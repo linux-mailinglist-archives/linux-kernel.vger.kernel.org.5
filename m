@@ -1,79 +1,82 @@
-Return-Path: <linux-kernel+bounces-155317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2067F8AE8C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:56:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 297D18AE8D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:59:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0C6328252E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:56:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47B791C21895
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:59:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F203136E21;
-	Tue, 23 Apr 2024 13:56:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CCE7137768;
+	Tue, 23 Apr 2024 13:58:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C3QL1llP"
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dfi2uLq2"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2534F135414
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30CD3136E16;
+	Tue, 23 Apr 2024 13:58:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713880604; cv=none; b=tEJzEYyeXa9v3xWfXCw7W70X1HsfUR1IR7aD2bG8fCcbss4H8RXlP3JDO4naCa61Ee4V5Wy3thWKINK5pYifoE5fX9NKzSjIElsh7G1puyQPwqQeE9ijjEuu5lM02zCIkpNMCl/62xH3gRRcycl0URTKMBZW/pgh5g9RnvbYYvc=
+	t=1713880731; cv=none; b=T7kcZ2rrHcoy72jT+RMrFag/0PqnM32B8o6RToVSMuM/DqQ8M3HTIN1vSXI8ECULuVSlyWQda+WdDXU1h9dGp2bcaF5pf1TURrN9uN8E/aPiIUPzeFbG8gCJre4H3in6N6MMijA6Zc3pgCjTg4fOA6cipz/wa+KbpCzUkFFPlZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713880604; c=relaxed/simple;
-	bh=eIDuK7Btp+udf2fVv94JzYZMy4NbqqbriW7Pgan3wkg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NDh+COAu7jkMWHueFxwktezpctvgOpMagDhoklBd5cIfhT7PkuhLk1Wp7NlFryirijQ1av8xIbZSh9EmNb+BbAJv6v0SAFXp+LG102rTTBVgeR8+0ENzXsbQr8xudors5kYRpOZC1nqHNoR9wvRi4dvkMjiw0J34tdH53S+35N0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C3QL1llP; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5d3912c9a83so3898254a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 06:56:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713880602; x=1714485402; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kQk5FyVP0lAkjPXrseFZ4aW2TL7nmZurojICLrE1sJU=;
-        b=C3QL1llPHVNesFaFRxCoejLZbYYnNlXsJw6zcDDr0h/cVhyyUeSAHp66gG8LxgikrB
-         4ZKnx+vdAWpTBXGH6EB67O3bll9Q7XFRp5fSag3kNNhDW9NbMQwhrhbxiRBV9hrQZnyK
-         VhJyBp9M0r38XYgZyIr57QRnLva3qtsu4H8z2OUTHD4Cu/UhorzZ47rwpQ6GM/iXCl1I
-         CVdXlHfxfsUqm3OrtIV4L5wY3SgPLrnItEK/t/h/cjLdXp/w/PwBBZj3MCdhy/KPKLAd
-         bSCepC7XSJhwSZzmU3WDRKxwGHeEn43cPFGhhhWmzsZVh1Gv6Zh6wnsUTfmqNpRgApJh
-         wyog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713880602; x=1714485402;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kQk5FyVP0lAkjPXrseFZ4aW2TL7nmZurojICLrE1sJU=;
-        b=YE48RjqBy5gov0hP8bg4MYD3C0J8pfQDGptlV4aVKGTHL1NlPvZeULTPR2zEV/1vkD
-         g+zREKCiH2/auIy+36JNmzBwIvz206B+MW9ep2MTvd4GMKHvT8BHcN53uTpwSkydTRXp
-         Q0C0baz+euHdKDSuLogYajHdv0MMNXZwqZX3gwgV84PooqWvnXJHnVCkCRUg004VwAUI
-         EWalN5WW+RXNCTIMDDSy3VV0gc8jQzY0yLnerRSQZwEMIhb/2kDO2EiU3XRbUh/VzWUC
-         rCxoWAgn4hnw49n2Rl1JI0CMgL77K/oq+fLKu/lAVavP1dTfiq8ei++KgJSvxxk7BH26
-         Dzsw==
-X-Gm-Message-State: AOJu0Yyv7eeAKph+2AOvP/jNVxA0WJCW6KbocvlmzilwfoiEX8kMXbqA
-	RBy9UJdCxYbtfSUDF7fax03Gjf0IAX3wB9v3DTlVMlEPR3hPRe+TJNwJh6s1
-X-Google-Smtp-Source: AGHT+IHi14oq6oMq0l+SgcZtnVF+lL+zvoONhe6aIpyGBgnH9ORlQ9qYr2zloIHU1A4q2j4SyGCYhQ==
-X-Received: by 2002:a05:6a21:9102:b0:1a7:8a55:b070 with SMTP id tn2-20020a056a21910200b001a78a55b070mr17991393pzb.37.1713880602157;
-        Tue, 23 Apr 2024 06:56:42 -0700 (PDT)
-Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id fa19-20020a056a002d1300b006e57247f4e5sm9623570pfb.8.2024.04.23.06.56.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 06:56:22 -0700 (PDT)
-From: Yuntao Wang <ytcoode@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Cc: Dennis Zhou <dennis@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Christoph Lameter <cl@linux.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH] percpu: simplify the logic of pcpu_alloc_first_chunk()
-Date: Tue, 23 Apr 2024 21:55:25 +0800
-Message-ID: <20240423135525.36872-1-ytcoode@gmail.com>
+	s=arc-20240116; t=1713880731; c=relaxed/simple;
+	bh=PM4hKVCgLViTlEhxGEmFa37oVZWQvC3vlHhtyjhGMvA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tNfQVUvjfHoAgWfsa0evPQ8cZp5uhp6te+75nKM8QYusyU8kNrGA8Dr1VyVmDi7j0wrCVvKZXxqOB6eFtushca3gUREnZqCqUkZVMEpx0yba89pzIDxHvTyjSOy4iT/qHBvLhoMphbGN/hrMepZ+58QpiK49Pee5L0sg95RpTe4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dfi2uLq2; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713880730; x=1745416730;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=PM4hKVCgLViTlEhxGEmFa37oVZWQvC3vlHhtyjhGMvA=;
+  b=dfi2uLq288Zmbcqgo/fAuud0TuOT1tc4CNcWBAR5MsldW0QYQl7fiQFH
+   hnah70cS4YJk1bfvl1vkcSi6j9a86k300A1geJKPdh+4yybJ6AvdoUg2c
+   e82dRfe/eP6IHp9iCVgnaNi9C2rgV2ARZAF1413DOldlCi6qzpqqnfp9j
+   gth8BTF+ffI65M5kN9+8Mvwsc0AnUN8dF4kP4hL7EebLtcCYcI79aa37F
+   sRg5Pm5fW8n6fUcQEUgpurREssyhiwsl2qu526zM1Cis5as0aiEYpxUVc
+   3bsLwWbrahfYRs4mHjQZQ5CS8mADQrq4ysHRWfvXubofv5dg+7sI3PTY0
+   w==;
+X-CSE-ConnectionGUID: 4iQ6PcLLSTyEciMdK/uoZw==
+X-CSE-MsgGUID: 6NVhk/ogTdK/Od/1CGbhGQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="26921426"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="26921426"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 06:58:49 -0700
+X-CSE-ConnectionGUID: If+xOyfqRgibg6Xjd3xxdg==
+X-CSE-MsgGUID: Rz+XMKpcS8KsUB23qWigbg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="24431745"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by fmviesa008.fm.intel.com with ESMTP; 23 Apr 2024 06:58:45 -0700
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v4 0/7] dma: skip calling no-op sync ops when possible
+Date: Tue, 23 Apr 2024 15:58:25 +0200
+Message-ID: <20240423135832.2271696-1-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -83,41 +86,121 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In the logic for hiding the end of the bitmap, there are several places
-where the same value 'region_bits - offset_bits' is calculated over and
-over again using different methods. Eliminate these redundant calculations
-to improve code readability.
+The series grew from Eric's idea and patch at [0]. The idea of using the
+shortcut for direct DMA as well belongs to Chris.
 
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+When an architecture doesn't need DMA synchronization and the buffer is
+not an SWIOTLB buffer, most of times the kernel and the drivers end up
+calling DMA sync operations for nothing.
+Even when DMA is direct, this involves a good non-inline call ladder and
+eats a bunch of CPU time. With IOMMU, this results in calling indirect
+calls on hotpath just to check what is already known and return.
+XSk is been using a custom shortcut for that for quite some time.
+I recently wanted to introduce a similar one for Page Pool. Let's combine
+all this into one generic shortcut, which would cover all DMA sync ops
+and all types of DMA (direct, IOMMU, ...).
+
+* #1 adds stub inlines to be able to compile DMA sync ops out when not
+     needed.
+* #2 adds generic shortcut and enables it for direct DMA.
+* #3 adds ability to skip DMA syncs behind an IOMMU.
+* #4-5 are just cleanups for Page Pool to avoid merge conflicts in future.
+* #6 checks for the shortcut as early as possible in the Page Pool code to
+     make sure no cycles wasted.
+* #7 replaces XSk's shortcut with the generic one.
+
+On 100G NIC, the result is +3-5% for direct DMA and +10-11% for IOMMU.
+As a bonus, XSk core now allows batched buffer allocations for IOMMU
+setups.
+If the shortcut is not available on some system, there should be no
+visible performance regressions.
+
+[0] https://lore.kernel.org/netdev/20221115182841.2640176-1-edumazet@google.com
+
+Alexander Lobakin (7):
+  dma: compile-out DMA sync op calls when not used
+  dma: avoid redundant calls for sync operations
+  iommu/dma: avoid expensive indirect calls for sync operations
+  page_pool: make sure frag API fields don't span between cachelines
+  page_pool: don't use driver-set flags field directly
+  page_pool: check for DMA sync shortcut earlier
+  xsk: use generic DMA sync shortcut instead of a custom one
+
+ kernel/dma/Kconfig                            |   5 +
+ include/net/page_pool/types.h                 |  25 ++++-
+ include/linux/device.h                        |   4 +
+ include/linux/dma-map-ops.h                   |  12 ++
+ include/linux/dma-mapping.h                   | 105 +++++++++++++-----
+ include/net/xdp_sock_drv.h                    |   7 +-
+ include/net/xsk_buff_pool.h                   |  14 +--
+ drivers/iommu/dma-iommu.c                     |   3 +-
+ drivers/net/ethernet/engleder/tsnep_main.c    |   2 +-
+ .../net/ethernet/freescale/dpaa2/dpaa2-xsk.c  |   2 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    |   2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c      |   2 +-
+ drivers/net/ethernet/intel/igc/igc_main.c     |   2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  |   2 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |   2 +-
+ drivers/net/ethernet/netronome/nfp/nfd3/xsk.c |   2 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |   2 +-
+ kernel/dma/mapping.c                          |  69 +++++++++---
+ kernel/dma/swiotlb.c                          |   6 +
+ net/core/page_pool.c                          |  76 ++++++++-----
+ net/xdp/xsk_buff_pool.c                       |  28 +----
+ 22 files changed, 243 insertions(+), 133 deletions(-)
+
 ---
- mm/percpu.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+From v3[1]:
+* #1:
+  * don't prefix DMA sync ops with '__', just define them as empty inlines
+    when !DMA_NEED_SYNC (Chris, Robin);
+  * always select DMA_NEED_SYNC when DMA_API_DEBUG (^);
+* #2:
+  * don't use BIT(), keep the style consistent (^);
+  * check for dma_map_ops::sync_sg_*() in dma_setup_need_sync() (^);
+  * don't reset the flag in swiotlb_alloc() as it's not streaming API (^);
+  * instead of 'dma_skip_sync', name the flag 'dma_need_sync' and inverse
+    the logic (^);
+  * setup the shortcut in dma_set_mask() (assuming every driver using DMA
+    must call it on probe) (^);
+  * combine dma_direct() and (ops->flags & CAN_SKIP_SYNC) checks (Robin);
+* #3:
+  - pick Acked-by (Robin).
 
-diff --git a/mm/percpu.c b/mm/percpu.c
-index 4e11fc1e6def..2a051f00f68d 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -1421,15 +1421,13 @@ static struct pcpu_chunk * __init pcpu_alloc_first_chunk(unsigned long tmp_addr,
- 	if (chunk->end_offset) {
- 		/* hide the end of the bitmap */
- 		offset_bits = chunk->end_offset / PCPU_MIN_ALLOC_SIZE;
--		bitmap_set(chunk->alloc_map,
--			   pcpu_chunk_map_bits(chunk) - offset_bits,
--			   offset_bits);
--		set_bit((start_offset + map_size) / PCPU_MIN_ALLOC_SIZE,
--			chunk->bound_map);
-+		start_offset = region_bits - offset_bits;
-+
-+		bitmap_set(chunk->alloc_map, start_offset, offset_bits);
-+		set_bit(start_offset, chunk->bound_map);
- 		set_bit(region_bits, chunk->bound_map);
- 
--		pcpu_block_update_hint_alloc(chunk, pcpu_chunk_map_bits(chunk)
--					     - offset_bits, offset_bits);
-+		pcpu_block_update_hint_alloc(chunk, start_offset, offset_bits);
- 	}
- 
- 	return chunk;
+From v2[2]:
+* #1:
+  * use two tabs for indenting multi-line function prototypes (Chris);
+* #2:
+  * make shortcut clearing function generic and move it out of the
+    SWIOTLB code (Chris);
+  * remove dma_set_skip_sync(): use direct assignment during the initial
+    setup, not used anywhere else (Chris);
+  * commitmsg: remove "NIC" and the workaround paragraph (Chris).
+
+From v1[3]:
+* #1:
+  * use static inlines instead of macros (Chris);
+  * move CONFIG_DMA_NEED_SYNC check into dma_skip_sync() (Robin);
+* #2:
+  * use a new dma_map_ops flag instead of new callback, assume the same
+    conditions as for direct DMA are enough (Petr, Robin);
+  * add more code comments to make sure the whole idea and path are
+    clear (Petr, Robin, Chris);
+* #2, #3: correct the Git tags and the authorship a bit.
+
+Not addressed in v2:
+* #1:
+  * dma_sync_*range_*() are still wrapped, as some subsystems may want
+    to call the underscored versions directly (e.g. Page Pool);
+* #2:
+  * the new dev->dma_skip_sync bit is still preferred over checking for
+    READ_ONCE(dev->dma_uses_io_tlb) + dev_is_dma_coherent() on hotpath
+    as a faster solution.
+
+[1] https://lore.kernel.org/netdev/20240214162201.4168778-1-aleksander.lobakin@intel.com
+[2] https://lore.kernel.org/netdev/20240205110426.764393-1-aleksander.lobakin@intel.com
+[3] https://lore.kernel.org/netdev/20240126135456.704351-1-aleksander.lobakin@intel.com
 -- 
 2.44.0
 
