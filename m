@@ -1,206 +1,302 @@
-Return-Path: <linux-kernel+bounces-154588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0C1D8ADE01
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:10:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EA438ADE05
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:11:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F58E1C2192A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:10:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE8341F228D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:11:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 722732E62D;
-	Tue, 23 Apr 2024 07:10:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA372E657;
+	Tue, 23 Apr 2024 07:11:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SjOutRJt"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="UxwdONSb"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 966BF29429
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:10:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2116428DBC
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:11:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713856216; cv=none; b=lsJXGrbM9v7lAK3U24lO27wBFIKfYoTyERnrbHb7GRmdCkBDf9fYuNWZ6yCbEn+qi9yOg8m7BgAZkl+ZH7vs0uyRiUS+0Q4Qxk22kBqsMZMhS3NN/+mWot1Fr2oIJ8l4Sh3lohrrN7mSEWgvLYHKlVqh0pISmTwFna5zZjHR1jw=
+	t=1713856275; cv=none; b=qs39K+yBO8Jre+P+7wEiUXBrgcbz7gDVubuMZZGxm43WOIisFcuWP7FB+EZEKHsuqh1awRrOvtGkEZCtwPCr/0/K3NVgSYlk0XTjlI431Jas6oFv126Abu4SPRRN3iMR4ByQehyGWA5bckzb531Bfg6ZXlbRblmqjgpRTFVnkI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713856216; c=relaxed/simple;
-	bh=yBIV7zaqZvrg/tg/0BisDRTKHzM1BXfxz5hj9GRS73o=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=V5Tp8ck86bVjjl6D9Fu801mvx0R84Qx5FOnWOblVsTjqZoTtVOSVmhHArXCyJbhQ+8lPtVhCnrDpaSc+iS2D9sap0v13PvgSprJmkPHkbNehsSWiQWnB4rSG1ULgrxXerhZgMVlOLCtU4h2TlZwZT3LJv0IgSC81mCiEPzIaj7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SjOutRJt; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2dd6c14d000so25265961fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 00:10:14 -0700 (PDT)
+	s=arc-20240116; t=1713856275; c=relaxed/simple;
+	bh=odE74ndxuyqdY3zgEI2iBLhV5SqQKMi+It1xd49Jl98=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y72C3ucfkmtPGNhVNKdYRDJWjcZVlFlXjOm8ouerfs9v50wN4/cXuJEdh6ea3J4SXBjG+ywzI75BMl6GV+i97zX4gnTbdctK9CUKT1+IZr/OWKg5duesbCu6s+glyK5fdOBZdxytMFuLm8VDkKn/AfTPjbP8ORyCIfSDRtqzmCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UxwdONSb; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-571bddddbc2so4960493a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 00:11:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713856213; x=1714461013; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wNtgb93EKXjvpP7lBU0smspsckMSUnUQVOfoYoovNGA=;
-        b=SjOutRJtQE2F14utSPilZJvRysEoR1YRtJ3vEWqjKk26kuSV6OhgyaCscmArSZ6u0n
-         aTJrouUJ1fWOu0TrWKlyKes6aOvnzPL6/+YJGj8+yeS9AYBAFUSZmEVOj1afckSCjWlg
-         8iwAI7IlY3m1lsavjJYY25/qQtXvVNzSMXOjkDpPLRnw4aOxfhJoQEZsWgxjac4YSbBH
-         t4MeDkwyFGvUd3W1R08tozfIgH4Zo4neYIWieJGfgB4EZmufqGfVsW+QUdgR1mBX0H6D
-         PWR7E+2ymQeo+VyCRvYM53NIzEHRNm4cvpMHvUArEiBEhoqQXZTBrlWfr7HNrXhKEpDJ
-         Nc4g==
+        d=google.com; s=20230601; t=1713856272; x=1714461072; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OGIN4Ae0OYLnSEhk4UefjxOz9LixYc6tJtQMSyoUMoA=;
+        b=UxwdONSbMTg2l1kKabfGwpzhysSRNl6scJJi/aYdeYuE0U3PzgVvgeKNLw+hWfa1km
+         BNApFu63iLMg5IWdJOpSKFeO9huotYICME/ZmJ5CByadJU59vhkTT/+yBV6C+587a3jj
+         J9dKXAN/n06lSzLA+J/UCVXXwoKCR+dCfPNBOFAgwQxf5ROIWt/FHSUlxIOrvewSgG8y
+         Ff8Dbor7h8q+jqSeHQ196Hft/3vJvYpdVqBvNZKgHzRucfN8svdULMDm7caDn78XgBnk
+         Gxp8jh58oTJFj0tBeoiS5OAjNNnaLD4U+xYlrcp0e8SS45KgVfKRoGqhyRL5My08cBcQ
+         r+1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713856213; x=1714461013;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wNtgb93EKXjvpP7lBU0smspsckMSUnUQVOfoYoovNGA=;
-        b=WN2yGeRXNzic1xn2tqH49U0BiMwn06QjSjJb1AGiE1NfHDgZVQSX17rWHYTJ/fsOvG
-         GvKueYkpweddqQJjJK4xp8HlpaPozc2CKgez72fdxzzlgb+A5+SWaZZ2UM38kitvjoyM
-         xprisOKttv0QMAMTgXLvLqZ35VAt3rzbod1T6kdw7NOfzAbqPth2UHamRDAxthPIDXe0
-         q3qQQCqPImZc/QU7jQ0oRpQKOxri25m8FoUYAPqactmJLRYOqCyEKQZIA22L9vTsG2cj
-         /EWhyvbuHN1A1+3QkvdRo5iq/a98Jnovgh9tEvbZ8oIX3moqZq7s6eX9f86DZ+HU5jGK
-         pKAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVYJCN5QLCSxl9MkvHb3q7AgP0nl2QAxchZXW4zd6D0BKUDJCcprAe0edWu82AguelLPZ5K0EMeCzJO60r7jb+AAUlP9SHjZV+Nn5t/
-X-Gm-Message-State: AOJu0Yy2ee8lIpSiCqi+MPkCe5IXHZw8xxB9TeZs7FHo6PzgEtvq647U
-	I0OI1JbXx05o7th4IUDoUb9ykUqde5FLAJkpQuyAHyD2hUPdV6k+PBqGNJCA8qk=
-X-Google-Smtp-Source: AGHT+IHESngGEjaTUV55LrK4cQ6o/pIuWEi1SD7AjVauRAH3j0Pyo9KShhcL6+N1ff5xMADJssFuqA==
-X-Received: by 2002:a05:651c:2010:b0:2d8:3eaf:86d2 with SMTP id s16-20020a05651c201000b002d83eaf86d2mr7773324ljo.47.1713856212449;
-        Tue, 23 Apr 2024 00:10:12 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id e6-20020a056402148600b005702c757af2sm6305825edv.30.2024.04.23.00.10.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 00:10:09 -0700 (PDT)
-Date: Tue, 23 Apr 2024 10:10:04 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, Benjamin Tissoires <bentiss@kernel.org>,
-	Jiri Kosina <jikos@kernel.org>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH 3/3] HID: bpf: lazy load the hid_tail_call entrypoint
-Message-ID: <74d0e9d1-7ac6-4f08-bab6-76c51e69cebf@moroto.mountain>
+        d=1e100.net; s=20230601; t=1713856272; x=1714461072;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OGIN4Ae0OYLnSEhk4UefjxOz9LixYc6tJtQMSyoUMoA=;
+        b=c9JM7DZxa1CP3BF4i4pC/7H16ac7vMiLUs8jFlARp5So7cYRLRb++J7bopEuwCFETK
+         Aiv7y/2qXTcT7l3y+cxWwvcmKKBxyMUC2lbF+za+dkOTn++r8YCUMuzNSBTHcyNOqtoi
+         yvXjD8N0/cjdKGeLi6c/TkCCl7//HaKBQ0di0STBB8i7AtFg3wPDadUKNodta8qaAQzY
+         HrplwZiN7XCXhHVLs8Qsod59g4uRGSzO7sqf6oA0N1jMXCDcSbB+iyb1aFrThd93/uv0
+         VtvA05ms6+hY+XQGNY/E707G+jECy0wL3OSqnUUIgLDjSO2vZl6syvl23mMgokdUrXsb
+         JLVg==
+X-Forwarded-Encrypted: i=1; AJvYcCXKSoZlYGVGj3sR9cgRA4Gl5qs64B6JnU2sQox3lzpi4NGXQyv9Hx2lzon0JPvXcD6IFOXJXpK4gxkZ/AlTgP8stoBlcNnY8pUCyEdo
+X-Gm-Message-State: AOJu0YyNM/qLLb+BkfZdglMVttF8fUsFrLlRgyZ4jP7ey0NVb47Vqc6N
+	pcmYvN0f+axfCPnlo1vybGCnZkcVsoP4SzC6gXhUwdCT+EIvlluMdPOizRGZp+IhvzypNHl4K17
+	cCxot9cp5pvByNOOxDR3+YD6153JRieA/xZ6h
+X-Google-Smtp-Source: AGHT+IE6fJwKvlBE0hK0aFw71XDa4QQAaKTfb/p3rYL/f5EnaEuqB5QGP3T5ZirLW5OD/d6MZszHeMugdtt7hHSmSA0=
+X-Received: by 2002:a17:906:5056:b0:a4e:3fad:b973 with SMTP id
+ e22-20020a170906505600b00a4e3fadb973mr7096623ejk.65.1713856272124; Tue, 23
+ Apr 2024 00:11:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240419-hid_bpf_lazy_skel-v1-3-9210bcd4b61c@kernel.org>
+References: <18b19dd4-6d76-4ed8-b784-32436ab93d06@linux.intel.com>
+ <Zhn9TGOiXxcV5Epx@google.com> <4c47b975-ad30-4be9-a0a9-f0989d1fa395@linux.intel.com>
+ <CAL715WJXWQgfzgh8KqL+pAzeqL+dkF6imfRM37nQ6PkZd09mhQ@mail.gmail.com>
+ <737f0c66-2237-4ed3-8999-19fe9cca9ecc@linux.intel.com> <CAL715W+RKCLsByfM3-0uKBWdbYgyk_hou9oC+mC9H61yR_9tyw@mail.gmail.com>
+ <Zh1mKoHJcj22rKy8@google.com> <CAL715WJf6RdM3DQt995y4skw8LzTMk36Q2hDE34n3tVkkdtMMw@mail.gmail.com>
+ <Zh2uFkfH8BA23lm0@google.com> <4d60384a-11e0-2f2b-a568-517b40c91b25@loongson.cn>
+ <ZiaX3H3YfrVh50cs@google.com> <d8f3497b-9f63-e30e-0c63-253908d40ac2@loongson.cn>
+ <d980dd10-e4c4-4774-b107-77b320cec9f9@linux.intel.com> <b5e97aa1-7683-4eff-e1e3-58ac98a8d719@loongson.cn>
+ <1ec7a21c-71d0-4f3e-9fa3-3de8ca0f7315@linux.intel.com> <5279eabc-ca46-ee1b-b80d-9a511ba90a36@loongson.cn>
+ <CAL715WJK893gQd1m9CCAjz5OkxsRc5C4ZR7yJWJXbaGvCeZxQA@mail.gmail.com>
+ <86d1f6d1-197a-ecd9-3349-a64da9ea9789@loongson.cn> <729c4b30-163c-4115-a380-14ece533a8b9@linux.intel.com>
+In-Reply-To: <729c4b30-163c-4115-a380-14ece533a8b9@linux.intel.com>
+From: Mingwei Zhang <mizhang@google.com>
+Date: Tue, 23 Apr 2024 00:10:35 -0700
+Message-ID: <CAL715W+BpyX3EeKr=3ipMH8W30wmhMkxg2Fx2OET9cvQ480cgg@mail.gmail.com>
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+To: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+Cc: maobibo <maobibo@loongson.cn>, Sean Christopherson <seanjc@google.com>, 
+	Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com, peterz@infradead.org, 
+	kan.liang@intel.com, zhenyuw@linux.intel.com, jmattson@google.com, 
+	kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
+	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
+	chao.gao@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Benjamin,
+On Mon, Apr 22, 2024 at 11:45=E2=80=AFPM Mi, Dapeng <dapeng1.mi@linux.intel=
+com> wrote:
+>
+>
+> On 4/23/2024 2:08 PM, maobibo wrote:
+> >
+> >
+> > On 2024/4/23 =E4=B8=8B=E5=8D=8812:23, Mingwei Zhang wrote:
+> >> On Mon, Apr 22, 2024 at 8:55=E2=80=AFPM maobibo <maobibo@loongson.cn> =
+wrote:
+> >>>
+> >>>
+> >>>
+> >>> On 2024/4/23 =E4=B8=8A=E5=8D=8811:13, Mi, Dapeng wrote:
+> >>>>
+> >>>> On 4/23/2024 10:53 AM, maobibo wrote:
+> >>>>>
+> >>>>>
+> >>>>> On 2024/4/23 =E4=B8=8A=E5=8D=8810:44, Mi, Dapeng wrote:
+> >>>>>>
+> >>>>>> On 4/23/2024 9:01 AM, maobibo wrote:
+> >>>>>>>
+> >>>>>>>
+> >>>>>>> On 2024/4/23 =E4=B8=8A=E5=8D=881:01, Sean Christopherson wrote:
+> >>>>>>>> On Mon, Apr 22, 2024, maobibo wrote:
+> >>>>>>>>> On 2024/4/16 =E4=B8=8A=E5=8D=886:45, Sean Christopherson wrote:
+> >>>>>>>>>> On Mon, Apr 15, 2024, Mingwei Zhang wrote:
+> >>>>>>>>>>> On Mon, Apr 15, 2024 at 10:38=E2=80=AFAM Sean Christopherson
+> >>>>>>>>>>> <seanjc@google.com> wrote:
+> >>>>>>>>>>>> One my biggest complaints with the current vPMU code is that
+> >>>>>>>>>>>> the roles and
+> >>>>>>>>>>>> responsibilities between KVM and perf are poorly defined,
+> >>>>>>>>>>>> which
+> >>>>>>>>>>>> leads to suboptimal
+> >>>>>>>>>>>> and hard to maintain code.
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> Case in point, I'm pretty sure leaving guest values in PMCs
+> >>>>>>>>>>>> _would_ leak guest
+> >>>>>>>>>>>> state to userspace processes that have RDPMC permissions, as
+> >>>>>>>>>>>> the PMCs might not
+> >>>>>>>>>>>> be dirty from perf's perspective (see
+> >>>>>>>>>>>> perf_clear_dirty_counters()).
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> Blindly clearing PMCs in KVM "solves" that problem, but in
+> >>>>>>>>>>>> doing so makes the
+> >>>>>>>>>>>> overall code brittle because it's not clear whether KVM
+> >>>>>>>>>>>> _needs_
+> >>>>>>>>>>>> to clear PMCs,
+> >>>>>>>>>>>> or if KVM is just being paranoid.
+> >>>>>>>>>>>
+> >>>>>>>>>>> So once this rolls out, perf and vPMU are clients directly to
+> >>>>>>>>>>> PMU HW.
+> >>>>>>>>>>
+> >>>>>>>>>> I don't think this is a statement we want to make, as it opens=
+ a
+> >>>>>>>>>> discussion
+> >>>>>>>>>> that we won't win.  Nor do I think it's one we *need* to make.
+> >>>>>>>>>> KVM doesn't need
+> >>>>>>>>>> to be on equal footing with perf in terms of owning/managing P=
+MU
+> >>>>>>>>>> hardware, KVM
+> >>>>>>>>>> just needs a few APIs to allow faithfully and accurately
+> >>>>>>>>>> virtualizing a guest PMU.
+> >>>>>>>>>>
+> >>>>>>>>>>> Faithful cleaning (blind cleaning) has to be the baseline
+> >>>>>>>>>>> implementation, until both clients agree to a "deal" between
+> >>>>>>>>>>> them.
+> >>>>>>>>>>> Currently, there is no such deal, but I believe we could have
+> >>>>>>>>>>> one via
+> >>>>>>>>>>> future discussion.
+> >>>>>>>>>>
+> >>>>>>>>>> What I am saying is that there needs to be a "deal" in place
+> >>>>>>>>>> before this code
+> >>>>>>>>>> is merged.  It doesn't need to be anything fancy, e.g. perf ca=
+n
+> >>>>>>>>>> still pave over
+> >>>>>>>>>> PMCs it doesn't immediately load, as opposed to using
+> >>>>>>>>>> cpu_hw_events.dirty to lazily
+> >>>>>>>>>> do the clearing.  But perf and KVM need to work together from
+> >>>>>>>>>> the
+> >>>>>>>>>> get go, ie. I
+> >>>>>>>>>> don't want KVM doing something without regard to what perf doe=
+s,
+> >>>>>>>>>> and vice versa.
+> >>>>>>>>>>
+> >>>>>>>>> There is similar issue on LoongArch vPMU where vm can directly
+> >>>>>>>>> pmu
+> >>>>>>>>> hardware
+> >>>>>>>>> and pmu hw is shard with guest and host. Besides context switch
+> >>>>>>>>> there are
+> >>>>>>>>> other places where perf core will access pmu hw, such as tick
+> >>>>>>>>> timer/hrtimer/ipi function call, and KVM can only intercept
+> >>>>>>>>> context switch.
+> >>>>>>>>
+> >>>>>>>> Two questions:
+> >>>>>>>>
+> >>>>>>>>    1) Can KVM prevent the guest from accessing the PMU?
+> >>>>>>>>
+> >>>>>>>>    2) If so, KVM can grant partial access to the PMU, or is it a=
+ll
+> >>>>>>>> or nothing?
+> >>>>>>>>
+> >>>>>>>> If the answer to both questions is "yes", then it sounds like
+> >>>>>>>> LoongArch *requires*
+> >>>>>>>> mediated/passthrough support in order to virtualize its PMU.
+> >>>>>>>
+> >>>>>>> Hi Sean,
+> >>>>>>>
+> >>>>>>> Thank for your quick response.
+> >>>>>>>
+> >>>>>>> yes, kvm can prevent guest from accessing the PMU and grant parti=
+al
+> >>>>>>> or all to access to the PMU. Only that if one pmu event is grante=
+d
+> >>>>>>> to VM, host can not access this pmu event again. There must be pm=
+u
+> >>>>>>> event switch if host want to.
+> >>>>>>
+> >>>>>> PMU event is a software entity which won't be shared. did you
+> >>>>>> mean if
+> >>>>>> a PMU HW counter is granted to VM, then Host can't access the PMU =
+HW
+> >>>>>> counter, right?
+> >>>>> yes, if PMU HW counter/control is granted to VM. The value comes fr=
+om
+> >>>>> guest, and is not meaningful for host.  Host pmu core does not know
+> >>>>> that it is granted to VM, host still think that it owns pmu.
+> >>>>
+> >>>> That's one issue this patchset tries to solve. Current new mediated
+> >>>> x86
+> >>>> vPMU framework doesn't allow Host or Guest own the PMU HW resource
+> >>>> simultaneously. Only when there is no !exclude_guest event on host,
+> >>>> guest is allowed to exclusively own the PMU HW resource.
+> >>>>
+> >>>>
+> >>>>>
+> >>>>> Just like FPU register, it is shared by VM and host during differen=
+t
+> >>>>> time and it is lately switched. But if IPI or timer interrupt uses
+> >>>>> FPU
+> >>>>> register on host, there will be the same issue.
+> >>>>
+> >>>> I didn't fully get your point. When IPI or timer interrupt reach, a
+> >>>> VM-exit is triggered to make CPU traps into host first and then the
+> >>>> host
+> >>> yes, it is.
+> >>
+> >> This is correct. And this is one of the points that we had debated
+> >> internally whether we should do PMU context switch at vcpu loop
+> >> boundary or VM Enter/exit boundary. (host-level) timer interrupt can
+> >> force VM Exit, which I think happens every 4ms or 1ms, depending on
+> >> configuration.
+> >>
+> >> One of the key reasons we currently propose this is because it is the
+> >> same boundary as the legacy PMU, i.e., it would be simple to propose
+> >> from the perf subsystem perspective.
+> >>
+> >> Performance wise, doing PMU context switch at vcpu boundary would be
+> >> way better in general. But the downside is that perf sub-system lose
+> >> the capability to profile majority of the KVM code (functions) when
+> >> guest PMU is enabled.
+> >>
+> >>>
+> >>>> interrupt handler is called. Or are you complaining the executing
+> >>>> sequence of switching guest PMU MSRs and these interrupt handler?
+> >>> In our vPMU implementation, it is ok if vPMU is switched in vm exit
+> >>> path, however there is problem if vPMU is switched during vcpu thread
+> >>> sched-out/sched-in path since IPI/timer irq interrupt access pmu
+> >>> register in host mode.
+> >>
+> >> Oh, the IPI/timer irq handler will access PMU registers? I thought
+> >> only the host-level NMI handler will access the PMU MSRs since PMI is
+> >> registered under NMI.
+> >>
+> >> In that case, you should disable  IRQ during vcpu context switch. For
+> >> NMI, we prevent its handler from accessing the PMU registers. In
+> >> particular, we use a per-cpu variable to guard that. So, the
+> >> host-level PMI handler for perf sub-system will check the variable
+> >> before proceeding.
+> >
+> > perf core will access pmu hw in tick timer/hrtimer/ipi function call,
+> > such as function perf_event_task_tick() is called in tick timer, there
+> > are  event_function_call(event, __perf_event_xxx, &value) in file
+> > kernel/events/core.c.
+> >
+> > https://lore.kernel.org/lkml/20240417065236.500011-1-gaosong@loongson.c=
+n/T/#m15aeb79fdc9ce72dd5b374edd6acdcf7a9dafcf4
+> >
+>
+> Just go through functions (not sure if all),  whether
+> perf_event_task_tick() or the callbacks of event_function_call() would
+> check the event->state first, if the event is in
+> PERF_EVENT_STATE_INACTIVE, the PMU HW MSRs would not be touched really.
+> In this new proposal, all host events with exclude_guest attribute would
+> be put on PERF_EVENT_STATE_INACTIVE sate if guest own the PMU HW
+> resource. So I think it's fine.
+>
 
-kernel test robot noticed the following build warnings:
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Benjamin-Tissoires/HID-bpf-fix-a-comment-in-a-define/20240419-225110
-base:   b912cf042072e12e93faa874265b30cc0aa521b9
-patch link:    https://lore.kernel.org/r/20240419-hid_bpf_lazy_skel-v1-3-9210bcd4b61c%40kernel.org
-patch subject: [PATCH 3/3] HID: bpf: lazy load the hid_tail_call entrypoint
-config: i386-randconfig-141-20240423 (https://download.01.org/0day-ci/archive/20240423/202404231109.h2IRrMMD-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202404231109.h2IRrMMD-lkp@intel.com/
-
-smatch warnings:
-drivers/hid/bpf/hid_bpf_jmp_table.c:478 __hid_bpf_attach_prog() error: uninitialized symbol 'link'.
-
-vim +/link +478 drivers/hid/bpf/hid_bpf_jmp_table.c
-
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  396  noinline int
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  397  __hid_bpf_attach_prog(struct hid_device *hdev, enum hid_bpf_prog_type prog_type,
-7cdd2108903a4e3 Benjamin Tissoires 2024-01-24  398  		      int prog_fd, struct bpf_prog *prog, __u32 flags)
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  399  {
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  400  	struct bpf_link_primer link_primer;
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  401  	struct hid_bpf_link *link;
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  402  	struct hid_bpf_prog_entry *prog_entry;
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  403  	int cnt, err = -EINVAL, prog_table_idx = -1;
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  404  
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  405  	mutex_lock(&hid_bpf_attach_lock);
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  406  
-60caa381da7dc38 Benjamin Tissoires 2024-04-19  407  	if (!jmp_table.map) {
-60caa381da7dc38 Benjamin Tissoires 2024-04-19  408  		err = hid_bpf_preload_skel();
-60caa381da7dc38 Benjamin Tissoires 2024-04-19  409  		WARN_ONCE(err, "error while preloading HID BPF dispatcher: %d", err);
-60caa381da7dc38 Benjamin Tissoires 2024-04-19  410  		if (err)
-60caa381da7dc38 Benjamin Tissoires 2024-04-19  411  			goto err_unlock;
-                                                                        ^^^^^^^^^^^^^^^^
-link isn't initialized.
-
-60caa381da7dc38 Benjamin Tissoires 2024-04-19  412  	}
-60caa381da7dc38 Benjamin Tissoires 2024-04-19  413  
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  414  	link = kzalloc(sizeof(*link), GFP_USER);
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  415  	if (!link) {
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  416  		err = -ENOMEM;
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  417  		goto err_unlock;
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  418  	}
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  419  
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  420  	bpf_link_init(&link->link, BPF_LINK_TYPE_UNSPEC,
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  421  		      &hid_bpf_link_lops, prog);
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  422  
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  423  	/* do not attach too many programs to a given HID device */
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  424  	cnt = hid_bpf_program_count(hdev, NULL, prog_type);
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  425  	if (cnt < 0) {
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  426  		err = cnt;
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  427  		goto err_unlock;
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  428  	}
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  429  
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  430  	if (cnt >= hid_bpf_max_programs(prog_type)) {
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  431  		err = -E2BIG;
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  432  		goto err_unlock;
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  433  	}
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  434  
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  435  	prog_table_idx = hid_bpf_insert_prog(prog_fd, prog);
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  436  	/* if the jmp table is full, abort */
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  437  	if (prog_table_idx < 0) {
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  438  		err = prog_table_idx;
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  439  		goto err_unlock;
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  440  	}
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  441  
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  442  	if (flags & HID_BPF_FLAG_INSERT_HEAD) {
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  443  		/* take the previous prog_entry slot */
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  444  		jmp_table.tail = PREV(jmp_table.tail);
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  445  		prog_entry = &jmp_table.entries[jmp_table.tail];
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  446  	} else {
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  447  		/* take the next prog_entry slot */
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  448  		prog_entry = &jmp_table.entries[jmp_table.head];
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  449  		jmp_table.head = NEXT(jmp_table.head);
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  450  	}
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  451  
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  452  	/* we steal the ref here */
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  453  	prog_entry->prog = prog;
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  454  	prog_entry->idx = prog_table_idx;
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  455  	prog_entry->hdev = hdev;
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  456  	prog_entry->type = prog_type;
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  457  
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  458  	/* finally store the index in the device list */
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  459  	err = hid_bpf_populate_hdev(hdev, prog_type);
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  460  	if (err) {
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  461  		hid_bpf_release_prog_at(prog_table_idx);
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  462  		goto err_unlock;
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  463  	}
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  464  
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  465  	link->hid_table_index = prog_table_idx;
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  466  
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  467  	err = bpf_link_prime(&link->link, &link_primer);
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  468  	if (err)
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  469  		goto err_unlock;
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  470  
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  471  	mutex_unlock(&hid_bpf_attach_lock);
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  472  
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  473  	return bpf_link_settle(&link_primer);
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  474  
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  475   err_unlock:
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  476  	mutex_unlock(&hid_bpf_attach_lock);
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13  477  
-4b9a3f49f02bf68 Benjamin Tissoires 2023-01-13 @478  	kfree(link);
-                                                              ^^^^
-
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  479  
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  480  	return err;
-f5c27da4e3c8a2e Benjamin Tissoires 2022-11-03  481  }
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+Is there any event in the host still having PERF_EVENT_STATE_ACTIVE?
+If so, hmm, it will reach perf_pmu_disable(event->pmu), which will
+access the global ctrl MSR.
 
