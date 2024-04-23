@@ -1,157 +1,90 @@
-Return-Path: <linux-kernel+bounces-155115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ED6C8AE575
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:06:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE04E8AE5E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:21:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 508351C22EE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:06:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66314283C42
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3229E1304BB;
-	Tue, 23 Apr 2024 11:58:36 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD0084E02;
+	Tue, 23 Apr 2024 12:21:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="K9OvCga1"
+Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 667F212FF71;
-	Tue, 23 Apr 2024 11:58:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA1182C60;
+	Tue, 23 Apr 2024 12:21:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713873515; cv=none; b=m3o6lAaTSvKay2IejNOcQCceUa3XBzJxXLOufFT2DcFa8J+2Vf79a0m+SWW+QsRL/6i72aGxw7+2M2SvChOtOj+8hpohvGQltCSrkcZJdilsgtp1jHP/zIP/Sgs1QQdI0x6KatRzpNDNxG/uMyE534OVFAX2Z0HmQC461JHcgXg=
+	t=1713874893; cv=none; b=kTjWjL8wK83qyQ1zSGMKJknptNxkTEqYscD0+FUtTR4L8RplBbdfcLmBgR+rF/tJi/UzsgL8tbkQkeBVH/Ui0i83H/sQDOARuBjwp9eEyfraX5hmyQhUPn65cv3Mc1uy+mrtknioWa9ciwZUBNr4QDDNySP0BFSTEX1PNfsbesc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713873515; c=relaxed/simple;
-	bh=UwN9B5ZWL0Ik8wZIGWNSkvjuIaxwxH+1NZhCExUifCE=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Jos/XdCmyM7K0erE7RVmXAtHyaB3bRkjwH/KsoNBmNhsKXUU0gmj5lD/1fglJvzrJd1kkov/EP0AXFuaIZPcBZHUHr8F9N1/5t+epC3YY01qBScGWrTb+34rChl1cR6I704gBfl85aXTblNHQAWyLSMgp59akFcH5zgeNa8zph0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VP0wk5VHmzShmm;
-	Tue, 23 Apr 2024 19:57:26 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (unknown [7.185.36.229])
-	by mail.maildlp.com (Postfix) with ESMTPS id E579818007D;
-	Tue, 23 Apr 2024 19:58:30 +0800 (CST)
-Received: from [10.174.178.247] (10.174.178.247) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 23 Apr 2024 19:58:29 +0800
-Subject: Re: [PATCH v7 06/16] ACPI: processor: Register deferred CPUs from
- acpi_processor_get_info()
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Thomas Gleixner
-	<tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
-	<linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>, <x86@kernel.org>, Russell King
-	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, Miguel
- Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
-	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
- Hansen <dave.hansen@linux.intel.com>, <linuxarm@huawei.com>,
-	<justin.he@arm.com>, <jianyong.wu@arm.com>
-References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
- <20240418135412.14730-7-Jonathan.Cameron@huawei.com>
-From: Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <d54b7aa7-f890-9f51-7ea7-f035eca1863f@huawei.com>
-Date: Tue, 23 Apr 2024 19:58:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+	s=arc-20240116; t=1713874893; c=relaxed/simple;
+	bh=jGvAPhh5VW4fYO/D1OLd4bVzXz1IC7v3zJgq8hBP5Lk=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=ey1/uwMm4nSHhedZst2Gom6hs+yaF+qYIKSJoyADJT4UboIoooGA/BecZ817sYVqndv3ce49DoKHWkpSl0AxyzSN/PwvKN8XMS05d9EvtCoMxB3dFSy2L+u8USmQ804a2su0T+sCqQBX4iabiDzSya49eKWbocvJD+FZYT2JbKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=K9OvCga1; arc=none smtp.client-ip=162.62.57.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1713874886; bh=jGvAPhh5VW4fYO/D1OLd4bVzXz1IC7v3zJgq8hBP5Lk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=K9OvCga14y0WBgcruPsbzLBOtne4q8Mi7z2LzUbWS5fvaD1ouhUt8qir6CVg9LtRm
+	 GZ+CIyI0LqMuLbvxZ9Gj7kZUlr17NDTHYcTfwE4WNIiICbmE+US76WPXFxytbGbfyz
+	 BuDlgD29P6natxwYgrJgm1G0Obc5E2f1SfwsrMy8=
+Received: from localhost.localdomain ([58.213.8.145])
+	by newxmesmtplogicsvrsza29-0.qq.com (NewEsmtp) with SMTP
+	id EB2B9A45; Tue, 23 Apr 2024 19:58:50 +0800
+X-QQ-mid: xmsmtpt1713873530te3l2kvca
+Message-ID: <tencent_5C4968C62CB4BF868761113A754124143108@qq.com>
+X-QQ-XMAILINFO: NVviswOLIctoag8HirS4vhs5DaIAsMSDiT63tBsS7GQfqirzHH9nDuk9t5shdC
+	 07bq+ZNHZ0tyP5Mp9aURyqwPltvbH7mClpV/r9wD4kik2mh9odCO/1N9/tyEI9WPL9InI+P0pjZG
+	 2Hjne0JrrMrT2PeroFvelrJW5uJTRK5GvxTgQ0Mr8KSRfaS5JX1P5YgP2v2Yx3g4k0NF7QDKe/4c
+	 OCVQetDfqY7O6B8isNpJWdYSh2wMLoGIWpOXmxeel5PnqQeDdxECBE419vl3Bb3R32CoBKGdXiZe
+	 zUtn9zgE6r2QLMY3UKhCVQU9sHMZo3YCvkPBuh3LcSb+7AATOO5xAm6tCnT6VxmDSaZA1d6F78hu
+	 JMPwKbtSwEkSi1ny44f2ikSC3iUxnHINYGy5a0KtZoBjJSI2JWqI0mum+XqcuB9qgW+FXBlE+y+5
+	 RQ6SkMEhmNMEx+BONNHVd4c+lWbwlsxIZhA35AsKYF1IfbNhBlkp+uWQA0KK9TvefUVJnn81KuX3
+	 ysrRq7db7iH5pjJRG9hDy2dVY5rucdX/Y/X5JuZ7xGSqjQ142yPJNzBr4sitGXuMFvpJmIKFEBVM
+	 poN3QtIonhgMjBbiJBRK63eWs568BMm8S6lXi9jzD7GzibcpfPMCg8jCh3XB3SbNLCkMBuZOf+mH
+	 iLB7K4tcUVW9rEFrS6wJorLMepePQLki3JM5Hvp2uD1Ud5pi8hBRWejiXmf00FRmWB2Nq7NPIH8g
+	 6mxxAN6RSqkjPiVma71l1XgUkz5EmcnW5RHdhGq/OciwPWQE8JfVxg2ERSlzJnIz92Zyqc5Wj6hp
+	 qdJSMuUx5Z973Z57zPCBIVQyZFNhDLKfR6mxfNNCzKlSNh+8rY+xwL+18xYTdezs1SUk3+F42aIC
+	 6tDUIzjyBGaE44bO0xs6ZEzbKAcm4+kH8p4Y2JCe/gbgPTm3usg/HLSHF9AybynMchjgkZrc+3Ez
+	 WUZo/W1vq69RBAayxxcNSIXVPFq6FiKNerZnLjOrS5/EMaZ2FXHHJ4WXdUAVYr6Xl4o8fPb1Q/Tn
+	 eZaMBZ8g==
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From: linke li <lilinke99@qq.com>
+To: razor@blackwall.org
+Cc: bridge@lists.linux.dev,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	lilinke99@qq.com,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	roopa@nvidia.com,
+	xujianhao01@gmail.com
+Subject: Re: [PATCH] net: bridge: remove redundant check of f->dst
+Date: Tue, 23 Apr 2024 19:58:45 +0800
+X-OQ-MSGID: <20240423115845.78992-1-lilinke99@qq.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+In-Reply-To: <b1fccc7c-3c9f-45e0-979f-f83dfc788613@blackwall.org>
+References: <b1fccc7c-3c9f-45e0-979f-f83dfc788613@blackwall.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240418135412.14730-7-Jonathan.Cameron@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500002.china.huawei.com (7.185.36.229)
+Content-Transfer-Encoding: 8bit
 
-On 2024/4/18 21:54, Jonathan Cameron wrote:
-> From: James Morse <james.morse@arm.com>
-> 
-> The arm64 specific arch_register_cpu() call may defer CPU registration
-> until the ACPI interpreter is available and the _STA method can
-> be evaluated.
-> 
-> If this occurs, then a second attempt is made in
-> acpi_processor_get_info(). Note that the arm64 specific call has
-> not yet been added so for now this will be called for the original
-> hotplug case.
-> 
-> For architectures that do not defer until the ACPI Processor
-> driver loads (e.g. x86), for initially present CPUs there will
-> already be a CPU device. If present do not try to register again.
-> 
-> Systems can still be booted with 'acpi=off', or not include an
-> ACPI description at all as in these cases arch_register_cpu()
-> will not have deferred registration when first called.
-> 
-> This moves the CPU register logic back to a subsys_initcall(),
-> while the memory nodes will have been registered earlier.
-> Note this is where the call was prior to the cleanup series so
-> there should be no side effects of moving it back again for this
-> specific case.
-> 
-> [PATCH 00/21] Initial cleanups for vCPU HP.
-> https://lore.kernel.org/all/ZVyz%2FVe5pPu8AWoA@shell.armlinux.org.uk/
-> commit 5b95f94c3b9f ("x86/topology: Switch over to GENERIC_CPU_DEVICES")
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-> Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Co-developed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Joanthan Cameron <Jonathan.Cameron@huawei.com>
-> ---
-> v7: Simplify the logic on whether to hotadd the CPU.
->      This path can only be reached either for coldplug in which
->      case all we care about is has register_cpu() already been
->      called (identifying deferred), or hotplug in which case
->      whether register_cpu() has been called is also sufficient.
->      Checks on _STA related elements or the validity of the ID
->      are no longer necessary here due to similar checks having
->      moved elsewhere in the path.
-> v6: Squash the two paths for conventional CPU Hotplug and arm64
->      vCPU HP.
-> ---
->   drivers/acpi/acpi_processor.c | 14 +++++++-------
->   1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> index 127ae8dcb787..4e65011e706c 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -350,14 +350,14 @@ static int acpi_processor_get_info(struct acpi_device *device)
->   	}
->   
->   	/*
-> -	 *  Extra Processor objects may be enumerated on MP systems with
-> -	 *  less than the max # of CPUs. They should be ignored _iff
-> -	 *  they are physically not present.
-> -	 *
-> -	 *  NOTE: Even if the processor has a cpuid, it may not be present
-> -	 *  because cpuid <-> apicid mapping is persistent now.
-> +	 *  This code is not called unless we know the CPU is present and
-> +	 *  enabled. The two paths are:
-> +	 *  a) Initially present CPUs on architectures that do not defer
-> +	 *     their arch_register_cpu() calls until this point.
-> +	 *  b) Hotplugged CPUs (enabled bit in _STA has transitioned from not
-> +	 *     enabled to enabled)
->   	 */
-> -	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
-> +	if (!get_cpu_device(pr->id)) {
->   		ret = acpi_processor_hotadd_init(pr, device);
->   
->   		if (ret)
+Thanks for your advice! Should I submit another patch with subject
+"[PATCH net-next] net: bridge: remove redundant check of f->dst" or
+"[PATCH net-next v2] net: bridge: remove redundant check of f->dst"?
 
-Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
 
