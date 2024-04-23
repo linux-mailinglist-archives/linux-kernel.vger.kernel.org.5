@@ -1,178 +1,287 @@
-Return-Path: <linux-kernel+bounces-155978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 352888AFC36
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B2F78AFC31
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:49:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6704B1C2226F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:49:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1472C1C22535
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:49:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF333EA95;
-	Tue, 23 Apr 2024 22:49:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8A811EA8D;
+	Tue, 23 Apr 2024 22:49:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="cBW+NGtN"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yblf64iG"
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AF532C1AE;
-	Tue, 23 Apr 2024 22:49:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB621C6BE
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 22:49:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713912553; cv=none; b=b7OokKEkPmnaxM8srujaUYlOBPx3lLkmNeHMHTYcAW6Jq+N51PhyMgVXH7MxIOnetMMCpZWkd17Yly0IgpdyWZ/PmzUAvHhYYnL3G7FpDZV+5GFeTXnZ1e/GT0OnSti2NAlVMdMAbNUk3iCRi/0A/VdRpNjLn9NeP+aVJKR3X0Q=
+	t=1713912542; cv=none; b=mUMBmebkOwaeYyuBrLU7DTGj3vuTpshoIHTprvW/UwQmuv5XyqVip/31eyycLrJaJVpWkGwcjKDj7hHaajpu4czw+QETXQ1Do7DZ7Mcq3qmzDnoi1GseoWsTNkfIQUAZKuL7wPDhV+WfocQ0tJ/9/1sUiLLIzMfeUsZY0TdF3AA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713912553; c=relaxed/simple;
-	bh=TRuX/tTAJzD7cSBZjxwlCUN8qWsw1eNS9r8xYN+qJVw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=baLxLM0L8VDXWH/WXp4y2hLtmg7dzh8TkDdro9ynLsYSzNxopFtYDjcs2csxUpEuVZhM1O7LZ7P44FPHKq9eQVIxUGqxqpN2OPnnZOQKQfpVa3VQMuG24SApKxHPnKUrG5Hrpeujc147NUx1CqVTeLx2TTf+Oj/piJDYSFPJCHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=cBW+NGtN; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43NM5IQN015367;
-	Tue, 23 Apr 2024 22:48:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=DDXZUb9B2qp1xMWb0EroroBnTTf58sdaiaj+26UKu5I=; b=cB
-	W+NGtNYFM1GqoOmyCowtmgRlTJaC2dalqNTOCyIa1B4tBeynyAvca5C5fvTmmvcj
-	jDzKC/l6wzG/EaGZeQsMwjMqjAbaK9a0N4MG4gnHxZDdi2eiebpl/LPBKUtl1PcM
-	9g5x2oV6G1gZNpF8XFXy6R2n9vLcAClfUSksV36DkTDoWKgb7esBgqdxbKNqLSUP
-	HTuZby/22SS/haVSE4yq6RwshxKOOxWekycPAEqRmAgmFJiSI3Z0EH7cW3RF8OKS
-	vPGA3ZU5xoPc2Zc6ueVlzG8ZQcTFaWMYeNVcu3jR2SXFxsaEn+8AAMJizpXhg1xB
-	5hmtyvO22MVROv/Cgd9Q==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpjp8gqp4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 22:48:45 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43NMmit4014980
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 22:48:44 GMT
-Received: from [10.110.64.215] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 23 Apr
- 2024 15:48:43 -0700
-Message-ID: <32ea2ffa-5ee4-5344-826d-3572085af705@quicinc.com>
-Date: Tue, 23 Apr 2024 15:48:43 -0700
+	s=arc-20240116; t=1713912542; c=relaxed/simple;
+	bh=q3rJ1K4a1vL1Qu/phBQBW+iD659Ved+2DL9VEOCZbrI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=W9DzSGDFIIEkFdpuRZu81ELiGsk6DsJb/Ba1/5v8ZLLS8aGCCbgYbYlBx8E2VPsaDHtcvf4Wrp6ojff0CVtEFNR5AHCEy7nJiepjrIXjdOd7DgEXNiPw7oszNdobBVITtOTSU2JIuPuJeK7HVdPANZK3G6O5KSwpfRGXqyMJYmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yblf64iG; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-439b1c72676so92951cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:49:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713912540; x=1714517340; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TFuf1odJW6gw+5rRIRioMk6XvuTZgOYXmnq0hWj8KOU=;
+        b=yblf64iG+UrxnHtnrhcTrPAsnOVOantu7dypRxh6pglAeZW3gG5xullReF8pGz/ecR
+         /qquIHeOKFYM55pG9S3QSMN6858No5SQRSedkJJWMj/RRuD5In15mY6tEPa+kDtQusZw
+         mGIpxgtNc4y8xXeDjnip7t+WdrmsvXZtlMV4U4IMKVtXhAOAUejQPy72lDXSq6Hv096H
+         Vh047LqV/f1JH3ytzJXbgTSQPIqmF7jx01QbGFaqVUfeT0naqeiQUTpvX9CXVv1VH4RR
+         RUiIV1p184t758QPBLKCCugeMlrVEmMgZX16xHZUlXYP9qcoul+L/Csb0Zkdlww2+YS8
+         wlNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713912540; x=1714517340;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TFuf1odJW6gw+5rRIRioMk6XvuTZgOYXmnq0hWj8KOU=;
+        b=bj/6pXyNEgM3GavX11NmNTJJWuVjweBk8Y65oAXehiQxtD/I2CanIYrzDBZXwpbjid
+         MpkN8vYlsazWynFZsRpS551W0lruHFLDcgX9fksrHZrquv2bG3w0K6l9BJDrLitBGL7h
+         aKQJScfrnBc2JLA1zD1yhoLy1zcKlkxemi8E8fdabRp9HRHZklJ1VcE47DwxcMqi83rX
+         sNR/Ay93tGK0xL9fxnyIuJGJpmPhuRr4w+0v4mcLHeq6JSOjkdPy5yommzSFFcJVTSZY
+         g0Amwzy2KVlqTDofixOzZeQKFIja8HBSoCWMJ+I5tYoOezMytc/FZ/t1uGAG4Y6zIBS8
+         RefQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX2Ncssrp4ugcVGAWh/DnPfUnYiIxYmvOGA59AJk+tvRGf3lyn+qW/ZyiBxht0GPRGSkER48jl4G7DCuLt91TUuGXUcz8eXfUR3SN1V
+X-Gm-Message-State: AOJu0YzSBH+ymEWIzay81ZYgX7GPtKMDj6UJzr4fcmU3rntUX2o0w1pz
+	aPtw1FNliAigSPJhlIO7TucCfFZnoRhjnLrvUDy/ZdXRpiicbVxjxxhGPBC4Zw6wj3ns+NT5d7U
+	P+lvRvUp2uOTj1BjcmWxCuSEak4y+sAee/3rv
+X-Google-Smtp-Source: AGHT+IFgrJmuqO3aOW7/tZCx+QVARQ7MwfvlmzhtXJrUMzw/zLxt5jU9cu2ClNCgb0H7upSfSPusLpDOjuysnwsbDmc=
+X-Received: by 2002:ac8:6e81:0:b0:437:c89e:245b with SMTP id
+ c1-20020ac86e81000000b00437c89e245bmr43930qtv.15.1713912539931; Tue, 23 Apr
+ 2024 15:48:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v19 41/41] ASoC: doc: Add documentation for SOC USB
-Content-Language: en-US
-To: Bagas Sanjaya <bagasdotme@gmail.com>, <srinivas.kandagatla@linaro.org>,
-        <mathias.nyman@intel.com>, <perex@perex.cz>, <conor+dt@kernel.org>,
-        <corbet@lwn.net>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
-        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
-        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh@kernel.org>,
-        <konrad.dybcio@linaro.org>
-CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>
-References: <20240422224906.15868-1-quic_wcheng@quicinc.com>
- <20240422224906.15868-42-quic_wcheng@quicinc.com>
- <ZicSOzE8KyaYGi0v@archie.me>
-From: Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <ZicSOzE8KyaYGi0v@archie.me>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: W15zYV3-qeG-OQ9c9nb1NdmLHuOGZuDd
-X-Proofpoint-ORIG-GUID: W15zYV3-qeG-OQ9c9nb1NdmLHuOGZuDd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-23_18,2024-04-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 phishscore=0 spamscore=0 clxscore=1011 bulkscore=0
- impostorscore=0 suspectscore=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404230061
+References: <20240410011313.2556848-1-irogers@google.com>
+In-Reply-To: <20240410011313.2556848-1-irogers@google.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 23 Apr 2024 15:48:48 -0700
+Message-ID: <CAP-5=fU7gO2VOEc6MCaPGnsznVPUmGcS6zm=b0xtWp+qxoSibw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] perf pmus: Sort/merge/aggregate PMUs like mrvl_ddr_pmu
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Athira Jajeev <atrajeev@linux.vnet.ibm.com>, 
+	James Clark <james.clark@arm.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, Bharat Bhushan <bbhushan2@marvell.com>, 
+	Bhaskara Budiredla <bbudiredla@marvell.com>, Will Deacon <will@kernel.org>, 
+	Stephane Eranian <eranian@google.com>, Thomas Richter <tmricht@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Bagas,
+On Tue, Apr 9, 2024 at 6:13=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> The mrvl_ddr_pmu is uncore and has a hexadecimal address suffix while
+> the previous PMU sorting/merging code assumes uncore PMU names start
+> with uncore_ and have a decimal suffix. Because of the previous
+> assumption it isn't possible to wildcard the mrvl_ddr_pmu.
+>
+> Modify pmu_name_len_no_suffix but also remove the suffix number out
+> argument, this is because we don't know if a suffix number of say 10
+> is in hexadecimal or decimal. As the only use of the suffix number is
+> in comparisons, it is safe there to compare the values as hexadecimal.
 
-On 4/22/2024 6:43 PM, Bagas Sanjaya wrote:
-> On Mon, Apr 22, 2024 at 03:49:06PM -0700, Wesley Cheng wrote:
->> +.. code-block:: rst
->> +
->> +int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
->> +					struct snd_soc_jack *jack)
->> +..
-> 
-> You forget to indent snd_soc_usb_setup_offload_jack() prototype:
-> 
-> ---- >8 ----
-> diff --git a/Documentation/sound/soc/usb.rst b/Documentation/sound/soc/usb.rst
-> index 3f7c3ef6a0c03c..0b6da0be9f317f 100644
-> --- a/Documentation/sound/soc/usb.rst
-> +++ b/Documentation/sound/soc/usb.rst
-> @@ -218,8 +218,8 @@ state.
->   
->   .. code-block:: rst
->   
-> -int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
-> -					struct snd_soc_jack *jack)
-> +        int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
-> +        					struct snd_soc_jack *jack)
->   ..
->   
->     - ``component``: ASoC component to add the jack
-> 
->> +USB Offload Playback Route Select Kcontrol
->> +-----------------------------------
-> 
-> USB offload playback heading underlines are not long enough to cover heading
-> titles, so I have to extend them:
-> 
-> ---- >8 ----
-> diff --git a/Documentation/sound/soc/usb.rst b/Documentation/sound/soc/usb.rst
-> index 0b6da0be9f317f..5e0e9fad131b24 100644
-> --- a/Documentation/sound/soc/usb.rst
-> +++ b/Documentation/sound/soc/usb.rst
-> @@ -482,7 +482,7 @@ into the physical USB port and enumerated.  The kcontrols are defined as:
->       kcontrol exposed by the platform card.
->   
->   USB Offload Playback Route Select Kcontrol
-> ------------------------------------
-> +------------------------------------------
->   In order to allow for vendor specific implementations on audio offloading device
->   selection, the SOC USB layer exposes the following:
->   
-> @@ -545,7 +545,7 @@ along to the external DSP.
->   
->   
->   USB Offload Playback Route Status
-> --------------------
-> +---------------------------------
->   SOC USB exposes APIs for keeping track of the offloading state, and expects this
->   to be maintained by the BE DAI link that created/added the SOC USB device.
->   
-> @@ -573,7 +573,7 @@ When executing the kcontrol get callback, it will loop across the active_list ar
->   and report to the application for active USB sound card and USB PCM device indexes.
->   
->   USB Offload Playback Capable Card
-> --------------------------------
-> +---------------------------------
->   USB sound also creates a kcontrol for applications to help determine which platform
->   sound card USB offloading is linked to.  This will allow applications to further
->   query the platform sound card for specific information about the current USB offload
-> 
-> Thanks.
-> 
++Thomas Richter
 
-Thanks for the review.  Will fix these all in the next revision.
+Thomas could you help validate that this doesn't cause issues on s390
+with the cpum_cf PMU (note how cf potentially looks like a hex
+suffix).
 
-Thanks
-Wesley Cheng
+Thanks,
+Ian
+
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/pmu.c  |  2 +-
+>  tools/perf/util/pmus.c | 51 ++++++++++++++++++++++--------------------
+>  tools/perf/util/pmus.h |  7 +++++-
+>  3 files changed, 34 insertions(+), 26 deletions(-)
+>
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index f39cbbc1a7ec..b0cca5841f90 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -1657,7 +1657,7 @@ static char *format_alias(char *buf, int len, const=
+ struct perf_pmu *pmu,
+>  {
+>         struct parse_events_term *term;
+>         int pmu_name_len =3D skip_duplicate_pmus
+> -               ? pmu_name_len_no_suffix(pmu->name, /*num=3D*/NULL)
+> +               ? pmu_name_len_no_suffix(pmu->name)
+>                 : (int)strlen(pmu->name);
+>         int used =3D snprintf(buf, len, "%.*s/%s", pmu_name_len, pmu->nam=
+e, alias->name);
+>
+> diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
+> index 16505071d362..b4ddcd0ade26 100644
+> --- a/tools/perf/util/pmus.c
+> +++ b/tools/perf/util/pmus.c
+> @@ -39,31 +39,44 @@ static bool read_sysfs_all_pmus;
+>
+>  static void pmu_read_sysfs(bool core_only);
+>
+> -int pmu_name_len_no_suffix(const char *str, unsigned long *num)
+> +int pmu_name_len_no_suffix(const char *str)
+>  {
+>         int orig_len, len;
+>
+>         orig_len =3D len =3D strlen(str);
+>
+> -       /* Non-uncore PMUs have their full length, for example, i915. */
+> -       if (!strstarts(str, "uncore_"))
+> -               return len;
+> -
+>         /*
+>          * Count trailing digits and '_', if '_{num}' suffix isn't presen=
+t use
+>          * the full length.
+>          */
+> -       while (len > 0 && isdigit(str[len - 1]))
+> +       while (len > 0 && isxdigit(str[len - 1]))
+>                 len--;
+>
+> -       if (len > 0 && len !=3D orig_len && str[len - 1] =3D=3D '_') {
+> -               if (num)
+> -                       *num =3D strtoul(&str[len], NULL, 10);
+> +       if (len > 0 && len !=3D orig_len && str[len - 1] =3D=3D '_')
+>                 return len - 1;
+> -       }
+> +
+>         return orig_len;
+>  }
+>
+> +int pmu_name_cmp(const char *lhs_pmu_name, const char *rhs_pmu_name)
+> +{
+> +       unsigned long lhs_num =3D 0, rhs_num =3D 0;
+> +       int lhs_pmu_name_len =3D pmu_name_len_no_suffix(lhs_pmu_name);
+> +       int rhs_pmu_name_len =3D pmu_name_len_no_suffix(rhs_pmu_name);
+> +       int ret =3D strncmp(lhs_pmu_name, rhs_pmu_name,
+> +                       lhs_pmu_name_len < rhs_pmu_name_len ? lhs_pmu_nam=
+e_len : rhs_pmu_name_len);
+> +
+> +       if (lhs_pmu_name_len !=3D rhs_pmu_name_len || ret !=3D 0 || lhs_p=
+mu_name_len =3D=3D 0)
+> +               return ret;
+> +
+> +       if (lhs_pmu_name_len + 1 < (int)strlen(lhs_pmu_name))
+> +               lhs_num =3D strtoul(&lhs_pmu_name[lhs_pmu_name_len + 1], =
+NULL, 16);
+> +       if (rhs_pmu_name_len + 1 < (int)strlen(rhs_pmu_name))
+> +               rhs_num =3D strtoul(&rhs_pmu_name[rhs_pmu_name_len + 1], =
+NULL, 16);
+> +
+> +       return lhs_num < rhs_num ? -1 : (lhs_num > rhs_num ? 1 : 0);
+> +}
+> +
+>  void perf_pmus__destroy(void)
+>  {
+>         struct perf_pmu *pmu, *tmp;
+> @@ -164,20 +177,10 @@ static struct perf_pmu *perf_pmu__find2(int dirfd, =
+const char *name)
+>  static int pmus_cmp(void *priv __maybe_unused,
+>                     const struct list_head *lhs, const struct list_head *=
+rhs)
+>  {
+> -       unsigned long lhs_num =3D 0, rhs_num =3D 0;
+>         struct perf_pmu *lhs_pmu =3D container_of(lhs, struct perf_pmu, l=
+ist);
+>         struct perf_pmu *rhs_pmu =3D container_of(rhs, struct perf_pmu, l=
+ist);
+> -       const char *lhs_pmu_name =3D lhs_pmu->name ?: "";
+> -       const char *rhs_pmu_name =3D rhs_pmu->name ?: "";
+> -       int lhs_pmu_name_len =3D pmu_name_len_no_suffix(lhs_pmu_name, &lh=
+s_num);
+> -       int rhs_pmu_name_len =3D pmu_name_len_no_suffix(rhs_pmu_name, &rh=
+s_num);
+> -       int ret =3D strncmp(lhs_pmu_name, rhs_pmu_name,
+> -                       lhs_pmu_name_len < rhs_pmu_name_len ? lhs_pmu_nam=
+e_len : rhs_pmu_name_len);
+>
+> -       if (lhs_pmu_name_len !=3D rhs_pmu_name_len || ret !=3D 0 || lhs_p=
+mu_name_len =3D=3D 0)
+> -               return ret;
+> -
+> -       return lhs_num < rhs_num ? -1 : (lhs_num > rhs_num ? 1 : 0);
+> +       return pmu_name_cmp(lhs_pmu->name ?: "", rhs_pmu->name ?: "");
+>  }
+>
+>  /* Add all pmus in sysfs to pmu list: */
+> @@ -297,11 +300,11 @@ static struct perf_pmu *perf_pmus__scan_skip_duplic=
+ates(struct perf_pmu *pmu)
+>                 pmu_read_sysfs(/*core_only=3D*/false);
+>                 pmu =3D list_prepare_entry(pmu, &core_pmus, list);
+>         } else
+> -               last_pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?:=
+ "", NULL);
+> +               last_pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?:=
+ "");
+>
+>         if (use_core_pmus) {
+>                 list_for_each_entry_continue(pmu, &core_pmus, list) {
+> -                       int pmu_name_len =3D pmu_name_len_no_suffix(pmu->=
+name ?: "", /*num=3D*/NULL);
+> +                       int pmu_name_len =3D pmu_name_len_no_suffix(pmu->=
+name ?: "");
+>
+>                         if (last_pmu_name_len =3D=3D pmu_name_len &&
+>                             !strncmp(last_pmu_name, pmu->name ?: "", pmu_=
+name_len))
+> @@ -313,7 +316,7 @@ static struct perf_pmu *perf_pmus__scan_skip_duplicat=
+es(struct perf_pmu *pmu)
+>                 pmu =3D list_prepare_entry(pmu, &other_pmus, list);
+>         }
+>         list_for_each_entry_continue(pmu, &other_pmus, list) {
+> -               int pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?: =
+"", /*num=3D*/NULL);
+> +               int pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?: =
+"");
+>
+>                 if (last_pmu_name_len =3D=3D pmu_name_len &&
+>                     !strncmp(last_pmu_name, pmu->name ?: "", pmu_name_len=
+))
+> diff --git a/tools/perf/util/pmus.h b/tools/perf/util/pmus.h
+> index 94d2a08d894b..624c2d53fc30 100644
+> --- a/tools/perf/util/pmus.h
+> +++ b/tools/perf/util/pmus.h
+> @@ -2,10 +2,15 @@
+>  #ifndef __PMUS_H
+>  #define __PMUS_H
+>
+> +#include <stdbool.h>
+> +#include <linux/list.h>
+> +
+>  struct perf_pmu;
+>  struct print_callbacks;
+>
+> -int pmu_name_len_no_suffix(const char *str, unsigned long *num);
+> +int pmu_name_len_no_suffix(const char *str);
+> +/* Exposed for testing only. */
+> +int pmu_name_cmp(const char *lhs_pmu_name, const char *rhs_pmu_name);
+>
+>  void perf_pmus__destroy(void);
+>
+> --
+> 2.44.0.478.gd926399ef9-goog
+>
 
