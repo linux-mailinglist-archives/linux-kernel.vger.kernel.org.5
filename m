@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-154821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F82C8AE17E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:58:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 110EA8AE182
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:59:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0AF42822C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:58:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 391A1B21AF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:59:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C421B5FB9B;
-	Tue, 23 Apr 2024 09:58:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 041B85FBAA;
+	Tue, 23 Apr 2024 09:59:16 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4973C2AD11;
-	Tue, 23 Apr 2024 09:58:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F7E822F11;
+	Tue, 23 Apr 2024 09:59:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713866285; cv=none; b=GWioU3hQ4ivevS/+jVZov1Tea+9FCiy/+Tt+Y/I0P2clOutgV2yaXpnpws+FN7htgfcpwEqSJHeE0zEmcnqiXTbqDV7eU+Y5+05Fj1FRn56dPWE6aooB5q71vBBOIGpZuRBr0uzNtrQZIIXVho7Dw4pS0gPggpUutiEqIkQQPAU=
+	t=1713866355; cv=none; b=jUj/gMX2Tnh4kHXMK+D5K/v+x6mcx0tMZtqWl44XC4Bvf6/FI10gHpt6eNlKrw8PZBxAFbjFjkDcvYf4c3jMTLkhBZVOh51phRugEKZ67e9EaAf6J8uACtkM+oMIOdtRbYzxwmVpnCU8UtJcSws56moYpEu4aY6xUyayZklTbVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713866285; c=relaxed/simple;
-	bh=TxdC6K1s4nq8pWJ5ttI5RCLM4q04ots0J9FKSFbKtNs=;
+	s=arc-20240116; t=1713866355; c=relaxed/simple;
+	bh=f3b/q4mHBxDMFeTpsNoxGk3SPntu5+fBCf9BQ4gAb9A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rcY5JSkdavZ9Z2jPZjfNbKr6Uw/ylluIJF3UbHBQsm4yG4M7sMmzw63nQfqHbOKViRB2649ycEgVzsXNUEAeAuNZ/+dae7Ml3BtfZ122EchU4m3MWOhPoI6YscM5KWoBhrDAHsOs5hMaIPjRwCpTlZMu3DZYFq4hLYbQwpPk+Bw=
+	 Content-Type:Content-Disposition:In-Reply-To; b=AqP0kg/LrHZWGmt7m9g0xVGj60BiacgVqVubm7NATpsNAMHRBYEF+SvHTelz71ciPP7My1zPD5NHjyrb/7fmjitxefHSBqCXO3d6uslGdZbmpzXg7r1kMGZS+H1jr2NXgtIO1cUMSiGkpQOyu+d7quNyYEZBM8wC4QIMPFtbBFI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95F87C116B1;
-	Tue, 23 Apr 2024 09:57:58 +0000 (UTC)
-Date: Tue, 23 Apr 2024 10:57:56 +0100
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E2E8C116B1;
+	Tue, 23 Apr 2024 09:59:08 +0000 (UTC)
+Date: Tue, 23 Apr 2024 10:59:06 +0100
 From: Catalin Marinas <catalin.marinas@arm.com>
 To: Robin Murphy <robin.murphy@arm.com>
 Cc: Joerg Roedel <joro@8bytes.org>, Christoph Hellwig <hch@lst.de>,
@@ -59,11 +59,13 @@ Cc: Joerg Roedel <joro@8bytes.org>, Christoph Hellwig <hch@lst.de>,
 	Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org,
 	iommu@lists.linux.dev, devicetree@vger.kernel.org,
+	Rob Herring <robh@kernel.org>,
+	Michael Kelley <mhklinux@outlook.com>,
 	Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH v4 6/7] iommu/dma: Centralise iommu_setup_dma_ops()
-Message-ID: <ZieGJJYXS6LoO_VZ@arm.com>
+Subject: Re: [PATCH v4 7/7] dma-mapping: Simplify arch_setup_dma_ops()
+Message-ID: <ZieGah8tnnuEgRhx@arm.com>
 References: <cover.1713523152.git.robin.murphy@arm.com>
- <bebea331c1d688b34d9862eefd5ede47503961b8.1713523152.git.robin.murphy@arm.com>
+ <5291c2326eab405b1aa7693aa964e8d3cb7193de.1713523152.git.robin.murphy@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,24 +74,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bebea331c1d688b34d9862eefd5ede47503961b8.1713523152.git.robin.murphy@arm.com>
+In-Reply-To: <5291c2326eab405b1aa7693aa964e8d3cb7193de.1713523152.git.robin.murphy@arm.com>
 
-On Fri, Apr 19, 2024 at 05:54:45PM +0100, Robin Murphy wrote:
+On Fri, Apr 19, 2024 at 05:54:46PM +0100, Robin Murphy wrote:
 > diff --git a/arch/arm64/mm/dma-mapping.c b/arch/arm64/mm/dma-mapping.c
-> index 61886e43e3a1..313d8938a2f0 100644
+> index 313d8938a2f0..0b320a25a471 100644
 > --- a/arch/arm64/mm/dma-mapping.c
 > +++ b/arch/arm64/mm/dma-mapping.c
-> @@ -58,8 +58,6 @@ void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
->  		   ARCH_DMA_MINALIGN, cls);
->  
->  	dev->dma_coherent = coherent;
-> -	if (device_iommu_mapped(dev))
-> -		iommu_setup_dma_ops(dev, dma_base, dma_base + size - 1);
->  
->  	xen_setup_dma_ops(dev);
+> @@ -46,8 +46,7 @@ void arch_teardown_dma_ops(struct device *dev)
 >  }
-
-In case you need an ack for the arm64 changes:
+>  #endif
+>  
+> -void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+> -			bool coherent)
+> +void arch_setup_dma_ops(struct device *dev, bool coherent)
+>  {
+>  	int cls = cache_line_size_of_cpu();
 
 Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 
