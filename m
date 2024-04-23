@@ -1,199 +1,170 @@
-Return-Path: <linux-kernel+bounces-154826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 288B48AE192
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:01:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E7EA8AE1AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:03:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1A701F23B98
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:01:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2594328595B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:03:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE4335FDDC;
-	Tue, 23 Apr 2024 10:01:42 +0000 (UTC)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C975FBA6;
+	Tue, 23 Apr 2024 10:01:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ELCLA7TZ"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBAC5EE8D;
-	Tue, 23 Apr 2024 10:01:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A81B75FB9B;
+	Tue, 23 Apr 2024 10:01:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713866502; cv=none; b=WWokdUNwf3A5q/Ma1FwtZA1pDcv6pOVJUujja06mF0NTqc5F+tKqAO9rdA+COIsbKS1rOrEeu5f6LVoo1oIT3yJLrTwK2aWVwHG+f1ebxvtqYTeWfpoXZFkhBVHyQxydoDTomerR22fetWjzYndVEA5VyJEB2aK7EVDOwjyviq4=
+	t=1713866518; cv=none; b=OCnKz1QNvbktkjq2jH25SPqe+zzqU0C+DALuVc7RRsv8OFn4qvQPpKfru/XiNScItgsMuRbl1d6m7d8x+bbWKjBy84W226HOdTBbgvZGUVtjyMNK5pEUYaZREjVYEuN9+lf+d+PDrv+Sfv6xhIrT+L0AeA5Pi58sByud0H04BpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713866502; c=relaxed/simple;
-	bh=vyWYebRDWDhl43XoUdYklPfaE7SPJBl5AaD0stQkpPs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eYCyBcpPgfxfAoIKRcnfmyasMqIw+Ka7l/8hGXMJV4+5QEJZcsJF56UPYR1OKFyJce8r1R78+9VXnBlxczVoWdrwFuDBo2qHeCTv8qGHsBRiTBc/dppbEmq9AneMFbuuTButekiOP1VFJQOkdIqOrhzRHBLCCQldw9Zcs6RlJTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-61587aa956eso60890277b3.1;
-        Tue, 23 Apr 2024 03:01:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713866496; x=1714471296;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rgAcX24jtvExHPqFhKDe6sUvmzXmlqVKJ8fmRK4rLMM=;
-        b=QnZUGVP/6G7mcoWEsqegQFXvEwQ8JyQ+PGpxLnQBzhGyaQ2jX/3Ur5mIahojx7uCpC
-         X8msEsyUvwHvpJmN99f51pOmn7BA5Pxma1+kpbtsLao3RS+axKYW3xDayzYYLBBE4q/j
-         fgXZOkb29IjF3HMaZF69jLtfqeBH625USjY74xWFuHgQ3jnSqMM4HRoO8If7SbaLDlr8
-         TyGGhZZfPi9n5A59Y5P+alAwr5l4PIAX6Cr1b6F5dCWL+LcrzD96AkFJJ0g1mWtWFEEz
-         ZCxIJgoiigNS/FhqFdpwu9u2uvhB2xUPhiZfjPdBFv61mQT+cvqEtZ/VWc9qEjyWu3gn
-         B5nQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUenAvUDDBf4huGfXhZlXanQnx6O2Z0Y+3bD/25y3ahqfMrhTF9tbkaA/v9oZ4vP2oYxJMKMP80AqNDIymF3HjZgQNma+R7lctOHbAVS0To9NGxWkVK4xRGzOnfB+DbFrkdQ3p+36ifl+Q1
-X-Gm-Message-State: AOJu0YzqpOXm53bzjpLXSX8F9Mo4MnoZJQTh5Ytk0csayEcJbQpCGaWC
-	k66oOKehrMvbs9O0aCcm3qfYngzl7wrZtJEnZXq1+IHglBm79CtRMphYro2I
-X-Google-Smtp-Source: AGHT+IGC+P2lDwgI+w4apZDW103kzDvUza6R3SH/Y1k0APvg3OvWJthvZQ4jmkoM7ojuFQlphP/wQQ==
-X-Received: by 2002:a05:690c:94:b0:61a:f1fc:eb14 with SMTP id be20-20020a05690c009400b0061af1fceb14mr14665327ywb.18.1713866495899;
-        Tue, 23 Apr 2024 03:01:35 -0700 (PDT)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id n127-20020a0dfd85000000b0060a16fb9209sm2426110ywf.115.2024.04.23.03.01.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 03:01:35 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dde0b30ebe2so5025592276.0;
-        Tue, 23 Apr 2024 03:01:35 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVsR5PtRlGJ5HkmxJ1CScy+iWGm3A02yvtpcrdEEstBV1Q/5X4froCZummg8lc+LAg+Zk78ar0FBFvk40hmpnHWw9+W+sam1xZCVvZlDZbl4MlIIdOacPGcCBRRDiEjHdxPM+CrSg2Ii9eP
-X-Received: by 2002:a25:2685:0:b0:de5:53c0:b9e5 with SMTP id
- m127-20020a252685000000b00de553c0b9e5mr1358571ybm.40.1713866495562; Tue, 23
- Apr 2024 03:01:35 -0700 (PDT)
+	s=arc-20240116; t=1713866518; c=relaxed/simple;
+	bh=eIHtDlpwxsc3XWZW8iA1wFGI7oLW/lPGfnVuHIpBM0k=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=dF23cm1uHw5/+gqbkFfPQM0EqghJNrZic74MKQWc/YoJaKkHACgWMfR5oeVz0ww8DdVPIdzQ15oSfQGwBijHGWLg/bJHOSnB9VTAPAzEt8ygUdgXJF+qQQL1WAr+mt3bAjEadi+TbJ2mbnFDXIzJMq6XWPmfpw0Z2QnwLta5a64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ELCLA7TZ; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 18E001C0005;
+	Tue, 23 Apr 2024 10:01:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713866508;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fTWKNBt1DmdiMdNDDF390iGqtyF7GrI4IgYrHS6Bp6M=;
+	b=ELCLA7TZnjfxTyZWJw2v9nMvXs5rfJNPpFqn7E5aHH7jBBqmFhmDJPJUrbcB5t5pknTUvF
+	hNtUfXlr/JVLfMCpoGaI4loOUk++YJShnqaspvqmN/IuO32HibjaM1tgg73Cjn1EwTYSK5
+	k4A8Ub+kSdBdB+hlFSLOJIt9yIh2EK1CmBORjiHyOV/VHt319Wh3Ovykmi42WHSkquC7yP
+	CFqkX0x3EVJI7wCNET/OYvr47VtgUKjHnj8MKQH6Fxavq+Z32n53UKoRyu56l6ndg/6B0O
+	PDii3s6BGVANW3sXVFHmwU/yyQHfPHmAukM1MkhxkWelrGo3TUgAJgO0hg0b/Q==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: [PATCH v4 0/6] spi: cadence-qspi: add Mobileye EyeQ5 support
+Date: Tue, 23 Apr 2024 12:01:39 +0200
+Message-Id: <20240423-cdns-qspi-mbly-v4-0-3d2a7b535ad0@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409154253.3043822-1-hugo@hugovil.com> <20240409154253.3043822-4-hugo@hugovil.com>
-In-Reply-To: <20240409154253.3043822-4-hugo@hugovil.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 23 Apr 2024 12:01:23 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVq=rf-6o485KiA+zcwJPHMe5STKUtSWtFPs2nmvshu-A@mail.gmail.com>
-Message-ID: <CAMuHMdVq=rf-6o485KiA+zcwJPHMe5STKUtSWtFPs2nmvshu-A@mail.gmail.com>
-Subject: Re: [PATCH v4 3/5] serial: sc16is7xx: split into core and I2C/SPI
- parts (core)
-To: Hugo Villeneuve <hugo@hugovil.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, peterz@infradead.org, 
-	mingo@kernel.org, linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
-	andy.shevchenko@gmail.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAAOHJ2YC/2XMyQ6CMBSF4VchXVtz6QS48j2Mi05IE6RISSMhv
+ LsFFw4s/5Ocb0bBDs4GdMpmNNjogvNdCnbIkG5kd7PYmdSIAGFAoMLadAE/Qu/wXbUTNpYQ4JI
+ xqShKp36wtXtu4OWaunFh9MO0+TFf1zdFofynYo4BSw605MKYpJ6V92PruqP2d7RikXwABnwHk
+ ARUXIiiKoUwwuwB+gXksANoAgpVAKeMVboufoFlWV4YSIqTMAEAAA==
+To: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Vaishnav Achath <vaishnav.a@ti.com>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Rob Herring <robh@kernel.org>
+Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.13.0
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hi Hugo,
+Hi all,
 
-On Tue, Apr 9, 2024 at 5:48=E2=80=AFPM Hugo Villeneuve <hugo@hugovil.com> w=
-rote:
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
->
-> Split the common code from sc16is7xx driver and move the I2C and SPI bus
-> parts into interface-specific source files.
->
-> sc16is7xx becomes the core functions which can support multiple bus
-> interfaces like I2C and SPI.
->
-> No functional changes intended.
->
-> Also simplify and improve Kconfig entries.
->   - Capitalize SPI keyword for consistency
->   - Display list of supported ICs each on a separate line (and aligned) t=
-o
->     facilitate locating a specific IC model
->   - Add Manufacturer name at start of description string
->   - Add UART keyword to description string
->
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+V4 of this series adding octal SPI-NOR support to Mobileye EyeQ5
+platform. It has been tested on EyeQ5 hardware successfully. Patches
+have been taken over time, meaning series got smaller over time.
 
-Thanks for your patch, which is now commit d49216438139bca0
-("serial: sc16is7xx: split into core and I2C/SPI parts (core)")
-in tty-next (next-20240415 and later).
+Patches:
+ - Make cdns,fifo-depth optional by computing it from hardware.
+ - No-IRQ mode for indirect read operations. Behind a quirk flag.
+ - Busywait on commands and indirect reads; reduces hrtimeouts load.
+ - Add mobileye,eyeq5-ospi compatible.
+ - EyeQ5 devicetree:
+    - Add octal SPI-NOR node.
+    - Add SPI-NOR flash node on eval board.
 
-> --- a/drivers/tty/serial/Kconfig
-> +++ b/drivers/tty/serial/Kconfig
-> @@ -1021,41 +1021,30 @@ config SERIAL_SCCNXP_CONSOLE
->           Support for console on SCCNXP serial ports.
->
->  config SERIAL_SC16IS7XX_CORE
-> -       tristate
-> -
-> -config SERIAL_SC16IS7XX
-> -       tristate "SC16IS7xx serial support"
-> +       tristate "NXP SC16IS7xx UART support"
+There is no dependency except if you want zero errors in devicetree:
+system-controller series [3] for <&clocks> phandle.
 
-Hence this replaces SERIAL_SC16IS7XX_CORE by SERIAL_SC16IS7XX,
-so arch/mips/configs/cu1??0-neo_defconfig needs to updated.
+Have a nice day,
+Théo
 
->         select SERIAL_CORE
-> -       depends on (SPI_MASTER && !I2C) || I2C
-> +       select SERIAL_SC16IS7XX_SPI if SPI_MASTER
-> +       select SERIAL_SC16IS7XX_I2C if I2C
+[0]: https://lore.kernel.org/lkml/20240216174227.409400-1-gregory.clement@bootlin.com/
+[1]: https://lore.kernel.org/linux-mips/20240209-regname-v1-0-2125efa016ef@flygoat.com/
+[2]: https://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/log/
+[3]: https://lore.kernel.org/lkml/20240301-mbly-clk-v9-0-cbf06eb88708@bootlin.com/
+[4]: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/log/
+[5]: https://lore.kernel.org/lkml/20240308-cdns-qspi-mbly-v1-0-a503856dd205@bootlin.com/
+[6]: https://lore.kernel.org/lkml/171259906078.120310.15397790336440498713.b4-ty@kernel.org/
 
-So if SPI_MASTER or I2C is enabled, the corresponding SERIAL_SC16IS7XX_*
-subdriver can no longer be disabled?  According to
-https://lore.kernel.org/all/20240403123501.8ef5c99f65a40ca2c10f635a@hugovil=
-com/
-you did want to support that?
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+Changes in v4:
+- Fix -Wunused-variable warning on patch "allow FIFO depth detection"
+  by dropping two unused local variables.
+- Rebase onto spi/for-next, drop three applied patches:
+  - spi: dt-bindings: cdns,qspi-nor: sort compatibles alphabetically
+  - spi: dt-bindings: cdns,qspi-nor: add mobileye,eyeq5-ospi compatible
+  - spi: dt-bindings: cdns,qspi-nor: make cdns,fifo-depth optional
+- Link to v3: https://lore.kernel.org/r/20240410-cdns-qspi-mbly-v3-0-7b7053449cf7@bootlin.com
 
->         help
-> -         This selects support for SC16IS7xx serial ports.
-> -         Supported ICs are SC16IS740, SC16IS741, SC16IS750, SC16IS752,
-> -         SC16IS760 and SC16IS762. Select supported buses using options b=
-elow.
-> +         Core driver for NXP SC16IS7xx UARTs.
-> +         Supported ICs are:
-> +
-> +           SC16IS740
-> +           SC16IS741
-> +           SC16IS750
-> +           SC16IS752
-> +           SC16IS760
-> +           SC16IS762
-> +
-> +         The driver supports both I2C and SPI interfaces.
->
->  config SERIAL_SC16IS7XX_I2C
-> -       bool "SC16IS7xx for I2C interface"
-> -       depends on SERIAL_SC16IS7XX
-> -       depends on I2C
-> -       select SERIAL_SC16IS7XX_CORE if SERIAL_SC16IS7XX
-> -       select REGMAP_I2C if I2C
-> -       default y
-> -       help
-> -         Enable SC16IS7xx driver on I2C bus,
-> -         If required say y, and say n to i2c if not required,
-> -         Enabled by default to support oldconfig.
-> -         You must select at least one bus for the driver to be built.
-> +       tristate
-> +       select REGMAP_I2C
->
->  config SERIAL_SC16IS7XX_SPI
-> -       bool "SC16IS7xx for spi interface"
-> -       depends on SERIAL_SC16IS7XX
-> -       depends on SPI_MASTER
-> -       select SERIAL_SC16IS7XX_CORE if SERIAL_SC16IS7XX
-> -       select REGMAP_SPI if SPI_MASTER
-> -       help
-> -         Enable SC16IS7xx driver on SPI bus,
-> -         If required say y, and say n to spi if not required,
-> -         This is additional support to existing driver.
-> -         You must select at least one bus for the driver to be built.
-> +       tristate
-> +       select REGMAP_SPI
->
->  config SERIAL_TIMBERDALE
->         tristate "Support for timberdale UART"
+Changes in v3:
+- dt-bindings:
+  - Patch "sort compatibles alphabetically":
+    - Moved first.
+    - Take Reviewed-By Krzysztof.
+  - Patch "add mobileye,eyeq5-ospi compatible":
+  - EyeQ5 no longer implies no cdns,fifo-depth prop. Patch now only adds
+    compatible, no more property conditional.
+  - New "make cdns,fifo-depth optional" patch, for all compatibles.
+- Driver:
+  - FIFO depth detection is no longer a quirk. It is for all compatibles
+    if no DT property is provided.
+  - Rebase onto spi-next [4] to drop three patches. No-IRQ mode patch is
+    mentioned in email saying a subset of patches got applied [6].
+    However, it is not in spi-next, so it is kept in series.
+  - Busywait is no longer behind a quirk; it applies to all compatibles.
+  - No-IRQ mode patch got modified to change its quirk index because
+    previous quirk got removed.
+  - As we removed some quirks, we no longer overflow u8 quirks.
+- Link to v2: https://lore.kernel.org/r/20240405-cdns-qspi-mbly-v2-0-956679866d6d@bootlin.com
 
-Gr{oetje,eeting}s,
+Changes in v2:
+- Rebase upon v6.9-rc2.
+- Fix dt-bindings commit subject tags.
+- Take Reviewed-by: Krzysztof Kozlowski on dt-bindings commit.
+- Add dt-bindings commit to order compatibles alphabetically.
+  Krzysztof: unsure if you want this. It is second so that commit
+  adding EyeQ5 compatible can be taken alone easily.
+- Drop patch taken upstream:
+  spi: cadence-qspi: switch from legacy names to modern ones
+- Add To: Rob Herring, following get_maintainer.pl recommendation.
+- Link to v1: https://lore.kernel.org/r/20240308-cdns-qspi-mbly-v1-0-a503856dd205@bootlin.com
 
-                        Geert
+---
+Théo Lebrun (6):
+      spi: cadence-qspi: allow FIFO depth detection
+      spi: cadence-qspi: add no-IRQ mode to indirect reads
+      spi: cadence-qspi: add early busywait to cqspi_wait_for_bit()
+      spi: cadence-qspi: add mobileye,eyeq5-ospi compatible
+      MIPS: mobileye: eyeq5: Add SPI-NOR controller node
+      MIPS: mobileye: eyeq5: add octal flash node to eval board DTS
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+ arch/mips/boot/dts/mobileye/eyeq5-epm5.dts | 15 +++++
+ arch/mips/boot/dts/mobileye/eyeq5.dtsi     | 15 +++++
+ drivers/spi/spi-cadence-quadspi.c          | 91 +++++++++++++++++++++++-------
+ 3 files changed, 102 insertions(+), 19 deletions(-)
+---
+base-commit: 9deae5003d0e89ec6ef15879a70ba6fb43e15029
+change-id: 20240209-cdns-qspi-mbly-de2205a44ab3
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Best regards,
+-- 
+Théo Lebrun <theo.lebrun@bootlin.com>
+
 
