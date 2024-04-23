@@ -1,115 +1,148 @@
-Return-Path: <linux-kernel+bounces-155386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11F468AE9AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:38:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 429808AE9CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:45:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB1DD289585
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:38:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EC99B230BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:45:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B7D7F499;
-	Tue, 23 Apr 2024 14:37:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B65213AD36;
+	Tue, 23 Apr 2024 14:45:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NsfKqWoP"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kYHpLDkH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iDgKYK0Q";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1evyy4Cl";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="V3cxaLrz"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3973313BAC3
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:37:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBDD88F5E;
+	Tue, 23 Apr 2024 14:45:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713883077; cv=none; b=JHKDpRc/9dhKwsVNBx4ZxHrrKjRm+UcILDXR/scoJ3RzJlIj/PVsRpL+PWR8Zpi82diOb8DWg7btzux1sGZ0RBjBdVu80Fgl30alLGMyVvlSqUSiOf+a2ajRMb6kh3DKCFxj5GP5If8zwAYxPO89TSvJZXzqvgbQbpjTZKhWezs=
+	t=1713883538; cv=none; b=UTVEySOiiJmVhxSdwZbOTrOdeXjxRD2VgAQuG9kuY0KgHYLI/ihGd4drhF8fsl7idjn5zuvdHwfQ8guBD33VUs1sdpV0fM8NFr5iIkA4Ej6zms2Q4KyAu++HV/wsGDIzUWolC/ucXSd9LncaNXmikx55j53uPHkkPmVdY50pdjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713883077; c=relaxed/simple;
-	bh=djonfho/R/jyeCS8Y9idO2dg/3sauTPDxmqFop0x9d0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UMMEKniyO99z+0MteZLH0E72Z1uqRMU2/uWUih2Sr9UcQVHAPKgOq0t9j8pRs/wa9iPf8D7c+SCLQL4vROxKPbtKwYHjzKqaeYvHlw9hQiSo18vf5uwccNqzLB03mDaWKAepxGtJdHi2BxVXIUBqXCBBESY0ARDA2fet26MK3G4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NsfKqWoP; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713883076; x=1745419076;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=djonfho/R/jyeCS8Y9idO2dg/3sauTPDxmqFop0x9d0=;
-  b=NsfKqWoPLVxUUe7oa8/d5aXWTxwI/tA2iGNTqckc6R/z/DEM3uCwrZwM
-   Nl5S7C/fWnIw3hHSCdL+lVerNKdPafq53q9X7RDEBQQfMbOMZx3hd9gWZ
-   2WjURXUvJAPZpgB2+J6iuuCHyQJDVcD65Rnkvwfssjf1dWQttwgQXhErq
-   USW5pfk4A/VrUR0OA0YggA585fDD8ko2yZDUdXNnY3sgikJV/1CG7gJyh
-   MhtG0eY6/rAsCI3WmPaOamULFNEXf9W7vDsqodj8kRVh4LLkbmkdZluPD
-   syNutmU7gQWRPClTmET6aGvunO6n7euPT4RLD69ozjuMSZTuyDL1KH7RX
-   w==;
-X-CSE-ConnectionGUID: k1ocTXG9TUSL/73SuNRR1w==
-X-CSE-MsgGUID: xaKGnx4PSJiny3vJliScOw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="9689343"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="9689343"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 07:37:56 -0700
-X-CSE-ConnectionGUID: Eel+Iw+tTjqCQrXcwsZB5A==
-X-CSE-MsgGUID: O2lJ0iAYTveU/wyW7as1xw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24425144"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa007.fm.intel.com with ESMTP; 23 Apr 2024 07:37:54 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id EDA1244E; Tue, 23 Apr 2024 17:37:52 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	linux-kernel@vger.kernel.org
-Cc: Stefani Seibold <stefani@seibold.net>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] kfifo: Don't use "proxy" headers
-Date: Tue, 23 Apr 2024 17:37:50 +0300
-Message-ID: <20240423143750.2480181-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
+	s=arc-20240116; t=1713883538; c=relaxed/simple;
+	bh=gPByzlowu52gZBR0jPs98e/qH0LAV1N1EdaNJp9k5pU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q9edEq/S4EC2QfnlXWQXU+px8aSlsMGRKvnGpK1RZFviLVoyVNOxfnEkzJV+KJjYs4P71mX4r2O1X8h1ZPD8qL8EMfunLNR2XBiv8v8k921N/NbVYXfJlsoGG9nnkovhkrIwsAEH/T4wRhko422LWfjkT8NtCgOEY1OAfu2CCRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kYHpLDkH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iDgKYK0Q; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1evyy4Cl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=V3cxaLrz; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E128D600B8;
+	Tue, 23 Apr 2024 14:45:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713883535;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ERxOOMezRAufIKqgnoffsNNUlab+BjMEAF6+1TvdqL0=;
+	b=kYHpLDkHdRQHUO1ImpunLE2b+SuGC8tpIhIpKCZ3ftKd3KHoFYV0RoM07n6lxcqokvr2Sm
+	7cnoUIUEi2KVdSuiUTYx8CJ8sDJkSZ1tQjYoEiNC//Ea9w6saukAwUi8thmUw4EbqUTWzm
+	tqSKhTzFHTVMA626W0tBctGtN6mUF3Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713883535;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ERxOOMezRAufIKqgnoffsNNUlab+BjMEAF6+1TvdqL0=;
+	b=iDgKYK0Qtdgpl1cAc8B+ZT8wMjb8Fks1FJhQJht044mBoApnXedDU1NrW5lYMjiXcgptoC
+	YGEwQFgEDkW4K7Ag==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713883534;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ERxOOMezRAufIKqgnoffsNNUlab+BjMEAF6+1TvdqL0=;
+	b=1evyy4Cl+UoOgOnUIXg1/q4G5gjdSMMfixQ9AUFI3ZH1o4Ji3ZEE7xe6lduUFDUScD9NRC
+	U+AoxYUdaKdUEymg+XTYyoA/OlCGQGJOFflWUcTAiJhTqG7+8L6hNXmyMTmVyOtLp+oUAg
+	oI1Z3yPCLULJo7wFclpk/jYpNxpDkWI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713883534;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ERxOOMezRAufIKqgnoffsNNUlab+BjMEAF6+1TvdqL0=;
+	b=V3cxaLrzAwF9PoRBfy+nEXrfs7bAIm0jGSbLKDT06xCnPrOa+fQwscTdxYcbeoWNhVGS/G
+	CE18HfQ/g2ubJ+Dg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C4D4113894;
+	Tue, 23 Apr 2024 14:45:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ESPiL47JJ2ZyAwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 23 Apr 2024 14:45:34 +0000
+Date: Tue, 23 Apr 2024 16:38:01 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Dominique Martinet <asmadeus@codewreck.org>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, Anand Jain <anand.jain@oracle.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Dominique Martinet <dominique.martinet@atmark-techno.com>,
+	Pavel Machek <pavel@denx.de>, stable@vger.kernel.org
+Subject: Re: [PATCH] btrfs: add missing mutex_unlock in
+ btrfs_relocate_sys_chunks()
+Message-ID: <20240423143801.GI3492@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20240419-btrfs_unlock-v1-1-c3557976a691@codewreck.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240419-btrfs_unlock-v1-1-c3557976a691@codewreck.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.69 / 50.00];
+	BAYES_HAM(-2.69)[98.66%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto]
+X-Spam-Score: -3.69
+X-Spam-Flag: NO
 
-Update header inclusions to follow IWYU (Include What You Use)
-principle.
+On Fri, Apr 19, 2024 at 11:22:48AM +0900, Dominique Martinet wrote:
+> From: Dominique Martinet <dominique.martinet@atmark-techno.com>
+> 
+> The previous patch forgot to unlock in the error path
+> 
+> Link: https://lore.kernel.org/all/Zh%2fHpAGFqa7YAFuM@duo.ucw.cz
+> Reported-by: Pavel Machek <pavel@denx.de>
+> Cc: stable@vger.kernel.org
+> Fixes: 7411055db5ce ("btrfs: handle chunk tree lookup error in btrfs_relocate_sys_chunks()")
+> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/linux/kfifo.h | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/kfifo.h b/include/linux/kfifo.h
-index d613748de7ff..564868bdce89 100644
---- a/include/linux/kfifo.h
-+++ b/include/linux/kfifo.h
-@@ -36,11 +36,16 @@
-  * to lock the reader.
-  */
- 
-+#include <linux/array_size.h>
- #include <linux/dma-mapping.h>
--#include <linux/kernel.h>
- #include <linux/spinlock.h>
- #include <linux/stddef.h>
--#include <linux/scatterlist.h>
-+#include <linux/types.h>
-+
-+#include <asm/barrier.h>
-+#include <asm/errno.h>
-+
-+struct scatterlist;
- 
- struct __kfifo {
- 	unsigned int	in;
--- 
-2.43.0.rc1.1336.g36b5255a03ac
-
+Added to for-next, thanks for catching it.
 
