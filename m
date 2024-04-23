@@ -1,156 +1,112 @@
-Return-Path: <linux-kernel+bounces-154615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 295938ADE71
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:43:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C6A58ADE76
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:44:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABCFE2843F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:43:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BA871F234E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36B99482DA;
-	Tue, 23 Apr 2024 07:43:39 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2345A4D58E;
+	Tue, 23 Apr 2024 07:44:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XQYWBDjI"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A1347A5D;
-	Tue, 23 Apr 2024 07:43:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EABFE47796;
+	Tue, 23 Apr 2024 07:44:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713858218; cv=none; b=crupKciJ2tLehGcOcKUEhPkdbWVjvOTmwaikcPFUcH6GBYoj4NvPzQ5CE6/yqcfKcroj4j3USjXUUk5BOQZIemsoLZd0GW4W6A8wtD8SN8mn9giUcJnIFdmQk1h9KOH0DVLfoEdbwPiG9vu3Np6S73JvLrEc6rdvHXQJYT5VKAI=
+	t=1713858273; cv=none; b=seazVZXg2oKpHWZwJYHD1MwTax6txwYEmIRZQ7GzgD5ItNbHt15gH9yqfLLOlYsJcuYCn14Lx4gINuxUvEoxEJfETVCEgDOO9+3W28mcQPX6S1XWF3y8e1ESDe06jO8600nXDakkq7CVlhwVL9Rp4FGYWYCV1SdEIxN+7/RVyJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713858218; c=relaxed/simple;
-	bh=zpqXzeN1h9+yujdqercMpcnT15Uwq0O3FUcKIyg2OOs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f0cwPgC/aZhjYjDSe+x2IeWRuwgnIDPcIY/XcBtDSF7HQJrmbe5jmOJ/bJaPYhW/gV+dwjkIsLYxaBolHXz3RmZBH8CZX3gdWluOfC25CdifWzSJjdZ1Y6xCMxTURT969jlCeWsZNEfEX7YMjhXKHXGA566QYpeRbcxlki+WwbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 896E0C116B1;
-	Tue, 23 Apr 2024 07:43:35 +0000 (UTC)
-From: Huacai Chen <chenhuacai@loongson.cn>
-To: Arnd Bergmann <arnd@arndb.de>,
-	Huacai Chen <chenhuacai@kernel.org>
-Cc: loongarch@lists.linux.dev,
-	linux-arch@vger.kernel.org,
-	Xuefeng Li <lixuefeng@loongson.cn>,
-	Guo Ren <guoren@kernel.org>,
-	Xuerui Wang <kernel@xen0n.name>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	linux-kernel@vger.kernel.org,
-	loongson-kernel@lists.loongnix.cn,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	Youling Tang <tangyouling@kylinos.cn>
-Subject: [PATCH] LoongArch: Fix callchain parse error with kernel tracepoint events
-Date: Tue, 23 Apr 2024 15:43:22 +0800
-Message-ID: <20240423074322.2480319-1-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1713858273; c=relaxed/simple;
+	bh=HItHqTRaUd0d1MV6aM34J5b3KIbtrvkExB8EEd+pcws=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=c7dg71aKSUGOFkIkup5Lu4KSk/FD8XwyzxXLYfGLrhyneHiX8b69ZjUV7m4GsXpcgNaFWCgFF0E4oKSEjRCt8ExcA9soI0K8RNzlIkjqv2wnkOeRKYdQeoX2cjewrPR9maS/KRDUbDCjJG7Mh13ad0GR0HbN1hnonzE+RELN8U8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XQYWBDjI; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-343e46ec237so4508528f8f.2;
+        Tue, 23 Apr 2024 00:44:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713858270; x=1714463070; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ICxLxoqLCPkVAEm/gWy9vaIt+Q7OZ1cgkkw+GcO4MNQ=;
+        b=XQYWBDjINoOiuI6QckJxUby8VbeecY5M+OqUMFzXgK4T214zAsYq707qS4lbYPkQC/
+         zzoCv/Z8Z3oHhpV3MX8kdwz8sqe7mntqP/ZeDGe+hLs9wCLWJ730QH2nAhYoGQIOxBGD
+         f+Rebqs3wMuyUzh3pVrI+18AlCZsPkmyzLjpTJjkUTL26o0F3n5S02t8MvVv7mbGp293
+         JK5ZeaTA36GIkK9/5b5gua8E+eI03R6JiqFj+VYKjl4rkZk78T5GfiOGs945MXJS1c5s
+         JLK/NmF4XZ+HDSGUDGongHqEIBDGyi2ImGbTh0yBVsfg8ZTVfcT1jcNHnpLV+sBSLWvT
+         VtWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713858270; x=1714463070;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ICxLxoqLCPkVAEm/gWy9vaIt+Q7OZ1cgkkw+GcO4MNQ=;
+        b=k490jooS1+ifb08dkjDRZY1Q8qiJqFwBogs0fTUAiZ3dHE9JxT1PaDX29seVDVIYlm
+         rwXNhzb4oxAP1KdBjB6KAzkMiI+mPjAjG8gJosja4fjCREswowQD6P3FvRGVO9MDYnUh
+         wBdpjplapw1SmSiNAiUAVyHI5mSjZR2kSMOVMKEuHzt587XTUFOgdfieNMrj09tyrk25
+         BW0XtNEt+ZU20ZEvZHeUxqUVyCz7JFYLW1nntUjNmREIAbZTjg9cju4KTC54u0uDy7dp
+         c7KIly9Y0bXRXtVV3nhsAmZH6TZezJxdl5dohkWNz1oMcCzoZCHjQJ97D1Z9Km1oIGx1
+         0KKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU2ISyryo4NWFLe1qBHi5nr/6yuE+S5rOntDAelyNIKhw8zMF20qmMKryMSKCJc9oBDhjvKTbmLGd1D14FUCqi2LLv4zBtFIGkjbEJPor8/2AV/hqa7KUu+CKWWzTj+KEYwX+gHsY5RxQc=
+X-Gm-Message-State: AOJu0Yy12/ZYqGHBvXJmxGc/pQsSxxI+/t7MsbzPlKcsTkSLKkA3Mqdw
+	NLQuwlLtIrWt6Cdc+9pVU7ZlMQVKfTIMDuOFjk2zZuTqeLGrM034c8p69w==
+X-Google-Smtp-Source: AGHT+IFM2SP8Nqxd1gHbttKIRjBJ47wvuHrP3Q9C4XUEFUGwVwtSO8/ZoFlInGPGW3r3ZGej1QYpkQ==
+X-Received: by 2002:a5d:444b:0:b0:343:e02f:1a46 with SMTP id x11-20020a5d444b000000b00343e02f1a46mr9466936wrr.2.1713858270055;
+        Tue, 23 Apr 2024 00:44:30 -0700 (PDT)
+Received: from localhost (craw-09-b2-v4wan-169726-cust2117.vm24.cable.virginm.net. [92.238.24.70])
+        by smtp.gmail.com with ESMTPSA id e5-20020adfe385000000b003455e5d2569sm14079241wrm.0.2024.04.23.00.44.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 00:44:29 -0700 (PDT)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Shenghao Ding <shenghao-ding@ti.com>,
+	linux-sound@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ASoc: PCM6240: Fix spelling mistake: "deley" -> "delay"
+Date: Tue, 23 Apr 2024 08:44:28 +0100
+Message-Id: <20240423074428.1313777-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-In order to fix perf's callchain parse error for LoongArch, we implement
-perf_arch_fetch_caller_regs() which fills several necessary registers
-used for callchain unwinding, including sp, fp, and era. This is similar
-to the following commits.
+There is a spelling mistake in a dev_err message. Fix it.
 
-commit b3eac0265bf6:
-("arm: perf: Fix callchain parse error with kernel tracepoint events")
-
-commit 5b09a094f2fb:
-("arm64: perf: Fix callchain parse error with kernel tracepoint events")
-
-commit 9a7e8ec0d4cc:
-("riscv: perf: Fix callchain parse error with kernel tracepoint events")
-
-Test with commands:
-
- perf record -e sched:sched_switch -g --call-graph dwarf
- perf report
-
-Without this patch:
-
- Children      Self  Command        Shared Object      Symbol
- ........  ........  .............  .................  ....................
-
- 43.41%    43.41%  swapper          [unknown]          [k] 0000000000000000
-
- 10.94%    10.94%  loong-container  [unknown]          [k] 0000000000000000
-         |
-         |--5.98%--0x12006ba38
-         |
-         |--2.56%--0x12006bb84
-         |
-          --2.40%--0x12006b6b8
-
-With this patch, callchain can be parsed correctly:
-
- Children      Self  Command        Shared Object      Symbol
- ........  ........  .............  .................  ....................
-
- 47.57%    47.57%  swapper          [kernel.vmlinux]   [k] __schedule
-         |
-         ---__schedule
-
- 26.76%    26.76%  loong-container  [kernel.vmlinux]   [k] __schedule
-         |
-         |--13.78%--0x12006ba38
-         |          |
-         |          |--9.19%--__schedule
-         |          |
-         |           --4.59%--handle_syscall
-         |                     do_syscall
-         |                     sys_futex
-         |                     do_futex
-         |                     futex_wait
-         |                     futex_wait_queue_me
-         |                     hrtimer_start_range_ns
-         |                     __schedule
-         |
-         |--8.38%--0x12006bb84
-         |          handle_syscall
-         |          do_syscall
-         |          sys_epoll_pwait
-         |          do_epoll_wait
-         |          schedule_hrtimeout_range_clock
-         |          hrtimer_start_range_ns
-         |          __schedule
-         |
-          --4.59%--0x12006b6b8
-                    handle_syscall
-                    do_syscall
-                    sys_nanosleep
-                    hrtimer_nanosleep
-                    do_nanosleep
-                    hrtimer_start_range_ns
-                    __schedule
-
-Reported-by: Youling Tang <tangyouling@kylinos.cn>
-Suggested-by: Youling Tang <tangyouling@kylinos.cn>
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
- arch/loongarch/include/asm/perf_event.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/codecs/pcm6240.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/loongarch/include/asm/perf_event.h b/arch/loongarch/include/asm/perf_event.h
-index 2a35a0bc2aaa..157c4ace69d0 100644
---- a/arch/loongarch/include/asm/perf_event.h
-+++ b/arch/loongarch/include/asm/perf_event.h
-@@ -9,4 +9,10 @@
+diff --git a/sound/soc/codecs/pcm6240.c b/sound/soc/codecs/pcm6240.c
+index 93d592dbee66..86e126783a1d 100644
+--- a/sound/soc/codecs/pcm6240.c
++++ b/sound/soc/codecs/pcm6240.c
+@@ -1772,7 +1772,7 @@ static int pcmdev_delay(struct pcmdevice_priv *pcm_dev,
+ 	int offset = 2;
  
- #define perf_arch_bpf_user_pt_regs(regs) (struct user_pt_regs *)regs
- 
-+#define perf_arch_fetch_caller_regs(regs, __ip) { \
-+	(regs)->csr_era = (__ip); \
-+	(regs)->regs[3] = current_stack_pointer; \
-+	(regs)->regs[22] = (unsigned long) __builtin_frame_address(0); \
-+}
-+
- #endif /* __LOONGARCH_PERF_EVENT_H__ */
+ 	if (offset + 2 > sublocksize) {
+-		dev_err(pcm_dev->dev, "%s: dev-%d deley out of boundary\n",
++		dev_err(pcm_dev->dev, "%s: dev-%d delay out of boundary\n",
+ 			__func__, devn);
+ 		return -EINVAL;
+ 	}
 -- 
-2.43.0
+2.39.2
 
 
