@@ -1,221 +1,202 @@
-Return-Path: <linux-kernel+bounces-154491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5C8A8ADCC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:22:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 660728ADCC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:23:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D765B2155B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 04:22:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89DCA1C2199B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 04:23:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BEBB1D531;
-	Tue, 23 Apr 2024 04:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FBA71D69E;
+	Tue, 23 Apr 2024 04:22:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PnESWfqq"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="cmMOyS3n"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2048.outbound.protection.outlook.com [40.107.237.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BDFA18AED;
-	Tue, 23 Apr 2024 04:22:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713846161; cv=none; b=fQh8wcO2Ds2vj0iu8Bon/ZXaJqmaDL2duPwzbuPswLhAMimrc1Ue/vTtZQ7oJ13WDz/R984mamzqPcdsuom9eB8NxMqqbt8wTMv/KN7kX+Vjj18UFY8/1ojs+ryzH56RB+RynpPQR0ZyQ6Bm3OZSpdh+IB7XXFtaD/bHR4+U4+c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713846161; c=relaxed/simple;
-	bh=5nWlXKGNzpbPvMYgzwa7Agut73MM3uPw54rc22XINyM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Gm1Jh6ICuj0J8uANgviRnlgyvb2thorUcCs+kSSZhvFwgb9ff+HG46gVGnlOd1TtRAiNOf+pzR8dSe3ymaKC1YNFsKP5evX3En8xd9zQvpgcfrqCGOZNf/ix8i3fkXknwXrxaUMVRXnrwcI3tVIhAfviJkzud3eN4J//JHVkPak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PnESWfqq; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a557044f2ddso566397866b.2;
-        Mon, 22 Apr 2024 21:22:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713846158; x=1714450958; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mUs2RUZvYrbt0djestVEkcsXv+XeS/wmMn/FMr80SwM=;
-        b=PnESWfqqXvBOoTvVXyFSsl9cQHSgD7N4ckW/WGfm8ZORq6+9jahTlHVEpXaaFshiSB
-         eiYwITfrYdLDiFRyYsCXlbz5ecfA1658CRg9IewxZ6DF2F70+Kjrdn+unPn6D14NrUXj
-         uJBYHHuFKJJmNT5PHvcN8Lfba5pBrE6ogO0F/yhtbJC8Et0KizP6+cI0mYg3Y/1RRInd
-         CNXzag3rr8hKQX9jegn4cnXODNwWSVaycvMTQVAyWLjQw2JszF2s6J8gbEM91rUWHpQ4
-         81chkubWAiY1N5fPc1cdBlYObu76EktOOpxSoL3Ei0XBXPZeT2kNZ40tLgBNgBFJlUWg
-         uDaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713846158; x=1714450958;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mUs2RUZvYrbt0djestVEkcsXv+XeS/wmMn/FMr80SwM=;
-        b=MQZyKbb1UrpyUTGy4qbxmEpqYydcbSG278mtItqQrw7EjxQJobMIt/K9EBKWtQJOS8
-         dlCCsGXH+qLdpEMrOJi9Ui2w6H14Bxfjciiur/Q8+dmEq9CN8aSLq6/zAve2UOdtA2Mi
-         HBtVqft9Z4lNG5xZ9MC+yEV3HW49+/zxAjBot/5gYGqVubOgurtq3Pr38J6lZp3fj51D
-         Rc5bXo7LwmYYPAXStlB/lzqGn6sb89+OxtywKzFSgdGrrumH+Sd/FCsur5eSDsH+VFV1
-         RFmOc8TfOb9R0ha13AMa72yQsiNZFLKBxOmM0HJgbfqMF23hnJJj9BSBjMJBgGmc2njC
-         anXA==
-X-Forwarded-Encrypted: i=1; AJvYcCXlF3meYXu4wAoPiPzbtp/4jMB36MA9J0fAud0oVyq20uqvPFhWv3w/aiCkt0lYUH0V9yDO0FnJ6rqAbum5LTkCZoK+biwvFGut6KEgjkv6+E4iNdjgrQBR/cV37tuzi1IBsAOjV50rpsFRIgFsVrBIIwvn7/4SZuxpH2IX1eIAVxTViLdL
-X-Gm-Message-State: AOJu0YwPif0YHJ86cUYoK70R8tJmeqpohIB4JQ11WcZBgwrGHdv1HH7N
-	XYV+GdMfz66ROi7JywEZDVej8KllBxpJBsCxofEZj0cv9BbWUJyA
-X-Google-Smtp-Source: AGHT+IHNB26jxIYXuLgkHDTr7cigbRb6NRaEhxNW9klXv6JV7oErenfbZDVtvg93kbkJoHjeXqljJQ==
-X-Received: by 2002:a17:906:3502:b0:a52:277d:c1c9 with SMTP id r2-20020a170906350200b00a52277dc1c9mr8047023eja.50.1713846157921;
-        Mon, 22 Apr 2024 21:22:37 -0700 (PDT)
-Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.googlemail.com with ESMTPSA id 17-20020a170906311100b00a5599f3a057sm3847028ejx.107.2024.04.22.21.22.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 21:22:37 -0700 (PDT)
-Message-ID: <c6a8fdc1-0230-4438-8b80-c07daf80f1ce@gmail.com>
-Date: Tue, 23 Apr 2024 06:22:35 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A83D3208CB;
+	Tue, 23 Apr 2024 04:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.48
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713846176; cv=fail; b=CIVzdwM7BTX+ENHcV3TauxhIe4uEcHXq1iv9A961qMKIsI7DAiXVD4NcmbBQWYkOOs8UBfeDLPjZ45aRRblghoK/7UPaQjhvlgv52OWMOin2BVZdr0xLqHbprPj0EgGypgISZvP2EWGpiXHneUDKQL7SbbnhOCsKUVCjAP9tM6Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713846176; c=relaxed/simple;
+	bh=fx8DZOfd05GU/BIf+sOfLx+QLRR+BHL5NkB+SFrPzEE=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=IZkMWmgX5TPpCB16R4bTpwTxSC1dXgHZw00u7195TVgtkmpELuZZuiOOq3G8MRKb/0uo2u0m1ao6KIaPjOmoXCwi+Q5OHe0KChsm0VOHL6ozhgRFZPEuzymo7l852zgoYMYxHyQLpUgk01iCoeoEtrd28dgBLso9Ehlva8M8G1U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=cmMOyS3n; arc=fail smtp.client-ip=40.107.237.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Qel6dRb+tuxyrQoVwD1lacrVnIPBy6LE5gTI3gVdeQRouWr8F/1hMK5Fa/VOQOX1c7MZAzYNd2RYM9nDbDLenDGzoX0/+o+d2Xl/2RXTswGRdYgVQayO0W+4LcRzcVvm5IB0N59BJDOLwvjVQ3SIpSR4XfC8ab2bfF/GqYkbxTHkA85EpeUwAdqny4U2KxVj8YxHBKb/kSubTDDitCzNr3z1Qt4HynQEOR+5+z9bL98jGrKtup3LaDYHIQA6tBM+ZkOQ8rMcZRzujKD64IWJ9PZKjIbQ6RpLQoN5ZDQ12v/TiEio141DONNsF7Har7PR+bIqQG7BQRHYfU/zay+HwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+N3x/H4IyIDfmFY8YBT2TdrNvENfKGnRAck4h8lVOaQ=;
+ b=c5NtxgBH/OaPQxeDjTobRsjAfbhOocpceKYc0Y0+BSFScs7v31auhk6nF3qarDgIwgwvB0WZ+n45OMLIpHkGqgkjrHtrsBNbDqL3jsUWK6Hb/HYVsn6+m+jMOcj+cHQC3pICjcAxKQcB4fo/hb+W/qkE0feky7AvAs+14qr4/pQl7Mlclx6mkD7Xk9rePcppuXheMbpObRgg7fmZLozhRft0ztprlkgJT7WuJn49cOXEAdN8foi8FODwl4uM2ldS9/+pm0DvXOyjm16jVHdLjHKDSzLOTGKAVg0BQNzoqagi4gIpVocejMdJf6vrw/dahQA5jFQSN8VcaTavvO7mqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+N3x/H4IyIDfmFY8YBT2TdrNvENfKGnRAck4h8lVOaQ=;
+ b=cmMOyS3nwF/n3UdbkxI20N0cbYXuAR8YwHMFvvqNBlH0Jgj7Sa1TRGn76g1iz+FDFEYAAQ8jx04sG9VuQdKkumOpLdh56nu1H56EWTaqznXJpEbmGv2iPQWkhN0tmA4fRjgqUcIHcjGutEdHOTPmDVorxAAUS+iyfKKZAAR4L4A=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS7PR12MB6309.namprd12.prod.outlook.com (2603:10b6:8:96::19) by
+ DS0PR12MB8766.namprd12.prod.outlook.com (2603:10b6:8:14e::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7472.44; Tue, 23 Apr 2024 04:22:52 +0000
+Received: from DS7PR12MB6309.namprd12.prod.outlook.com
+ ([fe80::b890:920f:cf3b:5fec]) by DS7PR12MB6309.namprd12.prod.outlook.com
+ ([fe80::b890:920f:cf3b:5fec%4]) with mapi id 15.20.7472.044; Tue, 23 Apr 2024
+ 04:22:52 +0000
+Message-ID: <6a7a8892-bb8d-4f03-a802-d7eee48045b5@amd.com>
+Date: Tue, 23 Apr 2024 09:52:41 +0530
+User-Agent: Mozilla Thunderbird
+Reply-To: nikunj@amd.com
+Subject: Re: [PATCH v8 06/16] virt: sev-guest: Move SNP Guest command mutex
+To: Borislav Petkov <bp@alien8.de>
+Cc: linux-kernel@vger.kernel.org, thomas.lendacky@amd.com, x86@kernel.org,
+ kvm@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
+ dave.hansen@linux.intel.com, pgonda@google.com, seanjc@google.com,
+ pbonzini@redhat.com
+References: <20240215113128.275608-1-nikunj@amd.com>
+ <20240215113128.275608-7-nikunj@amd.com>
+ <20240422130012.GAZiZfXM5Z2yRvw7Cx@fat_crate.local>
+Content-Language: en-US
+From: "Nikunj A. Dadhania" <nikunj@amd.com>
+In-Reply-To: <20240422130012.GAZiZfXM5Z2yRvw7Cx@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0171.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:de::14) To DS7PR12MB6309.namprd12.prod.outlook.com
+ (2603:10b6:8:96::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] dt-bindings: media: convert Mediatek consumer IR to
- the json-schema
-To: Mauro Carvalho Chehab <mchehab@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Sean Wang <sean.wang@mediatek.com>, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20240209085616.1062-1-zajec5@gmail.com>
-Content-Language: en-US
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-In-Reply-To: <20240209085616.1062-1-zajec5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB6309:EE_|DS0PR12MB8766:EE_
+X-MS-Office365-Filtering-Correlation-Id: c03c2982-f3db-4210-d100-08dc634d0a74
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?VTN0S2xoNCtSSnNrTXBiYTBJR1BoK1A4a1FRUmFsQzNvZDJmcU5kakR1OWZC?=
+ =?utf-8?B?cENDdEw2c2poTWNsMy9zSm55UkV6QUpoekNobXJFU0lpKytER05GTzc4VzlB?=
+ =?utf-8?B?WGJTaFNuNVA2V3FtUnBxcXFGVzdBVEE2NWdjNUJ2LzM5Vml4NldBTE56alBJ?=
+ =?utf-8?B?Q1BmcnpoNllHTy9xd04yVWxCRnJHQ1JCVEFGSEJCSWxrY2p3M1JMSXZNZGZh?=
+ =?utf-8?B?K01CM0tiV0Y3SG42cnd4NEgzVnVvZ0pKZGFlWWZJakh0M3lJK0I0OW0xQ2JT?=
+ =?utf-8?B?OFFmNzJWMTQrWkFiVCtKa3NhRjRZUU9FNFNiV1F6VG01NHBtYno2UkJMSk01?=
+ =?utf-8?B?SGJhSzU2eFlySGtjeFNHQXIySTdYOHl1QWxyQnBtcmQ4SnF2d1c1TWNaWXJV?=
+ =?utf-8?B?N3lVUzQ3Y0Y3cytQUkdaN1F0dVlKRTQwUHFPR1JpaDBxNUNGYTFlMmNzb0hT?=
+ =?utf-8?B?TW1LSlh3R3dkOVFKSUZTWHZoOUxZZ0JPL2VzZ2RQUDlpQ2dxVEVZOVhuZXVT?=
+ =?utf-8?B?bXJic0krRzlRZDZOT2NKMjcyTnhNZnFMTmh6bm9vNUZZd0NITEtMTTNxU25K?=
+ =?utf-8?B?b2VpNld1K2NpZkMrOE5hQmlBZGE2QndTbGM5TzdMbnY5anFZSWhveG1naFZ2?=
+ =?utf-8?B?dU1SVkFLeEpncWV1TTNjTi9BTnl4ckV4cWl6MlhzNzdJUC9zS1VtSGxvRHZB?=
+ =?utf-8?B?MlZOakE4aEpPSlBvakFQTkJIZDFMV0tNb3JGdHQvanpRNUxCbVZSL2FuQ3lH?=
+ =?utf-8?B?S1UxUGM1bkFHUit2UlA0M0tORHQ3QXhRWjRoUml0cVNqQzc3azFEc1lscm1j?=
+ =?utf-8?B?U09MQXM2Qnh2b3lsaEhobWU1OWlyRXhablhsNU5YVWFweXF5YzRVcW9YTzJQ?=
+ =?utf-8?B?eWNjQ2s4K3Z2N1JVRWNoRmtlbVAvNEtFWE5FWXk4dFp2ajNzRFpLNkt6TlBW?=
+ =?utf-8?B?aThWbzBjemZjYmRrTFpRdm8rRDBlQ0dEKzlPU0k0U1licEdjamRiQVk0T3Va?=
+ =?utf-8?B?S0Q2cHhqZE9HdGFLdmtjems2c3pYV21vVTU4R2FXK3hhNmV4TFEzR0hIeXNP?=
+ =?utf-8?B?VDlFNXRNZ0RPVFBBYitJVVRBdTNNclM4aGdzeWxJcWJ1VEJ0L1U2STRrS0hI?=
+ =?utf-8?B?UEYwNThJVHdqYXh6NHB6ZEZIR3dXczBDenhWM2RrUHJwWHRGTStmcWQzMzNW?=
+ =?utf-8?B?ZW0zN3p6S2NDQXN5dEY3OHFwNTNOZDBYcGtPTWp3RWdRMmw4NmkvSGVhU3V3?=
+ =?utf-8?B?QXJINlkvejA0Ull6SEdGQy9XRkNYRjBocUp1WWhuQzRJTDF4SElzSzZCVUVS?=
+ =?utf-8?B?bVVlUjU4V3VKWURnUko2eGNiOWlRWkcvS3Q4WlVuOGVBcFp6K3ZEa1h1a3cy?=
+ =?utf-8?B?Si94ZlJEYkRGMFVycVlWY01LTkU3SW9jOWVuQ25MWHVjZkttMTdTWVl4Nldu?=
+ =?utf-8?B?a3NFMXdacjNLRzd6UGxUNUE0NXRrUDZjeHp6em1aeEJEYU5lUnVQTDR1V0ZN?=
+ =?utf-8?B?SFFLSU1raTdrSEJXOCs4UUVPR1hRalRLRTJSMGQvam9KTDVlNlpzNGM5TGdY?=
+ =?utf-8?B?ejQ4S3YwVTJVcVFUNFFwcW4vKzRBR0RmMzhySDBwa1RXVUtVMXU4NkY5T2k0?=
+ =?utf-8?B?TlBVcUV0R1pMZFdNcVlGc2R3REZhbTdReG4vVGxMNUhXTjVwMjlXdnNkMW9N?=
+ =?utf-8?B?RjQzSS9VMHFDY1lYWnovak9MbXM5bUNOWnB2MW44OVg2ME1oUE5vcERnPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6309.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(7416005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?QURVRExZNkRpNmlGK1JjOERIUyt6NjdCUkk1b1JydmZTN3cyZkhFbWhNNWdP?=
+ =?utf-8?B?VEdLbWZkdkE5QnFuNUFoUzh5NXNpN2ZGMnVLR3pQZmlWdkJNT1FXM0h3Qm94?=
+ =?utf-8?B?SVJ3VjB6VXlIV1NYNnBzSnlCbGN2VmJlSlEwUml6aGFTVXRZNmNMWFNMRUps?=
+ =?utf-8?B?U2diMHRDeklWWm1HZHIrVjRONTA0V2VIaVVldnBpK29XNkxNbDJ1NnZYYUcr?=
+ =?utf-8?B?SnRNclQ1Y3E3N2p0alhGUHhkRmlGN2QySHpnV09HdTVBbTRsZFl0NDROaUdW?=
+ =?utf-8?B?M2QwYjk5Vm9oeERZbGo2ajNkdThCdVUzdEluRFczUmhDQkFpWDBROVRiUG0r?=
+ =?utf-8?B?eHNVQmx2TzNFSWRmei9RODdWd1pTQ2d1UUozbE9YMFMveWpUWUtTcndacG9E?=
+ =?utf-8?B?VzZuSFd0cFAyVjhoL1dETjhtUHdPazZyV1lNRTlFZlo5V2YvWW8rUFRENzho?=
+ =?utf-8?B?T3J4ZkwxZnVHZlJDTFVNVmtNcE5PRzBTandLRWI0dU1BaDIyc3BTcmhQdjli?=
+ =?utf-8?B?dGJKVlVmWWFSZC9zUFBpMFNZRjAzVFNRSVZMRFNKVU9PWmNkdThBYWcwU25v?=
+ =?utf-8?B?SkR4Qm13M2FvOFl3a0FHK0lNWUFnMENxZTdYTVFvRWlqSGN4ODlaTENSazB0?=
+ =?utf-8?B?YmxMb3Vad0wxbnJSMXJXY3Qrc3pKZHdTVE1qQ1ZjaVVsSkpXc2Z6UFVnZmls?=
+ =?utf-8?B?YUxabll3dXNhZ1lqa0pOQi91Zy8xenpOQXprcHFIaTVMWHV1RWZyQXZ6NDZi?=
+ =?utf-8?B?RUpPSTFOdWVDVWRjWHpPY3grYnRmbUZKZk9IanN6N1FVMnBmVjJwYTBHbWN0?=
+ =?utf-8?B?YkVmWERUN1V1Z2wxWHVIam8zOVlEeC9qaUtob0pQMjFmQjNEclJaeVU4cVBL?=
+ =?utf-8?B?Rm9qRTJBcUZnRGhWd1Bxd2gxTi8xb0Y4Uy8wNkhka3Vmc0VvbHFxZWxLNnVQ?=
+ =?utf-8?B?NFVOOXdvNGR6MmtwbXpoRTU5ZW4wcFRkc0QrYjRJdTFPMUIrVUwrbzQ4VGR6?=
+ =?utf-8?B?eWMvclRLNzlmeHVuZTAwdEx1MXV6TEJXOHhrTWl4b3plcTdsbzh4T0thYSs4?=
+ =?utf-8?B?NkdaYytkUER3Y2h4VkVDL21aUWFFZmhIdDhDWDBPejRwZXVRQ1NHd3V4VnJZ?=
+ =?utf-8?B?a09ZWEFrSTBnZlVmVXpEMWF5ZTRzWlV3M2tpaWpwMVFtZ1AzSnB2ODdIbnlT?=
+ =?utf-8?B?R2J2WGxmeVo5WGhxcW44OGNaekdKYlN5YkRQbWk5QlVIby9nQ1R0eUZoM3Nk?=
+ =?utf-8?B?V0xMVnJnbUg1MFpHWXdoYzFBaTZWNzJlWlBDSURBbzJwSkFjYzlsR095S01v?=
+ =?utf-8?B?SXVoS0prTGU3YVZBSlBaME9FQ3ZDNFo4SXZDQUFoN24zMGw3bTRtL1VVQ1Ur?=
+ =?utf-8?B?L0NPbDNFZFJIcWdUWmtnN2VPYmJEZ3NhcGtMSllLdGlIM1c1UVI4eDFwNUNI?=
+ =?utf-8?B?cDZpc3k5Wkh1cFdjMUZJb1BZUUxVZHQ4cCt1QXRQeFJHcFFOL3RUVy8zTzRl?=
+ =?utf-8?B?c2kvOU02Z1hzekRvcmpuWGdPR2kybFJHQlF2LzRDcUxLNzZpV0xUcFJoOUxy?=
+ =?utf-8?B?Q0F6dUdFOXc1c2JpMHpSWkVaQ3lOZFlTdkpvSVVJYjAyTmg5a0tvWW5tVjJG?=
+ =?utf-8?B?UFJoSzZoYUQvL1VkZ2RKYzJXS0E0T245RnJpSTFXOXBCYzRmc3N4bGg1OW0x?=
+ =?utf-8?B?U1ZrQzVVSk1iakluRUN0SnI3QkJQdU1jOEtOdGdEbXhtWkI2TFdYMWIvRERS?=
+ =?utf-8?B?VFVzRXN1M0ZoRis5VXY0VytTU1dQZjJWbVM4THBpdXZ6cUluYmxNYTZOSlZr?=
+ =?utf-8?B?aEVhTWRUUDhxMW5WTWJiSXpkeUZXMVhTLzZHbThack4yb2NFQnJueEM1TERC?=
+ =?utf-8?B?WjdlaURrYzkvTHFRNEtGSUEzazk3a0l2L2FRQzJVU0xHWVgrMUkwak5mYXlk?=
+ =?utf-8?B?L3piTFZKOWJhZDN2aHhJM2c5T0NtMDdiWWd5Sm5yN0tIWElFcGUvQytCNGxo?=
+ =?utf-8?B?SGxiVGJONmtYQjVtK1Q5eFN3Rm5vV3RacVFBZGJHdUR2b040bzcyQ0xJWTR0?=
+ =?utf-8?B?M0dHbjNBVXJHTS9zQnZwZ01wQUpSaWNpL3k0RTBmMy9kQW4yVlJXOTMxdm1r?=
+ =?utf-8?Q?o1pUohlJIbMXjM/SigaKFCdOp?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c03c2982-f3db-4210-d100-08dc634d0a74
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6309.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2024 04:22:52.2341
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: d5VLk8TJzo0KtS0m1Bs6Oa5iC/PguNz6uOxH2AEFELlaIkIn6imwCjZhEZGmJEeT9kl9CM8CMDQE6NIMpOEblg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8766
 
-Hi Mauro,
+On 4/22/2024 6:30 PM, Borislav Petkov wrote:
+> On Thu, Feb 15, 2024 at 05:01:18PM +0530, Nikunj A Dadhania wrote:
+>> SNP command mutex is used to serialize the shared buffer access, command
+>> handling and message sequence number races. Move the SNP guest command
+>> mutex out of the sev guest driver and provide accessors to sev-guest
+> 
+> And why in the hell are we doing this?
 
-On 9.02.2024 09:56, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> This helps validating DTS files. Introduced changes:
-> 1. Reworded title
-> 2. Made "bus" clock required on MT7623 as well
-> 3. Added required #include-s and adjusted "reg" & clocks in example
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+SNP guest messaging will be moving as part of sev.c, and Secure TSC code
+will use this mutex.
+ 
+> Always, *ALWAYS* make sure a patch's commit message answers *why*
+> a change is done. This doesn't explain why so I'm reading "just because"
+> and "just because" doesn't fly.
 
-could you take my patch throught your tree?
+Sure, will change.
 
+> 
+>> driver. Remove multiple lockdep check in sev-guest driver, next patch adds
+>> a single lockdep check in snp_send_guest_request().
+> 
+> The concept of "next patch" is meaningless once the patch is in git.
 
-> ---
-> V2: Extended "IR" in title
->      Made "bus" required at MT7623 needs it as well
->      Updated example
-> 
-> Thanks AngeloGioacchino!
-> 
->   .../bindings/media/mediatek,mt7622-cir.yaml   | 55 +++++++++++++++++++
->   .../devicetree/bindings/media/mtk-cir.txt     | 28 ----------
->   2 files changed, 55 insertions(+), 28 deletions(-)
->   create mode 100644 Documentation/devicetree/bindings/media/mediatek,mt7622-cir.yaml
->   delete mode 100644 Documentation/devicetree/bindings/media/mtk-cir.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/media/mediatek,mt7622-cir.yaml b/Documentation/devicetree/bindings/media/mediatek,mt7622-cir.yaml
-> new file mode 100644
-> index 000000000000..c01210e053f9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/mediatek,mt7622-cir.yaml
-> @@ -0,0 +1,55 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/mediatek,mt7622-cir.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MediaTek Consumer Infrared Receiver on-SoC Controller
-> +
-> +maintainers:
-> +  - Sean Wang <sean.wang@mediatek.com>
-> +
-> +allOf:
-> +  - $ref: rc.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - mediatek,mt7622-cir
-> +      - mediatek,mt7623-cir
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 2
-> +
-> +  clock-names:
-> +    items:
-> +      - const: clk
-> +      - const: bus
-> +
-> +required:
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/mt2701-clk.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +    ir@10013000 {
-> +        compatible = "mediatek,mt7623-cir";
-> +        reg = <0x10013000 0x1000>;
-> +        interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_LOW>;
-> +        clocks = <&infracfg CLK_INFRA_IRRX>, <&topckgen CLK_TOP_AXI_SEL>;
-> +        clock-names = "clk", "bus";
-> +        linux,rc-map-name = "rc-rc6-mce";
-> +    };
-> diff --git a/Documentation/devicetree/bindings/media/mtk-cir.txt b/Documentation/devicetree/bindings/media/mtk-cir.txt
-> deleted file mode 100644
-> index 5e18087ce11f..000000000000
-> --- a/Documentation/devicetree/bindings/media/mtk-cir.txt
-> +++ /dev/null
-> @@ -1,28 +0,0 @@
-> -Device-Tree bindings for Mediatek consumer IR controller
-> -found in Mediatek SoC family
-> -
-> -Required properties:
-> -- compatible	    : Should be
-> -			"mediatek,mt7623-cir": for MT7623 SoC
-> -			"mediatek,mt7622-cir": for MT7622 SoC
-> -- clocks	    : list of clock specifiers, corresponding to
-> -		      entries in clock-names property;
-> -- clock-names	    : should contain
-> -			- "clk" entries: for MT7623 SoC
-> -			- "clk", "bus" entries: for MT7622 SoC
-> -- interrupts	    : should contain IR IRQ number;
-> -- reg		    : should contain IO map address for IR.
-> -
-> -Optional properties:
-> -- linux,rc-map-name : see rc.txt file in the same directory.
-> -
-> -Example:
-> -
-> -cir: cir@10013000 {
-> -	compatible = "mediatek,mt7623-cir";
-> -	reg = <0 0x10013000 0 0x1000>;
-> -	interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_LOW>;
-> -	clocks = <&infracfg CLK_INFRA_IRRX>;
-> -	clock-names = "clk";
-> -	linux,rc-map-name = "rc-rc6-mce";
-> -};
+Sure. As direct access to the mutex was not available now, I had removed lockdep
+check here and documented that lockdep gets added at later point.
+
+Regards
+Nikunj
+ 
 
 
