@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-154553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F3E48ADD84
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:29:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 387D08ADD89
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:30:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA7AA281524
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:29:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFB541F21DE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:30:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0666323775;
-	Tue, 23 Apr 2024 06:29:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2DDA24211;
+	Tue, 23 Apr 2024 06:29:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tr62kshn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pX1tYYjE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 233A1225CB;
-	Tue, 23 Apr 2024 06:29:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1DFD225CB;
+	Tue, 23 Apr 2024 06:29:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713853757; cv=none; b=E0LyDTdIg006/7cKNH2AUMZYiyBuC6+vpKyVbVPwKORWDB6UWnKHniLlRiEpZtQkwbXaBZnS1Y47lSwlea410/ZRvqAzm4XC9hjjrKRvFNvwmwAwok15Bhu4zx1M1Qy4E25DzIvQXcl/1Rs3qPbmse9OBH8ZhXZg8MZGDu35Ky0=
+	t=1713853797; cv=none; b=m14p1/vYZfrkrB/IZdKIonT+gbfSCCkgyA29H0h27PnYz2UYYCGFSVqioziNL7iDG3fhmdiwIguh036hzEwteDgaZgY1FXQ6veWRGi652eo9C/Y08flEvpAe6QjZi87HyQ63Md25iTnzHqsi/5resmw1hj+7OeSho6g+kPeNOv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713853757; c=relaxed/simple;
-	bh=cBSsZ/h0qVJQL8CIvsXlAF52pPYuWnrnSHQgBo7++Eo=;
+	s=arc-20240116; t=1713853797; c=relaxed/simple;
+	bh=Du6oRyp667ZxX+058XBELinrjFvDkzEcSMRJGemOEkQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I3mGtnQ53NMPIZMSv4tbhlwiPPmPjZJblLUU0JaQtjbGr/GetRdj7uv1kwxXxgtqkUbAKg30vOkR9aDKxxYfZBnNLT+tsT7EBXNabLkkrvhXFSQyRq5IRaV1xvU9IKgNMczM1WzL/yBJw8yKs5pbuQXEfUbvaXlhJDYK/710l24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tr62kshn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90422C116B1;
-	Tue, 23 Apr 2024 06:29:12 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=raWF/MC4Hp5OI4NLMnUMbEOMSGyRkIlaLSaJB2Mh+txaMC4+8yPJx3vN6D9UMVE29gY9ewBs6Z6Q8/xzfPpak63LuPw+sToEQnaztHDW4fBrQsP+RnewdiOtgVUEk22LmtMcg8GvvoExRDpQ3ROu0nAYfhvlOVV/9p4xeoy5edc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pX1tYYjE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 146C1C116B1;
+	Tue, 23 Apr 2024 06:29:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713853756;
-	bh=cBSsZ/h0qVJQL8CIvsXlAF52pPYuWnrnSHQgBo7++Eo=;
+	s=k20201202; t=1713853796;
+	bh=Du6oRyp667ZxX+058XBELinrjFvDkzEcSMRJGemOEkQ=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=tr62kshnCH3OiANlk31gTX5yxCHXZ2RBdkixaowPuERsd64X24gFL6itaYEtqYN29
-	 Iqq9cjtaAqhE9czsr/24ZTNCrMSvVoTDaH8mUdcvtY2JJaHeiLd1ZOue8vRmpDPRcM
-	 u+BTyqJYrnabaWKY1aFgu8cBwGao2ihCZz+VuCOBrlEo9BHiQPjtdkV4dEdF41LOhe
-	 H1FLMlAfJjTaqA8IatVavOhE5emm1Kp3B/UllhM3fT5B5NzPNvqfzwgNYRDIV4vTtt
-	 9qNmiBSaZtMyN5X5/B7G+5UWPNQcNdoXWBObY9NrFmWKsqwDvL6EjBpmCVprcUp7J8
-	 Qy3ycr76s47FQ==
-Message-ID: <2b422e9f-bd80-4c57-a3e1-8b463b25c834@kernel.org>
-Date: Tue, 23 Apr 2024 08:29:10 +0200
+	b=pX1tYYjEbq2cADrlzMUgBAQVoAAo005SVxdENaBQy/4tZRYHFaIRHMD5INzZ75Nml
+	 VrZnuUUXBZhBJbeUEjsimYf0f9i2RvyjCDGtGQ01G5iqiGt4zJ7tsPMRozFEn5nC24
+	 yNEcO+QK6g7PGeqAuMtr8YwzEIWMh30EIc1O15ohxNPmp1Arx3uoTi4FvRheQMjfhk
+	 yRHWsZqTInhJWj4hSVCIM80TcxpicEdDNAZh664gl3heGKy833kpZrOZSJcMhHi6Uh
+	 z/2URXN04ymJRepcbPHlJbmu3NGgBNKuD8cSPfl6Kvxs7ufjP5XbKVqmbBwKmmxbJJ
+	 jzFDwGHsAWI4Q==
+Message-ID: <90b43116-f5c0-4357-8582-6243c14254dd@kernel.org>
+Date: Tue, 23 Apr 2024 08:29:50 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,7 +49,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] dt-bindings: mmc: renesas,sdhi: Drop 'items' keyword
+Subject: Re: [PATCH 2/6] dt-bindings: mmc: renesas,sdhi: Document RZ/G2L
+ family compatibility
 To: Prabhakar <prabhakar.csengg@gmail.com>,
  Geert Uytterhoeven <geert+renesas@glider.be>,
  Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
@@ -61,7 +62,7 @@ Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
  Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 References: <20240422213006.505576-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240422213006.505576-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240422213006.505576-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -107,60 +108,20 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240422213006.505576-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240422213006.505576-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 22/04/2024 23:30, Prabhakar wrote:
 > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 > 
-> Drop 'items' keyword from compatible list which have single const value.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  .../devicetree/bindings/mmc/renesas,sdhi.yaml  | 18 ++++++------------
->  1 file changed, 6 insertions(+), 12 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml b/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
-> index 29f2400247eb..90c8b1b727a8 100644
-> --- a/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
-> @@ -12,16 +12,11 @@ maintainers:
->  properties:
->    compatible:
->      oneOf:
-> -      - items:
-> -          - const: renesas,sdhi-sh73a0  # R-Mobile APE6
-> -      - items:
-> -          - const: renesas,sdhi-r7s72100 # RZ/A1H
-> -      - items:
-> -          - const: renesas,sdhi-r7s9210 # SH-Mobile AG5
-> -      - items:
-> -          - const: renesas,sdhi-r8a73a4 # R-Mobile APE6
-> -      - items:
-> -          - const: renesas,sdhi-r8a7740 # R-Mobile A1
-> +      - const: renesas,sdhi-sh73a0  # R-Mobile APE6
-> +      - const: renesas,sdhi-r7s72100 # RZ/A1H
-> +      - const: renesas,sdhi-r7s9210 # SH-Mobile AG5
-> +      - const: renesas,sdhi-r8a73a4 # R-Mobile APE6
-> +      - const: renesas,sdhi-r8a7740 # R-Mobile A1
+> - RZ/G2UL and RZ/Five ("r9a07g043")
+> - RZ/G2L(C) ("r9a07g044")
+> - RZ/V2L ("r9a07g054")
+> - RZ/G3S ("r9a08g045")
+> - RZ/V2M ("r9a09g011")
 
-That's just an enum.
-
->        - items:
->            - enum:
->                - renesas,sdhi-r8a7778 # R-Car M1
-> @@ -40,8 +35,7 @@ properties:
->                - renesas,sdhi-r8a7793  # R-Car M2-N
->                - renesas,sdhi-r8a7794  # R-Car E2
->            - const: renesas,rcar-gen2-sdhi # R-Car Gen2 and RZ/G1
-> -      - items:
-> -          - const: renesas,sdhi-mmc-r8a77470 # RZ/G1C (SDHI/MMC IP)
-> +      - const: renesas,sdhi-mmc-r8a77470 # RZ/G1C (SDHI/MMC IP)
-
-This as well
-
-
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
