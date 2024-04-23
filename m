@@ -1,171 +1,200 @@
-Return-Path: <linux-kernel+bounces-155243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C49D68AE747
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:03:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2A378AE74C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:04:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C5CF1F20845
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:03:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E737F1C23250
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:04:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02F50134751;
-	Tue, 23 Apr 2024 13:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 484C41350C8;
+	Tue, 23 Apr 2024 13:03:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="kxKeOQ1t"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jsccEwdO"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E76712FF71
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:03:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3BD4126F10
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:03:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713877405; cv=none; b=dVzk1FF3r6pzYyvObuZYf/LCqhaft6xFXPMf8KDZ3+dRxc+NuIPE9gfv8EEPE8JpZ3cp4ZY/47OWBkyhtKcI1P6sF/oQjg//cgSpYsKR6UjxUdCytledmW4O6HQcf1s8Bw468tPFQfHlJj/KbLh7Y2AX18fivK3L2fTYZx+ghj0=
+	t=1713877438; cv=none; b=r8k8ZI5BGu8WJsr4H1RcFAiGEXhiOc5/TvfJKiWu7hOdE7F1v6SUgKAlRHMQGx0eYuTGlXc8ER+B/7RqywwvcWjU8VsrIATTJglvEcqxu+o7XGIur+NBSNohvQHVExLczubMGuSRjhDPIK+VfyjqzmH7ZH9Ot7tCMsKK3+bgHag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713877405; c=relaxed/simple;
-	bh=HzAJFBGJNzG+mmpiLhhdmnsEu2H7mtL2tnPdNu265DY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FaELBK+mLxageobFzYf7jvaJAJgUQlMmQzhHsAHaoOZeDFmHfXtFQiTXRe68QvP+d5g9FPS5rmGn+gm593xHSDMW2+7Dl6bY3skzwtla0928ug7uRrX0PIg5Ee0mnl9Vk2xX1D7tuyF71qturndenegEURHQJ2GQu6Bc6USKb68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=kxKeOQ1t; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-57215beb016so1414888a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 06:03:19 -0700 (PDT)
+	s=arc-20240116; t=1713877438; c=relaxed/simple;
+	bh=S25T3qbVz7Y5k5OAGJMgnWEF0GJuX3pk/nUOLoJFNSk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k62ZQ/tcKyXS0F3sG5flCKfSfjd4ujdhdHfXP/kZCmLcdYrww46QASzShIU9R++EAU9qhpftYWWtJR7lNLC+ba5kJaQuv/pEO9m6mlyNTT68C1FyZnpnxgzwmW0Q6ENIMsnuX8bT6CLQFOFobjQV5U3OUOlDRoG33x+YKm7PrhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jsccEwdO; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51b09c3a111so3681774e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 06:03:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1713877398; x=1714482198; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yEMgQabm/0/E0TemyCdNw0BH8lVeUgs2Tq3e3AEWvmU=;
-        b=kxKeOQ1tVvhTjUVS0N309epxgdj02/I1JeZrpmbPj1/j1EcZtFkPFBfYvJKPVZKY9V
-         kIM4ZTh8S1IqE2RKuEdzrQSlZYhp7zBSZSiN8mguR4KIpTA6EDEzPXLhPJ7nrvPhGqPu
-         K05Rg1TKs6kjbCw7hfrIJlcOeDtNnpxcTzJqaV2dQbsAVW8DezkWRwRjDYh7T7MwB3WX
-         TG+Zp0mMV2T1aStUV55P2TDcBv8dllaVVlLWIXezKJAh9cZjlRvc8SxZ6mqO6jM24xoq
-         S1msFwXrAfVV2CqT9T5qfeGuoq68OLkS7yYZ1cWclFAEIlsUaSyY49FP9m8XfqwxuSyS
-         7hTw==
+        d=linaro.org; s=google; t=1713877435; x=1714482235; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Kvy8LO+cIMm+HbZIf+ZYGi2YekLnZkMXi2GFq6BTKfQ=;
+        b=jsccEwdO88o6Kik7i1fGGKIgPC4Xp9LTwmfVBexyxCeLW38LkdYWrbs9zzIJVTcEqq
+         /8WP5ub3GK0EkorIwOXrVXguDbBaDRlCs0jM5mI95QcpGbk+0cM819S+ZmKNHzEUR4oF
+         s1nl/7YwyzpCQJZgSTlCi4ryVVWf4iAc4+zTdFEWgAXqCQfR5J7n+kRAojM0pW72CtHV
+         6Zt136pVLEo+OMHDpE094jLOZZhL7EeUWNd/Zp7sdwlPlRmxp0hjVKnhsMpFcfgUmq7B
+         p5VhaWUWYTL2XvXIVG39xzjqHJTfGkhps0pLgWaNTaJpQcsxMbgTmQi6LM0SG/r6/oLt
+         k/1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713877398; x=1714482198;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yEMgQabm/0/E0TemyCdNw0BH8lVeUgs2Tq3e3AEWvmU=;
-        b=FcwzA0OSiIEDsnCd5Xev+XQjFGBRPxmQEMZsp9FA37e47pg7ghtbv7/YftxyLHIYHN
-         kfi7JC2nQz5Vz5CXTuA+RQOyd9vQkdtF/GfB78NB601T7R8tvvgTglh6ZJkDx6gUmzMa
-         DF2HoAduPK+CBLvhT1wdmAaqUOv0FWCA4r6utLntpCJl2/l3T5cP58M+Fm5NffArUdZj
-         bnKNuimcH+szmH33PB0ZyBWt/E5/bg6iMc6wXRmUn3mVOm9i57gIQUccd0fqcwhnkSnv
-         ksTuX7kfE4juiLQXizFTqhWPdY2HVsb7+xMFIIuX+DXTcyakISCq0+UAqhQgg+K2X4OH
-         0zKw==
-X-Forwarded-Encrypted: i=1; AJvYcCXFUtbrqyKlbJePnz5qhkuKwtaNBqqFbv+K1Uzkvyv0CTufeYUQnmdovcyktEZFl23TXlEg1vmHV+YfXO1Qn5HIEZHBNMTHMy5PlO1W
-X-Gm-Message-State: AOJu0YxDg9+FqFGYQmXkfzEXbl2pwL4RKzAjQucTZWIcG2alNEZGXuA2
-	WdBXUo62PeeL8uC7LkPF7z9uMH+ivREAtDvKP02G+WG6hb5GAS4KsWwEmntJ/Cg=
-X-Google-Smtp-Source: AGHT+IGOf9jTtjwTkllvBAcfwY4LnRurmtji2qf6CII78i3MTciBR8bvSzu25+7rRP8jP1GNkn3hmA==
-X-Received: by 2002:a50:cd8c:0:b0:570:5b38:1bf2 with SMTP id p12-20020a50cd8c000000b005705b381bf2mr8304894edi.30.1713877398199;
-        Tue, 23 Apr 2024 06:03:18 -0700 (PDT)
-Received: from localhost (78-80-105-131.customers.tmcz.cz. [78.80.105.131])
-        by smtp.gmail.com with ESMTPSA id em8-20020a056402364800b0057021b811eesm6669990edb.67.2024.04.23.06.03.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 06:03:15 -0700 (PDT)
-Date: Tue, 23 Apr 2024 15:03:14 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Geetha sowjanya <gakula@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org,
-	davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
-	sgoutham@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
-Subject: Re: [net-next PATCH v2 0/9] Introduce RVU representors
-Message-ID: <Ziexkkz8HCtIVRap@nanopsycho>
-References: <20240422095401.14245-1-gakula@marvell.com>
+        d=1e100.net; s=20230601; t=1713877435; x=1714482235;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kvy8LO+cIMm+HbZIf+ZYGi2YekLnZkMXi2GFq6BTKfQ=;
+        b=f9XngA7vKnZ19rb6nDpkTFjcewKXdb74SV25QIuswzgCTqHUoK5PSq2Apv1kZRpXOm
+         Sgh93Q/aI7kU1hx/UEguW33ZZN4vllKcbB1a6uAsXXuuyK+kXY6Kauvk8qhEJvn0ARlc
+         QY90mCh9OgdGQ3J+2n3tKayoUm7wkJAavhn17i2tR4axV6ihfVbEHhuUlzAqVy3YLJ78
+         nTtivAB3SVP00seruBjVmBBmTTrVvBXbPFjS9NRuJ9Cv+uqF8GbgIccO0QFLC3K+RQyP
+         YpeJ71EiSpr5qUv2d9QSxjoRJoa6P8iY8/VNwXSR6i2ad2BsxAaZYVV75uPAYVqvYIWr
+         tm4A==
+X-Forwarded-Encrypted: i=1; AJvYcCWdMANDZAVo2lSzX3vaQjFhMJlbG7nUwlysHc+lzbH0Z2pJJmAqJ2sqbaEUOrwTxVerVKs2cOqIt7ha7Dy4kk+88uoz74b5+ZqNKcS0
+X-Gm-Message-State: AOJu0YzH1yZwj5mWd56lv4M0NY32CQfLYs/pU3XlJWTpkS/RWB9bFfYp
+	nYrCw6OxDQwy271jH7zmqICllb9C8XFhynb3A1aqncJ5vHVUgGf6BORv/xaE9Ms=
+X-Google-Smtp-Source: AGHT+IGpySdaQcCROpQ5r5e9TsmfSInd7LVYx0iPlnKIMODKT5YasK7WcFwD6VkU7AE9jDrwMyk+5A==
+X-Received: by 2002:a05:6512:36d2:b0:519:6c2d:9bdb with SMTP id e18-20020a05651236d200b005196c2d9bdbmr7266957lfs.43.1713877435006;
+        Tue, 23 Apr 2024 06:03:55 -0700 (PDT)
+Received: from [172.30.205.0] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id z4-20020ac24f84000000b00513d244005asm2019862lfs.199.2024.04.23.06.03.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 06:03:53 -0700 (PDT)
+Message-ID: <f2d96f99-d8ac-4ff1-83fa-742e541565e4@linaro.org>
+Date: Tue, 23 Apr 2024 15:03:50 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240422095401.14245-1-gakula@marvell.com>
-
-Mon, Apr 22, 2024 at 11:53:52AM CEST, gakula@marvell.com wrote:
->This series adds representor support for each rvu devices.
->When switchdev mode is enabled, representor netdev is registered
->for each rvu device. In implementation of representor model, 
->one NIX HW LF with multiple SQ and RQ is reserved, where each
->RQ and SQ of the LF are mapped to a representor. A loopback channel
->is reserved to support packet path between representors and VFs.
->CN10K silicon supports 2 types of MACs, RPM and SDP. This
->patch set adds representor support for both RPM and SDP MAC
->interfaces.
->
->- Patch 1: Refactors and exports the shared service functions.
->- Patch 2: Implements basic representor driver.
->- Patch 3: Add devlink support to create representor netdevs that
->  can be used to manage VFs.
->- Patch 4: Implements basec netdev_ndo_ops.
->- Patch 5: Installs tcam rules to route packets between representor and
->	   VFs.
->- Patch 6: Enables fetching VF stats via representor interface.
->- Patch 7: Adds support to sync link state between representors and VFs.
->- Patch 8: Enables configuring VF MTU via representor netdevs.
->- Patch 9: Add representors for sdp MAC.
-
-
-Could you please add some command outputs to the cover letter? Like
-$ devlink dev
-$ devlink port
-
-outputs at least.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFT 0/7] arm64: qcom: allow up to 4 lanes for the Type-C
+ DisplayPort Altmode
+To: Luca Weiss <luca.weiss@fairphone.com>, neil.armstrong@linaro.org,
+ Bjorn Andersson <andersson@kernel.org>
+Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I
+ <kishon@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Abhinav Kumar
+ <quic_abhinavk@quicinc.com>, linux-arm-msm@vger.kernel.org,
+ linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240229-topic-sm8x50-upstream-phy-combo-typec-mux-v1-0-07e24a231840@linaro.org>
+ <CZUHV429NTF7.1GW9TN9NXB4J1@fairphone.com>
+ <7a7aa05f-9ae6-4ca0-a423-224fc78fbd0c@linaro.org>
+ <liah4xvkfattlen7s2zi3vt2bl5pbbxqgig3k5ljqpveoao656@iacnommxkjkt>
+ <236a104c-fc16-4b3d-9a00-e16517c00e3a@linaro.org>
+ <D064242SMIVM.1GUC1I9GE9IGC@fairphone.com>
+ <963b60e5-6ab7-4d9f-885a-ba744c2b7991@linaro.org>
+ <D0C42YR1270X.23P9WCWWNB8XF@fairphone.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <D0C42YR1270X.23P9WCWWNB8XF@fairphone.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
->
->-----------
->v1-v2:
-> -Fixed build warnings.
-> -Address review comments provided by "Kalesh Anakkur Purayil".
->
->Geetha sowjanya (9):
->  octeontx2-pf: Refactoring RVU driver
->  octeontx2-pf: RVU representor driver
->  octeontx2-pf: Create representor netdev
->  octeontx2-pf: Add basic net_device_ops
->  octeontx2-af: Add packet path between representor and VF
->  octeontx2-pf: Get VF stats via representor
->  octeontx2-pf: Add support to sync link state between representor and
->    VFs
->  octeontx2-pf: Configure VF mtu via representor
->  octeontx2-pf: Add representors for sdp MAC
->
-> .../net/ethernet/marvell/octeontx2/Kconfig    |   8 +
-> .../ethernet/marvell/octeontx2/af/Makefile    |   3 +-
-> .../ethernet/marvell/octeontx2/af/common.h    |   2 +
-> .../net/ethernet/marvell/octeontx2/af/mbox.h  |  73 +++
-> .../net/ethernet/marvell/octeontx2/af/npc.h   |   1 +
-> .../net/ethernet/marvell/octeontx2/af/rvu.h   |  30 +-
-> .../marvell/octeontx2/af/rvu_debugfs.c        |  27 -
-> .../marvell/octeontx2/af/rvu_devlink.c        |   6 +
-> .../ethernet/marvell/octeontx2/af/rvu_nix.c   |  75 ++-
-> .../marvell/octeontx2/af/rvu_npc_fs.c         |   4 +
-> .../ethernet/marvell/octeontx2/af/rvu_rep.c   | 457 ++++++++++++++
-> .../marvell/octeontx2/af/rvu_struct.h         |  26 +
-> .../marvell/octeontx2/af/rvu_switch.c         |  20 +-
-> .../ethernet/marvell/octeontx2/nic/Makefile   |   2 +
-> .../ethernet/marvell/octeontx2/nic/cn10k.c    |   4 +-
-> .../ethernet/marvell/octeontx2/nic/cn10k.h    |   2 +-
-> .../marvell/octeontx2/nic/otx2_common.c       |  53 +-
-> .../marvell/octeontx2/nic/otx2_common.h       |  83 ++-
-> .../marvell/octeontx2/nic/otx2_devlink.c      |  47 ++
-> .../ethernet/marvell/octeontx2/nic/otx2_pf.c  | 305 ++++++---
-> .../ethernet/marvell/octeontx2/nic/otx2_reg.h |   1 +
-> .../marvell/octeontx2/nic/otx2_txrx.c         |  35 +-
-> .../marvell/octeontx2/nic/otx2_txrx.h         |   3 +-
-> .../ethernet/marvell/octeontx2/nic/otx2_vf.c  |  18 +-
-> .../net/ethernet/marvell/octeontx2/nic/rep.c  | 596 ++++++++++++++++++
-> .../net/ethernet/marvell/octeontx2/nic/rep.h  |  51 ++
-> 26 files changed, 1707 insertions(+), 225 deletions(-)
-> create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_rep.c
-> create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/rep.c
-> create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/rep.h
->
->-- 
->2.25.1
->
->
+
+On 4/5/24 12:19, Luca Weiss wrote:
+> On Fri Apr 5, 2024 at 10:08 AM CEST, Neil Armstrong wrote:
+>> Hi Luca,
+>>
+>> On 29/03/2024 10:02, Luca Weiss wrote:
+>>> On Tue Mar 26, 2024 at 10:02 PM CET, Konrad Dybcio wrote:
+>>>> On 16.03.2024 5:01 PM, Bjorn Andersson wrote:
+>>>>> On Fri, Mar 15, 2024 at 06:35:15PM +0100, Neil Armstrong wrote:
+>>>>>> On 15/03/2024 18:19, Luca Weiss wrote:
+>>>>>>> On Thu Feb 29, 2024 at 2:07 PM CET, Neil Armstrong wrote:
+>>>>>>>> Register a typec mux in order to change the PHY mode on the Type-C
+>>>>>>>> mux events depending on the mode and the svid when in Altmode setup.
+>>>>>>>>
+>>>>>>>> The DisplayPort phy should be left enabled if is still powered on
+>>>>>>>> by the DRM DisplayPort controller, so bail out until the DisplayPort
+>>>>>>>> PHY is not powered off.
+>>>>>>>>
+>>>>>>>> The Type-C Mode/SVID only changes on plug/unplug, and USB SAFE states
+>>>>>>>> will be set in between of USB-Only, Combo and DisplayPort Only so
+>>>>>>>> this will leave enough time to the DRM DisplayPort controller to
+>>>>>>>> turn of the DisplayPort PHY.
+>>>>>>>>
+>>>>>>>> The patchset also includes bindings changes and DT changes.
+>>>>>>>>
+>>>>>>>> This has been successfully tested on an SM8550 board, but the
+>>>>>>>> Thinkpad X13s deserved testing between non-PD USB, non-PD DisplayPort,
+>>>>>>>> PD USB Hubs and PD Altmode Dongles to make sure the switch works
+>>>>>>>> as expected.
+>>>>>>>>
+>>>>>>>> The DisplayPort 4 lanes setup can be check with:
+>>>>>>>> $ cat /sys/kernel/debug/dri/ae01000.display-controller/DP-1/dp_debug
+>>>>>>>> 	name = msm_dp
+>>>>>>>> 	drm_dp_link
+>>>>>>>> 		rate = 540000
+>>>>>>>> 		num_lanes = 4
+>>>>>>>
+>>>>>>> Hi Neil,
+>>>>>>>
+>>>>>>> I tried this on QCM6490/SC7280 which should also support 4-lane DP but I
+>>>>>>> haven't had any success so far.
+>>>>>>>
+>>>>> [..]
+>>>>>>> [ 1775.563969] [drm:dp_ctrl_link_train] *ERROR* max v_level reached
+>>>>>>> [ 1775.564031] [drm:dp_ctrl_link_train] *ERROR* link training #1 failed. ret=-11
+>>>>>>
+>>>>>> Interesting #1 means the 4 lanes are not physically connected to the other side,
+>>>>>> perhaps QCM6490/SC7280 requires a specific way to enable the 4 lanes in the PHY,
+>>>>>> or some fixups in the init tables.
+>>>>>>
+>>>>>
+>>>>> I tested the same on rb3gen2 (qcs6490) a couple of weeks ago, with the
+>>>>> same outcome. Looking at the AUX reads, after switching to 4-lane the
+>>>>> link training is failing on all 4 lanes, in contrast to succeeding only
+>>>>> on the first 2 if you e.g. forget to mux the other two.
+>>>>>
+>>>>> As such, my expectation is that there's something wrong in the QMP PHY
+>>>>> (or possibly redriver) for this platform.
+>>>>
+>>>> Do we have any downstream tag where 4lane dp works? I'm willing to believe
+>>>> the PHY story..
+>>>
+>>> Just tested on Fairphone 5 downstream and 4 lane appears to work there.
+>>> This is with an USB-C to HDMI adapter that only does HDMI.
+>>>
+>>> FP5:/ # cat /sys/kernel/debug/drm_dp/dp_debug
+>>>           state=0x20a5
+>>>           link_rate=270000
+>>>           num_lanes=4
+>>>           resolution=2560x1440@60Hz
+>>>           pclock=241500KHz
+>>>           bpp=24
+>>>           test_req=DP_LINK_STATUS_UPDATED
+>>>           lane_count=4
+>>>           bw_code=10
+>>>           v_level=0
+>>>           p_level=0
+>>>
+>>> Sources are here:
+>>> https://gerrit-public.fairphone.software/plugins/gitiles/kernel/msm-5.4/+/refs/heads/odm/rc/target/13/fp5
+>>> And probably more importantly techpack/display:
+>>> https://gerrit-public.fairphone.software/plugins/gitiles/platform/vendor/opensource/display-drivers/+/refs/heads/odm/rc/target/13/fp5
+>>> Dts if useful:
+>>> https://gerrit-public.fairphone.software/plugins/gitiles/kernel/msm-extra/devicetree/+/refs/heads/kernel/13/fp5
+>>
+>> Could you retry with this applied ?
+>>
+>> https://lore.kernel.org/all/20240405000111.1450598-1-swboyd@chromium.org/
+> 
+> Unfortunately I do not see any change with this on QCM6490 Fairphone 5
+> and 4-lane DP.
+
+Hm, could you like dump all the PHY regions up and downstream with the display
+connected (and nothing connected) and compare them?
+
+Konrad
 
