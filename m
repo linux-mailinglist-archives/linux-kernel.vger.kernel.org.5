@@ -1,73 +1,59 @@
-Return-Path: <linux-kernel+bounces-155534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F8C78AF3A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:14:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 758818AF3A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:15:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B15511C23903
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:14:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E183C1F25C8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:15:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E5513CAB5;
-	Tue, 23 Apr 2024 16:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C79BF13D2AD;
+	Tue, 23 Apr 2024 16:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="b1yJeJJa"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rnp7POTR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 156DB13CAB3;
-	Tue, 23 Apr 2024 16:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0F6513D254;
+	Tue, 23 Apr 2024 16:14:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713888849; cv=none; b=s8TZT5XSGdA32qqBW77GtZpSF8pYzYR+npoE3i56q3LD2olJ7qi2GzMcIfAxJF18aOm/V4Q/Mju0noMzmYov3anbAUQGZ2V+9CvOfVSQnUgchNWo7OaZn9dlYgvWxE6gmMsHoaZk3ORdQx/GovbD/rFmO/X1Li48P3PLFCXBdQY=
+	t=1713888867; cv=none; b=Xta/0T1jaSG9Zlec8EWbaPG3XDjPzJzJ9j5g9221vFNTBD0gXJYdC4UZ+fQ/9WRRvfcIHGxNKcce/XB4DiF8VNKZ/+TUHvadVfIDxG7PxVvoP6ohOkUuY19ucyDBVvHpzziXfQ5PzDz88sTnvaO5qp98ziXSW7i+criIx1KjXYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713888849; c=relaxed/simple;
-	bh=b967/hHJBnWnMCTBji//0dHXuXrl2DP/d/po0fsIoGk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IaoypCbaxBk4vQRu9zScgOMcS4JG8rDEsBZoBicwf39IbSBPo5gEqJO3AVFDYRHAQqkJZKQnqcyRKCl9FwNGQViNYxyjOjlchuIux3cCu36sUl3YMjOsOmQN2RxIO+JjOpcW3+4J15D3WE4Xh1bvcphNSsWshG9ZX3tRq+ZrvMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=b1yJeJJa; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 43D96120011;
-	Tue, 23 Apr 2024 19:14:05 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 43D96120011
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1713888845;
-	bh=5Gfs5AmZGozZkrrRTvm140Edujqw0V5kNp9waYflDF8=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=b1yJeJJaDHqH69ss+sRunhyufYQj7rb6mouCKXrVFaysnuFWc1mTSgT1EdKNU6Pq3
-	 A79gQ+iFnbkN0Ik2WngcXBxeoU35rNHzUXQh3IOuRagb9hDzpBNxo+53kX7rrwtmFf
-	 yXSumzqbDzwQ4ffX1nb0oatFzMSYX461Wf41TP6vjjzW0ATntFn5grKADVJzfDfkmB
-	 VL3FO6D8MQTQXABxWmID518Txl7ELHqLvPC32mgKsIqlp6xu42EYxFxDIVbedXbA9b
-	 zlbsYkG4x9qmvprIbIh5ASsZ7oDjF+OW43b3OLIzQ6ac+CLmxuPZq+U3u2b8O0GYP1
-	 QGCVfVjuwnZ2w==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Tue, 23 Apr 2024 19:14:05 +0300 (MSK)
-Received: from work.sberdevices.ru (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 23 Apr 2024 19:14:04 +0300
-From: George Stark <gnstark@salutedevices.com>
-To: <u.kleine-koenig@pengutronix.de>, <neil.armstrong@linaro.org>,
-	<khilman@baylibre.com>, <jbrunet@baylibre.com>,
-	<martin.blumenstingl@googlemail.com>, <thierry.reding@gmail.com>,
-	<hkallweit1@gmail.com>
-CC: <linux-pwm@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<kernel@salutedevices.com>, George Stark <gnstark@salutedevices.com>, Dmitry
- Rokosov <ddrokosov@salutedevices.com>
-Subject: [PATCH 2/2] pwm: meson: add check for error from clk_round_rate()
-Date: Tue, 23 Apr 2024 19:13:56 +0300
-Message-ID: <20240423161356.2522636-3-gnstark@salutedevices.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240423161356.2522636-1-gnstark@salutedevices.com>
-References: <20240423161356.2522636-1-gnstark@salutedevices.com>
+	s=arc-20240116; t=1713888867; c=relaxed/simple;
+	bh=MF9MVVzEWCkDsJuADHSSNcmrmA+7PiShcDl8I7RBoxc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e7hHloKXMPCVpvbkNaxJyqvajyi8KhGBCRM26OScERtxOM+t96+DkLVL1DRIKyJPJHKpIf+ZS6Yp7SZuC/B0hWop+qHJY6K7GaGNvENE3p7LVet7DF4k0DgVHfsL/aEnmEnOYixEl9XJhh+PdnJ/1GirE2mGTWBh5szMzpLFnEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rnp7POTR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47E89C116B1;
+	Tue, 23 Apr 2024 16:14:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713888866;
+	bh=MF9MVVzEWCkDsJuADHSSNcmrmA+7PiShcDl8I7RBoxc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Rnp7POTRChNVWoSOXbUa2zBnh+rlPche521eDQGL2p8mhuvEiKZsZDk87UD5BXypF
+	 mmETVh4VNB5hs4LnXDXqUOAj8fbPCoOJfEl0vaDZZ0OSMuoIaOUgNa/XUOCVPw0K5s
+	 IylTEhSZ2UYn01X9oq9G3oP/rQq+qTXA74DlswQcH1omX9ZJ6O8xvdVswOMsStjDY9
+	 FQWVZCIQnr6inXW4w6HRuC4mVd3pS5mU1YpsQMRuG6aeBVGml++KC9ccSOMPpsr2F1
+	 UhHppXuYNw974WA5nHM9/5I1WQuEdGO3MdND7qsFreQrkfcnZ3OKUH6LkdaoITtz+N
+	 NJ19JgsfD8UjQ==
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: Sinan Kaya <okaya@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Vinod Koul <vkoul@kernel.org>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dmaengine: qcom: Drop hidma DT support
+Date: Tue, 23 Apr 2024 11:14:11 -0500
+Message-ID: <20240423161413.481670-1-robh@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,55 +61,191 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184882 [Apr 23 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 18 0.3.18 b9d6ada76958f07c6a68617a7ac8df800bc4166c, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;smtp.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/23 04:11:00 #24934400
-X-KSMG-AntiVirus-Status: Clean, skipped
 
-clk_round_rate() can return not only zero if requested frequency can not
-be provided but also negative error code so add check for it too.
+The DT support in hidma has been broken since commit 37fa4905d22a
+("dmaengine: qcom_hidma: simplify DT resource parsing") in 2018. The
+issue is the of_address_to_resource() calls bail out on success rather
+than failure. This driver is for a defunct QCom server platform where
+DT use was limited to start with. As it seems no one has noticed the
+breakage, just remove the DT support altogether.
 
-Fixes: 329db102a26d ("pwm: meson: make full use of common clock framework")
-Signed-off-by: George Stark <gnstark@salutedevices.com>
-Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 ---
- drivers/pwm/pwm-meson.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/dma/qcom/hidma.c      |  11 ----
+ drivers/dma/qcom/hidma_mgmt.c | 109 +---------------------------------
+ 2 files changed, 1 insertion(+), 119 deletions(-)
 
-diff --git a/drivers/pwm/pwm-meson.c b/drivers/pwm/pwm-meson.c
-index ebe76298f6e2..52604635b31e 100644
---- a/drivers/pwm/pwm-meson.c
-+++ b/drivers/pwm/pwm-meson.c
-@@ -168,9 +168,10 @@ static int meson_pwm_calc(struct pwm_chip *chip, struct pwm_device *pwm,
- 		freq = ULONG_MAX;
+diff --git a/drivers/dma/qcom/hidma.c b/drivers/dma/qcom/hidma.c
+index 202ac95227cb..721b4ac0857a 100644
+--- a/drivers/dma/qcom/hidma.c
++++ b/drivers/dma/qcom/hidma.c
+@@ -50,7 +50,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+-#include <linux/of_dma.h>
+ #include <linux/property.h>
+ #include <linux/delay.h>
+ #include <linux/acpi.h>
+@@ -947,22 +946,12 @@ static const struct acpi_device_id hidma_acpi_ids[] = {
+ MODULE_DEVICE_TABLE(acpi, hidma_acpi_ids);
+ #endif
  
- 	fin_freq = clk_round_rate(channel->clk, freq);
--	if (fin_freq == 0) {
--		dev_err(pwmchip_parent(chip), "invalid source clock frequency\n");
--		return -EINVAL;
-+	if (fin_freq <= 0) {
-+		dev_err(pwmchip_parent(chip),
-+			"invalid source clock frequency %llu\n", freq);
-+		return fin_freq ? fin_freq : -EINVAL;
- 	}
+-static const struct of_device_id hidma_match[] = {
+-	{.compatible = "qcom,hidma-1.0",},
+-	{.compatible = "qcom,hidma-1.1", .data = (void *)(HIDMA_MSI_CAP),},
+-	{.compatible = "qcom,hidma-1.2",
+-	 .data = (void *)(HIDMA_MSI_CAP | HIDMA_IDENTITY_CAP),},
+-	{},
+-};
+-MODULE_DEVICE_TABLE(of, hidma_match);
+-
+ static struct platform_driver hidma_driver = {
+ 	.probe = hidma_probe,
+ 	.remove_new = hidma_remove,
+ 	.shutdown = hidma_shutdown,
+ 	.driver = {
+ 		   .name = "hidma",
+-		   .of_match_table = hidma_match,
+ 		   .acpi_match_table = ACPI_PTR(hidma_acpi_ids),
+ 	},
+ };
+diff --git a/drivers/dma/qcom/hidma_mgmt.c b/drivers/dma/qcom/hidma_mgmt.c
+index 1d675f31252b..bb883e138ebf 100644
+--- a/drivers/dma/qcom/hidma_mgmt.c
++++ b/drivers/dma/qcom/hidma_mgmt.c
+@@ -7,12 +7,7 @@
  
- 	dev_dbg(pwmchip_parent(chip), "fin_freq: %lu Hz\n", fin_freq);
+ #include <linux/dmaengine.h>
+ #include <linux/acpi.h>
+-#include <linux/of.h>
+ #include <linux/property.h>
+-#include <linux/of_address.h>
+-#include <linux/of_irq.h>
+-#include <linux/of_platform.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/module.h>
+ #include <linux/uaccess.h>
+@@ -327,115 +322,13 @@ static const struct acpi_device_id hidma_mgmt_acpi_ids[] = {
+ MODULE_DEVICE_TABLE(acpi, hidma_mgmt_acpi_ids);
+ #endif
+ 
+-static const struct of_device_id hidma_mgmt_match[] = {
+-	{.compatible = "qcom,hidma-mgmt-1.0",},
+-	{},
+-};
+-MODULE_DEVICE_TABLE(of, hidma_mgmt_match);
+-
+ static struct platform_driver hidma_mgmt_driver = {
+ 	.probe = hidma_mgmt_probe,
+ 	.driver = {
+ 		   .name = "hidma-mgmt",
+-		   .of_match_table = hidma_mgmt_match,
+ 		   .acpi_match_table = ACPI_PTR(hidma_mgmt_acpi_ids),
+ 	},
+ };
+ 
+-#if defined(CONFIG_OF) && defined(CONFIG_OF_IRQ)
+-static int object_counter;
+-
+-static int __init hidma_mgmt_of_populate_channels(struct device_node *np)
+-{
+-	struct platform_device *pdev_parent = of_find_device_by_node(np);
+-	struct platform_device_info pdevinfo;
+-	struct device_node *child;
+-	struct resource *res;
+-	int ret = 0;
+-
+-	/* allocate a resource array */
+-	res = kcalloc(3, sizeof(*res), GFP_KERNEL);
+-	if (!res)
+-		return -ENOMEM;
+-
+-	for_each_available_child_of_node(np, child) {
+-		struct platform_device *new_pdev;
+-
+-		ret = of_address_to_resource(child, 0, &res[0]);
+-		if (!ret)
+-			goto out;
+-
+-		ret = of_address_to_resource(child, 1, &res[1]);
+-		if (!ret)
+-			goto out;
+-
+-		ret = of_irq_to_resource(child, 0, &res[2]);
+-		if (ret <= 0)
+-			goto out;
+-
+-		memset(&pdevinfo, 0, sizeof(pdevinfo));
+-		pdevinfo.fwnode = &child->fwnode;
+-		pdevinfo.parent = pdev_parent ? &pdev_parent->dev : NULL;
+-		pdevinfo.name = child->name;
+-		pdevinfo.id = object_counter++;
+-		pdevinfo.res = res;
+-		pdevinfo.num_res = 3;
+-		pdevinfo.data = NULL;
+-		pdevinfo.size_data = 0;
+-		pdevinfo.dma_mask = DMA_BIT_MASK(64);
+-		new_pdev = platform_device_register_full(&pdevinfo);
+-		if (IS_ERR(new_pdev)) {
+-			ret = PTR_ERR(new_pdev);
+-			goto out;
+-		}
+-		new_pdev->dev.of_node = child;
+-		of_dma_configure(&new_pdev->dev, child, true);
+-		/*
+-		 * It is assumed that calling of_msi_configure is safe on
+-		 * platforms with or without MSI support.
+-		 */
+-		of_msi_configure(&new_pdev->dev, child);
+-	}
+-
+-	kfree(res);
+-
+-	return ret;
+-
+-out:
+-	of_node_put(child);
+-	kfree(res);
+-
+-	return ret;
+-}
+-#endif
+-
+-static int __init hidma_mgmt_init(void)
+-{
+-#if defined(CONFIG_OF) && defined(CONFIG_OF_IRQ)
+-	struct device_node *child;
+-
+-	for_each_matching_node(child, hidma_mgmt_match) {
+-		/* device tree based firmware here */
+-		hidma_mgmt_of_populate_channels(child);
+-	}
+-#endif
+-	/*
+-	 * We do not check for return value here, as it is assumed that
+-	 * platform_driver_register must not fail. The reason for this is that
+-	 * the (potential) hidma_mgmt_of_populate_channels calls above are not
+-	 * cleaned up if it does fail, and to do this work is quite
+-	 * complicated. In particular, various calls of of_address_to_resource,
+-	 * of_irq_to_resource, platform_device_register_full, of_dma_configure,
+-	 * and of_msi_configure which then call other functions and so on, must
+-	 * be cleaned up - this is not a trivial exercise.
+-	 *
+-	 * Currently, this module is not intended to be unloaded, and there is
+-	 * no module_exit function defined which does the needed cleanup. For
+-	 * this reason, we have to assume success here.
+-	 */
+-	platform_driver_register(&hidma_mgmt_driver);
+-
+-	return 0;
+-}
+-module_init(hidma_mgmt_init);
++module_platform_driver(hidma_mgmt_driver);
+ MODULE_LICENSE("GPL v2");
 -- 
-2.25.1
+2.43.0
 
 
