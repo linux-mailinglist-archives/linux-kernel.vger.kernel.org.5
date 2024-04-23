@@ -1,119 +1,138 @@
-Return-Path: <linux-kernel+bounces-155704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 592868AF5DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:55:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C7748AF5E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:58:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F4261F23DD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:55:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 081A628605F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:58:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BF2A13E040;
-	Tue, 23 Apr 2024 17:55:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2499813E051;
+	Tue, 23 Apr 2024 17:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mRfhfJ8L"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="yc3o9Te7"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A312513CA96;
-	Tue, 23 Apr 2024 17:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 594CF1BC23
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713894902; cv=none; b=AdlJU8/JUM4qpPSY57NRZNfBmz/QBVCk8Hhs49jzizz/TbpmMZ0Ez1sbHWroR7eJCLkH46lmC3dYyNiOipnn0dltpZ872btNfxFzTGlwi7m3PBjZawaC2mn7dEKaZ0KDX+cKWCB2UvNBVT1iDhYmgqDDCYw4h/kF6iYEH29WeLs=
+	t=1713895100; cv=none; b=E12ULyDPjzKz0b8yWXj2BGjcCGhDxhu3P2Eac6jR9byA59uEiyzfjcQBOOJhDwh9cve53h3vbxSQEsGRxEKKjlJjK4PMdrSlF5pdJgck8IG1P/WBaHTv3gnNfi/n5hTZ/J7ZZdoSA0Tp+aKpqbW+TeFIi23+8nLFyByL/vNRbxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713894902; c=relaxed/simple;
-	bh=PGQwdnS06bvdys+WxRJxUn/Bg9dr1D8tAvnY139mQcc=;
+	s=arc-20240116; t=1713895100; c=relaxed/simple;
+	bh=SRmMiVJNHY3dDe641SBcogYA9dhCnTJSpL2O3oo4uHo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Tg/kLzzb9mFIkM8szjQn9GBA7ca7H2tAcOSzbdAK8nVjGXh1iFAU0HauPnh+B01vuiMNaTE0r6jsCLWzH/iBqJH2OtxFsXDVZKj91gbWvc3oljBcJ5+RJD858DMJoqWgaYc3+MzBfTiskhL3+Np0vfU5qkKnfJrFYnpsMs9SYrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mRfhfJ8L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE093C2BD11;
-	Tue, 23 Apr 2024 17:55:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713894902;
-	bh=PGQwdnS06bvdys+WxRJxUn/Bg9dr1D8tAvnY139mQcc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=mRfhfJ8LRu8ZU0Q9yu8YHFx02Veix5EyONslm0St76zo3ykKtxI2iqvbrk/2yAq4K
-	 56wFXk1Z6A/UjukfTAL33aIjQVbcSodwxb2VkkVuVSVYKglzNvRHYXM+ghcQSbHdDg
-	 e5U+QJ5aulRB4Falrk8n7ozfpbDW9Z8Qa8lsT9Eb60yS2+ltB9Zzi+p+TssG9aj6XN
-	 WvpKrfDguRkYZjFyEslJAoOgr4C2V2VwjZ6Hf7xnQ7+YdSwrk7nhzOaGTZBIkXhcGT
-	 5jbUhezrMtaWkaNTg2TqvVkjvnf+JS8tRTnUVklbCTY0jL31kJePnBRPuklCDR2Tkh
-	 W1iSPyXi1E8dA==
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5a9ef9ba998so1316559eaf.1;
-        Tue, 23 Apr 2024 10:55:01 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWmBGnMV7k4hbLOqU/69cMJFi2tNcZLiUwXMcDXk2HfvBhxKkrtVwmCQna5RZ+qnraqACMp3pepQOX1656pPkRxosoTHR021cfAjN1QZ9ZyVeHAIZzAeg+8u0WdTj3CoBG0LaywKKU=
-X-Gm-Message-State: AOJu0YxzdzpOOla55u+ictlK/dfDE0IeKdkERRvOwFSlmNweZ1a1dst6
-	1wxmp4dDAsRSUl5RKEI2aVKavmuB1RwdjXT4FSvGMdTtKHl5GaRUWsQTZGFm4JZX6ZC8/A+kwtd
-	LDpLdwEtvQ0bCs1fIF7giPFyOuyQ=
-X-Google-Smtp-Source: AGHT+IEQnVXWc2aNMSwsVGjapjUioOU3uOUD6dYJ0Y7yyxS3FzliJyvm6Y2uE9JWKAtUfjcfpewhB0sndpq5NUYExOI=
-X-Received: by 2002:a4a:e6c7:0:b0:5ac:6fc1:c2cb with SMTP id
- v7-20020a4ae6c7000000b005ac6fc1c2cbmr95685oot.0.1713894901224; Tue, 23 Apr
- 2024 10:55:01 -0700 (PDT)
+	 To:Cc:Content-Type; b=YCSHetY0kN9wkxYpAUkfyPYC2XsmH2RVzMQp8hfhor2FNu+Krplr1ApfidMMpBnV3qsKJBWUJ4od6yRb3WByhV/xKTMbUzudZ1M4SKBp605/OguHQPPr7ZFiHoGM/SSpdz3LTLyhVjERZZacL1BEQn2u8CpCGae+da4egoG1vCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=yc3o9Te7; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2dd7e56009cso32143591fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:58:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1713895095; x=1714499895; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9B8eXcmZ97ONLTtCWWjVm+MKijPPu4vhRh0ro3qBaWQ=;
+        b=yc3o9Te7o1q1T9NuPmYd2xd0TekiavwNYhjAndBweAyG38tJkqf3bObJTtimPaZLr3
+         w2OCYGSigvpKV2eHxl+lh/5Rsh4sIsTEVXsps6d1tD4XdZC3520sIYvTI1LNjC1OQGfN
+         UbgXeFRZq6MVKSjf8l7x64H0JD1IIKWq3hdZU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713895095; x=1714499895;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9B8eXcmZ97ONLTtCWWjVm+MKijPPu4vhRh0ro3qBaWQ=;
+        b=En8mIJgZFAkty+Ocfup/UZNx/HSgZyo0kKIgO6YNOQvyya4Og7JX49IRWZ0yFyquH3
+         NGe3DoHbKHIka0LuZn8cNdT1z+b33uAg8p6+px1jk8mwYYrPWCXVG4vK0s0oU7f33PTd
+         GAlEMVBW4uUvIC/Og1Sr71EcPQdNoS1Jq0Kxm4xjYEXIYC+mG85fHP8jt8YSB+79Rt+F
+         e9UerK0V8GIY7hvmvth2le2oJ4bZJMCLQlqm9Y7t30d2lU+n5Bhg2UvZdhS9qe3B97y+
+         rlGBxLPhcVLNt103hn8qRxLHjw842yMc20jEMrtwaB8hEnjm9d+O7Jk3lLpq6zGauKpT
+         WSsQ==
+X-Gm-Message-State: AOJu0Ywps5Z6Qwxz9VyLMttye31q316qa4on4lUl1TUkGUZLx62B8dqj
+	JT2sXtZh+GA3HzD0+Y5IBe985U10s+U2TGOCYkZNs+AxIxad6Qw4PKixA3T9oLfVy3YZ1t45z8o
+	cM1xsrT8/dCJD+UbBScszrwLBca3wx/v2TyZxJw==
+X-Google-Smtp-Source: AGHT+IEnSc1tfYpb0PQBfoKjTLLEnX1cTm3AcRcS0BsoOJGktTKN63BmrVbfDjW8YbOgCbVr5RVxz5VwqMYdrMi/9nw=
+X-Received: by 2002:a05:651c:c1:b0:2dc:e69a:fdbc with SMTP id
+ 1-20020a05651c00c100b002dce69afdbcmr8450ljr.1.1713895095197; Tue, 23 Apr 2024
+ 10:58:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <13515747.uLZWGnKmhe@kreacher> <1913649.CQOukoFCf9@kreacher> <8e26c3cb-1283-4561-95aa-30432f1d13ee@linaro.org>
-In-Reply-To: <8e26c3cb-1283-4561-95aa-30432f1d13ee@linaro.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 23 Apr 2024 19:54:49 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0h=15LYhukPWmHPK5hvD=2u75rTEiC8oJMVBFziMkB5gQ@mail.gmail.com>
-Message-ID: <CAJZ5v0h=15LYhukPWmHPK5hvD=2u75rTEiC8oJMVBFziMkB5gQ@mail.gmail.com>
-Subject: Re: [PATCH v1 07/16] thermal: gov_power_allocator: Eliminate a
- redundant variable
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM <linux-pm@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Lukasz Luba <lukasz.luba@arm.com>, 
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+References: <20240407090558.3395-1-jiangshanlai@gmail.com> <20240407090558.3395-4-jiangshanlai@gmail.com>
+In-Reply-To: <20240407090558.3395-4-jiangshanlai@gmail.com>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Tue, 23 Apr 2024 13:58:01 -0400
+Message-ID: <CAEXW_YRjuWMLvmZ_oVHEe837gPAyjBs5OMvZc=T1PXYB0apNmQ@mail.gmail.com>
+Subject: Re: [PATCH V2 03/11] rcu: Reorder tree_exp.h after tree_plugin.h
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org, 
+	Lai Jiangshan <jiangshan.ljs@antgroup.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Zqiang <qiang.zhang1211@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 23, 2024 at 7:35=E2=80=AFPM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
+On Sun, Apr 7, 2024 at 5:03=E2=80=AFAM Lai Jiangshan <jiangshanlai@gmail.co=
+m> wrote:
 >
-> On 10/04/2024 18:12, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Notice that the passive field in struct thermal_zone_device is not
-> > used by the Power Allocator governor itself and so the ordering of
-> > its updates with respect to allow_maximum_power() or allocate_power()
-> > does not matter.
-> >
-> > Accordingly, make power_allocator_manage() update that field right
-> > before returning, which allows the current value of it to be passed
-> > directly to allow_maximum_power() without using the additional update
-> > variable that can be dropped.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
+> From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 >
-> The step_wise and the power allocator are changing the tz->passive
-> values, so telling the core to start and stop the passive mitigation time=
-r.
+> Enable tree_exp.h using some rcu preempt macros introduced in
+> the next patch. The new macros touch core rcu-preempt fields
+> and are better to be implemented in tree_plugin.h.
 >
-> It looks strange that a plugin controls the core internal and not the
-> opposite.
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+> ---
+>  kernel/rcu/tree.c        | 2 +-
+>  kernel/rcu/tree_plugin.h | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
 >
-> I'm wondering if it would not make sense to have the following ops:
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index d9642dd06c25..57d1ae26861f 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -5245,6 +5245,6 @@ void __init rcu_init(void)
+>  }
 >
->         .start
->         .stop
+>  #include "tree_stall.h"
+> -#include "tree_exp.h"
+>  #include "tree_nocb.h"
+>  #include "tree_plugin.h"
+> +#include "tree_exp.h"
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index b1264096d03a..d899b4afc21c 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -103,6 +103,7 @@ static void __init rcu_bootup_announce_oddness(void)
+>  #ifdef CONFIG_PREEMPT_RCU
 >
-> .start is called when the first trip point is crossed the way up
-> .stop is called when the first trip point is crossed the way down
->
->   - The core is responsible to start and stop the passive mitigation time=
-r.
->
->   - the governors do no longer us tz->passive
->
-> The reset of the governor can happen at start or stop, as well as the
-> device cooling states.
+>  static void rcu_report_exp_rnp(struct rcu_node *rnp, bool wake);
+> +static bool sync_rcu_exp_done(struct rcu_node *rnp);
+>  static void rcu_read_unlock_special(struct task_struct *t);
 
-I have a patch that simply increments tz->passive when a passive trip
-point is passed on the way up and decrements it when a passive trip
-point is crossed on the way down.  It appears to work reasonably well.
+OK with me, but not sure if the reordering of header inclusion is
+needed? You could get the same results by just adding declarations of
+the new helpers to tree_exp.h.
+
+Not sure if tree_plugin.h needs to be included last, I for some reason
+thought it needed to be - but looks like not. I found a thread that
+shed some light into the header file including C code thing as well,
+which may or may not help:
+https://lore.kernel.org/all/8ab3ca72-e20c-4b18-803f-bf6937c2cd70@paulmck-la=
+ptop/#t
+
+Thanks.
 
