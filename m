@@ -1,118 +1,86 @@
-Return-Path: <linux-kernel+bounces-155361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2074D8AE954
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:22:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB2F58AE950
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:20:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B65F81F22717
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:22:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECB761C220A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8797B13B5BD;
-	Tue, 23 Apr 2024 14:22:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D12E13B582;
+	Tue, 23 Apr 2024 14:20:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lmjJS+od"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KnW73mnG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1B013AD2B;
-	Tue, 23 Apr 2024 14:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D45113776F;
+	Tue, 23 Apr 2024 14:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713882132; cv=none; b=Hb5ASvRKT1r/nL1nX3pdziD3JlqOX0ginYNoU7rMq7acEmYQAZlLuyiYiAjPG0SPsBT2s05VivFrcbPj59/+O7gRwhGz7Faqu7KKdOI+6Xe+IvMdLIjDgbOXte25xJ+e+JFtD83PfLXsYh1bZJLmwkFT0438YWxoHb2yitleciM=
+	t=1713882037; cv=none; b=MML2xjhvSs6jTFBYdoEs5bLzUXfOtrA5DGZLjYQfjJ3ut93qU5phaUyoEye4tBl6YkiFFLsn9iBKvN0lJ1wiutvbBxmoTUi2GgmX/5/PlvhYmRsn32MFzF3WLZ9Irkm++Gm3hFxqlImIHso1CeCCKM7Xyzh2e2+ejeehrm3Vs/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713882132; c=relaxed/simple;
-	bh=zBsBBHL1e2snmIX58IfUqfbnuJKU+3R/sEuhgPszwh8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AAhI097M/SjEJwQ91IOuklZfiyikzdcoOsXU4Yw5/mQbG2SGsQxh1TQdT6SuPxCrF4X9zroiOpLaDrE5ZDw7f/sJJNQUzifgOGs2gY3/QKS+MXcxKR+LsmIcijXt28dtasajoITJoeQiub2apwVTtNNOzKW/LIMjJsnbznAuo7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lmjJS+od; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713882131; x=1745418131;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zBsBBHL1e2snmIX58IfUqfbnuJKU+3R/sEuhgPszwh8=;
-  b=lmjJS+odVGNzwrE3GBVPj7eqvUXIPa2vglNuCuhKDGwdf9GBGC775LiR
-   tfq2iwaMYUdzyu+dsX3PYWDBeLFf6pEZ+pvgOxZwZO1fBLLi8QBHk0bqW
-   wIjjoS1J3QO/Vxr4MMvnss042Caoihb2fZO6Xyj+BGQtwUrovHNm3Wa2Z
-   YDlRVGYzMTxasKyK21zbzZHuVk1M8q7gupsxSObwfGDjXTlRwN+Gn0OAR
-   u4Gzbz9R1z3zI/CSBNJwpu/EHKBbh+qVbW1V45YS+VtorZzBZSQGuPuld
-   L8ykiplCF2mZniBwKAFa1xETIFT76PbaMPr2XC0dg8TsHjEZLCbqjUFfG
-   A==;
-X-CSE-ConnectionGUID: M3/RmmvRRn6StgEKPXJVLg==
-X-CSE-MsgGUID: I+FQAxkbSBiDHMEtqj5agA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="20163851"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="20163851"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 07:22:11 -0700
-X-CSE-ConnectionGUID: tlvtzjWDQqmdq3Po0Q2zFQ==
-X-CSE-MsgGUID: gSnos4jEQQOWrj26zDjTHw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="29030064"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa003.jf.intel.com with ESMTP; 23 Apr 2024 07:22:09 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id B55AC489; Tue, 23 Apr 2024 17:22:07 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Matthew Wilcox <willy@infradead.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v1 2/2] xarray: Don't use "proxy" headers
-Date: Tue, 23 Apr 2024 17:20:25 +0300
-Message-ID: <20240423142204.2408923-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
-In-Reply-To: <20240423142204.2408923-1-andriy.shevchenko@linux.intel.com>
-References: <20240423142204.2408923-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1713882037; c=relaxed/simple;
+	bh=zLC/Cfeda05MZAEngIc01iWcAOs4ICPgoAY1ea19gwM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SMOMc1cbpl3g9d8bnGd+i3lhC5QdCjLgDrxk19O/i+Y6wmkw5CGhXzSUNKKPSHBuqWqk24MXm73yVlFyzNG981BDHFl/gb0F4mQDuxwosyXeTam3uiVaomxpQcGas/RsYODUnAIIrUFRf7Q0Bjr0wlS/LOyt5sdGSUAXv6fbNDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KnW73mnG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B46EFC116B1;
+	Tue, 23 Apr 2024 14:20:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713882037;
+	bh=zLC/Cfeda05MZAEngIc01iWcAOs4ICPgoAY1ea19gwM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KnW73mnGmamG9IFaewuH5XSilHmTIw0l6vRolCW1Kia0k5zrXRgEZr4/igfT1/YrR
+	 wRbPwfZPsoSmNeBZuEgOkk3BCF66U+ebX5NNBbzhxfnZg7LVmPhTGqmTvU3nqj0Teh
+	 6spRECGs34isnlUhTPMenIc+f0mrfkHDoXATGmR+UAfs6PyzIdyxiJztBLcW9oZxxp
+	 pQiZgZ93UAl5KQrvgQa1at5YmznpCr57P+5mHra0cwKsNUHEwfU9wmXLMnIZHRLhx7
+	 vQG4fuRbpKEDLUL4PfAGDo3SGbg7p4JKoPu7MOT11jSnaGrcRl7O+NonO/ZD6kvv2d
+	 o0X/1j8lLBAdQ==
+Date: Tue, 23 Apr 2024 16:20:33 +0200
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the
+ i2c-host-fixes tree
+Message-ID: <qn4mvuemt3wblgntqx7rit4syvgkfipne26d63do4ef2jalpjd@vsvxdg36r3xf>
+References: <20240423083145.771dddf5@canb.auug.org.au>
+ <20240423091728.06d9ad30@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240423091728.06d9ad30@canb.auug.org.au>
 
-Update header inclusions to follow IWYU (Include What You Use)
-principle.
+Hi Stephen,
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/linux/xarray.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+On Tue, Apr 23, 2024 at 09:17:28AM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> On Tue, 23 Apr 2024 08:31:45 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Commit
+> > 
+> >   86eb98127332 ("gpio: pca953x: move suspend()/resume() to suspend_noirq()/resume_noirq()")
+> > 
+> > is missing a Signed-off-by from its committer.
+> 
+> That commit is also (still) in the i2c-host tree.
 
-diff --git a/include/linux/xarray.h b/include/linux/xarray.h
-index d54a1e98b0ca..d2e4d3624689 100644
---- a/include/linux/xarray.h
-+++ b/include/linux/xarray.h
-@@ -12,14 +12,18 @@
- #include <linux/bitmap.h>
- #include <linux/bug.h>
- #include <linux/compiler.h>
-+#include <linux/err.h>
- #include <linux/gfp.h>
- #include <linux/kconfig.h>
--#include <linux/kernel.h>
-+#include <linux/limits.h>
-+#include <linux/lockdep.h>
- #include <linux/rcupdate.h>
- #include <linux/sched/mm.h>
- #include <linux/spinlock.h>
- #include <linux/types.h>
- 
-+struct list_lru;
-+
- /*
-  * The bottom two bits of the entry determine how the XArray interprets
-  * the contents:
--- 
-2.43.0.rc1.1336.g36b5255a03ac
+Ops... this patch shouldn't be there at all.
 
+I think it ended up by mistake while I was testing the series.
+
+I will remove it.
+
+Thanks a lot!
+Andi
 
