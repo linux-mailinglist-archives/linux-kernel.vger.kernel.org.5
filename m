@@ -1,101 +1,111 @@
-Return-Path: <linux-kernel+bounces-154630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AA768ADE9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:53:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 371308ADEA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:54:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E1051F23697
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:53:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6927B1C222A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:54:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB9D1481D1;
-	Tue, 23 Apr 2024 07:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E884246447;
+	Tue, 23 Apr 2024 07:54:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="p5g5M1/X"
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qFDotcdy"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F102946522
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:53:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F75947F7A
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:54:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713858811; cv=none; b=TQkuz3cpAQ7LUvwtJPdem0PRUTQReYOKN730q0loikw0HxWlx3hBroitxlsnVuFml4csFMq53+FIPj7x26Wl1Sb6M0QZ4QuT9r87/r0q4ukRjlXAbxewxrCi8tPnckhnvFoeY4wY4Oy+rKKYZbeyFEzO/hJqitQ6sCQlW9E2a9s=
+	t=1713858852; cv=none; b=I/ICfRXGpHKseCu0n0amSfKteFIhloeS8dzWQaNls6+2Taec4e4vijLpVzILZStRguAuzK726bHIbM1AF1P7UAaYQPrWKZ2kvX8nrxjEqz66JggfUGmvJLbIKNYzhbEEHbZbHjwvlmIH5cif082203S2YmgD3dvUZ3L/85zjPdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713858811; c=relaxed/simple;
-	bh=2uRvhIeBa7+qSWT0hhZnPL7Y55HU9vEDWEPpAdr2fHE=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=gx7UgMbtMLekl7wMo10HHwAUfF+oCwoyr+9PhhsUuKSRTUYAq29TNp89fZSNJgfKvdym8d81R9TAyNZXOHWF071uP5bJDFzpSGa4ELPCg9GbUEd4zDQVkN6E8gx9ZvqxgfP08o1K0owHMaCyRi26msaVM9kXVQyNeXGi3qY0Nhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=p5g5M1/X; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1713858852; c=relaxed/simple;
+	bh=Bv4VRmVg5nOXDs0B4iKA24dkhwSR5MrL4cXlSX5YltE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ls5aMRX8qlGp7AfyzahPz1o2hVA7Ukelf8zZxuBEllt/OqAXG/cldUeT5f0oRjDZGYWVNcaP5WPrLF/P/MLngJ9vVGrnskLQtfEocoht+2Wn7yyWMTkWmmMfIAUTLxYpC0lqmERuiNTiwvqGoQnAhPDKE5HDRultQTIBP3an8Bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qFDotcdy; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so3937800276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 00:54:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713858849; x=1714463649; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Ne7SQgNtLYRiRuHgxnjris3mVjBkOuVjWua3h1qnz4=;
+        b=qFDotcdyQQS+F9coeFoMSHaUjL/EqLwdwvnxqoMLEjvMEe/KzVB19mlptD4ab9XHwN
+         iYPcChlAUlWvmkwDcpFwhDFwSGzYVzGmUn7COOG1dNVP90b0E1m9N2MFJxnyRwiXgiWE
+         gMhCs3y4SRxQZEa4d9sM25QjDe+VUt1hwRUch6elEuRYGtdBZE54nUf2q1bNHgbbxjUv
+         FkK1V78JUiaaElOWzlVqMWGQjf97R5N6CyraakNNVG/pk+Fe4U1mIAwb9p4SCgLh0bUC
+         KpgwTDoqxHTc2QPN9W2TVLqD9lazlsh14dDZdxzUUClR+hLlxcOTFwxCMnPU0L81D9sx
+         YwYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713858849; x=1714463649;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3Ne7SQgNtLYRiRuHgxnjris3mVjBkOuVjWua3h1qnz4=;
+        b=okeynG1O4qbkOeD3M/mwMI2UYZuYJYVMId4xu9gwF1rUo0Z/MJo1DDeUEDOu6QPiz9
+         5JKaKgEDKCMbUSlCDv3JzOQCiE0EZ171g6FAemVu4ksUDe2vpNpJ1+6EwTI3yAPwXpKf
+         Iv8iR95ltgPn8BgLmwEwHWXn4UV8UJXVPmtyF3W9Qw8F5NKS5bzBVLEjcWNP7ETnQ9/c
+         cX7duuITu2lPOE0dhyZFJmVf8dM4yENJ8DumOhPl2wTHM28eTdGJjhzsaSgb6vj1moKk
+         19z/YfT/t/GCwHkWjPIIVuwjFdsK/z2f6N8BH8bYe87HhPtWSDaqBAeYC33oQS5b1pr7
+         iw3A==
+X-Forwarded-Encrypted: i=1; AJvYcCUouUPr+aEle0+r9GmY84GIxeYWvYnxOav5nB3w7zvUKT+3D5i0ou6/AuAreljl01NkTAWtkdZ9UivK/FnCNqfzmGIUsGzRzAjVsr8a
+X-Gm-Message-State: AOJu0YwimQhb0xo4N3EvonfkpOstWXRt8imlpjV1+brE4jAlK2Jl/HXI
+	/A1MeJ8Mpez0biWnQW7t4nGHs6HWdu9XDG7C4lm7ifOFueEg80qrQk/SakZXw3iJGorWFovStSs
+	6cWJHnIuPaA4paFb0vgb+jzNw4E66qUbAGh/2tA==
+X-Google-Smtp-Source: AGHT+IEL7KRfa1JAVKFRuIecyIm/Y5cjYNThFgxAiGj9BjTgdvZZnAdOh/UlIv9zVyBc8AmnYbwxxJdG74ezwMWJYps=
+X-Received: by 2002:a25:9346:0:b0:dcc:2671:7819 with SMTP id
+ g6-20020a259346000000b00dcc26717819mr1822061ybo.25.1713858849646; Tue, 23 Apr
+ 2024 00:54:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713858807;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vjYIax7W2T2XC/0OrrkmBtCx2ko2ZCZN2ZtWHto1d7Y=;
-	b=p5g5M1/XsEW7m/OL6Z0aOouGOrbnunRC+/rMqiD9Nj7fj+3x/IHod3cl1rRXE9b2Vz+moQ
-	yIl5LP6231Hbpbb9vEHhea+RyvvvugTUuBQ5pj1kseX+E6255ZyXqa1sCcQPNBaxNJ1aU9
-	pN67PtoralP8LZsc6GhxRuOmMkfipmM=
-Date: Tue, 23 Apr 2024 07:53:24 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Yajun Deng" <yajun.deng@linux.dev>
-Message-ID: <3c452d5db5b3d5879160ab62a9e0ac4481a6298a@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH] mm/rmap: remove unnecessary page_table_lock
-To: "David Hildenbrand" <david@redhat.com>, akpm@linux-foundation.org
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
-In-Reply-To: <b848c431-deca-42e4-925c-673b3fa1f251@redhat.com>
-References: <20240422105212.1485788-1-yajun.deng@linux.dev>
- <b848c431-deca-42e4-925c-673b3fa1f251@redhat.com>
-X-Migadu-Flow: FLOW_OUT
+References: <20240423093354.3d060378@canb.auug.org.au>
+In-Reply-To: <20240423093354.3d060378@canb.auug.org.au>
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Date: Tue, 23 Apr 2024 09:53:58 +0200
+Message-ID: <CACMJSeu+fUdYoxue-q=DxFdvtopgshQY+i2kpZMP-RGOTqMu_g@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the gpio-brgl-fixes tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Prathamesh Shete <pshete@nvidia.com>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-April 22, 2024 at 7:24 PM, "David Hildenbrand" <david@redhat.com> wrote:
-
-
-
->=20
->=20On 22.04.24 12:52, Yajun Deng wrote:
->=20
->=20>=20
->=20> page_table_lock is a lock that for page table, we won't change page
-> >=20
->=20>  table in __anon_vma_prepare(). As we can see, it works well in
-> >=20
->=20>  anon_vma_clone(). They do the same operation.
-> >=20
->=20
-> We are reusing mm->page_table_lock to serialize, not the *actual* low-l=
-evel page table locks that really protect PTEs.
->=20
->=20With that locking gone, there would be nothing protection vma->anon_v=
-ma.
->=20
->=20Note that anon_vma_clone() is likely called with the mmap_lock held i=
-n write mode, which is not the case for __anon_vma_prepare() ...
-
-Yes, anon_vma_clone() is called with the mmap_lock held. I added mmap_ass=
-ert_write_locked(dst->vm_mm) to prove it.
-I added mmap_assert_write_locked(vma->vm_mm) in __anon_vma_prepare() at t=
-he same time, it shows __anon_vma_prepare()
-is also called with the mmap_lock held too.
-
->=20
->=20I think this change is wrong.
->=20
->=20-- Cheers,
->=20
->=20David / dhildenb
+On Tue, 23 Apr 2024 at 01:34, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
+> Hi all,
+>
+> After merging the gpio-brgl-fixes tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>
+> drivers/gpio/gpio-tegra186.c: In function 'tegra186_gpio_is_accessible':
+> drivers/gpio/gpio-tegra186.c:189:14: error: 'or' of unmatched not-equal tests is always 1 [-Werror]
+>   189 |              (value & TEGRA186_GPIO_WRITE_ACCESS)))
+>       |              ^
+> drivers/gpio/gpio-tegra186.c:189:14: error: 'or' of unmatched not-equal tests is always 1 [-Werror]
+> cc1: all warnings being treated as errors
+>
+> Caused by commit
+>
+>   62326f7cefc2 ("gpio: tegra186: Fix tegra186_gpio_is_accessible() check")
+>
+> I have used the gpio-brgl-fixes tree from next-20240422 for today.
+>
+> --
+> Cheers,
+> Stephen Rothwell
+
+I will back this out of my branch, please resend a fixed version.
+
+Bart
 
