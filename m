@@ -1,128 +1,251 @@
-Return-Path: <linux-kernel+bounces-155296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 313338AE865
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:40:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65C798AE86E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:45:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA74A1F21155
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:40:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C4112852DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:45:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B539C13666F;
-	Tue, 23 Apr 2024 13:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD881369AA;
+	Tue, 23 Apr 2024 13:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Bf7q7O3q"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V4kl05cm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CB8D641;
-	Tue, 23 Apr 2024 13:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A55C6290F;
+	Tue, 23 Apr 2024 13:45:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713879633; cv=none; b=nVn1xasuGoTAzEVYcdRcUze2IzK7fRzdpw3Wre31QKgkO2r5ie1xnciCdsjgYcxOnA7U+w29bl5EW3z3wjJDmI82kdZ5VqKKnqv/AMtttMa5CSSiRhcySu1lUwWDVs97Eftg34BRBcdz9QqX/j0rPtU5O6xN2+A204vx+FqTC6s=
+	t=1713879904; cv=none; b=NcAKCQF9l10dQnqP7Cmv2gK4c9QeE4yDHyhGsJpphwkczjtAkYrfCZvCZWQlOCN8NK2gZHV9q/fzTWfr71MxzTCc8vRhlUh94CJIuTVn0IhCiEe6dA75/MaTAh6RTOmgmc3fZLIDnS/Ddx2C0l/WHlxnizOzFYHnFd/Q7y6K1qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713879633; c=relaxed/simple;
-	bh=OjoB4YNf+hVkLOFE5qH5rMcnX+a/LvE6rWEnQacRq94=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KBQo7B4h4RMVUPEK2sZ2y4rBPV+xgL0fF+ekIeoUu5sC2/mbx4DJ6X/xVwvmDtL9EhsQiYnw03Q3sM+mFv0XfwbMj2ju9YOPUNTWvP5fJ5KVTSOwqEQ2HS/HWe3pOuKvLSflGtf2YUrGFdhp4/6skQXgs2GUJHOfpH365uZstI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Bf7q7O3q; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713879632; x=1745415632;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=OjoB4YNf+hVkLOFE5qH5rMcnX+a/LvE6rWEnQacRq94=;
-  b=Bf7q7O3qhXy1emY8DqEL9IE/r8VVbv7MTdeE7uUJzmUrlB0jxp8FjKHg
-   E7dVXbokn973PzeaJyCOcB0Zk2kqpbRLkmWs8uqKgApdAqOzCQey0rpNZ
-   fBywjCZhWnlRHnMiSkQ2g2B9vFKLPylf/njfHkyy7zBwC0/Hgy2BstfxW
-   Dfi3Flt7FX5p43gk8YuuLXc7PPUgBLbr3K3JGTj5atAmXzPs5/ygJJg2s
-   De4T0THc7e6p+iPdVMj1fyVfPxAyF3Tv6oNjBHOu3JnQpP2V39cutYlxw
-   D4fKm4ZGkyboV6gWXEeBEcRqHkcTzn30NqTcW1C2j/9yb99wmL7yJGUqg
-   A==;
-X-CSE-ConnectionGUID: yn1N5DnrSD+uKQO35urRuQ==
-X-CSE-MsgGUID: 9Z5dsM0XRsSuVT5zGPIJNQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="9633408"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="9633408"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 06:40:31 -0700
-X-CSE-ConnectionGUID: IuIt3hpzQ3mY+mQzj10XPw==
-X-CSE-MsgGUID: iyCcn9/cS7KCiRMYdEZAmw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24351668"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.63.204])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 06:40:28 -0700
-Message-ID: <e082dabe-5d1c-4be0-baaa-5be30cff0016@intel.com>
-Date: Tue, 23 Apr 2024 16:40:20 +0300
+	s=arc-20240116; t=1713879904; c=relaxed/simple;
+	bh=zWK2ReDFbkliJtaNVR7CmsOANV76XcgqSo5F0cqc4rs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oo8Zx2cPxXFrEyXYud75gY5vA7hJPZ/wiGcPTJfvCkFZcc6t4DlEK0LkR2HyOCy9WeB+iUfl4JLbgQOA2sylE2wbu4sVEZm3aWF6w46PR2a4OpUnzdWDmMMkFJ0gnZor9am3tuMfqUrAU5cPB5dCTQBtthEC3EwOhqdLwgbx2PY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V4kl05cm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 220ECC32783;
+	Tue, 23 Apr 2024 13:45:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713879904;
+	bh=zWK2ReDFbkliJtaNVR7CmsOANV76XcgqSo5F0cqc4rs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=V4kl05cml6OpRcGFHeQw9n3dATJ/Ob+Tc/PDPgR76CXhiaG8ll72J+9JZ8il2UPUP
+	 y7QgwvZQOVjw2Bnm+UYZ4XJY6XvauiC83A7eYqWphs9M25ZTugbLtEO8o7sful4gWg
+	 fx82dtiy/pGO2gfDRbRF+aJAsmB3NtBxqTskQzoXcxCuNgoKMdTxYtIHy9vfkBn5iQ
+	 GxZe066I4Nk+/k5ZKq4tnY2pKhoEcJCmcLpH/bN8tSBxWyYTjr62NtRHkuEo5w/zyt
+	 Nqa3/GOhS8cKz2xj3fcy6FDdOlHsWfWiZ+i/a3J1ASsbKTsSOQ+7MXY+ukV5tpfHaA
+	 EMQC3bu6GPNVw==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-516d2600569so7150292e87.0;
+        Tue, 23 Apr 2024 06:45:04 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWb0kuXropkWuunCugs5zOPoe7oQ/cwZ/QVFju6sSepS4uAFn1N9ArHVP9B/PHy2HM69cXbcMtphi/TnSgsubfRXh4p7DJhbk+V8AhIPY370NGaBtin4UeyE2GxW92EXr1a0RYJRsUrSbuXuYvxjF0HwHDmlOnEvleb90+LKQ==
+X-Gm-Message-State: AOJu0YzVDO/Ssv1exOOz4quoR6Fpo6kZlxU0cyIya8O4M3on76BEZJ74
+	MytUh8wGuBhetvKQ93y/k2CQ+XtOuM0MkdfHvRfma65/hvkir4wvjPL5k5NwfY1dpcBbJqcV7If
+	rqT7AqGmSMxQSF0DW13Z2gYDnim8=
+X-Google-Smtp-Source: AGHT+IGYNwxeuuPgiHKtxd4oJygpTKk9VWJFI3uQjC7JbCruESydOS1HJ9g7YXGPSpKzTcYy2uUHXvX/yneINltO5BE=
+X-Received: by 2002:a2e:9a95:0:b0:2da:9f24:44a8 with SMTP id
+ p21-20020a2e9a95000000b002da9f2444a8mr9158584lji.11.1713879902758; Tue, 23
+ Apr 2024 06:45:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] perf scripts python: Add a script to run instances of
- perf script in parallel
-To: Ian Rogers <irogers@google.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Andi Kleen <ak@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <20240313123634.4353-1-adrian.hunter@intel.com>
- <CAP-5=fW1bH8qQkD7LrO6_3fJ3NsqoW1GrX8=s-sfaTbrvk58+A@mail.gmail.com>
-Content-Language: en-US
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAP-5=fW1bH8qQkD7LrO6_3fJ3NsqoW1GrX8=s-sfaTbrvk58+A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240415162041.2491523-5-ardb+git@google.com> <20240415162041.2491523-6-ardb+git@google.com>
+In-Reply-To: <20240415162041.2491523-6-ardb+git@google.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Tue, 23 Apr 2024 22:44:26 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQi33YR35QZi3gX8Gfe-J3mfuEB5GWjmfT7W07mjmgKYw@mail.gmail.com>
+Message-ID: <CAK7LNAQi33YR35QZi3gX8Gfe-J3mfuEB5GWjmfT7W07mjmgKYw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] kallsyms: Avoid weak references for kallsyms symbols
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <martin.lau@linux.dev>, linux-arch@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, 
+	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <olsajiri@gmail.com>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/04/24 21:19, Ian Rogers wrote:
-> On Wed, Mar 13, 2024 at 5:36 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> Add a Python script to run a perf script command multiple times in
->> parallel, using perf script options --cpu and --time so that each job
->> processes a different chunk of the data.
->>
->> The script supports the use of normal perf script options like
->>  --dlfilter and --script, so that the benefit of running parallel jobs
->> naturally extends to them also. In addition, a command can be provided
->> (refer --pipe-to option) to pipe standard output to a custom command.
->>
->> Refer to the script's own help text at the end of the patch for more
->> details.
->>
->> The script is useful for Intel PT traces, that can be efficiently
->> decoded by perf script when split by CPU and/or time ranges. Running
->> jobs in parallel can decrease the overall decoding time.
->>
->> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+On Tue, Apr 16, 2024 at 1:20=E2=80=AFAM Ard Biesheuvel <ardb+git@google.com=
+> wrote:
+>
+> From: Ard Biesheuvel <ardb@kernel.org>
+>
+> kallsyms is a directory of all the symbols in the vmlinux binary, and so
+> creating it is somewhat of a chicken-and-egg problem, as its non-zero
+> size affects the layout of the binary, and therefore the values of the
+> symbols.
+>
+> For this reason, the kernel is linked more than once, and the first pass
+> does not include any kallsyms data at all. For the linker to accept
+> this, the symbol declarations describing the kallsyms metadata are
+> emitted as having weak linkage, so they can remain unsatisfied. During
+> the subsequent passes, the weak references are satisfied by the kallsyms
+> metadata that was constructed based on information gathered from the
+> preceding passes.
+>
+> Weak references lead to somewhat worse codegen, because taking their
+> address may need to produce NULL (if the reference was unsatisfied), and
+> this is not usually supported by RIP or PC relative symbol references.
+>
+> Given that these references are ultimately always satisfied in the final
+> link, let's drop the weak annotation, and instead, provide fallback
+> definitions in the linker script that are only emitted if an unsatisfied
+> reference exists.
+>
+> While at it, drop the FRV specific annotation that these symbols reside
+> in .rodata - FRV is long gone.
+>
+> Tested-by: Nick Desaulniers <ndesaulniers@google.com> # Boot
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Link: https://lkml.kernel.org/r/20230504174320.3930345-1-ardb%40kernel.or=
+g
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
 
 
->> +
->> +       def __init__(self, cmd, pipe_to, output_dir="."):
->> +               self.popen = None
->> +               self.consumer = None
->> +               self.cmd = cmd
->> +               self.pipe_to = pipe_to
->> +               self.output_dir = output_dir
->> +               self.cmdout_name = output_dir + "/cmd.txt"
->> +               self.stdout_name = output_dir + "/out.txt"
->> +               self.stderr_name = output_dir + "/err.txt"
-> 
-> Why use files here and not pipes?
+I dropped v5, and picked up this one.
 
-There is an option to pipe to another command.
+Thanks.
 
->                                   Could using files cause the command
-> to fail on a read-only file system?
 
-The user chooses the output directory, so they will need the foresight
-not to choose a read-only file system.
 
+>  include/asm-generic/vmlinux.lds.h | 19 +++++++++++++
+>  kernel/kallsyms.c                 |  6 ----
+>  kernel/kallsyms_internal.h        | 30 ++++++++------------
+>  3 files changed, 31 insertions(+), 24 deletions(-)
+>
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmli=
+nux.lds.h
+> index f7749d0f2562..e8449be62058 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -448,11 +448,30 @@
+>  #endif
+>  #endif
+>
+> +/*
+> + * Some symbol definitions will not exist yet during the first pass of t=
+he
+> + * link, but are guaranteed to exist in the final link. Provide prelimin=
+ary
+> + * definitions that will be superseded in the final link to avoid having=
+ to
+> + * rely on weak external linkage, which requires a GOT when used in posi=
+tion
+> + * independent code.
+> + */
+> +#define PRELIMINARY_SYMBOL_DEFINITIONS                                 \
+> +       PROVIDE(kallsyms_addresses =3D .);                               =
+ \
+> +       PROVIDE(kallsyms_offsets =3D .);                                 =
+ \
+> +       PROVIDE(kallsyms_names =3D .);                                   =
+ \
+> +       PROVIDE(kallsyms_num_syms =3D .);                                =
+ \
+> +       PROVIDE(kallsyms_relative_base =3D .);                           =
+ \
+> +       PROVIDE(kallsyms_token_table =3D .);                             =
+ \
+> +       PROVIDE(kallsyms_token_index =3D .);                             =
+ \
+> +       PROVIDE(kallsyms_markers =3D .);                                 =
+ \
+> +       PROVIDE(kallsyms_seqs_of_names =3D .);
+> +
+>  /*
+>   * Read only Data
+>   */
+>  #define RO_DATA(align)                                                 \
+>         . =3D ALIGN((align));                                            =
+ \
+> +       PRELIMINARY_SYMBOL_DEFINITIONS                                  \
+>         .rodata           : AT(ADDR(.rodata) - LOAD_OFFSET) {           \
+>                 __start_rodata =3D .;                                    =
+ \
+>                 *(.rodata) *(.rodata.*)                                 \
+> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+> index 18edd57b5fe8..22ea19a36e6e 100644
+> --- a/kernel/kallsyms.c
+> +++ b/kernel/kallsyms.c
+> @@ -325,12 +325,6 @@ static unsigned long get_symbol_pos(unsigned long ad=
+dr,
+>         unsigned long symbol_start =3D 0, symbol_end =3D 0;
+>         unsigned long i, low, high, mid;
+>
+> -       /* This kernel should never had been booted. */
+> -       if (!IS_ENABLED(CONFIG_KALLSYMS_BASE_RELATIVE))
+> -               BUG_ON(!kallsyms_addresses);
+> -       else
+> -               BUG_ON(!kallsyms_offsets);
+> -
+>         /* Do a binary search on the sorted kallsyms_addresses array. */
+>         low =3D 0;
+>         high =3D kallsyms_num_syms;
+> diff --git a/kernel/kallsyms_internal.h b/kernel/kallsyms_internal.h
+> index 27fabdcc40f5..85480274fc8f 100644
+> --- a/kernel/kallsyms_internal.h
+> +++ b/kernel/kallsyms_internal.h
+> @@ -5,27 +5,21 @@
+>  #include <linux/types.h>
+>
+>  /*
+> - * These will be re-linked against their real values
+> - * during the second link stage.
+> + * These will be re-linked against their real values during the second l=
+ink
+> + * stage. Preliminary values must be provided in the linker script using=
+ the
+> + * PROVIDE() directive so that the first link stage can complete success=
+fully.
+>   */
+> -extern const unsigned long kallsyms_addresses[] __weak;
+> -extern const int kallsyms_offsets[] __weak;
+> -extern const u8 kallsyms_names[] __weak;
+> +extern const unsigned long kallsyms_addresses[];
+> +extern const int kallsyms_offsets[];
+> +extern const u8 kallsyms_names[];
+>
+> -/*
+> - * Tell the compiler that the count isn't in the small data section if t=
+he arch
+> - * has one (eg: FRV).
+> - */
+> -extern const unsigned int kallsyms_num_syms
+> -__section(".rodata") __attribute__((weak));
+> -
+> -extern const unsigned long kallsyms_relative_base
+> -__section(".rodata") __attribute__((weak));
+> +extern const unsigned int kallsyms_num_syms;
+> +extern const unsigned long kallsyms_relative_base;
+>
+> -extern const char kallsyms_token_table[] __weak;
+> -extern const u16 kallsyms_token_index[] __weak;
+> +extern const char kallsyms_token_table[];
+> +extern const u16 kallsyms_token_index[];
+>
+> -extern const unsigned int kallsyms_markers[] __weak;
+> -extern const u8 kallsyms_seqs_of_names[] __weak;
+> +extern const unsigned int kallsyms_markers[];
+> +extern const u8 kallsyms_seqs_of_names[];
+>
+>  #endif // LINUX_KALLSYMS_INTERNAL_H_
+> --
+> 2.44.0.683.g7961c838ac-goog
+>
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
