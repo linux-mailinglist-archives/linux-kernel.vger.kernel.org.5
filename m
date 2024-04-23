@@ -1,99 +1,125 @@
-Return-Path: <linux-kernel+bounces-155432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC6088AEA60
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:13:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37F868AE9A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:37:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37FC3B23699
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:13:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDEA11F2509F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D522813C69D;
-	Tue, 23 Apr 2024 15:13:28 +0000 (UTC)
-Received: from 6.mo560.mail-out.ovh.net (6.mo560.mail-out.ovh.net [87.98.165.38])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 863FC84FC5;
+	Tue, 23 Apr 2024 14:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UCacEaZ6"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC57313BAE2
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=87.98.165.38
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F81C1B815;
+	Tue, 23 Apr 2024 14:37:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713885208; cv=none; b=t2dX9qE3NkFvSuDLHIm7lYrxG5AUDK/9o8/oJgw3vfPQuipqX3/kruUkc/C9Sj460QBM2W0DuyfhvU8yH09I+lYGu1qufB8Pet7xg8DVWAd7HaaO2uJeHjvYQ5+rlr2Ix5UzwGEYdwpRfOW+8yKf/VAtitzkYjuXFzMmg4XQuf8=
+	t=1713883045; cv=none; b=buBE2uMWrOuodH1QsLApXhGMyU/YO4QLGixkwnHxsVPiHRCTNG6AccyCPPj+QZsUJUnbajeXiZ/hUcFn4xTZQvG+m90iaP2Lvb9sQtBWZBJXOMJ3hJXYxdlAKQKmw7RqIWIvF+fY/S8+scQAMB4gmghERmZGz1IKGsXOF07173g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713885208; c=relaxed/simple;
-	bh=AwUAUzpHBOsc1lMca4BINuz9URPqQhgCUVu2azAuauE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=AEaKM52FDI50aa50J3oO89QVl8ZW0nXGonI/qe3go9cbjf8Fm4HZ3l6FgB1reJPzV2eIDVaost2YDfNUR1bckwzVq4Q/KaaHKusrNqqlV2jTaKfWcuBhZPzZrOsbLBl0KaxVQo6/CeyXesVlwmeMgvv6L3IErS82T1uowO5c1PE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=etezian.org; arc=none smtp.client-ip=87.98.165.38
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etezian.org
-Received: from director1.ghost.mail-out.ovh.net (unknown [10.108.9.101])
-	by mo560.mail-out.ovh.net (Postfix) with ESMTP id 4VP4QJ6WzDz1W5C
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:34:48 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-bhrm4 (unknown [10.110.113.89])
-	by director1.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 407C11FEC9;
-	Tue, 23 Apr 2024 14:34:48 +0000 (UTC)
-Received: from etezian.org ([37.59.142.97])
-	by ghost-submission-6684bf9d7b-bhrm4 with ESMTPSA
-	id Bgz7CQjHJ2bTTwEAbTVA8Q
-	(envelope-from <andi@etezian.org>); Tue, 23 Apr 2024 14:34:48 +0000
-Authentication-Results:garm.ovh; auth=pass (GARM-97G002eebf7df8-33da-4965-bbcb-682bf0db39b3,
-                    C447AC6F663E29B5B072953094682C3B23667ADA) smtp.auth=andi@etezian.org
-X-OVh-ClientIp:89.217.109.169
-From: Andi Shyti <andi.shyti@kernel.org>
-To: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Piyush Malgujar <pmalgujar@marvell.com>
-Cc: sgarapati@marvell.com, cchavva@marvell.com, jannadurai@marvell.com
-In-Reply-To: <20240423074618.3278609-1-pmalgujar@marvell.com>
-References: <20240423074618.3278609-1-pmalgujar@marvell.com>
-Subject: Re: [PATCH v7 0/5] i2c: thunderx: Marvell thunderx i2c changes
-Message-Id: <171388288720.439949.15428292378589168497.b4-ty@kernel.org>
-Date: Tue, 23 Apr 2024 16:34:47 +0200
+	s=arc-20240116; t=1713883045; c=relaxed/simple;
+	bh=aQ0ENn3iVqRW6h2IWGFzijLW4RgbLKhy6rpRynm6x78=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AEaPzoY+4riQq3OwfRP860/y4Lxj22I/nb0Za6qmhcWoUCXCrKOJ1eYVym+stl0sfr4YYCVTAPFn6WMnETBXnW88tsz7Smkw5i3qyHhue5DtFf/esFYA4hBmu7LFFxXl5UZqjYhiExpxbfpAwPZX+Y99q5nneMjKPytMEt0bqP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UCacEaZ6; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713883044; x=1745419044;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=aQ0ENn3iVqRW6h2IWGFzijLW4RgbLKhy6rpRynm6x78=;
+  b=UCacEaZ6N08Cck0AM7f5UwyU2mFo1KreycV8ww+EozEMCw4uV47KowHC
+   g1nae74Hp4+JS5jyq+vtaC8CS3tdDFTkm8CJG2sMiGKkJV0e8/FDgeXT+
+   IoRmTFPN0vwxCnzvHswf/dYAKHgM//V1+mZS0gwS1Yb8xiIW5GhrQfKFi
+   72NpOBY2u4dKmlarkGJZqc9Nhe9PqVJ5ABstPPKU+x5AYMcka+ls33kO4
+   fCZwl7e8UBwuJn3C3LcOfxP15WcUIwbL/ZPKLUSEOVRxw9O0q9s155qV+
+   mdO5AbaT9SlQQw9wklogmnyEWZCheO3TSMMrNlccYkqOLQSyolVvqLtoQ
+   A==;
+X-CSE-ConnectionGUID: PH0kRgA6Q82d8N0cHVDMOw==
+X-CSE-MsgGUID: zLzZScFDSgym8lRzbLhrAQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="26985765"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="26985765"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 07:37:23 -0700
+X-CSE-ConnectionGUID: q3ocQ6L1QgiwX8xh61lC4w==
+X-CSE-MsgGUID: j+UE+l6OSEmPziXhflB1XQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="24436634"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 07:37:22 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rzHGq-00000000Mdk-0WKi;
+	Tue, 23 Apr 2024 17:37:20 +0300
+Date: Tue, 23 Apr 2024 17:37:19 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jani Nikula <jani.nikula@intel.com>
+Cc: workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v1 2/2] Documentation: process: Recommend to put Cc: tags
+ after cutter '---' line
+Message-ID: <ZifHnw1cxgP77MKx@smile.fi.intel.com>
+References: <20240423132024.2368662-1-andriy.shevchenko@linux.intel.com>
+ <20240423132024.2368662-3-andriy.shevchenko@linux.intel.com>
+ <871q6wrw12.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13.0
-X-Ovh-Tracer-Id: 14341713015152839280
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudeluddgjeekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvegjfhfukfffgggtgffosehtjeertdertdejnecuhfhrohhmpeetnhguihcuufhhhihtihcuoegrnhguihdrshhhhihtiheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpeffteehudffvdfhudfgffdugfejjeduheehgeefgeeuhfeiuefghffgueffvdfgfeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduvdejrddtrddtrddupdekledrvddujedruddtledrudeiledpfeejrdehledrudegvddrleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpegrnhguihesvghtvgiiihgrnhdrohhrghdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheeitddpmhhouggvpehsmhhtphhouhht
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871q6wrw12.fsf@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hi
-
-On Tue, 23 Apr 2024 00:46:03 -0700, Piyush Malgujar wrote:
-> The changes are for Marvell OcteonTX2 SOC family:
+On Tue, Apr 23, 2024 at 05:30:49PM +0300, Jani Nikula wrote:
+> On Tue, 23 Apr 2024, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > The recommendation is based on the following rationale:
+> >
+> > - it makes the commit messages much cleaner and easy to read, especially
+> >   on the screens of the mobile devices;
+> >
+> > - it reduces resources (memory, time, energy) to retrieve all these
+> >   headers, which are barely needed by a mere user, as for automation
+> >   they will be still available via mail archives, such as
+> >   https://lore.kernel.org, assuming the Link: or Message-ID tag is
+> >   provided.
 > 
-> - Handling clock divisor logic using subsytem ID
-> - Support for high speed mode
-> - Handle watchdog timeout
-> - Added ioclk support
+> I find the information in the commit message useful, and it tells me who
+> were explicitly included in the discussion.
 > 
-> [...]
+> For example when fixing a regression I'd like to Cc everyone who was
+> Cc'd in the regressing commit. The drm subsystem maintainer tool
+> actually has a helper for doing just that. 'dim fixes <sha1>' digs up
+> all the relevant info.
 
-Applied to i2c/i2c-host on
+> The Cc's on the mailing list archive are harder to dig up, and do not
+> accurately reflect the same information.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
+How comes? These Cc: are 1:1 mapped to the Cc: email headers.
 
-Thank you,
-Andi
+> A lot of patches get sent with
+> more Cc's in the mail message than in the commit message.
 
-Patches applied
-===============
-[1/5] i2c: thunderx: Clock divisor logic changes
-      commit: 1e82de6368238dfcca306fc66dc6c3f8c21e1b4b
-[2/5] i2c: thunderx: Support for High speed mode
-      commit: 305b1350c49993bbc879270764aa59e8de00a904
-[3/5] i2c: octeon: Add platform prefix to macros
-      commit: 8c82edccf99ad4395cf943dad48c47b44a1c920a
-[4/5] i2c: octeon: Handle watchdog timeout
-      commit: b6ea602a1100c6241c47a8b4326a050ff3379c4d
-[5/5] i2c: thunderx: Adding ioclk support
-      commit: 8d49135d177dbfee92bd84fef32b47d656e6b314
+Note, this is the recommendation as it's stated. You can continue polluting
+the environment on your wish.
+
+> > Let's be environment friendly and save the planet!
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
