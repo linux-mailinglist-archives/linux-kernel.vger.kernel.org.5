@@ -1,242 +1,182 @@
-Return-Path: <linux-kernel+bounces-154439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75FB78ADC16
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:10:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E94A8ADC19
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:12:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F042D1F229BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:10:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58754282F17
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:12:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9B017C66;
-	Tue, 23 Apr 2024 03:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cxG5MqLZ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C51191946B;
+	Tue, 23 Apr 2024 03:12:08 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 341FC17BDC
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:10:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C119F17C66
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:12:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713841819; cv=none; b=ZAvP65pv9dQ1+4kVNZFSkXmCpypVxSBLU/05lK0O7VFx4z2DBgrN6+eDF5/e8+DD9Zj6QxHyznFtjkhJ8Ut+1ZSMR/O0Pu/dALB8nchKhYBYDf8lWF8yIljSczfpK2bE73dDzK2J8DldRlZLt5+apfRMj/7LIyh0U1yIxab01rw=
+	t=1713841928; cv=none; b=YvhrKi7gxqV9rQLmfAuAcpjQVpR4Bdr6+NR/2tPGIjWqxbRiYrQQKCo0wVlKuCdA8mmDaswfQuK2J6zhuc6HvfwLjzo9nj5xda0FgT+rMaiFnu0dDB2U0pCPO8jgqAdKU8TCKb8E6dtmFrctvlkzC5Y3iv9lVOb1pwXrcHfSkFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713841819; c=relaxed/simple;
-	bh=wXNHc5PiarQzMsw9YBToa7rRkxIOn05fejmLy8UMDd4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Sa+7AxsBla0hdkeoyFMZjGim7HOc2xxe6IBCufnfxLr4SZLhO9nKh3WEJvsKSAbb8lygMLeu0jo9QmNtBc4nFaJ14eok7wOkBqXEWocPtyxQQ1cQ+6gW9Azo+CIvAmgFSgKOiGB/WdLdCVIGo+9zRQo9x0NP+lpn1YYKRzaZfe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cxG5MqLZ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713841816;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xGOzBYTBEU4Vx1BmqOXWbqCplxuBx3Gn5FBEe57Uzsg=;
-	b=cxG5MqLZBMRplCF0LQ/8x4NPcTYo+/88qtHWOZZLub0ZNAWc5a14rmJ7Qrq1yOVUY1bZ27
-	l2Ikozb0b+iE9wX2Alp+Xua97Fto/ClSPvAUVjT1P219DSlaKtqz4r5MpxHROqakm7AA6D
-	qgIYyagRx8PoP/qwcIWpxvH6iqt1G3o=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-372-6gjRmXGgNlSYjjQui2DVTg-1; Mon, 22 Apr 2024 23:10:13 -0400
-X-MC-Unique: 6gjRmXGgNlSYjjQui2DVTg-1
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-2a2e0a51adfso6702897a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 20:10:12 -0700 (PDT)
+	s=arc-20240116; t=1713841928; c=relaxed/simple;
+	bh=GWW51GVVwSLgUVGLvsw8rxCGl7sizkMmGhk3+hBuLhE=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=ULV+Q62Ag3SaaeDJSYO8HkETFvWPguDm5U1ZvX0aBn7O7lZ4JvWBL3WiKuJ+7tDBosa8euL8NR7zqKMIdpt7vkNWpHfYpIQU7EJo2PK2Vg9xXUG9+3DHVty5PikN1cdrFbXP4gm6AnG9BkCejIzMZuXiERXD6sylG06wJStLOSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36c0f8200ffso19978015ab.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 20:12:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713841811; x=1714446611;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xGOzBYTBEU4Vx1BmqOXWbqCplxuBx3Gn5FBEe57Uzsg=;
-        b=qHEHcNpgI41V5teNu1xIEJpahFdYizXSoP4IflDJzwZmiATjrQEMnFxLar8QRTye1M
-         QuUcfGQfgvJ5EW12BSIXAc196YeD2aog116+6aLFtKiV+8NfXf7yi7m4r4dsyGbJa7cF
-         GpDQg1I23Tl5AmmKofJElE1ejm30mjUwBb4KaVkFSzn3rSefQaIYAnEPyoeWiQOQQ3h8
-         nASV/QtS5qT8ffVmMKQJP+9h+06eOjVIYMitRJsftcdPbhLScq+X/moAr9C/ylHkC6JY
-         tvTn14NFDhn3oLB7ydT34kfxMpVgCW/uKKhK3Pvvr+LgLTOg3FIzWzUk9g410dJhjPSF
-         usXA==
-X-Forwarded-Encrypted: i=1; AJvYcCUb0es8hnVn8JVUY2BNY+EGYmvr70jxQ8PSNtOQPuB5HpWSzrEjiwbuw9n7mRfmcYVXhawKVfISkwT4l60b43CzIKZE94EHd/cf5gAM
-X-Gm-Message-State: AOJu0YwAeiXWmwZz8I5G3feKZSHZa9NOsHDFFurkzq/IB1mWxvttYMHl
-	s558KVBGkrQT6u1aAtw1bRm06S0n/0G0cCiDYl75IH90ge5RbToqSYa4FYIRSj+6nKNS46u1TsJ
-	cITDJPwpdFvSUxju2Y8FMwjw+/f3N2DdJF6JDl0or2ZOd2UldmZGb5COXJuV45t3qSroIVo0HIj
-	etwuRsyWbqnrV9DBAfWI3F3jANLbv/0OXr5JJVpq2K4nqGBYM=
-X-Received: by 2002:a17:90a:d990:b0:2ab:ca7d:658b with SMTP id d16-20020a17090ad99000b002abca7d658bmr10112319pjv.4.1713841811420;
-        Mon, 22 Apr 2024 20:10:11 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGgWUZxEIFiEErm5ahPVsmlGOlQL1BmJvl5wL68pDzSmIyeZFBW5KI0sV7sfwyMQHO929OZbhQnJ8VHOn5ptBY=
-X-Received: by 2002:a17:90a:d990:b0:2ab:ca7d:658b with SMTP id
- d16-20020a17090ad99000b002abca7d658bmr10112304pjv.4.1713841811015; Mon, 22
- Apr 2024 20:10:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713841926; x=1714446726;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lq5EIudatIUnUuPkCcE3HI/FjNPx7iAarBCgGCEWQ2I=;
+        b=mdAT/jre79vEgmibPs7uCab2DOxLhfpT0IfCfS5Zbja/fSeBXdFnysKVmxZIAqXGU4
+         hIKg8Q3hkJ73TI67NDm6EkwsfGuc2v5Ui0XD0D55j2VAeyo4xYKPl5un4s2fGMWppHVs
+         3OGSTjLSWjshsKCdVYKRLbr0yQQXMdWDfNYNwYPeRxfOANCMwpAZ0fr79ewx6ShO0kUy
+         8neik5dCV3IANKQCRdj2XC/gMuFGM6YNRn9PG87hjxfDGi2N+lDwXiP6oW2w341gJALM
+         uBjrk3cyAwcEaa/ocbGLhjp7geHbLRE/g1X9Gx2V3F6RxnUzOXo7o4bzb+qLkvorB+QL
+         SQHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWUx51ivSwp0waZIk6Q2t/wsBvmZGGoNQMqSmW43M/lE+wqd+Syblbhvdd687HIG5458hXjr7or7DccuDmjditY8+eUnzr6CBX0Gs0Y
+X-Gm-Message-State: AOJu0YxK4xwWnlRP4Bc9+rBTeuK+3m6f05t/gLA23Oitt+Y2gVd8GlgB
+	GIo/SOJitKQiJUoeK3V3yoIAEpPJChUSy5/GyXm0CK3a83jPCecDNBMaTTM4tMOyRWVsnriuOyn
+	pvYtmYjZ6Yl1OLGIhCu2VtCdfeAH5IoC9I7mZ5dWw1tm53Yk7HsWev6Y=
+X-Google-Smtp-Source: AGHT+IG0T6rUXJMGS82aTSlmekyR6zHOZdcxSSoeIiDM/mvm4Dh0sa1EIRSZcS+vjFN/ZmxjpKKxoem0Bh+uEwnO0cbEPRQLw9tW
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412133017.483407-1-lulu@redhat.com> <20240412133017.483407-4-lulu@redhat.com>
- <20240417052723-mutt-send-email-mst@kernel.org> <CACGkMEtv56TSaA=W337hFU3VALfbrGMcEdu25O4Ecx7guUacyQ@mail.gmail.com>
- <20240422160348-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20240422160348-mutt-send-email-mst@kernel.org>
-From: Jason Wang <jasowang@redhat.com>
-Date: Tue, 23 Apr 2024 11:09:59 +0800
-Message-ID: <CACGkMEsj1aYBBO+kh5wmTk9vh=QRj50FHPFZ6QX3gs1Jh+XQdA@mail.gmail.com>
-Subject: Re: [PATCH v5 3/5] vduse: Add function to get/free the pages for reconnection
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Cindy Lu <lulu@redhat.com>, linux-kernel@vger.kernel.org, 
-	virtualization@lists.linux-foundation.org
+X-Received: by 2002:a05:6638:4126:b0:485:6cb9:9a78 with SMTP id
+ ay38-20020a056638412600b004856cb99a78mr82697jab.0.1713841925143; Mon, 22 Apr
+ 2024 20:12:05 -0700 (PDT)
+Date: Mon, 22 Apr 2024 20:12:05 -0700
+In-Reply-To: <20240422231617.2916-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000264c380616baebdc@google.com>
+Subject: Re: [syzbot] [pm?] KASAN: use-after-free Read in netdev_unregister_kobject
+From: syzbot <syzbot+6cf5652d3df49fae2e3f@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 23, 2024 at 4:05=E2=80=AFAM Michael S. Tsirkin <mst@redhat.com>=
- wrote:
->
-> On Thu, Apr 18, 2024 at 08:57:51AM +0800, Jason Wang wrote:
-> > On Wed, Apr 17, 2024 at 5:29=E2=80=AFPM Michael S. Tsirkin <mst@redhat.=
-com> wrote:
-> > >
-> > > On Fri, Apr 12, 2024 at 09:28:23PM +0800, Cindy Lu wrote:
-> > > > Add the function vduse_alloc_reconnnect_info_mem
-> > > > and vduse_alloc_reconnnect_info_mem
-> > > > These functions allow vduse to allocate and free memory for reconne=
-ction
-> > > > information. The amount of memory allocated is vq_num pages.
-> > > > Each VQS will map its own page where the reconnection information w=
-ill be saved
-> > > >
-> > > > Signed-off-by: Cindy Lu <lulu@redhat.com>
-> > > > ---
-> > > >  drivers/vdpa/vdpa_user/vduse_dev.c | 40 ++++++++++++++++++++++++++=
-++++
-> > > >  1 file changed, 40 insertions(+)
-> > > >
-> > > > diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa=
-_user/vduse_dev.c
-> > > > index ef3c9681941e..2da659d5f4a8 100644
-> > > > --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> > > > +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> > > > @@ -65,6 +65,7 @@ struct vduse_virtqueue {
-> > > >       int irq_effective_cpu;
-> > > >       struct cpumask irq_affinity;
-> > > >       struct kobject kobj;
-> > > > +     unsigned long vdpa_reconnect_vaddr;
-> > > >  };
-> > > >
-> > > >  struct vduse_dev;
-> > > > @@ -1105,6 +1106,38 @@ static void vduse_vq_update_effective_cpu(st=
-ruct vduse_virtqueue *vq)
-> > > >
-> > > >       vq->irq_effective_cpu =3D curr_cpu;
-> > > >  }
-> > > > +static int vduse_alloc_reconnnect_info_mem(struct vduse_dev *dev)
-> > > > +{
-> > > > +     unsigned long vaddr =3D 0;
-> > > > +     struct vduse_virtqueue *vq;
-> > > > +
-> > > > +     for (int i =3D 0; i < dev->vq_num; i++) {
-> > > > +             /*page 0~ vq_num save the reconnect info for vq*/
-> > > > +             vq =3D dev->vqs[i];
-> > > > +             vaddr =3D get_zeroed_page(GFP_KERNEL);
-> > >
-> > >
-> > > I don't get why you insist on stealing kernel memory for something
-> > > that is just used by userspace to store data for its own use.
-> > > Userspace does not lack ways to persist data, for example,
-> > > create a regular file anywhere in the filesystem.
-> >
-> > Good point. So the motivation here is to:
-> >
-> > 1) be self contained, no dependency for high speed persist data
-> > storage like tmpfs
->
-> No idea what this means.
+Hello,
 
-I mean a regular file may slow down the datapath performance, so
-usually the application will try to use tmpfs and other which is a
-dependency for implementing the reconnection.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: use-after-free Read in netdev_unregister_kobject
 
->
-> > 2) standardize the format in uAPI which allows reconnection from
-> > arbitrary userspace, unfortunately, such effort was removed in new
-> > versions
->
-> And I don't see why that has to live in the kernel tree either.
+==================================================================
+BUG: KASAN: use-after-free in device_for_each_child+0xa7/0x170 drivers/base/core.c:4044
+Read of size 8 at addr ffff8880293555f8 by task kbnepd bnep0/5664
 
-I can't find a better place, any idea?
+CPU: 0 PID: 5664 Comm: kbnepd bnep0 Not tainted 6.9.0-rc4-syzkaller-00173-g3cdb45594619-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0x169/0x550 mm/kasan/report.c:488
+ kasan_report+0x143/0x180 mm/kasan/report.c:601
+ device_for_each_child+0xa7/0x170 drivers/base/core.c:4044
+ pm_runtime_set_memalloc_noio+0x114/0x260 drivers/base/power/runtime.c:248
+ netdev_unregister_kobject+0x178/0x250 net/core/net-sysfs.c:2106
+ unregister_netdevice_many_notify+0x11dd/0x16e0 net/core/dev.c:11135
+ unregister_netdevice_many net/core/dev.c:11163 [inline]
+ unregister_netdevice_queue+0x303/0x370 net/core/dev.c:11042
+ unregister_netdevice include/linux/netdevice.h:3115 [inline]
+ unregister_netdev+0x1c/0x30 net/core/dev.c:11181
+ bnep_session+0x2e09/0x3000 net/bluetooth/bnep/core.c:525
+ kthread+0x2f2/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
 
-Thanks
+The buggy address belongs to the physical page:
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x29355
+flags: 0xfff80000000000(node=0|zone=1|lastcpupid=0xfff)
+page_type: 0xffffffff()
+raw: 00fff80000000000 ffffea0000a4d588 ffffea0000a4d508 0000000000000000
+raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as freed
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0x140dc0(GFP_USER|__GFP_COMP|__GFP_ZERO), pid 5470, tgid 1627921193 (syz-executor.4), ts 5470, free_ts 128431373442
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x1ea/0x210 mm/page_alloc.c:1534
+ prep_new_page mm/page_alloc.c:1541 [inline]
+ get_page_from_freelist+0x3410/0x35b0 mm/page_alloc.c:3317
+ __alloc_pages+0x256/0x6c0 mm/page_alloc.c:4575
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ alloc_pages_node include/linux/gfp.h:261 [inline]
+ __kmalloc_large_node+0x91/0x1f0 mm/slub.c:3911
+ __do_kmalloc_node mm/slub.c:3954 [inline]
+ __kmalloc+0x320/0x4a0 mm/slub.c:3979
+ kmalloc include/linux/slab.h:632 [inline]
+ kzalloc include/linux/slab.h:749 [inline]
+ hci_alloc_dev_priv+0x27/0x2030 net/bluetooth/hci_core.c:2500
+ hci_alloc_dev include/net/bluetooth/hci_core.h:1672 [inline]
+ __vhci_create_device drivers/bluetooth/hci_vhci.c:406 [inline]
+ vhci_create_device+0x12e/0x720 drivers/bluetooth/hci_vhci.c:480
+ vhci_get_user drivers/bluetooth/hci_vhci.c:537 [inline]
+ vhci_write+0x3cb/0x480 drivers/bluetooth/hci_vhci.c:617
+ call_write_iter include/linux/fs.h:2110 [inline]
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0xa86/0xcb0 fs/read_write.c:590
+ ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+page last free pid 5470 tgid 5470 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1141 [inline]
+ free_unref_page_prepare+0x986/0xab0 mm/page_alloc.c:2347
+ free_unref_page+0x37/0x3f0 mm/page_alloc.c:2487
+ __folio_put_large+0x13f/0x190 mm/swap.c:132
+ __folio_put+0x299/0x390 mm/swap.c:140
+ folio_put include/linux/mm.h:1506 [inline]
+ free_large_kmalloc+0x105/0x1c0 mm/slub.c:4361
+ kfree+0x1ca/0x3a0 mm/slub.c:4384
+ hci_release_dev+0x1516/0x16a0 net/bluetooth/hci_core.c:2833
+ bt_host_release+0x83/0x90 net/bluetooth/hci_sysfs.c:94
+ device_release+0x9b/0x1c0
+ kobject_cleanup lib/kobject.c:689 [inline]
+ kobject_release lib/kobject.c:720 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x231/0x480 lib/kobject.c:737
+ vhci_release+0x8b/0xd0 drivers/bluetooth/hci_vhci.c:675
+ __fput+0x42b/0x8a0 fs/file_table.c:422
+ task_work_run+0x251/0x310 kernel/task_work.c:180
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0xa1b/0x27e0 kernel/exit.c:878
+ do_group_exit+0x207/0x2c0 kernel/exit.c:1027
+ __do_sys_exit_group kernel/exit.c:1038 [inline]
+ __se_sys_exit_group kernel/exit.c:1036 [inline]
+ __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1036
 
->
-> > If the above doesn't make sense, we don't need to offer those pages by =
-VDUSE.
-> >
-> > Thanks
-> >
-> >
-> > >
-> > >
-> > >
-> > > > +             if (vaddr =3D=3D 0)
-> > > > +                     return -ENOMEM;
-> > > > +
-> > > > +             vq->vdpa_reconnect_vaddr =3D vaddr;
-> > > > +     }
-> > > > +
-> > > > +     return 0;
-> > > > +}
-> > > > +
-> > > > +static int vduse_free_reconnnect_info_mem(struct vduse_dev *dev)
-> > > > +{
-> > > > +     struct vduse_virtqueue *vq;
-> > > > +
-> > > > +     for (int i =3D 0; i < dev->vq_num; i++) {
-> > > > +             vq =3D dev->vqs[i];
-> > > > +
-> > > > +             if (vq->vdpa_reconnect_vaddr)
-> > > > +                     free_page(vq->vdpa_reconnect_vaddr);
-> > > > +             vq->vdpa_reconnect_vaddr =3D 0;
-> > > > +     }
-> > > > +
-> > > > +     return 0;
-> > > > +}
-> > > >
-> > > >  static long vduse_dev_ioctl(struct file *file, unsigned int cmd,
-> > > >                           unsigned long arg)
-> > > > @@ -1672,6 +1705,8 @@ static int vduse_destroy_dev(char *name)
-> > > >               mutex_unlock(&dev->lock);
-> > > >               return -EBUSY;
-> > > >       }
-> > > > +     vduse_free_reconnnect_info_mem(dev);
-> > > > +
-> > > >       dev->connected =3D true;
-> > > >       mutex_unlock(&dev->lock);
-> > > >
-> > > > @@ -1855,12 +1890,17 @@ static int vduse_create_dev(struct vduse_de=
-v_config *config,
-> > > >       ret =3D vduse_dev_init_vqs(dev, config->vq_align, config->vq_=
-num);
-> > > >       if (ret)
-> > > >               goto err_vqs;
-> > > > +     ret =3D vduse_alloc_reconnnect_info_mem(dev);
-> > > > +     if (ret < 0)
-> > > > +             goto err_mem;
-> > > >
-> > > >       __module_get(THIS_MODULE);
-> > > >
-> > > >       return 0;
-> > > >  err_vqs:
-> > > >       device_destroy(&vduse_class, MKDEV(MAJOR(vduse_major), dev->m=
-inor));
-> > > > +err_mem:
-> > > > +     vduse_free_reconnnect_info_mem(dev);
-> > > >  err_dev:
-> > > >       idr_remove(&vduse_idr, dev->minor);
-> > > >  err_idr:
-> > > > --
-> > > > 2.43.0
-> > >
->
+Memory state around the buggy address:
+ ffff888029355480: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff888029355500: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff888029355580: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                                                                ^
+ ffff888029355600: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff888029355680: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+
+
+Tested on:
+
+commit:         3cdb4559 Merge tag 's390-6.9-4' of git://git.kernel.or..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=10c3d0d3180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d239903bd07761e5
+dashboard link: https://syzkaller.appspot.com/bug?extid=6cf5652d3df49fae2e3f
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=105d6b20980000
 
 
