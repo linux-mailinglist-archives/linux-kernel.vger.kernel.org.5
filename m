@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-155085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E14DA8AE51F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:58:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13C9F8AE521
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:58:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A5EFB22335
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:58:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C30F2286C7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:58:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3629B14AD3E;
-	Tue, 23 Apr 2024 11:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93BBF14B08A;
+	Tue, 23 Apr 2024 11:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u9v0FWni"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D6WL/1ks"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70ED314AD22;
-	Tue, 23 Apr 2024 11:42:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB537130A6C;
+	Tue, 23 Apr 2024 11:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872527; cv=none; b=R2nowGIq1OYwRSBpl19DuvLX9Ue90TTpiJGWK3Ir6xF3qumJB0JU0HIDg+DjNsKbUjVeUlWT1m2ymzRslW+8VzMzOsim0k4TSZk1s+qo5KoGhhSo0fOhT/OKCCx+4BgRllT2/9EywlAzt0X9rNStMLcGhWsMSBFaxcjFbDdwKzU=
+	t=1713872528; cv=none; b=NiploOnDzW5WGhjkZhF6pRpqqdvd2Qk5Q0kVTzv+Dmbzqey8eqSTUM2DzEd1fRHUUPjnb19a3PRPQNhykKHS3A3PZwqNcFjVP1AhVM5peKTd/RUhZCmQs+d6ROlaLei/DUYCBhrszn8DHsG91+ay27s1lQ1KUPIjTAYuq2ft04s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872527; c=relaxed/simple;
-	bh=VPgfesJpUVtk9HJb+OT4n5OG4cnGiA6ah0GxO0RQjFo=;
+	s=arc-20240116; t=1713872528; c=relaxed/simple;
+	bh=Kvm46gz7dc5HjTw0rsOrBcTJgY5BTDwR9R5K2p+PS/Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NlGF971/O91y8hqt2rXvUORQzlYESkMK/jcAporsZfyi7qGGE4UdxeCRE3Qz+xvgKkG6DXA+qReXmTNzTMc8N0eruf+7YQa6DSW8xjXgiatRi8awt5zWFpFRw+uwrX/0nPjVdlfS6iH/iUhoB0QVfqA3KHvWzDfvJ0ivry5zrcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u9v0FWni; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A811C32782;
-	Tue, 23 Apr 2024 11:42:06 +0000 (UTC)
+	 MIME-Version; b=WA184WCZxPAHGp4cXXizpia9E+6OxBt29ZyT/Dof/++uC0rwep+0JLaVEzneSFeH647TCNQp1bEsXIRMeqegdRDNk5MRFb5BIS7+hwoe5xlGUZacIzogCX5raGBXcKJJnOlLnjjjWFCaY1ZTJb9Q3JbJy5QpiKHHHH6lDhPH62g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D6WL/1ks; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0AA7C4AF07;
+	Tue, 23 Apr 2024 11:42:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872527;
-	bh=VPgfesJpUVtk9HJb+OT4n5OG4cnGiA6ah0GxO0RQjFo=;
+	s=k20201202; t=1713872528;
+	bh=Kvm46gz7dc5HjTw0rsOrBcTJgY5BTDwR9R5K2p+PS/Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=u9v0FWniNHXU2ffTC5qm0p1fIF8c9Winl3//HtlQx8jGvuTHQIgv+QsnKL5+tswNw
-	 kda5FFH0JgBgPGWB1G8pSvHjQl7yVjA/xTwnN6vvSNykzo5hyhd81bGWFc/6BsvQ1w
-	 1CnZ9kCFbGbuQLMtuBlMQIJnPcOLHgUyWFsebeM8i+wAhnnwfNW3SDCPBE1E6y8On8
-	 GG8gUj7uAhorKG1c68c2CZlcUxb/ffcEZ9BTYf6oeWnyq47ZnK+eIMOljQIOaeEYhS
-	 Hr5mHDiU6PKYn0nWg9iiP9qEGJ62Dg2OYQNi88k1tHf+orXeWHgW06njnp2p4WdZKK
-	 2o7aKqtizT7FQ==
+	b=D6WL/1ksXUSYHs7TvP/sKoM14u9aCeoSFvpF6HuT6fEBK6N7BveiKESvZKBcN2hcx
+	 5zBwAbenNM+lO/Sgf6tnE2QR7FOASeqPSSJP40CTV7FeghK/q6tBYBUhm1CUfD5fNU
+	 6vnplexRB1/E/Bv9RbKdo0cwQY1qo9sCRvQYZu6wymgGja+TdhfhU/PPq8WaCUZokD
+	 aBh+97KSFYnLPioh0kYD88kVwN8qYdIXqJOssUSsdhcpkuloLiuNl8X4J/ct713jYp
+	 gFp4Yqov0jsQmhtMuzPTbjPbhUtKcG22SR3odgUVEXhCoRumV7cl+vylSHYP+yPgTR
+	 d4tqtBafFeFFg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+Cc: Joakim Sindholt <opensource@zhasha.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	andy@kernel.org,
-	linus.walleij@linaro.org,
-	brgl@bgdev.pl,
-	linux-gpio@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 5/7] gpio: crystalcove: Use -ENOTSUPP consistently
-Date: Tue, 23 Apr 2024 07:03:15 -0400
-Message-ID: <20240423110318.1659628-5-sashal@kernel.org>
+	lucho@ionkov.net,
+	asmadeus@codewreck.org,
+	v9fs@lists.linux.dev
+Subject: [PATCH AUTOSEL 4.19 6/7] fs/9p: drop inodes immediately on non-.L too
+Date: Tue, 23 Apr 2024 07:03:16 -0400
+Message-ID: <20240423110318.1659628-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240423110318.1659628-1-sashal@kernel.org>
 References: <20240423110318.1659628-1-sashal@kernel.org>
@@ -66,33 +66,29 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.312
 Content-Transfer-Encoding: 8bit
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Joakim Sindholt <opensource@zhasha.com>
 
-[ Upstream commit ace0ebe5c98d66889f19e0f30e2518d0c58d0e04 ]
+[ Upstream commit 7fd524b9bd1be210fe79035800f4bd78a41b349f ]
 
-The GPIO library expects the drivers to return -ENOTSUPP in some
-cases and not using analogue POSIX code. Make the driver to follow
-this.
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Joakim Sindholt <opensource@zhasha.com>
+Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-crystalcove.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/9p/vfs_super.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpio/gpio-crystalcove.c b/drivers/gpio/gpio-crystalcove.c
-index 58531d8b8c6e4..02da5113c0f2e 100644
---- a/drivers/gpio/gpio-crystalcove.c
-+++ b/drivers/gpio/gpio-crystalcove.c
-@@ -99,7 +99,7 @@ static inline int to_reg(int gpio, enum ctrl_register reg_type)
- 		case 0x5e:
- 			return GPIOPANELCTL;
- 		default:
--			return -EOPNOTSUPP;
-+			return -ENOTSUPP;
- 		}
- 	}
- 
+diff --git a/fs/9p/vfs_super.c b/fs/9p/vfs_super.c
+index eeab9953af896..b47c5dea23424 100644
+--- a/fs/9p/vfs_super.c
++++ b/fs/9p/vfs_super.c
+@@ -346,6 +346,7 @@ static const struct super_operations v9fs_super_ops = {
+ 	.alloc_inode = v9fs_alloc_inode,
+ 	.destroy_inode = v9fs_destroy_inode,
+ 	.statfs = simple_statfs,
++	.drop_inode = v9fs_drop_inode,
+ 	.evict_inode = v9fs_evict_inode,
+ 	.show_options = v9fs_show_options,
+ 	.umount_begin = v9fs_umount_begin,
 -- 
 2.43.0
 
