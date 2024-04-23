@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-155046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D94198AE4B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:48:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C957B8AE4B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:48:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 175691C22E89
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:48:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17B74B25BA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:48:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4563013F458;
-	Tue, 23 Apr 2024 11:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB1F13FD81;
+	Tue, 23 Apr 2024 11:41:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H0OEvcM7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mg9/a2ZA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EE7A13E8BC;
-	Tue, 23 Apr 2024 11:41:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C971F13FD61;
+	Tue, 23 Apr 2024 11:41:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872462; cv=none; b=cFYEw+HnRx/03lxTydMf3nNtMJuGWj5WsddyZe1Q9w2QuQbSBv1vtaQoZlsIiJVBPYd0+J6sg36HbgZ4mdMf6OzuUppiwEGpjsh5Cd30rY0ojA3KId+WsAMEO7EWUwcvoeoJFzV2sOr9W31+S4LU02yEEicqnvLbUkxJ2pucnko=
+	t=1713872463; cv=none; b=Yca/EIZmXLrsPwZH1oQIeNoxRrXvQ9sMWorSyJ2QQbhsB9T25VsjeoGOpMT5/UMAy0dhiBhg30tHjYmNtN2Z4HYhlkxZ/U6QYS6Dm4lVayxFiPMLhmLuWydJAiBn6kuuI8NSTp54HLcLgsoXZACndLkOp8RZNciYMKhB+bx+vHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872462; c=relaxed/simple;
-	bh=N5CvA0kzhNVnwmYknNTI+zmx8qwLZ++XKkjhBDdFhoI=;
+	s=arc-20240116; t=1713872463; c=relaxed/simple;
+	bh=RtleWkbbY+Os9CWeeebkpemyAVsN7UYp4fK2i35g3lQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NWC5qq9ICkJmpvv9rmULVj1bSu5vLflMM5OEda8EGMxbYaxxu2bwbzBjEpDRlBPA7Fix4d5jPZmrAdMgzL1DKfz1LO1lOidOTAecPMEEUI8snA3d3eC7gjUatzg40fazRhBJnW6ZposA+eELY+PuqiFx4yaJ9Wazgkx5bt51+Hw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H0OEvcM7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BAA6C3277B;
-	Tue, 23 Apr 2024 11:41:01 +0000 (UTC)
+	 MIME-Version; b=XNyvDJx9N2k3C8sacHEzikiAFvo6ZPZxtJYESURF3BkV8Po5GL+EUEhOf4Vj9ZZTw1lSv9Rgnu5S3lzudf8bt5995AWIInXd4xTObmF/t08wAGHsxWsZiyCi4i21NVYpNHjt0JY1ULb6+xAoBYhXMY6yxtjucHciaX4mVXXwHeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mg9/a2ZA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C375C2BD11;
+	Tue, 23 Apr 2024 11:41:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872462;
-	bh=N5CvA0kzhNVnwmYknNTI+zmx8qwLZ++XKkjhBDdFhoI=;
+	s=k20201202; t=1713872463;
+	bh=RtleWkbbY+Os9CWeeebkpemyAVsN7UYp4fK2i35g3lQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=H0OEvcM79bMUupCgSa1hEiNiNE6pHHqa3kCbh17vbzcK8CDHNDj+xitMgSEwQLZGo
-	 GqUkkz1KY3e9McTLrSMmG2nUX2C9nBtO66vzx9VVLrsyQisVGOHFhdX8sj4AMtvDMR
-	 RDaS/pGtx92nwvNGuUDTG/QzU75L/llz5bTjR+JipfXtIsisf9jjH8HIb7ezJRYk7C
-	 57BkN2mYe8cz1mOw/ZcTnuDdsFZO8K3Q2noUmgfFGRe/tKkkaP1aHUYtC1BlgtdMsg
-	 SD+QvNHCGbIVWTFlW54CJiWysst+iB0ien4DPaywNPATxy9zYgk3+b17C4ybBGh86c
-	 9vC4SKpsPYHcQ==
+	b=Mg9/a2ZA4IxO1oWiRpVoi74eVAVE8XAZOnjDoGilZpzqKRdR+N8ZLxe/lRNnLhvp0
+	 Rqo1pDMRujtCfBo0To5AdRkoye8WYuS0YlIUgDDZQe8xSrEA4WIzP4JHVufTlWHqei
+	 uzTtt/vHPYGiOR7VhU9mYbN+lU6UEGpeQ9wFK2uBFuQ8D8u33jjjjlE6hPfsuuU0Gl
+	 wU1jt0QR7tmQwjgjARZf6mxJtq4hqgEUqHOvfXfVLvgIIHKiEbi0jg5+Og7b9SuwM/
+	 w+WxuwwQlCjnC6nXOzD1bWXUGKM1uTNGi2+jYFTANeaSuZI9Gy2MjPSky2IP1bqQF0
+	 SFCi8fq5OaXYw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Joakim Sindholt <opensource@zhasha.com>,
+Cc: Jeff Layton <jlayton@kernel.org>,
 	Eric Van Hensbergen <ericvh@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	lucho@ionkov.net,
 	asmadeus@codewreck.org,
 	v9fs@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.1 2/9] fs/9p: translate O_TRUNC into OTRUNC
-Date: Tue, 23 Apr 2024 07:02:08 -0400
-Message-ID: <20240423110217.1658879-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 3/9] 9p: explicitly deny setlease attempts
+Date: Tue, 23 Apr 2024 07:02:09 -0400
+Message-ID: <20240423110217.1658879-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240423110217.1658879-1-sashal@kernel.org>
 References: <20240423110217.1658879-1-sashal@kernel.org>
@@ -66,34 +66,40 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.87
 Content-Transfer-Encoding: 8bit
 
-From: Joakim Sindholt <opensource@zhasha.com>
+From: Jeff Layton <jlayton@kernel.org>
 
-[ Upstream commit 87de39e70503e04ddb58965520b15eb9efa7eef3 ]
+[ Upstream commit 7a84602297d36617dbdadeba55a2567031e5165b ]
 
-This one hits both 9P2000 and .u as it appears v9fs has never translated
-the O_TRUNC flag.
+9p is a remote network protocol, and it doesn't support asynchronous
+notifications from the server. Ensure that we don't hand out any leases
+since we can't guarantee they'll be broken when a file's contents
+change.
 
-Signed-off-by: Joakim Sindholt <opensource@zhasha.com>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
 Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/9p/vfs_inode.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/9p/vfs_file.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
-index a0c5a372dcf62..8f287009545c9 100644
---- a/fs/9p/vfs_inode.c
-+++ b/fs/9p/vfs_inode.c
-@@ -181,6 +181,9 @@ int v9fs_uflags2omode(int uflags, int extended)
- 		break;
- 	}
+diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
+index aec43ba837992..87222067fe5de 100644
+--- a/fs/9p/vfs_file.c
++++ b/fs/9p/vfs_file.c
+@@ -667,6 +667,7 @@ const struct file_operations v9fs_file_operations = {
+ 	.splice_read = generic_file_splice_read,
+ 	.splice_write = iter_file_splice_write,
+ 	.fsync = v9fs_file_fsync,
++	.setlease = simple_nosetlease,
+ };
  
-+	if (uflags & O_TRUNC)
-+		ret |= P9_OTRUNC;
-+
- 	if (extended) {
- 		if (uflags & O_EXCL)
- 			ret |= P9_OEXCL;
+ const struct file_operations v9fs_file_operations_dotl = {
+@@ -708,4 +709,5 @@ const struct file_operations v9fs_mmap_file_operations_dotl = {
+ 	.splice_read = generic_file_splice_read,
+ 	.splice_write = iter_file_splice_write,
+ 	.fsync = v9fs_file_fsync_dotl,
++	.setlease = simple_nosetlease,
+ };
 -- 
 2.43.0
 
