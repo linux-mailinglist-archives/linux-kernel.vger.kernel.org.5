@@ -1,159 +1,175 @@
-Return-Path: <linux-kernel+bounces-155857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A87BD8AF817
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:37:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86B598AF81D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:42:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DADC71C21F52
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:37:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D9F92821F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:42:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E497142E85;
-	Tue, 23 Apr 2024 20:37:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DB64142E88;
+	Tue, 23 Apr 2024 20:42:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gJLvS7FG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kYMQRTu1"
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9662C13FD8E;
-	Tue, 23 Apr 2024 20:37:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D934142E60
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 20:42:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713904662; cv=none; b=nn8Gjy5AKL4R2e/QgO8/tMwlGDnbR9+0x90vXSr5mUC0ZFCDHS2Lnd30WWton9w8bRUcjWLo1zAmR0Aj8hN3LhWvuzn5IkCtp9wyBUw/GW0ZLhOY7gBqk8DWg1/DqACXllXN5S0vlXjVAWo1Juro/p5VCyWMo7XOBn6NE3SOTdc=
+	t=1713904936; cv=none; b=KLkJ8YGQVvol2A/GESV9roOSBpuPgPdmsdah3hiAe5ORtqXN0fWv1HzmAwxx5NwU6IuPY1OdQUxTGK6SkBu7DjiKgN+Y4jr5+rbpIQo/MMjWstxFMQg7DDSGu2vZnRz5t7Bjfn0M+XWwxDCTMEEGv9i1ZxkBiUqM/+jZyHxhCUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713904662; c=relaxed/simple;
-	bh=P89WNhg/a/bLXsZUqJDGwcAwiliOwCUCLVi06pVezO4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yq7oxuTsX751KbIwmvXPia0SVcAA5cDrfRTr45WI2t8etJv0CySXE4BLWpsI/YGwkQM6jG7RiZH1cp00eHa1rvi/gGxpQPvyb6AemUVdeYMoUF22CPoMMKK2xHd5ytfCCSVI1evNJGnwaGVHen8MoClENHqGCDG1YxnG/j4k8js=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gJLvS7FG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FD58C116B1;
-	Tue, 23 Apr 2024 20:37:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713904662;
-	bh=P89WNhg/a/bLXsZUqJDGwcAwiliOwCUCLVi06pVezO4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gJLvS7FGZ1yr2xI+2uIMgptkBUPqNN2Fnp83Y8OATDCBh+6P2GkvXdurf4hR7nM5f
-	 JuYIfAj1zY9GEi9v8pVtBIjVvtorRzo2Zx8Yi6enX3keO2KJZyxFW6UiHcEC0+RcxL
-	 U3H2swi+fNFX5zu/Bw0JWikbGYu3jeqGSLIFvpX7t5N5fkd2DU85sExCD/eW5DLk5q
-	 iJw3mqU5lEsc3UEN6EAxWYwc5ylQPZgKmp2l+eexoZrWR4RoMimjbINqGjr0yoCWgt
-	 nG3IY9uTwg95ptKq2yphfwS4yFwA8VUfQHWkoXi+rX24uJTRGVEU7B2SXoeH9glzdT
-	 XjRv71efZzAEA==
-Date: Tue, 23 Apr 2024 17:37:38 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Changbin Du <changbin.du@huawei.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] perf trace beauty: Always show param if show_zero
- is set
-Message-ID: <ZigcEg1inS1JoSr5@x1>
-References: <20240423015330.2206892-1-changbin.du@huawei.com>
- <20240423015330.2206892-2-changbin.du@huawei.com>
+	s=arc-20240116; t=1713904936; c=relaxed/simple;
+	bh=D5BJ7O2Kt6zlpwHLoy0opognLmOElaFOtR6DOOQwoGk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JP2vHzKg8XSpe0FKRYPQ16sZqvC1lHt22ye4bJV0pUiPLlQS8kRtSt4wUBCzJb0NOEPf5t/HYU4ivAWuMBKPN/n0PoVBK7qQ9rSPg6AaLVt/aT3gjwU9UMtGFicsicXC3eNQfnaJ2LWsHZQuMRZiuPn7Ro8u3kcQ/U01k+XISrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kYMQRTu1; arc=none smtp.client-ip=209.85.160.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-439b1c72676so33571cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:42:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713904934; x=1714509734; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gBaEPajCkSnKrTb2DDUtDRO7q5j6yIsYeUTfCcOrMGA=;
+        b=kYMQRTu15aTxa4Cdv/DvuzwZuIH35TsiPZV0MAtEnaYekPznFy3+ZaJ/s+2goONuaR
+         I/uHdO28dtkUovWhO7zYy6sIBQPd2J5MOSiqyFy5Qkx1nsJK+CoiAnGsKzymZuitT7vG
+         ANWVv0RyTBPGEb2BKz02dcEW0g7QcdfT6NZyAbtqn8SRhiz1D4/zOCZlDXbLgRbBVwxZ
+         vv+sKP4m0VlKdTq1eGipVaGRoWcMQFOdi1BLwxN3teMnfVczr989KHSts2ERnjR3+3wQ
+         /RurnZud9CCj6/f3DNAV2JPG/v+6ebr0ntZ9TE0hOeNFY/hp700Vs+grWFqx0LWtmLNH
+         ujbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713904934; x=1714509734;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gBaEPajCkSnKrTb2DDUtDRO7q5j6yIsYeUTfCcOrMGA=;
+        b=NZ6odYmzug5uOuMKA60PaYyiexXFD3u6G1GR07lCmf/sZFV4CAOky+4nqym1QDjRiE
+         YVTAbjNmcWIj7HXZgoJbKQw9s4oWq4GZPrva1UCLVMt9ycwFVzs7cu33kQetSubyB6MQ
+         CzzsZGm/D7iO8fX1wBDdy+6iF97A9rhu1hqe2OnK4scJ8BrY0/BpOfoYYwAUcSle2aTG
+         eP9RzzO6KRFs44/97f4pVNAEfzxzBEZlY9VEPcD/Ff1IthMVyPOcnA9inOFREHXyA3qf
+         ISi4k+OAVCwCN5xIPDbUZNeqNS2NRjxWl0z+zL8e//UBVNig8+UuxCQHwu+m1yZaNgHX
+         GShQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTQEGLBjFf4tkdSBRFDHUv0pOFLA8hEtvGj0zGR64ItdCOvIC/D6EP4+U9HtnkWv4DELGorCeGxOpHaTcpRD3NmmVDr4RXRiloVpEB
+X-Gm-Message-State: AOJu0Yy+5VQJT42wIEPD91XRNx/QDQmZyhi6g1cRaYjetarSJzMZM9u7
+	qXVmajjulh4VV+rxBEZgp5NCuVJI7ssZCnB+xeDrBvWcc6WzQ/FoxuZTL4OW8wQ13iV3vQkja+m
+	1rNANmerSoDQyg1uABwkyT49KxSQB0IG/wjAP
+X-Google-Smtp-Source: AGHT+IHM5cqjg54cb9ro/IxJNIkES3D9cFrBeXaYCys/rrJyRDxCkf4sLwPEhC9IJaInYueqnzKY2005j/7L4KiVNz0=
+X-Received: by 2002:a05:622a:4402:b0:434:d055:5b00 with SMTP id
+ ka2-20020a05622a440200b00434d0555b00mr63892qtb.20.1713904934205; Tue, 23 Apr
+ 2024 13:42:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423015330.2206892-2-changbin.du@huawei.com>
+References: <20240418081548.12160-1-lvzhaoxiong@huaqin.corp-partner.google.com>
+ <20240418081548.12160-3-lvzhaoxiong@huaqin.corp-partner.google.com>
+ <zanx5y3obqmewnbooovf52hx6vh7tpi4zsbse2dyzcqzddmzhw@kewxoa6n3mja>
+ <CACb=7PURWtS8bwT5EcAFHhu7deHd2Y8cNOattfdwyEYpOUcbnQ@mail.gmail.com>
+ <vbt2nxddw2dc7hkreq4iybv5zv5xyp32oajybeqsphgfrhzmn7@tskvckljmxpe> <CACb=7PVTvV9nsFu1ZAXu7YTjSOAGZka+c__EJq3J3qgSJGEShw@mail.gmail.com>
+In-Reply-To: <CACb=7PVTvV9nsFu1ZAXu7YTjSOAGZka+c__EJq3J3qgSJGEShw@mail.gmail.com>
+From: Doug Anderson <dianders@google.com>
+Date: Tue, 23 Apr 2024 13:41:59 -0700
+Message-ID: <CAD=FV=VYAzqsGEBJai9b9n+HxHiG59L1vF73AEWcTwLS_ryjWw@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] drm/panel: kd101ne3: add new panel driver
+To: Hsin-Yi Wang <hsinyi@google.com>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>, mripard@kernel.org, 
+	airlied@gmail.com, daniel@ffwll.ch, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	cong yang <yangcong5@huaqin.corp-partner.google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 23, 2024 at 09:53:29AM +0800, Changbin Du wrote:
-> For some parameters, it is best to also display them when they are 0,
-> e.g. flags.
+Hi,
 
-Please provide examples of what you're changing, to understand your
-change one has to know what are strarrays and what they handle in 'perf
-trace', i.e. if the value is zero but the argument has a string array
-associated, it probably will translate zero into some string.
+On Tue, Apr 23, 2024 at 11:10=E2=80=AFAM Hsin-Yi Wang <hsinyi@google.com> w=
+rote:
+>
+> > > > > +#define _INIT_DCS_CMD(...) { \
+> > > > > +     .type =3D INIT_DCS_CMD, \
+> > > > > +     .len =3D sizeof((char[]){__VA_ARGS__}), \
+> > > > > +     .data =3D (char[]){__VA_ARGS__} }
+> > > > > +
+> > > > > +#define _INIT_DELAY_CMD(...) { \
+> > > > > +     .type =3D DELAY_CMD,\
+> > > > > +     .len =3D sizeof((char[]){__VA_ARGS__}), \
+> > > > > +     .data =3D (char[]){__VA_ARGS__} }
+> > > >
+> > > > This is the third panel driver using the same appoach. Can you use
+> > > > mipi_dsi_generic_write_seq() instead of the huge table? Or if you p=
+refer
+> > > > the table, we should extract this framework to a common helper.
+> > > > (my preference is shifted towards mipi_dsi_generic_write_seq()).
+> > > >
+> > > The drawback of mipi_dsi_generic_write_seq() is that it can cause the
+> > > kernel size grows a lot since every sequence will be expanded.
+> > >
+> > > Similar discussion in here:
+> > > https://lore.kernel.org/dri-devel/CAD=3DFV=3DWju3WS45=3DEpXMUg7FjYDh3=
+-=3Dmvm_jS7TF1tsaAzbb4Uw@mail.gmail.com/
+> > >
+> > > This patch would increase the module size from 157K to 572K.
+> > > scripts/bloat-o-meter shows chg +235.95%.
+> > >
+> > > So maybe the common helper is better regarding the kernel module size=
+?
+> >
+> > Yes, let's get a framework done in a useful way.
+> > I'd say, drop the _INIT_DELAY_CMD. msleep() and usleep_range() should b=
+e
+> > used instead (and it's up to the developer to select correct delay
+> > function).
+> >
+> > >
+> > > > > +
+> > > > > +static const struct panel_init_cmd kingdisplay_kd101ne3_init_cmd=
+[] =3D {
+> > > > > +     _INIT_DELAY_CMD(50),
+> > > > > +     _INIT_DCS_CMD(0xE0, 0x00),
+> >
+> > [skipped the body of the table]
+> >
+> > > > > +     _INIT_DCS_CMD(0x0E, 0x48),
+> > > > > +
+> > > > > +     _INIT_DCS_CMD(0xE0, 0x00),
+> >
+> > > > > +     _INIT_DCS_CMD(0X11),
+> >
+> > Also, at least this is mipi_dsi_dcs_exit_sleep_mode().
+> >
+> > > > > +     /* T6: 120ms */
+> > > > > +     _INIT_DELAY_CMD(120),
+> > > > > +     _INIT_DCS_CMD(0X29),
+> >
+> > And this is mipi_dsi_dcs_set_display_on().
+> >
+> > Having a single table enourages people to put known commands into the
+> > table, the practice that must be frowned upon and forbidden.
+> >
+> > We have functions for some of the standard DCS commands. So, maybe
+> > instead of adding a single-table based approach we can improve
+> > mipi_dsi_generic_write_seq() to reduce the bloat. E.g. by moving the
+> > error handling to a common part of enable() / prepare() function.
+> >
+>
+> For this panel, I think it can also refer to how
+> panel-kingdisplay-kd097d04.c does. Create the table for init cmd data,
+> not what operation to use, and use mipi_dsi_generic_write_seq() when
+> looping through the table.
 
-So I did:
+Even more similar discussion:
 
-root@x1:~# perf trace -e syscalls:sys_enter_mmap --filter prot==0
-     0.000 gnome-shell/2293 syscalls:sys_enter_mmap(addr: 0x10afec7e1000, len: 65536, flags: PRIVATE|FIXED|ANONYMOUS)
-^Croot@x1:~#
-
-And this is _before_ this patch, after this patch we get:
-
-
-root@x1:~# perf trace -e syscalls:sys_enter_mmap --filter prot==0
-     0.000 Isolated Web C/25530 syscalls:sys_enter_mmap(addr: 0x7f27df529000, len: 4096, flags: PRIVATE|FIXED|ANONYMOUS)
-    40.267 DOM Worker/1105511 syscalls:sys_enter_mmap(addr: 0x1c9faec48000, len: 65536, flags: PRIVATE|FIXED|ANONYMOUS)
-   270.145 firefox/3447 syscalls:sys_enter_mmap(addr: 0x7fa0ed343000, len: 4096, flags: PRIVATE|FIXED|ANONYMOUS)
-  2194.686 firefox/3447 syscalls:sys_enter_mmap(addr: 0x7fa0ed39f000, len: 4096, flags: PRIVATE|FIXED|ANONYMOUS)
-  2461.709 Isolated Web C/21794 syscalls:sys_enter_mmap(addr: 0x7fdc3e100000, len: 1048576, flags: PRIVATE|FIXED|ANONYMOUS)
-  4476.053 firefox/3447 syscalls:sys_enter_mmap(addr: 0x7fa0ed3a1000, len: 4096, flags: PRIVATE|FIXED|ANONYMOUS)
-^Croot@x1:~#
-
-Because 'mmap's 'prot' is not set directly as an strarray, see:
-
-        { .name     = "mmap",       .hexret = true,
-/* The standard mmap maps to old_mmap on s390x */
-#if defined(__s390x__)
-        .alias = "old_mmap",
-#endif
-          .arg = { [2] = { .scnprintf = SCA_MMAP_PROT,  /* prot */ },
-                   [3] = { .scnprintf = SCA_MMAP_FLAGS, /* flags */
-                           .strtoul   = STUL_STRARRAY_FLAGS,
-                           .parm      = &strarray__mmap_flags, },
-                   [5] = { .scnprintf = SCA_HEX,        /* offset */ }, }, },
-
-static size_t syscall_arg__scnprintf_mmap_prot(char *bf, size_t size, struct syscall_arg *arg)
-{
-        unsigned long prot = arg->val;
-
-        if (prot == 0)
-                return scnprintf(bf, size, "%sNONE", arg->show_string_prefix ? strarray__mmap_prot.prefix : "");
-
-        return mmap__scnprintf_prot(prot, bf, size, arg->show_string_prefix);
-}
-
-#define SCA_MMAP_PROT syscall_arg__scnprintf_mmap_prot
-
-So can you please provide an example that shows before/after your patch?
-
-- Arnaldo
- 
-> Signed-off-by: Changbin Du <changbin.du@huawei.com>
-> ---
->  tools/perf/builtin-trace.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> index e5fef39c34bf..a8407eee58a3 100644
-> --- a/tools/perf/builtin-trace.c
-> +++ b/tools/perf/builtin-trace.c
-> @@ -2099,9 +2099,9 @@ static size_t syscall__scnprintf_args(struct syscall *sc, char *bf, size_t size,
->  			    !trace->show_zeros &&
->  			    !(sc->arg_fmt &&
->  			      (sc->arg_fmt[arg.idx].show_zero ||
-> -			       sc->arg_fmt[arg.idx].scnprintf == SCA_STRARRAY ||
-> -			       sc->arg_fmt[arg.idx].scnprintf == SCA_STRARRAYS) &&
-> -			      sc->arg_fmt[arg.idx].parm))
-> +			        ((sc->arg_fmt[arg.idx].scnprintf == SCA_STRARRAY ||
-> +			          sc->arg_fmt[arg.idx].scnprintf == SCA_STRARRAYS) &&
-> +			         sc->arg_fmt[arg.idx].parm))))
->  				continue;
->  
->  			printed += scnprintf(bf + printed, size - printed, "%s", printed ? ", " : "");
-> @@ -2803,8 +2803,8 @@ static size_t trace__fprintf_tp_fields(struct trace *trace, struct evsel *evsel,
->  		 */
->  		if (val == 0 &&
->  		    !trace->show_zeros &&
-> -		    !((arg->show_zero ||
-> -		       arg->scnprintf == SCA_STRARRAY ||
-> +		    !arg->show_zero &&
-> +		    !((arg->scnprintf == SCA_STRARRAY ||
->  		       arg->scnprintf == SCA_STRARRAYS) &&
->  		      arg->parm))
->  			continue;
-> -- 
-> 2.34.1
+https://lore.kernel.org/r/CAD=3DFV=3DUGDbNvAMjzWSOvxybGikQcvW9JsRtbxHVg8_97=
+YPEQCA@mail.gmail.com
 
