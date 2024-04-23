@@ -1,97 +1,108 @@
-Return-Path: <linux-kernel+bounces-154685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 051F48ADFC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:31:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ADA68ADFD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:34:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41DBA1F21EC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:31:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C55D1C226E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:34:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3637B535D6;
-	Tue, 23 Apr 2024 08:31:38 +0000 (UTC)
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3D46381AD;
+	Tue, 23 Apr 2024 08:34:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="ZiFYelrY"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA3C79D3;
-	Tue, 23 Apr 2024 08:31:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.78.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA64D320E
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713861097; cv=none; b=Of95e05QGBC9O2Vi3Jpk+2nObBgS+a4r0Bk/Xa7yYWv6ivumcA1ulD6kCnkrcuurycENiP88G9aLnbzA91+KR972FK2Y+Z5O9RyylZrY/hzcVWc0IZRllNJoXLIa2kbIPFJWESpCCGEZ6Ahw8e3dsqwuAleiR304oXWHVVzMzSY=
+	t=1713861241; cv=none; b=ZjI8p4UxaDdEGSJalZEoIxEvPNXreSee1qsW1s6/khbybrTcoz/mMBA/COhvpjcths5DQ0ltwhw25tJAT05nES1r2E5tySgLPUCkyBfVYs/O3Ne6yIUZM5UpJx2JCOQRvb/Yyrs6jBNc/GLT4EHIzr3GZf0wLNqcLHarVFMbMWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713861097; c=relaxed/simple;
-	bh=8x0r0T5MB8m4NAc+KSUCSNVRU7J7wJFu67VI65GGPd8=;
+	s=arc-20240116; t=1713861241; c=relaxed/simple;
+	bh=GbEOcBiBoSjAahAIDalXGsP5xushNOL01/QV0u5nyAg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QBCZzp2COg5WGNcWFjjKgQ47qm4MdPCN80Aw7ocS8QgCP2kCuTGH/hQ/w+aA5XbjS22mOlZU9eKEGpJjprnPRfPywYM7SOtTTxElqZwLvgCheNluxyUoa4gKAuIGB6owDaXn18j6nxfbwLJEgapZQnwgQ56aiKeMtn9yZ1vpYJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.78.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+	 Content-Type:Content-Disposition:In-Reply-To; b=fi4RAZPir4qf1Gmv4TTlvTs8GS6zuHPb11c3ZRf8meZ2FUbmHKV42y5xcr9RmUNjf3rgqBezppQWDh/2NybvDoIEUINCdeNXPh2/QEYvOexsuOPD0pmP8wceY+f4CZk0ghIm1rQOp5fa0CSaixJqnhojsi09nCdxfIzFeN8h2NI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=ZiFYelrY; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0A62B40E0249;
+	Tue, 23 Apr 2024 08:33:51 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id d_koH9OyGXIh; Tue, 23 Apr 2024 08:33:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1713861226; bh=NFHsFX0uVgJUjkPOc/vFyW6tpvFhp24NlUDlmhptGtI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZiFYelrYnwih1ZDSbpND7ggtn2LzlXFUQxagba/xXahDpv751L2VEFFlY2QdtGA2K
+	 aVr7LpPjT09tTtYYQf7cqFwboyrlA97a2gYWr0CCO9dfPgGeRU7DK4KZ1XFkBI+ei9
+	 hXruUqOPua6+OVwrR/kMeXIMKTikWBmKB1+kdVVC3/w3pWJewZsmWZXMxGYjhLy9eL
+	 bGjoG8PIMZFINGtXu8RP5pR8+wUMDnvf/xllorclJc7YAoQ5q4+8RE9g6yGzCgWRul
+	 /dK8YhcutcqcGoeaXqN6eDHNmLBbvM/6CQy/8U8VTQ3gU3DDnozDo8YBh8Ni2yeZCC
+	 ofHA46PaXW3kBojoEZZ/lPyg67e/vrnStj7/5EJnhAK6KOQOOrmxR1UZlPyKBBJ3m1
+	 L59OrZp7BcL7dB02/Q0t6Nv5OZa0iWcbvFbVZ3PRZdRhBsTYzcZ8QKJ4Cr/+ZIFJxb
+	 Aa9F6r/ImgC1SnfeGDDTRRZlGODfqmvN0qY8RN+0UKOEit6wcZoiGjDhR0w/Y3Jz/v
+	 hyAdWzja/NURn6ZcJIant85XLLTWKY+72v8tm6um7hgLz+hea2Y84iIAvMQGSehr/V
+	 BtEQVR5Qc8WyI02ePZUSmV80ueakICjsA6jBgK+lkh9xsXYRv4Mm7QAQpt4UOzTLPc
+	 jq4/PGt0419YNI2JnAMZQpRo=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout2.hostsharing.net (Postfix) with ESMTPS id D411C28141EB1;
-	Tue, 23 Apr 2024 10:31:30 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id CDA7B4C5F0; Tue, 23 Apr 2024 10:31:30 +0200 (CEST)
-Date: Tue, 23 Apr 2024 10:31:30 +0200
-From: Lukas Wunner <lukas@wunner.de>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Esther Shimanovich <eshimanovich@chromium.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>
-Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-Message-ID: <Zidx4lV2303H88R_@wunner.de>
-References: <03926c6c-43dc-4ec4-b5a0-eae57c17f507@amd.com>
- <20240123061820.GL2543524@black.fi.intel.com>
- <CA+Y6NJFMDcB7NV49r2WxFzcfgarRiWsWO0rEPwz43PKDiXk61g@mail.gmail.com>
- <CA+Y6NJGz6f8hE4kRDUTGgCj+jddUyHeD_8ocFBkARr7w90jmBw@mail.gmail.com>
- <20240416050353.GI112498@black.fi.intel.com>
- <CA+Y6NJF6+s5zUZeaWtagpMt8Qu0a1oE+3re3c6EsppH+ZsuMRQ@mail.gmail.com>
- <20240419044945.GR112498@black.fi.intel.com>
- <CA+Y6NJEpWpfPqHO6=Z1XFCXZDUq1+g6EFryB+Urq1=h0PhT+fg@mail.gmail.com>
- <7d68a112-0f48-46bf-9f6d-d99b88828761@amd.com>
- <20240423053312.GY112498@black.fi.intel.com>
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A68E740E0177;
+	Tue, 23 Apr 2024 08:33:37 +0000 (UTC)
+Date: Tue, 23 Apr 2024 10:33:32 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Robert Richter <rrichter@amd.com>
+Cc: Dave Hansen <dave.hansen@intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	linux-kernel@vger.kernel.org, jgross@suse.com, tglx@linutronix.de,
+	x86@kernel.org, Kim Phillips <kim.phillips@amd.com>,
+	Robert Richter <rric@kernel.org>
+Subject: Re: [PATCH 2/4] perf/x86/ibs: Use CPUID region helper
+Message-ID: <20240423083332.GAZidyXG5HFM0CrG3H@fat_crate.local>
+References: <20240416151242.GGZh6VaiO2gC4ej2BT@fat_crate.local>
+ <f142e9c4-4829-4ace-8757-485246ad3572@intel.com>
+ <20240416174850.GEZh66AmnDjrLxoXaw@fat_crate.local>
+ <ZiEMnWaHkn99_oyW@rric.localdomain>
+ <20240422172055.GAZiacdxkQU0XAbybW@fat_crate.local>
+ <ZibEFZ6DoxDeBxxp@rric.localdomain>
+ <20240422204146.GCZibLiqZhbY1J4qFJ@fat_crate.local>
+ <ZibW8D9-CTd8G-_v@rric.localdomain>
+ <20240422214503.GDZibaX4G2HWQgZuvH@fat_crate.local>
+ <ZidnBlWbCaMg-UDi@rric.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240423053312.GY112498@black.fi.intel.com>
+In-Reply-To: <ZidnBlWbCaMg-UDi@rric.localdomain>
 
-On Tue, Apr 23, 2024 at 08:33:12AM +0300, Mika Westerberg wrote:
-> I think what you are looking for is that anything behind a PCIe tunnel
-> should not have this applied. IIRC the AMD GPU or some code there were
-> going to add identification of "virtual" links to the bandwidth
-> calculation functionality.
+On Tue, Apr 23, 2024 at 09:45:10AM +0200, Robert Richter wrote:
+> I prefer 1) as this applies IBS_CAPS_DEFAULT only if the leaf is
+> missing which was the original intention of IBS_CAPS_DEFAULT but can
+> live with 2) as it is implemented now.
 
-I guess I could resurrect my correlation patch:
+As implemented now and be done with it. We already wasted too much time
+with some hypothetical and there's bigger fish to fry so let's leave it
+like it is and move on.
 
-https://lore.kernel.org/all/f53ea40a7487e145aa1a62c347cef1814072e140.1536517047.git.lukas@wunner.de/
+Thx.
 
-The last time I forward-ported it was for v5.13.  I still have that code
-running on my development machine.
+-- 
+Regards/Gruss,
+    Boris.
 
-The problem is that it only allows lookup from tb_port to pci_dev.
-I'd have to add a pointer to struct pci_dev to allow lookups in the
-inverse direction.  Though I think we have such PCI companion devices
-for CXL as well, so such a pointer could be useful in general.
-
-I'm knee-deep in PCI device authentication code but could probably
-dedicate a weekend to the correlation patch if there's interest?
-
-Once we have correlation, we can expose more precise bandwidth
-for virtual PCI links in sysfs.
-
-Thanks,
-
-Lukas
+https://people.kernel.org/tglx/notes-about-netiquette
 
