@@ -1,128 +1,132 @@
-Return-Path: <linux-kernel+bounces-154723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321058AE02A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:45:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 343268AE02C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:46:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C65AC1F21BA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:45:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7A642847FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:46:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A265647F;
-	Tue, 23 Apr 2024 08:44:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2414757871;
+	Tue, 23 Apr 2024 08:44:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hQJGEq7I"
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="nrXmo/ZS"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 962D855C22
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:44:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2F7656B6C;
+	Tue, 23 Apr 2024 08:44:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713861870; cv=none; b=My2Ucqn9FNohIhCml6pELF+fiAN/y1okN3vhh5NycTpncR+atgS6dYLoMbgJoIXasXiRfEU6Zt1Tle/68is2lUW8BRAHn4X1ySz0hOdFvCFoWnLTx0aQFEqbsRTSe4A6mEVMCRJWTOrmyO+1LUQNH6vvf4aklw2oEftdNdj+Goo=
+	t=1713861874; cv=none; b=OydYdb5KQuq3vnQ3VVrAvoZgqgVczJqk2PC86cFd14G9FqrYDFUHE7DyBcD6FwMiYKXwGu9xA/jRXTOYgH5VULLjBye5+L/wuGUWJPFOOk2dtgS0tQphZRH3JZ8KNt035f4RebK5K3fijv22ZsLG1zm17/43KBHYCWFCIru6JX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713861870; c=relaxed/simple;
-	bh=+My4GXa+K/9fAwH9uLEaNISiSAPjuktHxHqtmFm83Z8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pFoPCSOEVJRh+ScR9woPorWDWwlkPrUe2gOsNO1B+/rABTNPuLinAt7GrJncEYn7jcO8VV6PFSUZ4TZfPrsLu6A/2bKjqFqfSt8SAFPUSqyjTyWvgwsihA4pcDiEZ4ulCrewfm+r2flw/WFtLuDbc2t2aCGdnXYaYHEXVXO/DKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hQJGEq7I; arc=none smtp.client-ip=209.85.161.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-5af03aa8814so1497555eaf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 01:44:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713861868; x=1714466668; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+My4GXa+K/9fAwH9uLEaNISiSAPjuktHxHqtmFm83Z8=;
-        b=hQJGEq7IsWwCB7iF4VeKMS847bcIldwI3S7bVETDCnfKecxRXh2gR7mkDHKHQxHn/2
-         BiSOQd8QivUYKLoPPNkYdeDODxb3gVSHoVqhsYEPWB3LznKYlCn4E/E+DVaB9oqLVyjd
-         LI/3y0tTvNrXgmOt6bQE4/BVtvhKmT0gVFDujxb+WfkGxipYs0/Y9PwfR8GWkDrIAGGZ
-         AVifceaPuCAvYsYRLuiZsTA7XouKEbZsh9HSh2S5IxYcYAK1vAgwLpXd+I4GS7LDV/qk
-         ddoGKDJKhPjn9uAG1F3hycx8h1Khdutox3R0KLg31Rv+uSWPoixXFEYs1UlOCoDDUHTH
-         4bZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713861868; x=1714466668;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+My4GXa+K/9fAwH9uLEaNISiSAPjuktHxHqtmFm83Z8=;
-        b=uBjD6mAtvXplu/GapzCKui6Fh6KKiEFFnXVEAtAmelpf/t7mHtS8LW9Rc+Tliq7nXu
-         cB1wfRvrQs4/bN342Yc7pYP/IZ52UdZc8N8HsPtd1cOzx/O9GsHeapr6lCRlx+OOk7eD
-         TbE1YJbD2Z2EvYTdl7FOa1lhkYQrneFA7MGoEOag9Lv9kzyhN2/H31gm/Q7s1O+kuVWb
-         hkjLrsf8jMzvm3pUY56liwxrxPfVTicG301MFfEX+mwfkxtDfnALRNRv5p+EjaxMVbSg
-         MquCB9mubmgQjD4J6ZqzjbL77O3EHx2RSIWmR8XWoDgVieZ1NkaDatt9WaL739VcofGe
-         RKug==
-X-Gm-Message-State: AOJu0YwQaIaSzT2GjhjAo6mS6iT1W+9NO9PZsfaxdns12IX5BOKIh/kj
-	B6Ea9+rb6gWqCC5lLvbLMeKi6q8Cos7VmAu9WiFEyu+CqMi5WCxKybJBI7R29mzklD/iwRJ8qPG
-	OHXdmCuMNblsENeAZtuebXD4RIFdVE/E/DJUT/Q+CMx695rfoyZg=
-X-Google-Smtp-Source: AGHT+IFEcRtF3ozJTE91QFopLg/DHbUsdVS1rllN6J8pIs46+14oweUTXy2DLOtlj4wnVzIkPzBbxpUkhsFgI+2EqbA=
-X-Received: by 2002:a4a:1484:0:b0:5af:36ef:27d0 with SMTP id
- 126-20020a4a1484000000b005af36ef27d0mr814140ood.1.1713861867830; Tue, 23 Apr
- 2024 01:44:27 -0700 (PDT)
+	s=arc-20240116; t=1713861874; c=relaxed/simple;
+	bh=jdsWPAe/3j9MrIf+j6Di+jr1djPe2ZWvG4ZRKncHSZw=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=J+IyhE2sCnYB7A3vBN6ox1wsVfx3muZZ4TtoYr28JJHUZiwMfq1KMJwowK4qlNpxzG0er2gONa+q3jqsyvqKn0HAiZ/9JedoSyXMQ542Jtfw6b1c1nGNBHHh8DNZRW/uhS73OUu96mAvFkBxIR5XnUP5/hHKf9vFW9vwfD2jt10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=nrXmo/ZS; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713861870;
+	bh=jdsWPAe/3j9MrIf+j6Di+jr1djPe2ZWvG4ZRKncHSZw=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=nrXmo/ZS8hSxgaHZp775l+2tsr1u0AKR1FBzyAeNOAHkxniKvx4afpIYlmCKRCzNS
+	 gif67zp9wHteIi/soXRfikZnU754o+FdB2N/T48RDzpEtNb4V58afnB5DWvsN/26sK
+	 a3HFSKNAMvX5Kq/+Uyn4r5Ypwqd6kHFkwD+k6Yvchrnk6+BC0SN/bQisu52M+4AChF
+	 cba/VP+MBV6PdWD6rmPdfC6TiTL/LPuORWQOy3us320eNpf1Kxn9o6bTTl6MJ3EEiF
+	 SzkAzumMb56+fLrvXRSnDoJ7t8zm/TO0J4OqCKaH0JAn8VE463+2DyXesr3R8IkDpB
+	 9HFSp7bWGcTGQ==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 705E337820AB;
+	Tue, 23 Apr 2024 08:44:26 +0000 (UTC)
+Message-ID: <e1d6b5ea-5816-433d-8c61-602c42ee204d@collabora.com>
+Date: Tue, 23 Apr 2024 13:44:54 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422091936.3714381-1-jens.wiklander@linaro.org>
- <DM6PR04MB6575CE5A70F2C733DF40E54CFC112@DM6PR04MB6575.namprd04.prod.outlook.com>
- <CAHUa44EzMpRbhJ=-h4hJifgtrMsvDZj=Zt4C3JkDxjKE4gz=7A@mail.gmail.com> <DM6PR04MB6575E485C2CDB40CC79A3081FC112@DM6PR04MB6575.namprd04.prod.outlook.com>
-In-Reply-To: <DM6PR04MB6575E485C2CDB40CC79A3081FC112@DM6PR04MB6575.namprd04.prod.outlook.com>
-From: Jens Wiklander <jens.wiklander@linaro.org>
-Date: Tue, 23 Apr 2024 10:44:09 +0200
-Message-ID: <CAHUa44F8J6byatNpg9W6Y2yinJw_RKEtLBKBSDxGkz0yx4Zi3A@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] Replay Protected Memory Block (RPMB) subsystem
-To: Avri Altman <Avri.Altman@wdc.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, 
-	"op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>, 
-	Shyam Saini <shyamsaini@linux.microsoft.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
-	Linus Walleij <linus.walleij@linaro.org>, Jerome Forissier <jerome.forissier@linaro.org>, 
-	Sumit Garg <sumit.garg@linaro.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
-	Bart Van Assche <bvanassche@acm.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v1 5/5] selftests/mm: soft-dirty should fail if a testcase
+ fails
+To: Ryan Roberts <ryan.roberts@arm.com>, David Hildenbrand
+ <david@redhat.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Shuah Khan <shuah@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+ Ard Biesheuvel <ardb@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Shivansh Vij <shivanshvij@outlook.com>
+References: <20240419074344.2643212-1-ryan.roberts@arm.com>
+ <20240419074344.2643212-6-ryan.roberts@arm.com>
+ <aaeb2611-e096-475c-9055-4e8dd9509b01@redhat.com>
+ <6a08436e-c984-43aa-bbfa-05cfea34516a@arm.com>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <6a08436e-c984-43aa-bbfa-05cfea34516a@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 23, 2024 at 10:22=E2=80=AFAM Avri Altman <Avri.Altman@wdc.com> =
-wrote:
->
-> > On Tue, Apr 23, 2024 at 8:42=E2=80=AFAM Avri Altman <Avri.Altman@wdc.co=
-m> wrote:
-> > >
-> > > > The OP-TEE driver finds the correct RPMB device to interact with by
-> > > > iterating over available devices until one is found with a
-> > > > programmed authentication matching the one OP-TEE is using. This
-> > > > enables coexisting users of other RPMBs since the owner can be
-> > > > determined by who knows the authentication key.
-> > > Devices in plural?
-> > > I am unaware of any board with multi eMMC devices soldered.
-> > > Can you refer me to such a platform?
-> >
-> > I'm testing with a Hikey960 (HiSilicon Kirin 620)
-> > https://www.96boards.org/product/hikey
-> > It has one soldered eMMC and one removable eMMC.
-> I used to have that board but with a UFS2.1 version, so I can't really te=
-ll.
-> https://github.com/96boards/documentation/blob/master/consumer/hikey/hike=
-y620/hardware-docs/hardware-user-manual.md#storage
-> indicating only a single eMMC device and a SD.
+On 4/23/24 1:24 PM, Ryan Roberts wrote:
+> On 22/04/2024 10:33, David Hildenbrand wrote:
+>> On 19.04.24 09:43, Ryan Roberts wrote:
+>>> Previously soft-dirty was unconditionally exiting with success, even if
+>>> one of it's testcases failed. Let's fix that so that failure can be
+>>> reported to automated systems properly.
+>>>
+>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 
-That's what I'm testing with, the kernel finds two RPMBs with
-different CIDs. I'm running my tests with the removable one.
+>>> ---
+>>>   tools/testing/selftests/mm/soft-dirty.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/tools/testing/selftests/mm/soft-dirty.c
+>>> b/tools/testing/selftests/mm/soft-dirty.c
+>>> index 7dbfa53d93a0..bdfa5d085f00 100644
+>>> --- a/tools/testing/selftests/mm/soft-dirty.c
+>>> +++ b/tools/testing/selftests/mm/soft-dirty.c
+>>> @@ -209,5 +209,5 @@ int main(int argc, char **argv)
+>>>
+>>>       close(pagemap_fd);
+>>>
+>>> -    return ksft_exit_pass();
+>>> +    ksft_finished();
+>>>   }
+>>> -- 
+>>> 2.25.1
+>>>
+>>
+>> Guess that makes sense independent of all the other stuff?
+> 
+> Yes definitely. What's the process here? Do I need to re-post as a stand-alone
+> patch? Or perhaps, Shuah, you could take this into your tree as is?
+She can. But if she misses it or you want to post v2 of this current
+series, you can just send this one separately. Usually I try to send
+separate patches for trivial and discussion required patches so that there
+isn't confusion of this kind.
 
-> Either way, AFAIK there are no production designs that make use of more t=
-han a single embedded flash storage.
-> This goes for both eMMC and UFS.
+> 
+>>
+>> Reviewed-by: David Hildenbrand <david@redhat.com>
+> 
+> Thanks!
+> 
+> 
+> 
 
-OK
-
-Thanks,
-Jens
+-- 
+BR,
+Muhammad Usama Anjum
 
