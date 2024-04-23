@@ -1,110 +1,90 @@
-Return-Path: <linux-kernel+bounces-154998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCD828AE424
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9930A8AE42C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:36:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CA051F23BE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:35:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 375971F23823
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:36:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12BF184A44;
-	Tue, 23 Apr 2024 11:33:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E163284A21;
+	Tue, 23 Apr 2024 11:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zo692RAm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=pqrs.dk header.i=@pqrs.dk header.b="D4KlswLM"
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55E8C7FBBF;
-	Tue, 23 Apr 2024 11:33:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46222E576;
+	Tue, 23 Apr 2024 11:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872028; cv=none; b=Pw8uA9cm0W0pWbSL9WnvmGJqNOiA473/FYCA3+wyXW88IvS1Ktcey8RXOUAst3an93mj+F3GvAUQletz8hzDS0Vbr9gT37PUetjuXGmvIffoW5sGXC4HKVshEf3ydbu0JfrS0//k6MY/KRnBc8hklnJKYmGbWXBVNOZSjS9LDII=
+	t=1713872152; cv=none; b=u4Q/RrrswW/1mK579kgYicf00xbMKEKjfdx4ZC9uA5YEZtwqAnzCCsJm7oi+/+7HTnF7r09c63EWLjzpbRg4vnsjQVPbEFlhS+O1NOD/33MHOh1DgPJyFDgjddZ6gYmIAYRPEyvX6D7W+inoIt+1Jq2NIqvy7MWCrdrQWjNdvrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872028; c=relaxed/simple;
-	bh=cC5/q/rDAJvbVMbrF1YBegWAnIa9bk1DnKTjp39vagY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VSsYJco78MWDmC2pIJhUP9lMgh1CbeOjZdH6qD+LR52WtFqnl+bGvdBFThti8VMdQRJkWGTHIZLCl8KKkuoUVk0syEx6Wt1Uk4KL1sz0Isesv1yxEzS/TS6NxTDfdoi3ptkepmUDwdl0XBgaS7sbvV9uSaBxSqG7HIcvkRXuzqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zo692RAm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 609C9C116B1;
-	Tue, 23 Apr 2024 11:33:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872027;
-	bh=cC5/q/rDAJvbVMbrF1YBegWAnIa9bk1DnKTjp39vagY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Zo692RAmsm1vLjhATemvFORhpgACbgV41af4TnLMOJADX9uv7UclWmvlJ+vvu2/wl
-	 o4tPRRJwNcLM0RAwdvldUp070gZPcWK5b+pOfcY1Ulj7yx6loKa1w3dJUzAQyoX2bc
-	 Zl259Nko9SuGT++XfEWLwD4XSIkVPsR9CHrPZZZQzUyZQULDmBM0JCKSvU8sOC/bjD
-	 AxFNkXugtAGl5qUbrAPUlVZC9NgzTtEVRw8Xe4frygrr4EWj/61NP5IfOtj4utOS27
-	 IsxGQOv/9XWMGr36zBeg8WQPijI3c1zsvwTKARs1lW/2UveoNvffDSqMdFF24PnLs7
-	 T94gAUNSvHpQA==
-Date: Tue, 23 Apr 2024 13:33:44 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org,
-	Lai Jiangshan <jiangshan.ljs@antgroup.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Uros Bizjak <ubizjak@gmail.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>, Nadav Amit <namit@vmware.com>,
-	Breno Leitao <leitao@debian.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Vegard Nossum <vegard.nossum@oracle.com>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [PATCH 09/10] x86/rcu: Add rcu_preempt_count
-Message-ID: <ZiecmBdOwHaaMufg@localhost.localdomain>
-References: <20240328075318.83039-1-jiangshanlai@gmail.com>
- <20240328075318.83039-10-jiangshanlai@gmail.com>
- <ZiZEcBEvK8NOQvwU@localhost.localdomain>
- <CAJhGHyBMYDWbRYp86wBu3x6Ry8HM2yiZxNv_WATwhzV+OO+ZFA@mail.gmail.com>
+	s=arc-20240116; t=1713872152; c=relaxed/simple;
+	bh=lJt8E0U3Mk8gFwh7JvTQ5k6BmWh49nIGxdJHH7cyVEc=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ct6yk8DCFxRwf035BG2y4tKPwbJJd7bRvYKzFLlBI+C6d2ITebi165a3ZmaKgDlsdReXP36lfie1/S2TcTc4i0JXSY2Eg6+kPLHdrJb6VISFhuT2h00UFuvlFn5+Or1zh6AYUMnULuw0Ua32Oz3Pm7bt28Gv1RnExmawruWF0YY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pqrs.dk; spf=pass smtp.mailfrom=pqrs.dk; dkim=pass (2048-bit key) header.d=pqrs.dk header.i=@pqrs.dk header.b=D4KlswLM; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pqrs.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pqrs.dk
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqrs.dk; s=key1;
+	t=1713872145;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=SeGdmR9Tag7SOUwFc4v/9fCbObSDxffUEqU54SLcBGw=;
+	b=D4KlswLM0VXPMkuJTMq35iulmEONaMwMfl8HvhVphaihApvIHqllOgFN5Y0nWva7M7lurJ
+	q4yNNV0XZVvh6doS2hT5OTxjs/h39LV0LlXkEheJcH7L1vxntdsjTZy10g0RSFlH/dP4OJ
+	V3lji1l8Nw9kb7dqL8Y0Z4eHKA7T5QdDClIqR0UC7UrLzQvpU+68jwpmdzbB0Ra7x497HW
+	2RI8kJ5IR5bcKL11KMq0lI84xnDyn/rk2ugJhBGxGalKS5Ev+NB5BdqW+ydF1mokVIkgKl
+	AIBNCwu+00UeA2MhmfGUtpiiqWejUDRzeRe1dZmVHWC6evCtvfRhFNX3OumR7A==
+From: =?utf-8?q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
+Subject: [PATCH 0/3] spi: sc18is602: add support for SC18IS606
+Date: Tue, 23 Apr 2024 13:35:29 +0200
+Message-Id: <20240423-sc18is606-v1-0-094ef37d5a59@bang-olufsen.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJhGHyBMYDWbRYp86wBu3x6Ry8HM2yiZxNv_WATwhzV+OO+ZFA@mail.gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAGdJ2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDEyNj3eJkQ4vMYjMDM90UY3NTM0Pj1KQUCyMloPqCotS0zAqwWdGxtbU
+ ACtPpnVsAAAA=
+To: Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>
+X-Migadu-Flow: FLOW_OUT
 
-Le Tue, Apr 23, 2024 at 05:02:35PM +0800, Lai Jiangshan a écrit :
-> Hello, Frederic
-> 
-> Thanks for reviewing.
-> 
-> On Mon, Apr 22, 2024 at 7:05 PM Frederic Weisbecker <frederic@kernel.org> wrote:
-> 
-> > > +
-> > > +/* We use the MSB mostly because its available */
-> >
-> > I think you can safely remove the "We " from all the comments :-)
-> 
-> The file is mainly copied from arch/x86/include/asm/preempt.h.
-> I will rephrase sentences in later iterations.
-> 
-> >
-> > > +#define RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED  0x80000000
-> >
-> > How about RCU_PREEMPT_UNLOCK_FASTPATH ?
-> 
-> 
-> I'm not good at naming. But the MSB really means exactly the opposite
-> of current->rcu_read_unlock_special and I think "UNLOCK_SPECIAL_INVERTED"
-> fits the meaning.
+The SC18IS606 is basically already supported by the driver, but since it
+has a larger data buffer and fewer chip selects, it deserves its own
+compatible string together with some minor modifications to the driver
+to support this.
 
-Right but I tend to think a constant should tell what something is, not what
-something is not.
+While at it, convert the device tree bindings to YAML before adding an
+additional compatible string.
 
-FWIW, p->rcu_read_unlock_special could even be renamed to p->rcu_read_unlock_slowpath
+Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+---
+Alvin Šipraga (3):
+      spi: dt-bindings: nxp,sc18is602: convert binding to YAML
+      spi: dt-bindings: nxp,sc18is602: add compatible for SC18IS606
+      spi: sc18is602: add support for SC18IS606
 
-Thanks.
+ .../devicetree/bindings/spi/nxp,sc18is602.yaml     | 60 ++++++++++++++++++++++
+ .../devicetree/bindings/spi/spi-sc18is602.txt      | 23 ---------
+ drivers/spi/spi-sc18is602.c                        | 29 ++++++++---
+ 3 files changed, 83 insertions(+), 29 deletions(-)
+---
+base-commit: 5343a65e03e4ee9f81508032e70b547e3c9f99ed
+change-id: 20240423-sc18is606-d375613ebd82
+
 
