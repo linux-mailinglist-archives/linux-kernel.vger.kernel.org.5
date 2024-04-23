@@ -1,157 +1,122 @@
-Return-Path: <linux-kernel+bounces-155790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D04EE8AF721
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:17:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 445848AF727
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:19:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F2161C24F1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:17:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 007CC2892B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:19:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 791FD1411DF;
-	Tue, 23 Apr 2024 19:16:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F80E140E40;
+	Tue, 23 Apr 2024 19:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cnyJSpdt"
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="B1M1F0Oq"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 720BB13E057
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 19:16:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F9713E031;
+	Tue, 23 Apr 2024 19:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713899813; cv=none; b=ogO7seu0cB31TqTLkHANOk8Uyzo6EyR/36YBBfGMSZHDlD0MAwjy3Jr9hcP/HCzobw9cXGu/pIfSgOTaUCLIYgjKgnU/6IY4WW/4yredxxcacOp+1VeJCDVv5cR6wyrBmj8gmATKdZZaHGrieq55OE7d4I5zhKbhIJ/QqPS4zUk=
+	t=1713899981; cv=none; b=YpUb4aTNIbsghc7Ge9CLwbeiTB98w66q3APzhAtr4RZmaFRp59zIzcTWjWf16mShAVi6Ljqn7Ikkean+3A5g669kksiTte7QfUcv6i1jcptkBdh9wy/+CkyNRms+DkDTs7fZ3TNSXzGeHVzi3eS0rdbdglQL0BDMpBJrCPVZznU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713899813; c=relaxed/simple;
-	bh=rKJ3l5PngsMhhUsgGiBJulPEoC22NhzF9omTbh59/TI=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=rS6QNCwQjWZRbJwDl3XDOJlnECbjbCKEH1lB+taRwCahhja7rIlez4Y8+C3BQLqDI01/TY0L8JrYDrTRUGkGioBbVkdQhPDDyAyn0SnaTNsyaCS8/f5NJJZS+0LdV6fwmZ00T0xH0iv6JM5rFc2vCGeZzzMyqmohlPWnqaSUE38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cnyJSpdt; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2ae63694954so2069885a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713899812; x=1714504612; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8B8BJDQiGUAbI0tZGCCPFyop6LA8Xy8bkwpS740fWe0=;
-        b=cnyJSpdtTy358I3qXwRZOR0UkyGFGx7akqv6eOLaC4uZZgfLJ6vdUg6NKbsrU/hmgE
-         3oRc87Nls3lX5EXG/tMfHyRrZ2PASYUXnwMXX48jTeYkzl2EGifKYzv+0T+BVnWpUIWX
-         ikuqSatc4QLoPC5nsoo8ygJru5Cs6YquwMs0hQsEtt5UEC9DvdLgPZU6//0cSqbUn/X2
-         C+g3sb5CUjC2CsYPpTYeVn9aoW2Jeb5rRq27m1tU0Fd1NpOuUp1taAjHYD6ApByS22zF
-         E/CTHYuuvWPN7itfVNtwnK8OVN6UBh/K1AHpo1TYouPulANPreXtfm4LCs7sW8XgzhI3
-         Iy4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713899812; x=1714504612;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8B8BJDQiGUAbI0tZGCCPFyop6LA8Xy8bkwpS740fWe0=;
-        b=LEMwXW/4H4SO1LAEX87MO+hzBOyp0tqO72+RDKDd3b3SoAfDYWdCpHEqx4ZLcT0vqu
-         qDf25zCZEPbaT49FO59YhfESzepZjOf7BsgV0jXSLP7GCgiVBSviWS4F2WT0Kb6htAbl
-         BF2cRY0lsBKqx2k1SQCbcKpRJoFzrm13m2xFTu/IhGCkneNYVHZ4vWcdmBzVwujE9TEL
-         t6RRoqMgAsicgXWE52Ws124sppSVm63tIQ6pjTdvHUnCG+ncmDyr5rK5oKofhtiHYzWV
-         oxUnOPHhSpKMh9UqlMorgrZ3Qe4BGwMrKYNpi5/xMIQFScdLYa8iVHegwnSgAZS2D8s6
-         kMGg==
-X-Forwarded-Encrypted: i=1; AJvYcCWeofZUBRzPkktxRDk4Jm/AOPZJtoAyDxSn3L6HPIBHhXUPjcfMeE5v8Arv/TPickKZ7zaGJFPnXCVntbR5K/3nO8JZyM4r47Sim3b5
-X-Gm-Message-State: AOJu0YzlXcNX/dysGU+g4O8SIwvz+Z+UHQ/ME8nvY6Ch/n4cHWXkKlIh
-	954uWpWCU0v9vvBVdqZiT56ESdHkWlArEokK73YVWeb5FXcx2CwBXoKiennJMfCn1UEEA9jVPOr
-	JLQ==
-X-Google-Smtp-Source: AGHT+IHc2Pkewcf/fjEyx1Ej8IWpt/3GzaBNYp2bJhAmBKboXze10z/yAFFif1JOzokxw7TZwp+xbvaMBRk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:8a95:b0:2a2:ff01:dd7c with SMTP id
- x21-20020a17090a8a9500b002a2ff01dd7cmr1330pjn.8.1713899811718; Tue, 23 Apr
- 2024 12:16:51 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Tue, 23 Apr 2024 12:16:49 -0700
+	s=arc-20240116; t=1713899981; c=relaxed/simple;
+	bh=yC2sOTTLKyjJya0KuXGRtrG/1u1CmNweM0g0qgRcqSQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=g/SUQSFQpFgqpnwd4VaQSUqoOFd13kokdc+o2uyiCO5CCXIZl7Mc2PuzMk4mUXwvW0UY5d7JyIOiSANuOxbuFrn8R3QBGFWGAB/7+NAdIggIyBlOkfvOjZdu7/woth3RNyuWv8KhhJEfCwl+9NsF7pnBkO0YnMs/sJjADqcAToE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=B1M1F0Oq reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
+ id a5cb8043b5e3b96b; Tue, 23 Apr 2024 21:19:37 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 8495166DB89;
+	Tue, 23 Apr 2024 21:19:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1713899977;
+	bh=yC2sOTTLKyjJya0KuXGRtrG/1u1CmNweM0g0qgRcqSQ=;
+	h=From:To:Cc:Subject:Date;
+	b=B1M1F0OqPpQQiiQgT2mmEhAYfslKdNrdpPnHQu0LPunY7P+pXVPPbsB4RR1cH2F/e
+	 AGsfYjEzhikU19woCDE/6YcHZiE4sm33ojOzwSSP1I/tudbSz6GhvnGKKGiyzNurXZ
+	 beyTCmrz+gefST5kEEk7foU78SC0wcyso3AvwRXN+hk4iDb8BKCoHwWU9E3hI172av
+	 5RGqiBS+jWEhv33h471J5zz5sQ83J68a5+Q/s9GFJVFLQoYlOfKKbS1AxgboZngB0o
+	 YUsGznCPpAuvAdmj9MvPkulw2O6StLov95qAI8mEPJXRt845A8NEqnZjb6GXBa4R+e
+	 Q4rEx3lromdRA==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux ACPI <linux-acpi@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
+ Mark Pearson <mpearson@lenovo.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Mario Limonciello <mario.limonciello@amd.com>
+Subject:
+ [PATCH v1] ACPI: PM: s2idle: Evaluate all Low-Power S0 Idle _DSM functions
+Date: Tue, 23 Apr 2024 21:19:36 +0200
+Message-ID: <12427214.O9o76ZdvQC@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <20240423191649.2885257-1-seanjc@google.com>
-Subject: [PATCH] Revert "KVM: async_pf: avoid recursive flushing of work items"
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Xu Yilun <yilun.xu@linux.intel.com>, Sean Christopherson <seanjc@google.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudeluddgudefkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeegfffhudejlefhtdegffekteduhfethffhieettefhkeevgfdvgfefieekiefgheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmphgvrghrshhonheslhgv
+ nhhovhhordgtohhmpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmrghrihhordhlihhmohhntghivghllhhosegrmhgurdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 
-Now that KVM does NOT gift async #PF workers a "struct kvm" reference,
-don't bother skipping "done" workers when flushing/canceling queued
-workers, as the deadlock that was being fudged around can no longer occur.
-When workers, i.e. async_pf_execute(), were gifted a referenced, it was
-possible for a worker to put the last reference and trigger VM destruction,
-i.e. trigger flushing of a workqueue from a worker in said workqueue.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Note, there is no actual lock, the deadlock was that a worker will be
-stuck waiting for itself (the workqueue code simulates a lock/unlock via
-lock_map_{acquire,release}()).
+Commit 073237281a50 ("ACPI: PM: s2idle: Enable Low-Power S0 Idle MSFT
+UUID for non-AMD systems") attempted to avoid evaluating the same Low-
+Power S0 Idle _DSM functions for different UUIDs, but that turns out to
+be a mistake, because some systems in the field are adversely affected
+by it.
 
-Skipping "done" workers isn't problematic per se, but using work->vcpu as
-a "done" flag is confusing, e.g. it's not clear that async_pf.lock is
-acquired to protect the work->vcpu, NOT the processing of async_pf.queue
-(which is protected by vcpu->mutex).
+Address this by allowing  all Low-Power S0 Idle _DSM functions to be
+evaluated, but still print the message regarding duplication of Low-
+Power S0 Idle _DSM function sets for different UUIDs.
 
-This reverts commit 22583f0d9c85e60c9860bc8a0ebff59fe08be6d7.
-
-Suggested-by: Xu Yilun <yilun.xu@linux.intel.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Fixes: 073237281a50 ("ACPI: PM: s2idle: Enable Low-Power S0 Idle MSFT UUID for non-AMD systems")
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218750
+Reported-and-tested-by: Mark Pearson <mpearson@lenovo.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- virt/kvm/async_pf.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+ drivers/acpi/x86/s2idle.c |    8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
-index 99a63bad0306..0ee4816b079a 100644
---- a/virt/kvm/async_pf.c
-+++ b/virt/kvm/async_pf.c
-@@ -80,7 +80,6 @@ static void async_pf_execute(struct work_struct *work)
- 	spin_lock(&vcpu->async_pf.lock);
- 	first = list_empty(&vcpu->async_pf.done);
- 	list_add_tail(&apf->link, &vcpu->async_pf.done);
--	apf->vcpu = NULL;
- 	spin_unlock(&vcpu->async_pf.lock);
+Index: linux-pm/drivers/acpi/x86/s2idle.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/x86/s2idle.c
++++ linux-pm/drivers/acpi/x86/s2idle.c
+@@ -492,16 +492,14 @@ static int lps0_device_attach(struct acp
+ 			unsigned int func_mask;
  
- 	/*
-@@ -120,8 +119,6 @@ static void kvm_flush_and_free_async_pf_work(struct kvm_async_pf *work)
- 
- void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
- {
--	spin_lock(&vcpu->async_pf.lock);
--
- 	/* cancel outstanding work queue item */
- 	while (!list_empty(&vcpu->async_pf.queue)) {
- 		struct kvm_async_pf *work =
-@@ -129,23 +126,15 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
- 					 typeof(*work), queue);
- 		list_del(&work->queue);
- 
--		/*
--		 * We know it's present in vcpu->async_pf.done, do
--		 * nothing here.
--		 */
--		if (!work->vcpu)
--			continue;
--
--		spin_unlock(&vcpu->async_pf.lock);
- #ifdef CONFIG_KVM_ASYNC_PF_SYNC
- 		flush_work(&work->work);
- #else
- 		if (cancel_work_sync(&work->work))
- 			kmem_cache_free(async_pf_cache, work);
- #endif
--		spin_lock(&vcpu->async_pf.lock);
+ 			/*
+-			 * Avoid evaluating the same _DSM function for two
+-			 * different UUIDs and prioritize the MSFT one.
++			 * Log a message if the _DSM function sets for two
++			 * different UUIDs overlap.
+ 			 */
+ 			func_mask = lps0_dsm_func_mask & lps0_dsm_func_mask_microsoft;
+-			if (func_mask) {
++			if (func_mask)
+ 				acpi_handle_info(adev->handle,
+ 						 "Duplicate LPS0 _DSM functions (mask: 0x%x)\n",
+ 						 func_mask);
+-				lps0_dsm_func_mask &= ~func_mask;
+-			}
+ 		}
  	}
  
-+	spin_lock(&vcpu->async_pf.lock);
- 	while (!list_empty(&vcpu->async_pf.done)) {
- 		struct kvm_async_pf *work =
- 			list_first_entry(&vcpu->async_pf.done,
 
-base-commit: d2ea9fd98cca88b4724b4515cd4d40452f78caa8
--- 
-2.44.0.769.g3c40516874-goog
+
 
 
