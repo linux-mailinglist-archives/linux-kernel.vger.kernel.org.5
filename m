@@ -1,105 +1,108 @@
-Return-Path: <linux-kernel+bounces-154530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FC3B8ADD29
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:33:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAFC98ADD2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:34:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51ABC1C21ADE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:33:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FB5C1F22E23
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:34:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BAF122611;
-	Tue, 23 Apr 2024 05:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20ABA20B3E;
+	Tue, 23 Apr 2024 05:34:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="dS3qlHCB"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bIiexB48"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC75C208A0;
-	Tue, 23 Apr 2024 05:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 677B163C8
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 05:34:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713850400; cv=none; b=XSmBL3ZhjuupGLnkQh0qVD3uhfYKetoSIvX6oDcZzS9EjaOjY9qCQotyNCckT18WklcoiLITS1TTVRY1exnbhLG8JKdh2Nm6ytjxI0PBZ7Dm5VwvxJXQLytGkCK9QyIhWlvzyCie/bcM0ydV1FX8OJBHskHkhcW5h3QM15Bl6Nk=
+	t=1713850464; cv=none; b=gLUfiLxmQs8GSCrkrZiu+CPRg3L3n+H7PasGA6kquD/cAY+WogSWCWPWKW9S/icA4j9FQDyxyUBLMQ67YNLs1FcjutsRv3kH2hZovwMyFegMpJqlo1ociH2mSy7VzC/RUB46eQMaTtK+dFfRfeXy6gDa/VT3XTFQ1z7Hz92+6EU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713850400; c=relaxed/simple;
-	bh=zEogd6obGKCj1wI8vY87B5g4GlNmcx47Ub4SIxdywdk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=brE54IMaplGS2LVTtLYMoZcGd2bL2AfcLl5P4rMd9U2aHB/vIh2jWH7CjTAqnUjCUsPxYjCDNIQHy//UgcGMH7KOlXGT7ifZ8yYO5jzntnYHPYwWyxX03Ov+/rttGJHXg8eCmRSDYbTcno+rN8tA2oEGRwb7wpDaA6AMpJ3ud0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=dS3qlHCB; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1713850393;
-	bh=dP5BWkKu6CZlkYIJk5vA8JCOTxwXlOrwHIcJXys/LEA=;
-	h=Date:From:To:Cc:Subject:From;
-	b=dS3qlHCBqR8Qs9PvW63vVzpiNYtLlaFL9WxJTcnTwGy6In0QtombBONDb5Grzo8Fw
-	 bLtB+wcLpb8Rr4kWLK9xTBQXyNhNNz5jM18oOTw69TH5QD2Qctt9aDpjQ8g9RIQljl
-	 VM+Ih+iKgFBPsTHJ/99ccDYt6XIHt7GsRQkqLO8h7K9NDTEI4MOL833aREWkwidVcV
-	 RXNM7Xq23LG+LEMZQgP92nx9eADLlT4dTC/N63AMBE4q3TvqWoZv6BodknTtKjkDZk
-	 BHq3Byuns/CJ3rd+jz3LW5YV96uyn/BxUWAYUM51u68MBX32AYcu49dbQZ2fq/JwyQ
-	 Zw7+oCe8kd8CQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VNrPN5sKPz4wb2;
-	Tue, 23 Apr 2024 15:33:12 +1000 (AEST)
-Date: Tue, 23 Apr 2024 15:33:12 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: "Michael S. Tsirkin" <mst@redhat.com>, Greg KH <greg@kroah.com>, Arnd
- Bergmann <arnd@arndb.de>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the vhost tree
-Message-ID: <20240423153312.6fb2dfa5@canb.auug.org.au>
+	s=arc-20240116; t=1713850464; c=relaxed/simple;
+	bh=wl33m1m5cEoe49D2s1ZHPhV/BK2S0RFicqiib2V5jXc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=kJkGiGea3imPapD2WrD6eBWsE9qnrarsEdXinZ9T1W4YDm3PgF8Fe/UQUMZiQG/Ql3tWLBNJQCsuKIA3dXyIrYvArRk49GjzRRTGfeH33VLMryi71IMFFm4GS2jKEOs1vL7YIKgfG3HGp3gT1ApDDV6hbaLPGmU9Tbd8SlsJoew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bIiexB48; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2CEBC116B1;
+	Tue, 23 Apr 2024 05:34:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713850464;
+	bh=wl33m1m5cEoe49D2s1ZHPhV/BK2S0RFicqiib2V5jXc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=bIiexB48+GS5yxoZn1hGe0wmZlIQwxTgcQYKlrxe59K/RJhrBf9iSP9Ne+HCfW32L
+	 HENsyYW1z9mcENU0OEsV+q1QNGE/bafMzcaRgEcnbW/d/i2EONbaC6Dxxe9V+QkZLZ
+	 reKF7w6f3oE3TuPr/eW6zCqvTd6oVfIM2UtFg7mcufKxe8Acn1X7Jp9vv5JQMQvuqR
+	 HajEnFli115vO66kN4NYMuhAyfPmJ4smLvhUXFNg7NR2ju6OtZFhmiDk9ff2lyZFjZ
+	 himiD5I2D3CahRCnT7WcHk1wyKAN2DrM2Kuve6w2Rgy59i4n0ClZ/+RWI68SEtFh3a
+	 sl10HRXv3RihA==
+From: Mark Brown <broonie@kernel.org>
+To: Matti Vaittinen <mazziesaccount@gmail.com>, 
+ Matti Vaittinen <mazziesaccount@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, 
+ Aleksander Mazur <deweloper@wp.pl>, Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <ZiYF6d1V1vSPcsJS@drtxq0yyyyyyyyyyyyyby-3.rev.dnainternet.fi>
+References: <ZiYF6d1V1vSPcsJS@drtxq0yyyyyyyyyyyyyby-3.rev.dnainternet.fi>
+Subject: Re: [PATCH] regulator: change stubbed devm_regulator_get_enable to
+ return Ok
+Message-Id: <171385046257.1774956.13833475166479174352.b4-ty@kernel.org>
+Date: Tue, 23 Apr 2024 14:34:22 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oHtvu8ZM/pFv+qEdRxAmrI.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
---Sig_/oHtvu8ZM/pFv+qEdRxAmrI.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, 22 Apr 2024 09:38:33 +0300, Matti Vaittinen wrote:
+> The devm_regulator_get_enable() should be a 'call and forget' API,
+> meaning, when it is used to enable the regulators, the API does not
+> provide a handle to do any further control of the regulators. It gives
+> no real benefit to return an error from the stub if CONFIG_REGULATOR is
+> not set.
+> 
+> On the contrary, returning and error is causing problems to drivers when
+> hardware is such it works out just fine with no regulator control.
+> Returning an error forces drivers to specifically handle the case where
+> CONFIG_REGULATOR is not set, making the mere existence of the stub
+> questionalble. Furthermore, the stub of the regulator_enable() seems to
+> be returning Ok.
+> 
+> [...]
 
-Hi all,
+Applied to
 
-The following commits are also in the char-misc tree as different
-commits (but the same patches):
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-  6ee63c01e1a2 ("misc/pvpanic: add shutdown event definition")
-  718330fcd40b ("misc/pvpanic: use bit macros")
+Thanks!
 
-These are commits
+[1/1] regulator: change stubbed devm_regulator_get_enable to return Ok
+      commit: 96e20adc43c4f81e9163a5188cee75a6dd393e09
 
-  ad76f3e8f57c ("misc/pvpanic: add shutdown event definition")
-  043327875298 ("misc/pvpanic: use bit macros")
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-in the char-misc tree.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---=20
-Cheers,
-Stephen Rothwell
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---Sig_/oHtvu8ZM/pFv+qEdRxAmrI.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYnSBgACgkQAVBC80lX
-0GzlMwf+OGWcHcy32pkIE0Qbr7wZTMgE5rhS7zkEsruwHPkSM/kxvraJaq8YbexM
-1/DvxCxJSYiUceKK6+AockQUxovmpmqM4BA46rsJkC0GeQMYlshkato0qxlKGpod
-Pjjosb8VCvZI/eu7+KlcdwrQiY9qF2JGOXaB7/DBkFUMfOifNZFRtQEIzzdsQLRo
-xWnQ93BgSRRE+Gxn3WpkUrpBlN5d5p+SrQJreyg1jx9uqKIynikoyR1xJXXLxlub
-1GAEk80dENNr+nLhlvjh5CJwJIFzf7lIM7EhqSgErq39kc4J7lkm8eG0aPOhwmqX
-RXSRuz0cvv8BevI1bK9LdfYQfnhU3g==
-=5Es1
------END PGP SIGNATURE-----
-
---Sig_/oHtvu8ZM/pFv+qEdRxAmrI.--
 
