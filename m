@@ -1,123 +1,93 @@
-Return-Path: <linux-kernel+bounces-155723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C5B68AF634
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:03:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA2D38AF702
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:04:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F2F328F456
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:03:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84E2FB27FB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A61621411E0;
-	Tue, 23 Apr 2024 18:02:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA774142654;
+	Tue, 23 Apr 2024 19:03:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="tiXjiwul";
-	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="HfWeE/u/"
-Received: from mailrelay3-1.pub.mailoutpod3-cph3.one.com (mailrelay3-1.pub.mailoutpod3-cph3.one.com [46.30.211.242])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="v/uguod+"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6973D13E404
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 18:02:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.242
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369091411E2;
+	Tue, 23 Apr 2024 19:03:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713895356; cv=none; b=AoxBh/BOmXYLemu1y2rAhq4UVCGxu5D3ei2xvLXSDhJoyv17YHmJsNaLxpu4n8hpmpXlrPe8uo4PlkKsQin7uWGA2utsynkxUplwSK0qtBnxTFDAWzuD6++fybMHYINEnPr18WsldzfzvnGIL9n+X2IrnuYnw4cT2mzXkMkoL6I=
+	t=1713899004; cv=none; b=iPbhl4F6USPRlDx0Jp87+qpDtIjX0TNSdCsDCZx9rSqRMAKUw87FxxqYQQyguZldh9pCsjR1rMp1cQBkI8xdgnE44xKMD3sJ4/SOaETvLqh1z0FMayVPGIxpmuYAc/jYDRdREOKdJvRYqkJzwNPLOD61dcbCTsrupb+ThLhrTzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713895356; c=relaxed/simple;
-	bh=mmtsBmibN1yGrAOOBOq7tt4DhIUx2MTlpkSj1eOKU5s=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oMypfB5gLAq/QHJYiy2r9qAqxY8JZqr6BzCFP0t/x/Fz1SyVJVnvq1/q1wtAbIcckrQYxCw8bSIIWKcZcF5M7lqpnKNJG/kQTb7ZXvDe3p48pl6e+0pv3svZzV2RV6W5+74hP4GEs2U66dUgNQ82hoOSiR5x77+E6QLPpwwtjh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=tiXjiwul; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=HfWeE/u/; arc=none smtp.client-ip=46.30.211.242
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=rsa1;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:to:from:
-	 date:from;
-	bh=QCtZv2hKR4TC2H8Xchi6BYje0EdwUJ959Ulh1BBi7BU=;
-	b=tiXjiwulObS5EhcPzBhcVI2b7lyYjbhyrN+eScXsvRPf4CNWM0mzep8evt/KlX081DuECo1DQzvk1
-	 wh1MmubDWKPpi1oCcXnnTeTwWGiaHZvyWX54QHWQETldd7n02Dy7XeAZxJXbF62UeR4Y8ovwmTG2h/
-	 zR7q3kIBfD44p/kz90excP2SMKqNX3fsDfoQhA9jSaZsFcdlhVIn9hXhLQ0zTkmC0yJhb1xUrfO8nr
-	 97Y/6MTQX2EPS+R3oWPQM8B+4lRwr4FvsPIelDz4z87plAov9qBeXcBLWVtOs9U2guU+NGPpN8TE/F
-	 JPgrGgj1BwmyI3XjPqR/8abBf7BSYHg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=ed1;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:to:from:
-	 date:from;
-	bh=QCtZv2hKR4TC2H8Xchi6BYje0EdwUJ959Ulh1BBi7BU=;
-	b=HfWeE/u/gBKw47N8oqIKQ7L5OJBjREBgJDf8mNUmiG3dJJPOazjw4Bgsd5yuaEF2d3z7H8kD48Zbl
-	 QMi8vYgAQ==
-X-HalOne-ID: 9dd17742-019b-11ef-8cb9-5166eb5bc2d3
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-	by mailrelay3.pub.mailoutpod3-cph3.one.com (Halon) with ESMTPSA
-	id 9dd17742-019b-11ef-8cb9-5166eb5bc2d3;
-	Tue, 23 Apr 2024 18:02:26 +0000 (UTC)
-Date: Tue, 23 Apr 2024 20:02:16 +0200
-From: Sam Ravnborg <sam@ravnborg.org>
-To: "David S. Miller" <davem@davemloft.net>,
-	Arnd Bergmann <arnd@kernel.org>,
-	Andreas Larsson <andreas@gaisler.com>, Helge Deller <deller@gmx.de>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>,
-	Kjetil Oftedal <oftedal@gmail.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-sound@vger.kernel.org
-Subject: Re: [PATCH v2 00/28] sparc32: sunset sun4m and sun4d
-Message-ID: <20240423180216.GA906720@ravnborg.org>
-References: <20240309-sunset-v2-0-f09912574d2c@ravnborg.org>
+	s=arc-20240116; t=1713899004; c=relaxed/simple;
+	bh=LFOOxpFh/7aFYWdR7UgyJwLunb9waVNBklnKzbvtBuI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oVD8TpdEl9VlosQeFVitvoexgMoVurqfev8dOKSLz9kdHmy1e24OKRzQHDyz2NLj/diquzdh/6NpDSQBXxOipMe+D2cXtcERa3MfSraxNX17CbULX4aeckZ7bSTwSjS3JeMCrSbMs9cPqnLPFIZmV0vVVsqVzE82jQo22yKjIpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=v/uguod+ reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
+ id 1636d9c1730bdaa3; Tue, 23 Apr 2024 20:03:20 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id C506A66DB86;
+	Tue, 23 Apr 2024 20:03:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1713895400;
+	bh=LFOOxpFh/7aFYWdR7UgyJwLunb9waVNBklnKzbvtBuI=;
+	h=From:To:Cc:Subject:Date;
+	b=v/uguod+tmHQU6dEb+riDqvrdqlr6/IPwM9uPctXEzsVQglWV7mnItbghITeMXRqe
+	 rKgORtWknISUrDctZyb+vBlDfa7V80X/cOsoUW9RDhx/r8QLaCYZrzz2wJxbuA0CO+
+	 pSqzO6fF00qZT840InececX4cXICDJsTcjM3J3QCoyAq04TvDU9SVmJCLe0dfHC1Ed
+	 qElv4AGmzq05gDsS8ic/1B3b5uiTShOCE2i/JrQ4I3szy0sBMOb0AYn0gAWtAUD+vx
+	 1bJYXB0ownhSRcrvToeGLjPQr2K/vyWmACDosxilGyWYT/YsQvGD6TmzSxz6U+vZRt
+	 1hDP1iQbSheBQ==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Lukasz Luba <lukasz.luba@arm.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject:
+ [PATCH v1 0/3] thermal/debugfs: Fix handling of cdev states and mitigation
+ episodes in progress
+Date: Tue, 23 Apr 2024 19:29:12 +0200
+Message-ID: <5774279.DvuYhMxLoT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240309-sunset-v2-0-f09912574d2c@ravnborg.org>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudeluddguddvudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeffffffkefgheehffelteeiveeffeevhfelteejvddvieejjeelvdeiheeuveeuffenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggr
+ nhhosehlihhnrghrohdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 
-Hi Andreas,
+Hi Everyone,
 
-On Sat, Mar 09, 2024 at 07:15:21PM +0100, Sam Ravnborg via B4 Relay wrote:
-> This is the second attempt to sunset sun4m and sun4d.
-> See [1] for the inital attempt.
-> 
-> The sun4m and sun4d parts of the kernel have seen no real interest
-> for several years now. Last time a few people surfaced, but it was
-> either due to a personal project or for nostalgic reasons.
-> It is time to let go and drop the parts of sparc32 that in reality
-> are not in use.
-> 
-> LEON from Frontgrade Gaisler is the only real user of sparc32,
-> and this patchset reduces sparc32 to what is required by LEON.
-> 
-> The defconfig is first adapted to the one used by Gaisler.
-> Then the patches removes sun4m and sun4d specific
-> implementations such as small drivers, SMP support, IRQ suppor etc.
-> 
-> Removing sun4m and sun4d support allowed removal of the run time
-> patching of the code as well as a lot of assembler code.
-> The result is a much cleaner assembler code that is easier to
-> understand and thus maintain and extend.
-> 
-> Changes in v2:
->   - Rebased on top of Andreas' for-next branch
->   - Collected ack's
->   - Added patch to remove cpuid patching (Andreas)
->   - Run-time testing using qemu (Andreas, Mark Cave-Ayland)
+The first two patches fix printing of cdev state residency values
+for the initial state and for the states that are used for the first
+time.
 
-Please let me know if you expect me to rebase this on for-next.
-I have not yet tried if there are merge conflicts but can take a look in
-a some days if required.
+The last patch fixes the handling of mitigation episodes in progress
+for thermal zones.
 
-That is assuming you agree with the sunset of the sun platforms...
+Please refer to the patch changelogs for details.
 
-	Sam
+The series applies on top of the bleeding-edge branch in linux-pm.git.
+
+Thanks!
+
+
+
 
