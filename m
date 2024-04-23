@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-155740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE7EE8AF677
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F42D8AF67B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:25:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35BE6B22DAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:25:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 422E6B21F17
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DC913FD8B;
-	Tue, 23 Apr 2024 18:24:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37EBC1411E0;
+	Tue, 23 Apr 2024 18:24:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AaUCpyr9"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VpbUHcBv"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3ECB13E418;
-	Tue, 23 Apr 2024 18:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA8FB13F437;
+	Tue, 23 Apr 2024 18:24:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713896692; cv=none; b=PpM358TD0aKzx6dW6R0FcAW7N0cBxwEhQdkum+ewQbvWtoWxA73A7WTPM0tp0bJKvbZ8XtcMRry5IlLX+zTHv3aYAN1QixalFrUV/Gm1Fh0OOFauBowFjMABOHWDrHWwFQfs0afLt+gK1GABGR1kxUBtW2pW/zaKvfdJSZRZY2A=
+	t=1713896693; cv=none; b=ohexgYbbA5bbcteAF36Lo/M6ET18LAnt4PLuS25RPkBece0BwIITuHgFbshrfhN+kiUDKG5EorrrK4sYrTCsbtc/TrbRkfIpg07nslroAgvpp9R8sXj9cO4E/D7pI5Rj+6fOV6WZol9UEvQXSaU/3w0vLRs2JsyglMeH0ELR2Yk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713896692; c=relaxed/simple;
-	bh=aNvr6nJ8MdjFtJCWEU21zXsCncROQPWhmpZ2dVqpnkw=;
+	s=arc-20240116; t=1713896693; c=relaxed/simple;
+	bh=y4UWqPTTQ16KbYceLassfLv+o3K1fLDGHhfI86xgT5A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=io0MB+w49Excyw5Yzujrh2DVXBZaHcyfPYjS5FFFWIk0FUcoNc/eL+1EwDFrSX/0idNNBepLx550UJxZQD0CuNMD41RuifOazjBfgxZA5gTFxpWvsl+JDiSPG/04ikjkA0qMpmFD2dcGhwSiHHBcOry4Q+AKQaroXGkc9qKLWSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AaUCpyr9; arc=none smtp.client-ip=209.85.128.42
+	 MIME-Version; b=T4P7CQHWQLIi3tT8p/T+xKuxkPWN21CQITT//jbcg9PUM29d0HmIg40544lRsMyoCV/B51AeZfAqQOf+/cI+d/IpdzdXjtQbzLCc9mQ2zRuPAxb2BCOjG/4I+rchDiZvD9i+Vhbp0J7Tkgsp0aHmDYBlnYdYjKxZ8bse3E/58KA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VpbUHcBv; arc=none smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41a1d2a7b81so823315e9.0;
-        Tue, 23 Apr 2024 11:24:50 -0700 (PDT)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-34a7e47d164so3608024f8f.3;
+        Tue, 23 Apr 2024 11:24:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713896689; x=1714501489; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713896690; x=1714501490; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MkDtJgHTmbZfUqKXKkWH0k+mpiwz1rvoj1AAD569Ce8=;
-        b=AaUCpyr9puGcUarNuDZAHh0gkdUYkwu8lCCz1kTVhU378yBBeKZaSxlkMg+NPIK0sN
-         PaKrJBvL8HTVILempW7JxeLINGmqu1bLC4ONm1OxdMwKy2qYn1VkSkL5NCRxGKaYCrMP
-         1TkAHAhlUKiy/wD3/0mpT1AGrrupShWzZxa2KZxI8GPfBFY6yg7U5kNxoGn8b4xEQK9a
-         05XrsVl4GXfxoaAj2r6Dh5mI1AjGfvhz/n8vJqj0AJ/0HWzUA5CJPMRqHNofft53bbft
-         fGWWGDmHBfq4TJGfCK9Y/V+zhNFguJNenibAPRtd6uXMPriQwlLjxDeJGgwi7Kt5jaUG
-         uh0A==
+        bh=Ti5j86HeR1DD90dqXtcMI4GGDjbxhYOJJR+sXMnaW/Q=;
+        b=VpbUHcBvVbw505jfHhL6kexC3+nk/riBlcqxGCJRPjE6pFPsvDqdcZ4ejOFAVYBJoE
+         p2sbF4k5m/if6OnjbGkdxtqC8xUWBoaMY2Me6vrAYUZecUKKQA0nsMaeb97gBkW5ujZu
+         J6ytBIGOzQpd9mctWsvLaQLNBWPwfYSxZqvmeVqGmtkJd2wqccSx9CvRGVcZaObqtnRR
+         qiPqiq3oW+/Lm/cs+ytbCNS4Fe7MkoIBjmw79UG43MtyGcmCR7XniuthlUqjbHOw9WLV
+         1aZn/Ldc0iWsOOq/xZ5Jl/dQbSczVcon958lLbUhd/sbf+KCnsnNUyswW1WTd0z60KOB
+         rqEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713896689; x=1714501489;
+        d=1e100.net; s=20230601; t=1713896690; x=1714501490;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MkDtJgHTmbZfUqKXKkWH0k+mpiwz1rvoj1AAD569Ce8=;
-        b=MjaeqsmA/NpGTIewAX0vYH/cimYNb2r6Vg1EOGl6bYE7oL60yUnjixcOj+mCvXPDkV
-         8xmiXapZqLKaiG+cloWgdQfTuS2X59Zqs1rZSY7y6zzFkh1HRKSnb80i1svTRvzc29R7
-         oIUsrT9YEYCRIcFUarkdsHgv8NM8LONYD6lF1+ggH1nbx6CP1gX1Bcfcslr6QwgGmmnJ
-         xPLJfoZA7jbOTRlykKgO2aSVeED8gTXjxmAzIptpR+lLJ8kZKM3J8b7+sh1IRPPAq9oT
-         GMplXvfHIW98i0JEb7GN1uL3uFfeThhkPG4pbI8BeGQdo0gO08VUvXjyS2XW36Zg82Cn
-         rqYg==
-X-Forwarded-Encrypted: i=1; AJvYcCXTgj5g0yJV2cxuZqZbRLmOnN9BgAMb2dZx/53MsafowMwWqqsnygjiQr2cHrbIgwOM9L5t2hdFhentAzCC3L2aNdMyFhN0rOWWQXbkm7/o7NjPItuLV5/t4F8cjMHkmPrQ9qV6oAx1k8vDX+GX0SDE/DI83x0STnvGSNXrUn/VorPVgr2/9HEC5Ac=
-X-Gm-Message-State: AOJu0Yz0r0FGBMKnxdxd1YKRow4YbFm8jHQfDbf48DbVR5GDSNUspejr
-	tnC6Guz+HqaN93ExKbnb4/4bxIdZ20dwAR11KERiBlKREmxtutSs
-X-Google-Smtp-Source: AGHT+IHM1tyEdQ4qlLv3higgniB6ZbpM0BDIHxfcP7jUXqORO6HXwKmxKG5erJfD5ChzRGKY4SCCrA==
-X-Received: by 2002:a05:6000:50:b0:34a:68aa:e242 with SMTP id k16-20020a056000005000b0034a68aae242mr2510078wrx.0.1713896688995;
-        Tue, 23 Apr 2024 11:24:48 -0700 (PDT)
+        bh=Ti5j86HeR1DD90dqXtcMI4GGDjbxhYOJJR+sXMnaW/Q=;
+        b=v4584LMTPEVjEhcsFKA8EKVU4zToNot7l+nO1eY6fDsSJU+u+3bPewC/jXeO0uQZs1
+         TB6xDeGU3BHo02X4A4E92OHIJ0RSkOnpWs8C9Ns+8PYpJBIwYiYgLnoNiVH0GzFTWwlC
+         ErwvuuPX/2ndlxuYpr75z4FwuNIDA0gp/nPQ/ncp3HXVUKkKvHxx0Wph8pYySp/xmp2U
+         4xz8e9lsze5yAizi9Mpwr2cnDzBELoChoyWysB3Qi+lLcj7L3684N2sHPBM/XlkHcx10
+         cdn9R3+8wBhkTTuVmS+HpU2z3UsnFbUElRszflRAC2Z3NeV/HoV8uWaUI7xivCpjmvng
+         AoRA==
+X-Forwarded-Encrypted: i=1; AJvYcCU9WGrgGLbYu5B4KbTUgFiqbYLLb/9YYCtmK+ZYzOwMG42rCvXXbi5BXJqIv8/8/MEkSKfDhRYx5hd0FhyKBaboe/hNP71gCt0ktdN3tJjVehv93kVJSGmdP8UJw960KwLXCdmk8DD9YJLydRwqlFH0SGRznjPXZztPSHMUaNr2ywn89YIWFEfZM8w=
+X-Gm-Message-State: AOJu0YwgiyVgc1kiJPHvJ04nvLoBFrKYMYBRWPUt1xh4trumbpYHN/IF
+	D7Tr99/e2LFC7KFhfNV+AKp7xOobV6IeYsv77AL+JmLKoNOlNMnU
+X-Google-Smtp-Source: AGHT+IExqLgMtKEkRc3UWuO+1KKfz5v/ObFBLuxk/ZDcPZvGt1I1Ua4GFp83UinLv9FI9681zSKRMA==
+X-Received: by 2002:a5d:504e:0:b0:33e:363b:a7dd with SMTP id h14-20020a5d504e000000b0033e363ba7ddmr34242wrt.20.1713896690157;
+        Tue, 23 Apr 2024 11:24:50 -0700 (PDT)
 Received: from prasmi.home ([2a00:23c8:2500:a01:cef0:9ed3:1428:f85f])
-        by smtp.gmail.com with ESMTPSA id t15-20020adfeb8f000000b00349ff2e0345sm15319164wrn.70.2024.04.23.11.24.47
+        by smtp.gmail.com with ESMTPSA id t15-20020adfeb8f000000b00349ff2e0345sm15319164wrn.70.2024.04.23.11.24.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 11:24:48 -0700 (PDT)
+        Tue, 23 Apr 2024 11:24:49 -0700 (PDT)
 From: Prabhakar <prabhakar.csengg@gmail.com>
 X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To: Geert Uytterhoeven <geert+renesas@glider.be>,
@@ -82,10 +82,11 @@ Cc: devicetree@vger.kernel.org,
 	Prabhakar <prabhakar.csengg@gmail.com>,
 	Biju Das <biju.das.jz@bp.renesas.com>,
 	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2 1/3] dt-bindings: mmc: renesas,sdhi: Group single const value items into an enum list
-Date: Tue, 23 Apr 2024 19:24:26 +0100
-Message-Id: <20240423182428.704159-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 2/3] dt-bindings: mmc: renesas,sdhi: Document RZ/G2L family compatibility
+Date: Tue, 23 Apr 2024 19:24:27 +0100
+Message-Id: <20240423182428.704159-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240423182428.704159-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 References: <20240423182428.704159-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
@@ -99,53 +100,76 @@ Content-Transfer-Encoding: 8bit
 
 From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Group single const value items into an enum list.
+- RZ/G2UL and RZ/Five ("r9a07g043")
+- RZ/G2L(C) ("r9a07g044")
+- RZ/V2L ("r9a07g054")
+- RZ/G3S ("r9a08g045")
+- RZ/V2M ("r9a09g011")
+
+The SD/MMC Interface in the above listed SoCs is not identical to that of
+R-Car Gen3. These SoCs have HS400 disabled and use fixed address mode.
+Therefore, we need to apply fixed_addr_mode and hs400_disabled quirks.
+
+Document 'renesas,rzg2l-sdhi' as a generic compatible string for the
+above SoCs.
+
+Also now use the 'renesas,rzg2l-sdhi' string in the if check for making
+sure the required clocks are present.
 
 Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
 v1->v2
-- Updated commit message
-- Grouped single const value items into an enum list. 
+- Collected the Ack
 ---
- .../devicetree/bindings/mmc/renesas,sdhi.yaml  | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+ .../devicetree/bindings/mmc/renesas,sdhi.yaml | 20 +++++++++----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml b/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
-index 29f2400247eb..2bf90095742b 100644
+index 2bf90095742b..afc2652fa6c8 100644
 --- a/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
 +++ b/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
-@@ -13,15 +13,13 @@ properties:
-   compatible:
-     oneOf:
+@@ -52,11 +52,6 @@ properties:
+               - renesas,sdhi-r8a77980  # R-Car V3H
+               - renesas,sdhi-r8a77990  # R-Car E3
+               - renesas,sdhi-r8a77995  # R-Car D3
+-              - renesas,sdhi-r9a07g043 # RZ/G2UL and RZ/Five
+-              - renesas,sdhi-r9a07g044 # RZ/G2{L,LC}
+-              - renesas,sdhi-r9a07g054 # RZ/V2L
+-              - renesas,sdhi-r9a08g045 # RZ/G3S
+-              - renesas,sdhi-r9a09g011 # RZ/V2M
+           - const: renesas,rcar-gen3-sdhi # R-Car Gen3 or RZ/G2
        - items:
--          - const: renesas,sdhi-sh73a0  # R-Mobile APE6
--      - items:
--          - const: renesas,sdhi-r7s72100 # RZ/A1H
--      - items:
--          - const: renesas,sdhi-r7s9210 # SH-Mobile AG5
--      - items:
--          - const: renesas,sdhi-r8a73a4 # R-Mobile APE6
--      - items:
--          - const: renesas,sdhi-r8a7740 # R-Mobile A1
+           - enum:
+@@ -65,6 +60,14 @@ properties:
+               - renesas,sdhi-r8a779g0  # R-Car V4H
+               - renesas,sdhi-r8a779h0  # R-Car V4M
+           - const: renesas,rcar-gen4-sdhi # R-Car Gen4
++      - items:
 +          - enum:
-+              - renesas,sdhi-sh73a0  # R-Mobile APE6
-+              - renesas,sdhi-r7s72100 # RZ/A1H
-+              - renesas,sdhi-r7s9210 # SH-Mobile AG5
-+              - renesas,sdhi-r8a73a4 # R-Mobile APE6
-+              - renesas,sdhi-r8a7740 # R-Mobile A1
-+              - renesas,sdhi-mmc-r8a77470 # RZ/G1C
-       - items:
-           - enum:
-               - renesas,sdhi-r8a7778 # R-Car M1
-@@ -40,8 +38,6 @@ properties:
-               - renesas,sdhi-r8a7793  # R-Car M2-N
-               - renesas,sdhi-r8a7794  # R-Car E2
-           - const: renesas,rcar-gen2-sdhi # R-Car Gen2 and RZ/G1
--      - items:
--          - const: renesas,sdhi-mmc-r8a77470 # RZ/G1C (SDHI/MMC IP)
-       - items:
-           - enum:
-               - renesas,sdhi-r8a774a1  # RZ/G2M
++              - renesas,sdhi-r9a07g043 # RZ/G2UL and RZ/Five
++              - renesas,sdhi-r9a07g044 # RZ/G2{L,LC}
++              - renesas,sdhi-r9a07g054 # RZ/V2L
++              - renesas,sdhi-r9a08g045 # RZ/G3S
++              - renesas,sdhi-r9a09g011 # RZ/V2M
++          - const: renesas,rzg2l-sdhi
+ 
+   reg:
+     maxItems: 1
+@@ -116,12 +119,7 @@ allOf:
+       properties:
+         compatible:
+           contains:
+-            enum:
+-              - renesas,sdhi-r9a07g043
+-              - renesas,sdhi-r9a07g044
+-              - renesas,sdhi-r9a07g054
+-              - renesas,sdhi-r9a08g045
+-              - renesas,sdhi-r9a09g011
++            const: renesas,rzg2l-sdhi
+     then:
+       properties:
+         clocks:
 -- 
 2.34.1
 
