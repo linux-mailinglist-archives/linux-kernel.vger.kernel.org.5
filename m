@@ -1,215 +1,139 @@
-Return-Path: <linux-kernel+bounces-155221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B91058AE6FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:52:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E206B8AE6EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:50:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE07E1C230E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:52:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C9F32876C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:50:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB5513B290;
-	Tue, 23 Apr 2024 12:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C4F12F391;
+	Tue, 23 Apr 2024 12:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="vJqK1J1X"
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="X3EGtRGX"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B36CB135417;
-	Tue, 23 Apr 2024 12:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D0312DDBE
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:49:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713876571; cv=none; b=K4MhaspcUko80mbF9lwGwy7RiWuLrMSGKLIIRDAntbecrjYyrKeuopPLbagxrKchXlMI3WsltgImk04qO/Lzup86pvHfkixKO8WZPvURsCuodLrbpmZoD9uQUv2YUGwQrA5+oTpnuU3w6FQBqH9Nkq+xlD0FDyL+DUX6N+W0vKw=
+	t=1713876557; cv=none; b=K5BA79rpyMk8XyIzN5FB23GJl+957hnF49HnfHrf0EKQyel2iHINEz3kx9D7fjDrWOHUc6jR2X8hCL1PycjA/1IUR6U4rPLQ/fkmvTc1fgK8un3D0wF2/MPNcNdHsKpyLHc+t81xT6zNJ3FON5sw8FW/W5nbGRTqX8xkBCUUbNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713876571; c=relaxed/simple;
-	bh=uTLp+ELFhdGrJpCMfmww9OK9ESHzrjUhNlIi99hsMw0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kMRXSZouYkrQK3mcmZ1IV8etGtdlRCfAeUyc809KmTrhq4EfPMEX9FMoi6GhhH5BU40Rhbwiggi/Xl14uX7OFPuayEi43Fu/ts2Kn2/cOjZj4JRMQL9bJE4IJa9cl9I/bbomRCTvx+qzTswEr+7mbCspLld9OsV8iLvZdX6KyH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=vJqK1J1X; arc=none smtp.client-ip=85.214.62.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
-Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: lukma@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id 714C48851D;
-	Tue, 23 Apr 2024 14:49:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1713876567;
-	bh=jhxcryAuFqbosk8HIXlOyLBsXBEZ6UHazg4UEaO9BxU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vJqK1J1Xh1VwdC06jg3okQcMTJofDvM5aDcHFFO7qpBv8vHQaYkrGp07H+nv4CbQa
-	 CPU/Cwm9XuQR3EkRKSV0TXa4S0lExV54bBbmaqPCuAiDyXGofbbyNBeO6jhEai3xR6
-	 yaNgotRrnhgwF+c00gr1hMkwGiEBe+Q9raz5ZIt9KLZCAbbW3ZjKWk8EDma/sWkG6E
-	 hsDS8T3mgNbgR3Jk6Sb8SIVPRRQCyIsupQjAV/vqQjaf2RoX72sQ9yh5PTVMDP9G9n
-	 e8yEYpbhpoKJe3Edw2vLf6xbWfDHTJnW3sqeWygzRIeYC8KeK8MNQKqPYVN5LlOXIB
-	 YghhXeicI04mQ==
-From: Lukasz Majewski <lukma@denx.de>
-To: netdev@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>,
-	Casper Andersson <casper.casan@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Tristram.Ha@microchip.com,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Ravi Gunasekaran <r-gunasekaran@ti.com>,
-	Simon Horman <horms@kernel.org>,
-	Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-	Murali Karicheri <m-karicheri2@ti.com>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Ziyang Xuan <william.xuanziyang@huawei.com>,
-	Shigeru Yoshida <syoshida@redhat.com>,
-	"Ricardo B. Marliere" <ricardo@marliere.net>,
-	linux-kernel@vger.kernel.org,
-	Lukasz Majewski <lukma@denx.de>
-Subject: [net-next PATCH v6 5/5] test: hsr: Add test for HSR RedBOX (HSR-SAN) mode of operation
-Date: Tue, 23 Apr 2024 14:49:08 +0200
-Message-Id: <20240423124908.2073400-6-lukma@denx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240423124908.2073400-1-lukma@denx.de>
-References: <20240423124908.2073400-1-lukma@denx.de>
+	s=arc-20240116; t=1713876557; c=relaxed/simple;
+	bh=XQeZr6E7rXhe/VT+k28qSPXYBkfsY+98/EcL4uCWgDU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Y/bu7sYqW35LkLsRFIp9GFTQqR09yz1EveJdrEC9vEzhmc8m/RZa2jBQN2JQeGEHWB+qcVQdA6rjvDKbEsfpa3I7WtXCO8RVrE2/Rh+29XgveXRqOl19UAxmby7PtDZ00bszsMn9+tUouL2lH1cor872qZifUqckHOJaPqbsiIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=X3EGtRGX; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-34665dd7610so2752166f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 05:49:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713876553; x=1714481353; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GtCF0d5TRfvf1gJjlek+SkbwLI/L240GdEgYBnOFyEs=;
+        b=X3EGtRGXHQ3DZI15Ubfea9OLOWPGEVP0xGmd2QsZJ4aZC6DkdsRk9xc+gAjKIbZlfE
+         5pcfowz3f2jRtPB4jZzeaHNMnA98kSnJqjtIdb1qkk8AEoVYqtYn2e8FlcxCIOVj7Ad3
+         6vvLpAbku3xJBP8DkhGwexSWVWW/qUY14ZQlSEgNoK7vAGLP4czaslnw/0eUR6k1xCUt
+         DOT+ikWyDWLdaBYPdifM9uRaUCd+Wsadd9TGhOYH3w3++jh3NTNc4jaVgmWLJ/4QITBj
+         RALkAbIvUrAZSfY7wkJRwPT0opPDJpxjE/MiuA6sNkKOh42+qeU/XgR91M133t0sZ2az
+         Z5Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713876553; x=1714481353;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GtCF0d5TRfvf1gJjlek+SkbwLI/L240GdEgYBnOFyEs=;
+        b=fLUpxqg11VmIq8vtec/S3SojOH/br0Ea7c8mY+uyV6OTADyq5/RrezsE0ib//jJ2p9
+         2Zhuf1PT3N35fbyHtceBz7Agd9wYyz/AXy1LZ1P2HflPQzeIHnZVMTMyU7wVYxAztuk0
+         Tt6LbTD0b9rMtpb/9m+KSiPZmxoAMTo5xreY67Kd1DEqAnrTvjDyKEGTE+6pS+Htf73D
+         eMyk6TOHKzGWgkOqiPDjlwp8w7g3/ZTPymvubHSGISsdNNQMQP0OXlNZb8KU6hSWz2cq
+         4qDv+mX5cmfJHBCyVdZ7mNyk3vpK4X+yCrRJEhrXStM7m0tuipLCemjYp1PnkRMNseRD
+         +MkA==
+X-Forwarded-Encrypted: i=1; AJvYcCVnCpAet559fy10jF36GT6Rx3n2gR4c+YY1YtJqiwUQJ/1sf9EZiqftZ0BIeEQBaR3fc+1eUYo3hVF+MCxg1Va45HpvX4fb239z6zFa
+X-Gm-Message-State: AOJu0Yy4UDqomq6yMfegyjZlZvLo1ikAgtLJC3WpJK2Tv6eKSfX21vid
+	78H0omtTVz7mWq8hcDomjDULprx5fh/GBfaurZ8dnlj53Ol8Q/pqL+ebBDdflK8=
+X-Google-Smtp-Source: AGHT+IFQ/wvfOsFaUdKh98XxWAyZjDTRY072QmJCxCCxJbX9yzwrMnJqlpUXpbY2Dl+AdrwFqOGXDg==
+X-Received: by 2002:a05:6000:1e89:b0:34a:9afe:76f with SMTP id dd9-20020a0560001e8900b0034a9afe076fmr5609928wrb.30.1713876553387;
+        Tue, 23 Apr 2024 05:49:13 -0700 (PDT)
+Received: from [192.168.0.102] ([176.61.106.227])
+        by smtp.gmail.com with ESMTPSA id y18-20020a056000109200b00343300a4eb8sm13594089wrw.49.2024.04.23.05.49.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 05:49:12 -0700 (PDT)
+Message-ID: <515e2718-7e1b-42c0-9d61-a10d00f12a31@linaro.org>
+Date: Tue, 23 Apr 2024 13:49:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 13/35] media: common: saa7146: Use min macro
+To: Ricardo Ribalda <ribalda@chromium.org>,
+ Martin Tuma <martin.tuma@digiteqautomotive.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ Hugues Fruchet <hugues.fruchet@foss.st.com>,
+ Alain Volmat <alain.volmat@foss.st.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Chen-Yu Tsai
+ <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Sowjanya Komatineni <skomatineni@nvidia.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
+ Abylay Ospan <aospan@netup.ru>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Dmitry Osipenko <digetx@gmail.com>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+ Sylvain Petinot <sylvain.petinot@foss.st.com>,
+ Jacopo Mondi <jacopo+renesas@jmondi.org>,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+ =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
+ Pavel Machek <pavel@ucw.cz>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
+References: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
+ <20240415-fix-cocci-v1-13-477afb23728b@chromium.org>
+Content-Language: en-US
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240415-fix-cocci-v1-13-477afb23728b@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This patch adds hsr_redbox.sh script to test if HSR-SAN mode of operation
-works correctly.
+On 15/04/2024 20:34, Ricardo Ribalda wrote:
+> Simplifies the code. Found by cocci:
+> 
+> drivers/media/common/saa7146/saa7146_hlp.c:125:36-37: WARNING opportunity for min()
+> drivers/media/common/saa7146/saa7146_hlp.c:154:41-42: WARNING opportunity for min()
+> drivers/media/common/saa7146/saa7146_hlp.c:286:35-36: WARNING opportunity for min()
+> drivers/media/common/saa7146/saa7146_hlp.c:289:35-36: WARNING opportunity for min()
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 
-Signed-off-by: Lukasz Majewski <lukma@denx.de>
----
-Changes for v6:
-- add to Makefile's TEST_PROGS hsr_redbox.sh script
----
- tools/testing/selftests/net/hsr/Makefile      |  2 +-
- tools/testing/selftests/net/hsr/hsr_redbox.sh | 92 +++++++++++++++++++
- 2 files changed, 93 insertions(+), 1 deletion(-)
- create mode 100755 tools/testing/selftests/net/hsr/hsr_redbox.sh
-
-diff --git a/tools/testing/selftests/net/hsr/Makefile b/tools/testing/selftests/net/hsr/Makefile
-index c782ad19e011..884cd2cc0681 100644
---- a/tools/testing/selftests/net/hsr/Makefile
-+++ b/tools/testing/selftests/net/hsr/Makefile
-@@ -2,7 +2,7 @@
- 
- top_srcdir = ../../../../..
- 
--TEST_PROGS := hsr_ping.sh
-+TEST_PROGS := hsr_ping.sh hsr_redbox.sh
- TEST_FILES += hsr_common.sh
- 
- include ../../lib.mk
-diff --git a/tools/testing/selftests/net/hsr/hsr_redbox.sh b/tools/testing/selftests/net/hsr/hsr_redbox.sh
-new file mode 100755
-index 000000000000..52e0412c32e6
---- /dev/null
-+++ b/tools/testing/selftests/net/hsr/hsr_redbox.sh
-@@ -0,0 +1,92 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+ipv6=false
-+
-+source ./hsr_common.sh
-+
-+do_complete_ping_test()
-+{
-+	echo "INFO: Initial validation ping (HSR-SAN/RedBox)."
-+	# Each node has to be able each one.
-+	do_ping "${ns1}" 100.64.0.2
-+	do_ping "${ns2}" 100.64.0.1
-+	# Ping from SAN to hsr1 (via hsr2)
-+	do_ping "${ns3}" 100.64.0.1
-+	do_ping "${ns1}" 100.64.0.3
-+	stop_if_error "Initial validation failed."
-+
-+	# Wait for MGNT HSR frames being received and nodes being
-+	# merged.
-+	sleep 5
-+
-+	echo "INFO: Longer ping test (HSR-SAN/RedBox)."
-+	# Ping from SAN to hsr1 (via hsr2)
-+	do_ping_long "${ns3}" 100.64.0.1
-+	# Ping from hsr1 (via hsr2) to SAN
-+	do_ping_long "${ns1}" 100.64.0.3
-+	stop_if_error "Longer ping test failed."
-+
-+	echo "INFO: All good."
-+}
-+
-+setup_hsr_interfaces()
-+{
-+	local HSRv="$1"
-+
-+	echo "INFO: preparing interfaces for HSRv${HSRv} (HSR-SAN/RedBox)."
-+
-+#       |NS1                     |
-+#       |                        |
-+#       |    /-- hsr1 --\        |
-+#       | ns1eth1     ns1eth2    |
-+#       |------------------------|
-+#            |            |
-+#            |            |
-+#            |            |
-+#       |------------------------|        |-----------|
-+#       | ns2eth1     ns2eth2    |        |           |
-+#       |    \-- hsr2 --/        |        |           |
-+#       |            \           |        |           |
-+#       |             ns2eth3    |--------| ns3eth1   |
-+#       |             (interlink)|        |           |
-+#       |NS2 (RedBOX)            |        |NS3 (SAN)  |
-+#
-+	# Check if iproute2 supports adding interlink port to hsrX device
-+	ip link help hsr | grep -q INTERLINK
-+	[ $? -ne 0 ] && { echo "iproute2: HSR interlink interface not supported!"; exit 0; }
-+
-+	# Create interfaces for name spaces
-+	ip link add ns1eth1 netns "${ns1}" type veth peer name ns2eth1 netns "${ns2}"
-+	ip link add ns1eth2 netns "${ns1}" type veth peer name ns2eth2 netns "${ns2}"
-+	ip link add ns3eth1 netns "${ns3}" type veth peer name ns2eth3 netns "${ns2}"
-+
-+	sleep 1
-+
-+	ip -n "${ns1}" link set ns1eth1 up
-+	ip -n "${ns1}" link set ns1eth2 up
-+
-+	ip -n "${ns2}" link set ns2eth1 up
-+	ip -n "${ns2}" link set ns2eth2 up
-+	ip -n "${ns2}" link set ns2eth3 up
-+
-+	ip -n "${ns3}" link set ns3eth1 up
-+
-+	ip -net "${ns1}" link add name hsr1 type hsr slave1 ns1eth1 slave2 ns1eth2 supervision 45 version ${HSRv} proto 0
-+	ip -net "${ns2}" link add name hsr2 type hsr slave1 ns2eth1 slave2 ns2eth2 interlink ns2eth3 supervision 45 version ${HSRv} proto 0
-+
-+	ip -n "${ns1}" addr add 100.64.0.1/24 dev hsr1
-+	ip -n "${ns2}" addr add 100.64.0.2/24 dev hsr2
-+	ip -n "${ns3}" addr add 100.64.0.3/24 dev ns3eth1
-+
-+	ip -n "${ns1}" link set hsr1 up
-+	ip -n "${ns2}" link set hsr2 up
-+}
-+
-+check_prerequisites
-+setup_ns ns1 ns2 ns3
-+
-+setup_hsr_interfaces 1
-+do_complete_ping_test
-+
-+exit $ret
--- 
-2.20.1
-
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
