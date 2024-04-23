@@ -1,110 +1,165 @@
-Return-Path: <linux-kernel+bounces-155112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC5348AE56B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EAF228AE55E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:04:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A50802877F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:05:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A436A286CDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:04:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98C0013DDA5;
-	Tue, 23 Apr 2024 11:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=holoscopio.com header.i=@holoscopio.com header.b="IziF5mDW"
-Received: from grilo.cascardo.info (trem.minaslivre.org [195.201.110.149])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4904E13D508;
+	Tue, 23 Apr 2024 11:53:42 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D41D55E45;
-	Tue, 23 Apr 2024 11:57:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.201.110.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 201A412C48D;
+	Tue, 23 Apr 2024 11:53:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713873438; cv=none; b=fp9nRLeMAoBf5OzGVfBCO106bBBrEnIktxaINGmqs8kfnMSs5PO3icDZyir/ewzoofMRk0f8YfM9O4MBKVvYpTktemmQVy8ncBOXRmFEbXzChpYmdVahNAHqlhJC6SO2CxXBbjBiPQc4QzSAnqCNVAdovpohTBvHzdBX0Fn0RWE=
+	t=1713873221; cv=none; b=kHrbANPDwPyCho1s4gdgM/57CDyf+g3xUluY+mIeah42PzYBtSvBrVoSjWtO071G7g6NVWG9P1kLiyXJ9M/544ppasUixUjRpjulfw7USmqkfxACJtIc0sQQ+pGihLUajlbZV74Eijwn9FAPa7BSOdNoFMPb6eToMdNgESiOq3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713873438; c=relaxed/simple;
-	bh=+3iRm5LFaZ/p2lS8pIZ6CpMc/upaxEiYwOwlpYvaI8M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZEJarpS6p/uH5j5vn2NxXsmb6hM77YdfLInXw5XNuSQphykWSkPeTsEiJlf/LS3oICXZeYfOPuKw0YEcWr8xvZOqGsQTSc8q4AVBfp1mJ/uYyYKOqiiLr3zkbfRvZKWQ6srmM1itaVDQR2LjTU8MxKBpqlj7/Dx72A4FW8Np5Xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=holoscopio.com; spf=pass smtp.mailfrom=holoscopio.com; dkim=pass (2048-bit key) header.d=holoscopio.com header.i=@holoscopio.com header.b=IziF5mDW; arc=none smtp.client-ip=195.201.110.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=holoscopio.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=holoscopio.com
-Received: from siri.cascardo.eti.br (179-125-71-233-dinamico.pombonet.net.br [179.125.71.233])
-	by grilo.cascardo.info (Postfix) with ESMTPSA id 74112206F1F;
-	Tue, 23 Apr 2024 08:49:55 -0300 (-03)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=holoscopio.com;
-	s=mail; t=1713872997;
-	bh=+3iRm5LFaZ/p2lS8pIZ6CpMc/upaxEiYwOwlpYvaI8M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IziF5mDWpryRcDJHxRtLpFQFQb+m3k6LRiD/zWmEc9V13qlFJtvZ7OKDs5Z8TNhw4
-	 nJgvTMTRVLfaG37R4L5h1Tac+pvz0yOLH9oRejzSaz9++QwOK4xMyoPS4EmHqFDD3v
-	 m1VTv4fabUBrROCXQmBqJeTrpJojRhdgC7gFYk3qH5jW8KElFMGaxpc5Rmu/nxavpf
-	 rUEIFVOjjMDRAud9UHel/OtZoFOS024SvWT6YG8/NuuiAcrAybT2ufT0H+qhnuuoTL
-	 CJTToRq7w7m8PffxAjH9Q+ggd6dAU2/Kz66gLwThC7KEs3w9+VI6zj62Za/EVGajfQ
-	 00sa1aXjbW12g==
-Date: Tue, 23 Apr 2024 08:49:51 -0300
-From: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Hans de Goede <hdegoede@redhat.com>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] platform/x86: classmate-laptop: Add missing
- MODULE_DESCRIPTION()
-Message-ID: <ZiegXwf0zK_cIhdR@siri.cascardo.eti.br>
-References: <20240422151238.2051330-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1713873221; c=relaxed/simple;
+	bh=sJUlIw2u3y7di8lLXLn9J2hl+nc7e+xRy/529rTVAcI=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=NWYsqE9zNZQs7y+zzxfmyrlV8xe01vmVNXYp7taAxJDnERsDXR+qmlJq9M2wliJG1+1nlhZaENqDDl5ufNczCIhIYsmWpAx+y0V046CLpvSwG1ZQFaxT7+rSb89m7AEMt/zWxu0mYp8AyIEKjUEskmWK6W3faElFYMPHoAHyhfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VP0mq6yPrzvPrw;
+	Tue, 23 Apr 2024 19:50:35 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (unknown [7.185.36.229])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6BA521403D4;
+	Tue, 23 Apr 2024 19:53:36 +0800 (CST)
+Received: from [10.174.178.247] (10.174.178.247) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 23 Apr 2024 19:53:35 +0800
+Subject: Re: [PATCH v7 04/16] ACPI: processor: Move checks and availability of
+ acpi_processor earlier
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Thomas Gleixner
+	<tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
+	<linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>, Russell King
+	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, Miguel
+ Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, <linuxarm@huawei.com>,
+	<justin.he@arm.com>, <jianyong.wu@arm.com>
+References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
+ <20240418135412.14730-5-Jonathan.Cameron@huawei.com>
+From: Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <0cfc4e2d-65ab-0040-2c7d-fad83f32455b@huawei.com>
+Date: Tue, 23 Apr 2024 19:53:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240422151238.2051330-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240418135412.14730-5-Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
 
-On Mon, Apr 22, 2024 at 06:12:38PM +0300, Andy Shevchenko wrote:
-> The modpost script is not happy
-> 
->   WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/platform/x86/classmate-laptop.o
-> 
-> because there is a missing module description.
-> 
-> Add it to the module.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/platform/x86/classmate-laptop.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/classmate-laptop.c b/drivers/platform/x86/classmate-laptop.c
-> index 87462e7c6219..fb208c68a7eb 100644
-> --- a/drivers/platform/x86/classmate-laptop.c
-> +++ b/drivers/platform/x86/classmate-laptop.c
-> @@ -13,8 +13,6 @@
->  #include <linux/input.h>
->  #include <linux/rfkill.h>
->  
-> -MODULE_LICENSE("GPL");
+> @@ -232,6 +263,7 @@ static int acpi_processor_get_info(struct acpi_device *device)
+>   	acpi_status status = AE_OK;
+>   	static int cpu0_initialized;
+>   	unsigned long long value;
+> +	int ret;
+>   
+>   	acpi_processor_errata();
+>   
+> @@ -316,10 +348,12 @@ static int acpi_processor_get_info(struct acpi_device *device)
+>   	 *  because cpuid <-> apicid mapping is persistent now.
+>   	 */
+>   	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
+> -		int ret = acpi_processor_hotadd_init(pr);
+> +		ret = acpi_processor_hotadd_init(pr, device);
+>   
+>   		if (ret)
+> -			return ret;
+> +			goto err;
+> +	} else {
+> +		acpi_processor_set_per_cpu(pr, device);
+>   	}
+>   
+>   	/*
+> @@ -357,6 +391,10 @@ static int acpi_processor_get_info(struct acpi_device *device)
+>   		arch_fix_phys_package_id(pr->id, value);
+>   
+>   	return 0;
+> +
+> +err:
+> +	per_cpu(processors, pr->id) = NULL;
+
+..
+
+> +	return ret;
+>   }
+>   
+>   /*
+> @@ -365,8 +403,6 @@ static int acpi_processor_get_info(struct acpi_device *device)
+>    * (cpu_data(cpu)) values, like CPU feature flags, family, model, etc.
+>    * Such things have to be put in and set up by the processor driver's .probe().
+>    */
+> -static DEFINE_PER_CPU(void *, processor_device_array);
 > -
->  struct cmpc_accel {
->  	int sensitivity;
->  	int g_select;
-> @@ -1139,3 +1137,5 @@ static const struct acpi_device_id cmpc_device_ids[] __maybe_unused = {
->  };
->  
->  MODULE_DEVICE_TABLE(acpi, cmpc_device_ids);
-> +MODULE_DESCRIPTION("Support for Classmate PC ACPI devices");
+>   static int acpi_processor_add(struct acpi_device *device,
+>   					const struct acpi_device_id *id)
+>   {
+> @@ -395,28 +431,6 @@ static int acpi_processor_add(struct acpi_device *device,
+>   	if (result) /* Processor is not physically present or unavailable */
+>   		return 0;
+>   
+> -	BUG_ON(pr->id >= nr_cpu_ids);
+> -
+> -	/*
+> -	 * Buggy BIOS check.
+> -	 * ACPI id of processors can be reported wrongly by the BIOS.
+> -	 * Don't trust it blindly
+> -	 */
+> -	if (per_cpu(processor_device_array, pr->id) != NULL &&
+> -	    per_cpu(processor_device_array, pr->id) != device) {
+> -		dev_warn(&device->dev,
+> -			"BIOS reported wrong ACPI id %d for the processor\n",
+> -			pr->id);
+> -		/* Give up, but do not abort the namespace scan. */
+> -		goto err;
+> -	}
+> -	/*
+> -	 * processor_device_array is not cleared on errors to allow buggy BIOS
+> -	 * checks.
+> -	 */
+> -	per_cpu(processor_device_array, pr->id) = device;
+> -	per_cpu(processors, pr->id) = pr;
 
-How about "Support for Intel Classmate PC ACPI devices", like the
-Kconfig devices?
+Nit: seems we need to remove the duplicated
+per_cpu(processors, pr->id) = NULL; in acpi_processor_add():
 
-Cascardo.
+--- a/drivers/acpi/acpi_processor.c
++++ b/drivers/acpi/acpi_processor.c
+@@ -446,7 +446,6 @@ static int acpi_processor_add(struct acpi_device 
+*device,
+   err:
+         free_cpumask_var(pr->throttling.shared_cpu_map);
+         device->driver_data = NULL;
+-       per_cpu(processors, pr->id) = NULL;
+   err_free_pr:
+         kfree(pr);
+         return result;
 
-> +MODULE_LICENSE("GPL");
-> -- 
-> 2.43.0.rc1.1336.g36b5255a03ac
-> 
+Thanks
+Hanjun
 
