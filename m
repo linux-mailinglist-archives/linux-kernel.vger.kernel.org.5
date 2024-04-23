@@ -1,67 +1,69 @@
-Return-Path: <linux-kernel+bounces-155818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C87388AF78B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:49:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8F658AF78D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:50:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AA961F239BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:49:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27A2B1C2219E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:50:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64EA81422C3;
-	Tue, 23 Apr 2024 19:49:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B9B14264C;
+	Tue, 23 Apr 2024 19:49:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="O23D/Lds"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="H79s4Q/R"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E83140396
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 19:49:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 992751419BF
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 19:49:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713901778; cv=none; b=EbnR1if3rFYOq9SzN7uQWhuhThDlEsJW12I9oyIOmJnvkD57MsC9Rdz3KgY9B/hA8t/h+PLC6nZvA0AjccOqnwyheqTLBnBXnr2wjyuG0yjI8Nf6sDq2sLVJmD42skacozUMjXaOSdqXhTMJWp678AT9m6yut6nh6BokRl4bN2E=
+	t=1713901779; cv=none; b=GExoCGdbkp6XAt51cHKKELLsHGdqDHpk8o/3o0KSFv0NZh85paithC6t0ye1RNHs4X8OoLnI1ndjlKEkJh0pPVcIwe4j4F0UEyTuOV6I7It0w+b+YfKvyQ2HifHShunCWA4R/tE8wKye423Top2l84NuJAcPLNeCJkTzWChsJZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713901778; c=relaxed/simple;
-	bh=kJ9kYfil2xzfpoYxIpb3/kZLHitOV5bl8cT+liycUAA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CepelDQPNEQgh5gazWBnmHshpHUw0tuULziAeepKpJPKnTXE1Fng9XZJdOItCTHaG5dOzjx89NJqXNiLZqIqF8V6vz7BgTW5wRKFUcNCIjUeq6u3y4qeqFTd76vNnDeIcMNSM05skBcyL7V/nS+UENanhmA0GWIjFRrcQm6NnI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=O23D/Lds; arc=none smtp.client-ip=209.85.210.176
+	s=arc-20240116; t=1713901779; c=relaxed/simple;
+	bh=NAmZBz9KaDewSEn6UsfuFlFlWSCv9ZwDJZlG72i5LnE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=qfO7KNwkSEe2p58lAOoBf7Q6NH1P1XqqLVsdLJ6mT+y2k2hddehotZe6KLjtybjubqQQBHS2fwHoVfmR1x17bUkzb0LFf2F4TOnvH9IgiQlKRdaqk77wUajXlaHD90tCj4gxaugMmdpcoOLxRP61Emn91FhvTRuWHD5Mg21nLQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=H79s4Q/R; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ecec796323so6158135b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:49:37 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6f28bb6d747so2561155b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:49:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1713901776; x=1714506576; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oPtGpJ/IOjI79m4Y457ecZg+Ii4M4Q2uc2yvPSAuKZY=;
-        b=O23D/LdsracELJIRnsl1Q9GakcG+wGXRnrx01rydjSQr6LqkRBxoFQQPXCwXf2k4fZ
-         rpq+M08yVj4+YTes+Mq1grbTTfngE3X3wVf1XrkmabhnxGXgcEPJcnVEhGp23JcOTvAq
-         wcWRHzjEJKXaW1ebVC7zSY1+FvubZ3+3CQdFo=
+        d=fastly.com; s=google; t=1713901777; x=1714506577; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9XSEsaXMnYKVqcTHOSxPSgntkBLCcmZ9J5ASUc0dakk=;
+        b=H79s4Q/RBaNSw0rrpw6Qp6qd61iAjvVhd9VStu1LP40yRnj4je7Q/QYbgcjlaHqLs7
+         /gFTUuskAhWmlJe3FU5pLj+wKY+bMQWXdIDg8HgppiesxQl6RPLWyN9ntPvdjWJ/QwgI
+         t6BcbuP5psZuSXsrByIgBQszexyRjR9oZ73W4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713901776; x=1714506576;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oPtGpJ/IOjI79m4Y457ecZg+Ii4M4Q2uc2yvPSAuKZY=;
-        b=ehrU+bTBW0X/NSvVPVIk3I8UV6MT0GdptQMdAIdZgblv8h+a3+/IDhpJb/WCvYjXBZ
-         +OMazNvtIf2LP+KK9rDngOhXOrWxoKdNqkPL8mxZ3fFjZP1FnWy4IArJIwcZsRC517pi
-         E0pzmC1s//EWd5P5zKc4Usu5gwxQC2pVqeQeiRHpyAHKMpC65RmnlYf53nureg+59l8N
-         IzgYahQn6A7+IjUEH2KXgPDrSjIj5UtqeWpknm0oYV1NE6kTYkua58+JFL7lg/mDVmxq
-         04rE0zRQs2YQUi8d5yDcNyp43eSa4yvsM99AKmErPsdM0AOHIDTGwrfWrQZD4JyplgYe
-         xxxA==
-X-Gm-Message-State: AOJu0YznOOXm9Qam5f91OxFPXsbiUvKrM/uAqwiij6WjaAEMoqvuvfcv
-	UNb7TKG8e7KaQow9rTpb8NYTM1wCHhz6EeS3b6QIv8ESO8tbm07mfft8HtiDRzZHn1Yh/5IMpZ7
-	eCEv7Px5eVAHkRlqmb4El9+BXTcclzb/xxhaqcgB1AZ71G9pSr7urInEQeOCY2juKZF7BVJMrjz
-	6jlBaDWaQmhivs1YKob5c1yngKrn6+gIBJBIgw906RFlY=
-X-Google-Smtp-Source: AGHT+IHfhg5op9/dvJaSrwjVkbxyvWR8iTMv6cxD/iyEnDvQGXqvcq/rsuhpMV+6R+9nENeq9i1FyA==
-X-Received: by 2002:aa7:888d:0:b0:6ed:d189:a0b6 with SMTP id z13-20020aa7888d000000b006edd189a0b6mr710354pfe.32.1713901775801;
-        Tue, 23 Apr 2024 12:49:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713901777; x=1714506577;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9XSEsaXMnYKVqcTHOSxPSgntkBLCcmZ9J5ASUc0dakk=;
+        b=YRiGcvprlnysHwCaK5tki5POD/G+hOzRZAU6fNI9GwIjKThBcYct28Myvx27h/5ns9
+         X4Ffll10GKdSohLc2DcbU8h3vIal+xXdqFjDSZn/vPBczZYjc+qoTgfvwT2R/nrP5+P+
+         DxJFJxQ8YDZuBEkyOynceaE3OGA7NaNC/t+tkyvqLhPlvXrRDHsMKC42UZ7amN89AotM
+         aphZNBkZ53zviG0zSK8lDFD5kzBmbR4ZNgOhtGpzZSleXTXk32f7kcE0MtFt0tMfs6jG
+         6rh71mIIZCO4ubjahef439yPJM3qwoQacGHmMBFwA3pR3XG9CWAAXnv8DoqA4UZy/QpH
+         1F+w==
+X-Gm-Message-State: AOJu0YzUZnEDdkm2zMOT/uimAEC4SoXUpFx3EsE9KocJFGZG21qs9UxG
+	47pBaUPfnw583S0fbuXeEi4SlL4W4Skg6hatdnIljHSK1Uk4+wJr9hMPqXbpzNd1AeNqpghsWeW
+	0alfQi/NQigSyUTLndoKWQwPrN7uwoZVIC/0SXyLDS+theq1goczlVdMb7NxCi+XSHr7MaDG0PV
+	/EQEOKDRBrhWxvL1BoRjG9DCxDSkDWG90myUorH/C4bXU=
+X-Google-Smtp-Source: AGHT+IG6XovYKWAkwGpJrOjAuxe2PGxzyt0cRlqmXFkcgQRTJ+XKwTbwxnJkl3VTUBPWj80xsE85hw==
+X-Received: by 2002:a05:6a00:8c4:b0:6ed:41f3:431d with SMTP id s4-20020a056a0008c400b006ed41f3431dmr779855pfu.0.1713901777469;
+        Tue, 23 Apr 2024 12:49:37 -0700 (PDT)
 Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
-        by smtp.gmail.com with ESMTPSA id q3-20020a056a00084300b006ecc6c1c67asm9995672pfk.215.2024.04.23.12.49.34
+        by smtp.gmail.com with ESMTPSA id q3-20020a056a00084300b006ecc6c1c67asm9995672pfk.215.2024.04.23.12.49.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 12:49:35 -0700 (PDT)
+        Tue, 23 Apr 2024 12:49:37 -0700 (PDT)
 From: Joe Damato <jdamato@fastly.com>
 To: linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org,
@@ -74,12 +76,14 @@ Cc: mkarsten@uwaterloo.ca,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
-	linux-rdma@vger.kernel.org (open list:MELLANOX MLX4 core VPI driver),
-	Paolo Abeni <pabeni@redhat.com>
-Subject: [PATCH net-next 0/3] mlx4: Add support for netdev-genl API
-Date: Tue, 23 Apr 2024 19:49:27 +0000
-Message-Id: <20240423194931.97013-1-jdamato@fastly.com>
+	Paolo Abeni <pabeni@redhat.com>,
+	linux-rdma@vger.kernel.org (open list:MELLANOX MLX4 core VPI driver)
+Subject: [PATCH net-next 1/3] net/mlx4: Track RX allocation failures in a stat
+Date: Tue, 23 Apr 2024 19:49:28 +0000
+Message-Id: <20240423194931.97013-2-jdamato@fastly.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240423194931.97013-1-jdamato@fastly.com>
+References: <20240423194931.97013-1-jdamato@fastly.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,46 +92,63 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi:
+mlx4_en_alloc_frags currently returns -ENOMEM when mlx4_alloc_page
+fails but does not increment a stat field when this occurs.
 
-This series adds support to mlx4 for the netdev-genl API which makes it
-much easier for users and user programs to map NAPI IDs back to
-ifindexes, queues, and IRQs. This is extremely useful for a number of
-use cases, including epoll-based busy poll.
+struct mlx4_en_rx_ring has a dropped field which is tabulated in
+mlx4_en_DUMP_ETH_STATS, but never incremented by the driver.
 
-In addition, this series includes a patch to generate per-queue
-statistics using the netlink API, as well.
+This change modifies mlx4_en_alloc_frags to increment mlx4_en_rx_ring's
+dropped field for the -ENOMEM case.
 
-To facilitate the stats, patch 1/3 makes use of an existing field,
-"dropped" which was already being exported in the ethtool stats by the
-driver, but was never incremented. As of patch 1/3, it is now being
-incremented by the driver in an appropriate place and used in patch 3/3
-as alloc_fail.
+Signed-off-by: Joe Damato <jdamato@fastly.com>
+Tested-by: Martin Karsten <mkarsten@uwaterloo.ca>
+---
+ drivers/net/ethernet/mellanox/mlx4/en_port.c | 4 +++-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c   | 4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-Please note: I do not have access to mlx4 hardware, but I've been
-working closely with Martin Karsten from University of Waterloo (CC'd)
-who has very graciously tested my patches on their mlx4 hardware (hence
-his Tested-by attribution in each commit). His latest research work is
-particularly interesting [1] and this series helps to support that (and
-future) work.
-
-[1]: https://dl.acm.org/doi/pdf/10.1145/3626780
-
-Thanks,
-Joe
-
-Joe Damato (3):
-  net/mlx4: Track RX allocation failures in a stat
-  net/mlx4: link NAPI instances to queues and IRQs
-  net/mlx4: support per-queue statistics via netlink
-
- drivers/net/ethernet/mellanox/mlx4/en_cq.c    | 14 +++
- .../net/ethernet/mellanox/mlx4/en_netdev.c    | 91 +++++++++++++++++++
- drivers/net/ethernet/mellanox/mlx4/en_port.c  |  4 +-
- drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  4 +-
- drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |  1 +
- 5 files changed, 112 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_port.c b/drivers/net/ethernet/mellanox/mlx4/en_port.c
+index 532997eba698..c4b1062158e1 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_port.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_port.c
+@@ -151,7 +151,7 @@ void mlx4_en_fold_software_stats(struct net_device *dev)
+ {
+ 	struct mlx4_en_priv *priv = netdev_priv(dev);
+ 	struct mlx4_en_dev *mdev = priv->mdev;
+-	unsigned long packets, bytes;
++	unsigned long packets, bytes, dropped;
+ 	int i;
+ 
+ 	if (!priv->port_up || mlx4_is_master(mdev->dev))
+@@ -164,9 +164,11 @@ void mlx4_en_fold_software_stats(struct net_device *dev)
+ 
+ 		packets += READ_ONCE(ring->packets);
+ 		bytes   += READ_ONCE(ring->bytes);
++		dropped += READ_ONCE(ring->dropped);
+ 	}
+ 	dev->stats.rx_packets = packets;
+ 	dev->stats.rx_bytes = bytes;
++	dev->stats.rx_missed_errors = dropped;
+ 
+ 	packets = 0;
+ 	bytes = 0;
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+index 8328df8645d5..573ae10300c7 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+@@ -82,8 +82,10 @@ static int mlx4_en_alloc_frags(struct mlx4_en_priv *priv,
+ 
+ 	for (i = 0; i < priv->num_frags; i++, frags++) {
+ 		if (!frags->page) {
+-			if (mlx4_alloc_page(priv, frags, gfp))
++			if (mlx4_alloc_page(priv, frags, gfp)) {
++				ring->dropped++;
+ 				return -ENOMEM;
++			}
+ 			ring->rx_alloc_pages++;
+ 		}
+ 		rx_desc->data[i].addr = cpu_to_be64(frags->dma +
 -- 
 2.25.1
 
