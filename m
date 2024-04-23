@@ -1,351 +1,132 @@
-Return-Path: <linux-kernel+bounces-155829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 072618AF7AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:58:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C2288AF7B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:59:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82A1C28B1EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:58:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB2AA286730
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:59:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87E2D1422D8;
-	Tue, 23 Apr 2024 19:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F241422C7;
+	Tue, 23 Apr 2024 19:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="GBNGlUMO"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m/LgQ5Wi"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A05C1411F4;
-	Tue, 23 Apr 2024 19:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E9E41411E0;
+	Tue, 23 Apr 2024 19:59:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713902296; cv=none; b=qT4rQskq7ZcM3jo41KeIqOEc/16Z9RWWc161Cwf3tPxv5w0wDhjlkcb62MtgAGZrea2OdlEzKwbEe0aObm/GsL28eh5HjrNhk88zF/lL21BKqe95ZJoNNvwGCdrm+GAt8RIlP7pZfHpLBBIxQAdsjUVzCV6v6olQuzcq86OONwg=
+	t=1713902362; cv=none; b=oZ4icMBSMX+cVd5AHSOiswohswRTKjb09sDFhThtq0JP+wWEIO59W8Q681okVGMWXFGc09rANOXZ+FtP71vklmTOHzQJE5jc7TPL8fwb8Sa8q02PRxuLYJuaZZvUGhU3f2TG6Z4ON9iqcZunKh7YR7Ir6hT0DpHNs/ZhZ7ZasY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713902296; c=relaxed/simple;
-	bh=jzSbqsy+gSaNWK/h2jOXWvQnb4ux/bndnUaOM908xqU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kidkDSnk9uxTTISzSgWiau/ukuNcfL++HgIriMRs/iH2ukiQmKavv6Zvc3j2WWqgmJTxdnYPPxrmbzDl2T73I+B4T1+hn2DaTnnvFJCnOV0mEbcONbkSGxWlypQ0XfCz8BpmFHPO3BIHae+V0Ik1j8ZyXZHpKCoVd1pq5rWxWmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=GBNGlUMO; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1713902294; x=1745438294;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=jzSbqsy+gSaNWK/h2jOXWvQnb4ux/bndnUaOM908xqU=;
-  b=GBNGlUMOKOW2av6WrZq9LtXId5mlWCkttHSgjFXUTDV734rMldyo228R
-   cElYXYKeym7VGjDYMn/mT0w0w+ARSV5RWmY6ibdRl2Da7fHhpAbeUxHQK
-   A39NFz7rhiFZOj+nKFVxwRBATE8IJf4UUKM59OIYnxpHSWLiJG6wEpmN6
-   PX1dehFUVEvraBvd0khbpKUodbhr287OpSM/1sIHISNmDnuRWsPjif+vH
-   xWR6bJesPQXb8jBmkhw7tiqhVSxQwKRiaEeqV+Ky1SAk/B/qjRCWwRstr
-   lZCHyzQEYg2Ziv8IyYyn0zyR+HvrAWys7xzW+/JOuxp2KyjbMdQjuV6W6
-   Q==;
-X-CSE-ConnectionGUID: 5xSWtGnMQTuHpwnp037lyA==
-X-CSE-MsgGUID: 6XUchRz+RfWYJfofscGSPQ==
-X-IronPort-AV: E=Sophos;i="6.07,222,1708412400"; 
-   d="scan'208";a="22310508"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Apr 2024 12:58:13 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 23 Apr 2024 12:57:43 -0700
-Received: from DEN-DL-M31836.microsemi.net (10.10.85.11) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Tue, 23 Apr 2024 12:57:41 -0700
-From: Horatiu Vultur <horatiu.vultur@microchip.com>
-To: <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <richardcochran@gmail.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Horatiu Vultur
-	<horatiu.vultur@microchip.com>
-Subject: [PATCH net-next] net: phy: micrel: Add support for PTP_PF_EXTTS for lan8814
-Date: Tue, 23 Apr 2024 21:57:32 +0200
-Message-ID: <20240423195732.3353522-1-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713902362; c=relaxed/simple;
+	bh=BbkoqiMSK9Ssbi1rjQKK2cN+8N1bYmMNPyz/b73g4Fs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nV2GQtyGxjbzObAyyVdSZbvc2Bq0r3d2FJ0uArO3pLAk2MhZqqTwxKAY9Igr1B9IaIo338MAaSmI4zUOD0qi0YqqhCAZWpBJc3VelltKSH0l/Fx4DwZLHSFuHeSzDZKrkIvmrP6NbqJ66Yij527RT8zED2AL7G+TChFDkv3P6CQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m/LgQ5Wi; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-516d68d7a8bso226308e87.1;
+        Tue, 23 Apr 2024 12:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713902359; x=1714507159; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tbZV0td3QiFIVyIuhLK1YCZ0t4y/knCvQBxyS/kA6xE=;
+        b=m/LgQ5WinM3HM0KY5T0SYxRwdiCTCI+AWY945naUOsdOEwNelmIoHxMzkXFVvqt2LL
+         HZJeCWnVTL9C9NZ78RV2z4lXfNv45UA3PokkvwhDLcMBmlHSuIc+7nJZxteNqEr6psk/
+         Vv80GC15uDqF7maAfW9AbL7ziXkY9w3LgJAie3nIw9OFD8wzzKyJbcNCIHUOEKTMlsOX
+         dpBI+ut+lp8CkvCvuEw74x+5T+K9QiPwCzj98UZ7aoG3t4+AqvB7wNDKbIOQhoyhh9Ho
+         jRAZ6/I5XNr/qIdfbD1OS0aXC7t3QrpylUKUtOeE0XVHjYPYWRhYkdIcUB4+KqkzdlBQ
+         jAEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713902359; x=1714507159;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tbZV0td3QiFIVyIuhLK1YCZ0t4y/knCvQBxyS/kA6xE=;
+        b=s9kMDgAXh2EQu31+2fL5cjYDI2EEsqOFz5QOZkTZ/4T2noPrCvqOn5un2Lckk1iIsc
+         uPYY3fF9J61VOZmsDvylAWLCyzMnY2AaBoxdXRLCN+c7ole77bXzC5DbwIcypkFUOow/
+         PGkUvASOUc27+AWyVs8cS9LcV8oOZtDb4DvKvSHG0cMXvU1q6cQXLwObuy9TtBgnFRA3
+         kRFz12OdqUeryyFCvHy+SH3eYPQPuSDzc6dyy1y2pJjiDHb2v9RDreyL9VSuLfI9MRxn
+         ZELiPk+gRpXgZHFc+MmuvgoKiOuFllBrHtrfXqoRJffMwa9NgJSE761JqsK8vPpch6iW
+         1ROA==
+X-Forwarded-Encrypted: i=1; AJvYcCVV+dCcK1A/r/gmHlb8Dz7bYmEKPiSjthQGj3xf+tTg5BYwmlnVhwqZ55TB7mxQiyGhBk/sgDU45vDemZOgIkQU4zv42wy8g+EAJHKF
+X-Gm-Message-State: AOJu0YxgETOzmmZkijQxFURaQWj1oXtFtM62snGkOq/bObpMg6z6QfSQ
+	O+Jd8HDhCydIt10rmSYZ6TLpR3fFtMTffhqlkDPDB4zosMMVqpJm
+X-Google-Smtp-Source: AGHT+IE5700aDd3WYfKRuJ3DOeiP5TWMahl8JXcxO0nR6RXknNJW+zAWi5dnzphHI1E21XuXkoF9Mw==
+X-Received: by 2002:ac2:5f83:0:b0:51a:cc71:b91d with SMTP id r3-20020ac25f83000000b0051acc71b91dmr1095486lfe.19.1713902359028;
+        Tue, 23 Apr 2024 12:59:19 -0700 (PDT)
+Received: from ?IPV6:2001:678:a5c:1202:2659:d6e4:5d55:b864? (soda.int.kasm.eu. [2001:678:a5c:1202:2659:d6e4:5d55:b864])
+        by smtp.gmail.com with ESMTPSA id bp26-20020a056512159a00b0051b25491ef5sm804621lfb.127.2024.04.23.12.59.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 12:59:18 -0700 (PDT)
+Message-ID: <ba0a2b84-2d98-4339-9b02-d7e95d9c6caf@gmail.com>
+Date: Tue, 23 Apr 2024 21:59:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] cgroup/cpuset: Statically initialize more members
+ of top_cpuset
+To: Waiman Long <longman@redhat.com>, Xiu Jianfeng <xiujianfeng@huawei.com>,
+ lizefan.x@bytedance.com, tj@kernel.org, hannes@cmpxchg.org
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240420094616.1028540-1-xiujianfeng@huawei.com>
+ <f2edf788-6ff3-43b1-9445-ac237e7910ac@gmail.com>
+ <a583d400-ed59-46b8-a26d-b726055b5cad@redhat.com>
+Content-Language: en-US, sv-SE
+From: Klara Modin <klarasmodin@gmail.com>
+In-Reply-To: <a583d400-ed59-46b8-a26d-b726055b5cad@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 
-Extend the PTP programmable gpios to implement also PTP_PF_EXTTS
-function. The pins can be configured to capture both of rising
-and falling edge. Once the event is seen, then an interrupt is
-generated and the LTC is saved in the registers.
-On lan8814 only GPIO 3 can be configured for this.
+On 2024-04-23 21:50, Waiman Long wrote:
+> 
+> On 4/23/24 15:21, Klara Modin wrote:
+>> Hi,
+>>
+>> On 2024-04-20 11:46, Xiu Jianfeng wrote:
+>>> Initializing top_cpuset.relax_domain_level and setting
+>>> CS_SCHED_LOAD_BALANCE to top_cpuset.flags in cpuset_init() could be
+>>> completed at the time of top_cpuset definition by compiler.
+>>>
+>>> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+>>> ---
+>>>   kernel/cgroup/cpuset.c | 5 ++---
+>>>   1 file changed, 2 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>>> index d8d3439eda4e..e70008a1d86a 100644
+>>> --- a/kernel/cgroup/cpuset.c
+>>> +++ b/kernel/cgroup/cpuset.c
+>>> @@ -369,8 +369,9 @@ static inline void notify_partition_change(struct 
+>>> cpuset *cs, int old_prs)
+>>>     static struct cpuset top_cpuset = {
+>>>       .flags = ((1 << CS_ONLINE) | (1 << CS_CPU_EXCLUSIVE) |
+>>> -          (1 << CS_MEM_EXCLUSIVE)),
+>>> +          (1 << CS_MEM_EXCLUSIVE) | (1 < CS_SCHED_LOAD_BALANCE)),
+>>
+>> You dropped a '<' for the bitwise shift, this causes bad cpu 
+>> utilization for me.
+> 
+> Oh, now load_balancing is disable by default in the root cgroup. That is 
+> bad. Will post a patch to fix it.
+> 
+> Thanks,
+> Longman
+> 
+I attached one in my previous message, though I'm still very new at this 
+and may have missed something.
 
-This was tested using:
-ts2phc -m -l 7 -s generic -f ts2phc.cfg
-
-Where the configuration was the following:
----
-[global]
-ts2phc.pin_index  3
-
-[eth0]
----
-
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- drivers/net/phy/micrel.c | 182 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 181 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index 0e310a5e2bff0..2d11f38cbc243 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -167,6 +167,9 @@
- #define PTP_CMD_CTL_PTP_LTC_STEP_SEC_		BIT(5)
- #define PTP_CMD_CTL_PTP_LTC_STEP_NSEC_		BIT(6)
- 
-+#define PTP_COMMON_INT_ENA			0x0204
-+#define PTP_COMMON_INT_ENA_GPIO_CAP_EN		BIT(2)
-+
- #define PTP_CLOCK_SET_SEC_HI			0x0205
- #define PTP_CLOCK_SET_SEC_MID			0x0206
- #define PTP_CLOCK_SET_SEC_LO			0x0207
-@@ -179,6 +182,27 @@
- #define PTP_CLOCK_READ_NS_HI			0x022C
- #define PTP_CLOCK_READ_NS_LO			0x022D
- 
-+#define PTP_GPIO_SEL				0x0230
-+#define PTP_GPIO_SEL_GPIO_SEL(pin)		((pin) << 8)
-+#define PTP_GPIO_CAP_MAP_LO			0x0232
-+
-+#define PTP_GPIO_CAP_EN				0x0233
-+#define PTP_GPIO_CAP_EN_GPIO_RE_CAPTURE_ENABLE(gpio)	BIT(gpio)
-+#define PTP_GPIO_CAP_EN_GPIO_FE_CAPTURE_ENABLE(gpio)	(BIT(gpio) << 8)
-+
-+#define PTP_GPIO_RE_LTC_SEC_HI_CAP		0x0235
-+#define PTP_GPIO_RE_LTC_SEC_LO_CAP		0x0236
-+#define PTP_GPIO_RE_LTC_NS_HI_CAP		0x0237
-+#define PTP_GPIO_RE_LTC_NS_LO_CAP		0x0238
-+#define PTP_GPIO_FE_LTC_SEC_HI_CAP		0x0239
-+#define PTP_GPIO_FE_LTC_SEC_LO_CAP		0x023A
-+#define PTP_GPIO_FE_LTC_NS_HI_CAP		0x023B
-+#define PTP_GPIO_FE_LTC_NS_LO_CAP		0x023C
-+
-+#define PTP_GPIO_CAP_STS			0x023D
-+#define PTP_GPIO_CAP_STS_PTP_GPIO_RE_STS(gpio)	BIT(gpio)
-+#define PTP_GPIO_CAP_STS_PTP_GPIO_FE_STS(gpio)	(BIT(gpio) << 8)
-+
- #define PTP_OPERATING_MODE			0x0241
- #define PTP_OPERATING_MODE_STANDALONE_		BIT(0)
- 
-@@ -274,6 +298,7 @@
- 
- #define LAN8814_PTP_GPIO_NUM			24
- #define LAN8814_PTP_PEROUT_NUM			2
-+#define LAN8814_PTP_EXTTS_NUM			3
- 
- #define LAN8814_BUFFER_TIME			2
- 
-@@ -3124,12 +3149,102 @@ static int lan8814_ptp_perout(struct ptp_clock_info *ptpci,
- 	return 0;
- }
- 
-+static void lan8814_ptp_extts_on(struct phy_device *phydev, int pin, u32 flags)
-+{
-+	u16 tmp;
-+
-+	/* Set as gpio input */
-+	tmp = lanphy_read_page_reg(phydev, 4, LAN8814_GPIO_DIR_ADDR(pin));
-+	tmp &= ~LAN8814_GPIO_DIR_BIT(pin);
-+	lanphy_write_page_reg(phydev, 4, LAN8814_GPIO_DIR_ADDR(pin), tmp);
-+
-+	/* Map the pin to ltc pin 0 of the capture map registers */
-+	tmp = lanphy_read_page_reg(phydev, 4, PTP_GPIO_CAP_MAP_LO);
-+	tmp |= pin;
-+	lanphy_write_page_reg(phydev, 4, PTP_GPIO_CAP_MAP_LO, tmp);
-+
-+	/* Enable capture on the edges of the ltc pin */
-+	tmp = lanphy_read_page_reg(phydev, 4, PTP_GPIO_CAP_EN);
-+	if (flags & PTP_RISING_EDGE)
-+		tmp |= PTP_GPIO_CAP_EN_GPIO_RE_CAPTURE_ENABLE(0);
-+	if (flags & PTP_FALLING_EDGE)
-+		tmp |= PTP_GPIO_CAP_EN_GPIO_FE_CAPTURE_ENABLE(0);
-+	lanphy_write_page_reg(phydev, 4, PTP_GPIO_CAP_EN, tmp);
-+
-+	/* Enable interrupt top interrupt */
-+	tmp = lanphy_read_page_reg(phydev, 4, PTP_COMMON_INT_ENA);
-+	tmp |= PTP_COMMON_INT_ENA_GPIO_CAP_EN;
-+	lanphy_write_page_reg(phydev, 4, PTP_COMMON_INT_ENA, tmp);
-+}
-+
-+static void lan8814_ptp_extts_off(struct phy_device *phydev, int pin)
-+{
-+	u16 tmp;
-+
-+	/* Set as gpio out */
-+	tmp = lanphy_read_page_reg(phydev, 4, LAN8814_GPIO_DIR_ADDR(pin));
-+	tmp |= LAN8814_GPIO_DIR_BIT(pin);
-+	lanphy_write_page_reg(phydev, 4, LAN8814_GPIO_DIR_ADDR(pin), tmp);
-+
-+	/* Enable alternate, 0:for alternate function, 1:gpio */
-+	tmp = lanphy_read_page_reg(phydev, 4, LAN8814_GPIO_EN_ADDR(pin));
-+	tmp &= ~LAN8814_GPIO_EN_BIT(pin);
-+	lanphy_write_page_reg(phydev, 4, LAN8814_GPIO_EN_ADDR(pin), tmp);
-+
-+	/* Clear the mapping of pin to registers 0 of the capture registers */
-+	tmp = lanphy_read_page_reg(phydev, 4, PTP_GPIO_CAP_MAP_LO);
-+	tmp &= ~GENMASK(3, 0);
-+	lanphy_write_page_reg(phydev, 4, PTP_GPIO_CAP_MAP_LO, tmp);
-+
-+	/* Disable capture on both of the edges */
-+	tmp = lanphy_read_page_reg(phydev, 4, PTP_GPIO_CAP_EN);
-+	tmp &= ~PTP_GPIO_CAP_EN_GPIO_RE_CAPTURE_ENABLE(pin);
-+	tmp &= ~PTP_GPIO_CAP_EN_GPIO_FE_CAPTURE_ENABLE(pin);
-+	lanphy_write_page_reg(phydev, 4, PTP_GPIO_CAP_EN, tmp);
-+
-+	/* Disable interrupt top interrupt */
-+	tmp = lanphy_read_page_reg(phydev, 4, PTP_COMMON_INT_ENA);
-+	tmp &= ~PTP_COMMON_INT_ENA_GPIO_CAP_EN;
-+	lanphy_write_page_reg(phydev, 4, PTP_COMMON_INT_ENA, tmp);
-+}
-+
-+static int lan8814_ptp_extts(struct ptp_clock_info *ptpci,
-+			     struct ptp_clock_request *rq, int on)
-+{
-+	struct lan8814_shared_priv *shared = container_of(ptpci, struct lan8814_shared_priv,
-+							  ptp_clock_info);
-+	struct phy_device *phydev = shared->phydev;
-+	int pin;
-+
-+	if (rq->extts.flags & ~(PTP_ENABLE_FEATURE |
-+				PTP_EXTTS_EDGES |
-+				PTP_STRICT_FLAGS))
-+		return -EOPNOTSUPP;
-+
-+	pin = ptp_find_pin(shared->ptp_clock, PTP_PF_EXTTS,
-+			   rq->extts.index);
-+	if (pin == -1 || pin != LAN8814_PTP_EXTTS_NUM)
-+		return -EINVAL;
-+
-+	mutex_lock(&shared->shared_lock);
-+	if (on)
-+		lan8814_ptp_extts_on(phydev, pin, rq->extts.flags);
-+	else
-+		lan8814_ptp_extts_off(phydev, pin);
-+
-+	mutex_unlock(&shared->shared_lock);
-+
-+	return 0;
-+}
-+
- static int lan8814_ptpci_enable(struct ptp_clock_info *ptpci,
- 				struct ptp_clock_request *rq, int on)
- {
- 	switch (rq->type) {
- 	case PTP_CLK_REQ_PEROUT:
- 		return lan8814_ptp_perout(ptpci, rq, on);
-+	case PTP_CLK_REQ_EXTTS:
-+		return lan8814_ptp_extts(ptpci, rq, on);
- 	default:
- 		return -EINVAL;
- 	}
-@@ -3148,6 +3263,10 @@ static int lan8814_ptpci_verify(struct ptp_clock_info *ptp, unsigned int pin,
- 		if (pin >= LAN8814_PTP_PEROUT_NUM || pin != chan)
- 			return -1;
- 		break;
-+	case PTP_PF_EXTTS:
-+		if (pin != LAN8814_PTP_EXTTS_NUM)
-+			return -1;
-+		break;
- 	default:
- 		return -1;
- 	}
-@@ -3320,6 +3439,64 @@ static void lan8814_handle_ptp_interrupt(struct phy_device *phydev, u16 status)
- 	}
- }
- 
-+static int lan8814_gpio_process_cap(struct lan8814_shared_priv *shared)
-+{
-+	struct phy_device *phydev = shared->phydev;
-+	struct ptp_clock_event ptp_event = {0};
-+	unsigned long nsec;
-+	s64 sec;
-+	u16 tmp;
-+
-+	/* This is 0 because whatever was the input pin it was mapped it to
-+	 * ltc gpio pin 0
-+	 */
-+	tmp = lanphy_read_page_reg(phydev, 4, PTP_GPIO_SEL);
-+	tmp |= PTP_GPIO_SEL_GPIO_SEL(0);
-+	lanphy_write_page_reg(phydev, 4, PTP_GPIO_SEL, tmp);
-+
-+	tmp = lanphy_read_page_reg(phydev, 4, PTP_GPIO_CAP_STS);
-+	if (!(tmp & PTP_GPIO_CAP_STS_PTP_GPIO_RE_STS(0)) &&
-+	    !(tmp & PTP_GPIO_CAP_STS_PTP_GPIO_FE_STS(0)))
-+		return -1;
-+
-+	if (tmp & BIT(0)) {
-+		sec = lanphy_read_page_reg(phydev, 4, PTP_GPIO_RE_LTC_SEC_HI_CAP);
-+		sec <<= 16;
-+		sec |= lanphy_read_page_reg(phydev, 4, PTP_GPIO_RE_LTC_SEC_LO_CAP);
-+
-+		nsec = lanphy_read_page_reg(phydev, 4, PTP_GPIO_RE_LTC_NS_HI_CAP) & 0x3fff;
-+		nsec <<= 16;
-+		nsec |= lanphy_read_page_reg(phydev, 4, PTP_GPIO_RE_LTC_NS_LO_CAP);
-+	} else {
-+		sec = lanphy_read_page_reg(phydev, 4, PTP_GPIO_FE_LTC_SEC_HI_CAP);
-+		sec <<= 16;
-+		sec |= lanphy_read_page_reg(phydev, 4, PTP_GPIO_FE_LTC_SEC_LO_CAP);
-+
-+		nsec = lanphy_read_page_reg(phydev, 4, PTP_GPIO_FE_LTC_NS_HI_CAP) & 0x3fff;
-+		nsec <<= 16;
-+		nsec |= lanphy_read_page_reg(phydev, 4, PTP_GPIO_RE_LTC_NS_LO_CAP);
-+	}
-+
-+	ptp_event.index = 0;
-+	ptp_event.timestamp = ktime_set(sec, nsec);
-+	ptp_event.type = PTP_CLOCK_EXTTS;
-+	ptp_clock_event(shared->ptp_clock, &ptp_event);
-+
-+	return 0;
-+}
-+
-+static int lan8814_handle_gpio_interrupt(struct phy_device *phydev, u16 status)
-+{
-+	struct lan8814_shared_priv *shared = phydev->shared->priv;
-+	int ret;
-+
-+	mutex_lock(&shared->shared_lock);
-+	ret = lan8814_gpio_process_cap(shared);
-+	mutex_unlock(&shared->shared_lock);
-+
-+	return ret;
-+}
-+
- static int lan8804_config_init(struct phy_device *phydev)
- {
- 	int val;
-@@ -3424,6 +3601,9 @@ static irqreturn_t lan8814_handle_interrupt(struct phy_device *phydev)
- 		ret = IRQ_HANDLED;
- 	}
- 
-+	if (!lan8814_handle_gpio_interrupt(phydev, irq_status))
-+		ret = IRQ_HANDLED;
-+
- 	return ret;
- }
- 
-@@ -3541,7 +3721,7 @@ static int lan8814_ptp_probe_once(struct phy_device *phydev)
- 	snprintf(shared->ptp_clock_info.name, 30, "%s", phydev->drv->name);
- 	shared->ptp_clock_info.max_adj = 31249999;
- 	shared->ptp_clock_info.n_alarm = 0;
--	shared->ptp_clock_info.n_ext_ts = 0;
-+	shared->ptp_clock_info.n_ext_ts = LAN8814_PTP_EXTTS_NUM;
- 	shared->ptp_clock_info.n_pins = LAN8814_PTP_GPIO_NUM;
- 	shared->ptp_clock_info.pps = 0;
- 	shared->ptp_clock_info.pin_config = shared->pin_config;
--- 
-2.34.1
-
+Regards,
+Klara Modin
 
