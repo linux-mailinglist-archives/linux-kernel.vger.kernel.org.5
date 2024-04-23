@@ -1,367 +1,241 @@
-Return-Path: <linux-kernel+bounces-154742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32D618AE06E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B96958AE07A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:01:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE0DD282632
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:00:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71272282E81
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:01:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED294F8BC;
-	Tue, 23 Apr 2024 09:00:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18F4556B69;
+	Tue, 23 Apr 2024 09:00:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ua44dFyI"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="axwT2LI/"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B86720310;
-	Tue, 23 Apr 2024 08:59:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE4756443;
+	Tue, 23 Apr 2024 09:00:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713862801; cv=none; b=cok6NaoL2uudk5nchyYJcFxpIMuf1BNhB7Oc7h3BvTHFBH7Q3VhCMf4Njf/3JEB0RekJOdRSlPLkqtUmSEU2pi3e434K8HNJwUN0XYn0i6W0q4JeFTU52CrSuUDrtYEpC55RyH7wmnfUa1KxkdebG8tS63PNsovT+6EPTpQ2Frk=
+	t=1713862850; cv=none; b=GcsixDQ8b9iwZniuoxLASoZ9y0yOC75x5OI6ss2oE8wd7+ySFOAlEDdrZd6740w+neLbdkKXV5vIWTTdwa+Yy3yPI1O6q0NreNn9bvuD9o9kgEJcm/W8Q6ZUQQ0M0uiQp0M5+cDGVJTAZl7bRvkV5CiN6rthU6FDmZiB6aLn3dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713862801; c=relaxed/simple;
-	bh=ed4LxOicoC+eJyvIiF/Z6tZxJQXXlksbIC8LauS8k3Q=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=tfptmes+44rOAhhHQaSANRl6MK0UAjpJX9Tft+y4YDrVftd8srBv/NavDAV8DWaVxcfNbdBVdD02PsHBXUfPD70CVJHFsWSpedK6lbf3zyVnNT7M49SabqEEEIifZi/ajCllmKUUHUvo8Baemg2gJGpMHH6X7xuzUQ51UE3lj4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ua44dFyI; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713862797;
-	bh=ed4LxOicoC+eJyvIiF/Z6tZxJQXXlksbIC8LauS8k3Q=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=ua44dFyIFowR1oFgnR4wlBDEhVFw29guSRlzIrOOBDajIWOmQW6mqWfqLU0idq3Fp
-	 R6M00RAAdyHxiXc/+oB39fZueh97X1AJyXvvFcc7MmNCGWUfLNQAbo3Yt2Di0kg4Zh
-	 2yxMQjYYIaEKwDhapQ8HnTVqiZn1LY0pASfkSxln4/+dY7Twf+MC+CNzXtwZF4Wg+Z
-	 X7h9WOAKR7LN3ex79xjCntbNJdMIITEVRvUcMHGMIAHKgtavqZ2rGlyyiK2oe891ET
-	 LYmRcfiscruUKuN/P3gFsfu+9o976xpcM/vNvNVakr/w7Q6yqTS9GaVuAvjIE9wyaT
-	 dzTGvsHd5lZ/g==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5180F3780016;
-	Tue, 23 Apr 2024 08:59:51 +0000 (UTC)
-Message-ID: <5059896a-8eef-445e-8fbb-161aec552217@collabora.com>
-Date: Tue, 23 Apr 2024 14:00:20 +0500
+	s=arc-20240116; t=1713862850; c=relaxed/simple;
+	bh=AaPe4W5ATU0vKXRJA+JX8mxIfjHiFM2MGOqUcT2Zjlg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QU8pomdtvQkfAnF0BTsd1QqRpFgJaTnD+U5719sb+8qdvSnJ9M7inw+3WpwJrSNQDQw88X073JcX0mkmZ4dD3CkxgrYKeHg+e/VP2iALPEqCxCnJApV+RQc6S6Yg7I+xY1lvi6SVU4L/7/n5xKp9HLQOwJUOyYabTz0wDalEeYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=axwT2LI/; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43N90W5O102048;
+	Tue, 23 Apr 2024 04:00:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713862832;
+	bh=alTEvUtf7H2uqDMe4053Ta0mKCB1AIUyCEraP187CNQ=;
+	h=From:To:CC:Subject:Date;
+	b=axwT2LI/tuAzCylciujUpYigCqp9ppfXoGUUwYTEYGniDpt9P+PnjIRB/j38+8eQ4
+	 1AeJIUAroAEpjZM0VXGiW+cmIQiKeOI2BD2bvga21d755Wqx/BA06YzVtMwATzI+eJ
+	 /4pWtdNJlUh3qHYPnaYmy1UYk+MqVvA0OrQhYsJM=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43N90WeQ104439
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 23 Apr 2024 04:00:32 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 23
+ Apr 2024 04:00:32 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 23 Apr 2024 04:00:32 -0500
+Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43N90Wx5093755;
+	Tue, 23 Apr 2024 04:00:32 -0500
+Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.25])
+	by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 43N90VEh023186;
+	Tue, 23 Apr 2024 04:00:31 -0500
+From: MD Danish Anwar <danishanwar@ti.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
+CC: Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzk+dt@kernel.org>,
+        Rob Herring <robh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        Tero Kristo <kristo@kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        MD
+ Danish Anwar <danishanwar@ti.com>
+Subject: [PATCH] arm64: dts: ti: k3-am642-evm-icssg1-dualemac: add overlay for mii mode
+Date: Tue, 23 Apr 2024 14:30:28 +0530
+Message-ID: <20240423090028.1311635-1-danishanwar@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Andrew Jones <ajones@ventanamicro.com>, Anup Patel <anup@brainfault.org>,
- Ajay Kaher <ajay.kaher@broadcom.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexandre Ghiti <alexghiti@rivosinc.com>, samuel.holland@sifive.com,
- Conor Dooley <conor.dooley@microchip.com>, Juergen Gross <jgross@suse.com>,
- kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org,
- Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Shuah Khan <shuah@kernel.org>,
- virtualization@lists.linux.dev, Will Deacon <will@kernel.org>, x86@kernel.org
-Subject: Re: [PATCH v8 22/24] KVM: riscv: selftests: Add a test for PMU
- snapshot functionality
-To: Atish Patra <atishp@rivosinc.com>, linux-kernel@vger.kernel.org
-References: <20240420151741.962500-1-atishp@rivosinc.com>
- <20240420151741.962500-23-atishp@rivosinc.com>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240420151741.962500-23-atishp@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 4/20/24 8:17 PM, Atish Patra wrote:
-> Verify PMU snapshot functionality by setting up the shared memory
-> correctly and reading the counter values from the shared memory
-> instead of the CSR.
-> 
-> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> Reviewed-by: Anup Patel <anup@brainfault.org>
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
-LGTM
+Add device tree overlay to enable both ICSSG1 ports available on AM64x-EVM
+in MII mode.
 
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+---
+NOTE: This patch depends on [1]. Without [1] mii mode will not work for
+ICSSG. Patch [1] is currently posted to net subsystem.
 
-> ---
->  .../testing/selftests/kvm/include/riscv/sbi.h |  25 +++
->  .../selftests/kvm/lib/riscv/processor.c       |  12 ++
->  .../selftests/kvm/riscv/sbi_pmu_test.c        | 144 ++++++++++++++++++
->  3 files changed, 181 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/include/riscv/sbi.h b/tools/testing/selftests/kvm/include/riscv/sbi.h
-> index 6675ca673c77..046b432ae896 100644
-> --- a/tools/testing/selftests/kvm/include/riscv/sbi.h
-> +++ b/tools/testing/selftests/kvm/include/riscv/sbi.h
-> @@ -8,6 +8,12 @@
->  #ifndef SELFTEST_KVM_SBI_H
->  #define SELFTEST_KVM_SBI_H
->  
-> +/* SBI spec version fields */
-> +#define SBI_SPEC_VERSION_DEFAULT	0x1
-> +#define SBI_SPEC_VERSION_MAJOR_SHIFT	24
-> +#define SBI_SPEC_VERSION_MAJOR_MASK	0x7f
-> +#define SBI_SPEC_VERSION_MINOR_MASK	0xffffff
-> +
->  /* SBI return error codes */
->  #define SBI_SUCCESS				 0
->  #define SBI_ERR_FAILURE				-1
-> @@ -33,6 +39,9 @@ enum sbi_ext_id {
->  };
->  
->  enum sbi_ext_base_fid {
-> +	SBI_EXT_BASE_GET_SPEC_VERSION = 0,
-> +	SBI_EXT_BASE_GET_IMP_ID,
-> +	SBI_EXT_BASE_GET_IMP_VERSION,
->  	SBI_EXT_BASE_PROBE_EXT = 3,
->  };
->  enum sbi_ext_pmu_fid {
-> @@ -60,6 +69,12 @@ union sbi_pmu_ctr_info {
->  	};
->  };
->  
-> +struct riscv_pmu_snapshot_data {
-> +	u64 ctr_overflow_mask;
-> +	u64 ctr_values[64];
-> +	u64 reserved[447];
-> +};
-> +
->  struct sbiret {
->  	long error;
->  	long value;
-> @@ -113,4 +128,14 @@ struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
->  
->  bool guest_sbi_probe_extension(int extid, long *out_val);
->  
-> +/* Make SBI version */
-> +static inline unsigned long sbi_mk_version(unsigned long major,
-> +					    unsigned long minor)
-> +{
-> +	return ((major & SBI_SPEC_VERSION_MAJOR_MASK) << SBI_SPEC_VERSION_MAJOR_SHIFT)
-> +		| (minor & SBI_SPEC_VERSION_MINOR_MASK);
-> +}
-> +
-> +unsigned long get_host_sbi_spec_version(void);
-> +
->  #endif /* SELFTEST_KVM_SBI_H */
-> diff --git a/tools/testing/selftests/kvm/lib/riscv/processor.c b/tools/testing/selftests/kvm/lib/riscv/processor.c
-> index e8211f5d6863..ccb35573749c 100644
-> --- a/tools/testing/selftests/kvm/lib/riscv/processor.c
-> +++ b/tools/testing/selftests/kvm/lib/riscv/processor.c
-> @@ -502,3 +502,15 @@ bool guest_sbi_probe_extension(int extid, long *out_val)
->  
->  	return true;
->  }
-> +
-> +unsigned long get_host_sbi_spec_version(void)
-> +{
-> +	struct sbiret ret;
-> +
-> +	ret = sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_SPEC_VERSION, 0,
-> +		       0, 0, 0, 0, 0);
-> +
-> +	GUEST_ASSERT(!ret.error);
-> +
-> +	return ret.value;
-> +}
-> diff --git a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
-> index 7c81691e39c5..9002ff451abf 100644
-> --- a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
-> +++ b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
-> @@ -19,6 +19,11 @@
->  #define RISCV_MAX_PMU_COUNTERS 64
->  union sbi_pmu_ctr_info ctrinfo_arr[RISCV_MAX_PMU_COUNTERS];
->  
-> +/* Snapshot shared memory data */
-> +#define PMU_SNAPSHOT_GPA_BASE		BIT(30)
-> +static void *snapshot_gva;
-> +static vm_paddr_t snapshot_gpa;
-> +
->  /* Cache the available counters in a bitmask */
->  static unsigned long counter_mask_available;
->  
-> @@ -186,6 +191,32 @@ static unsigned long read_counter(int idx, union sbi_pmu_ctr_info ctrinfo)
->  	return counter_val;
->  }
->  
-> +static inline void verify_sbi_requirement_assert(void)
-> +{
-> +	long out_val = 0;
-> +	bool probe;
-> +
-> +	probe = guest_sbi_probe_extension(SBI_EXT_PMU, &out_val);
-> +	GUEST_ASSERT(probe && out_val == 1);
-> +
-> +	if (get_host_sbi_spec_version() < sbi_mk_version(2, 0))
-> +		__GUEST_ASSERT(0, "SBI implementation version doesn't support PMU Snapshot");
-> +}
-> +
-> +static void snapshot_set_shmem(vm_paddr_t gpa, unsigned long flags)
-> +{
-> +	unsigned long lo = (unsigned long)gpa;
-> +#if __riscv_xlen == 32
-> +	unsigned long hi = (unsigned long)(gpa >> 32);
-> +#else
-> +	unsigned long hi = gpa == -1 ? -1 : 0;
-> +#endif
-> +	struct sbiret ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_SNAPSHOT_SET_SHMEM,
-> +				      lo, hi, flags, 0, 0, 0);
-> +
-> +	GUEST_ASSERT(ret.value == 0 && ret.error == 0);
-> +}
-> +
->  static void test_pmu_event(unsigned long event)
->  {
->  	unsigned long counter;
-> @@ -234,6 +265,59 @@ static void test_pmu_event(unsigned long event)
->  	stop_reset_counter(counter, 0);
->  }
->  
-> +static void test_pmu_event_snapshot(unsigned long event)
-> +{
-> +	unsigned long counter;
-> +	unsigned long counter_value_pre, counter_value_post;
-> +	unsigned long counter_init_value = 100;
-> +	struct riscv_pmu_snapshot_data *snapshot_data = snapshot_gva;
-> +
-> +	counter = get_counter_index(0, counter_mask_available, 0, event);
-> +	counter_value_pre = read_counter(counter, ctrinfo_arr[counter]);
-> +
-> +	/* Do not set the initial value */
-> +	start_counter(counter, 0, 0);
-> +	dummy_func_loop(10000);
-> +	stop_counter(counter, SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT);
-> +
-> +	/* The counter value is updated w.r.t relative index of cbase */
-> +	counter_value_post = READ_ONCE(snapshot_data->ctr_values[0]);
-> +	__GUEST_ASSERT(counter_value_post > counter_value_pre,
-> +		       "Event update verification failed: post [%lx] pre [%lx]\n",
-> +		       counter_value_post, counter_value_pre);
-> +
-> +	/*
-> +	 * We can't just update the counter without starting it.
-> +	 * Do start/stop twice to simulate that by first initializing to a very
-> +	 * high value and a low value after that.
-> +	 */
-> +	WRITE_ONCE(snapshot_data->ctr_values[0], ULONG_MAX/2);
-> +	start_counter(counter, SBI_PMU_START_FLAG_INIT_SNAPSHOT, 0);
-> +	stop_counter(counter, SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT);
-> +	counter_value_pre = READ_ONCE(snapshot_data->ctr_values[0]);
-> +
-> +	WRITE_ONCE(snapshot_data->ctr_values[0], counter_init_value);
-> +	start_counter(counter, SBI_PMU_START_FLAG_INIT_SNAPSHOT, 0);
-> +	stop_counter(counter, SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT);
-> +	counter_value_post = READ_ONCE(snapshot_data->ctr_values[0]);
-> +	__GUEST_ASSERT(counter_value_pre > counter_value_post,
-> +		       "Counter reinitialization verification failed : post [%lx] pre [%lx]\n",
-> +		       counter_value_post, counter_value_pre);
-> +
-> +	/* Now set the initial value and compare */
-> +	WRITE_ONCE(snapshot_data->ctr_values[0], counter_init_value);
-> +	start_counter(counter, SBI_PMU_START_FLAG_INIT_SNAPSHOT, 0);
-> +	dummy_func_loop(10000);
-> +	stop_counter(counter, SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT);
-> +
-> +	counter_value_post = READ_ONCE(snapshot_data->ctr_values[0]);
-> +	__GUEST_ASSERT(counter_value_post > counter_init_value,
-> +		       "Event update verification failed: post [%lx] pre [%lx]\n",
-> +		       counter_value_post, counter_init_value);
-> +
-> +	stop_reset_counter(counter, 0);
-> +}
-> +
->  static void test_invalid_event(void)
->  {
->  	struct sbiret ret;
-> @@ -301,6 +385,34 @@ static void test_pmu_basic_sanity(void)
->  	GUEST_DONE();
->  }
->  
-> +static void test_pmu_events_snaphost(void)
-> +{
-> +	int num_counters = 0;
-> +	struct riscv_pmu_snapshot_data *snapshot_data = snapshot_gva;
-> +	int i;
-> +
-> +	/* Verify presence of SBI PMU and minimum requrired SBI version */
-> +	verify_sbi_requirement_assert();
-> +
-> +	snapshot_set_shmem(snapshot_gpa, 0);
-> +
-> +	/* Get the counter details */
-> +	num_counters = get_num_counters();
-> +	update_counter_info(num_counters);
-> +
-> +	/* Validate shared memory access */
-> +	GUEST_ASSERT_EQ(READ_ONCE(snapshot_data->ctr_overflow_mask), 0);
-> +	for (i = 0; i < num_counters; i++) {
-> +		if (counter_mask_available & (BIT(i)))
-> +			GUEST_ASSERT_EQ(READ_ONCE(snapshot_data->ctr_values[i]), 0);
-> +	}
-> +	/* Only these two events are guranteed to be present */
-> +	test_pmu_event_snapshot(SBI_PMU_HW_CPU_CYCLES);
-> +	test_pmu_event_snapshot(SBI_PMU_HW_INSTRUCTIONS);
-> +
-> +	GUEST_DONE();
-> +}
-> +
->  static void run_vcpu(struct kvm_vcpu *vcpu)
->  {
->  	struct ucall uc;
-> @@ -357,6 +469,35 @@ static void test_vm_events_test(void *guest_code)
->  	test_vm_destroy(vm);
->  }
->  
-> +static void test_vm_setup_snapshot_mem(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
-> +{
-> +	/* PMU Snapshot requires single page only */
-> +	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS, PMU_SNAPSHOT_GPA_BASE, 1, 1, 0);
-> +	/* PMU_SNAPSHOT_GPA_BASE is identity mapped */
-> +	virt_map(vm, PMU_SNAPSHOT_GPA_BASE, PMU_SNAPSHOT_GPA_BASE, 1);
-> +
-> +	snapshot_gva = (void *)(PMU_SNAPSHOT_GPA_BASE);
-> +	snapshot_gpa = addr_gva2gpa(vcpu->vm, (vm_vaddr_t)snapshot_gva);
-> +	sync_global_to_guest(vcpu->vm, snapshot_gva);
-> +	sync_global_to_guest(vcpu->vm, snapshot_gpa);
-> +}
-> +
-> +static void test_vm_events_snapshot_test(void *guest_code)
-> +{
-> +	struct kvm_vm *vm = NULL;
-> +	struct kvm_vcpu *vcpu;
-> +
-> +	vm = vm_create_with_one_vcpu(&vcpu, guest_code);
-> +	__TEST_REQUIRE(__vcpu_has_sbi_ext(vcpu, KVM_RISCV_SBI_EXT_PMU),
-> +				   "SBI PMU not available, skipping test");
-> +
-> +	test_vm_setup_snapshot_mem(vm, vcpu);
-> +
-> +	run_vcpu(vcpu);
-> +
-> +	test_vm_destroy(vm);
-> +}
-> +
->  int main(void)
->  {
->  	test_vm_basic_test(test_pmu_basic_sanity);
-> @@ -365,5 +506,8 @@ int main(void)
->  	test_vm_events_test(test_pmu_events);
->  	pr_info("SBI PMU event verification test : PASS\n");
->  
-> +	test_vm_events_snapshot_test(test_pmu_events_snaphost);
-> +	pr_info("SBI PMU event verification with snapshot test : PASS\n");
-> +
->  	return 0;
->  }
+This patch is based on next-20240423 linux-next tag.
 
+[1] https://lore.kernel.org/all/20240423084828.1309294-1-danishanwar@ti.com/
+
+ arch/arm64/boot/dts/ti/Makefile               |   4 +
+ .../ti/k3-am642-evm-icssg1-dualemac-mii.dtso  | 101 ++++++++++++++++++
+ 2 files changed, 105 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac-mii.dtso
+
+diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+index c76b41f86527..08c974b05616 100644
+--- a/arch/arm64/boot/dts/ti/Makefile
++++ b/arch/arm64/boot/dts/ti/Makefile
+@@ -44,6 +44,7 @@ k3-am642-hummingboard-t-usb3-dtbs := \
+ 	k3-am642-hummingboard-t.dtb k3-am642-hummingboard-t-usb3.dtbo
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-icssg1-dualemac.dtbo
++dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-icssg1-dualemac-mii.dtbo
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t-pcie.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t-usb3.dtb
+@@ -132,6 +133,8 @@ k3-am62p5-sk-csi2-tevi-ov5640-dtbs := k3-am62p5-sk.dtb \
+ 	k3-am62x-sk-csi2-tevi-ov5640.dtbo
+ k3-am642-evm-icssg1-dualemac-dtbs := \
+ 	k3-am642-evm.dtb k3-am642-evm-icssg1-dualemac.dtbo
++k3-am642-evm-icssg1-dualemac-mii-dtbs := \
++	k3-am642-evm.dtb k3-am642-evm-icssg1-dualemac-mii.dtbo
+ k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
+ 	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
+ k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
+@@ -160,6 +163,7 @@ dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
+ 	k3-am62p5-sk-csi2-ov5640.dtb \
+ 	k3-am62p5-sk-csi2-tevi-ov5640.dtb \
+ 	k3-am642-evm-icssg1-dualemac.dtb \
++	k3-am642-evm-icssg1-dualemac-mii.dtb \
+ 	k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb \
+ 	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb \
+ 	k3-am68-sk-base-board-csi2-dual-imx219-dtbs \
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac-mii.dtso b/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac-mii.dtso
+new file mode 100644
+index 000000000000..3081b5c64886
+--- /dev/null
++++ b/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac-mii.dtso
+@@ -0,0 +1,101 @@
++// SPDX-License-Identifier: GPL-2.0
++/**
++ * DT overlay for enabling both ICSSG1 port on AM642 EVM in MII mode
++ *
++ * Copyright (C) 2020-2024 Texas Instruments Incorporated - https://www.ti.com/
++ */
++
++/dts-v1/;
++/plugin/;
++#include <dt-bindings/gpio/gpio.h>
++#include "k3-pinctrl.h"
++
++&{/} {
++	aliases {
++		ethernet1 = "/icssg1-eth/ethernet-ports/port@1";
++	};
++
++	mdio-mux-2 {
++		compatible = "mdio-mux-multiplexer";
++		mux-controls = <&mdio_mux>;
++		mdio-parent-bus = <&icssg1_mdio>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		mdio@0 {
++			reg = <0x0>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			icssg1_phy2: ethernet-phy@3 {
++				reg = <3>;
++			};
++		};
++	};
++};
++
++&main_pmx0 {
++	icssg1_mii1_pins_default: icssg1-mii1-default-pins {
++		pinctrl-single,pins = <
++			AM64X_IOPAD(0x00f8, PIN_INPUT, 1) /* (V9) PRG1_PRU0_GPO16.PR1_MII_MT0_CLK */
++			AM64X_IOPAD(0x00f4, PIN_OUTPUT, 0) /* (Y9) PRG1_PRU0_GPO15.PR1_MII0_TXEN */
++			AM64X_IOPAD(0x00f0, PIN_OUTPUT, 0) /* (AA9) PRG1_PRU0_GPO14.PR1_MII0_TXD3 */
++			AM64X_IOPAD(0x00ec, PIN_OUTPUT, 0) /* (W9) PRG1_PRU0_GPO13.PR1_MII0_TXD2 */
++			AM64X_IOPAD(0x00e8, PIN_OUTPUT, 0) /* (U9) PRG1_PRU0_GPO12.PR1_MII0_TXD1 */
++			AM64X_IOPAD(0x00e4, PIN_OUTPUT, 0) /* (AA8) PRG1_PRU0_GPO11.PR1_MII0_TXD0 */
++			AM64X_IOPAD(0x00c8, PIN_INPUT, 1) /* (Y8) PRG1_PRU0_GPO4.PR1_MII0_RXDV */
++			AM64X_IOPAD(0x00d0, PIN_INPUT, 1) /* (AA7) PRG1_PRU0_GPO6.PR1_MII_MR0_CLK */
++			AM64X_IOPAD(0x00c4, PIN_INPUT, 1) /* (V8) PRG1_PRU0_GPO3.PR1_MII0_RXD3 */
++			AM64X_IOPAD(0x00c0, PIN_INPUT, 1) /* (W8) PRG1_PRU0_GPO2.PR1_MII0_RXD2 */
++			AM64X_IOPAD(0x00cc, PIN_INPUT, 1) /* (V13) PRG1_PRU0_GPO5.PR1_MII0_RXER */
++			AM64X_IOPAD(0x00bc, PIN_INPUT, 1) /* (U8) PRG1_PRU0_GPO1.PR1_MII0_RXD1 */
++			AM64X_IOPAD(0x00b8, PIN_INPUT, 1) /* (Y7) PRG1_PRU0_GPO0.PR1_MII0_RXD0 */
++			AM64X_IOPAD(0x00d8, PIN_INPUT, 1) /* (W13) PRG1_PRU0_GPO8.PR1_MII0_RXLINK */
++		>;
++	};
++
++	icssg1_mii2_pins_default: icssg1-mii2-default-pins {
++		pinctrl-single,pins = <
++			AM64X_IOPAD(0x0148, PIN_INPUT, 1) /* (Y10) PRG1_PRU1_GPO16.PR1_MII_MT1_CLK */
++			AM64X_IOPAD(0x0144, PIN_OUTPUT, 0) /* (Y11) PRG1_PRU1_GPO15.PR1_MII1_TXEN */
++			AM64X_IOPAD(0x0140, PIN_OUTPUT, 0) /* (AA11) PRG1_PRU1_GPO14.PR1_MII1_TXD3 */
++			AM64X_IOPAD(0x013c, PIN_OUTPUT, 0) /* (U10) PRG1_PRU1_GPO13.PR1_MII1_TXD2 */
++			AM64X_IOPAD(0x0138, PIN_OUTPUT, 0) /* (V10) PRG1_PRU1_GPO12.PR1_MII1_TXD1 */
++			AM64X_IOPAD(0x0134, PIN_OUTPUT, 0) /* (AA10) PRG1_PRU1_GPO11.PR1_MII1_TXD0 */
++			AM64X_IOPAD(0x0118, PIN_INPUT, 1) /* (W12) PRG1_PRU1_GPO4.PR1_MII1_RXDV */
++			AM64X_IOPAD(0x0120, PIN_INPUT, 1) /* (U11) PRG1_PRU1_GPO6.PR1_MII_MR1_CLK */
++			AM64X_IOPAD(0x0114, PIN_INPUT, 1) /* (Y12) PRG1_PRU1_GPO3.PR1_MII1_RXD3 */
++			AM64X_IOPAD(0x0110, PIN_INPUT, 1) /* (AA12) PRG1_PRU1_GPO2.PR1_MII1_RXD2 */
++			AM64X_IOPAD(0x011c, PIN_INPUT, 1) /* (AA13) PRG1_PRU1_GPO5.PR1_MII1_RXER */
++			AM64X_IOPAD(0x010c, PIN_INPUT, 1) /* (V11) PRG1_PRU1_GPO1.PR1_MII1_RXD1 */
++			AM64X_IOPAD(0x0108, PIN_INPUT, 1) /* (W11) PRG1_PRU1_GPO0.PR1_MII1_RXD0 */
++			AM64X_IOPAD(0x0128, PIN_INPUT, 1) /* (U12) PRG1_PRU1_GPO8.PR1_MII1_RXLINK */
++		>;
++	};
++};
++
++&cpsw3g {
++	pinctrl-0 = <&rgmii1_pins_default>;
++};
++
++&cpsw_port2 {
++	status = "disabled";
++};
++
++&mdio_mux_1 {
++	status = "disabled";
++};
++
++&icssg1_eth {
++	pinctrl-0 = <&icssg1_mii1_pins_default &icssg1_mii2_pins_default>;
++};
++
++&icssg1_emac0 {
++	phy-mode = "mii";
++};
++
++&icssg1_emac1 {
++	status = "okay";
++	phy-handle = <&icssg1_phy2>;
++	phy-mode = "mii";
++};
 -- 
-BR,
-Muhammad Usama Anjum
+2.34.1
+
 
