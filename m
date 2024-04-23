@@ -1,145 +1,131 @@
-Return-Path: <linux-kernel+bounces-154608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 339B78ADE47
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:32:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 785EF8ADE65
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:39:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4AA9283464
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:32:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CECB1F22F16
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:39:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06C534778B;
-	Tue, 23 Apr 2024 07:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C6834CDF9;
+	Tue, 23 Apr 2024 07:38:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h7wU7B1d"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g2nCNumm"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE1AF4654E
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:31:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88F5F46441;
+	Tue, 23 Apr 2024 07:38:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713857519; cv=none; b=aY5yG1tVeHi+4yZev0INTJeqlNthMIUXFF8xTwSuGrfqDiH21G51ipqADn7LdTmHKLmjxWOJCllkEhr7q/uy1PdoH7Tr00Yn0Ookm5IWN47adX06/unIsQ8l99hVjz8gEIV0hHHv9DGSxq9CDLkQKraYA1X/mrWYDcgKgHaDHV4=
+	t=1713857931; cv=none; b=auiBXftCscdy1v3JteyE6UXnPdDO023fsUB1RZrT0eJj5lV2XXQ6QbP+zXeaEOZ44AVWBEL0iCz7uz7rGedi0/ZODbdZJshyic8cKxewU4/L8JUzFqmk8ATaksWz1PQj5vNIH3QvGU7gWCamQaXqaBq0JwIx8wPT6V+MQ2AEBNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713857519; c=relaxed/simple;
-	bh=vFg0PnW0QQak5o0PgV9TFPerX7uBdhytKIDhd+Oc0Js=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=ilNkGlgwV9fFDEF4G5wph5BL5z9zjhoIBIxDgTzrkmnKGeEm+Ww2EoHn60JKkFTvKi6G6JaFGPn0NyL81fwi5W/S9NWOLWP4hZnzqHiS4WW5Phg30o2kfpcml1ZZbywhnfWg4ZUfaE8O7Ppy5J9rWkBzQJ3CvMNm86j2UFH6yBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=h7wU7B1d; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41aa21b06b3so8463555e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 00:31:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713857516; x=1714462316; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1Sg65QOPtcQZrOuYCGKYckpDE7YmJS9IWjjcvkkY/64=;
-        b=h7wU7B1dk2TRw+AF0FnrcJfGZFhGOZwB4Erv3X9W0ivtDEUKJRvAUlS+XjknzAjnsl
-         cMB57NH7UjqXGsmMi7rCKOY6jvnod5a54ShOTwcrSy8FEze5R5Omb7REWKJeqEGFHIYD
-         ryVJUan+LGTaxxIHC2IbyLywU4KN+Bd9h36z9uhWe8BmJfpXe41FFlwxld7XbpO/5BN+
-         KRcPxei7Lx6RBnY9beumflFGt28/iTyHMw3TkgCUQzfoDqV9f8kyfUth9nk+yTu+/01u
-         npk9bKeM+AMWbXqYC7TFKF0bYaYiwmznxdDcBvyvIIHd7xXcQOpA3Y9JynNSRQICdPkJ
-         nwuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713857516; x=1714462316;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1Sg65QOPtcQZrOuYCGKYckpDE7YmJS9IWjjcvkkY/64=;
-        b=lnJeA5Y0YWYFUH/Ot53lbsOgwmFb66l9nF1oQUY1lo7hInw+y6lgHBQ85YUApkUNa5
-         EFZQGqjSA0PKbTQQiSmmGgfk8qBWK+0lYen42Pn04kw4vqFDL/Vg8hA2ISiIPWvIscJa
-         0AJlHImnwsLLzI0vzWuFV4xNk2ergKrHlRTJEUd90ymd8bNqy4aAKcg6BGkX+5Gsp+8y
-         zuwS/RwkVSxg+ZFlAjNGiRUHlb0st8PIxfO5HL+UkEXld2p1nBmHhvQ2ZEn0MGAWbP+8
-         +b+fOIY3KQy4RSSdfEb/7c3oaH6a8GXIymnceVBxp5XGGwHbcFWmtbX4VehMgnDicHsM
-         sWzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVOVsQ2X9Ep/ul2+0NpQ8Wh8aYStW7XQo+XAmd+ls2cIxGjfERYeIZDkEO/fyZ9pImgldtei7HYKOLIljUmizMZdEWaX+3jdLz01Bq5
-X-Gm-Message-State: AOJu0YwJ6PycHOYEj/strYRY44F73BzcGB+EXESlfUofUJO/DzwnD6xy
-	tgQuB8d2cT3EuS8vlkkol7x9NX33hp71+GfRYC8N6d8vovcZ3ilQI4HXYVMQd54=
-X-Google-Smtp-Source: AGHT+IEjX6XmY23ztXbTm1qHkzpcVPy7yUfnvurNDsfJDLw/qOQdKczcN+j324+ogboWYhVA1mtzgA==
-X-Received: by 2002:a05:600c:4689:b0:418:f308:7fa2 with SMTP id p9-20020a05600c468900b00418f3087fa2mr11273273wmo.14.1713857515759;
-        Tue, 23 Apr 2024 00:31:55 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id g9-20020a05600c310900b0041a9fc2a6b5sm2456064wmo.20.2024.04.23.00.31.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 00:31:55 -0700 (PDT)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-To: "dmitry . baryshkov @ linaro . org" <dmitry.baryshkov@linaro.org>, 
- "andrzej . hajda @ intel . com" <andrzej.hajda@intel.com>, 
- "rfoss @ kernel . org" <rfoss@kernel.org>, 
- "Laurent . pinchart @ ideasonboard . com" <Laurent.pinchart@ideasonboard.com>, 
- "jonas @ kwiboo . se" <jonas@kwiboo.se>, 
- "jernej . skrabec @ gmail . com" <jernej.skrabec@gmail.com>, 
- "maarten . lankhorst @ linux . intel . com" <maarten.lankhorst@linux.intel.com>, 
- "mripard @ kernel . org" <mripard@kernel.org>, 
- "tzimmermann @ suse . de" <tzimmermann@suse.de>, 
- "airlied @ gmail . com" <airlied@gmail.com>, 
- "daniel @ ffwll . ch" <daniel@ffwll.ch>, 
- "robh+dt @ kernel . org" <robh+dt@kernel.org>, 
- "krzysztof . kozlowski+dt @ linaro . org" <krzysztof.kozlowski+dt@linaro.org>, 
- "conor+dt @ kernel . org" <conor+dt@kernel.org>, 
- "linux @ armlinux . org . uk" <linux@armlinux.org.uk>, 
- "Nicolas . Ferre @ microchip . com" <Nicolas.Ferre@microchip.com>, 
- "alexandre . belloni @ bootlin . com" <alexandre.belloni@bootlin.com>, 
- "claudiu . beznea @ tuxon . dev" <claudiu.beznea@tuxon.dev>, 
- "Manikandan . M @ microchip . com" <Manikandan.M@microchip.com>, 
- "arnd @ arndb . de" <arnd@arndb.de>, 
- "geert+renesas @ glider . be" <geert+renesas@glider.be>, 
- "Jason @ zx2c4 . com" <Jason@zx2c4.com>, 
- "mpe @ ellerman . id . au" <mpe@ellerman.id.au>, 
- "gerg @ linux-m68k . org" <gerg@linux-m68k.org>, 
- "rdunlap @ infradead . org" <rdunlap@infradead.org>, 
- "vbabka @ suse . cz" <vbabka@suse.cz>, 
- "dri-devel @ lists . freedesktop . org" <dri-devel@lists.freedesktop.org>, 
- "devicetree @ vger . kernel . org" <devicetree@vger.kernel.org>, 
- "linux-kernel @ vger . kernel . org" <linux-kernel@vger.kernel.org>, 
- "oe-kbuild-all @ lists . linux . dev" <oe-kbuild-all@lists.linux.dev>, 
- "Hari . PrasathGE @ microchip . com" <Hari.PrasathGE@microchip.com>, 
- Dharma Balasubiramani <dharma.b@microchip.com>
-In-Reply-To: <20240421011050.43265-1-dharma.b@microchip.com>
-References: <20240421011050.43265-1-dharma.b@microchip.com>
-Subject: Re: (subset) [PATCH v8 0/4] LVDS Controller Support for SAM9X75
- SoC
-Message-Id: <171385751450.47981.16261973588553752989.b4-ty@linaro.org>
-Date: Tue, 23 Apr 2024 09:31:54 +0200
+	s=arc-20240116; t=1713857931; c=relaxed/simple;
+	bh=mjRkFfdBtZbVYBPrvsjPmWl58HkXWr16xgIBP3dQroM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=COuefhTOhK8DI4ss2fOuEjv8uAb0+mEcyP6subvAxUnwnFt4Xv/wA0S6q1dYcudFqWQs7E9pwGod0fmudnC0pU8PEWo9bLHx8OoSA/4XIUvV472TggvfkSVDmve/iE2brcMDUfSLkJuKQLMmq4XpcX09NUmVeRKEwaNGqwajEbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g2nCNumm; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713857929; x=1745393929;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mjRkFfdBtZbVYBPrvsjPmWl58HkXWr16xgIBP3dQroM=;
+  b=g2nCNummvlRj+JVkPdJL1qOV+3rWgeywty2ipzANBbnJsXrpqJJhNC7x
+   dGhRdKrMZSNTTUv7zqboihF8yRIa41pCGR5wGmoqMRkgLsiM8PALfGbR1
+   QdhdVn+mJmY7z6GSblg/InVuNT9Rjr5AtxSwnZ3T6ufoZTK95L2gBnmWx
+   axZ/DlclZSuohycmHPNp5Se6llS/di/BlqDwFb3xVT7eUAq0rvYY2Du5K
+   lXp5pwMepesZQcGKV6qnCKNpwAwNpF8ae4EQ3zNICZrq10y2XAS9Y9ttD
+   omYiHR2SC0iie8sQ17O7EN5NbilH9cgNWuen1tOzmGrUrFS0yOTUm+Cb1
+   A==;
+X-CSE-ConnectionGUID: GvO6N5AUR2yId7/OmN5Dmw==
+X-CSE-MsgGUID: SWnKJNYuTzqKvj7J1LwpQg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="31918033"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="31918033"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 00:38:48 -0700
+X-CSE-ConnectionGUID: s/KDoHdVTiSM0XnX3bJmkw==
+X-CSE-MsgGUID: mzxAigJiRoSRJZwbwrOibA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="24332315"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa006.fm.intel.com with ESMTP; 23 Apr 2024 00:38:37 -0700
+Date: Tue, 23 Apr 2024 15:33:16 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Corey Minyard <minyard@acm.org>,
+	Peter Huewe <peterhuewe@gmx.de>,
+	Jarkko Sakkinen <jarkko@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	Peter Rosin <peda@axentia.se>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+	Keyur Chudgar <keyur@os.amperecomputing.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Tony Lindgren <tony@atomide.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Xiang Chen <chenxiang66@hisilicon.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Shan-Chun Hung <schung@nuvoton.com>, Arnd Bergmann <arnd@arndb.de>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Tom Rix <trix@redhat.com>,
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Randy Dunlap <rdunlap@infradead.org>, Rob Herring <robh@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	openipmi-developer@lists.sourceforge.net,
+	linux-integrity@vger.kernel.org, dmaengine@vger.kernel.org,
+	linux-fpga@vger.kernel.org, linux-input@vger.kernel.org,
+	linux-i2c@vger.kernel.org, netdev@vger.kernel.org,
+	linux-omap@vger.kernel.org, linux-rtc@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 33/34] drivers: remove incorrect of_match_ptr/ACPI_PTR
+ annotations
+Message-ID: <ZidkPHp27jz0t6t3@yilunxu-OptiPlex-7050>
+References: <20240403080702.3509288-1-arnd@kernel.org>
+ <20240403080702.3509288-34-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403080702.3509288-34-arnd@kernel.org>
 
-Hi,
+> diff --git a/drivers/fpga/versal-fpga.c b/drivers/fpga/versal-fpga.c
+> index 3710e8f01be2..e6189106c468 100644
+> --- a/drivers/fpga/versal-fpga.c
+> +++ b/drivers/fpga/versal-fpga.c
+> @@ -69,7 +69,7 @@ static struct platform_driver versal_fpga_driver = {
+>  	.probe = versal_fpga_probe,
+>  	.driver = {
+>  		.name = "versal_fpga_manager",
+> -		.of_match_table = of_match_ptr(versal_fpga_of_match),
+> +		.of_match_table = versal_fpga_of_match,
 
-On Sun, 21 Apr 2024 06:40:46 +0530, Dharma Balasubiramani wrote:
-> This patch series introduces LVDS controller support for the SAM9X75 SoC. The
-> LVDS controller is designed to work with Microchip's sam9x7 series
-> System-on-Chip (SoC) devices, providing Low Voltage Differential Signaling
-> capabilities.
-> 
-> Patch series Changelog:
-> - Include configs: at91: Enable LVDS serializer
-> - include all necessary To/Cc entries.
-> The Individual Changelogs are available on the respective patches.
-> 
-> [...]
+For this part
 
-Thanks, Applied to https://gitlab.freedesktop.org/drm/misc/kernel.git (drm-misc-next)
-
-[1/4] dt-bindings: display: bridge: add sam9x75-lvds binding
-      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/c24177ca3b27e5a7ddaab8d330cedecd7eb9244a
-[2/4] drm/bridge: add lvds controller support for sam9x7
-      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/179b0769fc5fc193d7837bdcb6ddee118a0fa9b8
-[3/4] MAINTAINERS: add SAM9X7 SoC's LVDS controller
-      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/e95752752eaf06c860811ac5ddf9badf6c1b43ca
-
--- 
-Neil
-
+Acked-by: Xu Yilun <yilun.xu@intel.com>
 
