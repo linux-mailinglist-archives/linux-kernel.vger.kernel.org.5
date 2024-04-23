@@ -1,122 +1,136 @@
-Return-Path: <linux-kernel+bounces-155383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F66E8AE9A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:36:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 400158AE989
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:31:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 536071C22C9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:36:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DCF9B23FA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6106784052;
-	Tue, 23 Apr 2024 14:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64EEB13BAEC;
+	Tue, 23 Apr 2024 14:31:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="X+J+XJu4"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uOs3Jeb1"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 236311B815;
-	Tue, 23 Apr 2024 14:36:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE22313BAE8
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:31:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713882989; cv=none; b=uXqaDUOSh0mwZ0JidqtEwi8Tr3WUQbo/HXdvzSRiofcrmc6GYI9wKD2DyWFROXhjpyUFOtl/hR3HgeZfqM89q/DYf+c58tCVZDgIE9wA/KNJ86tEhe9xgbQezum5MRN3KyuTUDlbYpyMckUj5LZiefNDIxRQJo0WB+zMfHP92ig=
+	t=1713882671; cv=none; b=opMaTuEx2anYXRNCAk4E/jCWCLE6kZQPRIAFRDJ9vB/ixHJDg4b2Pms9cb7GnPjTS4b5HisfEDHjFNNfTcvJVkfb67IavcsnyiH0ZN4zMXUOjMwSaKnbPNtkwLCaGEVrsM91dHPSBfPkLdjLfDPbjOlNjJzuXYnIzPN28mvO6Co=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713882989; c=relaxed/simple;
-	bh=Gwm8ZPo1SC6T+uOpmJJVq6I3CmfxZWOiFLlPUuq9jY4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oFNomsdMlYDIgOXSJ9/BtZ83V/6dTRyAg+xm6hNk7lzWaQYuQKMiJQe7po2ijBMWfB7150HSyAhbGxJXSTvc05ei0u1lxUY/d/8jmQvYYMbjvSPZVeI95SPq96UGhKh82Ik1T5Swrl6tVLLnEC7165KJD3oefwQQR8FNVf/weB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=X+J+XJu4; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713882988; x=1745418988;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Gwm8ZPo1SC6T+uOpmJJVq6I3CmfxZWOiFLlPUuq9jY4=;
-  b=X+J+XJu48VoJhS+jUvXZxldvgTD6fB8f6adH0tslE18M0GdsAFClW+b5
-   5evd/qm/tjNIW7pHzwvCFaeB7hU9HEJt5GKfnfOIl/0b3t82fyWK7IKDk
-   wE/nDAM7W18cx1Pemk54AL3OVTBIfubkau5HGjtMHSFeiUJPt1GxZ8SR1
-   8mFr8m3nGseYydDciPkDDDMnc2SUAcYS+5cKxBTQmm4VUNKV1SOCglEJ1
-   tppH7T1yb+waN+G772Ly4Awac7nMA402tkBNQZCPgizQhZvPS0zf6eJf4
-   vk0cGu6HMd+9k6n66aNhEHt1mZrJzGnA/cGzRWNBUkH2fCR3tpH9tDJsI
-   A==;
-X-CSE-ConnectionGUID: bCeg287MSjOsYFIQMSp4OQ==
-X-CSE-MsgGUID: WVHO0kw6T/WmW6fedzy4+A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="20871052"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="20871052"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 07:36:28 -0700
-X-CSE-ConnectionGUID: IqM/G6yDRIKZaPaxlYhcNg==
-X-CSE-MsgGUID: ydM3K6KcSk+vC3Soa6GxHA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24843567"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa006.jf.intel.com with ESMTP; 23 Apr 2024 07:36:25 -0700
-Date: Tue, 23 Apr 2024 22:31:04 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Peter Colberg <peter.colberg@intel.com>
-Cc: Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-	Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-	linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Russ Weight <russ.weight@linux.dev>,
-	Marco Pagani <marpagan@redhat.com>,
-	Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: Re: [RFC PATCH v2 6/9] fpga: dfl: migrate Accelerated Function Unit
- driver to dfl_feature_dev_data
-Message-ID: <ZifGKL65IDARHHN/@yilunxu-OptiPlex-7050>
-References: <20240409233942.828440-1-peter.colberg@intel.com>
- <20240409233942.828440-7-peter.colberg@intel.com>
+	s=arc-20240116; t=1713882671; c=relaxed/simple;
+	bh=+UavbOojFmAIVuDGknU8MaLgwR7F3N2h7Re+qQZJ5JI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=C2YEcCbj8lPFLT8Lz7z5QZnaHlMRIUK3lxT2R0IdE3s8NrBXAFpCVH6SD7WvGMItSvcL7OjJRIbpPjtrwhpBhNSSy+cW8ZKVn8djf/umue69ewFHrBR2SDrUw6rj6ZFRYXtn6O+uN7ihiHZXNPVa618gTwQ29NzZSgA8BfDehTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uOs3Jeb1; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-57225322312so628059a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713882668; x=1714487468; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7IDPH8aO0C/CgFOvGahjdiLNFhkL4WdyF17UbMtaO6w=;
+        b=uOs3Jeb1PBkFtWHue3LJysWPE/eiRq3MCNKtsJxYiuc7IaJcbHK7/KErEkfvXtLgxL
+         gFI0NuAzJuSCOzl+I01w6Wn3b9GistRxrPz2nuTa7g3Pu6tF2WBY1FB/tLJsVKed2dl0
+         v+M1sI40R28l+M2ckMburiyRR43YBJx6qHf7AcjSNkXwXkIiEDpBMYywSRWN777x5iZU
+         bJamRjfIZBhs7ytAWOyLS4h5JOi7UFf1OlCzIFnRmmvr9rdtQc8PiGrs+2/84UkjC5/y
+         qAyYNA9QiiTltRX36BP/DaUeigB2ZkuFHe440azSRtN9aBKBAviO6o+bYrUFIqwEij+S
+         lu4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713882668; x=1714487468;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7IDPH8aO0C/CgFOvGahjdiLNFhkL4WdyF17UbMtaO6w=;
+        b=BLoARaiY93MeHXrEveqK8Iq0IKnCRZmwThVPixpGIgRRCTdSma9GvIzVaLQm49ICdl
+         06buxsTB3lbimKNG2ELAuLVgRTJnZBjBh3WCUyjn3KjKecaYdl1rv1Og8zZK6XR6wJww
+         kAMqOiQUyhQ5kmiPvYopvWHwioJFYhY1Q7QMJn2bEnKjE6PXpUyYpsfmEQqDfSBGJ5n8
+         brICKXzyy6Gucb3WvKmciwBqi5pWkWFFG/YbT06c/chbgd5AkQiMYw+xUOaPwXFkfyky
+         sZAJ6zP5LmBd9AEMqc8uOQ2lfeuRme1ytJG4NPJZEG+aCPjhlSV5J1tyTWoVNUnVQ/RR
+         cfVw==
+X-Forwarded-Encrypted: i=1; AJvYcCXZNgvPSzUSVUc2wc4Y/zyY82ycCAIbLuPQUHWj0ZMN6w6kHARQoaivcXqrMc/kIq1+jhHhdqIuA7NB1hiT/bQaSHPq6WbWipNfgLA8
+X-Gm-Message-State: AOJu0Yyse4hq7bq6Uo+AJnxg8AN8aMUFKEEiiohbvPQOb7dOp9nRKM4B
+	xu91SzTpkW2t8LzysyOiRAuthjXSfxWK+ztemSEUMhIVPGbvJO9ZFZlGb0UAnqE=
+X-Google-Smtp-Source: AGHT+IFYZf3kNXrbsNynZ3gGf77a9GhwGcDNyKdEdv42OO0DXfASpzIR/lk0VyJPU+3cTv810Ziq9w==
+X-Received: by 2002:a50:d5c3:0:b0:56b:d9e7:1233 with SMTP id g3-20020a50d5c3000000b0056bd9e71233mr7620642edj.32.1713882668343;
+        Tue, 23 Apr 2024 07:31:08 -0700 (PDT)
+Received: from puffmais.c.googlers.com (8.239.204.35.bc.googleusercontent.com. [35.204.239.8])
+        by smtp.gmail.com with ESMTPSA id fg7-20020a056402548700b005704957a968sm6708099edb.13.2024.04.23.07.31.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 07:31:08 -0700 (PDT)
+From: =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+Date: Tue, 23 Apr 2024 15:31:04 +0100
+Subject: [PATCH 2/3] arm64: dts: exynos: gs101: enable cmu-hsi0 clock
+ controller
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240409233942.828440-7-peter.colberg@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240423-hsi0-gs101-v1-2-2c3ddb50c720@linaro.org>
+References: <20240423-hsi0-gs101-v1-0-2c3ddb50c720@linaro.org>
+In-Reply-To: <20240423-hsi0-gs101-v1-0-2c3ddb50c720@linaro.org>
+To: Peter Griffin <peter.griffin@linaro.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
+ Krzysztof Kozlowski <krzk@kernel.org>, 
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, 
+ Chanwoo Choi <cw00.choi@samsung.com>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Will McVicker <willmcvicker@google.com>, kernel-team@android.com, 
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+X-Mailer: b4 0.12.4
 
-On Tue, Apr 09, 2024 at 07:39:39PM -0400, Peter Colberg wrote:
-> This change separates out most of the symbol name changes required by this
-> patch series for the file: drivers/fpga/dfl-afu-main.c. This is done to
-> split a single monolithic change into multiple, smaller patches at the
-> request of the maintainer.
-> 
-> Signed-off-by: Peter Colberg <peter.colberg@intel.com>
-> ---
-> v2:
-> - Split monolithic patch into series at request of maintainer
-> - Change afu_ioctl_*() to receive dfl_feature_dev_data instead of
->   dfl_feature_platform_data.
-> - Replace local variable pdata with fdata in afu_mmap().
-> - Remove unused local variable pdata in afu_dev_{init,destroy}().
-> ---
->  drivers/fpga/dfl-afu-main.c | 110 ++++++++++++++++++------------------
->  1 file changed, 56 insertions(+), 54 deletions(-)
-> 
-> diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
-> index 6b97c073849e..61868cdd5b0b 100644
-> --- a/drivers/fpga/dfl-afu-main.c
-> +++ b/drivers/fpga/dfl-afu-main.c
-> @@ -504,9 +504,11 @@ static const struct attribute_group port_afu_group = {
->  static int port_afu_init(struct platform_device *pdev,
->  			 struct dfl_feature *feature)
->  {
-> +	struct dfl_feature_dev_data *fdata =
-> +					to_dfl_feature_dev_data(&pdev->dev);
->  	struct resource *res = &pdev->resource[feature->resource_index];
->  
-> -	return afu_mmio_region_add(dev_get_platdata(&pdev->dev),
-> +	return afu_mmio_region_add(fdata,
+Enable the cmu-hsi0 clock controller. It feeds USB.
 
-Again, please keep the change simple for massive replacement. If you
-want other adjustments, do it in another patch.
+Signed-off-by: André Draszik <andre.draszik@linaro.org>
+---
+ arch/arm64/boot/dts/exynos/google/gs101.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-Thanks,
-Yilun
+diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+index eddb6b326fde..9755a0bb70a1 100644
+--- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
++++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+@@ -1247,6 +1247,20 @@ spi_13: spi@10d60000 {
+ 			};
+ 		};
+ 
++		cmu_hsi0: clock-controller@11000000 {
++			compatible = "google,gs101-cmu-hsi0";
++			reg = <0x11000000 0x4000>;
++			#clock-cells = <1>;
++
++			clocks = <&ext_24_5m>,
++				 <&cmu_top CLK_DOUT_CMU_HSI0_BUS>,
++				 <&cmu_top CLK_DOUT_CMU_HSI0_DPGTC>,
++				 <&cmu_top CLK_DOUT_CMU_HSI0_USB31DRD>,
++				 <&cmu_top CLK_DOUT_CMU_HSI0_USBDPDBG>;
++			clock-names = "oscclk", "bus", "dpgtc", "usb31drd",
++				      "usbdpdbg";
++		};
++
+ 		pinctrl_hsi1: pinctrl@11840000 {
+ 			compatible = "google,gs101-pinctrl";
+ 			reg = <0x11840000 0x00001000>;
+
+-- 
+2.44.0.769.g3c40516874-goog
+
 
