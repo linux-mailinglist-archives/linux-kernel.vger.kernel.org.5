@@ -1,112 +1,132 @@
-Return-Path: <linux-kernel+bounces-155593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 930D38AF48F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:46:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BE048AF496
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:48:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37FDD1F247F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:46:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEDD3B238A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8A8E13D52C;
-	Tue, 23 Apr 2024 16:46:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE8A13D627;
+	Tue, 23 Apr 2024 16:48:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bshuNDet"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H0N9z2Dp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1F5513D516;
-	Tue, 23 Apr 2024 16:46:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCEB813D510;
+	Tue, 23 Apr 2024 16:48:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713890794; cv=none; b=jprMI7BQfZdQr0+yXi4YB3a+YBm+e0H7vePXdwWe28fQBmgS1yoUfmCRvKTywfgq5JsYcb/E4+zDZHaMO3JL4b3bY7it5hKNpFIyrwfWCcQ/M1DoaaAmzGYMC/pntOM3lrvI/Hqi5uq3LpI4M99CFuT7j5/7iCyXXMyDrWDWetM=
+	t=1713890910; cv=none; b=j7Q+Eb3zQSDitVcUFmYzR/VWc6/pdxCdWDPqj/DuEdLJVGAOYxve1ghcx6d+zD7EQyJqq5P58YnP2B9AZ3iyZZaEo471kY/3HyDHaArPPXlKHWDYS8grTHWs/Ybkm3IUSDYKZTQh4o8wTFAcaqoH1Ds4UgpLPG4SH04+v4ayd0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713890794; c=relaxed/simple;
-	bh=X04TMGUEoTQq6ssKaWRAYwBOvxwm4/UkOVHluKDUc0A=;
+	s=arc-20240116; t=1713890910; c=relaxed/simple;
+	bh=dDcEPFI4Ualc1uLvugD6+grOLhPWeZRyR8kTPMNYs3s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tGRupVmhl3CXee9vUIwaQAW6iCGNYd0xlBYKA0ZJl0tHaeo572L67rJfIP0SBITPcirxJMCv6mxv45HbvManftjeLnjsc6DkdxpIt+fQulrICa3T93rAVwqp7NJsa7+GQpKTfp4ESFf86q1tubpBsR+Isl1RH8901CuzuJkIYVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bshuNDet; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713890793; x=1745426793;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=X04TMGUEoTQq6ssKaWRAYwBOvxwm4/UkOVHluKDUc0A=;
-  b=bshuNDetZQUu+e83KRVePRP2DDg0IGsiP0lb9ymxwaxVj73RhQ49+h+0
-   yaXVtc+kwkLYLGfMIYSge7TwOldsKptL19MNbNZBj0wHUI0sS9Ypmbr+u
-   7wm0d56dACDY7lUPm2thEmntOXnO4tuli7bdqcpQwFh3HnmAMtx219mZx
-   6yvbLNzPgf+4+3Z9zNSIGfhvYwtYy8QXDrHY3EnvCji4sUU14ca7d2eBH
-   AgfW/EL9Hcd6aqZlREbdG4tUEYAnCgxgmUruI5ooBzB4VVLYK4a62fEoi
-   YLd/BrizC4qF3q7kQAzUKDkh6eG65vXjBDmPqCXhKmkLqvb1XJ46ceqts
-   w==;
-X-CSE-ConnectionGUID: cEgt2psCQ9iaVuqwsDn6bQ==
-X-CSE-MsgGUID: vTy7pJI/R1SACFn3lneJ5A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="9318061"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="9318061"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 09:46:32 -0700
-X-CSE-ConnectionGUID: fx3hzkhmRTKzdTyvq2YGIw==
-X-CSE-MsgGUID: tQSw8qZSSl+Gasbx+7P2Uw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24395789"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa009.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 09:46:31 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rzJHo-00000000Osh-1HrE;
-	Tue, 23 Apr 2024 19:46:28 +0300
-Date: Tue, 23 Apr 2024 19:46:28 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: Jani Nikula <jani.nikula@intel.com>, workflows@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] Documentation: process: Recommend to put Cc: tags
- after cutter '---' line
-Message-ID: <Zifl5PAAD1GTLWSK@smile.fi.intel.com>
-References: <20240423132024.2368662-1-andriy.shevchenko@linux.intel.com>
- <20240423132024.2368662-3-andriy.shevchenko@linux.intel.com>
- <871q6wrw12.fsf@intel.com>
- <ZifHnw1cxgP77MKx@smile.fi.intel.com>
- <878r14yw8n.fsf@meer.lwn.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sZ0RyWF7U4pcH4NthuPhKLWiJgBBfS/olC0LqhwXeWekkRhoit+MDbjFS4Wu6YFVP1g6vooL15JVo5cX0kyFhnlJpyPfB1z2xyoC2RgBVQW5vmowOMWRoPtLQ9AIY8GC4CTFiT05F9EQXR7dtM/5Lkm8xqVnPSrtk20lFYdDMT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H0N9z2Dp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2099AC116B1;
+	Tue, 23 Apr 2024 16:48:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713890909;
+	bh=dDcEPFI4Ualc1uLvugD6+grOLhPWeZRyR8kTPMNYs3s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=H0N9z2Dpb8WrHvqNLiT000UhV8Y+9krxRJtMDjYhIaBZP1030Bof/Sp/hOK16Vnyt
+	 pbVCxC1D1O5/vA65C3BsscHOwlAvYg1UpOpQ3EVxyzDTLUE1ZM+lZ8cmZu3/NkS3Tw
+	 xVOk1gKZBGsmyD84IVNwPtg+ESwZW+XFy+bMdvO5bjU1uLsENudLBOWWYEhZMMT8Fa
+	 vyNNR8+roNhWc/HCa+cWfetSA9UjIquzJOhYsoF6WnUMrvgZez9qPfpY5616SRkjrl
+	 L6wHTtaUP4o+WnWmTSYwHJWDswPA3+5pzcdxtnlLflvYjbQiJdjWqAwg5QkWxRyxD2
+	 yBGwCrlwvy10w==
+Date: Tue, 23 Apr 2024 17:48:24 +0100
+From: Conor Dooley <conor@kernel.org>
+To: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>,
+	Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 2/5] riscv: add ISA extension parsing for Zimop
+Message-ID: <20240423-juiciness-unethical-90ec18e4fabe@spud>
+References: <20240404103254.1752834-1-cleger@rivosinc.com>
+ <20240404103254.1752834-3-cleger@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Zc1JrpErq69EY9Ys"
 Content-Disposition: inline
-In-Reply-To: <878r14yw8n.fsf@meer.lwn.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-
-On Tue, Apr 23, 2024 at 08:44:24AM -0600, Jonathan Corbet wrote:
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
-> 
-> >> A lot of patches get sent with
-> >> more Cc's in the mail message than in the commit message.
-> >
-> > Note, this is the recommendation as it's stated. You can continue polluting
-> > the environment on your wish.
-> 
-> The environmental case here is ... not strong.
-> 
-> I, too, have my doubts about this recommendation; responding this way is
-> not going to change a lot of minds, IMO.
-
-Let's see how discussion will go.
-
-Nevertheless, there seem no objections against the first patch in the series.
-Can it be applied?
-
--- 
-With Best Regards,
-Andy Shevchenko
+In-Reply-To: <20240404103254.1752834-3-cleger@rivosinc.com>
 
 
+--Zc1JrpErq69EY9Ys
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Apr 04, 2024 at 12:32:48PM +0200, Cl=E9ment L=E9ger wrote:
+> Add parsing for Zimop ISA extension which was ratified in commit
+> 58220614a5f of the riscv-isa-manual.
+>=20
+> Signed-off-by: Cl=E9ment L=E9ger <cleger@rivosinc.com>
+
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+> ---
+>  arch/riscv/include/asm/hwcap.h | 1 +
+>  arch/riscv/kernel/cpufeature.c | 1 +
+>  2 files changed, 2 insertions(+)
+>=20
+> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwca=
+p.h
+> index e17d0078a651..543e3ea2da0e 100644
+> --- a/arch/riscv/include/asm/hwcap.h
+> +++ b/arch/riscv/include/asm/hwcap.h
+> @@ -81,6 +81,7 @@
+>  #define RISCV_ISA_EXT_ZTSO		72
+>  #define RISCV_ISA_EXT_ZACAS		73
+>  #define RISCV_ISA_EXT_XANDESPMU		74
+> +#define RISCV_ISA_EXT_ZIMOP		75
+> =20
+>  #define RISCV_ISA_EXT_XLINUXENVCFG	127
+> =20
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
+e.c
+> index 3ed2359eae35..115ba001f1bc 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -256,6 +256,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D {
+>  	__RISCV_ISA_EXT_DATA(zihintntl, RISCV_ISA_EXT_ZIHINTNTL),
+>  	__RISCV_ISA_EXT_DATA(zihintpause, RISCV_ISA_EXT_ZIHINTPAUSE),
+>  	__RISCV_ISA_EXT_DATA(zihpm, RISCV_ISA_EXT_ZIHPM),
+> +	__RISCV_ISA_EXT_DATA(zimop, RISCV_ISA_EXT_ZIMOP),
+>  	__RISCV_ISA_EXT_DATA(zacas, RISCV_ISA_EXT_ZACAS),
+>  	__RISCV_ISA_EXT_DATA(zfa, RISCV_ISA_EXT_ZFA),
+>  	__RISCV_ISA_EXT_DATA(zfh, RISCV_ISA_EXT_ZFH),
+> --=20
+> 2.43.0
+>=20
+
+--Zc1JrpErq69EY9Ys
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZifmVwAKCRB4tDGHoIJi
+0rtUAQCfFhskrVJaQGT4zQgAGIaJX6eQRM8RECwtSJ2o0cGu0gD+IKq0dbK1gZnO
++otlDf1x+J0DKBOQ9YLeg8J2xFWRTAk=
+=AiuW
+-----END PGP SIGNATURE-----
+
+--Zc1JrpErq69EY9Ys--
 
