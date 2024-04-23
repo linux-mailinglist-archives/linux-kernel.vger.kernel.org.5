@@ -1,117 +1,86 @@
-Return-Path: <linux-kernel+bounces-155991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0855B8AFC79
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:17:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4C438AFC6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:11:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0001C283B75
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:08:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91147288253
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:11:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C392B38DDD;
-	Tue, 23 Apr 2024 23:08:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OZYv0w8X"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAD6336B0D;
+	Tue, 23 Apr 2024 23:11:06 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7EB2E62F;
-	Tue, 23 Apr 2024 23:08:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B73C36AF8
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:11:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713913733; cv=none; b=BJge4SgdsVnEEJI3rnMbrdDLdbn5t3ZtbBiiLZogQHnH2LamTHLIKgf1g+UL3C04IU977CYG5bYCiZvC7YhRMmg82LmHa4mNpZwSLgAARcrDONZg652nw9t8GXmeteqjJuVulayBw4ooGnSOJc8s4zee9QMUTwX6/zirhh2yb0A=
+	t=1713913866; cv=none; b=nLmQ2cGWFXWun1Rt9Zrn/nIG+CLUtkaL/+IDtMAwoM+vmcP3iUHwGM4BvjQakStMjdr83bdGLh7XnmI3btOBB59BpUeBwqXl/5gyE60V8ws8MdAAWsZNl5GV/yuPZK8x2+KOyafgqlcPu/ajU2b24WH1qvSz7xaAqtKKQYbK9JA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713913733; c=relaxed/simple;
-	bh=mmRIkV2XMlCxj4R1CexxonFAsAeDGzYAWzEWtaDKnCM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AlqD3xW+CDbks0zu73CyQeoWGunbu6P35XhdIcEGk+nw71bxIRPSZ/yuEx9g6w+zOrtUOeApKykGPOrqhBCCC50xwTX9KSLViaucWHdKP9EZ2tq2To2Fqs0FClvFt+kwF5302BY22w5Ac5bMhzZ0/NWTB3IqsjcCdZ1IVzpbOQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OZYv0w8X; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a51a7d4466bso668791166b.2;
-        Tue, 23 Apr 2024 16:08:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713913730; x=1714518530; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mOubRUxsYQ+p5re1HJn2aIjhIuCSgEkL2WgxwHltP6c=;
-        b=OZYv0w8XtuZ6TJeD/K5yE29lji1bttgBU9DIC5TQ8kryzD3J7EFWV5iz4SRQ1iOMNO
-         r0amrFFXAT1mKCbK7MLJ9TdNUJ/BDKOOkIssSa91QTAwRJjjj1x7IioF3BytkpzeYawO
-         1eCiQ84rCJNa9VfDd9w5zKRxWpBTkMxB0f0gPB95sZfGrR33vT2NgJtxmwJITVLiZsCf
-         rHqU3i6QSg/TI5RUNooxDIJOxFdHahtBUcXmMwE6NeaaYO55G3SzYvdCLuBgyoSQVVJk
-         MzBLVG72vx47+JnGnGi0B4KHyS1BwR92iKrS59n1Wnreln21VGVxlU4Pdl16yHz00cL0
-         MjKw==
+	s=arc-20240116; t=1713913866; c=relaxed/simple;
+	bh=IprRLrP4/OBNEf7yZBlJYicr3vDmv5ZOE/MNS6iX41k=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=i0ZgRhFyxdD0Lm5YQ/ksEHvI79uUsTMApLxKA3KipI8997q61Zg00n2CTKb2YPEuYXaAesya5rqDMuTowtsGpr8ozEzPr23OnNTBIsurWQbB1arLRrtg3QtUrUKhl4JpLxFk5ousUPXrydB4k88uAm5zDF5G7sLGjoOHHvULcJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7ddf0219685so152540639f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:11:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713913730; x=1714518530;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mOubRUxsYQ+p5re1HJn2aIjhIuCSgEkL2WgxwHltP6c=;
-        b=r9ScyCLfgMnC23Cim+z5DgUVMUJcg4jum3NH6Jget83KUdNe+5UQ8Y6PEVm/sFoA3w
-         gDfjNB/gy5C/LuoduolBwBV4LYcm5M33YR2t+rEjLN1FDn/BymA2MXgryYH8h49hSWVx
-         EGjkAc6lWSruJTwEElz2DlkFfs1UYSW4I1bxUiDRANXTB9fVzBr4FGbqBm94XWvSt2h6
-         dJglOl1Q8H1zabFrzn5/G9FUlnGJIzD96PVIwCYIJ9WjjrkT1/EL4QD5eLeuSJKD312s
-         uvm/0wEAIUm7SugCR7SDGNRHGBa81uVKwAjiju1EEO77pvpDojbCRRIov7vJCUDFFz4c
-         IQDw==
-X-Forwarded-Encrypted: i=1; AJvYcCWxYK3xUgdPYcDJKw8gBE+851rWHWqKASMfqWtzUNHlDdSAJL9JS2RrbvwrQV/05YtFfnh0xL1iJL8X4Pbq3hpNmEPQ/P/2HUcQEiUtHbADF2WjbBif0mjpoyGv5RsUr/MyoI8XY8MaP6grB/hcYzTYaIviFfcQSnUjNzGExvS+gzHlvSuXrNByJzpCiDh6FGb4DT7j5IjzVxuw/Isl3Ps4
-X-Gm-Message-State: AOJu0YwmfK0OnBve5ruObIdBdJBsDnsVe7MGM6MyGjoaQF7Jh9D5GX5V
-	bj30LssmgwjkG2Bn2m+HK4uL/5PnY68YuZCLoRUIW7UJImZ9c1nrWdUh8iwzv6SR4/WQ0+AaAXV
-	hyKP0z/Nr1XFESTLQxbRoatjEC7A=
-X-Google-Smtp-Source: AGHT+IH0I+fz392Yc9QQdmMfH48abnh5L/ReLRRQ4WhXNmBB/5ukEAf+sHnLvLjG5foXtSu/lNY/gm9SoFxlBu7Gy2s=
-X-Received: by 2002:a17:906:aace:b0:a55:552d:965e with SMTP id
- kt14-20020a170906aace00b00a55552d965emr467140ejb.6.1713913729829; Tue, 23 Apr
- 2024 16:08:49 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713913864; x=1714518664;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fkAZzF+AxPebPQDG24hg0CBtvDuYtfCIICEEd/EnwVU=;
+        b=CN66+SrhtU9ILHoL3flZpS3s69eST8pU4H/S1i7AbcKbd1C6VCcl8dI87yOzhaLvlC
+         ZI4CWxg3af+6CvH9rsgzZVPF/C73FmshaKlTaboQBrFM6u34CmrJ0kn0frhj+FMiDtrX
+         pv9A2gBYJ7gTmhqLVvHk3x9+/+/NCxDHXnZ/tcVLVr6r2sMAPpDK3EJUoNcKYqJUd79F
+         N/HpFpXHjjH4Os/Z0suQmtuq6kau0hAffDRF433ElXzOO5BPuq/+dMwisFSDV4HQckY4
+         KkOjAopNsEC3d3PvdrDcSXdsGzqJr2KOdAF3bMTvxpb1qUvciL5RKQIdhfEZFnUvQepd
+         Vb0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVG50OBDuuS2whBPbxwP9QRZAGQAMlc9GW35san76QEklzattg3/8K8cW26FsSFpvpzXxNER1iRhYpCQgvAHoHFQicUEQ3PTw1Pi7xU
+X-Gm-Message-State: AOJu0Yz9TCpWcApVwG328Dw9Nb+kkLKI7IdJmeKbSYjDvWoWSSPXgD0O
+	88uBvjwinVqRsxFUjm1TwtrVbVQYtMaQTnOJDWOX39GvmXHDSwdrahYKHg7bO65Uo7p0ZogNWXd
+	2hgh601b7VyktHQS9LaBO15wpuHLZezalFm8tGpg/48vJZoLMh2tx9gg=
+X-Google-Smtp-Source: AGHT+IEveMiYHuDcZj/a2y6m0NqiKHSXJCwDxdTjEO0YpC8BQ2wwn8vMdO2N2zn107e7Vsl2oNvBMI17WPf7Qn1AwQFtrLEjmuYG
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240423223309.1468198-2-aren@peacevolution.org> <20240423223309.1468198-5-aren@peacevolution.org>
-In-Reply-To: <20240423223309.1468198-5-aren@peacevolution.org>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 24 Apr 2024 02:08:13 +0300
-Message-ID: <CAHp75Vcp=-T2135s3rVbpQzcG=iiieit+L0BgnmoZet_AsbgcA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/6] iio: light: stk3310: Manage LED power supply
-To: Aren Moynihan <aren@peacevolution.org>
-Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, Liam Girdwood <lgirdwood@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, Ondrej Jirman <megi@xff.cz>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	linux-iio@vger.kernel.org, phone-devel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	Willow Barraco <contact@willowbarraco.fr>
+X-Received: by 2002:a05:6638:2581:b0:482:cfdd:daeb with SMTP id
+ s1-20020a056638258100b00482cfdddaebmr112001jat.5.1713913864241; Tue, 23 Apr
+ 2024 16:11:04 -0700 (PDT)
+Date: Tue, 23 Apr 2024 16:11:04 -0700
+In-Reply-To: <20240423223458.3126-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000dd33b0616cbabb9@google.com>
+Subject: Re: [syzbot] [net?] possible deadlock in __unix_gc
+From: syzbot <syzbot+fa379358c28cc87cc307@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 24, 2024 at 1:41=E2=80=AFAM Aren Moynihan <aren@peacevolution.o=
-rg> wrote:
->
-> The stk3310 and stk3310 chips have an input for power to the infrared
-> LED. Add support for managing it's state.
+Hello,
 
-its
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-..
+Reported-and-tested-by: syzbot+fa379358c28cc87cc307@syzkaller.appspotmail.com
 
->         if (IS_ERR(data->vdd_reg))
->                 return dev_err_probe(&client->dev, ret, "get regulator vd=
-d failed\n");
->
-> +       data->led_reg =3D devm_regulator_get(&client->dev, "leda");
-> +       if (IS_ERR(data->led_reg))
-> +               return dev_err_probe(&client->dev, ret, "get regulator le=
-d failed\n");
+Tested on:
 
-Can't you use a bulk regulator API instead?
+commit:         4d200843 Merge tag 'docs-6.9-fixes2' of git://git.lwn...
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=179a2a80980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=98d5a8e00ed1044a
+dashboard link: https://syzkaller.appspot.com/bug?extid=fa379358c28cc87cc307
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=128da46b180000
 
---=20
-With Best Regards,
-Andy Shevchenko
+Note: testing is done by a robot and is best-effort only.
 
