@@ -1,174 +1,118 @@
-Return-Path: <linux-kernel+bounces-155184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D63128AE66C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:40:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5DBE8AE671
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:40:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA8C9B24685
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:40:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 775CB285338
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57AD513443F;
-	Tue, 23 Apr 2024 12:38:29 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 747B585631;
-	Tue, 23 Apr 2024 12:38:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A98135A4A;
+	Tue, 23 Apr 2024 12:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EpKUFJiI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C4F912E1EF;
+	Tue, 23 Apr 2024 12:38:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713875908; cv=none; b=XOjhtNNCLY5hNFnclgoBzFYHHrrTxa4R3U6M0izA2Zi019+0LrO5ELLsqV69GBugTz2g4pcOyUJ4H4rXODD1nnP/8yJgjfgoFICO2YzN50Ha30DuGmJiPR1aKrTpnuV/vybEroIiXrIhEpH3ccfnpGxJghuHJoFVT/7Zibpy4Zo=
+	t=1713875933; cv=none; b=V9ZuSRGbC4/HqtvPtVnbZ/w4Qt2HrZuT6N0hvnVIEmklvXDpzH0FP9R6/eN3EKg5HF6HsWPXI0ZuGhVsI8o+jgUOr9mWo5hzjzZcJlTQakwcDS0ORAkoicq24uvHyl6uPcYhw2cQYHl1TANKp1N97eYuiHVeZ952dNL3W1vG90I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713875908; c=relaxed/simple;
-	bh=W3QJ3abnpeI4gXmfwcQAafj4T+GPRhWjzlZLcC4bPRY=;
+	s=arc-20240116; t=1713875933; c=relaxed/simple;
+	bh=+cXiwTbxFmfiSsQO21Adm9RSvK/3tEUU0QEneBBOX70=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P47/aOF8kg7mzR+Mb5ydIB6ACa+o8vB/kxW7nAxpQKfunTknCfSW/UzHy1K7Z2MRuZSoyG0vm5okyyP2QE9hSuP12OSAdfN87TlLbmLy0BucKNT68XFWKUs1HnYdGBwBRL871e96IWokEmFLBbTLXdJtD/W5HLAJ3wZibl30NS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D5717339;
-	Tue, 23 Apr 2024 05:38:54 -0700 (PDT)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CF0673F7BD;
-	Tue, 23 Apr 2024 05:38:22 -0700 (PDT)
-Date: Tue, 23 Apr 2024 13:38:20 +0100
-From: Dave Martin <Dave.Martin@arm.com>
-To: Peter Newman <peternewman@google.com>
-Cc: Babu Moger <babu.moger@amd.com>, corbet@lwn.net, fenghua.yu@intel.com,
-	reinette.chatre@intel.com, tglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-	hpa@zytor.com, paulmck@kernel.org, rdunlap@infradead.org,
-	tj@kernel.org, peterz@infradead.org, yanjiewtw@gmail.com,
-	kim.phillips@amd.com, lukas.bulwahn@gmail.com, seanjc@google.com,
-	jmattson@google.com, leitao@debian.org, jpoimboe@kernel.org,
-	rick.p.edgecombe@intel.com, kirill.shutemov@linux.intel.com,
-	jithu.joseph@intel.com, kai.huang@intel.com,
-	kan.liang@linux.intel.com, daniel.sneddon@linux.intel.com,
-	pbonzini@redhat.com, sandipan.das@amd.com,
-	ilpo.jarvinen@linux.intel.com, maciej.wieczor-retman@intel.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	eranian@google.com, james.morse@arm.com
-Subject: Re: [RFC PATCH v3 00/17] x86/resctrl : Support AMD Assignable
- Bandwidth Monitoring Counters (ABMC)
-Message-ID: <ZiervIprcwoApAqw@e133380.arm.com>
-References: <cover.1711674410.git.babu.moger@amd.com>
- <ZiaRXrmDDjc194JI@e133380.arm.com>
- <CALPaoCh5DDmojnkUZPnACkq_ugwKnqCnwLHj2sV69TSTzpAL9g@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bMA5saaKFKcuPxFEO7+U2rqimf3T1XYHjMTSKJZgMiMlnijP9/V/G4izWXfcNmy5/ycmCO3WYyDh29xSbU4nPS7tPOMVYSmWdAKpEDzM4sf+aByU6AmqU/oKl77hSjC06NyB+hrvNWn4uuxYSRZmYlHuxznYnTV8AIqr/6rli8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EpKUFJiI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B64AC116B1;
+	Tue, 23 Apr 2024 12:38:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713875932;
+	bh=+cXiwTbxFmfiSsQO21Adm9RSvK/3tEUU0QEneBBOX70=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EpKUFJiIg8iLilLGVtbduWQebSgX9U/D2FgvydndfzBLm9spskITcBjNtTxVG/Gpm
+	 XbLH7kLJJqXOJDoEmSY3fTfB2qy3dDiZCXjfvKnyjPsLGmmtn8kFvb5SuCSu4h+/vC
+	 SGhpydeagU0louQl4VetJfuyjGbrzOeSa3iAfjsJrK25+9XaOEFdqHdGF8rwt7fGb+
+	 142bvCoSGBKlTZByQGf/BulrwuMcegszSwNikANTdo6aTUIHNwwUdcSuffkxFGLZOc
+	 WIkY0zKC3o9jNPzig34V7fQcqTDK2SS+BJs5VLYvetlnAQSKOyAffltLIj67pHXgwt
+	 RTMtcjiQt9ZTw==
+Date: Tue, 23 Apr 2024 07:38:50 -0500
+From: Rob Herring <robh@kernel.org>
+To: Sean Anderson <sean.anderson@linux.dev>
+Cc: Michal Simek <michal.simek@amd.com>,
+	Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>
+Subject: Re: [PATCH 1/7] dt-bindings: pci: xilinx-nwl: Add phys
+Message-ID: <20240423123850.GA4105016-robh@kernel.org>
+References: <20240422195904.3591683-1-sean.anderson@linux.dev>
+ <20240422195904.3591683-2-sean.anderson@linux.dev>
+ <171382130333.1986303.15938018699322126426.robh@kernel.org>
+ <173a7bb2-5473-4c1b-b3dd-ef776e63ac7a@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALPaoCh5DDmojnkUZPnACkq_ugwKnqCnwLHj2sV69TSTzpAL9g@mail.gmail.com>
+In-Reply-To: <173a7bb2-5473-4c1b-b3dd-ef776e63ac7a@linux.dev>
 
-Hi Peter,
+On Mon, Apr 22, 2024 at 05:30:06PM -0400, Sean Anderson wrote:
+> On 4/22/24 17:28, Rob Herring wrote:
+> > 
+> > On Mon, 22 Apr 2024 15:58:58 -0400, Sean Anderson wrote:
+> >> Add phys properties so Linux can power-on/configure the GTR
+> >> transcievers.
+> >> 
+> >> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+> >> ---
+> >> 
+> >>  Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml | 8 ++++++++
+> >>  1 file changed, 8 insertions(+)
+> >> 
+> > 
+> > My bot found errors running 'make dt_binding_check' on your patch:
+> > 
+> > yamllint warnings/errors:
+> > 
+> > dtschema/dtc warnings/errors:
+> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml: properties:phy-names: {'maxItems': 4, 'items': [{'pattern': '^pcie-phy[0-3]$'}]} should not be valid under {'required': ['maxItems']}
+> > 	hint: "maxItems" is not needed with an "items" list
+> > 	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+> > 
+> > doc reference errors (make refcheckdocs):
+> > 
+> > See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240422195904.3591683-2-sean.anderson@linux.dev
+> > 
+> > The base for the series is generally the latest rc1. A different dependency
+> > should be noted in *this* patch.
+> > 
+> > If you already ran 'make dt_binding_check' and didn't see the above
+> > error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> > date:
+> > 
+> > pip3 install dtschema --upgrade
+> > 
+> > Please check and re-submit after running the above command yourself. Note
+> > that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+> > your schema. However, it must be unset to test all examples with your schema.
+> > 
+> 
+> This warning is invalid, since I am using pattern with items.
 
-On Mon, Apr 22, 2024 at 11:23:50AM -0700, Peter Newman wrote:
-> Hi Dave,
-> 
-> On Mon, Apr 22, 2024 at 9:33 AM Dave Martin <Dave.Martin@arm.com> wrote:
-> >
-> > Hi Babu,
-> >
-> > On Thu, Mar 28, 2024 at 08:06:33PM -0500, Babu Moger wrote:
-> > >        Assignment flags can be one of the following:
-> > >
-> > >         t  MBM total event is assigned
-> >
-> > With my MPAM hat on this looks a bit weird, although I suppose it
-> > follows on from the way "mbm_total_bytes" and "mbm_local_bytes" are
-> > already exposed in resctrlfs.
-> >
-> > From an abstract point of view, "total" and "local" are just event
-> > selection criteria, additional to those in mbm_cfg_mask.  The different
-> > way they are treated in the hardware feels like an x86 implementation
-> > detail.
-> >
-> > For MPAM we don't currently distinguish local from non-local traffic, so
-> > I guess this just reduces to a simple on-off (i.e., "t" or nothing),
-> > which I guess is tolerable.
-> >
-> > This might want more thought if there is an expectation that more
-> > categories will be added here, though (?)
-> 
-> There should be a path forward whenever we start supporting
-> user-configured counter classes. I assume the letters a-z will be
-> enough to cover all the counter classes which could be used at once.
+It is valid. You need to make 'items' a schema not a list (i.e. drop the 
+'-').
 
-Ack, though I'd appreciate a response on the point about "_" below in
-case people missed it.
-
-> 
-> >
-> > >         l  MBM local event is assigned
-> > >         tl Both total and local MBM events are assigned
-> > >         _  None of the MBM events are assigned
-> >
-> > This use of '_' seems unusual.  Can we not just have the empty string
-> > for "nothing assigned"?
-> >
-> > Since every assignment is terminated by ';' or end-of-line, I don't
-> > think that there would be any parsing ambiguity (?)
-> >
-> > >
-> > >       Examples:
-> > >
-> > >       # cat /sys/fs/resctrl/info/L3_MON/mbm_assign_control
-> > >       non_defult_group//0=tl;1=tl;2=tl;3=tl;4=tl;5=tl;6=tl;7=tl;
-> > >       non_defult_group/non_default_mon1/0=tl;1=tl;2=tl;3=tl;4=tl;5=tl;6=tl;7=tl;
-> > >       //0=tl;1=tl;2=tl;3=tl;4=tl;5=tl;6=tl;7=tl;
-> > >       /default_mon1/0=tl;1=tl;2=tl;3=tl;4=tl;5=tl;6=tl;7=tl;
-> > >
-> > >       There are four groups and all the groups have local and total event assigned.
-> > >
-> > >       "//" - This is a default CONTROL MON group
-> > >
-> > >       "non_defult_group//" - This is non default CONTROL MON group
-> > >
-> > >       "/default_mon1/"  - This is Child MON group of the defult group
-> > >
-> > >       "non_defult_group/non_default_mon1/" - This is child MON group of the non default group
-> > >
-> > >       =tl means both total and local events are assigned.
-> > >
-> > > e. Update the group assignment states using the interface file /sys/fs/resctrl/info/L3_MON/mbm_assign_control.
-> > >
-> > >       The write format is similar to the above list format with addition of
-> > >       op-code for the assignment operation.
-> >
-> > With by resctrl newbie hat on:
-> >
-> > It feels a bit complex (for the kernel) to have userspace needing to
-> > write a script into a magic file that we need to parse, specifying
-> > updates to a bunch of controls already visible as objects in resctrlfs
-> > in their own right.
-> >
-> > What's the expected use case here?
-> 
-> I went over the use case of iterating a small number of monitors over
-> a much larger number of monitoring groups here:
-> 
-> https://lore.kernel.org/lkml/CALPaoCi=PCWr6U5zYtFPmyaFHU_iqZtZL-LaHC2mYxbETXk3ig@mail.gmail.com/
-> 
-> >
-> > If userspace really does need to switch lots of events simultaneously
-> > then I guess the overhead of enumerating and poking lots of individual
-> > files might be unacceptable though, and we would still need some global
-> > interfaces for operations such as "unassign everything"...
-> 
-> My main goal is for the number of parallel IPI batches to all the
-> domains (or write syscalls) to be O(num_rmids / num_monitors) rather
-> than O(num_rmids * num_monitors) as I need to know how frequently we
-> can afford to sample the current memory bandwidth of the maximum
-> number of monitoring groups supported.
-
-Fair enough; I wasn't fully aware of the background discussions.
-
-Cheers
----Dave
+Rob
 
