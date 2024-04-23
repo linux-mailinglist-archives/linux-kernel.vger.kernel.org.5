@@ -1,66 +1,79 @@
-Return-Path: <linux-kernel+bounces-155592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A9D98AF48D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:46:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 930D38AF48F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:46:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 558AF2867FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:46:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37FDD1F247F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:46:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C4D13D537;
-	Tue, 23 Apr 2024 16:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8A8E13D52C;
+	Tue, 23 Apr 2024 16:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VW//JClN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bshuNDet"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540DB13BAFE;
-	Tue, 23 Apr 2024 16:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1F5513D516;
+	Tue, 23 Apr 2024 16:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713890783; cv=none; b=kkBhFmw9sPV7PhTB8wRCr8mtsOKSByE+qSy0b4jrHz8zB0EYFRO69wRztm0PgSm17oyOw0G2htudPCqwPuaf+q4wLdH7wgbcrjZJH31je/4IvSbQfVLJE46yJmYCWFrdLzTBv3b69/8cRd8k80HQ0qPZNM6FhmgzsJZ6BgMuelI=
+	t=1713890794; cv=none; b=jprMI7BQfZdQr0+yXi4YB3a+YBm+e0H7vePXdwWe28fQBmgS1yoUfmCRvKTywfgq5JsYcb/E4+zDZHaMO3JL4b3bY7it5hKNpFIyrwfWCcQ/M1DoaaAmzGYMC/pntOM3lrvI/Hqi5uq3LpI4M99CFuT7j5/7iCyXXMyDrWDWetM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713890783; c=relaxed/simple;
-	bh=d6fUPT7FccaSpbhAaWt+3bXIMJB6KRIJ6QO0yTnP038=;
+	s=arc-20240116; t=1713890794; c=relaxed/simple;
+	bh=X04TMGUEoTQq6ssKaWRAYwBOvxwm4/UkOVHluKDUc0A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E1wdi2Q7BalRVecUMmUqZ0fkaVp1/OvjomuiH/g+dOYkcbI6WTPr+nWkdhzVbTfp2bjlTKiYxnQ9eXQr2XpcIsvcCJUaBRt949AyVZ4o0+xlID64kVfn+18Mn6Uh9vI2rqxcZAsU3Wsmxe79N9qEcWo5bH357BMDMzU8r1ci+38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VW//JClN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17428C116B1;
-	Tue, 23 Apr 2024 16:46:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713890782;
-	bh=d6fUPT7FccaSpbhAaWt+3bXIMJB6KRIJ6QO0yTnP038=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VW//JClNLBdywVje2WU6TgzA/sd6UIAiscV0HlVXGhCD19BwZG5atbmQRH/qm/nMf
-	 RwrIAGS3M9LGnI0rin3JJ9NWKsj6cnXpz1Pz6mCvIt1DfZWVCuV4g6M1TIEm9QS5UY
-	 Kp5tywStDs1+ph8qr4NtIaXuGZt4Qvunna7FwICtBvvawtEhce117pR7iPrGZEJDz/
-	 xQJ9brNKx+1Vwo3iL/HXTIqx4ZwvlxHevJ99ais6v96nvBgiE9C3kEgMc04ESDP1Gl
-	 3fuxPXMiS4FqJGZ1mBIwyG8yLUzHSfVVXhZDlQ0PC6HHb9TWpRUM1M6bFdqhdZpvRp
-	 KXWAIDcrJkWPw==
-Date: Tue, 23 Apr 2024 17:46:16 +0100
-From: Simon Horman <horms@kernel.org>
-To: Gregor Herburger <gregor.herburger@ew.tq-group.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Thomas Kopp <thomas.kopp@microchip.com>,
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux@ew.tq-group.com,
-	alexander.stein@ew.tq-group.com
-Subject: Re: [PATCH 2/4] can: mcp251xfd: mcp251xfd_regmap_crc_write():
- workaround for errata 5
-Message-ID: <20240423164616.GX42092@kernel.org>
-References: <20240417-mcp251xfd-gpio-feature-v1-0-bc0c61fd0c80@ew.tq-group.com>
- <20240417-mcp251xfd-gpio-feature-v1-2-bc0c61fd0c80@ew.tq-group.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tGRupVmhl3CXee9vUIwaQAW6iCGNYd0xlBYKA0ZJl0tHaeo572L67rJfIP0SBITPcirxJMCv6mxv45HbvManftjeLnjsc6DkdxpIt+fQulrICa3T93rAVwqp7NJsa7+GQpKTfp4ESFf86q1tubpBsR+Isl1RH8901CuzuJkIYVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bshuNDet; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713890793; x=1745426793;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=X04TMGUEoTQq6ssKaWRAYwBOvxwm4/UkOVHluKDUc0A=;
+  b=bshuNDetZQUu+e83KRVePRP2DDg0IGsiP0lb9ymxwaxVj73RhQ49+h+0
+   yaXVtc+kwkLYLGfMIYSge7TwOldsKptL19MNbNZBj0wHUI0sS9Ypmbr+u
+   7wm0d56dACDY7lUPm2thEmntOXnO4tuli7bdqcpQwFh3HnmAMtx219mZx
+   6yvbLNzPgf+4+3Z9zNSIGfhvYwtYy8QXDrHY3EnvCji4sUU14ca7d2eBH
+   AgfW/EL9Hcd6aqZlREbdG4tUEYAnCgxgmUruI5ooBzB4VVLYK4a62fEoi
+   YLd/BrizC4qF3q7kQAzUKDkh6eG65vXjBDmPqCXhKmkLqvb1XJ46ceqts
+   w==;
+X-CSE-ConnectionGUID: cEgt2psCQ9iaVuqwsDn6bQ==
+X-CSE-MsgGUID: vTy7pJI/R1SACFn3lneJ5A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="9318061"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="9318061"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 09:46:32 -0700
+X-CSE-ConnectionGUID: fx3hzkhmRTKzdTyvq2YGIw==
+X-CSE-MsgGUID: tQSw8qZSSl+Gasbx+7P2Uw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="24395789"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa009.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 09:46:31 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rzJHo-00000000Osh-1HrE;
+	Tue, 23 Apr 2024 19:46:28 +0300
+Date: Tue, 23 Apr 2024 19:46:28 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: Jani Nikula <jani.nikula@intel.com>, workflows@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] Documentation: process: Recommend to put Cc: tags
+ after cutter '---' line
+Message-ID: <Zifl5PAAD1GTLWSK@smile.fi.intel.com>
+References: <20240423132024.2368662-1-andriy.shevchenko@linux.intel.com>
+ <20240423132024.2368662-3-andriy.shevchenko@linux.intel.com>
+ <871q6wrw12.fsf@intel.com>
+ <ZifHnw1cxgP77MKx@smile.fi.intel.com>
+ <878r14yw8n.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,24 +82,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240417-mcp251xfd-gpio-feature-v1-2-bc0c61fd0c80@ew.tq-group.com>
+In-Reply-To: <878r14yw8n.fsf@meer.lwn.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Apr 17, 2024 at 03:43:55PM +0200, Gregor Herburger wrote:
-> According to Errata DS80000789E 5 writing IOCON register using one SPI
-> write command clears LAT0/LAT1.
+On Tue, Apr 23, 2024 at 08:44:24AM -0600, Jonathan Corbet wrote:
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
 > 
-> Errata Fix/Work Around suggests to write registers with single byte write
-> instructions. However, it seems that every write to the second byte
-> causes the overrite of LAT0/LAT1.
-
-nit: overwrite
-
-Flagged by ./scripts/checkpatch.pl --codespell
-
+> >> A lot of patches get sent with
+> >> more Cc's in the mail message than in the commit message.
+> >
+> > Note, this is the recommendation as it's stated. You can continue polluting
+> > the environment on your wish.
 > 
-> Never write byte 2 of IOCON register to avoid clearing of LAT0/LAT1.
+> The environmental case here is ... not strong.
 > 
-> Signed-off-by: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+> I, too, have my doubts about this recommendation; responding this way is
+> not going to change a lot of minds, IMO.
 
-..
+Let's see how discussion will go.
+
+Nevertheless, there seem no objections against the first patch in the series.
+Can it be applied?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
