@@ -1,98 +1,114 @@
-Return-Path: <linux-kernel+bounces-154517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A857C8ADD08
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:04:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 684828ADD25
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:32:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5131B1F22D48
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:04:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C35FBB2224D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:32:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDAA3224D7;
-	Tue, 23 Apr 2024 05:04:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k86VvsxN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFC2220DD2;
+	Tue, 23 Apr 2024 05:32:43 +0000 (UTC)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A4320DD2;
-	Tue, 23 Apr 2024 05:04:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E52EA208A0;
+	Tue, 23 Apr 2024 05:32:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713848651; cv=none; b=rIJgRTVVVsX2xVqTlBguMNGwj/73fo0iz4IkafsJ/iWf466jOOXqFF75stL2Lg/9YcNUK1BvnD6oOtgnNG5IxLa41tHjmhXhdK+nivGauWJrNqjp2Z3eqHkudT7y2W8lOmYZU1rcOCGUWFkV+NU8t9wuPoVLsMKCXq7HwcU39yU=
+	t=1713850363; cv=none; b=suar9OJ4/2HCxCbDfHPmlaj63/tyCizrNfieqojeJ2bNAWrv9qFHAOYkQPeSFtG91M6h22itvbIWrrG+BuddMLAJNlPCAnLujWIl09HowNYniqTyiUMSOc1zBgXv/vr5Fswatj646RZiKUOylJ9m8/ahQ2No0cc+zQJbZIShv1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713848651; c=relaxed/simple;
-	bh=fyyNNc35kzUf08wTp1I94CCtJE66QRy40bl7jgbwPI0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=smi5jBhaOA7LFRxRBz09gFBnBxBgNowpk4dXKNVO8xcUnwLTs8SDqsWEsqCFsGmiA2/6QUiImRFoeM/KB9CeNrFcIF/MdKgWS4Hh0KqEx47uhlICezAU+9BNgQqmN/kG4Rb15hpwbRcvVQ2ggnYP2p8kzOhTgNxImw+dnkWY6PU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k86VvsxN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7F7FC2BD10;
-	Tue, 23 Apr 2024 05:04:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713848650;
-	bh=fyyNNc35kzUf08wTp1I94CCtJE66QRy40bl7jgbwPI0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=k86VvsxNvKmKatUjSlNP1W6xBPp7fok45wJ/XmrsV3OHsiBtnaOW1m04D/O1zdZJ1
-	 wucJyo6Mh6HJzcuTnjXoeU8KB6fSTZC6lAfp6fogp5nw/o5gayUm+w1riRRtNlp2es
-	 Tuz1EAOFqQZply7pTOKVeWgj2akHu0j4sr5uoDjD/CyiDdxs6YS5b8EfEFPwusbhec
-	 tQ24xwvU2eeTmKboYKF5nNJxoC/UNydgCmWku02BSeQewfBgAeYyrE4VBFDOC/ZaHo
-	 zNkYCk+ji1cLhv9hx8VWrMVEps62F5+Hrq0+b7JFVflGPrb4hHRqoteehw4liuBmR9
-	 xT3ebRB66RITQ==
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, 
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
- Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <20240422151513.2052167-1-andriy.shevchenko@linux.intel.com>
-References: <20240422151513.2052167-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] ASoC: soc.h: Don't use "proxy" headers
-Message-Id: <171384864836.1769239.2563630658108188735.b4-ty@kernel.org>
-Date: Tue, 23 Apr 2024 14:04:08 +0900
+	s=arc-20240116; t=1713850363; c=relaxed/simple;
+	bh=+azLDfk/XeFroGKgVqni53cR/vzETd6dF45ytF23To8=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=VC7l6wwB0lN9wi9+bOrkGxDXXtsQWfvwS8xZGqFwYJJ5n2CXNgmMcgiExFleBOxY6OqcbrOfc1chQ3KP4/OVOeT9+nTZXeORJMaoVJuE9Ex3bs6cFfidQAel1JDoesQkWzKis3Qks1BHktx274eUdMSWBKS/l8x6+8AvsnM8cSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D33FA20081E;
+	Tue, 23 Apr 2024 07:26:57 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7B9532005F3;
+	Tue, 23 Apr 2024 07:26:57 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 21EEC180222C;
+	Tue, 23 Apr 2024 13:26:55 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: abelvesa@kernel.org,
+	peng.fan@nxp.com,
+	mturquette@baylibre.com,
+	sboyd@kernel.org,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	festevam@gmail.com,
+	imx@lists.linux.dev,
+	shengjiu.wang@gmail.com
+Cc: linux-clk@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: imx: imx8mp: Use modern pm_ops
+Date: Tue, 23 Apr 2024 13:08:37 +0800
+Message-Id: <1713848917-13380-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
 
-On Mon, 22 Apr 2024 18:15:13 +0300, Andy Shevchenko wrote:
-> Update header inclusions to follow IWYU (Include What You Use)
-> principle.
-> 
-> 
+Without CONFIG_PM, the driver warns about unused functions
 
-Applied to
+./drivers/clk/imx/clk-imx8mp-audiomix.c:363:12: warning: 'clk_imx8mp_audiomix_runtime_resume' defined but not used [-Wunused-function]
+  363 | static int clk_imx8mp_audiomix_runtime_resume(struct device *dev)
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./drivers/clk/imx/clk-imx8mp-audiomix.c:356:12: warning: 'clk_imx8mp_audiomix_runtime_suspend' defined but not used [-Wunused-function]
+  356 | static int clk_imx8mp_audiomix_runtime_suspend(struct device *dev)
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Change the old SET_RUNTIME_PM_OPS()/SET_NOIRQ_SYSTEM_SLEEP_PM_OPS()
+helpers to their modern replacements that avoid the warning.
 
-Thanks!
+Fixes: 1496dd413b2e ("clk: imx: imx8mp: Add pm_runtime support for power saving")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ drivers/clk/imx/clk-imx8mp-audiomix.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-[1/1] ASoC: soc.h: Don't use "proxy" headers
-      commit: 3249c68e3cdacc2da8fe811a54f8db43df124c0e
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/drivers/clk/imx/clk-imx8mp-audiomix.c b/drivers/clk/imx/clk-imx8mp-audiomix.c
+index 574a032309c1..e4231e9c8f05 100644
+--- a/drivers/clk/imx/clk-imx8mp-audiomix.c
++++ b/drivers/clk/imx/clk-imx8mp-audiomix.c
+@@ -368,10 +368,10 @@ static int clk_imx8mp_audiomix_runtime_resume(struct device *dev)
+ }
+ 
+ static const struct dev_pm_ops clk_imx8mp_audiomix_pm_ops = {
+-	SET_RUNTIME_PM_OPS(clk_imx8mp_audiomix_runtime_suspend,
+-			   clk_imx8mp_audiomix_runtime_resume, NULL)
+-	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+-				      pm_runtime_force_resume)
++	RUNTIME_PM_OPS(clk_imx8mp_audiomix_runtime_suspend,
++		       clk_imx8mp_audiomix_runtime_resume, NULL)
++	NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				  pm_runtime_force_resume)
+ };
+ 
+ static const struct of_device_id clk_imx8mp_audiomix_of_match[] = {
+@@ -386,7 +386,7 @@ static struct platform_driver clk_imx8mp_audiomix_driver = {
+ 	.driver = {
+ 		.name = "imx8mp-audio-blk-ctrl",
+ 		.of_match_table = clk_imx8mp_audiomix_of_match,
+-		.pm = &clk_imx8mp_audiomix_pm_ops,
++		.pm = pm_ptr(&clk_imx8mp_audiomix_pm_ops),
+ 	},
+ };
+ 
+-- 
+2.34.1
 
 
