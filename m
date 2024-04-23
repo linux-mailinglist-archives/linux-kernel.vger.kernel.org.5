@@ -1,161 +1,159 @@
-Return-Path: <linux-kernel+bounces-154377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F9B98ADB62
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:02:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22C6C8ADB65
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:05:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6D25281C10
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:02:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5497D1C21161
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C919D11184;
-	Tue, 23 Apr 2024 01:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 575D012B93;
+	Tue, 23 Apr 2024 01:05:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="By5tKlFv";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UR4ID+jk"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="jsK+vCzc"
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C204FE57E
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 01:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 777A7F9D4
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 01:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713834138; cv=none; b=ej6uBxpZqXTjBhEovn+pzrrxGechxMeuCSfTcfUoM1nSFDo6H9i1c4j7+tQhA+LbHix9UrQ0L9DakScPWcQ5i6DFb/0wgPTUKPVyLbfaKSTlypsp8zqsoFfotICL912YGQQWGv+LY30Um6F/3s14qm3Yy6vODAtAVUqBLO/4Ncg=
+	t=1713834327; cv=none; b=ki01YeXVlLwm+cX/JS1k0uxmKpqS8fugny1ZtUeZznVucwT17EOJH2FKHb/HwBfWyE1qBHWB/61dVeQhh/0RXJ/5xkKWNNosX3quwzseBBgGoenwYvQqm0tMYFicmyv4ULivEoVinq5yCv/ibNJ5eaBFl62RNiqWVh1v8Rbk5oM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713834138; c=relaxed/simple;
-	bh=uWpj90WzaivTpwV3wRAddW6tg90OKeaqEUAm2vDazMg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=eQ8YmxGljNdqJiNwG5V/hdhtQlf1TOLQUVKFmABimv643XEJyUYnSnIeiTX/RHeV6xxG0vBE2AVhcYzWCmYzuch4n1Hlr6fsdP3ovE/NypRalOWrEfW6YKUedTz+rCkOqR0hiFXg2RA4aLGVU9uM7bk2kL/3IJSdojAIu1ctda0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=By5tKlFv; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UR4ID+jk; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713834135;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G9dZh/zkbcqMryMT4S/DkvJjtqvfHQKiNRTkLprSWL8=;
-	b=By5tKlFvILbXDv5rNI7WxSK8H0hWIUveJ/O0Lw1WwMcwMkQKDi1aqBLtFoy31jwX5z+ue5
-	NGlk5KA8EPNLP3u74AUWTnqyVAUx0yRqjne1znNISad4/1lmHkd1q91h5Ly0Ln6lfKkgvH
-	lX38xr08oQgpwokdIgHWGaPaVwdOYorPX8gjwXujMUNQxA69F3Sa4wI2VTE8vQTQfz5wRv
-	nthjKkEUmCioncEkhG7UQrqUhuAVrkgHU0kJaxhg1cNhnnIyJumFXVSYALV9ISb1fOlvwq
-	kjKsCd2/0bth3BaJLbstS62O66j3lmTqxw0Slkw4rXjzuWUNrOimVI6qplI9jA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713834135;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G9dZh/zkbcqMryMT4S/DkvJjtqvfHQKiNRTkLprSWL8=;
-	b=UR4ID+jkokw2iZXPOchoRTOKnavwHuT/2JbUHVWbEc5ISAK1C990M0U+CFDVSTB/CYfeS5
-	UfCkZfZT3CZr1PCg==
-To: Dongli Zhang <dongli.zhang@oracle.com>
-Cc: virtualization@lists.linux.dev, joe.jin@oracle.com,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] genirq/cpuhotplug: retry with online CPUs on
- irq_do_set_affinity failure
-In-Reply-To: <240e09fb-257f-d32c-64c8-559430b06a2a@oracle.com>
-References: <20240419013322.58500-1-dongli.zhang@oracle.com>
- <20240419013322.58500-2-dongli.zhang@oracle.com> <87ttjtunbx.ffs@tglx>
- <240e09fb-257f-d32c-64c8-559430b06a2a@oracle.com>
-Date: Tue, 23 Apr 2024 03:02:11 +0200
-Message-ID: <87bk60vqlo.ffs@tglx>
+	s=arc-20240116; t=1713834327; c=relaxed/simple;
+	bh=Ys9eBif2EXRWvkxwaOL53LJ7BDs+h10YaUlHu4IfCNY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=lIdck5nwpK5GL3mk4aeh1r0KXttK89q9t2+B9HxwPmv1St4QBXMSDh2isOQ1KzAKMC5cOUmcRGc3PTGFXO4YzGFTHaJAOvZMZYl9FroOHdRoGdnzFgpFb5+Mq9qy9Y5b8DjR6v30LinEz4dWqfu8w4oeeQ5qIbC9fgX/48j7D7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=jsK+vCzc; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 108D92C0358;
+	Tue, 23 Apr 2024 13:05:22 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1713834322;
+	bh=Ys9eBif2EXRWvkxwaOL53LJ7BDs+h10YaUlHu4IfCNY=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=jsK+vCzcaBHccAezXGTKrK8AAzDWUnEburgXUXL2ZlBRXMnCEZBwAAKN4lVAx9Sbk
+	 9wU/eEmBR64QeCjbqjiyOeonjbaqpUEDGzWG83TMJ3y85EwPJGPEAkw+avckN3N7AC
+	 wlKafIY04aPFbMKp5Rt1qCyM132gAmNkd0B62ZChzkiXZe+ToAIwkxtwzdNyesiOo8
+	 MgC9mkCqPJJFXKqqCXUFAlqYkS6w3HEE7FEsDm1XZ1nuFjSobPkYw/bwW/EdDaNOkW
+	 +fUhmJxrHBi4wP/QbU59y9B1iAN6H+UhPH15nqddsoIRUhfvwMjztgFcwsYhO1TbFO
+	 7Xv+wkOQKeskQ==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B662709510001>; Tue, 23 Apr 2024 13:05:21 +1200
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Tue, 23 Apr 2024 13:05:21 +1200
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1544.009; Tue, 23 Apr 2024 13:05:21 +1200
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Bjorn Helgaas <helgaas@kernel.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Herve Codina
+	<herve.codina@bootlin.com>
+Subject: Re: local bus enumeration beyond a PCI device
+Thread-Topic: local bus enumeration beyond a PCI device
+Thread-Index: AQHakSa58Ehmqkf3b0um4G7kLubeE7FtlbWAgAazc4A=
+Date: Tue, 23 Apr 2024 01:05:21 +0000
+Message-ID: <b7589f13-e851-4ec3-ade7-43981b345cb1@alliedtelesis.co.nz>
+References: <20240418184531.GA245970@bhelgaas>
+In-Reply-To: <20240418184531.GA245970@bhelgaas>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D74C541C61EF714E8AB3F2BDB1A26DBF@atlnz.lc>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=dY4j3mXe c=1 sm=1 tr=0 ts=66270951 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=VwQbUJbxAAAA:8 a=P-IC7800AAAA:8 a=B1HeB8yAkB6dStQe3HsA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=d3PnA9EDa4IxuAV0gXij:22
+X-SEG-SpamProfiler-Score: 0
 
-On Mon, Apr 22 2024 at 16:09, Dongli Zhang wrote:
-> On 4/22/24 13:58, Thomas Gleixner wrote:
->> On Thu, Apr 18 2024 at 18:33, Dongli Zhang wrote:
-> Would you mind suggesting if the below commit message is fine to you?
->
->
-> genirq/cpuhotplug: retry with cpu_online_mask when irq_do_set_affinity return
-> -ENOSPC
->
-> When a CPU goes offline, the interrupts pinned to that CPU are
-> re-configured.
->
-> Its managed interrupts undergo either migration to other CPUs or shutdown
-> if all CPUs listed in the affinity are offline. This patch doesn't affect
-> managed interrupts.
->
-> For regular interrupts, they are migrated to other selected online CPUs.
-> The target CPUs are chosen from either desc->pending_mask (suppose
-> CONFIG_GENERIC_PENDING_IRQ) or d->common->affinity (suppose CONFIG_SMP).
-> The cpu_online_mask is used as target CPUs only when CPUs in both
-> desc->pending_mask and d->common->affinity are offline.
->
-> However, there is a bad corner case, when desc->pending_mask or
-> d->common->affinity is selected as the target cpumask, but none of their
-> CPUs has any available vectors.
-
-Up to here it's fine.
-
-> As a result, an -ENOSPC error happens:
->
->   "IRQ151: set affinity failed(-28)."
->
-> This is from the debugfs. The allocation fails although other online CPUs
-> (except CPU=2) have many free vectors.
-
-The debugfs output is not really providing more information than the
-last sentence. It just occupies space :)
-
-> The steps to reproduce the issue are in [1]. The core idea is:
->
-> 1. Create a KVM guest with many virtio-net PCI devices, each configured
-> with a very large number of queues/vectors.
->
-> 2. Set the affinity of all virtio-net interrupts to "2,3".
-
-That makes absolutely no sense at all. :)
-
-But yes, I can see the non-real world problem with that.
-
-> For regular interrupts, if irq_do_set_affinity() returns -ENOSPC, retry it
-> with all online CPUs. The issue does not happen for managed interrupts
-> because the vectors are always reserved (in cm->managed_map) before the CPU
-> offline operation.
->
-> [1]
-> https://lore.kernel.org/all/20240419013322.58500-1-dongli.zhang@oracle.com/
-
-The reproduction instructions are just additional information and not
-necessarily change log material.
-
-So I'd just say after the above:
-> However, there is a bad corner case, when desc->pending_mask or
-> d->common->affinity is selected as the target cpumask, but none of their
-> CPUs has any available vectors.
-
-   In this case the migration fails and the device interrupt becomes
-   stale. This is not any different from the case where the affinity
-   mask does not contain any online CPU, but there is no fallback
-   operation for this.
-
-   Instead of giving up retry the migration attempt with the online CPU
-   mask if the interrupt is not managed as managed interrupts cannot be
-   affected by this problem.
-
-Hmm?
-
-> I will change it to a single line.
->
-> Would you mind suggesting which is preferred? !cpumask_equal(affinity,
-> cpu_online_mask) or (affinity != cpu_online_mask)?
-
-If at all you want !cpumask_subset(cpu_online_mask, affinity), but as
-this is a corner case 'affinity != cpu_online_mask' should be good
-enough.
-
-Thanks,
-
-        tglx
+SGksDQoNCk9uIDE5LzA0LzI0IDA2OjQ1LCBCam9ybiBIZWxnYWFzIHdyb3RlOg0KPiBbK2NjIEhl
+cnZlXQ0KPg0KPiBPbiBUaHUsIEFwciAxOCwgMjAyNCBhdCAxMjoyNDowNkFNICswMDAwLCBDaHJp
+cyBQYWNraGFtIHdyb3RlOg0KPj4gSGksDQo+Pg0KPj4gV2UndmUgZ290IGEgY3VzdG9tIHg4Nl82
+NCBiYXNlZCBkZXNpZ24gdGhhdCBpcyB1c2luZyBhbiBBU0lYOTEwMCB0bw0KPj4gcHJvdmlkZSBh
+IFBDSSB0byBsb2NhbCBidXMgYnJpZGdlLiBBdHRhY2hlZCB0byB0aGF0IGxvY2FsIGJ1cyBpcyBh
+biBGUEdBDQo+PiB3aGljaCBtb3N0bHkgcHJvdmlkZXMgc29tZSBHUElPcyBhY2Nlc3NlZCB2aWEg
+cmVnaXN0ZXJzIG9uIHRoZSBsb2NhbA0KPj4gYnVzLiBSaWdodCBub3cgd2UndmUgZ290IGEgY3Vz
+dG9tIGRyaXZlciB0aGF0IGJ1bmRsZXMgZXZlcnl0aGluZw0KPj4gdG9nZXRoZXIgc28gZWZmZWN0
+aXZlbHkgd2UndmUgZ290IGEgUENJIGRldmljZSB0aGF0IHByb3ZpZGVzIEdQSU9zLg0KPiBXaGF0
+J3MgdGhlIGxvY2FsIGJ1cz8gIFRoZSBBU0lYOTEwMCAoZm9yIHdoaWNoIEdvb2dsZSBkb2Vzbid0
+IGZpbmQgYW55DQo+IGRldGFpbHMpIHdvdWxkIGhhdmUgYSBQQ0kgaW50ZXJmYWNlIG9uIHRoZSBw
+cmltYXJ5ICh1cHN0cmVhbSkgc2lkZS4NCj4gV2hhdCdzIHRoZSBsb2NhbCBidXMgb24gdGhlIHNl
+Y29uZGFyeSAoZG93bnN0cmVhbSkgc2lkZT8gIEJlbG93IHlvdQ0KPiBtZW50aW9uICJQQ0kgYnJp
+ZGdlIiwgd2hpY2ggbm9ybWFsbHkgbWVhbnMgYm90aCB0aGUgcHJpbWFyeSBhbmQNCj4gc2Vjb25k
+YXJ5IHNpZGVzIGFyZSBQQ0kgYnVzZXMuDQoNClRoZSBBU0lYOTEwMCBpcyBhIG11bHRpIHB1cnBv
+c2UgY2hpcCB3aXRoIGEgZmV3IG9wdGlvbnMgZm9yIHByb3ZpZGluZyANCkdQSU8vSTJDL1NQSS9l
+dGMuIEluIG91ciBoYXJkd2FyZSBjb25maWd1cmF0aW9uIHdlJ3JlIHVzaW5nIGl0IHRvIA0KcHJv
+dmlkZSBhIDE2LWJpdCBwYXJhbGxlbCBidXMgd2hpY2ggd2UncmUgdXNpbmcgZm9yIHJlZ2lzdGVy
+IGFjY2VzcyB0byANCnRoZSBGUEdBLiBUaGVyZSdzIGFuIG91dHNpZGUgY2hhbmNlIHNvbWVvbmUg
+bWlnaHQgYXNrIHVzIHRvIGhhbmcgb3RoZXIgDQpwYXJhbGxlbCBkZXZpY2VzIGxpa2UgYW4gU1JB
+TSBvciBzb21lIE5PUiBGbGFzaCBvZmYgaXQgYXMgd2VsbC4gVGhlc2UgDQphcmUgYWxsIHRoaW5n
+cyB3ZSd2ZSBkb25lIG9uIG90aGVyIHByb2R1Y3RzIHdpdGggbW9yZSB0cmFkaXRpb25hbCANCmVt
+YmVkZGVkIFNvQ3MgdGhhdCBoYXZlIGEgcGFyYWxsZWwgYnVzIGludGVyZmFjZS4NCg0KPiBJZiB0
+aGUgbG9jYWwgYnVzIGlzIG5vdCBQQ0ksIEkgZ3Vlc3MgdGhlIEFTSVg5MTAwIHdvdWxkIGxvb2sg
+dG8gdGhlIE9TDQo+IGxpa2UgYW4gZW5kcG9pbnQsIGkuZS4sIFBDSV9IRUFERVJfVFlQRV9OT1JN
+QUwsIGFuZCB0aGUgQVNJWDkxMDANCj4gZHJpdmVyIHdvdWxkIGhhbmRsZSBhbnkgImJyaWRnZSIg
+ZnVuY3Rpb25hbGl0eSBjb21wbGV0ZWx5IGludGVybmFsbHk/DQoNCkkgbWlnaHQgYmUgdXNpbmcg
+dGhlIHRlcm1pbm9sb2d5IHdyb25nLiBFc3NlbnRpYWxseSB0aGUgQVNJWDkxMDAgaXMgYSANClBD
+SS1lIGVuZHBvaW50IChzbyBhIGRldmljZSBmcm9tIHRoZSBQQ0kgc3Vic3lzdGVtcyBwb2ludCBv
+ZiB2aWV3KSBidXQgDQp0aGF0IGRldmljZSBjYW4gYmUgYSBJMkMsIFNQSSBvciBwYXJhbGxlbCBi
+dXMgY29udHJvbGxlciBvbnRvIHdoaWNoIA0Kb3RoZXIgZGV2aWNlcyBhcmUgY29ubmVjdGVkLkhl
+bmNlIGl0J3MgcHJvdmlkaW5nIGEgYnJpZGdlIGJldHdlZW4gUENJIA0KYW5kIDE2LWJpdCBwYXJh
+bGxlbCBidXNzZXMuDQoNCj4gTWF5YmUgSGVydmUncyB3b3JrIGF0DQo+IGh0dHBzOi8vbG9yZS5r
+ZXJuZWwub3JnL3IvMjAyNDAzMjUxNTM5MTkuMTk5MzM3LTEtaGVydmUuY29kaW5hQGJvb3RsaW4u
+Y29tDQo+IHdvdWxkIGJlIHJlbGV2YW50Pw0KDQpJJ3ZlIGhhZCBhIHF1aWNrIGxvb2sgYXQgdGhh
+dCBzZXJpZXMuIEknbSBub3QgMTAwJSBzdXJlIGl0J2xsIGhlbHAuIFRoZSANCnBsYXRmb3JtIEkn
+bSBkZWFsaW5nIHdpdGggaXMgeDg2XzY0IGFuZCBkb2Vzbid0IGhhdmUgZGV2aWNlIHRyZWUgc3Vw
+cG9ydCANCihpZiBzb21lb25lIGNhbiBzYXkgImhleSBkbyB4eXogYW5kIHlvdSdsbCBnZXQgRFQg
+b24geDg2IiB0aGF0J2QgYmUgDQpncmVhdCkuQnV0IEknbGwgdGFrZSBhIGNsb3NlciBsb29rIGF0
+IGl0IGFuZCBhdCB0aGUgb3JpZ2luYWwgIkdlbmVyYXRlIA0KZGV2aWNlIHRyZWUgbm9kZSBmb3Ig
+cGNpIGRldmljZXMiIHNlcmllcy4NCg0KPj4gQnV0IGFzIHRoaW5ncyBjYW4gY2hhbmdlIGJhc2Vk
+IG9uIHRoZSBGUEdBIHByb2dyYW0gSSdkIGxpa2Ugc29tZQ0KPj4gZmxleGliaWxpdHkgdG8gdHJl
+YXQgaXQgc2VwYXJhdGVseSBmcm9tIHRoZSBQQ0kgYnJpZGdlLiBTbyByZWFsbHkgSSdkDQo+PiBs
+aWtlIHRvIGhhdmUgYSBQQ0kgZGV2aWNlIGRyaXZlciBmb3IgdGhlIEFTSVg5MTAwIHRoYXQgcHJv
+dmlkZXMgYSBsb2NhbA0KPj4gYnVzIGNvbnRyb2xsZXIgYW5kIGEgKHBsYXRmb3JtPykgZHJpdmVy
+IGZvciB0aGUgRlBHQSB0aGF0IHByb3ZpZGVzIHRoZQ0KPj4gR1BJT3Mgd2hlcmUgSSBjYW4gaGF2
+ZSBkaWZmZXJlbnQgY29tcGF0aWJsZXMgZm9yIHRoZSBkaWZmZXJlbnQNCj4+IGltcGxlbWVudGF0
+aW9ucy4NCj4+DQo+PiBUaGVuIGluIHRoZSBBQ1BJIG92ZXJsYXkgSSdkIGhhdmUgc29tZXRoaW5n
+IGxpa2UNCj4+DQo+PiAgIMKgwqDCoCBTY29wZSAoXF9TQi5QQ0kwLkQwQjApDQo+PiAgIMKgwqDC
+oCB7DQo+PiAgIMKgwqDCoMKgwqDCoMKgIERldmljZSAoQVNJWCkNCj4+ICAgwqDCoMKgwqDCoMKg
+wqAgew0KPj4gICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIE5hbWUgKF9BRFIsIDB4MDAwMCkNCj4+
+DQo+PiAgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIERldmljZSAoRlBHQSkNCj4+ICAgwqDCoMKgIMKg
+wqDCoCDCoMKgwqAgew0KPj4gICDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKg
+wqDCoCBOYW1lIChfSElELCAiUFJQMDAwMSIpDQo+PiAgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKg
+wqDCoCDCoMKgwqAgwqDCoMKgIE5hbWUgKF9EU0QsIFBhY2thZ2UgKCkNCj4+ICAgwqDCoMKgIMKg
+wqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgew0KPj4gVG9VVUlEKCJkYWZmZDgxNC02
+ZWJhLTRkOGMtOGE5MS1iYzliYmY0YWEzMDEiKSwNCj4+ICAgwqDCoMKgIMKgwqDCoCDCoMKgwqAg
+wqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgUGFja2FnZSAoKQ0KPj4g
+ICDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKg
+IMKgwqDCoCB7DQo+PiAgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKg
+IMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIFBhY2thZ2UgKCkgew0K
+Pj4gImNvbXBhdGlibGUiLCAibXktcGxhdGZvcm0tZHJpdmVyLWZvci1mcGdhIiB9LA0KPj4gICDC
+oMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKg
+wqDCoCB9DQo+PiAgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIH0p
+DQo+PiAgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIH0NCj4+ICAgwqDCoMKgwqDCoMKgwqAgfQ0KPj4g
+ICDCoMKgwqAgfQ0KPj4NCj4+ICAgwqDCoCBTY29wZShcX1NCKQ0KPj4gICDCoMKgIHsNCj4+ICAg
+wqDCoMKgIMKgwqDCoCBEZXZpY2UoT1RIUikNCj4+ICAgwqDCoMKgIMKgwqDCoCB7DQo+PiAgIMKg
+wqDCoCDCoMKgwqAgwqDCoMKgIEdwaW9JbyAoRXhjbHVzaXZlLCBQdWxsVXAsIDAsIDAsIElvUmVz
+dHJpY3Rpb25JbnB1dE9ubHksDQo+PiAiXFxfU0IuUENJMC5EMEIwLkFTSVguRlBHQSIsKSB7IDAg
+fQ0KPj4gICDCoMKgwqAgwqDCoMKgIH0NCj4+ICAgwqDCoCB9DQo+Pg0KPj4gSXMgaXQgZXZlbiBw
+b3NzaWJsZSB0byByZWdpc3RlciBhIGhvc3QgY29udHJvbGxlciBmb3IgYW5vdGhlciBwbGF0Zm9y
+bSBidXM/DQo+Pg0KPj4gVGhhbmtzLA0KPj4gQ2hyaXM=
 
