@@ -1,155 +1,172 @@
-Return-Path: <linux-kernel+bounces-154382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF1378ADB70
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:15:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D9678ADB72
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:17:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CD4E1C210BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:15:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 114B9284A8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:17:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5822C12B8B;
-	Tue, 23 Apr 2024 01:15:30 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DABA125C0;
+	Tue, 23 Apr 2024 01:17:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M8DwuEve"
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95F8EE57E;
-	Tue, 23 Apr 2024 01:15:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A808FC18
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 01:17:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713834929; cv=none; b=KVM553NoaFAx+84Inup9IqZ9CsrcW86mzAdBDq2N86kBKSaXgmGuTxiPdyAf+M1admyikprW0ZTvcjWD8Ulksci2UHaY2WCWatFNlGz9TzsU1jNJgEKirnxradrVpolP/fSAczI0CDc7FL+gfc0Zj8C3mpeuka/n7mqVoPpGDCQ=
+	t=1713835061; cv=none; b=siHPXZvfMEPV7rAhvx5hoI/XZdtvtkAS3a4BB3V18uOcJu2OiLWTkWAvDGsYGA8HvBEc3o+jkeSPRvqhvvp+Duq4B21sKWekNbteRSzCFpGaCGMMLZV0ksrhUAtBmEuoohV8vVyE7laxvSVHYQ4g22AH3KcSj95s9JdT9igg40g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713834929; c=relaxed/simple;
-	bh=vJvnUU5F0EtGJV+PqP1PFDfhLv+WzdP7ZGV4C8OuObg=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=fdyFw2uyen0PvCDqt7xWq6+s8PcpkO+cd7tY/DKIMNhUm41mpqQ5GdCeVmt7r8XtqWXHqcJHWuNyhXPim0jtvVNFlM4nztP6xCZSqEjncT+4r/V4L+Wj/+eolCvkoYIWSadg/WUJnEkwcLrcDinWIpBTzKrCDQlg+BJlqJ+FUJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VNkgc5SLkz4f3m6Z;
-	Tue, 23 Apr 2024 09:15:08 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id DF6131A016E;
-	Tue, 23 Apr 2024 09:15:17 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP1 (Coremail) with SMTP id cCh0CgCXsQqkCydmICrVKg--.12730S2;
-	Tue, 23 Apr 2024 09:15:17 +0800 (CST)
-Subject: Re: [PATCH v4 2/4] writeback: support retrieving per group debug
- writeback stats of bdi
-To: Tejun Heo <tj@kernel.org>
-Cc: akpm@linux-foundation.org, willy@infradead.org, jack@suse.cz,
- bfoster@redhat.com, dsterba@suse.com, mjguzik@gmail.com,
- dhowells@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org
-References: <20240422164808.13627-1-shikemeng@huaweicloud.com>
- <20240422164808.13627-3-shikemeng@huaweicloud.com>
- <ZiatOJDzICT9e6pi@slm.duckdns.org>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <7e8d85c0-8b36-9c47-1411-f7077e5c0cd8@huaweicloud.com>
-Date: Tue, 23 Apr 2024 09:15:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	s=arc-20240116; t=1713835061; c=relaxed/simple;
+	bh=5dNHtu9PJ4dePjTdOxbwG2n1lua4BrF3Sz0/qY0oe14=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hSvFaXVlxngFc9g3LJqvzR8xYCJz/rvsjS1wVIuDUhUEzMgPQNBDzTj+0e8SqenuvqgquAb6vxGEIQxXmeCjHoSw6apkSAzoYZkkeTeW4ftTGzrOCs2C8JCDWCnmwWvJBOPbk5TM6Q5GehRzDXoteKm652J57jYMJ+RqnPVmxIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M8DwuEve; arc=none smtp.client-ip=209.85.221.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4dcf9659603so1555526e0c.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 18:17:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713835059; x=1714439859; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YQfi/J7nvpoMKwZ6FO7G+J37oGiYtgYh3OlF6VNlT/g=;
+        b=M8DwuEve0Jt4yc/SZOnNyv9fOYYrn3BpC/qTgnVGee5dQmzqxJr6GwW+StB08IVrHe
+         gB4TCblbHkzIkBf10EGJEkxN42kd5sQiL286xQrUpDeT1/M18ZGYw9e9R1M6a4Xr2zn3
+         uBI+EeOGTrlbx+JZretq6bEqYY1cVeyzT6glOuwxRrQKrD27iU4x3IJDe2UJhDwbXdsJ
+         tb5vIW+CqhXtVL4OQq+9ZCU/8WDaqAPagoAe6fXhE1+jj/q/LnsSZTN5jQdntPR1opfp
+         CZfS+phJkLV3V0s73YHwrGfr7pKC2H1eM2hrhzn8Zg0Y3MHG6GYPUgbkqzmoUK3VT3+m
+         Rgyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713835059; x=1714439859;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YQfi/J7nvpoMKwZ6FO7G+J37oGiYtgYh3OlF6VNlT/g=;
+        b=ueqX+0s/yBtcda9AVGbw8hdGTMh+SNpNjkg9BA6aPikKoBLgl3UiG7y3ojnJnAlN9P
+         OkEYboCgiPmUtgw+HzesVgn6B+diKhwSbrHLXNUJAKtT3MrRm37BQbo9Im28FNL1FMBJ
+         v/lLS1r1wdhdwfwpOFY7VqwM02lPH2u2m1rSjDWzsfquiBos62/1bUqqNnkmJUkdRQ8f
+         Zkz1V0aaqECfFIW0f6PVZpGgxXZdVrM6f19smCY4WPel72e2KuC0m6oCs27t/sVGAQEt
+         7BRJUhNoHS25YTTKVR78i1DTsvPle2vmJPDkveue9C4mexaQCaZrk8Yqbr5lWLk/DKju
+         Qn2A==
+X-Forwarded-Encrypted: i=1; AJvYcCVHiqzIArOsOWtYRvizYfm2IYNqX2szFgr3huLe+SevK+7rYXNXr8QgDE2c8vf2gNjrtfK8oypwbwoEJ4cUZoyz9D1hdNmY9w/1mPc/
+X-Gm-Message-State: AOJu0YyedyIYNaSfeynXpqOaS1f3kRPZf7XQVEP6CQ3ozWV0XpAtoRsP
+	shh09CbEGe+vA5KuSA+hUPRmC4L+rCeh4M34Rftp8H7wAkzZ1ymjBpJpAgx5v619M4oFFb43hvn
+	j9SL2fPEWIYAMK+NgQnufeLb0tC0=
+X-Google-Smtp-Source: AGHT+IE5kr7/FmDvHdESTeTV4pYrQRqKLntjammemlRhEqpP/AXB3ajSLiqSe4AE/qWEXqd9Lh4LDE0NGTk5T5AoRoU=
+X-Received: by 2002:a05:6122:134d:b0:4d8:37eb:9562 with SMTP id
+ f13-20020a056122134d00b004d837eb9562mr13950768vkp.0.1713835058873; Mon, 22
+ Apr 2024 18:17:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZiatOJDzICT9e6pi@slm.duckdns.org>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgCXsQqkCydmICrVKg--.12730S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cr4Uur4DAr4fuF43Kr4xXrb_yoW8WFy7pF
-	4xAw18trW8X3409F12k3WxWr90vayDXFy5X3s7Cry7JrsxKr15tr9Ig3yYvFn8ZF93ZF95
-	JanIvryktw1vyw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+References: <cover.1713755580.git.baolin.wang@linux.alibaba.com> <05d0096e4ec3e572d1d52d33a31a661321ac1551.1713755580.git.baolin.wang@linux.alibaba.com>
+In-Reply-To: <05d0096e4ec3e572d1d52d33a31a661321ac1551.1713755580.git.baolin.wang@linux.alibaba.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 23 Apr 2024 09:17:27 +0800
+Message-ID: <CAGsJ_4xu4iL5pv7T1chyzGC2Vp9q1GwOp3wxb=bYMW-T-pj4dA@mail.gmail.com>
+Subject: Re: [RFC PATCH 5/5] mm: shmem: add anonymous share mTHP counters
+To: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: akpm@linux-foundation.org, hughd@google.com, willy@infradead.org, 
+	david@redhat.com, wangkefeng.wang@huawei.com, ryan.roberts@arm.com, 
+	ying.huang@intel.com, shy828301@gmail.com, ziy@nvidia.com, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Apr 22, 2024 at 3:03=E2=80=AFPM Baolin Wang
+<baolin.wang@linux.alibaba.com> wrote:
+>
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> ---
+>  include/linux/huge_mm.h | 2 ++
+>  mm/huge_memory.c        | 4 ++++
+>  mm/shmem.c              | 5 ++++-
+>  3 files changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> index 26b6fa98d8ac..67b9c1acad31 100644
+> --- a/include/linux/huge_mm.h
+> +++ b/include/linux/huge_mm.h
+> @@ -270,6 +270,8 @@ enum mthp_stat_item {
+>         MTHP_STAT_ANON_SWPOUT,
+>         MTHP_STAT_ANON_SWPOUT_FALLBACK,
+>         MTHP_STAT_ANON_SWPIN_REFAULT,
+> +       MTHP_STAT_SHMEM_ANON_ALLOC,
+> +       MTHP_STAT_SHMEM_ANON_ALLOC_FALLBACK,
+
+not quite sure about this. for 2MB pmd-mapped THP shmem, we count them
+as FILE_THP.
+here we are counting as SHMEM_ANON. To me, SHMEM_ANON is more correct but
+it doesn't align with pmd-mapped THP. David, Ryan, what do you think?
 
 
+>         __MTHP_STAT_COUNT
+>  };
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 9e52c0db7580..dc15240c1ab3 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -557,6 +557,8 @@ DEFINE_MTHP_STAT_ATTR(anon_alloc_fallback, MTHP_STAT_=
+ANON_ALLOC_FALLBACK);
+>  DEFINE_MTHP_STAT_ATTR(anon_swpout, MTHP_STAT_ANON_SWPOUT);
+>  DEFINE_MTHP_STAT_ATTR(anon_swpout_fallback, MTHP_STAT_ANON_SWPOUT_FALLBA=
+CK);
+>  DEFINE_MTHP_STAT_ATTR(anon_swpin_refault, MTHP_STAT_ANON_SWPIN_REFAULT);
+> +DEFINE_MTHP_STAT_ATTR(shmem_anon_alloc, MTHP_STAT_SHMEM_ANON_ALLOC);
+> +DEFINE_MTHP_STAT_ATTR(shmem_anon_alloc_fallback, MTHP_STAT_SHMEM_ANON_AL=
+LOC_FALLBACK);
+>
+>  static struct attribute *stats_attrs[] =3D {
+>         &anon_alloc_attr.attr,
+> @@ -564,6 +566,8 @@ static struct attribute *stats_attrs[] =3D {
+>         &anon_swpout_attr.attr,
+>         &anon_swpout_fallback_attr.attr,
+>         &anon_swpin_refault_attr.attr,
+> +       &shmem_anon_alloc_attr.attr,
+> +       &shmem_anon_alloc_fallback_attr.attr,
+>         NULL,
+>  };
+>
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 8b009e7040b2..4a0aa75ab29c 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1706,11 +1706,14 @@ static struct folio *shmem_alloc_and_add_folio(st=
+ruct vm_fault *vmf,
+>                         pages =3D 1 << order;
+>                         index =3D round_down(index, pages);
+>                         folio =3D shmem_alloc_hugefolio(gfp, info, index,=
+ order);
+> -                       if (folio)
+> +                       if (folio) {
+> +                               count_mthp_stat(order, MTHP_STAT_SHMEM_AN=
+ON_ALLOC);
+>                                 goto allocated;
+> +                       }
+>
+>                         if (pages =3D=3D HPAGE_PMD_NR)
+>                                 count_vm_event(THP_FILE_FALLBACK);
+> +                       count_mthp_stat(order, MTHP_STAT_SHMEM_ANON_ALLOC=
+_FALLBACK);
+>                         order =3D next_order(&orders, order);
+>                 }
+>         } else {
+> --
+> 2.39.3
+>
 
-on 4/23/2024 2:32 AM, Tejun Heo wrote:
-> Hello,
-> 
-> On Tue, Apr 23, 2024 at 12:48:06AM +0800, Kemeng Shi wrote:
->> Add /sys/kernel/debug/bdi/xxx/wb_stats to show per group writeback stats
->> of bdi.
->>
->> Following domain hierarchy is tested:
->>                 global domain (320G)
->>                 /                 \
->>         cgroup domain1(10G)     cgroup domain2(10G)
->>                 |                 |
->> bdi            wb1               wb2
->>
->> /* per wb writeback info of bdi is collected */
->> cat /sys/kernel/debug/bdi/252:16/wb_stats
->> WbCgIno:                    1
->> WbWriteback:                0 kB
->> WbReclaimable:              0 kB
->> WbDirtyThresh:              0 kB
->> WbDirtied:                  0 kB
->> WbWritten:                  0 kB
->> WbWriteBandwidth:      102400 kBps
->> b_dirty:                    0
->> b_io:                       0
->> b_more_io:                  0
->> b_dirty_time:               0
->> state:                      1
->> WbCgIno:                 4094
->> WbWriteback:            54432 kB
->> WbReclaimable:         766080 kB
->> WbDirtyThresh:        3094760 kB
->> WbDirtied:            1656480 kB
->> WbWritten:             837088 kB
->> WbWriteBandwidth:      132772 kBps
->> b_dirty:                    1
->> b_io:                       1
->> b_more_io:                  0
->> b_dirty_time:               0
->> state:                      7
->> WbCgIno:                 4135
->> WbWriteback:            15232 kB
->> WbReclaimable:         786688 kB
->> WbDirtyThresh:        2909984 kB
->> WbDirtied:            1482656 kB
->> WbWritten:             681408 kB
->> WbWriteBandwidth:      124848 kBps
->> b_dirty:                    0
->> b_io:                       1
->> b_more_io:                  0
->> b_dirty_time:               0
->> state:                      7
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> 
-> Maybe it'd be useful to delineate each wb better in the output? It's a bit
-> difficult to parse visually. Other than that,
-Sorry for this. A blank line was added at end of each wb in this patch but I
-forgot to update the changelog.
-As there is some kunit build problem reported, I will correct changelog with
-the fix to build problem.
-Thanks a lot for review.
-
-Kemeng
-> 
-> Acked-by: Tejun Heo <tj@kernel.org>
-> 
-> Thanks.
-> 
-
+Thanks
+Barry
 
