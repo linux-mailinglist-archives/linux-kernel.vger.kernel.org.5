@@ -1,104 +1,152 @@
-Return-Path: <linux-kernel+bounces-155511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 248BC8AF362
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:01:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C87938AF364
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:02:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48449B2449D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:01:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FE731F240E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4E7513CA89;
-	Tue, 23 Apr 2024 16:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B300513CA89;
+	Tue, 23 Apr 2024 16:01:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VI18o5+8"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="w2m7aQoU"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A6E1350F2;
-	Tue, 23 Apr 2024 16:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D7E13CA84
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:01:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713888086; cv=none; b=L37pd/FdAemFMHT7e+KLcmrUha0SnEcsikfOzxxp0hH7IO9qhh5hgZwpJNcrbjez6gdv1SEvZPSmPOu9wKitzfnQ6prZf9Jfzij85ICJ75v2o3tf/x3o+/Gi6m+ilrKYgMblVKLdr0VvpHDWcMYX7zRatPwnLzFnAf28tl05yFM=
+	t=1713888112; cv=none; b=W3o/qNySYfs6WTUVQf48DiGlO/Hd2Xvi9C9td3vb0TtWZopVdMuW5hN4pz//N/vT7qwMnRQPEXuMChk9jjUf7+rdwRbg7r2cxL+o8eT2Vg7Goq4r46RKTNkwBDy3uJBnJCGWi+8hLt9HjrYvX0BI7M21FdCt5H6wpSqeqdHggtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713888086; c=relaxed/simple;
-	bh=PNQBO0iNLxR8U4HksV68EkO7M5zt8A8WHrYsHbxd/yw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HXeqdgueeOmtc4SYyg9+G1u3x+45DPfGpOsKHfu8QBH3Ce4blGGKFRHSUU3YflnyNH5yclP6yLTU4u0VQaDQw7SbDxu2UFoyeh8PRtbQ6T4VzQxvHeVveOwnhlrR9/ZHIXZbZXYY44RCPoViyV3K9oiqGefjSA+C94Ecnl5LtjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VI18o5+8; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ed0e9ccca1so5406323b3a.0;
-        Tue, 23 Apr 2024 09:01:24 -0700 (PDT)
+	s=arc-20240116; t=1713888112; c=relaxed/simple;
+	bh=8wnNyKJb0veN/MV8Mv57GQlyBKPZWpwn557cXY3kO/c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mHPyZhRIZcuVbJo8p8eEYsdET9f/Y5edR8pEkJV5HhJk0pVHiIFhkdZrGLF1fTFD0m2tOernTi0w/UMPRkq0x1gFqUnF4+zBASDtHYcEH86tk7tq1hLrOGqYMD9hFEdpMnJgL1824ThM8DwptIE31rpSgLoeCDAk8omyzlOz3DU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=w2m7aQoU; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51acb95b892so4989528e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:01:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713888084; x=1714492884; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8AFpeUo5gFWggR9UCj8+ja6/OFl5Ao3dvFK12RV7J1c=;
-        b=VI18o5+8oreYbdgVvwP1/z1IXFDiqrBZWFFC/hxvY8b/F0NTNhGv362+BycefV4Mw9
-         3ZK2+XqQ0b9uvFq6oaQvcWA9Zq10T8fIt1vyKYfJyUG3o5Dxg5VlPq3DBhznvTCzr+Zj
-         PELchC9Ur7SomZVGK3oxzHD7aC+TDyOoiFWqRyiWtYX0ANFK/20d0qhhsQmu8XgBoyMz
-         bW2YyGrSAkAPkf/yswKYdc6z9KnT/YxdvsFUe5tF8lFQze1C0hExsgD4q67ivEMCJB+a
-         kythrtTugbxphLpZ5hCmT+gBxNf2vK2YOAEiwdDlbUtaX0TpgoKsS+pa13bN0kdRonLt
-         LHQQ==
+        d=linaro.org; s=google; t=1713888108; x=1714492908; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kyWNLoaFq49ed7kQ5m7rCchd3rgIf0cIGZ39xj4WFV4=;
+        b=w2m7aQoUYXILnLTSXN9Z+A+zXZQ9SMcjxm0pLqo6acWhckZKywDUvGStoA+/xFoO+m
+         5pKF722C4pLY098fzWIKvN7UDAgBxR+30LDcXAz5GmtfmO9fVPiCki8H/uob4JfW5y3H
+         sqSBZTMIsh0V24LvIo5nYKXeSzdA0Y1Vik+Lzzki/PG1iURupBGu0/x/xAsvft4EsfRm
+         7sEtX28YFiBqv7qd1zDNJGbB6x8ZNlBkcaDxvjR1whlqLF1/MMqrFoN62aJvSfjnWOa0
+         72q8XZJAjEm95kt3NCa51F0CktKIbhLKnLLeH1LDvIKwIpU7ZXm92NLTfGnatzHQiKSY
+         F0yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713888084; x=1714492884;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8AFpeUo5gFWggR9UCj8+ja6/OFl5Ao3dvFK12RV7J1c=;
-        b=roU+KtizFfj1ebz+F128MjgD/OkCxX9worDweLBETqhXGWwRW0zfnWRrBP70F9QFyQ
-         QglcZAGgfScctuy2cuz8gZrrWgWJl/oowCnFYo9koxcyYW6/XQKvVt8tEH5rjETHsal4
-         WQX6VtpSfJgeIvgU1nf0wPC2io7RJNTeSTh3TbZScCDRYCY1sJVRFxOyuwJdWvUSF0B5
-         wzsXC12jsoBPWm0Tm6rO3GFnDNaibgZyVG6wW0V4wzx0PIoPkjPbNynB6uTMN1auOiwa
-         dWXJT1j5jNbo5yY+fp0pOmSZwbzFHQNU7r/ZNOOsfmF7ygPWXHOnDdVSJJV+CPDiXCbY
-         tU8A==
-X-Forwarded-Encrypted: i=1; AJvYcCXgyo1B5EtrNhOc+VFr/ZaOaaP2V81LUB853hzLjaYaaYychR4eTEqsgwBnG9aO7WKPJ0PMK0YQuXdcvgxljwbR4BRPM9XiyCFvRfGCI59x5aaJOWgjMjO1UdoDAw9vXikR0rM53A==
-X-Gm-Message-State: AOJu0YxH3THpnygQH88JJqEQKFbiIv8Mrd7MSBtKUNC57+9GfUtKyc80
-	T+B+Uxx9GPm+iECrOwyUntW2b143v3XDEwaFBRtfQpYr0nsDyhYOefFGdMTo
-X-Google-Smtp-Source: AGHT+IGIOT3ID+kHLi2YOydjHrPyh0DnhFJisw7LGPY9Wv4MuyK45iFNl6tB3QBeGgVfS9WjZ0JTjA==
-X-Received: by 2002:a05:6a21:2d87:b0:1a9:e2e0:1806 with SMTP id ty7-20020a056a212d8700b001a9e2e01806mr14099261pzb.43.1713888083672;
-        Tue, 23 Apr 2024 09:01:23 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:6f51])
-        by smtp.gmail.com with ESMTPSA id lw4-20020a056a00750400b006ea9108ec12sm9760478pfb.115.2024.04.23.09.01.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 09:01:23 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 23 Apr 2024 06:01:21 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Xiu Jianfeng <xiujianfeng@huawei.com>
-Cc: longman@redhat.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 -next] cgroup/cpuset: Avoid clearing
- CS_SCHED_LOAD_BALANCE twice
-Message-ID: <ZifbUdjX6VYCl2qD@slm.duckdns.org>
-References: <20240423024439.1064922-1-xiujianfeng@huawei.com>
+        d=1e100.net; s=20230601; t=1713888108; x=1714492908;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kyWNLoaFq49ed7kQ5m7rCchd3rgIf0cIGZ39xj4WFV4=;
+        b=IbEN9PozMul7vlsUyPei33wvNS7TpK80F+9gisUB9zzxFtDiUGasM6ek9i7UPdlmXo
+         V1z0eEC1cmfmjnTcpRIHSGlkMzXg24w9XZc2cLF6dOXlRNSZ0E+PRgq4t3pDQA5KrCaK
+         TP48Mt2vjlPGXT1a9DOFLeZl/s8I6RBON+wfEajQIxftZCg9g3UAEizz3i24JQ8VdzhP
+         dvN/rL8W5I/hrOInm+tGA0NPDqcLeLrRbU2vqgea5u+9TYEIb7FdtK7ZTUJPZt/aRuQD
+         tfjKYAwHhxpvt4+8TkfDMeVDuUkDpGYcx9r0ImSDoXLZRRA/QohLNplGCiToZJ8UUaUf
+         IGHg==
+X-Gm-Message-State: AOJu0Yx41vn5evy/AMGW3R8R/wYdxPcPUjVDIyJDEcajuR2wHzHvj7Bp
+	lb4+Tv6jn/40UxWpmIBF03KBW8jR7pDVe4NopeOIT9wUpy2Evv7UkppsQVQbCEJnm7iTcp/o8Vb
+	o
+X-Google-Smtp-Source: AGHT+IEMJHpXJqvWsOsvt5ybObDs25KSQ0lIYxTGWxZZJhc/tgLXqpQZOm+GNvAGtkZxSi9w/H+NxA==
+X-Received: by 2002:a05:6512:3453:b0:515:9ee7:ce45 with SMTP id j19-20020a056512345300b005159ee7ce45mr10510574lfr.49.1713888108058;
+        Tue, 23 Apr 2024 09:01:48 -0700 (PDT)
+Received: from [172.30.205.0] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id r1-20020ac25a41000000b00516c1fa74e3sm2081333lfn.207.2024.04.23.09.01.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 09:01:47 -0700 (PDT)
+Message-ID: <9fda72fa-e5e5-4d45-b268-dd98d28fb5a1@linaro.org>
+Date: Tue, 23 Apr 2024 18:01:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423024439.1064922-1-xiujianfeng@huawei.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] kallsyms: Avoid weak references for kallsyms symbols
+To: Masahiro Yamada <masahiroy@kernel.org>,
+ Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+ linux-kbuild@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+ Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>
+References: <20240420145303.238068-2-ardb+git@google.com>
+ <CAK7LNARGZZC=5Pcy8qBpp1E94hRHHHdUu7KxVudH1iT-yugs=g@mail.gmail.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <CAK7LNARGZZC=5Pcy8qBpp1E94hRHHHdUu7KxVudH1iT-yugs=g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 23, 2024 at 02:44:39AM +0000, Xiu Jianfeng wrote:
-> In cpuset_css_online(), CS_SCHED_LOAD_BALANCE will be cleared twice,
-> the former one in the is_in_v2_mode() case could be removed because
-> is_in_v2_mode() can be true for cgroup v1 if the "cpuset_v2_mode"
-> mount option is specified, that balance flag change isn't appropriate
-> for this particular case.
+
+
+On 4/22/24 18:02, Masahiro Yamada wrote:
+> On Sat, Apr 20, 2024 at 11:53 PM Ard Biesheuvel <ardb+git@google.com> wrote:
+>>
+>> From: Ard Biesheuvel <ardb@kernel.org>
+>>
+>> kallsyms is a directory of all the symbols in the vmlinux binary, and so
+>> creating it poses somewhat of a chicken-and-egg problem, as its non-zero
+>> size affects the layout of the binary, and therefore the values of the
+>> symbols.
+>>
+>> For this reason, the kernel is linked more than once, and the first pass
+>> does not include any kallsyms data at all. For the linker to accept
+>> this, the symbol declarations describing the kallsyms metadata are
+>> emitted as having weak linkage, so they can remain unsatisfied. During
+>> the subsequent passes, the weak references are satisfied by the kallsyms
+>> metadata that was constructed based on information gathered from the
+>> preceding passes.
+>>
+>> Weak references lead to somewhat worse codegen, because taking their
+>> address may need to produce NULL (if the reference was unsatisfied), and
+>> this is not usually supported by RIP or PC relative symbol references.
+>>
+>> Given that these references are ultimately always satisfied in the final
+>> link, let's drop the weak annotation on the declarations, and instead,
+>> provide fallback definitions with weak linkage. This informs the
+>> compiler that ultimately, the reference will always be satisfied.
+>>
+>> While at it, drop the FRV specific annotation that these symbols reside
+>> in .rodata - FRV is long gone.
+>>
+>> Cc: Masahiro Yamada <masahiroy@kernel.org>
+>> Cc: linux-kbuild@vger.kernel.org
+>> Acked-by: Nick Desaulniers <ndesaulniers@google.com>
+>> Acked-by: Kees Cook <keescook@chromium.org>
+>> Acked-by: Arnd Bergmann <arnd@arndb.de>
+>> Link: https://lore.kernel.org/all/20240415075837.2349766-5-ardb+git@google.com
+>> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+>> ---
+>> v5: - avoid PROVIDE() in the linker script, use weak definitions instead
+>>      - drop tested-by, replace reviewed-by with acked-by
+>>
 > 
-> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+> Applied to linux-kbuild. Thanks.
 
-Applied to cgroup/for-6.10.
+Hi, this commit seems to break call traces, resulting in output like:
 
-Thanks.
+[    2.777006] Call trace:
+[    2.777007]  _text+0x89e7e8/0x39e0000
+[    2.777008]  _text+0x89e82c/0x39e0000
+[    2.777009]  _text+0x2b940cc/0x2bd2a90
+[    2.777011]  _text+0x2b941a4/0x2bd2a90
+[    2.777012]  _text+0x145dc/0x39e0000
+[    2.777014]  _text+0x2b51184/0x2bd2a90
+[    2.777016]  _text+0x18fc6a4/0x39e0000
+[    2.777018]  _text+0x15644/0x39e0000
+[    2.777019] ---[ end trace 0000000000000000 ]---
 
--- 
-tejun
+Konrad
 
