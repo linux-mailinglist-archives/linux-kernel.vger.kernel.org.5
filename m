@@ -1,92 +1,149 @@
-Return-Path: <linux-kernel+bounces-155771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4DA58AF6EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:58:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 805D28AF6F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:59:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7024728E603
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:58:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A16191C21CAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:59:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C15D013F441;
-	Tue, 23 Apr 2024 18:58:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B5F13F452;
+	Tue, 23 Apr 2024 18:59:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XfQ2vdH0"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="DP04iC5C"
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D5F13E8B8
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 18:58:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A8CE13E3F8;
+	Tue, 23 Apr 2024 18:59:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713898694; cv=none; b=pIi/XVEdErvi5s31qMl88aImYYs77p6ViWn2lUIb9DoLxNrS1zqT7yLZD4f25ftaJRjr1qRk3WoDu/5EDWbBUEixVqxl/Dz0fO+W7eWSGr6YECrobqiuTToBauRaRMgYsRQZLnNfJzsXpcdMytOPoDGGgf5pZWFyX889+UXG13g=
+	t=1713898779; cv=none; b=DOWojuCb/94TBaJSYDq7lwyYBaUTIx+SywsWQyshlhOCEFJO2LtnKpQkaBwQ1cRvRGGSF9uA7XLkPSdpA2KczNpxkk2tmeBc9uQhRc2acZz+HuaRefxMIf1RyLqRV7Jn+nA2Jlq0yb6t6g4cUHp3wYZIICSydZG+dlmXIlMpThw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713898694; c=relaxed/simple;
-	bh=8u7NxCqmrJ4dxUb/5JwH09FlXZ20WCy+pxzvSv16E30=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=VnAjpYPdcpW7RhI6nuhJMTy9td94O0xeCKlNG9c67CducCIgJn20fwUhha9j/RRuNlW4iiGYgV2WtTL8j4E731UtZX+I/TlR04kz+DfnyHgsW7caxy6DL+JvLT78jhbsEstrF7eqcKBPQjC9Z/1Z4ChD3SOxfu8qFIjNvq9yiEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XfQ2vdH0; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713898692; x=1745434692;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=8u7NxCqmrJ4dxUb/5JwH09FlXZ20WCy+pxzvSv16E30=;
-  b=XfQ2vdH0YNnQROSX+1/miGqWGKU09Xj9bPJxkO3RwUItNdhQWPmODmTw
-   cWPsDbKCmYT7WylZ11XfJi18c6+NVTcs8kf5MDPh60qaCl0FItEsmeBgu
-   1Y2xCFKZLRvSYanyJGygu0Ku6iZS5Gb9kzk6MSjCGLCmgeg3qtgRjbtzz
-   tLUEI2k6SqftVeBYEcnUHCbDmx1Eauho1d2UONjBgVlnU2CZ664xmBKCS
-   sOL8BqH2ohbJGIbB9bS/Bn1stPGJIiqUUO2YQIlMrfa7f88XNV0pBbVMX
-   Y512tj3WQTKubqjgR+kjZentcXK4nED2ajBgxfhQem2ZmYmDFpdkiXTKk
-   g==;
-X-CSE-ConnectionGUID: j+2czPq3RpuVmHbXrG/y7g==
-X-CSE-MsgGUID: I8j4QP7yQ5i55PStvCTVWw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="20652074"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="20652074"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 11:58:12 -0700
-X-CSE-ConnectionGUID: B56BPt9pRI20bACZQ9pBaw==
-X-CSE-MsgGUID: KJZl/ZQjTp6KArJkDYLquw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="29119070"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 11:58:10 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rzLLD-00000000RQD-30Ph;
-	Tue, 23 Apr 2024 21:58:07 +0300
-Date: Tue, 23 Apr 2024 21:58:07 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	linux-kernel@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc: Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org,
-	Namhyung Kim <namhyung@kernel.org>
-Subject: limits.h in tools/
-Message-ID: <ZigEvxn0-70og0H1@smile.fi.intel.com>
+	s=arc-20240116; t=1713898779; c=relaxed/simple;
+	bh=T7XszNRd8d+6SJEaBpiVinIwTQ8ta84/yRO4o6mv+wA=;
+	h=Date:From:To:Cc:Message-Id:In-Reply-To:References:Mime-Version:
+	 Content-Type:Subject; b=UeqtRV608oN2D/wZ38yAdCBAi6QDVi9oaiqcJHmWxtd8sySs5S3w8ED7vlhhxNNEI+z0RgEns8gBz8gQCF2RT2T8weBumhExRCONubC4uI3FVpWsV6ekvCZ1ajZSFIv/mnMV3dOJJQPObsaNblxA6MxoE1BiH5DhqYwk4u+HLB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=DP04iC5C; arc=none smtp.client-ip=162.243.120.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+	:Date:subject:date:message-id:reply-to;
+	bh=71XbR04R1YkOfno5gJ7a+xFyEwpBdthJL1F3pof/8tw=; b=DP04iC5Ci929JBdYjlKl5/6yNs
+	t/0uKrH5tUprvgZl2veE/dRXKBLuED2FrAMpBXWART1pqWxNSPZC9Cd8Xuka25jHo0GjSWH4Oc0iC
+	Eth3QIjVAbMrticl2F4RJOu4loQ1g93Kj6ADHoIhV9dLTUCzcwVEWG0Ez4mjSQCdk3vQ=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:53768 helo=pettiford)
+	by mail.hugovil.com with esmtpa (Exim 4.92)
+	(envelope-from <hugo@hugovil.com>)
+	id 1rzLME-0000Qp-VJ; Tue, 23 Apr 2024 14:59:16 -0400
+Date: Tue, 23 Apr 2024 14:59:10 -0400
+From: Hugo Villeneuve <hugo@hugovil.com>
+To: Konstantin Pugin <ria.freelander@gmail.com>
+Cc: krzk@kernel.org, conor@kernel.org, lkp@intel.com, vz@mleia.com,
+ robh@kernel.org, jcmvbkbc@gmail.com, nicolas.ferre@microchip.com,
+ manikanta.guntupalli@amd.com, corbet@lwn.net, ychuang3@nuvoton.com,
+ u.kleine-koenig@pengutronix.de, Maarten.Brock@sttls.nl, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Hugo
+ Villeneuve <hvilleneuve@dimonoff.com>, Andy Shevchenko <andy@kernel.org>,
+ Lech Perczak <lech.perczak@camlingroup.com>, Ilpo =?ISO-8859-1?Q?J=E4rvin?=
+ =?ISO-8859-1?Q?en?= <ilpo.jarvinen@linux.intel.com>,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Message-Id: <20240423145910.c3141dbd01665213526b54fa@hugovil.com>
+In-Reply-To: <20240422133219.2710061-2-ria.freelander@gmail.com>
+References: <20240422133219.2710061-1-ria.freelander@gmail.com>
+	<20240422133219.2710061-2-ria.freelander@gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Level: 
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	* -2.8 NICE_REPLY_A Looks like a legit reply (A)
+Subject: Re: [PATCH v7 1/3] serial: sc16is7xx: announce support of
+ SER_RS485_RTS_ON_SEND
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-It seems tons of the code in tools include linux/limits.h. But I haven't found
-where do we copy it. Any pointers?
+On Mon, 22 Apr 2024 16:32:13 +0300
+Konstantin Pugin <ria.freelander@gmail.com> wrote:
 
-Based on the discussion 20220603183231.15159C385A9@smtp.kernel.org.
+Hi Konstantin,
+
+> The hardware supports both RTS_ON_SEND and RTS_AFTER_SEND modes, but
+> after the commit 4afeced55baa ("serial: core: fix sanitizing check for
+> RTS settings") we always end up with SER_RS485_RTS_AFTER_SEND set and
+> always write to the register field SC16IS7XX_EFCR_RTS_INVERT_BIT, which
+> breaks some hardware using these chips.
+
+it took me a long time to properly understand what you meant in your
+commit message. In my setup, I have the property rs485-rts-active-low
+defined, and couldn't reproduce the problem. It is only after I
+commented this property that I got a warning about the "invalid RTS
+setting"... I also got it by defining rs485-rts-active-high.
+
+I suggest the following changes to the commit message:
+
+----
+When specifying flag SER_RS485_RTS_ON_SEND in RS485 configuration,
+we get the following warning after commit 4afeced55baa ("serial: core:
+fix sanitizing check for RTS settings"):
+
+    invalid RTS setting, using RTS_AFTER_SEND instead
+
+This results in SER_RS485_RTS_AFTER_SEND being set and the
+driver always write to the register field SC16IS7XX_EFCR_RTS_INVERT_BIT,
+which breaks some hardware using these chips.
+
+The hardware supports both RTS_ON_SEND and RTS_AFTER_SEND modes, so fix
+this by announcing support for RTS_ON_SEND.
+---
+
+If you agree to these changes, feel free to add:
+
+Tested-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+
+Hugo.
+
+
+> 
+> Fixes: 267913ecf737 ("serial: sc16is7xx: Fill in rs485_supported")
+> Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
+> ---
+>  drivers/tty/serial/sc16is7xx.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
+> index 03cf30e20b75..dfcc804f558f 100644
+> --- a/drivers/tty/serial/sc16is7xx.c
+> +++ b/drivers/tty/serial/sc16is7xx.c
+> @@ -1449,7 +1449,7 @@ static int sc16is7xx_setup_mctrl_ports(struct sc16is7xx_port *s,
+>  }
+>  
+>  static const struct serial_rs485 sc16is7xx_rs485_supported = {
+> -	.flags = SER_RS485_ENABLED | SER_RS485_RTS_AFTER_SEND,
+> +	.flags = SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND | SER_RS485_RTS_AFTER_SEND,
+>  	.delay_rts_before_send = 1,
+>  	.delay_rts_after_send = 1,	/* Not supported but keep returning -EINVAL */
+>  };
+> -- 
+> 2.34.1
+> 
+> 
+> 
+
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Hugo Villeneuve
 
