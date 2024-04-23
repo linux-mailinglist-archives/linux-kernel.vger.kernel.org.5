@@ -1,41 +1,42 @@
-Return-Path: <linux-kernel+bounces-155038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154975-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 073808AE4A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:46:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B046A8AE3C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:25:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1AD21F23340
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:46:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2D101C22A59
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:25:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE9213D2B6;
-	Tue, 23 Apr 2024 11:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50D6B7C6DF;
+	Tue, 23 Apr 2024 11:25:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=antgroup.com header.i=@antgroup.com header.b="Dt7cB+Dl"
-Received: from out0-196.mail.aliyun.com (out0-196.mail.aliyun.com [140.205.0.196])
+	dkim=pass (1024-bit key) header.d=antgroup.com header.i=@antgroup.com header.b="zpOORgxm"
+Received: from out0-219.mail.aliyun.com (out0-219.mail.aliyun.com [140.205.0.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FEE713C9DA
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 11:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.205.0.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D87A47E59F
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 11:25:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.205.0.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872449; cv=none; b=BfiFrq7BadQiNZi1WrzHgbLaRfKmyte8IHrVtYAXXu+Y5XVrhWiIy9qrCAy7Hm0CcLthK3CVq/Pgjqq6MEYAEsuBjulrlH24L6Tjx/kJ+o5KxsEgwzp06TKshpxVLzHY6oCoMNe1jsz9O4lgEjJH7Sldb20x2oNgAChpuuByC5A=
+	t=1713871523; cv=none; b=kqBrhPJt0A3k6KlZPtzBwdWp5w5ml0d1So8SGCwCjMv4MEKYPYZeDS5d3L5iYMb/LZ2GNWOKC+FmfK62guvFpfqau+4irtRLqlAtGyK62KFy1JbngecJG93zzNuNvNOK10Kwa/9NVHR9rZKl+4hS9oAoPLwAbwdFbXlQvmtTYhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872449; c=relaxed/simple;
-	bh=YfsrPvivDoRKNrC1YbqFj+eCbbGzeciwc/RF0sBkVJU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=G7o3lV+CBHDiqUwttvXmx3irAH3hPb7s3u7KtALZzS+h5f1pLHm6wyHKF/Rw6igY0nSR12gdzYp2551PSMLBt7npc5tfEs5FCVjzkIECyQJDqKY78/l2j2Cv53a8vkIjLfj85/rs8LZwH+mgT/BcjvV8FViIHuBdzIq8uTDSmrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; dkim=pass (1024-bit key) header.d=antgroup.com header.i=@antgroup.com header.b=Dt7cB+Dl; arc=none smtp.client-ip=140.205.0.196
+	s=arc-20240116; t=1713871523; c=relaxed/simple;
+	bh=Ghj0/V/dH76APPyaKDAlG7P8Sbut9JOjTVMQKESCzlc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tjHRDr9viNPBPKPv04gw7gvk+YZKRRolT3cPlCdWSFcAIEq+6dVeITPFumr1APERgNRQnvrv3Nzx0CahqvXR/kDyM75TirvXkfMX9vLZvZ4Nzhzl+Ve+Ut2F5Bin5wNHhw9QZyDHKvvCnOCCa8qH6L5b6yi+T79qqLWIpFh0S9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; dkim=pass (1024-bit key) header.d=antgroup.com header.i=@antgroup.com header.b=zpOORgxm; arc=none smtp.client-ip=140.205.0.219
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=antgroup.com; s=default;
-	t=1713872444; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
-	bh=Puom3o0JDkiZIFarbwt9DAJoDSO5gjgxzhiu11+oa54=;
-	b=Dt7cB+Dlv+gDGuvCSI0krKXzPBBUjh/wdHxVuCtXuZzSKlIwwPeYG4k0OLL4c6+P2BRRnBjLp5K4yMgMfNftbfCCGQI7juDq52KfcDmi9Jvef//gOHbFBNKM7zL/0cOafDcuyBtuIFOXg8Fc6H7vQAdSQ8h8Pg9jcU46PW9Q1T0=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047192;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.XJTUYfJ_1713871506;
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.XJTUYfJ_1713871506)
+	t=1713871513; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	bh=35K+byay5rbsmnKXw4pAmKxWNtRGPhfuJu7mpbXe+7w=;
+	b=zpOORgxm7y4rkGhVbqR04m2MFyKaDYASe2TUzeKv1mXU2S4H/xiRBR/iDPWdwYJQLJPGZMHKOZ5+q/CVn7q8e1PUDhYVU2OAdxGDX3+rlqE8JO1yEgssL7h4kzqiPK2YsW0Me4MDZKNDD0bb3Qp/24diOQW1WKS/lZK8VEi+K0w=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047212;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.XJTUYhj_1713871512;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.XJTUYhj_1713871512)
           by smtp.aliyun-inc.com;
           Tue, 23 Apr 2024 19:25:12 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
@@ -45,10 +46,12 @@ To: richard@nod.at,
 Cc:  <linux-um@lists.infradead.org>,
    <linux-kernel@vger.kernel.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH 0/7] um: A follow-up series of -Wmissing-prototypes fixes
-Date: Tue, 23 Apr 2024 19:24:50 +0800
-Message-Id: <20240423112457.2409319-1-tiwei.btw@antgroup.com>
+Subject: [PATCH 1/7] um: Fix -Wmissing-prototypes warnings for (rt_)sigreturn
+Date: Tue, 23 Apr 2024 19:24:51 +0800
+Message-Id: <20240423112457.2409319-2-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240423112457.2409319-1-tiwei.btw@antgroup.com>
+References: <20240423112457.2409319-1-tiwei.btw@antgroup.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,36 +61,47 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This is a follow-up series built on top of below series:
-https://lore.kernel.org/linux-um/20240306101925.1088870-1-tiwei.btw@antgroup.com/
+Use SYSCALL_DEFINE0 to define (rt_)sigreturn. This will address
+below -Wmissing-prototypes warnings:
 
-Tiwei Bie (7):
-  um: Fix -Wmissing-prototypes warnings for (rt_)sigreturn
-  um: Fix the -Wmissing-prototypes warning for __switch_mm
-  um: Fix the -Wmissing-prototypes warning for get_thread_reg
-  um: Fix the declaration of kasan_map_memory
-  um: Add an internal header shared among the user code
-  um: Fix -Wmissing-prototypes warnings for __vdso_*
-  um: Remove unused do_get_thread_area function
+arch/x86/um/signal.c:453:6: warning: no previous prototype for ‘sys_sigreturn’ [-Wmissing-prototypes]
+arch/x86/um/signal.c:560:6: warning: no previous prototype for ‘sys_rt_sigreturn’ [-Wmissing-prototypes]
 
- arch/um/include/asm/kasan.h             |  1 -
- arch/um/include/asm/mmu.h               |  2 --
- arch/um/include/asm/processor-generic.h |  1 -
- arch/um/include/shared/kern_util.h      |  2 ++
- arch/um/include/shared/skas/mm_id.h     |  2 ++
- arch/um/os-Linux/internal.h             | 20 ++++++++++++++++++++
- arch/um/os-Linux/main.c                 |  2 --
- arch/um/os-Linux/mem.c                  |  1 +
- arch/um/os-Linux/skas/mem.c             |  2 --
- arch/um/os-Linux/start_up.c             |  2 --
- arch/um/scripts/Makefile.rules          |  3 ++-
- arch/x86/um/shared/sysdep/archsetjmp.h  |  7 +++++++
- arch/x86/um/signal.c                    |  5 +++--
- arch/x86/um/tls_32.c                    | 17 -----------------
- arch/x86/um/vdso/um_vdso.c              | 10 ++++++++--
- 15 files changed, 45 insertions(+), 32 deletions(-)
- create mode 100644 arch/um/os-Linux/internal.h
+Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+---
+ arch/x86/um/signal.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/arch/x86/um/signal.c b/arch/x86/um/signal.c
+index 263e1d08f216..48e87b45adba 100644
+--- a/arch/x86/um/signal.c
++++ b/arch/x86/um/signal.c
+@@ -8,6 +8,7 @@
+ #include <linux/personality.h>
+ #include <linux/ptrace.h>
+ #include <linux/kernel.h>
++#include <linux/syscalls.h>
+ #include <asm/unistd.h>
+ #include <linux/uaccess.h>
+ #include <asm/ucontext.h>
+@@ -450,7 +451,7 @@ int setup_signal_stack_si(unsigned long stack_top, struct ksignal *ksig,
+ 	return 0;
+ }
+ 
+-long sys_sigreturn(void)
++SYSCALL_DEFINE0(sigreturn)
+ {
+ 	unsigned long sp = PT_REGS_SP(&current->thread.regs);
+ 	struct sigframe __user *frame = (struct sigframe __user *)(sp - 8);
+@@ -557,7 +558,7 @@ int setup_signal_stack_si(unsigned long stack_top, struct ksignal *ksig,
+ }
+ #endif
+ 
+-long sys_rt_sigreturn(void)
++SYSCALL_DEFINE0(rt_sigreturn)
+ {
+ 	unsigned long sp = PT_REGS_SP(&current->thread.regs);
+ 	struct rt_sigframe __user *frame =
 -- 
 2.34.1
 
