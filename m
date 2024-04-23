@@ -1,193 +1,176 @@
-Return-Path: <linux-kernel+bounces-154758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F26BE8AE098
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 92DFA8AE085
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:02:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DC4E2852B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:07:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49BA6283F8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:02:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C9C56444;
-	Tue, 23 Apr 2024 09:07:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E6CD5644F;
+	Tue, 23 Apr 2024 09:02:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FmVwHJDI"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V0W+v8/c"
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36FAC5647B;
-	Tue, 23 Apr 2024 09:07:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A200535DB;
+	Tue, 23 Apr 2024 09:02:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713863233; cv=none; b=D1IgklT5CDEXFs1IAU5bb1YeSTq3YfQOQIwahT7HEd1Q14ooph11cojr2c9REMu42jL4Euwaj3P/R8NB+KWACriIKQeTKP5Cyzd3GOdIPw3nF6B0LX2MwKeP9dKiaFnu0BV6ZLF/MqaIDGz1Tma+yAbYm0GhQVJcubzINoNIa9Q=
+	t=1713862970; cv=none; b=REsfvcocK/DF95GvH3DNJ357me03DjFE2shmGkObiOr2B7rAFDqT5JSHVTRygxSeHiIVGLGFUlM/BYtalG2KTKEdqsn7yS25tPAA7OCZs626yID+L7iM7IhqdVjwpJ0Mvq/y/N4uztaLYDLzF7vaqXqHbPqMVInmgwZ9kJSel8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713863233; c=relaxed/simple;
-	bh=3sflhcA0hu5cpeDqgRxeLXG5DOKfuWBbLCsPck6cnnU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SsEDWyrTacOCSGidvIlcVKKWSktE6grmQxm3/n85dCqYMqSK8nmd0Y8Vre9pYZ3zkrYVK5QsKd2n+8SS/bj6jXgitWlNuSdKP10u93SJwpH2P72DLKjRsHYzggYbkeJnb6NvEyP0WIvViR+R0WMwBb1vLfWhhXQNK9D5m6sG4lc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FmVwHJDI; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713863232; x=1745399232;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3sflhcA0hu5cpeDqgRxeLXG5DOKfuWBbLCsPck6cnnU=;
-  b=FmVwHJDIe+FfyG/p/IVRVuEYGYh4jv3LdJ7vBAi4BLc7jYQ8X26CikuM
-   +qhz9of2amAkwNgJN7BkXS5zMhdgSOyjfa1yYyOa6R/RHq2McAT6Zfj8h
-   TFrDabbtK08haEnPEpDM3so/Kt15qVviNXeiW29X0GWY1JXhwsnQrSGCX
-   D50YWQj2oZw7h+pRcox5+IjQ85cSg8HDd9HLmphc9tZEzSW87sQXGkveb
-   1LjNp2NAZP22mNIQr98YCpshXzQ/nxVOn3Dw/WzuXUxMAu8vtwsXm65aZ
-   SckKmBjna/i6ZlJMN6k28Rt3rz0YH19HM4brJYRtFEpFWn9gKU29ZJCwz
-   w==;
-X-CSE-ConnectionGUID: jYvaClv6ShKUd2LqUux2xA==
-X-CSE-MsgGUID: 6aXRxPLkTiKVq9xDBTEguw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="9302210"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="9302210"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 02:07:12 -0700
-X-CSE-ConnectionGUID: z/rQpEQZRQqgs+rjy2bg0g==
-X-CSE-MsgGUID: 6D40TMoGTsadoQQyHbX4/Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="55247181"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa002.jf.intel.com with ESMTP; 23 Apr 2024 02:07:08 -0700
-Date: Tue, 23 Apr 2024 17:01:48 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Peter Colberg <peter.colberg@intel.com>
-Cc: Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-	Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-	linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Russ Weight <russ.weight@linux.dev>,
-	Marco Pagani <marpagan@redhat.com>,
-	Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: Re: [RFC PATCH v2 2/9] fpga: dfl: migrate AFU DMA region management
- driver to dfl_feature_dev_data
-Message-ID: <Zid4/GH1hL5YRboH@yilunxu-OptiPlex-7050>
-References: <20240409233942.828440-1-peter.colberg@intel.com>
- <20240409233942.828440-3-peter.colberg@intel.com>
+	s=arc-20240116; t=1713862970; c=relaxed/simple;
+	bh=Tf1WAE083iqElmWUjgIU3qiP70v7umc//U+zy4dFFjw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JjyZMdUObff9i9O5nd5dQUIXPHv1X2cSeuj12ouCAcb61wOsvwKZ2m/+3bl1R11LNCeLuEk7k4xe9mehPOjAjtJK0AvRyJ9jk1xz8aNwVwoipTj5STSQH3HRhwEN/zV1Xo0dKxqEdgj5OOnzubDTkNJ5JDUpt/DQIemvJg3eJH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V0W+v8/c; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2ae6c8745ffso802684a91.2;
+        Tue, 23 Apr 2024 02:02:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713862968; x=1714467768; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BXsOnG+unFLFOLCvhsKIlfWgz2bxnXfsLh7JooJSg6o=;
+        b=V0W+v8/cOLxU3jH/RQyn2sz/K7z2CWF4V6XxFi+NOhXaXCYcEk7iERWbWuVoIdzQqA
+         CkySKC/vvqtsVq8MJf9ieU8a1YPvmSp6A91VItbqHvTXst6KQxYdRTdg4JE52O15HJKq
+         zY3Sd54/Xa+jvADHeryDXkJNZDOB5TXGf9mDHSkdWMlegmhkIA00tI/a9jZVeuw1fVrI
+         MBh7R31n2F5oY5TAfFWh7eXDArFrrpN2lxdfEeQ0aI8bAw+00fpOl0f9jr0QC329PX/N
+         8yYzxu36phfm+F4sUKEUQrUgn+rtbcX53aqXQOjimjF1JBAomx91AxwCudb4fcuz2Fac
+         zYpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713862968; x=1714467768;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BXsOnG+unFLFOLCvhsKIlfWgz2bxnXfsLh7JooJSg6o=;
+        b=daq8BQWQxdPDr0V+jxNTs3ufQ77AnXrwKXjcL6xLg1TYivd//uLEkIUtkZo7ES20/u
+         XPWp7p3VLNnJwVAADba4VG8QoeqAcNs4lcxGbVqvq6d15NUQtecqOdUTl/7Dv0LOlf8G
+         4pN8ou6oJlGQ+FQngBIGlIusLRKIS+GczHpUl+ns1sZ9y0MHkUa1Q9XdIOd4zgYL4F/u
+         NCH5oir8z3odEGLw27NetMSpSIic4aa45xPbCpddTn+5JxmY4hHMri9CNI36R361yVtl
+         v3iH1CR6fOEke8ZEtBdeWQQVoL/YZNgp8QVIgo+LhVsBgEg9MICFCFuqy7qGmrfYXXch
+         x+RA==
+X-Forwarded-Encrypted: i=1; AJvYcCV1m1j5kyYDbjyRo8QaeQ87QJrwLEOVZ7B7BelF/hCs8g9V455AHYikxbbwNZ6jekkQlxbR0mAHTIJ7mkr+yLaHCenB
+X-Gm-Message-State: AOJu0Yw5VzZZYUNYCbFohTTAMIlgsVrKsAW5qHXJJO5p8BGJZdVPpt+a
+	DW2M1VfQAMjKMMcNVuofsZ+gkJFq4Zzc3QW1W35QHzcXQjciq1asnPqXQzo3NV5MK1vadP+MRc9
+	zqtqSDGAfmU4BKBiI+7/cNC0yugo=
+X-Google-Smtp-Source: AGHT+IH6xJKCgpblnzG46n84QQ0mtRzKqpyXpmK/5Twj2PbdrB/ocRSHnvU7H4hol4gFBTRZ1F+F9NHe/J6n2w/pAls=
+X-Received: by 2002:a17:90a:5310:b0:2a2:97ce:24f5 with SMTP id
+ x16-20020a17090a531000b002a297ce24f5mr12622248pjh.35.1713862968530; Tue, 23
+ Apr 2024 02:02:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240409233942.828440-3-peter.colberg@intel.com>
+References: <20240328075318.83039-1-jiangshanlai@gmail.com>
+ <20240328075318.83039-10-jiangshanlai@gmail.com> <ZiZEcBEvK8NOQvwU@localhost.localdomain>
+In-Reply-To: <ZiZEcBEvK8NOQvwU@localhost.localdomain>
+From: Lai Jiangshan <jiangshanlai@gmail.com>
+Date: Tue, 23 Apr 2024 17:02:35 +0800
+Message-ID: <CAJhGHyBMYDWbRYp86wBu3x6Ry8HM2yiZxNv_WATwhzV+OO+ZFA@mail.gmail.com>
+Subject: Re: [PATCH 09/10] x86/rcu: Add rcu_preempt_count
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org, 
+	Lai Jiangshan <jiangshan.ljs@antgroup.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Uros Bizjak <ubizjak@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Nadav Amit <namit@vmware.com>, 
+	Breno Leitao <leitao@debian.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Vegard Nossum <vegard.nossum@oracle.com>, 
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>, Nikolay Borisov <nik.borisov@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 09, 2024 at 07:39:35PM -0400, Peter Colberg wrote:
-> This change separates out most of the symbol name changes required by this
-> patch series for the file: drivers/fpga/dfl-afu-dma-region.c. 
+Hello, Frederic
 
-> This is done
-> to split a single monolithic change into multiple, smaller patches at the
-> request of the maintainer.
+Thanks for reviewing.
 
-This sentence provides no useful info.
+On Mon, Apr 22, 2024 at 7:05=E2=80=AFPM Frederic Weisbecker <frederic@kerne=
+l.org> wrote:
 
-> 
-> Signed-off-by: Peter Colberg <peter.colberg@intel.com>
-> ---
-> v2:
-> - Split monolithic patch into series at request of maintainer
-> - Reorder local variables in afu_dma_unpin_pages() to reverse Christmas
->   tree order.
-> ---
->  drivers/fpga/dfl-afu-dma-region.c | 119 +++++++++++++++---------------
->  1 file changed, 61 insertions(+), 58 deletions(-)
-> 
-> diff --git a/drivers/fpga/dfl-afu-dma-region.c b/drivers/fpga/dfl-afu-dma-region.c
-> index 02b60fde0430..fb45e51b12af 100644
-> --- a/drivers/fpga/dfl-afu-dma-region.c
-> +++ b/drivers/fpga/dfl-afu-dma-region.c
-> @@ -16,26 +16,26 @@
->  
->  #include "dfl-afu.h"
->  
-> -void afu_dma_region_init(struct dfl_feature_platform_data *pdata)
-> +void afu_dma_region_init(struct dfl_feature_dev_data *fdata)
->  {
-> -	struct dfl_afu *afu = dfl_fpga_pdata_get_private(pdata);
-> +	struct dfl_afu *afu = dfl_fpga_fdata_get_private(fdata);
->  
->  	afu->dma_regions = RB_ROOT;
->  }
->  
->  /**
->   * afu_dma_pin_pages - pin pages of given dma memory region
-> - * @pdata: feature device platform data
-> + * @fdata: feature dev data
->   * @region: dma memory region to be pinned
->   *
->   * Pin all the pages of given dfl_afu_dma_region.
->   * Return 0 for success or negative error code.
->   */
-> -static int afu_dma_pin_pages(struct dfl_feature_platform_data *pdata,
-> +static int afu_dma_pin_pages(struct dfl_feature_dev_data *fdata,
->  			     struct dfl_afu_dma_region *region)
->  {
->  	int npages = region->length >> PAGE_SHIFT;
-> -	struct device *dev = &pdata->dev->dev;
-> +	struct device *dev = &fdata->dev->dev;
->  	int ret, pinned;
->  
->  	ret = account_locked_vm(current->mm, npages, true);
-> @@ -73,17 +73,17 @@ static int afu_dma_pin_pages(struct dfl_feature_platform_data *pdata,
->  
->  /**
->   * afu_dma_unpin_pages - unpin pages of given dma memory region
-> - * @pdata: feature device platform data
-> + * @fdata: feature dev data
->   * @region: dma memory region to be unpinned
->   *
->   * Unpin all the pages of given dfl_afu_dma_region.
->   * Return 0 for success or negative error code.
->   */
-> -static void afu_dma_unpin_pages(struct dfl_feature_platform_data *pdata,
-> +static void afu_dma_unpin_pages(struct dfl_feature_dev_data *fdata,
->  				struct dfl_afu_dma_region *region)
->  {
->  	long npages = region->length >> PAGE_SHIFT;
-> -	struct device *dev = &pdata->dev->dev;
-> +	struct device *dev = &fdata->dev->dev;
->  
->  	unpin_user_pages(region->pages, npages);
->  	kfree(region->pages);
-> @@ -133,20 +133,21 @@ static bool dma_region_check_iova(struct dfl_afu_dma_region *region,
->  
->  /**
->   * afu_dma_region_add - add given dma region to rbtree
-> - * @pdata: feature device platform data
-> + * @fdata: feature dev data
->   * @region: dma region to be added
->   *
->   * Return 0 for success, -EEXIST if dma region has already been added.
->   *
-> - * Needs to be called with pdata->lock heold.
-> + * Needs to be called with fdata->lock held.
->   */
-> -static int afu_dma_region_add(struct dfl_feature_platform_data *pdata,
-> +static int afu_dma_region_add(struct dfl_feature_dev_data *fdata,
->  			      struct dfl_afu_dma_region *region)
->  {
-> -	struct dfl_afu *afu = dfl_fpga_pdata_get_private(pdata);
-> +	struct dfl_afu *afu = dfl_fpga_fdata_get_private(fdata);
-> +	struct device *dev = &fdata->dev->dev;
+> > +
+> > +/* We use the MSB mostly because its available */
+>
+> I think you can safely remove the "We " from all the comments :-)
 
-Don't introduce any other unnecessary changes in the big
-symbol replacement patch.  People could read over all the same
-replacements quickly, even if they are massive. But if there are
-some other changes in between...
+The file is mainly copied from arch/x86/include/asm/preempt.h.
+I will rephrase sentences in later iterations.
 
->  	struct rb_node **new, *parent = NULL;
->  
-> -	dev_dbg(&pdata->dev->dev, "add region (iova = %llx)\n",
-> +	dev_dbg(dev, "add region (iova = %llx)\n",
->  		(unsigned long long)region->iova);
+>
+> > +#define RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED  0x80000000
+>
+> How about RCU_PREEMPT_UNLOCK_FASTPATH ?
+
+
+I'm not good at naming. But the MSB really means exactly the opposite
+of current->rcu_read_unlock_special and I think "UNLOCK_SPECIAL_INVERTED"
+fits the meaning.
+
+>
+> > +
+> > +/*
+> > + * We use the RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED bit as an inverted
+> > + * current->rcu_read_unlock_special.s such that a decrement hitting 0
+> > + * means we can and should call rcu_read_unlock_special().
+> > + */
+> > +#define RCU_PREEMPT_INIT     (0 + RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED)
+>
+> Or simply:
+>
+> #define RCU_PREEMPT_INIT     RCU_PREEMPT_UNLOCK_FASTPATH
+>
+> Or you can even remove RCU_PREEMPT_INIT and use RCU_PREEMPT_UNLOCK_FASTPA=
+TH directly.
+
+"0" means the initial rcu_preempt_count is 0 for the initial task.
+
+> > +
+> > +#endif // #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
+> > +
+> > +#endif /* __ASM_RCU_PREEMPT_H */
+> > diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.=
+c
+> > index ba8cf5e9ce56..0b204a649442 100644
+> > --- a/arch/x86/kernel/cpu/common.c
+> > +++ b/arch/x86/kernel/cpu/common.c
+> > @@ -1992,9 +1992,10 @@ static __init int setup_clearcpuid(char *arg)
+> >  __setup("clearcpuid=3D", setup_clearcpuid);
+> >
+> >  DEFINE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot) =3D {
+> > -     .current_task   =3D &init_task,
+> > -     .preempt_count  =3D INIT_PREEMPT_COUNT,
+> > -     .top_of_stack   =3D TOP_OF_INIT_STACK,
+> > +     .current_task           =3D &init_task,
+> > +     .preempt_count          =3D INIT_PREEMPT_COUNT,
+> > +     .top_of_stack           =3D TOP_OF_INIT_STACK,
+> > +     .rcu_preempt_count      =3D RCU_PREEMPT_INIT,
+>
+> #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT ?
+>
+> Thanks.
+
+Fixed in V2:
+https://lore.kernel.org/lkml/20240407090558.3395-1-jiangshanlai@gmail.com/
+
+Thanks
+Lai
+
+>
+>
+> >  };
+> >  EXPORT_PER_CPU_SYMBOL(pcpu_hot);
+> >  EXPORT_PER_CPU_SYMBOL(const_pcpu_hot);
+> > --
+> > 2.19.1.6.gb485710b
+> >
 
