@@ -1,423 +1,258 @@
-Return-Path: <linux-kernel+bounces-155365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A36C28AE961
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:24:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 727358AE969
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:25:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 329411F24A5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:24:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78AE1B22425
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:25:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98B1513BAE2;
-	Tue, 23 Apr 2024 14:24:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mwIMeQrL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9511A6A03F;
+	Tue, 23 Apr 2024 14:25:14 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58BA513B795;
-	Tue, 23 Apr 2024 14:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BEFE139D1B
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:25:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713882255; cv=none; b=Q6P8TZo2KxZ3pBaiEyE8aPDLf+lx0qqcHshzVt3W0YAXjx3gCL2h+fiBEX8uZ7Mk3p52ho31xrEymhErKkYy/EZi5z6lUciRbPZbiFNAbiFQOG4qLA3AmJ7ylnRHmM9ZWNaNxlwrpro2bBtLEd5Gac54s55CX34N+eKZOnzCc+U=
+	t=1713882313; cv=none; b=Y2ItNhdu9lJgANnRaQS0pB0U56t1IT8pnDY8yQGluF3BmD2LLABF296n1zL51VW2z+pMZB6PKKuTZY3QU2DS2QSQLR5aD85d6nv/70fh6UTna11HSXbc9S+cxoQP/28ol2l6JmVsSzZagjkwdqtwabokxVn24fJS0pk2O/jpdEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713882255; c=relaxed/simple;
-	bh=lsKqiX8Zjk3SA4TnopgENDvHBDl4W5onZMLdYgcKjKg=;
+	s=arc-20240116; t=1713882313; c=relaxed/simple;
+	bh=8gqjlT+NAG/LnNUmirvpIEfJgjj4C/RuZXZoY7Tx8z8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NY9tUST73EVpW+LdSzthEj1ROKhr3MezM/zuuupAP/3ZHuG92F0roU5vHs9vJNBKq1d31A/GyfuevoxUhjRDlFCLSDA7/x2eSxXb750LBFWrSj5wqaGAmZi0Fwil66WMiHWq2/3b0NfefVggxrqKX1ZkVJXODafVCwU8/u3INRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mwIMeQrL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5C72C116B1;
-	Tue, 23 Apr 2024 14:24:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713882255;
-	bh=lsKqiX8Zjk3SA4TnopgENDvHBDl4W5onZMLdYgcKjKg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mwIMeQrLGCpcC1dwjfuqkkqaaG6CWCweJpkoWeAxh9LAnnifhlfOwNmykhTQYeeQP
-	 XKxMpkAgcQrl+/wICk2WiIXzPThk8iC+HnjOE1qbhMzWAF6m+lyb6e8ahLC1mKPnYB
-	 ioUVaJF+Aq0KNpfPv8YLTjhyXLuB+YOV6AtpYVDnJM3Qa0p2yIZT8BYzTQvSfKydXT
-	 p0Y7027aD9i75V+JgsusBmZao/WFVZuaiEFvGcPBBi1rC7iQmpmQynQm4y7LAvpOLM
-	 Yz48TDtPJGIk6TWbU38wh6Qd+sRgD9cnL+25Ff/br6/ZoJNhsKYtd2s6mbN6RK1Puy
-	 3N+GsfFo3YGPQ==
-Date: Tue, 23 Apr 2024 09:24:12 -0500
-From: Rob Herring <robh@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shengjiu.wang@gmail.com, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2] ASoC: dt-bindings: fsl,ssi: Convert to YAML
-Message-ID: <20240423142412.GA138232-robh@kernel.org>
-References: <1713764894-11870-1-git-send-email-shengjiu.wang@nxp.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=etY/2xY8IM+56oYxiXdCziCuLaO9UTw1C214ZvJDUicS6TnSxVKuohQDqMlzM4da/XBPn9Ws6lzIkV7cxi53YDwBDpxB4ZIRGKCXgP5xxrb/u/S6gVEKuq4wUeLsxSbZtaG0dJdZwFIWfK4DXCUji6o0zT9gE5v4TwterpjwtPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mgr@pengutronix.de>)
+	id 1rzH4x-0000NU-CJ; Tue, 23 Apr 2024 16:25:03 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mgr@pengutronix.de>)
+	id 1rzH4w-00DuYX-09; Tue, 23 Apr 2024 16:25:02 +0200
+Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <mgr@pengutronix.de>)
+	id 1rzH4v-009uDa-2u;
+	Tue, 23 Apr 2024 16:25:01 +0200
+Date: Tue, 23 Apr 2024 16:25:01 +0200
+From: Michael Grzeschik <mgr@pengutronix.de>
+To: Avichal Rakesh <arakesh@google.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Daniel Scally <dan.scally@ideasonboard.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jayant Chowdhary <jchowdhary@google.com>, etalvala@google.com,
+	Michael Riesch <michael.riesch@wolfvision.net>,
+	Thinh Nguyen <Thinh.Nguyen@synopsys.com>, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] usb: gadget: uvc: allocate requests based on frame
+ interval length and buffersize
+Message-ID: <ZifEvUi9-E8M4dp8@pengutronix.de>
+References: <ZiWga5Kqno1ICv97@pengutronix.de>
+ <dcad0089-4105-44bc-a2b4-3cfc6f44164b@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="pAYe3sblKvwSCo0F"
 Content-Disposition: inline
-In-Reply-To: <1713764894-11870-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <dcad0089-4105-44bc-a2b4-3cfc6f44164b@google.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mgr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Mon, Apr 22, 2024 at 01:48:14PM +0800, Shengjiu Wang wrote:
-> Convert the fsl,ssi binding to YAML.
-> 
-> Add below compatible strings which were not listed
-> in document:
-> 
-> fsl,imx50-ssi
-> fsl,imx53-ssi
-> fsl,imx25-ssi
-> fsl,imx27-ssi
-> fsl,imx6q-ssi
-> fsl,imx6sl-ssi
-> fsl,imx6sx-ssi
-> 
-> Add below fsl,mode strings which were not listed.
-> 
-> i2s-slave
-> i2s-master
-> lj-slave
-> lj-master
-> rj-slave
-> rj-master
-> 
-> Add 'ac97-gpios' property which were not listed.
-> Then dtbs_check can pass.
-> 
-> And remove the 'codec' description which should be
-> in the 'codec' binding doc.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
-> changes in v2:
-> - change fallback string to const.
-> - add dai-common.yaml
-> - add ac97-gpios property
-> 
->  .../devicetree/bindings/sound/fsl,ssi.txt     |  87 --------
->  .../devicetree/bindings/sound/fsl,ssi.yaml    | 192 ++++++++++++++++++
->  2 files changed, 192 insertions(+), 87 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/fsl,ssi.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/fsl,ssi.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-> deleted file mode 100644
-> index 7e15a85cecd2..000000000000
-> --- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-> +++ /dev/null
-> @@ -1,87 +0,0 @@
-> -Freescale Synchronous Serial Interface
-> -
-> -The SSI is a serial device that communicates with audio codecs.  It can
-> -be programmed in AC97, I2S, left-justified, or right-justified modes.
-> -
-> -Required properties:
-> -- compatible:       Compatible list, should contain one of the following
-> -                    compatibles:
-> -                      fsl,mpc8610-ssi
-> -                      fsl,imx51-ssi
-> -                      fsl,imx35-ssi
-> -                      fsl,imx21-ssi
-> -- cell-index:       The SSI, <0> = SSI1, <1> = SSI2, and so on.
-> -- reg:              Offset and length of the register set for the device.
-> -- interrupts:       <a b> where a is the interrupt number and b is a
-> -                    field that represents an encoding of the sense and
-> -                    level information for the interrupt.  This should be
-> -                    encoded based on the information in section 2)
-> -                    depending on the type of interrupt controller you
-> -                    have.
-> -- fsl,fifo-depth:   The number of elements in the transmit and receive FIFOs.
-> -                    This number is the maximum allowed value for SFCSR[TFWM0].
-> - - clocks:          "ipg" - Required clock for the SSI unit
-> -                    "baud" - Required clock for SSI master mode. Otherwise this
-> -		      clock is not used
-> -
-> -Required are also ac97 link bindings if ac97 is used. See
-> -Documentation/devicetree/bindings/sound/soc-ac97link.txt for the necessary
-> -bindings.
-> -
-> -Optional properties:
-> -- codec-handle:     Phandle to a 'codec' node that defines an audio
-> -                    codec connected to this SSI.  This node is typically
-> -                    a child of an I2C or other control node.
-> -- fsl,fiq-stream-filter: Bool property. Disabled DMA and use FIQ instead to
-> -		    filter the codec stream. This is necessary for some boards
-> -		    where an incompatible codec is connected to this SSI, e.g.
-> -		    on pca100 and pcm043.
-> -- dmas:		    Generic dma devicetree binding as described in
-> -		    Documentation/devicetree/bindings/dma/dma.txt.
-> -- dma-names:	    Two dmas have to be defined, "tx" and "rx", if fsl,imx-fiq
-> -		    is not defined.
-> -- fsl,mode:         The operating mode for the AC97 interface only.
-> -                    "ac97-slave" - AC97 mode, SSI is clock slave
-> -                    "ac97-master" - AC97 mode, SSI is clock master
-> -- fsl,ssi-asynchronous:
-> -                    If specified, the SSI is to be programmed in asynchronous
-> -                    mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
-> -                    all be connected to valid signals.  In synchronous mode,
-> -                    SRCK and SRFS are ignored.  Asynchronous mode allows
-> -                    playback and capture to use different sample sizes and
-> -                    sample rates.  Some drivers may require that SRCK and STCK
-> -                    be connected together, and SRFS and STFS be connected
-> -                    together.  This would still allow different sample sizes,
-> -                    but not different sample rates.
-> -- fsl,playback-dma: Phandle to a node for the DMA channel to use for
-> -                    playback of audio.  This is typically dictated by SOC
-> -                    design.  See the notes below.
-> -                    Only used on Power Architecture.
-> -- fsl,capture-dma:  Phandle to a node for the DMA channel to use for
-> -                    capture (recording) of audio.  This is typically dictated
-> -                    by SOC design.  See the notes below.
-> -                    Only used on Power Architecture.
-> -
-> -Child 'codec' node required properties:
-> -- compatible:       Compatible list, contains the name of the codec
-> -
-> -Child 'codec' node optional properties:
-> -- clock-frequency:  The frequency of the input clock, which typically comes
-> -                    from an on-board dedicated oscillator.
-> -
-> -Notes on fsl,playback-dma and fsl,capture-dma:
-> -
-> -On SOCs that have an SSI, specific DMA channels are hard-wired for playback
-> -and capture.  On the MPC8610, for example, SSI1 must use DMA channel 0 for
-> -playback and DMA channel 1 for capture.  SSI2 must use DMA channel 2 for
-> -playback and DMA channel 3 for capture.  The developer can choose which
-> -DMA controller to use, but the channels themselves are hard-wired.  The
-> -purpose of these two properties is to represent this hardware design.
-> -
-> -The device tree nodes for the DMA channels that are referenced by
-> -"fsl,playback-dma" and "fsl,capture-dma" must be marked as compatible with
-> -"fsl,ssi-dma-channel".  The SOC-specific compatible string (e.g.
-> -"fsl,mpc8610-dma-channel") can remain.  If these nodes are left as
-> -"fsl,elo-dma-channel" or "fsl,eloplus-dma-channel", then the generic Elo DMA
-> -drivers (fsldma) will attempt to use them, and it will conflict with the
-> -sound drivers.
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.yaml b/Documentation/devicetree/bindings/sound/fsl,ssi.yaml
-> new file mode 100644
-> index 000000000000..d22911b0e9ef
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/fsl,ssi.yaml
-> @@ -0,0 +1,192 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/fsl,ssi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale Synchronous Serial Interface
-> +
-> +maintainers:
-> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> +
-> +description:
-> +  Notes on fsl,playback-dma and fsl,capture-dma
-> +  On SOCs that have an SSI, specific DMA channels are hard-wired for playback
-> +  and capture.  On the MPC8610, for example, SSI1 must use DMA channel 0 for
-> +  playback and DMA channel 1 for capture.  SSI2 must use DMA channel 2 for
-> +  playback and DMA channel 3 for capture.  The developer can choose which
-> +  DMA controller to use, but the channels themselves are hard-wired.  The
-> +  purpose of these two properties is to represent this hardware design.
-> +
-> +  The device tree nodes for the DMA channels that are referenced by
-> +  "fsl,playback-dma" and "fsl,capture-dma" must be marked as compatible with
-> +  "fsl,ssi-dma-channel".  The SOC-specific compatible string (e.g.
-> +  "fsl,mpc8610-dma-channel") can remain.  If these nodes are left as
-> +  "fsl,elo-dma-channel" or "fsl,eloplus-dma-channel", then the generic Elo DMA
-> +  drivers (fsldma) will attempt to use them, and it will conflict with the
-> +  sound drivers.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - fsl,imx50-ssi
-> +              - fsl,imx53-ssi
-> +          - enum:
-> +              - fsl,imx51-ssi
 
-const
+--pAYe3sblKvwSCo0F
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +          - const: fsl,imx21-ssi
-> +      - items:
-> +          - enum:
-> +              - fsl,imx25-ssi
-> +              - fsl,imx27-ssi
-> +              - fsl,imx35-ssi
-> +              - fsl,imx51-ssi
-> +              - fsl,imx6q-ssi
-> +              - fsl,imx6sl-ssi
-> +              - fsl,imx6sx-ssi
-> +          - enum:
-> +              - fsl,imx21-ssi
-> +              - fsl,imx51-ssi
+Ccing:
 
-Fallbacks cannot be enum's. You need to split this into 2. Also, there's 
-no valid entry for "fsl,imx21-ssi".
+Michael Riesch <michael.riesch@wolfvision.net>
+Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-It also doesn't make sense that sometimes mx21 is a fallback of mx51, 
-but then sometimes the last fallback is mx51.
+On Mon, Apr 22, 2024 at 05:21:09PM -0700, Avichal Rakesh wrote:
+>On 4/21/24 16:25, Michael Grzeschik wrote:
+>> On Tue, Apr 09, 2024 at 11:24:56PM +0200, Michael Grzeschik wrote:
+>>> This patch series is improving the size calculation and allocation
+>>> of the uvc requests. Using the currenlty setup frame duration of the
+>>> stream it is possible to calculate the number of requests based on the
+>>> interval length.
+>>
+>> The basic concept here is right. But unfortunatly we found out that
+>> together with Patch [1] and the current zero length request pump
+>> mechanism [2] and [3] this is not working as expected.
+>>
+>> The conclusion that we can not queue more than one frame at once into
+>> the hw led to [1]. The current implementation of zero length reqeusts
+>> which will be queued while we are waiting for the frame to finish
+>> transferring will enlarge the frame duration. Since every zero-length
+>> request is still taking up at least one frame interval of 125 us.
+>
+>I haven't taken a super close look at your patches, so please feel free
+>to correct me if I am misunderstanding something.
+>
+>It looks like the goal of the patches is to determine a better number
+>and size of usb_requests from the given framerate such that we send exactly
+>nreqs requests per frame where nreqs is determined to be the exact number
+>of requests that can be sent in one frame interval?
 
-> +      - items:
-> +          - const: fsl,mpc8610-ssi
-> +
-> +  cell-index:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1, 2]
-> +    description: The SSI index
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  fsl,fifo-depth:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      The number of elements in the transmit and receive FIFOs.
-> +      This number is the maximum allowed value for SFCSR[TFWM0].
+It does not need to be the exact time, actually it may not be exact.
+Scattering the data over all requests would not leave any headroom for
+any latencies or overhead.
 
-Ordering is standard properties first (like 'clocks') and then vendor 
-specific properties last.
+>As the logic stands, we need some 0-length requests to be circulating to
+>ensure that we don't miss ISOC deadlines. The current logic unconditionally
+>sends half of all allocated requests to be circulated.
+>
+>With those two things in mind, this means than video_pump can at encode
+>at most half a frame in one go, and then has to wait for complete
+>callbacks to come in. In such cases, the theoretical worst case for
+>encode time is
+>125us * (number of requests needed per frame / 2) + scheduling delays
+>as after the first half of the frame has been encoded, the video_pump
+>thread will have to wait 125us for each of the zero length requests to
+>be returned.
+>
+>The underlying assumption behind the "queue 0-length requests" approach
+>was that video_pump encodes the frames in as few requests as possible
+>and that there are spare requests to maintain a pressure on the
+>ISOC queue without hindering the video_pump thread, and unfortunately
+>it seems like patch 3/3 is breaking both of them?
 
-You need some constraints on the fsl,fifo-depth values.
+Right.
 
-> +
-> +  clocks:
-> +    items:
-> +      - description: The ipg clock for register access
-> +      - description: clock for SSI master mode
-> +    minItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: ipg
-> +      - const: baud
-> +    minItems: 1
-> +
-> +  dmas:
-> +    oneOf:
-> +      - items:
-> +          - description: DMA controller phandle and request line for RX
-> +          - description: DMA controller phandle and request line for TX
-> +      - items:
-> +          - description: DMA controller phandle and request line for RX0
-> +          - description: DMA controller phandle and request line for TX0
-> +          - description: DMA controller phandle and request line for RX1
-> +          - description: DMA controller phandle and request line for TX1
-> +
-> +  dma-names:
-> +    oneOf:
-> +      - items:
-> +          - const: rx
-> +          - const: tx
-> +      - items:
-> +          - const: rx0
-> +          - const: tx0
-> +          - const: rx1
-> +          - const: tx1
-> +
-> +  codec-handle:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle to a 'codec' node that defines an audio
-> +      codec connected to this SSI.  This node is typically
-> +      a child of an I2C or other control node.
-> +
-> +  fsl,fiq-stream-filter:
-> +    type: boolean
-> +    description:
-> +      Disabled DMA and use FIQ instead to filter the codec stream.
-> +      This is necessary for some boards where an incompatible codec
-> +      is connected to this SSI, e.g. on pca100 and pcm043.
-> +
-> +  fsl,mode:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    enum: [ ac97-slave, ac97-master, i2s-slave, i2s-master,
-> +            lj-slave, lj-master, rj-slave, rj-master ]
-> +    description: |
-> +      "ac97-slave" - AC97 mode, SSI is clock slave
-> +      "ac97-master" - AC97 mode, SSI is clock master
-> +      "i2s-slave" - I2S mode, SSI is clock slave
-> +      "i2s-master" - I2S mode, SSI is clock master
-> +      "lj-slave" - Left justified mode, SSI is clock slave
-> +      "lj-master" - Left justified mode, SSI is clock master
-> +      "rj-slave" - Right justified mode, SSI is clock slave
-> +      "rj-master" - Right justified mode, SSI is clock master
-> +
-> +  fsl,ssi-asynchronous:
-> +    type: boolean
-> +    description: If specified, the SSI is to be programmed in asynchronous
-> +      mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
-> +      all be connected to valid signals.  In synchronous mode,
-> +      SRCK and SRFS are ignored.  Asynchronous mode allows
-> +      playback and capture to use different sample sizes and
-> +      sample rates.  Some drivers may require that SRCK and STCK
-> +      be connected together, and SRFS and STFS be connected
-> +      together.  This would still allow different sample sizes,
-> +      but not different sample rates.
-> +
-> +  fsl,playback-dma:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: Phandle to a node for the DMA channel to use for
-> +      playback of audio.  This is typically dictated by SOC
-> +      design. Only used on Power Architecture.
-> +
-> +  fsl,capture-dma:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: Phandle to a node for the DMA channel to use for
-> +      capture (recording) of audio.  This is typically dictated
-> +      by SOC design. Only used on Power Architecture.
-> +
-> +  ac97-gpios:
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    description: Please refer to soc-ac97link.txt
-> +
-> +  "#sound-dai-cells":
-> +    const: 0
-> +    description: optional, some dts node didn't add it.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - fsl,fifo-depth
-> +
-> +allOf:
-> +  - $ref: dai-common.yaml#
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/imx6qdl-clock.h>
-> +    ssi1: ssi@2028000 {
+>Assuming my understanding of your patches is correct, my question
+>is: Why do we want to spread the frame uniformly over the requests
+>instead of encoding it in as few requests as possible. Spreading
+>the frame over more requests artificially increases the encode time
+>required by video_pump, and AFAICT there is no real benefit to it?
 
-Drop unused labels.
-> +        compatible = "fsl,imx6q-ssi",
-> +                     "fsl,imx51-ssi";
+Thinh gave me the advise that it is better to use the isoc stream
+constantly filled. Rather then streaming big amounts of data in the
+beginning of an frameinterval and having then a lot of spare time
+where the bandwidth is completely unsused.
 
-This fits on 1 line.
+In our reallife scenario streaming big requests had the impact, that
+the dwc3 core could not keep up with reading the amount of data
+=66rom the memory bus, as the bus is already under heavy load. When the
+HW was then not able to transfer the requested and actually available
+amount of data in the interval, the hw did give us the usual missed
+interrupt answer.
 
-> +        reg = <0x02028000 0x4000>;
-> +        interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
-> +        clocks = <&clks IMX6QDL_CLK_SSI1_IPG>,
-> +                 <&clks IMX6QDL_CLK_SSI1>;
-> +        clock-names = "ipg", "baud";
-> +        dmas = <&sdma 37 1 0>, <&sdma 38 1 0>;
-> +        dma-names = "rx", "tx";
-> +        #sound-dai-cells = <0>;
-> +        fsl,fifo-depth = <15>;
-> +    };
-> -- 
-> 2.34.1
-> 
+Using smaller requests solved the problem here, as it really was
+unnecessary to stress the memory and usb bus in the beginning as
+we had enough headroom in the temporal domain.
+
+Which then led to the conclusion that the number of needed requests
+per image frame interval is calculatable since we know the usb
+interval length.
+
+@Thinh: Correct me if I am saying something wrong here.
+
+>> Therefor to properly make those patches work, we will have to get rid of
+>> the zero length pump mechanism again and make sure that the whole
+>> business logic of what to be queued and when will only be done in the
+>> pump worker. It is possible to let the dwc3 udc run dry, as we are
+>> actively waiting for the frame to finish, the last request in the
+>> prepared and started list will stop the current dwc3 stream and  for
+>> no underruns will occur with the next ep_queue.
+>
+>One thing to note here: The reason we moved to queuing 0-length requests
+>from complete callback was because even with realtime priority, video_pump
+>thread doesn't always meet the ISOC queueing cadence. I think stopping and
+>starting the stream was briefly discussed in our initial discussion in
+>https://lore.kernel.org/all/20230419001143.pdxflhzyecf4kvee@synopsys.com/
+>and Thinh mentioned that dwc3 controller does it if it detects an underrun,
+>but I am not sure if starting and stopping an ISOC stream is good practice.
+
+The realtime latency aspect is not an issue anymore if we ensure that we
+always keep only one frame in the hw ring buffer. When the pump worker
+ensure that it will always run through one full frame the scheduler has
+no chance to break our running dwc3 stream. Since the pump is running
+under a while(1) this should be possible.
+
+Also with the request amount precalculation we can always encode the
+whole frame into all available requests and don't have to wait for
+requests to be available again.
+
+Together with the latest knowladge about the underlying hw we even need to =
+only
+keep one frame in the HW ring buffer. Since we have some interrupt latency,
+keeping more frames in the ring buffer, would mean that we are not able to =
+tag
+the currently streamed frame properly as errornous if the dwc3 hw ring buff=
+er
+is already telling the host some data about the next frame. And as we alrea=
+dy
+need to wait for the end of the frame to finish, based on the assumption th=
+at
+only one frame is enqueued in the ring buffer the hw will stop the stream a=
+nd
+the next requst will start a new stream. So there will no missed underruns =
+be
+happening.
+
+So the main fact here is, that telling the host some status about a
+frame in the past is impossible! Therefor the first request of the next
+hw stream need to be the one that is telling the Host if the previous frame
+is ment to be drawn or not.
+
+>Someone better versed in USB protocol can probably confirm, but it seems
+>somewhat hacky to stop the ISOC stream at the end of the frame and restart
+>with the next frame.
+
+All I know is that the HW mechanism that is reading from the trb ring buffe=
+r is
+started or stopped I don't know if really the ISOC stream is stopped and
+restarted here or what that means on the real wire. And if so, I am unsure =
+if
+that is really a problem or not. Thinh?
+
+Regards,
+Michael
+
+--=20
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--pAYe3sblKvwSCo0F
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmYnxLcACgkQC+njFXoe
+LGTxWw/7BgPauuaLsObgielou/Vbj4cuMoFf/sDUjtHTPxs//knIZdN5OJQGvtSA
+p3j21QhhVZCG/vaa7luIRV9VLAo6ZlkAWZDFpYa+D2P9e4MnsMsZ7DA7lTqm00Vj
+4GDf9AmXk69ENwWWcGZRru/tz4MIhBdXsIBa0dHzLtzyY8PMHH6ltg7s81Kg6+Uw
+DVBCD8P2FdMcFqrik8sIG+hY34xodoX5MsMQPMvy/ZQzjMbQ1tkzwAQIx6a76uZ1
+gMN28swzpk+jypHshExpUwMlNaIh1R3HeVTHPuZySYEvenxjIJhaD01MGsub8LKz
+0neONyQVVkkrS804Dzqi3+jyaOaFxvHLaJlkcjKEWh2MfaDB77WCcnL3ikqjSYxW
+5Hmzwy94NVKPy+WxZ1peUP+SnxfiE0iXQ1M0D3+TXLx7WXdxco0Zqtbn5ZeedDuJ
+s8pkp8IjmacGP1xEEZHjxUg6TVkSXNEoXChdSwwRAICnpg1Y+6X9gwC36bnkUjst
+VEHhuOst39Ir2VWg+p/e3Yz3JMaJ/hOhZK6rMG8Uxdf/urdmYe1B5HI5cNpcTZAK
+S3bwJ09suo8l7KVMDV1swxPOKWdGIYrJo1zbCGQHm5lJvo91SnOaLrOZBPH8bZw7
+hDqVPEb3LM2QaxrddaXobjVN1sLQobYkJKCgIHRrL9p5khpLVno=
+=uJCa
+-----END PGP SIGNATURE-----
+
+--pAYe3sblKvwSCo0F--
 
