@@ -1,155 +1,111 @@
-Return-Path: <linux-kernel+bounces-154773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B9798AE0CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:14:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 458868AE0D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:16:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1398B282CCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:14:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB9071F227C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6556D5788E;
-	Tue, 23 Apr 2024 09:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4DE58234;
+	Tue, 23 Apr 2024 09:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CWiYY/s3"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="Noqz7nUU"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E013056444
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A7455579F;
+	Tue, 23 Apr 2024 09:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713863641; cv=none; b=dd4HjHD4v8OOK9/89yicJMOa+aA1e4n3Dg6GNMLe/vWNEfjAbHToFXU+9z8rjxX46/YJcCExTTr9teNshpJCHPJBi7Wksb6hOcGd/hDFpZ5dGA0GnsK4Rr5qW5LEGM9LNgO3zj3MUaS9AiBSixedaS1eW/K0pmJGxzj0kT0BNYM=
+	t=1713863773; cv=none; b=n5JrsZxiet78eoewKbvu+Qx/eDD5vivR48ajHe2o/mb4Ot2KKlzEgVf3ar4MW77bdYxYJrqTpg3RpUFM9+AXp1rVIPTpRJS4TAI2eB1MfWaHPGrNAM3zaWRtnr/lYCVS5vr9U8fUj/81snb1VsdTE3LE9XBrmfZOx+x53l3fWP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713863641; c=relaxed/simple;
-	bh=+HYC9r8wTCRmGIBMgAS0O5zj7Qmlb2jFg4GebaRKIp4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KvtZYGtZqMB52NbZ96nZo4zdMOScFLcgF9iMDA4ABaaPhVc2vPRm03Cg7sYbIFxVSEUyG70KnEcOqrPtCnHmWEiVzfI5Nv+AlgdhugFvB/lAo2nNcgk+kctJAnjsHddp2sC/iJE3vTZnFrzC3zPN5cncMPB9Lnq8eNWR+x4xfwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CWiYY/s3; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713863638;
+	s=arc-20240116; t=1713863773; c=relaxed/simple;
+	bh=rv0p/MWkAuT2vz1VMOmdFiPXoFuGDfYUuce8c41MYNg=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=OYvkKyk+0AUYEwUB5e0ISThKnYU8r3/Eb7jEPrwhAiyDTK/9Ldoj+IZ/5wlcKJjoaUkoR1ZKsaWJBQaslM22iAAUUQblIv67zvon515c8q3nqIrjL0xpWtzO9h5X+E+rQ0tn7VWbL13mIznzKOSyyOfj5BE8oQ3yJBoPEM+MaZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=Noqz7nUU; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A2FC3FF80D;
+	Tue, 23 Apr 2024 09:16:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1713863766;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1xckAbIaUxfV2U1fI0YjievZgsT18mecVG8rOgbjUb8=;
-	b=CWiYY/s36hHtEL67Bm+5EWyU+LCfEG1UpfLWnEVIbXz0KuWAko7PgPVD3dk4UJWqNe6Cy8
-	pipte2Mok/ZysRZpH8n9oy09LCjzYr+mUm9XpGEmOY9faaMhPiWTv3NELmf1vqiUg0UCrj
-	XVldl4laWxKDdJksranNVMNeFhmUpjQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-31-XR9TCmclOKWARBv67SXIMQ-1; Tue, 23 Apr 2024 05:13:56 -0400
-X-MC-Unique: XR9TCmclOKWARBv67SXIMQ-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-34b0b409775so1030081f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 02:13:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713863635; x=1714468435;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1xckAbIaUxfV2U1fI0YjievZgsT18mecVG8rOgbjUb8=;
-        b=XuXsh95VIRzoEUmL1681Zj2+AtvinJXEUwcWkTNDLJizdPaV2bwl9JYRaedtrVD3Lm
-         gpD0M0dGOlmjc0YLpIuP5m45JB3lK9m3ah7KLLGi+Z48UysZycvejKPhLzFkpiqMRje6
-         ImgIDtAcbF+azKua4W+6wti1emlzhiaEoLsDvEDfkd5f06Yfj2D1MEo2+cwcU23f95aj
-         zn+i+P8A989UlB/avpeW1FdYmfX7DkGCq+hExhyR0ViLyfWrh2YDYYW2ehBfRC6yZGVt
-         lexv388SKF34FbfSq59EuqSEFhDcYixVCmNU5WYo9kRdAgTOLeYbuEr+nsNWOEp3RJpT
-         fJSA==
-X-Gm-Message-State: AOJu0YzK7YuftdXhNuAq80krmanY/OYtOM7hfYI8EeyOjf1L9a2Ar2Tk
-	aSx+GMXxDZpOzIWRsZF4zapBlWeKDMyzmRJ9m2MKKTB3V6rKy3z0hJCKBpl4FLeum3VOFx2YHdQ
-	OOe73zOhEmJBMPzeftESEjba5Mz6LAURNA/y90G79kYP5FmdOCtA83qUyAG5/AA==
-X-Received: by 2002:a5d:6d8d:0:b0:343:f335:2489 with SMTP id l13-20020a5d6d8d000000b00343f3352489mr9334356wrs.59.1713863635393;
-        Tue, 23 Apr 2024 02:13:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGrpMdpbG8FFAw85brCrIe+xZ/QGNjBiBptgCa0RJlLmPxE7ErKfP7eMNOPOzyyRh2eNOA1Bg==
-X-Received: by 2002:a5d:6d8d:0:b0:343:f335:2489 with SMTP id l13-20020a5d6d8d000000b00343f3352489mr9334339wrs.59.1713863634871;
-        Tue, 23 Apr 2024 02:13:54 -0700 (PDT)
-Received: from redhat.com ([2a06:c701:7429:3c00:dc4a:cd5:7b1c:f7c2])
-        by smtp.gmail.com with ESMTPSA id z2-20020adff742000000b00343ca138924sm14071319wrp.39.2024.04.23.02.13.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 02:13:53 -0700 (PDT)
-Date: Tue, 23 Apr 2024 05:13:50 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: zhenwei pi <pizhenwei@bytedance.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	virtualization@lists.linux.dev, david@redhat.com,
-	jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
-	akpm@linux-foundation.org
-Subject: Re: [PATCH v3 2/4] virtio_balloon: introduce oom-kill invocations
-Message-ID: <20240423051151-mutt-send-email-mst@kernel.org>
-References: <20240423034109.1552866-1-pizhenwei@bytedance.com>
- <20240423034109.1552866-3-pizhenwei@bytedance.com>
+	bh=46+IHxai2w3bldZvmMzKkHuWZictfMvaorkaAyKmx7Y=;
+	b=Noqz7nUU+wByDEgUUaUBJqb1Ue1br1avd+ELDCq7zip4RUr2JLl2RNYqMy4Q2q/6N861Pf
+	1gvzDziUKUw2KbfagAYRF3swtyMahHqFVE4zIEYIdQljbTtoA/OkECdlLhgMr+YefZCaWm
+	t9kYUcKAuta9PAFUHhb/mAO2vkoKNQybdzaTNi+2x99lKPiDp11A4GiLHU57IODB10+sJM
+	6WleyMoDJQrBLg/xULjzaEck/JnkQRUYF2POX9ry691NnIMHpSBKp75fjrHv6hZB110New
+	/Li99wTGVLBtQmuJRu7cRcMrVKwDbO4+p5zX9Is6DLAQTg9CiG3TLqiKnWBW/A==
+Message-ID: <facb8204-c2b3-4084-a2e3-4fbf3a3fdc9d@arinc9.com>
+Date: Tue, 23 Apr 2024 12:16:03 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423034109.1552866-3-pizhenwei@bytedance.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] Set PHY address of MT7531 switch to 0x1f on MediaTek
+ arm64 boards
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+To: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240314-for-mediatek-mt7531-phy-address-v1-0-52f58db01acd@arinc9.com>
+ <ff196055-ecd8-4563-bc01-ff2533a07109@arinc9.com>
+ <a60fc16d-4236-427c-b4a8-ec6fdf62d9f0@arinc9.com>
+Content-Language: en-US
+In-Reply-To: <a60fc16d-4236-427c-b4a8-ec6fdf62d9f0@arinc9.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-On Tue, Apr 23, 2024 at 11:41:07AM +0800, zhenwei pi wrote:
-> When the guest OS runs under critical memory pressure, the guest
-> starts to kill processes. A guest monitor agent may scan 'oom_kill'
-> from /proc/vmstat, and reports the OOM KILL event. However, the agent
-> may be killed and we will loss this critical event(and the later
-> events).
+On 08/04/2024 10:22, Arınç ÜNAL wrote:
+> On 31.03.2024 12:28, arinc.unal@arinc9.com wrote:
+>> On 14.03.2024 15:20, Arınç ÜNAL via B4 Relay wrote:
+>>> Hello.
+>>>
+>>> This is a small patch series setting the PHY address of MT7531 to 0x1f on
+>>> all boards that have the switch.
+>>>
+>>> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+>>> ---
+>>> Arınç ÜNAL (2):
+>>>        arm64: dts: mediatek: mt7622: set PHY address of MT7531 switch to 0x1f
+>>>        arm64: dts: mediatek: mt7986: set PHY address of MT7531 switch to 0x1f
+>>>
+>>>   arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts | 4 ++--
+>>>   arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts             | 4 ++--
+>>>   arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts | 4 ++--
+>>>   arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts             | 4 ++--
+>>>   arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts             | 4 ++--
+>>>   5 files changed, 10 insertions(+), 10 deletions(-)
+>>> ---
+>>> base-commit: ba90af39ba57b3fe3ecfdba0c87a80d20c7b788d
+>>> change-id: 20240314-for-mediatek-mt7531-phy-address-9d0b4cfeca21
+>>>
+>>> Best regards,
+>>
+>> Reminder that this patch series is waiting.
 > 
-> For now we can also grep for magic words in guest kernel log from host
-> side. Rather than this unstable way, virtio balloon reports OOM-KILL
-> invocations instead.
-> 
-> Acked-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
-> ---
->  drivers/virtio/virtio_balloon.c     | 1 +
->  include/uapi/linux/virtio_balloon.h | 6 ++++--
->  2 files changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> index 1710e3098ecd..f7a47eaa0936 100644
-> --- a/drivers/virtio/virtio_balloon.c
-> +++ b/drivers/virtio/virtio_balloon.c
-> @@ -330,6 +330,7 @@ static inline unsigned int update_balloon_vm_stats(struct virtio_balloon *vb)
->  		    pages_to_bytes(events[PSWPOUT]));
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_MAJFLT, events[PGMAJFAULT]);
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_MINFLT, events[PGFAULT]);
-> +	update_stat(vb, idx++, VIRTIO_BALLOON_S_OOM_KILL, events[OOM_KILL]);
->  
->  #ifdef CONFIG_HUGETLB_PAGE
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_HTLB_PGALLOC,
-> diff --git a/include/uapi/linux/virtio_balloon.h b/include/uapi/linux/virtio_balloon.h
-> index ddaa45e723c4..b17bbe033697 100644
-> --- a/include/uapi/linux/virtio_balloon.h
-> +++ b/include/uapi/linux/virtio_balloon.h
-> @@ -71,7 +71,8 @@ struct virtio_balloon_config {
->  #define VIRTIO_BALLOON_S_CACHES   7   /* Disk caches */
->  #define VIRTIO_BALLOON_S_HTLB_PGALLOC  8  /* Hugetlb page allocations */
->  #define VIRTIO_BALLOON_S_HTLB_PGFAIL   9  /* Hugetlb page allocation failures */
-> -#define VIRTIO_BALLOON_S_NR       10
-> +#define VIRTIO_BALLOON_S_OOM_KILL      10 /* OOM killer invocations */
-> +#define VIRTIO_BALLOON_S_NR       11
->  
->  #define VIRTIO_BALLOON_S_NAMES_WITH_PREFIX(VIRTIO_BALLOON_S_NAMES_prefix) { \
->  	VIRTIO_BALLOON_S_NAMES_prefix "swap-in", \
+> Another reminder that this patch series is waiting to be applied.
 
-Looks like a useful extension. But
-any UAPI extension has to go to virtio spec first.
+Here's the third reminder for someone to apply this. From now on, I am
+going to reply to this thread once every day until this patch series is
+applied.
 
-> @@ -83,7 +84,8 @@ struct virtio_balloon_config {
->  	VIRTIO_BALLOON_S_NAMES_prefix "available-memory", \
->  	VIRTIO_BALLOON_S_NAMES_prefix "disk-caches", \
->  	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-allocations", \
-> -	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-failures" \
-> +	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-failures", \
-> +	VIRTIO_BALLOON_S_NAMES_prefix "oom-kills" \
->  }
->  
->  #define VIRTIO_BALLOON_S_NAMES VIRTIO_BALLOON_S_NAMES_WITH_PREFIX("")
-> -- 
-> 2.34.1
-
+Arınç
 
