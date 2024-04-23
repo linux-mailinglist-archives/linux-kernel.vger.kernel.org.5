@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-154453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40CBB8ADC39
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:24:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9CDB8ADC3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:25:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8BAE1F22FE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:24:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7733E1F22FE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 510C01C695;
-	Tue, 23 Apr 2024 03:24:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0621D52D;
+	Tue, 23 Apr 2024 03:24:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gLlgDQeL"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XNPRos7K"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3894017C66
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4DE61CA81
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:24:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713842664; cv=none; b=qPFq05vUy1HIwHuzeAv8wI+KoG+B7sQ/zHqL3jL/rkgbVaWVDOIf901iFNMQfl2ms5C24BC2JdZq7oC4zHj5gx5zYzJBWsZxQTBtXIDKdvbzRJN8K+ihxBdL222Vni3rR/eSriOwGvH23DLFGVJL+pA6nPb25HoCy52Vf8JDed8=
+	t=1713842667; cv=none; b=W+LVDytD9nLgkIfUghVEZFb9Zy2TRlQqNbJ8H94Iaa+w0kaTjPpD7bWB8ortUKrCXZEoaYPq/F2A5iSA+c5K7jlWf/c5eg4+vCQZbJXVIAUWn1N9eulBchZ86u1pS7k32BMSAfrGHmuFq7RBB+d5c6eZyajdI4oiXQhBh445JP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713842664; c=relaxed/simple;
-	bh=LfYpnyQAsBnDVm5T77C4UR9syKWZT60Wqobuc9Uot60=;
+	s=arc-20240116; t=1713842667; c=relaxed/simple;
+	bh=LRQl9lv2M8QSOZPByVQiOvj73HlXJF/ZAmTJj/fGtZM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CKcrGl7+qvqk47VWWk5ZBEwtmsRfLv+JSBndGu+2f2/tXzssPIU/4WjvR2QNcc95baI+iRBzIvjl/0RAiTBona2ly86t9xzYHuZJw7ywEscv9G+R9WPWHg3pCxrguvEds3C2d/Z0kE/ckRLC1NoUSuQhG0bPTWxq4ebGorE3dOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gLlgDQeL; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=LGi37c1wUxRWyXxUDfNw7kQUwQl4tL6OLSLurP7fH47e/TSJ6+QGTzrA83epfpzdchqTF4Gn5i8Vn3A3RMGkwTA3Qgg/m1PFeJFqX98NX7ckJnINM6zyw0ixe23j9H8orT6JhEXJn+jsvWVKR18eVHTzG+3jyPkH+9rrkQzWpBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XNPRos7K; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713842662;
+	s=mimecast20190719; t=1713842664;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EdbGfF2EWeWPE3Aari8NoS/LX4R/2UfIijpnrdTbWd0=;
-	b=gLlgDQeLWkTHxa09oG0fESn8IjtktJfAbtH3ii1bnGiuDK9X0k+GmG4TCp1Y1FKTUFHD29
-	aOr1Yuij78dtw7DOGMDTROgLg1ZW7f4pdQlhs0Zpzeku4rsmU+cEpb1aUVabRQb6S2JScb
-	q21lb7wTYxidbARj3Vp7ASkHCw1ryaM=
+	bh=/BuCY3v8aKDYplSDVVzxpIvd+2taH57MWRDqJV/LGJ4=;
+	b=XNPRos7K5V8ohkM4l1Md0+oWydcxM/C0+uZqAUOPZnUyn4sQEUpsxCWj+ry/G5xYSocm4u
+	QW3rfBiKVAHies/orIlisLdnF51dIkzOHwRvFR7sai0Fw3PN0mHS8qxvsgIwYpCb8N12/E
+	ngzT7J8p3RilDkt0D1g67dqi4i/sdEY=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-507-cfbfH8CoNKiFSi8BANP4Gg-1; Mon, 22 Apr 2024 23:24:18 -0400
-X-MC-Unique: cfbfH8CoNKiFSi8BANP4Gg-1
+ us-mta-127-O2h3yeDePoGQV3yoIrddFw-1; Mon, 22 Apr 2024 23:24:21 -0400
+X-MC-Unique: O2h3yeDePoGQV3yoIrddFw-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4B54D80B935;
-	Tue, 23 Apr 2024 03:24:18 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0E0F380591B;
+	Tue, 23 Apr 2024 03:24:21 +0000 (UTC)
 Received: from gshan-thinkpadx1nanogen2.remote.csb (unknown [10.64.136.57])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 2395A1BDAA;
-	Tue, 23 Apr 2024 03:24:15 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id DD1E51BDAA;
+	Tue, 23 Apr 2024 03:24:18 +0000 (UTC)
 From: Gavin Shan <gshan@redhat.com>
 To: virtualization@lists.linux.dev
 Cc: linux-kernel@vger.kernel.org,
 	mst@redhat.com,
 	jasowang@redhat.com,
 	shan.gavin@gmail.com
-Subject: [PATCH 1/4] vhost: Drop variable last_avail_idx in vhost_get_vq_desc()
-Date: Tue, 23 Apr 2024 13:24:04 +1000
-Message-ID: <20240423032407.262329-2-gshan@redhat.com>
+Subject: [PATCH 2/4] vhost: Improve vhost_get_avail_idx() with smp_rmb()
+Date: Tue, 23 Apr 2024 13:24:05 +1000
+Message-ID: <20240423032407.262329-3-gshan@redhat.com>
 In-Reply-To: <20240423032407.262329-1-gshan@redhat.com>
 References: <20240423032407.262329-1-gshan@redhat.com>
 Precedence: bulk
@@ -75,69 +75,168 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-The local variable @last_avail_idx is equivalent to vq->last_avail_idx.
-So the code can be simplified a bit by dropping the local variable
-@last_avail_idx.
+All the callers of vhost_get_avail_idx() are concerned to the memory
+barrier, imposed by smp_rmb() to ensure the order of the available
+ring entry read and avail_idx read.
+
+Improve vhost_get_avail_idx() so that smp_rmb() is executed when
+the avail_idx is advanced. With it, the callers needn't to worry
+about the memory barrier.
 
 No functional change intended.
 
+Suggested-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Gavin Shan <gshan@redhat.com>
 ---
- drivers/vhost/vhost.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ drivers/vhost/vhost.c | 91 ++++++++++++++++---------------------------
+ 1 file changed, 34 insertions(+), 57 deletions(-)
 
 diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index 8995730ce0bf..ef7942103232 100644
+index ef7942103232..b3adc0bc9e72 100644
 --- a/drivers/vhost/vhost.c
 +++ b/drivers/vhost/vhost.c
-@@ -2498,14 +2498,11 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
+@@ -1290,10 +1290,34 @@ static void vhost_dev_unlock_vqs(struct vhost_dev *d)
+ 		mutex_unlock(&d->vqs[i]->mutex);
+ }
+ 
+-static inline int vhost_get_avail_idx(struct vhost_virtqueue *vq,
+-				      __virtio16 *idx)
++static inline int vhost_get_avail_idx(struct vhost_virtqueue *vq)
+ {
+-	return vhost_get_avail(vq, *idx, &vq->avail->idx);
++	__virtio16 avail_idx;
++	int r;
++
++	r = vhost_get_avail(vq, avail_idx, &vq->avail->idx);
++	if (unlikely(r)) {
++		vq_err(vq, "Failed to access avail idx at %p\n",
++		       &vq->avail->idx);
++		return r;
++	}
++
++	vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
++	if (vq->avail_idx != vq->last_avail_idx) {
++		/* Ensure the available ring entry read happens
++		 * before the avail_idx read when the avail_idx
++		 * is advanced.
++		 */
++		smp_rmb();
++	}
++
++	if (unlikely((u16)(vq->avail_idx - vq->last_avail_idx) > vq->num)) {
++		vq_err(vq, "Invalid avail index change from %u to %u",
++		       vq->last_avail_idx, vq->avail_idx);
++		return -EINVAL;
++	}
++
++	return 0;
+ }
+ 
+ static inline int vhost_get_avail_head(struct vhost_virtqueue *vq,
+@@ -2498,35 +2522,19 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
  {
  	struct vring_desc desc;
  	unsigned int i, head, found = 0;
--	u16 last_avail_idx;
- 	__virtio16 avail_idx;
+-	__virtio16 avail_idx;
  	__virtio16 ring_head;
  	int ret, access;
  
- 	/* Check it isn't doing very strange things with descriptor numbers. */
--	last_avail_idx = vq->last_avail_idx;
--
+-	/* Check it isn't doing very strange things with descriptor numbers. */
  	if (vq->avail_idx == vq->last_avail_idx) {
- 		if (unlikely(vhost_get_avail_idx(vq, &avail_idx))) {
- 			vq_err(vq, "Failed to access avail idx at %p\n",
-@@ -2514,16 +2511,16 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
- 		}
- 		vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
- 
--		if (unlikely((u16)(vq->avail_idx - last_avail_idx) > vq->num)) {
-+		if (unlikely((u16)(vq->avail_idx - vq->last_avail_idx) > vq->num)) {
- 			vq_err(vq, "Guest moved avail index from %u to %u",
--				last_avail_idx, vq->avail_idx);
-+				vq->last_avail_idx, vq->avail_idx);
- 			return -EFAULT;
- 		}
+-		if (unlikely(vhost_get_avail_idx(vq, &avail_idx))) {
+-			vq_err(vq, "Failed to access avail idx at %p\n",
+-				&vq->avail->idx);
+-			return -EFAULT;
+-		}
+-		vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
+-
+-		if (unlikely((u16)(vq->avail_idx - vq->last_avail_idx) > vq->num)) {
+-			vq_err(vq, "Guest moved avail index from %u to %u",
+-				vq->last_avail_idx, vq->avail_idx);
+-			return -EFAULT;
+-		}
++		ret = vhost_get_avail_idx(vq);
++		if (unlikely(ret))
++			return ret;
  
  		/* If there's nothing new since last we looked, return
  		 * invalid.
  		 */
--		if (vq->avail_idx == last_avail_idx)
-+		if (vq->avail_idx == vq->last_avail_idx)
+ 		if (vq->avail_idx == vq->last_avail_idx)
  			return vq->num;
- 
- 		/* Only get avail ring entries after they have been
-@@ -2534,10 +2531,10 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
+-
+-		/* Only get avail ring entries after they have been
+-		 * exposed by guest.
+-		 */
+-		smp_rmb();
+ 	}
  
  	/* Grab the next descriptor number they're advertising, and increment
- 	 * the index we've seen. */
--	if (unlikely(vhost_get_avail_head(vq, &ring_head, last_avail_idx))) {
-+	if (unlikely(vhost_get_avail_head(vq, &ring_head, vq->last_avail_idx))) {
- 		vq_err(vq, "Failed to read head: idx %d address %p\n",
--		       last_avail_idx,
--		       &vq->avail->ring[last_avail_idx % vq->num]);
-+		       vq->last_avail_idx,
-+		       &vq->avail->ring[vq->last_avail_idx % vq->num]);
- 		return -EFAULT;
- 	}
+@@ -2787,35 +2795,19 @@ EXPORT_SYMBOL_GPL(vhost_add_used_and_signal_n);
+ /* return true if we're sure that avaiable ring is empty */
+ bool vhost_vq_avail_empty(struct vhost_dev *dev, struct vhost_virtqueue *vq)
+ {
+-	__virtio16 avail_idx;
+-	int r;
+-
+ 	if (vq->avail_idx != vq->last_avail_idx)
+ 		return false;
+ 
+-	r = vhost_get_avail_idx(vq, &avail_idx);
+-	if (unlikely(r))
+-		return false;
+-
+-	vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
+-	if (vq->avail_idx != vq->last_avail_idx) {
+-		/* Since we have updated avail_idx, the following
+-		 * call to vhost_get_vq_desc() will read available
+-		 * ring entries. Make sure that read happens after
+-		 * the avail_idx read.
+-		 */
+-		smp_rmb();
++	if (unlikely(vhost_get_avail_idx(vq)))
+ 		return false;
+-	}
+ 
+-	return true;
++	return vq->avail_idx == vq->last_avail_idx;
+ }
+ EXPORT_SYMBOL_GPL(vhost_vq_avail_empty);
+ 
+ /* OK, now we need to know about added descriptors. */
+ bool vhost_enable_notify(struct vhost_dev *dev, struct vhost_virtqueue *vq)
+ {
+-	__virtio16 avail_idx;
+ 	int r;
+ 
+ 	if (!(vq->used_flags & VRING_USED_F_NO_NOTIFY))
+@@ -2839,25 +2831,10 @@ bool vhost_enable_notify(struct vhost_dev *dev, struct vhost_virtqueue *vq)
+ 	/* They could have slipped one in as we were doing that: make
+ 	 * sure it's written, then check again. */
+ 	smp_mb();
+-	r = vhost_get_avail_idx(vq, &avail_idx);
+-	if (r) {
+-		vq_err(vq, "Failed to check avail idx at %p: %d\n",
+-		       &vq->avail->idx, r);
++	if (unlikely(vhost_get_avail_idx(vq)))
+ 		return false;
+-	}
+-
+-	vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
+-	if (vq->avail_idx != vq->last_avail_idx) {
+-		/* Since we have updated avail_idx, the following
+-		 * call to vhost_get_vq_desc() will read available
+-		 * ring entries. Make sure that read happens after
+-		 * the avail_idx read.
+-		 */
+-		smp_rmb();
+-		return true;
+-	}
+ 
+-	return false;
++	return vq->avail_idx != vq->last_avail_idx;
+ }
+ EXPORT_SYMBOL_GPL(vhost_enable_notify);
  
 -- 
 2.44.0
