@@ -1,106 +1,88 @@
-Return-Path: <linux-kernel+bounces-155126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 125148AE599
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:09:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 091038AE5FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:26:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4186C1C21B00
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:09:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16687B2184B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:26:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5230A12DDBE;
-	Tue, 23 Apr 2024 12:06:56 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB53584A2E;
+	Tue, 23 Apr 2024 12:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kl.wtf header.i=@kl.wtf header.b="as/Udpef"
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E662584A44;
-	Tue, 23 Apr 2024 12:06:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8BE778285
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:26:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713874015; cv=none; b=CuZhfU69cYqGSbbQKvlvl+T+skzU2HtS+ZvxwmlHMbkd7fmiYosmFR5CSl9A0wZ7i9QXGo36BzuK8rE3FPEDNwXYzZR6G3Pa+7Wqo0rBN+qTPDuuOgjmuAfu2HgEsROJF9KNceyDy8wmJIZL6rPm8gcVNmMXjHl4db9nuOAwv4s=
+	t=1713875170; cv=none; b=WZdbmAlaJkjjUtIQmoWymwC10k6HjceHySfrZ+D2665zZFIb6YfEQwirtjwe11z0PCHvDPQ545rpczT6OTjWwro0h345P/KPJMBBywnfYnVHEw34KOC9T8aHVwj8wAVZtrxQy5GjexRxigUBKsdQJC5ykhYkKIhSQ44qjxHe84w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713874015; c=relaxed/simple;
-	bh=WlZYqWhdAH7netYQkFAGYZjAaa89jWNhRzERNv5h2Kk=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=ixEfHzr9ZYPGoDSDPHbyt4XHoU43FiAUjZk2C2OWEIzTO7HpFzvRRWvVqPXXOiYQntBMTUzWo1r1IkiHFRxzUU4mZN4XjRexwwmfQ5VAPtHQFqrVg8rpWMKLK6wS2OGI6qycxfLo/q2NdlDlC8JstJgBHdwe2m4eM+gDtt2RM+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VP1460Qk8z1R9LL;
-	Tue, 23 Apr 2024 20:03:50 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (unknown [7.185.36.229])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4D77118007D;
-	Tue, 23 Apr 2024 20:06:50 +0800 (CST)
-Received: from [10.174.178.247] (10.174.178.247) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 23 Apr 2024 20:06:49 +0800
-Subject: Re: [PATCH v7 08/16] ACPI: Add post_eject to struct acpi_scan_handler
- for cpu hotplug
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Thomas Gleixner
-	<tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
-	<linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>, <x86@kernel.org>, Russell King
-	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, Miguel
- Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
-	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
- Hansen <dave.hansen@linux.intel.com>, <linuxarm@huawei.com>,
-	<justin.he@arm.com>, <jianyong.wu@arm.com>
-References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
- <20240418135412.14730-9-Jonathan.Cameron@huawei.com>
-From: Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <df2388a1-45d8-c42e-fca0-0e21f1810a9d@huawei.com>
-Date: Tue, 23 Apr 2024 20:06:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+	s=arc-20240116; t=1713875170; c=relaxed/simple;
+	bh=e6ARaU2OvtoZ+qzRuhjbMDMgcKFgiApYcNksWkkvBME=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=sstF/uFw7cCKfZhgPKogZAySeDR0+DkH2J+P0H/7gfFVL6KVhBxtFEnVbD0Y8Wu1BvVmwaodjFVp4NsKLLjHkZNbP4VPi78mxQTrTbINwzRzcq87oy7P7bfjmuokmU4HH6ZKPKF2J1ogDqcDE0dfR/ehk3BgaWiMJHXZAhE0kYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kl.wtf; spf=pass smtp.mailfrom=kl.wtf; dkim=pass (2048-bit key) header.d=kl.wtf header.i=@kl.wtf header.b=as/Udpef; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kl.wtf
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kl.wtf
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kl.wtf; s=key1;
+	t=1713875165;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=e6ARaU2OvtoZ+qzRuhjbMDMgcKFgiApYcNksWkkvBME=;
+	b=as/Udpef9eDD+8GaJPHSDIIQANVuzGADEdLLCu2Ok9qKb9HbUhQsXLDuQUJZRQUSWP7dD1
+	6AQ/02qX/tHtpv5EpmBd25oELsLQhRh0QBbBI93PiMfSd9pJxuDWVtwY3Ah4TXGxFm73o5
+	Xb+C/1m4iSChBucJ0m1J49V6XUZtISl1FTeo2SqHVxTeuK1cAHgE23Jee/i78gFGe4gqBZ
+	aQxsMhC/JZtHPnsL4l6akpGOZTXa/KvYBCgdriCq5ZHC8Q3hTQbkL0kKB0KoGmuA8q63jF
+	v2dOjGogQdxc1zWCWvM2Y6FK6KShSJM9BeQUv/oZETdk7z//RvpF8CvW1i6fbA==
+From: Kenny Levinsen <kl@kl.wtf>
+To: Jiri Kosina <jikos@kernel.org>,
+	Dmitry Torokhov <dtor@chromium.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Radoslaw Biernacki <rad@chromium.org>,
+	Lukasz Majczak <lma@chromium.org>
+Subject: [PATCH v2 0/3] HID: i2c-hid: Probe and wake device with HID descriptor fetch
+Date: Tue, 23 Apr 2024 14:07:52 +0200
+Message-ID: <20240423122518.34811-1-kl@kl.wtf>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240418135412.14730-9-Jonathan.Cameron@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500002.china.huawei.com (7.185.36.229)
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 2024/4/18 21:54, Jonathan Cameron wrote:
-> From: James Morse <james.morse@arm.com>
-> 
-> struct acpi_scan_handler has a detach callback that is used to remove
-> a driver when a bus is changed. When interacting with an eject-request,
-> the detach callback is called before _EJ0.
-> 
-> This means the ACPI processor driver can't use _STA to determine if a
-> CPU has been made not-present, or some of the other _STA bits have been
-> changed. acpi_processor_remove() needs to know the value of _STA after
-> _EJ0 has been called.
-> 
-> Add a post_eject callback to struct acpi_scan_handler. This is called
-> after acpi_scan_hot_remove() has successfully called _EJ0. Because
-> acpi_scan_check_and_detach() also clears the handler pointer,
-> it needs to be told if the caller will go on to call
-> acpi_bus_post_eject(), so that acpi_device_clear_enumerated()
-> and clearing the handler pointer can be deferred.
-> An extra flag is added to flags field introduced in the previous
-> patch to achieve this.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Joanthan Cameron <Jonathan.Cameron@huawei.com>
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-> Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+This revises my previous patch[0] to add the sleep STM chips seem to
+require as per discussion on the original patch from Lukasz and
+Radoslaw[1]. I had initially tried without as it had not previously been
+needed in the similar logic in our resume path, but it would appear that
+this was simply luck as the affected device was woken up in that case by
+"noise" from other sources.
 
-Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+To reiterate, the idea is to add the retry that Lukasz and Radoslaw
+discovered was necessary, but do away with the dummy smbus probe and
+instead just let HID descriptor fetch retry as needed, aligning more
+with the existing retry logic used after resume while saving some noise
+on the bus and speeding up initialization a tiny bit.
+
+I added Co-developed-by tags, I hope that's appropriate. We should await
+an ACK from Lukasz on it fixing their hardware quirk.
+
+[0]: https://lore.kernel.org/all/20240415170517.18780-1-kl@kl.wtf/
+[1]: https://lore.kernel.org/all/CAE5UKNqPA4SnnXyaB7Hwk0kcKMMQ_DUuxogDphnnvSGP8g1nAQ@mail.gmail.com/
+
 
