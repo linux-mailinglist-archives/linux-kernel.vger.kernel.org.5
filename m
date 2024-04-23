@@ -1,185 +1,160 @@
-Return-Path: <linux-kernel+bounces-154602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9A8E8ADE34
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:26:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B91738ADE3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:28:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC5761C21ACA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:26:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46602B2143A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1218B46521;
-	Tue, 23 Apr 2024 07:26:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JrUakD1u"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80CF846B9F;
+	Tue, 23 Apr 2024 07:27:58 +0000 (UTC)
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74211C698
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:26:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B10B1C698;
+	Tue, 23 Apr 2024 07:27:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713857178; cv=none; b=k49waMEhY0blFh6R7SrdqHMtPOVuGOYE/9DF6J4OR5kXw5CVbisc50zMf/oPkF8e/sQcN30Lio1x0jynVIjce5oi1olt+E8ltVp6jPC0FNmDG8dTeNtUDsIhqhMZnlMycz9R73NXhRYReWx9/LnybWGsqBWcW9IjDrmubqeXkvI=
+	t=1713857278; cv=none; b=RnP0Lq7vmhtPcbnCm3Rst25vUiiM3spvsIJVw9A6zTpJ16sj923B/6/jITRID7aaQe3InhM7/aOgTFrrJrN9B/MUCsQ75ZNZJdyRWxawlSlCKP6UAhqlYUxAiWaNvoz5Slcbi7raH1SMfkQmL6V8o1rUXUnWF2mK9v6ztYCO+m0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713857178; c=relaxed/simple;
-	bh=39ctU/s2u8PKh/DqZlicMxEVNRh9lCi5PZ1lHrRant8=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=s+0isjoLBh/Vhb4GpWnmu3wkrm/d3dnPoku9QTCe5/jbXqg5vHWKkGm1WpjBW3KTZcmLmbycev6fJ53MEFdCuRKYY9UBYYGV9IOZAiY4RRrPGE73cjPht4jnt586sQ1nE+rbyu859g9bNbQEGHOf3PzJr/Oj3ivGWTZ2e3yXNuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JrUakD1u; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713857177; x=1745393177;
-  h=date:from:to:cc:subject:message-id;
-  bh=39ctU/s2u8PKh/DqZlicMxEVNRh9lCi5PZ1lHrRant8=;
-  b=JrUakD1uA/zOhBUKHAmPfxZQln6/cDZhVR9TU8eTGxj6guKIY7e6OsU8
-   Z2zqrj4Qp0EHQCs7QpHvicGw5zUcS3lSuktC9Q+eFCYvjoNl51nBpSra4
-   Vpqgob+Am9MKBaMctwCVVSon8TghQjR6W79vRk6oL9lRxW3IkH2zL2Cpc
-   wfpE0liDBwJLGlYoM4PmZfyGY6Hl44aA6trKnkX2L8D2qog54ov4QbuoR
-   LL47V/Mpl+8dXA+Fp9krnII0fYpMNaUj9uYM94QUDb32YC2VWvR+KUl1i
-   TrtT11bI2gd0DxcGIxuA0CyoFKOJVVRgro6bRIp+TqcNXIDoyd+a44qpG
-   A==;
-X-CSE-ConnectionGUID: 8tClSz1+S1ClcTmIC9BDaQ==
-X-CSE-MsgGUID: G4AtRBzfQiWsFrzXKqw47Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="20576880"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="20576880"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 00:26:17 -0700
-X-CSE-ConnectionGUID: TPLFLD8uTvmDiYCvW8Asyg==
-X-CSE-MsgGUID: iSZc1LgvSTKBy8+kysZw2A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="28930408"
-Received: from lkp-server01.sh.intel.com (HELO 01437695816f) ([10.239.97.150])
-  by orviesa003.jf.intel.com with ESMTP; 23 Apr 2024 00:26:16 -0700
-Received: from kbuild by 01437695816f with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rzAXd-0000ar-0x;
-	Tue, 23 Apr 2024 07:26:13 +0000
-Date: Tue, 23 Apr 2024 15:25:26 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- e70316d17f6ab49a6038ffd115397fd68f8c7be8
-Message-ID: <202404231523.fQUDtSJe-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1713857278; c=relaxed/simple;
+	bh=WCE297pXyCGDdhhfCD0olqnd+53OCM/7N0xDi3vCiKI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W77uO7Wj+M8jDQ4AE/SSYTIS/7YRoC6de6Ciy6e731OUb57URT6aR67qrBSOa9ySbEF7H2V3ogwtsrinT59m+kVkuAKWLMCTR565B1lV0Gz/VUZ9NXsslR2DpcO8clz4HDn0gq94dMuE3ZPXJg/STXDuJ0kK/SSgcMI+xY3relg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-61b4387ae4fso34613037b3.2;
+        Tue, 23 Apr 2024 00:27:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713857274; x=1714462074;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kAJUv+Bt0mn8NDZY50gq/EY+6KHjPMT7UvJ7vKHp6FQ=;
+        b=wlkrGejcmBDeDkjLXeZ1ZPoEmkqDEM1Sgf+neyPmDFKULg8yr1rl/zIdtcU74msnwl
+         wzJyTWJUNOul9Enq+0Pxff4xsj4qQjkBaGA81teTBt7zJx4voqaWb3yCIpeS1KxV5PJj
+         6eg5A8ck111pVbSEZUU7q6Lg4qHD6oMKQqC7E78lcN/yGbQq0VD6n65XZDFtrzL4iYof
+         775x6GPiBHLPNVeXxVpICpKonawWYd3GFL7zTP+XeVER47CkKd+Q6ENNdrFEDrgjRh/K
+         m/MftvkdZRGgtaiSnBv6kIlykJs++sVlRURBynSvS+fzV6Xb+WLNMunjyZdyhSmuIAlB
+         t9dw==
+X-Forwarded-Encrypted: i=1; AJvYcCXIWNDx6Zxq82Ke0GEDIzlQNn1w/7FXAYYFT4iP2u8HoOxfNJUlr3rNOJQc+HeJpDymE9dF1gVJlPZS5/Yg//IL+h62S7g9pf9uw96j4FuvQ/bXPeq8zt940rkEJ325AVGjEXbJ/3hs6PeuXTuVEVAqynivpEIEne4M05yOa0V9KFeVmZg=
+X-Gm-Message-State: AOJu0YzcqqEIRKG8i3uXY5D1tvFaHYtFut3S5wZfD4u5sEsGrf6m8VR5
+	wZDhC34r6zxuWBKhj3PET1qHLWS5/4avtpn91uoy0Ut9GpJK04EhDzd+xBYI
+X-Google-Smtp-Source: AGHT+IFu+WZtOTgIRKVC7zH0MysdWnKL7gJp/2tpJONE4B2UX256YUC11BeSiqFiW4i8AboacqcVtg==
+X-Received: by 2002:a05:690c:3810:b0:61a:c4a3:8a5c with SMTP id jx16-20020a05690c381000b0061ac4a38a5cmr14438523ywb.44.1713857274025;
+        Tue, 23 Apr 2024 00:27:54 -0700 (PDT)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id a16-20020a81bc10000000b0061877ef0f7asm2343678ywi.44.2024.04.23.00.27.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 00:27:53 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-de54b28c41eso662857276.0;
+        Tue, 23 Apr 2024 00:27:53 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWSA0DTctmHkkKRg7WYkb3MG2LMmgd2qwNq56wlYmzaW2yYBT6eyaTMEkmR3yShM3+ALuFz0oTxq4XuL/KBinIQM/C09wknAhCp8JldgkW3GOoyCcCad/HuRvkO+AF3MSZm1UTyA6EcXoR9aSAMrCEtJCpAZE5B6oR0WpaZue36eavJf/Q=
+X-Received: by 2002:a25:d655:0:b0:dcc:58ed:6ecc with SMTP id
+ n82-20020a25d655000000b00dcc58ed6eccmr12671072ybg.41.1713857273097; Tue, 23
+ Apr 2024 00:27:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240422111123.1622967-1-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240422111123.1622967-1-claudiu.beznea.uj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 23 Apr 2024 09:27:41 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUXRx1-95PD_WG4X=y4UefYXzTqm7T2mi+di+ZdKGUXYA@mail.gmail.com>
+Message-ID: <CAMuHMdUXRx1-95PD_WG4X=y4UefYXzTqm7T2mi+di+ZdKGUXYA@mail.gmail.com>
+Subject: Re: [PATCH] serial: sh-sci: Call device_set_wakeup_path() for serial console
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, ulf.hansson@linaro.org, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
+	linux-pm@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: e70316d17f6ab49a6038ffd115397fd68f8c7be8  x86/sev: Check for MWAITX and MONITORX opcodes in the #VC handler
+Hi Claudiu,
 
-elapsed time: 871m
+CC Peng
 
-configs tested: 93
-configs skipped: 134
+Thanks for your patch!
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+On Mon, Apr 22, 2024 at 1:11=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> =
+wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> In case the SCI is used as a UART console, no_console_suspend is
+> available in bootargs and SCI is part of a software-controlled power
+> domain we need to call device_set_wakeup_path(). This lets the power
+> domain core code knows that this domain should not be powered off
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   clang
-arm64                               defconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240423   clang
-i386         buildonly-randconfig-002-20240423   clang
-i386         buildonly-randconfig-003-20240423   gcc  
-i386         buildonly-randconfig-004-20240423   clang
-i386         buildonly-randconfig-005-20240423   clang
-i386         buildonly-randconfig-006-20240423   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240423   gcc  
-i386                  randconfig-002-20240423   gcc  
-i386                  randconfig-003-20240423   clang
-i386                  randconfig-004-20240423   gcc  
-i386                  randconfig-005-20240423   clang
-i386                  randconfig-006-20240423   clang
-i386                  randconfig-011-20240423   gcc  
-i386                  randconfig-012-20240423   clang
-i386                  randconfig-013-20240423   clang
-i386                  randconfig-014-20240423   gcc  
-i386                  randconfig-015-20240423   gcc  
-i386                  randconfig-016-20240423   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-s390                             allyesconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allyesconfig   gcc  
-um                             i386_defconfig   gcc  
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-003-20240423   gcc  
-x86_64       buildonly-randconfig-004-20240423   gcc  
-x86_64       buildonly-randconfig-006-20240423   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-002-20240423   gcc  
-x86_64                randconfig-003-20240423   gcc  
-x86_64                randconfig-004-20240423   gcc  
-x86_64                randconfig-005-20240423   gcc  
-x86_64                randconfig-006-20240423   gcc  
-x86_64                randconfig-011-20240423   gcc  
-x86_64                randconfig-012-20240423   gcc  
-x86_64                randconfig-016-20240423   gcc  
-x86_64                randconfig-074-20240423   gcc  
-x86_64                randconfig-075-20240423   gcc  
-x86_64                randconfig-076-20240423   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
+know
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> durring system suspend. Otherwise, the SCI power domain is turned off,
+
+during
+
+> nothing is printed while suspending and the suspend/resume process is
+> blocked. This was detected on the RZ/G3S SoC while adding support
+> for power domains.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+>  drivers/tty/serial/sh-sci.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/tty/serial/sh-sci.c b/drivers/tty/serial/sh-sci.c
+> index 97031db26ae4..57a7f18e16e4 100644
+> --- a/drivers/tty/serial/sh-sci.c
+> +++ b/drivers/tty/serial/sh-sci.c
+> @@ -3441,8 +3441,12 @@ static __maybe_unused int sci_suspend(struct devic=
+e *dev)
+>  {
+>         struct sci_port *sport =3D dev_get_drvdata(dev);
+>
+> -       if (sport)
+> +       if (sport) {
+> +               if (uart_console(&sport->port) && !console_suspend_enable=
+d)
+> +                       device_set_wakeup_path(dev);
+
+device_set_awake_path(), as of commit 10bb4e4ab7dd3898 ("PM: sleep:
+Add helpers to allow a device to remain powered-on") in v6.6
+(although I'm still a bit puzzled about the difference).
+
+> +
+>                 uart_suspend_port(&sci_uart_driver, &sport->port);
+
+I think it would be better to make this more general, and move the call
+to the existing console_suspend_enabled handling in uart_suspend_port().
+
+> +       }
+>
+>         return 0;
+>  }
+
+If this works, we can remove the console_suspend_enabled handling
+from drivers/pmdomain/renesas/rmobile-sysc.c, and revert commit
+309864dcf92b76fc ("genpd: imx: scu-pd: do not power off console if
+no_console_suspend").
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
