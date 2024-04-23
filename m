@@ -1,186 +1,91 @@
-Return-Path: <linux-kernel+bounces-155911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFBCC8AF8CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:13:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EFE58AF8CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:16:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F32C11C21F11
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:13:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B930FB226F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:16:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940DE143860;
-	Tue, 23 Apr 2024 21:13:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED03114387B;
+	Tue, 23 Apr 2024 21:16:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vPiC37X/"
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Ves3E2I0"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5819C1369BE
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 21:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 497B5142624;
+	Tue, 23 Apr 2024 21:16:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713906794; cv=none; b=MNYkX+Ef6OtxHhgcWjo2ZHJz/RJUfeb5CKPoVQx/ICeK25r4gQFY8bipDnCwRibzD91j3SqV+lho67v00MlL9tE9mm6m3ObG6yLO9byiFG3O1SWZcelnAFcL9l/gvNTrsjTPClz1zLDSdRwmSB9O1hWOV6RMlKIaFx5ots2VxUE=
+	t=1713906998; cv=none; b=iNqFXy+wq3RaDbydIK7Qv1k+efn9YvZOajIRsoGldJNjIhHKM8PkFUdh2zJyj3AUda3ftpcphriUzueXf4sUo0A/isWcZWqFIyVJk+TCS0/fOxM51eHDYXoBChR4YPgFdK0YY88e7DQ+4kthXeKufuxVsHg8/V7ZqpuYWns3P+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713906794; c=relaxed/simple;
-	bh=myriipUeoB1/JaZQkm9XDuzk4YU50w6UP6wACK7rMbE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XDLgI9XIytiKe4sY0ZScEF6IO7IyRWzn0eNf5dLD5L7QlPKkIAt1THE5VtUCVj2sONEEybEY/88/FIiOs/EaDepd1VFTg3v6qWYXM+AWAAp7GVMbopfCcW8X68f6YYkk2OwUIcC6GATTQzhwFRvlH+J5FyJPGMgkEx644ISvOTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vPiC37X/; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-43989e6ca42so109321cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:13:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713906792; x=1714511592; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9J1SHCnjXki1s8tfPNEpfyniTQlQg6e6yMISySpF958=;
-        b=vPiC37X/7mbQcx4t0bJ9bDv+KoQXL82NykU+1qdHjQoDxR2bWngPIfNwuAH4uzYahV
-         mVmEjcuLGIuzPh40vrWHitSWxIBNNYmPs12PfHz5RpAVopLsu05K/YU0o7shVTI898vC
-         3uzgohy4W9c6swA4D7uHfGXy+T32jdrjiTYC12X1XIg2vNxbf8dmV19+ETymYKKB/o7W
-         b/iFNdOyxRQdhvzgBEkM0/PIPXZQpOR6zEwtezE19t7CBigMGWetfv1r0enHEJHELUjc
-         O7g+K2wK7DXBtrNXchoi97S4YoJQ3/P/PO0b8gCtSUNLd4PJ43E1xBAWpyIwN4n56iHj
-         k31A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713906792; x=1714511592;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9J1SHCnjXki1s8tfPNEpfyniTQlQg6e6yMISySpF958=;
-        b=TClGV9vm+Huzd0DCT99d9zifpOB4QgtbIjWTGuH+oFsW6R9cIRQvYzqXUWAmHpowYX
-         m0luoMVDqQ7PC2xiYg9JVI5R4e7FIj6nsIa0OJRf87pPClst2ifIU+E8whCP/GhIN6GY
-         +y19B2P206ZzvtJtjx5D+dvZ8/t7zKDYmK+3PYUHzMKFNB2I6zqjMo+YaIqY9bes+bns
-         vdn1GVWeyQwhvocDF3lQ3QsFOCAytFclReaT6RvC1gX3dc5uXQSzNlsQ2KHpVwgZsC8v
-         WjKjrzdA78y1kMkYVXBMryJKnFABYy7wuvxrFQhrK4coos8TYA9veIGUy0bPy6jbOARM
-         fZjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUbezlzcR7MaCoEyyczacFFkssoEcULwrNpo+fR6eTgOudu6cKryphHlLJxkcEVdXWGBlfCf80IWY9+pXMo3uWpwqqQ+q39sbmSXA1L
-X-Gm-Message-State: AOJu0YztO+GcihHrVdUkvNpsVleSCvAT1uTMnfnieopGRKUpjLmsBsx0
-	KhKPIAhzZfe9nYK0BeczzT4kRm3mZi6ZOHYFVS1PIJpmmCvbHS0ZFU8qsQvBdOrV10uut08fd9k
-	FGVVOKuaRa/dchu9wV/tDDZRowIeQg4BRmIHH
-X-Google-Smtp-Source: AGHT+IHdKnzSgrPiEJFhwcoSEHOd74I6o6QZI1g2bWQ2ETFQjDsZasweCZwLZNK8Bei7SvSkDePgJ0V+es5FZ3WsMXE=
-X-Received: by 2002:ac8:6d0:0:b0:431:8176:e4e5 with SMTP id
- j16-20020ac806d0000000b004318176e4e5mr13491qth.13.1713906792165; Tue, 23 Apr
- 2024 14:13:12 -0700 (PDT)
+	s=arc-20240116; t=1713906998; c=relaxed/simple;
+	bh=JGQEPIZaHXeikM4Tk76pEXGRiC7713fWE7+iNxo/Jyg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DKLuDRyN7ejboFh4sKJ61rbvOO+NPpSgM4bxYrQ77WCFYiw8q7fGQt5U5D0qf9xuvIoXyhk88PzjTzNZXvnz0TO2KCzxe4G42r8gRennZjDzUw77/qRjv21HCXdMhLoMNK/9oBQrv6evy/YH3/7k80pqJ0RC0JRqLZ/y8Q1vBZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Ves3E2I0; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Y5R12QiV7DpuvpeduE378DEur4+YnhQS9T1MG7wqbfY=; b=Ves3E2I0CjNh6iW9kvNwds/a8j
+	hEnafItIzpsovcojZIOxJCubSbfkOwl5SvdYWMLNa96pETZ6f60BconY0GBBiJor+HDYnxv3DaOpU
+	bcaWe9uLzDEon1Z+p/2RBXGzP6CeA+Eh/pV3uEayARWnwvtUULbO9f7LUbTDfRwHh7CaAkzWNqLhl
+	CaLtXtNOS7bNxEZiRW24xHcg6DuzxuQtNrE5ru7pgezvlXdHk63nPoCAfNkOx3KhO15szNQEXZvjo
+	22+A5Y2FSB3C4IHvkXkx1Xiuhncin4W0oBCTz6ZYTZUciZUd0mIJGciwcOqOzkJ9H6OUbo0FlOJPn
+	ikGj9rEA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46130)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rzNV6-00056m-1x;
+	Tue, 23 Apr 2024 22:16:28 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rzNV5-0003gl-8X; Tue, 23 Apr 2024 22:16:27 +0100
+Date: Tue, 23 Apr 2024 22:16:27 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 0/8] net: dsa: b53: Remove adjust_link
+Message-ID: <ZiglK1pD9ZBzBflo@shell.armlinux.org.uk>
+References: <20240423183339.1368511-1-florian.fainelli@broadcom.com>
+ <ZigIkdr/FEmBZRLP@shell.armlinux.org.uk>
+ <9df504be-e907-437f-8f26-6e2cbb3997a2@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240423090808.242389-1-davidgow@google.com>
-In-Reply-To: <20240423090808.242389-1-davidgow@google.com>
-From: Rae Moar <rmoar@google.com>
-Date: Tue, 23 Apr 2024 17:12:59 -0400
-Message-ID: <CA+GJov4SLN-=V0RrqkgwG6WN-DUwcsmtpH-fEzJ4+NyOfaDgow@mail.gmail.com>
-Subject: Re: [PATCH] kunit: test: Move fault tests behind KUNIT_FAULT_TEST
- Kconfig option
-To: David Gow <davidgow@google.com>
-Cc: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Guenter Roeck <linux@roeck-us.net>, 
-	kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9df504be-e907-437f-8f26-6e2cbb3997a2@broadcom.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Tue, Apr 23, 2024 at 5:08=E2=80=AFAM David Gow <davidgow@google.com> wro=
-te:
->
-> The NULL dereference tests in kunit_fault deliberately trigger a kernel
-> BUG(), and therefore print the associated stack trace, even when the
-> test passes. This is both annoying (as it bloats the test output), and
-> can confuse some test harnesses, which assume any BUG() is a failure.
->
-> Allow these tests to be specifically disabled (without disabling all
-> of KUnit's other tests), by placing them behind the
-> CONFIG_KUNIT_FAULT_TEST Kconfig option. This is enabled by default, but
-> can be set to 'n' to disable the test. An empty 'kunit_fault' suite is
-> left behind, which will automatically be marked 'skipped'.
->
-> As the fault tests already were disabled under UML (as they weren't
-> compatible with its fault handling), we can simply adapt those
-> conditions, and add a dependency on !UML for our new option.
->
-> Suggested-by: Guenter Roeck <linux@roeck-us.net>
-> Link: https://lore.kernel.org/all/928249cc-e027-4f7f-b43f-502f99a1ea63@ro=
-eck-us.net/
-> Fixes: 82b0beff3497 ("kunit: Add tests for fault")
-> Signed-off-by: David Gow <davidgow@google.com>
+On Tue, Apr 23, 2024 at 12:15:49PM -0700, Florian Fainelli wrote:
+> And thank you for the reminder this needed to be done, once this lands I
+> will submit the removal of the adjust_link within net/dsa/, unless you have
+> that queued up already ready to go?
 
-Hello!
+I don't have that queued up, but it would be great to get that done as
+well. I think it would get rid of a reasonable amount of code in
+net/dsa?
 
-This looks good to me. Very useful!
-
-Reviewed-by: Rae Moar <rmoar@google.com>
-
-Thanks!
--Rae
-
-> ---
->  lib/kunit/Kconfig      | 11 +++++++++++
->  lib/kunit/kunit-test.c |  8 ++++----
->  2 files changed, 15 insertions(+), 4 deletions(-)
->
-> diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
-> index 68a6daec0aef..34d7242d526d 100644
-> --- a/lib/kunit/Kconfig
-> +++ b/lib/kunit/Kconfig
-> @@ -24,6 +24,17 @@ config KUNIT_DEBUGFS
->           test suite, which allow users to see results of the last test s=
-uite
->           run that occurred.
->
-> +config KUNIT_FAULT_TEST
-> +       bool "Enable KUnit tests which print BUG stacktraces"
-> +       depends on KUNIT_TEST
-> +       depends on !UML
-> +       default y
-> +       help
-> +         Enables fault handling tests for the KUnit framework. These tes=
-ts may
-> +         trigger a kernel BUG(), and the associated stack trace, even wh=
-en they
-> +         pass. If this conflicts with your test infrastrcture (or is con=
-fusing
-> +         or annoying), they can be disabled by setting this to N.
-> +
->  config KUNIT_TEST
->         tristate "KUnit test for KUnit" if !KUNIT_ALL_TESTS
->         default KUNIT_ALL_TESTS
-> diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
-> index 0fdca5fffaec..e3412e0ca399 100644
-> --- a/lib/kunit/kunit-test.c
-> +++ b/lib/kunit/kunit-test.c
-> @@ -109,7 +109,7 @@ static struct kunit_suite kunit_try_catch_test_suite =
-=3D {
->         .test_cases =3D kunit_try_catch_test_cases,
->  };
->
-> -#ifndef CONFIG_UML
-> +#if IS_ENABLED(CONFIG_KUNIT_FAULT_TEST)
->
->  static void kunit_test_null_dereference(void *data)
->  {
-> @@ -136,12 +136,12 @@ static void kunit_test_fault_null_dereference(struc=
-t kunit *test)
->         KUNIT_EXPECT_TRUE(test, ctx->function_called);
->  }
->
-> -#endif /* !CONFIG_UML */
-> +#endif /* CONFIG_KUNIT_FAULT_TEST */
->
->  static struct kunit_case kunit_fault_test_cases[] =3D {
-> -#ifndef CONFIG_UML
-> +#if IS_ENABLED(CONFIG_KUNIT_FAULT_TEST)
->         KUNIT_CASE(kunit_test_fault_null_dereference),
-> -#endif /* !CONFIG_UML */
-> +#endif /* CONFIG_KUNIT_FAULT_TEST */
->         {}
->  };
->
-> --
-> 2.44.0.769.g3c40516874-goog
->
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
