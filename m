@@ -1,108 +1,102 @@
-Return-Path: <linux-kernel+bounces-155277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6B9B8AE803
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:23:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 344458AE801
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:23:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02F97B2837D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:23:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 666F61C2235E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 930DD1369BF;
-	Tue, 23 Apr 2024 13:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D255E135A6D;
+	Tue, 23 Apr 2024 13:23:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="ZBHlAvAk"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KED5v42A"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D82C135A78;
-	Tue, 23 Apr 2024 13:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 186FA745E2;
+	Tue, 23 Apr 2024 13:23:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713878592; cv=none; b=SDaSYZYM+KtMKbTpq0kAA1+F/plYKmTiuhDzZPhccIiEEatPlbUcr/1ea+9RHOcZDFxScPIzIoGQzz9N2lKYVjGSQ2VfkdxHQGlWqk802Kw9D/7GzjS5II4bCHUtBJr9rnM933Z6B5q6lORU9M/hOM+aWZ55DMjnk/qA3mW4u2A=
+	t=1713878590; cv=none; b=rRDtUZTxggv25GvDNQs/MGNCCt5llfDNvc9r4Nr9s6jJP3jvr1ej/P1liWN/QOkH8XSIcKrKquykmvxBwOHbQJ+SX3JovPZxFYQYGuXfjERKwV10dMY0g4mGM9DVj3yShNTatdcFH5QA05jHjPBywYn/5q3/Yfy1FJTaTCi4mhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713878592; c=relaxed/simple;
-	bh=MpB1vGpcm8vPdDQxwuDpXFCLiB9Rpr/rHRL0DsgP2jY=;
+	s=arc-20240116; t=1713878590; c=relaxed/simple;
+	bh=Y3e+kyYzGZmeqX9U2y8Sf5GaMC6t/3cbauRRDhpXMhE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QXaTtTF5JA4X6obVmaV8Dv9Rx4rXfbZQTKYSC67TdNv/217fl0ZPxspnGkAW/mUsFbtd0lzNTWpH3laerv4QtaV3rLrTuzgqHw80mSblxMqfX06BX36n9kyFTiloZRpTZlFZ3j1/b2hWL3sV7MjAfqzCAZIixLBDUS2oArtKpPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=ZBHlAvAk; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id AE62440E0192;
-	Tue, 23 Apr 2024 13:23:08 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id oWWHdYJ-hwo5; Tue, 23 Apr 2024 13:23:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1713878585; bh=/hW7sIjmt3vV+F8wtAYDHFfbBByCE0rEdpHRFcL6KBg=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=DxnE/6XIP8bu/Phj7qrqQmLKKbuwGBv3UQUW50Kh/tbJCOhB025Ly4X29E7JAkszPFd6zn4q8mmNcWdxwYF8ku7+vofBHOyS5YR1HvOwXL4UWlt2HdD1oXzb3CGbfjBwy7T1vRpmRWfbfbqGdJ2nrzdi0dyHu8h2RZDuIJHCkhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KED5v42A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D2E8C116B1;
+	Tue, 23 Apr 2024 13:23:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713878589;
+	bh=Y3e+kyYzGZmeqX9U2y8Sf5GaMC6t/3cbauRRDhpXMhE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZBHlAvAk3/n1/l5FQAePQDZqz4DRvfyt2+Ikz3kv3NCRkRVFco4zetzFiHlang6re
-	 dhNEu0xh5pxXB5I1lGLlv0Ji+z733bzTGFXrbMvAWbE0wb4qKklcNYVZN7muzgBk0B
-	 b5Ho6T/x01nm80Ekei4un+kTNPKfp3BkExe/lzczqB3/uZ7pIGQudpQxEDinKARi/P
-	 8LsesHMKHhzkXzSVMxRlpOd5NoFVrBft5G7fgFmvouLJOKOuBuLVC+dRrX+D9Rs9KL
-	 M8rTZy37epXhiUcKlQXPlNU2R8PpSRRjV+mJ3Fc8OjjAL8XC8RyYXxh+sK6QWyYphn
-	 8r4xV92ZtK7AguUpAoTn3vLysNv5PrRspz1z9KOEUvsbMdNegsJ3Rm5e+rgu7jGqQg
-	 tqFacbucPpakAsXkaTcmmRBhI62x5Gr7SquK4NH4X9omGTYzyfXyht5uG6QhVcBNZn
-	 cLD3NkSBJmUPQWMlwI73AwgD09Cz+3icRUKQB4xTEmp7T20OeXOxx3GgXNkbAT6qF/
-	 W0vfYJphE/fYwYRpj9YDhuUv7NQDGPENPsLM+89EVvRxlYRS1RRkTfEZN+XDKnhHvd
-	 idixrL5iNFwuXsWyijKOly15AvrFJuxQsBsG61W9ia4a0exdNe12/WqBZXwL4wvaI1
-	 rxvOR9fG64aM2OVw+6ZBAFJY=
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C70A840E00B2;
-	Tue, 23 Apr 2024 13:22:53 +0000 (UTC)
-Date: Tue, 23 Apr 2024 15:22:52 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: "Nikunj A. Dadhania" <nikunj@amd.com>
-Cc: linux-kernel@vger.kernel.org, thomas.lendacky@amd.com, x86@kernel.org,
-	kvm@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
-	dave.hansen@linux.intel.com, pgonda@google.com, seanjc@google.com,
-	pbonzini@redhat.com
-Subject: Re: [PATCH v8 07/16] x86/sev: Move and reorganize sev guest request
- api
-Message-ID: <20240423132252.GJZie2LGgVszU_XejZ@fat_crate.local>
-References: <20240215113128.275608-1-nikunj@amd.com>
- <20240215113128.275608-8-nikunj@amd.com>
- <20240422131459.GAZiZi0wUtpx2r0M6-@fat_crate.local>
- <eadcab6f-b533-49e3-9aec-dc06036327f5@amd.com>
+	b=KED5v42A/DIYWTinaT6HqZ0EzXjUr/GomwKAiORVTHqV3Qh9fIy66439eRBhYoqwv
+	 EOvMe9pDnPvmkhEXh6PL9LftXU9Mm0nYAvr45JyMrwFuqCjWZCFqQkjaFxXuNVHEAc
+	 BZ5Ns8FatnJO7xpQ33PIzjx8BbzxQCM7SJpXPCCMoR4kNj1V+KLUMIaMCvUfLHFCb2
+	 84cs3gH35Qbnp/Cm5Rz6VJkaAO8bx7IO752OdXImQvv+1jg2vOsoUWDte9/imL10cl
+	 SUYBichI0SnZxDT5+Ayzxur9FAw3WU7lNP6a8XDHtcld32dGJa98fiGJEh8DcP1pE+
+	 ncXSNdg3AEguA==
+Date: Tue, 23 Apr 2024 14:23:04 +0100
+From: Simon Horman <horms@kernel.org>
+To: Stefan Eichenberger <eichest@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	lxu@maxlinear.com, andrew@lunn.ch, hkallweit1@gmail.com,
+	linux@armlinux.org.uk, michael@walle.cc, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] net: phy: mxl-gpy: add new device tree property
+ to disable SGMII autoneg
+Message-ID: <20240423132304.GS42092@kernel.org>
+References: <20240416121032.52108-1-eichest@gmail.com>
+ <20240416121032.52108-3-eichest@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eadcab6f-b533-49e3-9aec-dc06036327f5@amd.com>
+In-Reply-To: <20240416121032.52108-3-eichest@gmail.com>
 
-On Tue, Apr 23, 2024 at 09:56:38AM +0530, Nikunj A. Dadhania wrote:
-> Yes, I had tried that compilation/guest boot does not break at this
-> stage.  That was the reason for intermixing movement and code change.
->
-> Let me give a second stab at this and I will try just to make sure
-> compilation does not break.
+On Tue, Apr 16, 2024 at 02:10:32PM +0200, Stefan Eichenberger wrote:
+> Add a new device tree property to disable SGMII autonegotiation and
+> instead use the option to match the SGMII speed to what was negotiated
+> on the twisted pair interface (tpi). This allows us to disable SGMII
+> autonegotiation on Ethernet controllers that are not compatible with
+> this mode.
+> 
+> Signed-off-by: Stefan Eichenberger <eichest@gmail.com>
+> ---
+>  drivers/net/phy/mxl-gpy.c | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/phy/mxl-gpy.c b/drivers/net/phy/mxl-gpy.c
+> index b2d36a3a96f1..4147b4c29eaf 100644
+> --- a/drivers/net/phy/mxl-gpy.c
+> +++ b/drivers/net/phy/mxl-gpy.c
+> @@ -114,6 +114,7 @@ struct gpy_priv {
+>  	 * is enabled.
+>  	 */
+>  	u64 lb_dis_to;
+> +	bool sgmii_match_tpi_speed;
+>  };
+>  
+>  static const struct {
+> @@ -262,8 +263,17 @@ static int gpy_mbox_read(struct phy_device *phydev, u32 addr)
+>  
+>  static int gpy_config_init(struct phy_device *phydev)
+>  {
+> +	struct gpy_priv *priv = phydev->priv;
+>  	int ret;
+>  
+> +	/* Disalbe SGMII Autoneg if we want to match SGMII to TPI speed */
 
-Yes, you can also do preparatory changes which get removed later, if
-that helps.
+nit: Disable
 
-It is perfectly fine to have a couple more patches preparing and doing
-the move which are trivial to review and verify vs one combo patch which
-makes you stare at it a long time and you're still not sure it doesn't
-change something...
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
