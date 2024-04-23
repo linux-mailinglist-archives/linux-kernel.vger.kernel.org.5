@@ -1,172 +1,146 @@
-Return-Path: <linux-kernel+bounces-155616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C46768AF4DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:03:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71A038AF4D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:03:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C0CB1F236DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:03:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29C492846D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:03:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C8813DDAC;
-	Tue, 23 Apr 2024 17:03:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A12513DDBA;
+	Tue, 23 Apr 2024 17:02:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="mJR3sRrA"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2072.outbound.protection.outlook.com [40.107.212.72])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uwp0Q4mf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F7313D8B9;
-	Tue, 23 Apr 2024 17:03:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.72
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713891790; cv=fail; b=t6S+dTEXJD2EqJirdiZF0ulboKE0l48V2vvPAMI5O3i1C8pp3c46NIGImi3+hRkMONMan3vfzjb0npF5EsfdtSAZZ73Tr4zT20IW26Aalar9Gwp3g6IdW3PJJeJpRHNoPg1LxKHaHVvWw2wc7fjzMjFK2eLqbpTp+EKiQuoLL1M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713891790; c=relaxed/simple;
-	bh=iwuTuz5bePMysFQar9rpkTJLiXInLrDemg8z3SG1PwU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ht1RVanwH5WXKR+p4DkiSGDuYyCN6YgSSG6rWTxrWxCRy7b4EqsrAPm9fEuGCCfcC+IQz2y5m6uaFxhNxhutGu2LBOqaJjvvAD8+BOzJei94cSs2X1SHr/s18xCObdskJVS1gu4RkecdYxb2+K4OleEBZZsOOkG4Za5ob5i6Nns=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=mJR3sRrA; arc=fail smtp.client-ip=40.107.212.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fygC7iS4DAc5HnbCPZmMNXflDU4LrICv9wQ9NVsLZTkqN7v7SjzW39++9pvYXLjDjsUiOckcUvawmCSF71iamRyYBrlhk0/OCsCfa9qfaWzNrcCPD6wd1F6J3CRU2ogfNzdbrrp+X5u7hSv5XsMNnevvbNsmNx6oqiapLBB9xHSkwuXBHbfsVKXHjSMY1cUVu0iQqRzuJblLvNZvAEMZtUt8X5pcvkXP2rUbGh1b98UZ/iTtnWqwCbAcC2T8JMpmfuaxLtaJfoz+7T7JZzUYH5zqXf+rKV8bslWuImPI8XrBFUYYWeU8+EHWBOhts6y1jHSb7ZzGSpuXpKQO6GuqTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=inasnDcjE9yIFjtrMw+cvl05bZaoFfhLxYwkIjGylAM=;
- b=JAJ+ucm8W4iTtx07Kb0OnYu77h90CanXRmuy4hFgabuHlgkcGZOJzFJ7ADWxph57Ysz3T50STJ76IkmNItRWwQ8Qi+AD9Hpamf/AY6Q4uQn32DPaJTLmGf2utnG7k0S2QWgG8LDUtcsfE6hk3Pip3fWLo7CP41EOMBPazHcFbc/PAgSMTg/5rj11YDIIKme7K1ZiqUDKf1h00TEdPsNdnel/ZcPeVl1O0DF1m43hrAI2HCPhKV6sXyvvS8CLqkDGlABLJQlcFsqD3I4IiEP9FHrGAZGqRjKcYAbhQxzmoq4BPQalx7arLgskxxmdgD7dKw1unPKWP/OWHZ0JjJi1NQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=inasnDcjE9yIFjtrMw+cvl05bZaoFfhLxYwkIjGylAM=;
- b=mJR3sRrAmsaYS5mCgcAxFjIyAM+N7tm1o07E7AMRqDQuIBs2Z6DzjoxEJVgZFVcuTH2T8YMrNVE7vHvWDah/7RlCnnjn4s6J0C3TXIvwIYyTAEJxstaigh42zyFDXxUWFnjUfUfed66GAEfWHuxG1Sn4VmMy4I4SXaJ2iEgDmsw=
-Received: from BN9P220CA0024.NAMP220.PROD.OUTLOOK.COM (2603:10b6:408:13e::29)
- by SJ0PR12MB6880.namprd12.prod.outlook.com (2603:10b6:a03:485::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Tue, 23 Apr
- 2024 17:03:03 +0000
-Received: from BN3PEPF0000B06F.namprd21.prod.outlook.com
- (2603:10b6:408:13e:cafe::37) by BN9P220CA0024.outlook.office365.com
- (2603:10b6:408:13e::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.35 via Frontend
- Transport; Tue, 23 Apr 2024 17:03:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN3PEPF0000B06F.mail.protection.outlook.com (10.167.243.74) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7519.0 via Frontend Transport; Tue, 23 Apr 2024 17:03:03 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 23 Apr
- 2024 12:03:01 -0500
-Received: from xsjtanmays50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Tue, 23 Apr 2024 12:03:00 -0500
-From: Tanmay Shah <tanmay.shah@amd.com>
-To: <andersson@kernel.org>, <mathieu.poirier@linaro.org>, <nathan@kernel.org>,
-	<ndesaulniers@google.com>, <morbo@google.com>, <justinstitt@google.com>,
-	<tanmay.shah@amd.com>
-CC: <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<llvm@lists.linux.dev>, kernel test robot <lkp@intel.com>
-Subject: [PATCH] drivers: remoteproc: xlnx: fix uninitialize variable use
-Date: Tue, 23 Apr 2024 10:02:11 -0700
-Message-ID: <20240423170210.1035957-1-tanmay.shah@amd.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 481A285298;
+	Tue, 23 Apr 2024 17:02:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713891769; cv=none; b=rdvH8xZ1AnEwGEr0JTh79hqbFeJNeKIdsJppa6dSjDmjNWRlUC9Fgv8/5hnGtEWN3oK4fg1DYzv48l/jcIcyeiuVhvrTFq02JnE2arSJda5Dc3Z9oDaSCjI9/rtA3hefcbfI/zqf8RFtmAMo9GU+hcMFTbeY0y8htXNu6mVHvkY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713891769; c=relaxed/simple;
+	bh=m466dLvNB0J/uZky3+7Cr0D0JS90YH5KfreDtY0WtCI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=i6KaJcc8lxSIYDGqI8CdztIJmSiGHl7pClrfAOq96cuCodPyKdgs6+R7LlpmzPzicHoGMJSmA0zxqJSKxPXHzay6j3DceG5Nw8ATo013aMwh0XI+LmfAFz2eIAOaAZkDILj1IWXna/D1J7ol4oCC6sXOpVMtAiBnanP8r8DTvVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uwp0Q4mf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C88FAC116B1;
+	Tue, 23 Apr 2024 17:02:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713891768;
+	bh=m466dLvNB0J/uZky3+7Cr0D0JS90YH5KfreDtY0WtCI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Uwp0Q4mfSETIxa9OxjK3u8WnepsDNQvoZbPWMdrGbW3C7w21NNxl1qRoRwHNISOne
+	 5pATbefczTl/liC1rygFYOPquXadURSEebV9ijNkUiuWz1QP65u7gBYIl9WHotkC+K
+	 uCaYgHBm/FIMakELMGRYR59O2XaS+m5AFl5h7hc61lb4jQNxzPERhAJ/zrbg3kUdS4
+	 OOXOHYcevRra4wJC4Lb64tK7BqVfFQl5C6sfWJobMgNrlEhtwq+UhojnbX4LYz7Sc/
+	 2TRqCHfEumFSy3DRdWSGY9gVGkZfzeXGlgOM3+THhjr5eulcXZRAZa8Oem0GC1Xao/
+	 fK/xjWqveLQNg==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51ac5923ef6so53227e87.0;
+        Tue, 23 Apr 2024 10:02:48 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUTnpXnjgdT7pcdWkfnblln508x1csgZNhttI3WztFFG9VF6T/6ZV9rZ/k507kaZrYnYy7/U2LKCxI6wIhelgX4eG5ioK2oyYXp7XwHbmsd5KJirmpyntU8y21Yg/1IzG7y+yh+I9s3PbPQPfmEHLZ5ggoX3dciNSkKr32w4T6nNuixy7T0E4j3P/6JcMMVplMXrlNnKox/TYC9qyI38JXWeN7I
+X-Gm-Message-State: AOJu0YwjcIvRg9LTBccsL/oG23YCuzkICqzgFSHRlO/su3l4hM8RkN07
+	UTkySLWwoLu02o9G3PTm6ZOWtBJWq1Tvo7fxVjIJ8Xc17r6wpbi0g9xL4mx+bgtIY64cVR9DOCH
+	9vWeo35UG/94EUMdsoQoW7oOoyA==
+X-Google-Smtp-Source: AGHT+IGVgsWU2NH32RQwD8Bf2g9mUv7U7WYuzYFHvrHKWCMJy9A+v9NRW7oUYUBxGn5HV5Q+/Hbch3rapFRcttQIUl0=
+X-Received: by 2002:a19:910a:0:b0:513:dcd2:1267 with SMTP id
+ t10-20020a19910a000000b00513dcd21267mr954795lfd.23.1713891767189; Tue, 23 Apr
+ 2024 10:02:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Received-SPF: None (SATLEXMB04.amd.com: tanmay.shah@amd.com does not designate
- permitted sender hosts)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B06F:EE_|SJ0PR12MB6880:EE_
-X-MS-Office365-Filtering-Correlation-Id: fc5a1c92-6e21-42f1-4255-08dc63b73cd7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?uCt0W5e+4lIJ2EHbfML4A7cyeuiWqor9sKu+AKu/nKx64gso9j8Q7Ux5t9ZD?=
- =?us-ascii?Q?cTJ5nrLn6oJsj1iBZs2dj7sLHSysKipqkpJ8ayU/fLDZ6i6lysFY21P2tRyG?=
- =?us-ascii?Q?eFMiGN+6Vxz/6TFueQsdFBtxneXBZsgQ5Un2N8Us6ya0EBtlHVI/UVwnSkqb?=
- =?us-ascii?Q?QGThkIqEtzqM8fUugxFWiIE4dwVVWAERPlkV3VKt3sX01MBivC/+EB9tGbc9?=
- =?us-ascii?Q?higLZ4XVv4TTOF5zV2wORGcOZ6GtIVE0WXWUwaBWbBNMmMSKy3BdeEZcVPYh?=
- =?us-ascii?Q?8YEX0MnnJITFXmqdGkpvXah2rlOA75sLydDMXUP75h8vaovp0rjxMXg5qgEP?=
- =?us-ascii?Q?QYd7QVJwwf/mcct2Mi7w3EqGgGBRAl6jNkHQN13Kktb2+NVlFdUYYI1h2N/U?=
- =?us-ascii?Q?aVCXMYNJ+ZcvNBKLa4gxpt5Va4tuCnkxyIAJK4IcIEs5rSo1j1q04nmyb9U+?=
- =?us-ascii?Q?gBWGnPPROcqn9neBB+p10wXmqTpwLrQ1+1hSBF0I1xEY6dZSt22nH0Avxwz2?=
- =?us-ascii?Q?bg1W2fRx9Qnagyh6T4pRXj38TQzsZBS7gnOrXjgqAfuyYr9raPlYrp7/Pk4w?=
- =?us-ascii?Q?bCXqlz8xWw4LpOiSTvAusY9KdjiwIySm672a1oPiwir4HYr26gAnn4DVKUEo?=
- =?us-ascii?Q?FmLDQpWoN0gPIW3+71BvBH6aZUgO9tFEnutu7VgoJt4k8lHwI6MLF5hBEEOw?=
- =?us-ascii?Q?zByijbvWOYNQGGeTvl9UX2DQHMRvlgZXH9QvucLYq6NWMjPWkIxbFvNl+y1B?=
- =?us-ascii?Q?oLxMqVyZa0ld2auDFjXWKzqB9YJiYph+Fqt6ZlQzYOPMm8nFZNxzPnwhvT82?=
- =?us-ascii?Q?il1uPL1BHiBP5ba8goE8zc7kvxK6b7+KDWIEXyE/rXH5cd+Cf11abP1RMV2w?=
- =?us-ascii?Q?OGwp4Kp2aqjqimaGnj8zfqAVZaxAfN+M0Xrbw9oGaxAJiEBcXuZmIejp1YDX?=
- =?us-ascii?Q?2R6Fw97yE8GafXupbyc0RicVjs9uqowHqUAm72kPqCKqMlKbUIOKbcMVHUgK?=
- =?us-ascii?Q?u5tqDeNtuGZ0XYM8fSHgB7K1BCI7AQoJVXpqxPDNskOCe6XUgiwAiVc/r9Mj?=
- =?us-ascii?Q?EdwDrnR5e6GO9K4NueDjHkXrklQX+AYtZ+ZJpeXm60xKFppxPyPFezTlHYil?=
- =?us-ascii?Q?MSUyXCTgD0Cw8MSi6ujCHg3XBcQHk3tNj4rdA2jbHp1YIdKz7r6bXuWAoqEg?=
- =?us-ascii?Q?bvOrj81lwebk2p+YJ0pSU8m4Hj4x1/JbtDRJROSTf1JyQw3pPX8bp5tZvcoj?=
- =?us-ascii?Q?/Rkbx3LzllI3gXGqQXYeUt5PnJB4kbqNkX3rZWHtEuJYbGkdD++rqkFcc+yT?=
- =?us-ascii?Q?oehd8u01MMcNUqhW0aEOgmOf0snMtYoXk6uBbnX0Mogg7B+KzwJhrDeQxFT6?=
- =?us-ascii?Q?ucB1Sfs=3D?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(376005)(36860700004)(7416005)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2024 17:03:03.0204
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc5a1c92-6e21-42f1-4255-08dc63b73cd7
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN3PEPF0000B06F.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6880
+References: <20240326220628.2392802-1-quic_amelende@quicinc.com> <20240326220628.2392802-3-quic_amelende@quicinc.com>
+In-Reply-To: <20240326220628.2392802-3-quic_amelende@quicinc.com>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Tue, 23 Apr 2024 12:02:34 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLZkU_74JK-BGOe83-redCi_TcV3dOOZs9DX3jThHfXrw@mail.gmail.com>
+Message-ID: <CAL_JsqLZkU_74JK-BGOe83-redCi_TcV3dOOZs9DX3jThHfXrw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] dt-bindings: pinctrl: qcom,pmic-gpio: Add PMIH0108
+ and PMD8028 support
+To: Anjelique Melendez <quic_amelende@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, linus.walleij@linaro.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	quic_subbaram@quicinc.com, quic_collinsd@quicinc.com, 
+	quic_jprakash@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Fix following warning for clang compiler with W=1 option:
-initialize the variable 'ret' to silence this warning
-     907 |         int ret, i;
-         |                ^
-         |                 = 0
+On Tue, Mar 26, 2024 at 5:07=E2=80=AFPM Anjelique Melendez
+<quic_amelende@quicinc.com> wrote:
+>
+> Update the Qualcomm Technologies, Inc. PMIC GPIO binding documentation
+> to include compatible strings for PMIH0108 and PMD8028 PMICs.
 
-Fixes: a6b974b40f94 ("drivers: remoteproc: xlnx: Add Versal and Versal-NET support")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202404231839.oHiY9Lw8-lkp@intel.com/
-Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
----
- drivers/remoteproc/xlnx_r5_remoteproc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You didn't test this with dtbs_check:
 
-diff --git a/drivers/remoteproc/xlnx_r5_remoteproc.c b/drivers/remoteproc/xlnx_r5_remoteproc.c
-index a6d8ac7394e7..d98940d7ef8f 100644
---- a/drivers/remoteproc/xlnx_r5_remoteproc.c
-+++ b/drivers/remoteproc/xlnx_r5_remoteproc.c
-@@ -904,7 +904,7 @@ static int zynqmp_r5_core_init(struct zynqmp_r5_cluster *cluster,
- {
- 	struct device *dev = cluster->dev;
- 	struct zynqmp_r5_core *r5_core;
--	int ret, i;
-+	int ret = -EINVAL, i;
- 
- 	r5_core = cluster->r5_cores[0];
- 
+     47  gpio@c000: gpio-line-names: ['AP_SUSPEND', '', '', '', '',
+'', '', '', '', '', '', ''] is too short
+     10  gpio@8800: gpio-line-names: ['FLASH_STROBE_1', 'AP_SUSPEND',
+'PM8008_1_RST_N', '', '', '', 'PMIC_EDP_BL_EN', 'PMIC_EDP_BL_PWM', '']
+is too short
 
-base-commit: e99fcac055b3325283d6c5c61a117651fb147686
--- 
-2.25.1
+>
+> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
+> ---
+>  .../bindings/pinctrl/qcom,pmic-gpio.yaml      | 20 +++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yam=
+l b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> index 2b17d244f051..a786357ed1af 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> @@ -57,10 +57,12 @@ properties:
+>            - qcom,pma8084-gpio
+>            - qcom,pmc8180-gpio
+>            - qcom,pmc8180c-gpio
+> +          - qcom,pmd8028-gpio
+>            - qcom,pmi632-gpio
+>            - qcom,pmi8950-gpio
+>            - qcom,pmi8994-gpio
+>            - qcom,pmi8998-gpio
+> +          - qcom,pmih0108-gpio
+>            - qcom,pmk8350-gpio
+>            - qcom,pmk8550-gpio
+>            - qcom,pmm8155au-gpio
+> @@ -143,6 +145,7 @@ allOf:
+>                - qcom,pm8005-gpio
+>                - qcom,pm8450-gpio
+>                - qcom,pm8916-gpio
+> +              - qcom,pmd8028-gpio
+>                - qcom,pmk8350-gpio
+>                - qcom,pmr735a-gpio
+>                - qcom,pmr735b-gpio
+> @@ -304,6 +307,21 @@ allOf:
+>            minItems: 1
+>            maxItems: 7
+>
+> +  - if:
+> +      properties:
+> +        comptaible:
 
+It took me a bit to find, but you've got a typo here. The result is
+this "if" schema is always true unless you actually have an instance
+with the typo too. Please send a fix.
+
+> +          contains:
+> +            enum:
+> +              - qcom,pmih0108-gpio
+> +    then:
+> +      properties:
+> +        gpio-line-names:
+> +          minItems: 18
+> +          maxItems: 18
+> +        gpio-reserved-ranges:
+> +          minItems: 1
+> +          maxItems: 9
 
