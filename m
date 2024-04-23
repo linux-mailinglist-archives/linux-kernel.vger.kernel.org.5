@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-155010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17F048AE44B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:40:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3350E8AE450
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:40:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CD4BB25351
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:40:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64DF71C21EF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D87A85639;
-	Tue, 23 Apr 2024 11:40:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588CC85C73;
+	Tue, 23 Apr 2024 11:40:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TPq94+6b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ABrEVlbr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 519B284FCB;
-	Tue, 23 Apr 2024 11:40:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D0D68003B;
+	Tue, 23 Apr 2024 11:40:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872404; cv=none; b=CvN9bCnPHM7UBFMwfa0+1MnhMzLDD+MHJjqJTjWGo5lyBQ+ToyBvxg9JrqBZPtMeQ2/XOVhfqj2z2E17SCXLE9f1wFWqSZ8H9V/zWRipFI10JHcr04C5VOR5hf7XFQ8n+b2gwKLuy0ii7is6xTe1zBikyDQn30hkKXi6inbOQSc=
+	t=1713872406; cv=none; b=ucjxMfA7cz1FeXH2dAojRZyqUf7kRr2x0Lx04oUgjCn1MOIW0mLPho5yCjA2Nb08wBhCEFpypuCUOmQkEFLb1IDUloWzEVd3AOlm3etRs6jhU/GADqw/FUo+vzJPh7cUBiMeyaSEzcX1PNvDwA0YYvaOCYS+l2Mm5695LMflBVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872404; c=relaxed/simple;
-	bh=Gr8K871TzLaNpZVkCi2hmx9Lyr3gDUp5Ll+ni/+Pssg=;
+	s=arc-20240116; t=1713872406; c=relaxed/simple;
+	bh=qkx2RDy5sGGcMieIR873OJNCriqJRBJBTL7GSFJbAhM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ctW4bDHnlEypYEXjgH7QxZskdpVucL03nb9l7aG1jxpmPwkUDNyKcWN77nNjdaSEwsldkMbi3k55UnuAJkJWVDxZOZzzhutioU6gaVz5l+/mKP30oUGw0bQPbkXXs85O3DBVg2HGOdLLN/TvcaQAHFdzpvyTMp8AHG8na1Y22fo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TPq94+6b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8D1CC4AF07;
-	Tue, 23 Apr 2024 11:40:02 +0000 (UTC)
+	 MIME-Version; b=prGMQ8SK6+qADzXV/0AGnkSTAs4IHSrCrtLo7Z7ndZlK7v/FeNhz3WPtL12HNbMY4wfokWJ2tF0JwI9BIhrGbibNesPkawIGCv3hmRVOdElKK1UIwDJoXdkg5EcioYXUjADlRA1Ifl31igX3YAXCIw3IjLyoEHLwe4CYm6A5ceE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ABrEVlbr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5513BC2BD11;
+	Tue, 23 Apr 2024 11:40:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872403;
-	bh=Gr8K871TzLaNpZVkCi2hmx9Lyr3gDUp5Ll+ni/+Pssg=;
+	s=k20201202; t=1713872406;
+	bh=qkx2RDy5sGGcMieIR873OJNCriqJRBJBTL7GSFJbAhM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TPq94+6bEBwKVI/clbJKJljAa87YME5K+oPIDW56AvLf1Mbi6JmK6O/KMfagBoUYa
-	 TWVzWw4s9DXpQYiAfpqLakWFzg/Ll8bpJO/2xpezsl16uKag30QmINVelrpfeFlW14
-	 suw4KmZy8hBzZFIcllIdV4EYEly7HE2WK/CJYr2kWPTEokHsSkw1znXn7jeSqzvap0
-	 2LL12fBlKSf8rQ6iOjMnz5Gcowtm0O6qC4xpcVKFIq6qg08R4BsP7UuS16Wm4mR6BS
-	 wB4R7sHVgjSJexfN3jTTZM8edtC2Kmpc50d8lLTZaZMxgWBE3adqj5yBkV3tn9jeBl
-	 P6/48hmczeavA==
+	b=ABrEVlbrxvlgM0b6LGyvu/00NWegrMFLXzubDoLfH3ULQ3M6//a9oyrWClP9nmoyJ
+	 O/sY7GUozxUs1wt4wehhBCyctIhr5BXIB1pb8QpSXlTR+lflWapzp+N3NyKBnpl91Y
+	 s8jvdSsL+AEMHcCoBvmz1ebPrO0G+c80oGskMisjNZxkadh5q1Eg4sWC2qLzZNjJ2l
+	 UZbbGdjdEyDr3wf0D1YGTkbu2xtftMjyQR9E0U4GlnTu4arXUdgL6jeVDnFtnQVlEG
+	 ObrnAXU8GPHoUiXE3fCREW6AT0XtppxlFqX3mp1P+PPbXV0miL84eKx8oMqvxvHN7M
+	 408h+qiO8BH2Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -49,9 +49,9 @@ Cc: Joakim Sindholt <opensource@zhasha.com>,
 	lucho@ionkov.net,
 	asmadeus@codewreck.org,
 	v9fs@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.8 02/18] fs/9p: translate O_TRUNC into OTRUNC
-Date: Tue, 23 Apr 2024 07:00:58 -0400
-Message-ID: <20240423110118.1652940-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 03/18] fs/9p: fix the cache always being enabled on files with qid flags
+Date: Tue, 23 Apr 2024 07:00:59 -0400
+Message-ID: <20240423110118.1652940-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240423110118.1652940-1-sashal@kernel.org>
 References: <20240423110118.1652940-1-sashal@kernel.org>
@@ -68,32 +68,41 @@ Content-Transfer-Encoding: 8bit
 
 From: Joakim Sindholt <opensource@zhasha.com>
 
-[ Upstream commit 87de39e70503e04ddb58965520b15eb9efa7eef3 ]
+[ Upstream commit 4e5d208cc9bd5fbc95d536fa223b4b14c37b8ca8 ]
 
-This one hits both 9P2000 and .u as it appears v9fs has never translated
-the O_TRUNC flag.
+I'm not sure why this check was ever here. After updating to 6.6 I
+suddenly found caching had been turned on by default and neither
+cache=none nor the new directio would turn it off. After walking through
+the new code very manually I realized that it's because the caching has
+to be, in effect, turned off explicitly by setting P9L_DIRECT and
+whenever a file has a flag, in my case QTAPPEND, it doesn't get set.
+
+Setting aside QTDIR which seems to ignore the new fid->mode entirely,
+the rest of these either should be subject to the same cache rules as
+every other QTFILE or perhaps very explicitly not cached in the case of
+QTAUTH.
 
 Signed-off-by: Joakim Sindholt <opensource@zhasha.com>
 Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/9p/vfs_inode.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/9p/fid.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
-index e337fec9b18e1..ffb76ec3cd9b3 100644
---- a/fs/9p/vfs_inode.c
-+++ b/fs/9p/vfs_inode.c
-@@ -178,6 +178,9 @@ int v9fs_uflags2omode(int uflags, int extended)
- 		break;
- 	}
- 
-+	if (uflags & O_TRUNC)
-+		ret |= P9_OTRUNC;
-+
- 	if (extended) {
- 		if (uflags & O_EXCL)
- 			ret |= P9_OEXCL;
+diff --git a/fs/9p/fid.h b/fs/9p/fid.h
+index 29281b7c38870..0d6138bee2a3d 100644
+--- a/fs/9p/fid.h
++++ b/fs/9p/fid.h
+@@ -49,9 +49,6 @@ static inline struct p9_fid *v9fs_fid_clone(struct dentry *dentry)
+ static inline void v9fs_fid_add_modes(struct p9_fid *fid, unsigned int s_flags,
+ 	unsigned int s_cache, unsigned int f_flags)
+ {
+-	if (fid->qid.type != P9_QTFILE)
+-		return;
+-
+ 	if ((!s_cache) ||
+ 	   ((fid->qid.version == 0) && !(s_flags & V9FS_IGNORE_QV)) ||
+ 	   (s_flags & V9FS_DIRECT_IO) || (f_flags & O_DIRECT)) {
 -- 
 2.43.0
 
