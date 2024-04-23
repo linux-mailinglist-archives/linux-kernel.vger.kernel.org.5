@@ -1,140 +1,103 @@
-Return-Path: <linux-kernel+bounces-154599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1DA28ADE2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 132248ADE32
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:24:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AC831C21AB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:23:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 451231C2186C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29219535CF;
-	Tue, 23 Apr 2024 07:22:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UbJ5Z1Gt"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2E446542;
+	Tue, 23 Apr 2024 07:22:57 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F0547F7A
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:22:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55FE746521
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713856948; cv=none; b=WZg6jY6ENkHStd4CD8uTonH1ecRaaNYXTwe0Smwmr2/mN7ZS6XnEYUoLoZk2lN/JFUCm49THqWwCp/KBMOVcrNxDB/ftRMrrrbPn7ZfV+lM8BjSeANekmi8w4cccaVMbzX9RfMMWE5Ep+1Q1gBTiA09cv8YF8do1HLuqtHLGoUU=
+	t=1713856977; cv=none; b=JZxbTRihDCu8+9RPZEktPGIASpkoMp8ed+V2xN75xdAFs+ovPTQdEO0r3j/CPqgEGxvJKbPPm6gcpBAUaukKbHQJzbRxukQt8n995EiJi2vnXQ0of84PucIDJF6jfwCCKukcyre5/PapFeOLzhwcGLz8VE++VIPyX2+vwcGR3qA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713856948; c=relaxed/simple;
-	bh=TBerHdNcd/VaASBcrY0w9ZfZal4wjbWMeedPNUSWFT8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X4K0TSNs8U2oyITVmWGJCo0FefpLjUzSOylTluMRChR1XqnmZ4By2ODAAUX36EpCjgVaE/SJQjrN1nmnfwiytBA+lkQWLv9UFQOGgQsOrkACUienMUevVugttAizNx+m/ENoF5k23Tg0emc2PPq1LrqBDNaakZToZOR9Kkgl65w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UbJ5Z1Gt; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-41a77836f16so12106845e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 00:22:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713856945; x=1714461745; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=E5JDwEM0S+y8m3kJjVaTErVxuzPV5GK/2cL9D2vmiaQ=;
-        b=UbJ5Z1Gtyt8ydfbXku7hag+Hn7/Ivj8orb7LgJm9dN3mRsiGC6269pBnn9ZQvTCC6L
-         x6PsWLjq4zSKiz/5uW6AiJMwJmEH5tTWmgrtTUdUlcSUENRT9+fZMYQ/hdBVo+ADkAg+
-         woOgi0znTx13UERfjyIwCxK02g/k3g8NzsfppjyUvlLVevWZV5YL/WlRn+t52tmVv5cg
-         ELVKvoyHxPydVu9Qy8lcvcCaIR2NlcObOOI16/pEBV1tkfGYBb/I4ee9zrlmx/vc1wP9
-         juogFmrKoetJ0fTLrPIKuWqwCQ33mA942uNLLesXGUpueMpB+HDNLvbV9xwTrq8rXl3/
-         3ldQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713856945; x=1714461745;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=E5JDwEM0S+y8m3kJjVaTErVxuzPV5GK/2cL9D2vmiaQ=;
-        b=ns5KPVPTtm+YUiOFQqzGEQd991j/V/uhA2Su8xpK7wmEMY4YTfGGrOhXgMRS2WxdBy
-         4Oud7ySRF3VEj+hQBxqWXl8z5TgFO/J2f4afmCx0kHMbzpDyqqdm6b31/7Rh3QJBEyFj
-         ZeNWJbSPCQvyCcwyD41IvVu4b2j0S8oY8pe/3ueVCZBW2Ty9w9o7OROtSk8+4MHqYbkp
-         hmq/dAKpT3YabgyzvUbLKJvObefCpNJwQ8IljEZRNLyagzhJypOnXIS/0d3B6kYv6jGk
-         Nc7wp4GfSZgwQKDzT4yIO01h/bG6qfDclEUmxORin1KQYiuC2m9SXt1rH2epARP5iiAC
-         l9tA==
-X-Forwarded-Encrypted: i=1; AJvYcCVwdDxjuLNnzXrff8Kg3lxmvt/sPnBmVn0vMQoaMbaIgu92rUWrEt6x23h+IteOzoNQECCt8p5CoTFgE+llkZfTkQFEoUk4UXZ6Laat
-X-Gm-Message-State: AOJu0Yxl+C1fq4NhuxQB0owKm8dVPulE2sTQi5hFbjNboYe8heGc1ALf
-	6xCJ85xuUvUDVOC3X+eVyVYQGMZg9pcbOa2E5L4uE+a8+j6p8sQ12HByRTncLW0=
-X-Google-Smtp-Source: AGHT+IGxE63ul961rmdayPpwfWtYcPyASuIixgCszvjaulRux0YGT/IzWKGo6KnTBv1DRd8c/eNyMw==
-X-Received: by 2002:a05:600c:a11:b0:418:f86a:5468 with SMTP id z17-20020a05600c0a1100b00418f86a5468mr10608692wmp.21.1713856944782;
-        Tue, 23 Apr 2024 00:22:24 -0700 (PDT)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id fj3-20020a05600c0c8300b00416b2cbad06sm23034393wmb.41.2024.04.23.00.22.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 00:22:24 -0700 (PDT)
-Message-ID: <8fd3faf9-0179-425e-a68e-d0dc0a2d7da9@linaro.org>
-Date: Tue, 23 Apr 2024 09:22:23 +0200
+	s=arc-20240116; t=1713856977; c=relaxed/simple;
+	bh=L4OcFr6Wq5nOJsUOvDaAmjOCMS9WVXFUfLPu4Nn2G+0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=USI7D5F46d9EC8qvN4CiYV2ZPBaMzW/nAlenaX/sbniEJxQSHMm1baLiLhbvYCOw37QXXHSge/EeBrlVph/XyjphbYQGmC+idtNTpIvKEDtLA+BWRgm4bWtEWCz2ZgaKK5ONPZFRLkauZdLH5Zukvf7/14yJ1EG71nb6iiv6/wo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4VNtSh53Lhz9v7g7
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:06:12 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id AB0F01404A5
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:22:42 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwA3LBW6YSdmcLXMBg--.38603S2;
+	Tue, 23 Apr 2024 08:22:42 +0100 (CET)
+Message-ID: <15d5da65079d072856ef5e8d88040df2095bb6b7.camel@huaweicloud.com>
+Subject: Re: [PATCH] um: Add winch to winch_handlers before registering
+ winch IRQ
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Johannes Berg <johannes@sipsolutions.net>, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com
+Cc: linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, Roberto
+ Sassu <roberto.sassu@huawei.com>
+Date: Tue, 23 Apr 2024 09:22:31 +0200
+In-Reply-To: <1743ad022502d64042fa7db4d847a988bb90cbdc.camel@sipsolutions.net>
+References: <20240307104926.3531358-1-roberto.sassu@huaweicloud.com>
+	 <1743ad022502d64042fa7db4d847a988bb90cbdc.camel@sipsolutions.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cpuidle: kirkwood: Convert to platform remove callback
- returning void
-Content-Language: en-US
-To: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Yangtao Li <frank.li@vivo.com>, linux-pm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20230712094014.41787-1-frank.li@vivo.com>
- <20231204115517.zxjgi6ateobjj52d@pengutronix.de>
- <h2sjdrgs7hwmbucr3rxlpusnkpj5tgq2fx27gijtrglr5ffhs6@s63cp4isu4mx>
- <fgmvwuzy34cruggah2z7fau4nnfzopuylsgjs6zzdypp26boya@ekrj5myjef5f>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <fgmvwuzy34cruggah2z7fau4nnfzopuylsgjs6zzdypp26boya@ekrj5myjef5f>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:LxC2BwA3LBW6YSdmcLXMBg--.38603S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtF4UKF47ur4rCryrJF43ZFb_yoW3JFgEgr
+	4vk34fG3yDJrs2krs0k34qvr4vga18Kr13JwsIqrW3X34DurZ3JrWSyr9Yvw15G3W5JFZx
+	GrZIgF9agr17CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbOkYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r1j6r4UM28EF7xvwVC2z280aVCY1x0267
+	AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
+	JVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
+	kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY
+	6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIx
+	AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIev
+	Ja73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgACBF1jj5iypgABs4
 
-On 09/04/2024 18:32, Uwe Kleine-König wrote:
-> Hello,
-> 
-> On Wed, Mar 06, 2024 at 10:33:06PM +0100, Uwe Kleine-König wrote:
->> On Mon, Dec 04, 2023 at 12:55:17PM +0100, Uwe Kleine-König wrote:
->>> On Wed, Jul 12, 2023 at 05:40:13PM +0800, Yangtao Li wrote:
->>>> The .remove() callback for a platform driver returns an int which makes
->>>> many driver authors wrongly assume it's possible to do error handling by
->>>> returning an error code. However the value returned is (mostly) ignored
->>>> and this typically results in resource leaks. To improve here there is a
->>>> quest to make the remove callback return void. In the first step of this
->>>> quest all drivers are converted to .remove_new() which already returns
->>>> void.
->>>>
->>>> Trivially convert this driver from always returning zero in the remove
->>>> callback to the void returning variant.
->>>>
->>>> Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
->>>> Signed-off-by: Yangtao Li <frank.li@vivo.com>
->>>
->>> Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
->>>
->>> Can you pick this up?
->>
->> This patch isn't in next yet. Is this still on someone's radar for
->> application? Would be great if this patch made it into the mainline
->> during the upcomming merge window.
-> 
-> It didn't made it into the merge window leading to 6.9-rc1. What are
-> the chances to get it into v6.10-rc1?
-> 
-> I just checked, the patch was submitted when Linus's tree was just after
-> v6.5-rc1. So it already missed four merge windows without any maintainer
-> feedback :-\
+On Thu, 2024-03-28 at 09:25 +0100, Johannes Berg wrote:
+> On Thu, 2024-03-07 at 11:49 +0100, Roberto Sassu wrote:
+> > From: Roberto Sassu <roberto.sassu@huawei.com>
+> >=20
+> > Registering a winch IRQ is racy, an interrupt may occur before the winc=
+h is
+> > added to the winch_handlers list.
+> >=20
+> > If that happens, register_winch_irq() adds to that list a winch that is
+> > scheduled to be (or has already been) freed, causing a panic later in
+> > winch_cleanup().
+> >=20
+> > Avoid the race by adding the winch to the winch_handlers list before
+> > registering the IRQ, and rolling back if um_request_irq() fails.
+> >=20
+>=20
+> Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
 
-Sorry, it is applied now.
+Thank you! Richard, are you going to pick this up?
 
 Thanks
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Roberto
 
 
