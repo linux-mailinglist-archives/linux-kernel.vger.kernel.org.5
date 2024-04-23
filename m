@@ -1,116 +1,110 @@
-Return-Path: <linux-kernel+bounces-155861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 047BC8AF826
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 419DB8AF828
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:46:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E84FB2213D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:45:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAC4AB23293
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:46:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6364D142E88;
-	Tue, 23 Apr 2024 20:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE25F142E8C;
+	Tue, 23 Apr 2024 20:46:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E2osmulO"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="neODTHt9"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35676142E73
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 20:45:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9680613E02C;
+	Tue, 23 Apr 2024 20:46:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713905148; cv=none; b=jfqgbrrVg21CmO4ofUFYZXSgw9cTkrfOaqcnWoVFLirgsTEbrpZBu0NW2jzUXu+AIZ+6XREgHQ4S/P+ze/cBNDie9Ac3M36Ypa9WWsSdhnk5Z5Jseqekdhx6P9iCtNeHvsllucFEuCOzaOhYgbIkZQhzsgVMx8kWkzayWuaI64U=
+	t=1713905185; cv=none; b=O5PHusJi4kattca8NpXiHpJI7X8vZqHhDfWxO3GJ1tv3NDJPATFz6K2gz0WdVpk4lwBXucj1LoJQTVGS7Qj4so/yXmSmwc2ptvotXTsWBjoG2dajzQfk1liliZHL5B5q2Hqxr8s+NbyQrCh8Hrdmo1DsTzKfpU1HsNOdTCILgw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713905148; c=relaxed/simple;
-	bh=db/jYTmQgIcatu4krOyw8W95WHarmYXRnUjtGzfjh94=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cWFiyeBmbpnOlAwtPI5DX9A9pJJ4mqHxOHiZPHSLIB/2SiL6gc9IuopcSqdr733eA0QU7dodfFHAtPYpyuSJLdQOKx/iEXd14BLc0ymszf+/TJOlTuMQml+7YPSPuFd7UoItb+OtBGvnEqPxvd9GUPXWKQ82WzM9Tv/Zsy19snU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E2osmulO; arc=none smtp.client-ip=198.175.65.15
+	s=arc-20240116; t=1713905185; c=relaxed/simple;
+	bh=FdRbkelJyyMp+XaA02zYd2JJk9swSDq0G/GC5XIBIBU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=k4X2B/GlToWnYwksGgz0JAIEcchMeSoy0WYpBR1p9LULVCsOfeXy5biwHw6j+CBfFWU6husZg3tSfCMYTMqay+Q9x9BI4dQwFrZSZJTmvF55JC5WsOpADETD3XRobA31G1KunwJP0ieBiUJWqK4Rzks/dLP9GopK53LnC2E+p7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=neODTHt9; arc=none smtp.client-ip=192.198.163.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713905148; x=1745441148;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=db/jYTmQgIcatu4krOyw8W95WHarmYXRnUjtGzfjh94=;
-  b=E2osmulO9LQVZK5bRbCQc+b3xi1mN2QdoE4YzsT4aOA2XIJygNeMSbnp
-   YZQ0116EzJFspsuOubvjJsGt/PUo2XDpPoMFu63MdIBHdt54O81fIVrl2
-   wVW8i5EdzZjSgH6Sv44QkJOMIV8/RZgmE3Lewcw4+T17kOL+3GDJI/cjg
-   e5sI4yd0jVVG2DgUo3r8e+RamiiGhbupjLLNJsEP4+oupBqj9CRCyqJ4y
-   EQ1fapdIRQ8NJrH0+NgGdLegpW7jEiXVBaGwHv4j5qObt6EHyMYPnADKj
-   mvw7YzDOE5HZGDb/XJN9h8eW9dQUI2EY+ca2vDgE7cYTXrgsienLDM/GX
-   A==;
-X-CSE-ConnectionGUID: W265MWxbQdiUGYbX43VDcg==
-X-CSE-MsgGUID: G7xX/clPRt6xusAgIVTtSg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="13300339"
+  t=1713905184; x=1745441184;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=FdRbkelJyyMp+XaA02zYd2JJk9swSDq0G/GC5XIBIBU=;
+  b=neODTHt9JJydGFItn4XWygb4mhvxD78qcK1AaHKIIZBnBkfAYPkTXtPs
+   KvUQAynnjhnDzKShvHz53FDqyZxkEFqXkj7hlukdHEj7PJ1DX/JMFwWMO
+   g8zjZApPY7yYWI1wd80B0jLCBN/KNllc81gyiw8HBdJ9BGKtd8AfponZQ
+   Lzi4VIMTgHhSqJWjxoaxwy7W+xF+fq5GOUDfsU3gH7qbsnaocjNbYI8DN
+   sFWtmoRrMONysJJL+xMzn/D8vqxDG4jZCYhF/WmnQdOfi3equwPNdvi7K
+   myV7iSypR1XfUAJJPvb2WQMI3zoqUmokDiIIjBerbP7//7SYojhtAmLzH
+   Q==;
+X-CSE-ConnectionGUID: ooD2albNSUicqfWdjdE5bg==
+X-CSE-MsgGUID: RxqjX9uCQWmAkahHFnkzgw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="34912314"
 X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="13300339"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 13:45:47 -0700
-X-CSE-ConnectionGUID: NBYlrgBOQnyVFlWFwK0ryA==
-X-CSE-MsgGUID: ykouW7uTR8CeUKKtMsy/dw==
+   d="scan'208";a="34912314"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 13:46:23 -0700
+X-CSE-ConnectionGUID: Ao8U5ampRTaBJ6wEIyqcOw==
+X-CSE-MsgGUID: tMNMSPcCSJCYnTKLS4ir1A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="61939027"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 13:45:45 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rzN1K-00000000TFX-1yu0;
-	Tue, 23 Apr 2024 23:45:42 +0300
-Date: Tue, 23 Apr 2024 23:45:42 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+   d="scan'208";a="24533078"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
+  by fmviesa010.fm.intel.com with ESMTP; 23 Apr 2024 13:46:23 -0700
+From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com
+Cc: platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v2 1/1] mm: page_alloc: Avoid defining unused function
-Message-ID: <Zigd9lrV7gffp8hQ@smile.fi.intel.com>
-References: <20240423161506.2637177-1-andriy.shevchenko@linux.intel.com>
- <20240423111000.aaf74252a07d7e7fd56d7e12@linux-foundation.org>
- <Zif9e5ByqBKJ9rgQ@smile.fi.intel.com>
- <20240423203020.GB318022@cmpxchg.org>
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH 00/10] Support partitioned systems
+Date: Tue, 23 Apr 2024 13:46:09 -0700
+Message-Id: <20240423204619.3946901-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423203020.GB318022@cmpxchg.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 23, 2024 at 04:30:20PM -0400, Johannes Weiner wrote:
-> On Tue, Apr 23, 2024 at 09:27:07PM +0300, Andy Shevchenko wrote:
-> > On Tue, Apr 23, 2024 at 11:10:00AM -0700, Andrew Morton wrote:
-> > > On Tue, 23 Apr 2024 19:14:43 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > > > In some configurations I got
-> > > > mm/page_alloc.c:656:20: warning: unused function 'add_to_free_list' [-Wunused-function]
-> > > > Becuase the only user is guarged with a certain ifdeffery,
-> > > > do the same for add_to_free_list().
-> > 
-> > ...
-> > 
-> > > Thanks, I'll queue this as a fix against "mm: page_alloc: consolidate
-> > > free page accounting".
-> > 
-> > Thank you!
-> 
-> Thanks for the fix. We switched most callsites to __add_to_free_list()
-> now, I didn't realize the memory failure code was the only one left.
+A partitioned system has two PCI device per package compared to only one.
+This doesn't change any TPMI functionality. Just while reading, different
+MMIO region is used for TPMI instances.
 
-You're welcome! Hint to the future `make W=1` should be a must during
-development.
+Some patches are not directly related to partitions, but added for easy
+application of series.
 
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Patches are applied on top of origin/review-hans branch as of April 23,
+2024.
+
+Srinivas Pandruvada (10):
+  platform/x86/intel/tpmi: Handle error from tpmi_process_info()
+  platform/x86/intel/tpmi: Check major version change for TPMI
+    Information
+  platform/x86/intel/tpmi: Align comments in kernel-doc
+  platform/x86/intel/tpmi: Add additional TPMI header fields
+  platform/x86: ISST: Use local variable for auxdev->dev
+  platform/x86: ISST: Shorten the assignments for power_domain_info
+  platform/x86: ISST: Support partitioned systems
+  platform/x86: ISST: Use in_range() to check package ID validity
+  platform/x86: ISST: Add dev_fmt
+  platform/x86: ISST: Add missing MODULE_DESCRIPTION
+
+ .../intel/speed_select_if/isst_if_common.c    |   1 +
+ .../intel/speed_select_if/isst_tpmi_core.c    | 345 +++++++++++++++---
+ drivers/platform/x86/intel/tpmi.c             |  39 +-
+ include/linux/intel_tpmi.h                    |  12 +-
+ 4 files changed, 333 insertions(+), 64 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.40.1
 
 
