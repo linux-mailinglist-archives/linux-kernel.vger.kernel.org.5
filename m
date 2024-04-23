@@ -1,82 +1,81 @@
-Return-Path: <linux-kernel+bounces-155851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDF588AF800
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:28:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6591B8AF802
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:30:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8476289895
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:28:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1287528B608
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA7B1428EA;
-	Tue, 23 Apr 2024 20:28:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB8F142E70;
+	Tue, 23 Apr 2024 20:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ACZd+Dop"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="JHynQWbu"
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3FA3142627
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 20:28:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C282D53361
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 20:30:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713904083; cv=none; b=YJg0C18ctP1XzlZSn4wSRQtqX2hFcCEbYvQj45NgD3TYDHyNKG5x1Jjc8xKXsuNRpVu5ZWnDPj48dOEEHkY15HGjuepoxrNc4ko1UiTwFvayaoHLogIIecgq3YcnQkv/lpcX7uBwN8E/Z5bp41NHgsnXGLhGmqBtM4hv12pKsTo=
+	t=1713904225; cv=none; b=GfTV97BfRIbxnFFioE32EbRPEzH1/zp3lCjjKSAEBrBNZX2Y8R5rMIYd4J9d2XXBaLus55SktvQ09op/RjbBt+5Zcy5CA5ZZPozaOTJsapTdAaWDkwzqi0zt1NhIsb3be72eAs20YNOsh7tQPtoDxFS5WQo7A8zCkGtSrUy8Yq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713904083; c=relaxed/simple;
-	bh=LKOCXLLr/y3TN06EgdAIxsEOgf88ap7dIaMwSVb7eNc=;
-	h=From:Date:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=O1ALdXyFrhpZbYWarXivE6EnSDtQ23WwWASpFkBW+9F2SrefMUB5wsde+gI3hvzJm7tdzvlXyzy8nts0maXp52oSWUxWWOHN7UT3LJhJkpfa9fpPI7IN2qL/8/kPgY9BcLZKHM3bER/IyBNPK/1EFzb7OVyxgNlAC5o9WxaNxVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ACZd+Dop; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e411e339b8so47144465ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:28:01 -0700 (PDT)
+	s=arc-20240116; t=1713904225; c=relaxed/simple;
+	bh=CVIaYdYrEQr9OMr4jPSvITFD5x9uRmh+lgV2uZibvH0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LRyWmdFrxL5eg6o97OYHUg4zt6/LIQCR0E5BHwUKIiL3SdgR73odnyBmMUqY0LlrlTGClRGmBCTiBuOW7g98BekokkBmBtMpYqyfEGS8RpE16rTev+Fo29Z3j9hZxyfl66Mlz7Si6tRJgESY/T5Ty82wWMq2vLM7Ix7jrSKFx1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=JHynQWbu; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c75139645aso2266946b6e.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:30:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713904081; x=1714508881; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ElhCcl6G0G6HIdkPF7nDaOrRESp4EOPhN/nwWmH0P0Q=;
-        b=ACZd+DopEisoZurmOVD3pzhvqZIB95C0Qc1MYg66cSEiUUvgGolpcefR7+UZO0VSG3
-         wtb4kPVv5JOYdyKPPT6Iu+2No7HPGUZScM+Pbj2094Grqy0LpqkowKnCT5dUFPVA41Dg
-         DPEZSXH1Zabwi7ZlUX6jjY6kEvCaFRnEJYRJBIBTT1EECNLTfAFBug5HSbvZXJakTgeM
-         0f6LMYCMsiUBdykQmKZOZ3gDJfxqItN7/cPD4WFNzn6N0fhHpkuT4eL25MJnLkIPLaN6
-         sscKpLVlYbTUu8F6in8+CgGdZt72/UQosxG3dhw2vmt+HrhtJGzYZvYnMdYB5hYQB3qr
-         k00A==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1713904221; x=1714509021; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Torx1UPL12mK+9YLUjCQ2uCUXMbYdjic5Odfv8SpXtw=;
+        b=JHynQWbugy4Cre7zVazDOiiX6ngpiwUSYNeeRKv78CLrMwNA7ilqjPIE509zAAD21i
+         OxETTMGiO7PUxpbSEFx4I414Ex5Jz/29bNhOmCsFbclz4+g+U4ChGjsc/pwNYwiVByiY
+         OOwRB4n4iVuOqVqWzp0aO6aE8xuBbkogiR+0Vg02aw07RECbBIrjcS8qL871b9o2U5CI
+         8RDDWa410mhqhWTCnbD4umKWUCgONF2UVh3aCYDPbUzjucivRrLaZXfP9lZtERqPh0nO
+         ZoaZD68UTghvu5a7/sA0bgoqxzVP/v149nhGBTiROWpd5216QQdqQKK80emib3Q8KDJs
+         1e5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713904081; x=1714508881;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ElhCcl6G0G6HIdkPF7nDaOrRESp4EOPhN/nwWmH0P0Q=;
-        b=HUwRKxRUut95h3yJ7AsfH64CPofPVOg4TN2gOq7PBRvQVngcIY76Dy36Bx9+r/MrmK
-         SYp9w3jVlycdNzme21QMfMNuEeXBEWXqeL9PDB2B14bKkQdwr8gIO0CjXjru2nmyK1k2
-         WIoH+h+/FEKeCrjLPZernhvmUZKezgWIziDEZWU3eqCZoo7ueN6RsDJPBk7wHduZYEgH
-         H3uRll/6vglhrRSDsN31BYUmk5wUdo4okGOOcfam8AKMjOPSmH0ZAE1WTHJRe++csiBm
-         nC8Y6p3pmMrS5NiyYULsvF3QjAsgM7iUACQZJEUrSsiUdWjWgwO6DNxI7fhgUorQkU7c
-         Lrsg==
-X-Forwarded-Encrypted: i=1; AJvYcCW2OgWeNV077qrw5iHjP5NVtbETQfCWwpR59tkB2iCkcgYeizgbhhcphJpnMtS1wH3hXd3CfkVxR++3yroZMzxjlY0r3NqcOR7wWzz2
-X-Gm-Message-State: AOJu0Yydz7lFqmGCJeFTIiqqGFLlQ0dR7NsHgKsc4kkIbzi7FoGE0DMe
-	sLdOIlEKKUWlZIVNbEnz/Owd6JUO56kyynPslYYDblIIeNj7yUJpN2EGit9N
-X-Google-Smtp-Source: AGHT+IH/UowfwTLVFs7FG4s/SVPC+n97N3bee3Xwzw64RB1SiFJYQWQyRrmColfNlVAQBwl36yRc3g==
-X-Received: by 2002:a17:902:fc86:b0:1e5:963d:963 with SMTP id mf6-20020a170902fc8600b001e5963d0963mr664625plb.68.1713904080938;
-        Tue, 23 Apr 2024 13:28:00 -0700 (PDT)
-Received: from localhost ([190.15.121.82])
-        by smtp.gmail.com with ESMTPSA id w5-20020a1709029a8500b001e435350a7bsm10424717plp.259.2024.04.23.13.28.00
+        d=1e100.net; s=20230601; t=1713904221; x=1714509021;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Torx1UPL12mK+9YLUjCQ2uCUXMbYdjic5Odfv8SpXtw=;
+        b=fq8XG3nvxiJri6NqLjcYAmNJMpc/VoCeK4NzzCeFhBjQoHxyy/B7qSC8pf6OW/biYo
+         aV4b4xcBY+ubj5afUgXtodqpV3MhlNbhSJ5a/TbIXPpkw0P5wUR7v9VORN/bffxKXOj9
+         0zIM/pfY0p8Y/5WTtqE35umDEJshkD03qP0QU3oQYfIRG82DyDlf315HzWHfBxVy9i+m
+         bBHAw6CE2PUR6YPWplQnb1B08Wf2jjdkNaUmZTgt4rgzvMFFqxrdh0tDwHLM4F3CC6hD
+         7HXYpqTF8ggw+l+/bnhiCoAfPWgT7cu6EFbFmUc9kMlqHiHI4vupPChTpUdeO+3nUY3P
+         KbvA==
+X-Forwarded-Encrypted: i=1; AJvYcCUr5jbED6scN2GY1t+nQBwcWHgnCCEzW/O7+c+joEjsy1cd9fBvT2KslV9y8NDWXRB/t/cJXayLu1H7D8whC6Pv4M7ALKOuSXLIDSZD
+X-Gm-Message-State: AOJu0YxzRSSJQmjSS8AZA3rc9CpTT/OZ6N0vbPWDUryV3aGHzydtR53j
+	RCDaauB9DpiQqrQY6GjqfkIga9WobGrMWYqnflS4Q1sBJPYof1kkhs4UAK43AkY=
+X-Google-Smtp-Source: AGHT+IHiUxJyLagPh/XINCMcJOpOhbZaSAa+jmo6C+ieX//m+gTeBM2QnjuG/QPlu/Y4VeO/9CBQHw==
+X-Received: by 2002:a05:6808:13d4:b0:3c7:5371:6a24 with SMTP id d20-20020a05680813d400b003c753716a24mr488139oiw.8.1713904221643;
+        Tue, 23 Apr 2024 13:30:21 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:9cfb])
+        by smtp.gmail.com with ESMTPSA id w9-20020a0ca809000000b00696b1050be8sm4365264qva.133.2024.04.23.13.30.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 13:28:00 -0700 (PDT)
-From: arnaldo.melo@gmail.com
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>, Arnaldo Carvalho de Melo <acme@redhat.com>
-Date: Tue, 23 Apr 2024 17:27:57 -0300
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>,
-	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Noah Goldstein <goldstein.w.n@gmail.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/1] tools lib rbtree: Pick some improvements from the kernel
- rbtree code
-Message-ID: <ZigZzeFoukzRKG1Q@x1>
+        Tue, 23 Apr 2024 13:30:21 -0700 (PDT)
+Date: Tue, 23 Apr 2024 16:30:20 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v2 1/1] mm: page_alloc: Avoid defining unused function
+Message-ID: <20240423203020.GB318022@cmpxchg.org>
+References: <20240423161506.2637177-1-andriy.shevchenko@linux.intel.com>
+ <20240423111000.aaf74252a07d7e7fd56d7e12@linux-foundation.org>
+ <Zif9e5ByqBKJ9rgQ@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,68 +84,25 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <Zif9e5ByqBKJ9rgQ@smile.fi.intel.com>
 
-The tools/lib/rbtree.c code came from the kernel, removing the
-EXPORT_SYMBOL() that make sense only there, unfortunately it is not
-being checked with tools/perf/check_headers.sh, will try to remedy this,
-till then pick the improvements from:
+On Tue, Apr 23, 2024 at 09:27:07PM +0300, Andy Shevchenko wrote:
+> On Tue, Apr 23, 2024 at 11:10:00AM -0700, Andrew Morton wrote:
+> > On Tue, 23 Apr 2024 19:14:43 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > > In some configurations I got
+> > > mm/page_alloc.c:656:20: warning: unused function 'add_to_free_list' [-Wunused-function]
+> > > Becuase the only user is guarged with a certain ifdeffery,
+> > > do the same for add_to_free_list().
+> 
+> ...
+> 
+> > Thanks, I'll queue this as a fix against "mm: page_alloc: consolidate
+> > free page accounting".
+> 
+> Thank you!
 
-  b0687c1119b4e8c8 ("lib/rbtree: use '+' instead of '|' for setting color.")
+Thanks for the fix. We switched most callsites to __add_to_free_list()
+now, I didn't realize the memory failure code was the only one left.
 
-That I noticed by doing:
-
-  diff -u tools/lib/rbtree.c lib/rbtree.c
-  diff -u tools/include/linux/rbtree_augmented.h include/linux/rbtree_augmented.h
-
-There is one other cases, but lets pick it in separate patches.
-
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Noah Goldstein <goldstein.w.n@gmail.com>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/include/linux/rbtree_augmented.h | 4 ++--
- tools/lib/rbtree.c                     | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/tools/include/linux/rbtree_augmented.h b/tools/include/linux/rbtree_augmented.h
-index 570bb9794421b975..95483c7d81df74fb 100644
---- a/tools/include/linux/rbtree_augmented.h
-+++ b/tools/include/linux/rbtree_augmented.h
-@@ -158,13 +158,13 @@ RB_DECLARE_CALLBACKS(RBSTATIC, RBNAME,					      \
- 
- static inline void rb_set_parent(struct rb_node *rb, struct rb_node *p)
- {
--	rb->__rb_parent_color = rb_color(rb) | (unsigned long)p;
-+	rb->__rb_parent_color = rb_color(rb) + (unsigned long)p;
- }
- 
- static inline void rb_set_parent_color(struct rb_node *rb,
- 				       struct rb_node *p, int color)
- {
--	rb->__rb_parent_color = (unsigned long)p | color;
-+	rb->__rb_parent_color = (unsigned long)p + color;
- }
- 
- static inline void
-diff --git a/tools/lib/rbtree.c b/tools/lib/rbtree.c
-index 727396de6be54f20..9e7307186b7f4123 100644
---- a/tools/lib/rbtree.c
-+++ b/tools/lib/rbtree.c
-@@ -58,7 +58,7 @@
- 
- static inline void rb_set_black(struct rb_node *rb)
- {
--	rb->__rb_parent_color |= RB_BLACK;
-+	rb->__rb_parent_color += RB_BLACK;
- }
- 
- static inline struct rb_node *rb_red_parent(struct rb_node *red)
--- 
-2.44.0
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
