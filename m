@@ -1,86 +1,119 @@
-Return-Path: <linux-kernel+bounces-155356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6F6D8AE947
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:17:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 785B48AE93F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:16:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECAEEB222F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:17:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B61D1B24962
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:16:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BCB13C81B;
-	Tue, 23 Apr 2024 14:16:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A2913B2AC;
+	Tue, 23 Apr 2024 14:15:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="JT8g8/3x"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 458A813C810;
-	Tue, 23 Apr 2024 14:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mK6eVn0+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59FE76A03F;
+	Tue, 23 Apr 2024 14:15:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713881766; cv=none; b=QPr/6uhyYVBVFZEoTpf+Fdv3kUSgEt+KpLr2FPGAOhzDKLlGIPdCsZOXHaLSV1EJeAlJdnwULFxzgwmWnXacmHdR5BHjS0g314cpB0vPtfGAV1F0EOq7LN7oYy0ZiHpplMwKbAkiJFb9PFwgm7l+qNid1OXFW1zgnlg0gJebL5w=
+	t=1713881753; cv=none; b=tgpzpFLD5J4yIlmSr5wBVUNQmztZKJcP/MvmIz+MSBz/cCImHbZsnnzrHuMvWAEIDBPfhMIURf4OuB3yrHOUDeBJquhirRKZ673GuoQubFj6jh2uaUcpBgHJRDQhhHLehfgM7Qx4PAeSY9TGod8g0xVGv7/3AMDm2ALGyZhXAjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713881766; c=relaxed/simple;
-	bh=+KHG3DtqLql0y+mvhcNwWBsrn4ZTxO3OwoCLAoy4VFQ=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=qWXxLfYXiYZ8rMe3bBvCm+XTv3QQzKFffzw3HM/ezSuY/Ujjyl8WYn0tIp3wTL9cNrNs92P5Q/w0dFtWHCsavbzLohgwEyA5lWr7hjAFu6Gfqa/gqVwLi+j5RF7ywV1ppJGiS3wPQ9nt2R6DYdQz4StVBKViWnc6FepzOwTPobs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=JT8g8/3x; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 0FF2120FFC0F;
-	Tue, 23 Apr 2024 07:15:57 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0FF2120FFC0F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1713881757;
-	bh=uozpRzWYBjgm8cTbZvOLXzh8DyhfyNM9Ds5e5SaprAA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=JT8g8/3xmhtBy/ejF8Ff/NoOKx2yMOZBd9sFg94nakQz4JgiJp5zKFMAJXB95e+zN
-	 u9qQlFA6dz8q2aurMKRdS4ZyglmI/GK5KbprEKcOir1AEyLcyAQa+5vsWcb1z0sIsl
-	 42aaCLt40kdFKvfMWeIJeV21sZzFNV34rfaINebs=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: nathan@kernel.org,
-	kotaranov@microsoft.com,
-	sharmaajay@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next 1/1] RDMA/mana_ib: fix missing ret value
-Date: Tue, 23 Apr 2024 07:15:51 -0700
-Message-Id: <1713881751-21621-1-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1713881753; c=relaxed/simple;
+	bh=/3WljR8aW/V0E1v3Brj7is8RAe3UfhXQE6tTikPtqC0=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=EhK7ILk7ALBVdx5vQygUPWGyoZdpJc3354oY3PJlsKT+pU7HgoALRCHvfDt75LP8xfrzsuGPO6YicZ5OaR1jX9bCQDHJ7DDQsNc8A4QH2u1ZZANNIFPctAoOUTAYU+zivQw6Oerns/r22gqW7oJNYCSdOgwWWOa73EJY1Ftig08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mK6eVn0+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED76DC116B1;
+	Tue, 23 Apr 2024 14:15:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713881753;
+	bh=/3WljR8aW/V0E1v3Brj7is8RAe3UfhXQE6tTikPtqC0=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=mK6eVn0+DrbeOuUV5FEYf3gVV1pdsJWJ44jDyFpN5LG0XOrkPVaHns1hxOZdRpnfD
+	 TVScMEj/gfBwDReV7KKIMdxKDP1sPELnA93+c2uB6Jl4BAX7sOuzV4791gXxVp3xzl
+	 diBZ4aIGtXgRrNWgNdh+UIFDCW42yA8u4suDEw0y/e5v4su23hrvtb5i3ULM0ujn21
+	 utOgZs1y/I6uGKooe+Av3Fh84Y3mqv+qPIxLYS7gyA2tGXj9S0Drjxim5I9mWUHuv6
+	 S+6cmneB/TkgLN2rmYJLYT5Vnd3j9aX9pSweof8bDBWF26BHetkf1Ib/4YEuGFeqwG
+	 06SITbLjzHV8A==
+Date: Tue, 23 Apr 2024 09:15:52 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+From: Rob Herring <robh@kernel.org>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>, 
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Heiko Stuebner <heiko@sntech.de>, 
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, 
+ Stefan Wahren <wahrenst@gmx.net>, devicetree@vger.kernel.org, 
+ andrew@lunn.ch, linux-rpi-kernel@lists.infradead.org, 
+ linux-arm-kernel@lists.infradead.org, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Andre Przywara <andre.przywara@arm.com>, 
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Geert Uytterhoeven <geert+renesas@glider.be>, 
+ linux-arm-kernel@vger.kernel.org, Tony Lindgren <tony@atomide.com>, 
+ Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <20240422230733.1284055-1-florian.fainelli@broadcom.com>
+References: <20240422230733.1284055-1-florian.fainelli@broadcom.com>
+Message-Id: <171388152698.138785.3152955834733360539.robh@kernel.org>
+Subject: Re: [PATCH v2] arm: dts: bcm2711: Describe Ethernet LEDs
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
 
-Set ret to -ENODEV when netdev_master_upper_dev_get_rcu
-returns NULL.
+On Mon, 22 Apr 2024 16:07:31 -0700, Florian Fainelli wrote:
+> Describe the Ethernet LEDs for the Raspberry Pi 4 model B board as well
+> as the Raspberry Pi 4 CM board. The Raspberry Pi 400 board does not
+> include RJ45 connector LEDs so the 'leds' node is deleted accordingly.
+> 
+> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> ---
+> Changes in v2:
+> 
+> - added "function = LED_FUNCTION_LAN"
+> 
+>  .../arm/boot/dts/broadcom/bcm2711-rpi-4-b.dts | 20 +++++++++++++++++
+>  .../arm/boot/dts/broadcom/bcm2711-rpi-400.dts |  1 +
+>  .../boot/dts/broadcom/bcm2711-rpi-cm4-io.dts  | 22 +++++++++++++++++++
+>  3 files changed, 43 insertions(+)
+> 
 
-Fixes: 8b184e4f1c32 ("RDMA/mana_ib: Enable RoCE on port 1")
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
- drivers/infiniband/hw/mana/device.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index fca4d0d85c64..7e09ceb3da53 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -87,6 +87,7 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 	upper_ndev = netdev_master_upper_dev_get_rcu(mc->ports[0]);
- 	if (!upper_ndev) {
- 		rcu_read_unlock();
-+		ret = -ENODEV;
- 		ibdev_err(&dev->ib_dev, "Failed to get master netdev");
- 		goto free_ib_device;
- 	}
--- 
-2.43.0
+My bot found new DTB warnings on the .dts files added or changed in this
+series.
+
+Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
+are fixed by another series. Ultimately, it is up to the platform
+maintainer whether these warnings are acceptable or not. No need to reply
+unless the platform maintainer has comments.
+
+If you already ran DT checks and didn't see these error(s), then
+make sure dt-schema is up to date:
+
+  pip3 install dtschema --upgrade
+
+
+New warnings running 'make CHECK_DTBS=y broadcom/bcm2711-rpi-4-b.dtb broadcom/bcm2711-rpi-400.dtb broadcom/bcm2711-rpi-cm4-io.dtb' for 20240422230733.1284055-1-florian.fainelli@broadcom.com:
+
+arch/arm/boot/dts/broadcom/bcm2711-rpi-cm4-io.dtb: ethernet-phy@0: leds: 'leds@1', 'leds@2' do not match any of the regexes: '^led@[a-f0-9]+$', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/net/ethernet-phy.yaml#
+arch/arm/boot/dts/broadcom/bcm2711-rpi-400.dtb: ethernet-phy@1: leds: 'leds@0', 'leds@1' do not match any of the regexes: '^led@[a-f0-9]+$', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/net/ethernet-phy.yaml#
+arch/arm/boot/dts/broadcom/bcm2711-rpi-4-b.dtb: ethernet-phy@1: leds: 'leds@0', 'leds@1' do not match any of the regexes: '^led@[a-f0-9]+$', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/net/ethernet-phy.yaml#
+
+
+
+
 
 
