@@ -1,47 +1,46 @@
-Return-Path: <linux-kernel+bounces-154413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA8638ADBCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 04:08:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFB198ADBCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 04:08:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17D951C21127
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:08:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA4571C21217
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:08:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4AF218E28;
-	Tue, 23 Apr 2024 02:07:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 987191757E;
+	Tue, 23 Apr 2024 02:08:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pE+Vik3o"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="rVhOOc49"
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F26B318AEA
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 02:07:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A9B171A4
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 02:08:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713838076; cv=none; b=QrqJ4SIJ4CMzj7LgaAOTh+MnYUC8Negvhysf27PvdQZYxfy7uGsaI2nRYLZap+pCLTIIGQOJIzximCXgoVtXzyp8wwOdv3F4+4vsIS2CdNqRtUqr5tceImIBchhLe98/VJ9V8ggqeOjEvz990EpQmgcPFBy1M2BRUKdXAkLcVFg=
+	t=1713838102; cv=none; b=VEvt86JYm8afbf/eqF1ElMm23A/vx/1oTckNw3lnhO4PEkAvk4+d8PbIGBzGJNlj+F2qJOs2rI9kpEX5VGDfmPN0+LjaFARN2eDtQDubDyUY8FNtof4pwS/pjLBuAYNjyvTwDVVScy2VjegQHvkfAZ0oeGvJ3gD4YKwL6p5qaJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713838076; c=relaxed/simple;
-	bh=9ZrYYhHo31/mbMcmlkNl/YC9fkL7yN42Gjse/Jn35WQ=;
+	s=arc-20240116; t=1713838102; c=relaxed/simple;
+	bh=cwzx2c1RdbSzHJPOZaM3YD22K1SuePF0SZcDVWEHT+A=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a6xKuirWTeHj7OBHIPMCqsPlqCbPzAmpbVg1kiQ4ysYzSyarNJ6dy0hAbyPd3dyWUX4U6a//L9rnDkBiJY1jKJUw/LHnx1Pi5oJY9s+/bZTgVPSbkwdOJrcKmNsP13hvqZBwf0IFQZotGmIFqSOK185g1fqd1QPNDUDeqC2ON0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pE+Vik3o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAC5AC113CC;
-	Tue, 23 Apr 2024 02:07:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713838075;
-	bh=9ZrYYhHo31/mbMcmlkNl/YC9fkL7yN42Gjse/Jn35WQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=pE+Vik3oiiMeIHNlxxtcPyG7/G8T38eNZtpg+A8LXg82eDw+dFbD/dpr8n+D4TLOC
-	 o8xu+x5SwYAtmI0pfmyExpeYiEJzNaBQdYqcQlzA3nn/I66KYY6MvW1XyV3Vg1iEYH
-	 wNil0i75gyyxednIclBFmYQceQOab3kkXfx4Q67/l/Mv9oCYZ8cFHaixxqxiBkbaNY
-	 mMfGyA9Ru1Mco5q5HWluEyrXJU2gicB7UoCC0N7Tcl1uNl/v98Yc/PUgaVnugPEOuH
-	 Sk3tQs0+S4gDHSy+TtSwSNMJpANDBDGZ68JzeJO6/mkEBnY3tHDps5H/ROMVOFSDh9
-	 70xl98xdJoGEg==
-Message-ID: <11d5d736-bae5-4a71-b400-087b8722893c@kernel.org>
-Date: Tue, 23 Apr 2024 10:07:52 +0800
+	 In-Reply-To:Content-Type; b=tFolQvU7X8DTEhHng15EUj0e+wF/oGB4wT6KMAThse5m5ghYe5j7lkfA1NFnzA2jhK2yFV1IrnQS2RflM44gsX2d7qdpmhnTe2C1Qwtdd77/Jvq1asAvVeonOfAxhCh3rkAqdGR8xE6uLfegqtKCyp7Hn1vvB4chDUiPQgd73jc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=rVhOOc49; arc=none smtp.client-ip=115.124.30.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713838090; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=JQs1c1jzpb91mhq216H2pWWxZ2UC8kVx2WWVmJ8vFXQ=;
+	b=rVhOOc490kP5Ud23BeFhtErXHoQ1MS/tzJcAmoCpQCNRzWxOwQSG91ofmYcNb9ORJiKMIp6xi9FyTRlYk2vmONortCY6KCFFLAQTfV5nJ40ebwVKukVVRfWR5vHnkCkUeMI20V1FSWym7OlmaAt3T31wt9bdNlLPEm1xq1GhUDk=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W57ATDw_1713838087;
+Received: from 30.97.56.65(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W57ATDw_1713838087)
+          by smtp.aliyun-inc.com;
+          Tue, 23 Apr 2024 10:08:09 +0800
+Message-ID: <7380659d-4aa4-4214-abe9-48fb7f1abd00@linux.alibaba.com>
+Date: Tue, 23 Apr 2024 10:08:07 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,124 +48,80 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] f2fs: use per-log target_bitmap to improve lookup
- performace of ssr allocation
-To: jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-References: <20240411082354.1691820-1-chao@kernel.org>
-Content-Language: en-US
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <20240411082354.1691820-1-chao@kernel.org>
+Subject: Re: [PATCH v2] mm/huge_memory: improve
+ split_huge_page_to_list_to_order() return value documentation
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Zi Yan <ziy@nvidia.com>,
+ John Hubbard <jhubbard@nvidia.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>
+References: <20240422194217.442933-1-david@redhat.com>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20240422194217.442933-1-david@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Jaegeuk, any comments for this serials?
 
-On 2024/4/11 16:23, Chao Yu wrote:
-> After commit 899fee36fac0 ("f2fs: fix to avoid data corruption by
-> forbidding SSR overwrite"), valid block bitmap of current openned
-> segment is fixed, let's introduce a per-log bitmap instead of temp
-> bitmap to avoid unnecessary calculation overhead whenever allocating
-> free slot w/ SSR allocator.
+
+On 2024/4/23 03:42, David Hildenbrand wrote:
+> The documentation is wrong and relying on it almost resulted in BUGs in
+> new callers: ever since fd4a7ac32918 ("mm: migrate: try again
+> if THP split is failed due to page refcnt") we return -EAGAIN on
+> unexpected folio references, not -EBUSY.
 > 
-> Signed-off-by: Chao Yu <chao@kernel.org>
+> Let's fix that and also document which other return values we can
+> currently see and why they could happen.
+> 
+> Reviewed-by: Zi Yan <ziy@nvidia.com>
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 > ---
-> v2:
-> - rebase to last dev-test branch.
->   fs/f2fs/segment.c | 30 ++++++++++++++++++++++--------
->   fs/f2fs/segment.h |  1 +
->   2 files changed, 23 insertions(+), 8 deletions(-)
 > 
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index 6474b7338e81..af716925db19 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -2840,31 +2840,39 @@ static int new_curseg(struct f2fs_sb_info *sbi, int type, bool new_sec)
->   	return 0;
->   }
->   
-> -static int __next_free_blkoff(struct f2fs_sb_info *sbi,
-> -					int segno, block_t start)
-> +static void __get_segment_bitmap(struct f2fs_sb_info *sbi,
-> +					unsigned long *target_map,
-> +					int segno)
->   {
->   	struct seg_entry *se = get_seg_entry(sbi, segno);
->   	int entries = SIT_VBLOCK_MAP_SIZE / sizeof(unsigned long);
-> -	unsigned long *target_map = SIT_I(sbi)->tmp_map;
->   	unsigned long *ckpt_map = (unsigned long *)se->ckpt_valid_map;
->   	unsigned long *cur_map = (unsigned long *)se->cur_valid_map;
->   	int i;
->   
->   	for (i = 0; i < entries; i++)
->   		target_map[i] = ckpt_map[i] | cur_map[i];
-> +}
-> +
-> +static int __next_free_blkoff(struct f2fs_sb_info *sbi, unsigned long *bitmap,
-> +					int segno, block_t start)
-> +{
-> +	__get_segment_bitmap(sbi, bitmap, segno);
->   
-> -	return __find_rev_next_zero_bit(target_map, BLKS_PER_SEG(sbi), start);
-> +	return __find_rev_next_zero_bit(bitmap, BLKS_PER_SEG(sbi), start);
->   }
->   
->   static int f2fs_find_next_ssr_block(struct f2fs_sb_info *sbi,
-> -		struct curseg_info *seg)
-> +					struct curseg_info *seg)
->   {
-> -	return __next_free_blkoff(sbi, seg->segno, seg->next_blkoff + 1);
-> +	return __find_rev_next_zero_bit(seg->target_map,
-> +				BLKS_PER_SEG(sbi), seg->next_blkoff + 1);
->   }
->   
->   bool f2fs_segment_has_free_slot(struct f2fs_sb_info *sbi, int segno)
->   {
-> -	return __next_free_blkoff(sbi, segno, 0) < BLKS_PER_SEG(sbi);
-> +	return __next_free_blkoff(sbi, SIT_I(sbi)->tmp_map, segno, 0) <
-> +							BLKS_PER_SEG(sbi);
->   }
->   
->   /*
-> @@ -2890,7 +2898,8 @@ static int change_curseg(struct f2fs_sb_info *sbi, int type)
->   
->   	reset_curseg(sbi, type, 1);
->   	curseg->alloc_type = SSR;
-> -	curseg->next_blkoff = __next_free_blkoff(sbi, curseg->segno, 0);
-> +	curseg->next_blkoff = __next_free_blkoff(sbi, curseg->target_map,
-> +							curseg->segno, 0);
->   
->   	sum_page = f2fs_get_sum_page(sbi, new_segno);
->   	if (IS_ERR(sum_page)) {
-> @@ -4635,6 +4644,10 @@ static int build_curseg(struct f2fs_sb_info *sbi)
->   				sizeof(struct f2fs_journal), GFP_KERNEL);
->   		if (!array[i].journal)
->   			return -ENOMEM;
-> +		array[i].target_map = f2fs_kzalloc(sbi, SIT_VBLOCK_MAP_SIZE,
-> +								GFP_KERNEL);
-> +		if (!array[i].target_map)
-> +			return -ENOMEM;
->   		if (i < NR_PERSISTENT_LOG)
->   			array[i].seg_type = CURSEG_HOT_DATA + i;
->   		else if (i == CURSEG_COLD_DATA_PINNED)
-> @@ -5453,6 +5466,7 @@ static void destroy_curseg(struct f2fs_sb_info *sbi)
->   	for (i = 0; i < NR_CURSEG_TYPE; i++) {
->   		kfree(array[i].sum_blk);
->   		kfree(array[i].journal);
-> +		kfree(array[i].target_map);
->   	}
->   	kfree(array);
->   }
-> diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-> index e1c0f418aa11..10f3e44f036f 100644
-> --- a/fs/f2fs/segment.h
-> +++ b/fs/f2fs/segment.h
-> @@ -292,6 +292,7 @@ struct curseg_info {
->   	struct f2fs_summary_block *sum_blk;	/* cached summary block */
->   	struct rw_semaphore journal_rwsem;	/* protect journal area */
->   	struct f2fs_journal *journal;		/* cached journal info */
-> +	unsigned long *target_map;		/* bitmap for SSR allocator */
->   	unsigned char alloc_type;		/* current allocation type */
->   	unsigned short seg_type;		/* segment type like CURSEG_XXX_TYPE */
->   	unsigned int segno;			/* current segment number */
+> v1 -> v2:
+> * Also document concurrent removal from the page cache (likely we should
+>    return -EBUSY -- but likely it doesn't really matter).
+> * Reference fd4a7ac32918 in patch description
+> 
+> ---
+>   mm/huge_memory.c | 14 +++++++++++---
+>   1 file changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index ee12726291f1b..a7406267323ed 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2956,7 +2956,7 @@ bool can_split_folio(struct folio *folio, int *pextra_pins)
+>    *
+>    * 3) The folio must not be pinned. Any unexpected folio references, including
+>    *    GUP pins, will result in the folio not getting split; instead, the caller
+> - *    will receive an -EBUSY.
+> + *    will receive an -EAGAIN.
+>    *
+>    * 4) @new_order > 1, usually. Splitting to order-1 anonymous folios is not
+>    *    supported for non-file-backed folios, because folio->_deferred_list, which
+> @@ -2975,8 +2975,16 @@ bool can_split_folio(struct folio *folio, int *pextra_pins)
+>    *
+>    * Returns 0 if the huge page was split successfully.
+>    *
+> - * Returns -EBUSY if @page's folio is pinned, or if the anon_vma disappeared
+> - * from under us.
+> + * Returns -EAGAIN if the folio has unexpected reference (e.g., GUP) or if
+> + * the folio was concurrently removed from the page cache.
+> + *
+> + * Returns -EBUSY when trying to split the huge zeropage, if the folio is
+> + * under writeback, if fs-specific folio metadata cannot currently be
+> + * released, or if some unexpected race happened (e.g., anon VMA disappeared,
+> + * truncation).
+> + *
+> + * Returns -EINVAL when trying to split to an order that is incompatible
+> + * with the folio. Splitting to order 0 is compatible with all folios.
+>    */
+>   int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+>   				     unsigned int new_order)
+
+LGTM. Thanks for fixing the document that I missed:)
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
