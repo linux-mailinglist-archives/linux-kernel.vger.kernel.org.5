@@ -1,159 +1,162 @@
-Return-Path: <linux-kernel+bounces-155307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20A8B8AE896
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:49:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABFF38AE899
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:49:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0BA21F23859
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:49:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DD1E1F243D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE6113A246;
-	Tue, 23 Apr 2024 13:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CB59136E07;
+	Tue, 23 Apr 2024 13:49:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YXMcclPS"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uWi7oEC1";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bfeC/poB";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="v7xoW3W8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ecrfcJ4o"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A5C139CE4;
-	Tue, 23 Apr 2024 13:48:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA1518E28;
+	Tue, 23 Apr 2024 13:49:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713880081; cv=none; b=UPIx0CG9uHQ4D7rauJxE4pf52RoPW0zshuWUA1BWPTRhU1iFZzO+SEo8z1j87ASpCm2nBZZw5HgPLnsz+O7myFDTcf0DruZQ5jGxhLx0zyiawrdAVwc/TxFeJLgAAn8vSX1Cz5L6hOgaZ9vY66ktI8HZmDz8r01A+o1j2RI8VtE=
+	t=1713880174; cv=none; b=POb0TGc5hWaG0PMvobsTXEYtf31zQgnES8hY+OgC9qZlzWH5S25IVIfdO7NQUA2m75Brmky8ycp3/kSqN4+yKkkVoLChwtUT3ijUU17xdo87lhRxYHmo9XZysfwP+lWMiC/smXGUhqCQFna6mMi5DmSxY3bVwH1A91mDfLtNb3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713880081; c=relaxed/simple;
-	bh=y7Dn96ugvzlC/fk+MWurHAoRm3fMDnGgcPR8W5+vqVk=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=UZGi0raQE83vfIIdXzhjix6h2EHLYfQIlu874A0fqgf2u/y0uem7UZ3gz2t+iSVbhnsh02quo8mviO5SdgtRVby2A7OYP3xrwUawCu7h5YXC5mwuVYkAHTnoIRpZd8P2sRpTB09B7RXkW5sVkMhA10lQwwJ5odYwCy6pwtcpSh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YXMcclPS; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713880081; x=1745416081;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=y7Dn96ugvzlC/fk+MWurHAoRm3fMDnGgcPR8W5+vqVk=;
-  b=YXMcclPSjxK2/3aCS5GMtdKaPQ2j/KxxdMYUb7OkCcHqt+t7kH3lnJa9
-   QrtzH08rDpzEbv3SnuEAUIwHTKvLC7jX1cU2xPD9FOWYhBA85g1AZVvY6
-   lKLarmnzuZDJNMyfwTiCKiTiraawz6TwYMPgSznC2y6EXQSc8Bn3p4cwB
-   LgvLLTUf4+FY9pfBU0xuGlEzY31gM49gut183EqCmZfXZ6m5K+QyvK6Se
-   nLuFuamctWkwOmEeIBsjbiqY56QL+1ya9JgHT6znTggIJCNgbqd7/JSpg
-   8wLZ/Xo668jK4UfPlIm1lVnS/XHSksnPsQC53bWzHDrS5KJiseJz7Kvr7
-   g==;
-X-CSE-ConnectionGUID: zpPTa7NCRbe1esiX4IPBiA==
-X-CSE-MsgGUID: XM8UpB/FSpy8JUoIi7fGVw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="13296914"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="13296914"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 06:48:00 -0700
-X-CSE-ConnectionGUID: BkcXkZPRS0S3k78O4PCmZQ==
-X-CSE-MsgGUID: U3NDdzEdTHSANk8ap3Fl9Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24881235"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.40])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 06:47:57 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 23 Apr 2024 16:47:53 +0300 (EEST)
-To: Aapo Vienamo <aapo.vienamo@linux.intel.com>
-cc: Linus Walleij <linus.walleij@linaro.org>, 
-    Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
-    linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
-    Mika Westerberg <mika.westerberg@linux.intel.com>, 
-    Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] gpio: Add Intel Granite Rapids-D vGPIO driver
-In-Reply-To: <20240419080555.97343-1-aapo.vienamo@linux.intel.com>
-Message-ID: <b3f2fad7-85aa-d1db-46ab-b3debd84caa7@linux.intel.com>
-References: <20240419080555.97343-1-aapo.vienamo@linux.intel.com>
+	s=arc-20240116; t=1713880174; c=relaxed/simple;
+	bh=NhKe2YHGl5ISjIZ1V9kL7vfU+zEcRpuhapiZo1nEUQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rZKwxxrj2PFQ2cTAfTGr+rn/ibBZy/NHqRrn55otcrq2+n1lSxnWVZidSEripEm87CgBj+B1OaTZq8ZfS+sy21vU8diQPWjF7DwKYCxV2MrUnHrrvmhwwg3hy/HMWqXpbYSGJULedb+cagp4hGGiw+ZeFNHKxy5XYYv6OjD6eTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uWi7oEC1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bfeC/poB; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=v7xoW3W8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ecrfcJ4o; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5ACC25FFCA;
+	Tue, 23 Apr 2024 13:49:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713880169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=54otsI6UoDqq+k+Xp9PPa5eDRRf1d2Mx1uUAtmPc1nE=;
+	b=uWi7oEC1LjmnzCwJirxtgcLddCwnd9NotMB8y7eRO9J9kGaDCe+rOmCjEVCVg9h2cjw5Yk
+	msPVQj2z5TreO/tsDdFzjqCDU0iWfxRnmwjUPY9Q/410gWvVz2tuHA0C8JM29HQB5yfgK5
+	uSCCtyBJxJJbAu29AGHnGnrt9b1zs0c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713880169;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=54otsI6UoDqq+k+Xp9PPa5eDRRf1d2Mx1uUAtmPc1nE=;
+	b=bfeC/poBWxtSr94p6O5hAG6FYErmI0upu0VH1RgrY+qoBJ3dvgUGfZewJKznCz9Pr8tymr
+	TEGg2403KrLE1nDg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713880168; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=54otsI6UoDqq+k+Xp9PPa5eDRRf1d2Mx1uUAtmPc1nE=;
+	b=v7xoW3W8AAYjvlxIVXWQwGqud55udGK5f1upOXiEuBsyvkRJpUn15V4gmfENMwNiMGT8Qh
+	/Nb3uDQNCzaqz4cEcaRi0gxiCTTsFGnxkkj8aK/6SKm1Gu2Yq0qH7s3JZ+0Rs+lro4KD47
+	nF4SYUQqwVgHQ9w5XnKhGmb2+FcYAVY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713880168;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=54otsI6UoDqq+k+Xp9PPa5eDRRf1d2Mx1uUAtmPc1nE=;
+	b=ecrfcJ4oxak7KaLj9A+5Cxr6ZMfddeMazoCRfrPaFrX5pqCcxyG7XQUDCghu1zJyaObgRn
+	JFouHs3ce8B7nWCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4161C13929;
+	Tue, 23 Apr 2024 13:49:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id AB2mD2i8J2ahbwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 23 Apr 2024 13:49:28 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id DF70BA082F; Tue, 23 Apr 2024 15:49:23 +0200 (CEST)
+Date: Tue, 23 Apr 2024 15:49:23 +0200
+From: Jan Kara <jack@suse.cz>
+To: Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+	tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH -next] cgroup: Introduce css_is_online() helper
+Message-ID: <20240423134923.osuljlalsd27awz3@quack3>
+References: <20240420094428.1028477-1-xiujianfeng@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240420094428.1028477-1-xiujianfeng@huawei.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[99.98%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,huawei.com:email,suse.cz:email]
+X-Spam-Score: -3.80
+X-Spam-Flag: NO
 
-On Fri, 19 Apr 2024, Aapo Vienamo wrote:
-
-> This driver provides a basic GPIO driver for the Intel Granite Rapids-D
-> virtual GPIOs. On SoCs with limited physical pins on the package, the
-> physical pins controlled by this driver would be exposed on an external
-> device such as a BMC or CPLD.
+On Sat 20-04-24 09:44:28, Xiu Jianfeng wrote:
+> Introduce css_is_online() helper to test if whether the specified
+> css is online, avoid testing css.flags with CSS_ONLINE directly
+> outside of cgroup.c.
 > 
-> Signed-off-by: Aapo Vienamo <aapo.vienamo@linux.intel.com>
-> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
 
+Looks good. Feel free to add:
 
-> diff --git a/drivers/gpio/gpio-graniterapids.c b/drivers/gpio/gpio-graniterapids.c
-> new file mode 100644
-> index 000000000000..61bcafe1985e
-> --- /dev/null
-> +++ b/drivers/gpio/gpio-graniterapids.c
-> @@ -0,0 +1,382 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+One style nit below:
+
 > +/*
-> + * Intel Granite Rapids-D vGPIO driver
-> + *
-> + * Copyright (c) 2024, Intel Corporation.
-> + *
-> + * Author: Aapo Vienamo <aapo.vienamo@linux.intel.com>
+> + * css_is_online - test whether the specified css is online
+> + * @css: target css
 > + */
-> +
-> +#include <linux/array_size.h>
-> +#include <linux/bitmap.h>
-> +#include <linux/cleanup.h>
-> +#include <linux/device.h>
-> +#include <linux/err.h>
-> +#include <linux/gfp_types.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +#include <linux/irq.h>
-> +#include <linux/math.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/overflow.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/types.h>
-> +
-> +#include <linux/gpio/driver.h>
-> +
-> +#define GNR_NUM_PINS 128
-> +#define GNR_PINS_PER_REG 32
-> +#define GNR_NUM_REGS DIV_ROUND_UP(GNR_NUM_PINS, GNR_PINS_PER_REG)
-> +
-> +#define GNR_CFG_BAR		0x00
-> +#define GNR_CFG_LOCK_OFFSET	0x04
-> +#define GNR_GPI_STATUS_OFFSET	0x20
-> +#define GNR_GPI_ENABLE_OFFSET	0x24
-> +
-> +#define GNR_CFG_DW_RX_MASK	(3 << 22)
+> +static inline bool css_is_online(struct cgroup_subsys_state *css)
+> +{
+> +	return !!(css->flags & CSS_ONLINE);
+> +}
 
-GENMASK()
+Since the return type is 'bool', you don't need the !! magic in the
+statement above.
 
-+ #include <linux/bits.h>
-
-> +#define GNR_CFG_DW_RX_DISABLE	(2 << 22)
-> +#define GNR_CFG_DW_RX_EDGE	(1 << 22)
-> +#define GNR_CFG_DW_RX_LEVEL	(0 << 22)
-
-FIELD_PREP(GNR_CFG_DW_RX_MASK, xx) x 3
-
-> +#define GNR_CFG_DW_RXDIS	BIT(4)
-> +#define GNR_CFG_DW_TXDIS	BIT(3)
-> +#define GNR_CFG_DW_RXSTATE	BIT(1)
-> +#define GNR_CFG_DW_TXSTATE	BIT(0)
-
-These require #include <linux/bits.h> (just pointing this out so you know
-in future, you'll need to add it anyway for GENMASK() as mentioned above).
-
+								Honza
 -- 
- i.
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
