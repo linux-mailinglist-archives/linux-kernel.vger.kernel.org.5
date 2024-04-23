@@ -1,127 +1,151 @@
-Return-Path: <linux-kernel+bounces-155922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 214148AF8E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:29:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CEB38AF8E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:27:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E29FB26A54
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:29:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DF881C23065
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:27:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B37414388C;
-	Tue, 23 Apr 2024 21:28:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D533143889;
+	Tue, 23 Apr 2024 21:27:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="l08TqcJ3"
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WorFhiHq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CD32143886
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 21:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D182313CFA4;
+	Tue, 23 Apr 2024 21:27:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713907712; cv=none; b=GHplIOvCri0MT5wDQWsvmAptiqX9/08FODx1Fu4NKnbUqM3E9dcmik9yL2ZoHjk7JWFNulMOCXdM4z9HD1jKnv4p9cwmHMpqLItwciUSQswIB6chU3cCMHrEggrvXzwKi0rHBaPzi895v6gZDBPMPyD9EsnubRoaZnUujZqA3NA=
+	t=1713907641; cv=none; b=p1uF2JS+4bjYuKGH3E3DqWZF6L0cquMW6jNTy9bdllCtDPUbViW2+C+JxnUzw+J8UioFaLxQIe1mgJFzAGgJILsgP9y2lfBISuoqj8vxZ/jggooTYtLVwV1k9+q3Lvxfk1j0VLxxjIkkfZhHPDzMVDE33WY5S0rUUA0ZQjR5o9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713907712; c=relaxed/simple;
-	bh=AR4/jfl18d1BrNGvop+qwiaQnL9UlAgiNSZUFkUuPkA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ubo3L5zJT3arEIX9SK758fPXu4jEpd/zdaAK38Jv0QvEQpfMR8oZggLTlML8b0Q5raf7AoP6js817kiqMEoCoKNiIvEaJ0FNc5NebPo2roiXB3IIf02Z+Y2kphwtKzYmO06PjW+wtvjPnrCqFhqGVlMpIhBScdsIYJkzZdqPs88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=l08TqcJ3; arc=none smtp.client-ip=35.89.44.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
-	by cmsmtp with ESMTPS
-	id zKeprByZCPM1hzNfDrQArS; Tue, 23 Apr 2024 21:26:55 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id zNfDrNGzs9zHMzNfDrACR8; Tue, 23 Apr 2024 21:26:55 +0000
-X-Authority-Analysis: v=2.4 cv=fo4XZ04f c=1 sm=1 tr=0 ts=6628279f
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=Sfg9OT4WXbNM99GaDXVDBA==:17
- a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=wYkD_t78qR0A:10
- a=VdDABtCXyk9SiVsiCNMA:9 a=QEXdDO2ut3YA:10 a=QYH75iMubAgA:10
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=AwENOt2jGw9fqo5gAkt7vsoIvQip3Njh2Yjyg0AisJ8=; b=l08TqcJ3vWK9Wbr79qe0LKF9pk
-	/UJRjVPioyW4djkhv7WQgP6YIOo/Uqi7x1GunjpStme8J2jG0ltsOeEIvwKwOvxsxtlmhTTVqLev0
-	93tqWOfrGtVNHzv5cLn+EZEXms//gISVtrYurCM5KiIfT4Rnvr3k4iBkJB+ehB9MQ4CivF0LTzZ/2
-	U0oYelpSUWSqvnED/SgmJZEAwrkec2xCuxT2Q0vjqvBFtI6IQx7Ochy8qFI9j1ogo0Zcwni/U3q+G
-	3StbiX5bHRxlg4WQKW4sKzZQm2VcCm9mOxxgIuNphMpO6GTk3hCtYimXYEpSR6v8u6X+E41+Cv1a9
-	qRYkP2tw==;
-Received: from [45.167.200.115] (port=1190 helo=[192.168.5.44])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rzNfA-002j2b-2J;
-	Tue, 23 Apr 2024 16:26:53 -0500
-Message-ID: <509125aa-9f92-438c-9a18-2cf3400d7194@embeddedor.com>
-Date: Wed, 24 Apr 2024 07:26:30 +1000
+	s=arc-20240116; t=1713907641; c=relaxed/simple;
+	bh=6tyOviKiBGRE0qFEG4rgVtjiOf1N2SmnrIhbrSSblFM=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=e/wnaZP5iyWvx03bjFUImTACAoD5+84JCRzHmtk1L0SSjHwsoGhu9rQcBCH/KuGXnpm/zkcdnhbO847+kl53+14kjMg7V3FpXx0eENx3WsjqItbEAaos/3xOyk69f68aPz5bc3AEGau/RsR0YgaVILS6hZZA3Em+WhJeGsUnDlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WorFhiHq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF370C116B1;
+	Tue, 23 Apr 2024 21:27:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713907641;
+	bh=6tyOviKiBGRE0qFEG4rgVtjiOf1N2SmnrIhbrSSblFM=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=WorFhiHqcbeV3/CwVjWejS3bkBiOqKie8srE3Rr5L+dbRjfSHk4b5W1txDeLGyKGe
+	 icYTJc5wtl27xguinwLwZq/Ma8VerE313J/eFen1ZscxaU8OIt3RTiGiQCYIeWftTK
+	 abslo5e/o8QMDU9l3jPz09NSGV5S0RxaQqShk8XqVmhPCm9vwsv2BAd75QPO3YjGSK
+	 g6+Goq9f7MOto6mjYCN3hFXyI2SfCKzHB1TAyfdHuXLDXHgFYoLuk7p0BMpYPTGzm7
+	 NLAbqAynui7rRAQqF3nkGG1PrAXtosRnAJrCWHlHT1GmghPSWGZ9Nwqyp6xv5tYIhC
+	 rHn6PagUBB98A==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] smb: smb2pdu.h: Avoid
- -Wflex-array-member-not-at-end warnings
-To: Steve French <smfrench@gmail.com>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>,
- Ronnie Sahlberg <ronniesahlberg@gmail.com>,
- Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
- Bharath SM <bharathsm@microsoft.com>, Namjae Jeon <linkinjeon@kernel.org>,
- Sergey Senozhatsky <senozhatsky@chromium.org>, linux-cifs@vger.kernel.org,
- samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
-References: <ZhgDTj1nwLEtSd9h@neat>
- <1166494b-3e34-4919-9998-141540a948b3@embeddedor.com>
- <CAH2r5msZaV1kHqQw8Sb_3wQfGBj4aU+tSCR5E0YJ8fCH6ODB4Q@mail.gmail.com>
- <7789881d-a709-48f4-8c14-259acbce813a@embeddedor.com>
- <CAH2r5mu=HYqSnT3j=mdLA7XPyha5A27tBqzJcEZfMAU-yLunbA@mail.gmail.com>
-Content-Language: en-US
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <CAH2r5mu=HYqSnT3j=mdLA7XPyha5A27tBqzJcEZfMAU-yLunbA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 45.167.200.115
-X-Source-L: No
-X-Exim-ID: 1rzNfA-002j2b-2J
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.5.44]) [45.167.200.115]:1190
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 18
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfCM7vYIa4rShS5KSlJkUu2jchL5Lhl4Yr3UjcZasxJeNhY1RH4ZN8xElPBq/Gbusals2eikByQNU7khQyyv7tCm5dQ1Bq1m1Hg7kmy/fjR2K+w3pzRKT
- J3ZhwHv/X48Oo3IhwfVUUYn5+C9we1Sukxsyg2LqoX3ZOOglQYCwwBacIvqexS3Zhob5y7zlzdh1FhCSDW5c1iC1aUlE0IrvvY6NDl9m98Jx3wJRVzd17+rk
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 24 Apr 2024 00:27:18 +0300
+Message-Id: <D0RTJVEHLLZ8.3967ZI3I5UO28@kernel.org>
+Cc: "Liu, Shuang" <ls123674@antgroup.com>
+Subject: Re: [RFC PATCH 1/1] x86/sgx: Explicitly give up the CPU in EDMM's
+ ioctl() to avoid softlockup
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Reinette Chatre" <reinette.chatre@intel.com>, "Huang, Kai"
+ <kai.huang@intel.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "zhubojun.zbj@antgroup.com"
+ <zhubojun.zbj@antgroup.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "dave.hansen@linux.intel.com"
+ <dave.hansen@linux.intel.com>
+X-Mailer: aerc 0.17.0
+References: <20240423092550.59297-1-zhubojun.zbj@antgroup.com>
+ <20240423092550.59297-2-zhubojun.zbj@antgroup.com>
+ <02fe00c3b10e4476d500ad7a34024b7eae5e3c97.camel@intel.com>
+ <bfdb5787-65db-4c64-bce1-d39f37ad09fa@intel.com>
+In-Reply-To: <bfdb5787-65db-4c64-bce1-d39f37ad09fa@intel.com>
 
+On Tue Apr 23, 2024 at 8:08 PM EEST, Reinette Chatre wrote:
+> Hi Kai,
+>
+> On 4/23/2024 4:50 AM, Huang, Kai wrote:
+> >> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx=
+/ioctl.c
+> >> index b65ab214bdf5..2340a82fa796 100644
+> >> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
+> >> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+> >> @@ -806,6 +806,9 @@ sgx_enclave_restrict_permissions(struct sgx_encl *=
+encl,
+> >>  		}
+> >> =20
+> >>  		mutex_unlock(&encl->lock);
+> >> +
+> >> +		if (need_resched())
+> >> +			cond_resched();
+> >>  	}
+> >> =20
+> >>  	ret =3D 0;
+> >> @@ -1010,6 +1013,9 @@ static long sgx_enclave_modify_types(struct sgx_=
+encl *encl,
+> >>  		entry->type =3D page_type;
+> >> =20
+> >>  		mutex_unlock(&encl->lock);
+> >> +
+> >> +		if (need_resched())
+> >> +			cond_resched();
+> >>  	}
+> >> =20
+> >>  	ret =3D 0;
+> >> @@ -1156,6 +1162,9 @@ static long sgx_encl_remove_pages(struct sgx_enc=
+l *encl,
+> >>  		kfree(entry);
+> >> =20
+> >>  		mutex_unlock(&encl->lock);
+> >> +
+> >> +		if (need_resched())
+> >> +			cond_resched();
+> >>  	}
+> >>
+> >=20
+> > You can remove the need_reshced() in all 3 places above but just call
+> > cond_resched() directly.
+> >=20
+>
+> This change will call cond_resched() after dealing with each page in a
+> potentially large page range (cover mentions 30GB but we have also had to
+> make optimizations for enclaves larger than this). Adding a cond_resched(=
+)
+> here will surely placate the soft lockup detector, but we need to take ca=
+re
+> how changes like this impact the performance of the system and having act=
+ions
+> on these page ranges take much longer than necessary.
+> For reference, please see 7b72c823ddf8 ("x86/sgx: Reduce delay and interf=
+erence
+> of enclave release") that turned frequent cond_resched() into batches
+> to address performance issues.
+>
+> It looks to me like the need_resched() may be a quick check that can be u=
+sed
+> to improve performance? I am not familiar with all use cases that need to=
+ be
+> considered to determine if a batching solution may be needed.
 
->> The _packed in the commit 0268a7cc7fdc is not an attribute, it's the name
->> for the group. So, it's not actually doing what the submitter thinks it does.
-> 
-> Do you want to submit a followup fix to fix this?  Or let Namjae fix it?
-> 
+Ya, well no matter it is the reasoning will need to be documented
+because this should have symmetry with sgx_ioc_enclave_add_pages()
+(see my response to Kai).
 
-The fix is correct. I'm sorry, I confused the suffix `_attr` with `_tagged` in
-the struct_group() family of functions.
+I because this makes dealing with need_resched() a change in code
+even if it is left out as a side-effect, I'd support of not removing
+which means adding need_resched() as a side-effect.
 
-I've been in airports the last 24 hours, and I my brain needs some rest.
+From this follows that *if* need_resched() needs to be removed then
+that is not really part of the bug fix, so in all cases the bug fix
+itself must include need_resched() :-)
 
-Thanks!
---
-Gustavo
+phew, hope you got my logic here, i think it reasonable...
+
+BR, Jarkko
 
