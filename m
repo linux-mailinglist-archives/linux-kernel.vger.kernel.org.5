@@ -1,139 +1,80 @@
-Return-Path: <linux-kernel+bounces-155120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEC518AE584
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:07:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70D3D8AE585
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:07:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69FD81F21AA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:07:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F41D1F21A9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:07:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C250134CFC;
-	Tue, 23 Apr 2024 12:02:21 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28A241350E8;
+	Tue, 23 Apr 2024 12:02:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VHJePlC8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B788564A;
-	Tue, 23 Apr 2024 12:02:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70E5785645
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:02:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713873741; cv=none; b=Nv//M0VXEsoJgVgC2ER0PAa9TbVqB8VANlpEbLkumDddNxEmvCrKiLTnh2Dh+xGPDqBPvj8CEd2FWuliWwJvvAlymnioprw16uP8dAainmSsMIINJeUflb16FEMWvUBRcNqoH3BMTUHZ+p9ceV82oqJcgBcRCM9HetQxlS3hCQY=
+	t=1713873745; cv=none; b=u0aIXLVz1ZK4fvd0eojUkP4zZaDDL+5zer3rn8t+BUtlTZq6p/I91LsqZ8JA3Q7yeUP/6GRxTPggrz0PQOLIDFMhgyxDeP0LtHCGhj4C+UFpV5zaNUty2BpvUzW0UB1SYMlougnHuu+LCHLjSYNyjXZ72mftqS/9EzwqqvpfXTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713873741; c=relaxed/simple;
-	bh=hfKlsY4ZX33lVwyiKtYcBze9pmY4qL8hQv67+y8Zpf4=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=syN+jajb8+TG5ig4end0QvVVVd46Hd0SLI6i58aF07hCWEPfBn2RsHelSC7cBC92QmiKfZmXMk83uAiXYl3UTwilbaW36mOktA3VFcZwTZRQg73m+qqVrT4Pw0wShbVB6yXOja6e1FyVjzW2nDpz6puLgO91e54sKf+GWAcD2yI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VP0zN61SJzNngf;
-	Tue, 23 Apr 2024 19:59:44 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (unknown [7.185.36.229])
-	by mail.maildlp.com (Postfix) with ESMTPS id 38ED71403D4;
-	Tue, 23 Apr 2024 20:02:15 +0800 (CST)
-Received: from [10.174.178.247] (10.174.178.247) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 23 Apr 2024 20:02:14 +0800
-Subject: Re: [PATCH v7 07/16] ACPI: scan: switch to flags for
- acpi_scan_check_and_detach()
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Thomas Gleixner
-	<tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
-	<linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>, <x86@kernel.org>, Russell King
-	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, Miguel
- Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
-	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
- Hansen <dave.hansen@linux.intel.com>, <linuxarm@huawei.com>,
-	<justin.he@arm.com>, <jianyong.wu@arm.com>
-References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
- <20240418135412.14730-8-Jonathan.Cameron@huawei.com>
-From: Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <c85a710b-c4b5-1b7d-c9dd-db6207776ef2@huawei.com>
-Date: Tue, 23 Apr 2024 20:02:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+	s=arc-20240116; t=1713873745; c=relaxed/simple;
+	bh=vjqw66gxg/k9RXm6AmFoqyNmXnRBIYP9D+Q0yn+Hl1s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RIWIhwvjNWB1yg882F/eYUaToUzSo7N4NwowL4H6FNLSlSb++MPRpP6q6NNFi2/wBS9lrebzWrFEMcwnO2MaAplt50XDQW52ytrcbGEoXIbLhqBl5IOdIi3HO0OzhOkV0ptL8Pjt9aNb2yYYBqrimnUEwfNPWccd7UrTTFAqk80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VHJePlC8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40E79C3277B;
+	Tue, 23 Apr 2024 12:02:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713873745;
+	bh=vjqw66gxg/k9RXm6AmFoqyNmXnRBIYP9D+Q0yn+Hl1s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VHJePlC8LmSMSnm/X7ALvprhDUROvJksMQVYLlYpEUPTnr7aV+I/Jpe3KIiJJjfEd
+	 HK4/B/F97gzwuh/6eDE1qGIUFYLAym/OlZGwLYhG8Ew67iDed1sfbVDIJP+gT182sa
+	 1r73mvuw+JjCxWHgKccUR33KFhYaBZ9vqq36K7bJeMXRk/mTuxzGhbeERTLk0Qe+od
+	 ce9I48bSCv8hWUgFaGfrVy9eJuVa07bL3I0bsZs1iO+5eRctXGRzX/dOqHHCoRdOoR
+	 nSOACPHFE21kyfrTkjcBywuVBzeGZAmr4QY++Vm7RNVO+Udi5HqCRbZTnxN5VcNQtX
+	 iqgZnDkBREeRQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rzEqt-000000005PS-1iZ6;
+	Tue, 23 Apr 2024 14:02:23 +0200
+Date: Tue, 23 Apr 2024 14:02:23 +0200
+From: Johan Hovold <johan@kernel.org>
+To: srinivas.kandagatla@linaro.org
+Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] ASoC: qcom: common: add Display port Jack function
+Message-ID: <ZiejT5yddioQ8upR@hovoldconsulting.com>
+References: <20240422134354.89291-1-srinivas.kandagatla@linaro.org>
+ <20240422134354.89291-3-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240418135412.14730-8-Jonathan.Cameron@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500002.china.huawei.com (7.185.36.229)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240422134354.89291-3-srinivas.kandagatla@linaro.org>
 
-On 2024/4/18 21:54, Jonathan Cameron wrote:
-> Precursor patch adds the ability to pass a uintptr_t of flags into
-> acpi_scan_check_and detach() so that additional flags can be
-> added to indicate whether to defer portions of the eject flow.
-> The new flag follows in the next patch.
-> 
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> 
-> ---
-> v7: No change
-> v6: Based on internal feedback switch to less invasive change
->      to using flags rather than a struct.
-> ---
->   drivers/acpi/scan.c | 17 ++++++++++++-----
->   1 file changed, 12 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index d1464324de95..1ec9677e6c2d 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -244,13 +244,16 @@ static int acpi_scan_try_to_offline(struct acpi_device *device)
->   	return 0;
->   }
->   
-> -static int acpi_scan_check_and_detach(struct acpi_device *adev, void *check)
-> +#define ACPI_SCAN_CHECK_FLAG_STATUS	BIT(0)
-> +
-> +static int acpi_scan_check_and_detach(struct acpi_device *adev, void *p)
->   {
->   	struct acpi_scan_handler *handler = adev->handler;
-> +	uintptr_t flags = (uintptr_t)p;
->   
-> -	acpi_dev_for_each_child_reverse(adev, acpi_scan_check_and_detach, check);
-> +	acpi_dev_for_each_child_reverse(adev, acpi_scan_check_and_detach, p);
->   
-> -	if (check) {
-> +	if (flags & ACPI_SCAN_CHECK_FLAG_STATUS) {
->   		acpi_bus_get_status(adev);
->   		/*
->   		 * Skip devices that are still there and take the enabled
-> @@ -288,7 +291,9 @@ static int acpi_scan_check_and_detach(struct acpi_device *adev, void *check)
->   
->   static void acpi_scan_check_subtree(struct acpi_device *adev)
->   {
-> -	acpi_scan_check_and_detach(adev, (void *)true);
-> +	uintptr_t flags = ACPI_SCAN_CHECK_FLAG_STATUS;
-> +
-> +	acpi_scan_check_and_detach(adev, (void *)flags);
->   }
->   
->   static int acpi_scan_hot_remove(struct acpi_device *device)
-> @@ -2601,7 +2606,9 @@ EXPORT_SYMBOL(acpi_bus_scan);
->    */
->   void acpi_bus_trim(struct acpi_device *adev)
->   {
-> -	acpi_scan_check_and_detach(adev, NULL);
-> +	uintptr_t flags = 0;
-> +
-> +	acpi_scan_check_and_detach(adev, (void *)flags);
->   }
->   EXPORT_SYMBOL_GPL(acpi_bus_trim);
+On Mon, Apr 22, 2024 at 02:43:52PM +0100, Srinivas Kandagatla wrote:
+ 
+>  static const struct snd_soc_dapm_widget qcom_jack_snd_widgets[] = {
+>  	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+>  	SND_SOC_DAPM_MIC("Mic Jack", NULL),
+> +	SND_SOC_DAPM_SPK("HDMI/DP0 Jack", NULL),
+> +	SND_SOC_DAPM_SPK("HDMI/DP1 Jack", NULL),
+> +	SND_SOC_DAPM_SPK("HDMI/DP2 Jack", NULL),
 
-Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+Shouldn't these be split in dedicated HDMI and DP jacks too? What if you
+have a machine with HDMI and DP jacks which would otherwise both claim
+"HDMI/DP0"?
+
+Johan
 
