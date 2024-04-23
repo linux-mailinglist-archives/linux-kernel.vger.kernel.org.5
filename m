@@ -1,166 +1,106 @@
-Return-Path: <linux-kernel+bounces-154518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A1BE8ADD0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:12:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C2878ADD11
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:17:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E6261C2139A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:12:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2369B221A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:17:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA50208A0;
-	Tue, 23 Apr 2024 05:12:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A2F3208A7;
+	Tue, 23 Apr 2024 05:17:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SBr3y4v3"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CIO6khEz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B66D81CA82
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 05:12:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2B41B966
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 05:17:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713849122; cv=none; b=n7m1gm+hIj7wOw6AX8sN+WuSzRhEKGFXz9V39VTcKBvUqaZYZ7iKGaeAhG4YLlkQXqyvHjPC28Oa+QTwuhbW/McWuX/tgqC2MQR84++bK/micbNIXFiXmo4X454TKxNXz6Sm5uyiUhFMhrFH3CFaGqnxaWSm1l37RRXzkrltdIc=
+	t=1713849456; cv=none; b=NNoSsXa2xhRFInvKs7ac7dJAixrl5eKVf9RVw5Jvb7VXRHYFrj/OXxcbb8KyUtbskJydr1LIMFvXqmrL/03lX+bPYHEUJfhuYjcsBuCb5oDGLYKm8TbQ8g+5KcKp7p00L8gjFj00ZSYMaCarTtprp4m68N+50odWLAneEL6kDCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713849122; c=relaxed/simple;
-	bh=deKjbTQrX2Kr2a+JaHlLXbv8YBnP4MnlhZJmmMO6fFo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=enA8Bejj77pOzNCZtPqtTm8IcTBmhhvjIa7mLXFBY+lpC3HhHmY85gDttiSX93hoHXH5FJr05VxxNF/1EKc1LBPLTIPO6jTEBZzXBNrh8PLUs45PzWF9pbdAwTVDd+Vzn3N5jlrAiyekwbUsZJyp6srAPAJx7DJJlFj1SmNK6yo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SBr3y4v3; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2db7c6b5598so68162311fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 22:12:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713849119; x=1714453919; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YZ2pAl6U7OSdp/ImmnBqXaV8FpFqgZHPz2bwq5kVVXc=;
-        b=SBr3y4v3qyxn4PwlgSnZeu/nvx0ILaSdlqSh1HQVnaYRaGtsVGYkKfhpvXILTazQfF
-         eOzbJ4I5svT+6SWwO5HBLLVh0Kz+VEizZ+1MEFpl9+E8E/WwG4sdCvfQhmfHBrdIhdc/
-         9JAb2LwcyGMIssCS28Kjbv0oBkrWBp8YAvolF2v5D56AhqkfGolzx3aENMUu/z03QJtd
-         /sP92sDwLcJrNdof7aB9L2sOKUW2n/BBY8ik/DxQh7FXd+596E4QenQTTOn4Lpdo7pgY
-         2zSyLerZ1lGpdoWQXNWWcp04KZ9zkc2saLiRyT8yzKhkTA9l10pdLmW8JWPI+UMoXRB1
-         DPXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713849119; x=1714453919;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YZ2pAl6U7OSdp/ImmnBqXaV8FpFqgZHPz2bwq5kVVXc=;
-        b=rAbGb5QACY5SCtO607pX6oGHxYInsAjEPA7Ao/cgBohC51y0Ao8uht5fye8QoryQPK
-         TVKmNpQyY7LnkCxA8jMszcbOFIlpgz1huZRd78zKvJ7/63iun5wrNG36uqHIkcE58gqh
-         FrGDyRmV0tX4Sd5f44cQfKMoO7gMAGYJPnUzFY76cW7nIEDpHbFES9Czm+HyGg42fTpC
-         0BRyww4NzHL4/7KDb/oBRN0ExNlkBJvY84pLaQXbIn17MPFZUWTJU6nuSQgRs0jvmq0w
-         FeBd2NpKjpe9hREUqLNWXG/pSkn0zc1e1ks+ci0MzCPL0mc8klibSgxA3ksP4B3z7vXo
-         KvsA==
-X-Forwarded-Encrypted: i=1; AJvYcCV2u947wBj5NV+WNmhKaU4/AOlQIJbZ8Y/Z4YL4H4nkGN6tlyZ4XmTshomGo36qk5esu7VUoZWYibgaPzHv3RIxZ+ndgY+LOTQ6PNsq
-X-Gm-Message-State: AOJu0Yz/Yoy/ssor594/5hGi+ICbGrbS8HoT0zPgbKpvnUs5LeQglM50
-	KBaSsyLbcXkO9Ky8ghkS6aKdvyW20P1RETk0hUrN/0D+Ep3bndy0
-X-Google-Smtp-Source: AGHT+IFJgFMRB9WwbskKeMis0h4clRoakWvs85bvcXXeKC93DPxeLg8zJS48963UCHJSSgRKPneUZw==
-X-Received: by 2002:a05:651c:218:b0:2dd:985d:9915 with SMTP id y24-20020a05651c021800b002dd985d9915mr2878323ljn.53.1713849118642;
-        Mon, 22 Apr 2024 22:11:58 -0700 (PDT)
-Received: from ?IPV6:2a10:a5c0:800d:dd00:8cfe:d6e7:6701:9dfd? ([2a10:a5c0:800d:dd00:8cfe:d6e7:6701:9dfd])
-        by smtp.gmail.com with ESMTPSA id f16-20020a2e9190000000b002d89c1f0d9csm1543685ljg.69.2024.04.22.22.11.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 22:11:58 -0700 (PDT)
-Message-ID: <b8856e9a-1720-4e22-bf97-8cf074983c34@gmail.com>
-Date: Tue, 23 Apr 2024 08:11:57 +0300
+	s=arc-20240116; t=1713849456; c=relaxed/simple;
+	bh=HeotCJcghQNRi29l1z9kedkrAnyUVRoEWfii/QDKt8g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mwReKL9cW9Q/U772T57gqB7II0ASiLR+BYD2Dp1bYFVdAfYUUACnYhtpfxkLs2Zcv0J2TOkzc9ownIVNzZqGJYqdVvX+qnpT8ZrKUIq+W7O/KMDsFHR38vMKAb6AiwFapnOuEEjFjR7qvAqmvheJXdqFl1dM2mMK5/MmkXMcLIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CIO6khEz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E0B1C116B1;
+	Tue, 23 Apr 2024 05:17:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713849455;
+	bh=HeotCJcghQNRi29l1z9kedkrAnyUVRoEWfii/QDKt8g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CIO6khEzSV5X2pduJLo2BZ+/nmO14FmNE7MgN52sse47jYAuzu7qSJnA0fPMHfcqo
+	 TLLJypvQOOulbffvV3jP2+9gSIYh78OHa5ho5avD3bOHlKeuSACyl7yrSdlxVdJdyb
+	 gRk226h8UonH2h/jQTGWGGUuGHNsO6R4pyTbp+FFBrpcXaAsSPkDRSl6gAGwualhI4
+	 64QTt6Ws2h7bawaYfwrv0lubFh8pHYA6C02w0gCuvVcRHANFBn8UczJfRQIQqSWkNt
+	 RC5Y/tEfrE1kGqQuID6prLWrgUtDkbF2l5Nbadlre5y7nW4GM77o8iDY3tG1BgRpca
+	 fNsFqrrUmESuA==
+Date: Tue, 23 Apr 2024 14:17:30 +0900
+From: Mark Brown <broonie@kernel.org>
+To: Will Deacon <will@kernel.org>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
+	linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/sysreg: Update ID_AA64MMFR2_EL1 register
+Message-ID: <ZidEalY_V3bXhJrJ@finisterre.sirena.org.uk>
+References: <20240419021325.2880384-1-anshuman.khandual@arm.com>
+ <20240419134623.GE3148@willie-the-truck>
+ <49365864-0080-4ddd-b0cb-eef41c88b6a9@arm.com>
+ <20240422171613.GC6223@willie-the-truck>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] regulator: change stubbed devm_regulator_get_enable to
- return Ok
-Content-Language: en-US, en-GB
-To: Guenter Roeck <linux@roeck-us.net>,
- Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org, Aleksander Mazur <deweloper@wp.pl>
-References: <ZiYF6d1V1vSPcsJS@drtxq0yyyyyyyyyyyyyby-3.rev.dnainternet.fi>
- <18d4811a-7c92-4bd7-b44f-aacf3c1f2f65@roeck-us.net>
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <18d4811a-7c92-4bd7-b44f-aacf3c1f2f65@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="J8bn/pOzNwfYEkkm"
+Content-Disposition: inline
+In-Reply-To: <20240422171613.GC6223@willie-the-truck>
+X-Cookie: TANSTAAFL
 
-On 4/22/24 16:23, Guenter Roeck wrote:
-> On 4/21/24 23:38, Matti Vaittinen wrote:
->> The devm_regulator_get_enable() should be a 'call and forget' API,
->> meaning, when it is used to enable the regulators, the API does not
->> provide a handle to do any further control of the regulators. It gives
->> no real benefit to return an error from the stub if CONFIG_REGULATOR is
->> not set.
->>
->> On the contrary, returning and error is causing problems to drivers when
->> hardware is such it works out just fine with no regulator control.
->> Returning an error forces drivers to specifically handle the case where
->> CONFIG_REGULATOR is not set, making the mere existence of the stub
->> questionalble. Furthermore, the stub of the regulator_enable() seems to
->> be returning Ok.
->>
-> 
-> Yes, that was the reason why the lm90 driver worked pripr to its conversion
-> to use devm_regulator_get_enable() if CONFIG_REGULATOR=n.
-> 
->> Change the stub implementation for the devm_regulator_get_enable() to
->> return Ok so drivers do not separately handle the case where the
->> CONFIG_REGULATOR is not set.
->>
->> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
->> Reported-by: Aleksander Mazur <deweloper@wp.pl>
->> Suggested-by: Guenter Roeck <linux@roeck-us.net>
->> Fixes: da279e6965b3 ("regulator: Add devm helpers for get and enable")
->>
->> ---
->> Please find the report by Aleksander from:
->> https://lore.kernel.org/all/20240420183427.0d3fda27@mocarz/
->>
->> This patch has not received testing. It'd be great to hear if this
->> solves the issue.
->>
->> I see the regulator_get_exclusive() and devm_regulator_get_optional()
->> returning errors. I thus leave the
->> devm_regulator_get_enable_[optional/exclusive]() to do the same while
->> wondering if this is the right thing to do, and why...
->>
-> 
-> At least one of the callers of devm_regulator_get_enable (exc3000) 
-> checks for
-> -ENODEV and ignores it. I assume we'll see more of those unless this patch
-> is accepted. Many of the callers of devm_regulator_get_enable_optional()
-> explicitly check for -ENODEV and ignore it. Others fail if 
-> CONFIG_REGULATOR=n.
-> My plan for affected hwmon drivers is (was ?) to check for -ENODEV and 
-> ignore
-> it to match other drivers.
 
-I'd rather fixed the stub than the callers. I suspect same goes with 
-other subsystems.
+--J8bn/pOzNwfYEkkm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Returning ERR_PTR(-ENODEV) for [devm_]regulator_get() made sense because
-> the returned regulator pointer was often used to obtain a voltage or to
-> do other regulator operations. I don't really see the point of returning
-> -ENODEV for the _enable APIs if regulator support is disabled.
+On Mon, Apr 22, 2024 at 06:16:13PM +0100, Will Deacon wrote:
+> On Mon, Apr 22, 2024 at 08:38:40AM +0530, Anshuman Khandual wrote:
 
-I agree. I'll send another one for the 
-devm_regulator_get_enable_[optional/exclusive]() if Mark accepts this one.
+> > This is not being used currently but will be required for upcoming
+> > features. I was under the impression that register fields (atleast
+> > for the ID registers) should be kept updated, with latest released
+> > spec ? Besides lately arch/arm64/tools/sysreg serves as very good
+> > reference for all necessary register fields.
 
-Thanks for the heads up!
+> Why? The linux headers aren't documenting the architecture.
 
-Yours,
-	-- Matti
+I don't know that it's something that we should be doing apropos of
+nothing but if people have done updates and they're not unreasonbly
+complicated to review it does seem useful to integrate them to avoid
+duplicated work.  There have been some issues with that around the ID
+registers (which are going to be on the places most prone to this I
+guess).
 
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
+--J8bn/pOzNwfYEkkm
+Content-Type: application/pgp-signature; name="signature.asc"
 
-~~ When things go utterly wrong vim users can always type :help! ~~
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYnRGkACgkQJNaLcl1U
+h9C6Rwf/Ss9y362yQfFUmqUbdi+GZr96SuHmRHPsQRhOKnjP/fmjGX5igoJldgcG
+wfa15cpBIwRKW46rDlSVehzzX43u+zRKd6CMtOjRrol173F6hXVfIXHGBi2a9tdj
+5oIAsnytZD8ho36DjdrzkxKrDytuY57B4034LqPLQ1GqAR7ay3PMXHN8PEyr8H9a
+6iCjg51kcqjPozIqBTcf+PGYB4U784K7Tf7RPG2gRWTnNYhy/0oOT62khSZCTL25
+CBbpnbyKeQdp+dBmF8wB6mGjsVnHATsrC82d3av6q7aLBrMVPVF7Lccghe3A7jT0
+yUXFEtHLFdooQirabUSk+EDz7Ej+EQ==
+=h7X/
+-----END PGP SIGNATURE-----
+
+--J8bn/pOzNwfYEkkm--
 
