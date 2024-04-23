@@ -1,133 +1,137 @@
-Return-Path: <linux-kernel+bounces-155285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DC918AE836
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E77C8AE83D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:32:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E106D1F214AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:30:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37C071F24954
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:32:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCDA3135A6E;
-	Tue, 23 Apr 2024 13:30:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E2BC136643;
+	Tue, 23 Apr 2024 13:32:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="APkYP6so"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RXJB8wsp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A812E135A61;
-	Tue, 23 Apr 2024 13:30:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949A112C7FD
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:32:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713879038; cv=none; b=knU4Cj7xYkZsvuW6NwoGG5YoHn8El7of9OLWyzNCbcx4mdPsUmolGlsofd99MLjBNg6Vu8Z4Z4KowUjUC+vr7FoIpXdkOUdHGUbH+yVk11EazRy0jDYZIp2WHU/zTuRIwT1cfc1pvLoADPT92pV5d4MxpZNCXxtnyOr46CO7/00=
+	t=1713879148; cv=none; b=FgfSqKV414ypPrGK+Oa6zAU8tGtLbt88yxd6m9khCLnp//sDFRRiWlmxKMCYha9d1ApOZ03Alk3toeoePyt2yj1XCCcJlcXxsNKRp1cl3Yw20Xuim4yTslMFJPWyA9/jluzLLVH+2+iBOn4yS9rN0K7zIa/Hx5AbXOejqn1GQnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713879038; c=relaxed/simple;
-	bh=s8B8mBRZqb0UbCIrbQqEbuF/Zx/nSdseOONtEXgkorw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XAOUX3zGJ+LYn1rngtGOPHpJJWw7h97ujJti7Vq3EOjZZd2xAMZSR9lFYA/ChYBUlp4dWPMT2pqY8z5pDrMHxmqXDjcSawQ2KHoeXQwuyAecFUPVkB7fzyNs/iZ+8j9SUH+45c5xFrlkKwgaZx8C3WarEmzyiENZKs/Z2wX1oYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=APkYP6so; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43N7uKxt007928;
-	Tue, 23 Apr 2024 13:30:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=FHxXmsQzs3QHPANqiuntiLXAQir+SMKlWo2mg8cQ+cU=; b=AP
-	kYP6soWSeW4vz6OdUBsH54jFQ3Tcn4K1yP8iD1VWmgkGfn+H2MnRsIpAPJUv0iIu
-	ZZzz5+pj6CRjbU9+yptwrNYRqVl5oGc4IW036T/zFiygcz5jX1Y9mon40JjcKOmN
-	TZ7UGOStm/2C4ye+P+WF2SD7HpdAa46XdKMvwsmeDbGywDcXXXX6kxQ9Y3TMAuPQ
-	Z9BbVoEBjU3OpPD7NceNNyVgQ44wB+HkeRLcBxd3Bttd0r3bZvOpH0z8lTL5mo6i
-	t0KwxgNUOKSIKjKk15xxccAoeubkr2IQ9C2/GiZv8eOFEXoX1D8tFxIm7Cw4TGTz
-	/+FN8igCGHmkpnQrnMcg==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xp91fgvyv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 13:30:20 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43NDUJYQ023702
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 13:30:19 GMT
-Received: from [10.217.219.66] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 23 Apr
- 2024 06:30:13 -0700
-Message-ID: <7f69c37c-07a4-07b8-9d16-dd4991f15311@quicinc.com>
-Date: Tue, 23 Apr 2024 19:00:10 +0530
+	s=arc-20240116; t=1713879148; c=relaxed/simple;
+	bh=AP67NgULme2krqQcPsRIs+2ZN6mA5krVB1+iZidsmpQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Jghhh44a/zsucxodwTqdzq0C/Dh1kObhDcTYCkMp0Ak3imN2uLdoVYzqEaA+KeexTxPab4tnS/NIVqT2OyId6IWjKBXZnh/Pfavz6cVVOcLhPP3CVeT/giZwayWBpRa9x6+FzGDcIgrcgFKuQX3cmqmw4v+UACN3RRPCnEL/3w4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RXJB8wsp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ACF1C32783
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:32:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713879148;
+	bh=AP67NgULme2krqQcPsRIs+2ZN6mA5krVB1+iZidsmpQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=RXJB8wspxP8pk4Ow4/JgUdQxDYSuMWXtvwZcHMcygIfsV8CZfR5piUq+ffZvqfEf8
+	 QaaKf3bHJBXR8vawtx32iwMO76Si+wymzaiCe6XIsb0qQN4qg6yOpwkVFwPNV5XJzz
+	 w3QwhPpK1HIqxgI4nzYSjmrhJExmGY8HDD9LPiymmpo+Rc9iIGYzaXP46hW/p9JnmC
+	 F7ENkaz77czs+clx3X06vxLdZusskiyvM8EZsWZiLYrN/BfDsp0h0KshKepGB/wZhq
+	 i7VE5ACvBL2q/FXyyXhWltW+bwyXFIMkKY/KXY0At5eUGls3my/FvtWLlPMvg2Rzcf
+	 dHMzq6OZow9ww==
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-618769020bcso60101517b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 06:32:28 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUYt/H3lDKlh9NGYqzUukI4euP6OhWgCb7PhtYPJ25P/lXQMExCjZkcWLrarubBQ39WCemUzpN83Jsuu6bXb7782pKasjMuVnkPDBco
+X-Gm-Message-State: AOJu0YxBtxyAPu+jKN+tqNfMoI+OG2662fBa5lYrlr+uDmdq+N4dNQY6
+	VmafchPm2IH5kx5NMPVTjfffNsCqRMg75uhz7D6qA8g25uvTDWshvoNdPEWZ4l8M2MS9A/jpZCQ
+	e/Bn9ZfYiE+blo25dofjzdzOUYe7IN0aU4UHaRw==
+X-Google-Smtp-Source: AGHT+IFshLz5spQ5CQ8dKF+BBgEo+ryWs5tFujTBrjKdLYE1dJu8PqqxFbvK93HDcogCUI2Ar0hY5OF8o/XSbAfFJgs=
+X-Received: by 2002:a25:6c0b:0:b0:de3:e1ea:d23 with SMTP id
+ h11-20020a256c0b000000b00de3e1ea0d23mr2464770ybc.51.1713879146752; Tue, 23
+ Apr 2024 06:32:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v10 2/3] PCI: qcom-ep: Add support for SA8775P SOC
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <manivannan.sadhasivam@linaro.org>
-CC: <quic_shazhuss@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_nayiluri@quicinc.com>,
-        <quic_krichai@quicinc.com>, <quic_vbadigan@quicinc.com>,
-        <quic_schintav@quicinc.com>, Bjorn Helgaas <bhelgaas@google.com>,
-        "Lorenzo
- Pieralisi" <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?=
-	<kw@linux.com>,
-        Rob Herring <robh@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1711725718-6362-1-git-send-email-quic_msarkar@quicinc.com>
- <1711725718-6362-3-git-send-email-quic_msarkar@quicinc.com>
- <8cdcfa2f-7a8f-4f63-b919-df0afde7d9de@linaro.org>
-Content-Language: en-US
-From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-In-Reply-To: <8cdcfa2f-7a8f-4f63-b919-df0afde7d9de@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 4vmaV2N2r0bYxsn4RJIWAubYy3W2-8U7
-X-Proofpoint-ORIG-GUID: 4vmaV2N2r0bYxsn4RJIWAubYy3W2-8U7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-23_11,2024-04-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- impostorscore=0 phishscore=0 spamscore=0 mlxlogscore=916
- priorityscore=1501 clxscore=1011 malwarescore=0 mlxscore=0
- lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2404230033
+References: <20240322104732.2327060-1-sean@geanix.com> <lkrxoqhcitmvjvzslhx6mrdjaa6lpxtpmdjt7wwollm6z4h65q@jk5esjje6ppy>
+In-Reply-To: <lkrxoqhcitmvjvzslhx6mrdjaa6lpxtpmdjt7wwollm6z4h65q@jk5esjje6ppy>
+From: Robert Foss <rfoss@kernel.org>
+Date: Tue, 23 Apr 2024 15:32:15 +0200
+X-Gmail-Original-Message-ID: <CAN6tsi40-gGgG3Bw-rS4TZBO+=JthWkPh-XqErGvkHdvhqx6tA@mail.gmail.com>
+Message-ID: <CAN6tsi40-gGgG3Bw-rS4TZBO+=JthWkPh-XqErGvkHdvhqx6tA@mail.gmail.com>
+Subject: Re: [PATCH] drm/stm: dsi: relax mode_valid clock tolerance
+To: Sean Nyekjaer <sean@geanix.com>
+Cc: Yannick Fertre <yannick.fertre@foss.st.com>, 
+	Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>, 
+	Philippe Cornu <philippe.cornu@foss.st.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Antonio Borneo <antonio.borneo@foss.st.com>, dri-devel@lists.freedesktop.org, 
+	linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Apr 22, 2024 at 4:06=E2=80=AFPM Sean Nyekjaer <sean@geanix.com> wro=
+te:
+>
+> On Fri, Mar 22, 2024 at 11:47:31AM +0100, Sean Nyekjaer wrote:
+> > When using the DSI interface via DSI2LVDS bridge, it seems a bit harsh
+> > to reguire the requested and the actual px clock to be within
+> > 50Hz. A typical LVDS display requires the px clock to be within +-10%.
+> >
+> > In case for HDMI .5% tolerance is required.
+> >
+> > Fixes: e01356d18273 ("drm/stm: dsi: provide the implementation of mode_=
+valid()")
+> > Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> > ---
+> Any feedback on this?
+>
+> >  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 7 +++----
+> >  1 file changed, 3 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/st=
+m/dw_mipi_dsi-stm.c
+> > index d5f8c923d7bc..97936b0ef702 100644
+> > --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+> > +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+> > @@ -322,8 +322,6 @@ dw_mipi_dsi_phy_get_timing(void *priv_data, unsigne=
+d int lane_mbps,
+> >       return 0;
+> >  }
+> >
+> > -#define CLK_TOLERANCE_HZ 50
+> > -
+> >  static enum drm_mode_status
+> >  dw_mipi_dsi_stm_mode_valid(void *priv_data,
+> >                          const struct drm_display_mode *mode,
+> > @@ -375,9 +373,10 @@ dw_mipi_dsi_stm_mode_valid(void *priv_data,
+> >               /*
+> >                * Filter modes according to the clock value, particularl=
+y useful for
+> >                * hdmi modes that require precise pixel clocks.
+> > +              * Check that px_clock is within .5% tolerance.
+> >                */
+> > -             if (px_clock_hz < target_px_clock_hz - CLK_TOLERANCE_HZ |=
+|
+> > -                 px_clock_hz > target_px_clock_hz + CLK_TOLERANCE_HZ)
+> > +             if (px_clock_hz < mult_frac(target_px_clock_hz, 995, 1000=
+) ||
+> > +                 px_clock_hz > mult_frac(target_px_clock_hz, 1005, 100=
+0))
+> >                       return MODE_CLOCK_RANGE;
+> >
+> >               /* sync packets are codes as DSI short packets (4 bytes) =
+*/
+> > --
+> > 2.44.0
+> >
+>
 
-On 4/23/2024 6:38 PM, Konrad Dybcio wrote:
->
->
-> On 3/29/24 16:21, Mrinmay Sarkar wrote:
->> Add support for SA8775P SoC to the Qualcomm PCIe Endpoint Controller
->> driver. Adding new compatible string as it has different set of clocks
->> compared to other SoCs.
->
-> So is it the only change after all? What did we conclude on the NO_SNOOP
-> saga?
->
-> If the difference is only in the consumed clocks (and they're only 
-> supposed
-> to be "on" with no special handling), I don't think a separate compatible
-> is necessary at all
->
-> Konrad
-
-Hi Konrad,
-Thanks for review.
-yes, we are going with the NO_SNOOP change for this platform.
-And that series has been reviewed and waiting for this patch to get applied.
-
-Thanks,
-Mrinmay
-
+Reviewed-by: Robert Foss <rfoss@kernel.org>
 
