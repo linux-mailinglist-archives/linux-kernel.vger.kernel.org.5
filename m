@@ -1,1166 +1,182 @@
-Return-Path: <linux-kernel+bounces-155287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3D5A8AE840
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:33:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F11718AE846
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:34:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72EBB1F244AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:33:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7D94284981
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:34:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 963EC136657;
-	Tue, 23 Apr 2024 13:33:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D1013666D;
+	Tue, 23 Apr 2024 13:34:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ONDEk15K"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C9p8qZQD"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B017135414;
-	Tue, 23 Apr 2024 13:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5839818E28;
+	Tue, 23 Apr 2024 13:34:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713879187; cv=none; b=a7XlYT7LlOisx4kW6sWBHlRyJ5HFlNkJx7wLMr4JYdpClZ8K42ja0FxNqLxyaP7O7X8d+IkSgc37buo32KhCM7PKdsbf9riuWZqribsJFVCblfJZ/WgLY5UCenCrvusMhFrge8aR/siYfBPvRDwa0ldkPGzYkIu00lfec7JNJPY=
+	t=1713879255; cv=none; b=vDuIMIpt0/qvl5c2wVd06CI9kXGtXR7JQhrsYpqPNwOlXdwxkE92iuakit4byfkAnGsDVWLfJ1bxvqayiXXe0tq9veAZ7YAhkjs1LdOg61psPVdWS0ZKzt7DZZS0RucmLGR07iJ2MwT5ez2WHOLue3BppASs6x16G01kAejFEmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713879187; c=relaxed/simple;
-	bh=/dVI/YfKOSbj1Fa6dvEdwslqTze/R+YT3U5JqA7CxQI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=vDT7EadiME8yBGjL3gl9HXSQ+BK8QEn60uAmvSpNKdDp6Bno0MIxVeBLYSf+fCr5Oi8Z6HL17vH/ttiTEht0He5FogRvE5ZeR2ux4vWwTDxPYszVU+RXgAqIQt5wJ5cLrAUixHXzPQMczkmPIved6BsK0uWw/EWT4OpIpk8o10o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ONDEk15K; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713879185; x=1745415185;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/dVI/YfKOSbj1Fa6dvEdwslqTze/R+YT3U5JqA7CxQI=;
-  b=ONDEk15KRqgA+KIaIRnFddezDV0WBpKQyZ1V6E4y3F6zzkCFzp5fpLsA
-   DrLZpRGeP2ApuX7HLROgM0/nB6PinfUC+70g59x/eikXFxYhGy9rB1xBa
-   EBj/1TmCpknWWxeWufwFW60IvnK1OrJ25aVjoq+Tggmz4m723n6oxpYYC
-   WGB69SwLfPR1+4KS0wqTVw0XDTZ4xnrBvdFdfXXqTTuCpnQ51jjjqRAY/
-   Ikw13rywBxqV4xozppKwQFnbzOmr1ibKzSLTHWB7aHw/+o3eSmDvT0kpY
-   rsgWC6K1WUIs4d4cmFVbiHrvi7VGNaPn6FU9QruZipizFGEkWt1h1V5cd
-   w==;
-X-CSE-ConnectionGUID: gnw2OgCcTVm2ZmjTU56tOA==
-X-CSE-MsgGUID: bMQkjMu2ROSjqhze0stlIw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="13295349"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="13295349"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 06:33:04 -0700
-X-CSE-ConnectionGUID: Ng5QEoqzTA2UjiLh+kzWMQ==
-X-CSE-MsgGUID: TeK59YCBRjuMuwDsu2oSDQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="29035641"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.252.63.204])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 06:33:01 -0700
-From: Adrian Hunter <adrian.hunter@intel.com>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Andi Kleen <ak@linux.intel.com>,
-	linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org
-Subject: [PATCH V3] perf scripts python: Add a script to run instances of perf script in parallel
-Date: Tue, 23 Apr 2024 16:32:48 +0300
-Message-Id: <20240423133248.10206-1-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713879255; c=relaxed/simple;
+	bh=eg6CHXM+1oDdRKlyGE4oIWweBZixWe12oxL3KrdPI2Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HFxG82h2AZpMQhIo1WEsNDGPkGDLUxX2rEn4vkrxmz14PPp33UC2ZxUOqDLqg61HO/IAFlFa49mxY0mtH9Yu5u8sF96DNsidlur7tw4vV3YvPooJHuDFukCzNTGtOxKzDYKDrwGDoG5n2+vhOAZuwdyNp7ieai7QpaAJRC6eDdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C9p8qZQD; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2dd6c14d000so29955771fa.0;
+        Tue, 23 Apr 2024 06:34:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713879251; x=1714484051; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4bc0c4MIvRavnylcD7Rjn0guOwInCRxicWBFGidWWE0=;
+        b=C9p8qZQDb7b+1lsRlH1KWfEivrzri4xjAzwLruURaXLYYtrxh23+8Dq0BFbWDgP9VB
+         dvzTe+E7fglEIYhG7CZUFQId76jNA1U2pnnV/hZeoTZFLdLtAIHFe0v7nHyt0Qo6JCwK
+         qYnlpd4hYc32KptEIK0+SmfvD9CQjW2gh7c/6xM90ERstaAhL3PxNvX++mtZb57fP34x
+         DXA99oV1aUhVO3Kdk5IWhiZAEyY7CMwItAErprNpA1hRlUHQ8FmM3WrAZPm4FQ1DHus5
+         COaDm1G5NnRXDOK98MK9p5ArbI42hlxVlSglRY57CBmSqe1dqEgUMV5AEea6s5O1jLmU
+         gYMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713879251; x=1714484051;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4bc0c4MIvRavnylcD7Rjn0guOwInCRxicWBFGidWWE0=;
+        b=mv2OBuDEunIFvkMSHFZh9HiwnbYRfvWB/JbZMx2sm+u0/dUWTm439M5qHB6kEdCvUD
+         GCXIS9K/qchiJmsffiWBVDiOUXvNx/ulvjaN+BInbPWU0RDZWws3rSE6neyslK0A2o8U
+         U4iceh4HYUiWs/xnritXPKqVC+1RmBATOQELE3siK8J454yp1BvXpPcpkpiBelgYVB1u
+         d6mboZ2uqr4wu0tv3mUVdEtY4RQAdHdAWlPvjHwk4b/2bBod68WdzVhwjksNyAjENTvK
+         BQIfV2dj9Nmh3uI9vk1b4e5GEWBSt4XLNlfjMOZGCHCWek+BSLtrb9Jzh3fpqRAtVzvy
+         ALVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVgkJJdnf0PraJQDcBGJfe64M51/iupBhRnlAdniLCjk2gsrwVf6df5zx1gWbWnJY0gElp6LFLXZREIv3SFA5HJMrbWzcPYYUU8FgzBt/V8Brp6wbP1dnCtFSL32Z3HbYWpYEac5cW73sy0Xw==
+X-Gm-Message-State: AOJu0YzC5UIURx62rywDnAE/9bpGVbW+FxzBLtshVAd12rlfqGM0a0bp
+	GTU3sr1kLqECfVvlpUg/FRZj0D1jT9tWFUy4GSBUvjiJKYQYv3F7OYB285WwZDq2LXnmSOb60xj
+	DM5IVuEhhvaa4kXyWI1LltwMMDGw=
+X-Google-Smtp-Source: AGHT+IHcGTmZHEOrIhZSVAH27HOvMiVHDiMwPl5ZaJV4e+FbQeZnWOfsfMYvzZFDGpBxKFn26o7uZbAMkFAw1v26gqU=
+X-Received: by 2002:a2e:9699:0:b0:2d9:e54d:81eb with SMTP id
+ q25-20020a2e9699000000b002d9e54d81ebmr9744299lji.12.1713879251195; Tue, 23
+ Apr 2024 06:34:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240417160842.76665-1-ryncsn@gmail.com> <20240417160842.76665-7-ryncsn@gmail.com>
+ <87mspkx3cy.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87mspkx3cy.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Tue, 23 Apr 2024 21:33:54 +0800
+Message-ID: <CAMgjq7CH0xCEXF6nwsNZYW7Rcx0YF1+7Sb_ycXe2k10hbZc_tA@mail.gmail.com>
+Subject: Re: [PATCH 6/8] mm/swap: get the swap file offset directly
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Matthew Wilcox <willy@infradead.org>, Chris Li <chrisl@kernel.org>, 
+	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, 
+	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add a Python script to run a perf script command multiple times in
-parallel, using perf script options --cpu and --time so that each job
-processes a different chunk of the data.
+On Tue, Apr 23, 2024 at 9:43=E2=80=AFAM Huang, Ying <ying.huang@intel.com> =
+wrote:
+>
+> Kairui Song <ryncsn@gmail.com> writes:
+>
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > folio_file_pos and page_file_offset are for mixed usage of swap cache
+> > and page cache, it can't be page cache here, so introduce a new helper
+> > to get the swap offset in swap file directly.
+> >
+> > Signed-off-by: Kairui Song <kasong@tencent.com>
+> > ---
+> >  mm/page_io.c | 6 +++---
+> >  mm/swap.h    | 5 +++++
+> >  2 files changed, 8 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/mm/page_io.c b/mm/page_io.c
+> > index ae2b49055e43..93de5aadb438 100644
+> > --- a/mm/page_io.c
+> > +++ b/mm/page_io.c
+> > @@ -279,7 +279,7 @@ static void sio_write_complete(struct kiocb *iocb, =
+long ret)
+> >                * be temporary.
+> >                */
+> >               pr_err_ratelimited("Write error %ld on dio swapfile (%llu=
+)\n",
+> > -                                ret, page_file_offset(page));
+> > +                                ret, swap_file_pos(page_swap_entry(pag=
+e)));
+> >               for (p =3D 0; p < sio->pages; p++) {
+> >                       page =3D sio->bvec[p].bv_page;
+> >                       set_page_dirty(page);
+> > @@ -298,7 +298,7 @@ static void swap_writepage_fs(struct folio *folio, =
+struct writeback_control *wbc
+> >       struct swap_iocb *sio =3D NULL;
+> >       struct swap_info_struct *sis =3D swp_swap_info(folio->swap);
+> >       struct file *swap_file =3D sis->swap_file;
+> > -     loff_t pos =3D folio_file_pos(folio);
+> > +     loff_t pos =3D swap_file_pos(folio->swap);
+> >
+> >       count_swpout_vm_event(folio);
+> >       folio_start_writeback(folio);
+> > @@ -429,7 +429,7 @@ static void swap_read_folio_fs(struct folio *folio,=
+ struct swap_iocb **plug)
+> >  {
+> >       struct swap_info_struct *sis =3D swp_swap_info(folio->swap);
+> >       struct swap_iocb *sio =3D NULL;
+> > -     loff_t pos =3D folio_file_pos(folio);
+> > +     loff_t pos =3D swap_file_pos(folio->swap);
+> >
+> >       if (plug)
+> >               sio =3D *plug;
+> > diff --git a/mm/swap.h b/mm/swap.h
+> > index fc2f6ade7f80..2de83729aaa8 100644
+> > --- a/mm/swap.h
+> > +++ b/mm/swap.h
+> > @@ -7,6 +7,11 @@ struct mempolicy;
+> >  #ifdef CONFIG_SWAP
+> >  #include <linux/blk_types.h> /* for bio_end_io_t */
+> >
+> > +static inline loff_t swap_file_pos(swp_entry_t entry)
+> > +{
+> > +     return ((loff_t)swp_offset(entry)) << PAGE_SHIFT;
+> > +}
+> > +
+> >  /* linux/mm/page_io.c */
+> >  int sio_pool_init(void);
+> >  struct swap_iocb;
+>
+> I feel that the file concept for swap is kind of confusing.  From the
+> file cache point of view, one "struct address space" conresponds to one
+> file.  If so, we have a simple file system on a swap device (block
+> device backed or file backed), where the size of each file is 64M.  The
+> swap entry encode the file system (swap_type), the file name
+> (swap_offset >> SWAP_ADDRESS_SPACE_SHIFT), and the offset in file (lower
+> bits of swap_offset).
+>
+> If the above definition is good, it's better to rename swap_file_pos()
+> to swap_dev_pos(), because it returns the swap device position of the
+> swap entry.
 
-Extend perf script tests to test also the new script.
+Good suggestion! The definition looks good to me, swap_dev_pos also
+looks better, "swap_file" looks confusing indeed.
 
-The script supports the use of normal perf script options like
- --dlfilter and --script, so that the benefit of running parallel jobs
-naturally extends to them also. In addition, a command can be provided
-(refer --pipe-to option) to pipe standard output to a custom command.
-
-Refer to the script's own help text at the end of the patch for more
-details.
-
-The script is useful for Intel PT traces, that can be efficiently
-decoded by perf script when split by CPU and/or time ranges. Running
-jobs in parallel can decrease the overall decoding time.
-
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
-
-
-Changes in V3:
-
-	Add to perf scripts test
-	Simplify Verbosity()
-	Prefer f-strings to string concatenation
-	Add comment for Work()
-	Add comment for OptPos()
-	Ensure RunWork() is passed the maximum number of jobs parameter
-
-Changes in V2:
-
-	Added option to pipe to a custom command
-	Added option to set a minimum time interval
-	Minor tidying
-
-
- tools/perf/scripts/python/parallel-perf.py | 988 +++++++++++++++++++++
- tools/perf/tests/shell/script.sh           |  26 +-
- 2 files changed, 1013 insertions(+), 1 deletion(-)
- create mode 100755 tools/perf/scripts/python/parallel-perf.py
-
-diff --git a/tools/perf/scripts/python/parallel-perf.py b/tools/perf/scripts/python/parallel-perf.py
-new file mode 100755
-index 000000000000..21f32ec5ed46
---- /dev/null
-+++ b/tools/perf/scripts/python/parallel-perf.py
-@@ -0,0 +1,988 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Run a perf script command multiple times in parallel, using perf script
-+# options --cpu and --time so that each job processes a different chunk
-+# of the data.
-+#
-+# Copyright (c) 2024, Intel Corporation.
-+
-+import subprocess
-+import argparse
-+import pathlib
-+import shlex
-+import time
-+import copy
-+import sys
-+import os
-+import re
-+
-+glb_prog_name = "parallel-perf.py"
-+glb_min_interval = 10.0
-+glb_min_samples = 64
-+
-+class Verbosity():
-+
-+	def __init__(self, quiet=False, verbose=False, debug=False):
-+		self.normal    = True
-+		self.verbose   = verbose
-+		self.debug     = debug
-+		self.self_test = True
-+		if self.debug:
-+			self.verbose = True
-+		if self.verbose:
-+			quiet = False
-+		if quiet:
-+			self.normal = False
-+
-+# Manage work (Start/Wait/Kill), as represented by a subprocess.Popen command
-+class Work():
-+
-+	def __init__(self, cmd, pipe_to, output_dir="."):
-+		self.popen = None
-+		self.consumer = None
-+		self.cmd = cmd
-+		self.pipe_to = pipe_to
-+		self.output_dir = output_dir
-+		self.cmdout_name = f"{output_dir}/cmd.txt"
-+		self.stdout_name = f"{output_dir}/out.txt"
-+		self.stderr_name = f"{output_dir}/err.txt"
-+
-+	def Command(self):
-+		sh_cmd = [ shlex.quote(x) for x in self.cmd ]
-+		return " ".join(self.cmd)
-+
-+	def Stdout(self):
-+		return open(self.stdout_name, "w")
-+
-+	def Stderr(self):
-+		return open(self.stderr_name, "w")
-+
-+	def CreateOutputDir(self):
-+		pathlib.Path(self.output_dir).mkdir(parents=True, exist_ok=True)
-+
-+	def Start(self):
-+		if self.popen:
-+			return
-+		self.CreateOutputDir()
-+		with open(self.cmdout_name, "w") as f:
-+			f.write(self.Command())
-+			f.write("\n")
-+		stdout = self.Stdout()
-+		stderr = self.Stderr()
-+		if self.pipe_to:
-+			self.popen = subprocess.Popen(self.cmd, stdout=subprocess.PIPE, stderr=stderr)
-+			args = shlex.split(self.pipe_to)
-+			self.consumer = subprocess.Popen(args, stdin=self.popen.stdout, stdout=stdout, stderr=stderr)
-+		else:
-+			self.popen = subprocess.Popen(self.cmd, stdout=stdout, stderr=stderr)
-+
-+	def RemoveEmptyErrFile(self):
-+		if os.path.exists(self.stderr_name):
-+			if os.path.getsize(self.stderr_name) == 0:
-+				os.unlink(self.stderr_name)
-+
-+	def Errors(self):
-+		if os.path.exists(self.stderr_name):
-+			if os.path.getsize(self.stderr_name) != 0:
-+				return [ f"Non-empty error file {self.stderr_name}" ]
-+		return []
-+
-+	def TidyUp(self):
-+		self.RemoveEmptyErrFile()
-+
-+	def RawPollWait(self, p, wait):
-+		if wait:
-+			return p.wait()
-+		return p.poll()
-+
-+	def Poll(self, wait=False):
-+		if not self.popen:
-+			return None
-+		result = self.RawPollWait(self.popen, wait)
-+		if self.consumer:
-+			res = result
-+			result = self.RawPollWait(self.consumer, wait)
-+			if result != None and res == None:
-+				self.popen.kill()
-+				result = None
-+			elif result == 0 and res != None and res != 0:
-+				result = res
-+		if result != None:
-+			self.TidyUp()
-+		return result
-+
-+	def Wait(self):
-+		return self.Poll(wait=True)
-+
-+	def Kill(self):
-+		if not self.popen:
-+			return
-+		self.popen.kill()
-+		if self.consumer:
-+			self.consumer.kill()
-+
-+def KillWork(worklist, verbosity):
-+	for w in worklist:
-+		w.Kill()
-+	for w in worklist:
-+		w.Wait()
-+
-+def NumberOfCPUs():
-+	return os.sysconf("SC_NPROCESSORS_ONLN")
-+
-+def NanoSecsToSecsStr(x):
-+	if x == None:
-+		return ""
-+	x = str(x)
-+	if len(x) < 10:
-+		x = "0" * (10 - len(x)) + x
-+	return x[:len(x) - 9] + "." + x[-9:]
-+
-+def InsertOptionAfter(cmd, option, after):
-+	try:
-+		pos = cmd.index(after)
-+		cmd.insert(pos + 1, option)
-+	except:
-+		cmd.append(option)
-+
-+def CreateWorkList(cmd, pipe_to, output_dir, cpus, time_ranges_by_cpu):
-+	max_len = len(str(cpus[-1]))
-+	cpu_dir_fmt = f"cpu-%.{max_len}u"
-+	worklist = []
-+	pos = 0
-+	for cpu in cpus:
-+		if cpu >= 0:
-+			cpu_dir = os.path.join(output_dir, cpu_dir_fmt % cpu)
-+			cpu_option = f"--cpu={cpu}"
-+		else:
-+			cpu_dir = output_dir
-+			cpu_option = None
-+
-+		tr_dir_fmt = "time-range"
-+
-+		if len(time_ranges_by_cpu) > 1:
-+			time_ranges = time_ranges_by_cpu[pos]
-+			tr_dir_fmt += f"-{pos}"
-+			pos += 1
-+		else:
-+			time_ranges = time_ranges_by_cpu[0]
-+
-+		max_len = len(str(len(time_ranges)))
-+		tr_dir_fmt += f"-%.{max_len}u"
-+
-+		i = 0
-+		for r in time_ranges:
-+			if r == [None, None]:
-+				time_option = None
-+				work_output_dir = cpu_dir
-+			else:
-+				time_option = "--time=" + NanoSecsToSecsStr(r[0]) + "," + NanoSecsToSecsStr(r[1])
-+				work_output_dir = os.path.join(cpu_dir, tr_dir_fmt % i)
-+				i += 1
-+			work_cmd = list(cmd)
-+			if time_option != None:
-+				InsertOptionAfter(work_cmd, time_option, "script")
-+			if cpu_option != None:
-+				InsertOptionAfter(work_cmd, cpu_option, "script")
-+			w = Work(work_cmd, pipe_to, work_output_dir)
-+			worklist.append(w)
-+	return worklist
-+
-+def DoRunWork(worklist, nr_jobs, verbosity):
-+	nr_to_do = len(worklist)
-+	not_started = list(worklist)
-+	running = []
-+	done = []
-+	chg = False
-+	while True:
-+		nr_done = len(done)
-+		if chg and verbosity.normal:
-+			nr_run = len(running)
-+			print(f"\rThere are {nr_to_do} jobs: {nr_done} completed, {nr_run} running", flush=True, end=" ")
-+			if verbosity.verbose:
-+				print()
-+			chg = False
-+		if nr_done == nr_to_do:
-+			break
-+		while len(running) < nr_jobs and len(not_started):
-+			w = not_started.pop(0)
-+			running.append(w)
-+			if verbosity.verbose:
-+				print("Starting:", w.Command())
-+			w.Start()
-+			chg = True
-+		if len(running):
-+			time.sleep(0.1)
-+		finished = []
-+		not_finished = []
-+		while len(running):
-+			w = running.pop(0)
-+			r = w.Poll()
-+			if r == None:
-+				not_finished.append(w)
-+				continue
-+			if r == 0:
-+				if verbosity.verbose:
-+					print("Finished:", w.Command())
-+				finished.append(w)
-+				chg = True
-+				continue
-+			if verbosity.normal and not verbosity.verbose:
-+				print()
-+			print("Job failed!\n    return code:", r, "\n    command:    ", w.Command())
-+			if w.pipe_to:
-+				print("    piped to:   ", w.pipe_to)
-+			print("Killing outstanding jobs")
-+			KillWork(not_finished, verbosity)
-+			KillWork(running, verbosity)
-+			return False
-+		running = not_finished
-+		done += finished
-+	errorlist = []
-+	for w in worklist:
-+		errorlist += w.Errors()
-+	if len(errorlist):
-+		print("Errors:")
-+		for e in errorlist:
-+			print(e)
-+	elif verbosity.normal:
-+		print("\r"," "*50, "\rAll jobs finished successfully", flush=True)
-+	return True
-+
-+def RunWork(worklist, nr_jobs=NumberOfCPUs(), verbosity=Verbosity()):
-+	try:
-+		return DoRunWork(worklist, nr_jobs, verbosity)
-+	except:
-+		for w in worklist:
-+			w.Kill()
-+		raise
-+	return True
-+
-+def ReadHeader(perf, file_name):
-+	return subprocess.Popen([perf, "script", "--header-only", "--input", file_name], stdout=subprocess.PIPE).stdout.read().decode("utf-8")
-+
-+def ParseHeader(hdr):
-+	result = {}
-+	lines = hdr.split("\n")
-+	for line in lines:
-+		if ":" in line and line[0] == "#":
-+			pos = line.index(":")
-+			name = line[1:pos-1].strip()
-+			value = line[pos+1:].strip()
-+			if name in result:
-+				orig_name = name
-+				nr = 2
-+				while True:
-+					name = f"{orig_name} {nr}"
-+					if name not in result:
-+						break
-+					nr += 1
-+			result[name] = value
-+	return result
-+
-+def HeaderField(hdr_dict, hdr_fld):
-+	if hdr_fld not in hdr_dict:
-+		raise Exception(f"'{hdr_fld}' missing from header information")
-+	return hdr_dict[hdr_fld]
-+
-+# Represent the position of an option within a command string
-+# and provide the option value and/or remove the option
-+class OptPos():
-+
-+	def Init(self, opt_element=-1, value_element=-1, opt_pos=-1, value_pos=-1, error=None):
-+		self.opt_element = opt_element		# list element that contains option
-+		self.value_element = value_element	# list element that contains option value
-+		self.opt_pos = opt_pos			# string position of option
-+		self.value_pos = value_pos		# string position of value
-+		self.error = error			# error message string
-+
-+	def __init__(self, args, short_name, long_name, default=None):
-+		self.args = list(args)
-+		self.default = default
-+		n = 2 + len(long_name)
-+		m = len(short_name)
-+		pos = -1
-+		for opt in args:
-+			pos += 1
-+			if m and opt[:2] == f"-{short_name}":
-+				if len(opt) == 2:
-+					if pos + 1 < len(args):
-+						self.Init(pos, pos + 1, 0, 0)
-+					else:
-+						self.Init(error = f"-{short_name} option missing value")
-+				else:
-+					self.Init(pos, pos, 0, 2)
-+				return
-+			if opt[:n] == f"--{long_name}":
-+				if len(opt) == n:
-+					if pos + 1 < len(args):
-+						self.Init(pos, pos + 1, 0, 0)
-+					else:
-+						self.Init(error = f"--{long_name} option missing value")
-+				elif opt[n] == "=":
-+					self.Init(pos, pos, 0, n + 1)
-+				else:
-+					self.Init(error = f"--{long_name} option expected '='")
-+				return
-+			if m and opt[:1] == "-" and opt[:2] != "--" and short_name in opt:
-+				ipos = opt.index(short_name)
-+				if "-" in opt[1:]:
-+					hpos = opt[1:].index("-")
-+					if hpos < ipos:
-+						continue
-+				if ipos + 1 == len(opt):
-+					if pos + 1 < len(args):
-+						self.Init(pos, pos + 1, ipos, 0)
-+					else:
-+						self.Init(error = f"-{short_name} option missing value")
-+				else:
-+					self.Init(pos, pos, ipos, ipos + 1)
-+				return
-+		self.Init()
-+
-+	def Value(self):
-+		if self.opt_element >= 0:
-+			if self.opt_element != self.value_element:
-+				return self.args[self.value_element]
-+			else:
-+				return self.args[self.value_element][self.value_pos:]
-+		return self.default
-+
-+	def Remove(self, args):
-+		if self.opt_element == -1:
-+			return
-+		if self.opt_element != self.value_element:
-+			del args[self.value_element]
-+		if self.opt_pos:
-+			args[self.opt_element] = args[self.opt_element][:self.opt_pos]
-+		else:
-+			del args[self.opt_element]
-+
-+def DetermineInputFileName(cmd):
-+	p = OptPos(cmd, "i", "input", "perf.data")
-+	if p.error:
-+		raise Exception(f"perf command {p.error}")
-+	file_name = p.Value()
-+	if not os.path.exists(file_name):
-+		raise Exception(f"perf command input file '{file_name}' not found")
-+	return file_name
-+
-+def ReadOption(args, short_name, long_name, err_prefix, remove=False):
-+	p = OptPos(args, short_name, long_name)
-+	if p.error:
-+		raise Exception(f"{err_prefix}{p.error}")
-+	value = p.Value()
-+	if remove:
-+		p.Remove(args)
-+	return value
-+
-+def ExtractOption(args, short_name, long_name, err_prefix):
-+	return ReadOption(args, short_name, long_name, err_prefix, True)
-+
-+def ReadPerfOption(args, short_name, long_name):
-+	return ReadOption(args, short_name, long_name, "perf command ")
-+
-+def ExtractPerfOption(args, short_name, long_name):
-+	return ExtractOption(args, short_name, long_name, "perf command ")
-+
-+def PerfDoubleQuickCommands(cmd, file_name):
-+	cpu_str = ReadPerfOption(cmd, "C", "cpu")
-+	time_str = ReadPerfOption(cmd, "", "time")
-+	# Use double-quick sampling to determine trace data density
-+	times_cmd = ["perf", "script", "--ns", "--input", file_name, "--itrace=qqi"]
-+	if cpu_str != None and cpu_str != "":
-+		times_cmd.append(f"--cpu={cpu_str}")
-+	if time_str != None and time_str != "":
-+		times_cmd.append(f"--time={time_str}")
-+	cnts_cmd = list(times_cmd)
-+	cnts_cmd.append("-Fcpu")
-+	times_cmd.append("-Fcpu,time")
-+	return cnts_cmd, times_cmd
-+
-+class CPUTimeRange():
-+	def __init__(self, cpu):
-+		self.cpu = cpu
-+		self.sample_cnt = 0
-+		self.time_ranges = None
-+		self.interval = 0
-+		self.interval_remaining = 0
-+		self.remaining = 0
-+		self.tr_pos = 0
-+
-+def CalcTimeRangesByCPU(line, cpu, cpu_time_ranges, max_time):
-+	cpu_time_range = cpu_time_ranges[cpu]
-+	cpu_time_range.remaining -= 1
-+	cpu_time_range.interval_remaining -= 1
-+	if cpu_time_range.remaining == 0:
-+		cpu_time_range.time_ranges[cpu_time_range.tr_pos][1] = max_time
-+		return
-+	if cpu_time_range.interval_remaining == 0:
-+		time = TimeVal(line[1][:-1], 0)
-+		time_ranges = cpu_time_range.time_ranges
-+		time_ranges[cpu_time_range.tr_pos][1] = time - 1
-+		time_ranges.append([time, max_time])
-+		cpu_time_range.tr_pos += 1
-+		cpu_time_range.interval_remaining = cpu_time_range.interval
-+
-+def CountSamplesByCPU(line, cpu, cpu_time_ranges):
-+	try:
-+		cpu_time_ranges[cpu].sample_cnt += 1
-+	except:
-+		print("exception")
-+		print("cpu", cpu)
-+		print("len(cpu_time_ranges)", len(cpu_time_ranges))
-+		raise
-+
-+def ProcessCommandOutputLines(cmd, per_cpu, fn, *x):
-+	# Assume CPU number is at beginning of line and enclosed by []
-+	pat = re.compile(r"\s*\[[0-9]+\]")
-+	p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-+	while True:
-+		if line := p.stdout.readline():
-+			line = line.decode("utf-8")
-+			if pat.match(line):
-+				line = line.split()
-+				if per_cpu:
-+					# Assumes CPU number is enclosed by []
-+					cpu = int(line[0][1:-1])
-+				else:
-+					cpu = 0
-+				fn(line, cpu, *x)
-+		else:
-+			break
-+	p.wait()
-+
-+def IntersectTimeRanges(new_time_ranges, time_ranges):
-+	pos = 0
-+	new_pos = 0
-+	# Can assume len(time_ranges) != 0 and len(new_time_ranges) != 0
-+	# Note also, there *must* be at least one intersection.
-+	while pos < len(time_ranges) and new_pos < len(new_time_ranges):
-+		# new end < old start => no intersection, remove new
-+		if new_time_ranges[new_pos][1] < time_ranges[pos][0]:
-+			del new_time_ranges[new_pos]
-+			continue
-+		# new start > old end => no intersection, check next
-+		if new_time_ranges[new_pos][0] > time_ranges[pos][1]:
-+			pos += 1
-+			if pos < len(time_ranges):
-+				continue
-+			# no next, so remove remaining
-+			while new_pos < len(new_time_ranges):
-+				del new_time_ranges[new_pos]
-+			return
-+		# Found an intersection
-+		# new start < old start => adjust new start = old start
-+		if new_time_ranges[new_pos][0] < time_ranges[pos][0]:
-+			new_time_ranges[new_pos][0] = time_ranges[pos][0]
-+		# new end > old end => keep the overlap, insert the remainder
-+		if new_time_ranges[new_pos][1] > time_ranges[pos][1]:
-+			r = [ time_ranges[pos][1] + 1, new_time_ranges[new_pos][1] ]
-+			new_time_ranges[new_pos][1] = time_ranges[pos][1]
-+			new_pos += 1
-+			new_time_ranges.insert(new_pos, r)
-+			continue
-+		# new [start, end] is within old [start, end]
-+		new_pos += 1
-+
-+def SplitTimeRangesByTraceDataDensity(time_ranges, cpus, nr, cmd, file_name, per_cpu, min_size, min_interval, verbosity):
-+	if verbosity.normal:
-+		print("\rAnalyzing...", flush=True, end=" ")
-+		if verbosity.verbose:
-+			print()
-+	cnts_cmd, times_cmd = PerfDoubleQuickCommands(cmd, file_name)
-+
-+	nr_cpus = cpus[-1] + 1 if per_cpu else 1
-+	if per_cpu:
-+		nr_cpus = cpus[-1] + 1
-+		cpu_time_ranges = [ CPUTimeRange(cpu) for cpu in range(nr_cpus) ]
-+	else:
-+		nr_cpus = 1
-+		cpu_time_ranges = [ CPUTimeRange(-1) ]
-+
-+	if verbosity.debug:
-+		print("nr_cpus", nr_cpus)
-+		print("cnts_cmd", cnts_cmd)
-+		print("times_cmd", times_cmd)
-+
-+	# Count the number of "double quick" samples per CPU
-+	ProcessCommandOutputLines(cnts_cmd, per_cpu, CountSamplesByCPU, cpu_time_ranges)
-+
-+	tot = 0
-+	mx = 0
-+	for cpu_time_range in cpu_time_ranges:
-+		cnt = cpu_time_range.sample_cnt
-+		tot += cnt
-+		if cnt > mx:
-+			mx = cnt
-+		if verbosity.debug:
-+			print("cpu:", cpu_time_range.cpu, "sample_cnt", cnt)
-+
-+	if min_size < 1:
-+		min_size = 1
-+
-+	if mx < min_size:
-+		# Too little data to be worth splitting
-+		if verbosity.debug:
-+			print("Too little data to split by time")
-+		if nr == 0:
-+			nr = 1
-+		return [ SplitTimeRangesIntoN(time_ranges, nr, min_interval) ]
-+
-+	if nr:
-+		divisor = nr
-+		min_size = 1
-+	else:
-+		divisor = NumberOfCPUs()
-+
-+	interval = int(round(tot / divisor, 0))
-+	if interval < min_size:
-+		interval = min_size
-+
-+	if verbosity.debug:
-+		print("divisor", divisor)
-+		print("min_size", min_size)
-+		print("interval", interval)
-+
-+	min_time = time_ranges[0][0]
-+	max_time = time_ranges[-1][1]
-+
-+	for cpu_time_range in cpu_time_ranges:
-+		cnt = cpu_time_range.sample_cnt
-+		if cnt == 0:
-+			cpu_time_range.time_ranges = copy.deepcopy(time_ranges)
-+			continue
-+		# Adjust target interval for CPU to give approximately equal interval sizes
-+		# Determine number of intervals, rounding to nearest integer
-+		n = int(round(cnt / interval, 0))
-+		if n < 1:
-+			n = 1
-+		# Determine interval size, rounding up
-+		d, m = divmod(cnt, n)
-+		if m:
-+			d += 1
-+		cpu_time_range.interval = d
-+		cpu_time_range.interval_remaining = d
-+		cpu_time_range.remaining = cnt
-+		# Init. time ranges for each CPU with the start time
-+		cpu_time_range.time_ranges = [ [min_time, max_time] ]
-+
-+	# Set time ranges so that the same number of "double quick" samples
-+	# will fall into each time range.
-+	ProcessCommandOutputLines(times_cmd, per_cpu, CalcTimeRangesByCPU, cpu_time_ranges, max_time)
-+
-+	for cpu_time_range in cpu_time_ranges:
-+		if cpu_time_range.sample_cnt:
-+			IntersectTimeRanges(cpu_time_range.time_ranges, time_ranges)
-+
-+	return [cpu_time_ranges[cpu].time_ranges for cpu in cpus]
-+
-+def SplitSingleTimeRangeIntoN(time_range, n):
-+	if n <= 1:
-+		return [time_range]
-+	start = time_range[0]
-+	end   = time_range[1]
-+	duration = int((end - start + 1) / n)
-+	if duration < 1:
-+		return [time_range]
-+	time_ranges = []
-+	for i in range(n):
-+		time_ranges.append([start, start + duration - 1])
-+		start += duration
-+	time_ranges[-1][1] = end
-+	return time_ranges
-+
-+def TimeRangeDuration(r):
-+	return r[1] - r[0] + 1
-+
-+def TotalDuration(time_ranges):
-+	duration = 0
-+	for r in time_ranges:
-+		duration += TimeRangeDuration(r)
-+	return duration
-+
-+def SplitTimeRangesByInterval(time_ranges, interval):
-+	new_ranges = []
-+	for r in time_ranges:
-+		duration = TimeRangeDuration(r)
-+		n = duration / interval
-+		n = int(round(n, 0))
-+		new_ranges += SplitSingleTimeRangeIntoN(r, n)
-+	return new_ranges
-+
-+def SplitTimeRangesIntoN(time_ranges, n, min_interval):
-+	if n <= len(time_ranges):
-+		return time_ranges
-+	duration = TotalDuration(time_ranges)
-+	interval = duration / n
-+	if interval < min_interval:
-+		interval = min_interval
-+	return SplitTimeRangesByInterval(time_ranges, interval)
-+
-+def RecombineTimeRanges(tr):
-+	new_tr = copy.deepcopy(tr)
-+	n = len(new_tr)
-+	i = 1
-+	while i < len(new_tr):
-+		# if prev end + 1 == cur start, combine them
-+		if new_tr[i - 1][1] + 1 == new_tr[i][0]:
-+			new_tr[i][0] = new_tr[i - 1][0]
-+			del new_tr[i - 1]
-+		else:
-+			i += 1
-+	return new_tr
-+
-+def OpenTimeRangeEnds(time_ranges, min_time, max_time):
-+	if time_ranges[0][0] <= min_time:
-+		time_ranges[0][0] = None
-+	if time_ranges[-1][1] >= max_time:
-+		time_ranges[-1][1] = None
-+
-+def BadTimeStr(time_str):
-+	raise Exception(f"perf command bad time option: '{time_str}'\nCheck also 'time of first sample' and 'time of last sample' in perf script --header-only")
-+
-+def ValidateTimeRanges(time_ranges, time_str):
-+	n = len(time_ranges)
-+	for i in range(n):
-+		start = time_ranges[i][0]
-+		end   = time_ranges[i][1]
-+		if i != 0 and start <= time_ranges[i - 1][1]:
-+			BadTimeStr(time_str)
-+		if start > end:
-+			BadTimeStr(time_str)
-+
-+def TimeVal(s, dflt):
-+	s = s.strip()
-+	if s == "":
-+		return dflt
-+	a = s.split(".")
-+	if len(a) > 2:
-+		raise Exception(f"Bad time value'{s}'")
-+	x = int(a[0])
-+	if x < 0:
-+		raise Exception("Negative time not allowed")
-+	x *= 1000000000
-+	if len(a) > 1:
-+		x += int((a[1] + "000000000")[:9])
-+	return x
-+
-+def BadCPUStr(cpu_str):
-+	raise Exception(f"perf command bad cpu option: '{cpu_str}'\nCheck also 'nrcpus avail' in perf script --header-only")
-+
-+def ParseTimeStr(time_str, min_time, max_time):
-+	if time_str == None or time_str == "":
-+		return [[min_time, max_time]]
-+	time_ranges = []
-+	for r in time_str.split():
-+		a = r.split(",")
-+		if len(a) != 2:
-+			BadTimeStr(time_str)
-+		try:
-+			start = TimeVal(a[0], min_time)
-+			end   = TimeVal(a[1], max_time)
-+		except:
-+			BadTimeStr(time_str)
-+		time_ranges.append([start, end])
-+	ValidateTimeRanges(time_ranges, time_str)
-+	return time_ranges
-+
-+def ParseCPUStr(cpu_str, nr_cpus):
-+	if cpu_str == None or cpu_str == "":
-+		return [-1]
-+	cpus = []
-+	for r in cpu_str.split(","):
-+		a = r.split("-")
-+		if len(a) < 1 or len(a) > 2:
-+			BadCPUStr(cpu_str)
-+		try:
-+			start = int(a[0].strip())
-+			if len(a) > 1:
-+				end = int(a[1].strip())
-+			else:
-+				end = start
-+		except:
-+			BadCPUStr(cpu_str)
-+		if start < 0 or end < 0 or end < start or end >= nr_cpus:
-+			BadCPUStr(cpu_str)
-+		cpus.extend(range(start, end + 1))
-+	cpus = list(set(cpus)) # Remove duplicates
-+	cpus.sort()
-+	return cpus
-+
-+class ParallelPerf():
-+
-+	def __init__(self, a):
-+		for arg_name in vars(a):
-+			setattr(self, arg_name, getattr(a, arg_name))
-+		self.orig_nr = self.nr
-+		self.orig_cmd = list(self.cmd)
-+		self.perf = self.cmd[0]
-+		if os.path.exists(self.output_dir):
-+			raise Exception(f"Output '{self.output_dir}' already exists")
-+		if self.jobs < 0 or self.nr < 0 or self.interval < 0:
-+			raise Exception("Bad options (negative values): try -h option for help")
-+		if self.nr != 0 and self.interval != 0:
-+			raise Exception("Cannot specify number of time subdivisions and time interval")
-+		if self.jobs == 0:
-+			self.jobs = NumberOfCPUs()
-+		if self.nr == 0 and self.interval == 0:
-+			if self.per_cpu:
-+				self.nr = 1
-+			else:
-+				self.nr = self.jobs
-+
-+	def Init(self):
-+		if self.verbosity.debug:
-+			print("cmd", self.cmd)
-+		self.file_name = DetermineInputFileName(self.cmd)
-+		self.hdr = ReadHeader(self.perf, self.file_name)
-+		self.hdr_dict = ParseHeader(self.hdr)
-+		self.cmd_line = HeaderField(self.hdr_dict, "cmdline")
-+
-+	def ExtractTimeInfo(self):
-+		self.min_time = TimeVal(HeaderField(self.hdr_dict, "time of first sample"), 0)
-+		self.max_time = TimeVal(HeaderField(self.hdr_dict, "time of last sample"), 0)
-+		self.time_str = ExtractPerfOption(self.cmd, "", "time")
-+		self.time_ranges = ParseTimeStr(self.time_str, self.min_time, self.max_time)
-+		if self.verbosity.debug:
-+			print("time_ranges", self.time_ranges)
-+
-+	def ExtractCPUInfo(self):
-+		if self.per_cpu:
-+			nr_cpus = int(HeaderField(self.hdr_dict, "nrcpus avail"))
-+			self.cpu_str = ExtractPerfOption(self.cmd, "C", "cpu")
-+			if self.cpu_str == None or self.cpu_str == "":
-+				self.cpus = [ x for x in range(nr_cpus) ]
-+			else:
-+				self.cpus = ParseCPUStr(self.cpu_str, nr_cpus)
-+		else:
-+			self.cpu_str = None
-+			self.cpus = [-1]
-+		if self.verbosity.debug:
-+			print("cpus", self.cpus)
-+
-+	def IsIntelPT(self):
-+		return self.cmd_line.find("intel_pt") >= 0
-+
-+	def SplitTimeRanges(self):
-+		if self.IsIntelPT() and self.interval == 0:
-+			self.split_time_ranges_for_each_cpu = \
-+				SplitTimeRangesByTraceDataDensity(self.time_ranges, self.cpus, self.orig_nr,
-+								  self.orig_cmd, self.file_name, self.per_cpu,
-+								  self.min_size, self.min_interval, self.verbosity)
-+		elif self.nr:
-+			self.split_time_ranges_for_each_cpu = [ SplitTimeRangesIntoN(self.time_ranges, self.nr, self.min_interval) ]
-+		else:
-+			self.split_time_ranges_for_each_cpu = [ SplitTimeRangesByInterval(self.time_ranges, self.interval) ]
-+
-+	def CheckTimeRanges(self):
-+		for tr in self.split_time_ranges_for_each_cpu:
-+			# Re-combined time ranges should be the same
-+			new_tr = RecombineTimeRanges(tr)
-+			if new_tr != self.time_ranges:
-+				if self.verbosity.debug:
-+					print("tr", tr)
-+					print("new_tr", new_tr)
-+				raise Exception("Self test failed!")
-+
-+	def OpenTimeRangeEnds(self):
-+		for time_ranges in self.split_time_ranges_for_each_cpu:
-+			OpenTimeRangeEnds(time_ranges, self.min_time, self.max_time)
-+
-+	def CreateWorkList(self):
-+		self.worklist = CreateWorkList(self.cmd, self.pipe_to, self.output_dir, self.cpus, self.split_time_ranges_for_each_cpu)
-+
-+	def PerfDataRecordedPerCPU(self):
-+		if "--per-thread" in self.cmd_line.split():
-+			return False
-+		return True
-+
-+	def DefaultToPerCPU(self):
-+		# --no-per-cpu option takes precedence
-+		if self.no_per_cpu:
-+			return False
-+		if not self.PerfDataRecordedPerCPU():
-+			return False
-+		# Default to per-cpu for Intel PT data that was recorded per-cpu,
-+		# because decoding can be done for each CPU separately.
-+		if self.IsIntelPT():
-+			return True
-+		return False
-+
-+	def Config(self):
-+		self.Init()
-+		self.ExtractTimeInfo()
-+		if not self.per_cpu:
-+			self.per_cpu = self.DefaultToPerCPU()
-+		if self.verbosity.debug:
-+			print("per_cpu", self.per_cpu)
-+		self.ExtractCPUInfo()
-+		self.SplitTimeRanges()
-+		if self.verbosity.self_test:
-+			self.CheckTimeRanges()
-+		# Prefer open-ended time range to starting / ending with min_time / max_time resp.
-+		self.OpenTimeRangeEnds()
-+		self.CreateWorkList()
-+
-+	def Run(self):
-+		if self.dry_run:
-+			print(len(self.worklist),"jobs:")
-+			for w in self.worklist:
-+				print(w.Command())
-+			return True
-+		result = RunWork(self.worklist, self.jobs, verbosity=self.verbosity)
-+		if self.verbosity.verbose:
-+			print(glb_prog_name, "done")
-+		return result
-+
-+def RunParallelPerf(a):
-+	pp = ParallelPerf(a)
-+	pp.Config()
-+	return pp.Run()
-+
-+def Main(args):
-+	ap = argparse.ArgumentParser(
-+		prog=glb_prog_name, formatter_class = argparse.RawDescriptionHelpFormatter,
-+		description =
-+"""
-+Run a perf script command multiple times in parallel, using perf script options
-+--cpu and --time so that each job processes a different chunk of the data.
-+""",
-+		epilog =
-+"""
-+Follow the options by '--' and then the perf script command e.g.
-+
-+	$ perf record -a -- sleep 10
-+	$ parallel-perf.py --nr=4 -- perf script --ns
-+	All jobs finished successfully
-+	$ tree parallel-perf-output/
-+	parallel-perf-output/
-+	├── time-range-0
-+	│   ├── cmd.txt
-+	│   └── out.txt
-+	├── time-range-1
-+	│   ├── cmd.txt
-+	│   └── out.txt
-+	├── time-range-2
-+	│   ├── cmd.txt
-+	│   └── out.txt
-+	└── time-range-3
-+	    ├── cmd.txt
-+	    └── out.txt
-+	$ find parallel-perf-output -name cmd.txt | sort | xargs grep -H .
-+	parallel-perf-output/time-range-0/cmd.txt:perf script --time=,9466.504461499 --ns
-+	parallel-perf-output/time-range-1/cmd.txt:perf script --time=9466.504461500,9469.005396999 --ns
-+	parallel-perf-output/time-range-2/cmd.txt:perf script --time=9469.005397000,9471.506332499 --ns
-+	parallel-perf-output/time-range-3/cmd.txt:perf script --time=9471.506332500, --ns
-+
-+Any perf script command can be used, including the use of perf script options
-+--dlfilter and --script, so that the benefit of running parallel jobs
-+naturally extends to them also.
-+
-+If option --pipe-to is used, standard output is first piped through that
-+command. Beware, if the command fails (e.g. grep with no matches), it will be
-+considered a fatal error.
-+
-+Final standard output is redirected to files named out.txt in separate
-+subdirectories under the output directory. Similarly, standard error is
-+written to files named err.txt. In addition, files named cmd.txt contain the
-+corresponding perf script command. After processing, err.txt files are removed
-+if they are empty.
-+
-+If any job exits with a non-zero exit code, then all jobs are killed and no
-+more are started. A message is printed if any job results in a non-empty
-+err.txt file.
-+
-+There is a separate output subdirectory for each time range. If the --per-cpu
-+option is used, these are further grouped under cpu-n subdirectories, e.g.
-+
-+	$ parallel-perf.py --per-cpu --nr=2 -- perf script --ns --cpu=0,1
-+	All jobs finished successfully
-+	$ tree parallel-perf-output
-+	parallel-perf-output/
-+	├── cpu-0
-+	│   ├── time-range-0
-+	│   │   ├── cmd.txt
-+	│   │   └── out.txt
-+	│   └── time-range-1
-+	│       ├── cmd.txt
-+	│       └── out.txt
-+	└── cpu-1
-+	    ├── time-range-0
-+	    │   ├── cmd.txt
-+	    │   └── out.txt
-+	    └── time-range-1
-+	        ├── cmd.txt
-+	        └── out.txt
-+	$ find parallel-perf-output -name cmd.txt | sort | xargs grep -H .
-+	parallel-perf-output/cpu-0/time-range-0/cmd.txt:perf script --cpu=0 --time=,9469.005396999 --ns
-+	parallel-perf-output/cpu-0/time-range-1/cmd.txt:perf script --cpu=0 --time=9469.005397000, --ns
-+	parallel-perf-output/cpu-1/time-range-0/cmd.txt:perf script --cpu=1 --time=,9469.005396999 --ns
-+	parallel-perf-output/cpu-1/time-range-1/cmd.txt:perf script --cpu=1 --time=9469.005397000, --ns
-+
-+Subdivisions of time range, and cpus if the --per-cpu option is used, are
-+expressed by the --time and --cpu perf script options respectively. If the
-+supplied perf script command has a --time option, then that time range is
-+subdivided, otherwise the time range given by 'time of first sample' to
-+'time of last sample' is used (refer perf script --header-only). Similarly, the
-+supplied perf script command may provide a --cpu option, and only those CPUs
-+will be processed.
-+
-+To prevent time intervals becoming too small, the --min-interval option can
-+be used.
-+
-+Note there is special handling for processing Intel PT traces. If an interval is
-+not specified and the perf record command contained the intel_pt event, then the
-+time range will be subdivided in order to produce subdivisions that contain
-+approximately the same amount of trace data. That is accomplished by counting
-+double-quick (--itrace=qqi) samples, and choosing time ranges that encompass
-+approximately the same number of samples. In that case, time ranges may not be
-+the same for each CPU processed. For Intel PT, --per-cpu is the default, but
-+that can be overridden by --no-per-cpu. Note, for Intel PT, double-quick
-+decoding produces 1 sample for each PSB synchronization packet, which in turn
-+come after a certain number of bytes output, determined by psb_period (refer
-+perf Intel PT documentation). The minimum number of double-quick samples that
-+will define a time range can be set by the --min_size option, which defaults to
-+64.
-+""")
-+	ap.add_argument("-o", "--output-dir", default="parallel-perf-output", help="output directory (default 'parallel-perf-output')")
-+	ap.add_argument("-j", "--jobs", type=int, default=0, help="maximum number of jobs to run in parallel at one time (default is the number of CPUs)")
-+	ap.add_argument("-n", "--nr", type=int, default=0, help="number of time subdivisions (default is the number of jobs)")
-+	ap.add_argument("-i", "--interval", type=float, default=0, help="subdivide the time range using this time interval (in seconds e.g. 0.1 for a tenth of a second)")
-+	ap.add_argument("-c", "--per-cpu", action="store_true", help="process data for each CPU in parallel")
-+	ap.add_argument("-m", "--min-interval", type=float, default=glb_min_interval, help=f"minimum interval (default {glb_min_interval} seconds)")
-+	ap.add_argument("-p", "--pipe-to", help="command to pipe output to (optional)")
-+	ap.add_argument("-N", "--no-per-cpu", action="store_true", help="do not process data for each CPU in parallel")
-+	ap.add_argument("-b", "--min_size", type=int, default=glb_min_samples, help="minimum data size (for Intel PT in PSBs)")
-+	ap.add_argument("-D", "--dry-run", action="store_true", help="do not run any jobs, just show the perf script commands")
-+	ap.add_argument("-q", "--quiet", action="store_true", help="do not print any messages except errors")
-+	ap.add_argument("-v", "--verbose", action="store_true", help="print more messages")
-+	ap.add_argument("-d", "--debug", action="store_true", help="print debugging messages")
-+	cmd_line = list(args)
-+	try:
-+		split_pos = cmd_line.index("--")
-+		cmd = cmd_line[split_pos + 1:]
-+		args = cmd_line[:split_pos]
-+	except:
-+		cmd = None
-+		args = cmd_line
-+	a = ap.parse_args(args=args[1:])
-+	a.cmd = cmd
-+	a.verbosity = Verbosity(a.quiet, a.verbose, a.debug)
-+	try:
-+		if a.cmd == None:
-+			if len(args) <= 1:
-+				ap.print_help()
-+				return True
-+			raise Exception("Command line must contain '--' before perf command")
-+		return RunParallelPerf(a)
-+	except Exception as e:
-+		print("Fatal error: ", str(e))
-+		if a.debug:
-+			raise
-+		return False
-+
-+if __name__ == "__main__":
-+	if not Main(sys.argv):
-+		sys.exit(1)
-diff --git a/tools/perf/tests/shell/script.sh b/tools/perf/tests/shell/script.sh
-index fa4d71e2e72a..d3b522866fe0 100755
---- a/tools/perf/tests/shell/script.sh
-+++ b/tools/perf/tests/shell/script.sh
-@@ -17,7 +17,7 @@ cleanup()
- 	sane=$(echo "${temp_dir}" | cut -b 1-21)
- 	if [ "${sane}" = "/tmp/perf-test-script" ] ; then
- 		echo "--- Cleaning up ---"
--		rm -f "${temp_dir}/"*
-+		rm -rf "${temp_dir}/"*
- 		rmdir "${temp_dir}"
- 	fi
- }
-@@ -65,7 +65,31 @@ _end_of_file_
- 	echo "DB test [Success]"
- }
- 
-+test_parallel_perf()
-+{
-+	echo "parallel-perf test"
-+	if ! python3 --version >/dev/null 2>&1 ; then
-+		echo "SKIP: no python3"
-+		err=2
-+		return
-+	fi
-+	pp=$(dirname "$0")/../../scripts/python/parallel-perf.py
-+	if [ ! -f "${pp}" ] ; then
-+		echo "SKIP: parallel-perf.py script not found "
-+		err=2
-+		return
-+	fi
-+	perf_data="${temp_dir}/pp-perf.data"
-+	output1_dir="${temp_dir}/output1"
-+	output2_dir="${temp_dir}/output2"
-+	perf record -o "${perf_data}" --sample-cpu uname
-+	python3 "${pp}" -o "${output_dir}" --jobs 4 --verbose -- perf script -i "${perf_data}"
-+	python3 "${pp}" -o "${output_dir}" --jobs 4 --verbose --per-cpu -- perf script -i "${perf_data}"
-+	echo "parallel-perf test [Success]"
-+}
-+
- test_db
-+test_parallel_perf
- 
- cleanup
- 
--- 
-2.34.1
-
+>
+> And, when we reaches consensus on the swap file related concept, we may
+> document it somewhere and review all naming in swap code to cleanup.
+>
+> --
+> Best Regards,
+> Huang, Ying
 
