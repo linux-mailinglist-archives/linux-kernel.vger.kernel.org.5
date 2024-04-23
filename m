@@ -1,137 +1,114 @@
-Return-Path: <linux-kernel+bounces-154664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94D478ADF84
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:14:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 541748ADF86
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:15:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AE1B1F258C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:14:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B199CB24E93
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:15:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0687A50291;
-	Tue, 23 Apr 2024 08:14:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED164EB24;
+	Tue, 23 Apr 2024 08:15:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="0edhszBe"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="SFiaGA+o"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A455245BF3
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:14:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DD0744C8F
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713860070; cv=none; b=ud/eiRdydnW9UMY8aAWVbWxoB6/xY+W3jSrOfu2Z2uawbImVnSic1XvmIXhDW/CzzmCkDSB4SMEEnVgjBRHRYUC9K223L26q++EvwQGEYE9h/xsDagmQrkmUj7sdTHFMzNhIBc7RMKvur0zC/ZB4E7lgTiVxT1saaWtaysxPWbE=
+	t=1713860122; cv=none; b=HxCF/a610/VT3jtKZpsbBA+eNYKO/A3rKGpuYEIc70kKrO48w5vWKLwZKGp+AFinIcRTkVPp6zac7t+YAByvsLRYJx1FAuZyBGtq2dAjq2GbF9Ep++c4UWM/iqOGE8FK+fSw7kbKLQw5FKzxJGmNOwuq+wl6QJKdqCoVJ/Lg2F8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713860070; c=relaxed/simple;
-	bh=wG6WZUpRd/kgpR3jnKexoyxO7GupX187v2aFnXW6ETE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NZSF2fAje0m8SyvT5zyFZ0ShUjH9weU5EoIjqQdRrOlk6O6HDBG4ZusvJnobUU/BBxfLXkTp3KOGM5A2zv/6cHQge00p7oJPbOlDnQFZLxhrzwZ6YDZUI4xorPD42jMcJfzsVy4rJyQFOeAjYGPLTG16w+hYShwG6T1mtAn4764=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=0edhszBe; arc=none smtp.client-ip=209.85.167.41
+	s=arc-20240116; t=1713860122; c=relaxed/simple;
+	bh=JSja9lhqzBxpPm9Dl7Kn58mh7Qp72gcE6cOY/1FjgaI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DTyZFTvyAdZztUXYFI3EIPNfWMdpF7ppQ8iCKcx0fjpFjKUt+vknl4rDAGhHzDX/LUip8tPnBETjUzDGtGkNaaq7FdQQ9iycb7xJf2Iqj4QKdT08h8sVK4lcrR3ChS9oIiztcIUTQH7gxmQplq5hMNboPoTJsA5W4fa0lsgrQVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=SFiaGA+o; arc=none smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-516d1ecaf25so6954149e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 01:14:28 -0700 (PDT)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-343d1003106so4468127f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 01:15:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1713860067; x=1714464867; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1713860119; x=1714464919; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XnrklfKDWUIqP05rELUPFXo38TCciTnfkiMrHFZcSA0=;
-        b=0edhszBeZKglHxghgKzf3jItk/+SToJzlfeZzOKrpBbF52aT35vbknnhmgvR17L+nw
-         RDkfsazmNmFvaGv/ENvnEC7oWFeXuY5/2ynV9IOc68xio+Z3D17slj1UvTnslsQHvoso
-         jgjIfkdJ6n1Efx3uLiu6hGxVtX6MQbRW6MiVHUr3W24kkPELA6pNfrtYDPEaCViRZ8xa
-         JPGRo4qc268DrJxmEqjolNdi0gLDDXC90eAVTcd+U9pD4iJxH2O2CKUKlMkOisAKiLQO
-         oOsV7SGijdW1JwShIleGXVQIocu3rKKRdGqYAmtuJTT2RsrR8iPwWedwo1NbjLUSsbDA
-         fvew==
+        bh=nDLatT6z2nkWTiwdyYcUvvJq9+ZxXPToD0XAs9gY3N0=;
+        b=SFiaGA+oIKBzpK79n/0IxI+5yvHjvMsQcjjh6h8KxdFVlThMAavVtyMvpOBGX2H4ER
+         OV9PXQiewIOrtpm4q1E6RkonnG0sZAXBNeHbNJhx58RvO+pJoUe+K33WkOpX5dpErUb9
+         ozHWh936i+2VHhCocR8gAU4xAbJ1epsbmXOZaJ8RsFbDmUwaryPYPwpFX7MIjit0nbhf
+         rctzeo2dnS2cRc0OOOfCS9unPBol9TzEdsYqjQfwtrsSdwQwOWdS9e2CsbzK5IBkFVKg
+         ifnHxHFxKZl/40FHeU8g/xUzUlCBet+1J0bvVVrgVjAmLHNrgH+f2MmZSRkB+aAyehIz
+         5dww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713860067; x=1714464867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1713860119; x=1714464919;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XnrklfKDWUIqP05rELUPFXo38TCciTnfkiMrHFZcSA0=;
-        b=n3VXeJLwBETMmANznSEw/TBFedu73Yhs9FR/RfIw1gPGMR4kqQkvIkZzVCf/KDt429
-         CsJHzf91LiV55qoig3xo67aWBSA5s7YdVa9TYXU0ZlH84FYL/Gs6Fj/yUrXYlyIj60+d
-         Zf3yzfT46sSgArDQq7nW7bRWi3NDmoMLtyQpeatR5ZLY6jgRrrU7JVpFRV9IPsANM/WF
-         v7D3Gpd9SvEcpG26EMHeDJTtYkcqdNVG2z/BJMHw1XwzU5rgqpbVBW53VB4XD3NFDdDf
-         yFGN8EOxrvZdCyM698aPR39UFvTaZ8eTnmI2e35yr+OMAdeuFe+B36morXGHe97Rz7ZN
-         QT4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVzI7qvX3DJ3FxcRNQbfVQso64CIUF1Y4WiGWP3pnaQalt3G/locog2eMur6Q48GslKPo6l/LLP7niqPm9uxMdfihRtjAFd5zV72Ls3
-X-Gm-Message-State: AOJu0YwilV8KAG02K2urz/EJUMkci89qKiZL6Kyo8lrBgvbrVCeRPXzH
-	UtLXSJzzwQEwFBvmcJW5h3KKDizZJZeXLHHhW15v+JBNtJNO+eKKIYw/fMTKhWez9WKQkY3zA91
-	CvwY11u004hsdLWdoovtI0eEl+npDjvG2fvY02Q==
-X-Google-Smtp-Source: AGHT+IFT5mw/VkxiK5lqt0jVSHXWxLoXZjq0sk+Ehe1bus84zOyUGBvUOArypZGnFC8w9m/x1qswTJnq8zLtb/vC3ws=
-X-Received: by 2002:a19:f80d:0:b0:516:c9a7:82de with SMTP id
- a13-20020a19f80d000000b00516c9a782demr7121805lff.38.1713860066879; Tue, 23
- Apr 2024 01:14:26 -0700 (PDT)
+        bh=nDLatT6z2nkWTiwdyYcUvvJq9+ZxXPToD0XAs9gY3N0=;
+        b=Kx/AUm7cFEwfI2X2UFweDVJtBTYGFlSi1sT8TM0Z6AsAwbfJwlU5kb1r5gwVGOKNxE
+         2pEqoLT2itQDsHUgHSAZNGmj5J+OM7VbIcV3L9wbruMbJLGAMWJiUzOaM3804UhP4Jev
+         pD9UGdFWs35vv5pf7bmypuh2WzBtQnWeQEcMn6NfWHUynDewT5SdB/0Q3pJASyA92Iaq
+         FruJKJo1dPzT8SbgBfcBNN/qSOatgaHuLy0VYReFbqz6JVroY36mkuj/f5NLmAYyWScf
+         pMtOKIxuYtGMRQe2xOEcbFV3ADjXPc5XWhIN4QbAqbGFdd6f3FYhE79OQ2clgOMt2CDT
+         nOHw==
+X-Forwarded-Encrypted: i=1; AJvYcCUPKRMkR5RAyVY9F7q2O7gH9EluHaplO8KUIOa6/1eLtVN7iBfKIY9s2pNrOmczbv97KH1cLCvCokoqPrys8zRzrJiLM/yrcY1wHPdw
+X-Gm-Message-State: AOJu0YywhKFvWvOPi+mp1A0pJsgsZmmoG8KxjssykQg23NmkHI7lvQyE
+	dsRNIjR0jl4soc/rFBaWEQs2QYtuD2905N5JBDA59kEoEtc0fvXIS7tGUWzNBg0=
+X-Google-Smtp-Source: AGHT+IHF3Y0Es/MAeH3w4xn89FySTBFml+iixjQpMYFzr+Kl0mNaN/Fe8NzBFtJSd4HVjcHyMEzJew==
+X-Received: by 2002:a5d:658f:0:b0:347:3037:188d with SMTP id q15-20020a5d658f000000b003473037188dmr10891497wru.34.1713860119316;
+        Tue, 23 Apr 2024 01:15:19 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:75a:e000:a046:fbef:467d:18f7])
+        by smtp.gmail.com with ESMTPSA id x12-20020adfdd8c000000b00349f139dbe4sm13947434wrl.91.2024.04.23.01.15.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 01:15:18 -0700 (PDT)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Bartosz Golaszewski <brgl@bgdev.pl>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Daniel Okazaki <dtokazaki@google.com>
+Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	kernel-team@android.com,
+	linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] eeprom: at24: fix memory corruption race condition
+Date: Tue, 23 Apr 2024 10:15:18 +0200
+Message-Id: <171386010055.10921.7297413066417044638.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240422174337.2487142-1-dtokazaki@google.com>
+References: <20240422174337.2487142-1-dtokazaki@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422174337.2487142-1-dtokazaki@google.com> <2024042324-public-disgrace-2674@gregkh>
-In-Reply-To: <2024042324-public-disgrace-2674@gregkh>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Tue, 23 Apr 2024 10:14:16 +0200
-Message-ID: <CAMRc=McBf57hRFwJtTGiM=3x9-D1zPrW8mDnMKmcnupPA6ZB5Q@mail.gmail.com>
-Subject: Re: [PATCH v3] eeprom: at24: fix memory corruption race condition
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Daniel Okazaki <dtokazaki@google.com>, Arnd Bergmann <arnd@arndb.de>, kernel-team@android.com, 
-	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 23, 2024 at 12:09=E2=80=AFAM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Mon, Apr 22, 2024 at 05:43:36PM +0000, Daniel Okazaki wrote:
-> > If the eeprom is not accessible, an nvmem device will be registered, th=
-e
-> > read will fail, and the device will be torn down. If another driver
-> > accesses the nvmem device after the teardown, it will reference
-> > invalid memory.
-> >
-> > Move the failure point before registering the nvmem device.
-> >
-> > Signed-off-by: Daniel Okazaki <dtokazaki@google.com>
-> > Fixes: b20eb4c1f026 ("eeprom: at24: drop unnecessary label")
-> > ---
-> > Changed sha length to 12 in description
-> > ---
->
-> Hi,
->
-> This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-> a patch that has triggered this response.  He used to manually respond
-> to these common problems, but in order to save his sanity (he kept
-> writing the same thing over and over, yet to different people), I was
-> created.  Hopefully you will not take offence and will fix the problem
-> in your patch and resubmit it so that it can be accepted into the Linux
-> kernel tree.
->
-> You are receiving this message because of the following common error(s)
-> as indicated below:
->
-> - You have marked a patch with a "Fixes:" tag for a commit that is in an
->   older released kernel, yet you do not have a cc: stable line in the
->   signed-off-by area at all, which means that the patch will not be
->   applied to any older kernel releases.  To properly fix this, please
->   follow the documented rules in the
->   Documentation/process/stable-kernel-rules.rst file for how to resolve
->   this.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-I fixed it when applying.
 
-Bart
+On Mon, 22 Apr 2024 17:43:36 +0000, Daniel Okazaki wrote:
+> If the eeprom is not accessible, an nvmem device will be registered, the
+> read will fail, and the device will be torn down. If another driver
+> accesses the nvmem device after the teardown, it will reference
+> invalid memory.
+> 
+> Move the failure point before registering the nvmem device.
+> 
+> [...]
 
->
-> If you wish to discuss this problem further, or you have questions about
-> how to resolve this issue, please feel free to respond to this email and
-> Greg will reply once he has dug out from the pending patches received
-> from other developers.
->
-> thanks,
->
-> greg k-h's patch email bot
+Applied, thanks!
+
+[1/1] eeprom: at24: fix memory corruption race condition
+      commit: f42c97027fb75776e2e9358d16bf4a99aeb04cf2
+
+Best regards,
+-- 
+Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
