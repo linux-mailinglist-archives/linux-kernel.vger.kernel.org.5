@@ -1,144 +1,141 @@
-Return-Path: <linux-kernel+bounces-154380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACB6E8ADB6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80C9D8ADB6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:13:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16E752848DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:12:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D8A7284737
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:13:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C7612E40;
-	Tue, 23 Apr 2024 01:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 598F410949;
+	Tue, 23 Apr 2024 01:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="BC5m/mQn"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IsAELkk2"
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01A8FFC18
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 01:12:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42B2312B82
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 01:13:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713834758; cv=none; b=Yu+K/ZKkfVqvbaioEEwBMo8eAeYxsWTxA+TBHn0kuKuifKQ7MAdFpeQ9QKKxuADi8QlkG2fCBCLNdOyqqjenL6bv4qofmFnuWdO6iRytObYkMK0u2m25WNcRSagWIxecQp31knrj2c3nLAClmjSqsJ/2x0rWBQUlXFClkQu2w44=
+	t=1713834819; cv=none; b=dhS1pf/KNDwXqoDgKfNOu/64xFJ04DLG6HABu8XXQfXR0VI/zSkwNb70WaGcFYILlg1Q7R8qTPas4/xFj87XEDbgOv4bOAMA17k1IyaITTKIJZEAUymEonkxWOnQ5mXPLyhwrufzErV2jSb1xkculXf0r+NEQbCfRdlB/W0ejsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713834758; c=relaxed/simple;
-	bh=obnCv2ejxmQAf1KycED7Pt69rTtXHiQl8HcqBdTJCQo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=lTfvwaFcQYaqcTeyn79yNAuxZjptnKrBzUylNjpzJX8D+o5asSaFRfdKwoubedYpkTOjRr6qPIlLyFkBTBMhx/cOZcrPrt4IrzbWZM0CcpC1qG71nD29xUTu8IqC5LehUwKgkJoLyKKRKsyB45X4ZR7NUCGEM8lyx7X32dnr+OA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=BC5m/mQn; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id CABA22C0358;
-	Tue, 23 Apr 2024 13:12:33 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1713834753;
-	bh=obnCv2ejxmQAf1KycED7Pt69rTtXHiQl8HcqBdTJCQo=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=BC5m/mQnUrLM3l59KEzW8jJf9nqvN8ESoerGXmDQJ7o7nOBtsF9RL5z5m3SsCnFSv
-	 +R7z7SeYLTPbvnUaO0Nf0O6PK/W7prlA4+L+6Uyq5XFfZ+N7mcBnIwnBUj3lY8azRW
-	 wqtvL36X9YXLX3+d7A3eQ6pVCk/e9nNeyl0qm3aQ7Gyig+En1uteHjTzeA4QsD6ND4
-	 N13lLqTPYFtSyfd6o3Hm+zmhvGHYyoqziB/rJzaoSFTsDQqjZBXh2M8W6Ywa+EV+Ud
-	 xw7YI7fkhGoOZnmAcg1kJZj0pwBYNUbyC26x7KEhtFFCSHzNlqtoy9GTNtHZ/xjTRO
-	 vezjD8JR5lWXA==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B66270b010001>; Tue, 23 Apr 2024 13:12:33 +1200
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Tue, 23 Apr 2024 13:12:33 +1200
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1544.009; Tue, 23 Apr 2024 13:12:33 +1200
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Herve Codina
-	<herve.codina@bootlin.com>, Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: local bus enumeration beyond a PCI device
-Thread-Topic: local bus enumeration beyond a PCI device
-Thread-Index: AQHakSa58Ehmqkf3b0um4G7kLubeE7FzKqIAgAEgiYA=
-Date: Tue, 23 Apr 2024 01:12:33 +0000
-Message-ID: <11b9ff3a-514e-4c50-88c2-fd6f53398b9c@alliedtelesis.co.nz>
-References: <bad63409-ed2b-4cef-988b-3c143636e9fa@alliedtelesis.co.nz>
- <ZiYY9u7uL7hnetFU@surfacebook.localdomain>
-In-Reply-To: <ZiYY9u7uL7hnetFU@surfacebook.localdomain>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A8B84613AFE57E4BBCE3BA997CE1CF2F@atlnz.lc>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1713834819; c=relaxed/simple;
+	bh=5VVrV9hcvFlsKZI5OHGPpwRNXV+1M7uEM1Z2u6Qt0i0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s4cpWjgk3dccry0KZ8AYEDNysIlbu7Z21Sd+0y6DJasT1El6XQHrZDecokCmvSgQS5TQMRYcce+/okO5z/tzNoJSu2lBuWd8qXT/nG4gGPxIBDIYrYMQMBD8DvxFTVoD76mlL9/LXfcXrfF5SFk6FQAuRxiVCJ3ufmZ0ZsZXzvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IsAELkk2; arc=none smtp.client-ip=209.85.221.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4dcbf770c24so2639010e0c.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 18:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713834817; x=1714439617; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n0QiT4LgQZ50n1AQG3qCZkCQEm18Wik9J0mwlzbdXB4=;
+        b=IsAELkk2CsoKgkqIKv+shwzhFA/kjR921wFX+0Xj43l34a/eYOrzNEQASLLMuAA3kh
+         Qbr/AWSxxevYOVWvb5aj1p5bWtFuRB909tKmiwj1aFo6nOfs7Hydtj01LVMRdgBcVktl
+         qynZ0PmW7k6wREfIgIthbHEeMUocaOdZVqoZ4Vpn5+oMHqyYrMIBURhaLSlsrkU1lvgB
+         A2prKyUaGazYW3nKsdMG+2otciU3SjQ3P1JJAEuC7Ls8RO5iVdecKGH+GnamonS+m52+
+         b8x22/WM1lpByumwj6pSwyKoz+iRpToY8imOz907M3D+qlEMpK5SYcUhAJCZJAIYh921
+         XscQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713834817; x=1714439617;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n0QiT4LgQZ50n1AQG3qCZkCQEm18Wik9J0mwlzbdXB4=;
+        b=g4X3gvKkEn/Wxg3BBk/7HAWhp4QktjR/SD9T7LrpiycmxOZUSjPN2rwnoTKzb6m8DN
+         WDTzkyoLRLyGZbrKEAxM32sbucoTqLcAwlKBF37PoFK9v/xj9UBL5tLUrDPXnwPh8SvH
+         YNJsvwMWZ4/HBkDUZcIV83fVqBEFAJ2qXJS96+7taRyq9sXD0APLK03DUV2JxZbi6eqA
+         yYSDxIbq7WeDPHbaSqAVhMTGI1Dp4zbeyK28gvb6aWTtIsSFN2tYksugsLecx+xPCP3G
+         Y4yV/VEXJVDgBU4gZTm1yYrbS4mOqM+ToQkG+0ObWAjwRldq8TyzSyEZXcWUuc5/ABt/
+         c/jA==
+X-Forwarded-Encrypted: i=1; AJvYcCV2g8GEdpwSB5gNCcfplr6MVo+tsMJSRUJEOMfzWnc8GHCSqkXj6RaNqr04N5zzCZSqKLnKZAeTke31/AmW2AK9pJ9o3j6bpIOntPm5
+X-Gm-Message-State: AOJu0YxUB89w3beJ35GRB4QtTUxuYmM4XqAYL4y7GXaFI6TGjNmgxDmn
+	rufMkNLPBKnvnPfAjQJe9k8f64rjU5zhrleXUY5edvcBMymdBj+w5g8wrDERTLOwJM9BcFA0Ivu
+	e0Q/SXi2FUK8mydvNAFCutFDXbdU=
+X-Google-Smtp-Source: AGHT+IFRB0M8tYZ94U5gY6b3+0CP/60BN0LS4hrFYSqugv3DRLFg+lrNMDhGWo8hO6c9FKiwvatw9RCoZ8nXAT0I7HA=
+X-Received: by 2002:a05:6122:ca3:b0:4bd:54d0:e6df with SMTP id
+ ba35-20020a0561220ca300b004bd54d0e6dfmr2780294vkb.1.1713834817070; Mon, 22
+ Apr 2024 18:13:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=dY4j3mXe c=1 sm=1 tr=0 ts=66270b01 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=Xj66QVUaDVOFW09HLocA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+References: <cover.1713755580.git.baolin.wang@linux.alibaba.com> <4107dcc957f3b62a37c83e30ca22305c373ef149.1713755580.git.baolin.wang@linux.alibaba.com>
+In-Reply-To: <4107dcc957f3b62a37c83e30ca22305c373ef149.1713755580.git.baolin.wang@linux.alibaba.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 23 Apr 2024 09:13:25 +0800
+Message-ID: <CAGsJ_4zyVt13F=zwQNDuWZMKVtgh9U7pPAqgrRpM3nTn17or4g@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/5] mm: shmem: add THP validation for PMD-mapped THP
+ related statistics
+To: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: akpm@linux-foundation.org, hughd@google.com, willy@infradead.org, 
+	david@redhat.com, wangkefeng.wang@huawei.com, ryan.roberts@arm.com, 
+	ying.huang@intel.com, shy828301@gmail.com, ziy@nvidia.com, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-DQpPbiAyMi8wNC8yNCAxOTo1OSwgQW5keSBTaGV2Y2hlbmtvIHdyb3RlOg0KPiBUaHUsIEFwciAx
-OCwgMjAyNCBhdCAxMjoyNDowNkFNICswMDAwLCBDaHJpcyBQYWNraGFtIGtpcmpvaXR0aToNCj4+
-IEhpLA0KPj4NCj4+IFdlJ3ZlIGdvdCBhIGN1c3RvbSB4ODZfNjQgYmFzZWQgZGVzaWduIHRoYXQg
-aXMgdXNpbmcgYW4gQVNJWDkxMDAgdG8NCj4+IHByb3ZpZGUgYSBQQ0kgdG8gbG9jYWwgYnVzIGJy
-aWRnZS4gQXR0YWNoZWQgdG8gdGhhdCBsb2NhbCBidXMgaXMgYW4gRlBHQQ0KPj4gd2hpY2ggbW9z
-dGx5IHByb3ZpZGVzIHNvbWUgR1BJT3MgYWNjZXNzZWQgdmlhIHJlZ2lzdGVycyBvbiB0aGUgbG9j
-YWwNCj4+IGJ1cy4gUmlnaHQgbm93IHdlJ3ZlIGdvdCBhIGN1c3RvbSBkcml2ZXIgdGhhdCBidW5k
-bGVzIGV2ZXJ5dGhpbmcNCj4+IHRvZ2V0aGVyIHNvIGVmZmVjdGl2ZWx5IHdlJ3ZlIGdvdCBhIFBD
-SSBkZXZpY2UgdGhhdCBwcm92aWRlcyBHUElPcy4NCj4+DQo+PiBCdXQgYXMgdGhpbmdzIGNhbiBj
-aGFuZ2UgYmFzZWQgb24gdGhlIEZQR0EgcHJvZ3JhbSBJJ2QgbGlrZSBzb21lDQo+PiBmbGV4aWJp
-bGl0eSB0byB0cmVhdCBpdCBzZXBhcmF0ZWx5IGZyb20gdGhlIFBDSSBicmlkZ2UuDQo+IFdoeT8g
-QUZBSVUgdGhlIGFyY2hpdGVjdHVyZSwgeW91IGhhdmUgYW4gRlBHQSB3aXRoIGEgcmVhbCBQQ0kg
-YnJpZGdlIC8gc3dpdGNoLA0KPiBubz8gSWYgaXQncyB0aGUgY2FzZSwgdGhlIHNvZnR3YXJlIHNo
-b3VsZG4ndCBjYXJlIGlmIHRoZSByZXNwZWN0aXZlIElQIGNvbWVzDQo+IGZyb20gRlBHQSBvciBT
-b0MuDQoNCk5vIHRoZSBGUEdBIGhhcyBhIHBhcmFsbGVsIGludGVyZmFjZS4gV2UgZGlkIHRyeSB0
-byBwdXNoIHRoZSBIVyANCmRlc2lnbmVycyBpbnRvIHVzaW5nIGEgRlBHQSB3aXRoIGEgcHJvcGVy
-IFBDSS1lIGludGVyZmFjZSBidXQgdGhleSANCnNpZ2h0ZWQgcmVhc29ucyBvZiBjb3N0IGFuZCBz
-Y2hlZHVsZSBzbyB0aGV5IGVuZGVkIHVwIGFkZGluZyB0aGUgDQpBU0lYOTEwMCBzbyB0aGV5IGNv
-dWxkIHJlLXVzZSBhIGxvdCBvZiB0aGUgZGVzaWduIHRoZXkgaGFkIGZyb20gYW4gb2xkZXIgDQpw
-cm9kdWN0Lg0KDQo+DQo+PiBTbyByZWFsbHkgSSdkDQo+PiBsaWtlIHRvIGhhdmUgYSBQQ0kgZGV2
-aWNlIGRyaXZlciBmb3IgdGhlIEFTSVg5MTAwIHRoYXQgcHJvdmlkZXMgYSBsb2NhbA0KPj4gYnVz
-IGNvbnRyb2xsZXIgYW5kIGEgKHBsYXRmb3JtPykgZHJpdmVyIGZvciB0aGUgRlBHQSB0aGF0IHBy
-b3ZpZGVzIHRoZQ0KPj4gR1BJT3Mgd2hlcmUgSSBjYW4gaGF2ZSBkaWZmZXJlbnQgY29tcGF0aWJs
-ZXMgZm9yIHRoZSBkaWZmZXJlbnQNCj4+IGltcGxlbWVudGF0aW9ucy4NCj4+DQo+PiBUaGVuIGlu
-IHRoZSBBQ1BJIG92ZXJsYXkgSSdkIGhhdmUgc29tZXRoaW5nIGxpa2UNCj4+DQo+PiAgIMKgwqDC
-oCBTY29wZSAoXF9TQi5QQ0kwLkQwQjApDQo+PiAgIMKgwqDCoCB7DQo+PiAgIMKgwqDCoMKgwqDC
-oMKgIERldmljZSAoQVNJWCkNCj4+ICAgwqDCoMKgwqDCoMKgwqAgew0KPj4gICDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIE5hbWUgKF9BRFIsIDB4MDAwMCkNCj4+DQo+PiAgIMKgwqDCoCDCoMKgwqAg
-wqDCoMKgIERldmljZSAoRlBHQSkNCj4+ICAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgew0KPj4gICDC
-oMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCBOYW1lIChfSElELCAiUFJQ
-MDAwMSIpDQo+PiAgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIE5h
-bWUgKF9EU0QsIFBhY2thZ2UgKCkNCj4+ICAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKg
-wqDCoCDCoMKgwqAgew0KPj4gVG9VVUlEKCJkYWZmZDgxNC02ZWJhLTRkOGMtOGE5MS1iYzliYmY0
-YWEzMDEiKSwNCj4+ICAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAg
-wqDCoMKgIMKgwqDCoCDCoMKgwqAgUGFja2FnZSAoKQ0KPj4gICDCoMKgwqAgwqDCoMKgIMKgwqDC
-oCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCB7DQo+PiAgIMKgwqDC
-oCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKg
-IMKgwqDCoCDCoMKgwqAgwqDCoMKgIFBhY2thZ2UgKCkgew0KPj4gImNvbXBhdGlibGUiLCAibXkt
-cGxhdGZvcm0tZHJpdmVyLWZvci1mcGdhIiB9LA0KPj4gICDCoMKgwqAgwqDCoMKgIMKgwqDCoCDC
-oMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCB9DQo+PiAgIMKgwqDCoCDC
-oMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIH0pDQo+PiAgIMKgwqDCoCDCoMKgwqAg
-wqDCoMKgIH0NCj4+ICAgwqDCoMKgwqDCoMKgwqAgfQ0KPj4gICDCoMKgwqAgfQ0KPj4NCj4+ICAg
-wqDCoCBTY29wZShcX1NCKQ0KPj4gICDCoMKgIHsNCj4+ICAgwqDCoMKgIMKgwqDCoCBEZXZpY2Uo
-T1RIUikNCj4+ICAgwqDCoMKgIMKgwqDCoCB7DQo+PiAgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIEdw
-aW9JbyAoRXhjbHVzaXZlLCBQdWxsVXAsIDAsIDAsIElvUmVzdHJpY3Rpb25JbnB1dE9ubHksDQo+
-PiAiXFxfU0IuUENJMC5EMEIwLkFTSVguRlBHQSIsKSB7IDAgfQ0KPj4gICDCoMKgwqAgwqDCoMKg
-IH0NCj4+ICAgwqDCoCB9DQo+Pg0KPj4gSXMgaXQgZXZlbiBwb3NzaWJsZSB0byByZWdpc3RlciBh
-IGhvc3QgY29udHJvbGxlciBmb3IgYW5vdGhlciBwbGF0Zm9ybSBidXM/DQo+IEFGQUlLIHRoZXJl
-IGlzIGFuIEZQR0EgZnJhbWV3b3JrIGluIHRoZSBrZXJuZWwgYW5kIHRoZSBpZGVhIGlzIHRoYXQg
-ZWFjaCBGUEdBDQo+IGNvbmZpZ3VyYXRpb24gcHJvdmlkZXMgYSBjb21wbGltZW50YXJ5IERUIHRv
-IGRlc2NyaWJlIHRoZSBoYXJkd2FyZSBzZXR1cC4gQXMNCj4gQmpvcm4gQ2MnZWQgdGhpcyB0byBI
-ZXJ2ZSB5b3UgbWF5IGdldCB0aGUgYW5zd2VyIG9uIHdoYXQncyBnb2luZyBvbiB0aGVyZSBtdWNo
-DQo+IGJldHRlciBhcyBJJ20gbm90IGludm9sdmVkIGluIHRoZSBkZXZlbG9wbWVudCBvZiB0aGF0
-IHRvcGljLg0KSSBkbyBuZWVkIHRvIGhhdmUgYSBiZXR0ZXIgbG9vayBhdCB0aGUgRlBHQSBmcmFt
-ZXdvcmsgaW4gdGhlIGtlcm5lbC4gDQpXZSd2ZSBtb3N0bHkgZG9uZSB3aXRob3V0IGl0IG9uIG90
-aGVyIHByb2R1Y3RzLg==
+On Mon, Apr 22, 2024 at 3:03=E2=80=AFPM Baolin Wang
+<baolin.wang@linux.alibaba.com> wrote:
+>
+> In order to extend support for mTHP, add THP validation for PMD-mapped TH=
+P
+> related statistics to avoid statistical confusion.
+>
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> ---
+
+Reviewed-by: Barry  Song <v-songbaohua@oppo.com>
+
+>  mm/shmem.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 893c88efc45f..b4afda71a3f0 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1662,7 +1662,7 @@ static struct folio *shmem_alloc_and_add_folio(gfp_=
+t gfp,
+>                         return ERR_PTR(-E2BIG);
+>
+>                 folio =3D shmem_alloc_hugefolio(gfp, info, index, order);
+> -               if (!folio)
+> +               if (!folio && pages =3D=3D HPAGE_PMD_NR)
+>                         count_vm_event(THP_FILE_FALLBACK);
+>         } else {
+>                 pages =3D 1;
+> @@ -1680,7 +1680,7 @@ static struct folio *shmem_alloc_and_add_folio(gfp_=
+t gfp,
+>                 if (xa_find(&mapping->i_pages, &index,
+>                                 index + pages - 1, XA_PRESENT)) {
+>                         error =3D -EEXIST;
+> -               } else if (huge) {
+> +               } else if (pages =3D=3D HPAGE_PMD_NR) {
+>                         count_vm_event(THP_FILE_FALLBACK);
+>                         count_vm_event(THP_FILE_FALLBACK_CHARGE);
+>                 }
+> @@ -2046,7 +2046,8 @@ static int shmem_get_folio_gfp(struct inode *inode,=
+ pgoff_t index,
+>                 folio =3D shmem_alloc_and_add_folio(huge_gfp,
+>                                 inode, index, fault_mm, true);
+>                 if (!IS_ERR(folio)) {
+> -                       count_vm_event(THP_FILE_ALLOC);
+> +                       if (folio_test_pmd_mappable(folio))
+> +                               count_vm_event(THP_FILE_ALLOC);
+>                         goto alloced;
+>                 }
+>                 if (PTR_ERR(folio) =3D=3D -EEXIST)
+> --
+> 2.39.3
+>
 
