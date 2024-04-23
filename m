@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-154690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC6D38ADFCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:32:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A74328ADFD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:33:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEE891C21BC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:32:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A4BD1F21E77
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:33:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA32255C2A;
-	Tue, 23 Apr 2024 08:31:57 +0000 (UTC)
-Received: from smtpbg153.qq.com (smtpbg153.qq.com [13.245.218.24])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8071A59173;
+	Tue, 23 Apr 2024 08:32:03 +0000 (UTC)
+Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B5754FAD;
-	Tue, 23 Apr 2024 08:31:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.245.218.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D24E5914C;
+	Tue, 23 Apr 2024 08:31:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.169.211.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713861117; cv=none; b=Bxd/lc0Q0IWOBMz5qdeessvWvVmsm5XaxnRynVmCYGgHUd387NlXUjgp6YjL9k3YRU1+1/3lU6qEENxil4rMWLr2w8hr4pp341Ad5tPnH+6Nv++AGmiazBhNDysytwBUdLaoZzDeHDBNDzu7AGZiSgxl/mhCJ9hs7t/BLShTQww=
+	t=1713861123; cv=none; b=iQETiklktwg7RvrvrxEAA5ensJ8HixPfn4VkYQpkEk0++E8vh6q8clRpe+bhAOqVEai2ANXJNuyilfF7ZnhgvG81/xig+xMa4VnEEWAlKGkx9G2XSh90oXASAv1589GqobZMFqq/DnU/4GTo7aecNhhbdKaooMGlvjMlIZsjP8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713861117; c=relaxed/simple;
-	bh=j26qiSSL/SsQJ3RIDKCP/7AkspKH1HFq2LoNpDQ+AE0=;
+	s=arc-20240116; t=1713861123; c=relaxed/simple;
+	bh=/BNrLKrkj1zztdJw2Le2jc+2s6d9f8gUuEhcw02th40=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Mlgjpgmz5drGQoMJaUJLk0T4ZAUtbrwbT4goi5uFVi2ecoONe/fZ89GhmS9lNkgswpPFiDbaXtpGjx9psAf+3s1cnyCavU7QqZj+mRlK2yYhIVhhtVAPqmGB5zr3Q0bbUtFHrezaurlyI+n8cdeLomP5YQGZFS3K3c396FogX24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=13.245.218.24
+	 MIME-Version; b=HqqZ93bDJADras4TJCD6Ok0P9G8a6bxOBiQVa1K3ahuECs1c8s1oGB1mPzSEU1djIrOJuJToMjWYQVMnDYfEwXaDmFK6HgSdD1zYIllpFGThZhxHHMKuxwpJyvhRxfBZ2XVQAxZk7ldC8H9lNsV/RPwxTrBIEn14QiPuJpVS/94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=18.169.211.239
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp87t1713861083trzeblda
-X-QQ-Originating-IP: kv1ZmXjt1ON8o7UDJCJT8yqN8nFiT1WeTFRAy5VFkDk=
+X-QQ-mid: bizesmtp89t1713861089t0jhys44
+X-QQ-Originating-IP: cUCVoziNrOH0fCzCgaYoM4CE29S8xvLsFE/5E51zYr4=
 Received: from localhost ( [112.0.147.129])
 	by bizesmtp.qq.com (ESMTP) with 
-	id ; Tue, 23 Apr 2024 16:31:22 +0800 (CST)
+	id ; Tue, 23 Apr 2024 16:31:28 +0800 (CST)
 X-QQ-SSF: 01400000000000903000000A0000000
-X-QQ-FEAT: 9GmJvWU2rBxyUWLB+viF7MgQDFd59YNLn9ApIRMx48b6m1Q6ZqTYLN/MTavQH
-	ROG5zX6sxbwaPJjPwossOL84vpBqVP0morJV0BjcGnQEMn98GPEdQAzBoP+lHV75KZu6pMk
-	GKMTAJSHuDW0GtUzGs2zzRprBgajp+Y4eKF2WXNMnL3Llhf6/2jlqwnIMbWJ3qIF/Q8hFGv
-	1dcYyzZuTLyXnbrWMqvoYcaFKxN5FBgDnKksdZfsm8a5Ye98PrQDReFMyrCCVaSqRZrMzXL
-	vLOoJyJ+CiJh0YZ3h6QtW/JFREWA9urn3FEHM5BTmlq87iDtxzGBEbsONq4Yfqe8W8oyTSg
-	M9wulzBYcUkaK1wJOR/SiZJgz7PXxZTuoiQecSUi0tKhDFz7hJ/FcaOGasKzvh8lVIn6PSw
-	caSERtx0552JSpvkDHjB7oUi3vtfQ3HS
+X-QQ-FEAT: 3M0okmaRx3gIbRIk2WH2P98KRMGrw6qQIogcjcz+juF05Qy9jWNZ5WfFQNFP+
+	Qdg736uGmqd4IulIwzKDwxF/x5o3JLvSNQqZkXdSLDIfEEABzxBYxs3GIKR7tdYbTbIh6VW
+	lGjtboHecdALAcVUsLh3e5EPQbJWdoIWRtcEX+nimoHqh3FW5MkRsdrBFi/XoGWIGio7Pw4
+	cCExKXTgxcaJkPwjd4BQsS/lRtg3O93DFoz8UQA9DL0wPxVgYjm4U4bfsxls9IZCJi57Uzc
+	qASAiXm1mHblBWjweThsDHm6hnslRtaIpU83G1xwkNLsXPgSucX/vuzYvd7bZS+Q+WMANGP
+	ElGWHsRJZTUna1M+D3pim5bFsMXPBLNPs0hZXkzXth9kCCWYnsma2sb0z8rknmDX5wXFbg6
+	3cDdArJ0vLd2k34QBRBoDm4g3+fgXAh0
 X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 1692039969414298604
+X-BIZMAIL-ID: 10010987221185693144
 From: Dawei Li <dawei.li@shingroup.cn>
 To: davem@davemloft.net,
 	andreas@gaisler.com
@@ -50,9 +50,9 @@ Cc: sparclinux@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	sam@ravnborg.org,
 	Dawei Li <dawei.li@shingroup.cn>
-Subject: [PATCH v3 4/6] sparc/pci_msi: Remove on-stack cpumask var
-Date: Tue, 23 Apr 2024 16:30:41 +0800
-Message-Id: <20240423083043.3735921-5-dawei.li@shingroup.cn>
+Subject: [PATCH v3 5/6] sparc/init: Remove on-stack cpumask var
+Date: Tue, 23 Apr 2024 16:30:42 +0800
+Message-Id: <20240423083043.3735921-6-dawei.li@shingroup.cn>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20240423083043.3735921-1-dawei.li@shingroup.cn>
 References: <20240423083043.3735921-1-dawei.li@shingroup.cn>
@@ -70,31 +70,28 @@ In general it's preferable to avoid placing cpumasks on the stack, as
 for large values of NR_CPUS these can consume significant amounts of
 stack space and make stack overflows more likely.
 
-@cpumask of irq_set_affinity() is read-only and free of change, drop
-unneeded cpumask var.
+Since the cpumask var resides in __init function, which means it's free
+of any concurrenct access, it can be safely marked with static to get
+rid of allocation on stack.
 
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
 ---
- arch/sparc/kernel/pci_msi.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ arch/sparc/mm/init_64.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/sparc/kernel/pci_msi.c b/arch/sparc/kernel/pci_msi.c
-index fc7402948b7b..acb2f83a1d5c 100644
---- a/arch/sparc/kernel/pci_msi.c
-+++ b/arch/sparc/kernel/pci_msi.c
-@@ -287,10 +287,7 @@ static int bringup_one_msi_queue(struct pci_pbm_info *pbm,
+diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
+index 1ca9054d9b97..9edbf57a2c59 100644
+--- a/arch/sparc/mm/init_64.c
++++ b/arch/sparc/mm/init_64.c
+@@ -1438,7 +1438,7 @@ static int __init numa_attach_mlgroup(struct mdesc_handle *md, u64 grp,
+ static int __init numa_parse_mdesc_group(struct mdesc_handle *md, u64 grp,
+ 					 int index)
+ {
+-	cpumask_t mask;
++	static cpumask_t mask;
+ 	int cpu;
  
- 	nid = pbm->numa_node;
- 	if (nid != -1) {
--		cpumask_t numa_mask;
--
--		cpumask_copy(&numa_mask, cpumask_of_node(nid));
--		irq_set_affinity(irq, &numa_mask);
-+		irq_set_affinity(irq, cpumask_of_node(nid));
- 	}
- 	err = request_irq(irq, sparc64_msiq_interrupt, 0,
- 			  "MSIQ",
+ 	numa_parse_mdesc_group_cpus(md, grp, &mask);
 -- 
 2.27.0
 
