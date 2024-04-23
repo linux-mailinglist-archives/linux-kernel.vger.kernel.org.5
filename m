@@ -1,47 +1,75 @@
-Return-Path: <linux-kernel+bounces-154659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AAD78ADF6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:06:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50F7A8ADF74
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:08:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 553DF2880E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:06:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE8941F25E20
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:08:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFCF952F99;
-	Tue, 23 Apr 2024 08:05:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77E544AEE5;
+	Tue, 23 Apr 2024 08:08:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="strJDnHz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="l+2uzccH"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E24121A0B
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1725F482DA
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:08:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713859545; cv=none; b=YLdxbVTYKd91FlK6AaWEerGgrPsQPxXwgXx9JNk8u5286M3YqQftL731Lt/rQPozaNT/MStUXnCt6FoFOkXMNsqjnhH80Xuc/V4xZ+3fXbfHGAhwyEVnT/ISw3+TB0G2bhFlg3Eylvf6JjACmitG3FS82M/DanTPO0/yNXEAo+Y=
+	t=1713859725; cv=none; b=uwHRpcoisywW33NsQEZ0JXok55dLPCKynf7E/LgzpVcTXDavit8jXSCNVP9Ad2V3gUbVaTwQiNWUcRSw6NsnfN4OcdC4aRKWX0t81fRaG2LeripumopwXVims0aLPU21iKTfwLJdXJjI/lDvyXjxX40QZwHfeTV8cRXpFKo8mIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713859545; c=relaxed/simple;
-	bh=XAgHQErbyTv6Q6IVmckNVUZze7guJEtpU0dAUvgqbQo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FtqjQALaA0ZFaqdrdrJVBGNn91D/LHbPtFVGTLPq2ySZnPCgmplsax0SVumkaUcIalfbpzpCMWf7TEdn+l0nUkS2B7EQdwDmgN4dfQv3jpcxfU4JghwLjyBK3SL48B+5D7v7Jfz+dENimZ9965CyafHD1JL8BgBJVBRR44MaXsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=strJDnHz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74AD9C116B1;
-	Tue, 23 Apr 2024 08:05:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713859544;
-	bh=XAgHQErbyTv6Q6IVmckNVUZze7guJEtpU0dAUvgqbQo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=strJDnHzxMNsrawv7GLNEmpBj0DF/8rc7W6RjJ/cpZ2xntnFstXCOA1lDXJCBzong
-	 1g2XKlOkWAVzyZ+rY3mwptWjU8SIOYDwoo/HX4bLKMAZfXClnrYgoJPNBYUxTUuak9
-	 hy83h+/WpRPc3INbXEt6dbxzNhX1n1upAWCWHUev80lu5CDCLUuORMZy0q26Fq48R8
-	 vol4I909zX2f5gIIrHXMe2gFNDZALhmWgZfmJCVO3HTHQS+Ace0dIKOg3nBkpv1JHJ
-	 POLzuHh0FXqpaS9M+frYuXmvIFsZOTh1K2HN5TzmL3rFdJMA9mPN41u+pbjPz4gGcy
-	 VZP/UOgRoErsw==
-Message-ID: <050ff49d-516c-41fc-a205-4c259384058f@kernel.org>
-Date: Tue, 23 Apr 2024 10:05:38 +0200
+	s=arc-20240116; t=1713859725; c=relaxed/simple;
+	bh=wLa+Cj5GCg4x8jycojoEYo8ruFJA3ooYCYBk5tPbY3c=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ZyLdpU8MZ8j0EbOR8bN4O5TQHZfJ4alSOtJbPPtMN2QLJU635CjT3yfnmee6vXokilNWgdnluD2i/EDD3SKp948KxrleGymm4RBlP5sQ7Gk2PPWDaBgTUgjA7aNHGymCmLcahwBb5X9X1lpFVxpTrXFidHQ4umcuro5BemqeMhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=l+2uzccH; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-346b96f1483so2787446f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 01:08:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713859722; x=1714464522; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8/oC2VtzrpJJKpFX/zRYpL4IVC3DtVUzT3QlRoS7w7o=;
+        b=l+2uzccHWvyCzKTTmk/JcPt1qpKajRQG8oiz6qHnbWfOwCo3nnMFd2/UIqxchXW61F
+         UwRn+Em5ETHpJh46658eIaWzNtN8YVFbpdGol7/oJpGwB0jlpjAypeeMDVNIo6azekhX
+         xzNoWcQ/8iexPxefHjuhVeVmnv1LCwrVmyvIGUdlP7R/rM1aKD9cGRZmCfaHs/QoVJIy
+         JEWGAckrQ5r7sMBmMvWtQKfP3mnv4t5hPuWQvOyIBMrnG3L6JF32isSq8+6618dNkIlU
+         2OkspDE2gCeV9KDWIe15d0qASh6gbB+74l7D4Xy0CLJygkkU+jh89gfGkmViIi1vzXpQ
+         EgVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713859722; x=1714464522;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8/oC2VtzrpJJKpFX/zRYpL4IVC3DtVUzT3QlRoS7w7o=;
+        b=kSBtYPir2b9qw0qVSwiNAN1uDUWpaRDqlVsN1B+De8+zOyFM1a645tBg3aDw8Wu+O7
+         3lAsKqdWMG++7HcU+6X3JuApFwUd0meMQhOHTcQ7jLrFrn3WC06H+TB4NhtZ2eHRbvy+
+         w57IEdIS0sz0S1ykb8Vet77rcoNyueI85HkYkY/j8SWCTZF26D4sdxaGqSGgtjaBtV+K
+         +c+Ha8fjX120242tps5/MxoArGN8MowZabsLI98oaefvVfTnLaRcAhzi7Ia3XB/+Shm1
+         6lsP/EfmJSl2nQtLr3Wji+/BKZNv9AYfTj87wAmwGX7E7W23KUTvo5bUgAVim5ZBcm5c
+         bUgg==
+X-Forwarded-Encrypted: i=1; AJvYcCVH06OwZCkCDVO2H68W4VFcUR6pFvhBWxpd2/Ajred5Mau/4XHvhuKSIUlQniUKAb3yMQZ+A3uD1+/U22R9xCRY3Vm7tB+r7dwWUrBN
+X-Gm-Message-State: AOJu0YxPmfI4mXs7ouwLRhB9Nej9ReU5DTYrODLiHqhbeBhwW3Bk3qdC
+	SZlyaFFgoBwS8NhTLzVsME4ZZ5YM3mBeOCMzP5o6YoY54AQM0f8txpM4f9NtwrQ=
+X-Google-Smtp-Source: AGHT+IGj3V51mN4o70u97cNRT3Eg+WA5oX7EwBLrwSwL4MS0vJPp5BQU4b374eoAEqNcBb+MC/ho4g==
+X-Received: by 2002:adf:a151:0:b0:343:6c07:c816 with SMTP id r17-20020adfa151000000b003436c07c816mr1361089wrr.16.1713859722150;
+        Tue, 23 Apr 2024 01:08:42 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:815e:851b:255f:e3ee? ([2a01:e0a:982:cbb0:815e:851b:255f:e3ee])
+        by smtp.gmail.com with ESMTPSA id a16-20020a5d4d50000000b0034a9b75e272sm8664280wru.45.2024.04.23.01.08.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 01:08:41 -0700 (PDT)
+Message-ID: <a2a2fa0e-2194-40db-85e7-d586c512231f@linaro.org>
+Date: Tue, 23 Apr 2024 10:08:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,86 +77,90 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 9/9] drm/bridge: tfp410: Add platform module alias
-To: Sui Jingfeng <sui.jingfeng@linux.dev>,
- Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Robert Foss <rfoss@kernel.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>, Jonas Karlman <jonas@kwiboo.se>,
- Jernej Skrabec <jernej.skrabec@gmail.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240422191903.255642-1-sui.jingfeng@linux.dev>
- <20240422191903.255642-10-sui.jingfeng@linux.dev>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240422191903.255642-10-sui.jingfeng@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v5 5/5] pwm: meson: add generic compatible for meson8 to
+ sm1
+To: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Jerome Brunet <jbrunet@baylibre.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-amlogic@lists.infradead.org, linux-pwm@vger.kernel.org,
+ JunYi Zhao <junyi.zhao@amlogic.com>
+References: <20240221151154.26452-1-jbrunet@baylibre.com>
+ <20240221151154.26452-6-jbrunet@baylibre.com>
+ <24ec3iiudmfapiosygpsvgu7kmdqe6csbkpuzx3p3sa4oyodqu@hshmbpvzhufb>
+ <1jplumc276.fsf@starbuckisacylon.baylibre.com>
+ <4v5lhnjbfnjpj4k4rme6kfphurr56ae5ngup7pcsrxhs4f7qh5@jian42uepseu>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <4v5lhnjbfnjpj4k4rme6kfphurr56ae5ngup7pcsrxhs4f7qh5@jian42uepseu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 22/04/2024 21:19, Sui Jingfeng wrote:
-> Otherwise when compiled as module, this driver will not be probed on
-> non-DT environment. This is a fundamential step to make this driver
-> truely OF-independent.
+On 18/04/2024 18:08, Uwe Kleine-König wrote:
+> On Thu, Apr 18, 2024 at 01:57:03PM +0200, Jerome Brunet wrote:
+>> On Fri 12 Apr 2024 at 14:08, Uwe Kleine-König <u.kleine-koenig@pengutronix.de> wrote:
+>>> b4 + git applied the patch just fine even without patch #4 of this
+>>> series. Would you be so kind to double check it works as intended?
+>>
+>> It does, Thx.
+> 
+> Thank you.
+>   
+>>> BTW, b4 diagnosed:
+>>>
+>>> Checking attestation on all messages, may take a moment...
+>>> ---
+>>>    ✗ [PATCH v5 5/5] pwm: meson: add generic compatible for meson8 to sm1
+>>>      + Link: https://lore.kernel.org/r/20240221151154.26452-6-jbrunet@baylibre.com
+>>>      + Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+>>>    ---
+>>>    ✗ BADSIG: DKIM/baylibre-com.20230601.gappssmtp.com
+>>>
+>>> Is this only because it took me so long to reply, or is there a
+>>> configuration issue with the baylibre MTA?
+>>
+>> I have no idea. This is the first time this is reported
+> 
+> I just picked up a patch by one of your colleagues and there the DKIM
+> stuff was fine. I didn't debug that further.
 
-NAK.
+Google's DKIM key gets rotated, after while the DKIM signature gets invalid.
 
-You should not need MODULE_ALIAS() in normal cases. If you need it,
-usually it means your device ID table is wrong (e.g. misses either
-entries or MODULE_DEVICE_TABLE()). MODULE_ALIAS() is not a substitute
-for incomplete ID table.
+The best is to add a GPG signature on top of DKIM, like with B4.
 
-Just check your aliases and look what is there. You already have
-i2c:tfp410 alias. If you need platform one, for some reason, explain
-what is your matching path and add appropriate ID table. With that
-explanation, of course.
+Neil
 
-Best regards,
-Krzysztof
+> 
+> Best regards
+> Uwe
+> 
 
 
