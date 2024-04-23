@@ -1,102 +1,181 @@
-Return-Path: <linux-kernel+bounces-155133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2986E8AE5AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:11:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A23B48AE5B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:11:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B1491C22F73
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:11:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6A00B2214C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:11:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2500127E0B;
-	Tue, 23 Apr 2024 12:10:44 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B4CB84FCB;
+	Tue, 23 Apr 2024 12:10:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="UWTl7xH1"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B615386265;
-	Tue, 23 Apr 2024 12:10:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5835E84A43
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:10:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713874244; cv=none; b=Xh6UV/EHQNzVCaSxMh6Pi+zdkO+BpFM4LqB+3X3wNXZiZdUDi6+P8SPvWpsxC4/ucFknueq8M6co5jlcqdfAkz6dqYHq5L1WHpLvSzidSp8dSsm35ggXBCCTqdb4E2uQy3berHG9fkfYDavKz8HnffaXw+TCsw01bLLIfB+OG+s=
+	t=1713874257; cv=none; b=mcCoqABojnRdj6ZjKxT7tBpX5fG9kh+cVRSc6HbOXs6p8HoanV8zbJdPqt153wvpZmP0WxMJiaJE8+uzAm0vbfMHEJQjnCCToB3xlu1YzNUiHYtQWCLB+hcJczvXeAxlA/6pkwYP6BH40SQRxKDhfoJLAaHShxizonkeb7xLSb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713874244; c=relaxed/simple;
-	bh=Nop/hThbF2HzvuBYxmGb29cMh/jcpean0AZbibqZBiQ=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=OB2EtgKSgDidhaIgA8uTdN+H4vkNZ/J6QxU1PhwN4sbkf3amKNNSlSxz8D08mX3ORs3sXV4v5s9+MOtaqGZfaSYARzXCWkLZjpj73kbiWLNvkvbyDdYQ/1SspcaHpbRBxqJMgDxlJcNSt1dl7O/VOPE3A0x4uj8pymIcuXnEut4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VP18W6Ktyz1R62r;
-	Tue, 23 Apr 2024 20:07:39 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (unknown [7.185.36.229])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2EE0C1400FD;
-	Tue, 23 Apr 2024 20:10:40 +0800 (CST)
-Received: from [10.174.178.247] (10.174.178.247) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 23 Apr 2024 20:10:39 +0800
-Subject: Re: [PATCH v7 09/16] arm64: acpi: Move get_cpu_for_acpi_id() to a
- header
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Thomas Gleixner
-	<tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
-	<linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>, <x86@kernel.org>, Russell King
-	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, Miguel
- Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
-	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
- Hansen <dave.hansen@linux.intel.com>, <linuxarm@huawei.com>,
-	<justin.he@arm.com>, <jianyong.wu@arm.com>
-References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
- <20240418135412.14730-10-Jonathan.Cameron@huawei.com>
-From: Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <344595f8-d40e-d410-26b7-e5d9b8cb1bec@huawei.com>
-Date: Tue, 23 Apr 2024 20:10:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+	s=arc-20240116; t=1713874257; c=relaxed/simple;
+	bh=yPA0VbuDugXAyhUBMF7SNGGOl4MsvDgi2noQ/f+p+s0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CNNN/p+WI9skEoR2jqiJidmrrNbGNYYXmyy/m8Up8GQPyfRUUMG9NHQsay8vEhOEuoITWDwNQznrhihlZAwtlTe5bH2AtCzbWbYBn8FY8HSaahwbaiJSab6FGv878h9fSOyh34jQMnn1i/XWUEn8a75ViKVs0snjPT12QTWRxUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=UWTl7xH1; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-346b146199eso4285668f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 05:10:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1713874254; x=1714479054; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kV5g9dBqJQB3acwPivqgb+A6yJex6eirm5nXSFy64Yw=;
+        b=UWTl7xH1qlg/6CmZOfMcqotaF3sj2DLT5IndhJokVzfLuNqvXQa/+OKZyQmUInuy9f
+         lgMmHT3wvEBuytJlDmka3yMqwaJFT4fgyAdzK8tOwANx1gBl4ShlvXcnYMM8VSazzrq/
+         gNunBf3X0v0rqZJPWKCSNq2K4ETggUsZtlWzBdUAWI7HTCSq1lY2q8wa7UP42tJazotS
+         gza6W3n9MzFBdIdhxKm3KGN5oKjnPMP9jYr/5ca5HC+akKQcjafJS6xcwt2eBAS1WGNr
+         auEoVwTUeovN4LCYCStlPRbfurJ4fZ3QWQt6Psq/CtnNZ1l11Nf9WB3pUuESH8srB6Cx
+         qREA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713874254; x=1714479054;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kV5g9dBqJQB3acwPivqgb+A6yJex6eirm5nXSFy64Yw=;
+        b=CObHZiVBSmUpMLUq4tsN8U9GXV9inos56YPpo1AdfemnO5Qzw0ZppDhEBbn1nqCz6y
+         j4t1gpWiBzKU2NsE69fHd+H5yAWT8saU2WZo1YgE/D+3g7Z0KPGCnLKf4WSPr5aM50UR
+         m2Vx7A8mdZGVQRUMPlzpJ98+3sOBGMfZdwijjnC9OJqLhji8YYpjW+3+VMJF308QkOTc
+         K0smiBjSZ30/yLVn+GVqZmOZja/0tILZBAqHevEIc7oxqMfUOw6eem5EbYUdibAuRgcN
+         B8n8JiSwHv1mbekD035MnpZhb44U6gS8vlVC9yl0WC+l+kGZ8Kz2qhfrzk0t1B8bk1NZ
+         AybQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX/G6LTrOnUbMJBir7Bzu5pkOwhL2dGfctGjLn/WVVEWf4LfASrlICsVmfZ6bfk6mMluDlLv+beI1ZNtJ38IZTLeT8e1ahf41TLlS9R
+X-Gm-Message-State: AOJu0YzkVsGKvgNIIJNDvZeePJRnhbaRbIQTyogaTg0mM7W2sOxQrEVM
+	DoBCNbsQcem68xWevVHEOo8Bry0uEv7LELclQ2ocP96WBn3lNLvAaLhw6qa/di8=
+X-Google-Smtp-Source: AGHT+IGzjXzz+JJVTsxvS1Lqw4gbV3f0mMHeGZ3kfY+oB0Rlj+Sv933prehjjydshXh5isd5epyUOQ==
+X-Received: by 2002:adf:eb0b:0:b0:349:cc20:2030 with SMTP id s11-20020adfeb0b000000b00349cc202030mr7842203wrn.51.1713874253453;
+        Tue, 23 Apr 2024 05:10:53 -0700 (PDT)
+Received: from [192.168.50.4] ([82.78.167.53])
+        by smtp.gmail.com with ESMTPSA id jg23-20020a05600ca01700b004189cf6bd6esm23281278wmb.22.2024.04.23.05.10.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 05:10:52 -0700 (PDT)
+Message-ID: <3d8925a8-32ee-467a-aca7-d4a04f26821f@tuxon.dev>
+Date: Tue, 23 Apr 2024 15:10:50 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240418135412.14730-10-Jonathan.Cameron@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500002.china.huawei.com (7.185.36.229)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] serial: sh-sci: Call device_set_wakeup_path() for serial
+ console
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, ulf.hansson@linaro.org,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-pm@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+References: <20240422111123.1622967-1-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdUXRx1-95PD_WG4X=y4UefYXzTqm7T2mi+di+ZdKGUXYA@mail.gmail.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <CAMuHMdUXRx1-95PD_WG4X=y4UefYXzTqm7T2mi+di+ZdKGUXYA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2024/4/18 21:54, Jonathan Cameron wrote:
-> From: James Morse <james.morse@arm.com>
-> 
-> ACPI identifies CPUs by UID. get_cpu_for_acpi_id() maps the ACPI UID
-> to the Linux CPU number.
-> 
-> The helper to retrieve this mapping is only available in arm64's NUMA
-> code.
-> 
-> Move it to live next to get_acpi_id_for_cpu().
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-> Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Hi, Geert,
 
-Looks good to me,
+On 23.04.2024 10:27, Geert Uytterhoeven wrote:
+> Hi Claudiu,
+> 
+> CC Peng
+> 
+> Thanks for your patch!
+> 
+> On Mon, Apr 22, 2024 at 1:11 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> In case the SCI is used as a UART console, no_console_suspend is
+>> available in bootargs and SCI is part of a software-controlled power
+>> domain we need to call device_set_wakeup_path(). This lets the power
+>> domain core code knows that this domain should not be powered off
+> 
+> know
+> 
+>> durring system suspend. Otherwise, the SCI power domain is turned off,
+> 
+> during
+> 
+>> nothing is printed while suspending and the suspend/resume process is
+>> blocked. This was detected on the RZ/G3S SoC while adding support
+>> for power domains.
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> ---
+>>  drivers/tty/serial/sh-sci.c | 6 +++++-
+>>  1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/tty/serial/sh-sci.c b/drivers/tty/serial/sh-sci.c
+>> index 97031db26ae4..57a7f18e16e4 100644
+>> --- a/drivers/tty/serial/sh-sci.c
+>> +++ b/drivers/tty/serial/sh-sci.c
+>> @@ -3441,8 +3441,12 @@ static __maybe_unused int sci_suspend(struct device *dev)
+>>  {
+>>         struct sci_port *sport = dev_get_drvdata(dev);
+>>
+>> -       if (sport)
+>> +       if (sport) {
+>> +               if (uart_console(&sport->port) && !console_suspend_enabled)
+>> +                       device_set_wakeup_path(dev);
+> 
+> device_set_awake_path(), as of commit 10bb4e4ab7dd3898 ("PM: sleep:
+> Add helpers to allow a device to remain powered-on") in v6.6
+> (although I'm still a bit puzzled about the difference).
 
-Acked-by: Hanjun Guo <guohanjun@huawei.com>
+Ok, I wasn't aware of it. I'll switch to this one.
 
-Thanks
-Hanjun
+> 
+>> +
+>>                 uart_suspend_port(&sci_uart_driver, &sport->port);
+> 
+> I think it would be better to make this more general, and move the call
+> to the existing console_suspend_enabled handling in uart_suspend_port().
+
+Ok, I'll try this way.
+
+> 
+>> +       }
+>>
+>>         return 0;
+>>  }
+> 
+> If this works, we can remove the console_suspend_enabled handling
+> from drivers/pmdomain/renesas/rmobile-sysc.c, and revert commit
+> 309864dcf92b76fc ("genpd: imx: scu-pd: do not power off console if
+> no_console_suspend").
+
+OK, first I'll go with this patch and after things settles down with it
+I'll propose changes for rmobile-sysc and imx. Is this ok for you?
+
+Thank you,
+Claudiu Beznea
+
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
 
