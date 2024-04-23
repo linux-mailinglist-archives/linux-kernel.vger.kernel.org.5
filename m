@@ -1,172 +1,110 @@
-Return-Path: <linux-kernel+bounces-154545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 866F68ADD71
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:22:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98FA88ADD75
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:22:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B81211C20F1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:22:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32F4A1F21CE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:22:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844F42261D;
-	Tue, 23 Apr 2024 06:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vocU1hcI"
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6CA528DC3;
+	Tue, 23 Apr 2024 06:22:17 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EBEC225AF
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 06:22:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3729424B23;
+	Tue, 23 Apr 2024 06:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713853330; cv=none; b=KBbOnhZ5Ufx6tfR9ts8exzOBJt+uBc4HQdso2C3oTCscIA6PzRYFeKihHqs7a0OutxXPDPe8UPGiFwlSvFRc3bNKNh/xWsCmZmazXCV9RIgtQp1XKFZV6CgJla4ZwSdqosfGRr0+d9mD08rImIo5xrfBWY9O9FV8rcl3K5Jd6oA=
+	t=1713853337; cv=none; b=kst76Jw2nBIAniUrF3Crfa15vAcvlYqNWVJmk1r4mVH85kY7BT9xQ7OwIf8o0sZsoWURFL/ZGU7sKuMUul2f5x1gcripFn+hr22qbnNc7/8NxdTIluTpK0cHVnC6dWYGSYeJP+ebCmrofctaD7DkpbfB9/yGcnVOADBuCmfte7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713853330; c=relaxed/simple;
-	bh=p7mT1mrDIoXnSA84WhCbJ7mewQVDNwgaGH3G+4j9vmk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gGyT/9o1NBi4/ilNXXHlTzJlG+K4d+CNWOJ0/w56Ug+HV9hI3b3AixkfNMz/P+hu3YJKOU93I0KfJrmBavY28nH/8XnPqm3cPhkujxjq7s1l06apj36q//eU9lFN9sLKoT1HR6GmYYFbTXYrD0ZRg1OFiuhSinpmzUZfw5vCU4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vocU1hcI; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ecbf2d04-f1e4-453d-b24c-f984c2fa1d1b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713853325;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Tvs8T44TPQ+aZe85ozLPkk1OZqgZ5bUavSfbQMGyH+o=;
-	b=vocU1hcIndM/wqxveJm4cFavglkhOpuXm9yHhE3wBj7RYgF7UpLthNEnSHCGOq9Yljmjhk
-	unX7WJUaUimwvQrH4YieB+zKr+LkLfmw6n6jxAZjb5nMHobVfPXLDQnOE4lroFooBooDow
-	j6x1d08DbT7rgwx59efvckX4l927RN0=
-Date: Tue, 23 Apr 2024 14:21:53 +0800
+	s=arc-20240116; t=1713853337; c=relaxed/simple;
+	bh=DKoT7BMoGVPNdwMs/lk7idD2NHilETaVsqVtGIKyMtE=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=rkf1nspxmgOeaCQE6CJApWMLYOSHSjmhmlXVsHd+Kb/ay4jc2yNJxmU9mOV1hheARFPnTJ8BOGttSFmPEpJWkaK+0qrQm+CHcXFXQ2XILPil+RVWgvLVkNPVgSCHVtS4fD3CFjsrSN/Sq5LetbK7uJYvjBOYTMB6bSN5YojiuSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VNsQP3WfJz1j0tK;
+	Tue, 23 Apr 2024 14:19:09 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (unknown [7.185.36.229])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7BE5414037D;
+	Tue, 23 Apr 2024 14:22:12 +0800 (CST)
+Received: from [10.174.178.247] (10.174.178.247) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 23 Apr 2024 14:22:11 +0800
+Subject: Re: [PATCH v7 02/16] cpu: Do not warn on arch_register_cpu()
+ returning -EPROBE_DEFER
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Thomas Gleixner
+	<tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
+	<linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>, Russell King
+	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, Miguel
+ Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, <linuxarm@huawei.com>,
+	<justin.he@arm.com>, <jianyong.wu@arm.com>
+References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
+ <20240418135412.14730-3-Jonathan.Cameron@huawei.com>
+From: Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <20b7c778-68c0-9ba3-06fb-61194ed3e04e@huawei.com>
+Date: Tue, 23 Apr 2024 14:22:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 1/9] drm/bridge: Allow using fwnode API to get the next
- bridge
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss
- <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>, Jonas Karlman <jonas@kwiboo.se>,
- Jernej Skrabec <jernej.skrabec@gmail.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240422191903.255642-1-sui.jingfeng@linux.dev>
- <20240422191903.255642-2-sui.jingfeng@linux.dev>
- <xsfrnucued63q2amv7betkvgks6bhssubhjcryghkcloytixj4@ukmak4xwyjtg>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <xsfrnucued63q2amv7betkvgks6bhssubhjcryghkcloytixj4@ukmak4xwyjtg>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <20240418135412.14730-3-Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
 
-Hi,
+On 2024/4/18 21:53, Jonathan Cameron wrote:
+> For arm64 the CPU registration cannot complete until the ACPI
+> interpreter us up and running so in those cases the arch specific
+> arch_register_cpu() will return -EPROBE_DEFER at this stage and the
+> registration will be attempted later.
+> 
+> Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
+> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> 
+> ---
+> v7: Fix condition to not print the error message of success (thanks Russell!)
+> ---
+>   drivers/base/cpu.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+> index 56fba44ba391..7b83e9c87d7c 100644
+> --- a/drivers/base/cpu.c
+> +++ b/drivers/base/cpu.c
+> @@ -558,7 +558,7 @@ static void __init cpu_dev_register_generic(void)
+>   
+>   	for_each_present_cpu(i) {
+>   		ret = arch_register_cpu(i);
+> -		if (ret)
+> +		if (ret && ret != -EPROBE_DEFER)
+>   			pr_warn("register_cpu %d failed (%d)\n", i, ret);
+>   	}
+>   }
 
+Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
 
-On 2024/4/23 03:51, Dmitry Baryshkov wrote:
-> On Tue, Apr 23, 2024 at 03:18:55AM +0800, Sui Jingfeng wrote:
->> Currently, the various display bridge drivers rely on OF infrastructures
->> to works very well, yet there are platforms and/or devices absence of 'OF'
->> support. Such as virtual display drivers, USB display apapters and ACPI
->> based systems etc.
->>
->> Add fwnode based helpers to fill the niche, this allows part of the display
->> bridge drivers to work across systems. As the fwnode API has wider coverage
->> than DT counterpart and the fwnode graphs are compatible with the OF graph,
->> so the provided helpers can be used on all systems in theory. Assumed that
->> the system has valid fwnode graphs established before drm bridge drivers
->> are probed, and there has fwnode assigned to involved drm bridge instance.
->>
->> Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
->> ---
->>   drivers/gpu/drm/drm_bridge.c | 74 ++++++++++++++++++++++++++++++++++++
->>   include/drm/drm_bridge.h     | 16 ++++++++
->>   2 files changed, 90 insertions(+)
->>
-> [skipped]
->
->> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
->> index 4baca0d9107b..a3f5d12a308c 100644
->> --- a/include/drm/drm_bridge.h
->> +++ b/include/drm/drm_bridge.h
->> @@ -26,6 +26,7 @@
->>   #include <linux/ctype.h>
->>   #include <linux/list.h>
->>   #include <linux/mutex.h>
->> +#include <linux/of.h>
->>   
->>   #include <drm/drm_atomic.h>
->>   #include <drm/drm_encoder.h>
->> @@ -721,6 +722,8 @@ struct drm_bridge {
->>   	struct list_head chain_node;
->>   	/** @of_node: device node pointer to the bridge */
->>   	struct device_node *of_node;
->> +	/** @fwnode: fwnode pointer to the bridge */
->> +	struct fwnode_handle *fwnode;
-> My comment is still the same: plese replace of_node with fwnode.
-
-s/plese/please
-
-
-Unless you can guarantee that *all* maintainers agree(welcome) with
-the code changes involved by your proposal. Otherwise I'm going to
-respect the domain specific maintainers to keep the code base as it
-is.
-
-I need the agreement of all other maintainers involved before I
-could take any further action. I'm asking because I need to make sure
-that such changes is what *everybody* wanted. As I have to respect
-to respective maintainers(such as Daniel, Thomas, Maxime, Laurent
-and all other maintainers of the drm miscellaneous).
-
-
->   It is more intrusive,
-
-It is not only intrusive, but also annoying.
-
-> however it will lower the possible confusion if the
-> driver sets both of_node and fwnode.
-
-The of_node and the fwnode can point to different thing, the potential
-reason it the situation of them is not symmetrical.
-
-  - On non-DT environment the of_node can point to NULL.
-  - The reverse is also true, that is on DT environment the fwnode can also point to NULL
-    if specific subsystem is not going to use it.
-  - And USB display adapter can be using at any arch in theory, it can use both of them, or
-    one of themm or neither of them.
-  
-
-This is a extremely flexible design, it's toward to future and also works with legacy.
-So what's the confusion is?
-
-
-> Also it will remove the necessity for helpers like drm_bridge_set_node().
-
-
-Thedrm_bridge_set_node() is just a mimic to the device_set_node(), the 
-struct device contains both of_node and fwnode as its data members.
-I didn't see anyone complains about it, am I fail to understand something?
-
-
-Or, let's put it straightforward, I'm going to follow your idea
-if you could remove the of_node data member from the struct device.
-Do you have the ability?
-
-
--- 
-Best regards,
-Sui
-
+Thanks
+Hanjun
 
