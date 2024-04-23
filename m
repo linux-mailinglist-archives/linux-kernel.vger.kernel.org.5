@@ -1,58 +1,57 @@
-Return-Path: <linux-kernel+bounces-155138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9C338AE5C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:13:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36E248AE5C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:14:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA1EC1C2217B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:13:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E705E2882C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DA27127E12;
-	Tue, 23 Apr 2024 12:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EDC01311B9;
+	Tue, 23 Apr 2024 12:13:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="CHGkAUtZ"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="TzWzw4zX"
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2066984FAC
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:13:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35EAD84FCB
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:13:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713874416; cv=none; b=DclUtRiU0WDOz3CvjgELTRxUM7VevOTT4ImciCunziOk9J2J34klENa5/XcHRMRzfq7CIw+KdQ1OHMLa+2S3BE4CS6SBQi9s+g2VH7l27yPdfszjwav+t41SU/daYPcKBnUtmz8uOxtgoHhUJWWMXILVKq/5aExDlWpdIjbDt9s=
+	t=1713874418; cv=none; b=Z7nWtazfJOyV1jDfEWRDQxyozj5nrYyrFckXXi2SRctI25+EbgjZ4qSmhxwdypzR31SAEjQtsa0/d6dY0cP5d1DBQo/agXWSyuJ2w60oSAW0QJrc6HcjtmqOzhdHmDJNaj651ZmD12hb3YfPbw63mgf2UbSn+F3OJTYzGoE5coA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713874416; c=relaxed/simple;
-	bh=4GV9MbW2RUuneAx+t3k0TvU8fbKIZejKkKEkfAigKsY=;
+	s=arc-20240116; t=1713874418; c=relaxed/simple;
+	bh=0jPmD9w6MO6TfNirky2Ez+VJd/uyuUY40pI0AtAvSpU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NOlqnyvH6R20lnAVM7LlCczyuUPkxQl2VeIOqwB5HqMi4n3TCmW6SLiGPrbK4Zzs/fvpNUcQ8lDS2shSqZ+4Wb3I49IR1O5zPeD3WFOnthI2Y33ZTbor+HsYlvtoS3fIX30KBNfAeQOfNwSE79uR+wpyT1oVLBIGAczkn9tSoPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=CHGkAUtZ; arc=none smtp.client-ip=194.117.254.33
+	 MIME-Version; b=eHbjZxTXpeIscxlZ3Xkm6AyDzed0IKNvk6V13FmXkV88Lfrq2yrKzv15Th2hLrt+NyAM5v77NeafQrgQA70VXq0BGnb4Ho/gcay5ssmpreG2IvMEEIwv714kJQcr0GQCrgwtW8YUOaxEt2wOSCJCViJi2Qjcf4ERzfkOxQsALb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=TzWzw4zX; arc=none smtp.client-ip=194.117.254.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
 	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=WOkkrOzp70gQH6ESIdM1GW0bOtr5jQu2Mkl7P4COiR8=; b=CHGkAU
-	tZKSh5LQE1xvhXrYl1zayyLSkqmqv+F9dGKxSTY26TAkT24LnloWOpaoHWHlEcjF
-	Unw5N8/t8kq7xu3LyRoatQZnPhe8FChGtLLrwHBtoy3ytI3n2zDPkLKOZ5ZRE+Iu
-	DcxAlBWfoaCu4a9DZo3pc7YeCKhnnY5Mq9SJPQ70zYW/S5Ojk9LA0qAfNpxP5jgQ
-	NdvtFmTiBdN1YtXmiwrRGSV0RRt+lpmH0PpLERABtTvxXpaqquCLvUtSnc06Lfbs
-	3x0KDClsYlHmUVCXXV3uxSZkZE+zw2+H0Y+7e+WSo17nJlD03tgpnDsAPa3aB2V7
-	B3XAAChg4Td2HccA==
-Received: (qmail 215962 invoked from network); 23 Apr 2024 14:13:30 +0200
+	 s=k1; bh=xe5iCNJGYAImX92c4VMr943pPMAZr/upLvt8TB4E1Rk=; b=TzWzw4
+	zXLdQiwmqYFVdOdf/vhMQHs1khqXsRzXhUUnaGLWq4B4MLBzWbnSQ+SjHGA5w/hs
+	RDlPn5o35fHgrOvLsVcML94E8ZV2VAOVgnevPn/vUjDX9VQLh56eu53g3nsyPJwp
+	ZV/qhYTSA//TE8GReYgaBuG/y9i22nTDx4ifjpAEfN/G9ka5Xh1DvP2cIsIHnQ97
+	zZ1ea5Yc6BqrI8CnojBEIojVOhIBnhTBJJDrF59MzUrPwACfaTj5Vlu57/dxJ6fC
+	DQyBoohCBHIA4LsTxoGvETCzkRsaZhibgl5cEQxr2Jx0VIWjYrtF+9qTrazSooR4
+	liVpdILFHALtej5w==
+Received: (qmail 215997 invoked from network); 23 Apr 2024 14:13:30 +0200
 Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 23 Apr 2024 14:13:30 +0200
-X-UD-Smtp-Session: l3s3148p1@OGhke8IWVsIgAwDPXxiyACzheF6dGXh7
+X-UD-Smtp-Session: l3s3148p1@iRJwe8IWYMIgAwDPXxiyACzheF6dGXh7
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-i2c@vger.kernel.org
 Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Rudolf Marek <r.marek@assembler.cz>,
 	Jean Delvare <jdelvare@suse.com>,
 	Andi Shyti <andi.shyti@kernel.org>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/4] i2c: ali1563: remove printout on handled timeouts
-Date: Tue, 23 Apr 2024 14:13:20 +0200
-Message-ID: <20240423121322.28460-4-wsa+renesas@sang-engineering.com>
+Subject: [PATCH 4/4] i2c: ali15x3: remove printout on handled timeouts
+Date: Tue, 23 Apr 2024 14:13:21 +0200
+Message-ID: <20240423121322.28460-5-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240423121322.28460-1-wsa+renesas@sang-engineering.com>
 References: <20240423121322.28460-1-wsa+renesas@sang-engineering.com>
@@ -71,21 +70,25 @@ should just pass this information upwards. Remove the printout.
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- drivers/i2c/busses/i2c-ali1563.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/i2c/busses/i2c-ali15x3.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-ali1563.c b/drivers/i2c/busses/i2c-ali1563.c
-index 307fb0666ecb..63897a89bb35 100644
---- a/drivers/i2c/busses/i2c-ali1563.c
-+++ b/drivers/i2c/busses/i2c-ali1563.c
-@@ -99,7 +99,6 @@ static int ali1563_transaction(struct i2c_adapter *a, int size)
- 		return 0;
+diff --git a/drivers/i2c/busses/i2c-ali15x3.c b/drivers/i2c/busses/i2c-ali15x3.c
+index d2fa30deb054..956e5020d71e 100644
+--- a/drivers/i2c/busses/i2c-ali15x3.c
++++ b/drivers/i2c/busses/i2c-ali15x3.c
+@@ -294,10 +294,8 @@ static int ali15x3_transaction(struct i2c_adapter *adap)
+ 		 && (timeout++ < MAX_TIMEOUT));
  
- 	if (!timeout) {
--		dev_err(&a->dev, "Timeout - Trying to KILL transaction!\n");
- 		/* Issue 'kill' to host controller */
- 		outb_p(HST_CNTL2_KILL, SMB_HST_CNTL2);
- 		data = inb_p(SMB_HST_STS);
+ 	/* If the SMBus is still busy, we give up */
+-	if (timeout > MAX_TIMEOUT) {
++	if (timeout > MAX_TIMEOUT)
+ 		result = -ETIMEDOUT;
+-		dev_err(&adap->dev, "SMBus Timeout!\n");
+-	}
+ 
+ 	if (temp & ALI15X3_STS_TERM) {
+ 		result = -EIO;
 -- 
 2.43.0
 
