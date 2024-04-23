@@ -1,204 +1,117 @@
-Return-Path: <linux-kernel+bounces-155908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F7468AF8C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:10:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B91788AF8C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:11:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55BBB290211
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:10:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DAB31F260E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:11:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72502142E9A;
-	Tue, 23 Apr 2024 21:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F11143866;
+	Tue, 23 Apr 2024 21:11:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JySSdKg6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cQAjUcRu"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A02B142E97;
-	Tue, 23 Apr 2024 21:10:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B95142909;
+	Tue, 23 Apr 2024 21:11:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713906624; cv=none; b=fUY2WkkdTekeJJu12rZwcl0qmMgQ3kABuutXVDNVdmezZrUfEI1eyd7YcG6NXjmFi9JUm5GiaPjIlyLBazTlqG+exsP7HeU4fUOo0iylKPiPEotQlh1Rz8S3KLp+2wSqZWXC7rkbthRgIbSU4Wfd0WAGknRACOPRPei9Umw/rhA=
+	t=1713906670; cv=none; b=aY8sXqD40IdL2Zvr3mBWyYVS1wCBIU3cDKEHNbbtU1eRKCaVFbQ4KYqK4vU7NNLUn38ukYkLC6hGN2gg9ic4BrVw+Mx7z8OMGQqOFryNoF/hkR+um1fjhlTJLIQm0atpb6ya8F0HKczrf3mDqeBATmkh3BhYJc0++AzIHJL/E74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713906624; c=relaxed/simple;
-	bh=T11rMPRRX9jt/RLdz1BLU5iOZ7SOs/dVFi4khlAQ6Cg=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=CFZCYTANmM1Zy1GtEXaCq3wrXvbxNpZEL8DPUkMIOo2FEgMB/lCmChCsl1H0uYsK9++SQOUuZRQqOR0G/pyPkxMw2fejizA+Z5j6NCqY1/bTsrD6vuOE6NpE9bNDEwQIR3lXbtbmhAb+ZgGaBt4YdpykvBynRLZ/puXWTMfAW34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JySSdKg6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F02DDC3277B;
-	Tue, 23 Apr 2024 21:10:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713906624;
-	bh=T11rMPRRX9jt/RLdz1BLU5iOZ7SOs/dVFi4khlAQ6Cg=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=JySSdKg6QZhIFMe4Ai5nIMK7eulsBOQIo0oj2UvSQGy/usq0emhdy462FDoXKEJJQ
-	 JAe47BTQTU0+REhK75C9pRReod0exkHzw7FSIf2OMaT7vmFSV6H3ZedUxzZpAHdevO
-	 nR34NsUAvEYH5tqkiAIacFxSdy93q2tVpW1oQbRooayKnhGcLRSlo4LvHcRiwz/pB7
-	 QUzc6kQbcNOfo2EdoLgLqdqy667ii9qijWFBVRLS/q117lE8DLSSuOZlzNXTUSGmXK
-	 z1bNdOl2ww9lr++JtzafWvGUb7/acCl9OxFh9GvwpaA0EoNk9KejgbgMvQUUJ+KHem
-	 EIbNsLt13EFUA==
+	s=arc-20240116; t=1713906670; c=relaxed/simple;
+	bh=d7TVE296PHJP44llwt9u2h0wBexxmfsPmyLF5+Hwt7I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=E4UalLPHmkkd1v0Bzvc4E/tMJqXLMVLS6F6jZursuWCuhUrNZg5225VxbiehtpB00vUOYNv02rqlUxWxjhosLOgtn524lWRvndYo3dvmZ3aaSS17gCEnZlcoBgpSp7b1xJb0kxil9WzobqScfPRYJdPvMGnTtfa4y2WF5+1itHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cQAjUcRu; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713906669; x=1745442669;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=d7TVE296PHJP44llwt9u2h0wBexxmfsPmyLF5+Hwt7I=;
+  b=cQAjUcRuarWhpaUSy9KiiyXAYGO6NW6SUQoz2Mwn8lvXtYnif5ini6vL
+   QHBLuXUQkU344W4af6LS3NeVwtVVX6Pt21aX4EfQBHqDixQqsOu/4w91d
+   eXN3YORv28DjhWFZCUvnTV+L39XQQw04St8fvklnjNrdpkBAH6w9e0PAI
+   Kf0q8kl1ONGc2AqBpsuqhHsEGqqVaPR6CzQV9L21kvBe6ZXxNrdETImDs
+   8x6gWvHCmSFO3CVVKaYmxpwdH6TswCSPrzqUuHMtDNJ9xVybLbhJ3Kjp3
+   zVXlgSvpWh2icwh0TNSi4I3/Tahdaty1TxD5n//VaS9zl2dInij6fMF7E
+   w==;
+X-CSE-ConnectionGUID: 68w5/Q2ISY2oyr+TZDe5NQ==
+X-CSE-MsgGUID: pWvGqNhBS8eMatlJqDyblA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="13304611"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="13304611"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 14:11:08 -0700
+X-CSE-ConnectionGUID: votKh3BHQgOzYJN5Hbz8zA==
+X-CSE-MsgGUID: f9jACy/KQGaiBd4uSpPCTA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="24494406"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa009.fm.intel.com with ESMTP; 23 Apr 2024 14:11:06 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 8524528A; Wed, 24 Apr 2024 00:11:05 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 1/1] ALSA: control: Use list_for_each_entry_safe()
+Date: Wed, 24 Apr 2024 00:10:22 +0300
+Message-ID: <20240423211102.3785556-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 24 Apr 2024 00:10:21 +0300
-Message-Id: <D0RT6W3IGBRL.34KQMBWUO1Z23@kernel.org>
-To: =?utf-8?b?5pyx5Lyv5ZCbKOadsOmTrSk=?= <zhubojun.zbj@antgroup.com>,
- <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
- <dave.hansen@linux.intel.com>
-Cc: <reinette.chatre@intel.com>, =?utf-8?b?5YiY5Y+MKOi9qeWxuSk=?=
- <ls123674@antgroup.com>
-Subject: Re: [RFC PATCH 1/1] x86/sgx: Explicitly give up the CPU in EDMM's
- ioctl() to avoid softlockup
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240423092550.59297-1-zhubojun.zbj@antgroup.com>
- <20240423092550.59297-2-zhubojun.zbj@antgroup.com>
-In-Reply-To: <20240423092550.59297-2-zhubojun.zbj@antgroup.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Tue Apr 23, 2024 at 12:25 PM EEST, =3D?UTF-8?B?5pyx5Lyv5ZCbKOadsOmTrSk=
-=3D?=3D wrote:
-> EDMM's ioctl()s support batch operations, which may be
-> time-consuming. Try to explicitly give up the CPU at
-> the every end of "for loop" in
-> sgx_enclave_{ modify_types | restrict_permissions | remove_pages}
-> to give other tasks a chance to run, and avoid softlockup warning.
->
-> The following has been observed on Linux v6.9-rc5 with kernel
-> preemptions disabled(by configuring "PREEMPT_NONE=3Dy"), when kernel
-> is requested to restrict page permissions of a large number of EPC pages.
->
->     ------------[ cut here ]------------
->     watchdog: BUG: soft lockup - CPU#45 stuck for 22s! [occlum-run:3905]
->     ...
->     CPU: 45 PID: 3905 Comm: occlum-run Not tainted 6.9.0-rc5 #7
->     ...
->     RIP: 0010:sgx_enclave_restrict_permissions+0xba/0x1f0
->     Code: 48 c1 e6 05 48 89 d1 48 8d 5c 24 40 b8 0e 00 00 00 48 2b 8e 70 =
-8e f5 93 48 c1 e9 05 48 c1 e1 0c 48 03 8e 68 8e f5 93 0f 01 cf <a9> 00 00 0=
-0 40 0f 85 b2 00 00 00 85 c0 0f 85 db 00 00 00 4c 89 ef
->     RSP: 0018:ffffb55a6591fa80 EFLAGS: 00000202
->     RAX: 0000000000000000 RBX: ffffb55a6591fac0 RCX: ffffb581e7384000
->     RDX: ffffb59a9e4e8080 RSI: 0000000000000020 RDI: ffff91d69e8cc000
->     RBP: ffffb55a6591fb70 R08: 0000000000000002 R09: ffff91d646e12be0
->     R10: 000000000000006e R11: 0000000000000002 R12: 000000072052d000
->     R13: ffff91d69e8cc000 R14: ffffb55a6591fbd8 R15: ffff91d69e8cc020
->     FS:  00007fe10dbda740(0000) GS:ffff92163e480000(0000) knlGS:000000000=
-0000000
->     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->     CR2: 00007fc041811000 CR3: 00000040d95c8005 CR4: 0000000000770ef0
->     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->     DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
->     PKRU: 55555554
->     Call Trace:
->      <IRQ>
->      ? show_regs+0x67/0x70
->      ? watchdog_timer_fn+0x1f3/0x280
->      ? __pfx_watchdog_timer_fn+0x10/0x10
->      ? __hrtimer_run_queues+0xc8/0x220
->      ? hrtimer_interrupt+0x10c/0x250
->      ? __sysvec_apic_timer_interrupt+0x53/0x130
->      ? sysvec_apic_timer_interrupt+0x7b/0x90
->      </IRQ>
->      <TASK>
->      ? asm_sysvec_apic_timer_interrupt+0x1b/0x20
->      ? sgx_enclave_restrict_permissions+0xba/0x1f0
->      ? __pte_offset_map_lock+0x94/0x110
->      ? sgx_encl_test_and_clear_young_cb+0x40/0x60
->      sgx_ioctl+0x1ab/0x900
->      ? do_syscall_64+0x79/0x110
->      ? apply_to_page_range+0x14/0x20
->      ? sgx_encl_test_and_clear_young+0x6c/0x80
->      ? sgx_vma_fault+0x132/0x4f0
->      __x64_sys_ioctl+0x95/0xd0
->      x64_sys_call+0x1209/0x20c0
->      do_syscall_64+0x6d/0x110
->      ? do_syscall_64+0x79/0x110
->      ? do_pte_missing+0x2e8/0xcc0
->      ? __pte_offset_map+0x1c/0x190
->      ? __handle_mm_fault+0x7b9/0xe60
->      ? __count_memcg_events+0x70/0x100
->      ? handle_mm_fault+0x256/0x360
->      ? do_user_addr_fault+0x3c1/0x860
->      ? irqentry_exit_to_user_mode+0x67/0x190
->      ? irqentry_exit+0x3b/0x50
->      ? exc_page_fault+0x89/0x180
->      entry_SYSCALL_64_after_hwframe+0x76/0x7e
->     RIP: 0033:0x7fe10e2ee5cb
->     Code: 0f 1e fa 48 8b 05 c5 78 0d 00 64 c7 00 26 00 00 00 48 c7 c0 ff =
-ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f=
-0 ff ff 73 01 c3 48 8b 0d 95 78 0d 00 f7 d8 64 89 01 48
->     RSP: 002b:00007fffb2c75518 EFLAGS: 00000246 ORIG_RAX: 000000000000001=
-0
->     RAX: ffffffffffffffda RBX: 0000000780000000 RCX: 00007fe10e2ee5cb
->     RDX: 00007fffb2c75520 RSI: 00000000c028a405 RDI: 0000000000000005
->     RBP: 0000000000000005 R08: 0000000000000000 R09: 00007fffb2c75594
->     R10: 00007fffb2c755c8 R11: 0000000000000246 R12: 00000000c028a405
->     R13: 00007fffb2c75520 R14: 0000000780000000 R15: 00007fe10e1a7980
->      </TASK>
->      ------------[ end trace ]------------
->
-> Signed-off-by: Bojun Zhu <zhubojun.zbj@antgroup.com>
+Instead of reiterating the list, use list_for_each_entry_safe()
+that allows to continue without starting over.
 
-Can you also fixup this as your "firstname lastname" in your emails
-from field? This matters so that author field in git log matches your
-sob.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+---
+v2: added tag (Jaroslav)
+ sound/core/control_led.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-> ---
->  arch/x86/kernel/cpu/sgx/ioctl.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/io=
-ctl.c
-> index b65ab214bdf5..2340a82fa796 100644
-> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
-> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-> @@ -806,6 +806,9 @@ sgx_enclave_restrict_permissions(struct sgx_encl *enc=
-l,
->  		}
-> =20
->  		mutex_unlock(&encl->lock);
-> +
-> +		if (need_resched())
-> +			cond_resched();
->  	}
-> =20
->  	ret =3D 0;
-> @@ -1010,6 +1013,9 @@ static long sgx_enclave_modify_types(struct sgx_enc=
-l *encl,
->  		entry->type =3D page_type;
-> =20
->  		mutex_unlock(&encl->lock);
-> +
-> +		if (need_resched())
-> +			cond_resched();
->  	}
-> =20
->  	ret =3D 0;
-> @@ -1156,6 +1162,9 @@ static long sgx_encl_remove_pages(struct sgx_encl *=
-encl,
->  		kfree(entry);
-> =20
->  		mutex_unlock(&encl->lock);
-> +
-> +		if (need_resched())
-> +			cond_resched();
->  	}
-> =20
->  	ret =3D 0;
+diff --git a/sound/core/control_led.c b/sound/core/control_led.c
+index 061a8ea23340..ea95405c76a4 100644
+--- a/sound/core/control_led.c
++++ b/sound/core/control_led.c
+@@ -290,16 +290,13 @@ static void snd_ctl_led_clean(struct snd_card *card)
+ {
+ 	unsigned int group;
+ 	struct snd_ctl_led *led;
+-	struct snd_ctl_led_ctl *lctl;
++	struct snd_ctl_led_ctl *lctl, *_lctl;
+ 
+ 	for (group = 0; group < MAX_LED; group++) {
+ 		led = &snd_ctl_leds[group];
+-repeat:
+-		list_for_each_entry(lctl, &led->controls, list)
+-			if (!card || lctl->card == card) {
++		list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
++			if (!card || lctl->card == card)
+ 				snd_ctl_led_ctl_destroy(lctl);
+-				goto repeat;
+-			}
+ 	}
+ }
+ 
+-- 
+2.43.0.rc1.1336.g36b5255a03ac
 
-Makes sense to me but maybe this should be a prefix op instead of
-postfix op given how things are laid out in sgx_ioc_enclave_add_pages()
-
-https://elixir.bootlin.com/linux/latest/source/arch/x86/kernel/cpu/sgx/ioct=
-l.c#L443
-
-BR, Jarkko
 
