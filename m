@@ -1,141 +1,93 @@
-Return-Path: <linux-kernel+bounces-156000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CC778AFC87
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:25:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C3F78AFC8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:26:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95141B224B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:25:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 086782843AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80DD43E47F;
-	Tue, 23 Apr 2024 23:25:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17B6741C92;
+	Tue, 23 Apr 2024 23:26:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HA4E6u11"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="2BuQeT8N"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1BB518B04;
-	Tue, 23 Apr 2024 23:25:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC38638DDD;
+	Tue, 23 Apr 2024 23:26:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713914743; cv=none; b=sKmRW3s5Jrz9ybGiCDx/XrZlxJMnlBgbZbxPvgaVvKRcdgLNPbmRirZbusYpH/AusaoPEvYgwhAmN6sXv786/DOfdkylmaPP++zE+ieNzgpU3t79tIzjiH1LaDOMvQT6F2MMvXJHkZ6ds6k+l3VQ9/sTr/Yza3wSaG+lLzErqnw=
+	t=1713914791; cv=none; b=khCMgQbiosIWpT3YKVHYSmH9bdaKxL0kYb0+82k2Q/O/yBK2f+cT0SPI6iWYQRRZYVeiDZA/80wTaPXhOsSc/2MEAlfA66WkWwasGqgSCwl3q4LLL/NAqW78fWYx7AhjPSzwHmxk0XYSzLrXsOdTAUbClqEOdm0IsccFoJLiT1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713914743; c=relaxed/simple;
-	bh=VnX964G5VpuWnkzc2ncz0fgLMmrnFHN8sX971WKxw04=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EJvXphBm1faZxeS75zhZ1mzqIn7XXpM2TWpDT0xtiRdAeMG0+RqWtJ+Yy4n/KmDEyUYL/k35WnAKqx8eN57VVuuxGX2Gv5ruiXijXqxMzcjoBbvw6XjhvrVYeX3+AZhA+pBwVxHl6B/Xnr18NoXLMjlOaeqzr2EJ2Fecfpedzi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HA4E6u11; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D75C5C116B1;
-	Tue, 23 Apr 2024 23:25:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713914743;
-	bh=VnX964G5VpuWnkzc2ncz0fgLMmrnFHN8sX971WKxw04=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HA4E6u11wZqqPlkiTO8OdLnB122FlA7mSGOtUpoKXEhkZRx4Nuz/OzIgRcGP7Ekpn
-	 cntx4DfVM1ZipT5vJIdkdTeCVPTvJUkbmXgxtsv+HDIv9u0QQS3UbGwMIZSFaXSDcr
-	 yglViJoDNVpWt4X0KWJZNkBZngnF7YZeQ86SvQjfGwUvHW5UoqpPTn5WNjorQpDufl
-	 BrRrd+XiclMkWsKnlGEElI47nVA3uu9pWBumi0NxrwdUa5TqOS/jWjH/QYE/ajbsuz
-	 yZv9D2u+YoIHaqYsNFJutGU9qqzZs78VK+dgdTacO2P2fw+TaVXEgKADiAMdhFPYi4
-	 hOKAAG8n/H71w==
-From: SeongJae Park <sj@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: SeongJae Park <sj@kernel.org>,
-	stable@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de,
-	jonathanh@nvidia.com,
-	f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net,
-	rwarsow@gmx.de,
-	conor@kernel.org,
-	allen.lkml@gmail.com,
-	broonie@kernel.org,
-	damon@lists.linux.dev
-Subject: Re: [PATCH 6.6 000/158] 6.6.29-rc1 review
-Date: Tue, 23 Apr 2024 16:25:39 -0700
-Message-Id: <20240423232540.885-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240423213855.696477232@linuxfoundation.org>
-References: 
+	s=arc-20240116; t=1713914791; c=relaxed/simple;
+	bh=vgtPT8kZmuUIwEgKnTpoONPjgJw4cySOe+Vlw9DBD7w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dUSLvUhlnUiIdTyLfpEO9fe+boIqInzwujl3SaUxGUSVNLFWaAZYlnDKrNF6V6PfxYFBmdJrl2kCFiVBPbDDl+ZxW0pJEyIkVRv8T4AGN+HEMP7YTF4i0cujbnsqWb/f8mxoy/jpMfHpZJbhJmR6aMTbuR/VXT4IrITdh5VBjwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=2BuQeT8N; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=EIgP/ChupM/MVY7fcGEjq87hzDUCAn6wjlf+IrXBvOM=; b=2BuQeT8NKR3EHOI/umX9Wk6VgE
+	vp30CDPxrZuaUQ6074Vj/KAzuVH9/UyKaiO6290uj0JpJ+NFUnxIVDecZwPU/cgmo9UgsAaWpeT9E
+	Rzm+KMub61vMGVooVrxoFIuFYOJbM5Un7Fb6rsd1vS1WfGDeDCX3U4EtFfA10JoN0L64=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rzPWj-00Dl3u-Ne; Wed, 24 Apr 2024 01:26:17 +0200
+Date: Wed, 24 Apr 2024 01:26:17 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
+	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v4 04/12] net: ethernet: oa_tc6: implement
+ software reset
+Message-ID: <1083000b-55db-4fea-843a-6d1db802242d@lunn.ch>
+References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+ <20240418125648.372526-5-Parthiban.Veerasooran@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418125648.372526-5-Parthiban.Veerasooran@microchip.com>
 
-Hello,
+> +static int oa_tc6_read_status0(struct oa_tc6 *tc6)
+> +{
+> +	u32 regval;
+> +	int ret;
+> +
+> +	ret = oa_tc6_read_register(tc6, OA_TC6_REG_STATUS0, &regval);
+> +	if (ret)
+> +		return 0;
 
-On Tue, 23 Apr 2024 14:37:17 -0700 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+If there is an error, your throw the error code away?
 
-> This is the start of the stable review cycle for the 6.6.29 release.
-> There are 158 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 25 Apr 2024 21:38:28 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.29-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
+It is a bit messy, since you are using this inside
+readx_poll_timeout(). I would probably do a netdev_warn() or similar,
+since it should not happen, and then return 0? I _think_ this is
+probably the first bus transaction we do, so if it fails, knowing the
+error code will help figuring out what is wrong with the SPI bus
+configuration.
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
-
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 73d4a5d15a31 ("Linux 6.6.29-rc1")
-
-Thanks,
-SJ
-
-[...]
-
----
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: debugfs_rm_non_contexts.sh
-ok 8 selftests: damon: sysfs.sh
-ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
-ok 10 selftests: damon: reclaim.sh
-ok 11 selftests: damon: lru_sort.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_arm64.sh
-ok 12 selftests: damon-tests: build_m68k.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
+	Andrew
 
