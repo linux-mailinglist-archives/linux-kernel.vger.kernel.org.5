@@ -1,111 +1,147 @@
-Return-Path: <linux-kernel+bounces-155174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B19E18AE647
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:37:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A95E78AE64A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:37:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3BE61C2155D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:37:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F7D81F22068
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23F5613443E;
-	Tue, 23 Apr 2024 12:36:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C40BB12C524;
+	Tue, 23 Apr 2024 12:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="j1fJ76Hy"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DvYJ3rNA"
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB2C4134438
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:36:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AAB2290F
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:36:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713875762; cv=none; b=tvfK96DPpThLkDr7B7qDT91Pkkmsb/ycu+iQuCpRHXnESKcXq7ye0tk7JtvIMxnwWXTgR8i7uxg/NzysZCXDk5iOqHaXb2IVF9Rxo0t/xWh2ZGeScByLZFkeUJtgS/xmzB47/6YScZfC8qt+AFWNevXSC4gDc6Q9iH6Waw+qwWY=
+	t=1713875777; cv=none; b=ufXTBLU4BrKwaypjeUubjBd6OPHlKH6oMVKBvn/o3trcrhgpd8XpBG/Q172KmFx6+kEAVCyF5+S0HAK9CWzrTQdsC4lBTZqOdFBCiMWJR1Ck9pJZxxXB2ui3CkWaTCiVVGpAw2TDiLxYwkE+sTSu7WkMR7wuAIaUFl/E1NILtJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713875762; c=relaxed/simple;
-	bh=ntq7IuyIVOsN/xiE7blnc7/zrkrEWbEFaH3sSdqcllA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z5bzLiVZqAMoBZRXtlL2p2TXW6LEDHdiEkGLfV5tLgeKeQKogNmGh2U1kaQuAbDuSEhToLnjS64u5AARjmEZ5ONuctoCXPUXEuI7Dabf+uf4xsHDLN+GwzjXMvublMMSg9gW86AoRE9qZK6Dkezd9TWt81MVKbAkzsApv++X5Dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=j1fJ76Hy; arc=none smtp.client-ip=209.85.208.179
+	s=arc-20240116; t=1713875777; c=relaxed/simple;
+	bh=kBS+00rn0dPcSUgrOy0bzN/o9u8ih+e/QkeSnrZhINo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=onFKcC5v0zCmzwgXj+yTgdXucr5Zcljm6w1XCc1zD3jyTei1jLVi29bSqLHiv2WdPY9R7OZdhsmmom7Cp+lv9v3+mXEqopaw028yXSN5lrpuQFgfh/EsNkCDO+BZTaWmjrUyXkdoxggxj1Tyf6Enm8xlUARGA0k+eFhCPuEYM6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DvYJ3rNA; arc=none smtp.client-ip=209.85.219.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2da01cb187cso95204211fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 05:36:00 -0700 (PDT)
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-699320fcbc1so32832746d6.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 05:36:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713875759; x=1714480559; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nUm4YW1UwAedF7qs6RwnQnQDlQCeY2lio1mQAuIl2hA=;
-        b=j1fJ76HyXWCsABW1aAa7jtpbVCL0EcHdLoxXGhy94E++z/ftgXd+EetZUECoB+XEaX
-         EvyBGdTzx/EuRDXsfq+jvRij3w7QfHXa3d932K0mPbpgW50MCVeR8V8aYpM51U2QKiic
-         yJtwNSNoxcqqafJUwl3koP66tOHwIMvbGSnXw2XuZIBIWH3z3W0B6MmfTr3MNbxIzJzy
-         8W1EsyF17fi7QDAyO4oMRQ9n+P1/7QXuQHLaRPzemQ9HlGbSWpq8GABxNOcFvSauoMvU
-         B3kiOPxUnUwwwSAWEVcr9X0z/BHYrDVjyRb5KEVJPJymo+y0P4o7uztAMbckkLeetMXQ
-         S90A==
+        d=linaro.org; s=google; t=1713875774; x=1714480574; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Rp1vCZilhDTRpF22A7l/FKH26XsKR5Ax3W1/+Bf3MV0=;
+        b=DvYJ3rNAFXgzJdIMBjVPuAOKkKU0AdrT2EPb8TmAeJV5XP87bG8DJCy1sS32AUEcE0
+         ZGx/COUlY/Yv9iXF6YkqSlejFMLDe66VG+bd6KSrv2kj6m5i6UiN5Q3BT3Q3Cgc59/Vo
+         0QP808IAjAn1fauB+fJGVeyb+FA/UthFRUdNyDL+kOq5ejLylvzeH0n5R/HDyQeGcdZP
+         sQYaUBsrs5AIWXAgm/RULvSFBiBm+UgbpIR2su+AiZS0YXuTZhseNcUPOXPJKHj+3S/Q
+         b9hNqu3EUveJRp0l7p+RVCmYGfS9RfwCcNdMwmekUqdvfNRlXpHD9D+g1Fl4HBfeR1UP
+         MQig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713875759; x=1714480559;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nUm4YW1UwAedF7qs6RwnQnQDlQCeY2lio1mQAuIl2hA=;
-        b=QxDYdcPMrvVmURWCThWd7T5D2mWKGI7xRaRGJKIH/fshXRAoK9KDlYLiC+L1YuPzzj
-         QUlHZkhnBiLcdagAb7U2w9G1IRzCPHF77iz8OEqAll/UT0gyx9n1H50XuFjSrAnaqT0Q
-         qyuTR2vuRYDYz1iCI6HEjr2NZVDL8N5CCjf/+69y9HMZusM/5OXY75KOwevVrDkKLqtT
-         mTxNTWYeZBNlzNHK0q/fFRcszrv1inb+wY21ZCdKPTBdJI+BCgA0GcYmBQfLGFq5brGC
-         JPDCbzP6Os9PII+sl1pYL7753Aqw5sbIjeJFCQcj/JlZgDHVhOG9l3gzdHowX1inwN/v
-         95/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXHLwYb6XfoRYg5xN6A4fTJh4ywoJPz4BAn+UqirVHRy4udgqzyBERp8J3p2CAwszLZMVfYHD1Pxjpjt/wLhtMBJoCUV2KsV56FIiXd
-X-Gm-Message-State: AOJu0YxrojA94LZU4+2iYplTMaDDwGbd0TyY7v9rrc6HhzIyIYjTmSf3
-	XVeB7PvMDlFztdPO0dRUSamdyRnj+LEHdu345qvQ5DBCSeZU62SN23w4QZPlaMY=
-X-Google-Smtp-Source: AGHT+IEjshmlgcGx5nklIUdU+NXP1sYIs4i4QNvD/BiRJQIPm+n+8UatxQVPrvg7Lboi3hBwptw75w==
-X-Received: by 2002:a05:651c:2214:b0:2d8:5af9:90c5 with SMTP id y20-20020a05651c221400b002d85af990c5mr13373645ljq.39.1713875758967;
-        Tue, 23 Apr 2024 05:35:58 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::8a5])
-        by smtp.gmail.com with ESMTPSA id o23-20020a2e9b57000000b002d46df91965sm1711649ljj.80.2024.04.23.05.35.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 05:35:58 -0700 (PDT)
-Date: Tue, 23 Apr 2024 15:35:57 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Rob Clark <robdclark@gmail.com>, 
-	Abhinav Kumar <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>, 
-	Marijn Suijten <marijn.suijten@somainline.org>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] drm/msm/dsi: Remove dsi_phy_read/write()
-Message-ID: <njceeizdk2pea3oqni3qpzl323dwrjtdin4cd4hqqewyrg6y74@pkpi42gvrv74>
-References: <20240423-topic-msm_cleanup-v1-0-b30f39f43b90@linaro.org>
- <20240423-topic-msm_cleanup-v1-1-b30f39f43b90@linaro.org>
+        d=1e100.net; s=20230601; t=1713875774; x=1714480574;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rp1vCZilhDTRpF22A7l/FKH26XsKR5Ax3W1/+Bf3MV0=;
+        b=ObFx3KRIQ5zV0jg6B2yWXyeRVxKleXh9moyqJDTGXYngG2q/2wbthTmX2faJKuFypQ
+         6S7ieCTtUHiJkm2d0mB11HuYaE4LbETfmxEX9tFn8Komq3EHTyScKaCdJsLBf1O83ayx
+         lNLEqXAA8YyTznag6bL/sB8uRKTTLV3Q0aJKt83DLbnzgbVdyQhekPZQkCngtAvOm1Md
+         9RzS8N+RA1N7oKQXivWKF2PYG67DHSU8mX1JzSx+pyLipon2kYez0SbQ200xxs2N5Jbz
+         MtlLHqudm6iZG6HThsSVWi+AHh/oYx1noPqBgg7JEXbpemIRQDcKq+yN8JaV7TPDfTTs
+         HNCA==
+X-Forwarded-Encrypted: i=1; AJvYcCWliVEmMVYmTuTRbf9ufePYH+PyjsoteMJFoCspa+Mp+z51tgbsNfU51910HPXPmgkAwRfW0e4dhW5UPdoiKvRqB9HUI0Lfs6fzVUnZ
+X-Gm-Message-State: AOJu0Ywd3rsNioMbY0kPdqaoxzutH8tsmSCjrzaq0T+D6yD77HOS0HLn
+	yWwnKYmH8Ynx7fZlmT2O3d3HWNDgtJ/E3N8N/mVUNfbImWYXfvrErOYxYcyBc1Q=
+X-Google-Smtp-Source: AGHT+IHLs2D3cGmmnHWTUSwtoRkNbwIfAKQK3gorK2TJ0i2M3UwxSJcpe4+NF+eQ9QL2KzfKnAuleg==
+X-Received: by 2002:a0c:cc0b:0:b0:699:125:8540 with SMTP id r11-20020a0ccc0b000000b0069901258540mr12888684qvk.60.1713875774488;
+        Tue, 23 Apr 2024 05:36:14 -0700 (PDT)
+Received: from [172.22.22.28] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
+        by smtp.gmail.com with ESMTPSA id t11-20020a0ce2cb000000b0069b5bb757d0sm5103890qvl.93.2024.04.23.05.36.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 05:36:13 -0700 (PDT)
+Message-ID: <d6f8d978-350d-4867-be4e-beea0c7e467b@linaro.org>
+Date: Tue, 23 Apr 2024 07:36:12 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423-topic-msm_cleanup-v1-1-b30f39f43b90@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 7/8] net: ipa: fix two minor ipa_cmd problems
+To: Paolo Abeni <pabeni@redhat.com>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org
+Cc: mka@chromium.org, andersson@kernel.org, quic_cpratapa@quicinc.com,
+ quic_avuyyuru@quicinc.com, quic_jponduru@quicinc.com,
+ quic_subashab@quicinc.com, elder@kernel.org, netdev@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240419151800.2168903-1-elder@linaro.org>
+ <20240419151800.2168903-8-elder@linaro.org>
+ <3a09d8e47e4c59aa4a42baae5b8a0886925a94a0.camel@redhat.com>
+Content-Language: en-US
+From: Alex Elder <elder@linaro.org>
+In-Reply-To: <3a09d8e47e4c59aa4a42baae5b8a0886925a94a0.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 23, 2024 at 12:36:59AM +0200, Konrad Dybcio wrote:
-> These are dummy wrappers that do literally nothing interesting.
-> Remove them.
+On 4/23/24 6:21 AM, Paolo Abeni wrote:
+> On Fri, 2024-04-19 at 10:17 -0500, Alex Elder wrote:
+>> In "ipa_cmd.h", ipa_cmd_data_valid() is declared, but that function
+>> does not exist.  So delete that declaration.
+>>
+>> Also, for some reason ipa_cmd_init() never gets called.  It isn't
+>> really critical--it just validates that some memory offsets and a
+>> size can be represented in some register fields, and they won't fail
+>> with current data.  Regardless, call the function in ipa_probe().
 > 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  drivers/gpu/drm/msm/dsi/phy/dsi_phy.h           |   2 -
->  drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c      | 273 +++++++++-----------
->  drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c      | 215 ++++++++--------
->  drivers/gpu/drm/msm/dsi/phy/dsi_phy_20nm.c      | 109 ++++----
->  drivers/gpu/drm/msm/dsi/phy/dsi_phy_28nm.c      | 224 ++++++++---------
->  drivers/gpu/drm/msm/dsi/phy/dsi_phy_28nm_8960.c | 205 +++++++--------
->  drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c       | 320 ++++++++++++------------
->  7 files changed, 645 insertions(+), 703 deletions(-)
+> That name sounds confusing to me: I expect *init to allocate/set
+> something that will need some reverse operation at shutdown/removal.
+> What about a possible follow-up renaming the function to
+> ipa_cmd_validate() or the like?
+
+In the IPA driver I have several phases of initialization that
+occur:
+- *_init() is done to initialize anything (like allocating memory
+   and looking up DT information) that does not require any access
+   to hardware.  Its inverse is *_exit().
+- *_config() is done once "primitive" (register-based) access to
+   the hardware is needed, where the hardware must be clocked.  Its
+   inverse is *_deconfig().
+- *_setup() is done after the above, at a point where a higher-level
+   command-based (submit/await completion) interface is available.
+   That is used for the last steps of setting up the hardware.  Its
+   inverse is *_teardown().
+
+You're right, that in this case all this init function does is
+validate things.  But at an abstract level, this is the place
+in the "IPA command" module where *any* early-stage initialization
+takes place.  The caller doesn't "know" that at the moment this
+happens to only be validation.  (I don't recall, but this might
+previously have done some other things.)
+
+So that's the reasoning behind the name.  Changing it to
+ipa_cmd_validate() makes sense too, but wouldn't fit the
+pattern used elsewhere.  I'm open to it though; it's just a
+design choice.  But unless you're convinced such a change
+would really improve the code, I plan to leave it as-is.
+
+> Not blocking the series, I'm applying it.
+
+Thank you very much.
+
+					-Alex
+
+
+> Thanks,
+> 
+> Paolo
 > 
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
--- 
-With best wishes
-Dmitry
 
