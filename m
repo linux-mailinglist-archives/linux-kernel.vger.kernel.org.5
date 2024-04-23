@@ -1,39 +1,54 @@
-Return-Path: <linux-kernel+bounces-154735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EC4B8AE050
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:52:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05FE68AE054
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:54:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C35F281610
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:52:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 675BCB22685
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:54:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 949AF55C2A;
-	Tue, 23 Apr 2024 08:52:40 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB40647F51
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:52:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1A7456451;
+	Tue, 23 Apr 2024 08:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="QZp3mbf9"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D5FE335D3;
+	Tue, 23 Apr 2024 08:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713862360; cv=none; b=IbD6hNAb4sRD6Xtf7NSGssNajF4DredSePXd+6hWG/Oo9eOCLhIvjhhsxJS2uXXHK37hpPU7UXH1Y9xIFKh2A9WDjY8bQ93YbvK2EHABTyBuX3USb3oeHbf+PQ469KDVscjvWgRGQicdJqDrsmhCbuhdGEmhlbWA44qnpWJyx+8=
+	t=1713862487; cv=none; b=oYIy8A4Wdu2+TjeoIIz9mgRushFNMeyudi7ZhPxRwds86OSRCYDZKUcPBW2vAjB03ZpE14iCjUw7jorAAohn0jknVXW141/fFCoUU+IJLGbBDgEQy0Yec/mN4Ux3wf+LofFA9LO2/NHgThMb9GitbELpI2m6ilZnhOG2O5w+5yU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713862360; c=relaxed/simple;
-	bh=zxOCmS5J8uz9+rq2BSY913ZBzR6qv+twFJc4XwSkjzI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AciCjehWbrGEX3xctQxx/S4DfLg8U0gyUIv9hEfP3l+JYh7fXSSv68UV1Q8n18lMhpYxo6EOXYfZKTCahN4Qai6wgQFFqUNc5knQEVENJ9bC6rngC7dgjbl7t3k/8k2zTuFdNyzrm5QlOicjFTAAId+vNjTrNMYsVzBi0EtzTz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4A3D3339;
-	Tue, 23 Apr 2024 01:53:06 -0700 (PDT)
-Received: from [10.57.74.127] (unknown [10.57.74.127])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 84B663F64C;
-	Tue, 23 Apr 2024 01:52:36 -0700 (PDT)
-Message-ID: <23a2e491-f4e2-4ab0-859c-8637ffb3d21e@arm.com>
-Date: Tue, 23 Apr 2024 09:52:35 +0100
+	s=arc-20240116; t=1713862487; c=relaxed/simple;
+	bh=vSvOWy+OfKttBBmQ2bfh7dtLqbR6HoSbBlNkHX8qxQQ=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=hnoKJKFavpqVoFydI+VlSpJzxXKAvnPwfirzNFceds8StNSPZdVRsBM0STCWgXBvYRSixW4mYFbbvbCHI9TjlRbhXRLhyintOkXyH+0OxpNUm/yjWZaHx0hYAYHRfYzQLXkONFnSKBd5ugbV5F9jKnMpuJEetw3Iu7K3KKxcdmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=QZp3mbf9; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713862484;
+	bh=vSvOWy+OfKttBBmQ2bfh7dtLqbR6HoSbBlNkHX8qxQQ=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=QZp3mbf9a1aq97WHqC5h1z3LTwIyOydN8bnzuK9jwEUA2ptsdJU0nhvxpUQVyx95w
+	 lP+DTgijmZSwR6Z7TjO9OGLghsPW7NY3ueZGIkIltRzfsBdD0cb3DKp4AqTY836w0K
+	 1fAI9C/idNOOsLUgffNCkWJWit/hCX2CoGmW2YWi5O1AZKAtoZzO/EbNfXOBbHJRLI
+	 8T0FZcGSL2BishnUIgCYkSug19QRtEy3Zis6Y80J4yV9x8h8YPhQavFNJ8tkaa3QDb
+	 nJkSIJIxGLzYV1aIBaf6jbwqIiTjCVqjZGdj89EamZUWnKESYpP0G8j6y7xuypiK5Y
+	 EJ49U5gTW+Qyw==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4C7B03781183;
+	Tue, 23 Apr 2024 08:54:39 +0000 (UTC)
+Message-ID: <78f5ee9a-084f-4a8a-9a22-be031f9baafa@collabora.com>
+Date: Tue, 23 Apr 2024 13:55:07 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,62 +56,53 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/9] Merge arm64/riscv hugetlbfs contpte support
-Content-Language: en-GB
-To: Alexandre Ghiti <alex@ghiti.fr>, Will Deacon <will@kernel.org>,
- Palmer Dabbelt <palmer@dabbelt.com>
-Cc: alexghiti@rivosinc.com, Catalin Marinas <catalin.marinas@arm.com>,
- Mark Rutland <mark.rutland@arm.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
- akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-mm@kvack.org
-References: <CAHVXubiH64beFuB_GHSq5BKCus=O_+bqYTCwWQ+=2Q-F=T=ctQ@mail.gmail.com>
- <mhng-911ba065-e6c8-4d42-978c-e47897bcb493@palmer-ri-x1c9a>
- <20240419110306.GA2972@willie-the-truck>
- <f6488073-b93f-4945-9d30-1ceb548d6bb4@ghiti.fr>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <f6488073-b93f-4945-9d30-1ceb548d6bb4@ghiti.fr>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, shuah@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Anshuman.Khandual@arm.com,
+ suzuki.poulose@arm.com, ryan.roberts@arm.com, rob.herring@arm.com,
+ Catalin.Marinas@arm.com, broonie@kernel.org, mark.rutland@arm.com,
+ linux@armlinux.org.uk
+Subject: Re: [PATCH v2 0/4] A new selftests/ directory for arm compatibility
+ testing
+To: Will Deacon <will@kernel.org>, Dev Jain <dev.jain@arm.com>
+References: <20240422070717.2194201-1-dev.jain@arm.com>
+ <20240422172108.GD6223@willie-the-truck>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240422172108.GD6223@willie-the-truck>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 22/04/2024 09:50, Alexandre Ghiti wrote:
-> Hi,
-> 
-> On 19/04/2024 13:03, Will Deacon wrote:
->> On Thu, Apr 18, 2024 at 03:11:56PM -0700, Palmer Dabbelt wrote:
->>> On Fri, 01 Mar 2024 03:29:18 PST (-0800), alexghiti@rivosinc.com wrote:
->>>> On Fri, Mar 1, 2024 at 11:45 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>> I confess I haven't looked at the patches yet, but this cover letter raises a
->>>>> few quesions for me. I'll aim to look at the actual patches in due course.
->>> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
->>>
->>> in case someone wants to pick them up via a generic tree.  I'm happy to take
->>> them via the RISC-V tree if folk want, no rush on my end I'm just scrubbing
->>> through old stuff.
->> I'd definitely like to take the arm64 parts via the arm64 tree (on a
->> shared branch), as it's a non-trivial amount of mm code which may end up
->> conflicting. I'd also like to see Ryan's Ack on the changes before these
->> end up in -next.
+On 4/22/24 10:21 PM, Will Deacon wrote:
+> On Mon, Apr 22, 2024 at 12:37:13PM +0530, Dev Jain wrote:
+>> This series introduces the selftests/arm directory, which tests 32 and 64-bit
+>> kernel compatibility with 32-bit ELFs running on the Aarch platform.
+>> The need for this bucket of tests is that 32 bit applications built on legacy
+>> ARM architecture must not break on the new Aarch64 platforms and the 64-bit
+>> kernel. The kernel must emulate the data structures, system calls and the
+>> registers according to Aarch32, when running a 32-bit process; this directory
+>> fills that testing requirement.
 >>
->> Will
+>> One may find similarity between this directory and selftests/arm64; it is
+>> advisable to refer to that since a lot has been copied from there itself.
 > 
-> 
-> The rebase on top of the contpte mTHP support changed quite a few things, I have
-> something working and will send it soon, so no need to review this patchset.
+> Isn't this going to be difficult to maintain if we have two divergent copies
+> of the same stuff? From a very quick skim, a bunch of the signals stuff is
+> idential to what we have on arm64...
+Agreed.
 
-Sorry this fell off my desk. CC me on the next version and I'll take a look.
+Why don't we follow what x86 suite has been doing? Compile tests for both
+arm and arm64, and add conditionals in the tests based on architecture.
+
+If someone has objection that the suite name is arm64, just rename it to
+arm which would be a generic name.
+
 
 > 
-> Thanks,
+> Will
 > 
-> Alex
-> 
-> 
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
+-- 
+BR,
+Muhammad Usama Anjum
 
