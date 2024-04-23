@@ -1,108 +1,130 @@
-Return-Path: <linux-kernel+bounces-154726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CEFD8AE036
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:48:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C2AF8AE038
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:49:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13BC8283364
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:48:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E9C81F21B77
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:49:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 622CB56446;
-	Tue, 23 Apr 2024 08:48:43 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD47B56440;
+	Tue, 23 Apr 2024 08:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="VIII61E+"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F7D31E526
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:48:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8899654FAE;
+	Tue, 23 Apr 2024 08:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713862123; cv=none; b=OYemXV4PoCNlCku33lbRrjM6wfsDEZDPVPC7Cf2ZF7AES03/2v9mJuK044+aLToITOhQKlTCiZijAvYbfJ19zMKFuaHfoIUPs2YVq3MCsbA2W5S8hEFzo9A00ztDAzUyC6YR3UlTC45FkhW1htY1iMIgJ8mf/jLnxwUxYsM+yc8=
+	t=1713862133; cv=none; b=exmu+O0G0LqlSZRPRT2aYHBBUA4o/bgSu7+l1VAMLW+hxiiXBPfP8glhmqBmUhYOBCvwUkcrZEh3+8eTkT3ZLbZjFY8mCgFvjyb/1x/tQrOKVZREJYGMDLIwNa8E+uau3ZFs1nb7VZzAk9Vt6L93ZREANqDrft04VS9jZKxSxT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713862123; c=relaxed/simple;
-	bh=g8zd7G7ZNAHafF2FAzyu3q4vLjerp9wEdhoccM4gm0A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yl62Y2FntZq+64k0qAAD8Xkq8P0HAQJFH5Kk7NkAQPeX81hlujTHMxK5b7l9kgdMx2daVe//nwBFvlXwVafg9boRIKHCw//mvtSzcyRHL1xzF1Vf+CYLMuJRwgz1rMgJhQuTRJU+9/GtQ8s2x2v4D2oEMDR5e79fGRVqMreMt/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rzBpD-0007F0-V4; Tue, 23 Apr 2024 10:48:27 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rzBpB-00DrZr-S1; Tue, 23 Apr 2024 10:48:25 +0200
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rzBpB-009nsc-2V;
-	Tue, 23 Apr 2024 10:48:25 +0200
-Date: Tue, 23 Apr 2024 10:48:25 +0200
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Kory Maincent <kory.maincent@bootlin.com>
-Cc: Jiri Pirko <jiri@resnulli.us>, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Kyle Swenson <kyle.swenson@est.tech>
-Subject: Re: [PATCH net-next v2 2/3] net: pse-pd: pse_core: Fix pse regulator
- type
-Message-ID: <Zid12Z4hVQ7sThhT@pengutronix.de>
-References: <20240422-fix_poe-v2-0-e58325950f07@bootlin.com>
- <20240422-fix_poe-v2-2-e58325950f07@bootlin.com>
- <ZiZ7-n5q3COmPRx6@nanopsycho>
- <20240422182030.34524046@kmaincent-XPS-13-7390>
+	s=arc-20240116; t=1713862133; c=relaxed/simple;
+	bh=Cq8DsZzwx0gUO/0lV/NY2e6qQt/0n/otAXdUhqCixM0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=U8g5otnYUpIQo9lFewQVMdXzVAd1M3cyTZdt3bJUrg91DGRxzljFPFaIbQ6EudCD1VxbbiTdXvRiM9yDFMjT8l63J7lfkS5YZnreFI+3vLKsZ1K1PhqO9LHaKd02ndKLqi7QddjQ0UeEFqLEM5/+q2t/bAST8f1Rv+hW7DAMZrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=VIII61E+; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43N8mYv0102865;
+	Tue, 23 Apr 2024 03:48:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713862114;
+	bh=izBQf8prT76mBbNRBNj+F/z8bHoPWICC5dVB8vaXVtM=;
+	h=From:To:CC:Subject:Date;
+	b=VIII61E+5vcBkTOEEyscEbswwz/uuKZ8jjezilBEc4an9hcmjqrcU/oo/kr5EfHAV
+	 4QENQD6fgfQDsPzgcDapSCLbuBSNf2NrrwKwYPrVQ+nW0UFEXAe65GyhIoJZse1/SM
+	 vSf5Gi+IWmqhEeFFjJ3OwJvjXGOncK+xtB67ECNc=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43N8mYCH049178
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 23 Apr 2024 03:48:34 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 23
+ Apr 2024 03:48:33 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 23 Apr 2024 03:48:33 -0500
+Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43N8mXWC071849;
+	Tue, 23 Apr 2024 03:48:33 -0500
+Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.25])
+	by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 43N8mW3t021108;
+	Tue, 23 Apr 2024 03:48:33 -0500
+From: MD Danish Anwar <danishanwar@ti.com>
+To: Siddharth Vadapalli <s-vadapalli@ti.com>, Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>,
+        "David
+ S. Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>, Andrew Lunn <andrew@lunn.ch>
+CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>, <srk@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>, <r-gunasekaran@ti.com>,
+        Roger Quadros
+	<rogerq@kernel.org>,
+        MD Danish Anwar <danishanwar@ti.com>
+Subject: [PATCH net] net: phy: dp83869: Fix MII mode failure
+Date: Tue, 23 Apr 2024 14:18:28 +0530
+Message-ID: <20240423084828.1309294-1-danishanwar@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240422182030.34524046@kmaincent-XPS-13-7390>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Mon, Apr 22, 2024 at 06:20:30PM +0200, Kory Maincent wrote:
-> On Mon, 22 Apr 2024 17:02:18 +0200
-> Jiri Pirko <jiri@resnulli.us> wrote:
-> 
-> > Mon, Apr 22, 2024 at 03:35:47PM CEST, kory.maincent@bootlin.com wrote:
-> > >From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
-> > >
-> > >Clarify PSE regulator as voltage regulator, not current.
-> > >The PSE (Power Sourcing Equipment) regulator is defined as a voltage
-> > >regulator, maintaining fixed voltage while accommodating varying current.
-> > >
-> > >Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> > >Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>  
-> > 
-> > This looks like a fix. Can you provide "Fixes" tag please and perhaps
-> > send this to -net tree?
-> 
-> Indeed I should have used the Fixes tag.
-> The PoE patch series that introduce this issue is currently in net-next.
+The DP83869 driver sets the MII bit (needed for PHY to work in MII mode)
+only if the op-mode is either DP83869_100M_MEDIA_CONVERT or
+DP83869_RGMII_100_BASE.
 
-With Fixes tag:
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Some drivers i.e. ICSSG support MII mode with op-mode as
+DP83869_RGMII_COPPER_ETHERNET for which the MII bit is not set in dp83869
+driver. As a result MII mode on ICSSG doesn't work and below log is seen.
 
+TI DP83869 300b2400.mdio:0f: selected op-mode is not valid with MII mode
+icssg-prueth icssg1-eth: couldn't connect to phy ethernet-phy@0
+icssg-prueth icssg1-eth: can't phy connect port MII0
+
+Fix this by setting MII bit for DP83869_RGMII_COPPER_ETHERNET op-mode as
+well.
+
+Fixes: 94e86ef1b801 ("net: phy: dp83869: support mii mode when rgmii strap cfg is used")
+Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+---
+NOTE: This patch is needed for MII mode to work for ICSSG Ethernet driver.
+I will post the device tree patch for MII mode and mark that as dependent
+on this patch.
+
+ drivers/net/phy/dp83869.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/phy/dp83869.c b/drivers/net/phy/dp83869.c
+index fa8c6fdcf301..d7aaefb5226b 100644
+--- a/drivers/net/phy/dp83869.c
++++ b/drivers/net/phy/dp83869.c
+@@ -695,7 +695,8 @@ static int dp83869_configure_mode(struct phy_device *phydev,
+ 	phy_ctrl_val = dp83869->mode;
+ 	if (phydev->interface == PHY_INTERFACE_MODE_MII) {
+ 		if (dp83869->mode == DP83869_100M_MEDIA_CONVERT ||
+-		    dp83869->mode == DP83869_RGMII_100_BASE) {
++		    dp83869->mode == DP83869_RGMII_100_BASE ||
++		    dp83869->mode == DP83869_RGMII_COPPER_ETHERNET) {
+ 			phy_ctrl_val |= DP83869_OP_MODE_MII;
+ 		} else {
+ 			phydev_err(phydev, "selected op-mode is not valid with MII mode\n");
+
+base-commit: 6bea4f03c6a4e973ef369e15aac88f37981db49e
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.34.1
+
 
