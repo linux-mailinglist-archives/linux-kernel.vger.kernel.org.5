@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-155022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2D5A8AE476
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:43:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F82E8AE479
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:43:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 301021C2128C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:43:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E2D0B240DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF4FE13664A;
-	Tue, 23 Apr 2024 11:40:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 301DC1369A3;
+	Tue, 23 Apr 2024 11:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dNxN3Qa+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KA/i2N5s"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17C3C135A54;
-	Tue, 23 Apr 2024 11:40:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A947136660;
+	Tue, 23 Apr 2024 11:40:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872423; cv=none; b=dQ7OK/PRgOU1Eo/KZ+s0hwGpASr3sOQrlQ/ON1bmIktBqJtJJwlJv71b/T3NYkTvZYud4dLT7d/JKf8r4Oxq1RTbMDj3C80/lreLva8Lsa4LpVuGOb+JDVwr/76SHl2v08Z3ZaVKiIxIYu5H49uRT5CY7tggA+vl3ipt9KXOAYE=
+	t=1713872424; cv=none; b=W4w4Px8iZdDRDYfLqCRCQgfLhfBID4IZFU+WCx6jnO0jnmaOMVrKEoHpQh9O1swYJxkxI39RjAPpwQAdx/zoe3LLCMeLcA4ipbwv/SI3Pr/KR7OYJQ/FrKVXuQP3vV3mRuFyQMTGW3gmjlP5oWPnsyPnjNszwcO6YldFN7Yl+Ns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872423; c=relaxed/simple;
-	bh=hKwut95N+tCwwDS51J+BHVxNHPqZYt4fc8mS6/l5WkI=;
+	s=arc-20240116; t=1713872424; c=relaxed/simple;
+	bh=TkcNi1fQ9TF91KAuebmGAZ3Sag/oWc+wWRlrwOCiSVw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RHn0G3ujV/8Cb8OOKcrxi4rhQUU33BHeHPaWfFfFPbkwe4Xgg8A+3XOR2tvENMugcQmzd8N9JZzeDZYzYqk5OtGocdSDlVgnBBDXpbOtYpeBb4qQNHYLtelOaE2nTqgSiXHRUV3JIArg2CgXifEInEeDoHSN2v5kfKXiEZILhP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dNxN3Qa+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27B37C32782;
-	Tue, 23 Apr 2024 11:40:22 +0000 (UTC)
+	 MIME-Version:Content-Type; b=EXUlQ2HwsezEJzbqItHZeDzOvqM9HOpUQ8PjRWnrTdYQj23KbygP9yEQOZtpYYRlCdKsDs0pxmmr2KClBEz3hoMltkVaq/inqC72zZFcHfHSxDVEq27ZZJTx9xtc3i3DBOzMGziZnZ0k3KlVvCY/ebAJWj0H3nkQcxwFMqQ1w3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KA/i2N5s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 687CCC2BD11;
+	Tue, 23 Apr 2024 11:40:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872423;
-	bh=hKwut95N+tCwwDS51J+BHVxNHPqZYt4fc8mS6/l5WkI=;
+	s=k20201202; t=1713872424;
+	bh=TkcNi1fQ9TF91KAuebmGAZ3Sag/oWc+wWRlrwOCiSVw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dNxN3Qa+BgTzJgxOWG9hCT639w5Q9X/ySlP8Ad7loDKxZZ2pngUbah/DcLUtUwg7r
-	 hrqxSWFupX8ZTJnl7egyPew5nmYFOs/goTt/wOcqYm2uXJy4ZJ6deSBj68dQAp3+YV
-	 DhVR3Py9LIXg7neeNB1nHnvrguOzv4C93EFUISNyWjy7dKu98+g1aaKw5i4zrdehgu
-	 ENPIR5GrMBAbIyYYU8NlVNXaNI6+9zojFqV2TpqQyYbQizCPfpDAo1z8yJSd6eo2Dp
-	 d+1GYVWJomTK+71z5m/x0waPoXkPGJuEvEAPxXERALddFjVc/BFgQEzjcvzMgWKD24
-	 7Y6+Ygfi7DHhg==
+	b=KA/i2N5sC+1bK5CxUQpWfWhJjG0dm4WQldytT6vPSYCwC6Bkk8CIbhPMd0LCJnA0m
+	 dtDvr+gG26U2GsubDE4j7lz7af5fo7h0PVuNhJLLh7Kar2l35H7XfQkjSeekDvj+WZ
+	 tP5SG/B55pZlgFRntyPPZqfrIp2U6/IWEBa4s1PEP0XVpcffVMAvoX6E2SJ2+kSJC1
+	 p7YshzSiZwwbSxCCyC+CNugR7qHF6bP6G1Yq7qiRee4RJcdUwQuQP69WnySuLNwQn6
+	 JpYUef9kxAtB5CtxTkrFPfN+bwOJBUjOLt0DXdskylR701J9LBDEY7Pz8DPo0G/VSF
+	 dp4gWaQEhB1Dw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Hans de Goede <hdegoede@redhat.com>,
 	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	hdegoede@redhat.com,
+	Shyam-sundar.S-k@amd.com,
 	platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 14/18] platform/x86: ISST: Add Granite Rapids-D to HPM CPU list
-Date: Tue, 23 Apr 2024 07:01:10 -0400
-Message-ID: <20240423110118.1652940-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 15/18] platform/x86/amd/pmc: Extend Framework 13 quirk to more BIOSes
+Date: Tue, 23 Apr 2024 07:01:11 -0400
+Message-ID: <20240423110118.1652940-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240423110118.1652940-1-sashal@kernel.org>
 References: <20240423110118.1652940-1-sashal@kernel.org>
@@ -66,33 +67,46 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.7
 Content-Transfer-Encoding: 8bit
 
-From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+From: Mario Limonciello <mario.limonciello@amd.com>
 
-[ Upstream commit d8c2d38c4d1dee8fe8e015b9ebf65bdd8e4da99b ]
+[ Upstream commit f609e7b1b49e4d15cf107d2069673ee63860c398 ]
 
-Add Granite Rapids-D to hpm_cpu_ids, so that MSR 0x54 can be used.
+BIOS 03.05 still hasn't fixed the spurious IRQ1 issue.  As it's still
+being worked on there is still a possibility that it won't need to
+apply to future BIOS releases.
 
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Link: https://lore.kernel.org/r/20240415212853.2820470-1-srinivas.pandruvada@linux.intel.com
+Add a quirk for BIOS 03.05 as well.
+
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20240410141046.433-1-mario.limonciello@amd.com
 Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel/speed_select_if/isst_if_common.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/platform/x86/amd/pmc/pmc-quirks.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/platform/x86/intel/speed_select_if/isst_if_common.c b/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
-index 08df9494603c5..30951f7131cd9 100644
---- a/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
-+++ b/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
-@@ -719,6 +719,7 @@ static struct miscdevice isst_if_char_driver = {
+diff --git a/drivers/platform/x86/amd/pmc/pmc-quirks.c b/drivers/platform/x86/amd/pmc/pmc-quirks.c
+index b456370166b6b..b4f49720c87f6 100644
+--- a/drivers/platform/x86/amd/pmc/pmc-quirks.c
++++ b/drivers/platform/x86/amd/pmc/pmc-quirks.c
+@@ -208,6 +208,15 @@ static const struct dmi_system_id fwbug_list[] = {
+ 			DMI_MATCH(DMI_BIOS_VERSION, "03.03"),
+ 		}
+ 	},
++	{
++		.ident = "Framework Laptop 13 (Phoenix)",
++		.driver_data = &quirk_spurious_8042,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Framework"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Laptop 13 (AMD Ryzen 7040Series)"),
++			DMI_MATCH(DMI_BIOS_VERSION, "03.05"),
++		}
++	},
+ 	{}
  };
  
- static const struct x86_cpu_id hpm_cpu_ids[] = {
-+	X86_MATCH_INTEL_FAM6_MODEL(GRANITERAPIDS_D,	NULL),
- 	X86_MATCH_INTEL_FAM6_MODEL(GRANITERAPIDS_X,	NULL),
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_CRESTMONT_X,	NULL),
- 	{}
 -- 
 2.43.0
 
