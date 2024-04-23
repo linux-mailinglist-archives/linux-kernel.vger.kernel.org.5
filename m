@@ -1,134 +1,115 @@
-Return-Path: <linux-kernel+bounces-154876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD3A88AE24C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:35:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E4858AE246
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:35:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E4BAB20F25
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:35:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AF5C1C21A27
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:34:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D77660EDC;
-	Tue, 23 Apr 2024 10:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F383A535D6;
+	Tue, 23 Apr 2024 10:34:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i+iWXxHe"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="pjmsJBd0"
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482EA322A;
-	Tue, 23 Apr 2024 10:34:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60EEF37147;
+	Tue, 23 Apr 2024 10:34:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713868500; cv=none; b=BOoFtYswEgu62SqVKYiDh89gsWNu2PvJ0tp0XBca7uBs0CtmSOy5y/ib+eKEjQUTbGb0UorQEHRO9dAA3+m5YoX3BPiEOHFj+3VWMHiXuKrWKYItChHQsOOKdhuvyt35RCN2fEO+Ydi20mW1L5LozpSA0b0mf/SFXHAhXUcHJmI=
+	t=1713868492; cv=none; b=PGhR5A+bkFKXZeTMoJOSNGQZNq99Dol0varl19SKJVZGl0LFDhT/KXgnvH1jltbKM/6XYQ+SRQqkOTIBIwgweFBmOdoZLBpXK/qq/lSYuo2/R4htsUgDVzbSgfdhe+nJLx3J6VTBPrczgJnig4yl8OE7u/dRnzKwSJ3QS3qqsRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713868500; c=relaxed/simple;
-	bh=BE29/rVJCvFya+GV7ARo6mMJrICMWxGYpyyg3ySIPvU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fd/JKyqWK8SiijA0jHTVwiwwd15LXzPC1IinDk8tOOcNx4VLQM5WwjREBNMzYjQfFut8r1pcx6/hQRRBLugdq/wA2Nv4JqB+i0wwdHcYFw5n19wXWVgXWoXMoMndfhJTGeL2xlaPN5uTQNrR2FuHxXs+VtYSKr/0GxW0BuyY0II=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i+iWXxHe; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-57215beb09bso1326816a12.3;
-        Tue, 23 Apr 2024 03:34:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713868497; x=1714473297; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QpfHmgVTBXM1G+3QVd/pCxFW4zgJHvWXKJ+R0G1BFoM=;
-        b=i+iWXxHekub1wE3LPhLjz/AEuz779d9ST0jwdl3qgPdUHjjItQgcixOxGUDwXBrxm8
-         Vpbw2G8gjBdKkK33L48UnbvBAINNDsGjtY63mDhn0PZo0ZgHPlx2WqPiONIjLFm+JJdX
-         YDNN2peFleEqKroQRwY1YYyNCNr2vf3zwaLONQIAvTzbQcxi5fUmCvy4VMh1qlDmjtcy
-         T2SI1yWa/YFsryGQzhNw1w6hPqC5q6a6RRM2NpTUVu0qGU71wJFIgS/zSyDSxneR/KQj
-         wiUfqi/nZWAPMDlK85PTwtaMLn4hy1dVivIyAIlr7aWSfG2YPEvau5AHxXCfU6AkV6IJ
-         LeIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713868497; x=1714473297;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QpfHmgVTBXM1G+3QVd/pCxFW4zgJHvWXKJ+R0G1BFoM=;
-        b=WBfaCMy348WLu47Zibde2xKpbiZhxtRzvmPbGxrc/xJbgz4Xyy/PCJM1Mu6Q5P323u
-         YGvl+VbWkRF55iSesSeoctE7ClPrB0gZc5OCiIz/lJrEGhCRT3UiGGgu+f5yy32uavV4
-         YdvzFMEkQN3Kfeidz0b6659Ig9l9xPk7MHHlNEDsYc4gPI257+LHA/pEZnogASYq7uUK
-         AaqNUSYa+BB/26xGH9o62V2cFZ67zKUMiM80D/qvHjMbG5lJFlGYOJ4GW15PXzrOocLl
-         IRGBxmbDdCyG6EZaPXyOPGaU5OvzR1A7F6+8wNYx9DnKWjjBnnspJnC/wy2zHF/tOlin
-         Ia2w==
-X-Forwarded-Encrypted: i=1; AJvYcCVc4KYwKDYti/OF/W9+DKM5C3a9n1hei5l9hljunFuUfj/A8fW7lbcz1rxHzcOeAJeITevVKqNp7kOGBYV3xW17Hj/t5YLipbjj9vBRbNlhllrHYgmHD6lj6HPBhNGo8pU9JGqN9N+KF/eGt9+R9UZWD1wlu+YzeWy58yJ1XPuyBs9HVSzOO5Nf3RPH7GAxwq57sew0bE/8nzee89HGB0N1mhvAxns5W+yLdI71Qk3MgtsofacIQrQ80Grm0aazHvxEsHhfglfMbWzpRxulS/J1SrOh/WhWYk3L9+DTKQ==
-X-Gm-Message-State: AOJu0Yw/CtBIPLEBI4LG69JsBls7p9zDKoEOuro+h0man8tFgGqQNlfA
-	yF6fvtbQmQoyMu2FLEGugE4BSxAMCW60GBW4zRdFgchySgB11LARFkqsF7t12cGgdW4n66hIiz0
-	JfF9fr9P4htjXOGcuFnCR6NbRtkY=
-X-Google-Smtp-Source: AGHT+IHkSAdNfoHHoj8gE8tCVdLt0/qh7w1c39WozB9nDYm8+OzxWhrEGs93n5j5fcE7kwKuVsOivNjDiZwSQXQBRdQ=
-X-Received: by 2002:a17:906:2491:b0:a52:6fcb:564a with SMTP id
- e17-20020a170906249100b00a526fcb564amr7200221ejb.9.1713868497304; Tue, 23 Apr
- 2024 03:34:57 -0700 (PDT)
+	s=arc-20240116; t=1713868492; c=relaxed/simple;
+	bh=KwbPcjrXsaN9eBiRQy+fJ9TI6jMFZegKAgDYMpZNJdM=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=l18kxxCFT/BxRPW/zJyLh+BketoqJsNCycat3dCAYSgEJBdcP7HLMh+A+yLIe6u7/o1znvc9Ce/2gEg4p8IVLMRc5B8GZTtFRiyvrvatAOMkCW8s7/OXJbGoPERiPB21iGtZneCALF2DBzXshdG5Es9F5/vFh4SMIpJ0LsjFjG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=pjmsJBd0; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1713868488;
+	bh=KwbPcjrXsaN9eBiRQy+fJ9TI6jMFZegKAgDYMpZNJdM=;
+	h=From:Date:Subject:To:Cc:From;
+	b=pjmsJBd0v+P59KM67nzYcRDzVTYZlnVLnM4dpCMlJFmnik6IGbQMQ3WhUmQeVH2dN
+	 7ZcFK1cb8ULPCZF1S20yh+Leutr4nyumJji4ATkCq8dH/15QHRDrMOiTI1GexJM/pp
+	 u5kHBpOlp9ERu9vwGlcifI+DF+e8mFRz68hEecME=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Tue, 23 Apr 2024 12:34:25 +0200
+Subject: [PATCH] admin-guide/hw-vuln/core-scheduling: fix return type of
+ PR_SCHED_CORE_GET
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102-j7200-pcie-s2r-v5-0-4b8c46711ded@bootlin.com>
- <20240102-j7200-pcie-s2r-v5-1-4b8c46711ded@bootlin.com> <CAMuHMdVnKX23yi7ir1LVxfXAMeeWMFzM+cdgSSTNjpn1OnC2xw@mail.gmail.com>
-In-Reply-To: <CAMuHMdVnKX23yi7ir1LVxfXAMeeWMFzM+cdgSSTNjpn1OnC2xw@mail.gmail.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 23 Apr 2024 13:34:21 +0300
-Message-ID: <CAHp75Vf+F3ArczHQ+nSmP4uFvRdMAQWufmR6xR0xtbHfVvFm-g@mail.gmail.com>
-Subject: Re: [PATCH v5 01/11] gpio: pca953x: move suspend()/resume() to suspend_noirq()/resume_noirq()
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thomas Richard <thomas.richard@bootlin.com>, Linus Walleij <linus.walleij@linaro.org>, 
-	Bartosz Golaszewski <brgl@bgdev.pl>, Tony Lindgren <tony@atomide.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, 
-	Janusz Krzysztofik <jmkrzyszt@gmail.com>, Vignesh R <vigneshr@ti.com>, 
-	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Siddharth Vadapalli <s-vadapalli@ti.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, 
-	linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, gregory.clement@bootlin.com, 
-	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
-	Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240423-core-scheduling-cookie-v1-1-5753a35f8dfc@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIALCOJ2YC/x3MQQqAIBBA0avErBNGs4iuEi3SphwKDaUIwrsnL
+ d/i/xcSRaYEQ/VCpJsTB18g6wqsm/1GgpdiUKg0atUIGyKJZB0t18F+Kw47kzDYttJqNNh3UOI
+ z0srPPx6nnD+NHGzzaAAAAA==
+To: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, 
+ Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+ Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
+ Jonathan Corbet <corbet@lwn.net>, 
+ "Joel Fernandes (Google)" <joel@joelfernandes.org>, 
+ Chris Hyser <chris.hyser@oracle.com>, Josh Don <joshdon@google.com>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ stable@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713868488; l=1859;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=KwbPcjrXsaN9eBiRQy+fJ9TI6jMFZegKAgDYMpZNJdM=;
+ b=JGquxRziWJbrB0Tbk8Ppl9VeteFIloDvuyOExYZGiqPT81OPpbtPqZNAfzkxoB1t3AHAKoBbX
+ KLKCKKJzT1lBpL7VvsFV1xY8gIi4iuLpjh64HbiJa8QtfYC/c9LUY0N
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-On Tue, Apr 23, 2024 at 12:42=E2=80=AFPM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Tue, Apr 16, 2024 at 3:31=E2=80=AFPM Thomas Richard
-> <thomas.richard@bootlin.com> wrote:
+sched_core_share_pid() copies the cookie to userspace with
+put_user(id, (u64 __user *)uaddr), expecting 64 bits of space.
+The "unsigned long" datatype that is documented in core-scheduling.rst
+however is only 32 bits large on 32 bit architectures.
 
-..
+Document "unsigned long long" as the correct data type that is always
+64bits large.
 
->         +i2c-rcar e66d8000.i2c: error -16 : 10000005
+This matches what the selftest cs_prctl_test.c has been doing all along.
 
-It probably means that I=C2=B2C host controller is already in power off
-mode and can't serve anymore.
+Fixes: 0159bb020ca9 ("Documentation: Add usecases, design and interface for core scheduling")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/util-linux/df7a25a0-7923-4f8b-a527-5e6f0064074d@t-8ch.de/
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ Documentation/admin-guide/hw-vuln/core-scheduling.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->         +pca953x 4-0020: Failed to sync GPIO dir registers: -16
->         +pca953x 4-0020: Failed to restore register map: -16
->         +pca953x 4-0020: PM: dpm_run_callback(): pca953x_resume_noirq
-> returns -16
->         +pca953x 4-0020: PM: failed to resume async noirq: error -16
+diff --git a/Documentation/admin-guide/hw-vuln/core-scheduling.rst b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+index cf1eeefdfc32..a92e10ec402e 100644
+--- a/Documentation/admin-guide/hw-vuln/core-scheduling.rst
++++ b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+@@ -67,8 +67,8 @@ arg4:
+     will be performed for all tasks in the task group of ``pid``.
+ 
+ arg5:
+-    userspace pointer to an unsigned long for storing the cookie returned by
+-    ``PR_SCHED_CORE_GET`` command. Should be 0 for all other commands.
++    userspace pointer to an unsigned long long for storing the cookie returned
++    by ``PR_SCHED_CORE_GET`` command. Should be 0 for all other commands.
+ 
+ In order for a process to push a cookie to, or pull a cookie from a process, it
+ is required to have the ptrace access mode: `PTRACE_MODE_READ_REALCREDS` to the
 
-Yeah, with this it's kinda forcing _every_ I=C2=B2C host controller PM to
-be moved also to noirq() or alike.
+---
+base-commit: 71b1543c83d65af8215d7558d70fc2ecbee77dcf
+change-id: 20240423-core-scheduling-cookie-b0551c40b086
 
-..
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
 
-> All issues above are fixed by reverting this commit.
-
-Let's revert as we close to the end of the cycle and this is not
-something that can be fixed ASAP in my opinion.
-
-..
-
-Thanks for the report, It's a pity that it wasn't tested before from
-the mailing list...
-
---=20
-With Best Regards,
-Andy Shevchenko
 
