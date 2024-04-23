@@ -1,149 +1,133 @@
-Return-Path: <linux-kernel+bounces-155773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 805D28AF6F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:59:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 212558AF6F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:01:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A16191C21CAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:59:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D25652869EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:01:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B5F13F452;
-	Tue, 23 Apr 2024 18:59:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9EAC13FD67;
+	Tue, 23 Apr 2024 19:01:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="DP04iC5C"
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+	dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="k/Wg5lgZ"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A8CE13E3F8;
-	Tue, 23 Apr 2024 18:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CB1822F00;
+	Tue, 23 Apr 2024 19:01:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713898779; cv=none; b=DOWojuCb/94TBaJSYDq7lwyYBaUTIx+SywsWQyshlhOCEFJO2LtnKpQkaBwQ1cRvRGGSF9uA7XLkPSdpA2KczNpxkk2tmeBc9uQhRc2acZz+HuaRefxMIf1RyLqRV7Jn+nA2Jlq0yb6t6g4cUHp3wYZIICSydZG+dlmXIlMpThw=
+	t=1713898880; cv=none; b=r+hKRXRZRDBGtAGeV/QB+FpT4UigT8EP3mLj0yfYdVAUWR7wukLNwQHioev0nQ8Tyo9+5IKUVfADdQzmCNhRgvt44C7p1j7S2bLT33y7ZPpAmPnpSJF3sGGWeQlbgs42wjdwIXi+AcWV5rVXykxXrif7Wutj5g7AM42DPK4yR58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713898779; c=relaxed/simple;
-	bh=T7XszNRd8d+6SJEaBpiVinIwTQ8ta84/yRO4o6mv+wA=;
-	h=Date:From:To:Cc:Message-Id:In-Reply-To:References:Mime-Version:
-	 Content-Type:Subject; b=UeqtRV608oN2D/wZ38yAdCBAi6QDVi9oaiqcJHmWxtd8sySs5S3w8ED7vlhhxNNEI+z0RgEns8gBz8gQCF2RT2T8weBumhExRCONubC4uI3FVpWsV6ekvCZ1ajZSFIv/mnMV3dOJJQPObsaNblxA6MxoE1BiH5DhqYwk4u+HLB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=DP04iC5C; arc=none smtp.client-ip=162.243.120.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=71XbR04R1YkOfno5gJ7a+xFyEwpBdthJL1F3pof/8tw=; b=DP04iC5Ci929JBdYjlKl5/6yNs
-	t/0uKrH5tUprvgZl2veE/dRXKBLuED2FrAMpBXWART1pqWxNSPZC9Cd8Xuka25jHo0GjSWH4Oc0iC
-	Eth3QIjVAbMrticl2F4RJOu4loQ1g93Kj6ADHoIhV9dLTUCzcwVEWG0Ez4mjSQCdk3vQ=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:53768 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rzLME-0000Qp-VJ; Tue, 23 Apr 2024 14:59:16 -0400
-Date: Tue, 23 Apr 2024 14:59:10 -0400
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Konstantin Pugin <ria.freelander@gmail.com>
-Cc: krzk@kernel.org, conor@kernel.org, lkp@intel.com, vz@mleia.com,
- robh@kernel.org, jcmvbkbc@gmail.com, nicolas.ferre@microchip.com,
- manikanta.guntupalli@amd.com, corbet@lwn.net, ychuang3@nuvoton.com,
- u.kleine-koenig@pengutronix.de, Maarten.Brock@sttls.nl, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Hugo
- Villeneuve <hvilleneuve@dimonoff.com>, Andy Shevchenko <andy@kernel.org>,
- Lech Perczak <lech.perczak@camlingroup.com>, Ilpo =?ISO-8859-1?Q?J=E4rvin?=
- =?ISO-8859-1?Q?en?= <ilpo.jarvinen@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Message-Id: <20240423145910.c3141dbd01665213526b54fa@hugovil.com>
-In-Reply-To: <20240422133219.2710061-2-ria.freelander@gmail.com>
-References: <20240422133219.2710061-1-ria.freelander@gmail.com>
-	<20240422133219.2710061-2-ria.freelander@gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713898880; c=relaxed/simple;
+	bh=tkGMGjpcpFko6fk7a+2OyUel2wfyFYBcaIRYqOvd8j4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=GUGtIsq+p8MzFWjZMGSuxQU+W7+98g8l23eBhz1wXRCYhq0bdjv7j3ExCa/McRJTrki3m39AIU8MGlVyM2ZgKwYCFWf/yH5ZHo5iwTNVAaCq/Cko+a9TmbEie6316DlA4rYaBaqo7hgwzNBcm1jafbMVgh5JzIBXZNW5lC1nzUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=k/Wg5lgZ; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
+ id 963cb8568aca2043; Tue, 23 Apr 2024 21:01:16 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 8445966DB89;
+	Tue, 23 Apr 2024 21:01:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1713898876;
+	bh=tkGMGjpcpFko6fk7a+2OyUel2wfyFYBcaIRYqOvd8j4=;
+	h=From:To:Cc:Subject:Date;
+	b=k/Wg5lgZMEI9xlmnJYmKdoQ83DZxUokRlMzbEMewF+adSgHS1rUSJXPlQlTsWPCrc
+	 giOFs6fCDz4qA0Cr/N4TVJkDYuacEb8RcjQ5ZSiccUq634LQgdkZK1qdONvtvgSH2f
+	 fmkq8Xb5Vbye9PgMSwI4DtbfqiGnFIeekexQ8nLvnlyxpzR50BEI7dqlgqDmxtO0/4
+	 xmGdXR3Zbai9SveBIFCXuiGZGpVpSHPwIETPx8/CLiwc1oWJueXckdtNdF3zHyE3ki
+	 6D2+9Dzfnl2nLmjBOxx1ABwRVlJ4uc2+iChKec/C7rfP7QT9aI8wIQn1fClvegKLL5
+	 uh0OzDYonEOvQ==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Lukasz Luba <lukasz.luba@arm.com>
+Subject: [PATCH v1] thermal: core: Introduce thermal_governor_trip_crossed()
+Date: Tue, 23 Apr 2024 21:01:15 +0200
+Message-ID: <12426299.O9o76ZdvQC@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -2.8 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH v7 1/3] serial: sc16is7xx: announce support of
- SER_RS485_RTS_ON_SEND
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudeluddgudefgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeegfffhudejlefhtdegffekteduhfethffhieettefhkeevgfdvgfefieekiefgheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohephedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgv
+ lhdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 
-On Mon, 22 Apr 2024 16:32:13 +0300
-Konstantin Pugin <ria.freelander@gmail.com> wrote:
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Hi Konstantin,
+Add a wrapper around the .trip_crossed() governor callback invocation
+to reduce code duplications slightly and improve the code layout in
+__thermal_zone_device_update().
 
-> The hardware supports both RTS_ON_SEND and RTS_AFTER_SEND modes, but
-> after the commit 4afeced55baa ("serial: core: fix sanitizing check for
-> RTS settings") we always end up with SER_RS485_RTS_AFTER_SEND set and
-> always write to the register field SC16IS7XX_EFCR_RTS_INVERT_BIT, which
-> breaks some hardware using these chips.
+No intentional functional impact.
 
-it took me a long time to properly understand what you meant in your
-commit message. In my setup, I have the property rs485-rts-active-low
-defined, and couldn't reproduce the problem. It is only after I
-commented this property that I got a warning about the "invalid RTS
-setting"... I also got it by defining rs485-rts-active-high.
-
-I suggest the following changes to the commit message:
-
-----
-When specifying flag SER_RS485_RTS_ON_SEND in RS485 configuration,
-we get the following warning after commit 4afeced55baa ("serial: core:
-fix sanitizing check for RTS settings"):
-
-    invalid RTS setting, using RTS_AFTER_SEND instead
-
-This results in SER_RS485_RTS_AFTER_SEND being set and the
-driver always write to the register field SC16IS7XX_EFCR_RTS_INVERT_BIT,
-which breaks some hardware using these chips.
-
-The hardware supports both RTS_ON_SEND and RTS_AFTER_SEND modes, so fix
-this by announcing support for RTS_ON_SEND.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
 
-If you agree to these changes, feel free to add:
+As requested in https://lore.kernel.org/linux-pm/3c169af3-e9c3-47c0-b343-48f699680009@linaro.org/
 
-Tested-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+---
+ drivers/thermal/thermal_core.c |   15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-Hugo.
+Index: linux-pm/drivers/thermal/thermal_core.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_core.c
++++ linux-pm/drivers/thermal/thermal_core.c
+@@ -450,6 +450,15 @@ static void thermal_zone_device_init(str
+ 		pos->initialized = false;
+ }
+ 
++static void thermal_governor_trip_crossed(struct thermal_governor *governor,
++					  struct thermal_zone_device *tz,
++					  const struct thermal_trip *trip,
++					  bool crossed_up)
++{
++	if (governor->trip_crossed)
++		governor->trip_crossed(tz, trip, crossed_up);
++}
++
+ static int thermal_trip_notify_cmp(void *ascending, const struct list_head *a,
+ 				   const struct list_head *b)
+ {
+@@ -489,16 +498,14 @@ void __thermal_zone_device_update(struct
+ 	list_for_each_entry(td, &way_up_list, notify_list_node) {
+ 		thermal_notify_tz_trip_up(tz, &td->trip);
+ 		thermal_debug_tz_trip_up(tz, &td->trip);
+-		if (governor->trip_crossed)
+-			governor->trip_crossed(tz, &td->trip, true);
++		thermal_governor_trip_crossed(governor, tz, &td->trip, true);
+ 	}
+ 
+ 	list_sort(NULL, &way_down_list, thermal_trip_notify_cmp);
+ 	list_for_each_entry(td, &way_down_list, notify_list_node) {
+ 		thermal_notify_tz_trip_down(tz, &td->trip);
+ 		thermal_debug_tz_trip_down(tz, &td->trip);
+-		if (governor->trip_crossed)
+-			governor->trip_crossed(tz, &td->trip, false);
++		thermal_governor_trip_crossed(governor, tz, &td->trip, false);
+ 	}
+ 
+ 	if (governor->manage)
 
 
-> 
-> Fixes: 267913ecf737 ("serial: sc16is7xx: Fill in rs485_supported")
-> Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
-> ---
->  drivers/tty/serial/sc16is7xx.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-> index 03cf30e20b75..dfcc804f558f 100644
-> --- a/drivers/tty/serial/sc16is7xx.c
-> +++ b/drivers/tty/serial/sc16is7xx.c
-> @@ -1449,7 +1449,7 @@ static int sc16is7xx_setup_mctrl_ports(struct sc16is7xx_port *s,
->  }
->  
->  static const struct serial_rs485 sc16is7xx_rs485_supported = {
-> -	.flags = SER_RS485_ENABLED | SER_RS485_RTS_AFTER_SEND,
-> +	.flags = SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND | SER_RS485_RTS_AFTER_SEND,
->  	.delay_rts_before_send = 1,
->  	.delay_rts_after_send = 1,	/* Not supported but keep returning -EINVAL */
->  };
-> -- 
-> 2.34.1
-> 
-> 
-> 
 
-
--- 
-Hugo Villeneuve
 
