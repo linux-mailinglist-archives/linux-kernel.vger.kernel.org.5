@@ -1,142 +1,132 @@
-Return-Path: <linux-kernel+bounces-155727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88BDA8AF63F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:05:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63FE48AF643
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:06:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 443FD294496
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:05:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0335E1F22E70
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:06:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7720A13E89B;
-	Tue, 23 Apr 2024 18:05:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF07713E3EF;
+	Tue, 23 Apr 2024 18:05:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qOzyjcNR"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WkDHqjiE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79BE813DDA5;
-	Tue, 23 Apr 2024 18:05:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 098EF1420B3;
+	Tue, 23 Apr 2024 18:05:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713895519; cv=none; b=VDOP0+SP0MIQNeBaTDcd8bppPJuBcQBLLD4NWTf7yZ5ioVVU8CAJy6p6kSVINI/2Q376z3iICEwSGXKWMv/pr3DHnivYRs9Z4CovhCoyjN+jgTbKqudw278ftkfWb3jOk7gymin19Ig5kQXHMfUq49xvBO4vvwXR303F0/5+pok=
+	t=1713895550; cv=none; b=VNfa603+sIGce/4FBocrkimrd+/w6LFjvG3ovg7bO5UDu5u6SQFAgNzZu4vubfIREJzhT1JnEbDCsLpi+0po4AKTh+RVWVZZlWjx9mPuzej2mq5jcQ5W/Q3JUGlKWloVOBDkaNnVzafF/VIrfSwq+nO45aIqlcE6TxGdHj0xvrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713895519; c=relaxed/simple;
-	bh=xLEeNea2Swz811EqhOtx3ywS1B3A9qNV3biB+04Js0w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=R4D2WcKTukcDKd3hQojSV3LK0rGUeQcDu3NgePDsJ7CkTu2ZVHgaH8sZAAL/ywSdlM+RLS1qttdNj9deiuiPv36j4kxBc9WMRUCmVYe9YO3NP9M3DBEuBWSEQ1ydxix1cBIIV9t2aigJ7I9RZe1S/5QevHUrz5XnxLFh1lz6R+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=qOzyjcNR; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=ucWCcqpK+RgxRkCoiBrn6yK6YGAtyibZy8sxqOnryEM=; b=qOzyjcNRdSbxBDuZsbyVrfEg6C
-	hz4XiG/TqH/YQrqkTW+XVNZOm3RAdD2IHy+TkB73mS4ryfWsUEc3AMbKuap4Mhvk8pemd8Z2pdCYC
-	fPQjbCsUO2woGCj5zNZzEqelEXcBV644WZ5FVRslbTCHknlhPln2EB0s9+itnNSo8LAzWUv842VYn
-	mBy3Yx6OQWjiAasKbIH3rseys+VjISPqNkZs4M6wkMdWDX09ifLMI9DmgSYvdksNEjLw1749B8PhT
-	2bOrSpivC4PVkNUgYQWEtub8W+5itQGQdvT30QWfQU4AQ6TTluNSnhr1n4BbAbLvkaUQ2bnU4KNWB
-	7/8pkewg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzKW5-000000014oc-2SlA;
-	Tue, 23 Apr 2024 18:05:17 +0000
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: akpm@linux-foundation.org,
-	willy@infradead.org,
-	Liam.Howlett@oracle.com
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	djwong@kernel.org,
-	david@fromorbit.com,
-	gost.dev@samsung.com,
-	p.raghav@samsung.com,
-	da.gomez@samsung.com,
-	mcgrof@kernel.org
-Subject: [PATCH 2/2] lib/test_xarray.c: fix error assumptions on check_xa_multi_store_adv_add()
-Date: Tue, 23 Apr 2024 11:05:16 -0700
-Message-ID: <20240423180517.256812-3-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240423180517.256812-1-mcgrof@kernel.org>
-References: <20240423180517.256812-1-mcgrof@kernel.org>
+	s=arc-20240116; t=1713895550; c=relaxed/simple;
+	bh=OGMcGHaqmVBhYuFv0XCcX1mQzR2UG/wAjsLV5VmbwUI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G+DdEU+AEViiqiKcoUVb3FLfIpgokpWGOglObbeILErporcoluqG+8CPDNwEbsNH7KzmuHuADpYt2OoLBcc3lYy4aea6vofxOI4FAzjhsuroS18kktu1CWqPuF9hEm6Dy9H5vFUJlQ6xtNHL1HdQjqmimXtA7X11A0lnHyUDFDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WkDHqjiE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8526FC2BD10;
+	Tue, 23 Apr 2024 18:05:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713895549;
+	bh=OGMcGHaqmVBhYuFv0XCcX1mQzR2UG/wAjsLV5VmbwUI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=WkDHqjiE3LCkX3HPeTNDULGQ0DVIPnQl/X1zq8Aw/MBVnjMFOVxl3ARRK9bmWkvAW
+	 U0BlupYN2L8DjgJgUGOAVk7x2LUxcBv0xDo4VwabqNunS6+sVGDWwWEEALwaHmUqox
+	 M8KOVtS9SFnqyEbuUIbBdNfR4pgHPeyLsRa9IN+edz0oR2DlbOnoRnyzQmhjqwJPO+
+	 20i2Z1cxZSfuS0Bvy/nVywABRQL2OoE/vx+agEkCBxyzDdgawrLKFOCpNDDAM3ddM3
+	 ZK+wneHy9SkQY9UOBCp8KzcIYCNWn8++17H99GKJ2xq2Hwm0qJXVemkzuO5JzUZ+jb
+	 cueC0bXubAI9g==
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5acdbfa7a45so1850905eaf.2;
+        Tue, 23 Apr 2024 11:05:49 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWnzS3ct8FM6VkTqPOKolee1bv2qctRhUqpkHk4zExoWj2Ac3C5TRa9kwBXn0RVqb/n3ppicpN+8LKhJS4SzpYgdktufdiG5RfT8rr7nUiMCJnv0LqDHMR4VwmUb3OwapR+9/CxogY=
+X-Gm-Message-State: AOJu0Yyo3Pva20DbbRmtj50IaSU8bcAKIL8luWvt61dTpQOsy+z1N4JG
+	yA70HHzHgU5EQMn0zkUgm8Se0jg1AFU/ctIx2WOthmxL6B0O/XzRq6WfAcjmJY7nI95v3omW8dI
+	0VM8Spk6UdmqHma4hFrwbiMNGmqU=
+X-Google-Smtp-Source: AGHT+IHA3zRxg1BGJSgFNpcroEm6mCZAwWfZ03DVjGk2V5epNCqRunPkRnnFOzcfuQronb1t6Qww4+MDB94LAzg7Vaw=
+X-Received: by 2002:a4a:ee8d:0:b0:5aa:6b2e:36f0 with SMTP id
+ dk13-20020a4aee8d000000b005aa6b2e36f0mr126873oob.0.1713895548914; Tue, 23 Apr
+ 2024 11:05:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <13515747.uLZWGnKmhe@kreacher> <1913649.CQOukoFCf9@kreacher>
+ <8e26c3cb-1283-4561-95aa-30432f1d13ee@linaro.org> <CAJZ5v0h=15LYhukPWmHPK5hvD=2u75rTEiC8oJMVBFziMkB5gQ@mail.gmail.com>
+ <33cafcb3-af9c-4058-b6b6-4e5aab6e21cb@linaro.org>
+In-Reply-To: <33cafcb3-af9c-4058-b6b6-4e5aab6e21cb@linaro.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 23 Apr 2024 20:05:37 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hR-fN08g-g_S261e+U=2Enfza3b9NZpmp4yhzAa=426A@mail.gmail.com>
+Message-ID: <CAJZ5v0hR-fN08g-g_S261e+U=2Enfza3b9NZpmp4yhzAa=426A@mail.gmail.com>
+Subject: Re: [PATCH v1 07/16] thermal: gov_power_allocator: Eliminate a
+ redundant variable
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
+	Linux PM <linux-pm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Lukasz Luba <lukasz.luba@arm.com>, 
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-While testing lib/test_xarray in userspace I've noticed we can fail with:
+On Tue, Apr 23, 2024 at 8:00=E2=80=AFPM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 23/04/2024 19:54, Rafael J. Wysocki wrote:
+> > On Tue, Apr 23, 2024 at 7:35=E2=80=AFPM Daniel Lezcano
+> > <daniel.lezcano@linaro.org> wrote:
+> >>
+> >> On 10/04/2024 18:12, Rafael J. Wysocki wrote:
+> >>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >>>
+> >>> Notice that the passive field in struct thermal_zone_device is not
+> >>> used by the Power Allocator governor itself and so the ordering of
+> >>> its updates with respect to allow_maximum_power() or allocate_power()
+> >>> does not matter.
+> >>>
+> >>> Accordingly, make power_allocator_manage() update that field right
+> >>> before returning, which allows the current value of it to be passed
+> >>> directly to allow_maximum_power() without using the additional update
+> >>> variable that can be dropped.
+> >>>
+> >>> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >>> ---
+> >>
+> >> The step_wise and the power allocator are changing the tz->passive
+> >> values, so telling the core to start and stop the passive mitigation t=
+imer.
+> >>
+> >> It looks strange that a plugin controls the core internal and not the
+> >> opposite.
+> >>
+> >> I'm wondering if it would not make sense to have the following ops:
+> >>
+> >>          .start
+> >>          .stop
+> >>
+> >> .start is called when the first trip point is crossed the way up
+> >> .stop is called when the first trip point is crossed the way down
+> >>
+> >>    - The core is responsible to start and stop the passive mitigation =
+timer.
+> >>
+> >>    - the governors do no longer us tz->passive
+> >>
+> >> The reset of the governor can happen at start or stop, as well as the
+> >> device cooling states.
+> >
+> > I have a patch that simply increments tz->passive when a passive trip
+> > point is passed on the way up and decrements it when a passive trip
+> > point is crossed on the way down.  It appears to work reasonably well.
+>
+> Does it make the governors getting ride of it ? Or at least not changing
+> its value ?
 
-make -C tools/testing/radix-tree
-/tools/testing/radix-tree/xarray
-
-BUG at check_xa_multi_store_adv_add:749
-xarray: 0x55905fb21a00x head 0x55905fa1d8e0x flags 0 marks 0 0 0
-0: 0x55905fa1d8e0x
-xarray: ../../../lib/test_xarray.c:749: check_xa_multi_store_adv_add: Assertion `0' failed.
-Aborted
-
-We get a failure with a BUG_ON(), and that is because we actually can
-fail due to -ENOMEM, the check in xas_nomem() will fix this for us so
-it makes no sense to expect no failure inside the loop. So modify the
-check and since this is also useful for instructional purposes clarify
-the situation.
-
-The check for XA_BUG_ON(xa, xa_load(xa, index) != p) is already done
-at the end of the loop so just remove the bogus on inside the loop.
-
-With this we now pass the test in both kernel and userspace:
-
-In userspace:
-
-/tools/testing/radix-tree/xarray
-XArray: 149092856 of 149092856 tests passed
-
-In kernel space:
-
-XArray: 148257077 of 148257077 tests passed
-
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- lib/test_xarray.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/lib/test_xarray.c b/lib/test_xarray.c
-index ebe2af2e072d..5ab35190aae3 100644
---- a/lib/test_xarray.c
-+++ b/lib/test_xarray.c
-@@ -744,15 +744,20 @@ static noinline void check_xa_multi_store_adv_add(struct xarray *xa,
- 
- 	do {
- 		xas_lock_irq(&xas);
--
- 		xas_store(&xas, p);
--		XA_BUG_ON(xa, xas_error(&xas));
--		XA_BUG_ON(xa, xa_load(xa, index) != p);
--
- 		xas_unlock_irq(&xas);
-+		/*
-+		 * In our selftest case the only failure we can expect is for
-+		 * there not to be enough memory as we're not mimicking the
-+		 * entire page cache, so verify that's the only error we can run
-+		 * into here. The xas_nomem() which follows will ensure to fix
-+		 * that condition for us so to chug on on the loop.
-+		 */
-+		XA_BUG_ON(xa, xas_error(&xas) && xas_error(&xas) != -ENOMEM);
- 	} while (xas_nomem(&xas, GFP_KERNEL));
- 
- 	XA_BUG_ON(xa, xas_error(&xas));
-+	XA_BUG_ON(xa, xa_load(xa, index) != p);
- }
- 
- /* mimics page_cache_delete() */
--- 
-2.43.0
-
+Not yet, but I'm going to update it this way.  The governors should
+not mess up with tz->passive IMV.
 
