@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-155071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8425C8AE4F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:54:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94C488AE4FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:54:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9ACF3B25011
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:54:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BCA81F23751
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:54:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB4614882D;
-	Tue, 23 Apr 2024 11:41:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1BD14885C;
+	Tue, 23 Apr 2024 11:41:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lPhUEFW5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="diWhzlFy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A042514830D;
-	Tue, 23 Apr 2024 11:41:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F27D414883C;
+	Tue, 23 Apr 2024 11:41:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872502; cv=none; b=OkxUrkRA50ukoKdx/mWSOInYIlrjj+eYExi+QS13wZmX/5M2RK1qP0NZbxZi5+2mY1S0b73jy7NZQZWB8yyVFn5Rp7aqEnQqZG4UYPvwJyFPlJgtmS8x6mGnQkTfJPHyCSn7zYMTad5HLgawIzVCP9NvMN766qo4hKe9KCKy7gQ=
+	t=1713872504; cv=none; b=MG7rDEQ7E/UVZyRfWuRQVgJ7elo2BUkrs0fJOe8JgL7nGIPXGeFKH5sOoUwrZ5NzAs0SPOGJ7o5gPqOSKg+633zBnRFAXAVKnVlMtXJL+XyFWQI61e4+ddb/796Tns9/Foicg2PzaPIdzYV3Wo6I/0vVfMK0OaiHJvPhKuIcSFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872502; c=relaxed/simple;
-	bh=1rAcXaRtX0KBbx6LkVQstBRs2T9F0UMhbuLUo4pWZ4I=;
+	s=arc-20240116; t=1713872504; c=relaxed/simple;
+	bh=2CXFvEBh+79qRy6bDr6kpfO2wkmH7cn0aOJtpV1LBEk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cPAvxFmCGr/iTvzQpOXaCcZ2YFHeFjbhya49vD/HLKl82VD/JxbpvRXpQbxpKgc583dJ6jTh6F1F0LbZET0/S67iOxIgRS+iSNskTpV6qKBAaOQNiD6Ai9EYU+oYNHYnQaffANHe4hdmsKu8NP+HLNIs8bPSwns281I7qI4u4MU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lPhUEFW5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CF7DC3277B;
-	Tue, 23 Apr 2024 11:41:40 +0000 (UTC)
+	 MIME-Version; b=TLWWmrVZuWHxgJHTpT8o8MCST89slFncvZdmhQk226e0KnIj7BtnRfUbpGMZMjkMB8zkzS2mvHQAxO4JYJ7Ji0Yo1ijrYJyJ9ibcqBRfuLvM0/BV4Xa4bKj+u8xJerVe5af1LW9EMqusajOAYRgqGxqPLlfnBrrqqkLLNWFO2c4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=diWhzlFy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7FA5C116B1;
+	Tue, 23 Apr 2024 11:41:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872502;
-	bh=1rAcXaRtX0KBbx6LkVQstBRs2T9F0UMhbuLUo4pWZ4I=;
+	s=k20201202; t=1713872503;
+	bh=2CXFvEBh+79qRy6bDr6kpfO2wkmH7cn0aOJtpV1LBEk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lPhUEFW5qBWbcw1PMcL5CEB+UNSrorPhIJ31dpOH8URT2Vw0uTYTuE/birieB4ww9
-	 QG42nVLKPmURny2Kjub7PwqaUart61sJYXXWabmVG09rXAelOIA5u6A+fByD3hWBdX
-	 RnuZGhy50reDEtFAHtUe/7F3ZGaRBzWtmYBt2aZZxOBp0U0MUErjAzcfIPe4yStVDC
-	 DcXlF9F2eYySueuB3YDdInDN5p/oLD3G5AUtQDi5uSfrrTTijSTlBWzCxM/9MUJpTv
-	 BsRcZ4HdrBWSIE10NmD4ZvY8Rng6uKNK5ePfiuKBKlzzKua598Un8FsujXTmrH8LmB
-	 2XbAdIoh/PuFw==
+	b=diWhzlFy5/ix5P/pfmWoU4jGRP50AWDn0+vIMObmYQGbgRym0C8PuErK+tTzBfR/C
+	 0RzMttUDMll9dUQOyGtgSGpvr8wGZ3lzOt61TR5EjLtOJ8L3ubFMQXvQW6HOks1uv1
+	 cYYxBMAnkgX0WsXBxGMsTLZKNqY/y57JWia4ZArOXOkmkjnvSbSyDAzm0Gbwkt7HYk
+	 7b0fJsrikhz31DB0GwNMmmkrbxl3VCO/faTkAI6JIqzWaiBZJi4sX7Xxhl1kvZTHRV
+	 k8GK636iPQkKI75EdFcqX1oXjFz0+qV0W4Yn4lcoDGU1EdUBXQ5umwHXVRZWd38Jgj
+	 TEnMD4QlHrGZA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Lyude Paul <lyude@redhat.com>,
-	Dave Airlie <airlied@redhat.com>,
+Cc: Vanillan Wang <vanillanwang@163.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	kherbst@redhat.com,
-	dakr@redhat.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	dri-devel@lists.freedesktop.org,
-	nouveau@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.10 8/9] drm/nouveau/dp: Don't probe eDP ports twice harder
-Date: Tue, 23 Apr 2024 07:02:46 -0400
-Message-ID: <20240423110249.1659263-8-sashal@kernel.org>
+	bjorn@mork.no,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 9/9] net:usb:qmi_wwan: support Rolling modules
+Date: Tue, 23 Apr 2024 07:02:47 -0400
+Message-ID: <20240423110249.1659263-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240423110249.1659263-1-sashal@kernel.org>
 References: <20240423110249.1659263-1-sashal@kernel.org>
@@ -69,55 +69,68 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.215
 Content-Transfer-Encoding: 8bit
 
-From: Lyude Paul <lyude@redhat.com>
+From: Vanillan Wang <vanillanwang@163.com>
 
-[ Upstream commit bf52d7f9b2067f02efe7e32697479097aba4a055 ]
+[ Upstream commit d362046021ea122309da8c8e0b6850c792ca97b5 ]
 
-I didn't pay close enough attention the last time I tried to fix this
-problem - while we currently do correctly take care to make sure we don't
-probe a connected eDP port more then once, we don't do the same thing for
-eDP ports we found to be disconnected.
+Update the qmi_wwan driver support for the Rolling
+LTE modules.
 
-So, fix this and make sure we only ever probe eDP ports once and then leave
-them at that connector state forever (since without HPD, it's not going to
-change on its own anyway). This should get rid of the last few GSP errors
-getting spit out during runtime suspend and resume on some machines, as we
-tried to reprobe eDP ports in response to ACPI hotplug probe events.
+- VID:PID 33f8:0104, RW101-GL for laptop debug M.2 cards(with RMNET
+interface for /Linux/Chrome OS)
+0x0104: RMNET, diag, at, pipe
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Reviewed-by: Dave Airlie <airlied@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240404233736.7946-3-lyude@redhat.com
-(cherry picked from commit fe6660b661c3397af0867d5d098f5b26581f1290)
+Here are the outputs of usb-devices:
+T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=5000 MxCh= 0
+D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
+P:  Vendor=33f8 ProdID=0104 Rev=05.04
+S:  Manufacturer=Rolling Wireless S.a.r.l.
+S:  Product=Rolling Module
+S:  SerialNumber=ba2eb033
+C:  #Ifs= 6 Cfg#= 1 Atr=a0 MxPwr=896mA
+I:  If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+E:  Ad=01(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=81(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I:  If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
+E:  Ad=02(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+I:  If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
+E:  Ad=03(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=84(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+I:  If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=40 Driver=option
+E:  Ad=04(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=86(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=87(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+I:  If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=50 Driver=qmi_wwan
+E:  Ad=0f(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=88(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
+E:  Ad=8e(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I:  If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
+E:  Ad=05(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=89(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+
+Signed-off-by: Vanillan Wang <vanillanwang@163.com>
+Link: https://lore.kernel.org/r/20240416120713.24777-1-vanillanwang@163.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nouveau_dp.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/net/usb/qmi_wwan.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
-index 447b7594b35ae..0107a21dc9f9b 100644
---- a/drivers/gpu/drm/nouveau/nouveau_dp.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
-@@ -109,12 +109,15 @@ nouveau_dp_detect(struct nouveau_connector *nv_connector,
- 	u8 *dpcd = nv_encoder->dp.dpcd;
- 	int ret = NOUVEAU_DP_NONE;
+diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
+index 3d342908f57a0..be2761d0bcd91 100644
+--- a/drivers/net/usb/qmi_wwan.c
++++ b/drivers/net/usb/qmi_wwan.c
+@@ -1358,6 +1358,7 @@ static const struct usb_device_id products[] = {
+ 	{QMI_FIXED_INTF(0x0489, 0xe0b5, 0)},	/* Foxconn T77W968 LTE with eSIM support*/
+ 	{QMI_FIXED_INTF(0x2692, 0x9025, 4)},    /* Cellient MPL200 (rebranded Qualcomm 05c6:9025) */
+ 	{QMI_QUIRK_SET_DTR(0x1546, 0x1342, 4)},	/* u-blox LARA-L6 */
++	{QMI_QUIRK_SET_DTR(0x33f8, 0x0104, 4)}, /* Rolling RW101 RMNET */
  
--	/* If we've already read the DPCD on an eDP device, we don't need to
--	 * reread it as it won't change
-+	/* eDP ports don't support hotplugging - so there's no point in probing eDP ports unless we
-+	 * haven't probed them once before.
- 	 */
--	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP &&
--	    dpcd[DP_DPCD_REV] != 0)
--		return NOUVEAU_DP_SST;
-+	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
-+		if (connector->status == connector_status_connected)
-+			return NOUVEAU_DP_SST;
-+		else if (connector->status == connector_status_disconnected)
-+			return NOUVEAU_DP_NONE;
-+	}
- 
- 	mutex_lock(&nv_encoder->dp.hpd_irq_lock);
- 	if (mstm) {
+ 	/* 4. Gobi 1000 devices */
+ 	{QMI_GOBI1K_DEVICE(0x05c6, 0x9212)},	/* Acer Gobi Modem Device */
 -- 
 2.43.0
 
