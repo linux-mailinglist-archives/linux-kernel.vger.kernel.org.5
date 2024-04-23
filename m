@@ -1,205 +1,223 @@
-Return-Path: <linux-kernel+bounces-155901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 933F28AF8AF
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D66C8AF8AE
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:02:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B71541C22C04
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:02:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A8261F24AA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:02:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2FE3143865;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED44142E83;
 	Tue, 23 Apr 2024 21:02:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HrjPm9ta"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BgvAATui"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B912142E74
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 21:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4946A142E70
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 21:02:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713906168; cv=none; b=b6Sd4RaXQrofiy4TdV2vIdc1YJmEsnPv3olljsUgIUPXwhqgQaxUJKCBwqdXEJaNIZWBHF4S76n+SJAl/qF3HKLV4CzhlrC4T1L7G+TZPF5pg2Cp6YL/RE2ZMH24mzwsGGeznAK3PboIYKjEYwp8adr5ucK16ia+uVNfyUEB44k=
+	t=1713906167; cv=none; b=cYH1JgIHaEHFaPJGYwUbKOeJDZpSUFEjYePVSvlAzhJWPEEV2bVJz7SeFiwKI0iwJ0R/XBT6nLuTWDk4/LYOhrapxEYgzIfqSnehiBvhN8BwHCH0MeDuyVQ2lQpuFC3ln2tpMVqwGYf30mTB9KzRj8tISrnPxf5VnLhImjmswJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713906168; c=relaxed/simple;
-	bh=cDl4XZPxQWTpxj5blcOmXam97d7ldd8LQhS8RqWqX5Q=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=q9iCIHZNyE8m8kljGkxuIDR0ElAiCoUKvnheLapQP1uCitan6vmgijyXBo6SZR9hIH6T0OUhFV/8S6ZBPWATy3T3lExTglyoY+rj5yxGs3B9st9NDGBWkDym96ckimypg6gbEGIaz05oXN9GJfBjpVjEKchWAxkxdp6EX9rKQxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HrjPm9ta; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713906166; x=1745442166;
-  h=date:from:to:cc:subject:message-id;
-  bh=cDl4XZPxQWTpxj5blcOmXam97d7ldd8LQhS8RqWqX5Q=;
-  b=HrjPm9taJE81qxT8gUgbxWYCa039Fb3I/vBj60eYEKvF/b7d3B6Gu+/J
-   60OiNkxkwRU7DxBIzAwKs2Fyj1xJID82qv5sFsrZuogf2xW3Fu7Y75/mf
-   TYVjmGShV4Wrw0MmqZdsdUT8IU7EZolXEZxRde+FRXm2fO9wRp+P4vMyM
-   q5xMWxNmD6RGg3VVzpTuvBADE3E6+JUzmq5D/kCg8IoyYvcmIzAs8t9OK
-   vMvU5IVrekMZ8lCoIGvesjpOiQ+CEbrDbLMCJBk0YW9mS/kExjtt4PG0D
-   souwwfSEUydRPZVH3cpgXhOCALIERrg/SwqeaY9Pg7BR3pDgSa4Ww/24C
-   Q==;
-X-CSE-ConnectionGUID: FCSRahA3RPuCE/ZJz54A/g==
-X-CSE-MsgGUID: qogNLLPkSnye2MVko0WMLw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="20919499"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="20919499"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 14:02:45 -0700
-X-CSE-ConnectionGUID: Lio/AtW1Rn66vTBA2gPGVw==
-X-CSE-MsgGUID: b/3NDR3PRLq+1spOweFRUA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="55693383"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 23 Apr 2024 14:02:44 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rzNHm-0000Wq-15;
-	Tue, 23 Apr 2024 21:02:42 +0000
-Date: Wed, 24 Apr 2024 05:01:59 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 5a04007fb7a9a3f101fe551f0e47849f2cd1125b
-Message-ID: <202404240556.AyEKWPkV-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1713906167; c=relaxed/simple;
+	bh=42nvruzyY6ImBqfKJnawPKvzV07Fr0CgGhbxyeE6jgA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OLSS4btc38xF8Vp07/GlJyallGcpNYODmBNHO5AroJWrVMB+GQ5Aj7DrNrZypWjAjAosZVXKwKq14fCNaF+7xAoAOJ8nr2uYQNlcwpRladqVflv0C3tGFB7QlVq/mr5Ie76oENQerKYvI5snMfXZzym1nKn04zkNS+KCawbuIWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BgvAATui; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713906165;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Zxyy28Md6aPh5qs5ewJe58rAyJq1+GKjWz4Z6iDmhPc=;
+	b=BgvAATuijUulfsdJCgMtUf8GO0VG+s0wXnVSGSGhTPB7+Fenq5QVi4SLZdKSbAYr/a+PB3
+	B2MWs+Nly4T6mL6vPzOzJyxURnHTe3Rc2BCBMhrZtt0vmpI/NavDSGsPLrww1tLDpcBjbk
+	B46l7slw3HDXorYLAf08idotjgXhg2E=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-571-ixPxxFIAPhKV_m2L4WzSAQ-1; Tue, 23 Apr 2024 17:02:43 -0400
+X-MC-Unique: ixPxxFIAPhKV_m2L4WzSAQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-418df23b51cso25159855e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:02:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713906162; x=1714510962;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Zxyy28Md6aPh5qs5ewJe58rAyJq1+GKjWz4Z6iDmhPc=;
+        b=VaTddb8fcPtWqIIXJiE1m+tsf28+5diDUz7E/BretFt6Xd6ra/kaeqTvojgCiEGEat
+         zBrrF80C/TdKheVqRaf/n/Q2WoodUjvOQLeWeQPlf0nNsllQlGbvwtHVVPOB/DR/gtZv
+         tAjeI9HaNBfJPXPB9AAcU3dWRqNWkMfuXnmPp9GvUSF+FQh535xY9V+fyNpYzQIhI+mA
+         NawrER4FiaNHAo2psUK8G9EjfXrF2qvonFiGTebGJXTuVpMtMzHgGIx+XCyN5CIYIFzH
+         nzaOo3flZMd++F61rZ70mXPPU+YlfdszD4zMTdBkjUeMVZ24i3zUqRGvL74na4WvVtGd
+         egNg==
+X-Forwarded-Encrypted: i=1; AJvYcCXIVF/zjqd1wLMK2UuPuYsodLm9wlL5Qfe8gzBUvuFZTh7OKcBmLiB/zUPT4UNE9vOgHIRMzliehzmABG9QYvSoLSY73WDs3nZXK1mj
+X-Gm-Message-State: AOJu0Ywd3+u7Bv+/D49GT+67VpeAWNhkrTRsE3TwY6bsn3S6scb+yN07
+	h2t38g5yv8q6emYtV3jO2cXvE7I02hqg03LgJe49oD0+toaxEZkVO9785NL4gJjJDabZFLJl1Ay
+	uFcd6cj7RZtjaVl8mv0qmEd0+TJSX3w6TM84rHIX2TvURpae3zKyOf1rnZ6YxRw==
+X-Received: by 2002:a05:600c:154f:b0:418:e08c:817 with SMTP id f15-20020a05600c154f00b00418e08c0817mr261595wmg.32.1713906162424;
+        Tue, 23 Apr 2024 14:02:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE+UZR9KJP/97XDIfEkl4YcqwqEPrjxlxOqOm/ztwKYnaqQd4CrowBy7cR5Iuw7eetUht662w==
+X-Received: by 2002:a05:600c:154f:b0:418:e08c:817 with SMTP id f15-20020a05600c154f00b00418e08c0817mr261583wmg.32.1713906161979;
+        Tue, 23 Apr 2024 14:02:41 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c706:fd00:fb07:92f8:8f0c:6a08? (p200300cbc706fd00fb0792f88f0c6a08.dip0.t-ipconnect.de. [2003:cb:c706:fd00:fb07:92f8:8f0c:6a08])
+        by smtp.gmail.com with ESMTPSA id n2-20020a05600c4f8200b0041884b79b81sm21451088wmq.1.2024.04.23.14.02.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 14:02:41 -0700 (PDT)
+Message-ID: <e001f009-0aeb-4a59-950e-3e5ed1c55751@redhat.com>
+Date: Tue, 23 Apr 2024 23:02:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/5] arm64/mm: uffd write-protect and soft-dirty
+ tracking
+To: Shivansh Vij <shivanshvij@outlook.com>,
+ Ryan Roberts <ryan.roberts@arm.com>, Mike Rapoport <rppt@linux.ibm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>,
+ Joey Gouly <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+References: <20240419074344.2643212-1-ryan.roberts@arm.com>
+ <24999e38-e4f7-4616-8eae-dfdeba327558@arm.com>
+ <MW4PR12MB6875618342F088BE6F4ECBB2B90D2@MW4PR12MB6875.namprd12.prod.outlook.com>
+ <c936083b-68b7-4d8f-a8fc-d188e646f390@redhat.com>
+ <ZiKcNJ0Qw2awRwaa@linux.ibm.com>
+ <ac4ffd88-2d13-4764-bb4e-18d0c4b9948d@redhat.com>
+ <9e73ad2f-198c-4ab5-a462-2e238edd9b34@arm.com>
+ <MW4PR12MB68755A569FE893DC72D86616B9112@MW4PR12MB6875.namprd12.prod.outlook.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <MW4PR12MB68755A569FE893DC72D86616B9112@MW4PR12MB6875.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 5a04007fb7a9a3f101fe551f0e47849f2cd1125b  Merge branch into tip/master: 'x86/shstk'
+>>
+>> Shivansh, do you speak for CRIU? Are you able to comment on whether CRIU
+>> supports checkpointing an app that uses uffd?
+> 
+> I do not speak for CRIU - I'm just a user (and hopefully a future contributor), but not a maintainer or owner. I can however comment on whether CRIU supports checkpointing an app that uses UFFD - it doesn't. Looking through both the implementation of CRIU (specifically how they restore memory [1]), and at recently filed Github issues [2], it's pretty clear that CRIU doesn't support processes using UFFD - that they do not currently have plans to [3].
 
-elapsed time: 726m
+Thanks for all these pointers!
 
-configs tested: 113
-configs skipped: 3
+> 
+> [1] https://github.com/checkpoint-restore/criu/blob/criu-2.x-stable/criu/mem.c#L683
+> [2] https://github.com/checkpoint-restore/criu/issues/2021
+> [3] https://github.com/checkpoint-restore/criu/issues/2021#issuecomment-1346971967
+> 
+>>>
+>>> Further ... isn't CRIU already using uffd in some cases? ...documentation
+>>> mentions [1] that it is used for "lazy (or post-copy) restore in CRIU". At least
+>>> if the documentation is correct and its actually implemented.
+>>>
+>>
+>> Shivansh, same question - do you know the current CRIU status/plans for using
+>> uffd-wp instead of soft-dirty? If CRIU doesn't currently implement it and has no
+>> current plans to, how can we guage interest in making a plan?
+>>
+> 
+> While I cannot gauge whether the maintainers or main contributors of CRIU plan on using uffd-wp instead of soft-dirty in the future, I can tell you that there is no currently open issue to track that work, and whenever anyone in the past has asked about ARM64 pre-dump support to CRIU (which is the feature that uses soft-dirty/would use uffd-wp), they've always just said it's not supported - but that they do want the feature [4].
+> 
+> So in summary, they want the feature, but no one is working on implementing it (either with soft-dirty or with uffd-wp).
+> 
+> I doubt that CRIU would have any issues with adding the feature via soft-dirty (since, as shown in [4] they're interested in it), but as for using uffd-wp they definitely haven't shown any interest thus far. Based on the fact that it would be a very significant amount of work and it would really only be for ARM64 support (which they're already fine without), I'd be very surprised if they were interested in pursuing it.
+> 
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Of course, nobody wants to do the work. But that doesn't mean that the 
+kernel has to do the work :)
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240424   gcc  
-arc                   randconfig-002-20240424   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240424   gcc  
-arm                   randconfig-002-20240424   gcc  
-arm                   randconfig-003-20240424   gcc  
-arm                   randconfig-004-20240424   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240424   clang
-arm64                 randconfig-002-20240424   gcc  
-arm64                 randconfig-003-20240424   gcc  
-arm64                 randconfig-004-20240424   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240424   gcc  
-csky                  randconfig-002-20240424   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240423   clang
-i386         buildonly-randconfig-002-20240423   clang
-i386         buildonly-randconfig-003-20240423   gcc  
-i386         buildonly-randconfig-004-20240423   clang
-i386         buildonly-randconfig-005-20240423   clang
-i386         buildonly-randconfig-006-20240423   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240423   gcc  
-i386                  randconfig-002-20240423   gcc  
-i386                  randconfig-003-20240423   clang
-i386                  randconfig-004-20240423   gcc  
-i386                  randconfig-005-20240423   clang
-i386                  randconfig-006-20240423   clang
-i386                  randconfig-011-20240423   gcc  
-i386                  randconfig-012-20240423   clang
-i386                  randconfig-013-20240423   clang
-i386                  randconfig-014-20240423   gcc  
-i386                  randconfig-015-20240423   gcc  
-i386                  randconfig-016-20240423   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
+If there are some major challenges why it cannot possible be done with 
+uffd-wp (unfixable), that's a different story.
+
+> [4] https://github.com/checkpoint-restore/criu/issues/1859#issuecomment-1972674047
+> 
+>>>
+>>>>
+>>>>> But I'll throw in another idea: do we really need soft-dirty and uffd-wp to
+>>>>> exist at the same time in the same process (or the VMA?). In theory, we
+>>
+>> My instinct is that MUXing a PTE bit like this will lead to some subtle problems
+>> that won't appear on arches that support either one or both of the features
+>> independently and unconditionally. Surely better to limit ourselves to either
+>> "arm64 will only support uffd-wp" or "arm64 will support both uffd-wp and
+>> soft-dirty". That way, we could move ahead with reviewing/merging the uffd-wp
+>> support asynchronously to deciding whether we want to support soft-dirty.
+>>
+> 
+> My personal preference is having both approaches supported - especially in the context of CRIU since I doubt they'll be willing to rewrite all of the dumping and restore logic just for ARM64 support.
+
+Sure, nobody does any work unless they are forced to.
+
+But this is something that arm64 maintainers will have to decide.
+
+Let's start with uffd-wp that has other well-known users that could 
+benefit (e.g., QEMU background snapshots).
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+
+David / dhildenb
+
 
