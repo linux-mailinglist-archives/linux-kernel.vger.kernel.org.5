@@ -1,283 +1,210 @@
-Return-Path: <linux-kernel+bounces-154978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E6688AE3D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:26:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1402D8AE3D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:27:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8A35284DAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:26:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 378781C22BCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:27:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 806AF8004E;
-	Tue, 23 Apr 2024 11:25:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CGqhr8wT"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6312685636;
-	Tue, 23 Apr 2024 11:25:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.7
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713871534; cv=fail; b=jSwNDYtvt3dxFd3PYeMlD9iz8kU1E3HlRB/vNrohFWgUYzvKz0oZ0Ev/2hHDN2sf2BqpFNK/WZ/ip/XUr+sgQgKRBR/+narEdoa5X3syYdZ3s3x7w21pjGo9Z3H6+NoryZy0P9bIBU0aJPlaBPSz3RuIc2NZ+XIoKwoF2R8l8kE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713871534; c=relaxed/simple;
-	bh=YszNSoo5jW2IJ1MlK+eRwqQAizilGdkCneIqNjGWimk=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=KidH6yEHsQCx865lCU2kH9NHtVyQTYiBD99h3KOZZfpqSNa0cGQAhNYHy2SgPGKJmYyAkp2RdqvcBeplnPpne5WbGYrs7YdM94+bhNwUL0MQ8PM76CccMdQmOlzynppccQniYvHjnllJnarkbw0b33CaovVqHyp0h1E+O+uaDmw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CGqhr8wT; arc=fail smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713871533; x=1745407533;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=YszNSoo5jW2IJ1MlK+eRwqQAizilGdkCneIqNjGWimk=;
-  b=CGqhr8wT4qbvWUYdwmtw8CnuG971VugE/54OjwFcChhS4NZPUmAvBM/9
-   bzrNy8Q0rw1qK4bHD7ZKeK7Yyx9zNBUJNkriec3iFF5HuxBCfUxRrzKUr
-   7OKgQx85EJ/22Ye/pM1TM3xav3N8KZmgCrZ69vWsh3msTZdHAknxV8aye
-   5J4sordxJvtsHur2JLrZL+MEKFOgFyO42ERS93OKCpT0haxycdWvL8H55
-   k90SLDHPAcDfLhdYrqeFpXS5qhgV4Z8cKdv8bNft6udIPYvMBF5YpqBXz
-   yfyL7xk4NqZSX7IwfUBGGlxNOygoSubR7+0VKt3QtCfSlFpv+eY7m0Qrn
-   Q==;
-X-CSE-ConnectionGUID: FYVi4dXkSJm9yWirRQ/Kbw==
-X-CSE-MsgGUID: sORLvleuSxCNVtT9asT1Bg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="34847620"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="34847620"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 04:25:29 -0700
-X-CSE-ConnectionGUID: sa0rC04tSa2KoMaNy7PYrQ==
-X-CSE-MsgGUID: L/5v082yQSG9xWVTMNXAMQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24946903"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Apr 2024 04:25:28 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 23 Apr 2024 04:25:27 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 23 Apr 2024 04:25:27 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 23 Apr 2024 04:25:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jWBc3PhONv3ew5u9SpVBEaNMLt2R8gskzZAJcD54F75Iho9w54K7EEKSzbmsjPa29MpiFV25fofjpWlnwjweNdYg0zaTw2NIBAyOQrXKOMPOSV81JCOovuvaag8T2d53xWr0oNJK0Zag7eToXvUIlqiFVXuHjvx8mrBHLvnO2CfjTFCCVZ48YCSjE2Z/vZrnFsY6rPidk+jT0iMnsUNLCak/1Brq7ycVng+G51OEZJ5ef9P+xc5DStT5CxaU4NAHQfQtIPIEO8Qnc9rNxjrHtyBQ5QBxFpfCmTVWEi/JyYgQyhW+zf/+6bkRtCxT+D4Ce/uc0Nl+T8bF8ddotckaug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YqjwspKpRqGA33K7tSNDoe+mppXFLEXejXhCt5uhzvY=;
- b=QQscZiRgSVZcosABDUb870lT8U7/DWFm5qi9qHEjSh0QI10SLa4FUdvL3ubHBG0rj0pWJQjYpIN/JmBhXmjUeJQcjlkrSzdf3l3Dty3XjZsKsHVJHEJw9Z0z2zd0X96n3kNbtY8BUsxe1q9yd4NO+SML3b2+4HJeZbqdRR4/J+Zwz8RQMnQAeJbymNpO0z/8P74+ZuTvblz5fnmrcQee+iUi7Are46dekRMhkGU2ncMYz0dWO0kZJ4jlcWWg0LQqGRwO9jtutQobDz93DcJED/Qrg/JyKtGQ4Dchn+fTtnX/hL0kfGo4vYH0PcFC34XMSH7APu89UhVnHT0wjkx4Mg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CH0PR11MB8086.namprd11.prod.outlook.com (2603:10b6:610:190::8)
- by SA2PR11MB4922.namprd11.prod.outlook.com (2603:10b6:806:111::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Tue, 23 Apr
- 2024 11:25:23 +0000
-Received: from CH0PR11MB8086.namprd11.prod.outlook.com
- ([fe80::984b:141d:2923:8ae3]) by CH0PR11MB8086.namprd11.prod.outlook.com
- ([fe80::984b:141d:2923:8ae3%5]) with mapi id 15.20.7519.020; Tue, 23 Apr 2024
- 11:25:21 +0000
-Message-ID: <f4c18446-e0f9-4f32-8460-2e885a673ce6@intel.com>
-Date: Tue, 23 Apr 2024 13:25:07 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-wired-lan] [PATCH 0/5] Ensure the copied buf is NULL
- terminated
-Content-Language: en-US
-To: Marcin Szycik <marcin.szycik@linux.intel.com>, Bui Quang Minh
-	<minhquangbui99@gmail.com>, Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>, "David S. Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Paul M Stillwell Jr
-	<paul.m.stillwell.jr@intel.com>, Rasesh Mody <rmody@marvell.com>, "Sudarsana
- Kalluru" <skalluru@marvell.com>, <GR-Linux-NIC-Dev@marvell.com>, "Krishna
- Gudipati" <kgudipat@brocade.com>, Anil Gurumurthy
-	<anil.gurumurthy@qlogic.com>, Sudarsana Kalluru
-	<sudarsana.kalluru@qlogic.com>, "James E.J. Bottomley"
-	<James.Bottomley@HansenPartnership.com>, "Martin K. Petersen"
-	<martin.petersen@oracle.com>, Fabian Frederick <fabf@skynet.be>, "Saurav
- Kashyap" <skashyap@marvell.com>, Javed Hasan <jhasan@marvell.com>,
-	<GR-QLogic-Storage-Upstream@marvell.com>, Nilesh Javali
-	<nilesh.javali@cavium.com>, Arun Easi <arun.easi@cavium.com>, "Manish
- Rangankar" <manish.rangankar@cavium.com>, Vineeth Vijayan
-	<vneethv@linux.ibm.com>, Peter Oberparleiter <oberpar@linux.ibm.com>, "Heiko
- Carstens" <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, "Alexander
- Gordeev" <agordeev@linux.ibm.com>, Christian Borntraeger
-	<borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>
-CC: Jens Axboe <axboe@kernel.dk>, <linux-s390@vger.kernel.org>,
-	<linux-scsi@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>, "Saurav
- Kashyap" <saurav.kashyap@cavium.com>
-References: <20240422-fix-oob-read-v1-0-e02854c30174@gmail.com>
- <eb54c7bb-db63-4361-b42f-dc02e2c37fbf@linux.intel.com>
-From: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-In-Reply-To: <eb54c7bb-db63-4361-b42f-dc02e2c37fbf@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4P221CA0016.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:303:8b::21) To CH0PR11MB8086.namprd11.prod.outlook.com
- (2603:10b6:610:190::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5337E82888;
+	Tue, 23 Apr 2024 11:26:56 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BA14823D9
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 11:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713871615; cv=none; b=JcMGIi1Ppx9/1CzT18QJ+hE+oiITdZR8qsMx2DOFgtIsKiFDeoyf0ry39Y8PRFC3uY+9/ost1LgZzlHDOt+Y52RHAWld/hJ1MuxFDTe1M3vU3hCnj3MquNa2g7snXF84VREdqz64yaSDsSu12jx7D4+fgu8e3zF+MAD8r/KR3Tc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713871615; c=relaxed/simple;
+	bh=wJKPniY4/Ci5B83yC2QKM57byNuiwW1P7++ILqKKhzQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b4Yho/DxDs5I9T7QbJWcd0LmA6WB+7xgZZtQpUE75R2Pt60SQRHfRypTymm+Fo81KONMzVthnX7C72R6q6gqAGGFAprIXaw1p2Hz41PpuY3MXdF5sJLCDaO0t9FYp/QDq11nZFge4CPyEUXMK7ztog3n07oBGpnKKDoB4eUda4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0ABE339;
+	Tue, 23 Apr 2024 04:27:21 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 570B83F7BD;
+	Tue, 23 Apr 2024 04:26:51 -0700 (PDT)
+Message-ID: <3cf97e3c-c8d9-4282-a8ca-e4c1ea383dbd@arm.com>
+Date: Tue, 23 Apr 2024 12:26:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH0PR11MB8086:EE_|SA2PR11MB4922:EE_
-X-MS-Office365-Filtering-Correlation-Id: 377a3a23-b695-443e-c583-08dc63880ffc
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|7416005|1800799015|366007|921011;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?RWk4aDkySUNhcXZhd281SWd3TTlCajY2Z0NDZ2NRanVRVElQZXBhdHloV3Yz?=
- =?utf-8?B?SzFwalk0Y09vM2syb2dHdmNBL3BVaGJMOWhKc0JyVTg0YUdXT2JDT2gxMHBM?=
- =?utf-8?B?OVgvalN4OWFsZnJwRDVtV0VsbFlxWlBObHpQWnhjMTFNV002eVI1OEs2Uitk?=
- =?utf-8?B?Y1NWV0ZWVU1LODkvYXJNY3crYWxZYU1OMU5aTDN6cGdjR2p2cGpTK0VhUXZk?=
- =?utf-8?B?SFB6Q0lnbzBjOHZqdFdwcklYOHZncXlRT3RpQ1kxTmJhK2N5YzZCSmllT3RJ?=
- =?utf-8?B?WkdFWXZpQUxqZWtFWmJjdUp5ZWtSUmJZWVFhSkJ3RTVXMEEwR2JvdEF2ZHM2?=
- =?utf-8?B?eWRWUHJZU0FXemFOZ0tuK2VyUlg5aU5DckwrRnNCSDlPTTNzVnI1MnZYTlNP?=
- =?utf-8?B?SURIY2gyWXBrNmFLWUwrNXhrQnRmTW1rOEdKNUZ4NExJcXRJS21vREtTVnk1?=
- =?utf-8?B?V3pxL1FtaUJIcmJuR1Nib0F6ZmVraEFOUnJPdFg2VHEyOTNRQk96bkhRZit5?=
- =?utf-8?B?SDMxNDZLbi94bTRjak90bFJBOG1velAzakxyYjlURmRxQm9xMDM1SHpuUWJH?=
- =?utf-8?B?YlRTWFM2eDJMZjBHeHVzMUZHY05sMmw4UkQ1RGs3R0pKdURidm5ab3BVVWlR?=
- =?utf-8?B?WFBIVDE4anhzSWs0UnoreHUzZEttWndSQndmYmw0ZkJJSDBxUUwyOTdxQytk?=
- =?utf-8?B?SlIyVHVjcWY0dlBkUHR1N1VYQkVMR2tjR1JHVnpEYyt1WGZjWmQxazJqSXZ3?=
- =?utf-8?B?eFF2RHJrbVQ1S2NxQkRVUlE5TnU0RmF3UWd5WVpCZ1o3ZTJmNzdGd2pPdVZU?=
- =?utf-8?B?dGkrOTg1SjAvZTRxcXBBQmdnS0pwa3djcTdCQVRSWXptZjY1bVNPQnprNEdp?=
- =?utf-8?B?Y3ptWUF5eXlEMW5kTTNZNnJFUERkTnM5NTljNXJGUDFjQkhOY3VuRGhJVGpy?=
- =?utf-8?B?ekdMdzkvQUJoNGpvZUFLSGUrcmNtRit5TGxqT3lVM2hKTzkvQnBFME9zekxT?=
- =?utf-8?B?eEw4VHp0d0xySG9tSFB1ZEJQUTRpZnpGQllPWHdVTldRYzRVR28rWEN1OHdp?=
- =?utf-8?B?RWJpNEtvWGl2V2tWOUdhcWN5VEMyeUFEeVpZQnRxTTlDbnFxM01nYjB3MXI1?=
- =?utf-8?B?Mnp3V2VlYmpKVktzV3QrTWpVMGUvK3VIN0JRL0N2VnFVUzQvNHVLYXlxbnJ3?=
- =?utf-8?B?anZ1WjlYT0I0a2hXRHk1Rm9YeFM3amlvMlJMQW10OC9YQ3ZtVmRwLzk5R2xv?=
- =?utf-8?B?WDM2cllYcTh2NVF2MC9LZ1VKSlNBQmNNSXZhTlFmN2pDdkljSFNkUDdZME5D?=
- =?utf-8?B?OWo5aFB2eUNpKzJFYjZWQzM1bC9iQzAvdDJCK0VaQUI4MDhldzRuNjdIWFNs?=
- =?utf-8?B?NE5Yc2htdXY5QW95YktHRGNoNEkvMzNkVVEwdzFiWFY4QVhtN1dRRkNFWEV1?=
- =?utf-8?B?cnYwMWh1dmFncHlPMEg5WkxRbUowN2FYaGx1TU1GTnc5R3JCMTdHY2NQbWVw?=
- =?utf-8?B?ZE56RmpLdnJEQWluL3RVUFRleFJaUTVjbUpSNm93SlFXZ1pwUkVkVm8wMEhJ?=
- =?utf-8?B?OHNXMStMdUR2L0E1RzU4a1l0d1lXYUtiS1BWNC9LWm1MOVg5NVluS1J6cnkz?=
- =?utf-8?B?SmhvVUVNU0RteU9PMnVrallJZ3dtQnlmSmFjZlhaZGUzMUJuSnhWTGRGeFRK?=
- =?utf-8?B?bmEwY2I2Z1pMelZ2QitCQytkV0dYb29sNS9VMVNLdlY3czI5THcySkE3RTk2?=
- =?utf-8?Q?h5D27g8Tt7IaEyNYbs76mG4NJxCEBeErvwPgWWm?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR11MB8086.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007)(921011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M1l0WUMyM2diU0J4RURzVC9rVDNXN0ZETVFNNnZTL3FVK3hBTmQ3QW9SK2kx?=
- =?utf-8?B?eUl3VHVqZ3pmMVVBUElUTEV6VVBaY2EvemJTUlNTb3dDMFVGaVI3bFBYRjN2?=
- =?utf-8?B?ZTN3azV6VEV3U01UbGhBSW1teUhZUnpnam13M3QvT1ZuRUtNcEV4RlVEc2VU?=
- =?utf-8?B?NEpNekx0ZERJbnl5aGIwYUlaQkRQM2RwSkdXb3FlNnJWR1A3ak9HQWlPSHV3?=
- =?utf-8?B?YjA1aTJaLzljR2JXVGtZRHZ5eEQ1NVRhVFROMVQ0ZXA5NDdHVmVDOUhza2JV?=
- =?utf-8?B?V2RMYmIzaHVoelU4ZXNHTEdvL0N5M2hZaExQek9qcU1nVTBHRHo3TkdQdmdU?=
- =?utf-8?B?QjQ5S2o4ZEZRRzQ1aCtvUE9xc3Bza2pqTHFVVW9scStzblFMWUl6QVJqaS85?=
- =?utf-8?B?eUdjMmorZW1WTDNKOGZHMXpzQkcyOXlyek5jV3gycE5OeVJZa0ZnMVpyYlNO?=
- =?utf-8?B?NUJUeERFdWtJRmtwWU5VT1BhQXJHKzZneDZiVW9MdVRHK3FObUtaQnl5WGw2?=
- =?utf-8?B?QUJrblNBNU5VYkliYnZEcTZOQm80aFVjYnlsc1YyVkpaU0lkMy9lMTdieGVH?=
- =?utf-8?B?SGhKclpRYkJCdjd6dU4zSDlGMzVQWWdtS1dwOXAzSmh3RlhvS2lrbFZrdWNn?=
- =?utf-8?B?Z012SDBZZjVVOU5EbkEydmc5TVdxMHd0T0IzQ0tPdzEvUXFRYThUUUJxaTFu?=
- =?utf-8?B?eFBrMkNmLytMVGRxZHdWTmlUUmRMeU9Bc3ZRNUVCM2JvbXc1UWpKeUMxdVFw?=
- =?utf-8?B?OUpPeTdqL0VkbTg0NVNHL0pHcUxwZGQ2Z0Q2VDJCb2NlWU42MUJVUTRnelhI?=
- =?utf-8?B?aEk3RldUMGx3R0pRMUlTOEMvbm05Z25CRWc3ZjFNR256ODAvVTg5WExjMndz?=
- =?utf-8?B?RmFrUmJuaVJ2MTFmc3BXT0tlSzd2ZElVT09mWmFrcTFvK3dSd0ZiZG5ON2l3?=
- =?utf-8?B?czIrQURGOEhFZGREcko5ZFg1M0ovQUdrQy9mQkhCbDBKc2w2TkprS0RDSyt3?=
- =?utf-8?B?NHA2WkozNGJsdFdpUlVZSzA2a3dWMjFrcnRjS3FFeG5jSnlqaDVqTHc5N242?=
- =?utf-8?B?dGRPdS9UYVJ2RW1MMFJtNVhGUkIwZE5PQXUxRDZZNSs5dGlPUFBpOEdDTWMr?=
- =?utf-8?B?d1pXMW5wbFpuUy81NW82VXp6dmVuekFvTFdjOWVqQktrcWE0YVBCOXlrTzIz?=
- =?utf-8?B?RHdOMjJUZWtwYlFLVFZtemw5M3ZCTXhnRlgxdjRvTDFXOVRqNEhISUFoWkFL?=
- =?utf-8?B?cU9IRU11aHVnams1M2JJVWVJYUZmTDRrV2s0ZlJueEtEbWQrNzAvYU1TT3Vo?=
- =?utf-8?B?c29RODI4VC9SeFFURE44NVdTZjdERWkvcDBPdGxxSm4xbDdmQTQwdlZhU1hw?=
- =?utf-8?B?RFVMdEt4OW5ocTI1eVY5V0Q1UUJlOWNwZEZxWS9VZ2xPcUNjSDhSRHEzNzRL?=
- =?utf-8?B?dFJsbUpydzUvSTg1T0NNZUh0di9iYVJFWjRWdFYwK3liVjZLK2dVY2IyeUVD?=
- =?utf-8?B?b01FRzNjaUJvNnBhY3FVRC9jb0RCb21JdmMwc3EwNjlMeEZVQnZEc1drSXM3?=
- =?utf-8?B?MW8rVEVEaEU1Qm9VRUFFUGZPdGF6b1pFSkJOZXdYWVM5WWVQUDVvQ0k5RWdI?=
- =?utf-8?B?VWFVZGRPWWtLaExJQXBteW54SWV6WW13dk8vN0hOU2RBUUlLMHlqTlJucTFL?=
- =?utf-8?B?dVMzR2NWUWRQb2xmbUhkd2dHTGFBNVNjaVM4Tk81RjNRcnVoelVMZVZxeXA5?=
- =?utf-8?B?N2x5dGxyenkvbk9PMXF0THR3S1RMMVMxOGNRMUJzejJlSytuYTNsS2dKT2tk?=
- =?utf-8?B?RmQzZ0w4YlZhSnFsaHgzSUZLQUNsTTBqeitlRFFNYlh2K3RNSjk5dW1sdVFL?=
- =?utf-8?B?Y0EySVFkSDJzMXBsU0JXZ3doWExDbW9hbU5lZkxHbWJKd0ZybnYybk1zeGVj?=
- =?utf-8?B?VXhSb2FNbE5GZmYvQlBPWUUvVTRIUXBScldlTkJrSEtjRHQ2MlNJMEtlV2Vq?=
- =?utf-8?B?VHhieDB2aDJkWlc3dm5nVzJhVDBSelcwaDF0RFI2Y0xSUUN2dVRkak9DbFFw?=
- =?utf-8?B?ZzlzZzVjUGRLWVFFUzlCMTFYVlNUR3J1RS9HaERmRThpb3lhODdhSENCYk1V?=
- =?utf-8?B?UjBJUDRPbHNvbVdLSUZxcnF0TTZnR3JJQkNtUVU5a24zVlB6bjhjNGlPMDY4?=
- =?utf-8?B?dlE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 377a3a23-b695-443e-c583-08dc63880ffc
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR11MB8086.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2024 11:25:21.6358
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: K6ihMREXiL86w0nSn2YjyVjH2ZwgEdagAgkjcYWNr0SKPR7S2ebHjd3/EVGCGBvt+xg4kyUYvTuk6ARnN0U3T3m1xneBgA4e0otgc9+vrH4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4922
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] iommu: Fix def_domain_type interaction with untrusted
+ devices
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: joro@8bytes.org, will@kernel.org, ewagner12@gmail.com,
+ suravee.suthikulpanit@amd.com, vashegde@amd.com, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org, regressions@lists.linux.dev
+References: <fa14583e94cbf540b60a6be94b41bb24d0037e75.1713272443.git.robin.murphy@arm.com>
+ <20240416152943.GU223006@ziepe.ca>
+From: Robin Murphy <robin.murphy@arm.com>
+Content-Language: en-GB
+In-Reply-To: <20240416152943.GU223006@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 4/23/24 13:10, Marcin Szycik wrote:
+On 16/04/2024 4:29 pm, Jason Gunthorpe wrote:
+> On Tue, Apr 16, 2024 at 02:00:43PM +0100, Robin Murphy wrote:
+>> Previously, an untrusted device forcing IOMMU_DOMAIN_DMA always took
+>> precedence over whatever a driver's def_domain_type may have wanted to
+>> say. This was intentionally handled in core code since 3 years prior,
+>> to avoid drivers poking at the details of what is essentially a policy
+>> between the PCI core and the IOMMU core. Now, though, we go to the
+>> length of evaluating both constraints to check for any conflict, and if
+>> so throw our toys out of the pram and refuse to handle the device at
+>> all. Regardless of any intent, in practice this leaves the device, and
+>> potentially the rest of its group or even the whole IOMMU, in a largely
+>> undetermined state, which at worst may render the whole system
+>> unusable.
 > 
-> 
-> On 22.04.2024 18:41, Bui Quang Minh wrote:
->> Hi everyone,
->>
->> I found that some drivers contains an out-of-bound read pattern like this
->>
->> 	kern_buf = memdup_user(user_buf, count);
->> 	...
->> 	sscanf(kern_buf, ...);
->>
->> The sscanf can be replaced by some other string-related functions. This
->> pattern can lead to out-of-bound read of kern_buf in string-related
->> functions.
->>
->> This series fix the above issue by replacing memdup_user with
->> memdup_user_nul or allocating count + 1 buffer then writing the NULL
->> terminator to end of buffer after userspace copying.
->>
->> Thanks,
->> Quang Minh.
->>
->> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
->> ---
->> Bui Quang Minh (5):
->>        drivers/net/ethernet/intel-ice: ensure the copied buf is NULL terminated
->>        drivers/net/brocade-bnad: ensure the copied buf is NULL terminated
->>        drivers/scsi/bfa/bfad: ensure the copied buf is NULL terminated
->>        drivers/scsi/qedf: ensure the copied buf is NULL terminated
->>        drivers/s390/cio: ensure the copied buf is NULL terminated
-> 
-> Typically you don't include path to module in title, instead:
-> ice: ensure the copied buf is NULL terminated
-> bna: ensure the copied buf is NULL terminated
-> etc.
+> For systems supporting untrusted device security the translation must
+> be BLOCKED at this point.
 
-good point,
-if you would respin, then the character name is NUL, not NULL.
+So why is that not enforced then? Simply hoping that calling 
+ops->release_device() or returning an error from iommu_device_register() 
+might do the right thing is no guarantee. Furthermore I'm pretty sure 
+we're still letting an untrusted device be hotplugged into an existing 
+group without any checks at all.
 
-> 
->>
->>   drivers/net/ethernet/brocade/bna/bnad_debugfs.c | 4 ++--
->>   drivers/net/ethernet/intel/ice/ice_debugfs.c    | 8 ++++----
->>   drivers/s390/cio/cio_inject.c                   | 3 ++-
->>   drivers/scsi/bfa/bfad_debugfs.c                 | 4 ++--
->>   drivers/scsi/qedf/qedf_debugfs.c                | 2 +-
->>   5 files changed, 11 insertions(+), 10 deletions(-)
->> ---
->> base-commit: ed30a4a51bb196781c8058073ea720133a65596f
->> change-id: 20240422-fix-oob-read-19ae7f8f3711
->>
->> Best regards,
-> 
-> Thanks,
-> Marcin
+Meanwhile if we go back to letting untrusted take priority and attach 
+the device to an empty DMA domain, oh hey look it's blocked, and what's 
+more we also retain control of the IOMMU to keep it that way. Problem 
+solved. You intentionally changed the code to be less effective at what 
+you say it should be doing, so once again I'm left a little puzzled as 
+to what point you're trying to argue here.
 
+>> Unfortunately it turns out that this is a realistic situation to run
+>> into by connecting a PASID-capable device (e.g. a GPU) to an AMD-based
+>> laptop via a Thunderbolt expansion box, since the AMD IOMMU driver needs
+>> an identity default domain for PASIDs to be usable, and thus sets a
+>> def_domain_type override based on PASID capability.
+> 
+> The majority of places implementing def_domain_type are using it as a
+> statement of HW capability that should not be ignored by the core code:
+> 
+>   - DART
+>     * system page size is too small, can't map IOPTEs, force identity
+
+Not a hardware limitation at all, it supports paging just fine, and 
+iommu-dma *could* in principle work with larger pages with a bit of 
+effort (some proof-of-concept patches were posted some time ago). This 
+is entirely the driver hacking around the legacy of iommu-dma and core 
+code not expecting the situation and thus not detecting it or handling 
+it gracefully. In fact I should be able to sort that out relatively 
+soon, once my other stuff lands and I'm able to start pulling 
+iommu_dma_init_domain() apart.
+
+>     * iommu does not support IDENTITY at all, force paging
+>   - tegra: Device quirks mean paging and DMA API doesn't work
+
+Hmm, I don't recall any specific device concerns. What I do know is that 
+historically this driver has always wanted to prevent the ARM DMA domain 
+or older versions of iommu-dma (prior to iommu_get_dma_domain()) from 
+getting in the way of what the host1x drivers expect, so if there is any 
+actual hardware policy here, it's very much implicitly hanging on the 
+coat-tails of software policy.
+
+>   - amd: The driver can't support PAGING when in SNP mode
+>   - SMMU: The driver can't support paging when in legacy binding mode and
+>           paging domain allocation fails as well
+
+Quite obviously nothing to do with hardware. That's there solely because 
+using the old binding prevents us from reasonably being able to order 
+binding the IOMMU driver against the client drivers, so we can't risk 
+having iommu-dma come up and change the DMA ops underneath an 
+already-active device.
+
+>   - qcom: Looks like these devices have some iommu bypass bus in their
+>           HW and paging doesn't work
+
+I believe that is true for some of the modem stuff, however again 
+there's also plenty of software policy in there too; some of it the same 
+thing about default domains getting in the way of how the GPU/display 
+drivers want to use dma-direct for cache maintenance underneath their 
+own unmanaged domains, one is completely abusing the domain type in a 
+devious hack which just happens to make some behaviour fall out of the 
+rest of the driver to satisfy an unrelated hardware/firmware constraint 
+(which is still *supposed* to be only a temporary fix pending a proper 
+solution, ha...)
+
+>   - SMMUv3: The comment says HISI devices cannot support paging due to a HW quirk
+> 
+> For these force overriding the driver knowledge will either result in
+> domain allocate/attach failure or a broken DMA environment anyhow.
+> 
+> The AMD PASID thing is actually unique because the driver can still
+> fully support PAGING, despite it wrongly telling the core code that it
+> can't.
+> 
+> This is happening because it is all just a hack to work around the
+> incomplete SW implementation in the AMD driver.
+
+Not really, it's shown up because the core code took an illogical step 
+backwards. Without significant surgery to IOMMU and/or driver core code, 
+the best and most reasonable thing to do at the moment is still the one 
+which happens to work out OK for the current AMD behaviour. Yes, if we 
+*had* done all the work to make the core code super-robust then the 
+issue could have been the GPU driver gracefully failing rather than 
+wedging the whole system, and the remaining blame could then be fairly 
+laid on amd_iommu_def_domain_type(), but that is not the case and cannot 
+be claimed to be.
+
+Per our API expectations, a driver's def_domain_type can go one of three 
+ways; do nothing, request IOMMU_DOMAIN_DMA, or request 
+IOMMU_DOMAIN_IDENTITY. For the first two it's clear that untrusted 
+forcing IOMMU_DOMAIN_DMA without even asking is perfectly fine. In the 
+third case, we still definitely want untrusted to take precedence, since 
+our policy is that the device not having access to things it shouldn't 
+is more important that it having to access things it should. Sure, in 
+the almost-impossible case that we did have an external device which 
+genuinely couldn't handle translation, then the user may allow a driver 
+to bind, which ends up not working and causing IOMMU faults, however 
+that would be equally true of any kind of blocking notion we could 
+implement right now, so there's no appreciable loss of functionality. 
+However, the overwhelming fact is that the few devices genuinely 
+requiring IDENTITY overrides are on-chip integrated things, any of which 
+suddenly turning up on external ports would be highly suspect, so that's 
+actually a big argument in *favour* of not believing def_domain_type 
+either in such cases.
+
+In fact the more I think about it, I could swear I've had this 
+discussion and worked through this reasoning before, possibly back when 
+we first introduced it?
+
+> When the AMD driver is
+> completed its def_domain_type should be removed entirely.
+> 
+> Since actual PASID AMD attach isn't implemented yet we could just
+> remove that check from def_domain_type as an RC fix. Vasant can sort
+> it out properly by disabling pasid support on untrusted devices until
+> the DTE logic is fully completed.
+> 
+>> In general, restoring the old behaviour of forcing translation will not
+>> make that device's operation any more broken than leaving it potentially
+>> blocked or subject to the rest of a group's translations would, nor will
+>> it be any less safe than leaving it potentially bypassed or subject to
+>> the rest of a group's translations would, so do that, and let eGPUs work
+>> again.
+> 
+> Well, this is true, since we can't handle the probe error it doesn't
+> matter what we do.
+
+OK, so after all that you do in fact agree? In that case, why are we 
+still mucking about proposing hacks on top of hacks in the AMD driver 
+rather than just fixing the regression sensibly?
+
+Thanks,
+Robin.
 
