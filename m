@@ -1,130 +1,199 @@
-Return-Path: <linux-kernel+bounces-154825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BAD18AE18F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:01:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 288B48AE192
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:01:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D8781C2181E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:01:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1A701F23B98
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:01:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D00865FDD3;
-	Tue, 23 Apr 2024 10:01:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Wy7aYCT+"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE4335FDDC;
+	Tue, 23 Apr 2024 10:01:42 +0000 (UTC)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC5A5FBA0
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBAC5EE8D;
+	Tue, 23 Apr 2024 10:01:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713866469; cv=none; b=BHPx8O2iB8dHUyGe62PLJCX3gJNo3uXC9VJ5CStzBcep/Xu+U6bXX/VBR1OSKT4w4qMQDIhWxs1fKI57YCPp8mM2Icqu/CP4c9BZmPBeCmZcG4Z72JfmoS+7X7hmAT6mCAliQD4bcgpy3zOgBRmsN5nK5z94/E/Fq2fpp0aA3os=
+	t=1713866502; cv=none; b=WWokdUNwf3A5q/Ma1FwtZA1pDcv6pOVJUujja06mF0NTqc5F+tKqAO9rdA+COIsbKS1rOrEeu5f6LVoo1oIT3yJLrTwK2aWVwHG+f1ebxvtqYTeWfpoXZFkhBVHyQxydoDTomerR22fetWjzYndVEA5VyJEB2aK7EVDOwjyviq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713866469; c=relaxed/simple;
-	bh=YwIkjif5BreNxnLNOWf6abaVgTHOQBKAwUvTq0Bl3Ug=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=YeGhuwZfP5zmAoMHrvByQrKoWUoMjmiah0ekh5Wgmgsq4pONWVKQNNLiSoFSjz7mO31u38o2aYZ7yhVwembmnSkBrcby/LCuudnz7s+EHQ60M327PAQfT9QGygL6XaAvuOghtPuwDXn1H4n0DuBtoMBS6N7mLZFNQTiYeCLLLv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Wy7aYCT+; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713866466;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=YwIkjif5BreNxnLNOWf6abaVgTHOQBKAwUvTq0Bl3Ug=;
-	b=Wy7aYCT+8RFva8VV/bXu8uMFTXFyUbPay1LaVJ1ci09ULOAM1vBJvGMAPyBmehC628HSyH
-	EHJN7PI9qtLptG5OSHbcWBOplR4ZPlwDaPayoMTNHi8fCdeQviunf13JZ+mpBYeLCPa81d
-	NYVzUrw1A/XDI/wHUIy1SdUYcHkx43Y=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-590-0O6f0zfJMT2cJKe5d_PBqQ-1; Tue, 23 Apr 2024 06:01:05 -0400
-X-MC-Unique: 0O6f0zfJMT2cJKe5d_PBqQ-1
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3c73b20ff31so1608470b6e.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:01:05 -0700 (PDT)
+	s=arc-20240116; t=1713866502; c=relaxed/simple;
+	bh=vyWYebRDWDhl43XoUdYklPfaE7SPJBl5AaD0stQkpPs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eYCyBcpPgfxfAoIKRcnfmyasMqIw+Ka7l/8hGXMJV4+5QEJZcsJF56UPYR1OKFyJce8r1R78+9VXnBlxczVoWdrwFuDBo2qHeCTv8qGHsBRiTBc/dppbEmq9AneMFbuuTButekiOP1VFJQOkdIqOrhzRHBLCCQldw9Zcs6RlJTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-61587aa956eso60890277b3.1;
+        Tue, 23 Apr 2024 03:01:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713866465; x=1714471265;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YwIkjif5BreNxnLNOWf6abaVgTHOQBKAwUvTq0Bl3Ug=;
-        b=ndOKV/OtzlOPItdJNZE/hk73tI4VFB2wDlcyEKUaJcVVCj373V4wG002+3YDWHy/oG
-         MRpPEber5fh8XbpvSUBhhCfRWuW6+2L8v1nn4rPOeLhvJhF4mwJy92lS5LzcSGoN3oa2
-         OrGMM/HG6uo2L7fk+9pRejclbi22Afdj3mweT5b+PiZeFqRkGkHKDMPWEH9KedWwNzo6
-         5S10j37ZffMoPxDyu9hk2GMENcywN9znZ2BIXqurze+rN0588opXr0NMtP/FjUCmoX6e
-         pBw9YKdKjX+0iicY29zqaBHs+g1Fi+A0cH+Sj0VqsQ1lxW6gFSohPnB2jldgDxhciYYc
-         T7OA==
-X-Forwarded-Encrypted: i=1; AJvYcCUsTeF7J+2p/mrolrTxGdd/80Xdt2Ra26VemvCo7kXwioYlOM1RAm8rJSEZYUj7UglHE6CNW/8zn5pciLiSTc4UTqUtDwUZuKZjY2AS
-X-Gm-Message-State: AOJu0YzfGXuZ3yuesHByAfM2nMlnDDfp2HbZS34leRxdz0VztyNuDI1h
-	uN1g9UGWug6OZDyBg9l0+6SEmE3/17ZAMRhzkw5ZnVIf0r1FRV8+yNofcFJds478wRcsK8enRd5
-	TybAmTTMUe3Qh4hUU1Untih/Q+KjgHWls1ELY0m0uyygSxDX2r6zPCuzgVozAvw==
-X-Received: by 2002:a05:6870:8891:b0:22e:dfbc:4aae with SMTP id m17-20020a056870889100b0022edfbc4aaemr14682574oam.2.1713866464844;
-        Tue, 23 Apr 2024 03:01:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE2cGPqTX80VpHqtIO0GuVwmn2dBJMhu25/rZtGRTV0uf+aWtNYNNJgU7vEjgHSo783VHDnMA==
-X-Received: by 2002:a05:6870:8891:b0:22e:dfbc:4aae with SMTP id m17-20020a056870889100b0022edfbc4aaemr14682536oam.2.1713866464448;
-        Tue, 23 Apr 2024 03:01:04 -0700 (PDT)
-Received: from gerbillo.redhat.com ([2a0d:3344:172c:4510::f71])
-        by smtp.gmail.com with ESMTPSA id x4-20020ac87304000000b00434c31fa60csm5023855qto.92.2024.04.23.03.01.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 03:01:04 -0700 (PDT)
-Message-ID: <4a92f794480b12c21eaeeeb66521dbe978f08414.camel@redhat.com>
-Subject: Re: [PATCH net] net: ethernet: ti: am65-cpts: Fix PTPv1 message
- type on TX packets
-From: Paolo Abeni <pabeni@redhat.com>
-To: Ravi Gunasekaran <r-gunasekaran@ti.com>, s-vadapalli@ti.com, 
-	rogerq@kernel.org
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	richardcochran@gmail.com, jreeder@ti.com, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, srk@ti.com
-Date: Tue, 23 Apr 2024 12:01:01 +0200
-In-Reply-To: <20240419080547.10682-1-r-gunasekaran@ti.com>
-References: <20240419080547.10682-1-r-gunasekaran@ti.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=mQINBGISiDUBEAC5uMdJicjm3ZlWQJG4u2EU1EhWUSx8IZLUTmEE8zmjPJFSYDcjtfGcbzLPb63BvX7FADmTOkO7gwtDgm501XnQaZgBUnCOUT8qv5MkKsFH20h1XJyqjPeGM55YFAXc+a4WD0YyO5M0+KhDeRLoildeRna1ey944VlZ6Inf67zMYw9vfE5XozBtytFIrRyGEWkQwkjaYhr1cGM8ia24QQVQid3P7SPkR78kJmrT32sGk+TdR4YnZzBvVaojX4AroZrrAQVdOLQWR+w4w1mONfJvahNdjq73tKv51nIpu4SAC1Zmnm3x4u9r22mbMDr0uWqDqwhsvkanYmn4umDKc1ZkBnDIbbumd40x9CKgG6ogVlLYeJa9WyfVMOHDF6f0wRjFjxVoPO6p/ZDkuEa67KCpJnXNYipLJ3MYhdKWBZw0xc3LKiKc+nMfQlo76T/qHMDfRMaMhk+L8gWc3ZlRQFG0/Pd1pdQEiRuvfM5DUXDo/YOZLV0NfRFU9SmtIPhbdm9cV8Hf8mUwubihiJB/9zPvVq8xfiVbdT0sPzBtxW0fXwrbFxYAOFvT0UC2MjlIsukjmXOUJtdZqBE3v3Jf7VnjNVj9P58+MOx9iYo8jl3fNd7biyQWdPDfYk9ncK8km4skfZQIoUVqrWqGDJjHO1W9CQLAxkfOeHrmG29PK9tHIwARAQABtB9QYW9sbyBBYmVuaSA8cGFiZW5pQHJlZGhhdC5jb20+iQJSBBMBCAA8FiEEg1AjqC77wbdLX2LbKSR5jcyPE6QFAmISiDUCGwMFCwkIBwIDIgIBBhUKCQgLAgQWAgMBAh4HAheAAAoJECkkeY3MjxOkJSYQAJcc6MTsuFxYdYZkeWjW//zbD3ApRHzpNlHLVSuJqHr9/aDS+tyszgS8jj9MiqALzgq4iZbg
- 7ZxN9ZsDL38qVIuFkSpgMZCiUHdxBC11J8nbBSLlpnc924UAyr5XrGA99 6Wl5I4Km3128GY6iAkH54pZpOmpoUyBjcxbJWHstzmvyiXrjA2sMzYjt3Xkqp0cJfIEekOi75wnNPofEEJg28XPcFrpkMUFFvB4Aqrdc2yyR8Y36rbw18sIX3dJdomIP3dL7LoJi9mfUKOnr86Z0xltgcLPGYoCiUZMlXyWgB2IPmmcMP2jLJrusICjZxLYJJLofEjznAJSUEwB/3rlvFrSYvkKkVmfnfro5XEr5nStVTECxfy7RTtltwih85LlZEHP8eJWMUDj3P4Q9CWNgz2pWr1t68QuPHWaA+PrXyasDlcRpRXHZCOcvsKhAaCOG8TzCrutOZ5NxdfXTe3f1jVIEab7lNgr+7HiNVS+UPRzmvBc73DAyToKQBn9kC4jh9HoWyYTepjdcxnio0crmara+/HEyRZDQeOzSexf85I4dwxcdPKXv0fmLtxrN57Ae82bHuRlfeTuDG3x3vl/Bjx4O7Lb+oN2BLTmgpYq7V1WJPUwikZg8M+nvDNcsOoWGbU417PbHHn3N7yS0lLGoCCWyrK1OY0QM4EVsL3TjOfUtCNQYW9sbyBBYmVuaSA8cGFvbG8uYWJlbmlAZ21haWwuY29tPokCUgQTAQgAPBYhBINQI6gu+8G3S19i2ykkeY3MjxOkBQJiEoitAhsDBQsJCAcCAyICAQYVCgkICwIEFgIDAQIeBwIXgAAKCRApJHmNzI8TpBzHD/45pUctaCnhee1vkQnmStAYvHmwrWwIEH1lzDMDCpJQHTUQOOJWDAZOFnE/67bxSS81Wie0OKW2jvg1ylmpBA0gPpnzIExQmfP72cQ1TBoeVColVT6Io35BINn+ymM7c0Bn8RvngSEpr3jBtqvvWXjvtnJ5/HbOVQCg62NC6ewosoKJPWpGXMJ9SKsVIOUHsmoWK60spzeiJoSmAwm3zTJQnM5kRh2q
- iWjoCy8L35zPqR5TV+f5WR5hTVCqmLHSgm1jxwKhPg9L+GfuE4d0SWd84y GeOB3sSxlhWsuTj1K6K3MO9srD9hr0puqjO9sAizd0BJP8ucf/AACfrgmzIqZXCfVS7jJ/M+0ic+j1Si3yY8wYPEi3dvbVC0zsoGj9n1R7B7L9c3g1pZ4L9ui428vnPiMnDN3jh9OsdaXeWLvSvTylYvw9q0DEXVQTv4/OkcoMrfEkfbXbtZ3PRlAiddSZA5BDEkkm6P9KA2YAuooi1OD9d4MW8LFAeEicvHG+TPO6jtKTacdXDRe611EfRwTjBs19HmabSUfFcumL6BlVyceIoSqXFe5jOfGpbBevTZtg4kTSHqymGb6ra6sKs+/9aJiONs5NXY7iacZ55qG3Ib1cpQTps9bQILnqpwL2VTaH9TPGWwMY3Nc2VEc08zsLrXnA/yZKqZ1YzSY9MGXWYLkCDQRiEog1ARAAyXMKL+x1lDvLZVQjSUIVlaWswc0nV5y2EzBdbdZZCP3ysGC+s+n7xtq0o1wOvSvaG9h5q7sYZs+AKbuUbeZPu0bPWKoO02i00yVoSgWnEqDbyNeiSW+vI+VdiXITV83lG6pS+pAoTZlRROkpb5xo0gQ5ZeYok8MrkEmJbsPjdoKUJDBFTwrRnaDOfb+Qx1D22PlAZpdKiNtwbNZWiwEQFm6mHkIVSTUe2zSemoqYX4QQRvbmuMyPIbwbdNWlItukjHsffuPivLF/XsI1gDV67S1cVnQbBgrpFDxN62USwewXkNl+ndwa+15wgJFyq4Sd+RSMTPDzDQPFovyDfA/jxN2SK1Lizam6o+LBmvhIxwZOfdYH8bdYCoSpqcKLJVG3qVcTwbhGJr3kpRcBRz39Ml6iZhJyI3pEoX3bJTlR5Pr1Kjpx13qGydSMos94CIYWAKhegI06aTdvvuiigBwjngo/Rk5S+iEGR5KmTqGyp27o6YxZy6D4NIc6PKUzhIUxfvuHNvfu
- sD2W1U7eyLdm/jCgticGDsRtweytsgCSYfbz0gdgUuL3EBYN3JLbAU+UZpy v/fyD4cHDWaizNy/KmOI6FFjvVh4LRCpGTGDVPHsQXaqvzUybaMb7HSfmBBzZqqfVbq9n5FqPjAgD2lJ0rkzb9XnVXHgr6bmMRlaTlBMAEQEAAYkCNgQYAQgAIBYhBINQI6gu+8G3S19i2ykkeY3MjxOkBQJiEog1AhsMAAoJECkkeY3MjxOkY1YQAKdGjHyIdOWSjM8DPLdGJaPgJdugHZowaoyCxffilMGXqc8axBtmYjUIoXurpl+f+a7S0tQhXjGUt09zKlNXxGcebL5TEPFqgJTHN/77ayLslMTtZVYHE2FiIxkvW48yDjZUlefmphGpfpoXe4nRBNto1mMB9Pb9vR47EjNBZCtWWbwJTIEUwHP2Z5fV9nMx9Zw2BhwrfnODnzI8xRWVqk7/5R+FJvl7s3nY4F+svKGD9QHYmxfd8Gx42PZc/qkeCjUORaOf1fsYyChTtJI4iNm6iWbD9HK5LTMzwl0n0lL7CEsBsCJ97i2swm1DQiY1ZJ95G2Nz5PjNRSiymIw9/neTvUT8VJJhzRl3Nb/EmO/qeahfiG7zTpqSn2dEl+AwbcwQrbAhTPzuHIcoLZYV0xDWzAibUnn7pSrQKja+b8kHD9WF+m7dPlRVY7soqEYXylyCOXr5516upH8vVBmqweCIxXSWqPAhQq8d3hB/Ww2A0H0PBTN1REVw8pRLNApEA7C2nX6RW0XmA53PIQvAP0EAakWsqHoKZ5WdpeOcH9iVlUQhRgemQSkhfNaP9LqR1XKujlTuUTpoyT3xwAzkmSxN1nABoutHEO/N87fpIbpbZaIdinF7b9srwUvDOKsywfs5HMiUZhLKoZzCcU/AEFjQsPTATACGsWf3JYPnWxL9
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+        d=1e100.net; s=20230601; t=1713866496; x=1714471296;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rgAcX24jtvExHPqFhKDe6sUvmzXmlqVKJ8fmRK4rLMM=;
+        b=QnZUGVP/6G7mcoWEsqegQFXvEwQ8JyQ+PGpxLnQBzhGyaQ2jX/3Ur5mIahojx7uCpC
+         X8msEsyUvwHvpJmN99f51pOmn7BA5Pxma1+kpbtsLao3RS+axKYW3xDayzYYLBBE4q/j
+         fgXZOkb29IjF3HMaZF69jLtfqeBH625USjY74xWFuHgQ3jnSqMM4HRoO8If7SbaLDlr8
+         TyGGhZZfPi9n5A59Y5P+alAwr5l4PIAX6Cr1b6F5dCWL+LcrzD96AkFJJ0g1mWtWFEEz
+         ZCxIJgoiigNS/FhqFdpwu9u2uvhB2xUPhiZfjPdBFv61mQT+cvqEtZ/VWc9qEjyWu3gn
+         B5nQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUenAvUDDBf4huGfXhZlXanQnx6O2Z0Y+3bD/25y3ahqfMrhTF9tbkaA/v9oZ4vP2oYxJMKMP80AqNDIymF3HjZgQNma+R7lctOHbAVS0To9NGxWkVK4xRGzOnfB+DbFrkdQ3p+36ifl+Q1
+X-Gm-Message-State: AOJu0YzqpOXm53bzjpLXSX8F9Mo4MnoZJQTh5Ytk0csayEcJbQpCGaWC
+	k66oOKehrMvbs9O0aCcm3qfYngzl7wrZtJEnZXq1+IHglBm79CtRMphYro2I
+X-Google-Smtp-Source: AGHT+IGC+P2lDwgI+w4apZDW103kzDvUza6R3SH/Y1k0APvg3OvWJthvZQ4jmkoM7ojuFQlphP/wQQ==
+X-Received: by 2002:a05:690c:94:b0:61a:f1fc:eb14 with SMTP id be20-20020a05690c009400b0061af1fceb14mr14665327ywb.18.1713866495899;
+        Tue, 23 Apr 2024 03:01:35 -0700 (PDT)
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
+        by smtp.gmail.com with ESMTPSA id n127-20020a0dfd85000000b0060a16fb9209sm2426110ywf.115.2024.04.23.03.01.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 03:01:35 -0700 (PDT)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dde0b30ebe2so5025592276.0;
+        Tue, 23 Apr 2024 03:01:35 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVsR5PtRlGJ5HkmxJ1CScy+iWGm3A02yvtpcrdEEstBV1Q/5X4froCZummg8lc+LAg+Zk78ar0FBFvk40hmpnHWw9+W+sam1xZCVvZlDZbl4MlIIdOacPGcCBRRDiEjHdxPM+CrSg2Ii9eP
+X-Received: by 2002:a25:2685:0:b0:de5:53c0:b9e5 with SMTP id
+ m127-20020a252685000000b00de553c0b9e5mr1358571ybm.40.1713866495562; Tue, 23
+ Apr 2024 03:01:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240409154253.3043822-1-hugo@hugovil.com> <20240409154253.3043822-4-hugo@hugovil.com>
+In-Reply-To: <20240409154253.3043822-4-hugo@hugovil.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 23 Apr 2024 12:01:23 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVq=rf-6o485KiA+zcwJPHMe5STKUtSWtFPs2nmvshu-A@mail.gmail.com>
+Message-ID: <CAMuHMdVq=rf-6o485KiA+zcwJPHMe5STKUtSWtFPs2nmvshu-A@mail.gmail.com>
+Subject: Re: [PATCH v4 3/5] serial: sc16is7xx: split into core and I2C/SPI
+ parts (core)
+To: Hugo Villeneuve <hugo@hugovil.com>
+Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, peterz@infradead.org, 
+	mingo@kernel.org, linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
+	andy.shevchenko@gmail.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2024-04-19 at 13:35 +0530, Ravi Gunasekaran wrote:
-> From: Jason Reeder <jreeder@ti.com>
->=20
-> The CPTS, by design, captures the messageType (Sync, Delay_Req, etc.)
-> field from the second nibble of the PTP header which is defined in the
-> PTPv2 (1588-2008) specification. In the PTPv1 (1588-2002) specification
-> the first two bytes of the PTP header are defined as the versionType
-> which is always 0x0001. This means that any PTPv1 packets that are
-> tagged for TX timestamping by the CPTS will have their messageType set
-> to 0x0 which corresponds to a Sync message type. This causes issues
-> when a PTPv1 stack is expecting a Delay_Req (messageType: 0x1)
-> timestamp that never appears.
->=20
-> Fix this by checking if the ptp_class of the timestamped TX packet is
-> PTP_CLASS_V1 and then matching the PTP sequence ID to the stored
-> sequence ID in the skb->cb data structure. If the sequence IDs match
-> and the packet is of type PTPv1 then there is a chance that the
-> messageType has been incorrectly stored by the CPTS so overwrite the
-> messageType stored by the CPTS with the messageType from the skb->cb
-> data structure. This allows the PTPv1 stack to receive TX timestamps
-> for Delay_Req packets which are necessary to lock onto a PTP Leader.
->=20
-> Signed-off-by: Jason Reeder <jreeder@ti.com>
-> Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
+Hi Hugo,
 
-Please provide a suitable fixes tag, thanks!
+On Tue, Apr 9, 2024 at 5:48=E2=80=AFPM Hugo Villeneuve <hugo@hugovil.com> w=
+rote:
+> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+>
+> Split the common code from sc16is7xx driver and move the I2C and SPI bus
+> parts into interface-specific source files.
+>
+> sc16is7xx becomes the core functions which can support multiple bus
+> interfaces like I2C and SPI.
+>
+> No functional changes intended.
+>
+> Also simplify and improve Kconfig entries.
+>   - Capitalize SPI keyword for consistency
+>   - Display list of supported ICs each on a separate line (and aligned) t=
+o
+>     facilitate locating a specific IC model
+>   - Add Manufacturer name at start of description string
+>   - Add UART keyword to description string
+>
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Paolo
+Thanks for your patch, which is now commit d49216438139bca0
+("serial: sc16is7xx: split into core and I2C/SPI parts (core)")
+in tty-next (next-20240415 and later).
 
+> --- a/drivers/tty/serial/Kconfig
+> +++ b/drivers/tty/serial/Kconfig
+> @@ -1021,41 +1021,30 @@ config SERIAL_SCCNXP_CONSOLE
+>           Support for console on SCCNXP serial ports.
+>
+>  config SERIAL_SC16IS7XX_CORE
+> -       tristate
+> -
+> -config SERIAL_SC16IS7XX
+> -       tristate "SC16IS7xx serial support"
+> +       tristate "NXP SC16IS7xx UART support"
+
+Hence this replaces SERIAL_SC16IS7XX_CORE by SERIAL_SC16IS7XX,
+so arch/mips/configs/cu1??0-neo_defconfig needs to updated.
+
+>         select SERIAL_CORE
+> -       depends on (SPI_MASTER && !I2C) || I2C
+> +       select SERIAL_SC16IS7XX_SPI if SPI_MASTER
+> +       select SERIAL_SC16IS7XX_I2C if I2C
+
+So if SPI_MASTER or I2C is enabled, the corresponding SERIAL_SC16IS7XX_*
+subdriver can no longer be disabled?  According to
+https://lore.kernel.org/all/20240403123501.8ef5c99f65a40ca2c10f635a@hugovil=
+com/
+you did want to support that?
+
+>         help
+> -         This selects support for SC16IS7xx serial ports.
+> -         Supported ICs are SC16IS740, SC16IS741, SC16IS750, SC16IS752,
+> -         SC16IS760 and SC16IS762. Select supported buses using options b=
+elow.
+> +         Core driver for NXP SC16IS7xx UARTs.
+> +         Supported ICs are:
+> +
+> +           SC16IS740
+> +           SC16IS741
+> +           SC16IS750
+> +           SC16IS752
+> +           SC16IS760
+> +           SC16IS762
+> +
+> +         The driver supports both I2C and SPI interfaces.
+>
+>  config SERIAL_SC16IS7XX_I2C
+> -       bool "SC16IS7xx for I2C interface"
+> -       depends on SERIAL_SC16IS7XX
+> -       depends on I2C
+> -       select SERIAL_SC16IS7XX_CORE if SERIAL_SC16IS7XX
+> -       select REGMAP_I2C if I2C
+> -       default y
+> -       help
+> -         Enable SC16IS7xx driver on I2C bus,
+> -         If required say y, and say n to i2c if not required,
+> -         Enabled by default to support oldconfig.
+> -         You must select at least one bus for the driver to be built.
+> +       tristate
+> +       select REGMAP_I2C
+>
+>  config SERIAL_SC16IS7XX_SPI
+> -       bool "SC16IS7xx for spi interface"
+> -       depends on SERIAL_SC16IS7XX
+> -       depends on SPI_MASTER
+> -       select SERIAL_SC16IS7XX_CORE if SERIAL_SC16IS7XX
+> -       select REGMAP_SPI if SPI_MASTER
+> -       help
+> -         Enable SC16IS7xx driver on SPI bus,
+> -         If required say y, and say n to spi if not required,
+> -         This is additional support to existing driver.
+> -         You must select at least one bus for the driver to be built.
+> +       tristate
+> +       select REGMAP_SPI
+>
+>  config SERIAL_TIMBERDALE
+>         tristate "Support for timberdale UART"
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
