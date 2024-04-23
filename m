@@ -1,94 +1,102 @@
-Return-Path: <linux-kernel+bounces-155935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ABF18AF9FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:45:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A4DB8AFA24
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:46:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6853AB2AFB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:45:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D6691C22AF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BAB14830D;
-	Tue, 23 Apr 2024 21:43:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 958CB148FE2;
+	Tue, 23 Apr 2024 21:44:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b="jPxOIJhR"
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [185.185.170.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bfjyqmdt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rc+C+8xr";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bfjyqmdt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rc+C+8xr"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9886145B06;
-	Tue, 23 Apr 2024 21:43:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.185.170.37
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713908615; cv=pass; b=fv/asxhwogFTgO0Q9ypeDdsQyeDR5/HxDz1jrTJfwyJ7Csr2c1bemX/ShdixGlknkFCZWzBQS82+/ZShtHK6gRiOKx/9vbD0L9vrklWzW+tXG33wLiS99LskqNomL7aqyTq+66gL8AveWncZTc3YaxHXRHI3+M4lvw6Iewqd6hs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713908615; c=relaxed/simple;
-	bh=lZmTtkNLtHoyI684P55R2eGce23W5SDipF7n66IgUMk=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0506E148850;
+	Tue, 23 Apr 2024 21:43:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713908640; cv=none; b=SUy/1xI3YyRXA6RW/hLAhKy4a8aBRCGjTunRspENOm08pPvJNNm1pGXQxhjHVRDEubIlFJoyjPI62rB3sJB2VAy7AhM/9QSNeOM7ZiADuUcw3NIS3x/yNMZ1s0VG9BMCAtIQPuxISWwJ5P2ncDMUkHdz7xhJ6F982/20ZDzeC8U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713908640; c=relaxed/simple;
+	bh=ecOe/OzguW1PvCBYxp6vLdDqIxUHefvPJoGSRBkzwo8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JaAwImYBo/PCo+KiODxQZluXTjnAbOGAYiR3isPDkzOcgo0HyssV2AI7ApuJqAjTbJV5zRFIqdt5tjSxruRsOPhTM1IjzH29vH5KgPYgrNFW8CAsiWffZUbFG44G0ipIZZwtf6fNgTpfT0Y5fi0MKbPGcZ7p6nj1HLAjV4c6Opo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b=jPxOIJhR; arc=pass smtp.client-ip=185.185.170.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
-Received: from hillosipuli.retiisi.eu (80-248-247-191.cust.suomicom.net [80.248.247.191])
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xl/f5N4FxUtF5pjkUq0UzScnZfCcfG1fmrDC8QxpkjabpvE9PMjdYu7MvOEoZ/o3q2blApw1eD1WXvKSf8Ko4ZDdEVK5W7B2VLtjIOH6zw+71SnDDr/z9QJ/3gqX5RDn+NEIQlMlSz9lPtPk2kR0ngpEGnkSGafaZMK1CLWXnUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bfjyqmdt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rc+C+8xr; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bfjyqmdt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rc+C+8xr; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: sailus)
-	by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4VPFwq32vVz49Q05;
-	Wed, 24 Apr 2024 00:43:23 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-	t=1713908604;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 10D853877E;
+	Tue, 23 Apr 2024 21:43:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713908637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OLqMEJxoaWFasN2MCsFBWnfqPLspdvp7bGhu9Pbap4g=;
-	b=jPxOIJhRkaSVTPHtwmPjyp+Q5vajhxCS9fRVxhQJWQYQDNWto33afXvHlu8/mZzHm01qiG
-	uhGNt2j7n+LcINKPE9PbmXvtZv2ddgxFS6psywd1rocS8VJW5DsWPT3U3whSIQgqKv74f3
-	/vVTflu0zQcqLPwjnFphJRa+fk/OELriVgs01OSESbY+RzZ0lM4EsWxZjVi6vJZBJd/PRY
-	C4Ve0wfBmSuZcuYfS7mEmwRixDGxGwhIRzRcJ7Lf6Bi7UPeVluSTXYjJjvuaIS5SZLMRmJ
-	Q7ylQDyNX9dgr0sZIovstxKvF0aKavJ6gFGhVsS4Ryj5BlinaJrNTt1t9W9lKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-	s=lahtoruutu; t=1713908604;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	bh=uMpaUDb7FMjHQOS99Uhw1BMiERfdDNdNMDsWOmWv3Lw=;
+	b=bfjyqmdtJVHu7qZ1D/wL0GNOUd+Fk+lmcKoK1LRmjCm2N0VdNF6PE/iUBkQmJTzh1j17GC
+	LKZiwB9u39PULkgcv7Swh4krfackJXmhMlJEmv/BPj7jX5T4fOZ9ytA9YFM2QYPtaJahRG
+	arKFYDtlUXuuD8Mk4uzL3YO2XasmAbw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713908637;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OLqMEJxoaWFasN2MCsFBWnfqPLspdvp7bGhu9Pbap4g=;
-	b=M6zUs/EfUIPYgvaq1nPxdq+0GrLsk1Y2xjmDep+Ag7vSNnFdg+QiuIzWeGo9Jv7oSFEW8r
-	KI9j7cqu0mobbSetMMnjsujDmw4oLrvR85QlB1U11XbrhjpFdIwY8rCa4jC3H1bwjsurHu
-	gG4MCEsmsriJXk2q2RwJxneRdpCnuwSatEnJkL+U8kzdTwFmOG4LHVb+bvvsJs1AEIo7f3
-	1R6i0F/wFDNuUDfBlqIB5QmCTLG44LgETeljEGk9bnrjLnD910h7IOAoTrbDKfdgoLpRJy
-	mFvwlgENBRoucLCUN0weT8yE93P6pVK+EYB8yr1m4W1i6rd4RBp4J7YIxzlS5A==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1713908604; a=rsa-sha256;
-	cv=none;
-	b=BytMvg5F1jRL6Ol5e3nsjLiTikopKfbBfes1/GXjWaBynT+Ruq1M7sv3Nwl9MLpzLnv/6U
-	QfdLODRu8NQaBBSegVFN5IpE53EK1m8rfxFuo20YrnhJWyjPKrt075eH4hc4Sao7QwuFtn
-	FLaRaNCUpKnUYECuVqrY8e8oc3QmbKBvCzsuMUSb7I3VduiYELdm1FzXBvwVhzQ7y1bkJ4
-	xLsH9H89nNRPTEaYHLvmUu6kFABHaiynnB5ezrTP7qKh2CP9KuntykpufPD2Zvsmo8a3NI
-	Rg3H7AUG9CuwjwYRi0FWM/bWgOEIojqQ7sXDD4lTyGz5LX/lNy60sZM8NB40fg==
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+	bh=uMpaUDb7FMjHQOS99Uhw1BMiERfdDNdNMDsWOmWv3Lw=;
+	b=rc+C+8xrdjAtWOpaFGijPrl9aTwfZGiDrgWfprgstheGp5c3fKJrpRcFGCed7+8pA5q8Oq
+	OgZRu09p6iYQ7iAw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=bfjyqmdt;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=rc+C+8xr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713908637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uMpaUDb7FMjHQOS99Uhw1BMiERfdDNdNMDsWOmWv3Lw=;
+	b=bfjyqmdtJVHu7qZ1D/wL0GNOUd+Fk+lmcKoK1LRmjCm2N0VdNF6PE/iUBkQmJTzh1j17GC
+	LKZiwB9u39PULkgcv7Swh4krfackJXmhMlJEmv/BPj7jX5T4fOZ9ytA9YFM2QYPtaJahRG
+	arKFYDtlUXuuD8Mk4uzL3YO2XasmAbw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713908637;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uMpaUDb7FMjHQOS99Uhw1BMiERfdDNdNMDsWOmWv3Lw=;
+	b=rc+C+8xrdjAtWOpaFGijPrl9aTwfZGiDrgWfprgstheGp5c3fKJrpRcFGCed7+8pA5q8Oq
+	OgZRu09p6iYQ7iAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 14EE2634C96;
-	Wed, 24 Apr 2024 00:43:23 +0300 (EEST)
-Date: Tue, 23 Apr 2024 21:43:22 +0000
-From: Sakari Ailus <sakari.ailus@iki.fi>
-To: Julien Massot <julien.massot@collabora.com>
-Cc: linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-	kernel@collabora.com, linux-kernel@vger.kernel.org,
-	mchehab@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Subject: Re: [PATCH v6 1/4] dt-bindings: media: add Maxim MAX96717 GMSL2
- Serializer
-Message-ID: <Zigrei9JB9L2XUEO@valkosipuli.retiisi.eu>
-References: <20240325131634.165361-1-julien.massot@collabora.com>
- <20240325131634.165361-2-julien.massot@collabora.com>
- <ZhkWqEAN4RozmPlT@valkosipuli.retiisi.eu>
- <f5a178b9-2eeb-4737-a051-b43cde9fae20@collabora.com>
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 02F7313929;
+	Tue, 23 Apr 2024 21:43:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Lby0AJ0rKGYBeAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 23 Apr 2024 21:43:57 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 9F021A082F; Tue, 23 Apr 2024 23:43:52 +0200 (CEST)
+Date: Tue, 23 Apr 2024 23:43:52 +0200
+From: Jan Kara <jack@suse.cz>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org, jack@suse.cz, ojaswin@linux.ibm.com,
+	ritesh.list@gmail.com
+Subject: Re: [PATCH v2 4/5] ext4: use correct criteria name instead stale
+ integer number in comment
+Message-ID: <20240423214352.t7yelmtvfbu7oggi@quack3>
+References: <20240423124046.974134-1-shikemeng@huaweicloud.com>
+ <20240423124046.974134-5-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,38 +105,91 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f5a178b9-2eeb-4737-a051-b43cde9fae20@collabora.com>
+In-Reply-To: <20240423124046.974134-5-shikemeng@huaweicloud.com>
+X-Spam-Flag: NO
+X-Spam-Score: -2.51
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 10D853877E
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_TLS_LAST(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[mit.edu,dilger.ca,vger.kernel.org,suse.cz,linux.ibm.com,gmail.com];
+	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email]
 
-Hi Julien,
+On Tue 23-04-24 20:40:45, Kemeng Shi wrote:
+> Use correct criteria name instead stale integer number in comment
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-On Tue, Apr 23, 2024 at 03:36:39PM +0200, Julien Massot wrote:
-> > > +            properties:
-> > > +              data-lanes:
-> > > +                minItems: 1
-> > > +                maxItems: 4
-> > > +
-> > > +              lane-polarities:
-> > > +                minItems: 1
-> > > +                maxItems: 5
-> > > +
-> > > +              bus-type:
-> > > +                enum:
-> > > +                  - 1 # MEDIA_BUS_TYPE_CSI2_CPHY
-> > > +                  - 4 # MEDIA_BUS_TYPE_CSI2_DPHY
-> > 
-> > Now that you have C-PHY here, does the hardware support data line order
-> > mapping? Just wondering. The bindings can be added without that and support
-> > added later on---that's what the video-interfaces.yaml is currently
-> > missing.
-> > 
-> > lane-polarities is only valid for D-PHY. What about the data-lanes, the
-> > maximum is probably different for C-PHY?
-> My mistake here; MAX96717 doesn't support C-PHY; I think I was confused by
-> some of the schemas implying a deserializer with C-PHY support.
-> I will drop the bus-type property in v7.
+You have cleaned up the superfluous "CR=" bits in several places but still
+left them is couple more :). See below:
 
-Ack, thanks!
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 5acf413808a2..71b2f9a18875 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -1131,8 +1131,9 @@ static void ext4_mb_choose_next_group(struct ext4_allocation_context *ac,
+>  		ext4_mb_choose_next_group_best_avail(ac, new_cr, group);
+>  	} else {
+>  		/*
+> -		 * TODO: For CR=2, we can arrange groups in an rb tree sorted by
+> -		 * bb_free. But until that happens, we should never come here.
+> +		 * TODO: For CR=CR_GOAL_LEN_SLOW, we can arrange groups in an
+			     ^^^ Still you have left these superfluous
+"CR=" bits here.
+ 
+> +		 * rb tree sorted by bb_free. But until that happens, we should
+> +		 * never come here.
+>  		 */
+>  		WARN_ON(1);
+>  	}
+> @@ -3445,10 +3446,11 @@ static int ext4_mb_init_backend(struct super_block *sb)
+>  	}
+>  	if (sbi->s_mb_prefetch > ext4_get_groups_count(sb))
+>  		sbi->s_mb_prefetch = ext4_get_groups_count(sb);
+> -	/* now many real IOs to prefetch within a single allocation at cr=0
+> -	 * given cr=0 is an CPU-related optimization we shouldn't try to
+> -	 * load too many groups, at some point we should start to use what
+> -	 * we've got in memory.
+> +	/*
+> +	 * now many real IOs to prefetch within a single allocation at
+> +	 * cr=CR_POWER2_ALIGNED. Given cr=CR_POWER2_ALIGNED is an CPU-related
+           ^^^  and here               ^^^
 
+> +	 * optimization we shouldn't try to load too many groups, at some point
+> +	 * we should start to use what we've got in memory.
+>  	 * with an average random access time 5ms, it'd take a second to get
+>  	 * 200 groups (* N with flex_bg), so let's make this limit 4
+>  	 */
+
+								Honza
 -- 
-Sakari Ailus
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
