@@ -1,160 +1,180 @@
-Return-Path: <linux-kernel+bounces-155293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF8F88AE857
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:38:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3A8E8AE85A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:38:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1FAA5B22367
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:38:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F9A71F21343
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:38:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B65C136988;
-	Tue, 23 Apr 2024 13:38:02 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D79F913699E;
+	Tue, 23 Apr 2024 13:38:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="gIYXTO+9"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF164135A61
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:37:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CBA9134CFE;
+	Tue, 23 Apr 2024 13:38:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713879481; cv=none; b=fLrhqycjjGbLgjhCnHPdwQ3KOgBbTojQVzK4qAIq2Q0qPZe1uxxuOAE8uuncpmAWEPNzAVMdXfWx0xJzg2Z1NX0nQAcInJP4EAh+lB63BFGRb+UvTDC6gmB5ozh2gPnOI/2P5YSGaSq2xGYMXgfpzi4rJXNm9W2/e1fBl0unE5I=
+	t=1713879494; cv=none; b=DDtBSI4noJ3GjsUMem4ICWTxu8KlZ52+SO5Nc+P7MZdgZ3sZNhG+tqnnRfUHI2JbtQqEb2Irdltt2YlWMUaqZVS/dR8exnKKVppHoT2yNmn4j20vfACtIay5VHRkWnQJdzXCyhljjMtxuhkvypsqUCy1rg4pPqbD0k1DJKONMiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713879481; c=relaxed/simple;
-	bh=69jnoKvvCDmMn/lAjGuLECv91VIAAt67LYlGv0q5hNI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BwfcsRdQcTt3EXMrSHo+p6m3VuRWyQtSsXrkCLNs/WDduNVGMrMa0v82WvpA3dguXXFMe4YlP+mCyRc9iP5g8iLl1YaOViPqGLQOZfndxskcIuyANmFB80yeep0iE5oqL6uU9Tc9Wf4V0gjzg8naWbpUaXsI9U8F8y9qMA4V72Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mgr@pengutronix.de>)
-	id 1rzGLJ-0000Fg-JC; Tue, 23 Apr 2024 15:37:53 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mgr@pengutronix.de>)
-	id 1rzGLI-00Du9u-IJ; Tue, 23 Apr 2024 15:37:52 +0200
-Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <mgr@pengutronix.de>)
-	id 1rzGLI-009tVB-1Z;
-	Tue, 23 Apr 2024 15:37:52 +0200
-Date: Tue, 23 Apr 2024 15:37:52 +0200
-From: Michael Grzeschik <mgr@pengutronix.de>
-To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] usb: dwc3: gadget: check drained isoc ep
-Message-ID: <Zie5sN473m2rgNTK@pengutronix.de>
-References: <20240307-dwc3-gadget-complete-irq-v2-1-8c5e9b35f7b9@pengutronix.de>
- <20240402230555.xgt5uilc42diyr4m@synopsys.com>
- <20240402231848.4hzzrxegjrcmdab2@synopsys.com>
- <20240404002906.wk6xbz2wp2tf2xwn@synopsys.com>
+	s=arc-20240116; t=1713879494; c=relaxed/simple;
+	bh=R37CrBrSZbw0FfGw18EfnNQE6N9d3UBGkfxO1/LRxts=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bikWsvOOjiLdap4sADbpKFGfjpFL1SVwGLkUgCNsEmTiS41qvEapQ9KWikuUiXJBc2whxHesnlQ1pb2aer+fBvRFf46TQPldlV9EfBCpVAyWqyVnhQ8vF4jaTc+v/t40sSpQc9g3amlB1GLicdhTiwWWqBB7/T1NYLOvBGS8/Gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=gIYXTO+9; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713879490;
+	bh=R37CrBrSZbw0FfGw18EfnNQE6N9d3UBGkfxO1/LRxts=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=gIYXTO+9y4i4W0WgLhT9Paj+W5pzGT1LnrmP4o6+cSJxoCNmCaTVYoWgvs8TLh5GO
+	 yNPr1hX9MiHT/8aLw3Bxhh1Eof9AC5DeXPfIlHTfQGsVq2MX/B9VFAB/8qgjNMUrGF
+	 iEika5igy2qtKd5V41ek2RCKcSiR3i6fSyUoaIbt8+txxYKOj24YhNOYkCPsgBwtU5
+	 lsKoT1AP2mOzLltygOrAwAFrr/3qVGDebPNsdAE7FWftSFO22c+sI4VmK7sCwGUy2G
+	 w8oP54GafMSPAe/9LIUjjZ9Blt8Wl9TaX3ztAovlpNiWOLClZMewXosEhAt7xmGgx0
+	 imIIfuRnfyY/Q==
+Received: from [100.74.67.65] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: jmassot)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3C8F73782136;
+	Tue, 23 Apr 2024 13:38:10 +0000 (UTC)
+Message-ID: <3b2417a6-2b25-4a43-928b-926649a48571@collabora.com>
+Date: Tue, 23 Apr 2024 15:38:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="M6Szu+DUfPV4wPeQ"
-Content-Disposition: inline
-In-Reply-To: <20240404002906.wk6xbz2wp2tf2xwn@synopsys.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mgr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 3/4] media: i2c: add MAX96717 driver
+To: Sakari Ailus <sakari.ailus@iki.fi>
+Cc: linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ kernel@collabora.com, linux-kernel@vger.kernel.org, mchehab@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+References: <20240325131634.165361-1-julien.massot@collabora.com>
+ <20240325131634.165361-4-julien.massot@collabora.com>
+ <ZhkZp9KKrRy7smLn@valkosipuli.retiisi.eu>
+Content-Language: en-US
+From: Julien Massot <julien.massot@collabora.com>
+In-Reply-To: <ZhkZp9KKrRy7smLn@valkosipuli.retiisi.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Hi Sakari,
 
---M6Szu+DUfPV4wPeQ
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Thinh,
-
-On Thu, Apr 04, 2024 at 12:29:14AM +0000, Thinh Nguyen wrote:
->On Tue, Apr 02, 2024, Thinh Nguyen wrote:
->> On Tue, Apr 02, 2024, Thinh Nguyen wrote:
->> > My concern here is for the case where transfer_in_flight =3D=3D true a=
-nd
+On 4/12/24 13:23, Sakari Ailus wrote:
+> Hi Julien,
+> 
+> Thanks for the update.
+> 
+> Could you also cc me to the possible further updates, please?
+> 
+> On Mon, Mar 25, 2024 at 02:16:33PM +0100, Julien Massot wrote:
+>> This driver handles the MAX96717 serializer in tunnel mode.
+>> All incoming CSI traffic will be tunneled through the GMSL2
+>> link.
 >>
->> I mean transfer_in_flight =3D=3D false
+>> The MAX96717 driver can handle MAX96717 and MAX96717F variants
+>> with the same "maxim,max96717f" compatible.
 >>
->> > list_empty(started_list) =3D=3D false. That means that the requests in=
- the
->> > started_list are completed but are not given back to the gadget driver.
->> >
->> > Since they remained in the started_list, they will be resubmitted again
->> > on the next usb_ep_queue. We may send duplicate transfers right?
->
->Actually, since the requests are completed, the HWO bits are cleared,
->nothing is submitted and no duplicate. But since the requests are not
->given back yet from the started_list, then the next Start_Transfer
->command will begin with the TRB address of the completed request
->(HWO=3D0), the controller may not process the next TRBs. Have you tested
->this scenario?
->
->> >
->> > You can try to cleanup requests in the started_list, but you need to be
->> > careful to make sure you're not out of sync with the transfer completi=
-on
->> > events and new requests from gadget driver.
->> >
->
->Was the problem you encounter due to no_interrupt settings where the
->it was set to the last request of the uvc data pump?
->
->if that's the case, can UVC function driver make sure to not set
->no_interrupt to the last request of the data pump from the UVC?
+>> Signed-off-by: Julien Massot <julien.massot@collabora.com>
+>> ---
+>> Change since v5:
+>>   - set the driver compatible back to MAX96717F that can be used as a fallback for MAX96717
+>>
+>> Change since v4:
+>>   - make the driver compatible with MAX96717 instead of MAX96717F
+>>   - Add the device id for the MAX96717
+>>   - remove hw_data structure for now, it can be usefull later for handling different serializers e.g max9295
+>>
+>> Change since v3:
+>>   - Maintainers: align to the new binding path
+>>   - Kconfig: better describe the symbol
+>>   - store the v4l2_mbus_config_mipi_csi2 structure instead of the full endpoint in the driver private structure
+>>   - use MAX96717_PAD_SINK/SOURCE instead of 0/1 for pad intialization
+>>   - Removed incorrect call to fwnode_handle_put(priv->sd.fwnode)
+>>   - Use unsigned int instead of u8
+>>   - Allocate clk name out of the clk struct initialization
+>>   - fixed multiline comment
+>>   - Removed one unnecessary goto at the end of the probe function
+>>
+>> Change since v2:
+>>   - Use CCI helpers instead of recoding register access
+>>   - add missing bitfield header
+>> ---
+>>   MAINTAINERS                  |   7 +
+>>   drivers/media/i2c/Kconfig    |  14 +
+>>   drivers/media/i2c/Makefile   |   1 +
+>>   drivers/media/i2c/max96717.c | 934 +++++++++++++++++++++++++++++++++++
+>>   4 files changed, 956 insertions(+)
+>>   create mode 100644 drivers/media/i2c/max96717.c
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index b43102ca365d..c43088157f6d 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -13277,6 +13277,13 @@ S:	Maintained
+>>   F:	Documentation/devicetree/bindings/media/i2c/maxim,max96712.yaml
+>>   F:	drivers/staging/media/max96712/max96712.c
+>>   
+>> +MAX96717 GMSL2 SERIALIZER DRIVER
+>> +M:	Julien Massot <julien.massot@collabora.com>
+>> +L:	linux-media@vger.kernel.org
+>> +S:	Maintained
+>> +F:	Documentation/devicetree/bindings/media/i2c/maxim,max96717.yaml
+>> +F:	drivers/media/i2c/max96717.c
+>> +
+>>   MAX9860 MONO AUDIO VOICE CODEC DRIVER
+>>   M:	Peter Rosin <peda@axentia.se>
+>>   L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+>> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+>> index 56f276b920ab..1a99396edbcf 100644
+>> --- a/drivers/media/i2c/Kconfig
+>> +++ b/drivers/media/i2c/Kconfig
+>> @@ -1573,6 +1573,20 @@ config VIDEO_DS90UB960
+>>   	  Device driver for the Texas Instruments DS90UB960
+>>   	  FPD-Link III Deserializer and DS90UB9702 FPD-Link IV Deserializer.
+>>   
+>> +config VIDEO_MAX96717
+>> +	tristate "Maxim MAX96717 GMSL2 Serializer support"
+>> +	depends on OF && I2C && VIDEO_DEV && COMMON_CLK
+>> +	select I2C_MUX
+>> +	select GPIOLIB
+>> +	select V4L2_CCI_I2C
+> 
+> I think you'll also need MEDIA_CONTROLLER, VIDEO_V4L2_SUBDEV_API and
+> V4L2_FWNODE.
 
-Actually no. What I want to do is to ensure that the dwc3 stream
-is stopped when the hardware was drained. Which is a valid point
-in my case. Since we are actually potentially enqueueing new request
-in the complete handler, be it zero length or real transfers.
+You are right, will be fixed in v7.
 
-Calling kick_transfer on an drained hw will absolutely run into
-missed isocs if the irq thread was called late. We saw this on real hardwar=
-e,
-where another irq_thread was scheduled with the same priority as the
-dwc3 irq_thread but was running so long that the HW was running dry in
-between the hw irq and the actual dwc3_irq_thread run.
+> 
+>> +	help
+>> +	  Device driver for the Maxim MAX96717 GMSL2 Serializer.
+>> +	  MAX96717 serializers convert video on a MIPI CSI-2
+>> +	  input to a GMSL2 output.
+>> +
+>> +	  To compile this driver as a module, choose M here: the
+>> +	  module will be called max96717.
+>> +
+>>   endmenu
+>>   
+>>   endif # VIDEO_DEV
+> 
 
-Michael
-
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---M6Szu+DUfPV4wPeQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmYnuawACgkQC+njFXoe
-LGT/DxAAwz6KulNc5KIUpueaEMu7WCq3l/4Bf+MoO37W9b1F8VVNE2jwZaLn/8iO
-rYUEIyJ6yqeiB4PrT3oBUwmqXQ39xMzzPqeFYwNA9WOa9e2vBVNE9ZesNpZVra/Q
-uNEoMVN56nWz2kIRLhl5egV5t96GGQMI4zi6UQx8OHXK6zKbhJcNh5zrDZT6gbRi
-X2MDOKF2TS9jrJK8TyU+gtbyjPdcrgmKfhv/XYmk3KaMBnVMx9EFoevQ+n2Vl6Nn
-51qkbjEooQ4uma+IitEI6tLjaytCOq57JPkMOUqArzXyhDyAhzmo8Lj0RDAhfFus
-TFk1TP6ee30tT4+Wvn6x8zD4FdOwqhYhaDfqRhmwdTGuAZ4bjGbsYhn/IT3PSNGF
-VyA1XiBqd+aqqBoxqTqMUChZ/uXjxqnJSjryCdwkNjHbxxkjoA9WWPE3QyBZXewn
-oEKaNC7G34SiyqubGuLinDBD9Q6gbtNSxCSxCdAEOWKUfI6NVjwr9Dve7dhpTlAu
-EqfJJu+Ittz3kB5qddDV43OVc7tpv2Tl6t04gyIuiNyoWxY0InHVJUhYW8hXFle7
-EaRn10m7ApNsKmF3Xmixw1uO6qp/Op4F2lvFIgNgkOowrm+zLWUULeR8RFx/HvWR
-b5cfRa47S0aUYmloKE93BoH7hN5S/JQ8fNzT+C3ljMr/eL3cEt0=
-=kvaR
------END PGP SIGNATURE-----
-
---M6Szu+DUfPV4wPeQ--
+-- 
+Julien Massot
+Senior Software Engineer
+Collabora Ltd.
+Platinum Building, St John's Innovation Park, Cambridge CB4 0DS, UK
+Registered in England & Wales, no. 5513718
 
