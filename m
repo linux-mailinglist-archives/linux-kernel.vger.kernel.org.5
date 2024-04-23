@@ -1,143 +1,145 @@
-Return-Path: <linux-kernel+bounces-154936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69CAC8AE344
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:02:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC32E8AE4A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:47:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A52701C21C81
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:02:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AE861F204E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:47:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72AD57E116;
-	Tue, 23 Apr 2024 11:02:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B55813DDA3;
+	Tue, 23 Apr 2024 11:40:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="REDNVa84"
-Received: from forward103b.mail.yandex.net (forward103b.mail.yandex.net [178.154.239.150])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kckn1+TF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79855768F0;
-	Tue, 23 Apr 2024 11:02:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D09313D8B1;
+	Tue, 23 Apr 2024 11:40:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713870136; cv=none; b=uwXrxTYCPSOxuSx3gvx+Q9Y59FRrBPzLVom/R+0r/aGM6imSplzIH+evXWmE3kPwuApUr8U8LA3vFDKIzYElYPG+j7BKeVCjSmIkg5ngn0wkFIJ42A6tkCyIyQxzZfAPkXCoPGWa575ZVlU0ypnhQZTjEVgZy0tQ54jI6nY+6Xg=
+	t=1713872453; cv=none; b=ZpUL09OffylU7V65wQ8zDDCm+Jjz0A7zMCk4xkKHQ98pmYudm6WqSRN3O/rXfuJeukUhX/rN9j4T+lUZXlHpMudHIR9EGoQamtqCe0Q0Y9Kerm2/dBCHg2kxkNWJMFfi+p2wNLx0lf60WH4dhtdbdF1mJP+lmgfXNm7SpHUP/zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713870136; c=relaxed/simple;
-	bh=t2/9kzu5cn37NlBr754kfbC9x4lMRcCfuiRc7DMS7GA=;
+	s=arc-20240116; t=1713872453; c=relaxed/simple;
+	bh=F5YyWvdNkv8DKw0T3YI20djvYl+RtxbGRqQQS14nsNI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oKIb4sa4AvG0XspedcCSi44vxH5//oLIiujCnqguJlFtADpPPWgCRY7jSU765Up396RhicR+3rn0sGAo+Iq08qeQZ8jREhM8R/RmaCuzeqBlyvTyF0bcWiCxcgEOrxQ0CvYRxon30l+JaW7WncIbnym+BDKVxJpWFsd9eoHX27s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=REDNVa84; arc=none smtp.client-ip=178.154.239.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
-Received: from mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:141d:0:640:ccff:0])
-	by forward103b.mail.yandex.net (Yandex) with ESMTPS id 5E52860917;
-	Tue, 23 Apr 2024 14:02:05 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 22IG0mHOiCg0-QkXjyiHP;
-	Tue, 23 Apr 2024 14:02:04 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1713870124; bh=5kgbLMAE980GVvENsTEIPE4CBNTxsGKzzeodVahHYoU=;
-	h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
-	b=REDNVa84SPivIOs507tMPS93uvn3SR3mVPvKLgWzufmj6aeinJUil5LceO6rinnsh
-	 t72TwzFis8gFJjWg6nAx/wu/F4axq44QP+PfiSWIM7vA3+DvvmpRy0QUdDNH2UzO//
-	 PwTxQrKO+IhslUWv6Bp9PaFCZlv/h3UPhxZz8NzM=
-Authentication-Results: mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-From: Stas Sergeev <stsp2@yandex.ru>
-To: linux-kernel@vger.kernel.org
-Cc: Stas Sergeev <stsp2@yandex.ru>,
-	Stefan Metzmacher <metze@samba.org>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Andy Lutomirski <luto@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	Jeff Layton <jlayton@kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Alexander Aring <alex.aring@gmail.com>,
-	linux-fsdevel@vger.kernel.org,
-	linux-api@vger.kernel.org,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	=?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
-Subject: [PATCH 1/2] fs: reorganize path_openat()
-Date: Tue, 23 Apr 2024 14:01:47 +0300
-Message-ID: <20240423110148.13114-2-stsp2@yandex.ru>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240423110148.13114-1-stsp2@yandex.ru>
-References: <20240423110148.13114-1-stsp2@yandex.ru>
+	 MIME-Version:Content-Type; b=k/E+puHQvaJUfKY/izN2qo22oP/zDDQ2TXOvSt0iDFIIocC0ZDY30hi4gVpGOwvbP6CQXF10tOlayPpiJVOFIKjw3yLAEv0JGVxmzTpc8JFFUDE4DrKmcD1Q0xzcXHnClsXSH2z0louZgo5k+Co45F3AhMzlQxNO0oHcJPIh/GA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kckn1+TF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCEA9C2BD11;
+	Tue, 23 Apr 2024 11:40:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713872453;
+	bh=F5YyWvdNkv8DKw0T3YI20djvYl+RtxbGRqQQS14nsNI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Kckn1+TFznkwbzHSn9b8SEuqXxSUHLdCFJ9DIckD1Nm1ln/ymm9jEuKPhZVPqXG+8
+	 XeDgiFxUnCqZiFAPle8jA05j9u5CMTcCj4V6u87+T6kMSCqoTA5nNgP0u0EDjXi/VG
+	 dJWmRaLM5Rai0oUjrWD3ZGLQlPcUAdkv/+g/rA6rvokQsRCexIaW8kxBYZVMvf1Bt4
+	 50zuvGxXgGixmhHfqcN6yq3TAN5kRk1cD+uVmoPDMwv4dKsuXz43sunD8YQ/mnvQg6
+	 c7He5CodDZ7cQFQl9YInAJII1+DlPKNsVx974nK/PjfooQvc0vMTemPtvEFcsgmG9t
+	 te02n4pBHNomw==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Alex Deucher <alexander.deucher@amd.com>,
+	Kees Cook <keescook@chromium.org>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Sasha Levin <sashal@kernel.org>,
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 14/16] drm/radeon: silence UBSAN warning (v3)
+Date: Tue, 23 Apr 2024 07:01:47 -0400
+Message-ID: <20240423110151.1658546-14-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240423110151.1658546-1-sashal@kernel.org>
+References: <20240423110151.1658546-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.6.28
 Content-Transfer-Encoding: 8bit
 
-This patch moves the call to alloc_empty_file() below the call to
-path_init(). That changes is needed for the next patch, which adds
-a cred override for alloc_empty_file(). The needed cred info is only
-available after the call to path_init().
+From: Alex Deucher <alexander.deucher@amd.com>
 
-No functional changes are intended by that patch.
+[ Upstream commit 781d41fed19caf900c8405064676813dc9921d32 ]
 
-Signed-off-by: Stas Sergeev <stsp2@yandex.ru>
+Convert a variable sized array from [1] to [].
 
-CC: Eric Biederman <ebiederm@xmission.com>
-CC: Alexander Viro <viro@zeniv.linux.org.uk>
-CC: Christian Brauner <brauner@kernel.org>
-CC: Jan Kara <jack@suse.cz>
-CC: Andy Lutomirski <luto@kernel.org>
-CC: linux-fsdevel@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
+v2: fix up a few more.
+v3: integrate comments from Kees.
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Tested-by: Jeff Johnson <quic_jjohnson@quicinc.com> (v2)
+Acked-by: Christian König <christian.koenig@amd.com> (v1)
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: keescook@chromium.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/namei.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/radeon/pptable.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/fs/namei.c b/fs/namei.c
-index c5b2a25be7d0..2fde2c320ae9 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -3782,22 +3782,30 @@ static struct file *path_openat(struct nameidata *nd,
- 	struct file *file;
- 	int error;
+diff --git a/drivers/gpu/drm/radeon/pptable.h b/drivers/gpu/drm/radeon/pptable.h
+index 4c2eec49dadc9..844f0490bf31f 100644
+--- a/drivers/gpu/drm/radeon/pptable.h
++++ b/drivers/gpu/drm/radeon/pptable.h
+@@ -424,7 +424,7 @@ typedef struct _ATOM_PPLIB_SUMO_CLOCK_INFO{
+ typedef struct _ATOM_PPLIB_STATE_V2
+ {
+       //number of valid dpm levels in this state; Driver uses it to calculate the whole 
+-      //size of the state: sizeof(ATOM_PPLIB_STATE_V2) + (ucNumDPMLevels - 1) * sizeof(UCHAR)
++      //size of the state: struct_size(ATOM_PPLIB_STATE_V2, clockInfoIndex, ucNumDPMLevels)
+       UCHAR ucNumDPMLevels;
+       
+       //a index to the array of nonClockInfos
+@@ -432,14 +432,14 @@ typedef struct _ATOM_PPLIB_STATE_V2
+       /**
+       * Driver will read the first ucNumDPMLevels in this array
+       */
+-      UCHAR clockInfoIndex[1];
++      UCHAR clockInfoIndex[] __counted_by(ucNumDPMLevels);
+ } ATOM_PPLIB_STATE_V2;
  
--	file = alloc_empty_file(op->open_flag, current_cred());
--	if (IS_ERR(file))
--		return file;
--
--	if (unlikely(file->f_flags & __O_TMPFILE)) {
-+	if (unlikely(op->open_flag & __O_TMPFILE)) {
-+		file = alloc_empty_file(op->open_flag, current_cred());
-+		if (IS_ERR(file))
-+			return file;
- 		error = do_tmpfile(nd, flags, op, file);
--	} else if (unlikely(file->f_flags & O_PATH)) {
-+	} else if (unlikely(op->open_flag & O_PATH)) {
-+		file = alloc_empty_file(op->open_flag, current_cred());
-+		if (IS_ERR(file))
-+			return file;
- 		error = do_o_path(nd, flags, file);
- 	} else {
- 		const char *s = path_init(nd, flags);
--		while (!(error = link_path_walk(s, nd)) &&
--		       (s = open_last_lookups(nd, file, op)) != NULL)
--			;
-+		file = alloc_empty_file(op->open_flag, current_cred());
-+		error = PTR_ERR_OR_ZERO(file);
-+		if (!error) {
-+			while (!(error = link_path_walk(s, nd)) &&
-+			       (s = open_last_lookups(nd, file, op)) != NULL)
-+				;
-+		}
- 		if (!error)
- 			error = do_open(nd, file, op);
- 		terminate_walk(nd);
-+		if (IS_ERR(file))
-+			return file;
- 	}
- 	if (likely(!error)) {
- 		if (likely(file->f_mode & FMODE_OPENED))
+ typedef struct _StateArray{
+     //how many states we have 
+     UCHAR ucNumEntries;
+     
+-    ATOM_PPLIB_STATE_V2 states[1];
++    ATOM_PPLIB_STATE_V2 states[] __counted_by(ucNumEntries);
+ }StateArray;
+ 
+ 
+@@ -450,7 +450,7 @@ typedef struct _ClockInfoArray{
+     //sizeof(ATOM_PPLIB_CLOCK_INFO)
+     UCHAR ucEntrySize;
+     
+-    UCHAR clockInfo[1];
++    UCHAR clockInfo[] __counted_by(ucNumEntries);
+ }ClockInfoArray;
+ 
+ typedef struct _NonClockInfoArray{
+@@ -460,7 +460,7 @@ typedef struct _NonClockInfoArray{
+     //sizeof(ATOM_PPLIB_NONCLOCK_INFO)
+     UCHAR ucEntrySize;
+     
+-    ATOM_PPLIB_NONCLOCK_INFO nonClockInfo[1];
++    ATOM_PPLIB_NONCLOCK_INFO nonClockInfo[] __counted_by(ucNumEntries);
+ }NonClockInfoArray;
+ 
+ typedef struct _ATOM_PPLIB_Clock_Voltage_Dependency_Record
 -- 
-2.44.0
+2.43.0
 
 
