@@ -1,272 +1,247 @@
-Return-Path: <linux-kernel+bounces-155495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B74F8AEB56
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:43:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 066EF8AEB57
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:43:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 457EEB231AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:43:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BE961F23BF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:43:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAB1C13C9BE;
-	Tue, 23 Apr 2024 15:43:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1393A13C9C5;
+	Tue, 23 Apr 2024 15:43:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JyHdhBkw"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YbOYp89p"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3FC13BAFE;
-	Tue, 23 Apr 2024 15:43:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775D913C3F1
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:43:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713886981; cv=none; b=gjccHjSwIya5O8T3zOkiB1KxMGxZDkEFzdRx5iO5Jz8GN8vjUES0fLSL3dah2C8fN/NlJIZSzuYGZsNNmEPlC5qA3VmdqbPM0peq2SYeZF214CbBf0nmMKDv0X6pOsQJWk2AvJShSstdzxbG2VADmKzmG9Y5VKz0tfnI93wbzY0=
+	t=1713886998; cv=none; b=P3ukgVkRr8p+A7fZbd8v9fs82b7Lu8wVk558P+FCJ6U664TWSDIB8JfGxDEShAGM1ioxboe19TwgN9ZZZ6+5T0yBpgk9BI0PgnPNcQzCk4ZqpUZ1SU1CwucdQSEysbg03KpJFNH40dHZ2g2e9OUB7PaWO0rFowdttw9cOh2jL+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713886981; c=relaxed/simple;
-	bh=878iBN1wCLHEB2yRzqkpbitV3mFieot5Pqm94fhfGog=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fLjlMwQ2BEc9c6ythNnp1Ld+nja1U75KUYYP+zkzJqACQQuBOA97eatszuOz+n/PSuiwR0F0VVROoYTIWnzc7QFdn5oA6wls25LAwkh8IupZBgTDRFlwhaV5yMJ5XvV2aFZkXaEErTOqV4JhWWqH4tf3pyryB67Oa49fY1E9yFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JyHdhBkw; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713886981; x=1745422981;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=878iBN1wCLHEB2yRzqkpbitV3mFieot5Pqm94fhfGog=;
-  b=JyHdhBkwB9qjMTKdE9nbt4efQkzKxkJGpexu1QdsXxQHPT8s7TPO0ncg
-   g3gmlZ9tRCpAYcE9GeGF8gU5v0Lzr2Hk4D7Iizc9/W6Uk3OmWqYB5HQ+y
-   x1+fw34zgG+z8vbChls8CS/WYMjaAM+z0q5aLCwt/fitnSIxl0yrb86Wa
-   Gs3pEHJlmUvheGW0+PUFZ2TdUd52l+o6vnfghjLhtFTpxNRBPoAkVQ1Cl
-   njWAAC0VoJi4Grc4IgiPRD4Xn/wl0223ZNDQ1Ou9xeYzGJ5RIDunl03qS
-   5yDLOehGrzLbzBQ+2Gr5JVERdN3IgKHbPYIHQwfSu6fvDjQ+zfBBlUpb0
-   w==;
-X-CSE-ConnectionGUID: LnmQdojvSkmqrF2MQBCnig==
-X-CSE-MsgGUID: AEnjRQacTrWlPxL3y8Bx+Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="9329281"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="9329281"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 08:43:00 -0700
-X-CSE-ConnectionGUID: SVLaXHivTkqKF0jkP1Q+dA==
-X-CSE-MsgGUID: R6Ph6u9PTiWUBmYBFUr1vA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24274769"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa010.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 08:42:57 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rzIIH-00000000Naj-1sJH;
-	Tue, 23 Apr 2024 18:42:53 +0300
-Date: Tue, 23 Apr 2024 18:42:53 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: nuno.sa@analog.com
-Cc: Petr Mladek <pmladek@suse.com>, Chris Down <chris@chrisdown.name>,
-	John Ogness <john.ogness@linutronix.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Olivier Moysan <olivier.moysan@foss.st.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Jyoti Bhayana <jbhayana@google.com>, linux-kernel@vger.kernel.org,
-	linux-iio@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] iio: temperature: ltc2983: convert to
- dev_err_probe()
-Message-ID: <ZifW_fUVcdIpfOWO@smile.fi.intel.com>
-References: <20240423-dev-add_dev_errp_probe-v2-0-12f43c5d8b0d@analog.com>
- <20240423-dev-add_dev_errp_probe-v2-2-12f43c5d8b0d@analog.com>
+	s=arc-20240116; t=1713886998; c=relaxed/simple;
+	bh=icLDvFvpV72zmE8xOhKfWko0Ndyksl7RQK+s9PmbDeE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iEwMWakYOCbDUpeuX7ay9s6WqVI85HfdB8aTY9rWqW4MK6+78izf3E3RcSp+xA1CwjXSPVI32hQV/0bNoWZznW3+KIyWGqXKj/HOxFgq49FYNR5Drl7i9/gORnSkLUpWBeB8zZiL9RZSojaRn28A8UXSP3ZjaTp4Md9PH3DCkM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YbOYp89p; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713886995;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zjKkFTxUJOrFDTkrrK48AIMAMR331JfkUWmmHYXPNWc=;
+	b=YbOYp89pEaJdEdi306rhlM/lXX1iMJ91cMcwKqR6bSAiv3WGLxvDuD4h+R6QlEE99o4MP5
+	gMbGX66j+11gT0cD5iCOnCs2La3mbTArgni06vxhe387qYjsFFvLLueiOOnD4l+6n1cvub
+	1FBPXULiOh4PKk/sVPNuKoNtmcnjheg=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-618-fMHnyZQ1Oni20YDu9krKMQ-1; Tue, 23 Apr 2024 11:43:13 -0400
+X-MC-Unique: fMHnyZQ1Oni20YDu9krKMQ-1
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-4377949a027so115252631cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:43:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713886992; x=1714491792;
+        h=content-transfer-encoding:in-reply-to:organization:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zjKkFTxUJOrFDTkrrK48AIMAMR331JfkUWmmHYXPNWc=;
+        b=uR6mQ3GoBdl9ce6hCcN+37urML/zEFXbIy3mfer2b2J/nuvZnCQ2vJQTdrcg2bEPVs
+         aXHdDwROVPjg1webyRBqS5ANCGlTHxUeeNQnTOhnLQ7y5CxIl095AxFXFxm9G8ZOLa+w
+         To1PREO4sGl5giqIiur+2vmxLtus9S82SxHiN5U7EYJNAc7yTI0yPusqftpBarOBj6Z6
+         hAXZj40FwEdG4Zafr/XhefMB+F0n1KYv0nWFMc1KCL3XS+WjA3DAvH0wPUCeoaI8NhSL
+         RpuBqMYm6zpTOg6LGO2uPGsmReHdaVPveMCJ9vC3y6UCAot321jg47eCTAX/U80k/OYF
+         Xc4w==
+X-Forwarded-Encrypted: i=1; AJvYcCX6vJ3PwVgcD4yWxK1PEMgJOsaNy5CFAhVYow0Q9aknPsHQsBzQ74k0U/WXnajZTXDpVmH/E3lBslIj3YE5fpQ+aiAh9JbiOhsl3rEn
+X-Gm-Message-State: AOJu0Yx1xP6p/tjihChrFtCIjxZtr1G43qEi5lIWuGf+A4Gzf1Tc422I
+	LJizeoqymYQNNSW4Y+oYlTNLnZ+4f93tF7PJQEJFJzdWJvhtcx4sUyglELe+NXpgkbqADJotSQz
+	ZWl+6nS7og1WLwMe3ld76FhoeYOq1MYFiK66EIzFrIRb6tlwBcLEmSkBNCI8J3A==
+X-Received: by 2002:ac8:7f03:0:b0:437:cc65:bbfd with SMTP id f3-20020ac87f03000000b00437cc65bbfdmr5683338qtk.8.1713886992709;
+        Tue, 23 Apr 2024 08:43:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEVbJXkNB9mPOWQi1awKT+drHechIbxwnI05S+Ty2UC4FXxVkYjTJWlzQwHhj9FWazhjx1ucw==
+X-Received: by 2002:ac8:7f03:0:b0:437:cc65:bbfd with SMTP id f3-20020ac87f03000000b00437cc65bbfdmr5683305qtk.8.1713886992321;
+        Tue, 23 Apr 2024 08:43:12 -0700 (PDT)
+Received: from [10.32.64.131] (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id do7-20020a05622a478700b0043999fccc10sm2461453qtb.62.2024.04.23.08.43.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 08:43:11 -0700 (PDT)
+Message-ID: <cbeae504-2752-4ef0-b103-e62fcf45ab93@redhat.com>
+Date: Tue, 23 Apr 2024 17:43:08 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423-dev-add_dev_errp_probe-v2-2-12f43c5d8b0d@analog.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/10] Allocation APIs
+To: Wedson Almeida Filho <wedsonaf@gmail.com>, rust-for-linux@vger.kernel.org
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
+ Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <benno.lossin@proton.me>,
+ Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl
+ <aliceryhl@google.com>, linux-kernel@vger.kernel.org,
+ Wedson Almeida Filho <walmeida@microsoft.com>, ajanulgu@redhat.com
+References: <20240328013603.206764-1-wedsonaf@gmail.com>
+Content-Language: en-US
+From: Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <20240328013603.206764-1-wedsonaf@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 23, 2024 at 05:20:31PM +0200, Nuno Sa via B4 Relay wrote:
-> From: Nuno Sa <nuno.sa@analog.com>
+Hi all,
+
+On 3/28/24 02:35, Wedson Almeida Filho wrote:
+> From: Wedson Almeida Filho <walmeida@microsoft.com>
 > 
-> Use dev_err_probe() in the probe() path. While at it, made some simple
-> improvements:
->  * Declare a struct device *dev helper. This also makes the style more
->    consistent (some places the helper was used and not in other places);
->  * Explicitly included the err.h and errno.h headers;
->  * Removed an useless else if();
->  * Removed some unnecessary line breaks.
-
-..
-
->  	/* Check space on the table. */
->  	if (st->custom_table_size + new_custom->size >
-> -	    (LTC2983_CUST_SENS_TBL_END_REG -
-> -	     LTC2983_CUST_SENS_TBL_START_REG) + 1) {
-
-> +	    (LTC2983_CUST_SENS_TBL_END_REG - LTC2983_CUST_SENS_TBL_START_REG) + 1)
-
-Semi-unrelated change?
-
-..
-
-> +		return dev_err_ptr_probe(dev, -EINVAL,
-> +				      "Invalid chann:%d for differential thermocouple",
-
-While at it, add missing \n.
-
-> +				      sensor->chan);
-
-..
-
-> +		return dev_err_cast_probe(dev, ref,
-> +					  "Property adi,rsense-handle missing or invalid");
-
-Ditto.
-
-..
-
-> +			return dev_err_ptr_probe(dev, -EINVAL,
-> +					      "Invalid number of wires:%u\n",
-> +					      n_wires);
-
-Can be compressed in terms of LoCs?
-
-..
-
-> +				return dev_err_ptr_probe(dev, -EINVAL,
-> +						      "Rotation not allowed for 2/3 Wire RTDs");
-
-\n
-
-..
-
-> +			return dev_err_ptr_probe(dev, -EINVAL,
-> +					      "Invalid rsense chann:%d to use in kelvin rsense",
-> +					      rtd->r_sense_chan);
-
-Ditto.
-
-..
-
-> +			return dev_err_ptr_probe(dev, -EINVAL,
-> +					      "Invalid chann:%d for the rtd config",
-
-Ditto.
-
-> +					      sensor->chan);
-
-..
-
-> +			return dev_err_ptr_probe(dev, -EINVAL,
-> +					      "Invalid chann:%d for RTD",
-
-Ditto.
-
-> +					      sensor->chan);
-
-..
-
-> +			return dev_err_ptr_probe(dev, -EINVAL,
-> +					      "Invalid value for excitation current(%u)",
-
-Ditto.
-
-> +					      excitation_current);
-
-..
-
-> +	if (IS_ERR(ref))
-> +		return dev_err_cast_probe(dev, ref,
-> +					  "Property adi,rsense-handle missing or invalid");
-
-Ditto.
-
-..
-
-> +		return dev_err_ptr_probe(dev, -EINVAL,
-> +				      "Invalid chann:%d for differential thermistor",
-> +				      sensor->chan);
-
-
-Ditto.
-
-..
-
-> +			return dev_err_ptr_probe(dev, -EINVAL,
-> +					      "Invalid value for excitation current(%u)",
-> +					      excitation_current);
-
-Ditto.
-
-..
-
-> +		return dev_err_ptr_probe(dev, -EINVAL,
-> +				      "Invalid chann:%d for differential thermistor",
-> +				      sensor->chan);
-
-Ditto.
-
-..
-
-> +			return dev_err_ptr_probe(dev, -EINVAL,
-> +					      "Invalid value for excitation current(%u)",
-> +					      excitation_current);
-
-Ditto.
-
-..
-
-> +		return dev_err_ptr_probe(dev, -EINVAL,
-> +				      "Invalid chann:%d for r_sense",
-> +				      sensor->chan);
-
-Ditto.
-
-..
-
-> +	if (!st->num_channels)
-> +		return dev_err_probe(dev, -EINVAL,
-> +				     "At least one channel must be given!");
-
-Ditto.
-
-..
-
-> +		return dev_err_probe(dev, -EINVAL,
-> +				     "EEPROM command failed: 0x%02X\n", val);
-
-One line?
-
-..
-
-> +	if (IS_ERR(st->regmap))
-> +		return dev_err_probe(dev, PTR_ERR(st->regmap),
-> +				     "Failed to initialize regmap\n");
-
-Wondering about Andi's proposal in conjunction with %pe to be in use
-
-		return dev_???(dev, st->regmap, "Failed to initialize regmap\n");
-
-where it returns an int and uses const void * as an error pointer for %pe.
-
-
-
-> -	st->iio_chan = devm_kzalloc(&spi->dev,
-> +	st->iio_chan = devm_kzalloc(dev,
->  				    st->iio_channels * sizeof(*st->iio_chan),
->  				    GFP_KERNEL);
-
-Separate change to devm_kzalloc() before this patch?
-In that patch you may also introduce a temporary struct device *dev.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> Revamp how we use the `alloc` crate.
+> 
+> We currently have a fork of the crate with changes to `Vec`; other
+> changes have been upstreamed (to the Rust project). This series removes
+> the fork and exposes all the functionality as extension traits.
+> 
+> Additionally, it also introduces allocation flag parameters to all
+> functions that may result in allocations (e.g., `Box::new`, `Arc::new`,
+> `Vec::push`, etc.) without the `try_` prefix -- the names are available
+> because we build `alloc` with `no_global_oom_handling`.
+> 
+> Lastly, the series also removes our reliance on the `allocator_api`
+> unstable feature.
+> 
+> Long term, we still want to make such functionality available in
+> upstream Rust, but this allows us to make progress now and reduces our
+> maintainance burden.
+> 
+> In summary:
+> 1. Removes `alloc` fork
+> 2. Removes use of `allocator_api` unstable feature
+> 3. Introduces flags (e.g., GFP_KERNEL, GFP_ATOMIC) when allocating
+
+With that series, how do we implement alternative allocators, such as
+(k)vmalloc or DMA coherent?
+
+For instance, I recently sketched up some firmware bindings we want to
+use in Nova providing
+
+fn copy<A: core::alloc::Allocator>(&self, alloc: A) -> Result<Vec<u8, 
+A>> [1]
+
+making use of Vec::try_with_capacity_in(). How would I implement
+something similar now?
+
+- Danilo
+
+[1] 
+https://gitlab.freedesktop.org/drm/nova/-/blob/topic/firmware/rust/kernel/firmware.rs?ref_type=heads#L63
+
+> 
+> ---
+> 
+> Changes in v3:
+> - Rebased on top of the latest `rust-next` branch.
+> - Updated `krealloc_aligned` to use `Flags` instead of `bindings::gfp_t`.
+> - Added __GFP_ZERO to flags, as part of the previous change.
+> - Avoiding temporary stack value in `Box::new_uninit`.
+> - Implement `Box::new` using `Box::new_uninit` (so only one of them actually
+>    allocates).
+> - Added examples/tests to `VecExt` methods.
+> - Fixed bug in length in `extend_from_slice`
+> - Link to v2: https://lore.kernel.org/rust-for-linux/20240327023531.187880-1-wedsonaf@gmail.com/T/#t
+> 
+> Changes in v2:
+> - Updated description of `alloc` crate.
+> - Renamed vecext and boxext modules to vec_ext and box_ext.
+> - Added derive directive to `AllocError`.
+> - Updated safety comment in `BoxExt::new`.
+> - Updated `VecExt::push` and `VecExt::extend_from_slice` to use
+>    `spare_capacity_mut`
+> - Added directive to not compile `destructure` and `rebuild` when `test` or
+>    `testlib` are configured. Otherwise we have a warning because `push` and
+>    `extend_from_slice` don't use them anymore.
+> - Updated indentation in `Arc::new_uninit`
+> - Moved the removal of `TryReserveError` convesion to `Error` to patch 7, where
+>    usage of `TryReserveError` is actually removed.
+> - Link to v1: https://lore.kernel.org/rust-for-linux/20240325195418.166013-1-wedsonaf@gmail.com/T/#t
+> 
+> Wedson Almeida Filho (10):
+>    rust: kernel: move `allocator` module under `alloc`
+>    rust: alloc: introduce the `VecExt` trait
+>    kbuild: use the upstream `alloc` crate
+>    rust: alloc: remove our fork of the `alloc` crate
+>    rust: alloc: introduce allocation flags
+>    rust: alloc: introduce the `BoxExt` trait
+>    rust: alloc: update `VecExt` to take allocation flags
+>    rust: sync: update `Arc` and `UniqueArc` to take allocation flags
+>    rust: init: update `init` module to take allocation flags
+>    rust: kernel: remove usage of `allocator_api` unstable feature
+> 
+>   rust/Makefile                        |   16 +-
+>   rust/alloc/README.md                 |   36 -
+>   rust/alloc/alloc.rs                  |  452 ----
+>   rust/alloc/boxed.rs                  | 2463 -----------------
+>   rust/alloc/collections/mod.rs        |  160 --
+>   rust/alloc/lib.rs                    |  288 --
+>   rust/alloc/raw_vec.rs                |  611 -----
+>   rust/alloc/slice.rs                  |  890 -------
+>   rust/alloc/vec/drain.rs              |  255 --
+>   rust/alloc/vec/extract_if.rs         |  115 -
+>   rust/alloc/vec/into_iter.rs          |  454 ----
+>   rust/alloc/vec/is_zero.rs            |  204 --
+>   rust/alloc/vec/mod.rs                | 3683 --------------------------
+>   rust/alloc/vec/partial_eq.rs         |   49 -
+>   rust/alloc/vec/set_len_on_drop.rs    |   35 -
+>   rust/alloc/vec/spec_extend.rs        |  119 -
+>   rust/bindings/bindings_helper.h      |    3 +
+>   rust/kernel/alloc.rs                 |   74 +
+>   rust/kernel/{ => alloc}/allocator.rs |   17 +-
+>   rust/kernel/alloc/box_ext.rs         |   59 +
+>   rust/kernel/alloc/vec_ext.rs         |  176 ++
+>   rust/kernel/error.rs                 |   13 +-
+>   rust/kernel/init.rs                  |   57 +-
+>   rust/kernel/lib.rs                   |    5 +-
+>   rust/kernel/prelude.rs               |    2 +
+>   rust/kernel/str.rs                   |    6 +-
+>   rust/kernel/sync/arc.rs              |   50 +-
+>   rust/kernel/sync/condvar.rs          |    2 +-
+>   rust/kernel/sync/lock/mutex.rs       |    2 +-
+>   rust/kernel/sync/lock/spinlock.rs    |    2 +-
+>   rust/kernel/types.rs                 |    4 +-
+>   rust/kernel/workqueue.rs             |   14 +-
+>   samples/rust/rust_minimal.rs         |    6 +-
+>   samples/rust/rust_print.rs           |    4 +-
+>   scripts/generate_rust_analyzer.py    |    2 +-
+>   35 files changed, 405 insertions(+), 9923 deletions(-)
+>   delete mode 100644 rust/alloc/README.md
+>   delete mode 100644 rust/alloc/alloc.rs
+>   delete mode 100644 rust/alloc/boxed.rs
+>   delete mode 100644 rust/alloc/collections/mod.rs
+>   delete mode 100644 rust/alloc/lib.rs
+>   delete mode 100644 rust/alloc/raw_vec.rs
+>   delete mode 100644 rust/alloc/slice.rs
+>   delete mode 100644 rust/alloc/vec/drain.rs
+>   delete mode 100644 rust/alloc/vec/extract_if.rs
+>   delete mode 100644 rust/alloc/vec/into_iter.rs
+>   delete mode 100644 rust/alloc/vec/is_zero.rs
+>   delete mode 100644 rust/alloc/vec/mod.rs
+>   delete mode 100644 rust/alloc/vec/partial_eq.rs
+>   delete mode 100644 rust/alloc/vec/set_len_on_drop.rs
+>   delete mode 100644 rust/alloc/vec/spec_extend.rs
+>   create mode 100644 rust/kernel/alloc.rs
+>   rename rust/kernel/{ => alloc}/allocator.rs (86%)
+>   create mode 100644 rust/kernel/alloc/box_ext.rs
+>   create mode 100644 rust/kernel/alloc/vec_ext.rs
+> 
+> 
+> base-commit: 768409cff6cc89fe1194da880537a09857b6e4db
 
 
