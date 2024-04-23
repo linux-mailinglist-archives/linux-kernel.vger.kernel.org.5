@@ -1,256 +1,470 @@
-Return-Path: <linux-kernel+bounces-154698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28A578ADFE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:37:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C9798ADFE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:39:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7CF11F23BD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:37:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 707051C22739
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:39:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 610B654F87;
-	Tue, 23 Apr 2024 08:37:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3079155782;
+	Tue, 23 Apr 2024 08:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="vRNvWfKW";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="EzTG9xW4";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="pZQgp31h";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="aoh/uXOo"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hLHTY6wa"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 805C3335D3;
-	Tue, 23 Apr 2024 08:37:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 537CE44C8F;
+	Tue, 23 Apr 2024 08:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713861468; cv=none; b=qFefzSAg0oBDdorrn1xooRHm3w5YYJQYWf53zIWDkaQNG6kxrr5C7R814adlyAKCltkuZHsuKdmd4cSI1mgjNlbC7bI5PkuLfeHc1hKuIHGfPa1hbpPrOnxNzt9QqN0PYhE7RwPOBwRSKlzssOVYlAlwZJmgtF18PJBK1K+WkSw=
+	t=1713861574; cv=none; b=T/NfNwD39TQ9QqMonhxt72Cf0Dv2oa3jtxHYzdubJQfOUeW86CI/SDWLr35HvUvEfJ65ImdCBn6iM8v4GronTKROXuTz0gQCwSPXzehJs56p29984XExj8AW0f7hMgIxkvMieIl1YW4V+4nrxGs/GiJaP6ozGntWDjWoeC9Na0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713861468; c=relaxed/simple;
-	bh=EcId0vIqDyW+eILPrif1RXZllHcJAbAs+MzTnpfHIro=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UqlzJM2q5Lj1Mb93ElOGZyHI80WK3WO7UiLerq+ycYQdsr+0YgEYyF4dLNHUaC11/XogVA2H1BVVu32R1ntfjZUas/czArlFRnJGHOq/fnVBLvNNizJgIfHn9uB0JW6GCbWM3tWmXLGASRSutFU77epnmEf/xbfl12QthokwUtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=vRNvWfKW; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=EzTG9xW4; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=pZQgp31h; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=aoh/uXOo; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 51DEF34AF6;
-	Tue, 23 Apr 2024 08:37:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713861464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1713861574; c=relaxed/simple;
+	bh=QTujR1a7+ujDQPHOp+uzhs//S+2APRPzioOxbcORayA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jgF6j0GM4gL3Z+e+y+4sOxNg2f+gyazMvoFJUHNJlnAq65oEEM3/Ck7kdZ7Rpkerymi5aCuh4WzUX3748+AXhBP1s3WcSf4s0aj3mWrgp5/duh6NWD+SZZghHattnfnIJJaVvzPlcXgn1GDkg1IOY7+f9pBdygjrflOM/vDXz/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hLHTY6wa; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 272DCE0004;
+	Tue, 23 Apr 2024 08:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713861568;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=k43u2gGdk2cW8QO1IHoAyZJZU9tLkWgAp9EhTT4lTag=;
-	b=vRNvWfKWVzr4sUGpT/IDqONgFemxalaVXCUBrjCMrYZvHmp+9QMikGcGif1+eK6IfaoAIW
-	ia6KfiDRkVOhzq4CEkEb1wppTkOcoD7dMam44xyqrN/KYHLF/e9JjdSO2epwp+eqLQ12PQ
-	RP6iITINexjE9u/j1JpL2Rppc87oGO8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713861464;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=k43u2gGdk2cW8QO1IHoAyZJZU9tLkWgAp9EhTT4lTag=;
-	b=EzTG9xW4XkaQ5GpfTzb5AAKztf/X7wKqf0szCoeOK63Q3426D00hO7R8wMe4yrgsw4aiBt
-	no+8Xq1v+KKvKpCA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713861463; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=k43u2gGdk2cW8QO1IHoAyZJZU9tLkWgAp9EhTT4lTag=;
-	b=pZQgp31hYgQFj5/M9nB95Axfg4NpdSHHsSZ3PUFOa2i2cED/DAVgu+qw9BgzT6z7ogVF39
-	xhF5bgTN5KOO7FimJbfLeqiL5yFs6mzB9m9gaJrNMFHNQhCSU5Ms3bICxyIa5gOpCzefRd
-	wfMHEaAu8fHSZBpjZBpaoa5FcyWxgp0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713861463;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=k43u2gGdk2cW8QO1IHoAyZJZU9tLkWgAp9EhTT4lTag=;
-	b=aoh/uXOoYpijBxVZRte5v9vJqE7ohUstWA/btZ5hS6NHUOiRLyGwvt209Ys2f6SYp5Uqfh
-	SngLi1mvv/kp/qAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F24C313894;
-	Tue, 23 Apr 2024 08:37:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id VmNGOlZzJ2a2DQAAD6G6ig
-	(envelope-from <tzimmermann@suse.de>); Tue, 23 Apr 2024 08:37:42 +0000
-Message-ID: <666d986e-5227-4b6d-829c-95ff16115488@suse.de>
-Date: Tue, 23 Apr 2024 10:37:41 +0200
+	 in-reply-to:in-reply-to:references:references;
+	bh=IWooWzbcUrSnTPeszzSJpcTzFIEr2JfKzqakj4tFJJY=;
+	b=hLHTY6waJMhOsBbEkB2wckL8NFXE/Z5ge/rWHSfH+e/KLA8ApALX67yjQ+GuQJt1ovw9p3
+	jy+JZRWVzXB/GWT293hP1J7JhRVXmkqSKfV7nBqrtIJDzw3RLzJSwcmQt/73yWcvuQydfy
+	FUR6cTax7hyIqbWcxzyYVXiSwdV+DRgtKDBRCk8cJIjEwiQIJGfgFc7QKr00M3kBFI8H9t
+	aaKSs9g3e2tJqAfX3nK9a5x0L7TLJ6IPCUM7ADcyR/Om0qJTl5nT065vGP/9w+oz9el9ii
+	qI98mhXg92GzjapvNeMLw6EPRcpE7Mc3eU88wsOSg+v/xix91Ef8xWRJ3kArxw==
+Date: Tue, 23 Apr 2024 10:39:24 +0200
+From: Herve Codina <herve.codina@bootlin.com>
+To: Saravana Kannan <saravanak@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
+ <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, Wolfram Sang
+ <wsa+renesas@sang-engineering.com>, Rob Herring <robh@kernel.org>, Mark
+ Brown <broonie@kernel.org>, Len Brown <lenb@kernel.org>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Daniel Scally <djrscally@gmail.com>,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>, Sakari Ailus
+ <sakari.ailus@linux.intel.com>, Geert Uytterhoeven
+ <geert+renesas@glider.be>, kernel-team@android.com, Wolfram Sang
+ <wsa@kernel.org>, linux-kernel@vger.kernel.org, imx@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-acpi@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v3 0/2] fw_devlink overlay fix
+Message-ID: <20240423103924.366eba43@bootlin.com>
+In-Reply-To: <20240411235623.1260061-1-saravanak@google.com>
+References: <20240411235623.1260061-1-saravanak@google.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fbdev: fix incorrect address computation in deferred IO
-To: Nam Cao <namcao@linutronix.de>, Jaya Kumar <jayalk@intworks.biz>,
- Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>,
- Javier Martinez Canillas <javierm@redhat.com>, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc: tiwai@suse.de, bigeasy@linutronix.de, patrik.r.jakobsson@gmail.com,
- Vegard Nossum <vegard.nossum@oracle.com>,
- George Kennedy <george.kennedy@oracle.com>,
- Darren Kenny <darren.kenny@oracle.com>, chuansheng.liu@intel.com,
- Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
- stable@vger.kernel.org
-References: <20240419190032.40490-1-namcao@linutronix.de>
-Content-Language: en-US
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <20240419190032.40490-1-namcao@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.79
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.79 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_TO(0.00)[linutronix.de,intworks.biz,ffwll.ch,gmx.de,redhat.com,vger.kernel.org,lists.freedesktop.org];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.de];
-	FREEMAIL_CC(0.00)[suse.de,linutronix.de,gmail.com,oracle.com,intel.com,vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TAGGED_RCPT(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linutronix.de:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,bootlin.com:url,oracle.com:email]
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
-Hi,
+Hi Saravana,
 
-thanks for following through with the bug and sending the patch
+On Thu, 11 Apr 2024 16:56:20 -0700
+Saravana Kannan <saravanak@google.com> wrote:
 
-Am 19.04.24 um 21:00 schrieb Nam Cao:
-> With deferred IO enabled, a page fault happens when data is written to the
-> framebuffer device. Then driver determines which page is being updated by
-> calculating the offset of the written virtual address within the virtual
-> memory area, and uses this offset to get the updated page within the
-> internal buffer. This page is later copied to hardware (thus the name
-> "deferred IO").
->
-> This calculation is only correct if the virtual memory area is mapped to
-> the beginning of the internal buffer. Otherwise this is wrong. For example,
-> if users do:
->      mmap(ptr, 4096, PROT_WRITE, MAP_FIXED | MAP_SHARED, fd, 0xff000);
->
-> Then the virtual memory area will mapped at offset 0xff000 within the
-> internal buffer. This offset 0xff000 is not accounted for, and wrong page
-> is updated. This will lead to wrong pixels being updated on the device.
->
-> However, it gets worse: if users do 2 mmap to the same virtual address, for
-> example:
->
->      int fd = open("/dev/fb0", O_RDWR, 0);
->      char *ptr = (char *) 0x20000000ul;
->      mmap(ptr, 4096, PROT_WRITE, MAP_FIXED | MAP_SHARED, fd, 0xff000);
->      *ptr = 0; // write #1
->      mmap(ptr, 4096, PROT_WRITE, MAP_FIXED | MAP_SHARED, fd, 0);
->      *ptr = 0; // write #2
->
-> In this case, both write #1 and write #2 apply to the same virtual address
-> (0x20000000ul), and the driver mistakenly thinks the same page is being
-> written to. When the second write happens, the driver thinks this is the
-> same page as the last time, and reuse the page from write #1. The driver
-> then lock_page() an incorrect page, and returns VM_FAULT_LOCKED with the
-> correct page unlocked. It is unclear what will happen with memory
-> management subsystem after that, but likely something terrible.
+> Overlays don't work correctly with fw_devlink. This patch series fixes
+> it. This series is now ready for review and merging once Geert and Herve
+> give they Tested-by.
+> 
+> Geert and Herve,
+> 
+> This patch series should hopefully fix both of your use cases [1][2][3].
+> Can you please check to make sure the device links created to/from the
+> overlay devices are to/from the right ones?
+> 
+> Thanks,
+> Saravana
+> 
 
-Please tone down the drama. :)
+I tested the series.
 
->
-> Fix this by taking the mapping offset into account.
->
-> Reported-and-tested-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-> Closes: https://lore.kernel.org/linux-fbdev/271372d6-e665-4e7f-b088-dee5f4ab341a@oracle.com
-> Fixes: 56c134f7f1b5 ("fbdev: Track deferred-I/O pages in pageref struct")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Nam Cao <namcao@linutronix.de>
-> ---
->   drivers/video/fbdev/core/fb_defio.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/video/fbdev/core/fb_defio.c b/drivers/video/fbdev/core/fb_defio.c
-> index dae96c9f61cf..d5d6cd9e8b29 100644
-> --- a/drivers/video/fbdev/core/fb_defio.c
-> +++ b/drivers/video/fbdev/core/fb_defio.c
-> @@ -196,7 +196,8 @@ static vm_fault_t fb_deferred_io_track_page(struct fb_info *info, unsigned long
->    */
->   static vm_fault_t fb_deferred_io_page_mkwrite(struct fb_info *info, struct vm_fault *vmf)
->   {
-> -	unsigned long offset = vmf->address - vmf->vma->vm_start;
-> +	unsigned long offset = vmf->address - vmf->vma->vm_start
-> +			+ (vmf->vma->vm_pgoff << PAGE_SHIFT);
+On my Microchip use case (i.e. DT overlay on a PCIe device), I observed that
+some driver removal were done in a wrong order. For instance, the onboard
+PCIe device interrupt controller (oic@e00c0120) was removed before its
+consumers.
 
-The page-fault handler at [1] use vm_fault.pgoff to retrieve the page 
-structure. Can we do the same here and avoid that computation?
+I enabled debug traces in core.c and observed that many links were dropped.
+These links are related to pinctrl, clock, reset, interrupts, ...
+I have the feeling that these links should not be dropped.
 
-Best regards
-Thomas
+Here are extracted traces:
+--- 8< ---
+  [    9.225355] mchp_lan966x 0000:01:00.0: enabling device (0000 -> 0002)
+  [    9.279024] device: 'd0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0': device_add
+  [    9.286555] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/oic@e00c0120
+  [    9.302168] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/reset@e200400c
+  [    9.317489] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064/tod_pins
+  ...
+  [    9.403387] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/mdio@e200413c Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/reset@e200400c
+  [    9.418466] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth3 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064
+  [    9.433263] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth2 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064
+  ...
+  [    9.495849] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8
+  [    9.512111] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000/i2c@600 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/oic@e00c0120
+  [    9.527931] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000/i2c@600 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8
+  [    9.544878] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000/i2c@600 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064/fcb4-i2c-pins
+  ...
+  [    9.562283] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/reset@e200400c
+  [    9.577563] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/oic@e00c0120
+  ...
+  [    9.592813] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/cpu_clk
+  [    9.608258] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/ddr_clk
+  [    9.623731] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sys_clk
+  [    9.639269] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/oic@e00c0120 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0
+  [    9.651930] device: 'pci:0000:01:00.0--platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0': device_add
+  [    9.661716] platform d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0: Linked as a sync state only consumer to 0000:01:00.0
+  ...
+  [    9.803560] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth2 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
+  [    9.816827] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth2 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064
+  [    9.831309] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth3 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
+  [    9.844561] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth3 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064
+  ...
+  [    9.919384] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000/i2c@600 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
+  [    9.934028] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000/i2c@600 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064/fcb4-i2c-pins
+  [    9.951138] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
+  [    9.965012] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064/tod_pins
+  [    9.980886] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
+  [    9.994831] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/reset@e200400c
+  [   10.009834] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/mdio@e200413c Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
+  [   10.023520] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/mdio@e200413c Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/reset@e200400c
+  [   10.038248] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/reset@e200400c
+  [   10.053160] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000/i2c@600 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8
+  [   10.069820] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
+  [   10.083772] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8
+  [   10.099739] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
+  [   10.114471] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sys_clk
+  [   10.129648] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/ddr_clk
+  [   10.144818] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/cpu_clk
+  [   10.159986] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/oic@e00c0120
+  [   10.174802] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000/i2c@600 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/oic@e00c0120
+  [   10.190323] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/oic@e00c0120
+  [   10.205098] simple-pm-bus d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0: Dropping the link to 0000:01:00.0
+  [   10.214501] device: 'pci:0000:01:00.0--platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0': device_unregister
+  [   10.225187] device: 'ea000000.switch': device_add
+  [   10.230321] device: 'platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0--platform:ea000000.switch': device_add
+  [   10.240806] devices_kset: Moving ea000000.switch to end of list
+  [   10.246794] platform ea000000.switch: Linked as a consumer to d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0
+  [   10.256399] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
+  [   10.270803] device: 'e800413c.mdio': device_add
+  [   10.275775] device: 'platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0--platform:e800413c.mdio': device_add
+  [   10.286036] devices_kset: Moving e800413c.mdio to end of list
+  [   10.291863] platform e800413c.mdio: Linked as a consumer to d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0
+  [   10.301213] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/mdio@e200413c Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
+  [   10.315260] mscc-miim e800413c.mdio: error -EPROBE_DEFER: Failed to get reset
+  ...
+  [   10.387676] device: 'd0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth3': device_add
+  [   10.388124] devices_kset: Moving ea000000.switch to end of list
+  [   10.402096] device: 'platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0--platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth3': device_add
+  [   10.416004] devices_kset: Moving d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth3 to end of list
+  [   10.425281] platform d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth3: Linked as a consumer to d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0
+  [   10.437942] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth3 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
+  [   10.451352] devices_kset: Moving e800413c.mdio to end of list
+  [   10.451912] device: 'd0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth2': device_add
+  [   10.458161] mscc-miim e800413c.mdio: error -EPROBE_DEFER: Failed to get reset
+  [   10.466501] device: 'platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0--platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth2': device_add
+  [   10.485906] devices_kset: Moving d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth2 to end of list
+  [   10.495096] platform d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth2: Linked as a consumer to d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0
+  [   10.507855] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth2 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
+  ...
+  [   10.580486] device: 'ea040000.flexcom': device_add
+  [   10.585753] device: 'platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0--platform:ea040000.flexcom': device_add
+  [   10.596336] devices_kset: Moving ea040000.flexcom to end of list
+  [   10.602429] platform ea040000.flexcom: Linked as a consumer to d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0
+  [   10.612031] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
+  [   10.626863] device: 'e8004064.pinctrl': device_add
+  [   10.632045] device: 'platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0--platform:e8004064.pinctrl': device_add
+  ...
+--- 8< ---
 
-[1] 
-https://elixir.bootlin.com/linux/v6.8/source/drivers/video/fbdev/core/fb_defio.c#L100
 
->   	struct page *page = vmf->page;
->   
->   	file_update_time(vmf->vma->vm_file);
+Here is the related dtso applied at the PCIe device DT node:
+--- 8< ---
+/ {
+	fragment@0 {
+		target-path="";
+		__overlay__ {
+			#address-cells = <3>;
+			#size-cells = <2>;
 
--- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
+			pci-ep-bus@0 {
+				compatible = "simple-bus";
+				#address-cells = <1>;
+				#size-cells = <1>;
 
+				/*
+				 * map @0xe2000000 (32MB) to BAR0 (CPU)
+				 * map @0xe0000000 (16MB) to BAR1 (AMBA)
+				 */
+				ranges = <0xe2000000 0x00 0x00 0x00 0x2000000
+				          0xe0000000 0x01 0x00 0x00 0x1000000>;
+
+				oic: oic@e00c0120 {
+					compatible = "microchip,lan966x-oic";
+					#interrupt-cells = <2>;
+					interrupt-controller;
+					interrupts = <0>; /* PCI INTx assigned interrupt */
+					reg = <0xe00c0120 0x190>;
+				};
+
+				cpu_clk: cpu_clk {
+					compatible = "fixed-clock";
+					#clock-cells = <0>;
+					clock-frequency = <600000000>;  // CPU clock = 600MHz
+				};
+
+				ddr_clk: ddr_clk {
+					compatible = "fixed-clock";
+					#clock-cells = <0>;
+					clock-frequency = <30000000>;  // Fabric clock = 30MHz
+				};
+
+				sys_clk: sys_clk {
+					compatible = "fixed-clock";
+					#clock-cells = <0>;
+					clock-frequency = <15625000>;  // System clock = 15.625MHz
+				};
+
+				clks: clock-controller@e00c00a8 {
+					compatible = "microchip,lan966x-gck";
+					#clock-cells = <1>;
+					clocks = <&cpu_clk>, <&ddr_clk>, <&sys_clk>;
+					clock-names = "cpu", "ddr", "sys";
+					reg = <0xe00c00a8 0x38>, <0xe00c02cc 0x4>;
+				};
+
+				cpu_ctrl: syscon@e00c0000 {
+					compatible = "microchip,lan966x-cpu-syscon", "syscon";
+					reg = <0xe00c0000 0xa8>;
+				};
+
+				reset: reset@e200400c {
+					compatible = "microchip,lan966x-switch-reset";
+					reg = <0xe200400c 0x4>;
+					reg-names = "gcb";
+					#reset-cells = <1>;
+					cpu-syscon = <&cpu_ctrl>;
+				};
+
+				gpio: pinctrl@e2004064 {
+					compatible = "microchip,lan966x-pinctrl";
+					reg = <0xe2004064 0xb4>,
+					      <0xe2010024 0x138>;
+					resets = <&reset 0>;
+					reset-names = "switch";
+					gpio-controller;
+					#gpio-cells = <2>;
+					gpio-ranges = <&gpio 0 0 78>;
+					interrupt-parent = <&oic>;
+					interrupt-controller;
+					interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
+					#interrupt-cells = <2>;
+
+					tod_pins: tod_pins {
+						pins = "GPIO_36";
+						function = "ptpsync_1";
+					};
+
+					fc0_a_pins: fcb4-i2c-pins {
+						/* RXD, TXD */
+						pins = "GPIO_9", "GPIO_10";
+						function = "fc0_a";
+					};
+
+					i2cmux_pins: i2cmux-pins {
+						pins = "GPIO_76", "GPIO_77";
+						function = "twi_slc_gate";
+						output-low;
+					};
+
+					i2cmux_0: i2cmux-0 {
+						pins = "GPIO_76";
+						function = "twi_slc_gate";
+						output-high;
+					};
+
+					i2cmux_1: i2cmux-1 {
+						pins = "GPIO_77";
+						function = "twi_slc_gate";
+						output-high;
+					};
+				};
+
+				flx0: flexcom@e0040000 {
+					compatible = "atmel,sama5d2-flexcom";
+					reg = <0xe0040000 0x100>;
+					clocks = <&clks GCK_ID_FLEXCOM0>;
+					#address-cells = <1>;
+					#size-cells = <1>;
+					ranges = <0x0 0xe0040000 0x800>;
+
+					atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
+
+					i2c_lan966x: i2c@600 {
+						compatible = "microchip,lan966x-i2c";
+						reg = <0x600 0x200>;
+						interrupt-parent = <&oic>;
+						interrupts = <48 IRQ_TYPE_LEVEL_HIGH>;
+						#address-cells = <1>;
+						#size-cells = <0>;
+						clocks = <&clks GCK_ID_FLEXCOM0>;
+						assigned-clocks = <&clks GCK_ID_FLEXCOM0>;
+						assigned-clock-rates = <20000000>;
+						pinctrl-0 = <&fc0_a_pins>;
+						pinctrl-names = "default";
+						i2c-analog-filter;
+						i2c-digital-filter;
+						i2c-digital-filter-width-ns = <35>;
+					};
+				};
+
+				i2c0_emux: i2c0-emux@0 {
+					compatible = "i2c-mux-pinctrl";
+					#address-cells = <1>;
+					#size-cells = <0>;
+					i2c-parent = <&i2c_lan966x>;
+					pinctrl-names = "i2c102", "i2c103", "idle";
+					pinctrl-0 = <&i2cmux_0>;
+					pinctrl-1 = <&i2cmux_1>;
+					pinctrl-2 = <&i2cmux_pins>;
+
+					i2c102: i2c_sfp1 {
+						reg = <0>;
+						#address-cells = <1>;
+						#size-cells = <0>;
+					};
+
+					i2c103: i2c_sfp2 {
+						reg = <1>;
+						#address-cells = <1>;
+						#size-cells = <0>;
+					};
+				};
+
+				sfp_eth2: sfp-eth2 {
+					compatible       = "sff,sfp";
+					i2c-bus          = <&i2c102>;
+					tx-disable-gpios = <&gpio  0 GPIO_ACTIVE_HIGH>;
+					los-gpios        = <&gpio 25 GPIO_ACTIVE_HIGH>;
+					mod-def0-gpios   = <&gpio 18 GPIO_ACTIVE_LOW>;
+					tx-fault-gpios   = <&gpio  2 GPIO_ACTIVE_HIGH>;
+				};
+
+				sfp_eth3: sfp-eth3 {
+					compatible       = "sff,sfp";
+					i2c-bus          = <&i2c103>;
+					tx-disable-gpios = <&gpio  1 GPIO_ACTIVE_HIGH>;
+					los-gpios        = <&gpio 26 GPIO_ACTIVE_HIGH>;
+					mod-def0-gpios   = <&gpio 19 GPIO_ACTIVE_LOW>;
+					tx-fault-gpios   = <&gpio  3 GPIO_ACTIVE_HIGH>;
+				};
+
+				serdes: serdes@e202c000 {
+					compatible = "microchip,lan966x-serdes";
+					reg = <0xe202c000 0x9c>,
+					      <0xe2004010 0x4>;
+					#phy-cells = <2>;
+				};
+
+				mdio1: mdio@e200413c {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					compatible = "microchip,lan966x-miim";
+					reg = <0xe200413c 0x24>,
+					      <0xe2010020 0x4>;
+
+					resets = <&reset 0>;
+					reset-names = "switch";
+
+					lan966x_phy0: ethernet-lan966x_phy@1 {
+						reg = <1>;
+					};
+
+					lan966x_phy1: ethernet-lan966x_phy@2 {
+						reg = <2>;
+					};
+				};
+
+				switch: switch@e0000000 {
+					compatible = "microchip,lan966x-switch";
+					reg = <0xe0000000 0x0100000>,
+					      <0xe2000000 0x0800000>;
+					reg-names = "cpu", "gcb";
+
+					interrupt-parent = <&oic>;
+					interrupts = <12 IRQ_TYPE_LEVEL_HIGH>,
+						     <9 IRQ_TYPE_LEVEL_HIGH>;
+					interrupt-names = "xtr", "ana";
+
+					resets = <&reset 0>;
+					reset-names = "switch";
+
+					pinctrl-names = "default";
+					pinctrl-0 = <&tod_pins>;
+
+					ethernet-ports {
+						#address-cells = <1>;
+						#size-cells = <0>;
+
+						port0: port@0 {
+							phy-handle = <&lan966x_phy0>;
+
+							reg = <0>;
+							phy-mode = "gmii";
+							phys = <&serdes 0 CU(0)>;
+						};
+
+						port1: port@1 {
+							phy-handle = <&lan966x_phy1>;
+
+							reg = <1>;
+							phy-mode = "gmii";
+							phys = <&serdes 1 CU(1)>;
+						};
+
+						port2: port@2 {
+							reg = <2>;
+							phy-mode = "sgmii";
+							phys = <&serdes 2 SERDES6G(0)>;
+							sfp = <&sfp_eth2>;
+							managed = "in-band-status";
+						};
+
+						port3: port@3 {
+							reg = <3>;
+							phy-mode = "sgmii";
+							phys = <&serdes 3 SERDES6G(1)>;
+							sfp = <&sfp_eth3>;
+							managed = "in-band-status";
+						};
+					};
+				};
+			};
+		};
+	};
+};
+--- 8< ---
+
+Best regards,
+Hervé
 
