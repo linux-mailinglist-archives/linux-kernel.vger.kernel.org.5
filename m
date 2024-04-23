@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-154521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68E878ADD14
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:19:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BED388ADD15
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:19:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D5D41C21917
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:19:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79C602818EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:19:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D865208A8;
-	Tue, 23 Apr 2024 05:19:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2CB120B3E;
+	Tue, 23 Apr 2024 05:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="I4F4bHP1"
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rs11xhPn"
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C140F1B966
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 05:19:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48F6C225A2
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 05:19:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713849546; cv=none; b=qLWoGcheoqwzpFDcmpr1IONeCo9XNtN3CFscGhqCf2WOEyVnV6j+MW3afEuOUjG+1tZ5yKVEpRmmSfgYDDkCCo7tKsOVznk0ZieJ8KKQMxLIjpQLiQPTwFCYhwpLGTXFLE20xm4UBq1FuFJNLlWQ7VrZxanxMIuSTaPl6wHtFnU=
+	t=1713849551; cv=none; b=UQr8UnyRasN37wMk52LTyE/2iU39tuqQxGRjh+wxsv78a233qIJtq5RYaNRwTvxvGryjqwwMquViTyCzpEIuTx9Lv4Wv/JQuuEjnhmafW9gbIqrBbPAElguyeFFmSTaGWQsLvsUxOV+H4VXIjiNMNGiOhNkLHnLeSDEQ+h3XfTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713849546; c=relaxed/simple;
-	bh=eiXcrRuZw4LtEHNUEA4exwXwssnNKo06rp7vQRI3atg=;
+	s=arc-20240116; t=1713849551; c=relaxed/simple;
+	bh=Wmvq48LEHKtnsh9tlioUOV+HIKXT4mpP0GExGJRNVys=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L6HSOHcIdOSZQ5arMvYM0Vh7T5yyJCzbuSJJ5T2f8CKYWpF5PAYfQ0WuPOfP/Dnw0EOD36YDSryG9U+HJWJsgCI7SP8K5QCrGTB7IR4hBWDcJcX6+CXTOeix9cvZ92kZvD1mdL3QsLHiG6dgcQNfHIFe6YFWgORLZt5ms/uepLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=I4F4bHP1; arc=none smtp.client-ip=91.218.175.176
+	 MIME-Version; b=lNqgdC3PyNDBdKlbg+29NMwF32Jco7MKLtsSPVHsD0N+zN4YVIWxubSrp14yvMMfrB/JbO1fQDFpUxBgURlB2DXDy+SCDaqG3sew4Fg6RuaeHHEblvuUGLNqaZ/wohR2kPWu9lc4TItc3/m6CW/AgVX7Vr2oTWcMR75l+1Iqehk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rs11xhPn; arc=none smtp.client-ip=95.215.58.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713849540;
+	t=1713849547;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bmlC5V1svJt9xuRUdyZMky0nyZvqteAMmSbcGNRQ+Ug=;
-	b=I4F4bHP1pHL9StE0oEfUCq18gVSk6V5wUHsNH2r4mbFqr3BWQqPEZJK6aDP5C5HBbpIZbm
-	7qNg7St16OMmZI9IF5XHvpKb6ahSRJqZ0Zorrf3bW8J+CXso/2RX9xjYMLMCnj2Tim11hK
-	zgXSePbl3UN1y1lt9gtQCIJB2FGhKJk=
+	bh=mPVb/7bJYg0jCXHlUHlEkoC8VRMDznvlUA6F/qpq0LU=;
+	b=rs11xhPnd+9ujJmxyiwAvIbaHbCvJYdPVIddaFlw5SnCPmRJf2G7uYXy12IKeEAF5st3Lj
+	b59FvyJ5wKuhH/XVQ6PnB0vVo8qJTGEnv4SY4rfkSAgFn0xbURo2o9NiV0/PjYCL0/JEeB
+	Uv0DlU5Nl1YornvPTybWThJ/C1flxus=
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
@@ -49,9 +49,9 @@ To: Andrew Morton <akpm@linux-foundation.org>,
 	Muchun Song <muchun.song@linux.dev>
 Cc: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] mm: rearrange node_stat_item to put memcg stats at start
-Date: Mon, 22 Apr 2024 22:18:23 -0700
-Message-ID: <20240423051826.791934-2-shakeel.butt@linux.dev>
+Subject: [PATCH 2/4] memcg: reduce memory for the lruvec and memcg stats
+Date: Mon, 22 Apr 2024 22:18:24 -0700
+Message-ID: <20240423051826.791934-3-shakeel.butt@linux.dev>
 In-Reply-To: <20240423051826.791934-1-shakeel.butt@linux.dev>
 References: <20240423051826.791934-1-shakeel.butt@linux.dev>
 Precedence: bulk
@@ -63,150 +63,122 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-At the moment the memcg stats are sized based on the size of enum
-node_stat_item but not all fields in node_stat_item corresponds to memcg
-stats. So, rearrage the contents of node_stat_item such that all the
-memcg specific stats are at the top and then the later patches will make
-sure that the memcg code will not waste space for non-memcg stats.
+At the moment, the amount of memory allocated for stats related structs
+in the mem_cgroup corresponds to the size of enum node_stat_item.
+However not all fields in enum node_stat_item has corresponding memcg
+stats. The fields of enum node_stat_item is sorted in such a way that
+all the fields with corresponding memcg stats are at the start of the
+enum node_stat_item. So, let's just make an explicit  boundary within
+enum node_stat_item and use that boundary to allocate memory for stats
+related structs of memcgs.
+
+For a given x86_64 config, the size of stats with and without patch is:
+
+structs size in bytes         w/o     with
+
+struct lruvec_stats           1128     648
+struct lruvec_stats_percpu     752     432
+struct memcg_vmstats          1832    1352
+struct memcg_vmstats_percpu   1280     960
+
+The memory savings is further compounded by the fact that these structs
+are allocated for each cpu and for node. To be precise, for each memcg,
+the memory saved would be:
+
+Memory saved = ((21 * 3 * NR_NODES) + (21 * 2 * NR_NODS * NR_CPUS) +
+               (21 * 3) + (21 * 2 * NR_CPUS)) * sizeof(long)
+
+Where 21 is the number of fields eliminated.
 
 Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 ---
- include/linux/mmzone.h | 25 +++++++++++++------------
- mm/vmstat.c            | 24 ++++++++++++------------
- 2 files changed, 25 insertions(+), 24 deletions(-)
+ include/linux/memcontrol.h | 12 ++++++------
+ include/linux/mmzone.h     |  8 ++++++--
+ mm/memcontrol.c            |  5 ++++-
+ 3 files changed, 16 insertions(+), 9 deletions(-)
 
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 9aba0d0462ca..d68db7a0e829 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -32,7 +32,7 @@ struct kmem_cache;
+ 
+ /* Cgroup-specific page state, on top of universal node page state */
+ enum memcg_stat_item {
+-	MEMCG_SWAP = NR_VM_NODE_STAT_ITEMS,
++	MEMCG_SWAP = NR_VM_NODE_MEMCG_STAT_ITEMS,
+ 	MEMCG_SOCK,
+ 	MEMCG_PERCPU_B,
+ 	MEMCG_VMALLOC,
+@@ -92,21 +92,21 @@ struct mem_cgroup_reclaim_iter {
+ 
+ struct lruvec_stats_percpu {
+ 	/* Local (CPU and cgroup) state */
+-	long state[NR_VM_NODE_STAT_ITEMS];
++	long state[NR_VM_NODE_MEMCG_STAT_ITEMS];
+ 
+ 	/* Delta calculation for lockless upward propagation */
+-	long state_prev[NR_VM_NODE_STAT_ITEMS];
++	long state_prev[NR_VM_NODE_MEMCG_STAT_ITEMS];
+ };
+ 
+ struct lruvec_stats {
+ 	/* Aggregated (CPU and subtree) state */
+-	long state[NR_VM_NODE_STAT_ITEMS];
++	long state[NR_VM_NODE_MEMCG_STAT_ITEMS];
+ 
+ 	/* Non-hierarchical (CPU aggregated) state */
+-	long state_local[NR_VM_NODE_STAT_ITEMS];
++	long state_local[NR_VM_NODE_MEMCG_STAT_ITEMS];
+ 
+ 	/* Pending child counts during tree propagation */
+-	long state_pending[NR_VM_NODE_STAT_ITEMS];
++	long state_pending[NR_VM_NODE_MEMCG_STAT_ITEMS];
+ };
+ 
+ /*
 diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 8f9c9590a42c..989ca97402c6 100644
+index 989ca97402c6..59592f3c7d9b 100644
 --- a/include/linux/mmzone.h
 +++ b/include/linux/mmzone.h
-@@ -166,9 +166,6 @@ enum node_stat_item {
- 	NR_UNEVICTABLE,		/*  "     "     "   "       "         */
- 	NR_SLAB_RECLAIMABLE_B,
- 	NR_SLAB_UNRECLAIMABLE_B,
--	NR_ISOLATED_ANON,	/* Temporary isolated pages from anon lru */
--	NR_ISOLATED_FILE,	/* Temporary isolated pages from file lru */
--	WORKINGSET_NODES,
- 	WORKINGSET_REFAULT_BASE,
- 	WORKINGSET_REFAULT_ANON = WORKINGSET_REFAULT_BASE,
- 	WORKINGSET_REFAULT_FILE,
-@@ -179,39 +176,43 @@ enum node_stat_item {
- 	WORKINGSET_RESTORE_ANON = WORKINGSET_RESTORE_BASE,
- 	WORKINGSET_RESTORE_FILE,
- 	WORKINGSET_NODERECLAIM,
-+	NR_PAGETABLE,		/* used for pagetables */
-+	NR_SECONDARY_PAGETABLE, /* secondary pagetables, KVM & IOMMU */
-+	NR_KERNEL_STACK_KB,	/* measured in KiB */
- 	NR_ANON_MAPPED,	/* Mapped anonymous pages */
- 	NR_FILE_MAPPED,	/* pagecache pages mapped into pagetables.
- 			   only modified from process context */
- 	NR_FILE_PAGES,
-+#ifdef CONFIG_SWAP
-+	NR_SWAPCACHE,
-+#endif
- 	NR_FILE_DIRTY,
- 	NR_WRITEBACK,
--	NR_WRITEBACK_TEMP,	/* Writeback using temporary buffers */
- 	NR_SHMEM,		/* shmem pages (included tmpfs/GEM pages) */
+@@ -192,8 +192,12 @@ enum node_stat_item {
  	NR_SHMEM_THPS,
--	NR_SHMEM_PMDMAPPED,
  	NR_FILE_THPS,
--	NR_FILE_PMDMAPPED,
  	NR_ANON_THPS,
-+	/* No memcg stats for the following fields. */
-+	NR_SHMEM_PMDMAPPED,
-+	NR_FILE_PMDMAPPED,
-+	NR_WRITEBACK_TEMP,	/* Writeback using temporary buffers */
+-	/* No memcg stats for the following fields. */
+-	NR_SHMEM_PMDMAPPED,
++	/*
++	 * No memcg stats for the following fields. Please add stats which have
++	 * memcg counterpart above NR_VM_NODE_MEMCG_STAT_ITEMS.
++	 */
++	NR_VM_NODE_MEMCG_STAT_ITEMS,
++	NR_SHMEM_PMDMAPPED = NR_VM_NODE_MEMCG_STAT_ITEMS,
+ 	NR_FILE_PMDMAPPED,
+ 	NR_WRITEBACK_TEMP,	/* Writeback using temporary buffers */
  	NR_VMSCAN_WRITE,
- 	NR_VMSCAN_IMMEDIATE,	/* Prioritise for reclaim when writeback ends */
-+	NR_ISOLATED_ANON,	/* Temporary isolated pages from anon lru */
-+	NR_ISOLATED_FILE,	/* Temporary isolated pages from file lru */
-+	WORKINGSET_NODES,
- 	NR_DIRTIED,		/* page dirtyings since bootup */
- 	NR_WRITTEN,		/* page writings since bootup */
- 	NR_THROTTLED_WRITTEN,	/* NR_WRITTEN while reclaim throttled */
- 	NR_KERNEL_MISC_RECLAIMABLE,	/* reclaimable non-slab kernel pages */
- 	NR_FOLL_PIN_ACQUIRED,	/* via: pin_user_page(), gup flag: FOLL_PIN */
- 	NR_FOLL_PIN_RELEASED,	/* pages returned via unpin_user_page() */
--	NR_KERNEL_STACK_KB,	/* measured in KiB */
- #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
- 	NR_KERNEL_SCS_KB,	/* measured in KiB */
- #endif
--	NR_PAGETABLE,		/* used for pagetables */
--	NR_SECONDARY_PAGETABLE, /* secondary pagetables, KVM & IOMMU */
- #ifdef CONFIG_IOMMU_SUPPORT
- 	NR_IOMMU_PAGES,		/* # of pages allocated by IOMMU */
- #endif
--#ifdef CONFIG_SWAP
--	NR_SWAPCACHE,
--#endif
- #ifdef CONFIG_NUMA_BALANCING
- 	PGPROMOTE_SUCCESS,	/* promote successfully */
- 	PGPROMOTE_CANDIDATE,	/* candidate pages to promote */
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 8507c497218b..4eac2f6322a3 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1206,9 +1206,6 @@ const char * const vmstat_text[] = {
- 	"nr_unevictable",
- 	"nr_slab_reclaimable",
- 	"nr_slab_unreclaimable",
--	"nr_isolated_anon",
--	"nr_isolated_file",
--	"workingset_nodes",
- 	"workingset_refault_anon",
- 	"workingset_refault_file",
- 	"workingset_activate_anon",
-@@ -1216,38 +1213,41 @@ const char * const vmstat_text[] = {
- 	"workingset_restore_anon",
- 	"workingset_restore_file",
- 	"workingset_nodereclaim",
-+	"nr_page_table_pages",
-+	"nr_sec_page_table_pages",
-+	"nr_kernel_stack",
- 	"nr_anon_pages",
- 	"nr_mapped",
- 	"nr_file_pages",
-+#ifdef CONFIG_SWAP
-+	"nr_swapcached",
-+#endif
- 	"nr_dirty",
- 	"nr_writeback",
--	"nr_writeback_temp",
- 	"nr_shmem",
- 	"nr_shmem_hugepages",
--	"nr_shmem_pmdmapped",
- 	"nr_file_hugepages",
--	"nr_file_pmdmapped",
- 	"nr_anon_transparent_hugepages",
-+	"nr_shmem_pmdmapped",
-+	"nr_file_pmdmapped",
-+	"nr_writeback_temp",
- 	"nr_vmscan_write",
- 	"nr_vmscan_immediate_reclaim",
-+	"nr_isolated_anon",
-+	"nr_isolated_file",
-+	"workingset_nodes",
- 	"nr_dirtied",
- 	"nr_written",
- 	"nr_throttled_written",
- 	"nr_kernel_misc_reclaimable",
- 	"nr_foll_pin_acquired",
- 	"nr_foll_pin_released",
--	"nr_kernel_stack",
- #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
- 	"nr_shadow_call_stack",
- #endif
--	"nr_page_table_pages",
--	"nr_sec_page_table_pages",
- #ifdef CONFIG_IOMMU_SUPPORT
- 	"nr_iommu_pages",
- #endif
--#ifdef CONFIG_SWAP
--	"nr_swapcached",
--#endif
- #ifdef CONFIG_NUMA_BALANCING
- 	"pgpromote_success",
- 	"pgpromote_candidate",
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 833d09c1d523..bb1bbf417a46 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1648,6 +1648,9 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+ {
+ 	int i;
+ 
++	/* Reduce by 1 for MEMCG_SWAP as that is not exposed in v2. */
++	BUILD_BUG_ON(ARRAY_SIZE(memory_stats) != MEMCG_NR_STAT - 1);
++
+ 	/*
+ 	 * Provide statistics on the state of the memory subsystem as
+ 	 * well as cumulative event counters that show past behavior.
+@@ -5869,7 +5872,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 
+ 		lstatc = per_cpu_ptr(pn->lruvec_stats_percpu, cpu);
+ 
+-		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
++		for (i = 0; i < NR_VM_NODE_MEMCG_STAT_ITEMS; i++) {
+ 			delta = pn->lruvec_stats.state_pending[i];
+ 			if (delta)
+ 				pn->lruvec_stats.state_pending[i] = 0;
 -- 
 2.43.0
 
