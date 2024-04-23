@@ -1,502 +1,225 @@
-Return-Path: <linux-kernel+bounces-154798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 758C78AE12C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:41:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BD658AE132
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:42:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24F09285F53
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:41:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 776E21F21B0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:42:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0696F5A7AE;
-	Tue, 23 Apr 2024 09:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="Xh3/4D0B"
-Received: from nbd.name (nbd.name [46.4.11.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F175C61C;
+	Tue, 23 Apr 2024 09:42:30 +0000 (UTC)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E0B1E863;
-	Tue, 23 Apr 2024 09:41:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8761051016;
+	Tue, 23 Apr 2024 09:42:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713865301; cv=none; b=Oh+DMLME6r4IY4sVYmayGk16AspmkoVdctBgQbNADD4q8E1CUUrGMJnu3emZq71Zt5wEYrChIYJx/9b1grmluIihz/DwsBc3OjZeEWnitP9JQmhgSCQUMv76iTOZjyODmkR9HLmQECNjYQimqd13yky/oK8PrcO0sfSqRb9YvtY=
+	t=1713865349; cv=none; b=LJ/HoSt1E6m7CaSdBgu9NUQip+dLwlisyrzamlse/KXUbp79JhMd17fppnDLhhYZ6K8nrjwv9UJASlnUZM0qfEawv8RrjMyAsCt9qAzFDP1YYrp9eOv4vhlCifl6Vj6SkgERJ19srs+b3lj7gCrYLlVZzTg6yQ33C56y5/3Tl0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713865301; c=relaxed/simple;
-	bh=wb2gGxMz/+9M/fu8LK5AA0KiG+HzE1MoorNuamhvWuk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oLGm7aY9w/HnENE+vLZxTmwQIvYfgesJute5HY5T9jFZjoLEnq0NL7AACpeq308+Dh0uzDPMagtfpIvKCouu2ZLWyBY3G+aJM/ROfgACshQse5SFiCv2/0sgZzzmPS68hEnogBAznJHQX8i31EP579737tH0Itwj67O9MA4xMZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=Xh3/4D0B; arc=none smtp.client-ip=46.4.11.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-	s=20160729; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=+3kf4tnbxRPHO2i5PbtOTYevq1L+iHw94A4K7v9Pm5k=; b=Xh3/4D0BNY1Z9aADi/bBROWfMi
-	oFXiQxizW+2DJ5o8+7SqeGLzBESZvo2v2gsVXYtnpKdHlF5V2WU+o/Ubc1DcWl0m/jLKAtEteAjLl
-	JLt2J8iSjtqtkUy1PigWfZ80Yl6RYEEQdrWPYBgV6DW68Gcp8qEJC8BTg5Ja1xJ7SwJY=;
-Received: from p54ae9c93.dip0.t-ipconnect.de ([84.174.156.147] helo=localhost.localdomain)
-	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
-	(Exim 4.96)
-	(envelope-from <nbd@nbd.name>)
-	id 1rzCeT-005zvG-0C;
-	Tue, 23 Apr 2024 11:41:25 +0200
-From: Felix Fietkau <nbd@nbd.name>
-To: netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	David Ahern <dsahern@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [RFC] net: add TCP fraglist GRO support
-Date: Tue, 23 Apr 2024 11:41:15 +0200
-Message-ID: <20240423094117.93206-1-nbd@nbd.name>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713865349; c=relaxed/simple;
+	bh=SeejIbtFL3q2Ah+TgrTpf656eWgMzRmReKNJR8SEw/M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fKPQNB3SE8ua+a0XYloNDAd5UlFsmGsc0Bo2wcTCfGGm8VI4aIxqM160gq5OAOWxr8fCdvEF1MrfrPfuDXNZY4RKDQSCKqbA2n4d4dxkjYOQ+rxNN50mrvOWbDjC5L9ONIGKZ+v5pJa730yKqJIf5NcIZcktUYk+NfU5Rdv28gk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-61816fc256dso47363617b3.0;
+        Tue, 23 Apr 2024 02:42:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713865345; x=1714470145;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wqVVfPd+WN3revU4fg7rebmHFdp/AiB0hyvlw5Bb61g=;
+        b=uqlflhjQyo+9UkWaG+dQ4pRyc+Mv+OpWEMAW0vD60iz9rdtwHbj+g+de5B/R6Jf2ZA
+         Id0x20wVLLl7i0iZTky0o4upJb6sCBLlvXtsXCef7jrSDQCEvprL6cTKyJ51Vi4fAdbv
+         t5T5EebEQj09IgyU0yeAJ+oWhQbaOMWzKjYX8n7FpLI4iQ67ko/Rt8I0hRJiN9/NW6xp
+         twThh+nUIe4N78sJgLJVcGzp1ZtsIVn1l8tw7bAYdda1NpJAu3L9S65AyFnE6rwD6x3Y
+         UyR/C1cVtns40GbYcuz7Oc1uLMEib1wTX4KZ1Tm6mKrA0nA+GwUMDbXh/brJ6mYxH/3T
+         X7yA==
+X-Forwarded-Encrypted: i=1; AJvYcCV/BtNrVgqwaiHe/N4MnHaMuXWSqtJNmmofUoT01/741JPnVPkp4gdFVBuP8g3lfO55cDv9TSZNFZvzjIaOC1prvNui4ctw70yIk/0Ert5vYxZsvj5zfJ+T8y3CgZlPsd4zhsM2jQM5QWGnCx4FJsIo0sitT1+8GObJ6mO7WXwRQeR4+KgAOGgWx4uzW39TXPhyMATdnEJ9LVX8e2WQHHCRCVqN1UGkyh5vN0uPbgAeiSuCDRyGLzeGnrz8lsE+Pw7FR6Nwiti53Lx8+aDdzn4QCBj9nYbDYldgWYzEFA==
+X-Gm-Message-State: AOJu0YxSF6CcvH9qT1ALkXUGgQRpZfkNTwURQ1ob9rpgEe6hQlXb+zgh
+	MBuMY5dv3mLrCbjWVbPspOGsXwwBAzRKKy/N6qgh3/usmyR5pIB2HrcwqlUB
+X-Google-Smtp-Source: AGHT+IHxjd25aXH4Pg198Wdzat7g29/g3mpyPaK2cuNtRCeV9WCFBJbFMsrV78FnEW7acppO2pJ2og==
+X-Received: by 2002:a05:690c:3501:b0:61a:fb4d:6fc3 with SMTP id fq1-20020a05690c350100b0061afb4d6fc3mr12942508ywb.35.1713865345073;
+        Tue, 23 Apr 2024 02:42:25 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id p204-20020a0de6d5000000b0061575978d53sm2426862ywe.55.2024.04.23.02.42.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 02:42:24 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so5240006276.1;
+        Tue, 23 Apr 2024 02:42:24 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXBe/ttW7jIQwk9mvXAqBujSj9nhpbCsQuTPJY0CECTUuPCrqHHiZhB2mFgyTMrI1nDQp6kb5glsHU4jLy3cr3NIKXyMQGCRXqPJ4AKP9BPNhBEIc4XzgvGCfD54yK/ckAKz/+72YFdRBJyhb9DMWhfpAzENfCIPQK1Uj3a6QPAAh7SANu6/VltdVwXTSt+TA88CQPrrDeY9YW4KnumNDzghIpiTFk8Jg8UhUGHGxfZlHw6pAl7h+gF4svd9Fz6G1BUGuohz8SsZKYRn1rwfc0sO78GOCH2II309HXqHg==
+X-Received: by 2002:a25:804f:0:b0:de4:6aa6:9ea2 with SMTP id
+ a15-20020a25804f000000b00de46aa69ea2mr11819127ybn.32.1713865344325; Tue, 23
+ Apr 2024 02:42:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240102-j7200-pcie-s2r-v5-0-4b8c46711ded@bootlin.com> <20240102-j7200-pcie-s2r-v5-1-4b8c46711ded@bootlin.com>
+In-Reply-To: <20240102-j7200-pcie-s2r-v5-1-4b8c46711ded@bootlin.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 23 Apr 2024 11:42:12 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVnKX23yi7ir1LVxfXAMeeWMFzM+cdgSSTNjpn1OnC2xw@mail.gmail.com>
+Message-ID: <CAMuHMdVnKX23yi7ir1LVxfXAMeeWMFzM+cdgSSTNjpn1OnC2xw@mail.gmail.com>
+Subject: Re: [PATCH v5 01/11] gpio: pca953x: move suspend()/resume() to suspend_noirq()/resume_noirq()
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Tony Lindgren <tony@atomide.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, 
+	Janusz Krzysztofik <jmkrzyszt@gmail.com>, Vignesh R <vigneshr@ti.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Siddharth Vadapalli <s-vadapalli@ti.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, 
+	linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, gregory.clement@bootlin.com, 
+	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
+	Andy Shevchenko <andy.shevchenko@gmail.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When forwarding TCP after GRO, software segmentation is very expensive,
-especially when the checksum needs to be recalculated.
-One case where that's currently unavoidable is when routing packets over
-PPPoE. Performance improves significantly when using fraglist GRO
-implemented in the same way as for UDP.
+Hi Thomas,
 
-Here's a measurement of running 2 TCP streams through a MediaTek MT7622
-device (2-core Cortex-A53), which runs NAT with flow offload enabled from
-one ethernet port to PPPoE on another ethernet port + cake qdisc set to
-1Gbps.
+On Tue, Apr 16, 2024 at 3:31=E2=80=AFPM Thomas Richard
+<thomas.richard@bootlin.com> wrote:
+> Some IOs can be needed during suspend_noirq()/resume_noirq().
+> So move suspend()/resume() to noirq.
+>
+> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+> Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
 
-rx-gro-list off: 630 Mbit/s, CPU 35% idle
-rx-gro-list on:  770 Mbit/s, CPU 40% idle
+Thanks for your patch, which is now commit 86eb98127332748f ("gpio:
+pca953x: move suspend()/resume() to suspend_noirq()/resume_noirq()")
+in i2c-host/i2c/i2c-host.
 
-Signe-off-by: Felix Fietkau <nbd@nbd.name>
----
- include/net/gro.h        |   1 +
- include/net/tcp.h        |   3 +-
- net/core/gro.c           |  27 ++++++++
- net/ipv4/tcp_offload.c   | 143 ++++++++++++++++++++++++++++++++++++++-
- net/ipv4/udp_offload.c   |  27 --------
- net/ipv6/tcpv6_offload.c |  58 +++++++++++++++-
- 6 files changed, 228 insertions(+), 31 deletions(-)
+This patch causes regressions on e.g. Salvator-XS.
 
-diff --git a/include/net/gro.h b/include/net/gro.h
-index 50f1e403dbbb..ca8e4b3de044 100644
---- a/include/net/gro.h
-+++ b/include/net/gro.h
-@@ -429,6 +429,7 @@ static inline __wsum ip6_gro_compute_pseudo(const struct sk_buff *skb,
- }
- 
- int skb_gro_receive(struct sk_buff *p, struct sk_buff *skb);
-+int skb_gro_receive_list(struct sk_buff *p, struct sk_buff *skb);
- 
- /* Pass the currently batched GRO_NORMAL SKBs up to the stack. */
- static inline void gro_normal_list(struct napi_struct *napi)
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index b935e1ae4caf..875cda53a7c9 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -2194,7 +2194,8 @@ void tcp_v4_destroy_sock(struct sock *sk);
- 
- struct sk_buff *tcp_gso_segment(struct sk_buff *skb,
- 				netdev_features_t features);
--struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb);
-+struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb,
-+				bool fraglist);
- INDIRECT_CALLABLE_DECLARE(int tcp4_gro_complete(struct sk_buff *skb, int thoff));
- INDIRECT_CALLABLE_DECLARE(struct sk_buff *tcp4_gro_receive(struct list_head *head, struct sk_buff *skb));
- INDIRECT_CALLABLE_DECLARE(int tcp6_gro_complete(struct sk_buff *skb, int thoff));
-diff --git a/net/core/gro.c b/net/core/gro.c
-index 2459ab697f7f..268c6c826d09 100644
---- a/net/core/gro.c
-+++ b/net/core/gro.c
-@@ -231,6 +231,33 @@ int skb_gro_receive(struct sk_buff *p, struct sk_buff *skb)
- 	return 0;
- }
- 
-+int skb_gro_receive_list(struct sk_buff *p, struct sk_buff *skb)
-+{
-+	if (unlikely(p->len + skb->len >= 65536))
-+		return -E2BIG;
-+
-+	if (NAPI_GRO_CB(p)->last == p)
-+		skb_shinfo(p)->frag_list = skb;
-+	else
-+		NAPI_GRO_CB(p)->last->next = skb;
-+
-+	skb_pull(skb, skb_gro_offset(skb));
-+
-+	NAPI_GRO_CB(p)->last = skb;
-+	NAPI_GRO_CB(p)->count++;
-+	p->data_len += skb->len;
-+
-+	/* sk ownership - if any - completely transferred to the aggregated packet */
-+	skb->destructor = NULL;
-+	skb->sk = NULL;
-+	p->truesize += skb->truesize;
-+	p->len += skb->len;
-+
-+	NAPI_GRO_CB(skb)->same_flow = 1;
-+
-+	return 0;
-+}
-+
- 
- static void napi_gro_complete(struct napi_struct *napi, struct sk_buff *skb)
- {
-diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
-index fab0973f995b..4f6e40a30b0c 100644
---- a/net/ipv4/tcp_offload.c
-+++ b/net/ipv4/tcp_offload.c
-@@ -28,6 +28,74 @@ static void tcp_gso_tstamp(struct sk_buff *skb, unsigned int ts_seq,
- 	}
- }
- 
-+static void __tcpv4_gso_segment_csum(struct sk_buff *seg,
-+				     __be32 *oldip, __be32 *newip,
-+				     __be16 *oldport, __be16 *newport)
-+{
-+	struct tcphdr *th;
-+	struct iphdr *iph;
-+
-+	if (*oldip == *newip && *oldport == *newport)
-+		return;
-+
-+	th = tcp_hdr(seg);
-+	iph = ip_hdr(seg);
-+
-+	if (th->check) {
-+		inet_proto_csum_replace4(&th->check, seg, *oldip, *newip,
-+					 true);
-+		inet_proto_csum_replace2(&th->check, seg, *oldport, *newport,
-+					 false);
-+		if (!th->check)
-+			th->check = CSUM_MANGLED_0;
-+	}
-+	*oldport = *newport;
-+
-+	csum_replace4(&iph->check, *oldip, *newip);
-+	*oldip = *newip;
-+}
-+
-+static struct sk_buff *__tcpv4_gso_segment_list_csum(struct sk_buff *segs)
-+{
-+	struct sk_buff *seg;
-+	struct tcphdr *uh, *uh2;
-+	struct iphdr *iph, *iph2;
-+
-+	seg = segs;
-+	uh = tcp_hdr(seg);
-+	iph = ip_hdr(seg);
-+
-+	if ((tcp_hdr(seg)->dest == tcp_hdr(seg->next)->dest) &&
-+	    (tcp_hdr(seg)->source == tcp_hdr(seg->next)->source) &&
-+	    (ip_hdr(seg)->daddr == ip_hdr(seg->next)->daddr) &&
-+	    (ip_hdr(seg)->saddr == ip_hdr(seg->next)->saddr))
-+		return segs;
-+
-+	while ((seg = seg->next)) {
-+		uh2 = tcp_hdr(seg);
-+		iph2 = ip_hdr(seg);
-+
-+		__tcpv4_gso_segment_csum(seg,
-+					 &iph2->saddr, &iph->saddr,
-+					 &uh2->source, &uh->source);
-+		__tcpv4_gso_segment_csum(seg,
-+					 &iph2->daddr, &iph->daddr,
-+					 &uh2->dest, &uh->dest);
-+	}
-+
-+	return segs;
-+}
-+
-+static struct sk_buff *__tcp_gso_segment_list(struct sk_buff *skb,
-+					      netdev_features_t features)
-+{
-+	skb = skb_segment_list(skb, features, skb_mac_header_len(skb));
-+	if (IS_ERR(skb))
-+		return skb;
-+
-+	return __tcpv4_gso_segment_list_csum(skb);
-+}
-+
- static struct sk_buff *tcp4_gso_segment(struct sk_buff *skb,
- 					netdev_features_t features)
- {
-@@ -37,6 +105,9 @@ static struct sk_buff *tcp4_gso_segment(struct sk_buff *skb,
- 	if (!pskb_may_pull(skb, sizeof(struct tcphdr)))
- 		return ERR_PTR(-EINVAL);
- 
-+	if (skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST)
-+		return __tcp_gso_segment_list(skb, features);
-+
- 	if (unlikely(skb->ip_summed != CHECKSUM_PARTIAL)) {
- 		const struct iphdr *iph = ip_hdr(skb);
- 		struct tcphdr *th = tcp_hdr(skb);
-@@ -178,7 +249,8 @@ struct sk_buff *tcp_gso_segment(struct sk_buff *skb,
- 	return segs;
- }
- 
--struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb)
-+struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb,
-+				bool fraglist)
- {
- 	struct sk_buff *pp = NULL;
- 	struct sk_buff *p;
-@@ -215,6 +287,7 @@ struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb)
- 	len = skb_gro_len(skb);
- 	flags = tcp_flag_word(th);
- 
-+	NAPI_GRO_CB(skb)->is_flist = fraglist;
- 	list_for_each_entry(p, head, list) {
- 		if (!NAPI_GRO_CB(p)->same_flow)
- 			continue;
-@@ -234,6 +307,7 @@ struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb)
- found:
- 	/* Include the IP ID check below from the inner most IP hdr */
- 	flush = NAPI_GRO_CB(p)->flush;
-+	flush |= fraglist != NAPI_GRO_CB(p)->is_flist;
- 	flush |= (__force int)(flags & TCP_FLAG_CWR);
- 	flush |= (__force int)((flags ^ tcp_flag_word(th2)) &
- 		  ~(TCP_FLAG_CWR | TCP_FLAG_FIN | TCP_FLAG_PSH));
-@@ -267,6 +341,19 @@ struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb)
- 	flush |= (ntohl(th2->seq) + skb_gro_len(p)) ^ ntohl(th->seq);
- 	flush |= skb_cmp_decrypted(p, skb);
- 
-+	if (fraglist) {
-+		flush |= (__force int)(flags ^ tcp_flag_word(th2));
-+		flush |= skb->ip_summed != p->ip_summed;
-+		flush |= skb->csum_level != p->csum_level;
-+		flush |= !pskb_may_pull(skb, skb_gro_offset(skb));
-+		flush |= NAPI_GRO_CB(p)->count >= 64;
-+
-+		if (flush || skb_gro_receive_list(p, skb))
-+			mss = 1;
-+
-+		goto out_check_final;
-+	}
-+
- 	if (flush || skb_gro_receive(p, skb)) {
- 		mss = 1;
- 		goto out_check_final;
-@@ -314,6 +401,49 @@ void tcp_gro_complete(struct sk_buff *skb)
- }
- EXPORT_SYMBOL(tcp_gro_complete);
- 
-+static bool tcp4_check_fraglist_gro(struct sk_buff *skb)
-+{
-+	const struct iphdr *iph = skb_gro_network_header(skb);
-+	struct net *net = dev_net(skb->dev);
-+	unsigned int off, hlen, thlen;
-+	struct tcphdr *th;
-+	struct sock *sk;
-+	int iif, sdif;
-+
-+	if (!(skb->dev->features & NETIF_F_GRO_FRAGLIST))
-+		return false;
-+
-+	inet_get_iif_sdif(skb, &iif, &sdif);
-+
-+	off = skb_gro_offset(skb);
-+	hlen = off + sizeof(*th);
-+	th = skb_gro_header(skb, hlen, off);
-+	if (unlikely(!th))
-+		return false;
-+
-+	thlen = th->doff * 4;
-+	if (thlen < sizeof(*th))
-+		return false;
-+
-+	hlen = off + thlen;
-+	if (!skb_gro_may_pull(skb, hlen)) {
-+		th = skb_gro_header_slow(skb, hlen, off);
-+		if (unlikely(!th))
-+			return false;
-+	}
-+
-+	sk = __inet_lookup_established(net, net->ipv4.tcp_death_row.hashinfo,
-+				       iph->saddr, th->source,
-+				       iph->daddr, ntohs(th->dest),
-+				       iif, sdif);
-+	if (!sk)
-+		return true;
-+
-+	sock_put(sk);
-+
-+	return false;
-+}
-+
- INDIRECT_CALLABLE_SCOPE
- struct sk_buff *tcp4_gro_receive(struct list_head *head, struct sk_buff *skb)
- {
-@@ -325,7 +455,7 @@ struct sk_buff *tcp4_gro_receive(struct list_head *head, struct sk_buff *skb)
- 		return NULL;
- 	}
- 
--	return tcp_gro_receive(head, skb);
-+	return tcp_gro_receive(head, skb, tcp4_check_fraglist_gro(skb));
- }
- 
- INDIRECT_CALLABLE_SCOPE int tcp4_gro_complete(struct sk_buff *skb, int thoff)
-@@ -333,6 +463,15 @@ INDIRECT_CALLABLE_SCOPE int tcp4_gro_complete(struct sk_buff *skb, int thoff)
- 	const struct iphdr *iph = ip_hdr(skb);
- 	struct tcphdr *th = tcp_hdr(skb);
- 
-+	if (NAPI_GRO_CB(skb)->is_flist) {
-+		skb_shinfo(skb)->gso_type |= SKB_GSO_FRAGLIST | SKB_GSO_TCPV4;
-+		skb_shinfo(skb)->gso_segs = NAPI_GRO_CB(skb)->count;
-+
-+		__skb_incr_checksum_unnecessary(skb);
-+
-+		return 0;
-+	}
-+
- 	th->check = ~tcp_v4_check(skb->len - thoff, iph->saddr,
- 				  iph->daddr, 0);
- 
-diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index 3498dd1d0694..a3cd546a1aea 100644
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -433,33 +433,6 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
- 	return segs;
- }
- 
--static int skb_gro_receive_list(struct sk_buff *p, struct sk_buff *skb)
--{
--	if (unlikely(p->len + skb->len >= 65536))
--		return -E2BIG;
--
--	if (NAPI_GRO_CB(p)->last == p)
--		skb_shinfo(p)->frag_list = skb;
--	else
--		NAPI_GRO_CB(p)->last->next = skb;
--
--	skb_pull(skb, skb_gro_offset(skb));
--
--	NAPI_GRO_CB(p)->last = skb;
--	NAPI_GRO_CB(p)->count++;
--	p->data_len += skb->len;
--
--	/* sk ownership - if any - completely transferred to the aggregated packet */
--	skb->destructor = NULL;
--	skb->sk = NULL;
--	p->truesize += skb->truesize;
--	p->len += skb->len;
--
--	NAPI_GRO_CB(skb)->same_flow = 1;
--
--	return 0;
--}
--
- 
- #define UDP_GRO_CNT_MAX 64
- static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
-diff --git a/net/ipv6/tcpv6_offload.c b/net/ipv6/tcpv6_offload.c
-index 4b07d1e6c952..7c82532d8aa7 100644
---- a/net/ipv6/tcpv6_offload.c
-+++ b/net/ipv6/tcpv6_offload.c
-@@ -7,12 +7,56 @@
-  */
- #include <linux/indirect_call_wrapper.h>
- #include <linux/skbuff.h>
-+#include <net/inet6_hashtables.h>
- #include <net/gro.h>
- #include <net/protocol.h>
- #include <net/tcp.h>
- #include <net/ip6_checksum.h>
- #include "ip6_offload.h"
- 
-+static bool tcp6_check_fraglist_gro(struct sk_buff *skb)
-+{
-+	const struct ipv6hdr *hdr = skb_gro_network_header(skb);
-+	struct net *net = dev_net(skb->dev);
-+	unsigned int off, hlen, thlen;
-+	struct tcphdr *th;
-+	struct sock *sk;
-+	int iif, sdif;
-+
-+	if (!(skb->dev->features & NETIF_F_GRO_FRAGLIST))
-+		return false;
-+
-+	inet6_get_iif_sdif(skb, &iif, &sdif);
-+
-+	off = skb_gro_offset(skb);
-+	hlen = off + sizeof(*th);
-+	th = skb_gro_header(skb, hlen, off);
-+	if (unlikely(!th))
-+		return false;
-+
-+	thlen = th->doff * 4;
-+	if (thlen < sizeof(*th))
-+		return false;
-+
-+	hlen = off + thlen;
-+	if (!skb_gro_may_pull(skb, hlen)) {
-+		th = skb_gro_header_slow(skb, hlen, off);
-+		if (unlikely(!th))
-+			return false;
-+	}
-+
-+	sk = __inet6_lookup_established(net, net->ipv4.tcp_death_row.hashinfo,
-+					&hdr->saddr, th->source,
-+					&hdr->daddr, ntohs(th->dest),
-+					iif, sdif);
-+	if (!sk)
-+		return true;
-+
-+	sock_put(sk);
-+
-+	return false;
-+}
-+
- INDIRECT_CALLABLE_SCOPE
- struct sk_buff *tcp6_gro_receive(struct list_head *head, struct sk_buff *skb)
- {
-@@ -24,7 +68,7 @@ struct sk_buff *tcp6_gro_receive(struct list_head *head, struct sk_buff *skb)
- 		return NULL;
- 	}
- 
--	return tcp_gro_receive(head, skb);
-+	return tcp_gro_receive(head, skb, tcp6_check_fraglist_gro(skb));
- }
- 
- INDIRECT_CALLABLE_SCOPE int tcp6_gro_complete(struct sk_buff *skb, int thoff)
-@@ -32,6 +76,15 @@ INDIRECT_CALLABLE_SCOPE int tcp6_gro_complete(struct sk_buff *skb, int thoff)
- 	const struct ipv6hdr *iph = ipv6_hdr(skb);
- 	struct tcphdr *th = tcp_hdr(skb);
- 
-+	if (NAPI_GRO_CB(skb)->is_flist) {
-+		skb_shinfo(skb)->gso_type |= SKB_GSO_FRAGLIST | SKB_GSO_TCPV6;
-+		skb_shinfo(skb)->gso_segs = NAPI_GRO_CB(skb)->count;
-+
-+		__skb_incr_checksum_unnecessary(skb);
-+
-+		return 0;
-+	}
-+
- 	th->check = ~tcp_v6_check(skb->len - thoff, &iph->saddr,
- 				  &iph->daddr, 0);
- 	skb_shinfo(skb)->gso_type |= SKB_GSO_TCPV6;
-@@ -51,6 +104,9 @@ static struct sk_buff *tcp6_gso_segment(struct sk_buff *skb,
- 	if (!pskb_may_pull(skb, sizeof(*th)))
- 		return ERR_PTR(-EINVAL);
- 
-+	if (skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST)
-+		return skb_segment_list(skb, features, skb_mac_header_len(skb));
-+
- 	if (unlikely(skb->ip_summed != CHECKSUM_PARTIAL)) {
- 		const struct ipv6hdr *ipv6h = ipv6_hdr(skb);
- 		struct tcphdr *th = tcp_hdr(skb);
--- 
-2.44.0
+    s2idle:
 
+         Freezing user space processes
+         Freezing user space processes completed (elapsed 0.006 seconds)
+         OOM killer disabled.
+         Freezing remaining freezable tasks
+         Freezing remaining freezable tasks completed (elapsed 0.003 second=
+s)
+         sd 0:0:0:0: [sda] Synchronizing SCSI cache
+         ata1.00: Entering standby power mode
+        +i2c-rcar e66d8000.i2c: error -16 : 10000005
+        +pca953x 4-0020: Failed to sync GPIO dir registers: -16
+        +pca953x 4-0020: Failed to restore register map: -16
+        +pca953x 4-0020: PM: dpm_run_callback(): pca953x_resume_noirq
+returns -16
+        +pca953x 4-0020: PM: failed to resume async noirq: error -16
+
+    s2ram:
+
+         Detected VIPT I-cache on CPU7
+         CPU7: Booted secondary processor 0x0000000103 [0x410fd034]
+         CPU7 is up
+        +i2c-rcar e66d8000.i2c: error -110 : 10000001
+        +pca953x 4-0020: Failed to sync GPIO dir registers: -110
+        +pca953x 4-0020: Failed to restore register map: -110
+        +pca953x 4-0020: PM: dpm_run_callback(): pca953x_resume_noirq
+returns -110
+        +pca953x 4-0020: PM: failed to resume async noirq: error -110
+         usb usb1: root hub lost power or was reset
+         ...
+         PM: suspend exit
+         ata1: link resume succeeded after 1 retries
+        -ata1: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
+        -sd 0:0:0:0: [sda] Starting disk
+        -ata1.00: configured for UDMA/133
+        -ata1.00: Entering active power mode
+        +ata1: SATA link down (SStatus 0 SControl 300)
+        +ata1: link resume succeeded after 1 retries
+        +ata1: SATA link down (SStatus 0 SControl 300)
+        +ata1: limiting SATA link speed to <unknown>
+        +ata1: link resume succeeded after 1 retries
+        +ata1: SATA link down (SStatus 0 SControl 3F0)
+        +ata1.00: disable device
+        +ata1.00: detaching (SCSI 0:0:0:0)
+        +sd 0:0:0:0: [sda] Synchronizing SCSI cache
+        +sd 0:0:0:0: [sda] Synchronize Cache(10) failed: Result:
+hostbyte=3D0x04 driverbyte=3DDRIVER_OK
+
+    When trying to read from /dev/sda afterwards:
+
+        ata1: link resume succeeded after 1 retries
+        ata1: SATA link down (SStatus 0 SControl 3F0)
+        ata1.00: disable device
+        ata1.00: detaching (SCSI 0:0:0:0)
+        device offline error, dev sda, sector 0 op 0x0:(READ) flags
+0x80700 phys_seg 4 prio class 0
+        device offline error, dev sda, sector 0 op 0x0:(READ) flags
+0x0 phys_seg 1 prio class 0
+        Buffer I/O error on dev sda, logical block 0, async page read
+        sd 0:0:0:0: [sda] Synchronizing SCSI cache
+        sd 0:0:0:0: [sda] Synchronize Cache(10) failed: Result:
+hostbyte=3D0x04 driverbyte=3DDRIVER_OK
+
+All issues above are fixed by reverting this commit.
+
+> --- a/drivers/gpio/gpio-pca953x.c
+> +++ b/drivers/gpio/gpio-pca953x.c
+> @@ -1234,7 +1234,7 @@ static void pca953x_save_context(struct pca953x_chi=
+p *chip)
+>         regcache_cache_only(chip->regmap, true);
+>  }
+>
+> -static int pca953x_suspend(struct device *dev)
+> +static int pca953x_suspend_noirq(struct device *dev)
+>  {
+>         struct pca953x_chip *chip =3D dev_get_drvdata(dev);
+>
+> @@ -1248,7 +1248,7 @@ static int pca953x_suspend(struct device *dev)
+>         return 0;
+>  }
+>
+> -static int pca953x_resume(struct device *dev)
+> +static int pca953x_resume_noirq(struct device *dev)
+>  {
+>         struct pca953x_chip *chip =3D dev_get_drvdata(dev);
+>         int ret;
+> @@ -1268,7 +1268,8 @@ static int pca953x_resume(struct device *dev)
+>         return ret;
+>  }
+>
+> -static DEFINE_SIMPLE_DEV_PM_OPS(pca953x_pm_ops, pca953x_suspend, pca953x=
+_resume);
+> +static DEFINE_NOIRQ_DEV_PM_OPS(pca953x_pm_ops,
+> +                              pca953x_suspend_noirq, pca953x_resume_noir=
+q);
+>
+>  /* convenience to stop overlong match-table lines */
+>  #define OF_653X(__nrgpio, __int) ((void *)(__nrgpio | PCAL653X_TYPE | __=
+int))
+>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
