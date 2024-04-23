@@ -1,94 +1,103 @@
-Return-Path: <linux-kernel+bounces-154730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCCE68AE03E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:49:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF4F58AE040
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:49:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 663841F21AE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:49:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C9BC1C21687
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:49:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD70E58234;
-	Tue, 23 Apr 2024 08:49:18 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CCF356772;
+	Tue, 23 Apr 2024 08:49:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="1Ks9Dv0k"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 938AC56B73
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:49:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1208320E;
+	Tue, 23 Apr 2024 08:49:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713862158; cv=none; b=PPjoEhjx41qJ1Cr7IWxoT5RKI5G3oyfvQPznhc0mr0vbXbxzNxJhKPdvvVHczlg5IvLpLpQIi5dZh2Y9T5qKXgo3SZhpqJUlEu7RktCQzT67fzMGPpI9kKpdTmJF/V8PzN7j/gVRgdracPpjsdfkA9SH+RCK0R81DjQZUHyVNBI=
+	t=1713862169; cv=none; b=fLtq6fjFzjgepgX7m2bcuDE80L2GVSVPFYJ5cdx/KOal1QyNiGOSCyVaEESLziaFDg7Y2Vaj2JqkOl+1EoOPTt/e5he4mGEK2kveuh36elvLJe8QlkKqKl07hwRlX1o7+1w8sIOWSj+rph8krv35/2djVHygc3i/ImQRos3PomQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713862158; c=relaxed/simple;
-	bh=W7f1Jf2jYUuUwHeiLYjopYj8jBxllwwQe9ojyeI4tqs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pJ+hvqhdsAQW3w3ibF2z4n5Dy7nSFYNu8Zcm8xPszUWXv/qviG5xBJBEl/cCoV5b3ECl26bLc6uHkAuQ6ZvoDxGQ1Y8kYmCffDTZ2DG3o05ReTb6FWqNmYCjQk/REznlHGPBrUntKaGghUjDNeaInsDCOy6bgdXpRZkFhxr0/xg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rzBpu-0007Tf-3I; Tue, 23 Apr 2024 10:49:10 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rzBpt-00DrZx-L6; Tue, 23 Apr 2024 10:49:09 +0200
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rzBpt-009nsy-1o;
-	Tue, 23 Apr 2024 10:49:09 +0200
-Date: Tue, 23 Apr 2024 10:49:09 +0200
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: "Kory Maincent (Dent Project)" <kory.maincent@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Kyle Swenson <kyle.swenson@est.tech>
-Subject: Re: [PATCH net-next v2 1/3] net: pse-pd: pse_core: Add missing kdoc
- return description
-Message-ID: <Zid2BRA74cA8hXfI@pengutronix.de>
-References: <20240422-fix_poe-v2-0-e58325950f07@bootlin.com>
- <20240422-fix_poe-v2-1-e58325950f07@bootlin.com>
+	s=arc-20240116; t=1713862169; c=relaxed/simple;
+	bh=jaQKU9Q+XiXAoGpDDMhf/NT3bVROuB+z0bWHqhTkHSQ=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=FW4Fl9Fcb0apZ0MKPQGz/W78pO96DjDI/pQy1v+5/rn4ie0s9zvxjeoloYgtkvcKS+Fi2oRPXiE2uDUx5vJJ8VwBQa4dCmxtSm2pxwKVWb3qxMJ4rm0eDTSfB5aSIJUWiFpPzS0PW6IfeYTreI6pmLHl69G3qBf4RLm+DcRR2o8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=1Ks9Dv0k; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713862165;
+	bh=jaQKU9Q+XiXAoGpDDMhf/NT3bVROuB+z0bWHqhTkHSQ=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=1Ks9Dv0k7unME3RDGOlAL6jZbnOxB764t6ypc8y4P9RwygOYdAemLXPK/6d/ZCoHy
+	 EEfq3j1XXnT9NQoC4jdQSqeXCuIPxvuHU8j/emHEg2lSkznxUezvGXPCSU53PmSOaF
+	 eSysWLMAyy06zq/2XN/smd2ULIgaZrHUjUajGQxybg388mlN8S3m1yP1My35FfLhkM
+	 qIfzCTFeTyz0RgrZsVqG6ZZ+dn1JqMfYoU7Lni6RLDdEZkYAfu1EFTZEYhPMtgisa+
+	 4YS7y+LAIOwwTkgaBGOdpypykxuUKiY4792/qMHYDacFDDt8LKfKVybM3WucL2mOsM
+	 jJjUVqR5/6qJw==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1A7CD37820AB;
+	Tue, 23 Apr 2024 08:49:22 +0000 (UTC)
+Message-ID: <440693ad-519e-4956-9ace-701bc1c3593e@collabora.com>
+Date: Tue, 23 Apr 2024 13:49:48 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240422-fix_poe-v2-1-e58325950f07@bootlin.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kvm@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: selftests: Add 'malloc' failure check in
+ test_vmx_nested_state
+To: Kunwu Chan <chentao@kylinos.cn>, seanjc@google.com,
+ kunwu.chan@hotmail.com, pbonzini@redhat.com, shuah@kernel.org
+References: <20240423073952.2001989-1-chentao@kylinos.cn>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240423073952.2001989-1-chentao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 22, 2024 at 03:35:46PM +0200, Kory Maincent (Dent Project) wrote:
-> From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
-> 
-> Add missing kernel documentation return description.
-> This allows to remove all warning from kernel-doc test script.
-> 
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+On 4/23/24 12:39 PM, Kunwu Chan wrote:
+> There is a 'malloc' call in test_vmx_nested_state function, which can
+> be unsuccessful. This patch will add the malloc failure checking
+> to avoid possible null dereference and give more information
+> about test fail reasons.
+LGTM
 
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+
+> 
+> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+> ---
+>  tools/testing/selftests/kvm/x86_64/vmx_set_nested_state_test.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/x86_64/vmx_set_nested_state_test.c b/tools/testing/selftests/kvm/x86_64/vmx_set_nested_state_test.c
+> index 67a62a5a8895..18afc2000a74 100644
+> --- a/tools/testing/selftests/kvm/x86_64/vmx_set_nested_state_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/vmx_set_nested_state_test.c
+> @@ -91,6 +91,7 @@ void test_vmx_nested_state(struct kvm_vcpu *vcpu)
+>  	const int state_sz = sizeof(struct kvm_nested_state) + getpagesize();
+>  	struct kvm_nested_state *state =
+>  		(struct kvm_nested_state *)malloc(state_sz);
+> +	TEST_ASSERT(state, "-ENOMEM when allocating kvm state");
+>  
+>  	/* The format must be set to 0. 0 for VMX, 1 for SVM. */
+>  	set_default_vmx_state(state, state_sz);
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+BR,
+Muhammad Usama Anjum
 
