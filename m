@@ -1,122 +1,199 @@
-Return-Path: <linux-kernel+bounces-154963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB80B8AE3AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:17:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08B278AE3D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:27:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09B4E1C22816
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:17:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 050A7B2236A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:27:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D527E573;
-	Tue, 23 Apr 2024 11:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="xxxt3KEA"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E69E7E796;
+	Tue, 23 Apr 2024 11:26:52 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89D507D3E3;
-	Tue, 23 Apr 2024 11:17:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D2F60279;
+	Tue, 23 Apr 2024 11:26:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713871027; cv=none; b=T8LxPvNjzNRZHGAkhnaM5mkhY/V8VruRoFN0KIg/bEnV2SJiLyMkx5j6NwFZtgb2CLX/uJkRv+EL0IL4uaD/9CKYK2vD/LhCJWa8Ha7+NYTWvYZi6vwZ7p2EgV9FxnLUjRExJtaXCNnl+LKkLOvMS5GBDXQIZfDJs9+fesb+xpc=
+	t=1713871612; cv=none; b=SwW95kWZyndz6ZRe1kyVZa9QPQCrFPBJtPEswc+n1WlMp1Lr91yE6pJraWxO+04c3xPBhb5MRCsx9uFWJ/SvwqBHzClzuq1H1SRosZmIXY2gw8WGddUFQ0SPQ18M2+dNWwEMCh8Cmd6eHXUoL+yWJwZvbPeuw/7rv7FVE2QUl6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713871027; c=relaxed/simple;
-	bh=FQ8w7k3m+awfAt2WI00e6XPciwGL7V7j+ZsuF0hlZNg=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=thzjdE6+LpoFPV/m/Gp5aBWMmNlHhpUOC4uDcS43DbaBVNHcLMYfYMzhEN8YWQbweMCuAlamxc/3r5v1p6i+g2Fk/6B/oLTk2QWO8pQGdK6MVPBe/pGbdLWBqvi5mNi5Z7Oq4/wF3H/5kPRk5ZBNTfK6djoR7ngb0em9BcOSOiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=xxxt3KEA; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1713871026; x=1745407026;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=FQ8w7k3m+awfAt2WI00e6XPciwGL7V7j+ZsuF0hlZNg=;
-  b=xxxt3KEAvput3fFDCwNmqGhF7sWrADNCm7NbssOKEI0QMR/UKwUjsbFw
-   mLcGsnVSYGiiWHOcWtG0n7ZfWBI1LHio7aMzKVNuIBIaTZ/NRQCaZvfbV
-   oEM5VBs3xsWxwSlI+MZfd4lrUnVN6lD9F9qK+Qch9rjLYuhqqyNZkrD6u
-   JQvUADUgrQAIdmJgbVLtO9SZ4hAhOcYupWHDkrmHdXQn9Qj6WIHnEvvAc
-   W3BeR7L1x++uTF46SrhiCdGHajSi9YZSfdCqBbIlquJJf7CtJft+7NE7h
-   X41mLZEO/Sd/fKdyjAL6Fj5AvXqMpKz/kNDGQDZoXWpibqXdculc/v4ng
-   w==;
-X-CSE-ConnectionGUID: ffN6ugd4ShOnAf1ihcOd+g==
-X-CSE-MsgGUID: 6Y+4TGCoRFez7yAkPzihEA==
-X-IronPort-AV: E=Sophos;i="6.07,222,1708412400"; 
-   d="scan'208";a="253077443"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Apr 2024 04:17:05 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 23 Apr 2024 04:16:44 -0700
-Received: from DEN-DL-M70577 (10.10.85.11) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Tue, 23 Apr 2024 04:16:42 -0700
-Date: Tue, 23 Apr 2024 11:16:42 +0000
-From: Daniel Machon <daniel.machon@microchip.com>
-To: =?utf-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
-CC: <netdev@vger.kernel.org>, Steen Hegelund <Steen.Hegelund@microchip.com>,
-	Lars Povlsen <lars.povlsen@microchip.com>, <UNGLinuxDriver@microchip.com>,
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	<linux-kernel@vger.kernel.org>, Jacob Keller <jacob.e.keller@intel.com>
-Subject: Re: [PATCH net-next 2/2] net: sparx5: flower: check for unsupported
- control flags
-Message-ID: <20240423111642.2pgzjpac65chjfxs@DEN-DL-M70577>
-References: <20240423102728.228765-1-ast@fiberby.net>
- <20240423102728.228765-2-ast@fiberby.net>
+	s=arc-20240116; t=1713871612; c=relaxed/simple;
+	bh=yIru4Dpy+UCxrypB9Zbcrt6rwL+AC++o7HQ7EHMSuTY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=kL337ZAR3vZmZPcQf0qDsZeKLnDA11lbfuGbalwQr5sr35sXTvyXGGaXs/x+ydyhSn0x+206zBaFdUpFPu77R3vEb48J+Q78VPYtYtcxx1nSiId9AU2hVAsZu1xu0FF7cfTQvIR0rwSdfpZhznu4LJFTFIbT8KqB/R+z/0eoq30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VP0F84QTsz4f3nKM;
+	Tue, 23 Apr 2024 19:26:36 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id C08ED1A0175;
+	Tue, 23 Apr 2024 19:26:45 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgBHGBHymidmAnH7Kg--.30599S4;
+	Tue, 23 Apr 2024 19:26:45 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	djwong@kernel.org,
+	hch@infradead.org,
+	brauner@kernel.org,
+	david@fromorbit.com,
+	chandanbabu@kernel.org,
+	tytso@mit.edu,
+	jack@suse.cz,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com
+Subject: [PATCH v5 4/9] xfs: convert delayed extents to unwritten when zeroing post eof blocks
+Date: Tue, 23 Apr 2024 19:17:35 +0800
+Message-Id: <20240423111735.1298851-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240320110548.2200662-5-yi.zhang@huaweicloud.com>
+References: <20240320110548.2200662-5-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240423102728.228765-2-ast@fiberby.net>
+X-CM-TRANSID:cCh0CgBHGBHymidmAnH7Kg--.30599S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw47Kw4fCw4UJF4DuryDKFg_yoWrGrW8pF
+	Zagw15GrsrKw1fZw4fAF1agr1F93Z5Cr4UJryrXrs3Za4Yqr4IgryIy3Wjqry8Cws3A3Wj
+	vF4jgas2934qvaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1
+	a9aPUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-> Use flow_rule_is_supp_control_flags() to reject filters with
-> unsupported control flags.
-> 
-> In case any unsupported control flags are masked,
-> flow_rule_is_supp_control_flags() sets a NL extended
-> error message, and we return -EOPNOTSUPP.
-> 
-> Only compile-tested.
-> 
-> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
-> ---
->  drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
-> index d846edd77a01..f81d89f8f620 100644
-> --- a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
-> +++ b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
-> @@ -197,6 +197,11 @@ sparx5_tc_flower_handler_control_usage(struct vcap_tc_flower_parse_usage *st)
->                 }
->         }
-> 
-> +       if (!flow_rule_is_supp_control_flags(FLOW_DIS_IS_FRAGMENT |
-> +                                            FLOW_DIS_FIRST_FRAG,
-> +                                            mt.mask->flags, extack))
-> +               return -EOPNOTSUPP;
-> +
->         st->used_keys |= BIT_ULL(FLOW_DISSECTOR_KEY_CONTROL);
-> 
->         return err;
-> --
-> 2.43.0
+From: Zhang Yi <yi.zhang@huawei.com>
 
-As mentioned in patch #1, use supp_flags here. Otherwise looks
-good.
+Current clone operation could be non-atomic if the destination of a file
+is beyond EOF, user could get a file with corrupted (zeroed) data on
+crash.
 
-/Daniel
+The problem is about preallocations. If you write some data into a file:
+
+	[A...B)
+
+and XFS decides to preallocate some post-eof blocks, then it can create
+a delayed allocation reservation:
+
+	[A.........D)
+
+The writeback path tries to convert delayed extents to real ones by
+allocating blocks. If there aren't enough contiguous free space, we can
+end up with two extents, the first real and the second still delalloc:
+
+	[A....C)[C.D)
+
+After that, both the in-memory and the on-disk file sizes are still B.
+If we clone into the range [E...F) from another file:
+
+	[A....C)[C.D)      [E...F)
+
+then xfs_reflink_zero_posteof() calls iomap_zero_range() to zero out the
+range [B, E) beyond EOF and flush it. Since [C, D) is still a delalloc
+extent, its pagecache will be zeroed and both the in-memory and on-disk
+size will be updated to D after flushing but before cloning. This is
+wrong, because the user can see the size change and read the zeroes
+while the clone operation is ongoing.
+
+We need to keep the in-memory and on-disk size before the clone
+operation starts, so instead of writing zeroes through the page cache
+for delayed ranges beyond EOF, we convert these ranges to unwritten and
+invalidate any cached data over that range beyond EOF.
+
+Suggested-by: Dave Chinner <david@fromorbit.com>
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+---
+Changes since v4:
+
+Move the delalloc converting hunk before searching the COW fork. Because
+if the file has been reflinked and copied on write,
+xfs_bmap_extsize_align() aligned the range of COW delalloc extent, after
+the writeback, there might be some unwritten extents left over in the
+COW fork that overlaps the delalloc extent we found in data fork.
+
+  data fork  ...wwww|dddddddddd...
+  cow fork          |uuuuuuuuuu...
+                    ^
+                  i_size
+
+In my v4, we search the COW fork before checking the delalloc extent,
+goto found_cow tag and return unconverted delalloc srcmap in the above
+case, so the delayed extent in the data fork will have no chance to
+convert to unwritten, it will lead to delalloc extent residue and break
+generic/522 after merging patch 6.
+
+ fs/xfs/xfs_iomap.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+index 236ee78aa75b..ab398cb3680a 100644
+--- a/fs/xfs/xfs_iomap.c
++++ b/fs/xfs/xfs_iomap.c
+@@ -1022,6 +1022,23 @@ xfs_buffered_write_iomap_begin(
+ 		goto out_unlock;
+ 	}
+ 
++	/*
++	 * For zeroing, trim a delalloc extent that extends beyond the EOF
++	 * block.  If it starts beyond the EOF block, convert it to an
++	 * unwritten extent.
++	 */
++	if ((flags & IOMAP_ZERO) && imap.br_startoff <= offset_fsb &&
++	    isnullstartblock(imap.br_startblock)) {
++		xfs_fileoff_t eof_fsb = XFS_B_TO_FSB(mp, XFS_ISIZE(ip));
++
++		if (offset_fsb >= eof_fsb)
++			goto convert_delay;
++		if (end_fsb > eof_fsb) {
++			end_fsb = eof_fsb;
++			xfs_trim_extent(&imap, offset_fsb, end_fsb - offset_fsb);
++		}
++	}
++
+ 	/*
+ 	 * Search the COW fork extent list even if we did not find a data fork
+ 	 * extent.  This serves two purposes: first this implements the
+@@ -1167,6 +1184,17 @@ xfs_buffered_write_iomap_begin(
+ 	xfs_iunlock(ip, lockmode);
+ 	return xfs_bmbt_to_iomap(ip, iomap, &imap, flags, 0, seq);
+ 
++convert_delay:
++	xfs_iunlock(ip, lockmode);
++	truncate_pagecache(inode, offset);
++	error = xfs_bmapi_convert_delalloc(ip, XFS_DATA_FORK, offset,
++					   iomap, NULL);
++	if (error)
++		return error;
++
++	trace_xfs_iomap_alloc(ip, offset, count, XFS_DATA_FORK, &imap);
++	return 0;
++
+ found_cow:
+ 	seq = xfs_iomap_inode_sequence(ip, 0);
+ 	if (imap.br_startoff <= offset_fsb) {
+-- 
+2.39.2
 
 
