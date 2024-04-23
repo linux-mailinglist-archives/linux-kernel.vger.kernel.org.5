@@ -1,107 +1,137 @@
-Return-Path: <linux-kernel+bounces-155097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 770DC8AE541
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EBFA8AE545
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:02:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A28441C20C6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:01:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CECF1C22E31
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:01:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D00C51386B2;
-	Tue, 23 Apr 2024 11:47:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="j/o6c8CF"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03661134730;
+	Tue, 23 Apr 2024 11:48:31 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59B21384A4
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 11:47:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 895F9482D7;
+	Tue, 23 Apr 2024 11:48:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872846; cv=none; b=SE2n1usLnttIQquKdBVLQ1M0mbFeZ2XXB2p5EwTUCfu1vk8mEIvT2V72uH5yZmRy+v2YnPcEr+yHgBholMIeycqepdjIapfG3r8ioDDsMerLG8c16INfUdImbFLDL0Ybeb0uMCLXOCC7TUsPUA2SyQHDo9zqNPLGULJGF+aiCXA=
+	t=1713872910; cv=none; b=X+CC0YO+QVoD2r3TQABFNGZmUX0SQsyISp/CWmTxE2NEN3eU3cuVhNXQ7cIVadZztJ4iWbKjgcqg8PEi/U5+U2E7g6gHxLfgSQFPs8nl9uIm/5mJnJvtwb5b97+UOvCoqimImPJ5nOo/GJgMHEegenMhI8Eb5n7PQ5o9etZF1EA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872846; c=relaxed/simple;
-	bh=5zXXaSDHHLZNmipmrDXsZzK9DAc3oLYYNJml3DyaE0E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=crRqr5jzE5x3StcWjLtF0csMHDE/X7eBddoaU4z130ZhDOBW+GUbEYIF07KLR9Sb/BTajb65+i9ulNWUVDjwfKfr+kxcQUCkmrDUy7NUJPvy2JlEWBAHyUySCd26Lj+qhMADPWaM2/lyVZEPrp+roEKiA2ot5NWu3d24DOEWmLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=j/o6c8CF; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-ddda842c399so5474318276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 04:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713872844; x=1714477644; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5zXXaSDHHLZNmipmrDXsZzK9DAc3oLYYNJml3DyaE0E=;
-        b=j/o6c8CFdBdfEW96EocgV4qMtZFKTFwHpUtuNWSeCLd8tEasG/T4995qxlu801Wyu4
-         S/HQM4cxJ257i+LXrh9gfHKFDPavaKecr/G7H0wYNVm23T4Yj/lwVdR8Xj+ZIn4epE7k
-         iIU6sVyMXVxhsS4Xxs4MBhfPVRxUezI6yGXIs/K85ld8/vfPKq2NxfSMh571G/yzIsOK
-         Zq1/HYW4Xtw95sGyf8rYjOeDSkNtjO0+2BPhRsAdLQBWzWWD9WrfaHkNXff2w2AXeZOW
-         RfxV36FOrNYMAKIgZXjFs30cBazElOsVCI/DhbOrgsAasypQOuGTkcKo/xSJy+9dWulV
-         o3lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713872844; x=1714477644;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5zXXaSDHHLZNmipmrDXsZzK9DAc3oLYYNJml3DyaE0E=;
-        b=Zjtk1ltnH8jkALnIgpKF9caoWjDv1iOib5S0Or8x3LAsx3T9gEWIak5rbszIK8T84S
-         sbfVRoEabp5HXtPV36okQd37QJ8q+FfvhkfpedJAdFIohZ3CoTq6qcsRgFq7tL0kKhc3
-         36t1W1Hab02EmTLQegae57OnefLvBj245MZl7LFxUxxTXkSbkrnjeLhHyfHFU1u64hBs
-         DMhpUDuSqQOTxjnL3PphMf/ilEuEuPZ0dBbEaFyNccIfN25fbmacjOb56GdlIru9x4W6
-         xHUse5u/Pg3qA7d4FZm2wwhKgbg7654/8HsNIsoMAtID3qM6Da1exuTNOipCdAtRf2ru
-         9zFg==
-X-Forwarded-Encrypted: i=1; AJvYcCW4mG3tS5CAPV16c5atpnvi8EiD89CDUy8mPLf2nf/PG/u2aOHSk0gf9Nb53/S+5AecLWs1RYfUhQKcssh4UMxxuXOCDbY1h6zYklc7
-X-Gm-Message-State: AOJu0Yyryz/JjLrO1KFqfvOR40E5swli99GOsT7FSsn3X0WUA3YO8TX0
-	s2vill72YwoVyG7RZyEUTk5g2twZTT9U4xEcSOyj+ouMNmEC7NbXcRAD+kRTSBLHpUXDRCuDvpB
-	HWu0f5FZ535ghXgg+NV7DEyJIR8hEQJCcC9emPA==
-X-Google-Smtp-Source: AGHT+IHntaLe6W6a9zZrdQp/NobtXyLalEiGhjsvJyg2CKkOy+q6UNrHqwWUkHv1SV9kpP87mRM7PtZ2WCmKIrFs8zs=
-X-Received: by 2002:a25:5f42:0:b0:de5:51dd:87da with SMTP id
- h2-20020a255f42000000b00de551dd87damr1858523ybm.32.1713872843745; Tue, 23 Apr
- 2024 04:47:23 -0700 (PDT)
+	s=arc-20240116; t=1713872910; c=relaxed/simple;
+	bh=s1VrbkB1mFREuzasvo0D9mWuRluO73r6qFb8n2kFnVI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=OJ4rwwja3Kv4jl8684CQ/JTRbKs8ONtQY31KsbZ69lldpzEwzU2aug7j6amPD8ZVwYXpU+Wwn2yZ7Z1K/5mhnFS6OlRbMcIpJNC4HOu7gxznhfJXhA4DqO8jiWJMCKf8nKUBz1tw2r0jMk1aW11FFZNTwYPsDdSaJCpDGKImuHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VP0gN6t5czNt7j;
+	Tue, 23 Apr 2024 19:45:52 +0800 (CST)
+Received: from dggpemd100004.china.huawei.com (unknown [7.185.36.20])
+	by mail.maildlp.com (Postfix) with ESMTPS id 530DA18007A;
+	Tue, 23 Apr 2024 19:48:23 +0800 (CST)
+Received: from [10.67.109.211] (10.67.109.211) by
+ dggpemd100004.china.huawei.com (7.185.36.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Tue, 23 Apr 2024 19:48:23 +0800
+Message-ID: <0ead5774-92ca-4a84-82e3-ec5c198794e5@huawei.com>
+Date: Tue, 23 Apr 2024 19:48:22 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240423-for-soc-asus-rt-ac3200-ac5300-v3-0-23d33cfafe7a@arinc9.com>
- <20240423-for-soc-asus-rt-ac3200-ac5300-v3-2-23d33cfafe7a@arinc9.com>
-In-Reply-To: <20240423-for-soc-asus-rt-ac3200-ac5300-v3-2-23d33cfafe7a@arinc9.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 23 Apr 2024 13:47:12 +0200
-Message-ID: <CACRpkdagwAD6KbCU0351rSUgqu6wimjREyfzGu06+aeSvM4fbA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] dt-bindings: arm: bcm: add bindings for ASUS RT-AC5300
-To: arinc.unal@arinc9.com
-Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, 
-	Hauke Mehrtens <hauke@hauke-m.de>, Rafal Milecki <zajec5@gmail.com>, 
-	Florian Fainelli <florian.fainelli@broadcom.com>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
-	Tom Brautaset <tbrautaset@gmail.com>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	Krzysztof Kozlowski <krzk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Content-Language: en-US
+To: Masahiro Yamada <masahiroy@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-kbuild@vger.kernel.org>,
+	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+	<dave.hansen@linux.intel.com>, <hpa@zytor.com>, <nathan@kernel.org>,
+	<nicolas@fjasle.eu>, <peterz@infradead.org>, <jpoimboe@kernel.org>,
+	<leitao@debian.org>, <petr.pavlu@suse.com>, <richard.weiyang@gmail.com>,
+	<ruanjinjie@huawei.com>, <ndesaulniers@google.com>, <jgross@suse.com>
+References: <20240422060556.1226848-1-liuyuntao12@huawei.com>
+ <CAK7LNAQgkt6t6UEB+_q15KJb2STVL6oqUo3mFM8EzumFH+-mYw@mail.gmail.com>
+From: "liuyuntao (F)" <liuyuntao12@huawei.com>
+In-Reply-To: <CAK7LNAQgkt6t6UEB+_q15KJb2STVL6oqUo3mFM8EzumFH+-mYw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemd100004.china.huawei.com (7.185.36.20)
 
-On Tue, Apr 23, 2024 at 11:51=E2=80=AFAM Ar=C4=B1n=C3=A7 =C3=9CNAL via B4 R=
-elay
-<devnull+arinc.unal.arinc9.com@kernel.org> wrote:
 
-> From: Ar=C4=B1n=C3=A7 =C3=9CNAL <arinc.unal@arinc9.com>
+
+On 2024/4/23 0:01, Masahiro Yamada wrote:
+> On Mon, Apr 22, 2024 at 3:41 PM Yuntao Liu <liuyuntao12@huawei.com> wrote:
+>>
+>> The current x86 architecture does not yet support the
+>> HAVE_LD_DEAD_CODE_DATA_ELIMINATION feature. x86 is widely used in
+>> embedded scenarios, and enabling this feature would be beneficial for
+>> reducing the size of the kernel image.
+>>
+>> In order to make this work, we keep the necessary tables by annotating
+>> them with KEEP, also it requires further changes to linker script to KEEP
+>> some tables and wildcard compiler generated sections into the right place.
+>>
+>> Enabling CONFIG_UNWINDER_ORC or CONFIG_MITIGATION_RETPOLINE will enable
+>> the objtool's --orc and --retpoline parameters, which will alter the
+>> layout of the binary file, thereby preventing gc-sections from functioning
+>> properly. Therefore, HAVE_LD_DEAD_CODE_DATA_ELIMINATION should only be
+>> selected when they are not enabled.
+>>
+>> Enabling CONFIG_LTO_CLANG or CONFIG_X86_KERNEL_IBT will use vmlinux.o
+>> instead of performing the slow LTO link again. This can also prevent
+>> gc-sections from functioning properly. Therefore, using this optimization
+>> when CONFIG_LD_DEAD_CODE_DATA_ELIMINATION is not enabled.
+>>
+>> The size comparison of zImage is as follows:
+>> x86_def_defconfig  i386_defconfig    tinyconfig
+>> 10892288           10826240          607232          no dce
+>> 10748928           10719744          529408          dce
+>> 1.3%               0.98%             12.8%           shrink
+>>
+>> When using smaller config file, there is a significant reduction in the
+>> size of the zImage.
+>> ---
+> 
+>> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+>> index 7862a8101747..7287b5a9f17d 100755
+>> --- a/scripts/link-vmlinux.sh
+>> +++ b/scripts/link-vmlinux.sh
+>> @@ -60,7 +60,7 @@ vmlinux_link()
+>>          # skip output file argument
+>>          shift
+>>
+>> -       if is_enabled CONFIG_LTO_CLANG || is_enabled CONFIG_X86_KERNEL_IBT; then
+>> +       if [ is_enabled CONFIG_LTO_CLANG || is_enabled CONFIG_X86_KERNEL_IBT ] && [ ! is_enabled CONFIG_LD_DEAD_CODE_DATA_ELIMINATION ]; then
+>>                  # Use vmlinux.o instead of performing the slow LTO link again.
+>>                  objs=vmlinux.o
+>>                  libs=
+>> --
+> 
+> 
+> This is wrong.
+> You should not put is_enabled inside [ ... ]
+> 
+
+My mistake.
+
+> (is_enabled CONFIG_LTO_CLANG || is_enabled CONFIG_X86_KERNEL_IBT) && !
+> is_enabled CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+> 
+> is still weird.
+> 
+> 
+> When CONFIG_LTO_CLANG=y and CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y,
+> the result of LTO will be discarded.
 >
-> Add ASUS RT-AC5300 under BCM47094 based boards.
->
-> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Signed-off-by: Ar=C4=B1n=C3=A7 =C3=9CNAL <arinc.unal@arinc9.com>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+On arm and risc-v, these two configs can both be enabled without any 
+issues, i think, it should be the same for x86 as well.
 
