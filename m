@@ -1,73 +1,62 @@
-Return-Path: <linux-kernel+bounces-156011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1A188AFC9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:32:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C059B8AFCA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:33:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E3E42834F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:32:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DB0F2827F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:33:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21BB3EA95;
-	Tue, 23 Apr 2024 23:32:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ABB63FB94;
+	Tue, 23 Apr 2024 23:33:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NX2GRL2f"
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Wzaxc9Rs"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D2CF18B04;
-	Tue, 23 Apr 2024 23:32:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E84B1DFF5;
+	Tue, 23 Apr 2024 23:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713915152; cv=none; b=fg+RTvMPUMMw+AFoLGWtESEv9/la4yc80XzactmBDEI7/z6dFdoTDTwI/UWu5v80LuFLcit+J5DiCGgKa1ZIOxMLOisGLF9vmf1HQ4VdtOkcbGOPOswIOvq+X2I5ZYQJPwjovtlE6ukgZxyhfkv54/D0JGpoieWZdjVq94wquGo=
+	t=1713915229; cv=none; b=kvZ+ZtWsmhHPxRfz7UVCZAINwPHXZGxaYGuRfaalZphdF6o9uIe2NL+5rLi7EzkndYnOeiqqyhWLi9Z0tUIzjLOtvflw1f/344g6O3GBkBKq+nhtgyjPq8eSQ3x4KxzP5pR9BftDORQSIOh4dtrB8CyWcX0b57Tt3HwEY3LxqSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713915152; c=relaxed/simple;
-	bh=23hS/brzScawZeSs4fKtuEAynjjzvMh/uEnoc2P5GwU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SL5Fdycce8rReejVMCG+y1yFn8A6OtMf0LsNGFPRecoOtRVUMOktEHrxo2zBkoWtCWnYo+JgDOiljLDBB4sdXCELxtsi0f4cQYLSBoZHMtu73n/E5ACbmPLlbRtpMHDxRKW0TV+Zmv/j3Qvg8reRx3epoIdU1RObr1j++iOF4ec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NX2GRL2f; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-439656c1b3eso24165801cf.1;
-        Tue, 23 Apr 2024 16:32:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713915148; x=1714519948; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SmXyH9dvxmCU3cg83hUuLVi3PIy6mOxfY3AEbqVj3JQ=;
-        b=NX2GRL2fs+CMcu79f8uk09ZYZdudE9XbIseYd6TW35XNvUpqvFIK2M9aSbHOf7wZZK
-         NqX0cxDn4UowaXnReBqxO7q4M64TSf+flBXM+I8JwczN5+GReoA0QRu3kZxW15J839rJ
-         XpmOZCw5u069W9EQ+4iVgUftNjkzdLX56xy1IyM06AtK4hXike476lZsePDCcWdiqlXg
-         d33vhDD8AsebuZd5b94mGiXBbVd3E16CVicB4MyYZ0IWMURZ0X1f+Ua36SaVATkxVy7u
-         SIu37+CtVvnIR2tKScPK2qLWN0PwbngA03QjOqBkT7UkKCBOvV3anS+kJWehjgFuIonI
-         ZAGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713915148; x=1714519948;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SmXyH9dvxmCU3cg83hUuLVi3PIy6mOxfY3AEbqVj3JQ=;
-        b=bwfAawtPxSlnMGOfYr8gKXYZYkjksw+hN7UvrfDRu9qHa+Tz69E27CtRZuOx+O2CLd
-         ln2icgYSxZpAI1T9o4cYZ0D6fRM1ZE53nqv+bH4xA99YtWn1Noo0um+QFzKml5PqieXs
-         gnlwHFwp88buq9x0mbazBPyIj5I4FqzFwh2ZifNL4l+Cma82vphov65pWF3Ta81wCsBQ
-         AQfCKYMyFS8DguosUzaSyvpY+0u4Mqbb4NXk9hpfbaN3lDMTO6d/RTSzO+QA0sLcDOmb
-         PyJg10VObchumuLgAslUkz688CX307yPIl2QpJb+1142VC6QpXh2mMg1HkhK3RuzhwrE
-         c+2g==
-X-Forwarded-Encrypted: i=1; AJvYcCV/iAxmBu7+TxtVm3sHaSplHKDcmnmVvalaPEUIqvVloAqkXr0JNUIgBTlOOuWwPPsdsDxgcmOIvGMNzIWM2P7a9OanmBmi61bzFjM4nzEw7rpvLIxhCh3JMEmd8RT1xkIlxxR1
-X-Gm-Message-State: AOJu0YwjH2TAtGeVTKj8irPn6Vf7nQZm/DOMF+cgcy0ai63POXI5oLef
-	nK99yqWHy+kgRrWlbvjjZRpM+1gg5l+PDLrSG4Art72+lltNyGhO
-X-Google-Smtp-Source: AGHT+IEIcF45RXhALXWmglYUuAQPe/v3F5iDAqUKYfrtp96kJ8HQ44745LYH4NAQQPDcZT7LMAumjg==
-X-Received: by 2002:a05:622a:5a0e:b0:43a:15c9:34b9 with SMTP id fy14-20020a05622a5a0e00b0043a15c934b9mr1058320qtb.28.1713915148115;
-        Tue, 23 Apr 2024 16:32:28 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id ic10-20020a05622a68ca00b00436510ddc5esm5588027qtb.34.2024.04.23.16.32.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 16:32:27 -0700 (PDT)
-Message-ID: <79e05a74-0de6-48de-b570-cea567d9aca9@gmail.com>
-Date: Tue, 23 Apr 2024 16:32:23 -0700
+	s=arc-20240116; t=1713915229; c=relaxed/simple;
+	bh=UhT05+SHXUDIfRetZSC879uPTe6jaust2zQku4q1KQk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=N+uahqwUygGqs+qDdiiClWYKJK+7GFgtKPFhHGq0DRGZsFeK6gKkpfXAsccRc1dyRDOGgpqiQWsKX8KJmv+6gBNm5gH349+9T4l8WysokQSDzmKlsQeFiBLQ+oSTZ8cdReY2pH3rYYDaCG58D53gbcd8hZG66uP7PDZ+q82Oh0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Wzaxc9Rs; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43NNSFui023474;
+	Tue, 23 Apr 2024 23:33:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=UhT05+SHXUDIfRetZSC879uPTe6jaust2zQku4q1KQk=; b=Wz
+	axc9Rs/aY4eq7Yw9Wxoi1c7YH8PzSQYqQqP2mjDYmyDmP4zEV8dfgh5XKkkOeHs+
+	IYkzu1xETm7/gHQBWp9bw64xPesLAakgpUtjuACCI3lNhW2wJEKim6gvRdua586O
+	XhUktIcY9RCjoZ9Fbq0LuEJ/LgNlU+Qkxfa7j6jkAVn+Vq69LX4qYbum1d+8SC3S
+	4vco8Ja6qUiblQo2uzsUN8THHe6kTGZY9Bxvgyr+5dZnm1Z6fywCOOc8gNaaiowi
+	jI4jXjZ3wGK2t9Iv4nGFpV80blauhoyrKIpoU3MCX47dw192BA4D79prBRqx4zlo
+	DM0AhzK77D2O1IJHgdzA==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xp9aa2q1p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Apr 2024 23:33:44 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43NNXgXV021080
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Apr 2024 23:33:42 GMT
+Received: from [10.71.110.192] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 23 Apr
+ 2024 16:33:40 -0700
+Message-ID: <24c894ae-5c4a-4462-b036-5929db2fc5ac@quicinc.com>
+Date: Tue, 23 Apr 2024 16:33:29 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,45 +64,52 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.15 00/71] 5.15.157-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
-References: <20240423213844.122920086@linuxfoundation.org>
+Subject: Re: [PATCH] of: reserved_mem: Remove the use of phandle from the
+ reserved_mem APIs
 Content-Language: en-US
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240423213844.122920086@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Jeff Johnson <quic_jjohnson@quicinc.com>, <robh@kernel.org>,
+        <saravanak@google.com>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@quicinc.com>
+References: <20240422235243.2878536-1-quic_obabatun@quicinc.com>
+ <d024a0b0-46aa-4182-a8e8-8ff15f12c363@quicinc.com>
+From: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+In-Reply-To: <d024a0b0-46aa-4182-a8e8-8ff15f12c363@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: qlaKYsRXzo7aOhtVXPD5ZDxRLe6tu7Qg
+X-Proofpoint-ORIG-GUID: qlaKYsRXzo7aOhtVXPD5ZDxRLe6tu7Qg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-23_18,2024-04-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=613
+ bulkscore=0 mlxscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0
+ impostorscore=0 adultscore=0 spamscore=0 suspectscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404230065
 
-On 4/23/24 14:39, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.157 release.
-> There are 71 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 25 Apr 2024 21:38:28 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.157-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+On 4/23/2024 7:32 AM, Jeff Johnson wrote:
+> On 4/22/2024 4:52 PM, Oreoluwa Babatunde wrote:
+>> The __find_rmem() function is the only place that references the phandle
+>> field of the reserved_mem struct. __find_rmem() is used to match a
+>> device_node object to its corresponding entry in the reserved_mem array
+>> using its phandle value. But, there is already a function called
+>> of_reserved_mem_lookup() which carries out the same action using the
+>> name of the node.
+>>
+>> Using the of_reserved_mem_lookup() function is more reliable because
+>> every node is gauranteed to have a name, but not all nodes will have a
+> s/gauranteed /guaranteed /
+>
+> (jumped out at me while scanning the kernel patches)
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+ack.
+
+Thank you Jeff!
 
 
