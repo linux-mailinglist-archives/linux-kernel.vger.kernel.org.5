@@ -1,123 +1,134 @@
-Return-Path: <linux-kernel+bounces-155924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25A888AF8EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:32:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ABF18AF9FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:45:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFCEA282DAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:32:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6853AB2AFB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:45:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B44B14388A;
-	Tue, 23 Apr 2024 21:32:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BAB14830D;
+	Tue, 23 Apr 2024 21:43:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gVXt9rf1"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b="jPxOIJhR"
+Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [185.185.170.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C09D26288
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 21:32:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713907955; cv=none; b=MsT4dDrDT7mgkZrJrGsQxzbd0JOPkGHHsEGfpJ7smXLqPXXOQQ6dxLKhatMK02rsQ+J4Hr/eFRlYXk8ews4LFfDo2DddnrbIJfWb32RXkdeeT7qqNor7+C+alFUBp9Zb74y4ovJcA16GWzzxxPWv3TOXttV8mPMA3Zc4H5A5wYM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713907955; c=relaxed/simple;
-	bh=qv8E1gsMpWM5F+eV243zDVTTn4MJOqXdD270Vb9ivYE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mFXHE7Wu6umuaPuK0BVn3LG8P9w7Cwm+svh0iTjrEZwz3TmMtjuBcr7QAUVh2QPTT7xg+Wx1wBzPaYnDt+P9gSFbTGbGiNgNgaKdUkww6QN5q8lv3X1DDIpgFcT7WWjwuM4ngY2TH/g6D+jgSNI5OGV4x2O1oubSxlXoMGZavQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gVXt9rf1; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ed691fb83eso4906935b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:32:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713907953; x=1714512753; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pKWTSVVnluWR7STSuRRgwJ6Rd/eSnjR70lXgePt6SEU=;
-        b=gVXt9rf1NYWcm0F+H9LBAxfAUcBbeQIs0Dl4nsq1V/ezUVA7JE3Fkl8iCmKGxBWpaB
-         oSwIeHJRmHWRx4fWI2UBF3fru5uOIAfNXVcgsF23KSU5+OLdLI6sPMmvkSc2ALgAPZ9q
-         n5yqnLZ9DBZcktHX5oHLdmaewhN/sAba+CfdeuaxuLZHGFMvXgjM7fvErUH5LUs/p8Dh
-         c+XHSAF0GaM5Yz2GSJ3oEVDBZJpQyuwLLp9qvf5lFrsY6s4isL2SthDCB/SAfBVtKJC1
-         fdoK2xzxdHTuICxqEznG/z3dm0laMwsugq0g2NJbqvVfBfYZMZt/3k7Ou7F33CkaZOXX
-         vHFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713907953; x=1714512753;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pKWTSVVnluWR7STSuRRgwJ6Rd/eSnjR70lXgePt6SEU=;
-        b=mCj+R1O3zJ41kKW1U6uupqr3QXXZGbEKgmG89TxyvgGndAxYbG1X8TLABZaxYgVrLC
-         Clag1SyhvtdZuAhqhQocQxY8+p48MiwmRCmm5iTIoyMCfkEV41l48+2eunpo3JhLJXJc
-         wSwq62RmyQGeqa/z0G3LwNT7LRZM+LweOOYPrjAtoRADCdNVqwIswJAhVIJ8RHtssH8f
-         0f3wyWiri6F+QBQBXV6T9RUKK/CMpeZgBjP2MrGHxdC9tH6h+zaSF9wQFr5gLpyujlcz
-         qZMwmUJeo95mdmyn4mQtvFF7Gq07MTHhy0w4AVOUWL82Ib9IHKvhIZvkGNUaetCEjlBn
-         yyGw==
-X-Forwarded-Encrypted: i=1; AJvYcCWk42W5pLJDk4srXWoGnK7DgEyOZN2aQ5FN890zEacGcwu50kzCOpXJM/Z4yUbXICRt1zGJfeaMcpm9RF6WYiFdcjMhZD6+tBhB1+K9
-X-Gm-Message-State: AOJu0YzzNBeCe9/Qf1pcjyqV/a8UKq6OzFWRwQ5XSTotlsfotDCpq3Yd
-	yCgp3NLBvFiF57RlYE1HOj66K6ihE1TUBIT5QhfIUlhyyYMe5/+W
-X-Google-Smtp-Source: AGHT+IGrpbSit5J2n0PJb2L0MA0usVpInvB9ORrbXoqp3luIDwgWfImPPruwclc8bzba1CRst2wamQ==
-X-Received: by 2002:a05:6a00:2442:b0:6ea:d794:ccee with SMTP id d2-20020a056a00244200b006ead794cceemr1003937pfj.17.1713907953467;
-        Tue, 23 Apr 2024 14:32:33 -0700 (PDT)
-Received: from xiaxiShen-ThinkPad.gigstreem.net ([66.160.179.28])
-        by smtp.gmail.com with ESMTPSA id fh9-20020a056a00390900b006ecf1922df7sm10047199pfb.36.2024.04.23.14.32.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 14:32:32 -0700 (PDT)
-From: Xiaxi Shen <shenxiaxi26@gmail.com>
-To: tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de
-Cc: hpa@zytor.com,
-	shenxiaxi26@gmail.com,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	javier.carrasco.cruz@gmail.com,
-	julia.lawall@inria.fr
-Subject: [PATCH] Replace of_node_put() with new cleanup feature
-Date: Tue, 23 Apr 2024 14:40:06 -0700
-Message-Id: <20240423214006.29030-1-shenxiaxi26@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9886145B06;
+	Tue, 23 Apr 2024 21:43:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.185.170.37
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713908615; cv=pass; b=fv/asxhwogFTgO0Q9ypeDdsQyeDR5/HxDz1jrTJfwyJ7Csr2c1bemX/ShdixGlknkFCZWzBQS82+/ZShtHK6gRiOKx/9vbD0L9vrklWzW+tXG33wLiS99LskqNomL7aqyTq+66gL8AveWncZTc3YaxHXRHI3+M4lvw6Iewqd6hs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713908615; c=relaxed/simple;
+	bh=lZmTtkNLtHoyI684P55R2eGce23W5SDipF7n66IgUMk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JaAwImYBo/PCo+KiODxQZluXTjnAbOGAYiR3isPDkzOcgo0HyssV2AI7ApuJqAjTbJV5zRFIqdt5tjSxruRsOPhTM1IjzH29vH5KgPYgrNFW8CAsiWffZUbFG44G0ipIZZwtf6fNgTpfT0Y5fi0MKbPGcZ7p6nj1HLAjV4c6Opo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b=jPxOIJhR; arc=pass smtp.client-ip=185.185.170.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
+Received: from hillosipuli.retiisi.eu (80-248-247-191.cust.suomicom.net [80.248.247.191])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sailus)
+	by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4VPFwq32vVz49Q05;
+	Wed, 24 Apr 2024 00:43:23 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
+	t=1713908604;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OLqMEJxoaWFasN2MCsFBWnfqPLspdvp7bGhu9Pbap4g=;
+	b=jPxOIJhRkaSVTPHtwmPjyp+Q5vajhxCS9fRVxhQJWQYQDNWto33afXvHlu8/mZzHm01qiG
+	uhGNt2j7n+LcINKPE9PbmXvtZv2ddgxFS6psywd1rocS8VJW5DsWPT3U3whSIQgqKv74f3
+	/vVTflu0zQcqLPwjnFphJRa+fk/OELriVgs01OSESbY+RzZ0lM4EsWxZjVi6vJZBJd/PRY
+	C4Ve0wfBmSuZcuYfS7mEmwRixDGxGwhIRzRcJ7Lf6Bi7UPeVluSTXYjJjvuaIS5SZLMRmJ
+	Q7ylQDyNX9dgr0sZIovstxKvF0aKavJ6gFGhVsS4Ryj5BlinaJrNTt1t9W9lKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+	s=lahtoruutu; t=1713908604;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OLqMEJxoaWFasN2MCsFBWnfqPLspdvp7bGhu9Pbap4g=;
+	b=M6zUs/EfUIPYgvaq1nPxdq+0GrLsk1Y2xjmDep+Ag7vSNnFdg+QiuIzWeGo9Jv7oSFEW8r
+	KI9j7cqu0mobbSetMMnjsujDmw4oLrvR85QlB1U11XbrhjpFdIwY8rCa4jC3H1bwjsurHu
+	gG4MCEsmsriJXk2q2RwJxneRdpCnuwSatEnJkL+U8kzdTwFmOG4LHVb+bvvsJs1AEIo7f3
+	1R6i0F/wFDNuUDfBlqIB5QmCTLG44LgETeljEGk9bnrjLnD910h7IOAoTrbDKfdgoLpRJy
+	mFvwlgENBRoucLCUN0weT8yE93P6pVK+EYB8yr1m4W1i6rd4RBp4J7YIxzlS5A==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1713908604; a=rsa-sha256;
+	cv=none;
+	b=BytMvg5F1jRL6Ol5e3nsjLiTikopKfbBfes1/GXjWaBynT+Ruq1M7sv3Nwl9MLpzLnv/6U
+	QfdLODRu8NQaBBSegVFN5IpE53EK1m8rfxFuo20YrnhJWyjPKrt075eH4hc4Sao7QwuFtn
+	FLaRaNCUpKnUYECuVqrY8e8oc3QmbKBvCzsuMUSb7I3VduiYELdm1FzXBvwVhzQ7y1bkJ4
+	xLsH9H89nNRPTEaYHLvmUu6kFABHaiynnB5ezrTP7qKh2CP9KuntykpufPD2Zvsmo8a3NI
+	Rg3H7AUG9CuwjwYRi0FWM/bWgOEIojqQ7sXDD4lTyGz5LX/lNy60sZM8NB40fg==
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 14EE2634C96;
+	Wed, 24 Apr 2024 00:43:23 +0300 (EEST)
+Date: Tue, 23 Apr 2024 21:43:22 +0000
+From: Sakari Ailus <sakari.ailus@iki.fi>
+To: Julien Massot <julien.massot@collabora.com>
+Cc: linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+	kernel@collabora.com, linux-kernel@vger.kernel.org,
+	mchehab@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Subject: Re: [PATCH v6 1/4] dt-bindings: media: add Maxim MAX96717 GMSL2
+ Serializer
+Message-ID: <Zigrei9JB9L2XUEO@valkosipuli.retiisi.eu>
+References: <20240325131634.165361-1-julien.massot@collabora.com>
+ <20240325131634.165361-2-julien.massot@collabora.com>
+ <ZhkWqEAN4RozmPlT@valkosipuli.retiisi.eu>
+ <f5a178b9-2eeb-4737-a051-b43cde9fae20@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5a178b9-2eeb-4737-a051-b43cde9fae20@collabora.com>
 
-Use the new cleanup magic to replace of_node_put() with
-__free(device_node) marking to auto release and to simplify the error
-paths
+Hi Julien,
 
-Suggested-by: Julia Lawall <julia.lawall@inria.fr>
-Signed-off-by: Xiaxi Shen <shenxiaxi26@gmail.com>
----
- arch/x86/platform/olpc/olpc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+On Tue, Apr 23, 2024 at 03:36:39PM +0200, Julien Massot wrote:
+> > > +            properties:
+> > > +              data-lanes:
+> > > +                minItems: 1
+> > > +                maxItems: 4
+> > > +
+> > > +              lane-polarities:
+> > > +                minItems: 1
+> > > +                maxItems: 5
+> > > +
+> > > +              bus-type:
+> > > +                enum:
+> > > +                  - 1 # MEDIA_BUS_TYPE_CSI2_CPHY
+> > > +                  - 4 # MEDIA_BUS_TYPE_CSI2_DPHY
+> > 
+> > Now that you have C-PHY here, does the hardware support data line order
+> > mapping? Just wondering. The bindings can be added without that and support
+> > added later on---that's what the video-interfaces.yaml is currently
+> > missing.
+> > 
+> > lane-polarities is only valid for D-PHY. What about the data-lanes, the
+> > maximum is probably different for C-PHY?
+> My mistake here; MAX96717 doesn't support C-PHY; I think I was confused by
+> some of the schemas implying a deserializer with C-PHY support.
+> I will drop the bus-type property in v7.
 
-diff --git a/arch/x86/platform/olpc/olpc.c b/arch/x86/platform/olpc/olpc.c
-index 1d4a00e767ec..66c4d1f888e7 100644
---- a/arch/x86/platform/olpc/olpc.c
-+++ b/arch/x86/platform/olpc/olpc.c
-@@ -202,7 +202,7 @@ static u32 __init get_board_revision(struct device_node *root)
- 
- static bool __init platform_detect(void)
- {
--	struct device_node *root = of_find_node_by_path("/");
-+	struct device_node *root __free(device_node) = of_find_node_by_path("/");
- 	bool success;
- 
- 	if (!root)
-@@ -218,7 +218,6 @@ static bool __init platform_detect(void)
- 			olpc_platform_info.boardrev >> 4);
- 	}
- 
--	of_node_put(root);
- 	return success;
- }
- 
+Ack, thanks!
+
 -- 
-2.34.1
-
+Sakari Ailus
 
