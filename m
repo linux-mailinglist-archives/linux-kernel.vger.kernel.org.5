@@ -1,247 +1,233 @@
-Return-Path: <linux-kernel+bounces-155496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 066EF8AEB57
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:43:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E80F8AEB5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:43:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BE961F23BF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:43:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2B041C2265E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:43:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1393A13C9C5;
-	Tue, 23 Apr 2024 15:43:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A041613C90D;
+	Tue, 23 Apr 2024 15:43:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YbOYp89p"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="CxaINy1v"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2059.outbound.protection.outlook.com [40.107.236.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775D913C3F1
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:43:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713886998; cv=none; b=P3ukgVkRr8p+A7fZbd8v9fs82b7Lu8wVk558P+FCJ6U664TWSDIB8JfGxDEShAGM1ioxboe19TwgN9ZZZ6+5T0yBpgk9BI0PgnPNcQzCk4ZqpUZ1SU1CwucdQSEysbg03KpJFNH40dHZ2g2e9OUB7PaWO0rFowdttw9cOh2jL+Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713886998; c=relaxed/simple;
-	bh=icLDvFvpV72zmE8xOhKfWko0Ndyksl7RQK+s9PmbDeE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iEwMWakYOCbDUpeuX7ay9s6WqVI85HfdB8aTY9rWqW4MK6+78izf3E3RcSp+xA1CwjXSPVI32hQV/0bNoWZznW3+KIyWGqXKj/HOxFgq49FYNR5Drl7i9/gORnSkLUpWBeB8zZiL9RZSojaRn28A8UXSP3ZjaTp4Md9PH3DCkM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YbOYp89p; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713886995;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zjKkFTxUJOrFDTkrrK48AIMAMR331JfkUWmmHYXPNWc=;
-	b=YbOYp89pEaJdEdi306rhlM/lXX1iMJ91cMcwKqR6bSAiv3WGLxvDuD4h+R6QlEE99o4MP5
-	gMbGX66j+11gT0cD5iCOnCs2La3mbTArgni06vxhe387qYjsFFvLLueiOOnD4l+6n1cvub
-	1FBPXULiOh4PKk/sVPNuKoNtmcnjheg=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-618-fMHnyZQ1Oni20YDu9krKMQ-1; Tue, 23 Apr 2024 11:43:13 -0400
-X-MC-Unique: fMHnyZQ1Oni20YDu9krKMQ-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-4377949a027so115252631cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:43:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713886992; x=1714491792;
-        h=content-transfer-encoding:in-reply-to:organization:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zjKkFTxUJOrFDTkrrK48AIMAMR331JfkUWmmHYXPNWc=;
-        b=uR6mQ3GoBdl9ce6hCcN+37urML/zEFXbIy3mfer2b2J/nuvZnCQ2vJQTdrcg2bEPVs
-         aXHdDwROVPjg1webyRBqS5ANCGlTHxUeeNQnTOhnLQ7y5CxIl095AxFXFxm9G8ZOLa+w
-         To1PREO4sGl5giqIiur+2vmxLtus9S82SxHiN5U7EYJNAc7yTI0yPusqftpBarOBj6Z6
-         hAXZj40FwEdG4Zafr/XhefMB+F0n1KYv0nWFMc1KCL3XS+WjA3DAvH0wPUCeoaI8NhSL
-         RpuBqMYm6zpTOg6LGO2uPGsmReHdaVPveMCJ9vC3y6UCAot321jg47eCTAX/U80k/OYF
-         Xc4w==
-X-Forwarded-Encrypted: i=1; AJvYcCX6vJ3PwVgcD4yWxK1PEMgJOsaNy5CFAhVYow0Q9aknPsHQsBzQ74k0U/WXnajZTXDpVmH/E3lBslIj3YE5fpQ+aiAh9JbiOhsl3rEn
-X-Gm-Message-State: AOJu0Yx1xP6p/tjihChrFtCIjxZtr1G43qEi5lIWuGf+A4Gzf1Tc422I
-	LJizeoqymYQNNSW4Y+oYlTNLnZ+4f93tF7PJQEJFJzdWJvhtcx4sUyglELe+NXpgkbqADJotSQz
-	ZWl+6nS7og1WLwMe3ld76FhoeYOq1MYFiK66EIzFrIRb6tlwBcLEmSkBNCI8J3A==
-X-Received: by 2002:ac8:7f03:0:b0:437:cc65:bbfd with SMTP id f3-20020ac87f03000000b00437cc65bbfdmr5683338qtk.8.1713886992709;
-        Tue, 23 Apr 2024 08:43:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEVbJXkNB9mPOWQi1awKT+drHechIbxwnI05S+Ty2UC4FXxVkYjTJWlzQwHhj9FWazhjx1ucw==
-X-Received: by 2002:ac8:7f03:0:b0:437:cc65:bbfd with SMTP id f3-20020ac87f03000000b00437cc65bbfdmr5683305qtk.8.1713886992321;
-        Tue, 23 Apr 2024 08:43:12 -0700 (PDT)
-Received: from [10.32.64.131] (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id do7-20020a05622a478700b0043999fccc10sm2461453qtb.62.2024.04.23.08.43.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 08:43:11 -0700 (PDT)
-Message-ID: <cbeae504-2752-4ef0-b103-e62fcf45ab93@redhat.com>
-Date: Tue, 23 Apr 2024 17:43:08 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F7013BAFE;
+	Tue, 23 Apr 2024 15:43:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713887015; cv=fail; b=KksehB0fg+gPhqTPXYG2L4sFQywpucNFROohjMJlvn44tPeW8ixdHvif0vGkhBzcoQmIESM/x/tv8+30xpAoWNYaG+OTGizq8uPzjfCh3E04x8c5mDolXBhT/rT5fnA4CxgvxGlF+9ZR3s90vQel5RUYg8CKRgmzpT3jKpBlc9I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713887015; c=relaxed/simple;
+	bh=rWwp489kSXBmabXMkP5Rwk02CqMDi2L5kBvIWzbBuRQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=fe46OG7jeAEgWU4f34g60rgTMk4BMpQ8N/PK+DcrZXWzcalQ/lCscPNQF/Y5r2WkiU7DRInLiStdALS6aRApQTdcfLkhb1JziM8wSGgSZgGs3pqJHe36n0x/o6nOoGe9B62wXlP+nQKuux8LpZG21CAJqIL++62vgnu6MNfySgA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=CxaINy1v; arc=fail smtp.client-ip=40.107.236.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mgpSTGsxiVVD93OOoa0KErMghW2UDYtdD5WMGMyf9+2tQiJWEIWFPRqyMFpxfTHThRnmPwPwru8u1CtqgevGxuz2mH4lih+rkua6LPLkRbRTPmf4jcaFy1jcMNvnzwuUqHHNreisGXcfIWxwzCh1RyO35zCgKv4OQ75N5sTKjA+a+3QKrvNAJVGVhpOw9CpcoiJdxj/VIYp02Mn357UFuNBc9c4vt2tJTUNjLZvKgHE2PO+pbDsscwWpCIsEv0iuA0XdfG8UxgLPjGg7gLRX6tJ16WKkr+QQD1Wcsb2eyT5Uy5/FB93U6S5WPVbZMwKOuT1lJBnKjJ40Kg5ZJjtwsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GHcgC+melfSM9yvR6s1HFoaZPdFuaFV/htCIbxe5ev0=;
+ b=iC2D3tm/+M0rvZqJyHjufr7h4FxacmFvQG08ryLCFXlObFYM5THE8csiQYJATU1B/d741t7e4ayR39gXuksll88l6DDABerD+p4jRHgslKPXdrzfAtoLw0L6AZqkr+sMmFrce2AJCwousDBYDTD+Csvh6rU68xYxQXRTUK8IQOx5wsUsWM4MBskHlhUkukr6ZSaNloXhzmpkkYYyG+UHbmgSZ0wr9MHejhK1cn8XT/QDr98qd0E76UK/RYNErVr0ktTjo4xBwZALXbSm1/4pQZYl9HL5H/4EXXZOO3ZlmC6jfWYYETf6/f6YhcvFMywJsXETPrEirmqroslJz5HGeg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GHcgC+melfSM9yvR6s1HFoaZPdFuaFV/htCIbxe5ev0=;
+ b=CxaINy1vmRaM4CWJFtFIbg+nkzjbZCw99Cg8LEF2Wwb+rJ6WLQUdHXWpH4HlRPzh13XIylahRo8cCILk0jXY6M39xIakPrfuKdU63s72yt6olYKs2uA1dQ1ByZB0CouNyj5jfFjors2OUENsUN8y1QkDbO5R+6bHDAxEn3FCnXM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by DM4PR12MB7646.namprd12.prod.outlook.com (2603:10b6:8:106::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Tue, 23 Apr
+ 2024 15:43:30 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::b0ef:2936:fec1:3a87]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::b0ef:2936:fec1:3a87%4]) with mapi id 15.20.7519.021; Tue, 23 Apr 2024
+ 15:43:30 +0000
+Message-ID: <4cd220cc-2e8e-4193-b01a-d3cd798c7118@amd.com>
+Date: Tue, 23 Apr 2024 10:43:25 -0500
+User-Agent: Mozilla Thunderbird
+Reply-To: babu.moger@amd.com
+Subject: Re: [RFC PATCH v3 00/17] x86/resctrl : Support AMD Assignable
+ Bandwidth Monitoring Counters (ABMC)
+To: Dave Martin <Dave.Martin@arm.com>, Peter Newman <peternewman@google.com>
+Cc: corbet@lwn.net, fenghua.yu@intel.com, reinette.chatre@intel.com,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ paulmck@kernel.org, rdunlap@infradead.org, tj@kernel.org,
+ peterz@infradead.org, yanjiewtw@gmail.com, kim.phillips@amd.com,
+ lukas.bulwahn@gmail.com, seanjc@google.com, jmattson@google.com,
+ leitao@debian.org, jpoimboe@kernel.org, rick.p.edgecombe@intel.com,
+ kirill.shutemov@linux.intel.com, jithu.joseph@intel.com,
+ kai.huang@intel.com, kan.liang@linux.intel.com,
+ daniel.sneddon@linux.intel.com, pbonzini@redhat.com, sandipan.das@amd.com,
+ ilpo.jarvinen@linux.intel.com, maciej.wieczor-retman@intel.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, eranian@google.com,
+ james.morse@arm.com
+References: <cover.1711674410.git.babu.moger@amd.com>
+ <ZiaRXrmDDjc194JI@e133380.arm.com>
+ <CALPaoCh5DDmojnkUZPnACkq_ugwKnqCnwLHj2sV69TSTzpAL9g@mail.gmail.com>
+ <ZiervIprcwoApAqw@e133380.arm.com>
+Content-Language: en-US
+From: "Moger, Babu" <babu.moger@amd.com>
+In-Reply-To: <ZiervIprcwoApAqw@e133380.arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SA0PR11CA0095.namprd11.prod.outlook.com
+ (2603:10b6:806:d1::10) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/10] Allocation APIs
-To: Wedson Almeida Filho <wedsonaf@gmail.com>, rust-for-linux@vger.kernel.org
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
- Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
- =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- Benno Lossin <benno.lossin@proton.me>,
- Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl
- <aliceryhl@google.com>, linux-kernel@vger.kernel.org,
- Wedson Almeida Filho <walmeida@microsoft.com>, ajanulgu@redhat.com
-References: <20240328013603.206764-1-wedsonaf@gmail.com>
-Content-Language: en-US
-From: Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <20240328013603.206764-1-wedsonaf@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|DM4PR12MB7646:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2d13aabf-6231-400a-fa01-08dc63ac1fc8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?N3dqQW5vVXEvUk5MYVVZcmkrNnhvRWJYcGdtNnlLamFCazA3WC80N2JCcEo1?=
+ =?utf-8?B?Ly8vTUVUMmw3aFNpNitMQXUySVR6UFp1VlR5b2U3dVMwS1NNdE43SlFnNy9H?=
+ =?utf-8?B?MGxEVDhubTB4NWJXNmIrbVAwS2lUNzNOOXVCNXlKWHRaQUlKYTVPeXZaVU9W?=
+ =?utf-8?B?dGl1QzR6TjJISjJCT0hMRGNBTmluSlJmak9oSitSQno2SXFZeWpoSmhTZVRB?=
+ =?utf-8?B?bVdlbjFnRGprQjlsS0NiMTBEeGVYTnJOU0dIUloxWERhV0orM3BBMlc2ejNN?=
+ =?utf-8?B?TnZ2MWN5TEJoVGYvREpVVWduNXBHUE1Bd0V4MFFHZUxoQmZpcldOTEx1TkZY?=
+ =?utf-8?B?UDZQRkFoTHFVdmhmVVVySFp2RFNGTm5PamZZQkw1MWgyUHFLRnAxRUxnM05k?=
+ =?utf-8?B?Sk9jaGtmc3N6RTdlNFpzZFl1MzByR3hZOHljOVRTTXVQb0VwWDU2L2M0QkN1?=
+ =?utf-8?B?RFdtQVJVcXBVWjRXdUtzWldSZEZINXJSUGtMOW1LNHQ2b1JmTHlNRFg1Rk5j?=
+ =?utf-8?B?OU1VaCs3MVgvTVI0bVcyWU15eXVyVVlKYjBWWis2RWYrdmoza25KYTllc1N0?=
+ =?utf-8?B?SHlUYllFcm85K3VhbHRmQjhQYWRHeHQ3K3hWbjJ0UTdRYTZFR0FYL3JHSzRY?=
+ =?utf-8?B?M1pKYThZRVNTUkpwbUI2Ykc0cVZpMmxnMDZJRW9aTW92bjE0UnBGQ1RRbXo1?=
+ =?utf-8?B?ZkhRa3V4Z3ptSVhMZEFGRjhYSVdSK2FRL1V3L0w5aW10dTVKRm5WdGxuSUxw?=
+ =?utf-8?B?UzhKOVZZQ1FhRXBDRnhBd3c2eW8rMWMwRkZCNDVETENwc3A3Y1BRZXE2aGp4?=
+ =?utf-8?B?MEFFWFRZclVMWlB5cENjenZ5U3pIajdoMUlyWXpESE5YQmRMczFhSFlRWENw?=
+ =?utf-8?B?eG5NcEpkeEQyTzByNDdMTUJwbHd0aWhHTlJod0NUTEF6cW82dnBlVU1BZWlk?=
+ =?utf-8?B?UGZET1F3R0lpRHdISEVUbWc0V0JBM2wrVUhWRjhsZWN5eUd3MGwyZmhrNElP?=
+ =?utf-8?B?N01xcUtZNC9oTFk4NW13Y0ZrMmk1SDluU24rUkgyaXpCSTh5SHg2SUNyNFlE?=
+ =?utf-8?B?Sno4NVJ3L3BHNnBzU25GZDRibFM2SVF2bHZ0TGtwNnpqTFZ6QzZnTXhJdHpE?=
+ =?utf-8?B?akNXQWZDZ2NpMXM1aFJNZWpjekJTelhZbVhRVUZtMUJ6RWFTSGE5aUNyMnBS?=
+ =?utf-8?B?Z1UxVHN1cG9lK0ZGYnFsdnd6TVFkWnFZVUFDS2lzYThIdk5lQkxUelh0elhD?=
+ =?utf-8?B?WDZaK1dTMSthZVhFYWhxK0RaY1hCOTNDS1Y4RXczVFFSbWVnZzlSV3VlT3Mr?=
+ =?utf-8?B?ZHEwaU9JbGlwcDJJZjJ4ZllYMjJyZ0ZmR0xzL0JITGlzRXJrWC8yVkNhMUNU?=
+ =?utf-8?B?NWNQT3N2YlJZd2NEeXJlZ3cwTGtmdC9kczFKa05SV2V1QXN5QlhtL2wrQ1BW?=
+ =?utf-8?B?VG82UEhrZ1pKc2FyZXkrbCtiWDVLTllacmxQRnJJVGVhRzVJTlpSRWFYRWdV?=
+ =?utf-8?B?R3hvd2xyVDUyTm8vVkx4T0FwMm9jU2ZYakpLMW1iZG9aU2kyRzNCSEZpUHIr?=
+ =?utf-8?B?U1hjWDZ4RnRCUmZGMFBVNnlHOTZWYlplS0pvYkZ6cnV4RFMzZnpuS1RjTzdt?=
+ =?utf-8?B?OHZaVjBwV3IrWFJsdU9LUGNUVHhud01iWDE2M3Budk1HMEU3U1J5RnVVaEtu?=
+ =?utf-8?B?Z1drdXFXb0VvS3c0d3hWdnVKSVluSUdRb3lzS3lZcFlqSDc2QlFtWFJBPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Qm03aHpJZXA4RDU5Wk0xU3ZmN1BnbHhHWHF1NE01cFJxbVJzdTZEb3RHMkhr?=
+ =?utf-8?B?cXlOalpHWE5HMXRSY0w5aFBiUDRkZURaczJpaTFlODhQTk9ZNnYxOE9kM1Zi?=
+ =?utf-8?B?WGxyREVaNDV1eVlQdFBkV09jU05GbVR6REF3NmUwdXFmWk9Dc0d5eFJiRmtm?=
+ =?utf-8?B?cm9uWkJTVkZWTkhJVGw3OXRoLzZNTnFXR1hJS3N6bVFwZW50WEJCdHBSOHB5?=
+ =?utf-8?B?NTI1TVFEOHpZakxGMWUrMG9aSHVuN3pVZ2dVMWVNK2FaVnJSMURkd2s2eDli?=
+ =?utf-8?B?b29YcmEwMEdxV2VCbkcweGpabi9MWENlaFZrVCsrMVpzM0J5cHlleDJqSk55?=
+ =?utf-8?B?MDFpYzZHUTdydTBuTmo5V0VoMlJkMDBjeEg2Zmp5Z2RhNUZ1K3l3K25tRDJa?=
+ =?utf-8?B?eEVvOW43MnUxMFhjcWgwRTIvRmRuWkQxRFFEQng3eVVFZDV0VHd2SjRVaVkr?=
+ =?utf-8?B?QXo5ZS9HK0QrdTRmVlRtbGVCNUluMlluTkJ6MHVwVmtwZHVlMEJsdGdVM1lH?=
+ =?utf-8?B?d2ZFR2NBVGhldE5vUWVlL2pNNmxURnVmUksrQXFYd1BZY0FRTjJvMkxBTUlV?=
+ =?utf-8?B?ZnJYdlo2dmp5dDJQcUNadWxNanhOSGxqTWxsUmNSKzNDTTJVWlU2bXltOXFR?=
+ =?utf-8?B?UGV6QXE3R0FlTndEVXBXcFc1RVkrNzRxNWE3QjlhbnZ3VnNPeVV3K0JhVDQ3?=
+ =?utf-8?B?Titxd1JvUk00aS84Mm8yejdXbWJONm1VWWRSeGVVSStzMGtsRDVnYStKa3dG?=
+ =?utf-8?B?elJ4ZFRNVnZ2QmZ2OU1DM0VCRkxXTmczRWh3T1hhWjhlZnZNQUV1VlVsNHNL?=
+ =?utf-8?B?MzdabldySWxPVEgxSS94cXZWV09BcjFITHdwQjliZ2FhdXc1VW9oRmZMaXZR?=
+ =?utf-8?B?UVlsODZ4Q21jNG5uL1RmSkFBQldiYXFrU0plOGlyZjJLY2pZVEZsR2Z0VFd2?=
+ =?utf-8?B?OUhUeGZrZzlzYWx4YXJwRnlyeUdHdkxqTG8vNXdZUTJWdS83djZZc3ViNG55?=
+ =?utf-8?B?azVJRXB3M0JKRyt5QkRBbHBIS2FaRVFySDBRUmVCTnErU2NGdVFIcy9oYW8w?=
+ =?utf-8?B?ZDZsZXl2d2pvTU50Nk9TVjBCaSs0ZW9ITTdFbmt2OGsrbzBwcWNJOFZYSTFR?=
+ =?utf-8?B?QkNiZUF3SWhBTWpMTnVVNVhRV2dPMFVPRHkvL2NvSnV5K2cyNzd4YlNBZkdz?=
+ =?utf-8?B?MkwxbkZ5MG1LaUVOQXhhcm11dlh1U1lMMm9MdVBUV0dDVjI5clg3cmVCTzNp?=
+ =?utf-8?B?RWI2YWg0Rk1EdTBKc01iTnZxTCtheHhZTmtoZ3JsZ3R4UFZrKzJ0WmRJVWcz?=
+ =?utf-8?B?VU9COHRJZm4xcnlMU2V0MSt3MkZNUG5MTjlKSzRNWnRZQklwdFRSNldRTG1F?=
+ =?utf-8?B?VGpaejhRMUdMWmFaMDJkSDVlSXJWckh5VW1QZHA3T0NZcTBRY2pDU1FWVVBR?=
+ =?utf-8?B?cFBsZGQ4bURseGRrUmVBaVJkczVDUDhIbC8rd1dwTTNtTUdUVXhSeXI1aEJq?=
+ =?utf-8?B?SEZGcFdKTVpTVG1zWW4zbjd5MWE0ZnNscHJHUkRNTytCQ1hQNit5cWFIT0lz?=
+ =?utf-8?B?Rm1vdHd6SDlWb0IvRUVMVUkvREVSenBWTkEzbSt0Q2w3bFRqUnVFNUdQRUlq?=
+ =?utf-8?B?RHZkZkxSaW9TbS9ROVNIYTdjaUwyVFBQUnJpQUk0RVdWa1F2K0dmaUlCTENo?=
+ =?utf-8?B?WE1YUVJhUi84SUxYdXVUVTJqQTVQWTl3ckt4Zzl5RlhoZEJWTm5Ja2JzV1lL?=
+ =?utf-8?B?bzd0T1lCbFBsYW0zRzhxNGZqUUZqVmQ1eVpiV3RGZXc1empoRUZESW9YMDcz?=
+ =?utf-8?B?a0xwZitoMzNPL09RUE1uZkIyQllUVFZhV24vSkY0OXNlR2xHemMrNUU5dTFZ?=
+ =?utf-8?B?TWQzVVpOSFVIVWNrZmg4N29BbnlERUxwc21xekR5WWpDczc0LzRFSWJDSlpa?=
+ =?utf-8?B?bkdrVjcwRVdvRjRVTXhJcWJtNUhFVmgxbWM5S0g3dnVUTzBacitBYnk4N2dQ?=
+ =?utf-8?B?dWRrcHlXSm5EK1d2SXN3M3E3QnZIaHBPM0RaQnc4eXpXSVltUzZaNGE1cEVO?=
+ =?utf-8?B?OVdGOFlZU0gybGZ0M05VOUo3bkRGUGN4eXMyV2tSclBmREJXSWtJZnVxa3hB?=
+ =?utf-8?Q?R0fY=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d13aabf-6231-400a-fa01-08dc63ac1fc8
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2024 15:43:30.0205
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QemCMceRqx6qkJaqA0VVs0lb0gxvbtfgapU81hpsy/nxVWII0h9TVCkyzVIccjkT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7646
 
-Hi all,
+Hi Dave,
 
-On 3/28/24 02:35, Wedson Almeida Filho wrote:
-> From: Wedson Almeida Filho <walmeida@microsoft.com>
+On 4/23/24 07:38, Dave Martin wrote:
+> Hi Peter,
 > 
-> Revamp how we use the `alloc` crate.
+> On Mon, Apr 22, 2024 at 11:23:50AM -0700, Peter Newman wrote:
+>> Hi Dave,
+>>
+>> On Mon, Apr 22, 2024 at 9:33 AM Dave Martin <Dave.Martin@arm.com> wrote:
+>>>
+>>> Hi Babu,
+>>>
+>>> On Thu, Mar 28, 2024 at 08:06:33PM -0500, Babu Moger wrote:
+>>>>        Assignment flags can be one of the following:
+>>>>
+>>>>         t  MBM total event is assigned
+>>>
+>>> With my MPAM hat on this looks a bit weird, although I suppose it
+>>> follows on from the way "mbm_total_bytes" and "mbm_local_bytes" are
+>>> already exposed in resctrlfs.
+>>>
+>>> From an abstract point of view, "total" and "local" are just event
+>>> selection criteria, additional to those in mbm_cfg_mask.  The different
+>>> way they are treated in the hardware feels like an x86 implementation
+>>> detail.
+>>>
+>>> For MPAM we don't currently distinguish local from non-local traffic, so
+>>> I guess this just reduces to a simple on-off (i.e., "t" or nothing),
+>>> which I guess is tolerable.
+>>>
+>>> This might want more thought if there is an expectation that more
+>>> categories will be added here, though (?)
+>>
+>> There should be a path forward whenever we start supporting
+>> user-configured counter classes. I assume the letters a-z will be
+>> enough to cover all the counter classes which could be used at once.
 > 
-> We currently have a fork of the crate with changes to `Vec`; other
-> changes have been upstreamed (to the Rust project). This series removes
-> the fork and exposes all the functionality as extension traits.
-> 
-> Additionally, it also introduces allocation flag parameters to all
-> functions that may result in allocations (e.g., `Box::new`, `Arc::new`,
-> `Vec::push`, etc.) without the `try_` prefix -- the names are available
-> because we build `alloc` with `no_global_oom_handling`.
-> 
-> Lastly, the series also removes our reliance on the `allocator_api`
-> unstable feature.
-> 
-> Long term, we still want to make such functionality available in
-> upstream Rust, but this allows us to make progress now and reduces our
-> maintainance burden.
-> 
-> In summary:
-> 1. Removes `alloc` fork
-> 2. Removes use of `allocator_api` unstable feature
-> 3. Introduces flags (e.g., GFP_KERNEL, GFP_ATOMIC) when allocating
+> Ack, though I'd appreciate a response on the point about "_" below in
+> case people missed it.
 
-With that series, how do we implement alternative allocators, such as
-(k)vmalloc or DMA coherent?
+It was based on the dynamic debug interface and also Reinette's suggestion
+as well.
+https://www.kernel.org/doc/html/v4.10/admin-guide/dynamic-debug-howto.html
+(Look for "No flags are set").
 
-For instance, I recently sketched up some firmware bindings we want to
-use in Nova providing
-
-fn copy<A: core::alloc::Allocator>(&self, alloc: A) -> Result<Vec<u8, 
-A>> [1]
-
-making use of Vec::try_with_capacity_in(). How would I implement
-something similar now?
-
-- Danilo
-
-[1] 
-https://gitlab.freedesktop.org/drm/nova/-/blob/topic/firmware/rust/kernel/firmware.rs?ref_type=heads#L63
-
-> 
-> ---
-> 
-> Changes in v3:
-> - Rebased on top of the latest `rust-next` branch.
-> - Updated `krealloc_aligned` to use `Flags` instead of `bindings::gfp_t`.
-> - Added __GFP_ZERO to flags, as part of the previous change.
-> - Avoiding temporary stack value in `Box::new_uninit`.
-> - Implement `Box::new` using `Box::new_uninit` (so only one of them actually
->    allocates).
-> - Added examples/tests to `VecExt` methods.
-> - Fixed bug in length in `extend_from_slice`
-> - Link to v2: https://lore.kernel.org/rust-for-linux/20240327023531.187880-1-wedsonaf@gmail.com/T/#t
-> 
-> Changes in v2:
-> - Updated description of `alloc` crate.
-> - Renamed vecext and boxext modules to vec_ext and box_ext.
-> - Added derive directive to `AllocError`.
-> - Updated safety comment in `BoxExt::new`.
-> - Updated `VecExt::push` and `VecExt::extend_from_slice` to use
->    `spare_capacity_mut`
-> - Added directive to not compile `destructure` and `rebuild` when `test` or
->    `testlib` are configured. Otherwise we have a warning because `push` and
->    `extend_from_slice` don't use them anymore.
-> - Updated indentation in `Arc::new_uninit`
-> - Moved the removal of `TryReserveError` convesion to `Error` to patch 7, where
->    usage of `TryReserveError` is actually removed.
-> - Link to v1: https://lore.kernel.org/rust-for-linux/20240325195418.166013-1-wedsonaf@gmail.com/T/#t
-> 
-> Wedson Almeida Filho (10):
->    rust: kernel: move `allocator` module under `alloc`
->    rust: alloc: introduce the `VecExt` trait
->    kbuild: use the upstream `alloc` crate
->    rust: alloc: remove our fork of the `alloc` crate
->    rust: alloc: introduce allocation flags
->    rust: alloc: introduce the `BoxExt` trait
->    rust: alloc: update `VecExt` to take allocation flags
->    rust: sync: update `Arc` and `UniqueArc` to take allocation flags
->    rust: init: update `init` module to take allocation flags
->    rust: kernel: remove usage of `allocator_api` unstable feature
-> 
->   rust/Makefile                        |   16 +-
->   rust/alloc/README.md                 |   36 -
->   rust/alloc/alloc.rs                  |  452 ----
->   rust/alloc/boxed.rs                  | 2463 -----------------
->   rust/alloc/collections/mod.rs        |  160 --
->   rust/alloc/lib.rs                    |  288 --
->   rust/alloc/raw_vec.rs                |  611 -----
->   rust/alloc/slice.rs                  |  890 -------
->   rust/alloc/vec/drain.rs              |  255 --
->   rust/alloc/vec/extract_if.rs         |  115 -
->   rust/alloc/vec/into_iter.rs          |  454 ----
->   rust/alloc/vec/is_zero.rs            |  204 --
->   rust/alloc/vec/mod.rs                | 3683 --------------------------
->   rust/alloc/vec/partial_eq.rs         |   49 -
->   rust/alloc/vec/set_len_on_drop.rs    |   35 -
->   rust/alloc/vec/spec_extend.rs        |  119 -
->   rust/bindings/bindings_helper.h      |    3 +
->   rust/kernel/alloc.rs                 |   74 +
->   rust/kernel/{ => alloc}/allocator.rs |   17 +-
->   rust/kernel/alloc/box_ext.rs         |   59 +
->   rust/kernel/alloc/vec_ext.rs         |  176 ++
->   rust/kernel/error.rs                 |   13 +-
->   rust/kernel/init.rs                  |   57 +-
->   rust/kernel/lib.rs                   |    5 +-
->   rust/kernel/prelude.rs               |    2 +
->   rust/kernel/str.rs                   |    6 +-
->   rust/kernel/sync/arc.rs              |   50 +-
->   rust/kernel/sync/condvar.rs          |    2 +-
->   rust/kernel/sync/lock/mutex.rs       |    2 +-
->   rust/kernel/sync/lock/spinlock.rs    |    2 +-
->   rust/kernel/types.rs                 |    4 +-
->   rust/kernel/workqueue.rs             |   14 +-
->   samples/rust/rust_minimal.rs         |    6 +-
->   samples/rust/rust_print.rs           |    4 +-
->   scripts/generate_rust_analyzer.py    |    2 +-
->   35 files changed, 405 insertions(+), 9923 deletions(-)
->   delete mode 100644 rust/alloc/README.md
->   delete mode 100644 rust/alloc/alloc.rs
->   delete mode 100644 rust/alloc/boxed.rs
->   delete mode 100644 rust/alloc/collections/mod.rs
->   delete mode 100644 rust/alloc/lib.rs
->   delete mode 100644 rust/alloc/raw_vec.rs
->   delete mode 100644 rust/alloc/slice.rs
->   delete mode 100644 rust/alloc/vec/drain.rs
->   delete mode 100644 rust/alloc/vec/extract_if.rs
->   delete mode 100644 rust/alloc/vec/into_iter.rs
->   delete mode 100644 rust/alloc/vec/is_zero.rs
->   delete mode 100644 rust/alloc/vec/mod.rs
->   delete mode 100644 rust/alloc/vec/partial_eq.rs
->   delete mode 100644 rust/alloc/vec/set_len_on_drop.rs
->   delete mode 100644 rust/alloc/vec/spec_extend.rs
->   create mode 100644 rust/kernel/alloc.rs
->   rename rust/kernel/{ => alloc}/allocator.rs (86%)
->   create mode 100644 rust/kernel/alloc/box_ext.rs
->   create mode 100644 rust/kernel/alloc/vec_ext.rs
-> 
-> 
-> base-commit: 768409cff6cc89fe1194da880537a09857b6e4db
-
+We tried to use that similar interface.
+-- 
+Thanks
+Babu Moger
 
