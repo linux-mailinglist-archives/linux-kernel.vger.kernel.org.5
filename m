@@ -1,150 +1,129 @@
-Return-Path: <linux-kernel+bounces-155956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0854B8AFBB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:28:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0E5D8AFBB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:29:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AA601C224A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:28:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E52A289F52
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7F814389D;
-	Tue, 23 Apr 2024 22:28:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55BAB143C48;
+	Tue, 23 Apr 2024 22:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pT3cr/Bp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eTs8TMTi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D97D85274
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 22:28:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932A585274;
+	Tue, 23 Apr 2024 22:29:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713911332; cv=none; b=P21nE1ekQ1/68HrYzvmt0TW53hNZAVKbO8r+LweZ86suY1T4qgKMnGfuE3LB+B+u50LuUB4cd2+hOYS8w/bf4UPaOjp3WDNOnlxooTYbmSzAupvtPbhnW70j7rO6SyR0A4XQpK4S796zrnqzWT3bS1TFr45mlue2M7cKN/EhOT8=
+	t=1713911379; cv=none; b=OT8iWDdD6huWpTCydYkcJze8kTVHc5Ue6hNkPVmZl/5WMw5qCRkv/BhS44f1DIro6wtlUmc1l+w17gDeJjQf2yB4aVwGNVu+ObnvkngO/+aAm3OzotDs70U+sCeH8tVvIiXqus7hvXtYcmn1a15zbG3M9llV/INkmw1XaRw6YHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713911332; c=relaxed/simple;
-	bh=Smf0YUi9NGBseopnvhxZ9pzCNFEUTNZ5RF659bgElf4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XQ2Jh5lKU++OI0igsiCOzzRnvoAS/KWlYCn/xjxYEpRJRDGyjNZmWSz+WxvOpXqNPamwnlJfPNu/cP8Gh/HG6G5eSE9ANkm6qL9S5E/9ED7mIq53I86j7Fv2fLKVgvjW8pOevNBqPlCvpGPEoQM/uo69+pWSc3QlwhZ8FqBC9Oc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pT3cr/Bp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CC42C116B1;
-	Tue, 23 Apr 2024 22:28:52 +0000 (UTC)
+	s=arc-20240116; t=1713911379; c=relaxed/simple;
+	bh=QRDUbZack2LxSr01yiW9w+SrJhQfWuQp7YFWGj5HHZ0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=t+S3xIJ8ipB0M3E7AK1qgtLtbRApPjeoqk0FLdsvvpvr33Up8zWmHxzAe5oCsgz3DvhcndgSHBUtHps5QhniIt+q/pRg0gbUI25GWA2ZYYNTejYPYYY2015KjHe2s/ZluUBTKY0VRutQCsQc9qa9fQN4JWqrlMv6U+WJr1zjtXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eTs8TMTi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15126C32781;
+	Tue, 23 Apr 2024 22:29:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713911332;
-	bh=Smf0YUi9NGBseopnvhxZ9pzCNFEUTNZ5RF659bgElf4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=pT3cr/BpI9fJXm4Qa832D0PSY/sgZxHItlthFSvHVDo1rjuvGzfnwSYjA8Lg860wH
-	 D8H/ZTKmsvNjx89M8WhajFkoUA4dzhIRRgpb4CljVuVHmWf5wjwuXec1al1RyjVon9
-	 msADxm2hIpTFRIq/ojxxJzFz3Qv0Y78G8yH31Vtk5brOnAXIC1bw9J+b9IBmZ215Jx
-	 WGCQhdDvUG3epMw6VANYNSgJnMF1te9oCIdofr9+MOosLCfABOmOZlPqiESlMW8RWb
-	 jDvcuhbgA6LzuvrnbhvBywsG1eGeWDFahsgd0awSZdVQODOJ8EBetM/wpsc4N2IJxD
-	 mMdvK6T9krP8Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id A6590CE0962; Tue, 23 Apr 2024 15:28:51 -0700 (PDT)
-Date: Tue, 23 Apr 2024 15:28:51 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Z qiang <qiang.zhang1211@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	syzbot <syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com>,
-	linux-kernel@vger.kernel.org, peterz@infradead.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [kernel?] WARNING: suspicious RCU usage in __do_softirq
-Message-ID: <b735d174-8ad9-4ace-86ee-75dc09852537@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <CALm+0cWx1kYtftE4nj7Jjgx2_bmNmSrBAgd36ksSvxJtNVhxHg@mail.gmail.com>
- <CALm+0cWRC1kqLJvmEqda4O97PZ-n0R0UQ35=fi6oA3rLsPoUSQ@mail.gmail.com>
- <8f281a10-b85a-4586-9586-5bbc12dc784f@paulmck-laptop>
- <CALm+0cWN0+cCsYddBUefya3aUw9c9Xn89GVV=Ys1_UPjS19WrQ@mail.gmail.com>
- <4c09abb6-4f6e-42d7-9944-c5da995649cb@paulmck-laptop>
- <CALm+0cVaLfE2ieK9aqh9yHkPDyO7zWbMe9K6WjTUgm4t9SnSFQ@mail.gmail.com>
- <ac7bf2c3-c752-46db-a5c8-0c55a1af8561@paulmck-laptop>
- <CALm+0cXGBPWxiNOkAoQG4hdnKCeVVR-APbfBPk9OGeU2RW+bKA@mail.gmail.com>
- <87o7a1umj3.ffs@tglx>
- <CALm+0cUesD9KaWyfsRUyGdErbrU11sAfRgRR=Qjyz7Boq9Vt=g@mail.gmail.com>
+	s=k20201202; t=1713911379;
+	bh=QRDUbZack2LxSr01yiW9w+SrJhQfWuQp7YFWGj5HHZ0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=eTs8TMTi1ZPYgxFP+M2Mxp83iY8Vf5DsBVFbudHno7/HlGlHl+zmCH/J07JAzqPkC
+	 Cdu/Y1Rh91qlY/Wv9X4BriovBQSGdEO5hdkTCrtP2ucaiynnMNZdsg1Kia9NAimPQI
+	 N4cqRB4kY8ISE6qTmUhpDp15BW2yPF+QSM/pZ2Eq4Fz8am/MfxSyJnLPAdnA7sy2vl
+	 0DlLTeqF9LbTih0RLY3Vc0VH8WvYnC4qjtM0dIusFxjvvgcCUiLJ0VZtUZy094Yy+q
+	 zQRrL//Ju2cdG6Ip5eHNNURt/blIMDuTLjGsGBmFstcIBEP/vgjXcgmWl09HnClqcq
+	 o5rIUGSIlLOGw==
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2dd64d6fe94so35969101fa.0;
+        Tue, 23 Apr 2024 15:29:38 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXXb/mLZ+Soh4tm19YOWXttnKBwSTUBZtKoA24qF4xMRmMFOYujKdVg/KhyKRuOnDq+dwlYQXcnltBZO7bXLZTZ2lcbkPAiRB2BZVvBW6ytCfzuVec6e5fHlWxvHhONUaAPgFal5qiK7Q==
+X-Gm-Message-State: AOJu0Yyl6ap9ZEf7TXgOsKx8pe0iYzkI33qCJTJt25AynGDq8atm/3iR
+	wbr88frsMz0RJCcjpYyCwDjRPkTSnIaADzTDlCnmPH5SqPTTCVytncikwdFIjptzzmw4YNF+ffy
+	t9ytCcBzUxdWC8jhNnUBTs/bSJSE=
+X-Google-Smtp-Source: AGHT+IEE8MjxKalHQM8XdEgNUc91LVZWM/6pPqr/Yz2ffINmdv3dae0mfTJKFx5pXn7+qu/Oo3vKQHFmg00ZfnrslAQ=
+X-Received: by 2002:a2e:3c17:0:b0:2d6:afdc:2a18 with SMTP id
+ j23-20020a2e3c17000000b002d6afdc2a18mr308281lja.16.1713911377371; Tue, 23 Apr
+ 2024 15:29:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALm+0cUesD9KaWyfsRUyGdErbrU11sAfRgRR=Qjyz7Boq9Vt=g@mail.gmail.com>
+References: <20240422065824.2516-1-yukuai1@huaweicloud.com>
+In-Reply-To: <20240422065824.2516-1-yukuai1@huaweicloud.com>
+From: Song Liu <song@kernel.org>
+Date: Tue, 23 Apr 2024 15:29:25 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW59dA2y9vLdJMzMpP_NcDRR_TUFz6Jk8mZLziWs94vaTQ@mail.gmail.com>
+Message-ID: <CAPhsuW59dA2y9vLdJMzMpP_NcDRR_TUFz6Jk8mZLziWs94vaTQ@mail.gmail.com>
+Subject: Re: [PATCH -next] md: fix resync softlockup when bitmap size is less
+ than array size
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: yukuai3@huawei.com, linan122@huawei.com, linux-raid@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 23, 2024 at 10:20:49AM +0800, Z qiang wrote:
-> >
-> > On Fri, Apr 19 2024 at 13:50, Z qiang wrote:
-> > >> On Thu, Apr 18, 2024 at 05:49:38PM +0800, Z qiang wrote:
-> > >  static __init int spawn_ksoftirqd(void)
-> > >  {
-> > > +       int cpu;
-> > > +
-> > > +       for_each_possible_cpu(cpu)
-> > > +               per_cpu(ksoftirqd_work, cpu) = false;
-> >
-> > First of all that initialization is pointless, but why making all of
-> > this complex as hell?
-> >
-> > Thanks,
-> >
-> >         tglx
-> > ---
-> > diff --git a/kernel/softirq.c b/kernel/softirq.c
-> > index b315b21fb28c..e991d735be0d 100644
-> > --- a/kernel/softirq.c
-> > +++ b/kernel/softirq.c
-> > @@ -508,7 +508,7 @@ static inline bool lockdep_softirq_start(void) { return false; }
-> >  static inline void lockdep_softirq_end(bool in_hardirq) { }
-> >  #endif
-> >
-> > -asmlinkage __visible void __softirq_entry __do_softirq(void)
-> > +static void handle_softirqs(bool kirqd)
-> >  {
-> >         unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
-> >         unsigned long old_flags = current->flags;
-> > @@ -563,8 +563,7 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
-> >                 pending >>= softirq_bit;
-> >         }
-> >
-> > -       if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
-> > -           __this_cpu_read(ksoftirqd) == current)
-> > +       if (!IS_ENABLED(CONFIG_PREEMPT_RT) && kirqd)
-> >                 rcu_softirq_qs();
-> >
-> >         local_irq_disable();
-> > @@ -584,6 +583,11 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
-> >         current_restore_flags(old_flags, PF_MEMALLOC);
-> >  }
-> >
-> > +asmlinkage __visible void __softirq_entry __do_softirq(void)
-> > +{
-> > +       handle_softirqs(false);
-> > +}
-> > +
-> >  /**
-> >   * irq_enter_rcu - Enter an interrupt context with RCU watching
-> >   */
-> > @@ -921,7 +925,7 @@ static void run_ksoftirqd(unsigned int cpu)
-> >                  * We can safely run softirq on inline stack, as we are not deep
-> >                  * in the task stack here.
-> >                  */
-> > -               __do_softirq();
-> > +               handle_softirqs(true);
-> 
-> Thanks, this is good for me :),
-> Paul, what do you think?
+On Mon, Apr 22, 2024 at 12:07=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> =
+wrote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> Is is reported that for dm-raid10, lvextend + lvchange --syncaction will
+> trigger following softlockup:
+>
+> kernel:watchdog: BUG: soft lockup - CPU#3 stuck for 26s! [mdX_resync:6976=
+]
+> CPU: 7 PID: 3588 Comm: mdX_resync Kdump: loaded Not tainted 6.9.0-rc4-nex=
+t-20240419 #1
+> RIP: 0010:_raw_spin_unlock_irq+0x13/0x30
+> Call Trace:
+>  <TASK>
+>  md_bitmap_start_sync+0x6b/0xf0
+>  raid10_sync_request+0x25c/0x1b40 [raid10]
+>  md_do_sync+0x64b/0x1020
+>  md_thread+0xa7/0x170
+>  kthread+0xcf/0x100
+>  ret_from_fork+0x30/0x50
+>  ret_from_fork_asm+0x1a/0x30
+>
+> And the detailed process is as follows:
+>
+> md_do_sync
+>  j =3D mddev->resync_min
+>  while (j < max_sectors)
+>   sectors =3D raid10_sync_request(mddev, j, &skipped)
+>    if (!md_bitmap_start_sync(..., &sync_blocks))
+>     // md_bitmap_start_sync set sync_blocks to 0
+>     return sync_blocks + sectors_skippe;
+>   // sectors =3D 0;
+>   j +=3D sectors;
+>   // j never change
+>
+> Root cause is that commit 301867b1c168 ("md/raid10: check
+> slab-out-of-bounds in md_bitmap_get_counter") return early from
+> md_bitmap_get_counter(), without setting returned blocks.
+>
+> Fix this problem by always set returned blocks from
+> md_bitmap_get_counter"(), as it used to be.
+>
+> Noted that this patch just fix the softlockup problem in kernel, the
+> case that bitmap size doesn't match array size still need to be fixed.
+>
+> Fixes: 301867b1c168 ("md/raid10: check slab-out-of-bounds in md_bitmap_ge=
+t_counter")
+> Reported-and-tested-by: Nigel Croxon <ncroxon@redhat.com>
+> Closes: https://lore.kernel.org/all/71ba5272-ab07-43ba-8232-d2da642acb4e@=
+redhat.com/
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-This looks quite nice to me, especially given that it avoids changing
-all the other calls to __do_softirq().  Some architectures might want
-to directly call handle_softirqs(), but if so, they can send the patches.
+Applied to md-6.10. Thanks!
 
-							Thanx, Paul
-
-> Thanks
-> Zqiang
-> 
-> >                 ksoftirqd_run_end();
-> >                 cond_resched();
-> >                 return;
+Song
 
