@@ -1,85 +1,101 @@
-Return-Path: <linux-kernel+bounces-155783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C53838AF710
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:12:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90D408AF713
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:14:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89C0728F0CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:12:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C8471F23A80
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:14:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7187113FD75;
-	Tue, 23 Apr 2024 19:12:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF3F913FD7C;
+	Tue, 23 Apr 2024 19:14:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TQnH4L4u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="VMxNgFE7"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF68513E8AA;
-	Tue, 23 Apr 2024 19:12:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A8E1E49E;
+	Tue, 23 Apr 2024 19:14:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713899541; cv=none; b=Q9KXyPL/5ne18Yn+0aTt7DNrDvCpe7Sh2nFlcn5ZfrSoCZ+Lj5ru5/qdOq2IHce/kvgBiJS7Vkg/5ELDvOzcfARhQIlDcj84VwPvude8sR+8arIz8d2BWSRoJlLebnG1j+Wifclj33u3FRf++Emc9J+tvANL1j2WEB0D6qb4GHI=
+	t=1713899683; cv=none; b=kB28G/8eIkltAjesDokvynwkCBW+BYSo+sBdeTuZFUlO3fw5XO8TUghZZW9T5qxfZWCK6+lozbMnOQs9LzkuRJ3CotvYSX0PEMvK2Sk2eN5c+4xdAF+XodKyySYnPEjMqco8Vtg9PwEtZeoJ02wPQiCFYIkdfyjVsS1uYq0fOss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713899541; c=relaxed/simple;
-	bh=A4v0iVTRQGov4eLAy/8gY4d9Gh2C+rxIC2azW69wrp4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PoZNpeCWNttsstSiEq2RV7ucEd5AyTqLw3qMmVEpN4j4UT+bTwYly6CND22SLsEbwUoDDamSWNViHoBf9NTpoyxF2+K79KxiK5EJQQ0CpA6kXoyWzdAr0WNP/UUocbYax0GyqJsYYmWa4S84Jbm/bhX8Libc33NIwHn4xanW2IQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TQnH4L4u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAFCEC116B1;
-	Tue, 23 Apr 2024 19:12:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713899540;
-	bh=A4v0iVTRQGov4eLAy/8gY4d9Gh2C+rxIC2azW69wrp4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TQnH4L4u+fP8vH1xyVF4Rgcq/Z0Cu/cnMDY7C4CBUjqX23mzRIrPjD8zE17lFis+5
-	 rY1WCr01R5HMMqOjvRUbu6Zgx0uKVkfvYL4nLVUMo5s+z4XaNukEuN8tR8Z9QXJSG6
-	 SHwkp9cWXLWlgCbk5MdCnU/uqoPUworEeB3eKt+ez6lTEpfLMGe6xw8xQ4agERWE8l
-	 1ZQQ2gnsDiYyq/zKewRNoZvnYNR4mdQAS1etrKR/p8Ds9QXElH9px18dKevM0sUdFb
-	 LI6g+MDbMlTaeKepTbfFRRXXdlTry2Bqi0fmN1ajMVI26e4XahP+uBJW25lwTGg+9V
-	 FtFzwGQFV/lKQ==
-From: Bjorn Andersson <andersson@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Subject: Re: [PATCH] arm64: configs: enable REGULATOR_QCOM_USB_VBUS
-Date: Tue, 23 Apr 2024 14:12:17 -0500
-Message-ID: <171389947417.1267776.11344166654266361329.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240325-arm64-config-usb-vbus-v1-1-d14601f81d08@linaro.org>
-References: <20240325-arm64-config-usb-vbus-v1-1-d14601f81d08@linaro.org>
+	s=arc-20240116; t=1713899683; c=relaxed/simple;
+	bh=vHCfR07oU6jXib+D/KGYmjmEdexZMbpvXTHnBEU9KGo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fYS3QK+DUNGml2zV7f+UATgwGgx+Pv82ctthZ0No/NjgGi6iJCS0icQ2/D/O5OZbvcmFQWnayiW9Zxr4GFibxO+S+hrGq0k7s3y4x2y6p2ydmqTNMT1WhLE2ok4reYM4tf1mTi6f7rv9amCYwMQhs3mcuyKf9l5RGBqooJ3oCTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=VMxNgFE7; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=m/j47UCoCVDN051XsJvZ/Szrqafk0ETS8lvIj7OcbyY=; b=VMxNgFE7yJtbn8XCv0oN4WtWH3
+	9Ay3zHGNLSUDat1mAimTbSPhdHD05TQAwG8VC91v1fktQzF0Ai5L2UdNWgZcjzq4QsrIshvn3l7Ib
+	usqRHqFwqc75QdegQlnGPXUQntzUBPqzHd7XOHMyI6rRr4oB/KT//TMSWyVYmSDcZcSKF7V/ez1yW
+	p0EYl1NDn+03AkfoSJKsI6BDurOuljFj+AA0KHC7yTLpJQ8hl3z9K1dQrNSkeGUs8mGMIKP5YdliM
+	efJz2bSXQyDGcuXEbyPhoElMMqUyteZoymGxOCVWJC367AeRg25sWmY2GUTPaQd+FPwygxdYA3929
+	n0mkUyHQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49760)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rzLb1-0004xi-0L;
+	Tue, 23 Apr 2024 20:14:27 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rzLb0-0003cf-4K; Tue, 23 Apr 2024 20:14:26 +0100
+Date: Tue, 23 Apr 2024 20:14:26 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 0/8] net: dsa: b53: Remove adjust_link
+Message-ID: <ZigIkdr/FEmBZRLP@shell.armlinux.org.uk>
+References: <20240423183339.1368511-1-florian.fainelli@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240423183339.1368511-1-florian.fainelli@broadcom.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-
-On Mon, 25 Mar 2024 15:46:52 +0200, Dmitry Baryshkov wrote:
-> Enable the VBUS regulator used on Qualcomm platforms (RB1, RB2, RB5) to
-> supply VBUS voltage to the USB-C connector.
+On Tue, Apr 23, 2024 at 11:33:31AM -0700, Florian Fainelli wrote:
+> b53 is now the only remaining driver that uses both PHYLIB's adjust_link
+> and PHYLINK's mac_ops callbacks, convert entirely to PHYLINK.
 > 
-> 
+> Florian Fainelli (8):
+>   net: dsa: b53: Stop exporting b53_phylink_* routines
+>   net: dsa: b53: Introduce b53_adjust_531x5_rgmii()
+>   net: dsa: b53: Introduce b53_adjust_5325_mii()
+>   net: dsa: b53: Force flow control for BCM5301X CPU port(s)
+>   net: dsa: b53: Configure RGMII for 531x5 and MII for 5325
+>   net: dsa: b53: Call b53_eee_init() from b53_mac_link_up()
+>   net: dsa: b53: Remove b53_adjust_link()
+>   net: dsa: b53: provide own phylink MAC operations
 
-Applied, thanks!
+Read through the series, nothing obvious stands out, thanks for doing
+this!
 
-[1/1] arm64: configs: enable REGULATOR_QCOM_USB_VBUS
-      commit: fefda685ec0846a1f1c2b13af2cce4cea580a768
+For the series:
 
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-That's "arm64: defconfig: ..."
-
-Best regards,
 -- 
-Bjorn Andersson <andersson@kernel.org>
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
