@@ -1,155 +1,296 @@
-Return-Path: <linux-kernel+bounces-155448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5327C8AEAB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:18:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D635B8AEAEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:22:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38507B212A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:18:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BD001F226E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:22:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78DD513C9DA;
-	Tue, 23 Apr 2024 15:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D25D813C3C7;
+	Tue, 23 Apr 2024 15:21:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ehgBachH"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ERD2tFq9"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A333713BADD
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:16:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D425820E;
+	Tue, 23 Apr 2024 15:21:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713885383; cv=none; b=CXcwg3B4Pw6sMoEGqZ+20aJun5HZ2r9Zuo+FJSrQn7gQo2CaWmsOymAfKQP5DhWqFuHGRSyimkywbRn4XjeoXiBWRXZr6SEfgYpygfnvr8NpJ7tK7zHgc8CpmKO5BoJpnUTpdwXiL99FdHXY8jywQ/zbZugdoE7yRQkjwM418N0=
+	t=1713885716; cv=none; b=RlVKw1fZLvGs79yn/FSh9V4C8u0nnzXUNEZTtmKiZyTgf9whK9LecdkEsJc5Blc36O/5pIyfVm7G2AUaJ0JKXkCvl9WA0+WA0/cgrhebQcUO2zde68Hbf2jCTSZ+UmRtAqWk04nqw9PZVfVNvEx8haLhCwoBpkjvJ2UyuvQJfxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713885383; c=relaxed/simple;
-	bh=Ee6SOKmG30ewdCFK7IZvfE3CXz7QryXsQcMupsl4wzk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A1s3shUesa3ZarbVxXdZJNzMrMU1EZb9sFr+CVs01cDrEAd+ClS2WG0vpSDH1uttvuLGywIkFyXLgmPKyC9wAj+Mgsd0OwTnvKEKSUD4QPehDi0u5cNBawrZ6leJjXWQ1nHqzPDuIJi0lICBOXmYeXYyQTWc+VBQXr2E38xkZyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ehgBachH; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41ae3dbedf3so1506895e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:16:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713885378; x=1714490178; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=RuiSEPvnSGXD+pf12IY85A3YnTFQOj0AbVMfkpi/E4I=;
-        b=ehgBachHm0KdpQZwLmC/ehrAgev5Y7kuynwgPvFz+a9SzaoQEKPQbG1m9cjAEMXEpY
-         fHEcb04jBtAOWF6x4EplCq8RNk17J9zeQFFwizi/d/jlqU+7RN86gu2eJKEFc8m93Qrg
-         cp1QBF4nJ16dtys+nzrXG1sbbAg1l5q8nILpOMGA0wGQ1YC/OFlV2DO9T0p+fCe7HwNm
-         KW5sAosaZ6YiUhakvJGGSjrXZP6w7N4P5mgQGmsTnSgpQ6x8274F2zS6mvloHhRPsnyp
-         NkGG6JRv+y2r3OsiFU4eYQVQzYNgUTaqzxBLp9PGYa4ZKsQvQ8kMrvohl19bCjsdogBx
-         QsBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713885378; x=1714490178;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RuiSEPvnSGXD+pf12IY85A3YnTFQOj0AbVMfkpi/E4I=;
-        b=YUUtyKXzatXYkcqf0V1f0Mztt9HnUG1m7mCYe+QgdEnLIw5gl0TiEn3XTad/IlFUDV
-         dWMvda2eXFAUCmsiQop85omzWrYqQMfzA5/CIQcLqNHaW1DyGNhwHlgN5gXbJt4CitIY
-         1qJroC38f4bUijEH5PbZiMVopsLCuDeVlzXB30IXLQfFIhwwxS5mKAYDvUSHuFOSz/My
-         4kAdD7vyXsHJ+4h0YvoKD8KrPVEyu8RROWUmApcQG0OjzXqOdaOCtkQLAcRwavuuWnNT
-         p8P7hGmBxgirD6aRsjKW04GJdssjyFWQos4P4FxuCy/qHnLqCPOIql3keV/cdH88J3ut
-         6XAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUyqQgTMMfq7zU0Qopp9JG2p9MrC4PsnId/19fljXF9I2UJBS5m21Nft9RzVIB3TBz62KM9wr8w0A9lk3XYYQ2GHfYlZ3UVveOwyW1T
-X-Gm-Message-State: AOJu0YyJgkCVYy07igitLSvFL8P48LT0NI0gGvQiQlVJxY+f788ukNmi
-	DqkCg2ACtU2hBPVDQUSJd4VazZnQbGW6nM0B0deOrFIa2ckhHNBmWbseoTnjRro=
-X-Google-Smtp-Source: AGHT+IEZEeNJOV+O2KErqnekc/IwFsuAeuJ0QiSlGAwIa1yE2yEYiB+lGf9/WdiEdPordI/LeaKpKA==
-X-Received: by 2002:a05:600c:35d6:b0:418:3eb7:e8c6 with SMTP id r22-20020a05600c35d600b004183eb7e8c6mr8015886wmq.5.1713885378312;
-        Tue, 23 Apr 2024 08:16:18 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id b7-20020adff907000000b0034b3394f0e1sm4359000wrr.10.2024.04.23.08.16.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 08:16:17 -0700 (PDT)
-Message-ID: <f60aac7f-dbba-4cba-8bb6-302b5c911b8c@linaro.org>
-Date: Tue, 23 Apr 2024 17:16:16 +0200
+	s=arc-20240116; t=1713885716; c=relaxed/simple;
+	bh=8q+5COullrGgMK603hfx3nS02g/+X5nJrkqKlC5uCik=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ryXQk8Zz4miBocHsOav4uqJW5Ts9Qmpa7KtZ53nS7JY7egwuldu6U6kpd+7uSanWuih0MlBcJ4t5b9T68iiS97uR/BT9Nc0q8YJJcj9YZOhMR7lDe4Ljfoo2DgB3c/QXTm/l9d0U7cO5vBKOiqaZXeb7JQrokl6dzSUg/E7snNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ERD2tFq9; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713885715; x=1745421715;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8q+5COullrGgMK603hfx3nS02g/+X5nJrkqKlC5uCik=;
+  b=ERD2tFq9NGvUyfNBN0HJwMVCssus1a4DKFVYTAn9I+v2NjO4arKSFOR7
+   MG1MhuZJ7u1P2mvu6kq4cuxxuZ7ItSjtGdd6LV3jXGQrsiqZgpYp1juX9
+   opBxLFSM/rh5ZTDwu692W09ZQ3gtxj0jj//VbYapeKS0q1k9LODTV3x5y
+   8F0rbEQnB0aBU3+7ZO+ZSLehsIcibYyG1GEOnxLETs+qbAgMfJe0zsXGI
+   3DNqW02DjEq+Mp27eRS0/Edh8d2bYc48YNXbIhqMzfWUQuffD/YamYEoh
+   HrCUfdYvF8OHr2/ezryzuTcRijAMgYAogWCHQYNSHSz1B+sw1MbkBuOhv
+   g==;
+X-CSE-ConnectionGUID: baCd5ciQSJeKZc01o3YAQg==
+X-CSE-MsgGUID: WfqL9q+JST+e+kAn+W6Z+g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="20894090"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="20894090"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 08:21:55 -0700
+X-CSE-ConnectionGUID: XBqXt0IKS+6PsV6aoAeJHA==
+X-CSE-MsgGUID: ICuqx3peTZ6KDBShrPd67g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="24271344"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa010.jf.intel.com with ESMTP; 23 Apr 2024 08:21:52 -0700
+Date: Tue, 23 Apr 2024 23:16:31 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Peter Colberg <peter.colberg@intel.com>
+Cc: Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+	Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+	linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Russ Weight <russ.weight@linux.dev>,
+	Marco Pagani <marpagan@redhat.com>,
+	Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Subject: Re: [RFC PATCH v2 8/9] fpga: dfl: migrate dfl_get_feature_by_id() to
+ dfl_feature_dev_data
+Message-ID: <ZifQz/QJvYpFljMv@yilunxu-OptiPlex-7050>
+References: <20240409233942.828440-1-peter.colberg@intel.com>
+ <20240409233942.828440-9-peter.colberg@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ARM: dts: vt8500: replace "uhci" nodename with generic
- name "usb"
-To: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240423150728.91527-1-sheharyaar48@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Language: en-US
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240423150728.91527-1-sheharyaar48@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409233942.828440-9-peter.colberg@intel.com>
 
-On 23/04/2024 17:07, Mohammad Shehar Yaar Tausif wrote:
-> Replace "uhci" nodenames with "usb" as it's generic and aligns with
-> the schema binding.
+On Tue, Apr 09, 2024 at 07:39:41PM -0400, Peter Colberg wrote:
+> This change separates out most of the symbol name changes required by this
+> patch series for the function: dfl_get_feature_by_id(). This is done to
+> split a single monolithic change into multiple, smaller patches at the
+> request of the maintainer.
 > 
-> Signed-off-by: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
+> Signed-off-by: Peter Colberg <peter.colberg@intel.com>
 > ---
->  arch/arm/boot/dts/vt8500/vt8500.dtsi | 2 +-
->  arch/arm/boot/dts/vt8500/wm8505.dtsi | 2 +-
->  arch/arm/boot/dts/vt8500/wm8650.dtsi | 2 +-
->  arch/arm/boot/dts/vt8500/wm8750.dtsi | 4 ++--
->  arch/arm/boot/dts/vt8500/wm8850.dtsi | 4 ++--
->  5 files changed, 7 insertions(+), 7 deletions(-)
+> v2:
+> - Split monolithic patch into series at request of maintainer
+> ---
+>  drivers/fpga/dfl-afu-error.c |  59 +++++++------
+>  drivers/fpga/dfl-afu-main.c  | 166 ++++++++++++++++++-----------------
+>  drivers/fpga/dfl-afu.h       |  26 +++---
+>  drivers/fpga/dfl-fme-error.c |  98 +++++++++++----------
+>  drivers/fpga/dfl-fme-main.c  |  18 ++--
+>  drivers/fpga/dfl-fme-pr.c    |   6 +-
+>  drivers/fpga/dfl.c           |   3 +-
+>  drivers/fpga/dfl.h           |  13 ++-
+>  8 files changed, 203 insertions(+), 186 deletions(-)
+> 
+> diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
+> index ab7be6217368..0f392d1f6d45 100644
+> --- a/drivers/fpga/dfl-afu-error.c
+> +++ b/drivers/fpga/dfl-afu-error.c
+> @@ -28,37 +28,36 @@
+>  #define ERROR_MASK		GENMASK_ULL(63, 0)
+>  
+>  /* mask or unmask port errors by the error mask register. */
+> -static void __afu_port_err_mask(struct device *dev, bool mask)
+> +static void __afu_port_err_mask(struct dfl_feature_dev_data *fdata, bool mask)
 
+Maybe first replace all "struct device *dev" arguments with "struct
+dfl_feature_platform data *pdata", then you could do simple
+pdata->fdata replacement the same as other patches.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>  {
+>  	void __iomem *base;
+>  
+> -	base = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
+> +	base = dfl_get_feature_ioaddr_by_id(fdata, PORT_FEATURE_ID_ERROR);
+>  
+>  	writeq(mask ? ERROR_MASK : 0, base + PORT_ERROR_MASK);
+>  }
+>  
+>  static void afu_port_err_mask(struct device *dev, bool mask)
+>  {
+> -	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
+> +	struct dfl_feature_dev_data *fdata = to_dfl_feature_dev_data(dev);
+>  
+> -	mutex_lock(&pdata->lock);
+> -	__afu_port_err_mask(dev, mask);
+> -	mutex_unlock(&pdata->lock);
+> +	mutex_lock(&fdata->lock);
+> +	__afu_port_err_mask(fdata, mask);
+> +	mutex_unlock(&fdata->lock);
+>  }
+>  
+>  /* clear port errors. */
+>  static int afu_port_err_clear(struct device *dev, u64 err)
+>  {
+> -	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
+> -	struct platform_device *pdev = to_platform_device(dev);
+> +	struct dfl_feature_dev_data *fdata = to_dfl_feature_dev_data(dev);
+>  	void __iomem *base_err, *base_hdr;
+>  	int enable_ret = 0, ret = -EBUSY;
+>  	u64 v;
+>  
+> -	base_err = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
+> -	base_hdr = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_HEADER);
+> +	base_err = dfl_get_feature_ioaddr_by_id(fdata, PORT_FEATURE_ID_ERROR);
+> +	base_hdr = dfl_get_feature_ioaddr_by_id(fdata, PORT_FEATURE_ID_HEADER);
+>  
+> -	mutex_lock(&pdata->lock);
+> +	mutex_lock(&fdata->lock);
+>  
+>  	/*
+>  	 * clear Port Errors
+> @@ -80,12 +79,12 @@ static int afu_port_err_clear(struct device *dev, u64 err)
+>  	}
+>  
+>  	/* Halt Port by keeping Port in reset */
+> -	ret = __afu_port_disable(pdev);
+> +	ret = __afu_port_disable(fdata);
+>  	if (ret)
+>  		goto done;
+>  
+>  	/* Mask all errors */
+> -	__afu_port_err_mask(dev, true);
+> +	__afu_port_err_mask(fdata, true);
+>  
+>  	/* Clear errors if err input matches with current port errors.*/
+>  	v = readq(base_err + PORT_ERROR);
+> @@ -102,28 +101,28 @@ static int afu_port_err_clear(struct device *dev, u64 err)
+>  	}
+>  
+>  	/* Clear mask */
+> -	__afu_port_err_mask(dev, false);
+> +	__afu_port_err_mask(fdata, false);
+>  
+>  	/* Enable the Port by clearing the reset */
+> -	enable_ret = __afu_port_enable(pdev);
+> +	enable_ret = __afu_port_enable(fdata);
+>  
+>  done:
+> -	mutex_unlock(&pdata->lock);
+> +	mutex_unlock(&fdata->lock);
+>  	return enable_ret ? enable_ret : ret;
+>  }
+>  
+>  static ssize_t errors_show(struct device *dev, struct device_attribute *attr,
+>  			   char *buf)
+>  {
+> -	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
+> +	struct dfl_feature_dev_data *fdata = to_dfl_feature_dev_data(dev);
+>  	void __iomem *base;
+>  	u64 error;
+>  
+> -	base = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
+> +	base = dfl_get_feature_ioaddr_by_id(fdata, PORT_FEATURE_ID_ERROR);
+>  
+> -	mutex_lock(&pdata->lock);
+> +	mutex_lock(&fdata->lock);
+>  	error = readq(base + PORT_ERROR);
+> -	mutex_unlock(&pdata->lock);
+> +	mutex_unlock(&fdata->lock);
+>  
+>  	return sprintf(buf, "0x%llx\n", (unsigned long long)error);
+>  }
+> @@ -146,15 +145,15 @@ static DEVICE_ATTR_RW(errors);
+>  static ssize_t first_error_show(struct device *dev,
+>  				struct device_attribute *attr, char *buf)
+>  {
+> -	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
+> +	struct dfl_feature_dev_data *fdata = to_dfl_feature_dev_data(dev);
+>  	void __iomem *base;
+>  	u64 error;
+>  
+> -	base = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
+> +	base = dfl_get_feature_ioaddr_by_id(fdata, PORT_FEATURE_ID_ERROR);
+>  
+> -	mutex_lock(&pdata->lock);
+> +	mutex_lock(&fdata->lock);
+>  	error = readq(base + PORT_FIRST_ERROR);
+> -	mutex_unlock(&pdata->lock);
+> +	mutex_unlock(&fdata->lock);
+>  
+>  	return sprintf(buf, "0x%llx\n", (unsigned long long)error);
+>  }
+> @@ -164,16 +163,16 @@ static ssize_t first_malformed_req_show(struct device *dev,
+>  					struct device_attribute *attr,
+>  					char *buf)
+>  {
+> -	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
+> +	struct dfl_feature_dev_data *fdata = to_dfl_feature_dev_data(dev);
+>  	void __iomem *base;
+>  	u64 req0, req1;
+>  
+> -	base = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
+> +	base = dfl_get_feature_ioaddr_by_id(fdata, PORT_FEATURE_ID_ERROR);
+>  
+> -	mutex_lock(&pdata->lock);
+> +	mutex_lock(&fdata->lock);
+>  	req0 = readq(base + PORT_MALFORMED_REQ0);
+>  	req1 = readq(base + PORT_MALFORMED_REQ1);
+> -	mutex_unlock(&pdata->lock);
+> +	mutex_unlock(&fdata->lock);
+>  
+>  	return sprintf(buf, "0x%016llx%016llx\n",
+>  		       (unsigned long long)req1, (unsigned long long)req0);
+> @@ -191,12 +190,14 @@ static umode_t port_err_attrs_visible(struct kobject *kobj,
+>  				      struct attribute *attr, int n)
+>  {
+>  	struct device *dev = kobj_to_dev(kobj);
+> +	struct dfl_feature_dev_data *fdata;
+>  
+> +	fdata = to_dfl_feature_dev_data(dev);
+>  	/*
+>  	 * sysfs entries are visible only if related private feature is
+>  	 * enumerated.
+>  	 */
+> -	if (!dfl_get_feature_by_id(dev, PORT_FEATURE_ID_ERROR))
+> +	if (!dfl_get_feature_by_id(fdata, PORT_FEATURE_ID_ERROR))
+>  		return 0;
+>  
+>  	return attr->mode;
+> diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
+> index 61868cdd5b0b..42928cc7e42b 100644
+> --- a/drivers/fpga/dfl-afu-main.c
+> +++ b/drivers/fpga/dfl-afu-main.c
+> @@ -26,7 +26,7 @@
+>  
+>  /**
+>   * __afu_port_enable - enable a port by clear reset
+> - * @pdev: port platform device.
+> + * @fdata: port feature dev data.
+>   *
+>   * Enable Port by clear the port soft reset bit, which is set by default.
+>   * The AFU is unable to respond to any MMIO access while in reset.
+> @@ -35,18 +35,17 @@
+>   *
+>   * The caller needs to hold lock for protection.
+>   */
+> -int __afu_port_enable(struct platform_device *pdev)
+> +int __afu_port_enable(struct dfl_feature_dev_data *fdata)
 
-Best regards,
-Krzysztof
+Same suggestion. Replace "struct platform_device *pdev" with "struct
+dfl_feature_platform_data *pdata" first. Then do massive pdata->fdata
+replacement.
 
+Thanks,
+Yilun
 
