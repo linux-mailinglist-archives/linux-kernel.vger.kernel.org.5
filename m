@@ -1,134 +1,155 @@
-Return-Path: <linux-kernel+bounces-154477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E12CD8ADC72
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:50:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EBAD8ADC75
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:54:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E6C31C21AA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:50:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50E611C21149
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:54:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B13561C694;
-	Tue, 23 Apr 2024 03:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="MJEQZ2Mc"
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E041CA89;
+	Tue, 23 Apr 2024 03:53:53 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 955311C2A3
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:50:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F178EEA9;
+	Tue, 23 Apr 2024 03:53:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713844219; cv=none; b=JihcOtNdM2ngTXo+/AoAkoZ4y2juIhUqVyt7ETpToG/M/V/hKB7+Wp48xZRudG60WampXm6iuaQlDNVZDFFBbp2K34LHcFcKmxQ/IAVHfnMGlYJlO6+T3UKmCtOj9SBgcsgbIIGIYVIZ+4bblTaYk3bNOXYJhHpH+xG98wrsKbA=
+	t=1713844432; cv=none; b=KqHOugSJ9P3B8YJVqVWoD4BGin18QpwOE1IDDW+UerfdGI4Zh6dL/BxWEWCeqrKlmRfCTpO5hhBFy5aiRTv4VWCFtnafEiIYmElTQP6NwwgqmJ4jE4DJEpXKD71EXKafsZkUoHRvK9T2MvXEYXr+s4O+p9ypPtlDgv15vrMfmKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713844219; c=relaxed/simple;
-	bh=hSBb+AL3adDeMX5G+K8NhaTTSH2YI9539LvVI4k5pCA=;
-	h=Mime-Version:Subject:From:To:CC:In-Reply-To:Message-ID:Date:
-	 Content-Type:References; b=Rf3m5tE+2R7Wbdq7QkEQ25EJkVNJzfvLIfxh1N5hf2JqP7nkI5NadU1M0LxOLB0pILbbXhK6S4COzS9pt7/uOyaS/Io/eLpMGcEXv1Uy1YD6HSZNKxXUHr//1A6zAUahkAGV3YGpeL6Nfjvqhm88z87naSrzsvbuVHO9yRDTdJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=MJEQZ2Mc; arc=none smtp.client-ip=203.254.224.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20240423035014epoutp02153a0ffe855b6e59f2647b11f089b9a2~IzDt8clpA2283022830epoutp02_
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:50:14 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20240423035014epoutp02153a0ffe855b6e59f2647b11f089b9a2~IzDt8clpA2283022830epoutp02_
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1713844214;
-	bh=hSBb+AL3adDeMX5G+K8NhaTTSH2YI9539LvVI4k5pCA=;
-	h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-	b=MJEQZ2McFmusiDyGFd7kMjvPPfBeCDFWA+j5ZVJ4IqZDkpQV6yRPlQTkFgyURCyIy
-	 e2f4c0Y4P8TqbNel06yAPapuTblTGwopiTLM0qvSRvdbU6Y4euoPKlZFEhmoFG9qZA
-	 +1nOycAojlga9gXd5jJXPt15mDsxwz5XEoNr9S/g=
-Received: from epsmgec5p1new.samsung.com (unknown [182.195.42.68]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-	20240423035013epcas5p2e3f1c0c2d7804cdb07dfba9894f4d2b5~IzDtfBXrd1772317723epcas5p2B;
-	Tue, 23 Apr 2024 03:50:13 +0000 (GMT)
-X-AuditID: b6c32a44-6c3ff70000002198-57-66272ff5813f
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-	epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	ED.1F.08600.5FF27266; Tue, 23 Apr 2024 12:50:13 +0900 (KST)
+	s=arc-20240116; t=1713844432; c=relaxed/simple;
+	bh=gZ01PmgJkAwD/5MjHEhBCay1mXLsSmDco4vWFq4iNlM=;
+	h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=JcQR4TpbQ0yXnuz6GhPJ0ZQxjYAu2djKEyFCMDgPRIYEXXxtPESEvan8CA7vz/yzr16dnPcyhg78v1ZGwN6Pg8PbI81HmCvvSxSUlnReDX8G4HyQObHbouKmrrolRNf6prXinTRPGxhBydZDrxFCVDtNua7msGUv9EPa2oTSmzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VNpBV3w9fz4f3nbh;
+	Tue, 23 Apr 2024 11:53:38 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id AD3781A0B98;
+	Tue, 23 Apr 2024 11:53:47 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP1 (Coremail) with SMTP id cCh0CgDH4gvJMCdmmxHfKg--.8936S2;
+	Tue, 23 Apr 2024 11:53:47 +0800 (CST)
+Subject: Re: [PATCH v5 3/5] writeback: fix build problems of "writeback:
+ support retrieving per group debug writeback stats of bdi"
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+To: akpm@linux-foundation.org, willy@infradead.org, jack@suse.cz,
+ bfoster@redhat.com, tj@kernel.org
+Cc: dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org, sj@kernel.org, sfr@canb.auug.org.au
+References: <20240423034643.141219-1-shikemeng@huaweicloud.com>
+ <20240423034643.141219-4-shikemeng@huaweicloud.com>
+Message-ID: <085442bc-68c8-4d91-952f-c321c4d81825@huaweicloud.com>
+Date: Tue, 23 Apr 2024 11:53:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH 1/1] mm: vmalloc: dump page owner info if page is
- already mapped
-Reply-To: hariom1.p@samsung.com
-Sender: Hariom Panthi <hariom1.p@samsung.com>
-From: Hariom Panthi <hariom1.p@samsung.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-CC: "urezki@gmail.com" <urezki@gmail.com>, "hch@infradead.org"
-	<hch@infradead.org>, "lstoakes@gmail.com" <lstoakes@gmail.com>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Maninder Singh <maninder1.s@samsung.com>,
-	Rohit Thapliyal <r.thapliyal@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20240422142835.3a2fe7740dfc3003b68de305@linux-foundation.org>
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20240423035007epcms5p44dc3e16cb8477df9159642a857726a44@epcms5p4>
-Date: Tue, 23 Apr 2024 09:20:07 +0530
-X-CMS-MailID: 20240423035007epcms5p44dc3e16cb8477df9159642a857726a44
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCKsWRmVeSWpSXmKPExsWy7bCmlu5XffU0gyV35S3mrF/DZnF6wiIm
-	i8u75rBZ3Fvzn9Xizrd57BaH57exWGy8l22x+iKLA4fHzll32T02r9Dy2PRpErvHiRm/WTz6
-	tqxi9Pi8SS6ALYrLJiU1J7MstUjfLoErY0EzR8EO/orrx3axNjC+5Oti5OSQEDCRWHLkJlMX
-	IxeHkMBuRokXD0+xdTFycPAKCEr83SEMUiMsECYxY/cfRhBbSEBeon3Da1aQEmEBXYl3u4tA
-	TDYBbYnjn6xAKkSAoque72IGmcgscIRJYvmM4+wQq3glZrQ/ZYGwpSW2L98KNpJTwFvi6re1
-	UDWiEjdXv4Wz3x+bzwhhi0i03jvLDGELSjz4uRsqLiPx+NVkVgi7XKJ/xR82CLuBUWLCXiMI
-	21xi/ZJVYDN5BXwlZj76CVbDIqAqMWFKO1S9i8TThqlgM5mBflm28DUzyF/MApoS63fpQ5TI
-	Skw9tY4JooRPovf3EyaYt3bMg7GVJeYe2QT1oqTEjvkdULaHxN+7IONBoXyUUeJf/zz2CYwK
-	sxABPQvJ5lkImxcwMq9ilEwtKM5NT002LTDMSy3XK07MLS7NS9dLzs/dxAhOOFouOxhvzP+n
-	d4iRiYPxEKMEB7OSCO+vPyppQrwpiZVVqUX58UWlOanFhxilOViUxHlft85NERJITyxJzU5N
-	LUgtgskycXBKNTClG6lUaHQtNi46WzxL1nHDjNCS7TU3K1Zf4u3jithgtjihL2H69sY3vdqS
-	Zx6ItuwWjUtrevZncTP7l2cikYmfXebVm86deugh2+qdsR3tO1iijgZnNi46KhLbdlDQoVTu
-	TGo66/nS9TVb1BVtlrU3G7PJBG9xuehjdF6v44pR3ATZjbNuc+23v6T5WV8yZM3Tti/Jfvf/
-	BZ6Y9nml4oefD7fLv9MQPmbQ8VH/1YP82+81+Q+Hv7E5EXjayy2XfZOSkuWl5J0Z8sdDM1ZY
-	VUZ75k1OaBNN2JQ9zeHWlgn/Fdt4v9z++WTLN+f50aWlwSdlNos+r8lVvV8ZurmVQ+sgS/e7
-	MPMXpt8PyvptslNiKc5INNRiLipOBADrXf74pwMAAA==
-X-CMS-RootMailID: 20240419044047epcas5p4a90ca734d73bc9a87cd1670beaa24d8e
-References: <20240422142835.3a2fe7740dfc3003b68de305@linux-foundation.org>
-	<20240419043910.2156379-1-hariom1.p@samsung.com>
-	<CGME20240419044047epcas5p4a90ca734d73bc9a87cd1670beaa24d8e@epcms5p4>
+MIME-Version: 1.0
+In-Reply-To: <20240423034643.141219-4-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgDH4gvJMCdmmxHfKg--.8936S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7CFWfCr48ZrW7Xw43Kr43Awb_yoW8CFy3pa
+	9xCa10k3yUXr9rGFnxCFW7Xr90q3y0qay7Wa4kAry2k3ZIgFnxGFySk348Zry8Zas3Gryx
+	uan0vFyxJrWqvrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvqb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280
+	aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0x
+	ZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-Hi,
 
-> > ...
-> >
-> > =40=40 -103,7 +105,13 =40=40 static int vmap_pte_range(pmd_t *pmd, unsi=
-gned long addr, unsigned long end,
-> >=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(=21pte)=0D=0A>=20>=C2=
-=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0return=20-ENOMEM;=0D=0A>=20>=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0do=20=7B=0D=0A>=20>=20-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0BUG_ON(=21pte_none(ptep_get(pte)));=0D=0A>=20>=20+=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=
-=20(=21pte_none(ptep_get(pte)))=20=7B=0D=0A>=20>=20+=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0if=20(pfn_valid(pfn))=20=7B=0D=0A>=20>=20+=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0page=20=3D=20pfn_to_page(pf=
-n);=0D=0A>=20>=20+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0dump_page_owner(page);=0D=0A>=20>=20+=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=7D=0D=0A>=20>=20+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0BUG();=0D=0A>=
-=20>=20+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=7D=0D=0A>=20=0D=0A>=20Diving=20straight=20into=20dump_page_owner()=
-=20seems=20inappropriate.=C2=A0=20The=0D=0A>=20higher-level=20dump_page()=
-=20interface=20is=20more=20typically=20used.=0D=0A>=20=0D=0A>=20Or,=20even=
-=20more=20common,=20VM_BUG_ON_PAGE(),=20but=20that=20doesn't=20look=20to=20=
-be=20a=0D=0A>=20good=20fit=20here.=0D=0A=0D=0AOk=20I=20will=20send=20V2=20w=
-ith=20dump_page=20API.=0D=0A=0D=0AThanks,=0D=0AHariom=20=0D=0A
+
+on 4/23/2024 11:46 AM, Kemeng Shi wrote:
+> Fix two build problems:
+> 1. implicit declaration of function 'cgroup_ino'.
+> 2. unused variable 'stats'.
+> 
+> After this fix, No build problem is found when CGROUPS is disabled.
+> The wb_stats could be successfully retrieved when CGROUP_WRITEBACK is
+> disabled:
+> cat wb_stats
+> WbCgIno:                    1
+> WbWriteback:                0 kB
+> WbReclaimable:         685440 kB
+> WbDirtyThresh:      195530960 kB
+> WbDirtied:             691488 kB
+> WbWritten:               6048 kB
+> WbWriteBandwidth:      102400 kBps
+> b_dirty:                    2
+> b_io:                       0
+> b_more_io:                  0
+> b_dirty_time:               0
+> state:                      5
+> 
+> cat wb_stats
+> WbCgIno:                    1
+> WbWriteback:                0 kB
+> WbReclaimable:         818944 kB
+> WbDirtyThresh:      195527484 kB
+> WbDirtied:             824992 kB
+> WbWritten:               6048 kB
+> WbWriteBandwidth:      102400 kBps
+> b_dirty:                    2
+> b_io:                       0
+> b_more_io:                  0
+> b_dirty_time:               0
+> state:                      5
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+Reported-by: SeongJae Park <sj@kernel.org>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Sorry for missing reported-by tags.
+
+> ---
+>  mm/backing-dev.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+> index 6ecd11bdce6e..e61bbb1bd622 100644
+> --- a/mm/backing-dev.c
+> +++ b/mm/backing-dev.c
+> @@ -172,7 +172,11 @@ static void wb_stats_show(struct seq_file *m, struct bdi_writeback *wb,
+>  		   "b_more_io:         %10lu\n"
+>  		   "b_dirty_time:      %10lu\n"
+>  		   "state:             %10lx\n\n",
+> +#ifdef CONFIG_CGROUP_WRITEBACK
+>  		   cgroup_ino(wb->memcg_css->cgroup),
+> +#else
+> +		   1ul,
+> +#endif
+>  		   K(stats->nr_writeback),
+>  		   K(stats->nr_reclaimable),
+>  		   K(stats->wb_thresh),
+> @@ -192,7 +196,6 @@ static int cgwb_debug_stats_show(struct seq_file *m, void *v)
+>  	unsigned long background_thresh;
+>  	unsigned long dirty_thresh;
+>  	struct bdi_writeback *wb;
+> -	struct wb_stats stats;
+>  
+>  	global_dirty_limits(&background_thresh, &dirty_thresh);
+>  
+> 
+
 
