@@ -1,122 +1,204 @@
-Return-Path: <linux-kernel+bounces-155406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 630CD8AE9F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:59:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF2228AE9FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:59:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04E271F22741
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:59:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EDBA1C22134
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:59:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E751213B78A;
-	Tue, 23 Apr 2024 14:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2730F13BADD;
+	Tue, 23 Apr 2024 14:59:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="Euk68xFI"
-Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V5IH/c+A"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF39719BBA;
-	Tue, 23 Apr 2024 14:59:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAEC47D408
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:59:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713884348; cv=none; b=NVkPNsT2ce6bf+CvEoa5FeqaZ3zGwGZNXNZTu5d7NT7A3KN4+famOcKmxvgP8H9+z4BsrQuNP0uf6j/0IawAd5aob4PEuOS7r3OTganBkJZN+Ry4Na9s2/JAq+gdrroPe4Z21EdaycTb47rBcQyS1BzOJmZNZczHYmtqGcFzAtM=
+	t=1713884379; cv=none; b=cT5Talaz115nal62u7iBN0UTm3Oyk+CNJtnHjEriXSpovCt7r8kiisTNhC+tLdldieA4bJz+sZwj+lr9hrE4dyumkLEptI4h+vAPa5QLNvVAYY7jSHIwlfGADyhh+XA2019CH2I9JEPw2uSg1ey6lJ164uhDSqG7sZPiaOvCpPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713884348; c=relaxed/simple;
-	bh=Yce+qDBOZuO+SfiuLBCU/iYtbYmkEpQFI26Eyr98dJM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OEhu4ZlV+wJIj/KYT/ungxKFyzCiWU9m+YvO3hA93ze900fx38ihmkd55J0OqcI6x8Gvr5E34e7GEm+Yrrw99ckkv5w6Iytzl69XaNZUdKAvjgHfVmjHXSWpLrabSCE38RjffOWXSdTeXPLaQi/0m5CJoqJ1b7Ip0phWThRI5hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=Euk68xFI; arc=none smtp.client-ip=193.104.135.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
-Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
-	by mail1.fiberby.net (Postfix) with ESMTPSA id 5A3B8600A7;
-	Tue, 23 Apr 2024 14:59:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
-	s=202008; t=1713884341;
-	bh=Yce+qDBOZuO+SfiuLBCU/iYtbYmkEpQFI26Eyr98dJM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Euk68xFI4y8XXUx+z6g6V0jHbc97oDHz4Ykrc1dFaHrz2+APG9+rMjRwumONlJ3v9
-	 kvq/rBT59BH4Wm3plThuU/m7SE44w4Y9ma3r8epFTJyj0/+B+afoY8qY2uW6QEv9PF
-	 mX57F2UEhS9ddG0RjEF49Ic3bp/6geC7mEFHJ10dQWbehrG0Cf698nmnjT7fW5AHiu
-	 AM3cgn/9DHwGf4Ucj0oGjFjklNhgduZ6l8ANv8IizC+Fzr0nEo60yuI0a9LitqVbUd
-	 fmZIZ8000qT91Fk8KQhOUL48nRrLcvjQDeWgTnqjhCu1zIjrlLEZf4CWEQiRfkIw/Y
-	 u/nnH8EJYneLg==
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	by x201s (Postfix) with ESMTP id DD630205A1A;
-	Tue, 23 Apr 2024 14:58:54 +0000 (UTC)
-Message-ID: <883a41cc-58b2-475b-a247-b45f69c7f24b@fiberby.net>
-Date: Tue, 23 Apr 2024 14:58:54 +0000
+	s=arc-20240116; t=1713884379; c=relaxed/simple;
+	bh=olfSGTsFnuztaBe/6TGLSCfwwp+edxO3rygKLxl5HZA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IZS2RUUfd7lwiF2HuJpF5RclZw5agNVyjtIogsUUNgkvMUSdc38+hwez6aOY1EOEi2Ww415aBqgIl5vELhO/oNyMEwpF8yQ4yXA4cxy1Ir9xZDBReOrCw06bx8Z4JTkSW6vneXzdfwTuPQQs+tBkJ5Lfx97o37/6t+2dkkdAkNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V5IH/c+A; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713884376;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ie+FYpj1GJEe+9FkFNy/6w/kFm+u4y5scRjGEyrOJXw=;
+	b=V5IH/c+AVgHlDpkHW7clK278FeGKHXWzB7RfNCi+iZhlmpCY2nyLETYXdirRoCs2SP7i2S
+	OH1bH+1qk1B2m9uhmyBko0a6Ly6ZRKnjbDZ3r7MLb3U1FVuF6cNW78BX6Mx6vsKgRh5W7r
+	uachMeYUlUyX0CjJJElFOGwb06WgRpI=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-402-EZAkr8dRO22DzJbf_RHEBg-1; Tue, 23 Apr 2024 10:59:35 -0400
+X-MC-Unique: EZAkr8dRO22DzJbf_RHEBg-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-56865619070so1931680a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:59:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713884373; x=1714489173;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ie+FYpj1GJEe+9FkFNy/6w/kFm+u4y5scRjGEyrOJXw=;
+        b=Ve78Bglev4f5JIRMln7CNbOIIGfemVsKJ5RY6cGboSsRG5FplBlIJjEZeru87VG53p
+         bghbtP+P/DCMApvCkbrYnkmD6cJFdG2vbDCozZLOHohH42/VzQFhxCTvRddKJMnFuLZg
+         HxQWGUUATPXrlyLHR9VMBkksY00Y67EyZAzNBKvjmnuOa4hsTox/td1blLK08E4eLLOQ
+         sN6WzwztZzBcl8m/h0hcJ2TgakBhCX1UneFglr4v/1cOgtbRVCeG5ohuttDXPqIskHiR
+         U2cQzivVRnn4zwtHUDMC+yMOTx84Mpxtw9A0zyrRSBxgYLDB5Snu1Wg8AL1wcHELVYph
+         DWvw==
+X-Forwarded-Encrypted: i=1; AJvYcCUNAPcNnJYVlbgOBXryJrt9GIctfzt230piqSy8hKPKVniR+oy+M1Tophw8nRh+4t+YpNZbAf0m3EydQXbctU9u9/fjRYd2R/xruojZ
+X-Gm-Message-State: AOJu0YzsyajNzGJ0W2tCXw2CaQ/frfYw/2INMaCof5ZBm7dhyHDg00V4
+	vymBAJ3EKIRuHISKeUb4IAC7Ry3xq07NzeY6shFH3GLYslO16jYr0i0262gvbSEU3X4ItrNhHyf
+	dlD26raL0hO70spq+WlmiOL1wh8yn2gwJgvXs+FO/PtXHa5HI+Q7lP7hgr8x8Wqp9M2zM59zrsr
+	XizrSbLL0tXXImubp4MC7+Naq6UkJFxq+/y2OZx3bd+QKf
+X-Received: by 2002:a50:d5cc:0:b0:570:5b72:164 with SMTP id g12-20020a50d5cc000000b005705b720164mr8847178edj.37.1713884373127;
+        Tue, 23 Apr 2024 07:59:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEx+SFJ52iA64fGz8cP56CJid1VLQQ91ZyiKP07BwcaJus+buR5U7snRiTmt/sE1JslZDX0L1Um1xd3XyxBORk=
+X-Received: by 2002:a50:d5cc:0:b0:570:5b72:164 with SMTP id
+ g12-20020a50d5cc000000b005705b720164mr8847165edj.37.1713884372794; Tue, 23
+ Apr 2024 07:59:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/2] net: lan966x: cleanup
- lan966x_tc_flower_handler_control_usage()
-To: Simon Horman <horms@kernel.org>
-Cc: netdev@vger.kernel.org, Horatiu Vultur <horatiu.vultur@microchip.com>,
- UNGLinuxDriver@microchip.com, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org
-References: <20240423102720.228728-1-ast@fiberby.net>
- <20240423140048.GU42092@kernel.org>
-Content-Language: en-US
-From: =?UTF-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
-In-Reply-To: <20240423140048.GU42092@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240331182440.14477-1-kl@kl.wtf> <14d1b38e-0f11-4852-9c52-92b4bedb0a77@leemhuis.info>
+In-Reply-To: <14d1b38e-0f11-4852-9c52-92b4bedb0a77@leemhuis.info>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Tue, 23 Apr 2024 16:59:20 +0200
+Message-ID: <CAO-hwJJtK2XRHK=HGaNUFb3mQhY5XbNGeCQwuAB0nmG2bjHX-Q@mail.gmail.com>
+Subject: Re: [PATCH v2] HID: i2c-hid: Revert to await reset ACK before reading
+ report descriptor
+To: Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: Jiri Kosina <jikos@kernel.org>, Douglas Anderson <dianders@chromium.org>, 
+	Hans de Goede <hdegoede@redhat.com>, linux-input@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Kenny Levinsen <kl@kl.wtf>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Simon,
+On Mon, Apr 22, 2024 at 7:11=E2=80=AFPM Linux regression tracking (Thorsten
+Leemhuis) <regressions@leemhuis.info> wrote:
+>
+> On 31.03.24 20:24, Kenny Levinsen wrote:
+> > In af93a167eda9, i2c_hid_parse was changed to continue with reading the
+> > report descriptor before waiting for reset to be acknowledged.
+> >
+> > This has lead to two regressions:
+>
+> Lo! Jiri, Benjamin, quick question: is there a reason why this fix for a
+> 6.8-rc1 regression after more than two and half weeks is not yet
+> mainlined? Or is there some good reason why we should be should be extra
+> cautious?
 
-On 4/23/24 2:00 PM, Simon Horman wrote:
-> On Tue, Apr 23, 2024 at 10:27:17AM +0000, Asbjørn Sloth Tønnesen wrote:
->> Define extack locally, to reduce line lengths and future users.
->>
->> Rename goto, as the error message is specific to the fragment flags.
->>
->> Only compile-tested.
->>
->> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
-> 
-> Hi Asbjørn,
-> 
-> This patch-set did not apply to net-next at the time it was posted
-> (although it does now), so it will need to be reposted.
+No special reasons I guess. Neither Jiri nor I have sent a HID update
+for this rc cycle, so it's still there, waiting to be pushed.
+I've been quite busy with BPF lately and dropped the ball slightly on
+the HID maintainer side, but I'm sure we'll send the PR to Linus this
+week or the next.
 
-Weird, patchwork incorrectly matched up the two series. I had
-rebased shortly before posting (net-next was at 077633afe07f4).
+Cheers,
+Benjamin
 
-The 4 emails and their Subject, Message-ID and In-Reply-To:
 
-Subject: [PATCH net-next 1/2] net: sparx5: flower: cleanup sparx5_tc_flower_handler_control_usage()
-Message-ID: <20240423102728.228765-1-ast@fiberby.net>  (A)
+>
+>
+> Side note: I noticed this due to the tracking today, but I also saw a
+> user that recently ran into the problem the quoted fix is supposed to
+> resolve: https://social.lol/@major/112294923280815017
+>
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> --
+> Everything you wanna know about Linux kernel regression tracking:
+> https://linux-regtracking.leemhuis.info/about/#tldr
+> If I did something stupid, please tell me, as explained on that page.
+>
+> #regzbot poke
+>
+> > 1. We fail to handle reset acknowledgement if it happens while reading
+> >    the report descriptor. The transfer sets I2C_HID_READ_PENDING, which
+> >    causes the IRQ handler to return without doing anything.
+> >
+> >    This affects both a Wacom touchscreen and a Sensel touchpad.
+> >
+> > 2. On a Sensel touchpad, reading the report descriptor this quickly
+> >    after reset results in all zeroes or partial zeroes.
+> >
+> > The issues were observed on the Lenovo Thinkpad Z16 Gen 2.
+> >
+> > The change in question was made based on a Microsoft article[0] stating
+> > that Windows 8 *may* read the report descriptor in parallel with
+> > awaiting reset acknowledgement, intended as a slight reset performance
+> > optimization. Perhaps they only do this if reset is not completing
+> > quickly enough for their tastes?
+> >
+> > As the code is not currently ready to read registers in parallel with a
+> > pending reset acknowledgement, and as reading quickly breaks the report
+> > descriptor on the Sensel touchpad, revert to waiting for reset
+> > acknowledgement before proceeding to read the report descriptor.
+> >
+> > [0]: https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/plu=
+g-and-play-support-and-power-management
+> >
+> > Fixes: af93a167eda9 ("HID: i2c-hid: Move i2c_hid_finish_hwreset() to af=
+ter reading the report-descriptor")
+> > Signed-off-by: Kenny Levinsen <kl@kl.wtf>
+> > ---
+> >  drivers/hid/i2c-hid/i2c-hid-core.c | 13 ++++---------
+> >  1 file changed, 4 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i=
+2c-hid-core.c
+> > index 2df1ab3c31cc..72d2bccf5621 100644
+> > --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+> > +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+> > @@ -735,9 +735,12 @@ static int i2c_hid_parse(struct hid_device *hid)
+> >       mutex_lock(&ihid->reset_lock);
+> >       do {
+> >               ret =3D i2c_hid_start_hwreset(ihid);
+> > -             if (ret)
+> > +             if (ret =3D=3D 0)
+> > +                     ret =3D i2c_hid_finish_hwreset(ihid);
+> > +             else
+> >                       msleep(1000);
+> >       } while (tries-- > 0 && ret);
+> > +     mutex_unlock(&ihid->reset_lock);
+> >
+> >       if (ret)
+> >               goto abort_reset;
+> > @@ -767,16 +770,8 @@ static int i2c_hid_parse(struct hid_device *hid)
+> >               }
+> >       }
+> >
+> > -     /*
+> > -      * Windows directly reads the report-descriptor after sending res=
+et
+> > -      * and then waits for resets completion afterwards. Some touchpad=
+s
+> > -      * actually wait for the report-descriptor to be read before sign=
+alling
+> > -      * reset completion.
+> > -      */
+> > -     ret =3D i2c_hid_finish_hwreset(ihid);
+> >  abort_reset:
+> >       clear_bit(I2C_HID_RESET_PENDING, &ihid->flags);
+> > -     mutex_unlock(&ihid->reset_lock);
+> >       if (ret)
+> >               goto out;
+> >
+>
 
-Subject: [PATCH net-next 2/2] net: sparx5: flower: check for unsupported control flags
-Message-ID: <20240423102728.228765-2-ast@fiberby.net>  (B)
-In-Reply-To: <20240423102728.228765-1-ast@fiberby.net> (A)
-
-Subject: [PATCH net-next 1/2] net: lan966x: cleanup lan966x_tc_flower_handler_control_usage()
-Message-ID: <20240423102720.228728-1-ast@fiberby.net>  (C)
-
-Subject: [PATCH net-next 2/2] net: lan966x: flower: check for unsupported control flags
-Message-ID: <20240423102720.228728-2-ast@fiberby.net>  (D)
-In-Reply-To: <20240423102720.228728-1-ast@fiberby.net> (C)
-
-Patchwork have two series A+D and C+B, instead of A+B and C+D.
-
-> Also, please consider providing a cover-letter for patch-sets with
-> more than one (but not just one) patch.
-
-Sure, will do. Didn't know if it was appreciated for so small series,
-anyway v2 will have more patches, after splitting this patch up.
-
--- 
-Best regards
-Asbjørn Sloth Tønnesen
-Network Engineer
-Fiberby - AS42541
 
