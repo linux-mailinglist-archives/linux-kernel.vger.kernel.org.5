@@ -1,196 +1,102 @@
-Return-Path: <linux-kernel+bounces-154432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63E2E8ADC00
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 04:42:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E65D68ADBFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 04:41:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 059831F21EF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:42:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B102283D79
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:41:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 139C118032;
-	Tue, 23 Apr 2024 02:42:17 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7501217C73;
+	Tue, 23 Apr 2024 02:41:47 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62CE917BDC
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 02:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE015E574
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 02:41:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713840136; cv=none; b=g4jY2MTtQZ7L5l4O85YoEfQZRs5RLFu871qRthaAi/GvYPWl/tDjBlyRvzv2uHMZlM3cylKlBn3les3qOpkwRv44CKCSTwhYixLEQHvA78zi4Jl64ZvqLqvitht9hGbNaEBsq9SmVZ/pMYIb0Vm1zbtTCxKzG/fnO2hJ7CyyyyU=
+	t=1713840107; cv=none; b=abre2z8novOCmRd1OuDySsiR1ocVjwCo400r3TcOmRtwZ8U35nrexFEGaHnaW7tAQGAGoFZMktJmkBGEsmnameX/hUTbTzp3MBXw7Cl79lKeZpaUMVhoZlCHuQcj8fMB6zB0DEpYece/Gj4bAL6Nb9VJ1FIa7to2t8BmhV4N58I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713840136; c=relaxed/simple;
-	bh=Uda6cTRjjmcJKph4My7u+kBHpqr+OUTWO5y/fZzmH5Y=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ezTo3zELHwSpwiAuC5o9CpMFzskGI3+cjKdakq6vj1/chCAl/07ticEO31tlmvTEN6bw/LAmwycCaiC2rABIG6cA0Touw2v3xFdTi34ii4goVRV1JLh4BxfwXOIEqbUQqdYJ9T+05QxHR0fFWNomc/IYizjdlFUGZT4XLhrnlX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VNmXT3Yywz1R5rG
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:39:05 +0800 (CST)
-Received: from kwepemi500008.china.huawei.com (unknown [7.221.188.139])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3F9AA18007F
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:42:05 +0800 (CST)
-Received: from huawei.com (10.67.174.55) by kwepemi500008.china.huawei.com
- (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 23 Apr
- 2024 10:42:04 +0800
-From: Jinjie Ruan <ruanjinjie@huawei.com>
-To: <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>
-CC: <ruanjinjie@huawei.com>
-Subject: [PATCH -next v2] genirq: Reuse irq_is_nmi()
-Date: Tue, 23 Apr 2024 02:40:37 +0000
-Message-ID: <20240423024037.3331215-1-ruanjinjie@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713840107; c=relaxed/simple;
+	bh=fKs0jIXa3gnFBSsBMylG2iyXyslYb90wPx+biLJKdZU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NYPCtvZFNrSZupIPK+YmUo4wCSWet0M2ito4eg1HajsU4qOWlTbaMe6vRyH4SouciVZsLWfedfQjro5x79xn/SIPfj5nwbLlCQ1CXHXabIkhWWR4QXaILXLa02pykwMNCGhwSnxDcDjm6cVh9oCPp/SjuXT6G219MmAzh4gmNT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 014bff9c011b11ef9305a59a3cc225df-20240423
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:3a5cc699-663c-4e05-b581-0cc67a517d84,IP:20,
+	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:1,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:16
+X-CID-INFO: VERSION:1.1.37,REQID:3a5cc699-663c-4e05-b581-0cc67a517d84,IP:20,UR
+	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:1,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:16
+X-CID-META: VersionHash:6f543d0,CLOUDID:a9e36e9d920fcd1a80fba757d9883cc3,BulkI
+	D:240423104139GMGK0LEM,BulkQuantity:0,Recheck:0,SF:19|43|74|66|38|24|72|10
+	2,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:
+	nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 014bff9c011b11ef9305a59a3cc225df-20240423
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw.kylinos.cn
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1491849440; Tue, 23 Apr 2024 10:41:36 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id A770EE000EB9;
+	Tue, 23 Apr 2024 10:41:36 +0800 (CST)
+X-ns-mid: postfix-66271FE0-474456508
+Received: from kernel.. (unknown [10.42.12.206])
+	by mail.kylinos.cn (NSMail) with ESMTPA id E1444E000EB9;
+	Tue, 23 Apr 2024 10:41:34 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: tomas.winkler@intel.com,
+	arnd@arndb.de,
+	gregkh@linuxfoundation.org,
+	kunwu.chan@hotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] mei: bus: constify the struct mei_cl_bus_type usage
+Date: Tue, 23 Apr 2024 10:41:33 +0800
+Message-Id: <20240423024133.1890455-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500008.china.huawei.com (7.221.188.139)
+Content-Transfer-Encoding: quoted-printable
 
-Move irq_is_nmi() definition from irqdesc.c to internals.h, and reuse it
-in manage.c and resend.c to simplify the code.
+Now that the driver core can properly handle constant struct bus_type,
+move the mei_cl_bus_type variable to be a constant structure as well,
+placing it into read-only memory which can not be modified at runtime.
 
-Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 ---
-v2:
-- static bool __maybe_unused -> static inline bool
----
- kernel/irq/internals.h |  5 +++++
- kernel/irq/irqdesc.c   |  5 -----
- kernel/irq/manage.c    | 16 ++++++++--------
- kernel/irq/resend.c    |  2 +-
- 4 files changed, 14 insertions(+), 14 deletions(-)
+ drivers/misc/mei/bus.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/irq/internals.h b/kernel/irq/internals.h
-index 6c43ef3e7308..ed28059e9849 100644
---- a/kernel/irq/internals.h
-+++ b/kernel/irq/internals.h
-@@ -280,6 +280,11 @@ static inline int irq_desc_is_chained(struct irq_desc *desc)
- 	return (desc->action && desc->action == &chained_action);
+diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c
+index f9bcff197615..99393f610cdf 100644
+--- a/drivers/misc/mei/bus.c
++++ b/drivers/misc/mei/bus.c
+@@ -1327,7 +1327,7 @@ static int mei_cl_device_uevent(const struct device=
+ *dev, struct kobj_uevent_env
+ 	return 0;
  }
- 
-+static inline bool irq_is_nmi(struct irq_desc *desc)
-+{
-+	return desc->istate & IRQS_NMI;
-+}
-+
- #ifdef CONFIG_PM_SLEEP
- bool irq_pm_check_wakeup(struct irq_desc *desc);
- void irq_pm_install_action(struct irq_desc *desc, struct irqaction *action);
-diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-index 382093196210..5fd4499f649e 100644
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -971,11 +971,6 @@ unsigned int kstat_irqs_cpu(unsigned int irq, int cpu)
- 	return desc && desc->kstat_irqs ? per_cpu(desc->kstat_irqs->cnt, cpu) : 0;
- }
- 
--static bool irq_is_nmi(struct irq_desc *desc)
--{
--	return desc->istate & IRQS_NMI;
--}
--
- unsigned int kstat_irqs_desc(struct irq_desc *desc, const struct cpumask *cpumask)
- {
- 	unsigned int sum = 0;
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index bf9ae8a8686f..f366e4e2af8c 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -564,7 +564,7 @@ irq_set_affinity_notifier(unsigned int irq, struct irq_affinity_notify *notify)
- 	/* The release function is promised process context */
- 	might_sleep();
- 
--	if (!desc || desc->istate & IRQS_NMI)
-+	if (!desc || irq_is_nmi(desc))
- 		return -EINVAL;
- 
- 	/* Complete initialisation of *notify */
-@@ -898,7 +898,7 @@ int irq_set_irq_wake(unsigned int irq, unsigned int on)
- 		return -EINVAL;
- 
- 	/* Don't use NMIs as wake up interrupts please */
--	if (desc->istate & IRQS_NMI) {
-+	if (irq_is_nmi(desc)) {
- 		ret = -EINVAL;
- 		goto out_unlock;
- 	}
-@@ -1624,7 +1624,7 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
- 		 */
- 		unsigned int oldtype;
- 
--		if (desc->istate & IRQS_NMI) {
-+		if (irq_is_nmi(desc)) {
- 			pr_err("Invalid attempt to share NMI for %s (irq %d) on irqchip %s.\n",
- 				new->name, irq, desc->irq_data.chip->name);
- 			ret = -EINVAL;
-@@ -2082,7 +2082,7 @@ const void *free_nmi(unsigned int irq, void *dev_id)
- 	unsigned long flags;
- 	const void *devname;
- 
--	if (!desc || WARN_ON(!(desc->istate & IRQS_NMI)))
-+	if (!desc || WARN_ON(!irq_is_nmi(desc)))
- 		return NULL;
- 
- 	if (WARN_ON(irq_settings_is_per_cpu_devid(desc)))
-@@ -2548,7 +2548,7 @@ void free_percpu_nmi(unsigned int irq, void __percpu *dev_id)
- 	if (!desc || !irq_settings_is_per_cpu_devid(desc))
- 		return;
- 
--	if (WARN_ON(!(desc->istate & IRQS_NMI)))
-+	if (WARN_ON(!irq_is_nmi(desc)))
- 		return;
- 
- 	kfree(__free_percpu_irq(irq, dev_id));
-@@ -2684,7 +2684,7 @@ int request_percpu_nmi(unsigned int irq, irq_handler_t handler,
- 		return -EINVAL;
- 
- 	/* The line cannot already be NMI */
--	if (desc->istate & IRQS_NMI)
-+	if (irq_is_nmi(desc))
- 		return -EINVAL;
- 
- 	action = kzalloc(sizeof(struct irqaction), GFP_KERNEL);
-@@ -2745,7 +2745,7 @@ int prepare_percpu_nmi(unsigned int irq)
- 	if (!desc)
- 		return -EINVAL;
- 
--	if (WARN(!(desc->istate & IRQS_NMI),
-+	if (WARN(!irq_is_nmi(desc),
- 		 KERN_ERR "prepare_percpu_nmi called for a non-NMI interrupt: irq %u\n",
- 		 irq)) {
- 		ret = -EINVAL;
-@@ -2787,7 +2787,7 @@ void teardown_percpu_nmi(unsigned int irq)
- 	if (!desc)
- 		return;
- 
--	if (WARN_ON(!(desc->istate & IRQS_NMI)))
-+	if (WARN_ON(!irq_is_nmi(desc)))
- 		goto out;
- 
- 	irq_nmi_teardown(desc);
-diff --git a/kernel/irq/resend.c b/kernel/irq/resend.c
-index 5f2c66860ac6..b07a2d732ffb 100644
---- a/kernel/irq/resend.c
-+++ b/kernel/irq/resend.c
-@@ -190,7 +190,7 @@ int irq_inject_interrupt(unsigned int irq)
- 	 *  - not NMI type
- 	 *  - activated
- 	 */
--	if ((desc->istate & IRQS_NMI) || !irqd_is_activated(&desc->irq_data))
-+	if (irq_is_nmi(desc) || !irqd_is_activated(&desc->irq_data))
- 		err = -EINVAL;
- 	else
- 		err = check_irq_resend(desc, true);
--- 
-2.34.1
+=20
+-static struct bus_type mei_cl_bus_type =3D {
++static const struct bus_type mei_cl_bus_type =3D {
+ 	.name		=3D "mei",
+ 	.dev_groups	=3D mei_cldev_groups,
+ 	.match		=3D mei_cl_device_match,
+--=20
+2.40.1
 
 
