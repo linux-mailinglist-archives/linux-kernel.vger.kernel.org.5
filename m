@@ -1,75 +1,92 @@
-Return-Path: <linux-kernel+bounces-155725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A2838AF63A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:04:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46DE78AF641
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:05:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C480E1F230A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:04:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 793321C20FC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA0F13E05F;
-	Tue, 23 Apr 2024 18:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 305AD13FD6E;
+	Tue, 23 Apr 2024 18:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Ps30MgGU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tYWlahpr"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C5213DDA5;
-	Tue, 23 Apr 2024 18:04:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EC7E13D8BB;
+	Tue, 23 Apr 2024 18:05:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713895478; cv=none; b=WriMD6PrO84D2+L6VSWd9ivk16w3gyY+aSVziAlK1HCfLJSR49wHWWKKIsFhJFTJgffUlxTnt//hAva1BKcP2SEPWeHHUlCjPGGVa+zJ7nIwTWWplNXjjvIttKN9D84kVO46evkIRUx4M9C18yRTWLcVNSe78YOYNNRqeVTDal8=
+	t=1713895520; cv=none; b=CCaNF5cJeCLv3k0TwVC/g/94celIfI7mRKaOTg9VAKbzHwO8tvEAu2MEsV1n1Z7w2WNLeZ93nAMVUj6O+1DRCmzJT/Fk8HYYYRAhYCx80RVLM5RyRmglbLWq/rP6Xpr5L43QjHbqgllLp5bSxuvz98W8xG+v95wr2W95dh02ozk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713895478; c=relaxed/simple;
-	bh=Cn74BPHtpjOJgshJQZ4iXhIa8/T0sNEp7Eia/9C6Jko=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=VoiCbLEEFLxREgQ18fvzHjy4ebcTl4JqflymmY56JZlGnJP/U8ur3V+6YUlHCNXiEwOozUX9QWgwFPGMjbqTXxmsHDrS56TFeBvjG36T3xTFbPASlkEYOvzEfaNHP+mNSvNtu93vQM3vf7eAvx+qzEh+cEG010y8pJf2w0XsRG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Ps30MgGU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73FB0C116B1;
-	Tue, 23 Apr 2024 18:04:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1713895476;
-	bh=Cn74BPHtpjOJgshJQZ4iXhIa8/T0sNEp7Eia/9C6Jko=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Ps30MgGUiU9lFBVCW5O/mFNhptLJxXnA4oBeSaQ/QSfnqnmaFDgdtGGFihoP+DVpz
-	 83/Hn9B8ZA6N65TRwJMSyTUw69MqKhUIurOL+1gIDrisex1AdspW8NAyaZBqcz4Bl5
-	 nR9RGWdr+Ixf0WWlZXud1QzV5k7n0IwdlqtNVmPA=
-Date: Tue, 23 Apr 2024 11:04:35 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Maxwell Bland <mbland@motorola.com>
-Cc: linux-mm@kvack.org,
- "Maxwell Bland <mbland@motorola.com> Catalin Marinas"
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Jonathan Corbet
- <corbet@lwn.net>, Ard Biesheuvel <ardb@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Alexandre Ghiti <alexghiti@rivosinc.com>,
- linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ptdump: add non-leaf descriptor support
-Message-Id: <20240423110435.c84aa2a0e4cb5a17fb1ab18d@linux-foundation.org>
-In-Reply-To: <20240423121820.874441838-1-mbland@motorola.com>
-References: <20240423121820.874441838-1-mbland@motorola.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713895520; c=relaxed/simple;
+	bh=csbBsLOK9aN1YY14VJhgNaSPYMZmkMYSj4EsvEhArm8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TNFThpsNAPN4PMQ289g19+n7C2t5m9A4SzLMfRCX4DYRFY198dFr96O9wbBztak2wMM3CNwXggicqfapVlzEaWfZKcM4f0YAAFPv1SnBy92qQP2NrhM/1ZeMM+Y05sE3qRilyuBcnk2PxzY0YP0P7GigBsOo4K4KD9iIXN60n8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=tYWlahpr; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=x5XbG1JjCYNvoxcYQVRjX4l6Fw6ilVYPinQm4/OHRBI=; b=tYWlahprIb/r9CmNbSKQsIiUt1
+	DoB/kydDfe2VqIoT5GWk2EL7C7AhVj2QqUUNuzRj6C3HQ4XBcDDLAW10mST9zh3of+/Kpfct6kCcA
+	cPNJUM2oFvm6nbro+8Uk7Ai/EXEvUtGz8kwxX71lMD//1c23DrTsD16/UK2w+YG7Mx2CvaKRSWeQH
+	IPSdoAgoaN1dnVScwV0/q4EXqtbWHUt3oeAooG9irIVzJcx62vK3H+2fY10+6MNRtLyfY4bcbhVCL
+	wdSAE+dOlSSEjUAv+B0qSalL2nSryomZrN6GcYZpo4GIO/Dm+qQgLx3Ki9nWcqTB4/EnTZSG2PkLS
+	PU2UWhBw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rzKW5-000000014oY-25p8;
+	Tue, 23 Apr 2024 18:05:17 +0000
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: akpm@linux-foundation.org,
+	willy@infradead.org,
+	Liam.Howlett@oracle.com
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	djwong@kernel.org,
+	david@fromorbit.com,
+	gost.dev@samsung.com,
+	p.raghav@samsung.com,
+	da.gomez@samsung.com,
+	mcgrof@kernel.org
+Subject: [PATCH 0/2] test_xarray: couple of fixes for v6-9-rc6
+Date: Tue, 23 Apr 2024 11:05:14 -0700
+Message-ID: <20240423180517.256812-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Tue, 23 Apr 2024 12:18:20 -0500 Maxwell Bland <mbland@motorola.com> wrote:
+Andrew,
 
-> Add an optional note_non_leaf parameter to ptdump, causing note_page to
-> be called on non-leaf descriptors. Implement this functionality on arm64
-> by printing table descriptors along with table-specific permission sets.
+Provided there are no issues by folks with these two patches, here are a couple
+of fixes which should be merged into the queue for v6.9-rc6.  The first one was
+reported by Liam, after fixing that I noticed an issue which a test, and a fix
+for that is on the second patch.
 
-I was going to queue this while awaiting acks from arm people, but
-there's a large reject in Documentation/arch/arm64/ptdump.rst.  Please
-update to latest mainline?
+I wasn't even aware that you can test xarray in userspace, cool beans.
+
+Luis Chamberlain (2):
+  tools: fix userspace compilation with new test_xarray changes
+  lib/test_xarray.c: fix error assumptions on
+    check_xa_multi_store_adv_add()
+
+ lib/test_xarray.c                       | 13 +++++++++----
+ tools/testing/radix-tree/linux/kernel.h |  2 ++
+ 2 files changed, 11 insertions(+), 4 deletions(-)
+
+-- 
+2.43.0
 
 
