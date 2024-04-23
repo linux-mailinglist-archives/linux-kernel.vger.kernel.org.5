@@ -1,676 +1,253 @@
-Return-Path: <linux-kernel+bounces-154449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3622D8ADC2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:19:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D2CD8ADC2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:20:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4226D1C20FDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:19:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 900281C20FF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D627719BA3;
-	Tue, 23 Apr 2024 03:18:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34FA21B95A;
+	Tue, 23 Apr 2024 03:20:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="J4ujlJ/4"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CF0318E1D;
-	Tue, 23 Apr 2024 03:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713842338; cv=none; b=qk8NNo7FTaMY8TVGXzD9sP7Jjj7/T1OuvTYfdFB71XFW3kwHY2eeEN1VRpPAhbyyFzrnVSteJdOKtUw0tkUgU6oHivU7wM2KEeAEf9usUu85gJfKWE+7JfMIHRUE6DhCp56rZZQNPeo1vHYKv0vkPiu8n/KOTfJ7zQmU2CDzFrU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713842338; c=relaxed/simple;
-	bh=skEEO4kFgAczopC58RFqHys/Huw2qXQ5TOdygai9m8Y=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=AbMU3rLZEzhOOOkg9R8bAwObxkwfIMkPuwbHTJhwoGOFAig2UGTvF9hn2OiPsR4gESDAs56FqMi2axsWKXcg05tat+hUoPj0jzoxSwkbL7RpXsIdXTZivQFTj6qqo5bWvzaY7BNHDCmJ/ZqePhIu8T2Fkezo3gTe/VQKLxyvpaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=J4ujlJ/4; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1175)
-	id 07F0320FF4E7; Mon, 22 Apr 2024 20:18:56 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 07F0320FF4E7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1713842336;
-	bh=SfykjGU21KpWUT3oWGxO9sK6oF9flIGG1eXp5wVmNbw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=J4ujlJ/4TwDKpBZXR9CO3q6TLnGvNgGuBcU2qpoh9X1yDwQd4+f+R2vVq4emk2h30
-	 fFchOHeQ55Q08g4QIJsLdKVd/20efuuZBrJyCht9KUnG5LzCVvnifVpBrMTKfbuouG
-	 FWn22kBUcggUuoPbipKZ8ByqJs/nd6OHTbO1WjJY=
-From: Aditya Nagesh <adityanagesh@linux.microsoft.com>
-To: adityanagesh@microsoft.com,
-	kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Aditya Nagesh <adityanagesh@linux.microsoft.com>
-Subject: [PATCH v4] Drivers: hv: Cosmetic changes for hv.c and balloon.c
-Date: Mon, 22 Apr 2024 20:18:46 -0700
-Message-Id: <1713842326-25576-1-git-send-email-adityanagesh@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aBJV7vZ9"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC69017C66;
+	Tue, 23 Apr 2024 03:20:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713842423; cv=fail; b=KJVyQ/wNWFUtbKa5XwFW0PHiyXu2Z1o3Dku/ThyquuptkSKUwGytP/C5mMX8JtJsb/6aZDaWAOjQkfFBjxMkcqNc89MHpASHu5ZjRYQvTXnJvvnF8UpL/RI8r7dYE2Z3OQgA0gOQmVK7qLrQVLsoQ7GEFlcpHBKoD2RRQ2kPBWY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713842423; c=relaxed/simple;
+	bh=ogLTMv+TWJEc+3B1bLqJQRT1Iiz28IZfNAzliCjViLM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=guETnkDtPICkwSoiyUKRlaC8UUMbBI3esatOkvX4EASE9gi1pLSs195zXcqoXT8gFJIv9sr1v1vwqproRiDDXSHoBzBHaRIWijKrK5PO4i1bQPITk7AwEpe2KSMs0UIC6F3ouKeq5Fn7vvHvVGcjq9Zntnpo702kDLiq8rs4iCg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aBJV7vZ9; arc=fail smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713842421; x=1745378421;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=ogLTMv+TWJEc+3B1bLqJQRT1Iiz28IZfNAzliCjViLM=;
+  b=aBJV7vZ9tY0E6O7PKIugkxinVCc2NARvEkRml3Q+2xz+IXxXXOp+x92l
+   NNzpKEzxo0G1eWlF8uUgWIW5Gl6hsbS1/xX5cf4TisM25KpZn/IwIlisD
+   qrkIgxr5HHVsA5QWdsJdci9Jj8ZdlHJPThNZAu78v5macKZPeyJ30nwRD
+   O2nGH14GASTfkjow6gzH1+1Q7Mse0ri+neUUEOZljiuvcAlU038XOkSfF
+   zByHF/EpsI1yMu5FawACjCMwA1/Tez4om3YgyTS9m2Gq7w+jIUwZpEaZ/
+   CoB46WYbJ2sUPyDY36H3vAZGrskxSpQiBLxV9RNlg/mUYcvVHPoRCNCv/
+   g==;
+X-CSE-ConnectionGUID: zHTcuA8bT6WOfEZ7YhgoBg==
+X-CSE-MsgGUID: NccQmVwuQLiLUvWQBwKcyw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="9238684"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="9238684"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 20:20:21 -0700
+X-CSE-ConnectionGUID: o0da9JtJSk6jX+X2CRun7A==
+X-CSE-MsgGUID: NuqQ20TFQjG8+siET0rKaA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="29019812"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Apr 2024 20:20:21 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 22 Apr 2024 20:20:20 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 22 Apr 2024 20:20:20 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.41) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 22 Apr 2024 20:20:20 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ahe+INK7U/4LpxASsBjNkmOunlskddIP8stqJWlsNClHbt2JYzFTZHDfUoYZ9L61Xr4UCopTT12a/wCDmBLnWF8ouAWXvuSbrGSFWZfjQlXlM+qSLuNeX/ruRPKYh08AlkfTcF1QhDyNhl9xAEdTNVIoznewL6Dqf7xYPQllYHxJIveJi1braeNtcJAMTbd9tzJrEvjG5KRDtdNEh8DI+SCT4e0QxcKtanIkR+uBkCZmKZaA5xQZnM0Wl4lV+zwv8DbefBc+15eCrtXyWGwabRze4rrFfCo+czALIHaXb7u5shXL0Qz8NkougVYJ2KalUXAWXOJ6hvG6nadfL5h5Nw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=baBCf1W5mXBTES3+srLD5ceSvrspUxJqfFIbDih5viM=;
+ b=lftT99NProrcXtPwUhkUYyGnCXakQ0dg9qvyafQf5/oZVp1iRwGziywCbw9H6BHja8pozdsCHcy7CzHAQ8epXXY8BAxuy7yPZvoDCKUo7KF0ULEgkJokdRhjdTyVUutxefvw1xU76uljkdG8Mlayur8XfkKAWMV4sOgoZo5IG48MJnuYpi4iiGmlWd3G0S2Q0OFQj2q7aO3KHsLF6xHboV5HSGDckQMvNG69IT05pes7JJxSIJIYVFc20iEM7x0nBwXr9YrThHFXhK/mqkZcN/E/VzZB5ydUkJv6uyXTNDHVLpzRirnMEdZ0JNxoZW7W4REMSb2RSOlr7TAHeFXHjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from DS0PR11MB6373.namprd11.prod.outlook.com (2603:10b6:8:cb::20) by
+ IA1PR11MB6467.namprd11.prod.outlook.com (2603:10b6:208:3a5::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.20; Tue, 23 Apr
+ 2024 03:20:18 +0000
+Received: from DS0PR11MB6373.namprd11.prod.outlook.com
+ ([fe80::55de:b95:2c83:7e6c]) by DS0PR11MB6373.namprd11.prod.outlook.com
+ ([fe80::55de:b95:2c83:7e6c%7]) with mapi id 15.20.7519.020; Tue, 23 Apr 2024
+ 03:20:18 +0000
+From: "Wang, Wei W" <wei.w.wang@intel.com>
+To: Sean Christopherson <seanjc@google.com>
+CC: "pbonzini@redhat.com" <pbonzini@redhat.com>, "kvm@vger.kernel.org"
+	<kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v1] KVM: x86: Validate values set to guest's
+ MSR_IA32_ARCH_CAPABILITIES
+Thread-Topic: [PATCH v1] KVM: x86: Validate values set to guest's
+ MSR_IA32_ARCH_CAPABILITIES
+Thread-Index: AQHalLXdNoJVo5noxUmOBw5weW5kSbF0sUgAgABP5tA=
+Date: Tue, 23 Apr 2024 03:20:17 +0000
+Message-ID: <DS0PR11MB6373118F72C9013C96718660DC112@DS0PR11MB6373.namprd11.prod.outlook.com>
+References: <20240422130558.86965-1-wei.w.wang@intel.com>
+ <Zia94vbLD-DF1GEw@google.com>
+In-Reply-To: <Zia94vbLD-DF1GEw@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DS0PR11MB6373:EE_|IA1PR11MB6467:EE_
+x-ms-office365-filtering-correlation-id: cef51de4-18d0-4838-43f6-08dc63444cfa
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230031|366007|376005|1800799015|38070700009;
+x-microsoft-antispam-message-info: =?us-ascii?Q?pLpAKN+n2hmiUk+ZRTCCJfIjiRJEofUh7nKiTD+ThmMfJPH6S8E64MWcv8NL?=
+ =?us-ascii?Q?Ef7C29ibsctGt1wDycvrBcPvS2htvINUPpJXeWENPvXVJK+giUIPW83I9pUy?=
+ =?us-ascii?Q?s5XeIZW833rFaGfgPlOvs6HFAcTKXH1Ebe3bKmiQwLGXi5Y21hhlPQcdLGyq?=
+ =?us-ascii?Q?oVM8cO/1hjAhTfjnLAfBrlQtBdcaiW/gyMGnC0p9/imEahKetWoD4+d8yxDZ?=
+ =?us-ascii?Q?D9gKbvgt6zfFU98vvi+7tzo2UBsfVLm3SnAfGLWCCpOI2Fu66eZP8AMhYR5E?=
+ =?us-ascii?Q?BtwvoEuuZZ+Bq0Rg7UXOGnXjvTdtlPum63qy92wj8P1+CMPj5BBWOjH5gz4T?=
+ =?us-ascii?Q?B3aIHWKRA+fZI/5dYFEBkMpPa/fRAgKczXIXhAoozVOMoTLntkfKAth4iS4O?=
+ =?us-ascii?Q?Zvd4mGNHviBBgDiEhpXUPbSsBUzJFSsLzBEtmeKrUf2/YJGIoJEsFA2X2mlf?=
+ =?us-ascii?Q?nFAsBe6BZLjHZFWEFdfDRmOn7P9mpZPlM9htDX4ZQTpNOBDwKMeX6+6+7Qkv?=
+ =?us-ascii?Q?+3Xo0BAjIlaRFL4fFIch0/fnUawGGmxJBiCwYN3MBaOwaewAVAPd88rU4l2i?=
+ =?us-ascii?Q?9dVqTpVNktm/GhExPlrCXOuyCw6M/PORngCXDjnrD1lmh2s10sIkHSppd59F?=
+ =?us-ascii?Q?ZlVPXMzEySwF9JlYk2vaa9Ietr5wRb9RuD1nZLF4wU5kmWYjYY9/h65y+avW?=
+ =?us-ascii?Q?yC87NNjb4g0oyyIbq8RbQpDmCwcaUIFOdTp1nYPSIqZ62CVN7eeHkIWk/KJE?=
+ =?us-ascii?Q?a88kkDYORn0/tG/KvfMryRE6lzSrAW80JS0PC8gkPHN3CltusIYwVEClGyZW?=
+ =?us-ascii?Q?VpSYOKn7nMVnMTwexs3AQtdtoMK5j6QVzGXBT57jos+z2GxJqlrDDue0VRTR?=
+ =?us-ascii?Q?jSdyX/WoHKNB6W5tvfh6bOQ8ukEWHAKg2nlc/t6ZlaJKfLchMG1FENkLM540?=
+ =?us-ascii?Q?P2fLc6pP+fAjnbPIf7/CfjGp9U3PfZfNxL2S9yR/M6pQh1zpxlWO9AFeo7Kc?=
+ =?us-ascii?Q?3TP2B7ObJoRK6MvBCbKoHuz8cY3hdP9LG1LRd9VZ1qWCHzjxKwKYNhbPaN5R?=
+ =?us-ascii?Q?zQAGvidYNGXjCiAzcxVlQwNlrA2C9xCjwup3jz0NN7URQQOhQEauFlactBs9?=
+ =?us-ascii?Q?tzkeD+XeakbjZwv+z9e2AQQC7ewipL5QtAq4QetdiJBxOEhiEfFo3Mo1q+tH?=
+ =?us-ascii?Q?l9jr3JqW0nBdCWPb2twiWxdazkSy2lATS3zRgS+WO6JUVzo3yWAMux3PKPOC?=
+ =?us-ascii?Q?qqTJVA6eDaTS3qCfiJeH/9hMi1Hp5IhJP10peSsB8eIjAoOcg8HOzGyFgonR?=
+ =?us-ascii?Q?DEn8S5uzEtMNuaJL9AaIkHKg0LMA4XS4cNX0RKim+EeLvw=3D=3D?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB6373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?u6KuUea92JuTpFXY9wVE3/jajFwswRE3/nXAkmOFXm3U+FcfruVYdR4A50x5?=
+ =?us-ascii?Q?e1eAmNXmAS5dKo0lw4woKVC6vj8f+VZd5YE1EAprNjmOVONgYHPqcZg7ASHn?=
+ =?us-ascii?Q?jdrJ34Y9sIWYCbq+aq+D+x9jPeUATBY3UheP+SBFJMtm7vLmeg1H+JfnJPAC?=
+ =?us-ascii?Q?YZsfqJrcH/xA5Oenh/o2FIFiaEa0TRp0bJWnxF1sr7BkQBuppw/Uv63E1oln?=
+ =?us-ascii?Q?Ky/WbER/ejz8NGokKXwS2wWmPSafpk9FyO5JYFRb0IJl/960dr0SiOlnjead?=
+ =?us-ascii?Q?q6f87DcykKlXuhTgtsFMSFhrc4mO4w0K25B6d4VOwWOiM9tmHTXMiviRbcch?=
+ =?us-ascii?Q?BqKWVSgSVxTv1BlQboD1I4LjJF4yfOBXLxfrpyRo/MVmjtkm+ig6axn90EZE?=
+ =?us-ascii?Q?AMRCeQpZyMK0giW2NEMGyq4prcTn8ueaeFR/jnOMdD3st8gDKC1yXeZWuQAO?=
+ =?us-ascii?Q?dCUc0Y1flwM+YWP/Fwb0VpKMvNBdbZXiXIgOzbGyKXG12qvVctPIW33QOFp5?=
+ =?us-ascii?Q?TmGimZtZo2gFCKd2V+RupMpb1otrBaPAfOHZ7DUHdROeaZmbIHMPVXrJjdak?=
+ =?us-ascii?Q?Uzbo+UyBATuNo5NnyKFzrtTCyIuakrgJCUUt7BSkz3ca5akKrf+ALKKsV92D?=
+ =?us-ascii?Q?3Y7SdFcz+bwiSp0jPhXkuHOkIaaMVoBkwJfR2NDnk/5L3iKBxQhvjuMVLQSr?=
+ =?us-ascii?Q?OuXXd5K3yfKXJ2ooIPLi1vqjdTQJllg6+auYMpc5eNDXhw1eAqCwzvyhTfcy?=
+ =?us-ascii?Q?BGZzW8/OXFmFk+s+79mdv+nz+QIAe/kHnDFzSrLyyPI6uRWjJPv+Aud3MPmK?=
+ =?us-ascii?Q?U/HTQ/b6idm9Qh4yKhKb5iUy6hiCg5AUzdB7mmEZPEwONGCFU/FAcd+RdzuU?=
+ =?us-ascii?Q?yBYNor3SQnPekYMnA6Hw6/ppfjN0dyQKSR15uQdsBEM3VX3vg5ttUcEb6CwH?=
+ =?us-ascii?Q?8z0USaQ6KrrZbwqpp+ah5uyjhVIgqfNVtudyl8pUcLFzwsoGMv75MiQQ2BWa?=
+ =?us-ascii?Q?r5SiJ4BT02dlXd077uRy0nTERYNS6v6eUQC4s+1bmJ/Or/hd4xuwsitZmMxz?=
+ =?us-ascii?Q?j/HFODEosQkd+6h00zlvai4cbtIaHWThOfi0dqiyjd1pa7qiVI2TuZApvYtH?=
+ =?us-ascii?Q?9qHy8AzkOMmw41gXRiZ8ZQ0+bfBS6moY5n+ZRoVuq/UDigbi4xT+64uRv0s/?=
+ =?us-ascii?Q?Jgi6rv6wPayrfDXotWWFLmxWLRgpiU3chS2vYnKJIR7ZrxNuS3Kqv96vjc8D?=
+ =?us-ascii?Q?BFjJ8mZTkrwlCqyxzj+y+NyoA4UkWoV7UvboCbyxnHB5E/Yki4+7o1Xj/EwF?=
+ =?us-ascii?Q?D5KuegVVxq+kP76xJx1FRukKz/mPCOdQptLGBcvhhD0CzVRPVN+rqd9oT7HV?=
+ =?us-ascii?Q?fHCqL0XNhd+aVwktl8NBNaTylNgM9lEiKcQWSY2R/RUXG70zbGVeYlVXAUjS?=
+ =?us-ascii?Q?sh8NkYoq+h8Nt2O118aXS7sQBiMwNgPw4bPh2ifLb4lPa/L7WWolmwXtWX/k?=
+ =?us-ascii?Q?tQDF/a5fYfjHpKYvHRwOAlc3YlXUknaMCrKxZj3Dv3DZGfYsReV/Of9V+iJ3?=
+ =?us-ascii?Q?xPHOcGgf/NrZzCi+52ShSWd82ZSNTvrTWscZrsIl?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB6373.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cef51de4-18d0-4838-43f6-08dc63444cfa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2024 03:20:17.9641
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IPK06lRvsAv5w5GoR7cLB3Finf59zltyiKN7DwbtHlwDaekzyrYPcumDOVPJIcd9385Kji8PsJisz1vHcYzBmA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6467
+X-OriginatorOrg: intel.com
 
-Fix issues reported by checkpatch.pl script in hv.c and
-balloon.c
- - Remove unnecessary parentheses
- - Remove extra newlines
- - Remove extra spaces
- - Add spaces between comparison operators
- - Remove comparison with NULL in if statements
+On Tuesday, April 23, 2024 3:44 AM, Sean Christopherson wrote:
+> On Mon, Apr 22, 2024, Wei Wang wrote:
+> > If the bits set by userspace to the guest's MSR_IA32_ARCH_CAPABILITIES
+> > are not supported by KVM, fails the write. This safeguards against the
+> > launch of a guest with a feature set, enumerated via
+> > MSR_IA32_ARCH_CAPABILITIES, that surpasses the capabilities supported
+> > by KVM.
+>=20
+> I'm not entirely certain KVM cares.  Similar to guest CPUID, advertising =
+features
+> to the guest that are unbeknownst may actually make sense in some scenari=
+os,
+> e.g.
+> if userspace learns of yet another "NO" bit that says a CPU isn't vulnera=
+ble to
+> some flaw.
 
-No functional changes intended
+I think it might be more appropriate for the guest to see the "NO" bit only=
+ when
+the host, such as the hardware (i.e., host_arch_capabilities), already supp=
+orts it.
+Otherwise, the guest could be misled by a false "NO" bit. For instance, the=
+ guest
+might assume it's not vulnerable to a certain flaw as it sees the "NO" bit =
+from the
+MSR, even though the enhancement feature isn't actually supported by the ho=
+st,
+and thus bypass a workaround (to the vulnerability) it should have used. Th=
+is could
+arise with a faulty or compromised userspace.
+Another scenario pertains to guest live migration: the source platform phys=
+ically
+supports the "NO" bit, but the destination platform does not. If KVM fails =
+the MSR
+write here, it could prevent such a live migration from proceeding.
 
-Signed-off-by: Aditya Nagesh <adityanagesh@linux.microsoft.com>
-Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
----
-[V4]
-Fix Alignment issue and revert a line since 100 characters are allowed in a line
+So I think it might be prudent for KVM to perform this check. This is simil=
+ar to the
+MSR_IA32_PERF_CAPABILITIES case that we have implemented.
 
-[V3]
-Fix alignment issues in multiline function parameters.
+>=20
+> ARCH_CAPABILITIES is read-only, i.e. KVM _can't_ shove it into hardware. =
+ So
+> as long as KVM treats the value as "untrusted", like KVM does for guest C=
+PUID,
+> I think the current behavior is actually ok.
 
-[V2]
-Change Subject from "Drivers: hv: Fix Issues reported by checkpatch.pl script"
- to "Drivers: hv: Cosmetic changes for hv.c and balloon.c"
+Yes, the value coming from userspace could be considered "untrusted", but s=
+hould
+KVM ensure to expose a trusted/reliable value to the guest?
 
- drivers/hv/hv.c         |  37 +++++++--------
- drivers/hv/hv_balloon.c | 102 +++++++++++++++-------------------------
- 2 files changed, 55 insertions(+), 84 deletions(-)
 
-diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
-index a8ad728354cb..e0d676c74f14 100644
---- a/drivers/hv/hv.c
-+++ b/drivers/hv/hv.c
-@@ -45,8 +45,8 @@ int hv_init(void)
-  * This involves a hypercall.
-  */
- int hv_post_message(union hv_connection_id connection_id,
--		  enum hv_message_type message_type,
--		  void *payload, size_t payload_size)
-+			enum hv_message_type message_type,
-+			void *payload, size_t payload_size)
- {
- 	struct hv_input_post_message *aligned_msg;
- 	unsigned long flags;
-@@ -86,7 +86,7 @@ int hv_post_message(union hv_connection_id connection_id,
- 			status = HV_STATUS_INVALID_PARAMETER;
- 	} else {
- 		status = hv_do_hypercall(HVCALL_POST_MESSAGE,
--				aligned_msg, NULL);
-+					 aligned_msg, NULL);
- 	}
- 
- 	local_irq_restore(flags);
-@@ -111,7 +111,7 @@ int hv_synic_alloc(void)
- 
- 	hv_context.hv_numa_map = kcalloc(nr_node_ids, sizeof(struct cpumask),
- 					 GFP_KERNEL);
--	if (hv_context.hv_numa_map == NULL) {
-+	if (!hv_context.hv_numa_map) {
- 		pr_err("Unable to allocate NUMA map\n");
- 		goto err;
- 	}
-@@ -120,11 +120,11 @@ int hv_synic_alloc(void)
- 		hv_cpu = per_cpu_ptr(hv_context.cpu_context, cpu);
- 
- 		tasklet_init(&hv_cpu->msg_dpc,
--			     vmbus_on_msg_dpc, (unsigned long) hv_cpu);
-+			     vmbus_on_msg_dpc, (unsigned long)hv_cpu);
- 
- 		if (ms_hyperv.paravisor_present && hv_isolation_type_tdx()) {
- 			hv_cpu->post_msg_page = (void *)get_zeroed_page(GFP_ATOMIC);
--			if (hv_cpu->post_msg_page == NULL) {
-+			if (!hv_cpu->post_msg_page) {
- 				pr_err("Unable to allocate post msg page\n");
- 				goto err;
- 			}
-@@ -147,14 +147,14 @@ int hv_synic_alloc(void)
- 		if (!ms_hyperv.paravisor_present && !hv_root_partition) {
- 			hv_cpu->synic_message_page =
- 				(void *)get_zeroed_page(GFP_ATOMIC);
--			if (hv_cpu->synic_message_page == NULL) {
-+			if (!hv_cpu->synic_message_page) {
- 				pr_err("Unable to allocate SYNIC message page\n");
- 				goto err;
- 			}
- 
- 			hv_cpu->synic_event_page =
- 				(void *)get_zeroed_page(GFP_ATOMIC);
--			if (hv_cpu->synic_event_page == NULL) {
-+			if (!hv_cpu->synic_event_page) {
- 				pr_err("Unable to allocate SYNIC event page\n");
- 
- 				free_page((unsigned long)hv_cpu->synic_message_page);
-@@ -203,14 +203,13 @@ int hv_synic_alloc(void)
- 	return ret;
- }
- 
--
- void hv_synic_free(void)
- {
- 	int cpu, ret;
- 
- 	for_each_present_cpu(cpu) {
--		struct hv_per_cpu_context *hv_cpu
--			= per_cpu_ptr(hv_context.cpu_context, cpu);
-+		struct hv_per_cpu_context *hv_cpu =
-+			per_cpu_ptr(hv_context.cpu_context, cpu);
- 
- 		/* It's better to leak the page if the encryption fails. */
- 		if (ms_hyperv.paravisor_present && hv_isolation_type_tdx()) {
-@@ -262,8 +261,8 @@ void hv_synic_free(void)
-  */
- void hv_synic_enable_regs(unsigned int cpu)
- {
--	struct hv_per_cpu_context *hv_cpu
--		= per_cpu_ptr(hv_context.cpu_context, cpu);
-+	struct hv_per_cpu_context *hv_cpu =
-+		per_cpu_ptr(hv_context.cpu_context, cpu);
- 	union hv_synic_simp simp;
- 	union hv_synic_siefp siefp;
- 	union hv_synic_sint shared_sint;
-@@ -277,8 +276,8 @@ void hv_synic_enable_regs(unsigned int cpu)
- 		/* Mask out vTOM bit. ioremap_cache() maps decrypted */
- 		u64 base = (simp.base_simp_gpa << HV_HYP_PAGE_SHIFT) &
- 				~ms_hyperv.shared_gpa_boundary;
--		hv_cpu->synic_message_page
--			= (void *)ioremap_cache(base, HV_HYP_PAGE_SIZE);
-+		hv_cpu->synic_message_page =
-+			(void *)ioremap_cache(base, HV_HYP_PAGE_SIZE);
- 		if (!hv_cpu->synic_message_page)
- 			pr_err("Fail to map synic message page.\n");
- 	} else {
-@@ -296,8 +295,8 @@ void hv_synic_enable_regs(unsigned int cpu)
- 		/* Mask out vTOM bit. ioremap_cache() maps decrypted */
- 		u64 base = (siefp.base_siefp_gpa << HV_HYP_PAGE_SHIFT) &
- 				~ms_hyperv.shared_gpa_boundary;
--		hv_cpu->synic_event_page
--			= (void *)ioremap_cache(base, HV_HYP_PAGE_SIZE);
-+		hv_cpu->synic_event_page =
-+			(void *)ioremap_cache(base, HV_HYP_PAGE_SIZE);
- 		if (!hv_cpu->synic_event_page)
- 			pr_err("Fail to map synic event page.\n");
- 	} else {
-@@ -348,8 +347,8 @@ int hv_synic_init(unsigned int cpu)
-  */
- void hv_synic_disable_regs(unsigned int cpu)
- {
--	struct hv_per_cpu_context *hv_cpu
--		= per_cpu_ptr(hv_context.cpu_context, cpu);
-+	struct hv_per_cpu_context *hv_cpu =
-+		per_cpu_ptr(hv_context.cpu_context, cpu);
- 	union hv_synic_sint shared_sint;
- 	union hv_synic_simp simp;
- 	union hv_synic_siefp siefp;
-diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
-index e000fa3b9f97..c3c16756a0fb 100644
---- a/drivers/hv/hv_balloon.c
-+++ b/drivers/hv/hv_balloon.c
-@@ -41,8 +41,6 @@
-  * Begin protocol definitions.
-  */
- 
--
--
- /*
-  * Protocol versions. The low word is the minor version, the high word the major
-  * version.
-@@ -71,8 +69,6 @@ enum {
- 	DYNMEM_PROTOCOL_VERSION_CURRENT = DYNMEM_PROTOCOL_VERSION_WIN10
- };
- 
--
--
- /*
-  * Message Types
-  */
-@@ -101,7 +97,6 @@ enum dm_message_type {
- 	DM_VERSION_1_MAX		= 12
- };
- 
--
- /*
-  * Structures defining the dynamic memory management
-  * protocol.
-@@ -115,7 +110,6 @@ union dm_version {
- 	__u32 version;
- } __packed;
- 
--
- union dm_caps {
- 	struct {
- 		__u64 balloon:1;
-@@ -148,8 +142,6 @@ union dm_mem_page_range {
- 	__u64  page_range;
- } __packed;
- 
--
--
- /*
-  * The header for all dynamic memory messages:
-  *
-@@ -174,7 +166,6 @@ struct dm_message {
- 	__u8 data[]; /* enclosed message */
- } __packed;
- 
--
- /*
-  * Specific message types supporting the dynamic memory protocol.
-  */
-@@ -271,7 +262,6 @@ struct dm_status {
- 	__u32 io_diff;
- } __packed;
- 
--
- /*
-  * Message to ask the guest to allocate memory - balloon up message.
-  * This message is sent from the host to the guest. The guest may not be
-@@ -286,14 +276,13 @@ struct dm_balloon {
- 	__u32 reservedz;
- } __packed;
- 
--
- /*
-  * Balloon response message; this message is sent from the guest
-  * to the host in response to the balloon message.
-  *
-  * reservedz: Reserved; must be set to zero.
-  * more_pages: If FALSE, this is the last message of the transaction.
-- * if TRUE there will atleast one more message from the guest.
-+ * if TRUE there will be at least one more message from the guest.
-  *
-  * range_count: The number of ranges in the range array.
-  *
-@@ -314,7 +303,7 @@ struct dm_balloon_response {
-  * to the guest to give guest more memory.
-  *
-  * more_pages: If FALSE, this is the last message of the transaction.
-- * if TRUE there will atleast one more message from the guest.
-+ * if TRUE there will be at least one more message from the guest.
-  *
-  * reservedz: Reserved; must be set to zero.
-  *
-@@ -342,7 +331,6 @@ struct dm_unballoon_response {
- 	struct dm_header hdr;
- } __packed;
- 
--
- /*
-  * Hot add request message. Message sent from the host to the guest.
-  *
-@@ -390,7 +378,6 @@ enum dm_info_type {
- 	MAX_INFO_TYPE
- };
- 
--
- /*
-  * Header for the information message.
-  */
-@@ -480,10 +467,10 @@ static unsigned long last_post_time;
- 
- static int hv_hypercall_multi_failure;
- 
--module_param(hot_add, bool, (S_IRUGO | S_IWUSR));
-+module_param(hot_add, bool, 0644);
- MODULE_PARM_DESC(hot_add, "If set attempt memory hot_add");
- 
--module_param(pressure_report_delay, uint, (S_IRUGO | S_IWUSR));
-+module_param(pressure_report_delay, uint, 0644);
- MODULE_PARM_DESC(pressure_report_delay, "Delay in secs in reporting pressure");
- static atomic_t trans_id = ATOMIC_INIT(0);
- 
-@@ -502,7 +489,6 @@ enum hv_dm_state {
- 	DM_INIT_ERROR
- };
- 
--
- static __u8 recv_buffer[HV_HYP_PAGE_SIZE];
- static __u8 balloon_up_send_buffer[HV_HYP_PAGE_SIZE];
- #define PAGES_IN_2M (2 * 1024 * 1024 / PAGE_SIZE)
-@@ -595,12 +581,12 @@ static inline bool has_pfn_is_backed(struct hv_hotadd_state *has,
- 	struct hv_hotadd_gap *gap;
- 
- 	/* The page is not backed. */
--	if ((pfn < has->covered_start_pfn) || (pfn >= has->covered_end_pfn))
-+	if (pfn < has->covered_start_pfn || pfn >= has->covered_end_pfn)
- 		return false;
- 
- 	/* Check for gaps. */
- 	list_for_each_entry(gap, &has->gap_list, list) {
--		if ((pfn >= gap->start_pfn) && (pfn < gap->end_pfn))
-+		if (pfn >= gap->start_pfn && pfn < gap->end_pfn)
- 			return false;
- 	}
- 
-@@ -724,7 +710,7 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
- 	unsigned long processed_pfn;
- 	unsigned long total_pfn = pfn_count;
- 
--	for (i = 0; i < (size/HA_CHUNK); i++) {
-+	for (i = 0; i < (size / HA_CHUNK); i++) {
- 		start_pfn = start + (i * HA_CHUNK);
- 
- 		scoped_guard(spinlock_irqsave, &dm_device.ha_lock) {
-@@ -745,7 +731,7 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
- 
- 		nid = memory_add_physaddr_to_nid(PFN_PHYS(start_pfn));
- 		ret = add_memory(nid, PFN_PHYS((start_pfn)),
--				(HA_CHUNK << PAGE_SHIFT), MHP_MERGE_RESOURCE);
-+				 (HA_CHUNK << PAGE_SHIFT), MHP_MERGE_RESOURCE);
- 
- 		if (ret) {
- 			pr_err("hot_add memory failed error is %d\n", ret);
-@@ -787,8 +773,8 @@ static void hv_online_page(struct page *pg, unsigned int order)
- 	guard(spinlock_irqsave)(&dm_device.ha_lock);
- 	list_for_each_entry(has, &dm_device.ha_region_list, list) {
- 		/* The page belongs to a different HAS. */
--		if ((pfn < has->start_pfn) ||
--				(pfn + (1UL << order) > has->end_pfn))
-+		if (pfn < has->start_pfn ||
-+		    (pfn + (1UL << order) > has->end_pfn))
- 			continue;
- 
- 		hv_bring_pgs_online(has, pfn, 1UL << order);
-@@ -855,7 +841,7 @@ static int pfn_covered(unsigned long start_pfn, unsigned long pfn_cnt)
- }
- 
- static unsigned long handle_pg_range(unsigned long pg_start,
--					unsigned long pg_count)
-+				     unsigned long pg_count)
- {
- 	unsigned long start_pfn = pg_start;
- 	unsigned long pfn_cnt = pg_count;
-@@ -866,7 +852,7 @@ static unsigned long handle_pg_range(unsigned long pg_start,
- 	unsigned long res = 0, flags;
- 
- 	pr_debug("Hot adding %lu pages starting at pfn 0x%lx.\n", pg_count,
--		pg_start);
-+		 pg_start);
- 
- 	spin_lock_irqsave(&dm_device.ha_lock, flags);
- 	list_for_each_entry(has, &dm_device.ha_region_list, list) {
-@@ -902,10 +888,9 @@ static unsigned long handle_pg_range(unsigned long pg_start,
- 			if (start_pfn > has->start_pfn &&
- 			    online_section_nr(pfn_to_section_nr(start_pfn)))
- 				hv_bring_pgs_online(has, start_pfn, pgs_ol);
--
- 		}
- 
--		if ((has->ha_end_pfn < has->end_pfn) && (pfn_cnt > 0)) {
-+		if (has->ha_end_pfn < has->end_pfn && pfn_cnt > 0) {
- 			/*
- 			 * We have some residual hot add range
- 			 * that needs to be hot added; hot add
-@@ -1010,7 +995,7 @@ static void hot_add_req(struct work_struct *dummy)
- 	rg_start = dm->ha_wrk.ha_region_range.finfo.start_page;
- 	rg_sz = dm->ha_wrk.ha_region_range.finfo.page_cnt;
- 
--	if ((rg_start == 0) && (!dm->host_specified_ha_region)) {
-+	if (rg_start == 0 && !dm->host_specified_ha_region) {
- 		unsigned long region_size;
- 		unsigned long region_start;
- 
-@@ -1033,7 +1018,7 @@ static void hot_add_req(struct work_struct *dummy)
- 
- 	if (do_hot_add)
- 		resp.page_count = process_hot_add(pg_start, pfn_cnt,
--						rg_start, rg_sz);
-+						  rg_start, rg_sz);
- 
- 	dm->num_pages_added += resp.page_count;
- #endif
-@@ -1211,11 +1196,10 @@ static void post_status(struct hv_dynmem_device *dm)
- 				sizeof(struct dm_status),
- 				(unsigned long)NULL,
- 				VM_PKT_DATA_INBAND, 0);
--
- }
- 
- static void free_balloon_pages(struct hv_dynmem_device *dm,
--			 union dm_mem_page_range *range_array)
-+			       union dm_mem_page_range *range_array)
- {
- 	int num_pages = range_array->finfo.page_cnt;
- 	__u64 start_frame = range_array->finfo.start_page;
-@@ -1231,8 +1215,6 @@ static void free_balloon_pages(struct hv_dynmem_device *dm,
- 	}
- }
- 
--
--
- static unsigned int alloc_balloon_pages(struct hv_dynmem_device *dm,
- 					unsigned int num_pages,
- 					struct dm_balloon_response *bl_resp,
-@@ -1278,7 +1260,6 @@ static unsigned int alloc_balloon_pages(struct hv_dynmem_device *dm,
- 			page_to_pfn(pg);
- 		bl_resp->range_array[i].finfo.page_cnt = alloc_unit;
- 		bl_resp->hdr.size += sizeof(union dm_mem_page_range);
--
- 	}
- 
- 	return i * alloc_unit;
-@@ -1332,7 +1313,7 @@ static void balloon_up(struct work_struct *dummy)
- 
- 		if (num_ballooned == 0 || num_ballooned == num_pages) {
- 			pr_debug("Ballooned %u out of %u requested pages.\n",
--				num_pages, dm_device.balloon_wrk.num_pages);
-+				 num_pages, dm_device.balloon_wrk.num_pages);
- 
- 			bl_resp->more_pages = 0;
- 			done = true;
-@@ -1366,16 +1347,15 @@ static void balloon_up(struct work_struct *dummy)
- 
- 			for (i = 0; i < bl_resp->range_count; i++)
- 				free_balloon_pages(&dm_device,
--						 &bl_resp->range_array[i]);
-+						   &bl_resp->range_array[i]);
- 
- 			done = true;
- 		}
- 	}
--
- }
- 
- static void balloon_down(struct hv_dynmem_device *dm,
--			struct dm_unballoon_request *req)
-+			 struct dm_unballoon_request *req)
- {
- 	union dm_mem_page_range *range_array = req->range_array;
- 	int range_count = req->range_count;
-@@ -1389,7 +1369,7 @@ static void balloon_down(struct hv_dynmem_device *dm,
- 	}
- 
- 	pr_debug("Freed %u ballooned pages.\n",
--		prev_pages_ballooned - dm->num_pages_ballooned);
-+		 prev_pages_ballooned - dm->num_pages_ballooned);
- 
- 	if (req->more_pages == 1)
- 		return;
-@@ -1414,8 +1394,7 @@ static int dm_thread_func(void *dm_dev)
- 	struct hv_dynmem_device *dm = dm_dev;
- 
- 	while (!kthread_should_stop()) {
--		wait_for_completion_interruptible_timeout(
--						&dm_device.config_event, 1*HZ);
-+		wait_for_completion_interruptible_timeout(&dm_device.config_event, 1 * HZ);
- 		/*
- 		 * The host expects us to post information on the memory
- 		 * pressure every second.
-@@ -1439,9 +1418,8 @@ static int dm_thread_func(void *dm_dev)
- 	return 0;
- }
- 
--
- static void version_resp(struct hv_dynmem_device *dm,
--			struct dm_version_response *vresp)
-+			 struct dm_version_response *vresp)
- {
- 	struct dm_version_request version_req;
- 	int ret;
-@@ -1502,7 +1480,7 @@ static void version_resp(struct hv_dynmem_device *dm,
- }
- 
- static void cap_resp(struct hv_dynmem_device *dm,
--			struct dm_capabilities_resp_msg *cap_resp)
-+		     struct dm_capabilities_resp_msg *cap_resp)
- {
- 	if (!cap_resp->is_accepted) {
- 		pr_err("Capabilities not accepted by host\n");
-@@ -1535,7 +1513,7 @@ static void balloon_onchannelcallback(void *context)
- 		switch (dm_hdr->type) {
- 		case DM_VERSION_RESPONSE:
- 			version_resp(dm,
--				 (struct dm_version_response *)dm_msg);
-+				     (struct dm_version_response *)dm_msg);
- 			break;
- 
- 		case DM_CAPABILITIES_RESPONSE:
-@@ -1565,7 +1543,7 @@ static void balloon_onchannelcallback(void *context)
- 
- 			dm->state = DM_BALLOON_DOWN;
- 			balloon_down(dm,
--				 (struct dm_unballoon_request *)recv_buffer);
-+				     (struct dm_unballoon_request *)recv_buffer);
- 			break;
- 
- 		case DM_MEM_HOT_ADD_REQUEST:
-@@ -1603,17 +1581,15 @@ static void balloon_onchannelcallback(void *context)
- 
- 		default:
- 			pr_warn_ratelimited("Unhandled message: type: %d\n", dm_hdr->type);
--
- 		}
- 	}
--
- }
- 
- #define HV_LARGE_REPORTING_ORDER	9
- #define HV_LARGE_REPORTING_LEN (HV_HYP_PAGE_SIZE << \
- 		HV_LARGE_REPORTING_ORDER)
- static int hv_free_page_report(struct page_reporting_dev_info *pr_dev_info,
--		    struct scatterlist *sgl, unsigned int nents)
-+			       struct scatterlist *sgl, unsigned int nents)
- {
- 	unsigned long flags;
- 	struct hv_memory_hint *hint;
-@@ -1648,7 +1624,7 @@ static int hv_free_page_report(struct page_reporting_dev_info *pr_dev_info,
- 		 */
- 
- 		/* page reporting for pages 2MB or higher */
--		if (order >= HV_LARGE_REPORTING_ORDER ) {
-+		if (order >= HV_LARGE_REPORTING_ORDER) {
- 			range->page.largepage = 1;
- 			range->page_size = HV_GPA_PAGE_RANGE_PAGE_SIZE_2MB;
- 			range->base_large_pfn = page_to_hvpfn(
-@@ -1662,23 +1638,21 @@ static int hv_free_page_report(struct page_reporting_dev_info *pr_dev_info,
- 			range->page.additional_pages =
- 				(sg->length / HV_HYP_PAGE_SIZE) - 1;
- 		}
--
- 	}
- 
- 	status = hv_do_rep_hypercall(HV_EXT_CALL_MEMORY_HEAT_HINT, nents, 0,
- 				     hint, NULL);
- 	local_irq_restore(flags);
- 	if (!hv_result_success(status)) {
--
- 		pr_err("Cold memory discard hypercall failed with status %llx\n",
--				status);
-+		       status);
- 		if (hv_hypercall_multi_failure > 0)
- 			hv_hypercall_multi_failure++;
- 
- 		if (hv_result(status) == HV_STATUS_INVALID_PARAMETER) {
- 			pr_err("Underlying Hyper-V does not support order less than 9. Hypercall failed\n");
- 			pr_err("Defaulting to page_reporting_order %d\n",
--					pageblock_order);
-+			       pageblock_order);
- 			page_reporting_order = pageblock_order;
- 			hv_hypercall_multi_failure++;
- 			return -EINVAL;
-@@ -1712,7 +1686,7 @@ static void enable_page_reporting(void)
- 		pr_err("Failed to enable cold memory discard: %d\n", ret);
- 	} else {
- 		pr_info("Cold memory discard hint enabled with order %d\n",
--				page_reporting_order);
-+			page_reporting_order);
- 	}
- }
- 
-@@ -1795,7 +1769,7 @@ static int balloon_connect_vsp(struct hv_device *dev)
- 	if (ret)
- 		goto out;
- 
--	t = wait_for_completion_timeout(&dm_device.host_event, 5*HZ);
-+	t = wait_for_completion_timeout(&dm_device.host_event, 5 * HZ);
- 	if (t == 0) {
- 		ret = -ETIMEDOUT;
- 		goto out;
-@@ -1850,7 +1824,7 @@ static int balloon_connect_vsp(struct hv_device *dev)
- 	if (ret)
- 		goto out;
- 
--	t = wait_for_completion_timeout(&dm_device.host_event, 5*HZ);
-+	t = wait_for_completion_timeout(&dm_device.host_event, 5 * HZ);
- 	if (t == 0) {
- 		ret = -ETIMEDOUT;
- 		goto out;
-@@ -1891,8 +1865,8 @@ static int hv_balloon_debug_show(struct seq_file *f, void *offset)
- 	char *sname;
- 
- 	seq_printf(f, "%-22s: %u.%u\n", "host_version",
--				DYNMEM_MAJOR_VERSION(dm->version),
--				DYNMEM_MINOR_VERSION(dm->version));
-+			DYNMEM_MAJOR_VERSION(dm->version),
-+			DYNMEM_MINOR_VERSION(dm->version));
- 
- 	seq_printf(f, "%-22s:", "capabilities");
- 	if (ballooning_enabled())
-@@ -1941,10 +1915,10 @@ static int hv_balloon_debug_show(struct seq_file *f, void *offset)
- 	seq_printf(f, "%-22s: %u\n", "pages_ballooned", dm->num_pages_ballooned);
- 
- 	seq_printf(f, "%-22s: %lu\n", "total_pages_committed",
--				get_pages_committed(dm));
-+		   get_pages_committed(dm));
- 
- 	seq_printf(f, "%-22s: %llu\n", "max_dynamic_page_count",
--				dm->max_dynamic_page_count);
-+		   dm->max_dynamic_page_count);
- 
- 	return 0;
- }
-@@ -1954,7 +1928,7 @@ DEFINE_SHOW_ATTRIBUTE(hv_balloon_debug);
- static void  hv_balloon_debugfs_init(struct hv_dynmem_device *b)
- {
- 	debugfs_create_file("hv-balloon", 0444, NULL, b,
--			&hv_balloon_debug_fops);
-+			    &hv_balloon_debug_fops);
- }
- 
- static void  hv_balloon_debugfs_exit(struct hv_dynmem_device *b)
-@@ -2097,7 +2071,6 @@ static int balloon_suspend(struct hv_device *hv_dev)
- 	tasklet_enable(&hv_dev->channel->callback_event);
- 
- 	return 0;
--
- }
- 
- static int balloon_resume(struct hv_device *dev)
-@@ -2156,7 +2129,6 @@ static  struct hv_driver balloon_drv = {
- 
- static int __init init_balloon_drv(void)
- {
--
- 	return vmbus_driver_register(&balloon_drv);
- }
- 
--- 
-2.34.1
+>=20
+> > Fixes: 0cf9135b773b ("KVM: x86: Emulate MSR_IA32_ARCH_CAPABILITIES on
+> > AMD hosts")
+>=20
+> This goes all the way back to:
+>=20
+>   28c1c9fabf48 ("KVM/VMX: Emulate MSR_IA32_ARCH_CAPABILITIES")
+>=20
+> the above just moved the logic from vmx.c to x86.c.
 
+OK.
 
