@@ -1,100 +1,152 @@
-Return-Path: <linux-kernel+bounces-155700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2796B8AF5C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:44:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 594268AF5D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:46:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F6A4B22C2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:44:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C0641F2865D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3AA13DDD4;
-	Tue, 23 Apr 2024 17:44:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4004A13E03B;
+	Tue, 23 Apr 2024 17:46:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="svG1WfsP"
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="D1/yBDrs"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22A913CA97
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:44:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9738613DDA5
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:46:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713894256; cv=none; b=tOt1ajjH4wGaK9Y5c7MuqiAlp3Xy6HF0M11bi9u4RPFnjgfeDws/5GHVT0pml1mbVySxoHTWy5Uny3S8DnFUqrV4fGZXs9aS0tFSyl3XMgxpeJiarCt9yZCxu/B0Z3oPpBq9ZDwoLwFQ4gcBmnjxur0Hghi7C+7fnTEjnjEf9t8=
+	t=1713894381; cv=none; b=Mh3PBXR7dC8z5J5xs4QrE0p7lvMlYmdZFFvEF+9eHtxubERGoR/jEUuxaUhiTUUElEiEqzWGkVdSXY7gh9rRgNKdSZBM11/8zwC+1lJnkTxSEq1G4B9r79Z35mnPzhJaMUCr9iicgIkiEx7sddJBwOLy/5Eh7CpVvNnh8CTaj04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713894256; c=relaxed/simple;
-	bh=ozqaaLGrbKl2wKyOSOrW2AyxeiLcZ2F8MuXkZ1yJ2+k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JINrNvsD/N/mmyRYBEgusEWSorwvmI3uc4DXePgKT3nrTfJZooi45Zx0c0NjiDhrlBT1hxC3DXAJ2m09CS5OlqRVTDUYzEQmvulGXdyXCpmev2ld9vbqSDdvzWBLqk+aYkNpKrcw35Cbt54SMh90XQV2vNhEfGgLBK/dyU4KXNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=svG1WfsP; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 23 Apr 2024 10:44:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713894252;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0umvTxHpcw152hw4GNh+8AkQo7OLhcip+cLOCx1NbGs=;
-	b=svG1WfsPjl+c6V/lE4Win9SUPatCmd83Kj4ieN9i6nN+1YS8YRtaV6beXQbnFEzx4D8w8Q
-	jn6qC9uOmtMyTzE3TMd1dwUa0fmck+x2iNyWdEw9X8z3olK3LPuj9KTWJ5Ff4OBeig89k9
-	hXBEJohiG4HWeOiGMW+bosjdY6OdRhA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] mm: rearrange node_stat_item to put memcg stats at
- start
-Message-ID: <cupqywok4kl3cxotmpnfrlcsxhkaj7lbo6viehvxlltv3qkt7g@nxxplmgbcfyi>
-References: <20240423051826.791934-1-shakeel.butt@linux.dev>
- <20240423051826.791934-2-shakeel.butt@linux.dev>
- <20240423135844.GA21141@cmpxchg.org>
+	s=arc-20240116; t=1713894381; c=relaxed/simple;
+	bh=1xND+7laK1/gHR/yIQlfzJQ0FdJnQbg+vOtHDtxU1AU=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=NfncWnp7nYySkg0Bg5nfalez6uYpIKDD2PFLliprOOyBNyGPLpArWRMBXd2XBYCaxEqXcIk5kEe/IvWiH7rjrrIJZA6rT4HNfL9SA+8V6uCzdXWXp7fAZSanyGz+AFgFSWK8OfPUkLz5Es/PAYn/GMeGYiyj/R8F/Zn51D2mun8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=D1/yBDrs; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-346b96f1483so50894f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:46:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713894377; x=1714499177; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=zGMw34tv1HuOcHijB9t3OKRrzUWV9Hg/9xS27N3bQHs=;
+        b=D1/yBDrsKu/IB808NgWsxCP9x2qdawHtG/sEccKmNEfliAimsJITsVwGdwLJLVepjm
+         tjM5s5l5LpTSwpOpF4SBRj9kb/cakZtjXEBTbQchfWETLNqN/HnQp41M8zj6xzhkMz77
+         0p7cMRyZfcOjsFgFLvyGoeVk7Fd2SrdOrtNhngsTmSoquvm5/E85kaq2Caj0j7TIglGu
+         ePCbvCBbPSmSCpXKlDd/Ao/9PLJoLlaoX9TSK3vuoR/rp7h9EgEIHUJetPurnD6wK0nN
+         9W4KxpzzodcmKINEnYiSSPxklprqBkLECnrss+W1rTJfioECkzTykueCk0WIKA/wrtyu
+         1ykQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713894377; x=1714499177;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zGMw34tv1HuOcHijB9t3OKRrzUWV9Hg/9xS27N3bQHs=;
+        b=NxzEHLWcZBoVpGEgkF1jYqLQVpBOfvpvnq6bbP0UD/V9ZiVFUvrqp4dqO51Qgq9s+B
+         2iXXSjb2Jk+awGOMlCmt8yeLRfMZ/D5YJObAE/JWpQkS9/9grtepfzJp4h0/vCLpqt11
+         V3MTmJC8wkCstvnJi3KsisxPG/7mEsTtpCxj2wv2bF5ycVjk36bqkcNwQzicTzYZOZWf
+         +DZhqb+ycelQHj0LVMCJXV+BAsn3F2Fk+KMbVD2JP1iBB6EmIE2QdEUfdx4kQ/QeHKGC
+         qqmStyP00Hc9yfTdWViiEYN17IDpIr/gVeRKsC/3hFwyHwcXRiYrCvhsiBfu542oo6cu
+         j1Uw==
+X-Forwarded-Encrypted: i=1; AJvYcCXGMU+6mRFwCbarbN8KGyOKfae372UzNc11SPFzCYt0pqxYW4GOwbTckS83VKauoO9MWdyJ3ySTN+/H5oMcqwLOLgpzQ5Cdkc3/9fFJ
+X-Gm-Message-State: AOJu0YzLd7E5fLjuZOMjx5N1/c/xwuqsfrbtFwH0Fjun3nHT+uHJ0hs6
+	rJVZk/UVRqfSjLyVKwsr1lloiBGhla61bZlscpWk4ofBTF6CB5uQpG8kvYYdeRo=
+X-Google-Smtp-Source: AGHT+IH80+mYiY8wLOolbQuNc5GEwyFsWGYaA4bWu8luwqVmUsFfilpQUnT2LT28gZIz55MBD8d4Vg==
+X-Received: by 2002:a05:6000:18d1:b0:343:6c07:c816 with SMTP id w17-20020a05600018d100b003436c07c816mr110767wrq.16.1713894376770;
+        Tue, 23 Apr 2024 10:46:16 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:aa38:830e:cbbf:591])
+        by smtp.gmail.com with ESMTPSA id l18-20020a5d5612000000b0034a62e51429sm11993475wrv.112.2024.04.23.10.46.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 10:46:16 -0700 (PDT)
+References: <20240423161006.2522351-1-gnstark@salutedevices.com>
+ <20240423161006.2522351-2-gnstark@salutedevices.com>
+ <20240423-wildcard-smoking-90b50f00da50@spud>
+User-agent: mu4e 1.10.8; emacs 29.2
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: George Stark <gnstark@salutedevices.com>,
+ u.kleine-koenig@pengutronix.de, neil.armstrong@linaro.org,
+ khilman@baylibre.com, jbrunet@baylibre.com,
+ martin.blumenstingl@googlemail.com, thierry.reding@gmail.com,
+ hkallweit1@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kernel@salutedevices.com, Dmitry Rokosov
+ <ddrokosov@salutedevices.com>
+Subject: Re: [PATCH 1/2] dt-bindings: pwm: amlogic: Add new bindings for
+ meson A1 pwm
+Date: Tue, 23 Apr 2024 19:44:35 +0200
+In-reply-to: <20240423-wildcard-smoking-90b50f00da50@spud>
+Message-ID: <1jr0ewezvc.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423135844.GA21141@cmpxchg.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
 
-On Tue, Apr 23, 2024 at 09:58:44AM -0400, Johannes Weiner wrote:
-> On Mon, Apr 22, 2024 at 10:18:23PM -0700, Shakeel Butt wrote:
-> > At the moment the memcg stats are sized based on the size of enum
-> > node_stat_item but not all fields in node_stat_item corresponds to memcg
-> > stats. So, rearrage the contents of node_stat_item such that all the
-> > memcg specific stats are at the top and then the later patches will make
-> > sure that the memcg code will not waste space for non-memcg stats.
-> > 
-> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> 
-> This series is a great idea and the savings speak for themselves.
-> 
-> But rearranging and splitting vmstats along the memcg-nomemcg line
-> seems like an undue burden on the non-memcg codebase and interface.
-> 
-> - It messes with user-visible /proc/vmstat ordering, and sets things
->   up to do so on an ongoing basis as stats are added to memcg.
-> 
-> - It also separates related stats (like the workingset ones) in
->   /proc/vmstat when memcg only accounts a subset.
-> 
-> Would it make more sense to have a translation table inside memcg?
-> Like we have with memcg1_events.
 
-Thanks for taking a look. I will look into the translation table
-approach. The reason I went with this approach was that I am in parallel
-looking into rearranging fields of important MM structs and also enums
-to improve cache locality. For example, the field NR_SWAPCACHE is always
-accessed together with NR_FILE_PAGES, so it makes sense to have them on
-same cacheline. So, is the rearrangement of vmstats a big NO or a little
-bit here and there is fine unlike what I did with this patch?
+On Tue 23 Apr 2024 at 17:56, Conor Dooley <conor@kernel.org> wrote:
 
-thanks,
-Shakeel
+> [[PGP Signed Part:Undecided]]
+> On Tue, Apr 23, 2024 at 07:10:05PM +0300, George Stark wrote:
+>> The chip has 3 dual channel PWM modules AB, CD, EF.
+>> 
+>> Signed-off-by: George Stark <gnstark@salutedevices.com>
+>> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+>
+> a would sort before s.
+>
+> With the re-order,
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>
+> Thanks,
+> Conor.
+>
+>> ---
+>>  Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml | 2 ++
+>>  1 file changed, 2 insertions(+)
+>> 
+>> diff --git a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+>> index 1d71d4f8f328..ef6daf1760ff 100644
+>> --- a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+>> +++ b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+>> @@ -37,6 +37,7 @@ properties:
+>>        - enum:
+>>            - amlogic,meson8-pwm-v2
+>>            - amlogic,meson-s4-pwm
+>> +          - amlogic,meson-a1-pwm
+
+AFAICT, the a1 interface is exactly as the s4 interface.
+So a1 should list s4 as a fallback and the driver should match on the s4.
+
+>>        - items:
+>>            - enum:
+>>                - amlogic,meson8b-pwm-v2
+>> @@ -126,6 +127,7 @@ allOf:
+>>            contains:
+>>              enum:
+>>                - amlogic,meson-s4-pwm
+>> +              - amlogic,meson-a1-pwm
+>>      then:
+>>        properties:
+>>          clocks:
+>> -- 
+>> 2.25.1
+>> 
+>
+> [[End of PGP Signed Part]]
+
+
+-- 
+Jerome
 
