@@ -1,109 +1,130 @@
-Return-Path: <linux-kernel+bounces-155767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5E278AF6E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:48:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C8338AF6E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:48:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D32BA1C21E95
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:48:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 534E91F234E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:48:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5882513E8AC;
-	Tue, 23 Apr 2024 18:48:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D97B13F437;
+	Tue, 23 Apr 2024 18:48:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SWKeXMsw"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aBI1JjY2"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B4273EA76;
-	Tue, 23 Apr 2024 18:48:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54B8413D522;
+	Tue, 23 Apr 2024 18:48:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713898084; cv=none; b=inOXu+z9yeB6uOSXcS8J/Td3+ZQssQgZFRP7VgX4NmInJI6/OXpYE2F+9mHXBmcJM8Y0OQrfAPZx5Ise0/s8KtDJPj7nDdfDplyLtY4cNaAIeAqT+siL3eoenasvp+qYnwFfOFazMNxxCJuoRMrJ4aiDS/AXaQzQX0kkSIHdPhw=
+	t=1713898103; cv=none; b=YV09xK25HFszIdjYX+zlN10Bdk6QWy52aChrf2P9goWnvzd1md+jYC4Ow9HMwZugX9+h7EgIZX8Vb66kv3uAC5GoHj38d/sqeZS3cK2esWKtrFKHnhvBZgPyChz23pqzkUglelOcyj+w+C+0nPiruyAF679GUdvjDampa5vfbOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713898084; c=relaxed/simple;
-	bh=H5568VIrx9lixuPNa8YvFEWiBslOts9v3R70mPD8pzo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i61C6lcbOaJCbICYfLlEZ2Crx7R2LFMySVeg7VSaRrWo6+VNF9b3mSGbTN5nsp79HLv5AmwfRPJEV4KXqe0fd2P1Q7I4djzhMgSb0ohxRia1S7/8lYsXKuPPode/jcX2qvvZ3EP1iWmn0+tjjhSiZE4ymDi8TqnOxb1ipPIhV5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SWKeXMsw; arc=none smtp.client-ip=209.85.214.173
+	s=arc-20240116; t=1713898103; c=relaxed/simple;
+	bh=d0ytp+9edLLYzkGEesnI0RtDlRfZNkUxCjRGJ6ynGPA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X2lIi+BIRKogV1oADlweV828SR4+mi0kizwwZal1piw8at1Ff4K7tCkz94yVtFosMvk0df+uSh/swVTEHo/GgqeXDISVsEIKsMlZYBWgzYHKxYgEYqINVTvVVO4rHF9A0ffqP51X7F5Yxsim21Ypeyl/itMTfpDLCAmB0LI2baE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aBI1JjY2; arc=none smtp.client-ip=209.85.167.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e3c9300c65so51713375ad.0;
-        Tue, 23 Apr 2024 11:48:03 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51acc258075so5261146e87.2;
+        Tue, 23 Apr 2024 11:48:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713898083; x=1714502883; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pX6RYPwRziaLwatJslL9RyMCesZcjbHxs3ByM77+JCY=;
-        b=SWKeXMswtT47xjFM02PzpjTrPZKtZlGkL1aoQ8cM/QfyRH+wYxggAcutxPs1UdHvRr
-         hRExlA45VEoz4nMvbgQb4nskeOTxcYnge8FH1xjSriwtG8lWK8hcSvFU146+Wlq5mB6Z
-         8BYSTvPlF4ZMS/AM2tuVeJjklHOG5LF+XMNktx/w6TP9DRSrsY7UPYVDbpsVDTVz4SKZ
-         z1eROukJ7H2oOk4+sTUQ3k2EW8H4hoUC8eYTcnpfhHcB15tT8MAq9FFRTsG7TbAAUKR2
-         +dHkHzSUrBgv5eAQGdPpqbabksOxlmGCrX0Vq3OZu/SMEX1XbNQJ6i318Qq1pl/Dubqu
-         sWVA==
+        d=gmail.com; s=20230601; t=1713898100; x=1714502900; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bSq7luXdn6BPSJxjU3yQC+GkFBc6W+zPaM7tp0Vg2Uw=;
+        b=aBI1JjY2QUdglP2vGes0RtU0SoOBxmuS/ZoFR5b7J6gJQF0QO9sXp0/7vPaF4vprxe
+         A5Vb5f1YzdNLI12Hx6GsyazF7PVbp9YneUC8wYCFAN2MN3FnnKDLJJ+aJsCi+jzkuSDo
+         PFqvIFG2RZ2Ay+09ZncIdN/iUd/TQCtJzxDazx6q5+RuCypvFA1zAX69EgJuV3Mjzztt
+         YPVRTR9FW2dqyrkrpaycyuUvyV0qODr1PcrW9smb7eA9B/63Rgtwn82/6DTQK5nTj8yW
+         BV+jjJizj5O87nQFNQaCBbpwSzn1yt5wgq6fr6QJPVQXHpyKCtxyh2xTAvHmmy/ebnpL
+         XGZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713898083; x=1714502883;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pX6RYPwRziaLwatJslL9RyMCesZcjbHxs3ByM77+JCY=;
-        b=S35w/vfZ84tTVhV2QJwlZBpLBy+ki3B29aMLnR6KsvBj9AOrnauCXgs4XOvatlJdLh
-         rJyzoP9hJbhNTxStRLbXxYKVF+L7KuEUNFCB46FE78Ea+GFuGdwM2fBAo6zBOnyvg25z
-         G0n+Zr4hmreMAddjgrHtQ1Jom1gtLXhlY/5NomQsgiA7KjXIRb85GBzcqW2/EW6xGxAX
-         5dcRSkkkRpKN+bSvcDeVUzIETudRJTCGS/HQpnpXDehyVu9fO03wMuatuu78lry42hVL
-         jeG+ztAQVy6dwe+WC8zH0DP3ZMQnlfyH2SElMTGmyYSUJhikKCa7Vc2lHqbx10YYd5kx
-         UGzg==
-X-Forwarded-Encrypted: i=1; AJvYcCXjD0Erv3tECQ/K7eP/r0s80u51bQmSYwJ6VzN96YsJWIUEQ8oDaGBS4uQZcCMEaKh+1mLQyOBqOzmw+YslBaCQqq36AzO6P2X0rBwGDpqbFLRt0S4Y6t3VPZtdTelViUGt9g1E8uLvJA==
-X-Gm-Message-State: AOJu0YzdacAmzjwDUNLVt+h/7rOzeuGHXwhHApMivlmpmBzIpXrViaVT
-	BclerJN3mMP3Rspju+nt0zCNgSgd131LtTMoHSyG1pxAIQxaONqy
-X-Google-Smtp-Source: AGHT+IHO+XPG1I7/p/baM5AJcJmueayGWEnQTbjJxKPqrnkkS2plAOEp+7WSaHEZhaTrjWIAgzNrJw==
-X-Received: by 2002:a17:902:9a42:b0:1e5:31c5:d7be with SMTP id x2-20020a1709029a4200b001e531c5d7bemr344081plv.40.1713898082818;
-        Tue, 23 Apr 2024 11:48:02 -0700 (PDT)
-Received: from [10.69.55.76] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id z3-20020a170903018300b001e0bcccc800sm10377709plg.35.2024.04.23.11.48.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 11:48:02 -0700 (PDT)
-Message-ID: <d8dcd3ad-25c7-46fc-b628-e6adcb5c2c9c@gmail.com>
-Date: Tue, 23 Apr 2024 11:47:59 -0700
+        d=1e100.net; s=20230601; t=1713898100; x=1714502900;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bSq7luXdn6BPSJxjU3yQC+GkFBc6W+zPaM7tp0Vg2Uw=;
+        b=Q4ys5f10rYJfnY270S7DFBD/R2VTKE1hZXDvZoUMw0++63MWfclZqgpuvLARGHYsLY
+         04hpR32BwstIXg2oifFgFpxLMMHtRN3rIpAoTauLfUYNApqAyKmYFt2nv9LE0l4d06Bb
+         88se1SC5CEmoYtgygdj0y055DJbG67N2tugzEyMzlcG0LZl3KiejZgUcJR71bP11pNYT
+         NENpCGL2B0cFk2YRIUvHDaefsr2UaObyBZJeB+k3ZmEkjqfIuu6VlfXW+Tt4bHwzzqxC
+         Spm0GuLdVxvmMG1ngllk5AG2y+aNx9y2Ka6+nW8DNtRrPoFA1l9gjTfBoOpulRTo9/2Y
+         aurg==
+X-Forwarded-Encrypted: i=1; AJvYcCXJlx1w4HGvYhHCH6+HkHyHV5pBhxWouSu2KkBIZaHuNxwB4Ey9i97piFNzynxZU1QjuFAs60esFdERzHuSPzAqde1GgAma4dGO/FbYIdySYhtlnYr8tj0eFShgV4wwgGZMbnYlI5XEiYoVCz19X3jSIvuCKn+qT94H5f1LGDoGUHMk8HXLsSM2
+X-Gm-Message-State: AOJu0YxhTI3OBVSLaFrNdWk5UaeagBuTnBUij3Gyn9ZUC34BqjpCN/ag
+	1y+DpjcfoeNlMBIf0nezbwgKg5bMsBkHJ/pPoYUBYr6IEWN/fFIj3zurCuHjaVnhqYqyaUIqEgk
+	txsdLoDh8vQpIR/lpo7LUYLo0z+A=
+X-Google-Smtp-Source: AGHT+IGUoFhNSew0Yy0iLsYTAiY/DuKVzOGfBQ6jFOlqajMER/+FZyTNlMfqUMJb10jORlLj0rJaOiXlV/EB8Fx2xcc=
+X-Received: by 2002:ac2:4841:0:b0:51a:cfca:ca3f with SMTP id
+ 1-20020ac24841000000b0051acfcaca3fmr291201lfy.36.1713898100187; Tue, 23 Apr
+ 2024 11:48:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] gpio: brcmstb: Use dynamic GPIO base numbers
-To: Florian Fainelli <florian.fainelli@broadcom.com>,
- Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: bcm-kernel-feedback-list@broadcom.com, linux-gpio@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Phil Elwell <phil@raspberrypi.com>
-References: <20240423175025.1490171-1-opendmb@gmail.com>
- <5f550f60-d7b9-4cb2-badf-fde4f53db790@broadcom.com>
-Content-Language: en-US
-From: Doug Berger <opendmb@gmail.com>
-In-Reply-To: <5f550f60-d7b9-4cb2-badf-fde4f53db790@broadcom.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240423170339.54131-1-ryncsn@gmail.com> <20240423170339.54131-3-ryncsn@gmail.com>
+In-Reply-To: <20240423170339.54131-3-ryncsn@gmail.com>
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date: Wed, 24 Apr 2024 03:48:03 +0900
+Message-ID: <CAKFNMomTmSJ=QTjTps=v9WkuEo112AT3DmEum-kNGv6pm6nghA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/8] nilfs2: drop usage of page_index
+To: Kairui Song <kasong@tencent.com>
+Cc: Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org, 
+	Andrew Morton <akpm@linux-foundation.org>, "Huang, Ying" <ying.huang@intel.com>, 
+	Chris Li <chrisl@kernel.org>, Barry Song <v-songbaohua@oppo.com>, 
+	Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, Minchan Kim <minchan@kernel.org>, 
+	Hugh Dickins <hughd@google.com>, David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-nilfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/23/2024 11:11 AM, Florian Fainelli wrote:
-> On 4/23/24 10:50, Doug Berger wrote:
->> Forcing a gpiochip to have a fixed base number now leads to a warning
->> message. Remove the need to do so by using the offset value of the
->> gpiochip.
->>
->> Signed-off-by: Phil Elwell <phil@raspberrypi.com>
->> Signed-off-by: Doug Berger <opendmb@gmail.com>
-> 
-> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> 
-> Thanks!
-Just submitted v2.
+On Wed, Apr 24, 2024 at 2:04=E2=80=AFAM Kairui Song wrote:
+>
+> From: Kairui Song <kasong@tencent.com>
+>
+> page_index is only for mixed usage of page cache and swap cache, for
+> pure page cache usage, the caller can just use page->index instead.
+>
+> It can't be a swap cache page here (being part of buffer head),
+> so just drop it, also convert it to use folio.
+>
+> Signed-off-by: Kairui Song <kasong@tencent.com>
+> Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+> Cc: linux-nilfs@vger.kernel.org
+> ---
+>  fs/nilfs2/bmap.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/fs/nilfs2/bmap.c b/fs/nilfs2/bmap.c
+> index 383f0afa2cea..9f561afe864f 100644
+> --- a/fs/nilfs2/bmap.c
+> +++ b/fs/nilfs2/bmap.c
+> @@ -453,8 +453,7 @@ __u64 nilfs_bmap_data_get_key(const struct nilfs_bmap=
+ *bmap,
+>         struct buffer_head *pbh;
+>         __u64 key;
+>
+> -       key =3D page_index(bh->b_page) << (PAGE_SHIFT -
+> -                                        bmap->b_inode->i_blkbits);
+> +       key =3D bh->b_folio->index << (PAGE_SHIFT - bmap->b_inode->i_blkb=
+its);
+>         for (pbh =3D page_buffers(bh->b_page); pbh !=3D bh; pbh =3D pbh->=
+b_this_page)
+>                 key++;
 
-Sorry,
-     Doug
+This conversion mixes the use of page and folio within the function.
+Would you like to take the opportunity to convert
+"page_buffers(bh->b_page)" to "folio_buffers(bh->b_folio)" as well?
+
+Thanks,
+Ryusuke Konishi
 
