@@ -1,116 +1,184 @@
-Return-Path: <linux-kernel+bounces-155007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 719938AE440
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:39:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 869E88AE443
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:40:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 279F41F21738
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:39:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83B21B24FE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A06D81722;
-	Tue, 23 Apr 2024 11:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZMiuRte7";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rOvjDt4a"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F3E67D3E6;
-	Tue, 23 Apr 2024 11:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64BEA83A11;
+	Tue, 23 Apr 2024 11:40:01 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A0827D3E6
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 11:39:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872382; cv=none; b=V/uEyTATukCA4ktxeoEJ5iHxitoJxx5RpFxUA00qVMblIZ+14IT3pUDTiyKVF4XnkyNt/0u0HVxRO5nid3cgD781JEw1iv/5cGI2jCjxq6CoBoGSNl5546quoaoFEyLK4jBJZVjmrzMGhMp25nLqTszoDLkjHRUycWq7zKY1JT8=
+	t=1713872400; cv=none; b=BP5BHnCO8XYOETdHmmoUNvqv4fEUYMDd6jjnYp+rL4j1/KK6byDrb4O4/zalkzd6M9X4H0ahnPPlkyCovZxPvdRQflpC/bMe6efwIR5MaM7ne6LybLXUoNi5xDuQqKrOzAw2kQ/Skt2filiez5FescGuT6tP7THrlOTXGklM9KU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872382; c=relaxed/simple;
-	bh=kiq6atPFDm1hyItOWVUCAq5+dBPedMN0gRxrx3BomxU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jKPqo88MQTXOED8ggycrWT+MfKJaW2mvsnLNOjPRaF4ZlbdoCyZ9dUpZcMYmmiCd0AH1VucYX1yEk+bPeyJrULkf/DqCX5WH6Wo7alBkpnyi1AyCtfP/2uCBJnwZ9e3SPl9BJ43uj/WPtjF7R6f+0r6mqm8YZVJ2zAWX2PenJmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZMiuRte7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rOvjDt4a; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 23 Apr 2024 13:39:33 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713872377;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C0HVSv5euflJb8c+If9F5GRU+WYrGKFtrWnWjuUiGzI=;
-	b=ZMiuRte76KcnQlXMkfARsv0/NVu9zZTf2RdRW62fJ1f8UkdMBDZtxd8rMIa0DKT1jip65R
-	fY1CXtvwDxQDBURnwLAbSOkmad0Ccwr+Y1SwtwRmsF7DjNDCZWdrp3XxZGFa4ZJuU3IBtL
-	oySHtTsXQ31/BuRd4zqmXnqvcocZp9LciGRDgR1uG2REbMWQ/g8zrtZdeSEaMs+vYu1uDq
-	lQBfl01lVKtO2sA1MhjWBw+LGfDNQ11u078L1d9gXX9izl0QkatZAzLT/rqLJmawgRk7yS
-	2Ct9cy4dsW+QAxxI6t/VkyuZycV2MPGtZYllVgaL39l9BtCP/GKOVP6KCwz5Vg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713872377;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C0HVSv5euflJb8c+If9F5GRU+WYrGKFtrWnWjuUiGzI=;
-	b=rOvjDt4a/9i+oY2ZeothsvDr4PfDNwf7LljBPfGHyxVmolGoL7M4aB5i8+rAntGPMvNvDI
-	PRjoFBIs7JDUlJBw==
-From: Nam Cao <namcao@linutronix.de>
-To: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Jaya Kumar <jayalk@intworks.biz>, Daniel Vetter <daniel@ffwll.ch>,
-	Helge Deller <deller@gmx.de>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, tiwai@suse.de, bigeasy@linutronix.de,
-	patrik.r.jakobsson@gmail.com,
-	Vegard Nossum <vegard.nossum@oracle.com>,
-	George Kennedy <george.kennedy@oracle.com>,
-	Darren Kenny <darren.kenny@oracle.com>, chuansheng.liu@intel.com,
-	Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] fbdev: fix incorrect address computation in deferred IO
-Message-ID: <20240423113933.IpMjHGw7@linutronix.de>
-References: <20240419190032.40490-1-namcao@linutronix.de>
- <666d986e-5227-4b6d-829c-95ff16115488@suse.de>
- <20240423095538.m79ML6a0@linutronix.de>
- <64c1585d-70e0-47d4-9d78-405b483b433c@suse.de>
+	s=arc-20240116; t=1713872400; c=relaxed/simple;
+	bh=Po6RxZpb+2WLlQDdIGE/5n596gYUv/wQirH+33oGB18=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PcQjSi/iZHss3X8HhjC9L4DqpxZpFU0NLsAs79U6uc1LG0/jDcUAPM4csV0etXhu2ttWHVc2dRXySFhiyOVYbjwoU/C335nlhxAkXHUdapm9XAe1wym+5L2FtpW/tjuoqc6rZ3COE1noj2zBOZwEct5IjRKfI6xewQzNS9Zz1Kc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8A65C339;
+	Tue, 23 Apr 2024 04:40:26 -0700 (PDT)
+Received: from [10.57.74.127] (unknown [10.57.74.127])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D1B7F3F7BD;
+	Tue, 23 Apr 2024 04:39:56 -0700 (PDT)
+Message-ID: <5f147c9d-ba00-4757-b88e-38b45fffb8d3@arm.com>
+Date: Tue, 23 Apr 2024 12:39:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 5/5] mm: shmem: add anonymous share mTHP counters
+Content-Language: en-GB
+To: Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Barry Song <21cnbao@gmail.com>
+Cc: akpm@linux-foundation.org, hughd@google.com, willy@infradead.org,
+ david@redhat.com, wangkefeng.wang@huawei.com, ying.huang@intel.com,
+ shy828301@gmail.com, ziy@nvidia.com, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
+ <05d0096e4ec3e572d1d52d33a31a661321ac1551.1713755580.git.baolin.wang@linux.alibaba.com>
+ <CAGsJ_4xu4iL5pv7T1chyzGC2Vp9q1GwOp3wxb=bYMW-T-pj4dA@mail.gmail.com>
+ <3045341d-06c2-4fdb-88a1-3f0d473f99ee@linux.alibaba.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <3045341d-06c2-4fdb-88a1-3f0d473f99ee@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <64c1585d-70e0-47d4-9d78-405b483b433c@suse.de>
 
-On Tue, Apr 23, 2024 at 01:27:09PM +0200, Thomas Zimmermann wrote:
-> Am 23.04.24 um 11:55 schrieb Nam Cao:
-..
-> > > The page-fault handler at [1] use vm_fault.pgoff to retrieve the page
-> > > structure. Can we do the same here and avoid that computation?
-> > Yes, thanks for the suggestion.
-> > 
-> > It will change things a bit: offset will not be the exact value anymore,
-> > but will be rounded down to multiple of PAGE_SIZE. But that doesn't matter,
-> > because it will only be used to calculate the page offset later on.
-> > 
-> > We can clean this up and rename this "offset" to "pg_offset". But that's
-> > for another day.
+On 23/04/2024 02:46, Baolin Wang wrote:
 > 
-> But can't we use struct vm_fault.pgoff directly? The page-fault handler has
-> used it since forever. The look-up code for the pageref should probably do
-> the same, because there's a 1:1 connection between the page and the pageref.
-> The pageref structure only exists because we cannot store its data in struct
-> page directly.
 > 
-> AFAICT pgoff is exactly the value want to compute. See [1] and� the
-> calculation at [2].
+> On 2024/4/23 09:17, Barry Song wrote:
+>> On Mon, Apr 22, 2024 at 3:03 PM Baolin Wang
+>> <baolin.wang@linux.alibaba.com> wrote:
+>>>
+>>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>>> ---
+>>>   include/linux/huge_mm.h | 2 ++
+>>>   mm/huge_memory.c        | 4 ++++
+>>>   mm/shmem.c              | 5 ++++-
+>>>   3 files changed, 10 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+>>> index 26b6fa98d8ac..67b9c1acad31 100644
+>>> --- a/include/linux/huge_mm.h
+>>> +++ b/include/linux/huge_mm.h
+>>> @@ -270,6 +270,8 @@ enum mthp_stat_item {
+>>>          MTHP_STAT_ANON_SWPOUT,
+>>>          MTHP_STAT_ANON_SWPOUT_FALLBACK,
+>>>          MTHP_STAT_ANON_SWPIN_REFAULT,
+>>> +       MTHP_STAT_SHMEM_ANON_ALLOC,
+>>> +       MTHP_STAT_SHMEM_ANON_ALLOC_FALLBACK,
+>>
+>> not quite sure about this. for 2MB pmd-mapped THP shmem, we count them
+>> as FILE_THP.
+>> here we are counting as SHMEM_ANON. To me, SHMEM_ANON is more correct but
+>> it doesn't align with pmd-mapped THP. David, Ryan, what do you think?
+> 
+> Thanks for reviewing.
+> 
+> IMO, I think both approaches are acceptable, which also reflects the dual nature
+> of anonymous shared pages: on the one hand they are anonymous pages, and on the
+> other hand, they are backed by a pseudo file. From the user's perspective, I
+> prefer to use the term "anonymous shmem", which can be distinguished from the
+> real file-backed THP.
+> 
+> Anyway, let's see what others think.
 
-Completely agree. I just wanted to point out that the value inside the
-variable "offset" won't be the same as before, but it's still correct.
+From a quick look at the code, it looks like the shmem alloc/fallback/charge
+events are all lumped in with FILE_THP. But the instantaneous "how many are
+allocated" and "how many are mapped" have their own NR_SHMEM_THPS and
+NR_SHMEM_PMDMAPPED counters? So its a bit inconsistent today.
 
-I just tested the patch on real hardware, will send it shortly.
+My preference would be to add these to be consistent with the anon stats:
 
-Best regards,
-Nam
+MTHP_STAT_SHMEM_FAULT_ALLOC,
+MTHP_STAT_SHMEM_FAULT_FALLBACK,
+MTHP_STAT_SHMEM_FAULT_FALLBACK_CHARGE,
+
+But it looks like these aren't always allocated due to faults? So perhaps:
+
+MTHP_STAT_SHMEM_ALLOC,
+MTHP_STAT_SHMEM_FALLBACK,
+MTHP_STAT_SHMEM_FALLBACK_CHARGE,
+
+If I've understood the code correctly (I know nothing about shmem), the
+allocation can be for both mmap(SHARED|ANON) and for tmpfs? So "SHMEM_ANON"
+probably isn't quite right?
+
+
+> 
+>>>          __MTHP_STAT_COUNT
+>>>   };
+>>>
+>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>> index 9e52c0db7580..dc15240c1ab3 100644
+>>> --- a/mm/huge_memory.c
+>>> +++ b/mm/huge_memory.c
+>>> @@ -557,6 +557,8 @@ DEFINE_MTHP_STAT_ATTR(anon_alloc_fallback,
+>>> MTHP_STAT_ANON_ALLOC_FALLBACK);
+>>>   DEFINE_MTHP_STAT_ATTR(anon_swpout, MTHP_STAT_ANON_SWPOUT);
+>>>   DEFINE_MTHP_STAT_ATTR(anon_swpout_fallback, MTHP_STAT_ANON_SWPOUT_FALLBACK);
+>>>   DEFINE_MTHP_STAT_ATTR(anon_swpin_refault, MTHP_STAT_ANON_SWPIN_REFAULT);
+>>> +DEFINE_MTHP_STAT_ATTR(shmem_anon_alloc, MTHP_STAT_SHMEM_ANON_ALLOC);
+>>> +DEFINE_MTHP_STAT_ATTR(shmem_anon_alloc_fallback,
+>>> MTHP_STAT_SHMEM_ANON_ALLOC_FALLBACK);
+>>>
+>>>   static struct attribute *stats_attrs[] = {
+>>>          &anon_alloc_attr.attr,
+>>> @@ -564,6 +566,8 @@ static struct attribute *stats_attrs[] = {
+>>>          &anon_swpout_attr.attr,
+>>>          &anon_swpout_fallback_attr.attr,
+>>>          &anon_swpin_refault_attr.attr,
+>>> +       &shmem_anon_alloc_attr.attr,
+>>> +       &shmem_anon_alloc_fallback_attr.attr,
+>>>          NULL,
+>>>   };
+>>>
+>>> diff --git a/mm/shmem.c b/mm/shmem.c
+>>> index 8b009e7040b2..4a0aa75ab29c 100644
+>>> --- a/mm/shmem.c
+>>> +++ b/mm/shmem.c
+>>> @@ -1706,11 +1706,14 @@ static struct folio *shmem_alloc_and_add_folio(struct
+>>> vm_fault *vmf,
+>>>                          pages = 1 << order;
+>>>                          index = round_down(index, pages);
+>>>                          folio = shmem_alloc_hugefolio(gfp, info, index, order);
+>>> -                       if (folio)
+>>> +                       if (folio) {
+>>> +                               count_mthp_stat(order,
+>>> MTHP_STAT_SHMEM_ANON_ALLOC);
+
+is there any reason why this can't go next to the existing PMD-size stat?
+
+>>>                                  goto allocated;
+>>> +                       }
+>>>
+>>>                          if (pages == HPAGE_PMD_NR)
+>>>                                  count_vm_event(THP_FILE_FALLBACK);
+>>> +                       count_mthp_stat(order,
+>>> MTHP_STAT_SHMEM_ANON_ALLOC_FALLBACK);
+>>>                          order = next_order(&orders, order);
+>>>                  }
+>>>          } else {
+>>> -- 
+>>> 2.39.3
+>>>
+>>
+>> Thanks
+>> Barry
+
 
