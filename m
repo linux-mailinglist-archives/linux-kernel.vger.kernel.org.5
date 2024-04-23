@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-154715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 733638AE012
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:44:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 542E78AE01A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:44:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96D431C227CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:44:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B989283BDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:44:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46EFA5FEE4;
-	Tue, 23 Apr 2024 08:42:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9EC9633E5;
+	Tue, 23 Apr 2024 08:42:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dqwXTFIj"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DvHpWkP5"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D65D58AB9;
-	Tue, 23 Apr 2024 08:42:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAD3259173;
+	Tue, 23 Apr 2024 08:42:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713861763; cv=none; b=m7uZjkWXmUfCEY/ca8uM9ManGzOI8DUcoHnVe05N1EcvaMUG99lJb2gTm+QOh9bCG4oZDe3C8TJmmpm43Q+xDamT3nNpowCSxwxufclb80OFlQ1pXaFl1X5JvOGOADNQ4XBilpXrRAvtm4OeH86835wW7sl/7J8wSAVsaT0v2TY=
+	t=1713861764; cv=none; b=KqeVkjb16SA6q+DVBzFBAm5+kujTpakoeolk1eMWNoEYnqC/Y/+ovpxaTQVkddgXCBZlM3eJLVs03af589VEi6AxHKrsDtfaOxv944UKxzX/YLJglkkpomx8Z3ERXxuj3Y4YnXHwlkv+8c3CC7ySXwAOyiO0BUTyuQrR53l6WIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713861763; c=relaxed/simple;
-	bh=ZCJiTRsB42adJW1jGpsPbGOs+pdNg3esf+F7zVVDU9s=;
+	s=arc-20240116; t=1713861764; c=relaxed/simple;
+	bh=2NXtJqNwMfj19zuaumAKGjpJjaHAeKnJ8xEnBbcueR8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=P3UGxd3+La+DfSJUgxNMnscUhxMFbGsKXIG9+okRLKF4F5ppHpmOVCiYZNvgHjY9Fzj5taXvguhAIZ1d+CB96RniPTjtKUQDSCikBO30QT6UTU/WcqsA645VDSK/kYzH7Xoz7Fl1YTF8MiRCKIrfs48bHBOZM3jsmYYWh2PrjI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dqwXTFIj; arc=none smtp.client-ip=209.85.221.45
+	 MIME-Version; b=gvhWcUsI21OwRaaaDC8yLRNv3WNjqRxtAG6Juw05t2YJ7pHXoEjkYubzQiTCu1C5F21/AhCetNvqLfdrybsMitYwGP+aAcqwSWuyHfRXALl3+zXrzr2EDQd2IUKQYflbcjJlsuZ+qz/JC7a7ppXD8/t9LHyNLdytLtz1KIMtN3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DvHpWkP5; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-347c197a464so3979039f8f.2;
-        Tue, 23 Apr 2024 01:42:41 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-34a7e47d164so3135874f8f.3;
+        Tue, 23 Apr 2024 01:42:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713861759; x=1714466559; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713861760; x=1714466560; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1JJb8CLWZ+zpfclyWYZpViBviTkIv/4bGLE2vrOMCLo=;
-        b=dqwXTFIjn4ZjKsyX/iiOCIMcdvAKNjvU+3jyxBieLAO6V2lWehEhrZiT/4ok8lly9/
-         xS8b8qyAgzxA0p8isPJgvHZRPMRvksVB8mxfPrEbFHMTQFqhUS6q5S1X2b2YRB9RQjPL
-         MivDrcOQ5PPyd/Ans8mp369hT0KnecMKPIrQyBDw+BNRceoTrgpcqh3jc0RjT0kGDOdu
-         Sro4L59HCMhvb92ibl7nIpPML+gkfLzvSTMCe+M9sc3lJV5pfwgmceyov79WNPHjorDA
-         uRtV1CbRyBvTXZ4WZeL0p7/inbIg9NfXWqEKZscpyzrqfh0Uc4s35nwW/x+HUgLJojO+
-         EfRQ==
+        bh=MmgvWFvlswLGZUJ7yfS60zJgrcO9Ytw9o2rKwpBXkoY=;
+        b=DvHpWkP5wW0DHatcDf/7fW1HF79YjXd7NNr76tCNeW5Qjl894/KjhZNL8cxWH+201B
+         VzYdk12SZ5iPICjV56sI3Ci3avkN2Ptoi3k+oHBSEFz2bDYVsfGOz19oObyzkReVczKQ
+         3Nhny9DHCx27B6r5nw7TtLgptjGYAhTG5LhRW7wY54r7UexQIkaNNdXg0e7AXI2qhz9H
+         GCbspQm/rt5xZxz5cBRKG4uyOqJMdVorX2RT2ct8whCgeS748wLlhdPBj4S7EBJ2xDzH
+         FMmkpHdWGNZGCzLJgJnaMtkXeULRxc+77jesDepjz3SggEVTbxhlElVb12uyMFNflRez
+         Hhyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713861759; x=1714466559;
+        d=1e100.net; s=20230601; t=1713861760; x=1714466560;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1JJb8CLWZ+zpfclyWYZpViBviTkIv/4bGLE2vrOMCLo=;
-        b=nLiqEXq4iepcoLFo/V294eT7aDVB1zXTQQFGVqgZslixq5LY1gxQWZcRpMi/8DzF/c
-         NGA4XLmwHMx9X5JRs/kIk9ZhSbFY/Z14D24KXTn8P8ubgI27L0JnSCLQuDMYJ1/eHz9V
-         ST9m3zgZrFaCO2TRhvhJX3LcokHjA6IhzSW1dXNO9HcubL2mnzOmakM2ahWwglYfyt6C
-         pzmJD30ohbjuAexhxgJoDyO75xJrq1iGxAcHJRiGRnGO89nuMvtfPu527Lyc/o6eMZNx
-         daSv3JsUk14ZncqpMGdtKCgHzBhlGR77FNNccBYe+578nwv+Dqavj9ntApTCI9e90LPf
-         x2Og==
-X-Forwarded-Encrypted: i=1; AJvYcCVzw5GlutbaZO1n6h20Q5dshb3V/xn3SteRgX8eS0/1Q8pOYi2HNMVXCJwRQ19A1ePDb4EmROBhaq2Y4tB0UMP8uGiQUW7oQ4YAszcDehIDVUpMeTr8osgY/SF7jN1QvSe5krUI6ccIQyUIDVE02nQ5wivsEpwLm8b89IuhLgNgTg==
-X-Gm-Message-State: AOJu0Yybqn7c3gKU5xD/uRQbsS7mS1EgL4mdal+vSuhqFerfGkUgFEgJ
-	gJqwgxmRnC/PyXtkPpt9419YarUBBijokSz1SrrPF953ppAG0C0UejgaA0dD
-X-Google-Smtp-Source: AGHT+IF8jcQSDNPpCg/TPAHgCWqSBkGJdO0aEfxeS/y7ooRXaDk/V7G3SyflRe3iPkFknUqZzkWVjA==
-X-Received: by 2002:adf:e30f:0:b0:34a:119b:aadc with SMTP id b15-20020adfe30f000000b0034a119baadcmr7191229wrj.6.1713861759472;
-        Tue, 23 Apr 2024 01:42:39 -0700 (PDT)
+        bh=MmgvWFvlswLGZUJ7yfS60zJgrcO9Ytw9o2rKwpBXkoY=;
+        b=Z33PZ7RDIrxG5qNIEIh0uKaHb0ckXzfrIj2tRS2QJAukpSnljl1ZMkXObhrSkK5i3u
+         NoaKd6WN/NF/1CWWTDtg9LWHPLRxvFT8AjInfQhymr0hN9F3mPbYAEmaVJFF2MqV0NrP
+         MJp31xxD2WhXNszp4iX1wCUFzJTt+s/gK7Xu73dVj+nfaYvvfd4J0uLLYwnY9ieiOA6P
+         IQST9KNcBZOlAi0+o6QJt5RzGR39CVBeSY7WukNpkQBvzirfKkTtvfJZIWK65vTeMQpr
+         f+DSW6wj8bgdm5Cl8Rv8AnTiznVwAXvi2imwmV/e92FPLeTk/7C5zKoP5Uuq/0xsU2hi
+         Q5sg==
+X-Forwarded-Encrypted: i=1; AJvYcCUSYjPX6ehv//2V/LL9opGvy7pwqDMVj0mrDhsC8VXpvWocx32lL3mTszU96mdTqnpgFyrlpe449inOo7p5PtZnPszaxaaKbgW3WyQF/El+GbyOlnQrK01eOc/LqxO2jiYjS8BbdGgWtH/7L1r3QgrQEZaRxBAseOQR150J00wloQ==
+X-Gm-Message-State: AOJu0Yw2IYXcy4cDRq1EZQ6fHbWO/oicz35yzc1LJmmZCH7L0rjURY3z
+	moU/hYewK34cqMZVw7NDVkvAJSMVa51UWdR8wfAzZMx0UdimailmSWjWircI
+X-Google-Smtp-Source: AGHT+IHA7RStjrs648Bt277IwOsy4o4Y3wUoLcKkpOWil4UMH0QOlaryQDoNgB70AfnKxoIrE4qCQw==
+X-Received: by 2002:a05:6000:1109:b0:343:a098:f41 with SMTP id z9-20020a056000110900b00343a0980f41mr7778658wrw.28.1713861760501;
+        Tue, 23 Apr 2024 01:42:40 -0700 (PDT)
 Received: from rbolboac.. ([2a02:2f0e:320d:e800:cce2:61fe:1efc:ce48])
-        by smtp.gmail.com with ESMTPSA id a16-20020adffb90000000b0034af18ef68csm5989939wrr.5.2024.04.23.01.42.38
+        by smtp.gmail.com with ESMTPSA id a16-20020adffb90000000b0034af18ef68csm5989939wrr.5.2024.04.23.01.42.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 01:42:38 -0700 (PDT)
+        Tue, 23 Apr 2024 01:42:40 -0700 (PDT)
 From: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
 X-Google-Original-From: Ramona Gradinariu <ramona.gradinariu@analog.com>
 To: linux-kernel@vger.kernel.org,
@@ -77,11 +77,10 @@ To: linux-kernel@vger.kernel.org,
 	conor+dt@kernel.org,
 	krzysztof.kozlowski+dt@linaro.org,
 	robh@kernel.org
-Cc: Ramona Gradinariu <ramona.gradinariu@analog.com>,
-	=?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>
-Subject: [PATCH 1/5] iio: adis16480: make the burst_max_speed configurable
-Date: Tue, 23 Apr 2024 11:42:06 +0300
-Message-Id: <20240423084210.191987-2-ramona.gradinariu@analog.com>
+Cc: Ramona Gradinariu <ramona.gradinariu@analog.com>
+Subject: [PATCH 2/5] iio: imu: adis16480.c: Add delta angle and delta velocity channels
+Date: Tue, 23 Apr 2024 11:42:07 +0300
+Message-Id: <20240423084210.191987-3-ramona.gradinariu@analog.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240423084210.191987-1-ramona.gradinariu@analog.com>
 References: <20240423084210.191987-1-ramona.gradinariu@analog.com>
@@ -91,198 +90,217 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-With this, we can pass the maxixum spi burst speed to the
-'ADIS16480_DATA()' macro. This is in preparation to support new devices
-that have a different speed than the one used so far.
+Add support for delta angle and delta velocity raw readings to
+adis16480 driver.
 
-Signed-off-by: Nuno Sá <nuno.sa@analog.com>
 Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
 ---
- drivers/iio/imu/adis16480.c | 84 +++++++++++++++++++------------------
- 1 file changed, 44 insertions(+), 40 deletions(-)
+ drivers/iio/imu/adis16480.c | 78 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 76 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/iio/imu/adis16480.c b/drivers/iio/imu/adis16480.c
-index b40a55bba30c..bc6cbd00cd4b 100644
+index bc6cbd00cd4b..4adc2244a4ef 100644
 --- a/drivers/iio/imu/adis16480.c
 +++ b/drivers/iio/imu/adis16480.c
-@@ -107,8 +107,6 @@
- #define ADIS16495_BURST_ID			0xA5A5
- /* total number of segments in burst */
- #define ADIS16495_BURST_MAX_DATA		20
--/* spi max speed in burst mode */
--#define ADIS16495_BURST_MAX_SPEED              6000000
- 
- #define ADIS16480_REG_SERIAL_NUM		ADIS16480_REG(0x04, 0x20)
- 
-@@ -872,33 +870,33 @@ static const char * const adis16480_status_error_msgs[] = {
- 
- static int adis16480_enable_irq(struct adis *adis, bool enable);
- 
--#define ADIS16480_DATA(_prod_id, _timeouts, _burst_len)			\
--{									\
--	.diag_stat_reg = ADIS16480_REG_DIAG_STS,			\
--	.glob_cmd_reg = ADIS16480_REG_GLOB_CMD,				\
--	.prod_id_reg = ADIS16480_REG_PROD_ID,				\
--	.prod_id = (_prod_id),						\
--	.has_paging = true,						\
--	.read_delay = 5,						\
--	.write_delay = 5,						\
--	.self_test_mask = BIT(1),					\
--	.self_test_reg = ADIS16480_REG_GLOB_CMD,			\
--	.status_error_msgs = adis16480_status_error_msgs,		\
--	.status_error_mask = BIT(ADIS16480_DIAG_STAT_XGYRO_FAIL) |	\
--		BIT(ADIS16480_DIAG_STAT_YGYRO_FAIL) |			\
--		BIT(ADIS16480_DIAG_STAT_ZGYRO_FAIL) |			\
--		BIT(ADIS16480_DIAG_STAT_XACCL_FAIL) |			\
--		BIT(ADIS16480_DIAG_STAT_YACCL_FAIL) |			\
--		BIT(ADIS16480_DIAG_STAT_ZACCL_FAIL) |			\
--		BIT(ADIS16480_DIAG_STAT_XMAGN_FAIL) |			\
--		BIT(ADIS16480_DIAG_STAT_YMAGN_FAIL) |			\
--		BIT(ADIS16480_DIAG_STAT_ZMAGN_FAIL) |			\
--		BIT(ADIS16480_DIAG_STAT_BARO_FAIL),			\
--	.enable_irq = adis16480_enable_irq,				\
--	.timeouts = (_timeouts),					\
--	.burst_reg_cmd = ADIS16495_REG_BURST_CMD,			\
--	.burst_len = (_burst_len),					\
--	.burst_max_speed_hz = ADIS16495_BURST_MAX_SPEED			\
-+#define ADIS16480_DATA(_prod_id, _timeouts, _burst_len, _burst_max_speed)	\
-+{										\
-+	.diag_stat_reg = ADIS16480_REG_DIAG_STS,				\
-+	.glob_cmd_reg = ADIS16480_REG_GLOB_CMD,					\
-+	.prod_id_reg = ADIS16480_REG_PROD_ID,					\
-+	.prod_id = (_prod_id),							\
-+	.has_paging = true,							\
-+	.read_delay = 5,							\
-+	.write_delay = 5,							\
-+	.self_test_mask = BIT(1),						\
-+	.self_test_reg = ADIS16480_REG_GLOB_CMD,				\
-+	.status_error_msgs = adis16480_status_error_msgs,			\
-+	.status_error_mask = BIT(ADIS16480_DIAG_STAT_XGYRO_FAIL) |		\
-+		BIT(ADIS16480_DIAG_STAT_YGYRO_FAIL) |				\
-+		BIT(ADIS16480_DIAG_STAT_ZGYRO_FAIL) |				\
-+		BIT(ADIS16480_DIAG_STAT_XACCL_FAIL) |				\
-+		BIT(ADIS16480_DIAG_STAT_YACCL_FAIL) |				\
-+		BIT(ADIS16480_DIAG_STAT_ZACCL_FAIL) |				\
-+		BIT(ADIS16480_DIAG_STAT_XMAGN_FAIL) |				\
-+		BIT(ADIS16480_DIAG_STAT_YMAGN_FAIL) |				\
-+		BIT(ADIS16480_DIAG_STAT_ZMAGN_FAIL) |				\
-+		BIT(ADIS16480_DIAG_STAT_BARO_FAIL),				\
-+	.enable_irq = adis16480_enable_irq,					\
-+	.timeouts = (_timeouts),						\
-+	.burst_reg_cmd = ADIS16495_REG_BURST_CMD,				\
-+	.burst_len = (_burst_len),						\
-+	.burst_max_speed_hz = _burst_max_speed					\
- }
- 
- static const struct adis_timeout adis16485_timeouts = {
-@@ -944,7 +942,7 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
- 		.max_dec_rate = 2048,
- 		.has_sleep_cnt = true,
- 		.filter_freqs = adis16480_def_filter_freqs,
--		.adis_data = ADIS16480_DATA(16375, &adis16485_timeouts, 0),
-+		.adis_data = ADIS16480_DATA(16375, &adis16485_timeouts, 0, 0),
- 	},
- 	[ADIS16480] = {
- 		.channels = adis16480_channels,
-@@ -958,7 +956,7 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
- 		.max_dec_rate = 2048,
- 		.has_sleep_cnt = true,
- 		.filter_freqs = adis16480_def_filter_freqs,
--		.adis_data = ADIS16480_DATA(16480, &adis16480_timeouts, 0),
-+		.adis_data = ADIS16480_DATA(16480, &adis16480_timeouts, 0, 0),
- 	},
- 	[ADIS16485] = {
- 		.channels = adis16485_channels,
-@@ -972,7 +970,7 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
- 		.max_dec_rate = 2048,
- 		.has_sleep_cnt = true,
- 		.filter_freqs = adis16480_def_filter_freqs,
--		.adis_data = ADIS16480_DATA(16485, &adis16485_timeouts, 0),
-+		.adis_data = ADIS16480_DATA(16485, &adis16485_timeouts, 0, 0),
- 	},
- 	[ADIS16488] = {
- 		.channels = adis16480_channels,
-@@ -986,7 +984,7 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
- 		.max_dec_rate = 2048,
- 		.has_sleep_cnt = true,
- 		.filter_freqs = adis16480_def_filter_freqs,
--		.adis_data = ADIS16480_DATA(16488, &adis16485_timeouts, 0),
-+		.adis_data = ADIS16480_DATA(16488, &adis16485_timeouts, 0, 0),
- 	},
- 	[ADIS16490] = {
- 		.channels = adis16485_channels,
-@@ -1000,7 +998,7 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
- 		.max_dec_rate = 4250,
- 		.filter_freqs = adis16495_def_filter_freqs,
- 		.has_pps_clk_mode = true,
--		.adis_data = ADIS16480_DATA(16490, &adis16495_timeouts, 0),
-+		.adis_data = ADIS16480_DATA(16490, &adis16495_timeouts, 0, 0),
- 	},
- 	[ADIS16495_1] = {
- 		.channels = adis16485_channels,
-@@ -1016,7 +1014,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
- 		.has_pps_clk_mode = true,
- 		/* 20 elements of 16bits */
- 		.adis_data = ADIS16480_DATA(16495, &adis16495_1_timeouts,
--					    ADIS16495_BURST_MAX_DATA * 2),
-+					    ADIS16495_BURST_MAX_DATA * 2,
-+					    6000000),
- 	},
- 	[ADIS16495_2] = {
- 		.channels = adis16485_channels,
-@@ -1032,7 +1031,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
- 		.has_pps_clk_mode = true,
- 		/* 20 elements of 16bits */
- 		.adis_data = ADIS16480_DATA(16495, &adis16495_1_timeouts,
--					    ADIS16495_BURST_MAX_DATA * 2),
-+					    ADIS16495_BURST_MAX_DATA * 2,
-+					    6000000),
- 	},
- 	[ADIS16495_3] = {
- 		.channels = adis16485_channels,
-@@ -1048,7 +1048,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
- 		.has_pps_clk_mode = true,
- 		/* 20 elements of 16bits */
- 		.adis_data = ADIS16480_DATA(16495, &adis16495_1_timeouts,
--					    ADIS16495_BURST_MAX_DATA * 2),
-+					    ADIS16495_BURST_MAX_DATA * 2,
-+					    6000000),
- 	},
- 	[ADIS16497_1] = {
- 		.channels = adis16485_channels,
-@@ -1064,7 +1065,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
- 		.has_pps_clk_mode = true,
- 		/* 20 elements of 16bits */
- 		.adis_data = ADIS16480_DATA(16497, &adis16495_1_timeouts,
--					    ADIS16495_BURST_MAX_DATA * 2),
-+					    ADIS16495_BURST_MAX_DATA * 2,
-+					    6000000),
- 	},
- 	[ADIS16497_2] = {
- 		.channels = adis16485_channels,
-@@ -1080,7 +1082,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
- 		.has_pps_clk_mode = true,
- 		/* 20 elements of 16bits */
- 		.adis_data = ADIS16480_DATA(16497, &adis16495_1_timeouts,
--					    ADIS16495_BURST_MAX_DATA * 2),
-+					    ADIS16495_BURST_MAX_DATA * 2,
-+					    6000000),
- 	},
- 	[ADIS16497_3] = {
- 		.channels = adis16485_channels,
-@@ -1096,7 +1099,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
- 		.has_pps_clk_mode = true,
- 		/* 20 elements of 16bits */
- 		.adis_data = ADIS16480_DATA(16497, &adis16495_1_timeouts,
--					    ADIS16495_BURST_MAX_DATA * 2),
-+					    ADIS16495_BURST_MAX_DATA * 2,
-+					    6000000),
- 	},
+@@ -140,6 +140,8 @@ struct adis16480_chip_info {
+ 	unsigned int accel_max_val;
+ 	unsigned int accel_max_scale;
+ 	unsigned int temp_scale;
++	unsigned int deltang_max_val;
++	unsigned int deltvel_max_val;
+ 	unsigned int int_clk;
+ 	unsigned int max_dec_rate;
+ 	const unsigned int *filter_freqs;
+@@ -445,6 +447,12 @@ enum {
+ 	ADIS16480_SCAN_MAGN_Z,
+ 	ADIS16480_SCAN_BARO,
+ 	ADIS16480_SCAN_TEMP,
++	ADIS16480_SCAN_DELTANG_X,
++	ADIS16480_SCAN_DELTANG_Y,
++	ADIS16480_SCAN_DELTANG_Z,
++	ADIS16480_SCAN_DELTVEL_X,
++	ADIS16480_SCAN_DELTVEL_Y,
++	ADIS16480_SCAN_DELTVEL_Z,
  };
  
+ static const unsigned int adis16480_calibbias_regs[] = {
+@@ -688,6 +696,14 @@ static int adis16480_read_raw(struct iio_dev *indio_dev,
+ 			*val = 131; /* 1310mbar = 131 kPa */
+ 			*val2 = 32767 << 16;
+ 			return IIO_VAL_FRACTIONAL;
++		case IIO_DELTA_ANGL:
++			*val = st->chip_info->deltang_max_val;
++			*val2 = 31;
++			return IIO_VAL_FRACTIONAL_LOG2;
++		case IIO_DELTA_VELOCITY:
++			*val = st->chip_info->deltvel_max_val;
++			*val2 = 31;
++			return IIO_VAL_FRACTIONAL_LOG2;
+ 		default:
+ 			return -EINVAL;
+ 		}
+@@ -761,6 +777,30 @@ static int adis16480_write_raw(struct iio_dev *indio_dev,
+ 	BIT(IIO_CHAN_INFO_CALIBSCALE), \
+ 	32)
+ 
++#define ADIS16480_DELTANG_CHANNEL(_mod) \
++	ADIS16480_MOD_CHANNEL(IIO_DELTA_ANGL, IIO_MOD_ ## _mod, \
++	ADIS16480_REG_ ## _mod ## _DELTAANG_OUT, ADIS16480_SCAN_DELTANG_ ## _mod, \
++	0, \
++	32)
++
++#define ADIS16480_DELTANG_CHANNEL_NO_SCAN(_mod) \
++	ADIS16480_MOD_CHANNEL(IIO_DELTA_ANGL, IIO_MOD_ ## _mod, \
++	ADIS16480_REG_ ## _mod ## _DELTAANG_OUT, -1, \
++	0, \
++	32)
++
++#define ADIS16480_DELTVEL_CHANNEL(_mod) \
++	ADIS16480_MOD_CHANNEL(IIO_DELTA_VELOCITY, IIO_MOD_ ## _mod, \
++	ADIS16480_REG_ ## _mod ## _DELTAVEL_OUT, ADIS16480_SCAN_DELTVEL_ ## _mod, \
++	0, \
++	32)
++
++#define ADIS16480_DELTVEL_CHANNEL_NO_SCAN(_mod) \
++	ADIS16480_MOD_CHANNEL(IIO_DELTA_VELOCITY, IIO_MOD_ ## _mod, \
++	ADIS16480_REG_ ## _mod ## _DELTAVEL_OUT, -1, \
++	0, \
++	32)
++
+ #define ADIS16480_MAGN_CHANNEL(_mod) \
+ 	ADIS16480_MOD_CHANNEL(IIO_MAGN, IIO_MOD_ ## _mod, \
+ 	ADIS16480_REG_ ## _mod ## _MAGN_OUT, ADIS16480_SCAN_MAGN_ ## _mod, \
+@@ -816,7 +856,13 @@ static const struct iio_chan_spec adis16480_channels[] = {
+ 	ADIS16480_MAGN_CHANNEL(Z),
+ 	ADIS16480_PRESSURE_CHANNEL(),
+ 	ADIS16480_TEMP_CHANNEL(),
+-	IIO_CHAN_SOFT_TIMESTAMP(11)
++	IIO_CHAN_SOFT_TIMESTAMP(11),
++	ADIS16480_DELTANG_CHANNEL_NO_SCAN(X),
++	ADIS16480_DELTANG_CHANNEL_NO_SCAN(Y),
++	ADIS16480_DELTANG_CHANNEL_NO_SCAN(Z),
++	ADIS16480_DELTVEL_CHANNEL_NO_SCAN(X),
++	ADIS16480_DELTVEL_CHANNEL_NO_SCAN(Y),
++	ADIS16480_DELTVEL_CHANNEL_NO_SCAN(Z),
+ };
+ 
+ static const struct iio_chan_spec adis16485_channels[] = {
+@@ -827,7 +873,13 @@ static const struct iio_chan_spec adis16485_channels[] = {
+ 	ADIS16480_ACCEL_CHANNEL(Y),
+ 	ADIS16480_ACCEL_CHANNEL(Z),
+ 	ADIS16480_TEMP_CHANNEL(),
+-	IIO_CHAN_SOFT_TIMESTAMP(7)
++	IIO_CHAN_SOFT_TIMESTAMP(7),
++	ADIS16480_DELTANG_CHANNEL_NO_SCAN(X),
++	ADIS16480_DELTANG_CHANNEL_NO_SCAN(Y),
++	ADIS16480_DELTANG_CHANNEL_NO_SCAN(Z),
++	ADIS16480_DELTVEL_CHANNEL_NO_SCAN(X),
++	ADIS16480_DELTVEL_CHANNEL_NO_SCAN(Y),
++	ADIS16480_DELTVEL_CHANNEL_NO_SCAN(Z),
+ };
+ 
+ enum adis16480_variant {
+@@ -938,6 +990,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
+ 		.accel_max_val = IIO_M_S_2_TO_G(21973 << 16),
+ 		.accel_max_scale = 18,
+ 		.temp_scale = 5650, /* 5.65 milli degree Celsius */
++		.deltang_max_val = IIO_DEGREE_TO_RAD(180),
++		.deltvel_max_val = 100,
+ 		.int_clk = 2460000,
+ 		.max_dec_rate = 2048,
+ 		.has_sleep_cnt = true,
+@@ -952,6 +1006,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
+ 		.accel_max_val = IIO_M_S_2_TO_G(12500 << 16),
+ 		.accel_max_scale = 10,
+ 		.temp_scale = 5650, /* 5.65 milli degree Celsius */
++		.deltang_max_val = IIO_DEGREE_TO_RAD(720),
++		.deltvel_max_val = 200,
+ 		.int_clk = 2460000,
+ 		.max_dec_rate = 2048,
+ 		.has_sleep_cnt = true,
+@@ -966,6 +1022,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
+ 		.accel_max_val = IIO_M_S_2_TO_G(20000 << 16),
+ 		.accel_max_scale = 5,
+ 		.temp_scale = 5650, /* 5.65 milli degree Celsius */
++		.deltang_max_val = IIO_DEGREE_TO_RAD(720),
++		.deltvel_max_val = 50,
+ 		.int_clk = 2460000,
+ 		.max_dec_rate = 2048,
+ 		.has_sleep_cnt = true,
+@@ -980,6 +1038,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
+ 		.accel_max_val = IIO_M_S_2_TO_G(22500 << 16),
+ 		.accel_max_scale = 18,
+ 		.temp_scale = 5650, /* 5.65 milli degree Celsius */
++		.deltang_max_val = IIO_DEGREE_TO_RAD(720),
++		.deltvel_max_val = 200,
+ 		.int_clk = 2460000,
+ 		.max_dec_rate = 2048,
+ 		.has_sleep_cnt = true,
+@@ -994,6 +1054,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
+ 		.accel_max_val = IIO_M_S_2_TO_G(16000 << 16),
+ 		.accel_max_scale = 8,
+ 		.temp_scale = 14285, /* 14.285 milli degree Celsius */
++		.deltang_max_val = IIO_DEGREE_TO_RAD(720),
++		.deltvel_max_val = 200,
+ 		.int_clk = 4250000,
+ 		.max_dec_rate = 4250,
+ 		.filter_freqs = adis16495_def_filter_freqs,
+@@ -1008,6 +1070,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
+ 		.accel_max_val = IIO_M_S_2_TO_G(32000 << 16),
+ 		.accel_max_scale = 8,
+ 		.temp_scale = 12500, /* 12.5 milli degree Celsius */
++		.deltang_max_val = IIO_DEGREE_TO_RAD(360),
++		.deltvel_max_val = 100,
+ 		.int_clk = 4250000,
+ 		.max_dec_rate = 4250,
+ 		.filter_freqs = adis16495_def_filter_freqs,
+@@ -1025,6 +1089,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
+ 		.accel_max_val = IIO_M_S_2_TO_G(32000 << 16),
+ 		.accel_max_scale = 8,
+ 		.temp_scale = 12500, /* 12.5 milli degree Celsius */
++		.deltang_max_val = IIO_DEGREE_TO_RAD(720),
++		.deltvel_max_val = 100,
+ 		.int_clk = 4250000,
+ 		.max_dec_rate = 4250,
+ 		.filter_freqs = adis16495_def_filter_freqs,
+@@ -1042,6 +1108,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
+ 		.accel_max_val = IIO_M_S_2_TO_G(32000 << 16),
+ 		.accel_max_scale = 8,
+ 		.temp_scale = 12500, /* 12.5 milli degree Celsius */
++		.deltang_max_val = IIO_DEGREE_TO_RAD(2160),
++		.deltvel_max_val = 100,
+ 		.int_clk = 4250000,
+ 		.max_dec_rate = 4250,
+ 		.filter_freqs = adis16495_def_filter_freqs,
+@@ -1059,6 +1127,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
+ 		.accel_max_val = IIO_M_S_2_TO_G(32000 << 16),
+ 		.accel_max_scale = 40,
+ 		.temp_scale = 12500, /* 12.5 milli degree Celsius */
++		.deltang_max_val = IIO_DEGREE_TO_RAD(360),
++		.deltvel_max_val = 400,
+ 		.int_clk = 4250000,
+ 		.max_dec_rate = 4250,
+ 		.filter_freqs = adis16495_def_filter_freqs,
+@@ -1076,6 +1146,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
+ 		.accel_max_val = IIO_M_S_2_TO_G(32000 << 16),
+ 		.accel_max_scale = 40,
+ 		.temp_scale = 12500, /* 12.5 milli degree Celsius */
++		.deltang_max_val = IIO_DEGREE_TO_RAD(720),
++		.deltvel_max_val = 400,
+ 		.int_clk = 4250000,
+ 		.max_dec_rate = 4250,
+ 		.filter_freqs = adis16495_def_filter_freqs,
+@@ -1093,6 +1165,8 @@ static const struct adis16480_chip_info adis16480_chip_info[] = {
+ 		.accel_max_val = IIO_M_S_2_TO_G(32000 << 16),
+ 		.accel_max_scale = 40,
+ 		.temp_scale = 12500, /* 12.5 milli degree Celsius */
++		.deltang_max_val = IIO_DEGREE_TO_RAD(2160),
++		.deltvel_max_val = 400,
+ 		.int_clk = 4250000,
+ 		.max_dec_rate = 4250,
+ 		.filter_freqs = adis16495_def_filter_freqs,
 -- 
 2.34.1
 
