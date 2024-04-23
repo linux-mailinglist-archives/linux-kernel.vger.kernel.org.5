@@ -1,141 +1,155 @@
-Return-Path: <linux-kernel+bounces-154381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80C9D8ADB6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:13:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF1378ADB70
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:15:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D8A7284737
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:13:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CD4E1C210BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:15:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 598F410949;
-	Tue, 23 Apr 2024 01:13:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IsAELkk2"
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5822C12B8B;
+	Tue, 23 Apr 2024 01:15:30 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42B2312B82
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 01:13:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95F8EE57E;
+	Tue, 23 Apr 2024 01:15:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713834819; cv=none; b=dhS1pf/KNDwXqoDgKfNOu/64xFJ04DLG6HABu8XXQfXR0VI/zSkwNb70WaGcFYILlg1Q7R8qTPas4/xFj87XEDbgOv4bOAMA17k1IyaITTKIJZEAUymEonkxWOnQ5mXPLyhwrufzErV2jSb1xkculXf0r+NEQbCfRdlB/W0ejsw=
+	t=1713834929; cv=none; b=KVM553NoaFAx+84Inup9IqZ9CsrcW86mzAdBDq2N86kBKSaXgmGuTxiPdyAf+M1admyikprW0ZTvcjWD8Ulksci2UHaY2WCWatFNlGz9TzsU1jNJgEKirnxradrVpolP/fSAczI0CDc7FL+gfc0Zj8C3mpeuka/n7mqVoPpGDCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713834819; c=relaxed/simple;
-	bh=5VVrV9hcvFlsKZI5OHGPpwRNXV+1M7uEM1Z2u6Qt0i0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s4cpWjgk3dccry0KZ8AYEDNysIlbu7Z21Sd+0y6DJasT1El6XQHrZDecokCmvSgQS5TQMRYcce+/okO5z/tzNoJSu2lBuWd8qXT/nG4gGPxIBDIYrYMQMBD8DvxFTVoD76mlL9/LXfcXrfF5SFk6FQAuRxiVCJ3ufmZ0ZsZXzvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IsAELkk2; arc=none smtp.client-ip=209.85.221.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4dcbf770c24so2639010e0c.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 18:13:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713834817; x=1714439617; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n0QiT4LgQZ50n1AQG3qCZkCQEm18Wik9J0mwlzbdXB4=;
-        b=IsAELkk2CsoKgkqIKv+shwzhFA/kjR921wFX+0Xj43l34a/eYOrzNEQASLLMuAA3kh
-         Qbr/AWSxxevYOVWvb5aj1p5bWtFuRB909tKmiwj1aFo6nOfs7Hydtj01LVMRdgBcVktl
-         qynZ0PmW7k6wREfIgIthbHEeMUocaOdZVqoZ4Vpn5+oMHqyYrMIBURhaLSlsrkU1lvgB
-         A2prKyUaGazYW3nKsdMG+2otciU3SjQ3P1JJAEuC7Ls8RO5iVdecKGH+GnamonS+m52+
-         b8x22/WM1lpByumwj6pSwyKoz+iRpToY8imOz907M3D+qlEMpK5SYcUhAJCZJAIYh921
-         XscQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713834817; x=1714439617;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n0QiT4LgQZ50n1AQG3qCZkCQEm18Wik9J0mwlzbdXB4=;
-        b=g4X3gvKkEn/Wxg3BBk/7HAWhp4QktjR/SD9T7LrpiycmxOZUSjPN2rwnoTKzb6m8DN
-         WDTzkyoLRLyGZbrKEAxM32sbucoTqLcAwlKBF37PoFK9v/xj9UBL5tLUrDPXnwPh8SvH
-         YNJsvwMWZ4/HBkDUZcIV83fVqBEFAJ2qXJS96+7taRyq9sXD0APLK03DUV2JxZbi6eqA
-         yYSDxIbq7WeDPHbaSqAVhMTGI1Dp4zbeyK28gvb6aWTtIsSFN2tYksugsLecx+xPCP3G
-         Y4yV/VEXJVDgBU4gZTm1yYrbS4mOqM+ToQkG+0ObWAjwRldq8TyzSyEZXcWUuc5/ABt/
-         c/jA==
-X-Forwarded-Encrypted: i=1; AJvYcCV2g8GEdpwSB5gNCcfplr6MVo+tsMJSRUJEOMfzWnc8GHCSqkXj6RaNqr04N5zzCZSqKLnKZAeTke31/AmW2AK9pJ9o3j6bpIOntPm5
-X-Gm-Message-State: AOJu0YxUB89w3beJ35GRB4QtTUxuYmM4XqAYL4y7GXaFI6TGjNmgxDmn
-	rufMkNLPBKnvnPfAjQJe9k8f64rjU5zhrleXUY5edvcBMymdBj+w5g8wrDERTLOwJM9BcFA0Ivu
-	e0Q/SXi2FUK8mydvNAFCutFDXbdU=
-X-Google-Smtp-Source: AGHT+IFRB0M8tYZ94U5gY6b3+0CP/60BN0LS4hrFYSqugv3DRLFg+lrNMDhGWo8hO6c9FKiwvatw9RCoZ8nXAT0I7HA=
-X-Received: by 2002:a05:6122:ca3:b0:4bd:54d0:e6df with SMTP id
- ba35-20020a0561220ca300b004bd54d0e6dfmr2780294vkb.1.1713834817070; Mon, 22
- Apr 2024 18:13:37 -0700 (PDT)
+	s=arc-20240116; t=1713834929; c=relaxed/simple;
+	bh=vJvnUU5F0EtGJV+PqP1PFDfhLv+WzdP7ZGV4C8OuObg=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=fdyFw2uyen0PvCDqt7xWq6+s8PcpkO+cd7tY/DKIMNhUm41mpqQ5GdCeVmt7r8XtqWXHqcJHWuNyhXPim0jtvVNFlM4nztP6xCZSqEjncT+4r/V4L+Wj/+eolCvkoYIWSadg/WUJnEkwcLrcDinWIpBTzKrCDQlg+BJlqJ+FUJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VNkgc5SLkz4f3m6Z;
+	Tue, 23 Apr 2024 09:15:08 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id DF6131A016E;
+	Tue, 23 Apr 2024 09:15:17 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP1 (Coremail) with SMTP id cCh0CgCXsQqkCydmICrVKg--.12730S2;
+	Tue, 23 Apr 2024 09:15:17 +0800 (CST)
+Subject: Re: [PATCH v4 2/4] writeback: support retrieving per group debug
+ writeback stats of bdi
+To: Tejun Heo <tj@kernel.org>
+Cc: akpm@linux-foundation.org, willy@infradead.org, jack@suse.cz,
+ bfoster@redhat.com, dsterba@suse.com, mjguzik@gmail.com,
+ dhowells@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org
+References: <20240422164808.13627-1-shikemeng@huaweicloud.com>
+ <20240422164808.13627-3-shikemeng@huaweicloud.com>
+ <ZiatOJDzICT9e6pi@slm.duckdns.org>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <7e8d85c0-8b36-9c47-1411-f7077e5c0cd8@huaweicloud.com>
+Date: Tue, 23 Apr 2024 09:15:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1713755580.git.baolin.wang@linux.alibaba.com> <4107dcc957f3b62a37c83e30ca22305c373ef149.1713755580.git.baolin.wang@linux.alibaba.com>
-In-Reply-To: <4107dcc957f3b62a37c83e30ca22305c373ef149.1713755580.git.baolin.wang@linux.alibaba.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 23 Apr 2024 09:13:25 +0800
-Message-ID: <CAGsJ_4zyVt13F=zwQNDuWZMKVtgh9U7pPAqgrRpM3nTn17or4g@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/5] mm: shmem: add THP validation for PMD-mapped THP
- related statistics
-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: akpm@linux-foundation.org, hughd@google.com, willy@infradead.org, 
-	david@redhat.com, wangkefeng.wang@huawei.com, ryan.roberts@arm.com, 
-	ying.huang@intel.com, shy828301@gmail.com, ziy@nvidia.com, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZiatOJDzICT9e6pi@slm.duckdns.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgCXsQqkCydmICrVKg--.12730S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cr4Uur4DAr4fuF43Kr4xXrb_yoW8WFy7pF
+	4xAw18trW8X3409F12k3WxWr90vayDXFy5X3s7Cry7JrsxKr15tr9Ig3yYvFn8ZF93ZF95
+	JanIvryktw1vyw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-On Mon, Apr 22, 2024 at 3:03=E2=80=AFPM Baolin Wang
-<baolin.wang@linux.alibaba.com> wrote:
->
-> In order to extend support for mTHP, add THP validation for PMD-mapped TH=
-P
-> related statistics to avoid statistical confusion.
->
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
 
-Reviewed-by: Barry  Song <v-songbaohua@oppo.com>
 
->  mm/shmem.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 893c88efc45f..b4afda71a3f0 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1662,7 +1662,7 @@ static struct folio *shmem_alloc_and_add_folio(gfp_=
-t gfp,
->                         return ERR_PTR(-E2BIG);
->
->                 folio =3D shmem_alloc_hugefolio(gfp, info, index, order);
-> -               if (!folio)
-> +               if (!folio && pages =3D=3D HPAGE_PMD_NR)
->                         count_vm_event(THP_FILE_FALLBACK);
->         } else {
->                 pages =3D 1;
-> @@ -1680,7 +1680,7 @@ static struct folio *shmem_alloc_and_add_folio(gfp_=
-t gfp,
->                 if (xa_find(&mapping->i_pages, &index,
->                                 index + pages - 1, XA_PRESENT)) {
->                         error =3D -EEXIST;
-> -               } else if (huge) {
-> +               } else if (pages =3D=3D HPAGE_PMD_NR) {
->                         count_vm_event(THP_FILE_FALLBACK);
->                         count_vm_event(THP_FILE_FALLBACK_CHARGE);
->                 }
-> @@ -2046,7 +2046,8 @@ static int shmem_get_folio_gfp(struct inode *inode,=
- pgoff_t index,
->                 folio =3D shmem_alloc_and_add_folio(huge_gfp,
->                                 inode, index, fault_mm, true);
->                 if (!IS_ERR(folio)) {
-> -                       count_vm_event(THP_FILE_ALLOC);
-> +                       if (folio_test_pmd_mappable(folio))
-> +                               count_vm_event(THP_FILE_ALLOC);
->                         goto alloced;
->                 }
->                 if (PTR_ERR(folio) =3D=3D -EEXIST)
-> --
-> 2.39.3
->
+on 4/23/2024 2:32 AM, Tejun Heo wrote:
+> Hello,
+> 
+> On Tue, Apr 23, 2024 at 12:48:06AM +0800, Kemeng Shi wrote:
+>> Add /sys/kernel/debug/bdi/xxx/wb_stats to show per group writeback stats
+>> of bdi.
+>>
+>> Following domain hierarchy is tested:
+>>                 global domain (320G)
+>>                 /                 \
+>>         cgroup domain1(10G)     cgroup domain2(10G)
+>>                 |                 |
+>> bdi            wb1               wb2
+>>
+>> /* per wb writeback info of bdi is collected */
+>> cat /sys/kernel/debug/bdi/252:16/wb_stats
+>> WbCgIno:                    1
+>> WbWriteback:                0 kB
+>> WbReclaimable:              0 kB
+>> WbDirtyThresh:              0 kB
+>> WbDirtied:                  0 kB
+>> WbWritten:                  0 kB
+>> WbWriteBandwidth:      102400 kBps
+>> b_dirty:                    0
+>> b_io:                       0
+>> b_more_io:                  0
+>> b_dirty_time:               0
+>> state:                      1
+>> WbCgIno:                 4094
+>> WbWriteback:            54432 kB
+>> WbReclaimable:         766080 kB
+>> WbDirtyThresh:        3094760 kB
+>> WbDirtied:            1656480 kB
+>> WbWritten:             837088 kB
+>> WbWriteBandwidth:      132772 kBps
+>> b_dirty:                    1
+>> b_io:                       1
+>> b_more_io:                  0
+>> b_dirty_time:               0
+>> state:                      7
+>> WbCgIno:                 4135
+>> WbWriteback:            15232 kB
+>> WbReclaimable:         786688 kB
+>> WbDirtyThresh:        2909984 kB
+>> WbDirtied:            1482656 kB
+>> WbWritten:             681408 kB
+>> WbWriteBandwidth:      124848 kBps
+>> b_dirty:                    0
+>> b_io:                       1
+>> b_more_io:                  0
+>> b_dirty_time:               0
+>> state:                      7
+>>
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> 
+> Maybe it'd be useful to delineate each wb better in the output? It's a bit
+> difficult to parse visually. Other than that,
+Sorry for this. A blank line was added at end of each wb in this patch but I
+forgot to update the changelog.
+As there is some kunit build problem reported, I will correct changelog with
+the fix to build problem.
+Thanks a lot for review.
+
+Kemeng
+> 
+> Acked-by: Tejun Heo <tj@kernel.org>
+> 
+> Thanks.
+> 
+
 
