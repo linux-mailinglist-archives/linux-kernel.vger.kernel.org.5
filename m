@@ -1,207 +1,148 @@
-Return-Path: <linux-kernel+bounces-154366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF40E8ADB46
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:47:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FC2E8ADB48
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:52:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35840B22275
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:47:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CEBDFB22C3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:52:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA777E574;
-	Tue, 23 Apr 2024 00:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA8F9D26A;
+	Tue, 23 Apr 2024 00:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SZ3SiHyu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N4DwEXFM"
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E56D1802;
-	Tue, 23 Apr 2024 00:47:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D804A322A
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 00:52:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713833259; cv=none; b=av2/fr4LqitAezw9DGqYK9W6qp6jo0zFfI5yRIYBHZP3cTP/DmY206FI4v8ijCIvfBpd/1SudIJT0hOCT0BALzeVEgj3wMtq+tOA5Qohvv95fdOLiNOw0YXrDlLbm0Of7kP/IMhWhsPJsf2mOZlHcnRkaKcROMjD+2A0GIv7Epw=
+	t=1713833547; cv=none; b=DtH9Vp6N2kThEWXnRx8JZmyQYYQf/f0eAOZk626aBzJOVOnyMfPyx8xGKb2Mp/v8shuSgQyXS0iailXjhV2uUlptkPK1i+c9SD0ElqiGZsB5rb3hEytjTVQ5tlYj0Ds4MkhJ6kIbspZnRp8RhWFpWyxNkI3zKQ0wlVWRUb6uhTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713833259; c=relaxed/simple;
-	bh=LPMHQme1V8vDzMirJlOpLb0vftLJDLrVwcaPBuEO5Fo=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=jEegyCr7MmzbXKQjXNMFpFDTPdUFrnxBeINC17acnofXbEcJb43QQHqQCvI/luygp7DNQHOQAhEtmrrq6UvZL/mXCgpXai26oJXcCEXEbBQ94KdGKWGyXOOySrFk7lSRzLyjVUpXecQjfkeE/80ihCRI4KnbUKT2JZvfMTCxLgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SZ3SiHyu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 675CBC113CC;
-	Tue, 23 Apr 2024 00:47:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713833258;
-	bh=LPMHQme1V8vDzMirJlOpLb0vftLJDLrVwcaPBuEO5Fo=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=SZ3SiHyuarYWB1F6tUkkzJzyu22t8hnVHWFlNGoRPoXlF7pH8kOwJUhYRe4QUK/8+
-	 JsVMSN0pt92WDOrwRouIEgBC9KwME4SGtqhrz3urJK3N0yH+pQdAeRAS2Jdajax+fv
-	 ezTpMm4VrCIa6YsUJnLeTUga7IcLYyWcviRWnb2VI17XAq46Kwm9W1olCg+vpLMe+k
-	 1WU/H0WoJ7QhZdXeFQt3NVyQ+LrE3aSdDJ4TI1fWoreR6UoiVw5PCMKZJnyV6AOcNn
-	 RvvxLGSH9+jyEU2G3HwSyJEFpRcVwJRb3i2Ebn7eZhQj/xS7col3kvATKlx7w/RcEw
-	 z93aSoFkhQYeg==
-Message-ID: <eca85d9094538b8713b556979e811b39.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1713833547; c=relaxed/simple;
+	bh=uclba+Y0I2KbZEt7WfVM1d6DNt4IOCvoMxSQvBBaLoA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m6PLaU13jbciwvTeMjYTKGTJz9xZhwEs0lPgzmf/T5XGEgEKx/jWWDq7mAuexjQkL/nVvDt9lMMpz16utVabwCbKCfHMSRu4dCfuwD0V4bmKYM1ekhwi3n1h8hBurgfmnP2dmDcq1ugU7MJ5f/rZXn6CFv1tL+SsEYW6vOQJgrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N4DwEXFM; arc=none smtp.client-ip=209.85.217.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-47a21267aa8so1673876137.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 17:52:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713833545; x=1714438345; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ClL00ZKNnFMRV8+vNcFNoNRUVtaZiDabBBHCITme6cw=;
+        b=N4DwEXFMsXbL6Wk9IFHZQzhlWYNH1/Ft42oSXV/hONC6Ida74bTCBEkmofMGptqZlu
+         qrtWeQEoSaeMdXRs8O3hpAdU3iB4vI+IFwQRpKveVI3aW7kck/v41lR5iMkHevKSxv1F
+         +cnRXlh7sJ2T7f+Fiq/hjJyYMJVYNBi0jUpwmlK9LTAJJmjwdZ20dNuzQ51z3JKQUQua
+         GG9pU3kwuDNTNQ0N+vTWDK+8301E4tCeWWR8wHfVUl444Jj9avrOhELC4SMDLOtZTXe1
+         QwSv7NxiJtoK64oyGI91QnFjjd5AtpPO0y+QVeU3IB8katUwOrnokX2J4C1Rc4+37dgZ
+         hXjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713833545; x=1714438345;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ClL00ZKNnFMRV8+vNcFNoNRUVtaZiDabBBHCITme6cw=;
+        b=cYGXUR2k4cECarMz+nA0UU3E4JHiMnwdKPzKmgjySn6THkwrseS81iqXOGrmsQvGkX
+         ye7azYFGDvC4GC/g90EoYYWd0+u51Gv+Q97kzWNCFqMYRWGSU1deIrySHomKQ7ldv/HX
+         I7ERwBVzPa+DBXJCoFxUCcl+aDbk5HyQallBpUkKpnu8YbrCyiOmNhjJhHP5zhVY9BMK
+         vpYTLHLINEU4KCzI8tbR9aoWDaAg2iSgUVlSY6LoFDbwye5lT5JkLYp2E2p7TgQm4/24
+         q4YgW1NxNlsffMlZC0COrt8rwlHQneB8LsTkv2zVxx1xDP301D4EYQzNOg0ZGX/uCuFQ
+         3ppQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWiZogcm+mT8ZdaIZ+qieZblTkotx8Blx0/XBruO7fG4gUtlLRDTHtieWclkjlneLk944CduogycpxrPKIOw3M7/fUQkY5wUjrPW5Ur
+X-Gm-Message-State: AOJu0YzdbK7MNX1sATZBY1UvAeVrxpWALar9+dXkpHjM9lAKE/1QskMl
+	7r63LoLYccsmbBbrso8NTWaSyleAWiKg7/wnsCKRg/Ub1A5S2/1mchAtyAqK3KWoKqaVRavn4Ag
+	Mu5NE28F2/o36R9z7+pH9ZiqjVws=
+X-Google-Smtp-Source: AGHT+IENNvKCUqce8Ft/mi66QsvWsVY3Pw7F+95jKA9kCDhY7lkaTazybKLRjabVwnQCPTqkuemT6qY6lpY0d+gtQs4=
+X-Received: by 2002:a67:e24c:0:b0:47b:bf92:691 with SMTP id
+ w12-20020a67e24c000000b0047bbf920691mr13868061vse.1.1713833544690; Mon, 22
+ Apr 2024 17:52:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240419101643.11534-1-hailong.liu@oppo.com> <CAGsJ_4zUhnAAUb77ktJxDvAQpZhGrs00+8iQU3dhwpy=C_CjDA@mail.gmail.com>
+ <20240422103857.qw5mrcnj4rgej2jh@oppo.com>
+In-Reply-To: <20240422103857.qw5mrcnj4rgej2jh@oppo.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 23 Apr 2024 08:52:13 +0800
+Message-ID: <CAGsJ_4wwrnO_Fri6acjoTDTr+G0rmCZsPie-ahVzM9runHQpTw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] mm/vmalloc: fix return value of vb_alloc if size
+ is 0.
+To: Hailong Liu <hailong.liu@oppo.com>
+Cc: akpm@linux-foundation.org, urezki@gmail.com, hch@infradead.org, 
+	lstoakes@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <06f26e2f49a8423cb0122a08fb2d868484e2e0a4.1713164546.git.unicorn_wang@outlook.com>
-References: <cover.1713164546.git.unicorn_wang@outlook.com> <06f26e2f49a8423cb0122a08fb2d868484e2e0a4.1713164546.git.unicorn_wang@outlook.com>
-Subject: Re: [PATCH v14 4/5] clk: sophgo: Add SG2042 clock driver
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: Chen Wang <unicorn_wang@outlook.com>
-To: Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org, devicetree@vger.kernel.org, guoren@kernel.org, haijiao.liu@sophgo.com, inochiama@outlook.com, jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, mturquette@baylibre.com, palmer@dabbelt.com, paul.walmsley@sifive.com, richardcochran@gmail.com, robh+dt@kernel.org, samuel.holland@sifive.com, xiaoguang.xing@sophgo.com
-Date: Mon, 22 Apr 2024 17:47:36 -0700
-User-Agent: alot/0.10
 
-Quoting Chen Wang (2024-04-15 00:23:27)
-> diff --git a/drivers/clk/sophgo/clk-sophgo-sg2042.c b/drivers/clk/sophgo/=
-clk-sophgo-sg2042.c
-> new file mode 100644
-> index 000000000000..0bcfaab52f51
-> --- /dev/null
-> +++ b/drivers/clk/sophgo/clk-sophgo-sg2042.c
-> @@ -0,0 +1,1645 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Sophgo SG2042 Clock Generator Driver
-> + *
-> + * Copyright (C) 2024 Sophgo Technology Inc. All rights reserved.
-> + */
-> +
-> +#include <asm/div64.h>
+On Mon, Apr 22, 2024 at 6:39=E2=80=AFPM Hailong Liu <hailong.liu@oppo.com> =
+wrote:
+>
+> On Mon, 22. Apr 11:46, Barry Song wrote:
+> > On Fri, Apr 19, 2024 at 6:17=E2=80=AFPM <hailong.liu@oppo.com> wrote:
+> > >
+> > > From: "Hailong.Liu" <hailong.liu@oppo.com>
+> > >
+> > > vm_map_ram check return value of vb_alloc by IS_ERR. if
+> > > vm_map_ram(page, 0, 0) , vb_alloc(0, GFP_KERNEL) would return NULL
+> > > which cause kernel panic by vmap_pages_range_noflush=E3=80=82fix this=
+ by
+> > > return ERR_PTR(-EINVAL) if size is 0.
+> > >
+> > > Signed-off-by: Hailong.Liu <hailong.liu@oppo.com>
+> > > ---
+> > > Changes since v1 [1]:
+> > > - Return ERR_PTR(-EINVAL) or not check IS_ERR_OR_NULL
+> > >
+> > > BTW,  Barry suggests me that if count is 0, return directly, in my
+> > > opinion, change return value is more resonable.
+> > >
+> > > [1] https://lore.kernel.org/all/84d7cd03-1cf8-401a-8edf-2524db0bd6d5@=
+oppo.com/
+> > >
+> > >  mm/vmalloc.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > > index a3fedb3ee0db..c430a999805b 100644
+> > > --- a/mm/vmalloc.c
+> > > +++ b/mm/vmalloc.c
+> > > @@ -2173,7 +2173,7 @@ static void *vb_alloc(unsigned long size, gfp_t=
+ gfp_mask)
+> > >                  * get_order(0) returns funny result. Just warn and t=
+erminate
+> > >                  * early.
+> > >                  */
+> > > -               return NULL;
+> > > +               return ERR_PTR(-EINVAL);
+> >
+> > might be ZERO_SIZE_PTR.
+>
+> Hi Barry,
+> Hi Barry, I use ERR_PTR(-EINVAL) to keep consistency with the return
+> value of the function alloc_vmap_area.
+>
+>         if (unlikely(!size || offset_in_page(size) || !is_power_of_2(alig=
+n)))
+>                 return ERR_PTR(-EINVAL);
+>
+> IMO, ZERO_SIZE_PTR is used by slab and can not be catched by IS_ERR().
 
-asm goes after linux includes...
+Ok. it seems not worth to change two places.
 
-> +#include <linux/array_size.h>
-> +#include <linux/bits.h>
-> +#include <linux/clk.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/io.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/platform_device.h>
+Reviewed-by: Barry Song <baohua@kernel.org>
 
-here.
-
-> +
-> +/*
-> + * The clock of SG2042 is composed of three parts.
-> + * The registers of these three parts of the clock are scattered in three
-> + * different memory address spaces:
-> + * - pll clocks
-> + * - gate clocks for RP subsystem
-> + * - div/mux, and gate clocks working for other subsystem than RP subsys=
-tem
-> + */
-> +#include <dt-bindings/clock/sophgo,sg2042-pll.h>
-> +#include <dt-bindings/clock/sophgo,sg2042-rpgate.h>
-> +#include <dt-bindings/clock/sophgo,sg2042-clkgen.h>
-> +
-> +/* Registers defined in SYS_CTRL */
-> +#define R_PLL_BEGIN            0xC0
-[...]
-> +
-> +#define SG2042_PLL(_id, _name, _parent_name, _r_stat, _r_enable, _r_ctrl=
-, _shift) \
-> +       {                                                               \
-> +               .hw.init =3D CLK_HW_INIT(                                =
- \
-> +                               _name,                                  \
-> +                               _parent_name,                           \
-
-This still uses a string. Please convert all parents described by
-strings to use clk_parent_data or clk_hw directly.
-
-> +                               &sg2042_clk_pll_ops,                    \
-> +                               CLK_GET_RATE_NOCACHE | CLK_GET_ACCURACY_N=
-OCACHE),\
-> +               .id =3D _id,                                             =
- \
-> +               .offset_ctrl =3D _r_ctrl,                                =
- \
-> +               .offset_status =3D _r_stat,                              =
- \
-> +               .offset_enable =3D _r_enable,                            =
- \
-> +               .shift_status_lock =3D 8 + (_shift),                     =
- \
-> +               .shift_status_updating =3D _shift,                       =
- \
-[...]
-> + * "clk_div_ddr01_1" is the name of Clock divider 1 control of DDR01, and
-> + * "clk_gate_ddr01_div1" is the gate clock in front of the "clk_div_ddr0=
-1_1",
-> + * they are both controlled by register CLKDIVREG28;
-> + * While for register value of mux selection, use Clock Select for DDR01=
-=E2=80=99s clock
-> + * as example, see CLKSELREG0, bit[2].
-> + * 1: Select in_dpll0_clk as clock source, correspondng to the parent in=
-put
-> + *    source from "clk_div_ddr01_0".
-> + * 0: Select in_fpll_clk as clock source, corresponding to the parent in=
-put
-> + *    source from "clk_div_ddr01_1".
-> + * So we need a table to define the array of register values correspondi=
-ng to
-> + * the parent index and tell CCF about this when registering mux clock.
-> + */
-> +static const u32 sg2042_mux_table[] =3D {1, 0};
-> +
-> +static const struct clk_parent_data clk_mux_ddr01_p[] =3D {
-> +       { .hw =3D &sg2042_div_clks[0].hw },
-> +       { .hw =3D &sg2042_div_clks[1].hw },
-
-Just use struct clk_init_data::parent_hws for this if you only have a
-clk_hw pointer for every element of the parent array.
-
-> +};
-> +
-> +static const struct clk_parent_data clk_mux_ddr23_p[] =3D {
-> +       { .hw =3D &sg2042_div_clks[2].hw },
-> +       { .hw =3D &sg2042_div_clks[3].hw },
-> +};
-> +
-[...]
-> +
-> +static int sg2042_pll_probe(struct platform_device *pdev)
-> +{
-> +       struct sg2042_clk_data *clk_data =3D NULL;
-> +       int i, ret =3D 0;
-> +       int num_clks =3D 0;
-> +
-> +       num_clks =3D ARRAY_SIZE(sg2042_pll_clks);
-> +
-> +       ret =3D sg2042_init_clkdata(pdev, num_clks, &clk_data);
-> +       if (ret < 0)
-> +               goto error_out;
-> +
-> +       ret =3D sg2042_clk_register_plls(&pdev->dev, clk_data, sg2042_pll=
-_clks,
-> +                                      num_clks);
-> +       if (ret)
-> +               goto cleanup;
-> +
-> +       return devm_of_clk_add_hw_provider(&pdev->dev,
-> +                                          of_clk_hw_onecell_get,
-> +                                          &clk_data->onecell_data);
-> +
-> +cleanup:
-> +       for (i =3D 0; i < num_clks; i++) {
-> +               if (clk_data->onecell_data.hws[i])
-> +                       clk_hw_unregister(clk_data->onecell_data.hws[i]);
-
-This should be unnecessary if devm is used throughout.
-
-> +       }
-> +
-> +error_out:
-> +       pr_err("%s failed error number %d\n", __func__, ret);
-> +       return ret;
-
-Just do this part in the one place the goto is. These two comments apply
-to all probes.
+>
+> --
+> Best Regards,
+> Hailong.
 
