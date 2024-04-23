@@ -1,172 +1,168 @@
-Return-Path: <linux-kernel+bounces-155575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8063F8AF41A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F7198AF41E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:30:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F14F1C23A4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:30:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60FFF1C221A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:30:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C05613D61C;
-	Tue, 23 Apr 2024 16:29:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA3AB13D620;
+	Tue, 23 Apr 2024 16:29:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YEWrtxWI"
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IBgsWl/U"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6210013D530
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D39A313C9DE;
+	Tue, 23 Apr 2024 16:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713889742; cv=none; b=BqXxTsBb/WwqsMf4s89+hQ2KFyTK0WRqKdr8ywDEDzLBKl6M7DdeaH6f74pdYxzz00rPL1qzUaIazb11LWM9HiLeiCLNK4ycwHagsNny5kkEAHHv22e3CM6Vhb0KTMhO1PGH1gBV/BZerWLckODyyeyGZ+Pc8vTYpffrXEsKPBA=
+	t=1713889792; cv=none; b=UuzaE8qv/gNHghCKHpJ7iQfpi0TAfd2NqurFNLXsj+xUSX1uOlayyjE8dbxh/QL1gYwxZ4sn5jNfygrx1VmjMEzcxGen2tczu7z0OurYyrQTsnQHT2oT1Xk+bWCLYHfhf4EKHDIXzClQPw8FEEbC2e4/FkVM6Dvm0wQRwhWFmKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713889742; c=relaxed/simple;
-	bh=hKwnyKYxUieWcDXpBDUPZWC/LBXcDL4MoiPPoFHtwhE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FdgllfoV0ekXVfrAvK5/IpjF6Gok9ZGt1E05N7WWXh7MwceXfdd0RtJmXx6JVdNZGOEaJ7JOUNOL+RuURCjELROQuEIVtkbVM3YT3nzNJqjfQzMQ0P35NON5yck6joMrB+k+na5/Ow7VFJ1E/iYdDx1Hbf4c44dGRuRJsRcA8Kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YEWrtxWI; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2adce8f7814so2061859a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:29:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713889740; x=1714494540; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GMsNlntKePki7cMkUYlg0t86F6HRDujxz9Yy8T6g+ic=;
-        b=YEWrtxWICGCV2yeG2SydqZuMasIle3A534xsylDOHjoTzfgA3XKwCJOEFEz8EURDx3
-         j3kqFhYiRdGeqUhkDXA0qnZQsraz631I7QfnY/80WcdLdEG1lCbqHUZ1rGdMClSjotgK
-         BrHSI5F2pVCMh9AWJUtj2dVDOPsY2U9DAPaU4RRbA/95EZzBqmNkeMOr1S0yoe3wexhX
-         jKCyDcP/s8II16CYEzmpTpq+W9Xv1Rzq+H/qW2xmTRmMY/eoSHgIg0xtGTXY+jLXDJPv
-         t+oKlcbYzM+j8enGehCTY1K3ttLWFkMcOazaEt0aKAdrb6cU8jTVQNvXm2sA+OERYn57
-         g1FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713889740; x=1714494540;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GMsNlntKePki7cMkUYlg0t86F6HRDujxz9Yy8T6g+ic=;
-        b=EwwKiXsYYi+tSp+qdzcCbSiJj5kbG3wDW8ih6OGfxyTm4semfgXmRvHULK6RsbJyaG
-         KG9nGpT9oP/j9zT9UQgb/gfqlpVDO4IDAl8sC/EmGMbCJF/FuXm3Xq14RywPrRm1lyte
-         P8Hq5ISkQ8ybAhG9q4vzz2KUjrOcrlNyf+lTVuiuIhiAqdboJTO8dWeOQ+xiRyfgPM/h
-         RTV6QZJPphM16JSWRUb8BgXs0H0tEj3ThG5xk3OAgwyQhVADXRpHf/N7GTFTq+D+Rcw9
-         M039psxi+kgYXJ2R9qA4fW/8HHDM8WCt1pYEw4VyCR6FFEqHHhAt/Eh6YruRc3IIDIYh
-         6QRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWJWy75YeIizZfekz82Hyqa/xsCHK9sxVO8d7hDuRqDoqvnb9MMFESTVLsDwtqDS9UVHRcynsQL+Qy2yilqFr81f2g+CiF0OtqGztGd
-X-Gm-Message-State: AOJu0YzqW35X1DIHN9nn6tJFBqzDxSbRnZnsRYx5Ob2XVA2kCdXp7XWp
-	aEQFfz1psdYwT/hoINuNJhUyhOqn9Qm+57HEnsOwxC63IaPGzm0WwwOluVX5
-X-Google-Smtp-Source: AGHT+IE1mIBHXr7DXWIF1lee9/leT3zgkzvzMUi58zr2PGz6kvSJOKss+onfXyAvnYI5I9TNDHiVFQ==
-X-Received: by 2002:a17:90a:638c:b0:2a5:badb:30ea with SMTP id f12-20020a17090a638c00b002a5badb30eamr13287807pjj.36.1713889740538;
-        Tue, 23 Apr 2024 09:29:00 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:6f51])
-        by smtp.gmail.com with ESMTPSA id si4-20020a17090b528400b002ae62a84f29sm2505085pjb.38.2024.04.23.09.28.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 09:29:00 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 23 Apr 2024 06:28:58 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Sven Schnelle <svens@linux.ibm.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] workqueue: fix selection of wake_cpu in kick_pool()
-Message-ID: <ZifhygHQQnPLBbtU@slm.duckdns.org>
-References: <20240423061906.2431968-1-svens@linux.ibm.com>
+	s=arc-20240116; t=1713889792; c=relaxed/simple;
+	bh=t2LezbxdKP35DVytCdS/mQglz2976ZAWz309dfVwZ0g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Cnt06NI+96ACEQPhwuRoGgnts4QZhIDYljvgnBhc3BdhPeOcs1oMjTyzv+TtDUc2kL80BfjuMPPtfRezB18zEj2DvHRXQ0K+RnXgE67lluOSqdTI3LUSBLpL/jneRHfMCYqqneiaA1c66jnWZ9yf/yPH85KJr8mgMo+gsFQQKjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IBgsWl/U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB81DC116B1;
+	Tue, 23 Apr 2024 16:29:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713889791;
+	bh=t2LezbxdKP35DVytCdS/mQglz2976ZAWz309dfVwZ0g=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=IBgsWl/UdkmQxLX83OuGJMtsKjtqRaJ8W92N7deRue/6Xy4n6bGLUfg9q/pwdK3lR
+	 zJnJcL/hW3pMy+RLD562WMKyyQc4OgxP+TDUWMFcp0tpCuapg165WpECG/i6pcQO7K
+	 8ZIxMMkY4riaRjyOBOHX5RhVSobhgFtd4Z9gYGt6N1MCD981hoKXOdoN4p+wZT4QZY
+	 ndblvf1azZ7PuLcY16j9QTO2AvNy0JINHPXrUkUabB0UuctFdNermhVkMNdBafA2g0
+	 3K9NSTUwrSYbpiSSLJmaKngE1r3K2qLDlld6qNrwKEFVePAJxRZ82W76hLU0NcGtPs
+	 NQkKv9H2yRa/Q==
+Message-ID: <2e67e4e6-83a7-4153-b6a7-cdec0ab2c171@kernel.org>
+Date: Tue, 23 Apr 2024 18:29:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423061906.2431968-1-svens@linux.ibm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/6] dt-bindings: HID: i2c-hid: elan: add
+ 'no-reset-on-power-off' property
+To: Johan Hovold <johan+linaro@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rob Herring
+ <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Douglas Anderson <dianders@chromium.org>, linux-input@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240423134611.31979-1-johan+linaro@kernel.org>
+ <20240423134611.31979-4-johan+linaro@kernel.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240423134611.31979-4-johan+linaro@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 23/04/2024 15:46, Johan Hovold wrote:
+> When the power supply is shared with other peripherals the reset line
+> can be wired in such a way that it can remain deasserted regardless of
+> whether the supply is on or not.
 
-Applied to wq/for-6.9-fixes with further explanation and stable cc.
+To clarify: the reset line is still present and working in such case?
 
-Thanks.
------- 8< ------
-From 57a01eafdcf78f6da34fad9ff075ed5dfdd9f420 Mon Sep 17 00:00:00 2001
-From: Sven Schnelle <svens@linux.ibm.com>
-Date: Tue, 23 Apr 2024 08:19:05 +0200
-Subject: [PATCH] workqueue: Fix selection of wake_cpu in kick_pool()
+> 
+> This is important as it can be used to avoid holding the controller in
+> reset for extended periods of time when it remains powered, something
+> which can lead to increased power consumption. Leaving reset deasserted
+> also avoids leaking current through the reset circuitry pull-up
+> resistors.
+> 
+> Add a new 'no-reset-on-power-off' devicetree property which can be used
+> by the OS to determine when reset needs to be asserted on power down.
+> 
+> Note that this property can also be used when the supply cannot be
+> turned off by the OS at all.
+> 
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/input/elan,ekth6915.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/input/elan,ekth6915.yaml b/Documentation/devicetree/bindings/input/elan,ekth6915.yaml
+> index c3a6f901ff45..3d20673f10b2 100644
+> --- a/Documentation/devicetree/bindings/input/elan,ekth6915.yaml
+> +++ b/Documentation/devicetree/bindings/input/elan,ekth6915.yaml
+> @@ -37,6 +37,12 @@ properties:
+>    reset-gpios:
+>      description: Reset GPIO; not all touchscreens using eKTH6915 hook this up.
+>  
+> +  no-reset-on-power-off:
 
-With cpu_possible_mask=0-63 and cpu_online_mask=0-7 the following
-kernel oops was observed:
+Missing vendor prefix. Unless you want to re-use existing property
+"keep-power-in-suspend", but the case here mentions power off, not suspend.
 
-smp: Bringing up secondary CPUs ...
-smp: Brought up 1 node, 8 CPUs
-Unable to handle kernel pointer dereference in virtual kernel address space
-Failing address: 0000000000000000 TEID: 0000000000000803
-[..]
- Call Trace:
-arch_vcpu_is_preempted+0x12/0x80
-select_idle_sibling+0x42/0x560
-select_task_rq_fair+0x29a/0x3b0
-try_to_wake_up+0x38e/0x6e0
-kick_pool+0xa4/0x198
-__queue_work.part.0+0x2bc/0x3a8
-call_timer_fn+0x36/0x160
-__run_timers+0x1e2/0x328
-__run_timer_base+0x5a/0x88
-run_timer_softirq+0x40/0x78
-__do_softirq+0x118/0x388
-irq_exit_rcu+0xc0/0xd8
-do_ext_irq+0xae/0x168
-ext_int_handler+0xbe/0xf0
-psw_idle_exit+0x0/0xc
-default_idle_call+0x3c/0x110
-do_idle+0xd4/0x158
-cpu_startup_entry+0x40/0x48
-rest_init+0xc6/0xc8
-start_kernel+0x3c4/0x5e0
-startup_continue+0x3c/0x50
+Anyway, the property sounds like what the OS should be doing, which is
+not what we want. You basically instruct driver what to do. We want a
+described hardware configuration or hardware specifics.
 
-The crash is caused by calling arch_vcpu_is_preempted() for an offline
-CPU. To avoid this, select the cpu with cpumask_any_and_distribute()
-to mask __pod_cpumask with cpu_online_mask. In case no cpu is left in
-the pool, skip the assignment.
+Reset is pulled to something? What is exactly different in this hardware
+configuration comparing to other hardware setup (regular)?
 
-tj: This doesn't fully fix the bug as CPUs can still go down between picking
-the target CPU and the wake call. Fixing that likely requires adding
-cpu_online() test to either the sched or s390 arch code. However, regardless
-of how that is fixed, workqueue shouldn't be picking a CPU which isn't
-online as that would result in unpredictable and worse behavior.
+> +    type: boolean
+> +    description:
+> +      Reset line is wired so that it can be left deasserted when the power
+> +      supply is off.
 
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-Fixes: 8639ecebc9b1 ("workqueue: Implement non-strict affinity scope for unbound workqueues")
-Cc: stable@vger.kernel.org # v6.6+
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
- kernel/workqueue.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 0066c8f6c154..a2af0aaf026b 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1277,8 +1277,12 @@ static bool kick_pool(struct worker_pool *pool)
- 	    !cpumask_test_cpu(p->wake_cpu, pool->attrs->__pod_cpumask)) {
- 		struct work_struct *work = list_first_entry(&pool->worklist,
- 						struct work_struct, entry);
--		p->wake_cpu = cpumask_any_distribute(pool->attrs->__pod_cpumask);
--		get_work_pwq(work)->stats[PWQ_STAT_REPATRIATED]++;
-+		int wake_cpu = cpumask_any_and_distribute(pool->attrs->__pod_cpumask,
-+							  cpu_online_mask);
-+		if (wake_cpu < nr_cpu_ids) {
-+			p->wake_cpu = wake_cpu;
-+			get_work_pwq(work)->stats[PWQ_STAT_REPATRIATED]++;
-+		}
- 	}
- #endif
- 	wake_up_process(p);
--- 
-2.44.0
+Best regards,
+Krzysztof
 
 
