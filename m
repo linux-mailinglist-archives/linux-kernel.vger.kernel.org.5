@@ -1,159 +1,171 @@
-Return-Path: <linux-kernel+bounces-154835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 633368AE1B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:04:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A45398AE1CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:07:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 187272814B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:04:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A6EE2812E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:07:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B7E604C8;
-	Tue, 23 Apr 2024 10:04:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Qme0d+1F"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8433C60B95;
+	Tue, 23 Apr 2024 10:06:59 +0000 (UTC)
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2096.outbound.protection.partner.outlook.cn [139.219.146.96])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 837545FBAA
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:04:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713866645; cv=none; b=n/xu7Vr0tbV8rWhXEF3TS6P1DFig5r8BPld1RxwDRTJIjc8rQSO8oZLQLG/PV2cFVUK4D2D5PMUfvqyxX5znIu3jpopSXlI5lHkTuDksIOWvMF4rZ1WU65jupHAm7kjmYPopzWedmroXGi9YYVK3Y+4E2lrovGjtWShcH08eY7U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713866645; c=relaxed/simple;
-	bh=QkvsqUOUIxDjQ4fehjx1w2ckvk/UVlRlqPUBOKypMgE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=m8waJyuu7gYfoAAb1eU3Bg3znOC0HeqNf+B9AvLfVslaKDZ9ILXZx6g8MgcseoLGA3nn5Nkr93F20+H7GVF1V976+gZ+Qf2E/TBiVho8d8FDez7TbnP+4TVHnoM/QrgpSGFatTa8vN4PYhz5kzcAsiYrr+HC/5uLhut44cyfdUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Qme0d+1F; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713866640;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ROHAHkC9G7JwPNLv0bg25AQnmJ1DAVE/hNqmAzXfSzM=;
-	b=Qme0d+1Ff8tEW7H+yuYgHnT3UWxEdBeSBrnGmxD14Dsdbn61dJxHd5jwKxhPxBJOM0Rptv
-	kAikCF4+7p/vDOz4k/PLjNP3W+qa2LpUh/wGS0Z1dcx0WsFCuOkLE/2GzFCPzgOAFKInMV
-	eU4jwO/wEspP4C1u+JhYmH+e+1d1H0k=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-319-sEHHNs79NMCL6ZzfWg2eEQ-1; Tue, 23 Apr 2024 06:03:59 -0400
-X-MC-Unique: sEHHNs79NMCL6ZzfWg2eEQ-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-349e1effeb5so2931885f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:03:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713866638; x=1714471438;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ROHAHkC9G7JwPNLv0bg25AQnmJ1DAVE/hNqmAzXfSzM=;
-        b=PGMWc+yTkxI5D+bNF4lpolO+GXLj3kQa9MeVUE+HzKJPXHlMKtRRiHGfmNsXFqpueT
-         GGgCb6tFc7R3HBIjje+D2yNovt0AtAaAGFIhai4QMxCFvTriUTeZekkaX3YUsvdyWEmc
-         sqZWFxi4imqxM2Cm4myZ53wTSxvPXAHY4Hh+CjOGZCKbL22mcCLjIc+A0qUvwB+15tQ1
-         b4jN/w8LQzhy6vBJwf3GLwpL6ZDMb+Abo5nHQBxn+WcaT5l1/3Fj3NVqvQi61JSvDGn2
-         vUXlgaABKbQSWO/6Hk1eqqGJpyJwSQooqRxR54w8KSezi2wkZtynP3m81OLnLxlgxIDD
-         KWnw==
-X-Forwarded-Encrypted: i=1; AJvYcCWOT/eWfihvWZeuAFeVShmo5MNAoJkeUSy3PBRLTJaLLboyQCHHmBHFTcVBHj07W3Sf1W+DTjXaFR8dzuDjSJMGvnauuPIcBdqzkX4P
-X-Gm-Message-State: AOJu0YyZPAJAy+CH8XrIY3RChPHoBGGV3za3gAgGvMuJXHb1b6rtXfTq
-	ojaYo9MxUZ6HTMMsHSbduJfPfWtjcZ0kZo1WzjId4htj9hgQ1+fJdvaEHT+LENRB4LEa/W37CwM
-	1LiZSBEXq2F+JCu+41f8EdNDGUnMxRlJXfi1jc+wWo69O9fa8160EfJz8wHTtZQ==
-X-Received: by 2002:a05:6000:174c:b0:347:e6d1:2fb8 with SMTP id m12-20020a056000174c00b00347e6d12fb8mr1382333wrf.34.1713866637973;
-        Tue, 23 Apr 2024 03:03:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH/aUN8L1+KJ5mn2QLrXc7q/M8mNESOVOZCGh5yFRpoIYd2BISgnEYa/7dz1oE9mdjQ5P5DSQ==
-X-Received: by 2002:a05:6000:174c:b0:347:e6d1:2fb8 with SMTP id m12-20020a056000174c00b00347e6d12fb8mr1382316wrf.34.1713866637505;
-        Tue, 23 Apr 2024 03:03:57 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:fd00:fb07:92f8:8f0c:6a08? (p200300cbc706fd00fb0792f88f0c6a08.dip0.t-ipconnect.de. [2003:cb:c706:fd00:fb07:92f8:8f0c:6a08])
-        by smtp.gmail.com with ESMTPSA id l1-20020a5d4bc1000000b0034ae73a8b25sm6322137wrt.37.2024.04.23.03.03.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 03:03:57 -0700 (PDT)
-Message-ID: <de45132d-501a-448f-8513-5e55c714b54c@redhat.com>
-Date: Tue, 23 Apr 2024 12:03:55 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13E1322F11;
+	Tue, 23 Apr 2024 10:06:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.96
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713866819; cv=fail; b=OlS6iKQ8diRd3piR2ord5Ppfa+biHCa+FP0Ahc4WcA0RTDSvkb8pGH/p34LTM7JQM8/z99L0qt/v7O/XZzQXxWKWmiVcBQrPHw38wE/6N47bVfbCmILMNlmBBQG4iUvut9KQECUURwNktZCJVn23hxTtj99o3I070f7zXY25peU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713866819; c=relaxed/simple;
+	bh=oEUss2ccXYRZxmK7FlKr7P/HE54Io0MA7b24o5uGmkc=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=kSHm2Uf+uWWQrll0CdOciVU7MlAdVBWGdIS2C3r5QTQxrSwzz+theaP3+fOJrprZCURKUs30c4psGbsuclKtOD2TrlEs3yEhc1Z+NFkW6rFzgqwitRl/JNVH0z8MBTTRrSbXgd3EFqvXF1+AS4BbST5TGOIcBjaDzdPCsX4C/ik=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.96
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V5kYxKv+bFxoFAeipVqbmWRSRsQQyVPhdZoDeJtmMd+EdJkxK2KnKv1W/ZKnXWZ7NvGFOOFMowPlEshUlD42cDWmteXQdX5VfSBWznwfpeOE1DBXgW7xHa0e091ZoA+aEJN2QCR5i6bjd/j72hUTuRIXDf8/PNyEB1EptvEKNiM3KZrx6Y3SadbE/wSD3dlRu9Vjp7q6x6Q2Q3onS2cH8gL5aN9TmEFLFzij4nfS+2lWka6NB9rOwGGu3R6wSW6p6vtbhGFy7MSbN8TA+ujxDoT5Nv3HDZs6YKgbtJeTH+w38hPPdQPf99mLpAc6F4d11QDPaV1rf1ZzaMfCLKnVzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Q1P2lrXNJOZN2ADl4PxctyLQ6KvEk3oVIfydM72cSqs=;
+ b=KucinErgQAOZU6T9sbD99u3QD0fU1dvN3sufEFQP6xROAY5Vd8sZvWYZ9J7RYVZz49gYfCArK+lJFoB5aeBB3Esb28Qln5p6U/9FXHaaEJ6vAjB7J2daHEM/DJVsEZXLWPaQHAG83HXhSTWMq3nUEci87i8oyeM03b1f3GEXzMUX2hMOFz+SNdzmlg0fwCNss7X5hdg+PhrFxVohHHdwAtdssEp62l2/pM77GGPcEa8Qxv/OAS2sf1fK6pAeHL7zl2O0iuuRkjfrYIfzufQFgGLcs2NnGKtoLzs/qWCNPg6+GnfqvX1hR5rIdKxtWTEv7AFbSoja7aQ6khSfo3gFNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:8::10) by NTZPR01MB1002.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:b::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.33; Tue, 23 Apr
+ 2024 08:34:17 +0000
+Received: from NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
+ ([fe80::e903:99a6:10b7:304d]) by
+ NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn ([fe80::e903:99a6:10b7:304d%6])
+ with mapi id 15.20.7472.044; Tue, 23 Apr 2024 08:34:17 +0000
+From: Xingyu Wu <xingyu.wu@starfivetech.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Takashi Iwai <tiwai@suse.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor.dooley@microchip.com>
+Cc: Walker Chen <walker.chen@starfivetech.com>,
+	Xingyu Wu <xingyu.wu@starfivetech.com>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org
+Subject: [PATCH v2 0/2] Add PDM controller for StarFive JH8100 SoC
+Date: Tue, 23 Apr 2024 16:34:03 +0800
+Message-Id: <20240423083405.263912-1-xingyu.wu@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHXPR01CA0022.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:1b::31) To NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:8::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/4] virtio_balloon: separate vm events into a function
-To: zhenwei pi <pizhenwei@bytedance.com>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, virtualization@lists.linux.dev
-Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
- akpm@linux-foundation.org
-References: <20240423034109.1552866-1-pizhenwei@bytedance.com>
- <20240423034109.1552866-2-pizhenwei@bytedance.com>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240423034109.1552866-2-pizhenwei@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: NTZPR01MB0956:EE_|NTZPR01MB1002:EE_
+X-MS-Office365-Filtering-Correlation-Id: 22d19776-5bc8-4d1b-b201-08dc637029db
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	W4IAc+0H0Fq7oNciOuV8MvlMffp5bEoHm+qwzBBtErEJcNleyOiDUM3hZwv47YsoGKQ+KZP/nZz45Xep17UnuABD8EIjPxpPmsg9JB2A1puW+dKNJmMYD/1SxLa14CP69VbSbXsMxjt4Lj6cn7O61q3EYjblfDzsR+TbWRKgu94EgvY7DXRNt4FrbVn/hImtCWrcFdIk4/TGTh+uVsGlSBUDYPau66j6z1I221dFni968kvrjDz9Y2yS2GWQSgTEgk0Ce5XffuBLT5dmCGtlJxJg3ahnoc5T2O8ilnQBRSbFEcX2yz75isnQgqav1Nzra58g38dV2/Sa/5zNk6sUjSB3hdynEIQQ3HKzWj16bgLVi0E3U2/d99y+Vr64weIxWAgzfb1eNvGLD3H5FkXv12zOTrNzLyXXKBnaqzxHxT8ajyDKisBjmmECMcNOjwUvLTfwTAj5UeUFSFpa5VJE0N2oF3rJvzdThZsEii736HoLWGcsihuCsDa3hZ3xDE0ZQlKoVkCF5ssKGLTpgbFresuTX9J7yi1SNTLDJBdzxBaG3k5SypBcBMA9j9xFCR8oP9L2rJpK0P4Kzy0m2uxTjWxKcsZM645dq8BIbiQ6OC7JE5Z85SLkllQ332ohD6p/
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(41320700004)(52116005)(366007)(1800799015)(7416005)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?LQZoTE48Bw7ANet3o9Di2c2xPIW1EbudG7FELyM9yniuJtxOYMDZS8akcVJL?=
+ =?us-ascii?Q?GwdVp2cV7XAdSeKbUDG6lgK8hZm4VsAK+bUdwbz2SsY2OopGyQk/QM5E6hZG?=
+ =?us-ascii?Q?QK1z4uN02pUzoEtJMtD9JzCpHs/3pJ98DvGQ94Y21WgKHGomfQMe+gJdKolv?=
+ =?us-ascii?Q?ZV0zBYpbTYrfPCao4FYj++opg2PIT54wvZ7Zm2tVgeHMeh+mSKNr3sVHUmG+?=
+ =?us-ascii?Q?GtXZU6VWOpcOxnMw1G2py0EIyWcAqFoPn+S1ZHTKCHdoIM7rTgBj6/a3oQBL?=
+ =?us-ascii?Q?nNzP7QS94JWNpiYh+7+wumcmiI1iXEXpt83nj4uGySG0rwJ3Bj8CvuSuk3nq?=
+ =?us-ascii?Q?9UtGfzO8RPDVZEwaFQcyq3E0TfHY4ZAu0tWuCEnS358dKIHsZHfqR6Yw4Gvj?=
+ =?us-ascii?Q?qbKELWIupr9nOxNScvTWsh+NIc1Ztn2PrfJWz4Uz5WWbfOmZyia5oV/QKtzc?=
+ =?us-ascii?Q?xJupcspySWRwVaYMT2QGBNdtDtCoeXCbIVQPOLXorcgv/lh8E9BkJH6s6e7r?=
+ =?us-ascii?Q?XZTQCTjq+T3Lv3u0fY3ElE6lZbMtqGHKXgxQ21/qGAY3nv5iQtJh3f7wUU7R?=
+ =?us-ascii?Q?0RpNj5B5Zc+qU4MSQ5oSnGDA02mQ0CSZj97Ow/Ujdxi95XHu5eC7RbN+sPnI?=
+ =?us-ascii?Q?HLFDwZ5tbhyVaagw4iMWefHy1Xzn/XmgFm5Bj/GSUPDg2rmlueA2ETAU9OSO?=
+ =?us-ascii?Q?DetVIfWbLiYJR1ubQtHUYL5GLGqUB0hRPyvpv5itvm68NJzAvltu7DNgfbR1?=
+ =?us-ascii?Q?joi1aGfiMME3i7rfukDAob4j4ewfHxVnafTKusq3pqX2dPs1R8QnD3lees3/?=
+ =?us-ascii?Q?EzWuIOFnKHKiR7tRXJreiF3iaY44fdvKwdb1w7waT1DMg427/rxkIHvZqcxY?=
+ =?us-ascii?Q?5omEEJHIlDFaPbWULLEBDLuhU4xGrr2VCN1rdKZiK+L7jgDdOwQDw31a5xDa?=
+ =?us-ascii?Q?T8t2i0cOGuXjoNcOGDpVsFiU4pHPj/geA3zuPSuyRv67Bp3ghEXFJJByhz5V?=
+ =?us-ascii?Q?uZwXtiYtpTg6LGrwpyNVdpfttbxUo8z6o6L86nC/Ynnq1HI9mOXcHiOzHm/z?=
+ =?us-ascii?Q?T9YKCLx/f4SKXCdyFOkMnxP8g/7fVOC4z/oHrmTbWZX13j7JM7btHcIt+C6T?=
+ =?us-ascii?Q?V7zTwUftLBRD6PQqh1KBIc4NDJkq+1Iwv/X5YbervekxUdxQ7k/rlfrayLe2?=
+ =?us-ascii?Q?5k0ur2xOYZNi75WPde20bM0E2+Aph2yF6mhn1+k/20qAlFzKO+9StFSnK7f5?=
+ =?us-ascii?Q?p6wNas/jNI/lDJu4TgirRITVSN+El4mqdkDihZWHy/er8I0b6KazHJwupBtm?=
+ =?us-ascii?Q?PI3RkTtnomHIBGvLIa75kxiGhIOUEU/INRadeGNx1N0KPfisekpRW/Qr6Kpu?=
+ =?us-ascii?Q?uPu6jmTmel/mrBlIb3Lysr4YJ73Jji1ovZBmdKhRWUGl/sRrratG4diFSPDV?=
+ =?us-ascii?Q?obYfuhs+xgV3fHgPzCuz5jfWNeO14ugPcU5psuskDcTDhyalU/di4G2i/2p0?=
+ =?us-ascii?Q?VepZRAJWMoEhssE52AaP38rfKiyqfj/HsdYdZdC5SxZBsn/6f13a/6Ti9DGl?=
+ =?us-ascii?Q?UZ0pbDeJDeKU9tkcPu7UjHLwCexqR6tSCloe9YOtfM4rqNF+OXAZanUAqS3K?=
+ =?us-ascii?Q?Zg=3D=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22d19776-5bc8-4d1b-b201-08dc637029db
+X-MS-Exchange-CrossTenant-AuthSource: NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2024 08:34:17.1466
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: th2KknMJl81kk4uq9OWWVlYWmFISM9v7ckHG/FDH/lP4oIhdshw8kZ1LhGwcSnTdgZsOde8r3CGhMKtZ+ZDO/Trp3o5/Qco1/5p6+5XaBcs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: NTZPR01MB1002
 
-On 23.04.24 05:41, zhenwei pi wrote:
-> All the VM events related statistics have dependence on
-> 'CONFIG_VM_EVENT_COUNTERS', separate these events into a function to
-> make code clean. Then we can remove 'CONFIG_VM_EVENT_COUNTERS' from
-> 'update_balloon_stats'.
-> 
-> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
-> ---
+The Pulse Density Modulation (PDM) controller is a digital PDM 
+microphone interface controller and decoder that supports both
+mono/stereo PDM format, and a Inter-IC Sound (I2S) transmitter
+that outputs standard stereo audio data to another device. The 
+PDM controller includes two PDM blocks, each PDM block can drive
+one bitstream sampling clock and two bitstream coming data
+(mono/stereo) with sampling clock rising and falling edge.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+The first patch adds documentation to describe PDM controller
+bindings. And the second patch adds PDM driver for the StarFive
+JH8100 SoC. The DTS patch of PDM controller will be submitted
+after the patchs of JH8100 DTS are accepted.
+
+Changes since v1:
+- Changed the subject prefix of the bindings.
+- Dropped the confused property in the bindings.
+- Added the $ref to dai-common.
+- Changed the kcontrol names and put it into ops.
+- Added the reset when device resume.
+- Modified two blocks into a whole PDM which supports up to 4
+  channels of recorder.
+
+v1: https://lore.kernel.org/all/20240307033708.139535-1-xingyu.wu@starfivetech.com/
+
+Xingyu Wu (2):
+  ASoC: dt-bindings: Add PDM controller for the StarFive JH8100 SoC
+  ASoC: starfive: Add PDM controller support
+
+ .../bindings/sound/starfive,jh8100-pdm.yaml   |  82 ++++
+ MAINTAINERS                                   |   7 +
+ sound/soc/starfive/Kconfig                    |   7 +
+ sound/soc/starfive/Makefile                   |   1 +
+ sound/soc/starfive/jh8100_pdm.c               | 447 ++++++++++++++++++
+ 5 files changed, 544 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/starfive,jh8100-pdm.yaml
+ create mode 100644 sound/soc/starfive/jh8100_pdm.c
 
 -- 
-Cheers,
-
-David / dhildenb
+2.25.1
 
 
