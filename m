@@ -1,194 +1,118 @@
-Return-Path: <linux-kernel+bounces-154785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B5E38AE0FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:27:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A29818AE100
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:29:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02A75282C17
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:27:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4C851C21B5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:29:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC4158ABF;
-	Tue, 23 Apr 2024 09:27:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9749158ABC;
+	Tue, 23 Apr 2024 09:29:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hY9PCbkZ"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="ED0I1g6x"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330585579F;
-	Tue, 23 Apr 2024 09:27:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09FAF20B33;
+	Tue, 23 Apr 2024 09:29:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713864459; cv=none; b=Ur9+6TvFk9HbtyuSjZWtm8vNjmHIYHy0htIKCcmgd4POp8TQTiC8tgoVLtJAeYOa1wYv57TTNXv7nR/thaUZl/kk2QfgAM16BhFpJSUfK8wHvJb1HsaRJ/uD9OmbwpFHfglHctl595H0+k3wE8HP2mwsKqgZr91lZE48WDQs0oo=
+	t=1713864592; cv=none; b=i0XzmGwDUN4dYaaqlAuL32ahGvSnPTfEkQ6spXgfIjPPCGzSxAl01oAzHxKC/OOBKT7mg9Q9f8hnMOm7R7z1Hp1SNTjtkxOqCP/6ybiHzvxBxlyV6LIwqJUQtEx8XfavoEm3xJtUvx8TIorFsc2e3iwn7YAO+F3ou4LPA1R2lF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713864459; c=relaxed/simple;
-	bh=EOX4YjrUbozAoGMMLpYqg+jSTn0QmSJhInxxze1hL1Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=bkbueAaSgdeqFNH793RI9GENMBer/+/+K0zEYMhlNCqaQ5pP/NcM2HaapOkhKy50yxScyRhNpRAqy0tnWKSn2e33AWuD2yyhdu2RODXgdOOGUm2r/mkrGgBHaD19sq214/LpOESGMfx5a5wqgYQrMw/dxRYB6KEVvBJYlb59YrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hY9PCbkZ; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4155819f710so44486955e9.2;
-        Tue, 23 Apr 2024 02:27:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713864456; x=1714469256; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KZuXG1wkvO/B1fLmfLgdxFlZTA1lHvDftcesjTjOO0U=;
-        b=hY9PCbkZ8YGhIbW5Nt2W2SuE6L5nJW83FCQk6pTHkT7WKu2E4zWn6nBgoU9ZTp0ij6
-         cvD3q8no6jRGNccMoGJdYxwgVfzcoTDNlWDcYkQ5ypTdIQgYt3T37SUiQdCM7kHXusSh
-         poIpkRQYBseJRTM1QrteMM4N0jUEtkzVtqBXadgMfYbE4BD6bEwGasESESdNtN8q6cjM
-         siPoftzFxRXHoIJw/M5F13SqeU32gHtrPZuZmw3WTnW/EOQcSSbWe0aQd4QzjIHxVoqt
-         1XqDk+efQUTylVbuSk1+8LYa3Y111UPl9M/ja6IC91VE+7Llyzcl05EAG5IPxT3iWQqm
-         Q0Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713864456; x=1714469256;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=KZuXG1wkvO/B1fLmfLgdxFlZTA1lHvDftcesjTjOO0U=;
-        b=IrcGs88Chu4Gb7s4vXdNImShK0aEY7w86PgmrqnyRxVSTcfHsVzTSOFA28IFKNWtDN
-         /uZN76ctJ//7zIBlZlrkovCaupKQdxwUBazGDToCrEJ+Yld3mbqTNs4mdRT1YquunGRy
-         vR+P+nEzcefhCglzJse0iIxoIlNwj0ixxWof2wkkNgEDA4slFatVXv2VK0ofj48wx4Rr
-         cuXbro1F9MW9gjWrA+K1bPQwMj+HGpuR0rRdHQ2bmEhYNCt7hts1uwkHjMIurs01xZzj
-         qqf6a88+bFE2onq4JvfOwXODdN7qsQsv6OZqyONeI7JvUD7JY8j22WSj6PaNdWuwH1yd
-         mksw==
-X-Forwarded-Encrypted: i=1; AJvYcCXzoKR9aiPz6aSeFcWDj14uOUmTcb7TI89/Tv0/bOjTJn5vhI5B6NQUAtv4fe/cunvfxv366JqJXPgTNiA8k/PHDytX887lS5wkwPiAGrATGUQU9qdaeAnXACqhcxyQJZBVRYqJ
-X-Gm-Message-State: AOJu0Yzm2mWCz5+SPt7BVHkZKsnOJ0uz4ODVVwPmmdgXqYckECc0wBk/
-	FG97nGrkY+aguEqLzc3e0wTCZwiQ6BovMJTPZF70QAjR8wRN2gqP
-X-Google-Smtp-Source: AGHT+IF7etJNXP7pepoGiqYe749GYfNp1p1FkDOTbS8vOSHMIRcSPd4q24gYAxumDCb5v9mtUevTcg==
-X-Received: by 2002:a05:600c:19cc:b0:418:e08c:865 with SMTP id u12-20020a05600c19cc00b00418e08c0865mr8772642wmq.25.1713864456312;
-        Tue, 23 Apr 2024 02:27:36 -0700 (PDT)
-Received: from debian ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id ay13-20020a05600c1e0d00b0041a7581f8b6sm5108124wmb.23.2024.04.23.02.27.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 02:27:36 -0700 (PDT)
-Message-ID: <fc6d9631-ad88-43dc-b587-7742fe47ab1e@gmail.com>
-Date: Tue, 23 Apr 2024 11:27:22 +0200
+	s=arc-20240116; t=1713864592; c=relaxed/simple;
+	bh=DKrNix9sXqeDeTqS0MKl9OJhP1yFEStDlJovycaWhCI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=umVJyK8abD4RmBceiZVGNmF79K+add7kbQbuVuSGuM8lG0d3urcMDxdrDaDL6BVr+7OfphAIvUXiKH+crj30cDwQsJW17FS3bPerukJJCMx/dpkMb4h046qP7ViCz/vsvAtSkDWW29eM6WN3NSHN+ThM69MllE66Jv5XJZ/5C6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=ED0I1g6x; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=0mkJ60YZ9h04LMO+Q8FAelHEGO/T+BnTHaX56USQTIU=;
+	t=1713864591; x=1714296591; b=ED0I1g6x+z56eIVe6T8eMrh+07e5Mn2ZT41zWgyuVXNneFP
+	jq10zHxvUeIJwFG0G3O5cWmbR2/ZU7yC18eghv7HhFYx6/cBmLVn/IM5Hmm6jzjIeha7MF3AzOP4S
+	5ugN6XoWKG5f7YsI7iC7uBWJnprwz9rW2aQSWvIu1LWqSDk8mJDYrUdWycNw63fC/ct75s8568S+f
+	uZaUuDCKWh7gCQ3AQgP2k+55GfQcHeVQWrrIM4rrZQWQ8G+oA3QQfS4F1SysKWinCCi4Xs5xxKLTt
+	dZNEdy9+AQMmASq8UI1fG6nJVCn8s/tQRqrcS6gLWC2jIguxhC6IVSa6JmV+lHEA==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rzCTE-00077K-IW; Tue, 23 Apr 2024 11:29:48 +0200
+Message-ID: <0197efe8-828b-43ae-85c9-5d521913a289@leemhuis.info>
+Date: Tue, 23 Apr 2024 11:29:48 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net v2 1/3] net: gro: add {inner_}network_offset to
- napi_gro_cb
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
- alexander.duyck@gmail.com, aleksander.lobakin@intel.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240419153542.121087-1-richardbgobert@gmail.com>
- <20240419153542.121087-2-richardbgobert@gmail.com>
- <6622bd416e567_1241e229425@willemb.c.googlers.com.notmuch>
- <ae7af8b6-0952-434d-8178-8042a2db6bc9@gmail.com>
- <662696b7c257_7539294ba@willemb.c.googlers.com.notmuch>
-From: Richard Gobert <richardbgobert@gmail.com>
-In-Reply-To: <662696b7c257_7539294ba@willemb.c.googlers.com.notmuch>
+User-Agent: Mozilla Thunderbird
+Subject: Re: 6.9.0-rc2+ kernel hangs on boot (bisected, maybe LED related)
+To: Lee Jones <lee@kernel.org>, Ben Greear <greearb@candelatech.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-leds@vger.kernel.org,
+ Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+References: <30f757e3-73c5-5473-c1f8-328bab98fd7d@candelatech.com>
+ <30819e01-43ce-638f-0cc6-067d6a8d03c7@candelatech.com>
+ <89a9eec3-337f-3c9f-6bbe-00a26a15287c@candelatech.com>
+ <20240411070718.GD6194@google.com>
+ <de43c7e1-7e8c-bdbe-f59e-7632c21da24a@candelatech.com>
+ <8736ebc8881e1e0cabfbbf033725a3123a5e8e90.camel@sipsolutions.net>
+ <bc420f3a-5809-4c4a-80ad-ccd8a46853b6@leemhuis.info>
+ <8ab88be5de30bcbd0d1cac3cfde6b2085dcfc8fb.camel@sipsolutions.net>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <8ab88be5de30bcbd0d1cac3cfde6b2085dcfc8fb.camel@sipsolutions.net>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1713864591;864d740c;
+X-HE-SMSGID: 1rzCTE-00077K-IW
 
-Willem de Bruijn wrote:
-> Richard Gobert wrote:
->> Willem de Bruijn wrote:
->>> Richard Gobert wrote:
->>>> This patch adds network_offset and inner_network_offset to napi_gro_cb, and
->>>> makes sure both are set correctly. In the common path there's only one
->>>> write (skb_gro_reset_offset, which replaces skb_set_network_header).
+On 23.04.24 11:06, Johannes Berg wrote:
+> On Tue, 2024-04-23 at 11:00 +0200, Linux regression tracking (Thorsten
+> Leemhuis) wrote:
+>> On 16.04.24 08:17, Johannes Berg wrote:
+>>> On Mon, 2024-04-15 at 13:37 -0700, Ben Greear wrote:
 >>>>
->>>> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
->>>> ---
->>>>  drivers/net/geneve.c           |  1 +
->>>>  drivers/net/vxlan/vxlan_core.c |  1 +
->>>>  include/net/gro.h              | 18 ++++++++++++++++--
->>>>  net/8021q/vlan_core.c          |  2 ++
->>>>  net/core/gro.c                 |  1 +
->>>>  net/ethernet/eth.c             |  1 +
->>>>  net/ipv4/af_inet.c             |  5 +----
->>>>  net/ipv4/gre_offload.c         |  1 +
->>>>  net/ipv6/ip6_offload.c         |  8 ++++----
->>>>  9 files changed, 28 insertions(+), 10 deletions(-)
+>>>> Johannes, you had another suggestion: changing iwlwifi's request_module() to request_module_nowait() in
+>>>> iwl_req_fw_callback()
 >>>>
+>>>> Is that still best thing to try in your opinion?
 >>>
->>>> +static inline int skb_gro_network_offset(const struct sk_buff *skb)
->>>> +{
->>>> +	return NAPI_GRO_CB(skb)->network_offsets[NAPI_GRO_CB(skb)->encap_mark];
->>>> +}
->>>> +
->>>
->>>
->>>> @@ -236,8 +236,6 @@ INDIRECT_CALLABLE_SCOPE struct sk_buff *ipv6_gro_receive(struct list_head *head,
->>>>  	if (unlikely(!iph))
->>>>  		goto out;
->>>>  
->>>> -	skb_set_network_header(skb, off);
->>>> -
->>>
->>> Especially for net, this is still a large patch.
->>>
->>> Can we avoid touching all those tunnel callbacks and just set the
->>> offsets in inet_gro_receive and ipv6_gro_receive themselves, just
->>> as skb_set_network_header now:
->>>
->>> @@ -236,7 +236,7 @@ INDIRECT_CALLABLE_SCOPE struct sk_buff *ipv6_gro_receive(struct list_head *head,
->>>         if (unlikely(!iph))
->>>                 goto out;
->>>  
->>> -       skb_set_network_header(skb, off);
->>> +       NAPI_GRO_CB(skb)->network_offsets[NAPI_GRO_CB(skb)->encap_mark] = off;
->>>
+>>> I guess so, I don't have any better ideas so far anyway ...
 >>
->> Thanks for the reply!
+>> [adding the iwlwifi maintainer; thread starts here:
+>> https://lore.kernel.org/lkml/30f757e3-73c5-5473-c1f8-328bab98fd7d@candelatech.com/
 >>
->> Setting network_offset on dev_gro_receive and inner_network_offset only
->> in the tunnel callbacks is the best option IMO. I agree that
->> we want a small patch to net that solves the problem, although I 
->> think always using ->encap_mark in the common path is not ideal. 
+>> ]
 >>
->> We can avoid changing all the tunnel callbacks by always setting
->> inner_network_offset in {ipv6,inet}_gro_receive and initialize
->> network_offset to 0 in dev_gro_receive. It will result in a small
->> change, without using ->encap_mark.
->>
->> What are your thoughts?
+>> Johannes, Miri, what's the status wrt to this regression? From here
+>> things look somewhat stalled -- but maybe there was progress and I just
+>> missed it.
 > 
-> That works. It's a bit ugly that inner_network_offset will always be
-> set, even if a packet only traverses inet_gro_receive once. What is
-> your concern with testing encap_mark?
-> 
-> How do you want to detect in udp[46]_lib_lookup_skb which of the two
-> offsets to use? That would still be encap_mark based?
-> 
+> What do you want? It got bisected to an LED merge, but you ping _us_?
+> Way to go ...
 
-I'd like to minimize any potential overhead, even a small one, and this way
-we do not need to access encap_mark at all in the common path.
+Sorry, to me it sounded a bit like you had an idea for a fix and were
+going to give it a try -- similar to how the maintainers for a r8169
+driver and the igc driver provided fixes for bugs recent LED changes
+exposed.
 
-NAPI_GRO_CB(skb)->network_offsets[NAPI_GRO_CB(skb)->encap_mark] = off;
+But sure, you are right, in the end some LED change seems to have cause
+this, so the duty to fix it lies in that field. Therefore:
 
-compiles to:
+Lee, what's the status here to get this fixed before the final?
 
-	movzx   eax, byte ptr [rbx+46h]
-	shr     al, 1
-	and     eax, 1
-	mov     [rbx+rax*2+4Ch], r14w
+Ciao, Thorsten
 
-while
 
-NAPI_GRO_CB(skb)->inner_network_offset = off;
-
-compiles to:
-
-	mov     [rbx+4Eh], r14w
-
-I do plan to add a patch to net-next after this to remove the access
-entirely from inet gro callbacks, in the meantime, it looks to me like a
-reasonable patch and small enough to not raise concerns.
-
-For udp_lib_lookup I don't see a way around it so yes, it would still be
-dependent on encap_mark. Since this runs in the complete phase it's less
-concerning.
-
-Let me know that you're ok with that and I'll post a v3.
 
