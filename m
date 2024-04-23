@@ -1,193 +1,107 @@
-Return-Path: <linux-kernel+bounces-155755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27A368AF6AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:35:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9AC68AF6AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:36:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D280E28CAFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:35:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DDD3AB24D54
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:35:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7CF6143862;
-	Tue, 23 Apr 2024 18:33:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674DD824B1;
+	Tue, 23 Apr 2024 18:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Df0U+Pwq"
-Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.209])
+	dkim=pass (2048-bit key) header.d=holoscopio.com header.i=@holoscopio.com header.b="TSr511ud"
+Received: from grilo.cascardo.info (trem.minaslivre.org [195.201.110.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2F572AD2C;
-	Tue, 23 Apr 2024 18:33:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.209
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C86923775;
+	Tue, 23 Apr 2024 18:34:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.201.110.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713897229; cv=none; b=YmDijZE75fdSpQVZcOTO/pQzD5gM05ZRYrT5HqxQw8lDHgxeR6h9kFPRXeKS0/7n22UTKlNdyYZ/RhdHWne4QquIbyAS7pR/3dGc8kvZr3kJh5K5LBN3dQVz3WvW1kArS/Bpb2TVHgOC0kdisV+VfGlOObxlH9JLUWaAKp5uSk0=
+	t=1713897277; cv=none; b=gY4xzHfb7ZlxKNu8wBIPYbzAYucGica4ttLWWQJbbZVQXBdA6fyy0MIbQK2TBYy7piTbdxb0lkq/3dcQ6Fi/5bTJ6A9qXR8Wymfs6f37er4ifw2mTPG/s+7tSG6F2i17XLMCjGrGgoKWG64FS8+2RfVK4fscedFHimZI7nquxkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713897229; c=relaxed/simple;
-	bh=c/Ah+ocoUmfGe7UtUQ0MIQIvcS0fCgxsUc5y7Y2Hzns=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nVvr60mDpmvvRKy3Z6AZk8Loq+0FNhmvBY8+gOqHJo/5o3KK7zFUkCZRT2Q9COnaVI1VRT8p+lgYpxeUHn6n3iWxZgKbd18lFeRWXeAKVSvLb9qRX1qChvtWub9mLApkeWkXNJuKNK72zrU/CT7Gx8WhKKo0+mxlF6jZ1IELxC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Df0U+Pwq; arc=none smtp.client-ip=192.19.144.209
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 05FC0C002821;
-	Tue, 23 Apr 2024 11:33:42 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 05FC0C002821
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1713897222;
-	bh=c/Ah+ocoUmfGe7UtUQ0MIQIvcS0fCgxsUc5y7Y2Hzns=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Df0U+PwqGWnGL6cz/LQi8FCGT4wMjX+C5bztz1J7ErXLmQiZEXlE967SpLHWGGKD5
-	 7fF5HkIpDEt5gP5eUmPbyIJZC1Hnx640btl9YpitkpoOe1BZ/jz50QjO1kGdX5Dp34
-	 MIJsgBh25ttg2sTd3FNoS1Vlh3DSKOzHGKM3be2Q=
-Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 29CE318041CAC4;
-	Tue, 23 Apr 2024 11:33:40 -0700 (PDT)
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-To: netdev@vger.kernel.org
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next 8/8] net: dsa: b53: provide own phylink MAC operations
-Date: Tue, 23 Apr 2024 11:33:39 -0700
-Message-Id: <20240423183339.1368511-9-florian.fainelli@broadcom.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240423183339.1368511-1-florian.fainelli@broadcom.com>
-References: <20240423183339.1368511-1-florian.fainelli@broadcom.com>
+	s=arc-20240116; t=1713897277; c=relaxed/simple;
+	bh=pfxw2gtdpgMhC/s+VT5Ue18fZiuVhtvZxEf0WdwsVho=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NdpAERB7vQSKOdWij+mcsIzWCwVFU/FYe4TDoUuQgsjy414g9SY1olbNnNXkgKRXL8dg+c6tiW+l9CZRDILFTyHXKozqd8oIhn8gPYhJF3DBPKwqDyKxFSO5RuUwyBzt7aiGLRSL9QyB+CENxGvWjWhX4klE9sXqS4N42X8ajkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=holoscopio.com; spf=pass smtp.mailfrom=holoscopio.com; dkim=pass (2048-bit key) header.d=holoscopio.com header.i=@holoscopio.com header.b=TSr511ud; arc=none smtp.client-ip=195.201.110.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=holoscopio.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=holoscopio.com
+Received: from siri.cascardo.eti.br (179-125-71-233-dinamico.pombonet.net.br [179.125.71.233])
+	by grilo.cascardo.info (Postfix) with ESMTPSA id 95570206F1F;
+	Tue, 23 Apr 2024 15:34:21 -0300 (-03)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=holoscopio.com;
+	s=mail; t=1713897263;
+	bh=pfxw2gtdpgMhC/s+VT5Ue18fZiuVhtvZxEf0WdwsVho=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TSr511udQzXT8wlW4Z1sRMNo+y3XjQUA31cR7gnkang4OICJLQeLYd0Qom2xXHB5O
+	 ChN8xe2r7lfM+s8tGd0n4R7InKGMs3T3SdJKftPcKLYYFIhG1rO9+S4ocMAe/yj/1S
+	 fn3pwYN/GMPIoLb6MinSkeeYJ5tQf0l6NIpwuT/FIzVncsyocaQCJQLKO0WFszge2R
+	 hz42oCtQjIQhhrd/RCOP5hhygEgFnqQobWifPo0DrBEweO8Qtyn1tKa3axuVuHk+Zg
+	 jX92i8dob4WIIHGVwD6Ppe0AbZwp2HwsKTHjUua2v/Ej4EdFoyBkpEVDWjRvxuz86f
+	 NNg4Kqp33evaQ==
+Date: Tue, 23 Apr 2024 15:34:18 -0300
+From: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Hans de Goede <hdegoede@redhat.com>,
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Subject: Re: [PATCH v2 1/1] platform/x86: classmate-laptop: Add missing
+ MODULE_DESCRIPTION()
+Message-ID: <Zif_KuuBLEkGI34u@siri.cascardo.eti.br>
+References: <20240423161108.2636958-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240423161108.2636958-1-andriy.shevchenko@linux.intel.com>
 
-Convert b53 to provide its own phylink MAC operations, thus avoiding the
-shim layer in DSA's port.c
+On Tue, Apr 23, 2024 at 07:09:51PM +0300, Andy Shevchenko wrote:
+> The modpost script is not happy
+> 
+>   WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/platform/x86/classmate-laptop.o
+> 
+> because there is a missing module description.
+> 
+> Add it to the module.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> v2: alinged text with Kconfig entry (Thadeu Lima)
+>  drivers/platform/x86/classmate-laptop.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/classmate-laptop.c b/drivers/platform/x86/classmate-laptop.c
+> index 87462e7c6219..cb6fce655e35 100644
+> --- a/drivers/platform/x86/classmate-laptop.c
+> +++ b/drivers/platform/x86/classmate-laptop.c
+> @@ -13,8 +13,6 @@
+>  #include <linux/input.h>
+>  #include <linux/rfkill.h>
+>  
+> -MODULE_LICENSE("GPL");
+> -
+>  struct cmpc_accel {
+>  	int sensitivity;
+>  	int g_select;
+> @@ -1139,3 +1137,5 @@ static const struct acpi_device_id cmpc_device_ids[] __maybe_unused = {
+>  };
+>  
+>  MODULE_DEVICE_TABLE(acpi, cmpc_device_ids);
+> +MODULE_DESCRIPTION("Support for Intel Classmate PC ACPI devices");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.43.0.rc1.1336.g36b5255a03ac
+> 
 
-Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
----
- drivers/net/dsa/b53/b53_common.c | 40 +++++++++++++++++++++-----------
- 1 file changed, 26 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index e490ef0fd3f1..8f50abe739b7 100644
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -1383,24 +1383,27 @@ static void b53_phylink_get_caps(struct dsa_switch *ds, int port,
- 		dev->ops->phylink_get_caps(dev, port, config);
- }
- 
--static struct phylink_pcs *b53_phylink_mac_select_pcs(struct dsa_switch *ds,
--						      int port,
-+static struct phylink_pcs *b53_phylink_mac_select_pcs(struct phylink_config *config,
- 						      phy_interface_t interface)
- {
--	struct b53_device *dev = ds->priv;
-+	struct dsa_port *dp = dsa_phylink_to_port(config);
-+	struct b53_device *dev = dp->ds->priv;
- 
- 	if (!dev->ops->phylink_mac_select_pcs)
- 		return NULL;
- 
--	return dev->ops->phylink_mac_select_pcs(dev, port, interface);
-+	return dev->ops->phylink_mac_select_pcs(dev, dp->index, interface);
- }
- 
--static void b53_phylink_mac_config(struct dsa_switch *ds, int port,
-+static void b53_phylink_mac_config(struct phylink_config *config,
- 				   unsigned int mode,
- 				   const struct phylink_link_state *state)
- {
-+	struct dsa_port *dp = dsa_phylink_to_port(config);
- 	phy_interface_t interface = state->interface;
-+	struct dsa_switch *ds = dp->ds;
- 	struct b53_device *dev = ds->priv;
-+	int port = dp->index;
- 
- 	if (is63xx(dev) && port >= B53_63XX_RGMII0)
- 		b53_adjust_63xx_rgmii(ds, port, interface);
-@@ -1415,11 +1418,13 @@ static void b53_phylink_mac_config(struct dsa_switch *ds, int port,
- 	}
- }
- 
--static void b53_phylink_mac_link_down(struct dsa_switch *ds, int port,
-+static void b53_phylink_mac_link_down(struct phylink_config *config,
- 				      unsigned int mode,
- 				      phy_interface_t interface)
- {
--	struct b53_device *dev = ds->priv;
-+	struct dsa_port *dp = dsa_phylink_to_port(config);
-+	struct b53_device *dev = dp->ds->priv;
-+	int port = dp->index;
- 
- 	if (mode == MLO_AN_PHY)
- 		return;
-@@ -1434,15 +1439,18 @@ static void b53_phylink_mac_link_down(struct dsa_switch *ds, int port,
- 		dev->ops->serdes_link_set(dev, port, mode, interface, false);
- }
- 
--static void b53_phylink_mac_link_up(struct dsa_switch *ds, int port,
-+static void b53_phylink_mac_link_up(struct phylink_config *config,
-+				    struct phy_device *phydev,
- 				    unsigned int mode,
- 				    phy_interface_t interface,
--				    struct phy_device *phydev,
- 				    int speed, int duplex,
- 				    bool tx_pause, bool rx_pause)
- {
-+	struct dsa_port *dp = dsa_phylink_to_port(config);
-+	struct dsa_switch *ds = dp->ds;
- 	struct b53_device *dev = ds->priv;
--	struct ethtool_keee *p = &dev->ports[port].eee;
-+	struct ethtool_keee *p = &dev->ports[dp->index].eee;
-+	int port = dp->index;
- 
- 	if (mode == MLO_AN_PHY) {
- 		/* Re-negotiate EEE if it was enabled already */
-@@ -2259,6 +2267,13 @@ static int b53_get_max_mtu(struct dsa_switch *ds, int port)
- 	return JMS_MAX_SIZE;
- }
- 
-+static const struct phylink_mac_ops b53_phylink_mac_ops = {
-+	.mac_select_pcs	= b53_phylink_mac_select_pcs,
-+	.mac_config	= b53_phylink_mac_config,
-+	.mac_link_down	= b53_phylink_mac_link_down,
-+	.mac_link_up	= b53_phylink_mac_link_up,
-+};
-+
- static const struct dsa_switch_ops b53_switch_ops = {
- 	.get_tag_protocol	= b53_get_tag_protocol,
- 	.setup			= b53_setup,
-@@ -2270,10 +2285,6 @@ static const struct dsa_switch_ops b53_switch_ops = {
- 	.phy_read		= b53_phy_read16,
- 	.phy_write		= b53_phy_write16,
- 	.phylink_get_caps	= b53_phylink_get_caps,
--	.phylink_mac_select_pcs	= b53_phylink_mac_select_pcs,
--	.phylink_mac_config	= b53_phylink_mac_config,
--	.phylink_mac_link_down	= b53_phylink_mac_link_down,
--	.phylink_mac_link_up	= b53_phylink_mac_link_up,
- 	.port_enable		= b53_enable_port,
- 	.port_disable		= b53_disable_port,
- 	.get_mac_eee		= b53_get_mac_eee,
-@@ -2716,6 +2727,7 @@ struct b53_device *b53_switch_alloc(struct device *base,
- 	dev->priv = priv;
- 	dev->ops = ops;
- 	ds->ops = &b53_switch_ops;
-+	ds->phylink_mac_ops = &b53_phylink_mac_ops;
- 	dev->vlan_enabled = true;
- 	/* Let DSA handle the case were multiple bridges span the same switch
- 	 * device and different VLAN awareness settings are requested, which
--- 
-2.34.1
-
+Acked-by: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
 
