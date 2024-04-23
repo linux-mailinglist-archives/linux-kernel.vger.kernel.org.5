@@ -1,132 +1,129 @@
-Return-Path: <linux-kernel+bounces-154512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50C698ADCF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:55:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95C228ADCFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:56:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 815B71C218DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 04:55:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 352101F22D66
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 04:56:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10357200A0;
-	Tue, 23 Apr 2024 04:55:41 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BD9520DC3;
+	Tue, 23 Apr 2024 04:55:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="le/Pv/qX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ECD21CFB5
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 04:55:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584EB1CAB3;
+	Tue, 23 Apr 2024 04:55:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713848140; cv=none; b=ZHN+PQPFT05thQaNVBlSdG0/jEPOlLZpREVrE18zKyLHr61etObQiS8eIXKBbGyDUvjMvC4v2Ciju6qySDeJ1Wt7xNRi999FIhgpI8wVozm6LjBcxQonr2UqiK7GOM/3Tawhm0hsCQpi3MTvh6/t0ixt8S5O+3AIBudcg3yPphw=
+	t=1713848154; cv=none; b=YAI7VeOIskTlQoJr0dkE4SIkHRzT/gq/nosGvkjBBR0V8etm3he1i1R2LVs9QQOUbiDsZ+mgCNWqJD50NkP42lOvPKwTv9vFeyKKTT4Bu83qhpmtzysxEGqTI8xx9jMZ6vuZiYMI4yVJ1CeEb0VlUT1UnlFrRjKIaCCb6MZVINA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713848140; c=relaxed/simple;
-	bh=SOwdi7HG2+z5wZidwvPN/H71xJ+z4d8xd6bHwCAQBbQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=q59unPUCtyQQwlv1hHldlCW4VCTbHEktkH1S9Neazxj22WEme5sPS1+ejnB789d5YuoDHUa7QwhYr2dxfUt2YHS9x3lH6AQCCccGZ9tco5UgoF/grpHXpXhtkh4qwAfBLAZ2uzmv/adZy6jVB99gx4xcFw1D/PPRo/dmX1oEfdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VNqTz4pWFzXksc;
-	Tue, 23 Apr 2024 12:52:07 +0800 (CST)
-Received: from kwepemm600012.china.huawei.com (unknown [7.193.23.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3CA5F1800B8;
-	Tue, 23 Apr 2024 12:55:35 +0800 (CST)
-Received: from [10.174.178.220] (10.174.178.220) by
- kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 23 Apr 2024 12:55:34 +0800
-Message-ID: <00b43845-c990-481f-be0a-4bf15ada8b3c@huawei.com>
-Date: Tue, 23 Apr 2024 12:55:22 +0800
+	s=arc-20240116; t=1713848154; c=relaxed/simple;
+	bh=puryQ1J6mzWbCrUfIOEYUOuYeQHliVuNmWN99eIePwQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b109HJHGIDbifzIPlkC5K8UgwXKspwDf2Rw0SNNNALaGHu8JVcP6dtsHuw9n03HOMYxAtBkFP1oMbxdMpVq2FoU0ukZaGsdmZSBCoz8dKhh2mcRM7/2DlOgnNgwgqdkU5KHnLKrpP54tUV6UqWE5tCMElC0tieIpzifTGQMK3dI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=le/Pv/qX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F34BC116B1;
+	Tue, 23 Apr 2024 04:55:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713848153;
+	bh=puryQ1J6mzWbCrUfIOEYUOuYeQHliVuNmWN99eIePwQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=le/Pv/qXNH6cmU/bEapqQld8Xy6qptw1W4yy3w76kNBPQoyRaCQ0eDU8aW4OhYWvQ
+	 5Mw11o+v7XwagPHZlhU0O3PzlDxaSNWLya2r6tfJ2eLh6f061eRrKx2Aax9CCNIi40
+	 9btXUZVsTznHsEP/H1yEccKQOxUkoFa5bdqrxukAQowOZhhLU7AzfKPatKfViNJz8F
+	 YlPKOkmW98paCxbsin3DxJ2//NPjoEEvFPmVbXH0uiYwYiMJb0X4DKvMA+EqLHRt7z
+	 uXd8GQaU2PNSFL2wkl7+gq+reYJfXzAQ0Hi/4hMHQK4jllydhVPYg3fUcJ0p+39rmQ
+	 BWvJQ5CtWZjFA==
+From: Song Liu <song@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: kernel-team@meta.com,
+	Song Liu <song@kernel.org>,
+	stable@vger.kernel.org,
+	Sean Christopherson <seanjc@google.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH] arch/Kconfig: Move SPECULATION_MITIGATIONS to arch/Kconfig
+Date: Mon, 22 Apr 2024 21:55:48 -0700
+Message-ID: <20240423045548.1324969-1-song@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] workqueue: Fix rescuer task's name truncated
-To: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, Aaron
- Tomlin <atomlin@atomlin.com>, <linux-kernel@vger.kernel.org>
-CC: Wenchao Hao <haowenchao22@gmail.com>
-References: <20240423182104.1812150-1-haowenchao2@huawei.com>
-Content-Language: en-US
-From: Wenchao Hao <haowenchao2@huawei.com>
-In-Reply-To: <20240423182104.1812150-1-haowenchao2@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600012.china.huawei.com (7.193.23.74)
+Content-Transfer-Encoding: 8bit
 
-On 2024/4/24 2:21, Wenchao Hao wrote:
-> Task comm of task is limitted to 16, prefix "kworker/R-" is added for
-> rescuer worker's task, which cause most task name is truncated as
-> following:
-> 
-> root   81  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-xprti]
-> root   82  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-cfg80]
-> root   85  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-nfsio]
-> root   86  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-xfsal]
-> root   87  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-xfs_m]
-> root   88  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-acpi_]
-> root   93  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-iscsi]
-> root   95  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-scsi_]
-> root   97  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-scsi_]
-> root   99  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-scsi_]
-> 
-> I want to fix this issue by split rescuer name to 2 part like other
-> kworker, the normal part is "kworker/R" which is set to task_struct's comm,
-> another part is wq->name which is added to kworker's desc. These 2 parts
-> would be merged in wq_worker_comm().
-> 
-> Fixes: b6a46f7263bd ("workqueue: Rename rescuer kworker")
-> 
-> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
-> ---
->   kernel/workqueue.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 0066c8f6c154..0ce9e8597a4d 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -5430,7 +5430,7 @@ static int init_rescuer(struct workqueue_struct *wq)
->   	}
->   
->   	rescuer->rescue_wq = wq;
-> -	rescuer->task = kthread_create(rescuer_thread, rescuer, "kworker/R-%s", wq->name);
-> +	rescuer->task = kthread_create(rescuer_thread, rescuer, "kworker/R");
->   	if (IS_ERR(rescuer->task)) {
->   		ret = PTR_ERR(rescuer->task);
->   		pr_err("workqueue: Failed to create a rescuer kthread for wq \"%s\": %pe",
-> @@ -5439,6 +5439,8 @@ static int init_rescuer(struct workqueue_struct *wq)
->   		return ret;
->   	}
->   
-> +	snprintf(rescuer->desc, sizeof(rescuer->desc), "%s", wq->name);
-> +
->   	wq->rescuer = rescuer;
->   	if (wq->flags & WQ_UNBOUND)
->   		kthread_bind_mask(rescuer->task, wq_unbound_cpumask);
-> @@ -6289,6 +6291,8 @@ void wq_worker_comm(char *buf, size_t size, struct task_struct *task)
->   						  worker->desc);
->   			}
->   			raw_spin_unlock_irq(&pool->lock);
-> +		} else if (worker->desc[0] != '\0') {
-> +			scnprintf(buf + off, size - off, "-%s", worker->desc);
->   		}
+SPECULATION_MITIGATIONS is currently defined only for x86. As a result,
+IS_ENABLED(CONFIG_SPECULATION_MITIGATIONS) is always false for other
+archs. f337a6a21e2f effectively set "mitigations=off" by default on
+non-x86 archs, which is not desired behavior. Jakub observed this
+change when running bpf selftests on s390 and arm64.
 
+Fix this by moving SPECULATION_MITIGATIONS to arch/Kconfig so that it is
+available in all archs and thus can be used safely in kernel/cpu.c
 
-Hi Tejun and all:
+Fixes: f337a6a21e2f ("x86/cpu: Actually turn off mitigations by default for SPECULATION_MITIGATIONS=n")
+Cc: stable@vger.kernel.org
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Daniel Sneddon <daniel.sneddon@linux.intel.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Song Liu <song@kernel.org>
+---
+ arch/Kconfig     | 10 ++++++++++
+ arch/x86/Kconfig | 10 ----------
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-I added another logic in wq_worker_comm() to append worker's desc when
-worker is not attached to a work pool. I don't know why the origin
-logic only append worker's desc when worker is attached to a work pool,
-so I am not sure if it's safe to using worker here directly.
-
->   	}
->   
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 9f066785bb71..8f4af75005f8 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -1609,4 +1609,14 @@ config CC_HAS_SANE_FUNCTION_ALIGNMENT
+ 	# strict alignment always, even with -falign-functions.
+ 	def_bool CC_HAS_MIN_FUNCTION_ALIGNMENT || CC_IS_CLANG
+ 
++menuconfig SPECULATION_MITIGATIONS
++	bool "Mitigations for speculative execution vulnerabilities"
++	default y
++	help
++	  Say Y here to enable options which enable mitigations for
++	  speculative execution hardware vulnerabilities.
++
++	  If you say N, all mitigations will be disabled. You really
++	  should know what you are doing to say so.
++
+ endmenu
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 39886bab943a..50c890fce5e0 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2486,16 +2486,6 @@ config PREFIX_SYMBOLS
+ 	def_bool y
+ 	depends on CALL_PADDING && !CFI_CLANG
+ 
+-menuconfig SPECULATION_MITIGATIONS
+-	bool "Mitigations for speculative execution vulnerabilities"
+-	default y
+-	help
+-	  Say Y here to enable options which enable mitigations for
+-	  speculative execution hardware vulnerabilities.
+-
+-	  If you say N, all mitigations will be disabled. You really
+-	  should know what you are doing to say so.
+-
+ if SPECULATION_MITIGATIONS
+ 
+ config MITIGATION_PAGE_TABLE_ISOLATION
+-- 
+2.43.0
 
 
