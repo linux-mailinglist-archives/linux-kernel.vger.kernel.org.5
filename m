@@ -1,157 +1,174 @@
-Return-Path: <linux-kernel+bounces-155183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83C418AE66A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:40:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D63128AE66C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:40:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B35A01C21FB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:40:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA8C9B24685
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:40:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A1712EBE5;
-	Tue, 23 Apr 2024 12:38:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VVXlHu9C"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2590F85631
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:38:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57AD513443F;
+	Tue, 23 Apr 2024 12:38:29 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 747B585631;
+	Tue, 23 Apr 2024 12:38:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713875902; cv=none; b=oTSQdLMTELh0M0cwTIqmOTvL8LIGYfh7x+CDoHIZy2BKH9Spcnil8NEbFtP71qWHsJBkGChMJH9HQN9MwLB7MUy+M/KHMHaS/MaKC/RrZvXeWFdWO2lgQnn4RVVdna5A7K54QrGsWYruz/pWt9qXCXaSRJNLbuWUT4nk7ZpiDX8=
+	t=1713875908; cv=none; b=XOjhtNNCLY5hNFnclgoBzFYHHrrTxa4R3U6M0izA2Zi019+0LrO5ELLsqV69GBugTz2g4pcOyUJ4H4rXODD1nnP/8yJgjfgoFICO2YzN50Ha30DuGmJiPR1aKrTpnuV/vybEroIiXrIhEpH3ccfnpGxJghuHJoFVT/7Zibpy4Zo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713875902; c=relaxed/simple;
-	bh=J/tw8yRBYo/0EgSy+tQkCdevIsk8fSb0kvRYZM3GDFs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mLeHKXeHemwjw/HWH4P9m+Aov0sqAz3xwuosWwhOdWe/BoMJKFpYE37BCfqLku30jWBdmM0JrG4qhH+CigxwgXCLcoYtZ1zu/g1s/zZG43hyydH3tOB1aqjA4QHjLOKlvFQbDD33vCBTVYdqv03KqES4MQXGIvuzHYUQNbgt7ow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VVXlHu9C; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-41adf3580dbso452915e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 05:38:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713875899; x=1714480699; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TIW/4kaIcgQ3dsiNOn7qNP3zsB635HzMYPtbd1p9/VE=;
-        b=VVXlHu9CXZqoztQocy6u8DU5OvlCWLqmddqPlIx+wpHX0wTpPj8TCfe1ERm+EZTO+o
-         utS5D1h7KdnNUnrUnr7rpmKNGKsZWxUHpy0SIFDfQMahqUEyNi5+lGKdB2dAmHzDH/0q
-         AvZJFyQobDhudPsyBZ/W09TGyWFa8J33WLZ5EcH8P5Zfnd1IfjsegCdp43iNT2WXhwAn
-         G8y+aXANy1u3/xF/iYtdCZTv+IqYMjVdw4JkaClOSoswtPA5/S/aAiTWf2lrBE+w4vdt
-         Fpjpq8jO9IFXs5PFQ58PXuP7T+Gzi3fLjci1+n9M889k7pysCdhzVYOei//ClqVAAJ07
-         /n5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713875899; x=1714480699;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TIW/4kaIcgQ3dsiNOn7qNP3zsB635HzMYPtbd1p9/VE=;
-        b=Ziyn1GcNzL97gaShsbd8Ba4SNdgl3eq9tskTLUnbcJvQPa3TfeDJfhA+Frp9VdqgZQ
-         GSIYxZOJ28MeATyjaLjxEIgulfRa7U73gAOcND3TSY4GGsFEljJSEoecb6cLkvZWLvMH
-         Mm/N4Wrr7Q3rRBqnqJpAWLYP+ldsnSjo3TG3p06z8tvBFmJKfU4X4MOY11aCqIYsQhqp
-         sOXRele9VYIMAfWAJrTPi25yxE6XFZJ0vy4zziCSVOm17euiv3z43A1d2cESqL85/rRd
-         mSnrlPCKCZ3Lzej8C9kmlEqqWgDNQx03DcTN3sxBmU2iVPWxLUQ77aJXBd/k/7g4B9eU
-         dGJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXCd+jcoeuEuf+i9b0ymdccn9XMbf3hQBiyLO3CVnvuG/UuosephCCG6fhh9q/aN6doG1z4TUscZPDaVv35BnQrYhrm1Wgm0yMg2o6c
-X-Gm-Message-State: AOJu0Ywqv3d/C2sOHq0vFyF4MfDHR3yERhWtzRp3UBR+FlFKTUoDYU3E
-	3YqUkRqhUbqWTQXih6UaguKfEjrrHW2qhx6k3mOSYpkydhczpIxrHlUvKy2IOrM=
-X-Google-Smtp-Source: AGHT+IHZPOUNNlHUfJ4UIDp40yrSx/o6yztNYiaRDe88l58PFdLYTv00xpM4C5Wj4nVQ3nuIAT5XVw==
-X-Received: by 2002:a05:600c:3b9c:b0:418:7ec1:7bdb with SMTP id n28-20020a05600c3b9c00b004187ec17bdbmr1874101wms.5.1713875899466;
-        Tue, 23 Apr 2024 05:38:19 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id s7-20020a05600c45c700b0041aa570bcd3sm3029800wmo.35.2024.04.23.05.38.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 05:38:18 -0700 (PDT)
-Message-ID: <92b02fd3-5eba-42a7-a166-21b14724b10c@linaro.org>
-Date: Tue, 23 Apr 2024 13:38:18 +0100
+	s=arc-20240116; t=1713875908; c=relaxed/simple;
+	bh=W3QJ3abnpeI4gXmfwcQAafj4T+GPRhWjzlZLcC4bPRY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P47/aOF8kg7mzR+Mb5ydIB6ACa+o8vB/kxW7nAxpQKfunTknCfSW/UzHy1K7Z2MRuZSoyG0vm5okyyP2QE9hSuP12OSAdfN87TlLbmLy0BucKNT68XFWKUs1HnYdGBwBRL871e96IWokEmFLBbTLXdJtD/W5HLAJ3wZibl30NS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D5717339;
+	Tue, 23 Apr 2024 05:38:54 -0700 (PDT)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CF0673F7BD;
+	Tue, 23 Apr 2024 05:38:22 -0700 (PDT)
+Date: Tue, 23 Apr 2024 13:38:20 +0100
+From: Dave Martin <Dave.Martin@arm.com>
+To: Peter Newman <peternewman@google.com>
+Cc: Babu Moger <babu.moger@amd.com>, corbet@lwn.net, fenghua.yu@intel.com,
+	reinette.chatre@intel.com, tglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+	hpa@zytor.com, paulmck@kernel.org, rdunlap@infradead.org,
+	tj@kernel.org, peterz@infradead.org, yanjiewtw@gmail.com,
+	kim.phillips@amd.com, lukas.bulwahn@gmail.com, seanjc@google.com,
+	jmattson@google.com, leitao@debian.org, jpoimboe@kernel.org,
+	rick.p.edgecombe@intel.com, kirill.shutemov@linux.intel.com,
+	jithu.joseph@intel.com, kai.huang@intel.com,
+	kan.liang@linux.intel.com, daniel.sneddon@linux.intel.com,
+	pbonzini@redhat.com, sandipan.das@amd.com,
+	ilpo.jarvinen@linux.intel.com, maciej.wieczor-retman@intel.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	eranian@google.com, james.morse@arm.com
+Subject: Re: [RFC PATCH v3 00/17] x86/resctrl : Support AMD Assignable
+ Bandwidth Monitoring Counters (ABMC)
+Message-ID: <ZiervIprcwoApAqw@e133380.arm.com>
+References: <cover.1711674410.git.babu.moger@amd.com>
+ <ZiaRXrmDDjc194JI@e133380.arm.com>
+ <CALPaoCh5DDmojnkUZPnACkq_ugwKnqCnwLHj2sV69TSTzpAL9g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/4] ASoC: qcom: display port changes
-To: Johan Hovold <johan@kernel.org>
-Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Bjorn Andersson <quic_bjorande@quicinc.com>
-References: <20240422134354.89291-1-srinivas.kandagatla@linaro.org>
- <ZieihZRKe7OtP-nV@hovoldconsulting.com>
-Content-Language: en-US
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <ZieihZRKe7OtP-nV@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALPaoCh5DDmojnkUZPnACkq_ugwKnqCnwLHj2sV69TSTzpAL9g@mail.gmail.com>
 
+Hi Peter,
 
-
-On 23/04/2024 12:59, Johan Hovold wrote:
-> On Mon, Apr 22, 2024 at 02:43:50PM +0100, Srinivas Kandagatla wrote:
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
->> This patchset adds support for.
->> 	1. parse Display Port module tokens from ASoC topology
->> 	2. add support to DP/HDMI Jack events.
->> 	3. fixes a typo in function name in sm8250
->>
->> Verified these patches on X13s along with changes to tplg in
->> https://git.codelinaro.org/linaro/qcomlt/audioreach-topology/-/tree/topic/x13s-dp?ref_type=heads
->> and ucm changes from https://github.com/Srinivas-Kandagatla/alsa-ucm-conf/tree/topic/x13s-dp
+On Mon, Apr 22, 2024 at 11:23:50AM -0700, Peter Newman wrote:
+> Hi Dave,
 > 
-> It looks like your UCM changes are still muxing the speaker and *each*
-> displayport output so that you can only use one device at a time (i.e.
-> only Speaker or DP1 or DP2 can be used).
-that is true.
-
-What is the use-case to use more than one audio sink devices at the same 
-time for a laptops?
-
-How do you test it? I never tested anything like that on a full desktop 
-setup.
-
-May be some manual setup in Wireplumber, but not 100% sure about 
-multiple stream handling.
-
+> On Mon, Apr 22, 2024 at 9:33 AM Dave Martin <Dave.Martin@arm.com> wrote:
+> >
+> > Hi Babu,
+> >
+> > On Thu, Mar 28, 2024 at 08:06:33PM -0500, Babu Moger wrote:
+> > >        Assignment flags can be one of the following:
+> > >
+> > >         t  MBM total event is assigned
+> >
+> > With my MPAM hat on this looks a bit weird, although I suppose it
+> > follows on from the way "mbm_total_bytes" and "mbm_local_bytes" are
+> > already exposed in resctrlfs.
+> >
+> > From an abstract point of view, "total" and "local" are just event
+> > selection criteria, additional to those in mbm_cfg_mask.  The different
+> > way they are treated in the hardware feels like an x86 implementation
+> > detail.
+> >
+> > For MPAM we don't currently distinguish local from non-local traffic, so
+> > I guess this just reduces to a simple on-off (i.e., "t" or nothing),
+> > which I guess is tolerable.
+> >
+> > This might want more thought if there is an expectation that more
+> > categories will be added here, though (?)
 > 
-> As we discussed off list last week, this seems unnecessarily limited and
-> as far as I understood is mostly needed to work around some
-> implementation details (not sure why DP1 and DP2 can't be used in
-> parallel either).
+> There should be a path forward whenever we start supporting
+> user-configured counter classes. I assume the letters a-z will be
+> enough to cover all the counter classes which could be used at once.
 
-It is absolutely possible to run all the streams in parallel from the 
-Audio hardware and DSP point of view.
-
-One thing to note is, On Qualcomm DP IP, we can not read/write registers 
-if the DP port is not connected, which means that we can not send data 
-in such cases.
-
-This makes it challenging to work with sound-servers like pipewire or 
-pulseaudio as they tend to send silence data at very early stages in the 
-full system boot up, ignoring state of the Jack events.
+Ack, though I'd appreciate a response on the point about "_" below in
+case people missed it.
 
 > 
-> Can you please describe the problem here so that we can discuss this
-> before merging an unnecessarily restricted solution which may later be
-> harder to change (e.g. as kernel, topology and ucm may again need to be
-> updated in lock step).
+> >
+> > >         l  MBM local event is assigned
+> > >         tl Both total and local MBM events are assigned
+> > >         _  None of the MBM events are assigned
+> >
+> > This use of '_' seems unusual.  Can we not just have the empty string
+> > for "nothing assigned"?
+> >
+> > Since every assignment is terminated by ';' or end-of-line, I don't
+> > think that there would be any parsing ambiguity (?)
+> >
+> > >
+> > >       Examples:
+> > >
+> > >       # cat /sys/fs/resctrl/info/L3_MON/mbm_assign_control
+> > >       non_defult_group//0=tl;1=tl;2=tl;3=tl;4=tl;5=tl;6=tl;7=tl;
+> > >       non_defult_group/non_default_mon1/0=tl;1=tl;2=tl;3=tl;4=tl;5=tl;6=tl;7=tl;
+> > >       //0=tl;1=tl;2=tl;3=tl;4=tl;5=tl;6=tl;7=tl;
+> > >       /default_mon1/0=tl;1=tl;2=tl;3=tl;4=tl;5=tl;6=tl;7=tl;
+> > >
+> > >       There are four groups and all the groups have local and total event assigned.
+> > >
+> > >       "//" - This is a default CONTROL MON group
+> > >
+> > >       "non_defult_group//" - This is non default CONTROL MON group
+> > >
+> > >       "/default_mon1/"  - This is Child MON group of the defult group
+> > >
+> > >       "non_defult_group/non_default_mon1/" - This is child MON group of the non default group
+> > >
+> > >       =tl means both total and local events are assigned.
+> > >
+> > > e. Update the group assignment states using the interface file /sys/fs/resctrl/info/L3_MON/mbm_assign_control.
+> > >
+> > >       The write format is similar to the above list format with addition of
+> > >       op-code for the assignment operation.
+> >
+> > With by resctrl newbie hat on:
+> >
+> > It feels a bit complex (for the kernel) to have userspace needing to
+> > write a script into a magic file that we need to parse, specifying
+> > updates to a bunch of controls already visible as objects in resctrlfs
+> > in their own right.
+> >
+> > What's the expected use case here?
 > 
->  From what I could tell after a quick look, this series does not
-> necessarily depend on muxing things this way, but please confirm that
-> too.
-
-These patches have nothing to do with how we model the muxing in UCM or 
-in tplg.
-
-so these can go as it is irrespective of how we want to model the DP 
-sinks in the UCM or tplg.
-
-
---srini
+> I went over the use case of iterating a small number of monitors over
+> a much larger number of monitoring groups here:
 > 
-> Johan
+> https://lore.kernel.org/lkml/CALPaoCi=PCWr6U5zYtFPmyaFHU_iqZtZL-LaHC2mYxbETXk3ig@mail.gmail.com/
+> 
+> >
+> > If userspace really does need to switch lots of events simultaneously
+> > then I guess the overhead of enumerating and poking lots of individual
+> > files might be unacceptable though, and we would still need some global
+> > interfaces for operations such as "unassign everything"...
+> 
+> My main goal is for the number of parallel IPI batches to all the
+> domains (or write syscalls) to be O(num_rmids / num_monitors) rather
+> than O(num_rmids * num_monitors) as I need to know how frequently we
+> can afford to sample the current memory bandwidth of the maximum
+> number of monitoring groups supported.
+
+Fair enough; I wasn't fully aware of the background discussions.
+
+Cheers
+---Dave
 
