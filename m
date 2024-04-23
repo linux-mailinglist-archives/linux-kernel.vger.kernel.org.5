@@ -1,155 +1,138 @@
-Return-Path: <linux-kernel+bounces-154404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 713C48ADBAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:46:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14AC58ADBB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:51:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E91A1C213CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:46:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4373EB229CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:51:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C7814292;
-	Tue, 23 Apr 2024 01:46:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="M4gCv/fz"
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 937BC168B8;
+	Tue, 23 Apr 2024 01:51:06 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97286134C6
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 01:46:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B33CA134A8;
+	Tue, 23 Apr 2024 01:51:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713836785; cv=none; b=EI6qVG+igEJPrbMIvaxXvZOe+nOG3xny5elJL8amP6r/kCOsla7gnRBcgaooho9EVrQ2k1X/wHoFqOv7872LeJsU8FiM69/Fr9d/rf3wFLoKqTrsfAeJXqBnpaz5jNk5Gx8leQ2/FqI8vq3Itcfyexrgt9NwY59/r8LDGfYcQH0=
+	t=1713837066; cv=none; b=hAhP/yv90HTWv8Wul13MCWX9cXk0u3VbaqkoLni8cbZJzUayRZbq0qPjGg9nkw1iqpJRqm66Ei2vtPcIMk2+ySkbCZbQR+96cDKuJhTnN2GBOQKd/BPgaNJWL+4+DQe2Uvv10TbKRYOmd2p58VhWovcBnHzoTlpyeSDB4iMqprw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713836785; c=relaxed/simple;
-	bh=BxB6dlVnYbWLoAq4KIPxLPfXIZvvx72U5vyiZG2qEkM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TXvK6fAlZ0EhV7SILDjQhLcqqdOTvE2FUQ2nhGvfRX/pv36+ZFyuoC+GQB/kc2d5jNIt0PgWN835dpbobLN2BS/DghQWlPDn6DQl5CsV/b1UkuNwBt/NVH1v26FYH01zYFsrJ3Dv5+Qyzo7lLFWDNc9/+P/vKJ1hC6CClTXwYeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=M4gCv/fz; arc=none smtp.client-ip=115.124.30.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1713836780; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=nbp8Po9QugxndSl6Xnhz2pUHpg0EmUfrKyhVksct1oM=;
-	b=M4gCv/fzcRSOt5kCQmBCZjZ0UuMipGOgoZKKh7oCUmm0WaBZ1T3KQFXrUSrLUrv8bM922Z484F/Tr2KJzeFReCLmRgeZHCLJhWroGRdihoO2vjOaSiQRGcMyajz4JQxMBX/EkYZFh+0uoH8EYQPfLMaKJ23jJScsbRwJUGBUwDc=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W570E4y_1713836777;
-Received: from 30.97.56.65(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W570E4y_1713836777)
-          by smtp.aliyun-inc.com;
-          Tue, 23 Apr 2024 09:46:18 +0800
-Message-ID: <3045341d-06c2-4fdb-88a1-3f0d473f99ee@linux.alibaba.com>
-Date: Tue, 23 Apr 2024 09:46:17 +0800
+	s=arc-20240116; t=1713837066; c=relaxed/simple;
+	bh=wzuhf0hawkcNBkeWH5LY2+F/ZJYzlObZ/lFVJeFgYAU=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=t3tD64gFmQTqcAa9ty31wgaqWZYubj6Lz3lXeRynpKucCbGOXD2D2tHXK0jEfFwJCSCOs5kbBJxVvOn4FgooosA6S4/QyhF6YNmYYkb3vMAgg7S9SQ+UzPdCIr4Z1q6+y1rhgx1igZr4cUMiuIiAul5fHeXbfbKT1mEPhr0Z5qE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VNlSp5jcvz4f3mHG;
+	Tue, 23 Apr 2024 09:50:50 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id E83221A0175;
+	Tue, 23 Apr 2024 09:50:59 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgBHGBECFCdm12jXKg--.14969S3;
+	Tue, 23 Apr 2024 09:50:59 +0800 (CST)
+Subject: Re: [PATCH] blk-throttle: fix repeat limit on bio with
+ BIO_BPS_THROTTLED
+To: "tj@kernel.org" <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: =?UTF-8?B?5ZGo5rOw5a6H?= <zhoutaiyu@kuaishou.com>,
+ "josef@toxicpanda.com" <josef@toxicpanda.com>,
+ "axboe@kernel.dk" <axboe@kernel.dk>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20240419120747.38031-1-zhoutaiyu@kuaishou.com>
+ <ea781ccc-c29e-894e-c54a-f44ea349edca@huaweicloud.com>
+ <e2d291e6b6ed43d89930eb2a7d459ff8@kuaishou.com>
+ <fbf135e8-de16-8eb4-9ade-1b979a335e33@huaweicloud.com>
+ <Ziag2TL_BqmTRK5D@slm.duckdns.org>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <283462e4-c2d7-8d70-bb0f-61db62a86e02@huaweicloud.com>
+Date: Tue, 23 Apr 2024 09:50:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/5] mm: shmem: add anonymous share mTHP counters
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, hughd@google.com, willy@infradead.org,
- david@redhat.com, wangkefeng.wang@huawei.com, ryan.roberts@arm.com,
- ying.huang@intel.com, shy828301@gmail.com, ziy@nvidia.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
- <05d0096e4ec3e572d1d52d33a31a661321ac1551.1713755580.git.baolin.wang@linux.alibaba.com>
- <CAGsJ_4xu4iL5pv7T1chyzGC2Vp9q1GwOp3wxb=bYMW-T-pj4dA@mail.gmail.com>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <CAGsJ_4xu4iL5pv7T1chyzGC2Vp9q1GwOp3wxb=bYMW-T-pj4dA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <Ziag2TL_BqmTRK5D@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBHGBECFCdm12jXKg--.14969S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7KryxJr4UGFWDAw1xXrWfuFg_yoW8Aw48p3
+	W3Ja1xAr1jyrs7Gw1avw4UXa4FvwsxCrZ8JryrGry2kr98Ga4xtr4xJr4akFnIvFsYkw1j
+	yFn3Xas5Wa95ZrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+	IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+	Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
+	UUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
+Hi, Tejun!
 
-
-On 2024/4/23 09:17, Barry Song wrote:
-> On Mon, Apr 22, 2024 at 3:03 PM Baolin Wang
-> <baolin.wang@linux.alibaba.com> wrote:
->>
->> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->> ---
->>   include/linux/huge_mm.h | 2 ++
->>   mm/huge_memory.c        | 4 ++++
->>   mm/shmem.c              | 5 ++++-
->>   3 files changed, 10 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->> index 26b6fa98d8ac..67b9c1acad31 100644
->> --- a/include/linux/huge_mm.h
->> +++ b/include/linux/huge_mm.h
->> @@ -270,6 +270,8 @@ enum mthp_stat_item {
->>          MTHP_STAT_ANON_SWPOUT,
->>          MTHP_STAT_ANON_SWPOUT_FALLBACK,
->>          MTHP_STAT_ANON_SWPIN_REFAULT,
->> +       MTHP_STAT_SHMEM_ANON_ALLOC,
->> +       MTHP_STAT_SHMEM_ANON_ALLOC_FALLBACK,
+在 2024/04/23 1:39, tj@kernel.org 写道:
+> Hello, Yu Kuai.
 > 
-> not quite sure about this. for 2MB pmd-mapped THP shmem, we count them
-> as FILE_THP.
-> here we are counting as SHMEM_ANON. To me, SHMEM_ANON is more correct but
-> it doesn't align with pmd-mapped THP. David, Ryan, what do you think?
-
-Thanks for reviewing.
-
-IMO, I think both approaches are acceptable, which also reflects the 
-dual nature of anonymous shared pages: on the one hand they are 
-anonymous pages, and on the other hand, they are backed by a pseudo 
-file. From the user's perspective, I prefer to use the term "anonymous 
-shmem", which can be distinguished from the real file-backed THP.
-
-Anyway, let's see what others think.
-
->>          __MTHP_STAT_COUNT
->>   };
+> On Mon, Apr 22, 2024 at 11:47:41AM +0800, Yu Kuai wrote:
+>> Hi!
 >>
->> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->> index 9e52c0db7580..dc15240c1ab3 100644
->> --- a/mm/huge_memory.c
->> +++ b/mm/huge_memory.c
->> @@ -557,6 +557,8 @@ DEFINE_MTHP_STAT_ATTR(anon_alloc_fallback, MTHP_STAT_ANON_ALLOC_FALLBACK);
->>   DEFINE_MTHP_STAT_ATTR(anon_swpout, MTHP_STAT_ANON_SWPOUT);
->>   DEFINE_MTHP_STAT_ATTR(anon_swpout_fallback, MTHP_STAT_ANON_SWPOUT_FALLBACK);
->>   DEFINE_MTHP_STAT_ATTR(anon_swpin_refault, MTHP_STAT_ANON_SWPIN_REFAULT);
->> +DEFINE_MTHP_STAT_ATTR(shmem_anon_alloc, MTHP_STAT_SHMEM_ANON_ALLOC);
->> +DEFINE_MTHP_STAT_ATTR(shmem_anon_alloc_fallback, MTHP_STAT_SHMEM_ANON_ALLOC_FALLBACK);
+>> 在 2024/04/22 11:33, 周泰宇 写道:
+>>> What I want to do here was to set an easy to reach value to BPS_LIMIT (10M/s in this example) and an unable to reach value to IOPS_LIMIT (100000 in this example).
+>>>
+>>>
+>>> Under this setting, the iostat shows that the bps is far less than 10M/s and sometimes is far larger than 10M/s.
 >>
->>   static struct attribute *stats_attrs[] = {
->>          &anon_alloc_attr.attr,
->> @@ -564,6 +566,8 @@ static struct attribute *stats_attrs[] = {
->>          &anon_swpout_attr.attr,
->>          &anon_swpout_fallback_attr.attr,
->>          &anon_swpin_refault_attr.attr,
->> +       &shmem_anon_alloc_attr.attr,
->> +       &shmem_anon_alloc_fallback_attr.attr,
->>          NULL,
->>   };
+>> Yes, I know this behaviour, and this is because blk-throttle works
+>> before IO split, and io stats is accounting bps for rq-based disk after
+>> IO split, if you using Q2C for bps you'll see that bps is stable as
+>> limit.
 >>
->> diff --git a/mm/shmem.c b/mm/shmem.c
->> index 8b009e7040b2..4a0aa75ab29c 100644
->> --- a/mm/shmem.c
->> +++ b/mm/shmem.c
->> @@ -1706,11 +1706,14 @@ static struct folio *shmem_alloc_and_add_folio(struct vm_fault *vmf,
->>                          pages = 1 << order;
->>                          index = round_down(index, pages);
->>                          folio = shmem_alloc_hugefolio(gfp, info, index, order);
->> -                       if (folio)
->> +                       if (folio) {
->> +                               count_mthp_stat(order, MTHP_STAT_SHMEM_ANON_ALLOC);
->>                                  goto allocated;
->> +                       }
+>> Hi, Tejun！
 >>
->>                          if (pages == HPAGE_PMD_NR)
->>                                  count_vm_event(THP_FILE_FALLBACK);
->> +                       count_mthp_stat(order, MTHP_STAT_SHMEM_ANON_ALLOC_FALLBACK);
->>                          order = next_order(&orders, order);
->>                  }
->>          } else {
->> --
->> 2.39.3
->>
+>> Do you think this *phenomenon* need to be fixed? If so, I don't see a
+>> easy way other than throttle bio after *IO split*. Perhaps ohter than
+>> bio merge case, this can be another motivation to move blk-throttle to
+>> rq_qos_throttle().
 > 
-> Thanks
-> Barry
+> Yeah, blk-throtl is sitting too early in the pipeline to easily track how
+> the bios actually get issued. However, given that it's been available for
+> bio-based drivers for a really long time, I don't think it'd be a good idea
+> to move it, so iops limit is always going to be a bit unreliable w.r.t. what
+> actually get issued to the device. So, IMHO, if the oddity is just about how
+> IOs are counted, I don't think it's a critical problem on its own.
+
+Got it, and agreed. Consider that bps limit for Q stage is stable,
+although iostat can observe bps higher or lower sometimes, overall it
+should be accurate.
+
+Hi, Zhoutaiyu,
+
+If you really want to fix this, you must come up with a solution with
+the respect of FIFO rules, breaking it like this patch is not something
+we'll accept, breaking fairness and some other flaws.
+
+Thanks,
+Kuai
+
+> 
+> Thanks.
+> 
+
 
