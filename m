@@ -1,132 +1,147 @@
-Return-Path: <linux-kernel+bounces-155594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BE048AF496
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 458C08AF49A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:49:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEDD3B238A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:48:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB621B242E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:49:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE8A13D627;
-	Tue, 23 Apr 2024 16:48:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7669B13D61F;
+	Tue, 23 Apr 2024 16:49:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H0N9z2Dp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LJqXzxJT"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCEB813D510;
-	Tue, 23 Apr 2024 16:48:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB1991E898
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:49:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713890910; cv=none; b=j7Q+Eb3zQSDitVcUFmYzR/VWc6/pdxCdWDPqj/DuEdLJVGAOYxve1ghcx6d+zD7EQyJqq5P58YnP2B9AZ3iyZZaEo471kY/3HyDHaArPPXlKHWDYS8grTHWs/Ybkm3IUSDYKZTQh4o8wTFAcaqoH1Ds4UgpLPG4SH04+v4ayd0Q=
+	t=1713890956; cv=none; b=Pc4oCDGGQ4FSQiksYHn/iC2DaqWN/IFjP3ZyriEJn1HuOr4zAIG7CZSegQB80QZBONRfEuN14u/7CouLMPbFjsVldn+a+QUHPqC8GJWL1nJCXSSfyLDSA7Tye51tuL4ZN28eNyYo44FJP2z33vnn832OSGWkdRmsiRY2aRFf2e0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713890910; c=relaxed/simple;
-	bh=dDcEPFI4Ualc1uLvugD6+grOLhPWeZRyR8kTPMNYs3s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sZ0RyWF7U4pcH4NthuPhKLWiJgBBfS/olC0LqhwXeWekkRhoit+MDbjFS4Wu6YFVP1g6vooL15JVo5cX0kyFhnlJpyPfB1z2xyoC2RgBVQW5vmowOMWRoPtLQ9AIY8GC4CTFiT05F9EQXR7dtM/5Lkm8xqVnPSrtk20lFYdDMT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H0N9z2Dp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2099AC116B1;
-	Tue, 23 Apr 2024 16:48:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713890909;
-	bh=dDcEPFI4Ualc1uLvugD6+grOLhPWeZRyR8kTPMNYs3s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=H0N9z2Dpb8WrHvqNLiT000UhV8Y+9krxRJtMDjYhIaBZP1030Bof/Sp/hOK16Vnyt
-	 pbVCxC1D1O5/vA65C3BsscHOwlAvYg1UpOpQ3EVxyzDTLUE1ZM+lZ8cmZu3/NkS3Tw
-	 xVOk1gKZBGsmyD84IVNwPtg+ESwZW+XFy+bMdvO5bjU1uLsENudLBOWWYEhZMMT8Fa
-	 vyNNR8+roNhWc/HCa+cWfetSA9UjIquzJOhYsoF6WnUMrvgZez9qPfpY5616SRkjrl
-	 L6wHTtaUP4o+WnWmTSYwHJWDswPA3+5pzcdxtnlLflvYjbQiJdjWqAwg5QkWxRyxD2
-	 yBGwCrlwvy10w==
-Date: Tue, 23 Apr 2024 17:48:24 +0100
-From: Conor Dooley <conor@kernel.org>
-To: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
-Cc: Jonathan Corbet <corbet@lwn.net>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>,
-	Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, kvm@vger.kernel.org,
-	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/5] riscv: add ISA extension parsing for Zimop
-Message-ID: <20240423-juiciness-unethical-90ec18e4fabe@spud>
-References: <20240404103254.1752834-1-cleger@rivosinc.com>
- <20240404103254.1752834-3-cleger@rivosinc.com>
+	s=arc-20240116; t=1713890956; c=relaxed/simple;
+	bh=ldVzTwv3fwEiTXBi6dYuRPKuiRpDDdt1y7A0qo9Q2QA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BEVPKrJ6WAmoy5hTLWAc3zoTY7RqQpBes4D/A/hz7pwYxKkMNR38PcraS95wOS/ibefqzcRtlmn3b9b07M54csVKo8ztmzA0zo1wjnAnXEUaqgu1GLkXjQMfw7tFBJd/AQulcJseU8oRxR5ZMcpZb5hjRxYdGzqqep/ZzzkYkV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LJqXzxJT; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41aa2f6ff00so15112585e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:49:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713890953; x=1714495753; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ldVzTwv3fwEiTXBi6dYuRPKuiRpDDdt1y7A0qo9Q2QA=;
+        b=LJqXzxJTRNDrHx9LQ1+C+/IPem1dbVrCqOUDX5bhqfDgMtzHOoopq52gzWru11PHZ/
+         1UnliwrVtmzmorsz5YPSU3SlPlDjLXaxVmY9KfLg7QvowFS9B7/z+wxKYdu8NQEzEwF4
+         nn9kfLOemMNUn7TK1gtgKK6OLjwLe4xJ/8evQ8Kk3h/mj3BRWBPbZJyiAsfewxJyQBhm
+         FuEFVsU+ZGDl7ozAfXnfBkz9g9JOdfOLFofaSYZM+EL1x6QT6tPrn9x9EtVVuKhFUwaI
+         nmfe8UzhkxwLYPmNK4PSAe3QTgoAgeTI8TmJH7nWhav0FUP08AhckZ8KYiVidUEEes/c
+         yChg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713890953; x=1714495753;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ldVzTwv3fwEiTXBi6dYuRPKuiRpDDdt1y7A0qo9Q2QA=;
+        b=OMwmgk7aJ+O97OYEwS9TpgbGur2D6WlOikLkKVqSRVjDBg1CB6A8A/2YTEj0lMnk6M
+         RfrAe2ZsK9V6tcgDmCmBG6wHfXZ94g1wWtlXSSei0altkBegd/z2taVAPGORDCoQ0qTj
+         drrB77dZAtknRuoUifx2lHFmOnj/b81nYTYDI7GcLrUGLvGx7dqbjr8a4TJkkCKPAIVf
+         zLWJArXamqncruesUi1otNgK5Dp8N7c54vjWkHsKf01ifa6KEgiO2sIqJxUMCQvrAuE3
+         Nj0phoVBq2pHmgXrhc8VRQuu2j79wb8CvLfuNPawdxE5W/XU/UoTxokp70VZ+U16BwCf
+         PIAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXvnFwqliCuazIL6SnIb41rfBZxZ5liHebIFkDX0CcQaeFwWHnTJU/wMNsSJm7o4vhoOzLjXIBON3+2vFb2jWHDW0dv1pgqN8N0nbvS
+X-Gm-Message-State: AOJu0YxU9Yp4YOBEPteg/TOD13EcK3AhhD7RRWVrS9y5V5tZ3/30LNtJ
+	ZWNowyoBED+pmzXTYOjS4CX1QdW2U1cutgvedZgAHodtTptM8bTI7GJx8GOPmiM=
+X-Google-Smtp-Source: AGHT+IFFjiX0lGTvRX6PkqniQZmmmeygPyoAEul4datqZN6BwlChbzsJP3H/9AAw03G7QKIB4ZDERg==
+X-Received: by 2002:adf:fa88:0:b0:34a:d130:611b with SMTP id h8-20020adffa88000000b0034ad130611bmr7093753wrr.17.1713890953167;
+        Tue, 23 Apr 2024 09:49:13 -0700 (PDT)
+Received: from [192.168.0.102] ([176.61.106.227])
+        by smtp.gmail.com with ESMTPSA id n12-20020a5d67cc000000b0034a51283404sm12576954wrw.72.2024.04.23.09.49.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 09:49:12 -0700 (PDT)
+Message-ID: <81770681-7ddb-41b4-8202-8dd44014c5e8@linaro.org>
+Date: Tue, 23 Apr 2024 17:49:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Zc1JrpErq69EY9Ys"
-Content-Disposition: inline
-In-Reply-To: <20240404103254.1752834-3-cleger@rivosinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 26/35] media: venus: Refator return path
+To: Ricardo Ribalda <ribalda@chromium.org>,
+ Martin Tuma <martin.tuma@digiteqautomotive.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ Hugues Fruchet <hugues.fruchet@foss.st.com>,
+ Alain Volmat <alain.volmat@foss.st.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Chen-Yu Tsai
+ <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Sowjanya Komatineni <skomatineni@nvidia.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
+ Abylay Ospan <aospan@netup.ru>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Dmitry Osipenko <digetx@gmail.com>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+ Sylvain Petinot <sylvain.petinot@foss.st.com>,
+ Jacopo Mondi <jacopo+renesas@jmondi.org>,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+ =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
+ Pavel Machek <pavel@ucw.cz>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
+References: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
+ <20240415-fix-cocci-v1-26-477afb23728b@chromium.org>
+Content-Language: en-US
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240415-fix-cocci-v1-26-477afb23728b@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 15/04/2024 20:34, Ricardo Ribalda wrote:
+> This is a nop, but let cocci now that this is not a good candidate for
 
---Zc1JrpErq69EY9Ys
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+*know
 
-On Thu, Apr 04, 2024 at 12:32:48PM +0200, Cl=E9ment L=E9ger wrote:
-> Add parsing for Zimop ISA extension which was ratified in commit
-> 58220614a5f of the riscv-isa-manual.
->=20
-> Signed-off-by: Cl=E9ment L=E9ger <cleger@rivosinc.com>
+> min()
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+But I think you should change the commit log ->
 
-> ---
->  arch/riscv/include/asm/hwcap.h | 1 +
->  arch/riscv/kernel/cpufeature.c | 1 +
->  2 files changed, 2 insertions(+)
->=20
-> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwca=
-p.h
-> index e17d0078a651..543e3ea2da0e 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -81,6 +81,7 @@
->  #define RISCV_ISA_EXT_ZTSO		72
->  #define RISCV_ISA_EXT_ZACAS		73
->  #define RISCV_ISA_EXT_XANDESPMU		74
-> +#define RISCV_ISA_EXT_ZIMOP		75
-> =20
->  #define RISCV_ISA_EXT_XLINUXENVCFG	127
-> =20
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 3ed2359eae35..115ba001f1bc 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -256,6 +256,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D {
->  	__RISCV_ISA_EXT_DATA(zihintntl, RISCV_ISA_EXT_ZIHINTNTL),
->  	__RISCV_ISA_EXT_DATA(zihintpause, RISCV_ISA_EXT_ZIHINTPAUSE),
->  	__RISCV_ISA_EXT_DATA(zihpm, RISCV_ISA_EXT_ZIHPM),
-> +	__RISCV_ISA_EXT_DATA(zimop, RISCV_ISA_EXT_ZIMOP),
->  	__RISCV_ISA_EXT_DATA(zacas, RISCV_ISA_EXT_ZACAS),
->  	__RISCV_ISA_EXT_DATA(zfa, RISCV_ISA_EXT_ZFA),
->  	__RISCV_ISA_EXT_DATA(zfh, RISCV_ISA_EXT_ZFH),
-> --=20
-> 2.43.0
->=20
+"Rewrite ternary return assignment to mitigate the following cocci WARNING."
 
---Zc1JrpErq69EY9Ys
-Content-Type: application/pgp-signature; name="signature.asc"
+> drivers/media/platform/qcom/venus/vdec.c:672:12-13: WARNING opportunity for min()
+> drivers/media/platform/qcom/venus/vdec.c:650:12-13: WARNING opportunity for min()
 
------BEGIN PGP SIGNATURE-----
+then
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZifmVwAKCRB4tDGHoIJi
-0rtUAQCfFhskrVJaQGT4zQgAGIaJX6eQRM8RECwtSJ2o0cGu0gD+IKq0dbK1gZnO
-+otlDf1x+J0DKBOQ9YLeg8J2xFWRTAk=
-=AiuW
------END PGP SIGNATURE-----
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
---Zc1JrpErq69EY9Ys--
+---
+bod
 
