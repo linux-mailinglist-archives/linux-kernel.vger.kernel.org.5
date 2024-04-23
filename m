@@ -1,182 +1,139 @@
-Return-Path: <linux-kernel+bounces-154591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5757B8ADE0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:12:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95EB88ADE0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:12:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7ACA91C2184A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:12:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50D5D2831BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:12:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 671E13FBA5;
-	Tue, 23 Apr 2024 07:11:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gMny9zpv"
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 490444597A;
+	Tue, 23 Apr 2024 07:12:53 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 196A2210F8;
-	Tue, 23 Apr 2024 07:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 884BD210F8
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:12:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713856318; cv=none; b=YKW3lpyXbAhMikp+Eor0/PxzvvJTAUW5acYd1LvIdIPR82JEdEUDhCrfy2QqyljoKdHv1PbqpLZSieSI8v9asvf9Q9CUx3cFm30A4Nes5fDRNrwh3ujVLF97Ft6PJ+mGYiVPJchUrv3yakZm4h8pYPGhRHo30VbKJmaoHmlaz78=
+	t=1713856372; cv=none; b=tJ07mTdCbSSa/bmIgUhc7DG9v3Rz1RplIbcp5i4uRzSzSAHu8/Ogv+FFur7GuTHPtyhPOkhx1w+EdH/XQpml/4cR7xoNmuZpmcPnhW+wx4s776tTE86Lq5HB5oxi+EX5oMvNMXsJ2RGaNZlSNydAsT5e/mho9YpWjSBZzhNkevg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713856318; c=relaxed/simple;
-	bh=AlvTmyAAQ/XmdZIewfIyeN/kIH2wHEWINkE0h+pdUUU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AE+RIwEZ9czzlH7qIlXLagzUEglVjKZW20Zo7sh9nMpDeE+c7A/B+VfungaGZvKAL5NvrE/95CPo8axjWg+xE9dIbQZqSYFQBBGXVat4SYBT8EXDJpJuGqkdjT5XvSacCIgZuV2hb4+rMYUb2tqWk6j1dytvIrAgy/kS5sZwPtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gMny9zpv; arc=none smtp.client-ip=209.85.221.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4dabbd69c71so1424893e0c.1;
-        Tue, 23 Apr 2024 00:11:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713856316; x=1714461116; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cGinqPTX5NiW6j/GQ/Iq1WFMkaCNwYX3kGhXDecfRtU=;
-        b=gMny9zpvL3kuUUz7RS6x22mN4tqW55Si8kBCDttluFlcTbhihs0HM7SeYdCQLJn7K7
-         AZ5E1mx4LB+22FnM+Oukn39y38IDit2cqsk/YsToIpA9tQdmwmVcq6vAZ24jCIY+Cmku
-         rE5YNFqANxqSX1IEquRG0XXxiFe1lSlbjG6i6+IqUh5WQIs8axCNSctGuw8jypvzO51u
-         aeUDHCO6j4r0CSxFLydjPaMoBjuIGyzl5YbOLI+2dkRcSSBrjXkgUvSNtjx+cL12P9kh
-         3q9uE9GVgbn4sjJZ0/KfV9Sd0iNng45wT+MTfejOlftYnYd+6HegezYAK2bj005kuGId
-         qKiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713856316; x=1714461116;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cGinqPTX5NiW6j/GQ/Iq1WFMkaCNwYX3kGhXDecfRtU=;
-        b=p23tzl4uvWD5wHlmrsMsHLc2n2LVi9V9XP4kLlGqQTvDOFDzL41oZWjx+pWB7cFhZt
-         6HLwsQogRehof7mquwBmslTa2sP2r9a7J2cJuTBtTWM7J3/cCX9YFoutmMTCptAqvQTi
-         FA9Oa4Tp73ICKAiKf8NH9UvLrd4h2/lbIX+bcgWQs8AD3UDbH7xh4PulsNJ1XiH5ViN7
-         L6kJnyC3cxc41YUMAcdzvilpmSyIfqlEqzaIA+KQGcUUXhAj7qxiaZqXgpn6LN/2v79r
-         U5sw3jc7//hDpd034QO8LlJOibgbHlAf7chrQ8N5FfoHHI8lwZfFkzxX7AUgPGV9/25H
-         p3Rg==
-X-Forwarded-Encrypted: i=1; AJvYcCWx6kAyCqMMtztC8/PGBYjg5uNGHvXNXqz7sRwdHcM7rLdpMj0dSxZVbb0BX5cUetlFGKF9+PQkdNhVa1HVhgYv94R01gZj0pJwgTFbdbOcJFhmKeo4rkc0Ma6tL9PsO7k7GYW9K4gkea2xWsa+S5UC1xo7QGsV80lBRzvnAzDVcFAt4dYKk9OAhvYeW+SRIHFUDilg67qx/PJcF9Vv3VsfJML3iudW
-X-Gm-Message-State: AOJu0YzsPTOBlm5rkLZ5J7uE2Cc5qa4IdXQLyu6JcvVxP8XjO/SbRBoz
-	7OwBqaUXLCLUbCqgFebFAd/Az3OipBHxpERVWeZvPeEJ71fJp1RYgCLMC3g8fR+/92D+al2Ey4g
-	MoqQgYEaANFcmp8A2o4hagpne7kg=
-X-Google-Smtp-Source: AGHT+IFsS2/AAwiQKfHd53mV7253T5S3AR6DXeDjFE8r1Ci6ZvE9jTAiG32mDZYY8SXhpZxj7dUSk0d6vcjqFSTRf0w=
-X-Received: by 2002:a05:6122:4699:b0:4da:c699:de98 with SMTP id
- di25-20020a056122469900b004dac699de98mr14076349vkb.16.1713856315832; Tue, 23
- Apr 2024 00:11:55 -0700 (PDT)
+	s=arc-20240116; t=1713856372; c=relaxed/simple;
+	bh=fQ4UVE6+6CmvmhJdhJsIrzZ7SFLcAeX7/JjxwWX44Ss=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JgC5xRpi8R+Lp4kDsZEtBXK510oBm/XBplMeRghgRWRSxZCdlQg5xDbOwL34yUpioISofJEo7w/C81treBtWOn5Jdno1T8xOhceL6eCpx8WgnP1qPsif9yXQpNMQKoHdLlhYTTjmcigmZBK8Chh50f/2KfuWeb4YEEH3XjJbq24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rzAKU-0005Pe-6R; Tue, 23 Apr 2024 09:12:38 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rzAKT-00DpqQ-DL; Tue, 23 Apr 2024 09:12:37 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rzAKT-006lQZ-11;
+	Tue, 23 Apr 2024 09:12:37 +0200
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Abel Vesa <abelvesa@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: Peng Fan <peng.fan@nxp.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	linux-clk@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH] clk: imx: imx8mp: Convert to platform remove callback returning void
+Date: Tue, 23 Apr 2024 09:12:31 +0200
+Message-ID: <20240423071232.463201-2-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422213006.505576-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240422213006.505576-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdUmSp1JTADtnsTqExssP1h1pQSLDeMd5NkC=uSXC+javA@mail.gmail.com>
-In-Reply-To: <CAMuHMdUmSp1JTADtnsTqExssP1h1pQSLDeMd5NkC=uSXC+javA@mail.gmail.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Tue, 23 Apr 2024 08:11:19 +0100
-Message-ID: <CA+V-a8vq=ehhgQ0QY__ZQb4NOMDZt07P93T+XjreHcGtBWa+Ww@mail.gmail.com>
-Subject: Re: [PATCH 3/6] mmc: renesas_sdhi: Add compatible string for RZ/G2L
- family, RZ/G3S, and RZ/V2M SoCs
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	Biju Das <biju.das.jz@bp.renesas.com>, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2328; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=fQ4UVE6+6CmvmhJdhJsIrzZ7SFLcAeX7/JjxwWX44Ss=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBmJ19gD+ey60Q7Nhcuckms6sc7hia2d0PrcgA61 25wyYCFd1mJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZidfYAAKCRCPgPtYfRL+ Tl6MB/9ewqqK8k3EJgNUQucdqRiJOeHsgqj+9R7jJdnfre4guZynzegjaBNiTZj1Eh3QTHqwUUq pCj1flKOlPO3XVFmphFRj9FD6svjQhLqGo5nX6/rYpUVd5j8xEnxbDYsNWqZoZcsItcKeWmrUfQ 55s6tGS7MHvqdcxRYoCs8paCvQ+Wxjq5Kf7OftuG0rTzGw7USCUjDxBOUectqjVP9HEX9HbjoM+ bmXbtYxMJPOVIiaWyOp53Thly1bbx1JKt3C8bJUeLfkSlVdOplKB+L2ZtQkoIUAoWrMCrahmN0h jys0PlKAAhqr2tXeO6U/54VCI3EgyqOijcJTRQXJQSBU54U+
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Hi Geert,
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
 
-Thank you for the review.
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
 
-On Tue, Apr 23, 2024 at 7:53=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Mon, Apr 22, 2024 at 11:30=E2=80=AFPM Prabhakar <prabhakar.csengg@gmai=
-l.com> wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > - RZ/G2UL and RZ/Five ("r9a07g043")
-> > - RZ/G2L(C) ("r9a07g044")
-> > - RZ/V2L ("r9a07g054")
-> > - RZ/G3S ("r9a08g045")
-> > - RZ/V2M ("r9a09g011")
-> >
-> > The above SoCs have HS400 disabled and use fixed address mode. Add a
-> > generic compatible 'renesas,rzg2l-sdhi' fallback string for these SoCs,
-> > where fixed_addr_mode and hs400_disabled quirks are applied.
->
-> Thanks for your patch!
-> >
-> > Note, 'renesas,sdhi-r9a09g011' is dropped as we will be using
-> > 'renesas,rzg2l-sdhi' as a fallback string for RZ/V2M SoC.
->
-> Doesn't that break backwards compatibility with existing DTBs?
->
-I was in two minds here, as similarly to the RZ/G2L family the RZ/V2M
-has Gen3 compat string as a fallback in the DTSI. So for existing DTBs
-this would still work (but with no quirks applied). But as you say
-I'll keep this to make sure we dont break anything,
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
 
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > ---
-> >  drivers/mmc/host/renesas_sdhi_internal_dmac.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/mmc/host/renesas_sdhi_internal_dmac.c b/drivers/mm=
-c/host/renesas_sdhi_internal_dmac.c
-> > index 53d34c3eddce..1828c37e0198 100644
-> > --- a/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-> > +++ b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-> > @@ -210,7 +210,7 @@ static const struct renesas_sdhi_quirks sdhi_quirks=
-_r8a77990 =3D {
-> >         .manual_tap_correction =3D true,
-> >  };
-> >
-> > -static const struct renesas_sdhi_quirks sdhi_quirks_r9a09g011 =3D {
-> > +static const struct renesas_sdhi_quirks sdhi_quirks_rzg2l =3D {
-> >         .fixed_addr_mode =3D true,
-> >         .hs400_disabled =3D true,
-> >  };
-> > @@ -255,9 +255,9 @@ static const struct renesas_sdhi_of_data_with_quirk=
-s of_r8a77990_compatible =3D {
-> >         .quirks =3D &sdhi_quirks_r8a77990,
-> >  };
-> >
-> > -static const struct renesas_sdhi_of_data_with_quirks of_r9a09g011_comp=
-atible =3D {
-> > +static const struct renesas_sdhi_of_data_with_quirks of_rzg2l_compatib=
-le =3D {
-> >         .of_data =3D &of_data_rcar_gen3,
-> > -       .quirks =3D &sdhi_quirks_r9a09g011,
-> > +       .quirks =3D &sdhi_quirks_rzg2l,
-> >  };
-> >
-> >  static const struct renesas_sdhi_of_data_with_quirks of_rcar_gen3_comp=
-atible =3D {
-> > @@ -283,7 +283,7 @@ static const struct of_device_id renesas_sdhi_inter=
-nal_dmac_of_match[] =3D {
-> >         { .compatible =3D "renesas,sdhi-r8a77970", .data =3D &of_r8a779=
-70_compatible, },
-> >         { .compatible =3D "renesas,sdhi-r8a77990", .data =3D &of_r8a779=
-90_compatible, },
-> >         { .compatible =3D "renesas,sdhi-r8a77995", .data =3D &of_rcar_g=
-en3_nohs400_compatible, },
-> > -       { .compatible =3D "renesas,sdhi-r9a09g011", .data =3D &of_r9a09=
-g011_compatible, },
->
-> Hence I think the above line should be kept, but changed to point
-> to &of_rzg2l_compatible.
->
-OK, will do.
+Fixes: 1496dd413b2e ("clk: imx: imx8mp: Add pm_runtime support for power saving")
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+Hello,
 
-Cheers,
-Prabhakar
+after the merge window leading to v6.10-rc1 (assuming Linus has >= 10 fingers
+this cycle :-) I want to switch the prototype of struct
+platform_driver::remove to return void. So please either merge this
+patch together with 1496dd413b2e, or accept me sending this patch
+together with the patch changing the function's prototype for inclusion
+to Greg's driver-core tree.
+
+Thanks
+Uwe
+
+ drivers/clk/imx/clk-imx8mp-audiomix.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/clk/imx/clk-imx8mp-audiomix.c b/drivers/clk/imx/clk-imx8mp-audiomix.c
+index 574a032309c1..be9df93b6adb 100644
+--- a/drivers/clk/imx/clk-imx8mp-audiomix.c
++++ b/drivers/clk/imx/clk-imx8mp-audiomix.c
+@@ -346,11 +346,9 @@ static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int clk_imx8mp_audiomix_remove(struct platform_device *pdev)
++static void clk_imx8mp_audiomix_remove(struct platform_device *pdev)
+ {
+ 	pm_runtime_disable(&pdev->dev);
+-
+-	return 0;
+ }
+ 
+ static int clk_imx8mp_audiomix_runtime_suspend(struct device *dev)
+@@ -382,7 +380,7 @@ MODULE_DEVICE_TABLE(of, clk_imx8mp_audiomix_of_match);
+ 
+ static struct platform_driver clk_imx8mp_audiomix_driver = {
+ 	.probe	= clk_imx8mp_audiomix_probe,
+-	.remove = clk_imx8mp_audiomix_remove,
++	.remove_new = clk_imx8mp_audiomix_remove,
+ 	.driver = {
+ 		.name = "imx8mp-audio-blk-ctrl",
+ 		.of_match_table = clk_imx8mp_audiomix_of_match,
+-- 
+2.43.0
+
 
