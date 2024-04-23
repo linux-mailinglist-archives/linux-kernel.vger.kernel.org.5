@@ -1,104 +1,149 @@
-Return-Path: <linux-kernel+bounces-155155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E9138AE5F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:24:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD25A8AE605
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:27:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF3502841DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:24:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CDB0286208
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98EBC127E0A;
-	Tue, 23 Apr 2024 12:23:46 +0000 (UTC)
-Received: from gardel.0pointer.net (gardel.0pointer.net [85.214.157.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C16EA86253;
+	Tue, 23 Apr 2024 12:26:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ixyfno0M"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB9598529E;
-	Tue, 23 Apr 2024 12:23:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.157.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1478814;
+	Tue, 23 Apr 2024 12:26:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713875026; cv=none; b=kmh5VCAP7ZPe+ImlKVDt/hAPFiktUTGpi08XENI8s5nJ9GJ2QXlwz4CSKQB7K70Z64296NvujBXQw3QEudYKGnk71RBRWRKMSTbzDLosHRRVby29vG+0imgeV8pAzE4Ay5ZsrMyS+yEHYZr/57uoLfsOZZASp/Y/YEZcaJqRS+g=
+	t=1713875196; cv=none; b=O/g7xFciTK/Im6UTf4eV+1BYcYGdjVkCwNT9l1XGgu4rznpPFQlTD+WEc8nCzCWHtoXLPW7rQhgq8tZNn8Qt4KH7sLuQXBaDsf3f2nHDnvb7YzRGpJogDTYpix+N8WliXIRDmwJvvzOmZv2ATLKO93A5nEglrQQa8mX170HZxMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713875026; c=relaxed/simple;
-	bh=5DmUvjxy5vtrmeA+aWwOw6GwVTh9Pm0+Jafzv1sTFSA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cwzDmaozonsKxGpZBSxPNg4LD9pC6r548aljuJQy0wI12dO2oWP1aMLKRoSZ4pYVLQXIZBMo/Wd9Cusg9/WpkObEQWq50+ftsbCPMxsN6rKodeGIOX61XIXIVTOqP7Dk6fXzCFS15uhjP+WLvkyK03U5/cbqhc4ybFsdUnU78UQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0pointer.de; spf=pass smtp.mailfrom=0pointer.de; arc=none smtp.client-ip=85.214.157.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0pointer.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0pointer.de
-Received: from gardel-login.0pointer.net (gardel-mail [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
-	by gardel.0pointer.net (Postfix) with ESMTP id 3A406E80104;
-	Tue, 23 Apr 2024 14:23:36 +0200 (CEST)
-Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
-	id A91ED1602F7; Tue, 23 Apr 2024 14:23:35 +0200 (CEST)
-Date: Tue, 23 Apr 2024 14:23:35 +0200
-From: Lennart Poettering <mzxreary@0pointer.de>
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: Alexander Graf <graf@amazon.com>, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Babis Chalios <bchalios@amazon.es>, Theodore Ts'o <tytso@mit.edu>,
-	"Cali, Marco" <xmarcalx@amazon.co.uk>,
-	Arnd Bergmann <arnd@arndb.de>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	Christian Brauner <brauner@kernel.org>, linux@leemhuis.info,
-	regressions@lists.linux.dev
-Subject: Re: [REGRESSION] Re: [PATCH] Revert "vmgenid: emit uevent when
- VMGENID updates"
-Message-ID: <ZieoRxn-On0gD-H2@gardel-login>
-References: <20240418114814.24601-1-Jason@zx2c4.com>
- <e09ce9fd-14cb-47aa-a22d-d295e466fbb4@amazon.com>
- <CAHmME9qKFraYWmzD9zKCd4oaMg6FyQGP5pL9bzZP4QuqV1O_Qw@mail.gmail.com>
+	s=arc-20240116; t=1713875196; c=relaxed/simple;
+	bh=GhFqWYnEMMVlmMXQ3Fz18iujy63dteb43440Fc9T//g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=noOOflfRSUnvz1UnTlL04Fse38aEvMBcf0LgLfUKkRvAd2OVq+nfiXhlep9+9Mm8GvDUn3D2Pa06Tiym8YA9E42FtPlk6WHAu7Uu24CL6u62oUk+pIxWhUNhCXZwl0H0+xbMc5TWOWpqV2+necaXMM+2sw8J2Jcj8h+QBH1Bf0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ixyfno0M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7016FC3277B;
+	Tue, 23 Apr 2024 12:26:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713875195;
+	bh=GhFqWYnEMMVlmMXQ3Fz18iujy63dteb43440Fc9T//g=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Ixyfno0Mumqxt2FxXvWIDrsNtDKx93yJVNdJNhB8n5MM2+SDtNwxEMRX5RyDRDFHN
+	 2Qu5PqID+p7dm2F590GnHTWuiAW70aNRmIT/Z9l8FSdI5YYxOBw5i8bY+BvdJIIH+S
+	 umR6clL5Tlu6w0K0wY1gOVDeftg/XZ6aPlMJlEoBgVvKmMyzC/T7U9CRJgUx4wxksv
+	 32frTGY3+AHtwkb1uhZsu+HoIq/EcYiA83eIjH4VSrAR344Exe67tXPW8+OcQGxTtv
+	 amQbNci+0Z28QM7vjj8jv1DQeDdBXNKrTKj3YXNjWM2+Myrvbm4omg2gvLWqKV80DU
+	 qon1HGcHrcNAg==
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5acf5723325so1309113eaf.0;
+        Tue, 23 Apr 2024 05:26:35 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWrpwo0arYK5Tf59akftLixY3Zs3cSjc/T7a08tM+Vw41Syx/jz1xwzjCiy6hnA/MbYQQRsGP8tYgJyXDw8jQEOpl5nsC281t2Pu/9ITZU4A9nwiOeGpob0iyU75eyXJolF+sfaRf8=
+X-Gm-Message-State: AOJu0Ywey0VjyYESG0c8nk3WXlremKGpsrfU7UFgxgUABHv6kcAlJsub
+	zRDgXbem2S5Y5M9mprQbjXxWiIb2dZEYn1OjoayTyBoBoWg+EGfJyj1Fpfgm2NqX4SnOYai2FmK
+	x1CpZySy7XWAh0atQ83EKQSV6RkA=
+X-Google-Smtp-Source: AGHT+IFVvA0HYfJ9IJSegQOjv5BhZ39vVydOBEH1PRw89xFYxRibhABRSF6oPzxBSeSuT69zRTXeirYp/IuSCMPsnjw=
+X-Received: by 2002:a05:6820:ecb:b0:5ac:6fc1:c2cb with SMTP id
+ en11-20020a0568200ecb00b005ac6fc1c2cbmr13195937oob.0.1713875194616; Tue, 23
+ Apr 2024 05:26:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHmME9qKFraYWmzD9zKCd4oaMg6FyQGP5pL9bzZP4QuqV1O_Qw@mail.gmail.com>
+References: <4918025.31r3eYUQgx@kreacher> <3a8f1978-c5df-40d6-91ca-276431bb01e1@arm.com>
+ <e8193798-4c02-423a-a9d8-63d29ebd7faa@linaro.org> <CAJZ5v0i2pvTLwj7jTzwhoQMap_cvjvNnK2Beuje2COo+F4hBzA@mail.gmail.com>
+ <2acea3c3-5c8f-4f3c-a275-743c3fbfd2e6@linaro.org>
+In-Reply-To: <2acea3c3-5c8f-4f3c-a275-743c3fbfd2e6@linaro.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 23 Apr 2024 14:26:23 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0j5Ja9-vuC9ve9Li=UxATcBtTmdMdhMS1g993XBe1DVqw@mail.gmail.com>
+Message-ID: <CAJZ5v0j5Ja9-vuC9ve9Li=UxATcBtTmdMdhMS1g993XBe1DVqw@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] thermal/debugfs: Fix and clean up trip point
+ statistics updates
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Lukasz Luba <lukasz.luba@arm.com>, 
+	"Rafael J. Wysocki" <rjw@rjwysocki.net>, LKML <linux-kernel@vger.kernel.org>, 
+	Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Di, 23.04.24 03:21, Jason A. Donenfeld (Jason@zx2c4.com) wrote:
+On Mon, Apr 22, 2024 at 6:12=E2=80=AFPM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 22/04/2024 17:48, Rafael J. Wysocki wrote:
+> > On Mon, Apr 22, 2024 at 5:34=E2=80=AFPM Daniel Lezcano
+>
+> [ ... ]
+>
+> >> or we should expect at least the residency to be showed even if the
+> >> mitigation state is not closed ?
+> >
+> > Well, in fact the device has already been in that state for some time
+> > and the mitigation can continue for a while.
+>
+> Yes, but when to update the residency time ?
+>
+> When we cross a trip point point ?
+>
+> or
+>
+> When we read the information ?
+>
+> The former is what we are currently doing AFAIR
 
-Jason!
+Not really.
 
-Can you please explain to me what the precise problem is with the
-uevent? It doesn't leak any information about the actual vmgenid, it
-just lets userspace know that the machine was cloned,
-basically. What's the problem with that? I'd really like to
-understand?
+Records are added by thermal_debug_cdev_state_update() which only runs
+when __thermal_cdev_update() is called, ie. from governors.
 
-There are many usecases for this in the VM world, for example we'd
-like to hook things up so that various userspace managed concepts,
-such as DHCP leases, MAC addresses are automatically refreshed.
+Moreover, it assumes the initial state to be 0 and checks if the new
+state is equal to the current one before doing anything else, so it
+will not make a record for the 0 state until the first transition.
 
-This has no relationship to RNGs or anything like this, it's just an
-event we can handle in userspace to trigger address refreshes like
-this.
+> and the latter must add the delta between the last update and the current=
+ time for the current
+> state, right ?
 
-Hence, why is the revert necessary? This was already in a released
-kernel, and we have started work on making use of this in systemd, and
-afaics this does not compromise the kernel RNG in even the remotest of
-ways, hence why is a revert necessary? From my usersace perspective
-it's just very very sad, that this simple, trivial interface we wanted
-to use, that was in a stable kernel is now gone again.
+Yes, and it is doing this already AFAICS.
 
-Can you explain what the problem with this single-line trivial
-interface is? I really would like to understand!
+The problem is that it only creates a record for the old state, so if
+the new one is seen for the first time, there will be no record for it
+until it changes to some other state.
 
-Lennart
+The appended patch (modulo GMail-induced white space breakage) should
+help with this, but the initial state handling needs to be addressed
+separately.
 
-(BTW: even if the uevent would leak the vmgenid somehow to userspace —
-which it does not —, at least on qemu — i.e. one of the most relevant
-VM platforms — the vmgenid can be read directly from userspace by
-cat'ing /sys/firmware/qemu_fw_cfg/by_name/etc/vmgenid_guid/raw,
-i.e. it's not that well protected anyway).
+---
+ drivers/thermal/thermal_debugfs.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---
-Lennart Poettering, Berlin
+Index: linux-pm/drivers/thermal/thermal_debugfs.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- linux-pm.orig/drivers/thermal/thermal_debugfs.c
++++ linux-pm/drivers/thermal/thermal_debugfs.c
+@@ -433,6 +433,14 @@ void thermal_debug_cdev_state_update(con
+     }
+
+     cdev_dbg->current_state =3D new_state;
++
++    /*
++     * Create a record for the new state if it is not there, so its
++     * duration will be printed by cdev_dt_seq_show() as expected if it
++     * runs before the next state transition.
++     */
++    thermal_debugfs_cdev_record_get(thermal_dbg, cdev_dbg->durations,
+new_state);
++
+     transition =3D (old_state << 16) | new_state;
+
+     /*
 
