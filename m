@@ -1,188 +1,172 @@
-Return-Path: <linux-kernel+bounces-155699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A24A8AF5C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 85A2A8AF58D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:35:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5D7D28D763
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:43:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0334B28904B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1ABE13E055;
-	Tue, 23 Apr 2024 17:43:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 167A913DDCC;
+	Tue, 23 Apr 2024 17:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="gLy76zbx"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YtX2wxXh"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 191E313E038
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:43:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1B2213DDA5
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:35:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713894225; cv=none; b=rSc7tw1OHb1Hs5Z+oQ5M6qUBWYkhwne0Ck7/CoHiP47me8qi4GNoeDjzASLnMGxShkXiDWFA3ced9QbLgaQYazmIyaq/w5GV3SJTliVGK48n6Arw+RjrOIn7oT1qIdOSjAkmJPsLRwa8F4fymsTelV6puE6DZ50mvxJhu1iyyGk=
+	t=1713893725; cv=none; b=RnfE5TRr3QbRoTVD56pGHksnyFUrGvn0VQu64xyKAQQZiy7uqd1jND7MejmJx6nMyKqUCQxBqAEAOnI9lZH5dmm2O2W0wIG8R0UnCdLvxkl2tgqz7h3nwlWBfz+GKBi1kRW953i8nJLvBfkXrlhAVIvpuzfbiJt1smzdJgA9TmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713894225; c=relaxed/simple;
-	bh=85djGqYP8/Kxapd6Cnll00IPvOM6JcnPhWbUX2qZEms=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=nVpOq4URCaG3Ti/BUd4gXWqHSxDNeEnLj9+OO233y0w35ZrOuPt+Hr7BC+12lN+/cnZgoDO4swGD/C0sd3FOoILwEOE2KmT0wyPcGD/n/1+PYZvORTaGuu8M+aIm8HSYafM68htLV7YUU9kpryg+psEceOk9wpRcmO18jS+nPgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=gLy76zbx; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41adf3580dbso631485e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:43:42 -0700 (PDT)
+	s=arc-20240116; t=1713893725; c=relaxed/simple;
+	bh=+upOyNx6GWgrNYQNFXIixuFdwRxie0s9oM3h10oBK7M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ChItgLe1SASCNLJP4Wzzh3dJ5bPCU6HuxALvDW29KCB/INZ1Efy+e6a1Jg0IyP+ayWoeYNzYtTC8Gk1UQwf+8ZdCl2KfsZe62uXt3AfU0zKtiZ2vsJNpNntFKVAeE7QSVSZmU27iqX1cawJBQtQnEmODPHyj8lultOVM08Gb9Zo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YtX2wxXh; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-41a5b68eceeso18357955e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:35:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713894221; x=1714499021; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=xP/dSnA767BtvZjFr+UbEirp9Ik35vqXQ9msNy380rM=;
-        b=gLy76zbxbs1t8TrfeJDNVYCcxDHDyGOjf/YBqdH/fKQVQYcL6uPAfCV5uJ3aJlhIAI
-         UhUVYzuKK+B7tSYJ9z2HKzI3h9rw/qd/yJtuWH4cblrTfN8KIxjq3ZPKl9W6TmBT5cz8
-         noCigHkhwASubuqwnvnUSLCNIpkFbGQix+IhofRXDIt/W120RHIPbC7nox9zts6WlW4k
-         VlacDpooQDnL3K/0bf9c9z4D/2u0vXFXbfP3xKjpbSPQ9ZX/DDC/ZiZ4lb7BO52K3S5D
-         uo0klgOVjJVlpy7Z7O4MFfpboRPu52q7onbRHqePUAbrLlDz53/EsQbLVW76dWaNPtyf
-         Astg==
+        d=linaro.org; s=google; t=1713893722; x=1714498522; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JOGIVpnxi6VE6tRYtin1B2x9HFniqBtLvm2+wpGsHgQ=;
+        b=YtX2wxXhF2s9w++gra1rIDMuLAFSBz8XAXkQj6BnxHcp33SK/XJykiP4t+U8rMU2c6
+         DHN+ecgLAQfN74FHp9av98dEUhkjHbkReagUTJxg/UDqL1CY7HJ7FJXu7SvqvxV5cNWb
+         rXaYiOCRz5Mx6Xl8g7xsS5FRz10Ig9fpJtTHbYKI6O3sooz10K8pANSS8XXDCY9YxNfr
+         gOV1dLqcXt3QCCq14Omg3Zqx3jrYOEUCw0bftIPdbrY7FhGfTYG4UGIDENw7PvuDVCvc
+         C+L7MV0PC7gCJ06GuS1lTqiDgc8Rc8Ciy/x6PRGK1mwWXpjFd+RMd2AEle3HVgOzl171
+         mMzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713894221; x=1714499021;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xP/dSnA767BtvZjFr+UbEirp9Ik35vqXQ9msNy380rM=;
-        b=jNKerKzlYVMonQUOheOixeSyDh20mZvl1KZzUXu0eEmbEoM8A5zrVguzY5A23uwlyP
-         S1pSVUsi2k1Xna0log4cl46rHr8cdnyXFrUOWHf0hUs20KW193XBVOLpU70vpo0OYUec
-         lp0iAnou6aN+GGPgbLypE4/Fc5z+HAlwVFxvo/72tMWGzBj2Sy9CKfGyA5nXl93QbQT4
-         bK/VXpJ7gj1QGyY4A3fcZCQ171aKaip9GPWl3j+NxDpt8SrxjPnE5AuPWWt3NNwz9MPt
-         9frDATlMIF9vZjmFCcFg4KxdLhB5rzjqgPEfCHSP5LWZRTqFq8MZYOc6gApIizkqTq2R
-         v+gQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXz7dHwDxyXO37+l8mUV0rR7ZqBCjl3E0EiFEe6Lf9otI21dvx5gTvwjWLIHEn6EsgTVAQ9Lf/OKaulONNjx/D053LQaKdAoqe+KlD4
-X-Gm-Message-State: AOJu0YxHSYlTJjBmvspixrzix+XLbjmWERl34Aiz3p5l1lDAhJq1KnC+
-	yCtMLEPFwMtdXk7h4uh5Jmu34Z40TaYpY+lONRYxFskiCjY26IquCef9cuZHyhs=
-X-Google-Smtp-Source: AGHT+IFN3sKGf0QLUl/rmcrF/MIEa7ILZ5sxMGe+vffDzMV1NNJqknbDpN+wCiQiguhfqPPiAmgxhg==
-X-Received: by 2002:a05:600c:1988:b0:418:f219:6f64 with SMTP id t8-20020a05600c198800b00418f2196f64mr2738580wmq.4.1713894221268;
-        Tue, 23 Apr 2024 10:43:41 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:aa38:830e:cbbf:591])
-        by smtp.gmail.com with ESMTPSA id d5-20020a5d6445000000b0034659d971a6sm15078195wrw.26.2024.04.23.10.43.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 10:43:40 -0700 (PDT)
-References: <20240423161006.2522351-1-gnstark@salutedevices.com>
- <20240423161006.2522351-3-gnstark@salutedevices.com>
-User-agent: mu4e 1.10.8; emacs 29.2
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: George Stark <gnstark@salutedevices.com>
-Cc: u.kleine-koenig@pengutronix.de, neil.armstrong@linaro.org,
- khilman@baylibre.com, jbrunet@baylibre.com,
- martin.blumenstingl@googlemail.com, thierry.reding@gmail.com,
- hkallweit1@gmail.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, kernel@salutedevices.com, George Stark
- <gnstark@sberdevices.ru>, Dmitry Rokosov <ddrokosov@salutedevices.com>
-Subject: Re: [PATCH 2/2] pwm: meson: support meson A1 SoC family
-Date: Tue, 23 Apr 2024 19:35:15 +0200
-In-reply-to: <20240423161006.2522351-3-gnstark@salutedevices.com>
-Message-ID: <1jv848ezzo.fsf@starbuckisacylon.baylibre.com>
+        d=1e100.net; s=20230601; t=1713893722; x=1714498522;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JOGIVpnxi6VE6tRYtin1B2x9HFniqBtLvm2+wpGsHgQ=;
+        b=d3jNNzLxOqNdYawOWuVIgzDwJijUpe+uZQkfz59oNVQ2warQg61+/MdrNi5JDnz/pY
+         o4ERUglGUVkEiMkAV2R8oaNJFC+HJJody2N3b3jXMSuZS/hWpsib3mRkH+uRgPePy4lf
+         b959hvtJt6fLMHFQIiiexErjrjgqi6pEThwy/v4XFfiYMi1aVM8bXivh2mx9f+KMDmvx
+         n3gtP7VdtxQ6uc3svrlPudOGm4BtsKv6LqcRUztpKL/vZRo73R7o6aKHJWFZDbrijrlN
+         VzremzPdM9SPLfPytvn3K2Y5M/DupBGcPJrt+nkDttS6TxM9EMTm6NmfmU/2EpwtJwX3
+         j1sA==
+X-Gm-Message-State: AOJu0YxDPQJiiAhFI2L5KTYl5X4EiqL0wXOvMbGMkVf1ZPENCq+vMxsb
+	l9XxjjxoBEaV8vrs4VY+QamfCRL/JjX5BmSeLBxK8BRSDvsGrePv24N3KjmjWH+5AhG7vUKMJF7
+	M
+X-Google-Smtp-Source: AGHT+IHHeZQlgL5dmAsLjSnkk1w8WyHgF/HPWUHH5O5RpYR12Iefh70oyVpmUUWo0vFfJnEqSGHPFw==
+X-Received: by 2002:a05:600c:4fc4:b0:419:fd49:5d46 with SMTP id o4-20020a05600c4fc400b00419fd495d46mr8505332wmq.38.1713893721911;
+        Tue, 23 Apr 2024 10:35:21 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id g18-20020a05600c4ed200b00417d624cffbsm24939787wmq.6.2024.04.23.10.35.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 10:35:20 -0700 (PDT)
+Message-ID: <8e26c3cb-1283-4561-95aa-30432f1d13ee@linaro.org>
+Date: Tue, 23 Apr 2024 19:35:19 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 07/16] thermal: gov_power_allocator: Eliminate a
+ redundant variable
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Lukasz Luba <lukasz.luba@arm.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+References: <13515747.uLZWGnKmhe@kreacher> <1913649.CQOukoFCf9@kreacher>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <1913649.CQOukoFCf9@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-
-On Tue 23 Apr 2024 at 19:10, George Stark <gnstark@salutedevices.com> wrote:
-
-> From: George Stark <gnstark@sberdevices.ru>
->
-> Add a compatible string and configuration for the meson A1 SoC family
-> PWM. Additionally, provide an external clock initialization helper
-> specifically designed for these PWM IPs.
->
-> Signed-off-by: George Stark <gnstark@sberdevices.ru>
-> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+On 10/04/2024 18:12, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Notice that the passive field in struct thermal_zone_device is not
+> used by the Power Allocator governor itself and so the ordering of
+> its updates with respect to allow_maximum_power() or allocate_power()
+> does not matter.
+> 
+> Accordingly, make power_allocator_manage() update that field right
+> before returning, which allows the current value of it to be passed
+> directly to allow_maximum_power() without using the additional update
+> variable that can be dropped.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > ---
->  drivers/pwm/pwm-meson.c | 35 +++++++++++++++++++++++++++++++++++
->  1 file changed, 35 insertions(+)
->
-> diff --git a/drivers/pwm/pwm-meson.c b/drivers/pwm/pwm-meson.c
-> index ea96c5973488..529a541ba7b6 100644
-> --- a/drivers/pwm/pwm-meson.c
-> +++ b/drivers/pwm/pwm-meson.c
-> @@ -462,6 +462,33 @@ static int meson_pwm_init_channels_meson8b_v2(struct pwm_chip *chip)
->  	return meson_pwm_init_clocks_meson8b(chip, mux_parent_data);
->  }
->  
-> +static int meson_pwm_init_channels_ext_clock(struct pwm_chip *chip)
 
-That kind on naming (ext) is almost sure to clash with whatever comes next.
-Just use the name of the first SoC using the method, a1 for instance.
+The step_wise and the power allocator are changing the tz->passive 
+values, so telling the core to start and stop the passive mitigation timer.
 
-> +{
-> +	struct device *dev = pwmchip_parent(chip);
-> +	struct meson_pwm *meson = to_meson_pwm(chip);
-> +	struct meson_pwm_channel *channels = meson->channels;
-> +	struct clk_bulk_data *clks = NULL;
-> +	unsigned int i;
-> +	int res;
-> +
-> +	res = devm_clk_bulk_get_all(dev, &clks);
-> +	if (res < 0) {
-> +		dev_err(dev, "can't get device clocks\n");
-> +		return res;
-> +	}
+It looks strange that a plugin controls the core internal and not the 
+opposite.
 
-I don't think allocating the 'clk_bulk_data *clks' is necessary or safe.
-We know exactly how many clocks we expect, there is no need for a get all.
+I'm wondering if it would not make sense to have the following ops:
 
-> +
-> +	if (res != MESON_NUM_PWMS) {
-> +		dev_err(dev, "clock count must be %d, got %d\n",
-> +			MESON_NUM_PWMS, res);
-> +		return -EINVAL;
-> +	}
+	.start
+	.stop
 
-.. and this only catches the problem after the fact.
+start is called when the first trip point is crossed the way up
+stop is called when the first trip point is crossed the way down
 
-It is probably convinient but not necessary.
+  - The core is responsible to start and stop the passive mitigation timer.
 
-> +
-> +	for (i = 0; i < MESON_NUM_PWMS; i++)
-> +		channels[i].clk = clks[i].clk;
+  - the governors do no longer us tz->passive
 
-channels[i].clk could be assigned directly of_clk_get() using clock
-indexes. No extra allocation needed.
+The reset of the governor can happen at start or stop, as well as the 
+device cooling states.
 
-> +
-> +	return 0;
-> +}
-> +
->  static const struct meson_pwm_data pwm_meson8b_data = {
->  	.parent_names = { "xtal", NULL, "fclk_div4", "fclk_div3" },
->  	.channels_init = meson_pwm_init_channels_meson8b_legacy,
-> @@ -500,11 +527,19 @@ static const struct meson_pwm_data pwm_meson8_v2_data = {
->  	.channels_init = meson_pwm_init_channels_meson8b_v2,
->  };
->  
-> +static const struct meson_pwm_data pwm_meson_ext_clock_data = {
-> +	.channels_init = meson_pwm_init_channels_ext_clock,
-> +};
-> +
->  static const struct of_device_id meson_pwm_matches[] = {
->  	{
->  		.compatible = "amlogic,meson8-pwm-v2",
->  		.data = &pwm_meson8_v2_data
->  	},
-> +	{
-> +		.compatible = "amlogic,meson-a1-pwm",
-> +		.data = &pwm_meson_ext_clock_data
-> +	},
->  	/* The following compatibles are obsolete */
->  	{
->  		.compatible = "amlogic,meson8b-pwm",
 
+>   drivers/thermal/gov_power_allocator.c |    9 +++------
+>   1 file changed, 3 insertions(+), 6 deletions(-)
+> 
+> Index: linux-pm/drivers/thermal/gov_power_allocator.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/gov_power_allocator.c
+> +++ linux-pm/drivers/thermal/gov_power_allocator.c
+> @@ -747,21 +747,18 @@ static void power_allocator_manage(struc
+>   {
+>   	struct power_allocator_params *params = tz->governor_data;
+>   	const struct thermal_trip *trip = params->trip_switch_on;
+> -	bool update;
+>   
+>   	lockdep_assert_held(&tz->lock);
+>   
+>   	if (trip && tz->temperature < trip->temperature) {
+> -		update = tz->passive;
+> -		tz->passive = 0;
+>   		reset_pid_controller(params);
+> -		allow_maximum_power(tz, update);
+> +		allow_maximum_power(tz, tz->passive);
+> +		tz->passive = 0;
+>   		return;
+>   	}
+>   
+> -	tz->passive = 1;
+> -
+>   	allocate_power(tz, params->trip_max->temperature);
+> +	tz->passive = 1;
+>   }
+>   
+>   static struct thermal_governor thermal_gov_power_allocator = {
+> 
+> 
+> 
 
 -- 
-Jerome
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
 
