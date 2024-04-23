@@ -1,57 +1,60 @@
-Return-Path: <linux-kernel+bounces-155061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FB8A8AE4DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:51:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F37708AE4DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:52:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA89F283CE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:51:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54A82B25B6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:52:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B42B1442EF;
-	Tue, 23 Apr 2024 11:41:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 207D8127E13;
+	Tue, 23 Apr 2024 11:41:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UrncRGiv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oym0uKzB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21E71448F4;
-	Tue, 23 Apr 2024 11:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3F1144D2A;
+	Tue, 23 Apr 2024 11:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872484; cv=none; b=M+L1ap5uD0OkyqxZ78hwuPbxaI0k4d4HDjwqi9eDO0j+tstFMjtkcJEGFmV3v9J/8LN6zzZeSd5VFBvHt8n+hYciiRPJs6+UMA4/ggZCh+KrWklqn6+CP1aTpL0kqkSYUhknD+orhnw6zZMHyLkqbWFhrMw+LIkCDNp3tSEgF18=
+	t=1713872486; cv=none; b=G19VmQk0ZCJbsA/KQFfZk/+F0HgZUYcu390X/yJJ/Z7qI6XvWCCOmkkYrK8+loKfNSDmnpHy5glIaR9vkseOqzoO4dKtEqKsmqE75lNahdqzK/yF78ZAv8rUud3Cb5n2+LsqztbMy5YILUgPGDyPAgo1MzEZ7tRzp9r9yrk351g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872484; c=relaxed/simple;
-	bh=9m8FyTxQoOWe9YS8ZXYB9PO92DE3oC2qzBetu28vvQE=;
+	s=arc-20240116; t=1713872486; c=relaxed/simple;
+	bh=1rAcXaRtX0KBbx6LkVQstBRs2T9F0UMhbuLUo4pWZ4I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H/bjL4Tz/NCmNsbxizE9ifGkI9lSBa213/aiQfzKSW4YrDWqWSpB2n5y6ztny/VI8puqJd4cJ6UVFByoLYmPG6N1YTW2i49mdCh5fYf4CC/ME2WaMxBP9jxcwP6z5/hb5U9/gZkXUglhGjFDaMrqs1m2NSmbBQ2FIlU2VZXU66Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UrncRGiv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A206EC3277B;
-	Tue, 23 Apr 2024 11:41:23 +0000 (UTC)
+	 MIME-Version; b=ZOiqhJxunsQ5NXH67NpAi6Z18+CbUylm6qRmcMttGE40I5DmB5qSzvDywLQmmsU6UwLqXZOp7gcBa+Ea7lxhh51KWefSdm0JGXzZEy/iKIR4iPs9NCIlED5WtyoeovQnN+QYb2PmuvfgmS767K1TTvMVlmx/68t/QMX1x4MgJ2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oym0uKzB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FCF4C32783;
+	Tue, 23 Apr 2024 11:41:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872484;
-	bh=9m8FyTxQoOWe9YS8ZXYB9PO92DE3oC2qzBetu28vvQE=;
+	s=k20201202; t=1713872486;
+	bh=1rAcXaRtX0KBbx6LkVQstBRs2T9F0UMhbuLUo4pWZ4I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UrncRGivnNkVmwU2n/20+UDfX+/eT/9JjXR7IXFbutUM6lh1xdWNsTAOugiLsmS02
-	 rU7KvH4NZprdKT03GAAB7t3ylk8LBxRDLLQ94nedz4fryKFqUX/yEYgc29V18HNJow
-	 FK6hwXXL5SO2vL8wCs1Xz96UQO2chbs8E1qZAbsUB/05UBenqPNwxGepVLCqxftCwe
-	 Zx22GmiiGDSf7RqTJ+uBJhq8F6ghkvKSjUCA+ys+dyZglx/WK9zLWy1xrS7CbwZ1Tj
-	 scZWWW+lnIyNbadRR8u5Qa6SpowWcHElnks6H3FlxgnU/hSUDPK4Wn2ZUYWynlQaWr
-	 uXNWH1b3Ktufw==
+	b=Oym0uKzBUlbeBtY1B89Ak7a7CoxfaFfsrxP8Ugp+X+lDKeSrQi9lQSSC1ZlqWDTLh
+	 AQhKJUfGWiDlOzLTIhE0ZsSSaaUxahEtsjUVjil6vKYil6ft7p2BeaUUPBI3LDpPbB
+	 7Hw+9rQPN38V+41DDXwIm0lC1y5X+HXdottNCVXoVKYkq1gJ4yrnXG2c95xpnUa2a+
+	 SAd5/0fHFA6/3zZaudM+fdhQ6R11RKB3k37kPwzOco57/rTjbQrMSOKusc5MyOQdyy
+	 yuUwAHC3x7zmnzo5rmX/+O2gBVDsbxolLlwh+nS4+9IjwbbKdNIkftszzPrm3rWG53
+	 OgpbiBAxKDATA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Joakim Sindholt <opensource@zhasha.com>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
+Cc: Lyude Paul <lyude@redhat.com>,
+	Dave Airlie <airlied@redhat.com>,
 	Sasha Levin <sashal@kernel.org>,
-	lucho@ionkov.net,
-	asmadeus@codewreck.org,
-	v9fs@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.15 7/9] fs/9p: drop inodes immediately on non-.L too
-Date: Tue, 23 Apr 2024 07:02:29 -0400
-Message-ID: <20240423110233.1659071-7-sashal@kernel.org>
+	kherbst@redhat.com,
+	dakr@redhat.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	dri-devel@lists.freedesktop.org,
+	nouveau@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.15 8/9] drm/nouveau/dp: Don't probe eDP ports twice harder
+Date: Tue, 23 Apr 2024 07:02:30 -0400
+Message-ID: <20240423110233.1659071-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240423110233.1659071-1-sashal@kernel.org>
 References: <20240423110233.1659071-1-sashal@kernel.org>
@@ -66,29 +69,55 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.156
 Content-Transfer-Encoding: 8bit
 
-From: Joakim Sindholt <opensource@zhasha.com>
+From: Lyude Paul <lyude@redhat.com>
 
-[ Upstream commit 7fd524b9bd1be210fe79035800f4bd78a41b349f ]
+[ Upstream commit bf52d7f9b2067f02efe7e32697479097aba4a055 ]
 
-Signed-off-by: Joakim Sindholt <opensource@zhasha.com>
-Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
+I didn't pay close enough attention the last time I tried to fix this
+problem - while we currently do correctly take care to make sure we don't
+probe a connected eDP port more then once, we don't do the same thing for
+eDP ports we found to be disconnected.
+
+So, fix this and make sure we only ever probe eDP ports once and then leave
+them at that connector state forever (since without HPD, it's not going to
+change on its own anyway). This should get rid of the last few GSP errors
+getting spit out during runtime suspend and resume on some machines, as we
+tried to reprobe eDP ports in response to ACPI hotplug probe events.
+
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Reviewed-by: Dave Airlie <airlied@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240404233736.7946-3-lyude@redhat.com
+(cherry picked from commit fe6660b661c3397af0867d5d098f5b26581f1290)
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/9p/vfs_super.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/nouveau/nouveau_dp.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/fs/9p/vfs_super.c b/fs/9p/vfs_super.c
-index 7449f7fd47d22..51ac2653984a7 100644
---- a/fs/9p/vfs_super.c
-+++ b/fs/9p/vfs_super.c
-@@ -340,6 +340,7 @@ static const struct super_operations v9fs_super_ops = {
- 	.alloc_inode = v9fs_alloc_inode,
- 	.free_inode = v9fs_free_inode,
- 	.statfs = simple_statfs,
-+	.drop_inode = v9fs_drop_inode,
- 	.evict_inode = v9fs_evict_inode,
- 	.show_options = v9fs_show_options,
- 	.umount_begin = v9fs_umount_begin,
+diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
+index 447b7594b35ae..0107a21dc9f9b 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_dp.c
++++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
+@@ -109,12 +109,15 @@ nouveau_dp_detect(struct nouveau_connector *nv_connector,
+ 	u8 *dpcd = nv_encoder->dp.dpcd;
+ 	int ret = NOUVEAU_DP_NONE;
+ 
+-	/* If we've already read the DPCD on an eDP device, we don't need to
+-	 * reread it as it won't change
++	/* eDP ports don't support hotplugging - so there's no point in probing eDP ports unless we
++	 * haven't probed them once before.
+ 	 */
+-	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP &&
+-	    dpcd[DP_DPCD_REV] != 0)
+-		return NOUVEAU_DP_SST;
++	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
++		if (connector->status == connector_status_connected)
++			return NOUVEAU_DP_SST;
++		else if (connector->status == connector_status_disconnected)
++			return NOUVEAU_DP_NONE;
++	}
+ 
+ 	mutex_lock(&nv_encoder->dp.hpd_irq_lock);
+ 	if (mstm) {
 -- 
 2.43.0
 
