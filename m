@@ -1,237 +1,157 @@
-Return-Path: <linux-kernel+bounces-155114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC5B28AE571
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:06:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ED6C8AE575
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:06:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BFAC1C22CEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:06:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 508351C22EE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:06:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4671513E3EF;
-	Tue, 23 Apr 2024 11:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ro8zqk+U"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3229E1304BB;
+	Tue, 23 Apr 2024 11:58:36 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F26AB84A2E;
-	Tue, 23 Apr 2024 11:58:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 667F212FF71;
+	Tue, 23 Apr 2024 11:58:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713873483; cv=none; b=Qg8QlEi7x89T7ePfr3+qTlZeA65cqSn/jWPZ697do2MaKQSMyyrzha5aBU2OuYWnf3nkJqvpznkklFt+4oB6dpIlsdvLwZJLAIKkeaJsec/kLpyjPjQEtlZnM3CVlXF0v4DQRRkBN8XrMGO7LI/PF5U7syjwEf36ieSbgCllmgU=
+	t=1713873515; cv=none; b=m3o6lAaTSvKay2IejNOcQCceUa3XBzJxXLOufFT2DcFa8J+2Vf79a0m+SWW+QsRL/6i72aGxw7+2M2SvChOtOj+8hpohvGQltCSrkcZJdilsgtp1jHP/zIP/Sgs1QQdI0x6KatRzpNDNxG/uMyE534OVFAX2Z0HmQC461JHcgXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713873483; c=relaxed/simple;
-	bh=FQXhx2R1lSfWR/ArLZ33NLR2SrABIM6HJonvYmtWnuw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=J39T0bWzMyduY4aYHmlXRDbZLHY4hbIRPQbZMrwpJz5XBnfQPwb96LZT45EDqF1AGCFL/uikqRCTntmAEUFL5Kn5BnuNY/Eyt14vcC+y07r37Nhv3tWuJNtUYpEq03x9Ok4Co50bMgteFSgwXyB7Q7cjI+4S04BWcMGk9F6HoL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ro8zqk+U; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2a564ca6f67so4578020a91.2;
-        Tue, 23 Apr 2024 04:58:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713873481; x=1714478281; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MLBJVL6Zs6xX5RgPPoHakdz0gIokn0SzcSKDDSlz0Kk=;
-        b=Ro8zqk+UYS4sPhc5abNHAJ9asqsXin2PTesad+bWsEhH03ffp3IsE87RsZwUZEM0Gb
-         MNPhHqrFAce53aIiOd7nkBL9anwhGm80IBarPF3x2aBpQPAIhp/jwFjh0yxrCTwRsQYL
-         lGJD52nAKDqYtLU8skRU9DLKozMWFJldk0BQWOsCytS5J7+Q7aVSLEV/rXk0wR9VKuH5
-         /NfobUcyVyElc1BtwHs+wLmEdXpNnppL0m4nRpKwFjpBKU4bchzR7e4JQog7lEe06JAr
-         qJ5mThsP4nBhTOUJ/FkekCbngET9WIYUGjCk7f9gXOhlSWxKYv0NrgcAhUSqE5t7mSXQ
-         dpmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713873481; x=1714478281;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MLBJVL6Zs6xX5RgPPoHakdz0gIokn0SzcSKDDSlz0Kk=;
-        b=fa8zTjbW3SiljQhoGfwot4Uy17k9/y/vcQO5ylJD2NajQR6thF3oiATbTC02D+BiSk
-         xut2IaZ0gV4CWaIIz5dOG9F7FetzPsP9JGC5omlgNEQdU2IFhRiP4UAyJDb6olISJI+y
-         zWga75VURl0jcN758XttwZe9xNIXHHEuFTnqfC0UHI8QuVgxujI095d23gcTtjlPBvFJ
-         9IXnjkKyQviMDUB9O6qy3bz4w06p3jQT325Fl5pOvVPmSOrFhtPL4gViSaKqs71RrlGP
-         26bfv8AwPcDjsdnvod32Z65/YkWZda1qJhAMgp8097pa8bySuBshzdukx8NqdCCCS8/g
-         ygjA==
-X-Forwarded-Encrypted: i=1; AJvYcCXEmWA1oVIxxKZUEgHVdWwFYg6MaE9FQrWmOgGbCqs3vZkLfsxwzeSkgBDF/jTKXuMtNAZmqH079YoShwecY6SQaiV9IfzHYH0q93FP7DFDOUVjA3r+GAPgpqH73O1GNa02YmatY7vxHYrxcXMqsly2/f+AVjF3Q447h1pjOhwGATEkP6MqlHHfMkb1djkQ2utM0TXGt2at8nnR1uU3udVNG6k=
-X-Gm-Message-State: AOJu0YzN1IMjPrFKgctWK+Gmle8bhXOU+bQUGR3TSKVnSAGpI8bBn44e
-	jZEDOozQB12/4kmeAxXMwgfxeXG4IGSTDq6pstiLRX/8PeUJOfRtEmqWPzsszi8=
-X-Google-Smtp-Source: AGHT+IGpezawsi7L9yl9OuiRmpihUZN+0NbXr2MY7scA1VG7GrpEXzz/DrnVMZgNJQI0bxaEdi+dAQ==
-X-Received: by 2002:a17:90a:9e8:b0:2a2:ba9:ba61 with SMTP id 95-20020a17090a09e800b002a20ba9ba61mr13715610pjo.34.1713873480825;
-        Tue, 23 Apr 2024 04:58:00 -0700 (PDT)
-Received: from localhost (ec2-3-111-32-5.ap-south-1.compute.amazonaws.com. [3.111.32.5])
-        by smtp.gmail.com with UTF8SMTPSA id e14-20020a17090ab38e00b002a03456ccabsm10952427pjr.30.2024.04.23.04.57.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 04:58:00 -0700 (PDT)
-From: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>
-Cc: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>,
-	Thierry Reding <treding@nvidia.com>,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-tegra@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] ASoC: dt-bindings: tegra20-ac97: convert to dt schema
-Date: Tue, 23 Apr 2024 17:27:47 +0530
-Message-ID: <20240423115749.15786-1-sheharyaar48@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713873515; c=relaxed/simple;
+	bh=UwN9B5ZWL0Ik8wZIGWNSkvjuIaxwxH+1NZhCExUifCE=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Jos/XdCmyM7K0erE7RVmXAtHyaB3bRkjwH/KsoNBmNhsKXUU0gmj5lD/1fglJvzrJd1kkov/EP0AXFuaIZPcBZHUHr8F9N1/5t+epC3YY01qBScGWrTb+34rChl1cR6I704gBfl85aXTblNHQAWyLSMgp59akFcH5zgeNa8zph0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VP0wk5VHmzShmm;
+	Tue, 23 Apr 2024 19:57:26 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (unknown [7.185.36.229])
+	by mail.maildlp.com (Postfix) with ESMTPS id E579818007D;
+	Tue, 23 Apr 2024 19:58:30 +0800 (CST)
+Received: from [10.174.178.247] (10.174.178.247) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 23 Apr 2024 19:58:29 +0800
+Subject: Re: [PATCH v7 06/16] ACPI: processor: Register deferred CPUs from
+ acpi_processor_get_info()
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Thomas Gleixner
+	<tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
+	<linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>, Russell King
+	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, Miguel
+ Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, <linuxarm@huawei.com>,
+	<justin.he@arm.com>, <jianyong.wu@arm.com>
+References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
+ <20240418135412.14730-7-Jonathan.Cameron@huawei.com>
+From: Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <d54b7aa7-f890-9f51-7ea7-f035eca1863f@huawei.com>
+Date: Tue, 23 Apr 2024 19:58:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240418135412.14730-7-Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
 
-Convert NVIDIA Tegra20 AC97 binding to DT schema.
-Change -gpio to -gpios in schema as "gpio" suffix is deprecated.
+On 2024/4/18 21:54, Jonathan Cameron wrote:
+> From: James Morse <james.morse@arm.com>
+> 
+> The arm64 specific arch_register_cpu() call may defer CPU registration
+> until the ACPI interpreter is available and the _STA method can
+> be evaluated.
+> 
+> If this occurs, then a second attempt is made in
+> acpi_processor_get_info(). Note that the arm64 specific call has
+> not yet been added so for now this will be called for the original
+> hotplug case.
+> 
+> For architectures that do not defer until the ACPI Processor
+> driver loads (e.g. x86), for initially present CPUs there will
+> already be a CPU device. If present do not try to register again.
+> 
+> Systems can still be booted with 'acpi=off', or not include an
+> ACPI description at all as in these cases arch_register_cpu()
+> will not have deferred registration when first called.
+> 
+> This moves the CPU register logic back to a subsys_initcall(),
+> while the memory nodes will have been registered earlier.
+> Note this is where the call was prior to the cleanup series so
+> there should be no side effects of moving it back again for this
+> specific case.
+> 
+> [PATCH 00/21] Initial cleanups for vCPU HP.
+> https://lore.kernel.org/all/ZVyz%2FVe5pPu8AWoA@shell.armlinux.org.uk/
+> commit 5b95f94c3b9f ("x86/topology: Switch over to GENERIC_CPU_DEVICES")
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> Co-developed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Joanthan Cameron <Jonathan.Cameron@huawei.com>
+> ---
+> v7: Simplify the logic on whether to hotadd the CPU.
+>      This path can only be reached either for coldplug in which
+>      case all we care about is has register_cpu() already been
+>      called (identifying deferred), or hotplug in which case
+>      whether register_cpu() has been called is also sufficient.
+>      Checks on _STA related elements or the validity of the ID
+>      are no longer necessary here due to similar checks having
+>      moved elsewhere in the path.
+> v6: Squash the two paths for conventional CPU Hotplug and arm64
+>      vCPU HP.
+> ---
+>   drivers/acpi/acpi_processor.c | 14 +++++++-------
+>   1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index 127ae8dcb787..4e65011e706c 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -350,14 +350,14 @@ static int acpi_processor_get_info(struct acpi_device *device)
+>   	}
+>   
+>   	/*
+> -	 *  Extra Processor objects may be enumerated on MP systems with
+> -	 *  less than the max # of CPUs. They should be ignored _iff
+> -	 *  they are physically not present.
+> -	 *
+> -	 *  NOTE: Even if the processor has a cpuid, it may not be present
+> -	 *  because cpuid <-> apicid mapping is persistent now.
+> +	 *  This code is not called unless we know the CPU is present and
+> +	 *  enabled. The two paths are:
+> +	 *  a) Initially present CPUs on architectures that do not defer
+> +	 *     their arch_register_cpu() calls until this point.
+> +	 *  b) Hotplugged CPUs (enabled bit in _STA has transitioned from not
+> +	 *     enabled to enabled)
+>   	 */
+> -	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
+> +	if (!get_cpu_device(pr->id)) {
+>   		ret = acpi_processor_hotadd_init(pr, device);
+>   
+>   		if (ret)
 
-Signed-off-by: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
----
- .../bindings/sound/nvidia,tegra20-ac97.txt    | 36 --------
- .../bindings/sound/nvidia,tegra20-ac97.yaml   | 82 +++++++++++++++++++
- 2 files changed, 82 insertions(+), 36 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.txt
- create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.txt
-deleted file mode 100644
-index eaf00102d92c..000000000000
---- a/Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.txt
-+++ /dev/null
-@@ -1,36 +0,0 @@
--NVIDIA Tegra 20 AC97 controller
--
--Required properties:
--- compatible : "nvidia,tegra20-ac97"
--- reg : Should contain AC97 controller registers location and length
--- interrupts : Should contain AC97 interrupt
--- resets : Must contain an entry for each entry in reset-names.
--  See ../reset/reset.txt for details.
--- reset-names : Must include the following entries:
--  - ac97
--- dmas : Must contain an entry for each entry in clock-names.
--  See ../dma/dma.txt for details.
--- dma-names : Must include the following entries:
--  - rx
--  - tx
--- clocks : Must contain one entry, for the module clock.
--  See ../clocks/clock-bindings.txt for details.
--- nvidia,codec-reset-gpio : The Tegra GPIO controller's phandle and the number
--  of the GPIO used to reset the external AC97 codec
--- nvidia,codec-sync-gpio : The Tegra GPIO controller's phandle and the number
--  of the GPIO corresponding with the AC97 DAP _FS line
--
--Example:
--
--ac97@70002000 {
--	compatible = "nvidia,tegra20-ac97";
--	reg = <0x70002000 0x200>;
--	interrupts = <0 81 0x04>;
--	nvidia,codec-reset-gpio = <&gpio 170 0>;
--	nvidia,codec-sync-gpio = <&gpio 120 0>;
--	clocks = <&tegra_car 3>;
--	resets = <&tegra_car 3>;
--	reset-names = "ac97";
--	dmas = <&apbdma 12>, <&apbdma 12>;
--	dma-names = "rx", "tx";
--};
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.yaml
-new file mode 100644
-index 000000000000..4ea0a303d995
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.yaml
-@@ -0,0 +1,82 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/nvidia,tegra20-ac97.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NVIDIA Tegra20 AC97 controller
-+
-+maintainers:
-+  - Thierry Reding <treding@nvidia.com>
-+  - Jon Hunter <jonathanh@nvidia.com>
-+
-+properties:
-+  compatible:
-+    const: nvidia,tegra20-ac97
-+
-+  reg:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+  reset-names:
-+    const: ac97
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  dmas:
-+    maxItems: 2
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+      - const: tx
-+
-+  nvidia,codec-reset-gpios:
-+    description: Reset pin of external AC97 codec
-+    maxItems: 1
-+
-+  nvidia,codec-sync-gpios:
-+    description: AC97 DAP _FS line
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - resets
-+  - reset-names
-+  - interrupts
-+  - clocks
-+  - dmas
-+  - dma-names
-+  - nvidia,codec-reset-gpios
-+  - nvidia,codec-sync-gpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/tegra20-car.h>
-+    #include <dt-bindings/gpio/tegra-gpio.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    ac97@70002000 {
-+        compatible = "nvidia,tegra20-ac97";
-+        reg = <0x70002000 0x200>;
-+        resets = <&tegra_car 3>;
-+        reset-names = "ac97";
-+        interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&tegra_car 3>;
-+        dmas = <&apbdma 12>, <&apbdma 12>;
-+        dma-names = "rx", "tx";
-+        nvidia,codec-reset-gpios = <&gpio TEGRA_GPIO(V, 2) GPIO_ACTIVE_HIGH>;
-+        nvidia,codec-sync-gpios = <&gpio TEGRA_GPIO(P, 0) GPIO_ACTIVE_HIGH>;
-+    };
-+...
--- 
-2.44.0
-
+Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
 
