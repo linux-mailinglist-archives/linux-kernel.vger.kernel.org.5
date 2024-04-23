@@ -1,155 +1,216 @@
-Return-Path: <linux-kernel+bounces-154955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCB478AE381
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 360F28AE37A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:10:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AC121C2214F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:11:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AA771C21FF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:10:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B39C82865;
-	Tue, 23 Apr 2024 11:10:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04F727BB0C;
+	Tue, 23 Apr 2024 11:10:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ERnBvNby"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="FmqnBL/s"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2059.outbound.protection.outlook.com [40.107.94.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20EDF80028;
-	Tue, 23 Apr 2024 11:10:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713870646; cv=none; b=McIFTCSSLlautCAxL3r8ISgCDKGc0PtRggL2S+KbrCwPhsDhWwLCBbosgekjZIIvy53Cts8GbLC0eRZ+g9W2cW3iUqoKCov7id1Eg8rx9UPnBMbwoZFMycvmfpWT55qBwsv5EvBIyxSuGjvxvM5te/7GlzVSyAJiffqZgNU4+98=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713870646; c=relaxed/simple;
-	bh=FhMYwpD0Jy+0t5UX4wrDuIaENfV+qwJP/+xWhZFZCdQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GHkX7VD6nLSh6upVA9fIJm9w2KmOdWzm9TWX+uBPXXpxGUDUmefcuoqmVEyjgqCW2K94IDiuVvYT+wyKl7LXiF3vssX8M54uUlDsi7aLOrxTg8hhBpXwQ+zhnUyR4tskoNOC50PDjo4jJs1A5YICrpNEAV9CY/jUZVYBhBidrD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ERnBvNby; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713870645; x=1745406645;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FhMYwpD0Jy+0t5UX4wrDuIaENfV+qwJP/+xWhZFZCdQ=;
-  b=ERnBvNbyFK6VwTLE/1IyNhrnjvj0TxFuN2XL4Gq4yAOJ7yN7lSkTHEOX
-   CDlc2aCKPJPboY8CRQ9p25ZrTi0xPKZuDho4/fJGNiDcoXAExx5WCcUT7
-   k1Ot3Y0us4F2uybfjrr42Qo85nTF/Jmcg9zLevTfktr3qGwmdSW6fDX4u
-   oTSHr0zY+q3Of+/1/hBTnL1uVqM88Npsrax+/yF5sxl/b18eE4LkXFwEC
-   8rX2uGqbODoQIr+zy0zp+Xw2b4xHI78iHrjfyCgGijDyqdO1VYQBh/OOC
-   Igdk54FoXmzzQn2j3gpp4kz7UQAw2sFDxEGa/Tc3pVTe6HmSSwbPnLjKU
-   A==;
-X-CSE-ConnectionGUID: yTIwQevkT9CXDZpZ5SC9lQ==
-X-CSE-MsgGUID: 8EmlvmEuT8+Ut7spIoLwrQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="26905757"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="26905757"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 04:10:45 -0700
-X-CSE-ConnectionGUID: GHANmPF1QaSu/tzRusNdUw==
-X-CSE-MsgGUID: zm+oKK03QECvY3VX9hfdGA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24342606"
-Received: from mszycik-mobl1.ger.corp.intel.com (HELO [10.246.35.198]) ([10.246.35.198])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 04:10:37 -0700
-Message-ID: <eb54c7bb-db63-4361-b42f-dc02e2c37fbf@linux.intel.com>
-Date: Tue, 23 Apr 2024 13:10:16 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEED26CDCC;
+	Tue, 23 Apr 2024 11:10:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713870636; cv=fail; b=b47KJCyVzY7iDNP4Gxk8WtlQ/BfckcSnMfQijtd9tbr/Gev110lu9EI7IXM4ZIXf0/m/G09MMq57gpA1XEBF2lj4kLlA+i52cqrzriZA4GDpmXrbnElIV0GPw897adx5kW3WBYX6QySAjpdn1JwCIWWWIVXQ9N4sf/FEIICLzFM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713870636; c=relaxed/simple;
+	bh=jptgyFHFPHN7k1IQn5vmAi87H0IUSoYaBcFjFCX4ZUg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oRwYuIWAnWaBmvNmFE2ic5W+ax6iEK0uw2E185KMAkAuXVeg3iM4+PSkbwGzJiyAWJvhxRZYNEdQ3D1Y+1x+Vo2DJ5bzrFBxxOWl6xyP7sA/nLBKj0taxWrWnMtLFhxMi9OArShXkpBWt88fI1EF3OCETLy2JJuuriQTjJcTgFU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=FmqnBL/s; arc=fail smtp.client-ip=40.107.94.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FnxdHONJsKSbWsjfby/OVgxLefwTFhc2ObK6wUnVNNJOQ47SxSbsuuxBjDLZUdPBI+QcfraOB+Q13ENEKmIu8hWTGjkJrkZQc5nwiKyvYRyzTGFD2RbEzXx/wzPdOAkgBI3TnbWkUBXvaBjpKYXgi5WqtucuaEmsTph922doYqWaKDe+l4Adnc+8+y4vFkHbwxnThRq8JnOdGmAeHH5l5wyfqaXk/RlBq0/3Q0rJ0RNTz1HWmY98VPzeSrKbKMdOk/M62J31XT2dxsnHbs7lOqvy62CVIhtVT/p3/1e7v3ED4/4X5l3D3EoyHKh/UpVIA2QitzBtKHUbaCzoFrqsUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8UeDwxMvmBqzyB6p7wrPOjn8GmtWqVEL46YSjfXJV6g=;
+ b=eGtU80R4EX14G1iXI5d1+NZbFxFNRWswMhNsRNDd6WTpsyE8MEAiarEgZ1f7LLoxSLwYrHUzFKzVJsH33xxgQNnRrr5oGiKDuTko236IJhvY7w9tVvCxxV9bTsF4zEElkzGp0Oj3hkLWx11FUMZR7Zj8TdCJR+b8Tv4N1RHV9jOWf3jw2TKB23ZjAHVWm6Jc3T/0dDbY54t78DoBdcQn63bTk/7eHhMqnv21bV8dwWj4YRkPLmqzI3UV0tz7rNPrP100qGmxNQYIcBXd+IWlyV4ZSF6Y6hsOon4PbGq6V2twEXQlNuMYPYzyYr/ljQLQSea6ZSroehn3lDOq+q8C6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8UeDwxMvmBqzyB6p7wrPOjn8GmtWqVEL46YSjfXJV6g=;
+ b=FmqnBL/s6i/Yw5+PGxYOxd1vNOTtQBsCtxYdd6qhz04QcB0ogEO3O0P8++FTlrSjER3011uxKZpt/sddHSLel2b8qaFBYlEMrwYLIrVqKLFyFP0vOhiLwcQpryvujaUOAIJ47PWHj4dVZE5u1ukskRwlgmcVYhevreJM85yHFmg=
+Received: from BLAP220CA0003.NAMP220.PROD.OUTLOOK.COM (2603:10b6:208:32c::8)
+ by SJ0PR12MB6879.namprd12.prod.outlook.com (2603:10b6:a03:484::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Tue, 23 Apr
+ 2024 11:10:32 +0000
+Received: from BL02EPF0001A0FF.namprd03.prod.outlook.com
+ (2603:10b6:208:32c:cafe::ce) by BLAP220CA0003.outlook.office365.com
+ (2603:10b6:208:32c::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.31 via Frontend
+ Transport; Tue, 23 Apr 2024 11:10:30 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL02EPF0001A0FF.mail.protection.outlook.com (10.167.242.106) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7519.19 via Frontend Transport; Tue, 23 Apr 2024 11:10:30 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 23 Apr
+ 2024 06:10:27 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 23 Apr
+ 2024 06:10:27 -0500
+Received: from xhdipdslab41.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Tue, 23 Apr 2024 06:10:23 -0500
+From: Nipun Gupta <nipun.gupta@amd.com>
+To: <alex.williamson@redhat.com>, <tglx@linutronix.de>,
+	<gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
+	<kvm@vger.kernel.org>
+CC: <maz@kernel.org>, <git@amd.com>, <harpreet.anand@amd.com>,
+	<pieter.jansen-van-vuuren@amd.com>, <nikhil.agarwal@amd.com>,
+	<michal.simek@amd.com>, <abhijit.gangurde@amd.com>, <srivatsa@csail.mit.edu>,
+	Nipun Gupta <nipun.gupta@amd.com>
+Subject: [PATCH v6 1/2] genirq/msi: add wrapper msi allocation API and export msi functions
+Date: Tue, 23 Apr 2024 16:40:20 +0530
+Message-ID: <20240423111021.1686144-1-nipun.gupta@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-wired-lan] [PATCH 0/5] Ensure the copied buf is NULL
- terminated
-To: Bui Quang Minh <minhquangbui99@gmail.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Paul M Stillwell Jr <paul.m.stillwell.jr@intel.com>,
- Rasesh Mody <rmody@marvell.com>, Sudarsana Kalluru <skalluru@marvell.com>,
- GR-Linux-NIC-Dev@marvell.com, Krishna Gudipati <kgudipat@brocade.com>,
- Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
- Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Fabian Frederick <fabf@skynet.be>, Saurav Kashyap <skashyap@marvell.com>,
- Javed Hasan <jhasan@marvell.com>, GR-QLogic-Storage-Upstream@marvell.com,
- Nilesh Javali <nilesh.javali@cavium.com>, Arun Easi <arun.easi@cavium.com>,
- Manish Rangankar <manish.rangankar@cavium.com>,
- Vineeth Vijayan <vneethv@linux.ibm.com>,
- Peter Oberparleiter <oberpar@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
- Saurav Kashyap <saurav.kashyap@cavium.com>
-References: <20240422-fix-oob-read-v1-0-e02854c30174@gmail.com>
-Content-Language: en-US
-From: Marcin Szycik <marcin.szycik@linux.intel.com>
-In-Reply-To: <20240422-fix-oob-read-v1-0-e02854c30174@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Received-SPF: None (SATLEXMB05.amd.com: nipun.gupta@amd.com does not designate
+ permitted sender hosts)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FF:EE_|SJ0PR12MB6879:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7813e818-f7c5-420c-729b-08dc6385fcb2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?q1fbc7ZhN41cdaR57u+PmYfKOAsLGGp80M/+ZA6NPw5Vq7iUclGuTr2lP8cI?=
+ =?us-ascii?Q?05VQlT14eSoA1pAI/suSTeR2ZWx33sL0AMVP4pJiiwiv0WHpyEGa37RL2lnH?=
+ =?us-ascii?Q?v6gjfDvAzEKqiiUwTX3cPWyGYht/ak5+B9p9KVAR+TUzYUFKvWNqqSbrpxaH?=
+ =?us-ascii?Q?pVXj8r9XPRq5baTxMmKdvv7e4X7pnpLI8RoHY+Wrqwyw6Ou2Lwk6LXmvqu5R?=
+ =?us-ascii?Q?ZgJZFpulFv/t5fhEfHYOlsldGyY1ebM5jr+G54l1hcwUGw5ZDkB+q85Tg4mf?=
+ =?us-ascii?Q?wIlWNoEKKZ0eP1IlhtP+6/TR9k74tzy73KedykSkHbzCACfE08xHrwBnN+wH?=
+ =?us-ascii?Q?svg0Vc7Dr7p9mOusYx/5LBngIu2RMyhf7LObAOUulybpfiz+3aAhkP33rc+0?=
+ =?us-ascii?Q?p49Fn4vnz4PmebE1TLZRjHS/YuGGrRN0+j0RwVyNb2pNXgRD61812+FSk7p6?=
+ =?us-ascii?Q?Qyc06J/imdVu1u4Akqy6NBdfIwDX67KcF8Q1XY7W0GO6UarP8jrWwP5rf6rz?=
+ =?us-ascii?Q?MGSyp/W1iiB6NWTXaoyEnaiNQO716unYeSHOdhTgczeMPf3g4Levi0fAssW5?=
+ =?us-ascii?Q?f313pumRqdbx0nX+vMaHbe+M51pZ9ruxvQ5sibRbUQJUspTlMeHnabOWuMeU?=
+ =?us-ascii?Q?otpIBdYYU7wJni0uRiVpDUQnDJo6+V6PEMend13BVp2Yuky3wjKfpyLe9i/l?=
+ =?us-ascii?Q?em0H8yX3SFZ4BBmKcl4w0Kx1CQEPj9xs9+4lXDKba/oPPeg8WRZGPmNObD6p?=
+ =?us-ascii?Q?SKQhTkmOKm13HTQHAVWQC6+0BOV0Cq1+MDPFURF8uwd3hwaMc3IV1njYiR4j?=
+ =?us-ascii?Q?tKO9v1z6edFW7WXi4HzSZQA1zD8eFwIUIUOJm1XpTtIqaWLr8NMtnN7bMUTK?=
+ =?us-ascii?Q?iQnQkmjLIIwS8pG6+DBWlvof4OYRFhLyttFKI3LR0E5MJYt5rV4Bm7lWBqZo?=
+ =?us-ascii?Q?oanH4jiVwXkF3NSkr++yBg2LV4nZCYtByd8i2Cl/8aTzkOcmZlTEPywoCa0L?=
+ =?us-ascii?Q?mkytisTTdJ8qlAP7PUCqfhbmdjeNFa1OSkwJL+zUtPfh7diwKs4A5LBWF329?=
+ =?us-ascii?Q?3Gvdd+xZdsmABHyLvnGDUI2cdMUUsjxpQD5XWY8eNEvNGkaPBprtnUzsHBQu?=
+ =?us-ascii?Q?1tQeha/K2wg4DIQCPPONje4CYb3dMN0AFt3DkfZBwX2zNChq0yPUe+18CrsP?=
+ =?us-ascii?Q?jpDwCUPLVicqCQxtmHEWBobbm7EOXwvxm1jDPdb310G6UFm/4U0NVe1PMciA?=
+ =?us-ascii?Q?fkSILgVA+9HZSH8MPP/LW6hZpmPk4HnzH5YG+bJbsRLO5gVFAFsIcpPjH4lV?=
+ =?us-ascii?Q?AMIpCESEFrv3CgNMa7rmSF1JkJIYhDg7pKVqXXersLck0fLEc6t7lJ1lcDju?=
+ =?us-ascii?Q?/s62K6d/+GkoQmnxs1sG05Izd05G?=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(376005)(36860700004)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2024 11:10:30.0652
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7813e818-f7c5-420c-729b-08dc6385fcb2
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL02EPF0001A0FF.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6879
 
+SI functions for allocation and free can be directly used by
+the device drivers without any wrapper provided by bus drivers.
+So export these MSI functions.
 
+Also, add a wrapper API to allocate MSIs providing only the 
+number of interrupts rather than range for simpler driver usage.
 
-On 22.04.2024 18:41, Bui Quang Minh wrote:
-> Hi everyone,
-> 
-> I found that some drivers contains an out-of-bound read pattern like this
-> 
-> 	kern_buf = memdup_user(user_buf, count);
-> 	...
-> 	sscanf(kern_buf, ...);
-> 
-> The sscanf can be replaced by some other string-related functions. This
-> pattern can lead to out-of-bound read of kern_buf in string-related
-> functions.
-> 
-> This series fix the above issue by replacing memdup_user with
-> memdup_user_nul or allocating count + 1 buffer then writing the NULL
-> terminator to end of buffer after userspace copying.
-> 
-> Thanks,
-> Quang Minh.
-> 
-> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-> ---
-> Bui Quang Minh (5):
->       drivers/net/ethernet/intel-ice: ensure the copied buf is NULL terminated
->       drivers/net/brocade-bnad: ensure the copied buf is NULL terminated
->       drivers/scsi/bfa/bfad: ensure the copied buf is NULL terminated
->       drivers/scsi/qedf: ensure the copied buf is NULL terminated
->       drivers/s390/cio: ensure the copied buf is NULL terminated
+Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+---
 
-Typically you don't include path to module in title, instead:
-ice: ensure the copied buf is NULL terminated
-bna: ensure the copied buf is NULL terminated
-etc.
+No change in v5->v6
 
-> 
->  drivers/net/ethernet/brocade/bna/bnad_debugfs.c | 4 ++--
->  drivers/net/ethernet/intel/ice/ice_debugfs.c    | 8 ++++----
->  drivers/s390/cio/cio_inject.c                   | 3 ++-
->  drivers/scsi/bfa/bfad_debugfs.c                 | 4 ++--
->  drivers/scsi/qedf/qedf_debugfs.c                | 2 +-
->  5 files changed, 11 insertions(+), 10 deletions(-)
-> ---
-> base-commit: ed30a4a51bb196781c8058073ea720133a65596f
-> change-id: 20240422-fix-oob-read-19ae7f8f3711
-> 
-> Best regards,
+Changes in v4->v5:
+- updated commit description as per the comments.
+- Rebased on 6.9-rc1
 
-Thanks,
-Marcin
+Changes in v3->v4:
+- No change
+
+Changes in v3: 
+- New in this patch series. VFIO-CDX uses the new wrapper API 
+  msi_domain_alloc_irqs and exported APIs. (This patch is moved
+  from CDX interrupt support to vfio-cdx patch, where these APIs
+  are used).
+
+ include/linux/msi.h | 6 ++++++
+ kernel/irq/msi.c    | 2 ++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/include/linux/msi.h b/include/linux/msi.h
+index 84859a9aa091..dc27cf3903d5 100644
+--- a/include/linux/msi.h
++++ b/include/linux/msi.h
+@@ -674,6 +674,12 @@ int platform_device_msi_init_and_alloc_irqs(struct device *dev, unsigned int nve
+ void platform_device_msi_free_irqs_all(struct device *dev);
+ 
+ bool msi_device_has_isolated_msi(struct device *dev);
++
++static inline int msi_domain_alloc_irqs(struct device *dev, unsigned int domid, int nirqs)
++{
++	return msi_domain_alloc_irqs_range(dev, domid, 0, nirqs - 1);
++}
++
+ #else /* CONFIG_GENERIC_MSI_IRQ */
+ static inline bool msi_device_has_isolated_msi(struct device *dev)
+ {
+diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
+index f90952ebc494..2024f89baea4 100644
+--- a/kernel/irq/msi.c
++++ b/kernel/irq/msi.c
+@@ -1434,6 +1434,7 @@ int msi_domain_alloc_irqs_range(struct device *dev, unsigned int domid,
+ 	msi_unlock_descs(dev);
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(msi_domain_alloc_irqs_range);
+ 
+ /**
+  * msi_domain_alloc_irqs_all_locked - Allocate all interrupts from a MSI interrupt domain
+@@ -1680,6 +1681,7 @@ void msi_domain_free_irqs_range(struct device *dev, unsigned int domid,
+ 	msi_domain_free_irqs_range_locked(dev, domid, first, last);
+ 	msi_unlock_descs(dev);
+ }
++EXPORT_SYMBOL_GPL(msi_domain_free_irqs_all);
+ 
+ /**
+  * msi_domain_free_irqs_all_locked - Free all interrupts from a MSI interrupt domain
+-- 
+2.34.1
+
 
