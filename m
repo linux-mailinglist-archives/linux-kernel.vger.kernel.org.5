@@ -1,123 +1,116 @@
-Return-Path: <linux-kernel+bounces-155580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F27B8AF440
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:35:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50B528AF457
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:37:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C3E828A9E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:35:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 823591C21FE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:37:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42D4C13D27E;
-	Tue, 23 Apr 2024 16:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAA0713D27E;
+	Tue, 23 Apr 2024 16:37:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="X0gpaPKa"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="VDN4tGw7"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02DE160
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:35:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BFB31C6A0
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:37:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713890108; cv=none; b=T7C1ji/b++/cZFrjPrpqiISnSc60Oxj0AwZJggtgc46/t9TfCdDF7xidRG3LRrKRppca2qtgy6E7YHLZZ1NQFKO5XQQk4otJn2lW0HcdswaKs476knntKCv31NLfXFIYGU53AFzZFdEXfLnaV+RJaqWv3Pl1zuEavXPUeio2/Kw=
+	t=1713890254; cv=none; b=PF2i2c6PpXiDl2qubyH5meozqMTPpvmIhWf4mKOtrAp2QsUpLMsc8IfO2ByXCNnOE0Z/NIh12VoDyj5LVjI82y44pb3xK5y0YrPZQ5QcIbZBpXQ9bSiUjbVWIfTXMCWavMyjAtulK6i7PsmTjxCkvLOrjk4ymyzZtROMO937kWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713890108; c=relaxed/simple;
-	bh=qQBo4zHx7NAn4ligmo6PXa4158dfnWCSpwcTjigSiFA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ato3YDlEpNIY/xs0V1pRZF30L8Js+NRtxNRsH8ke4RKpO5pW8ghPvKFUR5xtT/jbvpkemzB68i2ChTNshvRLN/FU4mpiJ91VQGplaAkFJ1LxQQ9vHudxw+qCwWUL2UcYqrL1qaGUvd/q3+slcPU5C6JyQJc8SL5mNPnoNKWhqyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=X0gpaPKa; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713890107; x=1745426107;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=qQBo4zHx7NAn4ligmo6PXa4158dfnWCSpwcTjigSiFA=;
-  b=X0gpaPKas51doi7njfEd3HMnRhXA2StW4d7zGQqDqropaScaEiQG3TaH
-   kk2eVVONT8rqk3T5jzMFGGZsfjaU1KYO2HS/siP6h5GjDb9GpxMIGE2Cy
-   E14KlBz9l9RuNnQu8Nq/JJ6O/bpYWSoVac1y5heAH1r79Y2/huzP82dqf
-   Ae25mm6eno79R+LcX6eWenKdZlU2D3ZpWD11i0evxXelbGnz4AVahOFQk
-   DNLyz5NsNZRfPh5/FTjsbOYdqjSsCmn6XY6G4cqstSl7ItKtd20ny013l
-   iNo9gd9SDpy1V8UDila3Y1B2an3zjbm1IVKloNvqT6n6bA77gaAqUYSu5
-   w==;
-X-CSE-ConnectionGUID: jEY+UHMXReWulQYIb2Ge2Q==
-X-CSE-MsgGUID: 7STnRJVxRSWmR5cz12S+AA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="9704992"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="9704992"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 09:35:06 -0700
-X-CSE-ConnectionGUID: 7VuuzHMyT2iPnevWCzGU5A==
-X-CSE-MsgGUID: zNeoL/DjSZajhbOmwZZWyQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="28914883"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 09:35:05 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rzJ6k-00000000Og4-44xN;
-	Tue, 23 Apr 2024 19:35:02 +0300
-Date: Tue, 23 Apr 2024 19:35:02 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] auxdisplay: charlcd: Provide a forward declaration
-Message-ID: <ZifjNpEetImWWcOb@smile.fi.intel.com>
-References: <20240409161523.935384-1-andriy.shevchenko@linux.intel.com>
- <20240409161523.935384-3-andriy.shevchenko@linux.intel.com>
- <CAMuHMdX_n4kifH6F20tt-umtL3rY9zb6=XmgrnXvuOJSibhrEQ@mail.gmail.com>
- <Zhe7wK-OhvHtGTHH@smile.fi.intel.com>
+	s=arc-20240116; t=1713890254; c=relaxed/simple;
+	bh=bVqr/UHJsQYfjpIFdbjqCtbPtG1Cdn8rAp1ojwEtgqg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=H5NpM59YjgwHNNNnmJ7n400PQ1KYRWlLegnXKTsXN74G3LRUnptIHmY7IM+63M5rUdCyh2mgSmpxjUJRBFEmg9tQAxu0AJte6od5Sc/Wbx2Gg4siSHPD3mUasW09bAiFYBLEiLWcazPOUlGGlIyVZR4j1LGWznlVTEUC33LAy9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=VDN4tGw7; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-51b09c3a111so4131799e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:37:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1713890249; x=1714495049; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xlPNa3LQZABLSUUaNRkv4uhiNmomWFCxtHuSkH0weN8=;
+        b=VDN4tGw7YfKGmooKf1kYsYcMQoe6WEhVySlL1pXpQOxiLrJi6tJfE+r7f9DhBikRZz
+         syiGQWrRGkhaU5q/kkJpQKZMoXRxW/Uzzte6ymzq0gfK7+Om8jR4IlGrS/vLQI1fdMIU
+         hBN9DYIkunPzyRkiCE7Apk9kSlEkb2wVVyZ2Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713890249; x=1714495049;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xlPNa3LQZABLSUUaNRkv4uhiNmomWFCxtHuSkH0weN8=;
+        b=PB9kRMNd/3+CP/sKtMDnfVlUJ82a1UgEbnUKtYLGqEwlPFU6vAS8NmWwHwGlwYX9A9
+         lYTPJ9VPiBJprXmc1b5XH4lF7O6JoEQrgAh53dRXKNG/uAK4nCeLedEdZ3PevgfGpgfE
+         8ujQfG0DK4yuhpcXsN/NtitYb0MGrIYa61cYnWfcx83Xvvrnxn6km5KhBM+QqxGDSZCE
+         un0CvUZ3KO4A0swyjG2mwE35++3gif/2cWZAbMg41gUIXtELR7Bx6AmF+4Ae1VAR3F2+
+         co6+Sfd5SIE0FKu+Y/ipDrN/jL1L08oczEk9s00l7OWZmn0alSqUqQsM2FhJ/Z7fLDa2
+         8aUw==
+X-Forwarded-Encrypted: i=1; AJvYcCUwDhsmZw9D5A64trVgS7iPdQ+1poaoh8owhxxTV1NzbvCLHgT6vBCY75m5zxQVrkKE2BcgixIxfu9mSX/XeiDYa7AzUavb3IZNM8ri
+X-Gm-Message-State: AOJu0YxnzPSrOhXuiwRgORnCezf7Qv/lQStknqLjHH8evjaWTMgY6yX9
+	0ByYTRxea4XMUk2nBr4EA1qKgS1z321AMXY1vR2MzBarXI4W1VWp0rTUPC8cAM0/WgvhSk9PEYk
+	buEHPIw==
+X-Google-Smtp-Source: AGHT+IFPKF6wUBQxjgd/k6BT+MZOtvioYA8zt3bRLYSQZ4rTnTp0WMb2+kWsa+cI+V9bNv7L5tee2w==
+X-Received: by 2002:a19:550f:0:b0:51a:d1dd:281c with SMTP id n15-20020a19550f000000b0051ad1dd281cmr53051lfe.26.1713890249182;
+        Tue, 23 Apr 2024 09:37:29 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id o30-20020ac25b9e000000b00513d1e9ce7esm2068728lfn.90.2024.04.23.09.37.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 09:37:28 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-51b09c3a111so4131734e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:37:28 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUsjIzIa/T07udph7xaZzqyyctF7NI+XltYq3o09EH+1BXaNQZJOFGO0nLqTEVFO4YAfTBC5oAtntaTSoLgBmfXYrOTNWn0Ai+wPG6O
+X-Received: by 2002:a05:6512:3a93:b0:51b:14f9:3f1d with SMTP id
+ q19-20020a0565123a9300b0051b14f93f1dmr64343lfu.30.1713890248006; Tue, 23 Apr
+ 2024 09:37:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zhe7wK-OhvHtGTHH@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <e696e720-0cd3-4505-8469-a94815b39467@I-love.SAKURA.ne.jp>
+ <CAHk-=wjEZvnn51dhhLqBKUd=cuFhbYA47_OyfUOPB-0zKToL7Q@mail.gmail.com>
+ <CAHk-=wjzqaqcicTtWfBtXyytJs1nqjJNved2JFsLVsVLYgVkuQ@mail.gmail.com>
+ <CAHk-=wjW3PdOZ7PJ+RHUKRc8SqQhcWXCACOvmwBkKUKABHKqwg@mail.gmail.com>
+ <6103a212-f84f-4dad-9d33-a18235bd970a@I-love.SAKURA.ne.jp>
+ <CAHk-=wgjZ0DJgeo5Sk-Kc5vw8TXGuxXftPV79Wv221ncstk1tA@mail.gmail.com>
+ <CAHk-=wg+hJ9Y8AKjp9qD7E_-pgBFdWGLiqzi1qth8LNpuST1cA@mail.gmail.com> <563ec0ed-a851-450b-aed6-986f6ea324ca@I-love.SAKURA.ne.jp>
+In-Reply-To: <563ec0ed-a851-450b-aed6-986f6ea324ca@I-love.SAKURA.ne.jp>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 23 Apr 2024 09:37:11 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wge_xT33zVY21rk4Le5xyPitiSFYL=qJ5NNwF-F79PJDg@mail.gmail.com>
+Message-ID: <CAHk-=wge_xT33zVY21rk4Le5xyPitiSFYL=qJ5NNwF-F79PJDg@mail.gmail.com>
+Subject: Re: [PATCH v2] tty: n_gsm: restrict tty devices to attach
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, "Starke, Daniel" <daniel.starke@siemens.com>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	linux-security-module <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Apr 11, 2024 at 01:30:25PM +0300, Andy Shevchenko wrote:
-> On Thu, Apr 11, 2024 at 09:30:31AM +0200, Geert Uytterhoeven wrote:
-> > On Tue, Apr 9, 2024 at 6:15 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > While there is no compilation error, strictly speaking compiler
-> > > should know about used types beforehand. Provide a forward decoration
-> > 
-> > declaration
-> 
-> Thanks, I updated locally. Please, see my answer below.
-> 
-> > > for struct charlcd_ops before using it in struct charlcd.
+On Tue, 23 Apr 2024 at 08:26, Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+>
+> On 2024/04/22 1:04, Linus Torvalds wrote:
+> >
+> > Actually, another option would be to just return an error at 'set_ldisc()' time.
+>
+> This patch works for me. You can propose a formal patch.
 
-..
+Ok, I wrote a commit message, added your tested-by, and sent it out
 
-> > > +struct charlcd_ops;
-> > > +
-> > >  struct charlcd {
-> > >         const struct charlcd_ops *ops;
-> > 
-> > No forward declaration is needed at this point, as ops is a _pointer_ to
-> > the structure.
-> 
-> The same way as in all other cases. We may drop all of them, but strictly
-> speaking (as I mentioned in the commit message) this is a good practice.
-> 
-> I.o.w. a forward declaration of custom data types is used for _pointers_.
-> 
-> > >         const unsigned char *char_conv; /* Optional */
+    https://lore.kernel.org/all/20240423163339.59780-1-torvalds@linux-foundation.org/
 
-Hmm, so what's the conclusion?
+let's see if anybody has better ideas, but that patch at least looks
+palatable to me.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+                  Linus
 
