@@ -1,123 +1,114 @@
-Return-Path: <linux-kernel+bounces-154781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 554AF8AE0E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:22:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4E548AE0F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:23:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF1241F228BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:22:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6767BB21F52
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 512DB56451;
-	Tue, 23 Apr 2024 09:21:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="LKu3vxab"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD79460DFB;
+	Tue, 23 Apr 2024 09:22:46 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0398056B65
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:21:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96FC36024B
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:22:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713864115; cv=none; b=CUeiq/S+7YxjZxkAkZdVzru/1ZoSp3cQW8zpKSWmii+jL/C8vVNgTAiALiVWKLkIXQOrtW6EfBiukAKBxA2VuF4prLTtv98Vie0PeytMj3YTJ/I4rOg6oYN2Wi36H72ol99hZRAPV1Jzpsrhuu1FWYTQ7XFzvw36S4avm+kHN9k=
+	t=1713864166; cv=none; b=WHDw2l/tNesGLYfyN2b1bpjeg1iDMp4KP1XuFTeiTinF3txCaa6iG+68kpqVp0gqcQEV7AWA82QZRfNdNEBeFZxuKnn0NFXdDxrlDO4nJXlILOkXSdpEQYdXAPRs1K3lx78JdTBHbnmXuniE8pe/8X7bZ6teOeJec7TMSx6utfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713864115; c=relaxed/simple;
-	bh=DdkrLe1RT9id5XgPQKF0YRBkxxjwVH7gEzkXmC6vFnk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DpGPkrV1sc2hNcW3KTYTzKsyb6lBpmlVJIWnDQ1T6F5mbANA+PHt+hBYiw7W/oyzCa06kOgKEWHSMP8Lw0nkgAoLlLA9KJJV8jYbFfwFgAyutQHKscxmalfbDXB2W7OuEsdH2WF3jYK2duiu1CcDPjLBtAsNkHTnSOTEMeZUKlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=LKu3vxab; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e3ff14f249so38864725ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 02:21:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1713864113; x=1714468913; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2HQB5x5/Geh4QesSHMQ6J5Oee4AS8dKYNPWzhQc0IWE=;
-        b=LKu3vxab4c9LM5B7qgMQZQeYJW+biUowjfP1G4A36SVw6mykQRcLDCgX9YBv1+Cm0z
-         h4fRrjT9delL06LdPi6HpvHgdsqSHiTwkkHnHlrHukQ6vVnQsLwu+MSdqEX6Y5vjMhiU
-         jQP2aOJqAeXSbCd7xtKOMGEqheCxoduPQLHYny1B04nrBrV7cTTDfsLFBJfC3geN2Cb+
-         7cHaqlQ0uF+CNpOQWoeWb95qVnto5H84GuDJBr9DRpBAliUV6M4GQcXIKlPKx5zwmqte
-         9foSH+1Hrw4/Cg795gyI0FZF14EXerM7/bpqODr/qwSwFNenDfhtE7Lm6cr7RRoyDvf5
-         36kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713864113; x=1714468913;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2HQB5x5/Geh4QesSHMQ6J5Oee4AS8dKYNPWzhQc0IWE=;
-        b=SxSfBtWMPt76omVmd+gOSgFeERjna7qtM0xEKZGSePZA9xzOMYtLa1wHcA3yWVQ/UK
-         5yflY6TU7+J3s46vM5+a/0/X2rgTy/tFm4XZR1A2iKfD2//EweClzuvM6LeIb8Ewzaa8
-         IgGaCRCuWiXUdmN5LlC9xfUhE2GXvhuOGsQaCDUCf0JOHx46myyqN2lRgqdgljNN0NT7
-         Mp3Q0NWD/mjzgZatiD/TIsHA+y9Tfi+j0WVMyuXjoBWEjB/Xjxb7cFC0cQsrC1qwpNr7
-         jCgDU0xUL+qCS4fwX2mbAfnrfjnAO3QWD3JgwABnjO0vrqo9VF4AJ1HwRiVZGqPKahZZ
-         kfCg==
-X-Gm-Message-State: AOJu0YwCBgMgsMOiDvMfRQpJGd0S233C2ZWucqZKo3pilgIfaVxqgNVi
-	C0Dh2jxmtLq7Kz7UGwkzSOtvI8OAkJshslnztyQsIsY4eSY/2feuy7btIZ+QXnE=
-X-Google-Smtp-Source: AGHT+IGNbPUgoPFYpHt28v7DULAEOmvD5VLEYjWmHxgKiyi3KxYYlHK+lL1oHrJ3+ZdleSTJCgMaQA==
-X-Received: by 2002:a17:903:1206:b0:1e4:53b6:6be with SMTP id l6-20020a170903120600b001e453b606bemr2926772plh.1.1713864113257;
-        Tue, 23 Apr 2024 02:21:53 -0700 (PDT)
-Received: from [10.3.43.196] ([61.213.176.14])
-        by smtp.gmail.com with ESMTPSA id h15-20020a170902680f00b001e89e7b2b74sm8884164plk.235.2024.04.23.02.21.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 02:21:52 -0700 (PDT)
-Message-ID: <6e9d6af5-74bc-4e97-84c0-2ba8a6499da9@bytedance.com>
-Date: Tue, 23 Apr 2024 17:21:48 +0800
+	s=arc-20240116; t=1713864166; c=relaxed/simple;
+	bh=jSaqwWRzyD3rma7O32HTNPQWFdvY3OUANQ/kOAmLL4E=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=HSGKb1XVC77crKBLRx4CFJq3t3ng9AB7zQHJRziM4kYul8Qw+9l0NQGxDr/bvvikW1q/XPQj3NXYjlu1yKKYxDmN2mewjuGfuwZ8xc7iFijiEqN6xjVgB6uMnxzGy1e3Wio4Ef6jlFjUsLXBzogkxowq1dePYylJKfhahSzvOFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-191-3VO-Mr3mMy2V2AACXbi5fg-1; Tue, 23 Apr 2024 10:22:35 +0100
+X-MC-Unique: 3VO-Mr3mMy2V2AACXbi5fg-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 23 Apr
+ 2024 10:22:06 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Tue, 23 Apr 2024 10:22:06 +0100
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Thomas Gleixner' <tglx@linutronix.de>,
+	=?utf-8?B?TWFoZXNoIEJhbmRld2FyICjgpK7gpLngpYfgpLYg4KSs4KSC4KSh4KWH4KS1?=
+ =?utf-8?B?4KS+4KSwKQ==?= <maheshb@google.com>
+CC: Netdev <netdev@vger.kernel.org>, Linux <linux-kernel@vger.kernel.org>,
+	David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, "Eric
+ Dumazet" <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, "Richard
+ Cochran" <richardcochran@gmail.com>, Arnd Bergmann <arnd@arndb.de>, "Sagi
+ Maimon" <maimon.sagi@gmail.com>, Jonathan Corbet <corbet@lwn.net>, John
+ Stultz <jstultz@google.com>, Mahesh Bandewar <mahesh@bandewar.net>
+Subject: RE: [PATCHv2 next] ptp: update gettimex64 to provide ts optionally in
+ mono-raw base.
+Thread-Topic: [PATCHv2 next] ptp: update gettimex64 to provide ts optionally
+ in mono-raw base.
+Thread-Index: AQHakUipE9fygZJ1Ok680rZNup1+trFzDfZAgAH4zUaAAIyhYA==
+Date: Tue, 23 Apr 2024 09:22:06 +0000
+Message-ID: <f2ac461445f44addb521ef79ecedc584@AcuMS.aculab.com>
+References: <20240418042706.1261473-1-maheshb@google.com>
+ <163538a0495840eca34f6fbd09533ae1@AcuMS.aculab.com>
+ <CAF2d9jj6H+jOfUbbw1ZEHmgqroXmn+oFV8NwTyKJ_P_T4G_5xg@mail.gmail.com>
+ <87edaxudr8.ffs@tglx>
+In-Reply-To: <87edaxudr8.ffs@tglx>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Re: [PATCH v3 2/4] virtio_balloon: introduce oom-kill invocations
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- virtualization@lists.linux.dev, david@redhat.com, jasowang@redhat.com,
- xuanzhuo@linux.alibaba.com, akpm@linux-foundation.org
-References: <20240423034109.1552866-1-pizhenwei@bytedance.com>
- <20240423034109.1552866-3-pizhenwei@bytedance.com>
- <20240423051151-mutt-send-email-mst@kernel.org>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-From: zhenwei pi <pizhenwei@bytedance.com>
-In-Reply-To: <20240423051151-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
+RnJvbTogVGhvbWFzIEdsZWl4bmVyDQo+IFNlbnQ6IDIzIEFwcmlsIDIwMjQgMDE6MjUNCi4uLg0K
+PiA+PiBJdCByZWFsbHkgd291bGQgYmUgbmljZSBpZiB0aG9zZSBiaWcgYWRqdXN0bWVudHMgZGlk
+bid0IGFmZmVjdA0KPiA+PiBDTE9DS19NT05BVE9OSUMuIChhcyBhbiBleGFtcGxlIHRyeSBzZW5k
+aW5nIFJUUCBhdWRpbyBldmVyeSAyMG1zKQ0KPiANCj4gVGhleSBkb24ndCBhZmZlY3QgQ0xPQ0tf
+TU9OQVRPTklDIGF0IGFsbCBiZWNhdXNlIHRoZXJlIGlzIG5vIHN1Y2ggY2xvY2sgOikNCj4gDQo+
+ID4gSG1tLCBwcm9iYWJseSB0aGlzIGlzIG91dCBvZiBjb250ZXh0IGZvciB0aGlzIHBhdGNoIGFu
+ZCBwcm9iYWJseSBhDQo+ID4gcXVlc3Rpb24gZm9yIHRoZSB0aW1lIG1haW50YWluZXJzIC8gZXhw
+ZXJ0cz8NCj4gDQo+IFRoZSBxdWFudGl0eSBvZiB0aGUgaW5pdGlhbCBmcmVxdWVuY3kgYWRqdXN0
+bWVudHMgZGVwZW5kcyBvbiB0aGUNCj4gYWNjdXJhY3kgb2YgdGhlIGluaXRpYWwgY2xvY2sgZnJl
+cXVlbmN5IGNhbGlicmF0aW9uIHdoaWNoIGlzIG9uIG1vc3QNCj4gc2FuZSBzeXN0ZW1zIHdpdGhp
+biArLy0gNTAwcHBtLg0KPiANCj4gICAgICA1MDBwcG0gb2YgMjBtcyA9PSAxMHVzDQo+IA0KPiBJ
+ZiB0aGUgY2xvY2sgY2FsaWJyYXRpb24gaXMgb2ZmIGJ5IGEgbGFyZ2VyIG1hcmdpbiB0aGVuIHRo
+YXQgbmVlZHMgdG8gYmUNCj4gZml4ZWQuDQoNClRoZSBpbml0aWFsIGFkanVzdG1lbnQgZGVwZW5k
+cyBvbiB0aGUgYWNjdXJhY3kgb2YgdGhlIGluaXRpYWwgUlRDDQp2YWx1ZSByZWFkIGZyb20gdGhl
+IGxvY2FsIGhhcmR3YXJlLg0KVGhpcyBpcyB1bmxpa2VseSB0byBiZSBtb3JlIGFjY3VyYXRlIHRo
+YW4gMSBzZWNvbmQgYW5kIGNhbiBlYXNpbHkNCmJlIGEgZmV3IHNlY29uZHMgb3V0Lg0KDQpDb3Jy
+ZWN0aW5nIHRoaXMgY2F1c2VzIE5UUCB0byBhZGp1c3QgdGhlIGNsb2NrIGF0IGl0cyBtYXhpbXVt
+IGRyaWZ0DQpyYXRlIGZvciBhIHdoaWxlIC0gSSdtIHN1cmUgSSd2ZSBzZWVuIHRoaXMgaGFwcGVu
+IGZvciBtaW51dGVzLg0KT25jZSB0aGlzIGNvbXBsZXRlcyB0aGVyZSBpcyBhICdzdGVwIGNoYW5n
+ZScgaW4gdGhlIGZyZXF1ZW5jeSBhZGp1c3RtZW50Lg0KDQpPbmNlIHRoZSBzeXN0ZW0gaGFzIGJl
+ZW4gcnVubmluZyBmb3IgYSB3aGlsZSB0aGUgYWRqdXN0bWVudHMgYXJlIG1pbm9yLg0KVGltZSBy
+dW5zIGFsdGVybmF0ZWx5IGZhc3QgYW5kIHNsb3cgdG8gbWFpbnRhaW4gbG9uZyB0ZXJtIGFjY3Vy
+YWN5Lg0KDQpUaGlzIGlzIG5vdGljZWFibGUgaWYgeW91IHVzZSBzY2hlZHVsZV9ocnRpbWVvdXRf
+cmFuZ2UoLCwgSFJUSU1FUl9NT0RFX0FCUykNCnRvIHN5bmNocm9uaXplIHRvIGFuIGFjY3VyYXRl
+IGV4dGVybmFsIGNsb2NrIFsxXS4NCihXaXRob3V0IE5UUCBpdCBoYXMgdG8gYWRqdXN0IGZvciB0
+ZW1wZXJhdHVyZSBjaGFuZ2luZyB0aGUgZnJlcXVlbmN5LikNCg0KCURhdmlkDQoNClsxXSBJbWFn
+aW5lIHNvbWUgaGFyZHdhcmUgdGhhdCBjb3VudHMgdXNlY3MgYWZ0ZXIgdGhlIDEtc2Vjb25kIEdQ
+UyBwdWxzZS4NCmFuZCBhIGRyaXZlciB0aGF0IGFkanVzdHMgYSBzbGVlcCB0byB3YWtlIHVwIHdo
+ZW4gdGhhdCBjb3VudCBpcyBiZXR3ZWVuDQooc2F5KSA0MDAgYW5kIDYwMC4NClVzaW5nIGEgdGlt
+ZXIgYW5kIGEgc2luZ2xlIHJlYWRsKCkgaXMgZmFyIGZhc3RlciB0aGFuIHRha2luZyBhbiBpbnRl
+cnJ1cHQuDQooSW4gb3VyIGNhc2UgaXQgaXMgYSAxMG1zIHB1bHNlIGRlcml2ZWQgZnJvbSB0aGUg
+Y2xvY2sgcmVjb3ZlcmVkIGZyb20NCmFuIEUxL1QxIHRlbGVjb21zIGxpbmsuKQ0KDQotDQpSZWdp
+c3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9u
+IEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-
-On 4/23/24 17:13, Michael S. Tsirkin wrote:
-> On Tue, Apr 23, 2024 at 11:41:07AM +0800, zhenwei pi wrote:
-
-[snip]
->>   #define VIRTIO_BALLOON_S_NAMES_WITH_PREFIX(VIRTIO_BALLOON_S_NAMES_prefix) { \
->>   	VIRTIO_BALLOON_S_NAMES_prefix "swap-in", \
-> 
-> Looks like a useful extension. But
-> any UAPI extension has to go to virtio spec first.
-> 
-
-Sure, I'll send related virtio spec changes once virtio comment mail 
-list gets ready.
-
->> @@ -83,7 +84,8 @@ struct virtio_balloon_config {
->>   	VIRTIO_BALLOON_S_NAMES_prefix "available-memory", \
->>   	VIRTIO_BALLOON_S_NAMES_prefix "disk-caches", \
->>   	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-allocations", \
->> -	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-failures" \
->> +	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-failures", \
->> +	VIRTIO_BALLOON_S_NAMES_prefix "oom-kills" \
->>   }
->>   
->>   #define VIRTIO_BALLOON_S_NAMES VIRTIO_BALLOON_S_NAMES_WITH_PREFIX("")
->> -- 
->> 2.34.1
-> 
-
--- 
-zhenwei pi
 
