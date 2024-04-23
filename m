@@ -1,138 +1,135 @@
-Return-Path: <linux-kernel+bounces-155705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C7748AF5E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:58:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB3618AF5E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:58:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 081A628605F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:58:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B87A1C215EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:58:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2499813E051;
-	Tue, 23 Apr 2024 17:58:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75F1313E03B;
+	Tue, 23 Apr 2024 17:58:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="yc3o9Te7"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o07N9ecy"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 594CF1BC23
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:58:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19CE613E034
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713895100; cv=none; b=E12ULyDPjzKz0b8yWXj2BGjcCGhDxhu3P2Eac6jR9byA59uEiyzfjcQBOOJhDwh9cve53h3vbxSQEsGRxEKKjlJjK4PMdrSlF5pdJgck8IG1P/WBaHTv3gnNfi/n5hTZ/J7ZZdoSA0Tp+aKpqbW+TeFIi23+8nLFyByL/vNRbxo=
+	t=1713895121; cv=none; b=W4M3VU4gwpDa/pKTiFxXNQUCcviJ0UjTNjR6Eh2jgAKUrZFVTjt24LUR37XFF81tWl1CLVdufrsvL/bwisTMom9vbOqYmXBi/F1iPVMZULEqXli1D7aFiDqOS76rzVeHD7IRsVK4mIkDNmXkgvx3gR0HWU0v+xGAojo9oHwAOE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713895100; c=relaxed/simple;
-	bh=SRmMiVJNHY3dDe641SBcogYA9dhCnTJSpL2O3oo4uHo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YCSHetY0kN9wkxYpAUkfyPYC2XsmH2RVzMQp8hfhor2FNu+Krplr1ApfidMMpBnV3qsKJBWUJ4od6yRb3WByhV/xKTMbUzudZ1M4SKBp605/OguHQPPr7ZFiHoGM/SSpdz3LTLyhVjERZZacL1BEQn2u8CpCGae+da4egoG1vCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=yc3o9Te7; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2dd7e56009cso32143591fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:58:17 -0700 (PDT)
+	s=arc-20240116; t=1713895121; c=relaxed/simple;
+	bh=dd+JeMwnI5oUS4+G0VV/w8a37ey100fY6+ic7TXAsH0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=H0gZ55O5iT7lGc6FwvS7RdLlcbmtMo6fSlo90au80CWMorLUOrpUBJ/qnvaTxDQ3SMGpI+kMmOQb7ilhAvzMX5ao7XkIrq8WGdr7mF+H8vFVBAFcWeovZYbAvmykhCviyZHsLQjvG2mErTbfZlDFzwuJT5ZFvNCKht1Hb8KLGiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=o07N9ecy; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41ac4cd7a1cso6415855e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:58:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1713895095; x=1714499895; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9B8eXcmZ97ONLTtCWWjVm+MKijPPu4vhRh0ro3qBaWQ=;
-        b=yc3o9Te7o1q1T9NuPmYd2xd0TekiavwNYhjAndBweAyG38tJkqf3bObJTtimPaZLr3
-         w2OCYGSigvpKV2eHxl+lh/5Rsh4sIsTEVXsps6d1tD4XdZC3520sIYvTI1LNjC1OQGfN
-         UbgXeFRZq6MVKSjf8l7x64H0JD1IIKWq3hdZU=
+        d=linaro.org; s=google; t=1713895118; x=1714499918; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IgRbrsMGiUIlEz9TTE6qVqcHJ+EG6dlP4R0WOrU0AXI=;
+        b=o07N9ecytWgJPZwENySqx8oJIg1gyF8i8Mg99zMwAqSkwXDKp+466GEU7P2bZpY9Ep
+         rMmFD4w90zKsK3THE5PQCQ9i23Kr+C3l1cad1+SFwVnwxBn+HDuTusK2CKv4z6wFBmJk
+         JGisxbeLKXaYIPKunBXrAt6NTAVQFdpXM2veiOZt2kgy36R47Vk+pRk44IqVckWXpMET
+         uCYZss8PN4T0rya7skLrnfrnPvf2O/7DNHaTN21pnLXMy3rPULvFeQYGaRAkXT8sx679
+         dvj6fKLNE/SglNdD+RMhlK42G3Ly0V5tkzhej/hsu+CbhqLgfRb5JEj57qs6GyD5T/8M
+         ioKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713895095; x=1714499895;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9B8eXcmZ97ONLTtCWWjVm+MKijPPu4vhRh0ro3qBaWQ=;
-        b=En8mIJgZFAkty+Ocfup/UZNx/HSgZyo0kKIgO6YNOQvyya4Og7JX49IRWZ0yFyquH3
-         NGe3DoHbKHIka0LuZn8cNdT1z+b33uAg8p6+px1jk8mwYYrPWCXVG4vK0s0oU7f33PTd
-         GAlEMVBW4uUvIC/Og1Sr71EcPQdNoS1Jq0Kxm4xjYEXIYC+mG85fHP8jt8YSB+79Rt+F
-         e9UerK0V8GIY7hvmvth2le2oJ4bZJMCLQlqm9Y7t30d2lU+n5Bhg2UvZdhS9qe3B97y+
-         rlGBxLPhcVLNt103hn8qRxLHjw842yMc20jEMrtwaB8hEnjm9d+O7Jk3lLpq6zGauKpT
-         WSsQ==
-X-Gm-Message-State: AOJu0Ywps5Z6Qwxz9VyLMttye31q316qa4on4lUl1TUkGUZLx62B8dqj
-	JT2sXtZh+GA3HzD0+Y5IBe985U10s+U2TGOCYkZNs+AxIxad6Qw4PKixA3T9oLfVy3YZ1t45z8o
-	cM1xsrT8/dCJD+UbBScszrwLBca3wx/v2TyZxJw==
-X-Google-Smtp-Source: AGHT+IEnSc1tfYpb0PQBfoKjTLLEnX1cTm3AcRcS0BsoOJGktTKN63BmrVbfDjW8YbOgCbVr5RVxz5VwqMYdrMi/9nw=
-X-Received: by 2002:a05:651c:c1:b0:2dc:e69a:fdbc with SMTP id
- 1-20020a05651c00c100b002dce69afdbcmr8450ljr.1.1713895095197; Tue, 23 Apr 2024
- 10:58:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713895118; x=1714499918;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IgRbrsMGiUIlEz9TTE6qVqcHJ+EG6dlP4R0WOrU0AXI=;
+        b=BIw8nadjr/BRxnZhJ16zP1XaXMN3zcVlzSlmwpzA8ag8eDYrbQjR9i+WWw/YlbIgtC
+         nXPWbBSX7CIXKh7y2y/Ohsd1lbjrI0fEY8QHf/5rgBQFUH+9sSATxI0ZBUM6pN2Fueec
+         7gr92z5Ujf5IJjZQwE5ZvVTyyQx9f+eoVIjPKBDJz9TSpYdlOqze/PXdRswzCwHea7w6
+         QAqMBNP2280DTq6D9MI2/ZytKs+T0OZpUOqv4iO6FNgBjb/Ev1Fr7/IUmi3nkKDmYWS/
+         lNhLpHuR72iN9VdLK8AAkuVgQ+gvVfgYZ7V4BHPnIlhKloY4Jq8gf3YOQ9jzO1BkYnlG
+         Wy/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVEaj5Jn4vXVGnCdE3mhi4DrfIs0yPPkvIxTDyx8YUmQVJhK3KrLz852qwUGYt27Zim81We0EBVrPKyyimB4zFkT/HR84p+m5cbY63+
+X-Gm-Message-State: AOJu0YzNl3nd5pc5uXlJOb/KZOe6bQurJD9Qb8UsHjEaptIP5t/3gic1
+	Uk8+VZ6DQ4r/pmy4g/e+P3Q4NpGQoZ2moMeeqcrIOLvp6R8ov1pE0jRqIjGbhr81JiGKEsvMGfM
+	A
+X-Google-Smtp-Source: AGHT+IEg8a5zVa87KQciw+DOQLgzGEJoPscxi47i8ZciqJoIshh+lMq1AzoW5459X2elbie9GPlIUA==
+X-Received: by 2002:a05:600c:3143:b0:41a:afe1:6d77 with SMTP id h3-20020a05600c314300b0041aafe16d77mr15647wmo.11.1713895118348;
+        Tue, 23 Apr 2024 10:58:38 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id w17-20020a5d6811000000b0034a2ba13588sm14055862wru.42.2024.04.23.10.58.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 10:58:37 -0700 (PDT)
+Message-ID: <3c169af3-e9c3-47c0-b343-48f699680009@linaro.org>
+Date: Tue, 23 Apr 2024 19:58:37 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240407090558.3395-1-jiangshanlai@gmail.com> <20240407090558.3395-4-jiangshanlai@gmail.com>
-In-Reply-To: <20240407090558.3395-4-jiangshanlai@gmail.com>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Tue, 23 Apr 2024 13:58:01 -0400
-Message-ID: <CAEXW_YRjuWMLvmZ_oVHEe837gPAyjBs5OMvZc=T1PXYB0apNmQ@mail.gmail.com>
-Subject: Re: [PATCH V2 03/11] rcu: Reorder tree_exp.h after tree_plugin.h
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org, 
-	Lai Jiangshan <jiangshan.ljs@antgroup.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Josh Triplett <josh@joshtriplett.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Zqiang <qiang.zhang1211@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 01/16] thermal: core: Introduce .trip_crossed()
+ callback for thermal governors
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Linux PM <linux-pm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ Lukasz Luba <lukasz.luba@arm.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+References: <13515747.uLZWGnKmhe@kreacher> <2009494.usQuhbGJ8B@kreacher>
+ <9f45fd2d-f1de-437f-ae8a-75ad51a5c061@linaro.org>
+ <CAJZ5v0ggUSk43LGgXLU08svxtdUDbAvX+4Ca0DNTAH0H85i7Rg@mail.gmail.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <CAJZ5v0ggUSk43LGgXLU08svxtdUDbAvX+4Ca0DNTAH0H85i7Rg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sun, Apr 7, 2024 at 5:03=E2=80=AFAM Lai Jiangshan <jiangshanlai@gmail.co=
-m> wrote:
->
-> From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
->
-> Enable tree_exp.h using some rcu preempt macros introduced in
-> the next patch. The new macros touch core rcu-preempt fields
-> and are better to be implemented in tree_plugin.h.
->
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
-> ---
->  kernel/rcu/tree.c        | 2 +-
->  kernel/rcu/tree_plugin.h | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index d9642dd06c25..57d1ae26861f 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -5245,6 +5245,6 @@ void __init rcu_init(void)
->  }
->
->  #include "tree_stall.h"
-> -#include "tree_exp.h"
->  #include "tree_nocb.h"
->  #include "tree_plugin.h"
-> +#include "tree_exp.h"
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index b1264096d03a..d899b4afc21c 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -103,6 +103,7 @@ static void __init rcu_bootup_announce_oddness(void)
->  #ifdef CONFIG_PREEMPT_RCU
->
->  static void rcu_report_exp_rnp(struct rcu_node *rnp, bool wake);
-> +static bool sync_rcu_exp_done(struct rcu_node *rnp);
->  static void rcu_read_unlock_special(struct task_struct *t);
+On 23/04/2024 19:25, Rafael J. Wysocki wrote:
+> On Tue, Apr 23, 2024 at 7:14 PM Daniel Lezcano
+> <daniel.lezcano@linaro.org> wrote:
+>>
+>> On 10/04/2024 18:10, Rafael J. Wysocki wrote:
+>>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>>>
+>>> Introduce a new thermal governor callback called .trip_crossed()
+>>> that will be invoked whenever a trip point is crossed by the zone
+>>> temperature, either on the way up or on the way down.
+>>>
+>>> The trip crossing direction information will be passed to it and if
+>>> multiple trips are crossed in the same direction during one thermal zone
+>>> update, the new callback will be invoked for them in temperature order,
+>>> either ascending or descending, depending on the trip crossing
+>>> direction.
+>>>
+>>> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>>> ---
 
-OK with me, but not sure if the reordering of header inclusion is
-needed? You could get the same results by just adding declarations of
-the new helpers to tree_exp.h.
+[ ... ]
 
-Not sure if tree_plugin.h needs to be included last, I for some reason
-thought it needed to be - but looks like not. I found a thread that
-shed some light into the header file including C code thing as well,
-which may or may not help:
-https://lore.kernel.org/all/8ab3ca72-e20c-4b18-803f-bf6937c2cd70@paulmck-la=
-ptop/#t
+>>> +             if (governor->trip_crossed)
+>>> +                     governor->trip_crossed(tz, &td->trip, true);
+>>
+>> Is it possible to wrap this into a function ? So we keep the calls at
+>> the same level in this block
+> 
+> I can send a separate patch for this if you want me to.
 
-Thanks.
+Yes, sure
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
 
