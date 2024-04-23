@@ -1,186 +1,116 @@
-Return-Path: <linux-kernel+bounces-154846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 247908AE1E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EC748AE1E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:16:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30FBEB215C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:15:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3782B2196A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:16:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678FF60B9C;
-	Tue, 23 Apr 2024 10:15:21 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 943B45FB9B
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A118560ED3;
+	Tue, 23 Apr 2024 10:16:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Od7jFFq3"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E44B60279
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:16:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713867321; cv=none; b=pRIa3dc4j+6KbD/1Xcqol0tCn2KXhkfA9WHB+bG9NImqdLLD2RVktEWdoTKAnOXD1Lgjl+S94Gzz72dMt2ifdj1POwluCt/BO2YFZ1hzNdO8zQUCB0zAxbNBViWqoXNkCBUlHaCySzzpQk8HHL3XnM5436T/XLtFd8O8oOjtpFA=
+	t=1713867370; cv=none; b=gmP56XZ2CNzYFcMtnqljs041RwlHTUGVdRYIbmR/oiCfmoyVhhWnvAXx4MheEktKZKixVQVDVmD4FVNCaAePqA1SFEc1pLjStREqEMp5fVdbVfM33xLZfLh86q3ek5oKF+Ou5UePSw6V+/dUWxyNaQjnLvDcLTJP8XxwA5Tb7pI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713867321; c=relaxed/simple;
-	bh=uCrJn8bOdsM7zhyNnPQ0SZMDjm0WhwqebBwccqw71g8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rGZAfxHwx5KKmqb+ZtUIOOUX3Mgji5vumlxtf8BsG+XQE9aM++txcHI/K79jUIno50Hn/i6yFEY1q57ELaS6APPi5SRQxfU/TDn1OTDjsNGOWr3b3+4fd+iUqJdAyDVA9UmxZ7RL+2gK/l/fu9mQVhQp7+y0u0jxjXR4BuF8b2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF97D339;
-	Tue, 23 Apr 2024 03:15:46 -0700 (PDT)
-Received: from [10.57.74.127] (unknown [10.57.74.127])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C19C3F7BD;
-	Tue, 23 Apr 2024 03:15:17 -0700 (PDT)
-Message-ID: <789cb7e4-8659-4244-b72e-e8fa0b26431d@arm.com>
-Date: Tue, 23 Apr 2024 11:15:15 +0100
+	s=arc-20240116; t=1713867370; c=relaxed/simple;
+	bh=jy5arJm1forKrmneoXB2SHX8PNwRuIx0u7xPry8cZsQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JcN0Vq71hBNMEns8db1wp/W9DbuvOOpiFmv04QMfPJ8Z7+XJ17Dh3phYdIzuvW1pwREwvsPthMFA4lcokaIp4egGkUzLB3a7v6HNCA7x5v8WtvXvf+qO9GT8S1r0bZnUNhViiI5aoKoLxtzGSp9iHOLJfL2anevTz8yno7+xqJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Od7jFFq3; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5720583df54so8698a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:16:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713867367; x=1714472167; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r3NXpsdHuYBobJGGyVWsy5SU7aCIFWQG4b8AIKli8P0=;
+        b=Od7jFFq3mqrPpd6LeZRscG0mYmp8d1sW0jlQA1P8HTZeNt0jtOhYN2LudVgKLjB6AX
+         jtH96KI0VyI5WnpVyzCwvrftcwDB/vb0qS00HbkqXH0OCMTCQu0wFQ+GGsIbkXz7/sa2
+         /8XtUG3o8m70RUN5j1JmdCWtP0/EqhGrsuVsEbHiK/RVm5AkbDj65CC9CG6VCXczeg4y
+         4OXfn3kP0l5pSJY9+0SBKTeVP1sisHMvFxbtJWPKBe2DqvYksUa9hBNEyYM3ZVLIxGly
+         CJUAEuOm2p1cVU2TGa/XPcXIlMzOINxTo8pFQlP8DVZSMx40Kgs2psAsLWzsA5+cbI0h
+         RUWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713867367; x=1714472167;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r3NXpsdHuYBobJGGyVWsy5SU7aCIFWQG4b8AIKli8P0=;
+        b=D5emsFxPl7dC8bCfmGJ5D3HzEI+tHuH2AjuT6zPIqyowXcjDw5EeGiBuigMx4e68Gb
+         hekLqKyxM2i6WCTmT6yIXNIStPnJXd2dazOMiGind6zwF4dXspvWvX8DKXHwfAos2nM+
+         CVWaiTS73fveB3LQpdoWwa9ti1L1hT9MWBvtHTVdj5HV6SL/LR1e/FFqvqAD8X0JEINY
+         ge5pgptusMfH2E4MdvFwsqFxdVQFi91Ycm1/3jiQBWhqdXFjirOo2Cux9cm+YUhsHiZA
+         ujTRqmcl23xstlrvDzAoP3mdX9G+Hz5LS/mjvqh7eY3C/HEY7FjPvWtBppSYWol01q6+
+         HeQg==
+X-Forwarded-Encrypted: i=1; AJvYcCWy5ZsbL6rrwDY6PXj4i1bktQC293a3o0Jx/nPC/d/qda99SoqpBCMsz6p3hoS5ZkyFFxXuNYgsKoC21wJGioBARg1z4EVWiJbh1mH9
+X-Gm-Message-State: AOJu0YwZtomPvjj4xcdA1DFV53J61kew5eq2ryVhvpx0U+SbMPK6khfG
+	oInw6msdm4QrGJTEUjcMNop7MyLPtkqq1nhfQCB4raztSzetk6RiuQK/ng80UcmNdrOjq9yfTS6
+	tQxGqXe08735TAUOWNu5a005UUosYF00bckLN
+X-Google-Smtp-Source: AGHT+IFIa/gpuCj2TMGZXBVHlclRlxTnGu9zd7qdxOMxi3vxfztcbE20f7CqYCAjND4a530cK1sVU/pdfE762+OAhVU=
+X-Received: by 2002:aa7:c147:0:b0:572:ca7:989d with SMTP id
+ r7-20020aa7c147000000b005720ca7989dmr105916edp.3.1713867366480; Tue, 23 Apr
+ 2024 03:16:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 0/4] Reduce cost of ptep_get_lockless on arm64
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, Mark Rutland
- <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Muchun Song <muchun.song@linux.dev>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240215121756.2734131-1-ryan.roberts@arm.com>
- <8bd9e136-8575-4c40-bae2-9b015d823916@redhat.com>
- <86680856-2532-495b-951a-ea7b2b93872f@arm.com>
- <35236bbf-3d9a-40e9-84b5-e10e10295c0c@redhat.com>
- <dbc5083b-bf8c-4869-8dc7-5fbf2c88cce8@arm.com>
- <f2aad459-e19c-45e2-a7ab-35383e8c3ba5@redhat.com>
- <4fba71aa-8a63-4a27-8eaf-92a69b2cff0d@arm.com>
- <5a23518b-7974-4b03-bd6e-80ecf6c39484@redhat.com>
- <81aa23ca-18b1-4430-9ad1-00a2c5af8fc2@arm.com>
- <70a36403-aefd-4311-b612-84e602465689@redhat.com>
- <f13d1e4d-1eea-4379-b683-4d736ad99c2c@arm.com>
- <3e50030d-2289-4470-a727-a293baa21618@redhat.com>
- <772de69a-27fa-4d39-a75d-54600d767ad1@arm.com>
- <969dc6c3-2764-4a35-9fa6-7596832fb2a3@redhat.com>
- <e0b34a1f-ef2e-484e-8d56-4901101dbdbf@arm.com>
- <11b1c25b-3e20-4acf-9be5-57b508266c5b@redhat.com>
- <89e04df9-6a2f-409c-ae7d-af1f91d0131e@arm.com>
- <ecd6e3e5-8617-42bd-bed4-3f97577934f9@redhat.com>
- <c880ba19-93ab-492b-a720-7272a1f8756d@arm.com>
- <abc3f45e-3bb9-44b8-ac87-c988e4de706c@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <abc3f45e-3bb9-44b8-ac87-c988e4de706c@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240423094117.93206-1-nbd@nbd.name>
+In-Reply-To: <20240423094117.93206-1-nbd@nbd.name>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 23 Apr 2024 12:15:55 +0200
+Message-ID: <CANn89i+6xRe4V6aDmD-9EM0uD7A87f6rzg3S7Xq6-NaB_Mb4nw@mail.gmail.com>
+Subject: Re: [RFC] net: add TCP fraglist GRO support
+To: Felix Fietkau <nbd@nbd.name>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi David,
+On Tue, Apr 23, 2024 at 11:41=E2=80=AFAM Felix Fietkau <nbd@nbd.name> wrote=
+:
+>
+> When forwarding TCP after GRO, software segmentation is very expensive,
+> especially when the checksum needs to be recalculated.
+> One case where that's currently unavoidable is when routing packets over
+> PPPoE. Performance improves significantly when using fraglist GRO
+> implemented in the same way as for UDP.
+>
+> Here's a measurement of running 2 TCP streams through a MediaTek MT7622
+> device (2-core Cortex-A53), which runs NAT with flow offload enabled from
+> one ethernet port to PPPoE on another ethernet port + cake qdisc set to
+> 1Gbps.
+>
+> rx-gro-list off: 630 Mbit/s, CPU 35% idle
+> rx-gro-list on:  770 Mbit/s, CPU 40% idle
 
-Sorry for the slow reply on this; its was due to a combination of thinking a bit
-more about the options here and being out on holiday.
+Hi Felix
 
+changelog is a bit terse, and patch complex.
 
-On 15/04/2024 17:02, David Hildenbrand wrote:
->>>> The potential problem I see with this is that the Arm ARM doesn't specify which
->>>> PTE of a contpte block the HW stores a/d in. So the HW _could_ update them
->>>> randomly and this could spuriously increase your check failure rate. In reality
->>>> I believe most implementations will update the PTE for the address that caused
->>>> the TLB to be populated. But in some cases, you could have eviction (due to
->>>> pressure or explicit invalidation) followed by re-population due to faulting on
->>>> a different page of the contpte block. In this case you would see this type of
->>>> problem too.
->>>>
->>>> But ultimately, isn't this basically equivalent to ptep_get_lockless()
->>>> returning
->>>> potentially false-negatives for access and dirty? Just with a much higher
->>>> chance
->>>> of getting a false-negative. How is this helping?
->>>
->>> You are performing an atomic read like GUP-fast wants you to. So there are no
->>> races to worry about like on other architectures: HW might *set* the dirty bit
->>> concurrently, but that's just fine.
->>
->> But you can still see false-negatives for access and dirty...
-> 
-> Yes.
-> 
->>
->>>
->>> The whole races you describe with concurrent folding/unfolding/ ... are
->>> irrelevant.
->>
->> And I think I convinced myself that you will only see false-negatives with
->> today's arm64 ptep_get(). But an order or magnitude fewer than with your
->> proposal (assuming 16 ptes per contpte block, and the a/d bits are in one of
->> those).
->>
->>>
->>> To me that sounds ... much simpler ;) But again, just something I've been
->>> thinking about.
->>
->> OK so this approach upgrades my "I'm fairly sure we never see false-positives"
->> to "we definitely never see false-positives". But it certainly increases the
->> quantity of false-negatives.
-> 
-> Yes.
-> 
->>
->>>
->>> The reuse of pte_get_lockless() outside GUP code might not have been the wisest
->>> choice.
->>>
->>
->> If you want to go down the ptep_get_gup_fast() route, you've still got to be
->> able to spec it, and I think it will land pretty close to my most recent stab at
->> respec'ing ptep_get_lockless() a couple of replies up on this thread.
->>
->> Where would your proposal leave the KVM use case? If you call it
->> ptep_get_gup_fast() presumably you wouldn't want to use it for KVM? So it would
->> be left with ptep_get()...
-> 
-> It's using GUP-fast.
-> 
->>
->> Sorry this thread is getting so long. Just to summarise, I think there are
->> currently 3 solutions on the table:
->>
->>    - ptep_get_lockless() remains as is
->>    - ptep_get_lockless() wraps ptep_get()
->>    - ptep_get_lockless() wraps __ptep_get() (and gets a gup_fast rename)
->>
->> Based on discussion so far, that's also the order of my preference.
-> 
-> (1) seems like the easiest thing to do.
+Could you elaborate why this issue
+seems to be related to a specific driver ?
 
-Yes, I'm very much in favour of easy.
+I think we should push hard to not use frag_list in drivers :/
 
-> 
->>
->> Perhaps its useful to enumerate why we dislike the current ptep_get_lockless()?
-> 
-> Well, you sent that patch series with "that aims to reduce the cost and
-> complexity of ptep_get_lockless() for arm64". (2) and (3) would achieve that. :)
+And GRO itself could avoid building frag_list skbs
+in hosts where forwarding is enabled.
 
-Touche! I'd half forgotten that we were having this conversation in the context
-of this series!
-
-I guess your ptep_get_gup_fast() approach is very similar to
-ptep_get_lockless_norecency()... So we are back to the beginning :)
-
-But ultimately I've come to the conclusion that it is easy to reason about the
-current arm64 ptep_get_lockless() implementation and see that its correct. The
-other options both have their drawbacks.
-
-Yes, there is a loop in the current implementation that would be nice to get rid
-of, but I don't think it is really any worse than the cmpxchg loops we already
-have in other helpers.
-
-I'm not planning to persue this any further. Thanks for the useful discussion
-(as always).
-
-
+(Note that we also can increase MAX_SKB_FRAGS to 45 these days)
 
