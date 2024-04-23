@@ -1,147 +1,133 @@
-Return-Path: <linux-kernel+bounces-155603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 614CE8AF4B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:55:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55D088AF4B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:56:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CF821C22F26
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:55:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81333B22511
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:56:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17BDA13D886;
-	Tue, 23 Apr 2024 16:55:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C1D13D896;
+	Tue, 23 Apr 2024 16:56:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="jvwKq515"
-Received: from nbd.name (nbd.name [46.4.11.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h7pqCXnC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961844CB55;
-	Tue, 23 Apr 2024 16:55:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C0F613D638;
+	Tue, 23 Apr 2024 16:56:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713891342; cv=none; b=gRmn6ZXpy5LMnSBVSUsDy1KkFLi2JcbdtoVNVboD2YjV3Aqj0jC6cnqm7uIIDd5hoJnwAufU11PmpBatnJ5BHy6O4NEGaftNDEF8fjbTfGmb24BiVTRBAO1O16ryFdWpnXokNI3S2+D0Bce8o++TYFnc9H/kKcegRi6aOmuJFhk=
+	t=1713891376; cv=none; b=ZqjIYux1y/AuBke1NeI0CQ0c2j49LviFFhbGGjrIhsdyFtGj8TJxo2MJZbSZJel5UhnxRnPF9p5v6A14Jks4QJ1ygmfI2ueDQHd0SJHLvBpR1IS8KKKCgECDB+gJz7maLCYgyN/GeGOE3sMeR+kFRkQkfWMk2z+5J7qcW0Lr178=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713891342; c=relaxed/simple;
-	bh=RAo4IfDAu5g0LmRE1zzsNWlD6/JX+GqMC2sW42ZFyc0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W1vRdJ/AIYYm2/9qMyYPhvyikVpH2Ynwzv1iulKv1vMuf/r/nNrJhLilIwfiuBN+Ic1BF0qfbHRIEk0eghL7JNkdhbefIBUz6Wc5Bk+e0CSQMZQ0BU1NayFDtaLbKUBY75IV1SRHOtIEnR5GUoMo93bl69GKoyeyurPGWlkYjN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=jvwKq515; arc=none smtp.client-ip=46.4.11.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-	s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=JC6KZtDYD3PtVC2ZV8829h/PXYrLgdMvHZ2+tPN/r5s=; b=jvwKq515D/Q1FFPF45hDlJAGxn
-	hs6Mc46U40oWYMQXzE/A+OfI4BaoLBJIHa3brfAseXPSTxZcvncqwrbFj3oWw9bqnyix0rrYGcTTx
-	CEBy5jKn94f7HJNCDyCIsFWPQhcu1EG3VCONkmshapbShsURnehqx9ssQKh/7gVZevgk=;
-Received: from p54ae9c93.dip0.t-ipconnect.de ([84.174.156.147] helo=nf.local)
-	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <nbd@nbd.name>)
-	id 1rzJQb-006E0M-12;
-	Tue, 23 Apr 2024 18:55:33 +0200
-Message-ID: <328ab7b3-4890-4e0d-8b9a-fed7700f1a6a@nbd.name>
-Date: Tue, 23 Apr 2024 18:55:32 +0200
+	s=arc-20240116; t=1713891376; c=relaxed/simple;
+	bh=9jKImSKJH//yp89TtUBPLUkHY2ItM8gvJTkZo98APIU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TCm8ajukOg5hNNIcTRfOHMeSeKAQrxgoTii5mD/euYGeugaRyDyWW6U9yB6sdTE/WUzN54Upuz1HnjvdBQUJtlsn7WesBYlqzGOxmb61EEZ28xVcG9Rlfj94WFQS6TXvGBeYZ1nk17l95NGHjqOZgJnEMUXI3L96tMVai899eMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h7pqCXnC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39EB5C116B1;
+	Tue, 23 Apr 2024 16:56:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713891375;
+	bh=9jKImSKJH//yp89TtUBPLUkHY2ItM8gvJTkZo98APIU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=h7pqCXnC0c+AKjGt7ps4NLqvG1MZr+CIoURfC46QPTZXNrPI+8bc8ubOSgl5YWzxd
+	 uOBz2QvIj3WTd+yoNcDW4MMVzP8vNIe4WTudrmYtXAL8oG8gfMIg/v3FL21WqqJhZZ
+	 WflEsdgNVsOfXcauiWWXmo3bxoCInTxrPrqJ7byHc8AYM13g9kVzRr7CgtH9+1kexe
+	 0HdFKuODKdnNG2qPHQecDVjRTqc5srs8LYv4I3/CRv4Q7JsN2NnMUTEb/lLg6UGIMZ
+	 3Md1MBvmSQfzFhCcnX5Kap2+znFipX5HDII2S4djNtKhNZW5CenSshViBS1/KPhUX0
+	 hxWVUQdOQjkJw==
+Date: Tue, 23 Apr 2024 17:56:10 +0100
+From: Conor Dooley <conor@kernel.org>
+To: George Stark <gnstark@salutedevices.com>
+Cc: u.kleine-koenig@pengutronix.de, neil.armstrong@linaro.org,
+	khilman@baylibre.com, jbrunet@baylibre.com,
+	martin.blumenstingl@googlemail.com, thierry.reding@gmail.com,
+	hkallweit1@gmail.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-amlogic@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kernel@salutedevices.com,
+	Dmitry Rokosov <ddrokosov@salutedevices.com>
+Subject: Re: [PATCH 1/2] dt-bindings: pwm: amlogic: Add new bindings for
+ meson A1 pwm
+Message-ID: <20240423-wildcard-smoking-90b50f00da50@spud>
+References: <20240423161006.2522351-1-gnstark@salutedevices.com>
+ <20240423161006.2522351-2-gnstark@salutedevices.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] net: add TCP fraglist GRO support
-To: Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, David Ahern <dsahern@kernel.org>,
- linux-kernel@vger.kernel.org
-References: <20240423094117.93206-1-nbd@nbd.name>
- <CANn89i+6xRe4V6aDmD-9EM0uD7A87f6rzg3S7Xq6-NaB_Mb4nw@mail.gmail.com>
- <63abfa26-d990-46c3-8982-3eaf7b8f8ee5@nbd.name>
- <CANn89iJZvoKVB+AK1_44gki2pHyigyMLXFkyevSQpH3iDbnCvw@mail.gmail.com>
- <7476374f-cf0c-45d0-8100-1b2cd2f290d5@nbd.name>
- <CANn89iLddm704LHPDnnoF2RbCfvrivAz0e6HTeiBARmvzoUBjA@mail.gmail.com>
- <ebe85dca-e0e9-4c55-a15d-20d340f66848@nbd.name>
- <97f10c8b5b615eac8f65d67ef10928d97b6b760d.camel@redhat.com>
-From: Felix Fietkau <nbd@nbd.name>
-Content-Language: en-US
-Autocrypt: addr=nbd@nbd.name; keydata=
- xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
- ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
- Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
- AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
- vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
- wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
- TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
- l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
- dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
- HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
- VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
- CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
- VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
- Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
- DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
- wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
- f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
- aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
- FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
- TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
- GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCeMncXpbbWNT2AtoAYICrKyX5R3iMAoMhw
- cL98efvrjdstUfTCP2pfetyN
-In-Reply-To: <97f10c8b5b615eac8f65d67ef10928d97b6b760d.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="kfOnWG+PV/EmHtbK"
+Content-Disposition: inline
+In-Reply-To: <20240423161006.2522351-2-gnstark@salutedevices.com>
 
-On 23.04.24 16:34, Paolo Abeni wrote:
-> On Tue, 2024-04-23 at 14:23 +0200, Felix Fietkau wrote:
->> On 23.04.24 14:11, Eric Dumazet wrote:
->> > On Tue, Apr 23, 2024 at 1:55 PM Felix Fietkau <nbd@nbd.name> wrote:
->> > > 
->> > > In the world of consumer-grade WiFi devices, there are a lot of chipsets
->> > > with limited or nonexistent SG support, and very limited checksum
->> > > offload capabilities on Ethernet. The WiFi side of these devices is
->> > > often even worse. I think fraglist GRO is a decent fallback for the
->> > > inevitable corner cases.
->> > 
->> > What about netfilter and NAT ? Are they okay with NETIF_F_FRAGLIST_GRO already ?
->> > 
->> > Many of these devices are probably using NAT.
->> 
->> In my tests, nftables NAT works just fine, both with and without 
->> flowtable offloading. I didn't see anything in netfilter that would have 
->> a problem with this.
-> 
-> I see you handle explicitly NAT changes in __tcpv4_gso_segment_csum(),
-> like the current UDP code.
-> 
-> The TCP header has many other fields that could be updated affecting
-> the TCP csum.
-> Handling every possible mutation looks cumbersome and will likely
-> reduce the performance benefits.
-> 
-> What is your plan WRT other TCP header fields update?
 
-I think that should be easy enough to handle. My patch already only 
-combines packets where tcp_flag_word(th) is identical. So when 
-segmenting, I could handle all flags changes with a single 
-inet_proto_csum_replace4 call.
+--kfOnWG+PV/EmHtbK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Strictly WRT the patch, I guess it deserves to be split in series,
-> moving UDP helpers in common code and possibly factoring out more
-> helpers with separate patches.
-Will do.
+On Tue, Apr 23, 2024 at 07:10:05PM +0300, George Stark wrote:
+> The chip has 3 dual channel PWM modules AB, CD, EF.
+>=20
+> Signed-off-by: George Stark <gnstark@salutedevices.com>
+> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
 
-> e.g. in __tcpv4_gso_segment_csum() is quite similar
-> __udpv4_gso_segment_csum() - even too much, as the tcp csum should be
-> always be updated when the ports or addresses change ;)
+a would sort before s.
 
-Will fix that.
+With the re-order,
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
 Thanks,
+Conor.
 
-- Felix
+> ---
+>  Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml b/Doc=
+umentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+> index 1d71d4f8f328..ef6daf1760ff 100644
+> --- a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+> +++ b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+> @@ -37,6 +37,7 @@ properties:
+>        - enum:
+>            - amlogic,meson8-pwm-v2
+>            - amlogic,meson-s4-pwm
+> +          - amlogic,meson-a1-pwm
+>        - items:
+>            - enum:
+>                - amlogic,meson8b-pwm-v2
+> @@ -126,6 +127,7 @@ allOf:
+>            contains:
+>              enum:
+>                - amlogic,meson-s4-pwm
+> +              - amlogic,meson-a1-pwm
+>      then:
+>        properties:
+>          clocks:
+> --=20
+> 2.25.1
+>=20
+
+--kfOnWG+PV/EmHtbK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZifoKgAKCRB4tDGHoIJi
+0pMNAQCxYf8hqWwkb4mI3niPQvLerhHnsj4GAXUEra2Y5SFWyAD+O8aq8lBtJQo7
+Ia++PthnUZ+ozioT++tgnXb3SPOeQQ8=
+=hN7Z
+-----END PGP SIGNATURE-----
+
+--kfOnWG+PV/EmHtbK--
 
