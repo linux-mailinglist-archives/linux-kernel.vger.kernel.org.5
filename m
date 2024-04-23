@@ -1,470 +1,115 @@
-Return-Path: <linux-kernel+bounces-154699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C9798ADFE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 25B1F8ADFEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:40:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 707051C22739
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:39:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56CD81C2271D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:40:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3079155782;
-	Tue, 23 Apr 2024 08:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E6A5644E;
+	Tue, 23 Apr 2024 08:40:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hLHTY6wa"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yw5HL3Az"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 537CE44C8F;
-	Tue, 23 Apr 2024 08:39:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 440C3535DB
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:39:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713861574; cv=none; b=T/NfNwD39TQ9QqMonhxt72Cf0Dv2oa3jtxHYzdubJQfOUeW86CI/SDWLr35HvUvEfJ65ImdCBn6iM8v4GronTKROXuTz0gQCwSPXzehJs56p29984XExj8AW0f7hMgIxkvMieIl1YW4V+4nrxGs/GiJaP6ozGntWDjWoeC9Na0c=
+	t=1713861600; cv=none; b=TZ9mrIfF3vf8mkAgA1WQLVwmSCDpehRfB2MiBgV934/wdDqYiadYundI+q3NiqTZyRmYLMA+wgh/NS267X8jRxaPi6by5IqYAuAbgi4sjNhgFHrPBQy5TX5NUi9h7QnUdKguGAF0zHqwkQh/OiH5dw0fZfVkhnFa4637v0fTanI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713861574; c=relaxed/simple;
-	bh=QTujR1a7+ujDQPHOp+uzhs//S+2APRPzioOxbcORayA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jgF6j0GM4gL3Z+e+y+4sOxNg2f+gyazMvoFJUHNJlnAq65oEEM3/Ck7kdZ7Rpkerymi5aCuh4WzUX3748+AXhBP1s3WcSf4s0aj3mWrgp5/duh6NWD+SZZghHattnfnIJJaVvzPlcXgn1GDkg1IOY7+f9pBdygjrflOM/vDXz/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hLHTY6wa; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 272DCE0004;
-	Tue, 23 Apr 2024 08:39:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713861568;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IWooWzbcUrSnTPeszzSJpcTzFIEr2JfKzqakj4tFJJY=;
-	b=hLHTY6waJMhOsBbEkB2wckL8NFXE/Z5ge/rWHSfH+e/KLA8ApALX67yjQ+GuQJt1ovw9p3
-	jy+JZRWVzXB/GWT293hP1J7JhRVXmkqSKfV7nBqrtIJDzw3RLzJSwcmQt/73yWcvuQydfy
-	FUR6cTax7hyIqbWcxzyYVXiSwdV+DRgtKDBRCk8cJIjEwiQIJGfgFc7QKr00M3kBFI8H9t
-	aaKSs9g3e2tJqAfX3nK9a5x0L7TLJ6IPCUM7ADcyR/Om0qJTl5nT065vGP/9w+oz9el9ii
-	qI98mhXg92GzjapvNeMLw6EPRcpE7Mc3eU88wsOSg+v/xix91Ef8xWRJ3kArxw==
-Date: Tue, 23 Apr 2024 10:39:24 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Saravana Kannan <saravanak@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
- <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Wolfram Sang
- <wsa+renesas@sang-engineering.com>, Rob Herring <robh@kernel.org>, Mark
- Brown <broonie@kernel.org>, Len Brown <lenb@kernel.org>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Daniel Scally <djrscally@gmail.com>,
- Heikki Krogerus <heikki.krogerus@linux.intel.com>, Sakari Ailus
- <sakari.ailus@linux.intel.com>, Geert Uytterhoeven
- <geert+renesas@glider.be>, kernel-team@android.com, Wolfram Sang
- <wsa@kernel.org>, linux-kernel@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
- devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-acpi@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v3 0/2] fw_devlink overlay fix
-Message-ID: <20240423103924.366eba43@bootlin.com>
-In-Reply-To: <20240411235623.1260061-1-saravanak@google.com>
-References: <20240411235623.1260061-1-saravanak@google.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1713861600; c=relaxed/simple;
+	bh=hUxnuqL2PMoKNdJqLthpwjtho1qwOuyydpUkgGnYWrU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=EYX8n6O/gIq+MCBpuvWJaNZRiOSVCro5IfDzGmrh6l2remuqULXmCY1SsahehDDNU3nBUvwjpRUj0pqMUvMkdvk68rjNxOEnfTOfa7VjICwXUn5PuwQ1xbRO8IwOB0IXcjNTa5zW8LZVYlPcF7MJsRj63ZVpFmjOLusBuUgMHVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yw5HL3Az; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6eff9dc1821so5237055b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 01:39:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713861598; x=1714466398; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5ihD3jb/Us/Z6Kem6hQCYxCXpK+hNZKDWnNmjR4ycrQ=;
+        b=Yw5HL3Azp/P1qPMmeJiHLU8H59ruGN5kYluNlc3bEEg3cyKCgT7d4Ix0wi/YLUWXCq
+         SXbv6qR2hEw0F+NaxHC+xvSS5Vd2Dsjx23F3FF3rGPv8W/7DBirATCGxPWebtEg8njbh
+         yrlMYeQmWtbcQb7teFoA9lRog6CQ0lIVPbJ1vXSy5wVjvQ6nNNnD1YKWr0OkPadgsSFm
+         HRF5SPHiXX4YPOQfWpl6NIt1uQuQ4EutRZVzx4GT42PA0dMeRvc5AUC9CARTxqkRSRDh
+         zfw9IE6s674bdwOo0t3V/qpwYuvPaYYVqPcpwR1crEgr8ExR/gyo1H3dfh5++Iaj8nw4
+         L7iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713861598; x=1714466398;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5ihD3jb/Us/Z6Kem6hQCYxCXpK+hNZKDWnNmjR4ycrQ=;
+        b=r/96iSCyN7RDrs0NX6prvg9kfLhA/pzeuXjyhdgbPiknvU88mlhEbfhmPEeY3Kz8kN
+         bre4n9Gwbj8mOsc/u4nFaGc8wudWy4mdiNIzbgS/TTDXcE2yFJwM1nT8JhpbjS3qS6I9
+         GKokmn4EFP3xQ69ZENHx4GltO4TDRkhUGNJFs8CBO4csBo1XlgkE91xtAP8CWYWysUVN
+         nbZOVykCvkzQsjUPpks18eHNnZB+cPN0C4dBKrUSaI2hnsGSPX5CM4LTbJGk0IO12R8o
+         FpDK2YZnE3NubAbUEV9x+R2alRIBNtoWySAFRcj/NGUnAlt+eFYtAZ3H+0Rd/XZ301BV
+         871A==
+X-Forwarded-Encrypted: i=1; AJvYcCWxYK6cy6l9+vq9rq28CKp9eu7A7zzPUK1d68iUoIzj9EkwqO/qWz7U0mpagVNKkQKZL72GaMwlPVdFZHFiY1L0re5oiI8YYYdqa7bL
+X-Gm-Message-State: AOJu0YzUJfkfl8NUfnsA7nEx1j8mnMSeRO3S4/EDMarf0gyTKnFZ/amH
+	3hukPiMJZ0ua5MP4O4nT459ZO4TrPJE6PIciquY5VMIhCYpNBMVA
+X-Google-Smtp-Source: AGHT+IEthgN1iS58ClxkD1qG3g2hjq8TWRx3fBXvqLxwb+i8a3emvKfEUAX+vdn1KvxNMCNoV3w66w==
+X-Received: by 2002:a05:6a20:9708:b0:1ad:3d93:b71e with SMTP id hr8-20020a056a20970800b001ad3d93b71emr3743979pzc.59.1713861598439;
+        Tue, 23 Apr 2024 01:39:58 -0700 (PDT)
+Received: from LancedeMBP.lan ([112.10.240.252])
+        by smtp.gmail.com with ESMTPSA id v7-20020aa78087000000b006f0b820022dsm7565155pff.75.2024.04.23.01.39.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 01:39:58 -0700 (PDT)
+From: Lance Yang <ioworker0@gmail.com>
+To: baolin.wang@linux.alibaba.com
+Cc: 21cnbao@gmail.com,
+	akpm@linux-foundation.org,
+	david@redhat.com,
+	hughd@google.com,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	ryan.roberts@arm.com,
+	shy828301@gmail.com,
+	wangkefeng.wang@huawei.com,
+	willy@infradead.org,
+	ying.huang@intel.com,
+	ziy@nvidia.com
+Subject: Re: [RFC PATCH 1/5] mm: memory: extend finish_fault() to support large folio
+Date: Tue, 23 Apr 2024 16:39:51 +0800
+Message-Id: <20240423083951.1380-1-ioworker0@gmail.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <358aefb1858b63164894d7d8504f3dae0b495366.1713755580.git.baolin.wang@linux.alibaba.com>
+References: <358aefb1858b63164894d7d8504f3dae0b495366.1713755580.git.baolin.wang@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
 
-Hi Saravana,
+Hey Baolin,
 
-On Thu, 11 Apr 2024 16:56:20 -0700
-Saravana Kannan <saravanak@google.com> wrote:
+[...]
+@@ -4727,9 +4725,11 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+[...]
 
-> Overlays don't work correctly with fw_devlink. This patch series fixes
-> it. This series is now ready for review and merging once Geert and Herve
-> give they Tested-by.
-> 
-> Geert and Herve,
-> 
-> This patch series should hopefully fix both of your use cases [1][2][3].
-> Can you please check to make sure the device links created to/from the
-> overlay devices are to/from the right ones?
-> 
-> Thanks,
-> Saravana
-> 
+The mm counters have been moved from updating out of set_pte_range(), so we
+we may need to rebase against Kefeng's patch[1].
 
-I tested the series.
++	int type = is_cow ? MM_ANONPAGES : mm_counter_file(folio);
+	set_pte_range(vmf, folio, &folio->page, nr_pages, addr);
++	add_mm_counter(vma->vm_mm, type, nr_pages);
+[...]
 
-On my Microchip use case (i.e. DT overlay on a PCIe device), I observed that
-some driver removal were done in a wrong order. For instance, the onboard
-PCIe device interrupt controller (oic@e00c0120) was removed before its
-consumers.
+[1] https://lore.kernel.org/all/20240412064751.119015-1-wangkefeng.wang@huawei.com/T/#me2827c26ff453c0fa86f2af9f68f245978b08774
 
-I enabled debug traces in core.c and observed that many links were dropped.
-These links are related to pinctrl, clock, reset, interrupts, ...
-I have the feeling that these links should not be dropped.
-
-Here are extracted traces:
---- 8< ---
-  [    9.225355] mchp_lan966x 0000:01:00.0: enabling device (0000 -> 0002)
-  [    9.279024] device: 'd0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0': device_add
-  [    9.286555] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/oic@e00c0120
-  [    9.302168] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/reset@e200400c
-  [    9.317489] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064/tod_pins
-  ...
-  [    9.403387] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/mdio@e200413c Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/reset@e200400c
-  [    9.418466] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth3 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064
-  [    9.433263] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth2 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064
-  ...
-  [    9.495849] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8
-  [    9.512111] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000/i2c@600 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/oic@e00c0120
-  [    9.527931] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000/i2c@600 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8
-  [    9.544878] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000/i2c@600 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064/fcb4-i2c-pins
-  ...
-  [    9.562283] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/reset@e200400c
-  [    9.577563] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/oic@e00c0120
-  ...
-  [    9.592813] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/cpu_clk
-  [    9.608258] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/ddr_clk
-  [    9.623731] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sys_clk
-  [    9.639269] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/oic@e00c0120 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0
-  [    9.651930] device: 'pci:0000:01:00.0--platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0': device_add
-  [    9.661716] platform d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0: Linked as a sync state only consumer to 0000:01:00.0
-  ...
-  [    9.803560] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth2 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
-  [    9.816827] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth2 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064
-  [    9.831309] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth3 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
-  [    9.844561] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth3 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064
-  ...
-  [    9.919384] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000/i2c@600 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
-  [    9.934028] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000/i2c@600 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064/fcb4-i2c-pins
-  [    9.951138] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
-  [    9.965012] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064/tod_pins
-  [    9.980886] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
-  [    9.994831] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/reset@e200400c
-  [   10.009834] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/mdio@e200413c Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
-  [   10.023520] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/mdio@e200413c Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/reset@e200400c
-  [   10.038248] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/reset@e200400c
-  [   10.053160] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000/i2c@600 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8
-  [   10.069820] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
-  [   10.083772] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8
-  [   10.099739] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8 Linked as a fwnode consumer to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
-  [   10.114471] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sys_clk
-  [   10.129648] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/ddr_clk
-  [   10.144818] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/clock-controller@e00c00a8 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/cpu_clk
-  [   10.159986] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/pinctrl@e2004064 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/oic@e00c0120
-  [   10.174802] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000/i2c@600 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/oic@e00c0120
-  [   10.190323] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/oic@e00c0120
-  [   10.205098] simple-pm-bus d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0: Dropping the link to 0000:01:00.0
-  [   10.214501] device: 'pci:0000:01:00.0--platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0': device_unregister
-  [   10.225187] device: 'ea000000.switch': device_add
-  [   10.230321] device: 'platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0--platform:ea000000.switch': device_add
-  [   10.240806] devices_kset: Moving ea000000.switch to end of list
-  [   10.246794] platform ea000000.switch: Linked as a consumer to d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0
-  [   10.256399] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/switch@e0000000 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
-  [   10.270803] device: 'e800413c.mdio': device_add
-  [   10.275775] device: 'platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0--platform:e800413c.mdio': device_add
-  [   10.286036] devices_kset: Moving e800413c.mdio to end of list
-  [   10.291863] platform e800413c.mdio: Linked as a consumer to d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0
-  [   10.301213] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/mdio@e200413c Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
-  [   10.315260] mscc-miim e800413c.mdio: error -EPROBE_DEFER: Failed to get reset
-  ...
-  [   10.387676] device: 'd0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth3': device_add
-  [   10.388124] devices_kset: Moving ea000000.switch to end of list
-  [   10.402096] device: 'platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0--platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth3': device_add
-  [   10.416004] devices_kset: Moving d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth3 to end of list
-  [   10.425281] platform d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth3: Linked as a consumer to d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0
-  [   10.437942] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth3 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
-  [   10.451352] devices_kset: Moving e800413c.mdio to end of list
-  [   10.451912] device: 'd0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth2': device_add
-  [   10.458161] mscc-miim e800413c.mdio: error -EPROBE_DEFER: Failed to get reset
-  [   10.466501] device: 'platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0--platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth2': device_add
-  [   10.485906] devices_kset: Moving d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth2 to end of list
-  [   10.495096] platform d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0:sfp-eth2: Linked as a consumer to d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0
-  [   10.507855] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/sfp-eth2 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
-  ...
-  [   10.580486] device: 'ea040000.flexcom': device_add
-  [   10.585753] device: 'platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0--platform:ea040000.flexcom': device_add
-  [   10.596336] devices_kset: Moving ea040000.flexcom to end of list
-  [   10.602429] platform ea040000.flexcom: Linked as a consumer to d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0
-  [   10.612031] /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0/flexcom@e0040000 Dropping the fwnode link to /soc/pcie@d0070000/pci@0,0/dev@0,0/pci-ep-bus@0
-  [   10.626863] device: 'e8004064.pinctrl': device_add
-  [   10.632045] device: 'platform:d0070000.pcie:pci@0,0:dev@0,0:pci-ep-bus@0--platform:e8004064.pinctrl': device_add
-  ...
---- 8< ---
-
-
-Here is the related dtso applied at the PCIe device DT node:
---- 8< ---
-/ {
-	fragment@0 {
-		target-path="";
-		__overlay__ {
-			#address-cells = <3>;
-			#size-cells = <2>;
-
-			pci-ep-bus@0 {
-				compatible = "simple-bus";
-				#address-cells = <1>;
-				#size-cells = <1>;
-
-				/*
-				 * map @0xe2000000 (32MB) to BAR0 (CPU)
-				 * map @0xe0000000 (16MB) to BAR1 (AMBA)
-				 */
-				ranges = <0xe2000000 0x00 0x00 0x00 0x2000000
-				          0xe0000000 0x01 0x00 0x00 0x1000000>;
-
-				oic: oic@e00c0120 {
-					compatible = "microchip,lan966x-oic";
-					#interrupt-cells = <2>;
-					interrupt-controller;
-					interrupts = <0>; /* PCI INTx assigned interrupt */
-					reg = <0xe00c0120 0x190>;
-				};
-
-				cpu_clk: cpu_clk {
-					compatible = "fixed-clock";
-					#clock-cells = <0>;
-					clock-frequency = <600000000>;  // CPU clock = 600MHz
-				};
-
-				ddr_clk: ddr_clk {
-					compatible = "fixed-clock";
-					#clock-cells = <0>;
-					clock-frequency = <30000000>;  // Fabric clock = 30MHz
-				};
-
-				sys_clk: sys_clk {
-					compatible = "fixed-clock";
-					#clock-cells = <0>;
-					clock-frequency = <15625000>;  // System clock = 15.625MHz
-				};
-
-				clks: clock-controller@e00c00a8 {
-					compatible = "microchip,lan966x-gck";
-					#clock-cells = <1>;
-					clocks = <&cpu_clk>, <&ddr_clk>, <&sys_clk>;
-					clock-names = "cpu", "ddr", "sys";
-					reg = <0xe00c00a8 0x38>, <0xe00c02cc 0x4>;
-				};
-
-				cpu_ctrl: syscon@e00c0000 {
-					compatible = "microchip,lan966x-cpu-syscon", "syscon";
-					reg = <0xe00c0000 0xa8>;
-				};
-
-				reset: reset@e200400c {
-					compatible = "microchip,lan966x-switch-reset";
-					reg = <0xe200400c 0x4>;
-					reg-names = "gcb";
-					#reset-cells = <1>;
-					cpu-syscon = <&cpu_ctrl>;
-				};
-
-				gpio: pinctrl@e2004064 {
-					compatible = "microchip,lan966x-pinctrl";
-					reg = <0xe2004064 0xb4>,
-					      <0xe2010024 0x138>;
-					resets = <&reset 0>;
-					reset-names = "switch";
-					gpio-controller;
-					#gpio-cells = <2>;
-					gpio-ranges = <&gpio 0 0 78>;
-					interrupt-parent = <&oic>;
-					interrupt-controller;
-					interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
-					#interrupt-cells = <2>;
-
-					tod_pins: tod_pins {
-						pins = "GPIO_36";
-						function = "ptpsync_1";
-					};
-
-					fc0_a_pins: fcb4-i2c-pins {
-						/* RXD, TXD */
-						pins = "GPIO_9", "GPIO_10";
-						function = "fc0_a";
-					};
-
-					i2cmux_pins: i2cmux-pins {
-						pins = "GPIO_76", "GPIO_77";
-						function = "twi_slc_gate";
-						output-low;
-					};
-
-					i2cmux_0: i2cmux-0 {
-						pins = "GPIO_76";
-						function = "twi_slc_gate";
-						output-high;
-					};
-
-					i2cmux_1: i2cmux-1 {
-						pins = "GPIO_77";
-						function = "twi_slc_gate";
-						output-high;
-					};
-				};
-
-				flx0: flexcom@e0040000 {
-					compatible = "atmel,sama5d2-flexcom";
-					reg = <0xe0040000 0x100>;
-					clocks = <&clks GCK_ID_FLEXCOM0>;
-					#address-cells = <1>;
-					#size-cells = <1>;
-					ranges = <0x0 0xe0040000 0x800>;
-
-					atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
-
-					i2c_lan966x: i2c@600 {
-						compatible = "microchip,lan966x-i2c";
-						reg = <0x600 0x200>;
-						interrupt-parent = <&oic>;
-						interrupts = <48 IRQ_TYPE_LEVEL_HIGH>;
-						#address-cells = <1>;
-						#size-cells = <0>;
-						clocks = <&clks GCK_ID_FLEXCOM0>;
-						assigned-clocks = <&clks GCK_ID_FLEXCOM0>;
-						assigned-clock-rates = <20000000>;
-						pinctrl-0 = <&fc0_a_pins>;
-						pinctrl-names = "default";
-						i2c-analog-filter;
-						i2c-digital-filter;
-						i2c-digital-filter-width-ns = <35>;
-					};
-				};
-
-				i2c0_emux: i2c0-emux@0 {
-					compatible = "i2c-mux-pinctrl";
-					#address-cells = <1>;
-					#size-cells = <0>;
-					i2c-parent = <&i2c_lan966x>;
-					pinctrl-names = "i2c102", "i2c103", "idle";
-					pinctrl-0 = <&i2cmux_0>;
-					pinctrl-1 = <&i2cmux_1>;
-					pinctrl-2 = <&i2cmux_pins>;
-
-					i2c102: i2c_sfp1 {
-						reg = <0>;
-						#address-cells = <1>;
-						#size-cells = <0>;
-					};
-
-					i2c103: i2c_sfp2 {
-						reg = <1>;
-						#address-cells = <1>;
-						#size-cells = <0>;
-					};
-				};
-
-				sfp_eth2: sfp-eth2 {
-					compatible       = "sff,sfp";
-					i2c-bus          = <&i2c102>;
-					tx-disable-gpios = <&gpio  0 GPIO_ACTIVE_HIGH>;
-					los-gpios        = <&gpio 25 GPIO_ACTIVE_HIGH>;
-					mod-def0-gpios   = <&gpio 18 GPIO_ACTIVE_LOW>;
-					tx-fault-gpios   = <&gpio  2 GPIO_ACTIVE_HIGH>;
-				};
-
-				sfp_eth3: sfp-eth3 {
-					compatible       = "sff,sfp";
-					i2c-bus          = <&i2c103>;
-					tx-disable-gpios = <&gpio  1 GPIO_ACTIVE_HIGH>;
-					los-gpios        = <&gpio 26 GPIO_ACTIVE_HIGH>;
-					mod-def0-gpios   = <&gpio 19 GPIO_ACTIVE_LOW>;
-					tx-fault-gpios   = <&gpio  3 GPIO_ACTIVE_HIGH>;
-				};
-
-				serdes: serdes@e202c000 {
-					compatible = "microchip,lan966x-serdes";
-					reg = <0xe202c000 0x9c>,
-					      <0xe2004010 0x4>;
-					#phy-cells = <2>;
-				};
-
-				mdio1: mdio@e200413c {
-					#address-cells = <1>;
-					#size-cells = <0>;
-					compatible = "microchip,lan966x-miim";
-					reg = <0xe200413c 0x24>,
-					      <0xe2010020 0x4>;
-
-					resets = <&reset 0>;
-					reset-names = "switch";
-
-					lan966x_phy0: ethernet-lan966x_phy@1 {
-						reg = <1>;
-					};
-
-					lan966x_phy1: ethernet-lan966x_phy@2 {
-						reg = <2>;
-					};
-				};
-
-				switch: switch@e0000000 {
-					compatible = "microchip,lan966x-switch";
-					reg = <0xe0000000 0x0100000>,
-					      <0xe2000000 0x0800000>;
-					reg-names = "cpu", "gcb";
-
-					interrupt-parent = <&oic>;
-					interrupts = <12 IRQ_TYPE_LEVEL_HIGH>,
-						     <9 IRQ_TYPE_LEVEL_HIGH>;
-					interrupt-names = "xtr", "ana";
-
-					resets = <&reset 0>;
-					reset-names = "switch";
-
-					pinctrl-names = "default";
-					pinctrl-0 = <&tod_pins>;
-
-					ethernet-ports {
-						#address-cells = <1>;
-						#size-cells = <0>;
-
-						port0: port@0 {
-							phy-handle = <&lan966x_phy0>;
-
-							reg = <0>;
-							phy-mode = "gmii";
-							phys = <&serdes 0 CU(0)>;
-						};
-
-						port1: port@1 {
-							phy-handle = <&lan966x_phy1>;
-
-							reg = <1>;
-							phy-mode = "gmii";
-							phys = <&serdes 1 CU(1)>;
-						};
-
-						port2: port@2 {
-							reg = <2>;
-							phy-mode = "sgmii";
-							phys = <&serdes 2 SERDES6G(0)>;
-							sfp = <&sfp_eth2>;
-							managed = "in-band-status";
-						};
-
-						port3: port@3 {
-							reg = <3>;
-							phy-mode = "sgmii";
-							phys = <&serdes 3 SERDES6G(1)>;
-							sfp = <&sfp_eth3>;
-							managed = "in-band-status";
-						};
-					};
-				};
-			};
-		};
-	};
-};
---- 8< ---
-
-Best regards,
-Hervé
+Thanks,
+Lance
 
