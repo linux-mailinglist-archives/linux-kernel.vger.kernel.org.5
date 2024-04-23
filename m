@@ -1,248 +1,123 @@
-Return-Path: <linux-kernel+bounces-154667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154681-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D83CC8ADF8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:17:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B6D18ADFB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:28:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E1741F2362B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:17:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 209E0281CA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B40E22B9CA;
-	Tue, 23 Apr 2024 08:16:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD99524A5;
+	Tue, 23 Apr 2024 08:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ite.com.tw header.i=@ite.com.tw header.b="H+GOWL9s"
-Received: from ironport.ite.com.tw (60-251-196-230.hinet-ip.hinet.net [60.251.196.230])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ek8nh+OR"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8785948788
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:16:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.251.196.230
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9FC93F9E8;
+	Tue, 23 Apr 2024 08:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713860207; cv=none; b=J0sKSrxxaWxORjvzIJPKkLATeFPtZtq2env/+uolKwrGTkLne4H+3MB2Z0dIoR1auxhYQvsARWn4RCo88c6tzRDFWpN+3EyH2qz5aO11N6PYPNxMMxYZrE8TwaGippuY1F0lPuaVvMWFhuIs+rVrzgw5mfq4jBCOg6T88yjpcuA=
+	t=1713860881; cv=none; b=ELO9Td+93UoJuFL1/ocUiXpe137vrC3g70SUM+IzF/jM7zre8Z2Uw/CEhjORB7hpFAdcwQd1yeE17obbWdrXha3Ocuz/uGXByHSOcu1qpDleZJ+U4Hb1eVXGaVR3MxT0LBS2kYmoc7LLslYNj7fv52z2xS8UvzFQHL+2iv/oARY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713860207; c=relaxed/simple;
-	bh=qMRvRfCHt4RfsM1ayabBFvguO+HsdBVmxHCbs/4Emq0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lkJ77Zq2t9yoQ3X38QUMmBv5UdDv6cbSXJ+xpKFzUAq3pre2jfnU8Rz1wX3+jhBeMbsxph7SvjGXUN1bAXwRNVwK09g0UI9BxzpTjGNdegWRrlPzajYpATekSA3j7iWnUui6U0HSDM4lJqd5x9SgRW3dk04H9NsjdmcGsjD4ETw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ite.com.tw; spf=pass smtp.mailfrom=ite.com.tw; dkim=fail (0-bit key) header.d=ite.com.tw header.i=@ite.com.tw header.b=H+GOWL9s reason="key not found in DNS"; arc=none smtp.client-ip=60.251.196.230
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ite.com.tw
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ite.com.tw
+	s=arc-20240116; t=1713860881; c=relaxed/simple;
+	bh=4rgs+Q8tD+dHRzJTXxgmPYJ2leRoMwnoR8des6f8Y3E=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=rozTRni9ywgrfK/RTIH67zaBiBuVUBIjlcXSZP4pVWEMQmvS9grX4VJmhcQv9SzqZCwJcEJMPLwIUOrQTdQDRrxsiQOZ8vuV7orIZeikn+zOlRr3+eg6Z54qmzcg5W+OcnaB4jW/OKiPT5rZ8hmTkDOvEgfPMOACiD1C4uvjHJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ek8nh+OR; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a51a7d4466bso569372966b.2;
+        Tue, 23 Apr 2024 01:27:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=ite.com.tw; s=dkim;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ZtLQhVDsiAYpK4O5MlGv6l3VXtS61DUL+pH4DJcyy/Q=;
-  b=H+GOWL9s+34ow1f+trqu4m+usnpck+ckQ8KEfPicE1lUx5ih0lPLidEN
-   O8m2VQ68tP73tpU1OlvahFDhwaY1mTcD2aIvvcYRrxJhLKdrSymDYY68M
-   wEXAd6URnU5sqvIbPDyeBVFXN+NqLpa2idIq45tc4hHeVJ4AWSzv31pio
-   YBe0V/BMrfh/8Xa+s4iIUGoRPBd29igm0uAG7Uq6IEvIMgO2AdUjH+aly
-   GKpgrwTMBTV8SY3mRom+ure+OXJKLNwOMUQJdIhJYNjM5nLCUQtWS2057
-   XzAI/yurP0AWbyjcY54KV+LePIoq1bw9hWez2grVpXMRHG18LYZG2J7Q5
-   g==;
-Received: from unknown (HELO mse.ite.com.tw) ([192.168.35.30])
-  by ironport.ite.com.tw with ESMTP; 23 Apr 2024 16:16:34 +0800
-Received: from CSBMAIL1.internal.ite.com.tw (CSBMAIL1.internal.ite.com.tw [192.168.65.58])
-	by mse.ite.com.tw with ESMTP id 43N8GRwc058283;
-	Tue, 23 Apr 2024 16:16:27 +0800 (GMT-8)
-	(envelope-from kuro.chung@ite.com.tw)
-Received: from ite-XPS-13-9360.internal.ite.com.tw (192.168.72.42) by
- CSBMAIL1.internal.ite.com.tw (192.168.65.58) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 23 Apr 2024 16:16:27 +0800
-From: kuro <kuro.chung@ite.com.tw>
-To:
-CC: Allen Chen <allen.chen@ite.com.tw>, Pin-yen Lin <treapking@chromium.org>,
-        Kuro Chung <kuro.chung@ite.com.tw>,
-        Kenneth Haung <kenneth.hung@ite.com.tw>,
-        Kuro Chung <kuro.chung@ite.corp-partner.google.com>,
-        Andrzej Hajda
-	<andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert
- Foss <rfoss@kernel.org>,
-        Laurent Pinchart
-	<Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej
- Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVERS"
-	<dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 1/1] drm/bridge: it6505: fix hibernate to resume no display issue
-Date: Tue, 23 Apr 2024 16:27:22 +0800
-Message-ID: <20240423082722.843587-2-kuro.chung@ite.com.tw>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240423082722.843587-1-kuro.chung@ite.com.tw>
-References: <20240423082722.843587-1-kuro.chung@ite.com.tw>
+        d=gmail.com; s=20230601; t=1713860878; x=1714465678; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n1ow1jnUWA2uy4x+ujOJIYra489DoEXou+HGtbxx9DY=;
+        b=Ek8nh+ORjB+eFUgGkeNsV+dK/LKnDl/wLUkZ8a//cBx2xnWvOx1VQHbgGR58RjOv+C
+         n11zQ47aExU4mVqUyfEHmgmJpArPO8JMFnQxR0lMd0Y+NVJZMKVV+eYUNyy680UWWmBF
+         QyjL278dVy54/YA0qL4UUc56m8eVk1Z+TMX0C2ene8umxTmcvQz/c+GzZxZImB8DhpkH
+         TpSbQixSeNZ8d2ARH45VyPn5X+TYdo4stpbbABNN7WGoJSv1LgKwN8k7qVziOfh9l3tO
+         nR4pWvN5Z03lsNok0PHrtgN7rW5NoVmK05zIXMD5IgwqJ3+/rSJA/m7T3oxzgUd+B7wd
+         ckuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713860878; x=1714465678;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=n1ow1jnUWA2uy4x+ujOJIYra489DoEXou+HGtbxx9DY=;
+        b=tW7uqh3aYat2nx9j+zZsAnHvdrVN3D93X6rXC1TXptrHtA9xpY8awbJ0T2HOVmQwDK
+         foWicyTW1iLPxKX0zJ9I42PprMY8EoOGa7xpFYQmxanqapGwGIMbu4sFi3vDDHDhqynh
+         LzioByYndDbx4Cy6BCMmULgELuAWEDx8QxRoY86nbXIHk469XASspUb3Z6ZiWjhWNXg3
+         5nKE/pChetOilSaSdZGRxpwzJGmrVDEDQ2VjWbtTRziylL61fbBQpgsNPwPFN724E3DX
+         Q1MI1xMwcdaJksEKK7uG1/+DbS/ilHkHQphImzApi3RdorTx/KgNwMWIa1LXCaW+OqmY
+         9SUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVMRovHSGGmtJ4sIemo0uJFoyYC50KsCO5b8JGi6HMoTSLg8d+OiQ7gSmtGQfjFFJ5G98YqAh6Nd2m3du4d7uR8/xnoGuzNY6Kl0H42
+X-Gm-Message-State: AOJu0YwLKdnGD1gVRB3WwtvmE01X6HQhveGQq4ltAgJ2MxIa78Yn/WUk
+	6Mhf13rRG3/k92vyz47mCCkzQ6HYE4JPcS+YBpvZvTlvgk8Y9Fj5
+X-Google-Smtp-Source: AGHT+IGdXvZE85ygrZFhUrP7aObavKBO1ceClUkXfSC1BjEwFEregBeh8y6zm1Psp3IVsTRdHsfAuw==
+X-Received: by 2002:a17:906:4718:b0:a58:7982:6282 with SMTP id y24-20020a170906471800b00a5879826282mr990508ejq.62.1713860878079;
+        Tue, 23 Apr 2024 01:27:58 -0700 (PDT)
+Received: from [127.0.1.1] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
+        by smtp.gmail.com with ESMTPSA id z13-20020a17090655cd00b00a4739efd7cesm6798786ejp.60.2024.04.23.01.27.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 01:27:56 -0700 (PDT)
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Subject: [PATCH 0/2] cpufreq: dt/dt-platdev: eliminate uses of
+ of_node_put()
+Date: Tue, 23 Apr 2024 10:27:43 +0200
+Message-Id: <20240423-of_node_put_cpufreq_dt-v1-0-19f51910276f@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: CSBMAIL1.internal.ite.com.tw (192.168.65.58) To
- CSBMAIL1.internal.ite.com.tw (192.168.65.58)
-X-TM-SNTS-SMTP:
-	3B09192209B203025BD741B7ACA8E0C697888362F73B39FE3A32B9968F8B69552002:8
-X-MAIL:mse.ite.com.tw 43N8GRwc058283
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAP9wJ2YC/x3MQQqAIBBA0avErBPMdGFXiZDQsWajphZBdPek5
+ Vv8/0DBTFhg6h7IeFGhGBqGvgO7r2FDRq4ZBBeSSyFY9CZEhyad1dh0+oyHcZVpq0YlnUbtObQ
+ 4ZfR0/+N5ed8Pf8gwuGgAAAA=
+To: "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Viresh Kumar <viresh.kumar@linaro.org>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713860876; l=1045;
+ i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
+ bh=4rgs+Q8tD+dHRzJTXxgmPYJ2leRoMwnoR8des6f8Y3E=;
+ b=m9B63KnDmu0Phc7Ai4aQwdSEXublyZ92HpOKSUhIN2N0RdK7MbLybtUomXpTXEqF4f1C8LgDO
+ VLCzBQdGCUTBEh6Zgw9AP3ov5mo9xLhxDJdQ/ZPPmir644SAjSbnM9f
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
 
-From: Kuro <kuro.chung@ite.com.tw>
+This series removes uses of of_node_put() in dt and dt-platdev, which
+can be replaced with the clenaup handler introduced with
+54da6a092431 ("locking: Introduce __cleanup() based infrastructure").
 
-ITE added a FIFO reset bit for input video. When system power resume,
-the TTL input of it6505 may get some noise before video signal stable
-and the hardware function reset is required.
-But the input FIFO reset will also trigger error interrupts of output module rising.
-Thus, it6505 have to wait a period can clear those expected error interrupts
-caused by manual hardware reset in one interrupt handler calling to avoid interrupt looping.
+This change provides a scope-based cleanup mechanism to avoid potential
+memory leaks that can appear if of_node_put() is not used correctly.
 
-Signed-off-by: Kuro Chung <kuro.chung@ite.corp-partner.google.com>
+The series is based on linux-next (next-20240422) and has been validated
+with a Rockchip RK3568 that makes use of these drivers.
 
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
- drivers/gpu/drm/bridge/ite-it6505.c | 73 +++++++++++++++++++----------
- 1 file changed, 49 insertions(+), 24 deletions(-)
+Javier Carrasco (2):
+      cpufreq: dt: eliminate uses of of_node_put()
+      cpufreq: dt-platdev: eliminate uses of of_node_put()
 
-diff --git a/drivers/gpu/drm/bridge/ite-it6505.c b/drivers/gpu/drm/bridge/ite-it6505.c
-index b53da9bb65a16..ae7f4c7ec6dd0 100644
---- a/drivers/gpu/drm/bridge/ite-it6505.c
-+++ b/drivers/gpu/drm/bridge/ite-it6505.c
-@@ -1317,9 +1317,15 @@ static void it6505_video_reset(struct it6505 *it6505)
- 	it6505_link_reset_step_train(it6505);
- 	it6505_set_bits(it6505, REG_DATA_MUTE_CTRL, EN_VID_MUTE, EN_VID_MUTE);
- 	it6505_set_bits(it6505, REG_INFOFRAME_CTRL, EN_VID_CTRL_PKT, 0x00);
--	it6505_set_bits(it6505, REG_RESET_CTRL, VIDEO_RESET, VIDEO_RESET);
-+
-+	it6505_set_bits(it6505, REG_VID_BUS_CTRL1, TX_FIFO_RESET, 0x02);
-+	it6505_set_bits(it6505, REG_VID_BUS_CTRL1, TX_FIFO_RESET, 0x00);
-+
- 	it6505_set_bits(it6505, REG_501_FIFO_CTRL, RST_501_FIFO, RST_501_FIFO);
- 	it6505_set_bits(it6505, REG_501_FIFO_CTRL, RST_501_FIFO, 0x00);
-+
-+	it6505_set_bits(it6505, REG_RESET_CTRL, VIDEO_RESET, VIDEO_RESET);
-+	usleep_range(1000, 2000);
- 	it6505_set_bits(it6505, REG_RESET_CTRL, VIDEO_RESET, 0x00);
- }
- 
-@@ -2249,12 +2255,11 @@ static void it6505_link_training_work(struct work_struct *work)
- 	if (ret) {
- 		it6505->auto_train_retry = AUTO_TRAIN_RETRY;
- 		it6505_link_train_ok(it6505);
--		return;
- 	} else {
- 		it6505->auto_train_retry--;
-+		it6505_dump(it6505);
- 	}
- 
--	it6505_dump(it6505);
- }
- 
- static void it6505_plugged_status_to_codec(struct it6505 *it6505)
-@@ -2475,31 +2480,53 @@ static void it6505_irq_link_train_fail(struct it6505 *it6505)
- 	schedule_work(&it6505->link_works);
- }
- 
--static void it6505_irq_video_fifo_error(struct it6505 *it6505)
-+static bool it6505_test_bit(unsigned int bit, const unsigned int *addr)
- {
--	struct device *dev = &it6505->client->dev;
--
--	DRM_DEV_DEBUG_DRIVER(dev, "video fifo overflow interrupt");
--	it6505->auto_train_retry = AUTO_TRAIN_RETRY;
--	flush_work(&it6505->link_works);
--	it6505_stop_hdcp(it6505);
--	it6505_video_reset(it6505);
-+	return 1 & (addr[bit / BITS_PER_BYTE] >> (bit % BITS_PER_BYTE));
- }
- 
--static void it6505_irq_io_latch_fifo_overflow(struct it6505 *it6505)
-+static void it6505_irq_video_handler(struct it6505 *it6505, const int *int_status)
- {
- 	struct device *dev = &it6505->client->dev;
-+	int reg_0d, reg_int03;
- 
--	DRM_DEV_DEBUG_DRIVER(dev, "IO latch fifo overflow interrupt");
--	it6505->auto_train_retry = AUTO_TRAIN_RETRY;
--	flush_work(&it6505->link_works);
--	it6505_stop_hdcp(it6505);
--	it6505_video_reset(it6505);
--}
-+	/*
-+	 * When video SCDT change with video not stable,
-+	 * Or video FIFO error, need video reset
-+	 */
- 
--static bool it6505_test_bit(unsigned int bit, const unsigned int *addr)
--{
--	return 1 & (addr[bit / BITS_PER_BYTE] >> (bit % BITS_PER_BYTE));
-+	if ((!it6505_get_video_status(it6505) &&
-+		(it6505_test_bit(INT_SCDT_CHANGE, (unsigned int *) int_status))) ||
-+		(it6505_test_bit(BIT_INT_IO_FIFO_OVERFLOW, (unsigned int *) int_status)) ||
-+		(it6505_test_bit(BIT_INT_VID_FIFO_ERROR, (unsigned int *) int_status))) {
-+
-+		it6505->auto_train_retry = AUTO_TRAIN_RETRY;
-+		flush_work(&it6505->link_works);
-+		it6505_stop_hdcp(it6505);
-+		it6505_video_reset(it6505);
-+
-+		usleep_range(10000, 11000);
-+
-+		/*
-+		 * Clear FIFO error IRQ to prevent fifo error -> reset loop
-+		 * HW will trigger SCDT change IRQ again when video stable
-+		 */
-+
-+		reg_int03 = it6505_read(it6505, INT_STATUS_03);
-+		reg_0d = it6505_read(it6505, REG_SYSTEM_STS);
-+
-+		reg_int03 &= (BIT(INT_VID_FIFO_ERROR) | BIT(INT_IO_LATCH_FIFO_OVERFLOW));
-+		it6505_write(it6505, INT_STATUS_03, reg_int03);
-+
-+		DRM_DEV_DEBUG_DRIVER(dev, "reg08 = 0x%02x", reg_int03);
-+		DRM_DEV_DEBUG_DRIVER(dev, "reg0D = 0x%02x", reg_0d);
-+
-+		return;
-+	}
-+
-+
-+	if (it6505_test_bit(INT_SCDT_CHANGE, (unsigned int *) int_status))
-+		it6505_irq_scdt(it6505);
- }
- 
- static irqreturn_t it6505_int_threaded_handler(int unused, void *data)
-@@ -2512,15 +2539,12 @@ static irqreturn_t it6505_int_threaded_handler(int unused, void *data)
- 	} irq_vec[] = {
- 		{ BIT_INT_HPD, it6505_irq_hpd },
- 		{ BIT_INT_HPD_IRQ, it6505_irq_hpd_irq },
--		{ BIT_INT_SCDT, it6505_irq_scdt },
- 		{ BIT_INT_HDCP_FAIL, it6505_irq_hdcp_fail },
- 		{ BIT_INT_HDCP_DONE, it6505_irq_hdcp_done },
- 		{ BIT_INT_AUX_CMD_FAIL, it6505_irq_aux_cmd_fail },
- 		{ BIT_INT_HDCP_KSV_CHECK, it6505_irq_hdcp_ksv_check },
- 		{ BIT_INT_AUDIO_FIFO_ERROR, it6505_irq_audio_fifo_error },
- 		{ BIT_INT_LINK_TRAIN_FAIL, it6505_irq_link_train_fail },
--		{ BIT_INT_VID_FIFO_ERROR, it6505_irq_video_fifo_error },
--		{ BIT_INT_IO_FIFO_OVERFLOW, it6505_irq_io_latch_fifo_overflow },
- 	};
- 	int int_status[3], i;
- 
-@@ -2550,6 +2574,7 @@ static irqreturn_t it6505_int_threaded_handler(int unused, void *data)
- 			if (it6505_test_bit(irq_vec[i].bit, (unsigned int *)int_status))
- 				irq_vec[i].handler(it6505);
- 		}
-+		it6505_irq_video_handler(it6505, (unsigned int *) int_status);
- 	}
- 
- 	pm_runtime_put_sync(dev);
+ drivers/cpufreq/cpufreq-dt-platdev.c |  7 ++-----
+ drivers/cpufreq/cpufreq-dt.c         | 21 ++++++---------------
+ 2 files changed, 8 insertions(+), 20 deletions(-)
+---
+base-commit: f529a6d274b3b8c75899e949649d231298f30a32
+change-id: 20240422-of_node_put_cpufreq_dt-9c5354d9e9f0
+
+Best regards,
 -- 
-2.25.1
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
 
