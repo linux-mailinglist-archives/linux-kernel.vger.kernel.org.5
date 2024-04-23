@@ -1,162 +1,228 @@
-Return-Path: <linux-kernel+bounces-154658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BB7A8ADF6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:06:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95D668ADF66
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:05:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 221E6287F80
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:06:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2399C1F253BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:05:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560BD3F9E8;
-	Tue, 23 Apr 2024 08:04:58 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6C960DEA;
+	Tue, 23 Apr 2024 08:03:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="XZeV3YWG"
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 643DD21A0B
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:04:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1BF34CDF9;
+	Tue, 23 Apr 2024 08:03:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713859497; cv=none; b=q7rU/OP1byWPJ8wJPZNYzT5Y+ynVeB2WzcAHhRIHo1PCcn5ZzDYL0j1eHEO3azV79M8oJP5CnEu6Tg9WSBH1BLHJuZr8WXVo46DIfF/8HfNs2GVc6SPWOZ1IUD0hblzK/YnwPkcjTlY8wVAEkDzIW9ADcnmU8b19lk1RgfgS4J8=
+	t=1713859392; cv=none; b=Ya6viw0K7g6ysUOfZ3po53vCmIny7S2m1AkK0LNU477Oql7Y6/ZUNMRrQ4+xFXaelaACVXfzMSWhsBV56GYMFAfXh1X16j8X7cfVT9L9npKIyEZddFAIcLnTnTLDGvZy9Pa4PcfGGam6qd0bxUTcwUKAAlo5E3ezRgDhV2CqXMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713859497; c=relaxed/simple;
-	bh=SJDuUew+/fONGg57g1C9S/LfOHF08ES9ORW9a2GA+qA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YPt1Q908faxm1RlQgRl9E8YsVLXRr+36sZbdlpJeAi7H0Nsif2K/n/GCscIxyk7zJkSmHoCjrbXf8KOl70Itz4C36YOHtxhHZ4u9YLN2PD7p76SwyKlPOhunFWOHCSHv26GCn8yZY6KzaQwzP6DD2IUNNuKwz8MVpJjWxa5fIps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rzB8f-0002Ao-VR; Tue, 23 Apr 2024 10:04:29 +0200
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rzB8f-00Dq02-2W; Tue, 23 Apr 2024 10:04:29 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id D862E2BD8CF;
-	Tue, 23 Apr 2024 07:53:51 +0000 (UTC)
-Date: Tue, 23 Apr 2024 09:53:51 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev
-Subject: Re: [PATCH v3 07/10] arm64: dts: imx8qm-mek: add flexcan support
-Message-ID: <20240423-savvy-straight-shellfish-ac1c64-mkl@pengutronix.de>
-References: <20240422-dts_8qm_audio-v3-0-680cee731ced@nxp.com>
- <20240422-dts_8qm_audio-v3-7-680cee731ced@nxp.com>
+	s=arc-20240116; t=1713859392; c=relaxed/simple;
+	bh=O54mll2lZcxHuSuV6IhzlmRJxXGkXc6uykp5lefHyQg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=gaxnNLFRfa/rRu26DvoPCR2gJF6S5ZUu/9IgdTh7KdXGeiC3VFOFtfiXrB7uipyMy8TyuUUdaaC+RFczQ5hOcUaKzTz728DcUJFUzSVQROsI6t5ufNga4BE7zBC7H1MvXZiy2dKr1NF0gjhNvfOdAUjmPrRktT4jX7dKbgDnvUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=XZeV3YWG; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1713858962;
+	bh=O54mll2lZcxHuSuV6IhzlmRJxXGkXc6uykp5lefHyQg=;
+	h=From:Subject:Date:To:Cc:From;
+	b=XZeV3YWGKdzXDyt2gGdiSBu+tAR9ehmxCo0/cgGTgNF4l9KeVxXCrFY2tRLq1+ykl
+	 c6TDhFBKGpJkh/D8HY03220W94T6e0r+dDxGxBkrr0k1umozRGS6gkzuySz0B7Xa/g
+	 8yXILGrDVWsr+D5Q4C7df89uD11g1JxsYDcXWzP0=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH v3 00/11] sysctl: treewide: constify ctl_table argument of
+ sysctl handlers
+Date: Tue, 23 Apr 2024 09:54:35 +0200
+Message-Id: <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tics6yqmbhuzwzxy"
-Content-Disposition: inline
-In-Reply-To: <20240422-dts_8qm_audio-v3-7-680cee731ced@nxp.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIADtpJ2YC/3XOwQ7CIAwG4FdZOIuB4oR48j2Mh411QrIwQxFdl
+ r27bCcT9fg3/b92ZoTRI7FTNbOI2ZMfQwlqVzHrmnBD7ruSGQhQEuDIaSKbBm7HQImXjW7AyI1
+ RbY1to9EIVqr3iL1/bezlWrLzlMY4bVeyXKcreBBK1r/BLLngUgE0VttWqO78RE9E1j3cPmBiq
+ 5rhQwL1R4IilbdaqU0vNegvaVmWN33FrUoHAQAA
+To: Luis Chamberlain <mcgrof@kernel.org>, 
+ Joel Granados <j.granados@samsung.com>, Kees Cook <keescook@chromium.org>
+Cc: Eric Dumazet <edumazet@google.com>, Dave Chinner <david@fromorbit.com>, 
+ linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+ linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
+ bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+ linux-xfs@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+ linux-perf-users@vger.kernel.org, netfilter-devel@vger.kernel.org, 
+ coreteam@netfilter.org, kexec@lists.infradead.org, 
+ linux-hardening@vger.kernel.org, bridge@lists.linux.dev, 
+ lvs-devel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+ rds-devel@oss.oracle.com, linux-sctp@vger.kernel.org, 
+ linux-nfs@vger.kernel.org, apparmor@lists.ubuntu.com, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713858961; l=7199;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=O54mll2lZcxHuSuV6IhzlmRJxXGkXc6uykp5lefHyQg=;
+ b=SEVrV4QL0aRQf4sZAyD6Lh+KIYjBicAEwKhtJ0PUAXQvKQVj+Lo8XxYFfez7YZFSvNW40HQoh
+ r7IOwglEOGsCcMSO1z8xH6fte/UGc8Ay9QjWTKXdmQpGpMwPGKciBsV
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
+* Patch 1 is a bugfix for the stack_erasing sysctl handler
+* Patches 2-10 change various helper functions throughout the kernel to
+  be able to handle 'const ctl_table'.
+* Patch 11 changes the signatures of all proc handlers through the tree.
+  Some other signatures are also adapted, for details see the commit
+  message.
 
---tics6yqmbhuzwzxy
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Only patch 1 changes any code at all.
 
-On 22.04.2024 15:50:09, Frank Li wrote:
-> Add flexcan[1,2,3] support for imx8qm-mek board.
->=20
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx8qm-mek.dts | 80 ++++++++++++++++++++++=
-++++++
->  1 file changed, 80 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/freescale/imx8qm-mek.dts b/arch/arm64/bo=
-ot/dts/freescale/imx8qm-mek.dts
-> index 3ab2fab7f7fa3..62ea3efd1ee2c 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8qm-mek.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8qm-mek.dts
-[...]
-> @@ -433,6 +492,27 @@ IMX8QM_QSPI0B_SS1_B_LSIO_QSPI0B_SS1_B     0x06000021
->  		>;
->  	};
-> =20
-> +	pinctrl_flexcan1: flexcan0grp {
-> +		fsl,pins =3D <
-> +			IMX8QM_FLEXCAN0_TX_DMA_FLEXCAN0_TX			0x21
-> +			IMX8QM_FLEXCAN0_RX_DMA_FLEXCAN0_RX			0x21
-> +		>;
-> +	};
-> +
-> +	pinctrl_flexcan2: flexcan1grp {
-> +		fsl,pins =3D <
-> +			IMX8QM_FLEXCAN1_TX_DMA_FLEXCAN1_TX			0x21
-> +			IMX8QM_FLEXCAN1_RX_DMA_FLEXCAN1_RX			0x21
-> +			>;
+The series was compile-tested on top of next-20230423 for
+i386, x86_64, arm, arm64, riscv, loongarch, s390 and m68k.
 
-The indention of the closing ">" looks strange.
+The series was split from my larger series sysctl-const series [0].
+It only focusses on the proc_handlers but is an important step to be
+able to move all static definitions of ctl_table into .rodata.
 
-> +	};
-> +
-> +	pinctrl_flexcan3: flexcan3grp {
-> +		fsl,pins =3D <
-> +			IMX8QM_FLEXCAN2_TX_DMA_FLEXCAN2_TX			0x21
-> +			IMX8QM_FLEXCAN2_RX_DMA_FLEXCAN2_RX			0x21
-> +			>;
+[0] https://lore.kernel.org/lkml/20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net/
 
-Same here.
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+Changes in v3:
+- Rebase on current -next
+- Cc affected mailing lists again to gather feedback
+- Link to v2: https://lore.kernel.org/r/20240323-sysctl-const-handler-v2-0-e80b178f1727@weissschuh.net
 
-> +	};
-> +
->  	pinctrl_lpuart0: lpuart0grp {
->  		fsl,pins =3D <
->  			IMX8QM_UART0_RX_DMA_UART0_RX				0x06000020
->=20
-> --=20
-> 2.34.1
->=20
->=20
->
+Changes in v2:
+- Reduce recipient list
+- Fix source formatting
+- Rebase onto next-20240322
+- Link to v1: https://lore.kernel.org/r/20240315-sysctl-const-handler-v1-0-1322ac7cb03d@weissschuh.net
 
-regards,
-Marc
+---
+Thomas Weißschuh (11):
+      stackleak: don't modify ctl_table argument
+      cgroup: bpf: constify ctl_table arguments and fields
+      hugetlb: constify ctl_table arguments of utility functions
+      utsname: constify ctl_table arguments of utility function
+      neighbour: constify ctl_table arguments of utility function
+      ipv4/sysctl: constify ctl_table arguments of utility functions
+      ipv6/addrconf: constify ctl_table arguments of utility functions
+      ipv6/ndisc: constify ctl_table arguments of utility function
+      ipvs: constify ctl_table arguments of utility functions
+      sysctl: constify ctl_table arguments of utility function
+      sysctl: treewide: constify the ctl_table argument of handlers
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+ arch/arm64/kernel/armv8_deprecated.c      |  2 +-
+ arch/arm64/kernel/fpsimd.c                |  2 +-
+ arch/s390/appldata/appldata_base.c        | 10 ++--
+ arch/s390/kernel/debug.c                  |  2 +-
+ arch/s390/kernel/topology.c               |  2 +-
+ arch/s390/mm/cmm.c                        |  6 +--
+ arch/x86/kernel/itmt.c                    |  2 +-
+ drivers/cdrom/cdrom.c                     |  4 +-
+ drivers/char/random.c                     |  6 +--
+ drivers/macintosh/mac_hid.c               |  2 +-
+ drivers/net/vrf.c                         |  2 +-
+ drivers/parport/procfs.c                  | 12 ++---
+ drivers/perf/arm_pmuv3.c                  |  4 +-
+ drivers/perf/riscv_pmu_sbi.c              |  2 +-
+ fs/coredump.c                             |  2 +-
+ fs/dcache.c                               |  4 +-
+ fs/drop_caches.c                          |  2 +-
+ fs/exec.c                                 |  4 +-
+ fs/file_table.c                           |  4 +-
+ fs/fs-writeback.c                         |  2 +-
+ fs/inode.c                                |  4 +-
+ fs/pipe.c                                 |  2 +-
+ fs/quota/dquot.c                          |  2 +-
+ fs/xfs/xfs_sysctl.c                       |  6 +--
+ include/linux/filter.h                    |  2 +-
+ include/linux/ftrace.h                    |  4 +-
+ include/linux/mm.h                        |  8 +--
+ include/linux/perf_event.h                |  6 +--
+ include/linux/security.h                  |  2 +-
+ include/linux/sysctl.h                    | 36 ++++++-------
+ include/linux/vmstat.h                    |  6 +--
+ include/linux/writeback.h                 |  2 +-
+ include/net/ndisc.h                       |  2 +-
+ include/net/neighbour.h                   |  6 +--
+ include/net/netfilter/nf_hooks_lwtunnel.h |  2 +-
+ ipc/ipc_sysctl.c                          |  8 +--
+ kernel/bpf/syscall.c                      |  4 +-
+ kernel/delayacct.c                        |  4 +-
+ kernel/events/callchain.c                 |  2 +-
+ kernel/events/core.c                      |  4 +-
+ kernel/fork.c                             |  2 +-
+ kernel/hung_task.c                        |  6 +--
+ kernel/kexec_core.c                       |  2 +-
+ kernel/kprobes.c                          |  2 +-
+ kernel/latencytop.c                       |  4 +-
+ kernel/pid_namespace.c                    |  2 +-
+ kernel/pid_sysctl.h                       |  2 +-
+ kernel/printk/internal.h                  |  2 +-
+ kernel/printk/printk.c                    |  2 +-
+ kernel/printk/sysctl.c                    |  5 +-
+ kernel/sched/core.c                       |  8 +--
+ kernel/sched/rt.c                         | 16 +++---
+ kernel/sched/topology.c                   |  2 +-
+ kernel/seccomp.c                          | 10 ++--
+ kernel/stackleak.c                        |  9 ++--
+ kernel/sysctl.c                           | 89 ++++++++++++++++---------------
+ kernel/time/timer.c                       |  2 +-
+ kernel/trace/ftrace.c                     |  2 +-
+ kernel/trace/trace.c                      |  2 +-
+ kernel/trace/trace_events_user.c          |  2 +-
+ kernel/trace/trace_stack.c                |  2 +-
+ kernel/umh.c                              |  2 +-
+ kernel/utsname_sysctl.c                   |  4 +-
+ kernel/watchdog.c                         | 12 ++---
+ mm/compaction.c                           |  6 +--
+ mm/hugetlb.c                              | 12 ++---
+ mm/page-writeback.c                       | 18 +++----
+ mm/page_alloc.c                           | 14 ++---
+ mm/util.c                                 | 12 ++---
+ mm/vmstat.c                               |  4 +-
+ net/bridge/br_netfilter_hooks.c           |  2 +-
+ net/core/neighbour.c                      | 20 +++----
+ net/core/sysctl_net_core.c                | 20 +++----
+ net/ipv4/devinet.c                        |  6 +--
+ net/ipv4/route.c                          |  2 +-
+ net/ipv4/sysctl_net_ipv4.c                | 38 ++++++-------
+ net/ipv6/addrconf.c                       | 27 +++++-----
+ net/ipv6/ndisc.c                          |  4 +-
+ net/ipv6/route.c                          |  2 +-
+ net/ipv6/sysctl_net_ipv6.c                |  4 +-
+ net/mpls/af_mpls.c                        |  4 +-
+ net/netfilter/ipvs/ip_vs_ctl.c            | 19 +++----
+ net/netfilter/nf_conntrack_standalone.c   |  2 +-
+ net/netfilter/nf_hooks_lwtunnel.c         |  2 +-
+ net/netfilter/nf_log.c                    |  2 +-
+ net/phonet/sysctl.c                       |  2 +-
+ net/rds/tcp.c                             |  4 +-
+ net/sctp/sysctl.c                         | 32 +++++------
+ net/sunrpc/sysctl.c                       |  6 +--
+ net/sunrpc/xprtrdma/svc_rdma.c            |  2 +-
+ security/apparmor/lsm.c                   |  2 +-
+ security/min_addr.c                       |  2 +-
+ security/yama/yama_lsm.c                  |  2 +-
+ 93 files changed, 329 insertions(+), 322 deletions(-)
+---
+base-commit: a59668a9397e7245b26e9be85d23f242ff757ae8
+change-id: 20231226-sysctl-const-handler-883b5eba7e80
 
---tics6yqmbhuzwzxy
-Content-Type: application/pgp-signature; name="signature.asc"
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmYnaQwACgkQKDiiPnot
-vG+uXwf/ZHhRwk/bowRcZWxqTLDKiPbKvuLEbsGITuh4y6PkYYF2mPGF/MgcJPGC
-Qad5zoD5VfrziHtjbnRNCBNz2r6KZ24waVXE0p8NDfcSYjr3sPYgsgxHPWCpyGxQ
-DeCiJ4m8prwHyPioC1bapLI60Td6Df0VlM2l7LxO7MA+psF9bncGYWNdWCSRP1J0
-PLi0I2w99Y75+aPy07U+huVlldIHhPjJGmLyq9KW5VuE29PspApRT1wMwx+ZvthO
-Lv5R0d3aTxIQBGtRlMQvX9aTIKMtgMs+Qhbgu+xgQw0AC3L6TfMskIGBxoUzPUKl
-YqcMaIGLEhWOM5QicIPtaOdUa9oYyg==
-=PR7J
------END PGP SIGNATURE-----
-
---tics6yqmbhuzwzxy--
 
