@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-154993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F4F68AE417
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:34:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FF568AE419
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:34:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA3AC1F23263
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:34:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 723811C22696
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:34:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5B3F84D03;
-	Tue, 23 Apr 2024 11:32:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B4412EBC9;
+	Tue, 23 Apr 2024 11:32:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="XShhd4kk";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="a/+pDAvL"
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="CxM0G6v0";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="rAugLcGH"
 Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08C9D12C528;
-	Tue, 23 Apr 2024 11:32:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3BC47E78E;
+	Tue, 23 Apr 2024 11:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713871945; cv=none; b=kEO69x4JV9IG/8OANKalB2oGWDDP8Jaw3St/1Y1eSvP5e2s6gfaba4fjXZTuO7DMVqJS9xaTEDZyDzkAKt7iWPUkjTCNAmGfVFmPmasrafNBZlKupPFVkk8mKLVTcLbtOfoYqBRseaye+B3Je28b23dOmtKEQb4WjGy2oUiOFBQ=
+	t=1713871950; cv=none; b=Suvg5/UVbC8r0f1394D3mUcqKGub1v/z610vIeieew4P++SUWOSVYn7qQyJFROmdHa1y10kRjGWfCA5QDX/Yxx++q3vESD1uA+T+TwfdRL6Fkz3Qm3y0QMwznIpHFHMBSr6xLG7ouPQkMoLnFcw+6cIFXuYqfyijY56z+PUBlcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713871945; c=relaxed/simple;
-	bh=Lb2kOyHxBVlOnPPlUA8MC8Rt8ZJwg9oOl++BmjHPGFo=;
+	s=arc-20240116; t=1713871950; c=relaxed/simple;
+	bh=jwSYTrGlB4VVA6AzwNKL6XCoUro5wTrrJWrgjhjZkpc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Nt3BN4wec588d3+Q0LQnuy1G+CTxf0t00yjz+K1aBlIDS4RZGh9K+kmIvTFV7/sDnXNfDUJ2SeSaRDJhB0n8VhSRO+qOvN9WSJ6yaTwzCKZYqtxy+/YvhO385qyhxEfLpDpx95fC9/ErtabettizE+zs/sWUO1bSAebvFJwxwMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=XShhd4kk; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=a/+pDAvL reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+	 MIME-Version; b=BlS+ugRIJWF3SZL7UVhbmNRooiW8sVKE4Z/u5ad+Ox914czN1+Cjnm7Z65sLqqEObEumRUgwWdQtE3KKZqzs4QLFLiuiuJgWMUljQ7zwjti+gB4Zno6pgiVl/AzzPFBKODJtn0jmjT7QjVNyyCGF3kaqXSeUktql3Hod998bY+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=CxM0G6v0; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=rAugLcGH reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1713871943; x=1745407943;
+  t=1713871949; x=1745407949;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=IHGaWNydXvipFKi2uOhyOlxIuJUsH0uNjrD85MUH+mY=;
-  b=XShhd4kkrCLfwkYIIxpQwEm0EMSrp3prwzZATc6kzCqR9oFmyXqvkIiV
-   xenkx+1DmH/DJVtSSagSs6CIrbLVK3YKZWoQAMDDPB3iEPr5ph5FSoR0l
-   aysvRsr7Zs7xSqUgNc8nK/JpX8Oz0ufxFaZTzR/LkLSK0i0k3DKfOIvYW
-   1oq0BcU/wA7HMgaFA6QMlYM5Ej4n6xpI+3q0iIBM7yxI+YX2KkJ/FnofI
-   IKWgVOoMhiLULhv04z6Laq7x8lJmPb59/0fWrL8euHGQA5IAuTdvFCVQj
-   ZkMpVsiCjcCTR0rF0ArSYZir0JMrxnf3H9tuPIp0XVkFvmmn8XIe88wL2
-   g==;
+  bh=iu1dWYNKDp9es51AFvUQfiaCrk+4XgYnKK2u7hGngWI=;
+  b=CxM0G6v0LPUkSAyYByPq2oZgotPj4EVhaE9XL64iMVM/Hqk7ceHqqPAk
+   wYfFq4bgzYbJHms3AUGY5MlgqBcqycNE0YoAA51dXNyUy4H/hwYoKCUh4
+   EAvStUxARYzUNWmMBiNdtHB4PbjWlkNo4DOK7nowWsnDtduANebtyiMx7
+   0LRxIO6uX2HjffRvFdEhpqwWN3pYoYqWt+m36zXqm4s5bgvd+VVjzO19h
+   MjEahrzQjN+r3KQ5+fj/XJz03aQjY4OCjQC+04l1hW0j5NG/LZ+V8uENB
+   Ue4PQJDFeCikWUnPp/ETowmFXwrotsIAO/qQvzRlVd9IysDBcErwzAI7v
+   A==;
 X-IronPort-AV: E=Sophos;i="6.07,222,1708383600"; 
-   d="scan'208";a="36565278"
+   d="scan'208";a="36565285"
 Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 23 Apr 2024 13:32:22 +0200
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BFC0416F693;
-	Tue, 23 Apr 2024 13:32:16 +0200 (CEST)
+  by mx1.tq-group.com with ESMTP; 23 Apr 2024 13:32:28 +0200
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 17F9A1702F4;
+	Tue, 23 Apr 2024 13:32:22 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1713871938; h=from:subject:date:message-id:to:cc:mime-version:
+	s=dkim; t=1713871944; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=IHGaWNydXvipFKi2uOhyOlxIuJUsH0uNjrD85MUH+mY=;
-	b=a/+pDAvLD4loevnWfiYm9xbOo+biD3JPBluf3IQVRNppTTUJbhYOWpEJ48rCcmS4Y+HfHg
-	2Cy6ANh2lW8Ba1yFWjk5QOfNvcdqi8KyVJP3VWcavuiGumDcR8ho63b8zsOq0R6FiluPse
-	64QwviCByZRLZCeXmA9+GSgg2bN2nIRneXR8c5aukEND4ILm7fYABTwycynwfxE77CygZG
-	Y3Gh+YgoHI9wK+OKozwwbTKgaS6+NvK0hEnOE3TJzSjWY99DWbGMN9cR0cb/UxJn8SbF/7
-	fkQXuwlxWYMdCZu4OetYMVXbJ7M63j/6iyYa5/qXG/ThvPZcciUE0QhddwB5MA==
+	bh=iu1dWYNKDp9es51AFvUQfiaCrk+4XgYnKK2u7hGngWI=;
+	b=rAugLcGHgiuz1Oyvl6KBwdn5BzeB5gtuK3wRKTe3q/S6eOlw8WCj2ZMN10oqBmqqv22yOO
+	/+FtnEkC7DreL7u50alA2g5FHbDfPG3lfQqEIZRLf/4+AT1n/zuPSFbkpY4sgrIRJbHviZ
+	QIWEgbhf289G9ydfkvTvQhqi0r1VptQBBrbaG7olMDe9v49yYGGKqbC4sGGA0WMKMlAxNX
+	CTPsLHaq/fUWZo+Y1MSYaSkRKM6c8YM8HLXKLfYIkfKpg1K6BMmxiB8fDo01RZ2jP7o5ps
+	y5eH6WFEgRBQXkOZBys3gaUmW8o2WAPqYHGpc4fLTB2/VQL7U04c3lBJKQJC5g==
 From: Alexander Stein <alexander.stein@ew.tq-group.com>
 To: Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
@@ -73,9 +73,9 @@ Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
 	imx@lists.linux.dev,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/6] arm64: dts: freescale: tqma8mpql: Add partitions subnode to spi-nor
-Date: Tue, 23 Apr 2024 13:31:49 +0200
-Message-Id: <20240423113151.2145120-5-alexander.stein@ew.tq-group.com>
+Subject: [PATCH 5/6] arm64: dts: freescale: tqma8mq: Add partitions subnode to spi-nor
+Date: Tue, 23 Apr 2024 13:31:50 +0200
+Message-Id: <20240423113151.2145120-6-alexander.stein@ew.tq-group.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240423113151.2145120-1-alexander.stein@ew.tq-group.com>
 References: <20240423113151.2145120-1-alexander.stein@ew.tq-group.com>
@@ -97,21 +97,20 @@ as well.
 
 Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 ---
- arch/arm64/boot/dts/freescale/imx8mp-tqma8mpql.dtsi | 8 ++++++--
+ arch/arm64/boot/dts/freescale/imx8mq-tqma8mq.dtsi | 8 ++++++--
  1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-tqma8mpql.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-tqma8mpql.dtsi
-index ebc29a950ba9a..336785a9fba89 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-tqma8mpql.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-tqma8mpql.dtsi
-@@ -45,12 +45,16 @@ &flexspi {
- 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-tqma8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-tqma8mq.dtsi
+index 5ca6b22525469..01e5092e4c40a 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-tqma8mq.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq-tqma8mq.dtsi
+@@ -251,11 +251,15 @@ &qspi0 {
  	flash0: flash@0 {
+ 		compatible = "jedec,spi-nor";
  		reg = <0>;
 -		#address-cells = <1>;
 -		#size-cells = <1>;
- 		compatible = "jedec,spi-nor";
- 		spi-max-frequency = <80000000>;
+ 		spi-max-frequency = <84000000>;
  		spi-tx-bus-width = <1>;
  		spi-rx-bus-width = <4>;
 +
