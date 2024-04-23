@@ -1,182 +1,258 @@
-Return-Path: <linux-kernel+bounces-154440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E94A8ADC19
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:12:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ADE18ADC1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:13:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58754282F17
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:12:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1223D283883
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:13:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C51191946B;
-	Tue, 23 Apr 2024 03:12:08 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 863461B962;
+	Tue, 23 Apr 2024 03:13:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P4A2Cuq3"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C119F17C66
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:12:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B699018AEA;
+	Tue, 23 Apr 2024 03:13:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713841928; cv=none; b=YvhrKi7gxqV9rQLmfAuAcpjQVpR4Bdr6+NR/2tPGIjWqxbRiYrQQKCo0wVlKuCdA8mmDaswfQuK2J6zhuc6HvfwLjzo9nj5xda0FgT+rMaiFnu0dDB2U0pCPO8jgqAdKU8TCKb8E6dtmFrctvlkzC5Y3iv9lVOb1pwXrcHfSkFA=
+	t=1713841989; cv=none; b=nRl+yJEPmIw7jTYyJXE3cJ0sUtRg8nXwRgpL511ZT1TMYaGd9m+bzQUeG7ih03lvmYm3BlALWkqwVNs182suI/WaPva1F5g33vIMBa6QzHSpBrEacs9WxCqqVl4xnS6nim3o1rNQjMyI6jdjrlbSSCHj6J2+E0+lbV/Mj4Bkyi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713841928; c=relaxed/simple;
-	bh=GWW51GVVwSLgUVGLvsw8rxCGl7sizkMmGhk3+hBuLhE=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=ULV+Q62Ag3SaaeDJSYO8HkETFvWPguDm5U1ZvX0aBn7O7lZ4JvWBL3WiKuJ+7tDBosa8euL8NR7zqKMIdpt7vkNWpHfYpIQU7EJo2PK2Vg9xXUG9+3DHVty5PikN1cdrFbXP4gm6AnG9BkCejIzMZuXiERXD6sylG06wJStLOSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36c0f8200ffso19978015ab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 20:12:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713841926; x=1714446726;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lq5EIudatIUnUuPkCcE3HI/FjNPx7iAarBCgGCEWQ2I=;
-        b=mdAT/jre79vEgmibPs7uCab2DOxLhfpT0IfCfS5Zbja/fSeBXdFnysKVmxZIAqXGU4
-         hIKg8Q3hkJ73TI67NDm6EkwsfGuc2v5Ui0XD0D55j2VAeyo4xYKPl5un4s2fGMWppHVs
-         3OGSTjLSWjshsKCdVYKRLbr0yQQXMdWDfNYNwYPeRxfOANCMwpAZ0fr79ewx6ShO0kUy
-         8neik5dCV3IANKQCRdj2XC/gMuFGM6YNRn9PG87hjxfDGi2N+lDwXiP6oW2w341gJALM
-         uBjrk3cyAwcEaa/ocbGLhjp7geHbLRE/g1X9Gx2V3F6RxnUzOXo7o4bzb+qLkvorB+QL
-         SQHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWUx51ivSwp0waZIk6Q2t/wsBvmZGGoNQMqSmW43M/lE+wqd+Syblbhvdd687HIG5458hXjr7or7DccuDmjditY8+eUnzr6CBX0Gs0Y
-X-Gm-Message-State: AOJu0YxK4xwWnlRP4Bc9+rBTeuK+3m6f05t/gLA23Oitt+Y2gVd8GlgB
-	GIo/SOJitKQiJUoeK3V3yoIAEpPJChUSy5/GyXm0CK3a83jPCecDNBMaTTM4tMOyRWVsnriuOyn
-	pvYtmYjZ6Yl1OLGIhCu2VtCdfeAH5IoC9I7mZ5dWw1tm53Yk7HsWev6Y=
-X-Google-Smtp-Source: AGHT+IG0T6rUXJMGS82aTSlmekyR6zHOZdcxSSoeIiDM/mvm4Dh0sa1EIRSZcS+vjFN/ZmxjpKKxoem0Bh+uEwnO0cbEPRQLw9tW
+	s=arc-20240116; t=1713841989; c=relaxed/simple;
+	bh=CvhjIIxxFjAmZFCyfdubkMs1aXvOi3ym67e8x5ikfAs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qLT+jIK5GWhZ+gL0SrgSIDn6MxKku12KP7yeHdqI5FiiLFv9bj2TZWZHqxVfRMUg1EACznGDncSOeuTx+0M3ZLIN5qH7fpap+AdMVlJrENF2PHVfah/UtRzNt8pvqt+ZXr16ANYXNCMB4fEkxK+faCLgfesvlWLILpPajx3YVLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P4A2Cuq3; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713841988; x=1745377988;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=CvhjIIxxFjAmZFCyfdubkMs1aXvOi3ym67e8x5ikfAs=;
+  b=P4A2Cuq3IJ4xOJT5Es0MegvZOnBb0GBr3CUuR+N4WR3wdcekJUBoAg6K
+   gKxp6jMLaFY2LfjscEJ8Kh9CpFQa5vooELWZFzPZyLWJP5ifecvLeYHV8
+   DVt+cap4n0PFQ0HvnKqlLZW+Z+xAvQyJ9tHdhiJGUZ6RFArHshGRkyiZp
+   NwhH94UyaRJoAIhXBS7w8bIOukg0n1KWB34mtVuieMqYpGllBKaxcdqtS
+   9F0vNbZA1M+HX09A4Yfv8rrnZFqy9ke/+G4EeYGrdmN73/LY+5C3qHJ86
+   4f0fvvAftiV5omIKDL3tLTYVZDd4i9kZJ91+PM1MxEUwLgvZ+vt2PI4SR
+   g==;
+X-CSE-ConnectionGUID: EDqxfF7HR6qW/rvT9fuluw==
+X-CSE-MsgGUID: i7PdanhhT4eUAAUwPbHTjQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="13242533"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="13242533"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 20:13:07 -0700
+X-CSE-ConnectionGUID: niGEtPpjTLaxKbeeH/seeQ==
+X-CSE-MsgGUID: znwvQhEOQrOmFwvDQ97Tsw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="24282123"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.124.245.127]) ([10.124.245.127])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 20:13:02 -0700
+Message-ID: <1ec7a21c-71d0-4f3e-9fa3-3de8ca0f7315@linux.intel.com>
+Date: Tue, 23 Apr 2024 11:13:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4126:b0:485:6cb9:9a78 with SMTP id
- ay38-20020a056638412600b004856cb99a78mr82697jab.0.1713841925143; Mon, 22 Apr
- 2024 20:12:05 -0700 (PDT)
-Date: Mon, 22 Apr 2024 20:12:05 -0700
-In-Reply-To: <20240422231617.2916-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000264c380616baebdc@google.com>
-Subject: Re: [syzbot] [pm?] KASAN: use-after-free Read in netdev_unregister_kobject
-From: syzbot <syzbot+6cf5652d3df49fae2e3f@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: use-after-free Read in netdev_unregister_kobject
-
-==================================================================
-BUG: KASAN: use-after-free in device_for_each_child+0xa7/0x170 drivers/base/core.c:4044
-Read of size 8 at addr ffff8880293555f8 by task kbnepd bnep0/5664
-
-CPU: 0 PID: 5664 Comm: kbnepd bnep0 Not tainted 6.9.0-rc4-syzkaller-00173-g3cdb45594619-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x169/0x550 mm/kasan/report.c:488
- kasan_report+0x143/0x180 mm/kasan/report.c:601
- device_for_each_child+0xa7/0x170 drivers/base/core.c:4044
- pm_runtime_set_memalloc_noio+0x114/0x260 drivers/base/power/runtime.c:248
- netdev_unregister_kobject+0x178/0x250 net/core/net-sysfs.c:2106
- unregister_netdevice_many_notify+0x11dd/0x16e0 net/core/dev.c:11135
- unregister_netdevice_many net/core/dev.c:11163 [inline]
- unregister_netdevice_queue+0x303/0x370 net/core/dev.c:11042
- unregister_netdevice include/linux/netdevice.h:3115 [inline]
- unregister_netdev+0x1c/0x30 net/core/dev.c:11181
- bnep_session+0x2e09/0x3000 net/bluetooth/bnep/core.c:525
- kthread+0x2f2/0x390 kernel/kthread.c:388
- ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x29355
-flags: 0xfff80000000000(node=0|zone=1|lastcpupid=0xfff)
-page_type: 0xffffffff()
-raw: 00fff80000000000 ffffea0000a4d588 ffffea0000a4d508 0000000000000000
-raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 2, migratetype Unmovable, gfp_mask 0x140dc0(GFP_USER|__GFP_COMP|__GFP_ZERO), pid 5470, tgid 1627921193 (syz-executor.4), ts 5470, free_ts 128431373442
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x1ea/0x210 mm/page_alloc.c:1534
- prep_new_page mm/page_alloc.c:1541 [inline]
- get_page_from_freelist+0x3410/0x35b0 mm/page_alloc.c:3317
- __alloc_pages+0x256/0x6c0 mm/page_alloc.c:4575
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- __kmalloc_large_node+0x91/0x1f0 mm/slub.c:3911
- __do_kmalloc_node mm/slub.c:3954 [inline]
- __kmalloc+0x320/0x4a0 mm/slub.c:3979
- kmalloc include/linux/slab.h:632 [inline]
- kzalloc include/linux/slab.h:749 [inline]
- hci_alloc_dev_priv+0x27/0x2030 net/bluetooth/hci_core.c:2500
- hci_alloc_dev include/net/bluetooth/hci_core.h:1672 [inline]
- __vhci_create_device drivers/bluetooth/hci_vhci.c:406 [inline]
- vhci_create_device+0x12e/0x720 drivers/bluetooth/hci_vhci.c:480
- vhci_get_user drivers/bluetooth/hci_vhci.c:537 [inline]
- vhci_write+0x3cb/0x480 drivers/bluetooth/hci_vhci.c:617
- call_write_iter include/linux/fs.h:2110 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0xa86/0xcb0 fs/read_write.c:590
- ksys_write+0x1a0/0x2c0 fs/read_write.c:643
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-page last free pid 5470 tgid 5470 stack trace:
- reset_page_owner include/linux/page_owner.h:25 [inline]
- free_pages_prepare mm/page_alloc.c:1141 [inline]
- free_unref_page_prepare+0x986/0xab0 mm/page_alloc.c:2347
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2487
- __folio_put_large+0x13f/0x190 mm/swap.c:132
- __folio_put+0x299/0x390 mm/swap.c:140
- folio_put include/linux/mm.h:1506 [inline]
- free_large_kmalloc+0x105/0x1c0 mm/slub.c:4361
- kfree+0x1ca/0x3a0 mm/slub.c:4384
- hci_release_dev+0x1516/0x16a0 net/bluetooth/hci_core.c:2833
- bt_host_release+0x83/0x90 net/bluetooth/hci_sysfs.c:94
- device_release+0x9b/0x1c0
- kobject_cleanup lib/kobject.c:689 [inline]
- kobject_release lib/kobject.c:720 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x231/0x480 lib/kobject.c:737
- vhci_release+0x8b/0xd0 drivers/bluetooth/hci_vhci.c:675
- __fput+0x42b/0x8a0 fs/file_table.c:422
- task_work_run+0x251/0x310 kernel/task_work.c:180
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xa1b/0x27e0 kernel/exit.c:878
- do_group_exit+0x207/0x2c0 kernel/exit.c:1027
- __do_sys_exit_group kernel/exit.c:1038 [inline]
- __se_sys_exit_group kernel/exit.c:1036 [inline]
- __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1036
-
-Memory state around the buggy address:
- ffff888029355480: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888029355500: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff888029355580: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                                                                ^
- ffff888029355600: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888029355680: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+To: maobibo <maobibo@loongson.cn>, Sean Christopherson <seanjc@google.com>
+Cc: Mingwei Zhang <mizhang@google.com>,
+ Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
+ peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
+ jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com
+References: <18b19dd4-6d76-4ed8-b784-32436ab93d06@linux.intel.com>
+ <Zhn9TGOiXxcV5Epx@google.com>
+ <4c47b975-ad30-4be9-a0a9-f0989d1fa395@linux.intel.com>
+ <CAL715WJXWQgfzgh8KqL+pAzeqL+dkF6imfRM37nQ6PkZd09mhQ@mail.gmail.com>
+ <737f0c66-2237-4ed3-8999-19fe9cca9ecc@linux.intel.com>
+ <CAL715W+RKCLsByfM3-0uKBWdbYgyk_hou9oC+mC9H61yR_9tyw@mail.gmail.com>
+ <Zh1mKoHJcj22rKy8@google.com>
+ <CAL715WJf6RdM3DQt995y4skw8LzTMk36Q2hDE34n3tVkkdtMMw@mail.gmail.com>
+ <Zh2uFkfH8BA23lm0@google.com>
+ <4d60384a-11e0-2f2b-a568-517b40c91b25@loongson.cn>
+ <ZiaX3H3YfrVh50cs@google.com>
+ <d8f3497b-9f63-e30e-0c63-253908d40ac2@loongson.cn>
+ <d980dd10-e4c4-4774-b107-77b320cec9f9@linux.intel.com>
+ <b5e97aa1-7683-4eff-e1e3-58ac98a8d719@loongson.cn>
+Content-Language: en-US
+From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <b5e97aa1-7683-4eff-e1e3-58ac98a8d719@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-Tested on:
+On 4/23/2024 10:53 AM, maobibo wrote:
+>
+>
+> On 2024/4/23 上午10:44, Mi, Dapeng wrote:
+>>
+>> On 4/23/2024 9:01 AM, maobibo wrote:
+>>>
+>>>
+>>> On 2024/4/23 上午1:01, Sean Christopherson wrote:
+>>>> On Mon, Apr 22, 2024, maobibo wrote:
+>>>>> On 2024/4/16 上午6:45, Sean Christopherson wrote:
+>>>>>> On Mon, Apr 15, 2024, Mingwei Zhang wrote:
+>>>>>>> On Mon, Apr 15, 2024 at 10:38 AM Sean Christopherson 
+>>>>>>> <seanjc@google.com> wrote:
+>>>>>>>> One my biggest complaints with the current vPMU code is that 
+>>>>>>>> the roles and
+>>>>>>>> responsibilities between KVM and perf are poorly defined, which 
+>>>>>>>> leads to suboptimal
+>>>>>>>> and hard to maintain code.
+>>>>>>>>
+>>>>>>>> Case in point, I'm pretty sure leaving guest values in PMCs 
+>>>>>>>> _would_ leak guest
+>>>>>>>> state to userspace processes that have RDPMC permissions, as 
+>>>>>>>> the PMCs might not
+>>>>>>>> be dirty from perf's perspective (see 
+>>>>>>>> perf_clear_dirty_counters()).
+>>>>>>>>
+>>>>>>>> Blindly clearing PMCs in KVM "solves" that problem, but in 
+>>>>>>>> doing so makes the
+>>>>>>>> overall code brittle because it's not clear whether KVM _needs_ 
+>>>>>>>> to clear PMCs,
+>>>>>>>> or if KVM is just being paranoid.
+>>>>>>>
+>>>>>>> So once this rolls out, perf and vPMU are clients directly to 
+>>>>>>> PMU HW.
+>>>>>>
+>>>>>> I don't think this is a statement we want to make, as it opens a 
+>>>>>> discussion
+>>>>>> that we won't win.  Nor do I think it's one we *need* to make.  
+>>>>>> KVM doesn't need
+>>>>>> to be on equal footing with perf in terms of owning/managing PMU 
+>>>>>> hardware, KVM
+>>>>>> just needs a few APIs to allow faithfully and accurately 
+>>>>>> virtualizing a guest PMU.
+>>>>>>
+>>>>>>> Faithful cleaning (blind cleaning) has to be the baseline
+>>>>>>> implementation, until both clients agree to a "deal" between them.
+>>>>>>> Currently, there is no such deal, but I believe we could have 
+>>>>>>> one via
+>>>>>>> future discussion.
+>>>>>>
+>>>>>> What I am saying is that there needs to be a "deal" in place 
+>>>>>> before this code
+>>>>>> is merged.  It doesn't need to be anything fancy, e.g. perf can 
+>>>>>> still pave over
+>>>>>> PMCs it doesn't immediately load, as opposed to using 
+>>>>>> cpu_hw_events.dirty to lazily
+>>>>>> do the clearing.  But perf and KVM need to work together from the 
+>>>>>> get go, ie. I
+>>>>>> don't want KVM doing something without regard to what perf does, 
+>>>>>> and vice versa.
+>>>>>>
+>>>>> There is similar issue on LoongArch vPMU where vm can directly pmu 
+>>>>> hardware
+>>>>> and pmu hw is shard with guest and host. Besides context switch 
+>>>>> there are
+>>>>> other places where perf core will access pmu hw, such as tick
+>>>>> timer/hrtimer/ipi function call, and KVM can only intercept 
+>>>>> context switch.
+>>>>
+>>>> Two questions:
+>>>>
+>>>>   1) Can KVM prevent the guest from accessing the PMU?
+>>>>
+>>>>   2) If so, KVM can grant partial access to the PMU, or is it all 
+>>>> or nothing?
+>>>>
+>>>> If the answer to both questions is "yes", then it sounds like 
+>>>> LoongArch *requires*
+>>>> mediated/passthrough support in order to virtualize its PMU.
+>>>
+>>> Hi Sean,
+>>>
+>>> Thank for your quick response.
+>>>
+>>> yes, kvm can prevent guest from accessing the PMU and grant partial 
+>>> or all to access to the PMU. Only that if one pmu event is granted 
+>>> to VM, host can not access this pmu event again. There must be pmu 
+>>> event switch if host want to.
+>>
+>> PMU event is a software entity which won't be shared. did you mean if 
+>> a PMU HW counter is granted to VM, then Host can't access the PMU HW 
+>> counter, right?
+> yes, if PMU HW counter/control is granted to VM. The value comes from 
+> guest, and is not meaningful for host.  Host pmu core does not know 
+> that it is granted to VM, host still think that it owns pmu.
 
-commit:         3cdb4559 Merge tag 's390-6.9-4' of git://git.kernel.or..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=10c3d0d3180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d239903bd07761e5
-dashboard link: https://syzkaller.appspot.com/bug?extid=6cf5652d3df49fae2e3f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=105d6b20980000
+That's one issue this patchset tries to solve. Current new mediated x86 
+vPMU framework doesn't allow Host or Guest own the PMU HW resource 
+simultaneously. Only when there is no !exclude_guest event on host, 
+guest is allowed to exclusively own the PMU HW resource.
 
+
+>
+> Just like FPU register, it is shared by VM and host during different 
+> time and it is lately switched. But if IPI or timer interrupt uses FPU 
+> register on host, there will be the same issue.
+
+I didn't fully get your point. When IPI or timer interrupt reach, a 
+VM-exit is triggered to make CPU traps into host first and then the host 
+interrupt handler is called. Or are you complaining the executing 
+sequence of switching guest PMU MSRs and these interrupt handler?
+
+
+>
+> Regards
+> Bibo Mao
+>>
+>>
+>>>
+>>>>
+>>>>> Can we add callback handler in structure kvm_guest_cbs?  just like 
+>>>>> this:
+>>>>> @@ -6403,6 +6403,7 @@ static struct perf_guest_info_callbacks 
+>>>>> kvm_guest_cbs
+>>>>> = {
+>>>>>          .state                  = kvm_guest_state,
+>>>>>          .get_ip                 = kvm_guest_get_ip,
+>>>>>          .handle_intel_pt_intr   = NULL,
+>>>>> +       .lose_pmu               = kvm_guest_lose_pmu,
+>>>>>   };
+>>>>>
+>>>>> By the way, I do not know should the callback handler be triggered 
+>>>>> in perf
+>>>>> core or detailed pmu hw driver. From ARM pmu hw driver, it is 
+>>>>> triggered in
+>>>>> pmu hw driver such as function kvm_vcpu_pmu_resync_el0,
+>>>>> but I think it will be better if it is done in perf core.
+>>>>
+>>>> I don't think we want to take the approach of perf and KVM guests 
+>>>> "fighting" over
+>>>> the PMU.  That's effectively what we have today, and it's a mess 
+>>>> for KVM because
+>>>> it's impossible to provide consistent, deterministic behavior for 
+>>>> the guest.  And
+>>>> it's just as messy for perf, which ends up having wierd, cumbersome 
+>>>> flows that
+>>>> exists purely to try to play nice with KVM.
+>>> With existing pmu core code, in tick timer interrupt or IPI function 
+>>> call interrupt pmu hw may be accessed by host when VM is running and 
+>>> pmu is already granted to guest. KVM can not intercept host 
+>>> IPI/timer interrupt, there is no pmu context switch, there will be 
+>>> problem.
+>>>
+>>> Regards
+>>> Bibo Mao
+>>>
+>
 
