@@ -1,51 +1,55 @@
-Return-Path: <linux-kernel+bounces-154747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A30118AE07C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:01:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 352728AE084
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:02:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 265F5B2103B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:01:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA3351F213F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:02:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CECDB58236;
-	Tue, 23 Apr 2024 09:00:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 619DB5822A;
+	Tue, 23 Apr 2024 09:02:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="pi8Lz4FM"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="rxrni5g7"
+Received: from mout.web.de (mout.web.de [212.227.15.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B925647F;
-	Tue, 23 Apr 2024 09:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94B7255C3A;
+	Tue, 23 Apr 2024 09:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713862854; cv=none; b=BbCgyHKZdadeOCTP1x9Ysiegc9nPFDPxsE0g95MZuwwl7/t9Tz1VtXkI9xHv4aHM4BmKaB55Zc38wuqI2pos1ZYaj5zAmbprbee+pXtxESSlL73XfNUa/uNKpSmsTPWhe2KWAyTQUXa4uxleta9phx/G5lKLEg+kBODbcWXjPtI=
+	t=1713862925; cv=none; b=JhZnrIQd52Alun98AtJO8ms3YwzhLSaPOXYFtIJLBTmMDlIsh3DPixYmpfsYELhZloCvnFpqOBIt4KA5dzwRZZ03Q+xN0H0SxhD/WBONz/+iujpAB98plfeT3mnxt77wYCzr5qrlavmVjw1d3PxVVdxnOukOWF5+xX4KybnvmuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713862854; c=relaxed/simple;
-	bh=DVL/W006mq7B8XRru41g4X8LQ/QFyfpjIosJSHzQt7s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nlPqQFmvOge6I09bCjyAoLNY7im3lfYO8Ic+5qUnF/KkYh14bXMCVrUtqII3RVzWM4CE/M3/aAxFX27Ydg66brfxzT9mNeC0+ke73HbHa6xPdE3s0GtbOJCT8XA5pt//t26Z3VPOTixTT8lQj6BwSa4rBpduJymTqzBl9pAneN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=pi8Lz4FM; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:Reply-To:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=rZoO7ltG3psc+RMtbCywngv1xFSki99rx9Qg2yUYeDY=;
-	t=1713862849; x=1714294849; b=pi8Lz4FMeS88/pL4t/BZI+mzwR1XURZ3pWX3VQziH/aUDMH
-	IJQOY96L4PJKa3PZgsi657gii2u7Gg4sPkxUTXIJ2ZCapLRwb3pejurux4JvugNiFZFjuJPxbt4L4
-	9SCVYvs67jHxwISBk4VUah6KCcjz968u8+VNB8MX5msrHg4YSDN7SDcCrlPcVsktiumwA0huLMowO
-	Wgl1O0zzBj/GkkEPJHABiIamBOqXYxiwlxNHMXz0EAZyYavYoqiglhdX9HI0JvRhmAwLmy5cKbMdw
-	RrEdTij+/x23UvpvNLEdpJYL+4IqdZF3VDPSdxjAJbmSBf/bIruuCdvIn0l6Notg==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rzC15-0000B6-B2; Tue, 23 Apr 2024 11:00:43 +0200
-Message-ID: <bc420f3a-5809-4c4a-80ad-ccd8a46853b6@leemhuis.info>
-Date: Tue, 23 Apr 2024 11:00:42 +0200
+	s=arc-20240116; t=1713862925; c=relaxed/simple;
+	bh=S+8tLFz8PqdpmPk9GLNuV9GGLXz9ZgJvD9u5g+3nVz4=;
+	h=Message-ID:Date:MIME-Version:To:References:Subject:From:Cc:
+	 In-Reply-To:Content-Type; b=DOQJ8W39Girs7s6bXbH+dDMZW6tYlvOWAxykjENJFFiobu6KlHNbieYdqNNNgZEBj2oZnmnacWFyvruMokMxeQx5suYRpouoqttbr86+jj7NwBLeS61lWf7+QtUb0bt9fjlJFmFccjip8Ha91JT2YQitwONNjFdQA3qQNsWArtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=rxrni5g7; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713862869; x=1714467669; i=markus.elfring@web.de;
+	bh=S+8tLFz8PqdpmPk9GLNuV9GGLXz9ZgJvD9u5g+3nVz4=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:References:
+	 Subject:From:Cc:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=rxrni5g7R2mjSxucArVegFiiAHh9HEn6QCeJ62wj1p/Qa1zUkuivKGAkipySQeXb
+	 zuFsp28xrw0yeVE1GPb70h3ish/l18kzD0x7ndBqn94ik9gLD8BL17g0tQOgeMT+9
+	 jFPP3I416qtO7oHHloMIU8olBTLX1KbanSJCYIijS6Uaf4tOhOyYzqiVtBwxWS9hq
+	 tKL8IwIjCegbLGivfzB+927Z/0iJFu3PC4gk2sCrxUcYW0b3CwdMrf/yIQRDVUJDl
+	 +u6XHd7/8OdkA/MsjlwKyxzyNapMbEZabl3OMiic91/dyocjrm6IywAGvkeDyydfN
+	 KDTBtdVWkYcRO3W0HA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MIc7N-1rtN8S2RBl-000hsm; Tue, 23
+ Apr 2024 11:01:09 +0200
+Message-ID: <75cb62a7-d77b-47c4-9b49-9e1ef1a5de1a@web.de>
+Date: Tue, 23 Apr 2024 11:00:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,51 +57,48 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: 6.9.0-rc2+ kernel hangs on boot (bisected, maybe LED related)
-To: Johannes Berg <johannes@sipsolutions.net>,
- Miri Korenblit <miriam.rachel.korenblit@intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, linux-leds@vger.kernel.org,
- Ben Greear <greearb@candelatech.com>, Lee Jones <lee@kernel.org>
-References: <30f757e3-73c5-5473-c1f8-328bab98fd7d@candelatech.com>
- <30819e01-43ce-638f-0cc6-067d6a8d03c7@candelatech.com>
- <89a9eec3-337f-3c9f-6bbe-00a26a15287c@candelatech.com>
- <20240411070718.GD6194@google.com>
- <de43c7e1-7e8c-bdbe-f59e-7632c21da24a@candelatech.com>
- <8736ebc8881e1e0cabfbbf033725a3123a5e8e90.camel@sipsolutions.net>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-In-Reply-To: <8736ebc8881e1e0cabfbbf033725a3123a5e8e90.camel@sipsolutions.net>
+To: Kunwu Chan <chentao@kylinos.cn>, linux-kselftest@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Shuah Khan <shuah@kernel.org>, Will Deacon <will@kernel.org>
+References: <20240423082102.2018886-1-chentao@kylinos.cn>
+Subject: Re: [PATCH] kselftest: arm64: Add a null pointer check
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <kunwu.chan@hotmail.com>
+In-Reply-To: <20240423082102.2018886-1-chentao@kylinos.cn>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1713862849;391881e7;
-X-HE-SMSGID: 1rzC15-0000B6-B2
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:TSDQS3DL0hGaVNjPgU+obuZkEZoMMiyjQaBK1gsN+be2j5u+Q9O
+ U3NR194Pvh2OhhxfIOdUC8WYI8voMGR5sQlTeuL1ThUG3ED9O6gvPtK0XdzkFyhmPnz0EBX
+ EStVyQS6KCN1/fk5IyMv6/FLrW9KJ5g36O0dLZcqqFsz4yZnTvQmsxFttXB7PX4ZIwPwGNX
+ /YsmOyVUeoHUlQJzgOMaw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:u351e5//zzU=;/xRPCb3L/L16rXzLLrZwlNZBJpv
+ GwbW2AeYe9WWa7sreBvHTYQIh5NRYb6VjGdlkmreYAoriLmTDrJNWaCl5Eln4uuPHditeB5Rn
+ MwGfnEgeTP0z1OpdbfhQRhxfzK5CzlbiAgUlvtWtD1P723GNx/4lLj6FufNDZ0p9nLmSshVmK
+ JJFM6hUgdAgiEiDo7zcladJvCdfetpvZhq+L8XzS1WpcFUrSfJ+qS2zEjRYyC4VX/Fe/c4zg7
+ 0g4ouGnkqNQfl28OUYwGFjo9dRGtGUHsbKhKG/AfvV2Nmrobs6PFzZixYR737vL+q6r7qPcQg
+ uR9W8XpKXB0shb4tqKF8XCMnUGPiL8Hgi6Y3XcW6T4nHHXg0TIUDLWv0DmK8rJ+VCF6Fjv5uF
+ zvEzcbZhGT+k618t9YIMlFkqQeQVYyGksuyLXpQ5NPvvOxXrlWPpR+jwoRsg7ZbmR0uj5/bS2
+ 84nBl/v6n7DiJGq0hV9rpkoSVDgaDgeP1Y8ioX5uffAU575w2KZ7V+4qgQuH+wX9Ofq/x0d/V
+ MaVzairF4Up3VoQT8tOvS4IVt5Jy51tYLvp5wF37GJ1u4GyYh6MtP52XSftAnMbwyKjYKlxWH
+ PAt7B6UFFJH3EdZF40XLg6TKRTgt3Ip7QwCcUyn5RrVqpMYhs0vN+a709P0IW4Qr21g0SHD0e
+ AIW0KL0r/P987qGI5AQ4+V0YTCC8glJL6Lb2+lCkl5QIB3+eOYhUoZpzMW6PH3UjEu30ciubq
+ K8YKvETi2LcMFPBlRd9SZQxtuFqusjOCEIol4UAUFB0YpA7ChQlBmkrwK1eif4430KyuPmw6I
+ Fn+y9mrOMC3Cz9qfCNEMwwP7Ms9LCjqMD04ddJkWXTq2g=
 
-On 16.04.24 08:17, Johannes Berg wrote:
-> On Mon, 2024-04-15 at 13:37 -0700, Ben Greear wrote:
->>
->> Johannes, you had another suggestion: changing iwlwifi's request_module() to request_module_nowait() in
->> iwl_req_fw_callback()
->>
->> Is that still best thing to try in your opinion?
-> 
-> I guess so, I don't have any better ideas so far anyway ...
+=E2=80=A6
+> This patch will add the malloc failure checking
+=E2=80=A6
 
-[adding the iwlwifi maintainer; thread starts here:
-https://lore.kernel.org/lkml/30f757e3-73c5-5473-c1f8-328bab98fd7d@candelatech.com/
+* Please use a corresponding imperative wording for the change description=
+.
 
-]
+* Would you like to add the tag =E2=80=9CFixes=E2=80=9D accordingly?
 
-Johannes, Miri, what's the status wrt to this regression? From here
-things look somewhat stalled -- but maybe there was progress and I just
-missed it.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
-
-#regzbot poke
+Regards,
+Markus
 
