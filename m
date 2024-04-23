@@ -1,111 +1,137 @@
-Return-Path: <linux-kernel+bounces-154774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 458868AE0D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:16:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3B368AE0D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:18:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB9071F227C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:16:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FE5F1C21694
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:18:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4DE58234;
-	Tue, 23 Apr 2024 09:16:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036855812B;
+	Tue, 23 Apr 2024 09:18:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="Noqz7nUU"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="glg2zKB4"
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A7455579F;
-	Tue, 23 Apr 2024 09:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49FAD2AD11
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:18:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713863773; cv=none; b=n5JrsZxiet78eoewKbvu+Qx/eDD5vivR48ajHe2o/mb4Ot2KKlzEgVf3ar4MW77bdYxYJrqTpg3RpUFM9+AXp1rVIPTpRJS4TAI2eB1MfWaHPGrNAM3zaWRtnr/lYCVS5vr9U8fUj/81snb1VsdTE3LE9XBrmfZOx+x53l3fWP4=
+	t=1713863892; cv=none; b=RTGoNSDMlQ6rg7kwBJhceSuEXF4Fngfhq1/wvxMLGMN2UvTScbCsGIHWiObFcXLht2tXIV5RDLtYoGIrmFkofjIZ65XgEXGDPv5451BkjzE4BJJS/wdT7BMKilGK0iRAnR/yso4pSjEbAiHfFjB3Z0snPxT030rbeSPgVkjoAKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713863773; c=relaxed/simple;
-	bh=rv0p/MWkAuT2vz1VMOmdFiPXoFuGDfYUuce8c41MYNg=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=OYvkKyk+0AUYEwUB5e0ISThKnYU8r3/Eb7jEPrwhAiyDTK/9Ldoj+IZ/5wlcKJjoaUkoR1ZKsaWJBQaslM22iAAUUQblIv67zvon515c8q3nqIrjL0xpWtzO9h5X+E+rQ0tn7VWbL13mIznzKOSyyOfj5BE8oQ3yJBoPEM+MaZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=Noqz7nUU; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A2FC3FF80D;
-	Tue, 23 Apr 2024 09:16:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1713863766;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=46+IHxai2w3bldZvmMzKkHuWZictfMvaorkaAyKmx7Y=;
-	b=Noqz7nUU+wByDEgUUaUBJqb1Ue1br1avd+ELDCq7zip4RUr2JLl2RNYqMy4Q2q/6N861Pf
-	1gvzDziUKUw2KbfagAYRF3swtyMahHqFVE4zIEYIdQljbTtoA/OkECdlLhgMr+YefZCaWm
-	t9kYUcKAuta9PAFUHhb/mAO2vkoKNQybdzaTNi+2x99lKPiDp11A4GiLHU57IODB10+sJM
-	6WleyMoDJQrBLg/xULjzaEck/JnkQRUYF2POX9ry691NnIMHpSBKp75fjrHv6hZB110New
-	/Li99wTGVLBtQmuJRu7cRcMrVKwDbO4+p5zX9Is6DLAQTg9CiG3TLqiKnWBW/A==
-Message-ID: <facb8204-c2b3-4084-a2e3-4fbf3a3fdc9d@arinc9.com>
-Date: Tue, 23 Apr 2024 12:16:03 +0300
+	s=arc-20240116; t=1713863892; c=relaxed/simple;
+	bh=0g3RC9v/aNxcYppBWNUHo78P3I4XIoFkZB6LPvM4rRg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VqaqbeJ0xuziUW4J22YufntvKT8zQ0SLSOgfjbf+3ZDe9ekijnCq2Sp02GUkUvBMqTWI6vF1v0lJyKbVWk9kHEAoN7mPGePdG0/uuO3MyEoPNPm2WdlvZK8+orD33PNUjHaqx8LrtYLqBh/NpuSJZV64hncIa1EI9lwpxJQ+70Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=glg2zKB4; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1713863886;
+	bh=0g3RC9v/aNxcYppBWNUHo78P3I4XIoFkZB6LPvM4rRg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=glg2zKB4PGPUfZvJ0aqL7uuMi0SINVsKXwKXdhd5u1KpxoTKTQ6fC/MaHuevI/JEL
+	 QIPa5tMcoPS0FGAA/b6nfzQLKhTS+RIPv49rvUUfw5zLS7QEjRB9Zg5KkQ8tgur6Pz
+	 usgMYtjQrAbArCDJWy3wVLwIKeXiHw1+oDkKNAdE=
+Date: Tue, 23 Apr 2024 11:18:06 +0200
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Shuah Khan <skhan@linuxfoundation.org>, 
+	"Paul E. McKenney" <paulmck@kernel.org>
+Cc: Willy Tarreau <w@1wt.eu>, linux-kernel@vger.kernel.org, 
+	Rodrigo Campos <rodrigo@sdfg.com.ar>
+Subject: Re: [PATCH v3 4/4] selftests/nolibc: Add tests for strlcat() and
+ strlcpy()
+Message-ID: <172d25cf-cfd7-4069-8c26-df2e81ffbad1@t-8ch.de>
+References: <20240218195110.1386840-1-rodrigo@sdfg.com.ar>
+ <20240218195110.1386840-5-rodrigo@sdfg.com.ar>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] Set PHY address of MT7531 switch to 0x1f on MediaTek
- arm64 boards
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-To: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240314-for-mediatek-mt7531-phy-address-v1-0-52f58db01acd@arinc9.com>
- <ff196055-ecd8-4563-bc01-ff2533a07109@arinc9.com>
- <a60fc16d-4236-427c-b4a8-ec6fdf62d9f0@arinc9.com>
-Content-Language: en-US
-In-Reply-To: <a60fc16d-4236-427c-b4a8-ec6fdf62d9f0@arinc9.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240218195110.1386840-5-rodrigo@sdfg.com.ar>
 
-On 08/04/2024 10:22, Arınç ÜNAL wrote:
-> On 31.03.2024 12:28, arinc.unal@arinc9.com wrote:
->> On 14.03.2024 15:20, Arınç ÜNAL via B4 Relay wrote:
->>> Hello.
->>>
->>> This is a small patch series setting the PHY address of MT7531 to 0x1f on
->>> all boards that have the switch.
->>>
->>> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
->>> ---
->>> Arınç ÜNAL (2):
->>>        arm64: dts: mediatek: mt7622: set PHY address of MT7531 switch to 0x1f
->>>        arm64: dts: mediatek: mt7986: set PHY address of MT7531 switch to 0x1f
->>>
->>>   arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts | 4 ++--
->>>   arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts             | 4 ++--
->>>   arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts | 4 ++--
->>>   arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts             | 4 ++--
->>>   arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts             | 4 ++--
->>>   5 files changed, 10 insertions(+), 10 deletions(-)
->>> ---
->>> base-commit: ba90af39ba57b3fe3ecfdba0c87a80d20c7b788d
->>> change-id: 20240314-for-mediatek-mt7531-phy-address-9d0b4cfeca21
->>>
->>> Best regards,
->>
->> Reminder that this patch series is waiting.
++ Shuah and Paul, please see below.
+
+So I picked this up and it got picked up by Shuah, but...
+
+On 2024-02-18 16:51:06+0000, Rodrigo Campos wrote:
+> I've verified that the tests matches libbsd's strlcat()/strlcpy()
+> implementation.
 > 
-> Another reminder that this patch series is waiting to be applied.
+> Please note that as strlcat()/strlcpy() are not part of the libc, the
+> tests are only compiled when using nolibc.
+> 
+> Signed-off-by: Rodrigo Campos <rodrigo@sdfg.com.ar>
+> ---
+>  tools/testing/selftests/nolibc/nolibc-test.c | 40 ++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+> index 6ba4f8275ac4..d373fc14706c 100644
+> --- a/tools/testing/selftests/nolibc/nolibc-test.c
+> +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+> @@ -600,6 +600,25 @@ int expect_strne(const char *expr, int llen, const char *cmp)
+>  	return ret;
+>  }
+>  
+> +#define EXPECT_STRBUFEQ(cond, expr, buf, val, cmp)				\
+> +	do { if (!(cond)) result(llen, SKIPPED); else ret += expect_str_buf_eq(expr, buf, val, llen, cmp); } while (0)
+> +
+> +static __attribute__((unused))
+> +int expect_str_buf_eq(size_t expr, const char *buf, size_t val, int llen, const char *cmp)
+> +{
+> +	llen += printf(" = %lu <%s> ", expr, buf);
 
-Here's the third reminder for someone to apply this. From now on, I am
-going to reply to this thread once every day until this patch series is
-applied.
+This introduces a compiler warning on 32bit:
 
-Arınç
+    i386-linux-gcc -Os -fno-ident -fno-asynchronous-unwind-tables -std=c89 -W -Wall -Wextra -fno-stack-protector -m32 -mstack-protector-guard=global -fstack-protector-all  -o nolibc-test \
+      -nostdlib -nostdinc -static -Isysroot/i386/include nolibc-test.c nolibc-test-linkage.c -lgcc
+    nolibc-test.c: In function 'expect_str_buf_eq':
+    nolibc-test.c:610:30: error: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'unsigned int'} [-Werror=format=]
+      610 |         llen += printf(" = %lu <%s> ", expr, buf);
+          |                            ~~^         ~~~~
+          |                              |         |
+          |                              |         size_t {aka unsigned int}
+          |                              long unsigned int
+          |                            %u
+
+
+It is easy enough to fix through a cast to "unsigned long".
+
+The original patch was already sent to Shuah and included in -next.
+
+Shuah, Paul:
+
+I'd like to rewrite the offending commit instead of having a fixup commit.
+As it seems to me the original patch would only go into 6.10 anyways.
+
+Any objections?
+
+Notes to self:
+
+* Add flag to run-tests.sh to use -Werror
+* Implement "%zu" in nolibc printf()
+
+> +	if (strcmp(buf, cmp) != 0) {
+> +		result(llen, FAIL);
+> +		return 1;
+> +	}
+> +	if (expr != val) {
+> +		result(llen, FAIL);
+> +		return 1;
+> +	}
+> +
+> +	result(llen, OK);
+> +	return 0;
+> +}
+
+> [..]
 
