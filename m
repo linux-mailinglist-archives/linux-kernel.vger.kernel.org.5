@@ -1,123 +1,113 @@
-Return-Path: <linux-kernel+bounces-155744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79A968AF682
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:27:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FC108AF680
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:27:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB80B1C22BBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:27:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D4F0B227C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:27:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE3F13FD72;
-	Tue, 23 Apr 2024 18:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83CFB13E89B;
+	Tue, 23 Apr 2024 18:27:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FbMzznh1"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EOX2r18C"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C2013E03F;
-	Tue, 23 Apr 2024 18:27:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7637B13CAA0
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 18:27:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713896841; cv=none; b=tlDvCAIZwdreu4nAsJ4vj+xMdwdumnruyWEkB33R2AJ9MrBbjmaCWatyUQHIo8pYsk6QGFB6r0dxaQWbveKkGpnxwUXSr6U1rFL20XaU8rknILpiIgckNBmFlVo9f+oo/RJ8kSwJJVHgOxoYZZI6XkDxvTmmFmtJnrnrb/8ueQs=
+	t=1713896833; cv=none; b=PQHs6oG78wjsRd+dpuwQhs2ALGLHTcvqLTKBsXiaoXVSJ0Z+WFJfZBGQ4bfXUKtEPHdWhv5ZrWUTx0JxxP8GkFSG7pOKAt/BSQH3KGCDFu7CYf9F/iYOnhI9hNkFX6CB86KKeFZNjSZDYQ3NQ90ynfYaNmcSws9oFAbb7X1eBws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713896841; c=relaxed/simple;
-	bh=MUhKyRYXyetdQxJjp1fJdiGhO6ynyEnnzqak81R4+Cg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CA1Sn08Fm9Pr97M+Y3eKZUFttZB6hhg8m6BtlwZICB+4P69EOGfuepa43PTe2FhUv2oTwpeaOrN34I/w3WPRnQQ13mPCN1ZGyI8X6wkx98ATd/EsbqE8rGcdOCvkj5oqXH38ninEdx+9YZkFuZluZ+ZAUzzMVyW+OK+Dtf2mWh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FbMzznh1; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-347c6d6fc02so953933f8f.1;
-        Tue, 23 Apr 2024 11:27:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713896838; x=1714501638; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eRREGXZ9LGwcYWVEeF7p0krK+m5v21ptFkL/WS+1sYc=;
-        b=FbMzznh1zcD8gHMSWnp9zuA6ndwgieqMY0YzILOI2HkMuOYZDMa+ri2Zem3LpcqVnb
-         qOcvepAZB9tIaim8EqEjHIDgqXk1+40VaCfdI5eOa2Ge179Q+6yHqxIhx6dYt4qy3Mp/
-         Md+P0BOKcpxR67hpyte1G202Uaotx5xcRtw4Vvf9Jyblw/tTpj+1wgg2IIF1jTPIlrSR
-         Lt9jH7KeMl90BNH5xFu/VyuC3fM/Def4x7l7EurmhXh86q1w/js9d52qFbEq/tZG/Jvl
-         fIZP/VL39Y/WLyFMhih78JVKdvDjAosomOSTK6eIAotOxwUUBlTOEpsS2Y5VMpPMYvtb
-         Eg6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713896838; x=1714501638;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eRREGXZ9LGwcYWVEeF7p0krK+m5v21ptFkL/WS+1sYc=;
-        b=W5mhqROW/3zuI+r7w2Z3QnGftYok88BDEqX4BlmcgY1NznslNFlLGuhBiWxfevj/12
-         +orIJBGCOt8z+YR9M38OBotL9VTfsts2al8kNyk9tGqjn6iBLumRNhCeiHdMyL2GhOYr
-         njto1yUvWbRLxZlv3VBCs10QuhPjWbOxRvSxtR/pUYhtWB87lpMLgcFGSRdekRIUKnXO
-         d7HJkiSHIm5tS3Wua5+2mYvhI8nXIngOXqzmdz1Yio43DjxcxTUZkXtRAMEcOQmDYcxz
-         hipl4AZMXy023Wcx2vs2lJ9/SvpktQV/ldHwUykFVdxcrIYT85c6EWp1ui1hWBXV8n9g
-         tQtw==
-X-Forwarded-Encrypted: i=1; AJvYcCWXEAcZPnvqmAZs0ZO6ni1fkBSFHVxMTxqlThiHtLmyFknRTbW0xJkos2IhZyxqsUM1bvi+3tnQvU9vBVSBuK/OucGacRkSgHjHS6LXHnhXCQim318Y8vi8vc5gGRhzBsL0QRYrjU8Lz0mZZ0rD
-X-Gm-Message-State: AOJu0YypemXWJEyV5xMd1fiTmIQ7Gm8d2ksLURpQca9g+MsHnkZRFx5H
-	mlm8LSM6FKFRZz5M8cqoQxcyQyzMl7wq+X1+2HI96RHGIbxfLokE
-X-Google-Smtp-Source: AGHT+IHZSW8cbaE8cUJtodpeB6lgrzhLWztPZHhQ0NTdQRmHr6aIpK5pncFskfZ4VRDIH0FqAEXlcQ==
-X-Received: by 2002:a05:600c:1c24:b0:41a:c04a:8021 with SMTP id j36-20020a05600c1c2400b0041ac04a8021mr105680wms.0.1713896837699;
-        Tue, 23 Apr 2024 11:27:17 -0700 (PDT)
-Received: from ivan-HLYL-WXX9.. ([2a01:4b00:d20e:7300:648d:95d1:ce77:2eb8])
-        by smtp.gmail.com with ESMTPSA id s15-20020adfe00f000000b0034b03d0b94csm6557878wrh.74.2024.04.23.11.27.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 11:27:17 -0700 (PDT)
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
-To: brendan.higgins@linux.dev,
-	davidgow@google.com
-Cc: Ivan Orlov <ivan.orlov0322@gmail.com>,
-	rmoar@google.com,
-	linux-kselftest@vger.kernel.org,
-	kunit-dev@googlegroups.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] kunit: string-stream-test: use KUNIT_DEFINE_ACTION_WRAPPER
-Date: Tue, 23 Apr 2024 19:27:01 +0100
-Message-Id: <20240423182701.38359-1-ivan.orlov0322@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713896833; c=relaxed/simple;
+	bh=Lk7VycwmGvCZjbAAwt/L6renm7YzvX/n9HKi03awkdo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DYtR4ohwpt/jjqAdQ9zDKcXZEExYTHdn1x92FhZv3F7MjJmnA+b7VlnbtzNFY5x7Fg1xN3WPS/XrddrYJSYTNWl5hJVF/47BK4PEehdTBcBj6uT5sYAU0eDas4RQn7tvIguBJkEklhA2GqbsRjSFpcx61wml6M6an0pgkVToD0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EOX2r18C; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713896832; x=1745432832;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Lk7VycwmGvCZjbAAwt/L6renm7YzvX/n9HKi03awkdo=;
+  b=EOX2r18C2916cfMc+YJ/ioykeTKON4rfrTxT4SAlRANKp9xvNWmRRA0H
+   IrmYEL7/+6bdegJQYWCyO09nnHOkZ8ydbfXFt8SbRUeEV/2CzBtX3vvGx
+   EgLUativ7oyXzVLriYFEnhHN3a7FSoLzL56Tahu4l/XIx7IEIhaGfd/zU
+   7pQKW3WuaIgfLF1iwmP06su2yvlPHEkl8Z8IYqom3PeKtlXn9kMHdZ+Uk
+   DLJOIzihiVsinPhT4CqG3gYSr+eZMNnd+wnef5G5YpyQrs3E6pwflXqI2
+   K5PZ98fmH/qTjHH/ZpeHWJF8rArH0QIkoz2D/acLAqqDoXYMaSHn5ixOn
+   g==;
+X-CSE-ConnectionGUID: pSE5Mab4Rp2TmnC7JfH2bA==
+X-CSE-MsgGUID: oZs2JnfPRpGuaXtagL5dYg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="9350890"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="9350890"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 11:27:11 -0700
+X-CSE-ConnectionGUID: C3h4PbPBT92bOWbiY3yfFA==
+X-CSE-MsgGUID: YT3HDgReQn+PXP80GhgySw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="29255465"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 11:27:10 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rzKrD-00000000QuI-39qS;
+	Tue, 23 Apr 2024 21:27:07 +0300
+Date: Tue, 23 Apr 2024 21:27:07 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH v2 1/1] mm: page_alloc: Avoid defining unused function
+Message-ID: <Zif9e5ByqBKJ9rgQ@smile.fi.intel.com>
+References: <20240423161506.2637177-1-andriy.shevchenko@linux.intel.com>
+ <20240423111000.aaf74252a07d7e7fd56d7e12@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240423111000.aaf74252a07d7e7fd56d7e12@linux-foundation.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Use KUNIT_DEFINE_ACTION_WRAPPER macro to define the 'kfree' and
-'string_stream_destroy' wrappers for kunit_add_action.
+On Tue, Apr 23, 2024 at 11:10:00AM -0700, Andrew Morton wrote:
+> On Tue, 23 Apr 2024 19:14:43 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > In some configurations I got
+> > mm/page_alloc.c:656:20: warning: unused function 'add_to_free_list' [-Wunused-function]
+> > Becuase the only user is guarged with a certain ifdeffery,
+> > do the same for add_to_free_list().
 
-Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
----
- lib/kunit/string-stream-test.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+..
 
-diff --git a/lib/kunit/string-stream-test.c b/lib/kunit/string-stream-test.c
-index 03fb511826f7..7511442ea98f 100644
---- a/lib/kunit/string-stream-test.c
-+++ b/lib/kunit/string-stream-test.c
-@@ -22,18 +22,10 @@ struct string_stream_test_priv {
- };
- 
- /* Avoids a cast warning if kfree() is passed direct to kunit_add_action(). */
--static void kfree_wrapper(void *p)
--{
--	kfree(p);
--}
-+KUNIT_DEFINE_ACTION_WRAPPER(kfree_wrapper, kfree, const void *);
- 
- /* Avoids a cast warning if string_stream_destroy() is passed direct to kunit_add_action(). */
--static void cleanup_raw_stream(void *p)
--{
--	struct string_stream *stream = p;
--
--	string_stream_destroy(stream);
--}
-+KUNIT_DEFINE_ACTION_WRAPPER(cleanup_raw_stream, string_stream_destroy, struct string_stream *);
- 
- static char *get_concatenated_string(struct kunit *test, struct string_stream *stream)
- {
+> Thanks, I'll queue this as a fix against "mm: page_alloc: consolidate
+> free page accounting".
+
+Thank you!
+
+> Please do tell us the config when fixing these things.  That way I can
+> do a little bisect to ensure that I correctly identified the offending
+> patch.
+
+Hmm... You mean defconfig? I can share it.
+
+I built this with `make W=1`, probably that one helps, but the MM parts of
+the defconfig have not been altered by me from the x86_64_defconfig.
+
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
 
