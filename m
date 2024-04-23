@@ -1,144 +1,204 @@
-Return-Path: <linux-kernel+bounces-155180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD15F8AE65B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:39:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C2DA8AE668
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:39:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 671471F21F4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:39:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4119B1C21F6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:39:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191761350CD;
-	Tue, 23 Apr 2024 12:36:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ulc+2dcp"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68E3134CCA
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:36:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A493B131BB1;
+	Tue, 23 Apr 2024 12:37:50 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C928786252;
+	Tue, 23 Apr 2024 12:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713875816; cv=none; b=c/wV89V24ptRRcZB2hOdb4tP5ezZBOWixG9wh1q0ecEFm3cdLOMevrOjBtxrgQCwiawza+rWivB6+VEBAirUcxfY7onC6MINiupnXysAgyahTKP4OnTMLRm0C2UxY/bnXElCgTV183zMSju9aRQXLVSkEIIUQb4tKHYfkwDvk1c=
+	t=1713875870; cv=none; b=bbjVezm08W1hnXs0BAs5VO2KQA4bh/8TuMnMLjApO/Yjn18mOg5QErFGM0JJU5W7F9HywaZq9sy2MdCsWqM0zatTalLh99IwbobLnSb3n0ttBq/KWOsFqvAbQwS1kMoOLb9lgZ7IV8lTrG0Bvu7WT6yokoxoTvJYdzaPUmE9E28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713875816; c=relaxed/simple;
-	bh=VvAME1LWxRbvx9VDh/G7d7/s1knb+JtsY3BVP7m4ZaU=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=n+fmD4qF1AoP5CUuxAZNjmuzMOhJevhkQwvsABao1BDlSWka4KbVYQwHzpA8Ho57TRFCx7BBjxv4rSIBcYLrBZiY0NyHhu20pxduraLXdDtYb4LH4jHATqPQFT10GZ9z7EzJQwtBWaELYQXVgq0XV0pEs3N/bA9QUpQxzz7mDCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ulc+2dcp; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713875814;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m5hTS5Su8xeK74rUb4KJF+eI0XGddiqGV3X2wh7pCMQ=;
-	b=Ulc+2dcphrdXBrNnW0/NfJCudDcAdWREZc4FyZibcVw4aZ0VGL0dVwksT83pWTjdojxIn6
-	km/HvG/fkF8FrOtrQobsACR6NFAqojUigjcP3/gxvGIrW/6KiHXgyEA7kcAs/cBqVXuRTC
-	hf2ZPZ1/uNQYDavyRoNlMBOeE5JI2J8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-75-Xj5FVClHMBeSnhEOFqUCew-1; Tue, 23 Apr 2024 08:36:47 -0400
-X-MC-Unique: Xj5FVClHMBeSnhEOFqUCew-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8096981F317;
-	Tue, 23 Apr 2024 12:36:46 +0000 (UTC)
-Received: from file1-rdu.file-001.prod.rdu2.dc.redhat.com (unknown [10.11.5.21])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 9D93FC0E7C2;
-	Tue, 23 Apr 2024 12:36:45 +0000 (UTC)
-Received: by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix, from userid 12668)
-	id 883ED30BE3F7; Tue, 23 Apr 2024 12:36:45 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-	by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix) with ESMTP id 841A83FA97;
-	Tue, 23 Apr 2024 14:36:45 +0200 (CEST)
-Date: Tue, 23 Apr 2024 14:36:45 +0200 (CEST)
-From: Mikulas Patocka <mpatocka@redhat.com>
-To: Peter Zijlstra <peterz@infradead.org>
-cc: Christoph Hellwig <hch@infradead.org>, Mike Snitzer <msnitzer@redhat.com>, 
-    Jens Axboe <axboe@kernel.dk>, Damien Le Moal <dlemoal@kernel.org>, 
-    Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, 
-    Waiman Long <longman@redhat.com>, Guangwu Zhang <guazhang@redhat.com>, 
-    dm-devel@lists.linux.dev, linux-block@vger.kernel.org, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] completion: move blk_wait_io to
- kernel/sched/completion.c
-In-Reply-To: <20240422105956.GN30852@noisy.programming.kicks-ass.net>
-Message-ID: <8ab5c16e-154-c66-d167-5ce9eb6ea331@redhat.com>
-References: <31b118f3-bc8d-b18b-c4b9-e57d74a73f@redhat.com> <20240417175538.GP40213@noisy.programming.kicks-ass.net> <546473fd-ca4b-3c64-349d-cc739088b748@redhat.com> <ZiCoIHFLAzCva2lU@infradead.org> <20240422105956.GN30852@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1713875870; c=relaxed/simple;
+	bh=a3kqUHLYmR5pmzhg2OJxtmhHSNHmTXPyeYCaZXx0lOU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pehxt97DQTz4kwhA2IhbvjTdE1F9pmOgTbpLVu3kgfEH6GwMqubtD+kc8VeDyxPowb/yAISClN/jgQYI0XtM0qYrXyS0Pz1gB9YO8uhhDnwVWZZED1OjErFn9VAzGhK1kVYHTMmrX/C55UKkVTrbzQ8/xSfIMBjKlYJNmABIH2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 561E9339;
+	Tue, 23 Apr 2024 05:38:11 -0700 (PDT)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38DBB3F7BD;
+	Tue, 23 Apr 2024 05:37:39 -0700 (PDT)
+Date: Tue, 23 Apr 2024 13:37:33 +0100
+From: Dave Martin <Dave.Martin@arm.com>
+To: "Moger, Babu" <babu.moger@amd.com>
+Cc: Peter Newman <peternewman@google.com>, corbet@lwn.net,
+	fenghua.yu@intel.com, reinette.chatre@intel.com, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, paulmck@kernel.org,
+	rdunlap@infradead.org, tj@kernel.org, peterz@infradead.org,
+	yanjiewtw@gmail.com, kim.phillips@amd.com, lukas.bulwahn@gmail.com,
+	seanjc@google.com, jmattson@google.com, leitao@debian.org,
+	jpoimboe@kernel.org, rick.p.edgecombe@intel.com,
+	kirill.shutemov@linux.intel.com, jithu.joseph@intel.com,
+	kai.huang@intel.com, kan.liang@linux.intel.com,
+	daniel.sneddon@linux.intel.com, pbonzini@redhat.com,
+	sandipan.das@amd.com, ilpo.jarvinen@linux.intel.com,
+	maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, eranian@google.com,
+	james.morse@arm.com
+Subject: Re: [RFC PATCH v3 00/17] x86/resctrl : Support AMD Assignable
+ Bandwidth Monitoring Counters (ABMC)
+Message-ID: <ZierjRNDMfg5swT8@e133380.arm.com>
+References: <cover.1711674410.git.babu.moger@amd.com>
+ <CALPaoCheW=Jz2R3gMKcgwQe6ONDrRqu3tUxeg=A3USg6BC8buA@mail.gmail.com>
+ <7ccd59b8-9fe3-4d1f-82f5-f33d96dbf5ac@amd.com>
+ <ZiaRewZJnLaDSx3m@e133380.arm.com>
+ <004dcaeb-30ae-4b27-895a-4025a670fcbf@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <004dcaeb-30ae-4b27-895a-4025a670fcbf@amd.com>
 
-
-
-On Mon, 22 Apr 2024, Peter Zijlstra wrote:
-
-> On Wed, Apr 17, 2024 at 09:57:04PM -0700, Christoph Hellwig wrote:
-> > On Wed, Apr 17, 2024 at 08:00:22PM +0200, Mikulas Patocka wrote:
-> > > > > +EXPORT_SYMBOL(wait_for_completion_long_io);
-> > > > 
-> > > > Urgh, why is it a sane thing to circumvent the hang check timer? 
-> > > 
-> > > The block layer already does it - the bios can have arbitrary size, so 
-> > > waiting for them takes arbitrary time.
+On Mon, Apr 22, 2024 at 03:44:26PM -0500, Moger, Babu wrote:
+> Hi Dave,
+> 
+> On 4/22/24 11:34, Dave Martin wrote:
+> > Hi Babu,
 > > 
-> > And as mentioned the last few times around, I think we want a task
-> > state to say that task can sleep long or even forever and not propagate
-> > this hack even further.
+> > On Thu, Apr 04, 2024 at 03:02:45PM -0500, Moger, Babu wrote:
+> >> Hi Peter,
+> >>
+> >>
+> >> On 4/4/24 14:08, Peter Newman wrote:
+> >>> Hi Babu,
+> >>>
+> >>> On Thu, Mar 28, 2024 at 6:07 PM Babu Moger <babu.moger@amd.com> wrote:
+> >>>>    The list follows the following format:
+> >>>>
+> >>>>        * Default CTRL_MON group:
+> >>>>                "//<domain_id>=<assignment_flags>"
+> >>>>
+> >>>>        * Non-default CTRL_MON group:
+> >>>>                "<CTRL_MON group>//<domain_id>=<assignment_flags>"
+> >>>>
+> >>>>        * Child MON group of default CTRL_MON group:
+> >>>>                "/<MON group>/<domain_id>=<assignment_flags>"
+> >>>>
+> >>>>        * Child MON group of non-default CTRL_MON group:
+> >>>>                "<CTRL_MON group>/<MON group>/<domain_id>=<assignment_flags>"
+> >>>>
+> >>>>        Assignment flags can be one of the following:
+> >>>>
+> >>>>         t  MBM total event is assigned
+> >>>>         l  MBM local event is assigned
+> >>>>         tl Both total and local MBM events are assigned
+> >>>>         _  None of the MBM events are assigned
+> >>>>
+> >>>>         Examples:
+> >>>>
+> >>>>         # cat /sys/fs/resctrl/info/L3_MON/mbm_assign_control
+> >>>>         non_defult_group//0=tl;1=tl;2=tl;3=tl;4=tl;5=tl;6=tl;7=tl;
+> >>>>         non_defult_group/non_default_mon1/0=tl;1=tl;2=tl;3=tl;4=tl;5=tl;6=tl;7=tl;
+> >>>>         //0=tl;1=tl;2=tl;3=tl;4=tl;5=tl;6=tl;7=tl;
+> >>>>         /default_mon1/0=tl;1=tl;2=tl;3=tl;4=tl;5=tl;6=tl;7=tl;
+> >>>>
+> >>>>         There are four groups and all the groups have local and total event assigned.
+> >>>>
+> >>>>         "//" - This is a default CONTROL MON group
+> >>>>
+> >>>>         "non_defult_group//" - This is non default CONTROL MON group
+> >>>>
+> >>>>         "/default_mon1/"  - This is Child MON group of the defult group
+> >>>>
+> >>>>         "non_defult_group/non_default_mon1/" - This is child MON group of the non default group
+> >>>>
+> >>>>         =tl means both total and local events are assigned.
+> >>>
+> >>> I recall there was supposed to be a way to perform the same update on
+> >>> all domains together so that it isn't tedious to not do per-domain
+> >>
+> >> Yes. Correct. Reinette suggested to have "no domains" means ALL the domains.
+> > 
+> > Would "*" be more intuitive?
 > 
-> A bit like TASK_NOLOAD (which is used to make TASK_IDLE work), but
-> different I suppose.
+> We could. But I don't see the need for wildcard ("*") or ranges and
+> complexity that comes with that.
+
+For "*", I mean that this would just stand for "all cpus", not a generic
+string match; apologies if I didn't make that clear.
+
+I think that an explicit "*" is still a less surprising way to say
+"everything" than "" (which if it means anything at all, usually means
+"nothing").
+
+I may have misunderstood the intention here: _if_ the intention is to
+provide a way to enable/disable an event in all domains without having
+to enumerate them all one by one, then I think "*" is preferable syntax
+to "".  That was my only real suggestion here.
+
 > 
-> TASK_NOHUNG would be trivial to add ofc. But is it worth it?
+> Even in schemata processing we don't use the wildcard or ranges and also
+> there is no mention of that in documentation.
+> https://www.kernel.org/doc/Documentation/x86/resctrl.rst
+
+I know, though writing the schemata files can be tedious and annoying,
+since their content is often very repetitive, so ...
+
 > 
-> Anyway, as per the other email, anything like this needs to come with a
-> big fat warning. You get to keep the pieces etc..
-
-This seems better than the blk_wait_io hack.
-
-Reviewed-by: Mikulas Patocka <mpatocka@redhat.com>
-
-> ---
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 3c2abbc587b4..83b25327c233 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -112,7 +112,8 @@ struct user_event_mm;
->  #define TASK_FREEZABLE			0x00002000
->  #define __TASK_FREEZABLE_UNSAFE	       (0x00004000 * IS_ENABLED(CONFIG_LOCKDEP))
->  #define TASK_FROZEN			0x00008000
-> -#define TASK_STATE_MAX			0x00010000
-> +#define TASK_NOHUNG			0x00010000
-> +#define TASK_STATE_MAX			0x00020000
->  
->  #define TASK_ANY			(TASK_STATE_MAX-1)
->  
-> diff --git a/kernel/hung_task.c b/kernel/hung_task.c
-> index b2fc2727d654..126fac835e5e 100644
-> --- a/kernel/hung_task.c
-> +++ b/kernel/hung_task.c
-> @@ -210,7 +210,8 @@ static void check_hung_uninterruptible_tasks(unsigned long timeout)
->  		state = READ_ONCE(t->__state);
->  		if ((state & TASK_UNINTERRUPTIBLE) &&
->  		    !(state & TASK_WAKEKILL) &&
-> -		    !(state & TASK_NOLOAD))
-> +		    !(state & TASK_NOLOAD) &&
-> +		    !(state & TASK_NOHUNG))
->  			check_hung_task(t, timeout);
->  	}
->   unlock:
+> Domains(or nodes) are processed one by one. Some examples.
 > 
+>  # cat schemata
+>     SMBA:0=2048;1=2048;2=2048;3=2048
+>       MB:0=2048;1=2048;2=2048;3=2048
+>       L3:0=ffff;1=ffff;2=ffff;3=ffff
+> 
+>   # echo "SMBA:1=64" > schemata
+>   # cat schemata
+>     SMBA:0=2048;1=  64;2=2048;3=2048
+>       MB:0=2048;1=2048;2=2048;3=2048
+>       L3:0=ffff;1=ffff;2=ffff;3=ffff
 
+.. it would be convenient to be able to do something like
+
+# echo "SMBA:*=64" >schemata
+# grep SMBA: schemata
+SMBA:0=  64;1=  64;2=  64;3=  64
+
+Anyway, this is nothing directly to do with this series; just a
+thought.
+
+
+> > Whatever is done here to describe the "wildcard node", would it be worth
+> > having the node field parse the same way in the "schemata" files?
+> > 
+> > Is there any merit in having range match expressions, e.g. something like
+> > 
+> > 	0-3,8-11=foo;4-7,12-*=bar
+> > 
+> > (The latter is obvious feature creep though, so a real use case for this
+> > would be needed to justify it.  I don't have one right now...)
+
+[...]
+
+> Thanks
+> Babu Moger
+
+I do agree that unless someone jumps up and down saying this would
+help their use case, this is probably a step too far.
+
+Just thinking aloud (and this kind of feature could be added later in a
+backwards compatible way if someone really needs it).
+
+Cheers
+---Dave
 
