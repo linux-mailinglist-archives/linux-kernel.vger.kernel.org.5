@@ -1,259 +1,250 @@
-Return-Path: <linux-kernel+bounces-154782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50AA98AE0F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:23:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABB9E8AE104
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:31:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 742991C20D44
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:23:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C963B21C36
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594C05FDA9;
-	Tue, 23 Apr 2024 09:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="CH9dkUne"
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 826685CDE6;
+	Tue, 23 Apr 2024 09:30:47 +0000 (UTC)
+Received: from mxct.zte.com.cn (mxct.zte.com.cn [58.251.27.85])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACDB55E060
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:22:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ACD358231;
+	Tue, 23 Apr 2024 09:30:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=58.251.27.85
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713864161; cv=none; b=BrUa4x4ZVlUQsTGzrF/taqHwqGMqX+P1hhVCNuiYJ5hdvjFn4RR+7uXQUnnhu0MyrZ7Or6nZPQFcIXhOOW7yfBfjab14vIfSxUfNXMXFjuidAq6kI2CaGzJwXqdsjnDXFblBO/aTFjoP3g/ch6kAMV7c94DF8AsddYETu9Nf924=
+	t=1713864647; cv=none; b=FFlr2fxVcgtifjq1Wo/SPiv00newFbn3mSYox6nlscudNhymmmDTTC+i8/vjwgU8lI2RXW2iZJdy3fC+YaI0ju0d1XLDsqqRFvV2x+ycXkwMBf3UbCk/n+FBtWLd+eWBkeC5ym1UwlMmVBga2m+kPOdi87dJZdxy2CAct61ynH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713864161; c=relaxed/simple;
-	bh=02Vxo0I2ovvnGImpCF9BLB/uEtq2R8MGGGH5kjvypv8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d+clR77dVklqawUHW6UzEkMdhnAqyswqfOpZJBZoKF2kzWGhzVAd6t9gPeLwOcT4QSymC7Vrb2SoOYH0l9pyZEY8HNk5rsO55RHuuC3eoVgvUdSUvh7pg1+TirUGgQgx/ohayn/GnKrO9qaGOUtV6+ONvIXpjJtKhhjHikuvq2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CH9dkUne; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-439b1c72676so301091cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 02:22:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713864158; x=1714468958; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HUBEkYHbivNK2pFyO0FBupD8qYWDXRUdBKWzThnZkR0=;
-        b=CH9dkUneY88Gw8xoVFFJyhtz38IYhhkpLy71t+LYjtZ55cqHhZUt8drize2zYwP//A
-         pGcufqjlbmHgxx6zQ1Mh3AXxFcAwCHsTinO5E3uAD1wKqJGXk6DizXS17J9PQV391OLn
-         0TYK1FBkwH4DnPqK9/qtNUJvIECrMhdTAj+oA/UYvugo5i+AdRV2KLxb+j8lbpr6SYEG
-         mk0rywdtnoL3PXbw1P/YsJfZFmXsE8+Vqk/bxwoNXIWJQuXvgzj6+KwAgw1pDjcwblJN
-         GGgHpGf7Xsz8tIxTKpmLJG52Lby4sOIRS4F0L34GYcx4mGXY3pfYm6XMqWqe3i74Xs1K
-         wUlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713864158; x=1714468958;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HUBEkYHbivNK2pFyO0FBupD8qYWDXRUdBKWzThnZkR0=;
-        b=a08lBbokxCP8B1FULTKo+ItgXpkKMhxt6yi4hBYdKtgtizNZJTwAzNU87ecA3G58wX
-         Gx3ZGvHASLNFOLqKydTViqqJIHTCY+EUyM8NMdTKfAkK+Yfy8pwgbR8/ZHBGNkboexit
-         oZEqr4Oh7NtyjIzFYmT/1xIWSAP+lpDmYxz55jh7cKgSlJgSqKjQjK4q1ACrSXAZS0UQ
-         Pph02lu1HsxTNBCS8qSe7HJmiCDCOY7avsmeJE6ROwHpYaAwiC4lVS29qh81gC3iad7/
-         GeagBD9m88Da/uxpmfMVpiMVUEPruvpyATAYLUkdShfJvFeS2tLFeglYS60Awj0pAXny
-         EiBw==
-X-Forwarded-Encrypted: i=1; AJvYcCWMZne3b1N8VSGPGMpLKrGQuqveEYdqHqrKWy1T63TBkGoeFoUCIQrNvyqiyqsuC573agEEa1d7A45w8zZtjJF6CtFaSwWr4NPoooL/
-X-Gm-Message-State: AOJu0YxKmti+qrN097I2GcHZsiBehLJMlPqKlAjDZSdkE1oc0dv86q1n
-	lVl1hAaC5hj7DSg6u9674bqqXGF7YQiURX5CJGTHoOzcl2761L2H19AGelnN+LBwR5mUH5uTz1I
-	bwQ1KXhCjVqiQ0OVIOOHa6JI+AViwgLLTKCm4
-X-Google-Smtp-Source: AGHT+IHUVImZr46KE7NjLsb4voeWSuhmpLmq8uDA7LeYXKhI00U6dSCZBVehDUFO7fu/ApIxReC1GPQBk/y0xeNhlH0=
-X-Received: by 2002:ac8:6682:0:b0:439:891f:bbd2 with SMTP id
- d2-20020ac86682000000b00439891fbbd2mr232880qtp.28.1713864158511; Tue, 23 Apr
- 2024 02:22:38 -0700 (PDT)
+	s=arc-20240116; t=1713864647; c=relaxed/simple;
+	bh=ig3gdWUIA4c/gij5+4IFxL8mX9LSwR8d7bXH682mwvg=;
+	h=Date:Message-ID:Mime-Version:From:To:Cc:Subject:Content-Type; b=D3PN8ARmsqIN1Pb5VhWO2dHTLFW5hbeF1J0/6LEUtiHRjvJq7XnQKxeU7iyIoRr1dnJbIIyg7r/q2y4vnCEs0h8M2kiFkcW/8u6GVZqmswkapDEzlCnWN6IHOqMe+9uYsePwokz22T+yuA8Q6sV87LxO1338TRlP6Rx92tUoKN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=58.251.27.85
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
+Received: from mxde.zte.com.cn (unknown [10.35.20.165])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mxct.zte.com.cn (FangMail) with ESMTPS id 4VNxWm6shTz9yVJ;
+	Tue, 23 Apr 2024 17:24:04 +0800 (CST)
+Received: from mxhk.zte.com.cn (unknown [192.168.250.137])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mxde.zte.com.cn (FangMail) with ESMTPS id 4VNxWf09Lhz5TCGC;
+	Tue, 23 Apr 2024 17:23:58 +0800 (CST)
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4VNxWP1rqSz8XrS7;
+	Tue, 23 Apr 2024 17:23:45 +0800 (CST)
+Received: from xaxapp03.zte.com.cn ([10.88.97.17])
+	by mse-fl2.zte.com.cn with SMTP id 43N9NbrR064067;
+	Tue, 23 Apr 2024 17:23:37 +0800 (+08)
+	(envelope-from xu.xin16@zte.com.cn)
+Received: from mapi (xaxapp03[null])
+	by mapi (Zmail) with MAPI id mid32;
+	Tue, 23 Apr 2024 17:23:39 +0800 (CST)
+Date: Tue, 23 Apr 2024 17:23:39 +0800 (CST)
+X-Zmail-TransId: 2afb66277e1b0ee-a7f29
+X-Mailer: Zmail v1.0
+Message-ID: <20240423172339974p6mbS7jpKDyLRbzUZSpAn@zte.com.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240319104857.70783-1-mic@digikod.net> <20240319104857.70783-8-mic@digikod.net>
- <928249cc-e027-4f7f-b43f-502f99a1ea63@roeck-us.net> <b70332b0-3e55-4375-935f-35ef3167a151@roeck-us.net>
- <20240422.thesh7quoo0U@digikod.net> <a0179848-99a2-4169-b7b2-1a8cddb27615@roeck-us.net>
-In-Reply-To: <a0179848-99a2-4169-b7b2-1a8cddb27615@roeck-us.net>
-From: David Gow <davidgow@google.com>
-Date: Tue, 23 Apr 2024 17:22:24 +0800
-Message-ID: <CABVgOS=MOaWhUwVb2Rp2JDTK9=qX_p2SDZp7ZAj+03isZps9iA@mail.gmail.com>
-Subject: Re: [PATCH v3 7/7] kunit: Add tests for fault
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	Brendan Higgins <brendanhiggins@google.com>, Rae Moar <rmoar@google.com>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
-	James Morris <jamorris@linux.microsoft.com>, Kees Cook <keescook@chromium.org>, 
-	Luis Chamberlain <mcgrof@kernel.org>, 
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Thara Gopinath <tgopinath@microsoft.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Vitaly Kuznetsov <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, 
-	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-um@lists.infradead.org, x86@kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000006301550616c01873"
+Mime-Version: 1.0
+From: <xu.xin16@zte.com.cn>
+To: <horms@kernel.org>, <edumazet@google.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+Cc: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <dsahern@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <yang.yang29@zte.com.cn>,
+        <he.peilin@zte.com.cn>, <liu.chun2@zte.com.cn>,
+        <jiang.xuexin@zte.com.cn>, <zhang.yunkai@zte.com.cn>,
+        <kerneljasonxing@gmail.com>, <fan.yu9@zte.com.cn>,
+        <qiu.yutan@zte.com.cn>, <xu.xin16@zte.com.cn>
+Subject: =?UTF-8?B?W1BBVENIIG5ldC1uZXh0IHY2XSBuZXQvaXB2NDogYWRkIHRyYWNlcG9pbnQgZm9yIGljbXBfc2VuZA==?=
+Content-Type: text/plain;
+	charset="UTF-8"
+X-MAIL:mse-fl2.zte.com.cn 43N9NbrR064067
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 66277E33.000/4VNxWm6shTz9yVJ
 
---0000000000006301550616c01873
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: Peilin He <he.peilin@zte.com.cn>
 
-On Mon, 22 Apr 2024 at 21:36, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 4/22/24 06:08, Micka=C3=ABl Sala=C3=BCn wrote:
-> > On Fri, Apr 19, 2024 at 04:38:01PM -0700, Guenter Roeck wrote:
-> >> On Fri, Apr 19, 2024 at 03:33:49PM -0700, Guenter Roeck wrote:
-> >>> Hi,
-> >>>
-> >>> On Tue, Mar 19, 2024 at 11:48:57AM +0100, Micka=C3=ABl Sala=C3=BCn wr=
-ote:
-> >>>> Add a test case to check NULL pointer dereference and make sure it w=
-ould
-> >>>> result as a failed test.
-> >>>>
-> >>>> The full kunit_fault test suite is marked as skipped when run on UML
-> >>>> because it would result to a kernel panic.
-> >>>>
-> >>>> Tested with:
-> >>>> ./tools/testing/kunit/kunit.py run --arch x86_64 kunit_fault
-> >>>> ./tools/testing/kunit/kunit.py run --arch arm64 \
-> >>>>    --cross_compile=3Daarch64-linux-gnu- kunit_fault
-> >>>>
-> >>>
-> >>> What is the rationale for adding those tests unconditionally whenever
-> >>> CONFIG_KUNIT_TEST is enabled ? This completely messes up my test syst=
-em
-> >>> because it concludes that it is pointless to continue testing
-> >>> after the "Unable to handle kernel NULL pointer dereference" backtrac=
-e.
-> >>> At the same time, it is all or nothing, meaning I can not disable
-> >>> it but still run other kunit tests.
-> >>>
-> >
-> > CONFIG_KUNIT_TEST is to test KUnit itself.  Why does this messes up you=
-r
-> > test system, and what is your test system?  Is it related to the kernel
-> > warning and then the message you previously sent?
->
-> It is not a warning, it is a BUG which terminates the affected kernel thr=
-ead.
-> NULL pointer dereferences are normally fatal, which is why I abort tests
-> if one is encountered. I am not going to start introducing code into my
-> scripts to ignore such warnings (or BUG messages) on a case by case basis=
-;
-> this would be unmaintainable.
->
-> > https://lore.kernel.org/r/fd604ae0-5630-4745-acf2-1e51c69cf0c0@roeck-us=
-net
-> > It seems David has a solution to suppress such warning.
-> >
->
-> I don't think so. My series tried to suppress warning backtraces, not BUG
-> messages. BUG messages can not easily be suppressed since the reaction is
-> architecture specific and typically fatal.
->
-> As I said below, never mind, I just disabled CONFIG_KUNIT_TEST in my test=
-ing.
->
-> Guenter
->
+Introduce a tracepoint for icmp_send, which can help users to get more
+detail information conveniently when icmp abnormal events happen.
 
-I think it probably makes sense to permit disabling the fault tests
-independently, at least until we have a way of suppressing the
-warnings.
+1. Giving an usecase example:
+=============================
+When an application experiences packet loss due to an unreachable UDP
+destination port, the kernel will send an exception message through the
+icmp_send function. By adding a trace point for icmp_send, developers or
+system administrators can obtain detailed information about the UDP
+packet loss, including the type, code, source address, destination address,
+source port, and destination port. This facilitates the trouble-shooting
+of UDP packet loss issues especially for those network-service
+applications.
 
-I've sent out a patch to add a CONFIG_KUNIT_FAULT_TEST option to
-disable these tests. Would that help?
-https://lore.kernel.org/linux-kselftest/20240423090808.242389-1-davidgow@go=
-ogle.com/
+2. Operation Instructions:
+==========================
+Switch to the tracing directory.
+        cd /sys/kernel/tracing
+Filter for destination port unreachable.
+        echo "type==3 && code==3" > events/icmp/icmp_send/filter
+Enable trace event.
+        echo 1 > events/icmp/icmp_send/enable
 
-(The other option is to split the tests out into a totally separate
-file / module. I think that's an option (and would make the config
-option more consistent with other test options) but since they're
-otherwise part of the KUnit tests, I think I prefer to keep them
-together.)
+3. Result View:
+================
+ udp_client_erro-11370   [002] ...s.12   124.728002:
+ icmp_send: icmp_send: type=3, code=3.
+ From 127.0.0.1:41895 to 127.0.0.1:6666 ulen=23
+ skbaddr=00000000589b167a
 
-Cheers,
--- David
+Change log
+==========
+v5->v6:
+Some fixes according to
+https://lore.kernel.org/all/20240413161319.GA853376@kernel.org/
+1.Resubmit patches based on the latest net-next code.
 
---0000000000006301550616c01873
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+v4->v5:
+Some fixes according to
+https://lore.kernel.org/all/CAL+tcoDeXXh+zcRk4PHnUk8ELnx=CE2pcCqs7sFm0y9aK-Eehg@mail.gmail.com/
+1.Adjust the position of trace_icmp_send() to before icmp_push_reply().
 
-MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
-BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
-BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
-Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
-Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
-FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
-YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
-AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
-mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
-wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
-5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
-ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
-MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
-IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
-hvcNAQkEMSIEICOgtZbnjNPnp0XK9jkyAuFSQkAiQFiPF/waq0dMweU1MBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDQyMzA5MjIzOFowaQYJKoZIhvcNAQkPMVww
-WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
-hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCLzff9
-FDeDetOWvy6uoOdJnlb25fbO6q5RHkefp+asUsi42FPODqn3EfHQdwwl4+C+keK704m9Y6zGgg4T
-0vxixRA/BtSXwbM8Fl6Df200ElutWw3ljz5zva1NfMfAx2CNpDgHNtbAmEOhYUYd+VGOxVVlCOOk
-0gsqxi6xHO2Yxbyf0Wkz6fPhz3TyElZQUrHt/Jim/6rNIaDHAlKzp34cdFdWdsIu9R+eJSazQHy0
-ruGHCF3+zW0TxdeWINQJE/W2WKrLUAUhBQgatT1cAY5aMozV35d8JLYMiZ1m/Ft57btFmiR78bxn
-aX+P2Imbjr5ryox6Ves599tT+j+e7/kq
---0000000000006301550616c01873--
+v3->v4:
+Some fixes according to
+https://lore.kernel.org/all/CANn89i+EFEr7VHXNdOi59Ba_R1nFKSBJzBzkJFVgCTdXBx=YBg@mail.gmail.com/
+1.Add legality check for UDP header in SKB.
+2.Target this patch for net-next.
+
+v2->v3:
+Some fixes according to
+https://lore.kernel.org/all/20240319102549.7f7f6f53@gandalf.local.home/
+1. Change the tracking directory to/sys/kernel/tracking.
+2. Adjust the layout of the TP-STRUCT_entry parameter structure.
+
+v1->v2:
+Some fixes according to
+https://lore.kernel.org/all/CANn89iL-y9e_VFpdw=sZtRnKRu_tnUwqHuFQTJvJsv-nz1xPDw@mail.gmail.com/
+1. adjust the trace_icmp_send() to more protocols than UDP.
+2. move the calling of trace_icmp_send after sanity checks
+in __icmp_send().
+
+Signed-off-by: Peilin He <he.peilin@zte.com.cn>
+Reviewed-by: Yunkai Zhang <zhang.yunkai@zte.com.cn>
+Cc: Yang Yang <yang.yang29@zte.com.cn>
+Cc: Liu Chun <liu.chun2@zte.com.cn>
+Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
+Signed-off-by: xu xin <xu.xin16@zte.com.cn>
+---
+ include/trace/events/icmp.h | 65 +++++++++++++++++++++++++++++++++++++
+ net/ipv4/icmp.c             |  4 +++
+ 2 files changed, 69 insertions(+)
+ create mode 100644 include/trace/events/icmp.h
+
+diff --git a/include/trace/events/icmp.h b/include/trace/events/icmp.h
+new file mode 100644
+index 000000000000..7d5190f48a28
+--- /dev/null
++++ b/include/trace/events/icmp.h
+@@ -0,0 +1,65 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM icmp
++
++#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_ICMP_H
++
++#include <linux/icmp.h>
++#include <linux/tracepoint.h>
++
++TRACE_EVENT(icmp_send,
++
++		TP_PROTO(const struct sk_buff *skb, int type, int code),
++
++		TP_ARGS(skb, type, code),
++
++		TP_STRUCT__entry(
++			__field(const void *, skbaddr)
++			__field(int, type)
++			__field(int, code)
++			__array(__u8, saddr, 4)
++			__array(__u8, daddr, 4)
++			__field(__u16, sport)
++			__field(__u16, dport)
++			__field(unsigned short, ulen)
++		),
++
++		TP_fast_assign(
++			struct iphdr *iph = ip_hdr(skb);
++			int proto_4 = iph->protocol;
++			__be32 *p32;
++
++			__entry->skbaddr = skb;
++			__entry->type = type;
++			__entry->code = code;
++
++			struct udphdr *uh = udp_hdr(skb);
++			if (proto_4 != IPPROTO_UDP || (u8 *)uh < skb->head ||
++				(u8 *)uh + sizeof(struct udphdr) > skb_tail_pointer(skb)) {
++				__entry->sport = 0;
++				__entry->dport = 0;
++				__entry->ulen = 0;
++			} else {
++				__entry->sport = ntohs(uh->source);
++				__entry->dport = ntohs(uh->dest);
++				__entry->ulen = ntohs(uh->len);
++			}
++
++			p32 = (__be32 *) __entry->saddr;
++			*p32 = iph->saddr;
++
++			p32 = (__be32 *) __entry->daddr;
++			*p32 = iph->daddr;
++		),
++
++		TP_printk("icmp_send: type=%d, code=%d. From %pI4:%u to %pI4:%u ulen=%d skbaddr=%p",
++			__entry->type, __entry->code,
++			__entry->saddr, __entry->sport, __entry->daddr,
++			__entry->dport, __entry->ulen, __entry->skbaddr)
++);
++
++#endif /* _TRACE_ICMP_H */
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
+\ No newline at end of file
+diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
+index 8cebb476b3ab..30b302492613 100644
+--- a/net/ipv4/icmp.c
++++ b/net/ipv4/icmp.c
+@@ -92,6 +92,8 @@
+ #include <net/inet_common.h>
+ #include <net/ip_fib.h>
+ #include <net/l3mdev.h>
++#define CREATE_TRACE_POINTS
++#include <trace/events/icmp.h>
+
+ /*
+  *	Build xmit assembly blocks
+@@ -762,6 +764,8 @@ void __icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info,
+ 	if (!fl4.saddr)
+ 		fl4.saddr = htonl(INADDR_DUMMY);
+
++	trace_icmp_send(skb_in, type, code);
++
+ 	icmp_push_reply(sk, &icmp_param, &fl4, &ipc, &rt);
+ ende:
+ 	ip_rt_put(rt);
+-- 
+2.17.1
 
