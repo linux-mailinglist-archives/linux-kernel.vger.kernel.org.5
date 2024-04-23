@@ -1,121 +1,120 @@
-Return-Path: <linux-kernel+bounces-154535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 702BF8ADD4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:03:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5C788ADCEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:52:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A12321C217D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:03:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CBFFB232BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 04:52:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6220C224E8;
-	Tue, 23 Apr 2024 06:03:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eebz0GdN"
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EB0E1DFCE;
+	Tue, 23 Apr 2024 04:52:06 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5406C18AED;
-	Tue, 23 Apr 2024 06:03:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B311B813
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 04:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713852191; cv=none; b=I23E1irbQWQqyiXvMoKuzJbByENmJ13ikXZruTTo3E0w4L/G5xyi9PWxdHPVu77dEwToz0F/EsD7t6vuuT7+pOa8a3WDFn/AkbdirKI7+gUhBz7pJvgJ9go7vDYKfoMYb+lhHeSCc5NuMInXtxPv1fgeFMQaGtQg9/06XwMPV60=
+	t=1713847926; cv=none; b=jR51Go+flP8fW+//e6JF9YcufnVBSu0PMqkallsAtDy0t0PJYwf4gkBZwFPu+RY16yK/nCO9+CH2w7MCDnfIa3GMwTd7BAhzUn9qSKMHc9E3TXV9OKG8mGYcy9FLSv7zK13QskfCsNB6S9a4p/r9xPdxqMY56J32co4FFax4840=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713852191; c=relaxed/simple;
-	bh=S82bhgOPlnk2N9rL4GPcTmGEkacOA1o1OYddKmaFf2Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iPaRHNgwpooRDSyYRV0fGekinm40a37b1QKvDCuuUcsbeGXHFC80fYPChsZi08S+4D/+5XWuFpChmjErtrOpkkp5cbpRbFnSAnQCf/GXzFuy6Gn7E193ompFBdyotuxh2I6lZD6PKG88wLSn9obrAnga9d0hUJK6LpQZEyNZnJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eebz0GdN; arc=none smtp.client-ip=209.85.222.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-78edc3ad5fdso434400985a.0;
-        Mon, 22 Apr 2024 23:03:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713852189; x=1714456989; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S82bhgOPlnk2N9rL4GPcTmGEkacOA1o1OYddKmaFf2Q=;
-        b=eebz0GdN3f9nxzyvEHVtxBSaOkb0ngvjpZAdV55iyqiFauAIkk3ctUIBgpLVIoCZRz
-         4ozYQpOfFa40Bt1K64Y2ZUkswP3UOIWBDNDopsD+/bTepiYGNoQMv6Uu429E9Y2bgi4H
-         Vj8n8ZHUPAoadlzjY5UVc2U+bUT91VRS2DCl/8Q6qn4NnsVgvu/bewj7COBSlbmhM5cw
-         +7V7VQlQjHbt6u19ASSweb0b5vBwBsBygKxADR1MEVM0/eN6/YSTkjjwu4o72t87oMnD
-         tH3/pTlt/IXm4+YwMXbpxTYFNyb3QBjedkadYjWTWK9+6NlqVdyMKmhEq/xft4arLc1I
-         PKbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713852189; x=1714456989;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S82bhgOPlnk2N9rL4GPcTmGEkacOA1o1OYddKmaFf2Q=;
-        b=amtED/OTqQuei0IkjQZuRskrtejdtNerBRoSKk8PqoVOK2yg/5QfddgCF4LJ7huDVE
-         ES6vamEp4m+IPXNFKKF75gjctseV5qxX4FoYbRrwM/4UwPuk59sdVjfXrZe/IHLA90Ns
-         xPr7Foln4OrVZ7EASpTkQiUoMwSRe3J/wSGRksQW9Dkv3waFiw2hkysf1WPUI+Kss5Sl
-         O6t4oKql6U5wYcFMDcXf2fNX7Ygq5rD/vfPi3wUxn2XYk7cMqDiK4rSwyeS3WPr569c5
-         wOXSWvd3dE2kOFAi3JDHrklRdf5z6dMKhnon1PqtTID16gtgYR+PVZl6VQhbeA2FFV6J
-         AP0w==
-X-Forwarded-Encrypted: i=1; AJvYcCUsucTX17h+MBgjMWHOPH4uirJeNBa91TKwRbv79pRj6CvvVlIZPTCXkFrYvju4pmkeG81nkCb2FVqXzCPnouqXTQlUyabFXJNhBPvfGo7KuX2ztr/1MWQyY7unJmtvR3L7xhCSWEKGiVjbaQ==
-X-Gm-Message-State: AOJu0Yy5jUAWPtsVwJ++KJvepLyfc+ZjvX92Nfu0xI/Ep6r/v528iecC
-	cwA0gvKjT1yY6xnn1AekwS6QDbi7qj3/H50N6u5FL5lotK9CUo/D5B7o351opWvIug5CxXwducw
-	pbqj6bJkQJz+KiUmZN+t2xHK+vx4Dg02u
-X-Google-Smtp-Source: AGHT+IH6mTafRKyle4oWcXPbSls9QQHFramdEUvZD2Zvk9flg0IWMdwpQ+TojhZslO2GM1HSfRYCOOcV0FFHM1EBDU4=
-X-Received: by 2002:a05:620a:2a01:b0:790:84ef:a34c with SMTP id
- o1-20020a05620a2a0100b0079084efa34cmr862676qkp.33.1713852189156; Mon, 22 Apr
- 2024 23:03:09 -0700 (PDT)
+	s=arc-20240116; t=1713847926; c=relaxed/simple;
+	bh=aYVYenudeseP7u4NAoXIRMIRqOl5yvNTBW+HWmhF2f0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rT/8rnptzM6OrI5wERXGsc6lhdIDDJt9/BlrL6YIUtwcaSOQtKpa77tKkL5/84Axcnh5DLCDdKC64GMuzY8ll56iUZUSp6YY9/oBsL4lW1SAb7jqWEubTTWexZ6UXuCdUzovtwyFyIjd0iqffjtkxjX/mTuytc/Kd2c/N9qvNnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VNqQx64KFzNtRn;
+	Tue, 23 Apr 2024 12:49:29 +0800 (CST)
+Received: from kwepemm600012.china.huawei.com (unknown [7.193.23.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id D88BD140444;
+	Tue, 23 Apr 2024 12:51:59 +0800 (CST)
+Received: from build.huawei.com (10.175.101.6) by
+ kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 23 Apr 2024 12:51:59 +0800
+From: Wenchao Hao <haowenchao2@huawei.com>
+To: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, Aaron
+ Tomlin <atomlin@atomlin.com>, <linux-kernel@vger.kernel.org>
+CC: Wenchao Hao <haowenchao22@gmail.com>, Wenchao Hao <haowenchao2@huawei.com>
+Subject: [RFC PATCH] workqueue: Fix rescuer task's name truncated
+Date: Wed, 24 Apr 2024 02:21:04 +0800
+Message-ID: <20240423182104.1812150-1-haowenchao2@huawei.com>
+X-Mailer: git-send-email 2.32.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422150651.2908169-1-stefanb@linux.ibm.com>
-In-Reply-To: <20240422150651.2908169-1-stefanb@linux.ibm.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 23 Apr 2024 09:02:58 +0300
-Message-ID: <CAOQ4uxgvHjU-n56ryOp5yWQF=yKz0Cfo0ZieypWJhqsBV4g-2w@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/2] ima: Fix detection of read/write violations on
- stacked filesystems
-To: Stefan Berger <stefanb@linux.ibm.com>
-Cc: linux-integrity@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zohar@linux.ibm.com, roberto.sassu@huawei.com, 
-	miklos@szeredi.hu, brauner@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600012.china.huawei.com (7.193.23.74)
 
-On Mon, Apr 22, 2024 at 6:07=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.co=
-m> wrote:
->
-> This series fixes the detection of read/write violations on stacked
-> filesystems. To be able to access the relevant dentries necessary to
-> detect files opened for writing on a stacked filesystem a new d_real_type
-> D_REAL_FILEDATA is introduced that allows callers to access all relevant
-> files involved in a stacked filesystem while traversing the layers.
->
+Task comm of task is limitted to 16, prefix "kworker/R-" is added for
+rescuer worker's task, which cause most task name is truncated as
+following:
 
-Stefan,
+root   81  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-xprti]
+root   82  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-cfg80]
+root   85  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-nfsio]
+root   86  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-xfsal]
+root   87  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-xfs_m]
+root   88  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-acpi_]
+root   93  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-iscsi]
+root   95  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-scsi_]
+root   97  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-scsi_]
+root   99  0.0  0.0  0  0 ?   I<   11:18   0:00 [kworker/R-scsi_]
 
-Both Miklos and myself objected to this solution:
-https://lore.kernel.org/linux-unionfs/CAJfpeguctirEYECoigcAsJwpGPCX2NyfMZ8H=
-8GHGW-0UyKfjgg@mail.gmail.com/
+I want to fix this issue by split rescuer name to 2 part like other
+kworker, the normal part is "kworker/R" which is set to task_struct's comm,
+another part is wq->name which is added to kworker's desc. These 2 parts
+would be merged in wq_worker_comm().
 
-Not sure what you are hoping to achieve from re-posting the same solution.
+Fixes: b6a46f7263bd ("workqueue: Rename rescuer kworker")
 
-I stopped counting how many times I already argued that *all* IMA/EVM
-assertions,
-including rw-ro violations should be enforced only on the real inode.
-I know this does not work - so you should find out why it does not work and=
- fix
-the problem.
+Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+---
+ kernel/workqueue.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Enforcing IMA/EVM on the overlayfs inode layer is just the wrong way IMO.
-Not once have I heard an argument from IMA/EVM developers why it is really
-needed to enforce IMA/EVM on the overlayfs inode layer and not on the
-real inode.
-I am sorry that we are failing to communicate on this matter, but I am not
-sure how else I can help.
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 0066c8f6c154..0ce9e8597a4d 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -5430,7 +5430,7 @@ static int init_rescuer(struct workqueue_struct *wq)
+ 	}
+ 
+ 	rescuer->rescue_wq = wq;
+-	rescuer->task = kthread_create(rescuer_thread, rescuer, "kworker/R-%s", wq->name);
++	rescuer->task = kthread_create(rescuer_thread, rescuer, "kworker/R");
+ 	if (IS_ERR(rescuer->task)) {
+ 		ret = PTR_ERR(rescuer->task);
+ 		pr_err("workqueue: Failed to create a rescuer kthread for wq \"%s\": %pe",
+@@ -5439,6 +5439,8 @@ static int init_rescuer(struct workqueue_struct *wq)
+ 		return ret;
+ 	}
+ 
++	snprintf(rescuer->desc, sizeof(rescuer->desc), "%s", wq->name);
++
+ 	wq->rescuer = rescuer;
+ 	if (wq->flags & WQ_UNBOUND)
+ 		kthread_bind_mask(rescuer->task, wq_unbound_cpumask);
+@@ -6289,6 +6291,8 @@ void wq_worker_comm(char *buf, size_t size, struct task_struct *task)
+ 						  worker->desc);
+ 			}
+ 			raw_spin_unlock_irq(&pool->lock);
++		} else if (worker->desc[0] != '\0') {
++			scnprintf(buf + off, size - off, "-%s", worker->desc);
+ 		}
+ 	}
+ 
+-- 
+2.32.0
 
-Thanks,
-Amir.
 
