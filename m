@@ -1,39 +1,64 @@
-Return-Path: <linux-kernel+bounces-155295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37FDD8AE860
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:38:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 313338AE865
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:40:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77A70B23084
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:38:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA74A1F21155
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:40:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4A7136655;
-	Tue, 23 Apr 2024 13:38:47 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 066FC13664A;
-	Tue, 23 Apr 2024 13:38:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B539C13666F;
+	Tue, 23 Apr 2024 13:40:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Bf7q7O3q"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CB8D641;
+	Tue, 23 Apr 2024 13:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713879527; cv=none; b=RJhiGHClFKeLC6YtAZMK64LfHAHroIhan136mJ5omeS7mm1f0+iPW5cv2Z3ZOdLYhWA0Un5QwdAGk8WCeu3hX1+vG3VlP4e/z5E/G8ol9ikTTJVo8eWgRj0ZUC2UGIRabJ/INuLO1iiFGK2mf9uVzskz94/RQhyZ/2srFcj4thI=
+	t=1713879633; cv=none; b=nVn1xasuGoTAzEVYcdRcUze2IzK7fRzdpw3Wre31QKgkO2r5ie1xnciCdsjgYcxOnA7U+w29bl5EW3z3wjJDmI82kdZ5VqKKnqv/AMtttMa5CSSiRhcySu1lUwWDVs97Eftg34BRBcdz9QqX/j0rPtU5O6xN2+A204vx+FqTC6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713879527; c=relaxed/simple;
-	bh=PfhZ9BWya075TMeIKQE4oWCcQuH0pMJSpG0ApxJMxuA=;
+	s=arc-20240116; t=1713879633; c=relaxed/simple;
+	bh=OjoB4YNf+hVkLOFE5qH5rMcnX+a/LvE6rWEnQacRq94=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PENRTkNMvshJ6518DG22qCSvuBx8Y92xGsBxbV34utusqV2m+jFym68Feakwufw2M/unI9K+LoNlaWDXrtOAXx5g9pDn6Qsj6bJry9CGclcaReYGmgjb1ZAMZ/ags6sl8QrQPaKZEtfXN6Zx5s5d6PmLJc6TPFsOZtUf6M4zzcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 369F8339;
-	Tue, 23 Apr 2024 06:39:10 -0700 (PDT)
-Received: from [10.57.76.137] (unknown [10.57.76.137])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F1193F64C;
-	Tue, 23 Apr 2024 06:38:41 -0700 (PDT)
-Message-ID: <95c30582-4fba-4e2d-8cc1-776b3e5507b7@arm.com>
-Date: Tue, 23 Apr 2024 14:38:50 +0100
+	 In-Reply-To:Content-Type; b=KBQo7B4h4RMVUPEK2sZ2y4rBPV+xgL0fF+ekIeoUu5sC2/mbx4DJ6X/xVwvmDtL9EhsQiYnw03Q3sM+mFv0XfwbMj2ju9YOPUNTWvP5fJ5KVTSOwqEQ2HS/HWe3pOuKvLSflGtf2YUrGFdhp4/6skQXgs2GUJHOfpH365uZstI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Bf7q7O3q; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713879632; x=1745415632;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=OjoB4YNf+hVkLOFE5qH5rMcnX+a/LvE6rWEnQacRq94=;
+  b=Bf7q7O3qhXy1emY8DqEL9IE/r8VVbv7MTdeE7uUJzmUrlB0jxp8FjKHg
+   E7dVXbokn973PzeaJyCOcB0Zk2kqpbRLkmWs8uqKgApdAqOzCQey0rpNZ
+   fBywjCZhWnlRHnMiSkQ2g2B9vFKLPylf/njfHkyy7zBwC0/Hgy2BstfxW
+   Dfi3Flt7FX5p43gk8YuuLXc7PPUgBLbr3K3JGTj5atAmXzPs5/ygJJg2s
+   De4T0THc7e6p+iPdVMj1fyVfPxAyF3Tv6oNjBHOu3JnQpP2V39cutYlxw
+   D4fKm4ZGkyboV6gWXEeBEcRqHkcTzn30NqTcW1C2j/9yb99wmL7yJGUqg
+   A==;
+X-CSE-ConnectionGUID: yn1N5DnrSD+uKQO35urRuQ==
+X-CSE-MsgGUID: 9Z5dsM0XRsSuVT5zGPIJNQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="9633408"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="9633408"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 06:40:31 -0700
+X-CSE-ConnectionGUID: IuIt3hpzQ3mY+mQzj10XPw==
+X-CSE-MsgGUID: iyCcn9/cS7KCiRMYdEZAmw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="24351668"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.63.204])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 06:40:28 -0700
+Message-ID: <e082dabe-5d1c-4be0-baaa-5be30cff0016@intel.com>
+Date: Tue, 23 Apr 2024 16:40:20 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,109 +66,63 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/3] thermal/debugfs: Fix and clean up trip point
- statistics updates
-To: "Rafael J. Wysocki" <rafael@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
- LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>
-References: <4918025.31r3eYUQgx@kreacher>
- <3a8f1978-c5df-40d6-91ca-276431bb01e1@arm.com>
- <e8193798-4c02-423a-a9d8-63d29ebd7faa@linaro.org>
- <CAJZ5v0i2pvTLwj7jTzwhoQMap_cvjvNnK2Beuje2COo+F4hBzA@mail.gmail.com>
- <2acea3c3-5c8f-4f3c-a275-743c3fbfd2e6@linaro.org>
- <CAJZ5v0j5Ja9-vuC9ve9Li=UxATcBtTmdMdhMS1g993XBe1DVqw@mail.gmail.com>
+Subject: Re: [PATCH V2] perf scripts python: Add a script to run instances of
+ perf script in parallel
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+ linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+References: <20240313123634.4353-1-adrian.hunter@intel.com>
+ <CAP-5=fW1bH8qQkD7LrO6_3fJ3NsqoW1GrX8=s-sfaTbrvk58+A@mail.gmail.com>
 Content-Language: en-US
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <CAJZ5v0j5Ja9-vuC9ve9Li=UxATcBtTmdMdhMS1g993XBe1DVqw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <CAP-5=fW1bH8qQkD7LrO6_3fJ3NsqoW1GrX8=s-sfaTbrvk58+A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+On 11/04/24 21:19, Ian Rogers wrote:
+> On Wed, Mar 13, 2024 at 5:36 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>
+>> Add a Python script to run a perf script command multiple times in
+>> parallel, using perf script options --cpu and --time so that each job
+>> processes a different chunk of the data.
+>>
+>> The script supports the use of normal perf script options like
+>>  --dlfilter and --script, so that the benefit of running parallel jobs
+>> naturally extends to them also. In addition, a command can be provided
+>> (refer --pipe-to option) to pipe standard output to a custom command.
+>>
+>> Refer to the script's own help text at the end of the patch for more
+>> details.
+>>
+>> The script is useful for Intel PT traces, that can be efficiently
+>> decoded by perf script when split by CPU and/or time ranges. Running
+>> jobs in parallel can decrease the overall decoding time.
+>>
+>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 
 
-On 4/23/24 13:26, Rafael J. Wysocki wrote:
-> On Mon, Apr 22, 2024 at 6:12 PM Daniel Lezcano
-> <daniel.lezcano@linaro.org> wrote:
->>
->> On 22/04/2024 17:48, Rafael J. Wysocki wrote:
->>> On Mon, Apr 22, 2024 at 5:34 PM Daniel Lezcano
->>
->> [ ... ]
->>
->>>> or we should expect at least the residency to be showed even if the
->>>> mitigation state is not closed ?
->>>
->>> Well, in fact the device has already been in that state for some time
->>> and the mitigation can continue for a while.
->>
->> Yes, but when to update the residency time ?
->>
->> When we cross a trip point point ?
->>
->> or
->>
->> When we read the information ?
->>
->> The former is what we are currently doing AFAIR
+>> +
+>> +       def __init__(self, cmd, pipe_to, output_dir="."):
+>> +               self.popen = None
+>> +               self.consumer = None
+>> +               self.cmd = cmd
+>> +               self.pipe_to = pipe_to
+>> +               self.output_dir = output_dir
+>> +               self.cmdout_name = output_dir + "/cmd.txt"
+>> +               self.stdout_name = output_dir + "/out.txt"
+>> +               self.stderr_name = output_dir + "/err.txt"
 > 
-> Not really.
-> 
-> Records are added by thermal_debug_cdev_state_update() which only runs
-> when __thermal_cdev_update() is called, ie. from governors.
-> 
-> Moreover, it assumes the initial state to be 0 and checks if the new
-> state is equal to the current one before doing anything else, so it
-> will not make a record for the 0 state until the first transition.
+> Why use files here and not pipes?
 
-Correct, AFAIKS.
+There is an option to pipe to another command.
 
-> 
->> and the latter must add the delta between the last update and the current time for the current
->> state, right ?
-> 
-> Yes, and it is doing this already AFAICS.
-> 
-> The problem is that it only creates a record for the old state, so if
-> the new one is seen for the first time, there will be no record for it
-> until it changes to some other state.
+>                                   Could using files cause the command
+> to fail on a read-only file system?
 
-Exactly, it's not totally wrong what we have now, just some missing part
-that needs to be added in the code, while we are counting/updating
-these stats.
-
-> 
-> The appended patch (modulo GMail-induced white space breakage) should
-> help with this, but the initial state handling needs to be addressed
-> separately.
-> 
-> ---
->   drivers/thermal/thermal_debugfs.c |    8 ++++++++
->   1 file changed, 8 insertions(+)
-> 
-> Index: linux-pm/drivers/thermal/thermal_debugfs.c
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/thermal_debugfs.c
-> +++ linux-pm/drivers/thermal/thermal_debugfs.c
-> @@ -433,6 +433,14 @@ void thermal_debug_cdev_state_update(con
->       }
-> 
->       cdev_dbg->current_state = new_state;
-> +
-> +    /*
-> +     * Create a record for the new state if it is not there, so its
-> +     * duration will be printed by cdev_dt_seq_show() as expected if it
-> +     * runs before the next state transition.
-> +     */
-> +    thermal_debugfs_cdev_record_get(thermal_dbg, cdev_dbg->durations,
-> new_state);
-> +
->       transition = (old_state << 16) | new_state;
-> 
->       /*
-
-Yes, something like this should do the trick. We will get the record
-entry in the list, so we at least enter the list loop in the
-cdev_dt_seq_show().
-
+The user chooses the output directory, so they will need the foresight
+not to choose a read-only file system.
 
 
