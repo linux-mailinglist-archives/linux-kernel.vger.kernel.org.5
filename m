@@ -1,107 +1,125 @@
-Return-Path: <linux-kernel+bounces-155546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAAFF8AF3CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:22:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 858428AF3CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:22:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85BE3282EC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:22:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 401F2286C7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:22:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3389D13D254;
-	Tue, 23 Apr 2024 16:22:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0570113CA99;
+	Tue, 23 Apr 2024 16:22:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VjLlekDd"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GhuZ3qEm"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2B4613CA99
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:22:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB29313CF9F
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:22:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713889341; cv=none; b=DsEhyvLilo585M4kcnDS/9wZ2stsfmTvF6QoeRxPKE5go9R3rNy6MxWtmKgAyTrLcJqz3UdZSSe5wEqqVvO9HNgtUllGc30K7Yfp0fC5pQtvow2kPo0M918vHgdQoqyID73Wa7TKLF9wkCw2qJgbdLTtKTNxTbx+BALMhayik4Y=
+	t=1713889369; cv=none; b=KRMksd6apoBSysJf2F3Q/RTeGBDSFuO+9bFe1vZRurzHuOpbeRmAzRGzCuc9jGct9lpnLu4E4SgYsRphHUOCs4+yK+corNHPf76HCkPKawwJuQIwoUKV/xFlX2VCSP4/Ioit1azLE3i02/a4tnbQbg1yhb9hb3ZVqjYDBCLwHLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713889341; c=relaxed/simple;
-	bh=zO79EE5lca96y5tk1jBN2RNddNarlFD6LibZvjCWZN8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KqzsWJ7FMb4dVkaauWIV2HV6HWaZqY2z4R4ALdoXx3gR91OPvp1KL1H+OJ67S0FBxUJF8xguJx8V3kFLRgDFbEdQggTYU7UhjaPxwbotb+1IxZ4MZDJA+qsNkjeBk3CcGj1fz/EXIR9xtCMzUn8pePWJYyy2RRr0GggMaM2VPoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VjLlekDd; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-518b9527c60so6848438e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:22:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713889337; x=1714494137; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rryQLukNGX6bltbPu3dT4IMJ7VdkGWG4t49Lq/kGVaM=;
-        b=VjLlekDdLPh3AoMfFCjl7qtwNdQsBLEeD1eFpRAqxuiqwgvYAO4S3NR9hGfu8NPqXa
-         S15rXRJ0MIGEWxkpM0S3SwSXq+mbFPPRKk4KxeACIA1R6dVhZJV+ih4KXGPhzyk8CpZW
-         MJuqLZAhlYvg4TSe9GEGX3EvHH9yiAC4UFGeXcDY2tsGPQ1iY5CVvVu1Ad4MnkcdksIx
-         lCobJZiTeTacDMPJtB7tvQ0DR7+FIcDhN6AnUo5otGLIDzaP44DVAuOTEsMIi2kx3l4G
-         L5D6+sTUCQq2UUusriZtRvLihrwHr4TnjHcPzUyYiqtbO0ID581fFn2UZrpQF2ymvNwm
-         yTig==
+	s=arc-20240116; t=1713889369; c=relaxed/simple;
+	bh=RZ9HqBGp7TiesVGMtiKF6isf7pQuV7LId4hRp1mxlRA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oTY5itXAKv7/Xrib8onuSL8Yj4APs93JVCtF9zOkBLXsu8PPE8JSjFQwA+QT4/VM6yiE2nirEKAQtCljWee61luOoi81zPlD0W5Ek+9/WaDWyqEm+dTT6sbHfT0DSBKJ4rgWtNaRPu7Druh3Bp086sOjAI8J//ZOcIVMUBJFvIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GhuZ3qEm; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713889366;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=H3SCZLnRvL1eBDiJGajTRcdGyi465jDJW6Y0DciZF9U=;
+	b=GhuZ3qEmJUNXsKpMfAbAYgLAsG3T3bpJ3U6Cxn/cZ2xhOmBDLVOWyACP2kMRKXVSq5sljt
+	RhMQ0BBufg84ljmgeB7IjUqv81fGrHjC4crIyuvg/PdyjhRcAbHGxx0TI8U0yUbnrYyrkH
+	XP9pIiWyPZXwLwQd9EX9JEq6OnA7v/g=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-284-ymqMAgOGNMGyMYsnK7uF4w-1; Tue, 23 Apr 2024 12:22:45 -0400
+X-MC-Unique: ymqMAgOGNMGyMYsnK7uF4w-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-79071211fbbso396984085a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:22:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713889337; x=1714494137;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rryQLukNGX6bltbPu3dT4IMJ7VdkGWG4t49Lq/kGVaM=;
-        b=uBRko5fcjjF+NEPGqg1H4mCVx7KlJDFDxcEGJjf6OzbSyGTDHaPR4sHhvNeLuczmse
-         e4K9mEVnJyzjdEXx494svth/Z76RxCXw/af1pdTwia7A1oA9tu20ukcEgGXhj3MCWvD/
-         jnIs0aom7nmFRBt5O0NxnqCBHix7UqjTX2YB8dv1jOfkOvZviULRGQ6Wu2ISl7EfOF0m
-         1K1+tdAldeEydX/rsbHIbbYBalPfeP/oPXQpRqtX+s54egrRlMv+G5/1Qx+PhOSNDqxw
-         6JnsTNRt/XVVeN7pcmIP8mFSoLsM0jWYk7l2qQSIOoNww20kcVrszZmj1AvZkBo15CRR
-         RgJg==
-X-Forwarded-Encrypted: i=1; AJvYcCVzlg/sdJ7iM/AzgzE069QvUxWYYbwWz1H7Mv4ZdUvDiFJ81AVo8eF84Y5h0qKiEDW/TtUfsjwcs9JuaOSfidGSyI3L9JedF7D0qDYv
-X-Gm-Message-State: AOJu0YxFAbcv03IVQuy0VN7vW2pZb6DsGCU1xghYUigExDj1siMNexIf
-	H99hWGV586XbKc/W3LuX5jCm9wQtUB6hEWQ1jQyr/M1LkDAmelw6+ZhJiwAlJgc=
-X-Google-Smtp-Source: AGHT+IH3nmHnEwYavp+3AF85hgClGpBGLwqG5/uE47MnsvBC78Cj0bT1r9wjIUlQwfxrbFen9V+3jQ==
-X-Received: by 2002:ac2:4143:0:b0:515:a8c9:6e99 with SMTP id c3-20020ac24143000000b00515a8c96e99mr26825lfi.5.1713889337192;
-        Tue, 23 Apr 2024 09:22:17 -0700 (PDT)
-Received: from [172.30.205.0] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id u21-20020ac24c35000000b0051b246caaddsm745480lfq.259.2024.04.23.09.22.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 09:22:16 -0700 (PDT)
-Message-ID: <808243c7-bc27-46d8-8dc6-ce7932931e01@linaro.org>
-Date: Tue, 23 Apr 2024 18:22:12 +0200
+        d=1e100.net; s=20230601; t=1713889365; x=1714494165;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H3SCZLnRvL1eBDiJGajTRcdGyi465jDJW6Y0DciZF9U=;
+        b=XOr9JEyXpUUPlqIQp3rUYn4llqk2QQmwbo7FBShBlRuraAocvJG9w+QNwWY14RwVJJ
+         ATogiy98nabZpJOpijtyk1Rcd3iK7Gj24+mfTK+vXZX7OdzfZgcjVTylqRzLr8dc25+f
+         qQ2Od0hqPFeYEIDDk/XiifuH1TV+sLAdPq3Q2jTSEX0oY8RQZ31F00DSHqBD+xBnDwpV
+         BiMMtucXhS0ReigEUcHFSYedGfxNVhUuiPFnefWfdemhlkDWeC6GtukfB+KIQLdFPKNh
+         nsOC20+iCzlihrcE6NkbiHZxHCqXYzcl7+0we2X0JG2lhZ8fAGDwKtD36ZhF62WK+Xme
+         QlzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWmI+5nSNg46c4DYNJE2ZOqx/g38y/Rf4bnPO0R2PrroYotpBjRfml0eOPZiuWzeCTWppPfB0QHsjclgKlipIIQX/+4nHLZsEspR57x
+X-Gm-Message-State: AOJu0Yw9120kc3sKXTZdGXbBx+3myw7vKEKO9E135NSf2AzSafkFFdMn
+	xn68leNBQ1+0kn18LAdGqGkyckywzWb7A6ykLF5NYKrpFcCa36oY3/x0s0fyJVWsadHqI8V/qug
+	j5k/Y73HkkkU63itArqxvNgKmX1DHj+wNFzyJX+93Ost4R3PZnfcryZmO90RZ
+X-Received: by 2002:a05:620a:4c5:b0:790:652b:6ed6 with SMTP id 5-20020a05620a04c500b00790652b6ed6mr11916150qks.35.1713889365077;
+        Tue, 23 Apr 2024 09:22:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG6LfYBiqs0o5HuFdrqThiCJq0HcpbT83enbtYOCy34DyyB4s1voP9KXTHqq36y4sCHWLaHbg==
+X-Received: by 2002:a05:620a:4c5:b0:790:652b:6ed6 with SMTP id 5-20020a05620a04c500b00790652b6ed6mr11916132qks.35.1713889364776;
+        Tue, 23 Apr 2024 09:22:44 -0700 (PDT)
+Received: from klayman.redhat.com (net-2-34-26-208.cust.vodafonedsl.it. [2.34.26.208])
+        by smtp.gmail.com with ESMTPSA id a4-20020a05620a066400b0078d73685803sm5412757qkh.99.2024.04.23.09.22.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 09:22:44 -0700 (PDT)
+From: Marco Pagani <marpagan@redhat.com>
+To: Moritz Fischer <mdf@kernel.org>,
+	Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>,
+	Tom Rix <trix@redhat.com>
+Cc: Marco Pagani <marpagan@redhat.com>,
+	linux-fpga@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] fpga: re-enable KUnit test suites for the subsystem
+Date: Tue, 23 Apr 2024 18:22:29 +0200
+Message-ID: <20240423162229.52023-1-marpagan@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] dt-bindings: dma: Drop unused QCom hidma binding
-To: "Rob Herring (Arm)" <robh@kernel.org>, Sinan Kaya <okaya@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>, Vinod Koul <vkoul@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240423161413.481670-1-robh@kernel.org>
- <20240423161413.481670-2-robh@kernel.org>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240423161413.481670-2-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+The core components no longer assume that low-level modules register a
+driver for the parent device and use its owner pointer to take the module's
+refcount. KUnit test suites can now be safely re-enabled even with loadable
+module support.
 
+This reverts commit a3fad2e92c76 ("fpga: disable KUnit test suites when
+module support is enabled")
 
-On 4/23/24 18:14, Rob Herring (Arm) wrote:
-> The QCom hidma binding was used on a defunct QCom server platform which
-> mainly used ACPI. DT support in the Linux driver has been broken since
-> 2018, so it seems this binding is unused and can be dropped.
-> 
-> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
-> ---
+Signed-off-by: Marco Pagani <marpagan@redhat.com>
+---
+ drivers/fpga/tests/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+diff --git a/drivers/fpga/tests/Kconfig b/drivers/fpga/tests/Kconfig
+index d4e55204c092..e4a64815f16d 100644
+--- a/drivers/fpga/tests/Kconfig
++++ b/drivers/fpga/tests/Kconfig
+@@ -1,6 +1,6 @@
+ config FPGA_KUNIT_TESTS
+-	bool "KUnit test for the FPGA subsystem" if !KUNIT_ALL_TESTS
+-	depends on FPGA=y && FPGA_REGION=y && FPGA_BRIDGE=y && KUNIT=y && MODULES=n
++	tristate "KUnit test for the FPGA subsystem" if !KUNIT_ALL_TESTS
++	depends on FPGA && FPGA_REGION && FPGA_BRIDGE && KUNIT=y
+ 	default KUNIT_ALL_TESTS
+         help
+           This builds unit tests for the FPGA subsystem
 
-Konrad
+base-commit: b7c0e1ecee403a43abc89eb3e75672b01ff2ece9
+-- 
+2.44.0
+
 
