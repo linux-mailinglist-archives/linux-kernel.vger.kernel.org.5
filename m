@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-155340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 559878AE91C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:08:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCF448AE91F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:08:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E0D52864FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:08:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A8F91F2360E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:08:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6079913793D;
-	Tue, 23 Apr 2024 14:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D74138499;
+	Tue, 23 Apr 2024 14:08:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kLyjOYu1"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S6z+Zc0s"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 031BA80040
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:08:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30AAA137918
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:08:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713881291; cv=none; b=X68o8oYbR0OZAX4JmaepzhzWphrjKwUW3jQecVNGAEYq+vdATuFu3LHL0bLPZGQAh+V2SBjCoQagEFFH7q3vInzy4f3Rr23tCFuqHtDF2qCkbWWDBJBXpBjOhesVswoTCqx5sdjFkDXLGZ3xm5XSF+88VatWBSJI/XEUYTgBf6Q=
+	t=1713881328; cv=none; b=GW3Si7h4f24VKNkIKPTOMhU60Jx4BglWwz0KaQViIGxGLGTf1lo+INipzpDjvsGXxFxNVukeLMuqh1yNK+jsWzhEfBlO42zGi5YKupKAgg9sp3OztjbakppBWwe8GwYrD5UDn3Obdw+ewGHrVljij550uhGlVetvZdsda/aVtdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713881291; c=relaxed/simple;
-	bh=t/aqj9l6D4oGdOYYNfNJF28vDO2u61VylE1o53rL9Hk=;
+	s=arc-20240116; t=1713881328; c=relaxed/simple;
+	bh=IWCU0w3VL0cvSLjhHzfvAO7YugroezgVY+Qah+oy6jg=;
 	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=tOrMrE5hSWpVsKs8htSCJjU7CMKsZAS4Lj/i1R5HcPbAMbrKUqrpxMg4DBjYhJZbfoh0m4I9p4lj0roJ/wmRNGqGubkk+XjbLS5e2xZLAgQ3uVEUpGYJBEeyP2dVeJUJyfW0pKZRgpLWFJvZ3aJJGrZCFaRX04F+Wb22s3NOoSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kLyjOYu1; arc=none smtp.client-ip=209.85.128.54
+	 In-Reply-To:Content-Type; b=b1KUAoVRFlNPiO2OagcOKICETXjNz0ce75k5L/SnE39fVR7GaHMQcBmcpU0m4NBDr6mjQdVtPuEZ8a3Vc7rsZp3f1BQoHx8bWVt9XIIpquxFq5b3D7A5DonA3CVjDSak7fP0+7VBmDl5Gdcc6mawZRINmb0GGbDQCzQYKlviZoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S6z+Zc0s; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41a5b68eceeso16252005e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:08:07 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4196c62bb4eso30313695e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:08:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713881286; x=1714486086; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1713881325; x=1714486125; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:references:cc:to:subject:reply-to:from:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=eqvuTZM7igFDZlQNb4hdaTtUbESqUIooaQ5Bj01QpVg=;
-        b=kLyjOYu1R6de4TYaFHPdnc2+tlb1Qi6bYSiQwUb8uvEz1GiUJ8LYXBGSXWDO4nrENp
-         GGsnxAfV4RTYM0OqmAk8sM0SQP8RiL0v3x/6oYtXkkxO3g0ncsT1AzMQ/rToSEhniDNo
-         /L9E1AhiugVakqvI9ZgVb9vg3qtLKClOurxi5W809v0nlwe9TmjHeiHtnRY2aVOeiS5u
-         RgtE/MfpGnvHDbw6Bcg0ZQfP3gBzGp7aNnB5IkKRebF3iSokMJILQoeIOdeWVo/YXg29
-         5THsE0VqcGe2SGXiFWxN3Xh7voY8+K7AUw6VJ7UX5WHRFWjEhB1jhdgTqLHDSCGscYHc
-         Xn6g==
+        bh=b1BoVNFpU0aThQ3DZVA1XTVmetSk4HOUliHNQd7s2Lg=;
+        b=S6z+Zc0sptV3BqEA8gjLQ0GBFmeaePjtrgZe1OYsPNtu7dlgOo1SnuXeU3bPxgqBti
+         0pkuJRao7uvEZ7KMe1DpFUcKO5Se+82PaFhc+xKKjAQFT8t9/APdOL90NvDqethvMEXU
+         SCuvVw+RCNMVXk9kz1zxhqZl5ND21Scj1NwhFzNujtJtRy9F2I06XZqAf43RTJq2cQJE
+         UyRXzs1ZMfbNPpK7vDjZA3/qyf9jWYpLdnsj18Rw2S1RAccBBdjmsJdpx9OQykZgF6Vb
+         eLeXvxnLPEbKRNH4pRRaOCy0W/7p1G7e6QPpMMBdjCWtTapVqwonSilSnIjIzwpo/7YN
+         wr8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713881286; x=1714486086;
+        d=1e100.net; s=20230601; t=1713881325; x=1714486125;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:references:cc:to:subject:reply-to:from:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=eqvuTZM7igFDZlQNb4hdaTtUbESqUIooaQ5Bj01QpVg=;
-        b=B9BQmER/Az8gCI8EW3zPSP+dEKzb4+J30ePXk+A9AHWNfhzm/UdIpE5pyYrCRkZIx6
-         EvkaYxN9vhvyEbMZY8WiVr54qJ/MzNEGqgvWuH1Bshmhs+OwxnDOPwFYapbotuZwBdCC
-         Kjus6AwVyo3jybp4H9/Glv0wfknjc6nfEuxhMtcsQ+UiUkLuh3+KL0upYfkkUzjJ754Z
-         2xb70jEIW7JyXeuQ9f+Nwqc8kSSRM4Y2sHL8ise1ld2HJzI97HnrLsggwYiSl9A5VJYx
-         UZIDLvYf6wbkrC06vAB9APjQFLl5PzvEsNT2Lc13p2NkldWj9d+fQixoYlQ+FVoJw/sv
-         RI7A==
-X-Forwarded-Encrypted: i=1; AJvYcCW4KXiSLZjwqcqJFr+h4C5lSacAHiBYEtxfXJiMm4QjqHEYg98XK2TqPFaL3fnbqigGLV0Ye1M45hUHNWk8uvx49SO6+r8BdgBcgQ0t
-X-Gm-Message-State: AOJu0YwjhDqtS+IZrf1+Z04DyE662mwPB2CSpStMnNCl4c8R58k5Q/cw
-	yCIS3Jku0Ud+02D2QtokEmCEhL1Uqc236ToF4uquNj3MrafXlq6sys8IlzlXizQ=
-X-Google-Smtp-Source: AGHT+IHKw6RqMukBMqPG6mxvhHjmXnorsMevPNOybd8lQo/Ht1W5X9vcVuYF9b9ElWkxkVWnfVIlMg==
-X-Received: by 2002:a05:600c:1da3:b0:41a:3b4f:822a with SMTP id p35-20020a05600c1da300b0041a3b4f822amr4820579wms.29.1713881285939;
-        Tue, 23 Apr 2024 07:08:05 -0700 (PDT)
+        bh=b1BoVNFpU0aThQ3DZVA1XTVmetSk4HOUliHNQd7s2Lg=;
+        b=XmpDoQg865yQeFto3EAAayhoHrWRoeeQvghoHklEi01KWaJx6cgiYp1hn1bHEm+vEs
+         Hn+SwjoXJV8p3yTQhFybYpz2+2dlV5C8fX1SZFriOkDXDchdWcc+9GRh2WIerOJoTJA0
+         6Fz0UpfgP3wb2wlvPDn+9y9jl+wdEOvp+69sayJ/URx4SHYi3vUArk3ZVFFX+rtzfu8p
+         lYn0XxRyhdAV0tr++lgSx8D7zmhNKavSSooejDFTCfBMZq6Jviwydl8C5q+mEFyKMkgO
+         5OX1GDCp2DPoV237D86VYV4dWvVpT80RPbQdNCy1C//FNdtiPb8dz4wR1QR1mveCA1v0
+         EEXw==
+X-Forwarded-Encrypted: i=1; AJvYcCWZFlvMwHdCWUbSrW7alBNkIFBxHiudEm3KYXj8uine4aIBAHAwfJq0Zv61WmZl3c9P/0i+uh4t+ExhWhxwJpoyQSfm8zp1uKem4X16
+X-Gm-Message-State: AOJu0Yz1gXppyWFIbdDc+5snLgI6TvkM3Ac6whiDq0DDMEy47GPyvVED
+	0BYkX6plZFQjKc5RWWNcRhLspsFzDcFMnTEe2iwk07s/dQG8yu8VS4Rwn27YaZA=
+X-Google-Smtp-Source: AGHT+IG40KDQ1MC6cSzKj7qM2lR4kQsCPwKdIVDQbpX2/BBZIqVwoVg6yVQRHufyqvSCY9BG+P/NYA==
+X-Received: by 2002:a5d:4d4b:0:b0:33e:7fbc:caea with SMTP id a11-20020a5d4d4b000000b0033e7fbccaeamr9901956wru.34.1713881325174;
+        Tue, 23 Apr 2024 07:08:45 -0700 (PDT)
 Received: from ?IPV6:2a01:e0a:982:cbb0:dfee:1061:7e39:bfff? ([2a01:e0a:982:cbb0:dfee:1061:7e39:bfff])
-        by smtp.gmail.com with ESMTPSA id s6-20020a05600c45c600b00418244d459esm20453876wmo.4.2024.04.23.07.08.04
+        by smtp.gmail.com with ESMTPSA id q12-20020adfcd8c000000b00343cad2a4d3sm14625332wrj.18.2024.04.23.07.08.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 07:08:05 -0700 (PDT)
-Message-ID: <4813aa76-6ce7-403d-8bff-1fb6e1d3f0a2@linaro.org>
-Date: Tue, 23 Apr 2024 16:08:04 +0200
+        Tue, 23 Apr 2024 07:08:44 -0700 (PDT)
+Message-ID: <864063fb-eeae-4eb7-9089-0d98011a0343@linaro.org>
+Date: Tue, 23 Apr 2024 16:08:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,13 +79,26 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 From: neil.armstrong@linaro.org
 Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] serial: msm: Unify TX and RX DMA paths
-To: Marek Szyprowski <m.szyprowski@samsung.com>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>
-References: <CGME20240423120821eucas1p2e8eb7aa059e00ee2bc6272cda24d1457@eucas1p2.samsung.com>
- <20240423120809.2678030-1-m.szyprowski@samsung.com>
+Subject: Re: [PATCH RFT 0/7] arm64: qcom: allow up to 4 lanes for the Type-C
+ DisplayPort Altmode
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Luca Weiss <luca.weiss@fairphone.com>, Bjorn Andersson <andersson@kernel.org>
+Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I
+ <kishon@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Abhinav Kumar
+ <quic_abhinavk@quicinc.com>, linux-arm-msm@vger.kernel.org,
+ linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240229-topic-sm8x50-upstream-phy-combo-typec-mux-v1-0-07e24a231840@linaro.org>
+ <CZUHV429NTF7.1GW9TN9NXB4J1@fairphone.com>
+ <7a7aa05f-9ae6-4ca0-a423-224fc78fbd0c@linaro.org>
+ <liah4xvkfattlen7s2zi3vt2bl5pbbxqgig3k5ljqpveoao656@iacnommxkjkt>
+ <236a104c-fc16-4b3d-9a00-e16517c00e3a@linaro.org>
+ <D064242SMIVM.1GUC1I9GE9IGC@fairphone.com>
+ <963b60e5-6ab7-4d9f-885a-ba744c2b7991@linaro.org>
+ <D0C42YR1270X.23P9WCWWNB8XF@fairphone.com>
+ <f2d96f99-d8ac-4ff1-83fa-742e541565e4@linaro.org>
 Content-Language: en-US, fr
 Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -112,264 +125,112 @@ Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
  QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
 Organization: Linaro
-In-Reply-To: <20240423120809.2678030-1-m.szyprowski@samsung.com>
+In-Reply-To: <f2d96f99-d8ac-4ff1-83fa-742e541565e4@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Marek,
+On 23/04/2024 15:03, Konrad Dybcio wrote:
+> 
+> 
+> On 4/5/24 12:19, Luca Weiss wrote:
+>> On Fri Apr 5, 2024 at 10:08 AM CEST, Neil Armstrong wrote:
+>>> Hi Luca,
+>>>
+>>> On 29/03/2024 10:02, Luca Weiss wrote:
+>>>> On Tue Mar 26, 2024 at 10:02 PM CET, Konrad Dybcio wrote:
+>>>>> On 16.03.2024 5:01 PM, Bjorn Andersson wrote:
+>>>>>> On Fri, Mar 15, 2024 at 06:35:15PM +0100, Neil Armstrong wrote:
+>>>>>>> On 15/03/2024 18:19, Luca Weiss wrote:
+>>>>>>>> On Thu Feb 29, 2024 at 2:07 PM CET, Neil Armstrong wrote:
+>>>>>>>>> Register a typec mux in order to change the PHY mode on the Type-C
+>>>>>>>>> mux events depending on the mode and the svid when in Altmode setup.
+>>>>>>>>>
+>>>>>>>>> The DisplayPort phy should be left enabled if is still powered on
+>>>>>>>>> by the DRM DisplayPort controller, so bail out until the DisplayPort
+>>>>>>>>> PHY is not powered off.
+>>>>>>>>>
+>>>>>>>>> The Type-C Mode/SVID only changes on plug/unplug, and USB SAFE states
+>>>>>>>>> will be set in between of USB-Only, Combo and DisplayPort Only so
+>>>>>>>>> this will leave enough time to the DRM DisplayPort controller to
+>>>>>>>>> turn of the DisplayPort PHY.
+>>>>>>>>>
+>>>>>>>>> The patchset also includes bindings changes and DT changes.
+>>>>>>>>>
+>>>>>>>>> This has been successfully tested on an SM8550 board, but the
+>>>>>>>>> Thinkpad X13s deserved testing between non-PD USB, non-PD DisplayPort,
+>>>>>>>>> PD USB Hubs and PD Altmode Dongles to make sure the switch works
+>>>>>>>>> as expected.
+>>>>>>>>>
+>>>>>>>>> The DisplayPort 4 lanes setup can be check with:
+>>>>>>>>> $ cat /sys/kernel/debug/dri/ae01000.display-controller/DP-1/dp_debug
+>>>>>>>>>     name = msm_dp
+>>>>>>>>>     drm_dp_link
+>>>>>>>>>         rate = 540000
+>>>>>>>>>         num_lanes = 4
+>>>>>>>>
+>>>>>>>> Hi Neil,
+>>>>>>>>
+>>>>>>>> I tried this on QCM6490/SC7280 which should also support 4-lane DP but I
+>>>>>>>> haven't had any success so far.
+>>>>>>>>
+>>>>>> [..]
+>>>>>>>> [ 1775.563969] [drm:dp_ctrl_link_train] *ERROR* max v_level reached
+>>>>>>>> [ 1775.564031] [drm:dp_ctrl_link_train] *ERROR* link training #1 failed. ret=-11
+>>>>>>>
+>>>>>>> Interesting #1 means the 4 lanes are not physically connected to the other side,
+>>>>>>> perhaps QCM6490/SC7280 requires a specific way to enable the 4 lanes in the PHY,
+>>>>>>> or some fixups in the init tables.
+>>>>>>>
+>>>>>>
+>>>>>> I tested the same on rb3gen2 (qcs6490) a couple of weeks ago, with the
+>>>>>> same outcome. Looking at the AUX reads, after switching to 4-lane the
+>>>>>> link training is failing on all 4 lanes, in contrast to succeeding only
+>>>>>> on the first 2 if you e.g. forget to mux the other two.
+>>>>>>
+>>>>>> As such, my expectation is that there's something wrong in the QMP PHY
+>>>>>> (or possibly redriver) for this platform.
+>>>>>
+>>>>> Do we have any downstream tag where 4lane dp works? I'm willing to believe
+>>>>> the PHY story..
+>>>>
+>>>> Just tested on Fairphone 5 downstream and 4 lane appears to work there.
+>>>> This is with an USB-C to HDMI adapter that only does HDMI.
+>>>>
+>>>> FP5:/ # cat /sys/kernel/debug/drm_dp/dp_debug
+>>>>           state=0x20a5
+>>>>           link_rate=270000
+>>>>           num_lanes=4
+>>>>           resolution=2560x1440@60Hz
+>>>>           pclock=241500KHz
+>>>>           bpp=24
+>>>>           test_req=DP_LINK_STATUS_UPDATED
+>>>>           lane_count=4
+>>>>           bw_code=10
+>>>>           v_level=0
+>>>>           p_level=0
+>>>>
+>>>> Sources are here:
+>>>> https://gerrit-public.fairphone.software/plugins/gitiles/kernel/msm-5.4/+/refs/heads/odm/rc/target/13/fp5
+>>>> And probably more importantly techpack/display:
+>>>> https://gerrit-public.fairphone.software/plugins/gitiles/platform/vendor/opensource/display-drivers/+/refs/heads/odm/rc/target/13/fp5
+>>>> Dts if useful:
+>>>> https://gerrit-public.fairphone.software/plugins/gitiles/kernel/msm-extra/devicetree/+/refs/heads/kernel/13/fp5
+>>>
+>>> Could you retry with this applied ?
+>>>
+>>> https://lore.kernel.org/all/20240405000111.1450598-1-swboyd@chromium.org/
+>>
+>> Unfortunately I do not see any change with this on QCM6490 Fairphone 5
+>> and 4-lane DP.
+> 
+> Hm, could you like dump all the PHY regions up and downstream with the display
+> connected (and nothing connected) and compare them?
 
-On 23/04/2024 14:08, Marek Szyprowski wrote:
-> Use scatterlist-based API also for RX mode to unify TX and RX DMA paths
-> as well as simplify the whole driver code a bit.
+Yes would be great, PHY regions and DP regions as well.
 
-Thanks for the patch, I have no idea if this is right or wrong.
-
-Greg, I think we should wait until this change is fully tested on multiple
-platforms including DMA usage (bluetooth) before aplying it.
-
-Thanks,
 Neil
 
 > 
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
->   drivers/tty/serial/msm_serial.c | 86 +++++++++++++--------------------
->   1 file changed, 34 insertions(+), 52 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/msm_serial.c b/drivers/tty/serial/msm_serial.c
-> index 0a9c5219df88..d5e00e613f73 100644
-> --- a/drivers/tty/serial/msm_serial.c
-> +++ b/drivers/tty/serial/msm_serial.c
-> @@ -161,14 +161,8 @@ enum {
->   struct msm_dma {
->   	struct dma_chan		*chan;
->   	enum dma_data_direction dir;
-> -	union {
-> -		struct {
-> -			dma_addr_t		phys;
-> -			unsigned char		*virt;
-> -			unsigned int		count;
-> -		} rx;
-> -		struct scatterlist tx_sg;
-> -	};
-> +	unsigned char		*virt;
-> +	struct scatterlist	sg;
->   	dma_cookie_t		cookie;
->   	u32			enable_bit;
->   	struct dma_async_tx_descriptor	*desc;
-> @@ -254,13 +248,7 @@ static void msm_stop_dma(struct uart_port *port, struct msm_dma *dma)
->   	unsigned int mapped;
->   	u32 val;
->   
-> -	if (dma->dir == DMA_TO_DEVICE) {
-> -		mapped = sg_dma_len(&dma->tx_sg);
-> -	} else {
-> -		mapped = dma->rx.count;
-> -		dma->rx.count = 0;
-> -	}
-> -
-> +	mapped = sg_dma_len(&dma->sg);
->   	dmaengine_terminate_all(dma->chan);
->   
->   	/*
-> @@ -275,11 +263,8 @@ static void msm_stop_dma(struct uart_port *port, struct msm_dma *dma)
->   	msm_write(port, val, UARTDM_DMEN);
->   
->   	if (mapped) {
-> -		if (dma->dir == DMA_TO_DEVICE) {
-> -			dma_unmap_sg(dev, &dma->tx_sg, 1, dma->dir);
-> -			sg_init_table(&dma->tx_sg, 1);
-> -		} else
-> -			dma_unmap_single(dev, dma->rx.phys, mapped, dma->dir);
-> +		dma_unmap_sg(dev, &dma->sg, 1, dma->dir);
-> +		sg_init_table(&dma->sg, 1);
->   	}
->   }
->   
-> @@ -299,7 +284,7 @@ static void msm_release_dma(struct msm_port *msm_port)
->   	if (dma->chan) {
->   		msm_stop_dma(&msm_port->uart, dma);
->   		dma_release_channel(dma->chan);
-> -		kfree(dma->rx.virt);
-> +		kfree(dma->virt);
->   	}
->   
->   	memset(dma, 0, sizeof(*dma));
-> @@ -371,8 +356,8 @@ static void msm_request_rx_dma(struct msm_port *msm_port, resource_size_t base)
->   
->   	of_property_read_u32(dev->of_node, "qcom,rx-crci", &crci);
->   
-> -	dma->rx.virt = kzalloc(UARTDM_RX_SIZE, GFP_KERNEL);
-> -	if (!dma->rx.virt)
-> +	dma->virt = kzalloc(UARTDM_RX_SIZE, GFP_KERNEL);
-> +	if (!dma->virt)
->   		goto rel_rx;
->   
->   	memset(&conf, 0, sizeof(conf));
-> @@ -399,7 +384,7 @@ static void msm_request_rx_dma(struct msm_port *msm_port, resource_size_t base)
->   
->   	return;
->   err:
-> -	kfree(dma->rx.virt);
-> +	kfree(dma->virt);
->   rel_rx:
->   	dma_release_channel(dma->chan);
->   no_rx:
-> @@ -434,7 +419,7 @@ static void msm_start_tx(struct uart_port *port)
->   	struct msm_dma *dma = &msm_port->tx_dma;
->   
->   	/* Already started in DMA mode */
-> -	if (sg_dma_len(&dma->tx_sg))
-> +	if (sg_dma_len(&dma->sg))
->   		return;
->   
->   	msm_port->imr |= MSM_UART_IMR_TXLEV;
-> @@ -462,12 +447,12 @@ static void msm_complete_tx_dma(void *args)
->   	uart_port_lock_irqsave(port, &flags);
->   
->   	/* Already stopped */
-> -	if (!sg_dma_len(&dma->tx_sg))
-> +	if (!sg_dma_len(&dma->sg))
->   		goto done;
->   
->   	dmaengine_tx_status(dma->chan, dma->cookie, &state);
->   
-> -	dma_unmap_sg(port->dev, &dma->tx_sg, 1, dma->dir);
-> +	dma_unmap_sg(port->dev, &dma->sg, 1, dma->dir);
->   
->   	val = msm_read(port, UARTDM_DMEN);
->   	val &= ~dma->enable_bit;
-> @@ -478,9 +463,9 @@ static void msm_complete_tx_dma(void *args)
->   		msm_write(port, MSM_UART_CR_TX_ENABLE, MSM_UART_CR);
->   	}
->   
-> -	count = sg_dma_len(&dma->tx_sg) - state.residue;
-> +	count = sg_dma_len(&dma->sg) - state.residue;
->   	uart_xmit_advance(port, count);
-> -	sg_init_table(&dma->tx_sg, 1);
-> +	sg_init_table(&dma->sg, 1);
->   
->   	/* Restore "Tx FIFO below watermark" interrupt */
->   	msm_port->imr |= MSM_UART_IMR_TXLEV;
-> @@ -503,16 +488,16 @@ static int msm_handle_tx_dma(struct msm_port *msm_port, unsigned int count)
->   	int ret;
->   	u32 val;
->   
-> -	sg_init_table(&dma->tx_sg, 1);
-> -	kfifo_dma_out_prepare(&tport->xmit_fifo, &dma->tx_sg, 1, count);
-> +	sg_init_table(&dma->sg, 1);
-> +	kfifo_dma_out_prepare(&tport->xmit_fifo, &dma->sg, 1, count);
->   
-> -	mapped = dma_map_sg(port->dev, &dma->tx_sg, 1, dma->dir);
-> +	mapped = dma_map_sg(port->dev, &dma->sg, 1, dma->dir);
->   	if (!mapped) {
->   		ret = -EIO;
->   		goto zero_sg;
->   	}
->   
-> -	dma->desc = dmaengine_prep_slave_sg(dma->chan, &dma->tx_sg, 1,
-> +	dma->desc = dmaengine_prep_slave_sg(dma->chan, &dma->sg, 1,
->   						DMA_MEM_TO_DEV,
->   						DMA_PREP_INTERRUPT |
->   						DMA_PREP_FENCE);
-> @@ -550,9 +535,9 @@ static int msm_handle_tx_dma(struct msm_port *msm_port, unsigned int count)
->   	dma_async_issue_pending(dma->chan);
->   	return 0;
->   unmap:
-> -	dma_unmap_sg(port->dev, &dma->tx_sg, 1, dma->dir);
-> +	dma_unmap_sg(port->dev, &dma->sg, 1, dma->dir);
->   zero_sg:
-> -	sg_init_table(&dma->tx_sg, 1);
-> +	sg_init_table(&dma->sg, 1);
->   	return ret;
->   }
->   
-> @@ -569,7 +554,7 @@ static void msm_complete_rx_dma(void *args)
->   	uart_port_lock_irqsave(port, &flags);
->   
->   	/* Already stopped */
-> -	if (!dma->rx.count)
-> +	if (!sg_dma_len(&dma->sg))
->   		goto done;
->   
->   	val = msm_read(port, UARTDM_DMEN);
-> @@ -586,14 +571,13 @@ static void msm_complete_rx_dma(void *args)
->   
->   	port->icount.rx += count;
->   
-> -	dma->rx.count = 0;
-> -
-> -	dma_unmap_single(port->dev, dma->rx.phys, UARTDM_RX_SIZE, dma->dir);
-> +	dma_unmap_sg(port->dev, &dma->sg, 1, dma->dir);
-> +	sg_init_table(&dma->sg, 1);
->   
->   	for (i = 0; i < count; i++) {
->   		char flag = TTY_NORMAL;
->   
-> -		if (msm_port->break_detected && dma->rx.virt[i] == 0) {
-> +		if (msm_port->break_detected && dma->virt[i] == 0) {
->   			port->icount.brk++;
->   			flag = TTY_BREAK;
->   			msm_port->break_detected = false;
-> @@ -604,9 +588,9 @@ static void msm_complete_rx_dma(void *args)
->   		if (!(port->read_status_mask & MSM_UART_SR_RX_BREAK))
->   			flag = TTY_NORMAL;
->   
-> -		sysrq = uart_prepare_sysrq_char(port, dma->rx.virt[i]);
-> +		sysrq = uart_prepare_sysrq_char(port, dma->virt[i]);
->   		if (!sysrq)
-> -			tty_insert_flip_char(tport, dma->rx.virt[i], flag);
-> +			tty_insert_flip_char(tport, dma->virt[i], flag);
->   	}
->   
->   	msm_start_rx_dma(msm_port);
-> @@ -630,14 +614,13 @@ static void msm_start_rx_dma(struct msm_port *msm_port)
->   	if (!dma->chan)
->   		return;
->   
-> -	dma->rx.phys = dma_map_single(uart->dev, dma->rx.virt,
-> -				   UARTDM_RX_SIZE, dma->dir);
-> -	ret = dma_mapping_error(uart->dev, dma->rx.phys);
-> -	if (ret)
-> +	sg_init_one(&dma->sg, dma->virt, UARTDM_RX_SIZE);
-> +	ret = dma_map_sg(uart->dev, &dma->sg, 1, dma->dir);
-> +	if (!ret)
->   		goto sw_mode;
->   
-> -	dma->desc = dmaengine_prep_slave_single(dma->chan, dma->rx.phys,
-> -						UARTDM_RX_SIZE, DMA_DEV_TO_MEM,
-> +	dma->desc = dmaengine_prep_slave_sg(dma->chan, &dma->sg, 1,
-> +						DMA_DEV_TO_MEM,
->   						DMA_PREP_INTERRUPT);
->   	if (!dma->desc)
->   		goto unmap;
-> @@ -664,8 +647,6 @@ static void msm_start_rx_dma(struct msm_port *msm_port)
->   
->   	msm_write(uart, msm_port->imr, MSM_UART_IMR);
->   
-> -	dma->rx.count = UARTDM_RX_SIZE;
-> -
->   	dma_async_issue_pending(dma->chan);
->   
->   	msm_write(uart, MSM_UART_CR_CMD_RESET_STALE_INT, MSM_UART_CR);
-> @@ -684,7 +665,8 @@ static void msm_start_rx_dma(struct msm_port *msm_port)
->   
->   	return;
->   unmap:
-> -	dma_unmap_single(uart->dev, dma->rx.phys, UARTDM_RX_SIZE, dma->dir);
-> +	dma_unmap_sg(uart->dev, &dma->sg, 1, dma->dir);
-> +	sg_init_table(&dma->sg, 1);
->   
->   sw_mode:
->   	/*
-> @@ -967,7 +949,7 @@ static irqreturn_t msm_uart_irq(int irq, void *dev_id)
->   	}
->   
->   	if (misr & (MSM_UART_IMR_RXLEV | MSM_UART_IMR_RXSTALE)) {
-> -		if (dma->rx.count) {
-> +		if (sg_dma_len(&dma->sg)) {
->   			val = MSM_UART_CR_CMD_STALE_EVENT_DISABLE;
->   			msm_write(port, val, MSM_UART_CR);
->   			val = MSM_UART_CR_CMD_RESET_STALE_INT;
+> Konrad
 
 
