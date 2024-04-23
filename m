@@ -1,101 +1,269 @@
-Return-Path: <linux-kernel+bounces-154745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 603098AE076
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:01:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17C638AE073
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:00:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91EDC1C21DE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:01:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C29EC281740
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:00:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 490C159151;
-	Tue, 23 Apr 2024 09:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA8F758213;
+	Tue, 23 Apr 2024 09:00:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ffDiCOhO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="J2/nytLQ"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6CA56B73;
-	Tue, 23 Apr 2024 09:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4F7256B73;
+	Tue, 23 Apr 2024 09:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713862829; cv=none; b=mfUytNjoPjtOwDqJSeZnucifGBuvGqZN8FqLzq/H2HWN+tU8mMi3yU9He7Oe/aZtacqKTZ1e6xyCmTxYeUjKF5Q5YKMXYJ6rnjjCCN6g5u9yWPmBf5Yw5DhJUfSd8CQvhFjZOVhkql2FKzd2b/BsjGJob5c20hXC+vzmpbDuW+g=
+	t=1713862821; cv=none; b=CLpR+0zxjedFkYHdn6HuwaSSLHOuerIbAhCJg7AWKKyD+xx2eemmhnmPfKUvcVyJARfda4PHE7bzmBcsUPXRBEqb738byMgYF9D8AYvScoNnUfpzBSFHNEKweOK+RzcnQeIklxxNCkn35qwgrMYp6eNemeJq//whAVnyoDjwvhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713862829; c=relaxed/simple;
-	bh=nE8DnFAjlXYHaUIN1qirvqDi+c0X4LQGHB4IF21MuZU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=hxwb+OQf4K/U5VONNSAOIr2kBGi+PhsRGJ2UUekblU8yaKR5zHDS4OiHUjINpYIz3SfkE7IH2gxNGgbJ+LH4oGDQiVg/tcD3RNuJwQssNvll8kIKFDSCIxOHVn+MTENq4Liy0ucvSEJSefr/zplUwlWfAHjxPbLd7LDsZwkn8Zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ffDiCOhO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F410FC2BD11;
-	Tue, 23 Apr 2024 09:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713862829;
-	bh=nE8DnFAjlXYHaUIN1qirvqDi+c0X4LQGHB4IF21MuZU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ffDiCOhOXgB1vtYuHtskFOzrmJPR48sXJuIs0EAloKkXE4BGyvLJzrJ21OWoetBSk
-	 IJOOFoN8WGP1Bo8Vaj0wW+vu4ckwjFOiJT+bheMARzCE42j2BaikPJirx3UtYtynFW
-	 PlaV4m9l+bDjqfZ9LjL9jbGN43KmCxbKF4opiiQ9/4Wpm4GWPBs4s7Lg+BVVvJ0FsU
-	 iWKdZSo2U/rvRday6FBau0M2kTLRN/qdOwX6AcwQDWNWfZOj3ECEB+WPMOmPlAktlP
-	 YyJaJ2+pgggh78adxIzT5UtKcMujMr2G+AyHxzzA7QVbYH1zp3Owv9sjRmiENsGuOD
-	 HH3cxEjbDHW2w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D44B2C595D1;
-	Tue, 23 Apr 2024 09:00:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1713862821; c=relaxed/simple;
+	bh=AoaZ5jmh8pzCQqrcZLQg/kMkPDAieme6wbIUtFYrJsw=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ZaxjqmLRJ0mn8e6XsImLTLwuVgVl3d8Bx+xp4GDPgOg1uxQe1ipe47I2Qfpbc4mHeF/wNY3Bcfau9lVvjCcpIbmVEGdB1+6xBQaxoGt0i/eC00EWpzX6Maq/MMB3UNcnlV/N1jQg70Vu+xt/7p4dlriSyhLS3zkXEB2JBbOGPso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=J2/nytLQ; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713862818;
+	bh=AoaZ5jmh8pzCQqrcZLQg/kMkPDAieme6wbIUtFYrJsw=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=J2/nytLQJRe8G36657IimHc+nCjIs8nJ3M7yzxS/PW+6EReV+FczK4xBkuDYJTcIf
+	 IX5lsb+TT1UbrLzdGz6cpdvmns3iR/OGA+RwhznWHqinHgzS3HhnBQvOgVo4oGg8/9
+	 2E6ucPldcGqfv8mmtpeXUt05GbYV/++plEEDytuUDcwOYzEWog5tbspVPfmNBglQHI
+	 7RLnCf7UTw9Q4mvYsMGl+niAjsSUhj3l3fRET+paA9o6O27W/+rXP6eQZikoEwwHFZ
+	 ICUWUSzYm2RaVg2hUFhYdw3+HWAR9iZmH8l3fyOYkiJ6AbdbifsVYbpXW5NiuZ7P96
+	 Y9ML0TZWFMYBQ==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5C2663780016;
+	Tue, 23 Apr 2024 09:00:09 +0000 (UTC)
+Message-ID: <12c3694c-f50b-41f8-b742-343614a7e14a@collabora.com>
+Date: Tue, 23 Apr 2024 14:00:39 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3 0/2] Read PHY address of switch from device
- tree on MT7530 DSA subdriver
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171386282885.3533.16186593968313244252.git-patchwork-notify@kernel.org>
-Date: Tue, 23 Apr 2024 09:00:28 +0000
-References: <20240418-b4-for-netnext-mt7530-phy-addr-from-dt-and-simplify-core-ops-v3-0-3b5fb249b004@arinc9.com>
-In-Reply-To: <20240418-b4-for-netnext-mt7530-phy-addr-from-dt-and-simplify-core-ops-v3-0-3b5fb249b004@arinc9.com>
-To: =?utf-8?b?QXLEsW7DpyDDnE5BTCB2aWEgQjQgUmVsYXkgPGRldm51bGwrYXJpbmMudW5hbC5h?=@codeaurora.org,
-	=?utf-8?b?cmluYzkuY29tQGtlcm5lbC5vcmc+?=@codeaurora.org
-Cc: daniel@makrotopia.org, dqfext@gmail.com, sean.wang@mediatek.com,
- andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
- bartel.eerdekens@constell8.be, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, arinc.unal@arinc9.com,
- florian.fainelli@broadcom.com
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Anup Patel <anup@brainfault.org>, Andrew Jones <ajones@ventanamicro.com>,
+ Ajay Kaher <ajay.kaher@broadcom.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexandre Ghiti <alexghiti@rivosinc.com>, samuel.holland@sifive.com,
+ Conor Dooley <conor.dooley@microchip.com>, Juergen Gross <jgross@suse.com>,
+ kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org,
+ Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Shuah Khan <shuah@kernel.org>,
+ virtualization@lists.linux.dev, Will Deacon <will@kernel.org>, x86@kernel.org
+Subject: Re: [PATCH v8 23/24] KVM: riscv: selftests: Add a test for counter
+ overflow
+To: Atish Patra <atishp@rivosinc.com>, linux-kernel@vger.kernel.org
+References: <20240420151741.962500-1-atishp@rivosinc.com>
+ <20240420151741.962500-24-atishp@rivosinc.com>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240420151741.962500-24-atishp@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Thu, 18 Apr 2024 08:35:29 +0300 you wrote:
-> This patch series makes the driver read the PHY address the switch listens
-> on from the device tree which, in result, brings support for MT7530
-> switches listening on a different PHY address than 31. And the patch series
-> simplifies the core operations.
+On 4/20/24 8:17 PM, Atish Patra wrote:
+> Add a test for verifying overflow interrupt. Currently, it relies on
+> overflow support on cycle/instret events. This test works for cycle/
+> instret events which support sampling via hpmcounters on the platform.
+> There are no ISA extensions to detect if a platform supports that. Thus,
+> this test will fail on platform with virtualization but doesn't
+> support overflow on these two events.
 > 
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> Reviewed-by: Anup Patel <anup@brainfault.org>
+> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+LGTM
+
+Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+
+> ---
+>  .../selftests/kvm/riscv/sbi_pmu_test.c        | 113 ++++++++++++++++++
+>  1 file changed, 113 insertions(+)
 > 
-> [...]
+> diff --git a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
+> index 9002ff451abf..0fd9b76ae838 100644
+> --- a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
+> +++ b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
+> @@ -14,6 +14,7 @@
+>  #include "test_util.h"
+>  #include "processor.h"
+>  #include "sbi.h"
+> +#include "arch_timer.h"
+>  
+>  /* Maximum counters(firmware + hardware) */
+>  #define RISCV_MAX_PMU_COUNTERS 64
+> @@ -24,6 +25,9 @@ union sbi_pmu_ctr_info ctrinfo_arr[RISCV_MAX_PMU_COUNTERS];
+>  static void *snapshot_gva;
+>  static vm_paddr_t snapshot_gpa;
+>  
+> +static int vcpu_shared_irq_count;
+> +static int counter_in_use;
+> +
+>  /* Cache the available counters in a bitmask */
+>  static unsigned long counter_mask_available;
+>  
+> @@ -120,6 +124,31 @@ static void guest_illegal_exception_handler(struct ex_regs *regs)
+>  	regs->epc += 4;
+>  }
+>  
+> +static void guest_irq_handler(struct ex_regs *regs)
+> +{
+> +	unsigned int irq_num = regs->cause & ~CAUSE_IRQ_FLAG;
+> +	struct riscv_pmu_snapshot_data *snapshot_data = snapshot_gva;
+> +	unsigned long overflown_mask;
+> +	unsigned long counter_val = 0;
+> +
+> +	/* Validate that we are in the correct irq handler */
+> +	GUEST_ASSERT_EQ(irq_num, IRQ_PMU_OVF);
+> +
+> +	/* Stop all counters first to avoid further interrupts */
+> +	stop_counter(counter_in_use, SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT);
+> +
+> +	csr_clear(CSR_SIP, BIT(IRQ_PMU_OVF));
+> +
+> +	overflown_mask = READ_ONCE(snapshot_data->ctr_overflow_mask);
+> +	GUEST_ASSERT(overflown_mask & 0x01);
+> +
+> +	WRITE_ONCE(vcpu_shared_irq_count, vcpu_shared_irq_count+1);
+> +
+> +	counter_val = READ_ONCE(snapshot_data->ctr_values[0]);
+> +	/* Now start the counter to mimick the real driver behavior */
+> +	start_counter(counter_in_use, SBI_PMU_START_FLAG_SET_INIT_VALUE, counter_val);
+> +}
+> +
+>  static unsigned long get_counter_index(unsigned long cbase, unsigned long cmask,
+>  				       unsigned long cflags,
+>  				       unsigned long event)
+> @@ -318,6 +347,33 @@ static void test_pmu_event_snapshot(unsigned long event)
+>  	stop_reset_counter(counter, 0);
+>  }
+>  
+> +static void test_pmu_event_overflow(unsigned long event)
+> +{
+> +	unsigned long counter;
+> +	unsigned long counter_value_post;
+> +	unsigned long counter_init_value = ULONG_MAX - 10000;
+> +	struct riscv_pmu_snapshot_data *snapshot_data = snapshot_gva;
+> +
+> +	counter = get_counter_index(0, counter_mask_available, 0, event);
+> +	counter_in_use = counter;
+> +
+> +	/* The counter value is updated w.r.t relative index of cbase passed to start/stop */
+> +	WRITE_ONCE(snapshot_data->ctr_values[0], counter_init_value);
+> +	start_counter(counter, SBI_PMU_START_FLAG_INIT_SNAPSHOT, 0);
+> +	dummy_func_loop(10000);
+> +	udelay(msecs_to_usecs(2000));
+> +	/* irq handler should have stopped the counter */
+> +	stop_counter(counter, SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT);
+> +
+> +	counter_value_post = READ_ONCE(snapshot_data->ctr_values[0]);
+> +	/* The counter value after stopping should be less the init value due to overflow */
+> +	__GUEST_ASSERT(counter_value_post < counter_init_value,
+> +		       "counter_value_post %lx counter_init_value %lx for counter\n",
+> +		       counter_value_post, counter_init_value);
+> +
+> +	stop_reset_counter(counter, 0);
+> +}
+> +
+>  static void test_invalid_event(void)
+>  {
+>  	struct sbiret ret;
+> @@ -413,6 +469,34 @@ static void test_pmu_events_snaphost(void)
+>  	GUEST_DONE();
+>  }
+>  
+> +static void test_pmu_events_overflow(void)
+> +{
+> +	int num_counters = 0;
+> +
+> +	/* Verify presence of SBI PMU and minimum requrired SBI version */
+> +	verify_sbi_requirement_assert();
+> +
+> +	snapshot_set_shmem(snapshot_gpa, 0);
+> +	csr_set(CSR_IE, BIT(IRQ_PMU_OVF));
+> +	local_irq_enable();
+> +
+> +	/* Get the counter details */
+> +	num_counters = get_num_counters();
+> +	update_counter_info(num_counters);
+> +
+> +	/*
+> +	 * Qemu supports overflow for cycle/instruction.
+> +	 * This test may fail on any platform that do not support overflow for these two events.
+> +	 */
+> +	test_pmu_event_overflow(SBI_PMU_HW_CPU_CYCLES);
+> +	GUEST_ASSERT_EQ(vcpu_shared_irq_count, 1);
+> +
+> +	test_pmu_event_overflow(SBI_PMU_HW_INSTRUCTIONS);
+> +	GUEST_ASSERT_EQ(vcpu_shared_irq_count, 2);
+> +
+> +	GUEST_DONE();
+> +}
+> +
+>  static void run_vcpu(struct kvm_vcpu *vcpu)
+>  {
+>  	struct ucall uc;
+> @@ -498,6 +582,32 @@ static void test_vm_events_snapshot_test(void *guest_code)
+>  	test_vm_destroy(vm);
+>  }
+>  
+> +static void test_vm_events_overflow(void *guest_code)
+> +{
+> +	struct kvm_vm *vm = NULL;
+> +	struct kvm_vcpu *vcpu;
+> +
+> +	vm = vm_create_with_one_vcpu(&vcpu, guest_code);
+> +	__TEST_REQUIRE(__vcpu_has_sbi_ext(vcpu, KVM_RISCV_SBI_EXT_PMU),
+> +				   "SBI PMU not available, skipping test");
+> +
+> +	__TEST_REQUIRE(__vcpu_has_isa_ext(vcpu, KVM_RISCV_ISA_EXT_SSCOFPMF),
+> +				   "Sscofpmf is not available, skipping overflow test");
+> +
+> +	test_vm_setup_snapshot_mem(vm, vcpu);
+> +	vm_init_vector_tables(vm);
+> +	vm_install_interrupt_handler(vm, guest_irq_handler);
+> +
+> +	vcpu_init_vector_tables(vcpu);
+> +	/* Initialize guest timer frequency. */
+> +	vcpu_get_reg(vcpu, RISCV_TIMER_REG(frequency), &timer_freq);
+> +	sync_global_to_guest(vm, timer_freq);
+> +
+> +	run_vcpu(vcpu);
+> +
+> +	test_vm_destroy(vm);
+> +}
+> +
+>  int main(void)
+>  {
+>  	test_vm_basic_test(test_pmu_basic_sanity);
+> @@ -509,5 +619,8 @@ int main(void)
+>  	test_vm_events_snapshot_test(test_pmu_events_snaphost);
+>  	pr_info("SBI PMU event verification with snapshot test : PASS\n");
+>  
+> +	test_vm_events_overflow(test_pmu_events_overflow);
+> +	pr_info("SBI PMU event verification with overflow test : PASS\n");
+> +
+>  	return 0;
+>  }
 
-Here is the summary with links:
-  - [net-next,v3,1/2] net: dsa: mt7530-mdio: read PHY address of switch from device tree
-    https://git.kernel.org/netdev/net-next/c/868ff5f4944a
-  - [net-next,v3,2/2] net: dsa: mt7530: simplify core operations
-    https://git.kernel.org/netdev/net-next/c/7c5e37d7ee78
-
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+BR,
+Muhammad Usama Anjum
 
