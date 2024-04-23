@@ -1,132 +1,125 @@
-Return-Path: <linux-kernel+bounces-155729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63FE48AF643
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:06:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 516168AF646
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:06:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0335E1F22E70
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:06:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06C381F27860
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF07713E3EF;
-	Tue, 23 Apr 2024 18:05:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 839FD13FD61;
+	Tue, 23 Apr 2024 18:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WkDHqjiE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="RFLwoUE+"
+Received: from forward502b.mail.yandex.net (forward502b.mail.yandex.net [178.154.239.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 098EF1420B3;
-	Tue, 23 Apr 2024 18:05:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4121013E3FA;
+	Tue, 23 Apr 2024 18:05:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713895550; cv=none; b=VNfa603+sIGce/4FBocrkimrd+/w6LFjvG3ovg7bO5UDu5u6SQFAgNzZu4vubfIREJzhT1JnEbDCsLpi+0po4AKTh+RVWVZZlWjx9mPuzej2mq5jcQ5W/Q3JUGlKWloVOBDkaNnVzafF/VIrfSwq+nO45aIqlcE6TxGdHj0xvrc=
+	t=1713895554; cv=none; b=X07r0eR/Ls+YcEUB4NhE8He2ky4p7dWn5VEf/gWWkYEXE+PaCm3FwLAmQ036DQQ8EC76zaLOgwcR97MIDHDcSCI8H0V/pYowsu5Z8Ywu9d0bUwDBrmpEwLNZYSZx3pFeC6O+UKpFPYb5TqyXGZmxv4qQQEZdvwKvYI9spCJvBVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713895550; c=relaxed/simple;
-	bh=OGMcGHaqmVBhYuFv0XCcX1mQzR2UG/wAjsLV5VmbwUI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G+DdEU+AEViiqiKcoUVb3FLfIpgokpWGOglObbeILErporcoluqG+8CPDNwEbsNH7KzmuHuADpYt2OoLBcc3lYy4aea6vofxOI4FAzjhsuroS18kktu1CWqPuF9hEm6Dy9H5vFUJlQ6xtNHL1HdQjqmimXtA7X11A0lnHyUDFDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WkDHqjiE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8526FC2BD10;
-	Tue, 23 Apr 2024 18:05:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713895549;
-	bh=OGMcGHaqmVBhYuFv0XCcX1mQzR2UG/wAjsLV5VmbwUI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=WkDHqjiE3LCkX3HPeTNDULGQ0DVIPnQl/X1zq8Aw/MBVnjMFOVxl3ARRK9bmWkvAW
-	 U0BlupYN2L8DjgJgUGOAVk7x2LUxcBv0xDo4VwabqNunS6+sVGDWwWEEALwaHmUqox
-	 M8KOVtS9SFnqyEbuUIbBdNfR4pgHPeyLsRa9IN+edz0oR2DlbOnoRnyzQmhjqwJPO+
-	 20i2Z1cxZSfuS0Bvy/nVywABRQL2OoE/vx+agEkCBxyzDdgawrLKFOCpNDDAM3ddM3
-	 ZK+wneHy9SkQY9UOBCp8KzcIYCNWn8++17H99GKJ2xq2Hwm0qJXVemkzuO5JzUZ+jb
-	 cueC0bXubAI9g==
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5acdbfa7a45so1850905eaf.2;
-        Tue, 23 Apr 2024 11:05:49 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWnzS3ct8FM6VkTqPOKolee1bv2qctRhUqpkHk4zExoWj2Ac3C5TRa9kwBXn0RVqb/n3ppicpN+8LKhJS4SzpYgdktufdiG5RfT8rr7nUiMCJnv0LqDHMR4VwmUb3OwapR+9/CxogY=
-X-Gm-Message-State: AOJu0Yyo3Pva20DbbRmtj50IaSU8bcAKIL8luWvt61dTpQOsy+z1N4JG
-	yA70HHzHgU5EQMn0zkUgm8Se0jg1AFU/ctIx2WOthmxL6B0O/XzRq6WfAcjmJY7nI95v3omW8dI
-	0VM8Spk6UdmqHma4hFrwbiMNGmqU=
-X-Google-Smtp-Source: AGHT+IHA3zRxg1BGJSgFNpcroEm6mCZAwWfZ03DVjGk2V5epNCqRunPkRnnFOzcfuQronb1t6Qww4+MDB94LAzg7Vaw=
-X-Received: by 2002:a4a:ee8d:0:b0:5aa:6b2e:36f0 with SMTP id
- dk13-20020a4aee8d000000b005aa6b2e36f0mr126873oob.0.1713895548914; Tue, 23 Apr
- 2024 11:05:48 -0700 (PDT)
+	s=arc-20240116; t=1713895554; c=relaxed/simple;
+	bh=cLmdiFJGIPbJIGlD75Kc+63tuL2Yo4mblrORZE2KIGw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MEIYd1T9xGHGyGPMEWKx/Wr2l9ahcEalAuOysl93Vu0ftHSwcSLMHAbuCPACWC/UOuvaV1D8bc1l38caiNc4JrMdgNVH/50xcHG3lEOxf5BOhz6SeGHqcFGqe/B7Bkxbb2MZsRYA0jKyzqqg0zkz+j+lRY2Wacba9JZx3W0CPjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=RFLwoUE+; arc=none smtp.client-ip=178.154.239.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+Received: from mail-nwsmtp-smtp-production-main-59.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-59.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:1a14:0:640:8120:0])
+	by forward502b.mail.yandex.net (Yandex) with ESMTPS id 6AA705EFBE;
+	Tue, 23 Apr 2024 21:05:42 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-59.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id d5Pu8ZKo7Os0-yyoYSl4F;
+	Tue, 23 Apr 2024 21:05:41 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1713895541; bh=glKFAk+N6amMEPICwdwbwvr3K4LhVCrg+bBmsDo+ia0=;
+	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
+	b=RFLwoUE+qG5ib7z005EuxVvB/+ijx1A+4g4h5j0gRFh2sl/tgRwJS0KwED3GNWvTx
+	 X1t9gaPnplbBl3pp9b8+Oue3z537Nvx32xWaRg6o5GZ2LRgRX2eeV1wXvXNw5AJfL4
+	 4w53QR7PCLlAjCSTIj2Tgi37z2iEfh5N3AmKs/00=
+Authentication-Results: mail-nwsmtp-smtp-production-main-59.iva.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+Message-ID: <bcc5c69a-fdb7-4835-bd1f-4093d360822c@yandex.ru>
+Date: Tue, 23 Apr 2024 21:05:39 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <13515747.uLZWGnKmhe@kreacher> <1913649.CQOukoFCf9@kreacher>
- <8e26c3cb-1283-4561-95aa-30432f1d13ee@linaro.org> <CAJZ5v0h=15LYhukPWmHPK5hvD=2u75rTEiC8oJMVBFziMkB5gQ@mail.gmail.com>
- <33cafcb3-af9c-4058-b6b6-4e5aab6e21cb@linaro.org>
-In-Reply-To: <33cafcb3-af9c-4058-b6b6-4e5aab6e21cb@linaro.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 23 Apr 2024 20:05:37 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hR-fN08g-g_S261e+U=2Enfza3b9NZpmp4yhzAa=426A@mail.gmail.com>
-Message-ID: <CAJZ5v0hR-fN08g-g_S261e+U=2Enfza3b9NZpmp4yhzAa=426A@mail.gmail.com>
-Subject: Re: [PATCH v1 07/16] thermal: gov_power_allocator: Eliminate a
- redundant variable
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
-	Linux PM <linux-pm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Lukasz Luba <lukasz.luba@arm.com>, 
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] implement OA2_INHERIT_CRED flag for openat2()
+Content-Language: en-US
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
+ Eric Biederman <ebiederm@xmission.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
+ Alexander Aring <alex.aring@gmail.com>, linux-fsdevel@vger.kernel.org,
+ linux-api@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+ =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+References: <20240423110148.13114-1-stsp2@yandex.ru>
+ <4D2A1543-273F-417F-921B-E9F994FBF2E8@amacapital.net>
+From: stsp <stsp2@yandex.ru>
+In-Reply-To: <4D2A1543-273F-417F-921B-E9F994FBF2E8@amacapital.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 23, 2024 at 8:00=E2=80=AFPM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> On 23/04/2024 19:54, Rafael J. Wysocki wrote:
-> > On Tue, Apr 23, 2024 at 7:35=E2=80=AFPM Daniel Lezcano
-> > <daniel.lezcano@linaro.org> wrote:
-> >>
-> >> On 10/04/2024 18:12, Rafael J. Wysocki wrote:
-> >>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >>>
-> >>> Notice that the passive field in struct thermal_zone_device is not
-> >>> used by the Power Allocator governor itself and so the ordering of
-> >>> its updates with respect to allow_maximum_power() or allocate_power()
-> >>> does not matter.
-> >>>
-> >>> Accordingly, make power_allocator_manage() update that field right
-> >>> before returning, which allows the current value of it to be passed
-> >>> directly to allow_maximum_power() without using the additional update
-> >>> variable that can be dropped.
-> >>>
-> >>> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >>> ---
-> >>
-> >> The step_wise and the power allocator are changing the tz->passive
-> >> values, so telling the core to start and stop the passive mitigation t=
-imer.
-> >>
-> >> It looks strange that a plugin controls the core internal and not the
-> >> opposite.
-> >>
-> >> I'm wondering if it would not make sense to have the following ops:
-> >>
-> >>          .start
-> >>          .stop
-> >>
-> >> .start is called when the first trip point is crossed the way up
-> >> .stop is called when the first trip point is crossed the way down
-> >>
-> >>    - The core is responsible to start and stop the passive mitigation =
-timer.
-> >>
-> >>    - the governors do no longer us tz->passive
-> >>
-> >> The reset of the governor can happen at start or stop, as well as the
-> >> device cooling states.
-> >
-> > I have a patch that simply increments tz->passive when a passive trip
-> > point is passed on the way up and decrements it when a passive trip
-> > point is crossed on the way down.  It appears to work reasonably well.
->
-> Does it make the governors getting ride of it ? Or at least not changing
-> its value ?
+23.04.2024 19:44, Andy Lutomirski пишет:
+>> On Apr 23, 2024, at 4:02 AM, Stas Sergeev <stsp2@yandex.ru> wrote:
+>>
+>> ﻿This patch-set implements the OA2_INHERIT_CRED flag for openat2() syscall.
+>> It is needed to perform an open operation with the creds that were in
+>> effect when the dir_fd was opened. This allows the process to pre-open
+>> some dirs and switch eUID (and other UIDs/GIDs) to the less-privileged
+>> user, while still retaining the possibility to open/create files within
+>> the pre-opened directory set.
+> I like the concept, as it’s a sort of move toward a capability system. But I think that making a dirfd into this sort of capability would need to be much more explicit. Right now, any program could do this entirely by accident, and applying OA2_INHERIT_CRED to an fd fished out of /proc seems hazardous.
 
-Not yet, but I'm going to update it this way.  The governors should
-not mess up with tz->passive IMV.
+Could you please clarify this a bit?
+I think if you open someone else's
+fd via /proc, then your current creds
+would be stored in a struct file, rather
+than the creds of the process from
+which you open. I don't think creds
+can be stolen that way, as I suppose
+opening via proc is similar to open
+via some symlink.
+Or is there some magic going on
+so that the process's creds can
+actually be leaked this way?
+
+> So perhaps if an open file description for a directory could have something like FMODE_CRED, and if OA2_INHERIT_CRED also blocked .., magic links, symlinks to anywhere above the dirfd (or maybe all symlinks) and absolute path lookups, then this would be okay.
+
+This is already there.
+My fault is that I put a short description
+in a cover letter and a long description
+in a patch itself. I should probably swap
+them, as you only read the cover letter.
+My patch takes care about possible escape
+scenarios by working only with restricted
+lookup modes: RESOLVE_BENEATH, RESOLVE_IN_ROOT.
+
+I made sure that symlinks leading outside
+of a sandbox, are rejected.
+Also note that my patch requires O_CLOEXEC
+on a dir_fd to avoid the cred leakage over
+exec syscall.
+
+> Also, there are lots of ways that f_cred could be relevant: fsuid/fsgid, effective capabilities and security labels. And it gets more complex if this ever gets extended to support connecting or sending to a socket or if someone opens a device node.  Does CAP_SYS_ADMIN carry over?
+Hmm, I don't know.
+The v1 version of a patch only changed
+fsuid/fsgid. Stefan Metzmacher suggested
+to use the full creds instead, but I haven't
+considered the implications of that change
+just yet.
+So if using the full creds is too much because
+it can carry things like CAP_SYS_ADMIN, then
+should I get back to v1 and only change
+fsuid/fsgid?
 
