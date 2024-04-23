@@ -1,132 +1,131 @@
-Return-Path: <linux-kernel+bounces-155610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA5B78AF4C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B04DD8AF4C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:01:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD2CF1C22494
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:00:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E07891C21D21
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:01:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E5B113D8A8;
-	Tue, 23 Apr 2024 17:00:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BAED13D52C;
+	Tue, 23 Apr 2024 17:01:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="A/Wl6+zC"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2EjxUol1"
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7946313D625
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:00:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7533C13D88A
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:01:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713891643; cv=none; b=S7CaOYfnaTFtr9S7CcuEImLX1TbyxwskqjGekjNxuCrrqV2Ju/WPg5XP8Y4f3GW4NgDFqCF0unZH5RZ4+ONHLUCd2980X1XuKw8E2IYR1Ty4sXIanh7nys4f34mewSNQXI/vShuh+6vRzvTnzXU4AHo+kViySqsTZGonVWyGctg=
+	t=1713891667; cv=none; b=hf2RqfYevfRZ1N+pro13SM5q2G8xN9vGJWquPYdgh3L8DYM1jsyQIqKiWTOCzL3X8pkGVw//RIFNmsOSr6t+9zjR5/TjUg560jbWgLejcjWTppfaZBMb/4ZrEliPrzvgkYDNl/hQfxDPbzKH5m64F0g8WndXG84oqM58PpMlXW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713891643; c=relaxed/simple;
-	bh=koJE8orB6Lr920KYY5A47CTkKeZrCUS3/cmdeXdfgCM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IeHfDym3G+ofELL7VzB2RDOOjojpB3BTJVnqp5kJMB4dj5bw7fqIyo7VtFDX2Zgz4QoURIisVtkRy7pDAk+l865qZL9pSSkdrh6WZ4KPFIrGLuWW5ejlIFoinHU9vg1IaWY9KPCEPpjsdsiGGi/StId/CCFiexHLDdVekycXB+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=A/Wl6+zC; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a55b93f5540so293589766b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:00:42 -0700 (PDT)
+	s=arc-20240116; t=1713891667; c=relaxed/simple;
+	bh=aswP9hdxKwb+09GNXGRaPB0IEecRqGKQdL5a6+WxhGM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bo3TTGWpKLmExlgyPuA+kaGZHlvgtZ0udIlv5CZE9itzFPXkHrlwN8QZdKoyOkdjsdZnSAKJGA7+yHqCLBbGWZPbydTXjkDwSKLbwPqjP1mlmlppZlMlUfENYDma1B7ufXFkBR1hep8zPoy0p5BtQOsvunPihQBzTzkLJJe+Hi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2EjxUol1; arc=none smtp.client-ip=209.85.166.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7da939572b5so139750839f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:01:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1713891641; x=1714496441; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7kpoRkSgmIbeAMxE5jSosiKeK58hdGccskOzXdueAwo=;
-        b=A/Wl6+zC1A3ocpvhH8Q4p1DLqofzfPNJL6aEDJ+3gSE0lpesO30tZTBwPTxtnVk2Af
-         JqyshzowNUAK9IrprDrU7cj23vj1BrdgehgNy/AFD43u12gDQlHUaVxWB0kE7zMrelOB
-         TtHUuG9DhZ0Zy0UpTaXTT+FC6OTJIQcl5PiR+a4h5Lw3kTLlVLetJ9NLnP+ucuFdjirK
-         305BkRYqooN0uBjgDxa7tFkDEQpd+10tCt/6fvsezA7lPpFr4O+iV9EQv+h6uC4lyLHb
-         XnfhSUcOVRpoHqZqV5CuUQbewkhTeapl+4/BY0E0GSf1NtNcbnxMiGWsKVlIWr5rEFcr
-         NQTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713891641; x=1714496441;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1713891664; x=1714496464; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7kpoRkSgmIbeAMxE5jSosiKeK58hdGccskOzXdueAwo=;
-        b=bpG3SBb+Yd2uItXcUHsMf6ZT80KiTZhNN2qVfF6PW3Ef++Avr0YmuuatRpzE5DisxD
-         6E5Bx74d9CgDtykXcCBgyRLtRbnwOY6UAIVNGadiyT14UAo22vXOSUH1o6HWRVp3WBv0
-         kvpQHkfJ9Fc+i8b1GXVqAizifWz07zJyisbTZKKqBYmyC3aUUqpOOaKjTpkIPITxe2qt
-         BM1IRSh+tDlueo6dDjLpRiPWM/y6taTHz/pDiSeuet6+q3vCL4L281wlliOBhifEs507
-         XQIs6adgb8CYQeF58TbaS2+LEl58ojjoxHjqfbMeDNaB4cFcqq2sAGxOytfiKlt2UnGK
-         iEIg==
-X-Forwarded-Encrypted: i=1; AJvYcCXED90eK1eR6OTJO5DbN/jQ94l8dAlNeZNSfmCZrcPprj21f3aKVRFgfL/QKtCSesIbgmWFRd11+HyfJNXGJYO2HeyMEeY7G/au0IVJ
-X-Gm-Message-State: AOJu0YxWrwx75+kIkUOzdDVbouSxrGueuKu5PUwsoJB8FELc5hzCl+jd
-	nzrOjYAA8rshhj0BqxaNncnt7IvvZ6WXnKLNa8TyKAxl80MA/LhWOjnRTFSYEBE=
-X-Google-Smtp-Source: AGHT+IGcGANkzjcqPRS58akjvbDATplTwj1qOXK/GFOuWc3MEiIWZm4cD/e4azAjA7fogSoeRMZxBA==
-X-Received: by 2002:a17:906:5857:b0:a52:2772:b9cb with SMTP id h23-20020a170906585700b00a522772b9cbmr8740381ejs.24.1713891640539;
-        Tue, 23 Apr 2024 10:00:40 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id z18-20020a170906435200b00a4e657a5f1asm7220478ejm.112.2024.04.23.10.00.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 10:00:40 -0700 (PDT)
-Date: Tue, 23 Apr 2024 19:00:39 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Tomasz Jeznach <tjeznach@rivosinc.com>
-Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, 
-	Robin Murphy <robin.murphy@arm.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Anup Patel <apatel@ventanamicro.com>, devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, 
-	Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com, linux-kernel@vger.kernel.org, 
-	Rob Herring <robh+dt@kernel.org>, Sebastien Boeuf <seb@rivosinc.com>, iommu@lists.linux.dev, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Nick Kossifidis <mick@ics.forth.gr>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 7/7] iommu/riscv: Paging domain support
-Message-ID: <20240423-64e0112d612ab1f011c4b26e@orel>
-References: <cover.1713456597.git.tjeznach@rivosinc.com>
- <301244bc3ff5da484b46d3fecc931cdad7d2806f.1713456598.git.tjeznach@rivosinc.com>
+        bh=JLMRks9PdH+g104L81D287ju8A0NrozcbxbmvZl/Zoo=;
+        b=2EjxUol1sf/a+UBLSAipJ30Dd/j+tsWIwtoBEMBjsNjmKVCCpZ/V59XqTWUOF1l2iF
+         JcNE8xxtY46hamhC06kO168CU5bkn2RfehiPVmStYpAs1+mtWgFIXjtted0vcl3SHyo1
+         /JxgdyVikMPwAnuBFqB8zFzM9yit0VnfSD4y8Vkyd3YAaZqsj26H4Y6cxAdAEkg/kYDP
+         OdsqQP2dpeoegaOfs9hTWZ6BPXtSsfc/H689masPI3IuYufjp/3wvMyTXXat18cYkBe5
+         xJ+74HmMMHXmmHYN/tnaSO+yIvw6CLmz82BWgkVtflJXg9Eo6Ca4BiiXkKgAA2P3nLm3
+         n9Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713891664; x=1714496464;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JLMRks9PdH+g104L81D287ju8A0NrozcbxbmvZl/Zoo=;
+        b=VOn06pQFh/loYvA7pitUDRjmEtI1tscCdIRMDoiVoei4K/zGntL0Nxr+ZcKwNtZvPE
+         6cEtivvouDz5+Yuo+KUY4sZ2sk016Z+C+h/CKxs/BM7ciw1SJGTK2xzGjuspm3P66V1m
+         XLrATLupTfW9cB+oD+0e12NE98tMsg5J+Zh8qATvMvwqSM0pK0EBsTbuUqRR/E9pUYa5
+         lOd3D7TFY2vWqJzXftL7oVtc2ikKPR8TvA2fKCrrMjhXY9LknSc9sYEPOSq+tXXo5BYa
+         uwU1qQXDM+u6lzCmnC1Lt8ElJXJ3nysg8i+EyW+4j4nrIdXXAAmEiaV+dyAYrvlPcBub
+         xkJA==
+X-Forwarded-Encrypted: i=1; AJvYcCWixHq37EkIIPUGzSSo3T7vGnGROg3Uy1bpxnvp9mthUmg9Vj1QeTjJKrMrB3MD0AQZdv2l4kiuiEOLVYZGcpn7ZyY8VzRYuEo9/TY7
+X-Gm-Message-State: AOJu0YyzyNNccubg8ttVUP1ggITgxYDGRk3y+r5aOkWFhvvthC6lwC4K
+	xkRSJucXSN4X1UliudkfF+8oylVawIjydDyAjf/zKbL4GVT7eiF/pzt9ZBBHxkWqFWjwl7K1FIv
+	j3c1+YnkBc4RpevorYdJQxfSJY4mFlMQdrJdC
+X-Google-Smtp-Source: AGHT+IGcw1mE7GQw0RFfG3rYNhp3N2M96TVgZiM44ui1PYuC2rOp0yhfUgHlgGhehZWYsoHgBqII2uXkVaAYJ4TGtYU=
+X-Received: by 2002:a05:6602:6b12:b0:7d5:de78:1d8 with SMTP id
+ ih18-20020a0566026b1200b007d5de7801d8mr21123669iob.18.1713891664253; Tue, 23
+ Apr 2024 10:01:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <301244bc3ff5da484b46d3fecc931cdad7d2806f.1713456598.git.tjeznach@rivosinc.com>
+References: <20240221160215.484151-1-panikiel@google.com> <20240221160215.484151-8-panikiel@google.com>
+ <09579b62-77fe-4ba4-b3a1-e3b17dff0188@linaro.org>
+In-Reply-To: <09579b62-77fe-4ba4-b3a1-e3b17dff0188@linaro.org>
+From: =?UTF-8?Q?Pawe=C5=82_Anikiel?= <panikiel@google.com>
+Date: Tue, 23 Apr 2024 19:00:53 +0200
+Message-ID: <CAM5zL5q7LJC8AmrtM7fH03zyvQug8k4WN4t2=Q-6jQBZAtYYEg@mail.gmail.com>
+Subject: Re: [PATCH v2 7/9] media: dt-bindings: Add Chameleon v3 framebuffer
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: airlied@gmail.com, akpm@linux-foundation.org, conor+dt@kernel.org, 
+	daniel@ffwll.ch, dinguyen@kernel.org, hverkuil-cisco@xs4all.nl, 
+	krzysztof.kozlowski+dt@linaro.org, maarten.lankhorst@linux.intel.com, 
+	mchehab@kernel.org, mripard@kernel.org, robh+dt@kernel.org, 
+	tzimmermann@suse.de, devicetree@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	linux-media@vger.kernel.org, chromeos-krk-upstreaming@google.com, 
+	ribalda@chromium.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 18, 2024 at 09:32:25AM -0700, Tomasz Jeznach wrote:
-..
-> +static size_t riscv_iommu_unmap_pages(struct iommu_domain *iommu_domain,
-> +				      unsigned long iova, size_t pgsize, size_t pgcount,
-> +				      struct iommu_iotlb_gather *gather)
-> +{
-> +	struct riscv_iommu_domain *domain = iommu_domain_to_riscv(iommu_domain);
-> +	size_t size = pgcount << __ffs(pgsize);
-> +	unsigned long *ptr, old;
-> +	size_t unmapped = 0;
-> +	size_t pte_size;
-> +
-> +	while (unmapped < size) {
-> +		ptr = riscv_iommu_pte_fetch(domain, iova, &pte_size);
-> +		if (!ptr)
-> +			return unmapped;
-> +
-> +		/* partial unmap is not allowed, fail. */
-> +		if (iova & ~(pte_size - 1))
-                           ^ Shouldn't this ~ be removed?
+Hi, sorry for the long delay
 
-> +			return unmapped;
-> +
-> +		old = READ_ONCE(*ptr);
-> +		if (cmpxchg_relaxed(ptr, old, 0) != old)
-> +			continue;
-> +
-> +		iommu_iotlb_gather_add_page(&domain->domain, gather, iova,
-> +					    pte_size);
-> +
-> +		iova += pte_size;
-> +		unmapped += pte_size;
-> +	}
-> +
-> +	return unmapped;
-> +}
-> +
+On Mon, Feb 26, 2024 at 10:10=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 21/02/2024 17:02, Pawe=C5=82 Anikiel wrote:
+> > The Chameleon v3 uses the framebuffer IP core to take the video signal
+> > from different sources and directly write frames into memory.
+> >
+> > Signed-off-by: Pawe=C5=82 Anikiel <panikiel@google.com>
+>
+> ...
+>
+> > +
+> > +  reg:
+> > +    items:
+> > +      - description: core registers
+> > +      - description: irq registers
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  google,legacy-format:
+> > +    type: boolean
+> > +    description: The incoming video stream is in 32-bit padded mode.
+>
+> Why is this a property of board DTS? Can't the input streams change
+> depending on the usage? Who defines the incoming stream format?
 
-Thanks,
-drew
+The input streams are defined by this hardware module - there are
+specific input lines for red, green, blue channels, h/v sync, etc.
+However, there are two variants of this module which behave
+differently - one has 60 input lines and outputs BGRX32, and the other
+one has 192 input lines and outputs RGB24.
+
+The "incoming 32-bit padded mode" referred to an internal bus inside
+of the module, which I realize isn't very meaningful. Instead, I think
+it would be better to have two compatibles, one for each variant of
+the module.
 
