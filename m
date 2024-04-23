@@ -1,304 +1,137 @@
-Return-Path: <linux-kernel+bounces-154790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A7AB8AE10A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:31:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCEA58AE10D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:32:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 149771F21CDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:31:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FBCBB22ACD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 841DF5915C;
-	Tue, 23 Apr 2024 09:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0459E58ABC;
+	Tue, 23 Apr 2024 09:32:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FEouxlI3"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WMswpRVE"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E368351016;
-	Tue, 23 Apr 2024 09:31:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF9445820E
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:32:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713864703; cv=none; b=tqgFg6IOpIuoMz9Hiu52UhKYJO+SUytx9evuwX4ijEFijS8II7wCfDsGnJTwLTCmEu7vK+KB4G7tLwXuR/8mAxplmQ9yKKrQ52mziDncakmfMgj3Asvcz8Zcuy7tZs7BrolPNCBT4YN8mj5Q2bk+bmuWAgRxPQNOBdnhhojEFOA=
+	t=1713864731; cv=none; b=S/KcLLhz1kSR9f7sWAODXxKpjcJ6JNqVOKvtTvvwOUhiq73Z+fT4cxfUD9yZ9A9EI0iUKMmA9P3KfAhwKHMwpySDf6GNyjbs7OqTH6MnFeJo83lNqsn4UtjdRtJcZBCcyw6uXOlCuzfM9J7kNk/0ziI8YSDG0IiZZVmff2o1nmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713864703; c=relaxed/simple;
-	bh=b3TWFQWb0tix0MkMtNzrHwbXq4CRG4GXigE0Dw28aBc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sNCEEZYLjsIvcDZ7qZskXOxXhT5s53t3ai1mx+Kpsj6En5NOW808Z8H8wWkDYGQNUDARC7uF53KYoEneRlXEwCjKC/t8htJzox8Raq2aICPiPnONdauykyg5o1DY/zueY/6X1zHJ3zDD0nVOSOqs+l2e/2MK7EAbaGAC6bsKwAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FEouxlI3; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2ab88634cfaso4282334a91.0;
-        Tue, 23 Apr 2024 02:31:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713864701; x=1714469501; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jFzo7Qok9UOM9YVV5ek8GZqoP/DoFpgiYqJRlA4fUxQ=;
-        b=FEouxlI34kawlB6MYpBx0sAScB5cNgG2DaAhEy0V0SnfNyGU3YP0FVXMWn5nII9rbC
-         GV3At833xYYe6NMLCSc2iWPGQHWMmJHkoZGToYRymRyPK4jogIXFfvUXmtrHDTRDAejO
-         S58cClrakn5kPpxmqe4dqptZO5jWpZ6btC5Q8Sa2R09f1qmVILx97sQOX8MLjQ72KWLR
-         Nrwbs56UcMb4oLTDOcT7Qx5u2tlaRjR0g3LloLbI9CTWI1SZ8/uUZ3rmVZK+KBP8q9Sf
-         3L/BlkpRSgxoV5CxsQB97MhIHKt4yMJJ6wWoHD2EnF89p0nxZr8brG90TcAUp4NZGqQh
-         M4oQ==
+	s=arc-20240116; t=1713864731; c=relaxed/simple;
+	bh=LdO/nreoe2L4sevFypjtMadn+EKT8D2kRiKGDBbpSy4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tV5s0aYLZ8cipoH2uNDPDmZyASQXu7+NRVMJNV92B7pRHepDnmntI3KCmZtPzkCPZ0Wt/ZNt6zxLrvfVxU+oDo3NFqhkOvY1HNgWxIIPtlZijOTSyUypcFMuVrj+cynVsIH0ppMQNHbFZxfut+ZjHPpEE0Qd0sZiRIV4AZb7b/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WMswpRVE; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713864728;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rrBGJotUcgHqpi6O/DfS++qUvwL5rymvBmbeSDD6nCk=;
+	b=WMswpRVEOFOgCSu0p6c3oraX6Lh6qC08172oIqZ0NuLXxN5oa7iL8Vd7A34dNotE/tyTb5
+	ASS0lE2BJ/y+IYTJfvJjtKMLhwSZmjnGgZiizRSq2+lPPqN1kROOmORDqWdS6iVoQc5weo
+	g/D6bGuP9/LeSFadAluamImELUV60Jc=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-26-q0-KX9-fNaebq4cliqmCCA-1; Tue, 23 Apr 2024 05:32:06 -0400
+X-MC-Unique: q0-KX9-fNaebq4cliqmCCA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-343ee356227so3557385f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 02:32:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713864701; x=1714469501;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jFzo7Qok9UOM9YVV5ek8GZqoP/DoFpgiYqJRlA4fUxQ=;
-        b=TOdZNUQKUx9NPQI+xVMEnMGjtJNG/gUU/UkWyu8JAcxmYwg74ASZLqIM9lANjUHhKy
-         IMmLhRYKes6sYBwV92Z/EyKLSqSY5Js+yjXKaTqXK4/YUksoFwGMZ59rVQz0hBUmJBf0
-         Bp7JyjVi3iVJnBDJmforEk+l7NNWBQYug45O4YYgXStO0BQyVrpPyMzuWu45ZnLnoyA3
-         2CkPDkpvHjkUEnXRdFOiWt8SwQxY6egBBXEYbHm6dT4atHkG7On7j4/yniU4LuoCb5Kh
-         Gix5puPLgZoeJuP+YSEM3SjgEygeevNPaJEwK9G6Gh5V3F/zIoaqk0j4TDyy5VOyIuUI
-         JsTw==
-X-Forwarded-Encrypted: i=1; AJvYcCXwLiAhtn04YcGtFRaKbOlxMZXKOO2b6zR3R8QdJ51RVMLBJxg3VJ3RPmVqz+YXg0VKcbQ54vFHRFwt4i+Y+tNYOqZuItM/MVuBrnLkR+iDU7bPRHQNO2IvB90forrkU3bR35Bit9YaVSMUgg==
-X-Gm-Message-State: AOJu0Yx1y+0MMJRZ0woZw98uNob5nZMfrYAhkZ5HHpXLCF5AVkA/QZ1O
-	Pd2XBpGr0Hcbmd1hM4DC/9vqF0aGcAlccCBU6LzcG5rqrNlSDULW
-X-Google-Smtp-Source: AGHT+IGPqnDbQJ4SDSWuDvIY7j4QSuZ2aMzG/rVkl/tk1flkyFfSJ14gXOz//hUe/um9aIfLeiCHdg==
-X-Received: by 2002:a17:90a:43e3:b0:2a2:bc8c:d677 with SMTP id r90-20020a17090a43e300b002a2bc8cd677mr12153342pjg.26.1713864700976;
-        Tue, 23 Apr 2024 02:31:40 -0700 (PDT)
-Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id q6-20020a17090a430600b002a2fe0998f0sm10745283pjg.19.2024.04.23.02.31.38
+        d=1e100.net; s=20230601; t=1713864726; x=1714469526;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rrBGJotUcgHqpi6O/DfS++qUvwL5rymvBmbeSDD6nCk=;
+        b=Xzh/tG59dFqjQmrPO3i4bnDSeA23qibc33gO6/y9CWRWt6O/6z014Y8LkL0cJty2J4
+         D3c22jBZbyUuxc02RLYDwwkVdjg7+DAsQbQpDCN273cCQpWK6XFWslvro0wtOnsSyaPM
+         aCuAfi9Z5tAdS3A/4ZEzAriq8PZiM/YwpwimfHv7rcnSMbfRdNhx9wrcaqbjEw+iJLGt
+         JFSsEtV/UU499/RikhZ2hEp2LPpHDGSnhlFC19ZeX5bSmlpR2YwpR+9Mm6LtX/fRpGQJ
+         lmP34wwfmngOFnjAdkp3sObuk+3g7VvgCTasdUcOn73vKv0ecIkWv4wTQ3Dm3g69qizt
+         0MFA==
+X-Forwarded-Encrypted: i=1; AJvYcCU8TRYFOnU2ppAATwo7VApmFLG8/pEnODQe95WuxPHmBA/eHzP4U2I3i7EuyFROjgJQZ7Afn+ccVRBjjuQB1yVsE/3P4vWlo+BnTSZW
+X-Gm-Message-State: AOJu0YwB/YWp5+TDkoiZlQGZQ4MyLDzGJqjpvvc9KfJMAz3+oqbBusZn
+	DLpTE8ucz0JEd5AhnjVviioY9zS1OV31+ekYCwir6P00GetK/xi2Maq1AFDrVhLZP9UG8ppcl0W
+	NFg+vRUXJar9YfEgeuS9G0R42hq45+LF75nIX/upuJ4h+GZSgJUFFMzcjh+V2Lw==
+X-Received: by 2002:a05:6000:1291:b0:34b:4afc:5d52 with SMTP id f17-20020a056000129100b0034b4afc5d52mr2733446wrx.9.1713864725716;
+        Tue, 23 Apr 2024 02:32:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH8P3x/S8bRNyl81Q2vOnuSsr15f1ZuacBaA2F08NubH2sSjaSh2fGkeB9/2DMmz8GUM0JX7Q==
+X-Received: by 2002:a05:6000:1291:b0:34b:4afc:5d52 with SMTP id f17-20020a056000129100b0034b4afc5d52mr2733411wrx.9.1713864724960;
+        Tue, 23 Apr 2024 02:32:04 -0700 (PDT)
+Received: from redhat.com ([2a06:c701:7429:3c00:dc4a:cd5:7b1c:f7c2])
+        by smtp.gmail.com with ESMTPSA id z14-20020adfe54e000000b00344a8f9cf18sm14193711wrm.7.2024.04.23.02.32.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 02:31:40 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: syzbot+2a62f58f1a4951a549bb@syzkaller.appspotmail.com
-Cc: jlayton@kernel.org,
-	jack@suse.cz,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	Jeongjun Park <aha310510@gmail.com>
-Subject: [PATCH fs/hfs] hfs: fix deadlock in hfs_extend_file()
-Date: Tue, 23 Apr 2024 18:31:32 +0900
-Message-Id: <20240423093132.55504-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <000000000000f07c2606165ff63a@google.com>
-References: <000000000000f07c2606165ff63a@google.com>
+        Tue, 23 Apr 2024 02:32:04 -0700 (PDT)
+Date: Tue, 23 Apr 2024 05:32:01 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>
+Subject: Re: linux-next: manual merge of the vhost tree with the mm tree
+Message-ID: <20240423053045-mutt-send-email-mst@kernel.org>
+References: <20240423145947.142171f6@canb.auug.org.au>
+ <e07add5b-e772-4a8c-b71f-79f1fe74580a@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e07add5b-e772-4a8c-b71f-79f1fe74580a@redhat.com>
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.9.0-rc4-syzkaller-00274-g3b68086599f8 #0 Not tainted
-------------------------------------------------------
-kworker/u8:6/1059 is trying to acquire lock:
-ffff88805bd4a7f8 (&HFS_I(tree->inode)->extents_lock){+.+.}-{3:3}, at: hfs_extend_file+0xff/0x1450 fs/hfs/extent.c:397
+On Tue, Apr 23, 2024 at 10:21:55AM +0200, David Hildenbrand wrote:
+> On 23.04.24 06:59, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Today's linux-next merge of the vhost tree got a conflict in:
+> > 
+> >    drivers/virtio/virtio_mem.c
+> > 
+> > between commit:
+> > 
+> >    c22e503ced5b ("fix missing vmalloc.h includes")
+> > 
+> > from the mm-unstable branch of the mm tree and commit:
+> > 
+> >    4ba509048975 ("virtio-mem: support suspend+resume")
+> > 
+> > from the vhost tree.
+> > 
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> > 
+> 
+> Easy header conflict. @MST, @Andrew, do we simply want to take that
+> virtio-mem patch via the MM tree to get rid of the conflict completely?
 
-but task is already holding lock:
-ffff88806a48c0b0 (&tree->tree_lock#2/1){+.+.}-{3:3}, at: hfs_find_init+0x16e/0x1f0
+ok by me:
 
-which lock already depends on the new lock.
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
+Andrew if you pick this let me know pls and I will drop it.
 
-the existing dependency chain (in reverse order) is:
+> -- 
+> Cheers,
+> 
+> David / dhildenb
 
--> #1 (&tree->tree_lock#2/1){+.+.}-{3:3}:
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
-       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
-       hfs_find_init+0x16e/0x1f0
-       hfs_ext_read_extent fs/hfs/extent.c:200 [inline]
-       hfs_extend_file+0x31b/0x1450 fs/hfs/extent.c:401
-       hfs_bmap_reserve+0xd9/0x400 fs/hfs/btree.c:234
-       hfs_cat_create+0x1e0/0x970 fs/hfs/catalog.c:104
-       hfs_create+0x66/0xe0 fs/hfs/dir.c:202
-       lookup_open fs/namei.c:3497 [inline]
-       open_last_lookups fs/namei.c:3566 [inline]
-       path_openat+0x1425/0x3240 fs/namei.c:3796
-       do_filp_open+0x235/0x490 fs/namei.c:3826
-       do_sys_openat2+0x13e/0x1d0 fs/open.c:1406
-       do_sys_open fs/open.c:1421 [inline]
-       __do_sys_openat fs/open.c:1437 [inline]
-       __se_sys_openat fs/open.c:1432 [inline]
-       __x64_sys_openat+0x247/0x2a0 fs/open.c:1432
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #0 (&HFS_I(tree->inode)->extents_lock){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
-       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
-       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
-       hfs_extend_file+0xff/0x1450 fs/hfs/extent.c:397
-       hfs_bmap_reserve+0xd9/0x400 fs/hfs/btree.c:234
-       __hfs_ext_write_extent+0x22e/0x4f0 fs/hfs/extent.c:121
-       hfs_ext_write_extent+0x154/0x1d0 fs/hfs/extent.c:144
-       hfs_write_inode+0xbc/0xec0 fs/hfs/inode.c:427
-       write_inode fs/fs-writeback.c:1498 [inline]
-       __writeback_single_inode+0x6b9/0x10b0 fs/fs-writeback.c:1715
-       writeback_sb_inodes+0x905/0x1260 fs/fs-writeback.c:1941
-       wb_writeback+0x457/0xce0 fs/fs-writeback.c:2117
-       wb_do_writeback fs/fs-writeback.c:2264 [inline]
-       wb_workfn+0x410/0x1090 fs/fs-writeback.c:2304
-       process_one_work kernel/workqueue.c:3254 [inline]
-       process_scheduled_works+0xa10/0x17c0 kernel/workqueue.c:3335
-       worker_thread+0x86d/0xd70 kernel/workqueue.c:3416
-       kthread+0x2f0/0x390 kernel/kthread.c:388
-       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&tree->tree_lock#2/1);
-                               lock(&HFS_I(tree->inode)->extents_lock);
-                               lock(&tree->tree_lock#2/1);
-  lock(&HFS_I(tree->inode)->extents_lock);
-
- *** DEADLOCK ***
-
-3 locks held by kworker/u8:6/1059:
- #0: ffff88801be87148 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3229 [inline]
- #0: ffff88801be87148 ((wq_completion)writeback){+.+.}-{0:0}, at: process_scheduled_works+0x8e0/0x17c0 kernel/workqueue.c:3335
- #1: ffffc90004197d00 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3230 [inline]
- #1: ffffc90004197d00 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_scheduled_works+0x91b/0x17c0 kernel/workqueue.c:3335
- #2: ffff88806a48c0b0 (&tree->tree_lock#2/1){+.+.}-{3:3}, at: hfs_find_init+0x16e/0x1f0
-
-======================================================
-
-When a file expansion operation occurs in the hfs file system, 
-unnecessary locking occurs due to recursion. This situation does 
-not appear to be easy to reproduce, but it is very strange logic 
-and must be fixed.
-
-Whether this recursion is intended behavior or not, I think it is a 
-good idea to prevent deadlock by placing mutex_lock() in a higher 
-function than hfs_extend_file().
-
-Reported-by: syzbot+2a62f58f1a4951a549bb@syzkaller.appspotmail.com
-Fixes: 39f8d472f280 ("hfs: convert extents_lock in a mutex")
-Fixes: 1267a07be5eb ("hfs: fix return value of hfs_get_block()")
-Fixes: 54640c7502e5 ("hfs: prevent btree data loss on ENOSPC")
-Signed-off-by: Jeongjun Park <aha310510@gmail.com>
----
- fs/hfs/catalog.c |  4 ++++
- fs/hfs/extent.c  | 26 +++++++++++++++-----------
- 2 files changed, 19 insertions(+), 11 deletions(-)
-
-diff --git a/fs/hfs/catalog.c b/fs/hfs/catalog.c
-index d63880e7d9d6..cece4333f7a7 100644
---- a/fs/hfs/catalog.c
-+++ b/fs/hfs/catalog.c
-@@ -101,7 +101,9 @@ int hfs_cat_create(u32 cnid, struct inode *dir, const struct qstr *str, struct i
- 	 * Fail early and avoid ENOSPC during the btree operations. We may
- 	 * have to split the root node at most once.
- 	 */
-+	mutex_lock(&HFS_I(fd.tree->inode)->extents_lock);
- 	err = hfs_bmap_reserve(fd.tree, 2 * fd.tree->depth);
-+	mutex_unlock(&HFS_I(fd.tree->inode)->extents_lock);
- 	if (err)
- 		goto err2;
- 
-@@ -307,7 +309,9 @@ int hfs_cat_move(u32 cnid, struct inode *src_dir, const struct qstr *src_name,
- 	 * Fail early and avoid ENOSPC during the btree operations. We may
- 	 * have to split the root node at most once.
- 	 */
-+	mutex_lock(&HFS_I(src_fd.tree->inode)->extents_lock);
- 	err = hfs_bmap_reserve(src_fd.tree, 2 * src_fd.tree->depth);
-+	mutex_unlock(&HFS_I(src_fd.tree->inode)->extents_lock);
- 	if (err)
- 		goto out;
- 
-diff --git a/fs/hfs/extent.c b/fs/hfs/extent.c
-index 6d1878b99b30..25de1d48b667 100644
---- a/fs/hfs/extent.c
-+++ b/fs/hfs/extent.c
-@@ -338,38 +338,41 @@ int hfs_get_block(struct inode *inode, sector_t block,
- {
- 	struct super_block *sb;
- 	u16 dblock, ablock;
--	int res;
-+	int res = 0;
- 
- 	sb = inode->i_sb;
- 	/* Convert inode block to disk allocation block */
- 	ablock = (u32)block / HFS_SB(sb)->fs_div;
- 
-+	mutex_lock(&HFS_I(inode)->extents_lock);
- 	if (block >= HFS_I(inode)->fs_blocks) {
- 		if (!create)
--			return 0;
--		if (block > HFS_I(inode)->fs_blocks)
--			return -EIO;
-+			goto out;
-+		if (block > HFS_I(inode)->fs_blocks){
-+			res = -EIO;
-+			goto out;
-+		}
- 		if (ablock >= HFS_I(inode)->alloc_blocks) {
- 			res = hfs_extend_file(inode);
- 			if (res)
--				return res;
-+				goto out;
- 		}
- 	} else
- 		create = 0;
- 
- 	if (ablock < HFS_I(inode)->first_blocks) {
- 		dblock = hfs_ext_find_block(HFS_I(inode)->first_extents, ablock);
-+		mutex_unlock(&HFS_I(inode)->extents_lock);
- 		goto done;
- 	}
- 
--	mutex_lock(&HFS_I(inode)->extents_lock);
- 	res = hfs_ext_read_extent(inode, ablock);
- 	if (!res)
- 		dblock = hfs_ext_find_block(HFS_I(inode)->cached_extents,
- 					    ablock - HFS_I(inode)->cached_start);
- 	else {
--		mutex_unlock(&HFS_I(inode)->extents_lock);
--		return -EIO;
-+		res = -EIO;
-+		goto out;
- 	}
- 	mutex_unlock(&HFS_I(inode)->extents_lock);
- 
-@@ -385,7 +388,10 @@ int hfs_get_block(struct inode *inode, sector_t block,
- 		inode_add_bytes(inode, sb->s_blocksize);
- 		mark_inode_dirty(inode);
- 	}
--	return 0;
-+	return res;
-+out:
-+	mutex_unlock(&HFS_I(inode)->extents_lock);
-+	return res;
- }
- 
- int hfs_extend_file(struct inode *inode)
-@@ -394,7 +400,6 @@ int hfs_extend_file(struct inode *inode)
- 	u32 start, len, goal;
- 	int res;
- 
--	mutex_lock(&HFS_I(inode)->extents_lock);
- 	if (HFS_I(inode)->alloc_blocks == HFS_I(inode)->first_blocks)
- 		goal = hfs_ext_lastblock(HFS_I(inode)->first_extents);
- 	else {
-@@ -444,7 +449,6 @@ int hfs_extend_file(struct inode *inode)
- 			goto insert_extent;
- 	}
- out:
--	mutex_unlock(&HFS_I(inode)->extents_lock);
- 	if (!res) {
- 		HFS_I(inode)->alloc_blocks += len;
- 		mark_inode_dirty(inode);
--- 
-2.34.1
 
