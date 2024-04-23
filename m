@@ -1,122 +1,316 @@
-Return-Path: <linux-kernel+bounces-154625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42C5F8ADE88
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96C0E8ADE8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:48:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED3951F22FA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:47:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 246251F22DD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 07:48:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC73B4AED7;
-	Tue, 23 Apr 2024 07:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D527546522;
+	Tue, 23 Apr 2024 07:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="Jwwtlv4R"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="A47FWdeL";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="VLL3+KC+"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A386653398;
-	Tue, 23 Apr 2024 07:46:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE84347A5D;
+	Tue, 23 Apr 2024 07:48:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713858419; cv=none; b=HG3SBgn1OA1Vvd4OlKGpcxCECidSbKS/VTroXvCuCLenOeJ7/JqM4Hp6cbQlTEIvvjyJgDqDHa5xhMJrPRWR41Vp0BG3PaKxBG0C64k9WqOO5KRKO1qQUh12LCOYvEB6vBVDb8qCqWMty6oKZT0GyInnypV9QbVQVaBheUk3MOc=
+	t=1713858515; cv=none; b=rMWHY7lSoGu/LF+8QwWBHTwgjtJHC1DVerAkc7j1tzkebczNd+2V9oWX6wzSWpkwVnnFQPfJSS/4fA70L55TuYIt+ju+B9HMJsjtC1SC6XE3azt6YDnzrMNoTo+jJ9b0aYtGo/RvwUlQVCSKgz5bYVhvQxjFFtt77d3Aiq1lY+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713858419; c=relaxed/simple;
-	bh=yP6lxvuSymTxQOW4Swfu6DslntzpjimH+bXUZsw9kYk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VWi9TyXE4Z2rIiw6Ns00qEMOmsdUClHj274GCk7aQ8rT5Jew4Xc6LIBBU8BAD8anJSm8nvgyA4Lzwn/x+c7GelX2cFchWPhw6L3rG0Cg9mg9yK5upq7J50kq2HtIBoBsNTsgbnfPYKX8Pt8g+LKvSJEPdqtxHYEgfte8LLkyp+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=Jwwtlv4R; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43N5iwLN027446;
-	Tue, 23 Apr 2024 00:46:54 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	pfpt0220; bh=EaoaSnjxTEUWcZWHn2en1F+5MPQmfw/Te+tM5XZu4yg=; b=Jww
-	tlv4R8ghq1e014LM0RqyLi4pyF9QgJIvU7yjX1FsqHEPmCF1ONR6znL3N3/pF2M0
-	7kQzdQCFyuWkXyQwx+3vSbHxhIgdUfWJDjaQ7u8sDG+815uF6pmQILn1CfCJ2vdb
-	wscB2y/soFGrlQD9Ho5nuZguG6DwjTZgfBX0BqJeDxKIBtTSJmEq0ZkEYe65PZ8l
-	C//07zeCWQIDPzeHZ4Pd/I1sSu6tVUu9+bOs3fph2gcPZeAUsEkCB1bG7cHzWbvA
-	JcYN9CaCClCqGpwRIrr6dGHNSsBwbxkKcXFnmjFa2oiR6FPRIGOTRJUl2qJMz9pY
-	cOSQmXT/Wjc46awqzgA==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3xmd7gg849-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 00:46:54 -0700 (PDT)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Tue, 23 Apr 2024 00:46:53 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Tue, 23 Apr 2024 00:46:53 -0700
-Received: from Dell2s-9.sclab.marvell.com (unknown [10.110.150.250])
-	by maili.marvell.com (Postfix) with ESMTP id 0B1DD3F7051;
-	Tue, 23 Apr 2024 00:46:53 -0700 (PDT)
-From: Piyush Malgujar <pmalgujar@marvell.com>
-To: <andi.shyti@kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC: <sgarapati@marvell.com>, <cchavva@marvell.com>, <jannadurai@marvell.com>,
-        Piyush Malgujar <pmalgujar@marvell.com>
-Subject: [PATCH v7 5/5] i2c: thunderx: Adding ioclk support
-Date: Tue, 23 Apr 2024 00:46:08 -0700
-Message-ID: <20240423074618.3278609-6-pmalgujar@marvell.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240423074618.3278609-1-pmalgujar@marvell.com>
-References: <20240423074618.3278609-1-pmalgujar@marvell.com>
+	s=arc-20240116; t=1713858515; c=relaxed/simple;
+	bh=50WUH8/gJdefZq4G72BFoplcUbcPUBwyyq+E5uJJwpw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=RnyH+Uchd6ihNDFSQhnueNcBW21Jp8L7zRNv0i+UxNF/9wUq0h2AsgrfkhyfeLxcoMR8A/za/c2DtJV3MoxXBkNmiMfu+TtGm1puLNFXhbE/VdrZziq4Ch/+qX1q7zNeoKHLMpboRevgqo9AvH0zXTI4yvRk4uIBZodWncT0Ig0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=A47FWdeL; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=VLL3+KC+ reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1713858512; x=1745394512;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=olb7YuiDqyB6vPx9JqkzKaHx9bpQLEFyzOe5hqPoF6Y=;
+  b=A47FWdeLjnMefa+N9ydnCq6UXYXF6gVb3h8UaXSd11h7ZtvhgYIQh3+I
+   3+ZndWtLjgN8dOZqxnfsRwSCElnadNZpLJ+CT1xeRdGgnBUWhVKCyAKDI
+   Sv2zUDnD2cofOAxaETXnxShQPep2AaX+LL2hTe65r0pTxhBfoSjIETSOj
+   eAUtT2fqInhdCGM6FWK94p7HIH45hviRfxfrl6ZZfbe92UhWLue0TjCgQ
+   oG+JWS0T3wEpq+v6bcGSq+ymrsmveeBcG50gnhMQgkjTAJJ1YqD0f82sy
+   sZH+y/QDpwjPRMuZNsfoMfnM0K1QdKFkIHnDrzmsIGXaNu1c6fg2rD/hr
+   A==;
+X-IronPort-AV: E=Sophos;i="6.07,222,1708383600"; 
+   d="scan'208";a="36558060"
+Received: from vmailcow01.tq-net.de ([10.150.86.48])
+  by mx1.tq-group.com with ESMTP; 23 Apr 2024 09:48:28 +0200
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0DB0D1750DA;
+	Tue, 23 Apr 2024 09:48:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
+	s=dkim; t=1713858503;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=olb7YuiDqyB6vPx9JqkzKaHx9bpQLEFyzOe5hqPoF6Y=;
+	b=VLL3+KC+GYUdsXj6WQoLpvHXIiz4he0woIZyf+LhtGP7xYHCuHzoppErbXlLo3cYItX/vl
+	ZuXMtI568VBJ+D3x7V4yVIqh+j+BvQ7JbV8fo4GBrSB/uJ9X8GLE0q8A39YREKN6PHm1Iw
+	XrcJd8S4VkKoKpRi5DavdOkSXHZRaJIM6/dhrl3sTxMFh/ZCXMsj3EhXNvSwAs5r1GgO1g
+	znsQ11Y6jeuAGmEpNpZKjNR0rqqrwyU97hirzPdg+xlAEkY75MkPOBkfuyEErS5SQ3ZHvS
+	Qd296WKXtS7hb/SKYcZvTJY4IoPUFzf3ewy00DmgL2g49kMgvapVNx0DAW9zSQ==
+From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To: Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Fabio Estevam <festevam@denx.de>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux@ew.tq-group.com,
+	Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH net v2 1/2] net: dsa: mv88e6xxx: Add support for model-specific pre- and post-reset handlers
+Date: Tue, 23 Apr 2024 09:47:48 +0200
+Message-ID: <addee2a493823b4a7e0ea966b1713f4ed6c04a2e.1713858017.git.matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: LJUejYXpfgUN92J9d_k7wGo4j1Sp7OLY
-X-Proofpoint-GUID: LJUejYXpfgUN92J9d_k7wGo4j1Sp7OLY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-23_04,2024-04-22_01,2023-05-22_02
+X-Last-TLS-Session-Version: TLSv1.3
 
-Read the ioclk property as reference clock if sclk not present in acpi
-table to make it SOC agnostic.
-In case, it's not populated from dts/acpi table, use the default clock
-of 800 MHz which is optimal in either case of sclk/ioclk.
+Instead of calling mv88e6xxx_g2_eeprom_wait() directly from
+mv88e6xxx_hardware_reset(), add configurable pre- and post-reset hard
+reset handlers. Initially, the handlers are set to
+mv88e6xxx_g2_eeprom_wait() for all families that have get/set_eeprom()
+to match the existing behavior. No functional change intended (except
+for additional error messages on failure).
 
-Signed-off-by: Piyush Malgujar <pmalgujar@marvell.com>
-Acked-by: Andi Shyti <andi.shyti@kernel.org>
+Fixes: 6ccf50d4d474 ("net: dsa: mv88e6xxx: Avoid EEPROM timeout when EEPROM is absent")
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 ---
- drivers/i2c/busses/i2c-thunderx-pcidrv.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-thunderx-pcidrv.c b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-index 31f11b77ab663626967c86086a03213876bf4a07..32d0e3930b675484138084e1bbed2e7cf898e1e1 100644
---- a/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-+++ b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-@@ -27,7 +27,7 @@
+v2: Moved comment back to mv88e6xxx_hardware_reset()
+
+
+ drivers/net/dsa/mv88e6xxx/chip.c | 50 +++++++++++++++++++++++++++++---
+ drivers/net/dsa/mv88e6xxx/chip.h |  6 ++++
+ 2 files changed, 52 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
+index 59b5dd0e2f41d..21853689f6b39 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -3123,6 +3123,7 @@ static int mv88e6xxx_software_reset(struct mv88e6xxx_chip *chip)
+ static void mv88e6xxx_hardware_reset(struct mv88e6xxx_chip *chip)
+ {
+ 	struct gpio_desc *gpiod = chip->reset;
++	int err;
  
- #define PCI_DEVICE_ID_THUNDER_TWSI	0xa012
+ 	/* If there is a GPIO connected to the reset pin, toggle it */
+ 	if (gpiod) {
+@@ -3131,17 +3132,26 @@ static void mv88e6xxx_hardware_reset(struct mv88e6xxx_chip *chip)
+ 		 * mid-byte, causing the first EEPROM read after the reset
+ 		 * from the wrong location resulting in the switch booting
+ 		 * to wrong mode and inoperable.
++		 * For this reason, switch families with EEPROM support
++		 * generally wait for EEPROM loads to complete as their pre-
++		 * and post-reset handlers.
+ 		 */
+-		if (chip->info->ops->get_eeprom)
+-			mv88e6xxx_g2_eeprom_wait(chip);
++		if (chip->info->ops->hardware_reset_pre) {
++			err = chip->info->ops->hardware_reset_pre(chip);
++			if (err)
++				dev_err(chip->dev, "pre-reset error: %d\n", err);
++		}
  
--#define SYS_FREQ_DEFAULT		700000000
-+#define SYS_FREQ_DEFAULT		800000000
- #define OTX2_REF_FREQ_DEFAULT		100000000
+ 		gpiod_set_value_cansleep(gpiod, 1);
+ 		usleep_range(10000, 20000);
+ 		gpiod_set_value_cansleep(gpiod, 0);
+ 		usleep_range(10000, 20000);
  
- #define TWSI_INT_ENA_W1C		0x1028
-@@ -100,7 +100,8 @@ static void thunder_i2c_clock_enable(struct device *dev, struct octeon_i2c *i2c)
- 		i2c->sys_freq = clk_get_rate(i2c->clk);
- 	} else {
- 		/* ACPI */
--		device_property_read_u32(dev, "sclk", &i2c->sys_freq);
-+		if (device_property_read_u32(dev, "sclk", &i2c->sys_freq))
-+			device_property_read_u32(dev, "ioclk", &i2c->sys_freq);
+-		if (chip->info->ops->get_eeprom)
+-			mv88e6xxx_g2_eeprom_wait(chip);
++		if (chip->info->ops->hardware_reset_post) {
++			err = chip->info->ops->hardware_reset_post(chip);
++			if (err)
++				dev_err(chip->dev, "post-reset error: %d\n", err);
++		}
  	}
+ }
  
- skip:
+@@ -4371,6 +4381,8 @@ static const struct mv88e6xxx_ops mv88e6141_ops = {
+ 	.watchdog_ops = &mv88e6390_watchdog_ops,
+ 	.mgmt_rsvd2cpu =  mv88e6390_g1_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6390_g1_rmu_disable,
+ 	.atu_get_hash = mv88e6165_g1_atu_get_hash,
+@@ -4561,6 +4573,8 @@ static const struct mv88e6xxx_ops mv88e6172_ops = {
+ 	.watchdog_ops = &mv88e6097_watchdog_ops,
+ 	.mgmt_rsvd2cpu = mv88e6352_g2_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6352_g1_rmu_disable,
+ 	.atu_get_hash = mv88e6165_g1_atu_get_hash,
+@@ -4661,6 +4675,8 @@ static const struct mv88e6xxx_ops mv88e6176_ops = {
+ 	.watchdog_ops = &mv88e6097_watchdog_ops,
+ 	.mgmt_rsvd2cpu = mv88e6352_g2_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6352_g1_rmu_disable,
+ 	.atu_get_hash = mv88e6165_g1_atu_get_hash,
+@@ -4755,6 +4771,8 @@ static const struct mv88e6xxx_ops mv88e6190_ops = {
+ 	.watchdog_ops = &mv88e6390_watchdog_ops,
+ 	.mgmt_rsvd2cpu = mv88e6390_g1_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6390_g1_rmu_disable,
+ 	.atu_get_hash = mv88e6165_g1_atu_get_hash,
+@@ -4813,6 +4831,8 @@ static const struct mv88e6xxx_ops mv88e6190x_ops = {
+ 	.watchdog_ops = &mv88e6390_watchdog_ops,
+ 	.mgmt_rsvd2cpu = mv88e6390_g1_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6390_g1_rmu_disable,
+ 	.atu_get_hash = mv88e6165_g1_atu_get_hash,
+@@ -4869,6 +4889,8 @@ static const struct mv88e6xxx_ops mv88e6191_ops = {
+ 	.watchdog_ops = &mv88e6390_watchdog_ops,
+ 	.mgmt_rsvd2cpu = mv88e6390_g1_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6390_g1_rmu_disable,
+ 	.atu_get_hash = mv88e6165_g1_atu_get_hash,
+@@ -4928,6 +4950,8 @@ static const struct mv88e6xxx_ops mv88e6240_ops = {
+ 	.watchdog_ops = &mv88e6097_watchdog_ops,
+ 	.mgmt_rsvd2cpu = mv88e6352_g2_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6352_g1_rmu_disable,
+ 	.atu_get_hash = mv88e6165_g1_atu_get_hash,
+@@ -4981,6 +5005,8 @@ static const struct mv88e6xxx_ops mv88e6250_ops = {
+ 	.watchdog_ops = &mv88e6250_watchdog_ops,
+ 	.mgmt_rsvd2cpu = mv88e6352_g2_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6250_g1_reset,
+ 	.vtu_getnext = mv88e6185_g1_vtu_getnext,
+ 	.vtu_loadpurge = mv88e6185_g1_vtu_loadpurge,
+@@ -5028,6 +5054,8 @@ static const struct mv88e6xxx_ops mv88e6290_ops = {
+ 	.watchdog_ops = &mv88e6390_watchdog_ops,
+ 	.mgmt_rsvd2cpu = mv88e6390_g1_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6390_g1_rmu_disable,
+ 	.atu_get_hash = mv88e6165_g1_atu_get_hash,
+@@ -5087,6 +5115,8 @@ static const struct mv88e6xxx_ops mv88e6320_ops = {
+ 	.watchdog_ops = &mv88e6390_watchdog_ops,
+ 	.mgmt_rsvd2cpu = mv88e6352_g2_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.vtu_getnext = mv88e6185_g1_vtu_getnext,
+ 	.vtu_loadpurge = mv88e6185_g1_vtu_loadpurge,
+@@ -5133,6 +5163,8 @@ static const struct mv88e6xxx_ops mv88e6321_ops = {
+ 	.set_egress_port = mv88e6095_g1_set_egress_port,
+ 	.watchdog_ops = &mv88e6390_watchdog_ops,
+ 	.mgmt_rsvd2cpu = mv88e6352_g2_mgmt_rsvd2cpu,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.vtu_getnext = mv88e6185_g1_vtu_getnext,
+ 	.vtu_loadpurge = mv88e6185_g1_vtu_loadpurge,
+@@ -5183,6 +5215,8 @@ static const struct mv88e6xxx_ops mv88e6341_ops = {
+ 	.watchdog_ops = &mv88e6390_watchdog_ops,
+ 	.mgmt_rsvd2cpu =  mv88e6390_g1_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6390_g1_rmu_disable,
+ 	.atu_get_hash = mv88e6165_g1_atu_get_hash,
+@@ -5338,6 +5372,8 @@ static const struct mv88e6xxx_ops mv88e6352_ops = {
+ 	.watchdog_ops = &mv88e6097_watchdog_ops,
+ 	.mgmt_rsvd2cpu = mv88e6352_g2_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6352_g1_rmu_disable,
+ 	.atu_get_hash = mv88e6165_g1_atu_get_hash,
+@@ -5400,6 +5436,8 @@ static const struct mv88e6xxx_ops mv88e6390_ops = {
+ 	.watchdog_ops = &mv88e6390_watchdog_ops,
+ 	.mgmt_rsvd2cpu = mv88e6390_g1_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6390_g1_rmu_disable,
+ 	.atu_get_hash = mv88e6165_g1_atu_get_hash,
+@@ -5462,6 +5500,8 @@ static const struct mv88e6xxx_ops mv88e6390x_ops = {
+ 	.watchdog_ops = &mv88e6390_watchdog_ops,
+ 	.mgmt_rsvd2cpu = mv88e6390_g1_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6390_g1_rmu_disable,
+ 	.atu_get_hash = mv88e6165_g1_atu_get_hash,
+@@ -5527,6 +5567,8 @@ static const struct mv88e6xxx_ops mv88e6393x_ops = {
+ 	.watchdog_ops = &mv88e6393x_watchdog_ops,
+ 	.mgmt_rsvd2cpu = mv88e6393x_port_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
++	.hardware_reset_pre = mv88e6xxx_g2_eeprom_wait,
++	.hardware_reset_post = mv88e6xxx_g2_eeprom_wait,
+ 	.reset = mv88e6352_g1_reset,
+ 	.rmu_disable = mv88e6390_g1_rmu_disable,
+ 	.atu_get_hash = mv88e6165_g1_atu_get_hash,
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.h b/drivers/net/dsa/mv88e6xxx/chip.h
+index 85eb293381a7e..c34caf9815c5c 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.h
++++ b/drivers/net/dsa/mv88e6xxx/chip.h
+@@ -487,6 +487,12 @@ struct mv88e6xxx_ops {
+ 	int (*ppu_enable)(struct mv88e6xxx_chip *chip);
+ 	int (*ppu_disable)(struct mv88e6xxx_chip *chip);
+ 
++	/* Additional handlers to run before and after hard reset, to make sure
++	 * that the switch and EEPROM are in a good state.
++	 */
++	int (*hardware_reset_pre)(struct mv88e6xxx_chip *chip);
++	int (*hardware_reset_post)(struct mv88e6xxx_chip *chip);
++
+ 	/* Switch Software Reset */
+ 	int (*reset)(struct mv88e6xxx_chip *chip);
+ 
 -- 
-2.43.0
+TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht München, HRB 105018
+Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
+https://www.tq-group.com/
 
 
