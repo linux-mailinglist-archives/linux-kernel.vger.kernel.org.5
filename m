@@ -1,118 +1,143 @@
-Return-Path: <linux-kernel+bounces-155454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC9E8AEACC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:19:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86E3C8AEACE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:20:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF1F71F22620
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:19:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12E4D287D27
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 831E313D61D;
-	Tue, 23 Apr 2024 15:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F15E13DBB6;
+	Tue, 23 Apr 2024 15:18:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ChPSXrCm"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UX/mbM5l"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C95CD13C67E;
-	Tue, 23 Apr 2024 15:17:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCDBF13C83C;
+	Tue, 23 Apr 2024 15:18:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713885472; cv=none; b=TZ8xcwiVdVaBsBYwjMLx3TaUaLmKpJHs3fuPmKhGyMV1syjEJWM4Yclwe++uNUf4qYydbwLIQE0YjMvPIjE5en6VG5TPRRWsTjt2G4LgA14GT0VfJo/HjNmzf3f9mzpatYH6b/bbzdcMGBG3UtFm09YE2EvyjIFgbPNw1vhNDHg=
+	t=1713885488; cv=none; b=igrS6Yooki40XFJW0BleV4gB86SF8eeSyJ9W9NsL3dCarchO7UnH9FPV8tCiKsWUCoGA8kCqVvrN9ZCwFzcSemH+D3at2kXNTVFCEBqpZdjJ+dSAQtjbx9OwMvfDNlwb7JHgyiOAC2U6cJRnis1WoBRy6la8zpOdvoOnzS4Pvew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713885472; c=relaxed/simple;
-	bh=bvgv9aLUJ3EMk1jeY5CIgMbaDSjxNRI7pgf5rK8d4Wo=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ckox7BwONBOLv8HXVyAMS37MGigWQ0aLNg/PuglRcqpn8jtldrtSm9jNIIUHDje1oPMBdHDs4sL4kl316qkGpsrLsjuhLX+jhz4RgHTnX4F6zI3B/+qx0tBH96qqMC/RncPACuQuAm6mjzDeYcCimqKrWAdAZfI3q1xdZJ3os5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ChPSXrCm; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43NFHXIV078995;
-	Tue, 23 Apr 2024 10:17:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713885453;
-	bh=lvfJKgIkkEKUauOE6w6qO3n0tQqMfPCnxJ2Toh2ImOo=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=ChPSXrCmw4Uan0ilpxHCww+JQG7wUpj/H1+Gy/oFr1y0/n3TtXwZyJkcgyIo0ldj2
-	 klj2eDeumoVT1e6ahMjGdyHWGY3GKgbpzGfQVylHXSWpcwHrp3EM3U1r0/iHUR6tSh
-	 ybKgeC5RcI8qzjiDtTEMgA4bvbGylszd6/+LUs40=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43NFHWZm130282
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 23 Apr 2024 10:17:32 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 23
- Apr 2024 10:17:32 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 23 Apr 2024 10:17:32 -0500
-Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43NFHWYL080176;
-	Tue, 23 Apr 2024 10:17:32 -0500
-From: Judith Mendez <jm@ti.com>
-To: Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>
-CC: Conor Dooley <conor+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Bhavya Kapoor <b-kapoor@ti.com>, Dasnavis
- Sabiya <sabiya.d@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH v3 5/5] arm64: dts: ti: k3-j784s4-main: Enable support for UHS mode
-Date: Tue, 23 Apr 2024 10:17:32 -0500
-Message-ID: <20240423151732.3541894-6-jm@ti.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240423151732.3541894-1-jm@ti.com>
-References: <20240423151732.3541894-1-jm@ti.com>
+	s=arc-20240116; t=1713885488; c=relaxed/simple;
+	bh=cXtuzrz0pugD7qW0LzJQMkZH8QRVvVQv977ZzpkGlB8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=O+/eR/wkwOoltwPBVHeGQ/G1ZcKso2KMA68hvI5ZHrH8rrrdpA1Tp4dJyVrw2lHNCZd9W24BujPEjQ3U5whyzLOkGNfhcuUVjV7at+KdNQr/npWVTMCO/NZ4nVcWOLzZHEU9no1RwVNS6RFXOwbntGmZ4Sqbb7old2rMppF5/+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UX/mbM5l; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713885487; x=1745421487;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=cXtuzrz0pugD7qW0LzJQMkZH8QRVvVQv977ZzpkGlB8=;
+  b=UX/mbM5lPbUWR9XjnGHMf+/FNs/wX0stitCAAmlYHgcsoRsfBv5fjBBG
+   5sU48IUrX6ybvwzDEHpjyLzRgPVpjcUhclAe9/0u/uDeniePQfrOYkgP8
+   iJGVJcISaPdyjkPtMUHR0bbxizHynY5RIHWTcknS0jWKiX34nXicr5Ofy
+   SJWVBFD8PIujss4l2HZw8fCZNCffLGLHIWCue9pQhjA3gQFoCJcSsEDUf
+   BRMv47Ie7hBDkn/UAAxks5hV3aoDkw9ZlK8UjhkHDdbEkiEpq/JZeekWJ
+   WNyjZiky+neCVOQDSRalX5yc8i6x2mpu41sZevZkW49OP+DgNJYeXeeWx
+   A==;
+X-CSE-ConnectionGUID: bgrknfd4RF6HrzqTTD10QQ==
+X-CSE-MsgGUID: I176GYuTSEiQdbkPF7DWmw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="13261682"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="13261682"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 08:18:06 -0700
+X-CSE-ConnectionGUID: bYXCDlWGSna35mVH8uSKzg==
+X-CSE-MsgGUID: 8YEXGAcARdqFztNbnn3PIg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="24439701"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.242.48]) ([10.124.242.48])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 08:18:04 -0700
+Message-ID: <b7d6bb0c-6ee4-4f93-a1a0-5ee6f49c0c59@intel.com>
+Date: Tue, 23 Apr 2024 23:18:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/6] KVM: selftests: x86: Add test for
+ KVM_PRE_FAULT_MEMORY
+To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org
+Cc: isaku.yamahata@intel.com, binbin.wu@linux.intel.com, seanjc@google.com,
+ rick.p.edgecombe@intel.com
+References: <20240419085927.3648704-1-pbonzini@redhat.com>
+ <20240419085927.3648704-7-pbonzini@redhat.com>
+Content-Language: en-US
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <20240419085927.3648704-7-pbonzini@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Dasnavis Sabiya <sabiya.d@ti.com>
+On 4/19/2024 4:59 PM, Paolo Bonzini wrote:
 
-Remove sdhci-caps-mask to enable support for SDR104 speed mode for
-SD card and remove no-1-8-v property so that SD card can work in
-any UHS-1 high speed mode it can support.
+..
 
-Fixes: 4664ebd8346a ("arm64: dts: ti: Add initial support for J784S4 SoC")
-Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
-Signed-off-by: Dasnavis Sabiya <sabiya.d@ti.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-[Judith: Add fixes tag]
-Signed-off-by: Judith Mendez <jm@ti.com>
----
-Changes since v2:
-- no change
----
- arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 2 --
- 1 file changed, 2 deletions(-)
+> +static void __test_pre_fault_memory(unsigned long vm_type, bool private)
+> +{
+> +	const struct vm_shape shape = {
+> +		.mode = VM_MODE_DEFAULT,
+> +		.type = vm_type,
+> +	};
+> +	struct kvm_vcpu *vcpu;
+> +	struct kvm_run *run;
+> +	struct kvm_vm *vm;
+> +	struct ucall uc;
+> +
+> +	uint64_t guest_test_phys_mem;
+> +	uint64_t guest_test_virt_mem;
+> +	uint64_t alignment, guest_page_size;
+> +
+> +	vm = vm_create_shape_with_one_vcpu(shape, &vcpu, guest_code);
+> +
+> +	alignment = guest_page_size = vm_guest_mode_params[VM_MODE_DEFAULT].page_size;
+> +	guest_test_phys_mem = (vm->max_gfn - TEST_NPAGES) * guest_page_size;
+> +#ifdef __s390x__
+> +	alignment = max(0x100000UL, guest_page_size);
+> +#else
+> +	alignment = SZ_2M;
+> +#endif
+> +	guest_test_phys_mem = align_down(guest_test_phys_mem, alignment);
+> +	guest_test_virt_mem = guest_test_phys_mem;
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-index d42f25cacf23d..6a4554c6c9c13 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-@@ -904,8 +904,6 @@ main_sdhci1: mmc@4fb0000 {
- 		ti,clkbuf-sel = <0x7>;
- 		ti,trm-icp = <0x8>;
- 		dma-coherent;
--		sdhci-caps-mask = <0x00000003 0x00000000>;
--		no-1-8-v;
- 		status = "disabled";
- 	};
- 
--- 
-2.43.2
+guest_test_virt_mem cannot be assigned as guest_test_phys_mem, which 
+leads to following virt_map() fails with
+
+==== Test Assertion Failure ====
+   lib/x86_64/processor.c:197: sparsebit_is_set(vm->vpages_valid, (vaddr 
+ >> vm->page_shift))
+   pid=4773 tid=4773 errno=0 - Success
+      1	0x000000000040f55c: __virt_pg_map at processor.c:197
+      2	0x000000000040605e: virt_pg_map at kvm_util_base.h:1065
+      3	 (inlined by) virt_map at kvm_util.c:1571
+      4	0x0000000000402b75: __test_pre_fault_memory at 
+pre_fault_memory_test.c:96
+      5	0x000000000040246e: test_pre_fault_memory at 
+pre_fault_memory_test.c:133 (discriminator 3)
+      6	 (inlined by) main at pre_fault_memory_test.c:140 (discriminator 3)
+      7	0x00007fcb68429d8f: ?? ??:0
+      8	0x00007fcb68429e3f: ?? ??:0
+      9	0x00000000004024e4: _start at ??:?
+   Invalid virtual address, vaddr: 0xfffffffc00000
+
+> +
+> +	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
+> +				    guest_test_phys_mem, TEST_SLOT, TEST_NPAGES,
+> +				    private ? KVM_MEM_GUEST_MEMFD : 0);
+> +	virt_map(vm, guest_test_virt_mem, guest_test_phys_mem, TEST_NPAGES);
+
+
+
 
 
