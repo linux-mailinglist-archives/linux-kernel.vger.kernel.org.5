@@ -1,112 +1,130 @@
-Return-Path: <linux-kernel+bounces-155573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A3708AF418
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:29:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24B988AF419
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:30:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 572CC28EC72
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:29:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35C431C23081
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:30:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A0813D514;
-	Tue, 23 Apr 2024 16:28:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zPqn29Gw"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E6AB13CF84
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6624D13DBB3;
+	Tue, 23 Apr 2024 16:28:47 +0000 (UTC)
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38ACB13D52A
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:28:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713889719; cv=none; b=MhZoE/hOp/dJB+D8nmQ7UTFnBPiZCXfv0gJHwc87GtMscVYkbbf+cew5edXZEMLTmRDioAKe4qe0cjZqCrmR1aBqfFvh2KCOMCfomK+o1wgOA1YIIGvrfHo1xdoEgHFNHgiUk4cpsTnlRjBZMvVyAiG71IDFMvgU2hZ+Lc/enCE=
+	t=1713889727; cv=none; b=o7OJ6Rc+h4d5M/WP4ZoQkIbp3rDYJ0QsuxHP3XZmb77jZEXmTl9YfAPisNP2809Q/cxI+ROqgb4wAwHpB9InZHU5tEWyhL1swCc0BVs77Pu0q6akl8BQFPvVKW5EsDoPE/G0VSByRmj1USKrGOHMdMDpEXW3KtByNSMUMfXNSCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713889719; c=relaxed/simple;
-	bh=u10jUnV5IDjrF3qigV0Kcg5bqQzScV7FiuhI8S8dp5I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=phxoapo1k74One92DQYUHGebEI2PDsUjTJkK1sXkvoDA/VaVSZK/Bt6w4CnWHcfN6rG6zwcPymCcE2EY0tqqWgfguLtyCozjwjCdyo5ZzgQlHiZQyDi7i+Jn69zP+COe1TZNPbqQpFc3InYzChHR1CaCO75LtqHCZAKDWQBoR4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zPqn29Gw; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51b526f0fc4so2860241e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:28:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713889716; x=1714494516; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4zO+T8/DOzCQtrJbOxhztGwyZx8qyfjvyqs0TKvYcbI=;
-        b=zPqn29GwyY8ZvUg5m2MlYy7Dia+QuJoCLxJ4OGLzx9ppexTCYMEKXd7Bwbo81JwUW2
-         spHQfLVX63Z/JHAfMYTA10goZdWVoX6U7FeQfx589/orOyontm0a2J/tJqdEUcHM+yWD
-         4vdtow+xiVWWbF2l3pj/vEcPxE8SC4/VKwaMPL2wDqsTth806RWTva9G1ieQ1whec7Yt
-         6ojoOvBdo5qa7vps485RhYWuuVFLu5SqtFPBKhf/g01R69hgt+3rCM5amYWAIK09ZPh6
-         HplvxplFjofMReab1l/44gRSazncjMnviql37UmLRwce7UinKi0y1zVMG+WnrQTtx6Cf
-         ab/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713889716; x=1714494516;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4zO+T8/DOzCQtrJbOxhztGwyZx8qyfjvyqs0TKvYcbI=;
-        b=TCi4zRyDhM2yAm7r31GNEXw7461ivmaK+hYj05ZviIFQCgLUW4S8zO8KrNGQA7GtA2
-         NL0NNTzxRnsaNbXAK3+xiBf0D5VhQWbAPp3SAUDBicqWsyv4Uve0g5eHZoAHwJxHhI1v
-         xsmbHp1bxe3m5peVJFlkDZmtxzTFgRzLw9tnsSzc0o5Ud1OMzkx5wKLxWrWfMpLkose+
-         p6vTXeyB6mwpMa+9R46+tlpHDKH8/dZqj3YARqSfyzXdiAYEvDM8D0LLlyfuD0xy5ytc
-         ENzu5EJySSMRQesOgY0wi3jPlQNp8+Qb8Mb3qaotry0m6yep21Kuy2GElIMGTw3irivN
-         7JJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXXtxPpTPjk/wMaZDSL+OtaV+njKyKuxXhUPmlZ5ZKlsTHF+o7Pf0q2uAh0CCTIGHNOzK6X1f9+A6Dg2QNoM6c+E02YJqW252/hfeGn
-X-Gm-Message-State: AOJu0YzlTx+rZqF6LuBh8sV9+m120EKo4FLrWzXNlxmcm8VIWWP+n7RM
-	WQVsOrde8KWMsIkKbgicwpL5pfTPpvYdibkTFLFuDUt6Ts0k/jJilEhRMgHzs08=
-X-Google-Smtp-Source: AGHT+IEOuAlhaaJQxnP2a++uUiRdJnjYuA5FRyqcqTId66NsqOBEEuVva004iyFbkf+AmumSQrPhwA==
-X-Received: by 2002:ac2:4895:0:b0:517:87ba:aff3 with SMTP id x21-20020ac24895000000b0051787baaff3mr33591lfc.43.1713889716504;
-        Tue, 23 Apr 2024 09:28:36 -0700 (PDT)
-Received: from [172.30.205.0] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id d14-20020a05651233ce00b00516ceeae6a9sm2060603lfg.9.2024.04.23.09.28.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 09:28:35 -0700 (PDT)
-Message-ID: <7f111799-a647-4b9c-8915-5a7be0c66d5e@linaro.org>
+	s=arc-20240116; t=1713889727; c=relaxed/simple;
+	bh=pB4VKsnN31I2O7fVXpDLnLWksgilJsrVoiT9rsc7u+k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LQYBr0JtAvZezAbxUV4vWPK0zUK1Ajbp+GDuCVV2x+Z2uDcSaeirnvOVh/o5ucdgSKRaj23+RDJLxgv+9V5VKn02XC0Kjrcy0+hKfNU/xMaf9+aD/NFWYKQW525/2T8xb7/uEzhSEzJYhyd/lBgqaACcxhRfMHKV5k7q6h2UYq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu; spf=pass smtp.mailfrom=1wt.eu; arc=none smtp.client-ip=163.172.96.212
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1wt.eu
+Received: (from willy@localhost)
+	by mail.home.local (8.17.1/8.17.1/Submit) id 43NGSVWL022815;
+	Tue, 23 Apr 2024 18:28:31 +0200
 Date: Tue, 23 Apr 2024 18:28:31 +0200
+From: Willy Tarreau <w@1wt.eu>
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc: Shuah Khan <skhan@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, linux-kernel@vger.kernel.org,
+        Rodrigo Campos <rodrigo@sdfg.com.ar>
+Subject: Re: [PATCH v3 4/4] selftests/nolibc: Add tests for strlcat() and
+ strlcpy()
+Message-ID: <Zifhr1sX5soHlXSG@1wt.eu>
+References: <20240218195110.1386840-1-rodrigo@sdfg.com.ar>
+ <20240218195110.1386840-5-rodrigo@sdfg.com.ar>
+ <172d25cf-cfd7-4069-8c26-df2e81ffbad1@t-8ch.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/4] arm64: dts: qcom: msm8976: Add Adreno GPU
-To: Adam Skladowski <a39.skl@gmail.com>
-Cc: phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240413170317.34553-1-a39.skl@gmail.com>
- <20240413170317.34553-4-a39.skl@gmail.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240413170317.34553-4-a39.skl@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <172d25cf-cfd7-4069-8c26-df2e81ffbad1@t-8ch.de>
 
+Hi Thomas,
 
-
-On 4/13/24 19:03, Adam Skladowski wrote:
-> Add Adreno GPU node.
+On Tue, Apr 23, 2024 at 11:18:06AM +0200, Thomas Weißschuh wrote:
+> + Shuah and Paul, please see below.
 > 
-> Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
-> ---
+> So I picked this up and it got picked up by Shuah, but...
+> 
+> On 2024-02-18 16:51:06+0000, Rodrigo Campos wrote:
+> > I've verified that the tests matches libbsd's strlcat()/strlcpy()
+> > implementation.
+> > 
+> > Please note that as strlcat()/strlcpy() are not part of the libc, the
+> > tests are only compiled when using nolibc.
+> > 
+> > Signed-off-by: Rodrigo Campos <rodrigo@sdfg.com.ar>
+> > ---
+> >  tools/testing/selftests/nolibc/nolibc-test.c | 40 ++++++++++++++++++++
+> >  1 file changed, 40 insertions(+)
+> > 
+> > diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+> > index 6ba4f8275ac4..d373fc14706c 100644
+> > --- a/tools/testing/selftests/nolibc/nolibc-test.c
+> > +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+> > @@ -600,6 +600,25 @@ int expect_strne(const char *expr, int llen, const char *cmp)
+> >  	return ret;
+> >  }
+> >  
+> > +#define EXPECT_STRBUFEQ(cond, expr, buf, val, cmp)				\
+> > +	do { if (!(cond)) result(llen, SKIPPED); else ret += expect_str_buf_eq(expr, buf, val, llen, cmp); } while (0)
+> > +
+> > +static __attribute__((unused))
+> > +int expect_str_buf_eq(size_t expr, const char *buf, size_t val, int llen, const char *cmp)
+> > +{
+> > +	llen += printf(" = %lu <%s> ", expr, buf);
+> 
+> This introduces a compiler warning on 32bit:
+> 
+>     i386-linux-gcc -Os -fno-ident -fno-asynchronous-unwind-tables -std=c89 -W -Wall -Wextra -fno-stack-protector -m32 -mstack-protector-guard=global -fstack-protector-all  -o nolibc-test \
+>       -nostdlib -nostdinc -static -Isysroot/i386/include nolibc-test.c nolibc-test-linkage.c -lgcc
+>     nolibc-test.c: In function 'expect_str_buf_eq':
+>     nolibc-test.c:610:30: error: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'unsigned int'} [-Werror=format=]
+>       610 |         llen += printf(" = %lu <%s> ", expr, buf);
+>           |                            ~~^         ~~~~
+>           |                              |         |
+>           |                              |         size_t {aka unsigned int}
+>           |                              long unsigned int
+>           |                            %u
+> 
+> 
+> It is easy enough to fix through a cast to "unsigned long".
 
-[...]
+Yes, that's usually what I do as well with size_t everywhere as well.
 
-> +				opp-200000000 {
-> +					opp-hz = /bits/ 64 <200000000>;
-> +					required-opps = <&rpmpd_opp_low_svs>;
-> +					opp-supported-hw = <0xff>;
+> The original patch was already sent to Shuah and included in -next.
+> 
+> Shuah, Paul:
+> 
+> I'd like to rewrite the offending commit instead of having a fixup commit.
+> As it seems to me the original patch would only go into 6.10 anyways.
+> 
+> Any objections?
 
-Doesn't look like this platform had any speed binning going on, can drop?
+I, too, think it would be the cleanest history-wise, I just don't know
+if that's the easiest for Shuah if it requires to change already published
+commit IDs.
 
-Konrad
+> Notes to self:
+> 
+> * Add flag to run-tests.sh to use -Werror
+> * Implement "%zu" in nolibc printf()
+
+Could be nice indeed!
+
+Thanks Thomas for taking care of this!
+Willy
 
