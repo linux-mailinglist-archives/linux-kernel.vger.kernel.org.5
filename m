@@ -1,106 +1,129 @@
-Return-Path: <linux-kernel+bounces-155151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0F058AE5E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:22:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E9B58AE5EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:23:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09472281944
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:22:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E5381F22D83
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF9484A2E;
-	Tue, 23 Apr 2024 12:22:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FD3B8615C;
+	Tue, 23 Apr 2024 12:23:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="BbXKUfsv"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qtQDLjrx"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE4AFE576
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 828E18593E
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:23:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713874929; cv=none; b=Q/tbjfASh+euWdTqf/wZ5juK7MofouH1m/brjzLET0Gu3gH7PWgl3K3eHnJxeuu6OycurHBUrT8OZFfCOBw3nTeAEapF/UBAKGopfvLBZuBZeiAOwAloJWeGcWtATGvDahOid8OhZQ7e5/xjXeEzxHhif7oPce/s7qdkdwWUfX0=
+	t=1713875000; cv=none; b=Aw5BPz2wDcci1C7/lm1eO7EkcQx5Bw0HxfPhc6hw5d+i6Zmaefo3Ys5XlKugEyKH6OuM0fdUcbkTw4EaUF1l/n8nn5D8fvvSC6dUP8sPCvts/tXKuvTZZw0s8z9ZmjM2DZHnTqqjVq2QNgNvlXQizAHGb1I9fsuaAsnFpTFuFUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713874929; c=relaxed/simple;
-	bh=QfxAecxSklFDaQtgLbxplA0r+fnYSsdh2xRpjUn6uy4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=B4kHtcs/uG39CvwHeaZBhhSys5B4THZ8MvIJZc0kt/hXS8vKqRgn4CuktUuurdhhMt2GMb/M/Y5j7ZV+GNMm5PCoy7367NsCJ7Zg5rJAjDKrrHUeKy4qr8bbJ8XrAKAG3AEGPwWCYojU/ObB4DfMpc5lYWAC7qIOrl8LxfgZuAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=BbXKUfsv; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=sOweXI35fJEX7TaL1KY6lKJ4Ci7OIE04l9EyjKhOXZM=;
-	t=1713874926; x=1715084526; b=BbXKUfsvSBzlUUgK0cRUmlPFc5e4GS84pcJ4UsYW4/pdLR7
-	dk+PWBs9B/VrqIFN6hYhhsoCD4rAN6G47BwYTiaDLtkQoadaBtm4aGz0z2vxsXKh6q/qhFfECtNw/
-	p0xbf7a/pD4h+vHBMAZ4aMtVDmyLuEvRxHsuJLTjItK2AghyzTHzk8C7CfxcSWGCYR3oU4DslUpnq
-	TPTDY2IH0IttIC1K55HY9tlY7NbKwrbe62cOX5fk/hH5kJd8IKKIpb9GyAs+nxHsufLSzVkmxCP0J
-	hk9jYz+YL6y6gYXG0lI/VbFUQU02jvEJXKLQ6zSirs2id5OHlWl+aywmyJ6HaHAg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1rzF9t-000000027hu-3mGu;
-	Tue, 23 Apr 2024 14:22:02 +0200
-Message-ID: <21cd05c895abc4f4e66190b26632543ff7990b32.camel@sipsolutions.net>
-Subject: Re: [PATCH 5/7] um: Add an internal header shared among the user
- code
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Tiwei Bie <tiwei.btw@antgroup.com>, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Date: Tue, 23 Apr 2024 14:22:00 +0200
-In-Reply-To: <ee636701-3f92-4424-8b04-dd2cecd8313a@antgroup.com>
-References: <20240423112457.2409319-1-tiwei.btw@antgroup.com>
-	 <20240423112457.2409319-6-tiwei.btw@antgroup.com>
-	 <e850e5016348805e7e2f427ed98cb1eb539fc434.camel@sipsolutions.net>
-	 <ee636701-3f92-4424-8b04-dd2cecd8313a@antgroup.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1713875000; c=relaxed/simple;
+	bh=zdEuS8XRlyMWs8i+nahfC/xh1vWX2u7uUNV94NmtyxI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QxU6pZvZEcHPnIEQ4X8c9xHRs5FajqTRU3wjnlo+feRT2zJRZQ4Nzkw/YDiH/zqjhKCXU5rdTx5VMIX4WetRhHqv935RjXj9ZHLCDiinA9vwOBkqCg6EFRn0OQqnsuHWzuqqeTKY7Zwq+SUFXYp+67UzbxNhnea/5xAsKD2VMQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qtQDLjrx; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-de45385a1b4so5240884276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 05:23:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713874997; x=1714479797; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zdEuS8XRlyMWs8i+nahfC/xh1vWX2u7uUNV94NmtyxI=;
+        b=qtQDLjrxOz4wZvnJ9bfDXVOwl9pgcBQaULNGILtSLiwxeDyEfhAr8hY1GpjLS2dTRk
+         hQ1iEhbECkmemy1TAXFuMPOUOPGWJ4rJo2px55vkJ71AvfR6b49QPvbxKf8zrSmSbhDL
+         bQ6ESm52uGwAZteQRyEsWi+LVmP+rj6eeITbPGoDbG9wthTw8JwH56ionOcthpbCsPt2
+         4qkwk+V30rP778AX8Fo+6zV0EUS7gnYsMXei7jeXT20ob3nxPjhcJLsMDKuLfT5Ccqlj
+         q+xCVo5CRZqIuVae8f4MvSq4uyC3n5xov/0Pw4C7KkELMp4EY9osQ15Hc88NeVYZ1Tq7
+         vsMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713874997; x=1714479797;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zdEuS8XRlyMWs8i+nahfC/xh1vWX2u7uUNV94NmtyxI=;
+        b=U0+sD5W/GA/p7EDV5+2PU1tLKQDXPQAbrtfsgy3pEzOsS2f+Qg+FPn6cAHtqgScryx
+         HSmAtx96wB6o9x17mqGjqb4eJl7wl7B4REGkN9ZLxgl5fvfWFF4hAYFIaUnIoRMo2QAw
+         qfoCm36qmrM6oxxc1j2u7o8mkqkiRQeDTVbitO/Kn0MB9CqAQuTau8l7tcBAQ2G89hpy
+         srMDtom6OnHsk+Cu+Hgg10bgJwZKmrqJqHhx+MlmBgTopIA4X15O7fP7T1OQbCq3PCtR
+         f+8mmQVQKvOwLmysDIHUuXXanw7cnxCaIxdopDB8brbfok2NaLxW+vG0mt9AAHZM36Ah
+         HBnA==
+X-Forwarded-Encrypted: i=1; AJvYcCUQT3gQiKjIzsTFq6Ob5aLlnDhICWs1K1cHt2CTyUWueV/P3zZI4rNUKW4ocA3ooAMx/5D8XWmZwLxA76cx+Fhk/2g9eDGTra0K8U9r
+X-Gm-Message-State: AOJu0YyO8NHpJt0D2JC+dctzHH41mHx94GYSGuSk5guihJik7RC4TrO+
+	+1RSvGdysrwRJehbf3r9iS73r5RWMkymUnow9NPZvWa7FyMJK+69ZhYlInIRfTB6iLAxilXfdAI
+	cKN2Gn0OBTBIptWpl3KNZZKiZlEZ3OZo5IxXZqg==
+X-Google-Smtp-Source: AGHT+IFGEmHXL5CwAkBYa70XCoYWKwe8UnjgAcbc2h7iJmpsycDinZVPrwrOVKWCKX5O935DZ/QH6hClp73iSys2pzI=
+X-Received: by 2002:a25:8251:0:b0:dc7:4067:9f85 with SMTP id
+ d17-20020a258251000000b00dc740679f85mr12766959ybn.58.1713874997608; Tue, 23
+ Apr 2024 05:23:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+References: <20240423040243.448091-1-vignesh.raman@collabora.com>
+ <20240423040243.448091-4-vignesh.raman@collabora.com> <e3a0ea8f-d306-488c-a69c-aa18078e5e03@igalia.com>
+In-Reply-To: <e3a0ea8f-d306-488c-a69c-aa18078e5e03@igalia.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 23 Apr 2024 15:23:06 +0300
+Message-ID: <CAA8EJppaaitcXkXSFTB4-S2CbBcrAVHouB0wWiU5Nw2FvpagqA@mail.gmail.com>
+Subject: Re: [PATCH v1 3/4] drm/ci: uprev IGT and generate testlist from build
+To: =?UTF-8?B?TWHDrXJhIENhbmFs?= <mcanal@igalia.com>
+Cc: Vignesh Raman <vignesh.raman@collabora.com>, dri-devel@lists.freedesktop.org, 
+	daniels@collabora.com, helen.koike@collabora.com, airlied@gmail.com, 
+	daniel@ffwll.ch, robdclark@gmail.com, david.heidelberg@collabora.com, 
+	guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com, 
+	linux-mediatek@lists.infradead.org, linux-amlogic@lists.infradead.org, 
+	linux-rockchip@lists.infradead.org, amd-gfx@lists.freedesktop.org, 
+	linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org, 
+	virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2024-04-23 at 20:09 +0800, Tiwei Bie wrote:
-> On 4/23/24 7:30 PM, Johannes Berg wrote:
-> > On Tue, 2024-04-23 at 19:24 +0800, Tiwei Bie wrote:
-> > >=20
-> > >  $(USER_OBJS:.o=3D.%): \
-> > > -	c_flags =3D -Wp,-MD,$(depfile) $(USER_CFLAGS) -include $(srctree)/i=
-nclude/linux/kern_levels.h -include user.h $(CFLAGS_$(basetarget).o)
-> > > +	c_flags =3D -Wp,-MD,$(depfile) $(USER_CFLAGS) -include $(srctree)/i=
-nclude/linux/kern_levels.h \
-> > > +		-include user.h -include $(srctree)/arch/um/os-Linux/internal.h $(=
-CFLAGS_$(basetarget).o)
-> > >=20
-> >=20
-> > Why not just include it explicitly?
->=20
-> I think it might be more convenient if we include it implicitly,
-> especially since there are two levels of directories under os-Linux/.
-> But I don't have a strong opinion on this. I'm also willing to
-> include it explicitly.
+On Tue, 23 Apr 2024 at 13:24, Ma=C3=ADra Canal <mcanal@igalia.com> wrote:
+>
+> On 4/23/24 01:02, Vignesh Raman wrote:
+> > Uprev IGT to the latest version and stop vendoring the
+> > testlist into the kernel. Instead, use the testlist from
+> > the IGT build to ensure we do not miss renamed or newly
+> > added tests.
+>
+> Nitpick: wouldn't it be better to (1) stop vendoring the
+> testlist into the kernel in one patch and then (2) uprev
+> IGT to the latest version? I feel that this patch is changing
+> a lot of different stuff.
 
-Yeah, ok, dunno.
+Definitely. Otherwise it's hard to understand whether a change to
+fails/flakes is caused by the uprev or by the testlist change. E.g. in
+several cases the list of failing subtests seems to be replaced with
+the test itself.
 
-> > We do have the warnings?
->=20
-> Yeah. Without this patch, I can get below warnings with `make ARCH=3Dum d=
-efconfig && make ARCH=3Dum`:
->=20
+>
+> Best Regards,
+> - Ma=C3=ADra
+>
+> >
+> > Skip kms tests for panfrost driver since it is not a kms
+> > driver and skip driver-specific tests. Update xfails with
+> > the latest testlist.
+> >
+> > Increase the timoout of i915 jobs to 2h30m since some jobs
+> > takes more than 2 hours to complete.
+> >
+> > Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+> > ---
 
-Sure. I meant, we don't need to hide the include, if we need to add it
-to some other file, we'll have the warnings as a reminder. :)
 
-I don't think anyone today would write the code as it is now ...
-
-johannes
+--=20
+With best wishes
+Dmitry
 
