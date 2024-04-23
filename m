@@ -1,119 +1,114 @@
-Return-Path: <linux-kernel+bounces-155252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF56C8AE77D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:09:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4A6E8AE778
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:08:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB922288F70
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:09:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 012D41C23513
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:08:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED1D113699E;
-	Tue, 23 Apr 2024 13:08:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3704135403;
+	Tue, 23 Apr 2024 13:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DbElU/od"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ting4AdE"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50282135A6E;
-	Tue, 23 Apr 2024 13:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1001353FB
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:08:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713877698; cv=none; b=g6kiTwmFkbyCc/QZr/KQnb+jw09YzqXhN/ktrFVB4xULRDeNtT6LdQbPCtbzB3eLI3VtSnnaJdDs+4E1CUm4SzOsdPxz2Kd3v9X7ourzFm8bGdbXyElzZ9PRPQ8wgbXIGTMBqPapwxjigE/4Dn3Sdx6XaO+DP3pq2gDNBPjIRGI=
+	t=1713877692; cv=none; b=CMBW3KpRkjULBaUo08OiA4Q311M2eRuFJYMj5KnazXsusDCGPiR4tmbVbZkA8wLti8uWkI+z6v+zr7IxX6StUqWKxoVYhRquUYKOaHLSAqKRg4vv8Tj9OJnEYFww45PXGNKZgXM2vWWJY7fQtAeBey6HBXJZKtFKQDEJP7LLOiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713877698; c=relaxed/simple;
-	bh=dlhH2ikJL+CjYyT5tXlg1eD1GvZPgftjtRMAdq5xhKc=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
-	 References:In-Reply-To; b=YWx2AxkgCQTkriIi3GXNJySIRH4i1CJKUUlJMrVJm6zr9G3eeQtxcR8KBu5g34g9h573Ys/Wz1Ic7VgfHprbf3rxYUzlg4dRhpwbcngksdXextZIUEwyVn0kn38K17NGPpIYHqU5Qz4PgxZzt5CwkbPkm4sFd76Vd9hxA06YYuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=DbElU/od; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6BFD7240002;
-	Tue, 23 Apr 2024 13:08:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713877686;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fkEpdkG026UGxnP+K6Y14R8MUybzKxtIX1NVxXz3z98=;
-	b=DbElU/odY8l5M8g9YDeNsim7YMAfn5f6facsnHHOshFQExqhgFztKsG8IWz97QrGxydv0j
-	U13+KtzqtZOvO+YsuFabrlIfBWZUh7bKbJwU83vgryN2U+7tyGZZd/4CN1jA9r6+1Zsuou
-	oKzkIAxED8RTiRxCyu5vVWrHW69QraZfnT0TU79tLywPPkcQQVmiy9WZ0muAG2JuR/ShII
-	oUMHYHOH7+clvPjVKNEA1l8svyYL3dwGHE3jC0CabRhsbuaQWzxxi8E1hUO3fHSMkj4CJs
-	7sJ4YKhwuhzVkSEbKvQNedoo/GajcAxkMgtAIAfl81qQXV2cACcux2R/Cg3llw==
+	s=arc-20240116; t=1713877692; c=relaxed/simple;
+	bh=BeIUqQAJFNDOpF7ht1GQmR6wVW1LPDbJ/XROhUKljBc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=s/kWKmU+Qr/FRKOz1eomJJ2KDsiSmyZ46iidk4n2Lxr+P021D5ve+GoEI5rFdIBDZ9rnizZ33JzK+NbUrFr3iUomgMupNRZz1XHChYvhMiJN2h4/rYpVVQIrYPWPBUcf0ZRg3IL5KxU4pL478UJjBdRkke+RMFDEdW/ldglNVbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ting4AdE; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d895e2c6efso85257591fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 06:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713877689; x=1714482489; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BeIUqQAJFNDOpF7ht1GQmR6wVW1LPDbJ/XROhUKljBc=;
+        b=ting4AdEyo60Uc45ePzamwPNjTyqc0LE1KIsTEOF4E8J8XTRjgyqRMupeNTLrsspru
+         duR4fu9Yt2rGDCsmuyjcY6bLaBzQvZ/rDwWnGSRT+zXw7yeLXBcGomgUcOjoFA3oqjNA
+         /RU3J+nfgZ1yf2UY4ah/ZjrwJ2CQpdiy4vi25NfFFXec0Yk/qCOTAJrOp26mps3g9B12
+         Cf8jvqxtBLz5II6o9xIImf1zYLVbFcqjP87cLbDzHflAt9p6N7PfUQ0o41vTK5Af74yO
+         5RA9OuivQ0SIC8mBBnyS4B7S7d6tIHgY3tuCUXEMLE6Djgqpi/ilJu4bxTB65lLecdB1
+         wARg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713877689; x=1714482489;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BeIUqQAJFNDOpF7ht1GQmR6wVW1LPDbJ/XROhUKljBc=;
+        b=E+Goh66giZpTtAoOSAPkgT0FKGYjdY3CONr6dIc2rq4sqpv/o6rxpjyRwa3Yqc7gZq
+         6eGyYu8oanvVxLyYolrzo6VUMl+PYRJ0ICaanM21D0jL7/KufIJW1rFYdg41KlCzUgUa
+         FpZ09G5SaADyUxwlidtlhbDSsKUETE/PzImVKXDkC0AdvZc/dXK3jQ6f+Te38dSCJN+n
+         XfbN4xG9d6QEdK4bW0g0gXxZBFdC75MI/Kdq9LDeqqTPOuHP0nJ9ciwAyDACo8uroG0Z
+         gRXUOlY1aUKG+RKebWlk5/DHNE4X6HPICRtcpZluJPhghNc8kkUqGw8kYjJLlF/RxXP6
+         U4kg==
+X-Forwarded-Encrypted: i=1; AJvYcCU/+a3+TCYX9dvE+QA5IfIerosZFD3zhFqTQnd76jmNG/QLvaZuGthLgIGfLMwGmMXeZKl+N8cgl6p56E24lZ3w81RBZax6bFGDPpw8
+X-Gm-Message-State: AOJu0Yz/kDIjoxb34o+QZbBUBa/rI2s+sgAMvcaVbFJLhcheEknDvozR
+	6NAImQOMx97ydgt1srDHh+meyq1DoEjO5VVYAkESBbu5M/lMcv+jbVGqUwfR7UA=
+X-Google-Smtp-Source: AGHT+IE63dqBihv/nXAaphUKhm4QoRx8cccrUbZIncSaNE5pK7FBZ6/h8B/ymrmWiFGABv0uHgk0Og==
+X-Received: by 2002:a05:651c:1a06:b0:2d8:34ec:54e6 with SMTP id by6-20020a05651c1a0600b002d834ec54e6mr9435410ljb.33.1713877688746;
+        Tue, 23 Apr 2024 06:08:08 -0700 (PDT)
+Received: from [172.30.205.0] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id k11-20020a2e888b000000b002dd92e1ae00sm542013lji.26.2024.04.23.06.08.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 06:08:08 -0700 (PDT)
+Message-ID: <8cdcfa2f-7a8f-4f63-b919-df0afde7d9de@linaro.org>
+Date: Tue, 23 Apr 2024 15:08:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 23 Apr 2024 15:08:05 +0200
-Message-Id: <D0RIXN4JG6ZA.4W4HN68M9U6I@bootlin.com>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: (subset) [PATCH v3 0/9] spi: cadence-qspi: add Mobileye EyeQ5
- support
-Cc: "Rob Herring" <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Vaishnav Achath" <vaishnav.a@ti.com>, "Thomas Bogendoerfer"
- <tsbogend@alpha.franken.de>, "Rob Herring" <robh@kernel.org>,
- <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-mips@vger.kernel.org>, "Vladimir
- Kondratiev" <vladimir.kondratiev@mobileye.com>, "Gregory CLEMENT"
- <gregory.clement@bootlin.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Mark Brown"
- <broonie@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240410-cdns-qspi-mbly-v3-0-7b7053449cf7@bootlin.com>
- <171283699002.32012.7629247540689477794.b4-ty@kernel.org>
- <D0QT350IJHFH.36EXE1UT9QM10@bootlin.com>
- <ZidAefc0Ejrklopf@finisterre.sirena.org.uk>
- <D0RF1AKWAEAE.44N64GHMV2ZY@bootlin.com>
- <3f891794-0083-4245-bad7-518b1c48bb7c@linaro.org>
-In-Reply-To: <3f891794-0083-4245-bad7-518b1c48bb7c@linaro.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 2/3] PCI: qcom-ep: Add support for SA8775P SOC
+To: Mrinmay Sarkar <quic_msarkar@quicinc.com>, andersson@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ manivannan.sadhasivam@linaro.org
+Cc: quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+ quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+ quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+ quic_schintav@quicinc.com, Bjorn Helgaas <bhelgaas@google.com>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <1711725718-6362-1-git-send-email-quic_msarkar@quicinc.com>
+ <1711725718-6362-3-git-send-email-quic_msarkar@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <1711725718-6362-3-git-send-email-quic_msarkar@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello,
 
-On Tue Apr 23, 2024 at 12:25 PM CEST, Krzysztof Kozlowski wrote:
-> On 23/04/2024 12:04, Th=C3=A9o Lebrun wrote:
-> > Hello,
-> >=20
-> > On Tue Apr 23, 2024 at 7:00 AM CEST, Mark Brown wrote:
-> >> On Mon, Apr 22, 2024 at 06:52:47PM +0200, Th=C3=A9o Lebrun wrote:
-> >>> All commits tagged "(no commit info)" do not show up in your for-next
-> >>> branch. Is that expected and is there anything I can do? There was on=
-e
-> >>> pending -Wunused-variable compiler warning to be addressed for
-> >>> example, see [0].
-> >>
-> >> Please submit any patches you'd like to see included.  If there were
-> >> outstanding issues that need fixing then fixing those prior to
-> >> submitting would be sensible.
-> >=20
-> > Seeing "Applied" followed by a list of commits, with some of those not
-> > being applied confused me.
->
-> That's a standard output of b4 and maybe also Patchwork, if some parts
-> are applied.
 
-Thanks for the pointer. I've created an issue over at b4 to see what
-people think about this matter. Current behavior is not intuitive as a
-young contributor.
+On 3/29/24 16:21, Mrinmay Sarkar wrote:
+> Add support for SA8775P SoC to the Qualcomm PCIe Endpoint Controller
+> driver. Adding new compatible string as it has different set of clocks
+> compared to other SoCs.
 
-See: https://github.com/mricon/b4/issues/26
+So is it the only change after all? What did we conclude on the NO_SNOOP
+saga?
 
-Regards,
+If the difference is only in the consumed clocks (and they're only supposed
+to be "on" with no special handling), I don't think a separate compatible
+is necessary at all
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+Konrad
 
