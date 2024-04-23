@@ -1,217 +1,140 @@
-Return-Path: <linux-kernel+bounces-155941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44C178AFB19
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:53:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0E378AFB21
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:53:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C62CE1F26B89
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:53:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D8D52886B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB77114D283;
-	Tue, 23 Apr 2024 21:46:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 089A4143C74;
+	Tue, 23 Apr 2024 21:48:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GzYhFQah";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lJrO8EOB";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GzYhFQah";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lJrO8EOB"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Rfh3yqj7"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80361145B38;
-	Tue, 23 Apr 2024 21:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E812A140E40
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 21:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713908815; cv=none; b=kIis+6Qi+u0uKPyzBrjQjqGEZ4dXDtRY7u+jvyYxgpwXSZwlXL8XSqvKkds9LkOG7Dc3fa+L6456CrYYzuvldDKMCvL7V30Q4kphSvxaigH7AEXkkmKNs1jFmLPEEIFILHtV905MFh+qGtk6w/B7ZFkYUvHqTtN8lD1UtFiJYmw=
+	t=1713908895; cv=none; b=tRscQ19Ed+7uxjHfaEIl1jTdtf6UizHe+dXu21XZoyJhET5xP33QDVGCJprOjLFyNM+kqwTQ7T8j/wU8szz7a0EQXgLNLqn9VJareQy/z0An8irndq4yoiTGbL68pk1ZwVW1hCnJeoJJy/g4KazOoWjcEanvYBdx5pb1/5F77o4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713908815; c=relaxed/simple;
-	bh=kmuVjF8KAUkxt0gcupljV05k6/m4UbaCtGln84oipt8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H4O8fQewx1GQwXoRh8TSjTrAYTimo247Bacwml5/Jt7GaIdcQT9rbnwB5EbMJOj99QklfckUkGiP8rX+TXdlT8rZavkssUBT8CKF1if0KSVhpOAE54y0TgxZqQeu2Wqr1tc1WM2p2NVXb/G1ySSUTjEjJdPKWR3yd5EuEse+Jhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GzYhFQah; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lJrO8EOB; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GzYhFQah; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lJrO8EOB; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 846AB3878A;
-	Tue, 23 Apr 2024 21:46:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713908811; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1Owf3IHJ7IMkSjpRBlY3smfRwZEWBGDK534+fPxEpJo=;
-	b=GzYhFQahgc8kBEfOYUyJx4T2HJi2bOOf44++/EPwSif+QjEfFrYR191ntlMLTLnnAAimij
-	yf94AUqYbVKcCq0gy9SIMotH/bX8oCbrhI/5rt4zrHvpMMgdJwBDhTutxmI6DawIoRrRQ9
-	N1NekkBbj/VoT/BpmqAcpSHmuZIj9kE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713908811;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1Owf3IHJ7IMkSjpRBlY3smfRwZEWBGDK534+fPxEpJo=;
-	b=lJrO8EOBlwfF5im/ncKJeGUtQtTna+5srAVx+zZ5Vf+ljFsQetMXyChSojLE7jVvpfzXhY
-	UyAKkLLcuf0PL6Cg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=GzYhFQah;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=lJrO8EOB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713908811; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1Owf3IHJ7IMkSjpRBlY3smfRwZEWBGDK534+fPxEpJo=;
-	b=GzYhFQahgc8kBEfOYUyJx4T2HJi2bOOf44++/EPwSif+QjEfFrYR191ntlMLTLnnAAimij
-	yf94AUqYbVKcCq0gy9SIMotH/bX8oCbrhI/5rt4zrHvpMMgdJwBDhTutxmI6DawIoRrRQ9
-	N1NekkBbj/VoT/BpmqAcpSHmuZIj9kE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713908811;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1Owf3IHJ7IMkSjpRBlY3smfRwZEWBGDK534+fPxEpJo=;
-	b=lJrO8EOBlwfF5im/ncKJeGUtQtTna+5srAVx+zZ5Vf+ljFsQetMXyChSojLE7jVvpfzXhY
-	UyAKkLLcuf0PL6Cg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 75C9713929;
-	Tue, 23 Apr 2024 21:46:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1Sl5HEssKGbHeAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 23 Apr 2024 21:46:51 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 1D0A9A082F; Tue, 23 Apr 2024 23:46:51 +0200 (CEST)
-Date: Tue, 23 Apr 2024 23:46:51 +0200
-From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jack@suse.cz, ojaswin@linux.ibm.com,
-	ritesh.list@gmail.com
-Subject: Re: [PATCH v2 5/5] ext4: open coding repeated check in
- next_linear_group
-Message-ID: <20240423214651.v7veh2x2pmkpxti4@quack3>
-References: <20240423124046.974134-1-shikemeng@huaweicloud.com>
- <20240423124046.974134-6-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1713908895; c=relaxed/simple;
+	bh=ztw70WIqVQBaNSH45npjc3+FwzycdJ4D/SvQ14SFB8I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZMd/lOmxk+BaUWjhL+n+2hvvHRHvSy8qlptsFigZPol0NJqJUYKZC6nJF4HbJmtVgloUmAE4GPXyKo9A2R003KMuv+0WPqCbUH3jwXSTzxLLQPVWnQ/bt1We6t2BmGGWjch9vShca1I/G4ZhL7wuLdif6cop5j/cSRkLd7M9zaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Rfh3yqj7; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-436ed871225so43601cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:48:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713908892; x=1714513692; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HOksILe6nmVL7yfoj3z4gNTzqZws1cudHPepaiKTCFw=;
+        b=Rfh3yqj7EZCXEZF3vw1zrM9hY36tMpEXRQauZA93WUA2LvkOeuwKYSE7+K92SR3Alx
+         O+7HyGgU72a/sES+AVgRtrriJDpirGB9CSeyvooY1AjeA9tpJBxvJCRSBMtcoMB215xT
+         hVkIf7nD4R/FhDpQYmA86rU2nHT7GuhzyJZcOrw4Li3yZ+d9O2+Loy5yxheMRsAu08QH
+         pCbbVvoG0gf9+6L3mfYVZNi2Up1KUhlpjFLBhoU2YSJh9H7lkH0UNFoxyzJRQGEBcUn7
+         X5nksqFtRBFfWLSfcFPkV9OXpfPW7ekU3uY1RcVlZc/oY545hZdmMYzFkfwZaBDTKd9E
+         z3sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713908892; x=1714513692;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HOksILe6nmVL7yfoj3z4gNTzqZws1cudHPepaiKTCFw=;
+        b=UwEbZfXofcTZJq6ex2clZXC5CeyxfR5qCVGJBwm7DthM36bKTRuAqBiyg6RtLAvXDX
+         NJlx2qmMwOxE6R1XN1swa0xW65a9c4sGtcvGfrk2u4GPB8RWnmsiXUfq+hubV/ziwzTF
+         IhaJcU/Zc3ymUKVbHZiR0zYEWJWOYSY7Qhxn94QFUxVjHm9KWrSGqj3zDdZTxvmhRSF0
+         p7EYFHJOxoalu4mL+bEyIB+tIlE93Bg4zpoDoDiIHRAudDb4phedzcMPT2lOJmLrnXNi
+         Kopuat/cPVpsfp6mmKKa/Habn8D7JbnsLbc91iR79AQYBwqGuEqnLKPMdaeHx0w5JRtN
+         Fx2w==
+X-Forwarded-Encrypted: i=1; AJvYcCXNIeXLByo50HKmohqUKm8o/HhGaSWZ8mVNYUihb1cWB+L8+QdDer5skzAd4nHkyXMhItIzvvvjTzdi7pFAL+40VDgaFqN5jblCyUm0
+X-Gm-Message-State: AOJu0YxcmLqvjSFXZPf50ah3nVKzxRUd95yKJLqmRmtEmNmIv6ZX7qQA
+	Urgcgbx35TDFHKUr5ZFnPR/aqUplqffBz1g/W9uXkZZ2kc+/uZ45I+R+A6d+wZozAeDQ5hJ41Al
+	iNoR/LboqQJ/BL4O32YlLME2OUnxgRkx2pbq4
+X-Google-Smtp-Source: AGHT+IHmfmt+n8ZHr2UBZvi0KLd1MiLpZSd36KI5Slq28e1mUs9ISGikELJmw2vgTIXu80YXGqN4ALSywcsgHOYDleI=
+X-Received: by 2002:ac8:5482:0:b0:437:c4ae:f3b4 with SMTP id
+ h2-20020ac85482000000b00437c4aef3b4mr82800qtq.26.1713908891776; Tue, 23 Apr
+ 2024 14:48:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423124046.974134-6-shikemeng@huaweicloud.com>
-X-Spam-Flag: NO
-X-Spam-Score: -2.40
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 846AB3878A
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.40 / 50.00];
-	BAYES_HAM(-2.89)[99.53%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[mit.edu,dilger.ca,vger.kernel.org,suse.cz,linux.ibm.com,gmail.com];
-	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.cz:dkim,suse.cz:email]
+References: <ZigRDKUGkcDqD-yW@x1>
+In-Reply-To: <ZigRDKUGkcDqD-yW@x1>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 23 Apr 2024 14:48:00 -0700
+Message-ID: <CAP-5=fV0sX2V5+yjTymzDFXakxZxFxKvokCOqobOFgZHn6eVsw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] perf tests shell kprobes: Add missing description as
+ used by 'perf test' output
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Veronika Molnarova <vmolnaro@redhat.com>, Michael Petlan <mpetlan@redhat.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Kajol Jain <kjain@linux.ibm.com>, 
+	Namhyung Kim <namhyung@kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue 23-04-24 20:40:46, Kemeng Shi wrote:
-> Open coding repeated check in next_linear_group.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+On Tue, Apr 23, 2024 at 12:50=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Before:
+>
+>   root@x1:~# perf test 76
+>    76: SPDX-License-Identifier: GPL-2.0                                : =
+Ok
+>   root@x1:~#
+>
+> After:
+>
+>   root@x1:~# perf test 76
+>    76: Add 'perf probe's, list and remove them.                        : =
+Ok
+>   root@x1:~#
+>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Kajol Jain <kjain@linux.ibm.com>
+> Cc: Michael Petlan <mpetlan@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Veronika Molnarova <vmolnaro@redhat.com>
+> Link: https://lore.kernel.org/lkml/
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-Looks good. Feel free to add:
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
+Thanks,
+Ian
 
 > ---
->  fs/ext4/mballoc.c | 31 +++++++++++++++----------------
->  1 file changed, 15 insertions(+), 16 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 71b2f9a18875..4afe5bb94bf4 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -1076,23 +1076,11 @@ static inline int should_optimize_scan(struct ext4_allocation_context *ac)
->  }
->  
->  /*
-> - * Return next linear group for allocation. If linear traversal should not be
-> - * performed, this function just returns the same group
-> + * Return next linear group for allocation.
->   */
->  static ext4_group_t
-> -next_linear_group(struct ext4_allocation_context *ac, ext4_group_t group,
-> -		  ext4_group_t ngroups)
-> +next_linear_group(ext4_group_t group, ext4_group_t ngroups)
->  {
-> -	if (!should_optimize_scan(ac))
-> -		goto inc_and_return;
-> -
-> -	if (ac->ac_groups_linear_remaining) {
-> -		ac->ac_groups_linear_remaining--;
-> -		goto inc_and_return;
-> -	}
-> -
-> -	return group;
-> -inc_and_return:
->  	/*
->  	 * Artificially restricted ngroups for non-extent
->  	 * files makes group > ngroups possible on first loop.
-> @@ -1118,8 +1106,19 @@ static void ext4_mb_choose_next_group(struct ext4_allocation_context *ac,
->  {
->  	*new_cr = ac->ac_criteria;
->  
-> -	if (!should_optimize_scan(ac) || ac->ac_groups_linear_remaining) {
-> -		*group = next_linear_group(ac, *group, ngroups);
-> +	if (!should_optimize_scan(ac)) {
-> +		*group = next_linear_group(*group, ngroups);
-> +		return;
-> +	}
-> +
-> +	/*
-> +	 * Optimized scanning can return non adjacent groups which can cause
-> +	 * seek overhead for rotational disks. So try few linear groups before
-> +	 * trying optimized scan.
-> +	 */
-> +	if (ac->ac_groups_linear_remaining) {
-> +		*group = next_linear_group(*group, ngroups);
-> +		ac->ac_groups_linear_remaining--;
->  		return;
->  	}
->  
-> -- 
-> 2.30.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>  tools/perf/tests/shell/base_probe/test_adding_kernel.sh | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/tools/perf/tests/shell/base_probe/test_adding_kernel.sh b/to=
+ols/perf/tests/shell/base_probe/test_adding_kernel.sh
+> index a5d707efad85cb40..63bb8974b38e0b0d 100755
+> --- a/tools/perf/tests/shell/base_probe/test_adding_kernel.sh
+> +++ b/tools/perf/tests/shell/base_probe/test_adding_kernel.sh
+> @@ -1,4 +1,5 @@
+>  #!/bin/bash
+> +# Add 'perf probe's, list and remove them
+>  # SPDX-License-Identifier: GPL-2.0
+>
+>  #
+> --
+> 2.44.0
+>
 
