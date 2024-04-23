@@ -1,100 +1,127 @@
-Return-Path: <linux-kernel+bounces-155920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91E298AF8E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:23:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 214148AF8E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:29:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1AF31C23116
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:23:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E29FB26A54
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:29:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E413414387B;
-	Tue, 23 Apr 2024 21:23:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B37414388C;
+	Tue, 23 Apr 2024 21:28:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pUQzFste"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="l08TqcJ3"
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31AB1143882;
-	Tue, 23 Apr 2024 21:23:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CD32143886
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 21:28:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713907395; cv=none; b=GoRYLj2sYqBJMh6FOKHB86lkddEenQcGXJSSud077mkqH1lEiXh1ElUVSTBszpOOky4MK6qXxfvThRQb+pjb/CGAXBF57SDIm7DfN9n9NQsLqJPJIjC9Wli/ngJ2M+/m3riobUXS6lEq4hRqSYets6F3fYPXQjIcIcURuwE49HY=
+	t=1713907712; cv=none; b=GHplIOvCri0MT5wDQWsvmAptiqX9/08FODx1Fu4NKnbUqM3E9dcmik9yL2ZoHjk7JWFNulMOCXdM4z9HD1jKnv4p9cwmHMpqLItwciUSQswIB6chU3cCMHrEggrvXzwKi0rHBaPzi895v6gZDBPMPyD9EsnubRoaZnUujZqA3NA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713907395; c=relaxed/simple;
-	bh=HK0ujPxp34qpwUxMtRk5RYEckAapSdQ4K+GXdVo0Cqk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eSXItm+1JCbjurSZSdXpvrEHNK1ZTAt09tSYNCat+mOVl9fH42v7LG9z93J++x0ucSxfBVq09/2PiDK6s2fmheFpJa6x27jgAmg4zdBFkuJS+Td/m0sTMONcgIMY8h8DWmFzDokdBZjWuJs0yrxChGRvhIkUmPmNJ1qR56CaMBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pUQzFste; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7370C4AF09;
-	Tue, 23 Apr 2024 21:23:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713907394;
-	bh=HK0ujPxp34qpwUxMtRk5RYEckAapSdQ4K+GXdVo0Cqk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=pUQzFstejbk7piPmipfGwzTsvsQHb+BJz6gxaBOD9wBGu5ujIXaTvilrhWrPzFKUs
-	 funigVyrZSsZBNfVpQyPAbu6N9p+q/76Ero/rE/BA6k5jlJZFc/qq8uJUfdSh9iLbj
-	 ZX8L3YWHwvOvVnB++kQajXwIJVyXE0C529BLCEU2RQgULWDl3c51p76+8q6O/wkz0H
-	 iaRbdoTSoAamZHl1VPdKxgkB953B83K1TFMT/C6TzROLXyT7DPYGVAKsfKU2ZKw4WO
-	 bf55Q0KIHKHXhhkoK7RRC+4Lvb/9+pascEU22Qjybg9dAFYD3TLHWe9rIae4JCqpjt
-	 pvO4wjKZbvJPg==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-51bafbe7509so1541098e87.1;
-        Tue, 23 Apr 2024 14:23:14 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVQBY5RWCclZt3/Dn/uoYpWWYpEAKdDK/25n9+kLNihQ5P8BhZGOTXgzZ4X5pivK0krk87XYvq9YP636+xvHCDewqSMXeETYS2csalnyvQHsyt3m2XkTgfJO3we5c6r/pT74crhCxOSaw==
-X-Gm-Message-State: AOJu0YwTmpuF/8Is+fVRvb5QCRhiIw7XGv3IUZUZ4s0vjLP/T5LBhl++
-	DuJ8/DT8PjBATU0mMjxY4teNe4BzOOG2nvHpav5JGngPrHCqf9CzMX0a3j+REEweEm3qqmFCj6F
-	72jLAKzQYIEdHZBjoaemgOwsw0A==
-X-Google-Smtp-Source: AGHT+IFSEy7Ntcs8kO5E/YWUotyQAYiFUv1GQFB5gLdH1tA5hJgWZew7wv8o02kRNGivuEr/W3u5Ti11wEYzT1Mnyl4=
-X-Received: by 2002:a05:6512:601:b0:519:611f:df49 with SMTP id
- b1-20020a056512060100b00519611fdf49mr524205lfe.69.1713907393154; Tue, 23 Apr
- 2024 14:23:13 -0700 (PDT)
+	s=arc-20240116; t=1713907712; c=relaxed/simple;
+	bh=AR4/jfl18d1BrNGvop+qwiaQnL9UlAgiNSZUFkUuPkA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ubo3L5zJT3arEIX9SK758fPXu4jEpd/zdaAK38Jv0QvEQpfMR8oZggLTlML8b0Q5raf7AoP6js817kiqMEoCoKNiIvEaJ0FNc5NebPo2roiXB3IIf02Z+Y2kphwtKzYmO06PjW+wtvjPnrCqFhqGVlMpIhBScdsIYJkzZdqPs88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=l08TqcJ3; arc=none smtp.client-ip=35.89.44.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
+	by cmsmtp with ESMTPS
+	id zKeprByZCPM1hzNfDrQArS; Tue, 23 Apr 2024 21:26:55 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id zNfDrNGzs9zHMzNfDrACR8; Tue, 23 Apr 2024 21:26:55 +0000
+X-Authority-Analysis: v=2.4 cv=fo4XZ04f c=1 sm=1 tr=0 ts=6628279f
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=Sfg9OT4WXbNM99GaDXVDBA==:17
+ a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=wYkD_t78qR0A:10
+ a=VdDABtCXyk9SiVsiCNMA:9 a=QEXdDO2ut3YA:10 a=QYH75iMubAgA:10
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=AwENOt2jGw9fqo5gAkt7vsoIvQip3Njh2Yjyg0AisJ8=; b=l08TqcJ3vWK9Wbr79qe0LKF9pk
+	/UJRjVPioyW4djkhv7WQgP6YIOo/Uqi7x1GunjpStme8J2jG0ltsOeEIvwKwOvxsxtlmhTTVqLev0
+	93tqWOfrGtVNHzv5cLn+EZEXms//gISVtrYurCM5KiIfT4Rnvr3k4iBkJB+ehB9MQ4CivF0LTzZ/2
+	U0oYelpSUWSqvnED/SgmJZEAwrkec2xCuxT2Q0vjqvBFtI6IQx7Ochy8qFI9j1ogo0Zcwni/U3q+G
+	3StbiX5bHRxlg4WQKW4sKzZQm2VcCm9mOxxgIuNphMpO6GTk3hCtYimXYEpSR6v8u6X+E41+Cv1a9
+	qRYkP2tw==;
+Received: from [45.167.200.115] (port=1190 helo=[192.168.5.44])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rzNfA-002j2b-2J;
+	Tue, 23 Apr 2024 16:26:53 -0500
+Message-ID: <509125aa-9f92-438c-9a18-2cf3400d7194@embeddedor.com>
+Date: Wed, 24 Apr 2024 07:26:30 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240317184130.157695-1-krzysztof.kozlowski@linaro.org> <20240317184130.157695-4-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240317184130.157695-4-krzysztof.kozlowski@linaro.org>
-From: Rob Herring <robh@kernel.org>
-Date: Tue, 23 Apr 2024 16:23:00 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJfT-jui5P56CO4Fr37kr5iNN8dpxt8ecKeFmdVGnRYbA@mail.gmail.com>
-Message-ID: <CAL_JsqJfT-jui5P56CO4Fr37kr5iNN8dpxt8ecKeFmdVGnRYbA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] arm: dts: allwinner: drop underscore in node names
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, Corentin Labbe <clabbe@baylibre.com>, 
-	Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] smb: smb2pdu.h: Avoid
+ -Wflex-array-member-not-at-end warnings
+To: Steve French <smfrench@gmail.com>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>,
+ Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+ Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+ Bharath SM <bharathsm@microsoft.com>, Namjae Jeon <linkinjeon@kernel.org>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>, linux-cifs@vger.kernel.org,
+ samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+References: <ZhgDTj1nwLEtSd9h@neat>
+ <1166494b-3e34-4919-9998-141540a948b3@embeddedor.com>
+ <CAH2r5msZaV1kHqQw8Sb_3wQfGBj4aU+tSCR5E0YJ8fCH6ODB4Q@mail.gmail.com>
+ <7789881d-a709-48f4-8c14-259acbce813a@embeddedor.com>
+ <CAH2r5mu=HYqSnT3j=mdLA7XPyha5A27tBqzJcEZfMAU-yLunbA@mail.gmail.com>
+Content-Language: en-US
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <CAH2r5mu=HYqSnT3j=mdLA7XPyha5A27tBqzJcEZfMAU-yLunbA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 45.167.200.115
+X-Source-L: No
+X-Exim-ID: 1rzNfA-002j2b-2J
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.5.44]) [45.167.200.115]:1190
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 18
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfCM7vYIa4rShS5KSlJkUu2jchL5Lhl4Yr3UjcZasxJeNhY1RH4ZN8xElPBq/Gbusals2eikByQNU7khQyyv7tCm5dQ1Bq1m1Hg7kmy/fjR2K+w3pzRKT
+ J3ZhwHv/X48Oo3IhwfVUUYn5+C9we1Sukxsyg2LqoX3ZOOglQYCwwBacIvqexS3Zhob5y7zlzdh1FhCSDW5c1iC1aUlE0IrvvY6NDl9m98Jx3wJRVzd17+rk
 
-On Sun, Mar 17, 2024 at 1:41=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> Underscores should not be used in node names (dtc with W=3D2 warns about
-> them), so replace them with hyphens.  Use also generic name for pwrseq
-> node, because generic naming is favored by Devicetree spec.  All the
-> clocks affected by this change use clock-output-names, so resulting
-> clock name should not change.  Functional impact checked with comparing
-> before/after DTBs with dtx_diff and fdtdump.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-This adds warnings:
+>> The _packed in the commit 0268a7cc7fdc is not an attribute, it's the name
+>> for the group. So, it's not actually doing what the submitter thinks it does.
+> 
+> Do you want to submit a followup fix to fix this?  Or let Namjae fix it?
+> 
 
-13  prcm@1f01400: 'ahb0-clk', 'apb0-clk', 'apb0-gates-clk',
-'apb0-rst', 'ar100-clk', 'ir-clk' do not match any of the regexes:
-'^.*_(clk|rst)$', 'pinctrl-[0-9]+'
+The fix is correct. I'm sorry, I confused the suffix `_attr` with `_tagged` in
+the struct_group() family of functions.
 
-Since we documented it with underscores, I'd say just leave these at
-least until if/when we define some standard names. I'd prefer we spend
-time reducing warnings from the common schema. I'm looking at
-root-node.yaml. simple-bus.yaml generates a lot too.
+I've been in airports the last 24 hours, and I my brain needs some rest.
 
-Rob
+Thanks!
+--
+Gustavo
 
