@@ -1,84 +1,90 @@
-Return-Path: <linux-kernel+bounces-155980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83E6B8AFC3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:53:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2653B8AFC56
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:59:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9093CB23BC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:53:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC1A41F244B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:59:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0387339AC;
-	Tue, 23 Apr 2024 22:52:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB0F32E85E;
+	Tue, 23 Apr 2024 22:59:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="rozgHBGe"
-Received: from forward501a.mail.yandex.net (forward501a.mail.yandex.net [178.154.239.81])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NfHZ0wWx"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CECFE18B04;
-	Tue, 23 Apr 2024 22:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05BB62E62F;
+	Tue, 23 Apr 2024 22:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713912779; cv=none; b=uQtnQ2AjQMS/CxYSD2L0SK2BLcmLihoPQI4WywIoRIHmqfZVlj7NGxU3dFnPA4/amBLHiHsD40YseB7slskM1Zak2PfJHrdGpDZa3tZFhS82bI9BkKUOcQJtqov8QfhU4VljMhB4s3LzKY7+6n/fcilbD7hddH1BqUrYqNdAdGY=
+	t=1713913149; cv=none; b=eZ7qG0g0vMxcXhM+d59m3bEfVIYEnec6UGCoRSbzXDUVZDXY6mPh1RdgES8PKq/YXvz5HdMi0o9oz9lR0wweYz4nyOoaVBRt6NUe1bmxGohG1R8c+AKLTN4hSozgEcpPyWJYJp+QLAl/n6QtRxoNLorO8tsQM55MYB8Hu7KhpMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713912779; c=relaxed/simple;
-	bh=gEADGKBqJj3ZAJettCo9099wAMmz2xF0IxZ6PXZbvXM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZlzjFdfiXc57MWjYSxqyQDUgWzMQa+SAvNrPuC3QJG9HRPtbj9fh+hyK6t3V/i1+uebadvJm/XLNJinbiiFaE+WiO3B+evcETISGEFN9AkyCFdPfyjZW4gDNuaF26Nsfrj6l971R+D7zjea/yH/ouW+/5ViTSSbKmSxbyEO9yPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=rozgHBGe; arc=none smtp.client-ip=178.154.239.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
-Received: from mail-nwsmtp-smtp-production-main-59.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-59.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:1a14:0:640:8120:0])
-	by forward501a.mail.yandex.net (Yandex) with ESMTPS id CC8D86180D;
-	Wed, 24 Apr 2024 01:52:48 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-59.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id jqTm45NoKmI0-LxKvboFV;
-	Wed, 24 Apr 2024 01:52:47 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1713912767; bh=frtj/OWfuK2l0yauuwxOq5Ja3FZYzGG8tIdmxFP5wxI=;
-	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
-	b=rozgHBGehcqd87/IxWKXLRd9g5vTbAA3lVsgEiB792xg6wC334pZBnp+3OjEKgz7b
-	 guU3natDtp2HyifDgFpl7coJBqwG9lbleKAaDfZjzr4fIE9rQ9OZ/pxI8S4DA3OaEz
-	 fo0ZnqwGYKldFBmH8cV96w6a6FI9GZYoMEchv2ks=
-Authentication-Results: mail-nwsmtp-smtp-production-main-59.iva.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-Message-ID: <3a6eccbd-263d-4a54-a35f-c16f60dc0a11@yandex.ru>
-Date: Wed, 24 Apr 2024 01:52:45 +0300
+	s=arc-20240116; t=1713913149; c=relaxed/simple;
+	bh=s8o3DPkfp3k+tdnCglc/unIS8LkRb0yjxyWkklbBA6o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dX44DmB/BavFgMRrcoOycUF4kuYMZ/eaTrfe11vs4RynxGkA8qWyLy/i0vnhUKKcQO/2ml0oFxfUQThpqfJ8qvgVMgFciY/hoqcYKEHgstZSP2ZDmWyrnhIW7AV4OSr9r+dAeq/juFpXE5snpsxILOqWpDBnLrA5G2jLlg4/3TE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=NfHZ0wWx; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=vs2mxITFBV+nRdHIV1uS98AGVTfpM4tELm97x05ajm0=; b=NfHZ0wWx8GsndEQHkBQc5Ztki1
+	+thI/9cbCmFDfsBKQdJhpY9sdYrV/3LG4b9EaxZ0lQ9V30/cPkhT3QlooLztHyMRN0CXpRp3xNP46
+	x4cp4efIgNLFzO5QRLE3Q5J1Axh70ssti9HIPvCLDgDRJ6ZlOZMOIeD7MQdzG43fH26hzdZ6DeMnX
+	iYYsZmvc+gaKlIlop7wT1ysPbtC6FwsO+/CDxp8D60K0LK8ef7xSNgaJzqYS8rfLG8Gwak/hUZuRt
+	YFxaII764S2palC6DlSP+PhM5yULs8nvv0FSPVcWpRz6TmGmlLPH7/umzcJ+2ccIKSYRnRP2pgL4x
+	qDIkZ1SQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rzP64-0000000HGFU-0pot;
+	Tue, 23 Apr 2024 22:58:44 +0000
+Date: Tue, 23 Apr 2024 23:58:44 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Kairui Song <kasong@tencent.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	"Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>,
+	Barry Song <v-songbaohua@oppo.com>,
+	Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>,
+	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Chao Yu <chao@kernel.org>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v2 3/8] f2fs: drop usage of page_index
+Message-ID: <Zig9JCrhky9JieRS@casper.infradead.org>
+References: <20240423170339.54131-1-ryncsn@gmail.com>
+ <20240423170339.54131-4-ryncsn@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] implement OA2_INHERIT_CRED flag for openat2()
-Content-Language: en-US
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
- Eric Biederman <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
- Alexander Aring <alex.aring@gmail.com>, linux-fsdevel@vger.kernel.org,
- linux-api@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
- =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
-References: <20240423110148.13114-1-stsp2@yandex.ru>
- <4D2A1543-273F-417F-921B-E9F994FBF2E8@amacapital.net>
-From: stsp <stsp2@yandex.ru>
-In-Reply-To: <4D2A1543-273F-417F-921B-E9F994FBF2E8@amacapital.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240423170339.54131-4-ryncsn@gmail.com>
 
-23.04.2024 19:44, Andy Lutomirski пишет:
-> Also, there are lots of ways that f_cred could be relevant: fsuid/fsgid, effective capabilities and security labels. And it gets more complex if this ever gets extended to support connecting or sending to a socket or if someone opens a device node.  Does CAP_SYS_ADMIN carry over?
-I posted a v3 where I only override
-fsuid, fsgid and group_info.
-Capabilities and whatever else are
-not overridden to avoid security risks.
-Does this address your concern?
+On Wed, Apr 24, 2024 at 01:03:34AM +0800, Kairui Song wrote:
+> @@ -4086,8 +4086,7 @@ void f2fs_clear_page_cache_dirty_tag(struct page *page)
+>  	unsigned long flags;
+>  
+>  	xa_lock_irqsave(&mapping->i_pages, flags);
+> -	__xa_clear_mark(&mapping->i_pages, page_index(page),
+> -						PAGECACHE_TAG_DIRTY);
+> +	__xa_clear_mark(&mapping->i_pages, page->index, PAGECACHE_TAG_DIRTY);
+>  	xa_unlock_irqrestore(&mapping->i_pages, flags);
+>  }
 
-Note that I think your other concerns
-are already addressed, I just added a
-bit more of a description now.
+I just sent a patch which is going to conflict with this:
+
+https://lore.kernel.org/linux-mm/20240423225552.4113447-3-willy@infradead.org/
+
+Chao Yu, Jaegeuk Kim; what are your plans for converting f2fs to use
+folios?  This is getting quite urgent.
 
