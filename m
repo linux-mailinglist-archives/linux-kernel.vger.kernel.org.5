@@ -1,182 +1,210 @@
-Return-Path: <linux-kernel+bounces-155355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A687E8AE944
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:16:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 003F08AE943
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:16:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D85C81C21995
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:16:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D168EB21D61
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:16:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B3813C3C7;
-	Tue, 23 Apr 2024 14:16:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29DF813B5A4;
+	Tue, 23 Apr 2024 14:15:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DUSbLvbe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lUsX2UAc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0703113B28D
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:15:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B87D13BADC;
+	Tue, 23 Apr 2024 14:15:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713881760; cv=none; b=ZCv9smi44q4+bqGuhHw/GkXl801+gjClS+EMA3v01sMgBdlXMdDe1H3gy4usHAgDb080xj3EGi/yFd/KpSOFJ852PrHoOw73y1BMzxMNxUeBxtvydvYjxJF9wItLCwNIV/QCh5/b82J81yvn9DnaUaSDnhHswN6i5TrRIzHs27w=
+	t=1713881758; cv=none; b=CnE0NCCKLIhhGttGDvKfr4669IhD4e7pSvTurU0E4tjVTRkpCb5CQ50xCwUYnOh96K9NzqrpfqW3MxMsZ3PNtZvlXXNCnH/FGNbAwjSVxtbfHxM+QX8BSi8SZ9Tq0xJtFtKAA+VqnLoDIgR3qqdbqFXK9KImU40ollSeCeNHi9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713881760; c=relaxed/simple;
-	bh=y5f5weJFRnxiw6ynDMcFieSZ2f9FgFYM9E+rwvT1a1c=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=DCCiOnk7zGs1jri53TlbSXTNYyh1WE+N2qav9WQurpY8MTWom4DDeKTgVsjQ9bjlSCeG8FX4SUC6dvePouYCNoRlDD2qo7BwezCYC4LYgaNSAX3cs2iYk++hTEfdGRe87JWplfRAXyQfD+mZOSMBFoGThU+az9BkXBOv1fREegQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DUSbLvbe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D305C116B1;
-	Tue, 23 Apr 2024 14:15:59 +0000 (UTC)
+	s=arc-20240116; t=1713881758; c=relaxed/simple;
+	bh=4DJ/Dgkx7F+t3aXQA8U+UrYZta3W6HBJxg7ojhYewBk=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=TEnyHHgRTbk8eo0QvQYltuV9FG5SNeI4+roY9l3r5kRt6ZE19Wa5naA40lki+G6nc09Nfs8HPrZcOgh5F9yeZ0PDE/zCr5gUIDo/slWcIBnXODqsOC6hJwqY8CM+h6fv5c+huxuVQ2NURmQfJMQI4eeDpnPJ9Dp/7IQZiWAol5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lUsX2UAc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC385C116B1;
+	Tue, 23 Apr 2024 14:15:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713881759;
-	bh=y5f5weJFRnxiw6ynDMcFieSZ2f9FgFYM9E+rwvT1a1c=;
-	h=Date:From:To:Cc:Subject:From;
-	b=DUSbLvbeubQDGG5yhfulNKJt54429nxOGcCJ6J//bjraXcYlM1Iwk+0fw8Lq0RxB6
-	 U2y5gk8gFJF47kJObqjhS+ZfAfMlq3rWWZKSWmn6o6UeJZYPDqmiB9hAgNu0pjf6Fw
-	 RuEC3Ppu6QuJdAZzqHt+cOInLJlDQpGiBnpa4YTdMUdg42L6Iki+bPX+Dq+ZapwohR
-	 RiSOMe0upoWqMb/Zav/VRUYsSaoU6WBE4moiBI71S8a9EDo03pv9K57I1elGd9gFgK
-	 QZ/H6PWr6pDCMiiY82QhsKQEth0/uTp2f9veKVV7h/zjKN/M+lrDreP1zmVv9uAsnW
-	 anx8ukFGFZ0bg==
-Date: Tue, 23 Apr 2024 11:15:56 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: linux-kernel@vger.kernel.org
-Cc: Adrian Hunter <adrian.hunter@intel.com>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 1/1 fyi] tools arch x86: Sync the msr-index.h copy with the
- kernel
-Message-ID: <ZifCnEZFx5MZQuIW@x1>
+	s=k20201202; t=1713881757;
+	bh=4DJ/Dgkx7F+t3aXQA8U+UrYZta3W6HBJxg7ojhYewBk=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=lUsX2UActzcUmTg0uHQcCkW7Q96/e4UkSHyVdA7jXz5dfn74WnxB7CkrmrGbnovDO
+	 rD7+Ssy0HyK7H15xbsLuK1Ao6pCfFk6iMUbH072mxWgt6l+p677024KgVnrtvNLRUX
+	 74HoMC0uAdMZFVIPAPU5OW9YIRdhW3e6TduXx9HfciuaqOMh9OR7AeCZXwgAmJvTDC
+	 aAYBMHKl9PAw/FxA1A+3Nrcl2loYmmye+skeHSvCtHqkFeEXND+wcddYDl8c4XabLx
+	 ooGajCGZVYq3etBUl0sUMbP0hTIT0WaB8w0wJfY3gvDHw0nxBc6kPi+vsEtfeJkhy5
+	 tSB3Y1Sokbjlw==
+Date: Tue, 23 Apr 2024 09:15:56 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+From: Rob Herring <robh@kernel.org>
+To: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ Krzysztof Kozlowski <krzk@kernel.org>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Rafal Milecki <zajec5@gmail.com>, Tom Brautaset <tbrautaset@gmail.com>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Florian Fainelli <florian.fainelli@broadcom.com>, 
+ Florian Fainelli <f.fainelli@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>, 
+ Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <20240423-for-soc-asus-rt-ac3200-ac5300-v3-0-23d33cfafe7a@arinc9.com>
+References: <20240423-for-soc-asus-rt-ac3200-ac5300-v3-0-23d33cfafe7a@arinc9.com>
+Message-Id: <171388152821.138872.5281517425137095516.robh@kernel.org>
+Subject: Re: [PATCH v3 0/5] Document ASUS RT-AC3200 and ASUS RT-AC5300 and
+ add device trees
 
-tldr; Just FYI, I'm carrying this on the perf tools tree.
 
-Full explanation:
+On Tue, 23 Apr 2024 12:50:44 +0300, Arınç ÜNAL wrote:
+> Hello.
+> 
+> This patch series documents the compatible strings for ASUS RT-AC3200 and
+> ASUS RT-AC5300, and adds the device trees for them. The last patch makes
+> the device tree files for ASUS RT-AC3100 and ASUS RT-AC88U conform to the
+> Devicetree Sources (DTS) Coding Style.
+> 
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> ---
+> Changes in v3:
+> - Add a new patch to the end.
+> - Patch 3
+>   - Reorder the nodes and properties to conform to the Devicetree Sources
+>     (DTS) Coding Style.
+> - Patch 4
+>   - Same as above.
+> - Link to v2: https://lore.kernel.org/r/20240419-for-soc-asus-rt-ac3200-ac5300-v2-0-f95ff50c2a4d@arinc9.com
+> 
+> Changes in v2:
+> - Patch 3
+>   - Remove the chosen node as earlycon is not for mainline use, and the
+>     stdout-path property which should be used instead of bootargs =
+>     "console=" is already described in bcm4708.dtsi with the same value.
+>   - Remove MAC address assignment to switch ports. To explain why shortly,
+>     on the switch with CPU port architecture, the LLC Entity associated
+>     with each port can be accessed without a distinct MAC address assigned
+>     to each port. Therefore, it is unnecessary.
+> - Patch 4
+>   - Same as above.
+> - Link to v1: https://lore.kernel.org/r/20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com
+> 
+> ---
+> Arınç ÜNAL (5):
+>       dt-bindings: arm: bcm: add bindings for ASUS RT-AC3200
+>       dt-bindings: arm: bcm: add bindings for ASUS RT-AC5300
+>       ARM: dts: BCM5301X: Add DT for ASUS RT-AC3200
+>       ARM: dts: BCM5301X: Add DT for ASUS RT-AC5300
+>       ARM: dts: BCM5301X: Conform to DTS Coding Style on ASUS RT-AC3100 & AC88U
+> 
+>  .../devicetree/bindings/arm/bcm/brcm,bcm4708.yaml  |   2 +
+>  arch/arm/boot/dts/broadcom/Makefile                |   2 +
+>  .../boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts   | 150 ++++++++++++++++++++
+>  .../boot/dts/broadcom/bcm47094-asus-rt-ac3100.dtsi |  92 ++++++------
+>  .../boot/dts/broadcom/bcm47094-asus-rt-ac5300.dts  | 156 +++++++++++++++++++++
+>  .../boot/dts/broadcom/bcm47094-asus-rt-ac88u.dts   |  69 +++++----
+>  6 files changed, 390 insertions(+), 81 deletions(-)
+> ---
+> base-commit: dd5c56cd065e6f7ac5f87b939e8a3c499a62d463
+> change-id: 20240408-for-soc-asus-rt-ac3200-ac5300-5d6efc2c497b
+> 
+> Best regards,
+> --
+> Arınç ÜNAL <arinc.unal@arinc9.com>
+> 
+> 
 
-There used to be no copies, with tools/ code using kernel headers
-directly. From time to time tools/perf/ broke due to legitimate kernel
-hacking. At some point Linus complained about such direct usage. Then we
-adopted the current model.
 
-The way these headers are used in perf are not restricted to just
-including them to compile something.
+My bot found new DTB warnings on the .dts files added or changed in this
+series.
 
-There are sometimes used in scripts that convert defines into string
-tables, etc, so some change may break one of these scripts, or new MSRs
-may use some different #define pattern, etc.
+Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
+are fixed by another series. Ultimately, it is up to the platform
+maintainer whether these warnings are acceptable or not. No need to reply
+unless the platform maintainer has comments.
 
-E.g.:
+If you already ran DT checks and didn't see these error(s), then
+make sure dt-schema is up to date:
 
-  $ ls -1 tools/perf/trace/beauty/*.sh | head -5
-  tools/perf/trace/beauty/arch_errno_names.sh
-  tools/perf/trace/beauty/drm_ioctl.sh
-  tools/perf/trace/beauty/fadvise.sh
-  tools/perf/trace/beauty/fsconfig.sh
-  tools/perf/trace/beauty/fsmount.sh
-  $
-  $ tools/perf/trace/beauty/fadvise.sh
-  static const char *fadvise_advices[] = {
-        [0] = "NORMAL",
-        [1] = "RANDOM",
-        [2] = "SEQUENTIAL",
-        [3] = "WILLNEED",
-        [4] = "DONTNEED",
-        [5] = "NOREUSE",
-  };
-  $
+  pip3 install dtschema --upgrade
 
-The tools/perf/check-headers.sh script, part of the tools/ build
-process, points out changes in the original files.
 
-So its important not to touch the copies in tools/ when doing changes in
-the original kernel headers, that will be done later, when
-check-headers.sh inform about the change to the perf tools hackers.
- sources
+New warnings running 'make CHECK_DTBS=y broadcom/bcm4709-asus-rt-ac3200.dtb broadcom/bcm47094-asus-rt-ac5300.dtb broadcom/bcm47094-asus-rt-ac88u.dtb' for 20240423-for-soc-asus-rt-ac3200-ac5300-v3-0-23d33cfafe7a@arinc9.com:
 
-To pick up the changes from these csets:
+arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb: /axi@18000000: failed to match any schema with compatible: ['brcm,bus-axi']
+arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dtb: /axi@18000000: failed to match any schema with compatible: ['brcm,bus-axi']
+arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb: pcie@12000: 'device_type' is a required property
+	from schema $id: http://devicetree.org/schemas/pci/pci-bus-common.yaml#
+arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb: pcie@12000: 'ranges' is a required property
+	from schema $id: http://devicetree.org/schemas/pci/pci-bus-common.yaml#
+arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb: pcie@13000: 'device_type' is a required property
+	from schema $id: http://devicetree.org/schemas/pci/pci-bus-common.yaml#
+arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb: pcie@13000: 'ranges' is a required property
+	from schema $id: http://devicetree.org/schemas/pci/pci-bus-common.yaml#
+arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dtb: pcie@12000: 'device_type' is a required property
+	from schema $id: http://devicetree.org/schemas/pci/pci-bus-common.yaml#
+arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dtb: pcie@12000: 'ranges' is a required property
+	from schema $id: http://devicetree.org/schemas/pci/pci-bus-common.yaml#
+arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb: pcie@14000: 'device_type' is a required property
+	from schema $id: http://devicetree.org/schemas/pci/pci-bus-common.yaml#
+arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb: pcie@14000: 'ranges' is a required property
+	from schema $id: http://devicetree.org/schemas/pci/pci-bus-common.yaml#
+arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dtb: pcie@13000: 'device_type' is a required property
+	from schema $id: http://devicetree.org/schemas/pci/pci-bus-common.yaml#
+arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dtb: pcie@13000: 'ranges' is a required property
+	from schema $id: http://devicetree.org/schemas/pci/pci-bus-common.yaml#
+arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dtb: pcie@14000: 'device_type' is a required property
+	from schema $id: http://devicetree.org/schemas/pci/pci-bus-common.yaml#
+arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dtb: pcie@14000: 'ranges' is a required property
+	from schema $id: http://devicetree.org/schemas/pci/pci-bus-common.yaml#
+arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb: ethernet-switch@18007000: ports:port@5: 'phy-mode' is a required property
+	from schema $id: http://devicetree.org/schemas/net/dsa/brcm,b53.yaml#
+arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb: ethernet-switch@18007000: ports:port@5: 'oneOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'phy-handle' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/dsa/brcm,b53.yaml#
+arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb: ethernet-switch@18007000: ports:port@7: 'phy-mode' is a required property
+	from schema $id: http://devicetree.org/schemas/net/dsa/brcm,b53.yaml#
+arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb: ethernet-switch@18007000: ports:port@7: 'oneOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'phy-handle' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/dsa/brcm,b53.yaml#
+arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb: ethernet-switch@18007000: ports:port@8: 'phy-mode' is a required property
+	from schema $id: http://devicetree.org/schemas/net/dsa/brcm,b53.yaml#
+arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb: ethernet-switch@18007000: Unevaluated properties are not allowed ('ports' was unexpected)
+	from schema $id: http://devicetree.org/schemas/net/dsa/brcm,b53.yaml#
+arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dtb: ethernet-switch@18007000: ports:port@5: 'phy-mode' is a required property
+	from schema $id: http://devicetree.org/schemas/net/dsa/brcm,b53.yaml#
+arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dtb: ethernet-switch@18007000: ports:port@5: 'oneOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'phy-handle' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/dsa/brcm,b53.yaml#
+arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dtb: ethernet-switch@18007000: ports:port@7: 'phy-mode' is a required property
+	from schema $id: http://devicetree.org/schemas/net/dsa/brcm,b53.yaml#
+arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dtb: ethernet-switch@18007000: ports:port@7: 'oneOf' conditional failed, one must be fixed:
+	'fixed-link' is a required property
+	'phy-handle' is a required property
+	'managed' is a required property
+	from schema $id: http://devicetree.org/schemas/net/dsa/brcm,b53.yaml#
+arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dtb: ethernet-switch@18007000: ports:port@8: 'phy-mode' is a required property
+	from schema $id: http://devicetree.org/schemas/net/dsa/brcm,b53.yaml#
+arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dtb: ethernet-switch@18007000: Unevaluated properties are not allowed ('ports' was unexpected)
+	from schema $id: http://devicetree.org/schemas/net/dsa/brcm,b53.yaml#
 
-  be482ff9500999f5 ("x86/bhi: Enumerate Branch History Injection (BHI) bug")
-  0f4a837615ff925b ("x86/bhi: Define SPEC_CTRL_BHI_DIS_S")
 
-That cause no changes to tooling:
 
-  $ tools/perf/trace/beauty/tracepoints/x86_msr.sh > x86_msr.before
-  $ objdump -dS /tmp/build/perf-tools-next/util/amd-sample-raw.o > amd-sample-raw.o.before
-  $ cp arch/x86/include/asm/msr-index.h tools/arch/x86/include/asm/msr-index.h
-  $ make -C tools/perf O=/tmp/build/perf-tools-next
-  <SNIP>
-  CC      /tmp/build/perf-tools-next/trace/beauty/tracepoints/x86_msr.o
-  <SNIP>
-  CC      /tmp/build/perf-tools-next/util/amd-sample-raw.o
-  <SNIP>
-  $ objdump -dS /tmp/build/perf-tools-next/util/amd-sample-raw.o > amd-sample-raw.o.after
-  $ tools/perf/trace/beauty/tracepoints/x86_msr.sh > x86_msr.after
-  $ diff -u x86_msr.before x86_msr.after
-  $ diff -u amd-sample-raw.o.before amd-sample-raw.o.after
 
-Just silences this perf build warning:
-
-  Warning: Kernel ABI header differences:
-    diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-index.h
-
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Daniel Sneddon <daniel.sneddon@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/lkml/
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/arch/x86/include/asm/msr-index.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/tools/arch/x86/include/asm/msr-index.h b/tools/arch/x86/include/asm/msr-index.h
-index 05956bd8bacf50e3..e72c2b87295799af 100644
---- a/tools/arch/x86/include/asm/msr-index.h
-+++ b/tools/arch/x86/include/asm/msr-index.h
-@@ -61,10 +61,13 @@
- #define SPEC_CTRL_SSBD			BIT(SPEC_CTRL_SSBD_SHIFT)	/* Speculative Store Bypass Disable */
- #define SPEC_CTRL_RRSBA_DIS_S_SHIFT	6	   /* Disable RRSBA behavior */
- #define SPEC_CTRL_RRSBA_DIS_S		BIT(SPEC_CTRL_RRSBA_DIS_S_SHIFT)
-+#define SPEC_CTRL_BHI_DIS_S_SHIFT	10	   /* Disable Branch History Injection behavior */
-+#define SPEC_CTRL_BHI_DIS_S		BIT(SPEC_CTRL_BHI_DIS_S_SHIFT)
- 
- /* A mask for bits which the kernel toggles when controlling mitigations */
- #define SPEC_CTRL_MITIGATIONS_MASK	(SPEC_CTRL_IBRS | SPEC_CTRL_STIBP | SPEC_CTRL_SSBD \
--							| SPEC_CTRL_RRSBA_DIS_S)
-+							| SPEC_CTRL_RRSBA_DIS_S \
-+							| SPEC_CTRL_BHI_DIS_S)
- 
- #define MSR_IA32_PRED_CMD		0x00000049 /* Prediction Command */
- #define PRED_CMD_IBPB			BIT(0)	   /* Indirect Branch Prediction Barrier */
-@@ -163,6 +166,10 @@
- 						 * are restricted to targets in
- 						 * kernel.
- 						 */
-+#define ARCH_CAP_BHI_NO			BIT(20)	/*
-+						 * CPU is not affected by Branch
-+						 * History Injection.
-+						 */
- #define ARCH_CAP_PBRSB_NO		BIT(24)	/*
- 						 * Not susceptible to Post-Barrier
- 						 * Return Stack Buffer Predictions.
--- 
-2.44.0
 
 
