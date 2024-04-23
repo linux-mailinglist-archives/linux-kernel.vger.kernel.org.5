@@ -1,91 +1,107 @@
-Return-Path: <linux-kernel+bounces-155912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EFE58AF8CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:16:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA158AF8D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:18:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B930FB226F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:16:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 440432898F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED03114387B;
-	Tue, 23 Apr 2024 21:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30250143883;
+	Tue, 23 Apr 2024 21:18:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Ves3E2I0"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KeEf18QK"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 497B5142624;
-	Tue, 23 Apr 2024 21:16:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE864142624;
+	Tue, 23 Apr 2024 21:18:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713906998; cv=none; b=iNqFXy+wq3RaDbydIK7Qv1k+efn9YvZOajIRsoGldJNjIhHKM8PkFUdh2zJyj3AUda3ftpcphriUzueXf4sUo0A/isWcZWqFIyVJk+TCS0/fOxM51eHDYXoBChR4YPgFdK0YY88e7DQ+4kthXeKufuxVsHg8/V7ZqpuYWns3P+A=
+	t=1713907107; cv=none; b=l/S0ZECfTbkYFoq5nsHXj+6JUbfxEJmKvVYzTaBmvjvpjwR9ngRb35Ql7JK42cZr8Ul2VaOtbvPkR5/PCGs1s6AMG6OjdKEtTeHUe6ZP42FCkTUGMRIcVgcoGB4zOzyvajSRmWMWEThtaxZSrL1doQV1iyCWFn+yz/jOvwg0OXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713906998; c=relaxed/simple;
-	bh=JGQEPIZaHXeikM4Tk76pEXGRiC7713fWE7+iNxo/Jyg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DKLuDRyN7ejboFh4sKJ61rbvOO+NPpSgM4bxYrQ77WCFYiw8q7fGQt5U5D0qf9xuvIoXyhk88PzjTzNZXvnz0TO2KCzxe4G42r8gRennZjDzUw77/qRjv21HCXdMhLoMNK/9oBQrv6evy/YH3/7k80pqJ0RC0JRqLZ/y8Q1vBZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Ves3E2I0; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Y5R12QiV7DpuvpeduE378DEur4+YnhQS9T1MG7wqbfY=; b=Ves3E2I0CjNh6iW9kvNwds/a8j
-	hEnafItIzpsovcojZIOxJCubSbfkOwl5SvdYWMLNa96pETZ6f60BconY0GBBiJor+HDYnxv3DaOpU
-	bcaWe9uLzDEon1Z+p/2RBXGzP6CeA+Eh/pV3uEayARWnwvtUULbO9f7LUbTDfRwHh7CaAkzWNqLhl
-	CaLtXtNOS7bNxEZiRW24xHcg6DuzxuQtNrE5ru7pgezvlXdHk63nPoCAfNkOx3KhO15szNQEXZvjo
-	22+A5Y2FSB3C4IHvkXkx1Xiuhncin4W0oBCTz6ZYTZUciZUd0mIJGciwcOqOzkJ9H6OUbo0FlOJPn
-	ikGj9rEA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46130)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rzNV6-00056m-1x;
-	Tue, 23 Apr 2024 22:16:28 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rzNV5-0003gl-8X; Tue, 23 Apr 2024 22:16:27 +0100
-Date: Tue, 23 Apr 2024 22:16:27 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 0/8] net: dsa: b53: Remove adjust_link
-Message-ID: <ZiglK1pD9ZBzBflo@shell.armlinux.org.uk>
-References: <20240423183339.1368511-1-florian.fainelli@broadcom.com>
- <ZigIkdr/FEmBZRLP@shell.armlinux.org.uk>
- <9df504be-e907-437f-8f26-6e2cbb3997a2@broadcom.com>
+	s=arc-20240116; t=1713907107; c=relaxed/simple;
+	bh=CJmlaW/WMNPHb2CyrsKTyGi+evxiFQAXb/u85TPFwss=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=o+vtauRWffFPQlVDGIUWqmcRaR1R/c3zsFZL/LI3bfvlpMCru/tRuMPduAciSIFGKPOARCGOlqGbwl3yx199xE5UpfirS+b24ew/oXmU9+5uihHDm6pmZOIqSooglTTNSojB/TQ6whuPeNCjbf5MWeygn24GMCxlwc8mF1KzoK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KeEf18QK; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713907106; x=1745443106;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CJmlaW/WMNPHb2CyrsKTyGi+evxiFQAXb/u85TPFwss=;
+  b=KeEf18QKitJwhsouG9tcHPOcSfHmoyCoUjmNautjBe0TyL07z4zIedlQ
+   r/S8ahZdG9FkgfqZN47p3nRnGvPg83FkSB6KtqjtRvfLPQk3RUwsnEVHB
+   L6sPFvuAGhgOXm7/ETN9HpF/vM8uk1/GtT74nW5cFZRTreNASFlAGWgrW
+   w4KV/T/gCxz7S+Z/TJC/bSzKtq/FnidYnpEPe7TmZ5VYGOGWZfD7Mutu+
+   Stwd71MyctX+6W/QvsyAFveH2SPkoRtx5hZ8svWlWIsjhpAsQPrFKaazL
+   V/ZiHFKmg2uCIiNMIcKsXiYQQ8euwb48ZWvApAhOsPxb1Ldsh4ccWlyEN
+   Q==;
+X-CSE-ConnectionGUID: D9vRfGi6Qk68Osb+XMMWyg==
+X-CSE-MsgGUID: fgjZQQB3QJiulhFhc9b1lg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="13302380"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="13302380"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 14:18:25 -0700
+X-CSE-ConnectionGUID: oxTR76zQS9Kuda1m6qRMJw==
+X-CSE-MsgGUID: EXcF+n1aR165ZtRQG6CROA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="29139854"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa003.jf.intel.com with ESMTP; 23 Apr 2024 14:18:22 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id D2E8F28A; Wed, 24 Apr 2024 00:18:20 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: linux-omap@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+	Siddharth Vadapalli <s-vadapalli@ti.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] PCI: dra7xx: Add missing header inclusion
+Date: Wed, 24 Apr 2024 00:18:17 +0300
+Message-ID: <20240423211817.3995488-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9df504be-e907-437f-8f26-6e2cbb3997a2@broadcom.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 23, 2024 at 12:15:49PM -0700, Florian Fainelli wrote:
-> And thank you for the reminder this needed to be done, once this lands I
-> will submit the removal of the adjust_link within net/dsa/, unless you have
-> that queued up already ready to go?
+Driver is using chained_irq_*() APIs, add the respective inclusion.
 
-I don't have that queued up, but it would be great to get that done as
-well. I think it would get rid of a reasonable amount of code in
-net/dsa?
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/pci/controller/dwc/pci-dra7xx.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
+index 2015f51664bc..cf8392190856 100644
+--- a/drivers/pci/controller/dwc/pci-dra7xx.c
++++ b/drivers/pci/controller/dwc/pci-dra7xx.c
+@@ -13,6 +13,7 @@
+ #include <linux/err.h>
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
++#include <linux/irqchip/chained_irq.h>
+ #include <linux/irqdomain.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.43.0.rc1.1336.g36b5255a03ac
+
 
