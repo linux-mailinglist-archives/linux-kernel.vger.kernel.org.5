@@ -1,132 +1,168 @@
-Return-Path: <linux-kernel+bounces-154552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 524888ADD80
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:28:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F3E48ADD84
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:29:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E618E1F21EE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:28:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA7AA281524
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:29:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1C523748;
-	Tue, 23 Apr 2024 06:28:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0666323775;
+	Tue, 23 Apr 2024 06:29:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P4gkREO3"
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tr62kshn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37CEA288DB;
-	Tue, 23 Apr 2024 06:28:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 233A1225CB;
+	Tue, 23 Apr 2024 06:29:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713853711; cv=none; b=QBUz5r40KIZ/Co1wA10GTxcistgO7dDFmsTzzpXMC7Fgt4U5KnNCS9JtyaqmlPV4G+dkovk5vZ51KhnJBX/pVlrpQb36gJ6bfclh9d90wR9dgPdUNoakDVs9P5LukjrqiXEidCFv+X7nxEhrKCU/z3VPH+RzGt8OuVQXuvgjtJQ=
+	t=1713853757; cv=none; b=E0LyDTdIg006/7cKNH2AUMZYiyBuC6+vpKyVbVPwKORWDB6UWnKHniLlRiEpZtQkwbXaBZnS1Y47lSwlea410/ZRvqAzm4XC9hjjrKRvFNvwmwAwok15Bhu4zx1M1Qy4E25DzIvQXcl/1Rs3qPbmse9OBH8ZhXZg8MZGDu35Ky0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713853711; c=relaxed/simple;
-	bh=RH3seyAGfFPN3Z3rV3vpTCGAc0jmROThGRyFEPOs0fY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UfbZl1uV2CuGYYfzJGxBR0KucXTOgyDe+z3Te7jMuq0EslahgnO49IraK2I4jHnYUhegjECSbEnGUxsKMsmMWfubl1aCZJUAvXrsy3bWdLy5RO1fER/yKgYmL2mUhR2wWljMReG7LAOdiOUujHN48Jwl95V9IHhownumVaB+6iQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P4gkREO3; arc=none smtp.client-ip=209.85.210.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6eb86b69e65so3140868a34.3;
-        Mon, 22 Apr 2024 23:28:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713853709; x=1714458509; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3vf4nYaIAsDBcjabT8ATdtFaulkvwKXK93mDR85Qldw=;
-        b=P4gkREO3to1qkuaplsTk+3hYYw3aPzJYKeQo+b//+qnUOL5LT09P0WIQBS5+vD7g5B
-         jp3QqiEAfh9y4Um/H46yFDJR2bouOK7a2qXbkzoj4fERL5FZaoEAp/r43k0hFf9zMbrJ
-         GY+95qMATgptfdfE5BsTXlOM2mxy2Gw9BEpLqFzwbZaWRkv3/TWFjGeiDM4TrJLyVpKp
-         VXn8NT3SCBl6hQGbm5A2hqXsM7e3OdCqnXb/iywnVuTON4nUXKQSTqBx56oDo1102WJo
-         gUsglCzAeKAz2c6SSn2niDo5KzzhB5rvbE3VcFQlmHuXgAQBgmMcql8LBffljABreBzR
-         +a5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713853709; x=1714458509;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3vf4nYaIAsDBcjabT8ATdtFaulkvwKXK93mDR85Qldw=;
-        b=FAQQd58bzUzb/R4k+CWmpIcPdq/8N8H5d8ee3IPxZBZk3u7XDrsFKbN6Ao2MwHmHjc
-         wGyFKw+rAtqs5+OBTjb1k7yXw/Y/TUTcaL/x0SR0rfZS6/AYe44OEYj4Gw6HolSr7515
-         fzmRo1dpOBm9+D+tyJt+8fGdcWoN2qpV1hXml02QSf7Xf8pgSlB99iDzI/dPolrbjvE9
-         UmmSs2zCz6y83yYhww71H9gF8Hep4RYyTAjnrZ4UHxpy+C8QaujS0SH4tEPjmL82GVSS
-         0oY2AFk1UrxdOFHuJio6NUu71Poc6/fWwXmWwBrJDDF1XkNMMfLFDPFxaP2C01VCC0/6
-         bwfg==
-X-Forwarded-Encrypted: i=1; AJvYcCULKYVuQzvrnBwJxK31q5pnyBINQn8E08pgsvp70Xlqp6GJjoQrCZ0R1kcSJI2dPMwBKtFLABs40r7nXpYWEHm4X1QHUgik1rsCxijKKJutyp7wzn33/FJWtAX/R1s47qotEoY7PXQ=
-X-Gm-Message-State: AOJu0Yw0k2RBaBL2kzaTklEDGBHKLJSwURRdu64I2XukEtb/czscnO0C
-	2v6yRrxs8wco1xzcK5o4Q76NgA81/0yMEH7b8YwvbaofEkzlkc5TvklNpbifyDIkMbDq86cnycV
-	10cXfpqBBs/hoJpKBmTjgdgz6wVs=
-X-Google-Smtp-Source: AGHT+IHaoOz81cM8ZgYwCcdxP+mHIRu4dpEwXHfWhSWaZ015706PToTI3XgPgElilbHdEWRXiAb4Nf0V1X5yJDKNKuo=
-X-Received: by 2002:a05:6358:5e83:b0:18a:5c27:7032 with SMTP id
- z3-20020a0563585e8300b0018a5c277032mr15515881rwn.13.1713853709291; Mon, 22
- Apr 2024 23:28:29 -0700 (PDT)
+	s=arc-20240116; t=1713853757; c=relaxed/simple;
+	bh=cBSsZ/h0qVJQL8CIvsXlAF52pPYuWnrnSHQgBo7++Eo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=I3mGtnQ53NMPIZMSv4tbhlwiPPmPjZJblLUU0JaQtjbGr/GetRdj7uv1kwxXxgtqkUbAKg30vOkR9aDKxxYfZBnNLT+tsT7EBXNabLkkrvhXFSQyRq5IRaV1xvU9IKgNMczM1WzL/yBJw8yKs5pbuQXEfUbvaXlhJDYK/710l24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tr62kshn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90422C116B1;
+	Tue, 23 Apr 2024 06:29:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713853756;
+	bh=cBSsZ/h0qVJQL8CIvsXlAF52pPYuWnrnSHQgBo7++Eo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=tr62kshnCH3OiANlk31gTX5yxCHXZ2RBdkixaowPuERsd64X24gFL6itaYEtqYN29
+	 Iqq9cjtaAqhE9czsr/24ZTNCrMSvVoTDaH8mUdcvtY2JJaHeiLd1ZOue8vRmpDPRcM
+	 u+BTyqJYrnabaWKY1aFgu8cBwGao2ihCZz+VuCOBrlEo9BHiQPjtdkV4dEdF41LOhe
+	 H1FLMlAfJjTaqA8IatVavOhE5emm1Kp3B/UllhM3fT5B5NzPNvqfzwgNYRDIV4vTtt
+	 9qNmiBSaZtMyN5X5/B7G+5UWPNQcNdoXWBObY9NrFmWKsqwDvL6EjBpmCVprcUp7J8
+	 Qy3ycr76s47FQ==
+Message-ID: <2b422e9f-bd80-4c57-a3e1-8b463b25c834@kernel.org>
+Date: Tue, 23 Apr 2024 08:29:10 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <285de20a187f3e4baeb28f639b5bf55e914a3821.1713756666.git.viresh.kumar@linaro.org>
- <CAGRGNgWHkVkOP13jh-w1KQYeR_yeq1JgOt9a+R40F8DGYKMtkg@mail.gmail.com> <20240423061253.blyfuqasyiatm5sa@vireshk-i7>
-In-Reply-To: <20240423061253.blyfuqasyiatm5sa@vireshk-i7>
-From: Julian Calaby <julian.calaby@gmail.com>
-Date: Tue, 23 Apr 2024 16:28:17 +1000
-Message-ID: <CAGRGNgWH7PW4fgMOYtEVohrPq0MVusKFOpF8GXCbMDA5D7BScA@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: sun50i: Fix build warning around snprint()
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Yangtao Li <tiny.windzz@gmail.com>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, linux-pm@vger.kernel.org, 
-	Vincent Guittot <vincent.guittot@linaro.org>, kernel test robot <lkp@intel.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/6] dt-bindings: mmc: renesas,sdhi: Drop 'items' keyword
+To: Prabhakar <prabhakar.csengg@gmail.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-mmc@vger.kernel.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+ Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20240422213006.505576-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240422213006.505576-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240422213006.505576-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Viresh,
+On 22/04/2024 23:30, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> 
+> Drop 'items' keyword from compatible list which have single const value.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+>  .../devicetree/bindings/mmc/renesas,sdhi.yaml  | 18 ++++++------------
+>  1 file changed, 6 insertions(+), 12 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml b/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
+> index 29f2400247eb..90c8b1b727a8 100644
+> --- a/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
+> @@ -12,16 +12,11 @@ maintainers:
+>  properties:
+>    compatible:
+>      oneOf:
+> -      - items:
+> -          - const: renesas,sdhi-sh73a0  # R-Mobile APE6
+> -      - items:
+> -          - const: renesas,sdhi-r7s72100 # RZ/A1H
+> -      - items:
+> -          - const: renesas,sdhi-r7s9210 # SH-Mobile AG5
+> -      - items:
+> -          - const: renesas,sdhi-r8a73a4 # R-Mobile APE6
+> -      - items:
+> -          - const: renesas,sdhi-r8a7740 # R-Mobile A1
+> +      - const: renesas,sdhi-sh73a0  # R-Mobile APE6
+> +      - const: renesas,sdhi-r7s72100 # RZ/A1H
+> +      - const: renesas,sdhi-r7s9210 # SH-Mobile AG5
+> +      - const: renesas,sdhi-r8a73a4 # R-Mobile APE6
+> +      - const: renesas,sdhi-r8a7740 # R-Mobile A1
 
-On Tue, Apr 23, 2024 at 4:12=E2=80=AFPM Viresh Kumar <viresh.kumar@linaro.o=
-rg> wrote:
->
-> On 23-04-24, 11:38, Julian Calaby wrote:
-> > On Mon, Apr 22, 2024 at 1:31=E2=80=AFPM Viresh Kumar <viresh.kumar@lina=
-ro.org> wrote:
-> > > diff --git a/drivers/cpufreq/sun50i-cpufreq-nvmem.c b/drivers/cpufreq=
-/sun50i-cpufreq-nvmem.c
-> > > index 30e5c337611c..cd50cea16a87 100644
-> > > --- a/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-> > > +++ b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-> > > @@ -208,7 +206,7 @@ static int sun50i_cpufreq_get_efuse(void)
-> > >  static int sun50i_cpufreq_nvmem_probe(struct platform_device *pdev)
-> > >  {
-> > >         int *opp_tokens;
-> > > -       char name[MAX_NAME_LEN];
-> > > +       char name[] =3D "speedXXXXXXXXXXX"; /* Integers can take 11 c=
-hars max */
-> >
-> > Would it make sense to just set a static length for the string here,
-> > say 17-20 characters and add a comment explaining the number, say: /*
-> > "speed" + 11 chars for the int */
-> >
-> > The string constant, while it'll probably be optimised away, seems
-> > weird and wasteful.
->
-> The counting goes wrong (I have done it in the past) sometimes and so
-> I like to explicitly reserve space like this, it also makes it look
-> cleaner, i.e. how the eventual string will be named.
+That's just an enum.
 
-I completely agree - ultimately it's whatever works and either way
-works equally well.
+>        - items:
+>            - enum:
+>                - renesas,sdhi-r8a7778 # R-Car M1
+> @@ -40,8 +35,7 @@ properties:
+>                - renesas,sdhi-r8a7793  # R-Car M2-N
+>                - renesas,sdhi-r8a7794  # R-Car E2
+>            - const: renesas,rcar-gen2-sdhi # R-Car Gen2 and RZ/G1
+> -      - items:
+> -          - const: renesas,sdhi-mmc-r8a77470 # RZ/G1C (SDHI/MMC IP)
+> +      - const: renesas,sdhi-mmc-r8a77470 # RZ/G1C (SDHI/MMC IP)
 
-Thanks,
+This as well
 
---=20
-Julian Calaby
 
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
+
+Best regards,
+Krzysztof
+
 
