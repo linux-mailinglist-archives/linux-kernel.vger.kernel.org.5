@@ -1,256 +1,143 @@
-Return-Path: <linux-kernel+bounces-154922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DAE58AE313
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:54:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8BF08AE314
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:54:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 480F7B220D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:54:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AB2E289E3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5663A84DFD;
-	Tue, 23 Apr 2024 10:49:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB37069944;
+	Tue, 23 Apr 2024 10:50:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="vtrKtpWh"
-Received: from forward101c.mail.yandex.net (forward101c.mail.yandex.net [178.154.239.212])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eCKw87pC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2DFA7E564;
-	Tue, 23 Apr 2024 10:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.212
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A82F7E564
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:50:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713869378; cv=none; b=J7Jx66xukZUz/usUHdrb1/yjvUkTQyseSSetZvRez7z79wQk1ZYCPv/vJAWZoFS7EN99/7ZDOVgBwlcVX6yYK3A8pWtxW5AQS7DLN+KsqEbcBx7j/DnUxRlGvHiCADUA5ZZhdyfJmawNaA/mSu4UISkc4fvvThUCQBkLa0R0FCU=
+	t=1713869407; cv=none; b=fj1IacZPAVcOcml1VcB80EPusvx6/7xOvzjRwbjRJwBGuDujdiNHvKLYGNa0qX/QBwHVxEgnEKhonINC4l+xdZDflzMirX8KEJB1G/dKlE0eotWoflu98p+GhEOdZS2JgVCC0j8JgzgFL5Q/OhOamNTlVmfT60EA2alo2icrY5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713869378; c=relaxed/simple;
-	bh=+OSMikil93STCKOPtNMLQAgzOlKbqGJFnnhDVohp4t0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jCDrRSBuHf2TK2UT7p4Ux/lCLaiblr7WyKdzX5rUBTulmH29RAJ4aF8hLjc97RS9YlBCRahxihXxMprKurcoHsupgHLxEH7RIMWZW8t188qpCwTq/PSuo/BagnEIvMKAfUjhKKZJpci/gPs/SxAXuXp/q+FAYEMHr0F0x+5uz9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=vtrKtpWh; arc=none smtp.client-ip=178.154.239.212
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
-Received: from mail-nwsmtp-smtp-production-main-85.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-85.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:b1a0:0:640:e983:0])
-	by forward101c.mail.yandex.net (Yandex) with ESMTPS id 311D360AC0;
-	Tue, 23 Apr 2024 13:49:34 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-85.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id TnHoiCGOm4Y0-QYddym58;
-	Tue, 23 Apr 2024 13:49:33 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1713869373; bh=ehiAOGcVzI3bx2ma+GbYdge1RWRGLiGOpmC8xlK5PQE=;
-	h=Cc:Message-ID:References:Date:In-Reply-To:Subject:To:From;
-	b=vtrKtpWhdONYwM8XXk4GdKNdGW3mjjjD513zMxLqKYFmk0FOzcajwcTzKNdciiqPw
-	 Ft59IfFxy9CPRttnbqBT4ZjontjO3X7o70Px6ME3Uy659KFlx8NhNGRNBjie14ObmN
-	 ythJzp+4zPVGJmzAixhVbah7UxN5J5hGqxtWFKb8=
-Authentication-Results: mail-nwsmtp-smtp-production-main-85.iva.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-From: Stas Sergeev <stsp2@yandex.ru>
-To: linux-kernel@vger.kernel.org
-Cc: Stas Sergeev <stsp2@yandex.ru>,
-	Stefan Metzmacher <metze@samba.org>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Andy Lutomirski <luto@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	Jeff Layton <jlayton@kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Alexander Aring <alex.aring@gmail.com>,
-	linux-fsdevel@vger.kernel.org,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	=?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
-Subject: [PATCH 2/2] openat2: add OA2_INHERIT_CRED flag
-Date: Tue, 23 Apr 2024 13:48:24 +0300
-Message-ID: <20240423104824.10464-3-stsp2@yandex.ru>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240423104824.10464-1-stsp2@yandex.ru>
-References: <20240423104824.10464-1-stsp2@yandex.ru>
+	s=arc-20240116; t=1713869407; c=relaxed/simple;
+	bh=5k6/TB+qfIpQ+Ema5EHVkMfgqW6M6hDUfX9R0tnHkwU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kGcFfaEuLgo3D92CvYUbl1V4weolBDf1en+KqYd1DAkQVUxvo0rc9/hFzgd2Y0fcHaUovzniiIEErVyftZ0WcazrvyyGYjcSUxqGJa0/uED254I7MWyQvWlrmodOTzxQL5RyCUXzoSjd+vW6JjHZVmVGimSEu0YQ9jBXMD+2O9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eCKw87pC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CDD6C2BD11;
+	Tue, 23 Apr 2024 10:50:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713869405;
+	bh=5k6/TB+qfIpQ+Ema5EHVkMfgqW6M6hDUfX9R0tnHkwU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=eCKw87pCRegyZc7R8roZMe4ME9Dze2dYZOsvuOiV0n9PpIeK1PYrL13tg48q5GDB9
+	 s4hzKYfmFFWb+FZPT3YQwM9VezWqB62foevC/BIYMPl6X+xeUHGQcSUAGnBXxCwGgg
+	 CRfOolwBkIoOa+nrZ6i0TnAudQRx7rAptJTFNn0mXOVZmn+3LO0hNnKrWXaplZR8s7
+	 d0gnZodpVOMOXfk8eGUvs2Q+dcJLP1OHxiChpu0ZMZjlqOM6vwmoiaJhKzCkwJz++y
+	 McJb1bn6wso2xo+QSrMUAQ+uwZvfCTSVGSQuWZZ6Qa+6a7WfeRbQUbzG8id+sIw6cG
+	 6lDogY8XvHvFw==
+Message-ID: <368f8c24-5c25-4a96-9714-80f31a6661a4@kernel.org>
+Date: Tue, 23 Apr 2024 12:49:59 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 9/9] drm/bridge: tfp410: Add platform module alias
+To: Sui Jingfeng <sui.jingfeng@linux.dev>,
+ Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Andrzej Hajda <andrzej.hajda@intel.com>, Jonas Karlman <jonas@kwiboo.se>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240422191903.255642-1-sui.jingfeng@linux.dev>
+ <20240422191903.255642-10-sui.jingfeng@linux.dev>
+ <050ff49d-516c-41fc-a205-4c259384058f@kernel.org>
+ <08e81099-77d6-4d6d-9e7b-b086c17818c9@linux.dev>
+ <e41e7916-14aa-4128-9ef1-42736ad9a581@kernel.org>
+ <648e60f1-780a-428c-93b3-89d9804d6686@linux.dev>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <648e60f1-780a-428c-93b3-89d9804d6686@linux.dev>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-This flag performs the open operation with the credentials that
-were in effect when dir_fd was opened.
-This allows the process to pre-open some directories and then
-change eUID (and all other UIDs/GIDs) to a less-privileged user,
-retaining the ability to open/create files within these directories.
+On 23/04/2024 12:44, Sui Jingfeng wrote:
+>>>>    If you need platform one, for some reason, explain
+>>>> what is your matching path and add appropriate ID table. With that
+>>>> explanation, of course.
+>>> When tfp410 works as a transparent bridge. The device itself is just a platform device.
+>>> similar with the display-connector.c and simple-bridge.c.
+>>>
+>>> It is not discoverable by the system on non-DT environment, this is the root problem.
+>>> I said the various display bridges drivers are fully DT dependent, Dimtry didn't agree!
+>>>
+>>> He said "I can not agree here. It doesn't depend on DT." and then asks me to developing
+>>> some other solution witch could preserve code sharing. So here it is.
+>>
+>> You wrote long message without actually reading my answer early. I
+>> already gave you the solution. Address that one.
+> 
+> Use MODULE_DEVICE_TABLE() instead? OK, I understand then. Thanks a lot 
+> for the education.
 
-Design goal:
-The idea is to provide a very light-weight sandboxing, where the
-process, without the use of any heavy-weight techniques like chroot
-within namespaces, can restrict the access to the set of pre-opened
-directories.
-This patch is just a first step to such sandboxing. If things go
-well, in the future the same extension can be added to more syscalls.
-These should include at least unlinkat(), renameat2() and the
-not-yet-upstreamed setxattrat().
 
-Security considerations:
-To avoid sandboxing escape, this patch makes sure the restricted
-lookup modes are used. Namely, RESOLVE_BENEATH or RESOLVE_IN_ROOT.
-To avoid leaking creds across exec, this patch requires O_CLOEXEC
-flag on a directory.
+Yes, at least for something which is real driver.
 
-Use cases:
-Virtual machines that deal with untrusted code, can use that
-instead of a more heavy-weighted approaches.
-Currently the approach is being tested on a dosemu2 VM.
-
-Signed-off-by: Stas Sergeev <stsp2@yandex.ru>
-
-CC: Stefan Metzmacher <metze@samba.org>
-CC: Eric Biederman <ebiederm@xmission.com>
-CC: Alexander Viro <viro@zeniv.linux.org.uk>
-CC: Andy Lutomirski <luto@kernel.org>
-CC: Christian Brauner <brauner@kernel.org>
-CC: Jan Kara <jack@suse.cz>
-CC: Jeff Layton <jlayton@kernel.org>
-CC: Chuck Lever <chuck.lever@oracle.com>
-CC: Alexander Aring <alex.aring@gmail.com>
-CC: linux-fsdevel@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
-CC: Paolo Bonzini <pbonzini@redhat.com>
-CC: Christian Göttsche <cgzones@googlemail.com>
----
- fs/internal.h                |  2 +-
- fs/namei.c                   | 30 ++++++++++++++++++++++++++++--
- fs/open.c                    |  2 +-
- include/linux/fcntl.h        |  2 ++
- include/uapi/linux/openat2.h |  3 +++
- 5 files changed, 35 insertions(+), 4 deletions(-)
-
-diff --git a/fs/internal.h b/fs/internal.h
-index 7ca738904e34..692b53b19aad 100644
---- a/fs/internal.h
-+++ b/fs/internal.h
-@@ -169,7 +169,7 @@ static inline void sb_end_ro_state_change(struct super_block *sb)
-  * open.c
-  */
- struct open_flags {
--	int open_flag;
-+	u64 open_flag;
- 	umode_t mode;
- 	int acc_mode;
- 	int intent;
-diff --git a/fs/namei.c b/fs/namei.c
-index 2fde2c320ae9..0e0f2e32ef02 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -586,6 +586,7 @@ struct nameidata {
- 	int		dfd;
- 	vfsuid_t	dir_vfsuid;
- 	umode_t		dir_mode;
-+	const struct cred *dir_open_cred;
- } __randomize_layout;
- 
- #define ND_ROOT_PRESET 1
-@@ -695,6 +696,7 @@ static void terminate_walk(struct nameidata *nd)
- 	nd->depth = 0;
- 	nd->path.mnt = NULL;
- 	nd->path.dentry = NULL;
-+	put_cred(nd->dir_open_cred);
- }
- 
- /* path_put is needed afterwards regardless of success or failure */
-@@ -2414,6 +2416,7 @@ static const char *path_init(struct nameidata *nd, unsigned flags)
- 			get_fs_pwd(current->fs, &nd->path);
- 			nd->inode = nd->path.dentry->d_inode;
- 		}
-+		nd->dir_open_cred = get_current_cred();
- 	} else {
- 		/* Caller must check execute permissions on the starting path component */
- 		struct fd f = fdget_raw(nd->dfd);
-@@ -2437,6 +2440,7 @@ static const char *path_init(struct nameidata *nd, unsigned flags)
- 			path_get(&nd->path);
- 			nd->inode = nd->path.dentry->d_inode;
- 		}
-+		nd->dir_open_cred = get_cred(f.file->f_cred);
- 		fdput(f);
- 	}
- 
-@@ -3794,8 +3798,28 @@ static struct file *path_openat(struct nameidata *nd,
- 		error = do_o_path(nd, flags, file);
- 	} else {
- 		const char *s = path_init(nd, flags);
--		file = alloc_empty_file(op->open_flag, current_cred());
--		error = PTR_ERR_OR_ZERO(file);
-+		const struct cred *old_cred = NULL;
-+
-+		error = 0;
-+		if (op->open_flag & OA2_INHERIT_CRED) {
-+			/* Make sure to work only with restricted
-+			 * look-up modes.
-+			 */
-+			if (!(nd->flags & (LOOKUP_BENEATH | LOOKUP_IN_ROOT)))
-+				error = -EPERM;
-+			/* Only work with O_CLOEXEC dirs. */
-+			if (!get_close_on_exec(nd->dfd))
-+				error = -EPERM;
-+
-+			if (!error)
-+				old_cred = override_creds(nd->dir_open_cred);
-+		}
-+		if (!error) {
-+			file = alloc_empty_file(op->open_flag, current_cred());
-+			error = PTR_ERR_OR_ZERO(file);
-+		} else {
-+			file = ERR_PTR(error);
-+		}
- 		if (!error) {
- 			while (!(error = link_path_walk(s, nd)) &&
- 			       (s = open_last_lookups(nd, file, op)) != NULL)
-@@ -3803,6 +3827,8 @@ static struct file *path_openat(struct nameidata *nd,
- 		}
- 		if (!error)
- 			error = do_open(nd, file, op);
-+		if (old_cred)
-+			revert_creds(old_cred);
- 		terminate_walk(nd);
- 		if (IS_ERR(file))
- 			return file;
-diff --git a/fs/open.c b/fs/open.c
-index ee8460c83c77..6be013182a35 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -1225,7 +1225,7 @@ inline int build_open_flags(const struct open_how *how, struct open_flags *op)
- 	 * values before calling build_open_flags(), but openat2(2) checks all
- 	 * of its arguments.
- 	 */
--	if (flags & ~VALID_OPEN_FLAGS)
-+	if (flags & ~VALID_OPENAT2_FLAGS)
- 		return -EINVAL;
- 	if (how->resolve & ~VALID_RESOLVE_FLAGS)
- 		return -EINVAL;
-diff --git a/include/linux/fcntl.h b/include/linux/fcntl.h
-index a332e79b3207..b71f8b162102 100644
---- a/include/linux/fcntl.h
-+++ b/include/linux/fcntl.h
-@@ -12,6 +12,8 @@
- 	 FASYNC	| O_DIRECT | O_LARGEFILE | O_DIRECTORY | O_NOFOLLOW | \
- 	 O_NOATIME | O_CLOEXEC | O_PATH | __O_TMPFILE)
- 
-+#define VALID_OPENAT2_FLAGS (VALID_OPEN_FLAGS | OA2_INHERIT_CRED)
-+
- /* List of all valid flags for the how->resolve argument: */
- #define VALID_RESOLVE_FLAGS \
- 	(RESOLVE_NO_XDEV | RESOLVE_NO_MAGICLINKS | RESOLVE_NO_SYMLINKS | \
-diff --git a/include/uapi/linux/openat2.h b/include/uapi/linux/openat2.h
-index a5feb7604948..cdd676a10b62 100644
---- a/include/uapi/linux/openat2.h
-+++ b/include/uapi/linux/openat2.h
-@@ -40,4 +40,7 @@ struct open_how {
- 					return -EAGAIN if that's not
- 					possible. */
- 
-+/* openat2-specific flags go to upper 4 bytes. */
-+#define OA2_INHERIT_CRED		(1ULL << 32)
-+
- #endif /* _UAPI_LINUX_OPENAT2_H */
--- 
-2.44.0
+Best regards,
+Krzysztof
 
 
