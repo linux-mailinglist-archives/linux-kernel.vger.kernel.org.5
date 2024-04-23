@@ -1,64 +1,73 @@
-Return-Path: <linux-kernel+bounces-155508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C35B8AF32A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:57:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15A158AF356
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:59:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0E611F24FCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:57:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C569B23BD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:59:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25BE813CA81;
-	Tue, 23 Apr 2024 15:57:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3711713CA81;
+	Tue, 23 Apr 2024 15:59:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HTvvMcLM"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UQRESpf9"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B43913CA82;
-	Tue, 23 Apr 2024 15:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41CBA13C687;
+	Tue, 23 Apr 2024 15:59:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713887825; cv=none; b=ovDgBoHHI0u1xcib87u0oVtpZaKc7du6D1VjG6orAfAF9fUvuEEdzLlmyPxEwcyLg+JnJhaJ059MybusoihooDwFYinOKQSFkiI8SVbHglYwLs0fRYTTMioPqD7qeFI+O8M4tKvgcncTowc6c9ARyVY4TOrDC3Inb2af/9qJQKQ=
+	t=1713887952; cv=none; b=kXQE0wR0n6mOCRlUVW3qGCCn7Vxpaj8FjKIkCXa5/cxADD4TeJ1NNu8a5Du7RrHlCH4D7Hk7Hkj0xmPfslPKyBnbVCkJa0wx6nkeCknDC9P3WxiNTXB4r5EEskrKKgwaiJDgorwWnh6qqh+cYQ0Jx+2Q9SNFfDmRFRXwMJSwmGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713887825; c=relaxed/simple;
-	bh=Ao7OtFR6Y/gnMao2EDCJiWEcU30WgANyFzpo/uxrtFM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=coiHfoBgCrd36QBESezXw7WF+Pm9uwiYnzd8ZX4wWnsLhntiehoXoDGdx0XL6mdT3nftXMB+D1gptqn28hq9YIUCCVfRzOKjehkJ2WfPwFJLu+iz+7tUauENiX6X4Do1xRRsTG/v8m/+BNnE5zSH2EbM/U4Aw3io4oSBjmCRhvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HTvvMcLM; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713887824; x=1745423824;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Ao7OtFR6Y/gnMao2EDCJiWEcU30WgANyFzpo/uxrtFM=;
-  b=HTvvMcLMVuSg6mpKJlEsThpGUuovfAZ9kWbOLHF4WTv3ecgBOinKz8X4
-   Jgl9n3jPGgqmUzw5kC+qmrPsw7aK2cMEIbcwBAZN0IB6EQ8AcrNOKWYPB
-   +wzeWbObw5MEceBITnkkzc0m7i9ziJjpl2MZ9L5MgrXgksVn+P5Q3Mety
-   Df3vY0Il6VWOyBvYd8u9LNYj6gRe1ligOdcKdoahLXW2UJW+Dy6NJB+CF
-   ZMoh66b3plPDgbTjis5WQLjgUQYYD9Ez3LYKHrm2qWdqez9WWn3dqnxUU
-   rtn1uBLqBWUYDeiQWt9c7IM8FVJ5H0UAH+Hap3u9z2LVZkZB6P9zoY+rw
-   A==;
-X-CSE-ConnectionGUID: E3M+VWHfT8SLsFy2odAaPg==
-X-CSE-MsgGUID: JNvgenu4Rqm6xITzb/MmHQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="12415285"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="12415285"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 08:57:03 -0700
-X-CSE-ConnectionGUID: vO5xSsY6RmKdl51eWK21mg==
-X-CSE-MsgGUID: en4GCTrdSViTMNvF3cDOIQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="28865302"
-Received: from alexkiru-mobl.amr.corp.intel.com (HELO [10.212.38.129]) ([10.212.38.129])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 08:57:03 -0700
-Message-ID: <735d6dbc-86e4-4747-9bd9-2574ead7d039@linux.intel.com>
-Date: Tue, 23 Apr 2024 10:57:01 -0500
+	s=arc-20240116; t=1713887952; c=relaxed/simple;
+	bh=+dHg90q3kt5uzx8OUAOnQDThLKxLvvuczBS3PMadXeE=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=J6vtxteCpvd9cWjIj6zvx2hlGWIJaiinTYQCXIYZPHt5N8XhsF5jrmzixJZcAt6uERqn191cybGVGJBq20jh1t+ZQe9jRMy7HpsnAfBEhWttNpf0UIfGJOOiHOMWsdus7+OFcebsOVmu4G48egJYSREXqcUPNvK1SV/lLjw2a1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UQRESpf9; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e3c9300c65so50043945ad.0;
+        Tue, 23 Apr 2024 08:59:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713887950; x=1714492750; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language:subject
+         :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5YhrAGWDia8r0qfX9pD7CKdUw7GJuUdNgtQ0L7MN4Cs=;
+        b=UQRESpf9vTq65HPIPdlQbYuytkXYb9Jra66vCdlIGgXkn9TPV/6ZTZZXqzAGVtWsAD
+         dVwS9zCiB87SegrQUYwfjQSq5075kJHmpv/m7AUb+BkrkgYngRo9zlCjgH9An6GIxIKX
+         BVUJ5+Oj+ZNXV1KpOCwfjgknJv7Msl8WcSLj0nuHKV8bDf9b+1nlJ78RQRsMS4b7T4D5
+         q9SvD2rYw2RhsocOAYOsPAnEWbMAyHryubenGLWault3zhT0XxzZOYJ6dxqGBr1R3bA0
+         IDkVR3NXUoT0GHbmjoQOQxZjnvsL5Y6DYPAmy1vOpqHwP8+acp5DtTv0Hm+RYNfCJ6YL
+         Petw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713887950; x=1714492750;
+        h=content-transfer-encoding:in-reply-to:from:content-language:subject
+         :references:cc:to:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5YhrAGWDia8r0qfX9pD7CKdUw7GJuUdNgtQ0L7MN4Cs=;
+        b=teNkk281LUPw5fjw1nq/PWrg4GFI+0DeYb02QxxV+hOTWpOg6mz4sXyl+dQrlH8DV1
+         HBYGc0962QG+w6eX1QMjZoA1NvsvtC6fskxxu9ogmLHS2RzH4AquTC85p9Q64MrY2uK9
+         EA7DT6O39utKhJGSMhY+er1XscvwYRuQIOW5KBqf8PrY2enA7hpImXefxSQyqBlI8KG6
+         sXfrPBU3z6dgr0CbLPCP45P9Ujm7EOmlXfs8b2fjPjrWED3fud2riDX4rGnj47RM5ooC
+         g1A+E3MdX8SFLCA4my9t1V4+NRcOB+LET9a77si/Bz7HClaUD11VLPaT4MJSBfeLzEhn
+         Uh8A==
+X-Forwarded-Encrypted: i=1; AJvYcCWA82+6Fy85I2Pqf8K7ervHvqtggd/Y5Ouq5dKWAz0BYMHtEvmGfzhMfrr76XjKjsJAxZeMftD5Dma943Pt4c1yAT+uAVUVv7RkPC0N++8MHaIzg9CQeaEBHvXjIDrMO6NgmKewzRLs
+X-Gm-Message-State: AOJu0YwDLEOpfzvCxiCRLhrtsQNXIXIDTHQPk8xANK3/8CLD56MI/zlb
+	hYUucOuXoNXUhjFQH/jNLD5woelJXzfT5X/Dl3bH9xIYWJwabiKc
+X-Google-Smtp-Source: AGHT+IH9bRCZSmUrzBavbSbB17corXaTmlQapmIBS3WHle9DmmLT+18JEktcMbp95Q+ylvXP5bVLgg==
+X-Received: by 2002:a17:902:d349:b0:1e4:9c2f:d4f7 with SMTP id l9-20020a170902d34900b001e49c2fd4f7mr11377056plk.28.1713887950359;
+        Tue, 23 Apr 2024 08:59:10 -0700 (PDT)
+Received: from [10.0.2.15] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id b15-20020a170903228f00b001e4928c8026sm10215639plh.13.2024.04.23.08.59.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 08:59:10 -0700 (PDT)
+Message-ID: <b1078bb2-bea1-4b32-9b4b-4c62e02e3ef4@gmail.com>
+Date: Wed, 24 Apr 2024 00:59:05 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,46 +75,56 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/14] ASoC: Constify local snd_sof_dsp_ops
-To: Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org>
- <89f8f0be-2534-46c8-9058-cabea4f68568@linux.intel.com>
- <9d1eda85-32a0-4e53-86ca-ce3137439bd7@kernel.org>
- <d046d195-6fa3-4c52-bc5f-3e5e763bc692@linux.intel.com>
- <138ac465-1576-4e86-a05d-63f8acc6fb70@kernel.org>
- <3acfbe3c-8b83-4c40-83c2-437f963fd25a@linux.intel.com>
- <7490bce3-3bd6-4beb-b8be-d47a6b0a30f0@kernel.org>
- <eaa0c99a-3b41-4444-906c-d2f005d326b9@linux.intel.com>
- <aef907ab-1087-4f49-bea4-d43ee6cebb73@kernel.org>
+To: carlos.bilbao@amd.com
+Cc: Avadhut.Naik@amd.com, bilbao@vt.edu, corbet@lwn.net,
+ elena.reshetova@intel.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, rdunlap@infradead.org,
+ Akira Yokosawa <akiyks@gmail.com>
+References: <109e7532-6265-4476-93ea-34fb0b209691@amd.com>
+Subject: Re: [PATCH v2] docs/MAINTAINERS: Update my email address
 Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <aef907ab-1087-4f49-bea4-d43ee6cebb73@kernel.org>
+From: Akira Yokosawa <akiyks@gmail.com>
+In-Reply-To: <109e7532-6265-4476-93ea-34fb0b209691@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
+Hi Carlos,
 
-> Are we talking about basic C now? Of course it does not mean that and I
-> already explained what is the goal of this - the static or global memory
-> in the driver can be moved to rodata.
+On Tue, 23 Apr 2024 10:19:14 -0500, Carlos Bilbao wrote:
+> In the near future, I will not have access to the email address I used as
+> maintainer of a number of things, mostly in the documentation. Update that
+> address to my personal email address (see Link) so I can continue
+> contributing and update .mailmap.
+> 
+> Link: https://lore.kernel.org/all/BL1PR12MB58749FF2BFEDB817DE1FE6CBF82A2@BL1PR12MB5874.namprd12.prod.outlook.com/
+> Signed-off-by: Carlos Bilbao <carlos.bilbao@amd.com>
+> ---
+> 
+> Changes since v1:
+> - Update .mailmap
+> 
+> ---
+>  .mailmap                                                  | 1 +
+[...]
 
-the dsp_ops used by the Intel drivers cannot be moved to rodata in all
-cases. the baseline is constant, all extensions for TGL+ are dynamically
-allocated and modified.
+> 
+> diff --git a/.mailmap b/.mailmap
+> index 1eb607efcc6e..4bac5578426a 100644
+> --- a/.mailmap
+> +++ b/.mailmap
+> @@ -113,6 +113,7 @@ Brian Silverman <bsilver16384@gmail.com> <brian.silverman@bluerivertech.com>
+>  Cai Huoqing <cai.huoqing@linux.dev> <caihuoqing@baidu.com>
+>  Can Guo <quic_cang@quicinc.com> <cang@codeaurora.org>
+>  Carl Huang <quic_cjhuang@quicinc.com> <cjhuang@codeaurora.org>
+> +Carlos Bilbao <carlos.bilbao@amd.com> <carlos.bilbao.osdev@gmail.com>
 
+I'm afraid this won't do what you'd expect.
+Entries in .mailmap should look like:
+
+  Full Name <new address> <old address>
+
+See gitmailmap(5) and git-check-mailmap(1) for further info.
+
+HTH, Akira
 
 
