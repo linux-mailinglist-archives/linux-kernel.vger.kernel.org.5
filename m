@@ -1,228 +1,221 @@
-Return-Path: <linux-kernel+bounces-155522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8672B8AF381
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA4E08AF383
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:09:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD61D1C21C2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:09:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09FD11C22089
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:09:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAECB13CF83;
-	Tue, 23 Apr 2024 16:09:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="Vq9EsyMx"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63BB113D290;
+	Tue, 23 Apr 2024 16:09:25 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B96D13C66C;
-	Tue, 23 Apr 2024 16:09:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713888555; cv=fail; b=n+buDhbNAryFKGD2+rN60YfiU7+tZGjTPsaDzPL49TNgXETaXGe5Nmh74aKr16fiLTb06CeiFfvCrwglpwzrqSo8E3iX3rzh2VZFAMkSjC34RamEDZLmxKy4OABHsptFURO9TIKp1qgYGfewAdfguY3vtucxknuyUTf2iVDAIrY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713888555; c=relaxed/simple;
-	bh=1f6Hw/+RkH9QRRKicjtROKEcU/H3c5/zqsvW9Zntf+U=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=bd/Fxjr6rL8g7qZmh752Rs1xOFn5gCBPkW/pifhEMbMI0VWjG0SJEVj5PCygc1E8UxMXIC7b6NWfWaQXTo9lApy/H1GVOz7sTofjS8F8rh+bDZRLFtfcVDnr2HeEdZBodvsI3R4mLpT27jHm2vqv7ChtpFuudFPldQP7F4XCmhw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=Vq9EsyMx; arc=fail smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43N5buqL016956;
-	Tue, 23 Apr 2024 09:09:05 -0700
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2041.outbound.protection.outlook.com [104.47.57.41])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3xmd7ghspp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 09:09:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TF0JQgdw/1okolosuatc8qOv2izvdOKCYB3NpnyKi2pJOHEItEKnw8epfoQr82vJy20LTkZPhDqi8Z8BbiAoztJ9MBtR+uU/76nPoI31HQHJRhzsGTewjWUBCsM7fK4zq8k6BgEQ6sbdk+P5YzvlQkwHtldJcT2SJRtDaXgJzHHsf8Si4/3V/XM6Y+AcSSAJTjlTQCKd/jsozr7pRHlH0/vtuJeRqRuJhf7bKDg1YsKFFn9+yCO+xqrarky6qcZfpkLDU0b0iV4JCjcQoQQVO2NR/h2ozHBYY3ZYbCZE50g4ONj2rfw09fVDhfIS16YhD03mPACIr0ML/eSlMbpyng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=s9UEMsrCCKBIOs9bfmsswbTa3Ijf/uu7wy9CH+8hmVk=;
- b=YW396x4ej4ajfQOcLWuZDkhvTCPuL7vf7gTcGBsnGcwzGqAMThtQ5x9UIRWmie31V/9yYTL0Lx32awN5NLI5zi9zWYgYTmQK/AidAmoiXidZbKjeF80/RXZnX2ViBqbmbCp8U1UJKpanq0SLl7o/5ZuE0NB5HF9W/mlL7xSNzfcQ6BhmyFPmIYxrlfB6C1zR7TvLquc3nx3BfugJb+pLE1+T5lR5i5Se85bHC5L2nX1K79IL/uY+/sEaHiu3dvx7X7h3y1a63t427wgFkQmxHMFis9FdHq5hZZQdzKnhQFT2u2zs9jC3zXXc0CcUnLYLl9DuuAz1mt+yFEvbAL/3Xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s9UEMsrCCKBIOs9bfmsswbTa3Ijf/uu7wy9CH+8hmVk=;
- b=Vq9EsyMxPCxClLhDieRRsWLp21kMKaXg7UMbfZgyIxMQ7sEiDcn3FPwl8F0CRiDpoG8OT4yfcc1lDanTQkgSgWfe0/nngfCvK4ImrEqkdes3JO7WcXguHkd7rJbqD5TGR+9L/Zy/J6ARcaoUqWCMuzQJUcN14zSbp/xiQHMq9l0=
-Received: from BL1PR18MB4342.namprd18.prod.outlook.com (2603:10b6:208:31e::16)
- by SJ0PR18MB4479.namprd18.prod.outlook.com (2603:10b6:a03:37f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Tue, 23 Apr
- 2024 16:09:03 +0000
-Received: from BL1PR18MB4342.namprd18.prod.outlook.com
- ([fe80::9e3c:b30b:67cf:1d16]) by BL1PR18MB4342.namprd18.prod.outlook.com
- ([fe80::9e3c:b30b:67cf:1d16%5]) with mapi id 15.20.7472.044; Tue, 23 Apr 2024
- 16:09:02 +0000
-From: Geethasowjanya Akula <gakula@marvell.com>
-To: Jiri Pirko <jiri@resnulli.us>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net"
-	<davem@davemloft.net>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        Sunil Kovvuri Goutham
-	<sgoutham@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>
-Subject: RE: [EXTERNAL] Re: [net-next PATCH v2 7/9] octeontx2-pf: Add support
- to sync link state between representor and VFs
-Thread-Topic: [EXTERNAL] Re: [net-next PATCH v2 7/9] octeontx2-pf: Add support
- to sync link state between representor and VFs
-Thread-Index: AQHalJsVB1fMpBcrLE6y6oPYaOQD67F11OkAgAAswtA=
-Date: Tue, 23 Apr 2024 16:09:02 +0000
-Message-ID: 
- <BL1PR18MB43427F05CB1F5D153DD54907CD112@BL1PR18MB4342.namprd18.prod.outlook.com>
-References: <20240422095401.14245-1-gakula@marvell.com>
- <20240422095401.14245-8-gakula@marvell.com> <ZieyWKC7ReztKRWF@nanopsycho>
-In-Reply-To: <ZieyWKC7ReztKRWF@nanopsycho>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR18MB4342:EE_|SJ0PR18MB4479:EE_
-x-ms-office365-filtering-correlation-id: 178d2027-7259-4e95-ac1b-08dc63afb18a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- =?us-ascii?Q?8lPMnMn7mtzq2tvRuIBNopaJ74qW+uzjOmoZgF1OdGVD/L9Sq76mLqfj3NBF?=
- =?us-ascii?Q?NT60l8PueklfnxERx9gsN8kp3V+SLObzBatfGj1VFv4LmPNBKJiN48PtokGD?=
- =?us-ascii?Q?YMGFar0HSb3VVa121MoPpFH5gVFI14SNK0QgTcjgRAn845DGctADz9grgkzj?=
- =?us-ascii?Q?zzDLbvu4S8ggaoDeKoemvH2zCDmKhgFT/LfeihHQlk9WNKLnFB974fGAbJKx?=
- =?us-ascii?Q?UlOSx0OISrIVkr1EMYBHq/hBIyVtdz1oBkXBGo5Urws2A80PhcFmExk353jP?=
- =?us-ascii?Q?Zr2FwUGQmUrfx08o4WnL2rBwZnlJd+VRHrGl0tZQv+IkVVl0Q6/sKXxTGbf1?=
- =?us-ascii?Q?Zo1k1kKdCn3asx2s6CBVXYkmhK/vu2oOupH3k4azmnKv/lUsKlg1yBrH0U9e?=
- =?us-ascii?Q?LsKJu7zFMv6/wPqRIB+mxEKD04+499ytFrP/UjMvAcOmnmG+zC6mVZjCS7Yt?=
- =?us-ascii?Q?mC1j3B31VYCAwlmdcoEgGGLBf6tqDXHIrRlgYJVNRvtlkdSP6iV+e6L61xhm?=
- =?us-ascii?Q?MRexqOvMe5E5cSXjN0S+ej0o7I4lSkqgaz6OGNivaSmSycQZxMmKhGCtOcIi?=
- =?us-ascii?Q?ohn1HI4zh0W85iTFjxeh2qeKX+h4WUybK1Aku4tChVq57BpYmoPdAl5JxbWi?=
- =?us-ascii?Q?joYCTMvMMrQ85Qo3tP0CGaCoYoLYiaa9YYUGNqIgpbPl4POt68YFsic1jKRx?=
- =?us-ascii?Q?5zdN8eV3pKhnzs8ggSGIk87xgC0qSMftYQXypnpoAwlXLnTmuQBovf+Shrs0?=
- =?us-ascii?Q?IxhXfaRVlbIZiTmnWQ84W1y4fY8HNUJqARufrDQlsGD9hOOezSpwUpHtlRoz?=
- =?us-ascii?Q?KgFJMhARHAnOCC60Q2iFSQ1209aQcsM5BhxLV1Dsr8UIdvrFqywllIEd3tWA?=
- =?us-ascii?Q?12HaS9kTvr0WxKyTyxMcjUFX26zYFYfTgkQG8V2sn24l6E5V234HP1LAFxJH?=
- =?us-ascii?Q?QDhJbRe/wbuNPViUMJz1r8qfgrITwnd7o0nbZtJ6e0om7C5Pgvj9gdTx/1Cf?=
- =?us-ascii?Q?2JqwAjixKckMVsvvrQRwOB3oTzT3MspfyfTGJ0EQMg5BU//ezOnUMwAklTo/?=
- =?us-ascii?Q?875DGNGFSpeQ5gd9xP3Th0keRR9cRh8a/o+vxos359uLEWwC8ppBcOGPw0JZ?=
- =?us-ascii?Q?YCDa835Tu6f85pQJA4Rq+azh+T9Bc33gTkkLw5VcHCh5ZgVL4se2Kf+7jWh6?=
- =?us-ascii?Q?iaBPbzFMG3DBWty979D8y/kiDfgMATKf0wktnsNc3540X3NYDvTQYiae1z10?=
- =?us-ascii?Q?bLEtsbZc0qroW+7GLCmIVFAlD3KiJcazGp9duCro4nVQFBhiIdIis5oHxe3B?=
- =?us-ascii?Q?onE3CNxYWfiW9H5ymupNPVwHzvsRDDEhlAtAhkfH03zThg=3D=3D?=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR18MB4342.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?18cRytvj9oLQslyFKLgXC+ZIDvJ/47QGOjwPGi+BtJc17MDNRWXPyUl2alys?=
- =?us-ascii?Q?I/toP83rLumGOzR5LRSKmq5tABZOXQw4S7HFaz2BtYBPnKqi1+/qPy27hVBJ?=
- =?us-ascii?Q?TwuoW5Ly0VHpIEVZguj+ANQUyxVzcL1Mno4jvFwDg6GTV2/MXaFmXoWSJ9HH?=
- =?us-ascii?Q?59G7tGxR1QLBsAMkry0X/0vLHxjt4MyqUvfZb9doLs5zriZeEeCXLU2GkKR9?=
- =?us-ascii?Q?yNb24xld+qZpNxvD+tzR1CuFvI4DmZDNqLSzw0kiiMIk1VONUTxssi05RR5U?=
- =?us-ascii?Q?HSUjYU8sCSc5EV/xLDu8Hl9AkY8Erv0Jqgu6gSAOod5LaRVT3JMYRDYUeNBM?=
- =?us-ascii?Q?xbd88VBeRUYQh4HPO+MgymRFzr34G8gp0ghO1NFGI2NpIsa5oHYc7UerFuni?=
- =?us-ascii?Q?u24DYXL/P63zJA72ewDDYcV9VRN3QttBURapLqcKfruRlvSTvA8jIb/xmh8L?=
- =?us-ascii?Q?bXkX3ORT9Q6dluaznzCw2vf8ntc7LLVWxYsQv8Bl3kFKZHQAkh/BLwK7WRJ6?=
- =?us-ascii?Q?AfJlUKPeI6OZ7BbuEepjailalGQqzQhrgNA4N6EXAH7Vd/tvDyXRnf7S3ACD?=
- =?us-ascii?Q?gXYxLfpmLhJlKKZWU7LgVQaoKl+n58uGx8zVADkkcQHvNYghnTpAVEWV/r5M?=
- =?us-ascii?Q?mBA0FXXYaviGca41Fe8dsPx3YP1WcjgXtH6xeCMsCogeWOewOHhw3EN6XVlg?=
- =?us-ascii?Q?NaYdaInpMGtfHToaTryA0fe7nPtz/gBCfUy6QoTwQvSCPukdaYdoYg1yBAel?=
- =?us-ascii?Q?mMGSUt7tZ1lyh4C2csNCtn5U7JNlli5Njyf5M2FkxCSY5kP3eo2QBrTozn5N?=
- =?us-ascii?Q?5CzPUffaepR7DEJXCwcnjRYw22xoXuwln6GqXYz1FwQwqel/tDywKI50eBfT?=
- =?us-ascii?Q?faY/AE7TAXcAS6Z4SqKYSEa8fXYz20sp0QcqO8UBSqCVGIsGLxSF4KX/+E1V?=
- =?us-ascii?Q?dcGUeXgj5u1x4TVm7uAWIyVodjnXpbFHDv2bWrc3o0ySZgYzaZDLlp1hUFOt?=
- =?us-ascii?Q?a6gFklY8sLqOeASK9uJaQSg7QaDdkaiqqPTaNJWCn5z0v6KLHCkwbzNvVeaG?=
- =?us-ascii?Q?SzowUEl+Va/fzYNQ8hvfE/m5ddvXY8PQtdi+WBekGGaKJ9fHdi8KNQyGXJj8?=
- =?us-ascii?Q?dkSBIZViot8XBLibE9bnWf7ll4QWYHZXLqexZtAYM/lYs8BGD+4ldqjTFkGF?=
- =?us-ascii?Q?UOor3O0NP74ArqZqSodUkipwkPDb9ALqqhDmQhwKWvXr1UGs7kvktLkdB/6u?=
- =?us-ascii?Q?mKM96SDCftjRyuaeFW08eBe1jsa/PXsxJ1uABgECsZCSrqvjTNOR37yPkalw?=
- =?us-ascii?Q?7I4E83n2pqLPiJWPaxE2DpoOPBZ+KgAxvbacBc+MuKApVPpfPWOmkDfYbOOr?=
- =?us-ascii?Q?NUgAuksPO0B9lBjqG7PINWXg/I92Ab1BsdKfqlEreG6HwAkIBlZEefPvJmac?=
- =?us-ascii?Q?0bPr1t7/UMgHnWczzL9i8RdM9+NWitdNRhhgURwyKuIDC3WI64AJEzb56N73?=
- =?us-ascii?Q?uDSot9HqOr4j7fGZTRtNHvD8P6LgUkxoGc8MHm+uxfNgMh8iOLvoZWnWGPaL?=
- =?us-ascii?Q?9rg1E0UVHsNr7Wj618s=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BCD913CA8C
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:09:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713888564; cv=none; b=Nm6lF7VXjtUTce8IBHZNrQhk0yT0S7OUuliBmNK+r3gjdOZOj86IH/rBccwXBvmigedLUc7doL/LNqlXqxIWyKVeJQyNI5PjnIds403iAdN+lir6whFOcK/qyAmDGRNHg1+1BtmSVxD9t5KwgBJOoHOzR1uEPn+p1Jl3goEWEU0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713888564; c=relaxed/simple;
+	bh=LL6Bn5JcSzwliiLuDQ78JZdeqM3pl5MZa4j3ubP5F80=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Rh0s+AXbyTqNNSjXTdDrs+NlbPHKCcp3D+ORYjaxeDWhaOsCAdG2lfUKm1zlWsKfcO1oM7lP+AqYXbwOCtZwOZj8BTCJ65a105wVfkQ0YzlgAKxObnZ4mfY+kdrulE9DbwtMAFJPNWGtQY66fxi9E9aSQaajb7UGCJ8ztKRQfNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7dadd5636ccso186695039f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:09:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713888562; x=1714493362;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/8J3OxauynARCzPhSLU5/ak2dxpVPJ+Bfj7eFyVyks4=;
+        b=m5+Ksb+t+Pu0akT/m5CNIZlXEEmtw0SqiNpwydEu0Crp/QE3sfcVVhuDWE+lxjn0Kf
+         wCMikaGKDC4PfVLJolVX/p/jdPtUG/7a0SQI9+oPCTJwEU6AR+lEisduwa6KKQoIOLwe
+         iKBwbHs7JSEjgNYyEP2sWw1V3ft/yO70uGTibR+NHbZHdSHlt6xWL0SbDdIa71YRz9CE
+         suXrmUnEHQxGxmphbYEd1o0CcmnX1LPYuq4AGyznIq/daidDD+1QznObp3MjmxN4wve8
+         tLdbl7IvqLNpCpvcRhNeU5Brq88HJwRIDi5TpeB9dXOVH3EYbCT6/x8E3W1iqUlFZHAb
+         2G2g==
+X-Forwarded-Encrypted: i=1; AJvYcCXYCtzy31VxXZUE1/AqRC+h/SH31fJodIqnV0TmoXZmPz62raPSOI0H/EykMhOn2OG/I15LJ+HozcDyhoNb/05oqhGc2Rc8arlOLUDx
+X-Gm-Message-State: AOJu0Yx9D4wBYYHFj5uBPFd8PgxLqwm0tGNjjzAzTSomMjmtbC3TARsa
+	xyfhmYOuzEqPzyvC+BqV+8IQm90m3HAJo0CBkiGv5ioy8jiGvsnQm/FZztMWWsO9kwalm4wACGe
+	sS08vouEsLXvdKAg3vzp2fpMgKIpmLxR8ckNpidTA36zVhGn7fFS6lIM=
+X-Google-Smtp-Source: AGHT+IHtCjhHDwurnWyMvfS1ZtFj8hEag/m7u5e1xnNDD5kvOqbF8jFgh+LwcUOGTMVmM3gPmK/9YVVNK3QO5xwqzCfBxD4snq2x
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR18MB4342.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 178d2027-7259-4e95-ac1b-08dc63afb18a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2024 16:09:02.8346
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g5wo8GbsiglhUfPCXAOybRGGBGrUVxakQF7LavbrXIBxH81FBlHvzH0Tc9YSymYfBn69NaAK5dof6QRb+Ss5RQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR18MB4479
-X-Proofpoint-ORIG-GUID: cdWd-Eq4HqPb5ZuOrX6RcHjOA7m4O2Xb
-X-Proofpoint-GUID: cdWd-Eq4HqPb5ZuOrX6RcHjOA7m4O2Xb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-23_13,2024-04-23_02,2023-05-22_02
+X-Received: by 2002:a05:6638:4126:b0:485:7333:8c29 with SMTP id
+ ay38-20020a056638412600b0048573338c29mr186877jab.1.1713888562340; Tue, 23 Apr
+ 2024 09:09:22 -0700 (PDT)
+Date: Tue, 23 Apr 2024 09:09:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f1761a0616c5c629@google.com>
+Subject: [syzbot] [net?] possible deadlock in __unix_gc
+From: syzbot <syzbot+fa379358c28cc87cc307@syzkaller.appspotmail.com>
+To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    4d2008430ce8 Merge tag 'docs-6.9-fixes2' of git://git.lwn...
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=14a15280980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=98d5a8e00ed1044a
+dashboard link: https://syzkaller.appspot.com/bug?extid=fa379358c28cc87cc307
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a8fb4f180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ceeb73180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/5670e5771b96/disk-4d200843.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/03314e6c8879/vmlinux-4d200843.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/41aca7a9505a/bzImage-4d200843.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fa379358c28cc87cc307@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.9.0-rc5-syzkaller-00007-g4d2008430ce8 #0 Not tainted
+------------------------------------------------------
+kworker/u8:1/11 is trying to acquire lock:
+ffff88807cea4e70 (&u->lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ffff88807cea4e70 (&u->lock){+.+.}-{2:2}, at: __unix_gc+0x40e/0xf70 net/unix/garbage.c:302
+
+but task is already holding lock:
+ffffffff8f6ab638 (unix_gc_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ffffffff8f6ab638 (unix_gc_lock){+.+.}-{2:2}, at: __unix_gc+0x117/0xf70 net/unix/garbage.c:261
+
+which lock already depends on the new lock.
 
 
+the existing dependency chain (in reverse order) is:
 
-> -----Original Message-----
-> From: Jiri Pirko <jiri@resnulli.us>
-> Sent: Tuesday, April 23, 2024 6:37 PM
-> To: Geethasowjanya Akula <gakula@marvell.com>
-> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; kuba@kernel.org=
-;
-> davem@davemloft.net; pabeni@redhat.com; edumazet@google.com; Sunil
-> Kovvuri Goutham <sgoutham@marvell.com>; Subbaraya Sundeep Bhatta
-> <sbhatta@marvell.com>; Hariprasad Kelam <hkelam@marvell.com>
-> Subject: [EXTERNAL] Re: [net-next PATCH v2 7/9] octeontx2-pf: Add support=
- to
-> sync link state between representor and VFs
->=20
-> Prioritize security for external emails: Confirm sender and content safet=
-y
-> before clicking links or opening attachments
->=20
-> ----------------------------------------------------------------------
-> Mon, Apr 22, 2024 at 11:53:59AM CEST, gakula@marvell.com wrote:
-> >Implements mbox function to sync the link state between VFs and its
-> >representors. Same mbox is use to notify other updates like mtu etc.
-> >
-> >This patch enables
-> >- Reflecting the link state of representor based on the VF state and
-> >link state of VF based on representor.
->=20
-> Could you please elaborate a bit more how exactly this behaves? Examples
-> would help.
->=20
-We patch implement the below requirement mentioned the representors documen=
-tation.
-Eg: ip link set r0p1 up/down  will disable carrier on/off of the correspond=
-ing representee(eth0) interface.
+-> #1 (unix_gc_lock){+.+.}-{2:2}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+       _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+       spin_lock include/linux/spinlock.h:351 [inline]
+       unix_notinflight+0x13d/0x390 net/unix/garbage.c:140
+       unix_detach_fds net/unix/af_unix.c:1819 [inline]
+       unix_destruct_scm+0x221/0x350 net/unix/af_unix.c:1876
+       skb_release_head_state+0x100/0x250 net/core/skbuff.c:1188
+       skb_release_all net/core/skbuff.c:1200 [inline]
+       __kfree_skb net/core/skbuff.c:1216 [inline]
+       kfree_skb_reason+0x16d/0x3b0 net/core/skbuff.c:1252
+       kfree_skb include/linux/skbuff.h:1262 [inline]
+       manage_oob net/unix/af_unix.c:2672 [inline]
+       unix_stream_read_generic+0x1125/0x2700 net/unix/af_unix.c:2749
+       unix_stream_splice_read+0x239/0x320 net/unix/af_unix.c:2981
+       do_splice_read fs/splice.c:985 [inline]
+       splice_file_to_pipe+0x299/0x500 fs/splice.c:1295
+       do_splice+0xf2d/0x1880 fs/splice.c:1379
+       __do_splice fs/splice.c:1436 [inline]
+       __do_sys_splice fs/splice.c:1652 [inline]
+       __se_sys_splice+0x331/0x4a0 fs/splice.c:1634
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #0 (&u->lock){+.+.}-{2:2}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+       _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+       spin_lock include/linux/spinlock.h:351 [inline]
+       __unix_gc+0x40e/0xf70 net/unix/garbage.c:302
+       process_one_work kernel/workqueue.c:3254 [inline]
+       process_scheduled_works+0xa10/0x17c0 kernel/workqueue.c:3335
+       worker_thread+0x86d/0xd70 kernel/workqueue.c:3416
+       kthread+0x2f0/0x390 kernel/kthread.c:388
+       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(unix_gc_lock);
+                               lock(&u->lock);
+                               lock(unix_gc_lock);
+  lock(&u->lock);
+
+ *** DEADLOCK ***
+
+3 locks held by kworker/u8:1/11:
+ #0: ffff888015089148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3229 [inline]
+ #0: ffff888015089148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_scheduled_works+0x8e0/0x17c0 kernel/workqueue.c:3335
+ #1: ffffc90000107d00 (unix_gc_work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3230 [inline]
+ #1: ffffc90000107d00 (unix_gc_work){+.+.}-{0:0}, at: process_scheduled_works+0x91b/0x17c0 kernel/workqueue.c:3335
+ #2: ffffffff8f6ab638 (unix_gc_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ #2: ffffffff8f6ab638 (unix_gc_lock){+.+.}-{2:2}, at: __unix_gc+0x117/0xf70 net/unix/garbage.c:261
+
+stack backtrace:
+CPU: 0 PID: 11 Comm: kworker/u8:1 Not tainted 6.9.0-rc5-syzkaller-00007-g4d2008430ce8 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Workqueue: events_unbound __unix_gc
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+ spin_lock include/linux/spinlock.h:351 [inline]
+ __unix_gc+0x40e/0xf70 net/unix/garbage.c:302
+ process_one_work kernel/workqueue.c:3254 [inline]
+ process_scheduled_works+0xa10/0x17c0 kernel/workqueue.c:3335
+ worker_thread+0x86d/0xd70 kernel/workqueue.c:3416
+ kthread+0x2f0/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
 
 
-"
-The representee's link state is controlled through the representor. Setting=
- the representor administratively UP or DOWN should cause carrier ON or OFF=
- at the representee.
-"
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
->=20
-> >- On VF interface up/down a notification is sent via mbox to
-> >representor
-> >  to update the link state.
-> >- On representor interafce up/down will cause the link state update of V=
-F.
-> >
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
