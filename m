@@ -1,145 +1,214 @@
-Return-Path: <linux-kernel+bounces-155435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC2278AEA7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:15:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9366F8AEA85
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:15:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB47FB21846
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:15:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B57628706B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:15:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B3413BC20;
-	Tue, 23 Apr 2024 15:15:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D6F513C9DC;
+	Tue, 23 Apr 2024 15:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4M4Wkov5"
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xtWGkKMm"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A71D136E1A
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C438913C66C
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:15:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713885321; cv=none; b=RE8uCfYJPB67XwAj4anics+D32GqUzn/QUHeo2zFhJKbzjxfBnhpULYveAvG200FAy1pB3E20CD6SDhaI9eUIZO/qVC4p7jc4CsNLb8taDyWwC2GiS7Bn9x50z6qS85YC6sf5uqr8cl6C9OdYnJHJFggwQ9YlN7AvMLwAssYj9A=
+	t=1713885324; cv=none; b=gEgouTCL/W2xkaKI0u9FHu8lXq+uqvszjVHdKQqEFFuC1XcrWBlwW5dnWCxYkyoaTZ/wygdEFln22DcbXxAvBxj+FKVHN/itRWGcQMI6Pg29CE8SQ4GzBMXTUAIBYatGM7jstpAvGZ+UE463rqs2tPSOu9TqNqvhj+6ksvDie0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713885321; c=relaxed/simple;
-	bh=0SenlblrjMqan5Pcbzcsf/FKyDn1lUZo9dEh2XP0Z9M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mDXManOYiMFYhx88aYhSZAJJxGNhKF/1PxLxJHkfjO1vX0hpy1tWg6j/ayWDYOoc7ciDXaDH/nfR/v4EifyckSkbds1k7ykNJBNkGS/Wr7sY40sTHO+leoL8Ntt+wz5jF9cNYe6/qF1GZJ7QDCNjLxqIMNiWVqET+WGIE5UEIxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4M4Wkov5; arc=none smtp.client-ip=209.85.160.174
+	s=arc-20240116; t=1713885324; c=relaxed/simple;
+	bh=29mJ2eC3FOIKEQMjH1aipAJXYNklA0kCDubcrgWpjxI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Rie1yLZR9eqgNCYCzYe/8QhKgA7+fET8IFCEs/7Iz66t7ZcRdMqe3MgisruGViY13T8c1musFFIkS7QCbUus/y8+5sHuJNAK61T1rVvdrBPC5re6kxOaUtLhgOuuANDe+YVWx4Jo7xsuplzboKaP+WqVzQWWvUeg3t2MbGrpBCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xtWGkKMm; arc=none smtp.client-ip=209.85.215.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-439b1c72676so478991cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:15:19 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5d8df7c5500so6199119a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:15:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713885318; x=1714490118; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0SenlblrjMqan5Pcbzcsf/FKyDn1lUZo9dEh2XP0Z9M=;
-        b=4M4Wkov5iosIaAr9HxKN2h/003c0jT7Y+iLULrRPu4nm/4YQAiRaE7aJDSxx4izvyd
-         zeD6nnkXPNlSKZsNO7V5YMy5CJLIuD8kpkoX8y6lEtqNBjIIo8bC9F4xjtuIiyrdq3oo
-         1ohK8PDgaGetp6FN06v6MkkdwT5ximkM0o8EosKD/UxwkXvfkFWeP4FSna/bctIuRloJ
-         u2bIEj09rs7AIrD9YM5wywcqbNjy2gxCVncY5eRS0BvlseTOY/B1kYp4PVMiDYBjTbX3
-         L2O+NY8LnCXu0F3IEDESVL1dBa+HlZdNhlQ4uOZwmVYMa/YiFSEoQydLTR4PMAJ8m8qX
-         pAFA==
+        d=google.com; s=20230601; t=1713885322; x=1714490122; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uvz589OQSL7BtgJIC3S0S1kNpDPbm+tVW7ZqS1/fwaA=;
+        b=xtWGkKMmc8hX2yznug3v6v5NSwmc5r6yM/pV85JKA/xXTIKo/xSUcAIo6PvwXlvVg4
+         CXMVozkAWsvIfTGSnL4kLHDurxzg5KdHJR/zmHzqO42pRFr9/I4h5O+BspVoj8MzU8m4
+         1mDriOyEjTn2AyKQkL6TtsRdrWsGfRqgsarVHEYDNwmv3OVNoNYvE7xL7wm0sSPJnPqZ
+         pNVJZtFBA5lz22gzCBl9miN6Iz4j4H41P81tTp9kN5EeeEfYpiM8kDHpLLJEZa2iSzXj
+         NC2TA7uhCK3qRNYPQPLJXLuXQf7XIoY63jOEy38g2i+fpP+EVC7P8ot031ZRYVe4w+vg
+         e9lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713885318; x=1714490118;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0SenlblrjMqan5Pcbzcsf/FKyDn1lUZo9dEh2XP0Z9M=;
-        b=JjMJGHOlGm8If6Y0ysdqiEq0W59vEHkgjA3SArgamZ/mC7JTxdK/jOxnWVQPgwq8LI
-         77gCGkjRboN+xXkI5UIIq+3O/aS50g2dbvhdeijxVJRk/rhjn1yyapH4grJru/5ZZ/hp
-         UzfdzquDCYpm0sZaLFJO1PBInnUFBf8u6J3xwfMgdx0DkDEjKnl3GPlr0saWutGIx6uU
-         27VpCqzFr2efVVAybszBWSiQZCanwBfOCVINKCRTdYMrodyyczhwDPQwmiPE7ydOXGxF
-         7gecoGfEJCaUySa4zGlrUKLTkLpniRkXeh1gkR2zmdqSKQ9TUs120cDEcnP5DhnoCoa4
-         0J5A==
-X-Forwarded-Encrypted: i=1; AJvYcCXKdWnQ+i9k3TbXarpIBhsrosnQsUX8Kcr92TcllE6qNaTg4ppKrxMivD+LDKuX/qH3z/SHgU5D+YpdfcfSvlcsB6HEVU1oQply9Yqw
-X-Gm-Message-State: AOJu0YwMafc0l+YL0XO5Y7LN40Nit8EGc1s+A61Brm+r+oZR+zXV2YXl
-	NW8apP0VaJt+R+KUsrAIElWVu2z/lRm3SADD5yP1LpWY8oHxZvtbbAdS+erbZanP+8cZt17CPzq
-	33iG9FTOGGYGWfP6qWTIXY0tyQQ8yFNz0v41q
-X-Google-Smtp-Source: AGHT+IEmDbvhgmJutRXxF3MJaFpsjAadibBlJZsxjSUIBJXhn/ms41LXrsgezlKX1Aj3ErOqxfZQYsmePxgCn9a7wgw=
-X-Received: by 2002:ac8:468d:0:b0:437:b3df:9ab9 with SMTP id
- g13-20020ac8468d000000b00437b3df9ab9mr224998qto.23.1713885318312; Tue, 23 Apr
- 2024 08:15:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713885322; x=1714490122;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uvz589OQSL7BtgJIC3S0S1kNpDPbm+tVW7ZqS1/fwaA=;
+        b=uPQztP6h7CVaYyU2nw+wd81d3YC6dsTwy0H6mcAGtWI6eaukhU/pZ5V4DoN/EuypBE
+         IDypbVnSxKC465RF3izm1iJ5qkLNxilNpEFgYfnZXBNyVAlbF55+NTiS9qPYe1SdPiuP
+         bjLFHUazoLoGL7lNalvTwyY9OaMnkyIc7oUnfKAhW/htBpLe2Bl0KbMFKVnkgUiIf15x
+         X/0jUn0coQKUYBVgEbBrTGj6hqkgt+Cmig7dUzNxc86t8zlFK0/e9csvydsQTF9+dZw+
+         HZeargc0v19EoE3PKzOl/3Zd0+NYNe9qk91XrlSgVSduyzmLBCDSAdEhwUKshnEL+I4e
+         0T/A==
+X-Forwarded-Encrypted: i=1; AJvYcCVHhdIG8I0J9nLT9OGkDGzB9VBA4bJ0s1GnYuRJC0Chw6s3fXvmedTWyfJJbghTGOEW8gSr4Tspo83JZFUhk3a50tG5w31mhj001biI
+X-Gm-Message-State: AOJu0Yz34NlQheG6EY5+YNEwDgaAcD0G+ejvm8SqZTjMuiYKnCQpStwY
+	QJ2IWoW1bL6Uq8crnAlO3G/cjlO66oWgkE3PT978fTypAbSusnO9CPvRNYuggNk0HTw2VB002tH
+	/dw==
+X-Google-Smtp-Source: AGHT+IFQMXpWlXAmt1Hjf05oblgz2qzg5pSqCLj2Uj5XW5rbT8TMU9yswMQX+Cl6PHEPZuJ5DFJk2P12+SU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:2b58:0:b0:5e8:57aa:3609 with SMTP id
+ r85-20020a632b58000000b005e857aa3609mr42754pgr.9.1713885321995; Tue, 23 Apr
+ 2024 08:15:21 -0700 (PDT)
+Date: Tue, 23 Apr 2024 08:15:20 -0700
+In-Reply-To: <d0563f077a7f86f90e72183cf3406337423f41fe.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240423031719.1941141-1-irogers@google.com> <c1c460ed-69c3-4fde-aa9b-be1051dae6ec@linux.ibm.com>
-In-Reply-To: <c1c460ed-69c3-4fde-aa9b-be1051dae6ec@linux.ibm.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 23 Apr 2024 08:15:02 -0700
-Message-ID: <CAP-5=fVrQJiFtLeYQqkKACHo_3ez9NEadYLcqy-UKk4i5dHSqQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] Assume sysfs event names are always lowercase
-To: Thomas Richter <tmricht@linux.ibm.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Randy Dunlap <rdunlap@infradead.org>, 
-	Jing Zhang <renyu.zj@linux.alibaba.com>, James Clark <james.clark@arm.com>, 
-	Ravi Bangoria <ravi.bangoria@amd.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <5ffd4052-4735-449a-9bee-f42563add778@intel.com>
+ <ZiEulnEr4TiYQxsB@google.com> <22b19d11-056c-402b-ac19-a389000d6339@intel.com>
+ <ZiKoqMk-wZKdiar9@google.com> <deb9ccacc4da04703086d7412b669806133be047.camel@intel.com>
+ <ZiaWMpNm30DD1A-0@google.com> <3771fee103b2d279c415e950be10757726a7bd3b.camel@intel.com>
+ <Zib76LqLfWg3QkwB@google.com> <6e83e89f145aee496c6421fc5a7248aae2d6f933.camel@intel.com>
+ <d0563f077a7f86f90e72183cf3406337423f41fe.camel@intel.com>
+Message-ID: <ZifQiCBPVeld-p8Y@google.com>
+Subject: Re: [PATCH v19 023/130] KVM: TDX: Initialize the TDX module when
+ loading the KVM intel kernel module
+From: Sean Christopherson <seanjc@google.com>
+To: Kai Huang <kai.huang@intel.com>
+Cc: Tina Zhang <tina.zhang@intel.com>, Hang Yuan <hang.yuan@intel.com>, 
+	Bo2 Chen <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>, 
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Erdem Aktas <erdemaktas@google.com>, 
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
+	Isaku Yamahata <isaku.yamahata@intel.com>, 
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 22, 2024 at 11:53=E2=80=AFPM Thomas Richter <tmricht@linux.ibm.=
-com> wrote:
->
-> On 4/23/24 05:17, Ian Rogers wrote:
-> > By assuming sysfs events are lower case, the case insensitive event
-> > parsing can probe for the existence of a file rather then loading all
-> > events in a directory. When the event is a json event like
-> > inst_retired.any on Intel, this reduces the number of openat calls on
-> > a Tigerlake laptop from 325 down to 255.
-> >
->
-> Ian, sorry for the late reply.
-> On s390 the events in the sysfs tree are all upper case:
+On Tue, Apr 23, 2024, Kai Huang wrote:
+> On Tue, 2024-04-23 at 13:34 +1200, Kai Huang wrote:
+> > >=20
+> > > > > And the intent isn't to catch every possible problem.  As with ma=
+ny sanity checks,
+> > > > > the intent is to detect the most likely failure mode to make tria=
+ging and debugging
+> > > > > issues a bit easier.
+> > > >=20
+> > > > The SEAMCALL will literally return a unique error code to indicate =
+CPU
+> > > > isn't in post-VMXON, or tdx_cpu_enable() hasn't been done.  I think=
+ the
+> > > > error code is already clear to pinpoint the problem (due to these p=
+re-
+> > > > SEAMCALL-condition not being met).
+> > >=20
+> > > No, SEAMCALL #UDs if the CPU isn't post-VMXON.  I.e. the CPU doesn't =
+make it to
+> > > the TDX Module to provide a unique error code, all KVM will see is a =
+#UD.
+> >=20
+> > #UD is handled by the SEAMCALL assembly code.  Please see TDX_MODULE_CA=
+LL
+> > assembly macro:
 
-Yikes, sigh.. thanks for catching this :-)
+Right, but that doesn't say why the #UD occurred.  The macro dresses it up =
+in
+TDX_SW_ERROR so that KVM only needs a single parser, but at the end of the =
+day
+KVM is still only going to see that SEAMCALL hit a #UD.
 
-> [root@a35lp67 ~]# ls -l /sys/devices/cpum_cf/events/ | head -10
-> total 0
-> -r--r--r-- 1 root root 4096 Apr 17 14:47 AES_BLOCKED_CYCLES
-> -r--r--r-- 1 root root 4096 Apr 17 14:47 AES_BLOCKED_FUNCTIONS
-> -r--r--r-- 1 root root 4096 Apr 17 14:47 AES_CYCLES
-> -r--r--r-- 1 root root 4096 Apr 17 14:47 AES_FUNCTIONS
-> -r--r--r-- 1 root root 4096 Apr 17 14:47 BCD_DFP_EXECUTION_SLOTS
-> -r--r--r-- 1 root root 4096 Apr 17 14:47 CPU_CYCLES
-> -r--r--r-- 1 root root 4096 Apr 17 14:47 CRSTE_1MB_WRITES
-> -r--r--r-- 1 root root 4096 Apr 17 14:47 DCW_OFF_DRAWER
-> -r--r--r-- 1 root root 4096 Apr 17 14:47 DCW_OFF_DRAWER_MEMORY
-> [root@a35lp67 ~]#
->
-> Same is true for all other PMUs (currently 5 and growing).
->
-> Is there a branch to pull to try out the effect of your patch on s390?
+> > > There is no reason to rely on the caller to take cpu_hotplug_lock, an=
+d definitely
+> > > no reason to rely on the caller to invoke tdx_cpu_enable() separately=
+ from invoking
+> > > tdx_enable().  I suspect they got that way because of KVM's unnecessa=
+rily complex
+> > > code, e.g. if KVM is already doing on_each_cpu() to do VMXON, then it=
+'s easy enough
+> > > to also do TDH_SYS_LP_INIT, so why do two IPIs?
+> >=20
+> > The main reason is we relaxed the TDH.SYS.LP.INIT to be called _after_ =
+TDX
+> > module initialization. =C2=A0
+> >=20
+> > Previously, the TDH.SYS.LP.INIT must be done on *ALL* CPUs that the
+> > platform has (i.e., cpu_present_mask) right after TDH.SYS.INIT and befo=
+re
+> > any other SEAMCALLs.  This didn't quite work with (kernel software) CPU
+> > hotplug, and it had problem dealing with things like SMT disable
+> > mitigation:
+> >=20
+> > https://lore.kernel.org/lkml/529a22d05e21b9218dc3f29c17ac5a176334cac1.c=
+amel@intel.com/T/#mf42fa2d68d6b98edcc2aae11dba3c2487caf3b8f
+> >=20
+> > So the x86 maintainers requested to change this.  The original proposal
+> > was to eliminate the entire TDH.SYS.INIT and TDH.SYS.LP.INIT:
+> >=20
+> > https://lore.kernel.org/lkml/529a22d05e21b9218dc3f29c17ac5a176334cac1.c=
+amel@intel.com/T/#m78c0c48078f231e92ea1b87a69bac38564d46469
+> >=20
+> > But somehow it wasn't feasible, and the result was we relaxed to allow
+> > TDH.SYS.LP.INIT to be called after module initialization.
+> >=20
+> > So we need a separate tdx_cpu_enable() for that.
 
-Sorry not, I think everything would break anyway. I'll extend what
-I've done so that event names can be lowercase or in shouty UPPERCASE.
+No, you don't, at least not given the TDX patches I'm looking at.  Allowing
+TDH.SYS.LP.INIT after module initialization makes sense because otherwise t=
+he
+kernel would need to online all possible CPUs before initializing TDX.  But=
+ that
+doesn't mean that the kernel needs to, or should, punt TDH.SYS.LP.INIT to K=
+VM.
 
-Thanks,
-Ian
+AFAICT, KVM is NOT doing TDH.SYS.LP.INIT when a CPU is onlined, only when K=
+VM
+is loaded, which means that tdx_enable() can process all online CPUs just a=
+s
+easily as KVM.
 
-> Thanks Thomas
-> --
-> Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, German=
-y
-> --
-> IBM Deutschland Research & Development GmbH
->
-> Vorsitzender des Aufsichtsrats: Wolfgang Wendt
->
-> Gesch=C3=A4ftsf=C3=BChrung: David Faller
->
-> Sitz der Gesellschaft: B=C3=B6blingen / Registergericht: Amtsgericht Stut=
-tgart, HRB 243294
->
+Presumably that approach relies on something blocking onlining CPUs when TD=
+X is
+active.  And if that's not the case, the proposed patches are buggy.
+
+> Btw, the ideal (or probably the final) plan is to handle tdx_cpu_enable()
+> in TDX's own CPU hotplug callback in the core-kernel and hide it from all
+> other in-kernel TDX users. =C2=A0
+>=20
+> Specifically:
+>=20
+> 1) that callback, e.g., tdx_online_cpu() will be placed _before_ any in-
+> kernel TDX users like KVM's callback.
+> 2) In tdx_online_cpu(), we do VMXON + tdx_cpu_enable() + VMXOFF, and
+> return error in case of any error to prevent that cpu from going online.
+>=20
+> That makes sure that, if TDX is supported by the platform, we basically
+> guarantees all online CPUs are ready to issue SEAMCALL (of course, the in=
+-
+> kernel TDX user still needs to do VMXON for it, but that's TDX user's
+> responsibility).
+>=20
+> But that obviously needs to move VMXON to the core-kernel.
+
+It doesn't strictly have to be core kernel per se, just in code that sits b=
+elow
+KVM, e.g. in a seperate module called VAC[*] ;-)
+
+[*] https://lore.kernel.org/all/ZW6FRBnOwYV-UCkY@google.com
+
+> Currently, export tdx_cpu_enable() as a separate API and require KVM to
+> call it explicitly is a temporary solution.
+>=20
+> That being said, we could do tdx_cpu_enable() inside tdx_enable(), but I
+> don't see it's a better idea.
+
+It simplifies the API surface for enabling TDX and eliminates an export.
 
