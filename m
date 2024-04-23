@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-155060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE9858AE4DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:51:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FB8A8AE4DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:51:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8F8CB24AED
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:51:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA89F283CE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 111701448E9;
-	Tue, 23 Apr 2024 11:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B42B1442EF;
+	Tue, 23 Apr 2024 11:41:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ydu2Cdv2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UrncRGiv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505C014431C;
-	Tue, 23 Apr 2024 11:41:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21E71448F4;
+	Tue, 23 Apr 2024 11:41:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872483; cv=none; b=Cv9rXHgUm/argm+0eiqkpF+P6eqTp/agIOU8tmHeNqKd7JjIRH3DDtOl2SZ5MT9/z+0wl4xosKyEi2p4I7UieXkvz7pAxTKFXSgD/znsC2d6YLmsyKz7OlcUigAwFUhGSGYqUESzL08gIc5RwMLqJQHN8Mz5sO7Z3XHQpsA4ht4=
+	t=1713872484; cv=none; b=M+L1ap5uD0OkyqxZ78hwuPbxaI0k4d4HDjwqi9eDO0j+tstFMjtkcJEGFmV3v9J/8LN6zzZeSd5VFBvHt8n+hYciiRPJs6+UMA4/ggZCh+KrWklqn6+CP1aTpL0kqkSYUhknD+orhnw6zZMHyLkqbWFhrMw+LIkCDNp3tSEgF18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872483; c=relaxed/simple;
-	bh=xO1L8ozLXNkLGNcQZU7QghmdPKLrycyXyH72uitmLwA=;
+	s=arc-20240116; t=1713872484; c=relaxed/simple;
+	bh=9m8FyTxQoOWe9YS8ZXYB9PO92DE3oC2qzBetu28vvQE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tYcN85C55ZzmjxdYJQ3tAkR7xssf1/mCCT0blPYSnR5/f6+HkTH5QnrcPewkXTH4qW/D9FzFdASrI3XcJ0/qJfGTBEGEtMwGoXdOqZOm/ZjYh4i1boAeryQX+0F8GPNsjANHkAUGuAzJVoKbUEk+KBlqvajOql41YrbpjT6bBxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ydu2Cdv2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64055C3277B;
-	Tue, 23 Apr 2024 11:41:22 +0000 (UTC)
+	 MIME-Version; b=H/bjL4Tz/NCmNsbxizE9ifGkI9lSBa213/aiQfzKSW4YrDWqWSpB2n5y6ztny/VI8puqJd4cJ6UVFByoLYmPG6N1YTW2i49mdCh5fYf4CC/ME2WaMxBP9jxcwP6z5/hb5U9/gZkXUglhGjFDaMrqs1m2NSmbBQ2FIlU2VZXU66Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UrncRGiv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A206EC3277B;
+	Tue, 23 Apr 2024 11:41:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872483;
-	bh=xO1L8ozLXNkLGNcQZU7QghmdPKLrycyXyH72uitmLwA=;
+	s=k20201202; t=1713872484;
+	bh=9m8FyTxQoOWe9YS8ZXYB9PO92DE3oC2qzBetu28vvQE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ydu2Cdv2Ww3g5/udzj4aBy2cCBmdmyQ2XB5BhiCOR3le+HzxwxhIm/HEZ5vMmt6lK
-	 UCmyP+kSPHOntT1TLz0TUY4i4stPcAggYF/AzoANZBXAPKQOd7wyiOQM9j06oyAo++
-	 APIQIlL9j8TB8IKGW2BfjPh+Re8ZLmqlQEbAhgaUBbqUBj/DTZVrNuE7Z8nRYix64P
-	 30qG6wm+xe76L6/Kt9oygWEUc3NhVpKDPRzhIKq4jWYM0frvEfWlvB4N/qqSEI7yUv
-	 EvTUuJV1F5ByskYftLIZFrKAiKaHnDks4YT+IlgW83dTYUVvtEi922ZANq9Ty29xvo
-	 RaDKLXEIm+wYg==
+	b=UrncRGivnNkVmwU2n/20+UDfX+/eT/9JjXR7IXFbutUM6lh1xdWNsTAOugiLsmS02
+	 rU7KvH4NZprdKT03GAAB7t3ylk8LBxRDLLQ94nedz4fryKFqUX/yEYgc29V18HNJow
+	 FK6hwXXL5SO2vL8wCs1Xz96UQO2chbs8E1qZAbsUB/05UBenqPNwxGepVLCqxftCwe
+	 Zx22GmiiGDSf7RqTJ+uBJhq8F6ghkvKSjUCA+ys+dyZglx/WK9zLWy1xrS7CbwZ1Tj
+	 scZWWW+lnIyNbadRR8u5Qa6SpowWcHElnks6H3FlxgnU/hSUDPK4Wn2ZUYWynlQaWr
+	 uXNWH1b3Ktufw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Stephen Boyd <sboyd@kernel.org>,
-	Douglas Anderson <dianders@chromium.org>,
+Cc: Joakim Sindholt <opensource@zhasha.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	mturquette@baylibre.com,
-	linux-clk@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 6/9] clk: Don't hold prepare_lock when calling kref_put()
-Date: Tue, 23 Apr 2024 07:02:28 -0400
-Message-ID: <20240423110233.1659071-6-sashal@kernel.org>
+	lucho@ionkov.net,
+	asmadeus@codewreck.org,
+	v9fs@lists.linux.dev
+Subject: [PATCH AUTOSEL 5.15 7/9] fs/9p: drop inodes immediately on non-.L too
+Date: Tue, 23 Apr 2024 07:02:29 -0400
+Message-ID: <20240423110233.1659071-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240423110233.1659071-1-sashal@kernel.org>
 References: <20240423110233.1659071-1-sashal@kernel.org>
@@ -65,69 +66,29 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.156
 Content-Transfer-Encoding: 8bit
 
-From: Stephen Boyd <sboyd@kernel.org>
+From: Joakim Sindholt <opensource@zhasha.com>
 
-[ Upstream commit 6f63af7511e7058f3fa4ad5b8102210741c9f947 ]
+[ Upstream commit 7fd524b9bd1be210fe79035800f4bd78a41b349f ]
 
-We don't need to hold the prepare_lock when dropping a ref on a struct
-clk_core. The release function is only freeing memory and any code with
-a pointer reference has already unlinked anything pointing to the
-clk_core. This reduces the holding area of the prepare_lock a bit.
-
-Note that we also don't call free_clk() with the prepare_lock held.
-There isn't any reason to do that.
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Link: https://lore.kernel.org/r/20240325184204.745706-3-sboyd@kernel.org
+Signed-off-by: Joakim Sindholt <opensource@zhasha.com>
+Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/clk.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ fs/9p/vfs_super.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 84397af4fb336..7a3b992ca3e40 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -4137,7 +4137,8 @@ void clk_unregister(struct clk *clk)
- 	if (ops == &clk_nodrv_ops) {
- 		pr_err("%s: unregistered clock: %s\n", __func__,
- 		       clk->core->name);
--		goto unlock;
-+		clk_prepare_unlock();
-+		return;
- 	}
- 	/*
- 	 * Assign empty clock ops for consumers that might still hold
-@@ -4171,11 +4172,10 @@ void clk_unregister(struct clk *clk)
- 	if (clk->core->protect_count)
- 		pr_warn("%s: unregistering protected clock: %s\n",
- 					__func__, clk->core->name);
-+	clk_prepare_unlock();
- 
- 	kref_put(&clk->core->ref, __clk_release);
- 	free_clk(clk);
--unlock:
--	clk_prepare_unlock();
- }
- EXPORT_SYMBOL_GPL(clk_unregister);
- 
-@@ -4381,13 +4381,11 @@ void __clk_put(struct clk *clk)
- 	    clk->max_rate < clk->core->req_rate)
- 		clk_core_set_rate_nolock(clk->core, clk->core->req_rate);
- 
--	owner = clk->core->owner;
--	kref_put(&clk->core->ref, __clk_release);
--
- 	clk_prepare_unlock();
- 
-+	owner = clk->core->owner;
-+	kref_put(&clk->core->ref, __clk_release);
- 	module_put(owner);
--
- 	free_clk(clk);
- }
- 
+diff --git a/fs/9p/vfs_super.c b/fs/9p/vfs_super.c
+index 7449f7fd47d22..51ac2653984a7 100644
+--- a/fs/9p/vfs_super.c
++++ b/fs/9p/vfs_super.c
+@@ -340,6 +340,7 @@ static const struct super_operations v9fs_super_ops = {
+ 	.alloc_inode = v9fs_alloc_inode,
+ 	.free_inode = v9fs_free_inode,
+ 	.statfs = simple_statfs,
++	.drop_inode = v9fs_drop_inode,
+ 	.evict_inode = v9fs_evict_inode,
+ 	.show_options = v9fs_show_options,
+ 	.umount_begin = v9fs_umount_begin,
 -- 
 2.43.0
 
