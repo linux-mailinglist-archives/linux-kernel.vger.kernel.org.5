@@ -1,204 +1,144 @@
-Return-Path: <linux-kernel+bounces-155408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF2228AE9FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:59:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9F8C8AE9F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:59:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EDBA1C22134
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:59:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4CAE286F42
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:59:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2730F13BADD;
-	Tue, 23 Apr 2024 14:59:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6848D7D408;
+	Tue, 23 Apr 2024 14:59:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V5IH/c+A"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="X51gGEyg"
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAEC47D408
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:59:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD7767D40D
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:59:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713884379; cv=none; b=cT5Talaz115nal62u7iBN0UTm3Oyk+CNJtnHjEriXSpovCt7r8kiisTNhC+tLdldieA4bJz+sZwj+lr9hrE4dyumkLEptI4h+vAPa5QLNvVAYY7jSHIwlfGADyhh+XA2019CH2I9JEPw2uSg1ey6lJ164uhDSqG7sZPiaOvCpPQ=
+	t=1713884371; cv=none; b=pVVKD7sSZK5CF12049b6qo3l6O1Rklx9tI9G+N38kmPJaBqMrgrl6r387flotvLi7aCj/7fptMnzsIMKgSZLjE5swujTyJyyhT5EK3hZRrpAOOq5nZVQHU3MbFQeQ9v1UoLw9CFyCySYXZCt0g6/1P+snmoVcLkja54Aq6zcPQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713884379; c=relaxed/simple;
-	bh=olfSGTsFnuztaBe/6TGLSCfwwp+edxO3rygKLxl5HZA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IZS2RUUfd7lwiF2HuJpF5RclZw5agNVyjtIogsUUNgkvMUSdc38+hwez6aOY1EOEi2Ww415aBqgIl5vELhO/oNyMEwpF8yQ4yXA4cxy1Ir9xZDBReOrCw06bx8Z4JTkSW6vneXzdfwTuPQQs+tBkJ5Lfx97o37/6t+2dkkdAkNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V5IH/c+A; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713884376;
+	s=arc-20240116; t=1713884371; c=relaxed/simple;
+	bh=4rFwTK4QCFK5vpEhfjbKw/LnAiGANKApDrFpRn437Qw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eHGCnxvB4bO5UWEmZboYBGREUhGSbN8o2mxJWs8NxbF+LJswN5AxqLD50CHindHYQkIwRHZhP5ZvIqL1uT3eqsMDR7bQPOHzhsTTij3rE1u3fS3pQ6mI7q2za+rcTE1Yb/CZW04XhtP+HyDoo6wHPsMvYLO7DLhEgCP+irpnzec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=X51gGEyg; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <472464bb-ae10-4452-aedf-a52b3eb8a25a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713884366;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ie+FYpj1GJEe+9FkFNy/6w/kFm+u4y5scRjGEyrOJXw=;
-	b=V5IH/c+AVgHlDpkHW7clK278FeGKHXWzB7RfNCi+iZhlmpCY2nyLETYXdirRoCs2SP7i2S
-	OH1bH+1qk1B2m9uhmyBko0a6Ly6ZRKnjbDZ3r7MLb3U1FVuF6cNW78BX6Mx6vsKgRh5W7r
-	uachMeYUlUyX0CjJJElFOGwb06WgRpI=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-402-EZAkr8dRO22DzJbf_RHEBg-1; Tue, 23 Apr 2024 10:59:35 -0400
-X-MC-Unique: EZAkr8dRO22DzJbf_RHEBg-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-56865619070so1931680a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:59:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713884373; x=1714489173;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ie+FYpj1GJEe+9FkFNy/6w/kFm+u4y5scRjGEyrOJXw=;
-        b=Ve78Bglev4f5JIRMln7CNbOIIGfemVsKJ5RY6cGboSsRG5FplBlIJjEZeru87VG53p
-         bghbtP+P/DCMApvCkbrYnkmD6cJFdG2vbDCozZLOHohH42/VzQFhxCTvRddKJMnFuLZg
-         HxQWGUUATPXrlyLHR9VMBkksY00Y67EyZAzNBKvjmnuOa4hsTox/td1blLK08E4eLLOQ
-         sN6WzwztZzBcl8m/h0hcJ2TgakBhCX1UneFglr4v/1cOgtbRVCeG5ohuttDXPqIskHiR
-         U2cQzivVRnn4zwtHUDMC+yMOTx84Mpxtw9A0zyrRSBxgYLDB5Snu1Wg8AL1wcHELVYph
-         DWvw==
-X-Forwarded-Encrypted: i=1; AJvYcCUNAPcNnJYVlbgOBXryJrt9GIctfzt230piqSy8hKPKVniR+oy+M1Tophw8nRh+4t+YpNZbAf0m3EydQXbctU9u9/fjRYd2R/xruojZ
-X-Gm-Message-State: AOJu0YzsyajNzGJ0W2tCXw2CaQ/frfYw/2INMaCof5ZBm7dhyHDg00V4
-	vymBAJ3EKIRuHISKeUb4IAC7Ry3xq07NzeY6shFH3GLYslO16jYr0i0262gvbSEU3X4ItrNhHyf
-	dlD26raL0hO70spq+WlmiOL1wh8yn2gwJgvXs+FO/PtXHa5HI+Q7lP7hgr8x8Wqp9M2zM59zrsr
-	XizrSbLL0tXXImubp4MC7+Naq6UkJFxq+/y2OZx3bd+QKf
-X-Received: by 2002:a50:d5cc:0:b0:570:5b72:164 with SMTP id g12-20020a50d5cc000000b005705b720164mr8847178edj.37.1713884373127;
-        Tue, 23 Apr 2024 07:59:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEx+SFJ52iA64fGz8cP56CJid1VLQQ91ZyiKP07BwcaJus+buR5U7snRiTmt/sE1JslZDX0L1Um1xd3XyxBORk=
-X-Received: by 2002:a50:d5cc:0:b0:570:5b72:164 with SMTP id
- g12-20020a50d5cc000000b005705b720164mr8847165edj.37.1713884372794; Tue, 23
- Apr 2024 07:59:32 -0700 (PDT)
+	bh=ccfCA2yriug7qqwYanAzAzrf5XnmP6204NXO919D7VA=;
+	b=X51gGEygzLQf0O5Kzn5SPDhBrOWq0rKxZcATRaiTGC5LLiOmhIKKpQiL5HHziZF8Q9e6fZ
+	2UCkRCUJrMJ5MoEdR5ZWePLnpEMeqmSNytbsGZG85WLNN2ofAw8yXj6sYmI0PkeK3+Bgi8
+	bH2DldDQavPuAyFm+jPjjx2ArkqOk6E=
+Date: Tue, 23 Apr 2024 10:59:21 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240331182440.14477-1-kl@kl.wtf> <14d1b38e-0f11-4852-9c52-92b4bedb0a77@leemhuis.info>
-In-Reply-To: <14d1b38e-0f11-4852-9c52-92b4bedb0a77@leemhuis.info>
-From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date: Tue, 23 Apr 2024 16:59:20 +0200
-Message-ID: <CAO-hwJJtK2XRHK=HGaNUFb3mQhY5XbNGeCQwuAB0nmG2bjHX-Q@mail.gmail.com>
-Subject: Re: [PATCH v2] HID: i2c-hid: Revert to await reset ACK before reading
- report descriptor
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Jiri Kosina <jikos@kernel.org>, Douglas Anderson <dianders@chromium.org>, 
-	Hans de Goede <hdegoede@redhat.com>, linux-input@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Kenny Levinsen <kl@kl.wtf>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 00/13] drm: zynqmp_dp: IRQ cleanups and debugfs support
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Michal Simek <michal.simek@amd.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ dri-devel@lists.freedesktop.org
+References: <20240422184553.3573009-1-sean.anderson@linux.dev>
+ <5334a3cc-bcf9-4791-9ca9-1d0093899707@ideasonboard.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+In-Reply-To: <5334a3cc-bcf9-4791-9ca9-1d0093899707@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Apr 22, 2024 at 7:11=E2=80=AFPM Linux regression tracking (Thorsten
-Leemhuis) <regressions@leemhuis.info> wrote:
->
-> On 31.03.24 20:24, Kenny Levinsen wrote:
-> > In af93a167eda9, i2c_hid_parse was changed to continue with reading the
-> > report descriptor before waiting for reset to be acknowledged.
-> >
-> > This has lead to two regressions:
->
-> Lo! Jiri, Benjamin, quick question: is there a reason why this fix for a
-> 6.8-rc1 regression after more than two and half weeks is not yet
-> mainlined? Or is there some good reason why we should be should be extra
-> cautious?
+On 4/23/24 09:33, Tomi Valkeinen wrote:
+> Hi Sean,
+> 
+> On 22/04/2024 21:45, Sean Anderson wrote:
+>> This series cleans up the zyqnmp_dp IRQ and locking situation. Once
+>> that's done, it adds debugfs support. The intent is to enable compliance
+>> testing or to help debug signal-integrity issues.
+>>
+>> Last time I discussed converting the HPD work(s) to a threaded IRQ. I
+>> did not end up doing that for this series since the steps would be
+>>
+>> - Add locking
+>> - Move link retraining to a work function
+>> - Harden the IRQ
+>> - Merge the works into a threaded IRQ (omitted)
+>>
+>> Which with the exception of the final step is the same as leaving those
+>> works as-is. Conversion to a threaded IRQ can be done as a follow-up.
+> 
+> What is the base for this series? I'm having trouble applying it.
+> 
+> I managed to mostly apply it, but I see the board hang when I unload the modules. I didn't debug it as it might as well be caused by my conflict resolution.
 
-No special reasons I guess. Neither Jiri nor I have sent a HID update
-for this rc cycle, so it's still there, waiting to be pushed.
-I've been quite busy with BPF lately and dropped the ball slightly on
-the HID maintainer side, but I'm sure we'll send the PR to Linus this
-week or the next.
+The base is v6.8-rc1, but it should probably be v6.9. I can rebase and resend.
 
-Cheers,
-Benjamin
+--Sean
 
-
->
->
-> Side note: I noticed this due to the tracking today, but I also saw a
-> user that recently ran into the problem the quoted fix is supposed to
-> resolve: https://social.lol/@major/112294923280815017
->
-> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
-> --
-> Everything you wanna know about Linux kernel regression tracking:
-> https://linux-regtracking.leemhuis.info/about/#tldr
-> If I did something stupid, please tell me, as explained on that page.
->
-> #regzbot poke
->
-> > 1. We fail to handle reset acknowledgement if it happens while reading
-> >    the report descriptor. The transfer sets I2C_HID_READ_PENDING, which
-> >    causes the IRQ handler to return without doing anything.
-> >
-> >    This affects both a Wacom touchscreen and a Sensel touchpad.
-> >
-> > 2. On a Sensel touchpad, reading the report descriptor this quickly
-> >    after reset results in all zeroes or partial zeroes.
-> >
-> > The issues were observed on the Lenovo Thinkpad Z16 Gen 2.
-> >
-> > The change in question was made based on a Microsoft article[0] stating
-> > that Windows 8 *may* read the report descriptor in parallel with
-> > awaiting reset acknowledgement, intended as a slight reset performance
-> > optimization. Perhaps they only do this if reset is not completing
-> > quickly enough for their tastes?
-> >
-> > As the code is not currently ready to read registers in parallel with a
-> > pending reset acknowledgement, and as reading quickly breaks the report
-> > descriptor on the Sensel touchpad, revert to waiting for reset
-> > acknowledgement before proceeding to read the report descriptor.
-> >
-> > [0]: https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/plu=
-g-and-play-support-and-power-management
-> >
-> > Fixes: af93a167eda9 ("HID: i2c-hid: Move i2c_hid_finish_hwreset() to af=
-ter reading the report-descriptor")
-> > Signed-off-by: Kenny Levinsen <kl@kl.wtf>
-> > ---
-> >  drivers/hid/i2c-hid/i2c-hid-core.c | 13 ++++---------
-> >  1 file changed, 4 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i=
-2c-hid-core.c
-> > index 2df1ab3c31cc..72d2bccf5621 100644
-> > --- a/drivers/hid/i2c-hid/i2c-hid-core.c
-> > +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-> > @@ -735,9 +735,12 @@ static int i2c_hid_parse(struct hid_device *hid)
-> >       mutex_lock(&ihid->reset_lock);
-> >       do {
-> >               ret =3D i2c_hid_start_hwreset(ihid);
-> > -             if (ret)
-> > +             if (ret =3D=3D 0)
-> > +                     ret =3D i2c_hid_finish_hwreset(ihid);
-> > +             else
-> >                       msleep(1000);
-> >       } while (tries-- > 0 && ret);
-> > +     mutex_unlock(&ihid->reset_lock);
-> >
-> >       if (ret)
-> >               goto abort_reset;
-> > @@ -767,16 +770,8 @@ static int i2c_hid_parse(struct hid_device *hid)
-> >               }
-> >       }
-> >
-> > -     /*
-> > -      * Windows directly reads the report-descriptor after sending res=
-et
-> > -      * and then waits for resets completion afterwards. Some touchpad=
-s
-> > -      * actually wait for the report-descriptor to be read before sign=
-alling
-> > -      * reset completion.
-> > -      */
-> > -     ret =3D i2c_hid_finish_hwreset(ihid);
-> >  abort_reset:
-> >       clear_bit(I2C_HID_RESET_PENDING, &ihid->flags);
-> > -     mutex_unlock(&ihid->reset_lock);
-> >       if (ret)
-> >               goto out;
-> >
->
+>> Changes in v3:
+>> - Store base pointers in zynqmp_disp directly
+>> - Don't delay work
+>> - Convert to a hard IRQ
+>> - Use AUX IRQs instead of polling
+>> - Take dp->lock in zynqmp_dp_hpd_work_func
+>>
+>> Changes in v2:
+>> - Fix kerneldoc
+>> - Rearrange zynqmp_dp for better padding
+>> - Split off the HPD IRQ work into another commit
+>> - Expand the commit message
+>> - Document hpd_irq_work
+>> - Document debugfs files
+>> - Add ignore_aux_errors and ignore_hpd debugfs files to replace earlier
+>>    implicit functionality
+>> - Attempt to fix unreproducable, spurious build warning
+>> - Drop "Optionally ignore DPCD errors" in favor of a debugfs file
+>>    directly affecting zynqmp_dp_aux_transfer.
+>>
+>> Sean Anderson (13):
+>>    drm: xlnx: Store base pointers in zynqmp_disp directly
+>>    drm: xlnx: Fix kerneldoc
+>>    drm: zynqmp_dp: Downgrade log level for aux retries message
+>>    drm: zynqmp_dp: Adjust training values per-lane
+>>    drm: zynqmp_dp: Rearrange zynqmp_dp for better padding
+>>    drm: zynqmp_dp: Don't delay work
+>>    drm: zynqmp_dp: Add locking
+>>    drm: zynqmp_dp: Don't retrain the link in our IRQ
+>>    drm: zynqmp_dp: Convert to a hard IRQ
+>>    drm: zynqmp_dp: Use AUX IRQs instead of polling
+>>    drm: zynqmp_dp: Split off several helper functions
+>>    drm: zynqmp_dp: Take dp->lock in zynqmp_dp_hpd_work_func
+>>    drm: zynqmp_dp: Add debugfs interface for compliance testing
+>>
+>>   Documentation/gpu/drivers.rst       |   1 +
+>>   Documentation/gpu/zynqmp.rst        | 149 +++++
+>>   MAINTAINERS                         |   1 +
+>>   drivers/gpu/drm/xlnx/zynqmp_disp.c  |  44 +-
+>>   drivers/gpu/drm/xlnx/zynqmp_dp.c    | 909 +++++++++++++++++++++++++---
+>>   drivers/gpu/drm/xlnx/zynqmp_dpsub.h |   1 +
+>>   drivers/gpu/drm/xlnx/zynqmp_kms.h   |   4 +-
+>>   7 files changed, 1000 insertions(+), 109 deletions(-)
+>>   create mode 100644 Documentation/gpu/zynqmp.rst
+>>
+> 
 
 
