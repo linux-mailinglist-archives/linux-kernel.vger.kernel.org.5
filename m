@@ -1,116 +1,106 @@
-Return-Path: <linux-kernel+bounces-155125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 267CC8AE594
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:09:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 125148AE599
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:09:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D01971F21D91
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:09:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4186C1C21B00
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:09:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4541B6CDCC;
-	Tue, 23 Apr 2024 12:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AcFHVBNE"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5230A12DDBE;
+	Tue, 23 Apr 2024 12:06:56 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D76B84A57;
-	Tue, 23 Apr 2024 12:06:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E662584A44;
+	Tue, 23 Apr 2024 12:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713874005; cv=none; b=BISDdx28QB2sjc0ueoPD3JI1HrvZs1YlCmzXB/Nr1+GbG7yZVh1uvhnnTnolfCBahcLefcgn8Jc6T1IfcLaeG0jBynCz0nOJpajdqobcNc24mguquW75MwXEEvwo9X1wRHpAe8Z8vqdUufhMc0BDGSJ/7mpjbyMUz43ux1ezF9w=
+	t=1713874015; cv=none; b=CuZhfU69cYqGSbbQKvlvl+T+skzU2HtS+ZvxwmlHMbkd7fmiYosmFR5CSl9A0wZ7i9QXGo36BzuK8rE3FPEDNwXYzZR6G3Pa+7Wqo0rBN+qTPDuuOgjmuAfu2HgEsROJF9KNceyDy8wmJIZL6rPm8gcVNmMXjHl4db9nuOAwv4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713874005; c=relaxed/simple;
-	bh=ajZC6cEvHYNvJ8SO6tgTd6bVKe1SKBDBkNwECnqvnsc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MSKhgIKmQJ6b4IQE7cqsqOa94h4tprgbm7b/ALRzZxUF3GgZhNRF+XqBqSuTv/o3iZ3fZpYUWQVg0DyoqIC89oASkzGYXUufHxSGwYae1Rb2yiUK6Qow2ERf5KO8GTNq/n72VMDEnn/Uc0JFem97TOBqQPPOvQ4Yi73b9qWpRjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AcFHVBNE; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ece8991654so5264597b3a.3;
-        Tue, 23 Apr 2024 05:06:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713874003; x=1714478803; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ePJTfpMJV0l5uaVpMu2YHr5onOMWSJ3SSOtuwyaujt4=;
-        b=AcFHVBNEiJgrMvCo7KDVOTodC8j2d2mbo56pwsAXYj6uwqbgD6w0fAZ7Bj6scfllF2
-         NUScMyCiRJAP+ShGKs0UkDFJ+vHzizdtHOLZs98cV5qHdZgGUMi53hzfAWBTzd5H5igw
-         mFqmQwaVXZjN6oixWJ3Bm9xjcosFAFg4j7D3tNCHtTgYkLPeET4/+ZZ/YIsVClZu31U1
-         MfjsWaJ+zaU8wvlLhLkIF/C5mFpnlL2JMvWpc7IYAcHBgUsHrZV+OPRT6Qtmy3OEToUq
-         +PkzOoPN/xAdWmq6vKO21myONjqSusdXqjrgv61uB9aoiQZ9faConT+r8ZNR2QlIXodD
-         8UbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713874003; x=1714478803;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ePJTfpMJV0l5uaVpMu2YHr5onOMWSJ3SSOtuwyaujt4=;
-        b=tH/SXsiKg5vBfAz52zebLVL1aC1CFZGgol3vJGHiSvdqGmB9XQ0Mxey6v04OGsJm+c
-         vz4/zF5VwVb2gl7ztrgDyX0TGyyVAGgFxv98q5nF9VXpnEUEj6ASmhDMvUyHLfboItF6
-         hCH70qdGJuOBSpt68fl0v0QkUvaSWlXyB/BqtL09Bt0A6JxyIP/0Zh6iCBhmK0Vg4/Kz
-         RcuOmmI+MkwV+XRC2a9C1qbQBgCKDdfhebY2ON3J0Cyair8H9Myjjzy51GDxhCT4zLK0
-         9s4+SSlUdVtv+ePM7cIRnQ5TPXi7J7v50MHV6SgvBvLEM7AhS1JfDH4LrXQ6UV9Z7I3+
-         0hzg==
-X-Forwarded-Encrypted: i=1; AJvYcCWwSn6ee0mj/GE3qk/VzxmIZ5CD8oyzbjMDJ+DeSXvSTrpcVS/EYBMtudqIOAUaUveRVa9s22KGEAvSdK2IEp8DEt9wpO83Kgbd3Y7IbQHPRJN413leYgYhWXjfY4YNCJ6hu+HiP/jgel9cldM9zlipJjNoMcfdpszDhJGD0TdM5df8h2Kv
-X-Gm-Message-State: AOJu0YzQS4FEZ5baq12LmAaNw76PGbKIPWDZ0VK+od2Wc9QJh3Nt036Z
-	vXUCtsiG6AtudOt6rc6lr9CYZnTccyl9pkIcuhltFFaWXCgLQnaO
-X-Google-Smtp-Source: AGHT+IFqX2rRYiMJDG9zp/0IvP4eq4wPkxF7OSgheRQRi9yiI56t756YFxNQtWrwlHJAIJhXUetBbQ==
-X-Received: by 2002:a05:6a20:1054:b0:1a7:4f8b:6439 with SMTP id gt20-20020a056a20105400b001a74f8b6439mr16348930pzc.34.1713874003535;
-        Tue, 23 Apr 2024 05:06:43 -0700 (PDT)
-Received: from localhost (ec2-3-111-32-5.ap-south-1.compute.amazonaws.com. [3.111.32.5])
-        by smtp.gmail.com with UTF8SMTPSA id u11-20020aa7838b000000b006ea97dc8740sm9454786pfm.78.2024.04.23.05.06.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 05:06:42 -0700 (PDT)
-From: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>
-Cc: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>,
-	devicetree@vger.kernel.org,
-	linux-tegra@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: tegra20-ac97: replace deprecated gpio suffix
-Date: Tue, 23 Apr 2024 17:36:29 +0530
-Message-ID: <20240423120630.16974-1-sheharyaar48@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713874015; c=relaxed/simple;
+	bh=WlZYqWhdAH7netYQkFAGYZjAaa89jWNhRzERNv5h2Kk=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ixEfHzr9ZYPGoDSDPHbyt4XHoU43FiAUjZk2C2OWEIzTO7HpFzvRRWvVqPXXOiYQntBMTUzWo1r1IkiHFRxzUU4mZN4XjRexwwmfQ5VAPtHQFqrVg8rpWMKLK6wS2OGI6qycxfLo/q2NdlDlC8JstJgBHdwe2m4eM+gDtt2RM+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VP1460Qk8z1R9LL;
+	Tue, 23 Apr 2024 20:03:50 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (unknown [7.185.36.229])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4D77118007D;
+	Tue, 23 Apr 2024 20:06:50 +0800 (CST)
+Received: from [10.174.178.247] (10.174.178.247) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 23 Apr 2024 20:06:49 +0800
+Subject: Re: [PATCH v7 08/16] ACPI: Add post_eject to struct acpi_scan_handler
+ for cpu hotplug
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Thomas Gleixner
+	<tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
+	<linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>, Russell King
+	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, Miguel
+ Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, <linuxarm@huawei.com>,
+	<justin.he@arm.com>, <jianyong.wu@arm.com>
+References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
+ <20240418135412.14730-9-Jonathan.Cameron@huawei.com>
+From: Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <df2388a1-45d8-c42e-fca0-0e21f1810a9d@huawei.com>
+Date: Tue, 23 Apr 2024 20:06:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240418135412.14730-9-Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
 
-Replace "gpio" suffix with "gpios" for tegra20-ac97 dts as gpio
-suffix is deprecated.
+On 2024/4/18 21:54, Jonathan Cameron wrote:
+> From: James Morse <james.morse@arm.com>
+> 
+> struct acpi_scan_handler has a detach callback that is used to remove
+> a driver when a bus is changed. When interacting with an eject-request,
+> the detach callback is called before _EJ0.
+> 
+> This means the ACPI processor driver can't use _STA to determine if a
+> CPU has been made not-present, or some of the other _STA bits have been
+> changed. acpi_processor_remove() needs to know the value of _STA after
+> _EJ0 has been called.
+> 
+> Add a post_eject callback to struct acpi_scan_handler. This is called
+> after acpi_scan_hot_remove() has successfully called _EJ0. Because
+> acpi_scan_check_and_detach() also clears the handler pointer,
+> it needs to be told if the caller will go on to call
+> acpi_bus_post_eject(), so that acpi_device_clear_enumerated()
+> and clearing the handler pointer can be deferred.
+> An extra flag is added to flags field introduced in the previous
+> patch to achieve this.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Reviewed-by: Joanthan Cameron <Jonathan.Cameron@huawei.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Signed-off-by: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
----
- arch/arm/boot/dts/nvidia/tegra20-colibri.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm/boot/dts/nvidia/tegra20-colibri.dtsi b/arch/arm/boot/dts/nvidia/tegra20-colibri.dtsi
-index 8c1d5c9fa483..2ff7be8f1382 100644
---- a/arch/arm/boot/dts/nvidia/tegra20-colibri.dtsi
-+++ b/arch/arm/boot/dts/nvidia/tegra20-colibri.dtsi
-@@ -445,9 +445,9 @@ lvp0 {
- 
- 	tegra_ac97: ac97@70002000 {
- 		status = "okay";
--		nvidia,codec-reset-gpio =
-+		nvidia,codec-reset-gpios =
- 			<&gpio TEGRA_GPIO(V, 0) GPIO_ACTIVE_LOW>;
--		nvidia,codec-sync-gpio =
-+		nvidia,codec-sync-gpios =
- 			<&gpio TEGRA_GPIO(P, 0) GPIO_ACTIVE_HIGH>;
- 	};
- 
--- 
-2.44.0
-
+Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
 
