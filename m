@@ -1,279 +1,207 @@
-Return-Path: <linux-kernel+bounces-154365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65A398ADB43
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF40E8ADB46
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:47:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0D35B24779
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:44:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35840B22275
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15E78FC1D;
-	Tue, 23 Apr 2024 00:44:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA777E574;
+	Tue, 23 Apr 2024 00:47:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l8eBtfq9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SZ3SiHyu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CDF2802;
-	Tue, 23 Apr 2024 00:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E56D1802;
+	Tue, 23 Apr 2024 00:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713833074; cv=none; b=Y6wU7gq/kO70foz7rBPsG6K/uxsf+EIc9JQEhEaE3JUfLVUPLOOP2O3r0UiNbp9m6R7vCH3WjD6/1n7FNLnyFterO4YMGc+OZR5NEpg1+g0lZRW5wxo4hAQwEhaHThBvunT1IicLo9qQGZ998tACmho6npWLzu8aoYY0sIFmxC4=
+	t=1713833259; cv=none; b=av2/fr4LqitAezw9DGqYK9W6qp6jo0zFfI5yRIYBHZP3cTP/DmY206FI4v8ijCIvfBpd/1SudIJT0hOCT0BALzeVEgj3wMtq+tOA5Qohvv95fdOLiNOw0YXrDlLbm0Of7kP/IMhWhsPJsf2mOZlHcnRkaKcROMjD+2A0GIv7Epw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713833074; c=relaxed/simple;
-	bh=77v/z4pf5G4vO82BkGrG5tUThBqnCicr34yR2Tw/p3U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KLXrjSEkP0dCd55ltKIYJORn03ulSomyy8tc8OTwbXMnsYsz52TBl1zpdMkPE6GAY67c4YvNltKOtOHw3qypLT1L4gsmJA2Vtydoza8hdelRAGviKj+EAkwfVNOnuIWVxbMVxns7CXVvkTEetBAS0zz7gl7Y/HQsgqSO5GaS+/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l8eBtfq9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD782C113CC;
-	Tue, 23 Apr 2024 00:44:32 +0000 (UTC)
+	s=arc-20240116; t=1713833259; c=relaxed/simple;
+	bh=LPMHQme1V8vDzMirJlOpLb0vftLJDLrVwcaPBuEO5Fo=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=jEegyCr7MmzbXKQjXNMFpFDTPdUFrnxBeINC17acnofXbEcJb43QQHqQCvI/luygp7DNQHOQAhEtmrrq6UvZL/mXCgpXai26oJXcCEXEbBQ94KdGKWGyXOOySrFk7lSRzLyjVUpXecQjfkeE/80ihCRI4KnbUKT2JZvfMTCxLgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SZ3SiHyu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 675CBC113CC;
+	Tue, 23 Apr 2024 00:47:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713833073;
-	bh=77v/z4pf5G4vO82BkGrG5tUThBqnCicr34yR2Tw/p3U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l8eBtfq9mJ37HXPcCtGC6rxe59aLTHv+peCLZVh0sXeHBv2fmxRJWQ8FIPxFarS67
-	 RztpnbCUjEZj71WTF82E+mm6epWyqTASnJ7PblEQKbryIHC+k+qPO9E/zI2ZpK6LtA
-	 S26Zdd2g6/lnLPyYE5fGo9lx63qT+IjaivOYJdWvJdV1Ms34Fcas9wFpDX3ldAbzAJ
-	 6iHqZfZUox3KVGxQ6+qnHtymtLdEAgIaJiAW6xnOwTyDRdU3o6XK9yeW6AA7ZPKYhU
-	 godRJb1KGT5oVfYn+AD3gbgyMYm5+f+UYbWGZKhMnUDbc6G8Ddo8jjZIaeReuPaKKV
-	 44Gi9j8gKFvOg==
-From: SeongJae Park <sj@kernel.org>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	akpm@linux-foundation.org,
-	willy@infradead.org,
-	jack@suse.cz,
-	bfoster@redhat.com,
-	tj@kernel.org,
-	dsterba@suse.com,
-	mjguzik@gmail.com,
-	dhowells@redhat.com,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 2/4] writeback: support retrieving per group debug writeback stats of bdi
-Date: Mon, 22 Apr 2024 17:44:30 -0700
-Message-Id: <20240423004430.140320-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240422164808.13627-3-shikemeng@huaweicloud.com>
-References: 
+	s=k20201202; t=1713833258;
+	bh=LPMHQme1V8vDzMirJlOpLb0vftLJDLrVwcaPBuEO5Fo=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=SZ3SiHyuarYWB1F6tUkkzJzyu22t8hnVHWFlNGoRPoXlF7pH8kOwJUhYRe4QUK/8+
+	 JsVMSN0pt92WDOrwRouIEgBC9KwME4SGtqhrz3urJK3N0yH+pQdAeRAS2Jdajax+fv
+	 ezTpMm4VrCIa6YsUJnLeTUga7IcLYyWcviRWnb2VI17XAq46Kwm9W1olCg+vpLMe+k
+	 1WU/H0WoJ7QhZdXeFQt3NVyQ+LrE3aSdDJ4TI1fWoreR6UoiVw5PCMKZJnyV6AOcNn
+	 RvvxLGSH9+jyEU2G3HwSyJEFpRcVwJRb3i2Ebn7eZhQj/xS7col3kvATKlx7w/RcEw
+	 z93aSoFkhQYeg==
+Message-ID: <eca85d9094538b8713b556979e811b39.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <06f26e2f49a8423cb0122a08fb2d868484e2e0a4.1713164546.git.unicorn_wang@outlook.com>
+References: <cover.1713164546.git.unicorn_wang@outlook.com> <06f26e2f49a8423cb0122a08fb2d868484e2e0a4.1713164546.git.unicorn_wang@outlook.com>
+Subject: Re: [PATCH v14 4/5] clk: sophgo: Add SG2042 clock driver
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: Chen Wang <unicorn_wang@outlook.com>
+To: Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org, devicetree@vger.kernel.org, guoren@kernel.org, haijiao.liu@sophgo.com, inochiama@outlook.com, jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, mturquette@baylibre.com, palmer@dabbelt.com, paul.walmsley@sifive.com, richardcochran@gmail.com, robh+dt@kernel.org, samuel.holland@sifive.com, xiaoguang.xing@sophgo.com
+Date: Mon, 22 Apr 2024 17:47:36 -0700
+User-Agent: alot/0.10
 
-Hi Kemeng,
-
-On Tue, 23 Apr 2024 00:48:06 +0800 Kemeng Shi <shikemeng@huaweicloud.com> wrote:
-
-> Add /sys/kernel/debug/bdi/xxx/wb_stats to show per group writeback stats
-> of bdi.
-> 
-> Following domain hierarchy is tested:
->                 global domain (320G)
->                 /                 \
->         cgroup domain1(10G)     cgroup domain2(10G)
->                 |                 |
-> bdi            wb1               wb2
-> 
-> /* per wb writeback info of bdi is collected */
-> cat /sys/kernel/debug/bdi/252:16/wb_stats
-> WbCgIno:                    1
-> WbWriteback:                0 kB
-> WbReclaimable:              0 kB
-> WbDirtyThresh:              0 kB
-> WbDirtied:                  0 kB
-> WbWritten:                  0 kB
-> WbWriteBandwidth:      102400 kBps
-> b_dirty:                    0
-> b_io:                       0
-> b_more_io:                  0
-> b_dirty_time:               0
-> state:                      1
-> WbCgIno:                 4094
-> WbWriteback:            54432 kB
-> WbReclaimable:         766080 kB
-> WbDirtyThresh:        3094760 kB
-> WbDirtied:            1656480 kB
-> WbWritten:             837088 kB
-> WbWriteBandwidth:      132772 kBps
-> b_dirty:                    1
-> b_io:                       1
-> b_more_io:                  0
-> b_dirty_time:               0
-> state:                      7
-> WbCgIno:                 4135
-> WbWriteback:            15232 kB
-> WbReclaimable:         786688 kB
-> WbDirtyThresh:        2909984 kB
-> WbDirtied:            1482656 kB
-> WbWritten:             681408 kB
-> WbWriteBandwidth:      124848 kBps
-> b_dirty:                    0
-> b_io:                       1
-> b_more_io:                  0
-> b_dirty_time:               0
-> state:                      7
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  include/linux/writeback.h |  1 +
->  mm/backing-dev.c          | 78 ++++++++++++++++++++++++++++++++++++++-
->  mm/page-writeback.c       | 19 ++++++++++
->  3 files changed, 96 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-> index 9845cb62e40b..112d806ddbe4 100644
-> --- a/include/linux/writeback.h
-> +++ b/include/linux/writeback.h
-> @@ -355,6 +355,7 @@ int dirtytime_interval_handler(struct ctl_table *table, int write,
->  
->  void global_dirty_limits(unsigned long *pbackground, unsigned long *pdirty);
->  unsigned long wb_calc_thresh(struct bdi_writeback *wb, unsigned long thresh);
-> +unsigned long cgwb_calc_thresh(struct bdi_writeback *wb);
->  
->  void wb_update_bandwidth(struct bdi_writeback *wb);
->  
-> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> index 089146feb830..6ecd11bdce6e 100644
-> --- a/mm/backing-dev.c
-> +++ b/mm/backing-dev.c
-> @@ -155,19 +155,93 @@ static int bdi_debug_stats_show(struct seq_file *m, void *v)
->  }
->  DEFINE_SHOW_ATTRIBUTE(bdi_debug_stats);
->  
-> +static void wb_stats_show(struct seq_file *m, struct bdi_writeback *wb,
-> +			  struct wb_stats *stats)
-> +{
+Quoting Chen Wang (2024-04-15 00:23:27)
+> diff --git a/drivers/clk/sophgo/clk-sophgo-sg2042.c b/drivers/clk/sophgo/=
+clk-sophgo-sg2042.c
+> new file mode 100644
+> index 000000000000..0bcfaab52f51
+> --- /dev/null
+> +++ b/drivers/clk/sophgo/clk-sophgo-sg2042.c
+> @@ -0,0 +1,1645 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Sophgo SG2042 Clock Generator Driver
+> + *
+> + * Copyright (C) 2024 Sophgo Technology Inc. All rights reserved.
+> + */
 > +
-> +	seq_printf(m,
-> +		   "WbCgIno:           %10lu\n"
-> +		   "WbWriteback:       %10lu kB\n"
-> +		   "WbReclaimable:     %10lu kB\n"
-> +		   "WbDirtyThresh:     %10lu kB\n"
-> +		   "WbDirtied:         %10lu kB\n"
-> +		   "WbWritten:         %10lu kB\n"
-> +		   "WbWriteBandwidth:  %10lu kBps\n"
-> +		   "b_dirty:           %10lu\n"
-> +		   "b_io:              %10lu\n"
-> +		   "b_more_io:         %10lu\n"
-> +		   "b_dirty_time:      %10lu\n"
-> +		   "state:             %10lx\n\n",
-> +		   cgroup_ino(wb->memcg_css->cgroup),
+> +#include <asm/div64.h>
 
-I'm getting below kunit build failure from the latest mm-unstable tree, and
-'git bisect' points this patch.
+asm goes after linux includes...
 
-    ERROR:root:.../linux/mm/backing-dev.c: In function ‘wb_stats_show’:
-    .../linux/mm/backing-dev.c:175:20: error: implicit declaration of function ‘cgroup_ino’; did you mean ‘cgroup_init’? [-Werror=implicit-function-declaration]
-      175 |                    cgroup_ino(wb->memcg_css->cgroup),
-          |                    ^~~~~~~~~~
-          |                    cgroup_init
-    .../linux/mm/backing-dev.c:175:33: error: ‘struct bdi_writeback’ has no member named ‘memcg_css’
-      175 |                    cgroup_ino(wb->memcg_css->cgroup),
-          |                                 ^~
+> +#include <linux/array_size.h>
+> +#include <linux/bits.h>
+> +#include <linux/clk.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/io.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/platform_device.h>
 
-The kunit build config is not having CONFIG_CGROUPS.  I guess we need to check
-the case?  I confirmed below dumb change is fixing the issue, but I guess it
-could be cleaner.  May I ask your opinion?
-
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -160,7 +160,9 @@ static void wb_stats_show(struct seq_file *m, struct bdi_writeback *wb,
- {
-
-        seq_printf(m,
-+#ifdef CONFIG_CGROUPS
-                   "WbCgIno:           %10lu\n"
-+#endif
-                   "WbWriteback:       %10lu kB\n"
-                   "WbReclaimable:     %10lu kB\n"
-                   "WbDirtyThresh:     %10lu kB\n"
-@@ -172,7 +174,9 @@ static void wb_stats_show(struct seq_file *m, struct bdi_writeback *wb,
-                   "b_more_io:         %10lu\n"
-                   "b_dirty_time:      %10lu\n"
-                   "state:             %10lx\n\n",
-+#ifdef CONFIG_CGROUPS
-                   cgroup_ino(wb->memcg_css->cgroup),
-+#endif
-                   K(stats->nr_writeback),
-                   K(stats->nr_reclaimable),
-                   K(stats->wb_thresh),
-
-
-> +		   K(stats->nr_writeback),
-> +		   K(stats->nr_reclaimable),
-> +		   K(stats->wb_thresh),
-> +		   K(stats->nr_dirtied),
-> +		   K(stats->nr_written),
-> +		   K(wb->avg_write_bandwidth),
-> +		   stats->nr_dirty,
-> +		   stats->nr_io,
-> +		   stats->nr_more_io,
-> +		   stats->nr_dirty_time,
-> +		   wb->state);
-> +}
-> +
-> +static int cgwb_debug_stats_show(struct seq_file *m, void *v)
-> +{
-> +	struct backing_dev_info *bdi = m->private;
-> +	unsigned long background_thresh;
-> +	unsigned long dirty_thresh;
-> +	struct bdi_writeback *wb;
-> +	struct wb_stats stats;
-
-Kunit build also shows below warning:
-
-    .../linux/mm/backing-dev.c: In function ‘cgwb_debug_stats_show’:
-    .../linux/mm/backing-dev.c:195:25: warning: unused variable ‘stats’ [-Wunused-variable]
-      195 |         struct wb_stats stats;
-          |                         ^~~~~
-
-I guess above line can simply removed?
+here.
 
 > +
-> +	global_dirty_limits(&background_thresh, &dirty_thresh);
+> +/*
+> + * The clock of SG2042 is composed of three parts.
+> + * The registers of these three parts of the clock are scattered in three
+> + * different memory address spaces:
+> + * - pll clocks
+> + * - gate clocks for RP subsystem
+> + * - div/mux, and gate clocks working for other subsystem than RP subsys=
+tem
+> + */
+> +#include <dt-bindings/clock/sophgo,sg2042-pll.h>
+> +#include <dt-bindings/clock/sophgo,sg2042-rpgate.h>
+> +#include <dt-bindings/clock/sophgo,sg2042-clkgen.h>
 > +
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(wb, &bdi->wb_list, bdi_node) {
-> +		struct wb_stats stats = { .dirty_thresh = dirty_thresh };
-> +
-> +		if (!wb_tryget(wb))
-> +			continue;
-> +
-> +		collect_wb_stats(&stats, wb);
-> +
-> +		/*
-> +		 * Calculate thresh of wb in writeback cgroup which is min of
-> +		 * thresh in global domain and thresh in cgroup domain. Drop
-> +		 * rcu lock because cgwb_calc_thresh may sleep in
-> +		 * cgroup_rstat_flush. We can do so here because we have a ref.
-> +		 */
-> +		if (mem_cgroup_wb_domain(wb)) {
-> +			rcu_read_unlock();
-> +			stats.wb_thresh = min(stats.wb_thresh, cgwb_calc_thresh(wb));
-> +			rcu_read_lock();
-> +		}
-> +
-> +		wb_stats_show(m, wb, &stats);
-> +
-> +		wb_put(wb);
-> +	}
-> +	rcu_read_unlock();
-> +
-> +	return 0;
-> +}
-
-
-Thanks,
-SJ
-
+> +/* Registers defined in SYS_CTRL */
+> +#define R_PLL_BEGIN            0xC0
 [...]
+> +
+> +#define SG2042_PLL(_id, _name, _parent_name, _r_stat, _r_enable, _r_ctrl=
+, _shift) \
+> +       {                                                               \
+> +               .hw.init =3D CLK_HW_INIT(                                =
+ \
+> +                               _name,                                  \
+> +                               _parent_name,                           \
+
+This still uses a string. Please convert all parents described by
+strings to use clk_parent_data or clk_hw directly.
+
+> +                               &sg2042_clk_pll_ops,                    \
+> +                               CLK_GET_RATE_NOCACHE | CLK_GET_ACCURACY_N=
+OCACHE),\
+> +               .id =3D _id,                                             =
+ \
+> +               .offset_ctrl =3D _r_ctrl,                                =
+ \
+> +               .offset_status =3D _r_stat,                              =
+ \
+> +               .offset_enable =3D _r_enable,                            =
+ \
+> +               .shift_status_lock =3D 8 + (_shift),                     =
+ \
+> +               .shift_status_updating =3D _shift,                       =
+ \
+[...]
+> + * "clk_div_ddr01_1" is the name of Clock divider 1 control of DDR01, and
+> + * "clk_gate_ddr01_div1" is the gate clock in front of the "clk_div_ddr0=
+1_1",
+> + * they are both controlled by register CLKDIVREG28;
+> + * While for register value of mux selection, use Clock Select for DDR01=
+=E2=80=99s clock
+> + * as example, see CLKSELREG0, bit[2].
+> + * 1: Select in_dpll0_clk as clock source, correspondng to the parent in=
+put
+> + *    source from "clk_div_ddr01_0".
+> + * 0: Select in_fpll_clk as clock source, corresponding to the parent in=
+put
+> + *    source from "clk_div_ddr01_1".
+> + * So we need a table to define the array of register values correspondi=
+ng to
+> + * the parent index and tell CCF about this when registering mux clock.
+> + */
+> +static const u32 sg2042_mux_table[] =3D {1, 0};
+> +
+> +static const struct clk_parent_data clk_mux_ddr01_p[] =3D {
+> +       { .hw =3D &sg2042_div_clks[0].hw },
+> +       { .hw =3D &sg2042_div_clks[1].hw },
+
+Just use struct clk_init_data::parent_hws for this if you only have a
+clk_hw pointer for every element of the parent array.
+
+> +};
+> +
+> +static const struct clk_parent_data clk_mux_ddr23_p[] =3D {
+> +       { .hw =3D &sg2042_div_clks[2].hw },
+> +       { .hw =3D &sg2042_div_clks[3].hw },
+> +};
+> +
+[...]
+> +
+> +static int sg2042_pll_probe(struct platform_device *pdev)
+> +{
+> +       struct sg2042_clk_data *clk_data =3D NULL;
+> +       int i, ret =3D 0;
+> +       int num_clks =3D 0;
+> +
+> +       num_clks =3D ARRAY_SIZE(sg2042_pll_clks);
+> +
+> +       ret =3D sg2042_init_clkdata(pdev, num_clks, &clk_data);
+> +       if (ret < 0)
+> +               goto error_out;
+> +
+> +       ret =3D sg2042_clk_register_plls(&pdev->dev, clk_data, sg2042_pll=
+_clks,
+> +                                      num_clks);
+> +       if (ret)
+> +               goto cleanup;
+> +
+> +       return devm_of_clk_add_hw_provider(&pdev->dev,
+> +                                          of_clk_hw_onecell_get,
+> +                                          &clk_data->onecell_data);
+> +
+> +cleanup:
+> +       for (i =3D 0; i < num_clks; i++) {
+> +               if (clk_data->onecell_data.hws[i])
+> +                       clk_hw_unregister(clk_data->onecell_data.hws[i]);
+
+This should be unnecessary if devm is used throughout.
+
+> +       }
+> +
+> +error_out:
+> +       pr_err("%s failed error number %d\n", __func__, ret);
+> +       return ret;
+
+Just do this part in the one place the goto is. These two comments apply
+to all probes.
 
