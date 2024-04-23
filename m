@@ -1,115 +1,112 @@
-Return-Path: <linux-kernel+bounces-155238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4A678AE73D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:01:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 024208AE725
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:58:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1761289C22
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:01:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE3DD2876DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDC912D1FE;
-	Tue, 23 Apr 2024 13:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95E312EBF1;
+	Tue, 23 Apr 2024 12:57:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="fqFCyc1o";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kJV4mjJA"
-Received: from fout2-smtp.messagingengine.com (fout2-smtp.messagingengine.com [103.168.172.145])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="vdqtVQuZ"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3852B12C814;
-	Tue, 23 Apr 2024 13:00:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD16A127E1B
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:57:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713877208; cv=none; b=mQf4zgd9O3XIIuRQphK/mi7AqTxkaWQ91A7+/tLJ5e3B9KEZT7IVVTzkxmigH3E1pQ3nzn3kzvk1wtUMNiLTlZz6Tq2jYFGzba9K/0OkBD3YYgjAFoSXksBAVy0U5JSuT0cas7A1j4+lEdVaTbSB1S/1zTtnOcxPpLuWoheebhs=
+	t=1713877077; cv=none; b=QdE2b5a/K1Ks3oijJ9pS1sTyya5IrCnlxhHCtgNlL4VXFb5ALVSigy61TH/D2aaFRFcbpL2YLxC1q5IszBWgIlXzOfBYlt5esRpzGT/0nKjuU+8cB6SWDuA2TquULeH9+fZ9ydPqrqke2MbC/kgXcQxAuyYCBusR3iqKpqom3/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713877208; c=relaxed/simple;
-	bh=96sOkJm4NWVH3kIPbR6s+LMnNin0blBdVvU3NTD2Rm0=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=jyzLg3GkRx6SbORUF9WgXkfUROnWy8TdXquQ/yxf4pSN3b0Z6g3msd34m1JQ4oy1/k144TSuPfsRSx5GEZW3iXDCQ8uUyAlcuhsBBaZ2AYU4gHgQJlX5vvwvEyFhz7jxacfGTSkd0xWdnz3aXFhKFDfCrrhPagLTykDGhRns16c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=fqFCyc1o; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kJV4mjJA; arc=none smtp.client-ip=103.168.172.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 53AD913817CB;
-	Tue, 23 Apr 2024 09:00:06 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 23 Apr 2024 09:00:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1713877206; x=1713963606; bh=96sOkJm4NW
-	VH3kIPbR6s+LMnNin0blBdVvU3NTD2Rm0=; b=fqFCyc1oHE+6auJzo+hRbFwgM/
-	oyV3kHrwOocGO6GwDHU83ixOOgB3AR3h8OGjiD1OOcN2Of/UGiHwcxWDGg7Q2kO9
-	hZ8Yv593YADSLWfBqFhrQrRbctx+eFJefPAmpoGMFM1NH0aSQs1ukdmTqY3Q72Ao
-	hij5dqno2g5LmhNHsTSo8/+Z/m57iCVwiK8b6pj6B/51ShQF4D8UCOJuexiE1h4Y
-	cjtRI2eE7n6CpRdKAFUvLC7cZdEhViDW70miNgwJkjWU52UUYaK6+OjnMMcWkEEf
-	G+nKBtedkghyG0Gjn0/agxzUfPOctWDzxLambqF/Eq10l0DJ/wGPA+M06vRA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1713877206; x=1713963606; bh=96sOkJm4NWVH3kIPbR6s+LMnNin0
-	blBdVvU3NTD2Rm0=; b=kJV4mjJA11QzkGuGatb62twjQKbnAAgYOuFW/mX8ZDEY
-	h56eNptRCeQ7jkB9yJYgr4EvvJYuaJeYzfkRi6U91T2g4coTl78qeu4Ah4CBYxXX
-	j+npQgWGnF168Y6Oyr6Qdrg/jv+ygqwj81Q+YHvwO2ikX9WkHo/eAnFFofBp3frf
-	SWyLLPc+svrQl22xkjGqWmuJVsG9BRpDs4HOi1cPLImKWfvNgDrRCdVZK8zt208G
-	vYn+kQRK/vuMH+eXuOQvIwdwc0ciXnsD5CAT4VljJANLVwNxTxyOuRggssvFACQY
-	PT2uwkybeRVDRADdP8n3rdbJGrQ0+KTT44cjeVKEsw==
-X-ME-Sender: <xms:1bAnZtnJ7by_3iVQOR4Bs_c8Igo2pPXcRMPL3Mf3A25lQwCD39H2tQ>
-    <xme:1bAnZo0Dmp5o603hjNlYPYYDSFM-_LLeUbGVEfmg_D_rbqv_EMPDlCwjGfc0zLbEa
-    Y4gYhrbwECNuaMi5RA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeluddgheelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:1bAnZjqJIGoZJGYvmN2m1Y0wmjgnhvfmGtckwD3x2SWNQ43vOWSsCA>
-    <xmx:1bAnZtn1f320OiptasVGe0HQkFGo57T_qDEFVtiX4ao6u9xTN5EDPA>
-    <xmx:1bAnZr1nrHRdqdTmtECoDnyXRaTdaBLMnTmSLt4S17qHVW2g_RJuaw>
-    <xmx:1bAnZsuVvpv_MnlXM3DuGQlhvZURwmrtFpTmLsUbi9D2JKalpYlUaQ>
-    <xmx:1rAnZtw-0sAb1sVjZXoQHf1StgQsEcl4I9ifaYfCnbO6Fmk6G3n7nY5k>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id CF625B6008F; Tue, 23 Apr 2024 09:00:05 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-386-g4cb8e397f9-fm-20240415.001-g4cb8e397
+	s=arc-20240116; t=1713877077; c=relaxed/simple;
+	bh=gbFgDHYOBjwAfydbjKzLfsqSEneKrhMKkq47E7/9+Js=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p2O9Pp974tRQ56hvy8HDCBWzE9XY2lr+Iab6FUoAarXBv5HerZ0oE8Aq5kbnjQBoGa6KAbMQ082fMcShPlV8t9/HhtZg16deMV0sOph3J0r5NRF2wmh++/4MznHQhIlCtzUOUTwDjGmgVuB0gU4AsJj8c/Z+fG3bgNCBMp5Mdo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=vdqtVQuZ; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-571e3f40e31so2967362a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 05:57:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1713877074; x=1714481874; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=gbFgDHYOBjwAfydbjKzLfsqSEneKrhMKkq47E7/9+Js=;
+        b=vdqtVQuZD9tFB9h0Nfz7aHsrwc9rvtODwHmbPDKo4vg+R3yiOf+2zue38azPuFLEkb
+         JNfy1aUwgnBUBQMre3s+pZMcPTpxEhGFXxwIFoYRrEihme5xH38fKRPHziZxVOiPEcFc
+         FKpjcIfwql8ht+MgwhpYe9IAtIPZfwyBbcw3+R5PBTcODc+ZXBr290piPQIJG9fu9clf
+         8dClUZeGWzsclaVvKmzqYbID4Hxq0xP8yjjbjkfWz/CaB3TRO4MhtsJSm8PrOevFe5jR
+         CBeN6lAuC4NneN5kU6l02BXv8XtuTsxY+wdWKIy9OVpAHpUi9TiNwaW4xgV/L1lbupZz
+         fyZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713877074; x=1714481874;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gbFgDHYOBjwAfydbjKzLfsqSEneKrhMKkq47E7/9+Js=;
+        b=TO71vX2dTwZDTTm8FhbTX7OQrg9DeZBDAS8ah2nvZZUsw5b+xI8RVtyd8aDTyZPZMB
+         yGuw3kSwbLULKo+9qok4mmzo4HU320D1Ij6/h/k4OuI1tbLAF6Y7dJgmPIgldCEhkXTY
+         QSbIw2PAiXZd5b8ukFfiukHbrAWLZ4QRDPwFou2+4CiQaX3QQqTUkImObv/7T1u23dz6
+         aOurQOP5yLfU+V/5RsGtihbaV7Az9On6UccTB7RUSvdfkbFyeHReu2kC/zxtyclk0jWT
+         J+BB7vCjIebrFRrb3HCa0kdGpnMN9qMKxvifbAsOblS25hs/6SNipmyedhiqort++hn4
+         CPmg==
+X-Forwarded-Encrypted: i=1; AJvYcCVbi2I6uPh5zMHRQoHoO/rweWbG030b0EHpGxFnsiQNXZqaUxOpvZNPW1UUFaGKv7Uau0F62LQ+J1wcOWeQx8txoo2stama3kLLK4Zk
+X-Gm-Message-State: AOJu0YwYrq09EWeK27Dn5BxrXlhintRAHxJ0LvBPrGX2yT3Y4AX6Iy+w
+	yqRafs5mzjeVtV3oz9dW7B0G7cQexEl7z+O93OWDH+TlKXLUqiG8mDe1OPXHrRo=
+X-Google-Smtp-Source: AGHT+IFySFld+JzBlc/qIbMllcHbAhPwGnkEfsEEOeb+myQHVp2LmwKN0wccqMzwrKNJyY3qCzWuBw==
+X-Received: by 2002:a17:906:b752:b0:a58:771c:1a93 with SMTP id fx18-20020a170906b75200b00a58771c1a93mr1707687ejb.45.1713877073741;
+        Tue, 23 Apr 2024 05:57:53 -0700 (PDT)
+Received: from localhost (78-80-105-131.customers.tmcz.cz. [78.80.105.131])
+        by smtp.gmail.com with ESMTPSA id q26-20020a1709066b1a00b00a53c746b499sm6996080ejr.137.2024.04.23.05.57.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 05:57:53 -0700 (PDT)
+Date: Tue, 23 Apr 2024 14:57:51 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: =?iso-8859-1?Q?Asbj=F8rn_Sloth_T=F8nnesen?= <ast@fiberby.net>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Siddharth Vadapalli <s-vadapalli@ti.com>,
+	Ravi Gunasekaran <r-gunasekaran@ti.com>,
+	Roger Quadros <rogerq@kernel.org>, linux-omap@vger.kernel.org
+Subject: Re: [PATCH net-next] net: ethernet: ti: cpsw: flower: validate
+ control flags
+Message-ID: <ZiewT6N2fjhFwrpW@nanopsycho>
+References: <20240422152656.175627-1-ast@fiberby.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <081ae10b-0a64-48fc-9be9-540e67900527@app.fastmail.com>
-In-Reply-To: <20240423102443.453261-1-masahiroy@kernel.org>
-References: <20240423102443.453261-1-masahiroy@kernel.org>
-Date: Tue, 23 Apr 2024 14:57:43 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Masahiro Yamada" <masahiroy@kernel.org>, dri-devel@lists.freedesktop.org
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
- "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
- "Maxime Ripard" <mripard@kernel.org>,
- "Thomas Zimmermann" <tzimmermann@suse.de>, "Dave Airlie" <airlied@gmail.com>,
- "Daniel Vetter" <daniel@ffwll.ch>,
- "Geert Uytterhoeven" <geert+renesas@glider.be>
-Subject: Re: [PATCH] drm: move DRM-related CONFIG options into DRM submenu
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240422152656.175627-1-ast@fiberby.net>
 
-On Tue, Apr 23, 2024, at 12:24, Masahiro Yamada wrote:
-> When you create a submenu using the 'menu' syntax, there is no
-> ambiguity about the end of the submenu because the code between
-> 'menu' and 'endmenu' becomes the submenu.
+Mon, Apr 22, 2024 at 05:26:55PM CEST, ast@fiberby.net wrote:
+>This driver currently doesn't support any control flags.
 >
-..
+>Use flow_rule_match_has_control_flags() to check for control flags,
+>such as can be set through `tc flower ... ip_flags frag`.
 >
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>In case any control flags are masked, flow_rule_match_has_control_flags()
+>sets a NL extended error message, and we return -EOPNOTSUPP.
+>
+>Only compile-tested.
+>
+>Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
 
-I think this is a useful cleanup.
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Next time, could you please bundle similar/related patches into
+a patchset?
+Thanks!
 
