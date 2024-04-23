@@ -1,137 +1,144 @@
-Return-Path: <linux-kernel+bounces-155087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2F398AE526
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:58:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DB6D8AE351
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:03:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 827F81F23E52
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:58:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5BCA1C21A09
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:03:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97ADF14C587;
-	Tue, 23 Apr 2024 11:42:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RRhYq85D"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFBB114BF8B;
-	Tue, 23 Apr 2024 11:42:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F7A87C09F;
+	Tue, 23 Apr 2024 11:03:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DFF45812B
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 11:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872530; cv=none; b=F/0Jq1sU5P+TY+r833pkoqiawLUZg42GvmeoyMaBnJqpuj8AssA3ZOXnmsxU9YxuHx/Mwl9LuBaP4VClxYrzcyAhAObpryzJuEZ/8ccOh0nSbhhDSU4Nel7lHFUif1AQEccf/N8lRpcGcAiJ0UwQuvJIvnMXGNZJdDslxcK8yGM=
+	t=1713870218; cv=none; b=McmGZiH4EAY2fbOTK7od/6l8h6YtPAVJtpHjgdOrJm7YXxqxDMV47HuHLwGtK05xR7KIIpLJO5Z+IHYDmJkbMHAkadJaG+pmmdumVO0ZjfKO/fbCk3dJZ/GHKaWAR5l2jVfhEFkQrxWCZXgnvAJpvUPUO969ekYdKvcvEUxnrLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872530; c=relaxed/simple;
-	bh=4xatCGuHGLqZax6DdkckXQorsV++62erOzujYkCsy4M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jSAqxLp2IRoFq8atHiv6RqNDh2LiYI6tbdHPR2OttxvFDw8EegQeaMs+uXAbb+GvgkjIjuNAWWY5lidg3m2GP/5TvsZEOnoWeaeYYJa0M1C9aRNHpxEE4JPGohjSiZabmp3eWnjSjmSuTJ5rABAZ5dE7SBrn1nrMU0schM5FBTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RRhYq85D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CB7CC116B1;
-	Tue, 23 Apr 2024 11:42:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872530;
-	bh=4xatCGuHGLqZax6DdkckXQorsV++62erOzujYkCsy4M=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RRhYq85DjhOpOxMG0VJwwynMq3anphrKISgK01I3nlHYG2sSbS2G3icIacogP4DGH
-	 jCVFHXrasftB/6dnBo/55EgsVSPg373IWGrtd5OKCmVwFrDW+Ib2k+goVYlsIs1vu8
-	 CvI/zrufJw//pLRgcfGbLBbDTXDAxdeUWY231ueKEjxA6G7e+9Eo2Rgedt3vspS7Cq
-	 vXFuyayxLzvMN6YUrbFtR3g4d8i+LHlf75MG+9OsVlC463rKSHyZSgCAQxk8BnOOJA
-	 iwBzGtWjgtxMWxswfl/g6TedhSiwjCDf0j6Ls5oigNUyg7+ti4d65Zg7R5wHDr/ov/
-	 3WSIWXTXyRDnQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Vanillan Wang <vanillanwang@163.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	bjorn@mork.no,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org,
-	linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 7/7] net:usb:qmi_wwan: support Rolling modules
-Date: Tue, 23 Apr 2024 07:03:17 -0400
-Message-ID: <20240423110318.1659628-7-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240423110318.1659628-1-sashal@kernel.org>
-References: <20240423110318.1659628-1-sashal@kernel.org>
+	s=arc-20240116; t=1713870218; c=relaxed/simple;
+	bh=Q/2gtcyulav/9Q2+HHK8JUU7iDQ7d8y7qqKXMLxj2GY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BTwgsEei+BjFfjrPa55spKkeTLYotOkO8IctrgbEgAnX7D7Z2+C/W4IUPIJFXpvT0In1ZW7e2UiwIuNnuhlzje4n3OjuGGisFQJ2Z8jrAjv38svU+xYFyFVaplsB13FKSvFrIP2/fwpT7rvgSow4DCMo4rz50annTHjOqCpfWEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F8B6339;
+	Tue, 23 Apr 2024 04:04:00 -0700 (PDT)
+Received: from [10.57.74.127] (unknown [10.57.74.127])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1936F3F7BD;
+	Tue, 23 Apr 2024 04:03:29 -0700 (PDT)
+Message-ID: <6aa25e2a-a6b6-4ab7-8300-053ca3c0d748@arm.com>
+Date: Tue, 23 Apr 2024 12:03:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.312
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/5] mm: memory: extend finish_fault() to support
+ large folio
+Content-Language: en-GB
+To: Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org,
+ hughd@google.com
+Cc: willy@infradead.org, david@redhat.com, wangkefeng.wang@huawei.com,
+ 21cnbao@gmail.com, ying.huang@intel.com, shy828301@gmail.com,
+ ziy@nvidia.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
+ <358aefb1858b63164894d7d8504f3dae0b495366.1713755580.git.baolin.wang@linux.alibaba.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <358aefb1858b63164894d7d8504f3dae0b495366.1713755580.git.baolin.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Vanillan Wang <vanillanwang@163.com>
+On 22/04/2024 08:02, Baolin Wang wrote:
+> Add large folio mapping establishment support for finish_fault() as a preparation,
+> to support multi-size THP allocation of anonymous shared pages in the following
+> patches.
+> 
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> ---
+>  mm/memory.c | 25 ++++++++++++++++++-------
+>  1 file changed, 18 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index b6fa5146b260..094a76730776 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4766,7 +4766,10 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+>  {
+>  	struct vm_area_struct *vma = vmf->vma;
+>  	struct page *page;
+> +	struct folio *folio;
+>  	vm_fault_t ret;
+> +	int nr_pages, i;
+> +	unsigned long addr;
+>  
+>  	/* Did we COW the page? */
+>  	if ((vmf->flags & FAULT_FLAG_WRITE) && !(vma->vm_flags & VM_SHARED))
+> @@ -4797,22 +4800,30 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+>  			return VM_FAULT_OOM;
+>  	}
+>  
+> +	folio = page_folio(page);
+> +	nr_pages = folio_nr_pages(folio);
+> +	addr = ALIGN_DOWN(vmf->address, nr_pages * PAGE_SIZE);
 
-[ Upstream commit d362046021ea122309da8c8e0b6850c792ca97b5 ]
+I'm not sure this is safe. IIUC, finish_fault() is called for any file-backed
+mapping. So you could have a situation where part of a (regular) file is mapped
+in the process, faults and hits in the pagecache. But the folio returned by the
+pagecache is bigger than the portion that the process has mapped. So you now end
+up mapping beyond the VMA limits? In the pagecache case, you also can't assume
+that the folio is naturally aligned in virtual address space.
 
-Update the qmi_wwan driver support for the Rolling
-LTE modules.
 
-- VID:PID 33f8:0104, RW101-GL for laptop debug M.2 cards(with RMNET
-interface for /Linux/Chrome OS)
-0x0104: RMNET, diag, at, pipe
+>  	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd,
+> -				      vmf->address, &vmf->ptl);
+> +				       addr, &vmf->ptl);
+>  	if (!vmf->pte)
+>  		return VM_FAULT_NOPAGE;
+>  
+>  	/* Re-check under ptl */
+> -	if (likely(!vmf_pte_changed(vmf))) {
+> -		struct folio *folio = page_folio(page);
+> -
+> -		set_pte_range(vmf, folio, page, 1, vmf->address);
+> -		ret = 0;
+> -	} else {
+> +	if (nr_pages == 1 && vmf_pte_changed(vmf)) {
+>  		update_mmu_tlb(vma, vmf->address, vmf->pte);
+>  		ret = VM_FAULT_NOPAGE;
+> +		goto unlock;
+> +	} else if (nr_pages > 1 && !pte_range_none(vmf->pte, nr_pages)) {
 
-Here are the outputs of usb-devices:
-T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=5000 MxCh= 0
-D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
-P:  Vendor=33f8 ProdID=0104 Rev=05.04
-S:  Manufacturer=Rolling Wireless S.a.r.l.
-S:  Product=Rolling Module
-S:  SerialNumber=ba2eb033
-C:  #Ifs= 6 Cfg#= 1 Atr=a0 MxPwr=896mA
-I:  If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-E:  Ad=01(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=81(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:  If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
-E:  Ad=02(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-I:  If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
-E:  Ad=03(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=84(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-I:  If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=40 Driver=option
-E:  Ad=04(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=86(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=87(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-I:  If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=50 Driver=qmi_wwan
-E:  Ad=0f(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=88(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
-E:  Ad=8e(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:  If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
-E:  Ad=05(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=89(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I think you have grabbed this from do_anonymous_page()? But I'm not sure it
+works in the same way here as it does there. For the anon case, if userfaultfd
+is armed, alloc_anon_folio() will only ever allocate order-0. So we end up in
+the vmf_pte_changed() path, which will allow overwriting a uffd entry. But here,
+there is nothing stopping nr_pages being greater than 1 when there could be a
+uffd entry present, and you will fail due to the pte_range_none() check. (see
+pte_marker_handle_uffd_wp()).
 
-Signed-off-by: Vanillan Wang <vanillanwang@163.com>
-Link: https://lore.kernel.org/r/20240416120713.24777-1-vanillanwang@163.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/usb/qmi_wwan.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks,
+Ryan
 
-diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
-index f787b9a4f9a9e..b4d436f985cfb 100644
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -1383,6 +1383,7 @@ static const struct usb_device_id products[] = {
- 	{QMI_FIXED_INTF(0x0489, 0xe0b5, 0)},	/* Foxconn T77W968 LTE with eSIM support*/
- 	{QMI_FIXED_INTF(0x2692, 0x9025, 4)},    /* Cellient MPL200 (rebranded Qualcomm 05c6:9025) */
- 	{QMI_QUIRK_SET_DTR(0x1546, 0x1342, 4)},	/* u-blox LARA-L6 */
-+	{QMI_QUIRK_SET_DTR(0x33f8, 0x0104, 4)}, /* Rolling RW101 RMNET */
- 
- 	/* 4. Gobi 1000 devices */
- 	{QMI_GOBI1K_DEVICE(0x05c6, 0x9212)},	/* Acer Gobi Modem Device */
--- 
-2.43.0
+> +		for (i = 0; i < nr_pages; i++)
+> +			update_mmu_tlb(vma, addr + PAGE_SIZE * i, vmf->pte + i);
+> +		ret = VM_FAULT_NOPAGE;
+> +		goto unlock;
+>  	}
+>  
+> +	set_pte_range(vmf, folio, &folio->page, nr_pages, addr);
+> +	ret = 0;
+> +
+> +unlock:
+>  	pte_unmap_unlock(vmf->pte, vmf->ptl);
+>  	return ret;
+>  }
 
 
