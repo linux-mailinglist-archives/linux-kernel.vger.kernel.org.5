@@ -1,86 +1,163 @@
-Return-Path: <linux-kernel+bounces-155992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4C438AFC6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:11:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D97CC8AFC70
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:13:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91147288253
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:11:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D229288026
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:13:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAD6336B0D;
-	Tue, 23 Apr 2024 23:11:06 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FB3736B0D;
+	Tue, 23 Apr 2024 23:13:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SqSM9wpL"
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B73C36AF8
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:11:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 914E21C687
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:12:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713913866; cv=none; b=nLmQ2cGWFXWun1Rt9Zrn/nIG+CLUtkaL/+IDtMAwoM+vmcP3iUHwGM4BvjQakStMjdr83bdGLh7XnmI3btOBB59BpUeBwqXl/5gyE60V8ws8MdAAWsZNl5GV/yuPZK8x2+KOyafgqlcPu/ajU2b24WH1qvSz7xaAqtKKQYbK9JA=
+	t=1713913979; cv=none; b=ALtTioqnAfy45ZBIP+hWIutQrnJPJq+ukFUXx8yof2F5heHIsdxNV2rUFyvYvr1vO1CsiyLCeIoO+iM+5utgeJzhi0IDy5+NniQhq6CxH70n41OwL2OupULvgfvsIJCGaBNeitXsL64itFdLH0fBEhKOhG1S5T67wJhPywuZwVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713913866; c=relaxed/simple;
-	bh=IprRLrP4/OBNEf7yZBlJYicr3vDmv5ZOE/MNS6iX41k=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=i0ZgRhFyxdD0Lm5YQ/ksEHvI79uUsTMApLxKA3KipI8997q61Zg00n2CTKb2YPEuYXaAesya5rqDMuTowtsGpr8ozEzPr23OnNTBIsurWQbB1arLRrtg3QtUrUKhl4JpLxFk5ousUPXrydB4k88uAm5zDF5G7sLGjoOHHvULcJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7ddf0219685so152540639f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:11:04 -0700 (PDT)
+	s=arc-20240116; t=1713913979; c=relaxed/simple;
+	bh=sCpL9Ppk/ORzgqDDGhuPamN44HwVbG4fiKQNU+9M14g=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=cXa3IQUAe90xQlbJUdFtUIW0zurwpKt1K0XZvy6kcGZqnHRaZP57u4lzF/mXVaA8o/ZX8wx40GfPvnAEutmMRFUhdovOeTRwzFISdTeGhGvyl0a70MyDIUGED/5A1TNuO/JcWbCc+NfR+Zdp6zwO9/h+VRmjtf/MuIM7jwuWYOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SqSM9wpL; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1e2a1619cfcso2781905ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:12:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713913978; x=1714518778; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uezg6+/4AiQv/6erEn8oKEVi+a/EdVmsvmMSGq8YULU=;
+        b=SqSM9wpLd8s4WuzKJLGjc3Ddv7mzCh5PxYlt5cMRUWTpxifmimGqJwPpmp3YPtKW0I
+         dNp0YMvl4TQdFBorRvtK47FAQxla23Xbpgzh+4Fx+ry9mJv7eTIws6oBIYhillmNTn99
+         8VrAbxHunf1EV/wY6xMCmb6c2zLZURMtdySy2Onp9n9as1bednrGNF2uWfX6oCBVcBmI
+         kNKK2Ast3HBR/95ixbILYYhK25Y+Ssgd58sU6nVJ3B30K6+vcZGcLfC5ry9xvXUz9OwM
+         Da/CPwaq77TCTBtjAAtVQcXIrHezolPOlMW0l5vABdruMsSIH1SLM5tg6uyzPLMa1Nk+
+         OT9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713913864; x=1714518664;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fkAZzF+AxPebPQDG24hg0CBtvDuYtfCIICEEd/EnwVU=;
-        b=CN66+SrhtU9ILHoL3flZpS3s69eST8pU4H/S1i7AbcKbd1C6VCcl8dI87yOzhaLvlC
-         ZI4CWxg3af+6CvH9rsgzZVPF/C73FmshaKlTaboQBrFM6u34CmrJ0kn0frhj+FMiDtrX
-         pv9A2gBYJ7gTmhqLVvHk3x9+/+/NCxDHXnZ/tcVLVr6r2sMAPpDK3EJUoNcKYqJUd79F
-         N/HpFpXHjjH4Os/Z0suQmtuq6kau0hAffDRF433ElXzOO5BPuq/+dMwisFSDV4HQckY4
-         KkOjAopNsEC3d3PvdrDcSXdsGzqJr2KOdAF3bMTvxpb1qUvciL5RKQIdhfEZFnUvQepd
-         Vb0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVG50OBDuuS2whBPbxwP9QRZAGQAMlc9GW35san76QEklzattg3/8K8cW26FsSFpvpzXxNER1iRhYpCQgvAHoHFQicUEQ3PTw1Pi7xU
-X-Gm-Message-State: AOJu0Yz9TCpWcApVwG328Dw9Nb+kkLKI7IdJmeKbSYjDvWoWSSPXgD0O
-	88uBvjwinVqRsxFUjm1TwtrVbVQYtMaQTnOJDWOX39GvmXHDSwdrahYKHg7bO65Uo7p0ZogNWXd
-	2hgh601b7VyktHQS9LaBO15wpuHLZezalFm8tGpg/48vJZoLMh2tx9gg=
-X-Google-Smtp-Source: AGHT+IEveMiYHuDcZj/a2y6m0NqiKHSXJCwDxdTjEO0YpC8BQ2wwn8vMdO2N2zn107e7Vsl2oNvBMI17WPf7Qn1AwQFtrLEjmuYG
+        d=1e100.net; s=20230601; t=1713913978; x=1714518778;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uezg6+/4AiQv/6erEn8oKEVi+a/EdVmsvmMSGq8YULU=;
+        b=cb4EPVVMKZcVAOfCHNYqWLDwKySTdHBnwDXmLdVWkZ6ze07SglUqvQQB/zFW4QVOGJ
+         BVgjlZKme52L4jfjgj8ZC7xvLpOAzB0UMpTFqNtYhDZ0D1HQAn45F5XR58GZmq7Medhg
+         uKZgpbEENpUVjE8ye5f/1mtDVgnRKOhqt0Wtv6F6gnYqMBwczcDIZdrbVXKtV/3+NVMd
+         CkBwlhNIGmmTBuVhqw8qgPQczdfs9acXjW97MASkx7T7wnGbDICtLPXuyOEBE7mBvvoe
+         a6FlghZ/QVTUSB4jC/PMPMFmjvIBlBG8XPuspwGXZ1kz4mQbgY3gxnIzjYwbSAiWv0Xj
+         Q0lA==
+X-Gm-Message-State: AOJu0YyV/gGBNu5EtSbRNWXzRuB3srqxFXLAw7bmzQTRLramG/vMv+wk
+	ZHo3KrUuDZvjyY6G4IBjWvl8zS/LrAhuLNS6IJxqirv0EKXq6s2cElfhZw1S0r49X5+0NW1S61f
+	PRQ==
+X-Google-Smtp-Source: AGHT+IE0R0KIqo8KD6RKKMpmgCRO+v6AuiFd4g6GW8XJGF/tKYJjL3fXfzwcdFarKqjKdhtz5eYejHKnoc0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:e5cd:b0:1e5:5c69:fcd7 with SMTP id
+ u13-20020a170902e5cd00b001e55c69fcd7mr65483plf.5.1713913977816; Tue, 23 Apr
+ 2024 16:12:57 -0700 (PDT)
+Date: Tue, 23 Apr 2024 16:12:56 -0700
+In-Reply-To: <20240409133959.2888018-6-pgonda@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2581:b0:482:cfdd:daeb with SMTP id
- s1-20020a056638258100b00482cfdddaebmr112001jat.5.1713913864241; Tue, 23 Apr
- 2024 16:11:04 -0700 (PDT)
-Date: Tue, 23 Apr 2024 16:11:04 -0700
-In-Reply-To: <20240423223458.3126-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000dd33b0616cbabb9@google.com>
-Subject: Re: [syzbot] [net?] possible deadlock in __unix_gc
-From: syzbot <syzbot+fa379358c28cc87cc307@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <20240409133959.2888018-1-pgonda@google.com> <20240409133959.2888018-6-pgonda@google.com>
+Message-ID: <ZihAeH4PXSUtT4hM@google.com>
+Subject: Re: [PATCH 5/6] Add is_sev_enabled() helpers
+From: Sean Christopherson <seanjc@google.com>
+To: Peter Gonda <pgonda@google.com>
+Cc: linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
+	Claudio Imbrenda <imbrenda@linux.ibm.com>, Carlos Bilbao <carlos.bilbao@amd.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Michael Roth <michael.roth@amd.com>
+Content-Type: text/plain; charset="us-ascii"
 
-Hello,
+On Tue, Apr 09, 2024, Peter Gonda wrote:
+> Add helper functions for guest code to check the status of SEV and
+> SEV-ES.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Why?  The names are super ambiguous, e.g. they could just as easily mean "is SEV
+enabled in KVM" or "is SEV enabled in CPUID".  And if an assert fires because
+is_sev_es_enabled() returns false, the user will get a _worse_ error message because
+all they'll know is _something_ in is_sev_es_enabled() failed, not which MSR bit
+came back 'bad.
 
-Reported-and-tested-by: syzbot+fa379358c28cc87cc307@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         4d200843 Merge tag 'docs-6.9-fixes2' of git://git.lwn...
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=179a2a80980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=98d5a8e00ed1044a
-dashboard link: https://syzkaller.appspot.com/bug?extid=fa379358c28cc87cc307
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=128da46b180000
-
-Note: testing is done by a robot and is best-effort only.
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Carlos Bilbao <carlos.bilbao@amd.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Michael Roth <michael.roth@amd.com>
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> ---
+>  tools/testing/selftests/kvm/include/x86_64/sev.h    |  3 +++
+>  tools/testing/selftests/kvm/lib/x86_64/sev.c        | 11 +++++++++++
+>  tools/testing/selftests/kvm/x86_64/sev_smoke_test.c |  5 ++---
+>  3 files changed, 16 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/include/x86_64/sev.h b/tools/testing/selftests/kvm/include/x86_64/sev.h
+> index bfd481707f67..691dc005e2a1 100644
+> --- a/tools/testing/selftests/kvm/include/x86_64/sev.h
+> +++ b/tools/testing/selftests/kvm/include/x86_64/sev.h
+> @@ -106,4 +106,7 @@ static inline void sev_launch_update_data(struct kvm_vm *vm, vm_paddr_t gpa,
+>  	vm_sev_ioctl(vm, KVM_SEV_LAUNCH_UPDATE_DATA, &update_data);
+>  }
+>  
+> +bool is_sev_enabled(void);
+> +bool is_sev_es_enabled(void);
+> +
+>  #endif /* SELFTEST_KVM_SEV_H */
+> diff --git a/tools/testing/selftests/kvm/lib/x86_64/sev.c b/tools/testing/selftests/kvm/lib/x86_64/sev.c
+> index 27ae1d3b1355..5b3f0a8a931a 100644
+> --- a/tools/testing/selftests/kvm/lib/x86_64/sev.c
+> +++ b/tools/testing/selftests/kvm/lib/x86_64/sev.c
+> @@ -189,3 +189,14 @@ struct kvm_vm *vm_sev_create_with_one_vcpu(uint32_t policy, void *guest_code,
+>  
+>  	return vm;
+>  }
+> +
+> +bool is_sev_enabled(void)
+> +{
+> +	return rdmsr(MSR_AMD64_SEV) & MSR_AMD64_SEV_ENABLED;
+> +}
+> +
+> +bool is_sev_es_enabled(void)
+> +{
+> +	return is_sev_enabled() &&
+> +	       rdmsr(MSR_AMD64_SEV) & MSR_AMD64_SEV_ES_ENABLED;
+> +}
+> diff --git a/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c b/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
+> index 026779f3ed06..1d84e78e7ae2 100644
+> --- a/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
+> @@ -16,8 +16,7 @@
+>  static void guest_sev_es_code(void)
+>  {
+>  	/* TODO: Check CPUID after GHCB-based hypercall support is added. */
+> -	GUEST_ASSERT(rdmsr(MSR_AMD64_SEV) & MSR_AMD64_SEV_ENABLED);
+> -	GUEST_ASSERT(rdmsr(MSR_AMD64_SEV) & MSR_AMD64_SEV_ES_ENABLED);
+> +	GUEST_ASSERT(is_sev_es_enabled());
+>  
+>  	/*
+>  	 * TODO: Add GHCB and ucall support for SEV-ES guests.  For now, simply
+> @@ -30,7 +29,7 @@ static void guest_sev_es_code(void)
+>  static void guest_sev_code(void)
+>  {
+>  	GUEST_ASSERT(this_cpu_has(X86_FEATURE_SEV));
+> -	GUEST_ASSERT(rdmsr(MSR_AMD64_SEV) & MSR_AMD64_SEV_ENABLED);
+> +	GUEST_ASSERT(is_sev_enabled());
+>  
+>  	GUEST_DONE();
+>  }
+> -- 
+> 2.44.0.478.gd926399ef9-goog
+> 
 
