@@ -1,268 +1,171 @@
-Return-Path: <linux-kernel+bounces-154457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D9308ADC42
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:26:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FB158ADC5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:44:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91598B21D05
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:26:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C38681C21025
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:44:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F6F71BC26;
-	Tue, 23 Apr 2024 03:26:23 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88332F5E;
-	Tue, 23 Apr 2024 03:26:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6F231CD3B;
+	Tue, 23 Apr 2024 03:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="YUMnUKHu"
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AC6818E1D
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:43:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713842782; cv=none; b=Cpxl3V48KDRoUwLL3z1rWU18TwKd+RcztoMF2GmvPFYw9dWw0UEOPlfDNspjMTZiw1V1tDH3jAGGaaHuz4b0iNS6rI5IHiewU9O3m7+QK7xKPWOD7cASGXwevC2wTS9AudNPmeKfs24Sjod9Y1EEdetBCMn0M+S1DPauRB+rxXo=
+	t=1713843832; cv=none; b=neAs0hZcaKOYF3i2FarE1P4/IroiGL29/8YN7vGoau1hvUkSGYnmNJwMlzbl8QS2JkuL2jUtToJH1zBFsPU2fUgD9kVbsgrelZBBdIznRrF2BCCa1q28gK9pxV0gtAlG+qafa39XmuoP0HR14YBQ2B/ZS8TodH1LdcPDP9irgGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713842782; c=relaxed/simple;
-	bh=CAJpcXGdqvr9FJJtpqAZjbO1UWsz5IjjJ1sxEz09kzM=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=iNbyx7vLjtfcF1p8txr8sVSriBK8eywDUo3pzX6o/wekpHUeVuLdlKQpDGGoInXcg1tYsdQvSbEoXuUeMs+NS1RdC9T80okywXGWlcfG2c7T7EH8VVfKjlAuBRsiKHJoBa8SPNLRkZ3ttquytaMXBruz4kqfjoSMOonjd9/frAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.173])
-	by gateway (Coremail) with SMTP id _____8CxJvBXKidmVyUBAA--.6777S3;
-	Tue, 23 Apr 2024 11:26:15 +0800 (CST)
-Received: from [10.20.42.173] (unknown [10.20.42.173])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bxut1UKidmN_ABAA--.8069S3;
-	Tue, 23 Apr 2024 11:26:14 +0800 (CST)
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-To: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>,
- Sean Christopherson <seanjc@google.com>
-Cc: Mingwei Zhang <mizhang@google.com>,
- Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
- peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
- jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
- irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
- chao.gao@intel.com
-References: <18b19dd4-6d76-4ed8-b784-32436ab93d06@linux.intel.com>
- <Zhn9TGOiXxcV5Epx@google.com>
- <4c47b975-ad30-4be9-a0a9-f0989d1fa395@linux.intel.com>
- <CAL715WJXWQgfzgh8KqL+pAzeqL+dkF6imfRM37nQ6PkZd09mhQ@mail.gmail.com>
- <737f0c66-2237-4ed3-8999-19fe9cca9ecc@linux.intel.com>
- <CAL715W+RKCLsByfM3-0uKBWdbYgyk_hou9oC+mC9H61yR_9tyw@mail.gmail.com>
- <Zh1mKoHJcj22rKy8@google.com>
- <CAL715WJf6RdM3DQt995y4skw8LzTMk36Q2hDE34n3tVkkdtMMw@mail.gmail.com>
- <Zh2uFkfH8BA23lm0@google.com>
- <4d60384a-11e0-2f2b-a568-517b40c91b25@loongson.cn>
- <ZiaX3H3YfrVh50cs@google.com>
- <d8f3497b-9f63-e30e-0c63-253908d40ac2@loongson.cn>
- <d980dd10-e4c4-4774-b107-77b320cec9f9@linux.intel.com>
- <b5e97aa1-7683-4eff-e1e3-58ac98a8d719@loongson.cn>
- <1ec7a21c-71d0-4f3e-9fa3-3de8ca0f7315@linux.intel.com>
-From: maobibo <maobibo@loongson.cn>
-Message-ID: <5f27b793-b19e-d429-190c-1c20a6d1c649@loongson.cn>
-Date: Tue, 23 Apr 2024 11:26:12 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1713843832; c=relaxed/simple;
+	bh=hNHEA6ccYnXv3lZ/1N2MV3Y3bDt/cuPB5SfWk4zbMMc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
+	 Content-Type:References; b=O8tJ9xsxdI01MPR4nx+S0YvZRGfS90RCIDwrywxGwaFl0hLBQg9/B8URZZTIFb1u2wMS2EKZe8oaI9wMb+DI0kHlc5A8a7tFhRSKUtjelyjFiNRZvy517SolZgCE9GkjjH4dr7LzHzAoZBAI9x7ak4fKBkLX6L+1t7Y64NK1vYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=YUMnUKHu; arc=none smtp.client-ip=203.254.224.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20240423034342epoutp02675f62126e2e67795115003ca9e07a9f~Iy_A2jHIw1621816218epoutp029
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:43:42 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20240423034342epoutp02675f62126e2e67795115003ca9e07a9f~Iy_A2jHIw1621816218epoutp029
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1713843822;
+	bh=/3lH6JmubFkHYjtCbMv/Rjqjgq4yJpzd2+PUGN+/hE0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=YUMnUKHuguqUF5uCvP2UU793sypxawpZlodjoWCsvNydLHr1fzyQHcdwqjhX/OiFM
+	 5ONP99SQEbTWSFzg42nizpJCdWURj52x6L8UZD+o+A+evAXoF596iMVWVkID9jFHn3
+	 rqCzQvOVcaN6rTL0u1A8oMcQUdv+A4rL7h64IHJ8=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+	epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+	20240423034341epcas5p16d4574060c424fb4367038103018e808~Iy_AMXyDy0740507405epcas5p1D;
+	Tue, 23 Apr 2024 03:43:41 +0000 (GMT)
+Received: from epsmges5p3new.samsung.com (unknown [182.195.38.180]) by
+	epsnrtp2.localdomain (Postfix) with ESMTP id 4VNnyy6pPdz4x9Q4; Tue, 23 Apr
+	2024 03:43:38 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+	epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	7B.61.09665.A6E27266; Tue, 23 Apr 2024 12:43:38 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+	20240423032657epcas5p4d97f377b48bd40e792d187013c5e409c~IyvZkh1-q0716607166epcas5p42;
+	Tue, 23 Apr 2024 03:26:57 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240423032657epsmtrp19fa8ee7399a25e71d6556845f2c94b23~IyvZjwKNM1313413134epsmtrp1p;
+	Tue, 23 Apr 2024 03:26:57 +0000 (GMT)
+X-AuditID: b6c32a4b-829fa700000025c1-5d-66272e6a7463
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	44.1C.19234.18A27266; Tue, 23 Apr 2024 12:26:57 +0900 (KST)
+Received: from testpc11818.samsungds.net (unknown [109.105.118.18]) by
+	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240423032655epsmtip1fdd4d1799bb8254f77809e6fca773541~IyvX3ceZp1684016840epsmtip12;
+	Tue, 23 Apr 2024 03:26:55 +0000 (GMT)
+From: hexue <xue01.he@samsung.com>
+To: axboe@kernel.dk
+Cc: anuj20.g@samsung.com, asml.silence@gmail.com, cliang01.li@samsung.com,
+	io-uring@vger.kernel.org, joshi.k@samsung.com, kundan.kumar@samsung.com,
+	linux-kernel@vger.kernel.org, peiwei.li@samsung.com, ruyi.zhang@samsung.com,
+	wenwen.chen@samsung.com, xiaobing.li@samsung.com, xue01.he@samsung.com
+Subject: Re: Re: [PATCH v2] io_uring: releasing CPU resources when polling
+Date: Tue, 23 Apr 2024 11:26:45 +0800
+Message-Id: <20240423032645.2546766-1-xue01.he@samsung.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <e8c28f87-ff8a-4f30-b252-46e2260357c9@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1ec7a21c-71d0-4f3e-9fa3-3de8ca0f7315@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Bxut1UKidmN_ABAA--.8069S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW3Xr17XryfJFyUtFy3GryrXwc_yoWxZr17pF
-	WxAF4jkr4DJr10yw1Utw18JFyUtrWUJw1UXrn8tFyUA3909r1Fqr1UXryj9FyUWr48GF1j
-	qr4Ut347Zw1DAagCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-	AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-	8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-	v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4qg4DU
-	UUU
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPJsWRmVeSWpSXmKPExsWy7bCmpm6Wnnqawc82U4umCX+ZLeas2sZo
+	sfpuP5vF6b+PWSzetZ5jsTj6/y2bxa/uu4wWW798ZbW4vGsOm8WzvZwWXw5/Z7c4O+EDq8XU
+	LTuYLDpaLjNadF04xebA77Fz1l12j8tnSz36tqxi9Pi8SS6AJSrbJiM1MSW1SCE1Lzk/JTMv
+	3VbJOzjeOd7UzMBQ19DSwlxJIS8xN9VWycUnQNctMwfoTiWFssScUqBQQGJxsZK+nU1RfmlJ
+	qkJGfnGJrVJqQUpOgUmBXnFibnFpXrpeXmqJlaGBgZEpUGFCdkbT9yuMBWv5Ko6uVmpgnM7d
+	xcjJISFgIrFg7SsmEFtIYDejxN/mgC5GLiD7E6PEzeYN7HBO3+IX7DAdf05+ZIZI7GSU2Hp8
+	FQuE84NR4mrDDxaQKjYBJYn9Wz4wgtgiAsIS+ztawYqYBdYySWy8fRZoIQeHsICXxNteJ5Aa
+	FgFViQ0bZoLdwStgLbHpzX+obfISN7v2M4PYnAK2Emsv3WKHqBGUODnzCdguZqCa5q2zwS6S
+	EJjKIfF15TsmiGYXiW+PL7FC2MISr45vgRoqJfGyvw3KzpeY/H09I4RdI7Fu8zsWCNta4t+V
+	PSwgdzILaEqs36UPEZaVmHpqHRPEXj6J3t9PoFbxSuyYB2MrSSw5sgJqpITE7wmLoE7wkJg2
+	D+IEIYEJjBJNt3UnMCrMQvLOLCTvzELYvICReRWjZGpBcW56arFpgXFeajk8jpPzczcxglOu
+	lvcOxkcPPugdYmTiYDzEKMHBrCTC++uPSpoQb0piZVVqUX58UWlOavEhRlNgeE9klhJNzgcm
+	/bySeEMTSwMTMzMzE0tjM0Mlcd7XrXNThATSE0tSs1NTC1KLYPqYODilGpisCoR+Cm3OYI76
+	e8LQ5NnNSI450rK3r5x3PPPepmFK5Uxe40s5/G6bZnisF1u7XnHe3eiGop3rW48xZzU+fdaa
+	skbUyHZW9NUbvJtePVmyyqNDMEX5vCtv9yepNY0vc6IV186wfR59WI29TctpmXXxQ46gha/Z
+	FOcaFM+7ecfhfMDKb3EX7pd9dl++c2n/xfInm9YpbpN5EcXdvc7BOGLVPYajU/IvWXmHbUlR
+	rjH/Zy2jr3goOefmYetHtbeOXgzded7ypHVLgsSrwqeHp607HfW+5n3ynXWTZ9UmCE5eNr85
+	7k248bLd7efjfx+tXvk9sfLB959c4a42r555XjQ9vslEm1v9Ad/+fc3160qOK7EUZyQaajEX
+	FScCANIvX8pCBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrELMWRmVeSWpSXmKPExsWy7bCSnG6jlnqawc3l2hZNE/4yW8xZtY3R
+	YvXdfjaL038fs1i8az3HYnH0/1s2i1/ddxkttn75ympxedccNotnezktvhz+zm5xdsIHVoup
+	W3YwWXS0XGa06Lpwis2B32PnrLvsHpfPlnr0bVnF6PF5k1wASxSXTUpqTmZZapG+XQJXRtP3
+	K4wFa/kqjq5WamCczt3FyMkhIWAi8efkR+YuRi4OIYHtjBKn3jxnh0hISOx49IcVwhaWWPkP
+	JA5S9I1RYuKTdkaQBJuAksT+LR/AbBGgov0drSwgRcwCe5kk7n+4ztTFyMEhLOAl8bbXCaSG
+	RUBVYsOGmUwgNq+AtcSmN/+hlslL3OzazwxicwrYSqy9dIsdpFVIwEaiY44FRLmgxMmZT1hA
+	bGag8uats5knMArMQpKahSS1gJFpFaNoakFxbnpucoGhXnFibnFpXrpecn7uJkZwNGgF7WBc
+	tv6v3iFGJg7GQ4wSHMxKIry//qikCfGmJFZWpRblxxeV5qQWH2KU5mBREudVzulMERJITyxJ
+	zU5NLUgtgskycXBKNTDpFd8784J9W1vi1av74gzU6n/9fTLxN0vOQZc/3mLy6Qu+Rr2u6Viy
+	acqac9wznJtXvA23LOe4YjZvQfO1aQwpP5V+GmT/0S5dY/30isCUJaJzn+rwx/Uaxz5XOvJI
+	ePGdRwzFrcavF+ewNfQe5vm7Z73uqhlnb/yZILL0rVx0+uV/X03sVX7U59Yxvvz5JvjvlFP3
+	lY5Njpwrrja9ZNvOviNz1XVYD30yuzP3zf9v1SFyQZKPLh08xlX8ovKEJq93gc9V78CFPdyC
+	JZ9cTPTlD/eetfX+vZ/nB9P5n4s2+5yMeeX5Mubk+9TLZjunsIocXlfMq9MpxhAyI2P7WsWQ
+	C4s2HXT5VeNnw+6o5nX6hRJLcUaioRZzUXEiAJ6eQ/31AgAA
+X-CMS-MailID: 20240423032657epcas5p4d97f377b48bd40e792d187013c5e409c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240423032657epcas5p4d97f377b48bd40e792d187013c5e409c
+References: <e8c28f87-ff8a-4f30-b252-46e2260357c9@kernel.dk>
+	<CGME20240423032657epcas5p4d97f377b48bd40e792d187013c5e409c@epcas5p4.samsung.com>
 
+On 4/22/24 18:11, Jens Axboe wrote:
+>On 4/18/24 3:31 AM, hexue wrote:
+>> This patch is intended to release the CPU resources of io_uring in
+>> polling mode. When IO is issued, the program immediately polls for
+>> check completion, which is a waste of CPU resources when IO commands
+>> are executed on the disk.
+>> 
+>> I add the hybrid polling feature in io_uring, enables polling to
+>> release a portion of CPU resources without affecting block layer.
+>> 
+>> - Record the running time and context switching time of each
+>>   IO, and use these time to determine whether a process continue
+>>   to schedule.
+>> 
+>> - Adaptive adjustment to different devices. Due to the real-time
+>>   nature of time recording, each device's IO processing speed is
+>>   different, so the CPU optimization effect will vary.
+>> 
+>> - Set a interface (ctx->flag) enables application to choose whether
+>>   or not to use this feature.
+>> 
+>> The CPU optimization in peak workload of patch is tested as follows:
+>>   all CPU utilization of original polling is 100% for per CPU, after
+>>   optimization, the CPU utilization drop a lot (per CPU);
+>> 
+>>    read(128k, QD64, 1Job)     37%   write(128k, QD64, 1Job)     40%
+>>    randread(4k, QD64, 16Job)  52%   randwrite(4k, QD64, 16Job)  12%
+>> 
+>>   Compared to original polling, the optimised performance reduction
+>>   with peak workload within 1%.
+>> 
+>>    read  0.29%     write  0.51%    randread  0.09%    randwrite  0%
+>
+>As mentioned, this is like a reworked version of the old hybrid polling
+>we had. The feature itself may make sense, but there's a slew of things
+>in this patch that aren't really acceptable. More below.
 
-
-On 2024/4/23 上午11:13, Mi, Dapeng wrote:
-> 
-> On 4/23/2024 10:53 AM, maobibo wrote:
->>
->>
->> On 2024/4/23 上午10:44, Mi, Dapeng wrote:
->>>
->>> On 4/23/2024 9:01 AM, maobibo wrote:
->>>>
->>>>
->>>> On 2024/4/23 上午1:01, Sean Christopherson wrote:
->>>>> On Mon, Apr 22, 2024, maobibo wrote:
->>>>>> On 2024/4/16 上午6:45, Sean Christopherson wrote:
->>>>>>> On Mon, Apr 15, 2024, Mingwei Zhang wrote:
->>>>>>>> On Mon, Apr 15, 2024 at 10:38 AM Sean Christopherson 
->>>>>>>> <seanjc@google.com> wrote:
->>>>>>>>> One my biggest complaints with the current vPMU code is that 
->>>>>>>>> the roles and
->>>>>>>>> responsibilities between KVM and perf are poorly defined, which 
->>>>>>>>> leads to suboptimal
->>>>>>>>> and hard to maintain code.
->>>>>>>>>
->>>>>>>>> Case in point, I'm pretty sure leaving guest values in PMCs 
->>>>>>>>> _would_ leak guest
->>>>>>>>> state to userspace processes that have RDPMC permissions, as 
->>>>>>>>> the PMCs might not
->>>>>>>>> be dirty from perf's perspective (see 
->>>>>>>>> perf_clear_dirty_counters()).
->>>>>>>>>
->>>>>>>>> Blindly clearing PMCs in KVM "solves" that problem, but in 
->>>>>>>>> doing so makes the
->>>>>>>>> overall code brittle because it's not clear whether KVM _needs_ 
->>>>>>>>> to clear PMCs,
->>>>>>>>> or if KVM is just being paranoid.
->>>>>>>>
->>>>>>>> So once this rolls out, perf and vPMU are clients directly to 
->>>>>>>> PMU HW.
->>>>>>>
->>>>>>> I don't think this is a statement we want to make, as it opens a 
->>>>>>> discussion
->>>>>>> that we won't win.  Nor do I think it's one we *need* to make. 
->>>>>>> KVM doesn't need
->>>>>>> to be on equal footing with perf in terms of owning/managing PMU 
->>>>>>> hardware, KVM
->>>>>>> just needs a few APIs to allow faithfully and accurately 
->>>>>>> virtualizing a guest PMU.
->>>>>>>
->>>>>>>> Faithful cleaning (blind cleaning) has to be the baseline
->>>>>>>> implementation, until both clients agree to a "deal" between them.
->>>>>>>> Currently, there is no such deal, but I believe we could have 
->>>>>>>> one via
->>>>>>>> future discussion.
->>>>>>>
->>>>>>> What I am saying is that there needs to be a "deal" in place 
->>>>>>> before this code
->>>>>>> is merged.  It doesn't need to be anything fancy, e.g. perf can 
->>>>>>> still pave over
->>>>>>> PMCs it doesn't immediately load, as opposed to using 
->>>>>>> cpu_hw_events.dirty to lazily
->>>>>>> do the clearing.  But perf and KVM need to work together from the 
->>>>>>> get go, ie. I
->>>>>>> don't want KVM doing something without regard to what perf does, 
->>>>>>> and vice versa.
->>>>>>>
->>>>>> There is similar issue on LoongArch vPMU where vm can directly pmu 
->>>>>> hardware
->>>>>> and pmu hw is shard with guest and host. Besides context switch 
->>>>>> there are
->>>>>> other places where perf core will access pmu hw, such as tick
->>>>>> timer/hrtimer/ipi function call, and KVM can only intercept 
->>>>>> context switch.
->>>>>
->>>>> Two questions:
->>>>>
->>>>>   1) Can KVM prevent the guest from accessing the PMU?
->>>>>
->>>>>   2) If so, KVM can grant partial access to the PMU, or is it all 
->>>>> or nothing?
->>>>>
->>>>> If the answer to both questions is "yes", then it sounds like 
->>>>> LoongArch *requires*
->>>>> mediated/passthrough support in order to virtualize its PMU.
->>>>
->>>> Hi Sean,
->>>>
->>>> Thank for your quick response.
->>>>
->>>> yes, kvm can prevent guest from accessing the PMU and grant partial 
->>>> or all to access to the PMU. Only that if one pmu event is granted 
->>>> to VM, host can not access this pmu event again. There must be pmu 
->>>> event switch if host want to.
->>>
->>> PMU event is a software entity which won't be shared. did you mean if 
->>> a PMU HW counter is granted to VM, then Host can't access the PMU HW 
->>> counter, right?
->> yes, if PMU HW counter/control is granted to VM. The value comes from 
->> guest, and is not meaningful for host.  Host pmu core does not know 
->> that it is granted to VM, host still think that it owns pmu.
-> 
-> That's one issue this patchset tries to solve. Current new mediated x86 
-> vPMU framework doesn't allow Host or Guest own the PMU HW resource 
-> simultaneously. Only when there is no !exclude_guest event on host, 
-> guest is allowed to exclusively own the PMU HW resource.
-> 
-> 
->>
->> Just like FPU register, it is shared by VM and host during different 
->> time and it is lately switched. But if IPI or timer interrupt uses FPU 
->> register on host, there will be the same issue.
-> 
-> I didn't fully get your point. When IPI or timer interrupt reach, a 
-> VM-exit is triggered to make CPU traps into host first and then the host 
-> interrupt handler is called. Or are you complaining the executing 
-> sequence of switching guest PMU MSRs and these interrupt handler?
-It is not necessary to save/restore PMU HW at every vm exit, it had 
-better be lately saved/restored, such as only when vcpu thread is 
-sched-out/sched-in, else the cost will be a little expensive.
-
-I know little about perf core. However there is PMU HW access in 
-interrupt mode. That means PMU HW access should be irq disabled in 
-general mode, else there may be nested PMU HW access. Is that true?
-
-> 
-> 
->>
->> Regards
->> Bibo Mao
->>>
->>>
->>>>
->>>>>
->>>>>> Can we add callback handler in structure kvm_guest_cbs?  just like 
->>>>>> this:
->>>>>> @@ -6403,6 +6403,7 @@ static struct perf_guest_info_callbacks 
->>>>>> kvm_guest_cbs
->>>>>> = {
->>>>>>          .state                  = kvm_guest_state,
->>>>>>          .get_ip                 = kvm_guest_get_ip,
->>>>>>          .handle_intel_pt_intr   = NULL,
->>>>>> +       .lose_pmu               = kvm_guest_lose_pmu,
->>>>>>   };
->>>>>>
->>>>>> By the way, I do not know should the callback handler be triggered 
->>>>>> in perf
->>>>>> core or detailed pmu hw driver. From ARM pmu hw driver, it is 
->>>>>> triggered in
->>>>>> pmu hw driver such as function kvm_vcpu_pmu_resync_el0,
->>>>>> but I think it will be better if it is done in perf core.
->>>>>
->>>>> I don't think we want to take the approach of perf and KVM guests 
->>>>> "fighting" over
->>>>> the PMU.  That's effectively what we have today, and it's a mess 
->>>>> for KVM because
->>>>> it's impossible to provide consistent, deterministic behavior for 
->>>>> the guest.  And
->>>>> it's just as messy for perf, which ends up having wierd, cumbersome 
->>>>> flows that
->>>>> exists purely to try to play nice with KVM.
->>>> With existing pmu core code, in tick timer interrupt or IPI function 
->>>> call interrupt pmu hw may be accessed by host when VM is running and 
->>>> pmu is already granted to guest. KVM can not intercept host 
->>>> IPI/timer interrupt, there is no pmu context switch, there will be 
->>>> problem.
->>>>
->>>> Regards
->>>> Bibo Mao
->>>>
->>
-
+Thank you very much for your patience in reviewing and correcting, I will
+improve those as soon as possible and submit the v3 patch later.
 
