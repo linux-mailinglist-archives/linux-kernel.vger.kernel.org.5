@@ -1,187 +1,202 @@
-Return-Path: <linux-kernel+bounces-157108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD5D48B0CE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:44:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 592588B0CEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:44:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B51EB1C213AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:44:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 104BA28A37C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:44:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BCF915ECC9;
-	Wed, 24 Apr 2024 14:44:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A4A15ECEA;
+	Wed, 24 Apr 2024 14:44:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="L71uEKY1"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fCycvUDI"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D9D51E501
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 14:44:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F22F5158867;
+	Wed, 24 Apr 2024 14:44:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713969865; cv=none; b=uSAWcjzIPDz+zYE3t4Hd4hdlka3v8MzYt8KPVLP5SjCmSDrLnVv2vJlyNVNRx3AGMF5CoKdFXrPwxzl0eSsJyDfcYYWhutHCBPwBMGQfh/eibbVZQW8WC8c6aJy7dRdOm1vYt7tTo4Kykx0qHCnce2eszJRZE+KVEUPoBrn2UlU=
+	t=1713969883; cv=none; b=RpSw/2xdRsnhNJxIFd/w/9Iz87nrnfsuVHlyTWDxNzLh032IVcvMtB61TEVD361kSoG1naBdAwCua97c4H6bgYO4ICS1tYQ7z8uD6lIsglmBVvtICnqtaKT9Xqg82ABFp1id4GzfeV6LafU0bNv8huwu+VEzkglTztBqhpJRDe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713969865; c=relaxed/simple;
-	bh=uWg8+ZtPG/ZLFFpZhnCvLb3hEOIhDlfyUNRqDJX575U=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WqbkP3SMOCMeow5hzpI/6pFBS4klz7w+ZtVpyKkCNQSUP+6WKAspv29loQ5vwHDn+HPjgetxhWYABrLvcGASlrhdY6wcbery4/IiP/l0y5XRPqNYnG9AiOF5kpCuQlKd2TdyfJStUZDMeZpOWWQQPKC6EYf7f82Pv4+PXQwtoUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=L71uEKY1; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com [209.85.128.197])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D8933411E9
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 14:44:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1713969858;
-	bh=cDX/Ta7sZiIBn1XBmkDtAtlryH2vK9PZZdp/V3uN0rM=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=L71uEKY1PYxrzqFHLPJpKullI8cf/v6xYlugw8vkM0XZRb/u3zDAK9bzNPXOzx18W
-	 N3OCngNDCbzpA5GWI2pC1NdNKrX56kk3CXGCR0XOjEJdCatrbGlQKuWjEyk73LcgdF
-	 6RkrTO4g9ZqxGK48SeiiRGleJ4Su4FOZR6yZ3EV5XLuduSiGkQ9kO5efkwdvkBN4fI
-	 U+HJ2gXwo/9loC3kgziscJJjU0FR/Y+ssmfa7F5e5/lH/KeL8EyHjIV+gGoJlml4Si
-	 ZVjj9/ranb8WsNzOMDCSGthbyBIHtlOhHSKdL0XGkHWqS74Dghe80l2recxltny87s
-	 WtOZyU6muSqIw==
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-61afa79081dso116608707b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 07:44:18 -0700 (PDT)
+	s=arc-20240116; t=1713969883; c=relaxed/simple;
+	bh=pFnSYolVK1sAbkMTB3+L70JGd/1tIizk76RsmxUjoqM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=fLTl5aqQQAdcTv8eAnrpGU6ewqStUln+m5vawgkcVNgH4skj0HkyvntqgQM6u+6OWMHbdkiH6e8HClsJlBArT0FUHwXnqaGjFZTdXBnHNGAv7O0+vAUk4KPp6BLAxvud+CZMkTfxePLv1wj1wXM3Nq51ssrjN4Of4tBNEYsalMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fCycvUDI; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ee0642f718so785638b3a.0;
+        Wed, 24 Apr 2024 07:44:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713969881; x=1714574681; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9AlBe3kk5ztZRFTkgvZ6SOgy/VblETXj3psnO1nVDEQ=;
+        b=fCycvUDIOelkS1dIvzCtIVwLCZRWx1Y0EF1FOiCQSMmO15VYNxelHGAePzA7m9Brdl
+         d7TtVvfeBL4iOO6qgu1acrGAYFoTV+k4vA8II+5i3jQ1EWD8UzhGbmRn9r4/c4Mq4kXZ
+         5gdJEEFPNUGT19YbG4frN+6n3pnfxHfDd7Ydp0EJaTcbA9wSGY5I6L8kfTk7DXXuMo5w
+         R2tdH3zXsXSGCzoF+oriam75hPEB9nOeJnRW1HIXlv65VyWlSBUsqA/t4crP/bwOnjtt
+         Lkop+/SXf0jCSwTy7kMx/FuW1iJb3aLa9F+jdBll5r0sUZpWYJeGHY3hgWWCd6e3GDzM
+         13HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713969858; x=1714574658;
-        h=content-transfer-encoding:cc:to:subject:message-id:date
-         :mime-version:references:in-reply-to:from:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=cDX/Ta7sZiIBn1XBmkDtAtlryH2vK9PZZdp/V3uN0rM=;
-        b=URvmnikHZ/HPhg0fRCCEmNdW7h9ip/D9Lt1UqB1nRUCvN0QVVLcM5CUb19AldbDi2K
-         KdYz5uMpgQmAaj/tGvPKwunle5KvgVwLbS2WxP0JKyKSE6dM0SzUaY+Q53MgV45q5jIX
-         t6zFbvHLE4HbOdLypWQBGZhEmcJyVMzxLp8kwW70VKcDwLV6OTMyJh1ftXihMDUra61H
-         rgUhrWWrBTeNMc9f7Tx1e9bIrx/uxkx9WTR9sgkZZerFOzHVf8dH+vOUdhicF5os8oAk
-         mUVus4EL7Gd6nEGw0/xFNLjvkKXwY9FryEGV8HVea1Vm1XXq10APDwhoW1ADae4Qh6dM
-         I8Eg==
-X-Forwarded-Encrypted: i=1; AJvYcCVhdp9jJEln4cyPK9FMdBHBwUeI8ZIKPDw14PTr45rO2mvXc3TTDV4tQviy2LSxopEniy2hkz94QlVvZtVILVC+eP6bsChKAO0gn7OB
-X-Gm-Message-State: AOJu0YyqNlcF8zI70CV8wA08QB1Zk4ppPNHY0GJ4gUWlCI/dAWzSXN8x
-	siwUfidLOyVZjkrL+Odgao/1ZhKxA3yBobV9KKhRbtu82j5+mVA1WQ0G/aKEkVIHnv+joiBwUXD
-	Bbcdy0OksCL4h+tPL6NaGNpTZUsfAT2daVbz0jQJRe0eVzkRSDMYmCTZvknU/qVNy1XAmy0wLLV
-	TQwssttDzVY3O7kzn800OJmVXR3zEMtxhCuHTobirF6ErgUvu3pR5JWFX3ilzV
-X-Received: by 2002:a05:690c:7484:b0:61a:ae0a:1f4d with SMTP id jv4-20020a05690c748400b0061aae0a1f4dmr2670986ywb.17.1713969857834;
-        Wed, 24 Apr 2024 07:44:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFAnkvq38wN8yqT3TvahJf1BBokL9ppAftSGKph8yTZ41xJ8L68lNa9+ahDLaDOVmyJ5hmuy3djep2ZQx+2DTg=
-X-Received: by 2002:a05:690c:7484:b0:61a:ae0a:1f4d with SMTP id
- jv4-20020a05690c748400b0061aae0a1f4dmr2670968ywb.17.1713969857512; Wed, 24
- Apr 2024 07:44:17 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 24 Apr 2024 07:44:16 -0700
-From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <SH0PR01MB08415B9CDDFB1A4FAB0FC4A9F910A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
-References: <20240424075856.145850-1-joshua.yeong@starfivetech.com>
- <20240424075856.145850-2-joshua.yeong@starfivetech.com> <CAJM55Z-C7XkFo4STk3rdLG4kvPfed-AfrHB1QJ-Tzt1LDoKw9w@mail.gmail.com>
- <SH0PR01MB0841F8C45091E4A08020ADF2F910A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
- <CAJM55Z9NAeRb_3ZBJksXt+4fJMdcYw55bfAs0EpSnM8VWBKQag@mail.gmail.com> <SH0PR01MB08415B9CDDFB1A4FAB0FC4A9F910A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
+        d=1e100.net; s=20230601; t=1713969881; x=1714574681;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9AlBe3kk5ztZRFTkgvZ6SOgy/VblETXj3psnO1nVDEQ=;
+        b=CVsE4b4DHRFPWk4ZSy7+w5xbDLByfWamryGOcBdsOCKdy0OXDudm5El4O8fyFlV0Kn
+         m3j3KTAs1c/MS6wtN/SeG0htNQNU62gZN/PBYrsyzqIboCOI159neKvzSIdeuZzkuIsW
+         QtVIEiM2b1FWnzdBdw8Z3j1cDFsEqHcRFTxJm3CUGcRCfHTWPqzhTHDCSGRpkERP/p2t
+         EvWKsaoeyvX6UyF+PSkrFoJx3Lgxb9wKHc8DtJsbANslLGngGZ/fc/JRTbt0e7YmU0pn
+         itI+VqRWGYjgq2As9yNjYb9HIGcj4cwrFD9gE7MR0Hd0ObMOKsrZTuiBneRZo1y7oSk2
+         ChjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW5TFuIgRYyiNLi54bsy6UBqp5NJVPe8aJjSWR6/tTCOEoh54irVxs3OkKOlsu5Ogys6nFVQyEtt2H9G1Ju+VrMikaYdKLVX+iewPkOtQnYKN0Jn9jhpQcn8zoYgMbhQ9Sswkg0uF3nesyvdDwg8rFwisToXGEMzbaNavTwWGAjFZk44y9ZQEibaT1qbUUXAU5QL3nz7LCin1UIKso=
+X-Gm-Message-State: AOJu0YwVavca6xjkRj9RttTQ7zMPfTlsoLxDmbJKiy9ibZfmYzRMF3z3
+	/XFsqpNYXUcvqgWjRHu6N22YsCDLsKwQJmQ0Jfq0AI3z+P+5O/Mi
+X-Google-Smtp-Source: AGHT+IEZ2apyKdcveQJKiKV0/EodXodOYVr/N97y8zIovzzSFGYRD4Ce2vZBNWEv4JnoIEF0HZVlwg==
+X-Received: by 2002:a05:6a20:3c8a:b0:1a9:97ab:d09a with SMTP id b10-20020a056a203c8a00b001a997abd09amr4044692pzj.16.1713969880981;
+        Wed, 24 Apr 2024 07:44:40 -0700 (PDT)
+Received: from [127.0.1.1] ([2001:ee0:50f5:5d0:6ca6:7f20:5242:67cc])
+        by smtp.googlemail.com with ESMTPSA id a5-20020aa78e85000000b006e554afa254sm11495743pfr.38.2024.04.24.07.44.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 07:44:40 -0700 (PDT)
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+Subject: [PATCH v2 0/6] Ensure the copied buf is NUL terminated
+Date: Wed, 24 Apr 2024 21:44:17 +0700
+Message-Id: <20240424-fix-oob-read-v2-0-f1f1b53a10f4@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Wed, 24 Apr 2024 07:44:16 -0700
-Message-ID: <CAJM55Z_G5EKSjHztCQ+gXDGwfpziZTE=HsHmwydJWB-uorMOqA@mail.gmail.com>
-Subject: RE: [PATCH v3 1/2] cache: Add StarFive StarLink cache management for
- StarFive JH8100
-To: Joshua Yeong <joshua.yeong@starfivetech.com>, 
-	Emil Renner Berthing <emil.renner.berthing@canonical.com>, "robh@kernel.org" <robh@kernel.org>, 
-	"krzk+dt@kernel.org" <krzk+dt@kernel.org>, "conor+dt@kernel.org" <conor+dt@kernel.org>, 
-	"conor@kernel.org" <conor@kernel.org>, "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>, 
-	"palmer@dabbelt.com" <palmer@dabbelt.com>, "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>, 
-	Leyfoon Tan <leyfoon.tan@starfivetech.com>, JeeHeng Sia <jeeheng.sia@starfivetech.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAMEaKWYC/3WMQQ6CMBBFr0Jm7ZhOqSm68h6GRS1TmESoaQ3Rk
+ N7dyt7l+z/vbZA5CWe4NBskXiVLXCroQwN+csvIKENl0EobZbTGIG+M8Y6J3YB0dmxDF1pLBFV
+ 5Jq7/nrv1lSfJr5g+e32l3/ontBIqZKW7k/GtImuu4+zkcfRxhr6U8gUzNIQ7qAAAAA==
+To: Jesse Brandeburg <jesse.brandeburg@intel.com>, 
+ Tony Nguyen <anthony.l.nguyen@intel.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Paul M Stillwell Jr <paul.m.stillwell.jr@intel.com>, 
+ Rasesh Mody <rmody@marvell.com>, Sudarsana Kalluru <skalluru@marvell.com>, 
+ GR-Linux-NIC-Dev@marvell.com, Anil Gurumurthy <anil.gurumurthy@qlogic.com>, 
+ Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>, 
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ "Martin K. Petersen" <martin.petersen@oracle.com>, 
+ Fabian Frederick <fabf@skynet.be>, Saurav Kashyap <skashyap@marvell.com>, 
+ GR-QLogic-Storage-Upstream@marvell.com, 
+ Nilesh Javali <nilesh.javali@cavium.com>, Arun Easi <arun.easi@cavium.com>, 
+ Manish Rangankar <manish.rangankar@cavium.com>, 
+ Vineeth Vijayan <vneethv@linux.ibm.com>, 
+ Peter Oberparleiter <oberpar@linux.ibm.com>, 
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+ Alexander Gordeev <agordeev@linux.ibm.com>, 
+ Christian Borntraeger <borntraeger@linux.ibm.com>, 
+ Sven Schnelle <svens@linux.ibm.com>, Sunil Goutham <sgoutham@marvell.com>, 
+ Linu Cherian <lcherian@marvell.com>, Geetha sowjanya <gakula@marvell.com>, 
+ Jerin Jacob <jerinj@marvell.com>, hariprasad <hkelam@marvell.com>, 
+ Subbaraya Sundeep <sbhatta@marvell.com>
+Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org, 
+ Saurav Kashyap <saurav.kashyap@cavium.com>, linux-s390@vger.kernel.org, 
+ Jens Axboe <axboe@kernel.dk>, Bui Quang Minh <minhquangbui99@gmail.com>, 
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>
+X-Mailer: b4 0.13.0
 
-Joshua Yeong wrote:
->
->
-> Emil Renner Berthing wrote:
-> > Joshua Yeong wrote:
-> > > Emil Renner Berthing wrote:
-> > > > Joshua Yeong wrote:
-> > > > > Add StarFive Starlink cache management driver for
-> > > > > JH8100 SoC. This driver enables RISC-V non-standard cache
-> > > > > operation on
-> > > > > JH8100 that does not support Zicbom extension instructions.
-> > > > >
-> > > > > Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
-> > > > > ---
-> > > > >  drivers/cache/Kconfig                   |   9 ++
-> > > > >  drivers/cache/Makefile                  |   5 +-
-> > > > >  drivers/cache/starfive_starlink_cache.c | 135
-> > > > > ++++++++++++++++++++++++
-> > > > >  3 files changed, 147 insertions(+), 2 deletions(-)  create mode
-> > > > > 100644 drivers/cache/starfive_starlink_cache.c
-> > > > >
-> > > > > diff --git a/drivers/cache/Kconfig b/drivers/cache/Kconfig index
-> > > > > 9345ce4976d7..9181cd391f53 100644
-> > > > > --- a/drivers/cache/Kconfig
-> > > > > +++ b/drivers/cache/Kconfig
-> > > > > @@ -14,4 +14,13 @@ config SIFIVE_CCACHE
-> > > > >  	help
-> > > > >  	  Support for the composable cache controller on SiFive platfor=
-ms.
-> > > > >
-> > > > > +config STARFIVE_STARLINK_CACHE
-> > > > > +	bool "StarFive StarLink Cache controller"
-> > > > > +	depends on RISCV
-> > > > > +	depends on ARCH_STARFIVE
-> > > > > +	select RISCV_DMA_NONCOHERENT
-> > > > > +	select RISCV_NONSTANDARD_CACHE_OPS
-> > > > > +	help
-> > > > > +	  Support for the StarLink cache controller on StarFive platfor=
-ms.
-> > > >
-> > > > This is a bit misleading. The JH71x0s don't have this. It's only on
-> > > > the JH8100 so far, and hopefully later SoCs will just implement RIS=
-C-V
-> > standards for this.
-> > > > So maybe something like
-> > > >
-> > > > "Support for the StarLink cache controller on the StarFive JH8100 S=
-oC."
-> > > >
-> > >
-> > > Hi Emil,
-> > >
-> > > The StarLink-500 cache controller is not designed exclusively for JH8=
-100 SoC.
-> > > While it is true that it currently exists on the StarFive platform,
-> > > CPU/SoC that does not come with Zicbom extensions supported would nee=
-d
-> > > to rely on this cache drive to do cache management operations. I thin=
-k
-> > > we don=E2=80=99t need to mentioned 'JH8100 SoC' here.
-> >
-> > Wait, in the previous mail you said that future designs will implement =
-Zicbom
-> > and not need this work-around, but here you're talking about other SoCs=
- that
-> > do need it. So which is it?
->
-> If you visit the company website and look for StarLink-500, you will find=
- that
-> it is a standalone IP that the company is selling as an interconnect. Any=
-one
-> who integrates StarLink without Zicbom extensions may utilize the cache
-> management operation from this IP.
+Hi everyone,
 
-So then the "on StarFive platforms" part is wrong? Or will this always go
-together with the Dubhe cores?
+I found that some drivers contains an out-of-bound read pattern like this
 
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+	kern_buf = memdup_user(user_buf, count);
+	...
+	sscanf(kern_buf, ...);
+
+The sscanf can be replaced by some other string-related functions. This
+pattern can lead to out-of-bound read of kern_buf in string-related
+functions.
+
+This series fix the above issue by replacing memdup_user with
+memdup_user_nul.
+
+Thanks,
+Quang Minh.
+
+To: Jesse Brandeburg <jesse.brandeburg@intel.com>
+To: Tony Nguyen <anthony.l.nguyen@intel.com>
+To: David S. Miller <davem@davemloft.net>
+To: Eric Dumazet <edumazet@google.com>
+To: Jakub Kicinski <kuba@kernel.org>
+To: Paolo Abeni <pabeni@redhat.com>
+To: Paul M Stillwell Jr <paul.m.stillwell.jr@intel.com>
+To: Rasesh Mody <rmody@marvell.com>
+To: Sudarsana Kalluru <skalluru@marvell.com>
+To: GR-Linux-NIC-Dev@marvell.com
+To: Anil Gurumurthy <anil.gurumurthy@qlogic.com>
+To: Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>
+To: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
+To: Martin K. Petersen <martin.petersen@oracle.com>
+To: Fabian Frederick <fabf@skynet.be>
+To: Saurav Kashyap <skashyap@marvell.com>
+To: GR-QLogic-Storage-Upstream@marvell.com
+To: Nilesh Javali <nilesh.javali@cavium.com>
+To: Arun Easi <arun.easi@cavium.com>
+To: Manish Rangankar <manish.rangankar@cavium.com>
+To: Vineeth Vijayan <vneethv@linux.ibm.com>
+To: Peter Oberparleiter <oberpar@linux.ibm.com>
+To: Heiko Carstens <hca@linux.ibm.com>
+To: Vasily Gorbik <gor@linux.ibm.com>
+To: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Christian Borntraeger <borntraeger@linux.ibm.com>
+To: Sven Schnelle <svens@linux.ibm.com>
+To: Dupuis, Chad <chad.dupuis@cavium.com>
+To: Sunil Goutham <sgoutham@marvell.com>
+To: Linu Cherian <lcherian@marvell.com>
+To: Geetha sowjanya <gakula@marvell.com>
+To: Jerin Jacob <jerinj@marvell.com>
+To: hariprasad <hkelam@marvell.com>
+To: Subbaraya Sundeep <sbhatta@marvell.com>
+Cc: intel-wired-lan@lists.osuosl.org
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-scsi@vger.kernel.org
+Cc: Saurav Kashyap <saurav.kashyap@cavium.com>
+Cc: linux-s390@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+
+Changes in v2:
+- Patch 5: use memdup_user_nul instead
+- Add patch 6
+- Link to v1: https://lore.kernel.org/r/20240422-fix-oob-read-v1-0-e02854c30174@gmail.com
+
+---
+Bui Quang Minh (6):
+      ice: ensure the copied buf is NUL terminated
+      bna: ensure the copied buf is NUL terminated
+      bfa: ensure the copied buf is NUL terminated
+      qedf: ensure the copied buf is NUL terminated
+      cio: ensure the copied buf is NUL terminated
+      octeontx2-af: avoid off-by-one read from userspace
+
+ drivers/net/ethernet/brocade/bna/bnad_debugfs.c         | 4 ++--
+ drivers/net/ethernet/intel/ice/ice_debugfs.c            | 8 ++++----
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c | 4 +---
+ drivers/s390/cio/cio_inject.c                           | 2 +-
+ drivers/scsi/bfa/bfad_debugfs.c                         | 4 ++--
+ drivers/scsi/qedf/qedf_debugfs.c                        | 2 +-
+ 6 files changed, 11 insertions(+), 13 deletions(-)
+---
+base-commit: ed30a4a51bb196781c8058073ea720133a65596f
+change-id: 20240422-fix-oob-read-19ae7f8f3711
+
+Best regards,
+-- 
+Bui Quang Minh <minhquangbui99@gmail.com>
+
 
