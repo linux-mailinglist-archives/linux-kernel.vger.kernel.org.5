@@ -1,92 +1,134 @@
-Return-Path: <linux-kernel+bounces-157628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA6A08B13CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE0378B13CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:52:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77FF9288348
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:51:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A7B2283D99
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:52:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FFB413BAE7;
-	Wed, 24 Apr 2024 19:51:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E66A013B59F;
+	Wed, 24 Apr 2024 19:52:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="db4GSOgl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="iIf1iLAc"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1DC81F5E6;
-	Wed, 24 Apr 2024 19:51:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C1313A864
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 19:52:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713988307; cv=none; b=fwsRyXwm+0CH+K5uO9Z3I3teIhqmnYHhFGAVfJnvRObDQofrf2GUh3bx2134A7XCfmDSZEMpmU9RaieoAGjm33UFLX/053zYddxV2IESQqG6L2FeXh7Epmg4cS0htLKrc8kVv308X4qbqyQl4VqwxNrD/rYrraBRSwcCuVujMZQ=
+	t=1713988339; cv=none; b=d+YkVuugBc54trPvoXrfwbyaUTr9hoeXFCEJEamPYOrRVpGjYWSeTrY1KGzug+xSbYKFgyHPgS1FIj1a/oeHlvSbwJojgMt4c9sjx8stBsxPOK2Ipr/E0TLg1Rn38fMdok+E4SKe6wnlgcc2o+y7CQ2kk2mWO9xsXw3YO1U9fc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713988307; c=relaxed/simple;
-	bh=jtmAwDifDGJc40Ti3DRzPkHknfQW48k+SMlypzp4lZs=;
+	s=arc-20240116; t=1713988339; c=relaxed/simple;
+	bh=OEUC2mG2HoVkCMpXGy6hcCMCUEUM1JF3EnAfQaO8yb8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GAE3izWFWBbHVtnhALdJA1WhZxb44GfR3RUlPq4X2KfScn/gHoR+1+UY/M3JCYUoHwm51+b3S/qwUAxKqvho+no9lOHJO+2bchiITayiPTEJeunQDyUf6iaThkBV1tkdlnFpks8pQjL7RdAEo+nesB6XMcngw3pGRjML3NXBGTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=db4GSOgl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA47BC113CD;
-	Wed, 24 Apr 2024 19:51:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713988307;
-	bh=jtmAwDifDGJc40Ti3DRzPkHknfQW48k+SMlypzp4lZs=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=uT5mioDXZH3jIjkeIAXzv6ip5HnUyc0F6FTuBAwqdWvudKKQe0bOdCxYVYagwzGpCx+62ebtOfWDERptbqs5ZhWTer1FJ6zCAaAnYEncjlaK84vKvCmLV8PFfLe2Cvsx7CZFZzfpfPEe0ztVXZcQDJBu/3QmlkU2XcOu23UiAxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=iIf1iLAc; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 24B7A40E0249;
+	Wed, 24 Apr 2024 19:52:14 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id bWou7kdspDYi; Wed, 24 Apr 2024 19:52:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1713988330; bh=76E5+GlxOaXqSLlg3LeqXjnwLuK+EterfPATQfb8pYU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=db4GSOglHvJENshh/vuBu/MLHkqgfDPrR2ydUtSVPJW1JBWLfYzHD1EI/2jFTjMFU
-	 0qKcqROUzsG5HeNOHNV0wC+nNbhxA1OjgvPLxNoER+83PNobrfSjTsfoTsXjTnbKH2
-	 Hxvc7HvrRGU6Sp/ghYnWzpcWIyOSBxBsWa64WEEVFSi08Lm9tcpfYbFdEOjuTd/FsW
-	 AWhlGaFX6Najj/9S/Lm5mhtUdQ73nsUJjp6HhavsN+3rzArL3v5KBaQHyGiwzSR7Pu
-	 LgcQHjxXucVDpuy6qa3wcDJEFVrlfIuJkzCMaM9+3ryonnulvfCNMgqky3vx+lELhP
-	 55v+0hyja4Wrw==
-Date: Wed, 24 Apr 2024 14:51:44 -0500
-From: Rob Herring <robh@kernel.org>
-To: Peter Griffin <peter.griffin@linaro.org>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, krzk+dt@kernel.org,
-	conor+dt@kernel.org, vkoul@kernel.org, kishon@kernel.org,
-	alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-	s.nawrocki@samsung.com, cw00.choi@samsung.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, James.Bottomley@hansenpartnership.com,
-	ebiggers@kernel.org, linux-scsi@vger.kernel.org,
-	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-clk@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	tudor.ambarus@linaro.org, andre.draszik@linaro.org,
-	saravanak@google.com, willmcvicker@google.com
-Subject: Re: [PATCH v2 01/14] dt-bindings: clock: google,gs101-clock:  add
- HSI2 clock management unit
-Message-ID: <20240424195144.GA360683-robh@kernel.org>
-References: <20240423205006.1785138-1-peter.griffin@linaro.org>
- <20240423205006.1785138-2-peter.griffin@linaro.org>
+	b=iIf1iLAcv0qrRNjafwCjeSkVr5q8TcZsE7rY70geQkkVCzL/+WjqHVoDLfXv4rF1Y
+	 2HG1XLotN8mblmcWo9kFtQ4rqdbfYIhnQOIIBbRU6IjmAc2/4ON43Tr7ZCiSr62tn/
+	 Six/He7bGAwzKYmXjeIwYi4YMuDzBjegK39Io1zVUVzWWbuuXV5Lx9kr8XFmFKuv4R
+	 qkSKHicMTwbK9W6aMYaKQwFWOS58JjJAOSbJ0DDWhxQo+wKpcwQ1/5ddt4zGTKiwL9
+	 lfycIX/s+tRbyRDAE46+LcjDdG+W8KidbAWXrqRW4hDNIwQ7aQvK0giD3ICyKpFRPq
+	 ZF2kxXQJ1DhIyDrcaMDb8gDt8mrqmmqKr9KMzeA4yA/XgY/fLVpi8GRTt8QTIRDzGK
+	 w95Ren6nBN/MqQPUwnWskMGVOpuKIQ9D6Xlm3bryD/YIVkOcLpjzIVqbqqOPp+nsrd
+	 GI6zK7yMzkqHTcbZt6fZ4GIMw/rjCBPPFujdk2eO38CTb+bKEu6G4JM509lXMpflPR
+	 OPCxDHB/WKExaSZU+4oz9cyR959Vykuh5CoaSCDp15EFizjWowfKa570J8gHBVpb0v
+	 FHJt7T6M4M3nhdBTmbvmCb/eIYDysKqfz6MqOrxt/A5625avyqu7k7JRYTjECQsVJG
+	 kU0v4kkgrmMfObO9u18Fc/Fw=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E7FE940E016B;
+	Wed, 24 Apr 2024 19:52:02 +0000 (UTC)
+Date: Wed, 24 Apr 2024 21:51:57 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Paul Gortmaker <paulg@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Richard Purdie <richard.purdie@linuxfoundation.org>
+Subject: Re: Intermittent Qemu boot hang/regression traced back to INT 0x80
+ changes
+Message-ID: <20240424195157.GGZili3b-AxmUDlipA@fat_crate.local>
+References: <20240424185806.GB101235@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240423205006.1785138-2-peter.griffin@linaro.org>
+In-Reply-To: <20240424185806.GB101235@kernel.org>
 
-On Tue, Apr 23, 2024 at 09:49:53PM +0100, Peter Griffin wrote:
-> Add dt schema documentation and clock IDs for the High Speed Interface
-> 2 (HSI2) clock management unit. This CMU feeds high speed interfaces
-> such as PCIe and UFS.
-> 
-> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
-> Reviewed-by: André Draszik <andre.draszik@linaro.org>
-> ---
->  .../bindings/clock/google,gs101-clock.yaml    | 30 ++++++++-
->  include/dt-bindings/clock/google,gs101.h      | 63 +++++++++++++++++++
->  2 files changed, 91 insertions(+), 2 deletions(-)
+On Wed, Apr 24, 2024 at 02:58:06PM -0400, Paul Gortmaker wrote:
+..
+> pci 0000:00:1d.0: [8086:2934] type 00 class 0x0c0300 conventional PCI endpoint
+> pci 0000:00:1d.0: BAR 4 [io  0xc080-0xc09f]
+> pci 0000:00:1d.1: [8086:2935] type 00 class 0x0c0300 conventional PCI endpoint
+> pci 0000:00:1d.1: BAR 4 [io  0xc0a0-0xc0bf]
+> pci 0000:00:1d.2: [8086:2936] type 00 class 0x0c0300 conventional PCI endpoint
+> <hang - not always exactly here, but always in this block of PCI printk>
 
-This collides with André's work adding HSI0. Perhaps combine the series 
-or even the patches and just send clocks as a series. Then it is clear 
-who should merge it.
+How would those commits have anything to do with such an early hang?!
 
-Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+Nothing that early is issuing INT80 32-bit syscalls, is it?
 
-Rob
+Btw, can you checkout the Linus tree at...
+
+f35e46631b28 Merge tag 'x86-int80-20231207' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+f4116bfc4462 x86/tdx: Allow 32-bit emulation by default
+
+
+<-- here and test that commit as the top one?
+
+55617fb991df x86/entry: Do not allow external 0x80 interrupts 
+
+which reminds me - that hang could be actually that guest kernel
+panicking but the panic not coming out to the console.
+
+When it hangs, can you connect with gdb to qemu and dump stack and
+registers?
+
+Make sure you have DEBUG_INFO enabled in the guest kernel.
+
+Is this even a guest?
+
+I know you had guests last time you reported the alternatives issue.
+
+Right, and then test the tree checked out at this commit:
+
+be5341eb0d43 x86/entry: Convert INT 0x80 emulation to IDTENTRY
+
+The others should be unrelated...
+
+b82a8dbd3d2f x86/coco: Disable 32-bit emulation by default on TDX and SEV
+
+Hmm.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
