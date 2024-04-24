@@ -1,197 +1,220 @@
-Return-Path: <linux-kernel+bounces-157172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68DB18B0DB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:14:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83E1A8B0E7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:36:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72F57B25376
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:14:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E42128E34C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1ED915F3F4;
-	Wed, 24 Apr 2024 15:14:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59DE1635AA;
+	Wed, 24 Apr 2024 15:35:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Cz/AbNt1"
-Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="NRb/X98j"
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2103.outbound.protection.outlook.com [40.107.95.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D8E15EFC7
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:14:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.169
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713971659; cv=none; b=K4ZRbZTmKEhJYmAUqvpZVZRVVica+Ly6/9C/o6c3BWWVe2pWMARP8c6lD92n/zO+7KIHRsxbi/dJW7yXLVgEk2UlGYZGF2aJ43jvRvZ58k8mS1yKGq25lEQi1lzeYYonVQUWF3tHJoeCeZQmB4FOL5s9q+oXkGrq9NM89Wd7I/E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713971659; c=relaxed/simple;
-	bh=9ApGTsY8uxB5PcD5HHBxIE2iGBtDP6lO/IMIeZfW83Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bD46+RcI1+nZsyVyKqWJumGkr08YQpwCztYx/PPDjPvXiMOX6ZQnoMIYhWQzx5CMX7lXwK/Y+lMNPXv9FyffbFyD+LypzeQw9pBzwgRIvbeSPzO/sEweaubB1JjWkMd7QlDascrjQ8CRoBjTsYEPmQILiDhu6Xv3L84FnRkJcnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Cz/AbNt1; arc=none smtp.client-ip=209.85.166.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-36a0c8c5f18so109645ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:14:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713971657; x=1714576457; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l96CL3C0CMjmESU5d/Yu/i0e8lRRnuduS9TzRkrFrs8=;
-        b=Cz/AbNt1Xdf4OUbM6wP0UmJ/lTr//CYR2z5BhFNhyUKcx89V29c8HbcaMdwjVB3WR3
-         dGwqUT0n3lcvVyM0QYhqapM1NcN0r/pe+E+El2XgREoZOLnP5IzHc9pbIflScsYJbTE5
-         uYJLBKjJMHjPKCZXIBRVvZH2iota/vPeI4VyNiYFFVEN38iEMsYreIH7ztJ/8Qj+l1J/
-         40UmBiHA7h+rHPpVCxUeqbD0rXL9/duwhYjophMvdbqqpgPgrnKeEbsoVmoywz8PQEQk
-         JtFbubS6RDJzaVJK/4kfv31RKmFauUpjDdwUHy40MJCnUfg9wtJ6obdT6j601oqR/N0z
-         kvew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713971657; x=1714576457;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l96CL3C0CMjmESU5d/Yu/i0e8lRRnuduS9TzRkrFrs8=;
-        b=BUqV8zTcnxBM6m8jAaAWH/CIuU+nBQ+SQmbwotFUHJ6k4A9+7E2SBuNV3/a5yt1waT
-         3/2+CM+SDqSLtZ9CukP+8A4Fap7oIylNUDXyXrWxH1d59Qex09ir2D+bI9/I0Dc8SXO1
-         0UxU+hexC3KZMb0RsieIBXru3/DW0W+u73YunLU4nS82GQmC8qjA3J5HxZDShL1VUoeW
-         WW9Fmge3nMINpHPdFHUDn4AXc53Kd7XVNCU9LPD6sNdvxGahg/5DoS0uOu1SbCS8eS+j
-         NVBOidBtiXWXX1r4Raxlg9EkUEGi+Vih5uoMhjWMsy373kJHA0khStjifH0DU909CSS1
-         /M1A==
-X-Forwarded-Encrypted: i=1; AJvYcCVvbBpDtoe2EgnHwOXM9UF3RvkuB/79/cmJBwjAMFzDv31CQh8Yulut5PCp4YdkhRjuBDq/Viq1bkkEGP2MQ5fu5/anLbvuI4gJsMrJ
-X-Gm-Message-State: AOJu0YzMf5PtH2QFhpplA7ql5Mx/GoOarP1jrVSSFAQEllW59RzDBxVo
-	2f+yycj7nvQ9iDCjwwzmdgWx76MLKC88tlb9Wvn0zVDKo/Ajy4q94zarpbJB1Pu2hC21aaUWofV
-	w1L+i5SMRAeUShE2F0yM1WFWfzfTNUZ7yBM36
-X-Google-Smtp-Source: AGHT+IF1c/EmZd9psYA18Gea/5hrwJliRY1WEl7Zid/rcAB2YtofHNqZVPhKqZjEnOZaG/rK0JCnXz3rEn7q6LLfybA=
-X-Received: by 2002:a92:c9c9:0:b0:36b:fbb3:2e96 with SMTP id
- k9-20020a92c9c9000000b0036bfbb32e96mr227535ilq.22.1713971656469; Wed, 24 Apr
- 2024 08:14:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 038E0161322;
+	Wed, 24 Apr 2024 15:35:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.103
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713972902; cv=fail; b=SsI4qTdKIWU5Yg9wSw2kXBCn1TWCnZyPp/TnS0OueapmMVcAzVmGkzGs2AAYNCt6FkYxCyQ6XkOK3YoPPbkmP+eg4hSmR0SglybHOcP/3mdVZT8CP4KtbPAgC1JnlvcS29+w7HloUkDCIxSjj7wSqVFY4rL3fCxs6CcAqhjPE3A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713972902; c=relaxed/simple;
+	bh=kHd1Ry3YnBdkXkRcPuiomPS+1pRowH3aS3iSttM88eA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=u5iORqmTsmUrUr2xH/+y4ymeMzejLyEWbG35rLnolV3BLRQGp4kj83vRXM9PWpwm6SZIE3zppBioVgEbtnaTS9u2ewFA6WB1dAUo6FbzR2oNCnp0Xo9oGWSeUfO3as1fEu70Ug/W4zCf9QeKxjgcYBaegICaU2Ekew/ZpSC9v68=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com; spf=pass smtp.mailfrom=memverge.com; dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b=NRb/X98j; arc=fail smtp.client-ip=40.107.95.103
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G8cbm8vVscye2ZzUf5B7chWIeCeBPcAfWzLnC10DrGg4q+MbsF6t9IUmUumkQ2f6rZJrOxUWDB5t53n2Mc31A6Fx7Al1NM79yA17hq3AJEwpY9CuU+4niHmAEsIJ1QkQ4HLX/BEVOA2gJonJj8czYA84oaMDyl3Qedy4V8FWmQmw4mZrUAQVsjBkdQ+38JesvEi1cajL0v9zUKHccOQERs3BF9EEKcHancAA3drHKyfr79XZOpbbnn4OrG/YgglCk/84sW8snQ7CRKnNmAN4plYVtDkf5H8xmWQoA85TSycPE1hUFtffprGR2Uqqxsl0+/SaRulkepUmW+dGIKiSCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qMs+xrt9+k20FUg4sXBvJmVVC1Dhf1Gh7jQGK6WsOsk=;
+ b=DNX8lNxCyfVdStWCXUGIfDBzyzZ1t96w3DAm58IJm7i2aR+7Q09qEUWpFY+55XdMsBYhtQBm1AFHJ7ODlkabZupMSjhBYRZ9CnmWA6SVJUMalasrJWPXt02VOxrPRBrWPqDsEFwKhPx7UGGqcLV/viJ9uO3oOEOygr6AvH4ZnZRMyhe9XFWTKAT6juQPoEHedAPbzjabWv6wiqiKBusT44cGcp8TTrrmRFDEfK185FyXtC7S1IWwsN+l9zWdlGuNSds3xc2B6nCkuOvzK/Kas/ax+tTz55ZIzlnsCA4pRIprSkpupp99vHCCSWqGxqARVo7Y7aEZISdRazYKHck8jQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qMs+xrt9+k20FUg4sXBvJmVVC1Dhf1Gh7jQGK6WsOsk=;
+ b=NRb/X98jCNAmbZmkjOOwVG2I+vw+b2aUW4KkkaJlP9G9abG8OpTTzhUTZXq26BCH+A1yjmqC7F4WXGQu5Asvx2DJTS6XQwCK+NJnqVmNzrG8qdocD+QaoAfa81lzfNl4sfhEXCYKVW8kD/MZ/qZ2FDqoZLUqJcnTeBrOTr0C3ak=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by LV8PR17MB7134.namprd17.prod.outlook.com (2603:10b6:408:180::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Wed, 24 Apr
+ 2024 15:34:57 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::5d53:b947:4cab:2cc8]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::5d53:b947:4cab:2cc8%4]) with mapi id 15.20.7472.044; Wed, 24 Apr 2024
+ 15:34:56 +0000
+Date: Wed, 24 Apr 2024 11:14:08 -0400
+From: Gregory Price <gregory.price@memverge.com>
+To: Dongsheng Yang <dongsheng.yang@easystack.cn>
+Cc: Dan Williams <dan.j.williams@intel.com>, axboe@kernel.dk,
+	John Groves <John@groves.net>, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+	Dongsheng Yang <dongsheng.yang.linux@gmail.com>
+Subject: Re: [PATCH RFC 0/7] block: Introduce CBD (CXL Block Device)
+Message-ID: <ZikhwAAIGFG0UU23@memverge.com>
+References: <20240422071606.52637-1-dongsheng.yang@easystack.cn>
+ <66288ac38b770_a96f294c6@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <ef34808b-d25d-c953-3407-aa833ad58e61@easystack.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ef34808b-d25d-c953-3407-aa833ad58e61@easystack.cn>
+X-ClientProxiedBy: SJ0PR03CA0291.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::26) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416061533.921723-1-irogers@google.com> <CAHBxVyF-u__MY9BNkqxUJg4ra76CzT0p_JBVaQqZm=u4V4u5AQ@mail.gmail.com>
-In-Reply-To: <CAHBxVyF-u__MY9BNkqxUJg4ra76CzT0p_JBVaQqZm=u4V4u5AQ@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 24 Apr 2024 08:14:02 -0700
-Message-ID: <CAP-5=fXqtvorr8JVwbEFubhAkcF2FTWNSzB+8G7En-9-rjfCdQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/16] Consistently prefer sysfs/json events
-To: Atish Kumar Patra <atishp@rivosinc.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, Beeman Strong <beeman@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|LV8PR17MB7134:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9f52e2f1-eebe-435d-5dfb-08dc647417ef
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|366007|376005;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?QUN1Z0lDZ2Rsc2lIWWNXN0RlTHNzak1yNUtLWU9VMjRaNEFldHZzSGdwZm1P?=
+ =?utf-8?B?STJSQmRIdlZOVmRGd3hWYnlPWUdDaXhmQ1pKRnd3OTVHVzJiZWxqY29DQ2dM?=
+ =?utf-8?B?M0puMmduK1Vqd0xEV0xyOEh2eGlYSmFIQVF3c1pHOUx0UzI4Tk9NQ240d3RC?=
+ =?utf-8?B?TXFoZEVKazJrN1dnNnFZdFN6T3NMTjZHdmdDSnVpalZRNDlJVTRkanhZU0kx?=
+ =?utf-8?B?c24yMDI3bHRUdlViblo5a0tLWXVTK3NxOVV6cnF0cVNHVmgzUlJoT3RVS0Yz?=
+ =?utf-8?B?WnltY1dxTHFMam9lUEc3NzRaRGp4NUhhZC9pZmtlRW1idlVpdXJFUFU2ZjEv?=
+ =?utf-8?B?S1VsTDhwOVU0bVNiUU5ZeEpFeUx0MXh0aTZjbHFvWTQ4VSt2aXlBYkYyL3Bp?=
+ =?utf-8?B?UmtwdHZWa05nVmZ0Y0RDRXJGaW5UbzNia0JXZUVFWCsyYTl0NUN3c1pKZEkx?=
+ =?utf-8?B?bEpYUEdFQ040SitSd0Y4Z2JLYlBJLy85L1NsU210Z0hYNXFoRktjUEFqeHJr?=
+ =?utf-8?B?a2Y5NExhMGhJbEZWeE5vTmpBdGRUSCtxdGd2ZGo1UHhCK1FMbWxyTVZCNXFz?=
+ =?utf-8?B?M0dtUXV5TUFsMWdGc2RXbEo1Ykh1Y0orVlJ6cXRpT3poYjNBOG85T1NJenhq?=
+ =?utf-8?B?RVMzR2JLNGkvc00vVWFzZ0daQ0Vpck4wN3NWUTJHTkQ5OUpFalhiMkoxclZF?=
+ =?utf-8?B?cFdnL3JOMTV2S3R0cWRYYk5KaS9ZTzJ1VzFCZlNBWk9wRTg3NTloSXhvWkRU?=
+ =?utf-8?B?RGNvbC9ZQndLVFptajhmbnZLZG1ER3JpVUVhZ2c4eXptL1doMVNvN3hGME1G?=
+ =?utf-8?B?VmNUSUJRWDNQY2g3VitxTDNuZVMzRyttaTBISm9pa3JWUWEvd21XN1ZFZ3dU?=
+ =?utf-8?B?eFJUUEF1YVljNUdCQlZzRzdBbHZ2NTVHTFB6VFZlTGhaTHEzTWdXS0RRa3lK?=
+ =?utf-8?B?S2NnaDl3cjUxWDZieXpCbHRybFVPUnI0YThWWGNSZ1hCUGNOekg0SVBoL21Y?=
+ =?utf-8?B?bHowVkhiSFNodStRVktxUlpETG50UlF2WGJ3ZzdERTlBNDdlY205VXVzSjNz?=
+ =?utf-8?B?cGx4N05WZDk2NlVPVVZBTEpBaGtobWV0aFNVTEFkTWVqL2RkRk5ua2tjTVhN?=
+ =?utf-8?B?Nmw1bWsyaVdHM1lPNEJKV1FWbDhCVFlZLzB1b1hPdWhRamR1RFFETnU5YVgv?=
+ =?utf-8?B?UEZWWEhMWmpKUUZPUldPZUNNQ05NSFd2SkZBMnNEeXplb28rRlQwa3VBVHdC?=
+ =?utf-8?B?a3RVTS9oY1pMbDMwRmZ0Ylh2WTFxQkJMVU9zZ1lCbGtmaUNuREJKWEllQlZJ?=
+ =?utf-8?B?eGZrdElFUU93VVZ0Q3JiMTNiVXZtcVEySjRxTnZuWXpqazR0OU5sb29yYXha?=
+ =?utf-8?B?Tkc3UEdqeUNxM3lsZFM0T0IweHE0aXhhcUlIMC9TQlpRVzZoMGdGcjlOWU1X?=
+ =?utf-8?B?SUZpcW5lN3RaenZEc2hMd2tlWFFxQU9md2h0Z0pBdUQweUwvT1c5ZEdPOEs3?=
+ =?utf-8?B?anFEMHVFZHFvZ1BpbjlFT29mM1ZpcnViajUyaXNTbTFMcU9Db3F1M01pSzlx?=
+ =?utf-8?B?N3ZKYzgrODFoZDBqcGVnaWRXNHJpdkVKZzQ4ODJOdWFZNjQ2WENYR203bC84?=
+ =?utf-8?B?Y2k0TlFnVmxGRW1XbFFMTUFMeGRBb2hnNSs1VHVHR1RJdUt1bWtvZWxjL2Nt?=
+ =?utf-8?B?UmlFRXdiMmpXTUVOMHRsaU1nZjl6VXc2MzJxVGJuWjJpWThtMlFRUWFRPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WjYrVStXd0JDYzQ3d0ZZZFI4VDdzdjNackt4QnltcEt6L1p4Ny93VmRTQndz?=
+ =?utf-8?B?SGtmUjI5dlRXWFVtY0FoYUt0K2dLMlJ4S1U0WWU5SjV6YnRkYTlRb0pHd2ts?=
+ =?utf-8?B?V25DVUFGV0ZoWEJUbkdhc2Uxa29jdWM0RDgwT1RGWjcxSFpiRmhFaVUzWkYz?=
+ =?utf-8?B?SEtUWTBNUUVnd043QkJRZVY1QXlSWHdHUEJoNjdGWGx4R3RvY0paeURpOURL?=
+ =?utf-8?B?Tk4vN20vTDFVQ1F6ZXVtZGYxbmM2VHFoamNpZGorVDV6WktRQjNCcVQ2bW84?=
+ =?utf-8?B?OWhkaHZvTncyL0dvT0ZVdERxcEtiSUdHZlpES2FqbHYzR3lSQ0JlRVppaXpJ?=
+ =?utf-8?B?MEVXM0FGcU1nMnJ4VmdNSlA1YkFJNUIrYkFYQzJUcDlFRkU3OWdseWxVdzBz?=
+ =?utf-8?B?V1NOSno3eTNCRktkNkh2TGNCZWVxYlI4Zmx5c0xjaFp1QlJScjR4Y3FWNCtV?=
+ =?utf-8?B?aEVkWmRkVFBsWlZwQ1RGMXJ3OVRTUUZTKzl3VU1MaEYyd2FTdGVPSGxOQ0Nr?=
+ =?utf-8?B?Qmt5Y3BuR2pTZERESGdmR0xSc2xUNlZ4U1FERWhiNHhqaVZ4SUd0UDBhcWl0?=
+ =?utf-8?B?UHE0RE9kdjA3K25yNVJuQlVBdmFodTRleWFiQUhUOUVRVkJWVDlFdUU2VWtF?=
+ =?utf-8?B?aGdaSmxZN1NHQXB4dnVUUGxod2FYb3NEa0RVRGhuOWVBNFpzTnkzd0wrRFdY?=
+ =?utf-8?B?M3g2SUZrVUovZTlRdTBpeVU3V2FHYUhlTXcvQzZnNVNnblBuRXA5NnBMZUds?=
+ =?utf-8?B?YjZiV0JVOGlnTXlTUUdyUG10M25PWmdCbUFYVjRjcVc2WHRwcUlVTUVxTEM1?=
+ =?utf-8?B?RE5xa1JQTXJjTmdDaFc3dlMrRExoeUF3RTZhTWkwQXdxc2lzYUJyWVpEYzds?=
+ =?utf-8?B?MUp4RFZFWkQ2dFh1dkw4Q1V3OGNYdWVvbzN0a3BZWVJuUzExRXl1SjlJbjhJ?=
+ =?utf-8?B?VjdBbnFFMWd5cUNMZFNNNUVWbXpLbnY4blZMUEpTcXUwVEJMOG9JOXZWY2pD?=
+ =?utf-8?B?VCtEaW9DWkg0ZzBzTXN3MC9UUlFweVJINVhGZXUzcithc1I5UG1RdzNla3da?=
+ =?utf-8?B?cFJGWUFsVWZmUkZjaytJWTV4ZUVRNDNaV1FYYjJnZUlqUUZOWUFCekR6dDZk?=
+ =?utf-8?B?dk1RdU96R0puVW5uZUFnZmc2UlY1N0dWdm0rclB2M1cvTHR5M2FNd3NKTlQ1?=
+ =?utf-8?B?dkRFYjhHUzhiRHpybTI1blpDcmM2d2pVL2QrOHpWdGxsbjVvRkNXYVdsd2x6?=
+ =?utf-8?B?ZlVXeHU3alJSTkZ0RmNIdmxaclg3Tm1BdGZBWm1oS2xDUWJ5Vm5FUGk1OWtD?=
+ =?utf-8?B?UURwUHpISXptZkg4ekVCNHI5aUd3YnM3bnBCMmZlNjRiMWhsRVlwZVo1Mmlh?=
+ =?utf-8?B?cjlKZkUzYnhWNjRsb0JPaXA2RWdUNDVqeWxya1ZzMmFtVzQvem1yU0gybld1?=
+ =?utf-8?B?aDZ3cjN2SDdWeU1PY2xIcVdmc3F0d291ek5mL2NjdmlDTUtyWmMyMWhhdG8z?=
+ =?utf-8?B?bXdLV0NaanRnTWNqU2ZDNG5SMUVWc2NIVDJkd2FGRUxiYzZvaFhKQVM5UG4w?=
+ =?utf-8?B?Vit5UWJOa3kwcHJRbk5hNk9QSEdZN3hqUCtvazRjWTFQU2w1NkNldFUxT3p1?=
+ =?utf-8?B?TDVMOUhtd0dlaDJxbXZSbXlFdzVnbGtJZys5TWJDZU9yTzh2dFk3VjRrK3Uy?=
+ =?utf-8?B?bzVIa28rQURhVlZZZlBUYnZaUTVESTNVZzIwZUhVaW9wMzF4S2R0NnVNOUFs?=
+ =?utf-8?B?TCt6WXNZL2kvckZqVStEam9pMkZ5MVZ4V2ljd1hqemVNWDl1Z1N0SVhQUWVK?=
+ =?utf-8?B?VFovaGR5bjZhMmhrNXdzTkE5RGxzdjZNcGpySU1zNzBQMkU0b1JENXBFaDkz?=
+ =?utf-8?B?Qnc5V1A4Z29JOUkya0p2MmdySXZyblQ4OEhFL2pYK0RTZlBRaGVXTTVsSnlX?=
+ =?utf-8?B?emQwV004QWhDV3R4MlBZNHl2TWZ4bHRqWG9BMjk4L29xWkl3R1YzdFdRVGxs?=
+ =?utf-8?B?MnVqU01rVk96bFhyQ2p5VG1QdGV4V0hCWmg0cTJKUElKZ0U4dWtIYTB2eFgr?=
+ =?utf-8?B?YzVnYmptTjl2Q0pWcTdnRk1KdGJCUnEwcEJFUHRocWVHTkhNQXBLMElpRGV0?=
+ =?utf-8?B?R0RWOVlDZndvb084YWVuSk5wY3VwVTJadVAwbEtXT08rSklRcTRYQmQ5aXI1?=
+ =?utf-8?B?dVE9PQ==?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f52e2f1-eebe-435d-5dfb-08dc647417ef
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 15:34:56.2458
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tkE5orBfS7zeH+MPgYVjmkVh35jJRbiIqTw7+BB6szvUogMXNayDyMha5AIV6rSYzuUumrAE1Mhd2IgpIjkUnCZdpts3k3n7rxy6pHzjGXg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR17MB7134
 
-On Tue, Apr 23, 2024 at 5:28=E2=80=AFPM Atish Kumar Patra <atishp@rivosinc.=
-com> wrote:
+On Wed, Apr 24, 2024 at 02:33:28PM +0800, Dongsheng Yang wrote:
+> 
+> 
+> 在 2024/4/24 星期三 下午 12:29, Dan Williams 写道:
+> > Dongsheng Yang wrote:
+> > > From: Dongsheng Yang <dongsheng.yang.linux@gmail.com>
+> > > 
+> > > Hi all,
+> > > 	This patchset introduce cbd (CXL block device). It's based on linux 6.8, and available at:
+> > > 	https://github.com/DataTravelGuide/linux
+> > > 
+> > [..]
+> > > (4) dax is not supported yet:
+> > > 	same with famfs, dax device is not supported here, because dax device does not support
+> > > dev_dax_iomap so far. Once dev_dax_iomap is supported, CBD can easily support DAX mode.
+> > 
+> > I am glad that famfs is mentioned here, it demonstrates you know about
+> > it. However, unfortunately this cover letter does not offer any analysis
+> > of *why* the Linux project should consider this additional approach to
+> > the inter-host shared-memory enabling problem.
+> > 
+> > To be clear I am neutral at best on some of the initiatives around CXL
+> > memory sharing vs pooling, but famfs at least jettisons block-devices
+> > and gets closer to a purpose-built memory semantic.
+> > 
+> > So my primary question is why would Linux need both famfs and cbd? I am
+> > sure famfs would love feedback and help vs developing competing efforts.
+> 
+> Hi,
+> 	Thanks for your reply, IIUC about FAMfs, the data in famfs is stored in
+> shared memory, and related nodes can share the data inside this file system;
+> whereas cbd does not store data in shared memory, it uses shared memory as a
+> channel for data transmission, and the actual data is stored in the backend
+> block device of remote nodes. In cbd, shared memory works more like network
+> to connect different hosts.
 >
-> On Mon, Apr 15, 2024 at 11:15=E2=80=AFPM Ian Rogers <irogers@google.com> =
-wrote:
-> >
-> > As discussed in:
-> > https://lore.kernel.org/lkml/20240217005738.3744121-1-atishp@rivosinc.c=
-om/
-> > preferring sysfs/json events consistently (with or without a given
-> > PMU) will enable RISC-V's hope to customize legacy events in the perf
-> > tool.
-> >
->
-> Thanks for remapping legacy events in a generic way. This looks great
-> and got rid of my
-> ugly arch specific way of remapping.  Is there a good way for the
-> driver (e.g via sysfs) to tell the perf tool
-> whether to remap the legacy event or not ?
->
-> In RISC-V the legacy systems without the new ISA extension may not
-> want to remap if running
-> the latest kernel.
->
-> I described the problem in detail in the original thread as well.
-> https://lore.kernel.org/lkml/63d73f09-84e5-49e1-99f5-60f414b22d70@rivosin=
-c.com/
 
-So the sysfs/json events have priority over the legacy hardware events
-with this patch series. I'm not clear on your question but here are
-some scenarios:
+Couldn't you basically just allocate a file for use as a uni-directional
+buffer on top of FAMFS and achieve the same thing without the need for
+additional kernel support? Similar in a sense to allocating a file on
+network storage and pinging the remote host when it's ready (except now
+it's fast!)
 
-1) for a vendor/model with a CPUID json files want to be used:
-1.1) the driver shouldn't advertise the events /sys/devices/<pmu name>/even=
-ts
-1.2) the json in the perf tool needs to have a mapfile.csv entry for
-the cpuid to a model directory containing the event json. In the
-directory the legacy events should be defined.
+(The point here is not "FAMFS is better" or "CBD is better", simply
+trying to identify the function that will ultimately dictate the form).
 
-2) for a vendor/model with a CPUID the driver files should be used:
-2.1) the driver should advertise the events in /sys/devices/<pmu name>/even=
-ts
-2.2) in the json for the CPUID avoid redefining the events
-
-3) for a vendor/model with a CPUID the legacy events should be used:
-3.1) the driver shouldn't advertise the events in /sys/devices/<pmu name>/e=
-vents
-3.2) in the json for the CPUID avoid defining the events
-
-Are you asking to have both sysfs and json events for a model? In this
-case, which have priority over the other? It's possible in the pmu.c
-code to have a prioritized lookup either from json then sysfs or
-vice-versa, at the moment it is first come first served. To some
-extent this can be seen on Intel uncore events where there are both
-sysfs and json events with the same config, when we reverse map if the
-sysfs name is loaded then it is reverse mapped in verbose log or by
-perf trace, whilst typically I think the json name is reverse mapped.
-Are you asking for the search order to be configurable by the driver?
-In the past I've considered that the search order may be configured in
-the tool and the user may want to provide their own directory
-containing additional events and metrics.
-
-> FWIW, for the entire series.
-> Tested-by: Atish Patra <atishp@rivosinc.com>
-
-Thanks, I think we can go ahead to land this. Kan's comment was to ask
-for a follow up changing max_precise behavior and I'm hesitant to do
-two behavior changes in 1 patch series.
-
-Ian
-
-> > Some minor clean-up is performed on the way.
-> >
-> > v2. Additional cleanup particularly adding better error messages. Fix
-> >     some line length issues on the earlier patches.
-> >
-> > Ian Rogers (16):
-> >   perf parse-events: Factor out '<event_or_pmu>/.../' parsing
-> >   perf parse-events: Directly pass PMU to parse_events_add_pmu
-> >   perf parse-events: Avoid copying an empty list
-> >   perf pmu: Refactor perf_pmu__match
-> >   perf tests parse-events: Use branches rather than cache-references
-> >   perf parse-events: Legacy cache names on all PMUs and lower priority
-> >   perf parse-events: Handle PE_TERM_HW in name_or_raw
-> >   perf parse-events: Constify parse_events_add_numeric
-> >   perf parse-events: Prefer sysfs/json hardware events over legacy
-> >   perf parse-events: Inline parse_events_update_lists
-> >   perf parse-events: Improve error message for bad numbers
-> >   perf parse-events: Inline parse_events_evlist_error
-> >   perf parse-events: Improvements to modifier parsing
-> >   perf parse-event: Constify event_symbol arrays
-> >   perf parse-events: Minor grouping tidy up
-> >   perf parse-events: Tidy the setting of the default event name
-> >
-> >  tools/perf/tests/parse-events.c |   6 +-
-> >  tools/perf/util/parse-events.c  | 482 ++++++++++++++++----------------
-> >  tools/perf/util/parse-events.h  |  49 ++--
-> >  tools/perf/util/parse-events.l  | 196 +++++++++----
-> >  tools/perf/util/parse-events.y  | 261 +++++++----------
-> >  tools/perf/util/pmu.c           |  27 +-
-> >  tools/perf/util/pmu.h           |   2 +-
-> >  7 files changed, 540 insertions(+), 483 deletions(-)
-> >
-> > --
-> > 2.44.0.683.g7961c838ac-goog
-> >
+~Gregory
 
