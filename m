@@ -1,159 +1,153 @@
-Return-Path: <linux-kernel+bounces-156656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B83008B0661
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2697B8B0667
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:49:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEF071C22B6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:48:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57F9A1C228BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:49:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 445791591E8;
-	Wed, 24 Apr 2024 09:48:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Y4j1cJv1"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26FB2158DDC;
+	Wed, 24 Apr 2024 09:49:15 +0000 (UTC)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C07A1E4A9;
-	Wed, 24 Apr 2024 09:48:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15AB3158DD0;
+	Wed, 24 Apr 2024 09:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713952118; cv=none; b=UtAHjaU0Sd1pQGcSPW8gMr3l4viAMna5aSE2f3Ap8X2SfQlM4htxwQG0Fb84sMiCi3YISalvoespueKWqxfCsEvBSukHjJzpcsnVkAJ8dC4sPaeq/wOSL6wvYeRD9Hj3Kez5XQ+Ez0wgtHxoXK8u/Ao6z3LeEP/YbnXy/V3qRq8=
+	t=1713952154; cv=none; b=tLe+TohMLjHrxxLTPiDAZLr8V3ZMQvNL4Pr9c2pwqWm2hkFAIYyhDzRJWfoidt1wli2LdA7MJKjWczetIIFjHeMyVIQ46FiuWLLkEuClKPO7wB7SsWT9WFbWg2YLYxZbUJ26eHD6Nka1jSs8LbJmKOXfpT6NvVjlxlBQ7kEqqHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713952118; c=relaxed/simple;
-	bh=qFeAqbZquuywth8gAciMHzmJRLCm3ua07vYvCDODKpc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=hqWEZy3m/uH5Ot4hzoVDHsFv8ntn+T/OXqiaDCyOYtMFajVhTddywDnbRHBSHIJeIf2q4hEPWuDRSRY3wPg5CKFDHLa5TDWoX6DXyOcgpZ1i4YPVXg5IZ+6v84lWRd6ND+kkUikIbNxH6S2XMvQx+GSaMvb8cyvC2GLfXC0bpDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Y4j1cJv1; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O8Cjvt010801;
-	Wed, 24 Apr 2024 09:48:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=lm2WXy/93BOQFkB7wmh4mOt9I25v0ikGhyWwcZ/oo+M=; b=Y4
-	j1cJv1UV3Al/68nfpARd8wA58RnyCQddb1GjndW9W9ycgP2HjEDLmg3ZXQsOyuHd
-	2aL7IqLnl0Ets0IDHHtTESBMHYm1CgTQZsSPcY8STzCcFIY9XT91uR+QN3Ay7P5N
-	PBPIJTHjjilqAm1S8u05Dd4c1N7sOd7BGd3+OIf/hLUWlJBQLOCNdtGj8PXRSdpI
-	EeySiu3caCZk6ix6C7fmdB3r1bV6bw/VsA0LWEI2aZKaFWIsJO26bXcDma8g30Ob
-	40RV7VZnxcnMo3+QyDYzREwcUoFaasoKIhXCQTa4rcfDLQ3jjEOgOl/tLXr7cEXM
-	UqhlFgg6xrKM/BO/OSDQ==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9grf89-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 09:48:29 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43O9mRKM019862
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 09:48:27 GMT
-Received: from [10.218.5.19] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 24 Apr
- 2024 02:48:18 -0700
-Message-ID: <a2efd882-2d69-490b-8362-c87e10dc625e@quicinc.com>
-Date: Wed, 24 Apr 2024 15:18:15 +0530
+	s=arc-20240116; t=1713952154; c=relaxed/simple;
+	bh=u4lx/JULd5SMfiKzIJbC77K4KRfvpML7qMWfMAaioYI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=F2gdxJAKM09qO6j/olhEgNinNv3v++7CBqA6+G6roNS0uWTV4edrrtgwyI0r/uoN9lyN4f8tlf0HfZ4ynFonhsIdu7O25MompuJ0mxwCmj2qgoJ9d56oQhZZnr4FBajRYH0a/vu6+k91MLH6Mk1CAv4oP5XqjONyghOVvirBYVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6164d7a02d2so77061907b3.3;
+        Wed, 24 Apr 2024 02:49:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713952151; x=1714556951;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6hEIVy3ACld9hvMVKRp+y3fj+DcJwYS/FFKJpxDdjEk=;
+        b=pHKZ4hWJuPcjwcvyjratQ3RaLJgo06y9lX8aYOI1923An0zQHhzOWxMjvyRMTme7np
+         44Gfd96Uq+NR++TGXIi5JYZ0an3vvI7faY52tVV6HuKBK6tCPjcYbbJtn25UaHlIpglx
+         TMJsUBY4ozFedyErJcxfj+T1OAf2w8UzQBxngxIssT9QpZR5UzSQEEnHKiSd/Fun8LM+
+         CA965R8gmVCVttCAqxYzSm8+MQBX3u53eMLMK1AcNhyTNfrY8frq3lSDRrhHOAei5dh9
+         2751PEog24WQXSWVCervNd57yX4cnxRJh0M/7mGw/9M/abEC6khK0cPHOCoQKWATFlmv
+         7WPw==
+X-Forwarded-Encrypted: i=1; AJvYcCUbmiQ3ZVRHP1m/ePvgygKx0517qQibNry2jDvkPEgSITPWNnt9AqUEQn1GFSxambur6L3D0kcMgMiHjLSYEXtcVYSG34oDxCVFq6dPDpGVefWrNZ76HGDJB47a5oHsUTR1fsHYQyUWUXj2
+X-Gm-Message-State: AOJu0YyMjZOkyEmfNnnUQARtFeBoRpEWnKe0vVXNl+LrI2b8nhWrz8Hu
+	Z+KElyO3l/LA2bmAMNHcr97Gw51G2lbBEJGTvv4eG4aswLFqGB+aUQC79E49
+X-Google-Smtp-Source: AGHT+IH1iqlvmzpGDqai+9wt7Uee4X8myKBxX98jbIgMafOaNXdduo1g5zc/B5bvH3eEPvukJrk6DA==
+X-Received: by 2002:a05:690c:690f:b0:615:1527:aa2 with SMTP id if15-20020a05690c690f00b0061515270aa2mr2011913ywb.10.1713952151348;
+        Wed, 24 Apr 2024 02:49:11 -0700 (PDT)
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
+        by smtp.gmail.com with ESMTPSA id a6-20020a81bc06000000b0061440b93ce5sm2887954ywi.37.2024.04.24.02.49.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 02:49:11 -0700 (PDT)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc23bf7e5aaso7001285276.0;
+        Wed, 24 Apr 2024 02:49:11 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWX51NhinKIz7FdYdVhRj/dv7r9KRpueSI+VXUuboIVfNqmFF9KcWhsIVEz/LoIus9kA4BmLsAXLvVxxFU7raraOtXm3J8aABYesv9gmPKSqz4zpnAqocSrgcS33ZwKkuGqwmBvWHXoUicN
+X-Received: by 2002:a25:e30d:0:b0:de5:5089:32b8 with SMTP id
+ z13-20020a25e30d000000b00de5508932b8mr1657304ybd.63.1713952150942; Wed, 24
+ Apr 2024 02:49:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 RESEND 4/5] clk: qcom: Use HW_CTRL_TRIGGER flag to
- switch video GDSC to HW mode
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "Stephen
- Boyd" <sboyd@kernel.org>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Bryan O'Donoghue
-	<bryan.odonoghue@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Ulf Hansson" <ulf.hansson@linaro.org>,
-        "Rafael J . Wysocki"
-	<rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>, Pavel Machek
-	<pavel@ucw.cz>,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        "Andy Gross" <agross@kernel.org>,
-        Dmitry
- Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abel Vesa <abel.vesa@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, Taniya Das <quic_tdas@quicinc.com>,
-        "Satya Priya
- Kakitapalli" <quic_skakitap@quicinc.com>,
-        Imran Shaik
-	<quic_imrashai@quicinc.com>,
-        Ajit Pandey <quic_ajipan@quicinc.com>
-References: <20240413152013.22307-1-quic_jkona@quicinc.com>
- <20240413152013.22307-5-quic_jkona@quicinc.com>
- <3592cea4-7e5c-448a-83c0-562b4ef4e7a1@linaro.org>
-Content-Language: en-US
-From: Jagadeesh Kona <quic_jkona@quicinc.com>
-In-Reply-To: <3592cea4-7e5c-448a-83c0-562b4ef4e7a1@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: OchKsveoWUoNiHZS7jF9lroVeA45wQkR
-X-Proofpoint-ORIG-GUID: OchKsveoWUoNiHZS7jF9lroVeA45wQkR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-24_07,2024-04-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 clxscore=1015
- suspectscore=0 phishscore=0 mlxscore=0 adultscore=0 mlxlogscore=999
- spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404240041
+References: <20240416123545.7098-4-wsa+renesas@sang-engineering.com> <20240416123545.7098-6-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20240416123545.7098-6-wsa+renesas@sang-engineering.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 24 Apr 2024 11:48:59 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUEvft0B9WdfZ936ccomZW4Qea8MVNSj-Q-Dyn8EKSUdA@mail.gmail.com>
+Message-ID: <CAMuHMdUEvft0B9WdfZ936ccomZW4Qea8MVNSj-Q-Dyn8EKSUdA@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/2] serial: sh-sci: always cancel hrtimer when DMA RX
+ is invalidated
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-renesas-soc@vger.kernel.org, Dirk Behme <dirk.behme@de.bosch.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Aleksandar Mitev <amitev@visteon.com>, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Wolfram,
 
-
-On 4/23/2024 4:24 AM, Konrad Dybcio wrote:
-> 
-> 
-> On 4/13/24 17:20, Jagadeesh Kona wrote:
->> The HW_CTRL_TRIGGER flag provides flexibility to switch the GDSC
->> mode as per the consumers requirement compared to HW_CTRL flag which
->> directly switches the GDSC mode as part of gdsc enable/disable.
->> Hence use HW_CTRL_TRIGGER flag for vcodec GDSC's to allow venus driver
->> to switch the vcodec GDSC to HW/SW control modes at runtime using
->> dev_pm_genpd_set_hwmode() API.
->>
->> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
->> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
->> ---
-> 
-> The commit title states clk: qcom: yet the only files changed are:
+On Tue, Apr 16, 2024 at 2:35=E2=80=AFPM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> Clear the timer whenever 'chan_rx' is cleared to avoid an OOPS.
+> Currently, the driver only runs the timer when 'chan_rx' is set before.
+> However, it is good defensive programming to make sure the hrtimer is
+> always stopped before clearing the 'chan_rx' pointer.
 >
+> Reported-by: Dirk Behme <dirk.behme@de.bosch.com>
+> Closes: https://lore.kernel.org/r/ee6c9e16-9f29-450e-81da-4a8dceaa8fc7@de=
+bosch.com
+> Fixes: 9ab765566086 ("serial: sh-sci: Remove timer on shutdown of port")
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Thanks Konrad for your review! As there are 2 files with similar 
-changes, I didn't mention file names in the commit title.
+Thanks for your patch!
 
->>   drivers/clk/qcom/videocc-sc7280.c | 2 +-
->>   drivers/clk/qcom/videocc-sm8250.c | 4 ++--
-> 
-> With no explanation as to why anywhere
+> Locking needs to be double-checked here. This patch is mainly calling
+> for opinions.
+
+I do think you need to cancel the timer: even when not restarting
+the timer in sci_dma_rx_complete() due to a DMA failure, the previous
+timer may still be running, and will cause a NULL pointer dereference
+on s->chan_rx on timer expiry.
+
+> --- a/drivers/tty/serial/sh-sci.c
+> +++ b/drivers/tty/serial/sh-sci.c
+> @@ -1262,6 +1262,7 @@ static void sci_dma_rx_chan_invalidate(struct sci_p=
+ort *s)
+>  {
+>         unsigned int i;
 >
+> +       hrtimer_cancel(&s->rx_timer);
 
-Sure, will update the target specific details in the commit text of next 
-series.
+Is it safe to do this unconditionally on shutdown (cfr. the old check
+for s->chan_rx_saved)?
 
-Thanks,
-Jagadeesh
+>         s->chan_rx =3D NULL;
+>         for (i =3D 0; i < ARRAY_SIZE(s->cookie_rx); i++)
+>                 s->cookie_rx[i] =3D -EINVAL;
+> @@ -2242,14 +2243,6 @@ static void sci_shutdown(struct uart_port *port)
+>                        scr & (SCSCR_CKE1 | SCSCR_CKE0 | s->hscif_tot));
+>         uart_port_unlock_irqrestore(port, flags);
+>
+> -#ifdef CONFIG_SERIAL_SH_SCI_DMA
+> -       if (s->chan_rx_saved) {
+> -               dev_dbg(port->dev, "%s(%d) deleting rx_timer\n", __func__=
+,
+> -                       port->line);
+> -               hrtimer_cancel(&s->rx_timer);
+> -       }
+> -#endif
+> -
+>         if (s->rx_trigger > 1 && s->rx_fifo_timeout > 0)
+>                 del_timer_sync(&s->rx_fifo_timer);
+>         sci_free_irq(s);
 
-> Konrad
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
