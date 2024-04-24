@@ -1,152 +1,187 @@
-Return-Path: <linux-kernel+bounces-157568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97AFF8B1308
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:58:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1DE98B130A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:58:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25F621F256CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:58:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68856283D91
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:58:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D37C1EB3F;
-	Wed, 24 Apr 2024 18:58:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1602B1CD3F;
+	Wed, 24 Apr 2024 18:58:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aZuoOT0V"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yprv+1+e"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AAF91DDF4
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 18:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD3D522EE8;
+	Wed, 24 Apr 2024 18:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713985090; cv=none; b=o5dkzvHZAuFRvhAhgsVZgpB5y21dYxAJpI45E2T0TkoJhfiId490TRNzr0tC5bBQaGVQSBFqg4QYcfTUVozRosDKQ0blK+NDa3U52WAkdq7/mheUMZMqh3LwYc5hyKufL1awMEuxdUa4ocAfZE5c7L2sID0hl/orq1JRGg/GE+E=
+	t=1713985099; cv=none; b=LtRL7/VMjNhN/sw+hTgiZ1Kkqyk8v5pupSa1ZmOqHq1kXeWgYdIiBpCqWDutSmfuKYfZfvtfuWPqp7sTe2WOXxmBwCfASfECRp1EFGwEJLJLenXgVYqkV856wTbRvj7lGeSGoCa/kb3APM/gjKLS4v5+7041CIdDuOQ8PwQOISU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713985090; c=relaxed/simple;
-	bh=BjFBDKkzHGMEVkv9tfjwZkzhELE3KKcTqpHmRJLC2uU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=SBCLuf1gg9FX40nJLpByrpn0yllMxVzO2etBhBIVizxg30TBFNWfn8Bphk/FcyAWFG+j+/m1hY0gkSnitSSWzMf72tnv5X6o2ptdQRbmPlZOrQlONCvuCeqDvyeNWCj04hxiCZSdelYOIwCXziBUNyEuQ4RprsiUJo6c7kisl3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aZuoOT0V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 683C6C113CD;
-	Wed, 24 Apr 2024 18:58:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713985089;
-	bh=BjFBDKkzHGMEVkv9tfjwZkzhELE3KKcTqpHmRJLC2uU=;
-	h=Date:From:To:Cc:Subject:From;
-	b=aZuoOT0VLfrU1aHNn0890hmbNvpJXRxwflhQkotP8s9Fp/aGbRziSff44bYyHQhWA
-	 l1T/ASrdtgCVzZsgY1EsvORPpJbrSPRwNQ+cYtVW2bNZhuI1zO1L1xvIWpLSf6QI8o
-	 92zOOkfdUe6VTcmJpC/T2F9uZEG0p28kKO7UdxguHwmA+mrjA7RMdX1ELShFkOHVoI
-	 dfEk22tW3+ihoQTIt2EKtezKCWffqoNouQta4jWgHQqkr3oT3q2BI/JuSIBKQSXntY
-	 SQQ8GjqrG44OWX0UURrJqcvDNVRgnJQn5WmlqGYtrv/CG2D3hww3PFNXO4eMvYm2Z8
-	 6B2lwJVdveW8w==
-Date: Wed, 24 Apr 2024 14:58:06 -0400
-From: Paul Gortmaker <paulg@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
-	Richard Purdie <richard.purdie@linuxfoundation.org>
-Subject: Intermittent Qemu boot hang/regression traced back to INT 0x80
- changes
-Message-ID: <20240424185806.GB101235@kernel.org>
+	s=arc-20240116; t=1713985099; c=relaxed/simple;
+	bh=HCt7b5jZVpt+S9X/iE7IN+XtRTt3TR+LfOAu0uJIZiY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JVfKRYAJQRHl+fLk8WVwbXmSf84HYBSs+FJLb0epcOUhG6O4v2bSaW+utWFV7mujjMFGDKhdvAcsTz2Xj/YM56lsMmI6koVXhNrsUk+elRAXhc5/0WX0tlo5jrjiepZw6qm+JQ2fKrjbKwdoFldd1jDbmgZIM5K8qZWInnFnVqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yprv+1+e; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-572250b7704so118310a12.2;
+        Wed, 24 Apr 2024 11:58:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713985095; x=1714589895; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DwvbZeXK2LmNo0b/liHJV6gTDtg1IGPQpDm4DyK4ylU=;
+        b=Yprv+1+e8+ujPy0aDRTmZO9DAzufwGqegg/fuXgCSsSf5zAADwVFulJ5NMtwgitUyL
+         9B+4JHOee3LgYQmx8mVRDpScREdeRsAfBu7219tz1c5clLpKBk7uZczUcdC/bBlfqy6e
+         82uIeDXCyw3q5dYF/fBq+Cn9X0YYrTrMKfXFdJskJ5oEh8PUuSPSw6jPhjVRxIdUOSkP
+         VNqQjQIZPoVvzo2X420t+q9FI1MMvMXoncSB+DNPKsQgfqHHcgaLK0cUwjbBOT5o/A7p
+         Cw21VSHEtWBw8/8/2LYVlxC8NnLhzWBTzzCrqJIMNl4MTrqLiNf4gXdv9+qfuz0sy+CV
+         8Q8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713985095; x=1714589895;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DwvbZeXK2LmNo0b/liHJV6gTDtg1IGPQpDm4DyK4ylU=;
+        b=A4G61tfoSsxsxKvbYYN5cZJWNg/rNcJllq7lleNeQpZtmcOh3KEKR3w7VMlWFgI/Px
+         sFvlkdvJPwfu+MRb64BpErXKLCMNkUSzYB0fNP9SONOc/ED40ArxW9CkK/wZbGL2zUVI
+         WyGD3GhP6E4TvgU7gO+l4R5GGKm+qrApLjYH6FPhdkxvdl9EChaDuC50pAwOYp+f0xpD
+         GMe8viogl9o/ei5GWU2cGttWE37pue+Qvakui5bJManxcOTBjrK/fPBm261NfwTs4wTQ
+         CpGIK85mBSCBIfWwzoFgeH8wPhBhIzCv9TmmW7jjr+/XRf2rilzorhvIrL8tAug3akFD
+         HBHg==
+X-Forwarded-Encrypted: i=1; AJvYcCXbCXhXlr5EfVVvjVxfO7t+WXT+5nvnD+xRm/0Grr7phvWXXhCNWYm4o25vMluhIYURjTTegdBvizEyy7SYJVQdjUzb44UD27g7ho+hIYszbxd6wMNlF56mmPL8dtjSj+MNZhAHOmvEOA==
+X-Gm-Message-State: AOJu0YxtV/azBbPUfXhqwjrh33Uw5/KecZTwxvsa84UbPMetyD8Rs7+G
+	rPSBBgaoeaamLXiWqOr2MF24pbJYo+R6qw9xfG2Ibrp59AnXYV0bDRZ8ERbs
+X-Google-Smtp-Source: AGHT+IFFeaRzMd/7Smdm00f104rcu/P7ErgzU3rDoChCfzP3EQsfV2DOJK5NtUDrizGxdpXgYZNMBQ==
+X-Received: by 2002:a50:c90a:0:b0:572:3cc4:2dcf with SMTP id o10-20020a50c90a000000b005723cc42dcfmr95098edh.14.1713985094787;
+        Wed, 24 Apr 2024 11:58:14 -0700 (PDT)
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id ij6-20020a056402158600b005705bfeeb27sm8103284edb.66.2024.04.24.11.58.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 11:58:14 -0700 (PDT)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+ Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
+ Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject:
+ Re: [PATCH] dt-bindings: mfd: allwinner,sun6i-a31-prcm: Use hyphens in node
+ names
+Date: Wed, 24 Apr 2024 20:58:13 +0200
+Message-ID: <2320577.ElGaqSPkdT@jernej-laptop>
+In-Reply-To: <20240424045521.31857-1-krzysztof.kozlowski@linaro.org>
+References: <20240424045521.31857-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 
-Richard (via the Yocto auto-builder) reported a sporadic (once per
-hundreds) boot hang during the PCI bus boot mapping on v6.6.x
-for both x86 and x86_64.
+Dne sreda, 24. april 2024 ob 06:55:21 GMT +2 je Krzysztof Kozlowski napisal(a):
+> Underscores should not be used in node names (dtc with W=2 warns about
+> them), so replace them with hyphens.  This should have no impact on
+> known users: Linux MFD driver does not care about children node names.
+> DTS was already adjusted in commit 0f47ef3ff1bd ("arm: dts: allwinner: drop
+> underscore in node names"), so without this change, we observe
+> dtbs_check warnings:
+> 
+>   sun6i-a31s-colorfly-e708-q1.dtb: prcm@1f01400: 'ahb0-clk', 'apb0-clk', 'apb0-gates-clk', 'apb0-rst', 'ar100-clk', 'ir-clk' do not match any of the regexes: '^.*_(clk|rst)$', 'pinctrl-[0-9]+'
+> 
+> Reported-by: Rob Herring <robh@kernel.org>
+> Closes: https://lore.kernel.org/all/CAL_JsqJfT-jui5P56CO4Fr37kr5iNN8dpxt8ecKeFmdVGnRYbA@mail.gmail.com/
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-On x86, I isolated it to the INT 0x80 backports added to v6.6.7:
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-239bff0171a8 x86/tdx: Allow 32-bit emulation by default
-22ca647c8f88 x86/entry: Do not allow external 0x80 interrupts
-4591766ff655 x86/entry: Convert INT 0x80 emulation to IDTENTRY
-34c686e5be2f x86/coco: Disable 32-bit emulation by default on TDX and SEV
-f259af26ee04 x86: Introduce ia32_enabled()
+Best regards,
+Jernej
 
-The ia32_enabled() is a trivial compile dependency and the Yocto use
-case doesn't even compile arch/x86/coco/tdx/tdx.c - leaving just the
-middle three commits.  I didn't try and bisect within those, since it
-seemed relatively clear to me they were assumed to be taken as a group.
+> ---
+>  .../bindings/mfd/allwinner,sun6i-a31-prcm.yaml     | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/allwinner,sun6i-a31-prcm.yaml b/Documentation/devicetree/bindings/mfd/allwinner,sun6i-a31-prcm.yaml
+> index 8789e3639ff7..ca0e9f1f2354 100644
+> --- a/Documentation/devicetree/bindings/mfd/allwinner,sun6i-a31-prcm.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/allwinner,sun6i-a31-prcm.yaml
+> @@ -20,7 +20,7 @@ properties:
+>      maxItems: 1
+>  
+>  patternProperties:
+> -  "^.*_(clk|rst)$":
+> +  "^.*-(clk|rst)$":
+>      type: object
+>      unevaluatedProperties: false
+>  
+> @@ -171,7 +171,7 @@ examples:
+>          compatible = "allwinner,sun6i-a31-prcm";
+>          reg = <0x01f01400 0x200>;
+>  
+> -        ar100: ar100_clk {
+> +        ar100: ar100-clk {
+>              compatible = "allwinner,sun6i-a31-ar100-clk";
+>              #clock-cells = <0>;
+>              clocks = <&rtc 0>, <&osc24M>,
+> @@ -180,7 +180,7 @@ examples:
+>              clock-output-names = "ar100";
+>          };
+>  
+> -        ahb0: ahb0_clk {
+> +        ahb0: ahb0-clk {
+>              compatible = "fixed-factor-clock";
+>              #clock-cells = <0>;
+>              clock-div = <1>;
+> @@ -189,14 +189,14 @@ examples:
+>              clock-output-names = "ahb0";
+>          };
+>  
+> -        apb0: apb0_clk {
+> +        apb0: apb0-clk {
+>              compatible = "allwinner,sun6i-a31-apb0-clk";
+>              #clock-cells = <0>;
+>              clocks = <&ahb0>;
+>              clock-output-names = "apb0";
+>          };
+>  
+> -        apb0_gates: apb0_gates_clk {
+> +        apb0_gates: apb0-gates-clk {
+>              compatible = "allwinner,sun6i-a31-apb0-gates-clk";
+>              #clock-cells = <1>;
+>              clocks = <&apb0>;
+> @@ -206,14 +206,14 @@ examples:
+>                                   "apb0_i2c";
+>          };
+>  
+> -        ir_clk: ir_clk {
+> +        ir_clk: ir-clk {
+>              #clock-cells = <0>;
+>              compatible = "allwinner,sun4i-a10-mod0-clk";
+>              clocks = <&rtc 0>, <&osc24M>;
+>              clock-output-names = "ir";
+>          };
+>  
+> -        apb0_rst: apb0_rst {
+> +        apb0_rst: apb0-rst {
+>              compatible = "allwinner,sun6i-a31-clock-reset";
+>              #reset-cells = <1>;
+>          };
+> 
 
-To confirm my diagnosis, I reverted this group of changes on v6.6.7
-baseline, and the sporadic PCI-hang went away.
 
-I then went to mainline and tested where it was added:
 
-commit f35e46631b28a63ca3887d7afef1a65a5544da52
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu Dec 7 11:56:34 2023 -0800
 
-    Merge tag 'x86-int80-20231207' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-
-Took about 400 runs, but the PCI-hang eventually showed up.
-
-Of course, the BHI changes touch a lot of the same files, and I was
-wondering if the issue would remain.  Tested v6.6.27 (has BHI backports)
-and it would still happen.  Can no longer easily revert the INT80
-changes once they are buried under the BHI changes anymore though.
-
-I then took v6.9-rc5 and let it run overnight (700 boots) and I "caught"
-three instances of the PCI-hang.
-
-Finally I took linux-next from today (next-20240424) and confirmed a
-PCI-hang within 50 boots.  I can't explain the variability other than it
-being a shared machine where I ran the tests.
-
-Not sure what to do next.  Figured step #1 was to report it, at least.
-A whole bunch of extra details are in the Yocto case:
-
-https://bugzilla.yoctoproject.org/show_bug.cgi?id=15463
-
-..including the v6.9-rc5 .config and the full qemu arg list.
-
-Paul.
---
-
-Linux version 6.9.0-rc5-next-20240424-yocto-standard (oe-user@oe-host) (i686-poky-linux-gcc (GCC) 13.2.0, GNU ld (GNU Binutils) 2.42.0.20240216) #1 SMP PREEMPT_DYNAMIC
- Wed Apr 24 10:57:01 UTC 2024
-BIOS-provided physical RAM map:
-BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable
-BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved
-[...]
-acpi PNP0A08:00: _OSC: platform does not support [LTR]
-acpi PNP0A08:00: _OSC: OS now controls [PME PCIeCapability]
-acpi resource window ([0x100000000-0x8ffffffff] ignored, not CPU addressable)
-PCI host bridge to bus 0000:00
-pci_bus 0000:00: root bus resource [io  0x0000-0x0cf7 window]
-pci_bus 0000:00: root bus resource [io  0x0d00-0xffff window]
-pci_bus 0000:00: root bus resource [mem 0x000a0000-0x000bffff window]
-pci_bus 0000:00: root bus resource [mem 0x10000000-0xafffffff window]
-pci_bus 0000:00: root bus resource [mem 0xc0000000-0xfebfffff window]
-pci_bus 0000:00: root bus resource [bus 00-ff]
-pci 0000:00:00.0: [8086:29c0] type 00 class 0x060000 conventional PCI endpoint
-pci 0000:00:01.0: [1234:1111] type 00 class 0x030000 conventional PCI endpoint
-pci 0000:00:01.0: BAR 0 [mem 0xfd000000-0xfdffffff pref]
-pci 0000:00:01.0: BAR 2 [mem 0xfebd0000-0xfebd0fff]
-pci 0000:00:01.0: ROM [mem 0xfebc0000-0xfebcffff pref]
-pci 0000:00:01.0: Video device with shadowed ROM at [mem 0x000c0000-0x000dffff]
-pci 0000:00:02.0: [1af4:1000] type 00 class 0x020000 conventional PCI endpoint
-pci 0000:00:02.0: BAR 0 [io  0xc040-0xc05f]
-pci 0000:00:02.0: BAR 1 [mem 0xfebd1000-0xfebd1fff]
-pci 0000:00:02.0: BAR 4 [mem 0xfe000000-0xfe003fff 64bit pref]
-pci 0000:00:02.0: ROM [mem 0xfeb80000-0xfebbffff pref]
-pci 0000:00:03.0: [1af4:1005] type 00 class 0x00ff00 conventional PCI endpoint
-pci 0000:00:03.0: BAR 0 [io  0xc060-0xc07f]
-pci 0000:00:03.0: BAR 1 [mem 0xfebd2000-0xfebd2fff]
-pci 0000:00:03.0: BAR 4 [mem 0xfe004000-0xfe007fff 64bit pref]
-pci 0000:00:1d.0: [8086:2934] type 00 class 0x0c0300 conventional PCI endpoint
-pci 0000:00:1d.0: BAR 4 [io  0xc080-0xc09f]
-pci 0000:00:1d.1: [8086:2935] type 00 class 0x0c0300 conventional PCI endpoint
-pci 0000:00:1d.1: BAR 4 [io  0xc0a0-0xc0bf]
-pci 0000:00:1d.2: [8086:2936] type 00 class 0x0c0300 conventional PCI endpoint
-<hang - not always exactly here, but always in this block of PCI printk>
 
