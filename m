@@ -1,124 +1,96 @@
-Return-Path: <linux-kernel+bounces-156383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82E9B8B0235
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:39:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 876528B0241
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:40:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 409CB283AE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:39:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B36111C226DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:40:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BF981598F6;
-	Wed, 24 Apr 2024 06:36:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EB88158A3C;
+	Wed, 24 Apr 2024 06:37:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YXIwA+L5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="o4xwe88O"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 429F7157E62;
-	Wed, 24 Apr 2024 06:36:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA3C1581F2;
+	Wed, 24 Apr 2024 06:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713940588; cv=none; b=LxH/B+1J3h9xFYjQjUCQ1amLMBGfCiU+Lrucl3IQALa5WuvMtoAQxlov283YdUnfZeOQG4zw4iZvbGOnmyjSgNJtCtxNI5GxMFLTPGg94eATNY5J2/+5I8DEXAL3EW9tutNlgH/k28v3mMtrnh7uKuNNftQBcnxomMQSdplOFhk=
+	t=1713940670; cv=none; b=foiBs1ss3fZAq03S4AQeBWOh8VO+15wfUox9iVEtHgX4LAILsgFkDspZ4Hwt4p/23Z4gQvvYgO3bYxwgztCbH2Nx1S5gHM3yW8cEc5/+3gWFNC2QogoGwJ1YwcVOq34hhps60LglwjdWTgA1an8QEB+0a4fXcAUpToqQ4Dau3Nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713940588; c=relaxed/simple;
-	bh=q+qnEpK+l59jPIQe5UqWWsiYjfA7aXbDpteN/UQE4iA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=CCTotrZkHKCfDUG5w+n3J4e+eXW8LCipj4oBDH2vAOfs20f85XXj5IOlSdI0lZRpetw26cF4rxgIenxziJOQymauiGHxqYHnje5ZNCaguxsHVgf4HsSnMZF/DWyYzb3xk1sNpChzjjKLcs4OgxKv+bVxUMV0/FbrLMMLesSDgSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YXIwA+L5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 366E3C113CE;
-	Wed, 24 Apr 2024 06:36:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713940587;
-	bh=q+qnEpK+l59jPIQe5UqWWsiYjfA7aXbDpteN/UQE4iA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=YXIwA+L5lnMLivG8Ty4VlkldYLZBJZPHVVZMR7CTjhW+GrLhvcLYVr97KR3EvltKy
-	 mxtpqmvPaHIZXvzV8eT0jlixtWZ3xh2QXaTMPa6IGG4p1VHEaxnlHdkZ+MOSUVEESj
-	 jmUAq+E9AcnjSHKsrj78MpyR7YYPeN4oPNUzJBG1rJRihgFkOJu4XbplXbCpzhDIUy
-	 fcBi/Cl8klNVmB4h4wO0XDMTkG4I7Ivgslvta3HSqjYYs/az22Y4ZG6p/b/qHEGtih
-	 9WsxJToWE/vq25/SJ1SqPJ9cWerEhS3jYmspvsRwsUqIFGq5P7adOML7RcGx4zgFSl
-	 KP5ImGssJdGIg==
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Date: Wed, 24 Apr 2024 08:33:45 +0200
-Subject: [PATCH v2 19/19] const_structs.checkpatch: add lcd_ops
+	s=arc-20240116; t=1713940670; c=relaxed/simple;
+	bh=JpRmySToucWzmNU3GW0RewtThBM4eo0oW5oq/VEQNzY=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=nJm4XUZrA2nGC2/X7gD1uONoHEE7ewyThp+VbgTSzXMrlUDLjRTNaXzozl2UCjtvxfIBz4AbYR5d3O+4rhSzhA+s49oLfL9BlmLwD/JFrlZz9VaBmopyFXbIgpV9ljeCW4wmTSmASlRrADImLTF0Pe/DhwelY/uhvuvwAOUmlrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=o4xwe88O; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240424-video-backlight-lcd-ops-v2-19-1aaa82b07bc6@kernel.org>
-References: <20240424-video-backlight-lcd-ops-v2-0-1aaa82b07bc6@kernel.org>
-In-Reply-To: <20240424-video-backlight-lcd-ops-v2-0-1aaa82b07bc6@kernel.org>
-To: Lee Jones <lee@kernel.org>, 
- Daniel Thompson <daniel.thompson@linaro.org>, 
- Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>, 
- =?utf-8?q?Bruno_Pr=C3=A9mont?= <bonbons@linux-vserver.org>, 
- Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>, 
- Alexander Shiyan <shc_work@mail.ru>, Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <festevam@gmail.com>
-Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev, 
- linux-omap@vger.kernel.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
- Krzysztof Kozlowski <krzk@kernel.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=924; i=krzk@kernel.org;
- h=from:subject:message-id; bh=q+qnEpK+l59jPIQe5UqWWsiYjfA7aXbDpteN/UQE4iA=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmKKfuTlvNIAwrbpIVvZdLwVKRUFDW99McbcRZO
- QcDFmCzNHWJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZiin7gAKCRDBN2bmhouD
- 1yEQD/wNRPPVi0sZ02CXQxc7WhjX2fS8W+11eReyDlq0TrPblfN1uN5EMVeLOipf070lASAUEgU
- Gtb/gaAZ5okrFRW0X2hOeeIODr5KW1USIedvITCosTww6e0o9/cTpygkeVTOALUJOnVMgpLJY55
- XRMvMJ4qGnfcWgPBAbjF93sxBkG6/HFDtOpxQDDQY7SHg59WVwHZi5oBviEKsJAYPrV9HcUMQ+f
- 3NoMhI72z6PrcVfGF5cqmzjrohnUZ62BHJHta13v+PzzYI7MSKNL7cJ7yZ/IpxZoD98gBNLGad9
- 981Jw4EwZJDQ+SZkds/AN2cOvHrrCiR7H1ufn9aL7sMA+SMYsVdyZWNvxiYu4+x0SxlKB7nU3jt
- 2iLwQLhDJRdPEarPDky8Zb4NwSmci44wy+6CkYp5wt7CN+jJLGTMchJNos8QG22urVDwI/ioxVf
- gwkTBb55aKgzI7G/igaFKh/KyHdHZfxdKwtWKi9qNCi8rIWmr8obybUjejGetKkDveClRmLwX1G
- +upKHPFu6Tu5tH87v78kZ52gfA6f9kojKKKevH0+Lrsr+H41Al/5f7RJm3/5eoLmoLnWdSKxiYN
- 4zuMqxjysxD7OdAaSsdgxFdiZhtldi3P0icA+Ykb2lvqkxFh/X4AIunJukrYCK5w1CEf/fOHFTq
- UcMo7yh1XzNrCMQ==
-X-Developer-Key: i=krzk@kernel.org; a=openpgp;
- fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1713940659;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pHwmy+JfTUfK+F37enKJhkifnhbbytVW3ZSkIuXP+d8=;
+	b=o4xwe88OAwCuuUcZUdhVy8jNxXYrWI9nHW05eYN2hbhKohgLfPxOcDX3YcPJlZvHO2Mh5a
+	/SxLddEzYDrrtA3UPSUVNIGAt/zk3cdD8KxVE47sb3sJiEjAfQ3uF1aJ0fZD5aHhhQ2iy6
+	yEekLyzQO8ED4r54r4PbCa9KQJXhzWxElna8LpJsiW3lz6ngGPUNAILRF8+PJQnnRQtTwD
+	+ubfEPX+NXLLB92iEqVh45op2a4PFIEKUNHBV6i56e1MxDfQImAakgLPyY2HlcP+3247TC
+	YF2TgMF40rX8+lBHAduvsXRRo+wZhyj3IJ1IsTSIBZZiZYWeTLHnQRdTusf6AA==
+Date: Wed, 24 Apr 2024 08:37:39 +0200
+From: Dragan Simic <dsimic@manjaro.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Marek Kraus <gamiee@pine64.org>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, conor+dt@kernel.org,
+ devicetree@vger.kernel.org, didi.debian@cknow.org, robh+dt@kernel.org,
+ linux-rockchip@lists.infradead.org, krzk+dt@kernel.org, heiko@sntech.de
+Subject: Re: [PATCH 1/2] dt-bindings: arm: rockchip: Correct the descriptions
+ for Pine64 boards
+In-Reply-To: <171388492373.250779.3280449198658307048.robh@kernel.org>
+References: <ec124dab2b1a8776aa39177ecce34babca3a50e2.1713832790.git.dsimic@manjaro.org>
+ <171388492373.250779.3280449198658307048.robh@kernel.org>
+Message-ID: <f1419f4b2003df69a3cd04d36de8000f@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-'struct lcd_ops' is not modified by core code.
+On 2024-04-23 17:09, Rob Herring wrote:
+> On Tue, 23 Apr 2024 02:43:43 +0200, Dragan Simic wrote:
+>> Correct the descriptions of a few Pine64 boards and devices, according
+>> to their official names used on the Pine64 wiki.  This ensures 
+>> consistency
+>> between the officially used names and the names in the source code.
+>> 
+>> Cc: Marek Kraus <gamiee@pine64.org>
+>> Signed-off-by: Dragan Simic <dsimic@manjaro.org>
+>> ---
+>> 
+>> Notes:
+>>     This continues the description cleanup started with Radxa boards. 
+>> [1]
+>> 
+>>     [1] 
+>> https://lore.kernel.org/linux-rockchip/1e148d6cd4486b31b5e7f3824cf6bccf536b74c0.1713457260.git.dsimic@manjaro.org/
+>> 
+>>  Documentation/devicetree/bindings/arm/rockchip.yaml | 6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>> 
+> 
+> Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
 
-Suggested-by: Thomas Weißschuh <linux@weissschuh.net>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
----
-
-Patch making lcd_ops const in progress:
-https://lore.kernel.org/r/20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org
-
-Cc: Lee Jones <lee@kernel.org>
-Cc: Daniel Thompson <daniel.thompson@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>
-Cc: linux-fbdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- scripts/const_structs.checkpatch | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/scripts/const_structs.checkpatch b/scripts/const_structs.checkpatch
-index fa96cfd16e99..52e5bfb61fd0 100644
---- a/scripts/const_structs.checkpatch
-+++ b/scripts/const_structs.checkpatch
-@@ -39,6 +39,7 @@ kgdb_arch
- kgdb_io
- kobj_type
- kset_uevent_ops
-+lcd_ops
- lock_manager_operations
- machine_desc
- microcode_ops
-
--- 
-2.43.0
-
+Thanks!
 
