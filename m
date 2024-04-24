@@ -1,89 +1,79 @@
-Return-Path: <linux-kernel+bounces-157554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E9F88B12CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:47:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D09D8B12CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:47:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D03EC1C25324
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:47:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A19351F25AA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:47:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 105FE2E636;
-	Wed, 24 Apr 2024 18:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEF121BF2F;
+	Wed, 24 Apr 2024 18:47:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="LyWtD7Hh"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="P9h75dPI"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD3CC2C6BD;
-	Wed, 24 Apr 2024 18:46:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3436B1772F;
+	Wed, 24 Apr 2024 18:46:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713984374; cv=none; b=F0DXXeS6Y1PIcNA2iW2rV4pa0tPZ6paIc6NWDvjFqTJtxZOJIwbLLttwLdt9RMLaLnkio6h5p9WX2tVe+C33N2VSDFSLXTz/Uf6hwXsBnBDxkeIAHKGZfrqpo927FQbQZkSKwM9YSsWjJSVTl1rZmiZDGskzmnyGQW+D3E2avFc=
+	t=1713984422; cv=none; b=jPox2JiXvorbM0fgtU7yJhJ5hdV5NGCWXMzg35t5R8Tq4m6jGDnGRlsHdMXxMEIhGYYlHHdexOGSAHGoI0eV4qCU1nAZ0Z6L63cYne9KeFFvcMW4anZQXDlcwCPKAPS6BHauAxAgP2R0E8GZVswNE1CKRXRj//lLvbOlbxuN3OI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713984374; c=relaxed/simple;
-	bh=s3FyBov567J2QGOwzCsWd6sbv2/5L8BTtQKZYmfBE4o=;
+	s=arc-20240116; t=1713984422; c=relaxed/simple;
+	bh=R99aO0G4C4tvy39lrwNWT9qRBl7d5x4sktKYwiBMh08=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EA83Z3VnZ+ltasfyYkxXEUrTOmPIjBkCcPYsPj1D+FCHvjzjNXQYOYplxl/Ctu4gfzbwvfSLZuCRYHKDGEfZmBh30BqsmTQVBnbez3kIsPPOWVZOHypGY19lyvou14Khqt2NcKfACvkkX44j+l8z9NtELBJPKShZi65o7z+On28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=LyWtD7Hh; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4E133B1;
-	Wed, 24 Apr 2024 20:45:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1713984318;
-	bh=s3FyBov567J2QGOwzCsWd6sbv2/5L8BTtQKZYmfBE4o=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=eNBqFar6vtcU85JCUKDyqCaP5osTnKULusvZfEw+46UqLts9YmBJqwG/wHUyhk7lsTic4RenV65oVMV4i4NiQrhm9viQtS0eMTl/JJrjufRVc8trmDupi3SQrowOIuuwxzETtqX+lrao0Ps8ikP8PqQgxz5RK+JfQLNd157rAnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=P9h75dPI; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1481C40E00C7;
+	Wed, 24 Apr 2024 18:46:58 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 9TgzoTgZmhK5; Wed, 24 Apr 2024 18:46:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1713984414; bh=RLpabNxR4gGiC8iZOFYg5sG6e8hVLDbCHs9kLLbABtY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LyWtD7HhQFhNcsJLXImxTlEO9zSrnA0XXnPz447uiAF/Ub8UwT4XZ+hvcyDUMkod9
-	 TdsIHxHej3MnvOv6+cPx44pYbMUETYoC3ESpbOJODQu+8+i6ZJdk+ZjLuVIbDD+Fvz
-	 VrWw2zwvUmUkCU8m2caH9M+pJwe1tu3zoTtTA6F4=
-Date: Wed, 24 Apr 2024 21:46:03 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>,
-	Ricardo Ribalda <ribalda@chromium.org>,
-	Martin Tuma <martin.tuma@digiteqautomotive.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Hugues Fruchet <hugues.fruchet@foss.st.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Sowjanya Komatineni <skomatineni@nvidia.com>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Sergey Kozlov <serjk@netup.ru>, Abylay Ospan <aospan@netup.ru>,
-	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-	Dmitry Osipenko <digetx@gmail.com>,
-	Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-	Sylvain Petinot <sylvain.petinot@foss.st.com>,
-	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-	Vikash Garodia <quic_vgarodia@quicinc.com>,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 09/26] media: v4l: async: refactor
- v4l2_async_create_ancillary_links
-Message-ID: <20240424184603.GA6282@pendragon.ideasonboard.com>
-References: <20240419-fix-cocci-v2-0-2119e692309c@chromium.org>
- <20240419-fix-cocci-v2-9-2119e692309c@chromium.org>
- <40b9c015-8ccf-4313-800a-ecae9aa8cc27@xs4all.nl>
- <ZilMu614pUAzEGTa@kekkonen.localdomain>
+	b=P9h75dPI/mx5pnSPDDQiSXL9pN3TWtTigX0Sm7sOUfMU0jnBPq43KeLerU1+SrIvY
+	 pgraqvsnmPkmG6RTlpEuTZDOUIxo/cx7jdqEkiNhAdeLmZ567SbJfXdQIibccb6qF3
+	 he6hv6NhQZnMhD1Hesnw9quD1Ob2TiAuyblF9dC/C+dFLFnYHkKG13EkjetnmWwoYX
+	 83mRWOS+o5PMq9wMrfWt07GKEGDQ8o6LuDFPx8HkJR1od5MRBJJMGt0YGtK5GSE1hp
+	 96BgBQfyLVyMgvpqh9CFd8/dZ2a/FT0Gv/Ueg+I1GHzNCLHXkDBfiso55GlLyREn8z
+	 bjHgTg7l1iOFG/1pGuV3gaeSCl20b1w+lgXPYYHyiZzz7bCYBasi94EKr2fQTaxBp3
+	 qiQNc/tqhUz3rI2M1yLQYEK5oOcMNYm+DXhNVwD8dLbz9bbHeni9SA7g+XFaTIOw/k
+	 Hk3TGEnQ6l9W7OBtabjIlKpz1pe1uz3FdqwXa44lA+43TBgxzBh4h0o2j7WAg6so7W
+	 FX7dXkNH4Z7veWc0D9ftL7jkeUkbtDUO6qmw5bUieXduOepyUJhT48HVYBjeij2xy6
+	 4DCPNhEU4Kw2qJ5qJPw1qbn8B9jIBMAGQD6qlqvb/S7VZG1XlZtvNGJyDQ9uD8ozuv
+	 gJf7lbDiaxaikAR5ozd0cqh4=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 479E340E0177;
+	Wed, 24 Apr 2024 18:46:46 +0000 (UTC)
+Date: Wed, 24 Apr 2024 20:46:40 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+Cc: X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	KVM <kvm@vger.kernel.org>, Ashish Kalra <ashish.kalra@amd.com>,
+	Joerg Roedel <joro@8bytes.org>, Michael Roth <michael.roth@amd.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH 5/5] x86/CPU/AMD: Track SNP host status with
+ cc_platform_*()
+Message-ID: <20240424184640.GFZilTkCX42j5sPu-o@fat_crate.local>
+References: <20240327154317.29909-1-bp@alien8.de>
+ <20240327154317.29909-6-bp@alien8.de>
+ <f6bb6f62-c114-4a82-bbaf-9994da8999cd@linux.microsoft.com>
+ <20240328134109.GAZgVzdfQob43XAIr9@fat_crate.local>
+ <ac4f34a0-036a-48b9-ab56-8257700842fc@linux.microsoft.com>
+ <20240328153914.GBZgWPIvLT6EXAPJci@fat_crate.local>
+ <aecd56a4-0a88-4162-95ef-47561631f16e@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,72 +82,59 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZilMu614pUAzEGTa@kekkonen.localdomain>
+In-Reply-To: <aecd56a4-0a88-4162-95ef-47561631f16e@linux.microsoft.com>
 
-On Wed, Apr 24, 2024 at 06:17:31PM +0000, Sakari Ailus wrote:
-> On Wed, Apr 24, 2024 at 12:55:20PM +0200, Hans Verkuil wrote:
-> > On 19/04/2024 11:47, Ricardo Ribalda wrote:
-> > > Return 0 without checking IS_ERR or PTR_ERR if CONFIG_MEDIA_CONTROLLER
-> > > is not enabled.
-> > > 
-> > > This makes cocci happier:
-> > > 
-> > > drivers/media/v4l2-core/v4l2-async.c:331:23-30: ERROR: PTR_ERR applied after initialization to constant on line 319
-> > > 
-> > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > ---
-> > >  drivers/media/v4l2-core/v4l2-async.c | 7 +++----
-> > >  1 file changed, 3 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
-> > > index 4bb073587817..915a9f3ea93c 100644
-> > > --- a/drivers/media/v4l2-core/v4l2-async.c
-> > > +++ b/drivers/media/v4l2-core/v4l2-async.c
-> > > @@ -316,9 +316,10 @@ v4l2_async_nf_try_all_subdevs(struct v4l2_async_notifier *notifier);
-> > >  static int v4l2_async_create_ancillary_links(struct v4l2_async_notifier *n,
-> > >  					     struct v4l2_subdev *sd)
-> > >  {
-> > > -	struct media_link *link = NULL;
-> > > +	struct media_link *link;
-> > >  
-> > > -#if IS_ENABLED(CONFIG_MEDIA_CONTROLLER)
-> > > +	if (!IS_ENABLED(CONFIG_MEDIA_CONTROLLER))
-> > > +		return 0;
-> > >  
-> > >  	if (sd->entity.function != MEDIA_ENT_F_LENS &&
-> > >  	    sd->entity.function != MEDIA_ENT_F_FLASH)
-> > > @@ -326,8 +327,6 @@ static int v4l2_async_create_ancillary_links(struct v4l2_async_notifier *n,
-> > >  
-> > >  	link = media_create_ancillary_link(&n->sd->entity, &sd->entity);
-> > >  
-> > > -#endif
-> > > -
-> > >  	return IS_ERR(link) ? PTR_ERR(link) : 0;
-> > >  }
+On Thu, Apr 04, 2024 at 07:07:26PM +0200, Jeremi Piotrowski wrote:
+> On 28/03/2024 16:39, Borislav Petkov wrote:
+> > On Thu, Mar 28, 2024 at 03:24:29PM +0100, Jeremi Piotrowski wrote:
+> >> It's not but if you set it before the check it will be set for all AMD
+> >> systems, even if they are neither CC hosts nor CC guests.
 > > 
-> > I think I would prefer:
-> > 
-> > static int v4l2_async_create_ancillary_links(struct v4l2_async_notifier *n,
-> > 					     struct v4l2_subdev *sd)
-> > {
-> > #if IS_ENABLED(CONFIG_MEDIA_CONTROLLER)
-> > 	struct media_link *link;
-> > 
-> > 	...
-> > 
-> > 	return IS_ERR(link) ? PTR_ERR(link) : 0;
-> > #else
-> > 	return 0;
-> > #endif
-> > }
+> > That a problem?
 > > 
 > 
-> Me, too.
+> No problem now but I did find it odd that cc_vendor will now always be set for AMD but
+> not for Intel. For Intel the various checks would automatically return true. Something
+> to look out for in the future when adding CC_ATTR's - no one can assume that the checks
+> will only run when actively dealing with confidential computing.
 
-I actually prefer Ricardo's proposal :-)
+Right, I haven't made up my mind fully here yet... setting cc_vendor
+*only* when running as some sort of a confidential computing guest kinda
+makes sense.
+
+And if it is not set, then that can be used to catch cases where the
+cc_* helpers are used outside of confidential computing cases...
+
+Do we want those assertions? I don't know...
+
+> I see your point about the disable needing to happen late - but then how about we remove
+> the setup_clear_cpu_cap(X86_FEATURE_SEV_SNP) too? No code depends on it any more and it would
+> help my cause as well.
+> 
+> > So we need a test for "am I a nested SNP hypervisor?"
+> > 
+> > So, can your thing clear X86_FEATURE_HYPERVISOR and thus "emulate"
+> > baremetal?
+> > 
+> 
+> Can't do that... it is a VM and hypervisor detection and various paravirt interfaces depend on
+> X86_FEATURE_HYPERVISOR.
+
+Right, but "your cause" as you call it above looks like a constant
+whack'a'mole game everytime we change something in the kernel when
+enabling those things and that breaks your cause.
+
+Do you really want that?
+
+Or would you prefer to define your nested solution properly and then
+have upstream code support it like the next well-defined coco platform
+instead?
+
+Thx.
 
 -- 
-Regards,
+Regards/Gruss,
+    Boris.
 
-Laurent Pinchart
+https://people.kernel.org/tglx/notes-about-netiquette
 
