@@ -1,156 +1,162 @@
-Return-Path: <linux-kernel+bounces-156735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0BDB8B0776
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:38:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2E878B0778
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:39:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DA03284FE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:38:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E51381C22844
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:39:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1921B1591E4;
-	Wed, 24 Apr 2024 10:38:04 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0CB11CA9
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 10:38:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AE72159570;
+	Wed, 24 Apr 2024 10:39:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fDDUF+at"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC64158200;
+	Wed, 24 Apr 2024 10:39:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713955083; cv=none; b=fSlkuEY7o+C6k9hL4yI1C5pgfbSFr7LRjDD/GI9C/uvKnAsty9APBP/r2/y2RVqjBZDp928xdF5WT7j3FyfzqpsBncsTo49da78VkMu45CUvfiOvRzm/sfk6UZ/q8dWlYGxJKEYAaraEkpiIVbWM/4+u02GIc0q32BRWZNNbGZU=
+	t=1713955154; cv=none; b=s6msQ5xRQX1nce5kL4NpYxV9P/vB3BObmTkW3X/2fX1XtyAkcZXTSebM1okrcnQbKeqCum+96Q4UoHV80iAMUEMEfiJU85ZhUtFFGh2EN0m2/njszfHIiuWWcA/bD7sUymGhS9lDIzeA2cgsO7z+SQZ1h4cWlbBGMkVm8ERcmsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713955083; c=relaxed/simple;
-	bh=8+a6UPEdwewE9o5mDlNnu2PJ+Sp6aVs4oeQrmbfCIN4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AuI0N/dkUwmdEK9018vQQrnvnvsv/siWXTc3bMjT8lT6xqyCdAGGga5vUZ+lrnETqpm6755+CgIbYROsla+oi8eRdDl3Mrhfozn+LW5nRLdqiv4W0IfJ0D8EWmIqp8ZHiogU0UuY0u3bh3JB4gMfuRVT0YJoIdDw3qC2+WP3+7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C7EE0339;
-	Wed, 24 Apr 2024 03:38:28 -0700 (PDT)
-Received: from bogus (unknown [10.57.84.59])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 671383F73F;
-	Wed, 24 Apr 2024 03:37:59 -0700 (PDT)
-Date: Wed, 24 Apr 2024 11:37:56 +0100
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
-Cc: gregkh@linuxfoundation.org, javier.carrasco.cruz@gmail.com,
-	Sudeep Holla <sudeep.holla@arm.com>, julia.lawall@inria.fr,
-	linux-kernel@vger.kernel.org, rafael@kernel.org,
-	skhan@linuxfoundation.org
-Subject: Re: [PATCH v2] drivers: use __free attribute instead of of_node_put()
-Message-ID: <20240424103756.jhloae3fcyinyba4@bogus>
-References: <20240419140106.3mkayxriqjt2cz5i@bogus>
- <20240422130931.176635-1-vincenzo.mezzela@gmail.com>
+	s=arc-20240116; t=1713955154; c=relaxed/simple;
+	bh=ic4AO+Elm5/i8oez5wDqDP2r2b8pMbypBYplKYgzygI=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=SZA02+AaGquAo7W7fro//kWdMLLgmTA9SrBF7O3bQoTWdu89YVNhst/AHV0j+JuSAjuYMWUv8vNNTZZexeSM4WZg2Kq/I5CA+FNEM04D/7Qi8XpbnhgnqeGgnOAzRfa/WIu0O3iIoux2n84fLsA/L7uDlx7Tbb1uR3f4kNPachA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fDDUF+at; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713955153; x=1745491153;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=ic4AO+Elm5/i8oez5wDqDP2r2b8pMbypBYplKYgzygI=;
+  b=fDDUF+atF6wpWQKweEl1Ob2WMufZAAr5X2zxIX8d70x7SvSAInyZPC0l
+   Lb8uPobnriQyrq+i130VtKkAyKq4c3BXbQlUXrcf/rB7svAv8++5KNFrA
+   UWhHwXJX8nul6mcBVLGNrxzFqAdH81KI6B1zYYhA8HiYZd8/CouKP08Jq
+   yHw+SHnDzXU/3aIrAwko9NUKl3UXq8ho19OjHzXKepZ2Inw89D17AjAx0
+   3O0fcWO9RX0dkiDLNFtJK7ZaamaGs5CJcBqcUsQpGDZTlO7hESzRCaBwD
+   9ZfaYOD8PofBvG6LoC4m+0o8XkkUpKAnrVBWVZ7cmWgYKoF38aX3AOtMU
+   A==;
+X-CSE-ConnectionGUID: b6YIO8cVSiu7FYMJFZr5Kg==
+X-CSE-MsgGUID: mXAgrAz4Tgar1lcC4y2ejA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="13365908"
+X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
+   d="scan'208";a="13365908"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 03:39:13 -0700
+X-CSE-ConnectionGUID: VPP0IJMPTwuF3lfMsOqIUQ==
+X-CSE-MsgGUID: aNUltn0LQlGz7s8AbV4/RQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
+   d="scan'208";a="24713014"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.46.54])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 03:39:07 -0700
+Message-ID: <1cb114be-9585-4f85-af9f-4bafb2d15d2a@intel.com>
+Date: Wed, 24 Apr 2024 13:39:02 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240422130931.176635-1-vincenzo.mezzela@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V5 00/12] perf/core: Add ability for an event to "pause"
+ or "resume" AUX area tracing
+From: Adrian Hunter <adrian.hunter@intel.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Thomas Richter <tmricht@linux.ibm.com>,
+ Hendrik Brueckner <brueckner@linux.ibm.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
+ <mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
+ coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+ Yicong Yang <yangyicong@hisilicon.com>,
+ Jonathan Cameron <jonathan.cameron@huawei.com>, Will Deacon
+ <will@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
+ linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+References: <20240208113127.22216-1-adrian.hunter@intel.com>
+ <52f3abd2-4f75-4147-bc7b-c98960d9494b@intel.com>
+Content-Language: en-US
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <52f3abd2-4f75-4147-bc7b-c98960d9494b@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 22, 2024 at 03:09:31PM +0200, Vincenzo Mezzela wrote:
-> Introduce the __free attribute for scope-based resource management.
-> Resources allocated with __free are automatically released at the end of
-> the scope. This enhancement aims to mitigate memory management issues
-> associated with forgetting to release resources by utilizing __free
-> instead of of_node_put().
->
-> The declaration of the device_node used within the do-while loops is
-> moved directly within the loop so that the resource is automatically
-> freed at the end of each iteration.
->
-> Suggested-by: Julia Lawall <julia.lawall@inria.fr>
-> Signed-off-by: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
-> ---
-> changes in v2:
->     - check loop exit condition within the loop
->     - add cleanup.h header
->
->  drivers/base/arch_topology.c | 150 +++++++++++++++++------------------
->  1 file changed, 73 insertions(+), 77 deletions(-)
->
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index 024b78a0cfc1..c9c4af55953e 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -20,6 +20,7 @@
->  #include <linux/rcupdate.h>
->  #include <linux/sched.h>
->  #include <linux/units.h>
-> +#include <linux/cleanup.h>
->
+On 11/04/24 15:02, Adrian Hunter wrote:
+> On 8/02/24 13:31, Adrian Hunter wrote:
+>> Hi
+>>
+>> Hardware traces, such as instruction traces, can produce a vast amount of
+>> trace data, so being able to reduce tracing to more specific circumstances
+>> can be useful.
+>>
+>> The ability to pause or resume tracing when another event happens, can do
+>> that.
+>>
+>> These patches add such a facilty and show how it would work for Intel
+>> Processor Trace.
+>>
+>> Maintainers of other AUX area tracing implementations are requested to
+>> consider if this is something they might employ and then whether or not
+>> the ABI would work for them.  Note, thank you to James Clark (ARM) for
+>> evaluating the API for Coresight.  Suzuki K Poulose (ARM) also responded
+>> positively to the RFC.
+>>
+>> Changes to perf tools are now (since V4) fleshed out.
+>>
+>>
+>> Changes in V5:
+>>
+>>     perf/core: Add aux_pause, aux_resume, aux_start_paused
+>> 	Added James' Ack
+>>
+>>     perf/x86/intel: Do not enable large PEBS for events with aux actions or aux sampling
+>> 	New patch
+>>
+>>     perf tools
+>> 	Added Ian's Ack
+>>
+>> Changes in V4:
+>>
+>>     perf/core: Add aux_pause, aux_resume, aux_start_paused
+>> 	Rename aux_output_cfg -> aux_action
+>> 	Reorder aux_action bits from:
+>> 		aux_pause, aux_resume, aux_start_paused
+>> 	to:
+>> 		aux_start_paused, aux_pause, aux_resume
+>> 	Fix aux_action bits __u64 -> __u32
+>>
+>>     coresight: Have a stab at support for pause / resume
+>> 	Dropped
+>>
+>>     perf tools
+>> 	All new patches
+>>
+>> Changes in RFC V3:
+>>
+>>     coresight: Have a stab at support for pause / resume
+>> 	'mode' -> 'flags' so it at least compiles
+>>
+>> Changes in RFC V2:
+>>
+>> 	Use ->stop() / ->start() instead of ->pause_resume()
+>> 	Move aux_start_paused bit into aux_output_cfg
+>> 	Tighten up when Intel PT pause / resume is allowed
+>> 	Add an example of how it might work for CoreSight
+> 
+> Any more comments?
+> 
 
-Keep it alphabetical. Also since <linux/of.h> does define kfree for
-of_node_get(), may not be needed strictly. Sorry for not noticing those
-details earlier. I am fine either way, it is good to keep it IMO.
+Ping
 
->  #define CREATE_TRACE_POINTS
->  #include <trace/events/thermal_pressure.h>
-> @@ -513,10 +514,10 @@ core_initcall(free_raw_capacity);
->   */
->  static int __init get_cpu_for_node(struct device_node *node)
->  {
-> -	struct device_node *cpu_node;
->  	int cpu;
->
-> -	cpu_node = of_parse_phandle(node, "cpu", 0);
-> +	struct device_node *cpu_node __free(device_node) =
-> +		of_parse_phandle(node, "cpu", 0);
->  	if (!cpu_node)
->  		return -1;
->
-> @@ -527,7 +528,6 @@ static int __init get_cpu_for_node(struct device_node *node)
->  		pr_info("CPU node for %pOF exist but the possible cpu range is :%*pbl\n",
->  			cpu_node, cpumask_pr_args(cpu_possible_mask));
->
-> -	of_node_put(cpu_node);
->  	return cpu;
->  }
->
-> @@ -538,28 +538,27 @@ static int __init parse_core(struct device_node *core, int package_id,
->  	bool leaf = true;
->  	int i = 0;
->  	int cpu;
-> -	struct device_node *t;
->
-> -	do {
-> +	for(;;) {
-
-Did you run checkpatch.pl on this ? It should have complained here and 3 other
-places below.
-
-> -			if (leaf) {
-> -				ret = parse_core(c, package_id, cluster_id,
-> -						 core_id++);
-> -			} else {
-> -				pr_err("%pOF: Non-leaf cluster with core %s\n",
-> -				       cluster, name);
-> -				ret = -EINVAL;
-> -			}
-> +		has_cores = true;
->
-> -			of_node_put(c);
-> -			if (ret != 0)
-> -				return ret;
-> +		if (depth == 0) {
-> +			pr_err("%pOF: cpu-map children should be clusters\n", c);
-> +			return -EINVAL;
-> +		}
-> +
-> +		if (leaf) {
-> +			ret = parse_core(c, package_id, cluster_id, core_id++);
-> +		} else {
-> +			pr_err("%pOF: Non-leaf cluster with core %s\n",
-> +					cluster, name);
-
-Missing alignment here.
-
---
-Regards,
-Sudeep
 
