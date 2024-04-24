@@ -1,143 +1,111 @@
-Return-Path: <linux-kernel+bounces-157083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DCD78B0CA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:34:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B330F8B0CA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:36:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E682E1F22940
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:34:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56AF6B210F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E455515E810;
-	Wed, 24 Apr 2024 14:34:04 +0000 (UTC)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7601115E7F9;
+	Wed, 24 Apr 2024 14:35:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DA7oZmg/"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F08451E511;
-	Wed, 24 Apr 2024 14:34:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B47E15B15C
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 14:35:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713969244; cv=none; b=nwV2BG6UigyXdovXjpBrksAWydF5Rca6/Klxr1asQ+tCAsWi00N5iFt1ZXsUkTpZ+l2C2OWuc+BehuUeWOSmwR452sMLPZkWvUr6g3ht5HvrodqD8uWypz7DTu/eVmRNNdp2PF4e0Y42NU0ivr3SVm6UGhgsYVfRsQL/+EeGcaQ=
+	t=1713969354; cv=none; b=asu2xV5qo8lGzsGQX0iY5rjW0R1O0qlKhIdehUJ6QXzaJx15ZZs+RB229jhrXiNYsBV/Hj4SUzVGu2RkvESGFfkpzYjY+Bm2aZuxUhoWqyIc2oq9g9D892UTGp/07slYAkecPmx9geraoaxxifM8w9sC1mFbch0XwwhvMFGHTEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713969244; c=relaxed/simple;
-	bh=VqOGJjRg28bc7eBQoexT89Jdg/lKWSrrtVGPjKj+334=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rgHIr0OJ3hDF3d8A0NBtgp7tEUTNYLozjTJ5sShtm54iLUU5C0Oapc86RgBzRG3wZz9abo38uRJ1j/Vc0H9gVuw/P4YwBdC65rxTNk0ftpc0XFrI3P6xFjPNqiJ4z2p6VhixBsowezdEDjpeY3W5G7r/6o+LV14X2essWhAkgSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-de55e876597so1682748276.1;
-        Wed, 24 Apr 2024 07:34:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713969240; x=1714574040;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HSe7bhwwM2b2w33Jw4XNWuzshIif1+7J1tm/9bS2R8A=;
-        b=eVehSVkavLx1DlrnpXOgzLwO5zrCTLX+Csza9XIW40xYPPqInPIH6xJhgza4JeITH9
-         m9VOtLfVn3m4pKVBdHLs7Fe9J4G2RFjkgpNCRyaEkofXBFtq/MjDqqs1N28+h0B6AVJk
-         MUi9v2lRaRDGnkmpHaoXEWKOxk9mz28QCZOBKw6YM89DtTXc9lIk1+TIelqNRcJJ/10L
-         eYQuMzH1IXHycYFUGlTv2KVrkqkqHU3G5/kjgVOJuZiZ2TVCJe2tn+uXSB/10qsRsxdz
-         FSYVgc8NnVkDsAGqxp4jCWae6FdM3xCktU09UuIQ69WPKk4d3AtO07S9GlqdDwXtg6ZI
-         5EAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXSSogjsyP5FPpTxLOZPi4T+eCCUzmCBJZIbwtK8X9kNKV2wRGzGm+yumfmYW8h3gb56m5/4DnU3MFY0VSPc1tSa/k4G1q1my6VX56fwckzKmQN+0Pi5GU/tucJF1vbzF01mNhjMHYkjBvC3QVZGjRETA2v1E2FOlZdiGo1cVeCkKXJ7nOuzIBFoeMn1H30FUrCBcXub6H1Z035z9548pRSYw6BagTJ9dn46tz397e0z0AQuWkVzFduhXNEnQ/SqLw=
-X-Gm-Message-State: AOJu0Yx5j3piqto8wwrJE2fPbNOIKrEAP7FpC+JuwnzXTM7xbkoT5w04
-	CwhwJXabOfrIWy93a22JCGMv2U+zf+tUoSW3KsDbx+3XTzDSEcWIBw+XBoytVzk=
-X-Google-Smtp-Source: AGHT+IEObBbN5M++ErhYwaDrkgrr0IpwEqoFf02RUCQvvbFUU/DBvvZ+TLfcj71hUZyJ9zFgRlIkHg==
-X-Received: by 2002:a25:68c5:0:b0:de5:4a6d:96f9 with SMTP id d188-20020a2568c5000000b00de54a6d96f9mr2906664ybc.51.1713969240076;
-        Wed, 24 Apr 2024 07:34:00 -0700 (PDT)
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
-        by smtp.gmail.com with ESMTPSA id u15-20020a25840f000000b00de553cb23d7sm914886ybk.56.2024.04.24.07.33.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 07:33:59 -0700 (PDT)
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc236729a2bso6578423276.0;
-        Wed, 24 Apr 2024 07:33:58 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWEB1+6dFOXn+/CBMmFfly8h/txC59WuMhZoR7LmmfogXpajrg3VcnTSrUZjt7aukFBY2lXnNYSpy/c3vrZYTCHuqFPAP2tqF6Z2mZlvJnB41XTJLjY294S48ZBmNkWwi9U06LEFKoZ316B7ZB5kh0Ft3uWwO+KWJMnDQEmkWfySOKo2WYy01VaxtNQjBteigr+y7OEolDVNT9hiK8/Uxc9w88AHJocZMfKgFoXpTuB5d0K8zoTXHdfj9ZEyKEX3Ks=
-X-Received: by 2002:a25:b31b:0:b0:dcc:fea7:7f7b with SMTP id
- l27-20020a25b31b000000b00dccfea77f7bmr2825103ybj.11.1713969238504; Wed, 24
- Apr 2024 07:33:58 -0700 (PDT)
+	s=arc-20240116; t=1713969354; c=relaxed/simple;
+	bh=kYUJMj8WambktxnBcdatjza3aKu1bxR5g5szXi3Etjc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pftVxeydh959qn4MmXZ/eYXKhfbL5NLdiykJpB8OKMPxkaK+wHTvsyq8IbKavkOwxU6RA5SnN9LzgcLzbb4M59Ba4UB5W7SyPWBXgsXOWVkZLrG0J6Y8k2cX1PaeFOYuhd1kHBQibjFD3+jhTX4vpI81zvWgSjbC9eLNuWIAllg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DA7oZmg/; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713969354; x=1745505354;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kYUJMj8WambktxnBcdatjza3aKu1bxR5g5szXi3Etjc=;
+  b=DA7oZmg/cVWSbjbWfdVDYpXVEc2VUX7t+ZDMiAlcdmZI1igRiYcoi6vB
+   4X8LPaw/+sax049LJniGDkh5iV70d+hjKGOk4VN4Lbx1FOuPXv1nDsKUm
+   y17w4koiYfd0SSofn/1NLBHZsid7OwsPIL0q2SaD/VQsrgnmU39tcsE5h
+   vvB2Z/TAn9/gkFTlxaYQL22+6bmqtVuomip3hKDOtgOdi5Brhvgzss6zO
+   bqwQGWuZ03+Qs9WyLklKV+O6Q7bdd6Q/daxU7b+dRRrUxllZW6nDHLHGq
+   NDD6KrwP3JnOF8Q5zfJMDkehiJNK/y7oz7llooSg4ugvI53gNODpnOwx5
+   g==;
+X-CSE-ConnectionGUID: 32Nf0IapQQ+E2Te2iDX/aA==
+X-CSE-MsgGUID: n7CWIlW7T5KOt4wfCbtNVQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9825853"
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="9825853"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 07:35:53 -0700
+X-CSE-ConnectionGUID: a/dchSKJR/COZIoy8TSfXA==
+X-CSE-MsgGUID: wBqVpR8xRTSjGjiyMjjTRQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="62191162"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa001.jf.intel.com with ESMTP; 24 Apr 2024 07:35:47 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 715EF1BD; Wed, 24 Apr 2024 17:35:46 +0300 (EEST)
+Date: Wed, 24 Apr 2024 17:35:46 +0300
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
+	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, 
+	Sean Christopherson <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>, 
+	kexec@lists.infradead.org, linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	Tao Liu <ltao@redhat.com>
+Subject: Re: [PATCHv10 04/18] cpu/hotplug, x86/acpi: Disable CPU offlining
+ for ACPI MADT wakeup
+Message-ID: <svpuqhoglv7s2wtu754i4oicowueen47vq6eobjbznsromb4m3@4h7vy346n4ak>
+References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
+ <20240409113010.465412-5-kirill.shutemov@linux.intel.com>
+ <20240423160258.GBZifbsuoTIbWDapej@fat_crate.local>
+ <k4t62qfiyapfh2hjp4bpnaa4bmtlajpm5q4an3qs4jimhldcwv@wtrp63ofrfk6>
+ <20240424135052.GDZikOPIOeGxtQRBBc@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422105355.1622177-1-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240422105355.1622177-1-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 24 Apr 2024 16:33:46 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXHhsdOgTiDdqMwAMvb-m_VBqOcTRPURx_upc2AtmBTfA@mail.gmail.com>
-Message-ID: <CAMuHMdXHhsdOgTiDdqMwAMvb-m_VBqOcTRPURx_upc2AtmBTfA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/8] clk: renesas: rzg2l: Add support for power domains
-To: ulf.hansson@linaro.org
-Cc: Claudiu <claudiu.beznea@tuxon.dev>, mturquette@baylibre.com, robh@kernel.org, 
-	krzk+dt@kernel.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
-	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240424135052.GDZikOPIOeGxtQRBBc@fat_crate.local>
 
-Hi Ulf,
+On Wed, Apr 24, 2024 at 03:50:52PM +0200, Borislav Petkov wrote:
+> On Wed, Apr 24, 2024 at 11:38:42AM +0300, Kirill A. Shutemov wrote:
+> > It was wrong from beginning. If ACPI MADT wake up method is used on the
+> > platform, we cannot handle offline, regardless if it is TDX or not.
+> 
+> Sounds to me like this fact should be a prominent part of the commit
+> message and these 1-4 patches should be carved out as a separate set
+> fixing that ACPI MADT thing and I should take them separately now...?
+> 
+> Also, does this need to go to stable although it is kinda big for
+> stable. If stable, do we need a smaller fix first which is backportable?
 
-On Mon, Apr 22, 2024 at 12:54=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev>=
- wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Series adds support for power domains on rzg2l driver.
->
-> RZ/G2L kind of devices support a functionality called MSTOP (module
-> stop/standby). According to hardware manual the module could be switch
-> to standby after its clocks are disabled. The reverse order of operation
-> should be done when enabling a module (get the module out of standby,
-> enable its clocks etc).
->
-> In [1] the MSTOP settings were implemented by adding code in driver
-> to attach the MSTOP state to the IP clocks. But it has been proposed
-> to implement it as power domain. The result is this series.
->
-> The DT bindings were updated with power domain IDs (plain integers
-> that matches the DT with driver data structures). The current DT
-> bindings were updated with module IDs for the modules listed in tables
-> with name "Registers for Module Standby Mode" (see HW manual) exception
-> being RZ/G3S where, due to the power down functionality, the DDR,
-> TZCDDR, OTFDE_DDR were also added.
->
-> Domain IDs were added to all SoC specific bindings.
->
-> Thank you,
-> Claudiu Beznea
->
-> Changes in v4:
-> - dropped the pwrdn functionality until it is better understanded
-> - dropped patch "clk: renesas: rzg2l-cpg: Add suspend/resume
->   support for power domains" from v3; this will be replaced
->   by propertly calling device_set_wakup_path() in serial console
->   driver
-> - instantiated the watchdog domain in r8a08g045 clock driver; this
->   allow applying r9a08g045 clock patch w/o affecting watchdog and later,
->   after all good with watchdog patches series at [2], only patch
->   "arm64: dts: renesas: r9a08g045: Update #power-domain-cells =3D <1>"
->   will need to be applied
+Correct me, if I am wrong, but I believe TDX guest is the only user of
+ACPI MADT wake up method. At least it was added into kernel for TDX guest.
+So it wouldn't fix anything user-visible. It might affect a future
+platform that uses this wake up method, but it is a guessing game.
 
-Are you happy with this series?  I would like to queue patches 1-7 in
-renesas-clk for v6.10 (i.e. this week).
-
-Thank you!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
