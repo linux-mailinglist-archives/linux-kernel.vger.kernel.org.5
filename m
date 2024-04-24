@@ -1,141 +1,131 @@
-Return-Path: <linux-kernel+bounces-157534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7009B8B1273
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:35:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C75A68B1282
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:39:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 103E21F21999
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:35:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8394728520D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:39:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870D31772F;
-	Wed, 24 Apr 2024 18:34:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F86B1C680;
+	Wed, 24 Apr 2024 18:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="A0qyPPgA"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VWZRnuNa"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECAC568A;
-	Wed, 24 Apr 2024 18:34:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71F061BC49
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 18:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713983694; cv=none; b=i53wJB0Er1X9zjRNv4zjhxbG7VWswFIBt4IjFS8JRt//l1K7e4fFyc2OHC81peX8c72ZTfnGocUYHKBA/ANAHczSmIHF9STrgnu5/sDbBsm/W/oV94TO2K9uvW9BTXoWx/jbAwRhrB5BtrtqajkVVlzi9E1X9AqbuQhE4TFGPk0=
+	t=1713983980; cv=none; b=Db30e4FDyMcR/tgzNcYEfL+XE7/bogB9KIg4J2Xv8R+nJdaEItXPDzAmfmurttj0oODPWRXTkgBRUARCyPdpfkHjwfUDHd8YhbS21dr4X8pxHvk/DkoX7m5AZDz9cdhQHpnIw7PL57oBXqzqYVELmKvDBjWcDp3yRpGp6fFARv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713983694; c=relaxed/simple;
-	bh=oCVgc8+y+x5fGR5TsGfG0er7opagmP5XkKqOTf2aT8c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HQbgL4V7S1zpCTtNSx+M5Fx0JEYaOeai/zD5a+OZot80R1IbDsBpk0rF+bvj8W30muOk6gnWH1YXyr+bsjnbVhLsmpFcPKR4A4q/db/08Un+Zr+5JigfOduKcWfMNB+fg37F/C0Bjxcfy8/v1pN226OpROIoN0pkXug92wKnF2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=A0qyPPgA; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3E02140E0249;
-	Wed, 24 Apr 2024 18:34:48 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id l1nWQHHUdBYV; Wed, 24 Apr 2024 18:34:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1713983682; bh=FG75FcCiem2JbZ6KSePc6u6dCPqsNWw2QYqFUaBzuCs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=A0qyPPgACV7iQcsfRBB6k21KrwTs5zRrI26jR4Zu/5XDMuISbDs7sKXnX8XUya/55
-	 RwWclRe7Y2YbqnybkJMauceHVYOEuVI0+viBsOtmDCfNUnrJXumOQMaH7KL1jA1ZmB
-	 QQLUNKhH7FaoXlGEz7sXAAfYXuayR9/wgF4npoBD4Xhhh3IYe+Dm0lX9uYaWN/xL8/
-	 253Kir+YZXCNvBGq94BW0rEgN1jLh95v1U/Yeib8EAamTkAYgF/4grr+8NjTLH91al
-	 LdcXNfM0ru6+JZFqu7IsKS2Rai6L0SLjSkxuPSkaxJyIChaRB0ijwwHYt+VEMVkG5/
-	 ISgutzRhAC/hJhYvAG8kYxNlJhxRvuNzhPMtu7/hoULcHGigK27YQDQEKCar13X1ng
-	 cM3ISXXGuTmfxBQwXHovMJInzYez+ksnDjvZbWnaDqXGNCaAOQFiWY6+Cde01IYGvy
-	 FS7tIgeTxGUXr5LwhmxOluXbYGnKy2/Xh7INT+ajCNOI0XIlVG4yMN/qP/hD5Zl/D6
-	 Li1S4Cbeq61y1N7bgHeT0nGoC+ipm6nsXKXf6ufiFSHoyikP1NHMUnGH66TOrkxkHo
-	 fNfeVkEq0IPCsAyNjXOwJi5NW5XtKmZmMtHNCmV4wpp7xXYAETXNcKd3wBoBKDqqCv
-	 SM/Y6uOqKSQXZfa5dhGazQJA=
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5730540E016B;
-	Wed, 24 Apr 2024 18:34:35 +0000 (UTC)
-Date: Wed, 24 Apr 2024 20:34:29 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-	tony.luck@intel.com, x86@kernel.org, Avadhut.Naik@amd.com,
-	John.Allen@amd.com
-Subject: Re: [PATCH v2 06/16] x86/mce/amd: Prep DFR handler before enabling
- banks
-Message-ID: <20240424183429.GGZilQtVJtGhOPm1ES@fat_crate.local>
-References: <20240404151359.47970-1-yazen.ghannam@amd.com>
- <20240404151359.47970-7-yazen.ghannam@amd.com>
+	s=arc-20240116; t=1713983980; c=relaxed/simple;
+	bh=XNCS2vE/uZ8FvuejqdKm2GWopK0U4sgGpwzCY+yux5A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RExfuvv1i/b1Jbf7kSR3gcMRN3uFeUWWk2Zp+0oyN0GILGQti4wp+Bfpi2BxCmjXcjwQ4w97y2WU7NBl4wqSDH0Ss63xUxxuQrPzmu5Wkj5kCrCl5wN5HXELJ/K7PNHvsdVPs6tZDVJiQ8jlczX89oOnx5YRaydF9jzbL3l9O1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VWZRnuNa; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713983980; x=1745519980;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=XNCS2vE/uZ8FvuejqdKm2GWopK0U4sgGpwzCY+yux5A=;
+  b=VWZRnuNaGfHtYIsrnc8juQ0rYUNZxtWEpNGLinAW+gHEY+n1VUndetA8
+   1PYVx+g3lS+qUGGlB57tRa8gcLV/G1Oxwr/eYS9NLGMJq4L1fa0A/mYU6
+   tMUJb+lWWqn/gWav8ehRy5NFGyMgZAbMAwrmmFg7TLbfNE3cQbF6f7kXR
+   pr7UmBT+xEva2z9Q5ob5Dt+2Awo+EvGPEin2bDe1LAROX/hq8Np8+a2vf
+   rvppae2MG4mnlIeCf1wwumWz0AJ/vDPxUNospvz785TWssvGgCtFfWUp+
+   22FMxE/wAuofaGTXLIVzCzU65v8ua4Ev3nEC/uGKfB+V2vsCMTCGGEM8C
+   w==;
+X-CSE-ConnectionGUID: HAYF+p2NS7aOTTumbQAaOg==
+X-CSE-MsgGUID: XCNma6OTTB6rwZFOxfeYuA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="13422640"
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="13422640"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:39:39 -0700
+X-CSE-ConnectionGUID: tKbITtiCTUKFd3D7HQw94w==
+X-CSE-MsgGUID: 3paWN80SQ4mdO5LFlAJ6/w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="25425096"
+Received: from ttiasha-mobl1.amr.corp.intel.com (HELO [10.209.122.5]) ([10.209.122.5])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:39:39 -0700
+Message-ID: <9a9ca7a4-e302-40f9-a112-c92bf9c720e7@intel.com>
+Date: Wed, 24 Apr 2024 11:39:38 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240404151359.47970-7-yazen.ghannam@amd.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/71] New Intel CPUID families
+To: Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org, patches@lists.linux.dev
+References: <20240424181245.41141-1-tony.luck@intel.com>
+Content-Language: en-US
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240424181245.41141-1-tony.luck@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 04, 2024 at 10:13:49AM -0500, Yazen Ghannam wrote:
-> Scalable MCA systems use the per-bank MCA_CONFIG register to enable
-> deferred error interrupts. This is done as part of SMCA configuration.
-> 
-> Currently, the deferred error interrupt handler is set up after SMCA
-> configuration.
-> 
-> Move the deferred error interrupt handler set up before SMCA
-> configuration. This ensures the kernel is ready to receive the
-> interrupts before the hardware is configured to send them.
-> 
-> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
-> ---
-> 
-> Notes:
->     Link:
->     https://lkml.kernel.org/r/20231118193248.1296798-11-yazen.ghannam@amd.com
->     
->     v1->v2:
->     * No change.
-> 
->  arch/x86/kernel/cpu/mce/amd.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/mce/amd.c b/arch/x86/kernel/cpu/mce/amd.c
-> index 3093fed06194..e8e78d91082b 100644
-> --- a/arch/x86/kernel/cpu/mce/amd.c
-> +++ b/arch/x86/kernel/cpu/mce/amd.c
-> @@ -589,6 +589,9 @@ static void deferred_error_interrupt_enable(struct cpuinfo_x86 *c)
->  	u32 low = 0, high = 0;
->  	int def_offset = -1, def_new;
->  
-> +	if (!mce_flags.succor)
+On 4/24/24 11:12, Tony Luck wrote:
+> But the tl;dr version is that some surgery is required to make adding
+> CPUs with new CPUID "family" values elegant.
 
-Does succor imply smca?
+Hey Tony,
 
-Because you have now this order:
-
-	deferred_error_interrupt_enable(c);
-
-	...
-
-	configure_smca(bank);
-
-and that one tests mce_flags.smca
-
-Now, if succor didn't imply smca, we'll enable the DF irq handler for
-no good reason on (succor=true && smca=false) systems.
-
-If the implication is given:
-
-Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+With the exception of the unavoidable PECI goofiness, this seems like a
+really universal win in readability and compactness.  It's looks really
+nice.  Thanks!
 
