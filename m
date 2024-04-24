@@ -1,58 +1,49 @@
-Return-Path: <linux-kernel+bounces-157819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ED218B16B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:00:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 879AE8B16B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:00:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 805FA1C24F66
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:00:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A02231C24F35
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:00:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9068216EC19;
-	Wed, 24 Apr 2024 23:00:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BF3D16EC1C;
+	Wed, 24 Apr 2024 23:00:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q0IXeXrR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gd/UXBCx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE52F16EBEF;
-	Wed, 24 Apr 2024 23:00:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE7A016EBE7;
+	Wed, 24 Apr 2024 23:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713999616; cv=none; b=p5VJTRQ7lAJjNcaNGH7k+Y1BoI/7P0mRS634gHIXKCDdnPa6tctssQqHbprm/PmQsk81+XdK6Wb0OELJP6XJK74dDIgw2okOm/7GZgpViAAkGJW9Cin2VZwIr43cI6yotbbXp/EHHzyxRSPMMln2CAg3xG8o4KrZf6nXwet5yYA=
+	t=1713999628; cv=none; b=Z3SlcZO6Ok3/ckzHmu2E08YsLaEKXHnGBrWD0bS9oK9xrqrKy3g01H4g1b8dMTjbyxvVjUScXXm32FhHvB/eFVNOF9WKRMgnJMdvs4z+LiAkDcCqoZTXrTH9fLj492u1D/o7WX5fkhHgg4D92VLjexR9eDdbCQIds1zi5RKuXFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713999616; c=relaxed/simple;
-	bh=9CcOa0hUVvEuNYn5qr9p8DH151WKe0SGbjU1e0KFA7k=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tf5KACBGGdFuDe/vhibB/vc1SBxM40SwVPee38wotwKqFaebMZi7vDKNBZ9vLq7QaR4AIKcFwBIDYjKMsjwBvBzTaQNqa1bKAjxqZLFslMIAtv/slvtnURBvbVfJ0mK3FEpKLAZ8U4babaOlTBvk+jLopM0sJP25zdGILsznJEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q0IXeXrR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FC5DC113CE;
-	Wed, 24 Apr 2024 23:00:16 +0000 (UTC)
+	s=arc-20240116; t=1713999628; c=relaxed/simple;
+	bh=4tVXH1bdNG8zrYB7FyYNMh7A/u6GuVfC/b0MJA6V2FI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=DeX7vJX38htavBEUysI6QN1SwEzcZNihVbBR9Px3T4x+mCbDMJhIbE2yqPinQzPGj+wlM9HqtrCVsbqZgumF0F1HLKcH8LN45iPqHIwxy7nY1DCeE5HHMh+218oU6Lqj3uPlJpRj9RzUEdVdZDW8IxypDAVSF3HCeZHqykW128I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gd/UXBCx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1B315C32786;
+	Wed, 24 Apr 2024 23:00:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713999616;
-	bh=9CcOa0hUVvEuNYn5qr9p8DH151WKe0SGbjU1e0KFA7k=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Q0IXeXrRsJ11NTSZXEY0JT6G3/yX0cVA4nHl7OVl21biOq0jrRNhvdrkiV4QLXUU0
-	 fg+t89/HgchVzlgqTlD9l7bofRzSsxavD8d683xc4M1jMoUZRsttMwX0w/i2FNxkoU
-	 AEPhf3j1ZrcrnBQGlBo/7cUgnyOAFg00OVEXjLTahNfzjX7KBfT+bWbaDMiV9csKme
-	 HOQQjM7KNm4DJ3nFHz27txczNCOagCiF2K1wPJh2KuiU0bdEVgbBezfbw1y16oPPEO
-	 yAWqe0aipXH6GyDKUVnktGhHuOxJAp86uNYh6rVYczcDjX4VhUece2LSXMrXZ1WpyR
-	 7CmruK6rlzZLA==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: [PATCH] perf annotate-data: Check annotation on perf report TUI
-Date: Wed, 24 Apr 2024 16:00:15 -0700
-Message-ID: <20240424230015.1054013-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+	s=k20201202; t=1713999628;
+	bh=4tVXH1bdNG8zrYB7FyYNMh7A/u6GuVfC/b0MJA6V2FI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Gd/UXBCx078Q7eW+KMN35VCDj0XWVV1e9MyupeiTvEzM5QAayM7HN96KM1uuORlav
+	 591iS11LpV8FhnsxvKT3vdhkKhD4qvbX8QSgIWhTqV1O/OyBdeMoqx6R7e6hCrgzbY
+	 Kh6+K5fA7Sj4f+QIUa8AedZNcWjIZSutZSTYBI5DQ/MN9M9iQhg6XEqlfEmiBTGXH8
+	 DBplkHKdnAB2IeaZTLLrhIEH5QqeoiYnuFE63ZPZeSrzzeSmblHIeZiZ9LI5vZOKWC
+	 2IaDGh0Mzl5NRTwi3V1VrMvPmEIhBHWrxst/oqwmFW0DM9DGOr7Wbrs/wBlfEAFjrf
+	 nMaBhJ1MPV9rg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 025CCC43614;
+	Wed, 24 Apr 2024 23:00:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,31 +51,42 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v1] bpf: update the comment for BTF_FIELDS_MAX
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171399962800.5535.10016594730757289270.git-patchwork-notify@kernel.org>
+Date: Wed, 24 Apr 2024 23:00:28 +0000
+References: <20240424054526.8031-1-haiyue.wang@intel.com>
+In-Reply-To: <20240424054526.8031-1-haiyue.wang@intel.com>
+To: Haiyue Wang <haiyue.wang@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+ linux-kernel@vger.kernel.org
 
-As it removed the sample accounting for code when no symbol sort key is
-given for perf report TUI, it might not allocate the annotated_source
-yet.  Let's check if it's NULL first.
+Hello:
 
-Fixes: 6cdd977ec24e1 ("perf report: Do not collect sample histogram unnecessarily")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/annotate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index dca2c08ab8c5..f5b6b5e5e757 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -906,7 +906,7 @@ int symbol__annotate(struct map_symbol *ms, struct evsel *evsel,
- 	if (parch)
- 		*parch = arch;
- 
--	if (!list_empty(&notes->src->source))
-+	if (notes->src && !list_empty(&notes->src->source))
- 		return 0;
- 
- 	args.arch = arch;
+On Wed, 24 Apr 2024 13:45:07 +0800 you wrote:
+> The commit d56b63cf0c0f ("bpf: add support for bpf_wq user type")
+> changes the fields support number to 11, just sync the comment.
+> 
+> Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
+> ---
+>  include/linux/bpf.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Here is the summary with links:
+  - [bpf-next,v1] bpf: update the comment for BTF_FIELDS_MAX
+    https://git.kernel.org/bpf/bpf-next/c/95c07d58250c
+
+You are awesome, thank you!
 -- 
-2.44.0.769.g3c40516874-goog
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
