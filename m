@@ -1,218 +1,106 @@
-Return-Path: <linux-kernel+bounces-157760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C95D8B15B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:02:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9482E8B15BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:03:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD16E2845A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:02:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 278E02849F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:02:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F0E615B130;
-	Wed, 24 Apr 2024 22:01:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PYFAopDP"
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66424156F46;
-	Wed, 24 Apr 2024 22:01:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17472159593;
+	Wed, 24 Apr 2024 22:02:54 +0000 (UTC)
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBFD0157474;
+	Wed, 24 Apr 2024 22:02:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713996118; cv=none; b=kYy/Yt+NSq6HWMavwpfx6RH45FPWXJMJHnBLOZCH+P+tyHw3s1vfDtjSpVIcc8ELQKDaidpiKYzxTIdssI03T6EL1GhGkB0loFyjB94bwUOu6gnc+ey7CViYCm3xzl5qPqRTinCJ8PvjTKWW34EVlDMm9Zfol2+2CmAIhpHbfe8=
+	t=1713996173; cv=none; b=mXl/a3+0uz1DjaAdW8W7nj3cq7KNwQf+bh5/Cf6XaL6GLkw60Qaz3RIcbZh/wXaKjBjZ+ztyLbJQhquC8Oaz2b5BNkx6NN0BsE4usbKiDP5nmnIqsdzwCkf2WeqVxvUgOYywQHjJpnR08Z54/tshSlQENv52k5I+7pMWA/pgpl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713996118; c=relaxed/simple;
-	bh=ZG+ntgzi5PkM1bTjwukYHVngl+la9QsTQx+Dj2qKr3U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bTDsjluXciivHMvsZ+rO8Goc1atarYX2lhh1S1rQXjm3/X8I3hcI0X+laLDoX7db07rQWJh6Hin887/UDdIpAUHgd/QrjfsZNXrbBMFvJQHX3pk9DINNfnraJYnhGO+i76OhEHFrEWYo72UTQ/iIW3+jf9VrS1aza5qdGvRKSx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PYFAopDP; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2ad8919ba0cso400289a91.0;
-        Wed, 24 Apr 2024 15:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713996117; x=1714600917; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4mlLExVU78P1Piha27/if7uYZprH+trWT7TZL2SvYBQ=;
-        b=PYFAopDPjYrluuTHbTOngh+6lBffHPFozF+Trj+7yiNdJk3i4YXj1qP6B3T3aQ9eW2
-         u4dNrxBO627H39VvogdG/ZUbwJ2Emixv6wAdgPWpUBuHAhfpJVlmvBlcmadFEqJUXujO
-         0Lw0jqozs00xYFJ3R1d7AP5Hjqxfr8+gWJPtdHQWXeAJRNsRvel0kWYxG1pjVvy1EWmw
-         n5zJWQuNQSMP4cbnl/ZoJmgSao4bKTmVie2kDeKbNO/ae5J2SuD/yXsjDUGiEkXwIr+d
-         jmKYbN7iKXjwI+O35BpYzuzcIMtdkb0ca02/lQEbnnu1d3ArWL8uWX67l1z7BCiYFJCh
-         HFKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713996117; x=1714600917;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4mlLExVU78P1Piha27/if7uYZprH+trWT7TZL2SvYBQ=;
-        b=DSIcKzY9MtTNCP9NDrhS4onodswq/I/zTNdj3PR6rIHHBeGhlDE1NolPIsYpNRldI6
-         oUMy0ov95Zwns8qisy3vln7EMKCoYBlidldNvED1UHEgaVCew8Nxh7Ev8FavOWH+rqm0
-         G5KYJXAFk8bWirfGt1oit6IpqZwMBil8FHSwdMgFxzrl0bHoCKJZ+gAPibF+MdF1RFzz
-         rfUi1bWKQNdFpOSNqS+aT/NcwsLiem1dtoTFF1j0KMgr1pz9c28YZpKBx/P5G/OoZHt2
-         TSYP6juOq9Gs4PPO0PlQlFsVZOvXehaxFDl7C2oHG8HmbZVAD2lsbN+ig+qI6AOFxaCz
-         IiJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWkFSF3iGJ0bk5ZzvRrtI8R8eZqIcVmLyiwiU8mUFCGxBNr9MShip57VtUvFYfVHtnZrWaVg5+gtA4nHKzoxzpVzH2V/nOA5Ibiot0A6nT1VctfpxF+c+ZlyJcQPoOP5+3f
-X-Gm-Message-State: AOJu0YzrQeZ3fdUoV9ynJ+wD+q7dqSgUVnpX19IJsEsOXCfUno/B03M5
-	laNdbe6V//sPLa6mpUeMYylH5LcjBN3zEfzCMkmK1AWWndhNTqgS9HBhqOOuTp4n7NJn5gvSDxw
-	Awt5oyMPyZNRCrSchS1A9r26gA9Y=
-X-Google-Smtp-Source: AGHT+IGBt6/cXnnlWIm2WuIW72gihVu448YDBwXpNTuksNUq5ldhuf6uEU4n70occoDe0KbcmZTgdV2ODP/auyiKPyc=
-X-Received: by 2002:a17:90b:4a83:b0:2af:6ce2:bbc8 with SMTP id
- lp3-20020a17090b4a8300b002af6ce2bbc8mr2360066pjb.6.1713996116560; Wed, 24 Apr
- 2024 15:01:56 -0700 (PDT)
+	s=arc-20240116; t=1713996173; c=relaxed/simple;
+	bh=889DZ02S6SUVQkUhisDCWyheeMIzXijzcmfyta4BrzA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XxnUdwm19JGgbGrTE2dw4jAPlfrV/m8zAn1bx3ZtlBHLPNu5W6vka8h6Uka7fjq2Bq/X5R4XXYNlKuM/SsAGDKGbAZhgWEQrP5WFAHBRh1MLhBHnfdjrWFTgxI4QzDUK+EPI0Pz2PbMQKWhO7RLXeaQf1GJYce93JAGdO6Ek2Ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu; spf=pass smtp.mailfrom=1wt.eu; arc=none smtp.client-ip=163.172.96.212
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1wt.eu
+Received: (from willy@localhost)
+	by pcw.home.local (8.15.2/8.15.2/Submit) id 43OM2bnN010288;
+	Thu, 25 Apr 2024 00:02:37 +0200
+Date: Thu, 25 Apr 2024 00:02:37 +0200
+From: Willy Tarreau <w@1wt.eu>
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc: Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/nolibc: disable brk()/sbrk() tests on musl
+Message-ID: <20240424220237.GA10281@1wt.eu>
+References: <20240424-nolibc-musl-brk-v1-1-b49882dd9a93@weissschuh.net>
+ <20240424021313.GA7774@1wt.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424173550.16359-1-puranjay@kernel.org> <20240424173550.16359-3-puranjay@kernel.org>
-In-Reply-To: <20240424173550.16359-3-puranjay@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 24 Apr 2024 15:01:43 -0700
-Message-ID: <CAEf4BzZOFye13KdBUKA7E=41NVNy5fOzF3bxFzaeZAzkq0kh-w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] bpf, arm64: inline bpf_get_smp_processor_id()
- helper
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>, 
-	Florent Revest <revest@chromium.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, puranjay12@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240424021313.GA7774@1wt.eu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Wed, Apr 24, 2024 at 10:36=E2=80=AFAM Puranjay Mohan <puranjay@kernel.or=
-g> wrote:
->
-> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inline
-> bpf_get_smp_processor_id().
->
-> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
->
-> Here is how the BPF and ARM64 JITed assembly changes after this commit:
->
->                                          BPF
->                                         =3D=3D=3D=3D=3D
->               BEFORE                                       AFTER
->              --------                                     -------
->
-> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_smp=
-_processor_id();
-> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff8000820=
-72008
->                                                 (bf) r0 =3D r0
+On Wed, Apr 24, 2024 at 04:13:13AM +0200, Willy Tarreau wrote:
+> On Wed, Apr 24, 2024 at 12:15:33AM +0200, Thomas Weiﬂschuh wrote:
+> > On musl calls to brk() and sbrk() always fail with ENOMEM.
+> > Detect this and skip the tests on musl.
+> > 
+> > Tested on glibc 2.39 and musl 1.2.5 in addition to nolibc.
+> > 
+> > Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
+> > ---
+> >  tools/testing/selftests/nolibc/nolibc-test.c | 10 +++++++---
+> >  1 file changed, 7 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+> > index 94bb6e11c16f..89be9ba95179 100644
+> > --- a/tools/testing/selftests/nolibc/nolibc-test.c
+> > +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+> > @@ -942,6 +942,7 @@ int run_syscall(int min, int max)
+> >  	int ret = 0;
+> >  	void *p1, *p2;
+> >  	int has_gettid = 1;
+> > +	int has_brk;
+> >  
+> >  	/* <proc> indicates whether or not /proc is mounted */
+> >  	proc = stat("/proc", &stat_buf) == 0;
+> > @@ -954,6 +955,9 @@ int run_syscall(int min, int max)
+> >  	has_gettid = __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 30);
+> >  #endif
+> >  
+> > +	/* on musl setting brk()/sbrk() always fails */
+> > +	has_brk = brk(0) == 0;
+> > +
+> >  	for (test = min; test >= 0 && test <= max; test++) {
+> >  		int llen = 0; /* line length */
+> >  
+> > @@ -969,9 +973,9 @@ int run_syscall(int min, int max)
+> >  		CASE_TEST(kill_0);            EXPECT_SYSZR(1, kill(getpid(), 0)); break;
+> >  		CASE_TEST(kill_CONT);         EXPECT_SYSZR(1, kill(getpid(), 0)); break;
+> >  		CASE_TEST(kill_BADPID);       EXPECT_SYSER(1, kill(INT_MAX, 0), -1, ESRCH); break;
+> > -		CASE_TEST(sbrk_0);            EXPECT_PTRNE(1, sbrk(0), (void *)-1); break;
+> > -		CASE_TEST(sbrk);              if ((p1 = p2 = sbrk(4096)) != (void *)-1) p2 = sbrk(-4096); EXPECT_SYSZR(1, (p2 == (void *)-1) || p2 == p1); break;
+> > -		CASE_TEST(brk);               EXPECT_SYSZR(1, brk(sbrk(0))); break;
+> > +		CASE_TEST(sbrk_0);            EXPECT_PTRNE(has_brk, sbrk(0), (void *)-1); break;
+> > +		CASE_TEST(sbrk);              if ((p1 = p2 = sbrk(4096)) != (void *)-1) p2 = sbrk(-4096); EXPECT_SYSZR(has_brk, (p2 == (void *)-1) || p2 == p1); break;
+> > +		CASE_TEST(brk);               EXPECT_SYSZR(has_brk, brk(sbrk(0))); break;
+> >  		CASE_TEST(chdir_root);        EXPECT_SYSZR(1, chdir("/")); chdir(getenv("PWD")); break;
+> >  		CASE_TEST(chdir_dot);         EXPECT_SYSZR(1, chdir(".")); break;
+> >  		CASE_TEST(chdir_blah);        EXPECT_SYSER(1, chdir("/blah"), -1, ENOENT); break;
+> 
+> Looks good, thank you Thomas!
 
-nit: hmm, you are probably using a bit outdated bpftool, it should be
-emitted as:
+BTW, Acked-by: Willy Tarreau <w@1wt.eu>
 
-(bf) r0 =3D &(void __percpu *)(r0)
-
->                                                 (61) r0 =3D *(u32 *)(r0 +=
-0)
->
->                                       ARM64 JIT
->                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->               BEFORE                                       AFTER
->              --------                                     -------
->
-> int cpu =3D bpf_get_smp_processor_id();      int cpu =3D bpf_get_smp_proc=
-essor_id();
-> mov     x10, #0xfffffffffffff4d0           mov     x7, #0xffff8000fffffff=
-f
-> movk    x10, #0x802b, lsl #16              movk    x7, #0x8207, lsl #16
-> movk    x10, #0x8000, lsl #32              movk    x7, #0x2008
-> blr     x10                                mrs     x10, tpidr_el1
-> add     x7, x0, #0x0                       add     x7, x7, x10
->                                            ldr     w7, [x7]
->
-> Performance improvement using benchmark[1]
->
->              BEFORE                                       AFTER
->             --------                                     -------
->
-> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   24.631 =
-=C2=B1 0.027M/s
-> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   23.742 =
-=C2=B1 0.023M/s
-> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   12.625 =
-=C2=B1 0.004M/s
->
-> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
->
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
->  kernel/bpf/verifier.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
->
-
-Besides the nits, lgtm.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 9715c88cc025..3373be261889 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -20205,7 +20205,7 @@ static int do_misc_fixups(struct bpf_verifier_env=
- *env)
->                         goto next_insn;
->                 }
->
-> -#ifdef CONFIG_X86_64
-> +#if defined(CONFIG_X86_64) || defined(CONFIG_ARM64)
-
-I think you can drop this, we are protected by
-bpf_jit_supports_percpu_insn() check and newly added inner #if/#elif
-checks?
-
->                 /* Implement bpf_get_smp_processor_id() inline. */
->                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
->                     prog->jit_requested && bpf_jit_supports_percpu_insn()=
-) {
-> @@ -20214,11 +20214,20 @@ static int do_misc_fixups(struct bpf_verifier_e=
-nv *env)
->                          * changed in some incompatible and hard to suppo=
-rt
->                          * way, it's fine to back out this inlining logic
->                          */
-> +#if defined(CONFIG_X86_64)
->                         insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(un=
-signed long)&pcpu_hot.cpu_number);
->                         insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
-PF_REG_0);
->                         insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
-_REG_0, 0);
->                         cnt =3D 3;
-> +#elif defined(CONFIG_ARM64)
-> +                       struct bpf_insn cpu_number_addr[2] =3D { BPF_LD_I=
-MM64(BPF_REG_0, (u64)&cpu_number) };
->
-
-this &cpu_number offset is not guaranteed to be within 4GB on arm64?
-
-> +                       insn_buf[0] =3D cpu_number_addr[0];
-> +                       insn_buf[1] =3D cpu_number_addr[1];
-> +                       insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
-PF_REG_0);
-> +                       insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
-_REG_0, 0);
-> +                       cnt =3D 4;
-> +#endif
->                         new_prog =3D bpf_patch_insn_data(env, i + delta, =
-insn_buf, cnt);
->                         if (!new_prog)
->                                 return -ENOMEM;
-> --
-> 2.40.1
->
+Willy
 
