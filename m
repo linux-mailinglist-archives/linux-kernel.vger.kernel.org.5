@@ -1,47 +1,73 @@
-Return-Path: <linux-kernel+bounces-157139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 340EC8B0D52
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:55:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B3A58B0D58
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:56:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F546B2769A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:55:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03A5B2829C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE48A160860;
-	Wed, 24 Apr 2024 14:54:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C2615EFBC;
+	Wed, 24 Apr 2024 14:56:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="rrpzs9vH"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="PN7hgq7t"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A308915FCED;
-	Wed, 24 Apr 2024 14:54:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C4DE15E802
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 14:56:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713970465; cv=none; b=r5ps0lTfVMiF1HPieJ/htcxy5sfPq9Su4W6tRVsgk7LVZpqfyhH0MGMq64xjdUZa9SXKQV0X/inq/Dac5F8AZS+bUnEWi7pTTIsdSxhNTFsHqOQpd0bJ11dWDqFvxuTC1pHE+Nt9qa63TXCV/uU5v8VMqSxkiNMKWajO1wx/NWE=
+	t=1713970567; cv=none; b=WAv8SZuDtC46jgN7svk9hvorNnJpJLS53usp5a2V09Xmj8D8rc50v1OMJDefGE6HSLY5oWNfj1m3pfhu02rrhqDIe/ce4BJesoDU5ip5bPAwSgs1u1JhqNpBnJunpPl8tI0S0jH56kA/4NPNZ9n5go3ApYPj34XUyTXGmdXX6NE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713970465; c=relaxed/simple;
-	bh=7A00nw+fZh+BCPaM9SVqEEy0Z0BVu4u19Cb3geQl+o0=;
+	s=arc-20240116; t=1713970567; c=relaxed/simple;
+	bh=r/bsG+DahccY41ogyHB98lQZDw4WLzeIB6IRxnU5Iu8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Dg5DeX6K7qg++bzo21dpJb9mZG/YAvtDvtey6Khbw2b+hFA/e/ON/Y/Hn/75paZ0aWOf37H84c3EHhroZ4vOgXd2FlEs9C2w/9Wv6SBdiACb66QF115ZOXwkOwEZ7R09xk0xT6Pe3dWjnr41hsAPWyhcdcvQ5wepWn/oEu81zyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=rrpzs9vH; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 68B8E66B;
-	Wed, 24 Apr 2024 16:53:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1713970409;
-	bh=7A00nw+fZh+BCPaM9SVqEEy0Z0BVu4u19Cb3geQl+o0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=rrpzs9vHJZ2VZMhFMNT1EtKNQKjBw0Ay/qh2jIz7PkTNCVHaH70Kj6R2cgNWaqowh
-	 pT6wQD+iXBrDcM9kyo1NoCqf7uUblTq9yNa7kV7pm3bCXDsHDs6sU5LQkVa68zNESK
-	 1NtlbFnQqY45u5ZUZKAYpjvv478CBPCUqCikJ4kg=
-Message-ID: <b179953c-5a08-4149-80c4-8610f7c9778a@ideasonboard.com>
-Date: Wed, 24 Apr 2024 17:54:17 +0300
+	 In-Reply-To:Content-Type; b=a61movllivYjWR0tn0RvNo3aOK2mK+6jidlyDhHAWWpU42P3lcyEfc6T7X55L2fKH6EpZjWVuKO9ZjLq2348p6mBpQxXGoHCfO1HnUV/uo9Nz0OHlfQ6vOYNm8c8xyVDH31bUuQbLHbiP14zNxlGUdp85R6Nv16Oqf61Mguoa8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=PN7hgq7t; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e3c3aa8938so48658925ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 07:56:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1713970564; x=1714575364; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+odfKIGSy18T3DcDdkmUycI8heuMSJ2q7o06nJf9qrc=;
+        b=PN7hgq7tjmwIoaK32SrPpf9JI8upIPMz1X17buhMznmmOj2BP2UtqVUfWF2Xu+fk7B
+         Y2NbmQUG7Q8exwehTab7/pDALy9dml3JC/AU+9iSfxweoaBzhis3dJCwjo9yLbTl9+3i
+         uSSRnNtQFQXKp09+qGLbsxggguTXEjqu9dw/XXmzEbFe6bRQgedMQlozNozqEKukNs8F
+         08B2825Fi+wOrSlIfLpQtPMCuuovGM/QwgbJ84BMOJlWg7zGiUfwY5Yx/Tqd9+wrHhAi
+         vSg5si8VykdyqjumSk8lWjzjpSr2eTlb8XqDIaN2FCLjZAtAk1DX5OTfQSzEGI+8QhXR
+         qEwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713970564; x=1714575364;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+odfKIGSy18T3DcDdkmUycI8heuMSJ2q7o06nJf9qrc=;
+        b=QfpqZkZLN7rryJbflwGEY78QGzWnYJLTizYIFM0Fv51O+2QQpZ3hyuA0uXQilKGwds
+         Pj8xXkwNdDaGNyc7xHliu2hwA1m1deC/DziQz8odua9F/f9ZTPN96ZSvHZx34PXl95rE
+         hT5b5bIh+72HW4agPzWcfvZnau83f+8h/3Go2ZTwkShms60HfDZBODj6l60nfmQ+KTfW
+         lTH1olENsYs04nwRQTGDGOadm2r5Gk+ScWwBKVNXmerQ6Mzv7VhnULxbdmliYoB/teFx
+         UH6ODSk32EztTrrVnrJijZVSIzeAzlbkESuy90gGRMCCYsaS3TR1F48mrQDxu8HbziUD
+         SFaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU3T0B/dMfOyCdhbSlelWnMplmhyUg5Tu2UdRJ7vjG1RyVnIz2M7NzA+u5Zji3f2V4QRWBIhARAmc4Ub99Zwj1XYhObsvjM9jf4lv4r
+X-Gm-Message-State: AOJu0YwYwyezJxwNhiO5uiBAZGTunDHFAoYjDZmjs9wXgWVc+AasevvP
+	pGRKhog8ja6IUpWcCw3m31FboB0npijReSpr2EM3qCZDxj8WzPS5zjOfVOlg3SA=
+X-Google-Smtp-Source: AGHT+IEaYo53TqZJYopBLHdHK0tVDo70MrJ3tDzgWV/fvnuFTB4b7aoeWM4Uy8iIZd0mOtysPisPkw==
+X-Received: by 2002:a05:6a20:979a:b0:1aa:a421:4239 with SMTP id hx26-20020a056a20979a00b001aaa4214239mr2575550pzc.15.1713970564438;
+        Wed, 24 Apr 2024 07:56:04 -0700 (PDT)
+Received: from [10.3.132.118] ([61.213.176.5])
+        by smtp.gmail.com with ESMTPSA id j17-20020aa783d1000000b006ecf00c1dd5sm11524186pfn.120.2024.04.24.07.56.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 07:56:03 -0700 (PDT)
+Message-ID: <34ba3b5c-638c-4622-8bcb-a2ef74b22f69@bytedance.com>
+Date: Wed, 24 Apr 2024 22:55:57 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,192 +75,246 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/7] Managing live video input format for ZynqMP DPSUB
-To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-Cc: dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-media@vger.kernel.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Michal Simek <michal.simek@amd.com>, Andrzej Hajda
- <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>,
- Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20240416-dp-live-fmt-v4-0-c7f379b7168e@amd.com>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Content-Language: en-US
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240416-dp-live-fmt-v4-0-c7f379b7168e@amd.com>
+Subject: Re: [PATCH 03/12] cachefiles: fix slab-use-after-free in
+ cachefiles_ondemand_get_fd()
+To: libaokun@huaweicloud.com, netfs@lists.linux.dev
+Cc: dhowells@redhat.com, jlayton@kernel.org, jefflexu@linux.alibaba.com,
+ linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Baokun Li <libaokun1@huawei.com>,
+ Hou Tao <houtao1@huawei.com>, zhujia.zj@bytedance.com
+References: <20240424033916.2748488-1-libaokun@huaweicloud.com>
+ <20240424033916.2748488-4-libaokun@huaweicloud.com>
+From: Jia Zhu <zhujia.zj@bytedance.com>
+In-Reply-To: <20240424033916.2748488-4-libaokun@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-On 16/04/2024 23:31, Anatoliy Klymenko wrote:
-> Implement live video input format setting for ZynqMP DPSUB.
-> 
-> ZynqMP DPSUB can operate in 2 modes: DMA-based and live.
-> 
-> In the live mode, DPSUB receives a live video signal from FPGA-based CRTC.
-> DPSUB acts as a DRM encoder bridge in such a scenario. To properly tune
-> into the incoming video signal, DPSUB should be programmed with the proper
-> media bus format. This patch series addresses this task.
-> 
-> Patch 1/7: Set the DPSUB layer mode of operation prior to enabling the
-> layer. Allows to use layer operational mode before its enablement.
-> 
-> Patch 2/7: Update some IP register defines.
-> 
-> Patch 3/7: Factor out some code into a helper function.
-> 
-> Patch 4/7: Announce supported input media bus formats via
-> drm_bridge_funcs.atomic_get_input_bus_fmts callback.
-> 
-> Patch 5/7: Minimize usage of a global flag. Minor improvement.
-> 
-> Patch 6/7: Program DPSUB live video input format based on selected bus
-> config in the new atomic bridge state.
-> 
-> Patch 7/7: New optional CRTC atomic helper proposal that will allow to
-> negotiate video signal format between CRTC and connected encoder.
-> Incorporate this callback into the DRM bridge format negotiation process.
-> Save negotiated output format in drm_crtc_state. Reference usage of this
-> API is available here:
-> https://github.com/onotole/linux/tree/dpsub-live-in
-
-The patches up to and including patch 6 look ready to me. I'll pick them 
-up to drm-misc.
-
-  Tomi
+Content-Transfer-Encoding: 8bit
 
 
-> To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> To: Maxime Ripard <mripard@kernel.org>
-> To: Thomas Zimmermann <tzimmermann@suse.de>
-> To: David Airlie <airlied@gmail.com>
-> To: Daniel Vetter <daniel@ffwll.ch>
-> To: Michal Simek <michal.simek@amd.com>
-> To: Andrzej Hajda <andrzej.hajda@intel.com>
-> To: Neil Armstrong <neil.armstrong@linaro.org>
-> To: Robert Foss <rfoss@kernel.org>
-> To: Jonas Karlman <jonas@kwiboo.se>
-> To: Jernej Skrabec <jernej.skrabec@gmail.com>
-> To: Rob Herring <robh+dt@kernel.org>
-> To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> To: Conor Dooley <conor+dt@kernel.org>
-> To: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+
+在 2024/4/24 11:39, libaokun@huaweicloud.com 写道:
+> From: Baokun Li <libaokun1@huawei.com>
 > 
-> Changes in v4:
-> - Replace controversial reference driver patches with the private
->    repository link.
-> - Split display layer format manipulation functions into 2 separate cases
->    for diferet layer modes.
-> - Address misc review comments (typos, comments, etc.)
+> We got the following issue in a fuzz test of randomly issuing the restore
+> command:
 > 
-> Link to v3: https://lore.kernel.org/r/20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com
+> ==================================================================
+> BUG: KASAN: slab-use-after-free in cachefiles_ondemand_daemon_read+0x609/0xab0
+> Write of size 4 at addr ffff888109164a80 by task ondemand-04-dae/4962
 > 
-> Changes in v3:
-> - Add connected live layer helper
-> - Include reference DRM format in zynqmp_disp_format for live layerss.
-> - Add default bus format list for non-live case.
-> - Explain removal of redundant checks in the commit message.
-> - Minor fixes and improvements from review comments.
+> CPU: 11 PID: 4962 Comm: ondemand-04-dae Not tainted 6.8.0-rc7-dirty #542
+> Call Trace:
+>   kasan_report+0x94/0xc0
+>   cachefiles_ondemand_daemon_read+0x609/0xab0
+>   vfs_read+0x169/0xb50
+>   ksys_read+0xf5/0x1e0
 > 
-> Link to v2: https://lore.kernel.org/r/20240312-dp-live-fmt-v2-0-a9c35dc5c50d@amd.com
+> Allocated by task 626:
+>   __kmalloc+0x1df/0x4b0
+>   cachefiles_ondemand_send_req+0x24d/0x690
+>   cachefiles_create_tmpfile+0x249/0xb30
+>   cachefiles_create_file+0x6f/0x140
+>   cachefiles_look_up_object+0x29c/0xa60
+>   cachefiles_lookup_cookie+0x37d/0xca0
+>   fscache_cookie_state_machine+0x43c/0x1230
+>   [...]
 > 
-> Changes in v2:
-> - Factor out register defines update into separate patch.
-> - Add some improvements minimizing ithe usage of a global flag.
-> - Reuse existing format setting API instead of introducing new versions.
-> - Add warning around NULL check on new bridge state within atomic enable
->    callback.
-> - Add drm_helper_crtc_select_output_bus_format() that wraps
->    drm_crtc_helper_funcs.select_output_bus_format().
-> - Update API comments per review recommendations.
-> - Address some minor review comments.
-> - Add reference CRTC driver that demonstrates the usage of the proposed
->    drm_crtc_helper_funcs.select_output_bus_format() API.
+> Freed by task 626:
+>   kfree+0xf1/0x2c0
+>   cachefiles_ondemand_send_req+0x568/0x690
+>   cachefiles_create_tmpfile+0x249/0xb30
+>   cachefiles_create_file+0x6f/0x140
+>   cachefiles_look_up_object+0x29c/0xa60
+>   cachefiles_lookup_cookie+0x37d/0xca0
+>   fscache_cookie_state_machine+0x43c/0x1230
+>   [...]
+> ==================================================================
 > 
-> - Link to v1: https://lore.kernel.org/r/20240226-dp-live-fmt-v1-0-b78c3f69c9d8@amd.com
+> Following is the process that triggers the issue:
 > 
+>       mount  |   daemon_thread1    |    daemon_thread2
+> ------------------------------------------------------------
+>   cachefiles_ondemand_init_object
+>    cachefiles_ondemand_send_req
+>     REQ_A = kzalloc(sizeof(*req) + data_len)
+>     wait_for_completion(&REQ_A->done)
+> 
+>              cachefiles_daemon_read
+>               cachefiles_ondemand_daemon_read
+>                REQ_A = cachefiles_ondemand_select_req
+>                cachefiles_ondemand_get_fd
+>                copy_to_user(_buffer, msg, n)
+>              process_open_req(REQ_A)
+>                                    ------ restore ------
+>                                    cachefiles_ondemand_restore
+>                                    xas_for_each(&xas, req, ULONG_MAX)
+>                                     xas_set_mark(&xas, CACHEFILES_REQ_NEW);
+> 
+>                                    cachefiles_daemon_read
+>                                     cachefiles_ondemand_daemon_read
+>                                      REQ_A = cachefiles_ondemand_select_req
+> 
+>               write(devfd, ("copen %u,%llu", msg->msg_id, size));
+>               cachefiles_ondemand_copen
+>                xa_erase(&cache->reqs, id)
+>                complete(&REQ_A->done)
+>     kfree(REQ_A)
+>                                      cachefiles_ondemand_get_fd(REQ_A)
+>                                       fd = get_unused_fd_flags
+>                                       file = anon_inode_getfile
+>                                       fd_install(fd, file)
+>                                       load = (void *)REQ_A->msg.data;
+>                                       load->fd = fd;
+>                                       // load UAF !!!
+> 
+> This issue is caused by issuing a restore command when the daemon is still
+> alive, which results in a request being processed multiple times thus
+> triggering a UAF. So to avoid this problem, add an additional reference
+> count to cachefiles_req, which is held while waiting and reading, and then
+> released when the waiting and reading is over.
+
+Hi Baokun,
+Thank you for catching this issue. Shall we fix this by following steps:
+cachefiles_ondemand_fd_release()
+     xas_for_each(req)
+         if req is not CACHEFILES_OP_READ
+             flush
+
+cachefiles_ondemand_restore()
+     xas_for_each(req)
+         if req is not CACHEFILES_REQ_NEW && op is (OPEN or CLOSE)
+             reset req to CACHEFILES_REQ_NEW
+
+By implementing these steps:
+1. In real daemon failover case： only pending read reqs will be
+reserved. cachefiles_ondemand_select_req will reopen the object by
+processing READ req.
+2. In daemon alive case： Only read reqs will be reset to
+CACHEFILES_REQ_NEW.
+
+
+> 
+> Note that since there is only one reference count for waiting, we need to
+> avoid the same request being completed multiple times, so we can only
+> complete the request if it is successfully removed from the xarray.
+> 
+> Fixes: e73fa11a356c ("cachefiles: add restore command to recover inflight ondemand read requests")
+> Suggested-by: Hou Tao <houtao1@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 > ---
-> Anatoliy Klymenko (7):
->        drm: xlnx: zynqmp_dpsub: Set layer mode during creation
->        drm: xlnx: zynqmp_dpsub: Update live format defines
->        drm: xlnx: zynqmp_dpsub: Add connected live layer helper
->        drm: xlnx: zynqmp_dpsub: Anounce supported input formats
->        drm: xlnx: zynqmp_dpsub: Minimize usage of global flag
->        drm: xlnx: zynqmp_dpsub: Set input live format
->        drm/atomic-helper: Add select_output_bus_format callback
+>   fs/cachefiles/internal.h |  1 +
+>   fs/cachefiles/ondemand.c | 44 ++++++++++++++++++++++------------------
+>   2 files changed, 25 insertions(+), 20 deletions(-)
 > 
->   drivers/gpu/drm/drm_bridge.c             |  14 +-
->   drivers/gpu/drm/drm_crtc_helper.c        |  38 +++++
->   drivers/gpu/drm/xlnx/zynqmp_disp.c       | 231 +++++++++++++++++++++++++++----
->   drivers/gpu/drm/xlnx/zynqmp_disp.h       |  17 +--
->   drivers/gpu/drm/xlnx/zynqmp_disp_regs.h  |   8 +-
->   drivers/gpu/drm/xlnx/zynqmp_dp.c         |  81 ++++++++---
->   drivers/gpu/drm/xlnx/zynqmp_kms.c        |   2 +-
->   include/drm/drm_crtc.h                   |  11 ++
->   include/drm/drm_crtc_helper.h            |   5 +
->   include/drm/drm_modeset_helper_vtables.h |  30 ++++
->   10 files changed, 372 insertions(+), 65 deletions(-)
-> ---
-> base-commit: bfa4437fd3938ae2e186e7664b2db65bb8775670
-> change-id: 20240226-dp-live-fmt-6415773b5a68
-> 
-> Best regards,
-
+> diff --git a/fs/cachefiles/internal.h b/fs/cachefiles/internal.h
+> index d33169f0018b..7745b8abc3aa 100644
+> --- a/fs/cachefiles/internal.h
+> +++ b/fs/cachefiles/internal.h
+> @@ -138,6 +138,7 @@ static inline bool cachefiles_in_ondemand_mode(struct cachefiles_cache *cache)
+>   struct cachefiles_req {
+>   	struct cachefiles_object *object;
+>   	struct completion done;
+> +	refcount_t ref;
+>   	int error;
+>   	struct cachefiles_msg msg;
+>   };
+> diff --git a/fs/cachefiles/ondemand.c b/fs/cachefiles/ondemand.c
+> index fd49728d8bae..56d12fe4bf73 100644
+> --- a/fs/cachefiles/ondemand.c
+> +++ b/fs/cachefiles/ondemand.c
+> @@ -4,6 +4,12 @@
+>   #include <linux/uio.h>
+>   #include "internal.h"
+>   
+> +static inline void cachefiles_req_put(struct cachefiles_req *req)
+> +{
+> +	if (refcount_dec_and_test(&req->ref))
+> +		kfree(req);
+> +}
+> +
+>   static int cachefiles_ondemand_fd_release(struct inode *inode,
+>   					  struct file *file)
+>   {
+> @@ -299,7 +305,6 @@ ssize_t cachefiles_ondemand_daemon_read(struct cachefiles_cache *cache,
+>   {
+>   	struct cachefiles_req *req;
+>   	struct cachefiles_msg *msg;
+> -	unsigned long id = 0;
+>   	size_t n;
+>   	int ret = 0;
+>   	XA_STATE(xas, &cache->reqs, cache->req_id_next);
+> @@ -330,41 +335,39 @@ ssize_t cachefiles_ondemand_daemon_read(struct cachefiles_cache *cache,
+>   
+>   	xas_clear_mark(&xas, CACHEFILES_REQ_NEW);
+>   	cache->req_id_next = xas.xa_index + 1;
+> +	refcount_inc(&req->ref);
+>   	xa_unlock(&cache->reqs);
+>   
+> -	id = xas.xa_index;
+> -
+>   	if (msg->opcode == CACHEFILES_OP_OPEN) {
+>   		ret = cachefiles_ondemand_get_fd(req);
+>   		if (ret) {
+>   			cachefiles_ondemand_set_object_close(req->object);
+> -			goto error;
+> +			goto out;
+>   		}
+>   	}
+>   
+> -	msg->msg_id = id;
+> +	msg->msg_id = xas.xa_index;
+>   	msg->object_id = req->object->ondemand->ondemand_id;
+>   
+>   	if (copy_to_user(_buffer, msg, n) != 0) {
+>   		ret = -EFAULT;
+>   		if (msg->opcode == CACHEFILES_OP_OPEN)
+>   			close_fd(((struct cachefiles_open *)msg->data)->fd);
+> -		goto error;
+>   	}
+> -
+> -	/* CLOSE request has no reply */
+> -	if (msg->opcode == CACHEFILES_OP_CLOSE) {
+> -		xa_erase(&cache->reqs, id);
+> -		complete(&req->done);
+> +out:
+> +	/* Remove error request and CLOSE request has no reply */
+> +	if (ret || msg->opcode == CACHEFILES_OP_CLOSE) {
+> +		xas_reset(&xas);
+> +		xas_lock(&xas);
+> +		if (xas_load(&xas) == req) {
+> +			req->error = ret;
+> +			complete(&req->done);
+> +			xas_store(&xas, NULL);
+> +		}
+> +		xas_unlock(&xas);
+>   	}
+> -
+> -	return n;
+> -
+> -error:
+> -	xa_erase(&cache->reqs, id);
+> -	req->error = ret;
+> -	complete(&req->done);
+> -	return ret;
+> +	cachefiles_req_put(req);
+> +	return ret ? ret : n;
+>   }
+>   
+>   typedef int (*init_req_fn)(struct cachefiles_req *req, void *private);
+> @@ -394,6 +397,7 @@ static int cachefiles_ondemand_send_req(struct cachefiles_object *object,
+>   		goto out;
+>   	}
+>   
+> +	refcount_set(&req->ref, 1);
+>   	req->object = object;
+>   	init_completion(&req->done);
+>   	req->msg.opcode = opcode;
+> @@ -455,7 +459,7 @@ static int cachefiles_ondemand_send_req(struct cachefiles_object *object,
+>   	wake_up_all(&cache->daemon_pollwq);
+>   	wait_for_completion(&req->done);
+>   	ret = req->error;
+> -	kfree(req);
+> +	cachefiles_req_put(req);
+>   	return ret;
+>   out:
+>   	/* Reset the object to close state in error handling path.
 
