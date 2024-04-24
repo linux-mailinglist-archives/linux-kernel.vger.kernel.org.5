@@ -1,118 +1,174 @@
-Return-Path: <linux-kernel+bounces-157621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0CC78B13B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DF16B8B13B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:43:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7A7D1C23DA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:42:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C86C1C2357E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F7C813BAC4;
-	Wed, 24 Apr 2024 19:42:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8229513AD06;
+	Wed, 24 Apr 2024 19:43:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mmvq6rPf"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XJLpfqld"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07CD81386AA;
-	Wed, 24 Apr 2024 19:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDAA91772F;
+	Wed, 24 Apr 2024 19:43:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713987729; cv=none; b=D81YQWmn1BaUWr3wqI1Co/gqvhv6YeJC31ayWyI5ialtwdVDPKcX/tNr+9fWqL2LysIi37dAPEFLkHB4BKt0/pWDRf7jwgMLe7VSDuRCVyznSPuY7+W1cf5tqKybkcQwTTrE3ZmpAPYJJ3YlKiBxUZnLNRNKDy9dYX8NtZ4/5Pg=
+	t=1713987814; cv=none; b=F4NO8jlRbAaERtMN0N1no/BN8f/y2stozWnaboXk8YDSqcKCMMcthjfjcsfk/E7Cu1lBxB8tQdt6WIElavqQX6/zHzSJ2xViQm3m1hQA75X50svOWYMhztw0sh+bPtUT0iA41wHDZiRsOKXa18oXDvHWrbbIud+GpBLewyGbxp4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713987729; c=relaxed/simple;
-	bh=SmGdTOXSTu0eJ97+MElF8nFJnR06zsOp19Qt7IFFhSw=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=rPdKbvbpfwKwOg3Vq7G5wp6tUlZmxBN4OsSl3r48f30FHqew44kW7rI6rhjPT1Vh3IPg4Q9ZpHApLsHx5fOqqU6hIP8xgd2hoh5d/WFEUoS9il/LViIvbBJTtLa7USDVLovbe/5FRzLgdjmTZsQ7ZHbEM/NE5Bvpen1kQA5MhUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mmvq6rPf; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713987728; x=1745523728;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=SmGdTOXSTu0eJ97+MElF8nFJnR06zsOp19Qt7IFFhSw=;
-  b=mmvq6rPf4rQsAhjI720M4L3OOtUPWMJ4yMWSXRgAH8WJxQiUQ+FhRsXg
-   maDjrVmU4zaxexqUr9CDsEmr3W6UKyy8nrYAKwBvTPwRheQn1tAHDBSIL
-   NUZWTuS75Yr6Jn72cqWyyPtsPJnG8XFkHLqEjD+Rwmw07tzy1zekVUvCX
-   lh/8T/WRkrPj5IyepRBYGTLOA7NNo9eGSDKwpJasaH4mQhQJc65pUAKI4
-   2bbQMcmDG6Ftyz8juq2rOcPx9JJfEJ23q2EoFDTaGrZLIygWKhlsGk1K9
-   f/wSaPjFKPUxi3j+zfRdr7V3MIdemCvlBO2HuvmVTUF10Nt/Jql22IbGi
-   A==;
-X-CSE-ConnectionGUID: 5sUE9eslQW602PrRHY32YA==
-X-CSE-MsgGUID: AWYy+J5YS9qz+Ih+ACHIHA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9570992"
-X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
-   d="scan'208";a="9570992"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 12:42:07 -0700
-X-CSE-ConnectionGUID: +5AZYzF3QfuZAYOPi9tPMg==
-X-CSE-MsgGUID: 8T+28TDfTn2FXwjxuzXVPA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
-   d="scan'208";a="29619025"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.125.85.20])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 24 Apr 2024 12:42:04 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: dave.hansen@linux.intel.com, kai.huang@intel.com, tj@kernel.org,
- mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
- x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
- tim.c.chen@linux.intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, chrisyan@microsoft.com
-Subject: Re: [PATCH v12 14/14] selftests/sgx: Add scripts for EPC cgroup
- testing
-References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
- <20240416032011.58578-15-haitao.huang@linux.intel.com>
- <D0LLS28WEXYA.G15BAG7WOJGR@kernel.org> <D0LLVE07V8O0.S8XF3CY2DQ9A@kernel.org>
- <op.2mbs1m05wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <D0LODQCRSTRA.2KSPCDB0FLK0X@kernel.org>
-Date: Wed, 24 Apr 2024 14:42:03 -0500
+	s=arc-20240116; t=1713987814; c=relaxed/simple;
+	bh=vKFYekx4zyI62STnk+FA6F7HSB3eErVD+QjnOQSj1zo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B+H4CKy808fLGiVJhOVQj2tctgEuSlbrVE44bd55F5bmOGMzFyC2p9+D3RQBt0jWVTfJkYtRNx4Fws/BLkU4m/fnOc8vCJa6pfL7Xdqyj4nTOtNyUxxBN8Rv2INIRnA/pTkx+Z9l99QMQ/GwWX/mZygEldg2TqyUBS1xkrUJyOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XJLpfqld; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14CE8C113CD;
+	Wed, 24 Apr 2024 19:43:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713987814;
+	bh=vKFYekx4zyI62STnk+FA6F7HSB3eErVD+QjnOQSj1zo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XJLpfqld/3oPnXCMuNWmUg+dzsWu9g5aWo3ExrrsKERD1UuKm7b6qJJwf8r47fTSP
+	 TOTA8OFSenxTbjqqCgWrfM6h0yzb4/dm9sEX7FpCf59AS6VTYAY0KSMmeqW7/L/Jsa
+	 +oPs17OTG2cWSX8qfdrgu65VGgpP+Vjt7WeMzkgNPstKbbOFzVayCpLCunJla1/n+/
+	 l85xedaTFLhc/r6hZnmlvO5IvPTE4sToreAqtEKPq4eW9qlTPFlenSfvIuv7w5Wt3o
+	 ggC33kausbftez9qr1TZX7mnrSsEVFr8U0h6VPteLc0kwF7ItP7lV5DFcuhII31c9c
+	 2yVCBUSJtMT3Q==
+Date: Wed, 24 Apr 2024 14:43:31 -0500
+From: Rob Herring <robh@kernel.org>
+To: =?iso-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Peter Griffin <peter.griffin@linaro.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Sam Protsenko <semen.protsenko@linaro.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Will McVicker <willmcvicker@google.com>,
+	Roy Luo <royluo@google.com>, kernel-team@android.com,
+	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/7] dt-bindings: phy: samsung,usb3-drd-phy: add gs101
+ compatible
+Message-ID: <20240424194331.GA352392-robh@kernel.org>
+References: <20240423-usb-phy-gs101-v1-0-ebdcb3ac174d@linaro.org>
+ <20240423-usb-phy-gs101-v1-1-ebdcb3ac174d@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2mqzodbxwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <D0LODQCRSTRA.2KSPCDB0FLK0X@kernel.org>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240423-usb-phy-gs101-v1-1-ebdcb3ac174d@linaro.org>
 
-Hi Jarkko
-On Tue, 16 Apr 2024 11:08:11 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+On Tue, Apr 23, 2024 at 06:06:03PM +0100, André Draszik wrote:
+> Add a dedicated google,gs101-usb31drd-phy compatible for Google Tensor
+> gs101 SoC.
+> 
+> It needs additional clocks enabled for register access, and additional
+> memory regions (PCS & PMA) are required for successful configuration.
+> 
+> Signed-off-by: André Draszik <andre.draszik@linaro.org>
+> ---
+>  .../bindings/phy/samsung,usb3-drd-phy.yaml         | 78 +++++++++++++++++-----
+>  1 file changed, 61 insertions(+), 17 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/samsung,usb3-drd-phy.yaml b/Documentation/devicetree/bindings/phy/samsung,usb3-drd-phy.yaml
+> index 452e584d9812..db1dc4c60b72 100644
+> --- a/Documentation/devicetree/bindings/phy/samsung,usb3-drd-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/samsung,usb3-drd-phy.yaml
+> @@ -25,6 +25,7 @@ description: |
+>  properties:
+>    compatible:
+>      enum:
+> +      - google,gs101-usb31drd-phy
+>        - samsung,exynos5250-usbdrd-phy
+>        - samsung,exynos5420-usbdrd-phy
+>        - samsung,exynos5433-usbdrd-phy
+> @@ -57,7 +58,18 @@ properties:
+>        the OF graph bindings specified.
+>  
+>    reg:
+> -    maxItems: 1
+> +    minItems: 1
+> +    items:
+> +      - description: PHY register base address.
+> +      - description: PCS register base address.
+> +      - description: PMA register base address.
+> +
+> +  reg-names:
+> +    minItems: 1
+> +    items:
+> +      - const: phy
+> +      - const: pcs
+> +      - const: pma
+>  
+>    samsung,pmu-syscon:
+>      $ref: /schemas/types.yaml#/definitions/phandle
+> @@ -85,30 +97,62 @@ allOf:
+>        properties:
+>          compatible:
+>            contains:
+> -            enum:
+> -              - samsung,exynos5433-usbdrd-phy
+> -              - samsung,exynos7-usbdrd-phy
+> +            const: google,gs101-usb31drd-phy
+>      then:
+>        properties:
+>          clocks:
+> -          minItems: 5
+> -          maxItems: 5
+> -        clock-names:
+>            items:
+> -            - const: phy
+> -            - const: ref
+> -            - const: phy_utmi
+> -            - const: phy_pipe
+> -            - const: itp
+> -    else:
+> -      properties:
+> -        clocks:
+> -          minItems: 2
+> -          maxItems: 2
+> +            - description: Gate of main PHY clock
+> +            - description: Gate of PHY reference clock
+> +            - description: Gate of control interface AXI clock
+> +            - description: Gate of control interface APB clock
+> +            - description: Gate of SCL APB clock
+>          clock-names:
+>            items:
+>              - const: phy
+>              - const: ref
+> +            - const: ctrl_aclk
+> +            - const: ctrl_pclk
+> +            - const: scl_pclk
+> +        reg:
+> +          minItems: 3
+> +        reg-names:
+> +          minItems: 3
+> +      required:
+> +        - reg-names
+> +    else:
+> +      if:
 
-> On Tue Apr 16, 2024 at 5:54 PM EEST, Haitao Huang wrote:
->> I did declare the configs in the config file but I missed it in my patch
->> as stated earlier. IIUC, that would not cause this error though.
->>
->> Maybe I should exit with the skip code if no CGROUP_MISC (no more
->> CGROUP_SGX_EPC) is configured?
-> OK, so I wanted to do a distro kernel test here, and used the default
-> OpenSUSE kernel config. I need to check if it has CGROUP_MISC set.
+We generally try to avoid having nested else/if like this. Please change 
+the existing 'else' to an 'if' and then add an 'if' for your new 
+compatible.
 
-I couldn't figure out why this failure you have encountered. I think  
-OpenSUSE kernel most likely config CGROUP_MISC.
-
-Also if CGROUP_MISC not set, then there should be error happen earlier on  
-echoing "+misc" to cgroup.subtree_control at line 20. But your log  
-indicates only error on echoing "sgx_epc ..." to  
-/sys/fs/cgroup/...//misc.max.
-
-I can only speculate that can could happen (if sgx epc cgroup was compiled  
-in) when the cgroup-fs subdirectories in question already have populated  
-config that is conflicting with the scripts.
-
-Could you double check or start from a clean environment?
-Thanks
-Haitao
+Rob
 
