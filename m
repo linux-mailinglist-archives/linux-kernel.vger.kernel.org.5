@@ -1,149 +1,151 @@
-Return-Path: <linux-kernel+bounces-157204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 830D88B0E6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:33:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 016DD8B0E66
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:32:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 237281F2518B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:33:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9CDE284988
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA3B615B97E;
-	Wed, 24 Apr 2024 15:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD671161301;
+	Wed, 24 Apr 2024 15:30:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="a8qYTfmX"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dLn+KLHa"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B9A15EFDB
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:30:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F9415FA68;
+	Wed, 24 Apr 2024 15:30:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713972625; cv=none; b=kKYycrCFf3jdP7t+SwuMKTDHzoFto8eN640fcTt22RovZWfvk5cjfWY15rHn+5m/iDFOPRnoE0yGRlinobrZSwiDrxWlv1SF8pb/yP2CzMmoyCJcZfgaLqW3JIr22cIip3WcIbt8Ebm+Vd4c5Pi2a6EXWcu4ab6yA0RQ8xHlZeY=
+	t=1713972622; cv=none; b=n9Ze8F6FvuXymFKmlWHwj1JuoW54wLY/9F+gLwZ+jCKi+aNFEbLh6mcvl4bgoaKhmprX44TX/t4jLg8r0J0OjIQu6J1JrbSPnC0sS+UyyH3INeJVyLvpiirerVTU3ckj2Ec/7tgNnYAaqBQLzoNrSdcQKLczZylaoZyco9FTbQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713972625; c=relaxed/simple;
-	bh=WrxU+iK2u+Wu8wwi+GibzMLwpaSndL/Suh4PRa2Redw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JFFaYGB4oeTjN+1eGpu84xobl32IcqgpLnZqnzsbqEOV21o5/ksra/vAFOApzegu13DrdcxUBZGTBc2gFKwUF9NteSHdUne1nJ/TzZBr58Pr78+Ss8/he9BLltrq35hYDecVG4KPGcZibiIlcs+K4RZD6XEQW0zAO82I/Af/y90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=a8qYTfmX; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51abf1a9332so7481050e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:30:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1713972621; x=1714577421; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kN0hHEeupGSSgCE7fWY20jL26gsYlFQ3vjjtg0lU+j8=;
-        b=a8qYTfmXzFdX9chUZKS0GFutyxQUkwaOQe6UtpXzDk6CDXoDnOJ10Ao5XsA15vL8UE
-         JLD2oSv3RkajURDTH6HrMNZPgRIgScZaLyW/4rKMAlIVESjMDJEwEJnb6EUX/c3x4J2W
-         eQYqRBmKgC9yZuwhH+EpqU9jNp7G3T7odjIs63yNmtJE+pICNvzScGNR72qbcwiAnWIO
-         Uf9JPkYlQmpbNNVshUxP3GqHfaTRIQei5FabfbNqStblqfrLb8AtyZIfTQUCH9HyyMC3
-         qCODIre+yssNeKv1mY+LbsvYV11bHg7ExEtATNtEMd74T5uW2vGcPdzys0wv5rPB4nDG
-         jvNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713972621; x=1714577421;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kN0hHEeupGSSgCE7fWY20jL26gsYlFQ3vjjtg0lU+j8=;
-        b=ovaafhRun3YHdiPsV8jQlGcK2x9f2IeQKyo4bjGRUI2ryMmBz9PbpCN0x4bu7fyr2d
-         /ciiihiONZdqYSDAYmvDCIF6zK2CQEiM4JcMCjkmFl4D7jzUNjtqQsKEdmTiepI0PR4y
-         dXhxkoUkcv4EDEV1XleiGi7HljvgcmAoXM4kRDOZYSybt8+Yhh/LRNT19xqEDUBfqfsj
-         5jIEux4m8FdqR1ysCD4qVaE5bGGdTR6Bq0Fq/QNTCL9THNIuI5HvOnssm1bskBeWeOjP
-         w/pCuQo4LccEtrqb8EiWmxC1ft4X8p3lwCj15W4GExrv4+Czaq9QWfFQKdkdVRtzwbhv
-         BHoA==
-X-Forwarded-Encrypted: i=1; AJvYcCVNeWh8aTuVe7EPaXMST477w3jLMAfq7wzfd9cJ7LqLLjnEioVRHq6dTyof46pP8Bo5DRlmlLFu0sVqOYJzBrio+lF7BHyvmrqXQmdf
-X-Gm-Message-State: AOJu0Yyzhn7Bld1GAHE+rNk13Z+0bLd9R8Tz63+VAm4ULu/zFndH6RV8
-	3I8+DufFEztRjIHmi1NM3anrnyROGdKETFp0TMWRBSesNtnqeDNZnQnsmQi6wboFj4Cm55f/mog
-	NS2DHMxMt3A1DKw5P0O3FmClVEIDo1a8HmfKreQ==
-X-Google-Smtp-Source: AGHT+IGn7KAqu+nR5bhFS2Z9m9gErGRNbgsG77V5JtQm/T9HJ5ODX/t/kTmqfxILFhpnt0Rc/sZLPz6eLDRVfdL0fe8=
-X-Received: by 2002:a05:6512:287:b0:516:cd83:a96a with SMTP id
- j7-20020a056512028700b00516cd83a96amr2069705lfp.37.1713972621326; Wed, 24 Apr
- 2024 08:30:21 -0700 (PDT)
+	s=arc-20240116; t=1713972622; c=relaxed/simple;
+	bh=wbLuhw/WYXCcv7kdW+LHH5poNfQY/brJKzckpRJupaE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g01LY+69ZAcDCTBQjpzraBmIpXue/oEiMPSCXONFqzRact8dqKf/beJP/YLtilUIMfYIS4HiT1gIUYVwbbeag2AhbaCgbhmY+cF/GoKy2u3fo0VqXJQn2jcdGzyldAuqzBhhxQ0vCWFjO+xklr0KF8zkeyUBBUSiZvSF4S7FNdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dLn+KLHa; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713972620; x=1745508620;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=wbLuhw/WYXCcv7kdW+LHH5poNfQY/brJKzckpRJupaE=;
+  b=dLn+KLHad0uNBXmg1wNDoq+v7czZDYkCvTA02uZAOiLMCAb6qkNBB6tc
+   v0/Yqswo5HGCsK2b4l6I93eh1UGVrhBYT+YPDm+FEftsAEDHohCK6XUUS
+   F9nhYVynzUIGhug6KCIZsygM//pwXi8X5M0zhMNO1EfJt1V+7a6HyArwa
+   b8lzwQrC51dQBaNP4nL7KbB63tyATBZH1KryAfFF+tHj0MDO4tEYDSUz9
+   HB+8x2m2OAQZ5FlANzrz65bjOD4KiHmUSVj5S+iJNOOm8p/37MOwfPF1u
+   PGYmaiqKH4vhJ67E0xydek5StOB3qLJkLCouAeyPMnpMVrSm8cGNyRMVf
+   w==;
+X-CSE-ConnectionGUID: RtD5yi/ARNO77Y3QqExL7Q==
+X-CSE-MsgGUID: 5DiS7h6ISly66z7Coi02MQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9540547"
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="9540547"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 08:30:18 -0700
+X-CSE-ConnectionGUID: 8VHd22DdTmO/lLu1mNIrQA==
+X-CSE-MsgGUID: D1ZemLcCQiKus60QrdcssQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="24631769"
+Received: from linux.intel.com ([10.54.29.200])
+  by orviesa010.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 08:30:18 -0700
+Received: from [10.212.107.188] (kliang2-mobl1.ccr.corp.intel.com [10.212.107.188])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id 422D8206D89D;
+	Wed, 24 Apr 2024 08:30:16 -0700 (PDT)
+Message-ID: <7f1014fc-eb0a-4989-8efa-245d5b6937cd@linux.intel.com>
+Date: Wed, 24 Apr 2024 11:30:14 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424122932.79120-1-brgl@bgdev.pl> <0f8ba1b5-490e-4961-80e2-7942f66730ec@linaro.org>
- <CACMJSeuBCkNyaD60qGVpAq91DqD_OA=tCVEY0t+JNK2vcWBc+Q@mail.gmail.com> <d82c2e39-d2b8-4de0-a11a-6ab2420f8f95@quicinc.com>
-In-Reply-To: <d82c2e39-d2b8-4de0-a11a-6ab2420f8f95@quicinc.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 24 Apr 2024 17:30:10 +0200
-Message-ID: <CAMRc=Md6yJ+ZMd7PD6ifQW4me1JLg3m6ZiVAMvbo9QaOH_jmaQ@mail.gmail.com>
-Subject: Re: [PATCH v2] Bluetooth: qca: set power_ctrl_enabled on NULL
- returned by gpiod_get_optional()
-To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, quic_zijuhu <quic_zijuhu@quicinc.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Marcel Holtmann <marcel@holtmann.org>, 
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Wren Turkal <wt@penguintechs.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 13/16] perf parse-events: Improvements to modifier
+ parsing
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ Atish Patra <atishp@rivosinc.com>, linux-riscv@lists.infradead.org,
+ Beeman Strong <beeman@rivosinc.com>
+References: <20240416061533.921723-1-irogers@google.com>
+ <20240416061533.921723-14-irogers@google.com>
+ <e8147f53-1930-44d8-abb8-fee460ec355f@linux.intel.com>
+ <CAP-5=fVXv_gsoq5L08gaEJvU1E8xoihc3-L4taA+bPHyOJfgqw@mail.gmail.com>
+ <7df3ff63-a421-42cc-bcaa-b0254ff6a0e8@linux.intel.com>
+ <CAP-5=fUi8DPNrbp=978K92Mopa71ag1sukttX3KcztD2ac0ADg@mail.gmail.com>
+Content-Language: en-US
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <CAP-5=fUi8DPNrbp=978K92Mopa71ag1sukttX3KcztD2ac0ADg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 24, 2024 at 5:24=E2=80=AFPM quic_zijuhu <quic_zijuhu@quicinc.co=
-m> wrote:
->
-> On 4/24/2024 10:52 PM, Bartosz Golaszewski wrote:
-> > On Wed, 24 Apr 2024 at 16:46, Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >>
-> >> On 24/04/2024 14:29, Bartosz Golaszewski wrote:
-> >>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >>>
-> >>
-> >>>               qcadev->susclk =3D devm_clk_get_optional(&serdev->dev, =
-NULL);
-> >>>               if (IS_ERR(qcadev->susclk)) {
-> >>> @@ -2355,10 +2360,13 @@ static int qca_serdev_probe(struct serdev_dev=
-ice *serdev)
-> >>>               qcadev->bt_en =3D devm_gpiod_get_optional(&serdev->dev,=
- "enable",
-> >>>                                              GPIOD_OUT_LOW);
-> >>>               if (IS_ERR(qcadev->bt_en)) {
-> >>> -                     dev_warn(&serdev->dev, "failed to acquire enabl=
-e gpio\n");
-> >>> -                     power_ctrl_enabled =3D false;
-> >>> +                     dev_err(&serdev->dev, "failed to acquire enable=
- gpio\n");
-> >>> +                     return PTR_ERR(qcadev->bt_en);
-> please think about for QCA2066. if it is returned from here.  BT will
-> not working at all.  if you don't return here. i will be working fine
-> for every BT functionality.
-> NAK again by me.
->
 
-Luiz,
 
-This in turn is an example of Zijun making a claim that looks like a
-legitimate review but is simply untrue. He's done it several times.
-I'm afraid that it may affect your judgment due to the confidence the
-claims are made with. As Krzysztof said multiple times: the
-device-tree bindings for QCA2066 are very clear: the enable-gpios
-property is *required* and so returning an error on failure here is
-correct. Even changing gpiod_get_optional() to just gpiod_get() would
-be in line with what the contract in the binding document says. Even
-if we relaxed the bindings, returning here stil *IS CORRECT* as if the
-enable-gpios is not defined, GPIOLIB will return NULL and we will NOT
-return.
+On 2024-04-24 11:18 a.m., Ian Rogers wrote:
+> On Fri, Apr 19, 2024 at 6:20 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>>
+>>
+>>
+>> On 2024-04-19 2:22 a.m., Ian Rogers wrote:
+>>>>> +             /* Simple modifiers copied to the evsel. */
+>>>>> +             if (mod.precise) {
+>>>>> +                     u8 precise = evsel->core.attr.precise_ip + mod.precise;
+>>>>> +                     /*
+>>>>> +                      * precise ip:
+>>>>> +                      *
+>>>>> +                      *  0 - SAMPLE_IP can have arbitrary skid
+>>>>> +                      *  1 - SAMPLE_IP must have constant skid
+>>>>> +                      *  2 - SAMPLE_IP requested to have 0 skid
+>>>>> +                      *  3 - SAMPLE_IP must have 0 skid
+>>>>> +                      *
+>>>>> +                      *  See also PERF_RECORD_MISC_EXACT_IP
+>>>>> +                      */
+>>>>> +                     if (precise > 3) {
+>>>> The pmu_max_precise() should return the max precise the current kernel
+>>>> supports. It checks the /sys/devices/cpu/caps/max_precise.
+>>>>
+>>>> I think we should use that value rather than hard code it to 3.
+>>> I'll add an extra patch to do that. I'm a bit concerned it may break
+>>> event parsing on platforms not supporting max_precise of 3.
+>>
+>> The kernel already rejects the precise_ip > max_precise (using the same
+>> x86_pmu_max_precise()). It should be fine to apply the same logic in the
+>> tool.
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/events/core.c#n566
+>>
+>> Will the extra patch be sent separately?
+> 
+> Let's do it separately. I'm concerned about the behavior on AMD (and
+> possibly similar architectures) where certain events support precision
+> like cycles, as they detour to the IBS PMU, but not all events support
+> it. The max_precise should reflect that AMD's Zen core PMU does
+> support precision as a consequence of detouring to IBS, but maybe
+> things in sysfs aren't set up correctly.
+> 
 
-Bartosz
+The x86_pmu_max_precise() is a generic function for X86. It should apply
+to AMD as well.
 
-> >>>               }
-> >>>
-> >>> +             if (!qcadev->bt_en)
-> >>> +                     power_ctrl_enabled =3D false;
-> >>
-> >> This looks duplicated - you already have such check earlier.
-> >>
-> >
-> > It's under a different switch case!
-> >
-> > Bartosz
->
+A separate patch looks good to me.
+
+Thanks,
+Kan
+
 
