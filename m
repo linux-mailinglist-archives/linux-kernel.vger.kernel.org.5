@@ -1,141 +1,210 @@
-Return-Path: <linux-kernel+bounces-156884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F10D8B09E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:42:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BCAA8B09E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:42:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF386283463
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:42:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 877611F22F7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:42:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B95E15B124;
-	Wed, 24 Apr 2024 12:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A441F143878;
+	Wed, 24 Apr 2024 12:42:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZnMv5Y/3"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DT72zjen"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5741E1422AF;
-	Wed, 24 Apr 2024 12:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42BC733989
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 12:42:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713962521; cv=none; b=K7or0xg1+9/ZLn3XVNaxfVlAFfUOXzspx1bPh/qvNEokhd4LuyZ39kspeUDMCBEHrceisp/AzIRS2kL6tyVy0N+d3eSq3m4qKItzvBqNFsHzrPhWOh2nCh3epxgUHn5nUha1Cckk2B803CcKYLjfZkVks/5/LnYxTQihiGWe1Gk=
+	t=1713962541; cv=none; b=N7PkzB3u6H+dT2TBRh3TT9L7+aOdOqeHhFJnuivhemryz3JvyTrTmP24EVq2R88iT4hmv2OcmtNzU5DPVu7h85hmY1fYDG1z20R9g+N3oKkstJ4U5E48yPub9ztNQmYwiWnxtD0MT18qZW7PLQmyhURdTVedaza1cZ3XSuZJxac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713962521; c=relaxed/simple;
-	bh=nyNhqyLFjqr0dCw+Re85psoVUJBi/GoV8lGY2doOudk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=Gvzg5vQNaNAyH+ZipPIAC8hscc2JZoCWtuRRyqzXxlj/L5stuh13vnJTOXR413zWPaIGv8BTSuWbYZPPqiii93ZBb4MYOaJHDWwPNonb1AKXdgIC/sss4/ZAdgRtjCSWa8afyra/eSQpDSJ3KtC15AYi0Iyp0i7HO/UbmV8+fVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZnMv5Y/3; arc=none smtp.client-ip=209.85.218.42
+	s=arc-20240116; t=1713962541; c=relaxed/simple;
+	bh=WjPnRgUoJqlBUscc7pwhQkggwrqjiHR7iRXGSKeaOX0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Lkm3PfaJnMQ00mp95v/kHRLYK3lrrGgxoYrMjty7fHLB470IMEr1xkoSYxXULocEJwj/bCPfB6+dibMYRIoclN60EX99cG0yF/147LJI92WYnm3cJ8+lFJuAMO7obOB224JZcNKlxDH7DHEP08tREe4zH6DZVicM/YLWUBSD784=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DT72zjen; arc=none smtp.client-ip=209.85.208.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a55b3d57277so424122466b.2;
-        Wed, 24 Apr 2024 05:41:59 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-572040691c9so1637261a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:42:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713962517; x=1714567317; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RHZIct1D0pwRcJc5TIZbntuTMJlJZEOfxhjoV++WJSc=;
-        b=ZnMv5Y/3J5YJMm6xh4LIPGI7WwkxL+dCr4wxp1sOnjmWspBZ7nep5v3N4/6yKnTU8I
-         ETAXJmNt02AfHs/TQuVhUDm9Pc5RfHXCBcDO1N6gJqgTX0ZLJHStvH8TnIJlraJeIxs9
-         1cFGOHJdC12U1P6YsXwjLmzM3944JbvwJZya7d1cQPDylrFFsTLvgJmpN4b75QnoxGQE
-         UzYHiWCscPP/cEEU2XCJZgR8TbenA08FbQVLPsLHad5yTJQie4yDnrvYK9RjeffKN70D
-         kKO2LcImii7W+Jd5jRd9AO5ff6FRZqjxM3GFhbiOmzSbcR4njJOeWKsl3tJFlB75rPT3
-         of9g==
+        d=gmail.com; s=20230601; t=1713962538; x=1714567338; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=G35Udwj9Bz+VcheWu2qe8n0792VGi8vidupqbamOdkI=;
+        b=DT72zjenKuQCyw25i3+leH4Eg8c01onO9WAAx4vaagi4e+t9nuJnT+MRWxTnjI8aYW
+         8t4NKuyBUUM5/1MUQgOfSj+ojhZPfq7f5SRnWgxDTvjs5RJZPbblW7xvzYll/W/HRRtV
+         dYY7xwxrvbi60UHr5A8FikiDXXUcfZELffMMDVcFZ3f6WKXk8o2KiEaGeRDhDZMKJqCR
+         QQQXTAWsnzLHNLNnVNd7Qc1pk+6QodkR30Wi9dIKEAP6fbVv9GkiZfONzuPQeEgW9V9z
+         46WXtxwzGlyjzkHFgyFApU84KlGNAtei+PZb0S8jzBnUJXZlCeWfX6CADWcijGnBHdeb
+         45Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713962517; x=1714567317;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RHZIct1D0pwRcJc5TIZbntuTMJlJZEOfxhjoV++WJSc=;
-        b=ZW5GasuOoS3yx7QwHHdG/7qaT0z3MLslUOsbZaNot/nLT0mwFWqGwfciooi1803f0J
-         I9vZ5mzITYd1wuHAyJFiRM1u44NXl7t0UvOjyOcUIWVUo604bGfsKgGVjn5NXRNh9fw1
-         KL9g/mMtu8sQXoZzVAnxIaw3jhVAiLVhvE47O/8zIBJjEJiaCn+89UB20lOzVAf9hM6V
-         OpqrC3mxjQxXjuBrmdlvX14geVUSvrOG3NW3LR7eUJhO0VfRDMSoa/gZiIVD139wRUUF
-         B3IGQXcr+dD8f+69PLnnYmb7+zJBRKi9X1XqUanhh0jxOSw0vvz8oi6KpgMFm4XQYGPW
-         hZkg==
-X-Forwarded-Encrypted: i=1; AJvYcCUPIv9newTI4wWOTA/+yKUoVo4SwdJhxk4s1Y7EoPTSEvKHlndOpIhuQbgldO++aaZMklo//yQww0BjccwoLv4nvm8wMWb53JOPYfvQ/ADKAMEpXaTEJ9wG4PksWd3sAHCgt+qH/uKiY24SLqFAoAOOmJS6V/lcPPZs5kwDtgU3iBSyJCadiigU4ZqdtEl+lXqG5yUXBDdFtVy+s0R1GZ+joD9ARza1DDwAYhnUJoolvGBaH+yZwNNesl7kkVsbEunofDiAeHs1GHWCV21S6WXDU4UsjR4KcaHIE55UC+TEUzER
-X-Gm-Message-State: AOJu0Yx+NdjKZDgEMqlkt8nGCDmH7etNG61IocU4mowXrLL+5JWvY85h
-	6c0R4CW5ZlG6n9L8dEUQTbUkTlhEjURU3e4aPRiE/oryaA9XW+OwjMkKvyrF44+dLZsdt7ujjBr
-	9bKpqaL6EeTEOsrvLZo+SY07WAVA=
-X-Google-Smtp-Source: AGHT+IFIhmK+schRX6X3I8Bxyx6tSQB7JSgLCRIm/8b1cT+bJ5PWapMzaGpgKQTyNU3aSrkHw3E716N3QPXAh2TBIrM=
-X-Received: by 2002:a17:906:7716:b0:a58:873e:a058 with SMTP id
- q22-20020a170906771600b00a58873ea058mr1515393ejm.27.1713962517515; Wed, 24
- Apr 2024 05:41:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713962538; x=1714567338;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=G35Udwj9Bz+VcheWu2qe8n0792VGi8vidupqbamOdkI=;
+        b=snVkjjdoQL8k0Iyngravd6Bnm+iX2AaaU6OTqv5HmNGU1nsH8snPMV4yehi1hUDg50
+         mZZgzp0JAskm4/LWA9tl2fAswElK2kErrIQWVL8qR7Ga7ZWtvok5rfyVg6MbECJspLL/
+         URVSMnSa62l5d89LefzSld+1dI5HLOjURHGyWM3B4FZgLxzxAgJgGUjvfI24YRY3sTVQ
+         UQ56IMilxiU0Me6JC2fGiVuIIAGqV3rfVNMpFMhEi4Gq0+HN9nRLp12AwbiencAqX56x
+         B7G9cC11VYPGTZ5rf2wK8qU1+JlYy/GptmcSsFFEbTzhNghCt8KWg3IMgor1yKVQSt1v
+         k7ow==
+X-Forwarded-Encrypted: i=1; AJvYcCWuMRURtvFRaS3G+vguP4/zdub6oLbqI1VIx4aEjYKACtEWkYKtxHm06hfY0pt0DfFOFpALUPDqnAO0sH535HokMntEXWTY6/yrM2wZ
+X-Gm-Message-State: AOJu0YyPq/R+UZbUi0E7GndIsKGM/7UdSwXtl97hfy0aLEcTDhLz5B0C
+	rMUdh+2q7OFxa8m+jvVbFnkScQantgX4/VR586z5VxdiZ55Qfceg
+X-Google-Smtp-Source: AGHT+IHXown7Dwzxvo38ijbB7FDQJm/wYLtASKk41/aZbgUXY840vrw4+5Rj5H+COMI/OSBuvZbPww==
+X-Received: by 2002:a50:c358:0:b0:572:1fb7:2a77 with SMTP id q24-20020a50c358000000b005721fb72a77mr2262994edb.6.1713962538295;
+        Wed, 24 Apr 2024 05:42:18 -0700 (PDT)
+Received: from [192.168.97.201] ([62.19.103.108])
+        by smtp.gmail.com with ESMTPSA id d6-20020a50fb06000000b005705e7ee65esm7819699edq.56.2024.04.24.05.42.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 05:42:18 -0700 (PDT)
+Message-ID: <d677360a-0f97-412c-8563-1def406061bd@gmail.com>
+Date: Wed, 24 Apr 2024 14:42:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
- <ZihNbtiVDkxgUDGk@surfacebook.localdomain> <sbkymvjmrufouqqscpmrui5kcd466gj6yn2bqwf3lhfk55mjos@n4ydx6wzyq4k>
-In-Reply-To: <sbkymvjmrufouqqscpmrui5kcd466gj6yn2bqwf3lhfk55mjos@n4ydx6wzyq4k>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 24 Apr 2024 15:41:21 +0300
-Message-ID: <CAHp75VfEvifLjPRQ+xsKipjwXA-APR7m_au6OJjafeXp6Wiyxg@mail.gmail.com>
-Subject: Re: [PATCH 00/18] i2c: remove printout on handled timeouts
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Andy Shevchenko <andy.shevchenko@gmail.com>, linux-i2c@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] drivers: use __free attribute instead of of_node_put()
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: gregkh@linuxfoundation.org, javier.carrasco.cruz@gmail.com,
+ julia.lawall@inria.fr, linux-kernel@vger.kernel.org, rafael@kernel.org,
+ skhan@linuxfoundation.org
+References: <20240419140106.3mkayxriqjt2cz5i@bogus>
+ <20240422130931.176635-1-vincenzo.mezzela@gmail.com>
+ <20240424103756.jhloae3fcyinyba4@bogus>
+Content-Language: en-US
+From: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+In-Reply-To: <20240424103756.jhloae3fcyinyba4@bogus>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 24, 2024 at 12:00=E2=80=AFPM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> On Wed, Apr 24, 2024 at 03:08:14AM +0300, Andy Shevchenko wrote:
-> > Wed, Apr 10, 2024 at 01:24:14PM +0200, Wolfram Sang kirjoitti:
-> > > While working on another cleanup series, I stumbled over the fact tha=
-t
-> > > some drivers print an error on I2C or SMBus related timeouts. This is
-> > > wrong because it may be an expected state. The client driver on top
-> > > knows this, so let's keep error handling on this level and remove the
-> > > prinouts from controller drivers.
-> > >
-> > > Looking forward to comments,
-> >
-> > I do not see an equivalent change in I=C2=B2C core.
+On 24/04/24 12:37, Sudeep Holla wrote:
+> On Mon, Apr 22, 2024 at 03:09:31PM +0200, Vincenzo Mezzela wrote:
+>> Introduce the __free attribute for scope-based resource management.
+>> Resources allocated with __free are automatically released at the end of
+>> the scope. This enhancement aims to mitigate memory management issues
+>> associated with forgetting to release resources by utilizing __free
+>> instead of of_node_put().
+>>
+>> The declaration of the device_node used within the do-while loops is
+>> moved directly within the loop so that the resource is automatically
+>> freed at the end of each iteration.
+>>
+>> Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+>> Signed-off-by: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+>> ---
+>> changes in v2:
+>>      - check loop exit condition within the loop
+>>      - add cleanup.h header
+>>
+>>   drivers/base/arch_topology.c | 150 +++++++++++++++++------------------
+>>   1 file changed, 73 insertions(+), 77 deletions(-)
+>>
+>> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+>> index 024b78a0cfc1..c9c4af55953e 100644
+>> --- a/drivers/base/arch_topology.c
+>> +++ b/drivers/base/arch_topology.c
+>> @@ -20,6 +20,7 @@
+>>   #include <linux/rcupdate.h>
+>>   #include <linux/sched.h>
+>>   #include <linux/units.h>
+>> +#include <linux/cleanup.h>
+>>
+> Keep it alphabetical. Also since <linux/of.h> does define kfree for
+> of_node_get(), may not be needed strictly. Sorry for not noticing those
+> details earlier. I am fine either way, it is good to keep it IMO.
 >
-> There shouldn't be. The core neither knows if it is okay or not. The
-> client driver knows.
+>>   #define CREATE_TRACE_POINTS
+>>   #include <trace/events/thermal_pressure.h>
+>> @@ -513,10 +514,10 @@ core_initcall(free_raw_capacity);
+>>    */
+>>   static int __init get_cpu_for_node(struct device_node *node)
+>>   {
+>> -	struct device_node *cpu_node;
+>>   	int cpu;
+>>
+>> -	cpu_node = of_parse_phandle(node, "cpu", 0);
+>> +	struct device_node *cpu_node __free(device_node) =
+>> +		of_parse_phandle(node, "cpu", 0);
+>>   	if (!cpu_node)
+>>   		return -1;
+>>
+>> @@ -527,7 +528,6 @@ static int __init get_cpu_for_node(struct device_node *node)
+>>   		pr_info("CPU node for %pOF exist but the possible cpu range is :%*pbl\n",
+>>   			cpu_node, cpumask_pr_args(cpu_possible_mask));
+>>
+>> -	of_node_put(cpu_node);
+>>   	return cpu;
+>>   }
+>>
+>> @@ -538,28 +538,27 @@ static int __init parse_core(struct device_node *core, int package_id,
+>>   	bool leaf = true;
+>>   	int i = 0;
+>>   	int cpu;
+>> -	struct device_node *t;
+>>
+>> -	do {
+>> +	for(;;) {
+> Did you run checkpatch.pl on this ? It should have complained here and 3 other
+> places below.
+It does indeed, I'll fix this.
 >
-> > IIRC in our case (DW or i801 or iSMT) we often have this message as the=
- only
+>> -			if (leaf) {
+>> -				ret = parse_core(c, package_id, cluster_id,
+>> -						 core_id++);
+>> -			} else {
+>> -				pr_err("%pOF: Non-leaf cluster with core %s\n",
+>> -				       cluster, name);
+>> -				ret = -EINVAL;
+>> -			}
+>> +		has_cores = true;
+>>
+>> -			of_node_put(c);
+>> -			if (ret != 0)
+>> -				return ret;
+>> +		if (depth == 0) {
+>> +			pr_err("%pOF: cpu-map children should be clusters\n", c);
+>> +			return -EINVAL;
+>> +		}
+>> +
+>> +		if (leaf) {
+>> +			ret = parse_core(c, package_id, cluster_id, core_id++);
+>> +		} else {
+>> +			pr_err("%pOF: Non-leaf cluster with core %s\n",
+>> +					cluster, name);
+> Missing alignment here.
 >
-> Often? How often?
+> --
+> Regards,
+> Sudeep
 
-Once in a couple of months I assume. Last time it was a few weeks ago
-that there was a report and they pointed to this very message which
-was helpful.
+I'll fix the misalignment and the checkpatch.pl warnings and send an 
+updated version.
 
-> > one that points to the issues (on non-debug level), it will be much har=
-der to
-> > debug for our customers with this going away.
->
-> The proper fix is to print the error in the client driver. Maybe this
-> needs a helper for client drivers which they can use like:
->
->         i2c_report_error(client, retval, flags);
->
-> The other thing which is also more helpful IMO is that we have
-> trace_events for __i2c_transfer. There, you can see what was happening
-> on the bus before the timeout. It can easily be that, if device X
-> times out, it was because of the transfer before to device Y which locks
-> up the bus. A simple "Bus timed out" message will not help you a lot
-> there.
+Furthermore, would you like to see this patch split in two patches where:
 
-The trace events are good to have, not sure if production kernels have
-them enabled, though.
+- patch 1 reorganizes the content of the loop using "if(!t) break;" 
+instead of having the "if(t) { all for body }";
 
-> And, keep in mind the false positives I mentioned in the coverletter.
+- patch 2 gets rid of of_node_put;
 
+This might be better than having both the reorganizations in the same patch.
 
---=20
-With Best Regards,
-Andy Shevchenko
+Please let me know what would you prefer.
+
+Thanks,
+
+Vincenzo
+
 
