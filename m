@@ -1,418 +1,111 @@
-Return-Path: <linux-kernel+bounces-157241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 595C18B0EFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:49:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43CCF8B0EF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:48:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D1FC1C2372B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:49:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D75351F22C15
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:48:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BCFF15B158;
-	Wed, 24 Apr 2024 15:48:56 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C25615FCE1
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:48:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151A815FA81;
+	Wed, 24 Apr 2024 15:48:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="g7FIz2ep"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ABFD1422AF
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:48:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713973735; cv=none; b=qp1cAfvFg8UbGGK81Mpzv/ztL6oG3VjHPZTjrssvR9UzlYJ2rsDLJAzbtkeQjwx+EnxSohiOZvuUp2Fo7Jy4TH5NU7PvwPxnTb60wIAAnjPY78w3rLZWUfIqyy3IYHsTzmpPxLVnyBPEGwN56ai5ULfGgNRfAmWxl6z0IfM4XnQ=
+	t=1713973722; cv=none; b=j6niHqBH+OIz9jXJ9aYGLxiug5T+QUpPP+hUykMaVtD5fPWSPGUN+sR9r5Q/Mfuhur69BpZ9f/1GcngZZfbai2vgutFIroENstYOxoALwwuoVz+GpzAiGuFJR4uL84BOOAMhVajx7UI0xoGuEeerNnL/zorqx3cTXyUq6UxCGfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713973735; c=relaxed/simple;
-	bh=YuKCWJqrqCFVF8bEqafSZZNR5jc4aNe3K2uWsydkyBM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bBtgyYKwEGzNFpmMIp1QXkKsxQsBn4QukMVOuGsqyVXvM2T6+AXWsAJe56eetojXUD5g0JIOFWvj8Jz6Sg8BdnVQuDiepEPNnvb1bgSH5yKI/f1i2ZMVDip5G0MgxczYGSKtH/ed/duXDLcf2nqd4iUZ7DmQmlQa2e26gtNjvQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 851551063
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:49:20 -0700 (PDT)
-Received: from e110455-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 75CD53F73F
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:48:52 -0700 (PDT)
-Date: Wed, 24 Apr 2024 16:48:37 +0100
-From: Liviu Dudau <liviu.dudau@arm.com>
-To: =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
-	Steven Price <steven.price@arm.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	kernel@collabora.com, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] drm/panthor: introduce job cycle and timestamp
- accounting
-Message-ID: <Zikp1U_MRd7NL39C@e110455-lin.cambridge.arm.com>
-References: <20240423213240.91412-1-adrian.larumbe@collabora.com>
- <20240423213240.91412-2-adrian.larumbe@collabora.com>
+	s=arc-20240116; t=1713973722; c=relaxed/simple;
+	bh=jqg5Fo1Agh7hM51ijesv5YFvMRtp1lD4hn9D9KkpZjc=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=lUFW8oetMPyidpNlZtKIRaGzvd0C+R2xeCbCiOPc+Bokdb1m0t09CEKpGoC7CaI057KsxqPzT/fV2oIi6M3G3OyUrq6gS03B527Q+HCwMp6CohfYmByBnlpa9KJfwJcQCpPxDqgZydw19xmwPArQ/AZQggStkP3wq8CCN6KHI2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=g7FIz2ep; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-de465caa098so15695276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:48:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713973720; x=1714578520; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l+gT/b/2VDLIr0gptxkhB+Y4JKNs3jUP0dyl/dPQGpc=;
+        b=g7FIz2epnGefg/HNRaAVmGAKLuDkMzpCiX0GEbhKi+fTwigqixUF7GN4JR5GFZA6t4
+         nZZX6Nw/6SSbndBhrrEbqoLDFdJRg9yjshyoycZQfKIGUoNBA21wOcE3VlH9u2CnroeF
+         xVOZb6DHvpOur0IHNrKBJ75srxCuQa7KHMRqsf9bVXl4zTfGKdbM+4YsBGK2rXE0uyOu
+         ZhHzFmWbo0Dwi7epEpjWRWOh8nXEALlGNxgJYPcmcJdQNv0/UPoiJMBC58JUhIr270Z1
+         /cPpi5QZbLcD11YBItssVyDKAjveZlyI3LRzhKqsmidHseJ/zK3x3jHmqLtlM/Esj5En
+         wH4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713973720; x=1714578520;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l+gT/b/2VDLIr0gptxkhB+Y4JKNs3jUP0dyl/dPQGpc=;
+        b=SNiq97wzDTGgZZftpNEI+8geZSF93xgIOPpczjMz64xDFEu5FzOkAR1GdGXDh2y7f4
+         dURIrXG5ik2uwdnsbdkkG5bUCDysXK5+xVenS2iQW4XgwspDZxCPVzun6Sks5YUn+yon
+         ebW/7unrNKs7SazQwWDbmi283uwVElEWy2xnXwUDex4Q76nsErFBWFzOs0nes2VIbyLd
+         AdnQfd8Yk48ceA1wJ9wyfR4s3hwZwNhm7pmQ0Qto88mguXhbn1GUkWQTf67d0XU+Nq0u
+         gyI+S/XGStXD9jVrScxAyxfr2foj7S+pu249L+EynkDGgu8SZXE6NtV/teLfYlDqdWhZ
+         1MJw==
+X-Forwarded-Encrypted: i=1; AJvYcCUrXh5Eb8U6NMQxjTGqD+stNuu+FweEAs6YK8+vY+4b5TnR+KrbSws5RVInIgyChxUQsRMSFlThufgNQ8iWPMJMLbdilJzfMkdb93aV
+X-Gm-Message-State: AOJu0Yy85xDlsWjTjNXC0xvTcw/3Vb+qtMaQ4EkS5YzBw1KeaiNNd8Tq
+	aBD0jdel6QADhaBg9iEG27hP5xCRftnVOa6YR7csEbEgXaW4ZZbxSJtNFSSmb0bm7TPLzrH7adN
+	Hpg==
+X-Google-Smtp-Source: AGHT+IExKySrR1s4Ud9PAy+cb98YYBcHMOgLDrDHHa34Z9UBMvLwK3yc+0vePOolgaxCWUfghuyi/UN0AAY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:154f:b0:de5:5be3:709f with SMTP id
+ r15-20020a056902154f00b00de55be3709fmr258695ybu.6.1713973720058; Wed, 24 Apr
+ 2024 08:48:40 -0700 (PDT)
+Date: Wed, 24 Apr 2024 08:48:38 -0700
+In-Reply-To: <20240424134248.GCZikMWA8EvlhGEYC7@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240423213240.91412-2-adrian.larumbe@collabora.com>
+Mime-Version: 1.0
+References: <20240420000556.2645001-1-seanjc@google.com> <20240420000556.2645001-3-seanjc@google.com>
+ <20240424053940.3ypivvztvv35dpu7@treble> <20240424134248.GCZikMWA8EvlhGEYC7@fat_crate.local>
+Message-ID: <Zikp1sPVzoYVt00X@google.com>
+Subject: Re: [PATCH v2 2/2] cpu: Ignore "mitigations" kernel parameter if CPU_MITIGATIONS=n
+From: Sean Christopherson <seanjc@google.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, 
+	Stephen Rothwell <sfr@canb.auug.org.au>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Will Deacon <will@kernel.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Adrián,
+On Wed, Apr 24, 2024, Borislav Petkov wrote:
+> On Tue, Apr 23, 2024 at 10:39:40PM -0700, Josh Poimboeuf wrote:
+> > On Fri, Apr 19, 2024 at 05:05:55PM -0700, Sean Christopherson wrote:
+> > > +#ifdef CONFIG_CPU_MITIGATIONS
+> > >  extern bool cpu_mitigations_off(void);
+> > >  extern bool cpu_mitigations_auto_nosmt(void);
+> > > +#else
+> > > +static inline bool cpu_mitigations_off(void)
+> > > +{
+> > > +	return false;
+> > > +}
+> > 
+> > This should probably return true?
 
-On Tue, Apr 23, 2024 at 10:32:34PM +0100, Adrián Larumbe wrote:
-> Enable calculations of job submission times in clock cycles and wall
-> time. This is done by expanding the boilerplate command stream when running
-> a job to include instructions that compute said times right before an after
-> a user CS.
-> 
-> Those numbers are stored in the queue's group's sync objects BO, right
-> after them. Because the queues in a group might have a different number of
-> slots, one must keep track of the overall slot tally when reckoning the
-> offset of a queue's time sample structs, one for each slot.
-> 
-> NUM_INSTRS_PER_SLOT had to be increased to 32 because of adding new FW
-> instructions for storing and subtracting the cycle counter and timestamp
-> register, and it must always remain a power of two.
-> 
-> This commit is done in preparation for enabling DRM fdinfo support in the
-> Panthor driver, which depends on the numbers calculated herein.
-> 
-> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
-> ---
->  drivers/gpu/drm/panthor/panthor_sched.c | 158 ++++++++++++++++++++----
->  1 file changed, 134 insertions(+), 24 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panthor/panthor_sched.c b/drivers/gpu/drm/panthor/panthor_sched.c
-> index b3a51a6de523..320dfa0388ba 100644
-> --- a/drivers/gpu/drm/panthor/panthor_sched.c
-> +++ b/drivers/gpu/drm/panthor/panthor_sched.c
-> @@ -93,6 +93,9 @@
->  #define MIN_CSGS				3
->  #define MAX_CSG_PRIO				0xf
->  
-> +#define NUM_INSTRS_PER_SLOT			32
-> +#define SLOTSIZE				(NUM_INSTRS_PER_SLOT * sizeof(u64))
-> +
->  struct panthor_group;
->  
->  /**
-> @@ -466,6 +469,9 @@ struct panthor_queue {
->  		 */
->  		struct list_head in_flight_jobs;
->  	} fence_ctx;
-> +
-> +	/** @time_offset: Offset of panthor_job_times structs in group's syncobj bo. */
-> +	unsigned long time_offset;
+/facepalm
 
-Minor nitpick: I would call it job_times_offset. Or stats_offset. One letter difference
-versus syncobjs' times_offset gets harder to read sometimes.
+Glad you were paying attention, as I was clearly not.  I double checked that
+flipping that to true does indeed force off mitigations.
 
->  };
->  
->  /**
-> @@ -580,7 +586,17 @@ struct panthor_group {
->  	 * One sync object per queue. The position of the sync object is
->  	 * determined by the queue index.
->  	 */
-> -	struct panthor_kernel_bo *syncobjs;
-> +
-> +	struct {
-> +		/** @bo: Kernel BO holding the sync objects. */
-> +		struct panthor_kernel_bo *bo;
-> +
-> +		/**
-> +		 * @times_offset: Beginning of panthor_job_times struct samples after
-> +		 * the group's array of sync objects.
-> +		 */
-> +		size_t times_offset;
-> +	} syncobjs;
->  
->  	/** @state: Group state. */
->  	enum panthor_group_state state;
-> @@ -639,6 +655,18 @@ struct panthor_group {
->  	struct list_head wait_node;
->  };
->  
-> +struct panthor_job_times {
-> +	struct {
-> +		u64 before;
-> +		u64 after;
-> +	} cycles;
-> +
-> +	struct {
-> +		u64 before;
-> +		u64 after;
-> +	} time;
-> +};
-> +
->  /**
->   * group_queue_work() - Queue a group work
->   * @group: Group to queue the work for.
-> @@ -718,6 +746,9 @@ struct panthor_job {
->  	/** @queue_idx: Index of the queue inside @group. */
->  	u32 queue_idx;
->  
-> +	/** @ringbuf_idx: Index of the ringbuffer inside @queue. */
-> +	u32 ringbuf_idx;
-> +
->  	/** @call_info: Information about the userspace command stream call. */
->  	struct {
->  		/** @start: GPU address of the userspace command stream. */
-> @@ -833,7 +864,7 @@ static void group_release_work(struct work_struct *work)
->  
->  	panthor_kernel_bo_destroy(panthor_fw_vm(ptdev), group->suspend_buf);
->  	panthor_kernel_bo_destroy(panthor_fw_vm(ptdev), group->protm_suspend_buf);
-> -	panthor_kernel_bo_destroy(group->vm, group->syncobjs);
-> +	panthor_kernel_bo_destroy(group->vm, group->syncobjs.bo);
->  
->  	panthor_vm_put(group->vm);
->  	kfree(group);
-> @@ -1924,8 +1955,6 @@ tick_ctx_init(struct panthor_scheduler *sched,
->  	}
->  }
->  
-> -#define NUM_INSTRS_PER_SLOT		16
-> -
->  static void
->  group_term_post_processing(struct panthor_group *group)
->  {
-> @@ -1962,7 +1991,7 @@ group_term_post_processing(struct panthor_group *group)
->  		spin_unlock(&queue->fence_ctx.lock);
->  
->  		/* Manually update the syncobj seqno to unblock waiters. */
-> -		syncobj = group->syncobjs->kmap + (i * sizeof(*syncobj));
-> +		syncobj = group->syncobjs.bo->kmap + (i * sizeof(*syncobj));
->  		syncobj->status = ~0;
->  		syncobj->seqno = atomic64_read(&queue->fence_ctx.seqno);
->  		sched_queue_work(group->ptdev->scheduler, sync_upd);
-> @@ -2729,7 +2758,7 @@ static void group_sync_upd_work(struct work_struct *work)
->  		if (!queue)
->  			continue;
->  
-> -		syncobj = group->syncobjs->kmap + (queue_idx * sizeof(*syncobj));
-> +		syncobj = group->syncobjs.bo->kmap + (queue_idx * sizeof(*syncobj));
->  
->  		spin_lock(&queue->fence_ctx.lock);
->  		list_for_each_entry_safe(job, job_tmp, &queue->fence_ctx.in_flight_jobs, node) {
-> @@ -2764,15 +2793,23 @@ queue_run_job(struct drm_sched_job *sched_job)
->  	struct panthor_scheduler *sched = ptdev->scheduler;
->  	u32 ringbuf_size = panthor_kernel_bo_size(queue->ringbuf);
->  	u32 ringbuf_insert = queue->iface.input->insert & (ringbuf_size - 1);
-> +	u32 ringbuf_index = ringbuf_insert / (SLOTSIZE);
->  	u64 addr_reg = ptdev->csif_info.cs_reg_count -
->  		       ptdev->csif_info.unpreserved_cs_reg_count;
->  	u64 val_reg = addr_reg + 2;
-> -	u64 sync_addr = panthor_kernel_bo_gpuva(group->syncobjs) +
-> -			job->queue_idx * sizeof(struct panthor_syncobj_64b);
-> +	u64 cycle_reg = addr_reg;
-> +	u64 time_reg = val_reg;
-> +	u64 sync_addr = panthor_kernel_bo_gpuva(group->syncobjs.bo) +
-> +		job->queue_idx * sizeof(struct panthor_syncobj_64b);
-> +	u64 times_addr = panthor_kernel_bo_gpuva(group->syncobjs.bo) + queue->time_offset +
-> +		(ringbuf_index * sizeof(struct panthor_job_times));
-> +
->  	u32 waitall_mask = GENMASK(sched->sb_slot_count - 1, 0);
->  	struct dma_fence *done_fence;
->  	int ret;
->  
-> +	drm_WARN_ON(&ptdev->base, ringbuf_insert >= ringbuf_size);
+> Right, I'll fix it up while applying and send them linuswards this
+> weekend so that 6.9 releases fixed.
 
-I think we should return an error here, rather than warn. What would be the point to continue?
-
-> +
->  	u64 call_instrs[NUM_INSTRS_PER_SLOT] = {
->  		/* MOV32 rX+2, cs.latest_flush */
->  		(2ull << 56) | (val_reg << 48) | job->call_info.latest_flush,
-> @@ -2780,6 +2817,18 @@ queue_run_job(struct drm_sched_job *sched_job)
->  		/* FLUSH_CACHE2.clean_inv_all.no_wait.signal(0) rX+2 */
->  		(36ull << 56) | (0ull << 48) | (val_reg << 40) | (0 << 16) | 0x233,
->  
-> +		/* MOV48 rX:rX+1, cycles_offset */
-> +		(1ull << 56) | (cycle_reg << 48) | (times_addr + offsetof(struct panthor_job_times, cycles.before)),
-> +
-> +		/* MOV48 rX:rX+1, time_offset */
-> +		(1ull << 56) | (time_reg << 48) | (times_addr + offsetof(struct panthor_job_times, time.before)),
-> +
-> +		/* STORE_STATE cycles */
-> +		(40ull << 56) |  (cycle_reg << 40) | (1ll << 32),
-> +
-> +		/* STORE_STATE timer */
-> +		(40ull << 56) |  (time_reg << 40) | (0ll << 32),
-> +
->  		/* MOV48 rX:rX+1, cs.start */
->  		(1ull << 56) | (addr_reg << 48) | job->call_info.start,
->  
-> @@ -2792,6 +2841,18 @@ queue_run_job(struct drm_sched_job *sched_job)
->  		/* CALL rX:rX+1, rX+2 */
->  		(32ull << 56) | (addr_reg << 40) | (val_reg << 32),
->  
-> +		/* MOV48 rX:rX+1, cycles_offset */
-> +		(1ull << 56) | (cycle_reg << 48) | (times_addr + offsetof(struct panthor_job_times, cycles.after)),
-> +
-> +		/* MOV48 rX:rX+1, time_offset */
-> +		(1ull << 56) | (time_reg << 48) | (times_addr + offsetof(struct panthor_job_times, time.after)),
-> +
-> +		/* STORE_STATE cycles */
-> +		(40ull << 56) |  (cycle_reg << 40) | (1ll << 32),
-> +
-> +		/* STORE_STATE timer */
-> +		(40ull << 56) |  (time_reg << 40) | (0ll << 32),
-> +
->  		/* MOV48 rX:rX+1, sync_addr */
->  		(1ull << 56) | (addr_reg << 48) | sync_addr,
->  
-> @@ -2846,6 +2907,7 @@ queue_run_job(struct drm_sched_job *sched_job)
->  
->  	job->ringbuf.start = queue->iface.input->insert;
->  	job->ringbuf.end = job->ringbuf.start + sizeof(call_instrs);
-> +	job->ringbuf_idx = ringbuf_index;
->  
->  	/* Make sure the ring buffer is updated before the INSERT
->  	 * register.
-> @@ -2936,7 +2998,8 @@ static const struct drm_sched_backend_ops panthor_queue_sched_ops = {
->  
->  static struct panthor_queue *
->  group_create_queue(struct panthor_group *group,
-> -		   const struct drm_panthor_queue_create *args)
-> +		   const struct drm_panthor_queue_create *args,
-> +		   unsigned int slots_so_far)
->  {
->  	struct drm_gpu_scheduler *drm_sched;
->  	struct panthor_queue *queue;
-> @@ -2987,9 +3050,12 @@ group_create_queue(struct panthor_group *group,
->  		goto err_free_queue;
->  	}
->  
-> +	queue->time_offset = group->syncobjs.times_offset +
-> +		(slots_so_far * sizeof(struct panthor_job_times));
-> +
->  	ret = drm_sched_init(&queue->scheduler, &panthor_queue_sched_ops,
->  			     group->ptdev->scheduler->wq, 1,
-> -			     args->ringbuf_size / (NUM_INSTRS_PER_SLOT * sizeof(u64)),
-> +			     args->ringbuf_size / SLOTSIZE,
->  			     0, msecs_to_jiffies(JOB_TIMEOUT_MS),
->  			     group->ptdev->reset.wq,
->  			     NULL, "panthor-queue", group->ptdev->base.dev);
-> @@ -3017,7 +3083,9 @@ int panthor_group_create(struct panthor_file *pfile,
->  	struct panthor_scheduler *sched = ptdev->scheduler;
->  	struct panthor_fw_csg_iface *csg_iface = panthor_fw_get_csg_iface(ptdev, 0);
->  	struct panthor_group *group = NULL;
-> +	unsigned int total_slots;
->  	u32 gid, i, suspend_size;
-> +	size_t syncobj_bo_size;
->  	int ret;
->  
->  	if (group_args->pad)
-> @@ -3083,33 +3151,75 @@ int panthor_group_create(struct panthor_file *pfile,
->  		goto err_put_group;
->  	}
->  
-> -	group->syncobjs = panthor_kernel_bo_create(ptdev, group->vm,
-> -						   group_args->queues.count *
-> -						   sizeof(struct panthor_syncobj_64b),
-> -						   DRM_PANTHOR_BO_NO_MMAP,
-> -						   DRM_PANTHOR_VM_BIND_OP_MAP_NOEXEC |
-> -						   DRM_PANTHOR_VM_BIND_OP_MAP_UNCACHED,
-> -						   PANTHOR_VM_KERNEL_AUTO_VA);
-> -	if (IS_ERR(group->syncobjs)) {
-> -		ret = PTR_ERR(group->syncobjs);
-> +	/*
-> +	 * Need to add size for the panthor_job_times structs, as many as the sum
-> +	 * of the number of job slots for every single queue ringbuffer.
-> +	 */
-> +	for (i = 0, total_slots = 0; i < group_args->queues.count; i++)
-> +		total_slots += (queue_args[i].ringbuf_size / (SLOTSIZE));
-> +
-> +	syncobj_bo_size = (group_args->queues.count * sizeof(struct panthor_syncobj_64b))
-> +		+ (total_slots * sizeof(struct panthor_job_times));
-> +
-> +	/*
-> +	 * Memory layout of group's syncobjs BO
-> +	 * group->syncobjs.bo {
-> +	 *	struct panthor_syncobj_64b sync1;
-> +	 *	struct panthor_syncobj_64b sync2;
-> +	 *		...
-> +	 *		As many as group_args->queues.count
-> +	 *		...
-> +	 *	struct panthor_syncobj_64b syncn;
-> +	 *	struct panthor_job_times queue1_slot1
-> +	 *	struct panthor_job_times queue1_slot2
-> +	 *		...
-> +	 *		As many as queue[i].ringbuf_size / SLOTSIZE
-> +	 *		...
-> +	 *	struct panthor_job_times queue1_slotP
-> +	 *		...
-> +	 *		As many as group_args->queues.count
-> +	 *		...
-> +	 *	struct panthor_job_times queueN_slot1
-> +	 *	struct panthor_job_times queueN_slot2
-> +	 *		...
-> +	 *		As many as queue[n].ringbuf_size / SLOTSIZE
-> +	 *	struct panthor_job_times queueN_slotQ
-> +	 *
-> +	 *	Linearly, group->syncobjs.bo = {syncojb1,..,syncobjN,
-> +	 *	{queue1 = {js1,..,jsP},..,queueN = {js1,..,jsQ}}}
-> +	 * }
-> +	 *
-> +	 */
-> +
-> +	group->syncobjs.bo = panthor_kernel_bo_create(ptdev, group->vm,
-> +						      syncobj_bo_size,
-> +						      DRM_PANTHOR_BO_NO_MMAP,
-> +						      DRM_PANTHOR_VM_BIND_OP_MAP_NOEXEC |
-> +						      DRM_PANTHOR_VM_BIND_OP_MAP_UNCACHED,
-> +						      PANTHOR_VM_KERNEL_AUTO_VA);
-> +	if (IS_ERR(group->syncobjs.bo)) {
-> +		ret = PTR_ERR(group->syncobjs.bo);
->  		goto err_put_group;
->  	}
->  
-> -	ret = panthor_kernel_bo_vmap(group->syncobjs);
-> +	ret = panthor_kernel_bo_vmap(group->syncobjs.bo);
->  	if (ret)
->  		goto err_put_group;
->  
-> -	memset(group->syncobjs->kmap, 0,
-> -	       group_args->queues.count * sizeof(struct panthor_syncobj_64b));
-> +	memset(group->syncobjs.bo->kmap, 0, syncobj_bo_size);
-> +
-> +	group->syncobjs.times_offset =
-> +		group_args->queues.count * sizeof(struct panthor_syncobj_64b);
->  
-> -	for (i = 0; i < group_args->queues.count; i++) {
-> -		group->queues[i] = group_create_queue(group, &queue_args[i]);
-> +	for (i = 0, total_slots = 0; i < group_args->queues.count; i++) {
-> +		group->queues[i] = group_create_queue(group, &queue_args[i], total_slots);
->  		if (IS_ERR(group->queues[i])) {
->  			ret = PTR_ERR(group->queues[i]);
->  			group->queues[i] = NULL;
->  			goto err_put_group;
->  		}
->  
-> +		total_slots += (queue_args[i].ringbuf_size / (SLOTSIZE));
->  		group->queue_count++;
->  	}
->  
-> -- 
-> 2.44.0
->
-
-With those comments addressed,
-Reviewed-by: Liviu Dudau <liviu.dudau@arm.com>
-
-Best regards,
-Liviu
-
-
--- 
-====================
-| I would like to |
-| fix the world,  |
-| but they're not |
-| giving me the   |
- \ source code!  /
-  ---------------
-    ¯\_(ツ)_/¯
+Thanks!
 
