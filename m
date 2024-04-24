@@ -1,332 +1,358 @@
-Return-Path: <linux-kernel+bounces-157720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEB738B150A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:07:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 075A88B150B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:08:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AFB01C2193D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:07:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AD531C23468
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:08:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13998156F32;
-	Wed, 24 Apr 2024 21:07:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A9A156999;
+	Wed, 24 Apr 2024 21:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YdWC5PCt"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gHQdcPXp"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADCB745CB;
-	Wed, 24 Apr 2024 21:07:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.12
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713992860; cv=fail; b=Bd544Mi2vJ85uzJDc5dETRE+KnNi0TsLj2hfmzG7bS+iJCvcFqezFRSopNCLRSqO2eJIlsPHZWBhHTf89ym2z8wrOPiTRmwwXt8S3rekPutG4TcNiT/nwtoJ1lKcdhT5LK4dCJxBQVW/g1QunERxZ8dOMoiTpF6Gk3eUuiau7xs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713992860; c=relaxed/simple;
-	bh=Z0hCrhL3S6CVQjCB7cluKJH4acwdu/X1Yynexq6P+D0=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=swoTfNGXjpV0jcfxekr2iTaWjEj7YoNiIiu3K56zLykvsxByMLw+8xJ5+fvWAcnVZTxic527yh82J7J8MTB9wlGeYyPngQ6ETQppSulk3s4mD/ZcoIIdnaIrgGjxH9zXubkOkYcFIJ6ML+TgyajiHsb7OM1Z4E/rSprlpyCRPMM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YdWC5PCt; arc=fail smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C168B156973;
+	Wed, 24 Apr 2024 21:08:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713992891; cv=none; b=WMs75hn2k+zxtZE/X7sk+iOD4bAlDF4KmCKh47WeYZtkD4Kl/Cb4eXPB1Los2lmJwhBzTwyVdvaSXn9kGd0BP1+G2sp0KDzT/cDSTDXfTJsBoHzFqYr4nKxJd/3fA0TU+ceuMmxxupe5ga9L9qe6qdyZSSHSrjjorvt7JO8HOTA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713992891; c=relaxed/simple;
+	bh=EleAqayESlUVzBofwFBWgvBnL/gAQLThLFFs1fbkf/0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cQ4v731jKT6MAFBYF6tuc9EhiBxeG4ss+JfTOghUECbjpg2IAld4dgEbMt5XdzDlHleS2Bsg/4mopkRclR3boCJgtgTgcGZk0Alc7xv9UaNWiIHe8dKdZD5F0J6Vjqt3MDMnITObbDjg+Ihq9zghGE5W135qAVeHYlZr8jCuq8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gHQdcPXp; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713992859; x=1745528859;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Z0hCrhL3S6CVQjCB7cluKJH4acwdu/X1Yynexq6P+D0=;
-  b=YdWC5PCtLij09uTULZKPTLN1JUMfdvm4bNp8yQ3yfPhsfK/bj0psUY4g
-   wOHxqCkf5sKeqo/JYk83tVjuJREZDPZSeN4cj/f1jF4cZ1SdffoXBX03r
-   81zLda2tCb47rXV1TKMKeubnGTASXSvuM4/NmiC/BosKg00rLyn1H7mZ9
-   iTJabCz5QapUN0FGpetyRjnnG1yF08d+EzbKXFktTr+2QCO9TN5W+NfAu
-   VwTtSjqwqN3s7ikTjVfpf+O59BIjev8fW/Ig1xTx4KbR9KjJW9chPFlsb
-   aT36NnIJkLd9Da7UFS9643qDPjUQsbiZiYOCyzcOD+msrFWveXFw2IYSA
-   A==;
-X-CSE-ConnectionGUID: 5J7yWCBcSXucXcaZZeIWqg==
-X-CSE-MsgGUID: Dra3RGgRSYSFjVfjzyll6A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="13439368"
+  t=1713992887; x=1745528887;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=EleAqayESlUVzBofwFBWgvBnL/gAQLThLFFs1fbkf/0=;
+  b=gHQdcPXpGnwODpjs+jxKqA0Y4sLrIwyhDDYaTyqAsLCcRmXWWYI9fPKo
+   3+fOA1i4WahhqEMWMVJCFivOdPAW86pJBRzU/FiL4k7Ef/zdDwUehWBiV
+   40BR5WTIwP1VwBdpKl08Ldsp/HKuE5PUiQVffxTOvWd7EyWXTapg7XoKU
+   0A4g0HKG9EgOKevY8NDsz6c5u6dj2gMu/1sx36Yj2JWBpM4QUHsIvq5P0
+   WxgGQezhtk3mWKGT1ujaYi0EhKg9PPXao70sQrBOOcPy2bKxQX0pnNAW5
+   +cZB8Sw/mO0YtZ4755utnL87M2V9MOZIHLxWcjKVw5Q9ky5Zu/WiyvwkF
+   w==;
+X-CSE-ConnectionGUID: 1b99vKqpTRqY1IKgBKol5w==
+X-CSE-MsgGUID: Iz8FMMaAQY2f21W1RDudfw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9773167"
 X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
-   d="scan'208";a="13439368"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 14:07:38 -0700
-X-CSE-ConnectionGUID: oCMDgLsmS5mIW2VyC4xdGw==
-X-CSE-MsgGUID: gLo4yW25QvCprGQ1Asp6ew==
+   d="scan'208";a="9773167"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 14:08:07 -0700
+X-CSE-ConnectionGUID: Lv1gvZraTkKZW5iTcmo1Hg==
+X-CSE-MsgGUID: ABvCwH99TYqF8RioM8Aj9A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
-   d="scan'208";a="25268917"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Apr 2024 14:07:37 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Apr 2024 14:07:37 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 24 Apr 2024 14:07:37 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 24 Apr 2024 14:07:36 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J0/kXq9jVuCvWtdjDOTVp3PwTrEMVIBduFPxRCslv5c+6dxU7fTrXbsYEvOAaiBP/gTmhNAzJG3IfGaqBzusoFz0LwM2B6JNuUbzXE3lCgqy7WllvDONer0f9CP85HJtUD6njEDucyHouEvclnBBUGAmuKxZ09ZhZ/c0Q+rWZMNUCFuG1xRkpvoMst1OSiHD3WScaD3eGjEiblb/5vBtvH5uBX2ao6KBaqybczOu8H5yOIg8PlKxMhK1rBoo3eI5GAmLnN1KXpK8eW36ffh/qSpgDsRun14cS1KIzauGiuC9W7U2zw/JGS3CPf2HEBg/DGssyCpF2halLFrNiaakZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Hxj8kvLJhgFooeIty/d1naghyIHMKR+w86aQFfrJZw8=;
- b=P0AaxPczB2OT0nhXiAsjTRSAAtRQNLlppvSWmV6B5Wii2d8zzECBcDeIc+VUGv2KGY+tXBCpJPA387fPWWxZKuIv+hGjNS4u4OftA838g9+DEP56v2NK8F3bPUuJi3SrE2lmcetQ09GvFMMVY9ZHgaGbtON/o9tnV3ILhJ+kvEUHPXWx1NSAm5Ng9fl6VsCjue4sywD4oyiiXGiUpr8dEvlmvSl9+gNr2jcRT2A6HVkN8dejSS1dc8+XjAJCOn8y4Pt7ktxi31VhejwgZKUzqzpf9HG5tuPwFmxTcqKEuXj0/3dMohzdzQM3wkbQnPU+Eoqsn0Oh/Q7ORhwyfBg2tg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by SA1PR11MB8350.namprd11.prod.outlook.com (2603:10b6:806:387::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Wed, 24 Apr
- 2024 21:07:31 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68%7]) with mapi id 15.20.7519.023; Wed, 24 Apr 2024
- 21:07:31 +0000
-Message-ID: <a76a430a-2a9d-4ff6-88c2-bdfafff92ae4@intel.com>
-Date: Wed, 24 Apr 2024 14:07:28 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 0/4] KVM: x86: Make bus clock frequency for vAPIC timer
- configurable
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, "seanjc@google.com"
-	<seanjc@google.com>
-CC: "jmattson@google.com" <jmattson@google.com>, "Gao, Chao"
-	<chao.gao@intel.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "vkuznets@redhat.com" <vkuznets@redhat.com>,
-	"Annapurve, Vishal" <vannapurve@google.com>, "Li, Xiaoyao"
-	<xiaoyao.li@intel.com>, "Aktas, Erdem" <erdemaktas@google.com>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>, "mlevitsk@redhat.com"
-	<mlevitsk@redhat.com>, "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, Yuan Yao <yuan.yao@intel.com>
-References: <cover.1711035400.git.reinette.chatre@intel.com>
- <6fae9b07de98d7f56b903031be4490490042ff90.camel@intel.com>
- <Ziku9m_1hQhJgm_m@google.com>
- <26073e608fc450c6c0dcfe1f5cb1590f14c71e96.camel@intel.com>
-Content-Language: en-US
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <26073e608fc450c6c0dcfe1f5cb1590f14c71e96.camel@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR03CA0208.namprd03.prod.outlook.com
- (2603:10b6:a03:2ef::33) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+   d="scan'208";a="24848109"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa009.fm.intel.com with ESMTP; 24 Apr 2024 14:08:04 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 6646F288; Thu, 25 Apr 2024 00:08:03 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Kate Hsuan <hpa@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-staging@lists.linux.dev
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v1 1/1] media: atomisp: Remove unused GPIO related defines and APIs
+Date: Thu, 25 Apr 2024 00:08:00 +0300
+Message-ID: <20240424210800.1776038-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SA1PR11MB8350:EE_
-X-MS-Office365-Filtering-Correlation-Id: 539bc3f5-db01-44dc-d01e-08dc64a28e12
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|1800799015|366007;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?THZueUh3NlFnK0N2cXFjMlp3TnI5Ym0zbVNxeU8velVDNXFTWWs0TlVvdmIz?=
- =?utf-8?B?OEgyQS9pb3c0N0RSOTJpdTl0aFQxUEpXa2RPSmsxZFFaRHQ5YTNYWWlJQ3FX?=
- =?utf-8?B?T0hkcnpXeXNEWmtpRmNWeVhadmNxNUhtbW9icjFXTnd0RWpGYmd0dkRuMDJS?=
- =?utf-8?B?L0I5OWw5OUtGUmdwRUlJeW5VMW1FQmdCWHhIZ1lFWXNFV1VNb2N1WFcxTEI2?=
- =?utf-8?B?VWJ0U0k5enhZRG1qRUJDcDZ1MUptM2NVcmlINTU0YVI2UkVXb0N0ZENJK2dP?=
- =?utf-8?B?OWhPM0N4d05aa1RvM3MrN3JnQktZNDhibVlDd2NCSnBNSEgyU3ViYzBnU294?=
- =?utf-8?B?ODdyUlZMVUVkQTVyMVpVT256dGR0SWpRRWNXYUROcnJWdHNNdWRud0dKL0pD?=
- =?utf-8?B?MkFhTWJhLzBVWGwwQkQxNm1YMzcvNmpZcEpncnY0MHpGY3ErYkdIME5XTU5n?=
- =?utf-8?B?NnFmRWczSWtrd0FMSGszSVVLRG0wTjJWZGxBSlZubytYK2pHMkhIRVRkZEdx?=
- =?utf-8?B?SmxVazNEV2R2TFc0RUNxRUE0ZVhzWTBQLzFaQmVpS3o4a3IyRm9BMExiSFFy?=
- =?utf-8?B?aTJyMWRWWVVMREphc1VFSmtpS1NrV25GdTExd2pxUmlTOGhyS2hLbmVCQTlP?=
- =?utf-8?B?L2tZdXdJdklCeWRTRm1oRFFMdUs4WTVYN0FFR2I1RVJLV3kvcGdsYWs2Sy9w?=
- =?utf-8?B?c2hZZFlWV2kyT1FaaE00dUE0VFliakFSRDc1Vmo2S05BOUNxMVQ0Nk93Tzhl?=
- =?utf-8?B?Q2ZJUXZGSnM2K1ZZbEJLMnFZMTlSQjg3dWhnRlp4em1KMUFXSWJJWDA4M3BS?=
- =?utf-8?B?eHdpK2tpWlhKeHN0cWovaGlEQmVqVTY3VHFKVTBRR293ZWVHU2xuR2tUeExR?=
- =?utf-8?B?bDNacEgwcmFQQ2xRL3pKbDlPc2lWMVdlb2I3Q3VkZXcwR1AwZTIrVE5uV2RP?=
- =?utf-8?B?b3ZHU1g0cVdKK0tsdUhPUnR3OC8wcEtleGZFUDcyRTA4Rk5JckkvSVl4R2pi?=
- =?utf-8?B?OUNJcVc3a1l3Um1WVTd1WjlEYTYxM3hTNmtqbzY4MHVqR0JGTmlDcUFncHBL?=
- =?utf-8?B?cEI0SUU4UEQrZE5LbzNtbGk3cTV3eUhEZzBQWmJ5QnAzMTV2ZThTN0VZcENM?=
- =?utf-8?B?WTlCQ1Jzc3B2cGkwYVR4eXBEUDcrN3d6NHpqVjFVOUJ3M0E3K0ZseUNYSzVR?=
- =?utf-8?B?NHIyUE41Rlp3NWJPYXdHclFIdnROUlJkVTJaV2hVQ3FDd09kelFVZ2I3dk1n?=
- =?utf-8?B?SXpRdG4wS0JLWWU1UGswUWJHOXBoOHJBdzFxZmZxeHpSRDdKNVc4encrYWJZ?=
- =?utf-8?B?akRINXloUG1Kbm5sNVI5RWdOaHM3NlY4YmV5ellhb01MSFI1L0NFWVkzYjlM?=
- =?utf-8?B?WWdsb2FwdG1QTFJiSWNtSzVkRCtaMDdDRWlxalJUMUkzSmR6bDZpZEZJQ0pN?=
- =?utf-8?B?KzJDempiYlIwT1hjRmVsbWwrR0V0U0I4dm01K1lWelJhK09oQ0lTYUpnb2o5?=
- =?utf-8?B?clgwUDVrZ0ZOa0d4MTNsSXR2RFFUdldVSjdKdklPNXRIVUtNZUFUSCs3ME5t?=
- =?utf-8?B?YW03Q1RCUWZDQldUVnVXWW5INmFHWDhKNWlDenpXVkpzdWFjKzhWZzdOMzV2?=
- =?utf-8?B?bVhVYytqQldZWXBUc1p0ZExTcDM3R1lVVVdHWGgxaklneTgyaVpad3ZDWmQy?=
- =?utf-8?B?bGNBcFMvY2lPVUFXbkRubzROQjZ3YjlCWGMwemJkRGNjd2RuNHkyeWdRPT0=?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OWtqWXp1b0VGT1d0dENOY21ydzV5OG1IYldYZjBROEZraTBVNVlKY0pzSCtn?=
- =?utf-8?B?UmFjWGlRUk9WcncvQS82MVBBRTJCKzRJWDlGSVVVdy9lMHhwWUl6dTBtOWor?=
- =?utf-8?B?TWF5Rnl2YWFoeW5LNnR6WktpQzVYV3JJdkpjOGxlaWpQRFg2SFczYS9meDA3?=
- =?utf-8?B?bWsyMThuS2drTTdvS21rTERuWERzOURVMmpKTEx6OU9oRWpqTXJpWjVGc1N6?=
- =?utf-8?B?ZVlRRjlHSTcrcUs3eFhKYjkvaU1YM3d2VTAycVJ6R2tuc2FDVldMdDZoc0s2?=
- =?utf-8?B?amg5bW9rMGs2SEpKRDB6WXcvWWtBbnFyTW5qUnVRNzNncXRpcmd5cEUyZktt?=
- =?utf-8?B?QUlTSkFSaHpFSzY2c1pieThldXpSRlJyT09jbEM1eGpzNW0welYyYjJ6S0hW?=
- =?utf-8?B?d0NnbnBZUERVRTlXdGJvWU9OZmg0VS83VktBZEYxYjRtM21QcTZxcFBCalYy?=
- =?utf-8?B?UkhMYnF2akhVOGlraDY1ZW44Z2hidzZhWHN4bzdzdG1xWDVPMTRHMHpoZjdh?=
- =?utf-8?B?cForZ2ljeXFEY1pmNU8zMTRLYWFWK0ZsRC9ibXhacEluTTltSTZaU0JZNGI3?=
- =?utf-8?B?V0VPREVMNnQ5TUQzbGhPNHRhK3FHdWZubk81QXZVT2VsSFFocjhINTQzenNz?=
- =?utf-8?B?VGxCSzA4Y3IrcXlCeEpGOEFxMkVkR0c5RmRqRU9ralJQMHQ4eTNReTduUEhY?=
- =?utf-8?B?RXRuaS8yMWo0Sm9WdC9lR3JPendxYis4dHh0bGtJNVNnWW1wdVdldXBLVmdl?=
- =?utf-8?B?M2ZiR3pUMXJBdWFvUCszQi8zUzNlQi9TUlcwQVJ3R1MvMEpVdFlWUUN6U1BS?=
- =?utf-8?B?b2ZBOXdtTmt6akZCZ2xJQ1BKT1NuSVVoRDltc21LelROdm94Zy94RXgvckY4?=
- =?utf-8?B?UEc5YWNiQ1lFd2ZlNzhidDMzTWFVclRlMEpqdFFRM2YxRmk4d0wzYnVWQjNv?=
- =?utf-8?B?U0F4N1JBb3RwOEdDeE5yaWI3WVF4WXF2SlVSMEN6Skt6cnV0ZXBGN01HYXZH?=
- =?utf-8?B?UklKK09XY3NzaytJMkZJQWdLMFExYno2TTNZTEc1djdvRE9HamhxWUljeGJT?=
- =?utf-8?B?T3gzNllhazZhdzZSdlFEUmJHMGdpSEdrYzlWRHdWQlR1L2MxcUVibU9wSmZs?=
- =?utf-8?B?YjRsb3lURkJIWlY0aXhsaFJ4TnhIWFQ2MzZwRzk0WEJxWkZ0MFljUnF4Uzdw?=
- =?utf-8?B?b3gyd3U3aG8wcWdCRnBGVjcza2VPeTNBVXNHSTA4eFlPcmpyK3pUUUdJSnhZ?=
- =?utf-8?B?N2pjdmJrSm5oOThadjFENnRWOCtvZVVscjJQNXdnT0Y0ajhiZ2xaVjhhQS9p?=
- =?utf-8?B?N0crNzdsbk5rK1V1bkN5OFNtVTVUTzFtTDUyTUFvbkZpanp3bWhoaURtak5j?=
- =?utf-8?B?alBaeFF6NG5QWGRUL2ZINFFRUTVIcjR0VWVMc3o1cmNPUVFlWFJicXRQOTBO?=
- =?utf-8?B?QXUyUG9SVysrT3ZYWFVnbEZieDhuUlBxVitMUDhxUEFoWlM3UTlUWFNHTnl2?=
- =?utf-8?B?bkRpM2EzdUlSSjBRSkFLdW9YODY1SFA1RjhoY0pNQWJoanFsQlYzTTR1UTUx?=
- =?utf-8?B?MmlJVVExRW9oNURYMXg4Z2xjOE9rQTRBT2prajR1OWdTcUs0TUJKWUpNa013?=
- =?utf-8?B?aTlIczNTOWZidWN0QitQeGUwMEI0dU81Q3hwS2FYcWxXRGtCSjJLMGFYYWc5?=
- =?utf-8?B?aFhRQ056WnA5TXNQZW5jbzRnUVd5RmJrM0VnSmpVRTk0STZva2pPdjZJcGdM?=
- =?utf-8?B?NEVUZTU4dGdraEN1SU81VllXcHoxYkhVanpyWndHVEh5MEFxWTZBdDZiZXlj?=
- =?utf-8?B?WXhFS01XM3g3K3RQZWdsUUR6UE5EYldBUFJ0bVpKRUljMk1TWlhlNGQ3WlFn?=
- =?utf-8?B?bnhGTTdWUlh1WVlFeDFBMFZDNjd6cWRXajkwVi9DQkNEU3NsblpmRWhNK1VI?=
- =?utf-8?B?SnhBd1NYSjN1Wi96dWpNRlhJcFlpSkx6NDhLOFdEeFZReWhoU3QyTklqcmFP?=
- =?utf-8?B?UVZvcnhWckI1MDZYdlRrZ3FBbDJneWltcGU1cW04S0FEQVQxNlRMei9Ja043?=
- =?utf-8?B?MHNxdlM2UkN1UzJ1bWhVTXNVU3pCb0p6T29HNmJzS2pNV1NjK1dSN3JkNDJI?=
- =?utf-8?B?R3h3c3VLWWd1TzBBZVNJK29EUFFVZTJHbXFvSHFiT0NuQmx5TmpvdElJU1dO?=
- =?utf-8?B?TEE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 539bc3f5-db01-44dc-d01e-08dc64a28e12
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 21:07:31.1945
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GOkcnK8Y+4uY+24BiuwjMOGbAR1MSh+LgIV2NpRpO2klx4NbkEoqbMGZCRxblTr/s0klpSxWdr4xTELroH2+I3+IKUnZAXgWueXB/5paVpM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8350
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 
-(+Yao Yuan)
+Remove unused GPIO related defines and APIs.
 
-Hi Sean and Rick,
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ .../media/atomisp/pci/gpio_block_defs.h       | 17 -------
+ .../pci/hive_isp_css_common/gpio_global.h     | 23 ----------
+ .../pci/hive_isp_css_common/host/gpio_local.h | 21 ---------
+ .../hive_isp_css_common/host/gpio_private.h   |  9 ++--
+ .../atomisp/pci/hive_isp_css_include/gpio.h   | 46 -------------------
+ .../hive_isp_css_include/host/gpio_public.h   | 46 -------------------
+ drivers/staging/media/atomisp/pci/sh_css.c    | 10 ++--
+ 7 files changed, 7 insertions(+), 165 deletions(-)
+ delete mode 100644 drivers/staging/media/atomisp/pci/hive_isp_css_common/host/gpio_local.h
+ delete mode 100644 drivers/staging/media/atomisp/pci/hive_isp_css_include/gpio.h
+ delete mode 100644 drivers/staging/media/atomisp/pci/hive_isp_css_include/host/gpio_public.h
 
-On 4/24/2024 9:38 AM, Edgecombe, Rick P wrote:
-> On Wed, 2024-04-24 at 09:13 -0700, Sean Christopherson wrote:
->> On Tue, Apr 16, 2024, Rick P Edgecombe wrote:
->>> On Thu, 2024-03-21 at 09:37 -0700, Reinette Chatre wrote:
->>>>
->>>> Summary
->>>> -------
->>>> Add KVM_CAP_X86_APIC_BUS_FREQUENCY capability to configure the APIC
->>>> bus clock frequency for APIC timer emulation.
->>>> Allow KVM_ENABLE_CAPABILITY(KVM_CAP_X86_APIC_BUS_FREQUENCY) to set the
->>>> frequency in nanoseconds. When using this capability, the user space
->>>> VMM should configure CPUID leaf 0x15 to advertise the frequency.
->>>
->>> Looks good to me and...
->>> Tested-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
->>>
->>> The only thing missing is actually integrating it into TDX qemu patches and
->>> testing the resulting TD. I think we are making a fair assumption that the
->>> problem should be resolved based on the analysis, but we have not actually
->>> tested that part. Is that right?
->>
->> Please tell me that Rick is wrong, and that this actually has been tested with
->> a TDX guest.  I don't care _who_ tested it, or with what VMM it has been
->> tested,
->> but _someone_ needs to verify that this actually fixes the TDX issue.
-> 
-> It is in the process of getting a TDX test developed (or rather updated).
-> Agreed, it requires verification that it fixes the original TDX issue. That is
-> why I raised it.
-> 
-> Reinette was working on this internally and some iterations were happening, but
-> we are trying to work on the public list as much as possible per your earlier
-> comments. So that is why she posted it.
-> 
-> There was at least some level of TDX integration in the past. I'm not sure what
-> exactly was tested, but we are going to re-verify it with the latest everything.
-
-Apologies for the delay. I am the one needing to do this testing and it took me a while
-to ramp up on all the parts (and I am still learning).
-
-I encountered quite the roadblock (for me) along the way that was caused by a lingering
-timer (presumably left by TDVF). Thank you so much to Isaku and Yao Yuan for helping me
-to root cause this. I believe that this is unique to the kvm-unit-tests that does
-not reset the environment like the OS.
-
-A modified x86/apic.c:test_apic_timer_one_shot() was used to test this feature. Below I
-provide the diff of essential parts against
-https://github.com/intel/kvm-unit-tests-tdx/blob/tdx/x86/apic.c for your reference. With
-these modifications it can be confirmed that the test within a TD fails without the work
-in this series, and passes with it. This was tested against a host kernel running a
-snapshot of the ongoing KVM TDX work and corresponding QEMU changes (including a QEMU
-change that enables the new capability introduced in this series).
-
-Below are the core changes made to the existing APIC test. The two major changes are:
-(a) stop any lingering timers before the test starts, (b) use CPUID 0x15 in TDX to
-accurately determine the TSC and APIC frequencies instead of making 1GHz assumption
-and use similar check as the kselftest test introduced in this series (I did have to
-increase the amount with which the frequency is allowed to deviate by 1% in my testing).
-
-Please note that there are some more changes needed to run this test in TDX since all
-APIC tests are not appropriate for TDX. This snippet was used in my testing and I
-will work with kvm-unit-test folks on the next steps to have it integrated.
-
-
-@@ -477,11 +478,29 @@ static void lvtt_handler(isr_regs_t *regs)
+diff --git a/drivers/staging/media/atomisp/pci/gpio_block_defs.h b/drivers/staging/media/atomisp/pci/gpio_block_defs.h
+index e1bd638d344a..55c39067a9bf 100644
+--- a/drivers/staging/media/atomisp/pci/gpio_block_defs.h
++++ b/drivers/staging/media/atomisp/pci/gpio_block_defs.h
+@@ -16,27 +16,10 @@
+ #ifndef _gpio_block_defs_h_
+ #define _gpio_block_defs_h_
  
- static void test_apic_timer_one_shot(void)
- {
--	uint64_t tsc1, tsc2;
- 	static const uint32_t interval = 0x10000;
-+	uint64_t measured_apic_freq, tsc2, tsc1;
-+	uint32_t tsc_freq = 0, apic_freq = 0;
-+	struct cpuid cpuid_tsc = {};
+-#define _HRT_GPIO_BLOCK_REG_ALIGN 4
+-
+ /* R/W registers */
+ #define _gpio_block_reg_do_e				 0
+ #define _gpio_block_reg_do_select		       1
+ #define _gpio_block_reg_do_0				 2
+ #define _gpio_block_reg_do_1				 3
+-#define _gpio_block_reg_do_pwm_cnt_0	     4
+-#define _gpio_block_reg_do_pwm_cnt_1	     5
+-#define _gpio_block_reg_do_pwm_cnt_2	     6
+-#define _gpio_block_reg_do_pwm_cnt_3	     7
+-#define _gpio_block_reg_do_pwm_main_cnt    8
+-#define _gpio_block_reg_do_pwm_enable      9
+-#define _gpio_block_reg_di_debounce_sel	  10
+-#define _gpio_block_reg_di_debounce_cnt_0	11
+-#define _gpio_block_reg_di_debounce_cnt_1	12
+-#define _gpio_block_reg_di_debounce_cnt_2	13
+-#define _gpio_block_reg_di_debounce_cnt_3	14
+-#define _gpio_block_reg_di_active_level	  15
+-
+-/* read-only registers */
+-#define _gpio_block_reg_di				  16
  
- #define APIC_LVT_TIMER_VECTOR    (0xee)
+ #endif /* _gpio_block_defs_h_ */
+diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/gpio_global.h b/drivers/staging/media/atomisp/pci/hive_isp_css_common/gpio_global.h
+index b5f017482f89..06b6cb3842f4 100644
+--- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/gpio_global.h
++++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/gpio_global.h
+@@ -16,31 +16,8 @@
+ #ifndef __GPIO_GLOBAL_H_INCLUDED__
+ #define __GPIO_GLOBAL_H_INCLUDED__
  
-+	/*
-+	 * CPUID 0x15 is not available in VMX, can use it to obtain
-+	 * TSC and APIC frequency for accurate testing
-+	 */
-+	if (is_tdx_guest()) {
-+		cpuid_tsc = raw_cpuid(0x15, 0);
-+		tsc_freq = cpuid_tsc.c * cpuid_tsc.b / cpuid_tsc.a;
-+		apic_freq = cpuid_tsc.c;
-+	}
-+	/*
-+	   stop already fired local timer
-+	   the test case can be negative failure if the timer fired
-+	   after installed lvtt_handler but *before*
-+	   write to TIMICT again.
-+	 */
-+	apic_write(APIC_TMICT, 0);
- 	handle_irq(APIC_LVT_TIMER_VECTOR, lvtt_handler);
+-#define IS_GPIO_VERSION_1
+-
+ #include <gpio_block_defs.h>
  
- 	/* One shot mode */
-@@ -503,8 +522,16 @@ static void test_apic_timer_one_shot(void)
- 	 * cases, the following should satisfy on all modern
- 	 * processors.
- 	 */
--	report((lvtt_counter == 1) && (tsc2 - tsc1 >= interval),
--	       "APIC LVT timer one shot");
-+	if (is_tdx_guest()) {
-+		measured_apic_freq = interval * (tsc_freq / (tsc2 - tsc1));
-+		report((lvtt_counter == 1) &&
-+		       (measured_apic_freq < apic_freq * 102 / 100) &&
-+		       (measured_apic_freq > apic_freq * 98 / 100),
-+		       "APIC LVT timer one shot");
-+	} else {
-+		report((lvtt_counter == 1) && (tsc2 - tsc1 >= interval),
-+		"APIC LVT timer one shot");
-+	}
+-/* pqiao: following part only defines in hive_isp_css_defs.h in fpga system.
+-	port it here
+-*/
+-
+-/* GPIO pin defines */
+-/*#define HIVE_GPIO_CAMERA_BOARD_RESET_PIN_NR                   0
+-#define HIVE_GPIO_LCD_CLOCK_SELECT_PIN_NR                     7
+-#define HIVE_GPIO_HDMI_CLOCK_SELECT_PIN_NR                    8
+-#define HIVE_GPIO_LCD_VERT_FLIP_PIN_NR                        8
+-#define HIVE_GPIO_LCD_HOR_FLIP_PIN_NR                         9
+-#define HIVE_GPIO_AS3683_GPIO_P0_PIN_NR                       1
+-#define HIVE_GPIO_AS3683_DATA_P1_PIN_NR                       2
+-#define HIVE_GPIO_AS3683_CLK_P2_PIN_NR                        3
+-#define HIVE_GPIO_AS3683_T1_F0_PIN_NR                         4
+-#define HIVE_GPIO_AS3683_SFL_F1_PIN_NR                        5
+-#define HIVE_GPIO_AS3683_STROBE_F2_PIN_NR                     6
+-#define HIVE_GPIO_MAX1577_EN1_PIN_NR                          1
+-#define HIVE_GPIO_MAX1577_EN2_PIN_NR                          2
+-#define HIVE_GPIO_MAX8685A_EN_PIN_NR                          3
+-#define HIVE_GPIO_MAX8685A_TRIG_PIN_NR                        4*/
+-
+ #define HIVE_GPIO_STROBE_TRIGGER_PIN		2
+ 
+ #endif /* __GPIO_GLOBAL_H_INCLUDED__ */
+diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/gpio_local.h b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/gpio_local.h
+deleted file mode 100644
+index 14013733f826..000000000000
+--- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/gpio_local.h
++++ /dev/null
+@@ -1,21 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Support for Intel Camera Imaging ISP subsystem.
+- * Copyright (c) 2010-2015, Intel Corporation.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms and conditions of the GNU General Public License,
+- * version 2, as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
+- */
+-
+-#ifndef __GPIO_LOCAL_H_INCLUDED__
+-#define __GPIO_LOCAL_H_INCLUDED__
+-
+-#include "gpio_global.h"
+-
+-#endif /* __GPIO_LOCAL_H_INCLUDED__ */
+diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/gpio_private.h b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/gpio_private.h
+index cc60bed71ddb..85fcde0b8615 100644
+--- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/gpio_private.h
++++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/gpio_private.h
+@@ -16,13 +16,10 @@
+ #ifndef __GPIO_PRIVATE_H_INCLUDED__
+ #define __GPIO_PRIVATE_H_INCLUDED__
+ 
+-#include "gpio_public.h"
+-
++#include "assert_support.h"
+ #include "device_access.h"
+ 
+-#include "assert_support.h"
+-
+-STORAGE_CLASS_GPIO_C void gpio_reg_store(
++static inline void gpio_reg_store(
+     const gpio_ID_t	ID,
+     const unsigned int		reg,
+     const hrt_data			value)
+@@ -33,7 +30,7 @@ STORAGE_CLASS_GPIO_C void gpio_reg_store(
+ 	return;
  }
  
+-STORAGE_CLASS_GPIO_C hrt_data gpio_reg_load(
++static inline hrt_data gpio_reg_load(
+     const gpio_ID_t	ID,
+     const unsigned int		reg)
+ {
+diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_include/gpio.h b/drivers/staging/media/atomisp/pci/hive_isp_css_include/gpio.h
+deleted file mode 100644
+index 6f16ca77cf75..000000000000
+--- a/drivers/staging/media/atomisp/pci/hive_isp_css_include/gpio.h
++++ /dev/null
+@@ -1,46 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Support for Intel Camera Imaging ISP subsystem.
+- * Copyright (c) 2015, Intel Corporation.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms and conditions of the GNU General Public License,
+- * version 2, as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
+- */
+-
+-#ifndef __GPIO_H_INCLUDED__
+-#define __GPIO_H_INCLUDED__
+-
+-/*
+- * This file is included on every cell {SP,ISP,host} and on every system
+- * that uses the input system device(s). It defines the API to DLI bridge
+- *
+- * System and cell specific interfaces and inline code are included
+- * conditionally through Makefile path settings.
+- *
+- *  - .        system and cell agnostic interfaces, constants and identifiers
+- *	- public:  system agnostic, cell specific interfaces
+- *	- private: system dependent, cell specific interfaces & inline implementations
+- *	- global:  system specific constants and identifiers
+- *	- local:   system and cell specific constants and identifiers
+- */
+-
+-#include "system_local.h"
+-#include "gpio_local.h"
+-
+-#ifndef __INLINE_GPIO__
+-#define STORAGE_CLASS_GPIO_H extern
+-#define STORAGE_CLASS_GPIO_C
+-#include "gpio_public.h"
+-#else  /* __INLINE_GPIO__ */
+-#define STORAGE_CLASS_GPIO_H static inline
+-#define STORAGE_CLASS_GPIO_C static inline
+-#include "gpio_private.h"
+-#endif /* __INLINE_GPIO__ */
+-
+-#endif /* __GPIO_H_INCLUDED__ */
+diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_include/host/gpio_public.h b/drivers/staging/media/atomisp/pci/hive_isp_css_include/host/gpio_public.h
+deleted file mode 100644
+index 13df9b57a5fb..000000000000
+--- a/drivers/staging/media/atomisp/pci/hive_isp_css_include/host/gpio_public.h
++++ /dev/null
+@@ -1,46 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Support for Intel Camera Imaging ISP subsystem.
+- * Copyright (c) 2015, Intel Corporation.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms and conditions of the GNU General Public License,
+- * version 2, as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
+- */
+-
+-#ifndef __GPIO_PUBLIC_H_INCLUDED__
+-#define __GPIO_PUBLIC_H_INCLUDED__
+-
+-#include "system_local.h"
+-
+-/*! Write to a control register of GPIO[ID]
+-
+- \param	ID[in]				GPIO identifier
+- \param	reg_addr[in]		register byte address
+- \param value[in]			The data to be written
+-
+- \return none, GPIO[ID].ctrl[reg] = value
+- */
+-STORAGE_CLASS_GPIO_H void gpio_reg_store(
+-    const gpio_ID_t	ID,
+-    const unsigned int		reg_addr,
+-    const hrt_data			value);
+-
+-/*! Read from a control register of GPIO[ID]
+-
+- \param	ID[in]				GPIO identifier
+- \param	reg_addr[in]		register byte address
+- \param value[in]			The data to be written
+-
+- \return GPIO[ID].ctrl[reg]
+- */
+-STORAGE_CLASS_GPIO_H hrt_data gpio_reg_load(
+-    const gpio_ID_t	ID,
+-    const unsigned int		reg_addr);
+-
+-#endif /* __GPIO_PUBLIC_H_INCLUDED__ */
+diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
+index e2497fc4dfc9..01f0b8a33c99 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css.c
++++ b/drivers/staging/media/atomisp/pci/sh_css.c
+@@ -66,8 +66,8 @@
+ #include "sp.h"			/* cnd_sp_irq_enable() */
+ #include "isp.h"		/* cnd_isp_irq_enable, ISP_VEC_NELEMS */
+ #include "gp_device.h"		/* gp_device_reg_store() */
+-#define __INLINE_GPIO__
+-#include "gpio.h"
++#include <gpio_global.h>
++#include <gpio_private.h>
+ #include "timed_ctrl.h"
+ #include "ia_css_inputfifo.h"
+ #define WITH_PC_MONITORING  0
+@@ -1363,10 +1363,8 @@ ia_css_init(struct device *dev, const struct ia_css_env *env,
+ 
+ 	ia_css_device_access_init(&env->hw_access_env);
+ 
+-	select = gpio_reg_load(GPIO0_ID, _gpio_block_reg_do_select)
+-	& (~GPIO_FLASH_PIN_MASK);
+-	enable = gpio_reg_load(GPIO0_ID, _gpio_block_reg_do_e)
+-	| GPIO_FLASH_PIN_MASK;
++	select = gpio_reg_load(GPIO0_ID, _gpio_block_reg_do_select) & ~GPIO_FLASH_PIN_MASK;
++	enable = gpio_reg_load(GPIO0_ID, _gpio_block_reg_do_e) | GPIO_FLASH_PIN_MASK;
+ 	sh_css_mmu_set_page_table_base_index(mmu_l1_base);
+ 
+ 	my_css_save.mmu_base = mmu_l1_base;
+-- 
+2.43.0.rc1.1336.g36b5255a03ac
 
-Reinette
 
