@@ -1,90 +1,129 @@
-Return-Path: <linux-kernel+bounces-157299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26B1E8B0F79
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:14:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47C6C8B0F7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:15:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB1071F22E6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:14:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A7361C218EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:15:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBFBB16132A;
-	Wed, 24 Apr 2024 16:14:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D149C168AF2;
+	Wed, 24 Apr 2024 16:14:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RRFmMAUg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="AV16uSg1"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13C4115B107;
-	Wed, 24 Apr 2024 16:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6070161322;
+	Wed, 24 Apr 2024 16:14:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713975253; cv=none; b=NQWbo7bWjq/nvZzmSkpN1s6EcOFktkE9JMt/K3mi8NocBxiJ83euTe8j+Wj3bjfx2hcujZN3Z4FS+6RbLkAC6G5F8JfA6cw1GOFAtjSBANll9Q3KoVD/MjU2yRe6kR+U1yZ5wQZjWcGp9dOPwKWUClzjz+Fcn9YSwlSDQ2hRyr8=
+	t=1713975256; cv=none; b=KsEvxqAJW52DRQKa4E7lD6iMbFCsy5cHW+wenSY1Nuomq3m3HyyW35uTFoO3ZEapoNaxf3u8I1TsdLhpkMzNcb/m9sRGXszQ13IBjWh89ItGz+YnLlZX0hVnDYgz6PgZANh349++pflSctQOdlsGsSqwt222qrgeHHsvwkbJg8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713975253; c=relaxed/simple;
-	bh=0TexNRTyXcfX03x/jOWGmM/SoFKxgKt/qC/qIndL658=;
+	s=arc-20240116; t=1713975256; c=relaxed/simple;
+	bh=A6NNMZIxwRDoaqJP/sVaKEK1Sqp369lZtQwhGk7s/xk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HYWMwmrRH6i3k+4DvRblVwQfB3Ey2sVsTdIDRieNIB0AWqGZ4qmrCxMtYYQytvrxkuRTuMWLSU3rFXVpuBp/Sf6hZz3sUvLyU4XuezI3+IyOqoZfKVsSjhr1qaC24h46A7Ff3rftrZMCBQ0d4wWFeHCBWBU0xyX2bunLhmBi7Tw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RRFmMAUg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A16F8C2BD11;
-	Wed, 24 Apr 2024 16:14:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713975252;
-	bh=0TexNRTyXcfX03x/jOWGmM/SoFKxgKt/qC/qIndL658=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RRFmMAUgnbfEicuP3c8YoxLCWx9PXXFqgf/ntWfZ2ZbgvvKMvFqgW+2NRlqrHHucx
-	 WkSQ+I5RIbqS1n3WO5wGmt1SmenQL6cbP0fZkSDYkOPDfJHkDt1OEH/dl7KJ+4afAE
-	 oP3eTNoYQL8WeZuCeqTWtyqGT5p1aUZ823Z96b5djgInRmocqvzQjkeSHT1R3XUKnK
-	 SMumHe2C5i/c4pzvQvUJa3Enqb2eS0iYxobOJDQLjCwm7zDOZBGXnIuhCzQSuT6dLI
-	 BBtpHCCH6SJhNL5odK+cy0wVgJ4Z30Zix9SPSvoYCNm8wBfW97hMVSTK/m/xKEDf/V
-	 K70FB2dtGOa0g==
-Date: Wed, 24 Apr 2024 17:14:06 +0100
-From: Simon Horman <horms@kernel.org>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: linux-kernel@vger.kernel.org,
-	Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
-	Lee Jones <lee@kernel.org>, Jiawen Wu <jiawenwu@trustnetic.com>,
-	Mengyuan Lou <mengyuanlou@net-swift.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Duanqiang Wen <duanqiangwen@net-swift.com>,
-	"open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>,
-	"open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
-Subject: Re: [PATCH 4/4] net: txgbe: Utilize i2c-designware.h
-Message-ID: <20240424161406.GM42092@kernel.org>
-References: <20240423233622.1494708-1-florian.fainelli@broadcom.com>
- <20240423233622.1494708-5-florian.fainelli@broadcom.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sesQFRrhsg8bJ+BlkG+TDGvQNsEs7L6IjUusb92uC/Gge2qAhBiPX3EyGFyI/YdaW1UszR2+PZs5fJFZ/lWPgiyyJZL/ML+x/E+g38kdHOcTd3wFiBdHLUeZ7/BA/NYbdCAiM2xvnCXc9mM7vRFroZNWChp9OPi3WDlgU7B72EM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=AV16uSg1; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1713975251; bh=A6NNMZIxwRDoaqJP/sVaKEK1Sqp369lZtQwhGk7s/xk=;
+	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+	b=AV16uSg1wFnhhvZ4t52YPzs2VQRUqhd4lB5Bvib4MOLVgu2EzYQZUZbn+LF1IN4nm
+	 xqH7wwuUVHdQmNDONHXeErqKyB+ICIo3BA6DSSrQsHn0Xub7zsvxqEjCd8iKzKp1Ob
+	 ux/KQ/cWf9JiNaLdYggxsWhVALFmPpGN/r7Fl+js=
+Date: Wed, 24 Apr 2024 18:14:10 +0200
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Aren Moynihan <aren@peacevolution.org>, 
+	Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, linux-iio@vger.kernel.org, phone-devel@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+	Willow Barraco <contact@willowbarraco.fr>
+Subject: Re: [PATCH v2 2/6] iio: light: stk3310: Implement vdd supply and
+ power it off during suspend
+Message-ID: <xxbwdl6ebvut3u7qhzfy65e4eheixghqe7yn4qemyuowxyxj5a@r2wa2b7bhw2x>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Andy Shevchenko <andy.shevchenko@gmail.com>, Aren Moynihan <aren@peacevolution.org>, 
+	Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, linux-iio@vger.kernel.org, phone-devel@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+	Willow Barraco <contact@willowbarraco.fr>
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <20240423223309.1468198-2-aren@peacevolution.org>
+ <20240423223309.1468198-4-aren@peacevolution.org>
+ <CAHp75VeRDSPvpmSbUyZPp0RMoTOE193U2ma18qxv_qZQKLCq8g@mail.gmail.com>
+ <5qqil7ltqhdeabml6toqpcy773uhjxgwaz3txpy4kv4sz55o2y@hmar674eey7s>
+ <CAHp75VdR9HtWbSif+j8QHX5zG9xPF1GzUFY2s-0OjD3RAWD9-Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240423233622.1494708-5-florian.fainelli@broadcom.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VdR9HtWbSif+j8QHX5zG9xPF1GzUFY2s-0OjD3RAWD9-Q@mail.gmail.com>
 
-On Tue, Apr 23, 2024 at 04:36:22PM -0700, Florian Fainelli wrote:
-> Rather than open code the i2c_designware string, utilize the newly
-> defined constant in i2c-designware.h.
+On Wed, Apr 24, 2024 at 06:20:41PM GMT, Andy Shevchenko wrote:
+> On Wed, Apr 24, 2024 at 3:59 PM Ondřej Jirman <megi@xff.cz> wrote:
+> > On Wed, Apr 24, 2024 at 02:16:06AM GMT, Andy Shevchenko wrote:
+> > > On Wed, Apr 24, 2024 at 1:41 AM Aren Moynihan <aren@peacevolution.org> wrote:
 > 
-> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> ...
+> 
+> > > >         ret = stk3310_init(indio_dev);
+> > > >         if (ret < 0)
+> > > > -               return ret;
+> > > > +               goto err_vdd_disable;
+> > >
+> > > This is wrong. You will have the regulator being disabled _before_
+> > > IRQ. Note, that the original code likely has a bug which sets states
+> > > before disabling IRQ and removing a handler.
+> >
+> > How so? stk3310_init is called before enabling the interrupt.
+> 
+> Exactly, IRQ is registered with devm and hence the error path and
+> remove stages will got it in a wrong order.
 
-Hi Florian,
+Makes no sense. IRQ is not enabled here, yet. So in error path, the code will
+just disable the regulator and devm will unref it later on. IRQ doesn't enter
+the picture here at all in the error path.
 
-FYI, this conflicts with:
+> > Original code has a bug that IRQ is enabled before registering the
+> > IIO device,
+> 
+> Indeed, but this is another bug.
+> 
+> > so if IRQ is triggered before registration, iio_push_event
+> > from IRQ handler may be called on a not yet registered IIO device.
+> >
+> > Never saw it happen, though. :)
+> 
+> Because nobody cares enough to enable DEBUG_SHIRQ.
 
-c644920ce922 ("net: txgbe: fix i2c dev name cannot match clkdev")
+Nice debug tool. I bet it makes quite a mess when enabled. :)
 
-But a patch-set has been submitted which reverts that commit:
+Kind regards,
+	o.
 
-https://lore.kernel.org/all/20240422084109.3201-1-duanqiangwen@net-swift.com/
+> -- 
+> With Best Regards,
+> Andy Shevchenko
 
