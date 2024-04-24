@@ -1,113 +1,97 @@
-Return-Path: <linux-kernel+bounces-157377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32B978B10C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:19:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEBCA8B10CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:19:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3F8B286BC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:19:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C7F51C230DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:19:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A1C16D9A1;
-	Wed, 24 Apr 2024 17:19:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6EFF16D338;
+	Wed, 24 Apr 2024 17:19:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PsCtRx8a"
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hUc+bY7X";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cq0zlA4j"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8FB16D4CC
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:19:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9700616C86A;
+	Wed, 24 Apr 2024 17:19:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713979147; cv=none; b=m2bhCDab6smsq+XJEkz3rU3lV4LeWilFVM61lD2zvnkpAT/FUhqy2Zx3WUq45CNgH7/6S7FHyJYGMEh6Sr3vMR6m/g66ekOq5darIMBy1p+QY5hAcFvPhgJdogxZalUo4Txnm65i1rTy0Zq0Qd6Du/JsyPAPuI7RTkPHs6ehL/U=
+	t=1713979186; cv=none; b=hUxkrzs7LdyeZTsPKNJydPXf//5Tfvca1FydAZvQNobnsNVQI4P0G6Nbnxnua2S8HnnemHI2lO+kSy+CSSJwzyGj286g9DOF8cqXebTWvBcNFVD4+z53MqchorYUZlaKLOmQ1XLQ16MK66Cz8G27ORXHjEkdt2357/GHqn3eHt8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713979147; c=relaxed/simple;
-	bh=fzUP5jXS3/ennNTINiF3XeycfhJxeMlYoYeWebVYLrE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r5a4fP3jJK9hCxixgif+EoRnH5TXVDP1vN8c2pWbJ4d+ABDVEFUU/u9GUKzMQdVZ9kTHOEw/8Sp51TuHytdIQsUH6+J8vzYBMQhdtsSH1V+fR+8Cb3jDQE+2hPK7pTW7rEynjLX5HakiOm4c3F2X3i7iCVNj9zlbfsGAqFKx/nY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PsCtRx8a; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 24 Apr 2024 10:18:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713979143;
+	s=arc-20240116; t=1713979186; c=relaxed/simple;
+	bh=x7Ce+dUogthNuO8t6VNBi8u+MSlVwOVR1CCnQ/MIrsg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=EWU0rlmMgtvKRfTd1dpYd5ZF0/bXuPTrFbD0n2eZ57m8IJ1RM70Tt/sXUHXCckySUVHBdQXLMd1s55UYNIIpuP86dKlkGfuaC/GeZZh1sAmsl5B0jbaseYA9gd62QklvAvjXDIGUo79+F/pA57HHvqomsEcpm2DYfu1TP8tVdTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hUc+bY7X; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cq0zlA4j; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713979182;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=MPnSCqBZNeTYi6Yq+K5T2lPK1pkupPn4Yzg+HFxV4RA=;
-	b=PsCtRx8aCSAoweOsm30ih69vNYVTRPodlMVcmiUBkctOGzu3pRGbw1sE5GGh7nsoNHVM5h
-	5QOF1Z7R8cBa1l8TH1edsuJdhO/kJb3MMCiOmD1nDIQZWbQLOr280pl0WKUUtvCtbe/b/D
-	kbfVKJFn8471rDFj+eFGUfHVrQqeYr8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Andrew Jones <ajones@ventanamicro.com>,
-	Markus Elfring <Markus.Elfring@web.de>,
-	Kunwu Chan <chentao@kylinos.cn>, linux-kselftest@vger.kernel.org,
-	kvm@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Kunwu Chan <kunwu.chan@hotmail.com>,
-	Anup Patel <anup@brainfault.org>, Thomas Huth <thuth@redhat.com>
-Subject: Re: [PATCH] KVM: selftests: Add 'malloc' failure check in
- test_vmx_nested_state
-Message-ID: <Zik_Aat5JJtWk0AM@linux.dev>
-References: <20240423073952.2001989-1-chentao@kylinos.cn>
- <878bf83c-cd5b-48d0-8b4e-77223f1806dc@web.de>
- <ZifMAWn32tZBQHs0@google.com>
- <20240423-0db9024011213dcffe815c5c@orel>
- <ZigI48_cI7Twb9gD@google.com>
- <20240424-e31c64bda7872b0be52e4c16@orel>
- <ZikcgIhyRbz5APPZ@google.com>
+	bh=OIgX8hYJKedlWpKZHCISbN03B7+KCkzESKI9X941yRc=;
+	b=hUc+bY7XdaUe4i2b4TqKGtx9lDylLSmzldzEvAn8mQPtvdDYs0v5kWtB3Nm+Vu8JpW93Vg
+	gGUat+XkI/WTRN1zIU/3ouPh047NwBu6a8uufa1eNllk7BZumEazzM5tJEfP08+VOaHHk0
+	b2pSU387zODGqcMMv+7Dzzsy9CkqGTdg/QXNNJZ0r0tSUv6IdVSQgc3oN4/3hciLoDZi0C
+	Tjl1UwBQWMlIEHh4VniIZaHY/kzWdUoQUHfQMoPpnK8rB7LOemzTxp5tYcpR4cqsvg3387
+	6OY2gH33HcmtgCgw4jQZYeYWASq0HYq41H11rgELbVTmshv6Wz04FMkdsyZcng==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713979182;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OIgX8hYJKedlWpKZHCISbN03B7+KCkzESKI9X941yRc=;
+	b=cq0zlA4jo7geFavqDooN7ZB8M5yDubfi1Jxg4xvuyaqXGVTXw2TP9zlz2YlfTN80nG7xIi
+	w1fmOJpSR2WXIxDg==
+To: Florian Fainelli <f.fainelli@gmail.com>, Florian Fainelli
+ <florian.fainelli@broadcom.com>, linux-kernel@vger.kernel.org
+Cc: opendmb@gmail.com, Tim Ross <tim.ross@broadcom.com>, Broadcom internal
+ kernel review list <bcm-kernel-feedback-list@broadcom.com>, "open
+ list:BROADCOM BMIPS MIPS ARCHITECTURE" <linux-mips@vger.kernel.org>,
+ "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] irqchip/irq-brcmstb-l2: Avoid saving mask on shutdown
+In-Reply-To: <f98dffd7-bb1c-4023-9a73-fdf2107160d1@gmail.com>
+References: <20240416194343.469318-1-florian.fainelli@broadcom.com>
+ <87le55ulw5.ffs@tglx> <958c27b1-26d7-4927-976b-4502f33f31f7@gmail.com>
+ <87il09ufl4.ffs@tglx> <f98dffd7-bb1c-4023-9a73-fdf2107160d1@gmail.com>
+Date: Wed, 24 Apr 2024 19:19:18 +0200
+Message-ID: <87mspiu19l.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZikcgIhyRbz5APPZ@google.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
 
-Hey,
+On Wed, Apr 24 2024 at 09:50, Florian Fainelli wrote:
+> On 4/22/24 16:45, Thomas Gleixner wrote:
+>> On Mon, Apr 22 2024 at 15:26, Florian Fainelli wrote:
+>>> On 4/22/24 14:29, Thomas Gleixner wrote:
+>>>>> +	if (save)
+>>>>> +		b->saved_mask = irq_reg_readl(gc, ct->regs.mask);
+>>>>
+>>>> what's the conditional actually buying you except more complex code?
+>>>
+>>> Not much this is an optimization that is simple to carry out. There can
+>>> be dozens of such L2 interrupt controllers in a given system and the
+>>> MMIO accesses start adding up eventually.
+>> 
+>> I'm impressed by saving ~12 microseconds per one dozen of interrupt
+>> controllers on system shutdown :)
+>
+> I know, right? More seriously are you willing to take that patch, should 
+> I write a better justification?
 
-On Wed, Apr 24, 2024 at 07:51:44AM -0700, Sean Christopherson wrote:
-> On Wed, Apr 24, 2024, Andrew Jones wrote:
-> > On Tue, Apr 23, 2024 at 12:15:47PM -0700, Sean Christopherson wrote:
-> > ...
-> > > I almost wonder if we should just pick a prefix that's less obviously connected
-> > > to KVM and/or selftests, but unique and short.
-> > >
-> > 
-> > How about kvmsft_ ? It's based on the ksft_ prefix of kselftest.h. Maybe
-> > it's too close to ksft though and would be confusing when using both in
-> > the same test?
-> 
-> I would prefer something short, and for whatever reason I have a mental block
-> with ksft.  I always read it as "k soft", which is completely nonsensical :-)
-
-I despise brevity in tests, so my strong preference is to use some form
-of 'namespaced' helper. Perhaps others have better memory than
-I do, but I'm quick to forget the selftests library and find the more
-verbose / obvious function names helpful for jogging my memory.
-
-> > I'm not a huge fan of capital letters, but we could also do something like
-> > MALLOC()/CALLOC().
-> 
-> Hmm, I'm not usually a fan either, but that could actually work quite well in this
-> case.  It would be quite intuitive, easy to visually parse whereas tmalloc() vs
-> malloc() kinda looks like a typo, and would more clearly communicate that they're
-> macros.
-
-Ooo, don't leave me out on the bikeshedding! How about TEST_MALLOC() /
-TEST_CALLOC(). It is vaguely similar to TEST_ASSERT(), which I'd hope
-would give the impression that an assertion is lurking below.
-
--- 
-Thanks,
-Oliver
+I don't have real objections other than rolling my eyes, but a better
+justification would be useful.
 
