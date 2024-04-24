@@ -1,108 +1,146 @@
-Return-Path: <linux-kernel+bounces-156611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 665838B05A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:13:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F61B8B05A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:14:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24F112882A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:13:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B444CB25565
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:14:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FABC158A39;
-	Wed, 24 Apr 2024 09:13:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35CDD158867;
+	Wed, 24 Apr 2024 09:13:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NTxPEmmY"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CV2h6DL9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECDAE158A24
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:13:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7434D158D75;
+	Wed, 24 Apr 2024 09:13:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713950022; cv=none; b=mF5eVzkvCqQEaJc65V9OvpSELCL412Tre0BuPMuOEz5pb6aXWdsfKz4UTZh9CPpM572MLNsgtEod1WiTPmcLkv1gybHw0cUtoHbcPR7DV3BFBpVOQGOM0V6C+bQtZJ/7d07nDsyP1XTQ9yImn09pn0PRz/62ASkwDSDu/QRHtJU=
+	t=1713950030; cv=none; b=k72GK44RH/g9tWMsTcwyu0ANC9fIZZyexChz8N31CMwj1Po+peXX0TH+tDC7lnxFcgyexhvzBfJgEN/mDRPY47rAW/+qQ9d1dJTpT6U7NoGMF+kVqsloU4HumBQ50irFwcrDhnts9UnbdscPCS9m3bs9wNl3ZYQy4E9vhDMwwvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713950022; c=relaxed/simple;
-	bh=YOwcHZZUsiHoO5pCDD+f5fKSeVpcwJRSQ8bCPZVkdX4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sCS3HaUsCWR6KZTYwwWxbGNixHnGhkFSBH1qFqVSEcXe7HX3thjWG119ITncu919/FGPK8QD1rojIp+0OBvsjjdRPv3/c+4a4JKOrIkHvw1dY2YzHuz7SVE0gVjL1S+MGTCQNl7CUzQjvMXQAZaaNqPrrsGKMCcQMqYsu4XVRNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NTxPEmmY; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2da0f8f7b24so8288201fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 02:13:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713950019; x=1714554819; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dyu/qfLUKMUVy9ySNB9uAE6ofOvsG4ON8Bs9Mq4sTeg=;
-        b=NTxPEmmY1GsnWMY25oxl+pbayyB9jotIgGO4X7QfIsj8drM3HXVjuK0QKph5X/f6wm
-         4A1Az+HCAcpIgPzKj8Inq8NR3lx1DBM5Ad4lELiJYqMGrCHPo6rtvsJFL2ZWUf0tvDcm
-         smyGMA1LZ5Kjg7NNvbajrthCI+eJKSHq+bk10674ESE+YIvHFfnbK50yx3q1sl6UEweI
-         xQz9uRbHqA/qX8LIff8hpV5yrfLznlbJ1pZa2rObE68MOv9fasHj6RqRNRDpeDSb4Zua
-         ixwTpMfWaQ7cTnpm6aq49JMgXMffJSZUdGkvqGoI5GTdodiNFf2LPOMwYoT8pFIkitSj
-         jqxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713950019; x=1714554819;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dyu/qfLUKMUVy9ySNB9uAE6ofOvsG4ON8Bs9Mq4sTeg=;
-        b=INjuqpDsvIa+SMW2KEG9nplboAii/WtrNLTurisa9avBqFnMNbFOeAm7C03PzXQqe8
-         yzX7Mg24tH5Sk7+Q27LQCxKMZwCgNBp0tw00NCltxAKS1kxjnjp0pP8n9Z7JWxPsEC2V
-         r9fJl1ACj/eUPWdgJTpy+wpjzTB9T/OCCuIup9JS0UYvO8eC1kOaBWhE7iqFQGn61Y4x
-         3fhV1DKtm0EDdQR4jkAQkHsaEFc8/mQrXlGXV5aDvELFhMrhi9aBiPfPLO6LzspL385h
-         28PPFCJgvlHWV2GaVUNpqqf48Hc/JiKYA4K/fxogCDVoT59/kg30yVh2KWm64dqSRQHp
-         ynAg==
-X-Forwarded-Encrypted: i=1; AJvYcCWN7okZHLq26vkY5K4wyywlw7OPV7IvFCJ1lEO47DV2bLTrfD69Eo+eIMsRdK4UWJNLtSnYMbUPx4oKQBAtx0tAYrdGpuyFKtznwmCz
-X-Gm-Message-State: AOJu0Yyez9jmDvbfAl/+cRFylQzlKs5zeQPk2ywC+kHzQvLUKshiuoqv
-	YVIqfLG3j/qsLzVlaQy/pvENCBe8jBkD/gb29KtVilz4PZAYQCON3P3N/T3NySI=
-X-Google-Smtp-Source: AGHT+IF7tGhQQ19VTK/0hLGwx3/fVCmQHC9hfOw/q63KO27oX2rwhIc6Wd2UFQ1XMV0Hpj7/jLMDRQ==
-X-Received: by 2002:a2e:a715:0:b0:2dd:f725:765d with SMTP id s21-20020a2ea715000000b002ddf725765dmr1673160lje.4.1713950019113;
-        Wed, 24 Apr 2024 02:13:39 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::8a5])
-        by smtp.gmail.com with ESMTPSA id n14-20020a2e86ce000000b002d2191e20e1sm1948403ljj.92.2024.04.24.02.13.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 02:13:38 -0700 (PDT)
-Date: Wed, 24 Apr 2024 12:13:37 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Jagan Teki <jagan@amarulasolutions.com>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] drm/bridge: tc358764: drop driver owner assignment
-Message-ID: <qmvi2dpwbkpbyyyqlugyqa6ljrpzodp64uwnfzi42oqw73q5zl@eoqmzkufxhvf>
-References: <20240330202741.83867-1-krzysztof.kozlowski@linaro.org>
- <20240330202741.83867-2-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1713950030; c=relaxed/simple;
+	bh=wWp0kC0f24K1UMqnicLBYBOSUnN/lBPXIwSVeU+KJ5g=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=pgqo9yIMUCdaEoa40auuzu9ve7Lr7cFaKlc1PUY0B6yvjICsz+cfrnxGmoVINRzfCv6ZomYvcXN7oKsweeq2OYO/TwbEHen4/gkyxr4pm+660mMG2sdXiA7704BQFJg0aeVV+gKIxprJ+4a0s9VuvnkZqbz9g2MrzciS42vDEc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CV2h6DL9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA785C2BD11;
+	Wed, 24 Apr 2024 09:13:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713950030;
+	bh=wWp0kC0f24K1UMqnicLBYBOSUnN/lBPXIwSVeU+KJ5g=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=CV2h6DL9iv2ythhvD/13ptoyATcTW+G96JRcj/SvrgZCkvJxD92Lw3pcFLpOzbxCe
+	 BnM4SO92UtECCHk1IyaDMIMOwVl3ofArv6esZBXJXNwjMHuGpM1gFP0ncMhfieTHVE
+	 gA+qn9ShcJiVn+DuC67KdIW6OpUxb/+ybBaJYmrfELRvDwhN4SXFUN6y/CjuB4ABR7
+	 BKEhfpZtbpF7/OQF+vahNOmAaLojngSGFHyPIsG7w94aalXnInh/92tcusj/b9QL6p
+	 kDUs1gwBmpbxM8aBZQ3Jp1OxAEeXqnkqf8ikvL/+it2oDGMQN73fGKUebdBdp8K/J6
+	 BQth9A7Y/X8Yg==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Puranjay Mohan <puranjay@kernel.org>, Alexandre Ghiti
+ <alexghiti@rivosinc.com>, Andy Chiu <andy.chiu@sifive.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+ <aou@eecs.berkeley.edu>, Steven Rostedt <rostedt@goodmis.org>, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Sami
+ Tolvanen <samitolvanen@google.com>, Guo Ren <guoren@kernel.org>, Ley Foon
+ Tan <leyfoon.tan@starfivetech.com>, Deepak Gupta <debug@rivosinc.com>, Sia
+ Jee Heng <jeeheng.sia@starfivetech.com>, Song Shuai
+ <suagrfillet@gmail.com>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@rivosinc.com>, =?utf-8?Q?Cl=C3=A9ment_L=C3=A9ger?=
+ <cleger@rivosinc.com>, Al Viro <viro@zeniv.linux.org.uk>,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Cc: puranjay12@gmail.com
+Subject: Re: [PATCH] ftrace: riscv: move from REGS to ARGS
+In-Reply-To: <20240405142453.4187-1-puranjay@kernel.org>
+References: <20240405142453.4187-1-puranjay@kernel.org>
+Date: Wed, 24 Apr 2024 11:13:46 +0200
+Message-ID: <87il0786np.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240330202741.83867-2-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 30, 2024 at 09:27:41PM +0100, Krzysztof Kozlowski wrote:
-> Core in mipi_dsi_driver_register() already sets the .owner, so driver
-> does not need to.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  drivers/gpu/drm/bridge/tc358764.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
+Puranjay Mohan <puranjay@kernel.org> writes:
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> This commit replaces riscv's support for FTRACE_WITH_REGS with support
+> for FTRACE_WITH_ARGS. This is required for the ongoing effort to stop
+> relying on stop_machine() for RISCV's implementation of ftrace.
+>
+> The main relevant benefit that this change will bring for the above
+> use-case is that now we don't have separate ftrace_caller and
+> ftrace_regs_caller trampolines. This will allow the callsite to call
+> ftrace_caller by modifying a single instruction. Now the callsite can
+> do something similar to:
+>
+> When not tracing:            |             When tracing:
+>
+> func:                                      func:
+>   auipc t0, ftrace_caller_top                auipc t0, ftrace_caller_top
+>   nop  <=3D=3D=3D=3D=3D=3D=3D=3D=3D<Enable/Disable>=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D>  jalr  t0, ftrace_caller_bottom
+>   [...]                                      [...]
+>
+> The above assumes that we are dropping the support of calling a direct
+> trampoline from the callsite. We need to drop this as the callsite can't
+> change the target address to call, it can only enable/disable a call to
+> a preset target (ftrace_caller in the above diagram). We can later optimi=
+ze
+> this by calling an intermediate dispatcher trampoline before ftrace_calle=
+r.
+>
+> Currently, ftrace_regs_caller saves all CPU registers in the format of
+> struct pt_regs and allows the tracer to modify them. We don't need to
+> save all of the CPU registers because at function entry only a subset of
+> pt_regs is live:
+>
+> |----------+----------+---------------------------------------------|
+> | Register | ABI Name | Description                                 |
+> |----------+----------+---------------------------------------------|
+> | x1       | ra       | Return address for traced function          |
+> | x2       | sp       | Stack pointer                               |
+> | x5       | t0       | Return address for ftrace_caller trampoline |
+> | x8       | s0/fp    | Frame pointer                               |
+> | x10-11   | a0-1     | Function arguments/return values            |
+> | x12-17   | a2-7     | Function arguments                          |
+> |----------+----------+---------------------------------------------|
+>
+> See RISCV calling convention[1] for the above table.
+>
+> Saving just the live registers decreases the amount of stack space
+> required from 288 Bytes to 112 Bytes.
+>
+> Basic testing was done with this on the VisionFive 2 development board.
+>
+> Note:
+>   - Moving from REGS to ARGS will mean that RISCV will stop supporting
+>     KPROBES_ON_FTRACE as it requires full pt_regs to be saved.
+>   - KPROBES_ON_FTRACE will be supplanted by FPROBES see [2].
 
+Puranjay,
 
--- 
-With best wishes
-Dmitry
+Apologies for the slow response.
+
+Restating from the RFC; This change is a prerequisite for moving towards
+a "FTRACE_WITH_CALL_OPS" model on riscv, and finally getting rid of the
+stop_machine() text patching.
+
+I've tested this on QEMU, and on the VisionFive2. No regressions
+(FTRACE_STARTUP_*, and kselftest), other than that KPROBES_ON_FTRACE no
+longer works. (Which will be addressed by [2]).
+
+Palmer, my preference is that this should go on for-next, rather than
+being part of the upcoming text patching support (worked on by Andy),
+but really up to you.
+
+Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
 
