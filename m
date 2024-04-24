@@ -1,255 +1,197 @@
-Return-Path: <linux-kernel+bounces-157773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FFA38B1603
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:17:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 056C88B1604
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:17:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 370B0284505
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:17:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A08B1C21D0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93246165FC3;
-	Wed, 24 Apr 2024 22:16:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB3D16131C;
+	Wed, 24 Apr 2024 22:17:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K2rJnMIg"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	dkim=pass (1024-bit key) header.d=penguintechs.org header.i=@penguintechs.org header.b="ksOCj8nx"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BCFE1772F;
-	Wed, 24 Apr 2024 22:16:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB30E15687F
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713997016; cv=none; b=paQIfyd0r/Bmm6j/gOepSG+lXc0FVXB+vX9VElI/chh1WncinNksZYFrWyTolnGCfr/AzYyAHaZLbHQeUIhysqmQ2tDZR1VFZ4zh3mcOLQLA7xcW5WjZLRWhIOgKO4lXV7EV81x91RAsOOkkdC4PfSnKq0g6nGtmBerX+KYRFkY=
+	t=1713997048; cv=none; b=fDZh3AMT7pHV8msN4JpfhL0+vaaKmPfcvt4xECqvSPf+bs+sGGBSwZLR6OHF0R6owLSQTQUxabqTkX9uMUZcXGENrXJ+QmzpesZaKHb5BkwJgyzz8mKNh+9HHdbmtUZnlK2aqLxQk1POzFo1Mtn5OBFSA8BGrNlrsYAV38wbWyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713997016; c=relaxed/simple;
-	bh=/yLFzn2f7TzQB8zUF0y9sJy+jO37et3cW0yoOU8T9k8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cncRyKuFzUtO2nmpOqiqDaoNHeM2kO6ZYnUe2jJY+c5Df4u+62y0jdChwWQcY2yvtvnLCbYP35TrM8eB/r0SULsX6sr5kWZ5liIqzOxZnl/NplSwsL7/GRgXkRwlhGZ06GffGQIp0w2ismDvfg0y4D/EIM2ZTCRkU81tKI3aTW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K2rJnMIg; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-43716c1616dso2632041cf.2;
-        Wed, 24 Apr 2024 15:16:55 -0700 (PDT)
+	s=arc-20240116; t=1713997048; c=relaxed/simple;
+	bh=GE8/DfGkNpeccnn7ctlLW9aQh1xnvrJHQprFymjvhgA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LlSle59Q+32/OmBerif1Y/4SzDcwd0CElPQmcwOJILl8TiJ+ZQ3i7Gfae5ndQU93affXEu8dco12Qvm3sTDeuVrwNKbHGWla9+nTM2HAqdIocxBzEnHGX2bXRzoNz5CLkiOIKcVZFcua+eJOdzcDXNcQNazmdF8qnrwVquZ6EpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=penguintechs.org; spf=pass smtp.mailfrom=penguintechs.org; dkim=pass (1024-bit key) header.d=penguintechs.org header.i=@penguintechs.org header.b=ksOCj8nx; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=penguintechs.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=penguintechs.org
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed0e9ccca1so411226b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:17:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713997014; x=1714601814; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W6PS2pwOfBu3kj7Fmn59K60LPIRKsK3MY9Ejj2YtdjI=;
-        b=K2rJnMIgRbkfibt+cMzhkpt7K4q70R2SnqXvAqF/H+5qN9YDVEJovN8oFu3kMT320g
-         lrDp8Q7IF1yPFYywEed1lDJvMiX3m2zQV6APV3vta9iBYGZupD4WWyFGFTOuejkRXRwj
-         vp/Y9U1V0ZYi8TXt48JVyPSPHAyM6XsMjKgcerSlV2L7UaNeS91yI4Xz8ZDO822/caqF
-         /oG6fPoJMB/iryHicYIdzCe7GY2v8YrC0ExUjI3mJA78hCGWquI70kchqxJVQenT5Z54
-         7vpI1lF+dAhUyQEaLU04yIv9Jg2ZjLqA44D3/T2AviHlLVnEcBBHAGSxXL8n3Xs2E+qf
-         fXYw==
+        d=penguintechs.org; s=google; t=1713997046; x=1714601846; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+87ElqgV6reNQU5hAVnWYAATmj8Ga4df6MNiPH7XWCI=;
+        b=ksOCj8nxgMh9WDFWfBztYD0TKHOYXAL4Ify3uPzqCyEafbLVte2mV9AaMIg6du+v76
+         FnTno9iMtu+jqqE4fU/DGh/NzPjWRfsQV39PPMnLIYzbZ9dDBB8thlCzosCw+IJnbL0N
+         eNW5HtQc0Yj5hX1kLadNTBNN0vTSOlgref3EA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713997014; x=1714601814;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W6PS2pwOfBu3kj7Fmn59K60LPIRKsK3MY9Ejj2YtdjI=;
-        b=p5linhvj1WkFY4+XKj/HzdXHH1oqZmnw/ZaDdidYNetF9F+1aoYVBMtJB3QMkHiuRx
-         YdRforBVEGl396fP+eaOfHML9TMADu8Odi3GnYPHbf1fvV5GJeEtiZ7hUWLJ6xGndecx
-         ZKwcdr07bbM4eeuxXp0G+jWEfVbEn7mMJccxVV4V+TRBfptFI2sWBbe6fOhBHbZVo3PY
-         wL8/nHMrArQYUSXX13gbHUZcNCpAptkoNNcew7irHfNlVwIB6NbwnYP7uGCKGtQ0Veom
-         xJcvFMvo/nrHgRp24e9hMxw/80aVZbASAsx+anv1OsPERH0dgdFsZ/h0LSVAZoRnMu8B
-         OVVg==
-X-Forwarded-Encrypted: i=1; AJvYcCVE9u0fhEYxRFvnoKgOrlH7vaEiQmgyF4oznDTZcSaFCcJvxz2HXVgcRooGg1WeSORQ+3AGoZDFmM9t+HDnqe7q9z1prqeltSBbiIEz8TJTLE1BzLejN6I8zpGpXgCGw8MaI/RYyEl0GmiE
-X-Gm-Message-State: AOJu0YxVHmqnSavE0rCSI+vxULs1cfqtTsEVDz0n/lxUGZj+eKkeaELw
-	9oX3KyGt1LQrM0kijeY+FAZOTqoeDR3pl08abRMVX1OTIWd1k3uF
-X-Google-Smtp-Source: AGHT+IE0BMrTVL8aZCcSneN09lqvYXMx4Na7OUXXkHaYA2G9383ajw63HFXmbYbvv3JOvf5g4QHPOg==
-X-Received: by 2002:a05:622a:20b:b0:431:5f79:6748 with SMTP id b11-20020a05622a020b00b004315f796748mr4257671qtx.51.1713997014061;
-        Wed, 24 Apr 2024 15:16:54 -0700 (PDT)
-Received: from stbirv-lnx-1.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id o14-20020ac841ce000000b00437a3bcc83asm6217997qtm.36.2024.04.24.15.16.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 15:16:53 -0700 (PDT)
-From: Doug Berger <opendmb@gmail.com>
-To: Al Cooper <alcooperx@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org,
-	bcm-kernel-feedback-list@broadcom.com,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	linux-serial@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Doug Berger <opendmb@gmail.com>
-Subject: [PATCH] serial: 8250_bcm7271: use default_mux_rate if possible
-Date: Wed, 24 Apr 2024 15:16:19 -0700
-Message-Id: <20240424221619.1840014-1-opendmb@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1713997046; x=1714601846;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+87ElqgV6reNQU5hAVnWYAATmj8Ga4df6MNiPH7XWCI=;
+        b=giwjPATiNBkKNkcDNXXQilXL8LkE7pskkNKZEiJHLsTvFv0XLYNkwGOu+dk41YGgnB
+         VoI2ggPnbReIWKLsB/c5P3oF6PXnYbLyjsPiCQtmnbPO/w7hgflhwCA0WbGWrzD6PV36
+         Dj09aOVU4HWgj+e7HlGfxF+HY0UTqIVEyNdQV8+3ZFo0tEVgvbt6NA7N8vJtBPsX5UAG
+         pMxU2BnHqxAGxPkp3xcqNtFijo567N72ZAXt0b/qYHMUuEuSMN8DIbGXPyMdGKytt2uG
+         A6OCfLZJOPjfUFiMtpkqSYh1B74b5Z2bE6sODBZaT+zUOTN0uVV3tsQsVNHlMCntoWMq
+         0+Ow==
+X-Forwarded-Encrypted: i=1; AJvYcCWq+K2Ewz0LPDzrcD3sLCMTVbFzq2ipmZ4vm3BfzfDzqj5rDPkSYUpyIqMeYP0xhOiPge4v1ClzZHBGlo6I/sv2VUcQ3JXCSHEBhBOj
+X-Gm-Message-State: AOJu0Yxdqiym+8nGF/E3RJHsM2OgWj8+Un7+dk89bLT+eTld82HA0FJ+
+	XVz3Xcj7IGnDUwRAPLskkdZyMtyQBQ/dHFlhLU/D2HrRnG+8EUfr/VolzbvHLw==
+X-Google-Smtp-Source: AGHT+IF37PCqcFYIP47bLz+LqfAcHhY/dxAFdY0Det+52UZ3kWJyXu++W2djITgeCIx3Fs7wN+D7MA==
+X-Received: by 2002:a05:6a21:1798:b0:1a9:c2da:f2ab with SMTP id nx24-20020a056a21179800b001a9c2daf2abmr3817988pzb.0.1713997046078;
+        Wed, 24 Apr 2024 15:17:26 -0700 (PDT)
+Received: from ?IPV6:2601:646:8700:dd30:5f3e:5ba7:e0ea:9a08? ([2601:646:8700:dd30:5f3e:5ba7:e0ea:9a08])
+        by smtp.gmail.com with ESMTPSA id kv13-20020a17090328cd00b001e0a28f61d0sm12401265plb.70.2024.04.24.15.17.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 15:17:25 -0700 (PDT)
+Message-ID: <aea85118-060a-4451-a1f1-d8e634f1aab7@penguintechs.org>
+Date: Wed, 24 Apr 2024 15:17:23 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Bluetooth: qca: set power_ctrl_enabled on NULL returned
+ by gpiod_get_optional()
+Content-Language: en-US
+To: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Cc: quic_zijuhu <quic_zijuhu@quicinc.com>, Bartosz Golaszewski
+ <brgl@bgdev.pl>, linux-bluetooth@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Marcel Holtmann <marcel@holtmann.org>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+References: <20240422130036.31856-1-brgl@bgdev.pl>
+ <99242a7c-53bf-4227-9623-7bc092f564b3@penguintechs.org>
+ <CAMRc=MepDwUbAKrWgm0CXKObqy8=igtug0QDgo-CgwxjZCAC2Q@mail.gmail.com>
+ <b982b73d-0540-409c-a6e2-0e03ecb11715@penguintechs.org>
+ <0381f39c-38ba-4a2b-915c-f14c5f911eb9@penguintechs.org>
+ <CAMRc=MfnEct7ThQhCA3AoY7hxq8j1mmFLNNkK17+RSvJxs67XQ@mail.gmail.com>
+ <2371f538-ec53-4037-b171-c62bf4e06eb1@penguintechs.org>
+ <CACMJSeunUaj0cxLaN4MpFmX5vTOx_vnWjBN4Y2FavdQoQxFRkg@mail.gmail.com>
+ <4c33304a-5dbc-450a-b874-e04ba9e93150@penguintechs.org>
+ <CAMRc=MeDQFHX9r-sHNxqkfpi=LkHoRSL7i6dWokB-J+J03rBEg@mail.gmail.com>
+ <93e15ecf-252f-4789-a23b-a28280f6aa84@quicinc.com>
+ <e64b89b3-a8f5-44e7-ae7f-fc4298841f1c@penguintechs.org>
+ <CACMJSet1wjEive0-Z=0_eiY7umBoSF_VX3QvVgiwqxhTSDZg6g@mail.gmail.com>
+From: Wren Turkal <wt@penguintechs.org>
+In-Reply-To: <CACMJSet1wjEive0-Z=0_eiY7umBoSF_VX3QvVgiwqxhTSDZg6g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-There is a scenario when resuming from some power saving states
-with no_console_suspend where console output can be generated
-before the 8250_bcm7271 driver gets the opportunity to restore
-the baud_mux_clk frequency. Since the baud_mux_clk is at its
-default frequency at this time the output can be garbled until
-the driver gets the opportunity to resume.
+On 4/24/24 6:53 AM, Bartosz Golaszewski wrote:
+> On Wed, 24 Apr 2024 at 15:26, Wren Turkal <wt@penguintechs.org> wrote:
+>>
+>> On 4/24/24 6:12 AM, quic_zijuhu wrote:
+>>> On 4/24/2024 8:27 PM, Bartosz Golaszewski wrote:
+>>>> On Wed, Apr 24, 2024 at 2:24 PM Wren Turkal <wt@penguintechs.org> wrote:
+>>>>>>>>
+>>>>>>>> That's OK, we have the first part right. Let's now see if we can reuse
+>>>>>>>> patch 2/2 from Zijun.
+>>>>>>>
+>>>>>>> I'm compiling it right now. Be back soon.
+>>>>>>>
+>>>>>>
+>>>>>> Well I doubt it's correct as it removed Krzysztof's fix which looks
+>>>>>> right. If I were to guess I'd say we need some mix of both.
+>>>>>
+>>>>> Patch 2/2 remove K's fix? I thought only 1/2 did that.
+>>>>>
+>>>>> To be specific, I have applied your patch and Zijun's 2/2 only.
+>>>>>
+>>>>
+>>>> No, patch 1/2 from Zijun reverted my changes. Patch 2/2 removes
+>>>> Krzysztof's changes and replaces them with a different if else. This
+>>>> patch is a better alternative to Zijun's patch 1/2. For 2/2, I'll let
+>>>> Krzysztof handle it.
+>>>>
+>>> do you really realize what do you talk about?
+>>> do you really listen what do @Wren says?
+>>>
+>>> he says that my patch 2/2 is right based on several verification results.
+>>
+>> she, not he
+>>
+>>> BTW, my 2/2 fix don't have anything about DTS usage.
+>>
+>> I think the problem with your 2/2 patch is that it removes the
+>> conditional bailing if the device is shutdown or not open.
+>>
+>> Maybe this patch instead?
+>>
+>> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+>> index 2f7ae38d85eb..fcac44ae7898 100644
+>> --- a/drivers/bluetooth/hci_qca.c
+>> +++ b/drivers/bluetooth/hci_qca.c
+>> @@ -2456,6 +2456,10 @@ static void qca_serdev_shutdown(struct device *dev)
+>>                       !test_bit(HCI_RUNNING, &hdev->flags))
+>>                           return;
+>>
+>> +               if (test_bit(HCI_QUIRK_NON_PERSISTENT_SETUP,
+>> &hdev->quirks) ||
+>> +                   hci_dev_test_flag(hdev, HCI_SETUP))
+>> +                       return;
+>> +
+>>                   serdev_device_write_flush(serdev);
+>>                   ret = serdev_device_write_buf(serdev, ibs_wake_cmd,
+>>                                                 sizeof(ibs_wake_cmd));
+>>
+>>> he maybe be a DTS expert but not BT from his present fix history for
+>>> bluetooth system.
+>>
+>>
+> 
+> Did you test it? Does it work? If so, please consider sending it
+> upstream for review.
+> 
+> You can keep Zijun's authorship but add your own SoB tag at the end
+> and mention what you did. Something like this:
+> 
+> [Wren: kept Krzysztof's fix]
+> Signed-off-by: Wren...
+> 
+> Bartosz
 
-Since this is only an issue with console use of the serial port
-during that window and the console isn't likely to use baud
-rates that require alternate baud_mux_clk frequencies, allow the
-driver to select the default_mux_rate if it is accurate enough.
+@Bartosz, I have tested this, and it works functionally for my setup. I 
+cannot detect a difference between this and Zijun's logic when I compile 
+a kernel with this patch.
 
-Fixes: 41a469482de2 ("serial: 8250: Add new 8250-core based Broadcom STB driver")
-Signed-off-by: Doug Berger <opendmb@gmail.com>
----
- drivers/tty/serial/8250/8250_bcm7271.c | 101 +++++++++++++++----------
- 1 file changed, 60 insertions(+), 41 deletions(-)
+@Zijun, I think you have objections to this patch. I would like to make 
+sure I hear your concern. Can you please take through it like I'm a 5 
+year old who barely knows C? In retrospect, I guess that I would be a 
+pretty precocious 5 year old. LOL.
 
-diff --git a/drivers/tty/serial/8250/8250_bcm7271.c b/drivers/tty/serial/8250/8250_bcm7271.c
-index de270863eb5e..2569ca69223f 100644
---- a/drivers/tty/serial/8250/8250_bcm7271.c
-+++ b/drivers/tty/serial/8250/8250_bcm7271.c
-@@ -673,18 +673,46 @@ static void init_real_clk_rates(struct device *dev, struct brcmuart_priv *priv)
- 	clk_set_rate(priv->baud_mux_clk, priv->default_mux_rate);
- }
- 
-+static u32 find_quot(struct device *dev, u32 freq, u32 baud, u32 *percent)
-+{
-+	u32 quot;
-+	u32 rate;
-+	u64 hires_rate;
-+	u64 hires_baud;
-+	u64 hires_err;
-+
-+	rate = freq / 16;
-+	quot = DIV_ROUND_CLOSEST(rate, baud);
-+	if (!quot)
-+		return 0;
-+
-+	/* increase resolution to get xx.xx percent */
-+	hires_rate = div_u64((u64)rate * 10000, (u64)quot);
-+	hires_baud = (u64)baud * 10000;
-+
-+	/* get the delta */
-+	if (hires_rate > hires_baud)
-+		hires_err = (hires_rate - hires_baud);
-+	else
-+		hires_err = (hires_baud - hires_rate);
-+
-+	*percent = (unsigned long)DIV_ROUND_CLOSEST_ULL(hires_err, baud);
-+
-+	dev_dbg(dev, "Baud rate: %u, MUX Clk: %u, Error: %u.%u%%\n",
-+		baud, freq, *percent / 100, *percent % 100);
-+
-+	return quot;
-+}
-+
- static void set_clock_mux(struct uart_port *up, struct brcmuart_priv *priv,
- 			u32 baud)
- {
- 	u32 percent;
- 	u32 best_percent = UINT_MAX;
- 	u32 quot;
-+	u32 freq;
- 	u32 best_quot = 1;
--	u32 rate;
--	int best_index = -1;
--	u64 hires_rate;
--	u64 hires_baud;
--	u64 hires_err;
-+	u32 best_freq = 0;
- 	int rc;
- 	int i;
- 	int real_baud;
-@@ -693,44 +721,35 @@ static void set_clock_mux(struct uart_port *up, struct brcmuart_priv *priv,
- 	if (priv->baud_mux_clk == NULL)
- 		return;
- 
--	/* Find the closest match for specified baud */
--	for (i = 0; i < ARRAY_SIZE(priv->real_rates); i++) {
--		if (priv->real_rates[i] == 0)
--			continue;
--		rate = priv->real_rates[i] / 16;
--		quot = DIV_ROUND_CLOSEST(rate, baud);
--		if (!quot)
--			continue;
--
--		/* increase resolution to get xx.xx percent */
--		hires_rate = (u64)rate * 10000;
--		hires_baud = (u64)baud * 10000;
--
--		hires_err = div_u64(hires_rate, (u64)quot);
--
--		/* get the delta */
--		if (hires_err > hires_baud)
--			hires_err = (hires_err - hires_baud);
--		else
--			hires_err = (hires_baud - hires_err);
--
--		percent = (unsigned long)DIV_ROUND_CLOSEST_ULL(hires_err, baud);
--		dev_dbg(up->dev,
--			"Baud rate: %u, MUX Clk: %u, Error: %u.%u%%\n",
--			baud, priv->real_rates[i], percent / 100,
--			percent % 100);
--		if (percent < best_percent) {
--			best_percent = percent;
--			best_index = i;
--			best_quot = quot;
-+	/* Try default_mux_rate first */
-+	quot = find_quot(up->dev, priv->default_mux_rate, baud, &percent);
-+	if (quot) {
-+		best_percent = percent;
-+		best_freq = priv->default_mux_rate;
-+		best_quot = quot;
-+	}
-+	/* If more than 1% error, find the closest match for specified baud */
-+	if (best_percent > 100) {
-+		for (i = 0; i < ARRAY_SIZE(priv->real_rates); i++) {
-+			freq = priv->real_rates[i];
-+			if (freq == 0 || freq == priv->default_mux_rate)
-+				continue;
-+			quot = find_quot(up->dev, freq, baud, &percent);
-+			if (!quot)
-+				continue;
-+
-+			if (percent < best_percent) {
-+				best_percent = percent;
-+				best_freq = freq;
-+				best_quot = quot;
-+			}
- 		}
- 	}
--	if (best_index == -1) {
-+	if (!best_freq) {
- 		dev_err(up->dev, "Error, %d BAUD rate is too fast.\n", baud);
- 		return;
- 	}
--	rate = priv->real_rates[best_index];
--	rc = clk_set_rate(priv->baud_mux_clk, rate);
-+	rc = clk_set_rate(priv->baud_mux_clk, best_freq);
- 	if (rc)
- 		dev_err(up->dev, "Error selecting BAUD MUX clock\n");
- 
-@@ -739,8 +758,8 @@ static void set_clock_mux(struct uart_port *up, struct brcmuart_priv *priv,
- 		dev_err(up->dev, "Error, baud: %d has %u.%u%% error\n",
- 			baud, percent / 100, percent % 100);
- 
--	real_baud = rate / 16 / best_quot;
--	dev_dbg(up->dev, "Selecting BAUD MUX rate: %u\n", rate);
-+	real_baud = best_freq / 16 / best_quot;
-+	dev_dbg(up->dev, "Selecting BAUD MUX rate: %u\n", best_freq);
- 	dev_dbg(up->dev, "Requested baud: %u, Actual baud: %u\n",
- 		baud, real_baud);
- 
-@@ -749,7 +768,7 @@ static void set_clock_mux(struct uart_port *up, struct brcmuart_priv *priv,
- 	i += (i / 2);
- 	priv->char_wait = ns_to_ktime(i);
- 
--	up->uartclk = rate;
-+	up->uartclk = best_freq;
- }
- 
- static void brcmstb_set_termios(struct uart_port *up,
+In all seriousness, @Zijun, I really appreciate the work you did on 
+this. I would like to understand why you assert that removing the logic 
+of Krzysztof is appropriate. Again, I am not a kernel developer, so this 
+stuff is really outside my wheelhouse. Having said that, by my reading, 
+which may very well be worng, it seems like you are just adding another 
+case that is orthogonal to K's conditions. I'd like to truly understand 
+you position to know if the patch I am suggesting is somehow harmful. 
+This is an earnest question. I really want to respect your expertise 
+here, and I really want you to know how much I appreciate your work.
+
+wt
 -- 
-2.34.1
-
+You're more amazing than you think!
 
