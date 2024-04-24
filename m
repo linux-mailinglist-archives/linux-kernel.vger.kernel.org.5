@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-157453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 275178B11D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:15:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 233858B11D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:15:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBDA91F21AED
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:15:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D39FA284557
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:15:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F0A16EC0B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC7F316F0CB;
 	Wed, 24 Apr 2024 18:14:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b3CBYKil"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Bm66JzdO"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 317E916DEAF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6AD516D9D9;
 	Wed, 24 Apr 2024 18:14:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713982490; cv=none; b=mbwcrLJojwreVkCjhlfV0rT4neD27JXvJXi9XMiamcOx3Z8kBCQm2yblpZ9Fur1LK889Q6mG1MB9jADzB4WN/++4h8z51xW3zgzSgVhEopZ+2N9rWZSS9c+oLak9owIAHe2N+eBo9AJgETg3oNiqsQ1X/dR6UhjAeMiZZTEpYsk=
+	t=1713982491; cv=none; b=kpGOCNCq1aX1JmJRGKsbYcB6Kmf2RGPraYSCuLIQ70vfM9nE6NPwxD0AQGnwR/Jv8P73V7xNn2dczUL1IbIbrPTO78IXiD8wDYHHYFKY2I6knNcfzAFIonrgnQrBHiDt9o5ODNNecLX+BOZ2fdqpYTrbE3np5rpGr+LQ+XyIv3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713982490; c=relaxed/simple;
-	bh=DTmj/yYZ5S3zG9s0UR1lWeqfV7XL+xXwEY+aB15HzFA=;
+	s=arc-20240116; t=1713982491; c=relaxed/simple;
+	bh=qqh/VHYxTuSJACNe+DTpuXgw37TddvW3ou6MW1MJcG0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YvrXqCkv9nZGmXY/yx+ztBmyOedfURy0Mxu2r6wt7EFXeORPaesp56WQRCdoQGaM9KAsVU/UGmBoV12+8Qte0D9K0PKnbeuT0IN61kG/Wrwh52cnssqSSCk9AzfwkCQkF8cnC0VtA8HSudJGTfEVIVBXzoMvhYk9zjU9nsv5Fbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b3CBYKil; arc=none smtp.client-ip=192.198.163.19
+	 MIME-Version; b=K5SY6UKYgTR3VpFeKuBt39SY0kt44S0k3Pa7CI7jGe1zQXNN+NbuEFpZ2yCgHRKy6qvUQy3huBVmbKeEfZymxWWQNTKd6sBmdk7KqY3HRiunHl5GPFAZ1WuKjJfEgHWDwZYGe4dBhi7p/OUbNwKSI+0anjl38MygxqQytQzJBQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Bm66JzdO; arc=none smtp.client-ip=192.198.163.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
@@ -35,44 +35,40 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   t=1713982489; x=1745518489;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=DTmj/yYZ5S3zG9s0UR1lWeqfV7XL+xXwEY+aB15HzFA=;
-  b=b3CBYKilboprpZlWgzdqD9tQA4AP6fVl0WRLarLasUSCMg9QKrvPfIYz
-   m8pugqBFi0x2+W3SUeU7/J2qBb/F9SCh2yWle26XQznBAcgLkjkEDixBB
-   WMKaAenJ9j4tdnmk2mJCMoJiDnvnjF7LbtLQY12ek8xZkEj+XtwQydGdQ
-   D0EJsAAAGPsUXOnDdafZyQwP0xLCels9GdCkAc4sRQx/uTvJLMOILXpAq
-   2vGcFW4PXXtyJ8d1c5X/Fi4fag74nIKg+UgJQDb/tT1dqIyrvSSvOS2eK
-   q/GcqVSYdfJ6/PdSZe7PIXRBvuK8Yid8C7BgMciF/0Fkc1H2pqNu103Cm
-   A==;
-X-CSE-ConnectionGUID: ABbjj0LRT9KRNRChC0+mUQ==
-X-CSE-MsgGUID: iZOF3LVsTk6u2BRYDysHCw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9503390"
+  bh=qqh/VHYxTuSJACNe+DTpuXgw37TddvW3ou6MW1MJcG0=;
+  b=Bm66JzdO1i2kieT4Ve/xbE+xYCeXhTF40qz7EBZ+2WMnzxITxwTe4d1N
+   htyclF55WISg8bnsf4CEcLsfeko3VFRLW6JoQtRclz9rnlLPEB2DHVjm+
+   NWUCgmqxDpWn7276q1NLIbSLJb3REvRQd7tZWyeNKi75pWQu6jEaV7/3K
+   32wooXG/TNeZZOdMOTTl1QW8xmWBTvm026Vo7fzCYCcoWmCaBxL/SRsRH
+   QAkGcBlN5TMpKb0/cUD6tsG0/yoyydgPBwlqq4kdAdUBDZwUdO4ube6Q4
+   3cbyT2jSewDRNSKLtydcASrYm9tFYG8dz5hMGy1trINAmPoSJpC1bpWHD
+   w==;
+X-CSE-ConnectionGUID: iwMu7bIIQqmxOjJ5AV4LIw==
+X-CSE-MsgGUID: vqzDdE0jS6ySzZDBtRhCgw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9481749"
 X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="9503390"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:14:48 -0700
-X-CSE-ConnectionGUID: 8YGYbTfMQSmqKIpYGLP9mg==
-X-CSE-MsgGUID: iJt3JCwTSSe45nPXccqmjw==
+   d="scan'208";a="9481749"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:14:49 -0700
+X-CSE-ConnectionGUID: w/FG+NFSS2O32W04eODo/A==
+X-CSE-MsgGUID: TyV1YTNzQUOZ4tB6OMugag==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="24683664"
+   d="scan'208";a="29262548"
 Received: from agluck-desk3.sc.intel.com ([172.25.222.105])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:14:48 -0700
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:14:49 -0700
 From: Tony Luck <tony.luck@intel.com>
 To: Borislav Petkov <bp@alien8.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org
-Cc: Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	linux-acpi@vger.kernel.org,
 	patches@lists.linux.dev,
-	Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v4 04/71] KVM: VMX: Switch to new Intel CPU model defines
-Date: Wed, 24 Apr 2024 11:14:47 -0700
-Message-ID: <20240424181447.41231-1-tony.luck@intel.com>
+	Tony Luck <tony.luck@intel.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH v4 05/71] ACPI: LPSS: Switch to new Intel CPU model defines
+Date: Wed, 24 Apr 2024 11:14:48 -0700
+Message-ID: <20240424181448.41250-1-tony.luck@intel.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240424181245.41141-1-tony.luck@intel.com>
 References: <20240424181245.41141-1-tony.luck@intel.com>
@@ -87,42 +83,26 @@ Content-Transfer-Encoding: 8bit
 New CPU #defines encode vendor and family as well as model.
 
 Signed-off-by: Tony Luck <tony.luck@intel.com>
-Acked-by: Sean Christopherson <seanjc@google.com>
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+ drivers/acpi/acpi_lpss.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index c37a89eda90f..2c747f2642c6 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -2518,17 +2518,15 @@ static bool cpu_has_sgx(void)
-  */
- static bool cpu_has_perf_global_ctrl_bug(void)
- {
--	if (boot_cpu_data.x86 == 0x6) {
--		switch (boot_cpu_data.x86_model) {
--		case INTEL_FAM6_NEHALEM_EP:	/* AAK155 */
--		case INTEL_FAM6_NEHALEM:	/* AAP115 */
--		case INTEL_FAM6_WESTMERE:	/* AAT100 */
--		case INTEL_FAM6_WESTMERE_EP:	/* BC86,AAY89,BD102 */
--		case INTEL_FAM6_NEHALEM_EX:	/* BA97 */
--			return true;
--		default:
--			break;
--		}
-+	switch (boot_cpu_data.x86_vfm) {
-+	case INTEL_NEHALEM_EP:	/* AAK155 */
-+	case INTEL_NEHALEM:	/* AAP115 */
-+	case INTEL_WESTMERE:	/* AAT100 */
-+	case INTEL_WESTMERE_EP:	/* BC86,AAY89,BD102 */
-+	case INTEL_NEHALEM_EX:	/* BA97 */
-+		return true;
-+	default:
-+		break;
- 	}
+diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
+index 04e273167e92..e7b57dcce146 100644
+--- a/drivers/acpi/acpi_lpss.c
++++ b/drivers/acpi/acpi_lpss.c
+@@ -337,8 +337,8 @@ static const struct lpss_device_desc bsw_spi_dev_desc = {
+ };
  
- 	return false;
+ static const struct x86_cpu_id lpss_cpu_ids[] = {
+-	X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT,	NULL),
+-	X86_MATCH_INTEL_FAM6_MODEL(ATOM_AIRMONT,	NULL),
++	X86_MATCH_VFM(INTEL_ATOM_SILVERMONT,	NULL),
++	X86_MATCH_VFM(INTEL_ATOM_AIRMONT,	NULL),
+ 	{}
+ };
+ 
 -- 
 2.44.0
 
