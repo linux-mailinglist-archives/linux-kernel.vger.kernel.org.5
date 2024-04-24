@@ -1,140 +1,172 @@
-Return-Path: <linux-kernel+bounces-156345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 623F08B0193
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:11:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A84A8B0196
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:12:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F4BDB21C52
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:11:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33D9A1F22F8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:12:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E6D156C66;
-	Wed, 24 Apr 2024 06:11:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69FCE156C64;
+	Wed, 24 Apr 2024 06:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Npfz5vBv"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="M5Hq08+z"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B0A15687B;
-	Wed, 24 Apr 2024 06:11:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2BC915687B;
+	Wed, 24 Apr 2024 06:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713939071; cv=none; b=uQHgbbx324oaXQqBU4zcL/MgTeVR7B/51N7KHUGEWUMP4CdKkQ0sZrg9xqHtbEaUJ18OCSWO8O5g/UN5trxA9YuvWvPh9lMtvp/44tDAv4X57fh1+90Hgw7qNDnblYEpQEUPp5ni3i5CiZXc73/V8RvkLStngJP6cbZRTM0jJc4=
+	t=1713939131; cv=none; b=KXpeyeN2ryMYjvGA6N2RpLlFI7NmMUJSk/YAeZzI/ymzCNnqo3h5lsI1pn0AGGZXlC2S7U4eLBwddJtpSEkAFyo+EnWa51dMtCMhXnbG1/vmEQBkoTjaT0tLvQZjpU4El0jUTokCDKnUDC2RC3t4uaWuv07MaxB/AY/nQO2T+cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713939071; c=relaxed/simple;
-	bh=gzkkQlE9RolOyVL22PsPDDxDNzwDNG3gpNefrqO6PLc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Ofi3PfD6p/+tVRY2HXBlEnnrN/J7OJwWw3rJh8FFgClB4TUqpefW2ecm666MJTdl+bdey4dIqZxYntsUoEn+wwcnYgKOmq68XH4+A/+uyvyL5BXyv4hoRpaHtJqKVrlotRva28hlVrqC+a4on9/e0o7mFESecncxub+E+1Oo/2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Npfz5vBv; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43O6AhG7045210;
-	Wed, 24 Apr 2024 01:10:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713939043;
-	bh=fpGSrtQzUsza+SVKZ8gQXj1v2j7Bd88adZDyqcxXnZE=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=Npfz5vBvlWTUd+PYGdZCkx9q+SXRhiQKOWMVyY1YVLhaa2aV2gvzOs+LpxadRE1Zw
-	 wpbWXaICBfIXsjL7D/ONKAwiPHOGRHwytZd96rqa3Xp3tddAvuylpRNJ/4gv2BzaTi
-	 mzKD8BgkkmCDTEDk6msPG9TDhHRKd050awt7bzpc=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43O6Ah4t053683
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 24 Apr 2024 01:10:43 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 24
- Apr 2024 01:10:43 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 24 Apr 2024 01:10:43 -0500
-Received: from [10.250.149.192] ([10.250.149.192])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43O6Abcx100128;
-	Wed, 24 Apr 2024 01:10:38 -0500
-Message-ID: <e91719e5-2de3-4c52-88e1-d85257484977@ti.com>
-Date: Wed, 24 Apr 2024 11:40:36 +0530
+	s=arc-20240116; t=1713939131; c=relaxed/simple;
+	bh=e+pY0b+TxkCDq9VqprImL8hLbk8nSPOMUDZewdOsEq4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gsrEQn+36Hy0dgLu6QuSGFp51+0947H4zpOYL8N0lVaSIlcDoXV05wX2sm6MyNqFpO1lpK+unbGDDbnmM2R4KCLHN3Br2qYhRcYLJND0vqNL9oHVMe9hckxztHT0k+/5/Wc1BsEdVJXrG37kIKwzDHtoWybPPLfE7tHqhqwH1Vo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=M5Hq08+z; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1713939125;
+	bh=oLOZg5DNKCFBb0IMA7uYnIkTcwkEnAqu0gabN8OsK1w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=M5Hq08+zXyF7JyhLSwQf1Jpxg+B0er2A5HrCANgkDeKjFDlfB2Kj3ufSkaM1w0zYt
+	 qPCoAKbuiBOxAq8xBXPoQkFSlKK49gF5tkesfKOSfY8bj2H5JvdBFymCbEexBxov4o
+	 crwzIFFOaTfisAIwPc92hIhVKV7wXXt6EwUidxxDLKJp5l+eHO+aRq3N9u03eHWAhz
+	 26Rw4HlKBlMRoS4AnHxbxGUR6m3yrXKaWbw/kd5m94c8n+XjfvUNS7Jyx66aFLGcWU
+	 l9UnL/1han1+S2vTdloOpEELf87nEhjk9gxnuaKvGLdGYCo/kMS10/2lPAbvqah2JS
+	 c3yMvbrvoQ1UA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VPTCm2BJ3z4wyj;
+	Wed, 24 Apr 2024 16:12:03 +1000 (AEST)
+Date: Wed, 24 Apr 2024 16:12:02 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Greg KH <greg@kroah.com>
+Cc: Fabio Estevam <festevam@denx.de>, Javier Carrasco
+ <javier.carrasco@wolfvision.net>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the usb tree with the usb.current
+ tree
+Message-ID: <20240424161202.7e45e19e@canb.auug.org.au>
+In-Reply-To: <2024041230-slaw-subsiding-9e85@gregkh>
+References: <20240412142547.3598ff68@canb.auug.org.au>
+	<2024041230-slaw-subsiding-9e85@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net: phy: dp83869: Fix MII mode failure
-To: MD Danish Anwar <danishanwar@ti.com>,
-        Siddharth Vadapalli
-	<s-vadapalli@ti.com>,
-        Paolo Abeni <pabeni@redhat.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Heiner Kallweit
-	<hkallweit1@gmail.com>, Andrew Lunn <andrew@lunn.ch>
-CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>, <srk@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        Ravi Gunasekaran <r-gunasekaran@ti.com>
-References: <20240423084828.1309294-1-danishanwar@ti.com>
-Content-Language: en-US
-From: Ravi Gunasekaran <r-gunasekaran@ti.com>
-In-Reply-To: <20240423084828.1309294-1-danishanwar@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; boundary="Sig_/0xI_=SLPommwheHLLKfHSDi";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/0xI_=SLPommwheHLLKfHSDi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Greg,
+
+On Fri, 12 Apr 2024 09:58:52 +0200 Greg KH <greg@kroah.com> wrote:
+>
+> On Fri, Apr 12, 2024 at 02:25:47PM +1000, Stephen Rothwell wrote:
+> >=20
+> > Today's linux-next merge of the usb tree got a conflict in:
+> >=20
+> >   drivers/usb/misc/onboard_usb_hub.c
+> >=20
+> > between commit:
+> >=20
+> >   34b990e9bb54 ("usb: misc: onboard_usb_hub: Disable the USB hub clock =
+on failure")
+> >=20
+> > from the usb.current tree and commit:
+> >=20
+> >   31e7f6c015d9 ("usb: misc: onboard_hub: rename to onboard_dev")
+> >=20
+> > from the usb tree.
+> >=20
+> > I fixed it up (I deleted this file and applied the following patch) and
+> > can carry the fix as necessary. This is now fixed as far as linux-next
+> > is concerned, but any non trivial conflicts should be mentioned to your
+> > upstream maintainer when your tree is submitted for merging.  You may
+> > also want to consider cooperating with the maintainer of the conflicting
+> > tree to minimise any particularly complex conflicts. =20
+>=20
+> Thanks, I knew this would happen, I'll apply your fixup when merging the
+> two branches together.
+
+It looks like the fix up patch did not get applied (repeated below).
+
+--=20
+Cheers,
+Stephen Rothwell
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 12 Apr 2024 14:20:48 +1000
+Subject: [PATCH] fix up for "usb: misc: onboard_hub: rename to onboard_dev"
+
+interacting with "usb: misc: onboard_usb_hub: Disable the USB hub clock
+on failure"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/usb/misc/onboard_usb_dev.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/misc/onboard_usb_dev.c b/drivers/usb/misc/onboard_=
+usb_dev.c
+index 648ea933bdad..f2bcc1a8b95f 100644
+--- a/drivers/usb/misc/onboard_usb_dev.c
++++ b/drivers/usb/misc/onboard_usb_dev.c
+@@ -93,7 +93,7 @@ static int onboard_dev_power_on(struct onboard_dev *onboa=
+rd_dev)
+ 	if (err) {
+ 		dev_err(onboard_dev->dev, "failed to enable supplies: %pe\n",
+ 			ERR_PTR(err));
+-		return err;
++		goto disable_clk;
+ 	}
+=20
+ 	fsleep(onboard_dev->pdata->reset_us);
+@@ -102,6 +102,10 @@ static int onboard_dev_power_on(struct onboard_dev *on=
+board_dev)
+ 	onboard_dev->is_powered_on =3D true;
+=20
+ 	return 0;
++
++disable_clk:
++	clk_disable_unprepare(onboard_dev->clk);
++	return err;
+ }
+=20
+ static int onboard_dev_power_off(struct onboard_dev *onboard_dev)
+--=20
+2.43.0
 
 
+--Sig_/0xI_=SLPommwheHLLKfHSDi
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-On 4/23/2024 2:18 PM, MD Danish Anwar wrote:
-> The DP83869 driver sets the MII bit (needed for PHY to work in MII mode)
-> only if the op-mode is either DP83869_100M_MEDIA_CONVERT or
-> DP83869_RGMII_100_BASE.
->
-> Some drivers i.e. ICSSG support MII mode with op-mode as
-> DP83869_RGMII_COPPER_ETHERNET for which the MII bit is not set in dp83869
-> driver. As a result MII mode on ICSSG doesn't work and below log is seen.
->
-> TI DP83869 300b2400.mdio:0f: selected op-mode is not valid with MII mode
-> icssg-prueth icssg1-eth: couldn't connect to phy ethernet-phy@0
-> icssg-prueth icssg1-eth: can't phy connect port MII0
->
-> Fix this by setting MII bit for DP83869_RGMII_COPPER_ETHERNET op-mode as
-> well.
->
-> Fixes: 94e86ef1b801 ("net: phy: dp83869: support mii mode when rgmii strap cfg is used")
-> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-> ---
-> NOTE: This patch is needed for MII mode to work for ICSSG Ethernet driver.
-> I will post the device tree patch for MII mode and mark that as dependent
-> on this patch.
->
->  drivers/net/phy/dp83869.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/phy/dp83869.c b/drivers/net/phy/dp83869.c
-> index fa8c6fdcf301..d7aaefb5226b 100644
-> --- a/drivers/net/phy/dp83869.c
-> +++ b/drivers/net/phy/dp83869.c
-> @@ -695,7 +695,8 @@ static int dp83869_configure_mode(struct phy_device *phydev,
->  	phy_ctrl_val = dp83869->mode;
->  	if (phydev->interface == PHY_INTERFACE_MODE_MII) {
->  		if (dp83869->mode == DP83869_100M_MEDIA_CONVERT ||
-> -		    dp83869->mode == DP83869_RGMII_100_BASE) {
-> +		    dp83869->mode == DP83869_RGMII_100_BASE ||
-> +		    dp83869->mode == DP83869_RGMII_COPPER_ETHERNET) {
->  			phy_ctrl_val |= DP83869_OP_MODE_MII;
->  		} else {
->  			phydev_err(phydev, "selected op-mode is not valid with MII mode\n");
->
-> base-commit: 6bea4f03c6a4e973ef369e15aac88f37981db49e
+-----BEGIN PGP SIGNATURE-----
 
-Reviewed-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYoorIACgkQAVBC80lX
+0Gx8nwf+Ky1H4cJiZmlF6KmnzitTA7p+81Gssp+3gCMJn0rsO0we+aMNsYI86roh
+SJCwDscx1enNllif/xoPVG63aoLRbOWPWkLAYgsH0m0tItSneUOykxV3ltTriDMk
+KcTDP9dwLxeNE5t+WCA+4jG6qYi2krbo1wNH81K8f2wfuqIebqWT28WYAuEBKJbm
+pHSkU8JlZBlxjUEfTfXoSkbOzZHuiadxtmASfA8hOgMgEQo0eIrWHE34KOgxH7Sq
+FJrYt8833Os8OfvGxLjlB+vwdqLSknAehA7VTcxZtHNxbOtwF82wsQrlW6OtDk5J
+TUELCJRbD0EV+eXTgAws10OJv2mdpA==
+=8vas
+-----END PGP SIGNATURE-----
 
-Regards,
-Ravi
+--Sig_/0xI_=SLPommwheHLLKfHSDi--
 
