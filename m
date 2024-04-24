@@ -1,78 +1,97 @@
-Return-Path: <linux-kernel+bounces-157822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EB518B16D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:05:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 321128B16D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:07:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 807011C23B73
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:05:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 566721C24EE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:07:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58F6C16F0C6;
-	Wed, 24 Apr 2024 23:05:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96A9816F0C2;
+	Wed, 24 Apr 2024 23:07:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gguesAFc"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="RGOpKw+s"
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56901157465;
-	Wed, 24 Apr 2024 23:05:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5BA16EBF3
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:07:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713999917; cv=none; b=t1YM76KR7MNw78iurpAbF1UjSrsPT2uf+DCQZqgQYMfzWndLGrw1cWZLQA0RDzDhCjXD5fylNMTjdF3pRvL04PDTuITH0mlA+56axv0md/oxhr59KO/UZOV0bbIR9kHVR2r+ytblqU2C+vRWsNbGnTNCSxbKgF1J1C67sB77xD4=
+	t=1714000039; cv=none; b=Ds3vBsQA9UK1Uiw3CpNZazY33sG9t4J2u1Nh3CsAMf7WmeE57uDGvu5EifqlIaE3XxUaLqSP1AI/fOeBXNusMSwLpFezkiUo6bljiwjvMhLEs91H+ZyJDte87uCfntzy5oHc747O/sBXMPbH3VvLHRjh9GLUL34KXxQj+G9YjAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713999917; c=relaxed/simple;
-	bh=pKPm/zrzVvXlCmLdiEV2pW5uSOyfPaBjLWmKfuO257Q=;
+	s=arc-20240116; t=1714000039; c=relaxed/simple;
+	bh=YkqsC0nF/H/k4Oytm2ewDWntFmRtzUD1STC8KXiQ41g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L/cTNiXlOjEkvEv4fWGq/aQlO4ZW63mHzUr6cINeL8qH4obG6Y9TmWTj3BYucpUCzZWOA3w9TVkj7yfNSPei4Mh3DlqwTf17Mt91QNQrqwfQAVh7szCD6moFh5nhWHULOGVDuT6Ep/eAIpJptRqc9PjGXzzyFMN3mgII8n13Hjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=gguesAFc; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ZkT+6J58bxSG5zYwuGwSSUyrEmL9IGY39TrZq4eGklU=; b=gguesAFcokKJCJyv+QBKjsgZkg
-	Fxm+aLJmRjFH3615INiPM5LIlxwiF4CsTlJ1OgKbQRjMejaxSaekr0J5Q9EcfUVpHeF7vZyiSzeS9
-	p0OCpCAwDtAdvwws0QfVLDE2BS4eWwZljuMyX1OwIDrOMk+SLGSFTLRh/JDvLg/il3VcbmXD3ehLq
-	kBCeD/cbRa/ECD0aoX2bXfVpS3VRV/N8ImQqlND9Jh3WnUW7qllGyGdHLcyhMeZBzNKtlC5Rq6fuj
-	IhBplFbSM5K+cacg3KipHlduBx35xJl+lom25sOLDExia1u37DaBXudyimcXF0Sr9kTyQBN49TPBF
-	qNo9oERg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzlfg-0000000EdWW-2rpA;
-	Wed, 24 Apr 2024 23:05:03 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 5529830043E; Thu, 25 Apr 2024 01:05:00 +0200 (CEST)
-Date: Thu, 25 Apr 2024 01:05:00 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Jakub Kicinski <kuba@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-	netdev@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 1/4] locking/atomic/x86: Silence intentional wrapping
- addition
-Message-ID: <20240424230500.GG12673@noisy.programming.kicks-ass.net>
-References: <20240424191225.work.780-kees@kernel.org>
- <20240424191740.3088894-1-keescook@chromium.org>
- <20240424224141.GX40213@noisy.programming.kicks-ass.net>
- <202404241542.6AFC3042C1@keescook>
- <20240424225436.GY40213@noisy.programming.kicks-ass.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DCK4wtSoThRup0Eh5RwxYgHg8bUSAImoZnVkDA/nnGctU6ch7BVZE5bB3X1nJkRyFYSaf+ugnr0sa0YlFajui4meRpG0GHPllFahwI3YXq929eKMzC7roxqOFJcU6o/Rg2o9XThmp7w23TaSmuALXYgt5OjmP79HhJMkXwexIzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=RGOpKw+s; arc=none smtp.client-ip=209.85.210.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6ebc92079b5so271879a34.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:07:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1714000037; x=1714604837; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5EOPLUxSGdh2673E9UnVgdv/f9WeKREWyE41T1+ComY=;
+        b=RGOpKw+sLSLcuvF8vdrD+kMElj4DLvMy8Jr8r7isGFxpW2e2r/ZdfJIhN1I80MOOve
+         /pQVO+3L45Ffch4h3HqtnQXLJ3akJPWQbWPuOd/Oq6nsXwEtReAPomhWWIex9MRXTfp/
+         bVR40bWS8gLIPLkE8eiOCRk94b4Pw3HBMg1Il8y/Gi+fwzcITKqwGBOgC3GcuohSW3Tc
+         WLr3YlCQEo1IeNv/2d8yTzyyH/zv6rvIufADTJN+pum/WaI8oEvQKimCYC1JGZ3Ew3tS
+         2avS8BFoY8IiZ+BaWk1Fb1k0EUG7M6CkJVRuY0FT1q1eNPieQSWfWLb+F2fbKruK2PNJ
+         6GEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714000037; x=1714604837;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5EOPLUxSGdh2673E9UnVgdv/f9WeKREWyE41T1+ComY=;
+        b=hOBBBsFzqlYzt9AgG4fqkx/VsVXmUotNDGXkNIs+PcCDbJOOhY8AN9PoTqvVCuiFF/
+         f4j75RXlPXQseoB2LNL9TI8HYXmW/UJwZWJw20CJ1NimyZEeF36+Aree0Z79e8SjPiAx
+         w6oxf7ME3FJOPKyUc9n+VDJlR/EmlBW2hAV8hSRDyCwqgZm7ODLgH8a+j92PRtFNMEDN
+         eOm72xYYrMyTVe3NP23DEUGBabGTM/jV09WdEIfgJ/nvR6NQSz/cSCRxZPUrkOuEOjAT
+         5/xNwGdgXxIph6Xxn7d+nQl9hcWZbqpWY5f8pxyUwNilz2KMwHrB/3cUwpDyjPR9Jg+4
+         srWw==
+X-Forwarded-Encrypted: i=1; AJvYcCWcweJwFt9wRuIEKoW5yKg2CL7J1q05d2aI32os4sxH+FPuZborPzuBkbF0uaYjwqOWZYjeA01O8aQgPF/FIJfpGCMRx8Jk/+DuvBqk
+X-Gm-Message-State: AOJu0YxhDEfHrVZlPQmCkIRU0mQzUAMAxsLdvpqgo1zVKoZXRpa9msIn
+	RSTOAZiWa0NLWT3SwTZeXLw19PPkgirAfnwmEMmwidSEDWbxcXys6g6n+7A3X0Y=
+X-Google-Smtp-Source: AGHT+IEK1yF/pF3Jt1MaMAE7gbVSzzN/c9vmeIlr7aFyXy4aHkiw6cz3OYQ6jtkyalR6CHilLOVggw==
+X-Received: by 2002:a05:6870:c0c7:b0:235:3d0:3096 with SMTP id e7-20020a056870c0c700b0023503d03096mr4168277oad.24.1714000037198;
+        Wed, 24 Apr 2024 16:07:17 -0700 (PDT)
+Received: from ziepe.ca ([12.97.180.36])
+        by smtp.gmail.com with ESMTPSA id oh23-20020a0568702c9700b00239379f06cdsm2596004oab.9.2024.04.24.16.07.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 16:07:16 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rzlhr-009uvX-JB;
+	Wed, 24 Apr 2024 20:07:15 -0300
+Date: Wed, 24 Apr 2024 20:07:15 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Tomasz Jeznach <tjeznach@rivosinc.com>
+Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Anup Patel <apatel@ventanamicro.com>,
+	Sunil V L <sunilvl@ventanamicro.com>,
+	Nick Kossifidis <mick@ics.forth.gr>,
+	Sebastien Boeuf <seb@rivosinc.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	iommu@lists.linux.dev, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux@rivosinc.com
+Subject: Re: [PATCH v2 5/7] iommu/riscv: Device directory management.
+Message-ID: <20240424230715.GI231144@ziepe.ca>
+References: <cover.1713456597.git.tjeznach@rivosinc.com>
+ <232b2824d5dfd9b8dcb3553bfd506444273c3305.1713456598.git.tjeznach@rivosinc.com>
+ <20240419124017.GC223006@ziepe.ca>
+ <CAH2o1u7_YBtS6m1-T56tmxud1mda2gb6tLGVpbBSs15FPcjaGQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,48 +100,67 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240424225436.GY40213@noisy.programming.kicks-ass.net>
+In-Reply-To: <CAH2o1u7_YBtS6m1-T56tmxud1mda2gb6tLGVpbBSs15FPcjaGQ@mail.gmail.com>
 
-On Thu, Apr 25, 2024 at 12:54:36AM +0200, Peter Zijlstra wrote:
-> On Wed, Apr 24, 2024 at 03:45:07PM -0700, Kees Cook wrote:
-> > On Thu, Apr 25, 2024 at 12:41:41AM +0200, Peter Zijlstra wrote:
-> > > On Wed, Apr 24, 2024 at 12:17:34PM -0700, Kees Cook wrote:
-> > > 
-> > > > @@ -82,7 +83,7 @@ static __always_inline bool arch_atomic_add_negative(int i, atomic_t *v)
-> > > >  
-> > > >  static __always_inline int arch_atomic_add_return(int i, atomic_t *v)
-> > > >  {
-> > > > -	return i + xadd(&v->counter, i);
-> > > > +	return wrapping_add(int, i, xadd(&v->counter, i));
-> > > >  }
-> > > >  #define arch_atomic_add_return arch_atomic_add_return
-> > > 
-> > > this is going to get old *real* quick :-/
-> > > 
-> > > This must be the ugliest possible way to annotate all this, and then
-> > > litter the kernel with all this... urgh.
-> > 
-> > I'm expecting to have explicit wrapping type annotations soon[1], but for
-> > the atomics, it's kind of a wash on how intrusive the annotations get. I
-> > had originally wanted to mark the function (as I did in other cases)
-> > rather than using the helper, but Mark preferred it this way. I'm happy
-> > to do whatever! :)
-> > 
-> > -Kees
-> > 
-> > [1] https://github.com/llvm/llvm-project/pull/86618
+On Wed, Apr 24, 2024 at 04:01:04PM -0700, Tomasz Jeznach wrote:
+> > > +     /* Update existing or allocate new entries in device directory */
+> > > +     for (i = 0; i < fwspec->num_ids; i++) {
+> > > +             dc = riscv_iommu_get_dc(iommu, fwspec->ids[i], !iommu_domain);
+> > > +             if (!dc && !iommu_domain)
+> > > +                     continue;
+> > > +             if (!dc)
+> > > +                     return -ENODEV;
+> >
+> > But if this fails some of the fwspecs were left in a weird state ?
+> >
+> > Drivers should try hard to have attach functions that fail and make no
+> > change at all or fully succeed.
+> >
+> > Meaning ideally preallocate any required memory before doing any
+> > change to the HW visable structures.
 > 
-> This is arse-about-face. Signed stuff wraps per -fno-strict-overflow.
-> We've been writing code for years under that assumption.
+> Good point. Done.
+> Looking at the fwspec->ids[] I'm assuming nobody will add/modify the
+> IDs after iommu_probe_device() completes.
+
+Yes
+
+> > > +             /* Swap device context, update TC valid bit as the last operation */
+> > > +             xchg64(&dc->fsc, fsc);
+> > > +             xchg64(&dc->ta, ta);
+> > > +             xchg64(&dc->tc, tc);
+> >
+> > This doesn't loook right? When you get to adding PAGING suport fsc has
+> > the page table pfn and ta has the cache tag, so this will end up
+> > tearing the data for sure, eg when asked to replace a PAGING domain
+> > with another PAGING domain? That will create a functional/security
+> > problem, right?
+> >
+> > I would encourage you to re-use the ARM sequencing code, ideally moved
+> > to some generic helper library. Every iommu driver dealing with
+> > multi-quanta descriptors seems to have this same fundamental
+> > sequencing problem.
+> >
 > 
-> You want to mark the non-wrapping case.
+> Good point. Reworked.
 
-That is, anything that actively warns about signed overflow when build
-with -fno-strict-overflow is a bug. If you want this warning you have to
-explicitly mark things.
+I suppose by force clearing the v bit before starting the sequence?
 
-Signed overflow is not UB, is not a bug.
+That is OK but won't support some non-embedded focused features in the
+long run. It is a good approach to get the driver landed though.
+ 
+> > The release_domain has landed too now. Please don't invent weird NULL
+> > domain types that have special meaning. I assume clearing the V bit is
+> > a blocking behavior? So please implement a proper blocking domain and
+> > set release_domain = &riscv_iommu_blocking and just omit this release
+> > function.
+> >
+> 
+> Updated to use release_domain, should be cleaner now.
+> Clearing TC.V is a blocking (but noisy) behavior, should be fine for
+> release domain where devices should be quiesced already.
 
-Now, it might be unexpected in some places, but fundamentally we run on
-2s complement and expect 2s complement. If you want more, mark it so.
+blocking is fine to be noisy.
+
+Jason
 
