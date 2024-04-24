@@ -1,164 +1,109 @@
-Return-Path: <linux-kernel+bounces-157527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 553808B1261
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9923A8B1262
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:31:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1171528F536
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:31:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55DE328F7E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B46D3175563;
-	Wed, 24 Apr 2024 18:24:06 +0000 (UTC)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0631816EC12;
+	Wed, 24 Apr 2024 18:27:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BPh9VQPU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F9A316EBFF;
-	Wed, 24 Apr 2024 18:24:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49AE816D4D1
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 18:27:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713983046; cv=none; b=iuRnU3cdtdYbs/aBkFjxWKPOp8waOVenAU6Za3hypb9+zqGCYESQD+gfawb41cXpOf4g27mi9C0OTqQ/Imt8CSLhvqTEzwm7fySfpNgUGOBcV1BHljffDofSyZp2SuwYTqjTAxUVQWdz3fFNsbFseAdjEzCDqPix7IGJUPMHVsA=
+	t=1713983222; cv=none; b=dH2Ufnb1ncNE6MwzuOKJtzXwiq0a1MTLqazMkoGLKgztdaDYlUxOVj7Sf1rX71JkOlGmQWeNyJ2Iw/JgXHvC0SUXxWZX1wW9RnZ14s2rrUQzLDuKEYiYc7oCQd+vDxxvx6Eea6vgTBG6ZpScVg0+1J+iKdMvlTMW4Hz3NNIIS0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713983046; c=relaxed/simple;
-	bh=Nq2r/xSMTKTi9jtSRejmw3Y+UjmxAmLt/U8EyeA1a8w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SrAOMoYaMl80KQadMSGNGJk9y1P2WdDMqSFL4ZqVdexjUl0NyKJI/b2FCcwxlNxvZ2Kd5DyqGjvrhVpObzMqrrCUqDk37PQ7jp06pS/Q4j4WQZuqBkIRKuXHpO7wU+KSVR0uzwMTN9+LMNcUwHNlR2/Y7utP84/MMTcKpAJevns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2dd6c14d000so1437201fa.0;
-        Wed, 24 Apr 2024 11:24:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713983043; x=1714587843;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NBHxa/dhAV/9oWKxfTbAVhvzTVzXkONqk+9xtsxO6s4=;
-        b=ZPcDRn50bw8dQWu765xFNTvI0+ICCIUUBp5ItlHsV1DmT43tZ/pQnhXhpDEHQU46Zo
-         WptDjmoE3fKq0LLLCBEGcJJFHa/ZljVknmK4swJ6lTJSGHYtUxzLkwydBayT6PqQfxs/
-         mC6hS6+yEQNT707NUsyTF2FEo9qGc2gWvpKlEhxx0QKNbt9VMTyE2jvVQPXBGz0cAR0w
-         aMTiPs1JSDQBcgaKAUnTo6TLT8Qqqkjzr8B+fNmIbRRlHE5lR1jEEUxRAsm1zEReZFjh
-         77xnOpUQm2/8G0H3nKMRReYE7f5NdNb89RVZ50qlx+SjB92esVmKyPRrDL0AgpS0b7wh
-         hJTA==
-X-Forwarded-Encrypted: i=1; AJvYcCUlnUwlbcgjSsjzti+eBgzZK+dluthwDgSRBO+XiX2j2fj/cIl6locBQ5dky+awUTVgGX1q+fN7FygIuP42EUbmYQ0ZYSS1n5BGYrdAkdiN7uhY3zDPDsss5PCcuM3fL4rqiHhw5s1En1Op1iY=
-X-Gm-Message-State: AOJu0YyTDYJYyjt18EBrECornjGD7z5TuDqZsfTlMiWu4v1dnPK9ngSP
-	hfTd0d890C25mxFsdXH+3qpQAjDritGdZpsvH8H3ICarO09dO05hSGvdpQ==
-X-Google-Smtp-Source: AGHT+IFDIB5hiF3emblc38AiRWGTrPAmQvq/oxLDBOAerlKusVDaocqu4PyucwRkOdRO0cu3Z4IeBQ==
-X-Received: by 2002:a2e:838b:0:b0:2de:809c:c670 with SMTP id x11-20020a2e838b000000b002de809cc670mr1567225ljg.49.1713983042412;
-        Wed, 24 Apr 2024 11:24:02 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-001.fbsv.net. [2a03:2880:30ff:1::face:b00c])
-        by smtp.gmail.com with ESMTPSA id g22-20020a056402091600b005721f9fbb60sm2259610edz.63.2024.04.24.11.24.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 11:24:02 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: Ping-Ke Shih <pkshih@realtek.com>,
-	Kalle Valo <kvalo@kernel.org>
-Cc: leit@meta.com,
-	linux-wireless@vger.kernel.org (open list:REALTEK WIRELESS DRIVER (rtw89)),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH wireless] wifi: rtw89: Un-embed dummy device
-Date: Wed, 24 Apr 2024 11:23:49 -0700
-Message-ID: <20240424182351.3936556-1-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1713983222; c=relaxed/simple;
+	bh=abPWopN//NmQWtu+Y5v3ubjHMIaG4BQbX/z10WFr8TY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ow0OEjgF4Fu6pfupPUICmRLzwj6da/ilgOHi57GFk+1dh7zdEl8I1O81q2qMpuFreqm/p59+T6cGC9/EQPvAqmn3MpVfwUvCbNQBKuyKUgFcMsK3NUVoW5ZlMr1aiD+aqzkMkWsV+r2w40IVD5I6q4IczjAvuslTCXgGThaQMAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BPh9VQPU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29049C2BD11;
+	Wed, 24 Apr 2024 18:27:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713983221;
+	bh=abPWopN//NmQWtu+Y5v3ubjHMIaG4BQbX/z10WFr8TY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BPh9VQPUhow8VDzz2IDIgbDmdiO42O/vPbw96koB2+PvfRyf6roPDkl42O8oVDNN/
+	 /1ANIU1PGVR/XeIMqARTcqin+FAClXOJLMTrb1ojFhzbo2+l3bNruCS0J9dGOHWU4M
+	 T8pq9vFS/JHT/snVnmZb1a1wBlXgUMC0yY8j6raHYJzYyEkXqC04fCf5J4LkIsTID+
+	 Xlsb4x0kdLF+A1IjCw14ZFvOlT+gtTmTQa4ZoEejcJx7pklgw3g1ZVxew5COqUtYSy
+	 nMrbKwZx8SkBmTSm7RD4aQhrQUpzvmjOaJClOktaNp5rvsP73pn53v7/7MIbkyI070
+	 VcCSD7/i6TL0g==
+Date: Wed, 24 Apr 2024 11:26:59 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Eric Biederman <ebiederm@xmission.com>, kexec@lists.infradead.org,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Kees Cook <keescook@chromium.org>, Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [RFC PATCH 2/9] x86/purgatory: Simplify stack handling
+Message-ID: <20240424182659.GA2126602@dev-arch.thelio-3990X>
+References: <20240424155309.1719454-11-ardb+git@google.com>
+ <20240424155309.1719454-13-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240424155309.1719454-13-ardb+git@google.com>
 
-Embedding net_device into structures prohibits the usage of flexible
-arrays in the net_device structure. For more details, see the discussion
-at [1].
+On Wed, Apr 24, 2024 at 05:53:12PM +0200, Ard Biesheuvel wrote:
+> From: Ard Biesheuvel <ardb@kernel.org>
+> 
+> The x86 purgatory, which does little more than verify a SHA-256 hash of
+> the loaded segments, currently uses three different stacks:
+> - one in .bss that is used to call the purgatory C code
+> - one in .rodata that is only used to switch to an updated code segment
+>   descriptor in the GDT
+> - one in .data, which allows it to be prepopulated from the kexec loader
+>   in theory, but this is not actually being taken advantage of.
+> 
+> Simplify this, by dropping the latter two stacks, as well as the loader
+> logic that programs RSP.
+> 
+> Both the stacks in .bss and .data are 4k aligned, but 16 byte alignment
+> is more than sufficient.
+> 
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  arch/x86/include/asm/kexec.h      |  1 -
+>  arch/x86/kernel/kexec-bzimage64.c |  8 --------
+>  arch/x86/purgatory/entry64.S      |  8 --------
+>  arch/x86/purgatory/setup-x86_64.S |  2 +-
+>  arch/x86/purgatory/stack.S        | 18 ------------------
 
-Un-embed the net_device from the private struct by converting it
-into a pointer. Then use the leverage the new alloc_netdev_dummy()
-helper to allocate and initialize dummy devices.
+This needs a small fix up to build.
 
-[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+  make[6]: *** No rule to make target 'arch/x86/purgatory/stack.o', needed by 'arch/x86/purgatory/purgatory.ro'.
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- drivers/net/wireless/realtek/rtw89/core.c | 11 ++++++++---
- drivers/net/wireless/realtek/rtw89/core.h |  4 ++--
- drivers/net/wireless/realtek/rtw89/pci.c  |  6 +++++-
- 3 files changed, 15 insertions(+), 6 deletions(-)
-
-PS: This is compile-tested only due to lack of hardware.
-
-diff --git a/drivers/net/wireless/realtek/rtw89/core.c b/drivers/net/wireless/realtek/rtw89/core.c
-index d474b8d5df3d..ade3e2a953a1 100644
---- a/drivers/net/wireless/realtek/rtw89/core.c
-+++ b/drivers/net/wireless/realtek/rtw89/core.c
-@@ -2485,11 +2485,15 @@ void rtw89_core_napi_stop(struct rtw89_dev *rtwdev)
- }
- EXPORT_SYMBOL(rtw89_core_napi_stop);
+diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
+index acc09799af2a..2b6b2fb033d6 100644
+--- a/arch/x86/purgatory/Makefile
++++ b/arch/x86/purgatory/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ OBJECT_FILES_NON_STANDARD := y
  
--void rtw89_core_napi_init(struct rtw89_dev *rtwdev)
-+int rtw89_core_napi_init(struct rtw89_dev *rtwdev)
- {
--	init_dummy_netdev(&rtwdev->netdev);
--	netif_napi_add(&rtwdev->netdev, &rtwdev->napi,
-+	rtwdev->netdev = alloc_netdev_dummy(0);
-+	if (!rtwdev->netdev)
-+		return -ENOMEM;
-+
-+	netif_napi_add(rtwdev->netdev, &rtwdev->napi,
- 		       rtwdev->hci.ops->napi_poll);
-+	return 0;
- }
- EXPORT_SYMBOL(rtw89_core_napi_init);
+-purgatory-y := purgatory.o stack.o setup-x86_$(BITS).o sha256.o entry64.o string.o
++purgatory-y := purgatory.o setup-x86_$(BITS).o sha256.o entry64.o string.o
  
-@@ -2497,6 +2501,7 @@ void rtw89_core_napi_deinit(struct rtw89_dev *rtwdev)
- {
- 	rtw89_core_napi_stop(rtwdev);
- 	netif_napi_del(&rtwdev->napi);
-+	free_netdev(rtwdev->netdev);
- }
- EXPORT_SYMBOL(rtw89_core_napi_deinit);
- 
-diff --git a/drivers/net/wireless/realtek/rtw89/core.h b/drivers/net/wireless/realtek/rtw89/core.h
-index fc1ed8612cf1..e206a2186747 100644
---- a/drivers/net/wireless/realtek/rtw89/core.h
-+++ b/drivers/net/wireless/realtek/rtw89/core.h
-@@ -5239,7 +5239,7 @@ struct rtw89_dev {
- 	struct rtw89_wow_param wow;
- 
- 	/* napi structure */
--	struct net_device netdev;
-+	struct net_device *netdev;
- 	struct napi_struct napi;
- 	int napi_budget_countdown;
- 
-@@ -6211,7 +6211,7 @@ void rtw89_core_query_rxdesc_v2(struct rtw89_dev *rtwdev,
- 				u8 *data, u32 data_offset);
- void rtw89_core_napi_start(struct rtw89_dev *rtwdev);
- void rtw89_core_napi_stop(struct rtw89_dev *rtwdev);
--void rtw89_core_napi_init(struct rtw89_dev *rtwdev);
-+int rtw89_core_napi_init(struct rtw89_dev *rtwdev);
- void rtw89_core_napi_deinit(struct rtw89_dev *rtwdev);
- int rtw89_core_sta_add(struct rtw89_dev *rtwdev,
- 		       struct ieee80211_vif *vif,
-diff --git a/drivers/net/wireless/realtek/rtw89/pci.c b/drivers/net/wireless/realtek/rtw89/pci.c
-index 19001130ad94..ef41c3a83b4a 100644
---- a/drivers/net/wireless/realtek/rtw89/pci.c
-+++ b/drivers/net/wireless/realtek/rtw89/pci.c
-@@ -4201,7 +4201,11 @@ int rtw89_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	rtw89_pci_link_cfg(rtwdev);
- 	rtw89_pci_l1ss_cfg(rtwdev);
- 
--	rtw89_core_napi_init(rtwdev);
-+	ret = rtw89_core_napi_init(rtwdev);
-+	if (ret) {
-+		rtw89_err(rtwdev, "failed to init napi\n");
-+		goto err_clear_resource;
-+	}
- 
- 	ret = rtw89_pci_request_irq(rtwdev, pdev);
- 	if (ret) {
--- 
-2.43.0
-
+ targets += $(purgatory-y)
+ PURGATORY_OBJS = $(addprefix $(obj)/,$(purgatory-y))
 
