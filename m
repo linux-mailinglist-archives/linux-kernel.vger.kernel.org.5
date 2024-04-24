@@ -1,301 +1,289 @@
-Return-Path: <linux-kernel+bounces-157705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 813A78B14DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:46:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 072EE8B14E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:48:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D2D81F23FCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:46:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B242B28479F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:48:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE56156978;
-	Wed, 24 Apr 2024 20:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78281156C57;
+	Wed, 24 Apr 2024 20:48:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b="GAav2AQv"
-Received: from meesny.iki.fi (meesny.iki.fi [195.140.195.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iUb7cQHR"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D26E1772F;
-	Wed, 24 Apr 2024 20:46:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=195.140.195.201
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713991586; cv=pass; b=NUNJ1r0PQk4W2QnQ+JcvMdgNiwMh1vM5YntjoUkC4EnRprIKHORN4RqD6hQ0COnyajTbuSeVVSi3eszTx3RN9Ir+RvyDxL9f3Ih623HUKF34oJshQK76iVncouNv/+/qxywHDBR/J4nGYAKeKfk2FvZYzVfzs8X6oVWvncmbw68=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713991586; c=relaxed/simple;
-	bh=Za8essE1jwdIXvxMhQKUOCruzXPmu9sSKRXZnQaC/04=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U4rIjBBcDz/s/oh21wOsnsaTWeVMlOzpjgsqyM6Q7TkDqswWEKxpTW06gjZ1hYIkzd5w4PDI9O5AmbZtf/ah+GlPtZX6s9v2XUtWzLte978Y0MjMXPryuY2FFcq43MN+fRDaIkRiZs6mQ5Y4IvSfup84J7Ds9Gpdu0hEx6WQrlw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b=GAav2AQv; arc=pass smtp.client-ip=195.140.195.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
-Received: from hillosipuli.retiisi.eu (2a00-1190-d1dd-0-c641-1eff-feae-163c.v6.cust.suomicom.net [IPv6:2a00:1190:d1dd:0:c641:1eff:feae:163c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sailus)
-	by meesny.iki.fi (Postfix) with ESMTPSA id 4VPrcY0Z8bzyS9;
-	Wed, 24 Apr 2024 23:46:20 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-	t=1713991581;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ueBAWNliVb+VwYWcNCW4oPB3DbovNowk0vSZn5YeC5A=;
-	b=GAav2AQvk6wp8UACJNAfTGeZW/rfzYBrZmfq2WWWciDYQyXGEzRpy1LPzeNmxwlmsOWCow
-	s8EfObeDmqa90y4MpGXnD+v7NtOBzH2ejmF+928zPpgBz+ovCku59IQoU4KLwnOzf7lTjg
-	attx6CtUUBz6IEE0hQ2X5B+8geP5ihk=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-	s=meesny; t=1713991581;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ueBAWNliVb+VwYWcNCW4oPB3DbovNowk0vSZn5YeC5A=;
-	b=bDBs9eWWpWFJtV6jjgNZPGPuyBuJ1aCgoVHhhQ5C+B1dEet8lvWYy1DSkiDd5BvH+rMdR0
-	Hzb+foAtADbqM1Qx3lfTJ5gv1PnnfwGKmrvPSqozruqjXiu/KCqEKYuIe9umxkAGTXNuFw
-	7IXfQP7tR/O4Vy8bf0s23w9bAd7i1og=
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1713991581; a=rsa-sha256; cv=none;
-	b=oy5IIIBDtP7A1QwyhL++/T72Z1qleI+b3YkrxI2v1CJ8itMIjoCJ1PX9NxTZYSe/VGKQFJ
-	ZfVJx0kwK1ueA7bgaZs3fREY9oTQqHXh6nUTGS+AZASizoh17MgJcGCHxkxbstR6kqPIZT
-	4tC0n5mlFeg85M6US4uRMJLbNP9vQgk=
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by hillosipuli.retiisi.eu (Postfix) with ESMTPS id B596B634C96;
-	Wed, 24 Apr 2024 23:46:19 +0300 (EEST)
-Date: Wed, 24 Apr 2024 20:46:19 +0000
-From: Sakari Ailus <sakari.ailus@iki.fi>
-To: Sylvain Petinot <sylvain.petinot@foss.st.com>
-Cc: benjamin.mugnier@foss.st.com, mchehab@kernel.org, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] media: dt-bindings: Add ST VD56G3 camera sensor
- binding
-Message-ID: <Zilvm98FNzWoGFL_@valkosipuli.retiisi.eu>
-References: <20240417133453.17406-1-sylvain.petinot@foss.st.com>
- <20240417133453.17406-2-sylvain.petinot@foss.st.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326A4156964
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 20:48:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713991698; cv=none; b=Re3quZcffoOzugIYe/nGOmi9+U/cJr0elY4AWolXB6MrOF1bFecKXVS5E/Jf9PnMNGDv0zLJnausgDwuirhCIwhUFty6GsGxG9fuJcLl8N8wD5YUhH7Ug2mUtnqjuETKOR0BdpBrVxHJgZFEhCPRax1LLKLWWMKyCR1ZiMgNF2M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713991698; c=relaxed/simple;
+	bh=APvvGfjt6M4RGHG68kcPHxSbyBNeXdPdp01IWBW2Xh8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CXhsJJNFwSN92abQM4sUVCEPDqeu9c53Mcec+uqFPIM9CMTXSV3pwgYVEj4uY+C+WdWrKCHogJE1I/Vg7FmGzNoiNB4tcvHH4LJGpTrz0Bh4KwIS68Wb85gQl0+uuvDC6hnxBu5CRULBG3nf34YenwKAlSEh2HEjukjc2tmsRAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iUb7cQHR; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so1304146276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:48:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713991695; x=1714596495; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=l1pZWiUWl1nMefgATaw3YsOhf+pqCV2nzomHBQjDgDo=;
+        b=iUb7cQHRdPzSnLuOtQ10HQPxCXShHqlw84cVDllBYOK9PLxLXNpUcxPkGcxvBUu73J
+         hUmjPh0vxM8sawc1ymMSsanW8e05vYq5DQYUDciIRe4XmvrQaH38QOyruo0CWffkX4En
+         mZB0xm5MDcAx31d278omLoglYOBSzYO+dK1pSLTLH3AOtKqmDv9fIJ9Hh6yeLwA6jWxC
+         QEyVY8wJ1E4VhNsls+RKbnKQEA1F8ElpoSn75M4+2nTj9K7MhfyuVpjDPncxY0ydFrZ8
+         +eb1VbadOtXSSLQzh/s59jVAaQ9N5JNW2u5VFl8+ByPR3FPM26Am5gp3ADe0Vplq8JhC
+         9W6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713991695; x=1714596495;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=l1pZWiUWl1nMefgATaw3YsOhf+pqCV2nzomHBQjDgDo=;
+        b=UxBss7ZI3dHaKxbeYWM31ZFWXOLghlOt7ab0UTv63nY1KysycismWSdzHcxvAmngjc
+         8GaNycr6ypFr9VItflwfEtOnYtSfACg7SFk0fnEPy2BeVGrIn+Rom3gYi17AMN/iDJtz
+         JdzmQZ63uI2DstgZLbCNQw9PZk3N9N58JwyAAqZ/70eqPEzYRNVeI9uvBnGhfYsJK8Zx
+         V21NFLfCAmnxY5VU4XSeETUZZXHXFC81XYrOomAqsLNv29zpf4mc9SAoT9htWE/+Nbxr
+         3qyOmnf5YmuVT6C9f3BheMUtGx1URTV5UZyAIqFf4KD8tH0W/gedzxqszsEcUv235Nvq
+         LWRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVyahXnFnog4lCPKkZaazJR7ju21+dvZW775z8Tzo2iQXpkBHNUqiDPz8StDdOyeFWcmeQlv7/SsgyCVTqw6w3OiMucBeAtkxu/CFYn
+X-Gm-Message-State: AOJu0YzwB/uukVr2S2dzMDecmpTWnUXqZlEf34qv0+u5mKdsH9HwcwgN
+	GcGC9PIdUuQ6bG5CAtao9LF1I9taU6vVBBF3LwpHb1ZCmErdRihcpHgouYudfGrggxrL7Op1PDr
+	dMBOTraBuFW6x2z/Z8Pm6jc0EFQSkyXjWDvTNMQ==
+X-Google-Smtp-Source: AGHT+IFoGSJUlBELzEJjb2GiElbJgSl6N/By/Nucv+WQf0ab/sVj/6V4J/pp7hLNpClrwGLOjUJdwEmao5p/n9i55u8=
+X-Received: by 2002:a25:ae85:0:b0:dcc:623e:1b5d with SMTP id
+ b5-20020a25ae85000000b00dcc623e1b5dmr621667ybj.31.1713991695065; Wed, 24 Apr
+ 2024 13:48:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240417133453.17406-2-sylvain.petinot@foss.st.com>
+References: <20240410124628.171783-1-brgl@bgdev.pl> <20240410124628.171783-2-brgl@bgdev.pl>
+In-Reply-To: <20240410124628.171783-2-brgl@bgdev.pl>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 24 Apr 2024 23:48:03 +0300
+Message-ID: <CAA8EJpq81Z4YH1apTidntwcfpsL3YjgMM_y+G0=waaoPjRL-Cw@mail.gmail.com>
+Subject: Re: [PATCH v7 01/16] regulator: dt-bindings: describe the PMU module
+ of the QCA6390 package
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Kalle Valo <kvalo@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, 
+	Mark Brown <broonie@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Saravana Kannan <saravanak@google.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, Amit Pundir <amit.pundir@linaro.org>, 
+	Xilin Wu <wuxilin123@gmail.com>, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Sylvain,
-
-Thanks for the patch.
-
-On Wed, Apr 17, 2024 at 03:34:52PM +0200, Sylvain Petinot wrote:
-> Add devicetree bindings Documentation for ST VD56G3 & ST VD66GY camera
-> sensors. Update MAINTAINERS file.
-> 
-> Signed-off-by: Sylvain Petinot <sylvain.petinot@foss.st.com>
+On Wed, 10 Apr 2024 at 15:46, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> The QCA6390 package contains discreet modules for WLAN and Bluetooth. They
+> are powered by the Power Management Unit (PMU) that takes inputs from the
+> host and provides LDO outputs. This document describes this module.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> Acked-by: Mark Brown <broonie@kernel.org>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  .../bindings/media/i2c/st,st-vd56g3.yaml      | 143 ++++++++++++++++++
->  MAINTAINERS                                   |   9 ++
->  2 files changed, 152 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml b/Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml
+>  .../bindings/regulator/qcom,qca6390-pmu.yaml  | 151 ++++++++++++++++++
+>  1 file changed, 151 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/qcom,qca6390-pmu.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/regulator/qcom,qca6390-pmu.yaml b/Documentation/devicetree/bindings/regulator/qcom,qca6390-pmu.yaml
 > new file mode 100644
-> index 000000000000..6792c02fea5c
+> index 000000000000..9d39ff9a75fd
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml
-> @@ -0,0 +1,143 @@
+> +++ b/Documentation/devicetree/bindings/regulator/qcom,qca6390-pmu.yaml
+> @@ -0,0 +1,151 @@
 > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright (c) 2024 STMicroelectronics SA.
 > +%YAML 1.2
 > +---
-> +$id: http://devicetree.org/schemas/media/i2c/st,st-vd56g3.yaml#
+> +$id: http://devicetree.org/schemas/regulator/qcom,qca6390-pmu.yaml#
 > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +title: STMicroelectronics VD56G3 Global Shutter Image Sensor
+> +title: Qualcomm Technologies, Inc. QCA6390 PMU Regulators
 > +
 > +maintainers:
-> +  - Benjamin Mugnier <benjamin.mugnier@foss.st.com>
-> +  - Sylvain Petinot <sylvain.petinot@foss.st.com>
+> +  - Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > +
-> +description: |-
-
-> +  The STMicroelectronics VD56G3 is a 1.5 M pixel global shutter image sensor
-> +  with an active array size of 1124 x 1364 (portrait orientation).
-> +  It is programmable through I2C, the address is fixed to 0x10.
-> +  The sensor output is available via CSI-2, which is configured as either 1 or
-> +  2 data lanes.
-
-The flow of the text could be improved by wrapping the text before 80
-columns (not earlier). Most editors can do this.
-
-> +  The sensor provides 8 GPIOS that can be used for either
-> +    - frame synchronization (Master: out-sync or Slave: in-sync)
-> +    - external LED signal (synchronized with sensor integration periods)
+> +description:
+> +  The QCA6390 package contains discreet modules for WLAN and Bluetooth. They
+> +  are powered by the Power Management Unit (PMU) that takes inputs from the
+> +  host and provides LDO outputs. This document describes this module.
 > +
 > +properties:
 > +  compatible:
-> +    enum:
-> +      - st,st-vd56g3
-> +      - st,st-vd66gy
+> +    const: qcom,qca6390-pmu
+> +
+> +  vddaon-supply:
+> +    description: VDD_AON supply regulator handle
+> +
+> +  vddpmu-supply:
+> +    description: VDD_PMU supply regulator handle
+> +
+> +  vddrfa0p95-supply:
+> +    description: VDD_RFA_0P95 supply regulator handle
+> +
+> +  vddrfa1p3-supply:
+> +    description: VDD_RFA_1P3 supply regulator handle
+> +
+> +  vddrfa1p9-supply:
+> +    description: VDD_RFA_1P9 supply regulator handle
+> +
+> +  vddpcie1p3-supply:
+> +    description: VDD_PCIE_1P3 supply regulator handle<S-Del>
+> +
+> +  vddpcie1p9-supply:
+> +    description: VDD_PCIE_1P9 supply regulator handle
+> +
+> +  vddio-supply:
+> +    description: VDD_IO supply regulator handle
+> +
+> +  wlan-enable-gpios:
+> +    maxItems: 1
+> +    description: GPIO line enabling the ATH11K WLAN module supplied by the PMU
+> +
+> +  bt-enable-gpios:
+> +    maxItems: 1
+> +    description: GPIO line enabling the ATH11K Bluetooth module supplied by the PMU
+
+As a side node, I think we should also steal swctrl pin from the
+bluetooth device node. It represents the status of the PMU and as such
+it is not BT-specific.
+
+> +
+> +  regulators:
+> +    type: object
 > +    description:
-> +      Two variants are availables; VD56G3 is a monochrome sensor while VD66GY
-> +      is a colour variant.
+> +      LDO outputs of the PMU
 > +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  VCORE-supply:
-> +    description: Digital core power supply (1.15V)
-> +
-> +  VDDIO-supply:
-> +    description: Digital IO power supply (1.8V)
-> +
-> +  VANA-supply:
-> +    description: Analog power supply (2.8V)
-> +
-> +  reset-gpios:
-> +    description: Sensor reset active low GPIO (XSHUTDOWN)
-> +    maxItems: 1
-> +
-> +  st,leds:
-> +    description:
-> +      Sensor's GPIOs used for external LED control.
-> +      Signal being the enveloppe of the integration time.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    minItems: 1
-> +    maxItems: 8
-> +    items:
-> +      minimum: 0
-> +      maximum: 7
-> +
-> +  port:
-> +    $ref: /schemas/graph.yaml#/$defs/port-base
-> +
-> +    properties:
-> +      endpoint:
-> +        $ref: /schemas/media/video-interfaces.yaml#
+> +    patternProperties:
+> +      "^ldo[0-9]$":
+> +        $ref: regulator.yaml#
+> +        type: object
 > +        unevaluatedProperties: false
 > +
-> +        properties:
-> +          clock-lanes:
-> +            const: 0
-
-If the clock lane is always zero, you can drop the property.
-
-> +
-> +          data-lanes:
-> +            minItems: 1
-> +            maxItems: 2
-> +            items:
-> +              enum: [1, 2]
-> +
-> +          link-frequencies:
-> +            minItems: 1
-> +            maxItems: 1
-> +            items:
-> +              enum: [402000000, 750000000]
-
-Is this a property of the sensor or the driver? Presumably the driver?
-
-What about the input clock frequency?
-
-> +
-> +          lane-polarities:
-> +            minItems: 1
-> +            maxItems: 3
-> +            items:
-> +              enum: [0, 1]
-
-The items are already in video-interfaces.yaml.
-
-> +            description: Any lane can be inverted or not.
-> +
-> +        required:
-> +          - clock-lanes
-> +          - data-lanes
-> +          - link-frequencies
+> +    additionalProperties: false
 > +
 > +required:
 > +  - compatible
-> +  - reg
-> +  - clocks
-> +  - VCORE-supply
-> +  - VDDIO-supply
-> +  - VANA-supply
-> +  - reset-gpios
-> +  - port
+> +  - regulators
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: qcom,qca6390-pmu
+> +    then:
+> +      required:
+> +        - vddaon-supply
+> +        - vddpmu-supply
+> +        - vddrfa0p95-supply
+> +        - vddrfa1p3-supply
+> +        - vddrfa1p9-supply
+> +        - vddpcie1p3-supply
+> +        - vddpcie1p9-supply
+> +        - vddio-supply
 > +
 > +additionalProperties: false
 > +
 > +examples:
 > +  - |
 > +    #include <dt-bindings/gpio/gpio.h>
+> +    pmu {
+> +        compatible = "qcom,qca6390-pmu";
 > +
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&bt_en_state>, <&wlan_en_state>;
 > +
-> +        vd56g3: camera-sensor@10 {
-> +            compatible = "st,st-vd56g3";
-> +            reg = <0x10>;
+> +        vddaon-supply = <&vreg_s6a_0p95>;
+> +        vddpmu-supply = <&vreg_s2f_0p95>;
+> +        vddrfa0p95-supply = <&vreg_s2f_0p95>;
+> +        vddrfa1p3-supply = <&vreg_s8c_1p3>;
+> +        vddrfa1p9-supply = <&vreg_s5a_1p9>;
+> +        vddpcie1p3-supply = <&vreg_s8c_1p3>;
+> +        vddpcie1p9-supply = <&vreg_s5a_1p9>;
+> +        vddio-supply = <&vreg_s4a_1p8>;
 > +
-> +            clocks = <&camera_clk_12M>;
+> +        wlan-enable-gpios = <&tlmm 20 GPIO_ACTIVE_HIGH>;
+> +        bt-enable-gpios = <&tlmm 21 GPIO_ACTIVE_HIGH>;
 > +
-> +            VCORE-supply = <&camera_vcore_v1v15>;
-> +            VDDIO-supply = <&camera_vddio_v1v8>;
-> +            VANA-supply = <&camera_vana_v2v8>;
+> +        regulators {
+> +            vreg_pmu_rfa_cmn: ldo0 {
+> +                regulator-name = "vreg_pmu_rfa_cmn";
+> +            };
 > +
-> +            reset-gpios = <&gpio 5 GPIO_ACTIVE_LOW>;
-> +            st,leds = <6>;
+> +            vreg_pmu_aon_0p59: ldo1 {
+> +                regulator-name = "vreg_pmu_aon_0p59";
+> +            };
 > +
-> +            port {
-> +                vd56g3_ep: endpoint {
-> +                    clock-lanes = <0>;
-> +                    data-lanes = <1 2>;
-> +                    link-frequencies =
-> +                      /bits/ 64 <402000000>;
-
-No need for a newline after "=".
-
-> +                    remote-endpoint = <&csiphy0_ep>;
-> +                };
+> +            vreg_pmu_wlcx_0p8: ldo2 {
+> +                regulator-name = "vreg_pmu_wlcx_0p8";
+> +            };
+> +
+> +            vreg_pmu_wlmx_0p85: ldo3 {
+> +                regulator-name = "vreg_pmu_wlmx_0p85";
+> +            };
+> +
+> +            vreg_pmu_btcmx_0p85: ldo4 {
+> +                regulator-name = "vreg_pmu_btcmx_0p85";
+> +            };
+> +
+> +            vreg_pmu_rfa_0p8: ldo5 {
+> +                regulator-name = "vreg_pmu_rfa_0p8";
+> +            };
+> +
+> +            vreg_pmu_rfa_1p2: ldo6 {
+> +                regulator-name = "vreg_pmu_rfa_1p2";
+> +            };
+> +
+> +            vreg_pmu_rfa_1p7: ldo7 {
+> +                regulator-name = "vreg_pmu_rfa_1p7";
+> +            };
+> +
+> +            vreg_pmu_pcie_0p9: ldo8 {
+> +                regulator-name = "vreg_pmu_pcie_0p9";
+> +            };
+> +
+> +            vreg_pmu_pcie_1p8: ldo9 {
+> +                regulator-name = "vreg_pmu_pcie_1p8";
 > +            };
 > +        };
 > +    };
-> +...
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7c121493f43d..991e65627e18 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -20868,6 +20868,15 @@ S:	Maintained
->  F:	Documentation/hwmon/stpddc60.rst
->  F:	drivers/hwmon/pmbus/stpddc60.c
->  
-> +ST VD56G3 DRIVER
-> +M:	Benjamin Mugnier <benjamin.mugnier@foss.st.com>
-> +M:	Sylvain Petinot <sylvain.petinot@foss.st.com>
-> +L:	linux-media@vger.kernel.org
-> +S:	Maintained
-> +T:	git git://linuxtv.org/media_tree.git
-> +F:	Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml
-> +F:	drivers/media/i2c/st-vd56g3.c
-> +
->  ST VGXY61 DRIVER
->  M:	Benjamin Mugnier <benjamin.mugnier@foss.st.com>
->  M:	Sylvain Petinot <sylvain.petinot@foss.st.com>
+> --
+> 2.40.1
+>
+
 
 -- 
-Kind regards,
-
-Sakari Ailus
+With best wishes
+Dmitry
 
