@@ -1,149 +1,146 @@
-Return-Path: <linux-kernel+bounces-157140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 020338B0D56
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:55:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BA3F8B0D4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:54:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24140B278F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:55:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDD1A1C20E01
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:54:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B1F9161314;
-	Wed, 24 Apr 2024 14:54:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7037315EFBC;
+	Wed, 24 Apr 2024 14:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="YcDLjFHr"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FB1G3Ttt"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD8D15F3F8;
-	Wed, 24 Apr 2024 14:54:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3022115E802;
+	Wed, 24 Apr 2024 14:54:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713970474; cv=none; b=VS3IvO32DEjGmhkP9+dk7AXsQrMG/KjwSv8e4svXh969eI7rUC4CXY/qqUoGbhBuq0JEX0HRn3iP1OfxFlU1aVXiiGjyotTyB5HgQ+z7FFpM1YKcW++rOtGKusz8AVUg8BZoyx4+WjsWa9Msrt4AfG8yeOnljb542BjG+43vAdo=
+	t=1713970460; cv=none; b=p6976yZcqdZSIHT+MpxsqWmAQuiMijsP7ywW3Po4iSxuREPprLn6/k5va9HQHq5EEaCRtDgekpLN5YS79nraw1QZDMz7N5K/X/41jnV3A21uFjVwx+ZHRsPB5+ksvS8unmX1u1J2bKm3qipUh1flaJQxy5k4DflXp4og23joirA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713970474; c=relaxed/simple;
-	bh=Vke2PRjMOaaDnifLzd+g5rbY2VteuyFJwC55RRx62rU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kxm8vi40fIsu7o4RWnF2AJDSl4IS5TEVNHm/pmf7QkFFBxLRkph+mCWZtUOmW2gp6Nza16ALwc3n38z4XgE3rjTtwJYkKcHv7f27ZS68snL3hdf+9JJ1P8S3g9SQz4wkwk3YPRaITJh9ibPT/Gdt8eBpEebJGsy4Qvw8w4aN0hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=YcDLjFHr; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43OEphXU021642;
-	Wed, 24 Apr 2024 14:54:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=faPLB+kw4kVxRvk/awmxuWyqP9LFnkCQP2eMceG1XuI=;
- b=YcDLjFHr2K+Ys/y15mRL/i5XlzBdFtq5rcBbzgelkmuX+/sL3KIqMraFZybJfrfhTwPF
- 7u7AHXycbmDG4D34xnfCR2DgOJGnNXA6qXu/y49qQVifXoEmuLv+cB606ogd5otL2rJ9
- CTlExfmUkla6534BoaeqwMQQDsnlvT/bOAD7WgZx+KBlUmYtxke/Fcj80Tr0c2pYkQbG
- 0n18GAE8iMvexUAP3WiRGGe+SFc37h3Z8yQYk/jURhsf8SEK9VznS3OvZ6/jfObjQcJL
- sLBr5o0nJ8SLB7BDMIKoDPPsbH33nCyutt1MZIgWr5TXXskwRS7DOVKmLMvhLe1x+8vY nA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xq1mjrcgs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 14:54:17 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43OEsGYx027087;
-	Wed, 24 Apr 2024 14:54:16 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xq1mjrcgj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 14:54:16 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43OC0rH5015277;
-	Wed, 24 Apr 2024 14:54:15 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmshmc1tt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 14:54:15 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43OEs9Kw44761424
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 24 Apr 2024 14:54:11 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4449D2004B;
-	Wed, 24 Apr 2024 14:54:09 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 23A4B20040;
-	Wed, 24 Apr 2024 14:54:07 +0000 (GMT)
-Received: from osiris (unknown [9.171.4.217])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 24 Apr 2024 14:54:07 +0000 (GMT)
-Date: Wed, 24 Apr 2024 16:54:05 +0200
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Bui Quang Minh <minhquangbui99@gmail.com>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Paul M Stillwell Jr <paul.m.stillwell.jr@intel.com>,
-        Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
-        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Fabian Frederick <fabf@skynet.be>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Nilesh Javali <nilesh.javali@cavium.com>,
-        Arun Easi <arun.easi@cavium.com>,
-        Manish Rangankar <manish.rangankar@cavium.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>, Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Saurav Kashyap <saurav.kashyap@cavium.com>, linux-s390@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v2 5/6] cio: ensure the copied buf is NUL terminated
-Message-ID: <20240424145405.26193-C-hca@linux.ibm.com>
-References: <20240424-fix-oob-read-v2-0-f1f1b53a10f4@gmail.com>
- <20240424-fix-oob-read-v2-5-f1f1b53a10f4@gmail.com>
+	s=arc-20240116; t=1713970460; c=relaxed/simple;
+	bh=uXJCumUlxTxHWrN5eeUyifZZYEzii/3yS0/w9Zg/rsU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=egEK5llDM58EnCOjTzLVLknrOveJzTA16wu0/MWPwXtqMdEICxC2I6zWrGbr7wUPI9nX4tFx8ICYDtr/MyYd7k3Ny/Iu2AAIqzMcDsLclqTHis8MYz0ry5ll+a9v1W/yYBv8kmp5xbRhW6pcNzxR1usrrUSriOf9GK2k8idqzJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FB1G3Ttt; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-57232e47a81so61a12.0;
+        Wed, 24 Apr 2024 07:54:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713970457; x=1714575257; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w+9IQLCN7DH23nxy4mYuyF9NGEY2ALiGsS8ZLweky1c=;
+        b=FB1G3TttSjmMHeaCk0ybMrSKwdrvboaFAgaII5GNMYKVukMwUC1iUKIzXLOyBaSNwv
+         cnyWRSOsf41qF0MDsCRXC1f9ZtNchE5VMZ4zpvgTFrm1cMnJ0T2s7leUkRd1UVYxCm6C
+         aMvJ0mn56RWVXwX9tW1iTiL14r6kBD5Z9qc8UQFHBKaxapVcM3J+HywOQb0dtUCEFPkS
+         dULudyWCwe+LysIsoy9r8CRH9qcldjOTe8XFotsKRaVysxErjMzPZez19qWjsOB7jfLt
+         X0RexRSBZI9qoyXYuYSTB5KeGeRt2Ozph80uE8DC4rvUZrPRXuO0k3K+tn1jwsUy6WqI
+         sB0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713970457; x=1714575257;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w+9IQLCN7DH23nxy4mYuyF9NGEY2ALiGsS8ZLweky1c=;
+        b=Nv3hK2cD33nQ31xHu1Tpc3EVeJq2QRzZpWb2eXJDuP6+h7mUe6z1kG7wFgbyuOEt06
+         ZluN3yLFV/i587Ma0tvECN0hRam/w28JV100ZeNjcaRp2sW4c61SiOTaV0zF6bYdzmKY
+         N+USGOMJSN9Uz77yMtlZQ2iwTvaU4vnEzfNXcHispziXzHefGvcWNTb/4YPHlAYRYH+J
+         MlMfhGw9faT/KOL14HiF7U7KNWaykiLBNQOhMKoiGHNDIEQS9sRVWFZOkAODmrAAtFq5
+         yJTyIBRcqMsOsH+NbaDBCY+kNZQN/e1P5j2fLG3lhhEM9waXewKyBu7kyQf9rd1hJ5tk
+         rxOg==
+X-Forwarded-Encrypted: i=1; AJvYcCWTFoEEqnGcZjaDlPpRt5Lx9knhSQ7WzThjXBP/m2vou+MgBIgT5muEKMMXNxQPpfypL/7UjHK/H8+R1agUkmEz8vkiAQ+4zz2b2ZblKKREm9d2LDfaQ/1F+uqgCmijtyxTSb795UxG1vI=
+X-Gm-Message-State: AOJu0Yzx7zPUXzNNpO/3MFUVUclZ9pK6d2whEreKGDv20bNkW1lS0FVA
+	y7NktPKdnDeVe16uK6XWB4M1BLIhdM8eLYD9vG3LuBLpdzv8FVyR9RdqsiihAI5g/+laiqBVi2S
+	JSjXzK5lN5A23c1vFJadrMBll+5I=
+X-Google-Smtp-Source: AGHT+IEAaL8HzUDGp+9KU4r+vu6pC/oTqS8n5nfkqM3dTXstIgOstxWocIe41WpymO7HJ75Msr+qjdwdCh5TnlvAPfs=
+X-Received: by 2002:a50:d490:0:b0:571:b82f:630d with SMTP id
+ s16-20020a50d490000000b00571b82f630dmr2916994edi.0.1713970457343; Wed, 24 Apr
+ 2024 07:54:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424-fix-oob-read-v2-5-f1f1b53a10f4@gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: P3jauZ9wnPsNqb9Y8f9APW5dRRKdbn4d
-X-Proofpoint-GUID: bdcVi_JhzGQ_L9LlgnK3IM-pAQHck6Ez
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-24_12,2024-04-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=863 suspectscore=0 phishscore=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 spamscore=0 bulkscore=0 clxscore=1011
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404240056
+References: <CAJg=8jyC1+s80etZgWteps0Q0yEsR2NE23+Bf+Daa7zgJ2qKBA@mail.gmail.com>
+ <2c9182cc-9d7e-0108-90bc-5e66da966bdb@huaweicloud.com>
+In-Reply-To: <2c9182cc-9d7e-0108-90bc-5e66da966bdb@huaweicloud.com>
+From: Marius Fleischer <fleischermarius@gmail.com>
+Date: Wed, 24 Apr 2024 07:54:06 -0700
+Message-ID: <CAJg=8jwn5NDWmo4=prnFbZJuq7N3kdmt2evkQ9uEJCWi0Bs8dg@mail.gmail.com>
+Subject: Re: INFO: task hung in bdev_open
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller@googlegroups.com, 
+	harrisonmichaelgreen@gmail.com, "yukuai (C)" <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 24, 2024 at 09:44:22PM +0700, Bui Quang Minh wrote:
-> Currently, we allocate a lbuf-sized kernel buffer and copy lbuf from
-> userspace to that buffer. Later, we use scanf on this buffer but we don't
-> ensure that the string is terminated inside the buffer, this can lead to
-> OOB read when using scanf. Fix this issue by using memdup_user_nul instead.
-> 
-> Fixes: a4f17cc72671 ("s390/cio: add CRW inject functionality")
-> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-> ---
->  drivers/s390/cio/cio_inject.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Kuai,
 
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
+I see, thanks so much for the explanation!
+
+Best,
+Marius
+
+On Mon, 22 Apr 2024 at 23:51, Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>
+> Hi,
+>
+> =E5=9C=A8 2024/04/21 9:19, Marius Fleischer =E5=86=99=E9=81=93:
+> > INFO: task syz-executor.2:32444 blocked for more than 143 seconds.
+> >     Not tainted 6.9.0-rc4-dirty #3
+> > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this messag=
+e.
+> > task:syz-executor.2  state:D stack:25264 pid:32444 tgid:32417
+> > ppid:8232   flags:0x00004006
+> > Call Trace:
+> >   <TASK>
+> >   context_switch kernel/sched/core.c:5409 [inline]
+> >   __schedule+0xd23/0x5bc0 kernel/sched/core.c:6746
+> >   __schedule_loop kernel/sched/core.c:6823 [inline]
+> >   schedule+0xe7/0x350 kernel/sched/core.c:6838
+> >   io_schedule+0xbf/0x130 kernel/sched/core.c:9044
+> >   folio_wait_bit_common+0x397/0x9c0 mm/filemap.c:1283
+> >   folio_put_wait_locked mm/filemap.c:1447 [inline]
+> >   do_read_cache_folio+0x2db/0x520 mm/filemap.c:3729
+> >   read_mapping_folio include/linux/pagemap.h:894 [inline]
+> >   read_part_sector+0xf7/0x440 block/partitions/core.c:715
+> >   adfspart_check_POWERTEC+0x82/0x710 block/partitions/acorn.c:454
+> >   check_partition block/partitions/core.c:138 [inline]
+> >   blk_add_partitions block/partitions/core.c:582 [inline]
+> >   bdev_disk_changed+0x891/0x15f0 block/partitions/core.c:686
+> >   blkdev_get_whole+0x18b/0x260 block/bdev.c:667
+> >   bdev_open+0x2eb/0xe90 block/bdev.c:880
+> >   blkdev_open+0x181/0x200 block/fops.c:620
+> >   do_dentry_open+0x6d3/0x18e0 fs/open.c:955
+> >   do_open fs/namei.c:3642 [inline]
+> >   path_openat+0x1b23/0x2670 fs/namei.c:3799
+> >   do_filp_open+0x1c7/0x410 fs/namei.c:3826
+> >   do_sys_openat2+0x164/0x1d0 fs/open.c:1406
+> >   do_sys_open fs/open.c:1421 [inline]
+> >   __do_sys_openat fs/open.c:1437 [inline]
+> >   __se_sys_openat fs/open.c:1432 [inline]
+> >   __x64_sys_openat+0x140/0x1f0 fs/open.c:1432
+> >   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+> >   do_syscall_64+0xce/0x250 arch/x86/entry/common.c:83
+> >   entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>
+> So this thread hold 'open_mutex' to issued IO to scan partitons, and
+> such IO never complete, consider that you are using nbd to test, and
+> nbd doesn't handle timeout by default, I really suspect this is not a
+> real issue, and this looks like nbd server side doesn't reply to
+> nbd-client.
+>
+> Thanks,
+> Kuai
+>
 
