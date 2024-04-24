@@ -1,51 +1,54 @@
-Return-Path: <linux-kernel+bounces-156340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 827218B0181
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:06:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70C4D8B0183
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:08:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B40141C214C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:06:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3473D2841F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:08:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA692156C5B;
-	Wed, 24 Apr 2024 06:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75453156C61;
+	Wed, 24 Apr 2024 06:08:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="ayCZNf++"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="GiVXuaHm"
+Received: from mout.web.de (mout.web.de [212.227.15.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3443D15696D;
-	Wed, 24 Apr 2024 06:06:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D1F156C4F;
+	Wed, 24 Apr 2024 06:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713938807; cv=none; b=Ybf7p0s0P0vh7jT/E3Yac9SRT1egQrlkVUODFHH7Tr/3FF3AlomzKt5hoTipnB7pLCYTulXipp30obIbqSrnaWLxE9iDMJsmT5WopsFTeh7gLpB/jZnlhUpyIBjBB+1/DbeOGKCGjAXwtxT8fy0dcDgCydId/S36i/1OXjDbMVM=
+	t=1713938880; cv=none; b=HfeuPZ1xvMdY5zqDcq2YyN0ppdSetm4ofi9JvL0jMt1Yuw7tVqll4vkpyRTPAnAtOBw6U0mem4oFHlSPAu2WEgmuQkAQvAGbeov5OXu1cu5gnm/iYMwv/KbPpCwt++C7x5QyGwcPHJas4YSYHp/sK4YlKs3S/fV89uQ+M7mi4fA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713938807; c=relaxed/simple;
-	bh=j1+muzAkVHfWGaUVDfWnppU1cbHnW27Ru5LKk7vTw1U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=DX5Vaw5gv7X8jRb/RrWcB36g9NHej7FZ489W8XPMDVZYhhhoeDvYNg/AEZZgHpB++PVpifjb6zqfgQNkRw/fZA9rkIZJldPVNJbFKSlzHWDnQ0jq+G/o8x/H2fxj4Djo+770RvNv14Vv0hNWrOLLYbWxPNi54qw7+qeS+SFzkFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=ayCZNf++; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Cc:From:References:To:Subject:Reply-To:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=BjWj3bvgshQkX0ic9F8zq8at9TWgUDpFINVtQ3l7b5c=;
-	t=1713938805; x=1714370805; b=ayCZNf++3DexYoMawSOlruJ1XI9KWtWkFEa1OsAMKFXCap6
-	Is6IJSYfF2OuLPcInqOvVmWM4JQGjKw3QL+nOCp4Bme7Wjy6vCBBAMYyWl7FRTWwSUyQNGUrqMSoe
-	lwhTPmte3J4S6gdGlmRFMlgAfbgX2aglUrA4Hxc/bP64A5hviYFYITdIdKxtqP9rwHebej1aLlWzn
-	dcZhi5QM0qpiW80Z8z1JWtu0O5Yr/olFLbUy4I3k5DUZk0+fBrF0s0D0Du4Lk9jClOAlDKxcF4HKR
-	0OrgV+jSMn1Kx0LJCZMU8/NSaxYgG3Z+cJysgxNOnFSOco2oKG5u5p2hVdxgghUw==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rzVm7-0006ig-5J; Wed, 24 Apr 2024 08:06:35 +0200
-Message-ID: <3b983390-110e-4c68-a825-6e811de78919@leemhuis.info>
-Date: Wed, 24 Apr 2024 08:06:34 +0200
+	s=arc-20240116; t=1713938880; c=relaxed/simple;
+	bh=Jd6FI6x901LXxbVZ58YQZYnxrAAST8jfAjB6KyEmr5A=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=s5k7yi3hSV6yxcWXCeOma6EZtZXoZvqLG/Yll7p1PoyIM4wQFXnUcW6G8tHwtONjFaU79CWAqK0ZTemwmUPF8LSSOnCSQWusBjda3CRtAewsjP4jdkI33pkkWcfFayOs2XCKnaZ8yd/zy/Yhw+nVfnzfhV/Iw/1BN1k7HMl9Cz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=GiVXuaHm; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713938835; x=1714543635; i=markus.elfring@web.de;
+	bh=Jd6FI6x901LXxbVZ58YQZYnxrAAST8jfAjB6KyEmr5A=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=GiVXuaHmCGvEIbo6HrKtTICQxdYMunna9F3dlqxkiD3oW1ibCN+dwD8j/gaF2OC4
+	 9GKUrRqCWp9jbHzcBtJK1tUyJjgxI3ROisUHxR6gTS/7m0VxAfKXn4Y5IdavocaUo
+	 +jpk3+Kr4VU3AnGm3YvsXVfPYrbInFxS84h7IBiFK8PIC5Hbr/b3dZiMKlN+FOnjR
+	 6o6Z6I/obvUwyKreqWmSl8Ydp68M6AqFimj9PU8JMbe5MFNuvankkFTuR4FqeSGa7
+	 Ooh1xV32HJfKNmoxC165bC1/TzVzCbDQC0wrEej9xOL+qq9yuj+RLcCjhLZIb1Xqf
+	 JDXuI6tonXctlpoPzQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MIL0C-1rwCP90hMq-000ywL; Wed, 24
+ Apr 2024 08:07:15 +0200
+Message-ID: <1b2b9d87-893e-4bfb-873a-68c5b269f04d@web.de>
+Date: Wed, 24 Apr 2024 08:06:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,51 +56,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: BT_RAM_CODE_MT7961_1a_2_hdr.bin is missing in the firmware tree
-To: "Artem S. Tashkinov" <aros@gmx.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- chris.lu@mediatek.com, deren.wu@mediatek.com,
- Peter Tsao <peter.tsao@mediatek.com>
-References: <6574fc0f-8a24-4aff-8a1b-dbf960b6375d@gmx.com>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-Cc: linux-bluetooth <linux-bluetooth@vger.kernel.org>,
- Linux kernel regressions list <regressions@lists.linux.dev>,
- linux-mediatek <linux-mediatek@lists.infradead.org>
-In-Reply-To: <6574fc0f-8a24-4aff-8a1b-dbf960b6375d@gmx.com>
+To: Yuxuan Hu <yuxuanhu@buaa.edu.cn>, netdev@vger.kernel.org,
+ kernel-janitors@vger.kernel.org,
+ Francesco Dolcini <francesco.dolcini@toradex.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>, Johan Hovold <johan@kernel.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, Jia-Ju Bai <baijiaju1990@gmail.com>,
+ Si-Jie Bai <sy2239101@buaa.edu.cn>, Yuxuan Hu <20373622@buaa.edu.cn>
+References: <20240422080408.1639247-1-20373622@buaa.edu.cn>
+Subject: Re: [PATCH] nfc: pn533: Fix null-ptr-deref in pn533_recv_frame()
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240422080408.1639247-1-20373622@buaa.edu.cn>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1713938805;e32e74d3;
-X-HE-SMSGID: 1rzVm7-0006ig-5J
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:T0GOxI3ph3jcg7WrBMBqclEkC4lZekQN+PZLv/AKJt2p8vaCJzo
+ IO27y+/52FQYKLn42n1s6i+4wq7rS5SbVNvynI/vfdPRSYqkw5WHhpI6txDd196PE8cqoZs
+ 9Jj/XFL4W1+t80SK7mpcn1qHg5acVt1BT8DUq/mfYdGmWGpUNye/oeoExHxyaIOxxZ74+DQ
+ GQ3z6l+EefRKlHizD+d9w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:hrYKoWGzCYg=;WQx1GhyRnGRtRRDbANvbS1pLmlK
+ lhaz1VfjQqT1epft+hvVTpOw1Anz65I2qESg26NqKVFosEefDDZrBvsURvfYSlAx6daJh/TkP
+ u4qRhZBxHH5lqFTISZxJmKFWUfe14ejHmpQCstcbIWQMTUrC1povUXIzJhiXwAOEuE9ajkyZc
+ COKC5E2ewP7AD3tolUzfMtuYKmT19PGQYala489AVdT2Ac+KUhxgUd/LnCFHIqumx0SsmvX2G
+ gJIMksIkNWo/wyEElMcO7WxqaTNGrjxYe+8wBxoZgdwq6R6X9GnvB9zsvrCG27xB7BVkQempz
+ c+RAvGSHMuXvFfFWQw5a+SPTJTWuv/D55V7BUB2RGcfeuTkBLUr4AM3dLs5qE3CwSXNV4RivF
+ MD1RFa2Ma6u8VgD1dSVBoUZEn4yvYitE2lWOyBeVUfp+JDIQ7ZCY3pQqn0TyuAO8mNFZ83giC
+ Ms/1QfkKFQ5QeYfZTT526vjOKeWlGvvlDhvvIJNtjIA0qkgCfi52bVUV5xRmRGl4A55hOpGHd
+ BQtnefidtUQ4LZX9xU1V5/mdtkNvnX8Dc6aBpoVVNixcIHgjB9jS4oR+XmHJzd/spD481BwBQ
+ ITD6SlSPt4VFJpOnBU4f0sQY3GcpbR93XWPB9vvwiUs3Wk7hHO+/zM/8ikUWMSTqVOBQuHdq5
+ RKmiUiy5DUU85CzHEb7Tydrosl8/aYsyyDrx9Xy9GI+FsWmhI4f4uPHbg0WjS9IB6q7Iwswrl
+ jq99ai75On4pMhcMJjwUH5UqSD7r1+i+QPTuwkWzhk3fH1k8YGqv7ukZ2qi0ABTqKl0FH2iHt
+ Sp3uixIX+E7qHmUPpi8Byp58WpI3gtVZo6ezY0EiPnsiI=
 
-On 23.04.24 12:23, Artem S. Tashkinov wrote:
-> 
-> Could you please push this firmware ASAP?
-> 
-> It's been reported to be missing:
-> https://bugzilla.kernel.org/show_bug.cgi?id=218757
+> Our fuzzing tool found a null-ptr-deref in function pn533_recv_frame
+> (/drivers/nfc/pn533/pn533.c) in kernel 6.8.
+=E2=80=A6
 
-FWIW, that can't be the only solution for that problem, as
-Documentation/driver-api/firmware/firmware-usage-guidelines.rst clearly
-states:
+Can it be nicer to use the term =E2=80=9Cnull pointer dereference=E2=80=9D=
+ for the commit message here?
 
-"""
-Users switching to a newer kernel should *not* have to install newer
-firmware files to keep their hardware working.
-"""
-
-Could anyone from mediatek please confirm that this rule is adhered?
-
-Side note: I wonder if Peter's patch
-https://lore.kernel.org/all/20240415141922.25055-1-peter.tsao@mediatek.com/
-("Bluetooth: btusb: Fix the patch for MT7920 the affected to MT7921") is
-relevant for this.
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+Regards,
+Markus
 
