@@ -1,182 +1,168 @@
-Return-Path: <linux-kernel+bounces-156948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B343E8B0AC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:21:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C54618B0921
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:20:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D73A01C235C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:21:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E45B288D33
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:20:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01F0F15D5BB;
-	Wed, 24 Apr 2024 13:21:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4073515ADB3;
+	Wed, 24 Apr 2024 12:20:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="oPBxCIqj"
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gs3LSytU"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D52D15821F;
-	Wed, 24 Apr 2024 13:21:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5AF15A4BA
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 12:20:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713964883; cv=none; b=eWx/va08RijE0fPY1x0ILTO1MwyyblCirvl51fbm5DuyW6BcSHb/7NpUi5/MTOxYRcee7vJPMoTXUNarlMqg7H0YCX3mCHU7Wt4SOPTmEEcYzCjFWXIWspq3atFmwPka1geqTe3dfqzR/6lc56cSnfVDVEDEimbOsOyHjM9xiX0=
+	t=1713961251; cv=none; b=ewGuIL67yI5Exlsra1PYpioRKgAqAB2K61NRmQefJHD4iyHdER9T8faDADrDXZKcFIZA70Fvfp+C7UyMhsF2ZwN+8+Iz9lhj/IFaXB4hC7rsD16jRrUZZk6b0T3FxG6fJPeSXz9neuYNDpy3ri/zabSf8bvi3jkm/91klTlt2CI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713964883; c=relaxed/simple;
-	bh=bABuUtxtwMiaDJEDth6yYKqkY4fMD7xJ78zqRkijgc0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=d+f4eerOeh8o2zWpWiktseCsT9DvruN4cxFpblOXYXB9DCsdEaaAdx/kWcBep+qEnEvYTfc2fbtVTooam0Jelh8mtpOIYlaWvck60V6+LsabgCQ4dcLASXLNsT3CzG0N0MqC5XXf7PDA1MyMyQGMaJAlfbyUygRyQg+qrJDvMw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=oPBxCIqj; arc=none smtp.client-ip=91.207.212.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43OC4omW029734;
-	Wed, 24 Apr 2024 14:20:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=hkSUB26Hij3YoH4d4gONssMZiD9lhMIi9MYuoDahbc0=; b=oP
-	BxCIqjZqjU5yIPdolezp3gucfYE43BpO2moF0boJpv1s74317nNrf8tTbYX5usOd
-	rlKx/FhS1Qy6Jkjea82P6nnIhij2k6RtqQ72RGkfOKHZzW/rYU1jige7eN6glRBm
-	Gr/fYnvQ0nI1FFIhwyV+FpQcOob58VqnssUOpcpR/bfBeTjXY5MTu8NY0VN5oLNt
-	baPC6vo+Z6OwTORIZk9BIz6pJZyBiWpxinx+vs127hpTMIh3Q7+NTYQB11bqSkWu
-	wTRZ/tTR1dd1WWC/yQviBRPlU7NtgpxHp9kyOZz9PzdXYOFqZatkp9e4ugAKrRJ2
-	ZAcLVNQAQ/E+lH5KwgDw==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xmrnj5npa-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 14:20:39 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 16FD54002D;
-	Wed, 24 Apr 2024 14:20:30 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0C4C621A91F;
-	Wed, 24 Apr 2024 14:19:21 +0200 (CEST)
-Received: from [10.48.86.79] (10.48.86.79) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 24 Apr
- 2024 14:19:18 +0200
-Message-ID: <a0bd94ce-3ddb-4448-ada9-7070323cc98f@foss.st.com>
-Date: Wed, 24 Apr 2024 14:19:18 +0200
+	s=arc-20240116; t=1713961251; c=relaxed/simple;
+	bh=QXyTAYtBEHqfKfsBRuXbIP00XZG3dAzuEqxSavK2oRs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NG0QykFL85ltnAgi9lXEugFBURcQiT/EF8VWgz8/JjdUWlSxSBZVV/gSeeqIo7Rl2ogrDAfZ3sjUS9TkJIa6wY++yPo74MlIYGQfhDUiXA5db/W2fY8H31w4XJMsTMrCnld2KCtpf//obj8Z2NpYYMF1EKMb0+b8jOumCItl0oM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gs3LSytU; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-de462979e00so7715309276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:20:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713961248; x=1714566048; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QXyTAYtBEHqfKfsBRuXbIP00XZG3dAzuEqxSavK2oRs=;
+        b=gs3LSytU3jDhhIAmFOvLS8BZCOMsXNtyS9bgBy53UYKVGLN6zf5ssNiEdMdi0xTChr
+         ywCXPjONKVU5snKcK6O2uNUTa1SiX4G58vrrJ/kHUvS1alAKSq1LsXDvz/XViwd5sB1M
+         wKEjvvymoQHuag26UJdD7j/2NXHHFXiYLMjjweTUvv5h0RMCwWSAdFgFQJcfSxwyV0eS
+         6eoSMWzsXY4yuCBEJUNvMbxKEO7WVNqQUnPrxplOMZwTwsbtXKrqbYJH4dt4OE6HYUO8
+         Bmuww/JC2NcxyR1nhLCVaHJIN1OVDI/XsJGgDK/jDq6+g8rmSTbRkuT/9hhJHz6T6iYc
+         g3CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713961248; x=1714566048;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QXyTAYtBEHqfKfsBRuXbIP00XZG3dAzuEqxSavK2oRs=;
+        b=UZ9PCDyYSdXfiyRAx2XwAcujr6G+9eGggnPKc+VIWLnh0CJ02/jq2HHXg3X/jxDww3
+         txRSL+oOqvEEPOZC8huOxReEtWBytT9aGMy5xx306XL/6IAvNdOKUdg0JZ2rDU5IjOhw
+         Rlr0T5LV7ZwhtreYwywK9FVaIdlanu/0ezE5vKlJD4LvBQKOPM3B1ZACikZIokNhhRQE
+         1PiaAsBnpXxycL9hDJgqpH81oFuwAo/VODS0SrYEjZ3P3tT4Zq9oSm/HhT+Ix4YJ1Ibv
+         tMUxvcr0isR+EcHnD8jbY4U+cOZ6lkkTtjb4LmXiqZsfg6Z7rD0UC6+EH2kZ1fTTqoGj
+         aAwA==
+X-Forwarded-Encrypted: i=1; AJvYcCUpUnLf/0qLSYRbPL2ahJhWQXJ9A3pkokT15uaX3Zc2WHzCGk/CIuW166mt4cU4wWnovZn/JI+ShPBuvh8Eibmq97RwNuKfe6fEOLOi
+X-Gm-Message-State: AOJu0Yw5blD6T97y0+lWkVSmSiGXzxBEEwEHwdbHraQ1Wiuh7v8lQPov
+	DJG4Dh2+5GS1/+fjxnA+iLhX6Kqg9aUQGfGM/lDTYuHv41B8XrajWZ1vCIEfukehWua1Jnix2eA
+	9w25jaFT9tBTk6ShIxjmsS+T8pcu/OX5Vit/V7w==
+X-Google-Smtp-Source: AGHT+IFlnUzjZT7CIke7TNCrSUx76xu1l/kSb/3YVpva/PnKnsHU1IGww6Ek7hw5Vt+mX8BVYvB8BjcE5mbTfmYmXDY=
+X-Received: by 2002:a05:6902:1024:b0:dca:e4fd:b6d6 with SMTP id
+ x4-20020a056902102400b00dcae4fdb6d6mr2642434ybt.61.1713961248050; Wed, 24 Apr
+ 2024 05:20:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 06/13] of: property: fw_devlink: Add support for
- "access-controller"
-To: Saravana Kannan <saravanak@google.com>,
-        Gatien Chevallier
-	<gatien.chevallier@foss.st.com>
-CC: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <vkoul@kernel.org>, <jic23@kernel.org>,
-        <olivier.moysan@foss.st.com>, <arnaud.pouliquen@foss.st.com>,
-        <mchehab@kernel.org>, <fabrice.gasnier@foss.st.com>,
-        <andi.shyti@kernel.org>, <ulf.hansson@linaro.org>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <hugues.fruchet@foss.st.com>, <lee@kernel.org>, <will@kernel.org>,
-        <catalin.marinas@arm.com>, <arnd@kernel.org>,
-        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
-        <peng.fan@oss.nxp.com>, <lars@metafoo.de>, <rcsekar@samsung.com>,
-        <wg@grandegger.com>, <mkl@pengutronix.de>,
-        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-media@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, Rob Herring <robh@kernel.org>
-References: <20240105130404.301172-1-gatien.chevallier@foss.st.com>
- <20240105130404.301172-7-gatien.chevallier@foss.st.com>
- <CAGETcx8HdnspNfDEJP+cqShJPsDryzGkOVq6B99cFQzkZi3dMg@mail.gmail.com>
-Content-Language: en-US
-From: Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <CAGETcx8HdnspNfDEJP+cqShJPsDryzGkOVq6B99cFQzkZi3dMg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-24_10,2024-04-23_02,2023-05-22_02
+References: <20240422130036.31856-1-brgl@bgdev.pl> <99242a7c-53bf-4227-9623-7bc092f564b3@penguintechs.org>
+ <CAMRc=MepDwUbAKrWgm0CXKObqy8=igtug0QDgo-CgwxjZCAC2Q@mail.gmail.com>
+ <b982b73d-0540-409c-a6e2-0e03ecb11715@penguintechs.org> <0381f39c-38ba-4a2b-915c-f14c5f911eb9@penguintechs.org>
+ <CAMRc=MfnEct7ThQhCA3AoY7hxq8j1mmFLNNkK17+RSvJxs67XQ@mail.gmail.com> <2371f538-ec53-4037-b171-c62bf4e06eb1@penguintechs.org>
+In-Reply-To: <2371f538-ec53-4037-b171-c62bf4e06eb1@penguintechs.org>
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Date: Wed, 24 Apr 2024 14:20:37 +0200
+Message-ID: <CACMJSeunUaj0cxLaN4MpFmX5vTOx_vnWjBN4Y2FavdQoQxFRkg@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: qca: set power_ctrl_enabled on NULL returned
+ by gpiod_get_optional()
+To: Wren Turkal <wt@penguintechs.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, linux-bluetooth@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Zijun Hu <quic_zijuhu@quicinc.com>, 
+	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Saravana
+On Wed, 24 Apr 2024 at 14:17, Wren Turkal <wt@penguintechs.org> wrote:
+>
+> On 4/24/24 4:56 AM, Bartosz Golaszewski wrote:
+> > On Wed, Apr 24, 2024 at 1:53=E2=80=AFPM Wren Turkal <wt@penguintechs.or=
+g> wrote:
+> >>
+> >> On 4/24/24 4:16 AM, Wren Turkal wrote:
+> >>> On 4/24/24 2:04 AM, Bartosz Golaszewski wrote:
+> >>>> On Wed, 24 Apr 2024 07:07:05 +0200, Wren Turkal<wt@penguintechs.org>
+> >>>> said:
+> >>>>> On 4/22/24 6:00 AM, Bartosz Golaszewski wrote:
+> >>>>>> From: Bartosz Golaszewski<bartosz.golaszewski@linaro.org>
+> >>>>>>
+> >>>>>> Any return value from gpiod_get_optional() other than a pointer to=
+ a
+> >>>>>> GPIO descriptor or a NULL-pointer is an error and the driver shoul=
+d
+> >>>>>> abort probing. That being said: commit 56d074d26c58 ("Bluetooth:
+> >>>>>> hci_qca:
+> >>>>>> don't use IS_ERR_OR_NULL() with gpiod_get_optional()") no longer s=
+ets
+> >>>>>> power_ctrl_enabled on NULL-pointer returned by
+> >>>>>> devm_gpiod_get_optional(). Restore this behavior but bail-out on
+> >>>>>> errors.
+> >>>>> Nack. This patch does fixes neither the disable/re-enable problem n=
+or
+> >>>>> the warm boot problem.
+> >>>>>
+> >>>>> Zijun replied to this patch also with what I think is the proper
+> >>>>> reasoning for why it doesn't fix my setup.
+> >>>>>
+> >>>> Indeed, I only addressed a single issue here and not the code under =
+the
+> >>>> default: label of the switch case. Sorry.
+> >>>>
+> >>>> Could you give the following diff a try?
+> >>>
+> >>> I had a feeling that was what was going on. I'll give the patch a sho=
+t.
+> >>>
+> >>> wt
+> >>
+> >> Considering this patch is basically equivalent to patch 1/2 from Zijun=
+,
+> >> I am not surprised that is works similarly. I.e. on a cold boot, I can
+> >> disable/re-enable bluetooth as many time as I want.
+> >>
+> >
+> > Zijun didn't bail out on errors which is the issue the original patch
+> > tried to address and this one preserves.
+> >
+> >> However, since this patch doesn't include the quirk fix from Zijun's
+> >> patchset (patch 2/2), bluetooth fails to work after a warm boot.
+> >>
+> >
+> > That's OK, we have the first part right. Let's now see if we can reuse
+> > patch 2/2 from Zijun.
+>
+> I'm compiling it right now. Be back soon.
+>
 
-On 4/24/24 07:57, Saravana Kannan wrote:
-> On Fri, Jan 5, 2024 at 5:03 AM Gatien Chevallier
-> <gatien.chevallier@foss.st.com> wrote:
->>
->> Allows tracking dependencies between devices and their access
->> controller.
->>
->> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
->> Acked-by: Rob Herring <robh@kernel.org>
-> 
-> Please cc me on fw_devlink patches. Also, this patch is breaking the
-> norm below. Please send a fix up patch.
-> 
->> ---
->> Changes in V9:
->>          - Added Rob's review tag
->>
->> Changes in V6:
->>          - Renamed access-controller to access-controllers
->>
->> Changes in V5:
->>          - Rename feature-domain* to access-control*
->>
->> Patch not present in V1
->>
->>   drivers/of/property.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/of/property.c b/drivers/of/property.c
->> index afdaefbd03f6..7f737eac91b2 100644
->> --- a/drivers/of/property.c
->> +++ b/drivers/of/property.c
->> @@ -1268,6 +1268,7 @@ DEFINE_SIMPLE_PROP(leds, "leds", NULL)
->>   DEFINE_SIMPLE_PROP(backlight, "backlight", NULL)
->>   DEFINE_SIMPLE_PROP(panel, "panel", NULL)
->>   DEFINE_SIMPLE_PROP(msi_parent, "msi-parent", "#msi-cells")
->> +DEFINE_SIMPLE_PROP(access_controllers, "access-controllers", "#access-controller-cells")
->>   DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
->>   DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
->>
->> @@ -1363,6 +1364,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
->>          { .parse_prop = parse_regulators, },
->>          { .parse_prop = parse_gpio, },
->>          { .parse_prop = parse_gpios, },
->> +       { .parse_prop = parse_access_controllers, },
-> 
-> All the simple properties are listed before the suffix ones as the
-> suffix checks are more expensive. So, you should have inserted this
-> right before the suffix properties. Also, there's a merge conflict in
-> linux-next. So make sure you take that into account when sending the
-> fix up and picking the order.
+Well I doubt it's correct as it removed Krzysztof's fix which looks
+right. If I were to guess I'd say we need some mix of both.
 
-I'm fixing the stm32-next branch by inserting
+Bart
 
-         { .parse_prop = parse_access_controllers, },
-just before
-
-	{ .parse_prop = parse_regulators, },
-
-
-> 
-> -Saravana
-> 
->>          {}
->>   };
-> 
->>
->> --
->> 2.35.3
->>
+> >> @Zijun, this patch looks more idiomatic when I look at the surrounding
+> >> code than your patch 1/2. Notice how it doesn't use the "else if"
+> >> construct. It does the NULL test separately after checking for errors.
+> >>
+> >> --
+> >> You're more amazing than you think!
+> >
+> > Bart
+>
+> --
+> You're more amazing than you think!
 
