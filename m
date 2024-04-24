@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-157112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D4F28B0CFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:46:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D92D8B0CFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:46:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0A4C1C24798
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:46:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B35211F28F08
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:46:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3822B15FA7E;
-	Wed, 24 Apr 2024 14:45:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6072A15FD07;
+	Wed, 24 Apr 2024 14:45:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZeQkZzPf"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kbCUUbHv"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E1915EFA0;
-	Wed, 24 Apr 2024 14:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C9C615E80A;
+	Wed, 24 Apr 2024 14:45:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713969911; cv=none; b=MMKSuf/8j/xhUqwCDi3qlNHrnQ7mi7Yh/USKQ5FU1pa1Ga4CpJRvL0wwU32hZhAmBHByItZdedwJaRoMOAF2CCU7ekGjwjgqS9ezKXl8UWwchhtFpZG8JR7XMotjlCwQNyXtyAYrAbCKBQd2RIsjXZYlx0CHY8/WXlHW/o2bao4=
+	t=1713969920; cv=none; b=T3oiNRL6AuUJKmOAmtg3RiF0Un+7KmdbbdxMQZaLOiMhpydWUHbuCqPUtV9tLxr5cPiA1+rM3MQmL0KhsxIq6AeuzCF/AoP/xO4p2GHgWKzcYDL8R4DNKY33QA7QrKyvg/HReE2iUtd9DlXCE8syneP/XqHc77zr5J3R9uRfOSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713969911; c=relaxed/simple;
-	bh=5qTfVU19Uhv7IKSJxI/EImm9oveNfOjQF+DaIPmQs6U=;
+	s=arc-20240116; t=1713969920; c=relaxed/simple;
+	bh=VaK7Dc1ZgvBEif7TgA4tb6qDQZcFjHq4J5gOM7PFKSo=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=dLkBu8T5EwsxM0pVgDRKbqaPS1tWYpEuEjZJnFFLajXwxRn0tHl41PNyOjVacZ6WxQONDCSj6qIZU3p+bHDgkiy22AbPLi1oShMPTgWkaqft+1BIQtElkEZDVvWVTmfeqzE+80ptampDeed/WqT9MLb0nRHYX0T90j1YBUu6gsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZeQkZzPf; arc=none smtp.client-ip=209.85.210.171
+	 In-Reply-To:To:Cc; b=DZO+TX8DJO37EqEyAEAuK2EXHPa5ZmMEnxmtItrHqFz+ikG2abKKXk3VWGaYqAyEf90gpvv7Kr5ULZOojbvvCgQmjk1PFUt9blk34DqvUSn2zVRBiunknwcgXSHi4yylfL9HycpHNm4M1vm/bQtq42P8N/0bPwfJlZIwjWYtr6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kbCUUbHv; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6f30f69a958so2568355b3a.1;
-        Wed, 24 Apr 2024 07:45:09 -0700 (PDT)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ee13f19e7eso6343387b3a.1;
+        Wed, 24 Apr 2024 07:45:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713969909; x=1714574709; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713969919; x=1714574719; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=iDVH41VbP2tcWCidq0GxDLy5uHVpzfSuy3cESbFhDE4=;
-        b=ZeQkZzPf1PsyFPY+9BPyc91yYyix7ODkEgq/Kw8ZX7Bg2hktumFSbLso6fToCG8f1l
-         dOF+OtIbMGVwcoi0bNPcLoqKUd3adRDCX90llTj4wiW9VpOHwiBDPdX+lIE3kiRuWS0t
-         5V7qSjB4yXnAQiBoiRWcwd1Cg0G4Z9QhbG3HnKURyueIUjw/b3e+6VUpbUVatNH2QBzM
-         EwWF+e/zzC6BatQ2t2EU7hy7EgY8Duy6LGhWVuUbyBy1WPC1bKGA7yPDiWn2O74j9bSU
-         DLpnqQhMi9EpDKsCAPJckVFQICUsnib9xJgtrNEsaJ3yKxS8CmAklM5FfMO0VInd9fpL
-         9vGg==
+        bh=jL5u74w472gVJgaoFOuurGlZOko3LllmO61ppXmRiz4=;
+        b=kbCUUbHvb6kqlJysGrCiMp4wEBrqwI5jJgoXCK/Ct9PIfx9TiqIRsuYbehs6/tlsyx
+         D14XPa7YFKSQnzMT1fgLsE6GBiE965oTg043e8p0h1BjtblSM/1/vD/D+Xs+iKMw/mAs
+         CZlgXlUV/qsQOPBBIP/7blZZz88Frdy+3/IouDH0xTebmJr5msmPiuPTAO0XvoZDhw+8
+         p/CvMhlrkR/F00P/ghKlhmhl/ffF6HK0+3EnOQHBEYADTrfCzaDF4Y+uMy2jnJQKb+Ry
+         8bfLt2MAeNz2lOvJKQR3GxAO5C2z6MtLxhQ0OtpuzKjZcG30Ly+EsePLTxCH+WyDm5ZJ
+         YF+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713969909; x=1714574709;
+        d=1e100.net; s=20230601; t=1713969919; x=1714574719;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iDVH41VbP2tcWCidq0GxDLy5uHVpzfSuy3cESbFhDE4=;
-        b=o731gKMXK5qhpZffLlFvPlVvC5hrEOKNjXssVVq2nJD+qJ0EqeBsFMRuoVqMq7fWnY
-         NbF239Ll7RH5Q+tQh32HOHaIDJepGRykR4V0V5CqMDKkCrJJ0uoACdefnSJ9dkimZPYi
-         4t4zOQ4dxFSXjTtP766FmP0JiitfGdB/wt+RDI7eH3AtU2/IQuzTLZ3tTEvSDn60WxcW
-         wKNTLM3cY1/X0GPb/lJ7jGLkXuxDTpt5xilV+LAXgiPFNR2y+5wLrK1NDTTxasv4NgiN
-         qzi9RIrLP+bLrkw9Db0cQCxnlUkX07H2eM5PCPVPBOuZ3nzaiZ3kPOvOipOa1Sxd1lF6
-         KnKw==
-X-Forwarded-Encrypted: i=1; AJvYcCXXq07c7cnlHaaNmRNquKRh8G0SYTWC7ifoIrQhLiEL88ST/NxdHRESJ4gyVfzVlkqXo9i3nTvCi3EC/S0OyB2yFrnSZbp5Zf04aHa7WiSm2OOMtz4Pt75xG39YW2dOi23JqtKpKSMr4+vkhXfbcD3B5K3kxqZ6KBnCWTpPu+pU/m32jMENAauVmBoK0JWeX6cqOn1AHeLrse3Vk8w=
-X-Gm-Message-State: AOJu0YwQpwh6ZQpx83oDZEoYSS/GvkVBc/ADF+9WcBWRnQSax455t2UR
-	EMYWcAFwffyZYLFGtHDtZOhGgbF74MW32SgqooSJUBOSfenQ8ETI
-X-Google-Smtp-Source: AGHT+IH7hDlGcLTpV6B9afh5y3sKseUhS0nuv4tpE75qoG+uPsjDp5Z57e8vcBnEwXBPXU5/z8LMfQ==
-X-Received: by 2002:a05:6a00:2405:b0:6f3:c10a:7bf3 with SMTP id z5-20020a056a00240500b006f3c10a7bf3mr503754pfh.0.1713969909373;
-        Wed, 24 Apr 2024 07:45:09 -0700 (PDT)
+        bh=jL5u74w472gVJgaoFOuurGlZOko3LllmO61ppXmRiz4=;
+        b=kAXqEoWC2UCrhdOK7a1QuQpzmnsjZhI+j0j8sC4SQTmmJDmelP6x8E5hIdPrNY4EDn
+         QVcmaSiDU4oPhQq7mcK/GFQwf8YtHheuEJdV8PgCkrM6fWvFt4djGnDPTh4LlgvOBtv6
+         lTvbMBIofJaFic0WOiXOK72B2QxIgUMi0D7IdX8j0Dzak9qyYHc04Wizw39abEWLZ5r2
+         J4g1c0mwCGlUZM9f2O8N+c5qrEF5/qkuoUWlifi5bM/okv6miQxWxErxc3G54MYb/+DR
+         UHGAUxNglcPgguQstLK/PsPLq3FY2YOP0s2eZXdtWvpMqHhPwVtw2uU1qVsr99uqmy+y
+         Nx5g==
+X-Forwarded-Encrypted: i=1; AJvYcCV2imJRMEtuG/vjajD6AXaWveg+xAT8a0ScYq31JY8CNT5T7Aq1HOTfWwfJp+Qf33G73QWsMhOj/bhKBev/UqCPqRz0TFhaAB55hKylv+swjsk4kKYe505d0IMoxB6lD4/RuRv2v/JPUbULsDAJwRwLvvWDujSHJ0EyvFQXaGgxOorKvmzB04BSXNPPM/HHsdRanvwIEDdOngUYVek=
+X-Gm-Message-State: AOJu0YxlKE0aaUduyJpN76i/z3PI0M++Nw1Gh906oP8+MUmfgQ6yTTuu
+	6UH37xAUP+BdloLgXQ9AEK/kCz9+dX4PK+K/YOaVNOReBkfyEj8C
+X-Google-Smtp-Source: AGHT+IE49U7h6wBv9tAHHYnz5iq0qU+ilw050QEUjqScU0CG/D47UjZh+SWsBkObp/54Z41ZULTZ/Q==
+X-Received: by 2002:a05:6a20:5606:b0:1a7:5184:8d14 with SMTP id ir6-20020a056a20560600b001a751848d14mr2731695pzc.46.1713969918691;
+        Wed, 24 Apr 2024 07:45:18 -0700 (PDT)
 Received: from [127.0.1.1] ([2001:ee0:50f5:5d0:6ca6:7f20:5242:67cc])
-        by smtp.googlemail.com with ESMTPSA id a5-20020aa78e85000000b006e554afa254sm11495743pfr.38.2024.04.24.07.45.00
+        by smtp.googlemail.com with ESMTPSA id a5-20020aa78e85000000b006e554afa254sm11495743pfr.38.2024.04.24.07.45.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 07:45:09 -0700 (PDT)
+        Wed, 24 Apr 2024 07:45:18 -0700 (PDT)
 From: Bui Quang Minh <minhquangbui99@gmail.com>
-Date: Wed, 24 Apr 2024 21:44:20 +0700
-Subject: [PATCH v2 3/6] bfa: ensure the copied buf is NUL terminated
+Date: Wed, 24 Apr 2024 21:44:21 +0700
+Subject: [PATCH v2 4/6] qedf: ensure the copied buf is NUL terminated
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,7 +77,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240424-fix-oob-read-v2-3-f1f1b53a10f4@gmail.com>
+Message-Id: <20240424-fix-oob-read-v2-4-f1f1b53a10f4@gmail.com>
 References: <20240424-fix-oob-read-v2-0-f1f1b53a10f4@gmail.com>
 In-Reply-To: <20240424-fix-oob-read-v2-0-f1f1b53a10f4@gmail.com>
 To: Jesse Brandeburg <jesse.brandeburg@intel.com>, 
@@ -109,37 +109,28 @@ Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
  Jens Axboe <axboe@kernel.dk>, Bui Quang Minh <minhquangbui99@gmail.com>
 X-Mailer: b4 0.13.0
 
-Currently, we allocate a nbytes-sized kernel buffer and copy nbytes from
-userspace to that buffer. Later, we use sscanf on this buffer but we don't
-ensure that the string is terminated inside the buffer, this can lead to
-OOB read when using sscanf. Fix this issue by using memdup_user_nul
-instead of memdup_user.
+Currently, we allocate a count-sized kernel buffer and copy count from
+userspace to that buffer. Later, we use kstrtouint on this buffer but we
+don't ensure that the string is terminated inside the buffer, this can
+lead to OOB read when using kstrtouint. Fix this issue by using
+memdup_user_nul instead of memdup_user.
 
-Fixes: 9f30b674759b ("bfa: replace 2 kzalloc/copy_from_user by memdup_user")
+Fixes: 61d8658b4a43 ("scsi: qedf: Add QLogic FastLinQ offload FCoE driver framework.")
 Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
 ---
- drivers/scsi/bfa/bfad_debugfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/qedf/qedf_debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/bfa/bfad_debugfs.c b/drivers/scsi/bfa/bfad_debugfs.c
-index 52db147d9979..f6dd077d47c9 100644
---- a/drivers/scsi/bfa/bfad_debugfs.c
-+++ b/drivers/scsi/bfa/bfad_debugfs.c
-@@ -250,7 +250,7 @@ bfad_debugfs_write_regrd(struct file *file, const char __user *buf,
- 	unsigned long flags;
- 	void *kern_buf;
+diff --git a/drivers/scsi/qedf/qedf_debugfs.c b/drivers/scsi/qedf/qedf_debugfs.c
+index 451fd236bfd0..96174353e389 100644
+--- a/drivers/scsi/qedf/qedf_debugfs.c
++++ b/drivers/scsi/qedf/qedf_debugfs.c
+@@ -170,7 +170,7 @@ qedf_dbg_debug_cmd_write(struct file *filp, const char __user *buffer,
+ 	if (!count || *ppos)
+ 		return 0;
  
--	kern_buf = memdup_user(buf, nbytes);
-+	kern_buf = memdup_user_nul(buf, nbytes);
- 	if (IS_ERR(kern_buf))
- 		return PTR_ERR(kern_buf);
- 
-@@ -317,7 +317,7 @@ bfad_debugfs_write_regwr(struct file *file, const char __user *buf,
- 	unsigned long flags;
- 	void *kern_buf;
- 
--	kern_buf = memdup_user(buf, nbytes);
-+	kern_buf = memdup_user_nul(buf, nbytes);
+-	kern_buf = memdup_user(buffer, count);
++	kern_buf = memdup_user_nul(buffer, count);
  	if (IS_ERR(kern_buf))
  		return PTR_ERR(kern_buf);
  
