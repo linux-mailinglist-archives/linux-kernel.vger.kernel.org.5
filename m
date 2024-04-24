@@ -1,220 +1,153 @@
-Return-Path: <linux-kernel+bounces-156763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E60D8B07D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:58:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B5CB8B07CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:56:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 263C02835B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:58:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3881F286EF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:56:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B2915991B;
-	Wed, 24 Apr 2024 10:58:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBDED159914;
+	Wed, 24 Apr 2024 10:56:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="YUy1Mr1J";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="J/cQvrL5";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="YUy1Mr1J";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="J/cQvrL5"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PN2VIcZa"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A4313DBB6;
-	Wed, 24 Apr 2024 10:57:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 262591598EA;
+	Wed, 24 Apr 2024 10:56:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713956281; cv=none; b=YeSWrLmRjAFVEVbZrKbBkihhSkmTuq8J2Cmoek3XkhOsPWjSF7XVFyuc00cfazLkCtfKliyB0Bn/WfO7j5XjSoTt/CPTqMef7IGeVtzKv6JzqfRogokoVP4G3EjmNrs9pD5XOp1OpzjOZRWLDGgChBwrlS7UpzPUqwL/EoXu0ZI=
+	t=1713956201; cv=none; b=qodBm91Tfr3qZWEehP+Lwooe5U+mNZT9cmKsB1ui/f2HOMeAuU9r0iZXRijUBY0aCenBuZBQ4q7CLCDM4I93xS/gWR+AJlc0MCpQtQDS2JnvhbO2VfQqKlwD15llqhLLZLeABOFLZ3wgaZgYnpnPso8VEuVE5Vwjl3O5bVR9BK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713956281; c=relaxed/simple;
-	bh=tRS2Dc6k4cHvFQvqwEyy6MnuweR/Dsimsz7u5sHttWQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R6TAr+mpUMTlT+sepVyt2QliRnw4TO9y2xuP3kD7HIvwy25yJFQvPAS0l58NFqWWJbmfXVcJ040Cfa6c7lWAffK3TLs1NY9pqstwtX/PfYknEfBlWghAny/STRVPiObXNcli9rXZjsLN/tMNF2UW163V08SWG/IQAvtah87Ou2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=YUy1Mr1J; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=J/cQvrL5; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=YUy1Mr1J; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=J/cQvrL5; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 286216144C;
-	Wed, 24 Apr 2024 10:57:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713956278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zepJMi+/FmAphXDQSDExadHqtRjvIFiQoMCvNpYvve8=;
-	b=YUy1Mr1JRvB2R7AR3ds8ByBJDyF+FV0oRRvwl7d1HhfNOTk7mRICDX83XeVD+0a+7jT3Ka
-	uzvaIZYBtWtu4yjYvhyQ/jfY3D4mlMbZWbfkwi5BElrYbEfa2iWCo5Xy3TE8ovMZkB61e9
-	3tKqjS2MklBlR/Ws/B44uzqq/axYiqU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713956278;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zepJMi+/FmAphXDQSDExadHqtRjvIFiQoMCvNpYvve8=;
-	b=J/cQvrL5Q5gRvCcb0IN9BRmKlbN9EwB0hEysYf72sKbbHcxMMJVXuWGXk0qzN7pTIgH4xC
-	GwJ1Q8YrxLdlp7Cw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713956278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zepJMi+/FmAphXDQSDExadHqtRjvIFiQoMCvNpYvve8=;
-	b=YUy1Mr1JRvB2R7AR3ds8ByBJDyF+FV0oRRvwl7d1HhfNOTk7mRICDX83XeVD+0a+7jT3Ka
-	uzvaIZYBtWtu4yjYvhyQ/jfY3D4mlMbZWbfkwi5BElrYbEfa2iWCo5Xy3TE8ovMZkB61e9
-	3tKqjS2MklBlR/Ws/B44uzqq/axYiqU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713956278;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zepJMi+/FmAphXDQSDExadHqtRjvIFiQoMCvNpYvve8=;
-	b=J/cQvrL5Q5gRvCcb0IN9BRmKlbN9EwB0hEysYf72sKbbHcxMMJVXuWGXk0qzN7pTIgH4xC
-	GwJ1Q8YrxLdlp7Cw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9AE6D13690;
-	Wed, 24 Apr 2024 10:57:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sWGSIrXlKGYiUwAAD6G6ig
-	(envelope-from <clopez@suse.de>); Wed, 24 Apr 2024 10:57:57 +0000
-From: =?UTF-8?q?Carlos=20L=C3=B3pez?= <clopez@suse.de>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Cc: seanjc@google.com,
-	=?UTF-8?q?Carlos=20L=C3=B3pez?= <clopez@suse.de>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v3] KVM: X86: improve documentation for KVM_CAP_X86_BUS_LOCK_EXIT
-Date: Wed, 24 Apr 2024 12:56:18 +0200
-Message-Id: <20240424105616.29596-1-clopez@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20231116133628.5976-1-clopez@suse.de>
-References: <20231116133628.5976-1-clopez@suse.de>
+	s=arc-20240116; t=1713956201; c=relaxed/simple;
+	bh=VlCUYJjJMdo3gKgoD+v70kTIJeDoxTMF1EJ27Rbviz8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mXJYjmpCRCWuapQPbFCS8XBFQZLjZHVwt0PUJYou5TWSDa/ivow5pGpjHpe4PP/Sf+c82Qx9KI33d7nzsnsaseOBS+pajFxjvV1fH3Sf36URQnqSMxtlXcnWxw6FhrPQeP14un6IP4lTZOMP6eCYOOzBIrITjsN4AD1YzqkBnxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PN2VIcZa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3999C113CE;
+	Wed, 24 Apr 2024 10:56:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713956201;
+	bh=VlCUYJjJMdo3gKgoD+v70kTIJeDoxTMF1EJ27Rbviz8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PN2VIcZaLKC7POnmPWKv/9Dg7rlkUALbhBAqV6Ud2rVxTNG4y7aqR2/9zw6l90Wzd
+	 B7y4YYxIjtEQD8LEHVSRwpQG6pCLsX2F2PVFa2RD4OkwUT/0zpeJqdfNk2LzjgQLSO
+	 C5/RXeNSdIvYyps+F/5mhZs2fnYKV6QidjRJKq/gkXP/9Sdu2qYBAc0jSJ7fgQt2O0
+	 xKMN4AEx7gLlg3wdzVNhLYhfSIDR7+eNBVZ3EhoXdKjg99jaiAMHxml14Be7P73I/m
+	 ZBt7bJtlDUaN29PFj+UhAI5vDel/ufQDjXvddyuPmynMrYpCo4mQOgjzITp9Vav2Sd
+	 rmt5enLCOR0WA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rzaIp-0000000035o-3MJZ;
+	Wed, 24 Apr 2024 12:56:39 +0200
+Date: Wed, 24 Apr 2024 12:56:39 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Doug Anderson <dianders@chromium.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH 4/6] HID: i2c-hid: elan: fix reset suspend current leakage
+Message-ID: <ZijlZw6zm4R9ULBU@hovoldconsulting.com>
+References: <20240423134611.31979-1-johan+linaro@kernel.org>
+ <20240423134611.31979-5-johan+linaro@kernel.org>
+ <CAD=FV=XP8aCjwE3LfgMy4oBL4xftFg5NkgUFso__54zNp_ZWiA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:email]
-X-Spam-Score: -3.30
-X-Spam-Flag: NO
+In-Reply-To: <CAD=FV=XP8aCjwE3LfgMy4oBL4xftFg5NkgUFso__54zNp_ZWiA@mail.gmail.com>
 
-Improve the description for the KVM_CAP_X86_BUS_LOCK_EXIT capability,
-fixing a few typos, grammarm and clarifying the purpose of the ioctl.
+On Tue, Apr 23, 2024 at 01:37:14PM -0700, Doug Anderson wrote:
+> On Tue, Apr 23, 2024 at 6:46 AM Johan Hovold <johan+linaro@kernel.org> wrote:
 
-Signed-off-by: Carlos López <clopez@suse.de>
----
-v3: Added Sean Christopherson's suggestions
-v2: Corrected the name of the KVM_RUN_X86_BUS_LOCK flag
+> > @@ -87,12 +104,14 @@ static int i2c_hid_of_elan_probe(struct i2c_client *client)
+> >         ihid_elan->ops.power_up = elan_i2c_hid_power_up;
+> >         ihid_elan->ops.power_down = elan_i2c_hid_power_down;
+> >
+> > -       /* Start out with reset asserted */
+> > -       ihid_elan->reset_gpio =
+> > -               devm_gpiod_get_optional(&client->dev, "reset", GPIOD_OUT_HIGH);
+> > +       ihid_elan->reset_gpio = devm_gpiod_get_optional(&client->dev, "reset",
+> > +                                                       GPIOD_ASIS);
+> 
+> I'm not a huge fan of this part of the change. It feels like the GPIO
+> state should be initialized by the probe function. Right before we
+> call i2c_hid_core_probe() we should be in the state of "powered off"
+> and the reset line should be in a consistent state. If
+> "no_reset_on_power_off" then it should be de-asserted. Else it should
+> be asserted.
 
- Documentation/virt/kvm/api.rst | 52 ++++++++++++++++++----------------
- 1 file changed, 27 insertions(+), 25 deletions(-)
+First, the reset gpio will be set before probe() returns, just not
+immediately when it is requested.
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 0b5a33ee71ee..a1d78e06a1ad 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -6416,9 +6416,9 @@ More architecture-specific flags detailing state of the VCPU that may
- affect the device's behavior. Current defined flags::
+[ Sure, your panel follower implementation may defer the actual probe of
+the touchscreen even further but I think that's a design flaw in the
+current implementation. ]
+
+Second, the device is not necessarily in the "powered off" state as the
+driver leaves the power supplies in whatever state that the boot
+firmware left them in.
+
+Not immediately asserting reset and instead leaving it in the state that
+the boot firmware left it in is also no different from what happens when
+a probe function bails out before requesting the reset line.
+
+> I think GPIOD_ASIS doesn't actually do anything useful for you, right?
+> i2c_hid_core_probe() will power on and the first thing that'll happen
+> there is that the reset line will be unconditionally asserted.
+
+It avoids asserting reset before we need to and thus also avoid the need
+to deassert it on early probe failures (e.g. if one of the regulator
+lookups fails).
+
+We also don't need to worry about timing requirements, which can all be
+handled in one place (i.e. in the power up and power down callbacks).
  
-   /* x86, set if the VCPU is in system management mode */
--  #define KVM_RUN_X86_SMM     (1 << 0)
-+  #define KVM_RUN_X86_SMM          (1 << 0)
-   /* x86, set if bus lock detected in VM */
--  #define KVM_RUN_BUS_LOCK    (1 << 1)
-+  #define KVM_RUN_X86_BUS_LOCK     (1 << 1)
-   /* arm64, set for KVM_EXIT_DEBUG */
-   #define KVM_DEBUG_ARCH_HSR_HIGH_VALID  (1 << 0)
- 
-@@ -7757,29 +7757,31 @@ Valid bits in args[0] are::
-   #define KVM_BUS_LOCK_DETECTION_OFF      (1 << 0)
-   #define KVM_BUS_LOCK_DETECTION_EXIT     (1 << 1)
- 
--Enabling this capability on a VM provides userspace with a way to select
--a policy to handle the bus locks detected in guest. Userspace can obtain
--the supported modes from the result of KVM_CHECK_EXTENSION and define it
--through the KVM_ENABLE_CAP.
--
--KVM_BUS_LOCK_DETECTION_OFF and KVM_BUS_LOCK_DETECTION_EXIT are supported
--currently and mutually exclusive with each other. More bits can be added in
--the future.
--
--With KVM_BUS_LOCK_DETECTION_OFF set, bus locks in guest will not cause vm exits
--so that no additional actions are needed. This is the default mode.
--
--With KVM_BUS_LOCK_DETECTION_EXIT set, vm exits happen when bus lock detected
--in VM. KVM just exits to userspace when handling them. Userspace can enforce
--its own throttling or other policy based mitigations.
--
--This capability is aimed to address the thread that VM can exploit bus locks to
--degree the performance of the whole system. Once the userspace enable this
--capability and select the KVM_BUS_LOCK_DETECTION_EXIT mode, KVM will set the
--KVM_RUN_BUS_LOCK flag in vcpu-run->flags field and exit to userspace. Concerning
--the bus lock vm exit can be preempted by a higher priority VM exit, the exit
--notifications to userspace can be KVM_EXIT_BUS_LOCK or other reasons.
--KVM_RUN_BUS_LOCK flag is used to distinguish between them.
-+Enabling this capability on a VM provides userspace with a way to select a
-+policy to handle the bus locks detected in guest. Userspace can obtain the
-+supported modes from the result of KVM_CHECK_EXTENSION and define it through
-+the KVM_ENABLE_CAP. The supported modes are mutually-exclusive.
-+
-+This capability allows userspace to force VM exits on bus locks detected in the
-+guest, irrespective whether or not the host has enabled split-lock detection
-+(which triggers an #AC exception that KVM intercepts). This capability is
-+intended to mitigate attacks where a malicious/buggy guest can exploit bus
-+locks to degrade the performance of the whole system.
-+
-+If KVM_BUS_LOCK_DETECTION_OFF is set, KVM doesn't force guest bus locks to VM
-+exit, although the host kernel's split-lock #AC detection still applies, if
-+enabled.
-+
-+If KVM_BUS_LOCK_DETECTION_EXIT is set, KVM enables a CPU feature that ensures
-+bus locks in the guest trigger a VM exit, and KVM exits to userspace for all
-+such VM exits, e.g. to allow userspace to throttle the offending guest and/or
-+apply some other policy-based mitigation. When exiting to userspace, KVM sets
-+KVM_RUN_X86_BUS_LOCK in vcpu-run->flags, and conditionally sets the exit_reason
-+to KVM_EXIT_X86_BUS_LOCK.
-+
-+Note! Detected bus locks may be coincident with other exits to userspace, i.e.
-+KVM_RUN_X86_BUS_LOCK should be checked regardless of the primary exit reason if
-+userspace wants to take action on all detected bus locks.
- 
- 7.23 KVM_CAP_PPC_DAWR1
- ----------------------
--- 
-2.35.3
+> Having this as "GPIOD_ASIS" makes it feel like the kernel is somehow
+> able to maintain continuity of this GPIO line from the BIOS state to
+> the kernel, but I don't think it can. I've looked at the "GPIOD_ASIS"
+> property before because I've always wanted the ability to have GPIOs
+> that could more seamlessly transition their firmware state to their
+> kernel state. I don't think the API actually allows it. The fact that
+> GPIO regulators don't support this seamless transition (even though it
+> would be an obvious feature to add) supports my theory that the API
+> doesn't currently allow it. It may be possible to make something work
+> on some implementations but I think it's not guaranteed.
+> 
+> Specifically, the docs say:
+> 
+> * GPIOD_ASIS or 0 to not initialize the GPIO at all. The direction must be set
+>   later with one of the dedicated functions.
+> 
+> So that means that you can't read the pin without making it an input
+> (which might change the state if it was previously driving a value)
+> and you can't write the pin without making it an output and choosing a
+> value to set it to. Basically grabbing a pin with "asis" doesn't allow
+> you to do anything with it--it just claims it and doesn't let anyone
+> else have it.
 
+These properties may prevent it from being used by the regulator
+framework, but GPIOD_ASIS works well in the case of a reset gpio where
+we simply leave it in whatever state the firmware left it in if probe
+fails before we get to powering on the device.
+
+Johan
 
