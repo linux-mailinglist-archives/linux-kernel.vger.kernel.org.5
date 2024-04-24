@@ -1,186 +1,137 @@
-Return-Path: <linux-kernel+bounces-157186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC6F78B0E11
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:23:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DE5B8B0E15
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:24:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23AF01F21D2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:23:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FA901C250C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:24:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78E2F15F41C;
-	Wed, 24 Apr 2024 15:23:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA3115FA6B;
+	Wed, 24 Apr 2024 15:24:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Ev5t56CM"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="EKu8xCiE"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A56BD15EFAD
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A067815ECFA;
+	Wed, 24 Apr 2024 15:24:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713972207; cv=none; b=tbci92oFSgmmw5xpLKf3BOsUT2wBDNcF38tcP/+NMxSVf2uY0khhNCVKOytSq7RzOrBIq7yBjYpWab4vJTeFc927iQHY4vx/4qBGy1QIpAi+CwIvh3lgMrJ30nqnw8HUDUmT6pYQALS5vUCrlHN+suisLWG1aGdpU2rLRK9GIb8=
+	t=1713972254; cv=none; b=i3dOLfMgZps/9GHPXtwH9JJrn5M0sngTzRGSgocT0+Mg1AU4Uc6VnjKvO+HBLOxaTsXnfyaEW5+GKs82s+Zl9sBfeEnEmVudXBFsmvFERvVwJAQfYUhnIaiExyTkn2v/Me9uCB4z6t+HtVMoOwaGp6FDVN21BVKcqrZTOrppQQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713972207; c=relaxed/simple;
-	bh=sCijfIoiWWuO+ID4TbJRdKV8axy5TX4E4LShcWAdV3o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jUgeXWHtXs/XDUQyNfkPpsnlCb/Q/7Se3xGPIuoXD7jFYoh6+2Z7fRlO+IDXXk35WfMTl5493d1gTcMHYGQQ67tpzMJgwkfsyJM3QDKYhF/bmOloN7m6QaWcBAt+0iWbSfZ5lYllxYw4Pt6grSyGVE6YpRmYGM+Wr5kdpPybfX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Ev5t56CM; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41a442c9dcbso29462065e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:23:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1713972204; x=1714577004; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VL+zjtnTa4V4GoS3gEyjQ79J0VHTyJiZJ2md1+Efeok=;
-        b=Ev5t56CMzhO5PFIR2LgecrKDWP+Szio/jP0qKkNK6+D49fg3RPinZzgGjZRYahzuA2
-         MZh2yvRBTJoX2ZZ/Mlrb1tAh/oYiBBSGcViTQNQ6+fHOlMbT08Ua0QxWSqmsbK3LXWAb
-         Y0nk6Y5mmYQpU4DWq8MVbiTOXu1A+V9kgcD4ybgU4QM8N5Fg8w/OULwqYBQOb8/po56t
-         HnYns2D5+tBCbf1ffGpvP1DwFdKUXruFtiMXKe4DEAp+festqits/tZiFCDAZ+RPpMuZ
-         KWynwewORBhn5OWjntkEgPT+efKlZW+MD1ZO28yYUlQnYW1CQc2d5Vebz4NGXZHs7Pde
-         IQsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713972204; x=1714577004;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VL+zjtnTa4V4GoS3gEyjQ79J0VHTyJiZJ2md1+Efeok=;
-        b=lVAIKO4q4cj5IhgRNV3IBi7y5oTQN7/WfcUvgqiOlQeHSOgmm1cgY95+GTZOEZlUyw
-         cJU6D36g5Jo3MBM7aDTLrh9Jl1+Z5GbFaF+nqjVF8ERzpimKQhHmzIoaVxFRZXULHtbB
-         VJoNCGdKaMW6ZTstM6g7gnim1Mxlf/AXcjphcUDJejI5yu2JUnykZ0x0WxYUfCF7WUAl
-         aKe8vSmmt1pcgXe2NviIQgShOhIVa5C7Egt8lks1LVO0h+qnQsZjOm1zC0bg4XHGtS4L
-         RJKFA1AuYRT3ENChkrW/TiQ3MFPmADnxcVj+W629Cq9pEUv+CN9p4VarMLVONEJEHb4t
-         Lb3A==
-X-Forwarded-Encrypted: i=1; AJvYcCVAh+NGCQ6k2TrNMPFgFJvU//kEnGIcDzm0Qr/UR/8NKzuAWb4J4h4nH+sgzqezo6ZCYHnDDElsklA/PBEuf4Uevb43As/LUI7ej4OX
-X-Gm-Message-State: AOJu0YxrXwapN8EkvCUdosXU0L8m+boqGSehNkXwpQ5ucxa+W1fjH14q
-	qcNE+4AJTW8Azb5LwFqpa0wFMidiKnTiH3ecZNPGIiof/4de7Um3Wj3zJLUXeyY=
-X-Google-Smtp-Source: AGHT+IGxx65KCqZ4q/prIN2iszax2XMR/WHT1xZqecy25hagi5Rc/3NljOGJBmCz23kmuErBnt/7ag==
-X-Received: by 2002:a05:600c:190b:b0:41a:a5ff:ea3a with SMTP id j11-20020a05600c190b00b0041aa5ffea3amr2116282wmq.19.1713972204035;
-        Wed, 24 Apr 2024 08:23:24 -0700 (PDT)
-Received: from linux-l9pv.suse (2a02:9130:80a6:db2c:2677:3ff:fecf:2660.red-2a02-9130.customerbam.ipv6.rima-tde.net. [2a02:9130:80a6:db2c:2677:3ff:fecf:2660])
-        by smtp.gmail.com with ESMTPSA id ay32-20020a05600c1e2000b0041ae995b926sm3736399wmb.3.2024.04.24.08.23.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 24 Apr 2024 08:23:23 -0700 (PDT)
-Date: Wed, 24 Apr 2024 23:23:19 +0800
-From: joeyli <jlee@suse.com>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Chun-Yi Lee <joeyli.kernel@gmail.com>,
-	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-	Manish Mandlik <mmandlik@google.com>,
-	Archie Pusaka <apusaka@chromium.org>,
-	Miao-chen Chou <mcchou@chromium.org>, linux-kernel@vger.kernel.org,
-	linux-bluetooth@vger.kernel.org
-Subject: Re: [PATCH] Bluetooth: hci_sync: Using hci_cmd_sync_submit when
- removing Adv Monitor
-Message-ID: <20240424152319.GD26307@linux-l9pv.suse>
-References: <20240424135903.24169-1-jlee@suse.com>
- <0391b306-1368-47ea-9602-26ff6df48921@molgen.mpg.de>
+	s=arc-20240116; t=1713972254; c=relaxed/simple;
+	bh=83ac671TJ5C3w8/YTTwK5TvUabe8Q/e9+Zt2/J33mLw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ZFvULv1om3swLTPeHmKWpgxIMGEVRZ5vatFHmBITDAr3vO+JVYjgWfqazNdS0vil6DFRADBXH1D1fZYLhh4+etzYQQymgKi48Wj0U2gn6Gi5nIZDmQnJhWN9Pq/YjlkkTakYk5Rz2bpEUoa/ppi6W8rYQzvCpahgdVYKKtcVZco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=EKu8xCiE; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O7cEEF025344;
+	Wed, 24 Apr 2024 15:24:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=ODq72kPb9i7MhF+ey4vjvHEqQGg1s8vUIXQbWS97qqo=; b=EK
+	u8xCiE5CuO1YP1Sfy+9MvmUosFzw8TGsagBro6l4IZSx5Hh9dj+ffrl0fLtUTyFQ
+	WxZBlAFY5w1xc4sGCk/K00uA/lM6Lh6DhVjwQ9Qtgnwacdh5FBu4JDVHRIo7bFEn
+	Ecjk30K5GKWfs18R1SieXf0sI7XGRo29lIXN0stgthad6SJiEa1vFMrQv46uo+Nr
+	Yjd4s9/ayrW0x4lzaH9ajYMnserxxh2OLah5NaUxiXa9UoHSc4EQI9APnYWn+s+o
+	KeAAEUbmVdjcBCobqxlS8ynkzfV/nkBNKR3uvDmrduza93DMcmBnfvZ7aSZZxjBZ
+	FbyKFV8uDq6kRaxfNA+Q==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9fh87x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 15:24:07 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43OFO6v8009100
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 15:24:06 GMT
+Received: from [10.253.14.221] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 24 Apr
+ 2024 08:24:03 -0700
+Message-ID: <d82c2e39-d2b8-4de0-a11a-6ab2420f8f95@quicinc.com>
+Date: Wed, 24 Apr 2024 23:24:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0391b306-1368-47ea-9602-26ff6df48921@molgen.mpg.de>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] Bluetooth: qca: set power_ctrl_enabled on NULL
+ returned by gpiod_get_optional()
+To: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>
+CC: Bartosz Golaszewski <brgl@bgdev.pl>,
+        Marcel Holtmann
+	<marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Wren
+ Turkal <wt@penguintechs.org>
+References: <20240424122932.79120-1-brgl@bgdev.pl>
+ <0f8ba1b5-490e-4961-80e2-7942f66730ec@linaro.org>
+ <CACMJSeuBCkNyaD60qGVpAq91DqD_OA=tCVEY0t+JNK2vcWBc+Q@mail.gmail.com>
+Content-Language: en-US
+From: quic_zijuhu <quic_zijuhu@quicinc.com>
+In-Reply-To: <CACMJSeuBCkNyaD60qGVpAq91DqD_OA=tCVEY0t+JNK2vcWBc+Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: kZy9dvY7hiai_BfZPYSRhAcGdv9HQ2dW
+X-Proofpoint-GUID: kZy9dvY7hiai_BfZPYSRhAcGdv9HQ2dW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_12,2024-04-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ impostorscore=0 clxscore=1015 priorityscore=1501 adultscore=0 phishscore=0
+ mlxlogscore=818 lowpriorityscore=0 suspectscore=0 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404240060
 
-Hi Paul,
+On 4/24/2024 10:52 PM, Bartosz Golaszewski wrote:
+> On Wed, 24 Apr 2024 at 16:46, Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 24/04/2024 14:29, Bartosz Golaszewski wrote:
+>>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>>>
+>>
+>>>               qcadev->susclk = devm_clk_get_optional(&serdev->dev, NULL);
+>>>               if (IS_ERR(qcadev->susclk)) {
+>>> @@ -2355,10 +2360,13 @@ static int qca_serdev_probe(struct serdev_device *serdev)
+>>>               qcadev->bt_en = devm_gpiod_get_optional(&serdev->dev, "enable",
+>>>                                              GPIOD_OUT_LOW);
+>>>               if (IS_ERR(qcadev->bt_en)) {
+>>> -                     dev_warn(&serdev->dev, "failed to acquire enable gpio\n");
+>>> -                     power_ctrl_enabled = false;
+>>> +                     dev_err(&serdev->dev, "failed to acquire enable gpio\n");
+>>> +                     return PTR_ERR(qcadev->bt_en);
+please think about for QCA2066. if it is returned from here.  BT will
+not working at all.  if you don't return here. i will be working fine
+for every BT functionality.
+NAK again by me.
 
-Thanks for your review. I will follow your suggestion to update
-my v2 patch. 
+>>>               }
+>>>
+>>> +             if (!qcadev->bt_en)
+>>> +                     power_ctrl_enabled = false;
+>>
+>> This looks duplicated - you already have such check earlier.
+>>
+> 
+> It's under a different switch case!
+> 
+> Bartosz
 
-Joey Lee
-
-On Wed, Apr 24, 2024 at 04:13:09PM +0200, Paul Menzel wrote:
-> Dear Chun-Yi,
-> 
-> 
-> Thank you for your patch.
-> 
-> Am 24.04.24 um 15:59 schrieb Lee, Chun-Yi:
-> > From: Chun-Yi Lee <jlee@suse.com>
-> 
-> Please use imperative mood in the commit message summary:
-> 
-> Use hci_cmd_sync_submit() when removing Adv Monitor
-> 
-> > Since the d883a4669a1de be introduced in v6.4, bluetooth daemon
-> > got the following failed message of MGMT_OP_REMOVE_ADV_MONITOR
-> > command when controller is power-off:
-> 
-> Maybe:
-> 
-> Since commit d883a4669a1de, present since Linux v6.4, the daemon bluetoothd
-> logs the failure below, if the command MGMT_OP_REMOVE_ADV_MONITOR is sent
-> when the controller is powered off.
-> 
-> > bluetoothd[20976]:
-> > src/adapter.c:reset_adv_monitors_complete() Failed to reset Adv
-> > Monitors: Failed>
-> 
-> Please make this one line and indent it with four spaces.
-> 
-> > Normally this situation is happened when the bluetoothd deamon
-> 
-> 1.  happen*s*
-> 2.  d*ae*mon
-> 
-> > be started manually after system booting. Which means that
-> 
-> is started
-> 
-> > bluetoothd received MGMT_EV_INDEX_ADDED event after kernel
-> 
-> receive*s*
-> 
-> > runs hci_power_off().
-> > 
-> > Base on doc/mgmt-api.txt, the MGMT_OP_REMOVE_ADV_MONITOR command
-> 
-> Base*d*
-> 
-> > can be used when the controller is not powered. This patch changes
-> 
-> “This patch …” is redundant. Use: Change the code …
-> 
-> > the code in remove_adv_monitor() to use hci_cmd_sync_submit()
-> > instead of hci_cmd_sync_queue().
-> 
-> Please document the test setup.
-> 
-> > Fixes: d883a4669a1de ("Bluetooth: hci_sync: Only allow hci_cmd_sync_queue if running")
-> > Cc: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-> > Cc: Manish Mandlik <mmandlik@google.com>
-> > Cc: Archie Pusaka <apusaka@chromium.org>
-> > Cc: Miao-chen Chou <mcchou@chromium.org>
-> > Signed-off-by: Chun-Yi Lee <jlee@suse.com>
-> > ---
-> >   net/bluetooth/mgmt.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-> > index 32ed6e9245a3..21962969411d 100644
-> > --- a/net/bluetooth/mgmt.c
-> > +++ b/net/bluetooth/mgmt.c
-> > @@ -5475,7 +5475,7 @@ static int remove_adv_monitor(struct sock *sk, struct hci_dev *hdev,
-> >   		goto unlock;
-> >   	}
-> > -	err = hci_cmd_sync_queue(hdev, mgmt_remove_adv_monitor_sync, cmd,
-> > +	err = hci_cmd_sync_submit(hdev, mgmt_remove_adv_monitor_sync, cmd,
-> >   				 mgmt_remove_adv_monitor_complete);
-> >   	if (err) {
-> 
-> 
-> Kind regards,
-> 
-> Paul
 
