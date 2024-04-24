@@ -1,156 +1,195 @@
-Return-Path: <linux-kernel+bounces-157724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF11E8B1512
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:10:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41CE08B1514
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:11:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E29591C2387C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:10:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1E791F24317
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:11:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBF2315698F;
-	Wed, 24 Apr 2024 21:10:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FBF9156C53;
+	Wed, 24 Apr 2024 21:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b="IsZyCOxu";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iKH/4OFZ"
-Received: from wfout7-smtp.messagingengine.com (wfout7-smtp.messagingengine.com [64.147.123.150])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MX2CG3+M"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB7B3745CB
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 21:10:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6229A156976;
+	Wed, 24 Apr 2024 21:11:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713993038; cv=none; b=tYw7deVlk4j0y+tG9rjunuNu+akc1nZWw/h9qeN+wogI6ByRoHSggoA0c9pj/X1PzCHeA08BIjUst1C9rCbMen5vmqPLGcSMSXXIsqLQTIiUOQjwnaMIu5+nZDlUq6jY10iDPaBTMGqr7bzWbfORrj7trzXEYJS1KjRu0b+dAtA=
+	t=1713993065; cv=none; b=C1Vng6WLRaH02dHhiJ24dTyISstrgiddEkUv9/z1w9z6vJTFZWqHGurXEg9zTgpEbPq+drXWh9E412yjVx4A8lJBpa92MlW8asZ9g3cqx5eUVVWIqnLmtJI/rH1xOiAdGCt3c9O+9XLp4GrWT0/NiaANa8hIsXqOnME0O989ikg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713993038; c=relaxed/simple;
-	bh=8YdfdSd5iOPEtRpSvYlPjstvzjwfPiKdAmYK/Egvfjo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AsYO0aKo0iktn3mcth60HcvW4xOMdzpdBmO2FPikLzkUS0QVuoJ+j907s0QrOorKDpqaDxR4dMOVFe3GnaklmxgWiruapATMHUHiCt0HTCs0FD1qdKdSEPLOqC/IUtmH3sHkf7MNWdDyaIAf+lvtIiMX6GspUPvEq7NHu0v+ieg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com; spf=pass smtp.mailfrom=sent.com; dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b=IsZyCOxu; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iKH/4OFZ; arc=none smtp.client-ip=64.147.123.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sent.com
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfout.west.internal (Postfix) with ESMTP id 38CA91C00138;
-	Wed, 24 Apr 2024 17:10:35 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 24 Apr 2024 17:10:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:reply-to:subject
-	:subject:to:to; s=fm3; t=1713993034; x=1714079434; bh=DNcr3ISM3z
-	eCbWjs6xD/+8e+IXLwFKS7Mr3PFm4E1FE=; b=IsZyCOxuIpfFsk5m74SJCu8tgN
-	+7B3k/EuxM6yFDk1dmDLxCrkqjx1tSVM0Fjks74eIPWH0X2lTnh2rCHGXaytj7CA
-	hDVdboMCuazTzWsDe6TFZBUkVkpqyNiL/BYWteeJy4Y3N9jsDVF/fur0xwMGbU/h
-	eGg1c2DpmkwL10xJIoItkGnfK6sEdBZ2fP1TCgi7w8a8v47Q8qPAwfqRITTlvcXq
-	+jnquupDMmP8QHw99kdtRJgvkkDS+7yA6DBqmFtlArpfAfPawa4WIbf9nomXqsQs
-	XSgyPmQy2AqeWIJZf4xN8/8q1p/Pm/noG4E3TkPqELSUPZX+YzOom9vgejRQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm3; t=1713993034; x=1714079434; bh=DNcr3ISM3zeCb
-	Wjs6xD/+8e+IXLwFKS7Mr3PFm4E1FE=; b=iKH/4OFZZ/2H5crujtjTCVp/YhPCj
-	ikXyqvR8lpN0jxmaDyeVpfadwDAJjKYhRGnr26jULLXZPBfJjFXfhBZKSVmInbaM
-	9fMWfFrVtkCWP/xKcsZDPp0cCt0O3tFJLZvW/qwZBOVBYSzmJVzCEVRmtUnVRBTi
-	Q0nCLl//YZYjZz/NS/iQpIbJPHkdjcn5SSBzu6IobN2CVtVEwa03I1wb0tuYqbZZ
-	ujtcHOY+FKTWRSMevioi0m89xJtMm7bR1MeK0wnOxjeaYHqUvq25X0Za9+Meb5hF
-	RTwtedvJdDCJ6Bn8pypWsDyso1TibFGrTTjEq9ZAvLOTYp2iblaaV/EDw==
-X-ME-Sender: <xms:SnUpZgzSOnPJGbr5h8hmlKlZgPqdmmQnST7Q7jaxrQWxCzeqA9DZ3w>
-    <xme:SnUpZkRTyDtJAvUVY5FJkqhLjska1RDBVcTK5Yq8CHaZletjdtpadwgrAyI6LamHI
-    kHkHz17OdRNyytjdg>
-X-ME-Received: <xmr:SnUpZiXkKiFVpg0A0oWlDBhN_LN3sdm3LakNop2VaQdCfU9yC_drEwKoVyhoF8pJ1yxUCoceaYdV2tbwgvRUw5PiWQLL-2zVV1jQ43fmCeaW2R6FI4AXtzj6>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudelhedgleelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofhrggfgsedtkeertdertddtnecuhfhrohhmpegkihcujggr
-    nhcuoeiiihdrhigrnhesshgvnhhtrdgtohhmqeenucggtffrrghtthgvrhhnpeffjeeuie
-    efjedujedugfeitdefledtgfeufffhudelgfdtkeetkeefjeehkeehtdenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeiiihdrhigrnhesshgvnh
-    htrdgtohhm
-X-ME-Proxy: <xmx:SnUpZujNO1UlM1UW3_lXF2-HY8rQw3Olb9ZpFheYGHSI0ffE3ajEWA>
-    <xmx:SnUpZiDgmEOCibeRjVyiIKnfJhzSpNPSOSWO0bi8Ac_r93aSE7WitA>
-    <xmx:SnUpZvLJ2v9CIhYbzsllYeJbojxmxdd4M-JIPU9uW9oEKAwn2GSxcg>
-    <xmx:SnUpZpD5TPvwGND5cI7gtZWsmcEHMvj51m5AcFGbvD6Q4pD5ZEmtAg>
-    <xmx:SnUpZqs4AIYuvqa3HUQPJ7X0I8HhCb4pQ5QbZEjAiwaV53JfbRXv_G2C>
-Feedback-ID: iccd040f4:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 24 Apr 2024 17:10:33 -0400 (EDT)
-From: Zi Yan <zi.yan@sent.com>
-To: linux-mm@kvack.org
-Cc: Zi Yan <ziy@nvidia.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Yang Shi <shy828301@gmail.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Barry Song <21cnbao@gmail.com>,
-	David Hildenbrand <david@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mm/rmap: do not add fully unmapped large folio to deferred split list
-Date: Wed, 24 Apr 2024 17:10:31 -0400
-Message-ID: <20240424211031.475756-1-zi.yan@sent.com>
-X-Mailer: git-send-email 2.43.0
-Reply-To: Zi Yan <ziy@nvidia.com>
+	s=arc-20240116; t=1713993065; c=relaxed/simple;
+	bh=ldOqrw1Va6ZZc6+oC/tGUjywY9xlTQi7kLbwUwTWTIU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hp3qOH/UjtCc/Hw0dHF/GC0m4P4vUPphtC1nesZQdRi4b4+2Ug6KfjDeRFgBaijPOtJrprn1x6Y6LW0G+ZnpvL3ifCxdq+bXaN+Y0sAK/rsDi7TQFwn+xUBaEduFAYIHXPuYW70tA1MDk2WFl5edLvUnohyWaXQVblNtvHnIF34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MX2CG3+M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94628C113CD;
+	Wed, 24 Apr 2024 21:11:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713993065;
+	bh=ldOqrw1Va6ZZc6+oC/tGUjywY9xlTQi7kLbwUwTWTIU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MX2CG3+M9P46wClZ/HGk/NKz5AyOqXA3CcMaw1TH/5brWuCfOE/d9rixsae7LL1Bf
+	 8oftCnCahKocCRV1CksaTZ3m0ePphDD6N6V9bhCwgd3J4jC+HY/Ylzhp0GbNEIbXOV
+	 KpCJalbzPZsAbB4wVH6nKUKRgs1RuihqrwO0PZmgXkUmfXqFbCpfEATqMowRWLiWm6
+	 xaW0panam9mqQyu3TYcFbwSJ95g8tfwOwBmU3p1ZzB/uQV0C03H3b7/oKKgwHYnr4S
+	 FwI/6TGphwm+lSR708KqnwOWxfvj/3IgrVWvCtkP8/eLWkXbXEDloEb9ylz/ZRSbK+
+	 ftwwPBGs0IWDw==
+Date: Wed, 24 Apr 2024 18:11:00 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Howard Chu <howardchu95@gmail.com>, peterz@infradead.org,
+	mingo@redhat.com, mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+	irogers@google.com, adrian.hunter@intel.com,
+	kan.liang@linux.intel.com, zegao2021@gmail.com, leo.yan@linux.dev,
+	ravi.bangoria@amd.com, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] Dump off-cpu samples directly
+Message-ID: <Zil1ZKc7mibs6ONQ@x1>
+References: <20240424024805.144759-1-howardchu95@gmail.com>
+ <CAM9d7chOdrPyeGk=O+7Hxzdm5ziBXLES8PLbpNJvA7_DMrrGHA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7chOdrPyeGk=O+7Hxzdm5ziBXLES8PLbpNJvA7_DMrrGHA@mail.gmail.com>
 
-From: Zi Yan <ziy@nvidia.com>
+On Wed, Apr 24, 2024 at 12:12:26PM -0700, Namhyung Kim wrote:
+> Hello,
+> 
+> On Tue, Apr 23, 2024 at 7:46 PM Howard Chu <howardchu95@gmail.com> wrote:
+> >
+> > As mentioned in: https://bugzilla.kernel.org/show_bug.cgi?id=207323
+> >
+> > Currently, off-cpu samples are dumped when perf record is exiting. This
+> > results in off-cpu samples being after the regular samples. Also, samples
+> > are stored in large BPF maps which contain all the stack traces and
+> > accumulated off-cpu time, but they are eventually going to fill up after
+> > running for an extensive period. This patch fixes those problems by dumping
+> > samples directly into perf ring buffer, and dispatching those samples to the
+> > correct format.
+> 
+> Thanks for working on this.
+> 
+> But the problem of dumping all sched-switch events is that it can be
+> too frequent on loaded machines.  Copying many events to the buffer
+> can result in losing other records.  As perf report doesn't care about
+> timing much, I decided to aggregate the result in a BPF map and dump
+> them at the end of the profiling session.
 
-In __folio_remove_rmap(), a large folio is added to deferred split list
-if any page in a folio loses its final mapping. It is possible that
-the folio is unmapped fully, but it is unnecessary to add the folio
-to deferred split list at all. Fix it by checking folio->_nr_pages_mapped
-before adding a folio to deferred split list. If the folio is already
-on the deferred split list, it will be skipped.
+Should we try to adapt when there are too many context switches, i.e.
+the BPF program can notice that the interval from the last context
+switch is too small and then avoid adding samples, while if the interval
+is a long one then indeed this is a problem where the workload is
+waiting for a long time for something and we want to know what is that,
+and in that case capturing callchains is both desirable and not costly,
+no?
 
-Commit 98046944a159 ("mm: huge_memory: add the missing
-folio_test_pmd_mappable() for THP split statistics") tried to exclude
-mTHP deferred split stats from THP_DEFERRED_SPLIT_PAGE, but it does not
-fix everything. A fully unmapped PTE-mapped order-9 THP was also added to
-deferred split list and counted as THP_DEFERRED_SPLIT_PAGE, since nr is
-512 (non zero), level is RMAP_LEVEL_PTE, and inside deferred_split_folio()
-the order-9 folio is folio_test_pmd_mappable(). However, this miscount
-was present even earlier due to implementation, since PTEs are unmapped
-individually and first PTE unmapping adds the THP into the deferred split
-list.
+The tool could then at the end produce one of two outputs: the most
+common reasons for being off cpu, or some sort of counter stating that
+there are way too many context switches?
 
-With commit b06dc281aa99 ("mm/rmap: introduce
-folio_remove_rmap_[pte|ptes|pmd]()"), kernel is able to unmap PTE-mapped
-folios in one shot without causing the miscount, hence this patch.
+And perhaps we should think about what is best to have as a default, not
+to present just plain old cycles, but point out that the workload is
+most of the time waiting for IO, etc, i.e. the default should give
+interesting clues instead of expecting that the tool user knows all the
+possible knobs and try them in all sorts of combinations to then reach
+some conclusion.
 
-Signed-off-by: Zi Yan <ziy@nvidia.com>
----
- mm/rmap.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+The default should use stuff that isn't that costly, thus not getting in
+the way of what is being observed, but at the same time look for common
+patterns, etc.
 
-diff --git a/mm/rmap.c b/mm/rmap.c
-index a7913a454028..220ad8a83589 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1553,9 +1553,11 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
- 		 * page of the folio is unmapped and at least one page
- 		 * is still mapped.
- 		 */
--		if (folio_test_large(folio) && folio_test_anon(folio))
--			if (level == RMAP_LEVEL_PTE || nr < nr_pmdmapped)
--				deferred_split_folio(folio);
-+		if (folio_test_large(folio) && folio_test_anon(folio) &&
-+		    list_empty(&folio->_deferred_list) &&
-+		    ((level == RMAP_LEVEL_PTE && atomic_read(mapped)) ||
-+		     (level == RMAP_LEVEL_PMD && nr < nr_pmdmapped)))
-+			deferred_split_folio(folio);
- 	}
+- Arnaldo
  
- 	/*
-
-base-commit: 2541ee5668b019c486dd3e815114130e35c1495d
--- 
-2.43.0
-
+> Maybe that's not a concern for you (or smaller systems).  Then I think
+> we can keep the original behavior and add a new option (I'm not good
+> at naming things, but maybe --off-cpu-sample?) to work differently
+> instead of removing the old behavior.
+> 
+> Thanks,
+> Namhyung
+> 
+> >
+> > Before, off-cpu samples are after regular samples
+> >
+> > ```
+> >          swapper       0 [000] 963432.136150:    2812933    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+> >          swapper       0 [000] 963432.637911:    4932876    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+> >          swapper       0 [001] 963432.798072:    6273398    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+> >          swapper       0 [000] 963433.541152:    5279005    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+> > sh 1410180 [000] 18446744069.414584:    2528851 offcpu-time:
+> >             7837148e6e87 wait4+0x17 (/usr/lib/libc.so.6)
+> >
+> >
+> > sh 1410185 [000] 18446744069.414584:    2314223 offcpu-time:
+> >             7837148e6e87 wait4+0x17 (/usr/lib/libc.so.6)
+> >
+> >
+> > awk 1409644 [000] 18446744069.414584:     191785 offcpu-time:
+> >             702609d03681 read+0x11 (/usr/lib/libc.so.6)
+> >                   4a02a4 [unknown] ([unknown])
+> > ```
+> >
+> >
+> > After, regular samples(cycles:P) and off-cpu(offcpu-time) samples are
+> > collected simultaneously:
+> >
+> > ```
+> > upowerd     741 [000] 963757.428701:     297848 offcpu-time:
+> >             72b2da11e6bc read+0x4c (/usr/lib/libc.so.6)
+> >
+> >
+> >       irq/9-acpi      56 [000] 963757.429116:    8760875    cycles:P:  ffffffffb779849f acpi_os_read_port+0x2f ([kernel.kallsyms])
+> > upowerd     741 [000] 963757.429172:     459522 offcpu-time:
+> >             72b2da11e6bc read+0x4c (/usr/lib/libc.so.6)
+> >
+> >
+> >          swapper       0 [002] 963757.434529:    5759904    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+> > perf 1419260 [000] 963757.434550: 1001012116 offcpu-time:
+> >             7274e5d190bf __poll+0x4f (/usr/lib/libc.so.6)
+> >             591acfc5daf0 perf_evlist__poll+0x24 (/root/hw/perf-tools-next/tools/perf/perf)
+> >             591acfb1ca50 perf_evlist__poll_thread+0x160 (/root/hw/perf-tools-next/tools/perf/perf)
+> >             7274e5ca955a [unknown] (/usr/lib/libc.so.6)
+> > ```
+> >
+> > Here's a simple flowchart:
+> >
+> > [parse_event (sample type: PERF_SAMPLE_RAW)] --> [config (bind fds,
+> > sample_id, sample_type)] --> [off_cpu_strip (sample type: PERF_SAMPLE_RAW)] -->
+> > [record_done(hooks off_cpu_finish)] --> [prepare_parse(sample type: OFFCPU_SAMPLE_TYPES)]
+> >
+> > Changes in v2:
+> >  - Remove unnecessary comments.
+> >  - Rename function off_cpu_change_type to off_cpu_prepare_parse
+> >
+> > Howard Chu (4):
+> >   perf record off-cpu: Parse off-cpu event, change config location
+> >   perf record off-cpu: BPF perf_event_output on sched_switch
+> >   perf record off-cpu: extract off-cpu sample data from raw_data
+> >   perf record off-cpu: delete bound-to-fail test
+> >
+> >  tools/perf/builtin-record.c             |  98 +++++++++-
+> >  tools/perf/tests/shell/record_offcpu.sh |  29 ---
+> >  tools/perf/util/bpf_off_cpu.c           | 242 +++++++++++-------------
+> >  tools/perf/util/bpf_skel/off_cpu.bpf.c  | 163 +++++++++++++---
+> >  tools/perf/util/evsel.c                 |   8 -
+> >  tools/perf/util/off_cpu.h               |  14 +-
+> >  tools/perf/util/perf-hooks-list.h       |   1 +
+> >  7 files changed, 344 insertions(+), 211 deletions(-)
+> >
+> > --
+> > 2.44.0
+> >
 
