@@ -1,200 +1,129 @@
-Return-Path: <linux-kernel+bounces-156854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF4C48B093E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:23:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 826318B0952
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:24:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78910288F4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:23:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 389CD1F22DBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0926015B122;
-	Wed, 24 Apr 2024 12:23:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IO7gDWt7"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A6815B116;
+	Wed, 24 Apr 2024 12:23:58 +0000 (UTC)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C90015ADAE
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 12:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CBB815ADB9;
+	Wed, 24 Apr 2024 12:23:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713961384; cv=none; b=BislF6GXJyMvxnhLzM2phyVUhCj1+a30Iu/HrhR67JSss+YHj7s/zZHnePaTfFYVULjR7ftdsPY0lIhYyKG3fTsxIxwD90uBqZLjVVBvT2CDiC3tchXGKqMpekno9HXjrWmK1KcKICEx/ytkP8N3hNoh0O25+TYOS4zveAucM3g=
+	t=1713961437; cv=none; b=tu1xsjDthMPcZ5JqJ7TdYV7zGmhM+5EBBd5cJXQZJ6OOfoVg1lrwSJG5YD7ZO2GamYSPDffozhbIbE0l57xBf4giOQIWYoprtksMq5ZBr3LX7Y5cMDwMos4k3sFADJSfCYmnkAgd3wJFPldJ8jzkJeFSbwHssd7zH+DHgvFm4EM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713961384; c=relaxed/simple;
-	bh=7EVAxZ43e6M9EqakVg8G5iPomQiclYYtKEY7SU0BQVY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ufm/KfHLHocYccr+7Yg+FCJlPB+3R0+S8LTFdTRg3gRtgZfQJaVZOvYJAojoNtk8VyJ9UBdsfhejxK0og4BsqWLDeKrKmyi+uKCvLYz8HKhBha7kXl6D4ACFkSsw8ThSl0m8FcXsaQQ7EVZWfrD7IRqx5qcDsyt7XvKU+JlisS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IO7gDWt7; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51ab4ee9df8so7079717e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713961381; x=1714566181; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wrwSu6K9f3l7AxMNZgK7qc0Fh0lkJOEbmkGCWsVk/v8=;
-        b=IO7gDWt7YQAFaTBUpD7YgRJeYIb4RLs7YrftnlHEi8vQcQvHYxZMwATIpGG5vKCEjy
-         nTbiAoVLeUtzlKPPqZL1sLjk32domfv5Kau6Kd7wWBNeGeYzMR7stBkG4aiSMu/pNe9b
-         VTRFp7yCdzniirClYlowH7FuJyL/tFNNwTT+dTNBXMINQqeUyrMmoBkmvNlbomUaWnem
-         l/e/1QUARtc9ovYmbaOLF1pGhYO/QNiLsfetP7kGKRcyIgAp4R6UbU6WhSVWPlV+xvD1
-         AYzwQg/P/wHL4WBYl5FGNYLutz4XYF+pJr31oI6nuEZ8wk4yjUwQn1JZKKlob244UAOb
-         33wg==
+	s=arc-20240116; t=1713961437; c=relaxed/simple;
+	bh=GEQEU9G9jYfvP7tuatC/Gwb8K5G1AjHOMjDvfQa5cXU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SFShxXCgeEaKz3U9ArcbKUA61Yk/D1tXgcYNEa/XvPlUbMnHn6ekeroAURMkqdLSrHVLDnLJWwFdI0k9FCQdl2UvzGKojNGnRrsYYaWndS1srnGC7rgpVrxU/C/RN4/ZMEZ9bMt+J1ymQzElmvakpkG12nlf3LYaHWUFPfpFnNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-61587aa9f4cso74606227b3.3;
+        Wed, 24 Apr 2024 05:23:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713961381; x=1714566181;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wrwSu6K9f3l7AxMNZgK7qc0Fh0lkJOEbmkGCWsVk/v8=;
-        b=ONVxsRwKVTQ/AIZBRcfq7S7GDKLwnZlBkxj3OI/fUEkHAfjWAOVC+x4/tkGqd+rw7J
-         qQDeLCVf3c4m0DiEdh1ZM6iaqYBD1DCnaHetnszzx+qOQhJagFPQzLmOet9GU/Vtt2/9
-         IuCjP2MndSqroz5k8afWAzvCueJvM4e8feEJQbLGakms4VqmhworxwA6Rj5uDY2fJWof
-         q8tBiXUAQqMsH3v+IpsJcwu0tU9Tsh2eKLHceoUB3dYbVfch5fnJEdDl4J52jvqvwUYy
-         PCOvHJIESBaUR8zEqc67Frl716G8VfnxaymJlZ2PjseGlTms2bJ4S/qtWb1hdHVBsbLJ
-         MnDw==
-X-Forwarded-Encrypted: i=1; AJvYcCVctJzTnzmL5Ykc+13Gfm0A+vOZikrgk2J4ForRYhOybEP7GmKJ30xlXbSp/6a1b1f5Dc4YtU9gBqlcetkZGq1ZVp5yaXZsI1TEXCSl
-X-Gm-Message-State: AOJu0Yx8xB/CPCCgmzu9I4PXRUiJ/6HcFXxLoCnMwFJDut8X7Ue4yi8k
-	aK9MxEhEXWwybKCFI3ZVhleZYnBX65hdqlESQ9hpZvBJlph0tFUw7FRKU8VZXhk=
-X-Google-Smtp-Source: AGHT+IFPa5xFHlLbe7/2cfOYqt4jxQXFvqOImOxBURYIRzLe89/MJtqrwwDMGKE5c0ccdXdD4aJkJg==
-X-Received: by 2002:a05:6512:310d:b0:51b:1f12:4844 with SMTP id n13-20020a056512310d00b0051b1f124844mr1876706lfb.64.1713961380616;
-        Wed, 24 Apr 2024 05:23:00 -0700 (PDT)
-Received: from [172.30.204.128] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id t3-20020a056512068300b0051b5835f3f9sm831432lfe.278.2024.04.24.05.22.56
+        d=1e100.net; s=20230601; t=1713961434; x=1714566234;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2RVJsyR0OTFv5/YGIUj8PBsD9xypjFhG71szkowka4s=;
+        b=nlseRABSDiTZ4Jl740dFHUT1QtiSS+bfsw+GfuOPH0TjBIAeXEsmFzVsz/whBAl+C8
+         B2R17xd3Vu95CyzLq5s/LV7ni3WwJrMl9ClkHo/QEwsNZn1OPHyuay2lle4KM4WZq3Uf
+         YECRRXflEMJ9T+nAEvsODgqhQo/4duEDqpmx8bfFq64Cqdp+lcp8grcI1w72d+KDPqFW
+         3moBbNUNwTI82h41amgTVL3vCm+UE09wcU6tQxlwoeVC5IZYwYnueM2xyrumSwYGYC0Q
+         bJtgXm/vNLrKM8gHNIc0LG4ImevBF23Qr43nM4iPshfGH3Fco7sDIFdUarD6HHdpIOWd
+         PCJA==
+X-Forwarded-Encrypted: i=1; AJvYcCWFYWSO/LoHVsL4kea69c4JUeG8hxFPEAdteXPcIiXiyVnohNxPzK2sNTlLN4ytISrrw0Ix48tm3SLPkI3ki1Qh9tSSflSnTVOImbQLEOGboU7BoiBVRVutJwvi55UXq7Tlbew6meakmwVLhKNn37oitawo8TwtaFSBBdX/5U2i41YMZKTcdXuyzFLSPsVDD4TBNCKcDCy5K/645wZsEpCOnzQHXZmw
+X-Gm-Message-State: AOJu0YzhVinfAeD6+lYcprDsjN3mAtxJCzFTyJuR9R/aJoNP2nGUlfyj
+	FTylKVk5S/GcX/PGH6EgJgKmvuxcbNBlQN9BEpZBclO2Gyr/KvrtGdfUolel
+X-Google-Smtp-Source: AGHT+IE/tQtrOgeUCoC7o5+cmjWl+4tMzOPuHX7fkMPv+LyCIn3ZfferTjgB1Xjrqg3xslfIsAmndw==
+X-Received: by 2002:a05:690c:380f:b0:61a:c4a3:8a5c with SMTP id jx15-20020a05690c380f00b0061ac4a38a5cmr2579499ywb.44.1713961434541;
+        Wed, 24 Apr 2024 05:23:54 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id e67-20020a0df546000000b0061517f052c0sm2954317ywf.116.2024.04.24.05.23.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 05:23:00 -0700 (PDT)
-Message-ID: <603aef24-a8ad-4c39-8c5a-846139f77a77@linaro.org>
-Date: Wed, 24 Apr 2024 14:22:54 +0200
+        Wed, 24 Apr 2024 05:23:54 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-de462979e00so7718711276.3;
+        Wed, 24 Apr 2024 05:23:54 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV+yKSyWgJBylBmUtOR+E1nNe3MWIeYe6hPny64hdLdoWoXxe294LBHfM5YAMVL0qrPDIuT6u2FmzQHl93X+eMU3UgC4CHNKjMoSSZGNgNjxxy2tcVW8eGPo5eiEXo3tLMHXc0/QdYLRTA8LKtd8naGukFNNyjjIpu6t5jxEeEhAITkkdA+p3DUifp155I8m6q9YOcI8KZ5s0DUAS1DsHFYLQjvMKIE
+X-Received: by 2002:a25:d0cb:0:b0:dcc:58ed:6ecc with SMTP id
+ h194-20020a25d0cb000000b00dcc58ed6eccmr2438657ybg.41.1713961433980; Wed, 24
+ Apr 2024 05:23:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 RESEND 3/5] clk: qcom: gdsc: Add set and get hwmode
- callbacks to switch GDSC mode
-To: Jagadeesh Kona <quic_jkona@quicinc.com>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>, "Rafael J . Wysocki"
- <rafael@kernel.org>, Kevin Hilman <khilman@kernel.org>,
- Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Andy Gross <agross@kernel.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Abel Vesa <abel.vesa@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- linux-pm@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>,
- Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
- Imran Shaik <quic_imrashai@quicinc.com>,
- Ajit Pandey <quic_ajipan@quicinc.com>
-References: <20240413152013.22307-1-quic_jkona@quicinc.com>
- <20240413152013.22307-4-quic_jkona@quicinc.com>
- <e70e0379-cab0-4586-825e-ade6775ca67c@linaro.org>
- <e419c6aa-6bb2-48ff-bacb-17a2e85856ea@quicinc.com>
- <0ed739d8-7ef6-4b0d-bd61-62966c9a9362@linaro.org>
- <2e8f5e93-1f24-4451-ab9f-ad1e7d98bc65@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <2e8f5e93-1f24-4451-ab9f-ad1e7d98bc65@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240423182428.704159-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240423182428.704159-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240423182428.704159-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 24 Apr 2024 14:23:42 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVqQ2Zpri_90ex05WVABQR2oRexFZLgLLqumC4v4czQ1w@mail.gmail.com>
+Message-ID: <CAMuHMdVqQ2Zpri_90ex05WVABQR2oRexFZLgLLqumC4v4czQ1w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] dt-bindings: mmc: renesas,sdhi: Document RZ/G2L
+ family compatibility
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	Biju Das <biju.das.jz@bp.renesas.com>, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Apr 23, 2024 at 8:24=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
+om> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> - RZ/G2UL and RZ/Five ("r9a07g043")
+> - RZ/G2L(C) ("r9a07g044")
+> - RZ/V2L ("r9a07g054")
+> - RZ/G3S ("r9a08g045")
+> - RZ/V2M ("r9a09g011")
+>
+> The SD/MMC Interface in the above listed SoCs is not identical to that of
+> R-Car Gen3. These SoCs have HS400 disabled and use fixed address mode.
+> Therefore, we need to apply fixed_addr_mode and hs400_disabled quirks.
+>
+> Document 'renesas,rzg2l-sdhi' as a generic compatible string for the
+> above SoCs.
+>
+> Also now use the 'renesas,rzg2l-sdhi' string in the if check for making
+> sure the required clocks are present.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+> v1->v2
+> - Collected the Ack
 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-On 4/24/24 12:27, Jagadeesh Kona wrote:
-> 
-> 
-> On 4/24/2024 3:25 PM, Bryan O'Donoghue wrote:
->> On 24/04/2024 10:47, Jagadeesh Kona wrote:
->>>
->>>
->>> On 4/24/2024 5:18 AM, Bryan O'Donoghue wrote:
->>>> On 13/04/2024 16:20, Jagadeesh Kona wrote:
->>>>> Some GDSC client drivers require the GDSC mode to be switched dynamically
->>>>> to HW mode at runtime to gain the power benefits. Typically such client
->>>>> drivers require the GDSC to be brought up in SW mode initially to enable
->>>>> the required dependent clocks and configure the hardware to proper state.
->>>>> Once initial hardware set up is done, they switch the GDSC to HW mode to
->>>>> save power. At the end of usecase, they switch the GDSC back to SW mode
->>>>> and disable the GDSC.
->>>>>
->>>>> Introduce HW_CTRL_TRIGGER flag to register the set_hwmode_dev and
->>>>> get_hwmode_dev callbacks for GDSC's whose respective client drivers
->>>>> require the GDSC mode to be switched dynamically at runtime using
->>>>> dev_pm_genpd_set_hwmode() API.
->>>>>
->>>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
->>>>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
->>>>> ---
->>>>>   drivers/clk/qcom/gdsc.c | 37 +++++++++++++++++++++++++++++++++++++
->>>>>   drivers/clk/qcom/gdsc.h |  1 +
->>>>>   2 files changed, 38 insertions(+)
->>>>>
->>>>> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
->>>>> index df9618ab7eea..c5f6be8181d8 100644
->>>>> --- a/drivers/clk/qcom/gdsc.c
->>>>> +++ b/drivers/clk/qcom/gdsc.c
->>>>> @@ -363,6 +363,39 @@ static int gdsc_disable(struct generic_pm_domain *domain)
->>>>>       return 0;
->>>>>   }
->>>>> +static int gdsc_set_hwmode(struct generic_pm_domain *domain, struct device *dev, bool mode)
->>>>> +{
->>>>> +    struct gdsc *sc = domain_to_gdsc(domain);
->>>>> +    int ret;
->>>>> +
->>>>> +    ret = gdsc_hwctrl(sc, mode);
->>>>> +    if (ret)
->>>>> +        return ret;
->>>>> +
->>>>> +    /* Wait for 1usec for mode transition to properly complete */
->>>>> +    udelay(1);
->>>>
->>>> A delay I suspect you don't need - if the HW spec says "takes 1 usec for this to take effect" that's 1 usec from io write completion from APSS to another system agent.
->>>>
->>>> You poll for the state transition down below anyway.
->>>>
->>>> I'd be pretty certain that's a redundant delay.
->>>>
->>>
->>> Thanks Bryan for your review!
->>>
->>> This 1usec delay is needed every time GDSC is moved in and out of HW control mode and the reason for same is explained in one of the older gdsc driver change at below link
->>>
->>> https://lore.kernel.org/all/1484027679-18397-1-git-send-email-rnayak@codeaurora.org/
->>>
->>
->> Right.
->>
->> If that is your precedent then you seem to be missing the mb(); between
->>
->> gdsc_hwctrl();
->>
->> /* mb(); here */
->>
->> and this
->>
->> udelay(1);
->>
-> 
-> Sorry, earlier I shared the link to base patch series which has mb() used, but in the mainlined series of the same patch mb() is removed as per the review comments.
-> 
-> Please find the mainlined series link:-
-> https://lore.kernel.org/all/1485145581-517-1-git-send-email-rnayak@codeaurora.org/
+Gr{oetje,eeting}s,
 
-Mostly because mb is a solution to a different problem. See this talk
-for more details:
+                        Geert
 
-https://youtu.be/i6DayghhA8Q
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-Konrad
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
