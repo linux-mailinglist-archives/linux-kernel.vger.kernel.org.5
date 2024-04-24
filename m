@@ -1,290 +1,355 @@
-Return-Path: <linux-kernel+bounces-157530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08F418B1267
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:32:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BF558B1269
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:32:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B446B28994F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:32:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0129D1F21A55
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:32:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7402316D9BE;
-	Wed, 24 Apr 2024 18:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41C816F0DE;
+	Wed, 24 Apr 2024 18:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="H4czK3M5"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VVBLRUKJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D206C16E88D
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 18:27:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 886F316E88D
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 18:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713983265; cv=none; b=JO5sD2GIhPPB9j+Gn6N2dSfYdcK5RTI3o8kVmj2TQyiUPq14VNvdPQ9qAIc8d3MYEoHOwgzdypfWquksaMLUjByjA7O8DSTga0dpg7jOP11mTnP3j17t8wUxGD8mAaPOAnIzmxA3GkKZN78PwxxcvB4kM15IBvjoWtohU9eV5as=
+	t=1713983344; cv=none; b=tGlJjjOMrtOZubyFt0PApRwtFovnVE2vyy7DnrVS5+GfXj2yPIeoV03q0F96sDEbtyJAZyDCDgGDGhw2LZLHQJIUabZMNdNPRYqFqkKARqGx3Pid4dZPs4hm4p9TMc0mVxJjQhkuuAyU13Rb1A5vr6au3rjKp8aXe/jhcMLuRVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713983265; c=relaxed/simple;
-	bh=lUkuDxqy2td1CJh92CLAhjg1PDaKaSR6jAMKDt4n7lc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cOnOImKKcfYgAFZ0KmNQfCozaWSuySVgfIpWtaklCuFGTZ6pwlJayM+8uzrsHUxE+GkkFNb9W+ggegNLhm+/dVo8PWPZwyd74iFJ6zvCyfAjCjMDcKxC2Y2uHxZ3h0ECasxwem2vbMimDy5AFLq1XoVRtM+nRh48qzEC9UZ1p2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=H4czK3M5; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e8414dc4e8so22025ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 11:27:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713983263; x=1714588063; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lUkuDxqy2td1CJh92CLAhjg1PDaKaSR6jAMKDt4n7lc=;
-        b=H4czK3M52lZQ4lkNCmSvwoIFwLsJDvcQaR7TB2hyNXO7RbxyMnO4GNHdORFbq6NEU3
-         UTuNAc6oFRnJlKrJG2yqGNygNn7p6SYYLktBzjVOe8zuL8ZNIu3H898Y7qxN2yEsBxeV
-         BeZA3E8R2u0TcFBOBsYT8dFb2BZEnvHBbVjmRmxp1vnq+zIPRx6gGP+e08Lmo8XNFLjH
-         oHLTh7gSejXDpnlGvbkd3CqeFPSiOrt26y5/BmSs6+xLmnE3RIxNi6ns4BORYqNEu0UH
-         Bn08rej2h+0kCkaPVAm/Gzjl/PahVowZZ4sC2GUyJyW11bcoRo3c95/O4p6pOM2BA0+a
-         rHkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713983263; x=1714588063;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lUkuDxqy2td1CJh92CLAhjg1PDaKaSR6jAMKDt4n7lc=;
-        b=gZIGmJ91W9lZ34RRsAa2QrzxL4OYzRMoFitbqWeMEk9aG9MJ9fuC5SM3EAta6bsGU0
-         KQF5xEf//lLBGXCcSZIfxP1/cnNRTcIiqlwtytbBXWb/YJ0LKlVe63cpN1myCWSSP0od
-         1I1o8WEDAi0jgsxl6YRnsw48/f+hefZz5J7vT/B68bT28O843hN2TvT20nr3K99gkleZ
-         WFTvZOx3/brspespiPiYu3soAF4TaVc5x+5bXbsGF8wM8QSQA4ljQ2zDMsxOFIlmMt4Y
-         aeLB1lQ0xVaujw4AW8IPRWm4MOAaxBXjfkH5LW373O6r69NK63Ob9gklpflR5jG/Giee
-         Geyg==
-X-Forwarded-Encrypted: i=1; AJvYcCXicZgh713hjN12qeUgj/Jw8wm4XOCNhEisC4igUhLUR1ds8c/mdRkF0MieputebYQOLdCwVx6JPffx3yEpB4YJTVWmYPAoju32HtPU
-X-Gm-Message-State: AOJu0YxML2t2/S9DMoDWPOVvzKrXk0NOkQBZnSaN56JL2FUj17qkA+Gk
-	9BdyoJ8vt4xMQRo9dQ3cQvCWf3x5CqcUrQAwVo7GtGd1W1BHVk4gvtfemrPd0sNz8ri9u4r+S64
-	PPeh2eP3naAKaFWdOopiWv1YQdw/r3+o/5Fqc
-X-Google-Smtp-Source: AGHT+IG9TFWjYX67TS5BhRxVy86ZzzMgfPz0j+VuLcUx7js4RWdhKLVokAumLhOPIOnftf73ljJ0IdX49/SiVJMVFwM=
-X-Received: by 2002:a17:902:d581:b0:1e5:3c03:cbc1 with SMTP id
- k1-20020a170902d58100b001e53c03cbc1mr9793plh.21.1713983262738; Wed, 24 Apr
- 2024 11:27:42 -0700 (PDT)
+	s=arc-20240116; t=1713983344; c=relaxed/simple;
+	bh=pASzK77Ts5o9D6W8WLMngPM+cJJgwLwJRtv7XzJUBB8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pz6dHU8nHEPFQ+OY1xOh+tfQxHeVMjANXwwIE2JjHevjiLU2LTbPxn6UeEPTDjOy1E3/zatiS11AxFOQAWAf4bfWkl2qhnz9IkZKu8d0qjC8N24pK0xoKI6wzwHSYF3BkRgFt4lXKARu3+o0HQaR+fOWCcMdvpBXU5WPulPs1Q4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VVBLRUKJ; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713983342; x=1745519342;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=pASzK77Ts5o9D6W8WLMngPM+cJJgwLwJRtv7XzJUBB8=;
+  b=VVBLRUKJP7LV9YHY07xvBaGrnHqget7U86GO26yrr3l8qvEC8OV/+224
+   YnUzcRJIY31LMVCL+zWhTQDGhviwpms+TqOo2lpeKRmsk8L1N4MvBN3/g
+   fyC7ZFbC0ddJpfgOORzMC97tD1aoS7t4ZIRNbTD/aYfRceyNk90Ksrue2
+   LR7w2Ja8YzBNClHx0zctvZ/3NAT8l32wnCTtS5+WhaQK4viRCnNkwCDB2
+   rL7rwxJNttRQEOzUE70gt+J42BATQ3JdpYlX9tRDMdbLWGUoOwEKdWxQj
+   LP8PxAFR5mwiaZIRpVXJ+V3Sd5TCDmjxzRvOCDDcn2EDzQrOi2yPesc37
+   Q==;
+X-CSE-ConnectionGUID: UJBoWP9PRjaa+eb8Kb2n/A==
+X-CSE-MsgGUID: bO/1cwnmTD6hPLI0ky32pw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9484415"
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="9484415"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:29:02 -0700
+X-CSE-ConnectionGUID: Y7/V9fycQUujaQesoicONQ==
+X-CSE-MsgGUID: i2Iqc/leRD2m1alGQZimZA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="29453681"
+Received: from ttiasha-mobl1.amr.corp.intel.com (HELO [10.209.122.5]) ([10.209.122.5])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:29:01 -0700
+Message-ID: <7eb992f3-ddc0-41d3-98e3-e9020eb90cb0@intel.com>
+Date: Wed, 24 Apr 2024 11:29:00 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103165438.633054-1-samuel.holland@sifive.com>
- <CAOnJCUJ4rC+Rrs6GV4t+=NWA=LtTZix5Nk1VzgP9CK-3+5-jAg@mail.gmail.com>
- <06e71142-e113-40ac-b2c2-b20893aa714f@sifive.com> <a4c4c9f2-9fe1-4c22-a99c-1667481ddd6b@rivosinc.com>
- <CAAhSdy1yoCMtR52X7tS6dB2x_ysgA8K4hSSXH044bbq2uFY7jQ@mail.gmail.com>
- <CAP-5=fX5JRYxZ26buLujSVP7roQTaWofqdiX1y1rAKQ70Yu+QQ@mail.gmail.com>
- <CAHBxVyGuxQLTnBUiK2w=9atqNXs0sWC9KcWjssgzhNnbp_Z-mg@mail.gmail.com> <20240424-7b4434122a8c1cf1c1173403@orel>
-In-Reply-To: <20240424-7b4434122a8c1cf1c1173403@orel>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 24 Apr 2024 11:27:28 -0700
-Message-ID: <CAP-5=fVts9oyi8AYmWnLvASZu_2AjcMeHX3UVLGiECX6yi3Pew@mail.gmail.com>
-Subject: Re: [PATCH] perf: RISC-V: Check standard event availability
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: Atish Kumar Patra <atishp@rivosinc.com>, Anup Patel <anup@brainfault.org>, 
-	Samuel Holland <samuel.holland@sifive.com>, Atish Patra <atishp@atishpatra.org>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Mark Rutland <mark.rutland@arm.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv2 3/4] x86/tdx: Handle PENDING_EPT_VIOLATION_V2
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
+Cc: sathyanarayanan.kuppuswamy@linux.intel.com, hpa@zytor.com,
+ seanjc@google.com, elena.reshetova@intel.com, rick.p.edgecombe@intel.com,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20240325104607.2653307-1-kirill.shutemov@linux.intel.com>
+ <20240325104607.2653307-4-kirill.shutemov@linux.intel.com>
+Content-Language: en-US
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240325104607.2653307-4-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 24, 2024 at 6:31=E2=80=AFAM Andrew Jones <ajones@ventanamicro.c=
-om> wrote:
->
-> On Tue, Apr 23, 2024 at 05:36:43PM -0700, Atish Kumar Patra wrote:
-> > On Mon, Apr 22, 2024 at 8:44=E2=80=AFPM Ian Rogers <irogers@google.com>=
- wrote:
-> > >
-> > > On Mon, Apr 15, 2024 at 9:07=E2=80=AFPM Anup Patel <anup@brainfault.o=
-rg> wrote:
-> > > >
-> > > > On Tue, Apr 16, 2024 at 5:31=E2=80=AFAM Atish Patra <atishp@rivosin=
-c.com> wrote:
-> > > > >
-> > > > > On 4/10/24 18:40, Samuel Holland wrote:
-> > > > > > Hi Atish,
-> > > > > >
-> > > > > > On 2024-03-18 2:44 PM, Atish Patra wrote:
-> > > > > >> On Wed, Jan 3, 2024 at 8:54=E2=80=AFAM Samuel Holland <samuel.=
-holland@sifive.com> wrote:
-> > > > > >>>
-> > > > > >>> The RISC-V SBI PMU specification defines several standard har=
-dware and
-> > > > > >>> cache events. Currently, all of these events appear in the `p=
-erf list`
-> > > > > >>> output, even if they are not actually implemented. Add logic =
-to check
-> > > > > >>> which events are supported by the hardware (i.e. can be mappe=
-d to some
-> > > > > >>> counter), so only usable events are reported to userspace.
-> > > > > >>>
-> > > > > >>
-> > > > > >> Thanks for the patch.
-> > > > > >> This adds tons of SBI calls at every boot for a use case which=
- is at
-> > > > > >> best confusing for a subset of users who actually wants to run=
- perf.
-> > > > > >
-> > > > > > I should have been clearer in the patch description. This is no=
-t just a cosmetic
-> > > > > > change; because perf sees these as valid events, it tries to us=
-e them in
-> > > > > > commands like `perf stat`. When the error from SBI_EXT_PMU_COUN=
-TER_CFG_MATCH
-> > > > > > causes the ->add() callback to fail, this prevents any other ev=
-ents from being
-> > > > > > scheduled on that same CPU (search can_add_hw in kernel/events/=
-core.c). That is
-> > > > > > why the dTLB/iTLB miss counts are missing in the "before" examp=
-le below.
-> > > > > >
-> > > > >
-> > > > > Thanks for explaining the problem. I can reproduce it in qemu as =
-well if
-> > > > > enough number of invalid events given on the command line and the
-> > > > > workload is short enough.
-> > > > >
-> > > > > >> This probing can be done at runtime by invoking the
-> > > > > >> pmu_sbi_check_event from pmu_sbi_event_map.
-> > > > > >> We can update the event map after that so that it doesn't need=
- to
-> > > > > >> invoke pmu_sbi_check_event next time.
-> > > > > >
-> > > > > > I tried to implement this suggestion, but it did not work. The =
-SBI interface
-> > > > > > does not distinguish between "none of the counters can monitor =
-the specified
-> > > > > > event [because the event is unsupported]" and "none of the coun=
-ters can monitor
-> > > > > > the specified event [because the counters are busy]". It is not=
- sufficient for
-> > > > > > the kernel to verify that at least one counter is available bef=
-ore performing
-> > > > > > the check, because certain events may only be usable on a subse=
-t of counters
-> > > > > > (per riscv,event-to-mhpmcounters), and the kernel does not know=
- that mapping.
-> > > > > >
-> > > > >
-> > > > > Yeah. My suggestion was to fix the perf list issue which is diffe=
-rent
-> > > > > than the issue reported now.
-> > > > >
-> > > > > > As a result, checking for event support is only reliable when n=
-one of the
-> > > > > > counters are in use. So the check can be asynchronous/deferred =
-to later in the
-> > > > > > boot process, but I believe it still needs to be performed for =
-all events before
-> > > > > > userspace starts using the counters.
-> > > > > >
-> > > > >
-> > > > > We should defer it a work queue for sure. We can also look at imp=
-roving
-> > > > > SBI PMU extension to support bulk matching behavior as well.
-> > > > >
-> > > > > However, I think a better solution would be to just rely on the j=
-son
-> > > > > file mappings instead of making SBI calls. We are going to have t=
-he
-> > > > > event encoding and mappings in the json in the future.
-> > > >
-> > > > The problem with JSON based event encoding is how to deal in-case
-> > > > we are running inside Guest/VM because Host could be anything.
-> > > >
-> > > > IMO, the JSON based approach is not suitable for SBI PMU. For now,
-> > > > we either defer the work using the work queue or keep the approach
-> > > > of this patch as-is.
-> > > >
-> > > > The good part about SBI PMU extension is that we do have a standard
-> > > > set of events and we only need a way to discover supported standard
-> > > > events with a minimum number of SBI calls. It is better to add a ne=
-w
-> > > > SBI PMU call to assist supported event discovery which will also
-> > > > help us virtualize it.
-> > > >
-> > > > Regards,
-> > > > Anup
-> > >
-> > > +Ian Rogers
-> > >
-> > > `perf list` will already filter some events depending on whether the
-> > > PMU supports them, for example, legacy cache events. I think we can
-> > > extend this to json events.
-> > >
-> >
-> > Yes. That's what I was thinking as well. However, that may be a
-> > problem in virtualization
-> > as Anup pointed out.
-> >
-> > As per my understanding, cloud providers provide json files for VMs
-> > based on the host
-> > architecture and allow migration only between hosts with the same
-> > family of cpu. In RISC-V, the mapfile.csv works based on 3 registers
-> > indicating marchid, mimpid, and mvendorid. Thus, the json file has to
-> > be tied with the host machine it is going to be run.
->
-> This is also my understanding. That is, that cloud instances typically
-> dedicate CPUs to VMs and don't try to present CPU models to VMs which
-> don't exactly match the host's CPUs. The remaining concern would be if
-> the hypervisor doesn't emulate/passthrough everything the json describes
-> for the host CPU type.
+On 3/25/24 03:46, Kirill A. Shutemov wrote:
+> PENDING_EPT_VIOLATION_V2 allows TD to control whether access to
+> a pending page triggers #VE.
+> 
+> Kernel doesn't want to see any #VEs on accesses to private memory:
+> disable such #VEs.
 
-So this isn't accurate. For x86 perf uses the CPUID instruction. A
-host operating system can change the CPUID for a guest, say pretending
-a newer CPU model is actually an older one. This can be done when
-migrating VMs as having the CPUID change dynamically in a guest would
-be a problem. VM migration like this can have issues and it is fair to
-say that it is avoided.
+This is really a bare bones changelog.  The connection between "pending"
+and "private" goes unmentioned.  It's not obvious when the kernel might
+be exposed to one of these #VE's.
 
-Fwiw, a particular problem we have with x86 guests is the host hiding
-CPUID leaves that describe things like the frequency of the CPU. It is
-difficult to compute metrics in units of time when you don't know what
-frequency cycles relates to.
+> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+> index 08e2bb462ce8..860bfdd5a11d 100644
+> --- a/arch/x86/coco/tdx/tdx.c
+> +++ b/arch/x86/coco/tdx/tdx.c
+> @@ -77,6 +77,17 @@ static inline void tdcall(u64 fn, struct tdx_module_args *args)
+>  		panic("TDCALL %lld failed (Buggy TDX module!)\n", fn);
+>  }
+>  
+> +static inline u64 tdg_vm_rd(u64 field)
+> +{
+> +	struct tdx_module_args args = {
+> +		.rdx = field,
+> +	};
+> +
+> +	tdcall(TDG_VM_RD, &args);
+> +
+> +	return args.r8;
+> +}
+> +
+>  static inline u64 tdg_vm_wr(u64 field, u64 value, u64 mask)
+>  {
+>  	struct tdx_module_args args = {
+> @@ -91,6 +102,28 @@ static inline u64 tdg_vm_wr(u64 field, u64 value, u64 mask)
+>  	return args.r8;
+>  }
+>  
+> +static inline u64 tdg_sys_rd(u64 field)
+> +{
+> +	struct tdx_module_args args = {
+> +		.rdx = field,
+> +	};
+> +
+> +	tdcall(TDG_SYS_RD, &args);
+> +
+> +	return args.r8;
+> +}
 
-> However, this is just "typical" clouds. All bets are off for general
-> virtualization, as Anup points out.
->
-> >
-> > We will end up doing the same if we only rely on the json file to
-> > filter events in the future. Please let me know if the assumption is
-> > incorrect.
-> >
-> > If we allow a SBI call route to discover which events are supported,
-> > the guest can always support legacy events on any host even though it
-> > doesn't have a json file.
->
-> Yes, I think we need a solution which works even without a json file,
-> since a VM may use a special mvendorid,marchid,mimpid triplet to
-> describe a more generic CPU type. Unless we also create json files
-> for these VCPUs, or provide other event discovery mechanisms, then
-> the VMs will not have anything.
+I scratched my head for a minute on why these two identical functions
+were introduced.  Then I realized that they're different TDCALLs.
 
-I think a set of generic events is a good thing, then the PMU driver
-can map perf's legacy events to the generic events in a clean way. I'm
-not sure what the issue is with RISC-V guest operating systems. To
-lower overhead on x86 pass-through PMUs are being explored, that is
-the guest operating system directly programming the CPU's performance
-counters to avoid hypervisor traps. For this to work the triplet
-mvendorid,marchid,mimpid should match that of the host.
+Please break them out into a separate patch where you can mention this.
+Also, the least we can do is a one-line comment about what they do:
 
-The perf tool supports the notion of a standard set of legacy events
-like instructions, cycles and certain cache events. More recently
-we've moved to prefer sysfs and json events over these, primarily
-because the Apple M1 ARM based Macs nobody was establishing the
-mapping from legacy to an actual event. Users were complaining that
-'cycles' via a sysfs event worked, but when ARM was made like Intel
-and prioritized legacy first, we broke it. Now we prioritize sysfs and
-json way for all architectures and hopefully everyone is happy. The
-last clean up for this is in:
-https://lore.kernel.org/lkml/20240416061533.921723-1-irogers@google.com/
+/* Read metadata about how *this* VM is configured. */
+static inline u64 tdg_vm_rd(u64 field)
+..
 
-Thanks,
-Ian
+/* Read metadata about the TDX system as whole. */
+static inline u64 tdg_sys_rd(u64 field)
 
-> Thanks,
-> drew
+> +static bool tdcs_ctls_set(u64 mask)
+> +{
+> +	struct tdx_module_args args = {
+> +		.rdx = TDCS_TD_CTLS,
+> +		.r8 = mask,
+> +		.r9 = mask,
+> +	};
+> +
+> +	return __tdcall(TDG_VM_WR, &args) == TDX_SUCCESS;
+> +}
+
+This is acronym soup.  It's made worse by "TDCS_TD_CTLS" being
+ungoogleable and not literally present in the first three TDX PDFs that
+I dug in.
+
+It's also not clear logically how this differs from tdg_vm_wr().
+
+>  /**
+>   * tdx_mcall_get_report0() - Wrapper to get TDREPORT0 (a.k.a. TDREPORT
+>   *                           subtype 0) using TDG.MR.REPORT TDCALL.
+> @@ -185,7 +218,8 @@ static void tdx_setup(u64 *cc_mask)
+>  {
+>  	struct tdx_module_args args = {};
+>  	unsigned int gpa_width;
+> -	u64 td_attr;
+> +	u64 td_attr, features;
+> +	bool sept_ve_disabled;
+>  
+>  	/*
+>  	 * TDINFO TDX module call is used to get the TD execution environment
+> @@ -206,19 +240,50 @@ static void tdx_setup(u64 *cc_mask)
+>  	gpa_width = args.rcx & GENMASK(5, 0);
+>  	*cc_mask = BIT_ULL(gpa_width - 1);
+>  
+> +	td_attr = args.rdx;
+> +
+>  	/* Kernel does not use NOTIFY_ENABLES and does not need random #VEs */
+>  	tdg_vm_wr(TDCS_NOTIFY_ENABLES, 0, -1ULL);
+>  
+> +	features = tdg_sys_rd(TDCS_TDX_FEATURES0);
+> +
+>  	/*
+>  	 * The kernel can not handle #VE's when accessing normal kernel
+>  	 * memory.  Ensure that no #VE will be delivered for accesses to
+>  	 * TD-private memory.  Only VMM-shared memory (MMIO) will #VE.
+> +	 *
+> +	 * Check if the TD is created with SEPT #VE disabled.
+>  	 */
+> -	td_attr = args.rdx;
+> -	if (!(td_attr & ATTR_SEPT_VE_DISABLE)) {
+> -		const char *msg = "TD misconfiguration: SEPT_VE_DISABLE attribute must be set.";
+> +	sept_ve_disabled = td_attr & ATTR_SEPT_VE_DISABLE;
+>  
+> -		/* Relax SEPT_VE_DISABLE check for debug TD. */
+> +	/*
+> +	 * Check if flexible control of SEPT #VE is supported.
+> +	 *
+> +	 * The check consists of verifying if the feature is supported by the
+> +	 * TDX module (the TDX_FEATURES0 check) and if the feature is enabled
+> +	 * for this TD (CONFIG_FLAGS check).
+> +	 *
+> +	 * If flexible control is supported, disable SEPT #VE.
+> +	 *
+> +	 * Disable SEPT #VE regardless of ATTR_SEPT_VE_DISABLE status as
+> +	 * flexible control allows software running before the kernel to
+> +	 * enable it.
+> +	 *
+> +	 * Skip SEPT disabling for debug TD. SEPT #VE is unsafe but can be
+> +	 * useful for debugging to produce a stack trace. Known to be useful
+> +	 * for debugging unaccepted memory problems.
+> +	 */
+> +	if (features & TDX_FEATURES0_PENDING_EPT_VIOLATION_V2 &&
+> +	    (tdg_vm_rd(TDCS_CONFIG_FLAGS) & TDCS_CONFIG_FLEXIBLE_PENDING_VE) &&
+
+Can't we just check TDCS_CONFIG_FLEXIBLE_PENDING_VE alone?  Surely that
+flag can't get set if !TDX_FEATURES0_PENDING_EPT_VIOLATION_V2.
+
+In any case, this is, um, kinda messy.  Look at what a helper could do:
+
+/*
+ * Private memory #VE's are bad because the kernel has no way of
+ * recovering from them and can only die. Newer TDX modules can
+ * configured to inflict fewer #VE's on guests.  Do it when available.
+ */
+static inline int try_disable_sept_ve(td_addr)
+{
+	/* Does the TDX module support the #VE reduction feature? */
+	if (!(features & TDX_FEATURES0_PENDING_EPT_VIOLATION_V2))
+		return -ENOTSUP;
+
+	/* Is this TD allowed to use the feature? */
+	if (!(tdg_vm_rd(TDCS_CONFIG_FLAGS) &
+	     TDCS_CONFIG_FLEXIBLE_PENDING_VE)))
+		return -ENOTSUP;
+
+	/* Keep #VE's enabled for splats in debugging environments: */
+	if (td_attr & ATTR_DEBUG)
+		return -ENOTSUP;
+
+	if (!tdcs_ctls_set(TD_CTLS_PENDING_VE_DISABLE))
+		return -ENOTSUP;
+
+	return 0;
+}
+
+Then the code becomes:
+	
+	if (!try_disable_sept_ve(td_addr))
+		sept_ve_disabled = true;
+	else
+		sept_ve_disabled = td_attr & ATTR_SEPT_VE_DISABLE;
+
+See how it sets the state in *ONE* easy-to-understand place?
+
+Oh, 'sept_ve_disabled' either gets disabled dynamically if it can, or it
+gets read from the static state if not.
+
+Oh, and if you ever have a comment that long with a bunch of
+explanations of individual if() conditions, *PLEASE* try to break it up
+in some way.  Otherwise readers just spent all their time trying to
+match up the comment to the code.  It's not a fun game.
+
+> +	    !(td_attr & ATTR_DEBUG)) {
+> +		if (tdcs_ctls_set(TD_CTLS_PENDING_VE_DISABLE))
+> +			sept_ve_disabled = true;
+> +	}
+> +
+> +	if (!sept_ve_disabled) {
+> +		const char *msg = "TD misconfiguration: SEPT #VE has to be disabled";
+> +
+> +		/* Relax SEPT #VE disable check for debug TD. */
+>  		if (td_attr & ATTR_DEBUG)
+>  			pr_warn("%s\n", msg);
+>  		else
+> diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
+> index fdfd41511b02..29a61c72e4dd 100644
+> --- a/arch/x86/include/asm/shared/tdx.h
+> +++ b/arch/x86/include/asm/shared/tdx.h
+> @@ -16,11 +16,27 @@
+>  #define TDG_VP_VEINFO_GET		3
+>  #define TDG_MR_REPORT			4
+>  #define TDG_MEM_PAGE_ACCEPT		6
+> +#define TDG_VM_RD			7
+>  #define TDG_VM_WR			8
+> +#define TDG_SYS_RD			11
+>  
+> -/* TDCS fields. To be used by TDG.VM.WR and TDG.VM.RD module calls */
+> +/* TDX Global Metadata. To be used by TDG.SYS.RD */
+> +#define TDCS_TDX_FEATURES0		0x0A00000300000008
+> +
+> +/* TDX TD-Scope Metadata. To be used by TDG.VM.WR and TDG.VM.RD */
+> +#define TDCS_CONFIG_FLAGS		0x1110000300000016
+> +#define TDCS_TD_CTLS			0x1110000300000017
+>  #define TDCS_NOTIFY_ENABLES		0x9100000000000010
+>  
+> +/* TDCS_TDX_FEATURES0 bits */
+> +#define TDX_FEATURES0_PENDING_EPT_VIOLATION_V2	BIT_ULL(16)
+> +
+> +/* TDCS_CONFIG_FLAGS bits */
+> +#define TDCS_CONFIG_FLEXIBLE_PENDING_VE	BIT_ULL(1)
+> +
+> +/* TDCS_TD_CTLS bits */
+> +#define TD_CTLS_PENDING_VE_DISABLE	BIT_ULL(0)
+> +
+>  /* TDX hypercall Leaf IDs */
+>  #define TDVMCALL_MAP_GPA		0x10001
+>  #define TDVMCALL_GET_QUOTE		0x10002
+
 
