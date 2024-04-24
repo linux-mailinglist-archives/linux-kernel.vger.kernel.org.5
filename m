@@ -1,207 +1,125 @@
-Return-Path: <linux-kernel+bounces-156535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 976A28B043E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E89A58B0445
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:25:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FCD92840F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:23:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A62A2283E86
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:25:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC6015887D;
-	Wed, 24 Apr 2024 08:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="D99h+jPI"
-Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 513A815887D;
+	Wed, 24 Apr 2024 08:25:17 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC85158867
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:23:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78826158871
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:25:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713947029; cv=none; b=SA4F3o31LMYR3b56iNESwAAu1YF+IsrfkH63RJ2V2Y7dUiAJ51hbSmTXLGMFpHhiIgTzph7mP5gLd64HI0XM55nzx5145PdGNBjbppT8Owb+FIhe+o0+U56grAIgqLYTn2eRLGX+enNwGHgELQvuKxIhBHOVRXdiYj2BHWUZauI=
+	t=1713947116; cv=none; b=XonTcBxRaK8/xfKIz6fxOmFDfFpzRcYMqBjn21jPF66rPYLUNEUG+LH5kcFJs2CMUapx79k8YF/gxqR8QWRInRDtjTGmaudnLA38LbI+e7P5GOzeHEHPKpH54MGV0nyu1q4CiMK/xXYwdUhMD6Is2kvs1P/ZW5j4UsiB8x28czI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713947029; c=relaxed/simple;
-	bh=Zp3ox78TP6hxWDah/Xpqv+ArZs5jq62G8JwODJB4R/k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iCUfaepNzGxL46k6RYnAWT6D9126OUMLk8XWJR2pUlat/5txEeA0ztL90o6KyjZ7CFicWRMC+qV4o2ppVJJ/6+1i/TBHCr7FlG55EJKRwSxHmo35HONP47CmVi54pgB6LGe9xbra0OZb+D5a2U//SnhXYXBTdg/LEozbXyc+a1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=D99h+jPI; arc=none smtp.client-ip=209.85.221.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-4dcd4cb27beso1671992e0c.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 01:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713947027; x=1714551827; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hPFo+IxgUQ2kIlqLDAB9FNtWLgx3YKcW7YRqfGcT4is=;
-        b=D99h+jPI02n6GqC0nTUgIBoOB/rxNVXaq+kV/nJeyIEeK9HKDBCFa35QkEhKnSrYSb
-         fSChGitjJDJuJORQ6mqbBpP5jjUy14U8DUJF25Xl1e+lkn80UzRJX93D1BU01eBY5GgG
-         T3bQ2c5PgSJ03ZWXGKDxrzkUd2DUPAoyANAOyL6kT20v6r01BnS9/6RyvwYfnxsMQqTt
-         bS0NNUoXToSapKYv02Cnsc0GkNtKrDhjL6X7WDSkRNbVBT3P0Og7sFHVomxUx55UuToQ
-         D2gtLw7CrXAo+63p52KAeMMDLKWgv8BM2WqJn5FMge0NkffY9VhFLDjpBPRAS+Gw1Rcv
-         wawA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713947027; x=1714551827;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hPFo+IxgUQ2kIlqLDAB9FNtWLgx3YKcW7YRqfGcT4is=;
-        b=Kkf6almMdhQSejewd8XRGSBed1WI1NjwqyfmZfGLYFdr0evWjHkkllTi8fardbjbo+
-         JsJ9IuzzLZH68ZOt1vQE55Wgs0mn4uicPpjOmNQXYQfUPRDsdinY6HHxgtL2+AzSlUXZ
-         /Wt7F36k/8nZKWbGSNjfd8S/hmjEEJ2Yqeo/CIRRQy9+3rxl04IQmor3xxeIzWB9Czyl
-         mJzpw1rVla6JlCP8qtU26QlZwWZGVwR2+NyJhPP0Dx1TGM+Ab9AqHC0nyGd4YY8XLo2J
-         uo7UgyYYatfLnUjP+XUsc+/kQrkjSL/g4pAd7R1l5V3mwrOLl+8TvRHK1GGkzwkbRwPZ
-         4D5g==
-X-Forwarded-Encrypted: i=1; AJvYcCUK8gUCaiNXeD+NNb9frkgm4JD8qUbQu+V364a9DVeYgdeUB+v2h54mRRQlyVuLPtHUc8f3IK7giCyY5lYSLyz+wBh6tkYjSUEb985/
-X-Gm-Message-State: AOJu0Yy7rFPjWAthpUeHWXz9dbARBvSquddHwBLKnncgVUaZA4Y+DPxt
-	kSQNuOAnIQdv17ZxOb0yTwyvBkBeXpLD3a8VMhMvruFm3zKGXdyyXQVYdM9lc+pUEcmd8PRMsf6
-	d1gGzGMsugdXPm3/J3lSdZgyEGDZLpvBnibc+Aw==
-X-Google-Smtp-Source: AGHT+IHZ7X76KDkGnfGA3Bl/vGPMhc2BLowSx3pIZsvhaqPdCqZCneOazFLgOUQklJc7AYOw6nVgw9sTtiQodVWHsnE=
-X-Received: by 2002:a05:6122:3284:b0:4dc:fbc5:d47 with SMTP id
- cj4-20020a056122328400b004dcfbc50d47mr1633005vkb.16.1713947026616; Wed, 24
- Apr 2024 01:23:46 -0700 (PDT)
+	s=arc-20240116; t=1713947116; c=relaxed/simple;
+	bh=NeIENiopGqRCJKXoxGR47faLpfIOQmosSOdAybtLZ1g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rqd+rVcPTxTxmOvBx1PlmJd6YBSAvzxr8ptRmf4PFtqsvLEffNupxJ2rL5B7A0z6J9D2UsTsAzCCi6TatG7T29YJPV+6sPUMbfOjw43MlRQA86F20QPo4flDcdbwex/f7v2v/kHbk1k66+ZcSfuWn6evnZ6/1zu0IyqTCgavHKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rzXw4-0004x8-5q; Wed, 24 Apr 2024 10:25:00 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rzXw3-00E2rV-Ic; Wed, 24 Apr 2024 10:24:59 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 23B652BEC37;
+	Wed, 24 Apr 2024 08:24:59 +0000 (UTC)
+Date: Wed, 24 Apr 2024 10:24:58 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+	Thomas Kopp <thomas.kopp@microchip.com>, Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux@ew.tq-group.com, alexander.stein@ew.tq-group.com
+Subject: Re: [PATCH 1/4] can: mcp251xfd: stop timestamp before sending chip
+ to sleep
+Message-ID: <20240424-fast-sandy-jackrabbit-d289a0-mkl@pengutronix.de>
+References: <20240417-mcp251xfd-gpio-feature-v1-0-bc0c61fd0c80@ew.tq-group.com>
+ <20240417-mcp251xfd-gpio-feature-v1-1-bc0c61fd0c80@ew.tq-group.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240423213853.356988651@linuxfoundation.org>
-In-Reply-To: <20240423213853.356988651@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 24 Apr 2024 13:53:35 +0530
-Message-ID: <CA+G9fYuv0nH3K9BJTmJyxLXxvKQjh91KdUi4yjJ0ewncW5cSjw@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/141] 6.1.88-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
-	broonie@kernel.org, Anders Roxell <anders.roxell@linaro.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-
-On Wed, 24 Apr 2024 at 03:14, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.1.88 release.
-> There are 141 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 25 Apr 2024 21:38:28 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.88-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
-
-As Pavel reported,
-
-LKFT also found these regressions on 6.1.
-
-The arm build failed with gcc-13 and clang-17 on the Linux stable-rc
-linux.6.1.y branch.
-
-arm:
- * omap2plus_defconfig - failed
- * defconfig  - failed
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Suspecting commit :
--------
-  ASoC: ti: Convert Pandora ASoC to GPIO descriptors
-    [ Upstream commit 319e6ac143b9e9048e527ab9dd2aabb8fdf3d60f ]
-
-Build log:
----
-arch/arm/mach-omap2/pdata-quirks.c:259:15: error: variable
-'pandora_soc_audio_gpios' has initializer but incomplete type
-  259 | static struct gpiod_lookup_table pandora_soc_audio_gpios = {
-      |               ^~~~~~~~~~~~~~~~~~
-arch/arm/mach-omap2/pdata-quirks.c:260:10: error: 'struct
-gpiod_lookup_table' has no member named 'dev_id'
-  260 |         .dev_id = "soc-audio",
-      |          ^~~~~~
-arch/arm/mach-omap2/pdata-quirks.c:260:19: warning: excess elements in
-struct initializer
-  260 |         .dev_id = "soc-audio",
-      |                   ^~~~~~~~~~~
-arch/arm/mach-omap2/pdata-quirks.c:260:19: note: (near initialization
-for 'pandora_soc_audio_gpios')
-arch/arm/mach-omap2/pdata-quirks.c:261:10: error: 'struct
-gpiod_lookup_table' has no member named 'table'
-  261 |         .table = {
-      |          ^~~~~
-arch/arm/mach-omap2/pdata-quirks.c:261:18: error: extra brace group at
-end of initializer
-  261 |         .table = {
-      |                  ^
-arch/arm/mach-omap2/pdata-quirks.c:261:18: note: (near initialization
-for 'pandora_soc_audio_gpios')
-arch/arm/mach-omap2/pdata-quirks.c:262:17: error: implicit declaration
-of function 'GPIO_LOOKUP'; did you mean 'IOP_LOOKUP'?
-[-Werror=implicit-function-declaration]
-  262 |                 GPIO_LOOKUP("gpio-112-127", 6, "dac", GPIO_ACTIVE_HIGH),
-      |                 ^~~~~~~~~~~
-      |                 IOP_LOOKUP
-arch/arm/mach-omap2/pdata-quirks.c:262:55: error: 'GPIO_ACTIVE_HIGH'
-undeclared here (not in a function); did you mean 'ACPI_ACTIVE_HIGH'?
-  262 |                 GPIO_LOOKUP("gpio-112-127", 6, "dac", GPIO_ACTIVE_HIGH),
-      |                                                       ^~~~~~~~~~~~~~~~
-      |                                                       ACPI_ACTIVE_HIGH
-arch/arm/mach-omap2/pdata-quirks.c:264:17: error: extra brace group at
-end of initializer
-  264 |                 { }
-      |                 ^
-arch/arm/mach-omap2/pdata-quirks.c:264:17: note: (near initialization
-for 'pandora_soc_audio_gpios')
-arch/arm/mach-omap2/pdata-quirks.c:261:18: warning: excess elements in
-struct initializer
-  261 |         .table = {
-      |                  ^
-arch/arm/mach-omap2/pdata-quirks.c:261:18: note: (near initialization
-for 'pandora_soc_audio_gpios')
-arch/arm/mach-omap2/pdata-quirks.c: In function 'omap3_pandora_legacy_init':
-arch/arm/mach-omap2/pdata-quirks.c:271:9: error: implicit declaration
-of function 'gpiod_add_lookup_table'
-[-Werror=implicit-function-declaration]
-  271 |         gpiod_add_lookup_table(&pandora_soc_audio_gpios);
-      |         ^~~~~~~~~~~~~~~~~~~~~~
-arch/arm/mach-omap2/pdata-quirks.c: At top level:
-arch/arm/mach-omap2/pdata-quirks.c:259:34: error: storage size of
-'pandora_soc_audio_gpios' isn't known
-  259 | static struct gpiod_lookup_table pandora_soc_audio_gpios = {
-      |                                  ^~~~~~~~~~~~~~~~~~~~~~~
-cc1: some warnings being treated as errors
-make[3]: *** [scripts/Makefile.build:250:
-arch/arm/mach-omap2/pdata-quirks.o] Error 1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="rqbw5j2wn4qgc634"
+Content-Disposition: inline
+In-Reply-To: <20240417-mcp251xfd-gpio-feature-v1-1-bc0c61fd0c80@ew.tq-group.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
 
-steps to reproduce:
----
-# tuxmake --runtime podman --target-arch arm --toolchain gcc-13
---kconfig omap2plus_defconfig
+--rqbw5j2wn4qgc634
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On 17.04.2024 15:43:54, Gregor Herburger wrote:
+> MCP2518FD exits Low-Power Mode (LPM) when CS is asserted. When chip
+> is send to sleep and the timestamp workqueue is not stopped chip is
+> waked by SPI transfer of mcp251xfd_timestamp_read.
+>=20
+> So before sending chip to sleep stop timestamp otherwise the
+> mcp251xfd_timestamp_read callback would wake chip up.
+>=20
+> Also there are error paths in mcp251xfd_chip_start where workqueue has
+> not been initialized but mcp251xfd_chip_stop is called. So check for
+> initialized func before canceling delayed_work.
 
-Links
----
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2fWG4dRZzA7WgJqyLQ8Rm05WTUo/
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.87-142-gcde450ef0f2f/testrun/23640116/suite/build/test/gcc-13-omap2plus_defconfig/details/
+Can you move the mcp251xfd_timestamp_init() (which starts the
+timestamping worker) into mcp251xfd_chip_start() to keep things
+symmetrical? I think then you don't need to check for "work->func" in
+mcp251xfd_timestamp_stop().
 
---
-Linaro LKFT
-https://lkft.linaro.org
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--rqbw5j2wn4qgc634
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmYowdcACgkQKDiiPnot
+vG/p/Qf/TnaEbLVI0x6Nv/Y79Ua6wtUkcJzzxBEoGz9HPhHdw/dLMVrLdK9WGHwu
+wQFssYbY/vrV+ro2S120SzM69VfAKZY49Ouee0bq5C1zrxqjJRpO1Axj7lV8kCX8
+x2LUUxnbL1Ga1NWJLR+Z+y4nBY/LZotSIGohDemQhScfL5cAGkz/ZyoU58rt6zxM
+stvz8zMtJQmkprU6LH3MWr8MT25hj3T9OW9WAkjlqT30VCfuYvsRYqmJw+MsNIPd
+iqoMDYIYZyHKqTBfciDfEhZVPJzLQQtn0H5EBfG+yq8GH8QE4MvPuOWCd371+Sil
+XomSJ6I2QI5SFbGP/Wh3KfwoMXnEtQ==
+=GzL3
+-----END PGP SIGNATURE-----
+
+--rqbw5j2wn4qgc634--
 
