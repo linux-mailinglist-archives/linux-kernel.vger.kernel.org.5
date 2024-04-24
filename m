@@ -1,172 +1,93 @@
-Return-Path: <linux-kernel+bounces-157702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E73C38B14CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:41:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEB0B8B14D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:44:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 751142812B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:41:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EF821F23E67
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:44:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7675E15696C;
-	Wed, 24 Apr 2024 20:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fcilreIO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC32115689A;
+	Wed, 24 Apr 2024 20:44:32 +0000 (UTC)
+Received: from omta001.cacentral1.a.cloudfilter.net (omta001.cacentral1.a.cloudfilter.net [3.97.99.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4F2F156898
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 20:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C85191CF9A
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 20:44:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.97.99.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713991293; cv=none; b=hxi/XgkvQHCAxEaEOYsbz9VF+nFhb4ipBLmd/c+xirokpKt4WaV+Y8OJ0eLydAmBA7ONRnL5AfcdgvCTJibDB4TTOvSf5a6lfTW/sZbc+Yumd9MU17EW0ArBUhscBNKRLY4h0WLHKjgK+Fvexijzb+tNKyVgG+ElTKLEZD2/8yA=
+	t=1713991472; cv=none; b=rSXkWLqC2r72DvovmOIq6cL45lkM0JZU3cwTe72fz1CuXd7BAeae1dr+NS630p1/HfCu4lXToeCZG+K5/rdyp9aBxqyagw7MG/pEp/TpypLWyPBVecqa48K2t7vTym1sURja16a98d89o0a23w7EC5DiVuxobPQ89kgQNAzHIYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713991293; c=relaxed/simple;
-	bh=buNsFbtYYVmx18JUFv8HM4y2vKkaxmf9C7mDNlja280=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A3Zd4t1rbMO3Ee+qWRlv0gym8NNyNEMK+z/rAoJ2I8kNb0tVQ1CsIloukJGcromSpr9IHiU8QexQIr3hjk61H3bnrUZJxGGMs8Hl2NKf/EZHlBJ2/mlK2iHdf3spCDNNykpKJ1xuMATrDyb7aDbohtn6Y0aG5oB11e4bjYxEnvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fcilreIO; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713991291;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oDWaGWnJakdCF6hfPJajrIOzDqbpV/2hCAui/gKGuBQ=;
-	b=fcilreIO6FdixA1kIywC294xU5HEfjWCxWY/6H0koCSFoVi4aR9NcdG3l4iJ1tOcpZ++H6
-	vVX2vwJVu0mg2bZ/hnhxdwtmA/fXot+uCf6MCmZD3Lb2W0gMZUsxebAOfns+W3ZC3qDJv8
-	YUAr+TnShtrrMuG8LgJ+7njb+8bZFjU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-609-Mv2ADBDyNyGMwxSxk2PyJQ-1; Wed, 24 Apr 2024 16:41:27 -0400
-X-MC-Unique: Mv2ADBDyNyGMwxSxk2PyJQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2D8C580021A;
-	Wed, 24 Apr 2024 20:41:27 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.8.33])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id A10E5202450D;
-	Wed, 24 Apr 2024 20:41:26 +0000 (UTC)
-Date: Wed, 24 Apr 2024 16:41:24 -0400
-From: Phil Auld <pauld@redhat.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-tip-commits@vger.kernel.org,
-	Chris von Recklinghausen <crecklin@redhat.com>,
-	Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
-	Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org
-Subject: Re: [tip: sched/urgent] sched/isolation: {revent boot crash when the
- boot CPU is nohz_full
-Message-ID: <20240424204124.GA36310@lorien.usersys.redhat.com>
-References: <20240411143905.GA19288@redhat.com>
- <171398910227.10875.3649946025664504959.tip-bot2@tip-bot2>
+	s=arc-20240116; t=1713991472; c=relaxed/simple;
+	bh=wPiZ4YfDBrjkq8EOtxQfcqvnjeuqIjnT0CsY8Wv3lfY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IQInIxhKmBw0zrT0a8BzxxqPiUjdiN41DGo0tGvKzBieKYnShYJ4HC8RnD1wt791l3jGvfDYgnI5xGO24IyeZXVtIsi2+9Z1MSwbeUcZL6yRo6ENUHYXxWkX/lUZc+Rg5saldK5YjPPnK4NII6ky3OaMxqN7JopbLNS+cP/ZSRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; arc=none smtp.client-ip=3.97.99.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: from shw-obgw-4003a.ext.cloudfilter.net ([10.228.9.183])
+	by cmsmtp with ESMTPS
+	id zZQArsKDq2Ui5zjTbreQf3; Wed, 24 Apr 2024 20:44:23 +0000
+Received: from webber.adilger.int ([70.77.200.158])
+	by cmsmtp with ESMTP
+	id zjTarXbbcByQrzjTarsQi2; Wed, 24 Apr 2024 20:44:23 +0000
+X-Authority-Analysis: v=2.4 cv=UOF+Hzfy c=1 sm=1 tr=0 ts=66296f27
+ a=0Thh8+fbYSyN3T2vM72L7A==:117 a=0Thh8+fbYSyN3T2vM72L7A==:17 a=RPJ6JBhKAAAA:8
+ a=QQdngafKVaWhNDnW0jYA:9 a=fa_un-3J20JGBB2Tu-mn:22
+From: Andreas Dilger <adilger@dilger.ca>
+To: Andy Whitcroft <apw@canonical.com>
+Cc: Joe Perches <joe@perches.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Andreas Dilger <adilger@dilger.ca>
+Subject: [PATCH v2 RESEND] checkpatch: ignore deleted lines for comment context
+Date: Wed, 24 Apr 2024 14:44:19 -0600
+Message-Id: <20240424204419.98942-1-adilger@dilger.ca>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <171398910227.10875.3649946025664504959.tip-bot2@tip-bot2>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfMuoxvXHk1erK7k15w7kBQNnrO7HOExXPbc7cXMtHIImaB36sP6XYQgOi/ymzTfYMdNe9zxHrPocj9oN0u0N04ZuLmnsUOL6MXT/fu8ktgkGwFKRAgBm
+ YZAfI4rqDQgJSwE4IFg98szDsz8Q4WwntKRD9pL8MmHzydbq8c5Aiom24rTAN8330i1VoAEHaK2njBceU2kEmQOhcO12oOKAxGi/dSSeTfhA7uTTp2DeG52f
+ KvPvLdv5u6prx/7+9rDNfHlTbnZTuQne32noeYX11p1jK8va1qf/opsNGAC0OVnF
 
-On Wed, Apr 24, 2024 at 08:05:02PM -0000 tip-bot2 for Oleg Nesterov wrote:
-> The following commit has been merged into the sched/urgent branch of tip:
-> 
-> Commit-ID:     8e3101b38dfc20848a23525b1e6e80bd1641d44c
-> Gitweb:        https://git.kernel.org/tip/8e3101b38dfc20848a23525b1e6e80bd1641d44c
-> Author:        Oleg Nesterov <oleg@redhat.com>
-> AuthorDate:    Thu, 11 Apr 2024 16:39:05 +02:00
-> Committer:     Thomas Gleixner <tglx@linutronix.de>
-> CommitterDate: Wed, 24 Apr 2024 21:53:34 +02:00
-> 
-> sched/isolation: {revent boot crash when the boot CPU is nohz_full
->
+Don't consider lines being removed by a patch as part of the context.
+Otherwise, false "WARNING: memory barrier without comment" and similar
+warnings can be reported when a comment exists on the previous line.
 
-Thanks Thomas, Typo in the reworded description :)
+For example, a change like below was previously incorrectly flagged
+as not having a comment because ctx_locate_comment() considers the
+modified '-' line not to be a comment:
 
+	/* matched by smp_store_release() in some_function() */
+ -	if (smp_load_acquire(&list->tail) == head))
+ +	if (smp_load_acquire(&list->tail) == head) && flags == 0)
 
-> Documentation/timers/no_hz.rst states that the "nohz_full=" mask must not
-> include the boot CPU, which is no longer true after commit 08ae95f4fd3b
-> ("nohz_full: Allow the boot CPU to be nohz_full").
-> 
-> However after commit aae17ebb53cd ("workqueue: Avoid using isolated cpus'
-> timers on queue_delayed_work") the kernel will crash at boot time in this
-> case; housekeeping_any_cpu() returns an invalid CPU number until smp_init()
-> brings the first housekeeping CPU up.
-> 
-> Change housekeeping_any_cpu() to check the result of cpumask_any_and() and
-> return smp_processor_id() in this case.
-> 
-> This is just the simple and backportable workaround which fixes the
-> symptom, but smp_processor_id() at boot time should be safe at least for
-> type == HK_TYPE_TIMER, this more or less matches the tick_do_timer_boot_cpu
-> logic.
-> 
-> There is no worry about cpu_down(); tick_nohz_cpu_down() will not allow to
-> offline tick_do_timer_cpu (the 1st online housekeeping CPU).
-> 
-> Fixes: aae17ebb53cd ("workqueue: Avoid using isolated cpus' timers on queue_delayed_work")
-> Reported-by: Chris von Recklinghausen <crecklin@redhat.com>
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Reviewed-by: Phil Auld <pauld@redhat.com>
-> Acked-by: Frederic Weisbecker <frederic@kernel.org>
-> Link: https://lore.kernel.org/r/20240411143905.GA19288@redhat.com
-> Closes: https://lore.kernel.org/all/20240402105847.GA24832@redhat.com/
-> ---
->  Documentation/timers/no_hz.rst |  7 ++-----
->  kernel/sched/isolation.c       | 11 ++++++++++-
->  2 files changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/timers/no_hz.rst b/Documentation/timers/no_hz.rst
-> index f8786be..7fe8ef9 100644
-> --- a/Documentation/timers/no_hz.rst
-> +++ b/Documentation/timers/no_hz.rst
-> @@ -129,11 +129,8 @@ adaptive-tick CPUs:  At least one non-adaptive-tick CPU must remain
->  online to handle timekeeping tasks in order to ensure that system
->  calls like gettimeofday() returns accurate values on adaptive-tick CPUs.
->  (This is not an issue for CONFIG_NO_HZ_IDLE=y because there are no running
-> -user processes to observe slight drifts in clock rate.)  Therefore, the
-> -boot CPU is prohibited from entering adaptive-ticks mode.  Specifying a
-> -"nohz_full=" mask that includes the boot CPU will result in a boot-time
-> -error message, and the boot CPU will be removed from the mask.  Note that
-> -this means that your system must have at least two CPUs in order for
-> +user processes to observe slight drifts in clock rate.) Note that this
-> +means that your system must have at least two CPUs in order for
->  CONFIG_NO_HZ_FULL=y to do anything for you.
->  
->  Finally, adaptive-ticks CPUs must have their RCU callbacks offloaded.
-> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-> index 373d42c..2a262d3 100644
-> --- a/kernel/sched/isolation.c
-> +++ b/kernel/sched/isolation.c
-> @@ -46,7 +46,16 @@ int housekeeping_any_cpu(enum hk_type type)
->  			if (cpu < nr_cpu_ids)
->  				return cpu;
->  
-> -			return cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
-> +			cpu = cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
-> +			if (likely(cpu < nr_cpu_ids))
-> +				return cpu;
-> +			/*
-> +			 * Unless we have another problem this can only happen
-> +			 * at boot time before start_secondary() brings the 1st
-> +			 * housekeeping CPU up.
-> +			 */
-> +			WARN_ON_ONCE(system_state == SYSTEM_RUNNING ||
-> +				     type != HK_TYPE_TIMER);
->  		}
->  	}
->  	return smp_processor_id();
-> 
+Signed-off-by: Andreas Dilger <adilger@dilger.ca>
+---
+v1->v2: don't update the #warn line
 
+ scripts/checkpatch.pl | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 9c4c4a61bc83..80691e3e3ef2 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -1974,6 +1974,7 @@ sub ctx_locate_comment {
+ 	for (my $linenr = $first_line; $linenr < $end_line; $linenr++) {
+ 		my $line = $rawlines[$linenr - 1];
+ 		#warn "           $line\n";
++		next if ($line =~ /^-/); # ignore lines removed by patch
+ 		if ($linenr == $first_line and $line =~ m@^.\s*\*@) {
+ 			$in_comment = 1;
+ 		}
 -- 
+2.25.1
 
 
