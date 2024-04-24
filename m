@@ -1,197 +1,264 @@
-Return-Path: <linux-kernel+bounces-157774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 056C88B1604
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:17:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 871208B160B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:19:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A08B1C21D0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:17:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E66741F23A4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:19:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB3D16131C;
-	Wed, 24 Apr 2024 22:17:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FDF816D302;
+	Wed, 24 Apr 2024 22:19:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=penguintechs.org header.i=@penguintechs.org header.b="ksOCj8nx"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MQcNune3"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB30E15687F
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:17:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C0315FA70
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713997048; cv=none; b=fDZh3AMT7pHV8msN4JpfhL0+vaaKmPfcvt4xECqvSPf+bs+sGGBSwZLR6OHF0R6owLSQTQUxabqTkX9uMUZcXGENrXJ+QmzpesZaKHb5BkwJgyzz8mKNh+9HHdbmtUZnlK2aqLxQk1POzFo1Mtn5OBFSA8BGrNlrsYAV38wbWyo=
+	t=1713997167; cv=none; b=oDKFkoJxF9ZqDX8FoLBa871W9FXgtwLQYl7sL7mbFyW7Vukm45ueLJB15FWFTfjXYUlbPMdzI1RBAkksG2n4UKwzBNjdyXPHpDWZEWKSXsQgJrXEpC8zEXgJJQbYaDVlrg2A9sd95gBoIxhuFKfpD+lneCsir/jsZaeLguLtt1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713997048; c=relaxed/simple;
-	bh=GE8/DfGkNpeccnn7ctlLW9aQh1xnvrJHQprFymjvhgA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LlSle59Q+32/OmBerif1Y/4SzDcwd0CElPQmcwOJILl8TiJ+ZQ3i7Gfae5ndQU93affXEu8dco12Qvm3sTDeuVrwNKbHGWla9+nTM2HAqdIocxBzEnHGX2bXRzoNz5CLkiOIKcVZFcua+eJOdzcDXNcQNazmdF8qnrwVquZ6EpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=penguintechs.org; spf=pass smtp.mailfrom=penguintechs.org; dkim=pass (1024-bit key) header.d=penguintechs.org header.i=@penguintechs.org header.b=ksOCj8nx; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=penguintechs.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=penguintechs.org
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed0e9ccca1so411226b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:17:26 -0700 (PDT)
+	s=arc-20240116; t=1713997167; c=relaxed/simple;
+	bh=NX5ud4CaT9JaaKudsoo9HAqQnazDTOUJ7K6XBwRDIlg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m5YmetkfqUJbbkzig0XMU4gSDm5p/EVC6d82+v9Dyh/COdSVMag4mwjn19899V4DvBzARv77xm3YaNxhIwfr12evzkkF+vlTH++UzsusSMk9VzVR+8qJynAN0g/+NzRLxes47YOdpQvrg97hCkhWPBqZ/WAGIYQJ6AN8KeHYPRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MQcNune3; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e8fcb0b860so67805ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:19:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=penguintechs.org; s=google; t=1713997046; x=1714601846; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+87ElqgV6reNQU5hAVnWYAATmj8Ga4df6MNiPH7XWCI=;
-        b=ksOCj8nxgMh9WDFWfBztYD0TKHOYXAL4Ify3uPzqCyEafbLVte2mV9AaMIg6du+v76
-         FnTno9iMtu+jqqE4fU/DGh/NzPjWRfsQV39PPMnLIYzbZ9dDBB8thlCzosCw+IJnbL0N
-         eNW5HtQc0Yj5hX1kLadNTBNN0vTSOlgref3EA=
+        d=google.com; s=20230601; t=1713997164; x=1714601964; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OSU58pUDAW526X8Oq5AygsbaAJ3W3pJesITfSQQhWew=;
+        b=MQcNune3htZ5WbW5pM5QwGar7yDU6ATlLET2FyxJId5rnpdDpnOjRC9tYOt0c5uSc8
+         /NOUkN+9O7PWD66mSILqzdK2XcFnw0vt4yZr6Xd70lalp7vrggip33ODdf4RwpuLWQeh
+         3Trg/Luc2LgybUe9pcd/VIPNR2rVfvqpCTvEBDgI9xGKm2HAwX/huhMofl9l/a/ATKSb
+         A75FHCCpW2550Zfl/gqKjrGQBAwvd5wraobMiljJrD+ew8SxCr1TPUXKciIcp8GTeRZM
+         A7LItE03uPRrvO0IKPQ8mh0Zju3WVhOPYlFl9LMnLKITT3/jJPpd2+HJRkzpiOEsN7TD
+         5V+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713997046; x=1714601846;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+87ElqgV6reNQU5hAVnWYAATmj8Ga4df6MNiPH7XWCI=;
-        b=giwjPATiNBkKNkcDNXXQilXL8LkE7pskkNKZEiJHLsTvFv0XLYNkwGOu+dk41YGgnB
-         VoI2ggPnbReIWKLsB/c5P3oF6PXnYbLyjsPiCQtmnbPO/w7hgflhwCA0WbGWrzD6PV36
-         Dj09aOVU4HWgj+e7HlGfxF+HY0UTqIVEyNdQV8+3ZFo0tEVgvbt6NA7N8vJtBPsX5UAG
-         pMxU2BnHqxAGxPkp3xcqNtFijo567N72ZAXt0b/qYHMUuEuSMN8DIbGXPyMdGKytt2uG
-         A6OCfLZJOPjfUFiMtpkqSYh1B74b5Z2bE6sODBZaT+zUOTN0uVV3tsQsVNHlMCntoWMq
-         0+Ow==
-X-Forwarded-Encrypted: i=1; AJvYcCWq+K2Ewz0LPDzrcD3sLCMTVbFzq2ipmZ4vm3BfzfDzqj5rDPkSYUpyIqMeYP0xhOiPge4v1ClzZHBGlo6I/sv2VUcQ3JXCSHEBhBOj
-X-Gm-Message-State: AOJu0Yxdqiym+8nGF/E3RJHsM2OgWj8+Un7+dk89bLT+eTld82HA0FJ+
-	XVz3Xcj7IGnDUwRAPLskkdZyMtyQBQ/dHFlhLU/D2HrRnG+8EUfr/VolzbvHLw==
-X-Google-Smtp-Source: AGHT+IF37PCqcFYIP47bLz+LqfAcHhY/dxAFdY0Det+52UZ3kWJyXu++W2djITgeCIx3Fs7wN+D7MA==
-X-Received: by 2002:a05:6a21:1798:b0:1a9:c2da:f2ab with SMTP id nx24-20020a056a21179800b001a9c2daf2abmr3817988pzb.0.1713997046078;
-        Wed, 24 Apr 2024 15:17:26 -0700 (PDT)
-Received: from ?IPV6:2601:646:8700:dd30:5f3e:5ba7:e0ea:9a08? ([2601:646:8700:dd30:5f3e:5ba7:e0ea:9a08])
-        by smtp.gmail.com with ESMTPSA id kv13-20020a17090328cd00b001e0a28f61d0sm12401265plb.70.2024.04.24.15.17.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 15:17:25 -0700 (PDT)
-Message-ID: <aea85118-060a-4451-a1f1-d8e634f1aab7@penguintechs.org>
-Date: Wed, 24 Apr 2024 15:17:23 -0700
+        d=1e100.net; s=20230601; t=1713997164; x=1714601964;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OSU58pUDAW526X8Oq5AygsbaAJ3W3pJesITfSQQhWew=;
+        b=K3RpZV5tUbiNKwx/pbIOupgip2mQF9qTna4MCc/nOHMIzRWq8fBnJCZJ9tHqN5erQO
+         TBEKiay5TbBz9RwgFmkif6ZSDL4bV2N7v0IIun3+lnV7LJ7KVNEvnD75hvZ9aK911ciY
+         NUVr7l7iqocJX176xwDOy74xmfqaIlGGPOwbuoDLRedrbfoulJyxLG7LzRdr72JydiMG
+         JmKgO5pXjrN6Zq3B6+4DN4iSdud2E9e4z+96WcDjj4AcPkblETI8GETKsYmrzCrYRoeR
+         qGJnjAWPSIsshLgWj8DvuoXwQUbYGewABZbAjnC6ymmbygp9iD7mRoQm2VNecZW7XSFr
+         UV6g==
+X-Forwarded-Encrypted: i=1; AJvYcCXg3HCF+le7jr0vyqz/nSpX2LPbee8sXfw+vFGLvhVk/I2ziPtMErOFsT7gGhsAefSfx6hs0UUsWoOKFvbP17rFey02MOIkMv5JfteD
+X-Gm-Message-State: AOJu0YyDvF1dafznoCvMpkmLSckWDe/GhA+dKJLJqeCz+2DpRAfdPRG+
+	DlDhE1dcGm9xtCts06XSEd31UlRCY8bfm7+V5VFLJfAf6gpOi7ck+rRAT+7cg1B/mskvPaqTk6n
+	220QRMCQYu8JUt+qI2HU0cMImzdUSRJ3O8Yku
+X-Google-Smtp-Source: AGHT+IEqcYtcl/GHMuNoCUNjmYG/0cFftn7omhI6XdCOiCeNCXw5+aicgp48RWK8DqsppATgYtPRgqVNHrIbttSxo8I=
+X-Received: by 2002:a17:902:9a01:b0:1e3:d23a:2d5e with SMTP id
+ v1-20020a1709029a0100b001e3d23a2d5emr31724plp.21.1713997163967; Wed, 24 Apr
+ 2024 15:19:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Bluetooth: qca: set power_ctrl_enabled on NULL returned
- by gpiod_get_optional()
-Content-Language: en-US
-To: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Cc: quic_zijuhu <quic_zijuhu@quicinc.com>, Bartosz Golaszewski
- <brgl@bgdev.pl>, linux-bluetooth@vger.kernel.org,
- linux-kernel@vger.kernel.org, Marcel Holtmann <marcel@holtmann.org>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-References: <20240422130036.31856-1-brgl@bgdev.pl>
- <99242a7c-53bf-4227-9623-7bc092f564b3@penguintechs.org>
- <CAMRc=MepDwUbAKrWgm0CXKObqy8=igtug0QDgo-CgwxjZCAC2Q@mail.gmail.com>
- <b982b73d-0540-409c-a6e2-0e03ecb11715@penguintechs.org>
- <0381f39c-38ba-4a2b-915c-f14c5f911eb9@penguintechs.org>
- <CAMRc=MfnEct7ThQhCA3AoY7hxq8j1mmFLNNkK17+RSvJxs67XQ@mail.gmail.com>
- <2371f538-ec53-4037-b171-c62bf4e06eb1@penguintechs.org>
- <CACMJSeunUaj0cxLaN4MpFmX5vTOx_vnWjBN4Y2FavdQoQxFRkg@mail.gmail.com>
- <4c33304a-5dbc-450a-b874-e04ba9e93150@penguintechs.org>
- <CAMRc=MeDQFHX9r-sHNxqkfpi=LkHoRSL7i6dWokB-J+J03rBEg@mail.gmail.com>
- <93e15ecf-252f-4789-a23b-a28280f6aa84@quicinc.com>
- <e64b89b3-a8f5-44e7-ae7f-fc4298841f1c@penguintechs.org>
- <CACMJSet1wjEive0-Z=0_eiY7umBoSF_VX3QvVgiwqxhTSDZg6g@mail.gmail.com>
-From: Wren Turkal <wt@penguintechs.org>
-In-Reply-To: <CACMJSet1wjEive0-Z=0_eiY7umBoSF_VX3QvVgiwqxhTSDZg6g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240424024805.144759-1-howardchu95@gmail.com>
+ <CAM9d7chOdrPyeGk=O+7Hxzdm5ziBXLES8PLbpNJvA7_DMrrGHA@mail.gmail.com> <Zil1ZKc7mibs6ONQ@x1>
+In-Reply-To: <Zil1ZKc7mibs6ONQ@x1>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 24 Apr 2024 15:19:09 -0700
+Message-ID: <CAP-5=fVYHjUk8OyidXbutBvZMPxf48LW7v-N3zvHBe5QME1vVQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Dump off-cpu samples directly
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>, Howard Chu <howardchu95@gmail.com>, peterz@infradead.org, 
+	mingo@redhat.com, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
+	jolsa@kernel.org, adrian.hunter@intel.com, kan.liang@linux.intel.com, 
+	zegao2021@gmail.com, leo.yan@linux.dev, ravi.bangoria@amd.com, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/24/24 6:53 AM, Bartosz Golaszewski wrote:
-> On Wed, 24 Apr 2024 at 15:26, Wren Turkal <wt@penguintechs.org> wrote:
->>
->> On 4/24/24 6:12 AM, quic_zijuhu wrote:
->>> On 4/24/2024 8:27 PM, Bartosz Golaszewski wrote:
->>>> On Wed, Apr 24, 2024 at 2:24 PM Wren Turkal <wt@penguintechs.org> wrote:
->>>>>>>>
->>>>>>>> That's OK, we have the first part right. Let's now see if we can reuse
->>>>>>>> patch 2/2 from Zijun.
->>>>>>>
->>>>>>> I'm compiling it right now. Be back soon.
->>>>>>>
->>>>>>
->>>>>> Well I doubt it's correct as it removed Krzysztof's fix which looks
->>>>>> right. If I were to guess I'd say we need some mix of both.
->>>>>
->>>>> Patch 2/2 remove K's fix? I thought only 1/2 did that.
->>>>>
->>>>> To be specific, I have applied your patch and Zijun's 2/2 only.
->>>>>
->>>>
->>>> No, patch 1/2 from Zijun reverted my changes. Patch 2/2 removes
->>>> Krzysztof's changes and replaces them with a different if else. This
->>>> patch is a better alternative to Zijun's patch 1/2. For 2/2, I'll let
->>>> Krzysztof handle it.
->>>>
->>> do you really realize what do you talk about?
->>> do you really listen what do @Wren says?
->>>
->>> he says that my patch 2/2 is right based on several verification results.
->>
->> she, not he
->>
->>> BTW, my 2/2 fix don't have anything about DTS usage.
->>
->> I think the problem with your 2/2 patch is that it removes the
->> conditional bailing if the device is shutdown or not open.
->>
->> Maybe this patch instead?
->>
->> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
->> index 2f7ae38d85eb..fcac44ae7898 100644
->> --- a/drivers/bluetooth/hci_qca.c
->> +++ b/drivers/bluetooth/hci_qca.c
->> @@ -2456,6 +2456,10 @@ static void qca_serdev_shutdown(struct device *dev)
->>                       !test_bit(HCI_RUNNING, &hdev->flags))
->>                           return;
->>
->> +               if (test_bit(HCI_QUIRK_NON_PERSISTENT_SETUP,
->> &hdev->quirks) ||
->> +                   hci_dev_test_flag(hdev, HCI_SETUP))
->> +                       return;
->> +
->>                   serdev_device_write_flush(serdev);
->>                   ret = serdev_device_write_buf(serdev, ibs_wake_cmd,
->>                                                 sizeof(ibs_wake_cmd));
->>
->>> he maybe be a DTS expert but not BT from his present fix history for
->>> bluetooth system.
->>
->>
-> 
-> Did you test it? Does it work? If so, please consider sending it
-> upstream for review.
-> 
-> You can keep Zijun's authorship but add your own SoB tag at the end
-> and mention what you did. Something like this:
-> 
-> [Wren: kept Krzysztof's fix]
-> Signed-off-by: Wren...
-> 
-> Bartosz
+On Wed, Apr 24, 2024 at 2:11=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> On Wed, Apr 24, 2024 at 12:12:26PM -0700, Namhyung Kim wrote:
+> > Hello,
+> >
+> > On Tue, Apr 23, 2024 at 7:46=E2=80=AFPM Howard Chu <howardchu95@gmail.c=
+om> wrote:
+> > >
+> > > As mentioned in: https://bugzilla.kernel.org/show_bug.cgi?id=3D207323
+> > >
+> > > Currently, off-cpu samples are dumped when perf record is exiting. Th=
+is
+> > > results in off-cpu samples being after the regular samples. Also, sam=
+ples
+> > > are stored in large BPF maps which contain all the stack traces and
+> > > accumulated off-cpu time, but they are eventually going to fill up af=
+ter
+> > > running for an extensive period. This patch fixes those problems by d=
+umping
+> > > samples directly into perf ring buffer, and dispatching those samples=
+ to the
+> > > correct format.
+> >
+> > Thanks for working on this.
+> >
+> > But the problem of dumping all sched-switch events is that it can be
+> > too frequent on loaded machines.  Copying many events to the buffer
+> > can result in losing other records.  As perf report doesn't care about
+> > timing much, I decided to aggregate the result in a BPF map and dump
+> > them at the end of the profiling session.
+>
+> Should we try to adapt when there are too many context switches, i.e.
+> the BPF program can notice that the interval from the last context
+> switch is too small and then avoid adding samples, while if the interval
+> is a long one then indeed this is a problem where the workload is
+> waiting for a long time for something and we want to know what is that,
+> and in that case capturing callchains is both desirable and not costly,
+> no?
+>
+> The tool could then at the end produce one of two outputs: the most
+> common reasons for being off cpu, or some sort of counter stating that
+> there are way too many context switches?
+>
+> And perhaps we should think about what is best to have as a default, not
+> to present just plain old cycles, but point out that the workload is
+> most of the time waiting for IO, etc, i.e. the default should give
+> interesting clues instead of expecting that the tool user knows all the
+> possible knobs and try them in all sorts of combinations to then reach
+> some conclusion.
+>
+> The default should use stuff that isn't that costly, thus not getting in
+> the way of what is being observed, but at the same time look for common
+> patterns, etc.
+>
+> - Arnaldo
 
-@Bartosz, I have tested this, and it works functionally for my setup. I 
-cannot detect a difference between this and Zijun's logic when I compile 
-a kernel with this patch.
+I really appreciate Howard doing this work!
 
-@Zijun, I think you have objections to this patch. I would like to make 
-sure I hear your concern. Can you please take through it like I'm a 5 
-year old who barely knows C? In retrospect, I guess that I would be a 
-pretty precocious 5 year old. LOL.
+I wonder there are other cases where we want to synthesize events in
+BPF, for example, we may have fast and slow memory on a system, we
+could turn memory events on a system into either fast or slow ones in
+BPF based on the memory accessed, so that fast/slow memory systems can
+be simulated without access to hardware. This also feels like a perf
+script type problem. Perhaps we can add something to the bpf-output
+event so it can have multiple uses and not just off-cpu.
 
-In all seriousness, @Zijun, I really appreciate the work you did on 
-this. I would like to understand why you assert that removing the logic 
-of Krzysztof is appropriate. Again, I am not a kernel developer, so this 
-stuff is really outside my wheelhouse. Having said that, by my reading, 
-which may very well be worng, it seems like you are just adding another 
-case that is orthogonal to K's conditions. I'd like to truly understand 
-you position to know if the patch I am suggesting is somehow harmful. 
-This is an earnest question. I really want to respect your expertise 
-here, and I really want you to know how much I appreciate your work.
+To turn the bpf-output samples into off-cpu events there is a pass
+added to the saving. I wonder if that can be more generic, like a save
+time perf inject.
 
-wt
--- 
-You're more amazing than you think!
+I worry about dropping short samples we can create a property that
+off-cpu time + on-cpu time !=3D wall clock time. Perhaps such short
+things can get pushed into Namhyung's "at the end" approach while
+longer things get samples. Perhaps we only do that when the frequency
+is too great.
+
+It would be nice to start landing this work so I'm wondering what the
+minimal way to do that is. It seems putting behavior behind a flag is
+a first step.
+
+Thanks,
+Ian
+
+> > Maybe that's not a concern for you (or smaller systems).  Then I think
+> > we can keep the original behavior and add a new option (I'm not good
+> > at naming things, but maybe --off-cpu-sample?) to work differently
+> > instead of removing the old behavior.
+> >
+> > Thanks,
+> > Namhyung
+> >
+> > >
+> > > Before, off-cpu samples are after regular samples
+> > >
+> > > ```
+> > >          swapper       0 [000] 963432.136150:    2812933    cycles:P:=
+  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+> > >          swapper       0 [000] 963432.637911:    4932876    cycles:P:=
+  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+> > >          swapper       0 [001] 963432.798072:    6273398    cycles:P:=
+  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+> > >          swapper       0 [000] 963433.541152:    5279005    cycles:P:=
+  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+> > > sh 1410180 [000] 18446744069.414584:    2528851 offcpu-time:
+> > >             7837148e6e87 wait4+0x17 (/usr/lib/libc.so.6)
+> > >
+> > >
+> > > sh 1410185 [000] 18446744069.414584:    2314223 offcpu-time:
+> > >             7837148e6e87 wait4+0x17 (/usr/lib/libc.so.6)
+> > >
+> > >
+> > > awk 1409644 [000] 18446744069.414584:     191785 offcpu-time:
+> > >             702609d03681 read+0x11 (/usr/lib/libc.so.6)
+> > >                   4a02a4 [unknown] ([unknown])
+> > > ```
+> > >
+> > >
+> > > After, regular samples(cycles:P) and off-cpu(offcpu-time) samples are
+> > > collected simultaneously:
+> > >
+> > > ```
+> > > upowerd     741 [000] 963757.428701:     297848 offcpu-time:
+> > >             72b2da11e6bc read+0x4c (/usr/lib/libc.so.6)
+> > >
+> > >
+> > >       irq/9-acpi      56 [000] 963757.429116:    8760875    cycles:P:=
+  ffffffffb779849f acpi_os_read_port+0x2f ([kernel.kallsyms])
+> > > upowerd     741 [000] 963757.429172:     459522 offcpu-time:
+> > >             72b2da11e6bc read+0x4c (/usr/lib/libc.so.6)
+> > >
+> > >
+> > >          swapper       0 [002] 963757.434529:    5759904    cycles:P:=
+  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+> > > perf 1419260 [000] 963757.434550: 1001012116 offcpu-time:
+> > >             7274e5d190bf __poll+0x4f (/usr/lib/libc.so.6)
+> > >             591acfc5daf0 perf_evlist__poll+0x24 (/root/hw/perf-tools-=
+next/tools/perf/perf)
+> > >             591acfb1ca50 perf_evlist__poll_thread+0x160 (/root/hw/per=
+f-tools-next/tools/perf/perf)
+> > >             7274e5ca955a [unknown] (/usr/lib/libc.so.6)
+> > > ```
+> > >
+> > > Here's a simple flowchart:
+> > >
+> > > [parse_event (sample type: PERF_SAMPLE_RAW)] --> [config (bind fds,
+> > > sample_id, sample_type)] --> [off_cpu_strip (sample type: PERF_SAMPLE=
+_RAW)] -->
+> > > [record_done(hooks off_cpu_finish)] --> [prepare_parse(sample type: O=
+FFCPU_SAMPLE_TYPES)]
+> > >
+> > > Changes in v2:
+> > >  - Remove unnecessary comments.
+> > >  - Rename function off_cpu_change_type to off_cpu_prepare_parse
+> > >
+> > > Howard Chu (4):
+> > >   perf record off-cpu: Parse off-cpu event, change config location
+> > >   perf record off-cpu: BPF perf_event_output on sched_switch
+> > >   perf record off-cpu: extract off-cpu sample data from raw_data
+> > >   perf record off-cpu: delete bound-to-fail test
+> > >
+> > >  tools/perf/builtin-record.c             |  98 +++++++++-
+> > >  tools/perf/tests/shell/record_offcpu.sh |  29 ---
+> > >  tools/perf/util/bpf_off_cpu.c           | 242 +++++++++++-----------=
+--
+> > >  tools/perf/util/bpf_skel/off_cpu.bpf.c  | 163 +++++++++++++---
+> > >  tools/perf/util/evsel.c                 |   8 -
+> > >  tools/perf/util/off_cpu.h               |  14 +-
+> > >  tools/perf/util/perf-hooks-list.h       |   1 +
+> > >  7 files changed, 344 insertions(+), 211 deletions(-)
+> > >
+> > > --
+> > > 2.44.0
+> > >
 
