@@ -1,110 +1,90 @@
-Return-Path: <linux-kernel+bounces-157298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E89B38B0F74
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:13:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26B1E8B0F79
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:14:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2503F1C214BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:13:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB1071F22E6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:14:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B92C816131C;
-	Wed, 24 Apr 2024 16:13:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBFBB16132A;
+	Wed, 24 Apr 2024 16:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hPjtlIT6"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RRFmMAUg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA14B15B107
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:13:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13C4115B107;
+	Wed, 24 Apr 2024 16:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713975210; cv=none; b=I8A3VTW/K05sfEQzYmzDU86EgPkcQyEH1asHD0ILMJgC7okKikRQ9RfL9EuTMdwPERY9J/4UCZc6qgw8MS6M4oxaqiQ2FU9oijoMu7Qd/28qt8cFNy8P1rUMgy0brArG0dwRGnxAI1lKyMNP8U3W4Lx6kg5OwsDQE/ZTtQ3tXks=
+	t=1713975253; cv=none; b=NQWbo7bWjq/nvZzmSkpN1s6EcOFktkE9JMt/K3mi8NocBxiJ83euTe8j+Wj3bjfx2hcujZN3Z4FS+6RbLkAC6G5F8JfA6cw1GOFAtjSBANll9Q3KoVD/MjU2yRe6kR+U1yZ5wQZjWcGp9dOPwKWUClzjz+Fcn9YSwlSDQ2hRyr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713975210; c=relaxed/simple;
-	bh=LWAdr7sNhwS/CNPenio+nMszXGBrLvqRUUDAm9TzMRQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=jxkp8oRbqQ5uTPdAezHPG4iw5mojCOe9ngKUnqtRg7ZJ+aLqEZdCZWrgyMa3/EFZu1zBJWlyA9yL4bGLguLF1l5Yf4aGs3HjyxwemDrObzlJtLn5xx66E41VRF7g/Ml6Gg6oB3eSDTgmoRCRMDwlZ0h3FopN1T0MCqzd06GW4cY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hPjtlIT6; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6f3844500a5so63045b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:13:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713975208; x=1714580008; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PaA4wyLmEeZNOg80inX0PuP1bfRa+x1yCphxcXdPVro=;
-        b=hPjtlIT6PgLW+bzEXKypv38tBnheBFqHe95iWB3Fr0JsxB1302SuLFz+Fd780z6y8+
-         N7V1YLrkvBtRcYnkgjWM3rIW69ClIgB0+EHBbEXp8Z+6PqSwD/9OlA6Z7MjY9+jq6jgk
-         GzjDtHSSgOiUroBWFgTkDjHihzvirZDiPXDaTo5yOHHuDhMZ/ug3Gn+wHImqP39z9MLl
-         vcA3CdjtKAzPIMowa0kZLwGHRDDdVOe9nsgX5JsB4oFS3QGj82echJEZ5sLVVpF+wTr8
-         AF3ZtNfP72Hsfb66ox4Dqifs0WCOI9JUF1PlDoyZ1bJvDuR70sVuZMRh+uq/YqQvPglF
-         gyxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713975208; x=1714580008;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PaA4wyLmEeZNOg80inX0PuP1bfRa+x1yCphxcXdPVro=;
-        b=pInqo8gdHlxnyEAQpyilgni699a5HR6MFc1gW2E8Ughc+EtARnltwBEpdX813+6O7n
-         H9GUytIXSTlXF5bWk3thkkD0RJMZ+OCD7BLNvszdGY7cg//MYQkyXxPSwYYEU+b7aYeG
-         BQeC18uIFXKHxivXqZEjkdoF6r4HAh//O3YJzF/BSroEQfyDH7CH6plqtH9cQc+zQ+pe
-         EgQb/0R76SpIviDrpjsR2jP8UFwZnllRI+8KkNArkVzXfbHNKFxkdhWtX0yJUnqqxymm
-         xxCFxjufRMJQtYKLs6Zg+/Qay24lAonw1xRXWDlFdzsdn3EBn8+dHSwA0muiFaGXf/rQ
-         9exQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVjwqnP+jiVlTpVJdvw/wHcU3iYCfo1/VHUZFQlm/xrNDSLmrBa+xwGaBBNt3XZo7ZKJbWC4dCfjJGmKVLXpD1jC6vk9+8bEOUHq80p
-X-Gm-Message-State: AOJu0YzZe3A1oybNMBXbnw/kks/Z1xjIJUp2EcUxNzEJV1bLmDR9LkGt
-	LxlaPb08aMlTKwHUOK4Rmx8L+RqAQjdR+NeMZ/OfxbmirrzpZ3UwINZNX90CEG2x5zNsjzuXYP1
-	Mhg==
-X-Google-Smtp-Source: AGHT+IGcH9Ew/i2TenHG22Ht2ZajYli2cHigwOlMHHn2UBTTXvMnBBQr0XVBCFOVW2KZ/Dmr6S2qlvHy+Tc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:2450:b0:6ed:d14e:a1b9 with SMTP id
- d16-20020a056a00245000b006edd14ea1b9mr273950pfj.0.1713975208058; Wed, 24 Apr
- 2024 09:13:28 -0700 (PDT)
-Date: Wed, 24 Apr 2024 09:13:26 -0700
-In-Reply-To: <6fae9b07de98d7f56b903031be4490490042ff90.camel@intel.com>
+	s=arc-20240116; t=1713975253; c=relaxed/simple;
+	bh=0TexNRTyXcfX03x/jOWGmM/SoFKxgKt/qC/qIndL658=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HYWMwmrRH6i3k+4DvRblVwQfB3Ey2sVsTdIDRieNIB0AWqGZ4qmrCxMtYYQytvrxkuRTuMWLSU3rFXVpuBp/Sf6hZz3sUvLyU4XuezI3+IyOqoZfKVsSjhr1qaC24h46A7Ff3rftrZMCBQ0d4wWFeHCBWBU0xyX2bunLhmBi7Tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RRFmMAUg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A16F8C2BD11;
+	Wed, 24 Apr 2024 16:14:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713975252;
+	bh=0TexNRTyXcfX03x/jOWGmM/SoFKxgKt/qC/qIndL658=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RRFmMAUgnbfEicuP3c8YoxLCWx9PXXFqgf/ntWfZ2ZbgvvKMvFqgW+2NRlqrHHucx
+	 WkSQ+I5RIbqS1n3WO5wGmt1SmenQL6cbP0fZkSDYkOPDfJHkDt1OEH/dl7KJ+4afAE
+	 oP3eTNoYQL8WeZuCeqTWtyqGT5p1aUZ823Z96b5djgInRmocqvzQjkeSHT1R3XUKnK
+	 SMumHe2C5i/c4pzvQvUJa3Enqb2eS0iYxobOJDQLjCwm7zDOZBGXnIuhCzQSuT6dLI
+	 BBtpHCCH6SJhNL5odK+cy0wVgJ4Z30Zix9SPSvoYCNm8wBfW97hMVSTK/m/xKEDf/V
+	 K70FB2dtGOa0g==
+Date: Wed, 24 Apr 2024 17:14:06 +0100
+From: Simon Horman <horms@kernel.org>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: linux-kernel@vger.kernel.org,
+	Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
+	Lee Jones <lee@kernel.org>, Jiawen Wu <jiawenwu@trustnetic.com>,
+	Mengyuan Lou <mengyuanlou@net-swift.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Duanqiang Wen <duanqiangwen@net-swift.com>,
+	"open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>,
+	"open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
+Subject: Re: [PATCH 4/4] net: txgbe: Utilize i2c-designware.h
+Message-ID: <20240424161406.GM42092@kernel.org>
+References: <20240423233622.1494708-1-florian.fainelli@broadcom.com>
+ <20240423233622.1494708-5-florian.fainelli@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1711035400.git.reinette.chatre@intel.com> <6fae9b07de98d7f56b903031be4490490042ff90.camel@intel.com>
-Message-ID: <Ziku9m_1hQhJgm_m@google.com>
-Subject: Re: [PATCH V4 0/4] KVM: x86: Make bus clock frequency for vAPIC timer configurable
-From: Sean Christopherson <seanjc@google.com>
-To: Rick P Edgecombe <rick.p.edgecombe@intel.com>
-Cc: "jmattson@google.com" <jmattson@google.com>, Chao Gao <chao.gao@intel.com>, 
-	"vkuznets@redhat.com" <vkuznets@redhat.com>, Vishal Annapurve <vannapurve@google.com>, 
-	Reinette Chatre <reinette.chatre@intel.com>, Xiaoyao Li <xiaoyao.li@intel.com>, 
-	Erdem Aktas <erdemaktas@google.com>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
-	"mlevitsk@redhat.com" <mlevitsk@redhat.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240423233622.1494708-5-florian.fainelli@broadcom.com>
 
-On Tue, Apr 16, 2024, Rick P Edgecombe wrote:
-> On Thu, 2024-03-21 at 09:37 -0700, Reinette Chatre wrote:
-> > 
-> > Summary
-> > -------
-> > Add KVM_CAP_X86_APIC_BUS_FREQUENCY capability to configure the APIC
-> > bus clock frequency for APIC timer emulation.
-> > Allow KVM_ENABLE_CAPABILITY(KVM_CAP_X86_APIC_BUS_FREQUENCY) to set the
-> > frequency in nanoseconds. When using this capability, the user space
-> > VMM should configure CPUID leaf 0x15 to advertise the frequency.
+On Tue, Apr 23, 2024 at 04:36:22PM -0700, Florian Fainelli wrote:
+> Rather than open code the i2c_designware string, utilize the newly
+> defined constant in i2c-designware.h.
 > 
-> Looks good to me and...
-> Tested-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> 
-> The only thing missing is actually integrating it into TDX qemu patches and
-> testing the resulting TD. I think we are making a fair assumption that the
-> problem should be resolved based on the analysis, but we have not actually
-> tested that part. Is that right?
+> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 
-Please tell me that Rick is wrong, and that this actually has been tested with
-a TDX guest.  I don't care _who_ tested it, or with what VMM it has been tested,
-but _someone_ needs to verify that this actually fixes the TDX issue.
+Hi Florian,
+
+FYI, this conflicts with:
+
+c644920ce922 ("net: txgbe: fix i2c dev name cannot match clkdev")
+
+But a patch-set has been submitted which reverts that commit:
+
+https://lore.kernel.org/all/20240422084109.3201-1-duanqiangwen@net-swift.com/
 
