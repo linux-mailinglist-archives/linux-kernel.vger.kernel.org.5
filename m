@@ -1,70 +1,39 @@
-Return-Path: <linux-kernel+bounces-157210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C4FE8B0E7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:35:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D5BF8B0E88
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:37:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3287D1F29A22
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:35:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E327B2C4A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:35:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 141451607AA;
-	Wed, 24 Apr 2024 15:34:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HkZuXtm6"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD5B715ECE4;
-	Wed, 24 Apr 2024 15:34:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D7F16190A;
+	Wed, 24 Apr 2024 15:34:56 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A14D1607AD
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:34:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713972887; cv=none; b=gsRpB87L34PdNQtAz9i9ZBQwO7RkLfY5kH+Nzhvcg4e/240OdxCYgaGs8NTKFq4EyAs1CEXIqKSTej9OrLiKQBJ3CQVS/lcXB9trlXlVgsEm84mbd/gMEfl57Ak30uBjZO8uRU/qmpFu7kggAdGvPODxu4ueyMbulMU8wp9Rxws=
+	t=1713972896; cv=none; b=B3mDeMbH6Ynyz2z7+v6nAs37o/AgoWRvCtOn2Yp/0ID0tZnv4m+VdJNXY3sdL6/b0oBW5rk/NQk5Ci6z2KoaDrtZuMh9XnjIkLDY82TpOG1ou87qDGKucsFBVTcS2WDKc5cji2z0D3FFNH6q+zuHEFCR/ZeTraMElb4xWGLKxnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713972887; c=relaxed/simple;
-	bh=XHcrnAmOsOix8K/xKq2+ZtbSNEaC/vMNW+9wzdDr6Fg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=qDrsd/Q+RcT+4cSRBgxYXIIn9LDAQzwFS0F4GPZL2xGmwk/iiomLUKz6ULjZE7RQOAaUNt1jnV5ryHfaCW1I81EOnSZcf7ldqpbwKl2axCk1DvqgsQwour0dxmFjOWyrkITxy6HJBapxf46ByMsV6lkL+tfA4RIwa9zMNjuhyB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HkZuXtm6; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713972886; x=1745508886;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=XHcrnAmOsOix8K/xKq2+ZtbSNEaC/vMNW+9wzdDr6Fg=;
-  b=HkZuXtm6tdT37JcQxdnClG8nBIOnUwVPFKW3TNOkD9U4+WaZl69QbSEP
-   6TFWnBRJ13bTLR9TLSRgMANVhLfRbTmxa97uz3g0yoqaDclP3pHvdAZhp
-   NdyAoJ2wrbvhg7fGU8KVEStxkI4VZqujYCOZ4ERx9dIcU95+3YDfYM+Im
-   QiAeRkPzl7vBxnxhaCshEBcDGdIUhIuFleWeBDNpVRfjECQKK5ArTXzOd
-   GwXd1YoK+mcBFmz3cI7ZfF1XuBUUyMNyMEgBwo2Ub/rxbB+jFHLzSMO9C
-   Krcoi5Wjq+fFcxSX0BBH8RN5JwSDFHgUR+SqmjZs5o7YLRZCuwfz/nPX1
-   A==;
-X-CSE-ConnectionGUID: 4FgB68m7RAyv/UqpHxYLvg==
-X-CSE-MsgGUID: xFcruwniQJS01cUDfhrnJw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="35011179"
-X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="35011179"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 08:34:35 -0700
-X-CSE-ConnectionGUID: rM0GpW3TRuC8zyhzefLgaQ==
-X-CSE-MsgGUID: 6mtRVtWERXaa/MAJLWhc0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="29556579"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 08:34:36 -0700
-Received: from [10.212.107.188] (kliang2-mobl1.ccr.corp.intel.com [10.212.107.188])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 2E4F6206D89D;
-	Wed, 24 Apr 2024 08:34:33 -0700 (PDT)
-Message-ID: <54a2ecfc-5a31-4e11-9e97-5a96baf18a0d@linux.intel.com>
-Date: Wed, 24 Apr 2024 11:34:32 -0400
+	s=arc-20240116; t=1713972896; c=relaxed/simple;
+	bh=TttsruVEiGpEdTihSdZHPGzRR4e3nj8xOXWaY9wj/K4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=L4YDUGLQ47iHYgOsjxabxlImW5JymFXT3Y/08/cUVAubPbTe9nAlLAHpaYrnrDADQV+MIpMptVXrY4eR4aEUeQgb+bhD88uhQKmTlWsIKgcKucR+L8s3x+Sz6JG6NVvjn1g/F6JSV/2MONQ8k8D4kereGeaCkC8Mn4drSJKQDd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 329421063;
+	Wed, 24 Apr 2024 08:35:19 -0700 (PDT)
+Received: from [10.1.25.156] (XHFQ2J9959.cambridge.arm.com [10.1.25.156])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7A55A3F73F;
+	Wed, 24 Apr 2024 08:34:50 -0700 (PDT)
+Message-ID: <0534d647-0753-4c34-943c-e705db1fbddd@arm.com>
+Date: Wed, 24 Apr 2024 16:34:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,70 +41,61 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/16] Consistently prefer sysfs/json events
-To: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- Atish Patra <atishp@rivosinc.com>, linux-riscv@lists.infradead.org,
- Beeman Strong <beeman@rivosinc.com>
-References: <20240416061533.921723-1-irogers@google.com>
-Content-Language: en-US
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20240416061533.921723-1-irogers@google.com>
+Subject: Re: [PATCH 2/2] mm: add docs for per-order mTHP split counters
+Content-Language: en-GB
+To: Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org
+Cc: 21cnbao@gmail.com, david@redhat.com, baolin.wang@linux.alibaba.com,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20240424135148.30422-1-ioworker0@gmail.com>
+ <20240424135148.30422-3-ioworker0@gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240424135148.30422-3-ioworker0@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-
-
-On 2024-04-16 2:15 a.m., Ian Rogers wrote:
-> As discussed in:
-> https://lore.kernel.org/lkml/20240217005738.3744121-1-atishp@rivosinc.com/
-> preferring sysfs/json events consistently (with or without a given
-> PMU) will enable RISC-V's hope to customize legacy events in the perf
-> tool.
+On 24/04/2024 14:51, Lance Yang wrote:
+> This commit introduces documentation for mTHP split counters in
+> transhuge.rst.
 > 
-> Some minor clean-up is performed on the way.
+> Signed-off-by: Lance Yang <ioworker0@gmail.com>
+> ---
+>  Documentation/admin-guide/mm/transhuge.rst | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 > 
-> v2. Additional cleanup particularly adding better error messages. Fix
->     some line length issues on the earlier patches.
-> 
-> Ian Rogers (16):
->   perf parse-events: Factor out '<event_or_pmu>/.../' parsing
->   perf parse-events: Directly pass PMU to parse_events_add_pmu
->   perf parse-events: Avoid copying an empty list
->   perf pmu: Refactor perf_pmu__match
->   perf tests parse-events: Use branches rather than cache-references
->   perf parse-events: Legacy cache names on all PMUs and lower priority
->   perf parse-events: Handle PE_TERM_HW in name_or_raw
->   perf parse-events: Constify parse_events_add_numeric
->   perf parse-events: Prefer sysfs/json hardware events over legacy
->   perf parse-events: Inline parse_events_update_lists
->   perf parse-events: Improve error message for bad numbers
->   perf parse-events: Inline parse_events_evlist_error
->   perf parse-events: Improvements to modifier parsing
->   perf parse-event: Constify event_symbol arrays
->   perf parse-events: Minor grouping tidy up
->   perf parse-events: Tidy the setting of the default event name
-> 
->  tools/perf/tests/parse-events.c |   6 +-
->  tools/perf/util/parse-events.c  | 482 ++++++++++++++++----------------
->  tools/perf/util/parse-events.h  |  49 ++--
->  tools/perf/util/parse-events.l  | 196 +++++++++----
->  tools/perf/util/parse-events.y  | 261 +++++++----------
->  tools/perf/util/pmu.c           |  27 +-
->  tools/perf/util/pmu.h           |   2 +-
->  7 files changed, 540 insertions(+), 483 deletions(-)
-> 
+> diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
+> index f82300b9193f..35d574a531c8 100644
+> --- a/Documentation/admin-guide/mm/transhuge.rst
+> +++ b/Documentation/admin-guide/mm/transhuge.rst
+> @@ -475,6 +475,22 @@ anon_swpout_fallback
+>  	Usually because failed to allocate some continuous swap space
+>  	for the huge page.
+>  
+> +split_page
+> +	is incremented every time a huge page is split into base
 
+perhaps "...successfully split into base..." to make it clear that this is only
+incremented on success.
 
-The series looks good to me.
+> +	pages. This can happen for a variety of reasons but a common
+> +	reason is that a huge page is old and is being reclaimed.
+> +	This action implies splitting all PMD/PTE mapped with the huge page.
 
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+What does it mean to "split all PTE"? It's already at its smallest granularity.
+Perhaps "This action implies splitting any block mappings into PTEs."?
 
-Thanks,
-Kan
+> +
+> +split_page_failed
+> +	is incremented if kernel fails to split huge
+> +	page. This can happen if the page was pinned by somebody.
+> +
+> +deferred_split_page
+> +	is incremented when a huge page is put onto split
+> +	queue. This happens when a huge page is partially unmapped and
+> +	splitting it would free up some memory. Pages on split queue are
+> +	going to be split under memory pressure.
+> +
+>  As the system ages, allocating huge pages may be expensive as the
+>  system uses memory compaction to copy data around memory to free a
+>  huge page for use. There are some counters in ``/proc/vmstat`` to help
+
 
