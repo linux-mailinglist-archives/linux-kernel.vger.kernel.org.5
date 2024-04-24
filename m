@@ -1,169 +1,218 @@
-Return-Path: <linux-kernel+bounces-157759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62E478B15B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:01:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C95D8B15B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:02:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72CCBB21841
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:01:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD16E2845A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D819158A04;
-	Wed, 24 Apr 2024 22:01:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F0E615B130;
+	Wed, 24 Apr 2024 22:01:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ec4e+S8E"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PYFAopDP"
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB66158211
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:01:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66424156F46;
+	Wed, 24 Apr 2024 22:01:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713996067; cv=none; b=GtzIV+Jl9SMPoMxn+sLgC8zkqcWrOjv3IhXNH7+beScFEQUtDYhn9Xgw2yHgob8RshlVtr7ebKiQ1ZuVUlLbFU7Kko/rUwjsLyR3f12JImaBBaqFWNmaCi2JWR8UWrko9tC4c/kzAVBCyvL/Zk1X4BUw0k2Hl0aLpt9cRqkoE3s=
+	t=1713996118; cv=none; b=kYy/Yt+NSq6HWMavwpfx6RH45FPWXJMJHnBLOZCH+P+tyHw3s1vfDtjSpVIcc8ELQKDaidpiKYzxTIdssI03T6EL1GhGkB0loFyjB94bwUOu6gnc+ey7CViYCm3xzl5qPqRTinCJ8PvjTKWW34EVlDMm9Zfol2+2CmAIhpHbfe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713996067; c=relaxed/simple;
-	bh=waLAn1oU6Dl+2buXX+0Cf1qjI968BHqs+nK0WlFL0+k=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aVFj65UIA5tCGaVDfKOFnfvPmm0kOHPryLygc4Vfb4jTNzV5u2/YT61zlHY5Rtrx1ZGyjJpYmZ1u0O48M4Dp7zNE3S5P4CjqYvVswM5/QG+NCQVCK0NmnZbeOnwEiEEhBCMLG7vhX+IpMDbOdNmaejAAD/npXXKY+FGslTWRrsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ec4e+S8E; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6eced6fd98aso411953b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:01:05 -0700 (PDT)
+	s=arc-20240116; t=1713996118; c=relaxed/simple;
+	bh=ZG+ntgzi5PkM1bTjwukYHVngl+la9QsTQx+Dj2qKr3U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bTDsjluXciivHMvsZ+rO8Goc1atarYX2lhh1S1rQXjm3/X8I3hcI0X+laLDoX7db07rQWJh6Hin887/UDdIpAUHgd/QrjfsZNXrbBMFvJQHX3pk9DINNfnraJYnhGO+i76OhEHFrEWYo72UTQ/iIW3+jf9VrS1aza5qdGvRKSx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PYFAopDP; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2ad8919ba0cso400289a91.0;
+        Wed, 24 Apr 2024 15:01:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713996065; x=1714600865; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9XS2AFiWkdDHUYi+lDUVnXX0MXLWYjT4idfLw+m+o3A=;
-        b=Ec4e+S8E6n4ym/MHlENxHfNb2qxUTgWasN7SDwg14AlPZThmhjrY1QkiPXPIfYmlVN
-         th4WNn06TB1BWBzEbO/zdjjKvlIFLo9DgnsXmUsefhTfVwhMCyDqoPj+e8mb9fqf+z6g
-         J2Vf5U9jZWEThvRA36HZ10y68O/2P0PqVrnp8=
+        d=gmail.com; s=20230601; t=1713996117; x=1714600917; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4mlLExVU78P1Piha27/if7uYZprH+trWT7TZL2SvYBQ=;
+        b=PYFAopDPjYrluuTHbTOngh+6lBffHPFozF+Trj+7yiNdJk3i4YXj1qP6B3T3aQ9eW2
+         u4dNrxBO627H39VvogdG/ZUbwJ2Emixv6wAdgPWpUBuHAhfpJVlmvBlcmadFEqJUXujO
+         0Lw0jqozs00xYFJ3R1d7AP5Hjqxfr8+gWJPtdHQWXeAJRNsRvel0kWYxG1pjVvy1EWmw
+         n5zJWQuNQSMP4cbnl/ZoJmgSao4bKTmVie2kDeKbNO/ae5J2SuD/yXsjDUGiEkXwIr+d
+         jmKYbN7iKXjwI+O35BpYzuzcIMtdkb0ca02/lQEbnnu1d3ArWL8uWX67l1z7BCiYFJCh
+         HFKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713996065; x=1714600865;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9XS2AFiWkdDHUYi+lDUVnXX0MXLWYjT4idfLw+m+o3A=;
-        b=PWCg9kL34frNqmv9YEdUqd9vP3RKa4LFz7nHz3TU4gj8mYVYPMbHwETmXtJ3T8hPhK
-         tXI1LAsCgWAmpR/pJDq1jCkYXWdh0YuTSWjM4qv0XT0eahUmP8Munf7nQiN0E4KV5VqV
-         9jkwTn5cEvIWMrCZy1j1se7wHjZGBUzF+GPkrJNrhKpAkMWNVqRxeSdUogk6KZaUa8dU
-         b+qBqjTCdcsVS+PdHg5/Lsk2Kn5/Y/Xfe/YoDAu/eI1MBQ4yvupG8iZbup0yeCgdnKkJ
-         m4C12dxEtFL92rf/1EW2Fm0cvzldtSy4zIMa0J/C7/xUgvuWndWAUBUQXgaNDKy67auK
-         BP3g==
-X-Forwarded-Encrypted: i=1; AJvYcCXyg0KYtO9xAHbBZlQSt22cF7EbrPJPdayCGs3TvDb/m9vRqpjI08VGLYihzBBd8azwCZufWS2myebYnABf+BHJ1a4aXWI2pWma/B7a
-X-Gm-Message-State: AOJu0Yw+LVicEYfTmu28ho795cR3Sy+qtOn43T86qzXDjGyAHMN7tdV8
-	qXPCB0rEA3d08puOHhHmygkPHvomzYyVTOZjsPX7NpexHPQnx0xbRBCVtOcLVw==
-X-Google-Smtp-Source: AGHT+IFMUnlkU6FVaZoF0o6oZfpmlht2NNx99MnGarXZG9dKHk5wWrfHzN2g4QEO7Yn+LdKEu4QaYw==
-X-Received: by 2002:a05:6a20:9714:b0:1a7:5100:7559 with SMTP id hr20-20020a056a20971400b001a751007559mr4241899pzc.32.1713996064358;
-        Wed, 24 Apr 2024 15:01:04 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s80-20020a632c53000000b005fe2f66f89fsm6705904pgs.75.2024.04.24.15.01.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 15:01:03 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Kees Cook <keescook@chromium.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] wifi: nl80211: Avoid address calculations via out of bounds array indexing
-Date: Wed, 24 Apr 2024 15:01:01 -0700
-Message-Id: <20240424220057.work.819-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1713996117; x=1714600917;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4mlLExVU78P1Piha27/if7uYZprH+trWT7TZL2SvYBQ=;
+        b=DSIcKzY9MtTNCP9NDrhS4onodswq/I/zTNdj3PR6rIHHBeGhlDE1NolPIsYpNRldI6
+         oUMy0ov95Zwns8qisy3vln7EMKCoYBlidldNvED1UHEgaVCew8Nxh7Ev8FavOWH+rqm0
+         G5KYJXAFk8bWirfGt1oit6IpqZwMBil8FHSwdMgFxzrl0bHoCKJZ+gAPibF+MdF1RFzz
+         rfUi1bWKQNdFpOSNqS+aT/NcwsLiem1dtoTFF1j0KMgr1pz9c28YZpKBx/P5G/OoZHt2
+         TSYP6juOq9Gs4PPO0PlQlFsVZOvXehaxFDl7C2oHG8HmbZVAD2lsbN+ig+qI6AOFxaCz
+         IiJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWkFSF3iGJ0bk5ZzvRrtI8R8eZqIcVmLyiwiU8mUFCGxBNr9MShip57VtUvFYfVHtnZrWaVg5+gtA4nHKzoxzpVzH2V/nOA5Ibiot0A6nT1VctfpxF+c+ZlyJcQPoOP5+3f
+X-Gm-Message-State: AOJu0YzrQeZ3fdUoV9ynJ+wD+q7dqSgUVnpX19IJsEsOXCfUno/B03M5
+	laNdbe6V//sPLa6mpUeMYylH5LcjBN3zEfzCMkmK1AWWndhNTqgS9HBhqOOuTp4n7NJn5gvSDxw
+	Awt5oyMPyZNRCrSchS1A9r26gA9Y=
+X-Google-Smtp-Source: AGHT+IGBt6/cXnnlWIm2WuIW72gihVu448YDBwXpNTuksNUq5ldhuf6uEU4n70occoDe0KbcmZTgdV2ODP/auyiKPyc=
+X-Received: by 2002:a17:90b:4a83:b0:2af:6ce2:bbc8 with SMTP id
+ lp3-20020a17090b4a8300b002af6ce2bbc8mr2360066pjb.6.1713996116560; Wed, 24 Apr
+ 2024 15:01:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2212; i=keescook@chromium.org;
- h=from:subject:message-id; bh=waLAn1oU6Dl+2buXX+0Cf1qjI968BHqs+nK0WlFL0+k=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmKYEcGRd/NCbnia73KALIWqr9Xdn0xKPvk2IDg
- sZ+kbxaAWuJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZimBHAAKCRCJcvTf3G3A
- Jgl6D/sE+uKc6xZceXhHihXJHkcePsJVuhgwr7dKlPZMuFQwxhFMONW4l1jvB75ZZOOEHWK2SiT
- bjAv30r5kIeB9IIiN9xYvRhMc5OmThRriaNKUEWLKBJFIq4ifOYSlhkmV59bwpgbsHdSHf9cMcn
- i3D0oCGMp5tuCntEZdJknOlPPyfOHpFogpECCCeZ3rx0DaK0HZgxH4/8BuH+zygO2WQF2nMGLIa
- rMUoU7iOGLm2F9VBKaCZlIliIh5asQfSQf3xG8vhyNB4e+8Ln2NTYC3CDWdrmzQ0tqaWrOLaOmM
- IpBKbf9f5kKvKDqxlDsotpoovA1H0bHx8xhVhIK2jBeW6zyAeCM202g+n9fTtOVgtN6jp1RjqGt
- bfy9b7t/2sbrv6A20wG0Xmc73nZenBnbGUX0ALnXTsAMmtnUu4MtEq+wTNtAnLy17CnfHShiHMG
- aCud8tlty5gc6YeDXdBdAPTXXmOw/qJ0VldaIg1GeCDtxGPhrdPd+72R0n09Dlt6WvRkEbPJnCi
- UyKCMU3wHTxz1kjMycrI7IJW6h39YPxS4fpX6YR7BOd3M+9IbxPciQMjLecb+zmbJpW3GUaOywn
- N0ZZw4YHMVNqrwt569MVc/BLAzLda52Usw7rv1JQXNFQk3/WpJqdfiPMepFkEbEq7lBNhnPflh3
- HQSxXOf KpyuyZkQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+References: <20240424173550.16359-1-puranjay@kernel.org> <20240424173550.16359-3-puranjay@kernel.org>
+In-Reply-To: <20240424173550.16359-3-puranjay@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 24 Apr 2024 15:01:43 -0700
+Message-ID: <CAEf4BzZOFye13KdBUKA7E=41NVNy5fOzF3bxFzaeZAzkq0kh-w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf, arm64: inline bpf_get_smp_processor_id()
+ helper
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>, 
+	Florent Revest <revest@chromium.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, puranjay12@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Before request->channels[] can be used, request->n_channels must be set.
-Additionally, address calculations for memory after the "channels" array
-need to be calculated from the allocation base ("request") rather than
-via the first "out of bounds" index of "channels", otherwise run-time
-bounds checking will throw a warning.
+On Wed, Apr 24, 2024 at 10:36=E2=80=AFAM Puranjay Mohan <puranjay@kernel.or=
+g> wrote:
+>
+> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inline
+> bpf_get_smp_processor_id().
+>
+> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
+>
+> Here is how the BPF and ARM64 JITed assembly changes after this commit:
+>
+>                                          BPF
+>                                         =3D=3D=3D=3D=3D
+>               BEFORE                                       AFTER
+>              --------                                     -------
+>
+> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_smp=
+_processor_id();
+> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff8000820=
+72008
+>                                                 (bf) r0 =3D r0
 
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Fixes: e3eac9f32ec0 ("wifi: cfg80211: Annotate struct cfg80211_scan_request with __counted_by")
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: linux-wireless@vger.kernel.org
-Cc: netdev@vger.kernel.org
----
- net/wireless/nl80211.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+nit: hmm, you are probably using a bit outdated bpftool, it should be
+emitted as:
 
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index f391b4055944..f1ed0981147e 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -9163,6 +9163,7 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
- 	struct wiphy *wiphy;
- 	int err, tmp, n_ssids = 0, n_channels, i;
- 	size_t ie_len, size;
-+	size_t ssids_offset, ie_offset;
- 
- 	wiphy = &rdev->wiphy;
- 
-@@ -9208,21 +9209,20 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
- 		return -EINVAL;
- 
- 	size = struct_size(request, channels, n_channels);
-+	ssids_offset = size;
- 	size = size_add(size, array_size(sizeof(*request->ssids), n_ssids));
-+	ie_offset = size;
- 	size = size_add(size, ie_len);
- 	request = kzalloc(size, GFP_KERNEL);
- 	if (!request)
- 		return -ENOMEM;
-+	request->n_channels = n_channels;
- 
- 	if (n_ssids)
--		request->ssids = (void *)&request->channels[n_channels];
-+		request->ssids = (void *)request + ssids_offset;
- 	request->n_ssids = n_ssids;
--	if (ie_len) {
--		if (n_ssids)
--			request->ie = (void *)(request->ssids + n_ssids);
--		else
--			request->ie = (void *)(request->channels + n_channels);
--	}
-+	if (ie_len)
-+		request->ie = (void *)request + ie_offset;
- 
- 	i = 0;
- 	if (scan_freqs) {
--- 
-2.34.1
+(bf) r0 =3D &(void __percpu *)(r0)
 
+>                                                 (61) r0 =3D *(u32 *)(r0 +=
+0)
+>
+>                                       ARM64 JIT
+>                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+>               BEFORE                                       AFTER
+>              --------                                     -------
+>
+> int cpu =3D bpf_get_smp_processor_id();      int cpu =3D bpf_get_smp_proc=
+essor_id();
+> mov     x10, #0xfffffffffffff4d0           mov     x7, #0xffff8000fffffff=
+f
+> movk    x10, #0x802b, lsl #16              movk    x7, #0x8207, lsl #16
+> movk    x10, #0x8000, lsl #32              movk    x7, #0x2008
+> blr     x10                                mrs     x10, tpidr_el1
+> add     x7, x0, #0x0                       add     x7, x7, x10
+>                                            ldr     w7, [x7]
+>
+> Performance improvement using benchmark[1]
+>
+>              BEFORE                                       AFTER
+>             --------                                     -------
+>
+> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   24.631 =
+=C2=B1 0.027M/s
+> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   23.742 =
+=C2=B1 0.023M/s
+> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   12.625 =
+=C2=B1 0.004M/s
+>
+> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
+>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
+>  kernel/bpf/verifier.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>
+
+Besides the nits, lgtm.
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 9715c88cc025..3373be261889 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20205,7 +20205,7 @@ static int do_misc_fixups(struct bpf_verifier_env=
+ *env)
+>                         goto next_insn;
+>                 }
+>
+> -#ifdef CONFIG_X86_64
+> +#if defined(CONFIG_X86_64) || defined(CONFIG_ARM64)
+
+I think you can drop this, we are protected by
+bpf_jit_supports_percpu_insn() check and newly added inner #if/#elif
+checks?
+
+>                 /* Implement bpf_get_smp_processor_id() inline. */
+>                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
+>                     prog->jit_requested && bpf_jit_supports_percpu_insn()=
+) {
+> @@ -20214,11 +20214,20 @@ static int do_misc_fixups(struct bpf_verifier_e=
+nv *env)
+>                          * changed in some incompatible and hard to suppo=
+rt
+>                          * way, it's fine to back out this inlining logic
+>                          */
+> +#if defined(CONFIG_X86_64)
+>                         insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(un=
+signed long)&pcpu_hot.cpu_number);
+>                         insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
+PF_REG_0);
+>                         insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
+_REG_0, 0);
+>                         cnt =3D 3;
+> +#elif defined(CONFIG_ARM64)
+> +                       struct bpf_insn cpu_number_addr[2] =3D { BPF_LD_I=
+MM64(BPF_REG_0, (u64)&cpu_number) };
+>
+
+this &cpu_number offset is not guaranteed to be within 4GB on arm64?
+
+> +                       insn_buf[0] =3D cpu_number_addr[0];
+> +                       insn_buf[1] =3D cpu_number_addr[1];
+> +                       insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
+PF_REG_0);
+> +                       insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
+_REG_0, 0);
+> +                       cnt =3D 4;
+> +#endif
+>                         new_prog =3D bpf_patch_insn_data(env, i + delta, =
+insn_buf, cnt);
+>                         if (!new_prog)
+>                                 return -ENOMEM;
+> --
+> 2.40.1
+>
 
