@@ -1,140 +1,177 @@
-Return-Path: <linux-kernel+bounces-157555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D09D8B12CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 294A68B12D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:49:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A19351F25AA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:47:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90E691F25B6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEF121BF2F;
-	Wed, 24 Apr 2024 18:47:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D4D5199B0;
+	Wed, 24 Apr 2024 18:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="P9h75dPI"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="J1Nz0Jd8"
+Received: from nbd.name (nbd.name [46.4.11.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3436B1772F;
-	Wed, 24 Apr 2024 18:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 884F71BF2B;
+	Wed, 24 Apr 2024 18:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713984422; cv=none; b=jPox2JiXvorbM0fgtU7yJhJ5hdV5NGCWXMzg35t5R8Tq4m6jGDnGRlsHdMXxMEIhGYYlHHdexOGSAHGoI0eV4qCU1nAZ0Z6L63cYne9KeFFvcMW4anZQXDlcwCPKAPS6BHauAxAgP2R0E8GZVswNE1CKRXRj//lLvbOlbxuN3OI=
+	t=1713984536; cv=none; b=oZtWcJC8b56INTtf90LoRt8ogUJ1R+wDwsqApyGB1F7yOBn/y2R8GVxKzXFqTv1X1eGNWDA7GsE3MTK8pl+M4DdiQ+5vRsxZnGhgLjP+Isgf2Ghrfj22tDMcgw3r3DaQUrKMn4S0mZxfnwiQ21BoLUu3Tj6EyaE4DtmXnfZsM4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713984422; c=relaxed/simple;
-	bh=R99aO0G4C4tvy39lrwNWT9qRBl7d5x4sktKYwiBMh08=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eNBqFar6vtcU85JCUKDyqCaP5osTnKULusvZfEw+46UqLts9YmBJqwG/wHUyhk7lsTic4RenV65oVMV4i4NiQrhm9viQtS0eMTl/JJrjufRVc8trmDupi3SQrowOIuuwxzETtqX+lrao0Ps8ikP8PqQgxz5RK+JfQLNd157rAnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=P9h75dPI; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1481C40E00C7;
-	Wed, 24 Apr 2024 18:46:58 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 9TgzoTgZmhK5; Wed, 24 Apr 2024 18:46:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1713984414; bh=RLpabNxR4gGiC8iZOFYg5sG6e8hVLDbCHs9kLLbABtY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=P9h75dPI/mx5pnSPDDQiSXL9pN3TWtTigX0Sm7sOUfMU0jnBPq43KeLerU1+SrIvY
-	 pgraqvsnmPkmG6RTlpEuTZDOUIxo/cx7jdqEkiNhAdeLmZ567SbJfXdQIibccb6qF3
-	 he6hv6NhQZnMhD1Hesnw9quD1Ob2TiAuyblF9dC/C+dFLFnYHkKG13EkjetnmWwoYX
-	 83mRWOS+o5PMq9wMrfWt07GKEGDQ8o6LuDFPx8HkJR1od5MRBJJMGt0YGtK5GSE1hp
-	 96BgBQfyLVyMgvpqh9CFd8/dZ2a/FT0Gv/Ueg+I1GHzNCLHXkDBfiso55GlLyREn8z
-	 bjHgTg7l1iOFG/1pGuV3gaeSCl20b1w+lgXPYYHyiZzz7bCYBasi94EKr2fQTaxBp3
-	 qiQNc/tqhUz3rI2M1yLQYEK5oOcMNYm+DXhNVwD8dLbz9bbHeni9SA7g+XFaTIOw/k
-	 Hk3TGEnQ6l9W7OBtabjIlKpz1pe1uz3FdqwXa44lA+43TBgxzBh4h0o2j7WAg6so7W
-	 FX7dXkNH4Z7veWc0D9ftL7jkeUkbtDUO6qmw5bUieXduOepyUJhT48HVYBjeij2xy6
-	 4DCPNhEU4Kw2qJ5qJPw1qbn8B9jIBMAGQD6qlqvb/S7VZG1XlZtvNGJyDQ9uD8ozuv
-	 gJf7lbDiaxaikAR5ozd0cqh4=
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 479E340E0177;
-	Wed, 24 Apr 2024 18:46:46 +0000 (UTC)
-Date: Wed, 24 Apr 2024 20:46:40 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-Cc: X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	KVM <kvm@vger.kernel.org>, Ashish Kalra <ashish.kalra@amd.com>,
-	Joerg Roedel <joro@8bytes.org>, Michael Roth <michael.roth@amd.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH 5/5] x86/CPU/AMD: Track SNP host status with
- cc_platform_*()
-Message-ID: <20240424184640.GFZilTkCX42j5sPu-o@fat_crate.local>
-References: <20240327154317.29909-1-bp@alien8.de>
- <20240327154317.29909-6-bp@alien8.de>
- <f6bb6f62-c114-4a82-bbaf-9994da8999cd@linux.microsoft.com>
- <20240328134109.GAZgVzdfQob43XAIr9@fat_crate.local>
- <ac4f34a0-036a-48b9-ab56-8257700842fc@linux.microsoft.com>
- <20240328153914.GBZgWPIvLT6EXAPJci@fat_crate.local>
- <aecd56a4-0a88-4162-95ef-47561631f16e@linux.microsoft.com>
+	s=arc-20240116; t=1713984536; c=relaxed/simple;
+	bh=o8LJpEkE4yYPybCP4kfKGPt4Qz74mZcXYp6/YedXHTE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=U+WiZVEZ0BhmpqMys1fD4cXj6x6XKyYNDLNEIOeOp6CB1/vubrFhcWnqLaIqdHYCIGvAmvUMHQV8rNG0fSPQ52m1RNeX2/TN27L/xMnvgiw75cN8EH//U3MALrS+AuGGCSQbouoKrbl1hmg2rs5x+4+kZk/0xmek1YsZoN6SEKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=J1Nz0Jd8; arc=none smtp.client-ip=46.4.11.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
+	s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=LlfjSz+06TFcdqph25Lx5VBdUjKqbhfJRSC9oP2qMKM=; b=J1Nz0Jd8hk/pp+YNGSiBNmI3lu
+	hZLg4JiMX4sq3G5bYJZc+8qzAD5UlgFiHtWMzKWU75/8LiuBIZw9ErC/LKKEqaC9DxXUOfZvhhA95
+	yDH20/RqzHOUVVRfMlOzOQeLTtEYDse+fTRgIcPX1XhCSfdZmPrj1mYtSsJBSOD3QxZI=;
+Received: from p200300daa70d8400593e4be1bb3506c9.dip0.t-ipconnect.de ([2003:da:a70d:8400:593e:4be1:bb35:6c9] helo=nf.local)
+	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <nbd@nbd.name>)
+	id 1rzhfj-006ski-2P;
+	Wed, 24 Apr 2024 20:48:47 +0200
+Message-ID: <87e6afb5-796b-48be-b68c-cd8a6a0f58f9@nbd.name>
+Date: Wed, 24 Apr 2024 20:48:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <aecd56a4-0a88-4162-95ef-47561631f16e@linux.microsoft.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 4/4] net: add heuristic for enabling TCP fraglist
+ GRO
+To: Eric Dumazet <edumazet@google.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, willemdebruijn.kernel@gmail.com,
+ linux-kernel@vger.kernel.org
+References: <20240424180458.56211-1-nbd@nbd.name>
+ <20240424180458.56211-5-nbd@nbd.name>
+ <CANn89iL39fo99P-mfiwR6jnMdw4do-tkyb=qxOQJLPtnB8cZvA@mail.gmail.com>
+From: Felix Fietkau <nbd@nbd.name>
+Content-Language: en-US
+Autocrypt: addr=nbd@nbd.name; keydata=
+ xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
+ ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
+ Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
+ AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
+ vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
+ wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
+ TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
+ l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
+ dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
+ HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
+ VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
+ CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
+ VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
+ Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
+ DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
+ wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
+ f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
+ aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
+ FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
+ TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
+ GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCeMncXpbbWNT2AtoAYICrKyX5R3iMAoMhw
+ cL98efvrjdstUfTCP2pfetyN
+In-Reply-To: <CANn89iL39fo99P-mfiwR6jnMdw4do-tkyb=qxOQJLPtnB8cZvA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 04, 2024 at 07:07:26PM +0200, Jeremi Piotrowski wrote:
-> On 28/03/2024 16:39, Borislav Petkov wrote:
-> > On Thu, Mar 28, 2024 at 03:24:29PM +0100, Jeremi Piotrowski wrote:
-> >> It's not but if you set it before the check it will be set for all AMD
-> >> systems, even if they are neither CC hosts nor CC guests.
-> > 
-> > That a problem?
-> > 
+On 24.04.24 20:23, Eric Dumazet wrote:
+> On Wed, Apr 24, 2024 at 8:05 PM Felix Fietkau <nbd@nbd.name> wrote:
+>>
+>> When forwarding TCP after GRO, software segmentation is very expensive,
+>> especially when the checksum needs to be recalculated.
+>> One case where that's currently unavoidable is when routing packets over
+>> PPPoE. Performance improves significantly when using fraglist GRO
+>> implemented in the same way as for UDP.
+>>
+>> When NETIF_F_GRO_FRAGLIST is enabled, perform a lookup for an established
+>> socket in the same netns as the receiving device. While this may not
+>> cover all relevant use cases in multi-netns configurations, it should be
+>> good enough for most configurations that need this.
+>>
+>> Here's a measurement of running 2 TCP streams through a MediaTek MT7622
+>> device (2-core Cortex-A53), which runs NAT with flow offload enabled from
+>> one ethernet port to PPPoE on another ethernet port + cake qdisc set to
+>> 1Gbps.
+>>
+>> rx-gro-list off: 630 Mbit/s, CPU 35% idle
+>> rx-gro-list on:  770 Mbit/s, CPU 40% idle
+>>
+>> Signe-off-by: Felix Fietkau <nbd@nbd.name>
+>> ---
+>>  net/ipv4/tcp_offload.c   | 45 ++++++++++++++++++++++++++++++++++++++-
+>>  net/ipv6/tcpv6_offload.c | 46 +++++++++++++++++++++++++++++++++++++++-
+>>  2 files changed, 89 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
+>> index 6294e7a5c099..f987e2d8423a 100644
+>> --- a/net/ipv4/tcp_offload.c
+>> +++ b/net/ipv4/tcp_offload.c
+>> @@ -404,6 +404,49 @@ void tcp_gro_complete(struct sk_buff *skb)
+>>  }
+>>  EXPORT_SYMBOL(tcp_gro_complete);
+>>
+>> +static bool tcp4_check_fraglist_gro(struct sk_buff *skb)
+>> +{
+>> +       const struct iphdr *iph = skb_gro_network_header(skb);
+>> +       struct net *net = dev_net(skb->dev);
+>> +       unsigned int off, hlen, thlen;
+>> +       struct tcphdr *th;
+>> +       struct sock *sk;
+>> +       int iif, sdif;
+>> +
+>> +       if (!(skb->dev->features & NETIF_F_GRO_FRAGLIST))
+>> +               return false;
+>> +
+>> +       inet_get_iif_sdif(skb, &iif, &sdif);
+>> +
+>> +       off = skb_gro_offset(skb);
+>> +       hlen = off + sizeof(*th);
+>> +       th = skb_gro_header(skb, hlen, off);
+>> +       if (unlikely(!th))
+>> +               return false;
+>> +
+>> +       thlen = th->doff * 4;
+>> +       if (thlen < sizeof(*th))
+>> +               return false;
+>> +
+>> +       hlen = off + thlen;
+>> +       if (!skb_gro_may_pull(skb, hlen)) {
+>> +               th = skb_gro_header_slow(skb, hlen, off);
+>> +               if (unlikely(!th))
+>> +                       return false;
+>> +       }
+>> +
+>> +       sk = __inet_lookup_established(net, net->ipv4.tcp_death_row.hashinfo,
+>> +                                      iph->saddr, th->source,
+>> +                                      iph->daddr, ntohs(th->dest),
+>> +                                      iif, sdif);
 > 
-> No problem now but I did find it odd that cc_vendor will now always be set for AMD but
-> not for Intel. For Intel the various checks would automatically return true. Something
-> to look out for in the future when adding CC_ATTR's - no one can assume that the checks
-> will only run when actively dealing with confidential computing.
-
-Right, I haven't made up my mind fully here yet... setting cc_vendor
-*only* when running as some sort of a confidential computing guest kinda
-makes sense.
-
-And if it is not set, then that can be used to catch cases where the
-cc_* helpers are used outside of confidential computing cases...
-
-Do we want those assertions? I don't know...
-
-> I see your point about the disable needing to happen late - but then how about we remove
-> the setup_clear_cpu_cap(X86_FEATURE_SEV_SNP) too? No code depends on it any more and it would
-> help my cause as well.
+> Presumably all this could be done only for the first skb/segment of a GRO train.
 > 
-> > So we need a test for "am I a nested SNP hypervisor?"
-> > 
-> > So, can your thing clear X86_FEATURE_HYPERVISOR and thus "emulate"
-> > baremetal?
-> > 
+> We could store the fraglist in a single bit in NAPI_GRO_CB(skb) ?
 > 
-> Can't do that... it is a VM and hypervisor detection and various paravirt interfaces depend on
-> X86_FEATURE_HYPERVISOR.
+> GRO does a full tuple evaluation, we can trust it.
 
-Right, but "your cause" as you call it above looks like a constant
-whack'a'mole game everytime we change something in the kernel when
-enabling those things and that breaks your cause.
+I will look into that, thanks.
 
-Do you really want that?
-
-Or would you prefer to define your nested solution properly and then
-have upstream code support it like the next well-defined coco platform
-instead?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+- Felix
 
