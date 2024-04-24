@@ -1,139 +1,229 @@
-Return-Path: <linux-kernel+bounces-156639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88EC28B0613
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:31:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3935F8B0618
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:32:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45E4D2844A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:31:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9F921F23CE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:32:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B16D158D9D;
-	Wed, 24 Apr 2024 09:31:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F7DE158DA2;
+	Wed, 24 Apr 2024 09:32:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="YPnyalHg"
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UWpiYij3"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734C5158D88
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:31:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9272D1EF1A;
+	Wed, 24 Apr 2024 09:32:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713951090; cv=none; b=R+a3LjaOZwDLGJdvz1xiTV9olL89cvCzCX1+rNbPwfBYaNBtA4YQuMYh+mpBLVtIPHc05rrB609GmunCDC49KbME+2k3w9+5U0GK1YcjrC8hU7ZuHsc/GWRSTyAez7ntXUc+Su7UCaCdJnQ29a910BIS7RpbaUGwwRku2caSh0Y=
+	t=1713951169; cv=none; b=iYEEadptpD6vJvOj77Pn5NQ0ibm2/w++O1hRbtuRF0FO2yRdNct+ysqC/mDVjVpB07i08b47OkA9w/gDxtqmqtmwsIKExJPuD0MFF/aQ3pnq0Q5WL8PaIPxMByVKztpGfUMpmcyeJhtXXtQv8M2ei/2AgZRUEw5PBfbAIsdKWt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713951090; c=relaxed/simple;
-	bh=8PWDdtiB3Xzzlhux/xDf8i4DGsXpZQEMjMXh021hTAc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ncRgSBNuA8NTbu4OZzUEf6K9bWEUYK1l8bZJyv2NbdcuaU5gRtrfHcBiTEY8iQ9Im0+YtV/BD0FHkSgESY6uLnJTItwZO3ke8j/7CxXGMb2Cqh3TmnTx9hsXaP96zY3VQVV0+8dS6FUGMj+eASD2MXi5+Qt3z02TPCOG3JoSGQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=YPnyalHg; arc=none smtp.client-ip=115.124.30.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1713951084; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=zipW5OKTuriO6u7AdV/9p85sXllwC1SbrX531oPkRyE=;
-	b=YPnyalHg5ucnWQMHM2GBdmUjlrWA3v5X4jxKwYvNEguosIIkXV6HWRairtvxuyjc0w4Y0cHnIg9TiTx1xfFWuCg/Dw093qQ9GN5qYa+xqIVSt9a13zFb2oGPenlRyCiaDKyZJFsOvr3DD+jspw0/s+rrIav8FjBde1zGB9cko6s=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067111;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W5ByeSc_1713951080;
-Received: from 30.97.56.58(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W5ByeSc_1713951080)
-          by smtp.aliyun-inc.com;
-          Wed, 24 Apr 2024 17:31:22 +0800
-Message-ID: <e0162ba4-11bb-46c1-81b3-4cda3d0d7a6f@linux.alibaba.com>
-Date: Wed, 24 Apr 2024 17:31:20 +0800
+	s=arc-20240116; t=1713951169; c=relaxed/simple;
+	bh=odLCeXV/7pBP8vRHrz9jbJlhc8urXDK1R3TAXp+bME0=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=BRXiXTPfxkmZRHCaPQ+KAe7iEnNpSf5Xo4EdIAO5LhCJLEANVF6Z75GSrbfPybC/cQjclSrJbMjUHNlLe+0ipF67ZB5/PF50PZ/Y9H8xCPZ7oA6nBtBQmMx07rVsUb56pIkBLeiRswgMG82mxb36jqKFC0fmzaKZa3Gi2L/zl/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UWpiYij3; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713951168; x=1745487168;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=odLCeXV/7pBP8vRHrz9jbJlhc8urXDK1R3TAXp+bME0=;
+  b=UWpiYij31oNeUXiVNFPFvtB2c5QqZvH77tYC44rURL8rUGL/mIREaD9s
+   bLJ9rlzcjt5XHYYxlSsTOGuhjUWmpRF6wa8dxcULweycI4wrUqMUR2p8n
+   WysrlRR/D3d24i6UYnKwyxXTB+RmDWbvChP7i9w0doEco02huumJdffaV
+   mV5/i4d+A3qfKEA4f3tXjDxg2LMGi6pE0Gx7QXq5kBaqHYwAFvsJtr/xj
+   s7Lqt8R+FQnr5+big1vfwtIZ3YCTCs2ed6yXhIfz7nuDe6G32DmOlIWsu
+   1Xk8RS3OdBPEab4jWW6Ha/tbSQKUUWvWN/YL5rmx2xW8P/kqBIEI79iS5
+   Q==;
+X-CSE-ConnectionGUID: xY7vXIJAQzC+bsrUtGxXMA==
+X-CSE-MsgGUID: WwS+QIxOQnKbDzVXdwqw6Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="20266894"
+X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
+   d="scan'208";a="20266894"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 02:32:46 -0700
+X-CSE-ConnectionGUID: 1IlfOP5SSgKRTdVfu3HG8A==
+X-CSE-MsgGUID: 3htIX186StqgyE5VNjzD0g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
+   d="scan'208";a="47910954"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.41])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 02:32:42 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 24 Apr 2024 12:32:36 +0300 (EEST)
+To: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+cc: linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+    Bjorn Helgaas <helgaas@kernel.org>, 
+    Mahesh J Salgaonkar <mahesh@linux.ibm.com>, Lukas Wunner <lukas@wunner.de>, 
+    Yazen Ghannam <yazen.ghannam@amd.com>, Bowman Terry <terry.bowman@amd.com>, 
+    Hagan Billy <billy.hagan@amd.com>, Simon Guinot <simon.guinot@seagate.com>, 
+    "Maciej W . Rozycki" <macro@orcam.me.uk>, 
+    Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: Re: [PATCH] PCI: pciehp: Clear LBMS on hot-remove to prevent link
+ speed reduction
+In-Reply-To: <20240424033339.250385-1-Smita.KoralahalliChannabasappa@amd.com>
+Message-ID: <52290bb0-97bc-aa52-6606-cc734a492cc1@linux.intel.com>
+References: <20240424033339.250385-1-Smita.KoralahalliChannabasappa@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/5] mm: shmem: add anonymous share mTHP counters
-To: Ryan Roberts <ryan.roberts@arm.com>, David Hildenbrand
- <david@redhat.com>, Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, hughd@google.com, willy@infradead.org,
- wangkefeng.wang@huawei.com, ying.huang@intel.com, shy828301@gmail.com,
- ziy@nvidia.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
- <05d0096e4ec3e572d1d52d33a31a661321ac1551.1713755580.git.baolin.wang@linux.alibaba.com>
- <CAGsJ_4xu4iL5pv7T1chyzGC2Vp9q1GwOp3wxb=bYMW-T-pj4dA@mail.gmail.com>
- <ce6be451-7c5a-402f-8340-be40699829c2@redhat.com>
- <fb2052ab-74d1-48f7-975b-15abc2a078e2@linux.alibaba.com>
- <140d4efa-28a0-449a-9570-9d44c23b55d1@redhat.com>
- <5edfe6b3-8f00-46c4-8ddb-d1add845541d@arm.com>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <5edfe6b3-8f00-46c4-8ddb-d1add845541d@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
+On Wed, 24 Apr 2024, Smita Koralahalli wrote:
 
-
-On 2024/4/24 16:15, Ryan Roberts wrote:
-> On 24/04/2024 08:11, David Hildenbrand wrote:
->> On 24.04.24 08:10, Baolin Wang wrote:
->>>
->>>
->>> On 2024/4/23 19:37, David Hildenbrand wrote:
->>>> On 23.04.24 03:17, Barry Song wrote:
->>>>> On Mon, Apr 22, 2024 at 3:03 PM Baolin Wang
->>>>> <baolin.wang@linux.alibaba.com> wrote:
->>>>>>
->>>>>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->>>>>> ---
->>>>>>     include/linux/huge_mm.h | 2 ++
->>>>>>     mm/huge_memory.c        | 4 ++++
->>>>>>     mm/shmem.c              | 5 ++++-
->>>>>>     3 files changed, 10 insertions(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->>>>>> index 26b6fa98d8ac..67b9c1acad31 100644
->>>>>> --- a/include/linux/huge_mm.h
->>>>>> +++ b/include/linux/huge_mm.h
->>>>>> @@ -270,6 +270,8 @@ enum mthp_stat_item {
->>>>>>            MTHP_STAT_ANON_SWPOUT,
->>>>>>            MTHP_STAT_ANON_SWPOUT_FALLBACK,
->>>>>>            MTHP_STAT_ANON_SWPIN_REFAULT,
->>>>>> +       MTHP_STAT_SHMEM_ANON_ALLOC,
->>>>>> +       MTHP_STAT_SHMEM_ANON_ALLOC_FALLBACK,
->>>>>
->>>>> not quite sure about this. for 2MB pmd-mapped THP shmem, we count them
->>>>> as FILE_THP.
->>>>> here we are counting as SHMEM_ANON. To me, SHMEM_ANON is more correct but
->>>>> it doesn't align with pmd-mapped THP. David, Ryan, what do you think?
->>>>
->>>> The term "anonymous share" in the patch subject is weird to begin with
->>>> ;) Easy to confuse with anonymous cow-shared memory. Let's just call it
->>>> "anonymous shmem", which it is under the hood.
->>>
->>> Sure.
->>>
->>>> ... regarding the question: if we add FILE_ALLOC and friends, at least
->>>> initially, we wouldn't account other large pagecache folios.
->>>>
->>>> ... likely we should add that then as well so the counter matches the
->>>> actual name?
->>>>
->>>> If we later realize that we need separate FILE vs. SHMEM vs. WHATEVER
->>>> counters, we can always add more fine-grained counters later. Doing it
->>>> consistently w.r.t. traditional THPs first sounds reasonable.
->>>
->>> Um, once we expose it to userspace through the sysfs interface, the
->>> sysfs interface should be explicit as much as possible and avoid
->>> confusing users, otherwise it will be difficult to change this kind of
->>> interface in the future. Personally, I prefer to Ryan's suggestion.
->>
->> Inconsistency is confusing. As long as you avoid that, I don't particularly care.
+> Clear Link Bandwidth Management Status (LBMS) if set, on a hot-remove event.
 > 
-> This is a good point. We have been careful to make sure the 2M ANON mTHP stats
-> match the existing PMD-size stats. So we should definitely make sure that any
-> future 2M FILE mTHP stats match too, which I guess means counting both SHMEM and
-> FILE events.
+> The hot-remove event could result in target link speed reduction if LBMS
+> is set, due to a delay in Presence Detect State Change (PDSC) happening
+> after a Data Link Layer State Change event (DLLSC).
 > 
-> So perhaps it makes more sense to add FILE counters to start with. If we need
-> the SHMEM-specific counters, we could add them later?
+> In reality, PDSC and DLLSC events rarely come in simultaneously. Delay in
+> PDSC can sometimes be too late and the slot could have already been
+> powered down just by a DLLSC event. And the delayed PDSC could falsely be
+> interpreted as an interrupt raised to turn the slot on. This false process
+> of powering the slot on, without a link forces the kernel to retrain the
+> link if LBMS is set, to a lower speed to restablish the link thereby
+> bringing down the link speeds [2].
 > 
-> I'm happy to go with the crowd on this...
+> According to PCIe r6.2 sec 7.5.3.8 [1], it is derived that, LBMS cannot
+> be set for an unconnected link and if set, it serves the purpose of
+> indicating that there is actually a device down an inactive link.
+> However, hardware could have already set LBMS when the device was
+> connected to the port i.e when the state was DL_Up or DL_Active. Some
+> hardwares would have even attempted retrain going into recovery mode,
+> just before transitioning to DL_Down.
+> 
+> Thus the set LBMS is never cleared and might force software to cause link
+> speed drops when there is no link [2].
+> 
+> Dmesg before:
+> 	pcieport 0000:20:01.1: pciehp: Slot(59): Link Down
+> 	pcieport 0000:20:01.1: pciehp: Slot(59): Card present
+> 	pcieport 0000:20:01.1: broken device, retraining non-functional downstream link at 2.5GT/s
+> 	pcieport 0000:20:01.1: retraining failed
+> 	pcieport 0000:20:01.1: pciehp: Slot(59): No link
+> 
+> Dmesg after:
+> 	pcieport 0000:20:01.1: pciehp: Slot(59): Link Down
+> 	pcieport 0000:20:01.1: pciehp: Slot(59): Card present
+> 	pcieport 0000:20:01.1: pciehp: Slot(59): No link
+> 
+> [1] PCI Express Base Specification Revision 6.2, Jan 25 2024.
+>     https://members.pcisig.com/wg/PCI-SIG/document/20590
+> [2] Commit a89c82249c37 ("PCI: Work around PCIe link training failures")
+> 
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+> ---
+> 1. Should be based on top of fixes for link retrain status in
+> pcie_wait_for_link_delay()
+> https://patchwork.kernel.org/project/linux-pci/list/?series=824858
+> https://lore.kernel.org/linux-pci/53b2239b-4a23-a948-a422-4005cbf76148@linux.intel.com/
+> 
+> Without the fixes patch output would be:
+> 	pcieport 0000:20:01.1: pciehp: Slot(59): Link Down
+> 	pcieport 0000:20:01.1: pciehp: Slot(59): Card present
+> 	pcieport 0000:20:01.1: broken device, retraining non-functional downstream link at 2.5GT/s
+> 	pcieport 0000:20:01.1: retraining failed
+> 	pcieport 0000:20:01.1: pciehp: Slot(59): No device found.
 
-(Seems I'm the only one who prefers the term 'SHMEM_' now.) Fine, I have 
-no strong preference, and let's keep consistency first. Thanks guys.
+Did you hit the 60 sec delay issue without series 824858? If you've tested 
+them and the fixes helped your case, could you perhaps give Tested-by for 
+that series too (in the relevant thread)?
+
+> 2. I initially attempted to wait for both events PDSC and DLLSC to happen
+> and then turn on the slot.
+> Similar to: https://lore.kernel.org/lkml/20190205210701.25387-1-mr.nuke.me@gmail.com/
+> but before turning on the slot.
+> 
+> Something like:
+> -		ctrl->state = POWERON_STATE;
+> -		mutex_unlock(&ctrl->state_lock);
+> -		if (present)
+> +		if (present && link_active) {
+> +			ctrl->state = POWERON_STATE;
+> +			mutex_unlock(&ctrl->state_lock);
+> 			ctrl_info(ctrl, "Slot(%s): Card present\n",
+> 				  slot_name(ctrl));
+> -		if (link_active)
+> 			ctrl_info(ctrl, "Slot(%s): Link Up\n",
+> 				  slot_name(ctrl));
+> -		ctrl->request_result = pciehp_enable_slot(ctrl);
+> -		break;
+> +			ctrl->request_result = pciehp_enable_slot(ctrl);
+> +			break;
+> +		}
+> +		else {
+> +			mutex_unlock(&ctrl->state_lock);
+> +			break;
+> +		}
+> 
+> This would also avoid printing the lines below on a remove event.
+> pcieport 0000:20:01.1: pciehp: Slot(59): Card present
+> pcieport 0000:20:01.1: pciehp: Slot(59): No link
+> 
+> I understand this would likely be not applicable in places where broken
+> devices hardwire PDS to zero and PDSC would never happen. But I'm open to
+> making changes if this is more applicable. Because, SW cannot directly
+> track the interference of HW in attempting link retrain and setting LBMS.
+> 
+> 3. I tried introducing delay similar to pcie_wait_for_presence() but I
+> was not successful in picking the right numbers. Hence hit with the same
+> link speed drop.
+> 
+> 4. For some reason I was unable to clear LBMS with:
+> 	pcie_capability_clear_word(ctrl->pcie->port, PCI_EXP_LNKSTA,
+> 				   PCI_EXP_LNKSTA_LBMS);
+
+LBMS is write-1-to-clear, pcie_capability_clear_word() tries to write 0 
+there (the accessor doesn't do what you seem to expect, it clears normal 
+bits, not write-1-to-clear bits).
+
+> ---
+>  drivers/pci/hotplug/pciehp_pci.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/hotplug/pciehp_pci.c b/drivers/pci/hotplug/pciehp_pci.c
+> index ad12515a4a12..9155fdfd1d37 100644
+> --- a/drivers/pci/hotplug/pciehp_pci.c
+> +++ b/drivers/pci/hotplug/pciehp_pci.c
+> @@ -92,7 +92,7 @@ void pciehp_unconfigure_device(struct controller *ctrl, bool presence)
+>  {
+>  	struct pci_dev *dev, *temp;
+>  	struct pci_bus *parent = ctrl->pcie->port->subordinate;
+> -	u16 command;
+> +	u16 command, lnksta;
+>  
+>  	ctrl_dbg(ctrl, "%s: domain:bus:dev = %04x:%02x:00\n",
+>  		 __func__, pci_domain_nr(parent), parent->number);
+> @@ -134,4 +134,10 @@ void pciehp_unconfigure_device(struct controller *ctrl, bool presence)
+>  	}
+>  
+>  	pci_unlock_rescan_remove();
+> +
+> +	/* Clear LBMS on removal */
+> +	pcie_capability_read_word(ctrl->pcie->port, PCI_EXP_LNKSTA, &lnksta);
+> +	if (lnksta & PCI_EXP_LNKSTA_LBMS)
+> +		pcie_capability_write_word(ctrl->pcie->port, PCI_EXP_LNKSTA,
+> +					   PCI_EXP_LNKSTA_LBMS);
+
+It's enough to unconditionally write PCI_EXP_LNKSTA_LBMS, no need to 
+check first. The comment is just spelling out what can already be read 
+from the code so I'd drop the comment.
+
+I agree it makes sense to clear the LBMS when device is removed.
+
+-- 
+ i.
+
 
