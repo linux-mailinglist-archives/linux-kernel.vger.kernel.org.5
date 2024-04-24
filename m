@@ -1,125 +1,97 @@
-Return-Path: <linux-kernel+bounces-156583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3FB98B0528
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:57:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 690EF8B0539
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:02:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88B59281CBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:57:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 134711F241EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:02:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2997158A2E;
-	Wed, 24 Apr 2024 08:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XWQkydc6"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A68E158A31;
+	Wed, 24 Apr 2024 09:02:27 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAE74158A0C
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:57:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AE2A13A406;
+	Wed, 24 Apr 2024 09:02:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713949025; cv=none; b=PpR2jxqi7AuZb78pD7V5HDWL9eayNTkawLvxc6Mz8wsMn7wGUGJz9fOqxd4qCljI1Vb8wS4KR4BC4R15uPjL6FOrg7EAmIHUmlfTQEgv3zwXcCJaetgW80ndxrq4IY1zTjz4i3Oa+4joS+NzLJ1sm6vy32YW9ztaUpIprsydxt0=
+	t=1713949347; cv=none; b=gVLJCXl7KIKa6YUVTmJPwobjl60j0rASpemWNfdiqlCHRVzMdXbXZUYiRnVo3XA8lebkxEM32h74g8s7UjI53wTlwqCjQumVq4v8G4yjXs78BIwHq6Luok6ReHm6GhcMGyuzzmp22VM7Vk6LplYUB02cOslxXlXywctF7nUDaGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713949025; c=relaxed/simple;
-	bh=2O72LDU1OqLroHzeVRXvbfTsfJ2fryQ4/oEHiZA7yqk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oC5GpZrxK0UJk3locDQnCABoHl2jNxRbGMJipMl2bCPrBXs2/6hHQ8FnPAebIP9gObCZDtpR2S/HvVY4NYZ9iT83v0wGTe8Y63ESW0X5FlAAnbHPByPC40oDOJR+NzIOWJPW3SPfskuZxlhQBO3bFG+cc83q8YbeiZ/Ny5sAd5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XWQkydc6; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-34a3e0b31e6so4824034f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 01:57:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713949021; x=1714553821; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AkIP6wFEIDdLYh2L9xznda/rD06h99rIWQ52OqgoXs8=;
-        b=XWQkydc6ifkoesYyyw2U5cHA0sdZiz0VjUkM/xH8y520/Dt5tITDvpVYNOHnqCNKsO
-         YeUs/mIzlikaaIXUw9xfTNIU8bcYE1ypsSNTvaLB5BY5zCqUoO9a4XOm7CFx22D8EpyF
-         H04vx0AO7iea0+w0oib9MLmG7cXIo/+lcn43nZyWdidxFNC4J9W9bcmUJJ9xmi+4d+Tp
-         8KRpj+ORL+IDXg/M/WCKmqI8dEnPs+4dKqiFFDWyb5NzReVNlBdvomZbOocJsscVhv81
-         0MiLGDZc9SNK6HXrEwvHfjXb2FSSO08J02IuRPoM5JJlZL7bSUjCcc483jPC3LsJDS5R
-         f6pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713949021; x=1714553821;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AkIP6wFEIDdLYh2L9xznda/rD06h99rIWQ52OqgoXs8=;
-        b=VmABDgvqF6pvC1Rn2f0i4IZnCdOmcTRP0oxLbtGGBPLW9wlDQRCWCdp9/IRm0ZiT7d
-         S1rMHQZMU130GWvlvSly5+XJHoDIcWrgKzleRp6xgRCviHSHp8RdX95wHoMlwCWH9NZ+
-         er1amFrqVG4sLSPhb2ZHQ86yULem94UIpAnfzNUGW9LDxPeq8KC2b+l5yqZTsBx3C2z/
-         uhb0q3yY0n7qWtPxEMFjkf61RSujlNesD4LYjfeQx0saPHEz9gUZ0W8B8+QS7uFNGRDH
-         cELDzP7zFel10yWM+XYEnev6rBBXBAbYtCSGTRhgxFZOgXE3k4jyUvhAQND4Q3Z3GPnY
-         IMTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWusZTdtdgP4cK894shwky0vjGoyiGBMW88jMWkeYMFyylyjqi6RYC63WT+qlD66Pu6L6FFUeXBe/+8/Xa04jBwUVTjAWYRfZAa90jt
-X-Gm-Message-State: AOJu0YwIE4/wD/ENqjY6Fwz8Ifik+0Mxuf9gjGCS5yiuZZ4C9stDv4IY
-	qZJKbx0g72aGmDCPoeQg5sfv7lI9Oj1JpnPaQur/GFGzTXSi3uEBM7Td2mq14F4=
-X-Google-Smtp-Source: AGHT+IEyU1gmwXgqSJtlqDiujsmNdbhvlCic00FHBLWvq1Gj2coaTNmeFtYG0ICD0QzXKkhlq8J0Rg==
-X-Received: by 2002:a5d:5449:0:b0:34a:a836:b940 with SMTP id w9-20020a5d5449000000b0034aa836b940mr1011074wrv.18.1713949021138;
-        Wed, 24 Apr 2024 01:57:01 -0700 (PDT)
-Received: from [192.168.0.19] ([176.61.106.227])
-        by smtp.gmail.com with ESMTPSA id v2-20020adfe282000000b00346ceb9e060sm16488957wri.103.2024.04.24.01.56.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 01:57:00 -0700 (PDT)
-Message-ID: <40e817d3-3a7a-4da5-9237-12915357e011@linaro.org>
-Date: Wed, 24 Apr 2024 09:56:59 +0100
+	s=arc-20240116; t=1713949347; c=relaxed/simple;
+	bh=yXFWoaQSid27j0ihrlBykIrBmnzl4uQX7jpdIxXuzkk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NH43mAKOJtMLXfAT0iU3HH7QP80M3yoHZqo6AifzETaMT1idMA+Rv0CZhe229C7Llk777QbZAqQ1RnClbSA/GILxrlvdWLUOprPdutuRARQaG2oqQJ8GwITb1u5bPtJCa9Bdkcj6NvOuw4lGr+vkHnHbUMr0Uh240h/ttG8BfN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VPXwj6v6Pz1j0sK;
+	Wed, 24 Apr 2024 16:59:17 +0800 (CST)
+Received: from kwepemm600005.china.huawei.com (unknown [7.193.23.191])
+	by mail.maildlp.com (Postfix) with ESMTPS id EC57E14040D;
+	Wed, 24 Apr 2024 17:02:21 +0800 (CST)
+Received: from huawei.com (10.50.165.33) by kwepemm600005.china.huawei.com
+ (7.193.23.191) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 24 Apr
+ 2024 17:02:21 +0800
+From: Longfang Liu <liulongfang@huawei.com>
+To: <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+	<shameerali.kolothum.thodi@huawei.com>, <jonathan.cameron@huawei.com>
+CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linuxarm@openeuler.org>, <liulongfang@huawei.com>
+Subject: [PATCH v5 0/5] add debugfs to hisilicon migration driver
+Date: Wed, 24 Apr 2024 16:57:16 +0800
+Message-ID: <20240424085721.12760-1-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.24.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] media: venus: fix use after free in vdec_close
-Content-Language: en-US
-To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <1713943070-24085-1-git-send-email-quic_dikshita@quicinc.com>
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <1713943070-24085-1-git-send-email-quic_dikshita@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600005.china.huawei.com (7.193.23.191)
 
-On 24/04/2024 08:17, Dikshita Agarwal wrote:
-> There appears to be a possible use after free with vdec_close().
-> The firmware will add buffer release work to the work queue through
-> HFI callbacks as a normal part of decoding. Randomly closing the
-> decoder device from userspace during normal decoding can incur
-> a read after free for inst.
-> 
-> Fix it by cancelling the work in vdec_close.
-> 
-> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
-> ---
->   drivers/media/platform/qcom/venus/vdec.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-> index 29130a9..56f8a25 100644
-> --- a/drivers/media/platform/qcom/venus/vdec.c
-> +++ b/drivers/media/platform/qcom/venus/vdec.c
-> @@ -1747,6 +1747,7 @@ static int vdec_close(struct file *file)
->   
->   	vdec_pm_get(inst);
->   
-> +	cancel_work_sync(&inst->delayed_process_work);
->   	v4l2_m2m_ctx_release(inst->m2m_ctx);
->   	v4l2_m2m_release(inst->m2m_dev);
->   	vdec_ctrl_deinit(inst);
+Add a debugfs function to the hisilicon migration driver in VFIO to
+provide intermediate state values and data during device migration.
 
-Needs a Fixes tag
+When the execution of live migration fails, the user can view the
+status and data during the migration process separately from the
+source and the destination, which is convenient for users to analyze
+and locate problems.
 
----
-bod
+Changes v4 -> v5
+	Adjust the debugfs file directory
+
+Changes v3 -> v4
+	Rebased on kernel6.9
+
+Changes v2 -> v3
+	Solve debugfs serialization problem.
+
+Changes v1 -> v2
+	Solve the racy problem of io_base.
+
+Longfang Liu (5):
+  hisi_acc_vfio_pci: extract public functions for container_of
+  hisi_acc_vfio_pci: modify the register location of the XQC address
+  hisi_acc_vfio_pci: create subfunction for data reading
+  hisi_acc_vfio_pci: register debugfs for hisilicon migration driver
+  Documentation: add debugfs description for hisi migration
+
+ .../ABI/testing/debugfs-hisi-migration        |  27 ++
+ MAINTAINERS                                   |   1 +
+ .../vfio/pci/hisilicon/hisi_acc_vfio_pci.c    | 302 ++++++++++++++++--
+ .../vfio/pci/hisilicon/hisi_acc_vfio_pci.h    |  10 +
+ 4 files changed, 308 insertions(+), 32 deletions(-)
+ create mode 100644 Documentation/ABI/testing/debugfs-hisi-migration
+
+-- 
+2.24.0
+
 
