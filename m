@@ -1,175 +1,113 @@
-Return-Path: <linux-kernel+bounces-157376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63EF68B10CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:19:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32B978B10C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:19:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96AEAB296B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:19:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3F8B286BC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC29B16D4CE;
-	Wed, 24 Apr 2024 17:19:05 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A1C16D9A1;
+	Wed, 24 Apr 2024 17:19:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PsCtRx8a"
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB228161326;
-	Wed, 24 Apr 2024 17:19:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8FB16D4CC
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:19:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713979145; cv=none; b=B6JRQdCs4N0/nGCe2Hl5Qjrg4gEda73B2cqzp5OeFYQO444Y9AYh+cMQ4q4+adzJoXxzIU49vu7oMoJfZh7qKPbvC/kyzYcGi6rN3/6rcNNmCGtnddBpRc90Ioy53Mf1qzCgO4qcRTD02keQnJQJxQ4z+KJqNu1fBTuQr9ftcgA=
+	t=1713979147; cv=none; b=m2bhCDab6smsq+XJEkz3rU3lV4LeWilFVM61lD2zvnkpAT/FUhqy2Zx3WUq45CNgH7/6S7FHyJYGMEh6Sr3vMR6m/g66ekOq5darIMBy1p+QY5hAcFvPhgJdogxZalUo4Txnm65i1rTy0Zq0Qd6Du/JsyPAPuI7RTkPHs6ehL/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713979145; c=relaxed/simple;
-	bh=BCrtxFaK5T02MtCXr6aEAaVrhNkNdyl/HwxjkUTvu8I=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VfPP/GR0mZiQVAfd2ELPIf09pqMkC509LoOELJL4nekbMJP12n7rjHx6s5cHSmLrasdbdBoNsUr9FvqONxGqkbeZ5MzibVyqvE60OzSDuE0nVg8BIYNknZ9Agbg8cWAtt6MXlUTZOmsBBA33eWrS+cG2K00fspW1dpkSSLLfuOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VPlyX1jGBz6K65n;
-	Thu, 25 Apr 2024 01:16:36 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0E35E140A70;
-	Thu, 25 Apr 2024 01:18:59 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 24 Apr
- 2024 18:18:58 +0100
-Date: Wed, 24 Apr 2024 18:18:57 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Hanjun Guo <guohanjun@huawei.com>
-CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
-	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
-	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, "James Morse"
-	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
- Brucker <jean-philippe@linaro.org>, Catalin Marinas
-	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Ingo Molnar
-	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <linuxarm@huawei.com>, <justin.he@arm.com>,
-	<jianyong.wu@arm.com>
-Subject: Re: [PATCH v7 04/16] ACPI: processor: Move checks and availability
- of acpi_processor earlier
-Message-ID: <20240424181857.00000e0f@Huawei.com>
-In-Reply-To: <0cfc4e2d-65ab-0040-2c7d-fad83f32455b@huawei.com>
-References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
-	<20240418135412.14730-5-Jonathan.Cameron@huawei.com>
-	<0cfc4e2d-65ab-0040-2c7d-fad83f32455b@huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1713979147; c=relaxed/simple;
+	bh=fzUP5jXS3/ennNTINiF3XeycfhJxeMlYoYeWebVYLrE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r5a4fP3jJK9hCxixgif+EoRnH5TXVDP1vN8c2pWbJ4d+ABDVEFUU/u9GUKzMQdVZ9kTHOEw/8Sp51TuHytdIQsUH6+J8vzYBMQhdtsSH1V+fR+8Cb3jDQE+2hPK7pTW7rEynjLX5HakiOm4c3F2X3i7iCVNj9zlbfsGAqFKx/nY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PsCtRx8a; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 24 Apr 2024 10:18:57 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713979143;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MPnSCqBZNeTYi6Yq+K5T2lPK1pkupPn4Yzg+HFxV4RA=;
+	b=PsCtRx8aCSAoweOsm30ih69vNYVTRPodlMVcmiUBkctOGzu3pRGbw1sE5GGh7nsoNHVM5h
+	5QOF1Z7R8cBa1l8TH1edsuJdhO/kJb3MMCiOmD1nDIQZWbQLOr280pl0WKUUtvCtbe/b/D
+	kbfVKJFn8471rDFj+eFGUfHVrQqeYr8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Andrew Jones <ajones@ventanamicro.com>,
+	Markus Elfring <Markus.Elfring@web.de>,
+	Kunwu Chan <chentao@kylinos.cn>, linux-kselftest@vger.kernel.org,
+	kvm@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Kunwu Chan <kunwu.chan@hotmail.com>,
+	Anup Patel <anup@brainfault.org>, Thomas Huth <thuth@redhat.com>
+Subject: Re: [PATCH] KVM: selftests: Add 'malloc' failure check in
+ test_vmx_nested_state
+Message-ID: <Zik_Aat5JJtWk0AM@linux.dev>
+References: <20240423073952.2001989-1-chentao@kylinos.cn>
+ <878bf83c-cd5b-48d0-8b4e-77223f1806dc@web.de>
+ <ZifMAWn32tZBQHs0@google.com>
+ <20240423-0db9024011213dcffe815c5c@orel>
+ <ZigI48_cI7Twb9gD@google.com>
+ <20240424-e31c64bda7872b0be52e4c16@orel>
+ <ZikcgIhyRbz5APPZ@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZikcgIhyRbz5APPZ@google.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 23 Apr 2024 19:53:34 +0800
-Hanjun Guo <guohanjun@huawei.com> wrote:
+Hey,
 
-> > @@ -232,6 +263,7 @@ static int acpi_processor_get_info(struct acpi_device *device)
-> >   	acpi_status status = AE_OK;
-> >   	static int cpu0_initialized;
-> >   	unsigned long long value;
-> > +	int ret;
-> >   
-> >   	acpi_processor_errata();
-> >   
-> > @@ -316,10 +348,12 @@ static int acpi_processor_get_info(struct acpi_device *device)
-> >   	 *  because cpuid <-> apicid mapping is persistent now.
-> >   	 */
-> >   	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
-> > -		int ret = acpi_processor_hotadd_init(pr);
-> > +		ret = acpi_processor_hotadd_init(pr, device);
-> >   
-> >   		if (ret)
-> > -			return ret;
-> > +			goto err;
-> > +	} else {
-> > +		acpi_processor_set_per_cpu(pr, device);
-> >   	}
-> >   
-> >   	/*
-> > @@ -357,6 +391,10 @@ static int acpi_processor_get_info(struct acpi_device *device)
-> >   		arch_fix_phys_package_id(pr->id, value);
-> >   
-> >   	return 0;
-> > +
-> > +err:
-> > +	per_cpu(processors, pr->id) = NULL;  
+On Wed, Apr 24, 2024 at 07:51:44AM -0700, Sean Christopherson wrote:
+> On Wed, Apr 24, 2024, Andrew Jones wrote:
+> > On Tue, Apr 23, 2024 at 12:15:47PM -0700, Sean Christopherson wrote:
+> > ...
+> > > I almost wonder if we should just pick a prefix that's less obviously connected
+> > > to KVM and/or selftests, but unique and short.
+> > >
+> > 
+> > How about kvmsft_ ? It's based on the ksft_ prefix of kselftest.h. Maybe
+> > it's too close to ksft though and would be confusing when using both in
+> > the same test?
 > 
-> ...
-> 
-> > +	return ret;
-> >   }
-> >   
-> >   /*
-> > @@ -365,8 +403,6 @@ static int acpi_processor_get_info(struct acpi_device *device)
-> >    * (cpu_data(cpu)) values, like CPU feature flags, family, model, etc.
-> >    * Such things have to be put in and set up by the processor driver's .probe().
-> >    */
-> > -static DEFINE_PER_CPU(void *, processor_device_array);
-> > -
-> >   static int acpi_processor_add(struct acpi_device *device,
-> >   					const struct acpi_device_id *id)
-> >   {
-> > @@ -395,28 +431,6 @@ static int acpi_processor_add(struct acpi_device *device,
-> >   	if (result) /* Processor is not physically present or unavailable */
-> >   		return 0;
-> >   
-> > -	BUG_ON(pr->id >= nr_cpu_ids);
-> > -
-> > -	/*
-> > -	 * Buggy BIOS check.
-> > -	 * ACPI id of processors can be reported wrongly by the BIOS.
-> > -	 * Don't trust it blindly
-> > -	 */
-> > -	if (per_cpu(processor_device_array, pr->id) != NULL &&
-> > -	    per_cpu(processor_device_array, pr->id) != device) {
-> > -		dev_warn(&device->dev,
-> > -			"BIOS reported wrong ACPI id %d for the processor\n",
-> > -			pr->id);
-> > -		/* Give up, but do not abort the namespace scan. */
-> > -		goto err;
-> > -	}
-> > -	/*
-> > -	 * processor_device_array is not cleared on errors to allow buggy BIOS
-> > -	 * checks.
-> > -	 */
-> > -	per_cpu(processor_device_array, pr->id) = device;
-> > -	per_cpu(processors, pr->id) = pr;  
-> 
-> Nit: seems we need to remove the duplicated
-> per_cpu(processors, pr->id) = NULL; in acpi_processor_add():
-> 
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -446,7 +446,6 @@ static int acpi_processor_add(struct acpi_device 
-> *device,
->    err:
->          free_cpumask_var(pr->throttling.shared_cpu_map);
->          device->driver_data = NULL;
-> -       per_cpu(processors, pr->id) = NULL;
+> I would prefer something short, and for whatever reason I have a mental block
+> with ksft.  I always read it as "k soft", which is completely nonsensical :-)
 
-I don't follow.  This path is used if processor_get_info() succeeded and
-we later fail.  I don't see where the the duplication is?
+I despise brevity in tests, so my strong preference is to use some form
+of 'namespaced' helper. Perhaps others have better memory than
+I do, but I'm quick to forget the selftests library and find the more
+verbose / obvious function names helpful for jogging my memory.
 
-
->    err_free_pr:
->          kfree(pr);
->          return result;
+> > I'm not a huge fan of capital letters, but we could also do something like
+> > MALLOC()/CALLOC().
 > 
-> Thanks
-> Hanjun
+> Hmm, I'm not usually a fan either, but that could actually work quite well in this
+> case.  It would be quite intuitive, easy to visually parse whereas tmalloc() vs
+> malloc() kinda looks like a typo, and would more clearly communicate that they're
+> macros.
 
+Ooo, don't leave me out on the bikeshedding! How about TEST_MALLOC() /
+TEST_CALLOC(). It is vaguely similar to TEST_ASSERT(), which I'd hope
+would give the impression that an assertion is lurking below.
+
+-- 
+Thanks,
+Oliver
 
