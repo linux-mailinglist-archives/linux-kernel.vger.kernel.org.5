@@ -1,494 +1,246 @@
-Return-Path: <linux-kernel+bounces-156930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 651CF8B0A7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:09:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A74A98B0A7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:10:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16EA7285D9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:09:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FEDCB22A96
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE7F015CD70;
-	Wed, 24 Apr 2024 13:09:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545FB15B568;
+	Wed, 24 Apr 2024 13:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="PfwkiYxM"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Bz4lgrSz"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2089.outbound.protection.outlook.com [40.107.20.89])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8996C15B979;
-	Wed, 24 Apr 2024 13:09:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713964172; cv=none; b=GT49zkVYa8QkdozSWcb8V/t+17Rqlct6Ec7NlxdcO81Dl8W/0C/K7OPIj79LG4Zh3Tpw46EOD1/NaMTvKxO4JewUViZQFAlzU+IOKa2nzCbTOvWuCvnnEDqNzn4q4M9dgEVj3eV76NzTffPyp/PzKR/h43FXDaOMZ+GFaF+FIyU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713964172; c=relaxed/simple;
-	bh=uE51YH6dRXxY9l4fyN6VGMRBtASFCkYj7MnLTYZhOvk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SFsVnWerPx5sAh/pG/bn0euIirMGa5SelyTdLGevoPBgJ6TNu6fWUiqi68OEqBAoyON1b+HlbLIVV76bRZIfaOKpznAkZesWaZx2P7AnkrWnErl5tyshaC5jkZXyMsHJNA6leTT66riOUo6JNWTBKUFAjQsNpGsMOHoklzzmXwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=PfwkiYxM; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5D05CB1;
-	Wed, 24 Apr 2024 15:08:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1713964117;
-	bh=uE51YH6dRXxY9l4fyN6VGMRBtASFCkYj7MnLTYZhOvk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PfwkiYxMIwhzvNTZqPb0X9oIF2U/rkVYuEIQemw1NJrd6Fgmv4iET6cBNw4KchFyd
-	 /DmDB8qL2rIUSwHLsoX6S7b9PkBpWxzNErlx5+oeBJFVzMiJvlsNbNJHe4LI8bNERA
-	 PrV4zHb4WdxCcuULsSS4qsdHoQzbSmuDAkjWiEaw=
-Date: Wed, 24 Apr 2024 16:09:22 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Umang Jain <umang.jain@ideasonboard.com>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 09/10] media: subdev: Support single-stream case in
- v4l2_subdev_enable/disable_streams()
-Message-ID: <20240424130922.GG18608@pendragon.ideasonboard.com>
-References: <20240416-enable-streams-impro-v5-0-bd5fcea49388@ideasonboard.com>
- <20240416-enable-streams-impro-v5-9-bd5fcea49388@ideasonboard.com>
- <20240419153603.GE12651@pendragon.ideasonboard.com>
- <7ed5e8cf-2bcc-4d4c-a1dc-17592b5909c0@ideasonboard.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 730F515B150;
+	Wed, 24 Apr 2024 13:09:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.89
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713964196; cv=fail; b=gIL7+iC/5Cb3Nc0KyQ/S1pouZWKH5TwX29hJWODHjBC8Ujeg9veHKWPNe5jJ5sbuPU46jKTQulwbq7yUijEBWjk+a8zxRO770g63cb9cTZ/9ax/zFgn9DPlJlT87Hv2XURnl2AI1FwS0UbuqMe0n+iNrE+5QZVNqw9t76qwyvlM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713964196; c=relaxed/simple;
+	bh=moFU5yypEgTBW3ReUkXTrRXfoabEgxpyjKkToeNmEN0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=CxVPHKKgdZfp0D+/k67tqGrH7sYoHc5QGqvxIjzNWLk+oF9B8F82sdmf++2cDeI+sixOBwTxFTnsfl2Wu8obQ2AubURo/tPlR6iKA6fIURN4CWWhv/ZstaPDQu4B4t4r0ieu7ZKTUQJY+cIqVgHVAdr4pZao/WlFM07nPIsKI9s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=Bz4lgrSz; arc=fail smtp.client-ip=40.107.20.89
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j3ZcDbSRqJsELm2ACoBYU/CgoB5DWpGlwDm8OcvLWVtXxKKND3whby9fJJ0ucRL0VE78+SdJ0KLANXUn2xeGvawOmjlw82BTfxoJGWg6Zj/5zQ+IS677jZKxQqSbEdG7ppGTwVoWecUnq5oDgGek3htiJAyCsTHpiKDmmKE+6T1nGWkhu3CXURttWWOH44ru2kfUma/mwG2q1OvGyT32z8NxhNiFOt2vSt0S2HPGiJFWOlpkcuGZYEWMZcSxmPFNzRFO44G4uyQMAMbv9B6Faxpxi0b08U168Ku34doExC7Cb/i/rqxyjGDDcT0SpWt4nDs0Fe4Q4dusYZZjlwWwyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LxEku2hewmWYMR6SCNUfzVBWwfRzrKIgFkq3/X1Knqw=;
+ b=X/RzSbkcZpRCL/f0n37rwzdQwf3lm5J9HP08tulSV2aKbVbfqFRYdNK4aO+5jIQI3p9W/0avRbAEOWVGR0A/SmIsnmk6vjvViG+pjFf7lRehWU35dPgKXC0mmSU/W+EVW1xvAGYXNLcO/qhb2cpKIVmmbcHVp7sAOv853Cs0gPqJMqMrsa2i9+Nnbo18LsLFFuFizO9ZD0inuUdIS9j9apN4ihtRSvuJOkksXvZuIe1U+ca8e0u/TCMKVkkCyCLMf+Bo1r0JQ9hN+KuKm49fW0e9ANL6ZZ4PM275PPvSEg0bp2h8IBgjwMz+J0PbijBksphFCo8cjFiorCkKrR2qWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LxEku2hewmWYMR6SCNUfzVBWwfRzrKIgFkq3/X1Knqw=;
+ b=Bz4lgrSzk2Q+lyQhAMM+GqASaiZr4Hj/319PN1J7Cl+X1aFux4uUpryHWxeSW/3G0w5RDwl7hOLh+3qsS/TF9/BIOt5ZcNDwOVHhJt5gcui3/HLRlKqjhHUWfwxXlTwwZFGEkpheIymDwq0RaX0Ua0CsHzfO/L02alUqjEvJ1wY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AM8PR04MB7297.eurprd04.prod.outlook.com (2603:10a6:20b:1c5::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Wed, 24 Apr
+ 2024 13:09:51 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7472.044; Wed, 24 Apr 2024
+ 13:09:51 +0000
+Date: Wed, 24 Apr 2024 09:09:43 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Joy Zou <joy.zou@nxp.com>
+Cc: peng.fan@nxp.com, vkoul@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+	conor+dt@kernel.org, imx@lists.linux.dev, dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] dmaengine: fsl-edma: clean up unused
+ "fsl,imx8qm-adma" compatible string
+Message-ID: <ZikEl8Banvu9AyW6@lizhi-Precision-Tower-5810>
+References: <20240424064508.1886764-1-joy.zou@nxp.com>
+ <20240424064508.1886764-2-joy.zou@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240424064508.1886764-2-joy.zou@nxp.com>
+X-ClientProxiedBy: BYAPR02CA0036.namprd02.prod.outlook.com
+ (2603:10b6:a02:ee::49) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <7ed5e8cf-2bcc-4d4c-a1dc-17592b5909c0@ideasonboard.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AM8PR04MB7297:EE_
+X-MS-Office365-Filtering-Correlation-Id: f8b3283c-fced-45a1-c91e-08dc645fd333
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?1MeQDJPSny50P66x7vJWfF1MeXBQjbLsCKhXI7RytB3LPm6f02GmXTHTAsVy?=
+ =?us-ascii?Q?xI4mobANlNlqfOK54fqSGOohUwXpJ9Yh8/sy9hZs5FkCd1GPgmQJ5FLg9wb8?=
+ =?us-ascii?Q?WTyUFAc7e4paheDgf5B8fF+dRhdUg+XCIJ0T1uRJIxMJ4P+hfP6JfrSMBRKJ?=
+ =?us-ascii?Q?rL1Lh3GLmZ4dUkmDspsAOYxnIfkvS53XfbzbGpahrAmSO6UvwaW00N9/GOcB?=
+ =?us-ascii?Q?yeIorWmPZLmrkalGWuHRRUhHsVvU+2F8hxJ6vsPR7AFBN/H0ickFgO3FTO5S?=
+ =?us-ascii?Q?9jvm0BSHJ9CZlE/LqvJCVjhmovBcc8/v9WWU1uptDIaSNJRwqS4qqGuwRRu6?=
+ =?us-ascii?Q?A7jaggNjv+UkOFJ39kcDPwo9BLBwACBzmIy7p4H9m89HODD7fGRiC++zIJt/?=
+ =?us-ascii?Q?PxnVtgcBhX5Ll02N6WzJvV/g8rOtQb0OHtN7KfgONj1G5NcuHajoAEWAMw/s?=
+ =?us-ascii?Q?A7OoSKBB5wpoUPKz+SkBqCghzo6d1/SMqe4MXloyAiQ2+EgodRxto/rcf8CZ?=
+ =?us-ascii?Q?IQt62yZiehIGDa8UmraHMuyF5LzWQHPah4RLNJw/UsslL5e3eYdyfeOYJwxI?=
+ =?us-ascii?Q?uSzzF+u78soZzNRJEayZVCp+pcC3opkdekfjd2PE5JDcFUJg8MIZl5XZkQeA?=
+ =?us-ascii?Q?j13fYu/lPFkRXkiKDq+O8O4DxEyDzvnlHvRnNNYd/2EOVaCp/9tyKKmeYJ6f?=
+ =?us-ascii?Q?MyG987K7p3v/mR1Ty5HW53gADyAxr11bjXsUfAMiGK9jPVk8IkjhEQRf1DK7?=
+ =?us-ascii?Q?RH8KgOSokzpx/7fNp++6GEttbcbkfbLSQ5bLLOlut4m0JBCkd798BLRtFBuR?=
+ =?us-ascii?Q?nJol8IBPbsHydyFgimSJL9dEOIDmtqZOjV/gjWwS41lgFOWEIghvfmTfyHF8?=
+ =?us-ascii?Q?b8wmJ9slmzEMoAaG8sTKPcRX2j5wFP4LkS/+f1tJogdwatQGtvy9GQ2YUmCz?=
+ =?us-ascii?Q?b0TnDaDC77ursJPkKXHJpA9whhbkl0h3tU+V7oWxdtYLF6ocGRg+V2WlRMj2?=
+ =?us-ascii?Q?CwgsGVf9bl6PUbo9x9oMivm3GpJO+EwbqxMS/5a8wlyofyEDarV3ijW+fVga?=
+ =?us-ascii?Q?PXopvOiDeG0ePBvOd4+P8wZHd/+w5FuraOd1hGCPgpXKhR+A128oGHPE77H6?=
+ =?us-ascii?Q?hmZp0zETuifJ64KXIdiXmUSat25+Z4Cy+LDVRKkwTouajel7ZM7G10loKZKE?=
+ =?us-ascii?Q?uwLaqFvcv3ne2md46Bzmi/W2mNGMST3h7ZDS9fENZxjBfCx/w5YfDZEye/cK?=
+ =?us-ascii?Q?f5YX1PEKnMOPIDxI49gg3iMy2pHH+ta1bDtMmha5/2cmdGeuNb62yohh9N5F?=
+ =?us-ascii?Q?yf+FeFdgyHo6x7LiXMw6jjo0XrWgUZZXA+0EzFlsEKkmwQ=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(52116005)(1800799015)(376005)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?wItPSPCguoshyNhoubtJyeFAFraKJJ3OtIhZZ3K21/lPEdqLL/9ksEjzisKh?=
+ =?us-ascii?Q?hPOeKBKgiOlO9l+Ia7EJW9irIGkOOpNIlLOoDGLShAY/7DCZIoSkURUaC+h0?=
+ =?us-ascii?Q?kZR0YNAjyPPDl87MrsPhluYtkzhCJ6gnRgXoRDaLXwZgU9xRYsIRsGilp7tv?=
+ =?us-ascii?Q?2aECc585YLXV23J+iQgpjC/6UqWvDMBHQ0mx3X1LLjrpoosbbABahHxyC3kY?=
+ =?us-ascii?Q?pOTSucGXj1D9NQQpqk1Hdsoe6y7lFgJ3o/dtMwMQOo+ldc+rcWKLysyJ02GI?=
+ =?us-ascii?Q?lrQEptOzYzA+e+XJCEKN1xu27zl0i4usC9tBTjhg8p2zB5WN8jDcipEYDJIc?=
+ =?us-ascii?Q?yIt2hOEAyiB90t9HRlBATWhLX9umpyA0pw7kN1ze2+7+aNiLlhzLoxwRet91?=
+ =?us-ascii?Q?HQG7ao7CmR5G5uAHXWuG3qS4msxXaA8CNYlYsgm5i3GtApCt977BfM6W67LU?=
+ =?us-ascii?Q?H7+f6WA+8QzHwqsGj2IjNzcoxYFTbJfd9n0pwk413ahPax1DjcoEhoBPTM06?=
+ =?us-ascii?Q?T9qnYhWTCl+XeuDauo/gtseoWJI/befppyx4E2pD4XlA9BnGaYcPPP+H+hGl?=
+ =?us-ascii?Q?D+1g3rdSRs2bzk5SfjeP9A0+P+k+nlAyyxeydejxiSLXWcFmB5oYX34JrQjb?=
+ =?us-ascii?Q?I+6KslA0rZlXWECIw3m3dxaQfa5sLP66NQQd+ZIyq56mKDEYQ1BmwrrJcryd?=
+ =?us-ascii?Q?ZnOrtTUxeyi1TOk8p1AdjrWRWqvX9E1pMgUfa/6u+2gsWav5iBRu582ofhc0?=
+ =?us-ascii?Q?drV/b/wpSGBxrCfP2yp0m3CCLFYYRh8rWoKtc75if6I54s+BoSafnNSGCkDw?=
+ =?us-ascii?Q?Kc5a2HzgK26+ppTdA1o7Yy1vakPoWZq04Fd7FmRExT2M9zpW5TEPaxZpQncu?=
+ =?us-ascii?Q?92JNnorDl5MCIO5HCnB3jKh23kz7o8QbKPTnFltr/qb4yOscBlP0gtH5guSi?=
+ =?us-ascii?Q?z2pFBV/yb1mdgbTGTiOlpGzg9dGDOqvMPa8PF35k0H5vY+5QlBIrEbOfz3zt?=
+ =?us-ascii?Q?CTuXzcTW5lOY94uBSUhOT0KWVbMSaqpNXgJW0Iz0kRDNohWrnva1REM02q3h?=
+ =?us-ascii?Q?dBHcVNaAtpstQq5UgRSO6hgfiAiGlWAs3NepynhlB9/Uyll5gqi4d4CqY+av?=
+ =?us-ascii?Q?NarfBwJ6DX3Fm1OlmwFMGyW4Tc7WDMEf17P/3RrT89dySQiWAJnRY7wzWCXb?=
+ =?us-ascii?Q?yGhZzfTu/6fzOd8noEaiQZIUTCsOR7B+Xhc0G9Vx64I57/uOvI+dnqfH71Ox?=
+ =?us-ascii?Q?MZ8fmSgKCNuf/dpOo/eg01d1R50JJeB3Kov2JkS/wNNvha2Ep37GD7TTrCDq?=
+ =?us-ascii?Q?uHA7Gd+EMGXoy+FlhBcypN940NW8s7rJP8Ww/zWVJFjqF+QY9c/y8DMIzYFj?=
+ =?us-ascii?Q?zhgZcbrOUVRc07VX9yOiD5LWpURzMaziYEwi2JHiTvPPyd37qY79mW+zUHwz?=
+ =?us-ascii?Q?7X5Ukn9vCtVKo3fwRi39rzjyVyL3Ltpt/b23fS3iC4N4waObjyEkYnmrOZuS?=
+ =?us-ascii?Q?IRp1aHsNPf2KB3b4fXP0Pw01Iz3u+Erv8VHjDlKHpd79waWpW8HDxGSmSGKl?=
+ =?us-ascii?Q?PPA2xUoBq4jhFsFe+44=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8b3283c-fced-45a1-c91e-08dc645fd333
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 13:09:50.9295
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dDej25MftCkfmWdNypyH9OxLYi5HeWxgDH+XN4Hy21P5i1WPuhRwlF18ZXeq9SJ6QREgSENCOGnryleCO9r0fw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7297
 
-On Wed, Apr 24, 2024 at 04:05:31PM +0300, Tomi Valkeinen wrote:
-> On 19/04/2024 18:36, Laurent Pinchart wrote:
-> > On Tue, Apr 16, 2024 at 04:55:12PM +0300, Tomi Valkeinen wrote:
-> >> At the moment the v4l2_subdev_enable/disable_streams() functions call
-> >> fallback helpers to handle the case where the subdev only implements
-> >> .s_stream(), and the main function handles the case where the subdev
-> >> implements streams (V4L2_SUBDEV_FL_STREAMS, which implies
-> >> .enable/disable_streams()).
-> >>
-> >> What is missing is support for subdevs which do not implement streams
-> >> support, but do implement .enable/disable_streams(). Example cases of
-> >> these subdevices are single-stream cameras, where using
-> >> .enable/disable_streams() is not required but helps us remove the users
-> >> of the legacy .s_stream(), and subdevices with multiple source pads (but
-> >> single stream per pad), where .enable/disable_streams() allows the
-> >> subdevice to control the enable/disable state per pad.
-> >>
-> >> The two single-streams cases (.s_stream() and .enable/disable_streams())
-> >> are very similar, and with small changes we can change the
-> >> v4l2_subdev_enable/disable_streams() functions to support all three
-> >> cases, without needing separate fallback functions.
-> >>
-> >> A few potentially problematic details, though:
-> >>
-> >> - For the single-streams cases we use sd->enabled_pads field, which
-> >>    limits the number of pads for the subdevice to 64. For simplicity I
-> >>    added the check for this limitation to the beginning of the function,
-> >>    and it also applies to the streams case.
-> >>
-> >> - The fallback functions only allowed the target pad to be a source pad.
-> >>    It is not very clear to me why this check was needed, but it was not
-> >>    needed in the streams case. However, I doubt the
-> >>    v4l2_subdev_enable/disable_streams() code has ever been tested with
-> >>    sink pads, so to be on the safe side, I added the same check
-> >>    to the v4l2_subdev_enable/disable_streams() functions.
-> >>
-> > 
-> > Now that v4l2_subdev_enable_streams() is usable by (almost) every
-> > driver, should we update documentation to indicate that manual calls to
-> > .s_stream() should be avoided ?
+On Wed, Apr 24, 2024 at 02:45:07PM +0800, Joy Zou wrote:
+> The eDMA hardware issue only exist imx8QM A0. A0 never mass production.
+> So remove the workaround safely.
 > 
-> How about:
-> 
-> diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-> index dabe1b5dfe4a..f52bb790773c 100644
-> --- a/include/media/v4l2-subdev.h
-> +++ b/include/media/v4l2-subdev.h
-> @@ -450,6 +450,11 @@ enum v4l2_subdev_pre_streamon_flags {
->   *     already started or stopped subdev. Also see call_s_stream wrapper in
->   *     v4l2-subdev.c.
->   *
-> + *     New drivers should instead implement &v4l2_subdev_pad_ops.enable_streams
-> + *     and &v4l2_subdev_pad_ops.disable_streams operations, and use
-> + *     v4l2_subdev_s_stream_helper for the &v4l2_subdev_video_ops.s_stream
-> + *     operation to support legacy users.A
-> + *
+> Signed-off-by: Joy Zou <joy.zou@nxp.com>
 
-Add
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
 
- *	Drivers should also not call the .s_stream() subdev operation directly,
- *	but use the v4l2_subdev_enable_streams() and
- *	v4l2_subdev_disable_streams() helpers.
-
->   * @g_pixelaspect: callback to return the pixelaspect ratio.
->   *
->   * @s_dv_timings: Set custom dv timings in the sub device. This is used
+> ---
+> Changes for v5:
+> 1.remove FSL_EDMA_DRV_QUIRK_SWAPPED in fsl-edma-common.h
 > 
+> Changes for v4:
+> 1.change the subject to keep consistent with the patchset.
 > 
-> Although now that I think about it, can we "ever" get rid of s_stream? 
-> enable_streams is only usable if the subdev has pads.
-
-Do we have pad-less subdevs that can stream ?
-
-> If that's the 
-> case, the text above should probably clarify when one should continue 
-> using s_stream.
+> Changes for v2:
+> 1. Change the subject.
+> ---
+>  drivers/dma/fsl-edma-common.c | 16 ++++------------
+>  drivers/dma/fsl-edma-common.h |  2 --
+>  drivers/dma/fsl-edma-main.c   |  8 --------
+>  3 files changed, 4 insertions(+), 22 deletions(-)
 > 
-> >> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> >> ---
-> >>   drivers/media/v4l2-core/v4l2-subdev.c | 187 ++++++++++++++--------------------
-> >>   1 file changed, 79 insertions(+), 108 deletions(-)
-> >>
-> >> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> >> index e45fd42da1e3..10406acfb9d0 100644
-> >> --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> >> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> >> @@ -2106,6 +2106,13 @@ static void v4l2_subdev_collect_streams(struct v4l2_subdev *sd,
-> >>   					u64 *found_streams,
-> >>   					u64 *enabled_streams)
-> >>   {
-> >> +	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS)) {
-> >> +		*found_streams = BIT_ULL(0);
-> >> +		*enabled_streams =
-> >> +			(sd->enabled_pads & BIT_ULL(pad)) ? BIT_ULL(0) : 0;
-> >> +		return;
-> >> +	}
-> >> +
-> >>   	*found_streams = 0;
-> >>   	*enabled_streams = 0;
-> >>   
-> >> @@ -2127,6 +2134,14 @@ static void v4l2_subdev_set_streams_enabled(struct v4l2_subdev *sd,
-> >>   					    u32 pad, u64 streams_mask,
-> >>   					    bool enabled)
-> >>   {
-> >> +	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS)) {
-> >> +		if (enabled)
-> >> +			sd->enabled_pads |= BIT_ULL(pad);
-> >> +		else
-> >> +			sd->enabled_pads &= ~BIT_ULL(pad);
-> >> +		return;
-> >> +	}
-> >> +
-> >>   	for (unsigned int i = 0; i < state->stream_configs.num_configs; ++i) {
-> >>   		struct v4l2_subdev_stream_config *cfg =
-> >>   			&state->stream_configs.configs[i];
-> >> @@ -2136,51 +2151,6 @@ static void v4l2_subdev_set_streams_enabled(struct v4l2_subdev *sd,
-> >>   	}
-> >>   }
-> >>   
-> >> -static int v4l2_subdev_enable_streams_fallback(struct v4l2_subdev *sd, u32 pad,
-> >> -					       u64 streams_mask)
-> >> -{
-> >> -	struct device *dev = sd->entity.graph_obj.mdev->dev;
-> >> -	int ret;
-> >> -
-> >> -	/*
-> >> -	 * The subdev doesn't implement pad-based stream enable, fall back
-> >> -	 * to the .s_stream() operation.
-> >> -	 */
-> >> -	if (!(sd->entity.pads[pad].flags & MEDIA_PAD_FL_SOURCE))
-> >> -		return -EOPNOTSUPP;
-> >> -
-> >> -	/*
-> >> -	 * .s_stream() means there is no streams support, so the only allowed
-> >> -	 * stream is the implicit stream 0.
-> >> -	 */
-> >> -	if (streams_mask != BIT_ULL(0))
-> >> -		return -EOPNOTSUPP;
-> >> -
-> >> -	/*
-> >> -	 * We use a 64-bit bitmask for tracking enabled pads, so only subdevices
-> >> -	 * with 64 pads or less can be supported.
-> >> -	 */
-> >> -	if (pad >= sizeof(sd->enabled_pads) * BITS_PER_BYTE)
-> >> -		return -EOPNOTSUPP;
-> >> -
-> >> -	if (sd->enabled_pads & BIT_ULL(pad)) {
-> >> -		dev_dbg(dev, "pad %u already enabled on %s\n",
-> >> -			pad, sd->entity.name);
-> >> -		return -EALREADY;
-> >> -	}
-> >> -
-> >> -	/* Start streaming when the first pad is enabled. */
-> >> -	if (!sd->enabled_pads) {
-> >> -		ret = v4l2_subdev_call(sd, video, s_stream, 1);
-> >> -		if (ret)
-> >> -			return ret;
-> >> -	}
-> >> -
-> >> -	sd->enabled_pads |= BIT_ULL(pad);
-> >> -
-> >> -	return 0;
-> >> -}
-> >> -
-> >>   int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
-> >>   			       u64 streams_mask)
-> >>   {
-> >> @@ -2189,21 +2159,33 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
-> >>   	bool already_streaming;
-> >>   	u64 enabled_streams;
-> >>   	u64 found_streams;
-> >> +	bool use_s_stream;
-> >>   	int ret;
-> >>   
-> >>   	/* A few basic sanity checks first. */
-> >>   	if (pad >= sd->entity.num_pads)
-> >>   		return -EINVAL;
-> >>   
-> >> +	if (!(sd->entity.pads[pad].flags & MEDIA_PAD_FL_SOURCE))
-> >> +		return -EOPNOTSUPP;
-> >> +
-> >> +	/*
-> >> +	 * We use a 64-bit bitmask for tracking enabled pads, so only subdevices
-> >> +	 * with 64 pads or less can be supported.
-> >> +	 */
-> >> +	if (pad >= sizeof(sd->enabled_pads) * BITS_PER_BYTE)
-> >> +		return -EOPNOTSUPP;
-> >> +
-> >>   	if (!streams_mask)
-> >>   		return 0;
-> >>   
-> >>   	/* Fallback on .s_stream() if .enable_streams() isn't available. */
-> >> -	if (!v4l2_subdev_has_op(sd, pad, enable_streams))
-> >> -		return v4l2_subdev_enable_streams_fallback(sd, pad,
-> >> -							   streams_mask);
-> >> +	use_s_stream = !v4l2_subdev_has_op(sd, pad, enable_streams);
-> >>   
-> >> -	state = v4l2_subdev_lock_and_get_active_state(sd);
-> >> +	if (!use_s_stream)
-> >> +		state = v4l2_subdev_lock_and_get_active_state(sd);
-> >> +	else
-> >> +		state = NULL;
-> >>   
-> >>   	/*
-> >>   	 * Verify that the requested streams exist and that they are not
-> >> @@ -2231,9 +2213,18 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
-> >>   
-> >>   	already_streaming = v4l2_subdev_is_streaming(sd);
-> >>   
-> >> -	/* Call the .enable_streams() operation. */
-> >> -	ret = v4l2_subdev_call(sd, pad, enable_streams, state, pad,
-> >> -			       streams_mask);
-> >> +	if (!use_s_stream) {
-> >> +		/* Call the .enable_streams() operation. */
-> >> +		ret = v4l2_subdev_call(sd, pad, enable_streams, state, pad,
-> >> +				       streams_mask);
-> >> +	} else {
-> >> +		/* Start streaming when the first pad is enabled. */
-> >> +		if (!already_streaming)
-> >> +			ret = v4l2_subdev_call(sd, video, s_stream, 1);
-> >> +		else
-> >> +			ret = 0;
-> >> +	}
-> >> +
-> >>   	if (ret) {
-> >>   		dev_dbg(dev, "enable streams %u:%#llx failed: %d\n", pad,
-> >>   			streams_mask, ret);
-> >> @@ -2243,34 +2234,32 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
-> >>   	/* Mark the streams as enabled. */
-> >>   	v4l2_subdev_set_streams_enabled(sd, state, pad, streams_mask, true);
-> > 
-> > state gets set to a non-null value above if the subdev has an
-> > enable_streams operation, while in v4l2_subdev_set_streams_enabled(),
+> diff --git a/drivers/dma/fsl-edma-common.c b/drivers/dma/fsl-edma-common.c
+> index f9144b015439..ed93e01282d5 100644
+> --- a/drivers/dma/fsl-edma-common.c
+> +++ b/drivers/dma/fsl-edma-common.c
+> @@ -75,18 +75,10 @@ static void fsl_edma3_enable_request(struct fsl_edma_chan *fsl_chan)
+>  
+>  	flags = fsl_edma_drvflags(fsl_chan);
+>  	val = edma_readl_chreg(fsl_chan, ch_sbr);
+> -	/* Remote/local swapped wrongly on iMX8 QM Audio edma */
+> -	if (flags & FSL_EDMA_DRV_QUIRK_SWAPPED) {
+> -		if (!fsl_chan->is_rxchan)
+> -			val |= EDMA_V3_CH_SBR_RD;
+> -		else
+> -			val |= EDMA_V3_CH_SBR_WR;
+> -	} else {
+> -		if (fsl_chan->is_rxchan)
+> -			val |= EDMA_V3_CH_SBR_RD;
+> -		else
+> -			val |= EDMA_V3_CH_SBR_WR;
+> -	}
+> +	if (fsl_chan->is_rxchan)
+> +		val |= EDMA_V3_CH_SBR_RD;
+> +	else
+> +		val |= EDMA_V3_CH_SBR_WR;
+>  
+>  	if (fsl_chan->is_remote)
+>  		val &= ~(EDMA_V3_CH_SBR_RD | EDMA_V3_CH_SBR_WR);
+> diff --git a/drivers/dma/fsl-edma-common.h b/drivers/dma/fsl-edma-common.h
+> index 01157912bfd5..3f93ebb890b3 100644
+> --- a/drivers/dma/fsl-edma-common.h
+> +++ b/drivers/dma/fsl-edma-common.h
+> @@ -194,8 +194,6 @@ struct fsl_edma_desc {
+>  #define FSL_EDMA_DRV_HAS_PD		BIT(5)
+>  #define FSL_EDMA_DRV_HAS_CHCLK		BIT(6)
+>  #define FSL_EDMA_DRV_HAS_CHMUX		BIT(7)
+> -/* imx8 QM audio edma remote local swapped */
+> -#define FSL_EDMA_DRV_QUIRK_SWAPPED	BIT(8)
+>  /* control and status register is in tcd address space, edma3 reg layout */
+>  #define FSL_EDMA_DRV_SPLIT_REG		BIT(9)
+>  #define FSL_EDMA_DRV_BUS_8BYTE		BIT(10)
+> diff --git a/drivers/dma/fsl-edma-main.c b/drivers/dma/fsl-edma-main.c
+> index 755a3dc3b0a7..b06fa147d6ba 100644
+> --- a/drivers/dma/fsl-edma-main.c
+> +++ b/drivers/dma/fsl-edma-main.c
+> @@ -349,13 +349,6 @@ static struct fsl_edma_drvdata imx8qm_data = {
+>  	.setup_irq = fsl_edma3_irq_init,
+>  };
+>  
+> -static struct fsl_edma_drvdata imx8qm_audio_data = {
+> -	.flags = FSL_EDMA_DRV_QUIRK_SWAPPED | FSL_EDMA_DRV_HAS_PD | FSL_EDMA_DRV_EDMA3,
+> -	.chreg_space_sz = 0x10000,
+> -	.chreg_off = 0x10000,
+> -	.setup_irq = fsl_edma3_irq_init,
+> -};
+> -
+>  static struct fsl_edma_drvdata imx8ulp_data = {
+>  	.flags = FSL_EDMA_DRV_HAS_CHMUX | FSL_EDMA_DRV_HAS_CHCLK | FSL_EDMA_DRV_HAS_DMACLK |
+>  		 FSL_EDMA_DRV_EDMA3,
+> @@ -397,7 +390,6 @@ static const struct of_device_id fsl_edma_dt_ids[] = {
+>  	{ .compatible = "fsl,ls1028a-edma", .data = &ls1028a_data},
+>  	{ .compatible = "fsl,imx7ulp-edma", .data = &imx7ulp_data},
+>  	{ .compatible = "fsl,imx8qm-edma", .data = &imx8qm_data},
+> -	{ .compatible = "fsl,imx8qm-adma", .data = &imx8qm_audio_data},
+>  	{ .compatible = "fsl,imx8ulp-edma", .data = &imx8ulp_data},
+>  	{ .compatible = "fsl,imx93-edma3", .data = &imx93_data3},
+>  	{ .compatible = "fsl,imx93-edma4", .data = &imx93_data4},
+> -- 
+> 2.37.1
 > 
-> That's not quite true, v4l2_subdev_lock_and_get_active_state() returns 
-> NULL if there's no state. If the driver has .enable_streams but no 
-> subdev-state, we'll have NULL state. But is that a driver bug? Probably, 
-> although I'm not quite sure. Whereas V4L2_SUBDEV_FL_STREAMS without 
-> state is a driver bug.
-> 
-> > you use it if the V4L2_SUBDEV_FL_STREAMS flag is set. The second
-> > condition is a subset of the first one, so it should be safe now, but I
-> > wonder if we're at risk of crashes in the future when reworking the
-> > code. I'm probably worrying needlessly.
-> 
-> I agree that this is a bit messy. We have multiple different scenarios 
-> which we handle in the same functions, and it's somewhat unclear what 
-> op/state/flag combinations the drivers are allowed to have and what not.
-> 
-> I could add a !state check here, and then use sd->enabled_pads. But that 
-> doesn't feel correct, and I think it's just better to crash and then fix 
-> it if we end up there.
-> 
-> >>   
-> >> -	if (!already_streaming)
-> >> +	if (!use_s_stream && !already_streaming)
-> >>   		v4l2_subdev_enable_privacy_led(sd);
-> > 
-> > Once everybody switches to v4l2_subdev_enable_streams() (am I dreaming?)
-> > we should move LED handling from the .s_stream() wrapper to here for the
-> > fallback case too. How about a TODO comment ?
-> 
-> Let's get back to this after we figure out if s_stream can ever be removed.
-> 
-> >>   
-> >>   done:
-> >> -	v4l2_subdev_unlock_state(state);
-> >> +	if (!use_s_stream)
-> > 
-> > 	if (state)
-> > 
-> > would be better I think.
-> 
-> We get the state and state lock if (!use_s_stream), so I think it makes 
-> sense to use the same condition when unlocking to be symmetric. I'm sure 
-> I can be convinced to use if (state) too, though =).
-> 
->   Tomi
-> 
-> >> +		v4l2_subdev_unlock_state(state);
-> >>   
-> >>   	return ret;
-> >>   }
-> >>   EXPORT_SYMBOL_GPL(v4l2_subdev_enable_streams);
-> >>   
-> >> -static int v4l2_subdev_disable_streams_fallback(struct v4l2_subdev *sd, u32 pad,
-> >> -						u64 streams_mask)
-> >> +int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
-> >> +				u64 streams_mask)
-> >>   {
-> >>   	struct device *dev = sd->entity.graph_obj.mdev->dev;
-> >> +	struct v4l2_subdev_state *state;
-> >> +	u64 enabled_streams;
-> >> +	u64 found_streams;
-> >> +	bool use_s_stream;
-> >>   	int ret;
-> >>   
-> >> -	/*
-> >> -	 * If the subdev doesn't implement pad-based stream enable, fall back
-> >> -	 * to the .s_stream() operation.
-> >> -	 */
-> >> -	if (!(sd->entity.pads[pad].flags & MEDIA_PAD_FL_SOURCE))
-> >> -		return -EOPNOTSUPP;
-> >> +	/* A few basic sanity checks first. */
-> >> +	if (pad >= sd->entity.num_pads)
-> >> +		return -EINVAL;
-> >>   
-> >> -	/*
-> >> -	 * .s_stream() means there is no streams support, so the only allowed
-> >> -	 * stream is the implicit stream 0.
-> >> -	 */
-> >> -	if (streams_mask != BIT_ULL(0))
-> >> +	if (!(sd->entity.pads[pad].flags & MEDIA_PAD_FL_SOURCE))
-> >>   		return -EOPNOTSUPP;
-> >>   
-> >>   	/*
-> >> @@ -2280,46 +2269,16 @@ static int v4l2_subdev_disable_streams_fallback(struct v4l2_subdev *sd, u32 pad,
-> >>   	if (pad >= sizeof(sd->enabled_pads) * BITS_PER_BYTE)
-> >>   		return -EOPNOTSUPP;
-> >>   
-> >> -	if (!(sd->enabled_pads & BIT_ULL(pad))) {
-> >> -		dev_dbg(dev, "pad %u already disabled on %s\n",
-> >> -			pad, sd->entity.name);
-> >> -		return -EALREADY;
-> >> -	}
-> >> -
-> >> -	/* Stop streaming when the last streams are disabled. */
-> >> -	if (!(sd->enabled_pads & ~BIT_ULL(pad))) {
-> >> -		ret = v4l2_subdev_call(sd, video, s_stream, 0);
-> >> -		if (ret)
-> >> -			return ret;
-> >> -	}
-> >> -
-> >> -	sd->enabled_pads &= ~BIT_ULL(pad);
-> >> -
-> >> -	return 0;
-> >> -}
-> >> -
-> >> -int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
-> >> -				u64 streams_mask)
-> >> -{
-> >> -	struct device *dev = sd->entity.graph_obj.mdev->dev;
-> >> -	struct v4l2_subdev_state *state;
-> >> -	u64 enabled_streams;
-> >> -	u64 found_streams;
-> >> -	int ret;
-> >> -
-> >> -	/* A few basic sanity checks first. */
-> >> -	if (pad >= sd->entity.num_pads)
-> >> -		return -EINVAL;
-> >> -
-> >>   	if (!streams_mask)
-> >>   		return 0;
-> >>   
-> >>   	/* Fallback on .s_stream() if .disable_streams() isn't available. */
-> >> -	if (!v4l2_subdev_has_op(sd, pad, disable_streams))
-> >> -		return v4l2_subdev_disable_streams_fallback(sd, pad,
-> >> -							    streams_mask);
-> >> +	use_s_stream = !v4l2_subdev_has_op(sd, pad, disable_streams);
-> >>   
-> >> -	state = v4l2_subdev_lock_and_get_active_state(sd);
-> >> +	if (!use_s_stream)
-> >> +		state = v4l2_subdev_lock_and_get_active_state(sd);
-> >> +	else
-> >> +		state = NULL;
-> >>   
-> >>   	/*
-> >>   	 * Verify that the requested streams exist and that they are not
-> >> @@ -2345,9 +2304,19 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
-> >>   
-> >>   	dev_dbg(dev, "disable streams %u:%#llx\n", pad, streams_mask);
-> >>   
-> >> -	/* Call the .disable_streams() operation. */
-> >> -	ret = v4l2_subdev_call(sd, pad, disable_streams, state, pad,
-> >> -			       streams_mask);
-> >> +	if (!use_s_stream) {
-> >> +		/* Call the .disable_streams() operation. */
-> >> +		ret = v4l2_subdev_call(sd, pad, disable_streams, state, pad,
-> >> +				       streams_mask);
-> >> +	} else {
-> >> +		/* Stop streaming when the last streams are disabled. */
-> >> +
-> >> +		if (!(sd->enabled_pads & ~BIT_ULL(pad)))
-> >> +			ret = v4l2_subdev_call(sd, video, s_stream, 0);
-> >> +		else
-> >> +			ret = 0;
-> >> +	}
-> >> +
-> >>   	if (ret) {
-> >>   		dev_dbg(dev, "disable streams %u:%#llx failed: %d\n", pad,
-> >>   			streams_mask, ret);
-> >> @@ -2357,10 +2326,12 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
-> >>   	v4l2_subdev_set_streams_enabled(sd, state, pad, streams_mask, false);
-> >>   
-> >>   done:
-> >> -	if (!v4l2_subdev_is_streaming(sd))
-> >> -		v4l2_subdev_disable_privacy_led(sd);
-> >> +	if (!use_s_stream) {
-> >> +		if (!v4l2_subdev_is_streaming(sd))
-> >> +			v4l2_subdev_disable_privacy_led(sd);
-> > 
-> > Do we want to disable the privacy LED on failure in all cases, in
-> > particular when the .s_stream() or .disable_streams() operations are not
-> > even called ?
-> > 
-> > And now that I wrote that, I realize the !v4l2_subdev_is_streaming()
-> > condition will not be true if the operations failed, so it should be
-> > fine.
-> > 
-> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > 
-> >>   
-> >> -	v4l2_subdev_unlock_state(state);
-> >> +		v4l2_subdev_unlock_state(state);
-> >> +	}
-> >>   
-> >>   	return ret;
-> >>   }
-> >>
-> > 
-> 
-
--- 
-Regards,
-
-Laurent Pinchart
 
