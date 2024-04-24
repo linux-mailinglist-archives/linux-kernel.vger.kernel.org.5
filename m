@@ -1,359 +1,143 @@
-Return-Path: <linux-kernel+bounces-157082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBDFF8B0C9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:32:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DCD78B0CA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:34:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF6C6B242B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:32:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E682E1F22940
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:34:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67CEB15E809;
-	Wed, 24 Apr 2024 14:32:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="GenqAOoC"
-Received: from mail-4325.protonmail.ch (mail-4325.protonmail.ch [185.70.43.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E455515E810;
+	Wed, 24 Apr 2024 14:34:04 +0000 (UTC)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 811481E511;
-	Wed, 24 Apr 2024 14:32:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F08451E511;
+	Wed, 24 Apr 2024 14:34:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713969145; cv=none; b=RhTVb5kp3LxZTCWW5bYfEjT/LEsejdqNjpBvh6h3uviZsq76z7UyXMklTXAIwEaA19owp937TB3wEvMUovbeNfmoGqwgP2ejwVOs+t/LPLQs7KnT1Raz/TAb6x008QLzpYJL7QVWUI5GdQr8YV+uKdbRqzZQH3V9iTBnm8uJ1ow=
+	t=1713969244; cv=none; b=nwV2BG6UigyXdovXjpBrksAWydF5Rca6/Klxr1asQ+tCAsWi00N5iFt1ZXsUkTpZ+l2C2OWuc+BehuUeWOSmwR452sMLPZkWvUr6g3ht5HvrodqD8uWypz7DTu/eVmRNNdp2PF4e0Y42NU0ivr3SVm6UGhgsYVfRsQL/+EeGcaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713969145; c=relaxed/simple;
-	bh=OcXTtqLaYOxzjC/irdoJBlXwf4PVEJPy2lAV3KR7dys=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=G26HGL0dtnZti0DiHar26syEyeZjJ8DXxni5/lFoK8JnggVXBsqICETnWzQ4oT17U/mhLl90Zbzw+V28eFOVvBzfpB7PXraudXyLH7oE+RWHqBoxv14FDf7GXXV0K8aCIrkIYTyUGHgLq2x9hkpRrOafTnAKLSCR+8c1ikGtazI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=GenqAOoC; arc=none smtp.client-ip=185.70.43.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1713969135; x=1714228335;
-	bh=a90d4TBjcJascEIB8j4K3VPbbCBfHLdOQNkr92BO7lU=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=GenqAOoCTpOKGa3FEgK0rPfVlqnG6dl0FDxoYXGDJ3+gEceU8X229p8v6QGGHwz4W
-	 wKksJclsFqr8BXvnyXq59+6tNBFbBHvfdUTVH4o0jWRHfg9JLTY/j4tLPf6uPNiCy/
-	 jVI0+ZRXUGh51z+WwI5b63hzo9JdqpDtZ3i+wV1DLnZ2e0y6JIBAVYkGDNNLhVuxyT
-	 pe2qGCzxNIwvkfaJOTpoUDP1DXqiiqV5iRBop3QFDLJmk2UP4waW9AOxgcz9M/DUeo
-	 8Ji8I4rNPz9zMSrVnhxVDd9uBKc2K+F/BCCvrksE4XtOKu43eLcsH4gOtQ67I8bslp
-	 rNWVk28OQgboA==
-Date: Wed, 24 Apr 2024 14:32:10 +0000
-To: linux-kernel@vger.kernel.org
-From: Raymond Hackley <raymondhackley@protonmail.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Jakob Hauser <jahau@rocketmail.com>, Stephan Gerhold <stephan@gerhold.net>, Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Subject: [RESEND PATCH v3] arm64: dts: qcom: msm8916/39-samsung-a2015: Add PMIC and charger
-Message-ID: <20240424143158.24358-1-raymondhackley@protonmail.com>
-Feedback-ID: 49437091:user:proton
-X-Pm-Message-ID: c8244e3c633f411f6facc3e5d95595234df5a988
+	s=arc-20240116; t=1713969244; c=relaxed/simple;
+	bh=VqOGJjRg28bc7eBQoexT89Jdg/lKWSrrtVGPjKj+334=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rgHIr0OJ3hDF3d8A0NBtgp7tEUTNYLozjTJ5sShtm54iLUU5C0Oapc86RgBzRG3wZz9abo38uRJ1j/Vc0H9gVuw/P4YwBdC65rxTNk0ftpc0XFrI3P6xFjPNqiJ4z2p6VhixBsowezdEDjpeY3W5G7r/6o+LV14X2essWhAkgSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-de55e876597so1682748276.1;
+        Wed, 24 Apr 2024 07:34:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713969240; x=1714574040;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HSe7bhwwM2b2w33Jw4XNWuzshIif1+7J1tm/9bS2R8A=;
+        b=eVehSVkavLx1DlrnpXOgzLwO5zrCTLX+Csza9XIW40xYPPqInPIH6xJhgza4JeITH9
+         m9VOtLfVn3m4pKVBdHLs7Fe9J4G2RFjkgpNCRyaEkofXBFtq/MjDqqs1N28+h0B6AVJk
+         MUi9v2lRaRDGnkmpHaoXEWKOxk9mz28QCZOBKw6YM89DtTXc9lIk1+TIelqNRcJJ/10L
+         eYQuMzH1IXHycYFUGlTv2KVrkqkqHU3G5/kjgVOJuZiZ2TVCJe2tn+uXSB/10qsRsxdz
+         FSYVgc8NnVkDsAGqxp4jCWae6FdM3xCktU09UuIQ69WPKk4d3AtO07S9GlqdDwXtg6ZI
+         5EAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXSSogjsyP5FPpTxLOZPi4T+eCCUzmCBJZIbwtK8X9kNKV2wRGzGm+yumfmYW8h3gb56m5/4DnU3MFY0VSPc1tSa/k4G1q1my6VX56fwckzKmQN+0Pi5GU/tucJF1vbzF01mNhjMHYkjBvC3QVZGjRETA2v1E2FOlZdiGo1cVeCkKXJ7nOuzIBFoeMn1H30FUrCBcXub6H1Z035z9548pRSYw6BagTJ9dn46tz397e0z0AQuWkVzFduhXNEnQ/SqLw=
+X-Gm-Message-State: AOJu0Yx5j3piqto8wwrJE2fPbNOIKrEAP7FpC+JuwnzXTM7xbkoT5w04
+	CwhwJXabOfrIWy93a22JCGMv2U+zf+tUoSW3KsDbx+3XTzDSEcWIBw+XBoytVzk=
+X-Google-Smtp-Source: AGHT+IEObBbN5M++ErhYwaDrkgrr0IpwEqoFf02RUCQvvbFUU/DBvvZ+TLfcj71hUZyJ9zFgRlIkHg==
+X-Received: by 2002:a25:68c5:0:b0:de5:4a6d:96f9 with SMTP id d188-20020a2568c5000000b00de54a6d96f9mr2906664ybc.51.1713969240076;
+        Wed, 24 Apr 2024 07:34:00 -0700 (PDT)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id u15-20020a25840f000000b00de553cb23d7sm914886ybk.56.2024.04.24.07.33.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 07:33:59 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc236729a2bso6578423276.0;
+        Wed, 24 Apr 2024 07:33:58 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWEB1+6dFOXn+/CBMmFfly8h/txC59WuMhZoR7LmmfogXpajrg3VcnTSrUZjt7aukFBY2lXnNYSpy/c3vrZYTCHuqFPAP2tqF6Z2mZlvJnB41XTJLjY294S48ZBmNkWwi9U06LEFKoZ316B7ZB5kh0Ft3uWwO+KWJMnDQEmkWfySOKo2WYy01VaxtNQjBteigr+y7OEolDVNT9hiK8/Uxc9w88AHJocZMfKgFoXpTuB5d0K8zoTXHdfj9ZEyKEX3Ks=
+X-Received: by 2002:a25:b31b:0:b0:dcc:fea7:7f7b with SMTP id
+ l27-20020a25b31b000000b00dccfea77f7bmr2825103ybj.11.1713969238504; Wed, 24
+ Apr 2024 07:33:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240422105355.1622177-1-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240422105355.1622177-1-claudiu.beznea.uj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 24 Apr 2024 16:33:46 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXHhsdOgTiDdqMwAMvb-m_VBqOcTRPURx_upc2AtmBTfA@mail.gmail.com>
+Message-ID: <CAMuHMdXHhsdOgTiDdqMwAMvb-m_VBqOcTRPURx_upc2AtmBTfA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/8] clk: renesas: rzg2l: Add support for power domains
+To: ulf.hansson@linaro.org
+Cc: Claudiu <claudiu.beznea@tuxon.dev>, mturquette@baylibre.com, robh@kernel.org, 
+	krzk+dt@kernel.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-The phones listed below have Richtek RT5033 PMIC and charger.
-Add them to the device trees.
+Hi Ulf,
 
-- Samsung Galaxy A3/A5/A7 2015
-- Samsung Galaxy E5/E7
-- Samsung Galaxy Grand Max
+On Mon, Apr 22, 2024 at 12:54=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev>=
+ wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Series adds support for power domains on rzg2l driver.
+>
+> RZ/G2L kind of devices support a functionality called MSTOP (module
+> stop/standby). According to hardware manual the module could be switch
+> to standby after its clocks are disabled. The reverse order of operation
+> should be done when enabling a module (get the module out of standby,
+> enable its clocks etc).
+>
+> In [1] the MSTOP settings were implemented by adding code in driver
+> to attach the MSTOP state to the IP clocks. But it has been proposed
+> to implement it as power domain. The result is this series.
+>
+> The DT bindings were updated with power domain IDs (plain integers
+> that matches the DT with driver data structures). The current DT
+> bindings were updated with module IDs for the modules listed in tables
+> with name "Registers for Module Standby Mode" (see HW manual) exception
+> being RZ/G3S where, due to the power down functionality, the DDR,
+> TZCDDR, OTFDE_DDR were also added.
+>
+> Domain IDs were added to all SoC specific bindings.
+>
+> Thank you,
+> Claudiu Beznea
+>
+> Changes in v4:
+> - dropped the pwrdn functionality until it is better understanded
+> - dropped patch "clk: renesas: rzg2l-cpg: Add suspend/resume
+>   support for power domains" from v3; this will be replaced
+>   by propertly calling device_set_wakup_path() in serial console
+>   driver
+> - instantiated the watchdog domain in r8a08g045 clock driver; this
+>   allow applying r9a08g045 clock patch w/o affecting watchdog and later,
+>   after all good with watchdog patches series at [2], only patch
+>   "arm64: dts: renesas: r9a08g045: Update #power-domain-cells =3D <1>"
+>   will need to be applied
 
-Signed-off-by: Raymond Hackley <raymondhackley@protonmail.com>
----
-v2: Split the connector into another patch
-v3: Skip applied conntector patch
-RESEND v3: Fix threading
----
- .../qcom/msm8916-samsung-a2015-common.dtsi    | 53 +++++++++++++++++-
- .../boot/dts/qcom/msm8916-samsung-a3u-eur.dts |  6 ++
- .../boot/dts/qcom/msm8916-samsung-a5u-eur.dts |  6 ++
- .../boot/dts/qcom/msm8916-samsung-e5.dts      |  6 ++
- .../boot/dts/qcom/msm8916-samsung-e7.dts      |  7 +++
- .../dts/qcom/msm8916-samsung-grandmax.dts     |  6 ++
- .../boot/dts/qcom/msm8939-samsung-a7.dts      | 56 ++++++++++++++++++-
- 7 files changed, 138 insertions(+), 2 deletions(-)
+Are you happy with this series?  I would like to queue patches 1-7 in
+renesas-clk for v6.10 (i.e. this week).
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi b/a=
-rch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
-index 4bbbee80b5e4..e6355e5e2177 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
-@@ -28,6 +28,12 @@ tz-apps@85500000 {
- =09=09};
- =09};
-=20
-+=09battery: battery {
-+=09=09compatible =3D "simple-battery";
-+=09=09precharge-current-microamp =3D <450000>;
-+=09=09precharge-upper-limit-microvolt =3D <3500000>;
-+=09};
-+
- =09clk_pwm: pwm {
- =09=09compatible =3D "clk-pwm";
- =09=09#pwm-cells =3D <2>;
-@@ -245,7 +251,7 @@ magnetometer@12 {
- &blsp_i2c4 {
- =09status =3D "okay";
-=20
--=09battery@35 {
-+=09fuel-gauge@35 {
- =09=09compatible =3D "richtek,rt5033-battery";
- =09=09reg =3D <0x35>;
- =09=09interrupt-parent =3D <&tlmm>;
-@@ -253,6 +259,44 @@ battery@35 {
-=20
- =09=09pinctrl-names =3D "default";
- =09=09pinctrl-0 =3D <&fg_alert_default>;
-+
-+=09=09power-supplies =3D <&charger>;
-+=09};
-+};
-+
-+&blsp_i2c6 {
-+=09status =3D "okay";
-+
-+=09pmic@34 {
-+=09=09compatible =3D "richtek,rt5033";
-+=09=09reg =3D <0x34>;
-+
-+=09=09interrupts-extended =3D <&tlmm 62 IRQ_TYPE_EDGE_FALLING>;
-+
-+=09=09pinctrl-0 =3D <&pmic_int_default>;
-+=09=09pinctrl-names =3D "default";
-+
-+=09=09regulators {
-+=09=09=09rt5033_reg_safe_ldo: SAFE_LDO {
-+=09=09=09=09regulator-min-microvolt =3D <4900000>;
-+=09=09=09=09regulator-max-microvolt =3D <4900000>;
-+=09=09=09=09regulator-always-on;
-+=09=09=09};
-+
-+=09=09=09/*
-+=09=09=09 * Needed for camera, but not used yet.
-+=09=09=09 * Define empty nodes to allow disabling the unused
-+=09=09=09 * regulators.
-+=09=09=09 */
-+=09=09=09LDO {};
-+=09=09=09BUCK {};
-+=09=09};
-+
-+=09=09charger: charger {
-+=09=09=09compatible =3D "richtek,rt5033-charger";
-+=09=09=09monitored-battery =3D <&battery>;
-+=09=09=09richtek,usb-connector =3D <&usb_con>;
-+=09=09};
- =09};
- };
-=20
-@@ -476,6 +520,13 @@ nfc_i2c_default: nfc-i2c-default-state {
- =09=09bias-disable;
- =09};
-=20
-+=09pmic_int_default: pmic-int-default-state {
-+=09=09pins =3D "gpio62";
-+=09=09function =3D "gpio";
-+=09=09drive-strength =3D <2>;
-+=09=09bias-disable;
-+=09};
-+
- =09sdc2_cd_default: sdc2-cd-default-state {
- =09=09pins =3D "gpio38";
- =09=09function =3D "gpio";
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-a3u-eur.dts b/arch/ar=
-m64/boot/dts/qcom/msm8916-samsung-a3u-eur.dts
-index 3b934f5eba47..906d31f1ea21 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-samsung-a3u-eur.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-a3u-eur.dts
-@@ -55,6 +55,12 @@ &accelerometer {
- =09=09       "0", "0", "1";
- };
-=20
-+&battery {
-+=09charge-term-current-microamp =3D <150000>;
-+=09constant-charge-current-max-microamp =3D <1000000>;
-+=09constant-charge-voltage-max-microvolt =3D <4350000>;
-+};
-+
- &blsp_i2c5 {
- =09status =3D "okay";
-=20
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-a5u-eur.dts b/arch/ar=
-m64/boot/dts/qcom/msm8916-samsung-a5u-eur.dts
-index 391befa22bb4..fe39be7a742b 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-samsung-a5u-eur.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-a5u-eur.dts
-@@ -29,6 +29,12 @@ &accelerometer {
- =09=09=09"0", "0", "1";
- };
-=20
-+&battery {
-+=09charge-term-current-microamp =3D <200000>;
-+=09constant-charge-current-max-microamp =3D <1500000>;
-+=09constant-charge-voltage-max-microvolt =3D <4350000>;
-+};
-+
- &blsp_i2c5 {
- =09status =3D "okay";
-=20
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-e5.dts b/arch/arm64/b=
-oot/dts/qcom/msm8916-samsung-e5.dts
-index fad2535255f7..800cb1038da0 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-samsung-e5.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-e5.dts
-@@ -23,6 +23,12 @@ / {
- =09chassis-type =3D "handset";
- };
-=20
-+&battery {
-+=09charge-term-current-microamp =3D <200000>;
-+=09constant-charge-current-max-microamp =3D <1500000>;
-+=09constant-charge-voltage-max-microvolt =3D <4350000>;
-+};
-+
- &blsp_i2c5 {
- =09status =3D "okay";
-=20
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-e7.dts b/arch/arm64/b=
-oot/dts/qcom/msm8916-samsung-e7.dts
-index b412b61ca258..ec1debd2e245 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-samsung-e7.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-e7.dts
-@@ -23,6 +23,13 @@ / {
- =09chassis-type =3D "handset";
- };
-=20
-+&battery {
-+=09charge-term-current-microamp =3D <200000>;
-+=09constant-charge-current-max-microamp =3D <1500000>;
-+=09constant-charge-voltage-max-microvolt =3D <4350000>;
-+};
-+
-+
- &pm8916_l17 {
- =09regulator-min-microvolt =3D <3000000>;
- =09regulator-max-microvolt =3D <3000000>;
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-grandmax.dts b/arch/a=
-rm64/boot/dts/qcom/msm8916-samsung-grandmax.dts
-index 5882b3a593b8..135df1739dbd 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-samsung-grandmax.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-grandmax.dts
-@@ -41,6 +41,12 @@ led-keyled {
- =09};
- };
-=20
-+&battery {
-+=09charge-term-current-microamp =3D <150000>;
-+=09constant-charge-current-max-microamp =3D <1000000>;
-+=09constant-charge-voltage-max-microvolt =3D <4400000>;
-+};
-+
- &reg_motor_vdd {
- =09gpio =3D <&tlmm 72 GPIO_ACTIVE_HIGH>;
- };
-diff --git a/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts b/arch/arm64/b=
-oot/dts/qcom/msm8939-samsung-a7.dts
-index 0c599e71a464..91acdb160227 100644
---- a/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts
-@@ -33,6 +33,15 @@ tz-apps@85500000 {
- =09=09};
- =09};
-=20
-+=09battery: battery {
-+=09=09compatible =3D "simple-battery";
-+=09=09charge-term-current-microamp =3D <150000>;
-+=09=09constant-charge-current-max-microamp =3D <1500000>;
-+=09=09constant-charge-voltage-max-microvolt =3D <4300000>;
-+=09=09precharge-current-microamp =3D <450000>;
-+=09=09precharge-upper-limit-microvolt =3D <3500000>;
-+=09};
-+
- =09gpio-hall-sensor {
- =09=09compatible =3D "gpio-keys";
-=20
-@@ -82,7 +91,7 @@ i2c-fg {
- =09=09#address-cells =3D <1>;
- =09=09#size-cells =3D <0>;
-=20
--=09=09battery@35 {
-+=09=09fuel-gauge@35 {
- =09=09=09compatible =3D "richtek,rt5033-battery";
- =09=09=09reg =3D <0x35>;
-=20
-@@ -91,6 +100,8 @@ battery@35 {
-=20
- =09=09=09pinctrl-0 =3D <&fg_alert_default>;
- =09=09=09pinctrl-names =3D "default";
-+
-+=09=09=09power-supplies =3D <&charger>;
- =09=09};
- =09};
-=20
-@@ -325,6 +336,42 @@ touchscreen@24 {
- =09};
- };
-=20
-+&blsp_i2c6 {
-+=09status =3D "okay";
-+
-+=09pmic@34 {
-+=09=09compatible =3D "richtek,rt5033";
-+=09=09reg =3D <0x34>;
-+
-+=09=09interrupts-extended =3D <&tlmm 62 IRQ_TYPE_EDGE_FALLING>;
-+
-+=09=09pinctrl-0 =3D <&pmic_int_default>;
-+=09=09pinctrl-names =3D "default";
-+
-+=09=09regulators {
-+=09=09=09rt5033_reg_safe_ldo: SAFE_LDO {
-+=09=09=09=09regulator-min-microvolt =3D <4900000>;
-+=09=09=09=09regulator-max-microvolt =3D <4900000>;
-+=09=09=09=09regulator-always-on;
-+=09=09=09};
-+
-+=09=09=09/*
-+=09=09=09 * Needed for camera, but not used yet.
-+=09=09=09 * Define empty nodes to allow disabling the unused
-+=09=09=09 * regulators.
-+=09=09=09 */
-+=09=09=09LDO {};
-+=09=09=09BUCK {};
-+=09=09};
-+
-+=09=09charger: charger {
-+=09=09=09compatible =3D "richtek,rt5033-charger";
-+=09=09=09monitored-battery =3D <&battery>;
-+=09=09=09richtek,usb-connector =3D <&usb_con>;
-+=09=09};
-+=09};
-+};
-+
- &blsp_uart2 {
- =09status =3D "okay";
- };
-@@ -510,6 +557,13 @@ nfc_i2c_default: nfc-i2c-default-state {
- =09=09bias-disable;
- =09};
-=20
-+=09pmic_int_default: pmic-int-default-state {
-+=09=09pins =3D "gpio62";
-+=09=09function =3D "gpio";
-+=09=09drive-strength =3D <2>;
-+=09=09bias-disable;
-+=09};
-+
- =09reg_tsp_en_default: reg-tsp-en-default-state {
- =09=09pins =3D "gpio73";
- =09=09function =3D "gpio";
+Thank you!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 --=20
-2.39.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
