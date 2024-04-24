@@ -1,67 +1,146 @@
-Return-Path: <linux-kernel+bounces-157776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DDDA8B160F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:20:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB4618B1614
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:21:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4990C2852FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:20:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 558B71F23C51
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:21:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4A3A16C86B;
-	Wed, 24 Apr 2024 22:20:15 +0000 (UTC)
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6B213AD0D;
-	Wed, 24 Apr 2024 22:20:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D681A16D33B;
+	Wed, 24 Apr 2024 22:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="W87k+08j"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF7B013AD0D;
+	Wed, 24 Apr 2024 22:20:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713997215; cv=none; b=XvkSJHbd01Pn7xBg/guPjhX0mzhpavQ8ZbqS/14hLBfCLWBTV1MZTEoRNa8Bh/WKM1XZIvTzMGSIh0z17mcQhHt2EXiXIscMuAieeBbjkJ1D2gUXOEg8nWjOe2RokF5JE27AEe2HoAI4kWG0VHYUZdJSlmwjaWL1JcsOIl44J2g=
+	t=1713997254; cv=none; b=pkHtTXY3q1dFPZQ9W+5LFADzBeBPTMem/QgRM7W0tScEWqKGyGLUHW0Q2GMx1MTS94lyWjwiL0+as3hXjVNtvXokAGUGtLMaWbWXPzxsBv87B/VfLf0OFzmxJYcUUL49U6wppNXwGU+3H/GOJj50PKHKTmiGn8EM0yzIzpbfbzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713997215; c=relaxed/simple;
-	bh=2SanSr9ivrXvN7XrjSoc2KbOt8Z+ZjzTk7lp7LZ4U1M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QKMB7uwYGZ9tP2a/bg/VzeGHOuknfV8mjcM/5RwLjOXfEggl2JMbVWBUEAoqh98jaqSjpQVYT/pQ1eOWNXZoWZZr5Mjpu3q381WW21pET6wG98mejh5gMhxOZfG+ENcKnoCduNZlupxz/HrZi5qgCP7bPWzzExLFqmiavv8yfjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Date: Thu, 25 Apr 2024 00:20:09 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Florian Westphal <fw@strlen.de>
-Cc: linke li <lilinke99@qq.com>, xujianhao01@gmail.com,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] netfilter: mark racy access on ext->gen_id
-Message-ID: <ZimFmQDa4WdibJec@calendula>
-References: <tencent_284407955020261D1B2BD142194A87C9EB0A@qq.com>
- <20240423120309.GA18954@breakpoint.cc>
+	s=arc-20240116; t=1713997254; c=relaxed/simple;
+	bh=cONU3mmrJUgdSbGbxulujXMO9As0fPjca+3seJRZqvk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=U29oEoDiVV+F4nqxvjhkL0bpYh/W2wbu9lb8+RITebIGMfZN7lPBppjQVKppfEHFNNHcwEj/c0iqCDHQzFk5Z3sFicuWZ3hDRACF65UgDNU3An0i9jiQ8AGS7MMdTLk9fbCiZsuhkzHb3hhshb8y4+GzheNxnwUhwsUCkrjHP5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=W87k+08j; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43OMJ4vN001337;
+	Wed, 24 Apr 2024 22:20:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=qcppdkim1; bh=3K56OkUxERthHoKXLzWV
+	jMjq56gNekNkkNgWZBs6Y5I=; b=W87k+08jZPWZCRZ0Xo6ulY3o7K01ZNLa9WeQ
+	WvlxnLO9tXOrWWZb7v3PXjB4okjJUhCw3ElQLt4jzbl7YteOtWWHUfem+aqItBTc
+	aA/wHjVcmZ8A4/dFggZ69trRpGu0+C9f0Gh7VQGVWnhFiykGsJRsECwVEcsgD4OL
+	+CO78i4J6rbwGHIY88wwdKtgaY1my4b1KqxdBspYqysvZUccFJy5FR911Q+EDQWs
+	hdHhDQ+oTi0teWyJ+rGZ0NL2k6iKyGMBGXjfPHmaLsEic3EDu5e5UZdiWB+ea6yT
+	BoMajfPDdB9vjfKmmfWontBAhXykDfTUA9g2an0lhK8Hgymdhg==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9e2a56-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 22:20:30 +0000 (GMT)
+Received: from pps.filterd (NALASPPMTA02.qualcomm.com [127.0.0.1])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 43OMKT4S019393;
+	Wed, 24 Apr 2024 22:20:29 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by NALASPPMTA02.qualcomm.com (PPS) with ESMTPS id 3xp4jb1776-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 22:20:29 +0000
+Received: from NALASPPMTA02.qualcomm.com (NALASPPMTA02.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43OMFl0D014703;
+	Wed, 24 Apr 2024 22:20:29 GMT
+Received: from hu-devc-lv-u20-a-new.qualcomm.com (hu-abchauha-lv.qualcomm.com [10.81.25.35])
+	by NALASPPMTA02.qualcomm.com (PPS) with ESMTPS id 43OMKT0w019376
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 22:20:29 +0000
+Received: by hu-devc-lv-u20-a-new.qualcomm.com (Postfix, from userid 214165)
+	id 53FF5220BD; Wed, 24 Apr 2024 15:20:28 -0700 (PDT)
+From: Abhishek Chauhan <quic_abchauha@quicinc.com>
+To: "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+Cc: kernel@quicinc.com
+Subject: [RFC PATCH bpf-next v5 0/2] Replace mono_delivery_time with tstamp_type
+Date: Wed, 24 Apr 2024 15:20:26 -0700
+Message-Id: <20240424222028.1080134-1-quic_abchauha@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240423120309.GA18954@breakpoint.cc>
+Content-Transfer-Encoding: 8bit
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: mhu9cKJ6S1ivAzggkV6TcCOGIuHE4fvL
+X-Proofpoint-ORIG-GUID: mhu9cKJ6S1ivAzggkV6TcCOGIuHE4fvL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_19,2024-04-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 lowpriorityscore=0 adultscore=0 spamscore=0 impostorscore=0
+ phishscore=0 mlxscore=0 suspectscore=0 clxscore=1015 malwarescore=0
+ mlxlogscore=754 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404240115
 
-On Tue, Apr 23, 2024 at 02:03:09PM +0200, Florian Westphal wrote:
-> linke li <lilinke99@qq.com> wrote:
-> > In __nf_ct_ext_find(), ext->gen_id can be changed by 
-> > nf_ct_ext_valid_post(), using WRITE_ONCE. Mark data races on ext->gen_id
-> > as benign using READ_ONCE. 
-> > 
-> > This patch is aimed at reducing the number of benign races reported by
-> > KCSAN in order to focus future debugging effort on harmful races.
-> 
-> Acked-by: Florian Westphal <fw@strlen.de>
-> 
-> Should proably go to nf tree.
+Patch 1 :- This patch takes care of only renaming the mono delivery
+timestamp to tstamp_type with no change in functionality of 
+existing available code in kernel also  
+Starts assigning tstamp_type with either mono or real and 
+introduces a new enum in the skbuff.h, again no change in functionality 
+of the existing available code in kernel , just making the code scalable.
 
-Can I get a Fixes: tag for this one?
+Patch 2 :- Additional bit was added to support tai timestamp type to 
+avoid tstamp drops in the forwarding path when testing TC-ETF. 
+With this patch i am updating bpf filter.c and some of the BPF
+unit test framework which tests redirect test scenarios. 
+Need reviews on those patches 
+
+
+Abhishek Chauhan (2):
+  net: Rename mono_delivery_time to tstamp_type for scalabilty
+  net: Add additional bit to support clockid_t timestamp type
+
+ include/linux/skbuff.h                        | 74 ++++++++++++++-----
+ include/net/inet_frag.h                       |  4 +-
+ include/uapi/linux/bpf.h                      |  1 +
+ net/bridge/netfilter/nf_conntrack_bridge.c    |  6 +-
+ net/core/dev.c                                |  2 +-
+ net/core/filter.c                             | 50 +++++++------
+ net/ieee802154/6lowpan/reassembly.c           |  2 +-
+ net/ipv4/inet_fragment.c                      |  2 +-
+ net/ipv4/ip_fragment.c                        |  2 +-
+ net/ipv4/ip_output.c                          | 11 +--
+ net/ipv4/raw.c                                |  2 +-
+ net/ipv4/tcp_output.c                         | 16 ++--
+ net/ipv6/ip6_output.c                         |  8 +-
+ net/ipv6/netfilter.c                          |  6 +-
+ net/ipv6/netfilter/nf_conntrack_reasm.c       |  2 +-
+ net/ipv6/raw.c                                |  2 +-
+ net/ipv6/reassembly.c                         |  2 +-
+ net/ipv6/tcp_ipv6.c                           |  2 +-
+ net/packet/af_packet.c                        |  7 +-
+ net/sched/act_bpf.c                           |  4 +-
+ net/sched/cls_bpf.c                           |  4 +-
+ .../selftests/bpf/prog_tests/ctx_rewrite.c    | 10 ++-
+ .../selftests/bpf/progs/test_tc_dtime.c       | 24 ++++--
+ 23 files changed, 153 insertions(+), 90 deletions(-)
+
+-- 
+2.25.1
+
 
