@@ -1,143 +1,126 @@
-Return-Path: <linux-kernel+bounces-156721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CD028B0746
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:26:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A0258B073D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:25:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1DDC1F220D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:26:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46F77282660
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:25:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D5B1598E7;
-	Wed, 24 Apr 2024 10:26:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dyD6o43s"
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E3915956F;
-	Wed, 24 Apr 2024 10:26:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2913515956F;
+	Wed, 24 Apr 2024 10:25:35 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C4F158211
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 10:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713954366; cv=none; b=bdix13e7ml+9PLLUc4zAbiyYieSP71TESMr4GgmvrMiOSPpvTEmdHfQPx9hM9H1vQgVaTTiRfuHnvPvwJ6zcQbj/FTct3FAHfjufgENr+30b2fQmThvVcGGVCdAr1CIU7Vbrqqb2ro+JUcydPmjIux+QD7F3JRuYvQu5t3UXyNw=
+	t=1713954334; cv=none; b=Gp8TTVi9RbzGkeqrhnDtrZvg3OZOsyF1FUih7QF0iluQRd1CjUTCofEArAfkpqhF6fS9DDD8Hi5pYlA3PK98eTCoePnQIFLd990aZdbNTXwP7K92z19igcJyCu/4oEXfIcJOK7srroP/pniCsIqOtxgV9/Z7UzL150b8wyFsGFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713954366; c=relaxed/simple;
-	bh=AZWGz/WvtgoCzFOkz9gz6ilvmzSpiEaQFbmh8lEyIyM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RwF8VdG8fJVGdLH7O99SRBf81PWdilx6m+OQLjYCMdoMWt4aADHXFjcGv1EEe7iGWpmIqqRpHngITO91UzkUerlS/kRN/MadlMVMuLBq3gPkrZhBV74Kvo1Vma5ElXDKoRj2JSzO71d+2d8P+DrR4TmtoyQSYq9sM68iRPyan00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dyD6o43s; arc=none smtp.client-ip=217.70.178.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from relay3-d.mail.gandi.net (unknown [217.70.183.195])
-	by mslow1.mail.gandi.net (Postfix) with ESMTP id 3784DC670A;
-	Wed, 24 Apr 2024 10:24:35 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8A89D6000A;
-	Wed, 24 Apr 2024 10:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713954267;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OVEm7ob18VpKCaMTFhx5G9Kb6z4kp/qqC4mfGOtfzt0=;
-	b=dyD6o43s+X70tu36CaPntCI9S7G6Mpdm4x7hO6BsSEu9+z36dVwBteNQBwwE6iaBeSsi3c
-	QQheFRj/aPn5G/WMf+yvs9Pvyqlw7gnKvjlSXYYNjxagiLXQp4uGshTYl4sLZHiPtL+MgE
-	s2qOhPMm2usFpwEyyFnNGPXX+zYMyEEpxGsYdUiMcsnGAPgIlfSO7rrotuYJf7jDr2Z2LT
-	1g/pbBPsm0EBBk46JMYX/O0CmzfZ9cFAdHFXn0O/JWxV0P9p7bE8I/DuzdVuwIkfxdKMdc
-	Mi/GkwbyXIaSvZu9lxr4kZ1I7Da7PbFs5pHVPy69iriR07mtv50BcwN9qZbF3w==
-Message-ID: <8d49f316-bb17-4956-a62b-e64d460825d4@bootlin.com>
-Date: Wed, 24 Apr 2024 12:24:24 +0200
+	s=arc-20240116; t=1713954334; c=relaxed/simple;
+	bh=cqP1oedXnkvm4sQbRc6s+aClewY6gEkVWcgHiC1Dh5w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r2Xd63w4M8n3QyfwBOQC9F0RJnJfnJnZ+ArfoOJgk2/4x3ZUFG2ZHIcYBVa4oFjKkxEUWNBMJwxFn29+jKBWdcMdxhMUnuP8mRNuwbV+LRCbjporbHqujY/tDphoOJ0pqRh/JlFiwzq5Enw+dJM8fRNsJ6Wz0LJ3qXYdW6rI0Cc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6715339;
+	Wed, 24 Apr 2024 03:25:59 -0700 (PDT)
+Received: from bogus (unknown [10.57.84.59])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37D0E3F73F;
+	Wed, 24 Apr 2024 03:25:30 -0700 (PDT)
+Date: Wed, 24 Apr 2024 11:25:27 +0100
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Beata Michalska <beata.michalska@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Sudeep Holla <sudeep.holla@arm.com>, ionela.voinescu@arm.com,
+	vanshikonda@os.amperecomputing.com, will@kernel.org,
+	catalin.marinas@arm.com, vincent.guittot@linaro.org,
+	sumitg@nvidia.com, yang@os.amperecomputing.com,
+	lihuisong@huawei.com, viresh.kumar@linaro.org
+Subject: Re: [PATCH v5 2/5] arm64: amu: Rule out potential use after free
+Message-ID: <20240424102527.3s4ebjnaai2md5pa@bogus>
+References: <20240417093848.1555462-1-beata.michalska@arm.com>
+ <20240417093848.1555462-3-beata.michalska@arm.com>
+ <20240418105052.zvkomz5yeayie4ph@bogus>
+ <ZiFCfwEvdJxg6Hth@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 02/11] i2c: omap: wakeup the controller during
- suspend() callback
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Andi Shyti <andi.shyti@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski
- <brgl@bgdev.pl>, Tony Lindgren <tony@atomide.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, Vignesh R <vigneshr@ti.com>,
- Peter Rosin <peda@axentia.se>, Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Siddharth Vadapalli <s-vadapalli@ti.com>, linux-gpio@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, gregory.clement@bootlin.com,
- theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com,
- Wolfram Sang <wsa+renesas@sang-engineering.com>
-References: <20240422194423.GA414623@bhelgaas>
-Content-Language: en-US
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <20240422194423.GA414623@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: thomas.richard@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZiFCfwEvdJxg6Hth@arm.com>
 
-On 4/22/24 21:44, Bjorn Helgaas wrote:
-> On Mon, Apr 22, 2024 at 11:40:02AM +0200, Thomas Richard wrote:
->> On 4/19/24 10:47, Andi Shyti wrote:
->>> Hi Thomas,
->>>
->>>> +static int omap_i2c_suspend(struct device *dev)
->>>> +{
->>>> +	/*
->>>> +	 * If the controller is autosuspended, there is no way to wakeup it once
->>>> +	 * runtime pm is disabled (in suspend_late()).
->>>> +	 * But a device may need the controller up during suspend_noirq() or
->>>> +	 * resume_noirq().
->>>> +	 * Wakeup the controller while runtime pm is enabled, so it is available
->>>> +	 * until its suspend_noirq(), and from resume_noirq().
->>>> +	 */
->>>> +	return pm_runtime_resume_and_get(dev);
->>>> +}
->>>> +
->>>> +static int omap_i2c_resume(struct device *dev)
->>>> +{
->>>> +	pm_runtime_mark_last_busy(dev);
->>>> +	pm_runtime_put_autosuspend(dev);
->>>> +
->>>> +	return 0;
->>>> +}
->>>> +
->>>>  static const struct dev_pm_ops omap_i2c_pm_ops = {
->>>>  	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
->>>>  				      pm_runtime_force_resume)
->>>> +	SET_SYSTEM_SLEEP_PM_OPS(omap_i2c_suspend, omap_i2c_resume)
->>>
->>> If you don't have CONFIG_PM_SLEEP, though, this doesn't compile.
->>
->> Hello Andi,
->>
->> Yes indeed, the __maybe_unused attribute is missing for
->> omap_i2c_suspend() and omap_i2c_resume().
-> 
-> Isn't there a way to avoid having to use the __maybe_unused attribute?
-> 
-> E.g., use DEFINE_SIMPLE_DEV_PM_OPS() as is done by these:
-> 
->   82f9cefadac4 ("serial: 8250_exar: switch to DEFINE_SIMPLE_DEV_PM_OPS()")
->   f243df0a0be0 ("media: platform: rzg2l-cru: rzg2l-csi2: Switch to RUNTIME_PM_OPS()")
->   6ccc22a5afcb ("net: ravb: Switch to SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() and pm_ptr()")
+On Thu, Apr 18, 2024 at 05:55:43PM +0200, Beata Michalska wrote:
+> On Thu, Apr 18, 2024 at 11:50:52AM +0100, Sudeep Holla wrote:
+> > On Wed, Apr 17, 2024 at 10:38:45AM +0100, Beata Michalska wrote:
+> > > For the time being, the amu_fie_cpus cpumask is being exclusively used
+> > > by the AMU-related internals of FIE support and is guaranteed to be
+> > > valid on every access currently made. Still the mask is not being
+> > > invalidated on one of the error handling code paths, which leaves
+> > > a soft spot with potential risk of uaf for CPUMASK_OFFSTACK cases.
+> > > To make things sound, set the cpumaks pointer explicitly to NULL upon
+> > > failing to register the cpufreq notifier.
+> > > Note that, due to the quirks of CPUMASK_OFFSTACK, this change needs to
+> > > be wrapped with grim ifdefing (it would be better served by
+> > > incorporating this into free_cpumask_var ...)
+> > >
+> >
+> > Yes it doesn't look neat.
+> >
+> > > Signed-off-by: Beata Michalska <beata.michalska@arm.com>
+> > > ---
+> > >  arch/arm64/kernel/topology.c | 6 +++++-
+> > >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> > > index 1a2c72f3e7f8..3c814a278534 100644
+> > > --- a/arch/arm64/kernel/topology.c
+> > > +++ b/arch/arm64/kernel/topology.c
+> > > @@ -244,8 +244,12 @@ static int __init init_amu_fie(void)
+> > >
+> > >  	ret = cpufreq_register_notifier(&init_amu_fie_notifier,
+> > >  					CPUFREQ_POLICY_NOTIFIER);
+> > > -	if (ret)
+> > > +	if (ret) {
+> > >  		free_cpumask_var(amu_fie_cpus);
+> > > +#ifdef CONFIG_CPUMASK_OFFSTACK
+> > > +		amu_fie_cpus = NULL;
+> > > +#endif
+> > > +	}
+> >
+> > Instead of this #ifdeffery, I was wondering if we can actually do the
+> > allocation in init_amu_fie_callback() the first time it gets called
+> > checking if amu_fie_cpus is NULL. init_amu_fie_callback() must get called
+> > only if the cpufreq_register_notifier() succeeds right ?
+> >
 
-Yes you're right, I don't need the __maybe_unused attribute if I use
-NOIRQ_SYSTEM_SLEEP_PM_OPS().
+> Delayed allocation ... I guess this will do the trick.
 
-By the way I can add a patch in the series to remove all the
-__maybe_unused attributes of this driver.
+I prefer that if we can't find any other alternative. Do you see any issues
+with that ? That said I am fine if Will/Catalin is happy with this.
 
+> > Also I don't see anyone calling amu_fie_setup(), so where do you think
+> > the possible use after free could occur for amu_fie_cpus. Just thinking
+> > out loud to check if I missed anything.
+> >
+> You haven't missed anything. Currently the uaf is purely theoretical as the code
+> that relies on that mask will only be executed if we have succeeded to register
+> the amu fie support: so far so good.
+
+Yes it is better to handle it even if it is theoretical.
+
+I assume you get some compiler error if you assign unconditionally and
+if(IS_ENABLED()) also doesn't work in this case as it would still give
+error ?
+
+--
 Regards,
-
--- 
-Thomas Richard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+Sudeep
 
