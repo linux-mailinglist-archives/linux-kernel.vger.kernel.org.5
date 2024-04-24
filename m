@@ -1,94 +1,108 @@
-Return-Path: <linux-kernel+bounces-156212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B80D28AFFAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:31:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DF0D8AFFAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:32:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12649285D74
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:31:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F348A1F234CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8065B13AA38;
-	Wed, 24 Apr 2024 03:31:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4330D13AA2B;
+	Wed, 24 Apr 2024 03:32:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ti+9iZ2b"
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nwjez3Qj"
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B9F13340B;
-	Wed, 24 Apr 2024 03:30:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3956C13340B;
+	Wed, 24 Apr 2024 03:32:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713929459; cv=none; b=Ljq6sndsozzbgj2Zfe8XvcLXhzGDVQ7HKLOz04AMtIqRzQpKYlTXOGCKCwNaTiaIRcGCVyVE7CKifrD2yf6rY2Z/BZzKqRdQof79FN7MWiYLWj8joXOZ4zHrHFuV89bTAJbamSRtCCTTj2cKUrb0y7usWoGyMfg2tCaw49/Jts0=
+	t=1713929532; cv=none; b=aTzXltif1JmgTMMPgZoTHZsu2u4RtAaI4kP7VPTWv6gvgdQKXgkV1Qm5miVyTuiyT0quBrxsVr2Eg0jtOBpVI2btVzsKF00MaYQdiyBYQKyxf+dz8r24bxVZXrtqd0DV5v3jKdCKeYYQBttxVdXx6KE7elKcU3SLo1alNl1SFVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713929459; c=relaxed/simple;
-	bh=rKi6NN48wepECtBpXiA7bU1rkNQhpJjd3bV4sNW0FT0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Oayst/9mEd7ELbpWnmGrXk87ogmImp8HKT1quEfsp4o28K7suQzZ3sCK2/c0n71QefnWgMHeNM0l8vURqBmINONAWpvuxBCdC6XL83GTWj76t+XdzvTsjXdx4Z6E+K9x/BSQnlKJZiF5aZHRxuvtgZZ91jj9qccq+t4RrrkfWns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ti+9iZ2b; arc=none smtp.client-ip=115.124.30.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1713929454; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=RAITW8Q5G1SlFKuL2iNYgoTd3KgsFZ6WJdYB4NCuFC4=;
-	b=ti+9iZ2bA6B9Huev8dpdGwNDZf+NL0ixy4jp7fJkSJnzsV3oCMN17SQSZiyqzHJwZR0FZ7JDo1raq2fAZPoVO1BxO2wrF2CnGn7wv4DfWJUJcxccnG5NrHvBV8LFZItcaUC7+AlfSiGZO4iGReGFkMgjndlXTq3wQbsk4DQKSOk=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045046011;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0W5AojMt_1713929452;
-Received: from 30.221.128.184(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0W5AojMt_1713929452)
-          by smtp.aliyun-inc.com;
-          Wed, 24 Apr 2024 11:30:53 +0800
-Message-ID: <a4d38a49-9629-4ee0-9eba-4d45abace30d@linux.alibaba.com>
-Date: Wed, 24 Apr 2024 11:30:52 +0800
+	s=arc-20240116; t=1713929532; c=relaxed/simple;
+	bh=6g97TUaw/jCh3yi3jPP3aYD2czjvp1b6ky2MjDkObNQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WUynYQ2VmSTvDae4GOQ4NCP8Rfhi3zQ6h5huzNSAUbmhXVKRL7xW+hHva1LfOh2EKON1YgLOU8zHlf9njLgy1/q6CGRjfCnHt9mraNMMfJf6Iyrc0+gy9rtF5XrlWPvh0LfhdGfmQACC4LLK+Bbx83B6gx3K00kSOsf+PwPDhfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nwjez3Qj; arc=none smtp.client-ip=209.85.160.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-22fa7e4b0beso3562617fac.1;
+        Tue, 23 Apr 2024 20:32:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713929530; x=1714534330; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wDmT8lLNd9UXbq0Sx6/V2FNt/nDtuLaceA/unrIBnFY=;
+        b=Nwjez3QjlJVGcxlQJR+2juEe8TUpQjCsOn82ZCk2WN2T4bD0BO/jGCME30k+TUFOWP
+         2Bed49jQLC0oOo2KL4Yvdq8w0nKV8hSKN47mIUj0YdiL4teQ5mIHoFIj4hzmS2Ti/etN
+         4MUPZXv1FJR4d14ql9MzU5DsPYynmf8ERGVWTaYrO6Gyp8rsPrDwZvphg/88Q4D8Gtpm
+         5VQxt36fyqIfAr4kTTUo6iUnMIAF1WAFh3qVlPUyXXjxTjO4wZrBQNzNgHiJYLVDd/sx
+         hXFg1LmR6srAIY/obYodMIfWD8T2vkCH+ktrW4WPH7zKNlzbSJcsvtv5e2x9mIU1HLBu
+         wXfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713929530; x=1714534330;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wDmT8lLNd9UXbq0Sx6/V2FNt/nDtuLaceA/unrIBnFY=;
+        b=PPhDOwvz1Lw7NsAhCbkFxHNyzbEGBb5ATQE0h0UaQvq8O2n62WCg7S2qKdJyf5VaP1
+         SZ8a7ZdQ0lZPNxhbCENYTNEmV3EkCbkZBV2HyMPjNYtx2NRLVzhWlFv5Tysu4Ye6W0Nh
+         vEilL5OZR5erC/veELnKDv5cL/HnJL7UVdvzwvEGLENRfPFyq7rNh60wxRC00pOYTEBv
+         nqwhWufS2MDsV8qGjJkpg1wY4Y7rdiDQokputEjm569JPc2HN6KczGiUXVq0+WKgIajN
+         AlPgf9QnXz7jiumcm7TcNs8DIG6bq5VZN2LvZpqFCwrwfTnka5VyvPt3tT/q/vFp/I04
+         JROw==
+X-Forwarded-Encrypted: i=1; AJvYcCVhfOsZLQm/Jz92wv94Mhn7JSqX5nbvWxvenYL00H5oMBsHUv3maVRxRdFzBzWxF7Kvq4rgFao0PjUOVr0GV9HQyDCLomE1DksSPtSHdgS+vbkkxmv5Aif1pvS/geZYZyWjXclK4g==
+X-Gm-Message-State: AOJu0YwudSAggkA13n4Ao39TCnRhckrR0nnLgXiCZlj8LdTAa/MSBiS1
+	iJVM1p03yP7eqCiPQOu1eb2O1NGKqxCZuDb7wBgV7rlqljI6P1LQ
+X-Google-Smtp-Source: AGHT+IGdF1krQFDWhoNw1xQE+nKdWRpL9qOkeMNiMokocZgXTW3pKzK+wXOW63Xe33I3eYFuPGP6yA==
+X-Received: by 2002:a05:6870:51c:b0:222:a91e:cc1d with SMTP id j28-20020a056870051c00b00222a91ecc1dmr1407863oao.4.1713929530158;
+        Tue, 23 Apr 2024 20:32:10 -0700 (PDT)
+Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
+        by smtp.gmail.com with ESMTPSA id v26-20020a62a51a000000b006e647059cccsm10426636pfm.33.2024.04.23.20.32.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 20:32:09 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 23 Apr 2024 17:32:08 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, Xiu Jianfeng <xiujianfeng@huawei.com>
+Subject: Re: [PATCH-cgroup] cgroup/cpuset: Fix incorrect top_cpuset flags
+Message-ID: <Zih9OG8Azp5vrg9f@slm.duckdns.org>
+References: <20240424010020.181305-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] ocfs2: remove redundant assignment to variable
- status
-To: Colin Ian King <colin.i.king@gmail.com>, akpm <akpm@linux-foundation.org>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
- ocfs2-devel@lists.linux.dev, Mark Fasheh <mark@fasheh.com>,
- Joel Becker <jlbec@evilplan.org>, Heming Zhao <heming.zhao@suse.com>
-References: <20240423223018.1573213-1-colin.i.king@gmail.com>
-Content-Language: en-US
-From: Joseph Qi <joseph.qi@linux.alibaba.com>
-In-Reply-To: <20240423223018.1573213-1-colin.i.king@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240424010020.181305-1-longman@redhat.com>
 
-
-
-On 4/24/24 6:30 AM, Colin Ian King wrote:
-> Variable status is being assigned and error code that is never read, it is
-> being assigned inside of a do-while loop. The assignment is redundant and
-> can be removed.
+On Tue, Apr 23, 2024 at 09:00:20PM -0400, Waiman Long wrote:
+> Commit 8996f93fc388 ("cgroup/cpuset: Statically initialize more
+> members of top_cpuset") uses an incorrect "<" relational operator for
+> the CS_SCHED_LOAD_BALANCE bit when initializing the top_cpuset. This
+> results in load_balancing turned off by default in the top cpuset which
+> is bad for performance.
 > 
-> Cleans up clang scan build warning:
-> fs/ocfs2/dlm/dlmdomain.c:1530:2: warning: Value stored to 'status' is never
-> read [deadcode.DeadStores]
+> Fix this by using the BIT() helper macro to set the desired top_cpuset
+> flags and avoid similar mistake from being made in the future.
 > 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> Fixes: 8996f93fc388 ("cgroup/cpuset: Statically initialize more members of top_cpuset")
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Acked-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-> ---
->  fs/ocfs2/dlm/dlmdomain.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/fs/ocfs2/dlm/dlmdomain.c b/fs/ocfs2/dlm/dlmdomain.c
-> index 2e0a2f338282..2018501b2249 100644
-> --- a/fs/ocfs2/dlm/dlmdomain.c
-> +++ b/fs/ocfs2/dlm/dlmdomain.c
-> @@ -1527,7 +1527,6 @@ static void dlm_send_join_asserts(struct dlm_ctxt *dlm,
->  {
->  	int status, node, live;
->  
-> -	status = 0;
->  	node = -1;
->  	while ((node = find_next_bit(node_map, O2NM_MAX_NODES,
->  				     node + 1)) < O2NM_MAX_NODES) {
+Applied to cgroup/for-6.10.
+
+Thanks.
+
+-- 
+tejun
 
