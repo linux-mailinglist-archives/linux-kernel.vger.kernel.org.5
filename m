@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-157476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 574FC8B1208
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:20:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D95C98B120A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:20:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89A3D1C23281
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:20:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 091361C215AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:20:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39DF181B81;
-	Wed, 24 Apr 2024 18:15:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F00D181BB4;
+	Wed, 24 Apr 2024 18:15:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LlQ0WAGc"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VOnEgCmI"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F9A180A6C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76CAA180A72
 	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 18:15:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713982521; cv=none; b=EIOm1yXagl4J6tliDbXZUmQlVcsBMX8KlBZhIkEGW0b010Y/7SDqcakYmCgi+4+wBN+xAIOa/A0C55+itwn6jen/nTR+4F+kBXlZtfjG4aghgKKCmwk89f1cGRYdC35YlslB5lzGisiHde1WgYU/gkNk3JhpAVto4eWts6CZyfk=
+	t=1713982521; cv=none; b=D2rK4xNXcRUiDBCl5mVNkx9jczC2N1k5EB2nwkTNEoejMroPhbNlJXBFjZxC/5iWeuw25ep0TdiT1BWbbauwO1VBHfjq3+5dUZuWrRKWly6pwFi7Jd92bN4MKB5OnPK5X46w01XFW6iiNfju2jPfNpawqD1LjOiL13OmoB7Ufek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713982521; c=relaxed/simple;
-	bh=MQ97iLFFbgxQYCiSBsEDrW3R5WSpsqJ/JU/KTZPQ0ow=;
+	bh=C848K1VcGM5RUfjuR4WSnPG/StJg7lvXcY8k7DJPfJE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KquNf80mU471iKxNR474JVX/EhTvYl2rBXooCrqsrgaOYF1P6SLPjvyKsdQWnSh3Kt7lb6krgoMRgC/ro9siieQ+tyANSPxg1x2mZnfcLb6Q3035uowLsZKzWYHllUx/ZX0iU2+tLJkXCExeXxTb/6QtqRN2n0tD2YRNUW2iB1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LlQ0WAGc; arc=none smtp.client-ip=192.198.163.18
+	 MIME-Version; b=jE8lFiEjJqJ+FTLulnKzzXsN/agXmLlKIlOWipqMToY7w2bpwhPIK2MNPKvIzNddLgv81s224Vc0jPYdw9dwP7trO/dEKxLlzhtZp8qFNpzNOXR9dxSkW5nyO/XHlJaHQSTmAVjDgrlZ5BpOSWxxYwQ5naFLtMnNx59Z9Y5TGoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VOnEgCmI; arc=none smtp.client-ip=192.198.163.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
@@ -35,44 +35,45 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   t=1713982519; x=1745518519;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=MQ97iLFFbgxQYCiSBsEDrW3R5WSpsqJ/JU/KTZPQ0ow=;
-  b=LlQ0WAGceM6Q025F8+v87+IN1IAVZyWavmTfXwS0ssUp/2vfvaj+VEAB
-   Oz+v+wUoXUl56ww5TamItHXf4mLEcFFNp28LtTb9GkOvU5PTed0gyu3GI
-   CaxZu2AoJsDc6aaCV9Vj01frAGbHQcv2mZifejg8yhKeMiw8Q73eQEP7O
-   vp81rsiZE+8i/LeHVr3OayqDTny1xpH01+lQ3+Y23Xt5Zac1nt8GQkUPR
-   J8Clvs+ZaOiXfioyGBxLnxEK9PSlw/PsfdrmGBSilBYBNLX/rSLmxPJeF
-   QpjTx3fTfar3fU5b01n6UR/7oTR60cy7tVZ/j+YBY84V2e7VoARQn9ke3
+  bh=C848K1VcGM5RUfjuR4WSnPG/StJg7lvXcY8k7DJPfJE=;
+  b=VOnEgCmIp8f5O5qM/11yVxtHUBox+fsPvQTzEqsycideWMH73v4yhC4d
+   td1S3VdzM7KRxapBWgiOHUm0qn7XcO4jS/T27QfDLY/WOL9VjRbL2WryD
+   ATNHWVgnh9elIE5Lg6owObJPiInDmlnYn7JTOVjSMMMEkPKMaD6QnSovH
+   GRe5BMlDRe5OxbnWv9+oNhAS9a1yBEnaXtTLb02a1/3D69R2k/PeuOw/U
+   ORdabR/xafvT/Mwmz6WmPr1ypsrjZjUuGowaHSjoCMXZmZFVtpnHcn7BT
+   ZaeF38+3DodYt6l2lds4a4tVPpa0VISeRLW3z/iMLhNvut8L6PjpgvVuP
    w==;
-X-CSE-ConnectionGUID: imiSScCiQM6UnnXLZGeBVQ==
-X-CSE-MsgGUID: YfT6z1fWT1KkF5oYLOyg8g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9481950"
+X-CSE-ConnectionGUID: zdSJYF1uQLGrymKxtmdUyQ==
+X-CSE-MsgGUID: CFt9FterQMC9X51VJX44Rw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9481959"
 X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="9481950"
+   d="scan'208";a="9481959"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:15:06 -0700
-X-CSE-ConnectionGUID: NQGb3yeuSbW5JeWJ/NDD0A==
-X-CSE-MsgGUID: SMvjHHtTQJySvBszTAF66A==
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:15:08 -0700
+X-CSE-ConnectionGUID: IZST3Fk6SPyfb5F5Inwqlg==
+X-CSE-MsgGUID: Qx5gOBl+Qbe//9evOyt44w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="29262700"
+   d="scan'208";a="29262706"
 Received: from agluck-desk3.sc.intel.com ([172.25.222.105])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:15:07 -0700
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:15:08 -0700
 From: Tony Luck <tony.luck@intel.com>
 To: Borislav Petkov <bp@alien8.de>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
 	Ingo Molnar <mingo@redhat.com>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
 	x86@kernel.org
-Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
+Cc: "H. Peter Anvin" <hpa@zytor.com>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Tony Luck <tony.luck@intel.com>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Vegard Nossum <vegard.nossum@oracle.com>,
 	linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev,
-	Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v4 27/71] x86/bugs: Switch to new Intel CPU model defines
-Date: Wed, 24 Apr 2024 11:15:06 -0700
-Message-ID: <20240424181506.41673-1-tony.luck@intel.com>
+	patches@lists.linux.dev
+Subject: [PATCH v4 28/71] x86/bugs: Switch to new Intel CPU model defines
+Date: Wed, 24 Apr 2024 11:15:07 -0700
+Message-ID: <20240424181507.41693-1-tony.luck@intel.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240424181245.41141-1-tony.luck@intel.com>
 References: <20240424181245.41141-1-tony.luck@intel.com>
@@ -88,57 +89,214 @@ New CPU #defines encode vendor and family as well as model.
 
 Signed-off-by: Tony Luck <tony.luck@intel.com>
 ---
- arch/x86/kernel/cpu/bugs.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ arch/x86/kernel/cpu/common.c | 154 +++++++++++++++++------------------
+ 1 file changed, 76 insertions(+), 78 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index ca295b0c1eee..32d86dd976c0 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -26,7 +26,7 @@
- #include <asm/msr.h>
- #include <asm/vmx.h>
- #include <asm/paravirt.h>
--#include <asm/intel-family.h>
-+#include <asm/cpu_device_id.h>
- #include <asm/e820/api.h>
- #include <asm/hypervisor.h>
- #include <asm/tlbflush.h>
-@@ -2390,20 +2390,20 @@ static void override_cache_bits(struct cpuinfo_x86 *c)
- 	if (c->x86 != 6)
- 		return;
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 2e70827c126f..cdaa795a9371 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -114,17 +114,17 @@ static const struct x86_cpu_id ppin_cpuids[] = {
+ 	X86_MATCH_FEATURE(X86_FEATURE_INTEL_PPIN, &ppin_info[X86_VENDOR_INTEL]),
  
--	switch (c->x86_model) {
--	case INTEL_FAM6_NEHALEM:
--	case INTEL_FAM6_WESTMERE:
--	case INTEL_FAM6_SANDYBRIDGE:
--	case INTEL_FAM6_IVYBRIDGE:
--	case INTEL_FAM6_HASWELL:
--	case INTEL_FAM6_HASWELL_L:
--	case INTEL_FAM6_HASWELL_G:
--	case INTEL_FAM6_BROADWELL:
--	case INTEL_FAM6_BROADWELL_G:
--	case INTEL_FAM6_SKYLAKE_L:
--	case INTEL_FAM6_SKYLAKE:
--	case INTEL_FAM6_KABYLAKE_L:
--	case INTEL_FAM6_KABYLAKE:
-+	switch (c->x86_vfm) {
-+	case INTEL_NEHALEM:
-+	case INTEL_WESTMERE:
-+	case INTEL_SANDYBRIDGE:
-+	case INTEL_IVYBRIDGE:
-+	case INTEL_HASWELL:
-+	case INTEL_HASWELL_L:
-+	case INTEL_HASWELL_G:
-+	case INTEL_BROADWELL:
-+	case INTEL_BROADWELL_G:
-+	case INTEL_SKYLAKE_L:
-+	case INTEL_SKYLAKE:
-+	case INTEL_KABYLAKE_L:
-+	case INTEL_KABYLAKE:
- 		if (c->x86_cache_bits < 44)
- 			c->x86_cache_bits = 44;
- 		break;
+ 	/* Legacy models without CPUID enumeration */
+-	X86_MATCH_INTEL_FAM6_MODEL(IVYBRIDGE_X, &ppin_info[X86_VENDOR_INTEL]),
+-	X86_MATCH_INTEL_FAM6_MODEL(HASWELL_X, &ppin_info[X86_VENDOR_INTEL]),
+-	X86_MATCH_INTEL_FAM6_MODEL(BROADWELL_D, &ppin_info[X86_VENDOR_INTEL]),
+-	X86_MATCH_INTEL_FAM6_MODEL(BROADWELL_X, &ppin_info[X86_VENDOR_INTEL]),
+-	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X, &ppin_info[X86_VENDOR_INTEL]),
+-	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X, &ppin_info[X86_VENDOR_INTEL]),
+-	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D, &ppin_info[X86_VENDOR_INTEL]),
+-	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X, &ppin_info[X86_VENDOR_INTEL]),
+-	X86_MATCH_INTEL_FAM6_MODEL(EMERALDRAPIDS_X, &ppin_info[X86_VENDOR_INTEL]),
+-	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNL, &ppin_info[X86_VENDOR_INTEL]),
+-	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNM, &ppin_info[X86_VENDOR_INTEL]),
++	X86_MATCH_VFM(INTEL_IVYBRIDGE_X, &ppin_info[X86_VENDOR_INTEL]),
++	X86_MATCH_VFM(INTEL_HASWELL_X, &ppin_info[X86_VENDOR_INTEL]),
++	X86_MATCH_VFM(INTEL_BROADWELL_D, &ppin_info[X86_VENDOR_INTEL]),
++	X86_MATCH_VFM(INTEL_BROADWELL_X, &ppin_info[X86_VENDOR_INTEL]),
++	X86_MATCH_VFM(INTEL_SKYLAKE_X, &ppin_info[X86_VENDOR_INTEL]),
++	X86_MATCH_VFM(INTEL_ICELAKE_X, &ppin_info[X86_VENDOR_INTEL]),
++	X86_MATCH_VFM(INTEL_ICELAKE_D, &ppin_info[X86_VENDOR_INTEL]),
++	X86_MATCH_VFM(INTEL_SAPPHIRERAPIDS_X, &ppin_info[X86_VENDOR_INTEL]),
++	X86_MATCH_VFM(INTEL_EMERALDRAPIDS_X, &ppin_info[X86_VENDOR_INTEL]),
++	X86_MATCH_VFM(INTEL_XEON_PHI_KNL, &ppin_info[X86_VENDOR_INTEL]),
++	X86_MATCH_VFM(INTEL_XEON_PHI_KNM, &ppin_info[X86_VENDOR_INTEL]),
+ 
+ 	{}
+ };
+@@ -1122,8 +1122,8 @@ static void identify_cpu_without_cpuid(struct cpuinfo_x86 *c)
+ #define VULNWL(vendor, family, model, whitelist)	\
+ 	X86_MATCH_VENDOR_FAM_MODEL(vendor, family, model, whitelist)
+ 
+-#define VULNWL_INTEL(model, whitelist)		\
+-	VULNWL(INTEL, 6, INTEL_FAM6_##model, whitelist)
++#define VULNWL_INTEL(vfm, whitelist)		\
++	X86_MATCH_VFM(vfm, whitelist)
+ 
+ #define VULNWL_AMD(family, whitelist)		\
+ 	VULNWL(AMD, family, X86_MODEL_ANY, whitelist)
+@@ -1140,32 +1140,32 @@ static const __initconst struct x86_cpu_id cpu_vuln_whitelist[] = {
+ 	VULNWL(VORTEX,	6, X86_MODEL_ANY,	NO_SPECULATION),
+ 
+ 	/* Intel Family 6 */
+-	VULNWL_INTEL(TIGERLAKE,			NO_MMIO),
+-	VULNWL_INTEL(TIGERLAKE_L,		NO_MMIO),
+-	VULNWL_INTEL(ALDERLAKE,			NO_MMIO),
+-	VULNWL_INTEL(ALDERLAKE_L,		NO_MMIO),
++	VULNWL_INTEL(INTEL_TIGERLAKE,		NO_MMIO),
++	VULNWL_INTEL(INTEL_TIGERLAKE_L,		NO_MMIO),
++	VULNWL_INTEL(INTEL_ALDERLAKE,		NO_MMIO),
++	VULNWL_INTEL(INTEL_ALDERLAKE_L,		NO_MMIO),
+ 
+-	VULNWL_INTEL(ATOM_SALTWELL,		NO_SPECULATION | NO_ITLB_MULTIHIT),
+-	VULNWL_INTEL(ATOM_SALTWELL_TABLET,	NO_SPECULATION | NO_ITLB_MULTIHIT),
+-	VULNWL_INTEL(ATOM_SALTWELL_MID,		NO_SPECULATION | NO_ITLB_MULTIHIT),
+-	VULNWL_INTEL(ATOM_BONNELL,		NO_SPECULATION | NO_ITLB_MULTIHIT),
+-	VULNWL_INTEL(ATOM_BONNELL_MID,		NO_SPECULATION | NO_ITLB_MULTIHIT),
++	VULNWL_INTEL(INTEL_ATOM_SALTWELL,	NO_SPECULATION | NO_ITLB_MULTIHIT),
++	VULNWL_INTEL(INTEL_ATOM_SALTWELL_TABLET, NO_SPECULATION | NO_ITLB_MULTIHIT),
++	VULNWL_INTEL(INTEL_ATOM_SALTWELL_MID,	NO_SPECULATION | NO_ITLB_MULTIHIT),
++	VULNWL_INTEL(INTEL_ATOM_BONNELL,	NO_SPECULATION | NO_ITLB_MULTIHIT),
++	VULNWL_INTEL(INTEL_ATOM_BONNELL_MID,	NO_SPECULATION | NO_ITLB_MULTIHIT),
+ 
+-	VULNWL_INTEL(ATOM_SILVERMONT,		NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
+-	VULNWL_INTEL(ATOM_SILVERMONT_D,		NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
+-	VULNWL_INTEL(ATOM_SILVERMONT_MID,	NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
+-	VULNWL_INTEL(ATOM_AIRMONT,		NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
+-	VULNWL_INTEL(XEON_PHI_KNL,		NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
+-	VULNWL_INTEL(XEON_PHI_KNM,		NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
++	VULNWL_INTEL(INTEL_ATOM_SILVERMONT,	NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
++	VULNWL_INTEL(INTEL_ATOM_SILVERMONT_D,	NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
++	VULNWL_INTEL(INTEL_ATOM_SILVERMONT_MID,	NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
++	VULNWL_INTEL(INTEL_ATOM_AIRMONT,	NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
++	VULNWL_INTEL(INTEL_XEON_PHI_KNL,	NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
++	VULNWL_INTEL(INTEL_XEON_PHI_KNM,	NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
+ 
+-	VULNWL_INTEL(CORE_YONAH,		NO_SSB),
++	VULNWL_INTEL(INTEL_CORE_YONAH,		NO_SSB),
+ 
+-	VULNWL_INTEL(ATOM_AIRMONT_MID,		NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
+-	VULNWL_INTEL(ATOM_AIRMONT_NP,		NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT),
++	VULNWL_INTEL(INTEL_ATOM_AIRMONT_MID,	NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
++	VULNWL_INTEL(INTEL_ATOM_AIRMONT_NP,	NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT),
+ 
+-	VULNWL_INTEL(ATOM_GOLDMONT,		NO_MDS | NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO),
+-	VULNWL_INTEL(ATOM_GOLDMONT_D,		NO_MDS | NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO),
+-	VULNWL_INTEL(ATOM_GOLDMONT_PLUS,	NO_MDS | NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO | NO_EIBRS_PBRSB),
++	VULNWL_INTEL(INTEL_ATOM_GOLDMONT,	NO_MDS | NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO),
++	VULNWL_INTEL(INTEL_ATOM_GOLDMONT_D,	NO_MDS | NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO),
++	VULNWL_INTEL(INTEL_ATOM_GOLDMONT_PLUS,	NO_MDS | NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO | NO_EIBRS_PBRSB),
+ 
+ 	/*
+ 	 * Technically, swapgs isn't serializing on AMD (despite it previously
+@@ -1175,9 +1175,9 @@ static const __initconst struct x86_cpu_id cpu_vuln_whitelist[] = {
+ 	 * good enough for our purposes.
+ 	 */
+ 
+-	VULNWL_INTEL(ATOM_TREMONT,		NO_EIBRS_PBRSB),
+-	VULNWL_INTEL(ATOM_TREMONT_L,		NO_EIBRS_PBRSB),
+-	VULNWL_INTEL(ATOM_TREMONT_D,		NO_ITLB_MULTIHIT | NO_EIBRS_PBRSB),
++	VULNWL_INTEL(INTEL_ATOM_TREMONT,	NO_EIBRS_PBRSB),
++	VULNWL_INTEL(INTEL_ATOM_TREMONT_L,	NO_EIBRS_PBRSB),
++	VULNWL_INTEL(INTEL_ATOM_TREMONT_D,	NO_ITLB_MULTIHIT | NO_EIBRS_PBRSB),
+ 
+ 	/* AMD Family 0xf - 0x12 */
+ 	VULNWL_AMD(0x0f,	NO_MELTDOWN | NO_SSB | NO_L1TF | NO_MDS | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO | NO_BHI),
+@@ -1198,10 +1198,8 @@ static const __initconst struct x86_cpu_id cpu_vuln_whitelist[] = {
+ #define VULNBL(vendor, family, model, blacklist)	\
+ 	X86_MATCH_VENDOR_FAM_MODEL(vendor, family, model, blacklist)
+ 
+-#define VULNBL_INTEL_STEPPINGS(model, steppings, issues)		   \
+-	X86_MATCH_VENDOR_FAM_MODEL_STEPPINGS_FEATURE(INTEL, 6,		   \
+-					    INTEL_FAM6_##model, steppings, \
+-					    X86_FEATURE_ANY, issues)
++#define VULNBL_INTEL_STEPPINGS(vfm, steppings, issues)		   \
++	X86_MATCH_VFM_STEPPINGS(vfm, steppings, issues)
+ 
+ #define VULNBL_AMD(family, blacklist)		\
+ 	VULNBL(AMD, family, X86_MODEL_ANY, blacklist)
+@@ -1226,43 +1224,43 @@ static const __initconst struct x86_cpu_id cpu_vuln_whitelist[] = {
+ #define RFDS		BIT(7)
+ 
+ static const struct x86_cpu_id cpu_vuln_blacklist[] __initconst = {
+-	VULNBL_INTEL_STEPPINGS(IVYBRIDGE,	X86_STEPPING_ANY,		SRBDS),
+-	VULNBL_INTEL_STEPPINGS(HASWELL,		X86_STEPPING_ANY,		SRBDS),
+-	VULNBL_INTEL_STEPPINGS(HASWELL_L,	X86_STEPPING_ANY,		SRBDS),
+-	VULNBL_INTEL_STEPPINGS(HASWELL_G,	X86_STEPPING_ANY,		SRBDS),
+-	VULNBL_INTEL_STEPPINGS(HASWELL_X,	X86_STEPPING_ANY,		MMIO),
+-	VULNBL_INTEL_STEPPINGS(BROADWELL_D,	X86_STEPPING_ANY,		MMIO),
+-	VULNBL_INTEL_STEPPINGS(BROADWELL_G,	X86_STEPPING_ANY,		SRBDS),
+-	VULNBL_INTEL_STEPPINGS(BROADWELL_X,	X86_STEPPING_ANY,		MMIO),
+-	VULNBL_INTEL_STEPPINGS(BROADWELL,	X86_STEPPING_ANY,		SRBDS),
+-	VULNBL_INTEL_STEPPINGS(SKYLAKE_X,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS),
+-	VULNBL_INTEL_STEPPINGS(SKYLAKE_L,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
+-	VULNBL_INTEL_STEPPINGS(SKYLAKE,		X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
+-	VULNBL_INTEL_STEPPINGS(KABYLAKE_L,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
+-	VULNBL_INTEL_STEPPINGS(KABYLAKE,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
+-	VULNBL_INTEL_STEPPINGS(CANNONLAKE_L,	X86_STEPPING_ANY,		RETBLEED),
+-	VULNBL_INTEL_STEPPINGS(ICELAKE_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
+-	VULNBL_INTEL_STEPPINGS(ICELAKE_D,	X86_STEPPING_ANY,		MMIO | GDS),
+-	VULNBL_INTEL_STEPPINGS(ICELAKE_X,	X86_STEPPING_ANY,		MMIO | GDS),
+-	VULNBL_INTEL_STEPPINGS(COMETLAKE,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
+-	VULNBL_INTEL_STEPPINGS(COMETLAKE_L,	X86_STEPPINGS(0x0, 0x0),	MMIO | RETBLEED),
+-	VULNBL_INTEL_STEPPINGS(COMETLAKE_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
+-	VULNBL_INTEL_STEPPINGS(TIGERLAKE_L,	X86_STEPPING_ANY,		GDS),
+-	VULNBL_INTEL_STEPPINGS(TIGERLAKE,	X86_STEPPING_ANY,		GDS),
+-	VULNBL_INTEL_STEPPINGS(LAKEFIELD,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED),
+-	VULNBL_INTEL_STEPPINGS(ROCKETLAKE,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS),
+-	VULNBL_INTEL_STEPPINGS(ALDERLAKE,	X86_STEPPING_ANY,		RFDS),
+-	VULNBL_INTEL_STEPPINGS(ALDERLAKE_L,	X86_STEPPING_ANY,		RFDS),
+-	VULNBL_INTEL_STEPPINGS(RAPTORLAKE,	X86_STEPPING_ANY,		RFDS),
+-	VULNBL_INTEL_STEPPINGS(RAPTORLAKE_P,	X86_STEPPING_ANY,		RFDS),
+-	VULNBL_INTEL_STEPPINGS(RAPTORLAKE_S,	X86_STEPPING_ANY,		RFDS),
+-	VULNBL_INTEL_STEPPINGS(ATOM_GRACEMONT,	X86_STEPPING_ANY,		RFDS),
+-	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RFDS),
+-	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT_D,	X86_STEPPING_ANY,		MMIO | RFDS),
+-	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RFDS),
+-	VULNBL_INTEL_STEPPINGS(ATOM_GOLDMONT,	X86_STEPPING_ANY,		RFDS),
+-	VULNBL_INTEL_STEPPINGS(ATOM_GOLDMONT_D,	X86_STEPPING_ANY,		RFDS),
+-	VULNBL_INTEL_STEPPINGS(ATOM_GOLDMONT_PLUS, X86_STEPPING_ANY,		RFDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_IVYBRIDGE,		X86_STEPPING_ANY,		SRBDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_HASWELL,		X86_STEPPING_ANY,		SRBDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_HASWELL_L,		X86_STEPPING_ANY,		SRBDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_HASWELL_G,		X86_STEPPING_ANY,		SRBDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_HASWELL_X,		X86_STEPPING_ANY,		MMIO),
++	VULNBL_INTEL_STEPPINGS(INTEL_BROADWELL_D,	X86_STEPPING_ANY,		MMIO),
++	VULNBL_INTEL_STEPPINGS(INTEL_BROADWELL_G,	X86_STEPPING_ANY,		SRBDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_BROADWELL_X,	X86_STEPPING_ANY,		MMIO),
++	VULNBL_INTEL_STEPPINGS(INTEL_BROADWELL,		X86_STEPPING_ANY,		SRBDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_SKYLAKE_X,		X86_STEPPING_ANY,		MMIO | RETBLEED | GDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_SKYLAKE_L,		X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_SKYLAKE,		X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_KABYLAKE_L,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_KABYLAKE,		X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_CANNONLAKE_L,	X86_STEPPING_ANY,		RETBLEED),
++	VULNBL_INTEL_STEPPINGS(INTEL_ICELAKE_L,		X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_ICELAKE_D,		X86_STEPPING_ANY,		MMIO | GDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_ICELAKE_X,		X86_STEPPING_ANY,		MMIO | GDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_COMETLAKE,		X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_COMETLAKE_L,	X86_STEPPINGS(0x0, 0x0),	MMIO | RETBLEED),
++	VULNBL_INTEL_STEPPINGS(INTEL_COMETLAKE_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_TIGERLAKE_L,	X86_STEPPING_ANY,		GDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_TIGERLAKE,		X86_STEPPING_ANY,		GDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_LAKEFIELD,		X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED),
++	VULNBL_INTEL_STEPPINGS(INTEL_ROCKETLAKE,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_ALDERLAKE,		X86_STEPPING_ANY,		RFDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_ALDERLAKE_L,	X86_STEPPING_ANY,		RFDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_RAPTORLAKE,	X86_STEPPING_ANY,		RFDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_RAPTORLAKE_P,	X86_STEPPING_ANY,		RFDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_RAPTORLAKE_S,	X86_STEPPING_ANY,		RFDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_ATOM_GRACEMONT,	X86_STEPPING_ANY,		RFDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_ATOM_TREMONT,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RFDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_ATOM_TREMONT_D,	X86_STEPPING_ANY,		MMIO | RFDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_ATOM_TREMONT_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RFDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_ATOM_GOLDMONT,	X86_STEPPING_ANY,		RFDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_ATOM_GOLDMONT_D,	X86_STEPPING_ANY,		RFDS),
++	VULNBL_INTEL_STEPPINGS(INTEL_ATOM_GOLDMONT_PLUS, X86_STEPPING_ANY,		RFDS),
+ 
+ 	VULNBL_AMD(0x15, RETBLEED),
+ 	VULNBL_AMD(0x16, RETBLEED),
 -- 
 2.44.0
 
