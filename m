@@ -1,116 +1,111 @@
-Return-Path: <linux-kernel+bounces-156701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5244A8B0703
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:13:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51D8C8B0708
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:16:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08EB51F22858
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:13:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D5C82819B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:16:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594F915921C;
-	Wed, 24 Apr 2024 10:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D97CF159588;
+	Wed, 24 Apr 2024 10:16:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jFlvwx/j";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="7yaGq7/d"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="oK8fWAw/"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 334651591EE;
-	Wed, 24 Apr 2024 10:13:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00E381591EE;
+	Wed, 24 Apr 2024 10:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713953625; cv=none; b=agTGrnALLypriOKk+5/SPG4VM+Lw6hemLMNrEOSPrfBK+35fezt9AZQo5VFjnyMr6FyZdx//MyQM31Zsfq1gHumba6O+UNSvaKZEY3e6V/0GQpfoZS86ExZsb5XF/FEtGTHLl++dYvdlNkf5o7RIKU7FsfH4kTeGu763L8iO9hQ=
+	t=1713953768; cv=none; b=ZhY0RCxrOuZwKdGghFeTrLVzHEc+/1+uWB9L0qpX32f9PACMCFqPxQ/IZ/KqwF+WsVmaBxf9wtbIdQUspc5tSWbAAuuCK4SlfrmxkT0+7Ztc7ALQqvV44+i5Dg6diDBYhQ/PrL2rVwof8t/+lNMs0H2yrxlKgd90MQ0ZMdCElvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713953625; c=relaxed/simple;
-	bh=RzQ9MzmadsmJNJYdtFtfbcxu5HflTL8fbN7EYDTgeP8=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=ThymjMb5hWkslOCFgY1qLbRmjqttQCrT1HoMlsDnSadOReyxj7aAR58w38ocu1DkAKDkpMcB5TGnbmWe8ay5n2hEqR7Y5ZeAEUevdTvMkKqJoIceEZIxzAhmvBQo3Vp8aHTu/lOo/qvcv5Bq4+Xa1krRhbRw8nBOtBQlTXOTDDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jFlvwx/j; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=7yaGq7/d; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 24 Apr 2024 10:13:41 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713953622;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AWA8ZRYSb39tNVn89T8ZAbT0WbRmXGIzDHq2lu5jI3s=;
-	b=jFlvwx/j9xjO8M8Ke3IZpjT8O80eDzBuYxfcL0Rh+qSJsz/6TlLhwvJVpWHG+jM8Q4nyn2
-	FKR9DoX+liurcWrCAXfJZ+s4Ur68bq9pwV/IRJa04hNviHlvwn0c+z/h+S0zqJrVi22qDZ
-	fr2wiTVuNidP5IMjGBADXDesy3OcuP4wXj8yjycgyM/18PwQzarILtZ/6h+cKCQn91liX3
-	yp/1nuVGiyb4FS+eRBOT/t4BTFAJd16eB+mvPRv+ZKnIbn3GvUIiEuPHTb3TfqDzELay6D
-	6hFaUnwtwMywEzoQw3GSE3P5iwTrxI2A9Ef2ApiWWZsPJC/swtJbBR8FZ+y1JA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713953622;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AWA8ZRYSb39tNVn89T8ZAbT0WbRmXGIzDHq2lu5jI3s=;
-	b=7yaGq7/dtPNym6lQm2H5VouGdVKQHLCRePJL0TewsB3YgxlDyzDoP8ikCGJOYwLaxmHd/J
-	JkMMsko7oc0ok+Bg==
-From: "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Fix update of rd->sg_overutilized
-Cc: Vincent Guittot <vincent.guittot@linaro.org>,
- Ingo Molnar <mingo@kernel.org>, x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240404155738.2866102-1-vincent.guittot@linaro.org>
-References: <20240404155738.2866102-1-vincent.guittot@linaro.org>
+	s=arc-20240116; t=1713953768; c=relaxed/simple;
+	bh=8Oy/uD9jVavJfWsgCdbYZdkk1sRLPXZ4IHuJWyeg0o4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mbH7dbs/6zp58MI0sz9AtmtzftjCED+t8n0nalpYS2GFoah1i26ZkoDV7DEzl7U9i5c8flEusKxpCGSYhyITcH8lzjJJIbg0hv/R+MNfXvXKhzDPTJT8rPlLwES5G2lmrnCynMuHyETtq4EQtZnocRPuchSgfhmB4MzNEzAxY20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=oK8fWAw/; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O9Epq6004161;
+	Wed, 24 Apr 2024 10:15:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=1B2VX4d
+	TB2W68hxQi0d3/UidK3ko/7h+QJBXG0519x8=; b=oK8fWAw/5DWQm0D4wiEG5Pd
+	wH9p2Rl4KOfJo690fDQKzcw2PRRZMVD3AFLLW9PWT2migCob04aDJxUu2aLxeCdd
+	qZjh7JS6ucnFEn3CpGWq0qyE+h9P/Kzmun/pd5q8hRGKMVGvOODb58QeKXN+G0z7
+	Xjmk1UIGNf0E2/FjNV5K/Tgj39UmtI0Mh4rf+bv1klUQtxT2taVqurDaipeSfJq6
+	b3fZRx90XECCAfJZh8fVtBN9/htNFpiKhlSnzuRjDcK8o4gE+kfPbzDrqb2k5vpM
+	QAlih6P055anwuQ7FWhyiiMWw3/NeiSiAKjplZSt7Iwks+X6OoebtxvtfA8NR+A=
+	=
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9ggh31-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 10:15:59 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43OAFwCR028651
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 10:15:58 GMT
+Received: from tengfan-gv.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Wed, 24 Apr 2024 03:15:54 -0700
+From: Tengfei Fan <quic_tengfan@quicinc.com>
+To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <robh@kernel.org>,
+        <krzk+dt@kernel.org>, <conor+dt@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC: <manivannan.sadhasivam@linaro.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        Tengfei Fan <quic_tengfan@quicinc.com>
+Subject: [PATCH 0/3] arm64: qcom: Add cpufreq and clock support
+Date: Wed, 24 Apr 2024 18:15:00 +0800
+Message-ID: <20240424101503.635364-1-quic_tengfan@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171395362163.10875.16925187350366324489.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: kvPxvTkw4ALCRlRBrWrBt9D6o3iVGwUz
+X-Proofpoint-GUID: kvPxvTkw4ALCRlRBrWrBt9D6o3iVGwUz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_07,2024-04-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=893
+ mlxscore=0 bulkscore=0 impostorscore=0 spamscore=0 clxscore=1011
+ priorityscore=1501 malwarescore=0 phishscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404240042
 
-The following commit has been merged into the sched/core branch of tip:
+Add cpufreq and clock support for SM4450 platform.
 
-Commit-ID:     cd18bec668bb6221a54f03d0b645b7aed841f825
-Gitweb:        https://git.kernel.org/tip/cd18bec668bb6221a54f03d0b645b7aed841f825
-Author:        Vincent Guittot <vincent.guittot@linaro.org>
-AuthorDate:    Thu, 04 Apr 2024 17:57:38 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 24 Apr 2024 12:02:51 +02:00
-
-sched/fair: Fix update of rd->sg_overutilized
-
-sg_overloaded is used instead of sg_overutilized to update
-rd->sg_overutilized.
-
-Fixes: 4475cd8bfd9b ("sched/balancing: Simplify the sg_status bitmask and use separate ->overloaded and ->overutilized flags")
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20240404155738.2866102-1-vincent.guittot@linaro.org
+Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
 ---
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 1dd3716..bb1ae4e 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10661,7 +10661,7 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 		set_rd_overloaded(env->dst_rq->rd, sg_overloaded);
- 
- 		/* Update over-utilization (tipping point, U >= 0) indicator */
--		set_rd_overutilized(env->dst_rq->rd, sg_overloaded);
-+		set_rd_overutilized(env->dst_rq->rd, sg_overutilized);
- 	} else if (sg_overutilized) {
- 		set_rd_overutilized(env->dst_rq->rd, sg_overutilized);
- 	}
+Tengfei Fan (3):
+  dt-bindings: cpufreq: cpufreq-qcom-hw: Add SM4450 compatibles
+  arm64: dts: qcom: sm4450: Add cpufreq support
+  arm64: dts: qcom: sm4450: Supply clock from cpufreq node to CPUs
+
+ .../bindings/cpufreq/cpufreq-qcom-hw.yaml     |  2 +
+ arch/arm64/boot/dts/qcom/sm4450.dtsi          | 37 +++++++++++++++++++
+ 2 files changed, 39 insertions(+)
+
+
+base-commit: a59668a9397e7245b26e9be85d23f242ff757ae8
+-- 
+2.25.1
+
 
