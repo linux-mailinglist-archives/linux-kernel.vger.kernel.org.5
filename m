@@ -1,228 +1,251 @@
-Return-Path: <linux-kernel+bounces-156177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 003A68AFEE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:56:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD5398AFEE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:57:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F5DA1F22B45
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:56:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 754EF286916
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:57:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F29F85C46;
-	Wed, 24 Apr 2024 02:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F3513B78F;
+	Wed, 24 Apr 2024 02:56:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N6kHTLcj"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PJY8zO85"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D783E171CC;
-	Wed, 24 Apr 2024 02:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B6E84FAA;
+	Wed, 24 Apr 2024 02:56:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713927387; cv=none; b=tWAS3PeQTJ5Wd0kdqiEwMJB1stT+vYfoqoyz0rrSkLp9JPPWp+aTC0I/BLW+PvCON5IpgTadxSIXGcoiPUk1o3HsLFgGkPMmeBSPjOvIEJWiZ+WPv8ISrfN5JIa8SDNl/JGI7t7LPMI/X9MO4Ft5dSe4GuKWTJboFIikHMiBnXo=
+	t=1713927396; cv=none; b=sU3kE27OO7R1ctagkugqVW96w7/ryf48+0yAtxJCQcfIwv8a1greWkvjaRVEvN6CW3i81hE3wfRyWFQa4oJ9DAtrev1qDIAcgiPx3ScYEnv4OvWDf6f2/+xacbohEHasiumuygpCYM3QxNw97v4Lc5qjaIVyvOcqizQw53BDxlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713927387; c=relaxed/simple;
-	bh=3F8Ljp1pZPV1emCV1Jv8jlUViTo++vaW01K6L3+V/Gg=;
+	s=arc-20240116; t=1713927396; c=relaxed/simple;
+	bh=VMJ73HRTSwfxt9Qoy/Gn+rvORVRwhCqItlUMlplMMuU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RXC/IYCuMyrdQE9outf51WekzYUxqD5jonzhmjhPu/h14YpVFuKvtBkWUeJ2x2s4M0MuZjh/PCwNfHSx3b2nfmZ/nCIqTLLxtGcGE1W9ILsrUwjAmvvgg3lCCIRm7AZzLl/eaPNtVG7ffDlQLLkzuYilSSwgCGPr+8r1C42Sz74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N6kHTLcj; arc=none smtp.client-ip=209.85.128.42
+	 To:Cc:Content-Type; b=k2V/t6LNz9p6cZk4LhclIT0lBELUATs8d66ISZkP48x/9oxyI3Fn/ZsC35b/xBqbXLakYn/8hRzWGvuti4LdulQKKDIxaRcWELLBHMMe+2MJzoPft9PyQB67HTARz6DzgtsHXbH3RiRgwiR4qfrvV2wIlQxNI2hFmyiH7vutyGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PJY8zO85; arc=none smtp.client-ip=209.85.208.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41a72f3a20dso20519165e9.0;
-        Tue, 23 Apr 2024 19:56:25 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d872102372so3754501fa.0;
+        Tue, 23 Apr 2024 19:56:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713927384; x=1714532184; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713927393; x=1714532193; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B917gxSMtiV9f/CrLtxYPwm85pplJTB5epaSS3BtCKg=;
-        b=N6kHTLcjuzxm4wWk7PWe6KBAiqBmc3E1fSimVps6dgViVITTCDQqPPPHrro3hGLTZW
-         MwtNtef42raDCpSA/D7rl/mrcW8Ro1Us71IGWsKO9Bh6t37IYbzRO2yQpINvG3wlp9QF
-         fe2SZkhKAQoZpAwHYGJB4npn2cM5jhd3KssBkVX1nu6nxlqWOMBHyunw3QimxgmKIjuX
-         19OkUqxh/m1yK6Nhw0yqoz9bZpxTFE6r3VZQHS7mQTgFIoQH+T+H2IivC3hRGA6chM1U
-         sP5E1aWzEeKgwtPxlh+XhiuoNAuymSaHKDAc1ZjGkCdDMawYFkaZmSmvhkhQ3FfH/l6o
-         C4kg==
+        bh=1Ed5BXb+3yDcaHzMwmV//gTO7icCBen+OQNCtXVGBFI=;
+        b=PJY8zO85hUarnebLgKtAnTkHnb5aOqcbfMdcCZJ3qYy0/3Kp4T923Ae+dnxl+V7dqy
+         41tLJx2vClG/rUBaZ2OobgW6aMXdKY3URtr8O0qUlBFVd83DcMDOf5Gh8A1TCgbXkS0j
+         KNHaVFnKKM3EPAuQZnwkAZpONJVExh+rwdB6ZXjewkuBOcBxEK2mJ9XNGK7EeLHxhJJX
+         Fg6qdVQ+yH+t8D8VXBy5sOuDU4W9u0q1OTcKDRgKjlQ/LJULoGexH6/h77+TQJc5E8Q/
+         YOeg2s2ivRrZy/vgdFYjV4KRI4GC3cXYKkmi/Q/xbleUxUlLuo1vapqrAxnx35jeF32c
+         o69g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713927384; x=1714532184;
+        d=1e100.net; s=20230601; t=1713927393; x=1714532193;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B917gxSMtiV9f/CrLtxYPwm85pplJTB5epaSS3BtCKg=;
-        b=ESiqcSvD+IFjn0NEF0ezb1TT+j88u4F+kcOl90Xi568w4itdQRVj2cBoCjbCx45jJg
-         KPsY37evdZKTviCuH+KL1tIe0CMaFS6MTyszs6l085qpNiTK76y8/0NIcyAocel7KWaA
-         Zgxa6Ceb3wnFb3OQ9duEQlptAIJ/jkXADJJmi+KDnoDpqdLoe/MO8F4Msgt84VzCEmON
-         WmLuP4rotB2IUSrpcCeCBvI/xSnuBL408u+ng8tdzZXnGr7M3TN3Wj+IZXYGJyBKkElb
-         W9/pldUkf29UpTDhHVnxj+QC7Xe/yXQTpZkvo4H6f+lBKbiI7qpWXLoYVcnJCzJ1tOtx
-         ZiQA==
-X-Forwarded-Encrypted: i=1; AJvYcCXHBkDfL+nseciS617Enym5o/qi6Sm1scuQI+fJ5WP11bFuoHh9jp5dxpFn5qwf4VXfwpdTw9e85jl8rsqfIh/Qh3eOy5FsxgBd76rghQYFa+3/vnAg3w+iWQmcImvFPJUPx/wbY2Q4vIYdeO2btoEujMDEiv/0BG1EPHM7xk/Uj21E
-X-Gm-Message-State: AOJu0Yy9PyCDNw2i83K5ycqgrb85b00QtDp2L/D26EOLjlatzHNgUQLK
-	qbbSMiZSL3fFtdEUcPqWexXCRsUT3X6mbWUTTqbZ/zqCmsqhSBUtATKOMrghnLF66ksqujgU7jl
-	2ujSM1IydpIx6WBIVMS6RACH7yew=
-X-Google-Smtp-Source: AGHT+IFt+uJn6bADlCJRAfLO2sYIqxeWgiQ8Ib/eiyitEnpA1LQrIHQHRW3pb7lwgHFPG9OJ1X9gYBmU/dcG513CNyw=
-X-Received: by 2002:adf:ec49:0:b0:34b:e79:2677 with SMTP id
- w9-20020adfec49000000b0034b0e792677mr707877wrn.63.1713927383986; Tue, 23 Apr
- 2024 19:56:23 -0700 (PDT)
+        bh=1Ed5BXb+3yDcaHzMwmV//gTO7icCBen+OQNCtXVGBFI=;
+        b=ig+rHBwJzzQWn0jFcGbmDu447RgXQVqvstAoUs/Ctxdf5ipozryuOa4q6aWMrWB8vW
+         pXfdbG0pMdtuupg4ZFjgzlhttd+alSwjNLhIonIo8eMhqKof8RJr1MdB5Dcv7l58Q/gA
+         tk/gx1cVD6RcJJaqH/AMJzADBY4Styt/xiIXpy27eRFrRoPETxqb5BD0rrCpSBgi3/u9
+         0+PhiDLaE3gKa5bZloIMCaYnHpmxrdLcAVFSaLU/pP1SwRD88/WULdeB3XVdXAA+uL7k
+         ZmctdTF3ycR3uMXFBu0EzaVJzLyUm3pJxGqhJ9MFqunpLYyo2TstceVPtRfUWwQSfZNh
+         E/fg==
+X-Forwarded-Encrypted: i=1; AJvYcCVOy8eUFeC8ZzcLoGx2Niq5dz+WFA9/33S6vxn4ElHNsNVkYUL46qXdzhHeVvnYRlfSyt3ptkiUO2LEy/rPjYa905JRhOCPD0M0tuud4omrJvSGAJaOgoG/YeXwkZ+mI+kEHB5BVedYljLQXroaem0k4IFiGffo2wsiq90diPN0iup/NpH7pA==
+X-Gm-Message-State: AOJu0YwxOivAxiiUOD6cYqHASXfbkYcGeY+ZwYff38GNXdTLiDFT+2OI
+	a3oOarfgM8kmhPawnlYBuBadhITsO55XIBnyYsfKgxEuG0H9wWoitjYDIy6W4M9PQecqknQLpjy
+	1KaUxS9djDwSSYl6dr7TuNhWGkM0=
+X-Google-Smtp-Source: AGHT+IFVKtxLp5hgNBcE7pLqHamYU9crgavsCYxLiK2bSQMn+2ebKbKDEkz9yDM+sacn5LQH4J36EjHpzfhSrPlgcCw=
+X-Received: by 2002:a2e:854e:0:b0:2de:2f6e:6375 with SMTP id
+ u14-20020a2e854e000000b002de2f6e6375mr418505ljj.4.1713927393077; Tue, 23 Apr
+ 2024 19:56:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240420-bpf_wq-v2-0-6c986a5a741f@kernel.org> <20240420-bpf_wq-v2-13-6c986a5a741f@kernel.org>
-In-Reply-To: <20240420-bpf_wq-v2-13-6c986a5a741f@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 23 Apr 2024 19:56:13 -0700
-Message-ID: <CAADnVQLbK2LajKjGRCxCUcSVOoPc5rQh=Gvz=AhYCon25CHxUA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 13/16] bpf: wq: add bpf_wq_set_callback_impl
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+References: <20240423170339.54131-1-ryncsn@gmail.com> <20240423170339.54131-8-ryncsn@gmail.com>
+ <87sezbsdwf.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87sezbsdwf.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Wed, 24 Apr 2024 10:56:16 +0800
+Message-ID: <CAMgjq7C1panmd2Fq0QvYMMdbj7rPh5znRCqogduNXoGYO7DLFA@mail.gmail.com>
+Subject: Re: [PATCH v2 7/8] mm: drop page_index/page_file_offset and convert
+ swap helpers to use folio
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Matthew Wilcox <willy@infradead.org>, Chris Li <chrisl@kernel.org>, 
+	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, 
+	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	Trond Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, 
+	linux-afs@lists.infradead.org, David Howells <dhowells@redhat.com>, 
+	Marc Dionne <marc.dionne@auristor.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 20, 2024 at 2:10=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.=
-org> wrote:
-> @@ -11018,6 +11027,7 @@ enum special_kfunc_type {
->         KF_bpf_percpu_obj_drop_impl,
->         KF_bpf_throw,
->         KF_bpf_iter_css_task_new,
-> +       KF_bpf_wq_set_callback_impl,
->  };
+On Wed, Apr 24, 2024 at 10:19=E2=80=AFAM Huang, Ying <ying.huang@intel.com>=
+ wrote:
 >
->  BTF_SET_START(special_kfunc_set)
-> @@ -11044,6 +11054,7 @@ BTF_ID(func, bpf_throw)
->  #ifdef CONFIG_CGROUPS
->  BTF_ID(func, bpf_iter_css_task_new)
->  #endif
-> +BTF_ID(func, bpf_wq_set_callback_impl)
->  BTF_SET_END(special_kfunc_set)
+> Kairui Song <ryncsn@gmail.com> writes:
 >
->  BTF_ID_LIST(special_kfunc_list)
-> @@ -11074,6 +11085,7 @@ BTF_ID(func, bpf_iter_css_task_new)
->  #else
->  BTF_ID_UNUSED
->  #endif
-> +BTF_ID(func, bpf_wq_set_callback_impl)
-
-This is broken on !CONFIG_CGROUPS.
-KF_bpf_wq_set_callback_impl in enum special_kfunc_type won't
-match special_kfunc_list.
-I moved this line up while applying.
-
->
->  static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
->  {
-> @@ -11402,12 +11414,28 @@ static bool is_sync_callback_calling_kfunc(u32 =
-btf_id)
->         return btf_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add_impl];
->  }
->
-> +static bool is_async_callback_calling_kfunc(u32 btf_id)
-> +{
-> +       return btf_id =3D=3D special_kfunc_list[KF_bpf_wq_set_callback_im=
-pl];
-> +}
-> +
->  static bool is_bpf_throw_kfunc(struct bpf_insn *insn)
->  {
->         return bpf_pseudo_kfunc_call(insn) && insn->off =3D=3D 0 &&
->                insn->imm =3D=3D special_kfunc_list[KF_bpf_throw];
->  }
->
-> +static bool is_bpf_wq_set_callback_impl_kfunc(u32 btf_id)
-> +{
-> +       return btf_id =3D=3D special_kfunc_list[KF_bpf_wq_set_callback_im=
-pl];
-> +}
-> +
-> +static bool is_callback_calling_kfunc(u32 btf_id)
-> +{
-> +       return is_sync_callback_calling_kfunc(btf_id) ||
-> +              is_async_callback_calling_kfunc(btf_id);
-> +}
-> +
->  static bool is_rbtree_lock_required_kfunc(u32 btf_id)
->  {
->         return is_bpf_rbtree_api_kfunc(btf_id);
-> @@ -12219,6 +12247,16 @@ static int check_kfunc_call(struct bpf_verifier_=
-env *env, struct bpf_insn *insn,
->                 }
->         }
->
-> +       if (is_bpf_wq_set_callback_impl_kfunc(meta.func_id)) {
-> +               err =3D push_callback_call(env, insn, insn_idx, meta.subp=
-rogno,
-> +                                        set_timer_callback_state);
-> +               if (err) {
-> +                       verbose(env, "kfunc %s#%d failed callback verific=
-ation\n",
-> +                               func_name, meta.func_id);
-> +                       return err;
-> +               }
-> +       }
-> +
->         rcu_lock =3D is_kfunc_bpf_rcu_read_lock(&meta);
->         rcu_unlock =3D is_kfunc_bpf_rcu_read_unlock(&meta);
->
-> @@ -16982,6 +17020,9 @@ static bool states_equal(struct bpf_verifier_env =
-*env,
->         if (old->active_rcu_lock !=3D cur->active_rcu_lock)
->                 return false;
->
-> +       if (old->in_sleepable !=3D cur->in_sleepable)
-> +               return false;
-> +
->         /* for states to be equal callsites have to be the same
->          * and all frame states need to be equivalent
->          */
-> @@ -19653,6 +19694,28 @@ static int fixup_kfunc_call(struct bpf_verifier_=
-env *env, struct bpf_insn *insn,
->                    desc->func_id =3D=3D special_kfunc_list[KF_bpf_rdonly_=
-cast]) {
->                 insn_buf[0] =3D BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
->                 *cnt =3D 1;
-> +       } else if (is_bpf_wq_set_callback_impl_kfunc(desc->func_id)) {
-> +               /* The verifier will process callback_fn as many times as=
- necessary
-> +                * with different maps and the register states prepared b=
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > There are four helpers for retrieving the page index within address
+> > space, or offset within mapped file:
+> >
+> > - page_index
+> > - page_file_offset
+> > - folio_index (equivalence of page_index)
+> > - folio_file_pos (equivalence of page_file_offset)
+> >
+> > And they are only needed for mixed usage of swap cache & page cache (eg=
+.
+> > migration, huge memory split). Else users can just use folio->index or
+> > folio_pos.
+> >
+> > This commit drops page_index and page_file_offset as we have eliminated
+> > all users, and converts folio_index and folio_file_pos (they were simpl=
 y
-> +                * set_timer_callback_state will be accurate.
-> +                *
-> +                * The following use case is valid:
-> +                *   map1 is shared by prog1, prog2, prog3.
-> +                *   prog1 calls bpf_timer_init for some map1 elements
-> +                *   prog2 calls bpf_timer_set_callback for some map1 ele=
-ments.
-> +                *     Those that were not bpf_timer_init-ed will return =
--EINVAL.
-> +                *   prog3 calls bpf_timer_start for some map1 elements.
-> +                *     Those that were not both bpf_timer_init-ed and
-> +                *     bpf_timer_set_callback-ed will return -EINVAL.
-> +                */
-
-Also removed this comment. It's not correct here.
-
-> +               struct bpf_insn ld_addrs[2] =3D {
-> +                       BPF_LD_IMM64(BPF_REG_4, (long)env->prog->aux),
-> +               };
-> +
-> +               insn_buf[0] =3D ld_addrs[0];
-> +               insn_buf[1] =3D ld_addrs[1];
-> +               insn_buf[2] =3D *insn;
-> +               *cnt =3D 3;
->         }
->         return 0;
->  }
+> > wrappers of page_index and page_file_offset, and implemented in a not
+> > very clean way) to use folio internally.
+> >
+> > After this commit, there will be only two helpers for users that may
+> > encounter mixed usage of swap cache and page cache:
+> >
+> > - folio_index (calls __folio_swap_cache_index for swap cache folio)
+> > - folio_file_pos (calls __folio_swap_dev_pos for swap cache folio)
+> >
+> > The index in swap cache and offset in swap device are still basically
+> > the same thing, but will be different in following commits.
+> >
+> > Signed-off-by: Kairui Song <kasong@tencent.com>
+> > ---
+> >  include/linux/mm.h      | 13 -------------
+> >  include/linux/pagemap.h | 19 +++++++++----------
+> >  mm/swapfile.c           | 13 +++++++++----
+> >  3 files changed, 18 insertions(+), 27 deletions(-)
+> >
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > index 0436b919f1c7..797480e76c9c 100644
+> > --- a/include/linux/mm.h
+> > +++ b/include/linux/mm.h
+> > @@ -2245,19 +2245,6 @@ static inline void *folio_address(const struct f=
+olio *folio)
+> >       return page_address(&folio->page);
+> >  }
+> >
+> > -extern pgoff_t __page_file_index(struct page *page);
+> > -
+> > -/*
+> > - * Return the pagecache index of the passed page.  Regular pagecache p=
+ages
+> > - * use ->index whereas swapcache pages use swp_offset(->private)
+> > - */
+> > -static inline pgoff_t page_index(struct page *page)
+> > -{
+> > -     if (unlikely(PageSwapCache(page)))
+> > -             return __page_file_index(page);
+> > -     return page->index;
+> > -}
+> > -
+> >  /*
+> >   * Return true only if the page has been allocated with
+> >   * ALLOC_NO_WATERMARKS and the low watermark was not
+> > diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> > index 2df35e65557d..a7d025571ee6 100644
+> > --- a/include/linux/pagemap.h
+> > +++ b/include/linux/pagemap.h
+> > @@ -780,7 +780,7 @@ static inline struct page *grab_cache_page_nowait(s=
+truct address_space *mapping,
+> >                       mapping_gfp_mask(mapping));
+> >  }
+> >
+> > -#define swapcache_index(folio)       __page_file_index(&(folio)->page)
+> > +extern pgoff_t __folio_swap_cache_index(struct folio *folio);
+> >
+> >  /**
+> >   * folio_index - File index of a folio.
+> > @@ -795,9 +795,9 @@ static inline struct page *grab_cache_page_nowait(s=
+truct address_space *mapping,
+> >   */
+> >  static inline pgoff_t folio_index(struct folio *folio)
+> >  {
+> > -        if (unlikely(folio_test_swapcache(folio)))
+> > -                return swapcache_index(folio);
+> > -        return folio->index;
+> > +     if (unlikely(folio_test_swapcache(folio)))
+> > +             return __folio_swap_cache_index(folio);
+> > +     return folio->index;
+> >  }
+> >
+> >  /**
+> > @@ -920,11 +920,6 @@ static inline loff_t page_offset(struct page *page=
+)
+> >       return ((loff_t)page->index) << PAGE_SHIFT;
+> >  }
+> >
+> > -static inline loff_t page_file_offset(struct page *page)
+> > -{
+> > -     return ((loff_t)page_index(page)) << PAGE_SHIFT;
+> > -}
+> > -
+> >  /**
+> >   * folio_pos - Returns the byte position of this folio in its file.
+> >   * @folio: The folio.
+> > @@ -934,6 +929,8 @@ static inline loff_t folio_pos(struct folio *folio)
+> >       return page_offset(&folio->page);
+> >  }
+> >
+> > +extern loff_t __folio_swap_dev_pos(struct folio *folio);
+> > +
+> >  /**
+> >   * folio_file_pos - Returns the byte position of this folio in its fil=
+e.
+> >   * @folio: The folio.
+> > @@ -943,7 +940,9 @@ static inline loff_t folio_pos(struct folio *folio)
+> >   */
+> >  static inline loff_t folio_file_pos(struct folio *folio)
+> >  {
+> > -     return page_file_offset(&folio->page);
+> > +     if (unlikely(folio_test_swapcache(folio)))
+> > +             return __folio_swap_dev_pos(folio);
+> > +     return ((loff_t)folio->index << PAGE_SHIFT);
 >
-> --
-> 2.44.0
+> This still looks confusing for me.  The function returns the byte
+> position of the folio in its file.  But we returns the swap device
+> position of the folio.
+
+Thanks for the comment.
+
+This doesn't look too confusing to me, __folio_swap_dev_pos ->
+swap_dev_pos also returns the byte position of the folio in swap
+device. If we agree swap device is kind of equivalent to the page
+cache file here, it shouldn't be too hard to understand.
+
 >
+> Tried to search folio_file_pos() usage.  The 2 usage in page_io.c is
+> swap specific, we can use swap_dev_pos() directly.
+
+The 2 usage in page_io.c is already converted to use swap_dev_pos
+directly in this series (patch 6/8).
+
+>
+> There are also other file system users (NFS and AFS) of
+> folio_file_pos(), I don't know why they need to work with swap
+> cache. Cced file system maintainers for help.
+>
+
+Thanks, I'm not very sure if we can just drop folio_file_pos and
+convert all users to use folio_pos directly. Swap cache mapping
+shouldn't be exposed to fs, but I'm not confident enough that this is
+a safe move. It looks OK to do so just by examining NFS code, but
+let's wait for feedback from FS people.
 
