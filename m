@@ -1,139 +1,134 @@
-Return-Path: <linux-kernel+bounces-156817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E01098B089A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:48:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F22FA8B08A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:51:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 948C21F2439A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:48:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7E3D285CE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:51:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F321215AAAA;
-	Wed, 24 Apr 2024 11:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 892C715AAAE;
+	Wed, 24 Apr 2024 11:51:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nPZArd9Z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=antgroup.com header.i=@antgroup.com header.b="p+8hKg66"
+Received: from out0-217.mail.aliyun.com (out0-217.mail.aliyun.com [140.205.0.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A6B015A4A3
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 11:48:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C40015A4A1;
+	Wed, 24 Apr 2024 11:51:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.205.0.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713959311; cv=none; b=MVCvGf2eeQ06xMIWFirc77efCQKmhsmJaUGPpyEZCw46WrLViGeEo7l98pdZemDsXXjw7wBVO5tToSv7CGJWMd0qAZiOxJTdM98x3HHF17ak87ZFFDXRqMVstyUq3v9IP7LA5v2cIKmhYtgoVG4BNKq0C8PkBwuVKJQs+xoPGeg=
+	t=1713959474; cv=none; b=i3vtW9Vr2VeP2TfQZTuCEiH43/K9Nke72wa1+YbIq7hREJxILOHU4Je+cDENDbDTFQIBQici9EmpbaHZVfHvUTHIJyqvSF09chxT9TailzC7RmkcvUtEfeGJeCzgvLvGyvgqgiPBKW0jbqYh2YpWDEqgjOBWqNidhicuxL1UwBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713959311; c=relaxed/simple;
-	bh=PO7HEtXuGC+TI0QunfomdbHElXxBffRMMrNGD/K4vzc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G/sGVB6ql2kpyHnrpS7iJEe5Rg1Gd03RB+JsZVsxWHif4uR859lRBAZgCUZ8M4X/3Bm2NvI6Tko9/u+BcS5hXcQACLpVcKSQS5Gvvi6l6YPIxkTl0tqIa1TjfWqwaz9wOMS7V5wtSMAtttz6g3Tj3HojqyggeFqgxwsvVvttrnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nPZArd9Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7E7AC113CE;
-	Wed, 24 Apr 2024 11:48:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713959311;
-	bh=PO7HEtXuGC+TI0QunfomdbHElXxBffRMMrNGD/K4vzc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nPZArd9ZAY5oMK6RVkPMKw+v+1bfHu4kyQ3uM7msjAj9edGK2JFwsSXLvIjClb3Df
-	 j7LvoLkaISGN329wmk6j/7FIPqf/eV17x3lWfhbL3GtdHeu4m0jcGV0+yVmEpv/LnT
-	 aB0TwULU2N80V6eQ7AfXDWq2f6UlpZ/278kQ2aJP6my6hFcWcy9cmZDCAp+wTUKNHb
-	 Yc/mZw/0JrnKVDM5lop926ZmG1WEwnjfJVKTOpLlPQIwtZQ9h4HnRaBYEAzkejj77k
-	 Z7vVAS6ZOOyU3SjFlBn5qn1Cwy5Rm7u4ZrCeAomhwJWbC702c0Ns8niLRN5qoeAgFZ
-	 xs+iasmtvTllg==
-Date: Wed, 24 Apr 2024 12:48:26 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Atish Patra <atishp@rivosinc.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH riscv/for-next] riscv: cacheflush: Fix warning when
- compiled without CONFIG_SMP
-Message-ID: <20240424-aspect-swinger-50d47c3d0a72@spud>
-References: <20240417-fix_nosmp_icache-v1-1-921a3c07d4ce@rivosinc.com>
+	s=arc-20240116; t=1713959474; c=relaxed/simple;
+	bh=0ASRLrYLM+eWKri3S7N5mLSo2FArHC34RbVnFY+i0/E=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=GxAAQZvNhxvc9pMC0jxxtzgV1R/vkg0N1tgK0/sYTQ4kf7701Kij9x7OkeExPuVjbfj7y41JCFQfOc5ZOhUOpimGJhByRiAnmD6K9/mQ95w2bY6VKOw86VuS+oMs7BA/WaqZQxlcnDy2u+9lNJ2rmQOz2qRsSqzO+dAGc82AlYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; dkim=pass (1024-bit key) header.d=antgroup.com header.i=@antgroup.com header.b=p+8hKg66; arc=none smtp.client-ip=140.205.0.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=antgroup.com; s=default;
+	t=1713959461; h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
+	bh=ozLjALREGz/5ADpN3UYpLtAQzZ6fw/RdnvorAJ09Wvs=;
+	b=p+8hKg662XSAiXfqhEmzDCY2U7PhfXxYzfW60nkIBPk8RBXQa8T2/lqT83A4nGF/hUUB4cSumO5Xim0YCFUTh8fIRKaTeSda7pr+Aer8kJJy9f4xpIghsO1Lh/27C2VYvkOahrM9tkcr86qaR7hvMS3DctJZR1W3Vcy8GpGV0WU=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047211;MF=zhubojun.zbj@antgroup.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---.XKLmvlB_1713959460;
+Received: from smtpclient.apple(mailfrom:zhubojun.zbj@antgroup.com fp:SMTPD_---.XKLmvlB_1713959460)
+          by smtp.aliyun-inc.com;
+          Wed, 24 Apr 2024 19:51:00 +0800
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="NanvZTWuCzgHOaYO"
-Content-Disposition: inline
-In-Reply-To: <20240417-fix_nosmp_icache-v1-1-921a3c07d4ce@rivosinc.com>
-
-
---NanvZTWuCzgHOaYO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.100.2.1.4\))
+Subject: Re: [RFC PATCH 1/1] x86/sgx: Explicitly give up the CPU in EDMM's
+ ioctl() to avoid softlockup
+From: "Bojun Zhu" <zhubojun.zbj@antgroup.com>
+In-Reply-To: <D0SAGP6DPKXF.2EHTXI9UH0HQ9@kernel.org>
+Date: Wed, 24 Apr 2024 19:50:49 +0800
+Cc: "=?UTF-8?B?SHVhbmcsIEthaQ==?=" <kai.huang@intel.com>,
+  "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+  "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+  "=?UTF-8?B?5YiY5Y+MKOi9qeWxuSk=?=" <ls123674@antgroup.com>,
+  "=?UTF-8?B?Q2hhdHJlLCBSZWluZXR0ZQ==?=" <reinette.chatre@intel.com>,
+  "Bojun Zhu" <zhubojun.zbj@antgroup.com>
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <D428BE51-20DA-42C5-A2B0-B264D7564700@antgroup.com>
+References: <20240423092550.59297-1-zhubojun.zbj@antgroup.com>
+ <20240423092550.59297-2-zhubojun.zbj@antgroup.com>
+ <02fe00c3b10e4476d500ad7a34024b7eae5e3c97.camel@intel.com>
+ <85dfbebc-a2d5-4828-b3b9-f929cd6e30cf@antgroup.com>
+ <D0S5S2NL1N5P.3Q0SM01VIZBJX@kernel.org>
+ <D0SAGP6DPKXF.2EHTXI9UH0HQ9@kernel.org>
+To: Jarkko Sakkinen <jarkko@kernel.org>
+X-Mailer: Apple Mail (2.3774.100.2.1.4)
 
-On Wed, Apr 17, 2024 at 04:49:48PM -0700, Charlie Jenkins wrote:
-> GCC tries to compile the static function set_icache_stale_mask() even
-> when there are no callers. Guard the function with #ifdef CONFIG_SMP.
->=20
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> Fixes: 383289e4b071 ("riscv: Include riscv_set_icache_flush_ctx prctl")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202404180621.qG7A9Tk0-lkp@i=
-ntel.com/
-> ---
-> Since this is just in for-next Palmer do you want to squash this onto the
-> commit that introduced this 383289e4b071?
+Hi Jarkko,
 
-It's not even in riscv/for-next as far as I can tell, and looks like the
-squash into the staging copy has already happened. I'm gonna drop this
-=66rom patchwork.
-
-> ---
->  arch/riscv/mm/cacheflush.c | 2 ++
->  1 file changed, 2 insertions(+)
+> On Apr 24, 2024, at 18:42, Jarkko Sakkinen <jarkko@kernel.org> wrote:
 >=20
-> diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-> index 3b03534e57b4..3ef666c7dfc7 100644
-> --- a/arch/riscv/mm/cacheflush.c
-> +++ b/arch/riscv/mm/cacheflush.c
-> @@ -154,6 +154,7 @@ void __init riscv_init_cbo_blocksizes(void)
->  		riscv_cboz_block_size =3D cboz_block_size;
->  }
-> =20
-> +#ifdef CONFIG_SMP
->  static void set_icache_stale_mask(void)
->  {
->  	cpumask_t *mask;
-> @@ -171,6 +172,7 @@ static void set_icache_stale_mask(void)
->  	cpumask_setall(mask);
->  	cpumask_assign_cpu(smp_processor_id(), mask, stale_cpu);
->  }
-> +#endif
-> =20
->  /**
->   * riscv_set_icache_flush_ctx() - Enable/disable icache flushing instruc=
-tions in
+> On Wed Apr 24, 2024 at 10:02 AM EEST, Jarkko Sakkinen wrote:
+>> On Wed Apr 24, 2024 at 9:46 AM EEST, Bojun Zhu wrote:
+>>> Based on the the discussion among you, Jarkko and Reinette,
+>>> I will keep the need_resched() and wrap the logic in using =
+sgx_resched(),
+>>> as suggested by Jarkko.
+>>=20
+>> Sounds like a plan :-)
 >=20
-> ---
-> base-commit: a76716f0ec75b9e7ac62d30854d690044c857684
-> change-id: 20240417-fix_nosmp_icache-0fc36aeafbe5
-> --=20
-> - Charlie
+> In sgx_ioc_enclave_add_pages() "if (!c)" check might cause possibly
+> some  confusion.
 >=20
+> Reason for it is that in "transaction sense" the operation can
+> be only meaningfully restarted when no pages have not been added
+> as MRENCLAVE checksum cannot be reset.
+>=20
+> BR, Jarkko
 >=20
 
---NanvZTWuCzgHOaYO
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+Thanks for your reminder.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZijxigAKCRB4tDGHoIJi
-0iHSAQDMmKslb0ZNvdDMQXGxUh6Nh2yAwGICnXywnCtLSJvYBQEAh0pm2Q+fF4dA
-9XYZPXj927z8xflePWNO47VSCEq9SA8=
-=dZsw
------END PGP SIGNATURE-----
+According to the SGX hardware specification, similar to "ADD PAGES=E2=80=9D=
+,
+the operations in  "MODT PAGEs=E2=80=9D and  "REMOVE PAGEs(at =
+runtime)=E2=80=9D =20
+can be only meaningfully restarted when no page has been handled.
 
---NanvZTWuCzgHOaYO--
+For the following code in sgx_ioc_enclave_add_pages():
+
+```c
+if (signal_pending(current)) {
+	if (!c)
+		ret =3D -ERESTARTSYS;
+
+	break;
+}
+```
+I still have some questions:
+
+It seems that the variable "ret" is set to 0 if there is **some** EPC =
+pages have been=20
+added when interrupted by signal(Supposed that sgx_encl_add_page()=20
+always returns successfully).
+
+Shall we set the return value as "-EINTR" if the context is interrupted =
+by=20
+signal when some EPC pages have been added?
+(BTW, return values contain -EINTR as shown in
+=
+https://elixir.bootlin.com/linux/latest/source/arch/x86/kernel/cpu/sgx/ioc=
+tl.c#L402)
+
+Please correct me if misunderstood it.
+
+Regards,
+Bojun=
 
