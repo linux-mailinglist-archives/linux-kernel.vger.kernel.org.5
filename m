@@ -1,223 +1,165 @@
-Return-Path: <linux-kernel+bounces-157787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C5E28B1630
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:32:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 920018B1631
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:32:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 316572810E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:32:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B59511C21DC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71CB116DEA4;
-	Wed, 24 Apr 2024 22:32:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A477C15ECEE;
+	Wed, 24 Apr 2024 22:32:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Kx+gIttH"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K8SXI46o"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C11A23BE
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:32:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD97523BE
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713997933; cv=none; b=Ai38brRmrnsy9HjJNSjyNzpUcTj37Vwr1OPvAxcy9esFhtRDUEFA/zeMY3a5MB87sXwU0DQBZX8ibq1WqL9htDJzNF7iOekgXcEmts16Tjlfyga4Pt76PsHh2lfgSAiPGoQut6fc0VkUh2AgDJvXOmINmPw0joQQXTfEhPwPOjs=
+	t=1713997946; cv=none; b=EP/PYZA/BpxNveNDaFnBo5gODhS9nEft7i6QTzVjIHVymyzbNRRjpzAM/Z+AmZWbX/ku+KYOdKAQXJ2D8ozEbqupWllt615EiIBwauuThbYmAc8KKHZbmkjMekIpBCJxhyOBxQzAFUmAWb6K5TfVwo0SJSiN6xSCavyJ2tU/RYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713997933; c=relaxed/simple;
-	bh=uvZEBkA/MPyDoHJ5/C9wqvZpYhJJlinnsxmUnLpv1is=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g34USzUlHnHerV0Bff2oSYU8lXkI7iLzz01Dz97e0Lqj9sFW8nctcw3Xtp4UOWQD6QrbdGfVtdiH1eaotdBy5IpMrPW3xtxTkuv7vkwAz/vKzZG6JqWEQgfRTHA2vUfNlgzW0oYu8g1lWyVIa/kFQMgxStikuqAv1VUUkIh2i68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Kx+gIttH; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6ed691fb83eso365591b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:32:11 -0700 (PDT)
+	s=arc-20240116; t=1713997946; c=relaxed/simple;
+	bh=EQo+zGC16IkD24HLaYmrTErmXONgg+WietHKBFzN8Qs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OEeV3ZsJqGpj/D+CbSPttzOh/XzZs0AcqpEkd5EFO8jw9yrikeD5TeM+DRdnXqYXeIoZOuaCd3Ez5r869j0o2R0cvtzbFV8kTTp+a2V3eLKX/zhoUIeP0R+RDWnizxHUkLsuDdNv1KSO+/lJrOg0pNWrR+WjDxX4MNtbUD3nkmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K8SXI46o; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a55b3d57277so43267866b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:32:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713997931; x=1714602731; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=W5XW2EeZa2xzGai521vbraJwVDegbnZlLcrpCRyHG1Q=;
-        b=Kx+gIttHeoiuuNGI10tI2jPgH1H8bQ7BfIHaBcOV8UOYyeTtHrs8UQMluz7MU8wM1F
-         ZvgJCsx7aSoDHM/eTD9ildmKsGHa/e6MBoQd7JRT28WJMVM6YcmX6d4Rav84A1cw9uxJ
-         Bhfh6uqIyrvSLAbvl8S8KKLnlVyNOgdQQHu1g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713997931; x=1714602731;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1713997943; x=1714602743; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=W5XW2EeZa2xzGai521vbraJwVDegbnZlLcrpCRyHG1Q=;
-        b=pO4bY/uU7MY+Sxj4XXazNPtUlfFEEgaVG3G/j519XJx0g+gwJ7JVg4luJYbtVpNQKp
-         I/OWB8ek4KVK5ny2EJaoHPhYH11axkEYe2jIo1g2i9NDwUbz9z1CN1Ex997KoSDrI1n9
-         9X/SzJLJMuptQoV8dYjNn6EaZ9IozjjnSCLDUWaWI4qQgEuZ/2c1X91vnY04A/6qCAks
-         06AI+RaFXcmjv57Xa9zrGcl/z5J6QDgRNwfxpmTXiKrv7bZrH5sj8aT/A43e05UuSCHx
-         veVhK4/h/p1Psaqh8+FOxqBThm88PXeH8lOIRtFlBQpTKXZyILz7DJC6wHxslHLeUWn7
-         97YA==
-X-Forwarded-Encrypted: i=1; AJvYcCVMECEfGEk/Z4eKHVvNdYGnfrWpKIHjLXsrUx82+qOiO0vxAHAraSErFXoAqEecuqK7HyLf79NNtPImOkoHSi07l4aCVW9tkdZA7XQk
-X-Gm-Message-State: AOJu0YwtUEkZlsMa5rOwQZjgCbbDXiuWPk+OtcathTa3OkuwudK2SkcO
-	imnZKeRxtlPQu88W8GebnevKC3fiPawbEvvVAwYgRh8TpTTy/TcpqkVnpZ8peA==
-X-Google-Smtp-Source: AGHT+IFXP0SM3z7WAQFgdBp5CCxZlXZmSMJJS/NqcGG1stQP0tBD3jcLz3Jce0/lDIAfO16tzwVCPw==
-X-Received: by 2002:a05:6a20:de89:b0:1a7:870a:86eb with SMTP id la9-20020a056a20de8900b001a7870a86ebmr3750218pzb.15.1713997931478;
-        Wed, 24 Apr 2024 15:32:11 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id u12-20020a056a00098c00b006f09d5807ebsm11488861pfg.82.2024.04.24.15.32.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 15:32:10 -0700 (PDT)
-Date: Wed, 24 Apr 2024 15:32:10 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Marco Elver <elver@google.com>, Andrey Konovalov <andreyknvl@gmail.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, llvm@lists.linux.dev,
-	kasan-dev@googlegroups.com, linux-hardening@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ubsan: Avoid i386 UBSAN handler crashes with Clang
-Message-ID: <202404241530.A26FA3CC2@keescook>
-References: <20240424162942.work.341-kees@kernel.org>
- <20240424192652.GA3341665@dev-arch.thelio-3990X>
+        bh=a1VSqOGp+cTDD3FwVgodoOnkI+tY2YGNCkhcEt2wmrs=;
+        b=K8SXI46o5GhTsTsE7YEEvqvJpA6hSALvNY9H9s2XVc9t4yon0eL4Cf5+74A8AXZ6AC
+         37UzEn4NO9hk91SFvcFg9hLRFqWtXtBMGyZBWnuGKnOYFKrHLCiYR6eBXayiTljD7oPZ
+         NSCXfCJAkBiVeId8FjsXhejgM1ciLtEJUCXu0RZofwQk+nY9kchpPL/H79EAOQPqrpQo
+         FTAlt4XuN4H0O9+yAoqOYxTzvKnpFzRUbqnar4mxZUPz12O81p3uXQA+73EFNkg2RSIx
+         8PxyyGvDN+27mybS+RY0Avec8F4bJr1ZThJm+9CYs6oUpMXCoyJtC6bMZ2G/Z5lhSRCo
+         j3fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713997943; x=1714602743;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a1VSqOGp+cTDD3FwVgodoOnkI+tY2YGNCkhcEt2wmrs=;
+        b=J7Gchfn40szjyiKjeSqQuYRuAFzUK9IFohuIjCURK++E6Ah+GrXjg70EmZs2y7szSE
+         ncqr1Usqfk/XQqfx45vvl/0nDfsW7qemSOmWUNVhWQbtaZYolp8Zqs5zU5OBfbW7VDBq
+         QyejNH7nRUIgaRi/omsgVFcpvvh0RP4lryio3/DwrXArnVYFd59G14G7d1glyZF7Hs9z
+         7OxIzXnvIUCHDwEAVLAiOaWOgeOfnEV7TDHgl8PDArpU85s1z3ZjjFD5qWYGc5WydWeo
+         qCSS+dQfzhJOtf9sdtTadVs59Tx8j9epY3YN3k+Bu0Xe4YOrCo+FP5HGNMXozCcyWs6G
+         bLpg==
+X-Forwarded-Encrypted: i=1; AJvYcCUx1WBx4XGG9X+pTclBiw86NpAPfqJJVtycIwZkGw2WMmUZH7g1a+4coX3bxvWXuKgka4sDVQcsQVuj09WyR/Neu1NcDD5OMWZsZDqB
+X-Gm-Message-State: AOJu0YwIkoAV6EYKXOqPlFBlHM98ijuXDJGbkIYW+NUnmylYimg1qpzZ
+	jWIGNtEM1E6SV4IkJZ63IVtiP8drUUzm/6EG4DgboCV+Hgqlo26YSbKJIGLYdvCev0YVr4KLZJr
+	K8CLT+laHbXs1OE+cO72fCA22Cx0=
+X-Google-Smtp-Source: AGHT+IEqtFmD6v9c765dugMGoqkOjGlWjaNOWIqmuj7vQIcOYL0B0PAWJepn5edmJtBLhZQl5RDy339oHFM/1lING+A=
+X-Received: by 2002:a17:906:f9d1:b0:a52:5d89:5f27 with SMTP id
+ lj17-20020a170906f9d100b00a525d895f27mr2602963ejb.14.1713997942903; Wed, 24
+ Apr 2024 15:32:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424192652.GA3341665@dev-arch.thelio-3990X>
+References: <20240424211031.475756-1-zi.yan@sent.com>
+In-Reply-To: <20240424211031.475756-1-zi.yan@sent.com>
+From: Yang Shi <shy828301@gmail.com>
+Date: Wed, 24 Apr 2024 15:32:11 -0700
+Message-ID: <CAHbLzkq61sTeRxU23gg3kMNBunxXH3GpkL6D56xcaepsDzFCJA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/rmap: do not add fully unmapped large folio to
+ deferred split list
+To: Zi Yan <ziy@nvidia.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Ryan Roberts <ryan.roberts@arm.com>, 
+	Barry Song <21cnbao@gmail.com>, David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 24, 2024 at 12:26:52PM -0700, Nathan Chancellor wrote:
-> Hi Kees,
-> 
-> On Wed, Apr 24, 2024 at 09:29:43AM -0700, Kees Cook wrote:
-> > When generating Runtime Calls, Clang doesn't respect the -mregparm=3
-> > option used on i386. Hopefully this will be fixed correctly in Clang 19:
-> > https://github.com/llvm/llvm-project/pull/89707
-> > but we need to fix this for earlier Clang versions today. Force the
-> > calling convention to use non-register arguments.
-> > 
-> > Reported-by: ernsteiswuerfel
-> 
-> FWIW, I think this can be
-> 
->   Reported-by: Erhard Furtner <erhard_f@mailbox.org>
-> 
-> since it has been used in the kernel before, the reporter is well known
-> :)
+On Wed, Apr 24, 2024 at 2:10=E2=80=AFPM Zi Yan <zi.yan@sent.com> wrote:
+>
+> From: Zi Yan <ziy@nvidia.com>
+>
+> In __folio_remove_rmap(), a large folio is added to deferred split list
+> if any page in a folio loses its final mapping. It is possible that
+> the folio is unmapped fully, but it is unnecessary to add the folio
+> to deferred split list at all. Fix it by checking folio->_nr_pages_mapped
+> before adding a folio to deferred split list. If the folio is already
+> on the deferred split list, it will be skipped.
+>
+> Commit 98046944a159 ("mm: huge_memory: add the missing
+> folio_test_pmd_mappable() for THP split statistics") tried to exclude
+> mTHP deferred split stats from THP_DEFERRED_SPLIT_PAGE, but it does not
+> fix everything. A fully unmapped PTE-mapped order-9 THP was also added to
+> deferred split list and counted as THP_DEFERRED_SPLIT_PAGE, since nr is
+> 512 (non zero), level is RMAP_LEVEL_PTE, and inside deferred_split_folio(=
+)
+> the order-9 folio is folio_test_pmd_mappable(). However, this miscount
+> was present even earlier due to implementation, since PTEs are unmapped
+> individually and first PTE unmapping adds the THP into the deferred split
+> list.
 
-Ah! Okay, thanks. I wasn't able to find an associated email address. :)
+Shall you mention the miscounting for mTHP too? There is another patch
+series adding the counter support for mTHP.
 
-> 
-> > Closes: https://github.com/KSPP/linux/issues/350
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> > Cc: Marco Elver <elver@google.com>
-> > Cc: Andrey Konovalov <andreyknvl@gmail.com>
-> > Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-> > Cc: Nathan Chancellor <nathan@kernel.org>
-> > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > Cc: Bill Wendling <morbo@google.com>
-> > Cc: Justin Stitt <justinstitt@google.com>
-> > Cc: llvm@lists.linux.dev
-> > Cc: kasan-dev@googlegroups.com
-> > Cc: linux-hardening@vger.kernel.org
-> > ---
-> >  lib/ubsan.h | 41 +++++++++++++++++++++++++++--------------
-> >  1 file changed, 27 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/lib/ubsan.h b/lib/ubsan.h
-> > index 50ef50811b7c..978828f6099d 100644
-> > --- a/lib/ubsan.h
-> > +++ b/lib/ubsan.h
-> > @@ -124,19 +124,32 @@ typedef s64 s_max;
-> >  typedef u64 u_max;
-> >  #endif
-> >  
-> > -void __ubsan_handle_add_overflow(void *data, void *lhs, void *rhs);
-> > -void __ubsan_handle_sub_overflow(void *data, void *lhs, void *rhs);
-> > -void __ubsan_handle_mul_overflow(void *data, void *lhs, void *rhs);
-> > -void __ubsan_handle_negate_overflow(void *_data, void *old_val);
-> > -void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs);
-> > -void __ubsan_handle_type_mismatch(struct type_mismatch_data *data, void *ptr);
-> > -void __ubsan_handle_type_mismatch_v1(void *_data, void *ptr);
-> > -void __ubsan_handle_out_of_bounds(void *_data, void *index);
-> > -void __ubsan_handle_shift_out_of_bounds(void *_data, void *lhs, void *rhs);
-> > -void __ubsan_handle_builtin_unreachable(void *_data);
-> > -void __ubsan_handle_load_invalid_value(void *_data, void *val);
-> > -void __ubsan_handle_alignment_assumption(void *_data, unsigned long ptr,
-> > -					 unsigned long align,
-> > -					 unsigned long offset);
-> > +/*
-> > + * When generating Runtime Calls, Clang doesn't respect the -mregparm=3
-> > + * option used on i386. Hopefully this will be fixed correctly in Clang 19:
-> > + * https://github.com/llvm/llvm-project/pull/89707
-> > + * but we need to fix this for earlier Clang versions today. Force the
-> 
-> It may be better to link to the tracking issue upstream instead of the
-> pull request just in case someone comes up with an alternative fix (not
-> that I think your change is wrong or anything but it seems like that
-> happens every so often).
-> 
-> I also get leary of the version information in the comment, even though
-> I don't doubt this will be fixed in clang 19.
-> 
-> > + * calling convention to use non-register arguments.
-> > + */
-> > +#if defined(__clang__) && defined(CONFIG_X86_32)
-> 
-> While __clang__ is what causes CONFIG_CC_IS_CLANG to get set and there
-> is some existing use of it throughout the kernel, I think
-> CONFIG_CC_IS_CLANG makes it easier to audit the workarounds that we
-> have, plus this will be presumably covered to
-> 
->   CONFIG_CLANG_VERSION < 190000
+>
+> With commit b06dc281aa99 ("mm/rmap: introduce
+> folio_remove_rmap_[pte|ptes|pmd]()"), kernel is able to unmap PTE-mapped
+> folios in one shot without causing the miscount, hence this patch.
+>
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> ---
+>  mm/rmap.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index a7913a454028..220ad8a83589 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -1553,9 +1553,11 @@ static __always_inline void __folio_remove_rmap(st=
+ruct folio *folio,
+>                  * page of the folio is unmapped and at least one page
+>                  * is still mapped.
+>                  */
+> -               if (folio_test_large(folio) && folio_test_anon(folio))
+> -                       if (level =3D=3D RMAP_LEVEL_PTE || nr < nr_pmdmap=
+ped)
+> -                               deferred_split_folio(folio);
+> +               if (folio_test_large(folio) && folio_test_anon(folio) &&
+> +                   list_empty(&folio->_deferred_list) &&
 
-Yeah, that seems much cleaner. I will adjust it...
+Do we really need this check? deferred_split_folio() does the same
+check too. Bailing out earlier sounds ok too, but there may not be too
+much gain.
 
-> 
-> when the fix actually lands. This file is not expected to be used
-> outside of the kernel, right? That is the only thing I could think of
-> where this distinction would actually matter.
-> 
-> > +# define ubsan_linkage asmlinkage
-> 
-> Heh, clever...
-> 
-> > +#else
-> > +# define ubsan_linkage /**/
-> 
-> Why is this defined as a comment rather than just nothing?
+> +                   ((level =3D=3D RMAP_LEVEL_PTE && atomic_read(mapped))=
+ ||
+> +                    (level =3D=3D RMAP_LEVEL_PMD && nr < nr_pmdmapped)))
 
-I dunno; this is a coding style glitch of mine. :P I will drop it.
+IIUC, this line is used to cover the case which has both partial
+PTE-mapping and PMD-mapping, then PMD mapping is unmapped fully. IIRC
+this case was not handled correctly before, the THP actually skipped
+deferred split queue. If so please add some description in the commit
+log.
 
-Thanks for the review!
+Otherwise the patch looks good to me. Reviewed-by: Yang Shi
+<shy828301@gmail.com>
 
--Kees
-
-> 
-> > +#endif
-> > +
-> > +void ubsan_linkage __ubsan_handle_add_overflow(void *data, void *lhs, void *rhs);
-> > +void ubsan_linkage __ubsan_handle_sub_overflow(void *data, void *lhs, void *rhs);
-> > +void ubsan_linkage __ubsan_handle_mul_overflow(void *data, void *lhs, void *rhs);
-> > +void ubsan_linkage __ubsan_handle_negate_overflow(void *_data, void *old_val);
-> > +void ubsan_linkage __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs);
-> > +void ubsan_linkage __ubsan_handle_type_mismatch(struct type_mismatch_data *data, void *ptr);
-> > +void ubsan_linkage __ubsan_handle_type_mismatch_v1(void *_data, void *ptr);
-> > +void ubsan_linkage __ubsan_handle_out_of_bounds(void *_data, void *index);
-> > +void ubsan_linkage __ubsan_handle_shift_out_of_bounds(void *_data, void *lhs, void *rhs);
-> > +void ubsan_linkage __ubsan_handle_builtin_unreachable(void *_data);
-> > +void ubsan_linkage __ubsan_handle_load_invalid_value(void *_data, void *val);
-> > +void ubsan_linkage __ubsan_handle_alignment_assumption(void *_data, unsigned long ptr,
-> > +						       unsigned long align,
-> > +						       unsigned long offset);
-> >  
-> >  #endif
-> > -- 
-> > 2.34.1
-> > 
-> > 
-
--- 
-Kees Cook
+> +                       deferred_split_folio(folio);
+>         }
+>
+>         /*
+>
+> base-commit: 2541ee5668b019c486dd3e815114130e35c1495d
+> --
+> 2.43.0
+>
 
