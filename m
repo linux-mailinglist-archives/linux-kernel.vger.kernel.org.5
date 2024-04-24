@@ -1,212 +1,175 @@
-Return-Path: <linux-kernel+bounces-157375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52C4C8B10C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63EF68B10CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:19:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAA58B293C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:15:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96AEAB296B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:19:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E196C16D332;
-	Wed, 24 Apr 2024 17:15:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aDsUkAeb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC29B16D4CE;
+	Wed, 24 Apr 2024 17:19:05 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F18B815B576;
-	Wed, 24 Apr 2024 17:15:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB228161326;
+	Wed, 24 Apr 2024 17:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713978949; cv=none; b=lZZKSED5hKSDEywelHb0fHo/2/CCOeRjjzCRJRJZZK2L7tFTi+KrTA8EkLkZFSGRusX84qeMLVPMq6xiPZIJqntYcL9y1qPQ+NQShKiWMFkS7YdJOhatChruAH+eWX9HwnXB8SHdWsh5cOyT5Pv3Wuo1Hgf2ZujdvD1YqNI6j+A=
+	t=1713979145; cv=none; b=B6JRQdCs4N0/nGCe2Hl5Qjrg4gEda73B2cqzp5OeFYQO444Y9AYh+cMQ4q4+adzJoXxzIU49vu7oMoJfZh7qKPbvC/kyzYcGi6rN3/6rcNNmCGtnddBpRc90Ioy53Mf1qzCgO4qcRTD02keQnJQJxQ4z+KJqNu1fBTuQr9ftcgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713978949; c=relaxed/simple;
-	bh=npblAWK7DFyXQvXOQl2/avJWn4QSgquFfcdlePygbCM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ADKLFO/u7YYeJQXBSdL1tsN940tcTJCW/Jd5f/w7/i8LKthZWXEbp7mojMGDWEXPk2oYQ9ktEvFps2mz80HQwtng3D0+bE+UhzHDHp1lchFchXs35rrZ2sl1pY2rqz7l0oRFeEilUS7A1/XJjVTFKPgQ00Br0EazQcmzlMxdNu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aDsUkAeb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FCF2C113CD;
-	Wed, 24 Apr 2024 17:15:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713978948;
-	bh=npblAWK7DFyXQvXOQl2/avJWn4QSgquFfcdlePygbCM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=aDsUkAebHzQS9aPZ5UAA9x/BNYa9s35Z/NlySbqBHZm3o5AhZ8lGrCMQroRBqjkDl
-	 CsRMtgywR3Orp+kkB1kzwY+16wR5fv5x2cZBFwqXGItuhX/nj7F7S9g9Guwb7+zHhG
-	 I45gi0R6iAS1q2kJvA6PqBKxiT6ZdYRFBvcwlqlcG6g78SwH0IAb8weJS8fFKrhj+J
-	 O9OSIZPDdN3DRCDjHlxeVs/bFJLpuDCaXfGswKQU83dSQEvrOcg1YcJBGd4XWRukIm
-	 D2NXtdjCK0MMGpNCVDh8qMOpTQdKA7FVPGp4yvpA+VyaMc7U4jEHJbTktdkULp9CuM
-	 wx1buCttxSuNw==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-518f8a69f82so26351e87.2;
-        Wed, 24 Apr 2024 10:15:48 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV8Pl7LOa0U1+AWCXmmH2BFgvljh40lUXDnm6oSZLiTy6pwXKlLfNPjiDrX1zrmjgvkkT/YGjGLsPoVu+tipHAFeAfRJb4EwhJW21UK0WHEk3w4VTI52VF0amQyCIa5kfEMXUS1B0Eh7HoNkdymhoHAjZ7I8BnAaK12uH2+aevZ4I92vmANV1fn
-X-Gm-Message-State: AOJu0Yyf6+pMQFLX0BuWGWPfQuOZJt8fjEGrBgHfhDsX3iYQRh1jBRvo
-	dSNcUr3flDWDMqL88JayIFSbXv99FZgW42tHGnqgs4kXjiLt8NEEm5rBFWAX/OC7pfIu5EG2sm3
-	GRwzyFMWQ9iW5DW/palKLi/OWWr0=
-X-Google-Smtp-Source: AGHT+IFByR9sAZYx99uDadvVjH6429abW58ugN7oeOIISGe6LBYkO77Hdh75n+FJj7K1fIY4Xvl2bvGC0kGF+f57Lbs=
-X-Received: by 2002:a19:ca08:0:b0:51a:f3b9:f774 with SMTP id
- a8-20020a19ca08000000b0051af3b9f774mr2470034lfg.21.1713978946867; Wed, 24 Apr
- 2024 10:15:46 -0700 (PDT)
+	s=arc-20240116; t=1713979145; c=relaxed/simple;
+	bh=BCrtxFaK5T02MtCXr6aEAaVrhNkNdyl/HwxjkUTvu8I=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VfPP/GR0mZiQVAfd2ELPIf09pqMkC509LoOELJL4nekbMJP12n7rjHx6s5cHSmLrasdbdBoNsUr9FvqONxGqkbeZ5MzibVyqvE60OzSDuE0nVg8BIYNknZ9Agbg8cWAtt6MXlUTZOmsBBA33eWrS+cG2K00fspW1dpkSSLLfuOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VPlyX1jGBz6K65n;
+	Thu, 25 Apr 2024 01:16:36 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0E35E140A70;
+	Thu, 25 Apr 2024 01:18:59 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 24 Apr
+ 2024 18:18:58 +0100
+Date: Wed, 24 Apr 2024 18:18:57 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Hanjun Guo <guohanjun@huawei.com>
+CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
+	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
+	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, "James Morse"
+	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
+ Brucker <jean-philippe@linaro.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <linuxarm@huawei.com>, <justin.he@arm.com>,
+	<jianyong.wu@arm.com>
+Subject: Re: [PATCH v7 04/16] ACPI: processor: Move checks and availability
+ of acpi_processor earlier
+Message-ID: <20240424181857.00000e0f@Huawei.com>
+In-Reply-To: <0cfc4e2d-65ab-0040-2c7d-fad83f32455b@huawei.com>
+References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
+	<20240418135412.14730-5-Jonathan.Cameron@huawei.com>
+	<0cfc4e2d-65ab-0040-2c7d-fad83f32455b@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422112711.362779-1-mikko.rapeli@linaro.org>
- <6e751959b9056884c1b9d3ba23e303d1737d8763.camel@HansenPartnership.com>
- <ZiZhSfgeAdrbnaVL@nuoska> <CAC_iWjKA-xRH=3FK+=woXsB8AW4+_mVhJhUQnL8iFKxGzOwKiA@mail.gmail.com>
- <e3038141413e25350f0e53496f7a7af1bf8419cf.camel@HansenPartnership.com>
- <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com>
- <e1da76ca4c7fe9319aaac5f8ff6eb46db433ec60.camel@HansenPartnership.com> <CAC_iWjLH=SDoTw_Pgr2hOKHkjEp_dKqwpUe9j6a=_WNW9UcxKw@mail.gmail.com>
-In-Reply-To: <CAC_iWjLH=SDoTw_Pgr2hOKHkjEp_dKqwpUe9j6a=_WNW9UcxKw@mail.gmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Wed, 24 Apr 2024 19:15:35 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGHT2wULF2zwNM_QxD29dRW_dtFX2sOvsLahPiRVB61qg@mail.gmail.com>
-Message-ID: <CAMj1kXGHT2wULF2zwNM_QxD29dRW_dtFX2sOvsLahPiRVB61qg@mail.gmail.com>
-Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
-To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, 
-	Mikko Rapeli <mikko.rapeli@linaro.org>, linux-efi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Lennart Poettering <lennart@poettering.net>, 
-	linux-integrity@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon, 22 Apr 2024 at 17:22, Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
->
-> On Mon, 22 Apr 2024 at 17:31, James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> >
-> > On Mon, 2024-04-22 at 16:54 +0300, Ilias Apalodimas wrote:
-> > > Hi James
-> > >
-> > > On Mon, 22 Apr 2024 at 16:38, James Bottomley
-> > > <James.Bottomley@hansenpartnership.com> wrote:
-> > > >
-> > > > On Mon, 2024-04-22 at 16:32 +0300, Ilias Apalodimas wrote:
-> > > > > Hi all,
-> > > > >
-> > > > > On Mon, 22 Apr 2024 at 16:08, Mikko Rapeli
-> > > > > <mikko.rapeli@linaro.org>
-> > > > > wrote:
-> > > > > >
-> > > > > > Hi,
-> > > > > >
-> > > > > > On Mon, Apr 22, 2024 at 08:42:41AM -0400, James Bottomley
-> > > > > > wrote:
-> > > > > > > On Mon, 2024-04-22 at 14:27 +0300, Mikko Rapeli wrote:
-> > > > > > > > Userspace needs to know if TPM kernel drivers need to be
-> > > > > > > > loaded and related services started early in the boot if
-> > > > > > > > TPM device is used and available.
-> > > > > > >
-> > > > > > > This says what but not why.  We already have module
-> > > > > > > autoloading that works correctly for TPM devices, so why is
-> > > > > > > this needed?
-> > > > > > >
-> > > > > > > We do have a chicken and egg problem with IMA in that the TPM
-> > > > > > > driver needs to be present *before* any filesystem, including
-> > > > > > > the one the TPM modules would be on, is mounted so executions
-> > > > > > > can be measured into IMA (meaning that if you use IMA the TPM
-> > > > > > > drivers must be built in) but this sounds to be something
-> > > > > > > different. However, because of the IMA problem, most
-> > > > > > > distributions don't end up compiling TPM drivers as modules
-> > > > > > > anyway.
-> > > > > > >
-> > > > > > > Is what you want simply that tpm modules be loaded earlier?
-> > > > > >
-> > > > > > Yes, ealier is the problem. In my specific testing case the
-> > > > > > machine is qemu arm64 with swtpm with EFI firmware for secure
-> > > > > > boot and TPM support.
-> > > > > >
-> > > > > > Firmware uses TPM and does measurements and thus TPM event log
-> > > > > > is
-> > > > > > available on this machine and a bunch of other arm64 boards.
-> > > > > > Visible in early boot dmesg as TPMEventLog lines like:
-> > > > > >
-> > > > > > [    0.000000] efi: ESRT=0xf0ea5040 TPMFinalLog=0xf0ea9040
-> > > > > > RTPROP=0xf0ea7040 SMBIOS=0xf0ea3000 TPMEventLog=0xeb3b3040
-> > > > > > INITRD=0xeb3b2040 RNG=0xe5c0f040 MEMRESERVE=0xe5c0e040
-> > > > > >
-> > > > > > Different boards use different TPM HW and drivers so compiling
-> > > > > > all these in is possible but a bit ugly. systemd recently
-> > > > > > gained support for a specific tpm2.target which makes TPM
-> > > > > > support modular and also works with kernel modules for some TPM
-> > > > > > use cases but not rootfs encryption.
-> > > > > >
-> > > > > > In my test case we have a kernel+initramfs uki binary which is
-> > > > > > loaded by EFI firmware as a secure boot binary. TPM support on
-> > > > > > various boards is visible in devicetree but not as ACPI table
-> > > > > > entries. systemd currently detect TPM2 support either via ACPI
-> > > > > > table /sys/firmware/acpi/tables/TPM2 or TPM entry or via
-> > > > > > firmware measurement via
-> > > > > > /sys/kernel/security/tpm0/binary_bios_measurements
-> > > > > > .
-> > > > >
-> > > > > One corner case worth noting here is that scanning the device
-> > > > > tree won't always work for non-ACPI systems... The reason is that
-> > > > > a firmware TPM (running in OP-TEE) might or might not have a DT
-> > > > > entry, since OP-TEE can discover the device dynamically and
-> > > > > doesn't always rely on a DT entry.
-> > > > >
-> > > > > I don't particularly love the idea that an EventLog existence
-> > > > > automatically means a TPM will be there, but it seems that
-> > > > > systemd already relies on that and it does solve the problem we
-> > > > > have.
-> > > >
-> > > > Well, quite. That's why the question I was interested in, perhaps
-> > > > not asked as clearly as it could be is: since all the TPM devices
-> > > > rely on discovery mechanisms like ACPI or DT or the like which are
-> > > > ready quite early, should we simply be auto loading the TPM drivers
-> > > > earlier?
-> > >
-> > > This would be an elegant way to solve this and on top of that, we
-> > > have a single discovery mechanism from userspace -- e.g ls /dev/tpmX.
-> > > But to answer that we need more feedback from systemd. What 'earlier'
-> > > means? Autload it from the kernel before we go into launching the
-> > > initrd?
-> >
-> > Right, so this is another timing problem: we can't autoload modules
-> > *before* they appear in the filesystem and presumably they're on the
-> > initrd, so auto loading must be post initrd mount (and init execution)
-> > but otherwise quite early?
->
-> Exactly. But is that enough?
->
-> >
-> > This might be quite a bit of work.  Logically, just moving the matching
-> > and loading code earlier might work, but we used to have a
-> > load_default_modules() at the end of init/main.c and it got removed
-> > (because it only eventually loaded elevator modules) everything is now
-> > loaded in it's various init routines, so to get, say, TPM ACPI modules
-> > loaded earlier, we'd have to run the ACPI device matching code earlier
-> > and so on for every other subsystem ...
->
-> Being the devil's advocate here and as I stated I don't love this but ...
-> The kernel isn't technically doing anything wrong. We just expose an
-> *existing* EFI config table. The kernel also exposes filesystems so
-> people are free to do rm -rf *.
-> The fact that applications might use it as a means of "oh there's
-> probably a TPM" shouldn't be the end of the world. On top of that,
-> since it's an EFI config table we can keep it around and never break
-> any ABIs we create to userspace. If in the future we find a better
-> way, userspace can use that?
->
-> So perhaps this is ok as long as make sure we understand why systemd
-> needs it that early?
->
+On Tue, 23 Apr 2024 19:53:34 +0800
+Hanjun Guo <guohanjun@huawei.com> wrote:
 
-What I would like to know is which API systemd is attempting to use,
-and which -apparently- may never become available if no TPM is exposed
-by the kernel.
+> > @@ -232,6 +263,7 @@ static int acpi_processor_get_info(struct acpi_device *device)
+> >   	acpi_status status = AE_OK;
+> >   	static int cpu0_initialized;
+> >   	unsigned long long value;
+> > +	int ret;
+> >   
+> >   	acpi_processor_errata();
+> >   
+> > @@ -316,10 +348,12 @@ static int acpi_processor_get_info(struct acpi_device *device)
+> >   	 *  because cpuid <-> apicid mapping is persistent now.
+> >   	 */
+> >   	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
+> > -		int ret = acpi_processor_hotadd_init(pr);
+> > +		ret = acpi_processor_hotadd_init(pr, device);
+> >   
+> >   		if (ret)
+> > -			return ret;
+> > +			goto err;
+> > +	} else {
+> > +		acpi_processor_set_per_cpu(pr, device);
+> >   	}
+> >   
+> >   	/*
+> > @@ -357,6 +391,10 @@ static int acpi_processor_get_info(struct acpi_device *device)
+> >   		arch_fix_phys_package_id(pr->id, value);
+> >   
+> >   	return 0;
+> > +
+> > +err:
+> > +	per_cpu(processors, pr->id) = NULL;  
+> 
+> ...
+> 
+> > +	return ret;
+> >   }
+> >   
+> >   /*
+> > @@ -365,8 +403,6 @@ static int acpi_processor_get_info(struct acpi_device *device)
+> >    * (cpu_data(cpu)) values, like CPU feature flags, family, model, etc.
+> >    * Such things have to be put in and set up by the processor driver's .probe().
+> >    */
+> > -static DEFINE_PER_CPU(void *, processor_device_array);
+> > -
+> >   static int acpi_processor_add(struct acpi_device *device,
+> >   					const struct acpi_device_id *id)
+> >   {
+> > @@ -395,28 +431,6 @@ static int acpi_processor_add(struct acpi_device *device,
+> >   	if (result) /* Processor is not physically present or unavailable */
+> >   		return 0;
+> >   
+> > -	BUG_ON(pr->id >= nr_cpu_ids);
+> > -
+> > -	/*
+> > -	 * Buggy BIOS check.
+> > -	 * ACPI id of processors can be reported wrongly by the BIOS.
+> > -	 * Don't trust it blindly
+> > -	 */
+> > -	if (per_cpu(processor_device_array, pr->id) != NULL &&
+> > -	    per_cpu(processor_device_array, pr->id) != device) {
+> > -		dev_warn(&device->dev,
+> > -			"BIOS reported wrong ACPI id %d for the processor\n",
+> > -			pr->id);
+> > -		/* Give up, but do not abort the namespace scan. */
+> > -		goto err;
+> > -	}
+> > -	/*
+> > -	 * processor_device_array is not cleared on errors to allow buggy BIOS
+> > -	 * checks.
+> > -	 */
+> > -	per_cpu(processor_device_array, pr->id) = device;
+> > -	per_cpu(processors, pr->id) = pr;  
+> 
+> Nit: seems we need to remove the duplicated
+> per_cpu(processors, pr->id) = NULL; in acpi_processor_add():
+> 
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -446,7 +446,6 @@ static int acpi_processor_add(struct acpi_device 
+> *device,
+>    err:
+>          free_cpumask_var(pr->throttling.shared_cpu_map);
+>          device->driver_data = NULL;
+> -       per_cpu(processors, pr->id) = NULL;
 
-Ideally, we should be able to take inspiration from the probe deferral
-work, and return -EAGAIN to convey that it is too early to signal
-either success or permanent failure.
+I don't follow.  This path is used if processor_get_info() succeeded and
+we later fail.  I don't see where the the duplication is?
 
-Exposing random firmware assets directly to user space to make guesses
-about this doesn't seem like a very robust approach to this issue.
+
+>    err_free_pr:
+>          kfree(pr);
+>          return result;
+> 
+> Thanks
+> Hanjun
+
 
