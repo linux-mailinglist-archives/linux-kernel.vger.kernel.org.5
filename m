@@ -1,136 +1,162 @@
-Return-Path: <linux-kernel+bounces-156871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 130308B09A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:29:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49B5E8B09A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:30:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94B761F255AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:29:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3FC01F24346
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:30:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED18315B151;
-	Wed, 24 Apr 2024 12:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B88A15B14E;
+	Wed, 24 Apr 2024 12:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="hSZsyrnd"
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="C4vQJg1T"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42B7715ADBD;
-	Wed, 24 Apr 2024 12:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32FF615B123
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 12:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713961779; cv=none; b=kfxheOP16JghlJc94o9ND1kqBZUFLK5ZzVBvkWEj36HBP1LFQNSpoIcLs57CGu5Ehiu44FOlOHNf3+dTjfbSG6HNkt7wf8sX6am4Tr1oO5/JoHe3e72/DXm18sRQ/bF7Eo86VbKWVze8izJ2F4+7ReWVs5FvurOtSq+0SkfbgNA=
+	t=1713961793; cv=none; b=X33D7/Jf+emQIxMiU+W4eRrmZdil7zh3eBjG8kg9lJxGbP0M6lanqthVQaDkKr1UFdXGPi9BcGBX4EqH91RQjmH9tF5tvuMsI4Oevv2KJEiEQJhwPJNkvB016xFf1ge8/8UIO/4cqfTUhbVlZzIDSAVGPiBQBL52W8x+j5qbJns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713961779; c=relaxed/simple;
-	bh=2r0Zx60Kk3Gcfn/lsAiAKkp21jd937boMLMyrUqiaVE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=fCy5jKY5k3G8y/yBaGBR1GFO9Rf+d+p3HFwl23A6HHimG10ckXfb8wJrNrNKOh/Vm89sOAAbmsP+/Kxu9GcCaUUxVFplnA/a8KMqKlqiokg6L2hafTYwkoAE0IXriwpJvQ59Qgh8mQDfXFUk1Yh53Xyhk3sjq2mlXIB7ICYsP4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=hSZsyrnd; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O7hW5Z021471;
-	Wed, 24 Apr 2024 14:29:15 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=0v8FucOCV2cy2eAkTUXe4t7/ZIX5yYmmCfK23IcasIw=; b=hS
-	ZsyrndC4U2fgo4zzlDapMaxl7bK7/cG5yCTy/vJO2LIoguD1oLcuE/Tzt1BNaw2R
-	k9CRLhbMWInadGCcw8Fh6OReDMcfzbZ7CsbwperoAFdWqSGw4Q0b1T3CBXj57LDO
-	UOOZqEg0H+esLKV9BgRCOq8gmWTWX8k40jed1yQb26BI4sgmKqrF5dSQ1WSK3sCa
-	Kj4YEorLTiVjVx3Sm/nzYd+JT7IujXOZ4DnRHLpmKJCldZ7tcKruk91PEUtd5ZaU
-	PB0pAdrwu4L9ujun8D0u72CGlqBMG6GKtEOPjkBc1GlfWQJsSao2UBvtXfwULRS9
-	6x206l5br2uOfxQkSgVg==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xm51w8c6g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 14:29:15 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 9D3F940044;
-	Wed, 24 Apr 2024 14:29:09 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4BE4A21B51B;
-	Wed, 24 Apr 2024 14:28:23 +0200 (CEST)
-Received: from [10.48.86.79] (10.48.86.79) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 24 Apr
- 2024 14:28:22 +0200
-Message-ID: <9baaed82-c118-4a60-beff-2be9dbe2a6c3@foss.st.com>
-Date: Wed, 24 Apr 2024 14:28:21 +0200
+	s=arc-20240116; t=1713961793; c=relaxed/simple;
+	bh=I8JHcqSr1Mqm7BxNvH2G+ew64E3zN8ICLGLmqbFjLoI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MRrxKYsXGEWlU+1Nc7n7Hc6gw5BQpNMxYiz1h8md8G2Pbx3U/1drAmOeGNGdpA/+0S+7ZCNys3bh6hwz4JExJLaqiSpAgJEmHpFui35p6t1P62LcX3T2eKS7uyqfVHOIoovIWlDMFahtCfHgpjTD3gpyV5hf3YWT4y1CpHIkxhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=C4vQJg1T; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41ae95468efso8327555e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:29:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1713961790; x=1714566590; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vWtmZ5PdQ7AkuvXH/covTAsvSmEpguf1BcHW30rYhQ0=;
+        b=C4vQJg1TpP8a14iLjHwwhR+MjDugh8eae4psu05cVhOkiCr8QxolaiDPb2ACb+qrv0
+         PCrsfaspVAoS3bs6NerwKXBiEl66JMDmje4fCj0+m6S1aC6IoXbjlSp2YuSmBFH2BZp6
+         ojiYE4s7otKcnnAeEtyo5FyZMBUj+ZtV55oq2oA4YJVuJzSDp8eSr5FXHVkb/S+PXrVE
+         EZYB2iT7iOjqMGYSO1597ayqOOHVvLHxFF/a+PG7NKrzKNK2EigLYz6Y02qCaf77If2Y
+         b42j5GX3sd1xsLtAmV5GpU9lgOTevRXnAS3P8faXdVXuCPOqgkMQwN/jN2DWk80Nh+jf
+         QxAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713961790; x=1714566590;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vWtmZ5PdQ7AkuvXH/covTAsvSmEpguf1BcHW30rYhQ0=;
+        b=eamlpNt4/5UvYz0locyL71Db6qb4FrUC7fBWEC8VDvxkzxtoWfrXA3Jhm5BbWttRX/
+         DxqFTwB61ZlaSulWN/Y3wBgMsllYhdU7ujBsPxm5is90YDuT6DchcRxGg+KJbbY1vl2L
+         ZQorMGDOpf+GDY5jUZVqySRXZSGDtveDCJVyAD4TkBvdv2tSBq/R8WltH1Xd7RJ5OTob
+         jQFHZbw04fsj+aLKlXEfMORzKfeVae2B+jXkxy8fZyhhHPy1uIsueergBJk0tQP2avZh
+         i1ZmH5f3ZnWBqLge8fS5q6X1yVKm9DnXbj3BRG2uAEcjy0mwcVTy6JsZZyhgfWGyz7cb
+         oY0w==
+X-Forwarded-Encrypted: i=1; AJvYcCUqQRzXYe5tXvT0x736cKRIuLS/5rKW4L0RfjxLtJSe7qZpPIpS6Vym+PHB2bCE4f5AzQnukGPU8OCVUsFm1YIarOX0FX0FrCE6jnak
+X-Gm-Message-State: AOJu0Yw4rQr9S9KhErWZgEisVaEDBAsfJvzfevkpFJnX+ViJKYz7a7qp
+	ywfp17kogI98hYWhLPI7mzZ5dcD3tngyCM4x9TOIZnl2GVeH5KUtEep6oIwYIZk=
+X-Google-Smtp-Source: AGHT+IGulFqaqD6gbOE1TUdpd2CJEXWTKn3weFW0kCzg+pu7D4O+Rt4yeRNvsqtF0Ix1d6WsHfoE3g==
+X-Received: by 2002:a05:600c:1c94:b0:416:3478:658c with SMTP id k20-20020a05600c1c9400b004163478658cmr1792376wms.27.1713961790457;
+        Wed, 24 Apr 2024 05:29:50 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:75a:e000:da66:dc78:acc5:bb9c])
+        by smtp.gmail.com with ESMTPSA id q6-20020a05600c46c600b0041892857924sm23750712wmo.36.2024.04.24.05.29.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 05:29:39 -0700 (PDT)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Wren Turkal <wt@penguintechs.org>,
+	Zijun Hu <quic_zijuhu@quicinc.com>
+Subject: [PATCH v2] Bluetooth: qca: set power_ctrl_enabled on NULL returned by gpiod_get_optional()
+Date: Wed, 24 Apr 2024 14:29:32 +0200
+Message-Id: <20240424122932.79120-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: manual merge of the devicetree tree with the
- net-next, stm32 trees
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Rob Herring <robh@kernel.org>,
-        David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-        "Paolo
- Abeni" <pabeni@redhat.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        "Arnd
- Bergmann" <arnd@arndb.de>
-CC: Networking <netdev@vger.kernel.org>,
-        Gatien Chevallier
-	<gatien.chevallier@foss.st.com>,
-        "Kory Maincent (Dent Project)"
-	<kory.maincent@bootlin.com>,
-        Linux Kernel Mailing List
-	<linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List
-	<linux-next@vger.kernel.org>,
-        Saravana Kannan <saravanak@google.com>
-References: <20240424134038.28532f2f@canb.auug.org.au>
-Content-Language: en-US
-From: Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <20240424134038.28532f2f@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-24_10,2024-04-23_02,2023-05-22_02
+Content-Transfer-Encoding: 8bit
 
-Hi Stephen
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-On 4/24/24 05:40, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the devicetree tree got a conflict in:
-> 
->    drivers/of/property.c
-> 
-> between commits:
-> 
->    6a15368c1c6d ("of: property: fw_devlink: Add support for "access-controller"")
->    93c0d8c0ac30 ("of: property: Add fw_devlink support for pse parent")
-> 
-> from the net-next, stm32 trees and commit:
-> 
->    669430b183fc ("of: property: fw_devlink: Add support for "power-supplies" binding")
-> 
-> from the devicetree tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> 
+Any return value from gpiod_get_optional() other than a pointer to a
+GPIO descriptor or a NULL-pointer is an error and the driver should
+abort probing. That being said: commit 56d074d26c58 ("Bluetooth: hci_qca:
+don't use IS_ERR_OR_NULL() with gpiod_get_optional()") no longer sets
+power_ctrl_enabled on NULL-pointer returned by
+devm_gpiod_get_optional(). Restore this behavior but bail-out on errors.
+While at it: also bail-out on error returned when trying to get the
+"swctrl" GPIO.
 
-After remark from Saravana I just updated the stm32-next branch which 
-impact part of code mentioned above. I think you should get a merge 
-conflict on the next stm32-next merge into linux-next.
+Reported-by: Wren Turkal <wt@penguintechs.org>
+Reported-by: Zijun Hu <quic_zijuhu@quicinc.com>
+Closes: https://lore.kernel.org/linux-bluetooth/1713449192-25926-2-git-send-email-quic_zijuhu@quicinc.com/
+Fixes: 56d074d26c58 ("Bluetooth: hci_qca: don't use IS_ERR_OR_NULL() with gpiod_get_optional()")
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+v1 -> v2:
+- also restore the previous behavior for QCA6390 and other models that
+  fall under the default: label in the affected switch case
+- bail-out on errors when getting the swctrl GPIO too
 
-I will warn Arnd B. about those conflicts in my next PR.
+ drivers/bluetooth/hci_qca.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-regards
-Alex
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index 92fa20f5ac7d..0e98ad2c0c9d 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -2327,16 +2327,21 @@ static int qca_serdev_probe(struct serdev_device *serdev)
+ 		    (data->soc_type == QCA_WCN6750 ||
+ 		     data->soc_type == QCA_WCN6855)) {
+ 			dev_err(&serdev->dev, "failed to acquire BT_EN gpio\n");
+-			power_ctrl_enabled = false;
++			return PTR_ERR(qcadev->bt_en);
+ 		}
+ 
++		if (!qcadev->bt_en)
++			power_ctrl_enabled = false;
++
+ 		qcadev->sw_ctrl = devm_gpiod_get_optional(&serdev->dev, "swctrl",
+ 					       GPIOD_IN);
+ 		if (IS_ERR(qcadev->sw_ctrl) &&
+ 		    (data->soc_type == QCA_WCN6750 ||
+ 		     data->soc_type == QCA_WCN6855 ||
+-		     data->soc_type == QCA_WCN7850))
+-			dev_warn(&serdev->dev, "failed to acquire SW_CTRL gpio\n");
++		     data->soc_type == QCA_WCN7850)) {
++			dev_err(&serdev->dev, "failed to acquire SW_CTRL gpio\n");
++			return PTR_ERR(qcadev->sw_ctrl);
++		}
+ 
+ 		qcadev->susclk = devm_clk_get_optional(&serdev->dev, NULL);
+ 		if (IS_ERR(qcadev->susclk)) {
+@@ -2355,10 +2360,13 @@ static int qca_serdev_probe(struct serdev_device *serdev)
+ 		qcadev->bt_en = devm_gpiod_get_optional(&serdev->dev, "enable",
+ 					       GPIOD_OUT_LOW);
+ 		if (IS_ERR(qcadev->bt_en)) {
+-			dev_warn(&serdev->dev, "failed to acquire enable gpio\n");
+-			power_ctrl_enabled = false;
++			dev_err(&serdev->dev, "failed to acquire enable gpio\n");
++			return PTR_ERR(qcadev->bt_en);
+ 		}
+ 
++		if (!qcadev->bt_en)
++			power_ctrl_enabled = false;
++
+ 		qcadev->susclk = devm_clk_get_optional(&serdev->dev, NULL);
+ 		if (IS_ERR(qcadev->susclk)) {
+ 			dev_warn(&serdev->dev, "failed to acquire clk\n");
+-- 
+2.40.1
+
 
