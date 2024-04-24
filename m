@@ -1,177 +1,154 @@
-Return-Path: <linux-kernel+bounces-156280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C6548B00B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 691008B00B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:55:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC45E284A10
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:56:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23222284A0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:55:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22C2F154452;
-	Wed, 24 Apr 2024 04:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0299E154446;
+	Wed, 24 Apr 2024 04:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PB4HwtaL"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="S6sjMxfK"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0D4152DE3
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 04:56:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA4CE13C82F;
+	Wed, 24 Apr 2024 04:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713934572; cv=none; b=fnsnCV/FUmCpZcfrgrFCNwhdVkLIQrspyHfkUI5QHJzShlhUsrzKBzZKsmt2BRy3n3GCk2gGr9YZf9UYgdFN7Y0NG8mtlpUMQ/n8WuAm+wGVTz1lTNiFpPuoFZiCXN577LPelOQCiXjp+Cd5sc8yvA6E9aF7LhtzFdXW7CEBAE4=
+	t=1713934549; cv=none; b=pu10oJXrzMw+j8jRcsT5/0WmMLAKQSgT5O1gGFjV/9mdWeKqQtcFdXObTtHUfgmKPYIYPq32CqiMrnnjvd0nUxs4HfcA+dreefe0bFmGpowauw+maKC+oa/p7Ipr59cy//dSXzgXSn27M/p+g5uutfo2cnrZyy4bb+hgxcqx4is=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713934572; c=relaxed/simple;
-	bh=6mib2j9Tqix0TaZXohSBIbKHbCUlawrXg7W6KyigNSw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BICHM0meSqn5q+dbkU5iHVAkCYyFccsMgo//h81aN39YVLu5ejOqkxgJwOzgSssn7/0s37RDdrTNwAK1IYa5vvw6Ia1Tm+xIO+x/WUM2uEhKIzAmQvuIaKGBooVohRnXe8+/17dPYoO65bLUhE0tqtWlVA+xe7lahXoWadhXzTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PB4HwtaL; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41a4f291f9dso23109665e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 21:56:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713934569; x=1714539369; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zwJb8zBIwU1qwrSJtAlaHALtfn+UoOXAgTY/Ygz1F0c=;
-        b=PB4HwtaLxwQuDAJ1+4S6Hh0f3R9pSQgD9j4bouQ7/8tkP2kNldm7ADdNkwhct/otUn
-         pMniQwo1pll6SZ3QhbksTV/wDktKPTRT9A3Dc+cvjx0i4dA2ZSxbzADfawhOwc7RaArM
-         uz4LrY+2kT4ZyHAX4bi42Do+gFLFQRFmuqMdEL2fU195fCIZXo2FpbQE5xsQY0FPWmL3
-         NaMuHkUG1cq3c6ZKbKXw2gZJPOI6DDysFp8ImTR4EOR/E6Us/CfZlWDLfbBAbvQlHbHk
-         7Rhh/Rxa6/Uy9F9lsCsU1Lz4t7O3fo4WPpTgDxgvDmUwR+SqflPe2vAo4/sSWO9eXcGb
-         cuwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713934569; x=1714539369;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zwJb8zBIwU1qwrSJtAlaHALtfn+UoOXAgTY/Ygz1F0c=;
-        b=rMJpVWFD0zxfB0X8vnZqdy2ni1bjbi2BPq94D1FTdYwxshD1QJv3jGUzbuwmPSMwt8
-         JOZDOPtpMJ/7o4A/gURxcG+OgjYMmAE3oid2WdWiKoYs0Uek7v97ivyU4tCm4pTKrXju
-         c9IDqOZZ0i7VOAag+rL7fV97PGdWnI3UqE2aL2xE8V0grgUctc9bon4E2dChs0an6Y6Y
-         /Jp6zygXnryj31riUcEYy5k4vek9/VyMmfUS2qDERjM6t4k04g6DvUTBJ/QTPVi3YKKn
-         TlBhqJnmJtfVerm1xX7PHkO6n/+VmJRnpV5iYLUmeYQo+zHaTFBriAfC9rpFraZV54uO
-         VmqA==
-X-Forwarded-Encrypted: i=1; AJvYcCW6avO58GztHKyPIO/rSLB8E5c67PEQ8KXuHXXZxRjCfw5z9/CfcWh2esekJsInrBd9cfJdzuQipoCJVCkeVKSa7mM3Z3cBUBxJa29s
-X-Gm-Message-State: AOJu0YwBUdQa4vOIz7Su/W+sb/uV17U6Nxu4HF1X8GWcVtodfPklR5Ws
-	F6Ui0+MNtAtgYMu1+xlFilKgnLboxm3iSWqPKMtYjmA4iNKv/iH7rpB4g8uwlcU=
-X-Google-Smtp-Source: AGHT+IECbaRpCw/YzRjoEkY/lxmPUGgnBF70hzYQWKqS+HctwjDv6uyR/KMGlR/d7ELDLk1akbjCRQ==
-X-Received: by 2002:a5d:4c82:0:b0:346:85a0:20af with SMTP id z2-20020a5d4c82000000b0034685a020afmr705374wrs.35.1713934568774;
-        Tue, 23 Apr 2024 21:56:08 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id j6-20020adff006000000b00349856b640bsm16124704wro.67.2024.04.23.21.56.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 21:56:08 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Lee Jones <lee@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] dt-bindings: mfd: allwinner,sun6i-a31-prcm: Use hyphens in node names
-Date: Wed, 24 Apr 2024 06:55:21 +0200
-Message-ID: <20240424045521.31857-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1713934549; c=relaxed/simple;
+	bh=3HNfuRsq5bP8CtlU4c34os9Pd3q+GbzNbJqEXXr5x1o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=WTYWtJwNpCSt1j+qRMO5B+WnYWrw4pjIHy3Yf961GB4Zu11MvuN0YwMxUope9PVm49Lzq+8V5imwz04udRxsQ6JPapFfNjWL2vj2r7Ed7uEpeaJFWDpSabiH980qI8hQHIxGMjU+9/iKlf0CgZy3FjdfaTqJXviYD3Q/gTQgLmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=S6sjMxfK; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O4YpaL009997;
+	Wed, 24 Apr 2024 04:55:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=d6RfTbleXipL1qn6KV8zRM3DFf84k4bMIcll6M1FFlg=; b=S6
+	sjMxfKoVyTRCUtb/opByWZ/jpzdNz7UTxVOUXXFz4LI9XjntL7pS/8CXHQ8FE0MG
+	to+l0tsrEiJronR2J2GPJPzBI2xLhz1jZThvCzbrHQYEhyqqzsK300ordUJiVa73
+	IJLpT+PUClGTGi4oZIKYwFSXKdPnVi1fqBYvJt9ltCRWqGXkgWCbCRFXPuHE5HOW
+	c248AjQj3pOEk59RJqctuOjWVrueD2uyN3NdgCWVJFwxsdvOS+A5nHfsjcBQajsw
+	pvUlsKmCS6EMe6v/J5XGYyhZ2D6T8tNVdlFnX1wSVQi8K9GJvoJNQhzckCMxGtsB
+	TtUWovkCfCB/+ac5Xchw==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpu6a00yp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 04:55:42 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43O4tfAH008444
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 04:55:42 GMT
+Received: from [10.253.72.119] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 23 Apr
+ 2024 21:55:40 -0700
+Message-ID: <a5744a30-8464-441d-b306-546b08099400@quicinc.com>
+Date: Wed, 24 Apr 2024 12:55:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Bluetooth: qca: set power_ctrl_enabled on NULL returned
+ by gpiod_get_optional()
+To: Bartosz Golaszewski <brgl@bgdev.pl>,
+        Marcel Holtmann
+	<marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC: <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Bartosz
+ Golaszewski <bartosz.golaszewski@linaro.org>,
+        Wren Turkal
+	<wt@penguintechs.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+References: <20240422130036.31856-1-brgl@bgdev.pl>
+Content-Language: en-US
+From: quic_zijuhu <quic_zijuhu@quicinc.com>
+In-Reply-To: <20240422130036.31856-1-brgl@bgdev.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 24XnXVLNxtl46AyVO20Y4CMnI-rDQNGL
+X-Proofpoint-GUID: 24XnXVLNxtl46AyVO20Y4CMnI-rDQNGL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_02,2024-04-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ mlxscore=0 impostorscore=0 suspectscore=0 phishscore=0 clxscore=1011
+ spamscore=0 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404240020
 
-Underscores should not be used in node names (dtc with W=2 warns about
-them), so replace them with hyphens.  This should have no impact on
-known users: Linux MFD driver does not care about children node names.
-DTS was already adjusted in commit 0f47ef3ff1bd ("arm: dts: allwinner: drop
-underscore in node names"), so without this change, we observe
-dtbs_check warnings:
+On 4/22/2024 9:00 PM, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> Any return value from gpiod_get_optional() other than a pointer to a
+> GPIO descriptor or a NULL-pointer is an error and the driver should
+> abort probing. That being said: commit 56d074d26c58 ("Bluetooth: hci_qca:
+> don't use IS_ERR_OR_NULL() with gpiod_get_optional()") no longer sets
+> power_ctrl_enabled on NULL-pointer returned by
+> devm_gpiod_get_optional(). Restore this behavior but bail-out on errors.
+> 
+> Reported-by: Wren Turkal <wt@penguintechs.org>
+> Reported-by: Zijun Hu <quic_zijuhu@quicinc.com>
+> Closes: https://lore.kernel.org/linux-bluetooth/1713449192-25926-2-git-send-email-quic_zijuhu@quicinc.com/
+> Fixes: 56d074d26c58 ("Bluetooth: hci_qca: don't use IS_ERR_OR_NULL() with gpiod_get_optional()")
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  drivers/bluetooth/hci_qca.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+> index 92fa20f5ac7d..739248c6d6b9 100644
+> --- a/drivers/bluetooth/hci_qca.c
+> +++ b/drivers/bluetooth/hci_qca.c
+> @@ -2327,9 +2327,12 @@ static int qca_serdev_probe(struct serdev_device *serdev)
+>  		    (data->soc_type == QCA_WCN6750 ||
+>  		     data->soc_type == QCA_WCN6855)) {
+>  			dev_err(&serdev->dev, "failed to acquire BT_EN gpio\n");
+> -			power_ctrl_enabled = false;
+> +			return PTR_ERR(qcadev->bt_en);
+>  		}
+>  
+For QCA6390, control logic do not reach here, so it has no any help for
+QCA6390.
+> +		if (!qcadev->bt_en)
+> +			power_ctrl_enabled = false;
+> +
+property enable-gpios are obviously marked as required for WCN6750 and
+WCN6855 by dts binding spec as shown by below link:
+https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.git/tree/Documentation/devicetree/bindings/net/bluetooth/qualcomm-bluetooth.yaml
 
-  sun6i-a31s-colorfly-e708-q1.dtb: prcm@1f01400: 'ahb0-clk', 'apb0-clk', 'apb0-gates-clk', 'apb0-rst', 'ar100-clk', 'ir-clk' do not match any of the regexes: '^.*_(clk|rst)$', 'pinctrl-[0-9]+'
+if user don't config the property then "qcadev->bt_en is NULL", can we
+still treat this case as good case?
 
-Reported-by: Rob Herring <robh@kernel.org>
-Closes: https://lore.kernel.org/all/CAL_JsqJfT-jui5P56CO4Fr37kr5iNN8dpxt8ecKeFmdVGnRYbA@mail.gmail.com/
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- .../bindings/mfd/allwinner,sun6i-a31-prcm.yaml     | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+that is why i changed my fix from reverting the wrong commit to only
+focusing on QCA6390.
 
-diff --git a/Documentation/devicetree/bindings/mfd/allwinner,sun6i-a31-prcm.yaml b/Documentation/devicetree/bindings/mfd/allwinner,sun6i-a31-prcm.yaml
-index 8789e3639ff7..ca0e9f1f2354 100644
---- a/Documentation/devicetree/bindings/mfd/allwinner,sun6i-a31-prcm.yaml
-+++ b/Documentation/devicetree/bindings/mfd/allwinner,sun6i-a31-prcm.yaml
-@@ -20,7 +20,7 @@ properties:
-     maxItems: 1
- 
- patternProperties:
--  "^.*_(clk|rst)$":
-+  "^.*-(clk|rst)$":
-     type: object
-     unevaluatedProperties: false
- 
-@@ -171,7 +171,7 @@ examples:
-         compatible = "allwinner,sun6i-a31-prcm";
-         reg = <0x01f01400 0x200>;
- 
--        ar100: ar100_clk {
-+        ar100: ar100-clk {
-             compatible = "allwinner,sun6i-a31-ar100-clk";
-             #clock-cells = <0>;
-             clocks = <&rtc 0>, <&osc24M>,
-@@ -180,7 +180,7 @@ examples:
-             clock-output-names = "ar100";
-         };
- 
--        ahb0: ahb0_clk {
-+        ahb0: ahb0-clk {
-             compatible = "fixed-factor-clock";
-             #clock-cells = <0>;
-             clock-div = <1>;
-@@ -189,14 +189,14 @@ examples:
-             clock-output-names = "ahb0";
-         };
- 
--        apb0: apb0_clk {
-+        apb0: apb0-clk {
-             compatible = "allwinner,sun6i-a31-apb0-clk";
-             #clock-cells = <0>;
-             clocks = <&ahb0>;
-             clock-output-names = "apb0";
-         };
- 
--        apb0_gates: apb0_gates_clk {
-+        apb0_gates: apb0-gates-clk {
-             compatible = "allwinner,sun6i-a31-apb0-gates-clk";
-             #clock-cells = <1>;
-             clocks = <&apb0>;
-@@ -206,14 +206,14 @@ examples:
-                                  "apb0_i2c";
-         };
- 
--        ir_clk: ir_clk {
-+        ir_clk: ir-clk {
-             #clock-cells = <0>;
-             compatible = "allwinner,sun4i-a10-mod0-clk";
-             clocks = <&rtc 0>, <&osc24M>;
-             clock-output-names = "ir";
-         };
- 
--        apb0_rst: apb0_rst {
-+        apb0_rst: apb0-rst {
-             compatible = "allwinner,sun6i-a31-clock-reset";
-             #reset-cells = <1>;
-         };
--- 
-2.43.0
+i will give different fix for other impacted QCA controllers.
 
+>  		qcadev->sw_ctrl = devm_gpiod_get_optional(&serdev->dev, "swctrl",
+>  					       GPIOD_IN);
+>  		if (IS_ERR(qcadev->sw_ctrl) &&
+
+NAK as explained above.
 
