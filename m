@@ -1,115 +1,139 @@
-Return-Path: <linux-kernel+bounces-156889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE04D8B09F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:46:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75C968B09F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:47:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D938DB229D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:46:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 317C2284522
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:47:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 813A415ADA4;
-	Wed, 24 Apr 2024 12:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72C6415ADA5;
+	Wed, 24 Apr 2024 12:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c8csSnqW"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LcPtxt4b"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA9541A87;
-	Wed, 24 Apr 2024 12:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5669515686E
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 12:46:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713962781; cv=none; b=bXbte9fzTXICACUwT+4CJFN56roWeebvaLJjrNFR6ep0GoE0ftU5GtMmYy1Xv1R+sDLYKGM10KZWpYNiiuLNjEcfXyqEVrwSUQLzn5SnO/5jkjoexyInodyvb5PysW/R1U71UQCXqE3eyqA6qDG7Lq6aXh8a5ce+lWrHyzM1DBA=
+	t=1713962812; cv=none; b=W1sstgrkVXjRZ4hKI/1F+Wk/3mb9jA4OHq2PVZUPx5oR+Y/4TcJVBhxhLD2J0iyM3rL/+CHz2yflDUZJxf2wyqqlEb34hxK2G9PXnPGUd9sKxd6m/KzT/WwgSSG87NxoFyRZaNLQzfvLTF8s4TJVm8ACwo2XYnsQevP9A/AEKA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713962781; c=relaxed/simple;
-	bh=93+T8xJd3cXLT+8AE8EB6mYgzWWVXtgtKLQaSc/xBMI=;
+	s=arc-20240116; t=1713962812; c=relaxed/simple;
+	bh=zM8sR5orAuQQ4cxTB/D5fYnLFqtLGuq1kFg7hhQqLsQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o5EJKByz1S+wq7ri5+d6X0EYh0gKe+sRWE+/7xaxB7KtYBj1Nei/I+AQcdBzeQW8LDWnMfW1vCx3tmFUMXg6wo1VSb6UqSMCkMGiUetvPl1Xfk7bdZDTsO6flB0mDwYfY1QXTBlIf2VKA/4q0mMPn4wnxX/2cwmh49fl82ezYyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c8csSnqW; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-516ef30b16eso8381007e87.3;
-        Wed, 24 Apr 2024 05:46:20 -0700 (PDT)
+	 To:Cc:Content-Type; b=NxPiErMAmEgXw5nl6XDZwtTRO4SwkRuUd/dN21Fq/01SZQ7sZ2Z+h0+ARTNJ5bapMLlJwsyg1e7Er0kzb7CEG0fQNezqTNvIFHBgAq+6itTynB2uJvplNQ0+NW9vhLU6QbdoyHGVL2SwdaVXen/IiMboYvCXs4GZAROrOyoLSRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LcPtxt4b; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-de45385a1b4so6329771276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:46:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713962778; x=1714567578; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+6TyatYgquEoqN9hGCWnWbVOlkZrg/qYutSLoXl0UTk=;
-        b=c8csSnqWkuOKSm2ryHvHEdB16KGx7xMB033UyC6ykMIecZMZVtWmDsXsrAqQi2DVnl
-         4SIofNU79+qsZqlBh4R1Fw+6peesyBNNxTfzL9WMnRZKzPPdrCRFQ0z9Cn/DrbZrLruD
-         PCLfCxIZpk6I7BsZ3LNrhP+KTT6zZf4vfdFkOMkiuwOwU6ccdsKCAmMIe/CsZLUWV0eB
-         EZOWMJPbzG7hpLoY/irQFuLfXjrjOD1F2NByp60eDy4JrZhZ9FwGjSSQhDfHFjV2L8NJ
-         TvmS9yNQBXD6B+6Defm/cEEBP3NvDp0EfE/KeyOZ+QUe2/PcqWp+dmbbEnPmfGjSqSnZ
-         Ht8g==
+        d=linaro.org; s=google; t=1713962810; x=1714567610; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=KrXYASI9NEzYia3x8Ig4KvMmkyEG5SofFlBDhZ//oC8=;
+        b=LcPtxt4b33cYrPdx3CIRXpjdXWUjT78C/PjdeLpiug8UCKPqIcdOglPHsuV2YUjPW8
+         Te903LSzQJTSD7uT2dzNn+lg85EWU30gaisyDnj2/VT6X1cYs6vUxS2KsbmkKpomi7gS
+         c3i5tc79qyT0leqS+pCkNo1/R5MONVFi2uHKXBCXWWbWrytKXXU14Nz+3cbaZlvfZmNh
+         fBtechV7fjRD+923uahXi878ASAjkgjG+MwM/6vJNT1CdCgSwWHY+3mRBqDMTAF03xpp
+         eM5Ray9mAHJKT65WMoA1XrMZl0277+JOP1FoIku36mcb6QK1nvwAcAgbRVWIoZWzeiES
+         GQMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713962778; x=1714567578;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+6TyatYgquEoqN9hGCWnWbVOlkZrg/qYutSLoXl0UTk=;
-        b=khvlS8JsnPudBJvSFPW/aOZPuoI7s9/6rVeMT/jYf5erZIjPCHf+/umKmwRaNCGcpL
-         oLIroao+mJO4ltssKDJdR3nRn9V49FQZk3SCP7eeH54itzV9viGUKim8OZnJMEn8A/fS
-         Gz7SwhB1CxoLOYOe58cDvsn6nqqr/PPvMeQfEBLArVCluuAMFneg8FD5Vk/YLs3ubY4H
-         EA0fOuby4+nnrk8iUphqqQsxX80WzPKlTa6BNqQk1KBAvFrb80mY1XnVtLabSjwLI8lO
-         UW3VFX0tsD1Q+JsPDr3e97xUbhcejLn/XJDQ6bXYuLoNbPqIEeeXKQMPipD5IqJ4bLvi
-         KcPA==
-X-Forwarded-Encrypted: i=1; AJvYcCXaIKwMfvg3scMWreuFWUHyB6i/XPv5sm7ai1tVCj7q7CJXiCZ9CuStoeFCAmt1Ix/mGfdHLtRj0qJKhZcjqtxF5zwYUEowAu09yX/s30+2XV39EjMBvVrf0n4d8T04vPHX0fMVEqmhYkzXO1F835VXC7mRYe36cK4iwSQWZaTy
-X-Gm-Message-State: AOJu0YxwhLcViy746m0tEL5ip6htgu9mrY9RH9L8dUyPXobykhtgjeBr
-	y+5RydgHm3Yz4nBmocF4KiB3pkqu38H1LqKKcUVEr/H3Qbx9iduzowCy9Kraek+dMul3A9cuGS4
-	tUqiqmvK+goSfjmRNp4eqCmdjgJc=
-X-Google-Smtp-Source: AGHT+IEjbCu8zM2o9faAOyVL2dwkhogAJAXqFNtV2Wm2BJdBui8upObgqrxp6TVRNEGGaQGBWfOudgvaGBNm310z0n0=
-X-Received: by 2002:a05:6512:b12:b0:51b:de39:3826 with SMTP id
- w18-20020a0565120b1200b0051bde393826mr1910497lfu.65.1713962778231; Wed, 24
- Apr 2024 05:46:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713962810; x=1714567610;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KrXYASI9NEzYia3x8Ig4KvMmkyEG5SofFlBDhZ//oC8=;
+        b=mX1CRgx3ODFVZkj2K1TwjS/REQ3+utTQhzQaXb4ccMTNvO495UFIWtD4jSHzm5mrtI
+         P/3B4JX/qsHlQjkxorIEnv+F/LeZ7vzNFxPWGdDXMI7WyNwxWVDsPD6McSQdHJeHqxBE
+         2modwl4qUb9iOwrvhW/rZXyewYbXVeX3Mb8zm2Y7w+hm8sU6ofyzQc8KeFRywUDNsmoh
+         nWmwBE/4IX33zAR548Nuv79tfUN7q9wHC42q6tCVroEsLrUZb3nH7UZbMGRWntPkZoeT
+         boo44Ihg6/CQf9x6pEbVJvUoSdZbp14xFyCWVZjGEHJAuler5Ufmz5eca0Rbuu67CaWh
+         G5Pw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+e697NlTg/43bquN+cZpqCtTnsExqsVoQUKajV7yzZP5vo9XH4O5DKW9tm89Qf6DFPt3hRH2pgEXf8IXraFdxKuo/NMUmJptnOa6u
+X-Gm-Message-State: AOJu0YzVxAnLcYQn5rhrmv/oiAykfAJTtRoqkKGiTiTohlcnpohEPZMo
+	OjQWT5Rqr3+GYx4z9EBr9dxT/5Jh/7JuBkEKfaS9yYPhVA13zoi6C+pBAw3fHBOocyvd8RxRWBo
+	UeGzvpyZAm4TqUTDb77K2sqZbOw3HL5VnseBg0op+VMAqafb3
+X-Google-Smtp-Source: AGHT+IEx71tun5t5E76UunWIPX06WRdVSlCvojyV6lcnuKs5nx7eNpkieeUAZ+aH8KQvmyHUlsLHPhwiU8grk8etkRM=
+X-Received: by 2002:a25:838c:0:b0:dce:1285:e9a5 with SMTP id
+ t12-20020a25838c000000b00dce1285e9a5mr2494534ybk.11.1713962810353; Wed, 24
+ Apr 2024 05:46:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240423233622.1494708-1-florian.fainelli@broadcom.com>
- <20240423233622.1494708-2-florian.fainelli@broadcom.com> <ZihLSKe_BHxasBql@surfacebook.localdomain>
- <0aac2975-42d0-4abe-9405-bf8a38a94104@broadcom.com> <b3cdfeb7-6eb0-4522-96ae-d3155d677002@lunn.ch>
-In-Reply-To: <b3cdfeb7-6eb0-4522-96ae-d3155d677002@lunn.ch>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 24 Apr 2024 15:45:42 +0300
-Message-ID: <CAHp75VfBnYdzs+rD2QLq=tavr=Aw2PsKbxXOseUJNWWwXsAwPw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] i2c: designware: Create shared header hosting driver name
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>, linux-kernel@vger.kernel.org, 
-	Jarkko Nikula <jarkko.nikula@linux.intel.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Mika Westerberg <mika.westerberg@linux.intel.com>, Jan Dabros <jsd@semihalf.com>, 
-	Andi Shyti <andi.shyti@kernel.org>, Lee Jones <lee@kernel.org>, 
-	Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Duanqiang Wen <duanqiangwen@net-swift.com>, 
-	"open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>, 
-	"open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
+References: <20240401-typec-fix-sm8250-v3-0-604dce3ad103@linaro.org>
+ <20240401-typec-fix-sm8250-v3-8-604dce3ad103@linaro.org> <d57ab72d-2604-4115-9973-1ce0f24b159f@linaro.org>
+In-Reply-To: <d57ab72d-2604-4115-9973-1ce0f24b159f@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 24 Apr 2024 15:46:39 +0300
+Message-ID: <CAA8EJprdLB3+30wvVZjpC5pWKUzgw+Mg54YkN3SvU-Ovc25Qpg@mail.gmail.com>
+Subject: Re: [PATCH v3 8/9] arm64: dts: qcom: x1e80100: describe USB signals properly
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	"Bryan O'Donoghue" <bryan.odonoghue@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Luca Weiss <luca.weiss@fairphone.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 24, 2024 at 3:18=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
-> > > >   #include <linux/i2c.h>
-> > > > +#include <linux/i2c-designware.h>
-> > >
-> > > Can it be hidden in the subfolder?
-> >
-> > That would require the MFD and ethernet drivers to include relative to =
-where
-> > they are in the source tree, do we really want that?
+On Tue, 2 Apr 2024 at 17:41, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
 >
-> Maybe linux/platform_data/i2c-designware.h ? There are a few NAME
-> macros in there.
+> On 1.04.2024 10:33 PM, Dmitry Baryshkov wrote:
+> > Follow example of other platforms. Rename HS graph nodes to contain
+> > 'dwc3_hs' and link SS lanes from DWC3 controllers to QMP PHYs.
+> >
+> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > ---
+> >  arch/arm64/boot/dts/qcom/x1e80100.dtsi | 149 +++++++++++++++++++++++++++++++--
+> >  1 file changed, 141 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+> > index f5a3b39ae70e..3213eccc3a3a 100644
+> > --- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+> > @@ -2543,6 +2543,33 @@ usb_1_ss0_qmpphy: phy@fd5000 {
+> >                       #phy-cells = <1>;
+> >
+> >                       status = "disabled";
+> > +
+> > +                     ports {
+> > +                             #address-cells = <1>;
+> > +                             #size-cells = <0>;
+> > +
+> > +                             port@0 {
+> > +                                     reg = <0>;
+> > +
+> > +                                     usb_1_ss0_qmpphy_out: endpoint {
+> > +                                     };
+> > +                             };
+> > +
+> > +                             port@1 {
+> > +                                     reg = <1>;
+> > +
+> > +                                     usb_1_ss0_qmpphy_usb_ss_in: endpoint {
+> > +                                             remote-endpoint = <&usb_1_ss0_dwc3_ss>;
+> > +                                     };
+> > +                             };
+> > +
+> > +                             port@2 {
+> > +                                     reg = <2>;
+> > +
+> > +                                     usb_1_ss0_qmpphy_dp_in: endpoint {
+>
+> This is more than just DP AFAIU, please call it SBU
 
-Yes, under subfolder I meant something like
-include/linux/$SOMETHING/_this_header_.h or even deeper.
+This is not the SBU lane. This is for the SS signals. We are not fully
+modelling the SBU signals yet anyway.
 
---=20
-With Best Regards,
-Andy Shevchenko
+-- 
+With best wishes
+Dmitry
 
