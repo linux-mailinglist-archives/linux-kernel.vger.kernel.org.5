@@ -1,122 +1,142 @@
-Return-Path: <linux-kernel+bounces-157425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63C8D8B1184
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:56:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4988E8B118A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:57:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 206F128473C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:56:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDC331F22D0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:57:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5FC416D9A3;
-	Wed, 24 Apr 2024 17:55:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8937816D4FE;
+	Wed, 24 Apr 2024 17:57:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o90A0dji"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="bjx9UMH2"
+Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2974E16C855;
-	Wed, 24 Apr 2024 17:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18D4F16D4EF;
+	Wed, 24 Apr 2024 17:57:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713981354; cv=none; b=IOitGWHCEauCEapJ3QgR7cpa6r4d6WUq5SlU/VBJ5TLBJxe3dMUAWtZCzQ5qWp/wc0X2sCJGQobijC4QDY6jnoGM4HsIaPxf0mTfEM21Jo/IG07xCJ4W+RkA1FPHJ3LJIwCMsbEGd0k1lWiJnGFNHQTwlgVJPyVWKz3ErhUqasc=
+	t=1713981459; cv=none; b=E//NsXC+Sm1a4uDfBfMFu+wz0QERXGf2IyQQXcDb7q8Xrr60/48/1WlFXBx7Sx9pJ/PNA44jT8j6bAPtxNWphoAxTorNNW17nCUzQ8W/fP4zf3VglhyMu1xeEKA93zW68lR3JAKbgliw8dX79trmWBf/nR0zfAArfhTga827ciE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713981354; c=relaxed/simple;
-	bh=R4CYpHlj8jEVfIevCJyMoADNlNhxgxYKx+hnKC/6ZHQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=GWh5QbQceOg18/LjGMJfMmAPLs92RJNn9a0knv04ZTVSRomN2R1ncPU3orQoc3Burkqs2LLG+IcT6xUFLujR1dj9Q88R1Qg4Hx2b9cT0R4SDzOAP/dK6H/OU1Vbb+1TCs9hHYAV/esYhriih8ZLJe6Y6J1uu/gjO8W0M68Th/PU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o90A0dji; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 237D7C2BD10;
-	Wed, 24 Apr 2024 17:55:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713981353;
-	bh=R4CYpHlj8jEVfIevCJyMoADNlNhxgxYKx+hnKC/6ZHQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=o90A0dji/1C/nj8o2so91Qf2gUBarrMOTde/k9C3QoyX+SPqyPj5Rl0J4CAjtDPFv
-	 ubbWx4NO7WFN5DxKr7dtMjXqL3ifQV9ZDEk9/E1heWe6mZNCR3tAkbzNz+d03g+0BC
-	 zhW5Qh+mMI/dbfxC5jak+61K8KAWmZm2QipBZDFOJaxHU3oYUnGE53WJHMqiMA8Wln
-	 CZnyVTlkM6DAQ/XVxoGGhSPFJKd5LRyybY0tP5A/QZNStYy/3YS1hDvFw4EGJg1UXu
-	 Z8G/GpZzpGRZNQ88h30w7vNI+z8rhH0gNd5Or4YxleSamM9mFDlFo1Y4rW+NQiv4rm
-	 upnSXlJDq9F+g==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Sunil V L
- <sunilvl@ventanamicro.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
- linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
- <aou@eecs.berkeley.edu>, "Rafael J . Wysocki" <rafael@kernel.org>, Len
- Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Anup Patel
- <anup@brainfault.org>, Thomas Gleixner <tglx@linutronix.de>, Samuel
- Holland <samuel.holland@sifive.com>, Robert Moore
- <robert.moore@intel.com>, Haibo1 Xu <haibo1.xu@intel.com>, Conor Dooley
- <conor.dooley@microchip.com>, Andrew Jones <ajones@ventanamicro.com>,
- Atish Kumar Patra <atishp@rivosinc.com>, Andrei Warkentin
- <andrei.warkentin@intel.com>, Marc Zyngier <maz@kernel.org>
-Subject: Re: [RFC PATCH v4 00/20] RISC-V: ACPI: Add external interrupt
- controller support
-In-Reply-To: <CAJZ5v0gTzn3TDoh0+0UQjMeJVdU+z16dDOT_fKMhr0XrOxyRtA@mail.gmail.com>
-References: <20240415170113.662318-1-sunilvl@ventanamicro.com>
- <CAJZ5v0gTzn3TDoh0+0UQjMeJVdU+z16dDOT_fKMhr0XrOxyRtA@mail.gmail.com>
-Date: Wed, 24 Apr 2024 19:55:50 +0200
-Message-ID: <871q6uir15.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1713981459; c=relaxed/simple;
+	bh=AbpQ6ac5gCGcv4jIbn0lkX2wvKzhocFgo1B53jkt0Js=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qgzJIic7zh/85H3uUt+6GHtMBmx7lnh9Cs2FXnPPuNvN9mJKMA7VA7CMkOqoF7XQTdgTOnUftm5iv87X+9gpNDTdg3jmZmLIQ6kWuuOm/BlWu6q+I2pRMYJQDoAQAuiXHKR9WB38wHZ7aDUSRIgPJ+vSp8jekDdc8GgzW+CdsC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=bjx9UMH2; arc=none smtp.client-ip=192.19.144.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id CD44AC00498D;
+	Wed, 24 Apr 2024 10:57:35 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com CD44AC00498D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1713981455;
+	bh=AbpQ6ac5gCGcv4jIbn0lkX2wvKzhocFgo1B53jkt0Js=;
+	h=From:To:Cc:Subject:Date:From;
+	b=bjx9UMH2pQaATU4j8GayhhrOxm/n8zAzh70UWVcibyUaFDLqXjZ+cBWN99PVBcuiw
+	 Ap+NHVHmxPruuED8jRgFuEUCVU/727oVLy4tz2ggeMe9X9cJULEBh+2Ee5qzGNCPco
+	 fhkhKikh3xi9rggpaKxRt6A542+ORH2bMyp0uA+Q=
+Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id E2F5D18041CAC4;
+	Wed, 24 Apr 2024 10:57:33 -0700 (PDT)
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+To: linux-kernel@vger.kernel.org
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
+	Tim Ross <tim.ross@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-mips@vger.kernel.org (open list:BROADCOM BMIPS MIPS ARCHITECTURE),
+	linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE)
+Subject: [PATCH v2] irqchip/irq-brcmstb-l2: Avoid saving mask on shutdown
+Date: Wed, 24 Apr 2024 10:57:32 -0700
+Message-Id: <20240424175732.1526531-1-florian.fainelli@broadcom.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-"Rafael J. Wysocki" <rafael@kernel.org> writes:
+The interrupt controller shutdown path does not need to save the mask of
+enabled interrupts because the next state the system is going to be in
+is akin to a cold boot, or a kexec'd kernel. Saving the mask only makes
+sense if the software state needs to preserve the hardware state across
+a system suspend/resume cycle.
 
-> On Mon, Apr 15, 2024 at 7:01=E2=80=AFPM Sunil V L <sunilvl@ventanamicro.c=
-om> wrote:
->>
->> This series adds support for the below ECR approved by ASWG.
->> 1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsIKia=
-7zR/view?usp=3Dsharing
->>
->> The series primarily enables irqchip drivers for RISC-V ACPI based
->> platforms.
->>
->> The series can be broadly categorized like below.
->>
->> 1) PCI ACPI related functions are migrated from arm64 to common file so
->> that we don't need to duplicate them for RISC-V.
->>
->> 2) Added support for re-ordering the probe of interrupt controllers when
->> IRQCHIP_ACPI_DECLARE is used.
->>
->> 3) To ensure probe order between interrupt controllers and devices,
->> implicit dependency is created similar to when _DEP is present.
->>
->> 4) When PNP devices like Generic 16550A UART, have the dependency on the
->> interrupt controller, they will not be added to PNP data structures. So,
->> added second phase of pnpacpi_init to handle this.
->>
->> 5) ACPI support added in RISC-V interrupt controller drivers.
->>
->> This series is still kept as RFC to seek feedback on above design
->> changes. Looking forward for the feedback!
->
-> I've looked at the patches and I don't see anything deeply concerning
-> in them from the ACPI core code perspective.
->
-> The changes look reasonably straightforward to me.
+As an optimization, and given that there are systems with dozens of such
+interrupt controller, we can save a "slow" memory mapped I/O read in the
+shutdown path where no saving/restoring is required.
 
-Sunil, given Rafael's input, it sounds like it's time for a patch
-proper. This is really the missing piece to make ACPI usable on RISC-V!
+Reported-by: Tim Ross <tim.ross@broadcom.com>
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+---
 
-Thanks for the nice work!
-Bj=C3=B6rn
+Changes in v2:
 
-FWIW,
-Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+- expand the commit message to explain this is an optimiation saving a
+  slow MMIO read
 
+ drivers/irqchip/irq-brcmstb-l2.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/irqchip/irq-brcmstb-l2.c b/drivers/irqchip/irq-brcmstb-l2.c
+index 2b0b3175cea0..c988886917f7 100644
+--- a/drivers/irqchip/irq-brcmstb-l2.c
++++ b/drivers/irqchip/irq-brcmstb-l2.c
+@@ -118,7 +118,7 @@ static void brcmstb_l2_intc_irq_handle(struct irq_desc *desc)
+ 	chained_irq_exit(chip, desc);
+ }
+ 
+-static void brcmstb_l2_intc_suspend(struct irq_data *d)
++static void __brcmstb_l2_intc_suspend(struct irq_data *d, bool save)
+ {
+ 	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
+ 	struct irq_chip_type *ct = irq_data_get_chip_type(d);
+@@ -127,7 +127,8 @@ static void brcmstb_l2_intc_suspend(struct irq_data *d)
+ 
+ 	irq_gc_lock_irqsave(gc, flags);
+ 	/* Save the current mask */
+-	b->saved_mask = irq_reg_readl(gc, ct->regs.mask);
++	if (save)
++		b->saved_mask = irq_reg_readl(gc, ct->regs.mask);
+ 
+ 	if (b->can_wake) {
+ 		/* Program the wakeup mask */
+@@ -137,6 +138,16 @@ static void brcmstb_l2_intc_suspend(struct irq_data *d)
+ 	irq_gc_unlock_irqrestore(gc, flags);
+ }
+ 
++static void brcmstb_l2_intc_shutdown(struct irq_data *d)
++{
++	__brcmstb_l2_intc_suspend(d, false);
++}
++
++static void brcmstb_l2_intc_suspend(struct irq_data *d)
++{
++	__brcmstb_l2_intc_suspend(d, true);
++}
++
+ static void brcmstb_l2_intc_resume(struct irq_data *d)
+ {
+ 	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
+@@ -252,7 +263,7 @@ static int __init brcmstb_l2_intc_of_init(struct device_node *np,
+ 
+ 	ct->chip.irq_suspend = brcmstb_l2_intc_suspend;
+ 	ct->chip.irq_resume = brcmstb_l2_intc_resume;
+-	ct->chip.irq_pm_shutdown = brcmstb_l2_intc_suspend;
++	ct->chip.irq_pm_shutdown = brcmstb_l2_intc_shutdown;
+ 
+ 	if (data->can_wake) {
+ 		/* This IRQ chip can wake the system, set all child interrupts
+-- 
+2.34.1
 
 
