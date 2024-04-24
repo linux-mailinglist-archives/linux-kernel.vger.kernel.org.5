@@ -1,201 +1,139 @@
-Return-Path: <linux-kernel+bounces-157143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6D9D8B0D5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:58:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA7788B0D66
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:58:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 733A51F22F88
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:58:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7B4D28B17D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:58:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F20A915ECF7;
-	Wed, 24 Apr 2024 14:57:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E8515F30A;
+	Wed, 24 Apr 2024 14:58:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="DA021eMb"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="huFgtjX/"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED3C15EFB7
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 14:57:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64B0415EFC7;
+	Wed, 24 Apr 2024 14:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713970668; cv=none; b=cMIplbI/EGrcAvRVhaKIw6uG0puzlw++jl7GV3HpVvLXhGzgFULsZzJ2BycUwdhIieYEiOpl8wrbDACqbX8l4wyfYshBpCiU0iwtZkd9n9eu9haQiJurrtHKxta2yY1ThxmuIHlbq8p/boGTREaRClN2rYFId0Q/3joaR9UBXhg=
+	t=1713970704; cv=none; b=QzRVDq1D2BEiwDN1U2JNKpOhC+5JfAIna+fuQgQl6TTSpXXumnMw2rvuzGJW91+c8ZmmFg/3VjNF8m1mcfqYBo9CcIO7BHMXnxpDgkBqT/wtzEeOm7ojaV6iEkiOdPTwBZGYHcpHDWPGohF0nHArwPQ4dgSpVyRIbNqnFF/09xo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713970668; c=relaxed/simple;
-	bh=QMslz113vv9u8rbbuaQqQeBM4KeubIHYp+3TNEFioH4=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cjgKYNTPM4N9fuR4YgRgAbFoXxkDJlWHLXqmc/iN3KCdA0pU0Irmr0Y27kraWFLkdktuHoNe47pjlsdISxaDfS/6c/ylRSbjvQhESFVnzdl0Epm/PGwj88FEI+I/3C5Uh6cLO/CCPoc2oqfV/+kzgOER1goTOwSGUXgY6JJ8ptk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=DA021eMb; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com [209.85.128.200])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 466E540590
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 14:57:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1713970664;
-	bh=5esocC9ZFW0Dfcow+sGknBU1wI/0vCj6NFX+zWkQdjU=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=DA021eMbB/XsGVtLKMIMG1mKtATTf63AUeW8Lt7+LvgkjAHISZm3JwefjHtBM0H/i
-	 qSqXIZdulN2d2BUMAaxs8t7v4xqrKHa3Y8R/Ip/+qfN9otkde3ASQZz/WuUtz3FRkK
-	 nGsWCwKXm5bybhYdQsmbsp6SjRONllK815yO0yGLODAgp/FNunveRRRttpzMLf1Kt1
-	 ofhkg+UJAa2TYjZmLyFfGJTSw+360rGIGvmL8unD0q9lzqewXSe2JIN8Jcm8iCyugq
-	 n6bJ+5afDhLXHDjSDSjc6DQQAd7y2qfyfXbYwEBaIIj9u7DD4Sk+zWur+W0SpX7INQ
-	 +Dl6pccMipFcQ==
-Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-61ae546adf3so110293037b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 07:57:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713970663; x=1714575463;
-        h=content-transfer-encoding:cc:to:subject:message-id:date
-         :mime-version:references:in-reply-to:from:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5esocC9ZFW0Dfcow+sGknBU1wI/0vCj6NFX+zWkQdjU=;
-        b=wEfJtBVfCKT0TVqbhG6t8k5OXAUq4ZsYdM5lC+wCMDLaYBe1hXBrZrYlwiGGSHSDok
-         pXSizoYiMRH4SlDMtM3vzfbypHoK9LgZcwtWIVb5SWY4Bl38FdeNJ6c0wyqc5khDoOcP
-         OpUPkuGvMGIh8Ac5xTUZYR2pguh0PdYnag6XcohzkrhARhZTZacG3Zv2YwIYHC3dofLW
-         326ITXsVjQ9zsDJC+TQssXvaBCNw8CcU0eteSjtSLASfB2TceCPngp/3vyTuFFNkcuUs
-         8o6uwxuvozQ8zllh6Zw9V0QSMP47XLzlUUIt5LVEaXXNhxiPF5G2iTR+N9Z5M0kfuhey
-         pP4A==
-X-Forwarded-Encrypted: i=1; AJvYcCVq36DtJ9kJMApcmW07mUsThVMhlBzt4jcs98T1MysI7sZBk/GqsX8kV6vuU439nXq5amijAydgMwq7XIVz3b3aHQAudkcAFIOCRbzh
-X-Gm-Message-State: AOJu0YxOfFN4om9OTPSQV5McHfvHbcLxiEQ/x71oSrrrojuz1BlZmPUv
-	IxM6nqdPouiVaQrqBdTooJgkd5pKq+Sk6UndIo6xDfe/x0JGz6AySmva6vvyE5OqPTz+NEDNYO0
-	27nt3OPvOSW3+Oh2p1FYsDeDiMHBbE4/YGAEr8nifqYOq+SSCka1XjcI3N4UkTNswT0uJhbyK3n
-	QOB3VjuUqBIFGkqUFy5TW0VKd61HQSZ3QPpiTe7OkKMHyuCdHqBk9+
-X-Received: by 2002:a05:690c:3612:b0:609:ff22:1a88 with SMTP id ft18-20020a05690c361200b00609ff221a88mr3109067ywb.44.1713970663329;
-        Wed, 24 Apr 2024 07:57:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGLj6vN82/lNMO93VtWofH8pTU6lK+eyGAXCYtefLHp0CWoW2WPTI12S+Ss5a+rfru0ns+AgDrPBoEFC+mLT9w=
-X-Received: by 2002:a05:690c:3612:b0:609:ff22:1a88 with SMTP id
- ft18-20020a05690c361200b00609ff221a88mr3109036ywb.44.1713970662973; Wed, 24
- Apr 2024 07:57:42 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 24 Apr 2024 07:57:42 -0700
-From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <SH0PR01MB08410B2FCAE1D9AA754865BFF910A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
-References: <20240424075856.145850-1-joshua.yeong@starfivetech.com>
- <20240424075856.145850-2-joshua.yeong@starfivetech.com> <CAJM55Z-C7XkFo4STk3rdLG4kvPfed-AfrHB1QJ-Tzt1LDoKw9w@mail.gmail.com>
- <SH0PR01MB0841F8C45091E4A08020ADF2F910A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
- <CAJM55Z9NAeRb_3ZBJksXt+4fJMdcYw55bfAs0EpSnM8VWBKQag@mail.gmail.com>
- <SH0PR01MB08415B9CDDFB1A4FAB0FC4A9F910A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
- <CAJM55Z_G5EKSjHztCQ+gXDGwfpziZTE=HsHmwydJWB-uorMOqA@mail.gmail.com> <SH0PR01MB08410B2FCAE1D9AA754865BFF910A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
+	s=arc-20240116; t=1713970704; c=relaxed/simple;
+	bh=x/ABSCkim9S0MeG/AzqNKvpbk54vNpeK5u4b7bC3YfY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H5sauUGNErg8WqTyVHMu1STqnVfTr3k37rwbCCo7qEmQ43RLHgDlt2//lzKON3QTj0rYXI4JOjcYKdon1++P8+byliCje0ty87ydOYr0oIN1QIgYBinx9mxMrifX6iqiPOt4BUXKh/syHAnM3wvy92h0lEZ9270Ol+dBGK8L7Lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=huFgtjX/; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=fzak5i6UEXrfZCHyTuoSWrRTPCwyT9tYF6PbbPFvEFg=; b=huFgtjX/EgWtocZIwmbY5+DXoU
+	MjVxuqn3Sx2ZoV8nfypF8Sge2jSlpPWvPyfgDoarUG1du5Usx2gfJetiyI9MUu6hv7bVQYZWvJ6NO
+	aaMwE5zawd5AaRVy30YOXW98BZaFHoqqeyqP3PRFi4R/s0LH+HruLIt7QVgeZTpn83MZpokIjf5bK
+	hWS4vVSZH9NwvyZMjbZHtNKj6Xrv6/NMm3MjK+k+ROwjHElpkRnv78N6lBtAIcra89usohYpQLJOV
+	GYZakpanBFv4g3ldCw9jhHsCWvjKC66T79c811qBX8gaZsx5b3UlB+VHwuLUEbc58lTSvo6vG3c7U
+	Dfg9ZwXg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54942)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rze4S-00068O-1H;
+	Wed, 24 Apr 2024 15:58:04 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rze4O-0004k6-MP; Wed, 24 Apr 2024 15:58:00 +0100
+Date: Wed, 24 Apr 2024 15:58:00 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Stefan Eichenberger <eichest@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	lxu@maxlinear.com, hkallweit1@gmail.com, michael@walle.cc,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] net: phy: mxl-gpy: add new device tree property
+ to disable SGMII autoneg
+Message-ID: <Zikd+GxuwMRC+5Ae@shell.armlinux.org.uk>
+References: <20240416121032.52108-1-eichest@gmail.com>
+ <20240416121032.52108-3-eichest@gmail.com>
+ <3f7f278f-e490-47f1-971c-ecf44a70cee4@lunn.ch>
+ <Zh6clAtI3NO+nMEi@eichest-laptop>
+ <5ed39628-4ac0-4c4e-9a16-fd4bf9a6db29@lunn.ch>
+ <Zh6mIv1Ee+1h21Xo@shell.armlinux.org.uk>
+ <Zh6z90iCpLqF4fla@eichest-laptop>
+ <Zh6/oVHUvnOVtHaC@shell.armlinux.org.uk>
+ <Zh94yqo2EHRq8eEq@eichest-laptop>
+ <ZiE156+BPpx/ciL6@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Wed, 24 Apr 2024 07:57:42 -0700
-Message-ID: <CAJM55Z-6vqSjL3GPT7GqC1k01zH8+zexSpcOFFUpuZELAQxARw@mail.gmail.com>
-Subject: RE: [PATCH v3 1/2] cache: Add StarFive StarLink cache management for
- StarFive JH8100
-To: Joshua Yeong <joshua.yeong@starfivetech.com>, 
-	Emil Renner Berthing <emil.renner.berthing@canonical.com>, "robh@kernel.org" <robh@kernel.org>, 
-	"krzk+dt@kernel.org" <krzk+dt@kernel.org>, "conor+dt@kernel.org" <conor+dt@kernel.org>, 
-	"conor@kernel.org" <conor@kernel.org>, "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>, 
-	"palmer@dabbelt.com" <palmer@dabbelt.com>, "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>, 
-	Leyfoon Tan <leyfoon.tan@starfivetech.com>, JeeHeng Sia <jeeheng.sia@starfivetech.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZiE156+BPpx/ciL6@shell.armlinux.org.uk>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Joshua Yeong wrote:
-> Emil Renner Berthing wrote:
-> > Joshua Yeong wrote:
-> > >
-> > >
-> > > Emil Renner Berthing wrote:
-> > > > Joshua Yeong wrote:
-> > > > > Emil Renner Berthing wrote:
-> > > > > > Joshua Yeong wrote:
-> > > > > > > Add StarFive Starlink cache management driver for
-> > > > > > > JH8100 SoC. This driver enables RISC-V non-standard cache
-> > > > > > > operation on
-> > > > > > > JH8100 that does not support Zicbom extension instructions.
-> > > > > > >
-> > > > > > > Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
-> > > > > > > ---
-> > > > > > >  drivers/cache/Kconfig                   |   9 ++
-> > > > > > >  drivers/cache/Makefile                  |   5 +-
-> > > > > > >  drivers/cache/starfive_starlink_cache.c | 135
-> > > > > > > ++++++++++++++++++++++++
-> > > > > > >  3 files changed, 147 insertions(+), 2 deletions(-)  create
-> > > > > > > mode
-> > > > > > > 100644 drivers/cache/starfive_starlink_cache.c
-> > > > > > >
-> > > > > > > diff --git a/drivers/cache/Kconfig b/drivers/cache/Kconfig
-> > > > > > > index
-> > > > > > > 9345ce4976d7..9181cd391f53 100644
-> > > > > > > --- a/drivers/cache/Kconfig
-> > > > > > > +++ b/drivers/cache/Kconfig
-> > > > > > > @@ -14,4 +14,13 @@ config SIFIVE_CCACHE
-> > > > > > >  	help
-> > > > > > >  	  Support for the composable cache controller on SiFive
-> > platforms.
-> > > > > > >
-> > > > > > > +config STARFIVE_STARLINK_CACHE
-> > > > > > > +	bool "StarFive StarLink Cache controller"
-> > > > > > > +	depends on RISCV
-> > > > > > > +	depends on ARCH_STARFIVE
-> > > > > > > +	select RISCV_DMA_NONCOHERENT
-> > > > > > > +	select RISCV_NONSTANDARD_CACHE_OPS
-> > > > > > > +	help
-> > > > > > > +	  Support for the StarLink cache controller on StarFive
-> > platforms.
-> > > > > >
-> > > > > > This is a bit misleading. The JH71x0s don't have this. It's onl=
-y
-> > > > > > on the JH8100 so far, and hopefully later SoCs will just
-> > > > > > implement RISC-V
-> > > > standards for this.
-> > > > > > So maybe something like
-> > > > > >
-> > > > > > "Support for the StarLink cache controller on the StarFive JH81=
-00 SoC."
-> > > > > >
-> > > > >
-> > > > > Hi Emil,
-> > > > >
-> > > > > The StarLink-500 cache controller is not designed exclusively for=
- JH8100
-> > SoC.
-> > > > > While it is true that it currently exists on the StarFive
-> > > > > platform, CPU/SoC that does not come with Zicbom extensions
-> > > > > supported would need to rely on this cache drive to do cache
-> > > > > management operations. I think we don=E2=80=99t need to mentioned=
- 'JH8100
-> > SoC' here.
-> > > >
-> > > > Wait, in the previous mail you said that future designs will
-> > > > implement Zicbom and not need this work-around, but here you're
-> > > > talking about other SoCs that do need it. So which is it?
-> > >
-> > > If you visit the company website and look for StarLink-500, you will
-> > > find that it is a standalone IP that the company is selling as an
-> > > interconnect. Anyone who integrates StarLink without Zicbom extension=
-s
-> > > may utilize the cache management operation from this IP.
-> >
-> > So then the "on StarFive platforms" part is wrong? Or will this always =
-go
-> > together with the Dubhe cores?
->
-> It would be 'on StarFive platform' without 'JH8100 SoC' that you suggeste=
-d.
-> StarFive's newer cores that will have Zicbom extensions supported. Those
-> CPU core will not need to have this cache controller enabled.
+On Thu, Apr 18, 2024 at 04:01:59PM +0100, Russell King (Oracle) wrote:
+> On Wed, Apr 17, 2024 at 09:22:50AM +0200, Stefan Eichenberger wrote:
+> > I also checked the datasheet and you are right about the 1000base-X mode
+> > and in-band AN. What worked for us so far was to use SGMII mode even for
+> > 2.5Gbps and disable in-band AN (which is possible for SGMII). I think
+> > this works because as you wrote, the genphy just multiplies the clock by
+> > 2.5 and doesn't care if it's 1000base-X or SGMII. With your patches we
+> > might even be able to use in-band autonegoation for 10,100 and 1000Mbps
+> > and then just disable it for 2.5Gbps. I need to test it, but I have hope
+> > that this should work.
+> 
+> There is another way we could address this. If the querying support
+> had a means to identify that the endpoint supports bypass mode, we
+> could then have phylink identify that, and arrange to program the
+> mvpp2 end to be in 1000base-X + x2.5 clock + AN bypass, which would
+> mean it wouldn't require the inband 16-bit word to be present.
+> 
+> I haven't fully thought it through yet - for example, I haven't
+> considered how we should indicate to the PCS that AN bypass mode
+> should be enabled or disabled via the pcs_config() method.
 
-No, what I meant was that if you're selling the "StarLink-500" IP to other =
-SoC
-manufacturors then it will not be restricted to StarFive platforms. So then
-"Support for the StarLink cache controller _on StarFive platforms_" is no l=
-onger
-true, right?
+Okay, I've been trying to put more effort into this, but it's been slow
+progress (sorry).
 
-/Emil
+My thoughts from a design point of view were that we could just switch
+to PHYLINK_PCS_NEG_OUTBAND instead of PHYLINK_PCS_NEG_INBAND_* and
+everything at the PCS layer should be able to cope, but this is not the
+case, especially with mvneta/mvpp2.
+
+The problem is that mvneta/mvpp2 (and probably more) expect that
+
+1) MLO_AN_INBAND means that the PCS will be using inband, and that
+   means the link up/down state won't be forced. This basically implies
+   that only PHYLINK_PCS_NEG_INBAND_* can be used can be used for the
+   PCS.
+
+2) !MLO_AN_INBAND means that an out-of-band mechanism will be used and
+   that means that the link needs to be forced (since there's no way
+   for the hardware to know whether the link should be up or down.)
+   It's therefore expected that only PHYLINK_PCS_NEG_OUTBAND will be
+   used for the PCS.
+
+So, attempting to put a resolution of the PHY and PCS abilities into
+phylink_pcs_neg_mode() and select the appropriate PHYLINK_PCS_NEG_*
+mode alone just doesn't work. Yet... we need to do that in there when
+considering whether inband can be enabled or not for non-PHY links.
+
+Basically, it needs a re-think how to solve this...
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
