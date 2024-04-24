@@ -1,220 +1,494 @@
-Return-Path: <linux-kernel+bounces-157212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83E1A8B0E7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:36:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0DA48B0DBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:15:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E42128E34C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:36:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4ED31C230CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:15:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59DE1635AA;
-	Wed, 24 Apr 2024 15:35:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E92015F321;
+	Wed, 24 Apr 2024 15:15:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="NRb/X98j"
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2103.outbound.protection.outlook.com [40.107.95.103])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HrDUN1pS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 038E0161322;
-	Wed, 24 Apr 2024 15:35:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.103
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713972902; cv=fail; b=SsI4qTdKIWU5Yg9wSw2kXBCn1TWCnZyPp/TnS0OueapmMVcAzVmGkzGs2AAYNCt6FkYxCyQ6XkOK3YoPPbkmP+eg4hSmR0SglybHOcP/3mdVZT8CP4KtbPAgC1JnlvcS29+w7HloUkDCIxSjj7wSqVFY4rL3fCxs6CcAqhjPE3A=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713972902; c=relaxed/simple;
-	bh=kHd1Ry3YnBdkXkRcPuiomPS+1pRowH3aS3iSttM88eA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=u5iORqmTsmUrUr2xH/+y4ymeMzejLyEWbG35rLnolV3BLRQGp4kj83vRXM9PWpwm6SZIE3zppBioVgEbtnaTS9u2ewFA6WB1dAUo6FbzR2oNCnp0Xo9oGWSeUfO3as1fEu70Ug/W4zCf9QeKxjgcYBaegICaU2Ekew/ZpSC9v68=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com; spf=pass smtp.mailfrom=memverge.com; dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b=NRb/X98j; arc=fail smtp.client-ip=40.107.95.103
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G8cbm8vVscye2ZzUf5B7chWIeCeBPcAfWzLnC10DrGg4q+MbsF6t9IUmUumkQ2f6rZJrOxUWDB5t53n2Mc31A6Fx7Al1NM79yA17hq3AJEwpY9CuU+4niHmAEsIJ1QkQ4HLX/BEVOA2gJonJj8czYA84oaMDyl3Qedy4V8FWmQmw4mZrUAQVsjBkdQ+38JesvEi1cajL0v9zUKHccOQERs3BF9EEKcHancAA3drHKyfr79XZOpbbnn4OrG/YgglCk/84sW8snQ7CRKnNmAN4plYVtDkf5H8xmWQoA85TSycPE1hUFtffprGR2Uqqxsl0+/SaRulkepUmW+dGIKiSCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qMs+xrt9+k20FUg4sXBvJmVVC1Dhf1Gh7jQGK6WsOsk=;
- b=DNX8lNxCyfVdStWCXUGIfDBzyzZ1t96w3DAm58IJm7i2aR+7Q09qEUWpFY+55XdMsBYhtQBm1AFHJ7ODlkabZupMSjhBYRZ9CnmWA6SVJUMalasrJWPXt02VOxrPRBrWPqDsEFwKhPx7UGGqcLV/viJ9uO3oOEOygr6AvH4ZnZRMyhe9XFWTKAT6juQPoEHedAPbzjabWv6wiqiKBusT44cGcp8TTrrmRFDEfK185FyXtC7S1IWwsN+l9zWdlGuNSds3xc2B6nCkuOvzK/Kas/ax+tTz55ZIzlnsCA4pRIprSkpupp99vHCCSWqGxqARVo7Y7aEZISdRazYKHck8jQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
- dkim=pass header.d=memverge.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qMs+xrt9+k20FUg4sXBvJmVVC1Dhf1Gh7jQGK6WsOsk=;
- b=NRb/X98jCNAmbZmkjOOwVG2I+vw+b2aUW4KkkaJlP9G9abG8OpTTzhUTZXq26BCH+A1yjmqC7F4WXGQu5Asvx2DJTS6XQwCK+NJnqVmNzrG8qdocD+QaoAfa81lzfNl4sfhEXCYKVW8kD/MZ/qZ2FDqoZLUqJcnTeBrOTr0C3ak=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=memverge.com;
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
- by LV8PR17MB7134.namprd17.prod.outlook.com (2603:10b6:408:180::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Wed, 24 Apr
- 2024 15:34:57 +0000
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::5d53:b947:4cab:2cc8]) by SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::5d53:b947:4cab:2cc8%4]) with mapi id 15.20.7472.044; Wed, 24 Apr 2024
- 15:34:56 +0000
-Date: Wed, 24 Apr 2024 11:14:08 -0400
-From: Gregory Price <gregory.price@memverge.com>
-To: Dongsheng Yang <dongsheng.yang@easystack.cn>
-Cc: Dan Williams <dan.j.williams@intel.com>, axboe@kernel.dk,
-	John Groves <John@groves.net>, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-	Dongsheng Yang <dongsheng.yang.linux@gmail.com>
-Subject: Re: [PATCH RFC 0/7] block: Introduce CBD (CXL Block Device)
-Message-ID: <ZikhwAAIGFG0UU23@memverge.com>
-References: <20240422071606.52637-1-dongsheng.yang@easystack.cn>
- <66288ac38b770_a96f294c6@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <ef34808b-d25d-c953-3407-aa833ad58e61@easystack.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ef34808b-d25d-c953-3407-aa833ad58e61@easystack.cn>
-X-ClientProxiedBy: SJ0PR03CA0291.namprd03.prod.outlook.com
- (2603:10b6:a03:39e::26) To SJ0PR17MB5512.namprd17.prod.outlook.com
- (2603:10b6:a03:394::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B727158A3D;
+	Wed, 24 Apr 2024 15:15:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713971742; cv=none; b=bvaSVDrkg+tIUYpTXWUNbFNisEv7cz+ylnyFWF/vJsKA7Tp0d6WjDZovYMJeXPMU/BKm/8ImmU9jQNAl8AOLXqiW+jdD/Ji1Z8oWBPcXVDUUhfFQCbeLi2mGshKXvcjPOzqibYYpztBSLaHXC1p1A0jatQHHm68jh/peMq+w+M0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713971742; c=relaxed/simple;
+	bh=uMcYy4FlcXjrYuGJofP0whwsMG8llTqowaxwAC+2Hz4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cLaU8uGMo9R7AHukAh1DHNEdKzT+Irarbh6E8h42hofACkH11X6IBtB/UGFgMXxz9nztTZS2OKkt54d/PraemHeZeEn3O0iNOFwQPQ7mRm01dS0rLiw92q+cVBgZERy+L0mYNE9Ppp8w14U5uULQoRZVTo6yFmyCuSbb2WTaE74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HrDUN1pS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 784EDC113CE;
+	Wed, 24 Apr 2024 15:15:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713971742;
+	bh=uMcYy4FlcXjrYuGJofP0whwsMG8llTqowaxwAC+2Hz4=;
+	h=Date:From:To:List-Id:Cc:Subject:References:In-Reply-To:From;
+	b=HrDUN1pSpimPiob87xTAh1TjENQmCCFAZAKzBBE/ozPbKg0vUs0thd0qy6MEBm6kL
+	 QPTDthYDXy8lv7mG4+ZBemlR88R/NVHT7z9ZtOHeEbxg1Xv5R1QZe4ftPiF767Vlvg
+	 rBZRRCGj89KZ6E8tsvT/zID1N3MTHccEJQ48lF7I4FfW2ETX1f/oUVV2y3V9oE37/9
+	 N2BIBhYCddfxP592hZ7uWIMSt0ClXFohFTPzt5DqN2xTQ2ECjS+a2AtI5QPPuKf7Tg
+	 TNUVBVmsK5k3DdOA5tAyKBsnYfWT50UQ8mMMAhqCmgz7qYkSnBAMBRbZVAg4jJloU8
+	 zVaJVApkcQcjw==
+Date: Wed, 24 Apr 2024 16:15:37 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Niko Pasaloukos <nikolaos.pasaloukos@blaize.com>
+Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	James Cowgill <james.cowgill@blaize.com>,
+	Matt Redfearn <matthew.redfearn@blaize.com>,
+	Neil Jones <neil.jones@blaize.com>, Arnd Bergmann <arnd@arndb.de>,
+	Olof Johansson <olof@lixom.net>, "soc@kernel.org" <soc@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v2 6/7] arm64: Add initial support for Blaize BLZP1600 CB2
+Message-ID: <20240424-budget-vaguely-426f34eb305e@spud>
+References: <20240424133320.19273-1-nikolaos.pasaloukos@blaize.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|LV8PR17MB7134:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f52e2f1-eebe-435d-5dfb-08dc647417ef
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|366007|376005;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?QUN1Z0lDZ2Rsc2lIWWNXN0RlTHNzak1yNUtLWU9VMjRaNEFldHZzSGdwZm1P?=
- =?utf-8?B?STJSQmRIdlZOVmRGd3hWYnlPWUdDaXhmQ1pKRnd3OTVHVzJiZWxqY29DQ2dM?=
- =?utf-8?B?M0puMmduK1Vqd0xEV0xyOEh2eGlYSmFIQVF3c1pHOUx0UzI4Tk9NQ240d3RC?=
- =?utf-8?B?TXFoZEVKazJrN1dnNnFZdFN6T3NMTjZHdmdDSnVpalZRNDlJVTRkanhZU0kx?=
- =?utf-8?B?c24yMDI3bHRUdlViblo5a0tLWXVTK3NxOVV6cnF0cVNHVmgzUlJoT3RVS0Yz?=
- =?utf-8?B?WnltY1dxTHFMam9lUEc3NzRaRGp4NUhhZC9pZmtlRW1idlVpdXJFUFU2ZjEv?=
- =?utf-8?B?S1VsTDhwOVU0bVNiUU5ZeEpFeUx0MXh0aTZjbHFvWTQ4VSt2aXlBYkYyL3Bp?=
- =?utf-8?B?UmtwdHZWa05nVmZ0Y0RDRXJGaW5UbzNia0JXZUVFWCsyYTl0NUN3c1pKZEkx?=
- =?utf-8?B?bEpYUEdFQ040SitSd0Y4Z2JLYlBJLy85L1NsU210Z0hYNXFoRktjUEFqeHJr?=
- =?utf-8?B?a2Y5NExhMGhJbEZWeE5vTmpBdGRUSCtxdGd2ZGo1UHhCK1FMbWxyTVZCNXFz?=
- =?utf-8?B?M0dtUXV5TUFsMWdGc2RXbEo1Ykh1Y0orVlJ6cXRpT3poYjNBOG85T1NJenhq?=
- =?utf-8?B?RVMzR2JLNGkvc00vVWFzZ0daQ0Vpck4wN3NWUTJHTkQ5OUpFalhiMkoxclZF?=
- =?utf-8?B?cFdnL3JOMTV2S3R0cWRYYk5KaS9ZTzJ1VzFCZlNBWk9wRTg3NTloSXhvWkRU?=
- =?utf-8?B?RGNvbC9ZQndLVFptajhmbnZLZG1ER3JpVUVhZ2c4eXptL1doMVNvN3hGME1G?=
- =?utf-8?B?VmNUSUJRWDNQY2g3VitxTDNuZVMzRyttaTBISm9pa3JWUWEvd21XN1ZFZ3dU?=
- =?utf-8?B?eFJUUEF1YVljNUdCQlZzRzdBbHZ2NTVHTFB6VFZlTGhaTHEzTWdXS0RRa3lK?=
- =?utf-8?B?S2NnaDl3cjUxWDZieXpCbHRybFVPUnI0YThWWGNSZ1hCUGNOekg0SVBoL21Y?=
- =?utf-8?B?bHowVkhiSFNodStRVktxUlpETG50UlF2WGJ3ZzdERTlBNDdlY205VXVzSjNz?=
- =?utf-8?B?cGx4N05WZDk2NlVPVVZBTEpBaGtobWV0aFNVTEFkTWVqL2RkRk5ua2tjTVhN?=
- =?utf-8?B?Nmw1bWsyaVdHM1lPNEJKV1FWbDhCVFlZLzB1b1hPdWhRamR1RFFETnU5YVgv?=
- =?utf-8?B?UEZWWEhMWmpKUUZPUldPZUNNQ05NSFd2SkZBMnNEeXplb28rRlQwa3VBVHdC?=
- =?utf-8?B?a3RVTS9oY1pMbDMwRmZ0Ylh2WTFxQkJMVU9zZ1lCbGtmaUNuREJKWEllQlZJ?=
- =?utf-8?B?eGZrdElFUU93VVZ0Q3JiMTNiVXZtcVEySjRxTnZuWXpqazR0OU5sb29yYXha?=
- =?utf-8?B?Tkc3UEdqeUNxM3lsZFM0T0IweHE0aXhhcUlIMC9TQlpRVzZoMGdGcjlOWU1X?=
- =?utf-8?B?SUZpcW5lN3RaenZEc2hMd2tlWFFxQU9md2h0Z0pBdUQweUwvT1c5ZEdPOEs3?=
- =?utf-8?B?anFEMHVFZHFvZ1BpbjlFT29mM1ZpcnViajUyaXNTbTFMcU9Db3F1M01pSzlx?=
- =?utf-8?B?N3ZKYzgrODFoZDBqcGVnaWRXNHJpdkVKZzQ4ODJOdWFZNjQ2WENYR203bC84?=
- =?utf-8?B?Y2k0TlFnVmxGRW1XbFFMTUFMeGRBb2hnNSs1VHVHR1RJdUt1bWtvZWxjL2Nt?=
- =?utf-8?B?UmlFRXdiMmpXTUVOMHRsaU1nZjl6VXc2MzJxVGJuWjJpWThtMlFRUWFRPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WjYrVStXd0JDYzQ3d0ZZZFI4VDdzdjNackt4QnltcEt6L1p4Ny93VmRTQndz?=
- =?utf-8?B?SGtmUjI5dlRXWFVtY0FoYUt0K2dLMlJ4S1U0WWU5SjV6YnRkYTlRb0pHd2ts?=
- =?utf-8?B?V25DVUFGV0ZoWEJUbkdhc2Uxa29jdWM0RDgwT1RGWjcxSFpiRmhFaVUzWkYz?=
- =?utf-8?B?SEtUWTBNUUVnd043QkJRZVY1QXlSWHdHUEJoNjdGWGx4R3RvY0paeURpOURL?=
- =?utf-8?B?Tk4vN20vTDFVQ1F6ZXVtZGYxbmM2VHFoamNpZGorVDV6WktRQjNCcVQ2bW84?=
- =?utf-8?B?OWhkaHZvTncyL0dvT0ZVdERxcEtiSUdHZlpES2FqbHYzR3lSQ0JlRVppaXpJ?=
- =?utf-8?B?MEVXM0FGcU1nMnJ4VmdNSlA1YkFJNUIrYkFYQzJUcDlFRkU3OWdseWxVdzBz?=
- =?utf-8?B?V1NOSno3eTNCRktkNkh2TGNCZWVxYlI4Zmx5c0xjaFp1QlJScjR4Y3FWNCtV?=
- =?utf-8?B?aEVkWmRkVFBsWlZwQ1RGMXJ3OVRTUUZTKzl3VU1MaEYyd2FTdGVPSGxOQ0Nr?=
- =?utf-8?B?Qmt5Y3BuR2pTZERESGdmR0xSc2xUNlZ4U1FERWhiNHhqaVZ4SUd0UDBhcWl0?=
- =?utf-8?B?UHE0RE9kdjA3K25yNVJuQlVBdmFodTRleWFiQUhUOUVRVkJWVDlFdUU2VWtF?=
- =?utf-8?B?aGdaSmxZN1NHQXB4dnVUUGxod2FYb3NEa0RVRGhuOWVBNFpzTnkzd0wrRFdY?=
- =?utf-8?B?M3g2SUZrVUovZTlRdTBpeVU3V2FHYUhlTXcvQzZnNVNnblBuRXA5NnBMZUds?=
- =?utf-8?B?YjZiV0JVOGlnTXlTUUdyUG10M25PWmdCbUFYVjRjcVc2WHRwcUlVTUVxTEM1?=
- =?utf-8?B?RE5xa1JQTXJjTmdDaFc3dlMrRExoeUF3RTZhTWkwQXdxc2lzYUJyWVpEYzds?=
- =?utf-8?B?MUp4RFZFWkQ2dFh1dkw4Q1V3OGNYdWVvbzN0a3BZWVJuUzExRXl1SjlJbjhJ?=
- =?utf-8?B?VjdBbnFFMWd5cUNMZFNNNUVWbXpLbnY4blZMUEpTcXUwVEJMOG9JOXZWY2pD?=
- =?utf-8?B?VCtEaW9DWkg0ZzBzTXN3MC9UUlFweVJINVhGZXUzcithc1I5UG1RdzNla3da?=
- =?utf-8?B?cFJGWUFsVWZmUkZjaytJWTV4ZUVRNDNaV1FYYjJnZUlqUUZOWUFCekR6dDZk?=
- =?utf-8?B?dk1RdU96R0puVW5uZUFnZmc2UlY1N0dWdm0rclB2M1cvTHR5M2FNd3NKTlQ1?=
- =?utf-8?B?dkRFYjhHUzhiRHpybTI1blpDcmM2d2pVL2QrOHpWdGxsbjVvRkNXYVdsd2x6?=
- =?utf-8?B?ZlVXeHU3alJSTkZ0RmNIdmxaclg3Tm1BdGZBWm1oS2xDUWJ5Vm5FUGk1OWtD?=
- =?utf-8?B?UURwUHpISXptZkg4ekVCNHI5aUd3YnM3bnBCMmZlNjRiMWhsRVlwZVo1Mmlh?=
- =?utf-8?B?cjlKZkUzYnhWNjRsb0JPaXA2RWdUNDVqeWxya1ZzMmFtVzQvem1yU0gybld1?=
- =?utf-8?B?aDZ3cjN2SDdWeU1PY2xIcVdmc3F0d291ek5mL2NjdmlDTUtyWmMyMWhhdG8z?=
- =?utf-8?B?bXdLV0NaanRnTWNqU2ZDNG5SMUVWc2NIVDJkd2FGRUxiYzZvaFhKQVM5UG4w?=
- =?utf-8?B?Vit5UWJOa3kwcHJRbk5hNk9QSEdZN3hqUCtvazRjWTFQU2w1NkNldFUxT3p1?=
- =?utf-8?B?TDVMOUhtd0dlaDJxbXZSbXlFdzVnbGtJZys5TWJDZU9yTzh2dFk3VjRrK3Uy?=
- =?utf-8?B?bzVIa28rQURhVlZZZlBUYnZaUTVESTNVZzIwZUhVaW9wMzF4S2R0NnVNOUFs?=
- =?utf-8?B?TCt6WXNZL2kvckZqVStEam9pMkZ5MVZ4V2ljd1hqemVNWDl1Z1N0SVhQUWVK?=
- =?utf-8?B?VFovaGR5bjZhMmhrNXdzTkE5RGxzdjZNcGpySU1zNzBQMkU0b1JENXBFaDkz?=
- =?utf-8?B?Qnc5V1A4Z29JOUkya0p2MmdySXZyblQ4OEhFL2pYK0RTZlBRaGVXTTVsSnlX?=
- =?utf-8?B?emQwV004QWhDV3R4MlBZNHl2TWZ4bHRqWG9BMjk4L29xWkl3R1YzdFdRVGxs?=
- =?utf-8?B?MnVqU01rVk96bFhyQ2p5VG1QdGV4V0hCWmg0cTJKUElKZ0U4dWtIYTB2eFgr?=
- =?utf-8?B?YzVnYmptTjl2Q0pWcTdnRk1KdGJCUnEwcEJFUHRocWVHTkhNQXBLMElpRGV0?=
- =?utf-8?B?R0RWOVlDZndvb084YWVuSk5wY3VwVTJadVAwbEtXT08rSklRcTRYQmQ5aXI1?=
- =?utf-8?B?dVE9PQ==?=
-X-OriginatorOrg: memverge.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f52e2f1-eebe-435d-5dfb-08dc647417ef
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 15:34:56.2458
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tkE5orBfS7zeH+MPgYVjmkVh35jJRbiIqTw7+BB6szvUogMXNayDyMha5AIV6rSYzuUumrAE1Mhd2IgpIjkUnCZdpts3k3n7rxy6pHzjGXg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR17MB7134
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="kfuG2k3Bnxl7jhEx"
+Content-Disposition: inline
+In-Reply-To: <20240424133320.19273-1-nikolaos.pasaloukos@blaize.com>
 
-On Wed, Apr 24, 2024 at 02:33:28PM +0800, Dongsheng Yang wrote:
-> 
-> 
-> 在 2024/4/24 星期三 下午 12:29, Dan Williams 写道:
-> > Dongsheng Yang wrote:
-> > > From: Dongsheng Yang <dongsheng.yang.linux@gmail.com>
-> > > 
-> > > Hi all,
-> > > 	This patchset introduce cbd (CXL block device). It's based on linux 6.8, and available at:
-> > > 	https://github.com/DataTravelGuide/linux
-> > > 
-> > [..]
-> > > (4) dax is not supported yet:
-> > > 	same with famfs, dax device is not supported here, because dax device does not support
-> > > dev_dax_iomap so far. Once dev_dax_iomap is supported, CBD can easily support DAX mode.
-> > 
-> > I am glad that famfs is mentioned here, it demonstrates you know about
-> > it. However, unfortunately this cover letter does not offer any analysis
-> > of *why* the Linux project should consider this additional approach to
-> > the inter-host shared-memory enabling problem.
-> > 
-> > To be clear I am neutral at best on some of the initiatives around CXL
-> > memory sharing vs pooling, but famfs at least jettisons block-devices
-> > and gets closer to a purpose-built memory semantic.
-> > 
-> > So my primary question is why would Linux need both famfs and cbd? I am
-> > sure famfs would love feedback and help vs developing competing efforts.
-> 
-> Hi,
-> 	Thanks for your reply, IIUC about FAMfs, the data in famfs is stored in
-> shared memory, and related nodes can share the data inside this file system;
-> whereas cbd does not store data in shared memory, it uses shared memory as a
-> channel for data transmission, and the actual data is stored in the backend
-> block device of remote nodes. In cbd, shared memory works more like network
-> to connect different hosts.
->
 
-Couldn't you basically just allocate a file for use as a uni-directional
-buffer on top of FAMFS and achieve the same thing without the need for
-additional kernel support? Similar in a sense to allocating a file on
-network storage and pinging the remote host when it's ready (except now
-it's fast!)
+--kfuG2k3Bnxl7jhEx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-(The point here is not "FAMFS is better" or "CBD is better", simply
-trying to identify the function that will ultimately dictate the form).
+On Wed, Apr 24, 2024 at 01:33:23PM +0000, Niko Pasaloukos wrote:
+> Adds support for the Blaize CB2 development board based on
+> BLZP1600 SoC. This consists of a Carrier-Board-2 and a SoM.
+>=20
+> The blaize-blzp1600.dtsi is the common part for the SoC,
+> blaize-blzp1600-som.dtsi is the common part for the SoM and
+> blaize-blzp1600-cb2.dts is the board specific file.
+>=20
+> 'make dtbs_check' complains about ['ti,ina3221'] and ['national,lm96163']
+> which are already upstreamed drivers with no yaml documentation.
 
-~Gregory
+Might not be what you want to hear, but please add yaml documentation
+for them. Rob told you to do so on v1:
+https://lore.kernel.org/all/20230412140344.GA2234522-robh@kernel.org/
+
+That said, I went and looked. ina3221 _is_ documented in a yaml binding
+and has been since October. national,lm96163 on the other hand, you'll
+have to document if you want to use it.
+
+Cheers,
+Conor.
+
+>=20
+> Co-developed-by: James Cowgill <james.cowgill@blaize.com>
+> Signed-off-by: James Cowgill <james.cowgill@blaize.com>
+> Co-developed-by: Matt Redfearn <matt.redfearn@blaize.com>
+> Signed-off-by: Matt Redfearn <matt.redfearn@blaize.com>
+> Co-developed-by: Neil Jones <neil.jones@blaize.com>
+> Signed-off-by: Neil Jones <neil.jones@blaize.com>
+> Signed-off-by: Nikolaos Pasaloukos <nikolaos.pasaloukos@blaize.com>
+> ---
+>  arch/arm64/boot/dts/Makefile                  |   1 +
+>  arch/arm64/boot/dts/blaize/Makefile           |   2 +
+>  .../boot/dts/blaize/blaize-blzp1600-cb2.dts   |  84 +++++++
+>  .../boot/dts/blaize/blaize-blzp1600-som.dtsi  |  23 ++
+>  .../boot/dts/blaize/blaize-blzp1600.dtsi      | 211 ++++++++++++++++++
+>  5 files changed, 321 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/blaize/Makefile
+>  create mode 100644 arch/arm64/boot/dts/blaize/blaize-blzp1600-cb2.dts
+>  create mode 100644 arch/arm64/boot/dts/blaize/blaize-blzp1600-som.dtsi
+>  create mode 100644 arch/arm64/boot/dts/blaize/blaize-blzp1600.dtsi
+>=20
+> diff --git a/arch/arm64/boot/dts/Makefile b/arch/arm64/boot/dts/Makefile
+> index 30dd6347a929..601b6381ea0c 100644
+> --- a/arch/arm64/boot/dts/Makefile
+> +++ b/arch/arm64/boot/dts/Makefile
+> @@ -9,6 +9,7 @@ subdir-y +=3D apm
+>  subdir-y +=3D apple
+>  subdir-y +=3D arm
+>  subdir-y +=3D bitmain
+> +subdir-y +=3D blaize
+>  subdir-y +=3D broadcom
+>  subdir-y +=3D cavium
+>  subdir-y +=3D exynos
+> diff --git a/arch/arm64/boot/dts/blaize/Makefile b/arch/arm64/boot/dts/bl=
+aize/Makefile
+> new file mode 100644
+> index 000000000000..595e7a350300
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/blaize/Makefile
+> @@ -0,0 +1,2 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +dtb-$(CONFIG_ARCH_BLAIZE_BLZP1600) +=3D blaize-blzp1600-cb2.dtb
+> diff --git a/arch/arm64/boot/dts/blaize/blaize-blzp1600-cb2.dts b/arch/ar=
+m64/boot/dts/blaize/blaize-blzp1600-cb2.dts
+> new file mode 100644
+> index 000000000000..0bdec7e81380
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/blaize/blaize-blzp1600-cb2.dts
+> @@ -0,0 +1,84 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Blaize, Inc. All rights reserved.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "blaize-blzp1600-som.dtsi"
+> +#include <dt-bindings/net/ti-dp83867.h>
+> +
+> +/ {
+> +	model =3D "Blaize BLZP1600 SoM1600P CB2 Development Board";
+> +
+> +	compatible =3D "blaize,blzp1600-cb2", "blaize,blzp1600";
+> +
+> +	aliases {
+> +		serial0 =3D &uart0;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path =3D "serial0:115200";
+> +	};
+> +};
+> +
+> +&i2c0 {
+> +	clock-frequency =3D <100000>;
+> +	status =3D "okay";
+> +};
+> +
+> +&i2c1 {
+> +	clock-frequency =3D <100000>;
+> +	status =3D "okay";
+> +};
+> +
+> +&i2c3 {
+> +	clock-frequency =3D <100000>;
+> +	status =3D "okay";
+> +
+> +	gpio_expander: gpio@74 {
+> +		compatible =3D "ti,tca9539";
+> +		reg =3D <0x74>;
+> +		gpio-controller;
+> +		#gpio-cells =3D <2>;
+> +		gpio-line-names =3D "RSP_PIN_7",	/* GPIO_0 */
+> +				  "RSP_PIN_11",	/* GPIO_1 */
+> +				  "RSP_PIN_13",	/* GPIO_2 */
+> +				  "RSP_PIN_15",	/* GPIO_3 */
+> +				  "RSP_PIN_27",	/* GPIO_4 */
+> +				  "RSP_PIN_29",	/* GPIO_5 */
+> +				  "RSP_PIN_31",	/* GPIO_6 */
+> +				  "RSP_PIN_33",	/* GPIO_7 */
+> +				  "RSP_PIN_37",	/* GPIO_8 */
+> +				  "RSP_PIN_16",	/* GPIO_9 */
+> +				  "RSP_PIN_18",	/* GPIO_10 */
+> +				  "RSP_PIN_22",	/* GPIO_11 */
+> +				  "RSP_PIN_28",	/* GPIO_12 */
+> +				  "RSP_PIN_32",	/* GPIO_13 */
+> +				  "RSP_PIN_36",	/* GPIO_14 */
+> +				  "TP31";	/* GPIO_15 */
+> +	};
+> +
+> +	gpio_expander_m2: gpio@75 {
+> +		compatible =3D "ti,tca9539";
+> +		reg =3D <0x75>;
+> +		gpio-controller;
+> +		#gpio-cells =3D <2>;
+> +		gpio-line-names =3D "M2_W_DIS1_N",	/* GPIO_0 */
+> +				  "M2_W_DIS2_N",	/* GPIO_1 */
+> +				  "M2_UART_WAKE_N",	/* GPIO_2 */
+> +				  "M2_COEX3",		/* GPIO_3 */
+> +				  "M2_COEX_RXD",	/* GPIO_4 */
+> +				  "M2_COEX_TXD",	/* GPIO_5 */
+> +				  "M2_VENDOR_PIN40",	/* GPIO_6 */
+> +				  "M2_VENDOR_PIN42",	/* GPIO_7 */
+> +				  "M2_VENDOR_PIN38",	/* GPIO_8 */
+> +				  "M2_SDIO_RST_N",	/* GPIO_9 */
+> +				  "M2_SDIO_WAKE_N",	/* GPIO_10 */
+> +				  "M2_PETN1",		/* GPIO_11 */
+> +				  "M2_PERP1",		/* GPIO_12 */
+> +				  "M2_PERN1",		/* GPIO_13 */
+> +				  "UIM_SWP",		/* GPIO_14 */
+> +				  "UART1_TO_RSP";	/* GPIO_15 */
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/blaize/blaize-blzp1600-som.dtsi b/arch/a=
+rm64/boot/dts/blaize/blaize-blzp1600-som.dtsi
+> new file mode 100644
+> index 000000000000..efac0d6b3d60
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/blaize/blaize-blzp1600-som.dtsi
+> @@ -0,0 +1,23 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Blaize, Inc. All rights reserved.
+> + */
+> +
+> +#include "blaize-blzp1600.dtsi"
+> +
+> +/ {
+> +	memory@1000 {
+> +		device_type =3D "memory";
+> +		reg =3D <0x0 0x00001000 0xfffff000>;
+> +	};
+> +};
+> +
+> +/* i2c4 bus is available only on the SoM, not on the board */
+> +&i2c4 {
+> +	clock-frequency =3D <100000>;
+> +	status =3D "okay";
+> +};
+> +
+> +&uart0 {
+> +	status =3D "okay";
+> +};
+> diff --git a/arch/arm64/boot/dts/blaize/blaize-blzp1600.dtsi b/arch/arm64=
+/boot/dts/blaize/blaize-blzp1600.dtsi
+> new file mode 100644
+> index 000000000000..ad1e502559d8
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/blaize/blaize-blzp1600.dtsi
+> @@ -0,0 +1,211 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Blaize, Inc. All rights reserved.
+> + */
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+> +#include <dt-bindings/reset/blaize,blzp1600-reset.h>
+> +#include <dt-bindings/clock/blaize,blzp1600-clk.h>
+> +
+> +/ {
+> +	interrupt-parent =3D <&gic>;
+> +	#address-cells =3D <2>;
+> +	#size-cells =3D <1>;
+> +
+> +	cpus {
+> +		#address-cells =3D <2>;
+> +		#size-cells =3D <0>;
+> +
+> +		cpu0: cpu@0 {
+> +			compatible =3D "arm,cortex-a53";
+> +			device_type =3D "cpu";
+> +			enable-method =3D "psci";
+> +			reg =3D <0x0 0x0>;
+> +			next-level-cache =3D <&l2>;
+> +		};
+> +
+> +		cpu1: cpu@1 {
+> +			compatible =3D "arm,cortex-a53";
+> +			device_type =3D "cpu";
+> +			enable-method =3D "psci";
+> +			reg =3D <0x0 0x1>;
+> +			next-level-cache =3D <&l2>;
+> +		};
+> +
+> +		l2: l2-cache0 {
+> +			compatible =3D "cache";
+> +			cache-level =3D <2>;
+> +			cache-unified;
+> +		};
+> +	};
+> +
+> +	timer {
+> +		compatible =3D "arm,armv8-timer";
+> +		interrupts =3D /* Physical Secure PPI */
+> +			     <GIC_PPI 13 (GIC_CPU_MASK_RAW(0x3) |
+> +					  IRQ_TYPE_LEVEL_LOW)>,
+> +			     /* Physical Non-Secure PPI */
+> +			     <GIC_PPI 14 (GIC_CPU_MASK_RAW(0x3) |
+> +					  IRQ_TYPE_LEVEL_LOW)>,
+> +			     /* Hypervisor PPI */
+> +			     <GIC_PPI 10 (GIC_CPU_MASK_RAW(0x3) |
+> +					  IRQ_TYPE_LEVEL_LOW)>,
+> +			     /* Virtual PPI */
+> +			     <GIC_PPI 11 (GIC_CPU_MASK_RAW(0x3) |
+> +					  IRQ_TYPE_LEVEL_LOW)>;
+> +	};
+> +
+> +	psci {
+> +		compatible =3D "arm,psci-1.0", "arm,psci-0.2";
+> +		method =3D "smc";
+> +	};
+> +
+> +	pmu {
+> +		compatible =3D "arm,cortex-a53-pmu";
+> +		interrupts =3D <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>;
+> +		interrupt-affinity =3D <&cpu0>, <&cpu1>;
+> +	};
+> +
+> +	sram@0 {
+> +		/*
+> +		 * On BLZP1600 there is no general purpose (non-secure) SRAM.
+> +		 * A small DDR memory space has been reserved for general use.
+> +		 */
+> +		compatible =3D "mmio-sram";
+> +		reg =3D <0x0 0x00000000 0x00001000>;
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <1>;
+> +		ranges =3D <0 0x0 0x00000000 0x1000>;
+> +
+> +		/* SCMI reserved buffer space on DDR space */
+> +		scmi0_shm: scmi-sram@800 {
+> +			compatible =3D "arm,scmi-shmem";
+> +			reg =3D <0x800 0x80>;
+> +		};
+> +	};
+> +
+> +	firmware {
+> +		scmi {
+> +			compatible =3D "arm,scmi-smc";
+> +			arm,smc-id =3D <0x82002000>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +
+> +			shmem =3D <&scmi0_shm>;
+> +
+> +			scmi_clk: protocol@14 {
+> +				reg =3D <0x14>;
+> +				#clock-cells =3D <1>;
+> +			};
+> +
+> +			scmi_rst: protocol@16 {
+> +				reg =3D <0x16>;
+> +				#reset-cells =3D <1>;
+> +			};
+> +		};
+> +	};
+> +
+> +	soc {
+> +		compatible =3D "simple-bus";
+> +		#address-cells =3D <2>;
+> +		#size-cells =3D <1>;
+> +		ranges;
+> +
+> +		gic: interrupt-controller@200410000 {
+> +			compatible =3D "arm,gic-400";
+> +			#interrupt-cells =3D <3>;
+> +			#address-cells =3D <0>;
+> +			interrupt-controller;
+> +			reg =3D <0x2 0x00410000 0x20000>,
+> +			      <0x2 0x00420000 0x20000>,
+> +			      <0x2 0x00440000 0x20000>,
+> +			      <0x2 0x00460000 0x20000>;
+> +			interrupts =3D <GIC_PPI 9 (GIC_CPU_MASK_RAW(0x3) |
+> +						 IRQ_TYPE_LEVEL_LOW)>;
+> +		};
+> +
+> +		uart0: serial@2004d0000 {
+> +			compatible =3D "ns16550a";
+> +			reg =3D <0x2 0x004d0000 0x1000>;
+> +			clocks =3D <&scmi_clk BLZP1600_UART0_CLK>;
+> +			resets =3D <&scmi_rst BLZP1600_UART0_RST>;
+> +			reg-shift =3D <2>;
+> +			interrupts =3D <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		uart1: serial@2004e0000 {
+> +			compatible =3D "ns16550a";
+> +			reg =3D <0x2 0x004e0000 0x1000>;
+> +			clocks =3D <&scmi_clk BLZP1600_UART1_CLK>;
+> +			resets =3D <&scmi_rst BLZP1600_UART1_RST>;
+> +			reg-shift =3D <2>;
+> +			interrupts =3D <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		i2c0: i2c@2004f0000 {
+> +			compatible =3D "snps,designware-i2c";
+> +			reg =3D <0x2 0x004f0000 0x1000>;
+> +			interrupts =3D <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&scmi_clk BLZP1600_I2C0_CLK>;
+> +			resets =3D <&scmi_rst BLZP1600_I2C0_RST>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		i2c1: i2c@200500000 {
+> +			compatible =3D "snps,designware-i2c";
+> +			reg =3D <0x2 0x00500000 0x1000>;
+> +			interrupts =3D <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&scmi_clk BLZP1600_I2C1_CLK>;
+> +			resets =3D <&scmi_rst BLZP1600_I2C1_RST>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		i2c2: i2c@200510000 {
+> +			compatible =3D "snps,designware-i2c";
+> +			reg =3D <0x2 0x00510000 0x1000>;
+> +			interrupts =3D <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&scmi_clk BLZP1600_I2C2_CLK>;
+> +			resets =3D <&scmi_rst BLZP1600_I2C2_RST>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		i2c3: i2c@200520000 {
+> +			compatible =3D "snps,designware-i2c";
+> +			reg =3D <0x2 0x00520000 0x1000>;
+> +			interrupts =3D <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&scmi_clk BLZP1600_I2C3_CLK>;
+> +			resets =3D <&scmi_rst BLZP1600_I2C3_RST>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		i2c4: i2c@200530000 {
+> +			compatible =3D "snps,designware-i2c";
+> +			reg =3D <0x2 0x00530000 0x1000>;
+> +			interrupts =3D <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&scmi_clk BLZP1600_I2C4_CLK>;
+> +			resets =3D <&scmi_rst BLZP1600_I2C4_RST>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		arm_cc712: crypto@200550000 {
+> +			compatible =3D "arm,cryptocell-712-ree";
+> +			reg =3D <0x2 0x00550000 0x1000>;
+> +			interrupts =3D <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks =3D <&scmi_clk 7>;
+> +		};
+> +	};
+> +};
+> --=20
+> 2.34.1
+>=20
+
+--kfuG2k3Bnxl7jhEx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZikiGQAKCRB4tDGHoIJi
+0ps5AP4wP6aFnR7sdpB4TDe+cVIARtYf81ONJTxyc2NCu9m3OQD+I3D8Cbwt7nPd
+QhCjt92qOe3wd66cCBpfGvL61Z0NYgk=
+=LUdV
+-----END PGP SIGNATURE-----
+
+--kfuG2k3Bnxl7jhEx--
 
