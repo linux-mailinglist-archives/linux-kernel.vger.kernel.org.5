@@ -1,91 +1,124 @@
-Return-Path: <linux-kernel+bounces-157578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 233F28B1322
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:04:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72BCA8B1325
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:04:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE240B2A20A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:02:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37DBB2820EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:04:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 096A722EFB;
-	Wed, 24 Apr 2024 19:02:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A311D556;
+	Wed, 24 Apr 2024 19:04:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="suRkzCOq"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AOqJHgg7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD3FE22612;
-	Wed, 24 Apr 2024 19:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00EE61D53C;
+	Wed, 24 Apr 2024 19:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713985363; cv=none; b=McYEieON50SUjk5ucWL7FRjiua/PhPROrUmxDDMhmS2vUN9VEXbZd8UjPGDIwlY+3Kni/xNoY1scTiVImSj6I4MC2j2rrMNf0S6xlNtEUhdZhoEzoGEVc5ghCBJ0ul4HTkiv4ECqiSFUtJVldFpWVNJ6kQoYzdR/UUWVydbBD9g=
+	t=1713985449; cv=none; b=AiKpI3evK+lAmAqZL9wKc9oWIIpU/qEWPC5V8/xKodWRvJmkrF5DoRBTsMszzEutk7Wi+ngYYnXKEAlyrvVxDRaqg5N76Qt3KC6EN/ll6THS6B04tliVnjdZrAr+Gjb6frkiHS4rFi7FevN/N5mA+u+RKR4d8wUcmkusNVT1z0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713985363; c=relaxed/simple;
-	bh=D8hVz++GpFugfjOvsQUiim3GwV4aUgvi8Mgm/n/7cxk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=gEjWBmmIZ8JCd1DIBZftNfrlx1BpEVwXsiis5RzU/DJp2oA2uDuv+t5n8x6A9xlK9kshfq32Ji9/i2XK+SNmaGjUZRYSdoDSDDvPBj74EMeJ8K2K3UBGsXzoj/c8EguQ+D8jwtHKR47Z7ErDNIR7rP0N3wP2/0hPvnvphvxy7Mg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=suRkzCOq; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6872747C41
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1713985355; bh=WuEWuIcnEOYd1g2UFaW7pujvnyvueZalHPpMfpbYQtc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=suRkzCOq3jKKULBoBSPI1YxskVl46LvvS2yhgwfIsn2+m3ilswllUMR1Ms4oQkMo2
-	 eCL0AK72AKDbHYHcv23ptOdORhWXgOZuu8q3SnmMj0Qg+VNlJ+Q7GLv3KJj56OrNkG
-	 84ziE1GMb+tM9mnm5sxUl1Dvqfar8GSo3naNDmAl6UtuFJTAKHIeOe7B7Ho7/jRYtA
-	 Ylu4YVF/dClA4ilc8lCeqKeG2/JMoRmFoTz6EB4dNe+o1DZS+CpCGCYiidz9dXelJx
-	 RKSlTOyUwI9CeX1IEk2ETDI5a8PoAlgWk80J7qIy+mpwBvmTCm+Jl8LwE7zVKGoKnC
-	 Zy7ltUCMpgn5A==
-Received: from localhost (unknown [IPv6:2601:280:5e00:625::1fe])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 6872747C41;
-	Wed, 24 Apr 2024 19:02:35 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: "Bilbao, Carlos" <carlos.bilbao@amd.com>, elena.reshetova@intel.com,
- Akira Yokosawa <akiyks@gmail.com>
-Cc: bilbao@vt.edu, "Naik, Avadhut" <Avadhut.Naik@amd.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Randy Dunlap
- <rdunlap@infradead.org>
-Subject: Re: [PATCH v3] docs/MAINTAINERS: Update my email address
-In-Reply-To: <97731c94-99b0-46be-8b78-5dac8510f690@amd.com>
-References: <97731c94-99b0-46be-8b78-5dac8510f690@amd.com>
-Date: Wed, 24 Apr 2024 13:02:34 -0600
-Message-ID: <87cyqetwhh.fsf@meer.lwn.net>
+	s=arc-20240116; t=1713985449; c=relaxed/simple;
+	bh=lf3gUKAZg+5HWPL/HBuxTOwojliXLX/XwXpqq85sjDU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oDIpBLCGkSFP634GdQqI8dkZxbEce9aAANgzfcsrPwMBMV8jWelnyhSctmt2BqF0Fj01OMnm4LC2yjcXvovyYfAJzYZ5dnoZSdt5SAioOF3m9HSza4IBrwC8zyamjnZiUaWcsvG02J615TX7z006qXoa6Nw3iwMAWOKNq1drwtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AOqJHgg7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88102C113CD;
+	Wed, 24 Apr 2024 19:04:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713985448;
+	bh=lf3gUKAZg+5HWPL/HBuxTOwojliXLX/XwXpqq85sjDU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AOqJHgg7/rdvu8eCspTWBEqD70ZnfT8SNhnp/IZYYQTTarBB4oqAw/KnEO338S/4f
+	 OzZ3G/GoLvNy55uIm6S3UrKwdJEPyvOlC70Cm0tHmxoTvCNpPYMYuodz4HCgYtYzZd
+	 yPXWHDKaLmyuhUeADnLTMucGYePF9piKD2Y47rfj7e2tcDPuLP5gjWMwuawWDcQHoM
+	 FnVZSdIZEX+3DdyJoySR3+EIBTKiAGXFVoEWpdbESZuuiqkJSXSvB8pQOhtWTbxxtK
+	 aUij5Wxps3qvVBIUB+MHizJDaj2O0r/9m1RWN2Vv52tDJX0QkP77TVo+jFk2fUYwC3
+	 FukUwxLvHsYFw==
+Date: Wed, 24 Apr 2024 12:04:05 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: djakov@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, matthias.bgg@gmail.com, lgirdwood@gmail.com,
+	broonie@kernel.org, keescook@chromium.org, gustavoars@kernel.org,
+	henryc.chen@mediatek.com, linux-pm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, kernel@collabora.com,
+	wenst@chromium.org, amergnat@baylibre.com,
+	Dawei Chien <dawei.chien@mediatek.com>
+Subject: Re: [PATCH v5 4/7] soc: mediatek: Add MediaTek DVFS Resource
+ Collector (DVFSRC) driver
+Message-ID: <20240424190405.GA2803128@dev-arch.thelio-3990X>
+References: <20240424095416.1105639-1-angelogioacchino.delregno@collabora.com>
+ <20240424095416.1105639-5-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240424095416.1105639-5-angelogioacchino.delregno@collabora.com>
 
-"Bilbao, Carlos" <carlos.bilbao@amd.com> writes:
+Hi Angelo,
 
-> In the near future, I will not have access to the email address I used as
-> maintainer of a number of things, mostly in the documentation. Update that
-> address to my personal email address (see Link) so I can continue
-> contributing and update .mailmap.
->
-> Link: https://lore.kernel.org/all/BL1PR12MB58749FF2BFEDB817DE1FE6CBF82A2@BL1PR12MB5874.namprd12.prod.outlook.com/
-> Signed-off-by: Carlos Bilbao <carlos.bilbao@amd.com>
-> ---
->
-> Change since v2:
-> - Fix .mailmap entry from <old-email> <new-email> to <new-email> <old-email>
->
-> Changes since v1:
-> - Update .mailmap
+On Wed, Apr 24, 2024 at 11:54:13AM +0200, AngeloGioacchino Del Regno wrote:
+> The Dynamic Voltage and Frequency Scaling Resource Collector (DVFSRC) is a
+> Hardware module used to collect all the requests from both software and the
+> various remote processors embedded into the SoC and decide about a minimum
+> operating voltage and a minimum DRAM frequency to fulfill those requests in
+> an effort to provide the best achievable performance per watt.
+> 
+> This hardware IP is capable of transparently performing direct register R/W
+> on all of the DVFSRC-controlled regulators and SoC bandwidth knobs.
+> 
+> This driver includes support for MT8183, MT8192 and MT8195.
+> 
+> Co-Developed-by: Dawei Chien <dawei.chien@mediatek.com>
+> [Angelo: Partial refactoring and cleanups]
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+..
+>  drivers/soc/mediatek/mtk-dvfsrc.c        | 551 +++++++++++++++++++++++
+..
+> +#define KBPS_TO_MBPS(x)			((x) / 1000)
+..
+> +static void __dvfsrc_set_dram_bw_v1(struct mtk_dvfsrc *dvfsrc, u32 reg,
+> +				    u16 max_bw, u16 min_bw, u64 bw)
+> +{
+> +	u32 new_bw = (u32)div_u64(KBPS_TO_MBPS(bw), 100);
+> +
+> +	/* If bw constraints (in mbps) are defined make sure to respect them */
+> +	if (max_bw)
+> +		new_bw = min(new_bw, max_bw);
+> +	if (min_bw && new_bw > 0)
+> +		new_bw = max(new_bw, min_bw);
+> +
+> +	dvfsrc_writel(dvfsrc, reg, new_bw);
+> +}
 
-I went to apply this, but it doesn't apply to docs-next.  Which tree was
-this patch done against?
+Using KBPS_TO_MBPS here results in
 
-Thanks,
+  ERROR: modpost: "__aeabi_uldivmod" [drivers/soc/mediatek/mtk-dvfsrc.ko] undefined!
 
-jon
+when building ARCH=arm allmodconfig with clang. I did not check to see
+if this is visible with GCC but if it is not, it is only because GCC
+implements certain transformations for constant division that clang may
+or may not have implemented (there was some work on getting all
+transformations that GCC has supported in clang as well but I do not
+think was ever completed). Perhaps KBPS_TO_MBPS() should be dropped and
+the new_bw assignement turned into
+
+  u32 new_bw = (u32)div_u64(bw, 100 * 1000); /* Multiply divisor by 1000 to convert bw from Kbps to Mbps */
+
+or something like that.
+
+Cheers,
+Nathan
 
