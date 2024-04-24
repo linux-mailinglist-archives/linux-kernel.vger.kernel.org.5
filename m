@@ -1,136 +1,92 @@
-Return-Path: <linux-kernel+bounces-156954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 534EE8B0AD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:27:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B40128B0AD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:28:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 920B9B23ABD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:27:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 698B81F23E41
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:28:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D333915CD64;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFE915D5C7;
+	Wed, 24 Apr 2024 13:27:47 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F07FB15CD51;
 	Wed, 24 Apr 2024 13:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="bZxiilOM"
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BFA71598E3
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:27:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713965265; cv=none; b=gBlxe4kUS8kQXW8mz74Ig3TUmImVFOK1UWJH3v+/icgCDW05fvcaRsljlYObAqL9P29HwuQpoacTd32PFBGL2GY2kEebQsKGy9i38KGZ3izCR9hn20KqeW1CiYHgj0FFrdYbB44XPPhV5aJuPmU4LxRiQ/HQwQBQ6gLccHhmvZE=
+	t=1713965267; cv=none; b=NMwjNj9UXuRUDAGkOYfOypAYd3oiu6FCKxX4l5iXvCdvQixS3TE44E78NKMyqcg8QkmO1j9VMQ6DnQqeyUnN6LVQ4/U3yP/Efqih0xwnJ8k3E48dPYHyQ+7y7aTNJAToYpTZbG0DqwWpFDKemKxTFtoGzKJkRsmT9XaqNgeg1yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713965265; c=relaxed/simple;
-	bh=hVCiT3cVeoDPw8o5TxOi/tzoJPcyStCe54BZO09DgLY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OFK764o7gB+A8rOhwQZdL8RRvvp8bLLyC8oPMjchGcR6o9+64fbOd9LkPd5NzEmpIFwzZn/O8vJ6U6slsQeoviR1udarcHozL8j/fgL8NHsTt+Eh/2ec73tq893QqEWPbeU35dOsBHcltlCqZXbQNyldrEiZ5dOXr18ufFpbF8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=bZxiilOM; arc=none smtp.client-ip=209.85.222.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-78f05341128so444191685a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:27:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1713965261; x=1714570061; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bmaQzf01ImU89PHQrVzq0PujKy/T2pnrZwcrGlSMcAM=;
-        b=bZxiilOMgQRR/kRrdlzRTfJzePsgEX5EzxwWMgF/l+ll5TFMAg6WfVXqXlKKbYbEac
-         6PNLN6uV72EeJrJJjrRuuXMXy1+nIVu/VbloaOoOggFO+XU0ovbZ/ajz/zUh08TrP1Tc
-         315xySGk/H6Q9AUcnQMVCa+FS/EXXOZX7wjx55KUj8sKrhR6ifV+NAjS1hp4lGygvTT1
-         QNYkbufwuxaPaEotEP7FJpb1Z/TnxbEs8oqcpnqzlbnJpcrp/LK9czAbdSW/OP0Ni0m/
-         wRVBYasNeBx+DcVVRd4vOyJ9zDn4RX1dr4JXzdjfD0IPzRGJmA9HWXz/KJfVnMNsgC71
-         iSQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713965261; x=1714570061;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bmaQzf01ImU89PHQrVzq0PujKy/T2pnrZwcrGlSMcAM=;
-        b=dtrJqbznuQOdSlupExxXDeLXjQw6lfHy2EopWS5yQrGKxTQMEglq2dRwmOeIcRFjfU
-         FlFn4q3oUx4OiPWq9BEiNXOlOdjlmQ4OcGVkGjVT5NnT/RQ3Tklh9WyJcv4Te9mVPKAP
-         VtVDsOYqQpm0n5JH/se38G2gSm8Gh6BYudvcIj1degk7RDn1b1gKSVX2s7AZRLx4/4YK
-         bKEAgxdhLK8AsGczCifKx47CQ77pkIKo+D7KXWXBavyhv7nzzmTmrn9RUn6p+hUmi7xJ
-         vf1VbGIDJ9hoV9hFn+ANI4gBQpvMv3I7ZJb8/96YmW3AldAbVF1P9H+VIhTNZhvhIFi2
-         FdSw==
-X-Forwarded-Encrypted: i=1; AJvYcCVKBuvwsYxs23bOpffL2crd5PVki7pMqvdCKQ+PMEQ2pdxvGSgBOVP7SDCiTRLD6OLexPVT/N2ETKbD2IpNbXUSsKAsdj1oGzPOZfBw
-X-Gm-Message-State: AOJu0YwLpzASNbVpYyvKPWE0NpISQUrK4FU7WmQ2gTNU2QqBl/DcJrkc
-	BFdf90mDqNvMA+VJ4LdtJFcMQ05BQ899q0QwnQidFW2+E3mFKYmLWikJxegGP5s=
-X-Google-Smtp-Source: AGHT+IG10JNnau66mb0W0bLsv7g+fqp1h/1IvnkN/qI5c9owHC6AC7QHVsin4Z6bVve3680gH3MsyA==
-X-Received: by 2002:a05:620a:40d5:b0:78e:db54:e5fe with SMTP id g21-20020a05620a40d500b0078edb54e5femr3078820qko.11.1713965261163;
-        Wed, 24 Apr 2024 06:27:41 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:9cfb])
-        by smtp.gmail.com with ESMTPSA id h6-20020a05620a13e600b0078f044ff474sm6146095qkl.35.2024.04.24.06.27.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 06:27:40 -0700 (PDT)
-Date: Wed, 24 Apr 2024 09:27:39 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: akpm@linux-foundation.org, willy@infradead.org, jack@suse.cz,
-	bfoster@redhat.com, tj@kernel.org, dsterba@suse.com,
-	mjguzik@gmail.com, dhowells@redhat.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 3/5] writeback: fix build problems of "writeback:
- support retrieving per group debug writeback stats of bdi"
-Message-ID: <20240424132739.GD318022@cmpxchg.org>
-References: <20240423034643.141219-1-shikemeng@huaweicloud.com>
- <20240423034643.141219-4-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1713965267; c=relaxed/simple;
+	bh=RHRNpt1GrdBK2G7+COQrLb3IEKD0I7+HfEEcq1CkGtk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j8x3mLOl7QuABUxWIwIzRbS5UkvAphZNdY5zJkz+DluuJ+7dZYhSQw4zxDj4Uf+NvqKdtHyUuGR2NY57QK5I0r6GOMAjdRaQNlK16QQVebsfFj55iE/xDhhXxEKAhn1/8dAVUI/Qbn3f4ZOyHZ5n52frEkAvAzV6DEM0pQWL0wE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 190582F;
+	Wed, 24 Apr 2024 06:28:13 -0700 (PDT)
+Received: from [10.57.86.198] (unknown [10.57.86.198])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DCF6A3F64C;
+	Wed, 24 Apr 2024 06:27:42 -0700 (PDT)
+Message-ID: <7c6504dd-ebef-4809-9e1d-7151db647e2a@arm.com>
+Date: Wed, 24 Apr 2024 14:27:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423034643.141219-4-shikemeng@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 14/14] virt: arm-cca-guest: TSM_REPORT support for
+ realms
+Content-Language: en-GB
+To: Thomas Fossati <thomas.fossati@linaro.org>,
+ Steven Price <steven.price@arm.com>
+Cc: kvm@vger.kernel.org, kvmarm@lists.linux.dev,
+ Sami Mujawar <sami.mujawar@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
+ Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
+ Oliver Upton <oliver.upton@linux.dev>, Zenghui Yu <yuzenghui@huawei.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Joey Gouly <joey.gouly@arm.com>, Alexandru Elisei
+ <alexandru.elisei@arm.com>, Christoffer Dall <christoffer.dall@arm.com>,
+ Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
+ Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+References: <20240412084056.1733704-1-steven.price@arm.com>
+ <20240412084213.1733764-1-steven.price@arm.com>
+ <20240412084213.1733764-15-steven.price@arm.com>
+ <CA+1=6ydMVk4Vcouc2ag8G7tfqZy80VWFxWHSHEKF1JaABd=A7A@mail.gmail.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <CA+1=6ydMVk4Vcouc2ag8G7tfqZy80VWFxWHSHEKF1JaABd=A7A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Kemeng,
-
-On Tue, Apr 23, 2024 at 11:46:41AM +0800, Kemeng Shi wrote:
-> Fix two build problems:
-> 1. implicit declaration of function 'cgroup_ino'.
-
-I just ran into this as well, with defconfig on mm-everything:
-
-/home/hannes/src/linux/linux/mm/backing-dev.c: In function 'wb_stats_show':
-/home/hannes/src/linux/linux/mm/backing-dev.c:175:33: error: 'struct bdi_writeback' has no member named 'memcg_css'
-  175 |                    cgroup_ino(wb->memcg_css->cgroup),
-      |                                 ^~
-make[3]: *** [/home/hannes/src/linux/linux/scripts/Makefile.build:244: mm/backing-dev.o] Error 1
-
-> ---
->  mm/backing-dev.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+On 24/04/2024 14:06, Thomas Fossati wrote:
+> Hi Steven, Sami,
 > 
-> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> index 6ecd11bdce6e..e61bbb1bd622 100644
-> --- a/mm/backing-dev.c
-> +++ b/mm/backing-dev.c
-> @@ -172,7 +172,11 @@ static void wb_stats_show(struct seq_file *m, struct bdi_writeback *wb,
->  		   "b_more_io:         %10lu\n"
->  		   "b_dirty_time:      %10lu\n"
->  		   "state:             %10lx\n\n",
-> +#ifdef CONFIG_CGROUP_WRITEBACK
->  		   cgroup_ino(wb->memcg_css->cgroup),
-> +#else
-> +		   1ul,
-> +#endif
->  		   K(stats->nr_writeback),
->  		   K(stats->nr_reclaimable),
->  		   K(stats->wb_thresh),
-> @@ -192,7 +196,6 @@ static int cgwb_debug_stats_show(struct seq_file *m, void *v)
->  	unsigned long background_thresh;
->  	unsigned long dirty_thresh;
->  	struct bdi_writeback *wb;
-> -	struct wb_stats stats;
->  
->  	global_dirty_limits(&background_thresh, &dirty_thresh);
+> On Fri, 12 Apr 2024 at 10:47, Steven Price <steven.price@arm.com> wrote:
+>> +/**
+>> + * arm_cca_report_new - Generate a new attestation token.
+>> + *
+>> + * @report: pointer to the TSM report context information.
+>> + * @data:  pointer to the context specific data for this module.
+>> + *
+>> + * Initialise the attestation token generation using the challenge data
+>> + * passed in the TSM decriptor.
+> 
+> Here, it'd be good to document two interesting facts about challenge data:
+> 1. It must be at least 32 bytes, and
+> 2. If its size is less than 64 bytes, it will be zero-padded.
 
-The fix looks right to me, but it needs to be folded into the previous
-patch. No patch should knowingly introduce an issue that is fixed
-later on. This will break bisection.
+Agreed !
+
+Suzuki
+
+> 
+> cheers!
+
 
