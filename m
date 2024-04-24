@@ -1,166 +1,139 @@
-Return-Path: <linux-kernel+bounces-156095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B2DE8AFDE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D6DA48AFDEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:39:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 272F81C2293D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:38:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 064BC1C22634
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1591ED2FA;
-	Wed, 24 Apr 2024 01:38:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DCB379F3;
+	Wed, 24 Apr 2024 01:39:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="0TqBFOqR"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VmLqbMMY"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BFD84C6D
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 01:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04B0379E4
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 01:39:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713922703; cv=none; b=Yqw2249wd7bXqadgquWw+DQoSWUk+t5KCP01kB/uOh9xSW/R7tTrbDBn172nMdoyJ2bfDJ6H0LIq2e+Dexu8ykLplyOx/vohDnWWylMlgaoIltx2FTYD7dkOtuFCc19GGtZNhdEPFxwSOimZ1DXW6k3aOXxs2GQhOEjsDxOEo0Q=
+	t=1713922774; cv=none; b=BxWVfLii4k7yGtHIPm3Js8kOBJTa+zd9M6GhRglpKH9hwLpl3kPeDiUiW5tb3EtME0T0PUvJXw6++TlZ7jEs2uimCBY0qeVT1hCBRAWCLeDaJi7G6V0RonuqKS8jhH3khtEQnGSYxa72pTrzd8wXGOBu/CFw3WQA1kZMVZ4FY8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713922703; c=relaxed/simple;
-	bh=iopcgr3rm1GlCkZxTneL83WpCXee/HP4dS8CuULl/go=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=UzVQJRL3UcPhLqQpyuurjCxz963DA4Q30mCK8s/Hheh0eE2gn3FDdRvZC6caHOA6CN7OjV4luX3xidOTFeSvqdYXWO/Mz9XRIyND3who4aHNx33oUtcPj/vcVgxH+H/AsUgSb+9AGG/xONqSVdxsQyQF8WsKeeginSfuYITYC40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=0TqBFOqR; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id CEAF82C02AE;
-	Wed, 24 Apr 2024 13:38:17 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1713922697;
-	bh=iopcgr3rm1GlCkZxTneL83WpCXee/HP4dS8CuULl/go=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=0TqBFOqRHxDY6YM38FvQdFMDHVEItdwJHTXZeNpGT55AoDMM3TP5w4Iz3N+X+nwe/
-	 J6jv/XxwlIdtKDN2c19NU/pFwER0CUAkdCkVJbYpFJOddU08AwA0NG60fU3ldWTNn6
-	 IZW7xWHuEN18BTTRyk2Qp/hM27ttLLTRfGNzwDhpCS0NJ0Kj4HLvjCLRGnKwishbWE
-	 fuvOmEXQIl02GXb5wl3MF1RnHO+AifambdikNS6kYqwS1Ve1Sd6LjwKRrAPQY+7npM
-	 HBY/L49+5XSKv+mbnDqTG4ontQH8Qk2WTXUMyflf/YOdaFfLIB57s3eKwgf3va6QMM
-	 w6Rg1o26Y8duA==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B662862890001>; Wed, 24 Apr 2024 13:38:17 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.1544.9; Wed, 24 Apr 2024 13:38:17 +1200
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.48; Wed, 24 Apr 2024 13:38:17 +1200
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1544.009; Wed, 24 Apr 2024 13:38:17 +1200
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, netdev
-	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "stable@vger.kernel.org"
-	<stable@vger.kernel.org>
-Subject: Re: kernel BUG at net/sunrpc/svc.c:570 after updating from v5.15.153
- to v5.15.155
-Thread-Topic: kernel BUG at net/sunrpc/svc.c:570 after updating from v5.15.153
- to v5.15.155
-Thread-Index: AQHaleHzc3oveYbGkkq3WWVD/cih7bF12zkA
-Date: Wed, 24 Apr 2024 01:38:17 +0000
-Message-ID: <0d2c2123-e782-4712-8876-c9b65d2c9a65@alliedtelesis.co.nz>
-References: <b363e394-7549-4b9e-b71b-d97cd13f9607@alliedtelesis.co.nz>
-In-Reply-To: <b363e394-7549-4b9e-b71b-d97cd13f9607@alliedtelesis.co.nz>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <36B91780D8124341AE1E686FAD1428B8@atlnz.lc>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1713922774; c=relaxed/simple;
+	bh=5q4NhWGDdtCddnYBrTLpMflmM72w85gXkEVwAtxbGEs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=RzBPTi4JslfuQBOvmygIzVCsmKSMUTjd+wTAqV58WljkL+qifBZgLejLVE6aqngMbhdAjNZJHDcG/kbhuW8CoToo8xGxZxwx0EB5Tnj35ywu+RNaXPl1omRLgASyu+5hG5NrvPb0sTc36EN2by2V1UWbkAJBwkvadGpWzAyHmxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VmLqbMMY; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-518a3e0d2ecso9434109e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 18:39:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713922771; x=1714527571; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+KwrOu+mn4qUHUoF/ypvY6dT95fqwOQv7ZBOs9tgmqQ=;
+        b=VmLqbMMYZ0YOc4hNa53NFBaDQqRABSpeR+oaA3Q/3zZFWK3VJdu05MyQ9mOEto31Cp
+         3J8fSHxNOjgL22iVkqkDI95MKIdTtGjTdlZGGcs0ULub77O9XgV4j3EVecdDELKFEz2O
+         4UkDa0imy7hRGMswG9vTaLGbEHDDArCax5dED8A/hMczy/OQzh5a6FlRasGabMqwx4ZI
+         in7CbjpWmgpcjtnl7YHqKWKOnIBUiicpWELeA/ZSq6IK3qbBs0bD70nYjAq774n8q1gX
+         mrMhAxRoUlogXDcV/5LKf/YxS/0A9LdA99HIcGKjXvI8JkUOfQPkNUIjlA5caIJp2q8a
+         Tp6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713922771; x=1714527571;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+KwrOu+mn4qUHUoF/ypvY6dT95fqwOQv7ZBOs9tgmqQ=;
+        b=l5do202zt87I6/eE3/rdJDIopYryvzfmX0QXJVfu28eCb+SqV77dV8tldeOhibWn4A
+         9eksa6lM5D/2Lb8O0lNn/RgxpldXQQXlPdIMIC+yWoGqztiCMFlT8uAxMD63Wqb3ex78
+         piyjJGBKPTzkpFuIvLmBAahWe++VZ3svG4kmuTL1ta/m8OfE1lDR7oc+EYHFn64tUim9
+         c/R2PjutQLvjHQmTrPPreFC7F5MjYBn9Ng3UKLWYOADxl0KmaAMm7qVXoFiKV8wSk7uW
+         5KWuqKQGFQmBYL2HeTYG+qLlVu3Nx9KkdfDqCNthUDHvPsEFToi8x+suYOvmzj7NJdkI
+         ayHA==
+X-Forwarded-Encrypted: i=1; AJvYcCX+wsFqaZQEAJwdHjCo5uh60MwwtBXAg3ZaGrIX7SI79iAC1QwN6firFdtG+u5xrVtIMXPSWwGCrT9IecLz8lwkZphRH/rl5PeVAKkP
+X-Gm-Message-State: AOJu0YzYNxjlMxsiQzcro5jfDpySKlKiftN9lfTEeLl+jBLQ4vU2BksO
+	lnt7lgAujf4casuKS7LSh9wtHKY8qkRPpoTX9G4DxVH5cfM5bFvxjoMXoaTHQ+PbfrqvGJn3/2u
+	f
+X-Google-Smtp-Source: AGHT+IF8zBOyGz3Noyn42UlTQ5loU9u6fXXbczhZaHr4EsPsGAEx7UMM64nPsYzL54r+KCNElZRF0A==
+X-Received: by 2002:a19:c50f:0:b0:516:cdfa:1802 with SMTP id w15-20020a19c50f000000b00516cdfa1802mr902338lfe.63.1713922770880;
+        Tue, 23 Apr 2024 18:39:30 -0700 (PDT)
+Received: from umbar.lan ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id g12-20020a19ac0c000000b0051bb40c7ee7sm308220lfc.185.2024.04.23.18.39.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 18:39:30 -0700 (PDT)
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: [PATCH v2 0/4] clk: qcom: dispcc: fix DisplayPort link clocks
+Date: Wed, 24 Apr 2024 04:39:28 +0300
+Message-Id: <20240424-dispcc-dp-clocks-v2-0-b44038f3fa96@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=dY4j3mXe c=1 sm=1 tr=0 ts=66286289 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=VaKPTF99bPf2uOp7nPkA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANBiKGYC/32NQQqDMBBFryKz7pSYJmK68h7FhSSjDpUkJEVaJ
+ Hdv6gG6fA/++wdkSkwZ7s0BiXbOHHwFeWnArpNfCNlVBimkEkr06DhHa9FFtFuwz4yaSDttZHd
+ THdRZTDTz+0w+xsor51dIn/Nhb3/2T2xvUeBsSCkjpJW9Gzb2UwrXkBYYSylfR56dcrEAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@somainline.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1260;
+ i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
+ bh=5q4NhWGDdtCddnYBrTLpMflmM72w85gXkEVwAtxbGEs=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmKGLRyzBa99J33q+8Z6DCW+4lilQocSB7nffpn
+ FCboN4blTWJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZihi0QAKCRCLPIo+Aiko
+ 1YnoCACLmzG1j9xY2nu07YENygnT/QelXsxKYBwzQUwelXzhbuMP2MZiC1ngX4WZbJgHySAQicm
+ hsao0mB5I71GJKpNXVXD9yB39ne5p7s9XGik9WqEQQ23iU83gAfRg4NlCxkdJn6EVdWamg2+neo
+ H+cXbtjz9H88YVS1XhoQuSjBEdGJpeAHbsCgxB5zeTxwfXqpyU8oIP9bBuky3dfH2Itd3WNKYRA
+ lb+z1bnNkzEWgnP/oRmBEkLLWUCzU+k/wdZzjHgUpCXXy0qxkMpmhJ4tDYTR0diqz62XLkKX9dx
+ bjOqeHEs7Pt4ACOwWUGRalPkx964xsiJpz8RwyOIRV8afpOq
+X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
+ fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
-DQpPbiAyNC8wNC8yNCAxMjo1NCwgQ2hyaXMgUGFja2hhbSB3cm90ZToNCj4gSGkgSmVmZiwgQ2h1
-Y2ssIEdyZWcsDQo+DQo+IEFmdGVyIHVwZGF0aW5nIG9uZSBvZiBvdXIgYnVpbGRzIGFsb25nIHRo
-ZSA1LjE1LnkgTFRTIGJyYW5jaCBvdXIgDQo+IHRlc3RpbmcgY2F1Z2h0IGEgbmV3IGtlcm5lbCBi
-dWcuIE91dHB1dCBiZWxvdy4NCj4NCj4gSSBoYXZlbid0IGR1ZyBpbnRvIGl0IHlldCBidXQgd29u
-ZGVyZWQgaWYgaXQgcmFuZyBhbnkgYmVsbHMuDQoNCkEgYml0IG1vcmUgaW5mby4gVGhpcyBpcyBo
-YXBwZW5pbmcgYXQgInJlYm9vdCIgZm9yIHVzLiBPdXIgZW1iZWRkZWQgDQpkZXZpY2VzIHVzZSBh
-IGJpdCBvZiBhIGhhY2tlZCB1cCByZWJvb3QgcHJvY2VzcyBzbyB0aGF0IHRoZXkgY29tZSBiYWNr
-IA0KZmFzdGVyIGluIHRoZSBjYXNlIG9mIGEgZmFpbHVyZS4NCg0KSXQgZG9lc24ndCBoYXBwZW4g
-d2l0aCBhIHByb3BlciBgc3lzdGVtY3RsIHJlYm9vdGAgb3Igd2l0aCBhIFNZU1JRK0INCg0KSSBj
-YW4gdHJpZ2dlciBpdCB3aXRoIGBraWxsYWxsIC05IG5mc2RgIHdoaWNoIEknbSBub3Qgc3VyZSBp
-cyBhIA0KY29tcGxldGVseSBsZWdpdCB0aGluZyB0byBkbyB0byBrZXJuZWwgdGhyZWFkcyBidXQg
-aXQncyBwcm9iYWJseSBjbG9zZSANCnRvIHdoYXQgb3VyIGN1c3RvbWl6ZWQgcmVib290IGRvZXMu
-DQoNCj4NCj4gVGhhbmtzLA0KPiBDaHJpcw0KPg0KPiBbwqDCoCA5MS42MDUxMDldIC0tLS0tLS0t
-LS0tLVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0tLQ0KPiBbwqDCoCA5MS42MDUxMjJdIGtlcm5lbCBC
-VUcgYXQgbmV0L3N1bnJwYy9zdmMuYzo1NzAhDQo+IFvCoMKgIDkxLjYwNTEyOV0gSW50ZXJuYWwg
-ZXJyb3I6IE9vcHMgLSBCVUc6IDAwMDAwMDAwZjIwMDA4MDAgWyMxXSANCj4gUFJFRU1QVCBTTVAN
-Cj4gW8KgwqAgOTEuNjEwNjQzXSBNb2R1bGVzIGxpbmtlZCBpbjogbXZjcHNzKE8pIHBsYXRmb3Jt
-X2RyaXZlcihPKSANCj4gaXBpZndkKE8pIHh0X2wydHAgeHRfaGFzaGxpbWl0IHh0X2Nvbm50cmFj
-ayB4dF9hZGRydHlwZSB4dF9MT0cgDQo+IHh0X0NIRUNLU1VNIHdwNTEyIHZ4bGFuIHZldGggdHdv
-ZmlzaF9nZW5lcmljIHR3b2Zpc2hfY29tbW9uIHNyOTgwMCANCj4gc21zYzk1eHggc21zYzc1eHgg
-c21zYyBzbTNfZ2VuZXJpYyBzaGE1MTJfYXJtNjQgc2hhM19nZW5lcmljIA0KPiBzZXJwZW50X2dl
-bmVyaWMgcnRsODE1MCBycGNzZWNfZ3NzX2tyYjUgcm1kMTYwIHBvbHkxMzA1X2dlbmVyaWMgcGx1
-c2IgDQo+IHBlZ2FzdXMgb3B0ZWVfcm5nIG5iZCBtaWNyb2NoaXAgbWQ0IG1kX21vZCBtY3M3ODMw
-IGxydyBsaWJwb2x5MTMwNSANCj4gbGFuNzh4eCBsMnRwX2lwNiBsMnRwX2lwIGwydHBfZXRoIGwy
-dHBfbmV0bGluayBsMnRwX2NvcmUgdWRwX3R1bm5lbCANCj4gaXB0X1JFSkVDVCBuZl9yZWplY3Rf
-aXB2NCBpcDZ0YWJsZV9uYXQgaXA2dGFibGVfbWFuZ2xlIGlwNnRhYmxlX2ZpbHRlciANCj4gaXA2
-dF9pcHY2aGVhZGVyIGlwNnRfUkVKRUNUIGlwNl91ZHBfdHVubmVsIGlwNl90YWJsZXMgZG05NjAx
-IGRtX3plcm8gDQo+IGRtX21pcnJvciBkbV9yZWdpb25faGFzaCBkbV9sb2cgZG1fbW9kIGRpYWcg
-dGlwYyBjdXNlIGN0cyANCj4gY3B1ZnJlcV9wb3dlcnNhdmUgY3B1ZnJlcV9jb25zZXJ2YXRpdmUg
-Y2hhY2hhX2dlbmVyaWMgY2hhY2hhMjBwb2x5MTMwNSANCj4gY2hhY2hhX25lb24gbGliY2hhY2hh
-IGNhc3Q2X2dlbmVyaWMgY2FzdDVfZ2VuZXJpYyBjYXN0X2NvbW1vbiANCj4gY2FtZWxsaWFfZ2Vu
-ZXJpYyBibG93ZmlzaF9nZW5lcmljIGJsb3dmaXNoX2NvbW1vbiBhdXRoX3JwY2dzcyANCj4gb2lk
-X3JlZ2lzdHJ5IGF0MjUgYXJtX3NtY2NjX3RybmcgYWVzX25lb25fYmxrIGlkcHJvbV9tdGQoTykg
-DQo+IGlkcHJvbV9pMmMoTykgZXBpM19ib2FyZGluZm9faTJjKE8pIHgyNTAoTykgcHN1c2xvdF9l
-cGkzX3JlZ2lzdGVyKE8pIA0KPiBwc3VzbG90X2dwaW9fZ3JvdXAoTykNCj4gW8KgwqAgOTEuNjEw
-ODA5XcKgIHBzdXNsb3QoTykNCj4gW8KgwqAgOTEuNjExODIyXSB3YXRjaGRvZzogd2F0Y2hkb2cx
-OiB3YXRjaGRvZyBkaWQgbm90IHN0b3AhDQo+IFvCoMKgIDkxLjY5NzA2NV3CoCBncGlvcGluc19i
-b2FyZGluZm8oTykgaWRwcm9tKE8pIGVwaTNfYm9hcmRpbmZvKE8pIA0KPiBib2FyZGluZm8oTykg
-aTJjX2dwaW8gaTJjX2FsZ29fYml0IGkyY19tdjY0eHh4IHBsdWdnYWJsZShPKSANCj4gbGVkX2Vu
-YWJsZShPKSBvbWFwX3JuZyBybmdfY29yZSBhdGxfcmVzZXQoTykgc2JzYV9nd2R0IHVpb19wZHJ2
-X2dlbmlycQ0KPiBbwqDCoCA5MS42OTcwOTZdIENQVTogMiBQSUQ6IDE3NzAgQ29tbTogbmZzZCBL
-ZHVtcDogbG9hZGVkIFRhaW50ZWQ6IA0KPiBHwqDCoMKgwqDCoMKgwqDCoMKgwqAgT8KgwqDCoMKg
-wqAgNS4xNS4xNTUgIzENCj4gW8KgwqAgOTEuNjk3MTAzXSBIYXJkd2FyZSBuYW1lOiBBbGxpZWQg
-VGVsZXNpcyB4MjUwLTI4WFRtIChEVCkNCj4gW8KgwqAgOTEuNjk3MTA3XSBwc3RhdGU6IDgwMDAw
-MDA1IChOemN2IGRhaWYgLVBBTiAtVUFPIC1UQ08gLURJVCAtU1NCUyANCj4gQlRZUEU9LS0pDQo+
-IFvCoMKgIDkxLjY5NzExMl0gcGMgOiBzdmNfZGVzdHJveSsweDg0LzB4YWMNCj4gW8KgwqAgOTEu
-NzAxMjAyXSB3YXRjaGRvZzogd2F0Y2hkb2cwOiB3YXRjaGRvZyBkaWQgbm90IHN0b3AhDQo+IFvC
-oMKgIDkxLjcwMjIxNV0gbHIgOiBzdmNfZGVzdHJveSsweDJjLzB4YWMNCj4gW8KgwqAgOTEuNzAy
-MjIwXSBzcCA6IGZmZmY4MDAwMGJiM2JkZTANCj4gW8KgwqAgOTEuNzAyMjIzXSB4Mjk6IGZmZmY4
-MDAwMGJiM2JkZTAgeDI4OiAwMDAwMDAwMDAwMDAwMDAwIHgyNzogDQo+IDAwMDAwMDAwMDAwMDAw
-MDANCj4gW8KgwqAgOTEuNzQ2MDk1XSB4MjY6IDAwMDAwMDAwMDAwMDAwMDAgeDI1OiBmZmZmMDAw
-MDBkYmZhYTQwIHgyNDogDQo+IGZmZmYwMDAwMTZjMTQwMDANCj4gW8KgwqAgOTEuNzQ2MTAxXSB4
-MjM6IGZmZmY4MDAwMDgzOTVjMDAgeDIyOiBmZmZmMDAwMDBlZTlmMjg0IHgyMTogDQo+IGZmZmYw
-MDAwMGVlYTllMTANCj4gW8KgwqAgOTEuNzQ2MTA4XSB4MjA6IGZmZmYwMDAwMGVlYTllMDAgeDE5
-OiBmZmZmMDAwMDBlZWE5ZTE0IHgxODogDQo+IGZmZmY4MDAwMDhlOTkwMDANCj4gW8KgwqAgOTEu
-NzY5NTI2XSB4MTc6IDAwMDAwMDAwMDAwMDAwMDYgeDE2OiAwMDAwMDAwMDAwMDAwMDAwIHgxNTog
-DQo+IDAwMDAwMDAwMDAwMDAwMDENCj4gW8KgwqAgOTEuNzc2NzgyXSB4MTQ6IDAwMDAwMDAwZmZm
-ZmZmZmQgeDEzOiBmZmZmZmMwMDAwMDAwMDAwIHgxMjogDQo+IGZmZmY4MDAwNzZiYzIwMDANCj4g
-W8KgwqAgOTEuNzg0MDMxXSB4MTE6IGZmZmYwMDAwN2ZiYTVjMTAgeDEwOiBmZmZmODAwMDc2YmMy
-MDAwIHg5IDogDQo+IGZmZmY4MDAwMDkyMjA3YzANCj4gW8KgwqAgOTEuNzg0MDM4XSB4OCA6IGZm
-ZmZmYzAwMDA1NWViMDggeDcgOiBmZmZmMDAwMDBlZjZjNGMwIHg2IDogDQo+IGZmZmZmYzAwMDFm
-ODcyYzgNCj4gW8KgwqAgOTEuNzk1ODIzXSB4NSA6IDAwMDAwMDAwMDAwMDAxMDAgeDQgOiBmZmZm
-MDAwMDdmYmFlZGE4IHgzIDogDQo+IDAwMDAwMDAwMDAwMDAwMDANCj4gW8KgwqAgOTEuODAxNjg0
-XSB4MiA6IDAwMDAwMDAwMDAwMDAwMDAgeDEgOiBmZmZmMDAwMDBkOGY4MDE4IHgwIDogDQo+IGZm
-ZmYwMDAwMGVlYTllMzANCj4gW8KgwqAgOTEuODA3NTQ1XSBDYWxsIHRyYWNlOg0KPiBbwqDCoCA5
-MS44MTAwODhdwqAgc3ZjX2Rlc3Ryb3krMHg4NC8weGFjDQo+IFvCoMKgIDkxLjgxMzU4Nl3CoCBz
-dmNfZXhpdF90aHJlYWQrMHgxMDgvMHgxNWMNCj4gW8KgwqAgOTEuODE2OTk4XcKgIG5mc2QrMHgx
-NzgvMHgxYTANCj4gW8KgwqAgOTEuODE4NjczXcKgIGt0aHJlYWQrMHgxNTAvMHgxNjANCj4gW8Kg
-wqAgOTEuODIwNjEwXcKgIHJldF9mcm9tX2ZvcmsrMHgxMC8weDIwDQo+IFvCoMKgIDkxLjgyMDYy
-MF0gQ29kZTogYTk0MTUzZjMgYThjMjdiZmQgZDUwMzIzYmYgZDY1ZjAzYzAgKGQ0MjEwMDAwKQ0K
-PiBbwqDCoCA5MS44MjA2MjldIFNNUDogc3RvcHBpbmcgc2Vjb25kYXJ5IENQVXMNCj4gW8KgwqAg
-OTEuODMwNDMzXSBTdGFydGluZyBjcmFzaGR1bXAga2VybmVsLi4uDQo+IFvCoMKgIDkxLjgzMzA2
-NF0gQnllIQ==
+On several Qualcomm platforms DisplayPort link clocks used incorrect
+frequency tables. Drop frequency tables and use clk_byte2_ops instead of
+clk_rcg2_ops.
+
+Note, this was tested on SM8450 only and then extended to other
+platforms.
+
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+Changes in v2:
+- Expanded commit messages to mention exact issue being fixed and the
+  triggering message (Stephen Boyd, Bjorn)
+- Link to v1: https://lore.kernel.org/r/20240408-dispcc-dp-clocks-v1-0-f9e44902c28d@linaro.org
+
+---
+Dmitry Baryshkov (4):
+      clk: qcom: dispcc-sm8450: fix DisplayPort clocks
+      clk: qcom: dispcc-sm6350: fix DisplayPort clocks
+      clk: qcom: dispcc-sm8550: fix DisplayPort clocks
+      clk: qcom: dispcc-sm8650: fix DisplayPort clocks
+
+ drivers/clk/qcom/dispcc-sm6350.c | 11 +----------
+ drivers/clk/qcom/dispcc-sm8450.c | 20 ++++----------------
+ drivers/clk/qcom/dispcc-sm8550.c | 20 ++++----------------
+ drivers/clk/qcom/dispcc-sm8650.c | 20 ++++----------------
+ 4 files changed, 13 insertions(+), 58 deletions(-)
+---
+base-commit: a59668a9397e7245b26e9be85d23f242ff757ae8
+change-id: 20240408-dispcc-dp-clocks-5ee5d5926346
+
+Best regards,
+-- 
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
 
