@@ -1,171 +1,162 @@
-Return-Path: <linux-kernel+bounces-157007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CA798B0B7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:50:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF97D8B0B92
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:54:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 709FA1C22AF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:50:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46ED6B23C25
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:54:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D493D15D5C3;
-	Wed, 24 Apr 2024 13:50:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5742315B15C;
+	Wed, 24 Apr 2024 13:54:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="EFKkX+Rm"
-Received: from nbd.name (nbd.name [46.4.11.11])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YDjQMa+2"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 805E815CD6F;
-	Wed, 24 Apr 2024 13:50:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34EF215B99C
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713966647; cv=none; b=n1mFU7JVubgb4FR7xpHPM74qMTee6JBiHsHx/xcuaByJxtkleaZ264Nl0mTySopac36LyJ2u8NGQZpd+NmqAiN0QqI99nAXU4G6cJ91xmxDL3hfraSYKnSS4qEjd9M5y3kJHv2BRgJjykI8K8Ms4W9kce7SE3ku8+AouWfYJuWc=
+	t=1713966874; cv=none; b=fjK8c6un8s2JoBMYiMhpcK1Rkhfyt9EFcT5gYoyPeeeTF4ojSGY9W6kTnkPEZkTbjIUqb29t/7ic5DT/s1XkSdLgThG44Kf2aYS2r5oSD5g8j8IquwvM6v8e9Oo0HKKJKxk0NO0sOlsqACmBqTthGW+pw7q1UoTtQAioYr3R3HU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713966647; c=relaxed/simple;
-	bh=4WwbKPa9Qflb+/iIZT+f/FFfbuAR+zna8wQMxq6DJ2Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BadI4eYhsCOgoTgggST5ROOCeVGpSBOIcHwA56BfdGPoJoVXBguwJnr9wp0ViwIJhCtihFRrB/4ouYFumEWyIG0VSknneX/+weTbZGpbrwJhN63wixepUGne6n6armk9sOipsrQPkdygvYsPNjNaoxx7b2gFKJrUYWhH+6uDKbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=EFKkX+Rm; arc=none smtp.client-ip=46.4.11.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-	s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=G3hli6eYNuucDxPQhgOYx6F2vYtfh3N/KW2prUSvcro=; b=EFKkX+RmvQ5yfh4QV1WkjR9B1Y
-	8p4xEfWxvqL8yegH295TDJSNPUVdtIbYb6OdJOXfBT67wfdZ8iRD8Er0eIkFjslQcf8DrVSE4kxNY
-	lqM5ckw6704T42upD0OS4Cj9visNoNuPwo7pXzQJlMTBzhowrfjEAtWdvVJn9sH/Pn7w=;
-Received: from p54ae9c93.dip0.t-ipconnect.de ([84.174.156.147] helo=nf.local)
-	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <nbd@nbd.name>)
-	id 1rzd16-006lN9-2a;
-	Wed, 24 Apr 2024 15:50:32 +0200
-Message-ID: <eb0e1eb6-306c-4cf7-922d-203db09d8d29@nbd.name>
-Date: Wed, 24 Apr 2024 15:50:32 +0200
+	s=arc-20240116; t=1713966874; c=relaxed/simple;
+	bh=KPARR30ZZmFE0n7R9yKr0iH+xt44HKxu1rqWPjRLPiI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nvoUN9jOaAu6G2Kb5wzi7hbXZkAZFuTa8LJwv78Rl1daXptNWri3UflkemYUtWykwK6icZMFvprTs4l3nZfUWz2R/vcPF7eKggF6XyzKhFx3U5mrJSvv7fT/VgChfm10cQHSg/wj7OTWGsnk0iBa68/BXq05QgRNUqLzcwWS4LM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YDjQMa+2; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713966872;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=MpzcW4eGUsXhIEVGjUGz71es2y4/452F4J6OFr59NG8=;
+	b=YDjQMa+2kPMC9V9Z5OfTqcfaeoG+vkE5UhrjAj0Yj2jCMZCFyxeRXJG8B5KTqv8WofHuHy
+	p5Qf1RNj4Qy7Ip65+APf94Ue/ujEKN74ZB/LIMYeHPxQusCCjydMlK9CWF0BcscEwmFwqK
+	wv5QqZU0dqcb1xT1I75XsnT9iWb4K4g=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-450-HuqN15zsOGehoISiB1vxHA-1; Wed, 24 Apr 2024 09:54:27 -0400
+X-MC-Unique: HuqN15zsOGehoISiB1vxHA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 664FA104D526;
+	Wed, 24 Apr 2024 13:54:27 +0000 (UTC)
+Received: from antares.redhat.com (unknown [10.39.193.98])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id C09391C0666A;
+	Wed, 24 Apr 2024 13:54:25 +0000 (UTC)
+From: Adrian Moreno <amorenoz@redhat.com>
+To: netdev@vger.kernel.org
+Cc: aconole@redhat.com,
+	echaudro@redhat.com,
+	horms@kernel.org,
+	i.maximets@ovn.org,
+	Adrian Moreno <amorenoz@redhat.com>,
+	dev@openvswitch.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH net-next 0/8] net: openvswitch: Add sample multicasting.
+Date: Wed, 24 Apr 2024 15:50:47 +0200
+Message-ID: <20240424135109.3524355-1-amorenoz@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] net: add TCP fraglist GRO support
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, David Ahern <dsahern@kernel.org>,
- linux-kernel@vger.kernel.org
-References: <20240423094117.93206-1-nbd@nbd.name>
- <CANn89i+6xRe4V6aDmD-9EM0uD7A87f6rzg3S7Xq6-NaB_Mb4nw@mail.gmail.com>
- <63abfa26-d990-46c3-8982-3eaf7b8f8ee5@nbd.name>
- <CANn89iJZvoKVB+AK1_44gki2pHyigyMLXFkyevSQpH3iDbnCvw@mail.gmail.com>
- <7476374f-cf0c-45d0-8100-1b2cd2f290d5@nbd.name>
- <CANn89iLddm704LHPDnnoF2RbCfvrivAz0e6HTeiBARmvzoUBjA@mail.gmail.com>
- <ebe85dca-e0e9-4c55-a15d-20d340f66848@nbd.name>
- <97f10c8b5b615eac8f65d67ef10928d97b6b760d.camel@redhat.com>
- <328ab7b3-4890-4e0d-8b9a-fed7700f1a6a@nbd.name>
- <66285f637bdec_1924cc2941b@willemb.c.googlers.com.notmuch>
-From: Felix Fietkau <nbd@nbd.name>
-Content-Language: en-US
-Autocrypt: addr=nbd@nbd.name; keydata=
- xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
- ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
- Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
- AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
- vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
- wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
- TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
- l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
- dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
- HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
- VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
- CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
- VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
- Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
- DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
- wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
- f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
- aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
- FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
- TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
- GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCeMncXpbbWNT2AtoAYICrKyX5R3iMAoMhw
- cL98efvrjdstUfTCP2pfetyN
-In-Reply-To: <66285f637bdec_1924cc2941b@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On 24.04.24 03:24, Willem de Bruijn wrote:
-> Felix Fietkau wrote:
->> On 23.04.24 16:34, Paolo Abeni wrote:
->> > On Tue, 2024-04-23 at 14:23 +0200, Felix Fietkau wrote:
->> >> On 23.04.24 14:11, Eric Dumazet wrote:
->> >> > On Tue, Apr 23, 2024 at 1:55 PM Felix Fietkau <nbd@nbd.name> wrote:
->> >> > > 
->> >> > > In the world of consumer-grade WiFi devices, there are a lot of chipsets
->> >> > > with limited or nonexistent SG support, and very limited checksum
->> >> > > offload capabilities on Ethernet. The WiFi side of these devices is
->> >> > > often even worse. I think fraglist GRO is a decent fallback for the
->> >> > > inevitable corner cases.
->> >> > 
->> >> > What about netfilter and NAT ? Are they okay with NETIF_F_FRAGLIST_GRO already ?
->> >> > 
->> >> > Many of these devices are probably using NAT.
->> >> 
->> >> In my tests, nftables NAT works just fine, both with and without 
->> >> flowtable offloading. I didn't see anything in netfilter that would have 
->> >> a problem with this.
->> > 
->> > I see you handle explicitly NAT changes in __tcpv4_gso_segment_csum(),
->> > like the current UDP code.
->> > 
->> > The TCP header has many other fields that could be updated affecting
->> > the TCP csum.
->> > Handling every possible mutation looks cumbersome and will likely
->> > reduce the performance benefits.
->> > 
->> > What is your plan WRT other TCP header fields update?
->> 
->> I think that should be easy enough to handle. My patch already only 
->> combines packets where tcp_flag_word(th) is identical. So when 
->> segmenting, I could handle all flags changes with a single 
->> inet_proto_csum_replace4 call.
->> 
->> > Strictly WRT the patch, I guess it deserves to be split in series,
->> > moving UDP helpers in common code and possibly factoring out more
->> > helpers with separate patches.
->> Will do.
-> 
-> A significant chunk of the complexity is in the
-> tcp[46]_check_fraglist_gro sk match. Is this heuristic worth the
-> complexity?
-> 
-> It seems that the platforms that will enable NETIF_F_FRAGLIST will
-> be mainly forwarding planes.
+** Background **
+Currently, OVS supports several packet sampling mechanisms (sFlow,
+per-bridge IPFIX, per-flow IPFIX). These end up being translated into a
+userspace action that needs to be handled by ovs-vswitchd's handler
+threads only to be forwarded to some third party application that
+will somehow process the sample and provide observability on the
+datapath.
 
-There are people using their devices as file servers and routers at the 
-same time. The heuristic helps for those cases.
+A particularly interesting use-case is controller-driven
+per-flow IPFIX sampling where the OpenFlow controller can add metadata
+to samples (via two 32bit integers) and this metadata is then available
+to the sample-collecting system for correlation.
 
-> If keeping, this refinement can probably a separate follow-on patch in
-> the series too:
-> 
-> - refactor existing udp code
-> - add segmentation support to handle such packets on tx
-> - add coalescing support that starts building such packets on rx
-> - refine coalescing choice
-I don't really understand what you're suggesting. With my patch, the GRO 
-code handles coalescing of packets. Segmentation on output is also 
-supported. The next version of my patch will fix the cases that were too 
-similar to the UDP code, so I guess refactoring to share code doesn't 
-really make sense there.
-Am I missing something?
+** Problem **
+The fact that sampled traffic share netlink sockets and handler thread
+time with upcalls, apart from being a performance bottleneck in the
+sample extraction itself, can severely compromise the datapath,
+yielding this solution unfit for highly loaded production systems.
 
-Thanks,
+Users are left with little options other than guessing what sampling
+rate will be OK for their traffic pattern and system load and dealing
+with the lost accuracy.
 
-- Felix
+Looking at available infrastructure, an obvious candidated would be
+to use psample. However, it's current state does not help with the
+use-case at stake because sampled packets do not contain user-defined
+metadata.
+
+** Proposal **
+This series is an attempt to fix this situation by extending the
+existing psample infrastructure to carry a variable length
+user-defined cookie.
+
+The main existing user of psample is tc's act_sample. It is also
+xtended to forward the action's cookie to psample.
+
+Finally, OVS sample action is extended with a couple of attributes
+(OVS_SAMPLE_ATTR_PSAMPLE_{GROUP,COOKIE}) that contain a 32 group_id
+and a variable length cookie. When provided, OVS sends the packet
+to psample for observability.
+
+In order to make it easier for users to receive samples coming from
+a specific source, group_id filtering is added to psample as well
+as a tracepoint for troubleshooting.
+
+--
+rfc_v2 -> v1:
+- Accomodate Ilya's comments.
+- Split OVS's attribute in two attributes and simplify internal
+handling of psample arguments.
+- Extend psample and tc with a user-defined cookie.
+- Add a tracepoint to psample to facilitate troubleshooting.
+
+rfc_v1 -> rfc_v2:
+- Use psample instead of a new OVS-only multicast group.
+- Extend psample and tc with a user-defined cookie.
+
+Adrian Moreno (8):
+  net: netlink: export genl private pointer getters
+  net: psample: add multicast filtering on group_id
+  net: psample: add user cookie
+  net: psample: add tracepoint
+  net: sched: act_sample: add action cookie to sample
+  net:openvswitch: add psample support
+  selftests: openvswitch: add sample action.
+  selftests: openvswitch: add psample test
+
+ Documentation/netlink/specs/ovs_flow.yaml     |   6 +
+ include/net/psample.h                         |   2 +
+ include/uapi/linux/openvswitch.h              |  49 ++++-
+ include/uapi/linux/psample.h                  |   2 +
+ net/netlink/genetlink.c                       |   2 +
+ net/openvswitch/actions.c                     |  51 ++++-
+ net/openvswitch/flow_netlink.c                |  80 +++++--
+ net/psample/psample.c                         | 131 ++++++++++-
+ net/psample/trace.h                           |  62 ++++++
+ net/sched/act_sample.c                        |  12 +
+ .../selftests/net/openvswitch/openvswitch.sh  |  97 +++++++-
+ .../selftests/net/openvswitch/ovs-dpctl.py    | 207 +++++++++++++++++-
+ 12 files changed, 655 insertions(+), 46 deletions(-)
+ create mode 100644 net/psample/trace.h
+
+-- 
+2.44.0
 
 
