@@ -1,106 +1,97 @@
-Return-Path: <linux-kernel+bounces-157414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C3C18B1159
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BD0F8B115D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:43:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0D221F269A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:42:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF1BD1F2752D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:43:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA45116D4E7;
-	Wed, 24 Apr 2024 17:41:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A593D16D4EC;
+	Wed, 24 Apr 2024 17:43:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BXvT2lFP"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (1024-bit key) header.d=ansari.sh header.i=@ansari.sh header.b="MwWXAVeG"
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EECE913777A;
-	Wed, 24 Apr 2024 17:41:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5022615B55C
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:43:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713980518; cv=none; b=FYlhCmAzyEaB038tRDOsHQSNsJMYA7g5WzWhZSgEm7c7yokTgRPB4gXmzjKKLdiQ5YeC6Bi+OaFw2IkHq0JQ56H1paijMAyQBVlRC/FsNEHTUuJ0j9mc54ByW164iuBkLE4ITgSdpsPgzJTweUB82zK76bY7thIyx3MKa3MhdOA=
+	t=1713980583; cv=none; b=jvOAaYydapesfJzjHAknbRQPMq0wHJMbTsI0/a0oFZt0yGfK1U6fhVOBsIIYcLoacIHd23uPJs/3BlzjWoLOSCfPhilv/UG95PS5sBQrtsEtRK67w9JJV2li/n3KGhm/oR+eQ8m8dSfAkmlg/CNES5qqTKh9FK9WT/PQiPtU32Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713980518; c=relaxed/simple;
-	bh=rzIGskttzZEZ6yA8Ya5sZoIK/iWbYQdhuesi5VGFu3Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rCYqf2muAmfSHPaX9PB7aiqG0erhVgXaKHkJT7iBbIRgg/ra+7crb4qKiw0hMFvs4+yb9nkDUti0vkPz92dK5u1HnlziSUnVUqTugMcV9Xr1S4nFMfWJEF9p93GplqScHKSgfHUSnUPPwDuNuczB/X6pmfeTPlZlfu4Hr1FdD2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=BXvT2lFP; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=pmCM4ZRC7PzrjVELSoDq0bCfVQk1Ajd90li1QmbuF7k=; b=BXvT2lFPFXXIPnM1ZCgaoAChvD
-	V3MPYe8GJ93zgM21lwvjNW5WR1VIJHFBTUUf+Byf/aMLDLU8aJ1qpjYHUvFcHi7F/FcEzzazN7vHx
-	9UzHHNuQH1Xa62cC+4WH+pvcP6DZAsBMCHAJH1J644hj7jJlWZQ4ls66mwWLmu1bkuWdCTMqlPnWp
-	R/RRYAtOaKF2lDBA5JqA4hjLwMaPQV91uTnISxd8Zj0pTwhJnMF8oyywLLSvi+QJdhYySQD+pT188
-	vv5tju1n4dWVyUkT+KVbgoe996W5VFeQruy13LYEjUXM2onX1t3iN9LJ7NEOmbGpgGknRDhqn/6gz
-	OaSAh0Lg==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzgcu-00000001Mvd-1JxD;
-	Wed, 24 Apr 2024 17:41:48 +0000
-Date: Wed, 24 Apr 2024 18:41:48 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Jeongjun Park <aha310510@gmail.com>
-Cc: shaggy@kernel.org,
-	syzbot+241c815bda521982cb49@syzkaller.appspotmail.com,
-	brauner@kernel.org, jlayton@kernel.org, eadavis@qq.com,
-	jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] jfs: Fix array-index-out-of-bounds in diFree
-Message-ID: <ZilEXC3qLiqMTs29@casper.infradead.org>
-References: <0000000000000866ea0616cb082c@google.com>
- <20240424172240.148883-1-aha310510@gmail.com>
+	s=arc-20240116; t=1713980583; c=relaxed/simple;
+	bh=Btuuide6blNMxT4spQm5WVAaE9Pr2p15ET0Ssyg2jss=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Y+27U8zobnBpOuTyHaXOuBUaQt3UL1Jg0LfvjJr0a+ETgwla/+xShCERVWhxbgNr68KYROTb0McesVR2y7IgKmojrYt1MRZcyrnfAqgJUpEooXA8F+9Yjl0XMxrUcpr/X4fD3Osc7GaNeprhAf9NJ03RlYM8MUGT9sDMDiSpCMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ansari.sh; spf=pass smtp.mailfrom=ansari.sh; dkim=pass (1024-bit key) header.d=ansari.sh header.i=@ansari.sh header.b=MwWXAVeG; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ansari.sh
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ansari.sh
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ansari.sh; s=key1;
+	t=1713980580;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=DgIsjlRwFnvhVYiFhATRum6nyhywEjAGmQto8MQKN08=;
+	b=MwWXAVeGwIRoCffBFMazY1eTv6TpyRelj1lOLOppLpJ9GnY/DRp9J9r79cXojaQFDw01gD
+	P+leG4YeATf8rhP9vM23Wym1G2ZBG7lJmqnLc7mEiZEdVVq6I+4vlHdpPyUUHgVw6dj3/I
+	+Z5k0oq3p16rLjkCECzdoaWBCqWdwgc=
+From: Rayyan Ansari <rayyan@ansari.sh>
+To: linux-arm-msm@vger.kernel.org
+Cc: ~postmarketos/upstreaming@lists.sr.ht,
+	Rayyan Ansari <rayyan@ansari.sh>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Luca Weiss <luca@z3ntu.xyz>,
+	Bryant Mairs <bryant@mai.rs>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: qcom: msm8226-microsoft-common: Enable smbb explicitly
+Date: Wed, 24 Apr 2024 18:42:06 +0100
+Message-ID: <20240424174206.4220-1-rayyan@ansari.sh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424172240.148883-1-aha310510@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Apr 25, 2024 at 02:22:40AM +0900, Jeongjun Park wrote:
-> Due to overflow, a value that is too large is entered into the agno 
-> value. Therefore, we need to add code to check the agno value.
+Enable the smbb node explicitly for MSM8x26 Lumia devices. These devices
+rely on the smbb driver in order to detect USB state.
 
-This is clearly wrong.
+It seems that this was accidentally missed in the commit that this
+fixes.
 
-#define BLKTOAG(b,sbi)  ((b) >> ((sbi)->bmap->db_agl2size))
+Fixes: c9c8179d0ccd ("ARM: dts: qcom: Disable pm8941 & pm8226 smbb charger by default")
+Signed-off-by: Rayyan Ansari <rayyan@ansari.sh>
+---
+ arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-common.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-I'd suggest that something has either corrupted the sbi->bmap
-pointer or the sbi->bmap->db_agl2size value.
+diff --git a/arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-common.dtsi b/arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-common.dtsi
+index 525d8c608b06..8839b23fc693 100644
+--- a/arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-common.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-common.dtsi
+@@ -287,6 +287,10 @@ &sdhc_2 {
+ 	status = "okay";
+ };
+ 
++&smbb {
++	status = "okay";
++};
++
+ &usb {
+ 	extcon = <&smbb>;
+ 	dr_mode = "peripheral";
+-- 
+2.44.0
 
-All your patch does is cover up the problem, not fix it.
-
-> Reported-by: syzbot+241c815bda521982cb49@syzkaller.appspotmail.com
-> Signed-off-by: Jeongjun Park <aha310510@gmail.com>
-> ---
->  fs/jfs/jfs_imap.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
-> index 2ec35889ad24..0aac083bc0db 100644
-> --- a/fs/jfs/jfs_imap.c
-> +++ b/fs/jfs/jfs_imap.c
-> @@ -881,6 +881,11 @@ int diFree(struct inode *ip)
->  	 */
->  	agno = BLKTOAG(JFS_IP(ip)->agstart, JFS_SBI(ip->i_sb));
->  
-> +	if(agno >= MAXAG || agno < 0){
-> +		jfs_error(ip->i_sb, "invalid array index (0 <= agno < MAXAG), agno = %d\n", agno);
-> +		return -ENOMEM;
-> +	}
-> +
->  	/* Lock the AG specific inode map information
->  	 */
->  	AG_LOCK(imap, agno);
-> -- 
-> 2.34.1
-> 
 
