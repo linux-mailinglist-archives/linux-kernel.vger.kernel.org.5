@@ -1,133 +1,113 @@
-Return-Path: <linux-kernel+bounces-156834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D6A98B08E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:06:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7DAD8B08E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:06:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DABCB22C6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:05:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54E111F25CA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:06:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC4D215AD9E;
-	Wed, 24 Apr 2024 12:05:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A372715ADA1;
+	Wed, 24 Apr 2024 12:06:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=penguintechs.org header.i=@penguintechs.org header.b="ks8YkGwZ"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="eXoBFJDg"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47AB1159919
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 12:05:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49B415AAA3;
+	Wed, 24 Apr 2024 12:06:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713960350; cv=none; b=LV69xAXwcWLWTDT4aLYGCiz/OotFZ1L4EPlzPdZMePWX5pbrSBtyTnVHbrXfhFwEDm+1wneDsECjBkk5SDuA+VATT4YhWIIgrnzxJKJQ65a4BXC7QWwhop/KH03DsbvBJ1hXTciOPXqhfSX6RY93AD+vw+tHTt3Zt3qKMD2+5fQ=
+	t=1713960363; cv=none; b=JJadDkA7vOeEYLga2sMNMB6hggwVN5CY3lAB5wgvm+iBevAacCS1s+nmnxgdmq33XadpjxQUOR/lZ83z33xQfGvzxh4RKPZHGATS1twky/BlI11izVePoJDSfeBTb3kuagejaiLcVCkJprnW2jW6Q6VvMWXIyKbT6Ws8ZESvtAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713960350; c=relaxed/simple;
-	bh=O9Y9XW9Bf8tQwBetsJd8cr2rhoDDnWiPSv3Wv8RVtfQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UKXjTRUxpIUheaeagfDN7l8E7hF8IJ+8rTt+j5Z62XPehjZJxcz2gn3pvThPIwtCHe5jKHrh4J3ZmDsnQePAlDm4Wme68BpfvhEu7r61KzgXBnZC+R8u6PPOdO4p4XGHOE/Orc4otgxo4B04epspxAJBG7w2cDsuTItusMD6rPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=penguintechs.org; spf=pass smtp.mailfrom=penguintechs.org; dkim=pass (1024-bit key) header.d=penguintechs.org header.i=@penguintechs.org header.b=ks8YkGwZ; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=penguintechs.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=penguintechs.org
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e3f17c64daso44236615ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:05:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=penguintechs.org; s=google; t=1713960347; x=1714565147; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S+FykyxhMPJPKFfFxIzTojGiVzkxju+/n6mO5lG++54=;
-        b=ks8YkGwZ9WesyzVattAimXAcqCXuDwuIXOeyFFfXrHFX1VP/HoVeKcvg3OpNMJsZNX
-         8ZQFqtSmLbqNcchZooELgEkTRGJK5r5wiiBUYVPJ16vLJea4DBLGAELveKrAvORdNW1S
-         TuH42TSmw7tZSRsAdjOtXOZeqG2FiyV6rxQIE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713960347; x=1714565147;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S+FykyxhMPJPKFfFxIzTojGiVzkxju+/n6mO5lG++54=;
-        b=F3EtBisRZfLe/JjheknUsgeGQKlz8W2Al9DbYk6X+MsuqD4iXHD02Sx5bdKzxWAe5v
-         KJ2+dyCE5J1RyFCpw2X4hDRwxeZMznMLr2AugOm3yoa0ps5idhFKNXF3wGp+a1m+ApY0
-         P26QFKFOL/P90n/g8Qa6PrCyqrUQHAkajt5Q78SsjX1HSC4U+D98YyA534gLBRTcgCbc
-         dBcj+g8EBHQRaayvFSXQ1yadDO3I6gw2uRTKg4YiF4v3G9RuHmrFu2u4en97f2WEd5IW
-         ABSlkoWR6YCznQXyVDlMpV+2JNKzgOtHlbiYgFpYoERbVZWlAIF/0tsk9XvYcEug2Q9C
-         5SPA==
-X-Forwarded-Encrypted: i=1; AJvYcCV4Hnqhmlt/7mwRM9eEPoFuRX/bkiI0x1N9iRpOBZgGF9rvvN6K9UoO+ulJN9IMC6q/gSdCGsZjrd4mt5yavxR5c3wUgCG+lb8RA1tg
-X-Gm-Message-State: AOJu0YyKtAlllaeqGs4oVPpkYarT8fDYpuDmKDdtZ8BPW6MQiYpxZ21O
-	N4QjAQ5QLEdOseSNd9h7mhYy1zIXGN7OAwL9Ot2nchTlF+MJsD4qx9Gm6S3Vxw==
-X-Google-Smtp-Source: AGHT+IEXVBByB7qMgyM2JwnpcF1ugnJgAAgMtOW169Er0h+ZLNEaK8zxB1N1x9RTjArZnauZ8RRf7A==
-X-Received: by 2002:a17:902:e809:b0:1e3:e137:d3af with SMTP id u9-20020a170902e80900b001e3e137d3afmr2745775plg.9.1713960347458;
-        Wed, 24 Apr 2024 05:05:47 -0700 (PDT)
-Received: from ?IPV6:2601:646:8700:dd30:5f3e:5ba7:e0ea:9a08? ([2601:646:8700:dd30:5f3e:5ba7:e0ea:9a08])
-        by smtp.gmail.com with ESMTPSA id w5-20020a1709029a8500b001e435350a7bsm11722255plp.259.2024.04.24.05.05.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 05:05:46 -0700 (PDT)
-Message-ID: <51a660cc-4562-42d7-a6fa-0f6f7e3f47b6@penguintechs.org>
-Date: Wed, 24 Apr 2024 05:05:45 -0700
+	s=arc-20240116; t=1713960363; c=relaxed/simple;
+	bh=qTmT8SjUiq5qoWl/PUT6yRzFTQu65wMods7xcZ3FnEg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mbcWvVu3fPYolBDWtHQ/ugrrWMdmDQwVoaYAaewADDt1guIoTvg3XfD2nK/5yWwCRQ3dmK4CSxac1c5hqL1iUA42gXFYXGVPmGsM+RKqKok052H82RleyAnSq7PaPTa0o6sCdxhWVExDph4NbyjvTyZi66pzxWzIdPHylTSnLCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=eXoBFJDg; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43OBu2Oj010616;
+	Wed, 24 Apr 2024 12:05:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=qTmT8SjUiq5qoWl/PUT6yRzFTQu65wMods7xcZ3FnEg=;
+ b=eXoBFJDgkewruQ2TSrXd3SGWw8G8YOCsDsmOzlulr8QlIsQKQAMXB1nURUXxvSsajYVS
+ LCynsshjojUM6LXB3NAJZM7NyJCWiaCWDoY3TtwqsEGthq4G23Rq3DVQKW7WVctuzmAy
+ C2xSQ4fTGiLYHa7XaR16DaODTkawKNAxTDN+uEXpPwft0GLMz9WkJhKOG7Kg+hFhNBux
+ 5fY9AVMfiQtzbMga3x90GeNXXcvbajo1gDRp9iRpIsUH3m2A897Fn8cIRO7GtqMQyu22
+ HJehC3IkA5ddSuWzNstryyTUattcVezptWx0+RgYG5cbp1Rk1P1tdFyh5cf2m6Qy/S3f MA== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xq1mjr0nt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 12:05:57 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43OB5uon020915;
+	Wed, 24 Apr 2024 12:05:56 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmre03k75-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 12:05:56 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43OC5o4940173900
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 24 Apr 2024 12:05:52 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A10992004E;
+	Wed, 24 Apr 2024 12:05:50 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 68F8320043;
+	Wed, 24 Apr 2024 12:05:50 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 24 Apr 2024 12:05:50 +0000 (GMT)
+Date: Wed, 24 Apr 2024 14:05:49 +0200
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Niklas Schnelle <schnelle@linux.ibm.com>, Jean Delvare <jdelvare@suse.de>
+Cc: Jean Delvare <jdelvare@suse.de>, linux-s390@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH RFC] s390/pci: Drop unneeded reference to CONFIG_DMI
+Message-ID: <Zij1fJw+Ksrq5iAm@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240423162724.3966265a@endymion.delvare>
+ <b5ee24107efbc943cfc8ea59bf0653d2dd6325ad.camel@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Bluetooth: qca: set power_ctrl_enabled on NULL returned
- by gpiod_get_optional()
-Content-Language: en-US
-To: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, linux-bluetooth@vger.kernel.org,
- linux-kernel@vger.kernel.org, Zijun Hu <quic_zijuhu@quicinc.com>,
- Marcel Holtmann <marcel@holtmann.org>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-References: <20240422130036.31856-1-brgl@bgdev.pl>
- <99242a7c-53bf-4227-9623-7bc092f564b3@penguintechs.org>
- <CAMRc=MepDwUbAKrWgm0CXKObqy8=igtug0QDgo-CgwxjZCAC2Q@mail.gmail.com>
- <06217256-8a13-4ebf-a282-9782a91793e4@penguintechs.org>
- <CAMRc=Mfwa2WSOLaUMaEM1czTcx31jynGqgxzLdCh7ROktQ_Vag@mail.gmail.com>
- <6433c145-a448-45dd-a982-8b5df0ca5c16@penguintechs.org>
- <CACMJSetnNDwVuRksjE2k=OJYoaa0i89kWxd1WB9RmTcpz78haA@mail.gmail.com>
-From: Wren Turkal <wt@penguintechs.org>
-In-Reply-To: <CACMJSetnNDwVuRksjE2k=OJYoaa0i89kWxd1WB9RmTcpz78haA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b5ee24107efbc943cfc8ea59bf0653d2dd6325ad.camel@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: IVKhr5tMpGNcHdPy8Kw3IszRgPI04iWI
+X-Proofpoint-GUID: IVKhr5tMpGNcHdPy8Kw3IszRgPI04iWI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_10,2024-04-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=639 suspectscore=0 phishscore=0 mlxscore=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 spamscore=0 bulkscore=0 clxscore=1011
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404240046
 
-On 4/24/24 5:01 AM, Bartosz Golaszewski wrote:
-> On Wed, 24 Apr 2024 at 13:59, Wren Turkal <wt@penguintechs.org> wrote:
->>
->> On 4/24/24 4:53 AM, Bartosz Golaszewski wrote:
->>> This must be your email client wrapping lines over a certain limit.
->>> Try and get the diff from lore[1], it should be fine.
->>>
->>> Bart
->>>
->>> [1]https://lore.kernel.org/lkml/CAMRc=MepDwUbAKrWgm0CXKObqy8=igtug0QDgo-CgwxjZCAC2Q@mail.gmail.com/
->>
->> I don't think it's my client. The extra newlines are right there in the
->> lore link.
->>
->> Look at the line that starts with "@@". That line is wrapped. The
->> following line ("serdev_device *serdev)") should be at the end of the
->> previous line. The same thing happened on the second "@@" line as well.
->>
-> 
-> Indeed. I just noticed that it applies fine with git apply and figured
-> the output must be right. Anyway, this is not a proper patch, I will
-> send one once I adapt Zijun's code.
-> 
-> Bart
+On Wed, Apr 24, 2024 at 01:34:49PM +0200, Niklas Schnelle wrote:
+> I'm assuming this change should go via the s390 tree? So let me add the
+> s390x architecture maintainers to pick this up, but from my side and
+> considering that you maintain the SMBIOS/DMI support:
 
-Weird. Git apply failed for me. That's how I noticed it.
+Hi Jean,
 
- From my terminal:
-➜  linux git:(my_master) ✗ git apply ../blah.diff
-error: corrupt patch at line 6
+Whether this patch is good to go alone via s390 tree or (as Niklas
+indicated) might depend on some SMBIOS/DMI update?
 
+> Acked-by: Niklas Schnelle <schnelle@linux.ibm.com>
 
-FWIW, I also tried pasting it into stdin by running `git apply` as well.
-
-wt
--- 
-You're more amazing than you think!
+Thanks!
 
