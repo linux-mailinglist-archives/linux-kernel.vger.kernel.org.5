@@ -1,119 +1,123 @@
-Return-Path: <linux-kernel+bounces-156405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 156788B0266
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:48:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B2808B0269
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:49:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6F8F283DC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:48:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 650D6B23C51
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:49:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47881157499;
-	Wed, 24 Apr 2024 06:48:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42ED7157478;
+	Wed, 24 Apr 2024 06:48:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vNfExcaV"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tgVqusFl"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1837615687C
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:48:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0811015687C
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:48:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713941325; cv=none; b=IWnpVn1OiyUozS5iMcOe/1WgGWCkyoKTwoggOQ8/i9CF9xNPW8kyDud+zv0788TklysSQZ3yGqLhoxIjdakGje0PirXRLDHq99XAZAAbGUeyiyZ8Io+IvXIgFk0cMFLd17Es+9GX/aJFOVtQuQkETfwCLeq0TSHyKaB/Eo0EvCU=
+	t=1713941330; cv=none; b=qwQIAbe5lzQEJ8N7XRIrlU1YdDQq+Lfe7vTuYBMxtj0g5C7p1YHJzULG8N1d5xxEV5DOZwpzTqt/p6If/nXQykDdX6y6Y3jPq6pdc6FwzV2KNhZ2BanI++XQ4DPMS7bDnFwfJu1/riGpwskXYZdoJvYvJU2R4OuQQhoBUTgYwrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713941325; c=relaxed/simple;
-	bh=5CU6mL+iQliAjVWbjAM7cnzdrrPIzC97UjspUCLrXDA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TS00jppWQzRF69jpJLoT5+orD9c8/anivq5xlmtbBN/F9rdnGkksJ+iuF1Oa7n6GxPo31vv/Of+3oB/YBDCczrSfS4ydQsS2bmf4jfUYUfgNDmYt/d62cJHgrmIVXeCIVeu6tNjlxstTJXjHOFrfuvqsIxFeZtCd6FkGiNLYBY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vNfExcaV; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-417e327773cso2753765e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713941322; x=1714546122; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r61Kb7IQFeca73kF1CUdR8Nck6Yrqjf3CouDIb1P98U=;
-        b=vNfExcaVYtlcpgdiHeOUgMU6utCfNEbc93oR4bUOnhUCA3WyreMkDNujfzC1SNjrnj
-         eLTK/uoVJODb5R/DcYNOW788rcl3TNNxcpZ8WzyyhRzsdhnfeTn0lQnquK87D7lx6Pe9
-         bi8TlNXddmq3+lUAJY4+xfWZ54KDbg0uRXsi2CI6I4taEClUqAMhw49vAG//NdC4RyDD
-         O9ouiL3GDjxnLpUqxgAw6nrCI1l9AEwK32bZe6NzIY5kOGNCM+f0QAqvTxD/i+KZz4W8
-         r2HJ7UIS0mgexa7N5fOwtam6U/1EjuYRQ9iA6GE+mon6C/lylu3ljAk1lkLopZ1rz9dg
-         Enbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713941322; x=1714546122;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r61Kb7IQFeca73kF1CUdR8Nck6Yrqjf3CouDIb1P98U=;
-        b=srg+IzZZ/q7gNT4OkJVqm/dMvxw/QF8eZfSMYOEftzsACTpf8IP0NIWf01K6KSemLD
-         GYvo0iBPgc/wr9SripBpJjrWutvnsLiKyrb/V+oU6EN1oUg8slgvFXiWLL3wVeKuJnfP
-         uVPdamckpWk2FSlB4rS8tU4UF5T+NMPmWFYa7mkoY/cPV3hZ2RlxLktRrNjK6ZevztCh
-         MW1XR5DVKZn96iJJ+Uf8/xbCZ2k8PsBq5SmbLeoKwq5MK7vc1+dKo9bLQ2M9UcLxoYVi
-         yTgaY7Jgwtx7uyC0ddcVVamWO59ifaA109PRqcJiHRAbzsiZ2HMOCXZ7XJgPlIQEZPLe
-         izzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUrEqB6+GB36lNaSu/SXmkq71r0USDDhh1wQnfDlaqzX0HTs0SSzvRfp/6zNPSbz51Y2brS7U+OFqcFXiOKgY6+JLzZoWtjeFIndVUi
-X-Gm-Message-State: AOJu0YxrQhAEndDaXXb5rK/hrN5kZMhpA9a+PBEskaeymSMCjShWRduJ
-	X2h7LGiEtIbB88knAeE4b82v653xmoTQXCjeQuL/BZM1jbs3kNW+Tt3tOcS2s0M=
-X-Google-Smtp-Source: AGHT+IHaQADJgMwIajA8lFxEUdw1lpqkdpyaVAJFqWUQcrZ+ZPia4iTy725UEakhayBhM96AyPmpog==
-X-Received: by 2002:a05:600c:3b91:b0:417:e316:fbb3 with SMTP id n17-20020a05600c3b9100b00417e316fbb3mr1013641wms.15.1713941322494;
-        Tue, 23 Apr 2024 23:48:42 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id iv19-20020a05600c549300b004186c58a9b5sm22433236wmb.44.2024.04.23.23.48.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 23:48:41 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	devicetree@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Kousik Sanagavarapu <five231003@gmail.com>
-Subject: Re: [PATCH] sh: j2: drop incorrect SPI controller max frequency property
-Date: Wed, 24 Apr 2024 08:48:36 +0200
-Message-ID: <171394121882.41568.17609347008268237958.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240322064221.25776-1-krzysztof.kozlowski@linaro.org>
-References: <20240322064221.25776-1-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1713941330; c=relaxed/simple;
+	bh=MCbQ8rAHzB39hXl89cji/rkdiQatKGWYGWSwFnCGjP8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lLeyuWwLgb9dB3SLcsSfN2fVsNc4n+lYptIc4fGCAycsAULqEuF+Tfza25jXZDZEQ2XqkzotIozEMADGHUyEdF1hlLAdlQyk9MmRwC9WDar7D5RXI8XD007+gqyKeQ4TOlUmuGfxVHUpMDkexND/dwsZiN8+WFfYxFnwZloro28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=tgVqusFl; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713941326;
+	bh=MCbQ8rAHzB39hXl89cji/rkdiQatKGWYGWSwFnCGjP8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=tgVqusFlVX5FZN6PlqVOsyQikYjC5hrQ2VCM/5ibvt0MptDvKLWSUx88lPTk+4Fqd
+	 mgKxcWC0X/Z2DxjMjROS7TGnZyJPW1jYvvwbNyeUXGnad8k1VAmpfi3U+1kUlfGwer
+	 oQ8w8BczM2vICB9TWN93JmFWjELosDlTP4TKMpOGRYx+gQlY8RyCzBU+33WdU1Qwou
+	 CfAZzuNv3BYxePp19MmEn2d9ICl13ZpHkLM01CkGRN30jmDjq+ra2e+Pv2+Cv8Eteh
+	 sBvwMDC4om7n41mdMVzw00Wa5Uoy/7Sf7WNd56fY096lMXtSFRXyx+EHzwnczLg+cJ
+	 Nwb1BuNR8tmHg==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bbrezillon)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 12529378212B;
+	Wed, 24 Apr 2024 06:48:46 +0000 (UTC)
+Date: Wed, 24 Apr 2024 08:48:43 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>
+Cc: Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+ <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] drm/panthor: introduce job cycle and timestamp
+ accounting
+Message-ID: <20240424084843.57f095df@collabora.com>
+In-Reply-To: <20240423213240.91412-2-adrian.larumbe@collabora.com>
+References: <20240423213240.91412-1-adrian.larumbe@collabora.com>
+	<20240423213240.91412-2-adrian.larumbe@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, 23 Apr 2024 22:32:34 +0100
+Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com> wrote:
 
-On Fri, 22 Mar 2024 07:42:21 +0100, Krzysztof Kozlowski wrote:
-> The J2 SPI controller bindings never allowed spi-max-frequency property
-> in the controller node.  Neither old spi-bus.txt bindings, nor new DT
-> schema allows it.  Linux driver does not parse that property from
-> controller node, thus drop it from DTS as incorrect hardware
-> description.  The SPI child device has already the same property with
-> the same value, so functionality should not be affected.
-> 
-> [...]
+> Enable calculations of job submission times in clock cycles and wall
+> time. This is done by expanding the boilerplate command stream when runni=
+ng
+> a job to include instructions that compute said times right before an aft=
+er
+> a user CS.
+>=20
+> Those numbers are stored in the queue's group's sync objects BO, right
+> after them. Because the queues in a group might have a different number of
+> slots, one must keep track of the overall slot tally when reckoning the
+> offset of a queue's time sample structs, one for each slot.
+>=20
+> NUM_INSTRS_PER_SLOT had to be increased to 32 because of adding new FW
+> instructions for storing and subtracting the cycle counter and timestamp
+> register, and it must always remain a power of two.
+>=20
+> This commit is done in preparation for enabling DRM fdinfo support in the
+> Panthor driver, which depends on the numbers calculated herein.
+>=20
+> Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
+> ---
+>  drivers/gpu/drm/panthor/panthor_sched.c | 158 ++++++++++++++++++++----
+>  1 file changed, 134 insertions(+), 24 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/panthor/panthor_sched.c b/drivers/gpu/drm/pa=
+nthor/panthor_sched.c
+> index b3a51a6de523..320dfa0388ba 100644
+> --- a/drivers/gpu/drm/panthor/panthor_sched.c
+> +++ b/drivers/gpu/drm/panthor/panthor_sched.c
+> @@ -93,6 +93,9 @@
+>  #define MIN_CSGS				3
+>  #define MAX_CSG_PRIO				0xf
+> =20
+> +#define NUM_INSTRS_PER_SLOT			32
+> +#define SLOTSIZE				(NUM_INSTRS_PER_SLOT * sizeof(u64))
 
-Month passed, no replies from maintainers about picking it up. Dunno, looks
-abandoned, so let me grab this. If anyone else wants to pick it up, let me
-know.
+Given everyone agreed on the profiling sysfs knob for Panfrost, I'm
+tempted to make the profiling optional here as well, so we can save
+space on the CS ring buffers when profiling is disabled. This means
+adjusting the 'credits' parameter we pass to drm_sched_job_init()
+accordingly, with one credit counting for an instruction (or a block of
+16 instructions to keep things naturally cache-line aligned). You'll
+also need to change the 'credit_limit' passed to drm_sched_init().
+> =20
 
-Applied, thanks!
-
-[1/1] sh: j2: drop incorrect SPI controller max frequency property
-      https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-dt.git/commit/?h=next/dt&id=cc92bf017f7c66c8a4050c61a7d11ddfd43f5cee
-
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
