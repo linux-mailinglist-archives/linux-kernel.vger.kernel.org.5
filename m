@@ -1,145 +1,142 @@
-Return-Path: <linux-kernel+bounces-156307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BB6B8B010D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:31:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A3768B0148
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:47:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4FE728546E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:31:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A04BFB23659
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:47:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292E915667D;
-	Wed, 24 Apr 2024 05:31:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE7C156887;
+	Wed, 24 Apr 2024 05:46:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gL0SCOdX"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="HLrEp3zX"
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F670155356;
-	Wed, 24 Apr 2024 05:31:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176F2156876
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:46:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713936689; cv=none; b=N2vL261tcfzBaLE1RrEvI+3CaMuuEX8fpEczVmGdtg7KBDfk/Ra7RznYLTc/f29fhA051Wq0SvzLvOl3bI9ChjZBpLEr3i3v+8InKiQ4roTuW5n1nuchyLgOsOFK9ZInF3Fyx32fUl6q3y/rbtHzxiW/UjoUWT6NxV0uhjxEB9M=
+	t=1713937618; cv=none; b=cl1mEUWsmguPErPtZ9ZT5OG8CMmAfZNBVopRO4tw3u00WoieXesl48zVbnKU6G8lVbrfRlphijO66E7E3fD/mXEuZfwk+6yrS2Yf9SBsSSEmxEPpnKrfudZfmGN5SJht5ZEsimcvXhQpX9xiDxvbFXOJU6qtvjChOGzWmdrP/gU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713936689; c=relaxed/simple;
-	bh=tPo4ypzFj/KicqcCKxaiOjCo7Eyu+TsGnLXFq3hFYTc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nAN+r1BSvurJON20sFRtMOSC/OSPfwYhpGQD+OGaxd6B7e8J54XsI9IqI1TJ9Z91JZBq7E/uQ6v3xVlEEWZZEpWH1asA+mnAW9/pIqgBjR6vM30CcO89Jn73WzI+nC0AF1twY2FMK36jpBxm6TIcWh3KjcKwYO4YVdpAmseu3wc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gL0SCOdX; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713936688; x=1745472688;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=tPo4ypzFj/KicqcCKxaiOjCo7Eyu+TsGnLXFq3hFYTc=;
-  b=gL0SCOdXaEOJkH48CwLlNNYb6X1X+WgXbMhxfce6c9ajjf80uUQd2Y20
-   zeDuvOBH0G2EjuNKylfmUC3P/Xo7+hg+ehq0kJWcJInFDGYlSRzh8zZMV
-   m/wVG4i1TVN7zKSGppqK22sLVoWcb7ZmXu7+Fz5mGv+ivflyfqhz0nZIV
-   nJMB7HpeKo0agO08rYM0WFxPRgUFiWodR2j+bLc/qg+lxFMAu9ondfK/N
-   MXvMoKpagHAVsJbTIVPb/TkOQ4MOdspxdlEYj633+63E+buxi5fY1sfm/
-   Q6IiKZEST49vy5VNN/y92fYhrYp/Qd3JDtZhHXxk9Wx2SL2MmxRbFc+s2
-   A==;
-X-CSE-ConnectionGUID: LFTOQx15QXaHIc+lR4XO/g==
-X-CSE-MsgGUID: rGh+fLP+RsGFaQJfVLQawg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="27004485"
-X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="27004485"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 22:31:28 -0700
-X-CSE-ConnectionGUID: K2nGZA+6SxS85oF+8k8ISA==
-X-CSE-MsgGUID: idXSMI25RBWTdeIp9t4v1A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="62050525"
-Received: from unknown (HELO haibo-OptiPlex-7090.sh.intel.com) ([10.239.159.132])
-  by orviesa001.jf.intel.com with ESMTP; 23 Apr 2024 22:31:16 -0700
-From: Haibo Xu <haibo1.xu@intel.com>
-To: sunilvl@ventanamicro.com,
-	arnd@arndb.de
-Cc: xiaobo55x@gmail.com,
-	ajones@ventanamicro.com,
-	Haibo Xu <haibo1.xu@intel.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Robert Moore <robert.moore@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Guo Ren <guoren@kernel.org>,
-	Greentime Hu <greentime.hu@sifive.com>,
-	Baoquan He <bhe@redhat.com>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-	Chen Jiahao <chenjiahao16@huawei.com>,
-	Jisheng Zhang <jszhang@kernel.org>,
-	James Morse <james.morse@arm.com>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	Evan Green <evan@rivosinc.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Marc Zyngier <maz@kernel.org>,
-	Tony Luck <tony.luck@intel.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Yuntao Wang <ytcoode@gmail.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-riscv@lists.infradead.org,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH v3 6/6] ACPI: NUMA: replace pr_info with pr_debug in arch_acpi_numa_init
-Date: Wed, 24 Apr 2024 13:46:26 +0800
-Message-Id: <70870d88a26f50677eb31ac72bd8c343f428e5b6.1713778236.git.haibo1.xu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1713778236.git.haibo1.xu@intel.com>
-References: <cover.1713778236.git.haibo1.xu@intel.com>
+	s=arc-20240116; t=1713937618; c=relaxed/simple;
+	bh=CF+ts3A4hUIMuGaFQFIzKuPMzImW0nVYFO6/BZ05kUs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VPmrShXjo+9l1eUhaRa660uyDg4og1mu2lyWOPM6XX2rI4Cj146TubHOTTMrZOhlm/GzvFVppD3bscvHiz2V9FWi4DNJW8EMTdgoW/j0mkCT47dGNI3EhihYaHqeGFxqLgvcL0gJ/7d9uIsibLHrb+2Zc4OhmtYOeDyCdRKAdrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=HLrEp3zX; arc=none smtp.client-ip=209.85.167.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c74a75d9adso2859896b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 22:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1713937615; x=1714542415; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oav/nBjbNQkJSHj491t5Rtmwwi8lc2zcpFduDWDdqHo=;
+        b=HLrEp3zXElsNeQq5ghg+IbasyFUOY45JCFvnv8QXVgdKv7Uw064/zhoP7EkxwZd3cB
+         3vStyImj8UcsrgCirsRHfA1KwMU02SRFfkei+kbZV4mXigck8n4yxUZIsXDV53baxfmH
+         +cxlMjHNEvDlGN/DJh2MqZU/qyucQazE5ULCU9SH9+VkH1iiuhMXbiFKJeZ8KwYnBL1Y
+         bNdWl1mNSphqNJKn7HVmCQO6AM7R4tOyoHya0iQdphoibzsej9U2w5Ej0VKLkWNVirrN
+         kJIZUCrvWi7Bb3z9Pbc8Kw7wkNoeFbgLkhdCHBWYsKpNpuC/fNQsVk7mSWdOxUDfemXx
+         tm9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713937615; x=1714542415;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oav/nBjbNQkJSHj491t5Rtmwwi8lc2zcpFduDWDdqHo=;
+        b=sg+kFPMkEYmYlSGddjufyFNrbbDxisyK9T9po0Tv7NcroBiTd3LLsjl8Np7Y7v5pZM
+         Qfkjz5pugkWdTmsuYMKOOu4glpCoj6mL+ZZ5GyT/+E/inhtQAEiVkOEz7H7ilfQnNQGj
+         kinebJVfOuJUlk3R6Xfw6o3wIRni9aK4vveRymUZnWeMSF2lMLhrXnJS2ximHIjf/wzo
+         cUhP/fi9D8G3UrM1sHCteII+JWDZNVybbF+qNF0QJkcKHfNFyqhzSpA/aLUFRwuBJU9+
+         ks2s8lxNrt3EkIz1348FYg+Tgxul1QBQtvTTH/zdi/l5Pjdfs6u4sObglYNNDO2quuDf
+         fuzg==
+X-Forwarded-Encrypted: i=1; AJvYcCXLOiwxTc6myTiO4KYnCJ0O82A5oZsfD4s3CRBlWs7GEocvi/jLd2XAT9gI3irgGwLhfkxXELfq5Sx2cIfRRGzL3jr6XrS1SCw+v/qC
+X-Gm-Message-State: AOJu0YwxCJh2Q/AS8gk/e9FkztPp9f//57KXsKdxf+9tkKIRH3ReYO5r
+	GsCVee+eS6Wr6Psm7tJn9Tqyc/MKTKH+HpzlWMfoLwM/ue7wbsQgCxdZu3dleUg=
+X-Google-Smtp-Source: AGHT+IGXNptk+olxPRJcLAW0W9h984MMeb0Lybawe6fqDXiy7gt7eKH1E3YmxBnctdni7giQ3i6BUw==
+X-Received: by 2002:a05:6808:170e:b0:3c6:6e1:b166 with SMTP id bc14-20020a056808170e00b003c606e1b166mr1792336oib.28.1713937615179;
+        Tue, 23 Apr 2024 22:46:55 -0700 (PDT)
+Received: from [10.3.132.118] ([61.213.176.6])
+        by smtp.gmail.com with ESMTPSA id j9-20020a056a00130900b006eae2d9298esm10560634pfu.194.2024.04.23.22.46.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 22:46:54 -0700 (PDT)
+Message-ID: <a2593b0a-1ddc-4f87-8b6d-68900fdcf612@bytedance.com>
+Date: Wed, 24 Apr 2024 13:46:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/5] cachefiles: add missing lock protection when polling
+To: libaokun@huaweicloud.com, netfs@lists.linux.dev
+Cc: dhowells@redhat.com, jlayton@kernel.org, jefflexu@linux.alibaba.com,
+ linux-cachefs@redhat.com, linux-erofs@lists.ozlabs.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Joseph Qi <joseph.qi@linux.alibaba.com>,
+ Gao Xiang <hsiangkao@linux.alibaba.com>, Baokun Li <libaokun1@huawei.com>
+References: <20240424033409.2735257-1-libaokun@huaweicloud.com>
+ <20240424033409.2735257-6-libaokun@huaweicloud.com>
+From: Jia Zhu <zhujia.zj@bytedance.com>
+In-Reply-To: <20240424033409.2735257-6-libaokun@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-There are lots of ACPI enabled systems that aren't NUMA and If the
-firmware didn't provide the SRAT/SLIT, then there will be a message
-"Failed to initialise from firmware" from arch_acpi_numa_init() which
-adding noise to the boot on all of those kind of systems. Replace the
-pr_info with pr_debug in arch_acpi_numa_init() to avoid it.
 
-Suggested-by: Sunil V L <sunilvl@ventanamicro.com>
-Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
----
- drivers/base/arch_numa.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
-index 5b59d133b6af..555aee3ee8e7 100644
---- a/drivers/base/arch_numa.c
-+++ b/drivers/base/arch_numa.c
-@@ -445,7 +445,7 @@ static int __init arch_acpi_numa_init(void)
- 
- 	ret = acpi_numa_init();
- 	if (ret) {
--		pr_info("Failed to initialise from firmware\n");
-+		pr_debug("Failed to initialise from firmware\n");
- 		return ret;
- 	}
- 
--- 
-2.34.1
+在 2024/4/24 11:34, libaokun@huaweicloud.com 写道:
+> From: Jingbo Xu <jefflexu@linux.alibaba.com>
+> 
+> Add missing lock protection in poll routine when iterating xarray,
+> otherwise:
+> 
+> Even with RCU read lock held, only the slot of the radix tree is
+> ensured to be pinned there, while the data structure (e.g. struct
+> cachefiles_req) stored in the slot has no such guarantee.  The poll
+> routine will iterate the radix tree and dereference cachefiles_req
+> accordingly.  Thus RCU read lock is not adequate in this case and
+> spinlock is needed here.
+> 
+> Fixes: b817e22b2e91 ("cachefiles: narrow the scope of triggering EPOLLIN events in ondemand mode")
+> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+> Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+> Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
+Thanks for catching this.
+
+Reviewed-by: Jia Zhu <zhujia.zj@bytedance.com>
+
+> ---
+>   fs/cachefiles/daemon.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/cachefiles/daemon.c b/fs/cachefiles/daemon.c
+> index 6465e2574230..73ed2323282a 100644
+> --- a/fs/cachefiles/daemon.c
+> +++ b/fs/cachefiles/daemon.c
+> @@ -365,14 +365,14 @@ static __poll_t cachefiles_daemon_poll(struct file *file,
+>   
+>   	if (cachefiles_in_ondemand_mode(cache)) {
+>   		if (!xa_empty(&cache->reqs)) {
+> -			rcu_read_lock();
+> +			xas_lock(&xas);
+>   			xas_for_each_marked(&xas, req, ULONG_MAX, CACHEFILES_REQ_NEW) {
+>   				if (!cachefiles_ondemand_is_reopening_read(req)) {
+>   					mask |= EPOLLIN;
+>   					break;
+>   				}
+>   			}
+> -			rcu_read_unlock();
+> +			xas_unlock(&xas);
+>   		}
+>   	} else {
+>   		if (test_bit(CACHEFILES_STATE_CHANGED, &cache->flags))
 
