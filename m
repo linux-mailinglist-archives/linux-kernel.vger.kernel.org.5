@@ -1,152 +1,93 @@
-Return-Path: <linux-kernel+bounces-156113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46FB88AFE18
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:00:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98B458AFE1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:01:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D28791F24053
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:00:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2328DB22340
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93BAA13FF9;
-	Wed, 24 Apr 2024 01:59:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B6M489X4"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FAA910949;
+	Wed, 24 Apr 2024 02:01:05 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D382125C1;
-	Wed, 24 Apr 2024 01:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDFE1BE58
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 02:01:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713923996; cv=none; b=JWgLNswps16+6L9Sy+aZ1dRUpa8SRE9ZpaY4+zz5FYV6W9jCXrKLxW9W2nb+hIRMXKtb6z8YMViZ2wEjhmEkq/Hjz36BBvg/dWjrz0h7445KKD2h3hMs2EGaYgRFDYcwjuNNhdvrrJhfOTmcbaiP8M1ga585zLpVxmsGz4H5bb4=
+	t=1713924065; cv=none; b=TBsrs3OmoDu3YUSTmt7uwKbafo9fYtojXH1YBRqE/LxAIuHshSJxpLIZGwnlr5QE4DAmmDsG3TuBoVWDxRKQnRE3kdM7rYPnlrgnW29U8VjZCUWfU752ec19oqSIRqNJANGip7GPsou8c6Feum3hB0lYnAakF38XkRa87XBlI6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713923996; c=relaxed/simple;
-	bh=DyNPAzKwbokZufqAtuH44GkPsBoseooq6vKYJRnGTls=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=AIP+xfrM0yDk/kwoU7C1alcEgPOXTzAMl93LkplmukV57Td4uNhfdZ64day9nkIx/KQdqi88/Q+DkSrdFrsFe/VI7aA0Y0Qdg20eff/4hNLbiPva7VUheUyJPa870dEPEu80e7G7J81WDRKG+O//uo19ocBxpKrrHRzNteMlqvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B6M489X4; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713923996; x=1745459996;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=DyNPAzKwbokZufqAtuH44GkPsBoseooq6vKYJRnGTls=;
-  b=B6M489X4xc8ftvXGGaNHg3/S0hBOuZtA4LyXnKTEGQ24Nx8dX3lGHamn
-   e6OlIRlbTCWTR9uwuDjD4KfIiDegxdAz+x+0T+1cZuzInnmdSGdWL0NlP
-   nUlF1+7Rs+u6CG13itkmqEAol5rJMfAEvwsj3nnaApagrchnQTUFzAJuC
-   Fe+eXH0RP+lS7Ftv9AWP1fW/WBLHhC4OVNB4/1E17rnkQBbqZ2smyoaDt
-   Smddm5lYOM4BbA//NJ8PR4xwMD3+x8WNalz2YT/t3x009TzbAC3CSFV3J
-   P1j5FnadgF7LALB7DOMPJ5+Tf17e5rFhUi4TkKpstuDNpAAJ78B6A9Dd3
-   w==;
-X-CSE-ConnectionGUID: DeZ+m4eiTTGjGehUYvMcBw==
-X-CSE-MsgGUID: DkpnNzSWTGyOlC7BAiNlpQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="9408467"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="9408467"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 18:59:48 -0700
-X-CSE-ConnectionGUID: xNecZULcRNyluOPYVbRgzQ==
-X-CSE-MsgGUID: 92dJW6OOSnKEeJSXPg7ZxA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24615469"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.242.48]) ([10.124.242.48])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 18:59:46 -0700
-Message-ID: <60c1bfe3-2210-4670-afa9-d4f789208650@intel.com>
-Date: Wed, 24 Apr 2024 09:59:43 +0800
+	s=arc-20240116; t=1713924065; c=relaxed/simple;
+	bh=TUP9FkX2lJl7zbsImkQch4ciYMMyBDiJtF6VqMtpXM0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=e31HwqgaVb6UhZATRDFBERXZMEOJjgMJs3KUerAQGcnS+VLzJZ6T+yoUynSewkKiu4JdyU2/+ESYV0/qyBPiaQyGu75JkXyGd+LVvmDRy3RCbhj/D3PQXag+LRR7wyRhoVMlDaqxxCl/2wG/PzlPD6OdSI1z16pwsdbDSv4lbYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36a1c2b7172so3693085ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 19:01:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713924063; x=1714528863;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ifim8rK+5Cn5AylRfbIwtbU4eq2GAjVjQaY82cuTstU=;
+        b=W1aFxu0u/RzN/j1oG2NVjgWBudZRK9OmMYBdOAST8/MdVfj5WswM7307NO6XK+F+dU
+         817eZpsA9vORwG+1+9tzRszqMcVPAV33wPQTeGr5OnOV49kVo+PMAfqMIcTPsT7EL7UG
+         BvfXRMBUFidqRhetKY7LViwr8KSu8hu41tmisR4yNenXm68966oUlYAsIe0bns2NDV+N
+         v28ZpzVDmsy8Wgh5zqCDo7B5AudEDVmnadRYq7yuQtHPSwZIz9GEWikLBRxovgeyyhpp
+         5EPQrq28bVxPjYUm/NuhsgsHEzDNvNSu5O6qFatluW+0b9Oo0Bcec5/2z9WsdCBj1xvK
+         u8jQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW4ylvMzfT+50hor5eofI5lHQsP1lWSufAWMOCRWMsYSjYYg1jVjjY6e4fNMmVkVsGuxnc9HMRtJu+HPJxDqCZC2T3eD96osrejCdxi
+X-Gm-Message-State: AOJu0Yycl5ifuK9A2auPB7WA5F3A4aizFq229+N+P1CIV9BdRo8WTVOE
+	aikAM0Mozy15eD4trK6iy/DdrYIYeCeWQ1x33aJSipmNxliL7qbGiY8RDb9xmSokKSKRS4VvhUj
+	EO9mQrdJrR+moIkc+YEevy51krtpkRnopgYWSq3JZyY3rO1ei5sPkaxY=
+X-Google-Smtp-Source: AGHT+IFb2GitKyqtyomAW5D/rDPBgckqBsgxNNOhYgMZPpoxfwrLMRBdrlj7GvDWAclxs7KfwPhmIkStqRgo4TlEKYioi51ypkQv
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/6] KVM: selftests: x86: Add test for
- KVM_PRE_FAULT_MEMORY
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
- kvm@vger.kernel.org
-Cc: isaku.yamahata@intel.com, binbin.wu@linux.intel.com, seanjc@google.com,
- rick.p.edgecombe@intel.com
-References: <20240419085927.3648704-1-pbonzini@redhat.com>
- <20240419085927.3648704-7-pbonzini@redhat.com>
- <b7d6bb0c-6ee4-4f93-a1a0-5ee6f49c0c59@intel.com>
-Content-Language: en-US
-In-Reply-To: <b7d6bb0c-6ee4-4f93-a1a0-5ee6f49c0c59@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1cac:b0:36b:1b8b:75f4 with SMTP id
+ x12-20020a056e021cac00b0036b1b8b75f4mr165809ill.2.1713924063116; Tue, 23 Apr
+ 2024 19:01:03 -0700 (PDT)
+Date: Tue, 23 Apr 2024 19:01:03 -0700
+In-Reply-To: <000000000000f1761a0616c5c629@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f450900616ce0aa5@google.com>
+Subject: Re: [syzbot] [net?] possible deadlock in __unix_gc
+From: syzbot <syzbot+fa379358c28cc87cc307@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, davem@davemloft.net, edumazet@google.com, 
+	hdanton@sina.com, horms@kernel.org, kuba@kernel.org, kuni1840@gmail.com, 
+	kuniyu@amazon.com, linux-kernel@vger.kernel.org, mhal@rbox.co, 
+	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 4/23/2024 11:18 PM, Xiaoyao Li wrote:
-> On 4/19/2024 4:59 PM, Paolo Bonzini wrote:
-> 
-> ...
-> 
->> +static void __test_pre_fault_memory(unsigned long vm_type, bool private)
->> +{
->> +    const struct vm_shape shape = {
->> +        .mode = VM_MODE_DEFAULT,
->> +        .type = vm_type,
->> +    };
->> +    struct kvm_vcpu *vcpu;
->> +    struct kvm_run *run;
->> +    struct kvm_vm *vm;
->> +    struct ucall uc;
->> +
->> +    uint64_t guest_test_phys_mem;
->> +    uint64_t guest_test_virt_mem;
->> +    uint64_t alignment, guest_page_size;
->> +
->> +    vm = vm_create_shape_with_one_vcpu(shape, &vcpu, guest_code);
->> +
->> +    alignment = guest_page_size = 
->> vm_guest_mode_params[VM_MODE_DEFAULT].page_size;
->> +    guest_test_phys_mem = (vm->max_gfn - TEST_NPAGES) * guest_page_size;
->> +#ifdef __s390x__
->> +    alignment = max(0x100000UL, guest_page_size);
->> +#else
->> +    alignment = SZ_2M;
->> +#endif
->> +    guest_test_phys_mem = align_down(guest_test_phys_mem, alignment);
->> +    guest_test_virt_mem = guest_test_phys_mem;
-> 
-> guest_test_virt_mem cannot be assigned as guest_test_phys_mem, which 
-> leads to following virt_map() fails with
+syzbot has bisected this issue to:
 
-The root cause is that vm->pa_bits is 52 while vm->va_bits is 48. So 
-vm->max_gfn is beyond the capability of va space
+commit 47d8ac011fe1c9251070e1bd64cb10b48193ec51
+Author: Michal Luczaj <mhal@rbox.co>
+Date:   Tue Apr 9 20:09:39 2024 +0000
 
-> ==== Test Assertion Failure ====
->    lib/x86_64/processor.c:197: sparsebit_is_set(vm->vpages_valid, (vaddr 
->  >> vm->page_shift))
->    pid=4773 tid=4773 errno=0 - Success
->       1    0x000000000040f55c: __virt_pg_map at processor.c:197
->       2    0x000000000040605e: virt_pg_map at kvm_util_base.h:1065
->       3     (inlined by) virt_map at kvm_util.c:1571
->       4    0x0000000000402b75: __test_pre_fault_memory at 
-> pre_fault_memory_test.c:96
->       5    0x000000000040246e: test_pre_fault_memory at 
-> pre_fault_memory_test.c:133 (discriminator 3)
->       6     (inlined by) main at pre_fault_memory_test.c:140 
-> (discriminator 3)
->       7    0x00007fcb68429d8f: ?? ??:0
->       8    0x00007fcb68429e3f: ?? ??:0
->       9    0x00000000004024e4: _start at ??:?
->    Invalid virtual address, vaddr: 0xfffffffc00000
-> 
->> +
->> +    vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
->> +                    guest_test_phys_mem, TEST_SLOT, TEST_NPAGES,
->> +                    private ? KVM_MEM_GUEST_MEMFD : 0);
->> +    virt_map(vm, guest_test_virt_mem, guest_test_phys_mem, TEST_NPAGES);
-> 
-> 
-> 
-> 
-> 
+    af_unix: Fix garbage collector racing against connect()
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13f440d3180000
+start commit:   4d2008430ce8 Merge tag 'docs-6.9-fixes2' of git://git.lwn...
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=100c40d3180000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17f440d3180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=98d5a8e00ed1044a
+dashboard link: https://syzkaller.appspot.com/bug?extid=fa379358c28cc87cc307
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a8fb4f180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ceeb73180000
+
+Reported-by: syzbot+fa379358c28cc87cc307@syzkaller.appspotmail.com
+Fixes: 47d8ac011fe1 ("af_unix: Fix garbage collector racing against connect()")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
