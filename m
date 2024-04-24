@@ -1,150 +1,158 @@
-Return-Path: <linux-kernel+bounces-156407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40DF48B0270
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:51:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9654E8B0276
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:53:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 602CF1C21B21
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:51:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53E032851EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:53:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0F115748D;
-	Wed, 24 Apr 2024 06:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eW05LZYc"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 619DC157A42;
+	Wed, 24 Apr 2024 06:53:02 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22066142E67
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:51:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBBF182AE;
+	Wed, 24 Apr 2024 06:52:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713941482; cv=none; b=ifeoi247F3JgHXjzVgpbsLp0Hw7j3+qrakJ6lfoprhUDbMjs2lvzWQWjlpkdAuUsLTjS3zVTslMTYwqaQ0DrpztWwqmMPvwta6V0KfLDCwReYzJ29gx/6FGWwS1Qke9YM/BGp32gX2hEROwhzx0jaFZPwSwEpw3iBZBfzjfPkNE=
+	t=1713941581; cv=none; b=k1kKECSxg7jMVUg8dyN2uU/k7EBvEq4w1Ut0wY+gwt/8ivH2RPUJ31YlV7i2sT+45xpE/TgDDmUNqXlw5IOP2FZhFVzGQ4ivYBHhmnI2BTOACLtuQdc9CBnvX1ghZYEJ9iYvbtizI5LkoEVH650zk2yvoYQ0Boo83nfwnwZ6Rvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713941482; c=relaxed/simple;
-	bh=e0psFuTSMLyPViM4HdYZqYy5nRfKxWhGIfCp/5rtrcs=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=rEui5PDa34pgUSWr93VNOgcpeSO91XAJi80UV/bIgLKH5c0a01WXOdRo2jUy+JpZTpugdNdGog/t7UTYzsRRgUVa/xIdXZV+TTomMemb7gOZXHCFpyVcjryaEXtFEXoc/+c3FluUcrInivaFFkTwvy9URTQOg5ukjKxX3722YIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eW05LZYc; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-34665dd7744so4965823f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713941479; x=1714546279; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5fhRPEnVPqfUJjDOhDV7MC9ZHHIfbOjexEAXqhIdO3Y=;
-        b=eW05LZYcNtldcXAVRqLPSOCj/850J1s4xwxUt2idddY7m04LOtZ5yCm8/au09rICYU
-         1x0oleFgNAg3145JQuSbAruFtqtUSYzWfBvtCHRVP3DWYf8F+BzK6Ldcqgt08nwY7TWV
-         4L+D4QI0FTHve2z3YN1aTf4DbalzcW0NC1v8gZAcJneeaKvrPHDV9B60JERXdgSyM0Yr
-         kgs+GAbpwjmv7gGbqZ3vJlUMImY7kjIJnQ0EKeFpmh4R7PC5CfJR8mcYwcZWxib7dAl0
-         w8fanhMgYOOn7GYxyxBbOpJtTXWv0YMRhtZAeNlUWJA+g2E1rasVRK2+02FGl+67fGCR
-         5Qeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713941479; x=1714546279;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=5fhRPEnVPqfUJjDOhDV7MC9ZHHIfbOjexEAXqhIdO3Y=;
-        b=cLLY3vFLq8A0l6OTw1UFz8HOXceXnO1F473HKCvXHanXwRqDnu0uMpEG3DhlLvynwQ
-         ktNpgPh/mfx5Ilb4j9qj4MC8Duv9GimqNNJyyXbkMaJZ8sR1Hx+Ft7GCQ9yPtNme/mjo
-         fa8Fx4XTkFBqc0mAwrsbSIjyyrXg5bClnkiTI4f1I+LTW5uvkILZfmENwVRf9EgKooVl
-         r1aK21xM0bfTNC6TWGcCoSAksWjjSLdJ6QovPZMtHndN84d2IrZAFzKclWxwOvPKp1R7
-         8AQLhSY30eGj+IgrfSl/0VM1NI3sa7/+iyl5Qg6D5KEv4ldgp3IliM9a0CT4v0v1IyFu
-         fu6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUTSieTwYxYRksrxHdQf2/VfwuqBEO7V4a9tbeJcL5YuClmzJWjId2/HZjbMLv6IPnyeTf56jiF9s6APJL8JhFsHiZUlkRt2o/Vg5zX
-X-Gm-Message-State: AOJu0YyGIk8Z+KN44iKfvH+QJY3IyR8dj5mLL80oVZBd4MH8YvXphqa7
-	nYZZ8Ozu/xG0Mh/2M8s83vfjSVBhIuCAtw+ytKFRBc5baDls/BOrcNFMEOy5Bxg=
-X-Google-Smtp-Source: AGHT+IER+PTkXrM2sYTgRDnw/H8j7tp/CT8JUDUe2TAwv1AXC+oqV7npD/LeU5lehsx1WtbbguW2Ag==
-X-Received: by 2002:a5d:5243:0:b0:343:ba58:97c4 with SMTP id k3-20020a5d5243000000b00343ba5897c4mr800456wrc.10.1713941479305;
-        Tue, 23 Apr 2024 23:51:19 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:ed3e:c90b:dd74:51a7? ([2a01:e0a:982:cbb0:ed3e:c90b:dd74:51a7])
-        by smtp.gmail.com with ESMTPSA id cs18-20020a056000089200b003437799a373sm16429555wrb.83.2024.04.23.23.51.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 23:51:18 -0700 (PDT)
-Message-ID: <ec748d7c-b1cb-4ab3-88e6-b624b1f086de@linaro.org>
-Date: Wed, 24 Apr 2024 08:51:17 +0200
+	s=arc-20240116; t=1713941581; c=relaxed/simple;
+	bh=zs8x+Cx0jIOBkLzuCzbdwjkkfCF5gfQheU48pxRWMQQ=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IQKr6crP9xfiH17XlhrJQXw3dgpspVwKlsoGhuz5X7/Y7VOAXkQgBOr2TAQw2bTztY/13npp41kaZpvGYqlzSHvz3CqAI3LBxR4OfHrm4Yl4eyv5/nXd3eVqJe7yFhvNkCej0p6zgwS8OKM2z6bUuSQDVE+6Oair5cHeYrT1hC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VPV3L59ztz1hwMr;
+	Wed, 24 Apr 2024 14:49:50 +0800 (CST)
+Received: from dggpeml500010.china.huawei.com (unknown [7.185.36.155])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9CD5E1A0188;
+	Wed, 24 Apr 2024 14:52:54 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpeml500010.china.huawei.com
+ (7.185.36.155) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 24 Apr
+ 2024 14:52:53 +0800
+From: Xin Liu <liuxin350@huawei.com>
+To: <alan.maguire@oracle.com>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <haoluo@google.com>, <john.fastabend@gmail.com>,
+	<jolsa@kernel.org>, <kongweibin2@huawei.com>, <kpsingh@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <liuxin350@huawei.com>,
+	<liwei883@huawei.com>, <martin.lau@linux.dev>, <sdf@google.com>,
+	<song@kernel.org>, <wuchangye@huawei.com>, <xiesongyang@huawei.com>,
+	<yanan@huawei.com>, <yhs@fb.com>, <zhangmingyi5@huawei.com>
+Subject: Re: [PATCH] libbpf: extending BTF_KIND_INIT to accommodate some unusual types
+Date: Wed, 24 Apr 2024 14:52:00 +0800
+Message-ID: <20240424065200.736080-1-liuxin350@huawei.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <a60a0842-cff9-407b-b970-316e615e22e1@oracle.com>
+References: <a60a0842-cff9-407b-b970-316e615e22e1@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] drm/panel: jdi-fhd-r63452: make use of prepare_prev_first
-To: =?UTF-8?B?QmFybmFiw6FzIEN6w6ltw6Fu?= <trabarni@gmail.com>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- y.oudjana@protonmail.com
-References: <20240423-jdi-fix-v1-1-808970662b40@gmail.com>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro
-In-Reply-To: <20240423-jdi-fix-v1-1-808970662b40@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500010.china.huawei.com (7.185.36.155)
 
-On 23/04/2024 22:54, Barnabás Czémán wrote:
-> The DSI host must be enabled for the panel to be initialized in
-> prepare(). Set the prepare_prev_first flag to guarantee this.
+On Tue, 23 Apr 2024 15:30:03 +0100 Alan Maguire <alan.maguire@oracle.com> wrote:
+> On 23/04/2024 14:15, Xin Liu wrote:
+> > On Mon, 22 Apr 2024 10:43:38 -0700 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > 
+> >> On Mon, Apr 22, 2024 at 7:46 AM Xin Liu <liuxin350@huawei.com> wrote:
+> >>>
+> >>> In btf__add_int, the size of the new btf_kind_int type is limited.
+> >>> When the size is greater than 16, btf__add_int fails to be added
+> >>> and -EINVAL is returned. This is usually effective.
+> >>>
+> >>> However, when the built-in type __builtin_aarch64_simd_xi in the
+> >>> NEON instruction is used in the code in the arm64 system, the value
+> >>> of DW_AT_byte_size is 64. This causes btf__add_int to fail to
+> >>> properly add btf information to it.
+> >>>
+> >>> like this:
+> >>>   ...
+> >>>    <1><cf>: Abbrev Number: 2 (DW_TAG_base_type)
+> >>>     <d0>   DW_AT_byte_size   : 64              // over max size 16
+> >>>     <d1>   DW_AT_encoding    : 5        (signed)
+> >>>     <d2>   DW_AT_name        : (indirect string, offset: 0x53): __builtin_aarch64_simd_xi
+> >>>    <1><d6>: Abbrev Number: 0
+> >>>   ...
+> >>>
+> >>> An easier way to solve this problem is to treat it as a base type
+> >>> and set byte_size to 64. This patch is modified along these lines.
+> >>>
+> >>> Fixes: 4a3b33f8579a ("libbpf: Add BTF writing APIs")
+> >>> Signed-off-by: Xin Liu <liuxin350@huawei.com>
+> >>> ---
+> >>>  tools/lib/bpf/btf.c | 2 +-
+> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> >>> index 2d0840ef599a..0af121293b65 100644
+> >>> --- a/tools/lib/bpf/btf.c
+> >>> +++ b/tools/lib/bpf/btf.c
+> >>> @@ -1934,7 +1934,7 @@ int btf__add_int(struct btf *btf, const char *name, size_t byte_sz, int encoding
+> >>>         if (!name || !name[0])
+> >>>                 return libbpf_err(-EINVAL);
+> >>>         /* byte_sz must be power of 2 */
+> >>> -       if (!byte_sz || (byte_sz & (byte_sz - 1)) || byte_sz > 16)
+> >>> +       if (!byte_sz || (byte_sz & (byte_sz - 1)) || byte_sz > 64)
+> >>
+> >>
+> >> maybe we should just remove byte_sz upper limit? We can probably
+> >> imagine 256-byte integers at some point, so why bother artificially
+> >> restricting it?
+> >>
+> >> pw-bot: cr
+> > 
+> > In the current definition of btf_kind_int, bits has only 8 bits, followed
+> > by 8 bits of unused interval. When we expand, we should only use 16 bits
+> > at most, so the maximum value should be 8192(1 << 16 / 8), directly removing
+> > the limit of byte_sz. It may not fit the current design. For INT type btfs
+> > greater than 255, how to dump is still a challenge.
+> > 
+> > Does the current version support a maximum of 8192 bytes?
+> > 
 > 
-> Signed-off-by: Barnabás Czémán <trabarni@gmail.com>
-> ---
->   drivers/gpu/drm/panel/panel-jdi-fhd-r63452.c | 1 +
->   1 file changed, 1 insertion(+)
+> Presuming we expanded BTF_INT_BITS() as per
 > 
-> diff --git a/drivers/gpu/drm/panel/panel-jdi-fhd-r63452.c b/drivers/gpu/drm/panel/panel-jdi-fhd-r63452.c
-> index 3e0a8e0d58a0..483dc88d16d8 100644
-> --- a/drivers/gpu/drm/panel/panel-jdi-fhd-r63452.c
-> +++ b/drivers/gpu/drm/panel/panel-jdi-fhd-r63452.c
-> @@ -247,6 +247,7 @@ static int jdi_fhd_r63452_probe(struct mipi_dsi_device *dsi)
->   
->   	drm_panel_init(&ctx->panel, dev, &jdi_fhd_r63452_panel_funcs,
->   		       DRM_MODE_CONNECTOR_DSI);
-> +	ctx->panel.prepare_prev_first = true;
->   
->   	ret = drm_panel_of_backlight(&ctx->panel);
->   	if (ret)
+> -#define BTF_INT_BITS(VAL)       ((VAL)  & 0x000000ff)
+> +#define BTF_INT_BITS(VAL)       ((VAL)  & 0x0000ffff)
 > 
-> ---
-> base-commit: a59668a9397e7245b26e9be85d23f242ff757ae8
-> change-id: 20240423-jdi-fix-986a796a3101
+> ...as you say we'd be able to represent a 65535-bit value. So if we
+> preserve the power-of-two restriction on byte sizes, we'd have to choose
+> between either having ints which
 > 
-> Best regards,
+> - have a byte_sz maximum of <= 4096 bytes, with all 32768 bits usable; or
+> - have a byte_sz maximum of <= 8192 bytes, with 65535 out of 65536 bits
+> usable
+> 
+> The first option seems more intuitive to me.
+> 
+> In terms of dumping, we could probably just dump a hex representation of
+> the relevant bytes.
+> 
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Currently, there is actually no scenario to use built-in structs in btf. 
+As Song and Andrii said, can we remove this restriction first?
+
+> >>
+> >>>                 return libbpf_err(-EINVAL);
+> >>>         if (encoding & ~(BTF_INT_SIGNED | BTF_INT_CHAR | BTF_INT_BOOL))
+> >>>                 return libbpf_err(-EINVAL);
+> >>> --
+> >>> 2.33.0
+> >>>
+> >>
+> > 
 
