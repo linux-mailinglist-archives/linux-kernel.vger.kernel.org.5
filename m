@@ -1,135 +1,131 @@
-Return-Path: <linux-kernel+bounces-157367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 322428B1096
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:03:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D5C98B109A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:04:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6AA91F21F51
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:03:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C79391F21CE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:03:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33DDF16D31E;
-	Wed, 24 Apr 2024 17:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C070816D32E;
+	Wed, 24 Apr 2024 17:03:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vbb7uZqu"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="R70mT1Aa"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BB2116C450;
-	Wed, 24 Apr 2024 17:02:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC6913C672;
+	Wed, 24 Apr 2024 17:03:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713978176; cv=none; b=W1sAl3NaUqf2VaZN5NXWGW3fDMc1bZg3LYce6yaMHf5bY/pzlI33Far0U9XGtCng0vi5zY8EFcq9nYBPmPMnyFG6fDIYghdGNerPJ7BoaC9e8PAkahutbSmzFCU9fM++Riohg0bmO1+ICbpgv2e75Hw7G9n/9OMHm/GEa5hY04s=
+	t=1713978230; cv=none; b=oeZEjEvGaqgpX42RGt1xVoyXxMzw4TG35TZcraVsca/nJTT//8mZtwPNs1u8npf/U5CXwl5JM17ybIbU8Z40EUVeVCwtmuBpuhfIc7+KicUZAhvqGr30+POwkKGUlHznsOc6lZPpX4bMu2jo63QiTvP3VF1btbuiEj9dKq++TUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713978176; c=relaxed/simple;
-	bh=sVJO/BKaSzrNDK1BuUol9EaOvF6F24rNvwFG2KMaPIo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MM0q4jlkGKwu7i4oyDREIEnR4OkBObNDBxdBzg8pfXh85Iwc9wEIBlHTiC6SqTP101myMGfLO263XPNakmOt3UPdc6STw7Qb9peyNOSXlFmPfQswm5+RWh6lsb0l2qMAcFC00szdb/SehBMWvlMn/f0Y8wzOAxabaask5A6r+GE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vbb7uZqu; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e8fce77bb2so365525ad.0;
-        Wed, 24 Apr 2024 10:02:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713978174; x=1714582974; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=d7bcMFCKOE077QNcsobA/coMeuJl5x7tICqaNKYUnZk=;
-        b=Vbb7uZqu1Twk6KCV/bMpVt20bvaa0IR915wiF+42Z0DSg7FStTz9j0xJhGcHLI8jRY
-         /lK+4NbmTZdWpqrOiweAvhCcq9y6rM9YaTCoD7kWOSADlr5O9rmKUVoH8uGmcXH909Tp
-         vXvWWjYT4o3R6yotVNs6NTCxB8kddM/M2GwfqcDfHeqX7Xe8jkQIF1jW/QZ67iTGZPqH
-         +NTcJc9vh3qmWOnvFAHSUU37o4TS5dZPThMzukCX6ppQcmCGhVSkgGMnfWx7Eo6iAFbY
-         yh43K7mMy0x3h07EzjO/DPpfYmZNxTUzHkKWkqShuJPxK8FKtY9BoVko05hUO3MERQ3+
-         W/Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713978174; x=1714582974;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d7bcMFCKOE077QNcsobA/coMeuJl5x7tICqaNKYUnZk=;
-        b=JWQr3BgPDaSoQpzE07jx756y2vwGteeI4azGaGs6JjGryGl9GXTYHdUqnbyWcxdca7
-         7rDrCwc8wk5e3Q7WF2DlIMZeMYssQniBlJ87+LLTnAKBUZVChS6cpX8lgsq3f+MYS1Sj
-         TNjDMAJXLJ12kq1TZEMtUqi3jyhde8pbUGU8idYbkTE2JHtMoELZABD/q4587TIqS/7f
-         i2kBWLZqcAYaab5FyS6Ot6BsKq1hpHbL7aaXiiZayXQ62OmLnTjI8vRtWTruP34KHhkV
-         heRuELr83nqNevmiRsPHbAD9cwLu33KLqp9hvacWBu5ZE5dBSsD0Au/yrTvBNqTzW/Sh
-         BV/A==
-X-Forwarded-Encrypted: i=1; AJvYcCXMnZ0DR2jkNZTMqxBTHjMYyYHa7SDrFHCE0bnsQD9dA387w2YI9Iz1KWkbi7cjkktGZhDo6voEikY6wkRYQxbx8Onz1n/nRb9o36N2ZKxNxB8R/AKbw/eYoo0ZvzGGf4J594PBBhjI
-X-Gm-Message-State: AOJu0YyaY3qSvxHh+KbXuj+ve/1bdW19kxJhMqe8mMeQDSUqv7JEqLhp
-	KDbDopa/wVfAVIjcAEKaYPgAWFqIh9xTb6iAhuwFaPo0c2pg5IKG
-X-Google-Smtp-Source: AGHT+IEaEHo9pgGHRcWg/itteSiVblxaDrpFI/q2gwnHa4l7jE5PauAW4U8fYv0zqQjHHQ1gHflcww==
-X-Received: by 2002:a17:903:2a8b:b0:1e2:d4da:6c72 with SMTP id lv11-20020a1709032a8b00b001e2d4da6c72mr4133171plb.0.1713978174346;
-        Wed, 24 Apr 2024 10:02:54 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e8-20020a17090301c800b001e0f5034e95sm12102466plh.288.2024.04.24.10.02.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 10:02:53 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>,
-	Gerd Hoffmann <kraxel@redhat.com>
-Subject: [PATCH] usb: ohci: Prevent missed ohci interrupts
-Date: Wed, 24 Apr 2024 10:02:50 -0700
-Message-Id: <20240424170250.3738037-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1713978230; c=relaxed/simple;
+	bh=T/ZAKPy8buCjIGF88sh6UkNXWW9YC7Q/1iCoPhwjICo=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Yew+2T5KRzpAJy+/IBdxE6D+zMq8LNRxGvFZGCnzAJodlOkigziuLdxwZNj2CHf24YXNteBkt3Zi9nC/YN7KpujC0PFzBml6LHm1V1KVnZOcKVJGUPRFbav4ECSH0lHxc1+8w5AEPaBY6300z/CaGiyj87VULHth9+idg6WMa08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=R70mT1Aa; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43OGrUX7008348;
+	Wed, 24 Apr 2024 17:03:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=aAP/A4cazOsZMHUrBbO9u
+	js3tZYwr0E6vouW1eMsocI=; b=R70mT1AaMtL/nEexBQlKHi4L1lplQNQX4WA/H
+	74cf1i2vBH3nl4uAoDbzqVeADgq7aSnocfWxMiDm2Bnzod81H3VjKHQUiTo1psb5
+	BBPzK5lXFkTla/4dbP/nWUobI4LLH6dm99v3/xP3eBks31Wm+/ce3+A/v79/yXW/
+	30uUuDq54psJHvpxWGRJDoga0Us7BExdhEtQdE/N3VcyG0JMX2bGbpEy34Z3B1zz
+	ypAx1tmpJQPEs05q01UCM8sQvDoAHdnpRSqun2b378dVHWIC2PL28WtyJRNjranV
+	lTlA6spxLdi35pbTxS7yxXTl5kxdfzNeVPkaq+xvrOYDT/tvQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9gsjrg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 17:03:44 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43OH3htw011575
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 17:03:43 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Wed, 24 Apr 2024 10:03:42 -0700
+Date: Wed, 24 Apr 2024 10:03:41 -0700
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Tengfei Fan <quic_tengfan@quicinc.com>
+CC: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <robh@kernel.org>,
+        <krzk+dt@kernel.org>, <conor+dt@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <manivannan.sadhasivam@linaro.org>,
+        <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
+Subject: Re: [PATCH 1/3] dt-bindings: cpufreq: cpufreq-qcom-hw: Add SM4450
+ compatibles
+Message-ID: <Zik7bbuDakqhXeI+@hu-bjorande-lv.qualcomm.com>
+References: <20240424101503.635364-1-quic_tengfan@quicinc.com>
+ <20240424101503.635364-2-quic_tengfan@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240424101503.635364-2-quic_tengfan@quicinc.com>
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Y8y0Oah7A-mLEHJbTSonoWgQAFD5RFOL
+X-Proofpoint-ORIG-GUID: Y8y0Oah7A-mLEHJbTSonoWgQAFD5RFOL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_14,2024-04-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 impostorscore=0 lowpriorityscore=0 clxscore=1011
+ suspectscore=0 phishscore=0 mlxscore=0 adultscore=0 mlxlogscore=973
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404240070
 
-Testing ohci functionality with qemu's pci-ohci emulation often results
-in ohci interface stalls, resulting in hung task timeouts.
+On Wed, Apr 24, 2024 at 06:15:01PM +0800, Tengfei Fan wrote:
+> Add compatible for EPSS CPUFREQ-HW on SM4450.
+> 
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
 
-The problem is caused by lost interrupts between the emulation and the
-Linux kernel code. Additional interrupts raised while the ohci interrupt
-handler in Linux is running and before the handler clears the interrupt
-status are not handled. The fix for a similar problem in ehci suggests
-that the problem is likely caused by edge-triggered MSI interrupts. See
-commit 0b60557230ad ("usb: ehci: Prevent missed ehci interrupts with
-edge-triggered MSI") for details.
+Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 
-Ensure that the ohci interrupt code handles all pending interrupts before
-returning to solve the problem.
+Regards,
+Bjorn
 
-Cc: Gerd Hoffmann <kraxel@redhat.com>
-Fixes: 306c54d0edb6 ("usb: hcd: Try MSI interrupts on PCI devices")
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/usb/host/ohci-hcd.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
-index 4f9982ecfb58..4d764eb6c1e5 100644
---- a/drivers/usb/host/ohci-hcd.c
-+++ b/drivers/usb/host/ohci-hcd.c
-@@ -888,6 +888,7 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
- 	/* Check for an all 1's result which is a typical consequence
- 	 * of dead, unclocked, or unplugged (CardBus...) devices
- 	 */
-+again:
- 	if (ints == ~(u32)0) {
- 		ohci->rh_state = OHCI_RH_HALTED;
- 		ohci_dbg (ohci, "device removed!\n");
-@@ -982,6 +983,11 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
- 	}
- 	spin_unlock(&ohci->lock);
- 
-+	/* repeat until all enabled interrupts are handled */
-+	ints = ohci_readl(ohci, &regs->intrstatus);
-+	if (ints & ohci_readl(ohci, &regs->intrenable))
-+		goto again;
-+
- 	return IRQ_HANDLED;
- }
- 
--- 
-2.39.2
-
+> ---
+>  Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
+> index 56fc71d6a081..1e9797f96410 100644
+> --- a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
+> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
+> @@ -38,6 +38,7 @@ properties:
+>                - qcom,sc7280-cpufreq-epss
+>                - qcom,sc8280xp-cpufreq-epss
+>                - qcom,sdx75-cpufreq-epss
+> +              - qcom,sm4450-cpufreq-epss
+>                - qcom,sm6375-cpufreq-epss
+>                - qcom,sm8250-cpufreq-epss
+>                - qcom,sm8350-cpufreq-epss
+> @@ -133,6 +134,7 @@ allOf:
+>                - qcom,sc8280xp-cpufreq-epss
+>                - qcom,sdm670-cpufreq-hw
+>                - qcom,sdm845-cpufreq-hw
+> +              - qcom,sm4450-cpufreq-epss
+>                - qcom,sm6115-cpufreq-hw
+>                - qcom,sm6350-cpufreq-hw
+>                - qcom,sm6375-cpufreq-epss
+> -- 
+> 2.25.1
+> 
 
