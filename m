@@ -1,109 +1,135 @@
-Return-Path: <linux-kernel+bounces-157365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D5C18B1090
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:01:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 322428B1096
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:03:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 181BD2837F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:01:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6AA91F21F51
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:03:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8780216D310;
-	Wed, 24 Apr 2024 17:01:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33DDF16D31E;
+	Wed, 24 Apr 2024 17:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iYZbtrXF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vbb7uZqu"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C560C158867;
-	Wed, 24 Apr 2024 17:01:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BB2116C450;
+	Wed, 24 Apr 2024 17:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713978098; cv=none; b=A5cUUPGCMGxSEIqtdAH35OgbS+LL6HE5sV6oGMh5EIUKc+qbC4kATsAq4GQM+WeI4Mb2VQfnIjxhSJnkDbYTCfs4jZx3ll/70Ho35tevR6/RjVDfmIbiaJeWVoiZzUuDEl8MLAsFuXREB/kb5yth+MACJPWthYa+iuZcXkDEvDA=
+	t=1713978176; cv=none; b=W1sAl3NaUqf2VaZN5NXWGW3fDMc1bZg3LYce6yaMHf5bY/pzlI33Far0U9XGtCng0vi5zY8EFcq9nYBPmPMnyFG6fDIYghdGNerPJ7BoaC9e8PAkahutbSmzFCU9fM++Riohg0bmO1+ICbpgv2e75Hw7G9n/9OMHm/GEa5hY04s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713978098; c=relaxed/simple;
-	bh=w988jo+lIUr9L/JqmZ0jDECyv0nP7HP9YfsgJRNVM+8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RIZ1ApcQ9YqUp7YEKkr9KpWD+++Lddr3Wk5p8zQHoCFw1aK3sEGqxWKkLEfK5d6GOrLHQPjv6T1piyTomf3ZkbZSADBTdqjnFKEUn+08l0Bh9qZhKZyZ/LjSBSAStdT0OiLNvPiEin6uolojCRLrAYw1heb98+4brBWK5cPdZ50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iYZbtrXF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBEA6C113CD;
-	Wed, 24 Apr 2024 17:01:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713978098;
-	bh=w988jo+lIUr9L/JqmZ0jDECyv0nP7HP9YfsgJRNVM+8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iYZbtrXFw6s2q521SVjMf/a/7XcxfIULZpFDzfe3iAg6hdL7puQMEyCQxbUScImLR
-	 I552oFPpodbHQ9brM1Dvq/w5WKI6m2pmXFO51XpHq/E7l4r8pro/VDnClsbSH1JePU
-	 dAxYjVgvpwdlDlMHpqk2niS4YOvRvukk7KRgdzD9O2Ypu0WDhGXNAD0zA2mmhmpo+Z
-	 yHMNt967CpBPmsoAaSGO2wG8TfZ/0u+I4AgCRC63k+8ay/VbT2JOYoUB3JxzFxNaop
-	 siVcEN+TaWsmOR4nyqgcr6bRMFOweTxI5BcdXSycrepUrQ9egYvnANKNBSWQNzmCPs
-	 9aLABcyhAHEGw==
-Date: Wed, 24 Apr 2024 19:01:32 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Cc: amir73il@gmail.com, hu1.chen@intel.com, miklos@szeredi.hu, 
-	malini.bhandaru@intel.com, tim.c.chen@intel.com, mikko.ylinen@intel.com, 
-	lizhen.you@intel.com, linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/3] overlayfs: Optimize override/revert creds
-Message-ID: <20240424-befund-unantastbar-9b0154bec6e7@brauner>
-References: <20240403021808.309900-1-vinicius.gomes@intel.com>
+	s=arc-20240116; t=1713978176; c=relaxed/simple;
+	bh=sVJO/BKaSzrNDK1BuUol9EaOvF6F24rNvwFG2KMaPIo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MM0q4jlkGKwu7i4oyDREIEnR4OkBObNDBxdBzg8pfXh85Iwc9wEIBlHTiC6SqTP101myMGfLO263XPNakmOt3UPdc6STw7Qb9peyNOSXlFmPfQswm5+RWh6lsb0l2qMAcFC00szdb/SehBMWvlMn/f0Y8wzOAxabaask5A6r+GE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vbb7uZqu; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e8fce77bb2so365525ad.0;
+        Wed, 24 Apr 2024 10:02:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713978174; x=1714582974; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=d7bcMFCKOE077QNcsobA/coMeuJl5x7tICqaNKYUnZk=;
+        b=Vbb7uZqu1Twk6KCV/bMpVt20bvaa0IR915wiF+42Z0DSg7FStTz9j0xJhGcHLI8jRY
+         /lK+4NbmTZdWpqrOiweAvhCcq9y6rM9YaTCoD7kWOSADlr5O9rmKUVoH8uGmcXH909Tp
+         vXvWWjYT4o3R6yotVNs6NTCxB8kddM/M2GwfqcDfHeqX7Xe8jkQIF1jW/QZ67iTGZPqH
+         +NTcJc9vh3qmWOnvFAHSUU37o4TS5dZPThMzukCX6ppQcmCGhVSkgGMnfWx7Eo6iAFbY
+         yh43K7mMy0x3h07EzjO/DPpfYmZNxTUzHkKWkqShuJPxK8FKtY9BoVko05hUO3MERQ3+
+         W/Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713978174; x=1714582974;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d7bcMFCKOE077QNcsobA/coMeuJl5x7tICqaNKYUnZk=;
+        b=JWQr3BgPDaSoQpzE07jx756y2vwGteeI4azGaGs6JjGryGl9GXTYHdUqnbyWcxdca7
+         7rDrCwc8wk5e3Q7WF2DlIMZeMYssQniBlJ87+LLTnAKBUZVChS6cpX8lgsq3f+MYS1Sj
+         TNjDMAJXLJ12kq1TZEMtUqi3jyhde8pbUGU8idYbkTE2JHtMoELZABD/q4587TIqS/7f
+         i2kBWLZqcAYaab5FyS6Ot6BsKq1hpHbL7aaXiiZayXQ62OmLnTjI8vRtWTruP34KHhkV
+         heRuELr83nqNevmiRsPHbAD9cwLu33KLqp9hvacWBu5ZE5dBSsD0Au/yrTvBNqTzW/Sh
+         BV/A==
+X-Forwarded-Encrypted: i=1; AJvYcCXMnZ0DR2jkNZTMqxBTHjMYyYHa7SDrFHCE0bnsQD9dA387w2YI9Iz1KWkbi7cjkktGZhDo6voEikY6wkRYQxbx8Onz1n/nRb9o36N2ZKxNxB8R/AKbw/eYoo0ZvzGGf4J594PBBhjI
+X-Gm-Message-State: AOJu0YyaY3qSvxHh+KbXuj+ve/1bdW19kxJhMqe8mMeQDSUqv7JEqLhp
+	KDbDopa/wVfAVIjcAEKaYPgAWFqIh9xTb6iAhuwFaPo0c2pg5IKG
+X-Google-Smtp-Source: AGHT+IEaEHo9pgGHRcWg/itteSiVblxaDrpFI/q2gwnHa4l7jE5PauAW4U8fYv0zqQjHHQ1gHflcww==
+X-Received: by 2002:a17:903:2a8b:b0:1e2:d4da:6c72 with SMTP id lv11-20020a1709032a8b00b001e2d4da6c72mr4133171plb.0.1713978174346;
+        Wed, 24 Apr 2024 10:02:54 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e8-20020a17090301c800b001e0f5034e95sm12102466plh.288.2024.04.24.10.02.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 10:02:53 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Guenter Roeck <linux@roeck-us.net>,
+	Gerd Hoffmann <kraxel@redhat.com>
+Subject: [PATCH] usb: ohci: Prevent missed ohci interrupts
+Date: Wed, 24 Apr 2024 10:02:50 -0700
+Message-Id: <20240424170250.3738037-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240403021808.309900-1-vinicius.gomes@intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 02, 2024 at 07:18:05PM -0700, Vinicius Costa Gomes wrote:
-> Hi,
-> 
-> Changes from RFC v3:
->  - Removed the warning "fixes" patches, as they could hide potencial
->    bugs (Christian Brauner);
->  - Added "cred-specific" macros (Christian Brauner), from my side,
->    added a few '_' to the guards to signify that the newly introduced
->    helper macros are preferred.
->  - Changed a few guard() to scoped_guard() to fix the clang (17.0.6)
->    compilation error about 'goto' bypassing variable initialization;
-> 
-> Link to RFC v3:
-> 
-> https://lore.kernel.org/r/20240216051640.197378-1-vinicius.gomes@intel.com/
-> 
-> Changes from RFC v2:
->  - Added separate patches for the warnings for the discarded const
->    when using the cleanup macros: one for DEFINE_GUARD() and one for
->    DEFINE_LOCK_GUARD_1() (I am uncertain if it's better to squash them
->    together);
->  - Reordered the series so the backing file patch is the first user of
->    the introduced helpers (Amir Goldstein);
->  - Change the definition of the cleanup "class" from a GUARD to a
->    LOCK_GUARD_1, which defines an implicit container, that allows us
->    to remove some variable declarations to store the overriden
->    credentials (Amir Goldstein);
->  - Replaced most of the uses of scoped_guard() with guard(), to reduce
->    the code churn, the remaining ones I wasn't sure if I was changing
->    the behavior: either they were nested (overrides "inside"
->    overrides) or something calls current_cred() (Amir Goldstein).
-> 
-> New questions:
->  - The backing file callbacks are now called with the "light"
->    overriden credentials, so they are kind of restricted in what they
->    can do with their credentials, is this acceptable in general?
+Testing ohci functionality with qemu's pci-ohci emulation often results
+in ohci interface stalls, resulting in hung task timeouts.
 
-Until we grow additional users, I think yes. Just needs to be
-documented.
+The problem is caused by lost interrupts between the emulation and the
+Linux kernel code. Additional interrupts raised while the ohci interrupt
+handler in Linux is running and before the handler clears the interrupt
+status are not handled. The fix for a similar problem in ehci suggests
+that the problem is likely caused by edge-triggered MSI interrupts. See
+commit 0b60557230ad ("usb: ehci: Prevent missed ehci interrupts with
+edge-triggered MSI") for details.
 
->  - in ovl_rename() I had to manually call the "light" the overrides,
->    both using the guard() macro or using the non-light version causes
->    the workload to crash the kernel. I still have to investigate why
->    this is happening. Hints are appreciated.
+Ensure that the ohci interrupt code handles all pending interrupts before
+returning to solve the problem.
 
-Do you have a reproducer? Do you have a splat from dmesg?
+Cc: Gerd Hoffmann <kraxel@redhat.com>
+Fixes: 306c54d0edb6 ("usb: hcd: Try MSI interrupts on PCI devices")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/usb/host/ohci-hcd.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
+index 4f9982ecfb58..4d764eb6c1e5 100644
+--- a/drivers/usb/host/ohci-hcd.c
++++ b/drivers/usb/host/ohci-hcd.c
+@@ -888,6 +888,7 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
+ 	/* Check for an all 1's result which is a typical consequence
+ 	 * of dead, unclocked, or unplugged (CardBus...) devices
+ 	 */
++again:
+ 	if (ints == ~(u32)0) {
+ 		ohci->rh_state = OHCI_RH_HALTED;
+ 		ohci_dbg (ohci, "device removed!\n");
+@@ -982,6 +983,11 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
+ 	}
+ 	spin_unlock(&ohci->lock);
+ 
++	/* repeat until all enabled interrupts are handled */
++	ints = ohci_readl(ohci, &regs->intrstatus);
++	if (ints & ohci_readl(ohci, &regs->intrenable))
++		goto again;
++
+ 	return IRQ_HANDLED;
+ }
+ 
+-- 
+2.39.2
+
 
