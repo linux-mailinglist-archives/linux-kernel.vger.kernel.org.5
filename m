@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-157016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 498248B0B94
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:54:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 228C58B0B9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:55:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05A4128506F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:54:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 978441F22545
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:55:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FE7B15E5B0;
-	Wed, 24 Apr 2024 13:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ADDC15ECDE;
+	Wed, 24 Apr 2024 13:54:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PtFH6AJ/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UBEzUrLY"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8419415E1F3
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:54:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC2FC15E7EE
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:54:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713966878; cv=none; b=Ue8vPUspBCUH9ViE1XD62JJm7+v3dWMQ9aH3iR6iLo+WrbvSRSMfuGN288MGa/otjegtaRbE6C6vde5JthRNck1DZXtd6jWZoRKHsgVer+RZUjAWORsNWMCxVgrXdBKxRgZ++f2D6SDeh/exhbkZAELkfZYLkpra7lel3NYrukc=
+	t=1713966882; cv=none; b=L4E0AWzk6af/PmLDHPrZqf5QDXa2ob4iFwXqKVN4fQBXYYVQ+yer0/6YiM/HemBSnU7i+s0p3d+xsc5MdTlkjKW6lQomHam+f/5RwSKInHF0/Ay+zlPucqX+iiKSgY0QZpsWuEylprd0pRTuL9a2HKVcbybynPMCwltYW+zFlCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713966878; c=relaxed/simple;
-	bh=aaAS8vV4wb9QvjU6bclPinSt2ufTufAeAaQH7gzZLTM=;
+	s=arc-20240116; t=1713966882; c=relaxed/simple;
+	bh=gxTGezLHWXY8b7sIhgnJbShbHkUHWXR6geF6I6OEDao=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O2vGnqXRKM1A60QnrunAZ4cyQ+DWHc0mYw/d56fRSbqKT5ES2bSGRLVeP75ZxYzbcPt5d8s7VoSChDV5k0e8rV7q65yqcSCBCX5VS9a8XvQ3M42lbCzOxo/hxioZ907j/RHembHur7VAQemxd1R9d9g0Ka3ebbySksYzyJZVcT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PtFH6AJ/; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=Qpr3Cm07VbxBIViC/UXZTUGqROv7hr/0daoaP0upqUf1SBkZhLhAIxNxLuDxi2VwAvIjJGhu63RWtfAeIY6QoN/3EZ98JOZ+KZrwhpfvG6aAEvfrJD5b19WnwhPkdBBnmY36IySFjVFzcFB1EY5kX2+M7ruDpBd3iR1VplbvbtA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UBEzUrLY; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713966876;
+	s=mimecast20190719; t=1713966880;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rmUaRXIMcsJ+dXovFl57XFZEcsYZXt5cyjvVIml/sc4=;
-	b=PtFH6AJ/f6c6RSnBZ0ZxWLh2y+ElHbYC9CeKwROKX5qo532060+gxEnpWOuyFl4sLb0zD3
-	0/DXPgYctlWzyeo/Jx77MrjZrZv/ZSQpcuBeupdxTbt33oh3jqka7QnZAStSgZenPSdQgX
-	x84sciqXq9ffgfYWGD/HygCwqnojBoU=
+	bh=mvfMKL+8UkJyc+6NdO80ILmMaNmzG0sr9rlaAL4MQIg=;
+	b=UBEzUrLYP1KsCFrnT3zjqKBcErNlcII2ybg9kYZuWE1D9WXCpPYP6nMDljzrqdhSvAkgZL
+	xPx76MNATkXz6G5gUG2WPzZbtZht3pWXUeqmIBATJVnc6MH7HZNHQAuQ3WQKecb2mD/SlV
+	HsS18hsDTFvssmfqdBxqDW1L43ugV2o=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-208-HJzfv7WJMfWcK7JLXcIesg-1; Wed,
- 24 Apr 2024 09:54:33 -0400
-X-MC-Unique: HJzfv7WJMfWcK7JLXcIesg-1
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-651-tSYvXOl7N2OL-BBPH0PrrQ-1; Wed,
+ 24 Apr 2024 09:54:35 -0400
+X-MC-Unique: tSYvXOl7N2OL-BBPH0PrrQ-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A4DDD299E740;
-	Wed, 24 Apr 2024 13:54:32 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 148D73C0252B;
+	Wed, 24 Apr 2024 13:54:35 +0000 (UTC)
 Received: from antares.redhat.com (unknown [10.39.193.98])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 218A91C0654B;
-	Wed, 24 Apr 2024 13:54:29 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 3B8881C0F120;
+	Wed, 24 Apr 2024 13:54:33 +0000 (UTC)
 From: Adrian Moreno <amorenoz@redhat.com>
 To: netdev@vger.kernel.org
 Cc: aconole@redhat.com,
@@ -61,19 +61,15 @@ Cc: aconole@redhat.com,
 	horms@kernel.org,
 	i.maximets@ovn.org,
 	Adrian Moreno <amorenoz@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+	Yotam Gigi <yotam.gi@gmail.com>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Jacob Keller <jacob.e.keller@intel.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/8] net: netlink: export genl private pointer getters
-Date: Wed, 24 Apr 2024 15:50:48 +0200
-Message-ID: <20240424135109.3524355-2-amorenoz@redhat.com>
+Subject: [PATCH net-next 2/8] net: psample: add multicast filtering on group_id
+Date: Wed, 24 Apr 2024 15:50:49 +0200
+Message-ID: <20240424135109.3524355-3-amorenoz@redhat.com>
 In-Reply-To: <20240424135109.3524355-1-amorenoz@redhat.com>
 References: <20240424135109.3524355-1-amorenoz@redhat.com>
 Precedence: bulk
@@ -85,36 +81,194 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-Both "__genl_sk_priv_get" and "genl_sk_priv_get" are useful functions to
-handle private pointers attached to genetlink sockets.
-Export them so they can be used in modules.
+Packet samples can come from several places (e.g: different tc sample
+actions), typically using the sample group (PSAMPLE_ATTR_SAMPLE_GROUP)
+to differentiate them.
 
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+Likewise, sample consumers that listen on the multicast group may only
+be interested on a single group. However, they are currently forced to
+receive all samples and discard the ones that are not relevant, causing
+unnecessary overhead.
+
+Allow users to filter on the desired group_id by adding a new command
+PSAMPLE_SET_FILTER that can be used to pass the desired group id.
+Store this filter on the per-socket private pointer and use it for
+filtering multicasted samples.
+
 Signed-off-by: Adrian Moreno <amorenoz@redhat.com>
 ---
- net/netlink/genetlink.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/uapi/linux/psample.h |   1 +
+ net/psample/psample.c        | 110 +++++++++++++++++++++++++++++++++--
+ 2 files changed, 105 insertions(+), 6 deletions(-)
 
-diff --git a/net/netlink/genetlink.c b/net/netlink/genetlink.c
-index feb54c63a116..beafa415a9f5 100644
---- a/net/netlink/genetlink.c
-+++ b/net/netlink/genetlink.c
-@@ -726,6 +726,7 @@ void *__genl_sk_priv_get(struct genl_family *family, struct sock *sk)
- 		return ERR_PTR(-EINVAL);
- 	return xa_load(family->sock_privs, (unsigned long) sk);
- }
-+EXPORT_SYMBOL(__genl_sk_priv_get);
+diff --git a/include/uapi/linux/psample.h b/include/uapi/linux/psample.h
+index e585db5bf2d2..9d62983af0a4 100644
+--- a/include/uapi/linux/psample.h
++++ b/include/uapi/linux/psample.h
+@@ -28,6 +28,7 @@ enum psample_command {
+ 	PSAMPLE_CMD_GET_GROUP,
+ 	PSAMPLE_CMD_NEW_GROUP,
+ 	PSAMPLE_CMD_DEL_GROUP,
++	PSAMPLE_CMD_SET_FILTER,
+ };
  
- /**
-  * genl_sk_priv_get - Get family private pointer for socket
-@@ -764,6 +765,7 @@ void *genl_sk_priv_get(struct genl_family *family, struct sock *sk)
- 	}
- 	return priv;
+ enum psample_tunnel_key_attr {
+diff --git a/net/psample/psample.c b/net/psample/psample.c
+index a5d9b8446f77..f5f77515b969 100644
+--- a/net/psample/psample.c
++++ b/net/psample/psample.c
+@@ -98,13 +98,77 @@ static int psample_nl_cmd_get_group_dumpit(struct sk_buff *msg,
+ 	return msg->len;
  }
-+EXPORT_SYMBOL(genl_sk_priv_get);
  
- /**
-  * genl_register_family - register a generic netlink family
+-static const struct genl_small_ops psample_nl_ops[] = {
++struct psample_obj_desc {
++	struct rcu_head rcu;
++	u32 group_num;
++};
++
++struct psample_nl_sock_priv {
++	struct psample_obj_desc __rcu *filter;
++	spinlock_t filter_lock; /* Protects filter. */
++};
++
++static void psample_nl_sock_priv_init(void *priv)
++{
++	struct psample_nl_sock_priv *sk_priv = priv;
++
++	spin_lock_init(&sk_priv->filter_lock);
++}
++
++static void psample_nl_sock_priv_destroy(void *priv)
++{
++	struct psample_nl_sock_priv *sk_priv = priv;
++	struct psample_obj_desc *filter;
++
++	filter = rcu_dereference_protected(sk_priv->filter, true);
++	kfree_rcu(filter, rcu);
++}
++
++static int psample_nl_set_filter_doit(struct sk_buff *skb,
++				      struct genl_info *info)
++{
++	struct psample_obj_desc *filter = NULL;
++	struct psample_nl_sock_priv *sk_priv;
++	struct nlattr **attrs = info->attrs;
++
++	if (attrs[PSAMPLE_ATTR_SAMPLE_GROUP]) {
++		filter = kzalloc(sizeof(*filter), GFP_KERNEL);
++		filter->group_num =
++			nla_get_u32(attrs[PSAMPLE_ATTR_SAMPLE_GROUP]);
++	}
++
++	sk_priv = genl_sk_priv_get(&psample_nl_family, NETLINK_CB(skb).sk);
++	if (IS_ERR(sk_priv)) {
++		kfree(filter);
++		return PTR_ERR(sk_priv);
++	}
++
++	spin_lock(&sk_priv->filter_lock);
++	filter = rcu_replace_pointer(sk_priv->filter, filter,
++				     lockdep_is_held(&sk_priv->filter_lock));
++	spin_unlock(&sk_priv->filter_lock);
++	kfree_rcu(filter, rcu);
++	return 0;
++}
++
++static const struct nla_policy
++psample_set_filter_policy[PSAMPLE_ATTR_SAMPLE_GROUP + 1] = {
++	[PSAMPLE_ATTR_SAMPLE_GROUP] = { .type = NLA_U32, },
++};
++
++static const struct genl_ops psample_nl_ops[] = {
+ 	{
+ 		.cmd = PSAMPLE_CMD_GET_GROUP,
+ 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
+ 		.dumpit = psample_nl_cmd_get_group_dumpit,
+ 		/* can be retrieved by unprivileged users */
+-	}
++	},
++	{
++		.cmd		= PSAMPLE_CMD_SET_FILTER,
++		.doit		= psample_nl_set_filter_doit,
++		.policy		= psample_set_filter_policy,
++		.flags		= 0,
++	},
+ };
+ 
+ static struct genl_family psample_nl_family __ro_after_init = {
+@@ -114,10 +178,13 @@ static struct genl_family psample_nl_family __ro_after_init = {
+ 	.netnsok	= true,
+ 	.module		= THIS_MODULE,
+ 	.mcgrps		= psample_nl_mcgrps,
+-	.small_ops	= psample_nl_ops,
+-	.n_small_ops	= ARRAY_SIZE(psample_nl_ops),
++	.ops		= psample_nl_ops,
++	.n_ops		= ARRAY_SIZE(psample_nl_ops),
+ 	.resv_start_op	= PSAMPLE_CMD_GET_GROUP + 1,
+ 	.n_mcgrps	= ARRAY_SIZE(psample_nl_mcgrps),
++	.sock_priv_size		= sizeof(struct psample_nl_sock_priv),
++	.sock_priv_init		= psample_nl_sock_priv_init,
++	.sock_priv_destroy	= psample_nl_sock_priv_destroy,
+ };
+ 
+ static void psample_group_notify(struct psample_group *group,
+@@ -360,6 +427,32 @@ static int psample_tunnel_meta_len(struct ip_tunnel_info *tun_info)
+ }
+ #endif
+ 
++static inline void psample_nl_obj_desc_init(struct psample_obj_desc *desc,
++					    u32 group_num)
++{
++	memset(desc, 0, sizeof(*desc));
++	desc->group_num = group_num;
++}
++
++static int psample_nl_sample_filter(struct sock *dsk, struct sk_buff *skb,
++				    void *data)
++{
++	struct psample_obj_desc *desc = data;
++	struct psample_nl_sock_priv *sk_priv;
++	struct psample_obj_desc *filter;
++	int ret = 0;
++
++	rcu_read_lock();
++	sk_priv = __genl_sk_priv_get(&psample_nl_family, dsk);
++	if (!IS_ERR_OR_NULL(sk_priv)) {
++		filter = rcu_dereference(sk_priv->filter);
++		if (filter && desc)
++			ret = (filter->group_num != desc->group_num);
++	}
++	rcu_read_unlock();
++	return ret;
++}
++
+ void psample_sample_packet(struct psample_group *group, struct sk_buff *skb,
+ 			   u32 sample_rate, const struct psample_metadata *md)
+ {
+@@ -370,6 +463,7 @@ void psample_sample_packet(struct psample_group *group, struct sk_buff *skb,
+ #ifdef CONFIG_INET
+ 	struct ip_tunnel_info *tun_info;
+ #endif
++	struct psample_obj_desc desc;
+ 	struct sk_buff *nl_skb;
+ 	int data_len;
+ 	int meta_len;
+@@ -487,8 +581,12 @@ void psample_sample_packet(struct psample_group *group, struct sk_buff *skb,
+ #endif
+ 
+ 	genlmsg_end(nl_skb, data);
+-	genlmsg_multicast_netns(&psample_nl_family, group->net, nl_skb, 0,
+-				PSAMPLE_NL_MCGRP_SAMPLE, GFP_ATOMIC);
++	psample_nl_obj_desc_init(&desc, group->group_num);
++	genlmsg_multicast_netns_filtered(&psample_nl_family,
++					 group->net, nl_skb, 0,
++					 PSAMPLE_NL_MCGRP_SAMPLE,
++					 GFP_ATOMIC, psample_nl_sample_filter,
++					 &desc);
+ 
+ 	return;
+ error:
 -- 
 2.44.0
 
