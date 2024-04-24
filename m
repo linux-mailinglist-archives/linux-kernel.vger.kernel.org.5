@@ -1,153 +1,97 @@
-Return-Path: <linux-kernel+bounces-156760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B5CB8B07CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:56:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 620888B07D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:57:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3881F286EF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:56:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A273AB22870
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBDED159914;
-	Wed, 24 Apr 2024 10:56:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E5E15991A;
+	Wed, 24 Apr 2024 10:57:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PN2VIcZa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="aHWX6URs"
+Received: from forward500c.mail.yandex.net (forward500c.mail.yandex.net [178.154.239.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 262591598EA;
-	Wed, 24 Apr 2024 10:56:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F36142E62;
+	Wed, 24 Apr 2024 10:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713956201; cv=none; b=qodBm91Tfr3qZWEehP+Lwooe5U+mNZT9cmKsB1ui/f2HOMeAuU9r0iZXRijUBY0aCenBuZBQ4q7CLCDM4I93xS/gWR+AJlc0MCpQtQDS2JnvhbO2VfQqKlwD15llqhLLZLeABOFLZ3wgaZgYnpnPso8VEuVE5Vwjl3O5bVR9BK4=
+	t=1713956241; cv=none; b=m3radUQssZGcZR3ioTjb1MQskSDnel+GHE0d7ZNCmBwBFiUhwT8oxhPwSUJWeWcsvFFJU8Uwa4ZnM1oo4MKN/yzpz5cOaM0FLXgAP+tZ6waH4mazfc+TGLwwX74bwAxx3ZrZR7rTpUR+zXf5Y4Ky4jOU4oL+R3oOyEHm442+rGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713956201; c=relaxed/simple;
-	bh=VlCUYJjJMdo3gKgoD+v70kTIJeDoxTMF1EJ27Rbviz8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mXJYjmpCRCWuapQPbFCS8XBFQZLjZHVwt0PUJYou5TWSDa/ivow5pGpjHpe4PP/Sf+c82Qx9KI33d7nzsnsaseOBS+pajFxjvV1fH3Sf36URQnqSMxtlXcnWxw6FhrPQeP14un6IP4lTZOMP6eCYOOzBIrITjsN4AD1YzqkBnxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PN2VIcZa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3999C113CE;
-	Wed, 24 Apr 2024 10:56:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713956201;
-	bh=VlCUYJjJMdo3gKgoD+v70kTIJeDoxTMF1EJ27Rbviz8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PN2VIcZaLKC7POnmPWKv/9Dg7rlkUALbhBAqV6Ud2rVxTNG4y7aqR2/9zw6l90Wzd
-	 B7y4YYxIjtEQD8LEHVSRwpQG6pCLsX2F2PVFa2RD4OkwUT/0zpeJqdfNk2LzjgQLSO
-	 C5/RXeNSdIvYyps+F/5mhZs2fnYKV6QidjRJKq/gkXP/9Sdu2qYBAc0jSJ7fgQt2O0
-	 xKMN4AEx7gLlg3wdzVNhLYhfSIDR7+eNBVZ3EhoXdKjg99jaiAMHxml14Be7P73I/m
-	 ZBt7bJtlDUaN29PFj+UhAI5vDel/ufQDjXvddyuPmynMrYpCo4mQOgjzITp9Vav2Sd
-	 rmt5enLCOR0WA==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rzaIp-0000000035o-3MJZ;
-	Wed, 24 Apr 2024 12:56:39 +0200
-Date: Wed, 24 Apr 2024 12:56:39 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Doug Anderson <dianders@chromium.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>, Jiri Kosina <jikos@kernel.org>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH 4/6] HID: i2c-hid: elan: fix reset suspend current leakage
-Message-ID: <ZijlZw6zm4R9ULBU@hovoldconsulting.com>
-References: <20240423134611.31979-1-johan+linaro@kernel.org>
- <20240423134611.31979-5-johan+linaro@kernel.org>
- <CAD=FV=XP8aCjwE3LfgMy4oBL4xftFg5NkgUFso__54zNp_ZWiA@mail.gmail.com>
+	s=arc-20240116; t=1713956241; c=relaxed/simple;
+	bh=Tpknc1WS+aLV5Cxqz1NO1ZCEXDAP8+u3fI3aOx5+9VQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=prOgcCI7V8+pmHHPV8uSXS3xtPuDCGE7HoHuPsdez3rzBZQ/1FL5CriJMIMPnML/XIsJ1KBAUST8S1F5NUShkCfAmZ/L/K6VbTGTYZxuqeMRrKZqQLMepzEv40/o+pqY8fts4j0fTmU6bhPL8J0JbZSKXW8F3PSmMLbsuyhvQcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=aHWX6URs; arc=none smtp.client-ip=178.154.239.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+Received: from mail-nwsmtp-smtp-production-main-24.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-24.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:9309:0:640:3b75:0])
+	by forward500c.mail.yandex.net (Yandex) with ESMTPS id 4E59861636;
+	Wed, 24 Apr 2024 13:57:11 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-24.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 9vIYOJTo7Gk0-0xNd6Gyy;
+	Wed, 24 Apr 2024 13:57:10 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1713956230; bh=PW4InI6RvH6mgnnXE9HYRckmIzWlFOBQopwKxQoJMTc=;
+	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
+	b=aHWX6URsvGY9GfJ08EiIqvHVi0dly45Vh5O6Q+ZOTyxDfkNc5ORaPf7IaobMkzrAA
+	 9Jo0iXVHVbmgUE3c513+Yo49C2x1HtTc9YXT7ecCU5H9oteq2GRdB7+YIxGthm5272
+	 MM42/0p13z6yHj5CShN+ssTAVQMbebEA1M7iaQgI=
+Authentication-Results: mail-nwsmtp-smtp-production-main-24.iva.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+Message-ID: <0e2e48be-86a8-418c-95b1-e8ca17469198@yandex.ru>
+Date: Wed, 24 Apr 2024 13:57:09 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] implement OA2_INHERIT_CRED flag for openat2()
+Content-Language: en-US
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
+ Eric Biederman <ebiederm@xmission.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
+ Alexander Aring <alex.aring@gmail.com>, linux-fsdevel@vger.kernel.org,
+ linux-api@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+ =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+References: <20240423110148.13114-1-stsp2@yandex.ru>
+ <4D2A1543-273F-417F-921B-E9F994FBF2E8@amacapital.net>
+From: stsp <stsp2@yandex.ru>
+In-Reply-To: <4D2A1543-273F-417F-921B-E9F994FBF2E8@amacapital.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=XP8aCjwE3LfgMy4oBL4xftFg5NkgUFso__54zNp_ZWiA@mail.gmail.com>
 
-On Tue, Apr 23, 2024 at 01:37:14PM -0700, Doug Anderson wrote:
-> On Tue, Apr 23, 2024 at 6:46 AM Johan Hovold <johan+linaro@kernel.org> wrote:
+23.04.2024 19:44, Andy Lutomirski пишет:
+>> On Apr 23, 2024, at 4:02 AM, Stas Sergeev <stsp2@yandex.ru> wrote:
+>>
+>> ﻿This patch-set implements the OA2_INHERIT_CRED flag for openat2() syscall.
+>> It is needed to perform an open operation with the creds that were in
+>> effect when the dir_fd was opened. This allows the process to pre-open
+>> some dirs and switch eUID (and other UIDs/GIDs) to the less-privileged
+>> user, while still retaining the possibility to open/create files within
+>> the pre-opened directory set.
+> I like the concept, as it’s a sort of move toward a capability system. But I think that making a dirfd into this sort of capability would need to be much more explicit. Right now, any program could do this entirely by accident, and applying OA2_INHERIT_CRED to an fd fished out of /proc seems hazardous.
 
-> > @@ -87,12 +104,14 @@ static int i2c_hid_of_elan_probe(struct i2c_client *client)
-> >         ihid_elan->ops.power_up = elan_i2c_hid_power_up;
-> >         ihid_elan->ops.power_down = elan_i2c_hid_power_down;
-> >
-> > -       /* Start out with reset asserted */
-> > -       ihid_elan->reset_gpio =
-> > -               devm_gpiod_get_optional(&client->dev, "reset", GPIOD_OUT_HIGH);
-> > +       ihid_elan->reset_gpio = devm_gpiod_get_optional(&client->dev, "reset",
-> > +                                                       GPIOD_ASIS);
-> 
-> I'm not a huge fan of this part of the change. It feels like the GPIO
-> state should be initialized by the probe function. Right before we
-> call i2c_hid_core_probe() we should be in the state of "powered off"
-> and the reset line should be in a consistent state. If
-> "no_reset_on_power_off" then it should be de-asserted. Else it should
-> be asserted.
+While I still don't quite understand
+the threat of /proc symlinks, I posted
+v4 which disallows them.
 
-First, the reset gpio will be set before probe() returns, just not
-immediately when it is requested.
+> So perhaps if an open file description for a directory could have something like FMODE_CRED, and if OA2_INHERIT_CRED also blocked .., magic links, symlinks to anywhere above the dirfd (or maybe all symlinks) and absolute path lookups, then this would be okay.
 
-[ Sure, your panel follower implementation may defer the actual probe of
-the touchscreen even further but I think that's a design flaw in the
-current implementation. ]
+So I think this all is now done.
 
-Second, the device is not necessarily in the "powered off" state as the
-driver leaves the power supplies in whatever state that the boot
-firmware left them in.
+> Also, there are lots of ways that f_cred could be relevant: fsuid/fsgid, effective capabilities and security labels. And it gets more complex if this ever gets extended to support connecting or sending to a socket or if someone opens a device node.  Does CAP_SYS_ADMIN carry over?
+Not any more, nothin is carried but
+fsuid, fsgid, groupinfo.
 
-Not immediately asserting reset and instead leaving it in the state that
-the boot firmware left it in is also no different from what happens when
-a probe function bails out before requesting the reset line.
-
-> I think GPIOD_ASIS doesn't actually do anything useful for you, right?
-> i2c_hid_core_probe() will power on and the first thing that'll happen
-> there is that the reset line will be unconditionally asserted.
-
-It avoids asserting reset before we need to and thus also avoid the need
-to deassert it on early probe failures (e.g. if one of the regulator
-lookups fails).
-
-We also don't need to worry about timing requirements, which can all be
-handled in one place (i.e. in the power up and power down callbacks).
- 
-> Having this as "GPIOD_ASIS" makes it feel like the kernel is somehow
-> able to maintain continuity of this GPIO line from the BIOS state to
-> the kernel, but I don't think it can. I've looked at the "GPIOD_ASIS"
-> property before because I've always wanted the ability to have GPIOs
-> that could more seamlessly transition their firmware state to their
-> kernel state. I don't think the API actually allows it. The fact that
-> GPIO regulators don't support this seamless transition (even though it
-> would be an obvious feature to add) supports my theory that the API
-> doesn't currently allow it. It may be possible to make something work
-> on some implementations but I think it's not guaranteed.
-> 
-> Specifically, the docs say:
-> 
-> * GPIOD_ASIS or 0 to not initialize the GPIO at all. The direction must be set
->   later with one of the dedicated functions.
-> 
-> So that means that you can't read the pin without making it an input
-> (which might change the state if it was previously driving a value)
-> and you can't write the pin without making it an output and choosing a
-> value to set it to. Basically grabbing a pin with "asis" doesn't allow
-> you to do anything with it--it just claims it and doesn't let anyone
-> else have it.
-
-These properties may prevent it from being used by the regulator
-framework, but GPIOD_ASIS works well in the case of a reset gpio where
-we simply leave it in whatever state the firmware left it in if probe
-fails before we get to powering on the device.
-
-Johan
+Thank you.
 
