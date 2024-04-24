@@ -1,137 +1,165 @@
-Return-Path: <linux-kernel+bounces-156690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A8F88B06D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:04:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F09848B06FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:09:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 285D5288423
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:03:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77D841F23F8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:09:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604EB15921A;
-	Wed, 24 Apr 2024 10:03:50 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A5015921C;
+	Wed, 24 Apr 2024 10:09:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SUCGpXpr";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MSA55m4W"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C38157498;
-	Wed, 24 Apr 2024 10:03:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B005158D99;
+	Wed, 24 Apr 2024 10:09:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713953030; cv=none; b=IonG3TSPk7tUnda3Xysq8P6+siOkNsHxb8YC7sEB11vpA5aIh3uSZfNgEL0CEoJtAg1tm/9MTxDCQh8uQ1m3a7eG6lDab/8iPxyUHtgwO0GMPeZVcQs24pVlaI/NS3l3oIxnEOpfrYH6cY2SeReJRNI0KHTFfKR13RCB7nhRwgU=
+	t=1713953390; cv=none; b=Uv02+kgANj37Df6iVdTVzLGJy/9Pz07JPhCI7GPXim/Pwf08LhG48BIiq0UAcVOBUhsdtKFQ66nv8y7j0M1C31jxbRS4D7im1dsx3hfN0nmbuwSH8g/aMX/gyq9rZsIgFzl4839StUQFTB7hFfv9j3MRSahGma2MEpENccfDgHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713953030; c=relaxed/simple;
-	bh=of8KehQGF7cDuMBIGs5ksgB82Umnq66JY9p3LR+p260=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cTPoLRBc5EsRfJWj8AOooj46iYjyyqQ6iK04aZY9d+DCWxFwpV7qfoxqg6siWaOzXONEHxq+YZg4odQYky14EjkRD6+pT+0CiXAhhPa6apaVcHrJbd+Y6FhfwYhsWGf+xyFv5oWDMnXXhgDsdnGxW5iFw631n613Yiyx0KFGPX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26846C113CE;
-	Wed, 24 Apr 2024 10:03:45 +0000 (UTC)
-Message-ID: <25a33db9-3bc1-4d90-83d4-0bdbea9bc5d8@xs4all.nl>
-Date: Wed, 24 Apr 2024 12:03:44 +0200
+	s=arc-20240116; t=1713953390; c=relaxed/simple;
+	bh=W6xud4LaOVjv4EcBRw1ooiHmNDmW6u4oEH9qzeBFsEM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Cy5SNnWHInQ6fkKKHwx3ee1dSaibJUAMqTVfPO1k9tWetESaHlOyoAbrZ8+nifC6DKrWKfLSzC6MWR7FSH4gtM41FzIoaFfQ4dJ1nAMR/nalIeT4xNoao4ThQVWgzwWjz3QgKuz1bgVX8UbJ9N9mqOcOnfw1lH8tCwCXb4sUHss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SUCGpXpr; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MSA55m4W; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EB1B36136F;
+	Wed, 24 Apr 2024 10:09:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1713953384; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=eDWLEwWp9FzNgsYJ9/J+V2MeJ5MCV4vYPXzikttfM24=;
+	b=SUCGpXprADGhHmkGjBIoi4O76qljYrHgVMCQnQr/BioiQmF1JZ1hhQu1ARWQx6VeC0qbbo
+	3SyyVqgKn92sSRk/C6xkqM/iLLvHjLJH/CSITn2scALlALMeWcsJxmrfTsexwJaxIkGueI
+	Nx7IcFlLvCZqvUsHb7VacpmLR5gdtxs=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=MSA55m4W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1713953382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=eDWLEwWp9FzNgsYJ9/J+V2MeJ5MCV4vYPXzikttfM24=;
+	b=MSA55m4Wg3OpK6wFdwo+hvhC9Gc7apVj6p0bpJ9zgF3IyHjVqCukj+DW6QORI9s91u5ldy
+	RwvudBqx3Mg0WAh4+2/T4bJD01p08Obi7fFU5q8M2KqL/53wHlV9UBP717VY8wrxDrc8Hi
+	MkUn+MfxMXCsnWkiOmq41E1MudnJcGs=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E4D891393C;
+	Wed, 24 Apr 2024 10:09:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id kAjcN2baKGaDRQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Wed, 24 Apr 2024 10:09:42 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.9-rc6
+Date: Wed, 24 Apr 2024 12:01:52 +0200
+Message-ID: <cover.1713884233.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] media: v4l2-ctrls: Add average qp control
-Content-Language: en-US, nl
-To: Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org
-Cc: shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de,
- kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
- xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
- ming.qian@oss.nxp.com, imx@lists.linux.dev, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240329092352.2648837-1-ming.qian@nxp.com>
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20240329092352.2648837-1-ming.qian@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	DWL_DNSWL_LOW(-1.00)[suse.com:dkim];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FROM_HAS_DN(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: EB1B36136F
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
 
-On 29/03/2024 10:23, Ming Qian wrote:
-> Add a control V4L2_CID_MPEG_VIDEO_AVERAGE_QP to report the average qp
-> value of current encoded frame.
-> 
-> Signed-off-by: Ming Qian <ming.qian@nxp.com>
-> ---
->  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 4 ++++
->  drivers/media/v4l2-core/v4l2-ctrls-defs.c                 | 5 +++++
->  include/uapi/linux/v4l2-controls.h                        | 2 ++
->  3 files changed, 11 insertions(+)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index 2a165ae063fb..cef20b3f54ca 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -1653,6 +1653,10 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
->      Quantization parameter for a P frame for FWHT. Valid range: from 1
->      to 31.
->  
-> +``V4L2_CID_MPEG_VIDEO_AVERAGE_QP (integer)``
-> +    This read-only control returns the average qp value of the currently
-> +    encoded frame. Applicable to the H264 and HEVC encoders.
+Hi,
 
-qp -> QP
+please pull a few more fixes, thanks.
 
-Why is this applicable to H264/HEVC only? I think it is fine for any codec.
+- fix information leak by the buffer returned from LOGICAL_INO ioctl
 
-This needs to document that the value applies to the last dequeued buffer
-(VIDIOC_DQBUF).
+- fix flipped condition in scrub when tracking sectors in zoned mode
 
-> +
->  .. raw:: latex
->  
->      \normalsize
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> index 8696eb1cdd61..88e86e4e539d 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> @@ -972,6 +972,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:		return "Use LTR Frames";
->  	case V4L2_CID_FWHT_I_FRAME_QP:				return "FWHT I-Frame QP Value";
->  	case V4L2_CID_FWHT_P_FRAME_QP:				return "FWHT P-Frame QP Value";
-> +	case V4L2_CID_MPEG_VIDEO_AVERAGE_QP:			return "Average QP value";
+- fix calculation when dropping extent range
 
-value -> Value
+- reinstate fallback to write uncompressed data in case of fragmented
+  space that could not store the entire compressed chunk
 
-Also move it up two lines so that it follows V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES
-rather than FWHT controls.
+- minor fix to message formatting style to make it conforming to the
+  commonly used style
 
->  
->  	/* VPX controls */
->  	case V4L2_CID_MPEG_VIDEO_VPX_NUM_PARTITIONS:		return "VPX Number of Partitions";
-> @@ -1507,6 +1508,10 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->  		*max = 0xffffffffffffLL;
->  		*step = 1;
->  		break;
-> +	case V4L2_CID_MPEG_VIDEO_AVERAGE_QP:
-> +		*type = V4L2_CTRL_TYPE_INTEGER;
-> +		*flags |= V4L2_CTRL_FLAG_VOLATILE | V4L2_CTRL_FLAG_READ_ONLY;
+----------------------------------------------------------------
+The following changes since commit 1db7959aacd905e6487d0478ac01d89f86eb1e51:
 
-Drop the volatile flag, this isn't a volatile value.
+  btrfs: do not wait for short bulk allocation (2024-04-09 23:20:32 +0200)
 
-> +		break;
->  	case V4L2_CID_PIXEL_RATE:
->  		*type = V4L2_CTRL_TYPE_INTEGER64;
->  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
-> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-> index 99c3f5e99da7..974fd254e573 100644
-> --- a/include/uapi/linux/v4l2-controls.h
-> +++ b/include/uapi/linux/v4l2-controls.h
-> @@ -898,6 +898,8 @@ enum v4l2_mpeg_video_av1_level {
->  	V4L2_MPEG_VIDEO_AV1_LEVEL_7_3 = 23
->  };
->  
-> +#define V4L2_CID_MPEG_VIDEO_AVERAGE_QP  (V4L2_CID_CODEC_BASE + 657)
-> +
->  /*  MPEG-class control IDs specific to the CX2341x driver as defined by V4L2 */
->  #define V4L2_CID_CODEC_CX2341X_BASE				(V4L2_CTRL_CLASS_CODEC | 0x1000)
->  #define V4L2_CID_MPEG_CX2341X_VIDEO_SPATIAL_FILTER_MODE		(V4L2_CID_CODEC_CX2341X_BASE+0)
+are available in the Git repository at:
 
-Regards,
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.9-rc5-tag
 
-	Hans
+for you to fetch changes up to fe1c6c7acce10baf9521d6dccc17268d91ee2305:
+
+  btrfs: fix wrong block_start calculation for btrfs_drop_extent_map_range() (2024-04-18 18:18:50 +0200)
+
+----------------------------------------------------------------
+David Sterba (1):
+      btrfs: remove colon from messages with state
+
+Johannes Thumshirn (1):
+      btrfs: fix information leak in btrfs_ioctl_logical_to_ino()
+
+Naohiro Aota (1):
+      btrfs: scrub: run relocation repair when/only needed
+
+Qu Wenruo (1):
+      btrfs: fix wrong block_start calculation for btrfs_drop_extent_map_range()
+
+Sweet Tea Dorminy (1):
+      btrfs: fallback if compressed IO fails for ENOSPC
+
+ fs/btrfs/backref.c                | 12 +++---------
+ fs/btrfs/extent_map.c             |  2 +-
+ fs/btrfs/inode.c                  | 13 ++++++-------
+ fs/btrfs/messages.c               |  2 +-
+ fs/btrfs/scrub.c                  | 18 +++++++++---------
+ fs/btrfs/tests/extent-map-tests.c |  5 +++++
+ 6 files changed, 25 insertions(+), 27 deletions(-)
 
