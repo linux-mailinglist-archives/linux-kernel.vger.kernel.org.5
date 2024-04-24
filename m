@@ -1,260 +1,252 @@
-Return-Path: <linux-kernel+bounces-156359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8243E8B01C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:28:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F9008B01C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:28:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11DA21F234CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:28:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71C681C22805
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:28:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DEEC156F4C;
-	Wed, 24 Apr 2024 06:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61E02156C79;
+	Wed, 24 Apr 2024 06:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="luZtCrI6"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="BlJnTdkf"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2065.outbound.protection.outlook.com [40.107.223.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597A3156C78;
-	Wed, 24 Apr 2024 06:28:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713940087; cv=none; b=BzA8vLxWyBs4EZMabAoA9ZhRyCijQRZ162G1NbsM1uyC1btam21E5d+k6FEb4fK35Hv9MmK0wkqyOXJMvKmXSxBOh/A//ZBFXTKeurbUmDC8YkkNpJjruIV0TYsJas33JiRFNVkkb2gfXZjZAsBSmO/+H4JmsUjTkAZm+q2A/xo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713940087; c=relaxed/simple;
-	bh=A/yU00UYToEMGGAoCjRKkNLmgEdhkdVsgbR/GogUobM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OGxphS8IJlQDJVTj9t+jxPBa+FUNCqgM/iH6LDSCRkqq8FwXwaxqEmZjyl0TGTJdOqlRLMCPI6sh/sP11SXG41ZyADSZpVr9K+IsF2kJjUFP42OwNzF0d/Uu8Aib4kFdYMTtWU2XDuRlxoE80OslAjjkCd5UKzKzGz5osEVDKFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=luZtCrI6; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713940085; x=1745476085;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=A/yU00UYToEMGGAoCjRKkNLmgEdhkdVsgbR/GogUobM=;
-  b=luZtCrI6NJ4hZoTxyweFuWeoGmj9zIo89mpVjXcs7jQh2OS4iVLFjomw
-   tdC/3pbxr+QHmqIck+/AyKiUBvAAZeWVSBZj09MJ3M9nwgYLz9GsEQAqf
-   0oSLsNrM+6S5m3PUPK7qLBGmugw2aY9ZJZRFqrbRn9mtRbkkQmqtg9KDc
-   oktukNmufnVep9+dAaHIP6KWRRP5+kRLNh3yeM+lxvthq7w4Mg2pti2r5
-   VQudD8G5qA6NlqrHGeQJH3OcwpWV23B2s534ynPOqF2xRobxRxDaPz27M
-   gUFZAwjVOgeRO+OInHqYsb98pfJ6hnBug6l5JZmEmcVdfgJeCM1/gsgY2
-   g==;
-X-CSE-ConnectionGUID: aKOYmmtSSwamtm1le7GvJQ==
-X-CSE-MsgGUID: TjIabWQWQaqQiCE53MssQg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="27009695"
-X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="27009695"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 23:28:04 -0700
-X-CSE-ConnectionGUID: AwhU1BzwRhOjwMu5FW138Q==
-X-CSE-MsgGUID: cW/Rgp99T5GE1XfoYNpitQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="29265418"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 23 Apr 2024 23:28:00 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rzW6n-0000wm-2Q;
-	Wed, 24 Apr 2024 06:27:57 +0000
-Date: Wed, 24 Apr 2024 14:27:38 +0800
-From: kernel test robot <lkp@intel.com>
-To: Joe Damato <jdamato@fastly.com>, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, tariqt@nvidia.com, saeedm@nvidia.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	mkarsten@uwaterloo.ca, gal@nvidia.com, nalramli@fastly.com,
-	Joe Damato <jdamato@fastly.com>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 1/3] net/mlx4: Track RX allocation failures in a
- stat
-Message-ID: <202404241411.3d5OJHs6-lkp@intel.com>
-References: <20240423194931.97013-2-jdamato@fastly.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D40415687B;
+	Wed, 24 Apr 2024 06:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.65
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713940083; cv=fail; b=ngCfBZcghh88a56yFCvxS7GBYhh5XTa1OEWkEceLMEmFBozNg7LfYghC7iisMtG4UNp/gV33kXLzI97WV6iLmzj+ebxkRAAsyofLob3wEnDuA5Gca6AlnTTqBjzaJtMAX6g0l/peGX96iQfWxaLBJgcm/p73fnB12j601EwiOxg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713940083; c=relaxed/simple;
+	bh=f3WNOz9NeO6UQYxy4Tz2OLPKSve1CxtrajHQkVjciz4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=LYq5nvUZnkGcFAaalwAh5BcJ9S3e2OzrZyELTOAaDNME0SahlCJy9zj0cg1+kEixL3smzf8fmgQQfttkvwb9My5nWFaaMRy76ojemdGLEfylWvKtY3p/evIQ+6j0jFQ8gEaR2Iu7BqEYBgY1iV6DyABv5iaEb3MdZH2q00gYxho=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=BlJnTdkf; arc=fail smtp.client-ip=40.107.223.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SZ+xFZt0wONInWuX3LFau59n7K9jG5EK8KhiMHgAX1R7BmezlF03CySexF5ZKLDjxpSIw1rUY1X1YqKKNOZdc8RHIEQ8h/OU3zLZA7gpxEv2wovdUGHBmfUpdsurAy4v+SkOR6sRduAQ8NoXT0zBvPJrSKkQw6VYHmJN7JJDweSQ0gZ1hPwuAggUNT9RXOsoyDuQColI5iMZrrBtgf0+R4WzRH1bxU0x+GN9tLCMESvl1E4wtqkzYPsn1iTYhjjx20vbI2pGiRzMd5WfZ3BMBrhiQKElNH2iCWkSCFRBnB6DNwCN4TGsN5n/CjUqMm043cxC8gR/lywgm5alp06L3g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=N3nBczLe8Vywg9B3jbzGWogXHETHRfdDVJB+hwvJeJA=;
+ b=ZbE7QA2p7jZXrRDrWWjy0YzP3JmIGBZiTdR7AtiaLRApASMgE7ti21q0kbVFZqb2qMQtEkB7CT2SEBDZh1FYXslhE5jY2YZF483psq/9ww00+PhqF340Ler2Mc4KGKkgZiO9qE7IhoghyjpSeyr6AO3aiia646ynfRog/7Ikz5GYctA0FsvO3gQMAkxpkuflhUp/YKCEL/3pJ7Djut83NPWpWHLaBa7hC6VzlGtNhLWRiXyISrehXa+RmIgQxJaZst2VZj6xbzYipV+U1GaGF5xLx+IXFfhfknFNVWxmo3pXsx6s4CqjBPbcXhYUXBehP7sioK6QXVt6hUKSVwAJRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N3nBczLe8Vywg9B3jbzGWogXHETHRfdDVJB+hwvJeJA=;
+ b=BlJnTdkfLpIOLTWAH+0nTFy79DyJvZV4ZcknV8C4wWlRaxVdxs12UMMPVSJTWzCORNdNdMIRYl+1HANwDp9jqUrGHRBy+J+sK2xsUSDvxBKiXJ40Mmuvu4KOiT3Okkfg9Nw1fboDsBxjhax0nkJ2yy9G1ZekfTOEdFY1LzOdHzDZvn0sOP8PwjX8uHigPSiLppLmg807c5zu33u2AirlfLKZXjjY/7HanhERvZskcCYweh26sTYNPKXbRKrXR1KkNJPFXkPhpmyqoFoHut2lOSXlKULdWTktYKQarF9SQ/srtnv3VyV6GQZXvpwM4DW8Gcnh5iqLN2trLB9O+LJ9vA==
+Received: from MN2PR05CA0046.namprd05.prod.outlook.com (2603:10b6:208:236::15)
+ by CYXPR12MB9277.namprd12.prod.outlook.com (2603:10b6:930:d8::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Wed, 24 Apr
+ 2024 06:27:59 +0000
+Received: from BL6PEPF0001AB58.namprd02.prod.outlook.com
+ (2603:10b6:208:236:cafe::1a) by MN2PR05CA0046.outlook.office365.com
+ (2603:10b6:208:236::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22 via Frontend
+ Transport; Wed, 24 Apr 2024 06:27:58 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ BL6PEPF0001AB58.mail.protection.outlook.com (10.167.241.10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7519.19 via Frontend Transport; Wed, 24 Apr 2024 06:27:58 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 23 Apr
+ 2024 23:27:49 -0700
+Received: from [10.41.21.79] (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 23 Apr
+ 2024 23:27:46 -0700
+Message-ID: <df19710e-7372-26eb-8ece-2962d13d8146@nvidia.com>
+Date: Wed, 24 Apr 2024 11:57:43 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423194931.97013-2-jdamato@fastly.com>
-
-Hi Joe,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on net-next/main]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Joe-Damato/net-mlx4-Track-RX-allocation-failures-in-a-stat/20240424-035224
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20240423194931.97013-2-jdamato%40fastly.com
-patch subject: [PATCH net-next 1/3] net/mlx4: Track RX allocation failures in a stat
-config: s390-defconfig (https://download.01.org/0day-ci/archive/20240424/202404241411.3d5OJHs6-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 5ef5eb66fb428aaf61fb51b709f065c069c11242)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240424/202404241411.3d5OJHs6-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404241411.3d5OJHs6-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/net/net_namespace.h:43:
-   In file included from include/linux/skbuff.h:17:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:10:
-   In file included from include/linux/mm.h:2208:
-   include/linux/vmstat.h:508:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     508 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     509 |                            item];
-         |                            ~~~~
-   include/linux/vmstat.h:515:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     515 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     516 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
-   include/linux/vmstat.h:527:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     527 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     528 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:536:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     536 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     537 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   In file included from drivers/net/ethernet/mellanox/mlx4/en_port.c:35:
-   In file included from include/linux/if_vlan.h:10:
-   In file included from include/linux/netdevice.h:38:
-   In file included from include/net/net_namespace.h:43:
-   In file included from include/linux/skbuff.h:28:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:78:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     547 |         val = __raw_readb(PCI_IOBASE + addr);
-         |                           ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:37:59: note: expanded from macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
-         |                                                           ^
-   include/uapi/linux/swab.h:102:54: note: expanded from macro '__swab16'
-     102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-         |                                                      ^
-   In file included from drivers/net/ethernet/mellanox/mlx4/en_port.c:35:
-   In file included from include/linux/if_vlan.h:10:
-   In file included from include/linux/netdevice.h:38:
-   In file included from include/net/net_namespace.h:43:
-   In file included from include/linux/skbuff.h:28:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:78:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:35:59: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
-         |                                                           ^
-   include/uapi/linux/swab.h:115:54: note: expanded from macro '__swab32'
-     115 | #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
-         |                                                      ^
-   In file included from drivers/net/ethernet/mellanox/mlx4/en_port.c:35:
-   In file included from include/linux/if_vlan.h:10:
-   In file included from include/linux/netdevice.h:38:
-   In file included from include/net/net_namespace.h:43:
-   In file included from include/linux/skbuff.h:28:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:78:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     584 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     692 |         readsb(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     700 |         readsw(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     708 |         readsl(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     717 |         writesb(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     726 |         writesw(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     735 |         writesl(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
->> drivers/net/ethernet/mellanox/mlx4/en_port.c:167:3: warning: variable 'dropped' is uninitialized when used here [-Wuninitialized]
-     167 |                 dropped += READ_ONCE(ring->dropped);
-         |                 ^~~~~~~
-   drivers/net/ethernet/mellanox/mlx4/en_port.c:154:39: note: initialize the variable 'dropped' to silence this warning
-     154 |         unsigned long packets, bytes, dropped;
-         |                                              ^
-         |                                               = 0
-   18 warnings generated.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [Patch v3 2/2] memory: tegra: make sid and broadcast regions
+ optional
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, "robh@kernel.org"
+	<robh@kernel.org>, "conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"maz@kernel.org" <maz@kernel.org>, "mark.rutland@arm.com"
+	<mark.rutland@arm.com>, Thierry Reding <treding@nvidia.com>, Jon Hunter
+	<jonathanh@nvidia.com>
+CC: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, Ashish Mhetre
+	<amhetre@nvidia.com>, Bibek Basu <bbasu@nvidia.com>, Sumit Gupta
+	<sumitg@nvidia.com>
+References: <20240412130540.28447-1-sumitg@nvidia.com>
+ <20240412130540.28447-3-sumitg@nvidia.com>
+ <06849796-f896-4cff-842c-118d86e94a6b@linaro.org>
+ <1aab0272-85ea-e3a1-7d68-27ab4f1e1993@nvidia.com>
+ <6506b2e8-c7f2-460d-b17d-55b731fac1ac@linaro.org>
+ <e1d4e915-08c9-c2e0-f882-6d7cd9500c96@nvidia.com>
+ <d27d0784-7f88-4351-943e-5c464a7d95df@linaro.org>
+ <95f8e4b5-23af-90cb-4dae-2922e8e71920@nvidia.com>
+ <4824ad5c-0250-43cb-8f92-ec5e6c9c49af@linaro.org>
+From: Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <4824ad5c-0250-43cb-8f92-ec5e6c9c49af@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB58:EE_|CYXPR12MB9277:EE_
+X-MS-Office365-Filtering-Correlation-Id: af6feca4-f046-45df-94b7-08dc6427af5b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230031|1800799015|82310400014|376005|36860700004;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?U2pYdUpjb1pXNm94S1NDOG9GRlEvcjRlcWhiVDRQT1hPZFlzU0pCQkYxTDRk?=
+ =?utf-8?B?RU1GVFRHUFNLdWVlSk11ektLQTk0ek00eVo0cnM1bmZxWmhudTcwWWkxd2Yr?=
+ =?utf-8?B?UEE0L1FVbEVHYVVGdkFlS2hvTmwrd2ovdjJVM0dxY0VsbSt0bWRBbjlidFNH?=
+ =?utf-8?B?dFo3aEtlZk5NWC9CTUQ5SjVZNkNSN0swYmNZemQrTWN6WUgzdWRucmtYczY2?=
+ =?utf-8?B?cWxnTzdNWHJ3VWNCRmt2WVV2QnZlVW5DZXkvV05YbXBXSWNrR3FUZGFxMEpJ?=
+ =?utf-8?B?NEptNlh5N0QzYTVWSzhtMjBWdTBGNkZWMzdNTS9ET2R1YlZVYnN5ZEU2dzZP?=
+ =?utf-8?B?WWdySmx0bk5qNE1PZFIxUWl0WitrWWlSWFFrR3RPNFFuckNwbjg3c1plM2Vo?=
+ =?utf-8?B?VGs1cnJDTVRWNjhjektpU2ZJbzIyOU56Q1VKMjkyaXZacFJMVmNwNFZVZEtr?=
+ =?utf-8?B?TGU2UkZ6blJ2TitDcmVtaFVTWTBuU1ZaMmFHeEdTeWxxZVJkcWFSYVp3VmFv?=
+ =?utf-8?B?cTYvaDZYRVhtUmFOUDVZT08rVUpuSWZIZ3FqdHZ4T25GaFFXWFlZZWMrdmY3?=
+ =?utf-8?B?SnFwQ0d3T0RjRFA1ZTAwalJ4bjl3V01LMXJXL2ZhUDg3MnpOUnJ2SFBBV0pR?=
+ =?utf-8?B?Sk8zMGNFSG9WakZxZnFHMEdZeE9GVkR2Y0kvanY1bFU3K2NOaU1peHFCb0ZH?=
+ =?utf-8?B?cFlrWmMzYmRxVzFpMCtBVHFmZE1peFgyT0VFdGtjQkFNT3VpRWlKT2FVdmpN?=
+ =?utf-8?B?dzNaQU9ReHlwRzFob0pMVzhsS3pFclh2RGQvbHA0NFhrWWF0dUxFVTZxMUI0?=
+ =?utf-8?B?MVVMWlZwckxRd2hPZ0FHbUJEZ2EvK0dXaE1xcno5eWYzUDdLWUJ0NEM4bElO?=
+ =?utf-8?B?UnJvS2ZSeW0xOVFrajdBdEwwNXhsL01vZFNKU3FTYjY2YWxMYzM4L0NpNmtE?=
+ =?utf-8?B?L3JQMi9XNktIVEEvZHZXUkpRcTM1WmRzV0pVR256amdYNGd5ZjlzQTl2ZjZq?=
+ =?utf-8?B?RTYvYjlhK2VkbzkrSWtSYVhzRStlZ0JvU25kN1ZSNXA5OGxSNldRNG5wM0xR?=
+ =?utf-8?B?eEFzSkh0MThXK2xzTjh3YWxJYmlUSEJSdlhoM1pjb0RqNExPYjJTU3ZxWDlH?=
+ =?utf-8?B?S2cxZE82d2U1S3lDNWNQUnpCSFo2eVRqdHFRcFlQcFZSY0RHWHg4c25SdVRi?=
+ =?utf-8?B?d2xPSWUxdDhZWVkzcE5JZWdZWUo1Yjk4enFOMlFmdStVNEl5YlgyZzl0ZUdN?=
+ =?utf-8?B?YkluZkQwbVdvUE9xaUtCTEtKa3laaXRtSjJZUWRRdmU0Y2FxRjBsOXRGMjU3?=
+ =?utf-8?B?dmJ2c2xlSnNBVE1EenhZMllhS0dHNUtkYzNQZVRGcXp2UnRpdFVIeWcxN3lG?=
+ =?utf-8?B?bGNUOWhJQjlscDVnZXRzTTd5amRYTkh4OEVqSGVSS2tlSFRKdGZpZ3l6Y3NT?=
+ =?utf-8?B?QVJQSmJoV2htL0FuQVRJVHpNVEdDRE03SFdQYUJ5ZXJDeG02OGhqaFAyV3FR?=
+ =?utf-8?B?Wi9aZTJNQytta3FvdG9NOWhZMDRPRXoxTHRlMkRQQXh6Ym9TVHVEaUF5K3ZR?=
+ =?utf-8?B?cUNxMVhyQXo0ZkNZRVhvemMwRUdWRTI5eWhmS0NXeldwbXFvdityN0VQekYy?=
+ =?utf-8?B?SWNVMnlNYmNxbjBydE9EenRRalBDbVFuYVFwalF6Y1FyTG84OXlKNG9vaVZh?=
+ =?utf-8?B?QWVjL1o1TEdxZVUxRHp2T0M5ZVFuMUxEekNFcTBleXpmY21Da1hqU3VlZDNL?=
+ =?utf-8?B?c1JWb2FRdksrZHpnYnNicjlQUkZ1VkwwQzFlYWlLcHhwVGMvS2k2aGhOZ1NN?=
+ =?utf-8?B?eG05QkFDRnVGcHpQcGtBRHlVMDlyYnJMTG1UbXV4RjJDamY5SnJaaERuMXZK?=
+ =?utf-8?Q?41BSBmHKBziFH?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(82310400014)(376005)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 06:27:58.6097
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: af6feca4-f046-45df-94b7-08dc6427af5b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB58.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR12MB9277
 
 
-vim +/dropped +167 drivers/net/ethernet/mellanox/mlx4/en_port.c
+>>>>>>>>
+>>>>>>>>      static inline u32 mc_readl(const struct tegra_mc *mc, unsigned long offset)
+>>>>>>>> diff --git a/drivers/memory/tegra/tegra186.c b/drivers/memory/tegra/tegra186.c
+>>>>>>>> index 1b3183951bfe..716582255eeb 100644
+>>>>>>>> --- a/drivers/memory/tegra/tegra186.c
+>>>>>>>> +++ b/drivers/memory/tegra/tegra186.c
+>>>>>>>> @@ -26,20 +26,16 @@
+>>>>>>>>      static int tegra186_mc_probe(struct tegra_mc *mc)
+>>>>>>>>      {
+>>>>>>>>           struct platform_device *pdev = to_platform_device(mc->dev);
+>>>>>>>> +     struct resource *res;
+>>>>>>>>           unsigned int i;
+>>>>>>>> -     char name[8];
+>>>>>>>> +     char name[14];
+>>>>>>>
+>>>>>>> How is it relevant? I don't see this being used in your diff.
+>>>>>>>
+>>>>>>>
+>>>>>>> Best regards,
+>>>>>>> Krzysztof
+>>>>>>>
+>>>>>>
+>>>>>> Did this change for below warning coming with 'W=1'.
+>>>>>>
+>>>>>> ../drivers/memory/tegra/tegra186.c: In function tegra186_mc_probe:
+>>>>>> ../drivers/memory/tegra/tegra186.c:51:49: warning: %u directive output
+>>>>>> may be truncated writing between 1 and 10 bytes into a region of size 6
+>>>>>> [8;;https://gc
+>>>>>> c.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wformat-truncation=-Wformat-truncation=8;;]
+>>>>>>        51 |                 snprintf(name, sizeof(name), "ch%u", i);
+>>>>>>           |                                                 ^~
+>>>>>> ../drivers/memory/tegra/tegra186.c:51:46: note: directive argument in
+>>>>>> the range [0, 4294967294]
+>>>>>>        51 |                 snprintf(name, sizeof(name), "ch%u", i);
+>>>>>>           |                                              ^~~~~~
+>>>>>> ../drivers/memory/tegra/tegra186.c:51:17: note: snprintf output between
+>>>>>> 4 and 13 bytes into a destination of size 8
+>>>>>>        51 |                 snprintf(name, sizeof(name), "ch%u", i);
+>>>>>>           |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>>>>
+>>>>> I asked how this is relevant to this change and you answer there is a
+>>>>> warning. If the warning was there, your answer is really just deflecting
+>>>>> the topic, so obviously this is new warning. Which part of code uses
+>>>>> longer name?
+>>>>>
+>>>>> BTW, really, such answers do not make review of your code smoother.
+>>>>>
+>>>>> Best regards,
+>>>>> Krzysztof
+>>>>>
+>>>>
+>>>> Apologies for not explaining it earlier.
+>>>>
+>>>> I increased the buffer size to suppress a static check warning in the
+>>>> existing code due to big range of 'unsigned int i', if copied to small
+>>>> name buffer.
+>>>>
+>>>> Seems like the warning is harmless as the maximum value of num_channels
+>>>> is 16. I will remove it and keep the buffer size as 8 in the next
+>>>> version.
+>>>>
+>>>
+>>> That's not the point. For the third time: how is it relevant to this
+>>> change here? Was or was not the warning before?
+>>>
+>>
+>> This is not relevant to the change here. The warning was before as well.
+> 
+> OK, fixing the warning is always a good idea, but this *must* be always
+> separate patch, with its own explanation and rationale, and warning message.
+> 
 
-   149	
-   150	void mlx4_en_fold_software_stats(struct net_device *dev)
-   151	{
-   152		struct mlx4_en_priv *priv = netdev_priv(dev);
-   153		struct mlx4_en_dev *mdev = priv->mdev;
-   154		unsigned long packets, bytes, dropped;
-   155		int i;
-   156	
-   157		if (!priv->port_up || mlx4_is_master(mdev->dev))
-   158			return;
-   159	
-   160		packets = 0;
-   161		bytes = 0;
-   162		for (i = 0; i < priv->rx_ring_num; i++) {
-   163			const struct mlx4_en_rx_ring *ring = priv->rx_ring[i];
-   164	
-   165			packets += READ_ONCE(ring->packets);
-   166			bytes   += READ_ONCE(ring->bytes);
- > 167			dropped += READ_ONCE(ring->dropped);
-   168		}
-   169		dev->stats.rx_packets = packets;
-   170		dev->stats.rx_bytes = bytes;
-   171		dev->stats.rx_missed_errors = dropped;
-   172	
-   173		packets = 0;
-   174		bytes = 0;
-   175		for (i = 0; i < priv->tx_ring_num[TX]; i++) {
-   176			const struct mlx4_en_tx_ring *ring = priv->tx_ring[TX][i];
-   177	
-   178			packets += READ_ONCE(ring->packets);
-   179			bytes   += READ_ONCE(ring->bytes);
-   180		}
-   181		dev->stats.tx_packets = packets;
-   182		dev->stats.tx_bytes = bytes;
-   183	}
-   184	
+Sure, will submit a separate patch for the warning and spin a v4 for 
+this patch series after incorporating all review comments.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thank you,
+Sumit Gupta
+
+> Best regards,
+> Krzysztof
+> 
 
