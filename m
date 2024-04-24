@@ -1,142 +1,287 @@
-Return-Path: <linux-kernel+bounces-157688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25BDA8B149E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:34:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C3D88B14A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:36:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53EA6B213B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:34:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 844961C22827
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:36:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FF52156881;
-	Wed, 24 Apr 2024 20:34:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D289F156893;
+	Wed, 24 Apr 2024 20:36:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ttse6SKn"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="C0IloMXS"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4C9143888
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 20:34:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72DC31848;
+	Wed, 24 Apr 2024 20:36:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713990857; cv=none; b=N0Uyu9Ij+14e37QA5DUrKjboIg0/QoDQGJkGudc3KrDMFidFvLcg7iqw1mLSkGyw+uAF3ClKF94VI7I2PnnPuqfDRsEkvq1OXojvlfQFT5su/pTGq/2Ni0j4NJeJdbTWq0wFupBikMQwropy6Yq5Ef3jRNLCrPfKYeexuhEoBGk=
+	t=1713990980; cv=none; b=D7tsMAD3PB+Mu222rwTkh71jLUc4JNzXUMOd1L9sWcARXZvbNTzNOGzQJbZXFW0+HUU2vswX8KGTo55fqX5MTi7xfYT16+EcwdDIDnEGL2Dsd7J5ao/4eB3o57K0W7Vi9QFbHfJdMPQrC9+WFSo8EbZxhv8pU27OvCGzRSKnvCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713990857; c=relaxed/simple;
-	bh=N4tR1OCvxXlmqdsmBOe02z1y7xWXGhLUQ3ZnQ2QDSls=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n+qA+uyoDCAa/xji9fOMv09AAIcwsKcXrRgO2iG0M9jaMEtE5oQ0YguGkwJHzsd3Jydp2GtOyXmRaAP8y2bpxp+bGf78z+QXXEg7AGyN3JPHrOBf1IHSyYmSqNndkVvP4ZGtUlR42yu/6XS370EC1j6whIzS5ij4BsgtXhuI2eI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ttse6SKn; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41b21ed19f6so2028625e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:34:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713990854; x=1714595654; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o3lACvsZ6zPvEprpO/EkNnTnrMAczxl+qNGhSvuhv70=;
-        b=Ttse6SKnVtu+sxNMgF0lVhMX8EFKhmhtY952CUKIeahe5ZK+fSyyln/yGuxig8MeZK
-         I/bXG7xEME2GqtZMen60ZzfSc2sY7QyMxrazC5HrLcgnCunwrj4Ur2kteMaS+SCuz8DA
-         0ifL5eqFiD2XHYGJEq0SDl2FSWRkMSGmlrJJgeGpxjd2xOEaSHrBZfDhq7aqrNIoJcr/
-         r1dFN+fPJgnOwHEr9YRvhaH6Dz+udEi6KXa7TZCzN7aVTHbekq+A/N1BXHyLkq70IWQd
-         BmPV45uDfXBAOCjNihIOVq6c5jt1A6kTVn/EiIMojlVQeG5TIF2bVCiKTOGs/pwGzD3b
-         t88w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713990854; x=1714595654;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o3lACvsZ6zPvEprpO/EkNnTnrMAczxl+qNGhSvuhv70=;
-        b=gMwezw7EDNhy6ourcluglPKku+ytMwm0TpVYcekyfFswW00nak7FZ3yxYVZXPsH1mI
-         D9Nn2e1BdJPLNQ3VCCIceMkJpjJy9UrIbsoFB/WFCLwBu08jA6gxhBnbDzPTc2+K5wM0
-         Xc6YswYYI6kvM6W6x/hzUX+FlBJtY8WWWRgxrFvXEdzoOIyPb9YqI58iV1Ln/RwK7FSF
-         yl3GHDIu2eILbsVCWPW/0OZqY1yC8F+HqcoSLWZf8YdYPRBt9Zfa4Udk2RfOv790UQg5
-         o0izS+khRjmpHAFaix2xohf2iAbVIgI6dRPGBq0tRua5oVTemyIZTJmljH19OkEenid1
-         Rt2g==
-X-Forwarded-Encrypted: i=1; AJvYcCXDThTpAL6jhZPmYxcn+ix1GqIsmCD8GwoVMv30YZ+RHDW17v8cGLPI6xV6Y6xE2rq4S/KYxlSdWzyfBY7pOSKF85825QCUf+kNHFcp
-X-Gm-Message-State: AOJu0Yy82iLxBrlixQWPI7sb2DgBq8twUNV1lp9pfi/u6VCMl3wD0xKY
-	q/Fpvfm8R/MobR/0fg6JfTHCkFl/5e2PkiO3W7sj6D8mMJUof1MffkLCIwuVcrT6Mkf/Gnxywuh
-	Pn1gi0DuKSO5Su+a2bPA8QKu9s8MeD6mqElj/
-X-Google-Smtp-Source: AGHT+IEpGQsy2wCErtKmtKEcA5NEcY+P1tgXlC5lhSeZkEfEoz+zEFlVXQM5BLNFUYcyPkWe/W0nWNsRNvjlNv9w/5k=
-X-Received: by 2002:a5d:4dcd:0:b0:34b:4afc:5d52 with SMTP id
- f13-20020a5d4dcd000000b0034b4afc5d52mr2870877wru.9.1713990854243; Wed, 24 Apr
- 2024 13:34:14 -0700 (PDT)
+	s=arc-20240116; t=1713990980; c=relaxed/simple;
+	bh=ZDrIe3PF/EnxD7pXUtpCL9BjffU5piJPa7AnQriL0nk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gfV09AFzXMuk/0RxF8tvMBoH9Nl+teMSJaRxBXkUUQrYztmw+KyW11XgLwIO/lUWzMB2SKvuvHFqsM+jL2qsEc31n/hXGOn47A6QycQXybXQlIp9z5j2Cclcm4l3jl4PgF35J2+E+gKfQ/mtjIJPl3v5Puku3dMViHm8Atf1U80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=C0IloMXS; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713990978; x=1745526978;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ZDrIe3PF/EnxD7pXUtpCL9BjffU5piJPa7AnQriL0nk=;
+  b=C0IloMXSp7Jgt9FG5XWC4a9we4UTXdp9PUuRvmZ57Qv1GN0/bhf6uhkD
+   FJwecvSLA+4CQJLCn7Ks0YYj8KLJPaXlSXBrRqaoMOTSyLStXjcRglhdE
+   5EFu6aaprTfjrhaTGXlACrxzlAw5u1WNFFQlYkCOKH0sCWGQ+4Si6Yapo
+   GzOhU2YAQ+CGo7Z5ai4MGszbjk6dctQmsgcJLgQPNk3VSBXtM0L3r2Tr2
+   5xFgG31opQhLgfZnU0evjCphin4VDUkca7UhcB1HK1IDV69YTE6r97iU2
+   OSfBQRE0qGg9WrFcGFK33E5A+aor3sy0sC82fDuiixLt0FczUdoG5l1+6
+   Q==;
+X-CSE-ConnectionGUID: e9Wb8YoBSD+rzPn5Zlj87Q==
+X-CSE-MsgGUID: hwdplfxvQWGjZPaMYozTuA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9511873"
+X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
+   d="scan'208";a="9511873"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 13:36:17 -0700
+X-CSE-ConnectionGUID: ++0Yg1brStqNjVB0EA2fTg==
+X-CSE-MsgGUID: 28fQtMvsR0eJaGkigW8k8Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
+   d="scan'208";a="29314974"
+Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
+  by fmviesa003.fm.intel.com with ESMTP; 24 Apr 2024 13:36:17 -0700
+From: Tony Nguyen <anthony.l.nguyen@intel.com>
+To: davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	netdev@vger.kernel.org
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>,
+	hawk@kernel.org,
+	linux-mm@kvack.org,
+	przemyslaw.kitszel@intel.com,
+	alexanderduyck@fb.com,
+	ilias.apalodimas@linaro.org,
+	linux-kernel@vger.kernel.org,
+	aleksander.lobakin@intel.com,
+	linyunsheng@huawei.com,
+	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
+	cl@linux.com,
+	akpm@linux-foundation.org,
+	vbabka@suse.cz
+Subject: [PATCH net-next v11 00/10][pull request] net: intel: start The Great Code Dedup + Page Pool for iavf
+Date: Wed, 24 Apr 2024 13:35:47 -0700
+Message-ID: <20240424203559.3420468-1-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424123935.2f65e886@canb.auug.org.au> <20240424130757.531be2842c505a62246d180c@linux-foundation.org>
- <ZilrutXaEB0laSvr@kernel.org>
-In-Reply-To: <ZilrutXaEB0laSvr@kernel.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 24 Apr 2024 13:33:58 -0700
-Message-ID: <CAJuCfpFmZmw-CW17OWjmxzh5BdXsc7a_1HcdEL7kmLTZDpU5kw@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the modules tree with the mm tree
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Stephen Rothwell <sfr@canb.auug.org.au>, 
-	Luis Chamberlain <mcgrof@kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>, Kent Overstreet <kent.overstreet@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 24, 2024 at 1:31=E2=80=AFPM Mike Rapoport <rppt@kernel.org> wro=
-te:
->
-> On Wed, Apr 24, 2024 at 01:07:57PM -0700, Andrew Morton wrote:
-> > On Wed, 24 Apr 2024 12:39:35 +1000 Stephen Rothwell <sfr@canb.auug.org.=
-au> wrote:
-> >
-> > > Hi all,
-> > >
-> > > Today's linux-next merge of the modules tree got a conflict in:
-> > >
-> > >   kernel/module/main.c
-> > >
-> > > between commits:
-> > >
-> > >   7f014cdda4cb ("lib: code tagging module support")
-> > >   5ab9b0c7ea5c ("lib: prevent module unloading if memory is not freed=
-")
-> > >
-> > > from the mm-unstable branch of the mm tree and commits:
-> > >
-> > >   0746f9982603 ("module: make module_memory_{alloc,free} more self-co=
-ntained")
-> > >   18da532eefc8 ("mm/execmem, arch: convert remaining overrides of mod=
-ule_alloc to execmem")
-> > >
-> > > from the modules tree.
-> > >
-> > > I fixed it up (I think, see below) and can carry the fix as
-> > > necessary. This is now fixed as far as linux-next is concerned, but a=
-ny
-> > > non trivial conflicts should be mentioned to your upstream maintainer
-> > > when your tree is submitted for merging.  You may also want to consid=
-er
-> > > cooperating with the maintainer of the conflicting tree to minimise a=
-ny
-> > > particularly complex conflicts.
-> >
-> > That's a shame.  I don't see much that we can do to reduce the damage h=
-ere.
->
-> I can rebase it on mm-unstable and this can go via the mm tree.
+Alexander Lobakin says:
 
-Conflict resolution looks fine to me. I'll run relevant tests on
-linux-next within 2 hours.
+Here's a two-shot: introduce {,Intel} Ethernet common library (libeth and
+libie) and switch iavf to Page Pool. Details are in the commit messages;
+here's a summary:
 
->
-> > Suren&Kent, please review (and preferably) test Stephen's handiwork in
-> > linux-next?
-> >
->
-> --
-> Sincerely yours,
-> Mike.
+Not a secret there's a ton of code duplication between two and more Intel
+ethernet modules. Before introducing new changes, which would need to be
+copied over again, start decoupling the already existing duplicate
+functionality into a new module, which will be shared between several
+Intel Ethernet drivers. The first name that came to my mind was
+"libie" -- "Intel Ethernet common library". Also this sounds like
+"lovelie" (-> one word, no "lib I E" pls) and can be expanded as
+"lib Internet Explorer" :P
+The "generic", pure-software part is placed separately, so that it can be
+easily reused in any driver by any vendor without linking to the Intel
+pre-200G guts. In a few words, it's something any modern driver does the
+same way, but nobody moved it level up (yet).
+The series is only the beginning. From now on, adding every new feature
+or doing any good driver refactoring will remove much more lines than add
+for quite some time. There's a basic roadmap with some deduplications
+planned already, not speaking of that touching every line now asks:
+"can I share this?". The final destination is very ambitious: have only
+one unified driver for at least i40e, ice, iavf, and idpf with a struct
+ops for each generation. That's never gonna happen, right? But you still
+can at least try.
+PP conversion for iavf lands within the same series as these two are tied
+closely. libie will support Page Pool model only, so that a driver can't
+use much of the lib until it's converted. iavf is only the example, the
+rest will eventually be converted soon on a per-driver basis. That is
+when it gets really interesting. Stay tech.
+---
+libeth has way more generic functionality and code in the idpf XDP
+tree[0], take a look if you want to have more complete picture of
+what this really is about.
+
+From v10[1]:
+* send as Pull Request (from Tony)
+
+From v9[2]:
+* pick Acked-by from Vlastimil and a couple Reviewed-by from Przemek;
+* mention that the libeth_fq::fp kernel-doc generates a warning and the
+  fix for that is pending on the linux-doc ML (Jakub);
+* no functional changes.
+
+From v8[3]:
+* rebase on top of net-next (6.9-rc1+);
+* introduce kvmalloc_array_node() and kvcalloc_node();
+* make Rx buffer management NUMA-aware;
+* resolve kdoc issues (Jakub, me).
+
+From v7[4]:
+* drop Page Pool optimization prereqs;
+* drop generic stats part: will redo to the new per-queue stats later;
+* split libie into "generic" and "fnic" (i40e, ice, iavf) parts;
+* use shorter and modern struct names;
+* #1: allow to compile-out hotpath IPv6 code when !CONFIG_IPV6;
+* #1: generate XDP RSS hash directly in the lookup table;
+* #8: fix rare skb nullptr deref bug.
+
+From v6[5]:
+* #04: resolve ethtool_puts() Git conflict (Jakub);
+* #06: pick RB from Ilias;
+* no functional changes.
+
+From v5[6]:
+* drop Page Pool DMA shortcut: will pick up Eric's more global DMA sync
+  optimization[7] and expand it to cover both IOMMU and direct DMA a bit
+  later (Yunsheng);
+* drop per-queue Page Pool Ethtool stats: they are now exported via
+  generic Netlink interface (Jakub);
+* #01: leave a comment why exactly this alignment (Jakub, Yunsheng);
+* #08: make use of page_pool_params::netdev when calculating PP params;
+* #08: rename ``libie_rx_queue`` -> ``libie_buf_queue``.
+
+From v4[8]:
+* make use of Jakub's &page_pool_params split;
+* #01: prevent frag fields from spanning into 2 cachelines after
+  splitting &page_pool_params into fast and slow;
+* #02-03: bring back the DMA sync shortcut, now as a per-page flag
+  (me, Yunsheng);
+* #04: let libie have its own Kconfig to stop further bloating of poor
+  intel/Kconfig;
+* #06: merge page split-reuse-recycle drop into one commit (Alex);
+* #07: decouple constifying of several Page Pool function arguments
+  into a separate commit, constify some more;
+* #09: stop abusing internal PP fields in the driver code (Yunsheng);
+* #09: calculate DMA sync size (::max_len) correctly: within one page,
+  not one buffer (Yunsheng);
+* #10: decouple rearranging &iavf_ring into separate commit, optimize
+  it even more;
+* #11: let the driver get back to the last descriptor to process after
+  an skb allocation fail, don't drop it (Alex);
+* #11: stop touching unrelated stuff like watchdog timeout etc. (Alex);
+* fix "Return:" in the kdoc (now `W=12 C=1` is clean), misc typos.
+
+From v3[9]:
+* base on the latest net-next, update bloat-o-meter and perf stats;
+* split generic PP optimizations into a separate series;
+* drop "optimize hotpath a bunch" commit: a lot of [controversial]
+  changes in one place, worth own series (Alex);
+* 02: pick Rev-by (Alex);
+* 03: move in-place recycling removal here from the dropped patch;
+* 05: new, add libie Rx buffer API separatelly from IAVF changes;
+* 05-06: use new "hybrid" allocation API from[10] to reduce memory usage
+  when a page can fit more than 1 truesize (also asked by David);
+* 06: merge with "always use order-0 page" commit to reduce diffs and
+  simplify things (Alex);
+* 09: fix page_alloc_fail counter.
+
+From v2[11]:
+* 0006: fix page_pool.h include in OcteonTX2 files (Jakub, Patchwork);
+* no functional changes.
+
+From v1[12]:
+* 0006: new (me, Jakub);
+* 0008: give the helpers more intuitive names (Jakub, Ilias);
+*  -^-: also expand their kdoc a bit for the same reason;
+*  -^-: fix kdoc copy-paste issue (Patchwork, Jakub);
+* 0011: drop `inline` from C file (Patchwork, Jakub).
+
+[0] https://github.com/alobakin/linux/commits/idpf-libie-new
+[1] https://lore.kernel.org/netdev/20240418113616.1108566-1-aleksander.lobakin@intel.com
+[2] https://lore.kernel.org/netdev/20240404154402.3581254-1-aleksander.lobakin@intel.com
+[3] https://lore.kernel.org/netdev/20240308141833.2966600-1-aleksander.lobakin@intel.com
+[4] https://lore.kernel.org/netdev/20231213112835.2262651-1-aleksander.lobakin@intel.com
+[5] https://lore.kernel.org/netdev/20231207172010.1441468-1-aleksander.lobakin@intel.com
+[6] https://lore.kernel.org/netdev/20231124154732.1623518-1-aleksander.lobakin@intel.com
+[7] https://lore.kernel.org/netdev/20221115182841.2640176-1-edumazet@google.com
+[8] https://lore.kernel.org/netdev/20230705155551.1317583-1-aleksander.lobakin@intel.com
+[9] https://lore.kernel.org/netdev/20230530150035.1943669-1-aleksander.lobakin@intel.com
+[10] https://lore.kernel.org/netdev/20230629120226.14854-1-linyunsheng@huawei.com
+[11] https://lore.kernel.org/netdev/20230525125746.553874-1-aleksander.lobakin@intel.com
+[12] https://lore.kernel.org/netdev/20230516161841.37138-1-aleksander.lobakin@intel.com
+
+The following are changes since commit 9dd15d5088e9b322893459e38e1d279a33fc096c:
+  Merge branch 'sparx5-port-mirroring'
+and are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue 40GbE
+
+Alexander Lobakin (10):
+  net: intel: introduce {, Intel} Ethernet common library
+  iavf: kill "legacy-rx" for good
+  iavf: drop page splitting and recycling
+  slab: introduce kvmalloc_array_node() and kvcalloc_node()
+  page_pool: constify some read-only function arguments
+  page_pool: add DMA-sync-for-CPU inline helper
+  libeth: add Rx buffer management
+  iavf: pack iavf_ring more efficiently
+  iavf: switch to Page Pool
+  MAINTAINERS: add entry for libeth and libie
+
+ MAINTAINERS                                   |  20 +
+ drivers/net/ethernet/intel/Kconfig            |   7 +
+ drivers/net/ethernet/intel/Makefile           |   3 +
+ drivers/net/ethernet/intel/i40e/i40e_common.c | 253 --------
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |   1 +
+ .../net/ethernet/intel/i40e/i40e_prototype.h  |   7 -
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  72 +--
+ drivers/net/ethernet/intel/i40e/i40e_type.h   |  88 ---
+ drivers/net/ethernet/intel/iavf/iavf.h        |   2 +-
+ drivers/net/ethernet/intel/iavf/iavf_common.c | 253 --------
+ .../net/ethernet/intel/iavf/iavf_ethtool.c    | 140 -----
+ drivers/net/ethernet/intel/iavf/iavf_main.c   |  40 +-
+ .../net/ethernet/intel/iavf/iavf_prototype.h  |   7 -
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   | 551 +++---------------
+ drivers/net/ethernet/intel/iavf/iavf_txrx.h   | 146 +----
+ drivers/net/ethernet/intel/iavf/iavf_type.h   |  90 ---
+ .../net/ethernet/intel/iavf/iavf_virtchnl.c   |  17 +-
+ .../net/ethernet/intel/ice/ice_lan_tx_rx.h    | 320 ----------
+ drivers/net/ethernet/intel/ice/ice_main.c     |   1 +
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 111 +---
+ drivers/net/ethernet/intel/libeth/Kconfig     |   9 +
+ drivers/net/ethernet/intel/libeth/Makefile    |   6 +
+ drivers/net/ethernet/intel/libeth/rx.c        | 150 +++++
+ drivers/net/ethernet/intel/libie/Kconfig      |  10 +
+ drivers/net/ethernet/intel/libie/Makefile     |   6 +
+ drivers/net/ethernet/intel/libie/rx.c         | 124 ++++
+ include/linux/net/intel/libie/rx.h            |  50 ++
+ include/linux/slab.h                          |  17 +-
+ include/net/libeth/rx.h                       | 242 ++++++++
+ include/net/page_pool/helpers.h               |  34 +-
+ include/net/page_pool/types.h                 |   4 +-
+ net/core/page_pool.c                          |  10 +-
+ 32 files changed, 836 insertions(+), 1955 deletions(-)
+ create mode 100644 drivers/net/ethernet/intel/libeth/Kconfig
+ create mode 100644 drivers/net/ethernet/intel/libeth/Makefile
+ create mode 100644 drivers/net/ethernet/intel/libeth/rx.c
+ create mode 100644 drivers/net/ethernet/intel/libie/Kconfig
+ create mode 100644 drivers/net/ethernet/intel/libie/Makefile
+ create mode 100644 drivers/net/ethernet/intel/libie/rx.c
+ create mode 100644 include/linux/net/intel/libie/rx.h
+ create mode 100644 include/net/libeth/rx.h
+
+-- 
+2.41.0
+
 
