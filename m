@@ -1,117 +1,158 @@
-Return-Path: <linux-kernel+bounces-156823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD9E08B08C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EA5C8B08CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:56:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7375B23BC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:55:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0D9BB2126E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:56:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1034815AD9E;
-	Wed, 24 Apr 2024 11:55:14 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B820315B0F0;
+	Wed, 24 Apr 2024 11:56:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Id80e8du"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668D215A4A3
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 11:55:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F2E158DDD;
+	Wed, 24 Apr 2024 11:56:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713959713; cv=none; b=Mvg2qXzmeKWw8/SwrctTbuzP25mIVa0atJH8ATfjArRUo77qQR0aZHXMq34UDbW3jSPLpLeMKJNTm3C71favy84QZrjat4ni/QAMR/SpdsyjlVwhw1ClUHInx+jo9s9WwudUNdBpPaz29RlU/MEqsVg+esoR3fJhSUtshWvZ9yY=
+	t=1713959789; cv=none; b=kJq7/AaAZ5GIua2sg+Z9f9FJCL6TsXcV6S9FHjdHD05b9sTVwhtyYcByyPX+fm6sVXG85G/+RrAzVE+nCeoNTnv3bWHEZjPRNHHylGsILVCbV5+VEu2wuaNmqEfEvRp7n20iZA1eF6vT2WVzmsdsLUJZC4xjdlEXMUYqrOQlQHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713959713; c=relaxed/simple;
-	bh=laKzd3mIW3DWI5qUup3vRqxbLwrPRojH8Z7HJlY1Apc=;
+	s=arc-20240116; t=1713959789; c=relaxed/simple;
+	bh=tAHa0uAP1XOIzwk0meIwhRRVXUzUhQWgzB2b6tqoVDI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kOrFXDw5dIrQcmfGIxe2BzzgxLpfb9fj0MC1NXqIduqlrNwPD710qy6VAZ6tQjLQal/g0iCh1Q8Um67CG0rZ9BYQtsHffi6IPK/6jG7DN1y/4sN9nM0adckLakClQ1kkFMH4eATz/yOkRhMEvlhIhSVwy9BYTDRxrS6CkyKBiJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rzbDD-00033t-Ou; Wed, 24 Apr 2024 13:54:55 +0200
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rzbDD-00E4Rk-8O; Wed, 24 Apr 2024 13:54:55 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id C8B292BEDFC;
-	Wed, 24 Apr 2024 11:54:54 +0000 (UTC)
-Date: Wed, 24 Apr 2024 13:54:54 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Gregor Herburger <gregor.herburger@ew.tq-group.com>
-Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
-	Thomas Kopp <thomas.kopp@microchip.com>, Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux@ew.tq-group.com, alexander.stein@ew.tq-group.com
-Subject: Re: [PATCH 1/4] can: mcp251xfd: stop timestamp before sending chip
- to sleep
-Message-ID: <20240424-adaptable-zircon-badger-1fefd9-mkl@pengutronix.de>
-References: <20240417-mcp251xfd-gpio-feature-v1-0-bc0c61fd0c80@ew.tq-group.com>
- <20240417-mcp251xfd-gpio-feature-v1-1-bc0c61fd0c80@ew.tq-group.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qewSW49Oh/Xgjy+uoaVlZkhPNVvXo+YyDqdMLiPs42tDaDHiX2JZ3Eno8K9K+d88FCPjHuf6B18SfV+1zrvKatCz3dJrRjIMKFkasmNJ/UMkoKNjCSCBmkm8cczsibeIMpypfqCNa77d+9Lqoc5omhpxHO/JpZslACftPIanAbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Id80e8du; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43OBqf4c020542;
+	Wed, 24 Apr 2024 11:56:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=XpH7mlduGY+teRfPIZDry1r3MxwXhD+lR2HCJ3M7h20=;
+ b=Id80e8du9KRHgkzMQaMuQ9JzazbKiuyAGb974iHcfri4PgE4w2/QmgBfdkh/FLLn4LEq
+ slJgP6wLd6NmCKlAWqINqRJ7aCEz+kr/wb8DiAmKvSDbm8Si8MDPkmIIHIdN5FlUK5CA
+ Kndcr3Xd9hVkD6HFYLYiZZYwRlwXgnIeFrSHXdtKTLyH0fGGU0JfHZlVZkdyh2qzw8Jh
+ yPDnqJHqHMrpMwnbAORuuLmHCGDnYYMl8TFBda3wNUm7Xd8kCwrfL+u52ZI/lMHblLRX
+ 7LVpJyYvnSrdqPhzC2gnGDG3oZ5gxAnGHcWrRhDGv1wU3TXdIbmQDbjusoaqGgNMTUHX 6A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xq0sag3k9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 11:56:08 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43OBu7rI027504;
+	Wed, 24 Apr 2024 11:56:07 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xq0sag3k4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 11:56:07 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43O9AlZS005355;
+	Wed, 24 Apr 2024 11:56:06 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xmx3cj5ym-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 11:56:06 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43OBu1o138732126
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 24 Apr 2024 11:56:03 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 078132004F;
+	Wed, 24 Apr 2024 11:56:01 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 492CE2004D;
+	Wed, 24 Apr 2024 11:55:59 +0000 (GMT)
+Received: from osiris (unknown [9.171.4.217])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 24 Apr 2024 11:55:59 +0000 (GMT)
+Date: Wed, 24 Apr 2024 13:55:57 +0200
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Paul M Stillwell Jr <paul.m.stillwell.jr@intel.com>,
+        Rasesh Mody <rmody@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
+        Krishna Gudipati <kgudipat@brocade.com>,
+        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
+        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Fabian Frederick <fabf@skynet.be>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Nilesh Javali <nilesh.javali@cavium.com>,
+        Arun Easi <arun.easi@cavium.com>,
+        Manish Rangankar <manish.rangankar@cavium.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, Saurav Kashyap <saurav.kashyap@cavium.com>,
+        linux-s390@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 5/5] drivers/s390/cio: ensure the copied buf is NULL
+ terminated
+Message-ID: <20240424115557.26193-A-hca@linux.ibm.com>
+References: <20240422-fix-oob-read-v1-0-e02854c30174@gmail.com>
+ <20240422-fix-oob-read-v1-5-e02854c30174@gmail.com>
+ <20240423065052.10211-C-hca@linux.ibm.com>
+ <e4f5cbd0-c803-4c3c-9703-f52e56864106@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="42zcn6qmd3zur5l3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240417-mcp251xfd-gpio-feature-v1-1-bc0c61fd0c80@ew.tq-group.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <e4f5cbd0-c803-4c3c-9703-f52e56864106@gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: uhfqRBb54eWKPef2hDdJnIwSrSgU2j72
+X-Proofpoint-ORIG-GUID: gLWakaQraUUUlMZLADf4xlA10NLu8ZwJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_08,2024-04-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=767
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 suspectscore=0 spamscore=0
+ priorityscore=1501 bulkscore=0 impostorscore=0 phishscore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404240046
 
+On Tue, Apr 23, 2024 at 09:46:35PM +0700, Bui Quang Minh wrote:
+> > > -	buffer = vmemdup_user(buf, lbuf);
+> > > +	buffer = vmemdup_user(buf, lbuf + 1);
+> > >   	if (IS_ERR(buffer))
+> > >   		return -ENOMEM;
+> > > +	buffer[lbuf] = '\0';
+> > 
+> > This would read one byte too much from user space, and could potentially
+> > fault.
+> > 
+> > Why isn't this simply memdup_user_nul() like all others, which would do the
+> > right thing?
+..
+> For this case, as the original code uses vmemdup_user, which internally uses
+> kvmalloc not kmalloc, so I try to keep the original behavior. And
+> vmemdup_user does not have the counterpart vmemdup_user_nul. I can
+> kvmalloc(lbuf + 1), then copy_to_user(lbuf) and set buffer[lbuf] = '\0' or
+> do you think I should create vmemdup_user_nul?
 
---42zcn6qmd3zur5l3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 17.04.2024 15:43:54, Gregor Herburger wrote:
-> MCP2518FD exits Low-Power Mode (LPM) when CS is asserted. When chip
-> is send to sleep and the timestamp workqueue is not stopped chip is
-> waked by SPI transfer of mcp251xfd_timestamp_read.
-
-How does the Low-Power Mode affect the GPIO lines? Is there a difference
-if the device is only in sleep mode?
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---42zcn6qmd3zur5l3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmYo8wsACgkQKDiiPnot
-vG94AAf/fWp9nrOulZnq9/AdJQ9ZdkwwGBc1Y2so9ZSM9MUN1SAmlR5E67MpNdT5
-IUuME7nsewsFsKPeirJiFFP8Vi0c4+ID0GimQkD6XKlNPjtBzJPDW3LfwPzkYg9w
-Z2jizgKuBwrJvqRHxREhRuAzU0SSBSmb7kh9a0mE2JjC7ju6E5wqYQvbI+P7tnFK
-VaWIq75tHVWGIp6IhnQtudGoRi+YUVaqTeoHpfyEgnCosZ8b4vhN8EasSnA1S5si
-1vDZBgCHfVqQ4Losf9Z0zUQx5KSSGjpQJP6YirqqUXqUTbrd0g7ht59550jAT5JE
-aZXrBcZxYBPxliNx/Kg1HmJUxCP2uQ==
-=MLif
------END PGP SIGNATURE-----
-
---42zcn6qmd3zur5l3--
+There is no need for vmalloc() instead of kmalloc() for this particular
+case. The input string is supposed to be rather short (see the sscanf()
+call). So converting to memdup_user_nul() is sufficient and solves the
+potential problem.
 
