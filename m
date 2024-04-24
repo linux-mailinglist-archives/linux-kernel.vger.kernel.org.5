@@ -1,87 +1,82 @@
-Return-Path: <linux-kernel+bounces-157345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 470058B1023
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:45:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69EDA8B1024
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:46:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDC851F248A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:45:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C6581C245A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:46:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECB5216C6B0;
-	Wed, 24 Apr 2024 16:45:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF83416C69A;
+	Wed, 24 Apr 2024 16:46:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lydYpDxM"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="IBPHkcdb"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5EBD393;
-	Wed, 24 Apr 2024 16:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73BD7393
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:46:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713977122; cv=none; b=NLF152vAiOfGtsTtQmS2juuV22xcqf8xqsaWaPnCFiSUWazfujmWi0JElQYiNHIxB7QG9HXtDqDW+J1A+XvtWkAX6kguJ9mRSMx8cBadTR+zzH2MBRUY15THyj0jmArZ/SASEWY429V6w9WHC3s2i+jifnR9K3rpTnn5GRKi/G8=
+	t=1713977186; cv=none; b=uEXjlOR465AkcfDqU5CQKCfJNHN5zvSuM5tgk6wn6SAS3wfesaiFDyFLTrjp7/Zihgsh74PbXLkjK1dbVYQrzMLTIktJefg3thOamWX9Ji/UAxF9fzrh/tzehNg9LQ6qWrJPHXkjmjU35dlRvWyLBCKrQI7dO3B7pchoQdKhPJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713977122; c=relaxed/simple;
-	bh=eghjSdHfDXmpKj6KcfaxUt06aiUtkhlI0/hSTgy5dp8=;
+	s=arc-20240116; t=1713977186; c=relaxed/simple;
+	bh=0gl8pqLkHh69onN4ComrekvSqNglUjxLzVsFszmR4UM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HTtydFB5Bt+xmEXuP9Y5SKkBNL/Y4mzMf4hyY1ksyMn1Sc3hrQif/30CMvcAYlTa8EgGoe2oVojpKRD9rGbO7ZnLFQ9mb7eOfXCrdtgJeQOYYYihymHioAKVF2pnddcQ43Jtewrw2Ppr3K+bpzydbSBC47h+uKW4i/kjy5zowY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lydYpDxM; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713977121; x=1745513121;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=eghjSdHfDXmpKj6KcfaxUt06aiUtkhlI0/hSTgy5dp8=;
-  b=lydYpDxMrfgmYFZDTuQnvs0dx0twIksc7V3fRqryp92FJFn6LRSuYSmx
-   mivJ6L00QorrOWL94W/LOyvMSLupeMyq+2EFzJPaiZ7WGJCYLteG47cWC
-   BhRKfSnlfyLhG+ugkDuRizGy9KIF1tKFl6ob5Q/1fROX83lJaluyHemCy
-   JE040Pj725Zur5DR4LCcJh+KI8y+0xDfC/d6e+bp6WqpQ8fHhXk4X5HSp
-   VPQMC5JLjJW1BVRwDMhw382VVe/rqMBXfVcSarGkn7+OMRHO8Vdsc0hV8
-   7sMoSw2HOPZLlnj5U3tvD2ALmGcR9n7OlzOz5F0EtvmfqN/bFCxqaP84G
-   A==;
-X-CSE-ConnectionGUID: ZZSrFAiwSle+59x6cU+DCA==
-X-CSE-MsgGUID: Nj/duk39Q7OTJSKhyEXjkA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9787502"
-X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="9787502"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 09:45:04 -0700
-X-CSE-ConnectionGUID: XVrT5SFuTemAEufu8IGP8A==
-X-CSE-MsgGUID: 9S4Pniz5RdS1kWMPMW6MNA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="24725565"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa009.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 09:44:54 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rzfjm-00000000ia8-3AYP;
-	Wed, 24 Apr 2024 19:44:50 +0300
-Date: Wed, 24 Apr 2024 19:44:50 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Sui Jingfeng <sui.jingfeng@linux.dev>, dri-devel@lists.freedesktop.org,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v2] software node: Implement device_get_match_data fwnode
- callback
-Message-ID: <Zik3AjiWkytSVn-1@smile.fi.intel.com>
-References: <20240422164658.217037-1-sui.jingfeng@linux.dev>
- <Zie3ebHOEpWHj1qV@smile.fi.intel.com>
- <d5bc1e73-a553-451e-ab74-f5f0ca259c6b@linux.dev>
- <hcltp2bbxxg2t7ibmzgiib7mgbwgmvzwnnq6mochdh7c4h76r3@bxj6yk5zq64e>
- <ZikE4qOVO7rgIs9a@smile.fi.intel.com>
- <CAA8EJpr1FSjizAh6Dp5Bmux3NrGYh=BfHFL4D1fa87Og4ymY0w@mail.gmail.com>
- <Zikck2FJb4-PgXX0@smile.fi.intel.com>
- <kucey3jsydjye3ndflns3cqolcpizhnxgzz3fkmcatlnpbnwrk@22ulsqfh2vf6>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bPnbq1w+jT3CSM3zk6JHgehd0DgFTlXpDLFwXxsyJE1BzkuHm3/jaiR76jT/k6DXmMcXQdkuDmtfnovGw9gnn1umxscUDzOe57syogZijBo3trMs6+fL3qFPzWm1X7zt3Rv+qw5r2LCw+4F/mgjLQO0x01YLVSMjXZGvE5S49ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=IBPHkcdb; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a4702457ccbso8972666b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:46:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1713977183; x=1714581983; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=OR2ExOkbn5NhoJ3EHQ69fEuHqlCRe0lWGaAZLilHS5Y=;
+        b=IBPHkcdb/URUsYVdzuksiMxmGoXiQ56bwOu1cD6w+wzQGWpDbYnGnTzSi8tHV/+4fb
+         8zN6JmWNIx80DjuTaXU2tyt8ywOb3GPjNHBIDcQVZD75DuoX4cPao7K1kTrbGs92bbNX
+         4GY7L5I8QfKrRKe2685OUm+ms2PwlMIhVvKl68n6P6HWn+xMnBq386ntW41+sDOpaJyI
+         X1XDA6/Qkn2m4CVkefOzFLUCK1X0HFs9H+h0yGkJjTzVJcc5Q39C+cNKH1TZGCv/qYY6
+         8T4OToFLGZCiyt2yK5iXg3e9/Gngp1rqRgdmr752GJHGprfqsnG5WYkkuCE4pO1Bb8dG
+         FDDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713977183; x=1714581983;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OR2ExOkbn5NhoJ3EHQ69fEuHqlCRe0lWGaAZLilHS5Y=;
+        b=rAwZ5KN1edUak0VX4I69yR2UrTEBYw0NmoAN5SjJlONhoOE1t4IlLgwnWeSd/MyIDV
+         B7TI+fzH4S0GFqrC3e+Eln6hWKEG0AwjOdFQ+4JlrNhD/azB0BLFXiloGr3EwIYFk7uT
+         jAvndFRTxoGOuFY2jFPAqjec4EMjBZ3d5o79v6Y6nXbhzG8aCvHQNAHXlV6BYQtXOEwH
+         1p5/YCIxrE78Hg6ygzGPMMdl6J9B0uy9+0VHh5bw1lYxgGbe/zzdA3NvB1le1nrPKyQU
+         mPW3rrx5DqKvT1OmUq6+VxYtugMzOY9Hc8j22s8EDqoYLFG2gE9ovSVsLKmQdQJS5dW2
+         kT4A==
+X-Forwarded-Encrypted: i=1; AJvYcCX4MuoCxSwuXvu6no/gXIIVPV83q4qiT5dAQyX0JhYTzf5gHRVLQ256u2kuqum38BWwzKp+/tOniHYLQnI4hmRcw2XOxGGS1L55DwnB
+X-Gm-Message-State: AOJu0YwTxW6WDgCrHRN1pO/q8V9YW538ry+6bQoERS4j4Km1o2oiA0hr
+	s+U2IIgqkJW8oE2lQ+xin70oVlbtkh1cQ4A+lV9w59GuqUhpqceJN1bLFqtYxlY=
+X-Google-Smtp-Source: AGHT+IEFGfcCTyr95j87C3m9QEcJHbWTs8ecvq8vgRfzfWoK9hZpODauOtNeyf9IWI85E+PeMJSnXA==
+X-Received: by 2002:a17:907:1048:b0:a55:347e:7a89 with SMTP id oy8-20020a170907104800b00a55347e7a89mr1880894ejb.67.1713977182761;
+        Wed, 24 Apr 2024 09:46:22 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id 16-20020a170906319000b00a5544063372sm8553551ejy.162.2024.04.24.09.46.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 09:46:22 -0700 (PDT)
+Date: Wed, 24 Apr 2024 18:46:21 +0200
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: linux-riscv@lists.infradead.org, 
+	Conor Dooley <conor.dooley@microchip.com>, Samuel Holland <samuel.holland@sifive.com>, 
+	Pu Lehui <pulehui@huaweicloud.com>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] RISC-V: clarify what some RISCV_ISA* config options do
+Message-ID: <20240424-e62cefb761bd56b398ec9235@orel>
+References: <20240424-tabby-plural-5f1d9fe44f47@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,62 +86,45 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <kucey3jsydjye3ndflns3cqolcpizhnxgzz3fkmcatlnpbnwrk@22ulsqfh2vf6>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240424-tabby-plural-5f1d9fe44f47@spud>
 
-On Wed, Apr 24, 2024 at 07:34:54PM +0300, Dmitry Baryshkov wrote:
-> On Wed, Apr 24, 2024 at 05:52:03PM +0300, Andy Shevchenko wrote:
-> > On Wed, Apr 24, 2024 at 04:34:39PM +0300, Dmitry Baryshkov wrote:
-> > > On Wed, 24 Apr 2024 at 16:11, Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > On Wed, Apr 24, 2024 at 12:37:16AM +0300, Dmitry Baryshkov wrote:
-> > > > > On Wed, Apr 24, 2024 at 12:49:18AM +0800, Sui Jingfeng wrote:
-> > > > > > On 2024/4/23 21:28, Andy Shevchenko wrote:
-> > > > > > > On Tue, Apr 23, 2024 at 12:46:58AM +0800, Sui Jingfeng wrote:
-
-..
-
-> > > > > But let me throw an argument why this patch (or something similar) looks
-> > > > > to be necessary.
-> > > > >
-> > > > > Both on DT and non-DT systems the kernel allows using the non-OF based
-> > > > > matching. For the platform devices there is platform_device_id-based
-> > > > > matching.
-> > > > >
-> > > > > Currently handling the data coming from such device_ids requires using
-> > > > > special bits of code, e.g. platform_get_device_id(pdev)->driver_data to
-> > > > > get the data from the platform_device_id. Having such codepaths goes
-> > > > > against the goal of unifying DT and non-DT paths via generic property /
-> > > > > fwnode code.
-> > > > >
-> > > > > As such, I support Sui's idea of being able to use device_get_match_data
-> > > > > for non-DT, non-ACPI platform devices.
-> > > >
-> > > > I'm not sure I buy this. We have a special helpers based on the bus type to
-> > > > combine device_get_match_data() with the respective ID table crawling, see
-> > > > the SPI and I²C cases as the examples.
-> > > 
-> > > I was thinking that we might be able to deprecate these helpers and
-> > > always use device_get_match_data().
-> > 
-> > True, but that is orthogonal to swnode match_data support, right?
-> > There even was (still is?) a patch series to do something like a new
-> > member to struct device_driver (? don't remember) to achieve that.
+On Wed, Apr 24, 2024 at 05:25:21PM +0100, Conor Dooley wrote:
+> From: Conor Dooley <conor.dooley@microchip.com>
 > 
-> Maybe the scenario was not properly described in the commit message, or
-> maybe I missed something. The usecase that I understood from the commit
-> message was to use instatiated i2c / spi devices, which means
-> i2c_device_id / spi_device_id. The commit message should describe why
-> the usecase requires using 'compatible' property and swnode. Ideally it
-> should describe how these devices are instantiated at the first place.
+> During some discussion on IRC yesterday and on Pu's bpf patch [1]
+> I noticed that these RISCV_ISA* Kconfig options are not really clear
+> about their implications. Many of these options have no impact on what
+> userspace is allowed to do, for example an application can use Zbb
+> regardless of whether or not the kernel does. Change the help text to
+> try and clarify whether or not an option affects just the kernel, or
+> also userspace. None of these options actually control whether or not an
+> extension is detected dynamically as that's done regardless of Kconfig
+> options, so drop any text that implies the option is required for
+> dynamic detection, rewording them as "do x when y is detected".
+> 
+> Link: https://lore.kernel.org/linux-riscv/20240328-ferocity-repose-c554f75a676c@spud/ [1]
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+> 
+> Since this is a commit entirely about wording, I dropped both R-bs for
+> v2 as, while my intent hasn't changed, I've come up with a new set of
+> wordings.
+> v2 redoes some of the "detected by the kernel" wording to avoid stuff that
+> Drew pointed out was redundant & adds a wee bit more wording to the C
+> extension's stuff to be clear that it is a build time option.
+> 
+> CC: Samuel Holland <samuel.holland@sifive.com>
+> CC: Pu Lehui <pulehui@huaweicloud.com>
+> CC: Björn Töpel <bjorn@kernel.org>
+> CC: Andrew Jones <ajones@ventanamicro.com>
+> CC: Paul Walmsley <paul.walmsley@sifive.com>
+> CC: Palmer Dabbelt <palmer@dabbelt.com>
+> CC: linux-riscv@lists.infradead.org
+> CC: linux-kernel@vger.kernel.org
+> ---
+>  arch/riscv/Kconfig | 36 +++++++++++++++++++-----------------
+>  1 file changed, 19 insertions(+), 17 deletions(-)
+>
 
-Yep. I also do not clearly understand the use case and why we need to have
-a board file, because the swnodes all are about board files that we must not
-use for the new platforms.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
