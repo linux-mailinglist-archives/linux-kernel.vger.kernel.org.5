@@ -1,225 +1,161 @@
-Return-Path: <linux-kernel+bounces-156613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 208C78B05A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:14:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D38198B03F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:14:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A18CA1F26642
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:14:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94A68283128
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 502F4158DC2;
-	Wed, 24 Apr 2024 09:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="aSAwhV0B"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1474C158A0E;
+	Wed, 24 Apr 2024 08:13:49 +0000 (UTC)
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2121.outbound.protection.partner.outlook.cn [139.219.146.121])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0AE3158D6B;
-	Wed, 24 Apr 2024 09:13:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713950038; cv=none; b=IHzhoPABdwtnkTg7dQwJiL4Ztbygn1xYBk6T9Kx1YajDFzr7gER7gjh7rV5scQXoDESLGOgWKOS/Fu1InO9TNDRgCHHDpvrSFLz1lqrdXHxzR9aKIT7Uz7pDe2krwAFTPOqY+GzUolHEDrUeVIUI75IXH5NA/oV6J2mPetCSDjg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713950038; c=relaxed/simple;
-	bh=kwOToCx5Xooe3aJqkybANNPjfaU/VyfvyRqvIPXQRH4=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=HHTu0kWfFcRd3GQG6jrhMjncdAlTCce8z+E16E+hK4YMv7kKSFm4Xvlc1G38k+w8lNo55wetkPUg2L46h9AK8lIuI6QWXKiU5xr3/teHazWX+R02ZiS2KJk4oCjCZzANIArDWLR/o9bh3bZsyab9b4fqSUUfAj+qV2GSmC224Lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=aSAwhV0B; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240424091353euoutp02a99f231124e7c37c8b8a49a9232b77f9~JLHl1sgmH1862118621euoutp020;
-	Wed, 24 Apr 2024 09:13:53 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240424091353euoutp02a99f231124e7c37c8b8a49a9232b77f9~JLHl1sgmH1862118621euoutp020
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1713950033;
-	bh=kwOToCx5Xooe3aJqkybANNPjfaU/VyfvyRqvIPXQRH4=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=aSAwhV0BgLj4HlzR9RkxKUIlKO6mdH+qDlcJnc3WQqvvbUEEu9rE5tdbfzAf3CCKG
-	 LMJ5j7IlxtSxWYK2OgflVwchXJUAt+SEljM12rLnj+ixER6dRPvEAkh5jxiubbM7YU
-	 y+vsHzDfhMaVwDt5VCCH2fjZ1joktXWYCMO6tnok=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240424091353eucas1p2d064d779024946aee4f8181509c2f5da~JLHlozUYn1487814878eucas1p23;
-	Wed, 24 Apr 2024 09:13:53 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id E5.96.09624.05DC8266; Wed, 24
-	Apr 2024 10:13:52 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240424091352eucas1p1c0d02929537ba08fee15fd7fd0517813~JLHlALEqg2217522175eucas1p19;
-	Wed, 24 Apr 2024 09:13:52 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240424091352eusmtrp1d9ccae9cde2c168d9a3fb3babdbf8d26~JLHk_vwxq2021920219eusmtrp1y;
-	Wed, 24 Apr 2024 09:13:52 +0000 (GMT)
-X-AuditID: cbfec7f2-c11ff70000002598-d2-6628cd50483d
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id DE.D4.08810.05DC8266; Wed, 24
-	Apr 2024 10:13:52 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240424091352eusmtip1fa4b115f07c557f8f6f3537efb4e8058~JLHktoFeI2178721787eusmtip1L;
-	Wed, 24 Apr 2024 09:13:52 +0000 (GMT)
-Received: from localhost (106.110.32.44) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Wed, 24 Apr 2024 10:13:51 +0100
-Date: Wed, 24 Apr 2024 09:52:38 +0200
-From: Joel Granados <j.granados@samsung.com>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-CC: Luis Chamberlain <mcgrof@kernel.org>, <josh@joshtriplett.org>, Kees Cook
-	<keescook@chromium.org>, Eric Biederman <ebiederm@xmission.com>, Iurii
-	Zaikin <yzaikin@google.com>, Steven Rostedt <rostedt@goodmis.org>, Masami
-	Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Thomas
-	Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>, Stephen
-	Boyd <sboyd@kernel.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry
-	<wad@chromium.org>, Ingo Molnar <mingo@redhat.com>, Peter Zijlstra
-	<peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
-	<vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel
-	Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider
-	<vschneid@redhat.com>, Petr Mladek <pmladek@suse.com>, John Ogness
-	<john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Anil S Keshavamurthy
-	<anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>,
-	Balbir Singh <bsingharora@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
-	<john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
-	KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
-	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
-	<linux-fsdevel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <tools@kernel.org>
-Subject: Re: [PATCH v3 00/10] sysctl: Remove sentinel elements from kernel
- dir
-Message-ID: <20240424075238.g7dwzjt7nqajcdgk@joelS2.panther.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F3B7158852;
+	Wed, 24 Apr 2024 08:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.121
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713946428; cv=fail; b=bcZzJUQs8ApuPrh+TeDMzc70WDEDAivrcJ8oOpjufsQgqccITuWDGkoKtoOD6SMAqOXp6aGe1kJpCLHeb8UXR92QTJnLvJGvKVj4g339Lgy9nQiW9jeeOn1I58ihzdl2qQqUq4yc7U7YUEtSqxVQipvDLN+ztiNJ4R1t08zBTWo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713946428; c=relaxed/simple;
+	bh=7bs9DFiAPydOLrz8koLS85SNVBEvy8oPmrho0DF9BQ8=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=L9J4e5zoJPllz/I5R9t0Du9954BzTq4mFh0ARS34wuRhTJyjv/BqTkATNuzdEd3BkvGV/OiPWyG5wfAkPUZelkG8X3b5aDVKjKT29scrWyd+G2CqioZp/ODQS/BnxKtJjQjek+ltQS10lfAs/3RjfgvB5bl8zn/fUgIX3fpIuIM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.121
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MmC8lsp2jKPTyY7jRlfo5OQy803PZsUEb2KZyDsreqsRVHQclVtPfMaOH+TFv6GpRlX/2bWrTrVuZ0f/wMhKJDCFoRDi732/pMocIIIxK3UWiMWwE0XlEvaPfN83QRcu4Xulyg8OuMAmD/MMx2PnVdsDyoSWDkvM4trb+AkYkR/WTg63c1hfTivh3eNHhAEcE/EhJ+WLejKJbqDfl4vq28AA6pt+GBLXmR1bqsKuew4OaHKfow3iNYYuBum8a5DX5LGSNb2f0StTB5+K8r+ti+8ZyAuL3d1VPRNLB0qUS03QS6Jhblsdt6ltL+u7+9CUJ3nfF8N+wmRu+cVKLsFjcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Cg9jfm2RdfID9OVLaH2/GdpLKSbONvmMc77/ga5YeHQ=;
+ b=gC6FlEJMKdjpH1WkHK7Rh8ICNTA0fltotowTG5tx1BlG1q9tFuPw2XfsfwcZNDtNuQBSiNRgyd71z53NxM6APQKKhQU3ol0TXPfESmb+PafCvZvCt5gpf+uT82MLmIkwLIzvCypBInE6OJFz1jTAtKCN25JVLtLNN+4xvssqRyi1B3QK/jTGH8+C1VuvjNMoWORb0eR7h0pyw35ZtXeGvx3Vczy4sf6XWuR3l4+5nj60ABCosBl6zXWZmqchGX8pbCGDN5KVhaAhTc68rg7rGzQPLGAif2eJAk8aXzBiCZ+Rur1A3JjbL9Lx06nAHqb+xeIH30nyLqs4MU4IY7XBSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:20::14) by SH0PR01MB0460.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:8::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.33; Wed, 24 Apr
+ 2024 07:59:12 +0000
+Received: from SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ ([fe80::e0a:f88a:cad1:dc1c]) by SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ ([fe80::e0a:f88a:cad1:dc1c%7]) with mapi id 15.20.7472.044; Wed, 24 Apr 2024
+ 07:59:12 +0000
+From: Joshua Yeong <joshua.yeong@starfivetech.com>
+To: robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	conor@kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	joshua.yeong@starfivetech.com,
+	leyfoon.tan@starfivetech.com,
+	jeeheng.sia@starfivetech.com
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH v3 0/2] Add StarFive's JH8100 StarLink Cache Controller
+Date: Wed, 24 Apr 2024 15:58:54 +0800
+Message-Id: <20240424075856.145850-1-joshua.yeong@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BJXPR01CA0048.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:12::15) To SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:20::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="c3mjqeq3spx6dpjw"
-Content-Disposition: inline
-In-Reply-To: <36a1ea2f-92c2-4183-a892-00c5b48c419b@linaro.org>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTe1BUZRjG5zvncM6CLR4Wwk/AHBAZBgE1dPwgISvHjs1UVM5UTqOucgQC
-	FmYXSMUmICRYUUhABgRZIK6LKBeX+wIr10BuEnETUERBUEJcCWXZgIPlTP+97/v8nu993j8+
-	Hi5opEx4niJ/ViwSeluQeoSicaHDzvW29ckdl+87oflXV3BUOTFIoOcLgxSaq28iUffYHyRK
-	mAwhUPJkG4Uy0l7gKLkjjEDjMTdxpFWEUUjVVEOh0LIcDCl6UgGqj0taFmS+aLG5kER3o+MJ
-	1HbeB1W2qjEUEVtKoEfKCxiqqm4h0J2KZBLVX79NIPm1YB2U+WcXhvIjc3VQX8w4QLFPHwKU
-	kW2FumtlGJLHaSjUdKEWQ9oxtQ5SRoxiaKm3kEDdf08RqLIwnURN2RoSFRfF46i98B6OIuqX
-	s95smKfQoFRLoVG5QgdllX+2bzszMq0hmPyr+YC5EtxFMCW5/RhTnnSXYsKUAxQjKwpginNs
-	mIyqSYyR9nXjzMCUM1OUF0kyQ71VJPO0vZ1i0oLjcSYmvRa4Gh/W2+vGensGsuLtLsf0PDp/
-	UQI/pcGpshfhRDA4t14KdHmQ3gWz8xNIKdDjCegcAFsePcS55jmA54qb15Q5ADXSOPK1pSIm
-	EeOEbAAXOyewf6nyxB7ANcUAyruGiBULQW+F0UMjq3aStoUd00PLS3g8o+U6Ml6ywuN0Ax92
-	xHWs8oa0K4zv7aZWGD69DwaHbFoZ82kD2JL4YBXB6VNwdky7iuC0Kcxe4q2MdWkXuCDrIbig
-	5lCdMbxW/wh/LxlYzQnpmXWwvWF8NQKk90NNqRvHGMLHTSUUV5vB1tgoguNjAaxZ+oviGjmA
-	WSFqjKPeg2E9D9YcH8Dw4RmCe1Qf9j0x4HLqw0uKhLVdfBgRLuBoKygfniZiwJakNy5LeuOy
-	pP8u48a2UFb5jPzfeBvMSpvCudoZFhTMEDJA5YENbIDEx52V7BSxP9hLhD6SAJG7/QlfnyKw
-	/L1al5qelYGUx7P2KoDxgApYLpvv35B3AhNC5CtiLYz4LxctTwr4bsLTZ1ix71FxgDcrUQFT
-	HmGxgb/VbTMroN2F/qwXy/qx4tcqxtM1Cca+DDxbJ7jnWXvoYpk25qD1nsBOZdTnjsP2pbFt
-	31uVrE/10m9WzCnXjdineFQd33/++Ca/vBnvI7kDm+00BVc/CSk6bKqWRu96aeswvdQ2Yb6o
-	c9D6oy17y68hlXfLNrv+0t2DTidoZeQX3wlOG77TanP91pmgj3sSg4xveDn4yS7V/NT4qbOb
-	OZ5ZbPJ2aHpVVJDjxu666sYPn/yGp1eYGR117T9bPRvq3mg2Z6z2rjuimx9npBDTqQcm56Xa
-	GTq8YbTW8qtvyKSJy3Y/q60yHeM1hxzKdvjL+75uabloMuaacuddibb6VYnBxl95eZ18lz2q
-	WP+3KlW979/69thuO6fwPJ8OkQUh8RDutMHFEuE/XTuYVtkEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTe0xTVxzHd+69vbewFS+FsRsciTaMGaaFIoVTIh1ZNrkui+EPyTKcQieX
-	xwYta8GgCaY44kqJoUxxUhBaQRBhaHnKc11XBwryEhlPAZ3yTJUhOt5r7ZaZ7L9Pvuf7/Z5f
-	fjmHjXIncXd2vDSZkUslCTzcEevcbB/fE3Z3V4xvU50LfLmWj8LmmVEMPl8ZJeCSuR2H/Y/u
-	4/DH2XQMFsx2EbBY/wKFBT0ZGHysqUPhVn0GAU3tPxPw9M2rCKwfKALQfF5rPdDJ4HqHAYfj
-	2bkY7MpKhM2dywhUnWvA4HTbWQS2tN7G4L2mAhyar9/FYMVPSha88nsfAiszy1lwSPMYwHOW
-	JwAWl3nBfqMOgRXnNwjYftaIwK1HyyzYpppE4OagAYP9f81jsNlwGYftZRs4rKnORWG3YQqF
-	KrN11rpbLwk4qt4i4GRFPQuWNh4M8aEnFjYwurKwEtD5yj6Mri0fRuhG7ThBZ7SNELSuOoWu
-	uepNF7fMIrR6qB+lR+aD6eprmTg9NtiC05buboLWK3NRWnPZCMLcIvj75LKUZGZHnEyRHMw7
-	LIB+fIEI8v38RXzB3sAjQX5Cno94XzSTEH+ckfuIo/hxW88+SmpxTtW01uJK8N02NXBgU6Q/
-	1aTJQ2zMJa8AamRjh11/lzI8v8+yswu1PqjG1cDR6lkE1GyOnrAHagBlzAq0MUa+R2WPTeA2
-	xsndVM/CGKoGbLarlTNzFbYsSt7iUEPTRa88LuRBauwHI2bzcMgQSpnuYe+fBNRwdfarizmk
-	M3U77w/Mxih5nOoyXAA2P0pup8o22TbZgRRTK7oBzD7nTmq5+ME/nEYtbTwBGuCifa1J+1qT
-	9r8mu+xNDW3OIv+TP6BK9fOonYOpqqqnmA4Q14Ark6JIjE1UCPgKSaIiRRrLPyZLrAbW513/
-	20rNTVA4t8g3AYQNTMDTmnx4o6IXuGNSmZThuXJW1z1juJxoyYmTjFwWKU9JYBQmILQuMQd1
-	f/uYzPpXpMmRggBfocA/QOQrFAXs5b3DOZCkknDJWEky8w3DJDHyf3MI28FdiWQronxLzxvf
-	MJ1Uxe8fDmVzG9y+kI8NRFWGz3Ssdn6I+zqmx/d7hkfeQXb3rdYVihpqY9p3mk2iT3dZDrhn
-	72HpXScP8T4+80z8PZ//yftpzpI3N+suVsfOWWIixLoQ4sbRwPTDRVHBAQX6X3tXzc1eoZp5
-	C136taX8BTK1eoLcxnJi8lyL5goH3Es+H+/9ih6simmOFlZ4THv0uJzRRXeUlHt+ebRFm3mn
-	9dJE1kXJocW33L7l/PnZ6dwjM70TDYUPFLlP2criknwx956rZ7gwbdg4HaBPXQpaOxXhPBXk
-	NNita3T+pZy/kFTmtRY6HJnqVNB4SnVpf44qbHX78sPrizxMEScReKNyheRvqkITNnMEAAA=
-X-CMS-MailID: 20240424091352eucas1p1c0d02929537ba08fee15fd7fd0517813
-X-Msg-Generator: CA
-X-RootMTR: 20240422142758eucas1p26e94cf6fbbbc99b27e941a172e8a4e41
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240422142758eucas1p26e94cf6fbbbc99b27e941a172e8a4e41
-References: <20240328-jag-sysctl_remove_empty_elem_kernel-v3-0-285d273912fe@samsung.com>
-	<CGME20240422142758eucas1p26e94cf6fbbbc99b27e941a172e8a4e41@eucas1p2.samsung.com>
-	<36a1ea2f-92c2-4183-a892-00c5b48c419b@linaro.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SH0PR01MB0841:EE_|SH0PR01MB0460:EE_
+X-MS-Office365-Filtering-Correlation-Id: 73b56d7e-8a11-4feb-67c7-08dc64346dcb
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	1a7SMoek5HN/7ol4MBX9CbJ93fIwYhJkxXkotu6oYHrzMIpwIgCBwcpDZ8Yv7BZuY8QbuCTaXFBxfK4OSGEUXRtUO5G0/kq9yoG9UkEn1+GrdmV5XUjlXYSCsrBvNJW4mxRooX1dpe1/FyodJdoJ13ZabcQfLvpS9OS015M8P3VpDGXTu/DvbKQCnRg4/9FxzjWtj9lgVFb/4g99uybAEisDWgqzBluHuLnMPhAdfdgCsueW6SblysR3mNLcQhn+zH0tvyP8i8zja3cw+NOCxnjCbYsCC380XUbsp1FRm0/R5YxY497I/JBVdzVafoC3R0ixeFCptpfAEUgY2IXhfgGxVAmsU0rR2SbCl0l6tNfmRtrEqsOMikOfNJHbhNRZpm/kC8/rdt+/xNphm3709hlKvIM0mQhzGoB9zezwdQNNKNXoCLVcIfm8QeFTPA1U3BLJnkyO4NGXxkEVMQtsJRM4mlhksVyyCy/Jr4c9Zj7T5SLrpQifn1XMGq+AFJVxxmDhwyes5QJHDHEflLi1Z/Ll7xD1cw4xb0/3FI9Y+wyt/RN6HQdZOVsj7sCtzPuaZ+8Ov1fpvroPpGnehbXfAUKbwwXnYTW2bAYvammUvVIQjx9oeuPuDxUiUK1N6By19qJ3TbISLcxDRk+RWoUjCg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(366007)(52116005)(7416005)(41320700004)(1800799015)(921011)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?J9VbbWUPk6asUWJ79YLi+o4C/4LCjMG2j9cdJa/Gb76nA9TEo9L9XHIBCTVH?=
+ =?us-ascii?Q?4SbOuhL7z2iGYlYMNDDJV7E5jFUFb6zBrFTDifWKfrkb7jkH5V18CyKj+HBA?=
+ =?us-ascii?Q?2yLH/uJHjPr7Klbfzuo+zH0skfz7QXOfVEl90AGUDZiS5WHQfwWQkVx1wWBb?=
+ =?us-ascii?Q?ODdpyhnfCbGinM/Dc4O/qvseeqruNjl/W+FkW7OsKbgJOo9N31+I/pDmjQL7?=
+ =?us-ascii?Q?Tl0rJqkjZI9oFFWgRGwHkl6E51QVuryv3/Su/MId36h8l1R/XUSH7HZIlKe5?=
+ =?us-ascii?Q?NcpR+W4J5k1SdRMRXRu8D6FOSWIXH9YtUAFbuuEd1m4aGPfaogbDPF8s3P4C?=
+ =?us-ascii?Q?Ci5o7oforgmi1Gfv5cBIDXO3JVTAv/3IbnZxrPtZ4urClzRFCIiw81hb9NDe?=
+ =?us-ascii?Q?Xax78LeRnZgc+4FRe4S1abn+AOM4zZvpHCKiWwD3hwwhme4MMIp5mF7Rm338?=
+ =?us-ascii?Q?dYw8B2+0xY8cUGNf5d6XiKwGt3oSKZ6yh+EPZmGftcdcTDp9rn4FGPcCaPUu?=
+ =?us-ascii?Q?d4O8iuWnQ+U46UeAw/1Ksr6jOvLnRBX4SNBiDWPVb5bnAojyEbeFurtuerZT?=
+ =?us-ascii?Q?I95l74FB5OWe7J9WH1xVF0pRDeeva9gM8FbFvUnM0EY6vQVsM5jMAscqgtSy?=
+ =?us-ascii?Q?BFgjP0BkACkHJ9LC0UZx1hvhDry9uCn7UMofc3boCbX96yzco2lbcn6sD52Z?=
+ =?us-ascii?Q?vOZdQRjzOArvUPnaFCvENNk+RKB7q8n83g/ANWh927t4S/x26uDtr55sr8ax?=
+ =?us-ascii?Q?DSjjVVsSCBbtt3dpoiAsNrn18239ukatBKVGaQH0MtKh2UF8v7fr56R0rE9v?=
+ =?us-ascii?Q?BjS5Xwc5JBjUVVsVTt+6GwqKOc4tHtVPpgBtRLruLc94VMK/QdwDV1uk3ETs?=
+ =?us-ascii?Q?33PG0D1dvXZ8naHVWQbwsxr6iLd5uesSU8t/vx196yzK+elvWHmUxgw56w0U?=
+ =?us-ascii?Q?Jfjp1BEEhr5bpvNjsCvdM+r9n9VqYJvFWFY53BirHCQTT/30nHxKOBiDPkK/?=
+ =?us-ascii?Q?KNMB5md1Orfea7xQejjl8HcBznvbHsT6Jt24ALWv/e6fBd/cxZxDmVHIj7bT?=
+ =?us-ascii?Q?MJ1PqQ+FrrqRBBCC6Eik1RF91GTekTTahIsBrR2aLhm/hKhutDB60t1ETe9S?=
+ =?us-ascii?Q?F8PDbwRx9A4T7nmXiYb1XDy+Gk3woc+u58PinFqDxVYn06tg1/gUD8xhRagU?=
+ =?us-ascii?Q?C6IYd8tjC6/Ea1PongtwNVWJ5TYIFn4ri89+ULLA29DahYYcSHrrxZuyhHub?=
+ =?us-ascii?Q?anf2F+wgsAWm9yZz+65RXhEFplBCr8oshKTXh/ED9SW5FFiOtULMa4huU9bk?=
+ =?us-ascii?Q?rwbbZpV1zAWSObddy11gQBek1Rx/jV3PbAd24qv3Bgm4IGpunKvSCb1HhBUq?=
+ =?us-ascii?Q?hk0nx4HuUUFDZIJ665KLKrjUasXIbQJhI+QSMv/yt/tIfydT3e4cHXgaYgQS?=
+ =?us-ascii?Q?OPT1UTijMX5+XejePBUAiJg4VCuPE9hPsxPU7iMYWCppaz3lvjwNZq8UfywU?=
+ =?us-ascii?Q?BegSxxBhFmi9KHUW7DwQFm/dEmdcSNQIqpSbRKuv3eyM0/LO+jgpbTTd4vCc?=
+ =?us-ascii?Q?6Qc9O1OOJyfLQ5Mg3+RUXS1h9xbpy5qT09Kv0LIo6xB2LilTRZIRn63l43SF?=
+ =?us-ascii?Q?xROZ4RskSlF7NfHVXa4t40k=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73b56d7e-8a11-4feb-67c7-08dc64346dcb
+X-MS-Exchange-CrossTenant-AuthSource: SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 07:59:12.3502
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ue5PKaIF4kR4wDTbivcPcOSDSTswl07rj+g4Q15/QrMLuD+CDtTyuf3UGkPF3q8LTqQIiM9P+fwpWwtTxBRcI20opxIZa9tdR5q9P4HW5O8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SH0PR01MB0460
 
---c3mjqeq3spx6dpjw
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+StarFive's JH8100 StarLink Cache Controller flush/invalidates cache using non-
+conventional RISC-V Zicbom extension instructions. This driver provides the
+cache handling on StarFive RISC-V SoC.
 
-On Mon, Apr 22, 2024 at 04:27:47PM +0200, Konrad Dybcio wrote:
->=20
->=20
-> On 3/28/24 16:44, Joel Granados wrote:
-> > What?
-> > These commits remove the sentinel element (last empty element) from the
-> > sysctl arrays of all the files under the "kernel/" directory that use a
-> > sysctl array for registration. The merging of the preparation patches
-> > [1] to mainline allows us to remove sentinel elements without changing
-> > behavior. This is safe because the sysctl registration code
-> > (register_sysctl() and friends) use the array size in addition to
-> > checking for a sentinel [2].
->=20
-> Hi,
->=20
-> looks like *this* "patch" made it to the sysctl tree [1], breaking b4
-> for everyone else (as there's a "--- b4-submit-tracking ---" magic in
-> the tree history now) on next-20240422
->=20
-> Please drop it (again, I'm only talking about this empty cover letter).
-Here do you mean revert? or do you mean force-push without the cover
-letter commit?
+Changes in v3:
+- Fix code syntax
+- Link to v2: https://lore.kernel.org/all/20240423072639.143450-1-joshua.yeong@starfivetech.com/
 
-I did the later, but if the former is necessary I can always go back to
-the old HEAD, add a revert commit and then push that.
+Changes in v2:
+- Change patch title from 'Add StarFive's StarLink-500 Cache Controller'
+- Remove StarFive alternative from errata framework
+- Fixes warning from https://lore.kernel.org/oe-kbuild-all/202403151625.boKDjHGr-lkp@intel.com/
+- Flush completion through atomic timeout function
+- Link to v1: https://lore.kernel.org/lkml/20240314061205.26143-1-joshua.yeong@starfivetech.com/
 
-Best
+Joshua Yeong (2):
+  cache: Add StarFive StarLink cache management for StarFive JH8100
+  dt-bindings: cache: Add docs for StarFive Starlink cache controller
 
->=20
-> Konrad
->=20
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git/com=
-mit/?h=3Dsysctl-next&id=3Dec04a7fa09ddedc1d6c8b86ae281897256c7fdf0
+ .../cache/starfive,jh8100-starlink-cache.yaml |  66 +++++++++
+ drivers/cache/Kconfig                         |   9 ++
+ drivers/cache/Makefile                        |   5 +-
+ drivers/cache/starfive_starlink_cache.c       | 135 ++++++++++++++++++
+ 4 files changed, 213 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/cache/starfive,jh8100-starlink-cache.yaml
+ create mode 100644 drivers/cache/starfive_starlink_cache.c
 
---=20
+-- 
+2.25.1
 
-Joel Granados
-
---c3mjqeq3spx6dpjw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmYoukYACgkQupfNUreW
-QU9vQAv+Lne9ZN0yGMA1Mmfcb0fp2lW2SntP3+HHJYiKmz98mwTHJrsNLqgRg9Sp
-18WTHY2ZF0t/6poR3F6+6ScGSdk9IjzwNzyLJeaH9iGQq8xU7PcIdcvgvXp5GWnw
-PeDW28bZ74r2vGa9sDRmzqEHmJ6zxGAsIRopraO5iCjsX/xZQILsbj3McgnQ1Mf8
-usn7eJbiUgpWPfc6Xp4oylK/5vZYwkds3ktFT0bCOO+QoP3bIS6xVkRBDS7K9cJS
-0yPRvkmICkjOL11n4PYKeev+5NHxAUbFwrD3HJ8bKkDIN0GQCsd98nucM2q32fcA
-aQnsxdnHVPeCf42ZSZWEpm3GtTqXJuBespmD78k3DqQMOElbGs3XWck0/17kTNRo
-3k53VVirXDs7xWx8KtGPt17sQLTjoR5ETNbS6OO+XLmZvzA8XHDvVLUVOKGvHcSC
-pXvKil3C7em0Yuea0ioAKeNRBr8SRsGXD6VazvCUX6eSAeYWVopJscUJY7c5FWuS
-wDWSrhNX
-=iaui
------END PGP SIGNATURE-----
-
---c3mjqeq3spx6dpjw--
 
