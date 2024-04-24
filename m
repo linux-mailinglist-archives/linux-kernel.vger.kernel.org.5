@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-156311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1B768B0115
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:35:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4025D8B0117
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:35:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 761C61F23AA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:35:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 728731C2247C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:35:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE62156870;
-	Wed, 24 Apr 2024 05:34:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9080D156962;
+	Wed, 24 Apr 2024 05:35:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="q1Kv1THB"
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="kBDyZ0Ml"
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08ACF156666
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:34:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E871156671
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:35:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713936893; cv=none; b=lM53jNd6NfRCeyc7v4s14sGEP1DUwvyCaUzqSMtVb2gEpFVL/ORfRQsjiWRrVWZw6gxCnPLQlNje02eS/JQQpxOusnIPIcWPBWDsqEZj0iJCLEFlptYWPlJ1GKJaTijVfSbftI9DN7rFLdo5igceojnI/4jr+HZCesBY5sGx10M=
+	t=1713936913; cv=none; b=IQ1+loV4y5iNl9JrA+ZASu01yVdH/1FaswsLdaIOrXe4ZCUK8ZwrcONQpeabZyVJhJW0gMO1LnYyHtTHKM+3EywNx81S8Q/PtPL02WAQvrwCy3EC4eVLGJeWanRraC377T/ZgwhiP+Wsc1ihEaI3VTwyYrFdb1e6TaxSxNOxZmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713936893; c=relaxed/simple;
-	bh=pdPxed/ER9IiDp9ME+rn2hk3q1ClqZRiV2sB5ZU8XR4=;
+	s=arc-20240116; t=1713936913; c=relaxed/simple;
+	bh=EJ7HICHgLilFrtLK8BajK1eVr4wt6O4I9e6krZgg5WE=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eC+qN14d6istlxUI417QBDUJ2T4gQtk3Gia7Pj4XX3yvXfEi1oabaolbQTz88DyGGAoP+rDrMwcUdvS0FfKyGGxhjHDKJxyWeS9qYZkfunhnTrl4wRIt/a24sK9lmWBzLyVQz6l0hFQuOFRtgjq3N5OB9HuusKSyf8QmPIq7TkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=q1Kv1THB; arc=none smtp.client-ip=68.232.154.123
+	 MIME-Version:Content-Type; b=TuPz/c+Y/Ij2RJ0gEaBVptUPUBsdTWlxbv1ryQ7DAeOy9u4OhUW39DLPEEgXN0roBbs/whhrc3feNCKgPCb9MwK+XEp/Cu0WrPazI2eNymXhX+7EnIpVj7moLz48jbmwEHLOiiT/uFK6/fz2+OEnqUsuYRl0cisD1K7D3519f1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=kBDyZ0Ml; arc=none smtp.client-ip=68.232.154.123
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1713936891; x=1745472891;
+  t=1713936912; x=1745472912;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=pdPxed/ER9IiDp9ME+rn2hk3q1ClqZRiV2sB5ZU8XR4=;
-  b=q1Kv1THBXfXZzjwAlecVz4ktZVgJxpNe6Gjp5Yvb462sQ/EWll5r2pyI
-   HwuQAzB+Mjjmv/FQ6cn8GPwH8Xm1sVkBCLAq9z/UW+jxcRpyvzepfMfMX
-   lzi7qn/dpwmYifzzklKnhz52MNaXlMxi5wwMO8fpSnYhdqmY6sidPpPoR
-   8KvJZNdMIvJPywkT3wnsrx4/g+94fQjtAvIUnhZv1zclUchyBJy+qqgbN
-   dex+50LVC56rFdktmyj//BWIfe/rCQP89EvR8tNVMouVsQBmHRNnCp13Z
-   8QwfqsxNZntyeDaNZQpwWt5qYUUX9ur9ucko/oQv2adDPmlegUHBixWdQ
-   A==;
-X-CSE-ConnectionGUID: PbptyM/7SruTa7hfwyXEEg==
-X-CSE-MsgGUID: QfTaV9MVTtONOBp1w3fY6Q==
+  bh=EJ7HICHgLilFrtLK8BajK1eVr4wt6O4I9e6krZgg5WE=;
+  b=kBDyZ0Mlm28T8L9F5DwJqGWyuqkX5HwKSovV9ou8iyUjtz6BHFvgVNx7
+   xRO4bkzI49TDN2f9Z6l+ZOkZZwnXjc0A2AFqfokea1vWfEZgQMUl024fc
+   sU6jAeYbLo+0SJ0vgn3FmEG/idJrT+KMEeAJiXCoEo5twfX6knF9j1ufX
+   7728+88QIAOr0RTLaAq3z4sXIdzcosibHwe/EhqGbwoISGQHAbDYbSUa3
+   7B68dhbuoEVyLSA2Jpuv6AYvFiRgIbBPtpio3ttQS2PCD7dDiFK0tkTso
+   4rwiVzrgWvF9LKd7Vh3WkIE3uenA7EkyfBlMUzUnG2YnJ42/+EnVLwyI5
+   w==;
+X-CSE-ConnectionGUID: cS45O937TrSqQ6qvvirFaA==
+X-CSE-MsgGUID: pHqPswsEQ4y0P+i2vFp7IQ==
 X-IronPort-AV: E=Sophos;i="6.07,225,1708412400"; 
-   d="scan'208";a="22373247"
+   d="scan'208";a="22977482"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Apr 2024 22:34:48 -0700
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Apr 2024 22:35:11 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 23 Apr 2024 22:34:40 -0700
+ 15.1.2507.35; Tue, 23 Apr 2024 22:34:50 -0700
 Received: from che-lt-i67131.microchip.com (10.10.85.11) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Tue, 23 Apr 2024 22:34:31 -0700
+ 15.1.2507.35 via Frontend Transport; Tue, 23 Apr 2024 22:34:40 -0700
 From: Manikandan Muralidharan <manikandan.m@microchip.com>
 To: <sam@ravnborg.org>, <bbrezillon@kernel.org>,
 	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
@@ -68,12 +68,11 @@ To: <sam@ravnborg.org>, <bbrezillon@kernel.org>,
 CC: <Hari.PrasathGE@microchip.com>, <Balamanikandan.Gunasundar@microchip.com>,
 	<Durai.ManickamKR@microchip.com>, <Nayabbasha.Sayed@microchip.com>,
 	<Dharma.B@microchip.com>, <Varshini.Rajendran@microchip.com>,
-	<Balakrishnan.S@microchip.com>, <Charan.Pedumuru@microchip.com>, "Durai
- Manickam KR" <durai.manickamkr@microchip.com>, Manikandan Muralidharan
-	<manikandan.m@microchip.com>
-Subject: [PATCH RESEND v9 2/8] drm: atmel-hlcdc: Define XLCDC specific registers
-Date: Wed, 24 Apr 2024 11:03:45 +0530
-Message-ID: <20240424053351.589830-3-manikandan.m@microchip.com>
+	<Balakrishnan.S@microchip.com>, <Charan.Pedumuru@microchip.com>, "Manikandan
+ Muralidharan" <manikandan.m@microchip.com>
+Subject: [PATCH RESEND v9 3/8] drm: atmel_hlcdc: replace regmap_read with regmap_read_poll_timeout
+Date: Wed, 24 Apr 2024 11:03:46 +0530
+Message-ID: <20240424053351.589830-4-manikandan.m@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240424053351.589830-1-manikandan.m@microchip.com>
 References: <20240424053351.589830-1-manikandan.m@microchip.com>
@@ -86,117 +85,84 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 
-From: Durai Manickam KR <durai.manickamkr@microchip.com>
+Replace regmap_read with regmap_read_poll_timeout to neatly handle
+retries
 
-The register address of the XLCDC IP used in SAM9X7 SoC family
-are different from the previous HLCDC. Defining those address
-space with valid macros.
-
-Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
-[manikandan.m@microchip.com: Remove unused macro definitions]
 Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
-Acked-by: Lee Jones <lee@kernel.org>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
 ---
- drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h | 42 ++++++++++++++++++++
- include/linux/mfd/atmel-hlcdc.h              | 10 +++++
- 2 files changed, 52 insertions(+)
+ .../gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c    | 44 +++++++++++--------
+ 1 file changed, 25 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
-index d0ecf0f58cce..c32e5c8809d7 100644
---- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
-+++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
-@@ -15,6 +15,7 @@
+diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
+index cc5cf4c2faf7..b229692a27ca 100644
+--- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
++++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
+@@ -203,19 +203,22 @@ static void atmel_hlcdc_crtc_atomic_disable(struct drm_crtc *c,
+ 	pm_runtime_get_sync(dev->dev);
  
- #include <drm/drm_plane.h>
+ 	regmap_write(regmap, ATMEL_HLCDC_DIS, ATMEL_HLCDC_DISP);
+-	while (!regmap_read(regmap, ATMEL_HLCDC_SR, &status) &&
+-	       (status & ATMEL_HLCDC_DISP))
+-		cpu_relax();
++	if (regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
++				     !(status & ATMEL_HLCDC_DISP),
++				    10, 1000))
++		dev_warn(dev->dev, "Atmel LCDC status register DISPSTS timeout\n");
  
-+/* LCD controller common registers */
- #define ATMEL_HLCDC_LAYER_CHER			0x0
- #define ATMEL_HLCDC_LAYER_CHDR			0x4
- #define ATMEL_HLCDC_LAYER_CHSR			0x8
-@@ -128,6 +129,47 @@
+ 	regmap_write(regmap, ATMEL_HLCDC_DIS, ATMEL_HLCDC_SYNC);
+-	while (!regmap_read(regmap, ATMEL_HLCDC_SR, &status) &&
+-	       (status & ATMEL_HLCDC_SYNC))
+-		cpu_relax();
++	if (regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
++				     !(status & ATMEL_HLCDC_SYNC),
++				    10, 1000))
++		dev_warn(dev->dev, "Atmel LCDC status register LCDSTS timeout\n");
  
- #define ATMEL_HLCDC_MAX_LAYERS			6
+ 	regmap_write(regmap, ATMEL_HLCDC_DIS, ATMEL_HLCDC_PIXEL_CLK);
+-	while (!regmap_read(regmap, ATMEL_HLCDC_SR, &status) &&
+-	       (status & ATMEL_HLCDC_PIXEL_CLK))
+-		cpu_relax();
++	if (regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
++				     !(status & ATMEL_HLCDC_PIXEL_CLK),
++				    10, 1000))
++		dev_warn(dev->dev, "Atmel LCDC status register CLKSTS timeout\n");
  
-+/* XLCDC controller specific registers */
-+#define ATMEL_XLCDC_LAYER_ENR			0x10
-+#define ATMEL_XLCDC_LAYER_EN			BIT(0)
-+
-+#define ATMEL_XLCDC_LAYER_IER			0x0
-+#define ATMEL_XLCDC_LAYER_IDR			0x4
-+#define ATMEL_XLCDC_LAYER_ISR			0xc
-+#define ATMEL_XLCDC_LAYER_OVR_IRQ(p)		BIT(2 + (8 * (p)))
-+
-+#define ATMEL_XLCDC_LAYER_PLANE_ADDR(p)		(((p) * 0x4) + 0x18)
-+
-+#define ATMEL_XLCDC_LAYER_DMA_CFG		0
-+
-+#define ATMEL_XLCDC_LAYER_DMA			BIT(0)
-+#define ATMEL_XLCDC_LAYER_REP			BIT(1)
-+#define ATMEL_XLCDC_LAYER_DISCEN		BIT(4)
-+
-+#define ATMEL_XLCDC_LAYER_SFACTC_A0_MULT_AS	(4 << 6)
-+#define ATMEL_XLCDC_LAYER_SFACTA_ONE		BIT(9)
-+#define ATMEL_XLCDC_LAYER_DFACTC_M_A0_MULT_AS	(6 << 11)
-+#define ATMEL_XLCDC_LAYER_DFACTA_ONE		BIT(14)
-+
-+#define ATMEL_XLCDC_LAYER_A0_SHIFT		16
-+#define ATMEL_XLCDC_LAYER_A0(x)			\
-+	((x) << ATMEL_XLCDC_LAYER_A0_SHIFT)
-+
-+#define ATMEL_XLCDC_LAYER_VSCALER_LUMA_ENABLE		BIT(0)
-+#define ATMEL_XLCDC_LAYER_VSCALER_CHROMA_ENABLE		BIT(1)
-+#define ATMEL_XLCDC_LAYER_HSCALER_LUMA_ENABLE		BIT(4)
-+#define ATMEL_XLCDC_LAYER_HSCALER_CHROMA_ENABLE		BIT(5)
-+
-+#define ATMEL_XLCDC_LAYER_VXSYCFG_ONE		BIT(0)
-+#define ATMEL_XLCDC_LAYER_VXSYTAP2_ENABLE	BIT(4)
-+#define ATMEL_XLCDC_LAYER_VXSCCFG_ONE		BIT(16)
-+#define ATMEL_XLCDC_LAYER_VXSCTAP2_ENABLE	BIT(20)
-+
-+#define ATMEL_XLCDC_LAYER_HXSYCFG_ONE		BIT(0)
-+#define ATMEL_XLCDC_LAYER_HXSYTAP2_ENABLE	BIT(4)
-+#define ATMEL_XLCDC_LAYER_HXSCCFG_ONE		BIT(16)
-+#define ATMEL_XLCDC_LAYER_HXSCTAP2_ENABLE	BIT(20)
-+
- /**
-  * Atmel HLCDC Layer registers layout structure
-  *
-diff --git a/include/linux/mfd/atmel-hlcdc.h b/include/linux/mfd/atmel-hlcdc.h
-index a186119a49b5..80d675a03b39 100644
---- a/include/linux/mfd/atmel-hlcdc.h
-+++ b/include/linux/mfd/atmel-hlcdc.h
-@@ -22,6 +22,8 @@
- #define ATMEL_HLCDC_DITHER		BIT(6)
- #define ATMEL_HLCDC_DISPDLY		BIT(7)
- #define ATMEL_HLCDC_MODE_MASK		GENMASK(9, 8)
-+#define ATMEL_XLCDC_MODE_MASK		GENMASK(10, 8)
-+#define ATMEL_XLCDC_DPI			BIT(11)
- #define ATMEL_HLCDC_PP			BIT(10)
- #define ATMEL_HLCDC_VSPSU		BIT(12)
- #define ATMEL_HLCDC_VSPHO		BIT(13)
-@@ -34,6 +36,12 @@
- #define ATMEL_HLCDC_IDR			0x30
- #define ATMEL_HLCDC_IMR			0x34
- #define ATMEL_HLCDC_ISR			0x38
-+#define ATMEL_XLCDC_ATTRE		0x3c
-+
-+#define ATMEL_XLCDC_BASE_UPDATE		BIT(0)
-+#define ATMEL_XLCDC_OVR1_UPDATE		BIT(1)
-+#define ATMEL_XLCDC_OVR3_UPDATE		BIT(2)
-+#define ATMEL_XLCDC_HEO_UPDATE		BIT(3)
+ 	clk_disable_unprepare(crtc->dc->hlcdc->sys_clk);
+ 	pinctrl_pm_select_sleep_state(dev->dev);
+@@ -241,20 +244,23 @@ static void atmel_hlcdc_crtc_atomic_enable(struct drm_crtc *c,
+ 	clk_prepare_enable(crtc->dc->hlcdc->sys_clk);
  
- #define ATMEL_HLCDC_CLKPOL		BIT(0)
- #define ATMEL_HLCDC_CLKSEL		BIT(2)
-@@ -48,6 +56,8 @@
- #define ATMEL_HLCDC_DISP		BIT(2)
- #define ATMEL_HLCDC_PWM			BIT(3)
- #define ATMEL_HLCDC_SIP			BIT(4)
-+#define ATMEL_XLCDC_SD			BIT(5)
-+#define ATMEL_XLCDC_CM			BIT(6)
+ 	regmap_write(regmap, ATMEL_HLCDC_EN, ATMEL_HLCDC_PIXEL_CLK);
+-	while (!regmap_read(regmap, ATMEL_HLCDC_SR, &status) &&
+-	       !(status & ATMEL_HLCDC_PIXEL_CLK))
+-		cpu_relax();
+-
++	if (regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
++				     status & ATMEL_HLCDC_PIXEL_CLK,
++				     10, 1000))
++		dev_warn(dev->dev, "Atmel LCDC status register CLKSTS timeout\n");
  
- #define ATMEL_HLCDC_SOF			BIT(0)
- #define ATMEL_HLCDC_SYNCDIS		BIT(1)
+ 	regmap_write(regmap, ATMEL_HLCDC_EN, ATMEL_HLCDC_SYNC);
+-	while (!regmap_read(regmap, ATMEL_HLCDC_SR, &status) &&
+-	       !(status & ATMEL_HLCDC_SYNC))
+-		cpu_relax();
++	if (regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
++				     status & ATMEL_HLCDC_SYNC,
++				     10, 1000))
++		dev_warn(dev->dev, "Atmel LCDC status register LCDSTS timeout\n");
+ 
+ 	regmap_write(regmap, ATMEL_HLCDC_EN, ATMEL_HLCDC_DISP);
+-	while (!regmap_read(regmap, ATMEL_HLCDC_SR, &status) &&
+-	       !(status & ATMEL_HLCDC_DISP))
+-		cpu_relax();
++	if (regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
++				     status & ATMEL_HLCDC_DISP,
++				     10, 1000))
++		dev_warn(dev->dev, "Atmel LCDC status register DISPSTS timeout\n");
++
+ 
+ 	pm_runtime_put_sync(dev->dev);
+ 
 -- 
 2.25.1
 
