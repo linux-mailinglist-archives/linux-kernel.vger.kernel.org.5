@@ -1,172 +1,143 @@
-Return-Path: <linux-kernel+bounces-157586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4EE58B133A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:07:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27B5F8B133F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:07:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FA0FB22B78
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:07:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 593A01C2280D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C49D2BAE3;
-	Wed, 24 Apr 2024 19:06:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6861D20DF7;
+	Wed, 24 Apr 2024 19:07:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xVHvpTX/"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="JUCvmZrw"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA9A91EB36;
-	Wed, 24 Apr 2024 19:06:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E0C1CD24;
+	Wed, 24 Apr 2024 19:07:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713985599; cv=none; b=YUZtucQobOoe+KLFBav58BZ3Te7khR63VFGbPoMz92QnZJ0SPzyOggsCYxavN8rFjFPMPdum6Kpfvp0Ej6bFxgLZiTxJDpFUiGq0IEJVq9JRY8niUAPdjKIaYFr2afBVHOpW6bymEbivfIi3j8ymXyBCjwYHOn3uQbZNLErtRss=
+	t=1713985639; cv=none; b=N/B58iJf1a3rIu76t4s+GW9tPziPO0ulQbu1VpkUUze/Ir7Nq44mnHV9eiHICnvR2HgK431fQfCZyNLEuQBonZrqIb9iWzR+laLXOTDmGSLwS6XyWPe1RzIWUEQpRAxjb9Js8KoUPJkNkdISZGDacUj0Q5XMcL+WL9D5W+Xqn24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713985599; c=relaxed/simple;
-	bh=lXgdA1VYXOVAo664jkOGVLzSIAQ7tosy7CcWVdpPwAk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OWoG72DCufl8Vy8ILuNmaN9F6euU+QGbcV3YTTJPXRyUrp19IyRsN5/0543rpoMm/64nsqRDlX1EPymjpWhMW3nmNhMaPa+9nBikwNrzqiv4LONlSJd0HRCu7Q+2jISo/xevoP/HRD5qFOV8FXHebhmUSLmzGdF15FhKPx+gt2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=xVHvpTX/; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43OJ6FBk022632;
-	Wed, 24 Apr 2024 14:06:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713985575;
-	bh=WpM9LZ1mafWCjjoPr9/TU74EPFXo8BshGHxAWjtGkx0=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=xVHvpTX/UdbE0culkKSjpf6GfCTzexC0OPzt9OvRo4ZHKud8mwBilDP6CVZC4gDQq
-	 nXynYIjEhl/eeqsqwRnpiVhZavJwe9pDJ87ocHfzPvS/tG5V9b7hethF4av11Z87DI
-	 /tJd5q47+dsehnC0EbIAR2tISmKPRksNOt04Bj7k=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43OJ6FWV106515
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 24 Apr 2024 14:06:15 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 24
- Apr 2024 14:06:14 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 24 Apr 2024 14:06:14 -0500
-Received: from ula0226330.dhcp.ti.com (ula0226330.dhcp.ti.com [10.219.51.241])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43OJ6DqR067070;
-	Wed, 24 Apr 2024 14:06:14 -0500
-From: Andrew Davis <afd@ti.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier
-	<mathieu.poirier@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof
- Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, Nishanth
- Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo
-	<kristo@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hari Nagalla
-	<hnagalla@ti.com>
-CC: <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Davis <afd@ti.com>
-Subject: [PATCH v8 4/4] arm64: dts: ti: k3-am62: Add M4F remoteproc node
-Date: Wed, 24 Apr 2024 14:06:12 -0500
-Message-ID: <20240424190612.17349-5-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240424190612.17349-1-afd@ti.com>
-References: <20240424190612.17349-1-afd@ti.com>
+	s=arc-20240116; t=1713985639; c=relaxed/simple;
+	bh=URHwfcZ2dvJLtTkhWQROx4aAwctdwvwLAfIwr0/k4Sk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mS/u9WUnZjRgPaBq/LMnRUoSy0nQkSOhQRXJkLA5ux3zkyGFe7nvtJTNc2gEP5tWLVw2KStqvDEeJYG7qFJFUInrest4ID3GGzBElAJBHalK/ybXey5ZtSLhYs+mpzVyzqiwL61kDLAN4kRFRsIpF/nPZ7j6Gnmclpdm2yvmTwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=JUCvmZrw; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id ADC3440E0192;
+	Wed, 24 Apr 2024 19:07:15 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id RsixhrfbRsJC; Wed, 24 Apr 2024 19:07:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1713985632; bh=QjOQvZjxGr+HZwRAXiop9IEkjMTXSpDO12auOhbpb2Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JUCvmZrwBh9PA8yQmaliGzMFwck50yT5yE3WmZbz427mrhUyN1oW2P+b8nMXnfYet
+	 +dVIeg+VAiZ7aYITPnp3krR4Z7MMurddjoqhF7RS1oNChbXT/ZBb3CQ+5Z6QXEPjZ/
+	 1Kh1sl++lIqHkrUUJfcoSgZ6PDTMQbR8mE0aXfzyG0SbFGHh4GgN1kc6ozR/Zh4PP8
+	 J6WQaxqUC4p4PFHZKJINYVpTxhyA0ny8NV2vlqyn6oAhKaUeRvSxDg5BxRJKaglPzL
+	 LSz4+rR6uggHp2GOKuMfWRAZZ3FGLSj6Uk9+IwQG//gTDvpuWdMnE9m7pYqW8sJCgn
+	 2+/XBbNlmzn1hN7Iz4Sm9V2HDhgxo/e4qZRBSvvtiJYsWsTbNoLFVqIQTYvqHpgdfa
+	 NheF8icbFaZ4YWMbXQ//G1jXEvHLqq7M5lY9azRUJH8pdCYpsEfibYCIXWaxQy9vXf
+	 wtPo4x6u0Zt4Wg6gVFSho47ot3TLsqEU1XKRKK3aHLmQXirNBmbSw7xwCmN+Ce9pl1
+	 wTVq0/QZvBC+GUxsO9CplB6MUVXTdQiGrhoyq/X16so2wYnlz1j0ou7q15M5MG2+q4
+	 Gbm++b1L/jsE3WpK3T5hZZuDZ5wX+blIi7meX4DrcDEeE9Yte9jgYCEhWBanrO0bjS
+	 yHYWHNNVJozXIiAK9RU3d+cU=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D571C40E01C5;
+	Wed, 24 Apr 2024 19:07:04 +0000 (UTC)
+Date: Wed, 24 Apr 2024 21:06:58 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+	tony.luck@intel.com, x86@kernel.org, Avadhut.Naik@amd.com,
+	John.Allen@amd.com
+Subject: Re: [PATCH v2 07/16] x86/mce/amd: Simplify DFR handler setup
+Message-ID: <20240424190658.GHZilYUvw1KfSfVd_e@fat_crate.local>
+References: <20240404151359.47970-1-yazen.ghannam@amd.com>
+ <20240404151359.47970-8-yazen.ghannam@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240404151359.47970-8-yazen.ghannam@amd.com>
 
-From: Hari Nagalla <hnagalla@ti.com>
+On Thu, Apr 04, 2024 at 10:13:50AM -0500, Yazen Ghannam wrote:
+> AMD systems with the SUCCOR feature can send an APIC LVT interrupt for
+> deferred errors. The LVT offset is 0x2 by convention, i.e. this is the
+> default as listed in hardware documentation.
+> 
+> However, the MCA registers may list a different LVT offset for this
+> interrupt. The kernel should honor the value from the hardware.
 
-The AM62x SoCs of the TI K3 family have a Cortex M4F core in the MCU
-domain. This core can be used by non safety applications as a remote
-processor. When used as a remote processor with virtio/rpmessage IPC,
-two carveout reserved memory nodes are needed. The first region is used
-as a DMA pool for the rproc device, and the second region will furnish
-the static carveout regions for the firmware memory.
+There's this "may" thing again.
 
-The current carveout addresses and sizes are defined statically for
-each rproc device. The M4F processor do not have an MMU, and as such
-require the exact memory used by the firmware to be set-aside.
+Is this enablement for some future hw too or do you really trust the
+value in MSR_CU_DEF_ERR is programmed correctly in all cases?
 
-Signed-off-by: Hari Nagalla <hnagalla@ti.com>
-Signed-off-by: Andrew Davis <afd@ti.com>
----
- arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi        | 12 ++++++++++++
- arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi | 18 ++++++++++++++++++
- 2 files changed, 30 insertions(+)
+> Simplify the enable flow by using the hardware-provided value. Any
+> conflicts will be caught by setup_APIC_eilvt(). Conflicts on production
+> systems can be handled as quirks, if needed.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi
-index e66d486ef1f21..0c6ee801f35fc 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi
-@@ -173,4 +173,16 @@ mcu_mcan1: can@4e18000 {
- 		bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
- 		status = "disabled";
- 	};
-+
-+	mcu_m4fss: m4fss@5000000 {
-+		compatible = "ti,am64-m4fss";
-+		reg = <0x00 0x5000000 0x00 0x30000>,
-+		<0x00 0x5040000 0x00 0x10000>;
-+		reg-names = "iram", "dram";
-+		ti,sci = <&dmsc>;
-+		ti,sci-dev-id = <9>;
-+		ti,sci-proc-ids = <0x18 0xff>;
-+		resets = <&k3_reset 9 1>;
-+		firmware-name = "am62-mcu-m4f0_0-fw";
-+	};
- };
-diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-index 3c45782ab2b78..bda9fb2e33eec 100644
---- a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-@@ -48,6 +48,18 @@ ramoops@9ca00000 {
- 			pmsg-size = <0x8000>;
- 		};
- 
-+		mcu_m4fss_dma_memory_region: m4f-dma-memory@9cb00000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0x9cb00000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		mcu_m4fss_memory_region: m4f-memory@9cc00000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0x9cc00000 0x00 0xe00000>;
-+			no-map;
-+		};
-+
- 		secure_tfa_ddr: tfa@9e780000 {
- 			reg = <0x00 0x9e780000 0x00 0x80000>;
- 			alignment = <0x1000>;
-@@ -457,6 +469,12 @@ mbox_m4_0: mbox-m4-0 {
- 	};
- };
- 
-+&mcu_m4fss {
-+	mboxes = <&mailbox0_cluster0>, <&mbox_m4_0>;
-+	memory-region = <&mcu_m4fss_dma_memory_region>,
-+			<&mcu_m4fss_memory_region>;
-+};
-+
- &usbss0 {
- 	bootph-all;
- 	status = "okay";
+Well, which systems support succor?
+
+I'd like to test this on them before we face all the quirkery. :)
+
+That area has been plagued by hw snafus if you look at
+setup_APIC_eilvt() and talk to uncle Robert. :-P
+
+> @@ -595,17 +584,15 @@ static void deferred_error_interrupt_enable(struct cpuinfo_x86 *c)
+>  	if (rdmsr_safe(MSR_CU_DEF_ERR, &low, &high))
+>  		return;
+>  
+> +	/*
+> +	 * Trust the value from hardware.
+> +	 * If there's a conflict, then setup_APIC_eilvt() will throw an error.
+> +	 */
+>  	def_new = (low & MASK_DEF_LVTOFF) >> 4;
+> -	if (!(low & MASK_DEF_LVTOFF)) {
+> -		pr_err(FW_BUG "Your BIOS is not setting up LVT offset 0x2 for deferred error IRQs correctly.\n");
+> -		def_new = DEF_LVT_OFF;
+> -		low = (low & ~MASK_DEF_LVTOFF) | (DEF_LVT_OFF << 4);
+> -	}
+> +	if (setup_APIC_eilvt(def_new, DEFERRED_ERROR_VECTOR, APIC_EILVT_MSG_FIX, 0))
+> +		return;
+>  
+> -	def_offset = setup_APIC_deferred_error(def_offset, def_new);
+> -	if ((def_offset == def_new) &&
+> -	    (deferred_error_int_vector != amd_deferred_error_interrupt))
+> -		deferred_error_int_vector = amd_deferred_error_interrupt;
+
+There was a reason for that - deferred_error_int_vector is a global var
+and you're calling enable_deferred_error_interrupt() on each CPU.
+
+> +	deferred_error_int_vector = amd_deferred_error_interrupt;
+>  
+>  	if (!mce_flags.smca)
+>  		low = (low & ~MASK_DEF_INT_TYPE) | DEF_INT_TYPE_APIC;
+
+Thx.
+
 -- 
-2.39.2
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
