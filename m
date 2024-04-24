@@ -1,110 +1,218 @@
-Return-Path: <linux-kernel+bounces-156846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D8258B0911
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C50FF8B0913
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:18:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6ECCFB23884
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:17:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6B9EB255E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2809115B575;
-	Wed, 24 Apr 2024 12:16:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 386D915ADAC;
+	Wed, 24 Apr 2024 12:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="U9zkW1MA"
-Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="dNitDyJI"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8FD415AD9E;
-	Wed, 24 Apr 2024 12:16:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E3921DFCE
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 12:17:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713961015; cv=none; b=oahlixZyowEeWPvjEOyUfA7q+x0da2mdyJs6srCc3K66HB7VL9rxMQrDoneXUTBKlR8XPwxEIMbAtnOVqhcWynTUxLcUiMhebP5Oi7//vOzV3xdyiMqO7tPcQN0Mf9Tewib/KdRA6RooUp0UF22iSnh+5gGRdmgB+3m01vYRyEU=
+	t=1713961033; cv=none; b=W6W5s8mlJCLhZOEhnfVNjqIdsy2JxXqcPSyvHj8w7OgfEv8XkpAjgVaCUyB6abW5HR6H1oPru+UDwayAOXdQhBk+s2RIsAnafSRZJwf14Dwp/INxSzQKXX9LijHgZhk8yrCbv6Iim6UJBrJirtDLN6N01NZeiq//NKKxpd0zi2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713961015; c=relaxed/simple;
-	bh=h8eKlpA8aZZwVUqM78/5h1yz+b7OYeMXRZb+mmI+cIU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lhvn9sPhp3gfuOmGVTkkd9HurA0OOu7kJxSW5JMLgydddikSuRAT7ImP/VsUW7cv897Kom0L/LaXgz9TvThD9Ox1PQepcTjRdmX9K8CsKGAO980759UBHEdIT/fKme9zXGvjBPvUaINrid6Lr4o3nEOlgMuLTPNSbLUYlr9F4K0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=U9zkW1MA; arc=none smtp.client-ip=193.104.135.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
-Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
-	by mail1.fiberby.net (Postfix) with ESMTPSA id E8314600A7;
-	Wed, 24 Apr 2024 12:16:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
-	s=202008; t=1713961004;
-	bh=h8eKlpA8aZZwVUqM78/5h1yz+b7OYeMXRZb+mmI+cIU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=U9zkW1MAsDL+1CvLFFtUVK7aRTXGk8uRkn6uMXraIMcQn6NzX5hl0EiM0Gl6ElnEJ
-	 XDzQBzeRUo41sc1ojdtewLOsdgTN8q3EP500OlzAYqRMDiwuoURt0uASR8FV0x7bO7
-	 kE0l7KC8K1o3IcaIQIYf5huZ8ooqayvxQIM8DJvJ6njFGLRQGA7Td2LY9mphGkLTNO
-	 EobCx6XmWLTCPN5e4Mo+bzYapHLl+RpvcRMhBmcYh78RaGgfESuPa+j3l4toFXBwMd
-	 pAA1knpezKGuE9+viyyMHF3Rk5Assmuw+g9IlZj8IaL8pCzJoQfj2bskV3poGAbjxA
-	 w6nYC3DrGAzRQ==
-Received: by x201s (Postfix, from userid 1000)
-	id CA0D721BB49; Wed, 24 Apr 2024 12:16:37 +0000 (UTC)
-From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
-To: netdev@vger.kernel.org
-Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
-	Steen Hegelund <Steen.Hegelund@microchip.com>,
-	Lars Povlsen <lars.povlsen@microchip.com>,
-	Daniel Machon <daniel.machon@microchip.com>,
-	UNGLinuxDriver@microchip.com,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	Jiri Pirko <jiri@resnulli.us>,
-	Simon Horman <horms@kernel.org>
-Subject: [PATCH net-next v2 4/4] net: sparx5: flower: check for unsupported control flags
-Date: Wed, 24 Apr 2024 12:16:25 +0000
-Message-ID: <20240424121632.459022-5-ast@fiberby.net>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240424121632.459022-1-ast@fiberby.net>
-References: <20240424121632.459022-1-ast@fiberby.net>
+	s=arc-20240116; t=1713961033; c=relaxed/simple;
+	bh=6cXo0HYHRZWTCyxWkHuthkQ6JyWZFk/Zby/c9viXlBA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k1yxGA2PC0LkJt95GiI9iyYvJtH9/c436+PelGNci1+Kieucdmzqti/bGmQ7uYy1uoalL13DDwpBg6rTYBWPZR7x0vBhX4yYqnZ3E/tibzKKL7UnllLbtFdL9sVTRnuZ1nN9kE2cGL9Q9/xYOlPBOCKfRwNC5dTl1DStfLrsSpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=dNitDyJI; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id C0FE46B3;
+	Wed, 24 Apr 2024 14:16:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1713960976;
+	bh=6cXo0HYHRZWTCyxWkHuthkQ6JyWZFk/Zby/c9viXlBA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=dNitDyJINONwKuW3dNydTI/sYdvnPjaYEkayQpQCTPK/5x8IzbQHHj5WU0X6eCsg3
+	 jjjPxwp8SetmKsq0Twg72r3pgpTKX9RPwfSC0qIif3vX3gZfGOecG6gljGYqVJLoJt
+	 J7mMLmkEXxy0G5IhQJFPALqwhcy0+EfVNd5jdaLw=
+Message-ID: <ef63cd67-30a5-40fe-93f0-9081772c495f@ideasonboard.com>
+Date: Wed, 24 Apr 2024 15:17:04 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm: zynqmp_dpsub: Always register bridge
+To: Sean Anderson <sean.anderson@linux.dev>
+Cc: linux-arm-kernel@lists.infradead.org, Michal Simek
+ <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
+ Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ dri-devel@lists.freedesktop.org,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>
+References: <20240308204741.3631919-1-sean.anderson@linux.dev>
+ <222c0245-b8bc-48d8-b4e1-a9fb276774ae@ideasonboard.com>
+ <ffd53a0e-9f72-4129-92aa-30c62a134676@linux.dev>
+Content-Language: en-US
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <ffd53a0e-9f72-4129-92aa-30c62a134676@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Use flow_rule_is_supp_control_flags() to reject filters with
-unsupported control flags.
+On 23/04/2024 23:50, Sean Anderson wrote:
+> Hi,
+> 
+> On 3/22/24 02:01, Tomi Valkeinen wrote:
+>> Hi,
+>>
+>> On 08/03/2024 22:47, Sean Anderson wrote:
+>>> We must always register the DRM bridge, since zynqmp_dp_hpd_work_func
+>>> calls drm_bridge_hpd_notify, which in turn expects hpd_mutex to be
+>>> initialized. We do this before zynqmp_dpsub_drm_init since that calls
+>>> drm_bridge_attach. This fixes the following lockdep warning:
+>>>
+>>> [   19.217084] ------------[ cut here ]------------
+>>> [   19.227530] DEBUG_LOCKS_WARN_ON(lock->magic != lock)
+>>> [   19.227768] WARNING: CPU: 0 PID: 140 at kernel/locking/mutex.c:582 __mutex_lock+0x4bc/0x550
+>>> [   19.241696] Modules linked in:
+>>> [   19.244937] CPU: 0 PID: 140 Comm: kworker/0:4 Not tainted 6.6.20+ #96
+>>> [   19.252046] Hardware name: xlnx,zynqmp (DT)
+>>> [   19.256421] Workqueue: events zynqmp_dp_hpd_work_func
+>>> [   19.261795] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>>> [   19.269104] pc : __mutex_lock+0x4bc/0x550
+>>> [   19.273364] lr : __mutex_lock+0x4bc/0x550
+>>> [   19.277592] sp : ffffffc085c5bbe0
+>>> [   19.281066] x29: ffffffc085c5bbe0 x28: 0000000000000000 x27: ffffff88009417f8
+>>> [   19.288624] x26: ffffff8800941788 x25: ffffff8800020008 x24: ffffffc082aa3000
+>>> [   19.296227] x23: ffffffc080d90e3c x22: 0000000000000002 x21: 0000000000000000
+>>> [   19.303744] x20: 0000000000000000 x19: ffffff88002f5210 x18: 0000000000000000
+>>> [   19.311295] x17: 6c707369642e3030 x16: 3030613464662072 x15: 0720072007200720
+>>> [   19.318922] x14: 0000000000000000 x13: 284e4f5f4e524157 x12: 0000000000000001
+>>> [   19.326442] x11: 0001ffc085c5b940 x10: 0001ff88003f388b x9 : 0001ff88003f3888
+>>> [   19.334003] x8 : 0001ff88003f3888 x7 : 0000000000000000 x6 : 0000000000000000
+>>> [   19.341537] x5 : 0000000000000000 x4 : 0000000000001668 x3 : 0000000000000000
+>>> [   19.349054] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffffff88003f3880
+>>> [   19.356581] Call trace:
+>>> [   19.359160]  __mutex_lock+0x4bc/0x550
+>>> [   19.363032]  mutex_lock_nested+0x24/0x30
+>>> [   19.367187]  drm_bridge_hpd_notify+0x2c/0x6c
+>>> [   19.371698]  zynqmp_dp_hpd_work_func+0x44/0x54
+>>> [   19.376364]  process_one_work+0x3ac/0x988
+>>> [   19.380660]  worker_thread+0x398/0x694
+>>> [   19.384736]  kthread+0x1bc/0x1c0
+>>> [   19.388241]  ret_from_fork+0x10/0x20
+>>> [   19.392031] irq event stamp: 183
+>>> [   19.395450] hardirqs last  enabled at (183): [<ffffffc0800b9278>] finish_task_switch.isra.0+0xa8/0x2d4
+>>> [   19.405140] hardirqs last disabled at (182): [<ffffffc081ad3754>] __schedule+0x714/0xd04
+>>> [   19.413612] softirqs last  enabled at (114): [<ffffffc080133de8>] srcu_invoke_callbacks+0x158/0x23c
+>>> [   19.423128] softirqs last disabled at (110): [<ffffffc080133de8>] srcu_invoke_callbacks+0x158/0x23c
+>>> [   19.432614] ---[ end trace 0000000000000000 ]---
+>>>
+>>> Fixes: eb2d64bfcc17 ("drm: xlnx: zynqmp_dpsub: Report HPD through the bridge")
+>>> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+>>> ---
+>>>
+>>>    drivers/gpu/drm/xlnx/zynqmp_dpsub.c | 6 ++----
+>>>    1 file changed, 2 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dpsub.c b/drivers/gpu/drm/xlnx/zynqmp_dpsub.c
+>>> index 88eb33acd5f0..639fff2c693f 100644
+>>> --- a/drivers/gpu/drm/xlnx/zynqmp_dpsub.c
+>>> +++ b/drivers/gpu/drm/xlnx/zynqmp_dpsub.c
+>>> @@ -256,12 +256,11 @@ static int zynqmp_dpsub_probe(struct platform_device *pdev)
+>>>        if (ret)
+>>>            goto err_dp;
+>>>    +    drm_bridge_add(dpsub->bridge);
+>>>        if (dpsub->dma_enabled) {
+>>>            ret = zynqmp_dpsub_drm_init(dpsub);
+>>>            if (ret)
+>>>                goto err_disp;
+>>> -    } else {
+>>> -        drm_bridge_add(dpsub->bridge);
+>>>        }
+>>>          dev_info(&pdev->dev, "ZynqMP DisplayPort Subsystem driver probed");
+>>> @@ -288,9 +287,8 @@ static void zynqmp_dpsub_remove(struct platform_device *pdev)
+>>>          if (dpsub->drm)
+>>>            zynqmp_dpsub_drm_cleanup(dpsub);
+>>> -    else
+>>> -        drm_bridge_remove(dpsub->bridge);
+>>>    +    drm_bridge_remove(dpsub->bridge);
+>>>        zynqmp_disp_remove(dpsub);
+>>>        zynqmp_dp_remove(dpsub);
+>>>    
+>>
+>> I sent a similar patch:
+>>
+>> https://lore.kernel.org/all/20240312-xilinx-dp-lock-fix-v1-1-1698f9f03bac@ideasonboard.com/
+>>
+>> I have the drm_bridge_add() call in zynqmp_dp_probe(), as that's where the bridge is set up, so it felt like a logical place. You add it later, just before the bridge is used the first time.
+>>
+>> I like mine a bit more as it has all the bridge code in the same place, but I also wonder if there might be some risks in adding the bridge early (before zynqmp_disp_probe()), although I can't see any issue right away...
+>>
+>> In any case, as this works for me too:
+>>
+>> Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>>
+>>   Tomi
+>>
+> Can someone pick up this fix before the release? I am still running into this bug on linux-next/master.
 
-In case any unsupported control flags are masked,
-flow_rule_is_supp_control_flags() sets a NL extended
-error message, and we return -EOPNOTSUPP.
+Can you check my version (link above)? After looking at both versions 
+today, I'd rather push mine: it adds and removes the bridge in the same 
+file where all the bridge code resides, and it'd be nice to manage the 
+bridge in that file as much as possible.
 
-Only compile-tested.
-
-Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
----
- drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
-index 22f6c778afb0..8d67d9f24c76 100644
---- a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
-+++ b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
-@@ -197,6 +197,11 @@ sparx5_tc_flower_handler_control_usage(struct vcap_tc_flower_parse_usage *st)
- 		}
- 	}
- 
-+	if (!flow_rule_is_supp_control_flags(FLOW_DIS_IS_FRAGMENT |
-+					     FLOW_DIS_FIRST_FRAG,
-+					     mt.mask->flags, extack))
-+		return -EOPNOTSUPP;
-+
- 	st->used_keys |= BIT_ULL(FLOW_DISSECTOR_KEY_CONTROL);
- 
- 	return err;
--- 
-2.43.0
+  Tomi
 
 
