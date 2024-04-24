@@ -1,113 +1,181 @@
-Return-Path: <linux-kernel+bounces-157781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 419CE8B161F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:22:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78D718B1623
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:25:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D459C1F216E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:22:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F25491F239DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:25:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59C9616D9DE;
-	Wed, 24 Apr 2024 22:21:32 +0000 (UTC)
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D906D16D4CA;
-	Wed, 24 Apr 2024 22:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72F716D33B;
+	Wed, 24 Apr 2024 22:25:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="W3mgvVWI"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5FD213AD0D
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:25:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713997291; cv=none; b=IEjKb2SUrk7WZ+2v/qpN6sxHf2hL0hUE5+hOBVmtmhNHm8Q+VdJNU2BhCHOGzdNEWkfu/EhZv2RS9+icc5LCvBB3NSoussY4cBNQ7kk8CezK6COiYW/BNizbJSTUrya2aHjvOmB0SdCo83RhPWi5c19pykKq3Dd5+FfrtC9FbsY=
+	t=1713997502; cv=none; b=dJGBE/bUbA+udz/ex2Eg6V4Nbco85W1i/yVnIEZEH0MOivmrUtojBmbU0e+onD9hmGDGFw1vhgyiSVSAeJe88H8fXHQcRmItYPWngc59XkyxYdGYNcZ67O0nhV4mYeT7Jji8WY622t+yELxInG+l3m14qafc1n7n3a1LfnBW6o8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713997291; c=relaxed/simple;
-	bh=e7ZeaCF9fOPOeOCdD6PM03PAZj7zzEABjm4s98O48vE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BuoVWICTVIjRplK131tNTRFy3pTqc5nVV4K7ugjbymZqjnnfCQkQNNalinfScEcpFsfPbAmN3YDfsUSW5hR7QHeoK54fDCk1Svkn3c1pEc02PMvsU66Kn+nAfMy0qzsfzaJpNJkXjpxIyrgv6NFehJnD9GWsAKzSx35fahtc7FA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Date: Thu, 25 Apr 2024 00:21:26 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Ismael Luceno <iluceno@suse.de>
-Cc: linux-kernel@vger.kernel.org, Firo Yang <firo.yang@suse.com>,
-	Andreas Taschner <andreas.taschner@suse.com>,
-	Michal =?utf-8?Q?Kube=C4=8Dek?= <mkubecek@suse.com>,
-	Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>,
-	lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	netdev@vger.kernel.org, coreteam@netfilter.org
-Subject: Re: [PATCH v2] ipvs: Fix checksumming on GSO of SCTP packets
-Message-ID: <ZimF5pntTWWcwq-r@calendula>
-References: <20240421142234.15764-1-iluceno@suse.de>
+	s=arc-20240116; t=1713997502; c=relaxed/simple;
+	bh=afOCXdLaCatGu3yM9MRIokEHahmNCXlOr3vSXsXWeBY=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Vy+JrRzm9piOhulelew/FeNPTbOhfV+wWRvKbv9fPfJ5k/s17CfLZgzDzfj1eMWEPfNahPnri4+R2TgO0s7qo1V4AAlWU63wgDwgJu/gWJfcPpKqGG8IsYYHHJj3a+VnSeWOympfDeT2BGG/biuOMEYoiDh3Hn34vn7dK3tgxMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=W3mgvVWI; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6ee09c3404bso465238b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:25:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713997500; x=1714602300; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MCBEdd7mOJH2jqONKmc5LYR7Ix2PzspgStOeVe4lD+s=;
+        b=W3mgvVWIHFtgGbg0iRV/zMwdwIpnEr9dHlmoQFqeIvaL2wmHO/bpO2P8kxEc7PDqtu
+         9WtTzkcVXsyhrq9xgPOsrTAf3mWGByqT4h/nyUlVhAfvjV34V0K8jrXU2o5Cn+c1Uqod
+         vW8yXT4Z3zoJBBqafgtHyDni5Gw/hac4zupgaXTmMorpmxL4tad26hSdNv+vBbChjTpf
+         55RbV4TEPL/unRWL8Sj2foLXS4tUjMkNw23l9fOXC2DSC4vPGo/aSJgMu2NNOXbwKpxm
+         7ciwitKfkkIEteUa1PikizYljo+KOtkkkOy8jtXXFUepicBeemeuZSfoBBf30jNSvNVq
+         uFHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713997500; x=1714602300;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MCBEdd7mOJH2jqONKmc5LYR7Ix2PzspgStOeVe4lD+s=;
+        b=ISPUk10/3L54WqKrX0/dRRhtIoa6PtchSFBqxpNaiINmt0oJPDxXfbK/MssTJ1duqC
+         O25ENDJe8LU4UkM71lvT+Do5F2RRDB0C50wBPuZUSbeBztVHXvRNZx32x5iHqC/RBkpI
+         q/k+/ZzjpJTJ137pxNopp8bee+iw14F3/HwmEZX8uK+VIzH4xIjx4YMqPwLLxx1CnAvR
+         08icRNIUCmSWb/rGJ+dyC4n6D1L58ujEg8/ir+RwVxTOLi73JM3+CiyKpD8oIeu010ey
+         r5HX+STswEo4XvQdAIhuXh8P0cnySA9USbLJMWHsDIuExSgHXGAsIiki4jNQCh8FXj4l
+         0DAg==
+X-Forwarded-Encrypted: i=1; AJvYcCU+q1Jby3edbr5KuGHaj6l0e83EtduSWZ4UQNRbHy0ur2tIEYUdnGoiPhNNlOVJ/8kckFmMw8lVb/dUVniMhIeKNTRfZ29LynJgyeVi
+X-Gm-Message-State: AOJu0Yz+F2F0Bjo7m7okyZ7oGoVyKWtUK0fHMIFX05RDTHl+FCABIQKP
+	ztPJcgKIxmhQShdvaH6enn+60G3JujZ4Hwof8JPA5T9GezOjYiKR0i00pYKBp5MpGFCMrPGsfwW
+	+yg==
+X-Google-Smtp-Source: AGHT+IEAXPsBUNYCxKf8Ii08b8jVMXjJ4Ztj1zvnIqs7EExuchDRdYGnWfIh1XhGlx6vZQAC176Ic55/2OA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1888:b0:6ea:ad01:358f with SMTP id
+ x8-20020a056a00188800b006eaad01358fmr272152pfh.6.1713997499809; Wed, 24 Apr
+ 2024 15:24:59 -0700 (PDT)
+Date: Wed, 24 Apr 2024 15:24:58 -0700
+In-Reply-To: <20240423235013.GO3596705@ls.amr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240421142234.15764-1-iluceno@suse.de>
+Mime-Version: 1.0
+References: <20240404185034.3184582-1-pbonzini@redhat.com> <20240404185034.3184582-10-pbonzini@redhat.com>
+ <20240423235013.GO3596705@ls.amr.corp.intel.com>
+Message-ID: <ZimGulY6qyxt6ylO@google.com>
+Subject: Re: [PATCH 09/11] KVM: guest_memfd: Add interface for populating gmem
+ pages with user data
+From: Sean Christopherson <seanjc@google.com>
+To: Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	michael.roth@amd.com, isaku.yamahata@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
 
-On Sun, Apr 21, 2024 at 04:22:32PM +0200, Ismael Luceno wrote:
-> It was observed in the wild that pairs of consecutive packets would leave
-> the IPVS with the same wrong checksum, and the issue only went away when
-> disabling GSO.
+On Tue, Apr 23, 2024, Isaku Yamahata wrote:
+> On Thu, Apr 04, 2024 at 02:50:31PM -0400,
+> Paolo Bonzini <pbonzini@redhat.com> wrote:
 > 
-> IPVS needs to avoid computing the SCTP checksum when using GSO.
+> > During guest run-time, kvm_arch_gmem_prepare() is issued as needed to
+> > prepare newly-allocated gmem pages prior to mapping them into the guest.
+> > In the case of SEV-SNP, this mainly involves setting the pages to
+> > private in the RMP table.
+> > 
+> > However, for the GPA ranges comprising the initial guest payload, which
+> > are encrypted/measured prior to starting the guest, the gmem pages need
+> > to be accessed prior to setting them to private in the RMP table so they
+> > can be initialized with the userspace-provided data. Additionally, an
+> > SNP firmware call is needed afterward to encrypt them in-place and
+> > measure the contents into the guest's launch digest.
+> > 
+> > While it is possible to bypass the kvm_arch_gmem_prepare() hooks so that
+> > this handling can be done in an open-coded/vendor-specific manner, this
+> > may expose more gmem-internal state/dependencies to external callers
+> > than necessary. Try to avoid this by implementing an interface that
+> > tries to handle as much of the common functionality inside gmem as
+> > possible, while also making it generic enough to potentially be
+> > usable/extensible for TDX as well.
+> 
+> I explored how TDX will use this hook.  However, it resulted in not using this
+> hook, and instead used kvm_tdp_mmu_get_walk() with a twist.  The patch is below.
+> 
+> Because SEV-SNP manages the RMP that is not tied to NPT directly, SEV-SNP can
+> ignore TDP MMU page tables when updating RMP.
+> On the other hand, TDX essentially updates Secure-EPT when it adds a page to
+> the guest by TDH.MEM.PAGE.ADD().  It needs to protect KVM TDP MMU page tables
+> with mmu_lock, not guest memfd file mapping with invalidate_lock.  The hook
+> doesn't apply to TDX well.  The resulted KVM_TDX_INIT_MEM_REGION logic is as
+> follows.
+> 
+>   get_user_pages_fast(source addr)
+>   read_lock(mmu_lock)
+>   kvm_tdp_mmu_get_walk_private_pfn(vcpu, gpa, &pfn);
+>   if the page table doesn't map gpa, error.
+>   TDH.MEM.PAGE.ADD()
+>   TDH.MR.EXTEND()
+>   read_unlock(mmu_lock)
+>   put_page()
 
-I am placing this into the nf.git tree for submission upstream in the
-next pull request, unless stated otherwise.
+Hmm, KVM doesn't _need_ to use invalidate_lock to protect against guest_memfd
+invalidation, but I also don't see why it would cause problems.  I.e. why not
+take mmu_lock() in TDX's post_populate() implementation?  That would allow having
+a sanity check that the PFN that guest_memfd() has is indeed the PFN that KVM's
+S-EPT mirror has, i.e. the PFN that KVM is going to PAGE.ADD.
 
-Thanks.
+> >From 7d4024049b51969a2431805c2117992fc7ec0981 Mon Sep 17 00:00:00 2001
+> Message-ID: <7d4024049b51969a2431805c2117992fc7ec0981.1713913379.git.isaku.yamahata@intel.com>
+> In-Reply-To: <cover.1713913379.git.isaku.yamahata@intel.com>
+> References: <cover.1713913379.git.isaku.yamahata@intel.com>
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+> Date: Tue, 23 Apr 2024 11:33:44 -0700
+> Subject: [PATCH] KVM: x86/tdp_mmu: Add a helper function to walk down the TDP MMU
+> 
+> KVM_TDX_INIT_MEM_REGION needs to check if the given GFN is already
+> populated.  Add wrapping logic to kvm_tdp_mmu_get_walk() to export it.
 
-> Fixes: 90017accff61 ("sctp: Add GSO support", 2016-06-02)
-> Co-developed-by: Firo Yang <firo.yang@suse.com>
-> Signed-off-by: Ismael Luceno <iluceno@suse.de>
-> Tested-by: Andreas Taschner <andreas.taschner@suse.com>
-> CC: Michal Kubeček <mkubecek@suse.com>
-> CC: Simon Horman <horms@verge.net.au>
-> CC: Julian Anastasov <ja@ssi.bg>
-> CC: lvs-devel@vger.kernel.org
-> CC: netfilter-devel@vger.kernel.org
-> CC: netdev@vger.kernel.org
-> CC: coreteam@netfilter.org
-> ---
-> 
-> Notes:
->     Changes since v1:
->     * Added skb_is_gso before skb_is_gso_sctp.
->     * Added "Fixes" tag.
-> 
->  net/netfilter/ipvs/ip_vs_proto_sctp.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/netfilter/ipvs/ip_vs_proto_sctp.c b/net/netfilter/ipvs/ip_vs_proto_sctp.c
-> index a0921adc31a9..1e689c714127 100644
-> --- a/net/netfilter/ipvs/ip_vs_proto_sctp.c
-> +++ b/net/netfilter/ipvs/ip_vs_proto_sctp.c
-> @@ -126,7 +126,8 @@ sctp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
->  	if (sctph->source != cp->vport || payload_csum ||
->  	    skb->ip_summed == CHECKSUM_PARTIAL) {
->  		sctph->source = cp->vport;
-> -		sctp_nat_csum(skb, sctph, sctphoff);
-> +		if (!skb_is_gso(skb) || !skb_is_gso_sctp(skb))
-> +			sctp_nat_csum(skb, sctph, sctphoff);
->  	} else {
->  		skb->ip_summed = CHECKSUM_UNNECESSARY;
+> +int kvm_tdp_mmu_get_walk_private_pfn(struct kvm_vcpu *vcpu, u64 gpa,
+> +				     kvm_pfn_t *pfn)
+> +{
+> +	u64 sptes[PT64_ROOT_MAX_LEVEL + 1], spte;
+> +	int leaf;
+> +
+> +	lockdep_assert_held(&vcpu->kvm->mmu_lock);
+> +
+> +	kvm_tdp_mmu_walk_lockless_begin();
+
+This is obviously not a lockless walk.
+
+> +	leaf = __kvm_tdp_mmu_get_walk(vcpu, gpa, sptes, true);
+> +	kvm_tdp_mmu_walk_lockless_end();
+> +	if (leaf < 0)
+> +		return -ENOENT;
+> +
+> +	spte = sptes[leaf];
+> +	if (is_shadow_present_pte(spte) && is_last_spte(spte, leaf)) {
+> +		*pfn = spte_to_pfn(spte);
+> +		return leaf;
 >  	}
-> @@ -174,7 +175,8 @@ sctp_dnat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
->  	    (skb->ip_summed == CHECKSUM_PARTIAL &&
->  	     !(skb_dst(skb)->dev->features & NETIF_F_SCTP_CRC))) {
->  		sctph->dest = cp->dport;
-> -		sctp_nat_csum(skb, sctph, sctphoff);
-> +		if (!skb_is_gso(skb) || !skb_is_gso_sctp(skb))
-> +			sctp_nat_csum(skb, sctph, sctphoff);
->  	} else if (skb->ip_summed != CHECKSUM_PARTIAL) {
->  		skb->ip_summed = CHECKSUM_UNNECESSARY;
->  	}
+>  
+> -	return leaf;
+> +	return -ENOENT;
+>  }
+> +EXPORT_SYMBOL_GPL(kvm_tdp_mmu_get_walk_private_pfn);
+>  
+>  /*
+>   * Returns the last level spte pointer of the shadow page walk for the given
 > -- 
-> 2.43.0
+> 2.43.2
 > 
-> 
+> -- 
+> Isaku Yamahata <isaku.yamahata@intel.com>
 
