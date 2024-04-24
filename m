@@ -1,127 +1,125 @@
-Return-Path: <linux-kernel+bounces-156935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FDFA8B0A90
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:11:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3787D8B0A84
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:11:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44E621F24B27
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:11:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5882EB2183C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:11:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5ABA15B98B;
-	Wed, 24 Apr 2024 13:11:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29AA215B130;
+	Wed, 24 Apr 2024 13:11:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="Ligt8wZM"
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="npKtE5vm"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B7615A4B0;
-	Wed, 24 Apr 2024 13:11:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F66156C71;
+	Wed, 24 Apr 2024 13:11:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713964297; cv=none; b=V9h1Nv52UrmiL2Y+gkrlpwRkZOHR0d6Rbyue62ohTlkMBrxTBSHumBXMzSev11aZ82URvXvfKrMho2WJ833tz/kijlC+ChqGy0PYij6AU9HTHEgli2ZsTvbHkGcrXM0MyK3+a8MS7BCh0tVgLYx8l+h0Hq1fo0qVunEvVNVczhk=
+	t=1713964266; cv=none; b=R9ZU7LhsfBB+2tVC5SQsGXjFP/M3H4dV5qig+FUIcbClNaNzKvNKY9RZI5tAPtKHcwio8Ph+AfKH3BoHWqlTKXTaV4e+WtxMMcJwFC/VRcJWKj5jY/O/F+iUmaHir/0+277gZXul91BC0HsSJr0mhJiE1MibC+CImgpKw1A5efg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713964297; c=relaxed/simple;
-	bh=0GM9qCjYncLlk2eyXQbEJr4kraDbbsFDY3wf8G6s70w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=dNLEyhT8gifKiHwqTKGHHbSgrVSPCG9FIJ5dckJX6dZMCT0nNzmHxW1NlQQ41h5bhfB9RV/hqNsZfcJGyPi4/nBSc7IdO0FiPuDkdoGFCp4Zkl/MuBJmfGBTINZwLXjbgbzjE+hzGRIQpPG4J96z7cRg944/godjl86OJO/YIU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=Ligt8wZM; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43OBiLD7018292;
-	Wed, 24 Apr 2024 15:11:09 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=HYSJG1sPeSjl23kgI1bzRXZCAj4WS/GfNG5nWWxw0Vk=; b=Li
-	gt8wZMTOL0sPyiSCxLlgRIUH/Vc82ELF6mVIODBNPHBiyGzugekT687g3kBWT6Fy
-	1iL5xeh5qo65/dnTsTyiKTVzRsq4R+3DEhG46rEaijnxESXbwMmPL45C15SaED4v
-	50Qcba0NgM4I+6/uL3aFTNs2S0jMD7ezz6yyeVXaw/ZSEB9JfstuMsUfE0WNKy3/
-	NtyMhdvqvde+Bas+TdXdtJl/Bs5rT2e5+WXEw4wJ6Gl/PR5DVxHHjren2plshRQI
-	B1nu12Sq34EmDylnO5QlOpXkfHLDa7op6xIUgueLRput5kXau/kTTUnFUAAJ878d
-	upGthvtis7RdJJjRy3kg==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xm4cngp6a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 15:11:09 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 4F19B4002D;
-	Wed, 24 Apr 2024 15:11:04 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2C10821ED4A;
-	Wed, 24 Apr 2024 15:10:27 +0200 (CEST)
-Received: from [10.48.86.79] (10.48.86.79) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 24 Apr
- 2024 15:10:26 +0200
-Message-ID: <f625f62c-6351-4799-92c8-20abb7185ac5@foss.st.com>
-Date: Wed, 24 Apr 2024 15:10:25 +0200
+	s=arc-20240116; t=1713964266; c=relaxed/simple;
+	bh=3PcOgPceJEiC6m9cZ1LVSeHjh37/hFNV6mfbgVb5lwI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aeWHNDbdQ15oXBOIMrZOsXyA4uZGXSd+CbGcBFgng7yyDZv4SLP/2NIwYVu6JJ14KLNb8qQQAh2WdIUfluMDxGOcmArSXSpJ4IVFzN7xBita/BAdQEjKRir1VloD95y0ztHY2cpDvhS9ZUEwnejoRDFRhemiJi4YDHzUEIvyx+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=npKtE5vm; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713964265; x=1745500265;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=3PcOgPceJEiC6m9cZ1LVSeHjh37/hFNV6mfbgVb5lwI=;
+  b=npKtE5vmNUftwo2hMDTnVvNDk5u8pzt48bXjvBm+JZRMVd7aJwQ6rpWk
+   cnFbcFdKlrO6UWEsHwA5DHlRk+j1JeRDRc65z2yYvKGib5HH+8ZGS5Kcq
+   9UjgI4kTb9BSUuLZ4ct1ttGf7Kd/2QwXEg4sAhKRC3ZO65uAjSF904zOe
+   i9lvBDjbI56f2H6MMl/5O46wH9p2QSTAD73OWAi0eOSyRmO6syG32TRJj
+   pfXSSZh+JR+dApnPlAcOQv70PTrPTLlc7UTSpdBknnkvcxMsckQTHJvna
+   R77/57quwCGwvCdk8OjaupFHpkfI0Kut4b3I59zUddEYggO1jJBDVgVF6
+   Q==;
+X-CSE-ConnectionGUID: 42BSboLdTM2UMoVdjFc02w==
+X-CSE-MsgGUID: DS4jJoUtRQWem34+ff+Wlw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="32084786"
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="32084786"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 06:11:05 -0700
+X-CSE-ConnectionGUID: hcUH0FqpTTWhma57UPIH3w==
+X-CSE-MsgGUID: vl74hA0uTqeby/DYkytS3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="55907700"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 06:11:02 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rzcOp-00000000em2-1179;
+	Wed, 24 Apr 2024 16:10:59 +0300
+Date: Wed, 24 Apr 2024 16:10:58 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Sui Jingfeng <sui.jingfeng@linux.dev>, dri-devel@lists.freedesktop.org,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Daniel Scally <djrscally@gmail.com>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v2] software node: Implement device_get_match_data fwnode
+ callback
+Message-ID: <ZikE4qOVO7rgIs9a@smile.fi.intel.com>
+References: <20240422164658.217037-1-sui.jingfeng@linux.dev>
+ <Zie3ebHOEpWHj1qV@smile.fi.intel.com>
+ <d5bc1e73-a553-451e-ab74-f5f0ca259c6b@linux.dev>
+ <hcltp2bbxxg2t7ibmzgiib7mgbwgmvzwnnq6mochdh7c4h76r3@bxj6yk5zq64e>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] media: dt-bindings: add access-controllers to
- STM32MP25 video codecs
-To: Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Mauro Carvalho Chehab
-	<mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Maxime Coquelin
-	<mcoquelin.stm32@gmail.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20240415093211.809927-1-hugues.fruchet@foss.st.com>
-Content-Language: en-US
-From: Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <20240415093211.809927-1-hugues.fruchet@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-24_10,2024-04-24_01,2023-05-22_02
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <hcltp2bbxxg2t7ibmzgiib7mgbwgmvzwnnq6mochdh7c4h76r3@bxj6yk5zq64e>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hi
+On Wed, Apr 24, 2024 at 12:37:16AM +0300, Dmitry Baryshkov wrote:
+> On Wed, Apr 24, 2024 at 12:49:18AM +0800, Sui Jingfeng wrote:
+> > On 2024/4/23 21:28, Andy Shevchenko wrote:
+> > > On Tue, Apr 23, 2024 at 12:46:58AM +0800, Sui Jingfeng wrote:
 
-On 4/15/24 11:32, Hugues Fruchet wrote:
-> access-controllers is an optional property that allows a peripheral to
-> refer to one or more domain access controller(s).
+..
+
+> But let me throw an argument why this patch (or something similar) looks
+> to be necessary.
 > 
-> Acked-by: Rob Herring <robh@kernel.org>
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
-> ---
->   .../devicetree/bindings/media/st,stm32mp25-video-codec.yaml   | 4 ++++
->   1 file changed, 4 insertions(+)
+> Both on DT and non-DT systems the kernel allows using the non-OF based
+> matching. For the platform devices there is platform_device_id-based
+> matching.
 > 
-> diff --git a/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml b/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
-> index b8611bc8756c..73726c65cfb9 100644
-> --- a/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
-> +++ b/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
-> @@ -30,6 +30,10 @@ properties:
->     clocks:
->       maxItems: 1
->   
-> +  access-controllers:
-> +    minItems: 1
-> +    maxItems: 2
-> +
->   required:
->     - compatible
->     - reg
+> Currently handling the data coming from such device_ids requires using
+> special bits of code, e.g. platform_get_device_id(pdev)->driver_data to
+> get the data from the platform_device_id. Having such codepaths goes
+> against the goal of unifying DT and non-DT paths via generic property /
+> fwnode code.
+> 
+> As such, I support Sui's idea of being able to use device_get_match_data
+> for non-DT, non-ACPI platform devices.
 
-Applied on stm32-next.
+I'm not sure I buy this. We have a special helpers based on the bus type to
+combine device_get_match_data() with the respective ID table crawling, see
+the SPI and I²C cases as the examples.
 
-Thanks!
-Alex
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
