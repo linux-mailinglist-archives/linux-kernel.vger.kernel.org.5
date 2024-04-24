@@ -1,123 +1,112 @@
-Return-Path: <linux-kernel+bounces-157679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 467CE8B147A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:22:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17ECE8B1478
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:22:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75578B2D228
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:21:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABDF61F2325A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3494142E6E;
-	Wed, 24 Apr 2024 20:20:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB1713C9DE;
+	Wed, 24 Apr 2024 20:21:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="TD6Za+4H"
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LJWhaOBS"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5315113D25E;
-	Wed, 24 Apr 2024 20:20:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F097219E4
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 20:21:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713990041; cv=none; b=rfz/WycC1D9cB22jnQe94f1CBq/7HXJew3RR1mQFsNUmgUwbZrqVIgHkr4jpt56jNnu8hg/SFsFN7xzT1/jIhTry0X4aahpkchIfAx27gdnKS+py8DTunqcIjyhJKtVUXypbgyIbrVL6a3d5TKgFqirPn63iTkiV7wLf7Mmvbu8=
+	t=1713990114; cv=none; b=kpb3Kquz8uODrgz0seXN0oqqYnuikFlU8BHzCuWuIxobZ9XIVt5tV5t53JNFSzUjEab1aVjq6l0VYnNsUDGc8KHF2F3xWfgGHPybfCAaqHHibT+6eR2N2BI5KyA3M5r81sd/CCibzSEHRkNOvgzF6L2z+NsMkJX+ZcdcdNFQLtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713990041; c=relaxed/simple;
-	bh=evUdA1G7V4lnHAGAdqIToss3C/AnK3uw31x0ZW7Z8tQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W719qLb1/GbS88PoAMyNLOUtiVP1iFYa9LWH4wx2JUDGLUxXL7koyLrEXS4neiwA4cGgZkMWwwO8P1z4ZXtc6+hwxH0koTPXcYMQbhjnZ9A0Zr9I7yo8D9jknGbTzFlPijhUMjjOvQuH9+3cc4Kp5DG5GZxzISSC8aHrDridIFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=TD6Za+4H; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from fpc (unknown [5.228.116.47])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 9038740769D4;
-	Wed, 24 Apr 2024 20:20:35 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 9038740769D4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1713990035;
-	bh=vrqHWArLY1GC2CmlIt6zLL/Sipn9wJVlFUF93H85+Sg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TD6Za+4HRVSrI+DWDliN8vmK05UQx4SECDU7t4Z5HhE+/Oy1gwQ6SMCwewXeyHFja
-	 Gx8OAByxcD1tYvzgP7O3WFE1giLdjyt/8bQrPcM8OQWM9cit2C87yVHIFR5JocaAf/
-	 D3XIpdZETrxrveUXHppQ0Q7sxzLBVQqYuwp+h+BI=
-Date: Wed, 24 Apr 2024 23:20:31 +0300
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: Roman Smirnov <r.smirnov@omp.ru>
-Cc: Michael Krufky <mkrufky@linuxtv.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Jia-Ju Bai <baijiaju1990@gmail.com>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	lvc-project@linuxtesting.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [lvc-project] [PATCH 1/3] media: tuners: tda18271: fix error
- code handling in tda18271_attach()
-Message-ID: <20240424202031.syigrtrtipbq5f2l@fpc>
-References: <20240416114509.198069-1-r.smirnov@omp.ru>
- <20240424180650.tpemkolglnkb2pyn@fpc>
+	s=arc-20240116; t=1713990114; c=relaxed/simple;
+	bh=TGEtv5XOiits4mamBa9OAfqfGV4U4S70ayjHE1cLPf0=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Hdj6Cev2R2oNkgBYgx1qHkxug4Twm0zrlEpIebc2auxzo4IAhbdSi/byXeHfX+9S9v2/zujubSM6QtKX43THqOOympN13CoDk8kS9PyO56udUND6Qknv9ZV8w2tJJNd1RAl0MiBCvdEiMnfYSf8zvEToNPdMo33aBM2gaLGmBRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LJWhaOBS; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61b7a24b843so3897457b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:21:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713990111; x=1714594911; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kJKivmW0J/DCohVbY4PLH/Gsm5HkrpKk4PumvPQkGTk=;
+        b=LJWhaOBS23+m4cbeffQxfBi2+LhQiaxH0g4aN0wnbucjwJjOE43th6w3x5Kshx4k/1
+         ksdbN/ffqddNeAOLSEXHRP0jRaxbX7Mq5pLjMASW7l7reMdVrUCcm+1JmbqVCFgWqa6p
+         9ypcuIzdQkWkyknbyeg6yjMPyGOoNk4dhRDK7Z1TCPMrFznKIsUS0C4Bczwd6AiKEm2L
+         /XNvlN3itMS4rlQRGCrMoJhRQ/mlJsBw/sgDL59KZ4FEC+zL/5qTDiNpzkah+Emu0cp8
+         XPFettXTUNO68E+4Yu30UQGHJvKxs/khMkvXnaALWx8vrx+nPO029a34YdOxWqbOF1ey
+         GfHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713990111; x=1714594911;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kJKivmW0J/DCohVbY4PLH/Gsm5HkrpKk4PumvPQkGTk=;
+        b=RjzoYwyMmdpjMZt7qt8VfuvCzh3b9Ie1qDy7p8egfwZcv4SGfcS1Lxk+7eClV7oDH3
+         k8GnJoErNLfjnkU+S2eLn/HMpiay35tb8uABsrRhexTrgMGqdJYUC47YgNLCvM5fMv0h
+         YcsDrdBXgKfk+B+mnGYaBFEllAU3mTpIH9OI/TJF28d3ARgHtsC5EWiFRFd7VNwZk3VX
+         EukqOKyraaKPExv/lArOe6igEYUGiPZ7rI14Br5HTusZEkaGBgBpyFIuesS2ojQBdHjU
+         OWmMWr0eNQNo38Vclohsq+qmd9mQY4BfQts0F1m0zrtgEEnk7BVAgXwqBf03K3hNxN4h
+         XO0w==
+X-Forwarded-Encrypted: i=1; AJvYcCUg0KtzXgLR+vvxr5zkx2wn0SKKSHT/it/ctwTKBOvrNB4Gsx90Ff5ZSol2x5EPk5eb/W7mikpzJvC5/lm2G5E12rvKTKHZpMuycLq6
+X-Gm-Message-State: AOJu0Yxn0c8VaujLDM3dK76QO2TLHkTj5yqAHFZN7pS3b+etQupPhXRb
+	sbI9eTCM1T15a2q5HSqY+1Nw3UZCEun+mF0nwbnIcvXBcX6wCn4CU8ove0DRqHVx/zc2YXOszhD
+	OZg==
+X-Google-Smtp-Source: AGHT+IET29Be+TqLLxR1el2WX7B1TltJHuVLHw4XBc2UEobX1IG760KHrKW5Mr9mGqY0ZbBfjntc+5CKv7o=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:c54c:0:b0:de1:d49:7ff6 with SMTP id
+ v73-20020a25c54c000000b00de10d497ff6mr385878ybe.7.1713990111258; Wed, 24 Apr
+ 2024 13:21:51 -0700 (PDT)
+Date: Wed, 24 Apr 2024 13:21:49 -0700
+In-Reply-To: <20240421180122.1650812-4-michael.roth@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240424180650.tpemkolglnkb2pyn@fpc>
+Mime-Version: 1.0
+References: <20240421180122.1650812-1-michael.roth@amd.com> <20240421180122.1650812-4-michael.roth@amd.com>
+Message-ID: <Zilp3Sp5S-sljoQE@google.com>
+Subject: Re: [PATCH v14 03/22] KVM: SEV: Add GHCB handling for Hypervisor
+ Feature Support requests
+From: Sean Christopherson <seanjc@google.com>
+To: Michael Roth <michael.roth@amd.com>
+Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
+	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, 
+	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, pbonzini@redhat.com, 
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
+	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
+	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, 
+	Brijesh Singh <brijesh.singh@amd.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, 24. Apr 21:06, Fedor Pchelkin wrote:
-> Hello Roman,
-> 
-> On Tue, 16. Apr 14:45, Roman Smirnov wrote:
-> > tda18271_attach() uses the hybrid_tuner_request_state() macro.
-> > It may return the error code -ENOMEM, but the function handle
-> > the value 0 instead.
-> 
-> Maybe hybrid_tuner_request_state macro declaration should be fixed to
-> generate zero in case of a memory allocation failure?
-> 
-> At least it has a comment stating the following
->  * 0 - no instances, indicates an error - kzalloc must have failed
-> 
-> And supposedly a number of drivers implemented the error handling based on
-> this assumption.
-> 
-> The drivers mentioned in this series are not the only ones susceptible to
-> the problem. Grepping through "hybrid_tuner_request_state" calls also gives
-> out tda9887, xc2028, r820t and others.
-> 
-> > 
-> > Found by Linux Verification Center (linuxtesting.org) with Svace.
-> > 
-> > Fixes: b9302fa7ed97 ("media: tuners: fix error return code of hybrid_tuner_request_state()")
+On Sun, Apr 21, 2024, Michael Roth wrote:
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 6e31cb408dd8..1d2264e93afe 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -33,9 +33,11 @@
+>  #include "cpuid.h"
+>  #include "trace.h"
+>  
+> -#define GHCB_VERSION_MAX	1ULL
+> +#define GHCB_VERSION_MAX	2ULL
+>  #define GHCB_VERSION_MIN	1ULL
 
-Looking more thoroughly, I think commit b9302fa7ed97 ("media: tuners: fix
-error return code of hybrid_tuner_request_state()") should be reverted
-because it just contradicts with the return values contract which is stated
-in the comment for the macro and which is followed by all the existing
-drivers.
-
-__ret should be assigned 0 in error case as was before the commit.
-
-> > Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
-> > ---
-> >  drivers/media/tuners/tda18271-fe.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/media/tuners/tda18271-fe.c b/drivers/media/tuners/tda18271-fe.c
-> > index a7e721baaa99..23432210f06a 100644
-> > --- a/drivers/media/tuners/tda18271-fe.c
-> > +++ b/drivers/media/tuners/tda18271-fe.c
-> > @@ -1255,7 +1255,7 @@ struct dvb_frontend *tda18271_attach(struct dvb_frontend *fe, u8 addr,
-> >  					      hybrid_tuner_instance_list,
-> >  					      i2c, addr, "tda18271");
-> >  	switch (instance) {
-> > -	case 0:
-> > +	case -ENOMEM:
-> >  		goto fail;
-> >  	case 1:
-> >  		/* new tuner instance */
-> > -- 
-> > 2.34.1
-> > 
+This needs a userspace control.  Being unable to limit the GHCB version advertised
+to the guest is going to break live migration of SEV-ES VMs, e.g. if a pool of
+hosts has some kernels running this flavor of KVM, and some hosts running an
+older KVM that doesn't support v2.
 
