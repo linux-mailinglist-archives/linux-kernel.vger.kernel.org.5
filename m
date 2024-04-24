@@ -1,129 +1,156 @@
-Return-Path: <linux-kernel+bounces-156733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68C298B0771
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:34:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0BDB8B0776
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:38:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2509B2858A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:34:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DA03284FE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:38:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8719C159579;
-	Wed, 24 Apr 2024 10:34:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="d5QjoJCT"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB58F142E62
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 10:34:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1921B1591E4;
+	Wed, 24 Apr 2024 10:38:04 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0CB11CA9
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 10:38:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713954886; cv=none; b=qGmrxuozg16uAQd2TBE76xMYvAvftVROta/KvVUc46/IDW6VKlYfk5nBsXdmmyva1GwHunxIVEu50DfeWdmFZgk22mAHnGfdCQLK905vI09dAc63PJSNZAlWb9YV/UTJLPN70f6BfLhiObwtMHqTiQj3Fo9mvVRjH3dGcErqV24=
+	t=1713955083; cv=none; b=fSlkuEY7o+C6k9hL4yI1C5pgfbSFr7LRjDD/GI9C/uvKnAsty9APBP/r2/y2RVqjBZDp928xdF5WT7j3FyfzqpsBncsTo49da78VkMu45CUvfiOvRzm/sfk6UZ/q8dWlYGxJKEYAaraEkpiIVbWM/4+u02GIc0q32BRWZNNbGZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713954886; c=relaxed/simple;
-	bh=YTGioqHw4bG0d3wWLA0C6k3sKtV4jev6rrEIMgbLhO4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P8FcEyv1n38OmyGHOeU6rk1WMxI7psDaAb5m59bUZYTxVOHcbXQz3X7Q+ebJzBjV992WcV7Td4tXVhb1/y4rbAYuPC8++FoMAXbSjNoYXM+VErCwdahKhqDEuMfwqbSZOU238WPvi39ed0/sJDqomtn9QbHiqePA+/EVmXojiNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=d5QjoJCT; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2de2f5ca076so18064371fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 03:34:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713954882; x=1714559682; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YTGioqHw4bG0d3wWLA0C6k3sKtV4jev6rrEIMgbLhO4=;
-        b=d5QjoJCT4tGPOUizncdMovUNpMyoBw50xu8aeFD05oztfFAcqdy3Bdul0lreOWRwCo
-         /IZUPO6onAUVtXA5+RVzgIc5ZrLbM4AmKZ42OLHrE3wX9eLtEUX89LX59CaisXGvLJc/
-         Mq+zwfEP3QqhcR2gtyvJ8GE3qKWIDXvLWmcZo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713954882; x=1714559682;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YTGioqHw4bG0d3wWLA0C6k3sKtV4jev6rrEIMgbLhO4=;
-        b=Ticl9ZOmaYh14P6Kt6Qa8YgOWrRZcR6qlBXttmzWUfnSSMn3UsH9kZesAoRvnZak6J
-         jgSfSJwzFTIMg7nftJzyrwz0CL6eYJobPPLthAP4hF2aOnfvB2GSjmwj+cr1jfIlL2YI
-         RTXztAI4sZkXG/lWBWL6AR4MYeWall242wzCz7WmKVwpkLza3qddLzj+kE3xs1aSHz4/
-         Ni57BuXrg9q5Dn55cvC7a+gUc/j5Imh8429aT6dQan8NhIOVGOzcAzmsieXScFzaZR5u
-         d4AnoLmxGgxzu2SdPkes5ndhAXn6z6gHoiTWG76atDYtj6fVTr8fIPCGgfbfVsoT9XN3
-         bA0A==
-X-Forwarded-Encrypted: i=1; AJvYcCV3dAFyDAzetHzT1ltm3/BdicI5dPFps/jXhQ6clm10avw+Knc9W6oNk77Kr4GC9LlttZZAhdHBij2d8fvBLRT1WoKYnlFxkV3hbvOf
-X-Gm-Message-State: AOJu0YzszRbUmLqZGX1YGJ5OmYtvNrQ5QSTAMj9nfaFgiGz6kJiW76fI
-	pDAJbDO/iIk3KwDGAl4w2yVdY8w1ymbb8tGxxf3SVnrRemm6XrZ7TN4NFrEK5Y342LdGOPhCCvr
-	ubchZdqQu/988PSVCzxQkpfEHuLFVapoYmrRH
-X-Google-Smtp-Source: AGHT+IH1SKEuMcbXbVaOT7b6LPKCdH0Hxd/9lwuaSIGld/FRJW7iu8EV/TAGnf3V8FIPftxocbi/e/dy8Ket9y/FUsU=
-X-Received: by 2002:a2e:3c0b:0:b0:2d8:5e21:8ec5 with SMTP id
- j11-20020a2e3c0b000000b002d85e218ec5mr1359535lja.48.1713954882016; Wed, 24
- Apr 2024 03:34:42 -0700 (PDT)
+	s=arc-20240116; t=1713955083; c=relaxed/simple;
+	bh=8+a6UPEdwewE9o5mDlNnu2PJ+Sp6aVs4oeQrmbfCIN4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AuI0N/dkUwmdEK9018vQQrnvnvsv/siWXTc3bMjT8lT6xqyCdAGGga5vUZ+lrnETqpm6755+CgIbYROsla+oi8eRdDl3Mrhfozn+LW5nRLdqiv4W0IfJ0D8EWmIqp8ZHiogU0UuY0u3bh3JB4gMfuRVT0YJoIdDw3qC2+WP3+7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C7EE0339;
+	Wed, 24 Apr 2024 03:38:28 -0700 (PDT)
+Received: from bogus (unknown [10.57.84.59])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 671383F73F;
+	Wed, 24 Apr 2024 03:37:59 -0700 (PDT)
+Date: Wed, 24 Apr 2024 11:37:56 +0100
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+Cc: gregkh@linuxfoundation.org, javier.carrasco.cruz@gmail.com,
+	Sudeep Holla <sudeep.holla@arm.com>, julia.lawall@inria.fr,
+	linux-kernel@vger.kernel.org, rafael@kernel.org,
+	skhan@linuxfoundation.org
+Subject: Re: [PATCH v2] drivers: use __free attribute instead of of_node_put()
+Message-ID: <20240424103756.jhloae3fcyinyba4@bogus>
+References: <20240419140106.3mkayxriqjt2cz5i@bogus>
+ <20240422130931.176635-1-vincenzo.mezzela@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240423122518.34811-1-kl@kl.wtf>
-In-Reply-To: <20240423122518.34811-1-kl@kl.wtf>
-From: =?UTF-8?Q?=C5=81ukasz_Majczak?= <lma@chromium.org>
-Date: Wed, 24 Apr 2024 12:34:30 +0200
-Message-ID: <CAE5UKNpSNtPbdMKDb7pDTpSiCNndkYP7KC+m6xSd6aMMQvQ2tQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] HID: i2c-hid: Probe and wake device with HID
- descriptor fetch
-To: Kenny Levinsen <kl@kl.wtf>
-Cc: Jiri Kosina <jikos@kernel.org>, Dmitry Torokhov <dtor@chromium.org>, 
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>, Douglas Anderson <dianders@chromium.org>, 
-	Hans de Goede <hdegoede@redhat.com>, Maxime Ripard <mripard@kernel.org>, 
-	Kai-Heng Feng <kai.heng.feng@canonical.com>, Johan Hovold <johan+linaro@kernel.org>, 
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Radoslaw Biernacki <rad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240422130931.176635-1-vincenzo.mezzela@gmail.com>
 
-On Tue, Apr 23, 2024 at 2:26=E2=80=AFPM Kenny Levinsen <kl@kl.wtf> wrote:
+On Mon, Apr 22, 2024 at 03:09:31PM +0200, Vincenzo Mezzela wrote:
+> Introduce the __free attribute for scope-based resource management.
+> Resources allocated with __free are automatically released at the end of
+> the scope. This enhancement aims to mitigate memory management issues
+> associated with forgetting to release resources by utilizing __free
+> instead of of_node_put().
 >
-> This revises my previous patch[0] to add the sleep STM chips seem to
-> require as per discussion on the original patch from Lukasz and
-> Radoslaw[1]. I had initially tried without as it had not previously been
-> needed in the similar logic in our resume path, but it would appear that
-> this was simply luck as the affected device was woken up in that case by
-> "noise" from other sources.
+> The declaration of the device_node used within the do-while loops is
+> moved directly within the loop so that the resource is automatically
+> freed at the end of each iteration.
 >
-> To reiterate, the idea is to add the retry that Lukasz and Radoslaw
-> discovered was necessary, but do away with the dummy smbus probe and
-> instead just let HID descriptor fetch retry as needed, aligning more
-> with the existing retry logic used after resume while saving some noise
-> on the bus and speeding up initialization a tiny bit.
+> Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+> Signed-off-by: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+> ---
+> changes in v2:
+>     - check loop exit condition within the loop
+>     - add cleanup.h header
 >
-> I added Co-developed-by tags, I hope that's appropriate. We should await
-> an ACK from Lukasz on it fixing their hardware quirk.
+>  drivers/base/arch_topology.c | 150 +++++++++++++++++------------------
+>  1 file changed, 73 insertions(+), 77 deletions(-)
 >
-> [0]: https://lore.kernel.org/all/20240415170517.18780-1-kl@kl.wtf/
-> [1]: https://lore.kernel.org/all/CAE5UKNqPA4SnnXyaB7Hwk0kcKMMQ_DUuxogDphn=
-nvSGP8g1nAQ@mail.gmail.com/
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index 024b78a0cfc1..c9c4af55953e 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/rcupdate.h>
+>  #include <linux/sched.h>
+>  #include <linux/units.h>
+> +#include <linux/cleanup.h>
 >
-Hi Kenny,
 
-Your solution works as it should - I have tested it on my Eve with
-enabled debugs and
-the retries works as expected with power-on, reboot and suspend/resume path=
-s.
+Keep it alphabetical. Also since <linux/of.h> does define kfree for
+of_node_get(), may not be needed strictly. Sorry for not noticing those
+details earlier. I am fine either way, it is good to keep it IMO.
 
-I have also disabled cros_ec_i2c driver to be 100% sure it doesn't do
-any i2c transactions on the bus
-and again the touchpad initialized successfully (with a retry) on all paths=
-.
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/thermal_pressure.h>
+> @@ -513,10 +514,10 @@ core_initcall(free_raw_capacity);
+>   */
+>  static int __init get_cpu_for_node(struct device_node *node)
+>  {
+> -	struct device_node *cpu_node;
+>  	int cpu;
+>
+> -	cpu_node = of_parse_phandle(node, "cpu", 0);
+> +	struct device_node *cpu_node __free(device_node) =
+> +		of_parse_phandle(node, "cpu", 0);
+>  	if (!cpu_node)
+>  		return -1;
+>
+> @@ -527,7 +528,6 @@ static int __init get_cpu_for_node(struct device_node *node)
+>  		pr_info("CPU node for %pOF exist but the possible cpu range is :%*pbl\n",
+>  			cpu_node, cpumask_pr_args(cpu_possible_mask));
+>
+> -	of_node_put(cpu_node);
+>  	return cpu;
+>  }
+>
+> @@ -538,28 +538,27 @@ static int __init parse_core(struct device_node *core, int package_id,
+>  	bool leaf = true;
+>  	int i = 0;
+>  	int cpu;
+> -	struct device_node *t;
+>
+> -	do {
+> +	for(;;) {
 
-So you can add:
-Tested-by: Lukasz Majczak <lma@chromium.org>
-Reviewed-by: Lukasz Majczak <lma@chromium.org>
+Did you run checkpatch.pl on this ? It should have complained here and 3 other
+places below.
 
-Thank you Kenny for your work :)
+> -			if (leaf) {
+> -				ret = parse_core(c, package_id, cluster_id,
+> -						 core_id++);
+> -			} else {
+> -				pr_err("%pOF: Non-leaf cluster with core %s\n",
+> -				       cluster, name);
+> -				ret = -EINVAL;
+> -			}
+> +		has_cores = true;
+>
+> -			of_node_put(c);
+> -			if (ret != 0)
+> -				return ret;
+> +		if (depth == 0) {
+> +			pr_err("%pOF: cpu-map children should be clusters\n", c);
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (leaf) {
+> +			ret = parse_core(c, package_id, cluster_id, core_id++);
+> +		} else {
+> +			pr_err("%pOF: Non-leaf cluster with core %s\n",
+> +					cluster, name);
 
-Best regards,
-Lukasz
+Missing alignment here.
+
+--
+Regards,
+Sudeep
 
