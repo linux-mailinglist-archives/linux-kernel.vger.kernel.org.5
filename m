@@ -1,133 +1,121 @@
-Return-Path: <linux-kernel+bounces-157184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A9FA8B0E06
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:21:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B12008B0DFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:21:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACCEB1C23C42
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:21:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CECF8B2A64F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:21:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F326616130C;
-	Wed, 24 Apr 2024 15:21:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A18D515FA76;
+	Wed, 24 Apr 2024 15:21:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PzcVnCJQ"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mqMzFLk6"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C140E15E5CC;
-	Wed, 24 Apr 2024 15:21:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5511C15EFAD
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713972081; cv=none; b=XJVjvA7WVLJJLPVaVHZypejNvVrs5FEl9OqTnuZ6vm/6NmjGHr26QoXSKY6xoP4JinTQRufRjnImZnTsH1fZuPw9c7FhuBFbDe/z+jS39LVVpRiGh58xsDJawheQnXb6ncuuusd28bq4S72RAxSMeLZ80U5eXVnkgCwK1sMv2eA=
+	t=1713972070; cv=none; b=NjrAvzAzi/doR2nkRWkJ02KiUxhL8IMCH0C0chHvkviFiRpqsmNc/Q726/KZk99TPPbrRjOuV8OkBYpkIu1sf/Vyyfl9sHsdAYbmr3fIw6eayoY2YXZHe1iqLoyOGTGxWVBOZmPnmfkBxUMnpp45TUzNWk1v/dzLIWeNHGl2Ls4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713972081; c=relaxed/simple;
-	bh=die5GEdR93SZJIrj+6mbvz6RS0d1bUoi/TXLw5RP8dI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=K5+nVxqiPT/AU8ow28gJ2Id69QLVwshDhULOHMhHfQnuexEENCDRAJX5V5EOF20PTOJwactcqZsqoD72p/W0UeO/gBK1P3Kc36Eu0TFG6YciTF1uUOQwvpjlTCyS5UeQliXiHEWyPoFYMJumAGJbL+zMKv+JWT7kqYUJdqEZIJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PzcVnCJQ; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a5544fd07easo68366b.0;
-        Wed, 24 Apr 2024 08:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713972078; x=1714576878; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xmbep3Wj2edBDGZAic+hg2xj7nE0C73pjSQNpMAXt4k=;
-        b=PzcVnCJQAvQA2+mMxauGIo/XWcsm2/lUw9jHxK04kGnPaFPao/T/FX3ABVeiSfuxfc
-         MHN1rl/bVzfvAbe4YcsatEpeHggf/ZlXEFW0jnNHu1ltvYApUUf+eSZV5N+gb28/rZAp
-         nRoyotu5LkjRvYj7fm/iDul68jbEaAKgVs1oYGrZKCbYkByvmDLnd0Q2lkfcyHeVrNdy
-         JMnR6BiL6Jj+Zgf071z1c5CGIrlboSFCTxFEDFmy5SivkDJC3rsojQJy+cCD+0OoBPdE
-         CtGrUHd+HijWBvaFcGbCV+CFFxS///qpFBgLmUykhLpkDNR7Z2DGbEdxHPdIyB/lZOvL
-         6KdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713972078; x=1714576878;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xmbep3Wj2edBDGZAic+hg2xj7nE0C73pjSQNpMAXt4k=;
-        b=APm3X8J+xn9KNMRrot3OCMRniImNGxsMjQ6eVpwWPGrOWeJMERm5oIBS0BrTUy/wnC
-         iDVt56oIgPUv8R/Ne7XQCwGN+Yi9S7ZqkZfwu7lLJAz9/msU22sbSActxTeb+PfqBzjJ
-         Ya8knfcm5TK1+S1BFn8ORacv2iEEU9IdJ2pgqzc2igGUiBsmeZVrwEwTP4U2nCBDm4DF
-         DaDYL2G4MPC3vClOybFjbeBO1p3y1yQ6QVf09cbDR8h6F0CriKWM6JTNbvB9JSl69vlZ
-         QpfSoMV+5JRot6MUGi1tgmInsCQsA/kCJY7ACTuZklukcFPTtJXOfX2Jc48CAPGfph1R
-         PEnw==
-X-Forwarded-Encrypted: i=1; AJvYcCVD6nZuGLylKNp+Y+2beVV9s7YCIg+aFV2QPnQyAkUj1vh3LdVaTyh5uTZ1GUyS7EuoxtcVgJTOXizE7ANN1LOP6hYHa9hr9SRaDHdXOB12Ao/rsEkmG+x5tLooWvpeV0OZ3g7OEYrEFDJc85TdIBSm5Qd3tRCueVg+zcRQWtX9y4NJBd3IZtkGaO0Tn222wgsnce7rrQl5cVwNbfTZep/J
-X-Gm-Message-State: AOJu0YxPup5VvkeYN0hcwo/+K6Tb5uOdBS+f3aDa4uBBzYT/LDbWI3Y9
-	Vf9jGvcLhfS9L2R17iQoSq1Fad9Jrsi49Bq+loZnJQ5fPsyuZel/yQnFIKUDmjSkvlSA2wBhJLV
-	79G1Z1g+bU1KLDuNwOZhjqiyXhTQ=
-X-Google-Smtp-Source: AGHT+IGQUEPZE3TBNrB7jm9cFv207FSC0kpyhsF+3dnUvHUba9LKAV3qWkn9Wz5L3PgDviOeIm6K6r9u4HEv/wd6LO4=
-X-Received: by 2002:a17:906:308c:b0:a51:8d60:215a with SMTP id
- 12-20020a170906308c00b00a518d60215amr1836143ejv.27.1713972077907; Wed, 24 Apr
- 2024 08:21:17 -0700 (PDT)
+	s=arc-20240116; t=1713972070; c=relaxed/simple;
+	bh=q1exOMXTIOd9tdMTIymwsETDLgVuZhekuD/4BzdFroE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A5EFV/wMfdRx6Dq0Jrt5ur+JWDgfeCzmwQRJg8xe/QovbZxEhgHM6rr75/YQHb51yOaqe/kXTACHbN+8JqbVSkwXubtX4aZ9xov9j1tKpCh0YnCyKa7AQk6fVT8EKQbHD4/nmfBbDva5H437rbSa88IGbu/iH4Zu2en59+FbyA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=mqMzFLk6; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=1BnmcBKajNjGf36OXNjueaNFKhQAlEqsZTRopkafH8Q=; b=mqMzFLk68bVQeWWZ2Z1gXeq8/U
+	0A52ko5Kh63k6l4n6DrP9lI2V8jY4fk4viTtgGnyDRI1q40OsiNsmFJfqsTypbJUKMEG8o/Pp4fBv
+	o5y/7PqJvNoESukcq/mYtmVJ5eSoQuDVplsod69b5nBZ1pEDwVTts6AJH0kdOgFiq3b2RFmcZJMLk
+	2HQWjCJOL/rVgW0XqYkz04r9rbS2KJYFSHkOYA49B6GTnDwqibow5dYUJ+KtXwVaFX3wHZP+Y6Nvk
+	lsQFtIKn649q2EITEWItFjCAODkXPpeEs+aGhheatzET3tibvn6C7Fz46G1OXjg7QBjHIxtGH5mf9
+	DTXCrfJA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rzeQO-0000000EQr3-3BVc;
+	Wed, 24 Apr 2024 15:20:45 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 60D3E30040C; Wed, 24 Apr 2024 17:20:44 +0200 (CEST)
+Date: Wed, 24 Apr 2024 17:20:44 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Mike Galbraith <efault@gmx.de>
+Cc: K Prateek Nayak <kprateek.nayak@amd.com>, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+	linux-kernel@vger.kernel.org, wuyun.abel@bytedance.com,
+	tglx@linutronix.de, Chen Yu <yu.c.chen@intel.com>,
+	Oliver Sang <oliver.sang@intel.com>
+Subject: Re: [RFC][PATCH 08/10] sched/fair: Implement delayed dequeue
+Message-ID: <20240424152044.GS30852@noisy.programming.kicks-ass.net>
+References: <20240405102754.435410987@infradead.org>
+ <20240405110010.631664251@infradead.org>
+ <557be85d-e1c1-0835-eebd-f76e32456179@amd.com>
+ <ec6f811b9977eeef1b3f1b3fb951fda066fd95f5.camel@gmx.de>
+ <14330cf4-8d9e-1e55-7717-653b800e5cee@amd.com>
+ <747627a1414f1f33d0c237f555494149d6937800.camel@gmx.de>
+ <2b9f7617f2b2130bb6270504ec3858f15d463f1d.camel@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240423223309.1468198-2-aren@peacevolution.org>
- <20240423223309.1468198-4-aren@peacevolution.org> <CAHp75VeRDSPvpmSbUyZPp0RMoTOE193U2ma18qxv_qZQKLCq8g@mail.gmail.com>
- <5qqil7ltqhdeabml6toqpcy773uhjxgwaz3txpy4kv4sz55o2y@hmar674eey7s>
-In-Reply-To: <5qqil7ltqhdeabml6toqpcy773uhjxgwaz3txpy4kv4sz55o2y@hmar674eey7s>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 24 Apr 2024 18:20:41 +0300
-Message-ID: <CAHp75VdR9HtWbSif+j8QHX5zG9xPF1GzUFY2s-0OjD3RAWD9-Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] iio: light: stk3310: Implement vdd supply and
- power it off during suspend
-To: =?UTF-8?Q?Ond=C5=99ej_Jirman?= <megi@xff.cz>, 
-	Andy Shevchenko <andy.shevchenko@gmail.com>, Aren Moynihan <aren@peacevolution.org>, 
-	Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, Liam Girdwood <lgirdwood@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	linux-iio@vger.kernel.org, phone-devel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	Willow Barraco <contact@willowbarraco.fr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2b9f7617f2b2130bb6270504ec3858f15d463f1d.camel@gmx.de>
 
-On Wed, Apr 24, 2024 at 3:59=E2=80=AFPM Ond=C5=99ej Jirman <megi@xff.cz> wr=
-ote:
-> On Wed, Apr 24, 2024 at 02:16:06AM GMT, Andy Shevchenko wrote:
-> > On Wed, Apr 24, 2024 at 1:41=E2=80=AFAM Aren Moynihan <aren@peacevoluti=
-on.org> wrote:
+On Thu, Apr 18, 2024 at 06:24:59PM +0200, Mike Galbraith wrote:
+> Greetings,
+> 
+> I tossed a couple rocks at it today, and seem to have hit the little
+> bugger.  The root cause seems to be doing the delay dequeue business on
+> exiting tasks.  Hunk #1 of hacklet below seems to quell the explosions.
+> 
 
-..
+Neat, Thanks! I was just about ready to go look at this again.
 
-> > >         ret =3D stk3310_init(indio_dev);
-> > >         if (ret < 0)
-> > > -               return ret;
-> > > +               goto err_vdd_disable;
-> >
-> > This is wrong. You will have the regulator being disabled _before_
-> > IRQ. Note, that the original code likely has a bug which sets states
-> > before disabling IRQ and removing a handler.
->
-> How so? stk3310_init is called before enabling the interrupt.
-
-Exactly, IRQ is registered with devm and hence the error path and
-remove stages will got it in a wrong order.
-
-> Original code has a bug that IRQ is enabled before registering the
-> IIO device,
-
-Indeed, but this is another bug.
-
-> so if IRQ is triggered before registration, iio_push_event
-> from IRQ handler may be called on a not yet registered IIO device.
->
-> Never saw it happen, though. :)
-
-Because nobody cares enough to enable DEBUG_SHIRQ.
-
---=20
-With Best Regards,
-Andy Shevchenko
+> 
+> ---
+>  kernel/sched/fair.c |    5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -5374,6 +5374,7 @@ dequeue_entity(struct cfs_rq *cfs_rq, st
+>  		update_curr(cfs_rq);
+> 
+>  		if (sched_feat(DELAY_DEQUEUE) && sleep &&
+> +		    !(entity_is_task(se) && (task_of(se)->flags & PF_EXITING)) &&
+>  		    !entity_eligible(cfs_rq, se)) {
+>  			if (cfs_rq->next == se)
+>  				cfs_rq->next = NULL;
+> @@ -5495,14 +5496,14 @@ pick_next_entity(struct rq *rq, struct c
+>  	}
+> 
+>  	struct sched_entity *se = pick_eevdf(cfs_rq);
+> -	if (se->sched_delayed) {
+> +	while (se && se->sched_delayed) {
+>  		dequeue_entities(rq, se, DEQUEUE_SLEEP | DEQUEUE_DELAYED);
+>  		SCHED_WARN_ON(se->sched_delayed);
+>  		SCHED_WARN_ON(se->on_rq);
+>  		if (sched_feat(DELAY_ZERO) && se->vlag > 0)
+>  			se->vlag = 0;
+> 
+> -		return NULL;
+> +		se = pick_eevdf(cfs_rq);
+>  	}
+>  	return se;
+>  }
+> 
 
