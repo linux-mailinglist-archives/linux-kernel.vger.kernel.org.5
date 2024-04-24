@@ -1,172 +1,189 @@
-Return-Path: <linux-kernel+bounces-156400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 778FA8B025B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:44:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEE7E8B0239
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:40:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E6C7281F93
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:44:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2295B2486E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:40:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 210FE15748B;
-	Wed, 24 Apr 2024 06:44:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08CFE157E76;
+	Wed, 24 Apr 2024 06:37:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="jlAnsaql"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="okP5igdW"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2074.outbound.protection.outlook.com [40.107.21.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6D4FEC0
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:44:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713941089; cv=none; b=NjAjryUwisgZCg+IWH30Nf87CrbzYxn4Jc/BBPevMtCaQYa9aK/unooFcWxv4v8Gs5kKOamhM+gebibwOuNUIrfpQqv5XdGxD7XqdBxenDkeWMfSX8DIl1nXNiGsGAzAJyn/6PC7HV+xhO6lqOGU/ttxd+CCoGXrH8hjNb8Baiw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713941089; c=relaxed/simple;
-	bh=qywyNAqtfmH3XPM3wc3C3h0jJnNuoDFJUlD0uSHfGJ0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X9MvpOmNZS4zIOGiesre0kgiqINAMpbuGM8KshnTmqtCQekvPqtxL5kL00l2DOv807avDMPwuXpj3Qdin0hxmbK9TIQ7b1lZzbpRVmUGCQO6BV/NkOKp4S/mu9gMoPlNMnCf+vnxe/9aT+ZiaAlXCzxK3WEvIVI2TCNhl5IPg1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=jlAnsaql; arc=none smtp.client-ip=209.85.166.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7dddba0f02fso84852039f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:44:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1713941087; x=1714545887; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sf3+5YALiCVsfizYQ3BDSn74CJsGH44UmM4ytaiZ8LM=;
-        b=jlAnsaqlvlEt9FPwcwjDy9IaN+Fcxx1QE37nTGGAN00ggG/w4NZa6KYzTaIN+9yxhU
-         CWQXSzSmlJLk8fGRrfKvoXIMWcSiAw+AjakMZ5ranb9IVAdFnOqObRxebJSxPIKOB69B
-         hrg8bNVq62xrNQ++nsxQsiVC2nu5wkP0i8MDKS45cWk+UVRZvgwNgmP62tIAxWQ1g/n+
-         U6Kc2n1y4emKUWVHkOGbwEM11geG+UveZrLR/HrOzdoawpeK2vcGvu4prxQDV0Fj0PR+
-         J0Vw77Il66M0/6CSAThn8tj1hFwf4pnp+At5d8fgXhZor5TzMSavAlHysIVZNtCYMlkO
-         MvZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713941087; x=1714545887;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Sf3+5YALiCVsfizYQ3BDSn74CJsGH44UmM4ytaiZ8LM=;
-        b=gsFY0mEcL/a1kxhhKwmQQB0n4WaBZRYi9ssh70n8UWfrtwmHHti5ihN3edJ+yXz5Us
-         wkzKOSlJhxNMHp5GS1yiE02SKPvPjIkEhLXfy0xJGkbqkHDPEpODZwFFosXFON9Jp90r
-         2uU7RYVzs/xinno1QqyB5EUJUVvK/vfSLj2M+wse3zo4TqkVXzqukHgyM1P/GC4DGbUw
-         fTyBAMfl7GYCpzeCTGOPCgOyYi7qjIVUN62FsUn6JnBZyRt5O1P3Xg2P+zwC1i68gQ2w
-         MfwOCDVeyFNS5asPHlQZwF644Tzwsld+UMMbMHwy1isSBbhgS1y5ocem+wipTVIkU75g
-         5Nxg==
-X-Forwarded-Encrypted: i=1; AJvYcCW7DYLnaKI8e55kidlr9+NZhl4RuqA07WiE4vUooqR9Q7wftKFtapv4GvpAFmyjzsjvciFHb4u1tDyG009vDIHcSf6WGtn/QqoDKdsU
-X-Gm-Message-State: AOJu0Yxra0Xp31Rb1cu7tjQ9EK+mFf13+6MPOOJIXB1bKDZ4K5XyaCUl
-	0pQidmyO+CzXKSQspssOHDvwXrcS69AE6ru2y5NXRCY2NSH1vD6UsnI6oL4DXr7KavvVjdvMqtJ
-	PLKsVmgGIvRboQb38Y2l/MEk5RcVRoisYNNufpw==
-X-Google-Smtp-Source: AGHT+IErBzM2ZvKYjC/kgSDBdh9xGud9im9ZtDYytTVq3cZLIALDpKA6oVcIv+vfvAqc+qjjb0Q4f5CdYvyjEl60vMI=
-X-Received: by 2002:a6b:7e46:0:b0:7da:836:5d82 with SMTP id
- k6-20020a6b7e46000000b007da08365d82mr1731542ioq.7.1713941086645; Tue, 23 Apr
- 2024 23:44:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20318157490;
+	Wed, 24 Apr 2024 06:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.74
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713940643; cv=fail; b=uMnKjeCoQKm4qQOTZDVgP3n2U4Ta7UyNOkdIgXxyDeOwoVhB4Jc9CMgPix+O1QlQPKk9GW/wVKd9H9njl2MNFZ7MQG6QlGhvm4kaCjudWnwsAkI3IgAZny5nrLDdBPg5h9kWHMD2/bRwWO0uWG42+VFWtmpDvAJkgn9G8PS+qTU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713940643; c=relaxed/simple;
+	bh=mpprf0b43IuOgoyYR3yyC2IvO3v6NwZZs38gWW2xwuY=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=Lw5VoFaGl9BGrdWKadL4GscGUrm6ioJXvzBPbWH3ag6JV3wW1FQdXVpwVvYk453U3g0IK+ahw4l6+c8WohOWpdxT7j27fM9mtN9bgil5U75MYYPlzRZR8hnXSkgxUUFcXy3PCb44vfn35eOdxr2J82SGzIPpVaJubZ9tVe5tguQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=okP5igdW; arc=fail smtp.client-ip=40.107.21.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SFfb6xHOWZRdxqBumrxE4wZagVPdv97spH3lG0v0AbGisadqLmxu0A3BKh/szKJbK1w5Z9DGMLRZbWFyqXr1h/IFm1vJRxXefars6wfmq1/RE/uw9hNXkb78ijTXV8JwklbS6SYOQ/pjlgpFMO4FhjSO1ZcmbFAV37ECA/zeqlyvOb3L7d9bKYssRn2aqcaTGsa4jlEdYa9hy39cGILct15DGNgNkdz8j8J7kCWPn8ZJKJhlRgJPMlGuMDCXapzDDKOlC5zTW+9bEnRoI6MbRaGJflYxA2SZxeTs6T5255/1czMXN375nGlA7FqlzzdGFF1X0D82MpMfOND9a/Ie3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tOO3gdOAnKpZmh9cZKvrdRMt9hG2p1V674jPyPOZsIo=;
+ b=my8JE9Fwm6LAVJlqyC4d00L/JftgrzNRCVOnuTC/8kOhSMwukdoe6UmxkVHJmYIUWFB3lptrzejF6bmFiS+yE2W6qK6S8XDdL/X/tGZz3ckYOLHUHBjHAbxwvFX26MDq73si+sAwOto9CXHQA7nmnlYR8aLkMZFrG0V3F1ms5KMRl+ue+1ZJUEDY9vg5DqhYsT6SOaZIEDd4PTb1rgrDnwAIwF5pGZe2ScTdizaamOe9KYC4PZ49LEJMECCA0KMz7e0Tdfh4svChzgYmJvJZXMNuI+jr24iZINJrYyHjmg+RZLffI0s3fQNGH1YeEaBgRU2faJAAw6kl89Jo7EVXDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tOO3gdOAnKpZmh9cZKvrdRMt9hG2p1V674jPyPOZsIo=;
+ b=okP5igdWgtfANkhbDmcirQgvYCz/+g+Iww4JS1E4pEszC0EAz/yzjn4nN+Mk6p6KrDOz/HqhpVA5H/MloE/GoIUG8nJFQDpYZoXR/qgq4PLgW2LxdOMSciAWItPy2hHWQIyoUVQcM62Bw8XY5RuDqRWKlnPd3XWkiIdLOIkFZDw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AS4PR04MB9386.eurprd04.prod.outlook.com (2603:10a6:20b:4e9::8)
+ by AS4PR04MB9483.eurprd04.prod.outlook.com (2603:10a6:20b:4ec::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Wed, 24 Apr
+ 2024 06:37:17 +0000
+Received: from AS4PR04MB9386.eurprd04.prod.outlook.com
+ ([fe80::4f24:3f44:d5b1:70ba]) by AS4PR04MB9386.eurprd04.prod.outlook.com
+ ([fe80::4f24:3f44:d5b1:70ba%7]) with mapi id 15.20.7472.044; Wed, 24 Apr 2024
+ 06:37:17 +0000
+From: Joy Zou <joy.zou@nxp.com>
+To: frank.li@nxp.com,
+	peng.fan@nxp.com,
+	vkoul@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org
+Cc: imx@lists.linux.dev,
+	dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH v5 0/2] clean up unused "fsl,imx8qm-adma" compatible string
+Date: Wed, 24 Apr 2024 14:45:06 +0800
+Message-Id: <20240424064508.1886764-1-joy.zou@nxp.com>
+X-Mailer: git-send-email 2.37.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2P153CA0029.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::16)
+ To AS4PR04MB9386.eurprd04.prod.outlook.com (2603:10a6:20b:4e9::8)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416013138.28760-1-zong.li@sifive.com> <Zia29wYvScRVdXUP@ghost>
-In-Reply-To: <Zia29wYvScRVdXUP@ghost>
-From: Zong Li <zong.li@sifive.com>
-Date: Wed, 24 Apr 2024 14:44:35 +0800
-Message-ID: <CANXhq0qN-SsC=iO_5gAea=FqQqztmVUHaGxE5Z2me0h10jBU+Q@mail.gmail.com>
-Subject: Re: [PATCH] Revert "riscv: disable generation of unwind tables"
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
-	schwab@suse.de, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS4PR04MB9386:EE_|AS4PR04MB9483:EE_
+X-MS-Office365-Filtering-Correlation-Id: 26f934a1-0e9f-4d51-ffd8-08dc6428fc19
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?dwUVmUdCv8lR2V5V9a83DiAUnK3T5z2zAGkz8l3woDLjpOwFZyBoxexZzJkI?=
+ =?us-ascii?Q?yIx68Txybl/z/D3ySYQCu2q/T0vC3wtbPimvwgnGxwxKpKXYqmiaZP5O4196?=
+ =?us-ascii?Q?McZlbKHLw1sxpnhPwqScuWNnRNRwbIhPAWOtwu8kyKlW9OdQAZkGd+scxqli?=
+ =?us-ascii?Q?dEIJ9mi7HNWE9QP1ySPtzKrDZMnKZUCidADQh7wKvJhc0pWV3UQASRLSMED/?=
+ =?us-ascii?Q?h7hzkroJebDx8WcTH+BgXbOZkWbhJrbQtck2OqwAjWDlDKn26ZlfGwemlWEx?=
+ =?us-ascii?Q?RGbofdYkjnUIOsVZKbPVRyBuAKJ4Qd1QPIzL6KEQ7OmWA6eLcq/HOgYevsBc?=
+ =?us-ascii?Q?+O2NGDz4toqB2JlKZ2e1HE2WjXeMG/q4e1fjTIuLqArl601tZLH+4HskoJSg?=
+ =?us-ascii?Q?ug91HEu1guFRt0F5Zyi3/Ti2SA9kA4HyZ7TbWPFeaUwCgVSccSOpAM69g1L7?=
+ =?us-ascii?Q?ZTJ5L4lmZn1hGEFxEeH0jVS7UahPNcQjSeoCF4+5Ab4QeaoRCYKE5tZDQI+c?=
+ =?us-ascii?Q?1G9xta7qfk4SiWeyoGHSjI5wJxajHG4r5Xs5Xtza6NN6Vvq46rR0VY/kqw7Q?=
+ =?us-ascii?Q?cisi+0mK4wW5drm6VgNLKz6irneubUmiWqjIU1aKTwOw3evoL4JhPt8H/sBv?=
+ =?us-ascii?Q?VcxTj0/fX5Gsy9vzts36sXs9cck9K8wz339ZLUfb+zGUc6W6NwbsFnDKbVqB?=
+ =?us-ascii?Q?NG3UneX7T4pF4xP2g2JkqjzUoq3dYPkqDCd7svcXn1uOkWqD5oCDPp/wl8cc?=
+ =?us-ascii?Q?doNjOYV5iXez3aWIHqkHrjDjw5Hb6gIzoglqEnSNG3brygFzcUujR6WupXqf?=
+ =?us-ascii?Q?W94eREOlGz5M25Og7TqOS2y3nAONG1CE4Vfy96THCXuxelTfHTZafkI0oi53?=
+ =?us-ascii?Q?Cc87IPFOPyhCB10mEh13xPZiWbNtpbxCJHVEnmpvPRVgOeaMXa2DnEo9fhqh?=
+ =?us-ascii?Q?dT6BKuxTf4tGtY0F3BgMi9e0Si02xK+48xgbhZOw+9UJ5GecI3S0hsFbHDDR?=
+ =?us-ascii?Q?VTc2TMtpLluqPJkSboYTGTRQ+zOuppmkbm1aZFCk0xlHIhrSq+Tnit2v/LyK?=
+ =?us-ascii?Q?WMPCcOjXe+60eZpIG5P7vqgmZK0ZHT8bvluw0QfNdQ2UZpBKIQm0RPbbvvak?=
+ =?us-ascii?Q?Ofqc4PQ9oraCBsPoR84pPlfmsfBgmODklp0pnu1/zgZVfNJW3q+KQy0Ncwls?=
+ =?us-ascii?Q?4kBeiBPiIAuO+pIzO5qsVHcczCgrReN3WIZoRT4XOn14CX827dhblWb2bV7r?=
+ =?us-ascii?Q?AIENjBZASSWqUcHKoo6tnsdYd557biMhmUTtHgAeHGnjBY90ZFpeT9XtK27X?=
+ =?us-ascii?Q?+b9UTfZ4w3NlxGgZv7IyBaLq3lskhV5mcmQmEufYNh+ndw=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR04MB9386.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(52116005)(376005)(366007)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?7EmFFuJBTEXP8NH++S5hpF/1xNvS1PlQ7QA/cu+bRcx1PtJrzk/Fpks8UWXc?=
+ =?us-ascii?Q?G8idHJR2Yr598aJoReBik4iEmmZtZYecMZsk9DzKnMxwp9FbmJVvmkVWyRJw?=
+ =?us-ascii?Q?Mjfd8IA1Voj4uHUYJwZOpYl4IFx0Y6qF0Ph7syFm9tUfcbsAdIc8GJ7ZxNac?=
+ =?us-ascii?Q?UTKpntJ8SmVtLmsQjWVhl4DAsqQ8h7n2NZSM9Rza2CAgN8ZgeWcIFefk+dD5?=
+ =?us-ascii?Q?4ChR5VhN8uGwQnH1G1khcFEb1SyVdYqy3MDMsLdLgvVSKGloy8ag3VemThNS?=
+ =?us-ascii?Q?lIXCLuotPI45iKB3MrWiBip/rdGPyGEEHuqximJCtE6D2bKlMHq7N5jn8qsZ?=
+ =?us-ascii?Q?mm2QHo4ydYlpod/2/S5XdtbKAIeYPCFwJ6zue9WpMTzFuro6FLc+u0tuBDDb?=
+ =?us-ascii?Q?LGGEe04hRzJz+W8NoLfR0EnsOu0U+Y5Ar/YhTvC6PZSrH/LwznmeDkj2mA/P?=
+ =?us-ascii?Q?OJQUbiK+elm0+D2nMZ1q1Npv7YPTMJGTXTsXjBIU56RDzqhcY85xzPew3Ip5?=
+ =?us-ascii?Q?LGzCvoHsuIw+5AkIxU7sdFRSUGgcpTUCjBgYkfDvK44W2pekpQ1CbRHKlwJW?=
+ =?us-ascii?Q?69x4ybMrwjBqUkWkRen8ZMFJDGLHfvGBAGPo6fds9NH8O+hAN6KebQ5Ruklq?=
+ =?us-ascii?Q?1jbbe4V+xSmmgvCzYuku3nremG/GJIwqzYKvvwPVsmv35p73ooB+DOBkAB7B?=
+ =?us-ascii?Q?XDDnBeq2lZ824pNIrP7AvVCJ0lo2Z5sfiAQjIkeAfCxMja+/zX1fWEJ0ZQNP?=
+ =?us-ascii?Q?r296O/AmVnRkGfQ+V1QumYzXcbWEpfl/2BzsVBfx2wY+tMvlhabSVJGqsFR6?=
+ =?us-ascii?Q?iR+cZ0ceL7RjAPbCZyQIdq1hqJ7nIqX72kuQ/kISPvh8TOgTRp61Hi5xAJfs?=
+ =?us-ascii?Q?wgKJU9vVMQig26YHG4puFq4KQ2QUvSK6XkPFl8EAkHQn3l6i6GGMVFGighml?=
+ =?us-ascii?Q?grmFngXowPDg9YUtpw8zt4uEJh3IsYE8FvLO9kC1Ueu4Un8c3HcPnJWrPW5l?=
+ =?us-ascii?Q?hx37KDQxenFA4s7w1N3yqfXJTppyr/ddDHFIH2YYCoowqODmRo5OXAJdSPv0?=
+ =?us-ascii?Q?+cmPRD10Jqmlronu4YsCp3N2uJl2PnQdzDCf0CQBQtt4C9kzw7/RsxPoV3H3?=
+ =?us-ascii?Q?zKuzOoTVaAPScxGqSypnBuubq08SdA8a3VwwfWBppxT1SgdAuJcOvaIP/blV?=
+ =?us-ascii?Q?vOFy733BtW9VoEhafwyR3Br6IHRkTAMEFnDSnXKxVUyKvWfFk4xauG70c0dH?=
+ =?us-ascii?Q?aBbhrfG8YqAhFE7wCj3pxP6AugB1MbO+6FehoifhURuvpBMKiSM/TTNhhmNo?=
+ =?us-ascii?Q?nsYNzblfLpzkdLtmu08WJPyyx1NIM7mez2fiPcq/K69iMQO9kaPsFLuSj41K?=
+ =?us-ascii?Q?usPU9TpP88F/iJvqjdljrLfmSIRtsYG5gIfmPPmknGVnmH+ZUS/IAAr9F4fU?=
+ =?us-ascii?Q?RZxOQxsBgaK1k/IH8TR4FDckY/70oVPD7DnqMJcj2k+eL0hMhKU2vQ0XcXgD?=
+ =?us-ascii?Q?E+HXrTG1TKQg6E+au5yikK60imN/BmvHblc2rxhbOYnmUbphIRI4u4Nv5jcG?=
+ =?us-ascii?Q?nthty9Ozg+Z31u4sk2INdhgpRoOitmoexfDml3H6?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26f934a1-0e9f-4d51-ffd8-08dc6428fc19
+X-MS-Exchange-CrossTenant-AuthSource: AS4PR04MB9386.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 06:37:17.3953
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yn5jwl9VJpBaixezwMIMf6b49DS0tyrHnzSUwsIoOLZzxSDgXOfPsZErXpmlMD8V
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR04MB9483
 
-On Tue, Apr 23, 2024 at 3:14=E2=80=AFAM Charlie Jenkins <charlie@rivosinc.c=
-om> wrote:
->
-> On Tue, Apr 16, 2024 at 09:31:38AM +0800, Zong Li wrote:
-> > This reverts commit 2f394c0e7d1129a35156e492bc8f445fb20f43ac.
-> >
-> > RISC-V has supported the complete relocation types in module loader by
-> > '8fd6c5142395 ("riscv: Add remaining module relocations")'.
-> > Now RISC-V port can enable unwind tables in case eh_frame parsing is
-> > needed.
-> >
-> > Signed-off-by: Zong Li <zong.li@sifive.com>
-> > ---
-> >  arch/riscv/Makefile | 3 ---
-> >  1 file changed, 3 deletions(-)
-> >
-> > diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-> > index 5b3115a19852..9216bf8a2691 100644
-> > --- a/arch/riscv/Makefile
-> > +++ b/arch/riscv/Makefile
-> > @@ -94,9 +94,6 @@ ifeq ($(CONFIG_CMODEL_MEDANY),y)
-> >       KBUILD_CFLAGS +=3D -mcmodel=3Dmedany
-> >  endif
-> >
-> > -# Avoid generating .eh_frame sections.
-> > -KBUILD_CFLAGS +=3D -fno-asynchronous-unwind-tables -fno-unwind-tables
-> > -
->
-> There are a lot of orphaned sections created by this, which throws a lot
-> of warnings. These warnings will only be present on GCC-13+ since
-> -fno-asynchronous-unwind-tables was a default before GCC-13.
->
-> The .eh_frame orphaned sections can be resolved by including
->
-> .eh_frame : {*(.eh_frame)}
->
-> in arch/riscv/kernel/vmlinux.lds.S. arm64 places it in the init section,
-> but outside init_data and init_text, so right after the .alternative
-> definition seems like a good place.
->
-> .init.eh_frame sections in drivers/firmware/efi/libstub also complain
-> about being orphaned, and other architectures have disabled unwind
-> tables for that compilation unit, so -fno-unwind-tables and
-> -fno-asynchronous-unwind-tables should be added to
-> drivers/firmware/efi/libstub/Makefile for riscv.
->
-> This also causes the resulting image (with defconfig) to increase from
-> 22M to 24M. There are currently no users of unwind tables in riscv so
-> this should be hidden behind a config. arm64 uses this config as:
->
-> # Avoid generating .eh_frame* sections.
-> ifneq ($(CONFIG_UNWIND_TABLES),y)
-> KBUILD_CFLAGS   +=3D -fno-asynchronous-unwind-tables -fno-unwind-tables
-> KBUILD_AFLAGS   +=3D -fno-asynchronous-unwind-tables -fno-unwind-tables
-> else
-> KBUILD_CFLAGS   +=3D -fasynchronous-unwind-tables
-> KBUILD_AFLAGS   +=3D -fasynchronous-unwind-tables
-> endif
->
-> Using this same config name for riscv would allow riscv to use the
-> standard .eh_frame code introduced in
-> https://lore.kernel.org/linux-arm-kernel/20221027155908.1940624-2-ardb@ke=
-rnel.org/.
->
-> This config is only enabled if some other config selects it in arm64,
-> but riscv does not contain any users so maybe this config can be left
-> unselected until there is a user of unwind tables in riscv.
->
+The patchset clean up "fsl,imx8qm-adma" compatible string.
+For the details, please check the patch commit log.
 
-Hi Charlie,
-Thanks a lot for the tips and information, I will use gcc-13+ to
-verify the next patch.
+---
+Changes for v5:
+1. remove remove FSL_EDMA_DRV_QUIRK_SWAPPED in fsl-edma-common.h.
+2. modify the bindings patch commit message and add review tag.
 
-> - Charlie
->
-> >  # The RISC-V attributes frequently cause compatibility issues and prov=
-ide no
-> >  # information, so just turn them off.
-> >  KBUILD_CFLAGS +=3D $(call cc-option,-mno-riscv-attribute)
-> > --
-> > 2.17.1
-> >
-> >
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+Changes for v4:
+1. change patch subject.
+
+Changes for v3:
+1. add more description for dt-bindings patch commit message.
+2. remove the unused compatible string "fsl,imx8qm-adma" from allOf property.
+
+Changes for v2:
+1. Change the patchset subject.
+2. Add bindings update.
+
+Joy Zou (2):
+  dmaengine: fsl-edma: clean up unused "fsl,imx8qm-adma" compatible
+    string
+  dt-bindings: fsl-dma: fsl-edma: clean up unused "fsl,imx8qm-adma"
+    compatible string
+
+ .../devicetree/bindings/dma/fsl,edma.yaml        |  2 --
+ drivers/dma/fsl-edma-common.c                    | 16 ++++------------
+ drivers/dma/fsl-edma-common.h                    |  2 --
+ drivers/dma/fsl-edma-main.c                      |  8 --------
+ 4 files changed, 4 insertions(+), 24 deletions(-)
+
+-- 
+2.37.1
+
 
