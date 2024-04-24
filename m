@@ -1,86 +1,112 @@
-Return-Path: <linux-kernel+bounces-157849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5564F8B1747
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:38:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E1658B174E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:40:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9C221F21E7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:38:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54C3A1F22426
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:40:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED08416F295;
-	Wed, 24 Apr 2024 23:38:06 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7C516F28F;
+	Wed, 24 Apr 2024 23:40:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="g1dLJazu"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB702901
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:38:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD8C16EBEF
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:39:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714001886; cv=none; b=FS0osMVV/44F0PH7OdtUwR74oq1emiXCtMjz6z1nwpDzMtGanvgEsO50jfohPD3z5CbmUPXn0YSB5H9tYdTauHSEUi+Cj8yJn/LXVh7/LD27R4miFYxcgabEPDVWySjuHpfidi5suU+lp2o4UK28dtyNJHMAO7fAJw7aVg8X+vE=
+	t=1714002000; cv=none; b=VwHi1kQd5aL6Jy/Vz+cbAM2AXy0hBpNOqlph7qsWjB8IYiz+WVPHOo37V96BS6M1+9KI35X+5HMFfh44fUwVPI9Vmexfgkk+ubr9cLEYFemoy2fHCcWoMJeH4xoHamcI/z7DS3OPAivdgJb+7ge2yo9tHsrH/tPFQW6Mey6VSy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714001886; c=relaxed/simple;
-	bh=khVCt5Dog1tiLOXWDJgREu2x1xVSvY8rGLoZBrpEms0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=AV0d0L3ZLQMNrYwLcc+F2VzsGvUD4FO6uOAwz9L7BWwdSRZohPUhNhT+OqNHqtfGE5R28eC6kXxkgEjKbL5BXoZJLuNM5orFkoG7Ro2VdDGP7LoTSJqIrUbRZ/SbNuI/4DRVCxsEiH30aatvVuXJD5vA+YDNMCJHqHSs5cjGdFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36a168177f0so12108995ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:38:04 -0700 (PDT)
+	s=arc-20240116; t=1714002000; c=relaxed/simple;
+	bh=S333S4sIPV+E0xMd8ucx9SmBeKuTCXKxVi0OsYUitzI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DRP5E1DwcJ8JvYmBW53K7JD6gBK97fLsk8OWZvsRGaQ5OS4juO8Wl7yUsRigHCRcYPuqAt4jCUNs4GdiSaBs+PUjqJD78Rn+xM6Sok5ao9a/1jtQaXVs2Ezsz3kMqcmc5JAQtqHrMK/+ryvgpZct3utOP+afSYG9cGjiM5gXDk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=g1dLJazu; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dbed179f0faso1220339276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:39:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714001998; x=1714606798; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4lbiDAQdRMQUnTwkJFNqDelP8XC5ywPFYlZpytL71Sk=;
+        b=g1dLJazu1CFtSqM0QQvvJ4p2y2NZv6pcjxhWVOlMEKcy8jKpk7uFslZJUoIgjvIP3o
+         opyqK+tv/sToA5osY3JxwmSGsGImu9fn8aKys52uSiBSO1xquqsHPCmIERFY+XhIvq2T
+         sbuAQgqEkX7x/PfcmAGXNjCT0rBpWAS8KpvcDSchr5HRXEyi+r3p9mkgztN4QaWP3T0t
+         zI2SnUfzUBk2uQMzxVvsaH3Y4adtdHP1h99SedZyqV0MX/yVwlPM4nTZcKZJ9NRp1pwR
+         D1dG+GPa98Q+5lyr8JbBOyZtwNBugoJ5aZKdFmkaA9VHkr6qxYnAyXWQomM9Gfy3MSwa
+         0+EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714001884; x=1714606684;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kcaB+Da5NKS4slkBhA8BS8DXtYe54xoXMCS2AeazuGs=;
-        b=Vif5GLj7r4ZS/P+k48zrCjLCfIMJZ/TJymveyrW0xbc6G463vhOkRi7L47/F6TmSTZ
-         qFIV2jpHFWy9GKOqUaS+8c5an8EczZq9JBoq0QvU0gkFpUdLFF6q6mG8z3gK+7lVZsTE
-         UOGQP2/oOeRvxfq7Fze1OylbfoyY0YzMwlWZc+QYaHtWy+LiasK/RJHAkfeVE30k6xbh
-         VZ1BLVdcIxjbcGzaZ2XzKW+eq1gLe/WOWs/hBh8ah8j4spD1lo9IN6XyPySbWC4fGtzN
-         9ekZ/Vuc6sDn+4JUy5/D1Q7hBKrSUEdgrWF2dUaGFs1OvdLLx+wQodE6elYjzKF7Uysz
-         bGQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWlCqr3IS+g2CpWclDfJmCppKEhoAkb2J1R45Jj+89JLWcmJtb1oQt4hJ3/znAWO0NnT1Gj3MlUWlxfn1l598a400PnZVffnjE2V6Rc
-X-Gm-Message-State: AOJu0YzIQBb+ItAF57DgGWdD8gDV3640InoNhWZjfqOgUV0kYUC+zFEi
-	8z8pq6YWxaVGtrhywu4f27Po/rFeYTvTbGIAIP/djwyiqbUj33R4kxYgTFiiRXws0ukXVgtC7Ew
-	ujeFSnW1//XUMfcjsM/B42mVRqGYjQ2ay6uKpMsodu/Kaa41+z+rb38Q=
-X-Google-Smtp-Source: AGHT+IFRQDKzIQMldnn3lL3gptJNnkTuljlosUzewjv5tRaiA2dPnlAZeIJvN0manq6Lv6/EIceykVRcnZGJnDX9SYgx1Hoocrp7
+        d=1e100.net; s=20230601; t=1714001998; x=1714606798;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4lbiDAQdRMQUnTwkJFNqDelP8XC5ywPFYlZpytL71Sk=;
+        b=syR6/K37lTmkDp4iDkmbR5+bqhzZg41Gx06dFqMX4nmvkUSQh8FrgPbfaWIOOT2vho
+         eOjMgCpMLaHA8sqDPGdmG2u+pNvpzQ+B1bHQweJ2hjd958hFHO3iF8vdOEvHafDNcFBH
+         a6pGNm/m+rldh/gcB+b2Hot6PrMLKgme16NmifbcuGQxOj8luc0vH0bGK5hPFoeuQamx
+         PAvmSPTR6iI2ULSNcrTVdXwvQpB7h9IUnVEPmD/KVNfqnUUiAuvGKtwXW9l/GvD62mZ3
+         v6Kar2KtZsY1H8SmfKI3PJ9MUVBUaeo6rXFAvZnTZujEsI0bLd/gp5DtGyeEPkH4ZkkX
+         d0fw==
+X-Forwarded-Encrypted: i=1; AJvYcCVVlTPgBYIauKa69diwgS9hTPaiJauP+e67+B5wzEsp8SwJL1GpgtFACymIwo8UooAXR3Xe9dwBgRmLSjOHB5/uRYR/V5bAgnVQxqhN
+X-Gm-Message-State: AOJu0YzqWLlq/S+t7SehBRdcym5Net/+OCMQK0qc3fSzYyGM4dQyKR8+
+	c6MLhyG8dt3K95Mn+uvGDyDQQfDdBavBSxEK3OmqmviNOsSbnEiOkhPDSh5kX0OQLVnXvhZdYar
+	QofSQbEL/MkDMqffTpV4iNnyb4FVI4YakJ+Q78g==
+X-Google-Smtp-Source: AGHT+IFbCEKpEBJRqFVkfoarP6YfnOgjBQGtumnt+gwnMFyhoUY0mANCP/DL9e2l0oGwk5Nf7M7RID79c6RIpYBEm9M=
+X-Received: by 2002:a25:c7ca:0:b0:de5:8427:d66f with SMTP id
+ w193-20020a25c7ca000000b00de58427d66fmr1166099ybe.4.1714001997820; Wed, 24
+ Apr 2024 16:39:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:50b:0:b0:36c:2357:7ad3 with SMTP id
- q11-20020a92050b000000b0036c23577ad3mr14063ile.3.1714001884380; Wed, 24 Apr
- 2024 16:38:04 -0700 (PDT)
-Date: Wed, 24 Apr 2024 16:38:04 -0700
-In-Reply-To: <20240424161201.147150-1-aha310510@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007691c20616e02945@google.com>
-Subject: Re: [syzbot] [hfs?] possible deadlock in hfsplus_file_extend
-From: syzbot <syzbot+325b61d3c9a17729454b@syzkaller.appspotmail.com>
-To: aha310510@gmail.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <20240424-ayn-odin2-initial-v1-0-e0aa05c991fd@gmail.com> <20240424-ayn-odin2-initial-v1-6-e0aa05c991fd@gmail.com>
+In-Reply-To: <20240424-ayn-odin2-initial-v1-6-e0aa05c991fd@gmail.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 25 Apr 2024 02:39:47 +0300
+Message-ID: <CAA8EJppXj=DyT0hEW05mAjgzHS+H2iiJ-M=MfJPgkWfztX=V8g@mail.gmail.com>
+Subject: Re: [PATCH 06/10] arm64: dts: qcom: sm8550: Add UART15
+To: wuxilin123@gmail.com
+Cc: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Junhao Xie <bigfoot@classfun.cn>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Tengfei Fan <quic_tengfan@quicinc.com>, 
+	Molly Sophia <mollysophia379@gmail.com>, linux-pwm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+On Wed, 24 Apr 2024 at 18:30, Xilin Wu via B4 Relay
+<devnull+wuxilin123.gmail.com@kernel.org> wrote:
+>
+> From: Xilin Wu <wuxilin123@gmail.com>
+>
+> Add uart15 node for UART bus present on sm8550 SoC.
+>
+> Signed-off-by: Molly Sophia <mollysophia379@gmail.com>
+> Signed-off-by: Xilin Wu <wuxilin123@gmail.com>
+> ---
+>  arch/arm64/boot/dts/qcom/sm8550.dtsi | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Reported-and-tested-by: syzbot+325b61d3c9a17729454b@syzkaller.appspotmail.com
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Tested on:
 
-commit:         e88c4cfc Merge tag 'for-6.9-rc5-tag' of git://git.kern..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/ master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1533285f180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=98d5a8e00ed1044a
-dashboard link: https://syzkaller.appspot.com/bug?extid=325b61d3c9a17729454b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=131f0927180000
-
-Note: testing is done by a robot and is best-effort only.
+-- 
+With best wishes
+Dmitry
 
