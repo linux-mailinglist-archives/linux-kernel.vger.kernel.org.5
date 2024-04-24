@@ -1,132 +1,153 @@
-Return-Path: <linux-kernel+bounces-156944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 362648B0AAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:19:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 616488B0AB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:20:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2059B23462
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:19:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77606B252C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:20:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C66B415B56F;
-	Wed, 24 Apr 2024 13:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D8115CD4A;
+	Wed, 24 Apr 2024 13:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="EULqXNl7"
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lHgApBrG"
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A4F1422AF
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41FBD15B562
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713964763; cv=none; b=t6ScPXlII5CXVqOkHjXs5cqezxSuG9Tc1B/vQd7/Yq+rrlMoHzSjvgpXKoBBVXwW+DLzLb9uBJ8LFuUMbpHbodcITB912BAtsx2ZNfFond3eH4qOOy6nP8uqMRD8SqQ5ok0eRjdLhVZmUKZgEUH0SgXqQ+0IxzhVm5dU2cdqrBY=
+	t=1713964788; cv=none; b=E/8pso4AjGhP3vFN3i8tWn5DNnuZVLnNAJ0Vw1COhGw0SLLWkkQ7sNzGaYDWsuPzE98cvVWuCHffZzdh8JKctYppgtqDn0V3OAXtYEs6W8pdA+I/ubF6UkkgwvtPQzaqJUGSHKVl7xzCCZP/179zOh0GGK3iKia5ZMDSGd9ylEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713964763; c=relaxed/simple;
-	bh=eWDgcUPoqiHy04toIRDjF+zURyREPsGTrP5YsYJgcwg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tdRSw1+ZxwtGhM+kwnaC/BwHQoybFHaixd2gomiVbvScfVvkrHY9+Mi1mdz4HMZAbFUEuMhP185g0w8jAuLVU1xtntSiJ4iwqCMz6k7uRxlsjjyaBchJ9re+PzBjgzjnUPuJZwg072N2diC3woibeiVtKJb4OSUbLTmLd0KbWbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=EULqXNl7; arc=none smtp.client-ip=209.85.222.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78edc3e80e6so467041085a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:19:20 -0700 (PDT)
+	s=arc-20240116; t=1713964788; c=relaxed/simple;
+	bh=/GQoX1gc0yl6e/Pz8zk6L9EPOwroU4wExy1cX78SnUI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QyRKp3eRzczhXuUbfvbc8ZUfBP/c0zzD29oycPBqBvZe/RbpQ1HcZPj//15sM4nlR7a9ksLmyCr3uCQc6C3657yjUiDo/2bL9HrIYUYL/ZxwtnDePTbcnUXgk36jb9FLBYRToAZXaYEkn9HckliH3iuRYqZ8ipOdvWrlcPb06ZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lHgApBrG; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-6082fd3e96eso120716a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:19:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1713964759; x=1714569559; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xzkq09b2+VRg5r2hzH+VShVRDqHUAWf8E5efl7fvk7w=;
-        b=EULqXNl7siYpv3gW8S3krA4vhPOfm6iSjsVn3vOU+BIWVDq2YIIHdQcdAijDBs48rV
-         Oj1HY5ouU80qtG7hYn6CXBYcBce8TvjnFPTFHHCGi7FrsoUzbhVmtZURkz5ezDlL2W1G
-         frROq6TEdTZlLmqQdww5EozJTzqe7tnOhK4m+pgSLNmCtisdpwFg5Ty0IWFO8/paqy1N
-         I9vMPdyTdXvlpqXpyEq3QvZd1i47A4WsbSQ36mw6nkjNWl/AQW47I+dLlUuBc/jYBgnx
-         U42sRvUdm1/+otk52Od89WUsInKo+bYuigMiSLIkEw1dU09l5oVWWQdo95VE24Z38Z/S
-         xX2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713964759; x=1714569559;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1713964786; x=1714569586; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xzkq09b2+VRg5r2hzH+VShVRDqHUAWf8E5efl7fvk7w=;
-        b=mBny6+QjiqdzC28yRdyOEJu46Je2x3R0ACiwcIZw+zFTgq/ODS5CU0APuJHyAkW7sH
-         XjTk6pZfUFLSDhKc2FVeHGrPSsDl3DOrOZvvhywIKKEFKjni0lCv3p3VQ2lo38VeEuRY
-         48c+4DQQ+/Xs+4Ga2fVA2qMwkHxqXG9EQaQFXLDfKyNqYcH5VhdIOzGDW+rjbEoHtjIk
-         Kx8tnaUnyGBSsF6LQN+HhjBHJVX0BpIu7V+DPkGE66FFfnVuUf1005LJyvQknMuaNKGo
-         zg4U0UNVP6pJB6a4cCmdudM+eH4COiTOxUXNIJk9TVkw2SB6E0J+CwWmapI1RH28FtZu
-         mqig==
-X-Forwarded-Encrypted: i=1; AJvYcCVqgvE6dDcVUOkrYwnC1saXpbZ0WNg+iAMSsZx7YlLh1xaq25VlcQ1f5KyaW724j8WXcH3yC5LFi515xfplaLFsEOeP9JxJGSi11LCW
-X-Gm-Message-State: AOJu0Ywr6yb774ImASpfNba/LjE3hzS8NvRlAdLSNbfEtiqIXTmFF9Hv
-	i46DQbuRFbgAcyKHXM+cCEk65fbefemWNx3GyHjm8EL0cmsstGvqR8suh8bItgk=
-X-Google-Smtp-Source: AGHT+IH7H4ZWxUHyX1qfEJXytrGSqajq5xSCmpXOA1RCBI5MLyT6vOp7AiPOzrOjdTPPLd4rKssRww==
-X-Received: by 2002:a05:620a:8222:b0:790:652a:f419 with SMTP id ow34-20020a05620a822200b00790652af419mr2528675qkn.41.1713964759520;
-        Wed, 24 Apr 2024 06:19:19 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:9cfb])
-        by smtp.gmail.com with ESMTPSA id u24-20020a05620a023800b0078f12e42f0csm5747909qkm.20.2024.04.24.06.19.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 06:19:19 -0700 (PDT)
-Date: Wed, 24 Apr 2024 09:19:18 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, leit@meta.com,
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>,
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <linux-mm@kvack.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: Fix data-race KCSAN bug in rstats
-Message-ID: <20240424131918.GC318022@cmpxchg.org>
-References: <20240424125940.2410718-1-leitao@debian.org>
+        bh=8VvHJ58Y+Q3UWAzWsSTTjuIwD8U8vgOkrH/9YIF6f+M=;
+        b=lHgApBrG4E6j0tbQuXywkr1MB58N2Bx9nktuAzORtFE377i1FUVwrKNdg871OpwQvK
+         tmBuLsubIW6D+NgNoy9IcN4PgzuKaN/7pYR36T1Bwmxfh7+2yPQn7npHwO+e/kPs2K63
+         WmHL37zDXk4UHA6ztqWrVCiy4aFkqIrmHZVUI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713964786; x=1714569586;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8VvHJ58Y+Q3UWAzWsSTTjuIwD8U8vgOkrH/9YIF6f+M=;
+        b=qmDNkCdB3B84gDZ5bRA9DiIFPq3IxiCahJq7YTGyaeUYjOxhUr/ss2eMSw9TyYqR8E
+         j0IglX9FuCdHgHxVlDwylLNl/aKiblO19OsEXcEenxL8TUlaTUOq467eoSlpw4duqKO4
+         mnuoQtz31eJsIVrYeJZrx4Eaq5a4lAiVYt9Kt5TJfvS7/m+ViTYhLBhtVqwjlki2aCKX
+         +Jc9MBReTZMTNueZWiQb/Y57qCkqA4h1v+ehqQbwhTxc2KprH1mWjPZczjo2H1noNILv
+         q6XXfQQPHzOz5XJ2NSAYlHrrp4OLLa2H+7DNIjnmEOxGvU+38+DLmURqarEbFaCrnwU9
+         hd2g==
+X-Forwarded-Encrypted: i=1; AJvYcCWeA4+uPdZ74YYpjK+iKWDEoY62/WRRG4fwCtgHtkgKFrmGJ8Yt7taeGu/gdUVSl6ior61oP0cYyBQxLla9ofJwMooZUFme42B5ZMPL
+X-Gm-Message-State: AOJu0YxfLLlSqjoJl9wcjtvZTz9kPSShzCCeIpfEfh0eGE39cE7/2wYY
+	GX5yAfiiComq8rdg3EMxAWT9o7D+hzorLh4JyUGmGJm1W4eyE7zbAG/HYrBR82B9GIJWx+oBjs8
+	CuXpz+jY0iRCcC3emVGbY3V81ROzHLVdXQnaF
+X-Google-Smtp-Source: AGHT+IEUzUPrMZm5/9Nr7/HujqEqTFgw9lpTp1RH6c+ZBPmhrdCrzL9/trH59BuNk2ibQ8CFKYuYBk72hhVixMAIZqA=
+X-Received: by 2002:a17:90b:4f41:b0:2a5:275c:ed with SMTP id
+ pj1-20020a17090b4f4100b002a5275c00edmr2474867pjb.23.1713964786600; Wed, 24
+ Apr 2024 06:19:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424125940.2410718-1-leitao@debian.org>
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+ <171318535003.254850.2125783941049872788.stgit@devnote2> <CABRcYmK_Btem8cBbz=j==RWxw11PQ8cNAUshNA540VD3O=2WEQ@mail.gmail.com>
+In-Reply-To: <CABRcYmK_Btem8cBbz=j==RWxw11PQ8cNAUshNA540VD3O=2WEQ@mail.gmail.com>
+From: Florent Revest <revest@chromium.org>
+Date: Wed, 24 Apr 2024 15:19:24 +0200
+Message-ID: <CABRcYmK+JMLDf41csuZB4aJSb9956wTy=5rpB1YDsSv0-MoZHg@mail.gmail.com>
+Subject: Re: [PATCH v9 01/36] tracing: Add a comment about ftrace_regs definition
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Alan Maguire <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 24, 2024 at 05:59:39AM -0700, Breno Leitao wrote:
-> A data-race issue in memcg rstat occurs when two distinct code paths
-> access the same 4-byte region concurrently. KCSAN detection triggers the
-> following BUG as a result.
-> 
-> 	BUG: KCSAN: data-race in __count_memcg_events / mem_cgroup_css_rstat_flush
-> 
-> 	write to 0xffffe8ffff98e300 of 4 bytes by task 5274 on cpu 17:
-> 	mem_cgroup_css_rstat_flush (mm/memcontrol.c:5850)
-> 	cgroup_rstat_flush_locked (kernel/cgroup/rstat.c:243 (discriminator 7))
-> 	cgroup_rstat_flush (./include/linux/spinlock.h:401 kernel/cgroup/rstat.c:278)
-> 	mem_cgroup_flush_stats.part.0 (mm/memcontrol.c:767)
-> 	memory_numa_stat_show (mm/memcontrol.c:6911)
-> <snip>
-> 
-> 	read to 0xffffe8ffff98e300 of 4 bytes by task 410848 on cpu 27:
-> 	__count_memcg_events (mm/memcontrol.c:725 mm/memcontrol.c:962)
-> 	count_memcg_event_mm.part.0 (./include/linux/memcontrol.h:1097 ./include/linux/memcontrol.h:1120)
-> 	handle_mm_fault (mm/memory.c:5483 mm/memory.c:5622)
-> <snip>
-> 
-> 	value changed: 0x00000029 -> 0x00000000
-> 
-> The race occurs because two code paths access the same "stats_updates"
-> location. Although "stats_updates" is a per-CPU variable, it is remotely
-> accessed by another CPU at
-> cgroup_rstat_flush_locked()->mem_cgroup_css_rstat_flush(), leading to
-> the data race mentioned.
-> 
-> Considering that memcg_rstat_updated() is in the hot code path, adding
-> a lock to protect it may not be desirable, especially since this
-> variable pertains solely to statistics.
-> 
-> Therefore, annotating accesses to stats_updates with READ/WRITE_ONCE()
-> can prevent KCSAN splats and potential partial reads/writes.
-> 
-> Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+On Wed, Apr 24, 2024 at 2:23=E2=80=AFPM Florent Revest <revest@chromium.org=
+> wrote:
+>
+> On Mon, Apr 15, 2024 at 2:49=E2=80=AFPM Masami Hiramatsu (Google)
+> <mhiramat@kernel.org> wrote:
+> >
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> >
+> > To clarify what will be expected on ftrace_regs, add a comment to the
+> > architecture independent definition of the ftrace_regs.
+> >
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > Acked-by: Mark Rutland <mark.rutland@arm.com>
+> > ---
+> >  Changes in v8:
+> >   - Update that the saved registers depends on the context.
+> >  Changes in v3:
+> >   - Add instruction pointer
+> >  Changes in v2:
+> >   - newly added.
+> > ---
+> >  include/linux/ftrace.h |   26 ++++++++++++++++++++++++++
+> >  1 file changed, 26 insertions(+)
+> >
+> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> > index 54d53f345d14..b81f1afa82a1 100644
+> > --- a/include/linux/ftrace.h
+> > +++ b/include/linux/ftrace.h
+> > @@ -118,6 +118,32 @@ extern int ftrace_enabled;
+> >
+> >  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
+> >
+> > +/**
+> > + * ftrace_regs - ftrace partial/optimal register set
+> > + *
+> > + * ftrace_regs represents a group of registers which is used at the
+> > + * function entry and exit. There are three types of registers.
+> > + *
+> > + * - Registers for passing the parameters to callee, including the sta=
+ck
+> > + *   pointer. (e.g. rcx, rdx, rdi, rsi, r8, r9 and rsp on x86_64)
+> > + * - Registers for passing the return values to caller.
+> > + *   (e.g. rax and rdx on x86_64)
+>
+> Ooc, have we ever considered skipping argument registers that are not
+> return value registers in the exit code paths ? For example, why would
+> we want to save rdi in a return handler ?
+>
+> But if we want to avoid the situation of having "sparse ftrace_regs"
+> all over again, we'd have to split ftrace_regs into a ftrace_args_regs
+> and a ftrace_ret_regs which would make this refactoring even more
+> painful, just to skip a few instructions. :|
+>
+> I don't necessarily think it's worth it, I just wanted to make sure
+> this was considered.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Ah, well, I just reached patch 22 and noticed that there you add add:
+
++ * Basically, ftrace_regs stores the registers related to the context.
++ * On function entry, registers for function parameters and hooking the
++ * function call are stored, and on function exit, registers for function
++ * return value and frame pointers are stored.
+
+So ftrace_regs can be a a sparse structure then. That's fair enough with me=
+! ;)
 
