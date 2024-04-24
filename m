@@ -1,342 +1,289 @@
-Return-Path: <linux-kernel+bounces-157771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18A908B15FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F4FD8B15FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:15:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84A9A1F237DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:15:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15B8B1F23966
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:15:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E2816C423;
-	Wed, 24 Apr 2024 22:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF72916131C;
+	Wed, 24 Apr 2024 22:15:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=biamp.com header.i=@biamp.com header.b="JBjWALFV";
-	dkim=pass (2048-bit key) header.d=biamp.com header.i=@biamp.com header.b="e6C+PwTA"
-Received: from mx0a-0068d901.pphosted.com (mx0a-0068d901.pphosted.com [205.220.168.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QrLaSbT8"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A983E15FA70;
-	Wed, 24 Apr 2024 22:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.168.35
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713996921; cv=fail; b=Old7uYRea+fytyy1bNNyEjwHQsZ7GDbQdRSytfS5u3u++3EYUP+9IKLmg0xd1pqhuY0Ezjodz82hbRe0RnZKWc47aVAJYiXX9HTS5Y/z04TeaScTct+40JKuaNxdSLkIGJX5QnXFWZxlvwzjWoTkRpUGTH7h/kXjoLwwslFMyRk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713996921; c=relaxed/simple;
-	bh=iocbcIDEZW7SOGQ+hUYocWe9D78pt5pTaNfwmfo9Mro=;
-	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=u0dY7mzMrAvYZlDQoK4YpTDM+8aSojMIxNvOvJMxuL0vsghtCUnSD0zBcbznHuoOh5FVaOKlaBSKkQC9sSYNbBacQxALAeS43z60rAw1Z2D6qEQ+v2Lg0rYkcMd5KD7G9zv+HGfnaYGs4nm0aKLT8JFoKND5ZDUijvhzlF+VpQ8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=biamp.com; spf=pass smtp.mailfrom=biamp.com; dkim=pass (2048-bit key) header.d=biamp.com header.i=@biamp.com header.b=JBjWALFV; dkim=pass (2048-bit key) header.d=biamp.com header.i=@biamp.com header.b=e6C+PwTA; arc=fail smtp.client-ip=205.220.168.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=biamp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=biamp.com
-Received: from pps.filterd (m0278264.ppops.net [127.0.0.1])
-	by mx0b-0068d901.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43OAU2cl028125;
-	Wed, 24 Apr 2024 15:15:02 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=biamp.com; h=
-	from:to:cc:subject:date:message-id:content-type
-	:content-transfer-encoding:mime-version; s=proofpoint; bh=HS65Vr
-	ZOowJuMIjMztvWiAqOyu9KWF99n3S2eLEu0RQ=; b=JBjWALFVrv0Uig97/J9wu3
-	D4LBMPoIrHNVdJ0syD/gxLMMQOvRLAk6zMp6zhe82LS1kXzlXaZmbOOUwBcJJeBq
-	oaewciFGEfKv1NN5SoE1hl0UrCTSATDn1c7bGSiU7hgnq3x1HteDAgeHjTnO1O5u
-	bWM1EKcqndTpXa9BveItQJDRMWBV/kkhgrzZ1iqj+fTDD6vheibT7KgZr+yiCigb
-	ltV0nmx/ln1lHv8JMexWSEw4eWHW4NZV5Ob/XqDMavoU4EqfK2hfx6AdEqZ8rP3d
-	926h/7UE8HIze6qLEnWggqDUavtGjaNUyAStbKnpPTZkFo4thEE/zPKx2z/HBojg
-	==
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-	by mx0b-0068d901.pphosted.com (PPS) with ESMTPS id 3xmcrg3aup-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 15:15:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T3YOVz1x46d2Rgo/0+ohbB0cjr5L/bkn1wv4lx0JDmrm/vtFXArSpNHgrJI7rZMqZQHdvN9On0mL51HeGdIYJSZ5EFgGcgpqZ0Wr0Cvjj+9ekLFGMvReDEs2QJfJzEcwRiW9qCuLNMN8w/jhI53rzF+0yLW3CWK0tjppr8amrWyold8GFgvi4PHTP8usQbRnBtQgPbY51k6Erw9RiC3TAkhErX57bdnFWu+CdGYUQDCfXeInDJxY+NIvbY0naxnzbZ+IWNQepwQ6fwZdwQfIqunYK0TtcnwqRK35NxAVWaUiamP0MKfzh7h0Qhy6weihkMHbMbnwViUSyHCJAMvwsQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HS65VrZOowJuMIjMztvWiAqOyu9KWF99n3S2eLEu0RQ=;
- b=SmzR/yopRc/+UwY8fUZGthard3Y1LmQKK7nnav/Y/8sOSNYFRYUT9+7to4p9z29D54yy3vlkYl2inTEbgO7ZMdyU9oVxdD0dwgD2NCsqg41L2brBoc9KoJAeyTw4jd+BV1KZd/SueJ2RHnkhdlqlfFAT7CGgNW19fz3ORAyHBRDJJ1KjTeO99dvlxr6yFfumYTqYdSEeBsdqbtTxR9YUA7Mhg2hp+P/2f6npxGqU/NyRu+5IqP3Enw4QLTY/IKjq04+7fU/RotHo1WOM4U562/1tlqGjQ2smJlg8UhCi5FGxGTpNdf3KvK8VDmrCPvKY0wbh0RNCwEj56sDf+6zgTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=biamp.com; dmarc=pass action=none header.from=biamp.com;
- dkim=pass header.d=biamp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=biamp.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HS65VrZOowJuMIjMztvWiAqOyu9KWF99n3S2eLEu0RQ=;
- b=e6C+PwTALVrpGLJ84ATH9uIaCMxNqFRVsKcWVnZyXlu4A5E99BoT9OtEyMe6kd07ytMGcBBusOR7/inG9uR29YQHeADBympAL1XwUTtejadZLty33s+RLKmbN90Mpf0OrQ08TFYD+JOVJQQ3IkwfuYxEse+jJFa3eMkZDyiPtzTLNyzSD1lW29LY+ljUL0O0UCIaELUg6lAr2WpzUlorIntM2sp3gXvNumKySBR52V0TcbMPszpbVN4ErHWOMqvMklmNgLg/k3lDMw+pk+ghZJcQpiZO1B/LNG4ihGCaN5reTrnCFlSZUrrhdy85520T2CD0kKQx2kdbBOr2uU5YIA==
-Received: from CO1PR17MB5419.namprd17.prod.outlook.com (2603:10b6:303:ec::17)
- by IA1PR17MB6925.namprd17.prod.outlook.com (2603:10b6:208:44c::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Wed, 24 Apr
- 2024 22:14:59 +0000
-Received: from CO1PR17MB5419.namprd17.prod.outlook.com
- ([fe80::f48:ee61:a81b:d555]) by CO1PR17MB5419.namprd17.prod.outlook.com
- ([fe80::f48:ee61:a81b:d555%4]) with mapi id 15.20.7519.021; Wed, 24 Apr 2024
- 22:14:59 +0000
-From: Chris Wulff <Chris.Wulff@biamp.com>
-To: "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Brauner
-	<brauner@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>, Jan Kara
-	<jack@suse.cz>,
-        Jeff Layton <jlayton@kernel.org>,
-        Dmitry Antipov
-	<dmantipov@yandex.ru>,
-        David Sands <david.sands@biamp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Chris Wulff
-	<chris.wulff@biamp.com>
-Subject: [PATCH v3] usb: gadget: f_fs: add capability for dfu run-time
- descriptor
-Thread-Topic: [PATCH v3] usb: gadget: f_fs: add capability for dfu run-time
- descriptor
-Thread-Index: AQHalokpimGT++aQ2k6Ic/g3VTUYsQ==
-Date: Wed, 24 Apr 2024 22:14:58 +0000
-Message-ID: 
- <CO1PR17MB54197F118CBC8783D289B97DE1102@CO1PR17MB5419.namprd17.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CO1PR17MB5419:EE_|IA1PR17MB6925:EE_
-x-ms-office365-filtering-correlation-id: 88b269f1-e786-4d73-2573-08dc64abfacc
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|366007|376005|1800799015|38070700009;
-x-microsoft-antispam-message-info: 
- =?iso-8859-1?Q?/H6jM8Ana/zzCRg5BQ50DBwKRVBrsgPl1Pam4vh1as3pKapdMMmYWmDPz+?=
- =?iso-8859-1?Q?Rmw/LfIVQwKHZPhq1+yudIVmtXlCMeHXYiu8VojotZj2ca6GD7YefrPIFI?=
- =?iso-8859-1?Q?GkHRQ9aSqZZbQ6qyE/Mtwq7x+CUUwnv3bPMDyTr8gX//4Ya9V3aHjC+Le5?=
- =?iso-8859-1?Q?Q0ECzfZiycfXzQTv1ymBNoDAdk5phmGKQjSPoYGDclSx+fdfBG9o5OsOSb?=
- =?iso-8859-1?Q?NJVheceL85ljg3xHi8Z29uhc9kanCIoU4uRJ1LrqIxIjZj3npDLf2h3Utx?=
- =?iso-8859-1?Q?+TyItlbpJ5bjIsRFhNgeBh5IbwmRsdl2UZkEu92oqUBktt/Vf/MnqxUV6c?=
- =?iso-8859-1?Q?fMMq1rZMprYMNMEx7SdRueYljTAmFVaiy3GF4IbYfLhZgL5mayLqzMS2Dr?=
- =?iso-8859-1?Q?s9r9UKoveUOBBkhlbxfpe1JhT1bPiYUKUvCuJX+dhSU7GRSRADzUN/u8ov?=
- =?iso-8859-1?Q?jYA4vTTGgqU+6vO36y2PRqCuDufVJixJG5eLeCEveu4wbkzO00WVi1Ij57?=
- =?iso-8859-1?Q?dWlVVcwbNEoUeuKPhjvUSm1z4KC5JRMSCfr4HT15n6Iyn9UiBJuJ3EUR3R?=
- =?iso-8859-1?Q?Q7TlnMNYww+8GLD3X4stDf/O5j+MooGpJtrJIzuaixpWhwgrNsVwX1qd9M?=
- =?iso-8859-1?Q?4bepeo6Z+W4f5ABKrfETrDdd3cZW8nWSE7g+5vkUNE9Zfqe8d0KPqB+uA8?=
- =?iso-8859-1?Q?fjVGfSWcy1Y5LsGNBQAC9yd7kuRldJ8EI13hMzyqOqjWoJS3kNXboKmyyB?=
- =?iso-8859-1?Q?TRjx2Ivk9dQBXA+b6hzmclLOsmXQ9gE/urnfs3j4l3HCALPbBdz9tCUiNo?=
- =?iso-8859-1?Q?6FGKXNyPV7GmNs7pcVmHGBj9ao2iXcqhn4JavsK7pJkKoO1v/xq/Hi3RmX?=
- =?iso-8859-1?Q?IwB9Nl3OSNw2DOUILrC0iNB7fefpLLLSzmsssKIpYHQDjTbtPAs75cfqGJ?=
- =?iso-8859-1?Q?0WeMtLioVNC8lGHv8B3gsn7J2+ZkvchsST8+lUBCtiP2zVfOdy37mndRVh?=
- =?iso-8859-1?Q?QNhCtsGwlfzdej+qFDEfi+K7AdWX2Qvc9ZqN+z9nGnnnuPhpG2KkblzSMl?=
- =?iso-8859-1?Q?1YH+Kq/OVAmlEIvraCFRl4TbIIgDbhX/6wKrfV8Vjd9uu0iPBxy1z/elh5?=
- =?iso-8859-1?Q?r++PwWdBuTi/5wHqgx3b9iUx364M6vKX3imPcMNM+QG9jgKauW4DpesJ9f?=
- =?iso-8859-1?Q?wLgmosaGhrj+UkwV/cRF3UiEiWm80Kez8TZT9n5z6PiI+3Wzq062TGwMIy?=
- =?iso-8859-1?Q?I8JvML5D08I+Aq8afyqpcYbBLbmvaOVdoUiZW6nDFZM8urp4Vy25S1gtSA?=
- =?iso-8859-1?Q?8qPY1Zj2tAmW+faTlettacf6/SpjtRd+VqV3SYbgw6wHHVZTbNFBCcDcKG?=
- =?iso-8859-1?Q?RcYwxuAypB3weH/eYDETF87a7JapbEyA=3D=3D?=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR17MB5419.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?iso-8859-1?Q?pLrESmVjDqxxkmtwDbptNLrXzpzuq6kCVtKQOX/DnMwRTsS3ZRFtNEQqby?=
- =?iso-8859-1?Q?Ul/hZpVBADLJEmIc/DzQkm/aVWBbwVk2v7u1zLV2zu652dwY6qSuxS8cnC?=
- =?iso-8859-1?Q?HSsqelOXXY3aWCCF92cRi7PWkeJFfJpzRKebEEDwBwqSo3hWRuDrAPcaYr?=
- =?iso-8859-1?Q?coD0ZlrxLdELQGMa2Dvyfbycc1+imKhNWzT8ISCZJ7IMZrYy+Q8ACNhhzy?=
- =?iso-8859-1?Q?E0dTrU19AsS6ktzEI6P57NN/EWnPsOPi4iYGM5LK0Vs92bpk0JaAN62qDa?=
- =?iso-8859-1?Q?Ghr3h0QEy0B19iOM79vO0bwDBrilKiwljy3IHEJwOP0QtZdPxXcuOMFzDP?=
- =?iso-8859-1?Q?gqy4Yy1qePRNdXBVJ/TDtoSbjhyXAGHgBAe9b4HXzWlxgRhYvXXrN9vfB9?=
- =?iso-8859-1?Q?ye2OayPvusCPU4ZmQqTpW/6K3vTMxy8qrZs7714IKdn9X8WmD/81jPak1q?=
- =?iso-8859-1?Q?0FCBDI9oZoX12aTxyHif/wkmvBxMNu6aaRBc56gSlZ220WyRwR15nefe4z?=
- =?iso-8859-1?Q?t6SW7v+MBuAsGrL3oDvq0QD/NyammvWGzlo7sBHY0BHCfLgY1/sWFz2CrH?=
- =?iso-8859-1?Q?Z9DRIl3w5NiBbXdgpGkUXJ6pgNGngNOGSREUqVyTjaXNK71Ea30T+ZGXrn?=
- =?iso-8859-1?Q?9On/WecS4KGd72aHCSsg5gXg5atdpaGLWJOX6Ddu4KVO1iQOd5aGJnqVPn?=
- =?iso-8859-1?Q?9RfsH5u93ftf4v5aifwBt75LZSglhxkz1VtwEU07m9gCX4HIDm/QKO8a9H?=
- =?iso-8859-1?Q?vHFEDPgJQzhuu70R7LjF2YmaAOXE8l5DNnS2DTfsWuppdBrdi3chALObaI?=
- =?iso-8859-1?Q?A+/g0G9+wwADwUnRs6wOPuCG3JyISp2PPFuNHFhhjuB7PROK9cho8sjJ/w?=
- =?iso-8859-1?Q?XRv/2Dmu5hic9xLh/ALoqjTV7mHAcr+YZpm6wjN6OLWEPdhuHUFdDZIdA+?=
- =?iso-8859-1?Q?JrceUZtGBFXR1EbHTRIz3SOsYK45GTce77koqn1Q4BipOLYffNaULnZq28?=
- =?iso-8859-1?Q?4HphMkNKJyBhVumjjonJYSuOvZALWp5ubTlJlFueWVxGFwSdYRte+WarRl?=
- =?iso-8859-1?Q?eIIxHbTneB89svAhYnxOGvkJSlQUVQ9KAun3z11nFx4docPOgTU2m+syUO?=
- =?iso-8859-1?Q?Wi/VAaCJx/J52NQMFHtpLwThMJkydjL64qZkmREDtzx5noLEu2txduTI5m?=
- =?iso-8859-1?Q?mUPScciCAsrqEZCtJT/9vt45lOtxlBat6/AqBswXdk/huC/wBdMjBGwZ/N?=
- =?iso-8859-1?Q?qvj+bwv+nT4M//C/miQDWAZ9SG9ByfUIOWjnIG0MUjRDevge7MDk9PoQwR?=
- =?iso-8859-1?Q?a1xco1/crXUyZBM8iyI7pCAmzuU3n8TWwCaE6jJZCc5ABxyE6gpirtwX4v?=
- =?iso-8859-1?Q?Y/YjqKG8MNgxtm/lGzZi7w95T6SZYKD+eBYFOB0atDGHMH7wL9Gd5DuUlT?=
- =?iso-8859-1?Q?sNS5WSObTQeUYPz7Lco9Gqtpt+HciiByad1NL106dJUFh1y0dqf2lU+sPr?=
- =?iso-8859-1?Q?Z5q9hy0YM2WftHGsJJDs14kRuoHQL1WjFaW6YZfTCqlsflqdCCSzW6n5v2?=
- =?iso-8859-1?Q?pwBj7TeKJO7HCrl2DQTxaydM3lZbr5VwNhWhnds7F3hsMMkrho183G/yP3?=
- =?iso-8859-1?Q?rGE+KTGlF8XhctKJsoInGER4bwmJAGnfbN?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53C7815687F
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:15:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713996950; cv=none; b=PmnwRG2Y+WOUqPANXWyZv5QlwojYiIW8YCnA8PlbFi3WfCvIKBOgS5rEKg+h1xmkil3fnlBwPMwnHUbDJzd0jHquJOW+IXyNweRuUQBgKWWFQKCuKGzHaNQpFn6zoB7RqhI0wiTBHMCvNSG4bi5eATok9VPsvEMJPkrGvdYixeM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713996950; c=relaxed/simple;
+	bh=BTzlFaaUWyBZ/0avVLQeurEPKx5+Gs28mKWdbs+QSVA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tpSP38LuX3u/YmPJNWEQJ6F68uWboz0N9KQbPC88rZW9yznCnh8Q/nWQzEArEigeyqj+Kj6vii0i4VARYHX0n0v0PGAcA5ows7WYXZie9iabb0DmaplSNkDtCuMjgECLTK/jVCD/P4K2O8v9LzdR1EsmBAgbRoC5GcXGm8jr1DQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QrLaSbT8; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41a72f3a1edso2566365e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:15:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713996946; x=1714601746; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9PwX26yDrbphgPlomUbRviwGBYrIb66VEMHKXPwN1t8=;
+        b=QrLaSbT8hi2hSaeSsk8f45Mqln3omSoq7Gb1Wxe4TrOA+WLE1vFyy+jS6/osf3LxOJ
+         1jP30i59pwj1VpxqLWOXbP2W7OUeUbaxYYxyZKhb0DZQhFeivkFMAkoZD9zdH54DW0rm
+         DBVQ94I1EsTcxOPScku/vKaqgblRqSuW0nfoTuV+BqFZzbrGH5Rx1T9urTEou5jgZCbP
+         Y2gxM9IkdFhlAzZUiPlm7SFzKsFi6k75djKMzAjjSeI8WrZjZRYapYmQ1U+/aDp1xdxx
+         HLj71v62pHYo1Odd2Du3a7R6kBWOVP+rKI21wq6Ojc2qtmGdGu7nJLFojPrgTary+cf2
+         gH2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713996946; x=1714601746;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9PwX26yDrbphgPlomUbRviwGBYrIb66VEMHKXPwN1t8=;
+        b=ahCAdSeY3hCxzeP/TFPGZx2Av2EMNGyNOJr9iJEcecoXHT9ce7Qjp7oiLtQFZRv/Oq
+         hrSVEIDS0qVVZskV9z7hlPdEWDbJe0pTAZNrVjF3tBlmQgxfGj3f+9smOtQswaF5yJl4
+         fmzVcDAmSoK0OboDK86s/MSxoZwFoZAN8OJFLTmys61KtMQwW+iSq29+dNNyC3L7Eod7
+         YxVgslUfCeaoGgLHt0DbYzlRxtT3b7y3B9Y7k/lCFb2sZt+Jt4nsI3i2PEHI25jVX9u0
+         WP9F0acyW3q3oN7XUnLjU6QxFUL8hyHbtcCKnVwEiRD/2dCr2OmKULsRBHwgtOgXDU23
+         ygFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVpNKA7kx5lUQwqD44JRkaoOJSdvA0C32+laMk0rv7WRRT5wpDhldu2XqfquEkv2TuXxBvlk22K1VDujOLzpBk7MAZl3yVvvpI+ET6p
+X-Gm-Message-State: AOJu0YwvMBkusM6e+O9crTZDWLsOYF2O9rPdDpFSg8xHadGW0z+aW3c4
+	5xjTVyS11n/bcCsDHDyWq1cKaYb1iSW68RlZltU36EA1LIyKRsiPgVc9OS4Silp7hJIRvGns1eo
+	SlMIZakCXUBT57y4pFG13Ba9qYlt3OxTK2L1K
+X-Google-Smtp-Source: AGHT+IHkboif/00IgRcoNKYbKyjHQwpzFRhV06M+te63W8KYhcpbAeVE+PqnNH2rpK8rFGBlds+W+jojcHREsdyxFyE=
+X-Received: by 2002:a05:600c:5247:b0:414:273:67d4 with SMTP id
+ fc7-20020a05600c524700b00414027367d4mr2632403wmb.30.1713996946437; Wed, 24
+ Apr 2024 15:15:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: biamp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR17MB5419.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 88b269f1-e786-4d73-2573-08dc64abfacc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2024 22:14:58.9075
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 341ac572-066c-46f6-bf06-b2d0c7ddf1be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WCBbZLHLS2+P4jBF8iITCLryPW0bf5saQV/lXtUz6NfdPeODj7zp1ZuxAW669jZ/WtZz4XwY4QKAD7liK2oHig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR17MB6925
-X-Proofpoint-ORIG-GUID: BzTDxwGfd18FFd6eKPd8erFCiS6KW5W8
-X-Proofpoint-GUID: BzTDxwGfd18FFd6eKPd8erFCiS6KW5W8
+References: <20240418081548.12160-1-lvzhaoxiong@huaqin.corp-partner.google.com>
+ <20240418081548.12160-3-lvzhaoxiong@huaqin.corp-partner.google.com>
+ <zanx5y3obqmewnbooovf52hx6vh7tpi4zsbse2dyzcqzddmzhw@kewxoa6n3mja>
+ <CACb=7PURWtS8bwT5EcAFHhu7deHd2Y8cNOattfdwyEYpOUcbnQ@mail.gmail.com>
+ <vbt2nxddw2dc7hkreq4iybv5zv5xyp32oajybeqsphgfrhzmn7@tskvckljmxpe>
+ <CACb=7PVTvV9nsFu1ZAXu7YTjSOAGZka+c__EJq3J3qgSJGEShw@mail.gmail.com>
+ <CAD=FV=VYAzqsGEBJai9b9n+HxHiG59L1vF73AEWcTwLS_ryjWw@mail.gmail.com>
+ <an2k3vgynq4as2sd5dy6ccmdiqedmo7qjsab5qyfhesd333i2a@235sqph3bze5>
+ <CAD=FV=VQ8rbwKk4WpHRER9p4cZp7UrrHRpgnErqbQxyxp4sg5w@mail.gmail.com> <CAA8EJprv3qBd1hfdWHrfhY=S0w2O70dZnYb6TVsS6AGRPxsYdw@mail.gmail.com>
+In-Reply-To: <CAA8EJprv3qBd1hfdWHrfhY=S0w2O70dZnYb6TVsS6AGRPxsYdw@mail.gmail.com>
+From: Hsin-Yi Wang <hsinyi@google.com>
+Date: Wed, 24 Apr 2024 15:15:18 -0700
+Message-ID: <CACb=7PVEpCFWf_aysRkeR0yWAXR5sTaXhNbi3TV3ffKj866+EQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] drm/panel: kd101ne3: add new panel driver
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Doug Anderson <dianders@google.com>, 
+	lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>, mripard@kernel.org, 
+	airlied@gmail.com, daniel@ffwll.ch, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	cong yang <yangcong5@huaqin.corp-partner.google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: David Sands <david.sands@biamp.com>=0A=
-=0A=
-Add the ability for FunctionFS driver to be able to create DFU Run-Time=0A=
-descriptors.=0A=
-=0A=
-Signed-off-by: David Sands <david.sands@biamp.com>=0A=
-Co-developed-by: Chris Wulff <chris.wulff@biamp.com>=0A=
-Signed-off-by: Chris Wulff <chris.wulff@biamp.com>=0A=
----=0A=
-v3: Documentation, additional constants and constant order fixed=0A=
-v2: https://lore.kernel.org/linux-usb/CO1PR17MB54198D086B61F7392FA9075FE10E=
-2@CO1PR17MB5419.namprd17.prod.outlook.com/=0A=
-v1: https://lore.kernel.org/linux-usb/CO1PR17MB5419AC3907C74E28D80C5021E108=
-2@CO1PR17MB5419.namprd17.prod.outlook.com/=0A=
-=0A=
- drivers/usb/gadget/function/f_fs.c  | 12 ++++++++++--=0A=
- include/uapi/linux/usb/ch9.h        |  9 +++++++--=0A=
- include/uapi/linux/usb/functionfs.h | 25 +++++++++++++++++++++++++=0A=
- 3 files changed, 42 insertions(+), 4 deletions(-)=0A=
-=0A=
-diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/functi=
-on/f_fs.c=0A=
-index bffbc1dc651f..4cc3f3601cf0 100644=0A=
---- a/drivers/usb/gadget/function/f_fs.c=0A=
-+++ b/drivers/usb/gadget/function/f_fs.c=0A=
-@@ -2467,7 +2467,7 @@ typedef int (*ffs_os_desc_callback)(enum ffs_os_desc_=
-type entity,=0A=
- =0A=
- static int __must_check ffs_do_single_desc(char *data, unsigned len,=0A=
- 					   ffs_entity_callback entity,=0A=
--					   void *priv, int *current_class)=0A=
-+					   void *priv, int *current_class, int *current_subclass)=0A=
- {=0A=
- 	struct usb_descriptor_header *_ds =3D (void *)data;=0A=
- 	u8 length;=0A=
-@@ -2524,6 +2524,7 @@ static int __must_check ffs_do_single_desc(char *data=
-, unsigned len,=0A=
- 		if (ds->iInterface)=0A=
- 			__entity(STRING, ds->iInterface);=0A=
- 		*current_class =3D ds->bInterfaceClass;=0A=
-+		*current_subclass =3D ds->bInterfaceSubClass;=0A=
- 	}=0A=
- 		break;=0A=
- =0A=
-@@ -2548,6 +2549,12 @@ static int __must_check ffs_do_single_desc(char *dat=
-a, unsigned len,=0A=
- 			if (length !=3D sizeof(struct ccid_descriptor))=0A=
- 				goto inv_length;=0A=
- 			break;=0A=
-+		} else if (*current_class =3D=3D USB_CLASS_APP_SPEC &&=0A=
-+			   *current_subclass =3D=3D USB_SUBCLASS_DFU) {=0A=
-+			pr_vdebug("dfu functional descriptor\n");=0A=
-+			if (length !=3D sizeof(struct usb_dfu_functional_descriptor))=0A=
-+				goto inv_length;=0A=
-+			break;=0A=
- 		} else {=0A=
- 			pr_vdebug("unknown descriptor: %d for class %d\n",=0A=
- 			      _ds->bDescriptorType, *current_class);=0A=
-@@ -2610,6 +2617,7 @@ static int __must_check ffs_do_descs(unsigned count, =
-char *data, unsigned len,=0A=
- 	const unsigned _len =3D len;=0A=
- 	unsigned long num =3D 0;=0A=
- 	int current_class =3D -1;=0A=
-+	int current_subclass =3D -1;=0A=
- =0A=
- 	for (;;) {=0A=
- 		int ret;=0A=
-@@ -2629,7 +2637,7 @@ static int __must_check ffs_do_descs(unsigned count, =
-char *data, unsigned len,=0A=
- 			return _len - len;=0A=
- =0A=
- 		ret =3D ffs_do_single_desc(data, len, entity, priv,=0A=
--			&current_class);=0A=
-+			&current_class, &current_subclass);=0A=
- 		if (ret < 0) {=0A=
- 			pr_debug("%s returns %d\n", __func__, ret);=0A=
- 			return ret;=0A=
-diff --git a/include/uapi/linux/usb/ch9.h b/include/uapi/linux/usb/ch9.h=0A=
-index 44d73ba8788d..7f155fba0c1f 100644=0A=
---- a/include/uapi/linux/usb/ch9.h=0A=
-+++ b/include/uapi/linux/usb/ch9.h=0A=
-@@ -254,6 +254,9 @@ struct usb_ctrlrequest {=0A=
- #define USB_DT_DEVICE_CAPABILITY	0x10=0A=
- #define USB_DT_WIRELESS_ENDPOINT_COMP	0x11=0A=
- #define USB_DT_WIRE_ADAPTER		0x21=0A=
-+/* From USB Device Firmware Upgrade Specification, Revision 1.1 */=0A=
-+#define USB_DT_DFU_FUNCTIONAL		0x21=0A=
-+/* these are from the Wireless USB spec */=0A=
- #define USB_DT_RPIPE			0x22=0A=
- #define USB_DT_CS_RADIO_CONTROL		0x23=0A=
- /* From the T10 UAS specification */=0A=
-@@ -263,6 +266,7 @@ struct usb_ctrlrequest {=0A=
- /* From the USB 3.1 spec */=0A=
- #define	USB_DT_SSP_ISOC_ENDPOINT_COMP	0x31=0A=
- =0A=
-+=0A=
- /* Conventional codes for class-specific descriptors.  The convention is=
-=0A=
-  * defined in the USB "Common Class" Spec (3.11).  Individual class specs=
-=0A=
-  * are authoritative for their usage, not the "common class" writeup.=0A=
-@@ -329,9 +333,10 @@ struct usb_device_descriptor {=0A=
- #define USB_CLASS_USB_TYPE_C_BRIDGE	0x12=0A=
- #define USB_CLASS_MISC			0xef=0A=
- #define USB_CLASS_APP_SPEC		0xfe=0A=
--#define USB_CLASS_VENDOR_SPEC		0xff=0A=
-+#define USB_SUBCLASS_DFU			0x01=0A=
- =0A=
--#define USB_SUBCLASS_VENDOR_SPEC	0xff=0A=
-+#define USB_CLASS_VENDOR_SPEC		0xff=0A=
-+#define USB_SUBCLASS_VENDOR_SPEC		0xff=0A=
- =0A=
- /*------------------------------------------------------------------------=
--*/=0A=
- =0A=
-diff --git a/include/uapi/linux/usb/functionfs.h b/include/uapi/linux/usb/f=
-unctionfs.h=0A=
-index 9f88de9c3d66..6d2061500184 100644=0A=
---- a/include/uapi/linux/usb/functionfs.h=0A=
-+++ b/include/uapi/linux/usb/functionfs.h=0A=
-@@ -37,6 +37,31 @@ struct usb_endpoint_descriptor_no_audio {=0A=
- 	__u8  bInterval;=0A=
- } __attribute__((packed));=0A=
- =0A=
-+/**=0A=
-+ * struct usb_dfu_functional_descriptor - DFU Functional descriptor=0A=
-+ * @bLength:		Size of the descriptor (bytes)=0A=
-+ * @bDescriptorType:	USB_DT_DFU_FUNCTIONAL=0A=
-+ * @bmAttributes:	DFU attributes=0A=
-+ * @wDetachTimeOut:	Maximum time to wait after DFU_DETACH (ms, le16)=0A=
-+ * @wTransferSize:	Maximum number of bytes per control-write (le16)=0A=
-+ * @bcdDFUVersion:	DFU Spec version (BCD, le16)=0A=
-+ */=0A=
-+struct usb_dfu_functional_descriptor {=0A=
-+	__u8  bLength;=0A=
-+	__u8  bDescriptorType;=0A=
-+	__u8  bmAttributes;=0A=
-+	__le16 wDetachTimeOut;=0A=
-+	__le16 wTransferSize;=0A=
-+	__le16 bcdDFUVersion;=0A=
-+} __attribute__ ((packed));=0A=
-+=0A=
-+/* from DFU functional descriptor bmAttributes */=0A=
-+#define DFU_FUNC_ATT_WILL_DETACH		(1 << 3)=0A=
-+#define DFU_FUNC_ATT_MANIFEST_TOLERANT		(1 << 2)=0A=
-+#define DFU_FUNC_ATT_CAN_UPLOAD			(1 << 1)=0A=
-+#define DFU_FUNC_ATT_CAN_DOWNLOAD		(1 << 0)=0A=
-+=0A=
-+=0A=
- struct usb_functionfs_descs_head_v2 {=0A=
- 	__le32 magic;=0A=
- 	__le32 length;=0A=
--- =0A=
-2.34.1=0A=
-=0A=
+On Wed, Apr 24, 2024 at 2:49=E2=80=AFPM Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On Thu, 25 Apr 2024 at 00:04, Doug Anderson <dianders@google.com> wrote:
+> >
+> > Hi,
+> >
+> > On Tue, Apr 23, 2024 at 2:20=E2=80=AFPM Dmitry Baryshkov
+> > <dmitry.baryshkov@linaro.org> wrote:
+> > >
+> > > On Tue, Apr 23, 2024 at 01:41:59PM -0700, Doug Anderson wrote:
+> > > > Hi,
+> > > >
+> > > > On Tue, Apr 23, 2024 at 11:10=E2=80=AFAM Hsin-Yi Wang <hsinyi@googl=
+e.com> wrote:
+> > > > >
+> > > > > > > > > +#define _INIT_DCS_CMD(...) { \
+> > > > > > > > > +     .type =3D INIT_DCS_CMD, \
+> > > > > > > > > +     .len =3D sizeof((char[]){__VA_ARGS__}), \
+> > > > > > > > > +     .data =3D (char[]){__VA_ARGS__} }
+> > > > > > > > > +
+> > > > > > > > > +#define _INIT_DELAY_CMD(...) { \
+> > > > > > > > > +     .type =3D DELAY_CMD,\
+> > > > > > > > > +     .len =3D sizeof((char[]){__VA_ARGS__}), \
+> > > > > > > > > +     .data =3D (char[]){__VA_ARGS__} }
+> > > > > > > >
+> > > > > > > > This is the third panel driver using the same appoach. Can =
+you use
+> > > > > > > > mipi_dsi_generic_write_seq() instead of the huge table? Or =
+if you prefer
+> > > > > > > > the table, we should extract this framework to a common hel=
+per.
+> > > > > > > > (my preference is shifted towards mipi_dsi_generic_write_se=
+q()).
+> > > > > > > >
+> > > > > > > The drawback of mipi_dsi_generic_write_seq() is that it can c=
+ause the
+> > > > > > > kernel size grows a lot since every sequence will be expanded=
+.
+> > > > > > >
+> > > > > > > Similar discussion in here:
+> > > > > > > https://lore.kernel.org/dri-devel/CAD=3DFV=3DWju3WS45=3DEpXMU=
+g7FjYDh3-=3Dmvm_jS7TF1tsaAzbb4Uw@mail.gmail.com/
+> > > > > > >
+> > > > > > > This patch would increase the module size from 157K to 572K.
+> > > > > > > scripts/bloat-o-meter shows chg +235.95%.
+> > > > > > >
+> > > > > > > So maybe the common helper is better regarding the kernel mod=
+ule size?
+> > > > > >
+> > > > > > Yes, let's get a framework done in a useful way.
+> > > > > > I'd say, drop the _INIT_DELAY_CMD. msleep() and usleep_range() =
+should be
+> > > > > > used instead (and it's up to the developer to select correct de=
+lay
+> > > > > > function).
+> > > > > >
+> > > > > > >
+> > > > > > > > > +
+> > > > > > > > > +static const struct panel_init_cmd kingdisplay_kd101ne3_=
+init_cmd[] =3D {
+> > > > > > > > > +     _INIT_DELAY_CMD(50),
+> > > > > > > > > +     _INIT_DCS_CMD(0xE0, 0x00),
+> > > > > >
+> > > > > > [skipped the body of the table]
+> > > > > >
+> > > > > > > > > +     _INIT_DCS_CMD(0x0E, 0x48),
+> > > > > > > > > +
+> > > > > > > > > +     _INIT_DCS_CMD(0xE0, 0x00),
+> > > > > >
+> > > > > > > > > +     _INIT_DCS_CMD(0X11),
+> > > > > >
+> > > > > > Also, at least this is mipi_dsi_dcs_exit_sleep_mode().
+> > > > > >
+> > > > > > > > > +     /* T6: 120ms */
+> > > > > > > > > +     _INIT_DELAY_CMD(120),
+> > > > > > > > > +     _INIT_DCS_CMD(0X29),
+> > > > > >
+> > > > > > And this is mipi_dsi_dcs_set_display_on().
+> > > > > >
+> > > > > > Having a single table enourages people to put known commands in=
+to the
+> > > > > > table, the practice that must be frowned upon and forbidden.
+> > > > > >
+> > > > > > We have functions for some of the standard DCS commands. So, ma=
+ybe
+> > > > > > instead of adding a single-table based approach we can improve
+> > > > > > mipi_dsi_generic_write_seq() to reduce the bloat. E.g. by movin=
+g the
+> > > > > > error handling to a common part of enable() / prepare() functio=
+n.
+> > > > > >
+> > > > >
+> > > > > For this panel, I think it can also refer to how
+> > > > > panel-kingdisplay-kd097d04.c does. Create the table for init cmd =
+data,
+> > > > > not what operation to use, and use mipi_dsi_generic_write_seq() w=
+hen
+> > > > > looping through the table.
+> > > >
+> > > > Even more similar discussion:
+> > > >
+> > > > https://lore.kernel.org/r/CAD=3DFV=3DUGDbNvAMjzWSOvxybGikQcvW9JsRtb=
+xHVg8_97YPEQCA@mail.gmail.com
+> > >
+> > > It seems I skipped that thread.
+> > >
+> > > I'd still suggest a code-based solution compared to table-based one, =
+for
+> > > the reasons I've outlined before. Having a tables puts a pressure on =
+the
+> > > developer to put commands there for which we already have a
+> > > command-specific function.
+> >
+> > The problem is that with these panels that need big init sequences the
+> > code based solution is _a lot_ bigger. If it were a few bytes or a
+> > 1-2KB then fine, but when Hsin-Yi measured Linus W's attempt to move
+> > from a table to code it was 100K difference in code [1]. I would also
+> > say that having these long init sequences done as separate commands
+> > encourages people to skip checking the return values of each of the
+> > transfer functions and I don't love that idea.
+> >
+> > It would be ideal if these panels didn't need these long init
+> > sequences, but I don't have any inside knowledge here saying that they
+> > could be removed. So assume we can't get rid of the init sequences it
+> > feels like we have to find some way to make the tables work for at
+> > least the large chunks of init code and encourage people to make the
+> > tables readable...
+>
+>
+> I did a quick check on the boe-tv101wum-nl6 driver by converting the
+> writes to use the following macro:
+>
+> #define mipi_dsi_dcs_write_cmd_seq(dsi, cmd, seq...)
+>              \
+>         do {                                                             =
+      \
+>                 static const u8 d[] =3D { cmd, seq };                    =
+    \
+>                 ret =3D mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));=
+    \
+>                 if (ret < 0)                                             =
+      \
+>                         goto err;                                        =
+      \
+>         } while (0)
+>
+> And then at the end of the init funciton having
+>
+> err:
+>         dev_err(panel->dev,
+>                 "failed to write command %d\n", ret);
+>         return ret;
+> }
+>
+
+I'm not sure about the coding style rule here, would it be considered
+unclear that caller of mipi_dsi_dcs_write_cmd_seq() needs to have err
+block, but the block may not be directly used in that caller and is
+only jumped from the macro?
+
+
+> Size comparison:
+>    text    data     bss     dec     hex filename
+> before
+>   34109   10410      18   44537    adf9
+> ../build-64/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.o
+> making init data const
+>   44359     184       0   44543    adff
+> ../build-64/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.o
+> with new macros
+>   44353     184       0   44537    adf9
+> ../build-64/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.o
+>
+> As you can see, there is literally no size difference with this macro in =
+place.
+> The only drawback is that the init stops on the first write rather
+> than going through the sequence.
+>
+> WDYT? I can turn this into a proper patch if you think this makes sense.
+>
+> >
+> >
+> > [1] https://lore.kernel.org/r/CAD=3DFV=3DUFa_AoJQvUT3BTiRs19WCA2xLVeQOU=
+=3D+nYu_HaE0_c6Q@mail.gmail.com
+>
+>
+>
+> --
+> With best wishes
+> Dmitry
 
