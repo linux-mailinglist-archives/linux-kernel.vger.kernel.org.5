@@ -1,92 +1,175 @@
-Return-Path: <linux-kernel+bounces-156756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39D1B8B07B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:53:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCACF8B07BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:54:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5DCE1F23A6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:53:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AFBC1C22EB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14B5415990A;
-	Wed, 24 Apr 2024 10:53:14 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36865156C6F;
-	Wed, 24 Apr 2024 10:53:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18FE7159906;
+	Wed, 24 Apr 2024 10:54:27 +0000 (UTC)
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBB99152E0B;
+	Wed, 24 Apr 2024 10:54:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713955993; cv=none; b=nzlkQlurNrHRVTdFIsMM+XP9kpz29sAf13rUkpKJ/EvFY92q3IA7St1FdWvkDFQKTZ6s80KVQKbBY29st86izLwvnoqmgr5ppaKwwfekICdCIYTibqnTy4/OWTyLw0st3Np37Jvkdip/u5NPk4L3e3PG0GWCbJgka6jVRwcn2BA=
+	t=1713956066; cv=none; b=miQXiQlZ5RHCr3MPbbiBplOhXD/C4YiZ6O//q+GERsJ8prV3CmZws1IKJ0HNHwgN5c3ql7zM//DJlSyxUStxDv5oTaYNZz5tLg2T2FdPnODS0w5afZjiP/QzRB7vdeZvCr/BWxvtl6krp3m0jgwN+zQzHdOkow/l9nMg2yLjfUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713955993; c=relaxed/simple;
-	bh=js8C/26yYtRBsgN6k1rTXrGTe9JoFXS17KjL+cl13uA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CM0MmFGhQVsLFEzcb8aIF+n4NzsKueSO7IUpfLKG3OGy+8Gb1lkvYZMYZzJYN4K4I1qVIBgE7ggoMJYe8BjfBSL4haNmOmPJmsHDzvExjAuyvXbrXCFAmgh3wN43A+aNkCN18t13FY7K4QEus1q2+jZYcECsp4yPz66JsqwtMpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D58A0339;
-	Wed, 24 Apr 2024 03:53:37 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.27])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 23FCE3F73F;
-	Wed, 24 Apr 2024 03:53:09 -0700 (PDT)
-From: Ryan Roberts <ryan.roberts@arm.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Ryan Roberts <ryan.roberts@arm.com>,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	David Hildenbrand <david@redhat.com>
-Subject: [PATCH v1] selftests/mm: soft-dirty should fail if a testcase fails
-Date: Wed, 24 Apr 2024 11:53:01 +0100
-Message-Id: <20240424105301.3157695-1-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1713956066; c=relaxed/simple;
+	bh=dTdKB9+IkBBoLgEPCcacEl7xptPU+1wETHC5RBLak14=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XBUcST1H/NrhCgKaMio34dBQ5E0+5v3/cb2Flwg8MsuF3Kx4FnzCqRLePzs85W2ImyIiXWw4RKL/ncZowvLQD78XbgLDGecTVDKZfhQY8sZ9MuZGrq/G9ymB/nJh4mo73o3OtwghmSyU7lI69OBbvaBWb82ONIJnNgjaQgeBYko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ed112c64beso5853031b3a.1;
+        Wed, 24 Apr 2024 03:54:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713956064; x=1714560864;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sbRk+8O9BzuC/xDyoYPxAM90+rfheN7dqlzCKkmo9fI=;
+        b=fKmq+FGj9fRPPgTYSaw1imRarnZJN+CUe6bHGD/N7Var7038bDN4DX+jRY6y/e7OOA
+         Jtv8r0LkZmNmn0+K0EssPxFs7hJndLr4QM3aHWwLmhyev0b6IOTi2+QPMCuhBawBNUrR
+         O4yGvBiuKTh9U2VC3RczlfOSUH4aSe09ijpPjLKp4PAAm1LczrIM+shBERbIX8DKk4zF
+         57xQTNOOiM32oMpO/L0D8HkP1cdk1j64dpAL/beasZ49dCcIIv8FQDuvaa5wDfYVFoVs
+         pFs8DJ+b1LTr09SyyPdpufcNLKNmm5ni1fc4wygVF0Kew5PKk4/89pDAWAAC1yf35mJ9
+         fFMw==
+X-Forwarded-Encrypted: i=1; AJvYcCUIOV4soHI/Wc6YOz3P8PrBJHehC0UxRSd8UITAhbwk9FkFRW7WYdN+QWykKFVQXhVk5mlco3LJbNx3+yD+jVXYR3ykddyKCkW1F0NM7w3RXQqw5Yr3WW7oM23DmchD3n+x1/H6cKep8fevtgPJQNrfcZ2lmTCRyckuxZicYdhtMB9a6wFKcnKJw61ob45e7WW1gaIHpWMq4MGUCQ==
+X-Gm-Message-State: AOJu0Yz8ijjXmH9LoE4sm/QbbfD21N8RAOWfbyjDe+G1czAutgBID3s1
+	3luRL+WpaJ5EtYDSjmUFQcy3fc7HO5bBxtmgXGi/cGqlR9KVtu9cVM2PXutZj3oZQUUmD+NcEMx
+	TxieY/ECxk4GEnizRcO9jMbtclKY=
+X-Google-Smtp-Source: AGHT+IEPBBrIzHYPuawwbCDK5O95umbDiYxjntGXJscMNGrfD44AaArcqQZ2F8S4CSUjX7zpwGx4/+8Es4RQwo03Gzc=
+X-Received: by 2002:a05:6a00:ccd:b0:6eb:3d37:ce7a with SMTP id
+ b13-20020a056a000ccd00b006eb3d37ce7amr2675985pfv.21.1713956064157; Wed, 24
+ Apr 2024 03:54:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240417-mcp251xfd-gpio-feature-v1-0-bc0c61fd0c80@ew.tq-group.com>
+ <20240417-mcp251xfd-gpio-feature-v1-2-bc0c61fd0c80@ew.tq-group.com>
+In-Reply-To: <20240417-mcp251xfd-gpio-feature-v1-2-bc0c61fd0c80@ew.tq-group.com>
+From: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date: Wed, 24 Apr 2024 19:54:12 +0900
+Message-ID: <CAMZ6RqKYfFNGpKdwvu2ekuE5FDwiXgmH=Q3bA=QmDMKPLEzYsQ@mail.gmail.com>
+Subject: Re: [PATCH 2/4] can: mcp251xfd: mcp251xfd_regmap_crc_write():
+ workaround for errata 5
+To: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, 
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Thomas Kopp <thomas.kopp@microchip.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-can@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux@ew.tq-group.com, alexander.stein@ew.tq-group.com
+Content-Type: text/plain; charset="UTF-8"
 
-Previously soft-dirty was unconditionally exiting with success, even if
-one of it's testcases failed. Let's fix that so that failure can be
-reported to automated systems properly.
+On Wed. 17 Apr. 2024 at 22:45, Gregor Herburger
+<gregor.herburger@ew.tq-group.com> wrote:
+> According to Errata DS80000789E 5 writing IOCON register using one SPI
+> write command clears LAT0/LAT1.
+>
+> Errata Fix/Work Around suggests to write registers with single byte write
+> instructions. However, it seems that every write to the second byte
+> causes the overrite of LAT0/LAT1.
+>
+> Never write byte 2 of IOCON register to avoid clearing of LAT0/LAT1.
+>
+> Signed-off-by: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+> ---
+>  drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c | 35 +++++++++++++++++++++++-
+>  1 file changed, 34 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
+> index 92b7bc7f14b9..ab4e372baffb 100644
+> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
+> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
+> @@ -229,14 +229,47 @@ mcp251xfd_regmap_crc_gather_write(void *context,
+>         return spi_sync_transfer(spi, xfer, ARRAY_SIZE(xfer));
+>  }
+>
+> +static int
+> +mcp251xfd_regmap_crc_write_iocon(void *context, const void *data, size_t count)
+                                                                            ^^^^
+count is never used.
 
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
+> +{
+> +       const size_t data_offset = sizeof(__be16) +
+> +               mcp251xfd_regmap_crc.pad_bits / BITS_PER_BYTE;
+> +       u16 reg = *(u16 *)data;
 
-Applies on top of v6.9-rc3.
+This line made me scratch my head a lot.
 
-I previously sent this out as part of a larger series [1]. Feedback was to
-repost standalone.
+When I see a void * parameter named data, I expect this to be a memory
+region. Here, if I got this correctly, data is just a pointer to a u16
+which represents the low bit of a register.
 
-[1] https://lore.kernel.org/all/20240419074344.2643212-1-ryan.roberts@arm.com/
+So, if you are not passing an address to a memory region but just a
+single scalar, why the void *? Wouldn't it be better to just do:
 
-Thanks,
-Ryan
+  mcp251xfd_regmap_crc_write_iocon(void *context, u16 reg)
 
+> +       /* Never write to bits 16..23 of IOCON register to avoid clearing of LAT0/LAT1
+> +        *
+> +        * According to Errata DS80000789E 5 writing IOCON register using one
+> +        * SPI write command clears LAT0/LAT1.
+> +        *
+> +        * Errata Fix/Work Around suggests to write registers with single byte
+> +        * write instructions. However, it seems that the byte at 0xe06(IOCON[23:16])
+> +        * is for read-only access and writing to it causes the cleraing of LAT0/LAT1.
+                                                                  ^^^^^^^^
+clearing
 
- tools/testing/selftests/mm/soft-dirty.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +        */
+> +
+> +       /* Write IOCON[15:0] */
+> +       mcp251xfd_regmap_crc_gather_write(context, &reg, 1,
+> +                                         data + data_offset, 2);
+> +       reg += 3;
+> +       /* Write IOCON[31:24] */
+> +       mcp251xfd_regmap_crc_gather_write(context, &reg, 1,
+> +                                         data + data_offset + 3, 1);
+> +
+> +       return 0;
+> +}
+> +
+>  static int
+>  mcp251xfd_regmap_crc_write(void *context,
+>                            const void *data, size_t count)
 
-diff --git a/tools/testing/selftests/mm/soft-dirty.c b/tools/testing/selftests/mm/soft-dirty.c
-index 7dbfa53d93a0..bdfa5d085f00 100644
---- a/tools/testing/selftests/mm/soft-dirty.c
-+++ b/tools/testing/selftests/mm/soft-dirty.c
-@@ -209,5 +209,5 @@ int main(int argc, char **argv)
+This also uses the const void* data, except that here, this is kind of
+forced by the prototype of the write() callback function from struct
+regmap_bus. Also, count is properly used.
 
- 	close(pagemap_fd);
+>  {
+>         const size_t data_offset = sizeof(__be16) +
+>                 mcp251xfd_regmap_crc.pad_bits / BITS_PER_BYTE;
+> +       u16 reg = *(u16 *)data;
+>
+> -       return mcp251xfd_regmap_crc_gather_write(context,
+> +       if (reg == MCP251XFD_REG_IOCON)
+> +               return mcp251xfd_regmap_crc_write_iocon(context,
+> +                                                data, count);
 
--	return ksft_exit_pass();
-+	ksft_finished();
- }
---
-2.25.1
+After changing the prototype of mcp251xfd_regmap_crc_write_iocon(),
+this would then become:
 
+                return mcp251xfd_regmap_crc_write_iocon(context, reg);
+
+> +       else
+> +               return mcp251xfd_regmap_crc_gather_write(context,
+>                                                  data, data_offset,
+>                                                  data + data_offset,
+>                                                  count - data_offset);
 
