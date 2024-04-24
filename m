@@ -1,129 +1,154 @@
-Return-Path: <linux-kernel+bounces-157799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1920E8B1662
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:45:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41C5F8B1667
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:45:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AE811C23AF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:45:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C39421F2412B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:45:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F1D16E89C;
-	Wed, 24 Apr 2024 22:45:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C902616E886;
+	Wed, 24 Apr 2024 22:45:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ip2IuUZ5"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	dkim=pass (2048-bit key) header.d=nexus-software-ie.20230601.gappssmtp.com header.i=@nexus-software-ie.20230601.gappssmtp.com header.b="o4UjR2Z/"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796A716E873
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0219816F0C6
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:45:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713998710; cv=none; b=jU7uYm45+QGolAL0uizOonMMZkvRc7gK60aVk3qzdfCGwpq9/agNhnDSPUeXMJshA6ambHZdg4Rfq5u6bzb7yI5hNUPW9LVmXMTyQ56szvmkNh+0Ucw+gUo2tPrNO3kk5SMZr9DDvU0nw+Maruh2mlNIQFfNiGPuD8xDc3IrY/k=
+	t=1713998716; cv=none; b=ugAM7PX7ElOjsq0w2KHkZhVdCwCwY4zoM3ubHqe+rT8MUtxdYJTr1ug902I8RSf9ci5FNN9X3f6XWxPo7BhxTgA/4Q0XpBslh3okM/ooLE8stZ2kPu3pOYAHAgQSRc2yUyYMbdidF5dOJIHb5L2My+GmRfpyJRDD0zXcAn9Mq+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713998710; c=relaxed/simple;
-	bh=PesUfngxJz9TzB+RXrKPi6gidufT5NJWBpNfqP6UeSg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nCMX2NAQjXP+PmF2FtZnU/LxEv4yE9w0X2riOJmc/SJZ+T3GcNz/Iz8Vi6kQXgjnoxCYjZ3e246ZPyt2fEjDOc5GswZ92Z7U7w4N/Yvwy4NxY/7zFwNd7hkFAz52zd5rFDPblMbYnoxSKVIjVaXhYBG3oLgbsv6hIQDMKlx9eTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ip2IuUZ5; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6eddff25e4eso373786b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:45:09 -0700 (PDT)
+	s=arc-20240116; t=1713998716; c=relaxed/simple;
+	bh=SXGoP5a7GOT/WhrngqddEad4BYmvCOsgRar0PvnouPA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ok+lg2DsbY+2wStrlmvpVpBW93ohlble9rDWQMWPiPvYfmmu8/wxT9OMVAz13z0PrF12DzN8IqclE3op+0By0ZKXjWxz/yGJU+ND9SOb44dq8d1P8qSLJOf/+C0E4RtfJCq+TtgkQaWeat7dGd3FljunL5vEDNPVeqHvPSTdHX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nexus-software.ie; spf=none smtp.mailfrom=nexus-software.ie; dkim=pass (2048-bit key) header.d=nexus-software-ie.20230601.gappssmtp.com header.i=@nexus-software-ie.20230601.gappssmtp.com header.b=o4UjR2Z/; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nexus-software.ie
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nexus-software.ie
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41b3692b508so2197085e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:45:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713998709; x=1714603509; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bQ7aAoW8uYuZUJ8c+fQ05Y2fxYHEV3uQB6MRkhy36Ug=;
-        b=Ip2IuUZ5LfeaeG8LgTT7FPRSNVprS1WtQ8j+0rOBMsdFH8RkkiUSJdxlYmcWm0keco
-         D0VyxtpaYBK3q8eO/87uN8z81J/XdcHp44mFnYRtTQyLFhhWKfvbInbP/sym7rPhnNN8
-         73IKrRKCZtycqCXOrZtxQ2k6kD6uCr8YzTm4E=
+        d=nexus-software-ie.20230601.gappssmtp.com; s=20230601; t=1713998712; x=1714603512; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EjxPm44LNMAJWpuJW83TDZMcoceLZ9YtXan5F0Els34=;
+        b=o4UjR2Z/McE0XTYAoiqGRPRSAGG96aVpHFvp3utenO3rwEdogZw2HYrpYQBvrmzBAk
+         tfSIRs5u9AJaWcN3xL5dL4aD0V2Gv230w7LPxoz4no9C3iXHR0w4DPOs28dI9HZlJbp9
+         wB259XCiUf6RCIRegaRTOrsN9sPPyZTOgVAkoZoIYTjrevb6Rk9gxarTzOZDT8RDxNl4
+         XehvfhNg+TNISLIcJsgVHovxQsVdyUlslTLu1PXuf7qbFMxk0/PlpUrkaTzVMFMf9cmu
+         sP81lU9cKZZimADG3UIXxXvBorc2cawO7ftSRKIKnixKSbxvlwgjsza1Tj+ja+A9XQQP
+         Pa1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713998709; x=1714603509;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bQ7aAoW8uYuZUJ8c+fQ05Y2fxYHEV3uQB6MRkhy36Ug=;
-        b=DxFjaB8M4SJ/CqXdPzYROUevaWbwHULYdCkFtjvwP88yEOJjJ4ZKifxmcNJ+7+UZgL
-         BSVwVoIm7fyUaMmzaT0CsQIQnV0LSdsY90Nrw/18ZQPCbvY819dRSBJy+FOQdCcvbxya
-         yeHsBfJczONs3dfr0ij3ZlCZp8LSjkdbXVKKNGXunmEWYMUjNPxt0zto3+gdU/EVrzdM
-         dmprPUIz+S2v22GCzAEVm0I45Y+QtDoKJDtDiI2AeWOP0NOpRu9xfLDRi7pnAG3qkXfh
-         9NJTm9b1JY5a1rR3woUWzPnBIbxXwi+JyDHRZTvilj8QbJEAeT5ZAT1MQBI/DJvNMp3J
-         JdGw==
-X-Forwarded-Encrypted: i=1; AJvYcCWjuS3o0FVkt/8WvkgHIYAWDJP0ikbeUE7gpBeq5MWZ8StP5RPHMaFRoa0jmA5T1h2Lm2GYNewCbI5o00d6i673gy/tPDtWZcvOBiVO
-X-Gm-Message-State: AOJu0Yz/TVKk4uJHdItt+kM8LWOS1m+w/qA3v0pVoR3uWzbGIZIqvjco
-	YwRqZN0XZqJ5ZgfsNHIuRj3uPS+YtMzFSEEIC9ScrYZdW5cdedxJanuY9QL9Dw==
-X-Google-Smtp-Source: AGHT+IEAjXKcOqWbmJBmZ5dMg2rtYhG1LF2zwzQbtnGchw8LS/JZuvVMQDMhTtYVw79O2YlLzJPAxg==
-X-Received: by 2002:a05:6a00:4fcb:b0:6eb:2b:43b4 with SMTP id le11-20020a056a004fcb00b006eb002b43b4mr5470380pfb.27.1713998708861;
-        Wed, 24 Apr 2024 15:45:08 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ln2-20020a056a003cc200b006eff6f669a1sm11902767pfb.30.2024.04.24.15.45.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 15:45:08 -0700 (PDT)
-Date: Wed, 24 Apr 2024 15:45:07 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Jakub Kicinski <kuba@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-	netdev@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 1/4] locking/atomic/x86: Silence intentional wrapping
- addition
-Message-ID: <202404241542.6AFC3042C1@keescook>
-References: <20240424191225.work.780-kees@kernel.org>
- <20240424191740.3088894-1-keescook@chromium.org>
- <20240424224141.GX40213@noisy.programming.kicks-ass.net>
+        d=1e100.net; s=20230601; t=1713998712; x=1714603512;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EjxPm44LNMAJWpuJW83TDZMcoceLZ9YtXan5F0Els34=;
+        b=P2QLk7Z0nbRsAfM6oaey+9TxIIpKnxJdjX8IJr46pywGEcz5BsuJ5r2+DUIFBs7BvV
+         k6AxxZPJfCAFXKsREIWtafwJtPq6ZbP7DMT3U9Ff/wLj1aA8+NbbLgGO4ETQOS0g+eUg
+         vzP8cKuIhm2mztov4G/PzDyRQALXYAHtn7d8y1YHusYXlvH/fh446G/UGmb6ovm0m/r1
+         UZPgBoid7nJDGt6KHmOQPCTpvZbrrsZoO+nvVNWiL/3Vfv8cquDkWYvlycK1v10NZ3GO
+         J6aixiDfE/Xn/5rCcvPT6GLWHo0tOb4pim/fDgEJEvJX/Ey+uePDH1MRsr2GgQAUvNUE
+         dYAw==
+X-Forwarded-Encrypted: i=1; AJvYcCVq5q36cON5JDZsg5HuWLenZ4dK0vbXgS6uQCp5WdZxCT84h3Bne1PM4anrOfOvGHFggce2cyxn2086aTOhMXRXth8mi1hqayQ6U0Hq
+X-Gm-Message-State: AOJu0YwdYj1tz4lC9zB6o3//USLoMMSZna1gEcllXLRSzqaA0N7F1iwH
+	wZXCxj5CPf9aOJQHQNyzkZIlQ+JZ/In6MIjjzvupmNkpYzuWjQLFgxCvmvk0pPA=
+X-Google-Smtp-Source: AGHT+IHo7LKxsrmDSKMk8aOpeGv8Hi5vQ2ujCjvtcHptgMG2NI8nzCY+2dEzhDD7b6VRLZ5xZvE/2g==
+X-Received: by 2002:a05:600c:a43:b0:41a:7bbe:c3bf with SMTP id c3-20020a05600c0a4300b0041a7bbec3bfmr2733342wmq.22.1713998712082;
+        Wed, 24 Apr 2024 15:45:12 -0700 (PDT)
+Received: from [192.168.0.102] ([176.61.106.227])
+        by smtp.gmail.com with ESMTPSA id k29-20020a05600c1c9d00b00418948a5eb0sm29127833wms.32.2024.04.24.15.45.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 15:45:11 -0700 (PDT)
+Message-ID: <99f51564-df99-4f06-9419-1eaa9501f27d@nexus-software.ie>
+Date: Wed, 24 Apr 2024 23:45:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424224141.GX40213@noisy.programming.kicks-ass.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 07/10] arm64: dts: qcom: sm8550: Update EAS properties
+To: wuxilin123@gmail.com, =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?=
+ <u.kleine-koenig@pengutronix.de>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Junhao Xie <bigfoot@classfun.cn>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Tengfei Fan <quic_tengfan@quicinc.com>,
+ Molly Sophia <mollysophia379@gmail.com>
+Cc: linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-arm-msm@vger.kernel.org
+References: <20240424-ayn-odin2-initial-v1-0-e0aa05c991fd@gmail.com>
+ <20240424-ayn-odin2-initial-v1-7-e0aa05c991fd@gmail.com>
+Content-Language: en-US
+From: Bryan O'Donoghue <pure.logic@nexus-software.ie>
+In-Reply-To: <20240424-ayn-odin2-initial-v1-7-e0aa05c991fd@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 25, 2024 at 12:41:41AM +0200, Peter Zijlstra wrote:
-> On Wed, Apr 24, 2024 at 12:17:34PM -0700, Kees Cook wrote:
+On 24/04/2024 16:29, Xilin Wu via B4 Relay wrote:
+> From: Xilin Wu <wuxilin123@gmail.com>
 > 
-> > @@ -82,7 +83,7 @@ static __always_inline bool arch_atomic_add_negative(int i, atomic_t *v)
-> >  
-> >  static __always_inline int arch_atomic_add_return(int i, atomic_t *v)
-> >  {
-> > -	return i + xadd(&v->counter, i);
-> > +	return wrapping_add(int, i, xadd(&v->counter, i));
-> >  }
-> >  #define arch_atomic_add_return arch_atomic_add_return
+> The original values provided by Qualcomm appear to be quite
+> inaccurate. Specifically, some heavy gaming tasks could be
+> improperly assigned to the A510 cores by the scheduler, resulting
+> in a CPU bottleneck. This update to the EAS properties aims to
+> enhance the user experience across various scenarios.
 > 
-> this is going to get old *real* quick :-/
+> The power numbers were obtained using a Type-C power meter, which
+> was directly connected to the battery connector on the AYN Odin 2
+> motherboard, acting as a fake battery.
 > 
-> This must be the ugliest possible way to annotate all this, and then
-> litter the kernel with all this... urgh.
+> It should be noted that the A715 cores seem less efficient than the
+> A710 cores. Therefore, an average value has been assigned to them,
+> considering that the A715 and A710 cores share a single cpufreq
+> domain.
+> 
+> Cortex-A510 cores:
+> 441 kHz, 564 mV, 43 mW, 350 Cx
+> 556 kHz, 580 mV, 59 mW, 346 Cx
+> 672 kHz, 592 mV, 71 mW, 312 Cx
+> 787 kHz, 604 mV, 83 mW, 290 Cx
+> 902 kHz, 608 mV, 96 mW, 288 Cx
+> 1017 kHz, 624 mV, 107 mW, 264 Cx
+> 1113 kHz, 636 mV, 117 mW, 252 Cx
+> 1228 kHz, 652 mV, 130 mW, 240 Cx
+> 1344 kHz, 668 mV, 146 mW, 235 Cx
+> 1459 kHz, 688 mV, 155 mW, 214 Cx
+> 1555 kHz, 704 mV, 166 mW, 205 Cx
+> 1670 kHz, 724 mV, 178 mW, 192 Cx
+> 1785 kHz, 744 mV, 197 mW, 189 Cx
+> 1900 kHz, 764 mV, 221 mW, 190 Cx
+> 2016 kHz, 784 mV, 243 mW, 188 Cx
+> Your dynamic-power-coefficient for cpu 1: 251
 
-I'm expecting to have explicit wrapping type annotations soon[1], but for
-the atomics, it's kind of a wash on how intrusive the annotations get. I
-had originally wanted to mark the function (as I did in other cases)
-rather than using the helper, but Mark preferred it this way. I'm happy
-to do whatever! :)
+This looks pretty convincing and like good work.
 
--Kees
+A few questions and suggestions for your commit log.
 
-[1] https://github.com/llvm/llvm-project/pull/86618
+I'd really love to know more about how you ran this test. What values 
+exactly does your power meter give you?
 
--- 
-Kees Cook
+How did you lock the core to a specific CPU frequency ?
+
+Maybe also give the equation to calculate Pdyn in the commit log.
+
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/1500974575-2244-1-git-send-email-wxt@rock-chips.com/#20763985
+
+---
+bod
 
