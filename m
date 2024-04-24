@@ -1,62 +1,80 @@
-Return-Path: <linux-kernel+bounces-157187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DE5B8B0E15
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:24:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A9908B0E19
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:26:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FA901C250C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:24:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B31921F226CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:26:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA3115FA6B;
-	Wed, 24 Apr 2024 15:24:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C085015FA68;
+	Wed, 24 Apr 2024 15:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="EKu8xCiE"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JkNl31wY"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A067815ECFA;
-	Wed, 24 Apr 2024 15:24:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E97515F3F7
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:26:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713972254; cv=none; b=i3dOLfMgZps/9GHPXtwH9JJrn5M0sngTzRGSgocT0+Mg1AU4Uc6VnjKvO+HBLOxaTsXnfyaEW5+GKs82s+Zl9sBfeEnEmVudXBFsmvFERvVwJAQfYUhnIaiExyTkn2v/Me9uCB4z6t+HtVMoOwaGp6FDVN21BVKcqrZTOrppQQU=
+	t=1713972407; cv=none; b=St6hrtl2iXccAnPgZhkTPGglxGxYEuu8xwbSd1g4w17iUZ3VAxxnkQ+cgYxKcErx+CXpTNqkdFE5HR3akr5rRDbncQMBtWNIe+C1AbKm6aQcJUITa1MZZGygqdX6eSR5pQA4GCxMy698Kujr2mSTpQimBlidxkIsq1wxkjKqILI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713972254; c=relaxed/simple;
-	bh=83ac671TJ5C3w8/YTTwK5TvUabe8Q/e9+Zt2/J33mLw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ZFvULv1om3swLTPeHmKWpgxIMGEVRZ5vatFHmBITDAr3vO+JVYjgWfqazNdS0vil6DFRADBXH1D1fZYLhh4+etzYQQymgKi48Wj0U2gn6Gi5nIZDmQnJhWN9Pq/YjlkkTakYk5Rz2bpEUoa/ppi6W8rYQzvCpahgdVYKKtcVZco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=EKu8xCiE; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O7cEEF025344;
-	Wed, 24 Apr 2024 15:24:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=ODq72kPb9i7MhF+ey4vjvHEqQGg1s8vUIXQbWS97qqo=; b=EK
-	u8xCiE5CuO1YP1Sfy+9MvmUosFzw8TGsagBro6l4IZSx5Hh9dj+ffrl0fLtUTyFQ
-	WxZBlAFY5w1xc4sGCk/K00uA/lM6Lh6DhVjwQ9Qtgnwacdh5FBu4JDVHRIo7bFEn
-	Ecjk30K5GKWfs18R1SieXf0sI7XGRo29lIXN0stgthad6SJiEa1vFMrQv46uo+Nr
-	Yjd4s9/ayrW0x4lzaH9ajYMnserxxh2OLah5NaUxiXa9UoHSc4EQI9APnYWn+s+o
-	KeAAEUbmVdjcBCobqxlS8ynkzfV/nkBNKR3uvDmrduza93DMcmBnfvZ7aSZZxjBZ
-	FbyKFV8uDq6kRaxfNA+Q==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9fh87x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 15:24:07 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43OFO6v8009100
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 15:24:06 GMT
-Received: from [10.253.14.221] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 24 Apr
- 2024 08:24:03 -0700
-Message-ID: <d82c2e39-d2b8-4de0-a11a-6ab2420f8f95@quicinc.com>
-Date: Wed, 24 Apr 2024 23:24:01 +0800
+	s=arc-20240116; t=1713972407; c=relaxed/simple;
+	bh=7aN5+WZTQsvFt0EKUQ5R5htwyE97gElyhQRvXJr9D7o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JUZ70zqg+HBH4CBjPpyuFjaEJROAOckKqpjdES1pfhQ8RaanNv6rRXVmgMT46MFbQ2cHDvKxYZ86oOtuKai+4D1nwzSV/5YT8dDJgyk4mr9FogqZ4yFSCtaWG9EoJTT/YvvkmTXYvzvpRPPVL+BEbz3+Ob48tgmPo1dhKd/yRDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JkNl31wY; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713972405;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=vIOHYmmLFUfNRGCfxVwrEQGqKQoMWtovNxl0ZVRiCbY=;
+	b=JkNl31wYx/8Mru+pplvtfKc4sgWVzvcPVWpjpq1pt8uDB0a0CJgM7w/GsNrHeAo9u1JM8b
+	oblDiRlRLhMU1I/Jis1i3z1EJlfutzjJ1KlSdXoFRR4XHC5e7hnfN8nRDyQO6xzGVwg3H7
+	TKgnA7bfDzuVWmoPrV3RM1mXEWQUXiY=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-605-wfQzcGtUPkG6Jb33-YUKAQ-1; Wed, 24 Apr 2024 11:26:43 -0400
+X-MC-Unique: wfQzcGtUPkG6Jb33-YUKAQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4183909fec8so54153445e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:26:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713972402; x=1714577202;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vIOHYmmLFUfNRGCfxVwrEQGqKQoMWtovNxl0ZVRiCbY=;
+        b=faXqFWuXHqDJE/26/puIcgna9eF8iDzWN1myKWmQEmxJsva4Oy+9u2bwErza+RdnR/
+         uLvG8ZZ07PQK2f83kqgpATU6DEBsxHX/7IsnMAlKD4bxJoBuPqUuqsx2cy5vsBFAfeCV
+         sGs9NTgw6YNpK8r0mggPOZe8lGkiTsnt1b+sBZxX0wCzQMoXYlLuISx/HfzKkrsjvtKy
+         ShYo8dNJa0oZCNEmZiLf2qnyy5L4C7RxqVwsCPkyeRxlDHRhpFL5Or+5lLu4bF6UH+0m
+         haxvAf03hPRACnWV07c71NMCfjx7WdebkYcgiDFSbBh6Jd0VcFqnxrjcdj7l+Fbv9xm1
+         m97Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXFITl8ZMJPCAftz29tpLqZQbSQVejcja6jsL8+4BFC20QbhQjhlQ063n4Q11E0zbsQJIntrLtlWQ/UGZtRJ5a4OLi84R8sUJNXMM76
+X-Gm-Message-State: AOJu0Ywn2V/TniSBbi1HEEFgxaSJ5WCcltkNgVmSCNWdKpGY8qCvh4ga
+	RMrtNs+E++YFyNv7mHtymJp9utP5xUcxrd68dft+3NfPudFab9iUl5dVQkwsc/QS9osSIdr4jZy
+	km9yxmQhna/pUewFDPdVdNaGq2pcZ0t+iyCQ4rf/9kpjzjsvhR71zDWCHv7E8rg==
+X-Received: by 2002:a05:600c:45cd:b0:41a:6edd:6c1d with SMTP id s13-20020a05600c45cd00b0041a6edd6c1dmr2413714wmo.32.1713972402499;
+        Wed, 24 Apr 2024 08:26:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHwN3kJujen3ohtp8mNC6cAKgj8nycOFMrwXudufoGOKuEgp5PFHZ09Raq1v/2NQUEMEi253A==
+X-Received: by 2002:a05:600c:45cd:b0:41a:6edd:6c1d with SMTP id s13-20020a05600c45cd00b0041a6edd6c1dmr2413694wmo.32.1713972402041;
+        Wed, 24 Apr 2024 08:26:42 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70d:1f00:7a4e:8f21:98db:baef? (p200300cbc70d1f007a4e8f2198dbbaef.dip0.t-ipconnect.de. [2003:cb:c70d:1f00:7a4e:8f21:98db:baef])
+        by smtp.gmail.com with ESMTPSA id l37-20020a05600c1d2500b004186f979543sm28257764wms.33.2024.04.24.08.26.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 08:26:40 -0700 (PDT)
+Message-ID: <f972ce5a-0351-450c-98a2-38188eae5001@redhat.com>
+Date: Wed, 24 Apr 2024 17:26:39 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,74 +82,207 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Bluetooth: qca: set power_ctrl_enabled on NULL
- returned by gpiod_get_optional()
-To: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>
-CC: Bartosz Golaszewski <brgl@bgdev.pl>,
-        Marcel Holtmann
-	<marcel@holtmann.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Wren
- Turkal <wt@penguintechs.org>
-References: <20240424122932.79120-1-brgl@bgdev.pl>
- <0f8ba1b5-490e-4961-80e2-7942f66730ec@linaro.org>
- <CACMJSeuBCkNyaD60qGVpAq91DqD_OA=tCVEY0t+JNK2vcWBc+Q@mail.gmail.com>
+Subject: Re: [PATCH v21 2/5] ring-buffer: Introducing ring-buffer mapping
+ functions
+To: Vincent Donnefort <vdonnefort@google.com>, rostedt@goodmis.org,
+ mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Cc: mathieu.desnoyers@efficios.com, kernel-team@android.com,
+ rdunlap@infradead.org, rppt@kernel.org, linux-mm@kvack.org
+References: <20240423232728.1492340-1-vdonnefort@google.com>
+ <20240423232728.1492340-3-vdonnefort@google.com>
+From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
-From: quic_zijuhu <quic_zijuhu@quicinc.com>
-In-Reply-To: <CACMJSeuBCkNyaD60qGVpAq91DqD_OA=tCVEY0t+JNK2vcWBc+Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Autocrypt: addr=david@redhat.com; keydata=
+ xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
+ AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
+ 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
+ rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
+ wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
+ 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
+ pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
+ KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
+ BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
+ 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
+ 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
+ M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
+ AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
+ boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
+ 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
+ XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
+ a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
+ Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
+ 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
+ kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
+ th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
+ jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240423232728.1492340-3-vdonnefort@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: kZy9dvY7hiai_BfZPYSRhAcGdv9HQ2dW
-X-Proofpoint-GUID: kZy9dvY7hiai_BfZPYSRhAcGdv9HQ2dW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-24_12,2024-04-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- impostorscore=0 clxscore=1015 priorityscore=1501 adultscore=0 phishscore=0
- mlxlogscore=818 lowpriorityscore=0 suspectscore=0 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2404240060
 
-On 4/24/2024 10:52 PM, Bartosz Golaszewski wrote:
-> On Wed, 24 Apr 2024 at 16:46, Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
->> On 24/04/2024 14:29, Bartosz Golaszewski wrote:
->>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>>
->>
->>>               qcadev->susclk = devm_clk_get_optional(&serdev->dev, NULL);
->>>               if (IS_ERR(qcadev->susclk)) {
->>> @@ -2355,10 +2360,13 @@ static int qca_serdev_probe(struct serdev_device *serdev)
->>>               qcadev->bt_en = devm_gpiod_get_optional(&serdev->dev, "enable",
->>>                                              GPIOD_OUT_LOW);
->>>               if (IS_ERR(qcadev->bt_en)) {
->>> -                     dev_warn(&serdev->dev, "failed to acquire enable gpio\n");
->>> -                     power_ctrl_enabled = false;
->>> +                     dev_err(&serdev->dev, "failed to acquire enable gpio\n");
->>> +                     return PTR_ERR(qcadev->bt_en);
-please think about for QCA2066. if it is returned from here.  BT will
-not working at all.  if you don't return here. i will be working fine
-for every BT functionality.
-NAK again by me.
 
->>>               }
->>>
->>> +             if (!qcadev->bt_en)
->>> +                     power_ctrl_enabled = false;
->>
->> This looks duplicated - you already have such check earlier.
->>
-> 
-> It's under a different switch case!
-> 
-> Bartosz
+I gave it some more thought, and I think we are still missing something 
+(I wish PFNMAP/MIXEDMAP wouldn't be that hard).
+
+> +
+> +/*
+> + *   +--------------+  pgoff == 0
+> + *   |   meta page  |
+> + *   +--------------+  pgoff == 1
+> + *   | subbuffer 0  |
+> + *   |              |
+> + *   +--------------+  pgoff == (1 + (1 << subbuf_order))
+> + *   | subbuffer 1  |
+> + *   |              |
+> + *         ...
+> + */
+> +#ifdef CONFIG_MMU
+> +static int __rb_map_vma(struct ring_buffer_per_cpu *cpu_buffer,
+> +			struct vm_area_struct *vma)
+> +{
+> +	unsigned long nr_subbufs, nr_pages, vma_pages, pgoff = vma->vm_pgoff;
+> +	unsigned int subbuf_pages, subbuf_order;
+> +	struct page **pages;
+> +	int p = 0, s = 0;
+> +	int err;
+> +
+
+I'd add some comments here like
+
+/* Refuse any MAP_PRIVATE or writable mappings. */
+> +	if (vma->vm_flags & VM_WRITE || vma->vm_flags & VM_EXEC ||
+> +	    !(vma->vm_flags & VM_MAYSHARE))
+> +		return -EPERM;
+> +
+
+/*
+  * Make sure the mapping cannot become writable later. Also, tell the VM
+  * to not touch these pages pages (VM_DONTCOPY | VM_DONTDUMP) and tell
+  * GUP to leave them alone as well (VM_IO).
+  */
+> +	vm_flags_mod(vma,
+> +		     VM_MIXEDMAP | VM_PFNMAP |
+> +		     VM_DONTCOPY | VM_DONTDUMP | VM_DONTEXPAND | VM_IO,
+> +		     VM_MAYWRITE);
+
+I am still really unsure about VM_PFNMAP ... it's not a PFNMAP at all 
+and, as stated, vm_insert_pages() even complains quite a lot when it 
+would have to set VM_MIXEDMAP and VM_PFNMAP is already set, likely for a 
+very good reason.
+
+Can't we limit ourselves to VM_IO?
+
+But then, I wonder if it really helps much regarding GUP: yes, it blocks 
+ordinary GUP (see check_vma_flags()) but as 
+insert_page_into_pte_locked() does *not* set pte_special(), GUP-fast 
+(gup_fast_pte_range()) will not reject it.
+
+Really, if you want GUP-fast to reject it, remap_pfn_range() and friends 
+are the way to go, that will set pte_special() such that also GUP-fast 
+will leave it alone, just like vm_normal_page() would.
+
+So ... I know Linus recommended VM_PFNMAP/VM_IO to stop GUP, but it 
+alone won't stop all of GUP. We really have to mark the PTE as special, 
+which vm_insert_page() must not do (because it is refcounted!).
+
+Which means: do we really have to stop GUP from grabbing that page?
+
+Using vm_insert_page() only with VM_MIXEDMAP (and without 
+VM_PFNMAP|VM_IO) would be better.
+
+If we want to stop all of GUP, remap_pfn_range() currently seems 
+unavoidable :(
+
+
+> +
+> +	lockdep_assert_held(&cpu_buffer->mapping_lock);
+> +
+> +	subbuf_order = cpu_buffer->buffer->subbuf_order;
+> +	subbuf_pages = 1 << subbuf_order;
+> +
+> +	nr_subbufs = cpu_buffer->nr_pages + 1; /* + reader-subbuf */
+> +	nr_pages = ((nr_subbufs) << subbuf_order) - pgoff + 1; /* + meta-page */
+> +
+> +	vma_pages = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
+> +	if (!vma_pages || vma_pages > nr_pages)
+> +		return -EINVAL;
+> +
+> +	nr_pages = vma_pages;
+> +
+> +	pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
+> +	if (!pages)
+> +		return -ENOMEM;
+> +
+> +	if (!pgoff) {
+> +		pages[p++] = virt_to_page(cpu_buffer->meta_page);
+> +
+> +		/*
+> +		 * TODO: Align sub-buffers on their size, once
+> +		 * vm_insert_pages() supports the zero-page.
+> +		 */
+> +	} else {
+> +		/* Skip the meta-page */
+> +		pgoff--;
+> +
+> +		if (pgoff % subbuf_pages) {
+> +			err = -EINVAL;
+> +			goto out;
+> +		}
+> +
+> +		s += pgoff / subbuf_pages;
+> +	}
+> +
+> +	while (s < nr_subbufs && p < nr_pages) {
+> +		struct page *page = virt_to_page(cpu_buffer->subbuf_ids[s]);
+> +		int off = 0;
+> +
+> +		for (; off < (1 << (subbuf_order)); off++, page++) {
+> +			if (p >= nr_pages)
+> +				break;
+> +
+> +			pages[p++] = page;
+> +		}
+> +		s++;
+> +	}
+> +
+> +	err = vm_insert_pages(vma, vma->vm_start, pages, &nr_pages);
+
+vm_insert_pages() documents: "In case of error, we may have mapped a 
+subset of the provided pages. It is the caller's responsibility to 
+account for this case."
+
+Which could for example happen, when allocating a page table fails.
+
+Would we able to deal with that here?
+
+
+Again, I wish it would all be easier ...
+
+-- 
+Cheers,
+
+David / dhildenb
 
 
