@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-157086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C56778B0CAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 998998B0CAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:37:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 613661F260C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:37:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13EF11F23EE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D390215E817;
-	Wed, 24 Apr 2024 14:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E6AD15EFB0;
+	Wed, 24 Apr 2024 14:37:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mwWXgIMp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h+F1XyJn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1575015E5D2;
-	Wed, 24 Apr 2024 14:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19B215ECF3;
+	Wed, 24 Apr 2024 14:37:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713969425; cv=none; b=BdkD0Ki4Sy/7+1DY4Jcus6GMl9c+soIqcITg82zdL8HREA6WquC3Jzx+3q3yu8zeHgVzgBEQeGduqAKzcMbZNzcrks5I9BUF4+KPPMFEq2/asrRBrGhigbUCrdqLkp6JsDiXp5T0iqN7aXPloovqkuxjjGv8T+9Ti5ENGkLSaps=
+	t=1713969427; cv=none; b=oBg/GNpqGpzv4Ec5kMZB65KFWIKTl5krfQJA2sX8zoAy2ly35S0w2hokKgdopU+QRdaH7fX4oj38fLVmscernjJINDrA9/8m5io1/T69omzUKscsvwL73i1W41Pajn7TAX3+E8m1uvbfo7SfDVdErTL/PWwFkErhT4hCvjdPhqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713969425; c=relaxed/simple;
-	bh=h3kni25RcZfL1isJbSQY1P90CKhCozvYjFrPz4S27pc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=u73O51AXd81HphhfftGrnFziBZamF4rXoG0kk6TuhJh2pUR3qBuY20yW47kvEfiqAUK4qAea8Z57CKsxWoNfMx1RqbUBrOrsSjUiKijJAsuAeljUo7QWMS/o3bzHqtQpulq5KbPAYFYY4Gednz05SAswD95jFo3rsyZSxkRE5QQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mwWXgIMp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30779C113CD;
-	Wed, 24 Apr 2024 14:37:02 +0000 (UTC)
+	s=arc-20240116; t=1713969427; c=relaxed/simple;
+	bh=k6zY+8OIqG3hvgbnxVfHVa3Ek+C1GSXe4a2L4RdgdEQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=I4p/RcWZ1zCAN8/6K8+1ZXT88uax8P6zRTd8D19oH7cVci5oo0B60WzLqC8ppr1Jd0SEqbiDldnn7IJNhaHs+UMXFAb2SJv5Bdsgd8Ssvb/7Dn8W3hT+e6AFutJbXkDKji97u1mg1ZRX2UnFcjsYxXiaBFNPxqq+JmiOi+21sn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h+F1XyJn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C08FC113CD;
+	Wed, 24 Apr 2024 14:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713969424;
-	bh=h3kni25RcZfL1isJbSQY1P90CKhCozvYjFrPz4S27pc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=mwWXgIMp7onRxIzQMA/o2hJjg+kLerJWdGA8NmXQBkjR3qi2vj/bQcmimTz0maYi8
-	 z5gMU5Octleth+6gAmoNuyUcD87z8qUeRbudH/zLFzlrnFWKT+4Zn4V3QxR5YagCAU
-	 sQn/rwmF/242nsRJulm6n+rabudxSrtlEkpv+p0INusFS5xIwV5YVCxTxZluFWwR8h
-	 QFdRxUeHDOWyNPlVW+G1pTmms/xmdJBZxRtx4CxNXCe1PPRomABni77Hm7BByEKEBK
-	 hJnZ/FSW076buS4A+GTcc+mjOgB15eg6FUJDRPr0pkANky9aTF5MAkauz8FCAAuMVh
-	 57tz6HVsJ0Bqg==
+	s=k20201202; t=1713969427;
+	bh=k6zY+8OIqG3hvgbnxVfHVa3Ek+C1GSXe4a2L4RdgdEQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=h+F1XyJnBAnkc7gMGRYlCJFwpBgbkGE0SW36ugHTAwN/bG8lgwRhTmdfnTGyVdupS
+	 THlpUvl3MZVQJ0vnc+mjzkKT30t9vfj7vc3mHA7GZV4cLlGSBA5Nlk0lCGuzPynoMA
+	 lc28IawaXFrOl9rm1vOA68HUUEW4d2+F3FHLIGKiK6uLigTWvPvWiHnaw5pP0yHAoP
+	 IWPua28+RGj6IvY1W8UZ4sqzpofBmorsbPcnvYEkp+6W0C9FD4OuSkXbxRS/Qls8Px
+	 yhePsHLxoB30PP2WZJ2P7yhKuGejQZtyClOMmSbU3Lz6apmPfQ7fas5wNw0ZIuOSXH
+	 tC7Tv0Ju+AQqQ==
 From: Daniel Bristot de Oliveira <bristot@kernel.org>
 To: Daniel Bristot de Oliveira <bristot@kernel.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -46,11 +47,14 @@ To: Daniel Bristot de Oliveira <bristot@kernel.org>,
 Cc: Jonathan Corbet <corbet@lwn.net>,
 	Juri Lelli <juri.lelli@redhat.com>,
 	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 0/8] rtla usage improvements
-Date: Wed, 24 Apr 2024 16:36:49 +0200
-Message-ID: <cover.1713968967.git.bristot@kernel.org>
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH 1/8] rtla/timerlat: Simplify "no value" printing on top
+Date: Wed, 24 Apr 2024 16:36:50 +0200
+Message-ID: <0a4d8085e7cd706733a5dc10a81ca38b82bd4992.1713968967.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <cover.1713968967.git.bristot@kernel.org>
+References: <cover.1713968967.git.bristot@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,56 +63,84 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi
+Instead of printing three times the same output, print it only once,
+reducing lines and being sure that all no values have the same length.
 
-These are some changes I have accumulated in the last
-weeks. Mostly improving the tool's user experience.
+It also fixes an extra '\n' when running the with kernel threads, like
+here:
 
- - On timerlat top, remove an extra \n that was breaking
-   the output.
+     =============== %< ==============
+                                      Timer Latency
 
- - Replace \t with '       ' on the auto analysis, fixing some
-   copy & paste.
+   0 00:00:01   |          IRQ Timer Latency (us)        |         Thread Timer Latency (us)
+ CPU COUNT      |      cur       min       avg       max |      cur       min       avg       max
+   2 #0         |        -         -         -         - |      161       161       161       161
+   3 #0         |        -         -         -         - |      161       161       161       161
+   8 #1         |       54        54        54        54 |        -         -         -         -'\n'
 
- - On timerlat top, do not print TTY formatting characters when
-   the output is not sent to a terminal, because they break the
-   output.
+ ---------------|----------------------------------------|---------------------------------------
+ ALL #1      e0 |                 54        54        54 |                161       161       161
+     =============== %< ==============
 
- - on timerlat top and hist, add a summary with the overall results.
-   For instance, the minimum value for all CPUs, the overall average
-   and the maximum value from all CPUs.
+This '\n' should have been removed with the user-space support that
+added another '\n' if not running with kernel threads.
 
- - Add a --warm-up <seconds> option, allowing the workload to run for
-   <seconds> before starting to collect results.
+Cc: stable@vger.kernel.org
+Fixes: cdca4f4e5e8e ("rtla/timerlat_top: Add timerlat user-space support")
+Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+---
+ tools/tracing/rtla/src/timerlat_top.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
 
- - Add a --trace-buffer-size option, allowing the user to set the
-   tracing buffer size. This is mainly useful for reducing the trace
-   file.
-
- - Make the user-space threads the default choice, also adding the
-   a -k option, allowing the user to switch to kerne-threads.
-
-Daniel Bristot de Oliveira (8):
-  rtla/timerlat: Simplify "no value" printing on top
-  rtla/auto-analysis: Replace \t with spaces
-  rtla/timerlat: Use pretty formatting only on interactive tty
-  rtla/timerlat: Add a summary for top mode
-  rtla/timerlat: Add a summary for hist mode
-  rtla: Add the --warm-up option
-  rtla/timerlat: Make user-space threads the default
-  rtla: Add --trace-buffer-size option
-
- Documentation/tools/rtla/common_options.rst   |   7 +
- .../tools/rtla/common_timerlat_options.rst    |   6 +-
- tools/tracing/rtla/src/osnoise_hist.c         |  41 ++-
- tools/tracing/rtla/src/osnoise_top.c          |  41 ++-
- tools/tracing/rtla/src/timerlat_aa.c          | 109 ++++----
- tools/tracing/rtla/src/timerlat_hist.c        | 220 ++++++++++++++--
- tools/tracing/rtla/src/timerlat_top.c         | 236 +++++++++++++++---
- tools/tracing/rtla/src/trace.c                |  15 ++
- tools/tracing/rtla/src/trace.h                |   1 +
- 9 files changed, 566 insertions(+), 110 deletions(-)
-
+diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
+index 8a3fa64319c6..2665e0bb5f1e 100644
+--- a/tools/tracing/rtla/src/timerlat_top.c
++++ b/tools/tracing/rtla/src/timerlat_top.c
+@@ -212,6 +212,8 @@ static void timerlat_top_header(struct osnoise_tool *top)
+ 	trace_seq_printf(s, "\n");
+ }
+ 
++static const char *no_value = "        -";
++
+ /*
+  * timerlat_top_print - prints the output of a given CPU
+  */
+@@ -239,10 +241,7 @@ static void timerlat_top_print(struct osnoise_tool *top, int cpu)
+ 	trace_seq_printf(s, "%3d #%-9d |", cpu, cpu_data->irq_count);
+ 
+ 	if (!cpu_data->irq_count) {
+-		trace_seq_printf(s, "        - ");
+-		trace_seq_printf(s, "        - ");
+-		trace_seq_printf(s, "        - ");
+-		trace_seq_printf(s, "        - |");
++		trace_seq_printf(s, "%s %s %s %s |", no_value, no_value, no_value, no_value);
+ 	} else {
+ 		trace_seq_printf(s, "%9llu ", cpu_data->cur_irq / params->output_divisor);
+ 		trace_seq_printf(s, "%9llu ", cpu_data->min_irq / params->output_divisor);
+@@ -251,10 +250,7 @@ static void timerlat_top_print(struct osnoise_tool *top, int cpu)
+ 	}
+ 
+ 	if (!cpu_data->thread_count) {
+-		trace_seq_printf(s, "        - ");
+-		trace_seq_printf(s, "        - ");
+-		trace_seq_printf(s, "        - ");
+-		trace_seq_printf(s, "        -\n");
++		trace_seq_printf(s, "%s %s %s %s", no_value, no_value, no_value, no_value);
+ 	} else {
+ 		trace_seq_printf(s, "%9llu ", cpu_data->cur_thread / divisor);
+ 		trace_seq_printf(s, "%9llu ", cpu_data->min_thread / divisor);
+@@ -271,10 +267,7 @@ static void timerlat_top_print(struct osnoise_tool *top, int cpu)
+ 	trace_seq_printf(s, " |");
+ 
+ 	if (!cpu_data->user_count) {
+-		trace_seq_printf(s, "        - ");
+-		trace_seq_printf(s, "        - ");
+-		trace_seq_printf(s, "        - ");
+-		trace_seq_printf(s, "        -\n");
++		trace_seq_printf(s, "%s %s %s %s\n", no_value, no_value, no_value, no_value);
+ 	} else {
+ 		trace_seq_printf(s, "%9llu ", cpu_data->cur_user / divisor);
+ 		trace_seq_printf(s, "%9llu ", cpu_data->min_user / divisor);
 -- 
 2.44.0
 
