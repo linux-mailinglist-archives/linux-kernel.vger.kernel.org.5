@@ -1,163 +1,136 @@
-Return-Path: <linux-kernel+bounces-156732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A25888B076E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:34:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73B8B8B0768
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:33:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ADA4283E9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:34:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 294671F22B4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:33:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BD1815957D;
-	Wed, 24 Apr 2024 10:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB57159564;
+	Wed, 24 Apr 2024 10:33:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Z7L7Vv2W";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7ntG99+Z";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Z7L7Vv2W";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7ntG99+Z"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 480A413DBB2;
-	Wed, 24 Apr 2024 10:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="QthLMQ3O"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F3B313DBB2;
+	Wed, 24 Apr 2024 10:33:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713954873; cv=none; b=rijDjOMpuZXEzoLQft0F1bVAlz3FXXqwaRU7FHaD2xZIsq2+H9dpxX9AlDdtnI2YQl149X3SPACuG1dvg/7tu7xc4yM0NDW3l0H+HeBSggEePf5UuDoEhqJDhqrKyuoZx+4Gfx6jLZ2/MzXiO03ltzJoHM3716nmpkvQD/xO7rQ=
+	t=1713954821; cv=none; b=BzFmz2fwXOn6goSE1KF5dR9S9iWpZFrlOPdtzEVM8NKCWHPqnbJ+rN3DSiyx7fNzkpdz6OiBHgCxZcDU7JORaIaKO6MHv9xQDbWAwBnlQs3/B0fY7cNxwcG7HUJ3CIQ+K2axUjJ2N06T7nqICnx2l4Nqc32I9Y2pLGirWClVjMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713954873; c=relaxed/simple;
-	bh=kcJ56fsa/PMFsPSqACtQFZlurMUAdbmI1ttj5bfikVM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=fEOfXEYeU6s6zT1L9kWdUwwsYZpq23o/5P0J0QDctVd8CE50KWSnkWLfcNrBsKFjC+n6T2korISLL91FpTTIM14AkiZwVbpLWyAI7PMePYFwyTXUrobiBKKs+LmnJcB0Nq6/jlO4N6kTyWbOI3V0neaXKQOIAFBnoV8OISnaEy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Z7L7Vv2W; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7ntG99+Z; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Z7L7Vv2W; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7ntG99+Z; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 767C3613F2;
-	Wed, 24 Apr 2024 10:34:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713954870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=lClhB2Lx5EF0SugdSw87bUnROejaSI8p6PH1P+TqX3s=;
-	b=Z7L7Vv2W7CLL9VMxKrr1on+J8hyAT76nbbvz35Dw5Jorq6mpHanLXSh1c9aBsRI16Hvbrw
-	nTsAR22V3fSWsadfnRYFwLHJc6NmSHMYywNCXiA7YuaXWISHxU+UV8qU0uiCRqYRTnjfOF
-	kcN+JXj5uCcbpMFL/19nl+OO8Ao5u8Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713954870;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=lClhB2Lx5EF0SugdSw87bUnROejaSI8p6PH1P+TqX3s=;
-	b=7ntG99+Zuc6fCcwdsPn+3q3HFP/MOJMDX5B93jon/FP3EBHZm89pXT5UDw/T5hPewoQEtw
-	nH6f/Q75Dd3SAFCw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Z7L7Vv2W;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=7ntG99+Z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713954870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=lClhB2Lx5EF0SugdSw87bUnROejaSI8p6PH1P+TqX3s=;
-	b=Z7L7Vv2W7CLL9VMxKrr1on+J8hyAT76nbbvz35Dw5Jorq6mpHanLXSh1c9aBsRI16Hvbrw
-	nTsAR22V3fSWsadfnRYFwLHJc6NmSHMYywNCXiA7YuaXWISHxU+UV8qU0uiCRqYRTnjfOF
-	kcN+JXj5uCcbpMFL/19nl+OO8Ao5u8Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713954870;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=lClhB2Lx5EF0SugdSw87bUnROejaSI8p6PH1P+TqX3s=;
-	b=7ntG99+Zuc6fCcwdsPn+3q3HFP/MOJMDX5B93jon/FP3EBHZm89pXT5UDw/T5hPewoQEtw
-	nH6f/Q75Dd3SAFCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EB61D1393C;
-	Wed, 24 Apr 2024 10:34:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +ZsKNjXgKGauTAAAD6G6ig
-	(envelope-from <clopez@suse.de>); Wed, 24 Apr 2024 10:34:29 +0000
-From: =?UTF-8?q?Carlos=20L=C3=B3pez?= <clopez@suse.de>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Cc: =?UTF-8?q?Carlos=20L=C3=B3pez?= <clopez@suse.de>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH] KVM: fix documentation for KVM_CREATE_GUEST_MEMFD
-Date: Wed, 24 Apr 2024 12:33:16 +0200
-Message-Id: <20240424103317.28522-1-clopez@suse.de>
-X-Mailer: git-send-email 2.35.3
+	s=arc-20240116; t=1713954821; c=relaxed/simple;
+	bh=LDWhUK0jDEvgCD/wSr4IUcRjzC8SZUkMJLbsuVglrYo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=hFC5qY/snUHprD+uI0JgYEZqbGTpIK34Z1VSj+buASyvTrjWP9oLEHbhHn7AqnlqpTfjOYwABV/LeIc6NCUv/pp1I7ARPPJPaNgladCjGJjobkhVPttviu7TYOePkpOWmM8qJW4PGMrszxHPRGIrdB5/QPs6xI3hSu5+P6o0j6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=QthLMQ3O; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id E09C0208591D; Wed, 24 Apr 2024 03:33:39 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E09C0208591D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1713954819;
+	bh=V1mal6zq+xdeJfcmGXIqdRpTal7N99j0myea4I6HSlE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=QthLMQ3OGJ47JeoAeOwmOy2PnbZj8TbUaGhCtbHpoj/Dp9SZU4fZClI8Fnm/WU+UZ
+	 UiKYfYchd9ESdwLW/HcP1eN1eWlNhz1evt+EEt8UG6iGj3gm50vMcP0s9ma0KO2nPQ
+	 Ian4DEwomU69hf3sJHR4uXkTgclY3DFa5n+qjO98=
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Breno Leitao <leitao@debian.org>,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	linux-hyperv@vger.kernel.org
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	shradhagupta@microsoft.com
+Subject: [PATCH net-next v2 1/2] net: Add sysfs atttributes for max_mtu min_mtu
+Date: Wed, 24 Apr 2024 03:33:37 -0700
+Message-Id: <1713954817-30133-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1713954774-29953-1-git-send-email-shradhagupta@linux.microsoft.com>
+References: <1713954774-29953-1-git-send-email-shradhagupta@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -1.95
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 767C3613F2
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.95 / 50.00];
-	DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MIXED_CHARSET(0.56)[subject];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.de:+]
 
-The KVM_CREATE_GUEST_MEMFD ioctl returns a file descriptor, and is
-documented as such in the description. However, the "Returns" field
-in the documentation states that the ioctl returns 0 on success.
-Update this to match the description.
+Add sysfs attributes to read max_mtu and min_mtu value for
+network devices
 
-Signed-off-by: Carlos López <clopez@suse.de>
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
 ---
- Documentation/virt/kvm/api.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Changes in v2:
+ * Created a new patch for generic attributes
+---
+ Documentation/ABI/testing/sysfs-class-net | 16 ++++++++++++++++
+ net/core/net-sysfs.c                      |  4 ++++
+ 2 files changed, 20 insertions(+)
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 0b5a33ee71ee..57bd2b2b1532 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -6316,7 +6316,7 @@ The "flags" field is reserved for future extensions and must be '0'.
- :Architectures: none
- :Type: vm ioctl
- :Parameters: struct kvm_create_guest_memfd(in)
--:Returns: 0 on success, <0 on error
-+:Returns: A file descriptor on success, <0 on error
+diff --git a/Documentation/ABI/testing/sysfs-class-net b/Documentation/ABI/testing/sysfs-class-net
+index ebf21beba846..f68f3b9be6ec 100644
+--- a/Documentation/ABI/testing/sysfs-class-net
++++ b/Documentation/ABI/testing/sysfs-class-net
+@@ -352,3 +352,19 @@ Description:
+ 		0  threaded mode disabled for this dev
+ 		1  threaded mode enabled for this dev
+ 		== ==================================
++
++What:           /sys/class/net/<iface>/max_mtu
++Date:           April 2024
++KernelVersion:  6.10
++Contact:        netdev@vger.kernel.org
++Description:
++                Indicates the interface's maximum supported MTU value, in
++                bytes, and in decimal format.
++
++What:           /sys/class/net/<iface>/min_mtu
++Date:           April 2024
++KernelVersion:  6.10
++Contact:        netdev@vger.kernel.org
++Description:
++                Indicates the interface's minimum supported MTU value, in
++                bytes, and in decimal format.
+diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
+index e3d7a8cfa20b..525b85d47676 100644
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -114,6 +114,8 @@ NETDEVICE_SHOW_RO(addr_len, fmt_dec);
+ NETDEVICE_SHOW_RO(ifindex, fmt_dec);
+ NETDEVICE_SHOW_RO(type, fmt_dec);
+ NETDEVICE_SHOW_RO(link_mode, fmt_dec);
++NETDEVICE_SHOW_RO(max_mtu, fmt_dec);
++NETDEVICE_SHOW_RO(min_mtu, fmt_dec);
  
- KVM_CREATE_GUEST_MEMFD creates an anonymous file and returns a file descriptor
- that refers to it.  guest_memfd files are roughly analogous to files created
+ static ssize_t iflink_show(struct device *dev, struct device_attribute *attr,
+ 			   char *buf)
+@@ -671,6 +673,8 @@ static struct attribute *net_class_attrs[] __ro_after_init = {
+ 	&dev_attr_carrier_up_count.attr,
+ 	&dev_attr_carrier_down_count.attr,
+ 	&dev_attr_threaded.attr,
++	&dev_attr_max_mtu.attr,
++	&dev_attr_min_mtu.attr,
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(net_class);
 -- 
-2.35.3
+2.34.1
 
 
