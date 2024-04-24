@@ -1,148 +1,104 @@
-Return-Path: <linux-kernel+bounces-157176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0BB38B0DD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:17:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DEB28B0DDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:18:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FECE284D14
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:17:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE71828A93B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:18:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B0F15F41C;
-	Wed, 24 Apr 2024 15:17:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A9D215F413;
+	Wed, 24 Apr 2024 15:18:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="jcO+Had0"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="WqzvqSdV"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 410C315EFC2;
-	Wed, 24 Apr 2024 15:17:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A1C115ECFA;
+	Wed, 24 Apr 2024 15:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713971838; cv=none; b=SNEHZ5AYwJS3UtO2/8Vli/pNQW705XloWEYzT2wQmTmUTRFKxO3w7O8kz19a5BWcfjxKuHtsiwJSWQ1Cbi+gqCEGkHUQltaJA+Cy2FKiFGu9+R4kT9IlDrHRg/xPA7sZs5dARwdi468E6BeMHLk5bVyNw54glvi6WHBxA+HEZuI=
+	t=1713971885; cv=none; b=sFrMrE6UmPd3z51M1Dcm3UrHOQCU1aThPYRG0muT2NmLPkSjnr1KH9mfqhgKhbMNlBaCTdnK40ssI/LwXkg4zM6Q+iXg5r3HmzBy2onaCfz04CYK/iFL6urtH8OzSw+1nEf0M7vgNk0EGEdktvxy+27VC/3UNdcfEit7MSBrhxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713971838; c=relaxed/simple;
-	bh=lxUuics4jmlqF3JSO6RqVRtlVjf5w9O3L4++yNBHbuE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t2YNXpSLCyKSrIV4v9z4sFSB9vuZuYvDtcKH7JBuWhCkL19bpmxtt3oDTpnqcGjzkt2PLoE3IoR+UKirJCxv0lj4gt+71yRdVSdbPI3GjSs3slKi+BzA2C7RJd3oOw8wTgKmslcVl+Jx3neEXUQhICWRHTX7/dP7YLHd0S4pLk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=jcO+Had0; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43OEvP0q032428;
-	Wed, 24 Apr 2024 15:17:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=LRXZigEswTP7y+kxZAU4wvy9qxPw5anZoKBCkQwQ0VQ=;
- b=jcO+Had0aSg52rZjlhEaia1uEq0IAOPidGvLK3ScMBO1iM2O9dpLxgdeiGZ1EU59bfil
- y5ZiP3JKZbUHYXoV5/EbsA9QHzFiHOxznQEQa1+yRMo1JjdMmsnAu7UsIHRnBvU8Vj+Q
- nzIaegcCM7US4b15+hGy2iFLTVx2jtQEJWW5HkPNLlGuU1K7q3qP8zkyrKIa1/bQxhGd
- vNSLIpahPzDfeQZTiEO9sRzTxhrMd3i8X59qGNBc7Sfjvm+55EK69kqDKtSIz5oaIm8x
- P03VgAi8NBw7tJ7TAyc3zNr9SQEXLYcFwyrpRS4cZtVir0/TVa1D0VE59tj1RjWXkGUU gg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xq49x01h2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 15:17:04 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43OFH3Ut032269;
-	Wed, 24 Apr 2024 15:17:04 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xq49x01gs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 15:17:03 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43OCad22015430;
-	Wed, 24 Apr 2024 15:17:02 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmshmc5aa-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 15:17:02 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43OFGuq732375212
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 24 Apr 2024 15:16:58 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4CEC520040;
-	Wed, 24 Apr 2024 15:16:56 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9F3D32004D;
-	Wed, 24 Apr 2024 15:16:55 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 24 Apr 2024 15:16:55 +0000 (GMT)
-Date: Wed, 24 Apr 2024 17:16:54 +0200
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Bui Quang Minh <minhquangbui99@gmail.com>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Paul M Stillwell Jr <paul.m.stillwell.jr@intel.com>,
-        Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
-        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Fabian Frederick <fabf@skynet.be>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Nilesh Javali <nilesh.javali@cavium.com>,
-        Arun Easi <arun.easi@cavium.com>,
-        Manish Rangankar <manish.rangankar@cavium.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>, Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Saurav Kashyap <saurav.kashyap@cavium.com>, linux-s390@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v2 5/6] cio: ensure the copied buf is NUL terminated
-Message-ID: <ZikiZsSTGUUM69GE@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20240424-fix-oob-read-v2-0-f1f1b53a10f4@gmail.com>
- <20240424-fix-oob-read-v2-5-f1f1b53a10f4@gmail.com>
+	s=arc-20240116; t=1713971885; c=relaxed/simple;
+	bh=hKhgyBQaIZdPBanYauPTJQBk8T8HfLnU6YYfO1XTBqs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kTwlVAL2/AeB0Z7XaWU7e/R+sCyrKrU9poNLsFY4qRwiTvmGqdASOT4e4uj0dPMwGduPQWMgmN89Y98vnTFM/1aAIhQhlsrVRMn9bcAeu4xp9wMMcfwNH+iUkP0RVEdh2ywub5YMc6rc03k+pPv4dLSR2nPEZjGjy/dnn+p+3c0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=WqzvqSdV; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1713971861; x=1714576661; i=wahrenst@gmx.net;
+	bh=9l8Ej71+gVBCVmFttV71A3zsw73ohtw5kgeGzerzOQk=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=WqzvqSdVwnO7rcI/gEN5JWKi3KApwpr0aP6DODflLyI5SWV7brLSGf3O+9IhHlTu
+	 YV07j7nylJrIgh823aMGA/Qk9j4Z+e5vhMg0erSkVFnVmH/DampHvHLyy6+/6vIZB
+	 vIu/A691/0EYb/2tSHyBhwFYCqtAl2CyQiMFyXeQ5OtGdgKrnuTZPO+xKRAlhgNgm
+	 xM5IPUxTwhLS8A9iFQ7wyWWlEQ2/xXL7luBKLC7dBLecILD2cBR1EeQnPMa/2UfX8
+	 0dvGqMclUj2I0X3tyj7ypd1BLQvbPdPjws/9l6x9I+uKfiGmUyuhD8pngzJg7zaJF
+	 kIziT2Rxeu2T45xNGQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MsYqp-1sojfC1XQ3-00u5QI; Wed, 24
+ Apr 2024 17:17:41 +0200
+Message-ID: <35562a06-6f6c-4b41-844a-9e7d79c2a83a@gmx.net>
+Date: Wed, 24 Apr 2024 17:17:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424-fix-oob-read-v2-5-f1f1b53a10f4@gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fZkGofveKPRbJZUl0Si2IEFY5soD-mFd
-X-Proofpoint-ORIG-GUID: JvjdeUHiZLMhgcceAmf2eHuewusCBopA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-24_12,2024-04-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0
- mlxscore=0 spamscore=0 suspectscore=0 mlxlogscore=892 phishscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404240059
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] staging: vc04_services: Delete unnecessary NULL check
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Umang Jain <umang.jain@ideasonboard.com>,
+ linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
+References: <526ec2ff-6277-4d5d-b2d9-63b087a97c7c@moroto.mountain>
+Content-Language: en-US
+From: Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <526ec2ff-6277-4d5d-b2d9-63b087a97c7c@moroto.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:pn54EqEI+ReomyIvYGsabZS7u5ZeWG/xdblQ4zKi5SKm3Po5+A9
+ nisTkwc+oL4la1YiyMWdAgy25cWqykZFAsOyFUTBWdHS8hJmHDRda3CuIK7fgswOTTFMpyV
+ SdSKXfnf7ZIKpjNxXLINZ65kXUXGVruDfK0fOYFzEDJLcWFFtUv2MdjUF0xP2weU1vNDmY2
+ AwY5McmMu/FcZkjiZgfRw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:zhvqWFM7hNA=;yogIy8PFBLK0D16lXiKYdmse7qm
+ 5TEkh5odup+x9sjC7I5wSMLxoElokGYC8yZF4en9A5aj8bV1tJvslSfIhk482rIntm/tx1NUs
+ j3Yea2d3gPXCUZ85ixzEmDKkjHW1EwVB/QsMPDvS6CkSuCoFle3mXMeTVL35OzRqFWTK1dDVg
+ Imr9hwIjqiwRYAiCeQ9F85Y9g5N2J4bzV7REupt+3z2z3o8oj7cuiwVTh9z23RLb/6XLcdFbl
+ q8THSjoOXwA6XGKnNAl9xiiX4fT5BwKd1KzRuqAIa8nOG2ehnaEovOgQBQojhDURK9aCnqsME
+ CKizLU24XxitG0LSlz4CPV6fVI/uz1elR0M7HZtVnSs5c+SrMpDHPHC1F7n14zkJIGqR5IhxK
+ 3SnFSqnXnbTT+XY91RR0txzsEylF/6tidFUZokJByNUIVbBtIq2gFN63+O/5TUxFFQoZhlnih
+ VZMx5PU2f8fHlzUYAqxG3TVsURqGXn6Xg37XmuapHeVG/bnFb9/pm4kFnj+36cmtUZtcAtWhK
+ PVMwTw5/GdhI4Dm/KkXeJsDrPG+Qbw8o6DdMYbpt4J9th5NhUtG6gUFn6Ppa/yerOpqqU/Apt
+ iyYiSpDK9W6YF50mnJ8RNoC9LthQfU8PpvA7zD3MZY/cuZJkOV/zTb/Htzv8Blx8mIit+yvBf
+ AzPRfGIzohv2jfBMszSWd5iSquSBxXLsf/Uf4Aegrl+klcJZe5IccOT6KOx7Ck3Lfn/nTg0yl
+ c6Nf2agIDGj5TtfdNmkDucq6A3eOwXkmOfojoBQGtUlgQjzpxmQ0V5LdiDCjSS5u8PjXVBvHr
+ pjvulL2/YN4MmY4pPYz+G0Q1gfTnH+PWn0oCeRnBzifEw=
 
-On Wed, Apr 24, 2024 at 09:44:22PM +0700, Bui Quang Minh wrote:
-> Currently, we allocate a lbuf-sized kernel buffer and copy lbuf from
-> userspace to that buffer. Later, we use scanf on this buffer but we don't
-> ensure that the string is terminated inside the buffer, this can lead to
-> OOB read when using scanf. Fix this issue by using memdup_user_nul instead.
-> 
-> Fixes: a4f17cc72671 ("s390/cio: add CRW inject functionality")
-> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-> ---
->  drivers/s390/cio/cio_inject.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Am 24.04.24 um 13:43 schrieb Dan Carpenter:
+> The "state" pointer points to an offset in the middle of the "mgmt"
+> struct so it can't possibly be NULL.  And also we dereferenced it on the
+> line before.  So this NULL check is pointless.  Delete it.
+>
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Reviewed-by: Stefan Wahren <wahrenst@gmx.net>
 
-Applied, thanks!
+Thanks
 
