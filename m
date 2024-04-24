@@ -1,166 +1,154 @@
-Return-Path: <linux-kernel+bounces-157364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA2628B106D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A40528B1094
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:02:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01B28B23B63
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:00:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4C0FB269B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:02:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AF4F16C87C;
-	Wed, 24 Apr 2024 17:00:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E2C16D31E;
+	Wed, 24 Apr 2024 17:01:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LKqlAErN"
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ckB/6Efj"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B2C15ECE4
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:00:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C6316C87E;
+	Wed, 24 Apr 2024 17:01:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713978038; cv=none; b=OrxOsKcqvXnplkvh+2xvLA09caNuA1n5WMgEOVYBrIlTuypPuqHYwK85/W9ee6CAFz39CDKodap8ABBS9ZqyDFV9tvL2KqCrQAyCDlQ1rh/jXkywMZ3V94BQL3l3tOItQ/d/9pmsUNS2QqYInE9XcwsVgXdHcGJ3yzTg6mMZrcE=
+	t=1713978117; cv=none; b=gzmAhahRR7V59SNGp7TwgR+Ct0IIFMgW5/5BDnX3p8o0hXcfMxV1KWilBAI7+gSQKFLiPm6lC2r35Lq2nTuUZUZSYBrAdqr1TqciTHVybHEja1w/LhzSlYAIClj7m43GtRl8YXJM477SXrMzfzC+AZ+sCE5eOjQXyiR+F+mG3nw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713978038; c=relaxed/simple;
-	bh=casyLeEEBfK4ikHLS0W+RwKPDoHx/Ev9PSKWpfdKTKk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oHTd5czzsPcO+BCVa3EKPvqlqrxWhNhfm21IXYhQK8H8YRU8Ct6FnC45yCR7zuiLzYRuu1OmBKp0bNZYiwnwKJSa1FgBWYph10Gd9aE0oTHKlkwz9aeF9qsbXVZUG4ZHCvJIq2E7Z6kpTbkyHe+A8/p0gVAoouE/elgjiu/nAZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LKqlAErN; arc=none smtp.client-ip=209.85.210.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6ea2f95ec67so43999a34.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 10:00:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713978033; x=1714582833; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jg/qAOTqmSx+R9zjCsmKNbYVeXAxK/pRxpkNV37yyXo=;
-        b=LKqlAErNVuRM1Lurs15Ln5KbTn5RhKZPjKpEf4SdEIBhSgynopx0tZJJeOxLahyaWg
-         YxTvKbD4XQOE/VMnfU2XjHvVaDxWh/qogXwzNFQHUID3ZINDwmz8k/NhCoYPyNOc/1Zf
-         5FJQmW2D1rU7WF6Qm2YdQEPQ0F/hbeu0e61nc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713978033; x=1714582833;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jg/qAOTqmSx+R9zjCsmKNbYVeXAxK/pRxpkNV37yyXo=;
-        b=C+uMpgtHDEWQY/GvTLD+A9aXGY6Edb4Q9Nm2uAQ+YnaSJ8OX7M/m55sGDyEHlZcF/a
-         PJkJyw1zBG2y0pQMKpj00cAS1VW51VyiL477ERNVshxdypooO5od5eDvK1xOQR56kqUn
-         MOY0Jfu6ZEdiCh1NLp3ml4eBb9fvhVPOSqJaRJ5f8kQIkJTdUMUgk+tHaw6zRzepl68Y
-         kgpCT74Swc3fA0KSB8q/ilQTxC/5NDjCS/+Ol78tUGebzddvYt4mCBFDtu0bEA1/20M+
-         ffkFYadS6VsWoBbpkSiMm22Xy/xQ370GNLtrFy80DTkUxU4s5e5viekR7AQalBcD1ufO
-         mhWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXSikk9/EMoHRkTO3aaoBJA9ga/UqVjykEatmFR+oIJXJrtdDqS/RzjPYVcwOp4dAyoxtc9KpqDzXnIUGChXJUa84XVk6NOm6wD9ZYa
-X-Gm-Message-State: AOJu0YxYFvoxZuVoKVEl8tLcfNvj0HHk4Ag7Kt7dYtj/+agHzrFMROJg
-	pVBqJyQY388u3sr8STeVF4+gkEC7TMxvMjxNWl89RZJWhcDMkltdRwy8vfEZ+q9OanNKOSFZUlM
-	=
-X-Google-Smtp-Source: AGHT+IHDMoAB5SY5++nhDGWIA1fCTw1r1cd2DQc97p466KGstzHeztOzW4DrRGWKsgG3yfNVLIv9cA==
-X-Received: by 2002:a9d:7f09:0:b0:6eb:89ce:9c6f with SMTP id j9-20020a9d7f09000000b006eb89ce9c6fmr4053662otq.33.1713978033277;
-        Wed, 24 Apr 2024 10:00:33 -0700 (PDT)
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com. [209.85.160.175])
-        by smtp.gmail.com with ESMTPSA id i19-20020ae9ee13000000b0078eca9de099sm6242771qkg.134.2024.04.24.10.00.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 10:00:33 -0700 (PDT)
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-434ffc2b520so5101cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 10:00:32 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWanHPr1mCwgvumrA/ZGJBqORX4e/6S9lAReh7Gpm4nllScm4w+TixvGuzB44fFMjPjxBAs9cqZ6VPOt3/lE+F5V7twktx+xJmdGa5W
-X-Received: by 2002:ac8:498a:0:b0:439:9c1b:ce93 with SMTP id
- f10-20020ac8498a000000b004399c1bce93mr403282qtq.12.1713978031476; Wed, 24 Apr
- 2024 10:00:31 -0700 (PDT)
+	s=arc-20240116; t=1713978117; c=relaxed/simple;
+	bh=8/c+EErr/LoDQQ0UswBCV688f9Qy+hEYoM2s16h4laE=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fxeIylQzjprmvUQC4Ww+uncFN9spfdFO1xXtt6AIheXGg+xHGBFury06WqO84eXtomaO80E9Q4e+cQmVUUvwctV2HqhceEzKF312j7I2DTTwFT6qhQ33RVLGjS+7H5t3eIEj0ndXUQ5jnxZ1PfYLlwimSx6m7il6QpVcbFk0G64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ckB/6Efj; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43OGr3rP025446;
+	Wed, 24 Apr 2024 17:01:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=v9LyJsiCVlAgeeEWeNcgp
+	jCdd+MkEQSXTQEg+z9k3H4=; b=ckB/6EfjQU7QYRxLN63Tx+JX+zZrhrWKcyemC
+	+z0P8/A3nyWPcmnf2SPzCY82w2DROkvZXqlYwQK3lyIjMJgB8HDAICO1dFUuZpj3
+	6g0WdGHdEGoKH3N4AcDhntJs47rkIsdcO+Ofp1iMWA3YpqWxHwqHr/31RfonbR6h
+	+Rh87jJR8i+8uaYKFcQcjoRhYwjG13czzU8mvVp8D7X+shaHC3P7qFb6yHGhIQqf
+	sAoPi731+YmyHGcGGu7VsFEtfblpNfm6xAnXZ2NxMaSFJp9u5xAEu0D7Z+hipLxF
+	hdxCVjlSlDgdzCWYc1BY0DbeJljbyL1LoxblhlKbJOfANHT9Q==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9e1kxr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 17:01:11 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43OH1BZa032159
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 17:01:11 GMT
+Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Wed, 24 Apr 2024 10:01:10 -0700
+Date: Wed, 24 Apr 2024 10:01:10 -0700
+From: Elliot Berman <quic_eberman@quicinc.com>
+To: Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>
+CC: Alex Elder <elder@linaro.org>,
+        Srinivas Kandagatla
+	<srinivas.kandagatla@linaro.org>,
+        Murali Nalajal <quic_mnalajal@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Carl van Schaik
+	<quic_cvanscha@quicinc.com>,
+        Philip Derrin <quic_pderrin@quicinc.com>,
+        Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
+        Jonathan Corbet
+	<corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        "Fuad
+ Tabba" <tabba@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Andrew
+ Morton" <akpm@linux-foundation.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH v17 15/35] virt: gunyah: Add proxy-scheduled vCPUs
+Message-ID: <20240424095405136-0700.eberman@hu-eberman-lv.qualcomm.com>
+References: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
+ <20240222-gunyah-v17-15-1e9da6763d38@quicinc.com>
+ <20240424093957.GY440762@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240423122518.34811-1-kl@kl.wtf> <20240423122518.34811-2-kl@kl.wtf>
-In-Reply-To: <20240423122518.34811-2-kl@kl.wtf>
-From: Doug Anderson <dianders@chromium.org>
-Date: Wed, 24 Apr 2024 10:00:17 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Xr6NsW085Sc+NhVmGDOn-zCCQ65CMNce_DsHxtXUgm9w@mail.gmail.com>
-Message-ID: <CAD=FV=Xr6NsW085Sc+NhVmGDOn-zCCQ65CMNce_DsHxtXUgm9w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] HID: i2c-hid: Rely on HID descriptor fetch to probe
-To: Kenny Levinsen <kl@kl.wtf>
-Cc: Jiri Kosina <jikos@kernel.org>, Dmitry Torokhov <dtor@chromium.org>, 
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>, Hans de Goede <hdegoede@redhat.com>, 
-	Maxime Ripard <mripard@kernel.org>, Kai-Heng Feng <kai.heng.feng@canonical.com>, 
-	Johan Hovold <johan+linaro@kernel.org>, linux-input@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Radoslaw Biernacki <rad@chromium.org>, 
-	Lukasz Majczak <lma@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240424093957.GY440762@quicinc.com>
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 89qGz_tE3OgnL4axkC5Pm979HLQTQNiv
+X-Proofpoint-ORIG-GUID: 89qGz_tE3OgnL4axkC5Pm979HLQTQNiv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_14,2024-04-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 lowpriorityscore=0 adultscore=0 spamscore=0 impostorscore=0
+ phishscore=0 mlxscore=0 suspectscore=0 clxscore=1011 malwarescore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404240073
 
-Hi,
+On Wed, Apr 24, 2024 at 03:09:57PM +0530, Srivatsa Vaddagiri wrote:
+> * Elliot Berman <quic_eberman@quicinc.com> [2024-02-22 15:16:38]:
+> 
+> > +/**
+> > + * struct gunyah_vm_exit_info - Reason for VM exit as reported by Gunyah
+> > + * See Gunyah documentation for values.
+> > + * @type: Describes how VM exited
+> > + * @padding: padding bytes
+> > + * @reason_size: Number of bytes valid for `reason`
+> > + * @reason: See Gunyah documentation for interpretation. Note: these values are
+> > + *          not interpreted by Linux and need to be converted from little-endian
+> > + *          as applicable.
+> > + */
+> > +struct gunyah_vm_exit_info {
+> > +	__u16 type;
+> 
+> Pls add an enum to describe the various exit types.
+> 
 
-On Tue, Apr 23, 2024 at 5:26=E2=80=AFAM Kenny Levinsen <kl@kl.wtf> wrote:
->
-> To avoid error messages when a device is not present, b3a81b6c4fc6 added
-> an initial bus probe using a dummy i2c_smbus_read_byte() call.
->
-> Without this probe, i2c_hid_fetch_hid_descriptor() will fail with
-> EREMOTEIO. Propagate the error up so the caller can handle EREMOTEIO
-> gracefully, and remove the probe as it is no longer necessary.
->
-> Signed-off-by: Kenny Levinsen <kl@kl.wtf>
-> ---
->  drivers/hid/i2c-hid/i2c-hid-core.c | 20 ++++++--------------
->  1 file changed, 6 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c=
--hid-core.c
-> index 2df1ab3c31cc..515a80dbf6c7 100644
-> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
-> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-> @@ -894,12 +894,8 @@ static int i2c_hid_fetch_hid_descriptor(struct i2c_h=
-id *ihid)
->                                               ihid->wHIDDescRegister,
->                                               &ihid->hdesc,
->                                               sizeof(ihid->hdesc));
-> -               if (error) {
-> -                       dev_err(&ihid->client->dev,
-> -                               "failed to fetch HID descriptor: %d\n",
-> -                               error);
-> -                       return -ENODEV;
-> -               }
-> +               if (error)
-> +                       return error;
->         }
->
->         /* Validate the length of HID descriptor, the 4 first bytes:
-> @@ -1014,17 +1010,13 @@ static int __i2c_hid_core_probe(struct i2c_hid *i=
-hid)
->         struct hid_device *hid =3D ihid->hid;
->         int ret;
->
-> -       /* Make sure there is something at this address */
-> -       ret =3D i2c_smbus_read_byte(client);
-> -       if (ret < 0) {
-> +       ret =3D i2c_hid_fetch_hid_descriptor(ihid);
-> +       if (ret =3D=3D -EREMOTEIO) {
+When I was first added the exit_info, I thought a bunch on whether to
+add the enum. I was thinking that if we add it to the UAPI, kernel need
+to parse and validate the values from RM. In the current scheme, I can
+leave it to userspace to interpret the value from RM. I could be
+convinced to go the other way though. Currently this is less code :) Let
+me know your thoughts! 
 
-I worry a little bit about keying just off of -EREMOTEIO. If I'm
-skimming the code properly it's up to the different i2c bus controller
-to decide which error code to return here. Looking at, for instance,
-"i2c-qcom-geni.c", I see:
+> > +	__u16 padding;
+> > +	__u32 reason_size;
+> > +	__u8 reason[GUNYAH_VM_MAX_EXIT_REASON_SIZE];
 
-[NACK] =3D {-ENXIO, "NACK: slv unresponsive, check its power/reset-ln"},
+If we start interpreting the @type, then maybe we should also start
+interpreting the @reason, and that will also add debt to the kernel
+driver.
 
-Maybe we should just use dev_dbg() in all cases here when we fail to
-fetch the descriptor? ...otherwise I think some boards will start
-getting a noisy error message.
+Thanks,
+Elliot
 
-..and confirmed that my skim seemed to be accurate. i put your
-patches on my system and then changed the system to think my
-hid-over-i2c device was at 0x11 instead of the normal 0x10. Now, I
-get:
-
-[    5.973417] i2c_hid_of 4-0011: failed to fetch HID descriptor: -6
-[    5.979701] i2c_hid_of 4-0011: Power on failed: -6
-
-
--Doug
 
