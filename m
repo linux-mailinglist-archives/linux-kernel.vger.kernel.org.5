@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-157326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7CF18B0FD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:31:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 790428B0FD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:32:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF54EB240CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:31:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3600628135D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B513116D302;
-	Wed, 24 Apr 2024 16:31:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C9E16D33A;
+	Wed, 24 Apr 2024 16:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LsHbQj9x"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OGysd6zf"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F3E224E8;
-	Wed, 24 Apr 2024 16:31:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04ED216C45D;
+	Wed, 24 Apr 2024 16:31:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713976280; cv=none; b=IUpHZHVUYa2aUmR14auDXM8zuaIzc0betKPvTIgivZuNXNKiLKwK58j0DOeq4UGE9ZBHsqfo27WF7FNjpOi6TXSsEVsx+kyeMmXj9oDXqIr9kLatzvRCE4R1qN5U/1GOKUUwo2aUAEKEDi/u4PhpFhz080gxsTEydPVJ1qUp1IU=
+	t=1713976286; cv=none; b=M2TTjEkI1jMM05qmCHJpICzI2mt/MnSQpLvJX1eukt8gk8yw6mwsy7zEcXqpC6k4QWALPpi1ngoDczf6ahuog69xKXuGK3Phb7ZNVnd23tuPdYUkvJ9AR1nQJTmbq+ItPESC/U6XMUSQ7Zvdji7egxt7FPGY9wMXOleh8/EvwMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713976280; c=relaxed/simple;
-	bh=AixDQM4dDKFPHO6uEtoMxrZDHaRr3b5n0FKmUADE5Io=;
+	s=arc-20240116; t=1713976286; c=relaxed/simple;
+	bh=bXd2cF1r5wGgGn8qjmQ3gV0VuKXhxZccccWQSzrZm9Q=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=V3paXINUNaEfzTspqWqun40T6p3PZqb6Nz1Nh+0CQn7VgJHshvG+OFizOkjPl92tIvwozfQ5lhYX4Wn1LtEKlV9fvNdW88Q14RGRo7INl3KHgeL0D9te2bXd+BGzOsL9WhX3XzOVnSur99err7YfbfVSbrGqwvEhG2qwaJoVFhc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LsHbQj9x; arc=none smtp.client-ip=209.85.221.48
+	 MIME-Version; b=htDVFsuk+9UCiYucXmunoVs7BqsMReuwHpfMRojhI9y5DvR9O0KbWA4HL/sKI2UAH4PVfO/Tgmcy5gfmzz7eUboNw0ajQdEARjf9smb28x6vUuCHbYY1J2PgYWe57uVod/SECVxKxqGCjv7YDpe1TR2QotgnIj9yplcCJOST4qU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OGysd6zf; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3499f1bed15so706708f8f.1;
-        Wed, 24 Apr 2024 09:31:18 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-417f5268b12so237295e9.1;
+        Wed, 24 Apr 2024 09:31:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713976277; x=1714581077; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713976283; x=1714581083; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7QuT4BeObJFe8wvayWogyBHFHRkrc8hy/BfvFL8inxQ=;
-        b=LsHbQj9xRWofHpLuC4B3f0Gik2LjCLB3e4jdICmvob08wQyQMnbVeUuSqhkxsx/7tY
-         Vajhbrgry2/RHmFzi0SEYQe/976/0R1EOwgcpa2GfLN/GFnCvL5xiW4CNLklBfqXgTKt
-         O71AAytY3fRv8FtCQbvnN1INvrEaeSMbgRVMLq1dmO7lAbdwcZAach0HPyY0uTAa9huj
-         FIQZDEcIhD4G/TCxySH+CDnM3cAkLKJTo3rgePbwxhsujP7KuIB4pzCXEKVNJ52jr4Mq
-         62wCPFnK9mubq10obk5X2Y9IuMdQ4nbq7AwrGuZKCmUIlEYNQHeSaTYYLaB01WpJyTsu
-         a4dQ==
+        bh=dBCxnbysmOgF/ewLoKlev2MPx9AEH27+l/wXXPvFzlE=;
+        b=OGysd6zfJiU90goKbGnLpHpfvLVXweV8WwC6O4IeR3ywgUmF+9bLUk+Wf4tuqhjA/g
+         +XayccX/exhcyopskadhgud4L1VfdoHDBOrHOLWMm2/2IYTyB8WgvSb+QGbr0sTTm8Lp
+         aZHvXGZ8ve+opDYndAN9kVXQN1xnH2qKfkRMvDXK9w0+gjS0mo+2HL8/DxLHd92zgbw1
+         518Cz4Wm/nUxP7eHJzEVF+DithRsiUsyAp/yY8WP7IVbCO7oCHmlFuUXGZU+ULVKhsl6
+         vLprWoV8IYVB5iN/rr4OVtdC3Q8qJyr2X6No7uecwhNt7Gwg2Hbk1e/BrknZdu0+1BNL
+         nj7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713976277; x=1714581077;
+        d=1e100.net; s=20230601; t=1713976283; x=1714581083;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7QuT4BeObJFe8wvayWogyBHFHRkrc8hy/BfvFL8inxQ=;
-        b=Vy4lsK0aH4Z/8jyFKRgVo8j1XV1h+w1H64j0mauvTcTaw/txmPs1a5qffCyQWZ0NlI
-         C5VIIIMXDDyt7pDmwtQ2zQ72FXDZlYmt9pTmkJiBaMwonJmWZFA2Sr6lLX1XU7PMptoD
-         g68VzqRvuHRPZYU8lThUXPE24lGbeQef/UfVjbEnid+Yhfw0hEe2v4F6DUzo/dPL9LSN
-         KY7Bh8XvKCKBgdPktcXxrw2qXWHCWnNK5lOc7tisLHJtKW5cz6kL8+lvQHkhLzUqu8lG
-         5RVCkbcpjI6FbSobth4dNDIG1YzJYW6cwP3oXc9x43Zmba4wmHEgPs6jc1q5x6g5Rc5E
-         7G2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXtyRJcF4xQmBosZIwXy2Gschv/eFKO3/ePS27eu5RvxNFfG+41gk+N9PtVSNgaI2xkdqFTu0m1BgzVCIiDXHSpa9U6TkcjFhBmnRfp77cTEK1t5HgdWTGhge3eVK7kXJWgIwsZ
-X-Gm-Message-State: AOJu0YxJ+UksoGxvdLpM6X/SIYhe2kKj7iGDa3Y0nqo9wBBo4WRZmN35
-	kjSW04QjYO2UE5c6OY8AJADwoBk8TCR1aMS3OXlnYU7I8f+LvV6o
-X-Google-Smtp-Source: AGHT+IG8C+Z8Ltvhw5M0S2QqoAssT/yk7DfzwknfhzDlPhkP/e8g2apIHIWBqgVbvPGWkCAMwYzHdQ==
-X-Received: by 2002:adf:e808:0:b0:347:9199:e972 with SMTP id o8-20020adfe808000000b003479199e972mr155566wrm.9.1713976277203;
-        Wed, 24 Apr 2024 09:31:17 -0700 (PDT)
+        bh=dBCxnbysmOgF/ewLoKlev2MPx9AEH27+l/wXXPvFzlE=;
+        b=grW/NIFQrec55pek6dvfDsd0mRCYINoOi35TWl0ORytegb+GL528AfghNlL8dpwIA6
+         hp3rbTYZB3KEPqFw+3HBgSDNHlAH59KM7xknk/FbtQiN7LGEsU2ykxXNn/+51vo2rUpK
+         RwsdsFtuPRzPZRrG9fBewKip9NvE6YK1jD+SXxUXnRZSR1X/Wm2p/+jqd8CXZtLyBv/G
+         Ld8wbBT+K7cQck7+ed3dq9J/CAg0JbzBSBWeRCj1XMXNK32O/+iF0QMatiiEpPG1MeNH
+         okcLfG6TiZ6d3Di0VZPsfacbJ5tw+YcJDvNY6xrC382cjRzRdFCi8jMBUxDLBjU7afXV
+         GQ6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV9zi6xXQfqztw50miVjQbyKYtVNkaZstgSMbCg5W7UM/M3i7G9F0ipUUJG2eGjCga8hUWMJmDZHd7snGED0M11kZaXB2Elrtc2SLdMJy9cven/mtaXFNyjOglHFPCVo9GNMlBv
+X-Gm-Message-State: AOJu0Ywp3KilgXNnMGIxDGRJxo9J4RdNDs6W546R0BQolJ30TFWe9PYy
+	SBLBnS0WMJmr8v89OXs23tCwHQQvJBxF5jVA52Qwjpbx5w9YLOKm
+X-Google-Smtp-Source: AGHT+IFUpJsakHRh1kOPHZFFzKEcGsY6ZHbqpePB9VmTomOvAodhS1J0k3ZrVcbUbLik4u6Hr30rmA==
+X-Received: by 2002:a05:600c:1c85:b0:416:4641:5947 with SMTP id k5-20020a05600c1c8500b0041646415947mr2786731wms.34.1713976283451;
+        Wed, 24 Apr 2024 09:31:23 -0700 (PDT)
 Received: from localhost ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id b15-20020a5d4b8f000000b0034b5dc8259dsm5256088wrt.57.2024.04.24.09.31.15
+        by smtp.gmail.com with ESMTPSA id o14-20020a05600c510e00b00419f572671dsm15945929wms.20.2024.04.24.09.31.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 09:31:17 -0700 (PDT)
+        Wed, 24 Apr 2024 09:31:23 -0700 (PDT)
 From: Richard Gobert <richardbgobert@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -77,9 +77,9 @@ To: davem@davemloft.net,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Richard Gobert <richardbgobert@gmail.com>
-Subject: [PATCH net v3 1/2] net: gro: fix udp bad offset in socket lookup by adding {inner_}network_offset to napi_gro_cb
-Date: Wed, 24 Apr 2024 18:30:44 +0200
-Message-Id: <20240424163045.123528-2-richardbgobert@gmail.com>
+Subject: [PATCH net v3 2/2] net: gro: add flush check in udp_gro_receive_segment
+Date: Wed, 24 Apr 2024 18:30:45 +0200
+Message-Id: <20240424163045.123528-3-richardbgobert@gmail.com>
 In-Reply-To: <20240424163045.123528-1-richardbgobert@gmail.com>
 References: <20240424163045.123528-1-richardbgobert@gmail.com>
 Precedence: bulk
@@ -90,277 +90,52 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Commits a602456 ("udp: Add GRO functions to UDP socket") and 57c67ff ("udp:
-additional GRO support") introduce incorrect usage of {ip,ipv6}_hdr in the
-complete phase of gro. The functions always return skb->network_header,
-which in the case of encapsulated packets at the gro complete phase, is
-always set to the innermost L3 of the packet. That means that calling
-{ip,ipv6}_hdr for skbs which completed the GRO receive phase (both in
-gro_list and *_gro_complete) when parsing an encapsulated packet's _outer_
-L3/L4 may return an unexpected value.
+GRO-GSO path is supposed to be transparent and as such L3 flush checks are
+relevant to all UDP flows merging in GRO. This patch uses the same logic
+and code from tcp_gro_receive, terminating merge if flush is non zero.
 
-This incorrect usage leads to a bug in GRO's UDP socket lookup.
-udp{4,6}_lib_lookup_skb functions use ip_hdr/ipv6_hdr respectively. These
-*_hdr functions return network_header which will point to the innermost L3,
-resulting in the wrong offset being used in __udp{4,6}_lib_lookup with
-encapsulated packets.
-
-This patch adds network_offset and inner_network_offset to napi_gro_cb, and
-makes sure both are set correctly.
-
-To fix the issue, network_offsets union is used inside napi_gro_cb, in
-which both the outer and the inner network offsets are saved.
-
-Reproduction example:
-
-Endpoint configuration example (fou + local address bind)
-
-    # ip fou add port 6666 ipproto 4
-    # ip link add name tun1 type ipip remote 2.2.2.1 local 2.2.2.2 encap fou encap-dport 5555 encap-sport 6666 mode ipip
-    # ip link set tun1 up
-    # ip a add 1.1.1.2/24 dev tun1
-
-Netperf TCP_STREAM result on net-next before patch is applied:
-
-net-next main, GRO enabled:
-    $ netperf -H 1.1.1.2 -t TCP_STREAM -l 5
-    Recv   Send    Send
-    Socket Socket  Message  Elapsed
-    Size   Size    Size     Time     Throughput
-    bytes  bytes   bytes    secs.    10^6bits/sec
-
-    131072  16384  16384    5.28        2.37
-
-net-next main, GRO disabled:
-    $ netperf -H 1.1.1.2 -t TCP_STREAM -l 5
-    Recv   Send    Send
-    Socket Socket  Message  Elapsed
-    Size   Size    Size     Time     Throughput
-    bytes  bytes   bytes    secs.    10^6bits/sec
-
-    131072  16384  16384    5.01     2745.06
-
-patch applied, GRO enabled:
-    $ netperf -H 1.1.1.2 -t TCP_STREAM -l 5
-    Recv   Send    Send
-    Socket Socket  Message  Elapsed
-    Size   Size    Size     Time     Throughput
-    bytes  bytes   bytes    secs.    10^6bits/sec
-
-    131072  16384  16384    5.01     2877.38
-
-Fixes: 57c67ff4bd92 ("udp: additional GRO support")
+Fixes: 36707061d6ba ("udp: allow forwarding of plain (non-fraglisted) UDP GRO packets")
 Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
 ---
- include/net/gro.h        | 18 ++++++++++++++++--
- net/8021q/vlan_core.c    |  2 ++
- net/core/gro.c           |  1 +
- net/ipv4/af_inet.c       |  5 +----
- net/ipv4/tcp_offload.c   |  3 ++-
- net/ipv4/udp.c           |  3 ++-
- net/ipv4/udp_offload.c   |  3 ++-
- net/ipv6/ip6_offload.c   |  6 +++---
- net/ipv6/tcpv6_offload.c |  3 ++-
- net/ipv6/udp.c           |  3 ++-
- net/ipv6/udp_offload.c   |  3 ++-
- 11 files changed, 35 insertions(+), 15 deletions(-)
+ net/ipv4/udp_offload.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/gro.h b/include/net/gro.h
-index 50f1e403dbbb..1faff23b66e8 100644
---- a/include/net/gro.h
-+++ b/include/net/gro.h
-@@ -87,6 +87,15 @@ struct napi_gro_cb {
- 
- 	/* used to support CHECKSUM_COMPLETE for tunneling protocols */
- 	__wsum	csum;
-+
-+	/* L3 offsets */
-+	union {
-+		struct {
-+			u16 network_offset;
-+			u16 inner_network_offset;
-+		};
-+		u16 network_offsets[2];
-+	};
- };
- 
- #define NAPI_GRO_CB(skb) ((struct napi_gro_cb *)(skb)->cb)
-@@ -172,12 +181,17 @@ static inline void *skb_gro_header(struct sk_buff *skb, unsigned int hlen,
- 	return ptr;
- }
- 
-+static inline int skb_gro_network_offset(const struct sk_buff *skb)
-+{
-+	return NAPI_GRO_CB(skb)->network_offsets[NAPI_GRO_CB(skb)->encap_mark];
-+}
-+
- static inline void *skb_gro_network_header(const struct sk_buff *skb)
- {
- 	if (skb_gro_may_pull(skb, skb_gro_offset(skb)))
--		return skb_gro_header_fast(skb, skb_network_offset(skb));
-+		return skb_gro_header_fast(skb, skb_gro_network_offset(skb));
- 
--	return skb_network_header(skb);
-+	return skb->data + skb_gro_network_offset(skb);
- }
- 
- static inline __wsum inet_gro_compute_pseudo(const struct sk_buff *skb,
-diff --git a/net/8021q/vlan_core.c b/net/8021q/vlan_core.c
-index f00158234505..9404dd551dfd 100644
---- a/net/8021q/vlan_core.c
-+++ b/net/8021q/vlan_core.c
-@@ -478,6 +478,8 @@ static struct sk_buff *vlan_gro_receive(struct list_head *head,
- 	if (unlikely(!vhdr))
- 		goto out;
- 
-+	NAPI_GRO_CB(skb)->network_offsets[NAPI_GRO_CB(skb)->encap_mark] = hlen;
-+
- 	type = vhdr->h_vlan_encapsulated_proto;
- 
- 	ptype = gro_find_receive_by_type(type);
-diff --git a/net/core/gro.c b/net/core/gro.c
-index 83f35d99a682..c7901253a1a8 100644
---- a/net/core/gro.c
-+++ b/net/core/gro.c
-@@ -371,6 +371,7 @@ static inline void skb_gro_reset_offset(struct sk_buff *skb, u32 nhoff)
- 	const skb_frag_t *frag0;
- 	unsigned int headlen;
- 
-+	NAPI_GRO_CB(skb)->network_offset = 0;
- 	NAPI_GRO_CB(skb)->data_offset = 0;
- 	headlen = skb_headlen(skb);
- 	NAPI_GRO_CB(skb)->frag0 = skb->data;
-diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index 55bd72997b31..2daf635ab99e 100644
---- a/net/ipv4/af_inet.c
-+++ b/net/ipv4/af_inet.c
-@@ -1568,10 +1568,7 @@ struct sk_buff *inet_gro_receive(struct list_head *head, struct sk_buff *skb)
- 
- 	NAPI_GRO_CB(skb)->is_atomic = !!(iph->frag_off & htons(IP_DF));
- 	NAPI_GRO_CB(skb)->flush |= flush;
--	skb_set_network_header(skb, off);
--	/* The above will be needed by the transport layer if there is one
--	 * immediately following this IP hdr.
--	 */
-+	NAPI_GRO_CB(skb)->inner_network_offset = off;
- 
- 	/* Note : No need to call skb_gro_postpull_rcsum() here,
- 	 * as we already checked checksum over ipv4 header was 0
-diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
-index ebe4722bb020..be8ddf6da88c 100644
---- a/net/ipv4/tcp_offload.c
-+++ b/net/ipv4/tcp_offload.c
-@@ -332,7 +332,8 @@ struct sk_buff *tcp4_gro_receive(struct list_head *head, struct sk_buff *skb)
- 
- INDIRECT_CALLABLE_SCOPE int tcp4_gro_complete(struct sk_buff *skb, int thoff)
- {
--	const struct iphdr *iph = ip_hdr(skb);
-+	const u16 offset = NAPI_GRO_CB(skb)->network_offsets[skb->encapsulation];
-+	const struct iphdr *iph = (struct iphdr *)(skb->data + offset);
- 	struct tcphdr *th = tcp_hdr(skb);
- 
- 	th->check = ~tcp_v4_check(skb->len - thoff, iph->saddr,
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index c02bf011d4a6..1399fce82b3f 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -532,7 +532,8 @@ static inline struct sock *__udp4_lib_lookup_skb(struct sk_buff *skb,
- struct sock *udp4_lib_lookup_skb(const struct sk_buff *skb,
- 				 __be16 sport, __be16 dport)
- {
--	const struct iphdr *iph = ip_hdr(skb);
-+	const u16 offset = NAPI_GRO_CB(skb)->network_offsets[skb->encapsulation];
-+	const struct iphdr *iph = (struct iphdr *)(skb->data + offset);
- 	struct net *net = dev_net(skb->dev);
- 	int iif, sdif;
- 
 diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index 3498dd1d0694..fd29d21d579c 100644
+index fd29d21d579c..8721fe5beca2 100644
 --- a/net/ipv4/udp_offload.c
 +++ b/net/ipv4/udp_offload.c
-@@ -718,7 +718,8 @@ EXPORT_SYMBOL(udp_gro_complete);
+@@ -471,6 +471,7 @@ static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
+ 	struct sk_buff *p;
+ 	unsigned int ulen;
+ 	int ret = 0;
++	int flush;
  
- INDIRECT_CALLABLE_SCOPE int udp4_gro_complete(struct sk_buff *skb, int nhoff)
- {
--	const struct iphdr *iph = ip_hdr(skb);
-+	const u16 offset = NAPI_GRO_CB(skb)->network_offsets[skb->encapsulation];
-+	const struct iphdr *iph = (struct iphdr *)(skb->data + offset);
- 	struct udphdr *uh = (struct udphdr *)(skb->data + nhoff);
+ 	/* requires non zero csum, for symmetry with GSO */
+ 	if (!uh->check) {
+@@ -504,13 +505,22 @@ static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
+ 			return p;
+ 		}
  
- 	/* do fraglist only if there is no outer UDP encap (or we already processed it) */
-diff --git a/net/ipv6/ip6_offload.c b/net/ipv6/ip6_offload.c
-index b41e35af69ea..5d6b875a4638 100644
---- a/net/ipv6/ip6_offload.c
-+++ b/net/ipv6/ip6_offload.c
-@@ -67,7 +67,7 @@ static int ipv6_gro_pull_exthdrs(struct sk_buff *skb, int off, int proto)
- 		off += len;
- 	}
- 
--	skb_gro_pull(skb, off - skb_network_offset(skb));
-+	skb_gro_pull(skb, off - skb_gro_network_offset(skb));
- 	return proto;
- }
- 
-@@ -236,7 +236,7 @@ INDIRECT_CALLABLE_SCOPE struct sk_buff *ipv6_gro_receive(struct list_head *head,
- 	if (unlikely(!iph))
- 		goto out;
- 
--	skb_set_network_header(skb, off);
-+	NAPI_GRO_CB(skb)->inner_network_offset = off;
- 
- 	flush += ntohs(iph->payload_len) != skb->len - hlen;
- 
-@@ -259,7 +259,7 @@ INDIRECT_CALLABLE_SCOPE struct sk_buff *ipv6_gro_receive(struct list_head *head,
- 	NAPI_GRO_CB(skb)->proto = proto;
- 
- 	flush--;
--	nlen = skb_network_header_len(skb);
-+	nlen = skb_gro_offset(skb) - off;
- 
- 	list_for_each_entry(p, head, list) {
- 		const struct ipv6hdr *iph2;
-diff --git a/net/ipv6/tcpv6_offload.c b/net/ipv6/tcpv6_offload.c
-index 4b07d1e6c952..e70d60e0f86f 100644
---- a/net/ipv6/tcpv6_offload.c
-+++ b/net/ipv6/tcpv6_offload.c
-@@ -29,7 +29,8 @@ struct sk_buff *tcp6_gro_receive(struct list_head *head, struct sk_buff *skb)
- 
- INDIRECT_CALLABLE_SCOPE int tcp6_gro_complete(struct sk_buff *skb, int thoff)
- {
--	const struct ipv6hdr *iph = ipv6_hdr(skb);
-+	const u16 offset = NAPI_GRO_CB(skb)->network_offsets[skb->encapsulation];
-+	const struct ipv6hdr *iph = (struct ipv6hdr *)(skb->data + offset);
- 	struct tcphdr *th = tcp_hdr(skb);
- 
- 	th->check = ~tcp_v6_check(skb->len - thoff, &iph->saddr,
-diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-index 8b1dd7f51249..f7880e306410 100644
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -272,7 +272,8 @@ static struct sock *__udp6_lib_lookup_skb(struct sk_buff *skb,
- struct sock *udp6_lib_lookup_skb(const struct sk_buff *skb,
- 				 __be16 sport, __be16 dport)
- {
--	const struct ipv6hdr *iph = ipv6_hdr(skb);
-+	const u16 offset = NAPI_GRO_CB(skb)->network_offsets[skb->encapsulation];
-+	const struct ipv6hdr *iph = (struct ipv6hdr *)(skb->data + offset);
- 	struct net *net = dev_net(skb->dev);
- 	int iif, sdif;
- 
-diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
-index bbd347de00b4..b41152dd4246 100644
---- a/net/ipv6/udp_offload.c
-+++ b/net/ipv6/udp_offload.c
-@@ -164,7 +164,8 @@ struct sk_buff *udp6_gro_receive(struct list_head *head, struct sk_buff *skb)
- 
- INDIRECT_CALLABLE_SCOPE int udp6_gro_complete(struct sk_buff *skb, int nhoff)
- {
--	const struct ipv6hdr *ipv6h = ipv6_hdr(skb);
-+	const u16 offset = NAPI_GRO_CB(skb)->network_offsets[skb->encapsulation];
-+	const struct ipv6hdr *ipv6h = (struct ipv6hdr *)(skb->data + offset);
- 	struct udphdr *uh = (struct udphdr *)(skb->data + nhoff);
- 
- 	/* do fraglist only if there is no outer UDP encap (or we already processed it) */
++		flush = NAPI_GRO_CB(p)->flush;
++
++		if (NAPI_GRO_CB(p)->flush_id != 1 ||
++		    NAPI_GRO_CB(p)->count != 1 ||
++		    !NAPI_GRO_CB(p)->is_atomic)
++			flush |= NAPI_GRO_CB(p)->flush_id;
++		else
++			NAPI_GRO_CB(p)->is_atomic = false;
++
+ 		/* Terminate the flow on len mismatch or if it grow "too much".
+ 		 * Under small packet flood GRO count could elsewhere grow a lot
+ 		 * leading to excessive truesize values.
+ 		 * On len mismatch merge the first packet shorter than gso_size,
+ 		 * otherwise complete the GRO packet.
+ 		 */
+-		if (ulen > ntohs(uh2->len)) {
++		if (ulen > ntohs(uh2->len) || flush) {
+ 			pp = p;
+ 		} else {
+ 			if (NAPI_GRO_CB(skb)->is_flist) {
 -- 
 2.36.1
 
