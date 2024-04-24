@@ -1,104 +1,113 @@
-Return-Path: <linux-kernel+bounces-156508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7220B8B0385
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB51E8B037E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:54:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F057B285621
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:55:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AABB2854C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:54:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC2C1586F4;
-	Wed, 24 Apr 2024 07:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38F70158204;
+	Wed, 24 Apr 2024 07:54:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="w00e1Xc3"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="C93l+A/i"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFBF11586C1;
-	Wed, 24 Apr 2024 07:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88AC43AB4
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 07:54:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713945289; cv=none; b=h9jvvAAREweN+4c5iGQC7Q2HGxaT/kg3x78uqnCLOjN7sY4LYcQwY7FwRQqK2mZURHQxLG6h97P9dFhAB6V0CgV0B16cD1WHthPVbzP8RhKTv66P6of9BswOGIXjWCAT+eaD4HyduLVR+qbWQ2rBwweSSfkoiVkb2EYxJPwd3fQ=
+	t=1713945269; cv=none; b=qQcckdAXNPn8PxuDQs4LG+Ypjsf53x1PG/W2ukY0rOqFwgaJ/chC7tpzwvJlQEI00vxe9p0SbwgMCgmvJJyZwNR2/SfylW1LqwpkBFcDwbCA3c6Ei+tWVri3r5Q+WrEfs818IyxMiAap1GxmvXTDCXOTfwKd9DMT0YTGPnmojwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713945289; c=relaxed/simple;
-	bh=G/Ne1nygDxtz04AiXYdovugI4Rgn7RO9miAi7JHpVfs=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PoRf8S2YypWU3IkHRR6N9wkJEENV9aDCqZbiiVkjX5Y5W1d6Se3rYcLfr4yx0oEU/lCc8fD0crAvrAAgjbjXM1qc+pixUvGFGPNrx64IKOuE4rI1792LiGinsOIZFMgt4Mqqq6P/Ei4v8hP1gwncAp19graVaIUSv1YtaZOzwmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=w00e1Xc3; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43O7seSB080715;
-	Wed, 24 Apr 2024 02:54:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713945280;
-	bh=gQjQVnUpCA/f5920UrgGuYszKKxWfgbV6oe5axpMu0E=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=w00e1Xc3FRiCT7c2Mg2vb8s1FV3BMe77h518zK4ZqEU4bMGX7UgD4MoJsjC4YbhSD
-	 h3xuuuFPdGoA1WlZQqMH+Cq/oPOf0Os90f9MZB6XVK4Rr+Ku1XRrApuz4WTHMb0LSX
-	 PwYOmEzWVWh5rV0VKAos9w+IfGOeZYk02hyYPrOw=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43O7setd128905
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 24 Apr 2024 02:54:40 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 24
- Apr 2024 02:54:40 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 24 Apr 2024 02:54:41 -0500
-Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (udit-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.18])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43O7sTEO023008;
-	Wed, 24 Apr 2024 02:54:37 -0500
-From: Udit Kumar <u-kumar1@ti.com>
-To: <nm@ti.com>, <vigneshr@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <n-francis@ti.com>, <m-chawdhry@ti.com>
-CC: <kristo@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
-        <conor+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        Udit Kumar
-	<u-kumar1@ti.com>
-Subject: [PATCH 2/2] arm64: dts: ti: k3-j784s4: Add main esm address range
-Date: Wed, 24 Apr 2024 13:24:23 +0530
-Message-ID: <20240424075423.1229127-3-u-kumar1@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240424075423.1229127-1-u-kumar1@ti.com>
-References: <20240424075423.1229127-1-u-kumar1@ti.com>
+	s=arc-20240116; t=1713945269; c=relaxed/simple;
+	bh=r25OLeguN4K1eHEelpNuj6AN7zkojxM0EofLkdAbtFU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=P8WxiL7y0pUYkVyi/t56dE0d0DrCewfBMFj0diXpsLBVAumJ5Tvm0B+zB6Gb70ZBxl/2XOd2qS25LjWV6Zyz0iH4+pni8Zinj1LM+mpwAjahG1S63XwtGd7g3XfYGaWLectPMByZJh611ASJamZffCUg5Fdljlu6JLzeGh/EqOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=C93l+A/i; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41a5b68eceeso23526535e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 00:54:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713945266; x=1714550066; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=myyoINEtifDPjTf6aBdAezFxWZgIXfzRzt4GnDTHFGE=;
+        b=C93l+A/i1VBKhZPguYbOZJAhuG6kyORNsBpp/qGAZpAAd2WxYyVxlYLCaPyPBqf/nq
+         suNByXc7cX2WxgciLQFa1i/Y+ejnGZmhq8nH2RL29QmkNrK1thVq67FTjK6XPTErC8j2
+         t4fK3uHZ26Yj8f2vWiSRo8QB/ckiQf6lA6pzRYBVLJkcTVI7uy2gn9ZjDGJD8kBDjsy8
+         5y/RSytRQFDAicusNvfbo89t+BiVCncHwVrlPr3g1earGTx6PKbEO60KCFvuexRYH5ws
+         XIeTJOOJAKE+E0SCn1Iu2WjIEluOhxN+5wgu8CcN1ZGcP8FY6+Ny3nF99fzYZ4kbf0As
+         /+iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713945266; x=1714550066;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=myyoINEtifDPjTf6aBdAezFxWZgIXfzRzt4GnDTHFGE=;
+        b=fK+k03FVzSl6pHzq+CtqfsvOp20rOfdgWEMcecgfTaUvsUzjsDwd+1nycvWqPmgOUf
+         4GWNXSnijoTu2lG0R+FloQ/TR18QzjnGWlroHt8vCUn4mpjRiN0c+r3sTAuGfD80iBPA
+         d6xGQFlxbTBvm6bchQzpvBxraGYRZQHUOgMWoneDUjyeTodKzxCcWMexuxOiXGE4xpcQ
+         ZAI58lngz5Zdl4uhU6uCzd7jokzrPopyLnvUBSB5uWjEJgT7kuyRwnPWd+FJ0c9RxSPz
+         K2ij1H54Q8gR5/GkDcZBHeUQJPQOsp5jCCdj46s4uROfL3oywzQkP66HcIhAhUWGxhJK
+         Kfew==
+X-Gm-Message-State: AOJu0YzdbSowI0ARaJlAYQgSmrWfcxDP8SnqJWsngfdjPZm5WdCgqew/
+	NycsjAiJPK4Iu7+Phx1Utv65kemKlGTHdQ+SqaBA4zLltcMLo43YRIt9xhfhfoo=
+X-Google-Smtp-Source: AGHT+IEtSjCdcL4qwBEISb3Sd1YNtbbBrcgO00iMUi4ITRKcY4v2ExdRL+3YQLmx4jnbmd5Bvz7SNg==
+X-Received: by 2002:a05:600c:4448:b0:41b:f95:f772 with SMTP id v8-20020a05600c444800b0041b0f95f772mr431558wmn.1.1713945266179;
+        Wed, 24 Apr 2024 00:54:26 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id o20-20020a05600c511400b0041a49b10a13sm10614777wms.11.2024.04.24.00.54.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 00:54:25 -0700 (PDT)
+Message-ID: <9ca49056-6617-4ce7-b064-a8c07b23a6ae@linaro.org>
+Date: Wed, 24 Apr 2024 09:54:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 08/16] thermal: gov_step_wise: Use .manage() callback
+ instead of .throttle()
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Lukasz Luba <lukasz.luba@arm.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+References: <13515747.uLZWGnKmhe@kreacher> <2628456.Lt9SDvczpP@kreacher>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <2628456.Lt9SDvczpP@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Main ESM address change was missing for J784S4 SOC,
-So adding main ESM address mapping.
+On 10/04/2024 18:13, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Make the Step-Wise governor use the new .manage() callback instead of
+> .throttle().
+> 
+> Even though using .throttle() is not particularly problematic for the
+> Step-Wise governor, using .manage() instead still allows it to reduce
+> overhead by updating all of the colling devices once after setting
+> target values for all of the thermal instances.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
 
-Signed-off-by: Udit Kumar <u-kumar1@ti.com>
----
- arch/arm64/boot/dts/ti/k3-j784s4.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
-index 6e2e92ffe745..da7368ed6b52 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
-@@ -234,6 +234,7 @@ cbass_main: bus@100000 {
- 		#size-cells = <2>;
- 		ranges = <0x00 0x00100000 0x00 0x00100000 0x00 0x00020000>, /* ctrl mmr */
- 			 <0x00 0x00600000 0x00 0x00600000 0x00 0x00031100>, /* GPIO */
-+			 <0x00 0x00700000 0x00 0x00700000 0x00 0x00001000>, /* ESM */
- 			 <0x00 0x01000000 0x00 0x01000000 0x00 0x0d000000>, /* Most peripherals */
- 			 <0x00 0x04210000 0x00 0x04210000 0x00 0x00010000>, /* VPU0 */
- 			 <0x00 0x04220000 0x00 0x04220000 0x00 0x00010000>, /* VPU1 */
 -- 
-2.34.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
 
