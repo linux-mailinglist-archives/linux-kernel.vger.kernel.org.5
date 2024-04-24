@@ -1,123 +1,132 @@
-Return-Path: <linux-kernel+bounces-156801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 873598B0858
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:31:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C66AC8B085E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:32:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B97FA1C2279F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:31:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6693A1F241AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:32:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B249E13DDD9;
-	Wed, 24 Apr 2024 11:31:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22DBC15A4AA;
+	Wed, 24 Apr 2024 11:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=carewolf.com header.i=@carewolf.com header.b="Ql7E73PQ";
-	dkim=permerror (0-bit key) header.d=carewolf.com header.i=@carewolf.com header.b="emaho29s"
-Received: from mailrelay3-3.pub.mailoutpod3-cph3.one.com (mailrelay3-3.pub.mailoutpod3-cph3.one.com [46.30.212.2])
+	dkim=pass (2048-bit key) header.d=carewolf.com header.i=@carewolf.com header.b="GVP2WCPU";
+	dkim=permerror (0-bit key) header.d=carewolf.com header.i=@carewolf.com header.b="hVvvLzGb"
+Received: from mailrelay6-3.pub.mailoutpod2-cph3.one.com (mailrelay6-3.pub.mailoutpod2-cph3.one.com [46.30.212.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9DAD142E62
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 11:31:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.212.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A361B15A491
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 11:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.212.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713958284; cv=none; b=FGzBlqVZ1RNN0EKeli8xc0RROagNjkXUxaMzaLe44tyeFYZRI4nb7RrVNAU2MPet98dxMehZ370lXv+vQLBtT8X4EG4EUEBzbi0/+pXiPydQ010EYygAJOj8m9F0N3Prq8BXijtNQ4f0OyN3/10CGxv0wGYYaqPosFoOI7ui7p4=
+	t=1713958371; cv=none; b=MELkhBUfB/vgIF7CTpM/I0flztLAh/8rZs0TX5FXDPPsojBq7jXzsDSnl6WQMI/RMnaYJw3gy9qqaESm28PuH3LmgOn5WnTcrn13MBM/QNBtDEn4gpfSCyP+kJSuWbAI2rUnbOA/vNJMOi/T+WmjBmWy+PHSfonEvO1YdLK19dE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713958284; c=relaxed/simple;
-	bh=WocI+kydEoNLGIxyswwT0BVFsa3elCOtzeRHRUN1NhU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RwsquhEzGPRMBoAZVpm97USiDW9NTMG4OFeiXR4c3BaEEtVxwZ3+4GcG/6Z134gVdhGzlZskop8jBUQPvg7eTgP77lmfH/lUT+ieP35/jg3a3M/rqT3lMJceWq/3jUS4hzN3VXL+lRRvMaoQOyBvjqlb1xLtnDw6PSt/z4fHYtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carewolf.com; spf=none smtp.mailfrom=carewolf.com; dkim=pass (2048-bit key) header.d=carewolf.com header.i=@carewolf.com header.b=Ql7E73PQ; dkim=permerror (0-bit key) header.d=carewolf.com header.i=@carewolf.com header.b=emaho29s; arc=none smtp.client-ip=46.30.212.2
+	s=arc-20240116; t=1713958371; c=relaxed/simple;
+	bh=JCQMG7fP0cjNcmTnJ2sSDvS2UO71hAD4BPDVQWE7ZYk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=c8QCMAPX96a9DUmKu63AWiFJcRd38PHjzbH79eNos99UeZ92MCTS3hz4ovSBdvqAsSY0zpWCi2g01S0/LF74x7Locp3CBT64NB0mP2NBvhTmSN11j6gZa5x/JzCm/MP5C6PW3o2/LbbXITZe+L3kSRw1AKzKH/9vSYAu5t0aoVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carewolf.com; spf=none smtp.mailfrom=carewolf.com; dkim=pass (2048-bit key) header.d=carewolf.com header.i=@carewolf.com header.b=GVP2WCPU; dkim=permerror (0-bit key) header.d=carewolf.com header.i=@carewolf.com header.b=hVvvLzGb; arc=none smtp.client-ip=46.30.212.37
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carewolf.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=carewolf.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=carewolf.com; s=rsa2;
-	h=content-type:content-transfer-encoding:mime-version:references:in-reply-to:
-	 message-id:date:subject:cc:to:from:from;
-	bh=DgHUUp6tFzs7q+y8o0cewN7ouY8O3uwxHNhxLT5MdMM=;
-	b=Ql7E73PQaaBBz23wRVVjcFHxCVr3A30rOUfJr5j0RhyDsRuRgxuL+2+qDNZwk8lC4rqkCZtwtiOjT
-	 AG5SFXGrZHpQXf1cmSu6uZGUNKkoBL77RP3Rv/TEEEqz7SjrER/Aa+XZgwAecyDkR4PC6T3X6Ig3q4
-	 dfC+Q4h1KTgyWMS6TQNzzwldhvrOOsfykkWbEmPx+2DMgNrE0/M+wDGJHRKec1qRqWYCyElUOEXErz
-	 Hn1l+pDyd1zH1jTjsdY/XChCZjRYp9V9wrvB75uDt3S1xZUO8Jq3BhOPigbIrpAcyQ1UF/NpX21zWv
-	 OBFxiT0YtjDw2Rcm8ehqyKRRsH/UZFA==
+	h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
+	 from;
+	bh=La1F9GWBKgOLv3pdQd/zEdcyB837+ewuRa+W1vOfcX0=;
+	b=GVP2WCPUXBc/8r+RqHisr+HQ9Hx5Qthrf1s754bea3Jd0pRDSeO1N2ev/HP5T+9K7lX3+puCd7NV0
+	 1Esg/fwDvuZViReuJDI09lvNy/1vyLuLuKaj0mQ5tk0JM6HofOx+b+/RQAshFDrXAfx14DwNcliYcD
+	 vbkUEdXX6qLcvKMbRnbdawBLUnCc7U8hgF9E6M6tpuULP87GfhvjwdvUZ0dYSiA/WCEJlNHS0ICoAM
+	 y99pq8quIsPDkwRvG9iKcPb28LL8rzJtG/F2UqEIl/xqlhFXsfJ3f+1eX49c5LP0Dm6ZSlUt880fqk
+	 +ayFa1im1WZwW3VwGSS2G3aH8Z8VURg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
 	d=carewolf.com; s=ed2;
-	h=content-type:content-transfer-encoding:mime-version:references:in-reply-to:
-	 message-id:date:subject:cc:to:from:from;
-	bh=DgHUUp6tFzs7q+y8o0cewN7ouY8O3uwxHNhxLT5MdMM=;
-	b=emaho29soRfaI+vnYU/WNGFUp+Nv0XqGhdUj7wtaz6Kub+TnHLyRdFflcOVM+7qdUK7VisaziOvrm
-	 wnosuEsDA==
-X-HalOne-ID: 02c7ceba-022e-11ef-9981-5166eb5bc2d3
-Received: from twilight.localnet (dynamic-2a02-3103-004c-5300-7231-17da-dcd1-9a4a.310.pool.telefonica.de [2a02:3103:4c:5300:7231:17da:dcd1:9a4a])
-	by mailrelay3.pub.mailoutpod3-cph3.one.com (Halon) with ESMTPSA
-	id 02c7ceba-022e-11ef-9981-5166eb5bc2d3;
-	Wed, 24 Apr 2024 11:30:12 +0000 (UTC)
-From: Allan Sandfeld Jensen <kde@carewolf.com>
-To: Benjamin Tissoires <bentiss@kernel.org>,
- Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org
-Cc: benjamin.tissoires@redhat.com, linux-input@vger.kernel.org
-Subject: Re: [PATCH] Logitech Anywhere 3SB support
-Date: Wed, 24 Apr 2024 13:30:11 +0200
-Message-ID: <6092750.lOV4Wx5bFT@twilight>
-In-Reply-To: <fe2980e3-3204-4572-9c7c-1e960727e1d4@redhat.com>
-References:
- <20240413095453.14816-1-kde@carewolf.com>
- <ntsifcsfo5i6xisxbgfjdpe4uenygqxrt3v5sceflgipznw6cb@gnhvkjmglrtg>
- <fe2980e3-3204-4572-9c7c-1e960727e1d4@redhat.com>
+	h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
+	 from;
+	bh=La1F9GWBKgOLv3pdQd/zEdcyB837+ewuRa+W1vOfcX0=;
+	b=hVvvLzGbrIiu1/uIWV5RFIPdTVhkyaeXPJiiF0BSVNIzYrzn4V+JmRmK9Bd/rWd2P4ccjX+BymW6m
+	 YV+newvCg==
+X-HalOne-ID: 360a4bc3-022e-11ef-8f41-f528319a6ef4
+Received: from carewolf.com (dynamic-2a02-3103-004c-5300-7231-17da-dcd1-9a4a.310.pool.telefonica.de [2a02:3103:4c:5300:7231:17da:dcd1:9a4a])
+	by mailrelay6.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
+	id 360a4bc3-022e-11ef-8f41-f528319a6ef4;
+	Wed, 24 Apr 2024 11:31:38 +0000 (UTC)
+From: kde@carewolf.com
+To: lains@riseup.net,
+	hadess@hadess.net,
+	jikos@kernel.org,
+	benjamin.tissoires@redhat.com,
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Allan Sandfeld Jensen <allan.jensen@qt.io>,
+	Allan Sandfeld Jensen <kde@carewolf.com>
+Subject: [PATCH] Add Logitech HID++ devices
+Date: Wed, 24 Apr 2024 13:31:30 +0200
+Message-Id: <20240424113130.60386-1-kde@carewolf.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Monday 15 April 2024 20:31:14 CEST Hans de Goede wrote:
-> Hi,
-> 
-> On 4/15/24 5:54 PM, Benjamin Tissoires wrote:
-> > [Ccing Hans as well for input]
-> > 
-> > On Apr 13 2024, kde@carewolf.com wrote:
-> >> From: Allan Sandfeld Jensen <allan.jensen@qt.io>
-> > 
-> > FWIW, this patch neesd a commit description and signed-offs
-> > 
+From: Allan Sandfeld Jensen <allan.jensen@qt.io>
 
-Will add.
+Adds a few recognized Logitech HID++ capable mice over USB and Bluetooth
 
-> 
-> FWIW I'm also not in favor of stretching drivers/hid/hid-logitech-dj.c
-> even further to also support the new bolt stuff.
-> 
-> AFAIK the new bolt stuff is significantly different.
-> 
-> Allan, I see in your other reply that you are mainly after
-> highres scrolling and since the bolt receiver does not do
-> per paired device addressing I wonder if you cannot just
-> get that by treating the bolt receiver as a wired HIDPP
-> device and just directly listing it as such in
-> hid-logitech-hidpp.c ?
-> 
-> The whole purpose of hid-logitech-dj.c is to create 1 virtual
-> hidpp devices per paired device and with bolt that is not
-> possible, so I think that we should circumvent hid-logitech-dj.c
-> for bolt and if we want to use any hidpp features do so
-> by directly listing the receivers in hid-logitech-hidpp.c .
-> 
-I think the bolt receiver is able to separate devices, but yes, it appears the 
-way it transmits device IDs and pairs has changed (some new registers it looks 
-like). I am removing this part of the patch. I am not adding the Bolt receiver 
-to hid-logitech-hidpp.c either though, because it doesnt work for me, and I 
-havent invested time yet to figure out what would be needed to get it to work.
+Signed-off-by: Allan Sandfeld Jensen <kde@carewolf.com>
+---
+ drivers/hid/hid-logitech-hidpp.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-I will transmit a patch with just the new bluetooth ID, and add a few more I 
-managed to find to fill out hid-logitech-hidpp.c
-
-Best regards
-Allan Sandfeld Jensen
-
+diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
+index 3c00e6ac8e76..6907b8c48c4e 100644
+--- a/drivers/hid/hid-logitech-hidpp.c
++++ b/drivers/hid/hid-logitech-hidpp.c
+@@ -4352,13 +4352,17 @@ static const struct hid_device_id hidpp_devices[] = {
+ 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC081) },
+ 	{ /* Logitech G903 Gaming Mouse over USB */
+ 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC086) },
++	{ /* Logitech G Pro Gaming Mouse over USB */
++	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC088) },
++	{ /* MX Vertical over USB */
++	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC08A) },
++	{ /* Logitech G703 Hero Gaming Mouse over USB */
++	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC090) },
+ 	{ /* Logitech G903 Hero Gaming Mouse over USB */
+ 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC091) },
+ 	{ /* Logitech G920 Wheel over USB */
+ 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_G920_WHEEL),
+ 		.driver_data = HIDPP_QUIRK_CLASS_G920 | HIDPP_QUIRK_FORCE_OUTPUT_REPORTS},
+-	{ /* Logitech G Pro Gaming Mouse over USB */
+-	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC088) },
+ 
+ 	{ /* MX5000 keyboard over Bluetooth */
+ 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb305),
+@@ -4373,13 +4377,19 @@ static const struct hid_device_id hidpp_devices[] = {
+ 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb008) },
+ 	{ /* MX Master mouse over Bluetooth */
+ 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb012) },
++	{ /* MX Master 2S mouse over Bluetooth */
++	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb019) },
+ 	{ /* MX Ergo trackball over Bluetooth */
+ 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb01d) },
+ 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb01e) },
++	{ /* MX Vertical mouse over Bluetooth */
++	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb020) },
+ 	{ /* MX Master 3 mouse over Bluetooth */
+ 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb023) },
+ 	{ /* MX Master 3S mouse over Bluetooth */
+ 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb034) },
++	{ /* MX Anywhere 3SB mouse over Bluetooth */
++	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb038) },
+ 	{}
+ };
+ 
+-- 
+2.39.2
 
 
