@@ -1,105 +1,92 @@
-Return-Path: <linux-kernel+bounces-157627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60BF98B13C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:50:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA6A08B13CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:51:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DBFE28831F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:50:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77FF9288348
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:51:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EBB613B582;
-	Wed, 24 Apr 2024 19:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FFB413BAE7;
+	Wed, 24 Apr 2024 19:51:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ul/oMFKP"
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="db4GSOgl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95CD6139CEE
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 19:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1DC81F5E6;
+	Wed, 24 Apr 2024 19:51:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713988218; cv=none; b=GsBUj05dKUYmBqdwTLvLFNjKgHDOXHbdTUjBp8xhKO4/JJtNbt9MObNdeE2b1g67EbEmQvVpqfhSDeZBevU/qXWnqKY09h55Ips7iBhmlSJE7iIV3ZjhT1Fz37Df5iY7EILaableeobxdJKAonQ0Rb3muobPCqC+eO/9MuVQk2I=
+	t=1713988307; cv=none; b=fwsRyXwm+0CH+K5uO9Z3I3teIhqmnYHhFGAVfJnvRObDQofrf2GUh3bx2134A7XCfmDSZEMpmU9RaieoAGjm33UFLX/053zYddxV2IESQqG6L2FeXh7Epmg4cS0htLKrc8kVv308X4qbqyQl4VqwxNrD/rYrraBRSwcCuVujMZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713988218; c=relaxed/simple;
-	bh=ty3ip0sNPfKUE4Qqy3CsV/iJ4rBvAvrZqSfPSwTYlRI=;
+	s=arc-20240116; t=1713988307; c=relaxed/simple;
+	bh=jtmAwDifDGJc40Ti3DRzPkHknfQW48k+SMlypzp4lZs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qdJT5C/2Q/kk/+EoI4XAh7U2PjJ0Vwjuqyu2ASwSK/PD6Mvh4rUMvrx/zm9DzpFxgBeSxkUCe/voN5sEeUhE8X80m9gJSLflt9vydWo2PoW+nJ+hjWmIwfu7TQ8NAMceFGlDxpjMhEAzQBdjirp/piDhjAlT2aFuct69sRpjPAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ul/oMFKP; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 24 Apr 2024 12:50:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713988213;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Hk4Hjf7MO1vgoycrQr13hwP52DhwjBNF8O6idPkuyDo=;
-	b=Ul/oMFKP3dKHsGVy/pJ1kPeMNR7LtzOTJ2czKmpnMyMG72gr6xDzmIAzTSaYAyofYcQXAX
-	Bo1J72cDI101j1Z57LZ9MfLIN5KasMGqH9Ueaav5Ib+QH6C9DYq4GHiMcd9Kf4csLE6Fja
-	NU9Kyf9zCpqkm3UrQtUYh90eO8Yq0Cc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Breno Leitao <leitao@debian.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, leit@meta.com, 
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>, 
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <linux-mm@kvack.org>, open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: Fix data-race KCSAN bug in rstats
-Message-ID: <dd6awhn7caxnctqluenr5gwll5yiea667awbxkqe4etjd5qdqj@6wndcuobiodg>
-References: <20240424125940.2410718-1-leitao@debian.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GAE3izWFWBbHVtnhALdJA1WhZxb44GfR3RUlPq4X2KfScn/gHoR+1+UY/M3JCYUoHwm51+b3S/qwUAxKqvho+no9lOHJO+2bchiITayiPTEJeunQDyUf6iaThkBV1tkdlnFpks8pQjL7RdAEo+nesB6XMcngw3pGRjML3NXBGTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=db4GSOgl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA47BC113CD;
+	Wed, 24 Apr 2024 19:51:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713988307;
+	bh=jtmAwDifDGJc40Ti3DRzPkHknfQW48k+SMlypzp4lZs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=db4GSOglHvJENshh/vuBu/MLHkqgfDPrR2ydUtSVPJW1JBWLfYzHD1EI/2jFTjMFU
+	 0qKcqROUzsG5HeNOHNV0wC+nNbhxA1OjgvPLxNoER+83PNobrfSjTsfoTsXjTnbKH2
+	 Hxvc7HvrRGU6Sp/ghYnWzpcWIyOSBxBsWa64WEEVFSi08Lm9tcpfYbFdEOjuTd/FsW
+	 AWhlGaFX6Najj/9S/Lm5mhtUdQ73nsUJjp6HhavsN+3rzArL3v5KBaQHyGiwzSR7Pu
+	 LgcQHjxXucVDpuy6qa3wcDJEFVrlfIuJkzCMaM9+3ryonnulvfCNMgqky3vx+lELhP
+	 55v+0hyja4Wrw==
+Date: Wed, 24 Apr 2024 14:51:44 -0500
+From: Rob Herring <robh@kernel.org>
+To: Peter Griffin <peter.griffin@linaro.org>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, krzk+dt@kernel.org,
+	conor+dt@kernel.org, vkoul@kernel.org, kishon@kernel.org,
+	alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
+	s.nawrocki@samsung.com, cw00.choi@samsung.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, James.Bottomley@hansenpartnership.com,
+	ebiggers@kernel.org, linux-scsi@vger.kernel.org,
+	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-clk@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	tudor.ambarus@linaro.org, andre.draszik@linaro.org,
+	saravanak@google.com, willmcvicker@google.com
+Subject: Re: [PATCH v2 01/14] dt-bindings: clock: google,gs101-clock:  add
+ HSI2 clock management unit
+Message-ID: <20240424195144.GA360683-robh@kernel.org>
+References: <20240423205006.1785138-1-peter.griffin@linaro.org>
+ <20240423205006.1785138-2-peter.griffin@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240424125940.2410718-1-leitao@debian.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240423205006.1785138-2-peter.griffin@linaro.org>
 
-On Wed, Apr 24, 2024 at 05:59:39AM -0700, Breno Leitao wrote:
-> A data-race issue in memcg rstat occurs when two distinct code paths
-> access the same 4-byte region concurrently. KCSAN detection triggers the
-> following BUG as a result.
+On Tue, Apr 23, 2024 at 09:49:53PM +0100, Peter Griffin wrote:
+> Add dt schema documentation and clock IDs for the High Speed Interface
+> 2 (HSI2) clock management unit. This CMU feeds high speed interfaces
+> such as PCIe and UFS.
 > 
-> 	BUG: KCSAN: data-race in __count_memcg_events / mem_cgroup_css_rstat_flush
-> 
-> 	write to 0xffffe8ffff98e300 of 4 bytes by task 5274 on cpu 17:
-> 	mem_cgroup_css_rstat_flush (mm/memcontrol.c:5850)
-> 	cgroup_rstat_flush_locked (kernel/cgroup/rstat.c:243 (discriminator 7))
-> 	cgroup_rstat_flush (./include/linux/spinlock.h:401 kernel/cgroup/rstat.c:278)
-> 	mem_cgroup_flush_stats.part.0 (mm/memcontrol.c:767)
-> 	memory_numa_stat_show (mm/memcontrol.c:6911)
-> <snip>
-> 
-> 	read to 0xffffe8ffff98e300 of 4 bytes by task 410848 on cpu 27:
-> 	__count_memcg_events (mm/memcontrol.c:725 mm/memcontrol.c:962)
-> 	count_memcg_event_mm.part.0 (./include/linux/memcontrol.h:1097 ./include/linux/memcontrol.h:1120)
-> 	handle_mm_fault (mm/memory.c:5483 mm/memory.c:5622)
-> <snip>
-> 
-> 	value changed: 0x00000029 -> 0x00000000
-> 
-> The race occurs because two code paths access the same "stats_updates"
-> location. Although "stats_updates" is a per-CPU variable, it is remotely
-> accessed by another CPU at
-> cgroup_rstat_flush_locked()->mem_cgroup_css_rstat_flush(), leading to
-> the data race mentioned.
-> 
-> Considering that memcg_rstat_updated() is in the hot code path, adding
-> a lock to protect it may not be desirable, especially since this
-> variable pertains solely to statistics.
-> 
-> Therefore, annotating accesses to stats_updates with READ/WRITE_ONCE()
-> can prevent KCSAN splats and potential partial reads/writes.
-> 
-> Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+> Reviewed-by: André Draszik <andre.draszik@linaro.org>
+> ---
+>  .../bindings/clock/google,gs101-clock.yaml    | 30 ++++++++-
+>  include/dt-bindings/clock/google,gs101.h      | 63 +++++++++++++++++++
+>  2 files changed, 91 insertions(+), 2 deletions(-)
 
-Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+This collides with André's work adding HSI0. Perhaps combine the series 
+or even the patches and just send clocks as a series. Then it is clear 
+who should merge it.
+
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+
+Rob
 
