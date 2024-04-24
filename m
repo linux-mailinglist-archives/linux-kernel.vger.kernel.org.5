@@ -1,196 +1,175 @@
-Return-Path: <linux-kernel+bounces-157844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8561A8B1725
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:33:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2F7B8B1722
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:33:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2D431F21518
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:33:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2154B27F38
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80EA716F287;
-	Wed, 24 Apr 2024 23:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACEAD16F0F9;
+	Wed, 24 Apr 2024 23:33:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nUkFi/JU"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JNGdYPC3"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ABCC16F0DD;
-	Wed, 24 Apr 2024 23:33:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C4E157467;
+	Wed, 24 Apr 2024 23:33:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714001619; cv=none; b=MCzVjkQens6/dWvDKqY7YlfC2xcT07ALX2qtGXIq6y+/E/w0Q8+yG+gS64Pid9p2VSlbZtzXYgps0Oig8+Y7uZilYua183cN1RAmvOgzMDFuOnvn6H7X+xamWh0aKdTp8p97txa64wYaID2fugVlqGoCGUxElgTkmqECJd9PB10=
+	t=1714001611; cv=none; b=amDzGLBGjSWTXOsFNA5E1K69IBTwzKDnsgF6LlhhffKnp9VyVGElwQ9p44OgOoTkVfXyICjCuydYVtYFQ0TXRIcHj/n2btLHJ0EHoJDCdvmgV8lMbfhscQB7hha9zznIkd3kT73y54WQMQUTJBHlg0TNlUOKUKoXzSc+qV26gvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714001619; c=relaxed/simple;
-	bh=RIgE5n3pL6jeQnQkBJoRkDShHjgY8jnKMIghJf4yJ2s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=euFkU1pikNmEWFnxtW7s5MTbhLBBbTcyS7spOcbsM2olbOdo+3oD5w/6Zd9Gr/TeBZRYuqQXSYLtLKvquq2V6Kt2PLBfkiFlKSTseJlBTv4YfkYBEvx1phvJsSf59WZ8n7xqJ00rhE5QWwyfm30uVKH6m30GS/jmAXB7/NEzG4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nUkFi/JU; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714001618; x=1745537618;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RIgE5n3pL6jeQnQkBJoRkDShHjgY8jnKMIghJf4yJ2s=;
-  b=nUkFi/JUqd5/lhtVtjLzNNRvAoG+uVUwZG/SNhQ2JpYy9E0qG3L8Dy+D
-   7CJSTxz/75+AlMe5aFlPhciXij8cSRjRgwmzUf2wfKwOBLG00E+yo9Ehm
-   aJX0mUDIihqPkZfSzukYVg/Pfgv6nDilOQGh0U4T2nEELWOzJpjQSyfPl
-   7iVQOcAwsxT9rz81x3zO5Ve4lD7W2vBWyMB77F+0yz+1Bob6UpuUoRTi3
-   W7DsPAKHHkLJISgMoe5VOxoLgaYNUU/tFwJjQQ+dOAxSAkUZxyEQRMj9S
-   Wi6gUryWCBYQYWHudxhKulF2yzG89e9tuYpv/X4+j/qtvHjg6TCt/C0bG
-   Q==;
-X-CSE-ConnectionGUID: O1b7S63XRrKvmSQBY4+7NQ==
-X-CSE-MsgGUID: zAY3AF7yThqdWRjByzBiRA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9589678"
-X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
-   d="scan'208";a="9589678"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 16:33:37 -0700
-X-CSE-ConnectionGUID: 4g0UrdBoQrilGb7Ep/RgRw==
-X-CSE-MsgGUID: K1w0tqhpQZ+bEtHASv2FDw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
-   d="scan'208";a="24916325"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa007.fm.intel.com with ESMTP; 24 Apr 2024 16:33:35 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rzm7I-0001m2-0t;
-	Wed, 24 Apr 2024 23:33:32 +0000
-Date: Thu, 25 Apr 2024 07:32:49 +0800
-From: kernel test robot <lkp@intel.com>
-To: Longfang Liu <liulongfang@huawei.com>, alex.williamson@redhat.com,
-	jgg@nvidia.com, shameerali.kolothum.thodi@huawei.com,
-	jonathan.cameron@huawei.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linuxarm@openeuler.org, liulongfang@huawei.com
-Subject: Re: [PATCH v5 4/5] hisi_acc_vfio_pci: register debugfs for hisilicon
- migration driver
-Message-ID: <202404250711.4mzD3Fe0-lkp@intel.com>
-References: <20240424085721.12760-5-liulongfang@huawei.com>
+	s=arc-20240116; t=1714001611; c=relaxed/simple;
+	bh=e+aCLPbcPlDLfPUYayoRXVY0kNFxuHQq2VVN1J3ih7s=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=A1u1vOo4K842vbIzZDJhbiXrOJbbccpxhxIaXUpv6/aGeHWw7TQKYv9rnd94otfXYcAsmSGHAxfOW85DVyTdc79jhZWHKCohpRXf+5iUNBe2BIWOII0Sy8NP5gPJ0D+PzF00ZmzsHYi+uXuYcbnKrig8WyWmYEIk57jzXlUuC2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JNGdYPC3; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d3907ff128so339048a12.3;
+        Wed, 24 Apr 2024 16:33:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714001609; x=1714606409; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=I7NiIAhTpcmiU3yqLyIwWWgKXM9g6jW61ojyM0IUSi8=;
+        b=JNGdYPC3agpFzIkryeOalQSBAvTUfCTDlfX6kl3MuVWGMrf8DijfCOS+x8GqqNqB9/
+         ymsP5amsEZmdSe3tAytXg95FZWZVsgZFzm0UsGJRZRw7Xkxp5yv+LDq+ydWu/uv7jmE1
+         D02/hF5mTuC5ZNZZqQzbqe4rYB0fVstlYp8x7vYa7wGYWKbqMvBYRWgktz6dA7dJg/Wa
+         MllhkZe4zqrnQYRYDR9B1YY1LW1wUdY1pfrPHVG4rljZTFD/AqqRGz+f3yF+bNHWdtFg
+         cLuyfuMu6KM02S2CgNQ1bw+7apl8BsO+2+/TIKwBUamjCMFGB1fq4kDsZ4TcqnDYeflK
+         yUPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714001609; x=1714606409;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=I7NiIAhTpcmiU3yqLyIwWWgKXM9g6jW61ojyM0IUSi8=;
+        b=LpmUWR7lAf/0+C9xoHA3bHYZ5LkPYfqbqmHkMr9D/LDtTcNVjIAXp00h/O/Mu9MhKQ
+         OvB+YfySQSPvKfgBA61DG+/fzsB8miLBlZ8isNC5K4Q803P2sb0g6lWrQJyY+x9j7yUU
+         sPMTW8Jc4CVxkM7j8k0ZuPOq3WCdg15xDbeQoMJhva99JMA2XBNkbBcYGxwEh+s1p9Qb
+         c5BlSF6GzXsyjP/p78MhkxjdmkDQEt+2vhSN64/+/f5FdrFNaJl3+A+0+avweXt5hLwZ
+         0gNnDpvBvvOd+yoz5QKcuEhFv2fHMD2TYN5of8zv+7S72b7HHgFJqVgswKpW1TFSfuiZ
+         T98g==
+X-Forwarded-Encrypted: i=1; AJvYcCVruZMa1NuIfo8CW2L55rXHHU8o8PV2QWQODM/LHIk+hE7VZnNajyKCU6Un8vfJaWRktsc4/rBihKQTSxdMgpWx9BIvbli/4RoN97ov0O+p2eK4LNYYXKpHHSLcJ+cNWc0b
+X-Gm-Message-State: AOJu0Yym9RrvZmh18Gpw5Yn7pMwjHrhB0oxx4jQTHxe0CwG+b9Q5B5AC
+	TtaAqzTGQfp7Oc6Yyoh7BcleuR+Jg1LNSQKJHn0iTLKKRFxZk+nx
+X-Google-Smtp-Source: AGHT+IEra6fKeChfPGHN7McwVRueAMrqdfxDMjJdTUOkg6c/GSxPPScmZ9DnEVL9dPZEVMDxSAI+xw==
+X-Received: by 2002:a05:6a20:244d:b0:1a9:11e4:72b6 with SMTP id t13-20020a056a20244d00b001a911e472b6mr5307015pzc.57.1714001608824;
+        Wed, 24 Apr 2024 16:33:28 -0700 (PDT)
+Received: from ?IPv6:2604:3d08:9880:5900:4d59:11ad:4924:e022? ([2604:3d08:9880:5900:4d59:11ad:4924:e022])
+        by smtp.gmail.com with ESMTPSA id u26-20020aa7839a000000b006e53cc789c3sm12028230pfm.107.2024.04.24.16.33.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 16:33:28 -0700 (PDT)
+Message-ID: <b49224dbc89bd304a5c20eef4430dfea40f4b6a5.camel@gmail.com>
+Subject: Re: [RFC PATCH bpf-next] libbpf: print character arrays as strings
+ if possible
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Quentin Deslandes <qde@naccy.de>, bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,  Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ linux-kernel@vger.kernel.org,  kernel-team@meta.com
+Date: Wed, 24 Apr 2024 16:33:27 -0700
+In-Reply-To: <20240413213904.146261-1-qde@naccy.de>
+References: <20240413213904.146261-1-qde@naccy.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424085721.12760-5-liulongfang@huawei.com>
 
-Hi Longfang,
+On Sat, 2024-04-13 at 23:39 +0200, Quentin Deslandes wrote:
+> Introduce the new print_strings flag in btf_dump_type_data_opts. If
+> enabled, libbpf will print character arrays as strings if they meet the
+> following conditions:
+> - Contains a nul-termination character ('\0')
+> - Contains only printable characters before the nul-termination character
+>=20
+> If print_strings is set to false (default value), the existing
+> behavior remains unchanged.
+>=20
+> With print_strings=3Dfalse:
+> .str_array =3D (__u8[14])[
+>     'H',
+>     'e',
+>     'l',
+>     'l',
+>     'o',
+> ],
+>=20
+> With print_strings=3Dtrue:
+> .str_array =3D (__u8[14])"Hello",
+>=20
+> Signed-off-by: Quentin Deslandes <qde@naccy.de>
+> ---
 
-kernel test robot noticed the following build errors:
+Hi Quentin,
 
-[auto build test ERROR on awilliam-vfio/next]
-[also build test ERROR on linus/master v6.9-rc5 next-20240424]
-[cannot apply to awilliam-vfio/for-linus]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thank you for this patch, sorry for the delay reviewing it.
+Could you please also add a few tests in
+tools/testing/selftests/bpf/prog_tests/btf_dump.c ?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Longfang-Liu/hisi_acc_vfio_pci-extract-public-functions-for-container_of/20240424-170806
-base:   https://github.com/awilliam/linux-vfio.git next
-patch link:    https://lore.kernel.org/r/20240424085721.12760-5-liulongfang%40huawei.com
-patch subject: [PATCH v5 4/5] hisi_acc_vfio_pci: register debugfs for hisilicon migration driver
-config: riscv-allmodconfig (https://download.01.org/0day-ci/archive/20240425/202404250711.4mzD3Fe0-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 5ef5eb66fb428aaf61fb51b709f065c069c11242)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240425/202404250711.4mzD3Fe0-lkp@intel.com/reproduce)
+[...]
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404250711.4mzD3Fe0-lkp@intel.com/
+> @@ -2021,6 +2022,21 @@ static int btf_dump_var_data(struct btf_dump *d,
+>  	return btf_dump_dump_type_data(d, NULL, t, type_id, data, 0, 0);
+>  }
+>=20
+> +static bool btf_dump_isprint_str(const char *data, unsigned int len)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i =3D 0; i < len; ++i) {
+> +		if (data[i] =3D=3D '\0')
+> +			return true;
+> +
+> +		if (!isprint(data[i]))
+> +			return false;
 
-All error/warnings (new ones prefixed by >>):
+Would it make sense to use isprint_l() and specify something like C locale?=
+=20
 
-   In file included from drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c:9:
-   In file included from include/linux/hisi_acc_qm.h:10:
-   In file included from include/linux/pci.h:38:
-   In file included from include/linux/interrupt.h:21:
-   In file included from arch/riscv/include/asm/sections.h:9:
-   In file included from include/linux/mm.h:2208:
-   include/linux/vmstat.h:508:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     508 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     509 |                            item];
-         |                            ~~~~
-   include/linux/vmstat.h:515:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     515 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     516 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
-   include/linux/vmstat.h:527:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     527 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     528 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:536:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     536 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     537 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
->> drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c:1370:46: error: too few arguments provided to function-like macro invocation
-    1370 |         dev_err("mailbox cmd channel state is OK!\n");
-         |                                                     ^
-   include/linux/dev_printk.h:143:9: note: macro 'dev_err' defined here
-     143 | #define dev_err(dev, fmt, ...) \
-         |         ^
->> drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c:1370:2: error: use of undeclared identifier 'dev_err'; did you mean '_dev_err'?
-    1370 |         dev_err("mailbox cmd channel state is OK!\n");
-         |         ^~~~~~~
-         |         _dev_err
-   include/linux/dev_printk.h:50:6: note: '_dev_err' declared here
-      50 | void _dev_err(const struct device *dev, const char *fmt, ...);
-         |      ^
->> drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c:1370:2: warning: expression result unused [-Wunused-value]
-    1370 |         dev_err("mailbox cmd channel state is OK!\n");
-         |         ^~~~~~~
-   6 warnings and 2 errors generated.
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>  static int btf_dump_array_data(struct btf_dump *d,
+>  			       const struct btf_type *t,
+>  			       __u32 id,
+> @@ -2047,8 +2063,14 @@ static int btf_dump_array_data(struct btf_dump *d,
+>  		 * char arrays, so if size is 1 and element is
+>  		 * printable as a char, we'll do that.
+>  		 */
+> -		if (elem_size =3D=3D 1)
+> +		if (elem_size =3D=3D 1) {
+>  			d->typed_dump->is_array_char =3D true;
+> +			if (d->typed_dump->print_strings &&
+> +					btf_dump_isprint_str(data, array->nelems)) {
+> +				btf_dump_type_values(d, "\"%s\"", data);
 
+Note: this would have to deal with escape sequences,
+otherwise strings containing '\' would be printed incorrectly.
 
-vim +1370 drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+> +				return 0;
+> +			}
+> +		}
+>  	}
+>=20
+>  	/* note that we increment depth before calling btf_dump_print() below;
 
-  1345	
-  1346	static int hisi_acc_vf_debug_cmd(struct seq_file *seq, void *data)
-  1347	{
-  1348		struct device *vf_dev = seq->private;
-  1349		struct vfio_pci_core_device *core_device = dev_get_drvdata(vf_dev);
-  1350		struct vfio_device *vdev = &core_device->vdev;
-  1351		struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_get_vf_dev(vdev);
-  1352		struct hisi_qm *vf_qm = &hisi_acc_vdev->vf_qm;
-  1353		u64 value;
-  1354		int ret;
-  1355	
-  1356		mutex_lock(&hisi_acc_vdev->enable_mutex);
-  1357		ret = hisi_acc_vf_debug_check(seq, vdev);
-  1358		if (ret) {
-  1359			mutex_unlock(&hisi_acc_vdev->enable_mutex);
-  1360			return ret;
-  1361		}
-  1362	
-  1363		value = readl(vf_qm->io_base + QM_MB_CMD_SEND_BASE);
-  1364		if (value == QM_MB_CMD_NOT_READY) {
-  1365			mutex_unlock(&hisi_acc_vdev->enable_mutex);
-  1366			dev_err(vf_dev, "mailbox cmd channel not ready!\n");
-  1367			return -EINVAL;
-  1368		}
-  1369		mutex_unlock(&hisi_acc_vdev->enable_mutex);
-> 1370		dev_err("mailbox cmd channel state is OK!\n");
-  1371	
-  1372		return 0;
-  1373	}
-  1374	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+[...]
 
