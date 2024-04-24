@@ -1,130 +1,113 @@
-Return-Path: <linux-kernel+bounces-156747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32ED98B07A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:47:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73B378B07A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:49:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7F891F234FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:47:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CC3C283910
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFA8B159584;
-	Wed, 24 Apr 2024 10:47:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE69E1598F9;
+	Wed, 24 Apr 2024 10:49:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qn5tlYpf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="HZWPnBpY"
+Received: from mout.web.de (mout.web.de [212.227.17.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 036D941C63
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 10:47:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5DB3EA66;
+	Wed, 24 Apr 2024 10:49:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713955669; cv=none; b=MmQfO1ha8WUDnWY1I1PBQD0rvA4D0gmoR+LDpNojU2u8Hv7j9kYH7W39xQUbGKFCxg+rlRQq6E1im/qr2JGJdyCSPQr8OcIlNLrxRET4b4pf+Q5PvfVnKme/MXnhuMP160s87xbQnZYVI2qiqx//hoRvsoYEA/O/stWgoeczQeE=
+	t=1713955764; cv=none; b=KSjt6QNduziLR2PweJEhSu/JVxU1+drhLpXj5UKWW2ic8PZ30exCORpEuNM9Wc6Mo+lJRxRkx7fxBrMN6ysmZoMyVkyko8DejixAeeVGccjXmlmRBqnxeYfUua0drdiTSl4GiTzATKOQgx0kagzF0qsDZNj5W9EJvQfldCSnKaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713955669; c=relaxed/simple;
-	bh=Es+BLiCAY4cW/MeeZ/D/X2HEXZPjviuh/l6QAzLU2PY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WseyC8H1PAHTycqB+uMBMyeS5GixX44RGQErMnKl2MtN17/L4cfO/bXY/P6de7u5on8cZHtznVA2bxUqwHqtPmuLlIf7yQ1zWISXBn/FKsY2ATp7bQNPSDOmPho+akUocz6U3FgI+VeEzk3oJQ6MiC5CvUYVGEcjvB9mexSibdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qn5tlYpf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62473C113CE;
-	Wed, 24 Apr 2024 10:47:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713955668;
-	bh=Es+BLiCAY4cW/MeeZ/D/X2HEXZPjviuh/l6QAzLU2PY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Qn5tlYpfbEmImm04g9ins0hFSOHkz+yFWGzZr+QtYeABdX8xBxfg4fqfZW2OKV1Bq
-	 kIjCDrVCY+wVlQ/QL6VkLb4MilbJDezOeUNprqzO+6N0nOb5qm48lNua0efGwjIgw6
-	 oWcy/zie6KHj0pDOTkdVONfuiu882YcaKWpTvYa0dF6Td4+FgKTOc58x6pSjI0Lp3m
-	 JpKj2XLjPJd+VSjtMKA744jyk/zuL7R7qsyErtlgavEq2RGYhjFqUvKe6GAa31noac
-	 87dUTQfNevj85bruXkfmlYpqpuC/jTAf4CfbwkcaE9V+95iZ6a8w/T4e5pQrrz1pe3
-	 ueIh9nTKdx1/w==
-Date: Wed, 24 Apr 2024 11:47:45 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/7] riscv: Simplify text patching loops
-Message-ID: <20240424-gallows-resilient-c46a69705a0c@spud>
-References: <20240327160520.791322-1-samuel.holland@sifive.com>
- <20240327160520.791322-5-samuel.holland@sifive.com>
- <20240424-cranial-punch-27b38726d3f7@spud>
+	s=arc-20240116; t=1713955764; c=relaxed/simple;
+	bh=Yee0/Osb8LuV3ZB2AQuxep76YOpKew5FVBEd5LX1IP0=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=g6AsjhaG48kDI5i1DRtoMKNyJ9Z5WoYYwtxpNFBZGBMF9DqFB5tUPD7wZ3b7LqUINkYPWLvzqosuNvubTSslW0E33Pmi2MjMkzf6ef8QL5XIpULm/LdqzEvx5Y6SNZBIb0OfzGZ3sdIIVz4xTATZBvRiZvVYlBQ4ourWFwnh9v8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=HZWPnBpY; arc=none smtp.client-ip=212.227.17.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713955735; x=1714560535; i=markus.elfring@web.de;
+	bh=Qk2Z9Ur/axCDf3ITMI3JPxcQXOHmAKvjUk3aT8fYJig=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=HZWPnBpYG78wi6FtGgGW3nJxdpOlFMEO+jprXyl+stSY2M6NWD90qe16+McfvgpC
+	 o6lXPzI2TjHFnCyQ5FySjnsIelOoHiir71RG6MBagMPIJJ1NLL8CfBrsMvCetMswa
+	 qNqA13j1gXp9ovCSuuXpqYz6T6ixxCnSHolZm5dTEVid+pzZ2wrd5LtHT2ioEOA7T
+	 aNt+2zWlxkUApJtNNuYPiEgSbLdqQnI8u88a96IgK6tWF5gxhfRp9Mn315ELA4njF
+	 6DBuWWTweleB4i5mLhc85HeDIoEPiFrNihua+Hbe4RSVuWUuOShiwz5r3d35qU4jB
+	 FoAKx/wrycVpbbfqfA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1N62yY-1sjZ4I3ftQ-016hUt; Wed, 24
+ Apr 2024 12:48:54 +0200
+Message-ID: <bf6e727e-a28c-4605-8a47-ac33550ebb10@web.de>
+Date: Wed, 24 Apr 2024 12:48:53 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="URBwmoCtPsB1XCmP"
-Content-Disposition: inline
-In-Reply-To: <20240424-cranial-punch-27b38726d3f7@spud>
-
-
---URBwmoCtPsB1XCmP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+To: Kunwu Chan <chentao@kylinos.cn>, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman
+ <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+ Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>
+Cc: LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <kunwu.chan@hotmail.com>
+References: <20240424020444.2375773-5-chentao@kylinos.cn>
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Add a null pointer check for
+ the serial_test_tp_attach_query
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240424020444.2375773-5-chentao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:c7wSIBl9mvxe/oo1tdl2vCRED6SYaYM8u6v4WauSkzejejYjAAt
+ np5HfYpoZymH9VE+IZbNGK7UqHxxYOoeUNdeHlUWsqagJoj7pULCM6DnYHOSFT7WVDt91ul
+ agYKJlHPB1bpxlkv27osy0n4hLtJv25QQFmLZR/q4HZ3wmS+4Iuj4o0oBrxiFbHlhoBgknI
+ ktcCV5r86GvRaGWcBc6NA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:H46wqUsSReI=;BwoCsKVvVwzyZjotKK3Nz6BIaFO
+ X/dcVBjZ2kBDBNMpqeYhSD5fE4tCWcZ5jrxWULfBXJAr2EutOXOpgl1G0qu2H3JLazNGIZVPS
+ PM3RpIj+qFRp+vdy3Ekyl05Ku4BzhxAToEeppc2Sv2tTdwxTHyMf/mCeXrQMdsidwROXDXLvp
+ Cu6rZ90AVRNrMFDZLaPWZlpOT2cXZmxhC2waj+amMoPIGSxaT+FaIZKmSRdkT7SUXoRSOTdTo
+ TEMcOXkYh4hwLboXRK06KVbg8ZT2D7xqBiwJKuFNFYeJqwSPLwdgaKvNwMT+Pz4d6BM1bcLh0
+ HbXWTr41j4LCOCkZ8lhAipr05tDtXE1tZp57zSVaJItwuy8zEGYUB5cggXlscrTIOBU6wN800
+ AMloERz30e2+6F7R4AaD2gDpqUZVAK2EwW9C5wjxvQ+Yvp2tadPg6SG3b6BI/HM0wUTCUNsvz
+ Ni1pVUsjoAjvqWRsJiBAMVv81/lU1vNujxtgJxIeukmuxGBspmv3pxl+FH/MPalJL680Ekb+w
+ Ka+hYTjJk9qkGtisXZx9m8hNtlnZjvr/jKNG5ZS64tSKMvuRJN4sm3n5nXn3e3neO2LHewWus
+ Vj84ewHD4KZiRzHWtEyU7FVismC0UQ7sQm4nWC7uGj+0854UawZM24d+FvjDho0Nijsx/DJHw
+ GB2ZLGjCyZwR1q7Ok1SbWRlaZGegWyTnvNHv7OpKBLv2Og5WTpnK27cvgmEMhUTEnXpIBHz7m
+ Ad+oF+tdWJDq0DGgfDmy5cXeSPD8fuIVmylzy1pfQGotMlo8T5P8/VlFztNfRdmyc5P7i3fks
+ ltS7ZFjcRL36hJQsO/0M8GegraZ6hIMpp0ZHvYwIvjQug=
 
-On Wed, Apr 24, 2024 at 11:44:17AM +0100, Conor Dooley wrote:
-> On Wed, Mar 27, 2024 at 09:04:43AM -0700, Samuel Holland wrote:
-> > This reduces the number of variables and makes the code easier to parse.
-> >=20
-> > Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> > ---
-> >=20
-> > Changes in v2:
-> >  - Further simplify patch_insn_set()/patch_insn_write() loop conditions
-> >  - Use min() instead of min_t() since both sides are unsigned long
-> >=20
-> >  arch/riscv/kernel/patch.c | 37 +++++++++++++++++++++----------------
-> >  1 file changed, 21 insertions(+), 16 deletions(-)
-> >=20
-> > diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-> > index 9a1bce1adf5a..0d1700d1934c 100644
-> > --- a/arch/riscv/kernel/patch.c
-> > +++ b/arch/riscv/kernel/patch.c
-> > @@ -155,22 +155,24 @@ NOKPROBE_SYMBOL(__patch_insn_write);
-> > =20
-> >  static int patch_insn_set(void *addr, u8 c, size_t len)
-> >  {
-> > -	size_t patched =3D 0;
-> >  	size_t size;
-> > -	int ret =3D 0;
-> > =20
-> >  	/*
-> >  	 * __patch_insn_set() can only work on 2 pages at a time so call it i=
-n a
-> >  	 * loop with len <=3D 2 * PAGE_SIZE.
-> >  	 */
-> > -	while (patched < len && !ret) {
-> > -		size =3D min_t(size_t, PAGE_SIZE * 2 - offset_in_page(addr + patched=
-), len - patched);
-> > -		ret =3D __patch_insn_set(addr + patched, c, size);
-> > -
-> > -		patched +=3D size;
-> >  	}
-> > =20
-> > -	return ret;
-> >  }
->=20
-> Weren't these actively wrong before, if a non-ultimate
-> __patch_insn_set() failed we'd just ignore the error?
+=E2=80=A6
+> Add the malloc failure checking to avoid possible null
+> dereference.
+=E2=80=A6
 
-nvm, failure to read on my part..
+How do you think about to use the following wording variant?
 
---URBwmoCtPsB1XCmP
-Content-Type: application/pgp-signature; name="signature.asc"
+   Add a return value check so that a null pointer dereference will be avo=
+ided
+   after a memory allocation failure.
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZijjUQAKCRB4tDGHoIJi
-0jnJAQCZwXvp86ggmW7AzqfFnAHTSRh+t/KIM9IcxGmWgbhAcAEAj4HjXN/D/hkC
-9nYTOHV+Z6/tFGPZAWLP52FWBbJNXgo=
-=qkLZ
------END PGP SIGNATURE-----
+Would you like to add the tag =E2=80=9CFixes=E2=80=9D accordingly?
 
---URBwmoCtPsB1XCmP--
+Regards,
+Markus
 
