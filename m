@@ -1,85 +1,88 @@
-Return-Path: <linux-kernel+bounces-156421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A00C08B02A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:56:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47A768B02A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:57:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D0FB2856BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:56:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 042DC2850C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FD2E158D79;
-	Wed, 24 Apr 2024 06:54:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8196158D9E;
+	Wed, 24 Apr 2024 06:54:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bTqdKgvD"
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rMnjVhQ2"
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B771586C5
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A65A1586F3
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:54:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713941669; cv=none; b=g7kpCww9KbfvbLWnDCkV5VQXAQp5dv8B6nr34lQyczuWr8M1r1SAeIg0Sp1eWaNLcUJ+Mc6BzECIPd9Ot/GQaloDinvGJXFIG8+rc7Ut37tamtDG4q9sbh5/0vSuwr2lzD/vSiRmQHNTWu341CMFrYMwrruzQrQ98H//m2eQ4uw=
+	t=1713941671; cv=none; b=iTAfyhiZoTx/Nbe8MIsKKnS8zrUKTJZn+qHVuDfkod9vl6/gVzjoQOXLtEJ9ntyEl09ZQFrbdVdlJUdmp1rvgaNe0lTFzxQ7IzBCjaiuxmMeQbcdqOoJGVFYIhTMX+u3T6/RniR1sH8IoBmJ0fOvmX8Ho2lcOexJFocQuPfkwZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713941669; c=relaxed/simple;
-	bh=xX17T8WMKkxIp4UDB4scfeAA2Am2xF6rrCVM05QAZRg=;
+	s=arc-20240116; t=1713941671; c=relaxed/simple;
+	bh=kWNHGysWTblhgSs0SJ23vg8euiQMUy4EJwOQsw/+q5I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MAhahPH8o2W1JVPmRvJvzxLJte5mMqvlwDPylx242zrVzbEYl5XyYg9APDWD4wQI+Q5RtdGsl+6168b27VuhG6yrSBlq4RxtzczTcbc1l3XyGnpttk7NQck2EkCzWJB6YfOf4CNGTG+7NfJkA8cjxHmtm3VMuMZdfo6ciYlVsfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bTqdKgvD; arc=none smtp.client-ip=209.85.221.47
+	 MIME-Version:Content-Type; b=bPfIyQZyPdOLbXR0zHl1Je5UXrMbESvOkqiTBlWV8MLoEYT4PCfoJp7cF8Kj/Ny5qNsdb5onj3smfpZSRVqruweBQGlHFaKF5f7dZUAxZ9ABBVJM1CvPSH4HtWcqe6QUN7x594mdD7X0A9SXNsvct207Jk/pRGf0WZwhwEQodFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rMnjVhQ2; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-34a3e0b31e6so4741379f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:54:28 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-343f62d8124so5281496f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:54:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713941667; x=1714546467; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1713941668; x=1714546468; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eRXZ/tLCapg/sR9UuiD3mh5QxR0Ko/bOntfG3Dm/Y24=;
-        b=bTqdKgvD54IurVg9s6sukYfUKnxzoUBko8J+YNShmOKR2wMccKhZCL3f83X2CU2uhL
-         YbDE+1vUvJU9Z3TqgvSz7pPdc9isRudhvRO7aXPeBlF0tOn4Fl9RmtnPI4rFIaW6WOFg
-         xw9dSNXMZynCEDlxMqTP2x1kffw7Gpp5YtbEyDmrwMV2CDRyKLbP7gQ1Y4YmnE/74vN4
-         r+2JO01PdIcccgauhWkSSLjHpBygE9J2Ftmg+6F+cB9XrU2LlkfaEIkuPhq5zNWD9Fgj
-         VDYinAXPVzVgxVk6gZbmaZ8VUqGW+mQIZV77lRMtMLY8aM0K+vdBVoSdS0n5T6VQgiPp
-         6UrQ==
+        bh=kp8+cGX7XtwofafT1aXzsyhi/8LAW0O99poprNGjx1o=;
+        b=rMnjVhQ2mJ6owuCHD0sl1mBJ1vT+PecKOAz/OoexkeQGZP/Xupiojr+CkK1npi31I3
+         36vp7RP4Qvna5DeXaM8T4np7DqQCxSk153gbw7h6JL61sAk/RV8cbRYDo4dVqJIsFG42
+         eMb2cc2NFfMTShliqwBfDvMz6yz+LZdXPSfY0/MLXXkbV7nM767ExawsnGPCgDm4YE0I
+         i4RJqfJae0K86AWwXxpq8flWZJwVF7gO9niwKjkRpbk4Bye1VTqV6DrwsM+ykgIS+Qi0
+         jiVGiWC1wFgd6uV1Ysq5PcD8WYWRBT498G/CiRLEHNU33viCHbdnkTqCI8k3bV3p7riE
+         fHbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713941667; x=1714546467;
+        d=1e100.net; s=20230601; t=1713941668; x=1714546468;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eRXZ/tLCapg/sR9UuiD3mh5QxR0Ko/bOntfG3Dm/Y24=;
-        b=e0SlberNhxLLBkxGt7oVmFtKyS2O5JBvcsg2jWKRc4El3XyZVosoE2MxbwsSVxzcqW
-         +HypcHxYls6X4IQFEFxH1rS959dP0BotnjN3afi17y6sWZDR3Jj1L8eOQHzK5+EURQ3r
-         0AnxVWkX4+iI3H+T8SK6+/j1Bjnxyr/khDVjMmJj0CNE7AuqIZxqY8DMqryfM05zK6DU
-         BiJdBqs2Qjb/3FdPwS6Z2TgysZOddtgYAtEf+EjwF5bH6Dy2AwAOOP+xDvSzyB2Mijxd
-         8pL6/UIGAXq9APF3dN+JXo6fwHyCkrYTHF82kgqs0NCCwF8HlgyU6FGbOGAXrYSatPyF
-         rDqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUwYHuAz1dA4GVme/qBcFSQAPU8njhWA3Q4Ywxudcg2q2EtWgHOVsIWzIEvvMrc153UEOsUWPcGibJh/JlgCQlXXy2IptYDpSAt+mpH
-X-Gm-Message-State: AOJu0Yw7aYLBmcDcX2MS2079EKQcV0J5JyY1ZvOxbxZtrCXwMnqdNLlL
-	9oZtxQAIfG6u2zy5+LoAVDNj2Ic8+p+3oFMJXRAZpweRN5lUBUYGiujUf3gOrtw=
-X-Google-Smtp-Source: AGHT+IEHetyDhUiUzHcfe7q16iCTDEirIvHNmMB9O5sQej3xjlHhonwKDPihO71zRrjNQU88qGbN8w==
-X-Received: by 2002:a5d:568a:0:b0:343:9b68:d9a3 with SMTP id f10-20020a5d568a000000b003439b68d9a3mr871983wrv.64.1713941666708;
-        Tue, 23 Apr 2024 23:54:26 -0700 (PDT)
+        bh=kp8+cGX7XtwofafT1aXzsyhi/8LAW0O99poprNGjx1o=;
+        b=XggqLRD7MHU36K7Q2tZM7LAM0U+1ThtBXdKn4D+/O+3QQhxxUXW670owhNzlSahca8
+         O/PR/Uc/wBq/ouYqFBEIN6/L9PoeuY+Nwq3omvsKkhi+13Gh6nEQy4r/E+axBHTw22QL
+         TAW8J47mWp/zFf7RaM68uLypic73vO8UaxMZcr3LyaO6/upU4oRJsWd3nTOWD4d3s0wO
+         KpYVKlJ7vCtwH2CtHPT18Z0Seiv6isINNb1m1kKPi21QQ1C4kBe1JOXjZHpr0xPlcJRw
+         ImyM7y/l7MK/mOiBdlGlxtcd2PJK9YrN5EjPUlS3QlW+ud+dvwqnGYxVcjSLSZaZVO7m
+         wjWA==
+X-Forwarded-Encrypted: i=1; AJvYcCVvKXB4NMBp8WnteCJyw6TsRQ1tZxh2NxJswTy+ou91zamyRg5J2lRz6DrlrjGC5HfTVyApkv3tUfLjysjTA8kpHCmr9gWTZKNyUzsO
+X-Gm-Message-State: AOJu0YxqbIy6RahmKFmo6Ze5ybLyNRs/gMDhlN2zm0MyTuqJUdU0NZm1
+	/PTYEVdSzrEv+1bDheO7r7Ejl8xG+xkNE7syBy7OsX9S4zidZMDlQOaFDIN/hxA=
+X-Google-Smtp-Source: AGHT+IFhrNuNdXyJDZskwR1EqA9Da3fPmgWhRxtO5+hpDh0nt443HLAIbFJ22742sOrHXtLXDLV5Wg==
+X-Received: by 2002:adf:ed81:0:b0:346:758e:5f29 with SMTP id c1-20020adfed81000000b00346758e5f29mr994865wro.60.1713941668106;
+        Tue, 23 Apr 2024 23:54:28 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id t18-20020a5d6912000000b0034997769ae4sm16338534wru.15.2024.04.23.23.54.25
+        by smtp.gmail.com with ESMTPSA id t18-20020a5d6912000000b0034997769ae4sm16338534wru.15.2024.04.23.23.54.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 23:54:26 -0700 (PDT)
+        Tue, 23 Apr 2024 23:54:27 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Rob Herring <robh@kernel.org>,
+To: =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-realtek-soc@lists.infradead.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Krzysztof Kozlowski <krzk@kernel.org>
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 1/2] arm64: dts: cavium: move non-MMIO node out of soc
-Date: Wed, 24 Apr 2024 08:54:13 +0200
-Message-ID: <171394159880.43787.17031752611016260486.b4-ty@linaro.org>
+Subject: Re: [PATCH 1/3] arm64: dts: realtek: rtd129x: add missing unit address to soc node
+Date: Wed, 24 Apr 2024 08:54:14 +0200
+Message-ID: <171394159880.43787.6058652515148052600.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240402194129.69481-1-krzk@kernel.org>
-References: <20240402194129.69481-1-krzk@kernel.org>
+In-Reply-To: <20240401140912.97157-1-krzk@kernel.org>
+References: <20240401140912.97157-1-krzk@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,11 +93,11 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 02 Apr 2024 21:41:28 +0200, Krzysztof Kozlowski wrote:
-> Non-MMIO devices, which are BTW not really part of the SoC, should not
-> be within simple-bus, as reported by dtc W=1 warning:
+On Mon, 01 Apr 2024 16:09:10 +0200, Krzysztof Kozlowski wrote:
+> "soc" node has "ranges" property thus add matching unit address to fix
+> dtc W=1 warnings:
 > 
->   thunder-88xx.dtsi:374.28-379.5: Warning (simple_bus_reg): /soc/refclk50mhz: missing or empty reg/ranges property
+>   rtd129x.dtsi:51.6-122.4: Warning (unit_address_vs_reg): /soc: node has a reg or ranges property, but no unit name
 > 
 > 
 
@@ -104,10 +107,12 @@ me know.
 
 Applied, thanks!
 
-[1/2] arm64: dts: cavium: move non-MMIO node out of soc
-      https://git.kernel.org/krzk/linux-dt/c/e0806688f15cc448e6d8ab0f2fa5e8040a7ab6d5
-[2/2] arm64: dts: cavium: correct unit addresses
-      https://git.kernel.org/krzk/linux-dt/c/02e361a6f6c72c16f89ca2e07b731025292b5662
+[1/3] arm64: dts: realtek: rtd129x: add missing unit address to soc node
+      https://git.kernel.org/krzk/linux-dt/c/9c1998bb182d7edbddf8bef66f87ea68f8b91d67
+[2/3] arm64: dts: realtek: rtd139x: add missing unit address to soc node
+      https://git.kernel.org/krzk/linux-dt/c/ed719eaa59f8bb0354dde2e37ece3e05239d0b1d
+[3/3] arm64: dts: realtek: rtc16xx: add missing unit address to soc node
+      https://git.kernel.org/krzk/linux-dt/c/bd54eff2c5272efeb91d37efd4d1af9270601028
 
 Best regards,
 -- 
