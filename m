@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-156398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F1618B0255
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:43:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 927888B0258
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:43:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A1A41C221DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:43:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B51F286504
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:43:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD0AE157E76;
-	Wed, 24 Apr 2024 06:40:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6650B157478;
+	Wed, 24 Apr 2024 06:41:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="k178uwOd"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eNl685kG"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BB95157489
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62CE142E67
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:41:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713940839; cv=none; b=BoQ99q6296xkl32NEq3I/Ww89YoN9IXjuWKpjnOc8AFh2EuTxng7jH049n3NRnIxDCg10rfo9Fdn+Y+HLn/0j1MVdhuXdK+mFPK+23XDj8ANHSr3ZqpsQF+t1qpP8NxBDzUOXf+nSMNRyGQWy1cQuYrSS8Lw4uGWyhjJdq0kWZA=
+	t=1713940887; cv=none; b=KZlx5XNmU8L8l1R2dhnZDxmaZJcv1tyFrBI4i3+fUDMvpZm1VECy39Ryv8IKCah+YpW7n+N3y3WywhvBnsNz8AdkXg5Ys+3ch+20R6qK0Gho9oinK67qCEWt8ZtEKyFaxVu5OkepWmAfVEeYln0TuewfqqzCzoIdEe2wsm4ABKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713940839; c=relaxed/simple;
-	bh=jsGigwJaT21jaZp+l/GT7WW++X2FmBsEqwWHqxZc4EA=;
+	s=arc-20240116; t=1713940887; c=relaxed/simple;
+	bh=PY1GCjvUsScyUe9sSnzrfAK8FRvjF5Z/Dk2Jm2zYZRs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NvDHHuJdOFPAJoWAB2+8468TxtonUkBSwuwk7WtwWQkIvROBmncZE9N2aRhjm5VFW2lkQ50WX2uV90kXHO5l4X3Gk+zzysLoM1hRc9JxyRWZXRyzf/PPXogzcs+VZa88wbw2I9TtcP/BC6Ohj5ejZG8mMKAoxuG0ZZPgYYqUvsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=k178uwOd; arc=none smtp.client-ip=209.85.128.47
+	 In-Reply-To:Content-Type; b=OFjQRogEHutfldOtj7tQAP1zyPygjocPzaZMUYsD2RO38wIhf/9qCuLeMXD8XXYn73IHe3QtFhSs2MsobpSAmjom4hjy0SVc16rtf2NkmY9OmAKwarzLnf4S/PVMq0uKG0mUoCWPH6AXPLN3Qbrl7BX/+sU4em+7yIpqGU9eHm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eNl685kG; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41af670185fso4248005e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:40:37 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-347c197a464so4888784f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:41:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713940836; x=1714545636; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1713940883; x=1714545683; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=aLqpP5JOcoWs0phruV9PElLYjrIEBaiE/1wi1+MvFjE=;
-        b=k178uwOd/3t3D7ponWjXuTgH4OHUW9LXZSMhHxkmNnqe5X87z3/++2TKNKuLaRHw6z
-         ryz1TCILFoEeDwXmF0rd6gbHkAy73T1E/qT98bWj/egNgdbC8pKKiMUmHe0nzzLm7Y8u
-         mMIYwURGmYxBtDqf8cjX0x4BL/l3ua10fA7Bam+4U8msF9MC5Q9YwBhVemIaiAD83bRz
-         RGRg1AXxDE0vZRMRUXvcJZFvq+puauWwpnQePgwQ+XS/LsLrfiI0sF7s6teXrhaPkLTn
-         kgP7q1l5LdtQmoSgRGZA9GipTYhapLAwtRWWWo5Ezv+4MjX5RFq2mO1Oa7/r5SvV7J7x
-         BG/g==
+        bh=hVVKethvTn9y+TohxNuEkRyLttOAuI+jLekdUGMV7Z4=;
+        b=eNl685kGRlgwEqhhRmAGoy7jwhSV5PqzeZRPcOl70VI80fGJ/uv1IWk3SGhHlWcsYV
+         /4OagegE9C8bf+RGBtEiEsT1r107ujW4D5yJ86vuuxLu+Kyr1Kb3O1ANNU4xbLjt7c3e
+         pJlafho6Za7plHoTV+vS3+isW8WqbYUga4/KgPcH9YEU1OMMJL7oVNolZt5hOskYSpvr
+         zErNSOyswbxWJusiQe9DB2kg2RWfaWeJvyTm7q0kXyavgTpG+bhA7eOSGhJrJLTaO8ge
+         xDbKnGABMeKmBzyyln17ODNDi0N+1vmylP5GYmpHb+KyJuPzjSHxFHW4AhsNZpCk1xe3
+         vgxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713940836; x=1714545636;
+        d=1e100.net; s=20230601; t=1713940883; x=1714545683;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=aLqpP5JOcoWs0phruV9PElLYjrIEBaiE/1wi1+MvFjE=;
-        b=svG/ElVeshqg+DNiJmgE5uWaGAorHpa4sfVflQV4JNDCbndiPBsZnJpFIe4EGPtYBB
-         hZ+PlmYlBEeM1uG1+ica4Dkqg+nzp6YDLdMj7xIjeuPei9zIIUyTexaLJL6m1Uu1H8IG
-         1+XI0+W4Uwnwu8Md14z4krryDfa2oBm//E63/wZFkwbaWvbCNnIxYP+pic7Vn1jdW4U3
-         IuuasMyA0Bbg9ut/ICOrfPWngrbm5tQWpzSCwqJJe+ai34941atDQmgog0L3bpvtJ3Ex
-         LeSDjDHEdobXBJ09deBrsm2cameC46gn3ws8FOW4aFSulwmHeSZ8cwPFWsvRR2nXoQ17
-         Sdag==
-X-Forwarded-Encrypted: i=1; AJvYcCUMImkGyPTJR8V3FTMoCsOHDdg7USWWSyVGOhCr1lrHj2kXn7jBn2QQd8kE14UDW8UOjPziDO2kph//0MLbdVzZ8j+mVi6D+QXp8DOw
-X-Gm-Message-State: AOJu0Yw2RlGnulAcOr2OL2tgx2ViFrd5xlYKWOGVueUrKhzP1TQqAhou
-	w1esHbZeaZTl6pkYZPnXOF0hTD0SYPT98txx34+sVPPgL+Ru/RTIUJVIoMY71iA=
-X-Google-Smtp-Source: AGHT+IFLWkkSUQvsR1bqXk9WBNPNhBslpbq9lF+4sA6QEUVfvqxRF/2R4ESS1pR0LOn+BuMFN+mTIQ==
-X-Received: by 2002:a05:600c:4f06:b0:415:4b4b:1e28 with SMTP id l6-20020a05600c4f0600b004154b4b1e28mr842664wmq.20.1713940835855;
-        Tue, 23 Apr 2024 23:40:35 -0700 (PDT)
+        bh=hVVKethvTn9y+TohxNuEkRyLttOAuI+jLekdUGMV7Z4=;
+        b=M8CxhGXjtsOIpL4ze6iaYPQMC+Xn0hPeyJdyfyyoiSi9jtjt7qKZevtvOqyPIsVR60
+         e2sTwQyLRbTUlNQ7+UmbgmhBGiq0xlpDeZAt604cMm7w0Js2MAQcaTMGsLg8N8xCJSma
+         j7lEb1pu0jbtvhdk2T5G75DwsnkiVK9GwRZmqSG+XAQz6iiC+hIeAXQa6NHsAXhzfEDg
+         mSBHxJWbvuclnIZ8LZr5kO0W3P/w4CEWf+grOwTLKR/DBaai9ZiVtQsrPvv/jGQoU5XR
+         gDM2SmRw//fzFH8tN39jWo1WqcICw2ZWhwFOYwu4GVAitW5hKzkeQg4N5vM1k5g7whT6
+         MGxw==
+X-Forwarded-Encrypted: i=1; AJvYcCU70Jj1NWyXFIUusHDg2u71oer6tIxxXuEWcgZhdEdyKgNmCSncDLpRd1QFQNyR7EmA3mTG+BN+fpbIadpT0R7dJSob5tsbUtCltkgI
+X-Gm-Message-State: AOJu0Yw/LdWEZzMUaBgEs3qApqUmkCGbCeMFVOf2aY0s6XsHtNm7Nk7s
+	LXFj2zVBbjBJrQ7aAJgRd7avMnpnAqhy/bWnc3LiKHd4ldw0gbdOp2Y/D07/Py4=
+X-Google-Smtp-Source: AGHT+IFn3i280Ha/QyCXLMeFf7F4uKnk95de57uBWPKWGglhK+O4jlPurAVezoZFi0D5aKylyqoA+w==
+X-Received: by 2002:adf:f384:0:b0:34a:e6aa:bc01 with SMTP id m4-20020adff384000000b0034ae6aabc01mr992652wro.5.1713940883452;
+        Tue, 23 Apr 2024 23:41:23 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id bg11-20020a05600c3c8b00b0041a9c3444a6sm6224521wmb.28.2024.04.23.23.40.34
+        by smtp.gmail.com with ESMTPSA id j6-20020a5d5646000000b0034b19cb1531sm6640820wrw.59.2024.04.23.23.41.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 23:40:35 -0700 (PDT)
-Message-ID: <9fbf48a6-239b-4304-850d-6ca43af93a71@linaro.org>
-Date: Wed, 24 Apr 2024 08:40:34 +0200
+        Tue, 23 Apr 2024 23:41:22 -0700 (PDT)
+Message-ID: <dcc93857-7c96-4afd-9183-dd221ab18a1c@linaro.org>
+Date: Wed, 24 Apr 2024 08:41:21 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,12 +76,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] firmware: coreboot: store owner from modules with
- coreboot_driver_register()
-To: Tzung-Bi Shih <tzungbi@kernel.org>,
- Brian Norris <briannorris@chromium.org>, Julius Werner <jwerner@chromium.org>
-Cc: chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240330-module-owner-coreboot-v1-0-ddba098b6dcf@linaro.org>
+Subject: Re: [PATCH] drm/etnaviv: drop driver owner assignment
+To: Christian Gmeiner <christian.gmeiner@gmail.com>
+Cc: Lucas Stach <l.stach@pengutronix.de>,
+ Russell King <linux+etnaviv@armlinux.org.uk>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240330205241.92711-1-krzysztof.kozlowski@linaro.org>
+ <CAH9NwWfU5eaBRSqhgJgHwgphtL+KUAiX3Tx_7vO11N_BV7qUQQ@mail.gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Content-Language: en-US
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -128,17 +131,24 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240330-module-owner-coreboot-v1-0-ddba098b6dcf@linaro.org>
+In-Reply-To: <CAH9NwWfU5eaBRSqhgJgHwgphtL+KUAiX3Tx_7vO11N_BV7qUQQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 30/03/2024 20:49, Krzysztof Kozlowski wrote:
-> Moving the .owner setting code to the core this effectively fixes
-> missing .owner in framebuffer-coreboot, memconsole-coreboot and vpd
-> drivers.
+On 01/04/2024 12:26, Christian Gmeiner wrote:
+>>
+>> Core in platform_driver_register() already sets the .owner, so driver
+>> does not need to.  Whatever is set here will be anyway overwritten by
+>> main driver calling platform_driver_register().
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > 
+> Reviewed-by: Christian Gmeiner <cgmeiner@igalia.com>
 
-It has been almost a month. Any comments on this patchset?
+Thanks.
+
+It has been almost a month. Any further comments on this patchset from
+maintainers? Can anyone pick it up?
 
 Best regards,
 Krzysztof
