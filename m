@@ -1,165 +1,139 @@
-Return-Path: <linux-kernel+bounces-156477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CEF98B0318
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:23:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40B8C8B0319
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:23:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEF091C2428D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:23:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F15A7287E29
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B3E31586F4;
-	Wed, 24 Apr 2024 07:21:18 +0000 (UTC)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78436158A3B;
+	Wed, 24 Apr 2024 07:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gKTHYL64"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC33D1581EC;
-	Wed, 24 Apr 2024 07:21:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06361581EC
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 07:21:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713943277; cv=none; b=VKbroE9gTuDDdbMTOQJqdfHOYr+pS7Ag7VaBUzUMTkTNzc7GVbRD089rdlXXztCJc7stfmOQTt1l2pxkEMxfS+aL4+vpaws+tM/S0SLw2bryJBB1h2LG6yv84DsPP/rMaF+F7J0lE8PpDzMeO1AstSHa5QJIOQpKdxcjgCEW+4o=
+	t=1713943280; cv=none; b=S8lzxGCRHQ/jfQxZbxHunXuhqFUv5znFgW7S3Jj99K+anxzj5NbFVi1Z+gDqo67mXN8dALJoXDni1UiRJk3uWH7pNUy6Zes6vyrb18ElWrxLdlFc80kqsrF6VnubA5Lax7a6iBhqzDSpRyGtnLQPjdkejoCLjHVnvOcvvGsFBdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713943277; c=relaxed/simple;
-	bh=MrAMw9NiDMTzXplx1v8tQRk0DT6c3nZFJrzglC0myyY=;
+	s=arc-20240116; t=1713943280; c=relaxed/simple;
+	bh=gejzVuWBbs/WERJ9LaTFGpunGqbTm4721u2pjEmC5BU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s/hK/Ssym8KfE/axNSfHkE/vwe7/KlJE3t5JxXkNxVIEJ5fPlLnQF6GhKApw6TNti1P6VNnYBIoQQdS/AB4AKJ0FpkW9xavvuYp7sUbe/ODiPH52y/mmksx55tXUTxc1edXcysTeR+HTxWI58lhWlXMFOwifpqg+FpSUgfmiRLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id B61B71C0080; Wed, 24 Apr 2024 09:21:13 +0200 (CEST)
-Date: Wed, 24 Apr 2024 09:21:13 +0200
-From: Pavel Machek <pavel@denx.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
-Subject: Re: [PATCH 6.1 000/141] 6.1.88-rc1 review
-Message-ID: <Ziiy6cS8Yyg6VFfK@duo.ucw.cz>
-References: <20240423213853.356988651@linuxfoundation.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ua6W2FpJ7g/I4+SN4RSCMXEtJjv9c96PHImTiNDzMjGn1xWhg2tXqP1Qsd0miMv3okScwk4BBvNrRYekp7OTueIUw4pIA+5UUhd5B2LlBENUqX8ineN0udF6xlYTeI2Ehwpf4Mjv/KO5cQbY9X7KNRvB2wnQ55PL4Tz1bdyuZIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gKTHYL64; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B32EC113CE;
+	Wed, 24 Apr 2024 07:21:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713943280;
+	bh=gejzVuWBbs/WERJ9LaTFGpunGqbTm4721u2pjEmC5BU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gKTHYL64JeM+ohgmxJAKPd2RuwHo3HmQplRv1+DpcgSWHMoiUiOsftam/VHAIIIkJ
+	 G38mdmJFVDjIIdXL3mtsrFLetGYqsFcbCWSTJS3mEI20HJRlGkDIc9WKcTk2gmcOyW
+	 zks617G6u9CE/v6dwUq6DSTMfkb782ZgDhcVZPgR00b5yOMCs4Dbry0C5zLwjGVl+A
+	 odlPGnfynIi93X34NgtJNYd8OYF1FGQ13zG/o8LuFVSh3mDdVHmRh8nPqYMrOSdaXK
+	 n/cpKRz9K+39tqwO1nq8t+3QYMxNlA2jcy32rRfjllGuWp7J8n6LLrsckq7y/iQxmG
+	 f38oAyu+xW1qg==
+Date: Wed, 24 Apr 2024 09:21:17 +0200
+From: Maxime Ripard <mripard@kernel.org>
+To: Sean Nyekjaer <sean@geanix.com>
+Cc: Yannick Fertre <yannick.fertre@foss.st.com>, 
+	Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>, Philippe Cornu <philippe.cornu@foss.st.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Robert Foss <rfoss@kernel.org>, Antonio Borneo <antonio.borneo@foss.st.com>, 
+	dri-devel@lists.freedesktop.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/stm: dsi: relax mode_valid clock tolerance
+Message-ID: <20240424-famous-fascinating-hyena-8fb3a7@houat>
+References: <20240322104732.2327060-1-sean@geanix.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Z8vrHj1uEYz9nP1I"
+Content-Type: multipart/signed; micalg=pgp-sha384;
+	protocol="application/pgp-signature"; boundary="v3qz7kftr5irttdu"
 Content-Disposition: inline
-In-Reply-To: <20240423213853.356988651@linuxfoundation.org>
+In-Reply-To: <20240322104732.2327060-1-sean@geanix.com>
 
 
---Z8vrHj1uEYz9nP1I
+--v3qz7kftr5irttdu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
+Hi,
 
-> This is the start of the stable review cycle for the 6.1.88 release.
-> There are 141 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Sorry, my previous review didn't go through.
 
-This causes compilation errors in our testing:
+On Fri, Mar 22, 2024 at 11:47:31AM +0100, Sean Nyekjaer wrote:
+> When using the DSI interface via DSI2LVDS bridge, it seems a bit harsh
+> to reguire the requested and the actual px clock to be within
+> 50Hz. A typical LVDS display requires the px clock to be within +-10%.
+>=20
+> In case for HDMI .5% tolerance is required.
+>=20
+> Fixes: e01356d18273 ("drm/stm: dsi: provide the implementation of mode_va=
+lid()")
+> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> ---
+>  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/=
+dw_mipi_dsi-stm.c
+> index d5f8c923d7bc..97936b0ef702 100644
+> --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+> +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+> @@ -322,8 +322,6 @@ dw_mipi_dsi_phy_get_timing(void *priv_data, unsigned =
+int lane_mbps,
+>  	return 0;
+>  }
+> =20
+> -#define CLK_TOLERANCE_HZ 50
+> -
+>  static enum drm_mode_status
+>  dw_mipi_dsi_stm_mode_valid(void *priv_data,
+>  			   const struct drm_display_mode *mode,
+> @@ -375,9 +373,10 @@ dw_mipi_dsi_stm_mode_valid(void *priv_data,
+>  		/*
+>  		 * Filter modes according to the clock value, particularly useful for
+>  		 * hdmi modes that require precise pixel clocks.
+> +		 * Check that px_clock is within .5% tolerance.
+>  		 */
+> -		if (px_clock_hz < target_px_clock_hz - CLK_TOLERANCE_HZ ||
+> -		    px_clock_hz > target_px_clock_hz + CLK_TOLERANCE_HZ)
+> +		if (px_clock_hz < mult_frac(target_px_clock_hz, 995, 1000) ||
+> +		    px_clock_hz > mult_frac(target_px_clock_hz, 1005, 1000))
+>  			return MODE_CLOCK_RANGE;
 
-arch/arm/mach-omap2/pdata-quirks.c:259:15: error: variable 'pandora_soc_aud=
-io_gpios' has initializer but incomplete type
-1991  259 | static struct gpiod_lookup_table pandora_soc_audio_gpios =3D {
-1992      |               ^~~~~~~~~~~~~~~~~~
-1993arch/arm/mach-omap2/pdata-quirks.c:260:10: error: 'struct gpiod_lookup_=
-table' has no member named 'dev_id'
-1994  260 |         .dev_id =3D "soc-audio",
-1995      |          ^~~~~~
-1996arch/arm/mach-omap2/pdata-quirks.c:260:19: warning: excess elements in =
-struct initializer
-1997  260 |         .dev_id =3D "soc-audio",
-1998      |                   ^~~~~~~~~~~
-1999arch/arm/mach-omap2/pdata-quirks.c:260:19: note: (near initialization f=
-or 'pandora_soc_audio_gpios')
-2000arch/arm/mach-omap2/pdata-quirks.c:261:10: error: 'struct gpiod_lookup_=
-table' has no member named 'table'
-2001  261 |         .table =3D {
-2002      |          ^~~~~
-2003arch/arm/mach-omap2/pdata-quirks.c:261:18: error: extra brace group at =
-end of initializer
-2004  261 |         .table =3D {
-2005      |                  ^
-2006arch/arm/mach-omap2/pdata-quirks.c:261:18: note: (near initialization f=
-or 'pandora_soc_audio_gpios')
-2007arch/arm/mach-omap2/pdata-quirks.c:262:17: error: implicit declaration =
-of function 'GPIO_LOOKUP'; did you mean 'IOP_LOOKUP'? [-Werror=3Dimplicit-f=
-unction-declaration]
-2008  262 |                 GPIO_LOOKUP("gpio-112-127", 6, "dac", GPIO_ACTI=
-VE_HIGH),
-2009      |                 ^~~~~~~~~~~
-2010      |                 IOP_LOOKUP
-2011arch/arm/mach-omap2/pdata-quirks.c:262:55: error: 'GPIO_ACTIVE_HIGH' un=
-declared here (not in a function); did you mean 'ACPI_ACTIVE_HIGH'?
-2012  262 |                 GPIO_LOOKUP("gpio-112-127", 6, "dac", GPIO_ACTI=
-VE_HIGH),
-2013      |                                                       ^~~~~~~~~=
-~~~~~~~
-2014      |                                                       ACPI_ACTI=
-VE_HIGH
-2015arch/arm/mach-omap2/pdata-quirks.c:264:17: error: extra brace group at =
-end of initializer
-2016  264 |                 { }
-2017      |                 ^
-2018arch/arm/mach-omap2/pdata-quirks.c:264:17: note: (near initialization f=
-or 'pandora_soc_audio_gpios')
-2019arch/arm/mach-omap2/pdata-quirks.c:261:18: warning: excess elements in =
-struct initializer
-2020  261 |         .table =3D {
-2021      |                  ^
-2022arch/arm/mach-omap2/pdata-quirks.c:261:18: note: (near initialization f=
-or 'pandora_soc_audio_gpios')
-2023  CC      net/sched/sch_api.o
-2024arch/arm/mach-omap2/pdata-quirks.c: In function 'omap3_pandora_legacy_i=
-nit':
-2025arch/arm/mach-omap2/pdata-quirks.c:271:9: error: implicit declaration o=
-f function 'gpiod_add_lookup_table' [-Werror=3Dimplicit-function-declaratio=
-n]
-2026  271 |         gpiod_add_lookup_table(&pandora_soc_audio_gpios);
-2027      |         ^~~~~~~~~~~~~~~~~~~~~~
-2028arch/arm/mach-omap2/pdata-quirks.c: At top level:
-2029arch/arm/mach-omap2/pdata-quirks.c:259:34: error: storage size of 'pand=
-ora_soc_audio_gpios' isn't known
-2030  259 | static struct gpiod_lookup_table pandora_soc_audio_gpios =3D {
-2031      |                                  ^~~~~~~~~~~~~~~~~~~~~~~
-2032cc1: some warnings being treated as errors
-2033make[2]: *** [scripts/Makefile.build:250: arch/arm/mach-omap2/pdata-qui=
-rks.o] Error 1
-2034make[1]: *** [scripts/Makefile.build:500: arch/arm/mach-omap2] Error 2
-2035make[1]: *** Waiting for unfinished jobs....
-2036
+I wonder if it's not something that should be made into a helper. We
+have a couple of drivers doing it already, so it might be worth creating
+a function that checks for a given struct clk pointer and pixel clock if
+it's within parameters.
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/670037=
-1466
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelines/1=
-265143103
+Maxime
 
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---Z8vrHj1uEYz9nP1I
+--v3qz7kftr5irttdu
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZiiy6QAKCRAw5/Bqldv6
-8vbUAJ9LTKihTTO5zazCV/M7Zb73aYUbBgCgu5+1hRVetQhHn2GgrkBQXnvFPdo=
-=RcgZ
+iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCZiiy6AAKCRAnX84Zoj2+
+dhSPAX4unsLgg7n5/O2rJ1Xlrd/571ia5c4LJJUra+mfWA8IhYeQMu4sWwT4uRjd
+Dgb0KZUBgLBnBIhAxuWQ3eNhMQrD/r7T0Mjb7b77bERge1rc14SEDTgD9BpPn8mG
+jmgHEANigw==
+=h0FU
 -----END PGP SIGNATURE-----
 
---Z8vrHj1uEYz9nP1I--
+--v3qz7kftr5irttdu--
 
