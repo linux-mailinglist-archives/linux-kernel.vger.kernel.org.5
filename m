@@ -1,106 +1,126 @@
-Return-Path: <linux-kernel+bounces-157125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59CDB8B0D25
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:50:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B3318B0D31
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:52:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89C23B26A32
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:50:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB436287B42
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:52:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF5915EFA0;
-	Wed, 24 Apr 2024 14:49:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C702F15ECF7;
+	Wed, 24 Apr 2024 14:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HvnJLGXk"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="PsLWA4oe"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3784715886A;
-	Wed, 24 Apr 2024 14:49:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB2D15EFDF
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 14:51:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713970195; cv=none; b=DdnqlJlk/7fP7wMqBlKg0Fu2oETi4wB+C3O78aqEaDzAUakkG8Lyj2mkXgLeOhkpog4YeDtAZUdgiCcfkqn5uXfJQTyuEd7eER8rY7U+FMB/rlJP4ynSga+q2Pqm9EtkmXfpaPIlveRgFPVHgdL0aefoLT1J5DxafyCaGjPDfEc=
+	t=1713970313; cv=none; b=eUiZEs7pyv3m8DBbtkznnlTPC06OV2d4H3Sul5t6YoIPVNz7YW/ssTVzVkPJ6vOHjZPqFYttE/rwVwedrGMmwqkwYbpZ60/mRvnj+6NMDxoXFi/8jknPlaIt7Q0SzR6E9pPFHWhXaDsxNswgnaWvgLOqojuwn28DxBpn7v1WvDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713970195; c=relaxed/simple;
-	bh=QfIp9Cuncd8TPCMm0EDUz7IMudkuyG5DpO4qs2ODp2w=;
+	s=arc-20240116; t=1713970313; c=relaxed/simple;
+	bh=LhsJcsPYkmC1C8NWMoV9t3a0TrX/fu9kJZuNQtERuRk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZjpYdtGIKJHVCtvqhniiN/i+b/4iECqaAohb7VE7xFDrCMChfAvzKX9IxKQ+UXfJ78KRxUmVSyGGd8gct4H9Yia6CabVgVMxBnvL0SmPulRa+SfIjT/VKkHD1ZwFxhsMOJiVlne5dZxYDL1/kCB6ai2eUKZNsev3LQxNf1/fVvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HvnJLGXk; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713970194; x=1745506194;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QfIp9Cuncd8TPCMm0EDUz7IMudkuyG5DpO4qs2ODp2w=;
-  b=HvnJLGXkFRTpzOpAEcxe4sBc2dqGP638rNYMGriEg0FFWtnfvG7h+hns
-   zH+8epM1XIPq4fX9Go4F4AcvQMsXtJbOikGLM4j9vuoDMsCiEyVMItkvf
-   BiHmjdtmFAvO4ExoMnuXp0vEEDBzJyaRZ1VrrCIEZ37yk+rz86si77G6k
-   BJlbjENCVpQDTJoUi6o3wJqxNTm4PGqJlz3N77BoId3PjqsbFdmGHYMTd
-   xkg1y+un4GQ+Y6NEXF74I/WwmbZu53Z1QLTEp0uxKkKMuFQCKlJBryFFb
-   4sc1iIuFjMJPZbU37Xp7lCzCYME9bd7o6KJSWna4T3zNqTcMqrWSN0Sd/
-   A==;
-X-CSE-ConnectionGUID: UivBsOr8R4mX+nmmDZJVRA==
-X-CSE-MsgGUID: CIkDa5Y0SMel1pYTGqVu3w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="13392135"
-X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="13392135"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 07:49:53 -0700
-X-CSE-ConnectionGUID: 4ydNRvDCQRSL0tBHTCMQCg==
-X-CSE-MsgGUID: kcLpl1bGTB6gEqnyj6Opyw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="24802439"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 07:49:51 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rzdwS-00000000gDk-3NW8;
-	Wed, 24 Apr 2024 17:49:48 +0300
-Date: Wed, 24 Apr 2024 17:49:48 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH v2 1/1] ALSA: control: Use list_for_each_entry_safe()
-Message-ID: <ZikcDLDnv1PX17wb@smile.fi.intel.com>
-References: <20240423211102.3785556-1-andriy.shevchenko@linux.intel.com>
- <87h6frdxz2.wl-tiwai@suse.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MaDlr82iRRv5iattVBAlNQbgd03+o+1p5td7cdKkpEG8eJVs6s0hjSVJOXGxqn9T24Y3Vfv8ddaB4OwKwXL9SN0+k/RtMzvc+PyHi8op7+g4IW2K3oXIJiQLhev2WBID0TQFE+n30ypsDxTK/rPfvBHhV2qtCPKQyAfFr0UOrA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=PsLWA4oe; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1EA2E40E0177;
+	Wed, 24 Apr 2024 14:51:49 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id FLV5n242awhg; Wed, 24 Apr 2024 14:51:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1713970305; bh=hAzgTdW20PH8p2TSvQDh/sf526Oq7pqMUYP84FyR6+g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PsLWA4oeHhE1aKts/WuRjHM5YGSItzza5+A7EtRPfUalEAza7A4eT/wCqKrkjtVAJ
+	 Bu+paApzhfU8mIQx+T15513wLpMsBfcVD+xGPv3HCtrVVEaASwj7ujZtjLKjatglhF
+	 TYtEo76RZCbRHZHlpaTacn/gbT/CzLrzimhUpRZ91nYkXIiCdJ1zKvbec3b8cYUVwu
+	 uAkXyQO6JI3LpCIn831pSy8UZocD4hLsM9zBASEoh5cHPPzjbHmJcdYFsKo8FYwL+b
+	 IpLLslb9O/yhwD+HOPEdOvrzPykVBVbMV3Anb3vKoa8nam13um74MPbOdJgYAmFlbH
+	 mgI+MMopUxh1af0NFhU7FkKIeZDHDVCZnDwtq48QwD06iYxVb0Ndfh+PvH4j4D3t06
+	 93+vso7mtQ27ZjEO9FZ246qrt/YdLRhkqGz8lrMUT28Sb/TG5WpvCLYJ5LxxgQA45D
+	 7o8W1mDGYtfg6pqRaFokPSNMJrkVg6BmbcT78sL0U6O8n04wAuodP8gmaPg0izFtGE
+	 mscySG9g3QOxGHk+c+0Kr8QiiHFCk2jiNxuAV0vCtPFNe+JUnLQ/KJ/O87zsxrRfJh
+	 TfylnRkDMqu/zghw53T1O3Piq07mo6c3qKwDpidI1yfdyiS7+1nhR5czcTu1mnGwyQ
+	 ahGVBjRQJnbFzikoFk0c4eJI=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4031C40E00C7;
+	Wed, 24 Apr 2024 14:51:23 +0000 (UTC)
+Date: Wed, 24 Apr 2024 16:51:22 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	Jun Nakajima <jun.nakajima@intel.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+	kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Tao Liu <ltao@redhat.com>
+Subject: Re: [PATCHv10 04/18] cpu/hotplug, x86/acpi: Disable CPU offlining
+ for ACPI MADT wakeup
+Message-ID: <20240424145122.GEZikcaiqFT_eG1KDo@fat_crate.local>
+References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
+ <20240409113010.465412-5-kirill.shutemov@linux.intel.com>
+ <20240423160258.GBZifbsuoTIbWDapej@fat_crate.local>
+ <k4t62qfiyapfh2hjp4bpnaa4bmtlajpm5q4an3qs4jimhldcwv@wtrp63ofrfk6>
+ <20240424135052.GDZikOPIOeGxtQRBBc@fat_crate.local>
+ <svpuqhoglv7s2wtu754i4oicowueen47vq6eobjbznsromb4m3@4h7vy346n4ak>
+ <e1a71955-5228-47fe-9241-dd0197d4a552@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87h6frdxz2.wl-tiwai@suse.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <e1a71955-5228-47fe-9241-dd0197d4a552@intel.com>
 
-On Wed, Apr 24, 2024 at 09:24:49AM +0200, Takashi Iwai wrote:
-> On Tue, 23 Apr 2024 23:10:22 +0200,
-> Andy Shevchenko wrote:
-> > 
-> > Instead of reiterating the list, use list_for_each_entry_safe()
-> > that allows to continue without starting over.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-> > ---
-> > v2: added tag (Jaroslav)
+On Wed, Apr 24, 2024 at 07:40:26AM -0700, Dave Hansen wrote:
+> On 4/24/24 07:35, Kirill A. Shutemov wrote:
+> >> Also, does this need to go to stable although it is kinda big for
+> >> stable. If stable, do we need a smaller fix first which is backportable?
+> > Correct me, if I am wrong, but I believe TDX guest is the only user of
+> > ACPI MADT wake up method. At least it was added into kernel for TDX guest.
+> > So it wouldn't fix anything user-visible. It might affect a future
+> > platform that uses this wake up method, but it is a guessing game.
 > 
-> We have a similar repeat in snd_ctl_led_reset().
-> Wouldn't it be better to catch both?
+> Yeah, the MADT wakeup is pretty funky, highly TDX specific, and not in
+> use or planned to be _put_ into use anywhere else.
 
-Sure, v3 is on its way.
+Then please make sure all that info is in the commit messages in the
+next revision. Because as they are now, they're not even beginning to
+explain what exactly is this fixing. /me thinking that this is some
+generic fix needed in stable is case-in-point.
+
+Thx.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards/Gruss,
+    Boris.
 
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
