@@ -1,222 +1,309 @@
-Return-Path: <linux-kernel+bounces-157845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 732388B1739
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:36:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBA258B1742
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:37:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C043284985
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:36:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AD3C1F2287D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C0A16F0F2;
-	Wed, 24 Apr 2024 23:35:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00C0516F0F0;
+	Wed, 24 Apr 2024 23:37:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pQrrMB4b"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xKsr56PK"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154E4442F;
-	Wed, 24 Apr 2024 23:35:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49609157473
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:37:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714001748; cv=none; b=LTmOiKUx83bugTvOEIuuStO98BKEWsXd1aAWcHIaWzmmnzJHObibvn39xoIFBRIPB4jxo0EO0AyMuL2JSMOT7y6MMpGn/oMWwvzYPEQ/GGDJkPzUr9iht5MfBDeKPs7tmiQIAv5miiVWwPtD9t15Yl6IIWFtrtcTeY30fz0Hso0=
+	t=1714001836; cv=none; b=XxAmRxFlBz8hlFFNzSDcGUFskRfNV71hHk9d65UcxViJo8PwzJYxsA/ZVwLqkZBA1Na6hQUJEXXcBY4LWpKAz/ffX54+GnB4MX/71y1KS2P4bWLrMLwQBV8AsuTPfTmr0SeRW4XE07gf8LTccirGxQ+yGHY7lJfattOWdHFftIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714001748; c=relaxed/simple;
-	bh=alWh828635B9LX6WrzpJ33NK+tWIsqWDA5n+dpzOkVg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=LpcUAIPaETetvWrvX1fA1s9/LUdJbDVFV9qouS4bIHacEv+ZEk5ygFosIwy0Uk3PPyL/Lpsqq0pZXoWtS29le7TnvdCdK4xoiesFHi7T1ldvan2vgTwiY8yz3/JbTa0TDMU9HhPlpbpoU1uEDh1f7ru9+7Qbgl5CQ1f1HpmlkYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pQrrMB4b; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43ONPDi7009559;
-	Wed, 24 Apr 2024 23:35:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=boDSHsbn06oFKEy2YJu1wtGdZZBUC0SEoorcU9qQ8r0=; b=pQ
-	rrMB4boYXfgbp2Pcs0WxyIa/gER36XaBwXp6+1kt/nZoccg7al7YZl7Wp6bxst+m
-	WjMiEUnl/tPOO1aAJutnIHj/V+2syeybkgd55Bx/LZDd62yDgA6ajf0UhWFWgm/W
-	zOwN7pDxBPhnuJb3GErG9w6xCcd8l6OnvjPho/1cQwsMftGA80My5Fa2PuMtdACr
-	iuTg9jmsjYfnGXf0NcH4fvFRC7bwVMOolXTNWqDrkcsQBCfxkyaEdq2KGDBscoVa
-	RPY74DrcqqJO3AMNY3ctIHlcY46T7CC4tueLp4wd4AI6v3HyT610FF7snq9S5YT9
-	/XPfZHKWjKIcIGrMNDYw==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9ktcna-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 23:35:41 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43ONZeKo005341
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 23:35:40 GMT
-Received: from [10.253.14.221] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 24 Apr
- 2024 16:35:38 -0700
-Message-ID: <1d0878e0-d138-4de2-86b8-326ab9ebde3f@quicinc.com>
-Date: Thu, 25 Apr 2024 07:35:36 +0800
+	s=arc-20240116; t=1714001836; c=relaxed/simple;
+	bh=F5+aF8cDr48TRubgu+AYedf/iRGKbug7UMfLWfuoev0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QCN9Q2t2jrgaW5x0cUiAvpbrtw5Lfyrc/l7FKrt0vnz0TphnuX2yYhLogO6367hg96SMEmjrUns4MZ9J1Sx7rZqghM+/25EtymigedaD1hcGgiFxo6EVNgubY9dPHEz3e2frc3pg0KiDv2ixSM9fz0rUPNA/7eSRmKW7FEAAHD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xKsr56PK; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-de55993cb6fso529075276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:37:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714001833; x=1714606633; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HJ0R3e0keMNx202pP2IN4/C+HPu73CPOtuGCfDRwGvU=;
+        b=xKsr56PK8gc7kC2XlKdyuCR7TKgc1e0ozMjtqEqH3HDSjwV+mY9utf3Q45yQ8bg9wo
+         ZU4LHYQt5/5xqmy/PJNr1HQCLU5I9CjCNZabC8rMEOuObUetRwkbL2UmrXDjvQiNxn58
+         038hhcL+uguub54DEtO+Fc53RLIb6r4KSTA4Ypuvg7jyZ3MxRULBVx7Dlkd0rZHcU5Zo
+         qRDm2co1MiGA2ov8clv8qNtk0QBsL61IWpllQd4zX6jyqZcyeWSo3JjEKdz+50WxqvkV
+         IE0/jhFfbPL9rRnoeRQdt89eyHpc8zMT/IVVLl5ARMaoB/I3/RTUowALi+8ULqBRKmfK
+         SZEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714001833; x=1714606633;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HJ0R3e0keMNx202pP2IN4/C+HPu73CPOtuGCfDRwGvU=;
+        b=MqdU+UhrRhj4+M6Hfrt++XoWnV1FOz67qwtDGZiKz+BcCKinL2JR6jHstKIDJLb2Wz
+         NuB8Lrm5bheWvgV/jCM85gZIk3i+vB+gaIGjvAn9fyXeLKzUMt9JaK7XTVBhSlFpIF91
+         4mJqvdaN50RxHByj4PgXFKsnA3Vx3bPpRzt0gXTiPyzWSgfn5/pr7QIrKo2VJYrWbkVK
+         Oy0BDTIdxY2oMYyX8A8fEfCNfMPlIxeyuHoyjVi1iAPW3eWyK3JEyCMWkSu4p6gzT0+M
+         Yk2wlNrCEYZrtPPIDeuaF3zS3+Qs+8GJOUmI0o/N0M8es+nixdMjfaMZHUMajmTyvabH
+         1wDw==
+X-Forwarded-Encrypted: i=1; AJvYcCWdRY7jPXJO0gfMpUUYiXNOA0uXqqCgd9b65TqWzwxlCm3uG69BpKUvnfAnaDcQk1gfYf6tmiZv1tzrfpSsZ0VtIvmLbP4Tn8Ez6DD0
+X-Gm-Message-State: AOJu0YxklMBOCPNRjh3KfCqKMsHjAnP/I6951qmNQpVsteLvP69vyY/V
+	0i3WXwSigzJ/1cd/IEjtZ+xVQIJ21Xm8wR5fSDgWgxHaIE9HKFQg3t4jXjW69Wsop4xqcS8WR+u
+	TXjtnpZ2PaGcbMotK52pXXXQqUMztV1VxFEdp87t9MJKdsmXnm/k=
+X-Google-Smtp-Source: AGHT+IFO6Jg9yz4O29TF/3ApJje86OjISlkRYmpbhXyKpYa10imH2qZlKxAqNXzx+sGHECnzJ3ejijQQwsfqD4JYJI4=
+X-Received: by 2002:a25:9f04:0:b0:dcf:bc57:cd61 with SMTP id
+ n4-20020a259f04000000b00dcfbc57cd61mr3974486ybq.50.1714001833305; Wed, 24 Apr
+ 2024 16:37:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Bluetooth: qca: set power_ctrl_enabled on NULL returned
- by gpiod_get_optional()
-To: Wren Turkal <wt@penguintechs.org>,
-        Bartosz Golaszewski
-	<bartosz.golaszewski@linaro.org>
-CC: Bartosz Golaszewski <brgl@bgdev.pl>, <linux-bluetooth@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Marcel Holtmann <marcel@holtmann.org>,
-        Luiz
- Augusto von Dentz <luiz.dentz@gmail.com>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>
-References: <20240422130036.31856-1-brgl@bgdev.pl>
- <99242a7c-53bf-4227-9623-7bc092f564b3@penguintechs.org>
- <CAMRc=MepDwUbAKrWgm0CXKObqy8=igtug0QDgo-CgwxjZCAC2Q@mail.gmail.com>
- <b982b73d-0540-409c-a6e2-0e03ecb11715@penguintechs.org>
- <0381f39c-38ba-4a2b-915c-f14c5f911eb9@penguintechs.org>
- <CAMRc=MfnEct7ThQhCA3AoY7hxq8j1mmFLNNkK17+RSvJxs67XQ@mail.gmail.com>
- <2371f538-ec53-4037-b171-c62bf4e06eb1@penguintechs.org>
- <CACMJSeunUaj0cxLaN4MpFmX5vTOx_vnWjBN4Y2FavdQoQxFRkg@mail.gmail.com>
- <4c33304a-5dbc-450a-b874-e04ba9e93150@penguintechs.org>
- <CAMRc=MeDQFHX9r-sHNxqkfpi=LkHoRSL7i6dWokB-J+J03rBEg@mail.gmail.com>
- <93e15ecf-252f-4789-a23b-a28280f6aa84@quicinc.com>
- <e64b89b3-a8f5-44e7-ae7f-fc4298841f1c@penguintechs.org>
- <CACMJSet1wjEive0-Z=0_eiY7umBoSF_VX3QvVgiwqxhTSDZg6g@mail.gmail.com>
- <aea85118-060a-4451-a1f1-d8e634f1aab7@penguintechs.org>
-Content-Language: en-US
-From: quic_zijuhu <quic_zijuhu@quicinc.com>
-In-Reply-To: <aea85118-060a-4451-a1f1-d8e634f1aab7@penguintechs.org>
+References: <20240418081548.12160-1-lvzhaoxiong@huaqin.corp-partner.google.com>
+ <20240418081548.12160-3-lvzhaoxiong@huaqin.corp-partner.google.com>
+ <zanx5y3obqmewnbooovf52hx6vh7tpi4zsbse2dyzcqzddmzhw@kewxoa6n3mja>
+ <CACb=7PURWtS8bwT5EcAFHhu7deHd2Y8cNOattfdwyEYpOUcbnQ@mail.gmail.com>
+ <vbt2nxddw2dc7hkreq4iybv5zv5xyp32oajybeqsphgfrhzmn7@tskvckljmxpe>
+ <CACb=7PVTvV9nsFu1ZAXu7YTjSOAGZka+c__EJq3J3qgSJGEShw@mail.gmail.com>
+ <CAD=FV=VYAzqsGEBJai9b9n+HxHiG59L1vF73AEWcTwLS_ryjWw@mail.gmail.com>
+ <an2k3vgynq4as2sd5dy6ccmdiqedmo7qjsab5qyfhesd333i2a@235sqph3bze5>
+ <CAD=FV=VQ8rbwKk4WpHRER9p4cZp7UrrHRpgnErqbQxyxp4sg5w@mail.gmail.com>
+ <CAA8EJprv3qBd1hfdWHrfhY=S0w2O70dZnYb6TVsS6AGRPxsYdw@mail.gmail.com>
+ <CACb=7PVEpCFWf_aysRkeR0yWAXR5sTaXhNbi3TV3ffKj866+EQ@mail.gmail.com>
+ <CAA8EJprLvEt_pt4XzACQG7pU8KYagKbQ71xwtRF9KrLygTT3ow@mail.gmail.com> <CAD=FV=V+jBvkKj1vvAsXuC5dSn0u_SQBQZHTrDZKoSG2V4fp3g@mail.gmail.com>
+In-Reply-To: <CAD=FV=V+jBvkKj1vvAsXuC5dSn0u_SQBQZHTrDZKoSG2V4fp3g@mail.gmail.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 25 Apr 2024 02:37:02 +0300
+Message-ID: <CAA8EJprU1KZHKAVUJiYaDRY6Wxihzw=ZDgdqQ9y7W3zdnRMfFg@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] drm/panel: kd101ne3: add new panel driver
+To: Doug Anderson <dianders@google.com>
+Cc: Hsin-Yi Wang <hsinyi@google.com>, 
+	lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>, mripard@kernel.org, 
+	airlied@gmail.com, daniel@ffwll.ch, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	cong yang <yangcong5@huaqin.corp-partner.google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: KIJB2dMPWpvIeDKjfmq4B2snpsXlaTos
-X-Proofpoint-GUID: KIJB2dMPWpvIeDKjfmq4B2snpsXlaTos
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-24_19,2024-04-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- clxscore=1015 priorityscore=1501 adultscore=0 lowpriorityscore=0
- mlxlogscore=999 impostorscore=0 phishscore=0 spamscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404240124
+Content-Transfer-Encoding: quoted-printable
 
-On 4/25/2024 6:17 AM, Wren Turkal wrote:
-> On 4/24/24 6:53 AM, Bartosz Golaszewski wrote:
->> On Wed, 24 Apr 2024 at 15:26, Wren Turkal <wt@penguintechs.org> wrote:
->>>
->>> On 4/24/24 6:12 AM, quic_zijuhu wrote:
->>>> On 4/24/2024 8:27 PM, Bartosz Golaszewski wrote:
->>>>> On Wed, Apr 24, 2024 at 2:24 PM Wren Turkal <wt@penguintechs.org>
->>>>> wrote:
->>>>>>>>>
->>>>>>>>> That's OK, we have the first part right. Let's now see if we
->>>>>>>>> can reuse
->>>>>>>>> patch 2/2 from Zijun.
->>>>>>>>
->>>>>>>> I'm compiling it right now. Be back soon.
->>>>>>>>
->>>>>>>
->>>>>>> Well I doubt it's correct as it removed Krzysztof's fix which looks
->>>>>>> right. If I were to guess I'd say we need some mix of both.
->>>>>>
->>>>>> Patch 2/2 remove K's fix? I thought only 1/2 did that.
->>>>>>
->>>>>> To be specific, I have applied your patch and Zijun's 2/2 only.
->>>>>>
->>>>>
->>>>> No, patch 1/2 from Zijun reverted my changes. Patch 2/2 removes
->>>>> Krzysztof's changes and replaces them with a different if else. This
->>>>> patch is a better alternative to Zijun's patch 1/2. For 2/2, I'll let
->>>>> Krzysztof handle it.
->>>>>
->>>> do you really realize what do you talk about?
->>>> do you really listen what do @Wren says?
->>>>
->>>> he says that my patch 2/2 is right based on several verification
->>>> results.
->>>
->>> she, not he
->>>
->>>> BTW, my 2/2 fix don't have anything about DTS usage.
->>>
->>> I think the problem with your 2/2 patch is that it removes the
->>> conditional bailing if the device is shutdown or not open.
->>>
->>> Maybe this patch instead?
->>>
->>> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
->>> index 2f7ae38d85eb..fcac44ae7898 100644
->>> --- a/drivers/bluetooth/hci_qca.c
->>> +++ b/drivers/bluetooth/hci_qca.c
->>> @@ -2456,6 +2456,10 @@ static void qca_serdev_shutdown(struct device
->>> *dev)
->>>                       !test_bit(HCI_RUNNING, &hdev->flags))
->>>                           return;
->>>
->>> +               if (test_bit(HCI_QUIRK_NON_PERSISTENT_SETUP,
->>> &hdev->quirks) ||
->>> +                   hci_dev_test_flag(hdev, HCI_SETUP))
->>> +                       return;
->>> +
->>>                   serdev_device_write_flush(serdev);
->>>                   ret = serdev_device_write_buf(serdev, ibs_wake_cmd,
->>>                                                 sizeof(ibs_wake_cmd));
->>>
->>>> he maybe be a DTS expert but not BT from his present fix history for
->>>> bluetooth system.
->>>
->>>
->>
->> Did you test it? Does it work? If so, please consider sending it
->> upstream for review.
->>
->> You can keep Zijun's authorship but add your own SoB tag at the end
->> and mention what you did. Something like this:
->>
+On Thu, 25 Apr 2024 at 02:25, Doug Anderson <dianders@google.com> wrote:
+>
+> Hi,
+>
+> On Wed, Apr 24, 2024 at 3:51=E2=80=AFPM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+> >
+> > On Thu, 25 Apr 2024 at 01:15, Hsin-Yi Wang <hsinyi@google.com> wrote:
+> > >
+> > > On Wed, Apr 24, 2024 at 2:49=E2=80=AFPM Dmitry Baryshkov
+> > > <dmitry.baryshkov@linaro.org> wrote:
+> > > >
+> > > > On Thu, 25 Apr 2024 at 00:04, Doug Anderson <dianders@google.com> w=
+rote:
+> > > > >
+> > > > > Hi,
+> > > > >
+> > > > > On Tue, Apr 23, 2024 at 2:20=E2=80=AFPM Dmitry Baryshkov
+> > > > > <dmitry.baryshkov@linaro.org> wrote:
+> > > > > >
+> > > > > > On Tue, Apr 23, 2024 at 01:41:59PM -0700, Doug Anderson wrote:
+> > > > > > > Hi,
+> > > > > > >
+> > > > > > > On Tue, Apr 23, 2024 at 11:10=E2=80=AFAM Hsin-Yi Wang <hsinyi=
+@google.com> wrote:
+> > > > > > > >
+> > > > > > > > > > > > +#define _INIT_DCS_CMD(...) { \
+> > > > > > > > > > > > +     .type =3D INIT_DCS_CMD, \
+> > > > > > > > > > > > +     .len =3D sizeof((char[]){__VA_ARGS__}), \
+> > > > > > > > > > > > +     .data =3D (char[]){__VA_ARGS__} }
+> > > > > > > > > > > > +
+> > > > > > > > > > > > +#define _INIT_DELAY_CMD(...) { \
+> > > > > > > > > > > > +     .type =3D DELAY_CMD,\
+> > > > > > > > > > > > +     .len =3D sizeof((char[]){__VA_ARGS__}), \
+> > > > > > > > > > > > +     .data =3D (char[]){__VA_ARGS__} }
+> > > > > > > > > > >
+> > > > > > > > > > > This is the third panel driver using the same appoach=
+ Can you use
+> > > > > > > > > > > mipi_dsi_generic_write_seq() instead of the huge tabl=
+e? Or if you prefer
+> > > > > > > > > > > the table, we should extract this framework to a comm=
+on helper.
+> > > > > > > > > > > (my preference is shifted towards mipi_dsi_generic_wr=
+ite_seq()).
+> > > > > > > > > > >
+> > > > > > > > > > The drawback of mipi_dsi_generic_write_seq() is that it=
+ can cause the
+> > > > > > > > > > kernel size grows a lot since every sequence will be ex=
+panded.
+> > > > > > > > > >
+> > > > > > > > > > Similar discussion in here:
+> > > > > > > > > > https://lore.kernel.org/dri-devel/CAD=3DFV=3DWju3WS45=
+=3DEpXMUg7FjYDh3-=3Dmvm_jS7TF1tsaAzbb4Uw@mail.gmail.com/
+> > > > > > > > > >
+> > > > > > > > > > This patch would increase the module size from 157K to =
+572K.
+> > > > > > > > > > scripts/bloat-o-meter shows chg +235.95%.
+> > > > > > > > > >
+> > > > > > > > > > So maybe the common helper is better regarding the kern=
+el module size?
+> > > > > > > > >
+> > > > > > > > > Yes, let's get a framework done in a useful way.
+> > > > > > > > > I'd say, drop the _INIT_DELAY_CMD. msleep() and usleep_ra=
+nge() should be
+> > > > > > > > > used instead (and it's up to the developer to select corr=
+ect delay
+> > > > > > > > > function).
+> > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > > > +
+> > > > > > > > > > > > +static const struct panel_init_cmd kingdisplay_kd1=
+01ne3_init_cmd[] =3D {
+> > > > > > > > > > > > +     _INIT_DELAY_CMD(50),
+> > > > > > > > > > > > +     _INIT_DCS_CMD(0xE0, 0x00),
+> > > > > > > > >
+> > > > > > > > > [skipped the body of the table]
+> > > > > > > > >
+> > > > > > > > > > > > +     _INIT_DCS_CMD(0x0E, 0x48),
+> > > > > > > > > > > > +
+> > > > > > > > > > > > +     _INIT_DCS_CMD(0xE0, 0x00),
+> > > > > > > > >
+> > > > > > > > > > > > +     _INIT_DCS_CMD(0X11),
+> > > > > > > > >
+> > > > > > > > > Also, at least this is mipi_dsi_dcs_exit_sleep_mode().
+> > > > > > > > >
+> > > > > > > > > > > > +     /* T6: 120ms */
+> > > > > > > > > > > > +     _INIT_DELAY_CMD(120),
+> > > > > > > > > > > > +     _INIT_DCS_CMD(0X29),
+> > > > > > > > >
+> > > > > > > > > And this is mipi_dsi_dcs_set_display_on().
+> > > > > > > > >
+> > > > > > > > > Having a single table enourages people to put known comma=
+nds into the
+> > > > > > > > > table, the practice that must be frowned upon and forbidd=
+en.
+> > > > > > > > >
+> > > > > > > > > We have functions for some of the standard DCS commands. =
+So, maybe
+> > > > > > > > > instead of adding a single-table based approach we can im=
+prove
+> > > > > > > > > mipi_dsi_generic_write_seq() to reduce the bloat. E.g. by=
+ moving the
+> > > > > > > > > error handling to a common part of enable() / prepare() f=
+unction.
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > > For this panel, I think it can also refer to how
+> > > > > > > > panel-kingdisplay-kd097d04.c does. Create the table for ini=
+t cmd data,
+> > > > > > > > not what operation to use, and use mipi_dsi_generic_write_s=
+eq() when
+> > > > > > > > looping through the table.
+> > > > > > >
+> > > > > > > Even more similar discussion:
+> > > > > > >
+> > > > > > > https://lore.kernel.org/r/CAD=3DFV=3DUGDbNvAMjzWSOvxybGikQcvW=
+9JsRtbxHVg8_97YPEQCA@mail.gmail.com
+> > > > > >
+> > > > > > It seems I skipped that thread.
+> > > > > >
+> > > > > > I'd still suggest a code-based solution compared to table-based=
+ one, for
+> > > > > > the reasons I've outlined before. Having a tables puts a pressu=
+re on the
+> > > > > > developer to put commands there for which we already have a
+> > > > > > command-specific function.
+> > > > >
+> > > > > The problem is that with these panels that need big init sequence=
+s the
+> > > > > code based solution is _a lot_ bigger. If it were a few bytes or =
+a
+> > > > > 1-2KB then fine, but when Hsin-Yi measured Linus W's attempt to m=
+ove
+> > > > > from a table to code it was 100K difference in code [1]. I would =
+also
+> > > > > say that having these long init sequences done as separate comman=
+ds
+> > > > > encourages people to skip checking the return values of each of t=
+he
+> > > > > transfer functions and I don't love that idea.
+> > > > >
+> > > > > It would be ideal if these panels didn't need these long init
+> > > > > sequences, but I don't have any inside knowledge here saying that=
+ they
+> > > > > could be removed. So assume we can't get rid of the init sequence=
+s it
+> > > > > feels like we have to find some way to make the tables work for a=
+t
+> > > > > least the large chunks of init code and encourage people to make =
+the
+> > > > > tables readable...
+> > > >
+> > > >
+> > > > I did a quick check on the boe-tv101wum-nl6 driver by converting th=
+e
+> > > > writes to use the following macro:
+> > > >
+> > > > #define mipi_dsi_dcs_write_cmd_seq(dsi, cmd, seq...)
+> > > >              \
+> > > >         do {                                                       =
+            \
+> > > >                 static const u8 d[] =3D { cmd, seq };              =
+          \
+> > > >                 ret =3D mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZ=
+E(d));    \
+> > > >                 if (ret < 0)                                       =
+            \
+> > > >                         goto err;                                  =
+            \
+> > > >         } while (0)
+> > > >
+> > > > And then at the end of the init funciton having
+> > > >
+> > > > err:
+> > > >         dev_err(panel->dev,
+> > > >                 "failed to write command %d\n", ret);
+> > > >         return ret;
+> > > > }
+> > > >
+> > >
+> > > I'm not sure about the coding style rule here, would it be considered
+> > > unclear that caller of mipi_dsi_dcs_write_cmd_seq() needs to have err
+> > > block, but the block may not be directly used in that caller and is
+> > > only jumped from the macro?
+> >
+> > I'm also not sure here. It was a quick and dirty test.
+> > We might as well do something like
+> >
+> > ret =3D mipi_dsi_dcs_write_cmd_seq(dsi, ...);
+> > if (ret)
+> >     goto err;
+> >
+> > all over the place.
+>
+> Oh. This is actually very simple to fix and requires no code changes
+> to clients. :-P We just need to hoist the printing out of the macro
+> and into "drm_mipi_dsi.c". Let me double-confirm and then I'll post a
+> patch.
 
-[V7 2/2] as shown by below link is the formal fix.
-https://patchwork.kernel.org/project/bluetooth/patch/1713932807-19619-3-git-send-email-quic_zijuhu@quicinc.com/
+Sounds good. I have converted boe-tv101wum-nl6, ilitek-ili9882t and
+innolux-p079zca drivers. Once you post your patch I can post those
+too.
 
-this fix logic was introduced from the very beginning when i saw your
-issue description as shown by below link
-https://lore.kernel.org/all/1713095825-4954-3-git-send-email-quic_zijuhu@quicinc.com/#t
 
->> [Wren: kept Krzysztof's fix]
->> Signed-off-by: Wren...
->>
->> Bartosz
-> 
-> @Bartosz, I have tested this, and it works functionally for my setup. I
-> cannot detect a difference between this and Zijun's logic when I compile
-> a kernel with this patch.
-> 
-> @Zijun, I think you have objections to this patch. I would like to make
-> sure I hear your concern. Can you please take through it like I'm a 5
-> year old who barely knows C? In retrospect, I guess that I would be a
-> pretty precocious 5 year old. LOL.
-> 
-> In all seriousness, @Zijun, I really appreciate the work you did on
-> this. I would like to understand why you assert that removing the logic
-> of Krzysztof is appropriate. Again, I am not a kernel developer, so this
-> stuff is really outside my wheelhouse. Having said that, by my reading,
-> which may very well be worng, it seems like you are just adding another
-> case that is orthogonal to K's conditions. I'd like to truly understand
-> you position to know if the patch I am suggesting is somehow harmful.
-> This is an earnest question. I really want to respect your expertise
-> here, and I really want you to know how much I appreciate your work.
-> you maybe see all replies of [2/2] patch for this issue within below
-link. i believe you will understand it. the bottom of the link includes
-all reply history.
-https://lore.kernel.org/all/fe1a0e3b-3408-4a33-90e9-d4ffcfc7a99b@quicinc.com/
-> wt
 
+--=20
+With best wishes
+Dmitry
 
