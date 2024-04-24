@@ -1,117 +1,91 @@
-Return-Path: <linux-kernel+bounces-156850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 084CD8B0917
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:19:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 816058B091A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:19:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C6D31C23881
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:19:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CC0C2889E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:19:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D621DFCE;
-	Wed, 24 Apr 2024 12:18:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B285E15B0E2;
+	Wed, 24 Apr 2024 12:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="21i4Ev+y";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="R09LMCfX"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="1lbAuKeu"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1180F15664E;
-	Wed, 24 Apr 2024 12:18:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57963157468;
+	Wed, 24 Apr 2024 12:18:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713961089; cv=none; b=tMeDvbxaokW72Mk5CVfBxtZ/VWP2I+LXBnkJIib4Wejbay2+hThKP/xqt7Kn4MKyB0DCF+mY6/tx4LYGCgs9jOuMsu8W3GwbNwzdVsnLrrLT74Z2V87sz8lUsvg0w/L63No+dS3GJeKwOMYhe9HTEV2vMWPJMWhMQP1Aa8MRYC8=
+	t=1713961124; cv=none; b=efK59Egq3IkhpoFZMqckIjRJkQIWoa7sh6BjfvKTINaHHhAMeZX1QigwPPG1bp0K1nyzUXoIJD7AQjazxp1OF5B+367JNY3RxOr1s5ST2XTGpJcwQ1YjD3FDbHDlmr7f3AlPKAT00lib0pmjM7ND6uetfMN67v31hALIDS+duso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713961089; c=relaxed/simple;
-	bh=GbHKzyfhUb1jOnVvYSSSri/kXM9vJDiRPMH7awIcAWQ=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=M/jsXV4+jDCcij5orpJ8xBl/Mv9zssfRx/iWvr+zVyWIhNHwSSMb+fC30n1mYvw+HRXZ4CDW76peRtNyeCIk+yw07eb3XwrYYLiXhiTqgPNTVhRNjYjNxof1wDW1SnpMrefB/IS9hKzIcErfWsu2DMwtaTNzVBdYn8pLj+qBmkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=21i4Ev+y; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=R09LMCfX; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 24 Apr 2024 12:18:05 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713961086;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lkjPL2IHsyS1WOvJSXBAtUZ2oR4SwSOeXnheY4fVsKU=;
-	b=21i4Ev+yqG8+3LcpQMy2uhfLvazl65QV+NN1cIum2s1xLZeXjOSrOAqIUDdDRsCLZ3jUb8
-	o17/IhX1qwdOejm+tMYWFdg7fweOO//SlvE0HLAnYcE5oZTuu3oYKDWRxWYEMNzw+rP4Xx
-	b6Ow328EhnjAVwqstrgrOAb4CJ3QkMjfsZEnSKI/h/VBvpXJF7E3PietSuwlLDMnwFd3zZ
-	W5u0Nar5BlYiNgYVjTW7vuIjUvv+xAB1/BQHwJZZOvm8shtDbJvSo4/8QLaE9HUDrbsdTg
-	D0UYXMHXtnHF3EPBlLAE1ewe+v8uGIN+YUh4zX8PNsjedFJxir3YCz7On9eegQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713961086;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lkjPL2IHsyS1WOvJSXBAtUZ2oR4SwSOeXnheY4fVsKU=;
-	b=R09LMCfXf03waoKLV4A/1dYe5JBEtdZ730N+UvUOMaNm43V1QNkcKOpXB8dV7GPyi0G6F1
-	kPbZpsGbG1DS/hDA==
-From: "tip-bot2 for Wenkuan Wang" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/CPU/AMD: Add models 0x10-0x1f to the Zen5 range
-Cc: Wenkuan Wang <Wenkuan.Wang@amd.com>,
- "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240423144111.1362-1-bp@kernel.org>
-References: <20240423144111.1362-1-bp@kernel.org>
+	s=arc-20240116; t=1713961124; c=relaxed/simple;
+	bh=SULN04cta+fMxT+A7uGTXzI3Jjh1sMkfuGFHWvafAXU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RV6W/hyAxg1pwBggmBMRijMdYaS5Dmp0QMDKDyPl9qRGHfJprTyi1mx/PTSCakMFmriBN1tbCUglT9DpCYKsREIUOvVUSRqi+nyOuHY0kWwTRcC05LwDx6tKHYKqtwcsLHntumhFlla6zosS+JiaCg+gVKiyUxZ+Ef2/IpFxGQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=1lbAuKeu; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=5YU6RLfJEcQkDYGp0nVtAW9ea3dToWjX8XmP9WmB4qY=; b=1lbAuKeuHQtGR5Xoqex+Vz8IKD
+	R14cRiF09njBi1f0wxU9n9ZAZ+VTdwMBSHHPn1ashAK0Rlpsa0EjCaUXqXosheKd/okYE74UdJjnd
+	faVQ4WN9xtHb8y5C8zN+wTZYzg3bOfkdqgdSIRS0Wf5fNjz4DbprPh2Rw/6hGYimsuQc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rzbZx-00DoLZ-13; Wed, 24 Apr 2024 14:18:25 +0200
+Date: Wed, 24 Apr 2024 14:18:25 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>,
+	linux-kernel@vger.kernel.org,
+	Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
+	Lee Jones <lee@kernel.org>, Jiawen Wu <jiawenwu@trustnetic.com>,
+	Mengyuan Lou <mengyuanlou@net-swift.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Duanqiang Wen <duanqiangwen@net-swift.com>,
+	"open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>,
+	"open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
+Subject: Re: [PATCH 1/4] i2c: designware: Create shared header hosting driver
+ name
+Message-ID: <b3cdfeb7-6eb0-4522-96ae-d3155d677002@lunn.ch>
+References: <20240423233622.1494708-1-florian.fainelli@broadcom.com>
+ <20240423233622.1494708-2-florian.fainelli@broadcom.com>
+ <ZihLSKe_BHxasBql@surfacebook.localdomain>
+ <0aac2975-42d0-4abe-9405-bf8a38a94104@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171396108538.10875.18372163140114322675.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0aac2975-42d0-4abe-9405-bf8a38a94104@broadcom.com>
 
-The following commit has been merged into the x86/urgent branch of tip:
+> > >   #include <linux/i2c.h>
+> > > +#include <linux/i2c-designware.h>
+> > 
+> > Can it be hidden in the subfolder?
+> 
+> That would require the MFD and ethernet drivers to include relative to where
+> they are in the source tree, do we really want that?
 
-Commit-ID:     2718a7fdf292b2dcb49c856fa8a6a955ebbbc45f
-Gitweb:        https://git.kernel.org/tip/2718a7fdf292b2dcb49c856fa8a6a955ebbbc45f
-Author:        Wenkuan Wang <Wenkuan.Wang@amd.com>
-AuthorDate:    Wed, 10 Apr 2024 11:53:08 +08:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Wed, 24 Apr 2024 14:05:25 +02:00
+Maybe linux/platform_data/i2c-designware.h ? There are a few NAME
+macros in there.
 
-x86/CPU/AMD: Add models 0x10-0x1f to the Zen5 range
-
-Add some more Zen5 models.
-
-Fixes: 3e4147f33f8b ("x86/CPU/AMD: Add X86_FEATURE_ZEN5")
-Signed-off-by: Wenkuan Wang <Wenkuan.Wang@amd.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20240423144111.1362-1-bp@kernel.org
----
- arch/x86/kernel/cpu/amd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index cb9eece..307302a 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -459,8 +459,7 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
- 
- 	case 0x1a:
- 		switch (c->x86_model) {
--		case 0x00 ... 0x0f:
--		case 0x20 ... 0x2f:
-+		case 0x00 ... 0x2f:
- 		case 0x40 ... 0x4f:
- 		case 0x70 ... 0x7f:
- 			setup_force_cpu_cap(X86_FEATURE_ZEN5);
+       Andrew
 
