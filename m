@@ -1,73 +1,94 @@
-Return-Path: <linux-kernel+bounces-157833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96AC68B16FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:20:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41FD78B1700
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:20:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5F8DB2760B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:20:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6504C1C24EBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2F7216F0DD;
-	Wed, 24 Apr 2024 23:19:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C7916F0E7;
+	Wed, 24 Apr 2024 23:20:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="qBLMYbIM"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YjOkppfY"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD96716EC1C
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:19:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9AC16EC1C
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:20:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714000795; cv=none; b=bZkB/sZWJaJs5TSS1VDUJaT2+7ID6HqFK5PN91kQFDNx0HXegMhD9EyiYKOORoS2aXbp2Mlv3d9Is40eV44djelX5cW8Pnbmb8t0KaIpMaheEHiUyFigixdE2wfiP+Qipz2DjPklM6oNhPptwZw2tfa4hpO5ID/HOr9wEDKKO0E=
+	t=1714000823; cv=none; b=jNHcHLawSAJ1pz5aLCGVV0FtbjDQq6sJMkJt+gh+0SxNzqW85N/t0Bw7oTyAQxuZ4HLlHtz+0imgwjl3qbRIzgKOl/jjTJwcKaWjgEA4yzwbrjmR2RB0Y9CXAtfva/CcCzcXO9RnUGuPYlUB470rIQP/KY6rYDSilsc5TFR0N6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714000795; c=relaxed/simple;
-	bh=z4ViiZLxdy4jCZuWPQrDKXZVk0No4/qeBTQCDlNgGvQ=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Pxzd5jnmK1fY0S6q0Oh0Q32noYuNYvRnhucFyOdcbEgowSmDanEkG+wVz6xyXxPa23Q7pC6pwwoZJ18DST+SjTht0yXI8hvTPfFKnRYE38N2e7IULOTDvFdlmzG01DZgIFQrSfe8/BBrjZsuVQDsQ9svV+2Eu9fi0QPNg++EwA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=qBLMYbIM; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e3c9300c65so3424785ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:19:53 -0700 (PDT)
+	s=arc-20240116; t=1714000823; c=relaxed/simple;
+	bh=xMdC6gPfhPx0eqt9pE8Cf6dx1C6F38ZaVJBhnbPRa2E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HWvKYD6ADgCg7mCbbWZav7g8rHPdcITM52L3I9W1vjHS1YJwjx7AICUDY5cynaP1bu70UiIMqdX9EU5zfVdgLzRUBDv+UJKDjQVNCDVAyAgAo77lzc7xjRMzFd8+22jCf8aWJkNLloacr6OJHJwxJygFL84+aUSAHozg2OUbAAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YjOkppfY; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1eab16dcfd8so1388875ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:20:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1714000792; x=1714605592; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZUTRfOJXq9toeuTA94eYM/KVw4rlaWe4u/+EWKtDEug=;
-        b=qBLMYbIMnIgOi/RtSlLiyEuaSN27DHEDMv+dnOyra2GH2ZpNDqxON+4Khga8LZ1oEq
-         R+40X9Peh9P6mzDQO9/bGKCf0rGAIP6U79U1YqBJ56KWYa7qe7jC41T0dRxPN4JlTpiT
-         m1aMbs9QRt5kEruUTQ9sGUMIPQ4+0U9Y16OSM=
+        d=chromium.org; s=google; t=1714000821; x=1714605621; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=53galFO5b9NlY6rYFvZBx1xxKB41abzyybNlJJlu7mM=;
+        b=YjOkppfYENLsgSowL4ZSX3/HwEPO/rWaGdecpkQt5gyw/H5ZATAG+gW+W2tC+ojKok
+         MDqG3tof6H/HtrbSwsMYkIbwjtGjzCmmqvw2O5Sw6eFYjDC33lZoOHsxxzCcHM0elPT6
+         YEf1+Ieh2UUWDqca+ScK4hNpsq1jjUD6IVZak=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714000792; x=1714605592;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZUTRfOJXq9toeuTA94eYM/KVw4rlaWe4u/+EWKtDEug=;
-        b=vIvOCAa5cftZMpv3a234TOo5RSXZmebaCuqt3oiCHyYVQZO4oGUmsA+nNBdGaNsUnV
-         uNc3dpMFsputu2PM1+hDOJ5zNTgTynesrwyuWY1FByopSZGwnZz485MkNxTeSZOO9AjX
-         kSMfdMncVNvQLqbtiaTnDZYd0t4Vm3ocSzx1QvFMO+PAHvhFf3BU9ouYhbLgqqhb4QLC
-         3BpIpi9voq2aps7HbMrY45o/gCOMtb+tvoU+6G404N4loamIIKYhDEhU+eh2aef7UUVc
-         nJ8bMxFwbs/rv4N35WWcP6yiyWiq5IXrHyNOlvySusfOBP63KN/5ybqNOED1q2Y7oF+L
-         DSkw==
-X-Gm-Message-State: AOJu0YwLlz/kpVhkQkFO0ERM3XbW6HRoUJjZ3/igiNvW1Ej7Qu1wiX77
-	vIQV8bDB5j84BsOwZCdAhCVes7253EjWdev10ZQWBm1GWJfH1qF6PmuUDiBpSEXgfMtNTdzYRBi
-	jNvSvVxANn0799B1mm3GSvXRjrOO42Y4zyz84rkYqrf06vIHvjPknpau2GJaS9eMP61Ec5QQocg
-	umNp+T5AhQ8D4rTz/jOc5dwmmBP7sXDLNGT4AWkGfsSy3MBQ==
-X-Google-Smtp-Source: AGHT+IFkRA0EgSkYjbg6bSMkqdrLpRXRjpOUupwLvqO6F0KMMqDuOjofX2sPeF9mvRaeqlL+TXudrA==
-X-Received: by 2002:a17:902:d481:b0:1e8:d85a:970 with SMTP id c1-20020a170902d48100b001e8d85a0970mr5004577plg.10.1714000792243;
-        Wed, 24 Apr 2024 16:19:52 -0700 (PDT)
-Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id t8-20020a170902e84800b001dd2bacf30asm12539301plg.162.2024.04.24.16.19.51
+        d=1e100.net; s=20230601; t=1714000821; x=1714605621;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=53galFO5b9NlY6rYFvZBx1xxKB41abzyybNlJJlu7mM=;
+        b=I9P2mss24xS27YNAWsCY3ODJ5E4GPDlrf/lDR+C4L45AkUN3ADyvGXBjD3efPRFWGk
+         0bHVu9kFPmk4ABLWBTFFVUeIKjuV+q6Xij6wUwQThMTs/epothOelGVJBCB6bEWXBXsv
+         9ksc+mCrs8lmyLkDTiRyE24Vw47Syyr7azKtf2aTSzxSlpRTy8Sr1lWX/CNimMUCW2ur
+         PhDqtL0tEfhKC9V+07uae10B1nS6AnMxzaB65BTQJirtJ1oJDTFUQZSvsXiueZMa7tbV
+         5jeuTPuHujEiNFFjgI4Qqtzx84HfLPJd3HDeQ+Xj3uifYf8sdXOFWDnFStpDwN/O0v/A
+         kFfw==
+X-Forwarded-Encrypted: i=1; AJvYcCUssl+hSN3vJt10G+QUi6dlJUw2Db2RaghwPkaaoxYQ58moFrNDleQpKL0/zycOJdL6vRNyZmzZfd6gxGUeTu9vp94kftSPtuorDdkN
+X-Gm-Message-State: AOJu0YzxjGa4Kxh0fUmsWmVppKNKOwI3xDdwX7EV9NxoqoFsXLCQhqFn
+	Hiq64vcyJlW1OB6JS6Rrozego0ERzKEUq16koDm1CqWXiPD3/sNFvyzqlhd4Kg==
+X-Google-Smtp-Source: AGHT+IFMkYJNAfNLSmk4oPnPeYVule+RDiUbFbapsmqTHjfPM7QXarEC91Pvng6lRM//0u2jQSClHg==
+X-Received: by 2002:a17:902:868f:b0:1dd:2eed:52a5 with SMTP id g15-20020a170902868f00b001dd2eed52a5mr3803324plo.37.1714000821414;
+        Wed, 24 Apr 2024 16:20:21 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id c10-20020a170902d48a00b001dd0c5d5227sm12448914plg.193.2024.04.24.16.20.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 16:19:51 -0700 (PDT)
-Date: Wed, 24 Apr 2024 16:19:49 -0700
-From: Joe Damato <jdamato@fastly.com>
-To: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	davem@davemloft.net, kuba@kernel.org, shuah@kernel.org
-Subject: ynl: maybe minor bug?
-Message-ID: <ZimTlf_ISC2n8snQ@LQ3V64L9R2>
+        Wed, 24 Apr 2024 16:20:20 -0700 (PDT)
+Date: Wed, 24 Apr 2024 16:20:20 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Jakub Kicinski <kuba@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+	netdev@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 1/4] locking/atomic/x86: Silence intentional wrapping
+ addition
+Message-ID: <202404241602.276D4ADA@keescook>
+References: <20240424191225.work.780-kees@kernel.org>
+ <20240424191740.3088894-1-keescook@chromium.org>
+ <20240424224141.GX40213@noisy.programming.kicks-ass.net>
+ <202404241542.6AFC3042C1@keescook>
+ <20240424225436.GY40213@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,94 +97,68 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240424225436.GY40213@noisy.programming.kicks-ass.net>
 
-Hi there:
+On Thu, Apr 25, 2024 at 12:54:36AM +0200, Peter Zijlstra wrote:
+> On Wed, Apr 24, 2024 at 03:45:07PM -0700, Kees Cook wrote:
+> > On Thu, Apr 25, 2024 at 12:41:41AM +0200, Peter Zijlstra wrote:
+> > > On Wed, Apr 24, 2024 at 12:17:34PM -0700, Kees Cook wrote:
+> > > 
+> > > > @@ -82,7 +83,7 @@ static __always_inline bool arch_atomic_add_negative(int i, atomic_t *v)
+> > > >  
+> > > >  static __always_inline int arch_atomic_add_return(int i, atomic_t *v)
+> > > >  {
+> > > > -	return i + xadd(&v->counter, i);
+> > > > +	return wrapping_add(int, i, xadd(&v->counter, i));
+> > > >  }
+> > > >  #define arch_atomic_add_return arch_atomic_add_return
+> > > 
+> > > this is going to get old *real* quick :-/
+> > > 
+> > > This must be the ugliest possible way to annotate all this, and then
+> > > litter the kernel with all this... urgh.
+> > 
+> > I'm expecting to have explicit wrapping type annotations soon[1], but for
+> > the atomics, it's kind of a wash on how intrusive the annotations get. I
+> > had originally wanted to mark the function (as I did in other cases)
+> > rather than using the helper, but Mark preferred it this way. I'm happy
+> > to do whatever! :)
+> > 
+> > -Kees
+> > 
+> > [1] https://github.com/llvm/llvm-project/pull/86618
+> 
+> This is arse-about-face. Signed stuff wraps per -fno-strict-overflow.
+> We've been writing code for years under that assumption.
 
-I am probably just doing something wrong, but I tried to run
-tools/testing/selftests/drivers/net/stats.py today and hit what is possibly
-a bug?
+Right, which is why this is going to take time to roll out. :) What we
+were really doing with -fno-strict-overflow was getting rid of undefined
+behavior. That was really really horrible; we don't need the compiler
+hallucinating.
 
-Background info: Python 3.12.3
+> You want to mark the non-wrapping case.
 
-I'm using net-next at commit 9dd15d5088e9 ("Merge branch
-'sparx5-port-mirroring'") with a couple driver modifications added on top
-of it that don't seem relevant to the two test failures I'm hitting:
+What we want is lack of ambiguity. Having done these kinds of things in
+the kernel for a while now, I have strong evidence that we get much better
+results with the "fail safe" approach, but start by making it non-fatal.
+That way we get full coverage, but we don't melt the world for anyone
+that doesn't want it, and we can shake things out over a few years. For
+example, it has worked well for CONFIG_FORTIFY, CONFIG_UBSAN_BOUNDS,
+KCFI, etc.
 
-1. "loopback has no stats", and
-2. "Try to get stats for lowest unused ifindex but not 0"
+The riskier condition is having something wrap when it wasn't expected
+(e.g. allocations, pointer offsets, etc), so we start by defining our
+regular types as non-wrapping, and annotate the wrapping types (or
+specific calculations or functions).
 
-Both of these tests expect the ynl library to raise an exception, but I
-don't think it does, from tools/net/ynl/lib/ynl.py, the _ops method:
+For signed types in particular, wrapping is overwhelmingly the
+uncommon case, so from a purely "how much annotations is needed"
+perspective, marking wrapping is also easiest. Yes, there are cases of
+expected wrapping, but we'll track them all down and get them marked
+unambiguously. One thing on the short list is atomics, so here we are. :)
 
-  if nl_msg.error:
-      raise NlError(nl_msg)
-  if nl_msg.done:
-      if nl_msg.extack:
-          print("Netlink warning:")
-          print(nl_msg)
+-Kees
 
-And the code in net/core/netdev-genl.c seems to set:
-
- else {
-        NL_SET_BAD_ATTR(info->extack,
-                        info->attrs[NETDEV_A_QSTATS_IFINDEX]);
-        err = netdev ? -EOPNOTSUPP : -ENODEV;
-
-which is what cli.py says:
-
-$ ./cli.py --spec ../../../Documentation/netlink/specs/netdev.yaml \
-           --dump qstats-get --json '{"ifindex": "1"}'
-Netlink warning:
-nl_len = 28 (12) nl_flags = 0x202 nl_type = 3
-	extack: {'bad-attr': '.ifindex'}
-[]
-
-that seems to be the warning print out from the above
-tools/net/ynl/lib/ynl.py snippet, not an NlError, which is what you'd get
-if you tried ifindex 0 (which is listed as out of range in the YAML spec):
-
-$ ./cli.py --spec ../../../Documentation/netlink/specs/netdev.yaml \
-           --dump qstats-get --json '{"ifindex": "0"}'
-
-Netlink error: Numerical result out of range
-nl_len = 108 (92) nl_flags = 0x300 nl_type = 2
-	error: -34
-        extack: {'msg': 'integer out of range', 'policy': {'min-value': 1,
-        'max-value': 4294967295, 'type': 'u32'}, 'bad-attr': '.ifindex'}
-
-I'm not sure whether:
-
-1. tools/net/ynl/lib/ynl.py should be raising NlError when there is an
-   extack in this case (I think this is probably the way to go?), or
-
-2. the tests should be changed so that they don't expect an exception to be
-   raised but (ideally?) hide the warning report from tools/net/ynl/lib/ynl.py
-   when the warning is expected.
-
-I don't know python at all so this is definitely wrong, but here's a small
-change I made to fix the test (a similar change was made for the test which
-follows).
-
-The following patch is not intended to be seriously considered for
-application, just to highlight the issue I am hitting:
-
-diff --git a/tools/testing/selftests/drivers/net/stats.py b/tools/testing/selftests/drivers/net/stats.py
-index 7a7b16b180e2..d9f5d1f3ed34 100755
---- a/tools/testing/selftests/drivers/net/stats.py
-+++ b/tools/testing/selftests/drivers/net/stats.py
-@@ -115,9 +115,8 @@ def qstat_by_ifindex(cfg) -> None:
-     ksft_eq(cm.exception.nl_msg.extack['bad-attr'], '.ifindex')
-
-     # loopback has no stats
--    with ksft_raises(NlError) as cm:
--        netfam.qstats_get({"ifindex": 1}, dump=True)
--    ksft_eq(cm.exception.nl_msg.error, -95)
-+    stats = netfam.qstats_get({"ifindex": 1}, dump=True)
-+    ksft_eq(cm.exception.nl_msg.error, -34)
-     ksft_eq(cm.exception.nl_msg.extack['bad-attr'], '.ifindex')
-
-
-
-Thanks,
-Joe
+-- 
+Kees Cook
 
