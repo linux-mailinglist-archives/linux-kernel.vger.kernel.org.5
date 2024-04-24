@@ -1,312 +1,230 @@
-Return-Path: <linux-kernel+bounces-157741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFC948B153F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:40:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B18EF8B1543
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:41:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D8041F246E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:40:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D42501C21D09
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:41:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C499C157460;
-	Wed, 24 Apr 2024 21:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D19FD158852;
+	Wed, 24 Apr 2024 21:41:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vzK75WP7"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Xy+gnUVI"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A9F0156F25
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 21:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5A2E156F4E
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 21:41:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713994806; cv=none; b=jCoG0YS+5Glkic23gT5QHJ0SEeuucdBj0HBDnn+t1x1o20Ci0Lj594KHy4aK7sHM6y6HkUIoM0IU3mQrynob8RT2G0FBJePKD1fBN51PMTfAzJoGsTzC9SdA7QsMDEkfCaxLu33lMIbUIOG+3cQlMZ1DKdTHT29+1tu9xpwfmYk=
+	t=1713994870; cv=none; b=F1o2wQ71z+gQEOWGhC7g3M/3/SwRBf8Ja6LpbVodIBTZ/0360pF3uNE5PwpzW50RpjHnRZmyzMOa9V0+pbrVplfHsQSiGUchtNvNj869zdZ8MUjLy/Lyg60wB0syp2HvBIXllgOctGIqJTvl7LUAiQFrwLOzBLcI8JiR85CdLoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713994806; c=relaxed/simple;
-	bh=muB/GrtMuyvIZL1gTqcuCa6Ri679P3tYV/yG2XVXejE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=aqX0VC1lnXdiWzmf7pJfhkigf8gFAb0DsvvP25TFwLH1pBSKHWk9ii54v3lWWtJ06dV5u42FvEyKq/oaOTklybBdoa+HPEZPkEbL1wu87xS76551iIVOXwdVzCtV80QhsjlVYSB01jCGhd1ZX+pljuxrBk4w10PrAwtZpO/C+go=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vzK75WP7; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61b9280bba3so6147097b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 14:40:05 -0700 (PDT)
+	s=arc-20240116; t=1713994870; c=relaxed/simple;
+	bh=CSAxST9l1ML3bK9B48Kc1gJu93/PFzNoh1S6a1nXHI8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IryoVvN6oG4H8TVhxQrARKeFY8LTXC5Ms547iLeQS59kuZbIe6HVYkHrePIfyN/9/ZEZZ4QQkJYDlHD2nQHssALG2TqREt3tKJ31yxkdH8F9HptL6iaLeM2P8aLV0xlqi9oximqAZeBVO/dVI5iB8H7JHD/PaTcVK/asq/FKY4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Xy+gnUVI; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e8fce77bb2so2528435ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 14:41:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713994804; x=1714599604; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=I1EKZolXdPYAzbRipKSJPkUCjMZ4Y7QNaYncgFsTwr8=;
-        b=vzK75WP7mC5FKQLGNl5wyDKIIzO3KD/FWqFd9qh6lO9A2qt2sWOlfgDuTel9DNUqxy
-         6SAbqif9f0vWrJu2uwahwsLg55yuP296E0UCYLD+3qKwXFzP0sdbZ62lzKOtQy3cVoJ9
-         ckFZDBtjnksoFOb8TIRDCAeT305uJzXRuje6kxtbfgxoiEmURacXH8km1XNof7ax/zS3
-         M348h4jM//X1pQb7kM01VwEZWZJ5tB3QepknKulCTIPdRSo5roqaD2EVDKFW9rw+5nAO
-         +LXWmdcNWlNB2WkSot0gPx1Y1xN2NHCU0pxjTABqzCLFmErV7r15yc0c7CdEw9+0ED0o
-         SZKg==
+        d=chromium.org; s=google; t=1713994867; x=1714599667; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZN4X6k1taEixm9wIK5apcc1Zl8K4ael4BkfXJ2q5v0k=;
+        b=Xy+gnUVIU94bJtUxLPVkLT9QDtDzY9yMC+6TWlXjEKMNojNcZDckA//lPc231R9Eh5
+         dQsg5NWXpVivDB1MhcvdX3Y7MvQl2xtNhS3xkgRYXL+7tGiK7gOEcVSmyAqnKCtLGVhi
+         80I2EjezI7+MtAHjTjjnCmbIKjl0BKBO+4omk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713994804; x=1714599604;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I1EKZolXdPYAzbRipKSJPkUCjMZ4Y7QNaYncgFsTwr8=;
-        b=PY9fus4SpfOaunOvC/nHj6J3Feh0mhqLYR83abzeS5llfQHRwYvb0S9shexQakycYE
-         xJElho7Uy10Ro2sxLCkmXBWkuPlc0wTbadYpx5/RDuXcwsHRw7t8CC/eCTQnn/ru9NLV
-         tmL3GLnrIjz9B0jSJAqLqJGATydfFALk+bqqkibrJ62q0F5GRMkZR0+7pUS3R3JMmCJF
-         BrIbF51Sg5Twr9ZaJ0O/QnWsIyga35doOfCbLksmz5f39irHsByZx7s77lmz+03Uq2Go
-         mocD64JbrdvPVWC53v2yGdNYa8l1c65cE/0objkioxw7bOilemRb7gGgShRUjqf0c6R2
-         bHSg==
-X-Forwarded-Encrypted: i=1; AJvYcCV52v8Ypez/Vmm7DGyEyKdUNzf22069rAMxVc4EvxCHqYzctQMyBeEZZSWglUOI2yE9KHc2h9wQUGwA/58skHQ8qh3nmE21PfXtmzrd
-X-Gm-Message-State: AOJu0YzaxaX0wIINtTeISalvT/ga7ylr1e4lo7QjZv+sRL8AdkV+FHqY
-	rLY14kE9ZbuyLasXhRVn2hvJ4LP95RMf3GGyi41B1hiZ/95ewFZsvln9OkDY8Owwv+sVDXJC8Sp
-	kdQ==
-X-Google-Smtp-Source: AGHT+IHBpn1SOBbV7drc58TxI6npqIiVI1VLzloAxa/Hpo4e1kwyTXpiUjL14BLYZcy0Z92zCwnow659/2U=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:708:b0:dcb:e4a2:1ab1 with SMTP id
- k8-20020a056902070800b00dcbe4a21ab1mr1134066ybt.11.1713994804317; Wed, 24 Apr
- 2024 14:40:04 -0700 (PDT)
-Date: Wed, 24 Apr 2024 14:40:02 -0700
-In-Reply-To: <20240418194133.1452059-10-michael.roth@amd.com>
+        d=1e100.net; s=20230601; t=1713994867; x=1714599667;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZN4X6k1taEixm9wIK5apcc1Zl8K4ael4BkfXJ2q5v0k=;
+        b=DV4fIPnnlN0aOaLBxOG2Kr6MMeBjPgf26sXh17sZ9rdiwxkM/qrLClJwryJT+EoGSA
+         Wd1G3Jp/LhXgoYYDaOdzczGPWpXwvs04XSICp2cxrrRk4+hmrBcsskRiG9oYTkTKKQhj
+         Y7nhhRY5EUv/eskeLBWiGF851Oj5DB2DO9D3xe18Px5+cvC2dArl4i3QASKbEZ7sPE8B
+         EQVFfrMahs3If4/iANDBe4XrVHByQGI9F5SoNDqxUZiv2vdUHW9u1Bo9Y15Tvr2ScbSa
+         XW2FF5N8kHE4dWRIrgfuefnXaKm/lzXJgwgokz+dxKJQ7b7d3/vbOO4cWtmWN5PpQNIz
+         8MOA==
+X-Forwarded-Encrypted: i=1; AJvYcCW17VpVKVU+C5XlLYCrfYDFA+x5/uFQgVoE8xh7wsZylYC+vWWkVNn0NwKaUsSYpu9/Dwj5mhU2ESzuZuJ0N8e81tu6mEYZqUX1yyet
+X-Gm-Message-State: AOJu0Yy0VeqyW52AeRLA0+cxEt6NOwvn1f3Q0skamhqw/J1iTg35njUb
+	0DHo/ObxZupR3RE1LxNZ4pZ+dlhHGtw6yBFMZJKZjksuN8w6gCeSU9l6INBjXQ==
+X-Google-Smtp-Source: AGHT+IGsKG0KETtSrCcshPv9+RfF012Av+jDYjVSzUmXh3bqJ3o6ya/7ATIavZVy0HYtqqTaTGzC9Q==
+X-Received: by 2002:a17:902:6b42:b0:1e2:aa62:2fbf with SMTP id g2-20020a1709026b4200b001e2aa622fbfmr3421800plt.45.1713994866961;
+        Wed, 24 Apr 2024 14:41:06 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id b5-20020a170902d60500b001e421f98ebdsm12397269plp.280.2024.04.24.14.41.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 14:41:05 -0700 (PDT)
+From: Kees Cook <keescook@chromium.org>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Kees Cook <keescook@chromium.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	"GONG, Ruiqi" <gongruiqi@huaweicloud.com>,
+	Xiu Jianfeng <xiujianfeng@huawei.com>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Jann Horn <jannh@google.com>,
+	Matteo Rizzo <matteorizzo@google.com>,
+	Thomas Graf <tgraf@suug.ch>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	julien.voisin@dustri.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v3 0/6] slab: Introduce dedicated bucket allocator
+Date: Wed, 24 Apr 2024 14:40:57 -0700
+Message-Id: <20240424213019.make.366-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240418194133.1452059-1-michael.roth@amd.com> <20240418194133.1452059-10-michael.roth@amd.com>
-Message-ID: <Zil8MnPXkCbqw3Ka@google.com>
-Subject: Re: [PATCH v13 09/26] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_START command
-From: Sean Christopherson <seanjc@google.com>
-To: Michael Roth <michael.roth@amd.com>
-Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
-	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, 
-	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, pbonzini@redhat.com, 
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
-	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
-	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, 
-	Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5704; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=CSAxST9l1ML3bK9B48Kc1gJu93/PFzNoh1S6a1nXHI8=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmKXxuxwETH4SRJIHb8kWj0m1zUTHql5HJhw+fz
+ mdszYRAjJiJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZil8bgAKCRCJcvTf3G3A
+ JvZTD/0emHHf4xvjdKdDiFBuShtObaN1uKCbv7/oH5gtys3bEISPdgj4zMk/cxYH553top2uDPd
+ RkE8sWeyyj1YywWB8kMcsG+gipbi/nmPicqIUT+Oflrdz77pmLG8OtcPued74mQbOa4CgpKaBqx
+ DBcWmnImRUGzQr/1wOzAdyj86L/C4nsmiyZWdPKRGVvR/hATQaKsDr1zsQe7LrkFtssFI/oUSA4
+ Y0oo8fPFxtaZOlA2R0vL25oC32E0CbbaRdGeVHPZXHT9GH1pUJeBp1EOPOsAhAcQ7yk2xL0exr5
+ 3Fw+qGigeSVEfglcqdrY7V38sCokZvMOtQV3QLd8BCD5sn4AR8/7qdWwN5MnGRPk/SWa9Efch+w
+ q/rAdkA3p6xGbNOFFmafGh4kL4tRjk/cSgG583WJFy5z7oBOsFmloPh0P22kLrQROzYRonqzEna
+ 8sjKMVDrcp8ROy+2y3nS1PHJSKVyXp4M8AS838x1i5ISBH2xbDPg2ohhIHnQ4rTiojcuEAov/Rn
+ gUsbW2iNWBvPn6Hz6iyZQbsSua1vsEDNzODC9VQXJ46DqX7VqJuzGjstmX6hP9RHDdUDco9Fu+N
+ Z8O9yOHxrdch8FXScDdJvFD/XRCFPExGKymM9b/Kpor8sO1mMgpyanlizX6I08BYM/pyvSGQFSw
+ /QIjFVz lv0QVvPA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 18, 2024, Michael Roth wrote:
-> +static inline bool sev_version_greater_or_equal(u8 major, u8 minor)
-> +{
-> +	if (major < SNP_POLICY_API_MAJOR)
-> +		return true;
-> +
-> +	if (major == SNP_POLICY_API_MAJOR && minor <= SNP_POLICY_API_MINOR)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
-> +static int snp_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
-> +{
-> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +	struct sev_data_snp_launch_start start = {0};
-> +	struct kvm_sev_snp_launch_start params;
-> +	u8 major, minor;
-> +	int rc;
-> +
-> +	if (!sev_snp_guest(kvm))
-> +		return -ENOTTY;
-> +
-> +	if (copy_from_user(&params, u64_to_user_ptr(argp->data), sizeof(params)))
-> +		return -EFAULT;
-> +
-> +	/* Don't allow userspace to allocate memory for more than 1 SNP context. */
-> +	if (sev->snp_context) {
-> +		pr_debug("SEV-SNP context already exists. Refusing to allocate an additional one.\n");
+Hi,
 
-What's the plan with all these printks?   There are far too many in this series.
-Some might be useful, but many of them have no business landing upstream.
+Series change history:
 
-> +		return -EINVAL;
-> +	}
-> +
-> +	sev->snp_context = snp_context_create(kvm, argp);
-> +	if (!sev->snp_context)
-> +		return -ENOTTY;
-> +
-> +	if (params.policy & ~SNP_POLICY_MASK_VALID) {
-> +		pr_debug("SEV-SNP hypervisor does not support requested policy %llx (supported %llx).\n",
+ v3:
+  - clarify rationale and purpose in commit log
+  - rebase to -next (CONFIG_CODE_TAGGING)
+  - simplify calling styles and split out bucket plumbing more cleanly
+  - consolidate kmem_buckets_*() family introduction patches
+ v2: https://lore.kernel.org/lkml/20240305100933.it.923-kees@kernel.org/
+ v1: https://lore.kernel.org/lkml/20240304184252.work.496-kees@kernel.org/
 
-What does "SEV-SNP hypervisor" even mean?
+For the cover letter, I'm repeating commit log for patch 4 here, which has
+additional clarifications and rationale since v2:
 
-> +			 params.policy, SNP_POLICY_MASK_VALID);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!(params.policy & SNP_POLICY_MASK_RSVD_MBO)) {
-> +		pr_debug("SEV-SNP hypervisor does not support requested policy %llx (must be set %llx).\n",
-> +			 params.policy, SNP_POLICY_MASK_RSVD_MBO);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (params.policy & SNP_POLICY_MASK_SINGLE_SOCKET) {
-> +		pr_debug("SEV-SNP hypervisor does not support limiting guests to a single socket.\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!(params.policy & SNP_POLICY_MASK_SMT)) {
-> +		pr_debug("SEV-SNP hypervisor does not support limiting guests to a single SMT thread.\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	major = (params.policy & SNP_POLICY_MASK_API_MAJOR);
-> +	minor = (params.policy & SNP_POLICY_MASK_API_MINOR);
-> +	if (!sev_version_greater_or_equal(major, minor)) {
+    Dedicated caches are available for fixed size allocations via
+    kmem_cache_alloc(), but for dynamically sized allocations there is only
+    the global kmalloc API's set of buckets available. This means it isn't
+    possible to separate specific sets of dynamically sized allocations into
+    a separate collection of caches.
+    
+    This leads to a use-after-free exploitation weakness in the Linux
+    kernel since many heap memory spraying/grooming attacks depend on using
+    userspace-controllable dynamically sized allocations to collide with
+    fixed size allocations that end up in same cache.
+    
+    While CONFIG_RANDOM_KMALLOC_CACHES provides a probabilistic defense
+    against these kinds of "type confusion" attacks, including for fixed
+    same-size heap objects, we can create a complementary deterministic
+    defense for dynamically sized allocations that are directly user
+    controlled. Addressing these cases is limited in scope, so isolation these
+    kinds of interfaces will not become an unbounded game of whack-a-mole. For
+    example, pass through memdup_user(), making isolation there very
+    effective.
+    
+    In order to isolate user-controllable sized allocations from system
+    allocations, introduce kmem_buckets_create(), which behaves like
+    kmem_cache_create(). Introduce kmem_buckets_alloc(), which behaves like
+    kmem_cache_alloc(). Introduce kmem_buckets_alloc_track_caller() for
+    where caller tracking is needed. Introduce kmem_buckets_valloc() for
+    cases where vmalloc callback is needed.
+    
+    Allows for confining allocations to a dedicated set of sized caches
+    (which have the same layout as the kmalloc caches).
+    
+    This can also be used in the future to extend codetag allocation
+    annotations to implement per-caller allocation cache isolation[1] even
+    for dynamic allocations.
+    
+    Memory allocation pinning[2] is still needed to plug the Use-After-Free
+    cross-allocator weakness, but that is an existing and separate issue
+    which is complementary to this improvement. Development continues for
+    that feature via the SLAB_VIRTUAL[3] series (which could also provide
+    guard pages -- another complementary improvement).
+    
+    Link: https://lore.kernel.org/lkml/202402211449.401382D2AF@keescook [1]
+    Link: https://googleprojectzero.blogspot.com/2021/10/how-simple-linux-kernel-memory.html [2]
+    Link: https://lore.kernel.org/lkml/20230915105933.495735-1-matteorizzo@google.com/ [3]
 
-Why does this need a someone weirdly named helper?  Isn't this just?
+After the core implementation are 2 patches that cover the most heavily
+abused "repeat offenders" used in exploits. Repeating those details here:
 
-	if (major < SNP_POLICY_API_MAJOR ||
-	    (major == SNP_POLICY_API_MAJOR && minor < SNP_POLICY_API_MINOR))
+    The msg subsystem is a common target for exploiting[1][2][3][4][5][6]
+    use-after-free type confusion flaws in the kernel for both read and
+    write primitives. Avoid having a user-controlled size cache share the
+    global kmalloc allocator by using a separate set of kmalloc buckets.
+    
+    Link: https://blog.hacktivesecurity.com/index.php/2022/06/13/linux-kernel-exploit-development-1day-case-study/ [1]
+    Link: https://hardenedvault.net/blog/2022-11-13-msg_msg-recon-mitigation-ved/ [2]
+    Link: https://www.willsroot.io/2021/08/corctf-2021-fire-of-salvation-writeup.html [3]
+    Link: https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html [4]
+    Link: https://google.github.io/security-research/pocs/linux/cve-2021-22555/writeup.html [5]
+    Link: https://zplin.me/papers/ELOISE.pdf [6]
+    Link: https://syst3mfailure.io/wall-of-perdition/ [7]
 
-> +		pr_debug("SEV-SNP hypervisor does not support requested version %d.%d (have %d,%d).\n",
-> +			 major, minor, SNP_POLICY_API_MAJOR, SNP_POLICY_API_MINOR);
-> +		return -EINVAL;
-> +	}
-> +
-> +	start.gctx_paddr = __psp_pa(sev->snp_context);
-> +	start.policy = params.policy;
-> +	memcpy(start.gosvw, params.gosvw, sizeof(params.gosvw));
-> +	rc = __sev_issue_cmd(argp->sev_fd, SEV_CMD_SNP_LAUNCH_START, &start, &argp->error);
-> +	if (rc) {
-> +		pr_debug("SEV_CMD_SNP_LAUNCH_START firmware command failed, rc %d\n", rc);
-> +		goto e_free_context;
-> +	}
-> +
-> +	sev->fd = argp->sev_fd;
-> +	rc = snp_bind_asid(kvm, &argp->error);
-> +	if (rc) {
-> +		pr_debug("Failed to bind ASID to SEV-SNP context, rc %d\n", rc);
-> +		goto e_free_context;
-> +	}
-> +
-> +	return 0;
-> +
-> +e_free_context:
-> +	snp_decommission_context(kvm);
-> +
-> +	return rc;
-> +}
-> +
->  int sev_mem_enc_ioctl(struct kvm *kvm, void __user *argp)
->  {
->  	struct kvm_sev_cmd sev_cmd;
-> @@ -1999,6 +2154,15 @@ int sev_mem_enc_ioctl(struct kvm *kvm, void __user *argp)
->  		goto out;
->  	}
->  
-> +	/*
-> +	 * Once KVM_SEV_INIT2 initializes a KVM instance as an SNP guest, only
-> +	 * allow the use of SNP-specific commands.
-> +	 */
-> +	if (sev_snp_guest(kvm) && sev_cmd.id < KVM_SEV_SNP_LAUNCH_START) {
-> +		r = -EPERM;
-> +		goto out;
-> +	}
-> +
->  	switch (sev_cmd.id) {
->  	case KVM_SEV_ES_INIT:
->  		if (!sev_es_enabled) {
-> @@ -2063,6 +2227,9 @@ int sev_mem_enc_ioctl(struct kvm *kvm, void __user *argp)
->  	case KVM_SEV_RECEIVE_FINISH:
->  		r = sev_receive_finish(kvm, &sev_cmd);
->  		break;
-> +	case KVM_SEV_SNP_LAUNCH_START:
-> +		r = snp_launch_start(kvm, &sev_cmd);
-> +		break;
->  	default:
->  		r = -EINVAL;
->  		goto out;
-> @@ -2258,6 +2425,33 @@ int sev_vm_copy_enc_context_from(struct kvm *kvm, unsigned int source_fd)
->  	return ret;
->  }
->  
-> +static int snp_decommission_context(struct kvm *kvm)
-> +{
-> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +	struct sev_data_snp_addr data = {};
-> +	int ret;
-> +
-> +	/* If context is not created then do nothing */
-> +	if (!sev->snp_context)
-> +		return 0;
-> +
-> +	data.address = __sme_pa(sev->snp_context);
-> +	down_write(&sev_deactivate_lock);
-> +	ret = sev_do_cmd(SEV_CMD_SNP_DECOMMISSION, &data, NULL);
-> +	if (WARN_ONCE(ret, "failed to release guest context")) {
+    Both memdup_user() and vmemdup_user() handle allocations that are
+    regularly used for exploiting use-after-free type confusion flaws in
+    the kernel (e.g. prctl() PR_SET_VMA_ANON_NAME[1] and setxattr[2][3][4]
+    respectively).
+    
+    Since both are designed for contents coming from userspace, it allows
+    for userspace-controlled allocation sizes. Use a dedicated set of kmalloc
+    buckets so these allocations do not share caches with the global kmalloc
+    buckets.
+    
+    Link: https://starlabs.sg/blog/2023/07-prctl-anon_vma_name-an-amusing-heap-spray/ [1]
+    Link: https://duasynt.com/blog/linux-kernel-heap-spray [2]
+    Link: https://etenal.me/archives/1336 [3]
+    Link: https://github.com/a13xp0p0v/kernel-hack-drill/blob/master/drill_exploit_uaf.c [4]
 
-WARN here, or WARN in the caller, not both.  And if you warn here, this can be
+Thanks!
 
-	down_write(&sev_deactivate_lock);
-	ret = sev_do_cmd(SEV_CMD_SNP_DECOMMISSION, &data, NULL);
-	up_write(&sev_deactivate_lock);
+-Kees
 
-	if (WARN_ONCE(ret, "..."))
 
-> +		up_write(&sev_deactivate_lock);
-> +		return ret;
-> +	}
-> +
-> +	up_write(&sev_deactivate_lock);
-> +
-> +	/* free the context page now */
+Kees Cook (6):
+  mm/slab: Introduce kmem_buckets typedef
+  mm/slab: Plumb kmem_buckets into __do_kmalloc_node()
+  mm/slab: Introduce __kvmalloc_node() that can take kmem_buckets
+    argument
+  mm/slab: Introduce kmem_buckets_create() and family
+  ipc, msg: Use dedicated slab buckets for alloc_msg()
+  mm/util: Use dedicated slab buckets for memdup_user()
 
-This doesn't seem like a particularly useful comment.  What would be useful is
-a comment explaining the "decommission" unbinds the ASID.  
+ include/linux/slab.h | 44 ++++++++++++++++--------
+ ipc/msgutil.c        | 13 +++++++-
+ lib/fortify_kunit.c  |  2 +-
+ lib/rhashtable.c     |  2 +-
+ mm/slab.h            |  6 ++--
+ mm/slab_common.c     | 79 +++++++++++++++++++++++++++++++++++++++++---
+ mm/slub.c            | 14 ++++----
+ mm/util.c            | 21 +++++++++---
+ 8 files changed, 146 insertions(+), 35 deletions(-)
 
-> +	snp_free_firmware_page(sev->snp_context);
-> +	sev->snp_context = NULL;
-> +
-> +	return 0;
-> +}
-> +
->  void sev_vm_destroy(struct kvm *kvm)
->  {
->  	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> @@ -2299,7 +2493,15 @@ void sev_vm_destroy(struct kvm *kvm)
->  		}
->  	}
->  
-> -	sev_unbind_asid(kvm, sev->handle);
-> +	if (sev_snp_guest(kvm)) {
-> +		if (snp_decommission_context(kvm)) {
-> +			WARN_ONCE(1, "Failed to free SNP guest context, leaking asid!\n");
+-- 
+2.34.1
 
-WARN on the actually failure, not '1'.  And a newline isn't needed.
-
-		if (WARN_ONCE(snp_decommission_context(kvm)
-			      "Failed to free SNP guest context, leaking asid!"))
-			return;
-
-> +			return;
-> +		}
-> +	} else {
-> +		sev_unbind_asid(kvm, sev->handle);
-> +	}
-> +
->  	sev_asid_free(sev);
->  }
->  
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 7f2e9c7fc4ca..0654fc91d4db 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -92,6 +92,7 @@ struct kvm_sev_info {
->  	struct list_head mirror_entry; /* Use as a list entry of mirrors */
->  	struct misc_cg *misc_cg; /* For misc cgroup accounting */
->  	atomic_t migration_in_progress;
-> +	void *snp_context;      /* SNP guest context page */
->  };
->  
->  struct kvm_svm {
-> -- 
-> 2.25.1
-> 
 
