@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-157602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C5488B1370
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:20:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D3FA8B1372
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:20:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF325284A03
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:20:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE0AD1C22865
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:20:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBC5678C93;
-	Wed, 24 Apr 2024 19:19:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B1A082D91;
+	Wed, 24 Apr 2024 19:19:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ya.ru header.i=@ya.ru header.b="baWM8vAt"
-Received: from forward502a.mail.yandex.net (forward502a.mail.yandex.net [178.154.239.82])
+	dkim=pass (1024-bit key) header.d=ya.ru header.i=@ya.ru header.b="gql0upej"
+Received: from forward502b.mail.yandex.net (forward502b.mail.yandex.net [178.154.239.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88F6745D9;
-	Wed, 24 Apr 2024 19:19:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.82
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB1417A724;
+	Wed, 24 Apr 2024 19:19:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713986372; cv=none; b=cPfXgjO74TE+oFrvxSjnTCA4Fl/JW0dWE2xhCXFZIvVKUPSw2nugSdMex848uznA2KmFvoZUg+LdG1P+QneEy5cwBn7Q5oLURLAGWU50gxeg0nuKHzJQ7P1lONF2TCkEkq8lkrpFxG6f4OBKw7/W2dwII+8HT07WLYFbza9V3ew=
+	t=1713986377; cv=none; b=uzXOFC5fyGct3CLk2ebS+KtvyGi5B11JMkOFN71CalISVpJ0WD18MNHjLvbuZrKTpvzAZ0BgnwAq+EKieIF45LbrYvQFvCfZq8Cvr+3grrtccUYDXMWgGOkkv92RPm92J8u/cvGijCQ5vstwzC0ZB6IZquF6hUxhO3OzgWHcUQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713986372; c=relaxed/simple;
-	bh=CHH7TL/5RLahwBG0WvRUPQJrqDTWKGexNu7vMZIs6UY=;
+	s=arc-20240116; t=1713986377; c=relaxed/simple;
+	bh=VpIb6fiZHXg3hmoKwHeP+v2+KBpzLJeKOmUqlXSWq20=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=go1Wk3LA5tnCvsvmL6BAY6ZzgDxCPQ1hSicXqxoz/iHuzJoIWcQMLGGVy7n80NdFZUMZiH8kUG87UGug3PeQNSBWPtLeBCpYQWZ1q0H9jRIsNQ/qpopXaRRx7MYVQ3wdOwB81elNtgtJOaOihcC61WslnFmshQYY4R3q6WPkk4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ya.ru; spf=pass smtp.mailfrom=ya.ru; dkim=pass (1024-bit key) header.d=ya.ru header.i=@ya.ru header.b=baWM8vAt; arc=none smtp.client-ip=178.154.239.82
+	 MIME-Version; b=WJVKEJta9WrKkIzs2DAqNqPyhHohl8QxDd+dTH8YrsewiR0oDqwxdD6JDFsBsudlTlyALE3RQ/cGr0qMIgN5JVcJEdPXz24VVNao+rFt6dyZvi3/H+7DKNhYiz1uEbDdUXBbfcTargo/dVN/MbkRQRUskWFytb6wrZIrOlGJ6Y8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ya.ru; spf=pass smtp.mailfrom=ya.ru; dkim=pass (1024-bit key) header.d=ya.ru header.i=@ya.ru header.b=gql0upej; arc=none smtp.client-ip=178.154.239.146
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ya.ru
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ya.ru
 Received: from mail-nwsmtp-smtp-production-main-54.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-54.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:332e:0:640:784d:0])
-	by forward502a.mail.yandex.net (Yandex) with ESMTPS id CD82C60A6A;
-	Wed, 24 Apr 2024 22:19:24 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-54.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id IJRtcgXMoCg0-w9WlDAHt;
-	Wed, 24 Apr 2024 22:19:23 +0300
+	by forward502b.mail.yandex.net (Yandex) with ESMTPS id 2EF3A5F319;
+	Wed, 24 Apr 2024 22:19:27 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-54.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id IJRtcgXMoCg0-8inZL3gi;
+	Wed, 24 Apr 2024 22:19:26 +0300
 X-Yandex-Fwd: 1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ya.ru; s=mail;
-	t=1713986363; bh=f8EnQH1L/dXaphsBpNH1E4suYCwQaxstBt1xwrlcsu4=;
+	t=1713986366; bh=71sGgVUD37SmuBxuzEyimvQaUN299mPg9mVqN5q3vsQ=;
 	h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
-	b=baWM8vAtYLNcQzEm1HzE78kwWCEgch8k+UJjazC/lMgZ991cFtfbW11eIenI7/dHz
-	 NDDV82LP4eTm7hnPnbCqPK3WbYQW4mJadb5cdK+t36l6luvSA06Ztg0wGY8DyhTJrD
-	 lg0Oexn1BcIJWU+oZJGnag2ctBBsI7nCiEpNAWtk=
+	b=gql0upejeI58UAiRkmcIK92e9xyvEfD42LnXccpHFphaORaD1/CYhMD/kvGLfVyLt
+	 VhKz+70cOWygz8Tq+dNQ1fa5I1z6Dn9hocsd2KNKGDVxsDceYyPSqubZQg+gaZGHS0
+	 H0XcgnK/xoYny0QBe0uOxelDZUTPUsUFfeL9eLIY=
 Authentication-Results: mail-nwsmtp-smtp-production-main-54.iva.yp-c.yandex.net; dkim=pass header.i=@ya.ru
 From: Konstantin Pugin <rilian.la.te@ya.ru>
 To: 
@@ -58,17 +58,21 @@ Cc: krzk@kernel.org,
 	u.kleine-koenig@pengutronix.de,
 	Maarten.Brock@sttls.nl,
 	Konstantin Pugin <ria.freelander@gmail.com>,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Andy Shevchenko <andy@kernel.org>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jiri Slaby <jirislaby@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
 	Lech Perczak <lech.perczak@camlingroup.com>,
 	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
 	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: [PATCH v8 1/3] serial: sc16is7xx: announce support of SER_RS485_RTS_ON_SEND
-Date: Wed, 24 Apr 2024 22:18:52 +0300
-Message-ID: <20240424191908.32565-2-rilian.la.te@ya.ru>
+	linux-serial@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH v8 2/3] dt-bindings: sc16is7xx: Add compatible line for XR20M1172 UART
+Date: Wed, 24 Apr 2024 22:18:53 +0300
+Message-ID: <20240424191908.32565-3-rilian.la.te@ya.ru>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240424191908.32565-1-rilian.la.te@ya.ru>
 References: <20240424191908.32565-1-rilian.la.te@ya.ru>
@@ -82,40 +86,30 @@ Content-Transfer-Encoding: 8bit
 
 From: Konstantin Pugin <ria.freelander@gmail.com>
 
-When specifying flag SER_RS485_RTS_ON_SEND in RS485 configuration,
-we get the following warning after commit 4afeced55baa ("serial: core:
-fix sanitizing check for RTS settings"):
+EXAR XR20M1172 UART is mostly register-compatible with NXP SPI UARTs.
+It will be handled by same driver, so, it makes sense to add DT
+definition for these block into driver's documentation.
 
-    invalid RTS setting, using RTS_AFTER_SEND instead
-
-This results in SER_RS485_RTS_AFTER_SEND being set and the
-driver always write to the register field SC16IS7XX_EFCR_RTS_INVERT_BIT,
-which breaks some hardware using these chips.
-
-The hardware supports both RTS_ON_SEND and RTS_AFTER_SEND modes, so fix
-this by announcing support for RTS_ON_SEND.
-
-Fixes: 267913ecf737 ("serial: sc16is7xx: Fill in rs485_supported")
-Tested-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Vladimir Zapolskiy <vz@mleia.com>
 Reviewed-by: Andy Shevchenko <andy@kernel.org>
 Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
 ---
- drivers/tty/serial/sc16is7xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index 03cf30e20b75..dfcc804f558f 100644
---- a/drivers/tty/serial/sc16is7xx.c
-+++ b/drivers/tty/serial/sc16is7xx.c
-@@ -1449,7 +1449,7 @@ static int sc16is7xx_setup_mctrl_ports(struct sc16is7xx_port *s,
- }
- 
- static const struct serial_rs485 sc16is7xx_rs485_supported = {
--	.flags = SER_RS485_ENABLED | SER_RS485_RTS_AFTER_SEND,
-+	.flags = SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND | SER_RS485_RTS_AFTER_SEND,
- 	.delay_rts_before_send = 1,
- 	.delay_rts_after_send = 1,	/* Not supported but keep returning -EINVAL */
- };
+diff --git a/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml b/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
+index 5dec15b7e7c3..c4bedf23368b 100644
+--- a/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
++++ b/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
+@@ -12,6 +12,7 @@ maintainers:
+ properties:
+   compatible:
+     enum:
++      - exar,xr20m1172
+       - nxp,sc16is740
+       - nxp,sc16is741
+       - nxp,sc16is750
 -- 
 2.44.0
 
