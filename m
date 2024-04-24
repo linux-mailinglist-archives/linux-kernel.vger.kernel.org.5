@@ -1,148 +1,127 @@
-Return-Path: <linux-kernel+bounces-156551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 062C08B046C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:35:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD0D68B0480
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:39:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9ABBD1F25B54
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:35:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DB7AB22D58
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3028158A06;
-	Wed, 24 Apr 2024 08:35:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5639F158851;
+	Wed, 24 Apr 2024 08:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Z+fi5877";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="6DyW8cLV";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Z+fi5877";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="6DyW8cLV"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="AR+gfgSC"
+Received: from smtpcmd01-g.aruba.it (smtpcmd01-g.aruba.it [62.149.158.217])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A31001E4A9;
-	Wed, 24 Apr 2024 08:35:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF4C1142915
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.158.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713947719; cv=none; b=P22+wxV0Z2W85QlpXVuuGFrExtdq75A1R/n1yMxG1AE3jFBwgyA7nVk0jOnQ6gaWCox6b5CwJapZ3nAVeIfGdW3ObWz9sj7OwkkWnxaP/Zr38Da6Wp4SM9/UpMNMAGbfMO1DX8nlH3Rnm9t5ACSDaF52JYqxShNv3Q73hdcX9lE=
+	t=1713947975; cv=none; b=BUf92aFNoySSSREhxtL/9Wbcvzcpc8FjSVqIr4fnVYPm5WN5gG5cqjIiPNuHWrkdLexGtXQ3s8JAAH3dXfwpD056/D/JZwJVmQRfJA8yi2dLmOYfi20YX8JI0JkHpSXa/1f2aZZKKnwXb7yFUelsTm8gqrqoF0jAEAmdEBud6mY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713947719; c=relaxed/simple;
-	bh=Diwxh7oYymnJcN+8qW/fo95XYZ0IL5WSPMdte6hs+Ds=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bTQpyGYbrJIxr8FDIqENcf6gKlFShIq6HqDfbGYSaSBvdtD2+5qAACETQCl5mLBf5EO0522whJ561K7GoU0lFdmVswKburXk68TaSHL/ioOTQTrAhUbvw4cX2Y3yrSWNA2KASOEIgBeVIsBUqr+PfU0hd0SjNFQo+0GztEo0e8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Z+fi5877; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=6DyW8cLV; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Z+fi5877; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=6DyW8cLV; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B3F2A611F1;
-	Wed, 24 Apr 2024 08:35:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713947713; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=elRg1WfuYIh3UN/+CGdWJcbo9zKqZDeKyAmj66ffYL0=;
-	b=Z+fi5877P1yRb5OnHCTwGKdKWopshyLSofJgIRzvxIrzDqmJ9mTx1p2ynY2q8zSYxEiryl
-	Wg0nTecO0P3olrNTwRs4B2yTxhpr4vU/0kQhYWid4JIpwbdHqCXFmgcJfB3QaqHl1o4Lha
-	lu1Rw0qz7uonv7zhqwJyB6p0grTdBCk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713947713;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=elRg1WfuYIh3UN/+CGdWJcbo9zKqZDeKyAmj66ffYL0=;
-	b=6DyW8cLVMVbUb/MEmadxQ/VFqiQ6Z0besAc/QjIxj9cAx6C82avzUQrBfNhvuEItFiyEcC
-	eF43mJWiaUkbs7Dw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713947713; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=elRg1WfuYIh3UN/+CGdWJcbo9zKqZDeKyAmj66ffYL0=;
-	b=Z+fi5877P1yRb5OnHCTwGKdKWopshyLSofJgIRzvxIrzDqmJ9mTx1p2ynY2q8zSYxEiryl
-	Wg0nTecO0P3olrNTwRs4B2yTxhpr4vU/0kQhYWid4JIpwbdHqCXFmgcJfB3QaqHl1o4Lha
-	lu1Rw0qz7uonv7zhqwJyB6p0grTdBCk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713947713;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=elRg1WfuYIh3UN/+CGdWJcbo9zKqZDeKyAmj66ffYL0=;
-	b=6DyW8cLVMVbUb/MEmadxQ/VFqiQ6Z0besAc/QjIxj9cAx6C82avzUQrBfNhvuEItFiyEcC
-	eF43mJWiaUkbs7Dw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 847C71393C;
-	Wed, 24 Apr 2024 08:35:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wZmgH0HEKGaIKQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Wed, 24 Apr 2024 08:35:13 +0000
-Date: Wed, 24 Apr 2024 10:35:23 +0200
-Message-ID: <87cyqfdupg.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	<alsa-devel@alsa-project.org>,
-	<linux-sound@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	<patches@opensource.cirrus.com>
-Subject: Re: [PATCH v1 0/2] Add support for Lenovo Thinkbook 13X
-In-Reply-To: <20240423162303.638211-1-sbinding@opensource.cirrus.com>
-References: <20240423162303.638211-1-sbinding@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1713947975; c=relaxed/simple;
+	bh=3+0nlzHW2JT0q5k/SQ97Gsuh5F72SEJngTlpyLTO/2I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LOiG/vzOtKCZfgEO2X8FjJ6iLBRO2rfj+vIiSyDVs00Zdwtcqd3FZrvTbXmLg/ELJAUDJpvHdb4dCTrWARgHQ6PRsKhjzI6BcO3+uxJcJNy0iiRFN0ya+0V/dbfE6rCBlQsTAZEg1lMwtraejMICfkUSnj5rwDcjrRAj40r9ufw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=AR+gfgSC; arc=none smtp.client-ip=62.149.158.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
+Received: from engicam.com ([146.241.29.4])
+	by Aruba Outgoing Smtp  with ESMTPSA
+	id zY75r7sLxwy3rzY75rdAoY; Wed, 24 Apr 2024 10:36:25 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+	t=1713947785; bh=3+0nlzHW2JT0q5k/SQ97Gsuh5F72SEJngTlpyLTO/2I=;
+	h=From:To:Subject:Date:MIME-Version;
+	b=AR+gfgSCukrCyVF+RQqon2vcgZK3OMxsvdFMCDTP3HYyjC0Bxn9vAnh2w+Oqy6hqv
+	 onwoiiP0Pt7fm9wIkItkY42dfImj8bCoUWrPXjpBPa9A6rTtlG6rozebDEi2A59ZgR
+	 uZqs5hTpnCshY+LxESmg3PyCIawr+tYqaPnsuxcBGbluQyhZIbURL7vz/MM4PRfbpt
+	 lYWffLUvU16t0dhy0xCnirzDHJ5u7a1i3syveqidUX/YNmqbCd7fecXh+6HlMnWTW+
+	 6bs3oiND7M6Igj1oZgrLswFRPyMHbzGWY//dh/MO+gNmoZ6ocZwh+Xj4QrW9jl+UBm
+	 E7QoMAzkTWaLQ==
+From: Fabio Aiuto <fabio.aiuto@engicam.com>
+To: Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Fabio Aiuto <fabio.aiuto@engicam.com>
+Subject: [PATCH v4 0/3] arm64: dts: imx93: add i.Core MX93 EDIMM 2.0 board
+Date: Wed, 24 Apr 2024 10:36:04 +0200
+Message-Id: <20240424083607.11162-1-fabio.aiuto@engicam.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-X-Spamd-Result: default: False [-1.45 / 50.00];
-	BAYES_HAM(-1.15)[88.70%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Spam-Score: -1.45
-X-Spam-Flag: NO
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfLnkJ1sozcfJ7Qr4uSLykER/wdjEN2xKC/4+pcCxAVGWkQWGbemRyNplRye8aE0lehC5Jxfro8d+ukwv8DIC9nEd2yIJbjatQyQzzw90sNFQsMKmKIbM
+ I/9cQb4rIuioNRT8hd1Jr9wHNBzr3eX1DtEFP8JGautdX0Tj20acemKUVYnVTtGX08948yMityF6UDebQTT8+9uoaIp/OkvcxXb2lDfCVFeTnHrvHT2j2cm0
+ l/QNhof5Xkn+wUSgq8BYPxSpR+JBezFkrvlg8EJ9UDYiV4iTJ0JniSsWJQMMjhOFx4S9fGeSaBBnwVVCPcPW41A9/W8jRBhm9chKByD7kBTTZRvSipGw2umk
+ vYeiRKL6DIMOmjQdErFaeKw2y7Cy0nt/0yFHmo77oi36K03Xge+XNoCBzXZLDNOePzWdosvd+WyKJLHGesVJ7xRweO27TyB3RmOhTK0aZJijDa7Z9eVpBEvg
+ zUdXZ29cA+AXs2HS4G8sX/yzZeRe1emWMlrlkIydpLNIbj9F3lCkypZgXEU=
 
-On Tue, 23 Apr 2024 18:23:01 +0200,
-Stefan Binding wrote:
-> 
-> This laptop does not contain _DSD required to support CS35L41 HDA.
-> To workaround this, add support for this laptop into the configuration
-> table in cs35l41_hda_property.c.
-> Also add the required entry into patch_realtek for this SSID.
-> 
-> Stefan Binding (2):
->   ALSA: hda: cs35l41: Support Lenovo 13X laptop without _DSD
->   ALSA: hda/realtek: Add quirks for Lenovo 13X
+Hello all,
 
-Applied both patches now to for-next branch.
+this patchset adds support for i.Core MX93 EDIMM 2.0 Starter Kit,
+a SoM + Evaluation Board combination from Engicam.
 
+The number of patch has diminished to 3, for I dropped the
+patch introducing a change in nxp,pca9450 binding which has
+been already submitted in regulator tree.
 
-thanks,
+(Dropped also regulator tree maintainers as recipients for
+they aren't anymore involved in this patchset)
 
-Takashi
+This patchset introduces just basic functionality for board.
+
+Thanks in advance,
+
+fabio
+---
+v3 ---> v4:
+	- drop wl_reg_on regulator in favor of
+	  mmc-pwrseq-simple
+v2 ---> v3:
+        - fixed dtschema warnings
+        - added Acked/Reviewed-by tags
+        - removed regulator-always-on on
+          bt_reg_on
+        - fixed clock rate assignment on
+          sgtl5000 node
+        - added wdog_b-warm-reset; property in pmic
+        - fixed indentation issue
+
+v1 ---> v2:
+        - dropped patch updating nxp,pca9450 binding
+        - fixed indentation issue
+        - fixed missing space issue
+        - improved naming of regulator nodes
+        - removed unneeded include
+        - fixed email recipients
+
+Fabio Aiuto (3):
+  dt-bindings: arm: fsl: add Engicam i.Core MX93 EDIMM 2.0 Starter Kit
+  arm64: dts: imx93: add Engicam i.Core MX93 SoM
+  arm64: dts: imx93: Add Engicam i.Core MX93 EDIMM 2.0 Starter Kit
+
+ .../devicetree/bindings/arm/fsl.yaml          |   7 +
+ arch/arm64/boot/dts/freescale/Makefile        |   1 +
+ .../dts/freescale/imx93-icore-mx93-edimm2.dts | 344 ++++++++++++++++++
+ .../boot/dts/freescale/imx93-icore-mx93.dtsi  | 271 ++++++++++++++
+ 4 files changed, 623 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx93-icore-mx93.dtsi
+
+-- 
+2.34.1
+
 
