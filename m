@@ -1,112 +1,151 @@
-Return-Path: <linux-kernel+bounces-157851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E1658B174E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:40:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00F3E8B174A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:40:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54C3A1F22426
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:40:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACDB6282648
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7C516F28F;
-	Wed, 24 Apr 2024 23:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E6416F0F9;
+	Wed, 24 Apr 2024 23:39:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="g1dLJazu"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="mTSeKG3O"
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD8C16EBEF
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:39:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D98416EBEF
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:39:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714002000; cv=none; b=VwHi1kQd5aL6Jy/Vz+cbAM2AXy0hBpNOqlph7qsWjB8IYiz+WVPHOo37V96BS6M1+9KI35X+5HMFfh44fUwVPI9Vmexfgkk+ubr9cLEYFemoy2fHCcWoMJeH4xoHamcI/z7DS3OPAivdgJb+7ge2yo9tHsrH/tPFQW6Mey6VSy8=
+	t=1714001994; cv=none; b=YdxxHpM3AdfUICDwllluX0+13SA2WvFTJvmommxEaYtU79/bfXeXHwC4x1u/Vq6cvUpFHy1wPHTnirWcebjOAy3nDWfDwMp4xS56FUSjF+UfaI8SF5yMNog4k8UP3nk4dk+zRYC4Q8RIOvBTFSjFWDBFEafoOxUrY9eUQ9Py+Mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714002000; c=relaxed/simple;
-	bh=S333S4sIPV+E0xMd8ucx9SmBeKuTCXKxVi0OsYUitzI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DRP5E1DwcJ8JvYmBW53K7JD6gBK97fLsk8OWZvsRGaQ5OS4juO8Wl7yUsRigHCRcYPuqAt4jCUNs4GdiSaBs+PUjqJD78Rn+xM6Sok5ao9a/1jtQaXVs2Ezsz3kMqcmc5JAQtqHrMK/+ryvgpZct3utOP+afSYG9cGjiM5gXDk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=g1dLJazu; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dbed179f0faso1220339276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:39:58 -0700 (PDT)
+	s=arc-20240116; t=1714001994; c=relaxed/simple;
+	bh=2O0o98ggkAQaDI7rP6itKxJY1fyhiAPS6wTogNwU5hg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=msOW+A/podwaPgKG1O8LWu7w5PNTUl+KW0GTAKsoqCIVWAvjl4U6uWWkVuOhI8jyRTWFpmyLB959Atis1olUgNQdDX75Uw7aLMaygw9rfCjb3w9wwu2zH+2SyUPN+WLd8hA4+erYRtPrcN88ysiscaHfNuvc3Tx6xEgMYG3jVkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=mTSeKG3O; arc=none smtp.client-ip=209.85.160.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-23333dddd8aso319179fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:39:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714001998; x=1714606798; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4lbiDAQdRMQUnTwkJFNqDelP8XC5ywPFYlZpytL71Sk=;
-        b=g1dLJazu1CFtSqM0QQvvJ4p2y2NZv6pcjxhWVOlMEKcy8jKpk7uFslZJUoIgjvIP3o
-         opyqK+tv/sToA5osY3JxwmSGsGImu9fn8aKys52uSiBSO1xquqsHPCmIERFY+XhIvq2T
-         sbuAQgqEkX7x/PfcmAGXNjCT0rBpWAS8KpvcDSchr5HRXEyi+r3p9mkgztN4QaWP3T0t
-         zI2SnUfzUBk2uQMzxVvsaH3Y4adtdHP1h99SedZyqV0MX/yVwlPM4nTZcKZJ9NRp1pwR
-         D1dG+GPa98Q+5lyr8JbBOyZtwNBugoJ5aZKdFmkaA9VHkr6qxYnAyXWQomM9Gfy3MSwa
-         0+EQ==
+        d=ziepe.ca; s=google; t=1714001992; x=1714606792; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pu6etYv5ocPJpDTio+T7Fs2/aD2ssrnDfuoC/AGwC3E=;
+        b=mTSeKG3OB6ztab6ECA7dehoBN5pZIBhzN4mW8PzumBU+iO+9fA5LcuTqcSNryCkEK9
+         JZhGzJXb2QOZ2f8IUMjSxOaNDT+XhUIdVUcORKhViXkw3/QSpvk8WTSjNdgosV4r0Nbt
+         MUJCYaTM/IbpI+NfqUVCvCpZ7TuXewAPvjG4RfcB768UPa9FOjuLAxnvopEGFZCJEvu0
+         Cxk4s/PxiZqBd0C/ZfoJD7p0jkgNr5gDtrsS/wmoEJX5hgnt7oFUCk6QT96k/CqBsdg2
+         e8p34X+AwDDLoUkQo0bkoIQAkL9+P3rZf7uiGtyG3En0zPV9apxUNl4nq2gMD/Y7rR3g
+         6acA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714001998; x=1714606798;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4lbiDAQdRMQUnTwkJFNqDelP8XC5ywPFYlZpytL71Sk=;
-        b=syR6/K37lTmkDp4iDkmbR5+bqhzZg41Gx06dFqMX4nmvkUSQh8FrgPbfaWIOOT2vho
-         eOjMgCpMLaHA8sqDPGdmG2u+pNvpzQ+B1bHQweJ2hjd958hFHO3iF8vdOEvHafDNcFBH
-         a6pGNm/m+rldh/gcB+b2Hot6PrMLKgme16NmifbcuGQxOj8luc0vH0bGK5hPFoeuQamx
-         PAvmSPTR6iI2ULSNcrTVdXwvQpB7h9IUnVEPmD/KVNfqnUUiAuvGKtwXW9l/GvD62mZ3
-         v6Kar2KtZsY1H8SmfKI3PJ9MUVBUaeo6rXFAvZnTZujEsI0bLd/gp5DtGyeEPkH4ZkkX
-         d0fw==
-X-Forwarded-Encrypted: i=1; AJvYcCVVlTPgBYIauKa69diwgS9hTPaiJauP+e67+B5wzEsp8SwJL1GpgtFACymIwo8UooAXR3Xe9dwBgRmLSjOHB5/uRYR/V5bAgnVQxqhN
-X-Gm-Message-State: AOJu0YzqWLlq/S+t7SehBRdcym5Net/+OCMQK0qc3fSzYyGM4dQyKR8+
-	c6MLhyG8dt3K95Mn+uvGDyDQQfDdBavBSxEK3OmqmviNOsSbnEiOkhPDSh5kX0OQLVnXvhZdYar
-	QofSQbEL/MkDMqffTpV4iNnyb4FVI4YakJ+Q78g==
-X-Google-Smtp-Source: AGHT+IFbCEKpEBJRqFVkfoarP6YfnOgjBQGtumnt+gwnMFyhoUY0mANCP/DL9e2l0oGwk5Nf7M7RID79c6RIpYBEm9M=
-X-Received: by 2002:a25:c7ca:0:b0:de5:8427:d66f with SMTP id
- w193-20020a25c7ca000000b00de58427d66fmr1166099ybe.4.1714001997820; Wed, 24
- Apr 2024 16:39:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714001992; x=1714606792;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Pu6etYv5ocPJpDTio+T7Fs2/aD2ssrnDfuoC/AGwC3E=;
+        b=SugHLbVc36gyKmzL4vhmJmTbaTM2EaD9lIknx9mW5cUW7nJS9Byevtsoymz0JiOeF7
+         1le225Ohvg7Ax9zp0H5MDlnVLbb+FZIVeYevxZ6jdDJDBHKryzAgrE2C3dzH8WUbHVCr
+         ODN1u2Qvtvxpbjvw/JbRzjM1znrNkCbjnMPfib3g4RaIWwPg7JkzW4nsib9sKLrX2r1R
+         MSDGovqk31ttSS9t/OEhBm7qNz238bUcnzc24fhgyrzzwXbCm/Mq/m6wIBvh8h+J6XEb
+         frerGs+/smx9Y5zI2EuRdS6MDLSF+WfXELIcUxOFPprJy+/eMDmtYjduLa/RnaRVdaVA
+         /xsg==
+X-Forwarded-Encrypted: i=1; AJvYcCX/QFkCqAane2F/EPtq28xEGgXwCxMdlw1QTTypfuY55NtdC0FzI8Tuh+IWl+St/AEeYqJbn9AqGiPcsHYIXYeddEUVG2/nfgP7uzI1
+X-Gm-Message-State: AOJu0Ywu62+mdKtbDwiIV2odEi5G9yIZTI4eMWFNum7RYOIBCiwt/xXH
+	2lu7yb+FMDjt+w2vLkRHleM0GR7GFtSqjXMS12MNWuA+BxNegdXIRu2PYonds8Q=
+X-Google-Smtp-Source: AGHT+IFHSoQmOFvkIt4UdS9vVvm/+9LOICy267nTOZxeYgmuzEs2JusAIDrqy2AljxZbMWh+yyg/Lg==
+X-Received: by 2002:a05:6870:9602:b0:22e:bc50:3492 with SMTP id d2-20020a056870960200b0022ebc503492mr4335970oaq.47.1714001992183;
+        Wed, 24 Apr 2024 16:39:52 -0700 (PDT)
+Received: from ziepe.ca ([12.97.180.36])
+        by smtp.gmail.com with ESMTPSA id pv10-20020a0568709d8a00b0023b50a85913sm78072oab.38.2024.04.24.16.39.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 16:39:51 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rzmDO-00A1fN-HT;
+	Wed, 24 Apr 2024 20:39:50 -0300
+Date: Wed, 24 Apr 2024 20:39:50 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Tomasz Jeznach <tjeznach@rivosinc.com>
+Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Anup Patel <apatel@ventanamicro.com>,
+	Sunil V L <sunilvl@ventanamicro.com>,
+	Nick Kossifidis <mick@ics.forth.gr>,
+	Sebastien Boeuf <seb@rivosinc.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	iommu@lists.linux.dev, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux@rivosinc.com
+Subject: Re: [PATCH v2 7/7] iommu/riscv: Paging domain support
+Message-ID: <20240424233950.GJ231144@ziepe.ca>
+References: <cover.1713456597.git.tjeznach@rivosinc.com>
+ <301244bc3ff5da484b46d3fecc931cdad7d2806f.1713456598.git.tjeznach@rivosinc.com>
+ <20240419125627.GD223006@ziepe.ca>
+ <CAH2o1u5+XD9YN=gdMVtfkyhKoKha0UpwKgOVbCAwOQa+saPfRw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424-ayn-odin2-initial-v1-0-e0aa05c991fd@gmail.com> <20240424-ayn-odin2-initial-v1-6-e0aa05c991fd@gmail.com>
-In-Reply-To: <20240424-ayn-odin2-initial-v1-6-e0aa05c991fd@gmail.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 25 Apr 2024 02:39:47 +0300
-Message-ID: <CAA8EJppXj=DyT0hEW05mAjgzHS+H2iiJ-M=MfJPgkWfztX=V8g@mail.gmail.com>
-Subject: Re: [PATCH 06/10] arm64: dts: qcom: sm8550: Add UART15
-To: wuxilin123@gmail.com
-Cc: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Junhao Xie <bigfoot@classfun.cn>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Tengfei Fan <quic_tengfan@quicinc.com>, 
-	Molly Sophia <mollysophia379@gmail.com>, linux-pwm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAH2o1u5+XD9YN=gdMVtfkyhKoKha0UpwKgOVbCAwOQa+saPfRw@mail.gmail.com>
 
-On Wed, 24 Apr 2024 at 18:30, Xilin Wu via B4 Relay
-<devnull+wuxilin123.gmail.com@kernel.org> wrote:
->
-> From: Xilin Wu <wuxilin123@gmail.com>
->
-> Add uart15 node for UART bus present on sm8550 SoC.
->
-> Signed-off-by: Molly Sophia <mollysophia379@gmail.com>
-> Signed-off-by: Xilin Wu <wuxilin123@gmail.com>
-> ---
->  arch/arm64/boot/dts/qcom/sm8550.dtsi | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
+On Wed, Apr 24, 2024 at 04:30:45PM -0700, Tomasz Jeznach wrote:
+> > > @@ -46,6 +46,10 @@ MODULE_LICENSE("GPL");
+> > >  #define dev_to_iommu(dev) \
+> > >       container_of((dev)->iommu->iommu_dev, struct riscv_iommu_device, iommu)
+> > >
+> > > +/* IOMMU PSCID allocation namespace. */
+> > > +static DEFINE_IDA(riscv_iommu_pscids);
+> > > +#define RISCV_IOMMU_MAX_PSCID                BIT(20)
+> > > +
+> >
+> > You may consider putting this IDA in the riscv_iommu_device() and move
+> > the pscid from the domain to the bond?
+> >
+> 
+> I've been considering containing IDA inside riscv_iommu_device at some
+> point,  but it made PCSID management more complicated.  In the follow
+> up patches it is desired for PSCID to be unique across all IOMMUs in
+> the system (within guest's GSCID), as the protection domains might
+> (and will) be shared between more than single IOMMU device.
 
+The PCSID isn't scoped under the GSCID? That doesn't sound very good,
+it means VM's can't direct issue invalidation with their local view of
+the PCSID space?
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > This seems suboptimal, you probably want to copy the new design that
+> > Intel is doing where you allocate "bonds" that are already
+> > de-duplicated. Ie if I have 10 devices on the same iommu sharing the
+> > domain the above will invalidate the PSCID 10 times. It should only be
+> > done once.
+> >
+> > ie add a "bond" for the (iommu,pscid) and refcount that based on how
+> > many devices are used. Then another "bond" for the ATS stuff eventually.
+> >
+> 
+> Agree, not perfect to send duplicate invalidations.
+> This should improve with follow up patchsets introducing of SVA
+> (reusing the same, extended bond structure) and update to send IOTLB
+> range invalidations.
+> 
+> For this change I've decided to go with as simple as possible
+> implementation and over-invalidate for domains with multiple devices
+> attached. Hope this makes sense.
 
+It is fine as long as you do fix it..
 
--- 
-With best wishes
-Dmitry
+Jason
 
