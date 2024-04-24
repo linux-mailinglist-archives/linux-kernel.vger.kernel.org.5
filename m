@@ -1,169 +1,208 @@
-Return-Path: <linux-kernel+bounces-156865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B4068B096D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:26:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D32F58B096B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:26:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CD3B1C23FC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:26:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AB8D1F254DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:26:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE5B15B153;
-	Wed, 24 Apr 2024 12:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF84C15B56E;
+	Wed, 24 Apr 2024 12:25:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="ExKG6atw"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VHdqBnNF"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E806215ADBD
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 12:25:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E5E15ADBD
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 12:25:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713961554; cv=none; b=AKK3M1iUU0q4cOJNP7f0e1M0ahyNQObhZryKglhivbnHCjdB5r3wUkvtM+Sv7hVwUVVotgFWLa0mDHVrsdZOzJwPnwYPIiSM+kEsUeRJStlWwpzP+pujUXfAUFKab2kkbJb2rRknCkiSIdPZUGOz7ADzAqnhG/Y/1gbCSCV0mrM=
+	t=1713961545; cv=none; b=QNoM7Xqb/me5EdRPN05S99x6pen13C++EH6IsCwTntVvSiLYPM33nyPRpHuGDip+c9nmmcUdkqYEmSQ1W0Sr3p12Q3GN3u16SbrqgnRvYlP2PPuZs4+Rsp/okpNdS56cpd8kbpxupVCJ2OmJl1HZcvCbVCqxKYXS/IVdzvoXljo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713961554; c=relaxed/simple;
-	bh=rG4d/MnWfaOjQq0qDrwsQuXTojlbohycGBXya8OAIuc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=B/Y4wm3ua0ilAFppncMVABWG0N2YjFqfk9mTqAjZGImYp0MDCryWaGRagAyOQlKxCa7oyW5sUNd2O8DY9tFpFRIoGWHrLOT/Jakx2Vd+rQPvRrbXXXO/gOPPFqgjqydnp1HLeXiekr1h8GStFp3nhMvDnCWHCQDf5BK0Ag3oLZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=ExKG6atw; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a55b2f49206so154833466b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:25:52 -0700 (PDT)
+	s=arc-20240116; t=1713961545; c=relaxed/simple;
+	bh=OUnlVrtOA8bfYKyxgEQlwedfzZMyoS8iLwh26XS6VIc=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=pG+djGW3IzEWfFNkmNB5dDJPwF6VtKgjRU5TQ6jSDJ1JTJrlkpDPKyiFgJ7BlFEx4E4Ep4AYI2IRdCcUM/P2fs3BiauowdRV12YoG91Vfu+l99qHT8fsXxMPiHnKnDzkJhnU43Jl0QuBNCatSkcNmLdB4MB8xXBJQG9dkHgQ1uU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VHdqBnNF; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2dcc8d10d39so62302861fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:25:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1713961551; x=1714566351; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6EK3Y3Nu/Z/IArF7/R+9U8KrZLCbZgIZZgP2Ef02z5M=;
-        b=ExKG6atwAgL7C6fnrea+BqyqoHZykKEJrQHLkHzYMLyY7CJqm/WrtYDEv8cV6kX/+o
-         jb6n6oB+BYouLXLBfA4MpxoHXKHhnOG/23xi8Btyhq7TRVJ6wBbp76weOVnV0TJj0FpK
-         42JHhGB396j2YTrxghW9U22LWtaywwUJdgDDs=
+        d=linaro.org; s=google; t=1713961541; x=1714566341; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Kxsp6XgbCGqnM98GPeUTVgQx/m9yaIy5tDfehUmygVg=;
+        b=VHdqBnNF3CHmbEZ3dqufwUn56+xJSPmxFLsLH3L+ymETyTFz/JXZRss+ZQnrdEMF3D
+         Vh/pFxb3g25qvJoxvdl3NfbZrd1aOz/pbKgK04bbN0qaRAbG/4fOT23G/Eya56S/1HCX
+         WvrPjINHaFkYqWr4mnUDUNM3lj1NHnwVkLnsQQCT3ZN8Nxf/7FXWRfaoVTqmPL6wwRdq
+         NE1GZMEbcUV+YydNbu9aEZYHj/scj7mq0TEZd9fVfozEeTbu+qDr0vD3i1LeBoE8zqHN
+         VgPwkF4/AIExdocUaO6WlcLxdv86h4+Pa31HsPhgG192vyNiS3AHFOlv7i0hzD9Tgouh
+         MRgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713961551; x=1714566351;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6EK3Y3Nu/Z/IArF7/R+9U8KrZLCbZgIZZgP2Ef02z5M=;
-        b=QDIGuPhGn+i1IuC7ZYa/QXzhaZo7GbfTNNSb+J1ie/L5Ly4ACm2xUk+JDt+Krhucc2
-         ldZqk/RqG+ouyD2q+qDeATkM/tR8NbwYohVL26Sicc6WhoEj2nj1pDlKrDakHzU5I2QN
-         gaWDoZnL0WfOu4qgP45gKYlzmbH4b2sI8XuB/dJz6paW+9bosU/+AcNurMEEHBUczf9i
-         q3ErofGUeNYDmUWtaQ6Xqi1qgz3s1ZgU66TEFcf9Lk7tT3SkX0VX/d5GJxOMZIbSt9be
-         4BTX+qerDWi3xajxvuyWnce1tAQWM0Uz2G4dqvyM4Z/5o3S4YfOLdrUFajcYMchI9ig0
-         4UPQ==
-X-Gm-Message-State: AOJu0YxetTYjBnIGjAGtmRXC0/VBU41OfhJnzpLPnhKQZAsvtXvqY1bj
-	PjinbdZXYaI8hSoCAyKNXTUOQ0haG7d+oQYhraCNB1XS2pkQc/ZrqrVXLRPrRzhqzl0uLs1y+H5
-	bGeI=
-X-Google-Smtp-Source: AGHT+IEACSnmOdwmOybMgM4QKn4HHUlMUtN23mOm1fXXJAGTvhFCmotMYTZCKh0njhVYjNRuha5ZqA==
-X-Received: by 2002:a17:906:3485:b0:a55:690b:b696 with SMTP id g5-20020a170906348500b00a55690bb696mr6278162ejb.9.1713961551046;
-        Wed, 24 Apr 2024 05:25:51 -0700 (PDT)
-Received: from andrea-amarula.amarulasolutions.com (212-57-59-66.xdsl.deanconnect.nl. [212.57.59.66])
-        by smtp.gmail.com with ESMTPSA id bi14-20020a170907368e00b00a5588ed8fa2sm6755202ejc.113.2024.04.24.05.25.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 05:25:50 -0700 (PDT)
-From: Andrea Calabrese <andrea.calabrese@amarulasolutions.com>
-To: linux-kernel@vger.kernel.org
-Cc: trivial@kernel.org,
-	Andrea Calabrese <andrea.calabrese@amarulasolutions.com>
-Subject: [PATCH] map.c: refactoring magic constant
-Date: Wed, 24 Apr 2024 14:25:33 +0200
-Message-Id: <20240424122533.79720-1-andrea.calabrese@amarulasolutions.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1713961541; x=1714566341;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kxsp6XgbCGqnM98GPeUTVgQx/m9yaIy5tDfehUmygVg=;
+        b=GhtwZd9iIswnlj9jkJlS1zqJ3mp1VgmtzhxX9Si0La3OCapKVEzLK2zg5wpvfum540
+         RKOgFkOoMvMjaiHioNaLpGwAHCURqnvpK//le7GszGncgjWwECjXqtSLC5z0lBIRdN4P
+         E0T+kWJep+rUjshJTSi5eMqH3VOYfrh8bTsYWoTQDOqojfUMpMvBolJWFZ+/gp4Y9GfG
+         BhJEWk51BXqjDICvAaaydvxe2GvnRXobNlYIYW9I8Cqp8gIxqbCdUdjJWsNci/p9LAS7
+         rJZ/79r7WfNP+RnVce5fM5qtOtvJlm0VMNlF3t3emEFmgNC5MbBbqekC2xZwPK9C3vsU
+         hwfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXOcX5VtDj++RwnE9OPbGyN8jDDQD9k/igs0HV5xhgoeo94UwbWIgVh9xUHqSiF2jjPD9KaqSB1pDX1/KMFjqBML+T7zfHGx3R2HV5p
+X-Gm-Message-State: AOJu0Ywjw5jvvR9EavF67er242EWYlOtCRqJTrW83FJ+8x+UoVrvu6hD
+	zXKvVXEOzm/1pCb31uRl76ZmCpYp7hI7qOJfLYvSDaUtOuEGv5eRDmXZYNQshXw=
+X-Google-Smtp-Source: AGHT+IGisWWM3dOSMD/2TLTmlTpO/DkDiI5dyGZfRTU/1KaVCsR4C5njQohN6cTWFWdeG9//MP/iDg==
+X-Received: by 2002:a05:6512:2383:b0:519:2a14:8511 with SMTP id c3-20020a056512238300b005192a148511mr1977508lfv.69.1713961541257;
+        Wed, 24 Apr 2024 05:25:41 -0700 (PDT)
+Received: from [172.30.204.128] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id cf18-20020a056512281200b0051bb99b8946sm175720lfb.146.2024.04.24.05.25.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 05:25:40 -0700 (PDT)
+Message-ID: <48326406-98c1-43c5-8c96-7e861b07efab@linaro.org>
+Date: Wed, 24 Apr 2024 14:25:38 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V5 RESEND 3/5] clk: qcom: gdsc: Add set and get hwmode
+ callbacks to switch GDSC mode
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+To: Jagadeesh Kona <quic_jkona@quicinc.com>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>, "Rafael J . Wysocki"
+ <rafael@kernel.org>, Kevin Hilman <khilman@kernel.org>,
+ Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Andy Gross <agross@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Abel Vesa <abel.vesa@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-pm@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>,
+ Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
+ Imran Shaik <quic_imrashai@quicinc.com>,
+ Ajit Pandey <quic_ajipan@quicinc.com>
+References: <20240413152013.22307-1-quic_jkona@quicinc.com>
+ <20240413152013.22307-4-quic_jkona@quicinc.com>
+ <e70e0379-cab0-4586-825e-ade6775ca67c@linaro.org>
+ <e419c6aa-6bb2-48ff-bacb-17a2e85856ea@quicinc.com>
+ <0ed739d8-7ef6-4b0d-bd61-62966c9a9362@linaro.org>
+ <2e8f5e93-1f24-4451-ab9f-ad1e7d98bc65@quicinc.com>
+ <603aef24-a8ad-4c39-8c5a-846139f77a77@linaro.org>
+Content-Language: en-US
+In-Reply-To: <603aef24-a8ad-4c39-8c5a-846139f77a77@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-In map.c there is a magic constant of value 255 for the maximum number
-of probes. It is in many places in the code, in this commit I modified
-it to make it more clear
 
-Signed-off-by: Andrea Calabrese <andrea.calabrese@amarulasolutions.com>
----
- drivers/base/map.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/base/map.c b/drivers/base/map.c
-index 83aeb09ca161..b27f0cf557f4 100644
---- a/drivers/base/map.c
-+++ b/drivers/base/map.c
-@@ -16,6 +16,8 @@
- #include <linux/kobject.h>
- #include <linux/kobj_map.h>
- 
-+#define MAX_PROBES = 255
-+
- struct kobj_map {
- 	struct probe {
- 		struct probe *next;
-@@ -25,7 +27,7 @@ struct kobj_map {
- 		kobj_probe_t *get;
- 		int (*lock)(dev_t, void *);
- 		void *data;
--	} *probes[255];
-+	} *probes[MAX_PROBES];
- 	struct mutex *lock;
- };
- 
-@@ -38,8 +40,8 @@ int kobj_map(struct kobj_map *domain, dev_t dev, unsigned long range,
- 	unsigned int i;
- 	struct probe *p;
- 
--	if (n > 255)
--		n = 255;
-+	if (n > MAX_PROBES)
-+		n = MAX_PROBES;
- 
- 	p = kmalloc_array(n, sizeof(struct probe), GFP_KERNEL);
- 	if (p == NULL)
-@@ -55,7 +57,7 @@ int kobj_map(struct kobj_map *domain, dev_t dev, unsigned long range,
- 	}
- 	mutex_lock(domain->lock);
- 	for (i = 0, p -= n; i < n; i++, p++, index++) {
--		struct probe **s = &domain->probes[index % 255];
-+		struct probe **s = &domain->probes[index % MAX_PROBES];
- 		while (*s && (*s)->range < range)
- 			s = &(*s)->next;
- 		p->next = *s;
-@@ -72,13 +74,13 @@ void kobj_unmap(struct kobj_map *domain, dev_t dev, unsigned long range)
- 	unsigned int i;
- 	struct probe *found = NULL;
- 
--	if (n > 255)
--		n = 255;
-+	if (n > MAX_PROBES)
-+		n = MAX_PROBES;
- 
- 	mutex_lock(domain->lock);
- 	for (i = 0; i < n; i++, index++) {
- 		struct probe **s;
--		for (s = &domain->probes[index % 255]; *s; s = &(*s)->next) {
-+		for (s = &domain->probes[index % MAX_PROBES]; *s; s = &(*s)->next) {
- 			struct probe *p = *s;
- 			if (p->dev == dev && p->range == range) {
- 				*s = p->next;
-@@ -100,7 +102,7 @@ struct kobject *kobj_lookup(struct kobj_map *domain, dev_t dev, int *index)
- 
- retry:
- 	mutex_lock(domain->lock);
--	for (p = domain->probes[MAJOR(dev) % 255]; p; p = p->next) {
-+	for (p = domain->probes[MAJOR(dev) % MAX_PROBES]; p; p = p->next) {
- 		struct kobject *(*probe)(dev_t, int *, void *);
- 		struct module *owner;
- 		void *data;
-@@ -147,7 +149,7 @@ struct kobj_map *kobj_map_init(kobj_probe_t *base_probe, struct mutex *lock)
- 	base->dev = 1;
- 	base->range = ~0;
- 	base->get = base_probe;
--	for (i = 0; i < 255; i++)
-+	for (i = 0; i < MAX_PROBES; i++)
- 		p->probes[i] = base;
- 	p->lock = lock;
- 	return p;
--- 
-2.34.1
+On 4/24/24 14:22, Konrad Dybcio wrote:
+> 
+> 
+> On 4/24/24 12:27, Jagadeesh Kona wrote:
+>>
+>>
+>> On 4/24/2024 3:25 PM, Bryan O'Donoghue wrote:
+>>> On 24/04/2024 10:47, Jagadeesh Kona wrote:
+>>>>
+>>>>
+>>>> On 4/24/2024 5:18 AM, Bryan O'Donoghue wrote:
+>>>>> On 13/04/2024 16:20, Jagadeesh Kona wrote:
+>>>>>> Some GDSC client drivers require the GDSC mode to be switched dynamically
+>>>>>> to HW mode at runtime to gain the power benefits. Typically such client
+>>>>>> drivers require the GDSC to be brought up in SW mode initially to enable
+>>>>>> the required dependent clocks and configure the hardware to proper state.
+>>>>>> Once initial hardware set up is done, they switch the GDSC to HW mode to
+>>>>>> save power. At the end of usecase, they switch the GDSC back to SW mode
+>>>>>> and disable the GDSC.
+>>>>>>
+>>>>>> Introduce HW_CTRL_TRIGGER flag to register the set_hwmode_dev and
+>>>>>> get_hwmode_dev callbacks for GDSC's whose respective client drivers
+>>>>>> require the GDSC mode to be switched dynamically at runtime using
+>>>>>> dev_pm_genpd_set_hwmode() API.
+>>>>>>
+>>>>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+>>>>>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+>>>>>> ---
+>>>>>>   drivers/clk/qcom/gdsc.c | 37 +++++++++++++++++++++++++++++++++++++
+>>>>>>   drivers/clk/qcom/gdsc.h |  1 +
+>>>>>>   2 files changed, 38 insertions(+)
+>>>>>>
+>>>>>> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+>>>>>> index df9618ab7eea..c5f6be8181d8 100644
+>>>>>> --- a/drivers/clk/qcom/gdsc.c
+>>>>>> +++ b/drivers/clk/qcom/gdsc.c
+>>>>>> @@ -363,6 +363,39 @@ static int gdsc_disable(struct generic_pm_domain *domain)
+>>>>>>       return 0;
+>>>>>>   }
+>>>>>> +static int gdsc_set_hwmode(struct generic_pm_domain *domain, struct device *dev, bool mode)
+>>>>>> +{
+>>>>>> +    struct gdsc *sc = domain_to_gdsc(domain);
+>>>>>> +    int ret;
+>>>>>> +
+>>>>>> +    ret = gdsc_hwctrl(sc, mode);
+>>>>>> +    if (ret)
+>>>>>> +        return ret;
+>>>>>> +
+>>>>>> +    /* Wait for 1usec for mode transition to properly complete */
+>>>>>> +    udelay(1);
+>>>>>
+>>>>> A delay I suspect you don't need - if the HW spec says "takes 1 usec for this to take effect" that's 1 usec from io write completion from APSS to another system agent.
+>>>>>
+>>>>> You poll for the state transition down below anyway.
+>>>>>
+>>>>> I'd be pretty certain that's a redundant delay.
+>>>>>
+>>>>
+>>>> Thanks Bryan for your review!
+>>>>
+>>>> This 1usec delay is needed every time GDSC is moved in and out of HW control mode and the reason for same is explained in one of the older gdsc driver change at below link
+>>>>
+>>>> https://lore.kernel.org/all/1484027679-18397-1-git-send-email-rnayak@codeaurora.org/
+>>>>
+>>>
+>>> Right.
+>>>
+>>> If that is your precedent then you seem to be missing the mb(); between
+>>>
+>>> gdsc_hwctrl();
+>>>
+>>> /* mb(); here */
+>>>
+>>> and this
+>>>
+>>> udelay(1);
+>>>
+>>
+>> Sorry, earlier I shared the link to base patch series which has mb() used, but in the mainlined series of the same patch mb() is removed as per the review comments.
+>>
+>> Please find the mainlined series link:-
+>> https://lore.kernel.org/all/1485145581-517-1-git-send-email-rnayak@codeaurora.org/
+> 
+> Mostly because mb is a solution to a different problem. See this talk
+> for more details:
+> 
+> https://youtu.be/i6DayghhA8Q
 
+(long story short: you want to read back the register right after
+writing to make sure things arrive at the hardware when you
+expect it to)
+
+Konrad
 
