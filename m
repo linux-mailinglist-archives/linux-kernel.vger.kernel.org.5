@@ -1,148 +1,107 @@
-Return-Path: <linux-kernel+bounces-156121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FFE28AFE2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:06:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E54D28AFE31
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:07:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBBF31F23361
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:06:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A239F2824B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8351171C;
-	Wed, 24 Apr 2024 02:06:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 365B31BF37;
+	Wed, 24 Apr 2024 02:06:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ei2NYRy2"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="vLEXkhX2"
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F192CCA7D
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 02:06:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BF931A716;
+	Wed, 24 Apr 2024 02:06:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713924388; cv=none; b=UbP08tlubE5s26HmMOTDaZ/+oVUL7yI7PhRiXUCxyi9yV81+vEi2Urz2ZaN8Tf8KCBLs42Jkc3qILd1YVQf+51Qixki5w4QeMraxvkReNk9WIyOAInECWuZb5enZJpObw0TpUvKlDPcMv3aw5IGrJyMOLKFraM6SZoLfDS+ylcA=
+	t=1713924417; cv=none; b=cUhYINIRDkl7lnSE05ySSUtchpbq4w6ft2FtwECNXyLFcJZ4eVVFmCt/NbzJN0SkJJzi8dAeJ2ZrJYVq1XATWaL0LIA5dsYMsJnkdU7qmw4+gOhb8ugbQMr2ZiNAzPEZ/NwxOfGdHV0MypXAcJ75003pZ3fNmEndFVSdrYUuf6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713924388; c=relaxed/simple;
-	bh=ggqkpIJRRlUV6tAg88gjXJlRfrPJhi1RKOyLAZkKTE0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=irW1JClYS7RaH77Uw8Gbvv6+Y+xAndW/1voZxBvrWRZS3wwN5XcwjkMui2fDtYG+vuGa9oHl+uZ74DIo3leY9VvrSs83riq/5EuulUwhYC3qj1KJsc1SXmK97nkEQnjPCMcnNlA5JydHx9gWwm5AT5XGZuTsYm4M1SxRKcymVrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ei2NYRy2; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-de55e876597so1038044276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 19:06:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713924386; x=1714529186; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7VmXPwLmorMky3vFkXFEX7LkOC9EFvM8+1foS9yBPWI=;
-        b=ei2NYRy2JYoPm+h8mKmll4edS1BhePitiK2WMIz+hLdlWgSNX0GFkT6yyzDyIIfEpo
-         bII2+MKjfYekjcBNl0bmUG6GuYOJiOVLGU7EJoqoTEMNLNiZ4XNndsuc3+Ls6kO2+S2g
-         Mflg4IMM1AZUXALKo3DZmTQsgz5UcOddKaY6gyZO3JyLAA10WIEN4dDOu9QZdUd914Tp
-         f3LKUafcg7VS0eQC2FJ2lQsjlJdVXUlhP4TocL0jOLmwzOVXo0WYKv+uIidAeu1gbVLE
-         AJFYIzL4NV1cjVyA6A4dZH21lI2Hej+mspYCMsOaBHaZBLrhyatwLZrtXTibB4yQuX0c
-         vFkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713924386; x=1714529186;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7VmXPwLmorMky3vFkXFEX7LkOC9EFvM8+1foS9yBPWI=;
-        b=rXgvjqPDihI61cWEScsGncuoIs8yuZLTBOidy+t9vhVKPbY4+hOgGXeotg9pABFo0M
-         cKdk6k/38VbhK9FGoTpjdKSV356uwbc9i+P5GE5MLDjcICIRgpx0GPvQe+K8VS8GxA/X
-         OWVL7Yt+nAEQ/UFWXJMDAS9h8wD8Hj1I+lTnteXih0BPDCwTSrDe+tlU4AeyFjH0bI5D
-         6QAMYDXyxLbeGALWqEIummwMcnFRYwGADT+s6DwMecQr9VyQ5weCv3SkMZFJwBp4p/Nx
-         95kFZQ4hQuEfXu00JLNCJ4gQtKyXXGM44kUIuB8QPP844Na28ZDyuP8uteHkgHlif6rn
-         iQqg==
-X-Forwarded-Encrypted: i=1; AJvYcCWZkqdQbwWCumVDskf7jzfkHO3/qQQJ4WJvOCI0pL4d1F8ncG8HSJ4z2nXq52MxqWkl4YBLhaCeZ0fmfIPthrUBUM+6wBEopyi25wVA
-X-Gm-Message-State: AOJu0Yx4EAdjWMNu7i2tqj4B6ZkhsCob3zWPosq2rQJJ3FTs6YxM9/sd
-	tqRrqHT+Oc+B11joOgfcIhKXqhLqpkoMnzPmo+cv95lb58WhF7IYoX65SAlIcBfMHfVc1k6e6Z7
-	iUTzU+vlDo4q2UpIXZU16oK2qlNDRyJ3FJFFEWw==
-X-Google-Smtp-Source: AGHT+IEhyHQTOiRrOU18xVsOck1+aEKCBM/7FJTW0SWFltJ3m3W6GG8zqUGem9WcfD/aL4IVh4bbEmCIrWfgpSt8XeM=
-X-Received: by 2002:a25:820a:0:b0:de5:5693:4e90 with SMTP id
- q10-20020a25820a000000b00de556934e90mr1495408ybk.40.1713924385958; Tue, 23
- Apr 2024 19:06:25 -0700 (PDT)
+	s=arc-20240116; t=1713924417; c=relaxed/simple;
+	bh=1uIB8Djgu2opDW8zJGbQrnwtQSobfaX9bM0LV2IjT9U=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=b71JmOHK3BIb1zzHebOnDFMu+EJ8oGtKXneJ3Q7xBogsyy379S1jZ9mM6PrJcJxdILcyCpVi0ki17NQ690l7sH4CCZ28bWXHd5fWLlcnwel2D46BZLejHuMK8h46Wej0MOSrlT/PUVS1+P21pjjksMZItwJH/RXBdEnQBaREmY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=vLEXkhX2; arc=none smtp.client-ip=115.124.30.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713924410; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=AsvxfKD5Ttu7vZmsRdGtb3GoFi3Ym87cXlOdkwJGalQ=;
+	b=vLEXkhX28Kaj2t55RvhqJjZ0lD8mka591ZdZVKxqunDFMz+prFF/SL53hN4mFODf1yvSXAI+fr9vjychOWvhGpuYeQjSUrHciZYkjxuNI9yyOazLTGexj7Q+aDGbCVr8zlJilKzBnPdF5BGxEwhQBInXacwzd6mQRO9hO1Ey2YM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W5Abekw_1713924398;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W5Abekw_1713924398)
+          by smtp.aliyun-inc.com;
+          Wed, 24 Apr 2024 10:06:49 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: chandan.babu@oracle.com
+Cc: djwong@kernel.org,
+	linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] xfs: Remove unused function xrep_dir_self_parent
+Date: Wed, 24 Apr 2024 10:06:38 +0800
+Message-Id: <20240424020638.81487-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424014821.4154159-1-jthies@google.com> <20240424014821.4154159-2-jthies@google.com>
-In-Reply-To: <20240424014821.4154159-2-jthies@google.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 24 Apr 2024 05:06:14 +0300
-Message-ID: <CAA8EJpq_DujhwoJ87Cg4gZ4LNdPu4i93EQ0VeKrCJPkeDj9ThQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] usb: typec: ucsi: Fix null deref in trace
-To: Jameson Thies <jthies@google.com>
-Cc: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org, 
-	pmalani@chromium.org, bleung@google.com, abhishekpandit@chromium.org, 
-	andersson@kernel.org, fabrice.gasnier@foss.st.com, gregkh@linuxfoundation.org, 
-	hdegoede@redhat.com, neil.armstrong@linaro.org, rajaram.regupathy@intel.com, 
-	saranya.gopal@intel.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, 24 Apr 2024 at 04:48, Jameson Thies <jthies@google.com> wrote:
->
-> From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
->
-> ucsi_register_altmode checks IS_ERR on returned pointer and treats
-> NULL as valid. This results in a null deref when
-> trace_ucsi_register_altmode is called. Return an error from
-> ucsi_register_displayport when it is not supported and register the
-> altmode with typec_port_register_altmode.
->
-> Reviewed-by: Jameson Thies <jthies@google.com>
-> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> ---
-> Changes in V2:
-> - Checks for error response from ucsi_register_displayport when
-> registering DisplayPort alternate mode.
->
->  drivers/usb/typec/ucsi/ucsi.c | 3 +++
->  drivers/usb/typec/ucsi/ucsi.h | 2 +-
->  2 files changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-> index cb52e7b0a2c5c..f3b413f94fd28 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.c
-> +++ b/drivers/usb/typec/ucsi/ucsi.c
-> @@ -361,6 +361,9 @@ static int ucsi_register_altmode(struct ucsi_connector *con,
->                 switch (desc->svid) {
->                 case USB_TYPEC_DP_SID:
->                         alt = ucsi_register_displayport(con, override, i, desc);
-> +                       if (IS_ERR(alt) && PTR_ERR(alt) == -EOPNOTSUPP)
+The function are defined in the dir_repair.c file, but not called
+elsewhere, so delete the unused function.
 
-This makes it ignore EOPNOTSUPP if it is returned by the non-stub
-implementation. I think the current state is actually better than the
-implementation found in this patch. I'd suggest adding a comment to
-ucsi_register_displayport() stub instead.
+fs/xfs/scrub/dir_repair.c:186:1: warning: unused function 'xrep_dir_self_parent'.
 
-> +                               alt = typec_port_register_altmode(con->port, desc);
-> +
->                         break;
->                 case USB_TYPEC_NVIDIA_VLINK_SID:
->                         if (desc->vdo == USB_TYPEC_NVIDIA_VLINK_DBG_VDO)
-> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-> index c4d103db9d0f8..c663dce0659ee 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.h
-> +++ b/drivers/usb/typec/ucsi/ucsi.h
-> @@ -496,7 +496,7 @@ ucsi_register_displayport(struct ucsi_connector *con,
->                           bool override, int offset,
->                           struct typec_altmode_desc *desc)
->  {
-> -       return NULL;
-> +       return ERR_PTR(-EOPNOTSUPP);
->  }
->
->  static inline void
-> --
-> 2.44.0.769.g3c40516874-goog
->
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8867
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ fs/xfs/scrub/dir_repair.c | 21 ---------------------
+ 1 file changed, 21 deletions(-)
 
-
+diff --git a/fs/xfs/scrub/dir_repair.c b/fs/xfs/scrub/dir_repair.c
+index 38957da26b94..f8450c7f99f4 100644
+--- a/fs/xfs/scrub/dir_repair.c
++++ b/fs/xfs/scrub/dir_repair.c
+@@ -176,27 +176,6 @@ xrep_setup_directory(
+ 	return 0;
+ }
+ 
+-/*
+- * If we're the root of a directory tree, we are our own parent.  If we're an
+- * unlinked directory, the parent /won't/ have a link to us.  Set the parent
+- * directory to the root for both cases.  Returns NULLFSINO if we don't know
+- * what to do.
+- */
+-static inline xfs_ino_t
+-xrep_dir_self_parent(
+-	struct xrep_dir		*rd)
+-{
+-	struct xfs_scrub	*sc = rd->sc;
+-
+-	if (sc->ip->i_ino == sc->mp->m_sb.sb_rootino)
+-		return sc->mp->m_sb.sb_rootino;
+-
+-	if (VFS_I(sc->ip)->i_nlink == 0)
+-		return sc->mp->m_sb.sb_rootino;
+-
+-	return NULLFSINO;
+-}
+-
+ /*
+  * Look up the dotdot entry and confirm that it's really the parent.
+  * Returns NULLFSINO if we don't know what to do.
 -- 
-With best wishes
-Dmitry
+2.20.1.7.g153144c
+
 
