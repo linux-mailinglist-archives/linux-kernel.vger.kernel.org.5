@@ -1,229 +1,175 @@
-Return-Path: <linux-kernel+bounces-156640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3935F8B0618
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:32:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E2C88B061A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:33:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9F921F23CE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:32:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9611EB242A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:33:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F7DE158DA2;
-	Wed, 24 Apr 2024 09:32:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75B3A158DA7;
+	Wed, 24 Apr 2024 09:33:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UWpiYij3"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Ro2hz1i6"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9272D1EF1A;
-	Wed, 24 Apr 2024 09:32:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A2C158D98;
+	Wed, 24 Apr 2024 09:33:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713951169; cv=none; b=iYEEadptpD6vJvOj77Pn5NQ0ibm2/w++O1hRbtuRF0FO2yRdNct+ysqC/mDVjVpB07i08b47OkA9w/gDxtqmqtmwsIKExJPuD0MFF/aQ3pnq0Q5WL8PaIPxMByVKztpGfUMpmcyeJhtXXtQv8M2ei/2AgZRUEw5PBfbAIsdKWt0=
+	t=1713951183; cv=none; b=NgCTVHOhshiIJX8gc9WfF/6RVZOzJdtz/xcrde/Xf2zJClSf00VsUY8HWYcxyCl6q6g18pfVU7aat68lqcvd4b8CotFpkL9ewnHfmo6Xu/dy9TY3/O8T4nmWokA/sp/xwFYhvydjefyH0UfU7/aNChm7AO2zT7Shn29Ol6APJKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713951169; c=relaxed/simple;
-	bh=odLCeXV/7pBP8vRHrz9jbJlhc8urXDK1R3TAXp+bME0=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=BRXiXTPfxkmZRHCaPQ+KAe7iEnNpSf5Xo4EdIAO5LhCJLEANVF6Z75GSrbfPybC/cQjclSrJbMjUHNlLe+0ipF67ZB5/PF50PZ/Y9H8xCPZ7oA6nBtBQmMx07rVsUb56pIkBLeiRswgMG82mxb36jqKFC0fmzaKZa3Gi2L/zl/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UWpiYij3; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713951168; x=1745487168;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=odLCeXV/7pBP8vRHrz9jbJlhc8urXDK1R3TAXp+bME0=;
-  b=UWpiYij31oNeUXiVNFPFvtB2c5QqZvH77tYC44rURL8rUGL/mIREaD9s
-   bLJ9rlzcjt5XHYYxlSsTOGuhjUWmpRF6wa8dxcULweycI4wrUqMUR2p8n
-   WysrlRR/D3d24i6UYnKwyxXTB+RmDWbvChP7i9w0doEco02huumJdffaV
-   mV5/i4d+A3qfKEA4f3tXjDxg2LMGi6pE0Gx7QXq5kBaqHYwAFvsJtr/xj
-   s7Lqt8R+FQnr5+big1vfwtIZ3YCTCs2ed6yXhIfz7nuDe6G32DmOlIWsu
-   1Xk8RS3OdBPEab4jWW6Ha/tbSQKUUWvWN/YL5rmx2xW8P/kqBIEI79iS5
-   Q==;
-X-CSE-ConnectionGUID: xY7vXIJAQzC+bsrUtGxXMA==
-X-CSE-MsgGUID: WwS+QIxOQnKbDzVXdwqw6Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="20266894"
-X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="20266894"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 02:32:46 -0700
-X-CSE-ConnectionGUID: 1IlfOP5SSgKRTdVfu3HG8A==
-X-CSE-MsgGUID: 3htIX186StqgyE5VNjzD0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="47910954"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.41])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 02:32:42 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 24 Apr 2024 12:32:36 +0300 (EEST)
-To: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-cc: linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-    Bjorn Helgaas <helgaas@kernel.org>, 
-    Mahesh J Salgaonkar <mahesh@linux.ibm.com>, Lukas Wunner <lukas@wunner.de>, 
-    Yazen Ghannam <yazen.ghannam@amd.com>, Bowman Terry <terry.bowman@amd.com>, 
-    Hagan Billy <billy.hagan@amd.com>, Simon Guinot <simon.guinot@seagate.com>, 
-    "Maciej W . Rozycki" <macro@orcam.me.uk>, 
-    Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: Re: [PATCH] PCI: pciehp: Clear LBMS on hot-remove to prevent link
- speed reduction
-In-Reply-To: <20240424033339.250385-1-Smita.KoralahalliChannabasappa@amd.com>
-Message-ID: <52290bb0-97bc-aa52-6606-cc734a492cc1@linux.intel.com>
-References: <20240424033339.250385-1-Smita.KoralahalliChannabasappa@amd.com>
+	s=arc-20240116; t=1713951183; c=relaxed/simple;
+	bh=XAoDaSLB7wCCpkwfe/8LxJovzMgC7falZxZ9yi3zYco=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=hnpjyVlIF/GnEX9lVyFlHMylXO2kA2QiAEsw/jdmQLwYolLbP6bDFRKu1E2ZsEjwrU6aOHlfs/h8dhgoko+EcNfmFclTTspBuvKOIoRV03LENCfbEGhFsrw8aTjYMIvXq2eg2Fq8CVMhN70sRCv54cy3WGQefXSkiJ0VxO8XwwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Ro2hz1i6; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O6WwLV012712;
+	Wed, 24 Apr 2024 09:32:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=KW9GG4RF2n2mUr66b+BQfKuNtOmG38alDo4jWjSHswY=; b=Ro
+	2hz1i6NUISigWBS0OKIr+kFm8jGxFbcNhqPLbJPOL2JAnBYNxlnxKbT295u6GCEc
+	obHAKRuLb9nt1I2FNtsPxNHAWk8o3rqP0+ub4s2kqXmifhOZ9tV0JaHE6HdoxVmE
+	OaiRTP06RYWXQF3tTfg49bP7ivM7OHDgDh9fR1LATvgXlp8JoTdWIQEAMKysI1DH
+	dnmfF9bF6VsEkQjmPfGExFbNXBA8odtAuUC4ek2Ht7xJ7jTuYmMxYO+J1wg4pwqw
+	9Hwo53pnmhNqipdzb7OG+X09KJvZ2H84qA1osYaITyZ8ByMhI1OY3mT7tw6arjqj
+	Fu+HCT2mILh1nu0KV8rQ==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9pge5q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 09:32:54 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43O9Wrlx007249
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 09:32:53 GMT
+Received: from [10.253.14.221] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 24 Apr
+ 2024 02:32:51 -0700
+Message-ID: <7b3dc952-d202-4377-9bb6-e7598e28de97@quicinc.com>
+Date: Wed, 24 Apr 2024 17:32:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Bluetooth: qca: set power_ctrl_enabled on NULL returned
+ by gpiod_get_optional()
+To: Bartosz Golaszewski <brgl@bgdev.pl>, Wren Turkal <wt@penguintechs.org>
+CC: <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Bartosz
+ Golaszewski <bartosz.golaszewski@linaro.org>,
+        Marcel Holtmann
+	<marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+References: <20240422130036.31856-1-brgl@bgdev.pl>
+ <99242a7c-53bf-4227-9623-7bc092f564b3@penguintechs.org>
+ <CAMRc=MepDwUbAKrWgm0CXKObqy8=igtug0QDgo-CgwxjZCAC2Q@mail.gmail.com>
+Content-Language: en-US
+From: quic_zijuhu <quic_zijuhu@quicinc.com>
+In-Reply-To: <CAMRc=MepDwUbAKrWgm0CXKObqy8=igtug0QDgo-CgwxjZCAC2Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 5WCdC2_pDCVX97UWnGHK0DBxAo5CLzAF
+X-Proofpoint-ORIG-GUID: 5WCdC2_pDCVX97UWnGHK0DBxAo5CLzAF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_06,2024-04-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 mlxlogscore=999 clxscore=1015
+ adultscore=0 malwarescore=0 bulkscore=0 impostorscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404240040
 
-On Wed, 24 Apr 2024, Smita Koralahalli wrote:
-
-> Clear Link Bandwidth Management Status (LBMS) if set, on a hot-remove event.
+On 4/24/2024 5:04 PM, Bartosz Golaszewski wrote:
+> On Wed, 24 Apr 2024 07:07:05 +0200, Wren Turkal <wt@penguintechs.org> said:
+>> On 4/22/24 6:00 AM, Bartosz Golaszewski wrote:
+>>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>>>
+>>> Any return value from gpiod_get_optional() other than a pointer to a
+>>> GPIO descriptor or a NULL-pointer is an error and the driver should
+>>> abort probing. That being said: commit 56d074d26c58 ("Bluetooth: hci_qca:
+>>> don't use IS_ERR_OR_NULL() with gpiod_get_optional()") no longer sets
+>>> power_ctrl_enabled on NULL-pointer returned by
+>>> devm_gpiod_get_optional(). Restore this behavior but bail-out on errors.
+>>
+>> Nack. This patch does fixes neither the disable/re-enable problem nor
+>> the warm boot problem.
+>>
+>> Zijun replied to this patch also with what I think is the proper
+>> reasoning for why it doesn't fix my setup.
+>>
 > 
-> The hot-remove event could result in target link speed reduction if LBMS
-> is set, due to a delay in Presence Detect State Change (PDSC) happening
-> after a Data Link Layer State Change event (DLLSC).
+> Indeed, I only addressed a single issue here and not the code under the
+> default: label of the switch case. Sorry.
 > 
-> In reality, PDSC and DLLSC events rarely come in simultaneously. Delay in
-> PDSC can sometimes be too late and the slot could have already been
-> powered down just by a DLLSC event. And the delayed PDSC could falsely be
-> interpreted as an interrupt raised to turn the slot on. This false process
-> of powering the slot on, without a link forces the kernel to retrain the
-> link if LBMS is set, to a lower speed to restablish the link thereby
-> bringing down the link speeds [2].
+> Could you give the following diff a try?
 > 
-> According to PCIe r6.2 sec 7.5.3.8 [1], it is derived that, LBMS cannot
-> be set for an unconnected link and if set, it serves the purpose of
-> indicating that there is actually a device down an inactive link.
-> However, hardware could have already set LBMS when the device was
-> connected to the port i.e when the state was DL_Up or DL_Active. Some
-> hardwares would have even attempted retrain going into recovery mode,
-> just before transitioning to DL_Down.
+> Bart
 > 
-> Thus the set LBMS is never cleared and might force software to cause link
-> speed drops when there is no link [2].
+> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+> index 92fa20f5ac7d..0e98ad2c0c9d 100644
+> --- a/drivers/bluetooth/hci_qca.c
+> +++ b/drivers/bluetooth/hci_qca.c
+> @@ -2327,16 +2327,21 @@ static int qca_serdev_probe(struct
+> serdev_device *serdev)
+>  		    (data->soc_type == QCA_WCN6750 ||
+>  		     data->soc_type == QCA_WCN6855)) {
+>  			dev_err(&serdev->dev, "failed to acquire BT_EN gpio\n");
+> -			power_ctrl_enabled = false;
+> +			return PTR_ERR(qcadev->bt_en);
+>  		}
 > 
-> Dmesg before:
-> 	pcieport 0000:20:01.1: pciehp: Slot(59): Link Down
-> 	pcieport 0000:20:01.1: pciehp: Slot(59): Card present
-> 	pcieport 0000:20:01.1: broken device, retraining non-functional downstream link at 2.5GT/s
-> 	pcieport 0000:20:01.1: retraining failed
-> 	pcieport 0000:20:01.1: pciehp: Slot(59): No link
-> 
-> Dmesg after:
-> 	pcieport 0000:20:01.1: pciehp: Slot(59): Link Down
-> 	pcieport 0000:20:01.1: pciehp: Slot(59): Card present
-> 	pcieport 0000:20:01.1: pciehp: Slot(59): No link
-> 
-> [1] PCI Express Base Specification Revision 6.2, Jan 25 2024.
->     https://members.pcisig.com/wg/PCI-SIG/document/20590
-> [2] Commit a89c82249c37 ("PCI: Work around PCIe link training failures")
-> 
-> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-> ---
-> 1. Should be based on top of fixes for link retrain status in
-> pcie_wait_for_link_delay()
-> https://patchwork.kernel.org/project/linux-pci/list/?series=824858
-> https://lore.kernel.org/linux-pci/53b2239b-4a23-a948-a422-4005cbf76148@linux.intel.com/
-> 
-> Without the fixes patch output would be:
-> 	pcieport 0000:20:01.1: pciehp: Slot(59): Link Down
-> 	pcieport 0000:20:01.1: pciehp: Slot(59): Card present
-> 	pcieport 0000:20:01.1: broken device, retraining non-functional downstream link at 2.5GT/s
-> 	pcieport 0000:20:01.1: retraining failed
-> 	pcieport 0000:20:01.1: pciehp: Slot(59): No device found.
-
-Did you hit the 60 sec delay issue without series 824858? If you've tested 
-them and the fixes helped your case, could you perhaps give Tested-by for 
-that series too (in the relevant thread)?
-
-> 2. I initially attempted to wait for both events PDSC and DLLSC to happen
-> and then turn on the slot.
-> Similar to: https://lore.kernel.org/lkml/20190205210701.25387-1-mr.nuke.me@gmail.com/
-> but before turning on the slot.
-> 
-> Something like:
-> -		ctrl->state = POWERON_STATE;
-> -		mutex_unlock(&ctrl->state_lock);
-> -		if (present)
-> +		if (present && link_active) {
-> +			ctrl->state = POWERON_STATE;
-> +			mutex_unlock(&ctrl->state_lock);
-> 			ctrl_info(ctrl, "Slot(%s): Card present\n",
-> 				  slot_name(ctrl));
-> -		if (link_active)
-> 			ctrl_info(ctrl, "Slot(%s): Link Up\n",
-> 				  slot_name(ctrl));
-> -		ctrl->request_result = pciehp_enable_slot(ctrl);
-> -		break;
-> +			ctrl->request_result = pciehp_enable_slot(ctrl);
-> +			break;
-> +		}
-> +		else {
-> +			mutex_unlock(&ctrl->state_lock);
-> +			break;
-> +		}
-> 
-> This would also avoid printing the lines below on a remove event.
-> pcieport 0000:20:01.1: pciehp: Slot(59): Card present
-> pcieport 0000:20:01.1: pciehp: Slot(59): No link
-> 
-> I understand this would likely be not applicable in places where broken
-> devices hardwire PDS to zero and PDSC would never happen. But I'm open to
-> making changes if this is more applicable. Because, SW cannot directly
-> track the interference of HW in attempting link retrain and setting LBMS.
-> 
-> 3. I tried introducing delay similar to pcie_wait_for_presence() but I
-> was not successful in picking the right numbers. Hence hit with the same
-> link speed drop.
-> 
-> 4. For some reason I was unable to clear LBMS with:
-> 	pcie_capability_clear_word(ctrl->pcie->port, PCI_EXP_LNKSTA,
-> 				   PCI_EXP_LNKSTA_LBMS);
-
-LBMS is write-1-to-clear, pcie_capability_clear_word() tries to write 0 
-there (the accessor doesn't do what you seem to expect, it clears normal 
-bits, not write-1-to-clear bits).
-
-> ---
->  drivers/pci/hotplug/pciehp_pci.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/hotplug/pciehp_pci.c b/drivers/pci/hotplug/pciehp_pci.c
-> index ad12515a4a12..9155fdfd1d37 100644
-> --- a/drivers/pci/hotplug/pciehp_pci.c
-> +++ b/drivers/pci/hotplug/pciehp_pci.c
-> @@ -92,7 +92,7 @@ void pciehp_unconfigure_device(struct controller *ctrl, bool presence)
->  {
->  	struct pci_dev *dev, *temp;
->  	struct pci_bus *parent = ctrl->pcie->port->subordinate;
-> -	u16 command;
-> +	u16 command, lnksta;
->  
->  	ctrl_dbg(ctrl, "%s: domain:bus:dev = %04x:%02x:00\n",
->  		 __func__, pci_domain_nr(parent), parent->number);
-> @@ -134,4 +134,10 @@ void pciehp_unconfigure_device(struct controller *ctrl, bool presence)
->  	}
->  
->  	pci_unlock_rescan_remove();
+> +		if (!qcadev->bt_en)
+> +			power_ctrl_enabled = false;
 > +
-> +	/* Clear LBMS on removal */
-> +	pcie_capability_read_word(ctrl->pcie->port, PCI_EXP_LNKSTA, &lnksta);
-> +	if (lnksta & PCI_EXP_LNKSTA_LBMS)
-> +		pcie_capability_write_word(ctrl->pcie->port, PCI_EXP_LNKSTA,
-> +					   PCI_EXP_LNKSTA_LBMS);
-
-It's enough to unconditionally write PCI_EXP_LNKSTA_LBMS, no need to 
-check first. The comment is just spelling out what can already be read 
-from the code so I'd drop the comment.
-
-I agree it makes sense to clear the LBMS when device is removed.
-
--- 
- i.
-
+>  		qcadev->sw_ctrl = devm_gpiod_get_optional(&serdev->dev, "swctrl",
+>  					       GPIOD_IN);
+>  		if (IS_ERR(qcadev->sw_ctrl) &&
+>  		    (data->soc_type == QCA_WCN6750 ||
+>  		     data->soc_type == QCA_WCN6855 ||
+> -		     data->soc_type == QCA_WCN7850))
+> -			dev_warn(&serdev->dev, "failed to acquire SW_CTRL gpio\n");
+> +		     data->soc_type == QCA_WCN7850)) {
+> +			dev_err(&serdev->dev, "failed to acquire SW_CTRL gpio\n");
+> +			return PTR_ERR(qcadev->sw_ctrl);
+> +		}
+> 
+>  		qcadev->susclk = devm_clk_get_optional(&serdev->dev, NULL);
+>  		if (IS_ERR(qcadev->susclk)) {
+> @@ -2355,10 +2360,13 @@ static int qca_serdev_probe(struct
+> serdev_device *serdev)
+>  		qcadev->bt_en = devm_gpiod_get_optional(&serdev->dev, "enable",
+>  					       GPIOD_OUT_LOW);
+>  		if (IS_ERR(qcadev->bt_en)) {
+> -			dev_warn(&serdev->dev, "failed to acquire enable gpio\n");
+> -			power_ctrl_enabled = false;
+> +			dev_err(&serdev->dev, "failed to acquire enable gpio\n");
+> +			return PTR_ERR(qcadev->bt_en);
+>  		}
+> 
+> +		if (!qcadev->bt_en)
+> +			power_ctrl_enabled = false;
+> +
+>  		qcadev->susclk = devm_clk_get_optional(&serdev->dev, NULL);
+>  		if (IS_ERR(qcadev->susclk)) {
+>  			dev_warn(&serdev->dev, "failed to acquire clk\n");
+i suggest stop here and request you code review for my changes, i found
+the issue and given fix for my concern.
 
