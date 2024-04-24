@@ -1,250 +1,247 @@
-Return-Path: <linux-kernel+bounces-156498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A3C88B035F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CF208B035C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:42:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DB3C1C2307C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:42:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFBF31C2097A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:42:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0592A15820E;
-	Wed, 24 Apr 2024 07:42:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01009158206;
+	Wed, 24 Apr 2024 07:42:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OSWGF7hB"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y+ojOGtE"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 225341581E4;
-	Wed, 24 Apr 2024 07:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F95157E82;
+	Wed, 24 Apr 2024 07:42:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713944531; cv=none; b=bFpp3BVtzDz1VFJxoq3EmmjIO9SpQU63Ku5OcO+ObwYcaQYvYFj8sV1JsmYErUTa9ivUZc9fXEwp+/R6k2F/lRQpdJQRVHPPkU4yp1NeInm85PUKOBv+Dvzrx6JLyI94uRmNNugCQoTuihzzJGK9zKxn36X/Bm6x7c0DjOQ62Lc=
+	t=1713944529; cv=none; b=SGCVwwjgbJo/aFY9ADBW8e1kzNICNRoYXqcDzFmaQmt7bfZt/hmHR1z5PRXrrFensj+j9DkSZJQFDJ7fVTRudHFab6wMr2ZWI7gNzQ3Do3At6k6/oMBWiubOMF4kXcqWyM6Ki1/fmT7RlmkbWqE0NrZ4iq8Vz+4LfWJShSz/OZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713944531; c=relaxed/simple;
-	bh=ifFeTKdxYgYlphUeuvIFx+Dv+oAd/73UKyLH3o1TNbk=;
+	s=arc-20240116; t=1713944529; c=relaxed/simple;
+	bh=3jSAEAP6h7kLKxNdHKe1wEKkmll4W+mLBzqwPyPus3s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h4gULGQP7HeUDrJOmIW5P3QMI79o3CVb5alW77/svjvvFndQAHKOgZLES38z4htbSzNUJe7IkCPBBOMT2IwkWd1xef900Fu22GcLT2/Ikp7Fr4BQO1Bt1qesM6fDpOLZ/ocCogBOryJPZzIMk2ckI80Ucitzy7Up4bHSjqZUtY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OSWGF7hB; arc=none smtp.client-ip=198.175.65.20
+	 Content-Type:Content-Disposition:In-Reply-To; b=lx4O5wMw5GrnbkhiGXwHHIlsbpyaTDtLLR/8melng5o5XHTLPw6Fvm4kuOhQfOzfwoJpMMGQSTxaEuvBeUYFHkhRzxrJp4JC6asiQlOO1de0CJt1GAaNwwELd/wZ02L0uYx6TWV82Uvx9k9SMs3Yo3Ga//19WASc5roWT7yXBf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y+ojOGtE; arc=none smtp.client-ip=198.175.65.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713944529; x=1745480529;
+  t=1713944527; x=1745480527;
   h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=ifFeTKdxYgYlphUeuvIFx+Dv+oAd/73UKyLH3o1TNbk=;
-  b=OSWGF7hB8rANZLgptV+yZEV71UJzebmz6o/CalukMQyXmFwAMypx3JQm
-   of6mvRzsH2VlL428VuzYSSL2TVMUsm5WBYtm7MS2TGnqT9zBJll65bZPg
-   mAg3RW6eZ6Q9d0UyaVGhF2fBtYl6sVBQIwEIdNRVr/tWhiWcFM2ydvNzu
-   3S0TeUW0QdchDHpmL0ywZSUTM02ywErAWF7tY1fF9D4pRTHqLBitVUOdb
-   6aGNcfdDAmwyjfv38jp4POUsOo5ar5MtVS+SzGIjq7TqW6YQW40RRc87s
-   3jpHPWzN3A8UJnvAP47Jqt65pOfGuP+S2dLfQU2a4rGYD6sAY4gLPFvP6
-   Q==;
-X-CSE-ConnectionGUID: M2RdbmPaROSCZP1d96XDNg==
-X-CSE-MsgGUID: hKUI3I5iTL288PPcJf6MUQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="9390861"
+   mime-version:in-reply-to;
+  bh=3jSAEAP6h7kLKxNdHKe1wEKkmll4W+mLBzqwPyPus3s=;
+  b=Y+ojOGtEXHcSmgFeELayjUZZqxDpIdzNCrol4GXXh8gVQmXJV0iqDjgt
+   XaWaBtu4LWkUUO0ER1eg18EAnXRYUrq3OImyhCJnxMaaRS2IaPnguVsMA
+   l6FwZ09yBOC7bbBG+hs2ZVq5xVvtgANa72moXCNGJAuF/+heJ/Fl/5qOO
+   WooVVOjfM9UX9IXL82AfE1MH4lszu3w40IK1B5XTXNeKdDIoiedOE5vC2
+   qIL74HfHxm+6rd+aefK9fdDErZ9hrnsyhAlMixpqPRz8E6/ZcW48ele8x
+   ygZmoKDTfXfk4Lmzyq0SEDYzcdC+EdmZq+1BmElB1ATtRbd6R8BY/aSmh
+   A==;
+X-CSE-ConnectionGUID: K5hhc8rHQjSnkU7RAS+gcw==
+X-CSE-MsgGUID: XsW3pNtyTDKh9//ABbyEAg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="9390847"
 X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="9390861"
+   d="scan'208";a="9390847"
 Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 00:42:07 -0700
-X-CSE-ConnectionGUID: zIrYEmJQTtywSUHadvP5bw==
-X-CSE-MsgGUID: vmWh2OsmQvu5mTjoxh3LlQ==
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 00:42:06 -0700
+X-CSE-ConnectionGUID: FALzAmajQ0uuFCSL2eFNuw==
+X-CSE-MsgGUID: ayiWfY4oQPi7bjsQn2obMg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="24692451"
+   d="scan'208";a="24692454"
 Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
   by fmviesa008.fm.intel.com with ESMTP; 24 Apr 2024 00:42:02 -0700
 Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rzXGR-000104-2d;
+	id 1rzXGR-000106-2j;
 	Wed, 24 Apr 2024 07:41:59 +0000
-Date: Wed, 24 Apr 2024 15:41:58 +0800
+Date: Wed, 24 Apr 2024 15:41:59 +0800
 From: kernel test robot <lkp@intel.com>
-To: =?iso-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Peter Griffin <peter.griffin@linaro.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Sam Protsenko <semen.protsenko@linaro.org>
-Cc: oe-kbuild-all@lists.linux.dev, Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Will McVicker <willmcvicker@google.com>,
-	Roy Luo <royluo@google.com>, kernel-team@android.com,
-	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	=?iso-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-Subject: Re: [PATCH 4/7] phy: exynos5-usbdrd: set ref clk freq in
- exynos850_usbdrd_utmi_init()
-Message-ID: <202404241533.iud4U7SP-lkp@intel.com>
-References: <20240423-usb-phy-gs101-v1-4-ebdcb3ac174d@linaro.org>
+To: Joe Damato <jdamato@fastly.com>, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, tariqt@nvidia.com, saeedm@nvidia.com
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	mkarsten@uwaterloo.ca, gal@nvidia.com, nalramli@fastly.com,
+	Joe Damato <jdamato@fastly.com>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next 2/3] net/mlx4: link NAPI instances to queues and
+ IRQs
+Message-ID: <202404241518.4TvjoN07-lkp@intel.com>
+References: <20240423194931.97013-3-jdamato@fastly.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240423-usb-phy-gs101-v1-4-ebdcb3ac174d@linaro.org>
+In-Reply-To: <20240423194931.97013-3-jdamato@fastly.com>
 
-Hi André,
+Hi Joe,
 
-kernel test robot noticed the following build errors:
+kernel test robot noticed the following build warnings:
 
-[auto build test ERROR on a59668a9397e7245b26e9be85d23f242ff757ae8]
+[auto build test WARNING on net-next/main]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Andr-Draszik/dt-bindings-phy-samsung-usb3-drd-phy-add-gs101-compatible/20240424-011137
-base:   a59668a9397e7245b26e9be85d23f242ff757ae8
-patch link:    https://lore.kernel.org/r/20240423-usb-phy-gs101-v1-4-ebdcb3ac174d%40linaro.org
-patch subject: [PATCH 4/7] phy: exynos5-usbdrd: set ref clk freq in exynos850_usbdrd_utmi_init()
-config: hexagon-randconfig-r123-20240424 (https://download.01.org/0day-ci/archive/20240424/202404241533.iud4U7SP-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20240424/202404241533.iud4U7SP-lkp@intel.com/reproduce)
+url:    https://github.com/intel-lab-lkp/linux/commits/Joe-Damato/net-mlx4-Track-RX-allocation-failures-in-a-stat/20240424-035224
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20240423194931.97013-3-jdamato%40fastly.com
+patch subject: [PATCH net-next 2/3] net/mlx4: link NAPI instances to queues and IRQs
+config: s390-defconfig (https://download.01.org/0day-ci/archive/20240424/202404241518.4TvjoN07-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 5ef5eb66fb428aaf61fb51b709f065c069c11242)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240424/202404241518.4TvjoN07-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404241533.iud4U7SP-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404241518.4TvjoN07-lkp@intel.com/
 
-All errors (new ones prefixed by >>):
+All warnings (new ones prefixed by >>):
 
-   In file included from drivers/phy/samsung/phy-exynos5-usbdrd.c:13:
-   In file included from include/linux/io.h:14:
-   In file included from arch/hexagon/include/asm/io.h:328:
-   include/asm-generic/io.h:548:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __raw_readb(PCI_IOBASE + addr);
-                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:561:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-                                                     ^
-   In file included from drivers/phy/samsung/phy-exynos5-usbdrd.c:13:
-   In file included from include/linux/io.h:14:
-   In file included from arch/hexagon/include/asm/io.h:328:
-   include/asm-generic/io.h:574:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-                                                     ^
-   In file included from drivers/phy/samsung/phy-exynos5-usbdrd.c:13:
-   In file included from include/linux/io.h:14:
-   In file included from arch/hexagon/include/asm/io.h:328:
-   include/asm-generic/io.h:585:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writeb(value, PCI_IOBASE + addr);
-                               ~~~~~~~~~~ ^
-   include/asm-generic/io.h:595:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:605:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
->> drivers/phy/samsung/phy-exynos5-usbdrd.c:798:10: error: call to undeclared function 'FIELD_PREP_CONST'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-                   reg |= FIELD_PREP_CONST(SSPPLLCTL_FSEL, 7);
-                          ^
-   6 warnings and 1 error generated.
+   In file included from include/linux/elf.h:6:
+   In file included from arch/s390/include/asm/elf.h:173:
+   In file included from arch/s390/include/asm/mmu_context.h:11:
+   In file included from arch/s390/include/asm/pgalloc.h:18:
+   In file included from include/linux/mm.h:2208:
+   include/linux/vmstat.h:508:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     508 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     509 |                            item];
+         |                            ~~~~
+   include/linux/vmstat.h:515:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     515 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     516 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   include/linux/vmstat.h:527:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     527 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     528 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:536:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     536 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     537 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   In file included from drivers/net/ethernet/mellanox/mlx4/en_cq.c:34:
+   In file included from include/linux/mlx4/cq.h:39:
+   In file included from include/linux/mlx4/device.h:37:
+   In file included from include/linux/if_ether.h:19:
+   In file included from include/linux/skbuff.h:28:
+   In file included from include/linux/dma-mapping.h:11:
+   In file included from include/linux/scatterlist.h:9:
+   In file included from arch/s390/include/asm/io.h:78:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     547 |         val = __raw_readb(PCI_IOBASE + addr);
+         |                           ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/big_endian.h:37:59: note: expanded from macro '__le16_to_cpu'
+      37 | #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
+         |                                                           ^
+   include/uapi/linux/swab.h:102:54: note: expanded from macro '__swab16'
+     102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+         |                                                      ^
+   In file included from drivers/net/ethernet/mellanox/mlx4/en_cq.c:34:
+   In file included from include/linux/mlx4/cq.h:39:
+   In file included from include/linux/mlx4/device.h:37:
+   In file included from include/linux/if_ether.h:19:
+   In file included from include/linux/skbuff.h:28:
+   In file included from include/linux/dma-mapping.h:11:
+   In file included from include/linux/scatterlist.h:9:
+   In file included from arch/s390/include/asm/io.h:78:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/big_endian.h:35:59: note: expanded from macro '__le32_to_cpu'
+      35 | #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
+         |                                                           ^
+   include/uapi/linux/swab.h:115:54: note: expanded from macro '__swab32'
+     115 | #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
+         |                                                      ^
+   In file included from drivers/net/ethernet/mellanox/mlx4/en_cq.c:34:
+   In file included from include/linux/mlx4/cq.h:39:
+   In file included from include/linux/mlx4/device.h:37:
+   In file included from include/linux/if_ether.h:19:
+   In file included from include/linux/skbuff.h:28:
+   In file included from include/linux/dma-mapping.h:11:
+   In file included from include/linux/scatterlist.h:9:
+   In file included from arch/s390/include/asm/io.h:78:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     584 |         __raw_writeb(value, PCI_IOBASE + addr);
+         |                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     692 |         readsb(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     700 |         readsw(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     708 |         readsl(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     717 |         writesb(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     726 |         writesw(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     735 |         writesl(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+>> drivers/net/ethernet/mellanox/mlx4/en_cq.c:202:12: warning: variable 'qtype' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+     202 |                 else if (cq->type == TX)
+         |                          ^~~~~~~~~~~~~~
+   drivers/net/ethernet/mellanox/mlx4/en_cq.c:205:45: note: uninitialized use occurs here
+     205 |                 netif_queue_set_napi(cq->dev, cq->cq_idx, qtype, NULL);
+         |                                                           ^~~~~
+   drivers/net/ethernet/mellanox/mlx4/en_cq.c:202:8: note: remove the 'if' if its condition is always true
+     202 |                 else if (cq->type == TX)
+         |                      ^~~~~~~~~~~~~~~~~~~
+     203 |                         qtype = NETDEV_QUEUE_TYPE_TX;
+   drivers/net/ethernet/mellanox/mlx4/en_cq.c:197:2: note: variable 'qtype' is declared here
+     197 |         enum netdev_queue_type qtype;
+         |         ^
+   18 warnings generated.
 
 
-vim +/FIELD_PREP_CONST +798 drivers/phy/samsung/phy-exynos5-usbdrd.c
+vim +202 drivers/net/ethernet/mellanox/mlx4/en_cq.c
 
-   750	
-   751	static void exynos850_usbdrd_utmi_init(struct exynos5_usbdrd_phy *phy_drd)
-   752	{
-   753		void __iomem *regs_base = phy_drd->reg_phy;
-   754		u32 reg;
-   755	
-   756		/*
-   757		 * Disable HWACG (hardware auto clock gating control). This will force
-   758		 * QACTIVE signal in Q-Channel interface to HIGH level, to make sure
-   759		 * the PHY clock is not gated by the hardware.
-   760		 */
-   761		reg = readl(regs_base + EXYNOS850_DRD_LINKCTRL);
-   762		reg |= LINKCTRL_FORCE_QACT;
-   763		writel(reg, regs_base + EXYNOS850_DRD_LINKCTRL);
-   764	
-   765		/* Start PHY Reset (POR=high) */
-   766		reg = readl(regs_base + EXYNOS850_DRD_CLKRST);
-   767		reg |= CLKRST_PHY_SW_RST;
-   768		writel(reg, regs_base + EXYNOS850_DRD_CLKRST);
-   769	
-   770		/* Enable UTMI+ */
-   771		reg = readl(regs_base + EXYNOS850_DRD_UTMI);
-   772		reg &= ~(UTMI_FORCE_SUSPEND | UTMI_FORCE_SLEEP | UTMI_DP_PULLDOWN |
-   773			 UTMI_DM_PULLDOWN);
-   774		writel(reg, regs_base + EXYNOS850_DRD_UTMI);
-   775	
-   776		/* Set PHY clock and control HS PHY */
-   777		reg = readl(regs_base + EXYNOS850_DRD_HSP);
-   778		reg |= HSP_EN_UTMISUSPEND | HSP_COMMONONN;
-   779		writel(reg, regs_base + EXYNOS850_DRD_HSP);
-   780	
-   781		/* Set VBUS Valid and D+ pull-up control by VBUS pad usage */
-   782		reg = readl(regs_base + EXYNOS850_DRD_LINKCTRL);
-   783		reg |= LINKCTRL_BUS_FILTER_BYPASS(0xf);
-   784		writel(reg, regs_base + EXYNOS850_DRD_LINKCTRL);
-   785	
-   786		reg = readl(regs_base + EXYNOS850_DRD_UTMI);
-   787		reg |= UTMI_FORCE_BVALID | UTMI_FORCE_VBUSVALID;
-   788		writel(reg, regs_base + EXYNOS850_DRD_UTMI);
-   789	
-   790		reg = readl(regs_base + EXYNOS850_DRD_HSP);
-   791		reg |= HSP_VBUSVLDEXT | HSP_VBUSVLDEXTSEL;
-   792		writel(reg, regs_base + EXYNOS850_DRD_HSP);
-   793	
-   794		reg = readl(regs_base + EXYNOS850_DRD_SSPPLLCTL);
-   795		reg &= ~SSPPLLCTL_FSEL;
-   796		switch (phy_drd->extrefclk) {
-   797		case EXYNOS5_FSEL_50MHZ:
- > 798			reg |= FIELD_PREP_CONST(SSPPLLCTL_FSEL, 7);
-   799			break;
-   800		case EXYNOS5_FSEL_26MHZ:
-   801			reg |= FIELD_PREP_CONST(SSPPLLCTL_FSEL, 6);
-   802			break;
-   803		case EXYNOS5_FSEL_24MHZ:
-   804			reg |= FIELD_PREP_CONST(SSPPLLCTL_FSEL, 2);
-   805			break;
-   806		case EXYNOS5_FSEL_20MHZ:
-   807			reg |= FIELD_PREP_CONST(SSPPLLCTL_FSEL, 1);
-   808			break;
-   809		case EXYNOS5_FSEL_19MHZ2:
-   810			reg |= FIELD_PREP_CONST(SSPPLLCTL_FSEL, 0);
-   811			break;
-   812		default:
-   813			dev_warn(phy_drd->dev, "unsupported ref clk: %#.2x\n",
-   814				 phy_drd->extrefclk);
-   815			break;
-   816		}
-   817		writel(reg, regs_base + EXYNOS850_DRD_SSPPLLCTL);
-   818	
-   819		/* Power up PHY analog blocks */
-   820		reg = readl(regs_base + EXYNOS850_DRD_HSP_TEST);
-   821		reg &= ~HSP_TEST_SIDDQ;
-   822		writel(reg, regs_base + EXYNOS850_DRD_HSP_TEST);
-   823	
-   824		/* Finish PHY reset (POR=low) */
-   825		udelay(10); /* required before doing POR=low */
-   826		reg = readl(regs_base + EXYNOS850_DRD_CLKRST);
-   827		reg &= ~(CLKRST_PHY_SW_RST | CLKRST_PORT_RST);
-   828		writel(reg, regs_base + EXYNOS850_DRD_CLKRST);
-   829		udelay(75); /* required after POR=low for guaranteed PHY clock */
-   830	
-   831		/* Disable single ended signal out */
-   832		reg = readl(regs_base + EXYNOS850_DRD_HSP);
-   833		reg &= ~HSP_FSV_OUT_EN;
-   834		writel(reg, regs_base + EXYNOS850_DRD_HSP);
-   835	}
-   836	
+   194	
+   195	void mlx4_en_deactivate_cq(struct mlx4_en_priv *priv, struct mlx4_en_cq *cq)
+   196	{
+   197		enum netdev_queue_type qtype;
+   198	
+   199		if (cq->type != TX_XDP) {
+   200			if (cq->type == RX)
+   201				qtype = NETDEV_QUEUE_TYPE_RX;
+ > 202			else if (cq->type == TX)
+   203				qtype = NETDEV_QUEUE_TYPE_TX;
+   204	
+   205			netif_queue_set_napi(cq->dev, cq->cq_idx, qtype, NULL);
+   206			napi_disable(&cq->napi);
+   207			netif_napi_del(&cq->napi);
+   208		}
+   209	
+   210		mlx4_cq_free(priv->mdev->dev, &cq->mcq);
+   211	}
+   212	
 
 -- 
 0-DAY CI Kernel Test Service
