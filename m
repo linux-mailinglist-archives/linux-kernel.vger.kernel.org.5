@@ -1,134 +1,111 @@
-Return-Path: <linux-kernel+bounces-157550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FD898B12BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:45:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B2EA8B12CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:47:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D43828151B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:45:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 241BEB28F1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB50C4597F;
-	Wed, 24 Apr 2024 18:42:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638791C6A4;
+	Wed, 24 Apr 2024 18:44:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vEgXKmyM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PfL5gwbR"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A9632C84F;
-	Wed, 24 Apr 2024 18:42:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40AF81DA21;
+	Wed, 24 Apr 2024 18:44:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713984158; cv=none; b=o2H6xrSOAiMP/0vfD1YbuHfZnkReoJUkxBGxuZomzTFNb4rFz8JG62jgBqaUS0163YFdlHNRFpx3hqBE5qXkuPdDZ1haLZCflZZ7ZfuTTAsTxLikUmqXJJsEKEmadlvTqm4xzsTVxQTYr+qZ8sEx05TQ9Wt3GWEyXqtRXkGhvyA=
+	t=1713984290; cv=none; b=oF161vBppNRFysh0HwPmTFCrC0Xf3VRddjOZakaXmHujvOHqlaloMwqJoApzOcmAn9gL2vtFM/gtGQT64K8sWV21yEISRjtF7AUjmMNWAKr6oQriM8Ms4Fz5vDnKuvEG0in+OYXdGKA7dO5vgfaChpefcG8B+F8y7Jlia1+kQcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713984158; c=relaxed/simple;
-	bh=CP8WfTDyvgYNfa6AxhA6VjlMigbLNYOvffOz1XRpFWw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=YXn+apzEPccx/UWS2H+IMKjEfukV4kNfINJn1gXzMbJIp3SnoS1wBQVC2E/ervNbqGkYOuyug1ldL39ekUpNAdT9A6JqklvI2HQ49bzacZSdn8VglxhXuxpAsT6S6UyFTwkASBz/nzzBcef0wVQqyRNGy20MKPvfX6r3b/0dKAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vEgXKmyM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9CEDFC4AF0A;
-	Wed, 24 Apr 2024 18:42:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713984157;
-	bh=CP8WfTDyvgYNfa6AxhA6VjlMigbLNYOvffOz1XRpFWw=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=vEgXKmyMlfjzGjfZToH0m5KMt4CE3/1hWUDo/8wdSxv/gHJpCkYuWL82iQEx5g3EW
-	 rtZLPgGUnWWGVu7jRx7X87rJDemytYjWHNAuZIDTg1TJ3intp+YgdYes12lQ8luDfB
-	 AI9fqc807HDcN+jFnRmCwVl9oMuYQGApq581ZXEmsCZ0fPBBjoAgEB3xETOW4R2vG5
-	 PNcepVs32s7tkB55bB62BcOgsCf+xkkj2OKOu09sCbJB8CkylT4CEgJDsUREz0tusu
-	 mqOpu3sqGjvRGorbOzrNxZBAtmYnkThfKu5SV7Uyh1kvWa7HWabFdeVahy1IMy0PKZ
-	 48ufA4lp1g3ow==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D430C4345F;
-	Wed, 24 Apr 2024 18:42:37 +0000 (UTC)
-From: =?utf-8?q?Duje_Mihanovi=C4=87_via_B4_Relay?= <devnull+duje.mihanovic.skole.hr@kernel.org>
-Date: Wed, 24 Apr 2024 20:42:39 +0200
-Subject: [PATCH v10 12/12] MAINTAINERS: add myself as Marvell PXA1908
- maintainer
+	s=arc-20240116; t=1713984290; c=relaxed/simple;
+	bh=8gIaXDNEUwMuLPcADBfY8qmuXHqxs1fdQRxqtQL+O0M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BGtw4hcgi7JOGBMlTtjvbI3hQpsr4itxZiGD78DpIx0mDrAq9RjDDt/15pKNHt//iNRkJngpxkYJkpJKXhOfoiVZZ7JHlhHlXHA0Fvi95ka+7oo0uRa2TIjTU2dNvFPZGXpeoB5bmW6bizmhDEEfjqeoN0v6woIjEiG/1DwC+iU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PfL5gwbR; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713984289; x=1745520289;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8gIaXDNEUwMuLPcADBfY8qmuXHqxs1fdQRxqtQL+O0M=;
+  b=PfL5gwbRpk96X4AEstwoTTXWnZJmKombWZWPf3As99HVIStjpw23tgCg
+   Pr8h/VI6oMjVigUFCjH5VzwxyvcCzPcSczYRIkgD7QHXioqoU0tbNUw/6
+   eAJHDSUQdDLeSkdNRYE9spgCBj++VS8vcnoSs1VbNu1DB38phGO132FR0
+   5E4hpjxfS2+zfCdjoQGRiDCeVRI4e8kRVpbEPEsWV1OuR8DA1CfiPZiX0
+   8uACph7VSZaL5S9PSA5fL0bP/EIifMv8NwELviWWXES2la0/IwmzbYzhk
+   ftJM5yLyM7HTREXf55lCdcuZx0RIRMnAwlAVm2OV+RVQvy4Sj79pxLKzl
+   g==;
+X-CSE-ConnectionGUID: 6lVlB1OfQUKuMCSD6maUvg==
+X-CSE-MsgGUID: dqo8O3ZRQAWxmqREYsVIUw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9507785"
+X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
+   d="scan'208";a="9507785"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:44:48 -0700
+X-CSE-ConnectionGUID: LqwW6PaoTPSookDLHZVo0A==
+X-CSE-MsgGUID: IgqSBZl9QByRq1tC0XUyMw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
+   d="scan'208";a="24810440"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa009.fm.intel.com with ESMTP; 24 Apr 2024 11:44:24 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id B8A1FA5; Wed, 24 Apr 2024 21:44:22 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Kate Hsuan <hpa@redhat.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	linux-media@vger.kernel.org,
+	linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v1 0/2] media: atomisp: A couple of cleanups
+Date: Wed, 24 Apr 2024 21:43:30 +0300
+Message-ID: <20240424184421.1737776-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240424-pxa1908-lkml-v10-12-36cdfb5841f9@skole.hr>
-References: <20240424-pxa1908-lkml-v10-0-36cdfb5841f9@skole.hr>
-In-Reply-To: <20240424-pxa1908-lkml-v10-0-36cdfb5841f9@skole.hr>
-To: Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, 
- Haojian Zhuang <haojian.zhuang@linaro.org>, 
- =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, 
- Lubomir Rintel <lkundrak@v3.sk>, Catalin Marinas <catalin.marinas@arm.com>, 
- Will Deacon <will@kernel.org>, Kees Cook <keescook@chromium.org>, 
- Tony Luck <tony.luck@intel.com>, 
- "Guilherme G. Piccoli" <gpiccoli@igalia.com>, Rob Herring <robh@kernel.org>
-Cc: phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
- Karel Balej <balejk@matfyz.cz>, David Wronek <david@mainlining.org>, 
- linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=906;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=IAO2s2H9eu3z+8543Qj+Twu7btrO5EN1Y9FniKrdIpI=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBmKVKVE2n5S7pMEvJ2dz5c5NHiJUcq66HbNB47N
- dzaKjRup7+JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZilSlQAKCRCaEZ6wQi2W
- 4WZCD/0e6BPwFLQgizdDY83IxSn9oXdBBmvVOC8UrCDlq+RZqV20ZPSC/Fwa2WvlgS3KujswLP4
- Ic9DKe9rZkIIUzr+QzaL3Z94bgSVXDxfs2W/rHMRlD2v/EH/A5k6ciR5cou9lcRkl68SYwevmVj
- qzaxs5gh5OG27pKWbunNHSHMhmDWhbawbWz5KFEfkcYe4FcsaYqigw3JPpiKVFGGNfKJ5w0x/xb
- pyDhPqrE96Irc77j37PGHeNJhmHX6dPgnEP7w997pE0d3kwNwlfW7IC2huzz+WHiZBq1p5lZcpA
- bwqEbB65dA7F6PhfErDC8Ohp3jWgvDDEU2z2OVEBL7fX3MLC0W1s0QrVm8xhEPKDwrh3GnrJPBO
- q79TUoZZTAD1oryVw/CBdRbl1ee1nGRxNWdByJekEBSWDYkGXk7qeqorzBQYFEP/uHEbn0Ck5EW
- HlPjUn4MOdn184Ngh4Y/hYwkXH11GQo7jgysCLviH0RVOi/SZwxh9Hlzv2uxMZ7j82JCxtDAdN3
- ph7B+fWWz9WM6+jC40qrOWsPSPj75Z8Z9tIuykacvdZasIdGRN9M9WDrqyZCcR9Qz3pp8ME2faJ
- jCU3+2ERgJOpCD0Nmp4IzLZqa7cLY4i6KACiJ5e0dg36zY+Ley0m9nxNBUS3g+HhOwgHi+5Vb24
- r9I3U9sMvziOoyA==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
-X-Endpoint-Received: by B4 Relay for duje.mihanovic@skole.hr/default with
- auth_id=112
-X-Original-From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Reply-To: duje.mihanovic@skole.hr
 
-From: Duje Mihanović <duje.mihanovic@skole.hr>
+1/ Drop a lot of unused math related macros.
+2/ Replace homegrown static_assert()
 
-Add myself as the maintainer for Marvell PXA1908 SoC support.
+Andy Shevchenko (2):
+  media: atomisp: Clean up unused macros from math_support.h
+  media: atomisp: Replace COMPILATION_ERROR_IF() by static_assert()
 
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ebf03f5f0619..5d48ac9801df 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2370,6 +2370,15 @@ F:	drivers/irqchip/irq-mvebu-*
- F:	drivers/pinctrl/mvebu/
- F:	drivers/rtc/rtc-armada38x.c
- 
-+ARM/Marvell PXA1908 SOC support
-+M:	Duje Mihanović <duje.mihanovic@skole.hr>
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+S:	Maintained
-+T:	git https://gitlab.com/LegoLivesMatter/linux
-+F:	arch/arm64/boot/dts/marvell/pxa1908*
-+F:	drivers/clk/mmp/clk-pxa1908*.c
-+F:	include/dt-bindings/clock/marvell,pxa1908.h
-+
- ARM/Mediatek RTC DRIVER
- M:	Eddie Huang <eddie.huang@mediatek.com>
- M:	Sean Wang <sean.wang@mediatek.com>
+ .../circbuf/interface/ia_css_circbuf_comm.h   |   6 +
+ .../pci/camera/util/interface/ia_css_util.h   |  11 --
+ .../media/atomisp/pci/camera/util/src/util.c  |  25 ++--
+ .../pci/hive_isp_css_include/assert_support.h |  23 ----
+ .../pci/hive_isp_css_include/math_support.h   | 110 +-----------------
+ .../pci/hive_isp_css_include/type_support.h   |   5 +-
+ drivers/staging/media/atomisp/pci/ia_css_3a.h |   5 +
+ .../staging/media/atomisp/pci/ia_css_dvs.h    |   4 +
+ .../media/atomisp/pci/ia_css_metadata.h       |   4 +
+ .../staging/media/atomisp/pci/ia_css_types.h  |   2 +
+ .../kernels/xnr/xnr_3.0/ia_css_xnr3.host.c    |   6 +-
+ .../atomisp/pci/runtime/binary/src/binary.c   |   2 -
+ .../spctrl/interface/ia_css_spctrl_comm.h     |   4 +
+ drivers/staging/media/atomisp/pci/sh_css.c    |  38 ------
+ .../staging/media/atomisp/pci/sh_css_frac.h   |   4 +-
+ .../media/atomisp/pci/sh_css_internal.h       |  15 ++-
+ 16 files changed, 60 insertions(+), 204 deletions(-)
 
 -- 
-2.44.0
-
+2.43.0.rc1.1336.g36b5255a03ac
 
 
