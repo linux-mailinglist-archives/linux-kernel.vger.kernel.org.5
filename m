@@ -1,129 +1,196 @@
-Return-Path: <linux-kernel+bounces-157057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A8338B0C4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:17:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 086868B0C4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:17:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11EBA1F227C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:17:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C3311C23BD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:17:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594B415ECC9;
-	Wed, 24 Apr 2024 14:17:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B508415ECEE;
+	Wed, 24 Apr 2024 14:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iGlJEXCk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bbXe+mpU"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C3E11E4A9;
-	Wed, 24 Apr 2024 14:17:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D81A715E811
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 14:17:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713968222; cv=none; b=Ba/t39ePSbrxHlDBAHExDuuOkV3h5YNV1c1VE9tf1RT3jOBIaw4/HZS6wEAnM0+y0r/vlv6Acm3gKeVrp0UFMgR8FuBENiL9W3Mq+7yaeHSdWrDJBKnacO32scgAoEKS9JVf0txdiW3d14rkSNKBjHrx1JEnJ5w1VECxqwjQQYA=
+	t=1713968224; cv=none; b=lcfhk+Seu6aRo+hclI1Fp4O976Cy1r0mOYT3xIRJXyk4lEK0o5pDb2lzKK12U4IqPrioCFHSiBJiOzKd0HA7jC6z485vNzMDTR9dX82Xw0ipf+tiBvmybG75L9VetquvjnJcl1AdNXWRKI80ImR90pHhEdflu+e+8ib1oVrKVuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713968222; c=relaxed/simple;
-	bh=TVeCIdKigppPn6hBVPjdjrER/LuvpbOBsA4R4tPiQ10=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kMIOzq65Wk3tCV0MLxoGQXpcQ24zfg0wS8z9p9HtK1dLLFHqj+OOit7p/HaHIJusg+gEx7Nedu5kiqDqCGvr8nIVH1zR/wnEz9YPm99wm446COZQ1h756gG/34790iQHJ3BahpF9PPsjuC7rTx9lLIGqllIC+Gw2YS9zBH1mXCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iGlJEXCk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AAFFC2BD10;
-	Wed, 24 Apr 2024 14:16:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713968222;
-	bh=TVeCIdKigppPn6hBVPjdjrER/LuvpbOBsA4R4tPiQ10=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iGlJEXCklGwgIX/lpduHMHe3cUFNWy14PSP4jUjJzMSaX+URz5HHDQ187fVoYrMmD
-	 v864YavFl96QeSR+6qEI0x/Fz5WmWKjofx6KLSBgoHQ/iwS1SeAmwu4LxNxpLL2c9X
-	 Z9hjJe9NVRkfkv6vu+Qngj5TPTUVbYtZoEQX3GybOGqukmZ5XRitbPmRj2t5DbFBF4
-	 bcZ6hdauVrnJ/Pj7B57tSt4lByMFQQ56jUFwqGudH7iALPlbctYe8HJ4k8QzYOhMks
-	 BOoWYAKOoO2fCYWU2ZU7UDa/xP674MPee9FMR481SI/ralFka8Szo5WBqwrE3I2qBt
-	 KEW7U1HBsdcHQ==
-Date: Wed, 24 Apr 2024 16:16:56 +0200
-From: Benjamin Tissoires <bentiss@kernel.org>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Alexei Starovoitov <ast@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bpf: verifier: allow arrays of progs to be used in
- sleepable context
-Message-ID: <35nbgxc7hqyef3iobfvhbftxtbxb3dfz574gbba4kwvbo6os4v@sya7ul5i6mmd>
-References: <20240422-sleepable_array_progs-v1-1-7c46ccbaa6e2@kernel.org>
- <7344022a-6f59-7cbf-ee45-6b7d59114be6@iogearbox.net>
- <un4jw2ef45vu3vwojpjca3wezso7fdp5gih7np73f4pmsmhmaj@csm3ix2ygd5i>
+	s=arc-20240116; t=1713968224; c=relaxed/simple;
+	bh=+xPMvdpLmBFBT82L+2rB4j5nQBGY5IoRBac4o5nrhJ0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kzGgLJQXDMq6IN+5eOUOHGwU+rc23ZZ/C3TVZYFHLk3DfbcIW1i6aSpz2WQNynwztzP3iLGZ5dBiCJ96veuUtzgLuISpGnumGHbCexQohW9uPmxpCzwnZzcllwGPnG2rjkh9HJ0Y9K2eqDc+DNUOmPc6N6QbuSG/5/q/W8bzkBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bbXe+mpU; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56e6a1edecfso10393622a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 07:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713968220; x=1714573020; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=D+FFw7YxB1izHeLB8MpAI1EI5GFWFRCwf6sagsTPIHc=;
+        b=bbXe+mpUAsf0TGKiMviAyDUFR4+5YvHDmNvmHii1Ad5FL0SfH4MvSrTqe/KIZM5ZAw
+         Moby1IqqTPbKog6t2ORUzn0wf+5s+tc0zNNXBSthLE4fXLRvjZiAedVZ3Qvjw/QV1yHv
+         2j0tfLpgq65xptUvOO0KFdm6CINLUvfMSwIYZvyX1r+HVzANl9AoQcPl45HIcKpLDsBa
+         dC3Uy1glCz0hSh9Wci3Z0BCAoTjMOhALQhqCvEESjIxWeCa7EhBoY+lkoh7ZOi0tcamI
+         Tukbf9iSQfV2lCRh6JQsS6HsTMaiQ7nKPntUvwqR7ak/xprwftdhXVV2LsZG9D82TL5h
+         ZL+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713968220; x=1714573020;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=D+FFw7YxB1izHeLB8MpAI1EI5GFWFRCwf6sagsTPIHc=;
+        b=MZmve29u7CPIP1ZqyknD+9PXKcAP0fwAHG7meKEoNoaX9MAvSorxMuRYDddXcHvzK0
+         P24If6/vl1323gunfTr3NpKOvz1fuLoMZkK5a+BuvPQsIv5HsOELX/gn/qwra6le7g8D
+         OD6NoXSQxe//eGIyQS87K2m0qA9wlgeyeEEKGwW7kU/4OGuhhW9mkJuZUk1+mCZqXsVh
+         3IlXvtkt/LLPiwTxDwkQKWJ3eKpXU8ccq97evOkICwNBe7M9Milu7HW0+ruFGd5xBfw/
+         jIUN2/TCy+Ixaa+AL0kGwXoY4AhDVjJ+ymi04fhCqzdz6rK5Vyw7IbCeTnfvJqjTaWx+
+         kgXA==
+X-Forwarded-Encrypted: i=1; AJvYcCW7QsulQ+Q8xG6E1eq/EDfYx/niAZzAS/eBWc1uMb9iITip2rwLORmL+6wtaLo4+kWLxn4L8zAMmarWbN2kJHfwEKzz2HQdzXrM/qE2
+X-Gm-Message-State: AOJu0YwpvW1UiOXyrLI6up5MdtyPj+qou1YTUMjCzWYqVHgzfwzRDQaL
+	GkVxjZu+mQvlthCmPti++jrtnyXW3pVuyjkrO/F83dT3IEu2yzagnRKfjGdCZII=
+X-Google-Smtp-Source: AGHT+IEOfsPQ7/Z1yv4Amm4JeBXw+SM4KXxokpxSErr9FzwFJ3mVhgmaCYRo+hfuU1OSFUWH+7v8TA==
+X-Received: by 2002:a50:c356:0:b0:56e:2b1c:d013 with SMTP id q22-20020a50c356000000b0056e2b1cd013mr1585369edb.21.1713968220054;
+        Wed, 24 Apr 2024 07:17:00 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id bf17-20020a0564021a5100b0056bf6287f32sm7886343edb.26.2024.04.24.07.16.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 07:16:59 -0700 (PDT)
+Message-ID: <2a3d928d-3e18-4e3a-9f5b-94dbbaaf3652@linaro.org>
+Date: Wed, 24 Apr 2024 16:16:58 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <un4jw2ef45vu3vwojpjca3wezso7fdp5gih7np73f4pmsmhmaj@csm3ix2ygd5i>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/7] dt-bindings: reset: Add binding constants for
+ BLZP1600
+To: Niko Pasaloukos <nikolaos.pasaloukos@blaize.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: James Cowgill <james.cowgill@blaize.com>,
+ Matt Redfearn <matthew.redfearn@blaize.com>,
+ Neil Jones <neil.jones@blaize.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+References: <20240424133230.19179-1-nikolaos.pasaloukos@blaize.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240424133230.19179-1-nikolaos.pasaloukos@blaize.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Apr 22 2024, Benjamin Tissoires wrote:
-> On Apr 22 2024, Daniel Borkmann wrote:
-> > On 4/22/24 9:16 AM, Benjamin Tissoires wrote:
-> > > Arrays of progs are underlying using regular arrays, but they can only
-> > > be updated from a syscall.
-> > > Therefore, they should be safe to use while in a sleepable context.
-> > > 
-> > > This is required to be able to call bpf_tail_call() from a sleepable
-> > > tracing bpf program.
-> > > 
-> > > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> > > ---
-> > > Hi,
-> > > 
-> > > a small patch to allow to have:
-> > > 
-> > > ```
-> > > SEC("fmod_ret.s/__hid_bpf_tail_call_sleepable")
-> > > int BPF_PROG(hid_tail_call_sleepable, struct hid_bpf_ctx *hctx)
-> > > {
-> > > 	bpf_tail_call(ctx, &hid_jmp_table, hctx->index);
-> > > 
-> > > 	return 0;
-> > > }
-> > > ```
-> > > 
-> > > This should allow me to add bpf hooks to functions that communicate with
-> > > the hardware.
-> > 
-> > Could you also add selftests to it? In particular, I'm thinking that this is not
-> > sufficient given also bpf_prog_map_compatible() needs to be extended to check on
-> > prog->sleepable. For example we would need to disallow calling sleepable programs
-> > in that map from non-sleepable context.
+On 24/04/2024 15:32, Niko Pasaloukos wrote:
+> Add SCMI reset numbers according to the Blaize BLZP1600 SoC
+> hardware specifications.
 > 
-> Just to be sure, if I have to change bpf_prog_map_compatible(), that
-> means that a prog array map can only have sleepable or non-sleepable
-> programs, but not both at the same time?
-> 
-> FWIW, indeed, I just tested and the BPF verifier/core is happy with this
-> patch only if the bpf_tail_call is issued from a non-sleepable context
-> (and crashes as expected).
-> 
-> But that seems to be a different issue TBH: I can store a sleepable BPF
-> program in a prog array and run it from a non sleepable context. I don't
-> need the patch at all as bpf_tail_call() is normally declared. I assume
-> your suggestion to change bpf_prog_map_compatible() will fix that part.
-> 
-> I'll digg some more tomorrow.
-> 
+> Reviewed-by: James Cowgill <james.cowgill@blaize.com>
+> Reviewed-by: Matt Redfearn <matt.redfearn@blaize.com>
+> Reviewed-by: Neil Jones <neil.jones@blaize.com>
+> Signed-off-by: Nikolaos Pasaloukos <nikolaos.pasaloukos@blaize.com>
+> ---
+>  .../dt-bindings/reset/blaize,blzp1600-reset.h | 84 +++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>  create mode 100644 include/dt-bindings/reset/blaize,blzp1600-reset.h
 
-Quick update:
-forcing the prog array to only contain sleepable programs or not seems
-to do the trick, but I'm down a rabbit hole as when I return from my
-trampoline, I get an invalid page fault, trying to execute NX-protected
-page.
+This goes with patch adding the binding doc.
 
-I'll report if it's because of HID-BPF or if there are more work to be
-doing for bpf_tail_call (which I suspect).
+> 
+> diff --git a/include/dt-bindings/reset/blaize,blzp1600-reset.h b/include/dt-bindings/reset/blaize,blzp1600-reset.h
+> new file mode 100644
+> index 000000000000..c500c2b0690c
+> --- /dev/null
+> +++ b/include/dt-bindings/reset/blaize,blzp1600-reset.h
+> @@ -0,0 +1,84 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause */
+> +/*
+> + * Copyright (C) 2023, Blaize, Inc.
+> + */
+> +
+> +#ifndef DT_BINDING_RESET_BLZP1600_H
+> +#define DT_BINDING_RESET_BLZP1600_H
+> +
+> +/* ARM SCMI resets */
+> +
+> +/* BLZP1600 reset numbers as defined in the hardware architecture */
+> +
+> +#define BLZP1600_A53_C0_HARD_RST 0
+> +#define BLZP1600_A53_C0_SOFT_RST 1
+> +#define BLZP1600_A53_C1_HARD_RST 2
+> +#define BLZP1600_A53_C1_SOFT_RST 3
+> +#define BLZP1600_A53_L2_CACHE_RST 4
+> +#define BLZP1600_A53_DBG_RST 5
+> +#define BLZP1600_GIC_RST 6
+> +#define BLZP1600_CRYPTO_RST 7
+> +/* reset 8 invalid */
 
-Cheers,
-Benjamin
+Same concerns.
+
+However another problem is lack of users of it. Your patchset looks
+random - this goes to subsustem, but there is no device binding, no
+driver, no DTS. Could be result of lack of threading. :/
+
+Best regards,
+Krzysztof
+
 
