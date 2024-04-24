@@ -1,110 +1,180 @@
-Return-Path: <linux-kernel+bounces-157070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D58818B0C74
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:27:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 110F78B0C78
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:28:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 131451C215B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:27:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48C3AB23FC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:28:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82F1915E80A;
-	Wed, 24 Apr 2024 14:27:08 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB1E15E812;
+	Wed, 24 Apr 2024 14:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nB1GSJJb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF18C158867;
-	Wed, 24 Apr 2024 14:27:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B198E15B15C;
+	Wed, 24 Apr 2024 14:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713968828; cv=none; b=CKwA1RrnVuqTsZlESELDm0MvdGaYE8GHGNHfjO6RmDsgmBq5+As2b4FP7hhzIpCIsAwzI7WXqna3Eg4eTzpqesbn8XdrohHmjlKCCZymfFInbMww0xt48Y25wk7B6Oc7H4qTnZ1MadfSOtrfkPOWPQXEOLXNhI3ikduawqcJzcg=
+	t=1713968900; cv=none; b=jCsDVQoAOHV/L7kOY8hXLn12xV5iNyKe3flvV5KIynDqv4TQLMIXWIYt3RLwgzyCpC6mvdAucSufZTuwipUti7pWw21fAti35LniFHnCya2y7zyHpX5gw4TExL/Emjf6Tu1Z+cI3RxJcROBE9YtrMjrDGLHE1fwhBpUmiKHMK4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713968828; c=relaxed/simple;
-	bh=3MRo09CAl1dLk8i/k1FkOLA4olAcV60dDi76ojCmJQc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nj5ryYW1/rCcIrjaj630gI+G78LJX9TBsyUUFxPTC3grgyCbduysz22J7nJx6zT/MRke8hgiMfODJpg29ieZ81R0ONkzw3b0G0xImU3mxQwdrpGvbEEcMwZc1/O3Eylp/LqT74/B5w49qpePwEEuqwKIlgoNjBuapBps1OHdLbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-X-CSE-ConnectionGUID: iBK17G9IRNKOryzqC5l5Wg==
-X-CSE-MsgGUID: MvoGg2vjTkqjvrnHp5J1MA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9453980"
-X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="9453980"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 07:26:54 -0700
-X-CSE-ConnectionGUID: skyNPZ5NT525XUblwMmtLQ==
-X-CSE-MsgGUID: dtI6JwCJQhSpTBVzz2mZ4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="25343374"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 07:26:50 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andy.shevchenko@gmail.com>)
-	id 1rzdaA-00000000fsk-2vqd;
-	Wed, 24 Apr 2024 17:26:46 +0300
-Date: Wed, 24 Apr 2024 17:26:46 +0300
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: linux-kernel@vger.kernel.org,
-	Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
-	Lee Jones <lee@kernel.org>, Jiawen Wu <jiawenwu@trustnetic.com>,
-	Mengyuan Lou <mengyuanlou@net-swift.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Duanqiang Wen <duanqiangwen@net-swift.com>,
-	"open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>,
-	"open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
-Subject: Re: [PATCH 0/4] Define i2c_designware in a header file
-Message-ID: <ZikWps1DIVPNJeOp@smile.fi.intel.com>
-References: <20240423233622.1494708-1-florian.fainelli@broadcom.com>
- <ZihKtSble151A5mT@surfacebook.localdomain>
- <e55c35c2-1bff-4b12-aa3b-713c6085d303@broadcom.com>
+	s=arc-20240116; t=1713968900; c=relaxed/simple;
+	bh=0bXj55cRRwgJmp1/Upxrw4MJ5bCblTkPE847LyJTv2E=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fNq2/s+6EZZVkighKt7aMZkXazHSnb4DkjIRtwVpzG4WYXDf3dQJdzbsZwLLDNnSOl5yyxl4B1+hNtPUdst+CbJzXvj96aBa0wbNwh5Mrt1TKyLIKkHGeSEK0wg+DSgbOaGH/7KaaU/ljQuIXNXApZlvmxSpV0TnxePQJcCtp1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nB1GSJJb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCDCEC113CD;
+	Wed, 24 Apr 2024 14:28:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713968900;
+	bh=0bXj55cRRwgJmp1/Upxrw4MJ5bCblTkPE847LyJTv2E=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=nB1GSJJbUfdncCQjgrtZ3L06InY0W628g/6DvkX25FfUkmkPG60pqJFLKMFaCXw8A
+	 1BnfAZH46DoQeN4JylqyKQimXYhD1H7sOwIPkdXsSVjzc27i8Jf/LgeMClX44SVXCV
+	 At0+LCdQybDKZJvnkUJDSX1DabRHpUUz2O13E0MkkLw1Q7Pq5SPCVFSqFFCOz3POGB
+	 4hzwulFHQfI++UhU4V6exonvtCSz6Ut8/efkCYQNL+02LkKwKq/ubkcd0jOKW8CiaZ
+	 lqXxw0fVIK2mEcUaLqKQEB33SPxBHwSQj9Gkce1c1IG80NlzMybqmQoBHsAVwM7eDT
+	 EdKK5MTw/MI0Q==
+Date: Wed, 24 Apr 2024 07:28:18 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Joe Damato <jdamato@fastly.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, tariqt@nvidia.com,
+ saeedm@nvidia.com, mkarsten@uwaterloo.ca, gal@nvidia.com,
+ nalramli@fastly.com, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, "open list:MELLANOX
+ MLX4 core VPI driver" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH net-next 3/3] net/mlx4: support per-queue statistics via
+ netlink
+Message-ID: <20240424072818.2c68a1ab@kernel.org>
+In-Reply-To: <ZiieqiuqNiy_W0mr@LQ3V64L9R2>
+References: <20240423194931.97013-1-jdamato@fastly.com>
+	<20240423194931.97013-4-jdamato@fastly.com>
+	<Zig5RZOkzhGITL7V@LQ3V64L9R2>
+	<20240423175718.4ad4dc5a@kernel.org>
+	<ZiieqiuqNiy_W0mr@LQ3V64L9R2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e55c35c2-1bff-4b12-aa3b-713c6085d303@broadcom.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 23, 2024 at 06:21:21PM -0700, Florian Fainelli wrote:
-> On 4/23/2024 4:56 PM, Andy Shevchenko wrote:
-> > Tue, Apr 23, 2024 at 04:36:18PM -0700, Florian Fainelli kirjoitti:
-> > > This patch series depends upon the following two patches being applied:
-> > > 
-> > > https://lore.kernel.org/all/20240422084109.3201-1-duanqiangwen@net-swift.com/
-> > > https://lore.kernel.org/all/20240422084109.3201-2-duanqiangwen@net-swift.com/
-> > > 
-> > > There is no reason why each driver should have to repeat the
-> > > "i2c_designware" string all over the place, because when that happens we
-> > > see the reverts like the above being necessary.
-> > 
-> > Isn't that a part of ABI between drivers, i.e. whenever ones want to
-> > request_module() or so they need to know what they are doing, no?
-> 
-> Yes, the drivers should know, but as evidenced by the two patches above,
-> there was still room for error. If we have to abide by a certain contract,
-> which is platform_driver::driver::name, then we might as well have a header
-> defining it no?
+On Tue, 23 Apr 2024 22:54:50 -0700 Joe Damato wrote:
+> On Tue, Apr 23, 2024 at 05:57:18PM -0700, Jakub Kicinski wrote:
+> > On Tue, 23 Apr 2024 12:42:13 -1000 Joe Damato wrote: =20
+> > > I realized in this case, I'll need to set the fields initialized to 0=
+xff
+> > > above to 0 before doing the increments below. =20
+> >=20
+> > I don't know mlx4 very well, but glancing at the code - are you sure we
+> > need to loop over the queues is the "base" callbacks?
+> >=20
+> > The base callbacks are for getting "historical" data, i.e. info which
+> > was associated with queues which are no longer present. You seem to
+> > sweep all queues, so I'd have expected "base" to just set the values=20
+> > to 0. And the real values to come from the per-queue callbacks. =20
+>=20
+> Hmm. Sorry I must have totally misunderstood what the purpose of "base"
+> was. I've just now more closely looked at bnxt which (maybe?) is the only
+> driver that implements base and I think maybe I kind of get it now.
+>=20
+> For some reason, I thought it meant "the total stats of all queues"; I di=
+dn't
+> know it was intended to provide "historical" data as you say.
+>=20
+> Making it set everything to 0 makes sense to me. I suppose I could also s=
+imply
+> omit it? What do you think?
 
-Maybe, I simply don't like the manipulations with parts of the device instance
-names / driver IDs / driver name, which all become mixed after this series.
+The base is used to figure out which stats are reported when we dump=20
+a summary for the whole device. So you gotta set them to 0.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> > The init to 0xff looks quite sus. =20
+>=20
+> Yes the init to 0xff is wrong, too. I noticed that, as well.
+>=20
+> Here's what I have listed so far in my changelog for the v2 (which I have=
+n't
+> sent yet), but perhaps the maintainers of mlx4 can weigh in?
+>=20
+> v1 -> v2:
+>  - Patch 1/3 now initializes dropped to 0.
+>  - Patch 3/3 includes several changes:
+>    - mlx4_get_queue_stats_rx and mlx4_get_queue_stats_tx check if i is
+>      valid before proceeding.
+>    - All initialization to 0xff for stats fields has been omit. The
+>      network stack does this before calling into the driver functions, so
+>      I've adjusted the driver functions to only set values if there is
+>      data to set, leaving the network stack's 0xff in place if not.
+>    - mlx4_get_base_stats sets all stats to 0 (no locking etc needed).
 
+All the ones you report right? Not just zero the struct.
+Any day now (tm) someone will add a lot more stats to the struct
+so the init should be selective only to the stats that are actually
+supported.
 
+> Let me know if that sounds vaguely correct?
+>=20
+> > Also what does this:
+> >  =20
+> > >	if (!priv->port_up || mlx4_is_master(priv->mdev->dev)) =20
+> >=20
+> > do? =F0=9F=A4=94=EF=B8=8F what's a "master" in this context? =20
+>=20
+> I have a guess, but I'd rather let the Mellanox folks provide the official
+> answer :)
+
+My guess is that on multi-port only one of the netdevs is "in charge"
+of the PCIe function. But these are queue stat, PCIe ownership may
+matter for refresh but not for having the stats. So my guess must be
+wrong..
+
+> > > Sorry about that; just realized that now and will fix that in the v2 =
+(along
+> > > with any other feedback I get), probably something:
+> > >=20
+> > >   if (priv->rx_ring_num) {
+> > >           rx->packets =3D 0;
+> > >           rx->bytes =3D 0;
+> > >           rx->alloc_fail =3D 0;
+> > >   }
+> > >=20
+> > > Here for the RX side and see below for the TX side. =20
+> >=20
+> > FWIW I added a simple test for making sure queue stats match interface
+> > stats, it's tools/testing/selftests/drivers/net/stats.py
+> >=20
+> > You have to export NETIF=3D$name to make it run on a real interface.
+> >=20
+> > To copy the tests to a remote machine I do:
+> >=20
+> > make -C tools/testing/selftests/ TARGETS=3D"net drivers/net drivers/net=
+/hw" install INSTALL_PATH=3D/tmp/ksft-net-drv
+> > rsync -ra --delete /tmp/ksft-net-drv root@${machine}:/root/
+> >=20
+> > HTH =20
+>=20
+> Thanks, this is a great help actually.
+>=20
+> I have a similar changeset for mlx5 (which is hardware I do have access t=
+o)
+> that adds the per-queue stats stuff so I'll definitely give your test a t=
+ry.
+>=20
+> Seeing as I made a lot of errors in this series, I'll hold off on sending=
+ the
+> mlx5 series until this mlx4 series is fixed and accepted, that way I can
+> produce a much better v1 for mlx5.
+
+mlx5 would be awesome! But no pressure on sending ASAP. I was writing a
+test for page pool allocation failures, which depends on qstat to check
+if driver actually saw the errors (I'll send it later today), and I
+couldn't confirm it working on mlx5 :(
 
