@@ -1,108 +1,123 @@
-Return-Path: <linux-kernel+bounces-156069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DD548AFD84
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B10D8AFD89
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:02:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DFE41C220FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:01:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA7A11C22357
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:02:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39A44C81;
-	Wed, 24 Apr 2024 01:00:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D06494C9F;
+	Wed, 24 Apr 2024 01:02:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QSU3tD8g"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JJw+/Dln"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF8F923BE
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 01:00:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108044A32;
+	Wed, 24 Apr 2024 01:02:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713920456; cv=none; b=uEnUUAWik9hE0zKx+guBbb0GAT65OMHmGsW282/0XQL7O8FfQ7DmBySt0/Y8fpgWAORqR/p/5zT0w4wAx3LyhrArWVn6b7jV8BJZvxwgu3Y7UlkPdyaqwaZOAOAnx8GPMOYeRSLocmjdf+FWQ8qiJt0F42goR+JOZ0dSkPrqnCQ=
+	t=1713920521; cv=none; b=ehkLg1Zajm/hYAba0E0tPYOWIH1VxulZV7ScRYSJPSqYP+pGaciJebU7SWNX8Ne8vOyft24YL2pAykujysOkmxY/gRC0Zpm4Vq+YOirU9d++OxrWodNFBDtzQSq85avtCrWRqA2XIx2gGceOsM9ObPjccM41EOV5ATofwAmNSyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713920456; c=relaxed/simple;
-	bh=S+0/yfWEbTG33zVAf3a7JUyadtPHjguQhf9rNUpBUYU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YMkfH/y3faka01wFDzkf765Y1RAtK8FK7yKTy0tNf7VUv82o70NsvS4WWODFD0zt3e+aflzvcY7mRoN9R6N8CcVH27jsEpHkKu9dCiXr7Ej3Gpn7QW9eSMXxfqTfHMZ8AfywNTukhqFO809QBTmxRrZ19thagJ5bKEze+Vw7nkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QSU3tD8g; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713920453;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=/a5fhFSmdofMCiLnLbJwkC2x6hk67MrQy10O1DXKAP4=;
-	b=QSU3tD8gtBkaPxftav6dtF9IOJgPuA4IGoaoKFOBGhAyasQwTnXGeZJ3usKQy3bOkHb2T+
-	Uh8IYQrvmhcuJPsuEp5tpFarKqFnUYTB5aRz+2UXEpMJ8E9ozw+94l69REukxCJCQUoyAN
-	2S6azcBoL15gQISEDnpMNCmJqZ4dyfw=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-131-Ou3fZRdJMUu6vLcO4XX7Uw-1; Tue,
- 23 Apr 2024 21:00:49 -0400
-X-MC-Unique: Ou3fZRdJMUu6vLcO4XX7Uw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3E5CB385A185;
-	Wed, 24 Apr 2024 01:00:49 +0000 (UTC)
-Received: from llong.com (unknown [10.22.33.184])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id E5757C13FA3;
-	Wed, 24 Apr 2024 01:00:47 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>
-Cc: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	Xiu Jianfeng <xiujianfeng@huawei.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH-cgroup] cgroup/cpuset: Fix incorrect top_cpuset flags
-Date: Tue, 23 Apr 2024 21:00:20 -0400
-Message-Id: <20240424010020.181305-1-longman@redhat.com>
+	s=arc-20240116; t=1713920521; c=relaxed/simple;
+	bh=FG6WT1YIudhRBGBeLBsnxzzVAv9mMWRCM4eJusDUt6I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qlG8LuTLrLBnySZ2gFIAtSihx77AjWmCMIgn29UeW3wxvE7FjzBEvVj2H/GubuwPztb8zliIS0Pr/4MkYBuvdCjOrYzySbIjlSKyhxk+kQc7l2bMYYS8wGo0QgJDvI+SLiyOLmXSYbv9rop66Y3XlHpFyml9OlcUnWzgtrZnNMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JJw+/Dln; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0612AC116B1;
+	Wed, 24 Apr 2024 01:01:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713920520;
+	bh=FG6WT1YIudhRBGBeLBsnxzzVAv9mMWRCM4eJusDUt6I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JJw+/DlnUJ6sU5ulqJ3i+B6KIgv36VvHxQcX4k3DAjuoyvM2+fDdI0wS5b87/bkmA
+	 MR3k4UwTAgLgA9UQfO8TGOzTl/jXq2g1Aa5ApuuAcEPlQxrgmxCJ/kn7MKFioLrdAm
+	 URtTduTjyHgDSnFcYa4d11LZNBXJedrD3yyISZjV6gnN21L8Na8sig4V6NwB5xnQku
+	 Kq/zXEFBGRbhDv26wWnynS3RIEiFaVlfZhlUOKSwISgF7GWYQjhTuMJyR6LCRYeTka
+	 lHqiwHHVloLhF01VNAJ0nv5/6cxsBCvIICN3SxOsy3Hgh4zjkuebq5jwvQaF1IUAZP
+	 0RvUQw7Z+9Yhw==
+Date: Wed, 24 Apr 2024 10:01:56 +0900
+From: Mark Brown <broonie@kernel.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Vaishnav Achath <vaishnav.a@ti.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Rob Herring <robh@kernel.org>, linux-spi@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Gregory CLEMENT <gregory.clement@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+	Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Subject: Re: (subset) [PATCH v3 0/9] spi: cadence-qspi: add Mobileye EyeQ5
+ support
+Message-ID: <ZihaBGwVRpI9hV0B@finisterre.sirena.org.uk>
+References: <20240410-cdns-qspi-mbly-v3-0-7b7053449cf7@bootlin.com>
+ <171283699002.32012.7629247540689477794.b4-ty@kernel.org>
+ <D0QT350IJHFH.36EXE1UT9QM10@bootlin.com>
+ <ZidAefc0Ejrklopf@finisterre.sirena.org.uk>
+ <D0RF1AKWAEAE.44N64GHMV2ZY@bootlin.com>
+ <3f891794-0083-4245-bad7-518b1c48bb7c@linaro.org>
+ <D0RIXN4JG6ZA.4W4HN68M9U6I@bootlin.com>
+ <20240423-epidemic-schedule-6fa9869b3e87@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5NS8qMoZHyi2Ue3W"
+Content-Disposition: inline
+In-Reply-To: <20240423-epidemic-schedule-6fa9869b3e87@spud>
+X-Cookie: TANSTAAFL
 
-Commit 8996f93fc388 ("cgroup/cpuset: Statically initialize more
-members of top_cpuset") uses an incorrect "<" relational operator for
-the CS_SCHED_LOAD_BALANCE bit when initializing the top_cpuset. This
-results in load_balancing turned off by default in the top cpuset which
-is bad for performance.
 
-Fix this by using the BIT() helper macro to set the desired top_cpuset
-flags and avoid similar mistake from being made in the future.
+--5NS8qMoZHyi2Ue3W
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 8996f93fc388 ("cgroup/cpuset: Statically initialize more members of top_cpuset")
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/cgroup/cpuset.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Tue, Apr 23, 2024 at 06:23:16PM +0100, Conor Dooley wrote:
+> On Tue, Apr 23, 2024 at 03:08:05PM +0200, Th=E9o Lebrun wrote:
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index e70008a1d86a..b0a97efa5f20 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -368,8 +368,8 @@ static inline void notify_partition_change(struct cpuset *cs, int old_prs)
- }
- 
- static struct cpuset top_cpuset = {
--	.flags = ((1 << CS_ONLINE) | (1 << CS_CPU_EXCLUSIVE) |
--		  (1 << CS_MEM_EXCLUSIVE) | (1 < CS_SCHED_LOAD_BALANCE)),
-+	.flags = BIT(CS_ONLINE) | BIT(CS_CPU_EXCLUSIVE) |
-+		 BIT(CS_MEM_EXCLUSIVE) | BIT(CS_SCHED_LOAD_BALANCE),
- 	.partition_root_state = PRS_ROOT,
- 	.relax_domain_level = -1,
- 	.remote_sibling = LIST_HEAD_INIT(top_cpuset.remote_sibling),
--- 
-2.39.3
+> > Thanks for the pointer. I've created an issue over at b4 to see what
+> > people think about this matter. Current behavior is not intuitive as a
+> > young contributor.
 
+> FWIW, given I see `having a more confident comment such as
+> "(commit not applied)".` there, having (no commit info) doesn't mean
+> that it wasn't applied always. Sometimes I've found that due to changes
+> in the patch b4 could not detect that it was applied and reported (no
+> commit info).
+
+Right, it can't prove a negative - if it can't find the patch it could
+be because it wasn't sent against current code and got changed
+sufficiently in application to cause issues.
+
+--5NS8qMoZHyi2Ue3W
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYoWgEACgkQJNaLcl1U
+h9C8nwf+M6jC46HsJsqNP1PRY9pjRMyT3AQW0H3wNNL8oUBBSvB3W2bj24C58F0u
+t+PFR0xaEVPfXCWG2GrCaBc3AE4ZhvbcDc+sjMo/HhEBt8AK8/UkVRdSClyfFAnE
+LIuSQaYoFdI+rDDkKBtpdSXRYESKR/vEokl2r1b5fW14JYz28Olnih/T6p9sn/YW
+2k/2AxFZfPRFENAb04cl7VGEdn2AJVWAL7nfmB8YgNobZ5xzaAyV+I9uDKNdSops
+5SnImX5KnHXy8sXU6HJMSgwCM+ebaK/1VAQfSESj2debilGRNychlThh5r9nZI3J
+EG+up4J2xk+r2lkix2Zzu8/eaZN2Ug==
+=l1gO
+-----END PGP SIGNATURE-----
+
+--5NS8qMoZHyi2Ue3W--
 
