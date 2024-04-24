@@ -1,109 +1,106 @@
-Return-Path: <linux-kernel+bounces-156711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C1EE8B072D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:22:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A97C78B0729
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:21:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 391CF284278
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:22:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBB751C228B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C779159581;
-	Wed, 24 Apr 2024 10:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910D5159564;
+	Wed, 24 Apr 2024 10:21:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="W5M6XgWc"
-Received: from mout.web.de (mout.web.de [212.227.17.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oGUUZMA9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A8F158211;
-	Wed, 24 Apr 2024 10:22:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9110158210
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 10:21:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713954135; cv=none; b=Eo0ug7v3m5W0Jcr2gc1BeCNYs2bJurckkUjkGH1WR51wV+pHQmKZaq4qGetd9vJ5p/ckpst6VMTSvS4B5hsU5fiIkjTUb6SJQD7vZqgW0G0hFAkQKDhagX1xgXjF1B3Nv0mO4tA7n+HUBTyG9NphheP05pjAwTKUHCfTy2ITA+E=
+	t=1713954103; cv=none; b=rAz0Y0qYKj7C7mPdG8zh466Am51J9Db+fnSG7YYxuQ75WiWCdU3M2z6QxhBzNj3YOUuA2Hf0LZGa2nngr4OrpRMRnblWootWo6GvXMGX8h5eESWl+j0DqMK+wEiWEwkasRRcDUm/S+tYZLQHC6+xHSs9PGT+bs9zDntp8TXx9vE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713954135; c=relaxed/simple;
-	bh=S+8tLFz8PqdpmPk9GLNuV9GGLXz9ZgJvD9u5g+3nVz4=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=G02ayHH+0dbX3pR5utmcKISz+gCumIZDhKoZCrRPWJew2p2FU2H5Z5g6k5IPj02yXKmdtfLShA0xRGHC/hAkxCfDYRbCa6ZNJAgfRfcLHOd5Pjqe4KGb1/Z0wHhVPRfnouSyVCzIZ3i9HZy4EAkToo8br7HMRpsZed1JvhEl68Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=W5M6XgWc; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713954088; x=1714558888; i=markus.elfring@web.de;
-	bh=S+8tLFz8PqdpmPk9GLNuV9GGLXz9ZgJvD9u5g+3nVz4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=W5M6XgWcQc6NXXpuPIsS+Oi3sjLW++hq1HDl8tUfSqkQjZ5yy3ZFhJbTqRn/zEUt
-	 cdSISmCgYgY8mJce4JIgmjPdHeqKXyPMlmSNeBrt446rqdgFvpoz7YR4IFTMk033K
-	 cx7UnhDlDawodbRD3EPM25VmmNJNArxvcJ5mVrAXZevs9xxnf4wD3VePOILWHS4ah
-	 EGVW0F0rImyKsWFzwCYZ2M0GPpZrswv1goFC3N9QtrxStelrcKjiLIS//Gn342RPX
-	 p2o+I6f7x/Vh8TzKTJu7cQ/mFigI9W+RENw7iHA8UAcTWgh2hbdGuWN+2DX1xA3J7
-	 P+2FQyWxVUG8D9CZtw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MTfol-1s7VBN2fK1-00TV25; Wed, 24
- Apr 2024 12:21:28 +0200
-Message-ID: <ba66425f-d164-4c95-a5af-4b8fc7bd93fe@web.de>
-Date: Wed, 24 Apr 2024 12:21:20 +0200
+	s=arc-20240116; t=1713954103; c=relaxed/simple;
+	bh=mHWzUjYz6696rmqvzHHtLW+jfpbBAvrrZwJo47hyK5M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fELkSGFXLSBOnir9zWtTgv8CrkajyucaIItIEk/RlXJSGdNJgKJp11WK9qvuBX7bnksfs6TB1A36bINxERlEADk9+n+MzadeitY6rdvxwefiw2IcKbNKF/BCki5mSYQC6Mi9o7TCic3KTenwK4LOMf40DsFI1i3oNCRssNOf8Kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oGUUZMA9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80471C113CE;
+	Wed, 24 Apr 2024 10:21:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713954103;
+	bh=mHWzUjYz6696rmqvzHHtLW+jfpbBAvrrZwJo47hyK5M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oGUUZMA9azO4ibiF6QemdmxTWinYwIrIJrEKjAog5K5qMVwXhM6aV4SHv7jbDK5AW
+	 Xy5G1tSdXySiL0mngzzT7M0pGxxBGxwC21WutXxwkUpS1XsL6gfLFSJo0Gx7DmYfln
+	 8SO6clR9pNJvmdE5RUP1OwznudQfeWwKR0EYDfu5xDq0wIY/E3gLoHbWsCjsl/9eSV
+	 Z7WuLr7RzIz7Ec9x4zo/1kVr9pjejlIrUXgHyvB1rSLLD/9AicK6ZO5zJd0ULXLHa+
+	 F+8Y46swU6Dye3kMquQmdLl0YeXvA997hyEhxRHcC53v26fA5HkWgsva/boTnngfkn
+	 +ES8novzQFB+Q==
+Date: Wed, 24 Apr 2024 11:21:39 +0100
+From: Conor Dooley <conor@kernel.org>
+To: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Ben Dooks <ben.dooks@codethink.co.uk>,
+	David Laight <David.Laight@aculab.com>,
+	Charlie Jenkins <charlie@rivosinc.com>
+Subject: Re: [PATCH v2] riscv: misaligned: remove CONFIG_RISCV_M_MODE
+ specific code
+Message-ID: <20240424-sampling-autopilot-313efe9aa9aa@spud>
+References: <20240206154104.896809-1-cleger@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Kunwu Chan <chentao@kylinos.cn>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman
- <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Yonghong Song <yonghong.song@linux.dev>
-Cc: LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <kunwu.chan@hotmail.com>
-References: <20240424020444.2375773-3-chentao@kylinos.cn>
-Subject: Re: [PATCH bpf-next 2/4] selftests/bpf/sockopt: Add a null pointer
- check for the run_test
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240424020444.2375773-3-chentao@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="oRqeOvL+VdCc0NJF"
+Content-Disposition: inline
+In-Reply-To: <20240206154104.896809-1-cleger@rivosinc.com>
+
+
+--oRqeOvL+VdCc0NJF
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:KC6bNGqm6X3itQnerJETpmr4GAAO8pJRrAeWhMYeh8rhXZtT7ln
- gEOJqQMgnHXenqg22lUjHfm6UKnKN7DpfcDp2WkY+arEQ1GxXKQ3GCyblAhvv8/c3yNS3lI
- 0+TMfcMXcfYSxoxWmlUE8IW1DBAiAzqt/kHoPT8yG+OvoFBqBNMzAwikWUrRpkkUDN+SLO0
- /hLsQV33Y07Fcj0Qr6ucg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:hJUp4csJDOQ=;KIkK5uVgFabHMkVvLjvlayCilyp
- Zzdkeze4299HSKaYXMVNIoFgQPKwroFjH0BAh+0BsKnkbKTtDwXpDA1sdmvbUgu7hk9buvu1C
- DX92oe3A8dFwQbpzKv4sjMdLX/qV+q5O2ra8+uuIGH+L61BU1Qyrw5qHseO0JdngndFKCPuh5
- OmztHZSG1XjEYFfPuoSZl/AtYyZ8+K+x1wAeeXjKkTcxdXoph97EdYQYCMZwVtS4kastsiUqn
- KgTcd06RdHLhmaNZH9JOk/AGZ1/79Mm5Ra1jawJqV4GeU08Y9covCfHulHElpJBNjVoOBOdIZ
- Ro4bbq0ytbcINtFO2/Xx3QM18JxBqJFxu21/MYk55kfVOY2rT4M11jHhJtYzZu0ERMP4AjMJE
- 6w7vn+jAVbAKe8vBsYLQXRpBLUt9lJ5RT8czoRKgff9y90IoQmJcOHz0qokJ4gr8HkGdFUrjX
- sNgM4Q7yycl1b23okDV2IWU9YM8+XkkgLjtGwQqqadAC/zvuHnIFn2+G93QmtleTwOU8/a3bu
- 73GIu4fu8W6NwzZwLQBVFcDpLKo6eIv/oUAhXTpEAuV6Vj7iQzrxyjXIKetbWSQVtoKXCQVPo
- Te6uDYfY08CNqLzflLuCjnGKrXEoCM5JGGCwYsJkPT4N0hgk9iFGbpLHgkmM+7cCQktOSggit
- Kgw0Dtj6PscxaF4GraezkgRc+39Pk7Mw6nFyRgPUNKpPdmQFM5KErjtn5IDpMVKMCgHcTEI9T
- xS2H3clKTtPcoAD+9QYs82KcJKeQ8/f5wDpT+Zu5WdyoQqqojzuUkuH1RF7DualhA5nLdIcgc
- IV+MizNFTlkZfvTlw+wC+1gfAlgukK/m0wCJ6QwIbFyV0=
 
-=E2=80=A6
-> This patch will add the malloc failure checking
-=E2=80=A6
+On Tue, Feb 06, 2024 at 04:40:59PM +0100, Cl=E9ment L=E9ger wrote:
+> While reworking code to fix sparse errors, it appears that the
+> RISCV_M_MODE specific could actually be removed and use the one for
+> normal mode. Even though RISCV_M_MODE can do direct user memory access,
+> using the user uaccess helpers is also going to work. Since there is no
+> need anymore for specific accessors (load_u8()/store_u8()), we can
+> directly use memcpy()/copy_{to/from}_user() and get rid of the copy
+> loop entirely. __read_insn() is also fixed to use an unsigned long
+> instead of a pointer which was cast in __user address space. The
+> insn_addr parameter is now cast from unsigned lnog to the correct
+> address space directly.
+>=20
+> Signed-off-by: Cl=E9ment L=E9ger <cleger@rivosinc.com>
 
-* Please use a corresponding imperative wording for the change description=
-.
+Removing some m-mode only code always feels like a win to me, given how
+little testing and attention it usually gets.
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-* Would you like to add the tag =E2=80=9CFixes=E2=80=9D accordingly?
+Cheers,
+Conor.
 
+--oRqeOvL+VdCc0NJF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Regards,
-Markus
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZijdMwAKCRB4tDGHoIJi
+0obhAP9G8BENAnUK/4kZ8hmIz9sbPYs+/H9oy+evduj/1FIkbwEAwglg5QsZanZN
+2N+UjmpnEvexe+uJYsAmjiRBxr6f/wE=
+=esEe
+-----END PGP SIGNATURE-----
+
+--oRqeOvL+VdCc0NJF--
 
