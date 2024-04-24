@@ -1,129 +1,122 @@
-Return-Path: <linux-kernel+bounces-156268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 392EC8B008B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:29:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14F9F8B008E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:30:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B9531C22F60
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:29:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46F321C22E97
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:30:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F13C13DB99;
-	Wed, 24 Apr 2024 04:29:46 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01DED143882;
+	Wed, 24 Apr 2024 04:29:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ghP3DquY"
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 119F08F47
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 04:29:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1960A142E69;
+	Wed, 24 Apr 2024 04:29:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713932985; cv=none; b=LtkquVRY8ZMWK4OORbZ9NNStUXflL1s2VwLciQSTQ7yLPDAzw/OE2OI8f1vRhE7O6LRL/It29bBXndgX0XJKLTPfNGJNUpS2iLqoT29MVOYb2rqwTqAr+MSIc6GIghtwkaiSGNqV7LDxhw81J/hygWOHmYrRskJWOwAVVGeUEXQ=
+	t=1713932991; cv=none; b=dgVvKymaJMR8hfYDfn/YUPH1elI7FjqkPpPmMdQJtZEdoTvCWnwgVuWDwfbBUHi1sB6Z4itPGGx41V2cmyVR7o5nZXogib0BNYwmSllaWvXW7LTn9/Afbo9Q760gNAtJMh0SJ6XJSdS02fxel0GarV9sMPio/u1SbDvmT7ychXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713932985; c=relaxed/simple;
-	bh=q5W9H19vXmzx0UW0GfZKEuwH98Exrq5h+lk0uURqxuw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=E6pa8Ukoc2tfjxKgyes55BR7SanRsa+zcTEu0vWbwpendzyuf30MaJA/zAs2fgDyb/ZzUeLMPHXtXeHqDiblpuSGZ31OIuNk3zonWhDJmHb9tP7gjW/KxrH8sjJvF/Nn0OmX9JjvfbVJkPcjrR0jA9kWfcjtvt92SiNCj1nNWKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VPQsb1KZTzXlLL;
-	Wed, 24 Apr 2024 12:26:11 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3D04118007D;
-	Wed, 24 Apr 2024 12:29:40 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 24 Apr 2024 12:29:39 +0800
-Message-ID: <0145f5db-1adf-46d1-1a2e-41230ab1e462@huawei.com>
-Date: Wed, 24 Apr 2024 12:29:25 +0800
+	s=arc-20240116; t=1713932991; c=relaxed/simple;
+	bh=/CE1ga0bQu85DlhG1yON8BpABcc2bBmdR5TCzDeQvFw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NSY8+gjLc2Qg/FTwjr1dvh0wB1TLVuoh9/XkrhWFoj/dktkvGgAmiCwz4Z4Q4zGtb5dL2yw8YYZZQfOigF77Et9xk7INrkwMJqD6IIq2eLO8yJJJ4opfV946gxJ7jIRbHJ2KkDs+1y/8aCpggpPfMTzyJN/FOH8ZytrXuY9iKlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ghP3DquY; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713932986; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=IM9801pvB5uZHmd1rEJHc3tA7W/DHFfufzGQLjxpri4=;
+	b=ghP3DquYWy/lKk3CFOb5B9MNGC/zFnrWcvDWCiNSEyLAiGYj3CLNcnIrWsjwOzQgs+LMJQzTaLHTyPYw6+XEn3R+QafhmyM2+GzdM9eg7hA/RwcWCmo3VilBgQXf7j0BrPg8sz7tBu2EK16SOeKSQ3CfvGEHV5pAfTWI7W/n4mw=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067109;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W5B7uD2_1713932984;
+Received: from 30.97.48.214(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W5B7uD2_1713932984)
+          by smtp.aliyun-inc.com;
+          Wed, 24 Apr 2024 12:29:45 +0800
+Message-ID: <de9d403c-c4ed-46c5-a572-18dc48bbd204@linux.alibaba.com>
+Date: Wed, 24 Apr 2024 12:29:44 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [RFC PATCH v2 0/2] mm: convert mm's rss stats to use atomic mode
-Content-Language: en-US
-To: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-CC: <akpm@linux-foundation.org>, <dennisszhou@gmail.com>,
-	<shakeelb@google.com>, <jack@suse.cz>, <surenb@google.com>,
-	<kent.overstreet@linux.dev>, <mhocko@suse.cz>, <vbabka@suse.cz>,
-	<yuzhao@google.com>, <yu.ma@intel.com>, <wangkefeng.wang@huawei.com>,
-	<sunnanyong@huawei.com>
-References: <20240418142008.2775308-1-zhangpeng362@huawei.com>
-From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
-In-Reply-To: <20240418142008.2775308-1-zhangpeng362@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/5] cachefiles: add missing lock protection when polling
+To: libaokun@huaweicloud.com, netfs@lists.linux.dev
+Cc: dhowells@redhat.com, jlayton@kernel.org, zhujia.zj@bytedance.com,
+ jefflexu@linux.alibaba.com, linux-cachefs@redhat.com,
+ linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Joseph Qi <joseph.qi@linux.alibaba.com>,
+ Baokun Li <libaokun1@huawei.com>
+References: <20240424033409.2735257-1-libaokun@huaweicloud.com>
+ <20240424033409.2735257-6-libaokun@huaweicloud.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <20240424033409.2735257-6-libaokun@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600020.china.huawei.com (7.193.23.147)
 
-On 2024/4/18 22:20, Peng Zhang wrote:
+Hi Baokun,
 
-Any suggestions or opinions are welcome. Could someone please review
-this patch series?
-Thanks!
+On 2024/4/24 11:34, libaokun@huaweicloud.com wrote:
+> From: Jingbo Xu <jefflexu@linux.alibaba.com>
+> 
+> Add missing lock protection in poll routine when iterating xarray,
+> otherwise:
+> 
+> Even with RCU read lock held, only the slot of the radix tree is
+> ensured to be pinned there, while the data structure (e.g. struct
+> cachefiles_req) stored in the slot has no such guarantee.  The poll
+> routine will iterate the radix tree and dereference cachefiles_req
+> accordingly.  Thus RCU read lock is not adequate in this case and
+> spinlock is needed here.
+> 
+> Fixes: b817e22b2e91 ("cachefiles: narrow the scope of triggering EPOLLIN events in ondemand mode")
+> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+> Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+> Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-> From: ZhangPeng <zhangpeng362@huawei.com>
->
-> Since commit f1a7941243c1 ("mm: convert mm's rss stats into
-> percpu_counter"), the rss_stats have converted into percpu_counter,
-> which convert the error margin from (nr_threads * 64) to approximately
-> (nr_cpus ^ 2). However, the new percpu allocation in mm_init() causes a
-> performance regression on fork/exec/shell. Even after commit 14ef95be6f55
-> ("kernel/fork: group allocation/free of per-cpu counters for mm struct"),
-> the performance of fork/exec/shell is still poor compared to previous
-> kernel versions.
->
-> To mitigate performance regression, we delay the allocation of percpu
-> memory for rss_stats. Therefore, we convert mm's rss stats to use
-> percpu_counter atomic mode. For single-thread processes, rss_stat is in
-> atomic mode, which reduces the memory consumption and performance
-> regression caused by using percpu. For multiple-thread processes,
-> rss_stat is switched to the percpu mode to reduce the error margin.
-> We convert rss_stats from atomic mode to percpu mode only when the
-> second thread is created.
->
-> After lmbench test, we can get 2% ~ 4% performance improvement
-> for lmbench fork_proc/exec_proc/shell_proc and 6.7% performance
-> improvement for lmbench page_fault (before batch mode[1]).
->
-> The test results are as follows:
->               base           base+revert        base+this patch
->
-> fork_proc    416.3ms        400.0ms  (3.9%)    398.6ms  (4.2%)
-> exec_proc    2095.9ms       2061.1ms (1.7%)    2047.7ms (2.3%)
-> shell_proc   3028.2ms       2954.7ms (2.4%)    2961.2ms (2.2%)
-> page_fault   0.3603ms       0.3358ms (6.8%)    0.3361ms (6.7%)
->
-> [1] https://lore.kernel.org/all/20240412064751.119015-1-wangkefeng.wang@huawei.com/
->
-> ChangeLog:
-> v2->v1:
-> - Convert rss_stats from atomic mode to percpu mode only when
->    the second thread is created per Jan Kara.
-> - Compared with v1, the performance data may be different due to
->    different test machines.
->
-> ZhangPeng (2):
->    percpu_counter: introduce atomic mode for percpu_counter
->    mm: convert mm's rss stats to use atomic mode
->
->   include/linux/mm.h             | 50 +++++++++++++++++++++++++++++-----
->   include/linux/percpu_counter.h | 43 +++++++++++++++++++++++++++--
->   include/trace/events/kmem.h    |  4 +--
->   kernel/fork.c                  | 18 +++++++-----
->   lib/percpu_counter.c           | 31 +++++++++++++++++++--
->   5 files changed, 125 insertions(+), 21 deletions(-)
->
--- 
-Best Regards,
-Peng
+I'm not sure why this patch didn't send upstream,
+https://gitee.com/anolis/cloud-kernel/commit/324ecaaa10fefb0e3d94b547e3170e40b90cda1f
 
+But since we're now working on upstreaming, so let's drop
+the previous in-house review tags..
+
+Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+
+Thanks,
+Gao Xiang
+
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+>   fs/cachefiles/daemon.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/cachefiles/daemon.c b/fs/cachefiles/daemon.c
+> index 6465e2574230..73ed2323282a 100644
+> --- a/fs/cachefiles/daemon.c
+> +++ b/fs/cachefiles/daemon.c
+> @@ -365,14 +365,14 @@ static __poll_t cachefiles_daemon_poll(struct file *file,
+>   
+>   	if (cachefiles_in_ondemand_mode(cache)) {
+>   		if (!xa_empty(&cache->reqs)) {
+> -			rcu_read_lock();
+> +			xas_lock(&xas);
+>   			xas_for_each_marked(&xas, req, ULONG_MAX, CACHEFILES_REQ_NEW) {
+>   				if (!cachefiles_ondemand_is_reopening_read(req)) {
+>   					mask |= EPOLLIN;
+>   					break;
+>   				}
+>   			}
+> -			rcu_read_unlock();
+> +			xas_unlock(&xas);
+>   		}
+>   	} else {
+>   		if (test_bit(CACHEFILES_STATE_CHANGED, &cache->flags))
 
