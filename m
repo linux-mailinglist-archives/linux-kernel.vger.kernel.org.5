@@ -1,114 +1,135 @@
-Return-Path: <linux-kernel+bounces-156578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B2898B04F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 586D78B051D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:56:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 450D8286088
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:52:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1595628622A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:56:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DCE0158A17;
-	Wed, 24 Apr 2024 08:52:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D179158A1A;
+	Wed, 24 Apr 2024 08:55:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qru/Sys7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XctjqQA5"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC93F157468;
-	Wed, 24 Apr 2024 08:52:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B57157468
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:55:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713948770; cv=none; b=DAhDQNfTpiRXetK1WtZqEBv4P7e5E8EXCJKRMBjdj0+OyLcyqdGR6FqQKj4fPdhMHPRRZvOJxxeJG9YDb5CYp9w1K/Oov/ZUcp7V7PcrPrEPyE/ytDI3/hlKcD4v8cIsVWwpMIebETtEBJOVE/TAxf1UIC9ASHCdeJxrd/KiYTQ=
+	t=1713948953; cv=none; b=uGavHGdv7nVPk7BALws+sNbt1oi0bwVAAuYHFN+SiT5Jh7uOZg+LsSQb77mTTwelxTV3oMWerjAWZy2Se5iJls//fRe16rW8KvEYB8xDZQ58LuqydF6cl2Npn3XbMR90LaD8O/O+9vWTsjXgsX+UiMdo2VDcLREGzy6I0oPxxtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713948770; c=relaxed/simple;
-	bh=xeFFermW9Sr98hlQ4VV5aZoZPPKK7kRslJqQSK7QTyQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=K1ShjykDW2s94P2GAW9ueVCDMd4o40bfpPjFYybYgbqso6K1F+Q/eZz8v40eOstgPRT2Di08P5o7bOE5+K48AQaeHIjniGZdqXq2FGrbrx39dVfcQ+bb2gfIkt7YUQkrQlJORpgCdB95wzVPDzxNzWlu+UmgnUEK+fpJpsGnPhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qru/Sys7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 60587C32781;
-	Wed, 24 Apr 2024 08:52:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713948770;
-	bh=xeFFermW9Sr98hlQ4VV5aZoZPPKK7kRslJqQSK7QTyQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=qru/Sys7v3vRJo1V9qwxutUZDfHsrufFdxuwkssyxwTQY7H2z59klkdktt6T5Lzyv
-	 inkPDKXP7VpPaT8sM8W46gVO2naJydK2Twrwp14kKKJAjGpHCHH6+RWE4g8VO7ySzY
-	 V03gXL/u0HQ3/Et1Wvy1Gu2T+DmWDk6Czg89yBx+g3fx2UPl2MB/P0u/aUtorfSJqk
-	 Oyh2lHdAvaNN5PcnSwo1heU+WxyAM9U66ayXO90wQzf1DUwhSi3Ds3f4vIL74FJBfV
-	 H4S7E34pqMIPxBvLoskml/csJuhmhQV6k+duCAQR7rQSUal4FqWALY/knJP+ZsfRls
-	 WG3ePO3Bmjbhg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 58305C4339F;
-	Wed, 24 Apr 2024 08:52:50 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1713948953; c=relaxed/simple;
+	bh=o9ieXt4YsstwVp8erJoixPiBUSmpe1lBbhh/3wG2GZ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ICzEB7B61A1rxNaUeHOwQDYPJCoIGEwqPPLfNV+U9XmGAPGXcKd2ATfk1CBInjsZpvZFztyGlnjlBmW3DrNmmiH0Hfr7q7y4Nh55nSebNyZdRQTSPwy6P+AAR/6p6hnL1LCJ0G9fgOA5HQAHR1wsXV/F38HOCoVYX8Ipna/+W2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XctjqQA5; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=0WNxoRpoZX+6fP6MFZJq0xwYM7fV0oJP00z3XTiuTEQ=; b=XctjqQA5AFhGRfsmnSwBTs9Pas
+	VRARhW6xFa6yVsV0UZp6CHcfjO/FN30bHmvZndoXxlp/+GCy7y2JYwRnZz566wITPW2yGkWpLto9E
+	ts8IySeHaNmXgsIbKj1hGDbODjnw5KaOaPGphviYW+2laDYS4znQIjl1yT3i36szMyXPp52+oxFhP
+	pmQsYmFLgLSU6SU9Z1t5QmyHy9dBk51QOlL2AmJzy5gMRtDNS/f19eEATu5GrvC4B7x6SsE9ZWS47
+	Fv52gYEUJzfqqCpsvQJYiw+Sa+hCi38cFPpjPTbSnpYweqEUypiQvlsI2+lI8O+V5Uex/Pe5l0bVx
+	F8uGGPbg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rzYPd-0000000EKz7-2MGF;
+	Wed, 24 Apr 2024 08:55:33 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 37D9230043E; Wed, 24 Apr 2024 10:55:33 +0200 (CEST)
+Date: Wed, 24 Apr 2024 10:55:33 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: hupu@oppo.com
+Cc: mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+	linux-kernel@vger.kernel.org, wuyun.abel@bytedance.com
+Subject: Re: [PATCH] sched/fair.c: Fix the calculation method of 'lag' to
+ ensure  that the vlag of the task after placement is the same as before.
+Message-ID: <20240424085533.GS40213@noisy.programming.kicks-ass.net>
+References: <20240423114416.64308-1-hupu@oppo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] platform/chrome: cros_ec_uart: properly fix race condition
-From: patchwork-bot+chrome-platform@kernel.org
-Message-Id: 
- <171394877035.3441.2924475068794719398.git-patchwork-notify@kernel.org>
-Date: Wed, 24 Apr 2024 08:52:50 +0000
-References: <20240410182618.169042-2-noah@noahloomans.com>
-In-Reply-To: <20240410182618.169042-2-noah@noahloomans.com>
-To: Noah Loomans <noah@noahloomans.com>
-Cc: bhanumaiya@chromium.org, bleung@chromium.org, tzungbi@kernel.org,
- groeck@chromium.org, robertzieba@google.com, chrome-platform@lists.linux.dev,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240423114416.64308-1-hupu@oppo.com>
 
-Hello:
-
-This patch was applied to chrome-platform/linux.git (for-next)
-by Tzung-Bi Shih <tzungbi@kernel.org>:
-
-On Wed, 10 Apr 2024 20:26:19 +0200 you wrote:
-> The cros_ec_uart_probe() function calls devm_serdev_device_open() before
-> it calls serdev_device_set_client_ops(). This can trigger a NULL pointer
-> dereference:
+On Tue, Apr 23, 2024 at 07:44:16PM +0800, hupu@oppo.com wrote:
+> From: hupu <hupu@oppo.com>
 > 
->     BUG: kernel NULL pointer dereference, address: 0000000000000000
->     ...
->     CPU: 5 PID: 103 Comm: kworker/u16:3 Not tainted 6.8.4-zen1-1-zen #1 4a88f2661038c2a3bb69aa70fb41a5735338823c
->     Hardware name: Google Morphius/Morphius, BIOS MrChromebox-4.22.2-1-g2a93624aebf 01/22/2024
->     Workqueue: events_unbound flush_to_ldisc
->     RIP: 0010:ttyport_receive_buf+0x3f/0xf0
->     ...
->     Call Trace:
->      <TASK>
->      ? __die+0x10f/0x120
->      ? page_fault_oops+0x171/0x4e0
->      ? srso_return_thunk+0x5/0x5f
->      ? exc_page_fault+0x7f/0x180
->      ? asm_exc_page_fault+0x26/0x30
->      ? ttyport_receive_buf+0x3f/0xf0
->      flush_to_ldisc+0x9b/0x1c0
->      process_one_work+0x17b/0x340
->      worker_thread+0x301/0x490
->      ? __pfx_worker_thread+0x10/0x10
->      kthread+0xe8/0x120
->      ? __pfx_kthread+0x10/0x10
->      ret_from_fork+0x34/0x50
->      ? __pfx_kthread+0x10/0x10
->      ret_from_fork_asm+0x1b/0x30
->      </TASK>
+> I think the 'lag' calculation here is inaccurate.
 > 
-> [...]
+> Assume that delta needs to be subtracted from v_i to ensure that the
+> vlag of task i after placement is the same as before.
 
-Here is the summary with links:
-  - platform/chrome: cros_ec_uart: properly fix race condition
-    https://git.kernel.org/chrome-platform/c/5e700b384ec1
+Why ?!? v_i is the unkown, it makes no sense to complicate things by
+adding extra unknowns.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> At this time, the
+> vlag of task i after placement should be:
+> vl'_i = V' - (v_i - delta)
 
+But but but, you can't have V' without knowing v_i.
 
+> From the above formula, we know that vl'_i should be:
+> vl'_i = (vl_i * W)/(W + w_i)
+> 
+> That is to say:
+> V' - (v_i - delta) = (vl_i * W)/(W + w_i)
+> 
+> For a newly added entity, generally set v_i to V', and the above formula
+> can be converted into:
+> V' - (V' - delta) = (vl_i * W)/(W + w_i)
+> 
+> Therefore the value of delta should be as follows, where delta is the
+> 'lag' in the code.
+> delta = (vl_i * W)/(W + w_i)
+> 
+> Signed-off-by: hupu <hupu@oppo.com>
+> ---
+>  kernel/sched/fair.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 03be0d1330a6..c5f74f753be8 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -5239,9 +5239,12 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+>  		if (curr && curr->on_rq)
+>  			load += scale_load_down(curr->load.weight);
+>  
+> -		lag *= load + scale_load_down(se->load.weight);
+> +		lag *= load;
+> +
+> +		load += scale_load_down(se->load.weight);
+>  		if (WARN_ON_ONCE(!load))
+>  			load = 1;
+> +
+>  		lag = div_s64(lag, load);
+
+You're making it:
+
+	v_i = V - (W * vl_i) / (W + w_i)
+
+In direct contradiction to the giant comment right above this that
+explains why the code is as it is.
+
+>  	}
+>  
+> -- 
+> 2.17.1
+> 
 
