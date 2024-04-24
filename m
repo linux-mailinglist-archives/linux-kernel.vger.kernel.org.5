@@ -1,218 +1,189 @@
-Return-Path: <linux-kernel+bounces-156671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F5728B069A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:56:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 677EE8B069C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:57:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60C1EB2583F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:56:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FA3128A56A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7AB31598E3;
-	Wed, 24 Apr 2024 09:55:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 348E71598FF;
+	Wed, 24 Apr 2024 09:55:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="aUCb4VaB"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2066.outbound.protection.outlook.com [40.107.212.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ldn2y5pj"
+Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07FAD1591EF;
-	Wed, 24 Apr 2024 09:55:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.66
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713952537; cv=fail; b=cfNBy/UZsOpugQszgjelAQF5W1WCGQXwE33/GuKF7g69KuNJ4JldJfmDwVysVQGkyH5ZeAd+2j5as+YrRWG28Kb8ZuvMTH46JgCOrq1JrBbafPAbvrl4A5Uzh/Pi5zmKD7F7UbWaszVnBAHoi0D3Wgf+YSK/eSIvg71c74NW2k4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713952537; c=relaxed/simple;
-	bh=zoVOGal6cgQ1bpmQI1ZNyAe2G8nNjJU5dVjlP09XpWM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=amk8r4iqWajt5UYPO3FKZ6hPUJsYwwAa+N+789ZBtkPefjBux1qFXNvbN7SbIw19yw+bSKm2IZDvrUHmEoJwixq8R6laduSffXoRM7FB8shYG21PK2uTyQx3lUX8z5IV4LhjjhVo10VHD3Lbfo5rHh3oZilfQ+IxoACBxBpVejs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=aUCb4VaB; arc=fail smtp.client-ip=40.107.212.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fUbDXDHEj7FqiokPAjGvzN8uYBwqexG5YKEgn1Nb6bYdbn5UBF0AYzxwzkxtHknQrpbGxZkFcTUlUYJ3hyXJU9TUO+Vp3YUBMB8MLAe7G9JO1a4V+9LHd0qg0QGai+bzEbJQrwxmrxrCFFo0QyTO1hMOjZKI7wDTiRAxgbUoUYL8b5guFATBIhmYhSbq3uiqKXrPPW23rIoBMeQygngT4N6ZnPmwhY66+929hIcuBanf2Sn+npqFNavr8/jEvqmRD1NvbF7Zf3yGSKbJeJcZHDZ0db8PxbR/vLI4pm+TYHUzzCmICEC1XEoa7wg/huaRON41xnmkSoZ1DqCBAFuefg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yUyOSBYA3l4OkJBb+ZbwkkErgKlejgw8t93Cq1e7cCk=;
- b=NdPMtDvPlgvt6YuFo3bsWzS97WIQhX0cy5ilV2JP537R8PAyX5oWwbGjIJ45ZtThak9gtnxOUYwE5Cbb3QRStClwBKy2QxqR+UEFG94WmFb8FlEf0s21tttsDJxGTp52uSNd9i1UQ7/ZSV6jT+GA3iJXER7fmrlIeFdkArJV7qyogQ9QlhznR4tIEb5t6he1QK3zqez/vwPnepVVscprtEFiMwdmVRe5v1lux32TstP4SpFm5uR0xwNL0mhCDNLy5q0+Fv/6yf70eDuooCta/NACCYZ0AkK6mAwz4o0l8WcP2ZHHIwThwx6JAPt5ExN1T6SwtxRxXRfG4OcdYr8Puw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yUyOSBYA3l4OkJBb+ZbwkkErgKlejgw8t93Cq1e7cCk=;
- b=aUCb4VaBSymG+yidJ53XIOeCMfWMPhKQYVQRjluNvzFxpQzlr711IYpTBTgO6zIWwCuKMc6TUo/p2n8OD5mTCIsc4LNvG/croTqYKaEfOjxLRNllCV31aLZzf+/VePS6ilicwofMVnt8xAMOYs/Eg7lVBo8Hi0zS1qkWplGLbanD8iM/e5UPw5eNCOPZOvfPNRIxIAm68BmfBCN59C2FUeZswMRDROtUVo4+RmySltKZkaTlqHv6TZbcLqP2Q8SNZa/GqA/9m4j9NtFRaQSkV17nx8aMKVe42hEPYbLxDgjLWut16fcjE5mBGN4TOpFeF8BM81EK64y0Y9oBzTLgnA==
-Received: from BL0PR05CA0023.namprd05.prod.outlook.com (2603:10b6:208:91::33)
- by SA3PR12MB7904.namprd12.prod.outlook.com (2603:10b6:806:320::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Wed, 24 Apr
- 2024 09:55:32 +0000
-Received: from BL6PEPF0001AB58.namprd02.prod.outlook.com
- (2603:10b6:208:91:cafe::e1) by BL0PR05CA0023.outlook.office365.com
- (2603:10b6:208:91::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22 via Frontend
- Transport; Wed, 24 Apr 2024 09:55:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- BL6PEPF0001AB58.mail.protection.outlook.com (10.167.241.10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7519.19 via Frontend Transport; Wed, 24 Apr 2024 09:55:31 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 24 Apr
- 2024 02:55:21 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Wed, 24 Apr 2024 02:55:20 -0700
-Received: from pshete-ubuntu.nvidia.com (10.127.8.10) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Wed, 24 Apr 2024 02:55:17 -0700
-From: Prathamesh Shete <pshete@nvidia.com>
-To: <linus.walleij@linaro.org>, <brgl@bgdev.pl>, <jonathanh@nvidia.com>,
-	<treding@nvidia.com>, <sfr@canb.auug.org.au>, <linux-gpio@vger.kernel.org>,
-	<linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <mochs@nvidia.com>, <csoto@nvidia.com>, <pshete@nvidia.com>,
-	<jamien@nvidia.com>, <smangipudi@nvidia.com>
-Subject: [PATCH v3] gpio: tegra186: Fix tegra186_gpio_is_accessible() check
-Date: Wed, 24 Apr 2024 15:25:14 +0530
-Message-ID: <20240424095514.24397-1-pshete@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CAMRc=MfJokORpEOMkOmQdzTuZxcUAcnmpdEyJWKqvT0gCpuzbg@mail.gmail.com>
-References: <CAMRc=MfJokORpEOMkOmQdzTuZxcUAcnmpdEyJWKqvT0gCpuzbg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A491598FB
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713952554; cv=none; b=fZfDrZ/F7QzAj4nEh795aoAreb3UWyiVlqFRTF6Ao4Dsd1LFHVqhD6/ND/gntWcHrCRcfnTcTxUuOnuVzHpAUahF7+xRUkj1B8QXG0wTC0fX7sEfcV9+C1XALzTIJFPgCA8TxecgEt2UXdz2T+BsEtzfKrzwMDRlBDHfVB0N7PI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713952554; c=relaxed/simple;
+	bh=gmI75FS6suiOP9ogaWAXodFk+XJnFCT0SIL9OaoUmpI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PleiNI/GGaDPSlueuZLaU5lpLFaSI4Kj4UkNVm/Pp0THAXviwhoXTHccWOjr8C2aBahSyFIgS32EjPgHBTU8DaYLfuD8tjDDtcvC/3HA3jMTEiUpVt/pRCnY0kMqGutMkU9Btv1bojmYw89/0zUSr3zUBUT1XQe/EACxZEE3b48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ldn2y5pj; arc=none smtp.client-ip=209.85.221.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-347c197a464so5028384f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 02:55:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713952551; x=1714557351; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1ynqVW3ECGmeDU6rhv1zDweO2ynf/w2KtnDZdanRG0w=;
+        b=ldn2y5pjcWxgv6cAavX+wIWBX1kLtZXBgibAdDCEENCFGNa2MM2tIfMkdB3TuyrJt1
+         ASuxgBNwhGW0cBydZ9nPEMA4KY/R1fFre1VtCXddX9+KRuC0YuIQhgaUI/KAoLGUv3OL
+         ep8uzNNOXTaYcKTFQ6EIsFkGRHv1V+RAaECJF5OPaLmOkEq3aSnezibaSH1jowAMP3SS
+         8DV3YnXitsDlQ7JeXKqFS7xJ+Byyw9TmLOqrNylhETjIIw6IY9QnhgL5yXUd5PjWAGcZ
+         XJGn+FKoEDG5VESmQ1LuAtEFub2NIb/qDOGV/XpZxLc9vHbr04MjDzdaRozKfMToh0py
+         bUmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713952551; x=1714557351;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1ynqVW3ECGmeDU6rhv1zDweO2ynf/w2KtnDZdanRG0w=;
+        b=xOl1lHQAApwW5nvRPzE9jkvFbAut9lETQ/0wkYaXhc5Ajkc85/1tZZvJymPb/NyIB5
+         qrj9aQg8JYO/UKFcFcVwAmdriF6FmNZtB4OopABODIdqe69VN4zN+rykU0yVkPLJffAf
+         m+Wx8nnz/utKhWIwp9dFnzXUuUQbKVumE6IZjpLW9SCsmEQz+bHeVZ7EO9ChrDJKqdg6
+         5zIuly5rZDLeN9VWbZc0EYZbCJBdrGJQZJRQUGBApohQnt0MLO5CQQZKyctRiFI30rKY
+         HX/celXimCMSnGzYopFgix8G9YB0LK1qS0ZNp6IJb4D5CEwG6ug+of1aAPHJZIwVZvM4
+         5qIg==
+X-Forwarded-Encrypted: i=1; AJvYcCUc7MOz4DtbLWu2xsjx4KtNJBQyQHrZRtkthZf5KDrkYfeaHRD3z+/pXXyJo9Ur6R7nyhAraZqUTMd9DCZcChxYiBlt94+ikXUgANjc
+X-Gm-Message-State: AOJu0YwF3zg0UsqNbyNx49iNOrslHwyABl7DMv24fBG5t9anlAUFDe7B
+	zKTKCNjOGCAfcbJ33/yjBepi6ccyH9qZPfzNY2X6d7PoEKiHcA6e+CVNX411P2g=
+X-Google-Smtp-Source: AGHT+IER1NTCPzuaWHubHqGos8XIu7OovuLjFb7xeldMSGmt424IGSpa3xxPOXaFqAnVbEx42dlPCw==
+X-Received: by 2002:a5d:56c6:0:b0:347:f6f8:5088 with SMTP id m6-20020a5d56c6000000b00347f6f85088mr1231675wrw.54.1713952550949;
+        Wed, 24 Apr 2024 02:55:50 -0700 (PDT)
+Received: from [192.168.0.102] ([176.61.106.227])
+        by smtp.gmail.com with ESMTPSA id d14-20020adfe88e000000b0034b86548582sm3233617wrm.102.2024.04.24.02.55.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 02:55:49 -0700 (PDT)
+Message-ID: <0ed739d8-7ef6-4b0d-bd61-62966c9a9362@linaro.org>
+Date: Wed, 24 Apr 2024 10:55:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB58:EE_|SA3PR12MB7904:EE_
-X-MS-Office365-Filtering-Correlation-Id: bfe1e682-4bb7-45b6-efd6-08dc6444ae02
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?TB0bKri1tcd3bK7nOSBl52bdp8pfCHY+OR8IoOZn+w5ZPVz34jIsKKxXKTy4?=
- =?us-ascii?Q?SqEaqgUImMDfx9Op/G+uL83KHNhqP7l9QN6KLrResMIdvCW4LRRZap50SFDr?=
- =?us-ascii?Q?s9KR9YbOi7nW2/ZqgUR+jWMo7JUVBbHNI7TNyM7/RrYV+VdbA0KzcBPV8Okk?=
- =?us-ascii?Q?nkviLmRuFwhoaiMrR5rD47G04PiWJJ/VIEgKBQ1PBhCAX0IOt9cIX9PTlmh3?=
- =?us-ascii?Q?BFNtv9RTBCwWwJdq+4CC6DWS+M9MVlw/c5J6ucjUyVWJgDc9hWDq5bUOIacS?=
- =?us-ascii?Q?n6HObP8eMwsYVCz6vorTqaN9l4xcfJ5mDaJP3Oz4frtbnYUHp6CnzBr0MV/x?=
- =?us-ascii?Q?0qR/WPL/zDBzwq5xNqjYtsP2oNgTp6vVy1PwfnRQYVuDAo/M1cYzOgMV6WUc?=
- =?us-ascii?Q?YUJkmmfmTkK32agWDzeGfcT0eh/viNFYwMou2qtmpseEt6Sxvmt1eFlO0I4a?=
- =?us-ascii?Q?SvGo3sIYYKLKffLaJK/QwO4oXxMqEOmC7TyuCGwYxh+sKk0F+KSu3/54fADj?=
- =?us-ascii?Q?YbY/3Axrn6rlpm2EbTAhWqnSukS+MXivXYt9IBhCXXh/rQ5pChWG1ejH5pF+?=
- =?us-ascii?Q?/dB6yYBC/hMCzEjC3HHPuv/OsGmimb+nDxUNIydwFqTYKfA3P6Bi6qP+blvw?=
- =?us-ascii?Q?vmFdFnquezXPfooELliaJXaYkSkvUQ347+9b7FT8qqAA1l3P8PTspoZ5Kt70?=
- =?us-ascii?Q?fsBscoXsOvruUXOQghfa95oAlTkwsml1vy77+PduidF+Rt4r16LyOqlyNRLW?=
- =?us-ascii?Q?wgcB04+TbIWheHyowqQO60KMAqd3qiC2baRqFQm4A8XTG7LXgotZD9fuWVcf?=
- =?us-ascii?Q?A6VSlhO1wI861t7PVjbjKq23lIalJ1qH6ozXImhJe4ah3NgGhbXhd/tSooCv?=
- =?us-ascii?Q?Cjc/e6Lr0elmq9r/Y7MwgpFPSQQ/ct9ZEuLkEmGXWplXWzK4WTwXZIKX2XBy?=
- =?us-ascii?Q?w7RSECo4GwgiiFwqdXk5Y6pPZDPGGH6ARTD70yU88pINEo0TxNm3Dyoz2yYJ?=
- =?us-ascii?Q?zzXcQO+JAPitDle6qmXIoU7JFhG/ZZnppFfBNmxoNxTRZ5ngE2O4ZlpVEfy9?=
- =?us-ascii?Q?BwyeVWBcL2w6g1keBtLIWW4nlQxad+j1iBrzKcOLPlcQ5UD6TZEVWsYH5+KT?=
- =?us-ascii?Q?UcAjPEJiDaULPWAvJVZsRXNPheY37pBXyuT0W+UeHhLwN3yeqo2WGviE3owi?=
- =?us-ascii?Q?ryI+H3xKLITgJ2eZZtw/OwFUEhi2lu9UZrA+yDi+tbVRNNRNNNaznsbI0hpF?=
- =?us-ascii?Q?BrJEmOBrtIe5IAEcaURZDt+RtApaRDr7u+yTuU2wsqYskNq0bnc/lVqFowVD?=
- =?us-ascii?Q?JJ9/M1jnI9USfAZ34O6ddWzEeENO3BjWkhD6quNsT5nJJjNVH5icaEFryxHz?=
- =?us-ascii?Q?Uy9mRpNAoIHfvshC1ouTiEldhXJ5?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(82310400014)(376005)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 09:55:31.7718
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bfe1e682-4bb7-45b6-efd6-08dc6444ae02
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF0001AB58.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7904
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V5 RESEND 3/5] clk: qcom: gdsc: Add set and get hwmode
+ callbacks to switch GDSC mode
+To: Jagadeesh Kona <quic_jkona@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>, "Rafael J . Wysocki"
+ <rafael@kernel.org>, Kevin Hilman <khilman@kernel.org>,
+ Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Andy Gross <agross@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Abel Vesa <abel.vesa@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-pm@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>,
+ Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
+ Imran Shaik <quic_imrashai@quicinc.com>,
+ Ajit Pandey <quic_ajipan@quicinc.com>
+References: <20240413152013.22307-1-quic_jkona@quicinc.com>
+ <20240413152013.22307-4-quic_jkona@quicinc.com>
+ <e70e0379-cab0-4586-825e-ade6775ca67c@linaro.org>
+ <e419c6aa-6bb2-48ff-bacb-17a2e85856ea@quicinc.com>
+Content-Language: en-US
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <e419c6aa-6bb2-48ff-bacb-17a2e85856ea@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-The controller has several register bits describing access control
-information for a given GPIO pin. When SCR_SEC_[R|W]EN is unset, it
-means we have full read/write access to all the registers for given GPIO
-pin. When SCR_SEC[R|W]EN is set, it means we need to further check the
-accompanying SCR_SEC_G1[R|W] bit to determine read/write access to all
-the registers for given GPIO pin.
+On 24/04/2024 10:47, Jagadeesh Kona wrote:
+> 
+> 
+> On 4/24/2024 5:18 AM, Bryan O'Donoghue wrote:
+>> On 13/04/2024 16:20, Jagadeesh Kona wrote:
+>>> Some GDSC client drivers require the GDSC mode to be switched 
+>>> dynamically
+>>> to HW mode at runtime to gain the power benefits. Typically such client
+>>> drivers require the GDSC to be brought up in SW mode initially to enable
+>>> the required dependent clocks and configure the hardware to proper 
+>>> state.
+>>> Once initial hardware set up is done, they switch the GDSC to HW mode to
+>>> save power. At the end of usecase, they switch the GDSC back to SW mode
+>>> and disable the GDSC.
+>>>
+>>> Introduce HW_CTRL_TRIGGER flag to register the set_hwmode_dev and
+>>> get_hwmode_dev callbacks for GDSC's whose respective client drivers
+>>> require the GDSC mode to be switched dynamically at runtime using
+>>> dev_pm_genpd_set_hwmode() API.
+>>>
+>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+>>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+>>> ---
+>>>   drivers/clk/qcom/gdsc.c | 37 +++++++++++++++++++++++++++++++++++++
+>>>   drivers/clk/qcom/gdsc.h |  1 +
+>>>   2 files changed, 38 insertions(+)
+>>>
+>>> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+>>> index df9618ab7eea..c5f6be8181d8 100644
+>>> --- a/drivers/clk/qcom/gdsc.c
+>>> +++ b/drivers/clk/qcom/gdsc.c
+>>> @@ -363,6 +363,39 @@ static int gdsc_disable(struct generic_pm_domain 
+>>> *domain)
+>>>       return 0;
+>>>   }
+>>> +static int gdsc_set_hwmode(struct generic_pm_domain *domain, struct 
+>>> device *dev, bool mode)
+>>> +{
+>>> +    struct gdsc *sc = domain_to_gdsc(domain);
+>>> +    int ret;
+>>> +
+>>> +    ret = gdsc_hwctrl(sc, mode);
+>>> +    if (ret)
+>>> +        return ret;
+>>> +
+>>> +    /* Wait for 1usec for mode transition to properly complete */
+>>> +    udelay(1);
+>>
+>> A delay I suspect you don't need - if the HW spec says "takes 1 usec 
+>> for this to take effect" that's 1 usec from io write completion from 
+>> APSS to another system agent.
+>>
+>> You poll for the state transition down below anyway.
+>>
+>> I'd be pretty certain that's a redundant delay.
+>>
+> 
+> Thanks Bryan for your review!
+> 
+> This 1usec delay is needed every time GDSC is moved in and out of HW 
+> control mode and the reason for same is explained in one of the older 
+> gdsc driver change at below link
+> 
+> https://lore.kernel.org/all/1484027679-18397-1-git-send-email-rnayak@codeaurora.org/
+> 
 
-This check was previously declaring that a GPIO pin was accessible
-only if either of the following conditions were met:
+Right.
 
-  - SCR_SEC_REN + SCR_SEC_WEN both set
+If that is your precedent then you seem to be missing the mb(); between
 
-    or
+gdsc_hwctrl();
 
-  - SCR_SEC_REN + SCR_SEC_WEN both set and
-    SCR_SEC_G1R + SCR_SEC_G1W both set
+/* mb(); here */
 
-Update the check to properly handle cases where only one of
-SCR_SEC_REN or SCR_SEC_WEN is set.
+and this
 
-Fixes: b2b56a163230 ("gpio: tegra186: Check GPIO pin permission before access.")
-Signed-off-by: Prathamesh Shete <pshete@nvidia.com>
-Acked-by: Thierry Reding <treding@nvidia.com>
+udelay(1);
+
 ---
-V2 -> V3: Retain Thierry's 'Acked-by' tag from V1 and add change log.
-V1 -> V2: Fix kernel test bot warning.
-
- drivers/gpio/gpio-tegra186.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/gpio/gpio-tegra186.c b/drivers/gpio/gpio-tegra186.c
-index d87dd06db40d..9130c691a2dd 100644
---- a/drivers/gpio/gpio-tegra186.c
-+++ b/drivers/gpio/gpio-tegra186.c
-@@ -36,12 +36,6 @@
- #define  TEGRA186_GPIO_SCR_SEC_REN		BIT(27)
- #define  TEGRA186_GPIO_SCR_SEC_G1W		BIT(9)
- #define  TEGRA186_GPIO_SCR_SEC_G1R		BIT(1)
--#define  TEGRA186_GPIO_FULL_ACCESS		(TEGRA186_GPIO_SCR_SEC_WEN | \
--						 TEGRA186_GPIO_SCR_SEC_REN | \
--						 TEGRA186_GPIO_SCR_SEC_G1R | \
--						 TEGRA186_GPIO_SCR_SEC_G1W)
--#define  TEGRA186_GPIO_SCR_SEC_ENABLE		(TEGRA186_GPIO_SCR_SEC_WEN | \
--						 TEGRA186_GPIO_SCR_SEC_REN)
- 
- /* control registers */
- #define TEGRA186_GPIO_ENABLE_CONFIG 0x00
-@@ -177,10 +171,18 @@ static inline bool tegra186_gpio_is_accessible(struct tegra_gpio *gpio, unsigned
- 
- 	value = __raw_readl(secure + TEGRA186_GPIO_SCR);
- 
--	if ((value & TEGRA186_GPIO_SCR_SEC_ENABLE) == 0)
--		return true;
-+	/*
-+	 * When SCR_SEC_[R|W]EN is unset, then we have full read/write access to all the
-+	 * registers for given GPIO pin.
-+	 * When SCR_SEC[R|W]EN is set, then there is need to further check the accompanying
-+	 * SCR_SEC_G1[R|W] bit to determine read/write access to all the registers for given
-+	 * GPIO pin.
-+	 */
- 
--	if ((value & TEGRA186_GPIO_FULL_ACCESS) == TEGRA186_GPIO_FULL_ACCESS)
-+	if (((value & TEGRA186_GPIO_SCR_SEC_REN) == 0 ||
-+	     ((value & TEGRA186_GPIO_SCR_SEC_REN) && (value & TEGRA186_GPIO_SCR_SEC_G1R))) &&
-+	     ((value & TEGRA186_GPIO_SCR_SEC_WEN) == 0 ||
-+	     ((value & TEGRA186_GPIO_SCR_SEC_WEN) && (value & TEGRA186_GPIO_SCR_SEC_G1W))))
- 		return true;
- 
- 	return false;
--- 
-2.17.1
-
+bod
 
