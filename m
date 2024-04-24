@@ -1,161 +1,129 @@
-Return-Path: <linux-kernel+bounces-156266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156268-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DCE88B0088
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:28:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 392EC8B008B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:29:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28D401F23D40
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:28:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B9531C22F60
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:29:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838891420A8;
-	Wed, 24 Apr 2024 04:28:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IPEU6vip"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F13C13DB99;
+	Wed, 24 Apr 2024 04:29:46 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E18913D8AA
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 04:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 119F08F47
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 04:29:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713932901; cv=none; b=KWNvG7YAxBDED1oiE5zc6hcxN8gXaOjzJFEraiMmxkvk8k/zQfxEkL6WUZCy9NSqnuxct4pMbDjq//Pb4426Xg/TpOvEBnPiOFCs8FGutYTWemTPEdtfRarLynjY/I44FmM+6m3Xr8gytpt940eK/LDuVeE/QRidmRC6apXh8dk=
+	t=1713932985; cv=none; b=LtkquVRY8ZMWK4OORbZ9NNStUXflL1s2VwLciQSTQ7yLPDAzw/OE2OI8f1vRhE7O6LRL/It29bBXndgX0XJKLTPfNGJNUpS2iLqoT29MVOYb2rqwTqAr+MSIc6GIghtwkaiSGNqV7LDxhw81J/hygWOHmYrRskJWOwAVVGeUEXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713932901; c=relaxed/simple;
-	bh=K2uPx8Z39cowyd3CKs/kv0/GPxaVvKugF3Okmkjpnuw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OxKcZiCv5yzFd9Y2NPy0VHY8DY1LrFmX57mwE6IjUlJTnVL0FISl7d3W/GVwojjyNjIbehhinJnHBeAsSAfLkHKQMwPxz7WzLmxAgwGC/5rZ6M9B2JYWpYdvSlYxg/DVnKX0NQo0+GGtnN2EiKu5tUHrE+K6ETTBcBCZwIs9oWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IPEU6vip; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a5883518135so144212266b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 21:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713932898; x=1714537698; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=R8Fs3EjOdj6derBzQe4RlSevlHJghueWR0mNYiVQCo8=;
-        b=IPEU6vipT+Xa7En49p+JNgPICicS70PpWZhTcU9qkqOUcGn6dXEImtS3aQ/R+/URtY
-         soActiicKwfRym0BFPKxltMPobDnunEP0RTFrC8ljNkvXULxUS0PErXtRMTfybdF9rqF
-         pnGxPpk2yUm7IDcxI0s0lIBRc5zQG3hgDvZJRuunDNByqpJ1oOKdq+VrPmgfRLC1qGw5
-         OhdsQTlaqIbwRyhT0jQi8V+WbGYPBIoy9sShYpCpRmLsX5qk32rylRjCqJWdpJiXep3C
-         yjf1LBEUrGFs9Yb6RKryi02mtkg8vPv0CA8wZ2wTpYTGMOLivV6X0aXvd8etoBvb3JR1
-         kvOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713932898; x=1714537698;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R8Fs3EjOdj6derBzQe4RlSevlHJghueWR0mNYiVQCo8=;
-        b=Ke9oaq5e3lphG4Y7VFoOk9fSWJZUfkEd/ktyjDzwofL7pDCSV4r8x1/yW5Xt5omCZX
-         uzJkOA5D1Oza8xlliygnrql2yN17fH5cO6QHM5ch+QcIzrMHZLuMC8edfu1CvhrfhxBc
-         gsbGlvPTqf6ucp5r5hIhebNOOYhTEhQLNw22XNocbFucBTa2uUbx4vsd+XfgHaEbWea8
-         TcTe63ffT92e6SkoKUoiIqwW+xGmK0oe1uqUxc9ILwuw2JB1WUXiRnVG7RAVVohql4hB
-         Qwv4qxI9PBG6w2hZ+fbXK6Vtw6/ZR38Qnh5c9DqC9a5q660rVy+QjZx8QLUYmuQWUFee
-         vqhw==
-X-Forwarded-Encrypted: i=1; AJvYcCULhRjvSOi0/L2wY0K//2Lh31aSKLzq0w7Ef3Pgz3+n6fmGuqfEDkplV0WWqYBv2EbY0C8gkB5i5cotdFsfIGz0IYj/Omo98JcPyTNP
-X-Gm-Message-State: AOJu0YwAxoaMbJk9jem4A7qdCxwH+aAJr5i2lT3DgVSQp2fA9mEi1+RC
-	2SZncmrPqsaPSCQjyrKb5sA5m/jfNlT8zmBjgzvQPvwklg42L/5Y7LmLz2Cvn6Y=
-X-Google-Smtp-Source: AGHT+IHhibC5y0u82AOKA3V0ahASy6QI1S46tkSYPwpI/AUogp7DUC0A/o5LtZczFgCVrCna43jbXg==
-X-Received: by 2002:a17:906:d206:b0:a4d:fcc9:905c with SMTP id w6-20020a170906d20600b00a4dfcc9905cmr657577ejz.20.1713932898280;
-        Tue, 23 Apr 2024 21:28:18 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id bb6-20020a1709070a0600b00a55b020a821sm3841045ejc.13.2024.04.23.21.28.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 21:28:17 -0700 (PDT)
-Message-ID: <7d08f521-bdc9-4122-a636-a0a2c5bc328b@linaro.org>
-Date: Wed, 24 Apr 2024 06:28:15 +0200
+	s=arc-20240116; t=1713932985; c=relaxed/simple;
+	bh=q5W9H19vXmzx0UW0GfZKEuwH98Exrq5h+lk0uURqxuw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=E6pa8Ukoc2tfjxKgyes55BR7SanRsa+zcTEu0vWbwpendzyuf30MaJA/zAs2fgDyb/ZzUeLMPHXtXeHqDiblpuSGZ31OIuNk3zonWhDJmHb9tP7gjW/KxrH8sjJvF/Nn0OmX9JjvfbVJkPcjrR0jA9kWfcjtvt92SiNCj1nNWKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VPQsb1KZTzXlLL;
+	Wed, 24 Apr 2024 12:26:11 +0800 (CST)
+Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3D04118007D;
+	Wed, 24 Apr 2024 12:29:40 +0800 (CST)
+Received: from [10.174.179.160] (10.174.179.160) by
+ kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 24 Apr 2024 12:29:39 +0800
+Message-ID: <0145f5db-1adf-46d1-1a2e-41230ab1e462@huawei.com>
+Date: Wed, 24 Apr 2024 12:29:25 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/6] dt-bindings: iio: light: stk33xx: add vdd and leda
- regulators
-To: Aren Moynihan <aren@peacevolution.org>,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Ondrej Jirman <megi@xff.cz>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- linux-iio@vger.kernel.org, phone-devel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- Willow Barraco <contact@willowbarraco.fr>
-References: <20240423223309.1468198-2-aren@peacevolution.org>
- <20240423223309.1468198-3-aren@peacevolution.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [RFC PATCH v2 0/2] mm: convert mm's rss stats to use atomic mode
 Content-Language: en-US
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240423223309.1468198-3-aren@peacevolution.org>
-Content-Type: text/plain; charset=UTF-8
+To: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+CC: <akpm@linux-foundation.org>, <dennisszhou@gmail.com>,
+	<shakeelb@google.com>, <jack@suse.cz>, <surenb@google.com>,
+	<kent.overstreet@linux.dev>, <mhocko@suse.cz>, <vbabka@suse.cz>,
+	<yuzhao@google.com>, <yu.ma@intel.com>, <wangkefeng.wang@huawei.com>,
+	<sunnanyong@huawei.com>
+References: <20240418142008.2775308-1-zhangpeng362@huawei.com>
+From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
+In-Reply-To: <20240418142008.2775308-1-zhangpeng362@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600020.china.huawei.com (7.193.23.147)
 
-On 24/04/2024 00:33, Aren Moynihan wrote:
-> stk3310 and stk3311 are typically connected to power supplies for the
-> chip (vdd) and the infrared LED (leda). Add properties so we can power
-> these up / down appropriately.
-> 
-> Signed-off-by: Aren Moynihan <aren@peacevolution.org>
-> ---
-> 
+On 2024/4/18 22:20, Peng Zhang wrote:
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Any suggestions or opinions are welcome. Could someone please review
+this patch series?
+Thanks!
 
-Best regards,
-Krzysztof
+> From: ZhangPeng <zhangpeng362@huawei.com>
+>
+> Since commit f1a7941243c1 ("mm: convert mm's rss stats into
+> percpu_counter"), the rss_stats have converted into percpu_counter,
+> which convert the error margin from (nr_threads * 64) to approximately
+> (nr_cpus ^ 2). However, the new percpu allocation in mm_init() causes a
+> performance regression on fork/exec/shell. Even after commit 14ef95be6f55
+> ("kernel/fork: group allocation/free of per-cpu counters for mm struct"),
+> the performance of fork/exec/shell is still poor compared to previous
+> kernel versions.
+>
+> To mitigate performance regression, we delay the allocation of percpu
+> memory for rss_stats. Therefore, we convert mm's rss stats to use
+> percpu_counter atomic mode. For single-thread processes, rss_stat is in
+> atomic mode, which reduces the memory consumption and performance
+> regression caused by using percpu. For multiple-thread processes,
+> rss_stat is switched to the percpu mode to reduce the error margin.
+> We convert rss_stats from atomic mode to percpu mode only when the
+> second thread is created.
+>
+> After lmbench test, we can get 2% ~ 4% performance improvement
+> for lmbench fork_proc/exec_proc/shell_proc and 6.7% performance
+> improvement for lmbench page_fault (before batch mode[1]).
+>
+> The test results are as follows:
+>               base           base+revert        base+this patch
+>
+> fork_proc    416.3ms        400.0ms  (3.9%)    398.6ms  (4.2%)
+> exec_proc    2095.9ms       2061.1ms (1.7%)    2047.7ms (2.3%)
+> shell_proc   3028.2ms       2954.7ms (2.4%)    2961.2ms (2.2%)
+> page_fault   0.3603ms       0.3358ms (6.8%)    0.3361ms (6.7%)
+>
+> [1] https://lore.kernel.org/all/20240412064751.119015-1-wangkefeng.wang@huawei.com/
+>
+> ChangeLog:
+> v2->v1:
+> - Convert rss_stats from atomic mode to percpu mode only when
+>    the second thread is created per Jan Kara.
+> - Compared with v1, the performance data may be different due to
+>    different test machines.
+>
+> ZhangPeng (2):
+>    percpu_counter: introduce atomic mode for percpu_counter
+>    mm: convert mm's rss stats to use atomic mode
+>
+>   include/linux/mm.h             | 50 +++++++++++++++++++++++++++++-----
+>   include/linux/percpu_counter.h | 43 +++++++++++++++++++++++++++--
+>   include/trace/events/kmem.h    |  4 +--
+>   kernel/fork.c                  | 18 +++++++-----
+>   lib/percpu_counter.c           | 31 +++++++++++++++++++--
+>   5 files changed, 125 insertions(+), 21 deletions(-)
+>
+-- 
+Best Regards,
+Peng
 
 
