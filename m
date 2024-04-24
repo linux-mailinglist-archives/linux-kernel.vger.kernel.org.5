@@ -1,103 +1,137 @@
-Return-Path: <linux-kernel+bounces-157420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1C778B1171
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:47:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CF708B1178
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:50:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 838241F27BCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:47:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE648282978
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E3316D4E9;
-	Wed, 24 Apr 2024 17:47:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A9C16D4F8;
+	Wed, 24 Apr 2024 17:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QDmgGL6x"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="mF8Y3dzK"
+Received: from forward501a.mail.yandex.net (forward501a.mail.yandex.net [178.154.239.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB07216D4DD;
-	Wed, 24 Apr 2024 17:47:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9622616D4E2;
+	Wed, 24 Apr 2024 17:50:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713980871; cv=none; b=lyLk/PdhDr3kkvu0/VyCN85F/aa6tSKG1fwAiYwSRmidqo+j6ZFtO1CxI0dqH9WTBCP3hzHOlju5Bg0HvvvQqgk+Waq3QcO7bs/UQVGDcjkZ2MFK0yPWMTKUNhQH3MWcA9TyHuy0SLWOhpeWcRxokRKFB38RqPxE6YXBHAlbHSI=
+	t=1713981043; cv=none; b=A2aoLh9t0Bfv+/lpkoFerxUe4+dBhonwREWxSDglXqmYtaaGlXdNf7lEBsDWAeR9bA9dGyKhPcBYifsSdti54pCIPv33XZ16lBOaRyUA0FxV+sSuSFSpYUbXCF9lzdOeHiYz08Ociq3kd6P6CDY2ZgkECsa2dAV5vFUEC9aq380=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713980871; c=relaxed/simple;
-	bh=a+n74rxaOF4+DkOVqzem1w9+0wK2gMczlxpyXMAMSc4=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=DwSb5lsM0eh5OPTyX9NlarU3zDJikjKJKWn5ds3qQe35onXnWLiLyLgdE3gj4spWnh/96Bb09PW/qgkv/g8qDHSLrxvdi/dC+kocrXY98e6bmttXfFVKOtoiIOByLAEAix76gr31j24DtNwr3L7Ch5JUNdmeePOZDH6DNLY8zns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QDmgGL6x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B68F1C113CD;
-	Wed, 24 Apr 2024 17:47:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713980870;
-	bh=a+n74rxaOF4+DkOVqzem1w9+0wK2gMczlxpyXMAMSc4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QDmgGL6xi8606me5qaR5+4uSai8DhMTbeOnm3XCe7aV4lCga+EFQEs19L3ofUS3ga
-	 vHoELpWL6BPdv+faFoP8NpGx+JXmlRWWqdM8nVCLH29wuQa+knkAaZ1efDTBuBtipz
-	 yeGM2Z9vV3jI58juoQbJfd6e0AWgrkQpAqu2aeF0bTf0ZEIOOstkiRVxd3vr+Rwpwv
-	 sMRn3Mr2P88U0JN98Zn9/PGwFes6UCa4GXLOppD7MA5BhOT9QDPa1sYJ2i34OQFuZm
-	 Z+DQBrhS+8NXgPkKmsqo8QYtWg4cLy0c+/DqtsLtpPXllDC+tUiju86gZaci+5F8tP
-	 b06pL4HGFRHHg==
+	s=arc-20240116; t=1713981043; c=relaxed/simple;
+	bh=o8jKNpnbE9BafJeDbh3SGBlwwtmgAmcgcxUn8SzIL/c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UowArBdePEH3qJY+mTANqrwmostS0d3QMWUaqLpqmpHum2SpGWKZDTPWlE3eMeyGePLOuKzz/w+iL7gZqzi37NLPF91669C7vcmTS8qF8ZxSbLgrWl2Rqw00beVK2RZ3C4Y57sCqOJIFwFT+bo5yrIrvOtj4ioI6bi5Cxxazrgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=mF8Y3dzK; arc=none smtp.client-ip=178.154.239.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+Received: from mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net [IPv6:2a02:6b8:c0d:2a02:0:640:77d9:0])
+	by forward501a.mail.yandex.net (Yandex) with ESMTPS id F043C61C52;
+	Wed, 24 Apr 2024 20:50:36 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id UoPFOVO1PCg0-scmYXfpm;
+	Wed, 24 Apr 2024 20:50:32 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1713981032; bh=FsAH7dX/dutCxtwW5Qi7X0NyAfR1DP1iFwg1kpXF4So=;
+	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
+	b=mF8Y3dzKtk7GK8J2sNnlE4Ivnl6zPyjuyzrw7qLAGwIiaDFmPt3X6XMM1uGPpxVWb
+	 pJlLAzBXp4ymZ5B4NWCAkjLw/IOQ83M8d+7eTp00hwnSLVoJSFSbin2UGCbMkdAUSO
+	 Z+Jsd21zqLRQV3Y2G1EwnzJHpLVYlJpZSKIN/0X0=
+Authentication-Results: mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+Message-ID: <6b46528a-965f-410a-9e6f-9654c5e9dba2@yandex.ru>
+Date: Wed, 24 Apr 2024 20:50:30 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 24 Apr 2024 20:47:46 +0300
-Message-Id: <D0SJIC3GSSKA.3S3RTNVWC55TB@kernel.org>
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, "Bojun Zhu"
- <zhubojun.zbj@antgroup.com>
-Cc: "Huang, Kai" <kai.huang@intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "dave.hansen@linux.intel.com"
- <dave.hansen@linux.intel.com>, =?utf-8?b?5YiY5Y+MKOi9qeWxuSk=?=
- <ls123674@antgroup.com>, "Chatre, Reinette" <reinette.chatre@intel.com>
-Subject: Re: [RFC PATCH 1/1] x86/sgx: Explicitly give up the CPU in EDMM's
- ioctl() to avoid softlockup
-X-Mailer: aerc 0.17.0
-References: <20240423092550.59297-1-zhubojun.zbj@antgroup.com>
- <20240423092550.59297-2-zhubojun.zbj@antgroup.com>
- <02fe00c3b10e4476d500ad7a34024b7eae5e3c97.camel@intel.com>
- <85dfbebc-a2d5-4828-b3b9-f929cd6e30cf@antgroup.com>
- <D0S5S2NL1N5P.3Q0SM01VIZBJX@kernel.org>
- <D0SAGP6DPKXF.2EHTXI9UH0HQ9@kernel.org>
- <D428BE51-20DA-42C5-A2B0-B264D7564700@antgroup.com>
- <D0SJFJIPUE1M.36M8JVVXO89YQ@kernel.org>
-In-Reply-To: <D0SJFJIPUE1M.36M8JVVXO89YQ@kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/2] implement OA2_INHERIT_CRED flag for openat2()
+Content-Language: en-US
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
+ Eric Biederman <ebiederm@xmission.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>,
+ Jan Kara <jack@suse.cz>, Jeff Layton <jlayton@kernel.org>,
+ Chuck Lever <chuck.lever@oracle.com>, Alexander Aring
+ <alex.aring@gmail.com>, David Laight <David.Laight@aculab.com>,
+ linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+ Paolo Bonzini <pbonzini@redhat.com>,
+ =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+References: <20240424105248.189032-1-stsp2@yandex.ru>
+ <20240424-schummeln-zitieren-9821df7cbd49@brauner>
+From: stsp <stsp2@yandex.ru>
+In-Reply-To: <20240424-schummeln-zitieren-9821df7cbd49@brauner>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed Apr 24, 2024 at 8:44 PM EEST, Jarkko Sakkinen wrote:
-> On Wed Apr 24, 2024 at 2:50 PM EEST, Bojun Zhu wrote:
-> > I still have some questions:
-> >
-> > It seems that the variable "ret" is set to 0 if there is **some** EPC p=
-ages have been=20
-> > added when interrupted by signal(Supposed that sgx_encl_add_page()=20
-> > always returns successfully).
+24.04.2024 19:09, Christian Brauner пишет:
+> This smells ripe enough to serve as an attack vector in non-obvious
+> ways. And in general this has the potential to confuse the hell out
+> unsuspecting userspace.
+
+Unsuspecting user-space will simply
+not use this flag. What do you mean?
+
+
+>   They can now suddenly get sent such
+> special-sauce files
+
+There are no any special files.
+This flag helps you to open a file on
+which you currently have no perms
+to open, but had those in the past.
+
+
+>   such as this that they have no way of recognizing as
+> there's neither an FMODE_* flag nor is the OA2_* flag recorded so it's
+> not available in F_GETFL.
 >
-> Ah, ok.
+> There's not even a way to restrict that new flag because no LSM ever
+> sees it. So that behavior might break LSM assumptions as well.
 >
-> Returning zero is right thing to do because it also returns count of
-> pages successfully added. I.e. the function does not guarantee that
-> all pages are processsed but it does guarantee that the system is in
-> predictable state.
+> And it is effectively usable to steal credentials. If process A opens a
+> directory with uid/gid 0 then sends that directory fd via AF_UNIX or
+> something to process B then process B can inherit the uid/gid of process
+
+No, it doesn't inherit anything.
+The inheritance happens only for
+a duration of an open() call, helping
+open() to succeed. The creds are
+reverted when open() completed.
+
+The only theoretically possible attack
+would be to open some file you'd never
+intended to open. Also note that a
+very minimal sed of creds is overridden:
+fsuid, fsgid, groupinfo.
+
+> A by specifying OA2_* with no way for process A to prevent this - not
+> even through an LSM.
+
+If process B doesn't use that flag, it
+inherits nothing, no matter what process
+A did or passed via a socket.
+So an unaware process that doesn't
+use that flag, is completely unaffected.
+
+> The permission checking model that we have right now is already baroque.
+> I see zero reason to add more complexity for the sake of "lightweight
+> sandboxing". We have LSMs and namespaces for stuff like this.
 >
-> It could be that e.g. sgx_alloc_epc_page() calls fails.
->
-> So, it is a bit like how read system call works.
+> NAK.
 
-Good that you asked that had rethink for a while.
+I don't think it is fair to say NAK
+without actually reading the patch
+or asking its author for clarifications.
+Even though you didn't ask, I provided
+my clarifications above, as I find that
+a polite action.
 
-What I would suggest that you just put out 2nd verson out and then we
-see where it is going.
-
-For sgx_ioc_encl_add_pages() it is important to maintain exact semantics
-as we need to maintain backwards compatibility.
-
-BR, Jarkko
 
