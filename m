@@ -1,124 +1,86 @@
-Return-Path: <linux-kernel+bounces-156133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 507C18AFE59
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:26:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 883118AFE54
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:24:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 060431F2366C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:26:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26A911F23544
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:24:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1841D18C31;
-	Wed, 24 Apr 2024 02:26:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B4B914277;
+	Wed, 24 Apr 2024 02:24:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iJTdQ02B"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="cSi2dipu"
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11DE317BA4;
-	Wed, 24 Apr 2024 02:26:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5C7BE4F
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 02:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713925567; cv=none; b=YGx8nNViWIEws6DKwyb6NxlxvixhyW1AHcK+5GOWq10ztuwsZRsB6L1FxgmyWI1ewx/IuCfXi4xNS8VhipPFym6mp1iqK3XrZxB7YRwbmiKzbVmV79uWj0TNmNSyiZu6qaMNssaz8ubX3vzTM4Cp9Pc3IvO/CUlijSsCC84QmIU=
+	t=1713925476; cv=none; b=Pv2HFH2E+NOQChm3+25t+Jq1CsgibZHjDJAQC7hgWq1DxK4sjxPq3L/kpCrAJPet2rnNI9DWI/syV2yBCGjEj5jQNMw1IJ84LxSvyFhoSC6FKlfw1zVZis4MRmqcUNZfhVjuwoq+qS88MEdRwqnOpepLZieiIxwA9cd9bzQZhEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713925567; c=relaxed/simple;
-	bh=QmPQF7eOoPT8Nnn8OjXFg1nFy1plktJnigngENo2NvY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=J+Rq1ZJDfmyBuHKY8n2fH2/BwP37V0WgeNAwXsjm4iOyhi+g5CmBoB7vraxAmW0+H4cVDGGTb4qxMM5baAoOgUFB2AyiG38K9T3t3o7fgNrO7xrSovYLksBKLdUpNcUsbBAfS5lRYpTwqxlaZB4cdu44sdGeDv+KD10hOHJVnck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iJTdQ02B; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713925566; x=1745461566;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=QmPQF7eOoPT8Nnn8OjXFg1nFy1plktJnigngENo2NvY=;
-  b=iJTdQ02BClkq/3jYAdGadz/iAFC+x7uQMNYEJ++TScZsBnfJy6bZDty3
-   lNPuAprGWuAJh+3uVR7J99LFqYatiMKEE23G93SDOzLm+WKeQKJSIaIdo
-   +ZAtQGrfaKSYh4UwHsKyLxWK67+u6YPODEIlKcDBbjUeNyiX9/0BOrt1a
-   pL9wJiijynBeLl/iN4SwO+8OscogI3IIVEIsaXzplGliGFFtAips/JWN3
-   LEY1hX4OpBn3tfdBvNxO4TMQ1PdpA9r4VwPzoCnTbJZ0qXwhsjtIMhbM3
-   wER14jnA5t21rpd/QXV5S4rxcT8Z8IvNgBaNQ9ozYz7MYMzSq8Zd2FWyB
-   Q==;
-X-CSE-ConnectionGUID: Zl6dREobRzuc+FSyFQnjiw==
-X-CSE-MsgGUID: gnP28RU1TSem0P88h0elNA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="27051300"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="27051300"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 19:25:58 -0700
-X-CSE-ConnectionGUID: VvU8Xw05S0qwtinn4bSQ/g==
-X-CSE-MsgGUID: XqJH75ReSsebrfkSkF2Hyg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="29039432"
-Received: from unknown (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 19:25:53 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Kairui Song <ryncsn@gmail.com>,  linux-mm@kvack.org,  Kairui Song
- <kasong@tencent.com>,  Andrew Morton <akpm@linux-foundation.org>,  Chris
- Li <chrisl@kernel.org>,  Barry Song <v-songbaohua@oppo.com>,  Ryan Roberts
- <ryan.roberts@arm.com>,  Neil Brown <neilb@suse.de>,  Minchan Kim
- <minchan@kernel.org>,  Hugh Dickins <hughd@google.com>,  David Hildenbrand
- <david@redhat.com>,  Yosry Ahmed <yosryahmed@google.com>,
-  linux-fsdevel@vger.kernel.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/8] mm/swap: optimize swap cache search space
-In-Reply-To: <Zico_U_i5ZQu9a1N@casper.infradead.org> (Matthew Wilcox's message
-	of "Tue, 23 Apr 2024 04:20:29 +0100")
-References: <20240417160842.76665-1-ryncsn@gmail.com>
-	<87zftlx25p.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<Zico_U_i5ZQu9a1N@casper.infradead.org>
-Date: Wed, 24 Apr 2024 10:24:01 +0800
-Message-ID: <87o79zsdku.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1713925476; c=relaxed/simple;
+	bh=stsLE/ioWFHLUMl+EIX2C3BtBelVYljca7jsZ9GceiM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nBQ2CRtuvo0HZ2YG2jLjW0ftUj7Ekh9GrIfYvuuILm6nU75lM3HsAfblJXLoAoisIJW4fkPUHpyg4CbNg2WRMSTfSJytLGWkqTgVATyviVSQp7WkeSM/yk+EfHQhpbd7kHl0axwkYu8v62XaKPx3jOMfqLvaYSXtQNH3ncRN0CY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=cSi2dipu; arc=none smtp.client-ip=115.124.30.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713925471; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=9Xo5LfY4b86VJZShQBakMByowni6YMcaFhpg9b0P14A=;
+	b=cSi2dipuB2t8XWc+KpOFInJHwWE4vE5Gb7CygDrvhuhKI/SVbkQoPtVaIDTu81QPrzTS8sPT+BuGx3F2DU8ww17tQ0ALKO9uIU/lFHjfQX7IKeVCwNt85/AAJZdmZo/blkbJTsSCz1dLO0c6hW0BNMZL2oXMB07KJmKPaA0fq5E=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0W5AZw7N_1713925461;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W5AZw7N_1713925461)
+          by smtp.aliyun-inc.com;
+          Wed, 24 Apr 2024 10:24:30 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: suzuki.poulose@arm.com
+Cc: mike.leach@linaro.org,
+	james.clark@arm.com,
+	coresight@lists.linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] coresight: Remove duplicate linux/amba/bus.h header
+Date: Wed, 24 Apr 2024 10:24:20 +0800
+Message-Id: <20240424022420.58516-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
 
-Hi, Matthew,
+/include/linux/coresight.h: linux/amba/bus.h is included more than once.
 
-Matthew Wilcox <willy@infradead.org> writes:
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8869
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ include/linux/coresight.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-> On Mon, Apr 22, 2024 at 03:54:58PM +0800, Huang, Ying wrote:
->> Is it possible to add "start_offset" support in xarray, so "index"
->> will subtract "start_offset" before looking up / inserting?
->
-> We kind of have that with XA_FLAGS_ZERO_BUSY which is used for
-> XA_FLAGS_ALLOC1.  But that's just one bit for the entry at 0.  We could
-> generalise it, but then we'd have to store that somewhere and there's
-> no obvious good place to store it that wouldn't enlarge struct xarray,
-> which I'd be reluctant to do.
->
->> Is it possible to use multiple range locks to protect one xarray to
->> improve the lock scalability?  This is why we have multiple "struct
->> address_space" for one swap device.  And, we may have same lock
->> contention issue for large files too.
->
-> It's something I've considered.  The issue is search marks.  If we delete
-> an entry, we may have to walk all the way up the xarray clearing bits as
-> we go and I'd rather not grab a lock at each level.  There's a convenient
-> 4 byte hole between nr_values and parent where we could put it.
->
-> Oh, another issue is that we use i_pages.xa_lock to synchronise
-> address_space.nrpages, so I'm not sure that a per-node lock will help.
+diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+index 653f1712eb77..f09ace92176e 100644
+--- a/include/linux/coresight.h
++++ b/include/linux/coresight.h
+@@ -12,7 +12,6 @@
+ #include <linux/io.h>
+ #include <linux/perf_event.h>
+ #include <linux/sched.h>
+-#include <linux/amba/bus.h>
+ #include <linux/platform_device.h>
+ 
+ /* Peripheral id registers (0xFD0-0xFEC) */
+-- 
+2.20.1.7.g153144c
 
-Thanks for looking at this.
-
-> But I'm conscious that there are workloads which show contention on
-> xa_lock as their limiting factor, so I'm open to ideas to improve all
-> these things.
-
-I have no idea so far because my very limited knowledge about xarray.
-
---
-Best Regards,
-Huang, Ying
 
