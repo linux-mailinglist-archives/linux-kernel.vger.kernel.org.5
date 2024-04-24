@@ -1,121 +1,166 @@
-Return-Path: <linux-kernel+bounces-156990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBB6E8B0B4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:41:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1B028B0B51
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:42:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FF2A1F25211
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:41:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DC6C282D5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:42:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECB9115F3FE;
-	Wed, 24 Apr 2024 13:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE0CB15E1E3;
+	Wed, 24 Apr 2024 13:40:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="2VwaBiS0"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="puQY9Tlv"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8B115CD7B;
-	Wed, 24 Apr 2024 13:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5679015D5B1
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713965983; cv=none; b=kl09alBF/PHb/c3jLCJVUzVLDLSij18mxrprDQnxq9o7TCMz/UlskIyX+BscB4Yrb9bYMih3KCibJxHE+1i5l3A+6JYTPtbKCDntiD6+efBwBNwaSa8aofeawLzhRVuDT+fbCgm3rDGvLr+rBfbF8eQaRnG8uP6qMEST1n7XxFM=
+	t=1713966010; cv=none; b=gDzDFsytIq+SD8K03SXBxmRUjaxjleMticrPcEh9ij1ka1t+rfwnRwWSmnqV+/4hMll7Ktjk7MqNExLxp+ZokqQsCYb+3H4zanUrNAl+7PK7fnT5xlkzpSeR05eK9sAPVSRNCQblKh8xRldkGdBRuvbaFHw9Qh37krpJXJVRHsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713965983; c=relaxed/simple;
-	bh=64mDTdBCtb8WNuIGOYCX/n2GuSDDhRGuuaVDFtoB9wI=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f0L12Sa5iRUGZ4GenegZO+6Bk9PPQygH/bOzY25sqNjoYcY82n0KBuW4rHCbdYF+jnPXWtedNs+E4IHD2jT/xa01E9VbF6HS8me1e1t/pg+cFabAdYKu7zP2xTUQppSIto4eyoTxUnzx3shuQBytDdcRdEbfGFdGVkFD/BmzbLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=2VwaBiS0; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1713965981; x=1745501981;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=64mDTdBCtb8WNuIGOYCX/n2GuSDDhRGuuaVDFtoB9wI=;
-  b=2VwaBiS01Yx8YlNfq4yX53UAeQ1rCN9wkNHxD718YNjitX2o6nPztNEA
-   WoPH6AQr41BZhIeSHtpEXiLnSNzaebeilGdfASwYezueBvNWgk5ats7fr
-   TkLFnWSvsqiha+kJcJAM4saPvtsWgCJPsZdfGbLhvjirNhepJ+uO026fu
-   GxFLuLEga5rfa8kbx4ZQ4FH8PLA4MXb7jl5o5mOt/5cIeB3Ffi05ZpGqR
-   FpJcesV6bhLJTAP7zm8Oi1mFA23WWCNN1gyJYgLFygTlb7SyK8cVQNw1C
-   FncC3GuWu4mkFrfoo7Z6or+XJDIIaTbdeDS2Jz4oXr1K2uYKx6dq1DOdW
-   g==;
-X-CSE-ConnectionGUID: DZwg016nQRyZW6QR0k7REg==
-X-CSE-MsgGUID: UqCHhIGESMmxZaRwjd1Piw==
-X-IronPort-AV: E=Sophos;i="6.07,226,1708412400"; 
-   d="scan'208";a="23034276"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 24 Apr 2024 06:39:33 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Apr 2024 06:39:08 -0700
-Received: from DEN-DL-M70577 (10.10.85.11) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Wed, 24 Apr 2024 06:39:06 -0700
-Date: Wed, 24 Apr 2024 13:39:05 +0000
-From: Daniel Machon <daniel.machon@microchip.com>
-To: =?utf-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
-CC: <netdev@vger.kernel.org>, Steen Hegelund <Steen.Hegelund@microchip.com>,
-	Lars Povlsen <lars.povlsen@microchip.com>, <UNGLinuxDriver@microchip.com>,
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	<linux-kernel@vger.kernel.org>, Jiri Pirko <jiri@resnulli.us>, Simon Horman
-	<horms@kernel.org>
-Subject: Re: [PATCH net-next v2 0/4] net: sparx5: flower: validate control
- flags
-Message-ID: <20240424133905.iex24gviwgoe7h3t@DEN-DL-M70577>
-References: <20240424121632.459022-1-ast@fiberby.net>
+	s=arc-20240116; t=1713966010; c=relaxed/simple;
+	bh=w4HFcqQhyWQncW/qT2xZrccfLMoMcxU2Zf6fU/4A86k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HX803tJ7AOkwQ3Bi5g/OICbGGdtEQiUY3xUM+9KGBPllo9kSElSnATrb7mZFPYRNoVPPO41Gw/xoxeAepV2vn3IK6VftUEONgphyuMHhMr8Bnfmb9gnNV7YZaqyJokPnxcJY/dSupp/c/372PToT+5AIyALyOGcL5QzzvtxcwMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=puQY9Tlv; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-51abf1a9332so7305782e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1713966006; x=1714570806; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w4HFcqQhyWQncW/qT2xZrccfLMoMcxU2Zf6fU/4A86k=;
+        b=puQY9TlvO9EY7+VTeUN7AGkV8AYCbogcOkYqOY8CiBoO52pKH9rGKpbHDX2f+A8zcV
+         M0tHdsy+FQlE6Xu6nOcohni11mJm/Q3myhPEESSx5AbyRb+ZyMFMaGVesOEEJEVSGfWW
+         Ghl8kh6lU0ncM0Fn4hZ4fYQh3wCCUH6SwlMoTgPYHbXPrwRaWt+nQFpCtscqYFFU6IWP
+         UnIWZqJb1DzmG4dQy7q81v7v/MRu29Dbics0jdrASKOW1AqUzy3prrWJae9Jmi3qugy8
+         AN4dMnm+usDwr8FPkALGOldVTZEUsCzm+We0Dfd8urhjRv1uDzF0F3JHFdnEyfNiWNMc
+         gD7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713966006; x=1714570806;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w4HFcqQhyWQncW/qT2xZrccfLMoMcxU2Zf6fU/4A86k=;
+        b=rRxS4mo7JurELQRFY/qdE16JbpCwS8lv+F6b4FIFHk1C9xop7S9unW38Cq2SIfB+2o
+         g+ox4TSxB0Rx19SJcpxI8EnJkWbmUdk8bFSJLe8GhyRhFo/y4fAkRjzvDqwSph0iJHWI
+         U8eI31tl4XzilsM3BB0MD/wZJiPnyqTPDl7hpHoNAbPGSE2x7OeTxEGFVg3sKKxlxYgY
+         l4HLa7feJZeR57EYEhoGbscnfYEaaCmdccj+9TAjnD20ByH0V2D2EEOk/Ohh1a5o3HOX
+         l62TtildX1LHDcub/NUP4rgcMJ9pSE4AlA4WDPJr0GVixVArbvODcjpO2WCdQPN3Yanw
+         DaPg==
+X-Forwarded-Encrypted: i=1; AJvYcCU/tRyUiqj/m1sMrsdpadAtiu/RCThdrvmy7oL+jxM7EXZ+fl1pvssb8AYcGjHfKyvioSdwUGPpGWg2kBotuFifP9qez2dn8I68W7RG
+X-Gm-Message-State: AOJu0YwborVaFCUUcnrY0JYEU66lfbtJwPD/nvdDQiI8YoLd2p0Cwf84
+	5W1KQ1H7xP5fQOEi6OpCDeOAToBOUtCuZeuKP0MIps/kA+Tyfvmy9PowtSAzDjuN6OFcr5enhmd
+	sJrSUzahpXjNF0mkeNlgNXbM89920A3WevvfPMA==
+X-Google-Smtp-Source: AGHT+IGCc9LpHF0GH7iMkeOurEKKTBpOYbN8ZfZ2sxdbqQmT/hxe+kIOMk4aMoiBnq7eB4dsRGZ80wCNp0zoQwvJID8=
+X-Received: by 2002:a05:6512:3454:b0:516:d1af:bd84 with SMTP id
+ j20-20020a056512345400b00516d1afbd84mr1645686lfr.14.1713966006516; Wed, 24
+ Apr 2024 06:40:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240424121632.459022-1-ast@fiberby.net>
+References: <20240424122932.79120-1-brgl@bgdev.pl> <ba9b0e6e-3601-4460-ab5c-a02eb7708a4f@penguintechs.org>
+ <CACMJSesZqCG=fdWe5C31a0iOFJ-ZpPRr70T_1TNLn7xqChZ4Sg@mail.gmail.com>
+ <0e6bc9af-71f2-46b5-8b92-5da674b44ad7@quicinc.com> <a45016e9-1668-40eb-83a1-7a62162e319a@penguintechs.org>
+In-Reply-To: <a45016e9-1668-40eb-83a1-7a62162e319a@penguintechs.org>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 24 Apr 2024 15:39:55 +0200
+Message-ID: <CAMRc=MfJ1v3pAB+Wvu1ahJAUvDfk3OsN5nieA-EYgTXPwMzqyg@mail.gmail.com>
+Subject: Re: [PATCH v2] Bluetooth: qca: set power_ctrl_enabled on NULL
+ returned by gpiod_get_optional()
+To: Wren Turkal <wt@penguintechs.org>
+Cc: quic_zijuhu <quic_zijuhu@quicinc.com>, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> This series adds flower control flags validation to the
-> sparx5 driver, and changes it from assuming that it handles
-> all control flags, to instead reject rules if they have
-> masked any unknown/unsupported control flags.
-> 
-> ---
-> 
-> Changelog:
-> 
-> v2:
-> * Split first patch into 3 (requested by Jiri)
-> * Convert a missed extack usage (noticed by Daniel)
-> * Added cover letter (requested by Simon and Daniel)
-> 
-> v1: https://lore.kernel.org/netdev/20240423102728.228765-1-ast@fiberby.net/
-> 
-> Asbjørn Sloth Tønnesen (4):
->   net: sparx5: flower: only do lookup if fragment flags are set
->   net: sparx5: flower: add extack to
->     sparx5_tc_flower_handler_control_usage()
->   net: sparx5: flower: remove goto in
->     sparx5_tc_flower_handler_control_usage()
->   net: sparx5: flower: check for unsupported control flags
-> 
->  .../microchip/sparx5/sparx5_tc_flower.c       | 20 +++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
-> 
-> --
-> 2.43.0
+On Wed, Apr 24, 2024 at 3:31=E2=80=AFPM Wren Turkal <wt@penguintechs.org> w=
+rote:
+>
+> On 4/24/24 6:22 AM, quic_zijuhu wrote:
+> > On 4/24/2024 9:18 PM, Bartosz Golaszewski wrote:
+> >> On Wed, 24 Apr 2024 at 15:10, Wren Turkal <wt@penguintechs.org> wrote:
+> >>>
+> >>> On 4/24/24 5:29 AM, Bartosz Golaszewski wrote:
+> >>>> From: Bartosz Golaszewski<bartosz.golaszewski@linaro.org>
+> >>>>
+> >>>> Any return value from gpiod_get_optional() other than a pointer to a
+> >>>> GPIO descriptor or a NULL-pointer is an error and the driver should
+> >>>> abort probing. That being said: commit 56d074d26c58 ("Bluetooth: hci=
+_qca:
+> >>>> don't use IS_ERR_OR_NULL() with gpiod_get_optional()") no longer set=
+s
+> >>>> power_ctrl_enabled on NULL-pointer returned by
+> >>>> devm_gpiod_get_optional(). Restore this behavior but bail-out on err=
+ors.
+> >>>> While at it: also bail-out on error returned when trying to get the
+> >>>> "swctrl" GPIO.
+> >>>>
+> >>>> Reported-by: Wren Turkal<wt@penguintechs.org>
+> >>>> Reported-by: Zijun Hu<quic_zijuhu@quicinc.com>
+> >>>> Closes:https://lore.kernel.org/linux-bluetooth/1713449192-25926-2-gi=
+t-send-email-quic_zijuhu@quicinc.com/
+> >>>> Fixes: 56d074d26c58 ("Bluetooth: hci_qca: don't use IS_ERR_OR_NULL()=
+ with gpiod_get_optional()")
+> >>>> Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@linaro.org>
+> >>>> Signed-off-by: Bartosz Golaszewski<bartosz.golaszewski@linaro.org>
+> >>>
+> >>> Tested-by: "Wren Turkal" <wt@penguintechs.org>
+> >>>
+> >>>
+> >>> Like this?
+> >>
+> >> Yes, awesome, thanks.
+> >>
+> >> This is how reviewing works too in the kernel, look at what Krzysztof
+> >> did under v1, he just wrote:
+> >>
+> >> Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@linaro.org>
+> >>
+> > v1 have obvious something wrong as i pointed and verified.
+> > so i think it is not suitable to attach v1's review-by tag to v2 anyway=
+.
+>
+> @Zijun, your concern is that current DTs may not define the gpio and
+> this will cause the bluetooth not to work?
 >
 
-For the series:
+This is simply not true. If the GPIO is not specified,
+gpiod_get_optional() will return NULL and GPIO APIs will work just
+fine.
 
-Reviewed-by: Daniel Machon <daniel.machon@microchip.com>
-Tested-by: Daniel Machon <daniel.machon@microchip.com>
+That being said: the contract for whether a GPIO is needed or not is
+not in the driver C code or released DT sources. It's in the bindings
+documents under Documentation/devicetree/bindings/. This is the source
+of truth. So if the binding for a given model has always said
+"required: enable-gpios" then we're absolutely in our rights to fix
+the driver to conform to that even if previously omitted. If you think
+otherwise - relax the bindings first.
 
+Bart
 
+> Would that not more appropriately be fixed by machine-specific fixups
+> for the DT?
+>
+> >
+> >> And mailing list tools will pick it up.
+> >>
+> >> Bartosz
+> >
+>
+> --
+> You're more amazing than you think!
 
