@@ -1,153 +1,169 @@
-Return-Path: <linux-kernel+bounces-156521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D87188B03E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:07:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AC218B03E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:10:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B1121F23B76
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:07:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEE491C236A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA871586D3;
-	Wed, 24 Apr 2024 08:07:08 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52C7436D
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:07:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D747158852;
+	Wed, 24 Apr 2024 08:10:31 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E64536D;
+	Wed, 24 Apr 2024 08:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713946028; cv=none; b=qYouvTGKOMn/hIfj/ENlB058ckYK+wYANIZ5B6CDcz4KyVxHiYaZglpMK7ooDMJIbOxYhG48tjsqvsZ5REE7bmQNUPifvH7ac2QeiiI/SFSVky8WDS3fAY/prjg19j6AjeoFl2ySiseBpyXown9vqFJo7o3RhwlL693/Hz4BcIo=
+	t=1713946230; cv=none; b=dH9uT67FeaJ8LD1iE1ZBT4ce3qMvGWvW0VRPxlrOn9C+vV++/QcfWeJPq79jEnogX5XhUL3N530YR9mlaKQkccIX/JkkICF2PTcJLjwYPhuJXVmc+uBBfBf8bBuf4S+9T5wvvnzPhTuhmTpehZRvCJtuYpSV+X+TGV0sKkWK1FM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713946028; c=relaxed/simple;
-	bh=kdOy2K+ZN+F0va8Jer7NoUqu8Cq6WNl+H9rDHKKRJ30=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IS1JetcCYpCsll0uzWCoZHAxf8BCNtFTB+jIfNpJW+CD2vzz//2UHbPSL1/5yyNKb4+cgDL/MbGEv4wgOorXB1ZQiiDpKEKj4+q33Ni16Cj081d+iY0VVNUuj5JpDakti9Wfgnpwx+MfZ5QsbvNVt1Blw5IEzBxvvTr8zt9xPH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57379339;
-	Wed, 24 Apr 2024 01:07:33 -0700 (PDT)
-Received: from [10.57.74.127] (unknown [10.57.74.127])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 23DBD3F64C;
-	Wed, 24 Apr 2024 01:07:04 -0700 (PDT)
-Message-ID: <6c418d70-a75d-4019-a0f5-56a61002d37a@arm.com>
-Date: Wed, 24 Apr 2024 09:07:02 +0100
+	s=arc-20240116; t=1713946230; c=relaxed/simple;
+	bh=b3HUjTobqzaKv1wG8AKQpzu+8E9bVgtosOQs6FdPTuQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OTa4shtzWfdBYFGVA49ErkPUJSC3pZ41YTqtCIPHwztkJ0xv+hmRKUCPf5NsFzT8YXPwBXTJ3DHzb2aG6Melgz8yQHIP/qN3rGo9lL+q25FrzRCEdgWsHG1gTYCGy7i31siwKaysOTGGYYa0aDIYlMRgCfMK4j4i4Xnbr3CmDvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VPWmp5D8Nz1R8QP;
+	Wed, 24 Apr 2024 16:07:22 +0800 (CST)
+Received: from dggpemd100001.china.huawei.com (unknown [7.185.36.94])
+	by mail.maildlp.com (Postfix) with ESMTPS id 223B114011F;
+	Wed, 24 Apr 2024 16:10:24 +0800 (CST)
+Received: from localhost.localdomain (10.50.165.33) by
+ dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Wed, 24 Apr 2024 16:10:23 +0800
+From: Xingui Yang <yangxingui@huawei.com>
+To: <john.g.garry@oracle.com>, <yanaijie@huawei.com>, <jejb@linux.ibm.com>,
+	<martin.petersen@oracle.com>, <damien.lemoal@opensource.wdc.com>
+CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
+	<chenxiang66@hisilicon.com>, <kangfenglong@huawei.com>
+Subject: [PATCH v2] scsi: libsas: Fix exp-attached end device cannot be scanned in again after probe failed
+Date: Wed, 24 Apr 2024 08:08:07 +0000
+Message-ID: <20240424080807.8469-1-yangxingui@huawei.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/5] mm: memory: extend finish_fault() to support
- large folio
-Content-Language: en-GB
-To: Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org,
- hughd@google.com
-Cc: willy@infradead.org, david@redhat.com, wangkefeng.wang@huawei.com,
- 21cnbao@gmail.com, ying.huang@intel.com, shy828301@gmail.com,
- ziy@nvidia.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
- <358aefb1858b63164894d7d8504f3dae0b495366.1713755580.git.baolin.wang@linux.alibaba.com>
- <6aa25e2a-a6b6-4ab7-8300-053ca3c0d748@arm.com>
- <c48ae381-f073-4b20-84ae-bd5e9e56ce29@linux.alibaba.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <c48ae381-f073-4b20-84ae-bd5e9e56ce29@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemd100001.china.huawei.com (7.185.36.94)
 
-On 24/04/2024 04:23, Baolin Wang wrote:
-> 
-> 
-> On 2024/4/23 19:03, Ryan Roberts wrote:
->> On 22/04/2024 08:02, Baolin Wang wrote:
->>> Add large folio mapping establishment support for finish_fault() as a
->>> preparation,
->>> to support multi-size THP allocation of anonymous shared pages in the following
->>> patches.
->>>
->>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->>> ---
->>>   mm/memory.c | 25 ++++++++++++++++++-------
->>>   1 file changed, 18 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/mm/memory.c b/mm/memory.c
->>> index b6fa5146b260..094a76730776 100644
->>> --- a/mm/memory.c
->>> +++ b/mm/memory.c
->>> @@ -4766,7 +4766,10 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
->>>   {
->>>       struct vm_area_struct *vma = vmf->vma;
->>>       struct page *page;
->>> +    struct folio *folio;
->>>       vm_fault_t ret;
->>> +    int nr_pages, i;
->>> +    unsigned long addr;
->>>         /* Did we COW the page? */
->>>       if ((vmf->flags & FAULT_FLAG_WRITE) && !(vma->vm_flags & VM_SHARED))
->>> @@ -4797,22 +4800,30 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
->>>               return VM_FAULT_OOM;
->>>       }
->>>   +    folio = page_folio(page);
->>> +    nr_pages = folio_nr_pages(folio);
->>> +    addr = ALIGN_DOWN(vmf->address, nr_pages * PAGE_SIZE);
->>
->> I'm not sure this is safe. IIUC, finish_fault() is called for any file-backed
->> mapping. So you could have a situation where part of a (regular) file is mapped
->> in the process, faults and hits in the pagecache. But the folio returned by the
->> pagecache is bigger than the portion that the process has mapped. So you now end
->> up mapping beyond the VMA limits? In the pagecache case, you also can't assume
->> that the folio is naturally aligned in virtual address space.
-> 
-> Good point. Yes, I think you are right, I need consider the VMA limits, and I
-> should refer to the calculations of the start pte and end pte in do_fault_around().
+We found that it is judged as broadcast flutter when the exp-attached end
+device reconnects after probe failed, as follows:
 
-You might also need to be careful not to increase reported RSS. I have a vague
-recollection that David once mentioned a problem with fault-around because it
-causes the reported RSS to increase for the process and this could lead to
-different decisions in other places. IIRC Redhat had an advisory somewhere with
-suggested workaround being to disable fault-around. For the anon-shared memory
-case, it shouldn't be a problem because the user has opted into allocating
-bigger blocks, but there may be a need to ensure we don't also start eagerly
-mapping regular files beyond what fault-around is configured for.
+[78779.654026] sas: broadcast received: 0
+[78779.654037] sas: REVALIDATING DOMAIN on port 0, pid:10
+[78779.654680] sas: ex 500e004aaaaaaa1f phy05 change count has changed
+[78779.662977] sas: ex 500e004aaaaaaa1f phy05 originated BROADCAST(CHANGE)
+[78779.662986] sas: ex 500e004aaaaaaa1f phy05 new device attached
+[78779.663079] sas: ex 500e004aaaaaaa1f phy05:U:8 attached: 500e004aaaaaaa05 (stp)
+[78779.693542] hisi_sas_v3_hw 0000:b4:02.0: dev[16:5] found
+[78779.701155] sas: done REVALIDATING DOMAIN on port 0, pid:10, res 0x0
+[78779.707864] sas: Enter sas_scsi_recover_host busy: 0 failed: 0
+..
+[78835.161307] sas: --- Exit sas_scsi_recover_host: busy: 0 failed: 0 tries: 1
+[78835.171344] sas: sas_probe_sata: for exp-attached device 500e004aaaaaaa05 returned -19
+[78835.180879] hisi_sas_v3_hw 0000:b4:02.0: dev[16:5] is gone
+[78835.187487] sas: broadcast received: 0
+[78835.187504] sas: REVALIDATING DOMAIN on port 0, pid:10
+[78835.188263] sas: ex 500e004aaaaaaa1f phy05 change count has changed
+[78835.195870] sas: ex 500e004aaaaaaa1f phy05 originated BROADCAST(CHANGE)
+[78835.195875] sas: ex 500e004aaaaaaa1f rediscovering phy05
+[78835.196022] sas: ex 500e004aaaaaaa1f phy05:U:A attached: 500e004aaaaaaa05 (stp)
+[78835.196026] sas: ex 500e004aaaaaaa1f phy05 broadcast flutter
+[78835.197615] sas: done REVALIDATING DOMAIN on port 0, pid:10, res 0x0
 
-> 
->>>       vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd,
->>> -                      vmf->address, &vmf->ptl);
->>> +                       addr, &vmf->ptl);
->>>       if (!vmf->pte)
->>>           return VM_FAULT_NOPAGE;
->>>         /* Re-check under ptl */
->>> -    if (likely(!vmf_pte_changed(vmf))) {
->>> -        struct folio *folio = page_folio(page);
->>> -
->>> -        set_pte_range(vmf, folio, page, 1, vmf->address);
->>> -        ret = 0;
->>> -    } else {
->>> +    if (nr_pages == 1 && vmf_pte_changed(vmf)) {
->>>           update_mmu_tlb(vma, vmf->address, vmf->pte);
->>>           ret = VM_FAULT_NOPAGE;
->>> +        goto unlock;
->>> +    } else if (nr_pages > 1 && !pte_range_none(vmf->pte, nr_pages)) {
->>
->> I think you have grabbed this from do_anonymous_page()? But I'm not sure it
->> works in the same way here as it does there. For the anon case, if userfaultfd
->> is armed, alloc_anon_folio() will only ever allocate order-0. So we end up in
-> 
-> IMO, the userfaultfd validation should do in the vma->vm_ops->fault() callback,
-> to make sure the nr_pages is always 1 if userfaultfd is armed.
+The cause of the problem is that the related ex_phy's attached_sas_addr was
+not cleared after the end device probe failed. In order to solve the above
+problem, a function sas_ex_unregister_end_dev() is defined to clear the
+ex_phy information and unregister the end device after the exp-attached end
+device probe failed.
 
-OK. Are you saying there is already logic to do that today? Great!
+As the sata device is an asynchronous probe, the sata device may probe
+failed after done REVALIDATING DOMAIN. Then after its port is added to the
+sas_port_del_list, the port will not be deleted until the end of the next
+REVALIDATING DOMAIN and sas_destruct_ports() is called. A warning about
+creating a duplicate port will occur in the new REVALIDATING DOMAIN when
+the end device reconnects. Therefore, the previous destroy_list and
+sas_port_del_list should be handled before REVALIDATING DOMAIN.
 
-> 
->> the vmf_pte_changed() path, which will allow overwriting a uffd entry. But here,
->> there is nothing stopping nr_pages being greater than 1 when there could be a
->> uffd entry present, and you will fail due to the pte_range_none() check. (see
->> pte_marker_handle_uffd_wp()).
-> 
-> So if we do the userfaultfd validation in ->fault() callback, then here we can
-> use the same logic as with anonymous case.
+Signed-off-by: Xingui Yang <yangxingui@huawei.com>
+---
+Changes since v1:
+- Simplify the process of getting ex_phy id based on Jason's suggestion.
+- Update commit information.
+---
+ drivers/scsi/libsas/sas_discover.c | 2 ++
+ drivers/scsi/libsas/sas_expander.c | 8 ++++++++
+ drivers/scsi/libsas/sas_internal.h | 6 +++++-
+ 3 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/libsas/sas_discover.c b/drivers/scsi/libsas/sas_discover.c
+index 8fb7c41c0962..aae90153f4c6 100644
+--- a/drivers/scsi/libsas/sas_discover.c
++++ b/drivers/scsi/libsas/sas_discover.c
+@@ -517,6 +517,8 @@ static void sas_revalidate_domain(struct work_struct *work)
+ 	struct sas_ha_struct *ha = port->ha;
+ 	struct domain_device *ddev = port->port_dev;
+ 
++	sas_destruct_devices(port);
++	sas_destruct_ports(port);
+ 	/* prevent revalidation from finding sata links in recovery */
+ 	mutex_lock(&ha->disco_mutex);
+ 	if (test_bit(SAS_HA_ATA_EH_ACTIVE, &ha->state)) {
+diff --git a/drivers/scsi/libsas/sas_expander.c b/drivers/scsi/libsas/sas_expander.c
+index f6e6db8b8aba..45793c10009b 100644
+--- a/drivers/scsi/libsas/sas_expander.c
++++ b/drivers/scsi/libsas/sas_expander.c
+@@ -1856,6 +1856,14 @@ static void sas_unregister_devs_sas_addr(struct domain_device *parent,
+ 	}
+ }
+ 
++void sas_ex_unregister_end_dev(struct domain_device *dev)
++{
++	struct domain_device *parent = dev->parent;
++	struct sas_phy *phy = dev->phy;
++
++	sas_unregister_devs_sas_addr(parent, phy->number, true);
++}
++
+ static int sas_discover_bfs_by_root_level(struct domain_device *root,
+ 					  const int level)
+ {
+diff --git a/drivers/scsi/libsas/sas_internal.h b/drivers/scsi/libsas/sas_internal.h
+index 3804aef165ad..434f928c2ed8 100644
+--- a/drivers/scsi/libsas/sas_internal.h
++++ b/drivers/scsi/libsas/sas_internal.h
+@@ -50,6 +50,7 @@ void sas_discover_event(struct asd_sas_port *port, enum discover_event ev);
+ 
+ void sas_init_dev(struct domain_device *dev);
+ void sas_unregister_dev(struct asd_sas_port *port, struct domain_device *dev);
++void sas_ex_unregister_end_dev(struct domain_device *dev);
+ 
+ void sas_scsi_recover_host(struct Scsi_Host *shost);
+ 
+@@ -145,7 +146,10 @@ static inline void sas_fail_probe(struct domain_device *dev, const char *func, i
+ 		func, dev->parent ? "exp-attached" :
+ 		"direct-attached",
+ 		SAS_ADDR(dev->sas_addr), err);
+-	sas_unregister_dev(dev->port, dev);
++	if (dev->parent && !dev_is_expander(dev->dev_type))
++		sas_ex_unregister_end_dev(dev);
++	else
++		sas_unregister_dev(dev->port, dev);
+ }
+ 
+ static inline void sas_fill_in_rphy(struct domain_device *dev,
+-- 
+2.17.1
 
 
