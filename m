@@ -1,71 +1,64 @@
-Return-Path: <linux-kernel+bounces-156932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DC2B8B0A80
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:10:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FDFA8B0A90
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:11:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF649285308
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:10:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44E621F24B27
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DC315ADA5;
-	Wed, 24 Apr 2024 13:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5ABA15B98B;
+	Wed, 24 Apr 2024 13:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=penguintechs.org header.i=@penguintechs.org header.b="PRM3mWPy"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="Ligt8wZM"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3720115B151
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B7615A4B0;
+	Wed, 24 Apr 2024 13:11:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713964225; cv=none; b=TuAGy1Eubh11m3ISd8w7DLUJrvp08vLl9JnA0oUlyn+g2SEXPwxNKmhrlnoMHfiXyNZKs3IYpKx0WBz2s/YLyICSVwRJlb3vbmP4eTsrjJCcDP4xOAOmDSK8UOTosW04hm8/OdtX3r7B0ZXKjpA5hgohTKiPqlpJkYIWqkXqvCI=
+	t=1713964297; cv=none; b=V9h1Nv52UrmiL2Y+gkrlpwRkZOHR0d6Rbyue62ohTlkMBrxTBSHumBXMzSev11aZ82URvXvfKrMho2WJ833tz/kijlC+ChqGy0PYij6AU9HTHEgli2ZsTvbHkGcrXM0MyK3+a8MS7BCh0tVgLYx8l+h0Hq1fo0qVunEvVNVczhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713964225; c=relaxed/simple;
-	bh=OefCvQ2x2IZXcgNdABhPCAcs1PW3cTeYzxWmJEpDiw8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OYxaN6ibGMZEda1PvanzXgMM1UBI/WFvPB8lUEB2MNWSW5rPoFan4nIyY4SwniY4m67C4X4HLtJkTNc4wWShtol1zAXpaEMLxluZ+OcI5z+Jojmk17y3f2C9B/K6Xoc0sFJR3Zq8uz23aL4y0kYmjDvtJRoP3KEDnwicI9KKLag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=penguintechs.org; spf=pass smtp.mailfrom=penguintechs.org; dkim=pass (1024-bit key) header.d=penguintechs.org header.i=@penguintechs.org header.b=PRM3mWPy; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=penguintechs.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=penguintechs.org
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e3ca546d40so56874265ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:10:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=penguintechs.org; s=google; t=1713964223; x=1714569023; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Sydl+4yFYinKXmdPTE5nn5HGpzz6QFMBENvh2i5loOE=;
-        b=PRM3mWPy+3RVNeSsfGkMdvomu9dVjir3bEAaNWBpOxmRpHfR9XKZnX6qlKGvRTevTj
-         6BXvzPBAdbrNa7QfMoBDzico67O3DRUvT+Z/mr8gwSYObHgDuFjoPBCR9UrExEAxLmQW
-         pdZmfex7QDQ7/o7vhgUoYJqKaiJDqqpD/PItY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713964223; x=1714569023;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sydl+4yFYinKXmdPTE5nn5HGpzz6QFMBENvh2i5loOE=;
-        b=DkmgUnSXKzlmGL6ZJIk5SJIBQVHot8iRcCqji37OBPvBoIbtQ8qqVgkZf39twDkcTD
-         YjwrY7B7OuPcq3JY4oBMsAi8js7O54+t4iaEPqRqWkuTLIslSSPrPAWJyBISF7FGDx5J
-         Q87sVnUnFIpuV+C9i9MDyw2xkMAnPNd4MgrOKbShSN1SDWCfxRsrH0MuPYopXaJxRhRh
-         1b7zdKwKfdo84tJiO0vGWXP5wuA4wN+Y3yBLIMiTNQyOKLlnzYmtExuVQ5W+JgbDklTp
-         OAYn7F1sHUpreHttdy9BxSBBnrquD8L/pKLC/UqqYHMt9pp9oq3dfAqpiGQ37H5zeJJu
-         H2OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXSEz1iaOZJWHJHbrhbR/g7CjaB7qN2alzdAaYDnvh3J1AxixIiRgASVytY8fJgcm2t8U5hPREmyehfsimDSlnA5SChNAlre3w2Xrxw
-X-Gm-Message-State: AOJu0Yxs1rm4rK+xWkcwjrmJv8wbuFvRTxxOIfSkwz+1Me/9o+6atsa1
-	UN5ZUBtL+TfrGOV0ihKaqEf6tKaZX+l4fKGgN5AV4btyk8vRxisAlKriO1+vmDd5+HbgnGSMipY
-	8OWki
-X-Google-Smtp-Source: AGHT+IENMZx7a5JN5bQLy2lo1eJGSELBdY0Fm2u/7eAZkB+kc4140yF/vjh6YqzxR99qe6U0lTo0vQ==
-X-Received: by 2002:a17:902:ecc6:b0:1e9:214a:4175 with SMTP id a6-20020a170902ecc600b001e9214a4175mr2782600plh.22.1713964223368;
-        Wed, 24 Apr 2024 06:10:23 -0700 (PDT)
-Received: from ?IPV6:2601:646:8700:dd30:5f3e:5ba7:e0ea:9a08? ([2601:646:8700:dd30:5f3e:5ba7:e0ea:9a08])
-        by smtp.gmail.com with ESMTPSA id jj1-20020a170903048100b001e2526a5cc3sm11830928plb.307.2024.04.24.06.10.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 06:10:22 -0700 (PDT)
-Message-ID: <ba9b0e6e-3601-4460-ab5c-a02eb7708a4f@penguintechs.org>
-Date: Wed, 24 Apr 2024 06:10:21 -0700
+	s=arc-20240116; t=1713964297; c=relaxed/simple;
+	bh=0GM9qCjYncLlk2eyXQbEJr4kraDbbsFDY3wf8G6s70w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=dNLEyhT8gifKiHwqTKGHHbSgrVSPCG9FIJ5dckJX6dZMCT0nNzmHxW1NlQQ41h5bhfB9RV/hqNsZfcJGyPi4/nBSc7IdO0FiPuDkdoGFCp4Zkl/MuBJmfGBTINZwLXjbgbzjE+hzGRIQpPG4J96z7cRg944/godjl86OJO/YIU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=Ligt8wZM; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43OBiLD7018292;
+	Wed, 24 Apr 2024 15:11:09 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=HYSJG1sPeSjl23kgI1bzRXZCAj4WS/GfNG5nWWxw0Vk=; b=Li
+	gt8wZMTOL0sPyiSCxLlgRIUH/Vc82ELF6mVIODBNPHBiyGzugekT687g3kBWT6Fy
+	1iL5xeh5qo65/dnTsTyiKTVzRsq4R+3DEhG46rEaijnxESXbwMmPL45C15SaED4v
+	50Qcba0NgM4I+6/uL3aFTNs2S0jMD7ezz6yyeVXaw/ZSEB9JfstuMsUfE0WNKy3/
+	NtyMhdvqvde+Bas+TdXdtJl/Bs5rT2e5+WXEw4wJ6Gl/PR5DVxHHjren2plshRQI
+	B1nu12Sq34EmDylnO5QlOpXkfHLDa7op6xIUgueLRput5kXau/kTTUnFUAAJ878d
+	upGthvtis7RdJJjRy3kg==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xm4cngp6a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 15:11:09 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 4F19B4002D;
+	Wed, 24 Apr 2024 15:11:04 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2C10821ED4A;
+	Wed, 24 Apr 2024 15:10:27 +0200 (CEST)
+Received: from [10.48.86.79] (10.48.86.79) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 24 Apr
+ 2024 15:10:26 +0200
+Message-ID: <f625f62c-6351-4799-92c8-20abb7185ac5@foss.st.com>
+Date: Wed, 24 Apr 2024 15:10:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,45 +66,62 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Bluetooth: qca: set power_ctrl_enabled on NULL
- returned by gpiod_get_optional()
+Subject: Re: [PATCH v2] media: dt-bindings: add access-controllers to
+ STM32MP25 video codecs
+To: Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Mauro Carvalho Chehab
+	<mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Maxime Coquelin
+	<mcoquelin.stm32@gmail.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20240415093211.809927-1-hugues.fruchet@foss.st.com>
 Content-Language: en-US
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Marcel Holtmann
- <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
- Zijun Hu <quic_zijuhu@quicinc.com>
-References: <20240424122932.79120-1-brgl@bgdev.pl>
-From: Wren Turkal <wt@penguintechs.org>
-In-Reply-To: <20240424122932.79120-1-brgl@bgdev.pl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+In-Reply-To: <20240415093211.809927-1-hugues.fruchet@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_10,2024-04-24_01,2023-05-22_02
 
-On 4/24/24 5:29 AM, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski<bartosz.golaszewski@linaro.org>
+Hi
+
+On 4/15/24 11:32, Hugues Fruchet wrote:
+> access-controllers is an optional property that allows a peripheral to
+> refer to one or more domain access controller(s).
 > 
-> Any return value from gpiod_get_optional() other than a pointer to a
-> GPIO descriptor or a NULL-pointer is an error and the driver should
-> abort probing. That being said: commit 56d074d26c58 ("Bluetooth: hci_qca:
-> don't use IS_ERR_OR_NULL() with gpiod_get_optional()") no longer sets
-> power_ctrl_enabled on NULL-pointer returned by
-> devm_gpiod_get_optional(). Restore this behavior but bail-out on errors.
-> While at it: also bail-out on error returned when trying to get the
-> "swctrl" GPIO.
+> Acked-by: Rob Herring <robh@kernel.org>
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+> ---
+>   .../devicetree/bindings/media/st,stm32mp25-video-codec.yaml   | 4 ++++
+>   1 file changed, 4 insertions(+)
 > 
-> Reported-by: Wren Turkal<wt@penguintechs.org>
-> Reported-by: Zijun Hu<quic_zijuhu@quicinc.com>
-> Closes:https://lore.kernel.org/linux-bluetooth/1713449192-25926-2-git-send-email-quic_zijuhu@quicinc.com/
-> Fixes: 56d074d26c58 ("Bluetooth: hci_qca: don't use IS_ERR_OR_NULL() with gpiod_get_optional()")
-> Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Bartosz Golaszewski<bartosz.golaszewski@linaro.org>
+> diff --git a/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml b/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
+> index b8611bc8756c..73726c65cfb9 100644
+> --- a/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
+> +++ b/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
+> @@ -30,6 +30,10 @@ properties:
+>     clocks:
+>       maxItems: 1
+>   
+> +  access-controllers:
+> +    minItems: 1
+> +    maxItems: 2
+> +
+>   required:
+>     - compatible
+>     - reg
 
-Tested-by: "Wren Turkal" <wt@penguintechs.org>
+Applied on stm32-next.
 
-
-Like this?
-wt
--- 
-You're more amazing than you think!
+Thanks!
+Alex
 
