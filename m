@@ -1,97 +1,182 @@
-Return-Path: <linux-kernel+bounces-156791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83AD98B0839
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:22:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CFC38B083F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:23:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D5B21C21217
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:22:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B56C1C22647
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:23:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63B215A491;
-	Wed, 24 Apr 2024 11:22:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFC915A49F;
+	Wed, 24 Apr 2024 11:23:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="PEYVFZxx"
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ULMeqJtG"
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D1EC142E62
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 11:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 627C3159913
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 11:23:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713957722; cv=none; b=Q51nl+PsAYIrRA5KxtjBxJyNhgWMasEvWGM3Rf1eBRzsRiYpVJJ+CFpA3skz/ukP42PEbS3gxzO7vZ/uDF0BQ+5x34HAk1MwvoVT8QtFW1ONsE8pBYAVS6MmZwOpupEQ+AZ/LlAl2QKfNiVuZrzTcTvPpPUGi2zFSCVXyjib9BU=
+	t=1713957814; cv=none; b=Iy6KvEFy7qXlGJAisOQzbJXIK/w1xOeanrgEpKq8Swe8bHyOBr/bBnJutl8c+wuCFGMGTuNV1t6mPUqtkwbVUSpML59Psrk78p3IaIPgIv+JW27YQEny83P+yhStQQIZ1WDMn+6a6jlbc7cw9MuDLL0Rk3bEWllygZwkTy+xn3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713957722; c=relaxed/simple;
-	bh=jXBd7jwfXzMtKsDnykh8KKkP0FF2C8w94PpTyyl1JWA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dChzqJHxLgxyXOzJOylOLw9UodvhFbrNSY/D46dRjEPl/hTT13o2KFMfL1J1lq19h/tnpxP9xyqhtPohfJ0ztfQk46iC1f9sxjRahbqjw9neJ1mBLGkYsz7BTIc+eC4yclLeFXtYGwuIOGvcFt0LzdkHl4Cowu558yqkRbt4Q4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=PEYVFZxx; arc=none smtp.client-ip=115.124.30.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1713957712; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=Ng39GRBnsItm8XR2jbJ/4RhY77ypkbK0TVgWZrO11AY=;
-	b=PEYVFZxx4gqw0auyu2KoVl5LgWb6lQFQgUrQd/afgaqSL80lElcSgA4OoXbckITeasJgFyb97J8nuuKy/jdGU75eTZcKsgaLwvD5+gmGd4mU/V1noX+mELrRc8YX3pTNPUghyOk/1SdGoha/HbHfBMsG434O+4GlbLfpsQECDtI=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067110;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W5C6jzC_1713957710;
-Received: from 30.221.147.25(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W5C6jzC_1713957710)
-          by smtp.aliyun-inc.com;
-          Wed, 24 Apr 2024 19:21:51 +0800
-Message-ID: <1c18da0e-b0cb-4eb2-9eab-19a68fa416cd@linux.alibaba.com>
-Date: Wed, 24 Apr 2024 19:21:50 +0800
+	s=arc-20240116; t=1713957814; c=relaxed/simple;
+	bh=jO1+xmcyT5I9v4tZVZ1d96pbFPmBoJZzFcDtl1zowAU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aFlea4DpN12oW/drNwKz3Oni48k2ZOUo1CCDo1s62l+5uwX2O2SwipTRzpQ3gYVCZnIoBg7TIsldVLXzN8LED/JGzNdgHUhEc97kcl1+MFP5GCpCU7n+n9OteoeD34+TbPTgUTp9MJIXAC+OICsE8XSPn/6s3+RNqKDqEsshDWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ULMeqJtG; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-617e42a3f94so73682017b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 04:23:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713957812; x=1714562612; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ln9+pg397axOqdZ8donOOoy2lTHgumZvva3u8wpOyis=;
+        b=ULMeqJtGGk8VtJdWNpblq5XHhxwlHRSxkvm9vTS14PXWx0aDNlx1yvPv0+GKtYAe1L
+         OkK/bKR8Xio/TZbXLDPug643BFq3lyWyNXkfiTp5t2kZP/ulS5inDET5ubv00bOAeuYr
+         hyJEpPQKem+3gupTwXAkqs9jk1QhnWz9BNISy9RDsrAEhveAQi80gTUtyxAKPHtp3xiB
+         bS9kDaNpdL15NOPwaUuXmrNZhggS2LTK3wyKUXFcgTnG5Y+hHUGRTMMQjodZohyZymBZ
+         w2FZeiKruxaS4jf59XIvI0CeTmW1yrfp9xFN5oV4jKlmMC1Ox9lD7skVZtYQRzJQqwp7
+         k6bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713957812; x=1714562612;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ln9+pg397axOqdZ8donOOoy2lTHgumZvva3u8wpOyis=;
+        b=dedsMA8HcyRqHM9PIfMPELWFcT8OfqlO1TNEw7ktMtYPoD4Nc177TLM/djRjHbo8cn
+         lk8INVp5mKB5QCgmwGi5rWehPybOJQpklJ1enK+TSxlu+kf7Y2Aufh88L4wS3lV7mykP
+         jfHQq2o8cQ/NsCoPhOMEr6npS8Lb5k0BjuMfutCIgq60TGSOcM42waifzVNXGO9liICe
+         rkXoMbEVx6rm/11W0LWMxG2t9BvLfYq81gwu6eohry/DmYXZrP0QZzwcgLfjO9Sfv5Ee
+         aqHdB/jiwmvcDPbclwJfq1m75AQUxjTyAYhcUO1vdrf87xmXgTWew38r3wgV965trQ63
+         C9sQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUhKd5mMgMLv9vhRfRWb+7A3+bz7nrJ/d7FejKTfSL05QR8pM/RKkAA2nMHzzkEnz1F6tF+ijOArCviOtP4sIQ0bR6fNeIA8UVeBLXs
+X-Gm-Message-State: AOJu0Yy13npDDFVWqMC6INQokwGWYXhDw2eVqZOIbl4QkwQI/q59J0HF
+	Md+00AHEQjbgUhyfhrPtQh4ogedeH1kLYa8mceyAT6FzkLMxIpfNBsJGnseP+ysxvIqMV5jkrfM
+	fARamQwbgU+sBPTW/LtnCrHRaMQKIvpB2WM5ajg==
+X-Google-Smtp-Source: AGHT+IGyMvZRrFQqm2rU9lrkFEVJeFfiWq/kBNzRzDGPLliI2awpe//wjMSlt7lzbgaKuWjFkR6/B06yPkXjykP9pGQ=
+X-Received: by 2002:a25:6841:0:b0:ddd:696a:8656 with SMTP id
+ d62-20020a256841000000b00ddd696a8656mr2219684ybc.41.1713957812276; Wed, 24
+ Apr 2024 04:23:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] erofs: modify the error message when
- prepare_ondemand_read failed
-To: Hongbo Li <lihongbo22@huawei.com>, xiang@kernel.org, chao@kernel.org
-Cc: huyue2@coolpad.com, dhavale@google.com, linux-erofs@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
-References: <20240424084247.759432-1-lihongbo22@huawei.com>
-Content-Language: en-US
-From: Jingbo Xu <jefflexu@linux.alibaba.com>
-In-Reply-To: <20240424084247.759432-1-lihongbo22@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240424101503.635364-1-quic_tengfan@quicinc.com> <20240424101503.635364-4-quic_tengfan@quicinc.com>
+In-Reply-To: <20240424101503.635364-4-quic_tengfan@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 24 Apr 2024 14:23:21 +0300
+Message-ID: <CAA8EJpqiXqsNq0B6EHnqubPcUzwJ0bc0y3rJ4RfrRimKifPf0Q@mail.gmail.com>
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: sm4450: Supply clock from cpufreq
+ node to CPUs
+To: Tengfei Fan <quic_tengfan@quicinc.com>
+Cc: rafael@kernel.org, viresh.kumar@linaro.org, robh@kernel.org, 
+	krzk+dt@kernel.org, conor+dt@kernel.org, andersson@kernel.org, 
+	konrad.dybcio@linaro.org, manivannan.sadhasivam@linaro.org, 
+	linux-pm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Wed, 24 Apr 2024 at 13:17, Tengfei Fan <quic_tengfan@quicinc.com> wrote:
+>
+> Qualcomm platforms making use of CPUFreq HW Engine (EPSS/OSM) supply
+> clocks to the CPU cores. But this relationship is not represented in DTS
+> so far.
+>
+> So let's make cpufreq node as the clock provider and CPU nodes as the
+> consumers. The clock index for each CPU node is based on the frequency
+> domain index.
 
+Is there any reason why this is not a part of the previous patch?
 
-On 4/24/24 4:42 PM, Hongbo Li wrote:
-> When prepare_ondemand_read failed, wrong error message is printed.
-> The prepare_read is also implemented in cachefiles, so we amend it.
-> 
-> Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+>
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
 > ---
->  fs/erofs/fscache.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/erofs/fscache.c b/fs/erofs/fscache.c
-> index 8aff1a724805..62da538d91cb 100644
-> --- a/fs/erofs/fscache.c
-> +++ b/fs/erofs/fscache.c
-> @@ -151,7 +151,7 @@ static int erofs_fscache_read_io_async(struct fscache_cookie *cookie,
->  		if (WARN_ON(len == 0))
->  			source = NETFS_INVALID_READ;
->  		if (source != NETFS_READ_FROM_CACHE) {
-> -			erofs_err(NULL, "prepare_read failed (source %d)", source);
-> +			erofs_err(NULL, "prepare_ondemand_read failed (source %d)", source);
->  			return -EIO;
->  		}
->  
+>  arch/arm64/boot/dts/qcom/sm4450.dtsi | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sm4450.dtsi b/arch/arm64/boot/dts/qcom/sm4450.dtsi
+> index 92badfd5b0e1..8d75c4f9731c 100644
+> --- a/arch/arm64/boot/dts/qcom/sm4450.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm4450.dtsi
+> @@ -47,6 +47,7 @@ CPU0: cpu@0 {
+>                         device_type = "cpu";
+>                         compatible = "arm,cortex-a55";
+>                         reg = <0x0 0x0>;
+> +                       clocks = <&cpufreq_hw 0>;
+>                         enable-method = "psci";
+>                         next-level-cache = <&L2_0>;
+>                         power-domains = <&CPU_PD0>;
+> @@ -72,6 +73,7 @@ CPU1: cpu@100 {
+>                         device_type = "cpu";
+>                         compatible = "arm,cortex-a55";
+>                         reg = <0x0 0x100>;
+> +                       clocks = <&cpufreq_hw 0>;
+>                         enable-method = "psci";
+>                         next-level-cache = <&L2_100>;
+>                         power-domains = <&CPU_PD0>;
+> @@ -91,6 +93,7 @@ CPU2: cpu@200 {
+>                         device_type = "cpu";
+>                         compatible = "arm,cortex-a55";
+>                         reg = <0x0 0x200>;
+> +                       clocks = <&cpufreq_hw 0>;
+>                         enable-method = "psci";
+>                         next-level-cache = <&L2_200>;
+>                         power-domains = <&CPU_PD0>;
+> @@ -110,6 +113,7 @@ CPU3: cpu@300 {
+>                         device_type = "cpu";
+>                         compatible = "arm,cortex-a55";
+>                         reg = <0x0 0x300>;
+> +                       clocks = <&cpufreq_hw 0>;
+>                         enable-method = "psci";
+>                         next-level-cache = <&L2_300>;
+>                         power-domains = <&CPU_PD0>;
+> @@ -129,6 +133,7 @@ CPU4: cpu@400 {
+>                         device_type = "cpu";
+>                         compatible = "arm,cortex-a55";
+>                         reg = <0x0 0x400>;
+> +                       clocks = <&cpufreq_hw 0>;
+>                         enable-method = "psci";
+>                         next-level-cache = <&L2_400>;
+>                         power-domains = <&CPU_PD0>;
+> @@ -148,6 +153,7 @@ CPU5: cpu@500 {
+>                         device_type = "cpu";
+>                         compatible = "arm,cortex-a55";
+>                         reg = <0x0 0x500>;
+> +                       clocks = <&cpufreq_hw 0>;
+>                         enable-method = "psci";
+>                         next-level-cache = <&L2_500>;
+>                         power-domains = <&CPU_PD0>;
+> @@ -167,6 +173,7 @@ CPU6: cpu@600 {
+>                         device_type = "cpu";
+>                         compatible = "arm,cortex-a78";
+>                         reg = <0x0 0x600>;
+> +                       clocks = <&cpufreq_hw 1>;
+>                         enable-method = "psci";
+>                         next-level-cache = <&L2_600>;
+>                         power-domains = <&CPU_PD0>;
+> @@ -186,6 +193,7 @@ CPU7: cpu@700 {
+>                         device_type = "cpu";
+>                         compatible = "arm,cortex-a78";
+>                         reg = <0x0 0x700>;
+> +                       clocks = <&cpufreq_hw 1>;
+>                         enable-method = "psci";
+>                         next-level-cache = <&L2_700>;
+>                         power-domains = <&CPU_PD0>;
+> --
+> 2.25.1
+>
+>
 
-
-LGTM.
-
-Reviewed-by: Jingbo Xu <jefflexu@linux.alibaba.com>
 
 -- 
-Thanks,
-Jingbo
+With best wishes
+Dmitry
 
