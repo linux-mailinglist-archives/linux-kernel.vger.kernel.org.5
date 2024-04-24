@@ -1,144 +1,159 @@
-Return-Path: <linux-kernel+bounces-156592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B8F08B0543
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:04:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2E958B0542
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:04:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F14E31F24E46
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:04:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A79B288D3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:04:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB49158D65;
-	Wed, 24 Apr 2024 09:04:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB061158A29;
+	Wed, 24 Apr 2024 09:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="brXMMJa5"
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="fOLfqlIy"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C3D14F62
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:04:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 051C2158A2C
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:04:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713949457; cv=none; b=MFYnFM2smsuVD9OsGrajanyyA46bw3nm1auNyo6axFjRP9t7/BMMlrl0GXqLdQA+7H4vsvO8RnhXHldDKGz/f+HBoIbFzhg9tuSMsLQTtGFMznQ+bikmIWBN62lCA0N7ynzC9QRJG8GAcMMOTpuHG/X1okLYkZpbnJtpE/Pe1xI=
+	t=1713949448; cv=none; b=aIh1mV8rHIDI3khAr9XGd9y1/1K8RydINFKTsZpU2TzWy82Tz6eR5I5rSsOPjm9vJz9/cc8TETifFbig/057tgra3zKeoekTPFCTTu8UnFLRPXFwf8VaWGMcdL4/54W3tF2FWl5Ko2IJOUIN8deocsCiSUUxv3kQyc6LIbgs1c8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713949457; c=relaxed/simple;
-	bh=qksrWxkR0vGCFklHnvkoYasBMe5RegjfrYaTlDF4BXk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=djwDcB1BqITf0xcMf+QkH4qNdj5mq82j83j4TEYGHOoYKlg5pQvnLCKYc/7hyE6bkPJ9IHLUnjDhvYUR0QTRdxlpbTrjmeq0TonHbkgGI3Y2ucWX5elqPXeTJQ1U4p+5RtkRZkcxO+bDqo9kAK3GqJLa/sF6+bD7bUqMVLkAFI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=brXMMJa5; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2a5ef566c7aso5277582a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 02:04:15 -0700 (PDT)
+	s=arc-20240116; t=1713949448; c=relaxed/simple;
+	bh=Y2wzOvQe5awl2YyrzbxpkVss7E7jaSjDhA6vqXjHISs=;
+	h=From:In-Reply-To:MIME-Version:References:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Csmoo/XTkb0/hc7gfLelAvmE7FWfRJNkZ81uCesOB8ft8AiiK4bbeFTXG52ulD9baSWLgVUq1yNM2ucyB9SWZaJFZvbzzZTw6tTw9AiFwh2zggMSQvIgiIdSrg0+//V2NeRJ+ybBBs035pcpCdX+2Jb7JJGr5UmEJYqgdXhN/fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=fOLfqlIy; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d858501412so89359721fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 02:04:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713949454; x=1714554254; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PYIPdENpbVZQ9HIQn9akzkzYpcsGYQETQSVXZ/yd8R0=;
-        b=brXMMJa5PcIuXGXTlLX4/v/Y4U2AeoqsLdq2lXqXrNWE8htQeoxU/SUTAErW0DBH3z
-         p92/rO+NqZKw+t2UzG1q/PkfxEbevQFpE5FYdVTLX7JmLsJ2T+69EXWuYh8efE4sAKkJ
-         T74/nX5r+tpI33SRmTLLH9NKrnCjUBqhQGkos=
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1713949443; x=1714554243; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:references:mime-version:in-reply-to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pG9za8GIt2C4BOKtDqST70eWWIAaa++7qoZuka22atU=;
+        b=fOLfqlIyZjW5NIDsjunXrf5zQeecKGfECk1Ut0zAaoXNQaqoYT1Od8bBgbAdUY4J+b
+         oAMyqqAiDH+z2wPtikd1QoVvSzGiMRwzX9ulXWrh3iGFknUibZ7fUT9rOGFBpbjuCAdS
+         PoNu6hm2/LXgd4mk7oaSCDm6k96HsOqTQCEsp51qnyihrHJu5DcFeeim621432QuiQd5
+         JYmxm+TEa0GjbbQf5vWKb0fKYyLWPMY2R/6561e1rHlQFxe1He5MZElaDxyvZaUtm5Qk
+         WFpWeoAHVVgeojypTFH6UpBUlZFpihTSUiJ/cVXHmmr5FsVzagTNOyVfi274v0N2Zbsr
+         8PFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713949454; x=1714554254;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PYIPdENpbVZQ9HIQn9akzkzYpcsGYQETQSVXZ/yd8R0=;
-        b=tVeXGZn27knkC8vyHbHX4KuE/khCosGF1rnDj1hj/7Ssz+9JW8aQ6cRa9okp2I5FDL
-         Nl5uQCRiTO6eB4Cybbe/MmCSl6iSvLAuiaYe9rjtE+FCcb6FqusHl2VB6JL61ihMYVdn
-         oIo97Z3xfaenWv7wXau/E3yLbIk0tLB16EHjv+vhIloIfrG9nVSufjxrW2guPCNNoKiv
-         zHahmHDqIkDk6Yr93HwSPr5FJ7Bnsugjj2nb5fJ8a3rVQ5sd0YYMAN8PU3VkAHoD4yyP
-         kQHTQh69bbpj40/i3R2OmnaFz+0iknOC3/d58kNnRB/hvNpuNeSp0VUuDa/OI6H3dArD
-         gZOQ==
-X-Gm-Message-State: AOJu0Yy4/Sx5ZQPeYHv4+zGS/oboKYHTIRL46DEcE0Yw04EWycartRN/
-	pUEK6VVDJQqOZqclThLI25YQdINMHpM0n4do+I1yCd0RcpKab1i/CZuKgwyvH6BSdvDZyGmQsoE
-	=
-X-Google-Smtp-Source: AGHT+IENUPRqn7faWjquObVQs5+1JEumsYMiz7DtQ/gPSBOWxdHheoAi8Vtm9d5VETo1mlGkymFgiA==
-X-Received: by 2002:a17:90a:7d17:b0:2a2:f35f:fa2d with SMTP id g23-20020a17090a7d1700b002a2f35ffa2dmr1643571pjl.17.1713949454570;
-        Wed, 24 Apr 2024 02:04:14 -0700 (PDT)
-Received: from localhost ([2401:fa00:8f:203:7c90:7e93:6f8d:8503])
-        by smtp.gmail.com with UTF8SMTPSA id y3-20020a17090a390300b002a232e4f9ddsm11748861pjb.34.2024.04.24.02.04.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 02:04:13 -0700 (PDT)
-From: David Stevens <stevensd@chromium.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-kernel@vger.kernel.org,
-	David Stevens <stevensd@chromium.org>
-Subject: [PATCH v2] genirq: Skip suspended irqs when restoring affinity
-Date: Wed, 24 Apr 2024 18:03:41 +0900
-Message-ID: <20240424090341.72236-1-stevensd@chromium.org>
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+        d=1e100.net; s=20230601; t=1713949443; x=1714554243;
+        h=cc:to:subject:message-id:date:references:mime-version:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pG9za8GIt2C4BOKtDqST70eWWIAaa++7qoZuka22atU=;
+        b=A85gbhiXPr+izfsfFOKV16cC4/wNSMhXfKCWkHttmPLm6r3pX9fcSp91/2CaK+Iy2j
+         UzEpIow0W+VR6G//g312cDbqNuFGCaUwyV/IvG43uIVrkgBjsDYeOuSKO3f+7ORQ5P42
+         x4Beg24XpLA9+0BkulzEot9Ex7vy8yX4JztvRkbddj0FqrQ8U+Bet6lqJ0WgHBgwEirc
+         PiGHvuERnxd8MiUtnyJN9BcS37nIhV1GZikCN7swciVqFRFiaA2ApaONn7Iu6Yaelf9s
+         gjcUJuKLtj4uMkinMIIZj+2xNwM79x0jkLsReVQOczAuXVwf6hCIiemHHLS/Qkgoordf
+         sqAg==
+X-Forwarded-Encrypted: i=1; AJvYcCWOQOA9SOnrpKWQThPToHsLTW4wFGlPz6N7hL3ILlWQ/89dRHs6UCpxcTaEOIkJeuzfrmJp9L9B5t5hq56/41pp2yjhqO47+kSpkmAl
+X-Gm-Message-State: AOJu0YxmCpeb0PcOWCp8kNytgCjGPwPtk2zvXWgP7ewRSoljd6z5Er+P
+	RKTfpBy0WNSGUWwb1rHqJxeaABhRxnSdRhbeJvbMPc0Fz6B+N4JciZ4vSHn2QsEajZdW8tOe6xj
+	rU3T2vRIYSJpDtORh74O9Zoe9Ere6cJdyrw/pgQ==
+X-Google-Smtp-Source: AGHT+IHihMiLWi4mS+U9MLzHnIRW71T0GNRhjdzDm651UOR7kxLQWwQJbUNXRKm+ie/OljuDvauLwUYFyWyyLZUYUGA=
+X-Received: by 2002:a05:6512:925:b0:51a:ca97:66d6 with SMTP id
+ f5-20020a056512092500b0051aca9766d6mr1164489lft.67.1713949442827; Wed, 24 Apr
+ 2024 02:04:02 -0700 (PDT)
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 24 Apr 2024 05:04:02 -0400
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+In-Reply-To: <99242a7c-53bf-4227-9623-7bc092f564b3@penguintechs.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240422130036.31856-1-brgl@bgdev.pl> <99242a7c-53bf-4227-9623-7bc092f564b3@penguintechs.org>
+Date: Wed, 24 Apr 2024 05:04:02 -0400
+Message-ID: <CAMRc=MepDwUbAKrWgm0CXKObqy8=igtug0QDgo-CgwxjZCAC2Q@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: qca: set power_ctrl_enabled on NULL returned
+ by gpiod_get_optional()
+To: Wren Turkal <wt@penguintechs.org>
+Cc: linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Zijun Hu <quic_zijuhu@quicinc.com>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-In irq_restore_affinity_of_irq(), skip suspended interrupts and let
-resume_device_irqs() deal with restoring them. This ensures that irqs
-are not delivered to drivers during the noirq phase of resuming from S3,
-after non-boot CPUs are brought back online.
+On Wed, 24 Apr 2024 07:07:05 +0200, Wren Turkal <wt@penguintechs.org> said:
+> On 4/22/24 6:00 AM, Bartosz Golaszewski wrote:
+>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>>
+>> Any return value from gpiod_get_optional() other than a pointer to a
+>> GPIO descriptor or a NULL-pointer is an error and the driver should
+>> abort probing. That being said: commit 56d074d26c58 ("Bluetooth: hci_qca:
+>> don't use IS_ERR_OR_NULL() with gpiod_get_optional()") no longer sets
+>> power_ctrl_enabled on NULL-pointer returned by
+>> devm_gpiod_get_optional(). Restore this behavior but bail-out on errors.
+>
+> Nack. This patch does fixes neither the disable/re-enable problem nor
+> the warm boot problem.
+>
+> Zijun replied to this patch also with what I think is the proper
+> reasoning for why it doesn't fix my setup.
+>
 
-Signed-off-by: David Stevens <stevensd@chromium.org>
----
- kernel/irq/cpuhotplug.c | 11 ++++++++---
- kernel/irq/manage.c     | 12 ++++++++----
- 2 files changed, 16 insertions(+), 7 deletions(-)
+Indeed, I only addressed a single issue here and not the code under the
+default: label of the switch case. Sorry.
 
-v1 -> v2:
- - Completely defer irq_startup() until __enable_irq().
-diff --git a/kernel/irq/cpuhotplug.c b/kernel/irq/cpuhotplug.c
-index 1ed2b1739363..43340e0b6df0 100644
---- a/kernel/irq/cpuhotplug.c
-+++ b/kernel/irq/cpuhotplug.c
-@@ -195,10 +195,15 @@ static void irq_restore_affinity_of_irq(struct irq_desc *desc, unsigned int cpu)
- 	    !irq_data_get_irq_chip(data) || !cpumask_test_cpu(cpu, affinity))
- 		return;
- 
--	if (irqd_is_managed_and_shutdown(data)) {
--		irq_startup(desc, IRQ_RESEND, IRQ_START_COND);
-+	/*
-+	 * Don't restore suspended interrupts here when a system comes back
-+	 * from S3. They are reenabled via resume_device_irqs().
-+	 */
-+	if (desc->istate & IRQS_SUSPENDED)
- 		return;
--	}
+Could you give the following diff a try?
+
+Bart
+
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index 92fa20f5ac7d..0e98ad2c0c9d 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -2327,16 +2327,21 @@ static int qca_serdev_probe(struct
+serdev_device *serdev)
+ 		    (data->soc_type == QCA_WCN6750 ||
+ 		     data->soc_type == QCA_WCN6855)) {
+ 			dev_err(&serdev->dev, "failed to acquire BT_EN gpio\n");
+-			power_ctrl_enabled = false;
++			return PTR_ERR(qcadev->bt_en);
+ 		}
+
++		if (!qcadev->bt_en)
++			power_ctrl_enabled = false;
 +
-+	if (irqd_is_managed_and_shutdown(data))
-+		irq_startup(desc, IRQ_RESEND, IRQ_START_COND);
- 
- 	/*
- 	 * If the interrupt can only be directed to a single target
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 1782f90cd8c6..82124f5bbe03 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -796,10 +796,14 @@ void __enable_irq(struct irq_desc *desc)
- 		irq_settings_set_noprobe(desc);
- 		/*
- 		 * Call irq_startup() not irq_enable() here because the
--		 * interrupt might be marked NOAUTOEN. So irq_startup()
--		 * needs to be invoked when it gets enabled the first
--		 * time. If it was already started up, then irq_startup()
--		 * will invoke irq_enable() under the hood.
-+		 * interrupt might be marked NOAUTOEN so irq_startup()
-+		 * needs to be invoked when it gets enabled the first time.
-+		 * This is also required when __enable_irq() is invoked for
-+		 * a managed and shutdown interrupt from the S3 resume
-+		 * path.
-+		 *
-+		 * If it was already started up, then irq_startup() will
-+		 * invoke irq_enable() under the hood.
- 		 */
- 		irq_startup(desc, IRQ_RESEND, IRQ_START_FORCE);
- 		break;
+ 		qcadev->sw_ctrl = devm_gpiod_get_optional(&serdev->dev, "swctrl",
+ 					       GPIOD_IN);
+ 		if (IS_ERR(qcadev->sw_ctrl) &&
+ 		    (data->soc_type == QCA_WCN6750 ||
+ 		     data->soc_type == QCA_WCN6855 ||
+-		     data->soc_type == QCA_WCN7850))
+-			dev_warn(&serdev->dev, "failed to acquire SW_CTRL gpio\n");
++		     data->soc_type == QCA_WCN7850)) {
++			dev_err(&serdev->dev, "failed to acquire SW_CTRL gpio\n");
++			return PTR_ERR(qcadev->sw_ctrl);
++		}
 
-base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
--- 
-2.44.0.769.g3c40516874-goog
+ 		qcadev->susclk = devm_clk_get_optional(&serdev->dev, NULL);
+ 		if (IS_ERR(qcadev->susclk)) {
+@@ -2355,10 +2360,13 @@ static int qca_serdev_probe(struct
+serdev_device *serdev)
+ 		qcadev->bt_en = devm_gpiod_get_optional(&serdev->dev, "enable",
+ 					       GPIOD_OUT_LOW);
+ 		if (IS_ERR(qcadev->bt_en)) {
+-			dev_warn(&serdev->dev, "failed to acquire enable gpio\n");
+-			power_ctrl_enabled = false;
++			dev_err(&serdev->dev, "failed to acquire enable gpio\n");
++			return PTR_ERR(qcadev->bt_en);
+ 		}
 
++		if (!qcadev->bt_en)
++			power_ctrl_enabled = false;
++
+ 		qcadev->susclk = devm_clk_get_optional(&serdev->dev, NULL);
+ 		if (IS_ERR(qcadev->susclk)) {
+ 			dev_warn(&serdev->dev, "failed to acquire clk\n");
 
