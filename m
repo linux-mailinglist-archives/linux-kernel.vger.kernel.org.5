@@ -1,289 +1,255 @@
-Return-Path: <linux-kernel+bounces-157772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F4FD8B15FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:15:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FFA38B1603
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:17:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15B8B1F23966
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:15:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 370B0284505
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:17:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF72916131C;
-	Wed, 24 Apr 2024 22:15:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93246165FC3;
+	Wed, 24 Apr 2024 22:16:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QrLaSbT8"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K2rJnMIg"
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53C7815687F
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:15:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BCFE1772F;
+	Wed, 24 Apr 2024 22:16:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713996950; cv=none; b=PmnwRG2Y+WOUqPANXWyZv5QlwojYiIW8YCnA8PlbFi3WfCvIKBOgS5rEKg+h1xmkil3fnlBwPMwnHUbDJzd0jHquJOW+IXyNweRuUQBgKWWFQKCuKGzHaNQpFn6zoB7RqhI0wiTBHMCvNSG4bi5eATok9VPsvEMJPkrGvdYixeM=
+	t=1713997016; cv=none; b=paQIfyd0r/Bmm6j/gOepSG+lXc0FVXB+vX9VElI/chh1WncinNksZYFrWyTolnGCfr/AzYyAHaZLbHQeUIhysqmQ2tDZR1VFZ4zh3mcOLQLA7xcW5WjZLRWhIOgKO4lXV7EV81x91RAsOOkkdC4PfSnKq0g6nGtmBerX+KYRFkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713996950; c=relaxed/simple;
-	bh=BTzlFaaUWyBZ/0avVLQeurEPKx5+Gs28mKWdbs+QSVA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tpSP38LuX3u/YmPJNWEQJ6F68uWboz0N9KQbPC88rZW9yznCnh8Q/nWQzEArEigeyqj+Kj6vii0i4VARYHX0n0v0PGAcA5ows7WYXZie9iabb0DmaplSNkDtCuMjgECLTK/jVCD/P4K2O8v9LzdR1EsmBAgbRoC5GcXGm8jr1DQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QrLaSbT8; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41a72f3a1edso2566365e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:15:48 -0700 (PDT)
+	s=arc-20240116; t=1713997016; c=relaxed/simple;
+	bh=/yLFzn2f7TzQB8zUF0y9sJy+jO37et3cW0yoOU8T9k8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cncRyKuFzUtO2nmpOqiqDaoNHeM2kO6ZYnUe2jJY+c5Df4u+62y0jdChwWQcY2yvtvnLCbYP35TrM8eB/r0SULsX6sr5kWZ5liIqzOxZnl/NplSwsL7/GRgXkRwlhGZ06GffGQIp0w2ismDvfg0y4D/EIM2ZTCRkU81tKI3aTW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K2rJnMIg; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-43716c1616dso2632041cf.2;
+        Wed, 24 Apr 2024 15:16:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713996946; x=1714601746; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9PwX26yDrbphgPlomUbRviwGBYrIb66VEMHKXPwN1t8=;
-        b=QrLaSbT8hi2hSaeSsk8f45Mqln3omSoq7Gb1Wxe4TrOA+WLE1vFyy+jS6/osf3LxOJ
-         1jP30i59pwj1VpxqLWOXbP2W7OUeUbaxYYxyZKhb0DZQhFeivkFMAkoZD9zdH54DW0rm
-         DBVQ94I1EsTcxOPScku/vKaqgblRqSuW0nfoTuV+BqFZzbrGH5Rx1T9urTEou5jgZCbP
-         Y2gxM9IkdFhlAzZUiPlm7SFzKsFi6k75djKMzAjjSeI8WrZjZRYapYmQ1U+/aDp1xdxx
-         HLj71v62pHYo1Odd2Du3a7R6kBWOVP+rKI21wq6Ojc2qtmGdGu7nJLFojPrgTary+cf2
-         gH2A==
+        d=gmail.com; s=20230601; t=1713997014; x=1714601814; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=W6PS2pwOfBu3kj7Fmn59K60LPIRKsK3MY9Ejj2YtdjI=;
+        b=K2rJnMIgRbkfibt+cMzhkpt7K4q70R2SnqXvAqF/H+5qN9YDVEJovN8oFu3kMT320g
+         lrDp8Q7IF1yPFYywEed1lDJvMiX3m2zQV6APV3vta9iBYGZupD4WWyFGFTOuejkRXRwj
+         vp/Y9U1V0ZYi8TXt48JVyPSPHAyM6XsMjKgcerSlV2L7UaNeS91yI4Xz8ZDO822/caqF
+         /oG6fPoJMB/iryHicYIdzCe7GY2v8YrC0ExUjI3mJA78hCGWquI70kchqxJVQenT5Z54
+         7vpI1lF+dAhUyQEaLU04yIv9Jg2ZjLqA44D3/T2AviHlLVnEcBBHAGSxXL8n3Xs2E+qf
+         fXYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713996946; x=1714601746;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9PwX26yDrbphgPlomUbRviwGBYrIb66VEMHKXPwN1t8=;
-        b=ahCAdSeY3hCxzeP/TFPGZx2Av2EMNGyNOJr9iJEcecoXHT9ce7Qjp7oiLtQFZRv/Oq
-         hrSVEIDS0qVVZskV9z7hlPdEWDbJe0pTAZNrVjF3tBlmQgxfGj3f+9smOtQswaF5yJl4
-         fmzVcDAmSoK0OboDK86s/MSxoZwFoZAN8OJFLTmys61KtMQwW+iSq29+dNNyC3L7Eod7
-         YxVgslUfCeaoGgLHt0DbYzlRxtT3b7y3B9Y7k/lCFb2sZt+Jt4nsI3i2PEHI25jVX9u0
-         WP9F0acyW3q3oN7XUnLjU6QxFUL8hyHbtcCKnVwEiRD/2dCr2OmKULsRBHwgtOgXDU23
-         ygFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVpNKA7kx5lUQwqD44JRkaoOJSdvA0C32+laMk0rv7WRRT5wpDhldu2XqfquEkv2TuXxBvlk22K1VDujOLzpBk7MAZl3yVvvpI+ET6p
-X-Gm-Message-State: AOJu0YwvMBkusM6e+O9crTZDWLsOYF2O9rPdDpFSg8xHadGW0z+aW3c4
-	5xjTVyS11n/bcCsDHDyWq1cKaYb1iSW68RlZltU36EA1LIyKRsiPgVc9OS4Silp7hJIRvGns1eo
-	SlMIZakCXUBT57y4pFG13Ba9qYlt3OxTK2L1K
-X-Google-Smtp-Source: AGHT+IHkboif/00IgRcoNKYbKyjHQwpzFRhV06M+te63W8KYhcpbAeVE+PqnNH2rpK8rFGBlds+W+jojcHREsdyxFyE=
-X-Received: by 2002:a05:600c:5247:b0:414:273:67d4 with SMTP id
- fc7-20020a05600c524700b00414027367d4mr2632403wmb.30.1713996946437; Wed, 24
- Apr 2024 15:15:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713997014; x=1714601814;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=W6PS2pwOfBu3kj7Fmn59K60LPIRKsK3MY9Ejj2YtdjI=;
+        b=p5linhvj1WkFY4+XKj/HzdXHH1oqZmnw/ZaDdidYNetF9F+1aoYVBMtJB3QMkHiuRx
+         YdRforBVEGl396fP+eaOfHML9TMADu8Odi3GnYPHbf1fvV5GJeEtiZ7hUWLJ6xGndecx
+         ZKwcdr07bbM4eeuxXp0G+jWEfVbEn7mMJccxVV4V+TRBfptFI2sWBbe6fOhBHbZVo3PY
+         wL8/nHMrArQYUSXX13gbHUZcNCpAptkoNNcew7irHfNlVwIB6NbwnYP7uGCKGtQ0Veom
+         xJcvFMvo/nrHgRp24e9hMxw/80aVZbASAsx+anv1OsPERH0dgdFsZ/h0LSVAZoRnMu8B
+         OVVg==
+X-Forwarded-Encrypted: i=1; AJvYcCVE9u0fhEYxRFvnoKgOrlH7vaEiQmgyF4oznDTZcSaFCcJvxz2HXVgcRooGg1WeSORQ+3AGoZDFmM9t+HDnqe7q9z1prqeltSBbiIEz8TJTLE1BzLejN6I8zpGpXgCGw8MaI/RYyEl0GmiE
+X-Gm-Message-State: AOJu0YxVHmqnSavE0rCSI+vxULs1cfqtTsEVDz0n/lxUGZj+eKkeaELw
+	9oX3KyGt1LQrM0kijeY+FAZOTqoeDR3pl08abRMVX1OTIWd1k3uF
+X-Google-Smtp-Source: AGHT+IE0BMrTVL8aZCcSneN09lqvYXMx4Na7OUXXkHaYA2G9383ajw63HFXmbYbvv3JOvf5g4QHPOg==
+X-Received: by 2002:a05:622a:20b:b0:431:5f79:6748 with SMTP id b11-20020a05622a020b00b004315f796748mr4257671qtx.51.1713997014061;
+        Wed, 24 Apr 2024 15:16:54 -0700 (PDT)
+Received: from stbirv-lnx-1.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id o14-20020ac841ce000000b00437a3bcc83asm6217997qtm.36.2024.04.24.15.16.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 15:16:53 -0700 (PDT)
+From: Doug Berger <opendmb@gmail.com>
+To: Al Cooper <alcooperx@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org,
+	bcm-kernel-feedback-list@broadcom.com,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	linux-serial@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Doug Berger <opendmb@gmail.com>
+Subject: [PATCH] serial: 8250_bcm7271: use default_mux_rate if possible
+Date: Wed, 24 Apr 2024 15:16:19 -0700
+Message-Id: <20240424221619.1840014-1-opendmb@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418081548.12160-1-lvzhaoxiong@huaqin.corp-partner.google.com>
- <20240418081548.12160-3-lvzhaoxiong@huaqin.corp-partner.google.com>
- <zanx5y3obqmewnbooovf52hx6vh7tpi4zsbse2dyzcqzddmzhw@kewxoa6n3mja>
- <CACb=7PURWtS8bwT5EcAFHhu7deHd2Y8cNOattfdwyEYpOUcbnQ@mail.gmail.com>
- <vbt2nxddw2dc7hkreq4iybv5zv5xyp32oajybeqsphgfrhzmn7@tskvckljmxpe>
- <CACb=7PVTvV9nsFu1ZAXu7YTjSOAGZka+c__EJq3J3qgSJGEShw@mail.gmail.com>
- <CAD=FV=VYAzqsGEBJai9b9n+HxHiG59L1vF73AEWcTwLS_ryjWw@mail.gmail.com>
- <an2k3vgynq4as2sd5dy6ccmdiqedmo7qjsab5qyfhesd333i2a@235sqph3bze5>
- <CAD=FV=VQ8rbwKk4WpHRER9p4cZp7UrrHRpgnErqbQxyxp4sg5w@mail.gmail.com> <CAA8EJprv3qBd1hfdWHrfhY=S0w2O70dZnYb6TVsS6AGRPxsYdw@mail.gmail.com>
-In-Reply-To: <CAA8EJprv3qBd1hfdWHrfhY=S0w2O70dZnYb6TVsS6AGRPxsYdw@mail.gmail.com>
-From: Hsin-Yi Wang <hsinyi@google.com>
-Date: Wed, 24 Apr 2024 15:15:18 -0700
-Message-ID: <CACb=7PVEpCFWf_aysRkeR0yWAXR5sTaXhNbi3TV3ffKj866+EQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] drm/panel: kd101ne3: add new panel driver
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Doug Anderson <dianders@google.com>, 
-	lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>, mripard@kernel.org, 
-	airlied@gmail.com, daniel@ffwll.ch, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	cong yang <yangcong5@huaqin.corp-partner.google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 24, 2024 at 2:49=E2=80=AFPM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> On Thu, 25 Apr 2024 at 00:04, Doug Anderson <dianders@google.com> wrote:
-> >
-> > Hi,
-> >
-> > On Tue, Apr 23, 2024 at 2:20=E2=80=AFPM Dmitry Baryshkov
-> > <dmitry.baryshkov@linaro.org> wrote:
-> > >
-> > > On Tue, Apr 23, 2024 at 01:41:59PM -0700, Doug Anderson wrote:
-> > > > Hi,
-> > > >
-> > > > On Tue, Apr 23, 2024 at 11:10=E2=80=AFAM Hsin-Yi Wang <hsinyi@googl=
-e.com> wrote:
-> > > > >
-> > > > > > > > > +#define _INIT_DCS_CMD(...) { \
-> > > > > > > > > +     .type =3D INIT_DCS_CMD, \
-> > > > > > > > > +     .len =3D sizeof((char[]){__VA_ARGS__}), \
-> > > > > > > > > +     .data =3D (char[]){__VA_ARGS__} }
-> > > > > > > > > +
-> > > > > > > > > +#define _INIT_DELAY_CMD(...) { \
-> > > > > > > > > +     .type =3D DELAY_CMD,\
-> > > > > > > > > +     .len =3D sizeof((char[]){__VA_ARGS__}), \
-> > > > > > > > > +     .data =3D (char[]){__VA_ARGS__} }
-> > > > > > > >
-> > > > > > > > This is the third panel driver using the same appoach. Can =
-you use
-> > > > > > > > mipi_dsi_generic_write_seq() instead of the huge table? Or =
-if you prefer
-> > > > > > > > the table, we should extract this framework to a common hel=
-per.
-> > > > > > > > (my preference is shifted towards mipi_dsi_generic_write_se=
-q()).
-> > > > > > > >
-> > > > > > > The drawback of mipi_dsi_generic_write_seq() is that it can c=
-ause the
-> > > > > > > kernel size grows a lot since every sequence will be expanded=
-.
-> > > > > > >
-> > > > > > > Similar discussion in here:
-> > > > > > > https://lore.kernel.org/dri-devel/CAD=3DFV=3DWju3WS45=3DEpXMU=
-g7FjYDh3-=3Dmvm_jS7TF1tsaAzbb4Uw@mail.gmail.com/
-> > > > > > >
-> > > > > > > This patch would increase the module size from 157K to 572K.
-> > > > > > > scripts/bloat-o-meter shows chg +235.95%.
-> > > > > > >
-> > > > > > > So maybe the common helper is better regarding the kernel mod=
-ule size?
-> > > > > >
-> > > > > > Yes, let's get a framework done in a useful way.
-> > > > > > I'd say, drop the _INIT_DELAY_CMD. msleep() and usleep_range() =
-should be
-> > > > > > used instead (and it's up to the developer to select correct de=
-lay
-> > > > > > function).
-> > > > > >
-> > > > > > >
-> > > > > > > > > +
-> > > > > > > > > +static const struct panel_init_cmd kingdisplay_kd101ne3_=
-init_cmd[] =3D {
-> > > > > > > > > +     _INIT_DELAY_CMD(50),
-> > > > > > > > > +     _INIT_DCS_CMD(0xE0, 0x00),
-> > > > > >
-> > > > > > [skipped the body of the table]
-> > > > > >
-> > > > > > > > > +     _INIT_DCS_CMD(0x0E, 0x48),
-> > > > > > > > > +
-> > > > > > > > > +     _INIT_DCS_CMD(0xE0, 0x00),
-> > > > > >
-> > > > > > > > > +     _INIT_DCS_CMD(0X11),
-> > > > > >
-> > > > > > Also, at least this is mipi_dsi_dcs_exit_sleep_mode().
-> > > > > >
-> > > > > > > > > +     /* T6: 120ms */
-> > > > > > > > > +     _INIT_DELAY_CMD(120),
-> > > > > > > > > +     _INIT_DCS_CMD(0X29),
-> > > > > >
-> > > > > > And this is mipi_dsi_dcs_set_display_on().
-> > > > > >
-> > > > > > Having a single table enourages people to put known commands in=
-to the
-> > > > > > table, the practice that must be frowned upon and forbidden.
-> > > > > >
-> > > > > > We have functions for some of the standard DCS commands. So, ma=
-ybe
-> > > > > > instead of adding a single-table based approach we can improve
-> > > > > > mipi_dsi_generic_write_seq() to reduce the bloat. E.g. by movin=
-g the
-> > > > > > error handling to a common part of enable() / prepare() functio=
-n.
-> > > > > >
-> > > > >
-> > > > > For this panel, I think it can also refer to how
-> > > > > panel-kingdisplay-kd097d04.c does. Create the table for init cmd =
-data,
-> > > > > not what operation to use, and use mipi_dsi_generic_write_seq() w=
-hen
-> > > > > looping through the table.
-> > > >
-> > > > Even more similar discussion:
-> > > >
-> > > > https://lore.kernel.org/r/CAD=3DFV=3DUGDbNvAMjzWSOvxybGikQcvW9JsRtb=
-xHVg8_97YPEQCA@mail.gmail.com
-> > >
-> > > It seems I skipped that thread.
-> > >
-> > > I'd still suggest a code-based solution compared to table-based one, =
-for
-> > > the reasons I've outlined before. Having a tables puts a pressure on =
-the
-> > > developer to put commands there for which we already have a
-> > > command-specific function.
-> >
-> > The problem is that with these panels that need big init sequences the
-> > code based solution is _a lot_ bigger. If it were a few bytes or a
-> > 1-2KB then fine, but when Hsin-Yi measured Linus W's attempt to move
-> > from a table to code it was 100K difference in code [1]. I would also
-> > say that having these long init sequences done as separate commands
-> > encourages people to skip checking the return values of each of the
-> > transfer functions and I don't love that idea.
-> >
-> > It would be ideal if these panels didn't need these long init
-> > sequences, but I don't have any inside knowledge here saying that they
-> > could be removed. So assume we can't get rid of the init sequences it
-> > feels like we have to find some way to make the tables work for at
-> > least the large chunks of init code and encourage people to make the
-> > tables readable...
->
->
-> I did a quick check on the boe-tv101wum-nl6 driver by converting the
-> writes to use the following macro:
->
-> #define mipi_dsi_dcs_write_cmd_seq(dsi, cmd, seq...)
->              \
->         do {                                                             =
-      \
->                 static const u8 d[] =3D { cmd, seq };                    =
-    \
->                 ret =3D mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));=
-    \
->                 if (ret < 0)                                             =
-      \
->                         goto err;                                        =
-      \
->         } while (0)
->
-> And then at the end of the init funciton having
->
-> err:
->         dev_err(panel->dev,
->                 "failed to write command %d\n", ret);
->         return ret;
-> }
->
+There is a scenario when resuming from some power saving states
+with no_console_suspend where console output can be generated
+before the 8250_bcm7271 driver gets the opportunity to restore
+the baud_mux_clk frequency. Since the baud_mux_clk is at its
+default frequency at this time the output can be garbled until
+the driver gets the opportunity to resume.
 
-I'm not sure about the coding style rule here, would it be considered
-unclear that caller of mipi_dsi_dcs_write_cmd_seq() needs to have err
-block, but the block may not be directly used in that caller and is
-only jumped from the macro?
+Since this is only an issue with console use of the serial port
+during that window and the console isn't likely to use baud
+rates that require alternate baud_mux_clk frequencies, allow the
+driver to select the default_mux_rate if it is accurate enough.
 
+Fixes: 41a469482de2 ("serial: 8250: Add new 8250-core based Broadcom STB driver")
+Signed-off-by: Doug Berger <opendmb@gmail.com>
+---
+ drivers/tty/serial/8250/8250_bcm7271.c | 101 +++++++++++++++----------
+ 1 file changed, 60 insertions(+), 41 deletions(-)
 
-> Size comparison:
->    text    data     bss     dec     hex filename
-> before
->   34109   10410      18   44537    adf9
-> ../build-64/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.o
-> making init data const
->   44359     184       0   44543    adff
-> ../build-64/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.o
-> with new macros
->   44353     184       0   44537    adf9
-> ../build-64/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.o
->
-> As you can see, there is literally no size difference with this macro in =
-place.
-> The only drawback is that the init stops on the first write rather
-> than going through the sequence.
->
-> WDYT? I can turn this into a proper patch if you think this makes sense.
->
-> >
-> >
-> > [1] https://lore.kernel.org/r/CAD=3DFV=3DUFa_AoJQvUT3BTiRs19WCA2xLVeQOU=
-=3D+nYu_HaE0_c6Q@mail.gmail.com
->
->
->
-> --
-> With best wishes
-> Dmitry
+diff --git a/drivers/tty/serial/8250/8250_bcm7271.c b/drivers/tty/serial/8250/8250_bcm7271.c
+index de270863eb5e..2569ca69223f 100644
+--- a/drivers/tty/serial/8250/8250_bcm7271.c
++++ b/drivers/tty/serial/8250/8250_bcm7271.c
+@@ -673,18 +673,46 @@ static void init_real_clk_rates(struct device *dev, struct brcmuart_priv *priv)
+ 	clk_set_rate(priv->baud_mux_clk, priv->default_mux_rate);
+ }
+ 
++static u32 find_quot(struct device *dev, u32 freq, u32 baud, u32 *percent)
++{
++	u32 quot;
++	u32 rate;
++	u64 hires_rate;
++	u64 hires_baud;
++	u64 hires_err;
++
++	rate = freq / 16;
++	quot = DIV_ROUND_CLOSEST(rate, baud);
++	if (!quot)
++		return 0;
++
++	/* increase resolution to get xx.xx percent */
++	hires_rate = div_u64((u64)rate * 10000, (u64)quot);
++	hires_baud = (u64)baud * 10000;
++
++	/* get the delta */
++	if (hires_rate > hires_baud)
++		hires_err = (hires_rate - hires_baud);
++	else
++		hires_err = (hires_baud - hires_rate);
++
++	*percent = (unsigned long)DIV_ROUND_CLOSEST_ULL(hires_err, baud);
++
++	dev_dbg(dev, "Baud rate: %u, MUX Clk: %u, Error: %u.%u%%\n",
++		baud, freq, *percent / 100, *percent % 100);
++
++	return quot;
++}
++
+ static void set_clock_mux(struct uart_port *up, struct brcmuart_priv *priv,
+ 			u32 baud)
+ {
+ 	u32 percent;
+ 	u32 best_percent = UINT_MAX;
+ 	u32 quot;
++	u32 freq;
+ 	u32 best_quot = 1;
+-	u32 rate;
+-	int best_index = -1;
+-	u64 hires_rate;
+-	u64 hires_baud;
+-	u64 hires_err;
++	u32 best_freq = 0;
+ 	int rc;
+ 	int i;
+ 	int real_baud;
+@@ -693,44 +721,35 @@ static void set_clock_mux(struct uart_port *up, struct brcmuart_priv *priv,
+ 	if (priv->baud_mux_clk == NULL)
+ 		return;
+ 
+-	/* Find the closest match for specified baud */
+-	for (i = 0; i < ARRAY_SIZE(priv->real_rates); i++) {
+-		if (priv->real_rates[i] == 0)
+-			continue;
+-		rate = priv->real_rates[i] / 16;
+-		quot = DIV_ROUND_CLOSEST(rate, baud);
+-		if (!quot)
+-			continue;
+-
+-		/* increase resolution to get xx.xx percent */
+-		hires_rate = (u64)rate * 10000;
+-		hires_baud = (u64)baud * 10000;
+-
+-		hires_err = div_u64(hires_rate, (u64)quot);
+-
+-		/* get the delta */
+-		if (hires_err > hires_baud)
+-			hires_err = (hires_err - hires_baud);
+-		else
+-			hires_err = (hires_baud - hires_err);
+-
+-		percent = (unsigned long)DIV_ROUND_CLOSEST_ULL(hires_err, baud);
+-		dev_dbg(up->dev,
+-			"Baud rate: %u, MUX Clk: %u, Error: %u.%u%%\n",
+-			baud, priv->real_rates[i], percent / 100,
+-			percent % 100);
+-		if (percent < best_percent) {
+-			best_percent = percent;
+-			best_index = i;
+-			best_quot = quot;
++	/* Try default_mux_rate first */
++	quot = find_quot(up->dev, priv->default_mux_rate, baud, &percent);
++	if (quot) {
++		best_percent = percent;
++		best_freq = priv->default_mux_rate;
++		best_quot = quot;
++	}
++	/* If more than 1% error, find the closest match for specified baud */
++	if (best_percent > 100) {
++		for (i = 0; i < ARRAY_SIZE(priv->real_rates); i++) {
++			freq = priv->real_rates[i];
++			if (freq == 0 || freq == priv->default_mux_rate)
++				continue;
++			quot = find_quot(up->dev, freq, baud, &percent);
++			if (!quot)
++				continue;
++
++			if (percent < best_percent) {
++				best_percent = percent;
++				best_freq = freq;
++				best_quot = quot;
++			}
+ 		}
+ 	}
+-	if (best_index == -1) {
++	if (!best_freq) {
+ 		dev_err(up->dev, "Error, %d BAUD rate is too fast.\n", baud);
+ 		return;
+ 	}
+-	rate = priv->real_rates[best_index];
+-	rc = clk_set_rate(priv->baud_mux_clk, rate);
++	rc = clk_set_rate(priv->baud_mux_clk, best_freq);
+ 	if (rc)
+ 		dev_err(up->dev, "Error selecting BAUD MUX clock\n");
+ 
+@@ -739,8 +758,8 @@ static void set_clock_mux(struct uart_port *up, struct brcmuart_priv *priv,
+ 		dev_err(up->dev, "Error, baud: %d has %u.%u%% error\n",
+ 			baud, percent / 100, percent % 100);
+ 
+-	real_baud = rate / 16 / best_quot;
+-	dev_dbg(up->dev, "Selecting BAUD MUX rate: %u\n", rate);
++	real_baud = best_freq / 16 / best_quot;
++	dev_dbg(up->dev, "Selecting BAUD MUX rate: %u\n", best_freq);
+ 	dev_dbg(up->dev, "Requested baud: %u, Actual baud: %u\n",
+ 		baud, real_baud);
+ 
+@@ -749,7 +768,7 @@ static void set_clock_mux(struct uart_port *up, struct brcmuart_priv *priv,
+ 	i += (i / 2);
+ 	priv->char_wait = ns_to_ktime(i);
+ 
+-	up->uartclk = rate;
++	up->uartclk = best_freq;
+ }
+ 
+ static void brcmstb_set_termios(struct uart_port *up,
+-- 
+2.34.1
+
 
