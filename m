@@ -1,181 +1,132 @@
-Return-Path: <linux-kernel+bounces-157537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BADC98B128A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:42:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82CA28B12AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:43:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29F7F1F2147D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:42:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FE4F2879A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDB2F18029;
-	Wed, 24 Apr 2024 18:42:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED65E2B9C4;
+	Wed, 24 Apr 2024 18:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OV8qAqYK"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L9L+IuEX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7B41798F;
-	Wed, 24 Apr 2024 18:42:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC9B1A716;
+	Wed, 24 Apr 2024 18:42:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713984155; cv=none; b=iHfh2VxZVJdasBy+mUPP2bn8IVfjSxP4Ez/l+ZRsuVk6Qxgf7jOLnFqgiTCKIi+3Tf51kVTJjM2XkbT2fPe31LLO2ImCljFC7JN46S9tiy7XeSIRGZOhjhZ5EcfmTyMKB1DMmxHAUnjrQ9gBPU0Xu+sVW5koxKE7J9bAI9nJbME=
+	t=1713984157; cv=none; b=hg8NtY5AApA20IIqBBZNizwT+RMLgvEau8XEW77qWehWlmZKAFfjhNEj8I/b73jpu8h4b/k7dp11Biz//gZU//mAOGFpxcz+jXI9aw7ZoqUJI1sx3rwTxn56RPXiFcDXQjFLaV5McBMvUy9jyqCDcbtWCAEgpb0umKWpW3sWQbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713984155; c=relaxed/simple;
-	bh=Itcg+Jd23ZQ0QilHdje/jSd9t3UqWVBHp9CbQrEwRDY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EC0C54yC8Hu0x5615zofFcvyM7Nc3r5nqH6KhVziqZhAXVoym/FjUgjRbRmcFdWK8wUBZyrfth6FTq4kY4D2wC0b8NzlKpkFevuEk84AkPtiPzP4ZkqfGuQDIGpro3YuS6YeA2JLBis1+Cy4PllmLqd9kZYy2MKxyNoDSav7cRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OV8qAqYK; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56e6acb39d4so144735a12.1;
-        Wed, 24 Apr 2024 11:42:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713984151; x=1714588951; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ol9krzBmTOyIuy1ft27l71rabBxmYrw1+e+89jby570=;
-        b=OV8qAqYKs6FYeM1aPS082RnpZOD6LRwZtnA9qVkBlThnXU4fEMJo9Zf2yis0sCWjlr
-         j+6/k2gdcIE6rNFmjx0Igv2Kt6Uxz11G0kt8al1YkSAPQtdUHbPii79Oco0dtOByUKzu
-         anJ4mKPOQH1/0zRiFapouef7wVddUiRLv3umrYZGVThK+hywrEC/zBzBRfdICbES8TlP
-         I0tDpWcaXO73m4PCHhcswjL3+QA0XDAX9oP/1zHEAtQL9HJmllPHr9ICRQz8XnAC2/cb
-         Ir13LLPltbIrO7NiorjZwHOUMOMWCZ0/6Ddfrcqb1NlAlwluMo+dj7zHTP+o9Nspi/jN
-         vumw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713984151; x=1714588951;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ol9krzBmTOyIuy1ft27l71rabBxmYrw1+e+89jby570=;
-        b=w1JOrdF+/3Z4oKN8GjmSQEgRhURZK9HothW/dB4F2sjjMFxzuJdS5gKg/qPwaydUTN
-         5O+Q8JhCNnoyWJO0qkNRqeGl3bNxTBlcm9XMdQrwGf2gLV2jmvkQnHRoyVkVHfRdHXB9
-         CoPyj/04v/0OOcu5Y9B4VfV1aZXh+QoFrYc0mjFhH8SSt42TKhcOf3xvEWDfrRL0VzaD
-         GeLT0uC4WZPEjs2AmUYGD0GuaScwxLSKk9zg+eil4VLsprc+qJBI7mA4p/HUZywlebpl
-         bIdNEhidlxpIVLawPu3NRVHQTh942F1q1UjxnpvRRetJADWTtEmjBu031Lp1UMu/aMJS
-         7rwg==
-X-Forwarded-Encrypted: i=1; AJvYcCUiSrFsgVZ1pjtgQx4tOIFdc/QJI/UaX4F4LAPN4T7jY/+BP7e7OrG12Pm0Leko1ruMF09a9pOIEQO6603+pxqcuyWBsvJVj+zXNm8tYvyaRltmyCb7NVv10aZ7iYrkpqz4nA3X9AGWwZ0=
-X-Gm-Message-State: AOJu0YxlR5IZTdyaJzkN0HqZ0Z3av128uv88Y2bd6GZkYlLoK5dwrP/b
-	pnmLCrM36n1P41/juAC8UZ+xyeaewWuQ/CgYaCXuTU1wpbNMdngd
-X-Google-Smtp-Source: AGHT+IFJqfBO5mQOjDTG16NEhTc1tvbEXpcR5UL3y/xbDmPZLBWl1fVr9z9AG8k1xyje5QaUGr0gWw==
-X-Received: by 2002:a50:9e64:0:b0:566:2f24:b063 with SMTP id z91-20020a509e64000000b005662f24b063mr2220945ede.23.1713984150928;
-        Wed, 24 Apr 2024 11:42:30 -0700 (PDT)
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id j2-20020aa7de82000000b005720e083878sm3644714edv.49.2024.04.24.11.42.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 11:42:30 -0700 (PDT)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Ban Tao <fengzheng923@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>, Joao Schim <joao@schimsalabim.eu>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Subject:
- Re: [PATCH] ASoC: sunxi: DMIC: Add controls for adjusting the mic gains
+	s=arc-20240116; t=1713984157; c=relaxed/simple;
+	bh=YV1l+NL1MbUX6QcpNEWpuWiaO5iXzK1TAEsfxx+4Rzo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=VchuClR5HAhzFnfn30tjnBCYt81oEhvO5mfBCdPgYi2pGaOmsbBTM2yz/2+N9cni+rqwYvICACiwYKPEc22GOAAwGZEZiMD67UJngW28eEPVdaJoug9XG0PJ5LcQvvu0b4Jzf3aVbdAneNXpppJsoCoCB3C/Z8JWwyiQqhxHLd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L9L+IuEX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8D91BC4AF0A;
+	Wed, 24 Apr 2024 18:42:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713984156;
+	bh=YV1l+NL1MbUX6QcpNEWpuWiaO5iXzK1TAEsfxx+4Rzo=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=L9L+IuEXthD0lvZJQZ/7HP25GnMBy36ColtjVo6argejgpPv3vA8uPUb01EIwMolm
+	 Iot9t2n0Ip3laYvHESrOxkQrxQP9ljf8qUIUgE7JwY76Sf2l5aDSj2a3537n1+e7iM
+	 3aCLYJRKnuPkoKnjoqtH+FT7i4iFfNh39AdjVX1uRAmyAtYQEwZ7zGBRZgxDDV1qXU
+	 WbujykTSL6ffoEuPEgU6k+6qPzuE3uwbq6/NX+M81bONSYez3+hmp4K5cxl8L6XayH
+	 zYR15lTfEhmkqCs5Q8TJ3tTUTQlB0KOWrmD2LmYJjH/cBpUy+hBjfksn5TlInwttFy
+	 ST/as7qk63S8g==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8109FC19F53;
+	Wed, 24 Apr 2024 18:42:36 +0000 (UTC)
+From: =?utf-8?q?Duje_Mihanovi=C4=87_via_B4_Relay?= <devnull+duje.mihanovic.skole.hr@kernel.org>
 Date: Wed, 24 Apr 2024 20:42:29 +0200
-Message-ID: <5772237.DvuYhMxLoT@jernej-laptop>
-In-Reply-To: <20240422150213.4040734-1-joao@schimsalabim.eu>
-References: <20240422150213.4040734-1-joao@schimsalabim.eu>
+Subject: [PATCH v10 02/12] dt-bindings: pinctrl: pinctrl-single: add
+ marvell,pxa1908-padconf compatible
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240424-pxa1908-lkml-v10-2-36cdfb5841f9@skole.hr>
+References: <20240424-pxa1908-lkml-v10-0-36cdfb5841f9@skole.hr>
+In-Reply-To: <20240424-pxa1908-lkml-v10-0-36cdfb5841f9@skole.hr>
+To: Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, 
+ Haojian Zhuang <haojian.zhuang@linaro.org>, 
+ =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, 
+ Lubomir Rintel <lkundrak@v3.sk>, Catalin Marinas <catalin.marinas@arm.com>, 
+ Will Deacon <will@kernel.org>, Kees Cook <keescook@chromium.org>, 
+ Tony Luck <tony.luck@intel.com>, 
+ "Guilherme G. Piccoli" <gpiccoli@igalia.com>, Rob Herring <robh@kernel.org>
+Cc: phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
+ Karel Balej <balejk@matfyz.cz>, David Wronek <david@mainlining.org>, 
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=989;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=KkKUaK2SeDyP20scuUXm7oVk+QfHUL3F87v8Iwvt8qk=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBmKVKUl27/OG+PLk3ZXfgd+Slke19f6jnwssT/t
+ Ej89zrVxnmJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZilSlAAKCRCaEZ6wQi2W
+ 4SowD/9Z1fBqrqZtXeWdIrjCtAVge6G3+6l00V8MVHqJpjOnSCPTo0EcDaXOrSMZZCwnjUwbWCB
+ GNFzU1sFeYBEp2Tmk7RT+wAB+UAaJNA8AlkPSF15DJhezdiHfVMibW+BEil7/kzolcSbDB+Pm6A
+ xOBtQ59I1r4XmyohtVaZFqs7qJVrDv6z9ZmwdZL0RmCB9BrjxTRkv3lO3BjFT9dVpphNsNfmLpf
+ u/6U/LV4hV6D1swBbDqcOKscS29SJ2ISMgZL6ipRApB8Wbk3w8GsvMzjWszGQ6LfezGspxehlnm
+ sF5j5u281gFYzB/LuKOp/Uzw/PCNmDUyt+258QCusRnb/dHbsN6cfzkctobk15383Tw2PggaXhj
+ 7gxaN3kxLc1Rg5Lf84/mQotyLApkzZH4eTId86jd+ApYSq22XPNUd4CmJ6Aev6Mwy1NTFV8wPZ2
+ djYLmYFDLQ/FJm6+EraY1bEjt06Iy3b2yPV4SVHQrSZ1mIyPb0+BmcAUvuSXXi0EhD1rLuxJMHe
+ jLSK+d8peMZMiQiG3mIEqvlBYyjfPY3acounggQo0FgQEWq2XfF2tlpxgCZ6Eh9TTRulxFHN3lP
+ 5tuZK0cb/UYhlcwkUerOevSEyW0BYqcrw4y/NFfKMoaXfD4l8+g/JzniMGs21McWMPACio0R39k
+ x5KLyWuowS7cLvg==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-Endpoint-Received: by B4 Relay for duje.mihanovic@skole.hr/default with
+ auth_id=112
+X-Original-From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Reply-To: duje.mihanovic@skole.hr
 
-Hi Joao,
+From: Duje Mihanović <duje.mihanovic@skole.hr>
 
-Dne ponedeljek, 22. april 2024 ob 17:02:13 GMT +2 je Joao Schim napisal(a):
-> The AllWinner H6 and later SoCs that sport a DMIC block contain a set of registers to control
-> the gain (left + right) of each of the four supported channels.
-> 
-> Add ASoC controls for changing each of the stereo channel gains using alsamixer and alike
+Add the "marvell,pxa1908-padconf" compatible to allow migrating to a
+separate pinctrl driver later.
 
-Add SoB tag.
+Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+ Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> ---
->  sound/soc/sunxi/sun50i-dmic.c | 34 ++++++++++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
-> 
-> diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
-> index c76628bc86c6..f8613d8c3462 100644
-> --- a/sound/soc/sunxi/sun50i-dmic.c
-> +++ b/sound/soc/sunxi/sun50i-dmic.c
-> @@ -14,6 +14,7 @@
->  #include <sound/dmaengine_pcm.h>
->  #include <sound/pcm_params.h>
->  #include <sound/soc.h>
-> +#include <sound/tlv.h>
->  
->  #define SUN50I_DMIC_EN_CTL			(0x00)
->  	#define SUN50I_DMIC_EN_CTL_GLOBE			BIT(8)
-> @@ -43,6 +44,17 @@
->  	#define SUN50I_DMIC_CH_NUM_N_MASK			GENMASK(2, 0)
->  #define SUN50I_DMIC_CNT				(0x2c)
->  	#define SUN50I_DMIC_CNT_N				(1 << 0)
-> +#define SUN50I_DMIC_D0D1_VOL_CTR		(0x30)
-> +	#define SUN50I_DMIC_D0D1_VOL_CTR_0R			(0)
-> +	#define SUN50I_DMIC_D0D1_VOL_CTR_0L			(8)
-> +	#define SUN50I_DMIC_D0D1_VOL_CTR_1R			(16)
-> +	#define SUN50I_DMIC_D0D1_VOL_CTR_1L			(24)
-> +#define SUN50I_DMIC_D2D3_VOL_CTR                (0x34)
-> +        #define SUN50I_DMIC_D2D3_VOL_CTR_2R                     (0)
-> +        #define SUN50I_DMIC_D2D3_VOL_CTR_2L                     (8)
-> +        #define SUN50I_DMIC_D2D3_VOL_CTR_3R                     (16)
-> +        #define SUN50I_DMIC_D2D3_VOL_CTR_3L                     (24)
-> +
->  #define SUN50I_DMIC_HPF_CTRL			(0x38)
->  #define SUN50I_DMIC_VERSION			(0x50)
->  
-> @@ -273,8 +285,30 @@ static const struct of_device_id sun50i_dmic_of_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
->  
-> +static const DECLARE_TLV_DB_SCALE(sun50i_dmic_vol_scale, -12000, 75, 1);
+diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
+index c11495524dd2..1ce24ad8bc73 100644
+--- a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
+@@ -33,6 +33,10 @@ properties:
+               - ti,omap5-padconf
+               - ti,j7200-padconf
+           - const: pinctrl-single
++      - items:
++          - enum:
++              - marvell,pxa1908-padconf
++          - const: pinconf-single
+ 
+   reg:
+     maxItems: 1
 
-DECLARE_TLV_DB_SCALE is old name, SNDRV_CTL_TLVD_DECLARE_DB_SCALE should be
-used instead.
-
-Other than that, it looks fine.
-
-Best regards,
-Jernej
-
-> +
-> +static const struct snd_kcontrol_new sun50i_dmic_controls[] = {
-> +
-> +        SOC_DOUBLE_TLV("DMIC Channel 0 Capture Volume", SUN50I_DMIC_D0D1_VOL_CTR,
-> +                       SUN50I_DMIC_D0D1_VOL_CTR_0L, SUN50I_DMIC_D0D1_VOL_CTR_0R,
-> +                       0xFF, 0, sun50i_dmic_vol_scale),
-> +        SOC_DOUBLE_TLV("DMIC Channel 1 Capture Volume", SUN50I_DMIC_D0D1_VOL_CTR,
-> +                       SUN50I_DMIC_D0D1_VOL_CTR_1L, SUN50I_DMIC_D0D1_VOL_CTR_1R,
-> +                       0xFF, 0, sun50i_dmic_vol_scale),
-> +        SOC_DOUBLE_TLV("DMIC Channel 2 Capture Volume", SUN50I_DMIC_D2D3_VOL_CTR,
-> +                       SUN50I_DMIC_D2D3_VOL_CTR_2L, SUN50I_DMIC_D2D3_VOL_CTR_2R,
-> +                       0xFF, 0, sun50i_dmic_vol_scale),
-> +        SOC_DOUBLE_TLV("DMIC Channel 3 Capture Volume", SUN50I_DMIC_D2D3_VOL_CTR,
-> +                       SUN50I_DMIC_D2D3_VOL_CTR_3L, SUN50I_DMIC_D2D3_VOL_CTR_3R,
-> +                       0xFF, 0, sun50i_dmic_vol_scale),
-> +
-> +
-> +};
-> +
->  static const struct snd_soc_component_driver sun50i_dmic_component = {
->  	.name           = "sun50i-dmic",
-> +	.controls	= sun50i_dmic_controls,
-> +	.num_controls	= ARRAY_SIZE(sun50i_dmic_controls),
->  };
->  
->  static int sun50i_dmic_runtime_suspend(struct device *dev)
-> 
-
-
+-- 
+2.44.0
 
 
 
