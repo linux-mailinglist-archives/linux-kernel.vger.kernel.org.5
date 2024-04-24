@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-156207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 534588AFF7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:22:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E74A8AFF7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:22:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD1501F22C93
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:22:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8106C1C21C51
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:22:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9912313D886;
-	Wed, 24 Apr 2024 03:22:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8E3E140363;
+	Wed, 24 Apr 2024 03:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="FPAem1Gj"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="iEOTLR6Q"
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6412285C46;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2CB086254;
 	Wed, 24 Apr 2024 03:22:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713928927; cv=none; b=VnCEVs9uR98w8CDdQBjk7Wd2xktXuRqQck181r2Dju8QyTBGZzzejq7Lsfw3wwUPcqVqKJCWfyvjnbqUtJPmHXEjChxVXGI3k8WsVIU1h1j1uz2dEMFiDdOB2RZhoXGOIlJMkbBVJwfPt+kMi8zVYGAnCbPRG1jvHtoFPFhI0Vo=
+	t=1713928931; cv=none; b=VY5NXC+9WrtnAFGv/KoxNfKK+f9VwpzmPlr3/4ktmHKIQk022O6BSY61WPfir6XQLd/U4dr2YdheE1l+sr8dQ/m3STU4kyuYQMkAZvF9rtWjE+cF6QmhOnAEsZckHmV82+mQQFsHimwun/YrWoNqqnxC0ndb42AtIIZ8g0F23CM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713928927; c=relaxed/simple;
-	bh=15Ics9rBeRjslxPH+6s/riknV83YlE2k7okx48Rqd8A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=ebvQMkgxocaWqxyFhUNCDHgt7fk10L5IB83Kmghb+EHohZJAAGsrjr68kCsFAq7r96o5o9mqq4tWG4usfPhhxxKmKz9Uryykfhb4WxdZ7i9kZ5NI7vVjwjb5mAWm2xxk9rtHcle+DuT9sCuR7Qib7OhwUPtXbOfNzAcfWpnnjrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=FPAem1Gj; arc=none smtp.client-ip=205.220.168.131
+	s=arc-20240116; t=1713928931; c=relaxed/simple;
+	bh=9R7FIcQFKBEQQx5QXYjeUT1GVFuSq72auzeXMoCNvHU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=mYUxXXIGeCajkRB1B3fEHEiEHYXVY560rJ2Dkxh0WmtW79qbGBTx3pXpAmvgjED9bEFl2oI1bNoEPzvGv4vjHNaFpwCQCyvlYGrygaNV2QyDRLsHQLjHoRAf/Xo/YbNQDA9kyMH8GL9smoEbGZSNbVurJ4DNRSWmffTe7DalccM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=iEOTLR6Q; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
 Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O1nCTQ023738;
-	Wed, 24 Apr 2024 03:22:03 GMT
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O2tinR012807;
+	Wed, 24 Apr 2024 03:22:04 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references; s=
-	qcppdkim1; bh=g+qBXc7qxkRg7xJfqPRUgrpsOaBjjklP9h5veFTBi7A=; b=FP
-	Aem1GjMpNXZh0yCCL4u72v2kys+RjKwKZ5u3wcORRcb/Xe7nlQiolTgUeJVzAVfO
-	pXJ6trwamm5bwnz2YJUJM9+9O0iYCR13WnUahJZGCeGE22fTXrB01YnF7cVL3XFZ
-	fA+0cm6/BfKps4g66qYgNb5komYsuGLbFbzTY7GxzJAxZuxdf761oguF2SIzdWL/
-	R88O5oal7PFjk0+ixVWoH9+V6paj261Nq2j5c9PCMjxg2Xa9RTOmWw6TeJx3U50C
-	RAuLLRR6Qqh9km4vpS5IFsDOdiLwohI6JFHMnOh7T1LtWv1gXy9n/GG8z6AL0lzA
-	0de2ujEj9M99ZLXbMXYA==
-Received: from aptaippmta01.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xppn5gbjw-1
+	qcppdkim1; bh=brzh2YeNdUZBh+5oiJjhUjNiEloHl8YjISKgrD0j3MI=; b=iE
+	OTLR6Q9DGXmG+5pgn++NZx9fqUgPdNX1QpKbGhPQA157EoUg2yFGrUk+39GZ6x23
+	p/FZq4M0QA5nBDpBBd0IybTzCvBw3yUKjQHN2HXritpYMc696RyA3HErbhnDfCvP
+	wDYe2WAURhxxrnhZEto0106WDHzwDxhoh47USQy3WlpPK2DEjDY1ON5zFdVjRCdv
+	BVYLvmtPbUV4mkn5qCAd/oihCH4ClLejXd4LSXGxp/DyYPEl38uCDUSkQ4z1Kv/2
+	ECC/rASQ0UWInEn7pUhRadzT1Is7fvtoUm2t1SVGmxTYTQHNbCJvJTidPmLVMZoB
+	V4WRqQaja7xks6wUi9DA==
+Received: from aptaippmta02.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xppn5gbjx-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Wed, 24 Apr 2024 03:22:03 +0000 (GMT)
-Received: from pps.filterd (APTAIPPMTA01.qualcomm.com [127.0.0.1])
-	by APTAIPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 43O3M1jK024093;
+Received: from pps.filterd (APTAIPPMTA02.qualcomm.com [127.0.0.1])
+	by APTAIPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 43O3M17U017025;
 	Wed, 24 Apr 2024 03:22:01 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 3xm6skh29q-1;
+	by APTAIPPMTA02.qualcomm.com (PPS) with ESMTP id 3xm6skgtj3-1;
 	Wed, 24 Apr 2024 03:22:01 +0000
-Received: from APTAIPPMTA01.qualcomm.com (APTAIPPMTA01.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43O3M1Q9024087;
+Received: from APTAIPPMTA02.qualcomm.com (APTAIPPMTA02.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43O3M07U017001;
 	Wed, 24 Apr 2024 03:22:01 GMT
 Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
-	by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 43O3M10H024082;
+	by APTAIPPMTA02.qualcomm.com (PPS) with ESMTP id 43O3M10E017012;
 	Wed, 24 Apr 2024 03:22:01 +0000
 Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 4098150)
-	id 605745B1E; Wed, 24 Apr 2024 11:22:00 +0800 (CST)
+	id C4D485B1C; Wed, 24 Apr 2024 11:22:00 +0800 (CST)
 From: Qiang Yu <quic_qianyu@quicinc.com>
 To: mani@kernel.org, quic_jhugo@quicinc.com
 Cc: mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
         quic_mrana@quicinc.com, Qiang Yu <quic_qianyu@quicinc.com>
-Subject: [PATCH v5 2/3] bus: mhi: host: Add a new API for getting channel doorbell address
-Date: Wed, 24 Apr 2024 11:21:54 +0800
-Message-Id: <1713928915-18229-3-git-send-email-quic_qianyu@quicinc.com>
+Subject: [PATCH v5 3/3] bus: mhi: host: pci_generic: Add edl callback to enter EDL
+Date: Wed, 24 Apr 2024 11:21:55 +0800
+Message-Id: <1713928915-18229-4-git-send-email-quic_qianyu@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1713928915-18229-1-git-send-email-quic_qianyu@quicinc.com>
 References: <1713928915-18229-1-git-send-email-quic_qianyu@quicinc.com>
@@ -74,8 +74,8 @@ X-QCInternal: smtphost
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: FURHiyRLJfNuAenTDfrslMnwu_cUY42v
-X-Proofpoint-ORIG-GUID: FURHiyRLJfNuAenTDfrslMnwu_cUY42v
+X-Proofpoint-GUID: 6307CEO8vJo6-1KKTXF_LYsnHkAwqg15
+X-Proofpoint-ORIG-GUID: 6307CEO8vJo6-1KKTXF_LYsnHkAwqg15
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
  definitions=2024-04-23_20,2024-04-23_02,2023-05-22_02
@@ -90,77 +90,122 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-Some controllers may want to know the address of a certain doorbell. Hence
-add a new API where we read CHDBOFF register to get the base address of
-doorbell, so that the controller can calculate the address of the doorbell
-it wants by adding additional offset.
+Some of the MHI modems like SDX65 based ones are capable of entering the EDL
+mode as per the standard triggering mechanism defined in the MHI spec v1.2. So
+let's add a common mhi_pci_generic_edl_trigger() function that triggers the EDL
+mode in the device when user writes to the /sys/bus/mhi/devices/.../trigger_edl
+file.
 
 Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
 Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
 ---
- drivers/bus/mhi/host/init.c |  6 ++----
- drivers/bus/mhi/host/main.c | 16 ++++++++++++++++
- include/linux/mhi.h         |  7 +++++++
- 3 files changed, 25 insertions(+), 4 deletions(-)
+ drivers/bus/mhi/host/pci_generic.c | 45 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
-index 7104c18..6e0fa79 100644
---- a/drivers/bus/mhi/host/init.c
-+++ b/drivers/bus/mhi/host/init.c
-@@ -541,11 +541,9 @@ int mhi_init_mmio(struct mhi_controller *mhi_cntrl)
- 	dev_dbg(dev, "Initializing MHI registers\n");
+diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
+index 51639bf..c65eaa8 100644
+--- a/drivers/bus/mhi/host/pci_generic.c
++++ b/drivers/bus/mhi/host/pci_generic.c
+@@ -27,12 +27,16 @@
+ #define PCI_VENDOR_ID_THALES	0x1269
+ #define PCI_VENDOR_ID_QUECTEL	0x1eac
  
- 	/* Read channel db offset */
--	ret = mhi_read_reg(mhi_cntrl, base, CHDBOFF, &val);
--	if (ret) {
--		dev_err(dev, "Unable to read CHDBOFF register\n");
-+	ret = mhi_get_channel_doorbell_offset(mhi_cntrl, &val);
-+	if (ret)
- 		return -EIO;
--	}
- 
- 	if (val >= mhi_cntrl->reg_len - (8 * MHI_DEV_WAKE_DB)) {
- 		dev_err(dev, "CHDB offset: 0x%x is out of range: 0x%zx\n",
-diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-index 15d657a..4de7567 100644
---- a/drivers/bus/mhi/host/main.c
-+++ b/drivers/bus/mhi/host/main.c
-@@ -1691,3 +1691,19 @@ void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev)
- 	}
++#define MHI_EDL_DB			91
++#define MHI_EDL_COOKIE			0xEDEDEDED
++
+ /**
+  * struct mhi_pci_dev_info - MHI PCI device specific information
+  * @config: MHI controller configuration
+  * @name: name of the PCI module
+  * @fw: firmware path (if any)
+  * @edl: emergency download mode firmware path (if any)
++ * @edl_trigger: capable of triggering EDL mode in the device (if supported)
+  * @bar_num: PCI base address register to use for MHI MMIO register space
+  * @dma_data_width: DMA transfer word size (32 or 64 bits)
+  * @mru_default: default MRU size for MBIM network packets
+@@ -44,6 +48,7 @@ struct mhi_pci_dev_info {
+ 	const char *name;
+ 	const char *fw;
+ 	const char *edl;
++	bool edl_trigger;
+ 	unsigned int bar_num;
+ 	unsigned int dma_data_width;
+ 	unsigned int mru_default;
+@@ -292,6 +297,7 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx75_info = {
+ 	.name = "qcom-sdx75m",
+ 	.fw = "qcom/sdx75m/xbl.elf",
+ 	.edl = "qcom/sdx75m/edl.mbn",
++	.edl_trigger = true,
+ 	.config = &modem_qcom_v2_mhiv_config,
+ 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+ 	.dma_data_width = 32,
+@@ -302,6 +308,7 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
+ 	.name = "qcom-sdx65m",
+ 	.fw = "qcom/sdx65m/xbl.elf",
+ 	.edl = "qcom/sdx65m/edl.mbn",
++	.edl_trigger = true,
+ 	.config = &modem_qcom_v1_mhiv_config,
+ 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+ 	.dma_data_width = 32,
+@@ -312,6 +319,7 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx55_info = {
+ 	.name = "qcom-sdx55m",
+ 	.fw = "qcom/sdx55m/sbl1.mbn",
+ 	.edl = "qcom/sdx55m/edl.mbn",
++	.edl_trigger = true,
+ 	.config = &modem_qcom_v1_mhiv_config,
+ 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+ 	.dma_data_width = 32,
+@@ -928,6 +936,40 @@ static void health_check(struct timer_list *t)
+ 	mod_timer(&mhi_pdev->health_check_timer, jiffies + HEALTH_CHECK_PERIOD);
  }
- EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
-+
-+int mhi_get_channel_doorbell_offset(struct mhi_controller *mhi_cntrl, u32 *chdb_offset)
+ 
++static int mhi_pci_generic_edl_trigger(struct mhi_controller *mhi_cntrl)
 +{
-+	struct device *dev = &mhi_cntrl->mhi_dev->dev;
 +	void __iomem *base = mhi_cntrl->regs;
-+	int ret;
++	void __iomem *edl_db;
++	int ret = 0;
++	u32 val;
 +
-+	ret = mhi_read_reg(mhi_cntrl, base, CHDBOFF, chdb_offset);
++	ret = mhi_device_get_sync(mhi_cntrl->mhi_dev);
 +	if (ret) {
-+		dev_err(dev, "Unable to read CHDBOFF register\n");
-+		return -EIO;
++		dev_err(mhi_cntrl->cntrl_dev, "Failed to wakeup the device\n");
++		return ret;
 +	}
 +
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(mhi_get_channel_doorbell_offset);
-diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-index d968e1a..2cf1b3a 100644
---- a/include/linux/mhi.h
-+++ b/include/linux/mhi.h
-@@ -816,4 +816,11 @@ int mhi_queue_skb(struct mhi_device *mhi_dev, enum dma_data_direction dir,
-  */
- bool mhi_queue_is_full(struct mhi_device *mhi_dev, enum dma_data_direction dir);
- 
-+/**
-+ * mhi_get_channel_doorbell_offset - Get the channel doorbell offset
-+ * @mhi_cntrl: MHI controller
-+ * @chdb_offset: Channel doorbell offset
-+ */
-+int mhi_get_channel_doorbell_offset(struct mhi_controller *mhi_cntrl, u32 *chdb_offset);
++	pm_wakeup_event(&mhi_cntrl->mhi_dev->dev, 0);
++	mhi_cntrl->runtime_get(mhi_cntrl);
 +
- #endif /* _MHI_H_ */
++	ret = mhi_get_channel_doorbell_offset(mhi_cntrl, &val);
++	if (ret)
++		goto err_get_chdb;
++
++	edl_db = base + val + (8 * MHI_EDL_DB);
++
++	mhi_cntrl->write_reg(mhi_cntrl, edl_db + 4, upper_32_bits(MHI_EDL_COOKIE));
++	mhi_cntrl->write_reg(mhi_cntrl, edl_db, lower_32_bits(MHI_EDL_COOKIE));
++
++	mhi_soc_reset(mhi_cntrl);
++
++err_get_chdb:
++	mhi_cntrl->runtime_put(mhi_cntrl);
++	mhi_device_put(mhi_cntrl->mhi_dev);
++
++	return ret;
++}
++
+ static int mhi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ {
+ 	const struct mhi_pci_dev_info *info = (struct mhi_pci_dev_info *) id->driver_data;
+@@ -962,6 +1004,9 @@ static int mhi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	mhi_cntrl->runtime_put = mhi_pci_runtime_put;
+ 	mhi_cntrl->mru = info->mru_default;
+ 
++	if (info->edl_trigger)
++		mhi_cntrl->edl_trigger = mhi_pci_generic_edl_trigger;
++
+ 	if (info->sideband_wake) {
+ 		mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
+ 		mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
 -- 
 2.7.4
 
