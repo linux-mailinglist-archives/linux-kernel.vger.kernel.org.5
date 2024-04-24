@@ -1,347 +1,240 @@
-Return-Path: <linux-kernel+bounces-156635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04F078B060D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:29:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A684F8B0610
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:30:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0F1A284F29
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:29:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA0591C22B52
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:30:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89C44159599;
-	Wed, 24 Apr 2024 09:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CCDC158D9C;
+	Wed, 24 Apr 2024 09:30:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EDARoSsl"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VFSRCOKw";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="LtAa1IcZ"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 907C81591F2
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:28:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713950887; cv=none; b=eep9H5Ia0e/ZF+wcZXwZh0k/N1YxBSyDX+CyCGgiImq3AjNkOhxQXX+KQv54FKtrkRuqhECjRspAJyEvRTyunoDORg7NrxnNuIaR1j6abhroZ8vgDXoPZc+z5VK4fVzOl/UgTymTbNvJP0XDj/ogVI0dsYG7/E+BwxddtReSQvc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713950887; c=relaxed/simple;
-	bh=fRpe4tZif781lZ12DHSpdu5zykO3631nXc2R0m1h4Bo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=BrDTfPD530Ik1suUSIGtGERs1eSdO0XlFODx13OFven0jf14njZML9ZxrtICDdeHMkn+0ymeQVTN2eI8DfKvNCeDop0Z2O6pkaXLoJGrTFTmTMd6Wt6+essljakiCFalFwDsPI40BzkFAnf3pUwd2dZHNsC/iGZXpe8lZiTpAjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EDARoSsl; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2da08b06e0dso78147021fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 02:28:05 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90E0C1EF1A;
+	Wed, 24 Apr 2024 09:30:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713951040; cv=fail; b=XgvotGidTkchN0MGpKPQbiV7rm62zc9cJ7+ueDHSicWrWQmAWBjdB2sNUO60C0neReCkd7SSD+oILdNhKTUaG9KtGQ3KLb5F9wWl66aalbybGByCXimfnItwqIrSDkpS7g4v6u17s1rqxZkOnjwtU6D0OipDDwV6jqTIECdTMac=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713951040; c=relaxed/simple;
+	bh=F6qkd+g1m6gdqOlYBJ/yVyNyVSpGIJNKqbws+d8EAKA=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=jodS4LgR/z9PCTg09wJO2GgMiDtgF3fYfpL24whHDwUXsYjz9I7oF4yctG8vQthX0d8lotSaVAsEJbiIyXUkgPvtr6eFSRF0dBraaE4Ad2a1Jw6r1l65BFlgjbEpMnRWlU4j6iaQZJlpZB8k7SRtH6AtJZeq0NYyNKAMK5sgGdQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=VFSRCOKw; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=LtAa1IcZ; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43O8eRB2014728;
+	Wed, 24 Apr 2024 09:30:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=7XeOVleqWkQ4tu3Ka74r2d5GDjNcrhGqy9Kdfn8dURY=;
+ b=VFSRCOKwledHNZCvCELkKfNxwYX0+a+diLz9hjftE1W2zIGy/LEPoIVusZuhVkEhUJn8
+ gUiwu8/FLf/yTinwsZafE1VcxbNNET6e++oH93U9bKJKnNKrKgvx9Bt2SLTKqcVPbPHD
+ iskGlwy7Bnvra4y7ruO/izytz+lrKiGthSVzWVLR9eREe200HZciJU3yciiOOoR//DyG
+ BVU9BGxgw2sXZB0GJU5DIpLL5fWV82FOF2Ajmrw7sGk0RAsLq8/chLshioK0SGqi5DnW
+ KJ3YggJEe/eHIW3Ewepa/WG4WM0Rnst+u62m8oSWNx+WVA4JRpCuic+MdU6Y9sHZX9DH gw== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xm4g4fmxb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 24 Apr 2024 09:30:07 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43O7jtGj035542;
+	Wed, 24 Apr 2024 09:30:06 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xm458hwgx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 24 Apr 2024 09:30:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GoMAUKp9fwg8UHrRVRPNZ+LCPM10RODauLhmb5SFKsHG1+nLWh/jrAWVEmG5/25YUviSq9diuxioYxKICXQ8EUlQhcizP9+dqPF9rpzxFnjgOMPH/wGAp8USWuZqJX/Z5ftX8pshCOE6B79XkX9ktdxbjs3ifcUsQBPjgEdh64tTAlDjibI7/kSCe8kB5h/To5Xc2NgBvfUAyWLid/2/WnNsNuB+6w4n2p2vsaKNpNfTrAGZRbDPN5wHvfBMOFCQd9BUqytP+stzTSnXkOZDIduEc1Gye5VRymCy4IYkhLnU1GkNOdl9NUUeDmDoNiQGlDl2P3sDDnS6IByVInOq5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7XeOVleqWkQ4tu3Ka74r2d5GDjNcrhGqy9Kdfn8dURY=;
+ b=kHwis0swt59w5qpTsjHqUtZZ4Bq13/iOmypI2B7WWEgOgzjHGfbSFJq2XjUe55UeOGM7OyYaK78DTTcC4I1a1FpMSXlGAH0lTF2qbwPqtlTdtbcZbFfiWR740Vr/eYIAzq4kTQfNxqFZf/oSWBmVzBJQ3/5JRfz6sE6ALxfmBxaRp1TMOjtCxbbn7melpuxNkB8nDHM+DXcQVFExCq5/qnrMxWrT5vAQKJ0kJyNMEIsH3gN5FhvbGkvu3FLH/UPSO3Yf4wdS6G9ezPUH2TpWgOypyNNQ9SKxIwWHEYJ+90KcYle8datBK5bAJEQuHRoNQCuxqGbyRlfO4athhT6mhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713950884; x=1714555684; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+XqnvD15NkzmaJMEzgWAv80CASkF9y6TdmD/lauJI7g=;
-        b=EDARoSslWh7Ym3+J9pihQkoxLnk6LEcN0ivKHg6uGmlfVT6c4TPKyCcRn2wooCYhtU
-         REhJ86HhRnh0CBowNiJRdkZSZLr7Pevuf4Z2USon63zBCCY8q1dSF2qCoUZmyLto5juy
-         NGSF9LnMlmN6+NqrLRzCo9t+chfdflY5ay/0+g7TmRlhMmY6rSrxUpxUhSTV4jH+5lH4
-         XFAA8/b89Ci19Vi7J7qFIgtmvnrcBAljGSKauRcKbEcl5AagusMd/sCnpq3+PctKs/Qj
-         llCGKXliOCBZu4GBeu13shPAyNNJU8kJ7AbCfyfeUQHzXh7rxr8eHMKXlH0+v3FCiQaX
-         0Wdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713950884; x=1714555684;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+XqnvD15NkzmaJMEzgWAv80CASkF9y6TdmD/lauJI7g=;
-        b=rIE0rMfi2aiGTk0Td9fnumOxwfNG39qu7NuE01rDbyYFS/mi85eyCsc7ClKo0XT4Qa
-         ybGiWpdPNfqpY/rjFU55vUAFwTa7BRmkEul+VByz0cpv4DEEOOTUXRa64CgE2h14BZNA
-         A5GGrNfodrnj8gNZJwM3PrSPnKLdAXGCqHksO5dZ6rarntAslolFyjUjJMtiqIDLq3vB
-         Y7/kDkvFPtbD9hNKxD2mP4807NMKSu87sukbGF+KJAL/I002SXB9SZiqGGIpdeNF6DIZ
-         bEhHu30SPXv92aB30g4F6JJu+zKmLaVA9T+YU37uerQstyiJPSf3Eyvf3Xkq3zKrD9y1
-         lQHg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwxf/hFubsBTQnuD589eg7cnsAY3Spg2Ujp0p++6JO/3Kidxv1CyoF1uXGD192T3rB11GzyJhY0yXz6xdR3Bnsr5YV3HQ7j9AH4Hkx
-X-Gm-Message-State: AOJu0YzIJd9zK9feIJJdwB6bjeMI+JzfYhtVRfR3U7gjRBoaXR4sxSCt
-	cJt0I0B1AkVy0EhG0/Es36wI9jvrD3xKmJGPwhMGgJIu94qOsY0fY1jtFsKwJUk/rzIGJJ8QGC8
-	B
-X-Google-Smtp-Source: AGHT+IHvO2oi/VktVWA8LCiBkkfJy9IjL5OZLxNNUom42pclP2vD2CwEvmUDzgFeX6OIyWoKPZiIzQ==
-X-Received: by 2002:a2e:a710:0:b0:2d6:c29c:a4e9 with SMTP id s16-20020a2ea710000000b002d6c29ca4e9mr935422lje.22.1713950883834;
-        Wed, 24 Apr 2024 02:28:03 -0700 (PDT)
-Received: from umbar.lan ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id u2-20020a2e8442000000b002d8744903ebsm1916849ljh.68.2024.04.24.02.28.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 02:28:03 -0700 (PDT)
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 24 Apr 2024 12:28:02 +0300
-Subject: [PATCH v7 6/6] remoteproc: qcom: enable in-kernel PD mapper
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7XeOVleqWkQ4tu3Ka74r2d5GDjNcrhGqy9Kdfn8dURY=;
+ b=LtAa1IcZav6YTFGIF/5L40Cx8RhHPQ5BT4KA0KlTxyfhmKKGdtR1FQMnWY4uhpt3KR3/+WpcxF5AFn2Bvk65sAWvbuoVoiXZl8lm00+WnNeCH9ktm5/ArE3dx2HdT6fjF3HWjCFs7Hc2hMLSPilv4q7oRaZ4GQKVZx+hc+jfagw=
+Received: from PH8PR10MB6290.namprd10.prod.outlook.com (2603:10b6:510:1c1::7)
+ by SA1PR10MB6518.namprd10.prod.outlook.com (2603:10b6:806:2b4::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.45; Wed, 24 Apr
+ 2024 09:30:03 +0000
+Received: from PH8PR10MB6290.namprd10.prod.outlook.com
+ ([fe80::309b:26bb:11d5:cc76]) by PH8PR10MB6290.namprd10.prod.outlook.com
+ ([fe80::309b:26bb:11d5:cc76%7]) with mapi id 15.20.7472.044; Wed, 24 Apr 2024
+ 09:30:03 +0000
+Message-ID: <726633e9-b5cd-4d04-bb98-79dea2e76cde@oracle.com>
+Date: Wed, 24 Apr 2024 14:59:53 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.6 000/158] 6.6.29-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+        rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com,
+        broonie@kernel.org, Darren Kenny <darren.kenny@oracle.com>,
+        Vegard Nossum <vegard.nossum@oracle.com>
+References: <20240423213855.696477232@linuxfoundation.org>
+Content-Language: en-US
+From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+In-Reply-To: <20240423213855.696477232@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TY2PR02CA0024.apcprd02.prod.outlook.com
+ (2603:1096:404:56::36) To PH8PR10MB6290.namprd10.prod.outlook.com
+ (2603:10b6:510:1c1::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240424-qcom-pd-mapper-v7-6-05f7fc646e0f@linaro.org>
-References: <20240424-qcom-pd-mapper-v7-0-05f7fc646e0f@linaro.org>
-In-Reply-To: <20240424-qcom-pd-mapper-v7-0-05f7fc646e0f@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Sibi Sankar <quic_sibis@quicinc.com>, 
- Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-remoteproc@vger.kernel.org, Johan Hovold <johan+linaro@kernel.org>, 
- Xilin Wu <wuxilin123@gmail.com>, 
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6924;
- i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=fRpe4tZif781lZ12DHSpdu5zykO3631nXc2R0m1h4Bo=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmKNCe9qNz3JAWsWAbg3RcW5Ue7H40CniSi6hYQ
- 6OspBeES+qJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZijQngAKCRCLPIo+Aiko
- 1cxeCACptgP2ZLM38Mk8RWur2+UjHJrAQdL+lGrGWJqRxmOtyu9IM3pJ4z4P3J1oqIWfkAUj0Ad
- 3znlgS48XMDp47zwhjVs6fg0K5rRSBsy2ho0+bD52Dip+OiXHYJWd4G3Ex6zJYNt33RR4h8TMG6
- clwiUgXYzUpfIqaQ3Hr8ubUbzbgJQgydbrY+YPURJ0nCqG8kGnlqbqZcx5kM5NVKJuL0tPR7wmo
- VpYvGgFcj5jgURk6Bmw96PkN9SUbXK1H748ANIGh5QNnYDkBS3iJQxy62qeLqo6EEFbCE/OhoNa
- c2ARDL6LD3P7bXOdsQPLRz128K368t3xTL1uRSSlwoNkfXrY
-X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
- fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR10MB6290:EE_|SA1PR10MB6518:EE_
+X-MS-Office365-Filtering-Correlation-Id: 32470946-9754-4dff-3aab-08dc64411ef8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	=?utf-8?B?bVpSOG9FWVk3ZDRkbG0zTW1kcVQ4WmpEenlWM2lwVlNnK2NseXZYa2diV3Zm?=
+ =?utf-8?B?RHNPVjNaM2d1eW1lZFM0ODY3ZU9rNnd4LzhXa2RpcmJLMW0yQnZITmhITnZS?=
+ =?utf-8?B?NTNSUHVhL1hSWWhGeUFHeU9JZHIrb01QYm5Pc0hwRlU3STMvQjZBZzZDbHNI?=
+ =?utf-8?B?N2pQd3dqZXRWYU11bTE2bUhSWlJ1c0w3elRseEJkU2ZsVy9QK0RSYU9qMWZI?=
+ =?utf-8?B?eUZMbzNOV2pqa0x2ZklBK2NwRlUwZmEreU1YajVOZzBpMXZxbVFSd2plK3dw?=
+ =?utf-8?B?VUt2bDBXYy9ldE5qT25DelRSRSsrT09nd0FkTXE3dEpZL1hPUWhzZ2NaTmxD?=
+ =?utf-8?B?b0xiWSt3QzJNT2VDODJwR0Rwb3BoUlloeWdQempTeDFXNXR0YmFXeEQ0V0NH?=
+ =?utf-8?B?U05aV2ppOXhWcjZkT0xhM3ZscFRwZEh6UDN6NStUc1IrV0FhSGMyNlZrN04y?=
+ =?utf-8?B?WGI4SktoUFVFNTBJMmpZWGhMR2laa1pETUdrY2dQaTFwUGRWcTZMSUcxOU5E?=
+ =?utf-8?B?UFRqY0tERFpBY2dOK2VnQXR2a3JEa0dtdEtkSlorSkU2VFhtQWVaRStLbk8x?=
+ =?utf-8?B?QWNqN0pWV2FkMW1EK29keExnY2o2d2xIbU5yVVNyamJydU55akVjYXM5YWFy?=
+ =?utf-8?B?UURvemR1dUpEZ2Nyc1NLRE9nQmpSTEFCemRSVkpQTTlYTEIwYzlTc0FHUDQ5?=
+ =?utf-8?B?SmlFOWVVd3g1QmsxNzI5VjdULzhDcjVCV2YyTHIzanNKMlpRdFc3VzBOTGZ6?=
+ =?utf-8?B?dUkzbG5RWmpmKyt5SzIxZ0ZwL1V0dEd5eVl1UXZoZFllTlEwK2RHU1NJalhN?=
+ =?utf-8?B?MUJoK3FlK005NkppeWNZSnd5K3FhZHg2TVpOSDRNSlpGTlc1RGZlK3Vicnh4?=
+ =?utf-8?B?UVF3QW1VcStuaU4xUUtrMDFrREpwN0ljOEptaVJRdmwxQm1DUkZXdWdqNnhO?=
+ =?utf-8?B?SEphUDVId0prNVc0blBud0Z3bzQ2Q01QcDNqaDRSUERRSng2amNhWkg0NFVj?=
+ =?utf-8?B?N05vRFd6bFQ2dzhIMUNDelcvdkhieHdQMC9WVENVaDMvVDRQK1U5Q1VlK1Ja?=
+ =?utf-8?B?RlhOR2o0VTVZbHNHY1JWZUxySndRbGpua0ljMXNTOXNlZVlnZE9VT1lWbTdz?=
+ =?utf-8?B?UzZWVi8rRUpwektnTkN4dWxoK0dBR01tcm02aExaQmhQK2ljVDR3Z1JxQWRU?=
+ =?utf-8?B?dXlIVi93ZFdpMTVXQW1oMDVodDU3UXI3UDhPUWM0N3dvdUVhRmwrUzhPTHlK?=
+ =?utf-8?B?bXl6SkJnZ0E1SGtCQyt3VnJWTlF6ZGlqNm44R1VkWUFDbE1yQStUckJ3TzFP?=
+ =?utf-8?B?b0JndVpOV1JOY0NKNVdmcW9lMGhLaU0wS24yRjlYSHdZYXRwRHJaVlRVajFR?=
+ =?utf-8?B?TnpINTk4N1NXazVuRHR6SGR5TVF5TTZKZUdNQmNRZ01yN1NjaUgxTWdjWW1N?=
+ =?utf-8?B?ajhDMUZsOU5UY29TZDFhdzY3VFdYWTg5eFJUNFlsMFA0VEN6V0xsa1pCOXRW?=
+ =?utf-8?B?WnlndUJUa0V2K3RlOXlCOTdPdjlVdzRVaUpJd1FEdHkwcU5BSzY4MlkrcTRI?=
+ =?utf-8?B?SmwyeDE2NjNubnFySjZkS2c1YkVGaGcwMjRiNkpxaU9vZFpPWEpYTDdEb0hY?=
+ =?utf-8?B?ZmdOdUNPYzRFcEt3Q2FNRkNyUTJVWERseEw2QXJEYjRuTnZWRlpWWFc4WTVy?=
+ =?utf-8?B?cjJQMll3c3FuNDRrYXVnL2ZDOElQVTM5NG5zY1JOZ2ZZeXB4ZDhsbjBBPT0=?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6290.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?R1NWQTF2TWZQZEZ3VkJ6QmwvSGo0bkdHd2lsYTRXYis4UXJiSzRrb1FWZnNN?=
+ =?utf-8?B?RkxWcll5L3BUc1J1MFRpc1ZXVjBtS1NLS0ZaZ1czcnFvaDNtOGVyZk03MHNH?=
+ =?utf-8?B?QUdGQzF1WXdwbjRjSG9VZzhHQU5jOEZwZlQ2bCtmQXVhMER0OUNTb3k2N3VQ?=
+ =?utf-8?B?SlJnV1g5ZjVCcGRIdXZuN1dxZFl0RzI1QStEd0kwMXdVMlEvaDhTNUdySlVT?=
+ =?utf-8?B?MzNoRm0rK2Nwb1dVM3hSZVVNR3pvRHRGRVdIL1NOc1k0UzJNWXdLSXpPcUlW?=
+ =?utf-8?B?R015cWM0ZFpxTHVVbndVRWF1azBWQkZMQ1NlUnJVTElYVW9JeFZ5ejZxYWZi?=
+ =?utf-8?B?U0pCaG16UHp4K2gvYVJETjJscktTQVRjT1Exb0JaeUFBcXJtck11OGRFbVV3?=
+ =?utf-8?B?dDVJMjI0MFpSZVVYSGJ2aHBXNjNuM2wxM2xDcDI5ekF6akJNMWtkWDJERmh6?=
+ =?utf-8?B?VHpxUitJdGNvT3lvdTFwTWZ1Q2pNR1VnSFhiM2tlY2F5RDA4dlhPaVZQTHU4?=
+ =?utf-8?B?aUw1SFBmR3JpRlA4T1p0VE9qNFlsL0dTcE9VZTZlRUY3TEdoeXd3L1ZvUkVa?=
+ =?utf-8?B?aVZNM0JZWkhrdEU0ejBmMU1WOVl1Ym5wUmRLRUtUUlJKblN5WUpCZE96WC94?=
+ =?utf-8?B?UXBMSi9CUlQ2U1hWdEdSdE1oRFJTa0J4b1ZJZHB2dEYzc2lTZ1FEUjRQNXZn?=
+ =?utf-8?B?dk9tN01UMVFyMnRFakhmdmtobEpVLzZ0RFkwTUFiTStmN3V6NGVnYlpEWEwr?=
+ =?utf-8?B?N2VpdzNla1p2cGduTTluVy8xbnFubW9VSExPQ1RjNHVTMURsK2x0MHA2ZjVQ?=
+ =?utf-8?B?R2EvdU5YeDFlQkd0WjBRL1hPV1pQRC9seG8waG9pY2MwVHczRDVCbTZmR0Zv?=
+ =?utf-8?B?dk1qeFhkUVhyeWVBMURlTXEwVDlyN1pjakhWSmVVejU1UVBKdG9yMlQxa2Ro?=
+ =?utf-8?B?OHZrSy9VT0Q3NHFFZ1BDY1N6MnlVTVN2TGg5ZlMyemtkaEw5TmlHazlxN1hs?=
+ =?utf-8?B?cmJMV0dhNHlwQ01OUjF3QWpkZjVMUWRIbXNCdkllcnhBRm5NSWRpOFdZL2hx?=
+ =?utf-8?B?VlFiYmpDVk1PL2tKbWUwTWlZYnk1eVhvWmFIczNFS0xxS3hSelFBbWxiYVl0?=
+ =?utf-8?B?bFZJaU5QN0wzT0J0aXR4elZuYndEOW5iVjVjdDBsU2JmZ3hIVVllTDEwcU43?=
+ =?utf-8?B?OXIwdCtxMnA4REpuMURVWFlPQ08xTHNDRHdmOG10WGlHWk9ZcmZiczZBTDdv?=
+ =?utf-8?B?bWgwazFtazluQ2h1YjNoSlVIZWJwZ1dHMEg5dzllZHpqdlVvVWVUMkxaTGMz?=
+ =?utf-8?B?RDRMc3dGQk9kL3pQNGx5SUxMRm1KM1FWb0R0TXFRdE5aWUYvN0xYMHdES2hN?=
+ =?utf-8?B?L29VMXNQT2dXNVVLaWU1cGRQdmlYeUxvWVZ1RWdNanRaekc3aFkvcmUyR1M4?=
+ =?utf-8?B?ZVAzSFJuaG52c1dXM0tPSnVFaGJnRTk2OE1pR2lzK0Uzd1gxR0FsdXpDYkg5?=
+ =?utf-8?B?QTlKTTMwRndtbWFxWkVYcmJpWUdLU0FrU3JRS3YzcW1TL1VtWHZqV1d2V2h4?=
+ =?utf-8?B?cjUvL1lXVVU3bkRjRkFSVWxEd2VxVFMvbGd3azExWHEreXNObE5SRU0rZ242?=
+ =?utf-8?B?WnI0WkN3cnRpT0prWVhuU0U4aGVEY3RrUUxXend0TnEvandTWjlvUEcwemVP?=
+ =?utf-8?B?cFROOVArRzQvdDVVemlyUkFKWURIR3VETG1RZ3lsaWZreDBqZUdta013d0ZD?=
+ =?utf-8?B?MGxmc1VwSzlZNmVvNTlFbWRGckI5VUtjcmZBTnl5TmIrTldzN3lkVTlUWFI2?=
+ =?utf-8?B?aHU4RWt4YTllVnpvQ2hzQi8wY1FBRDY4alpJRVNHNnRXZm5Xb0JxTkJ0d2dI?=
+ =?utf-8?B?aHhuT1hRemI2bWpZdzBnSzVIc2tVU1BSVTZ5K09vaUk3OG1naHF1cGhBc25E?=
+ =?utf-8?B?SUVGRzBTNHExeVdUZDcxS084RG14ektyS2xJcTlDU09DTDJ2eTdlV3F1eE9X?=
+ =?utf-8?B?RE5DRHpPS2c2QWVFRjNHVEd2M2oxTSt4Q3RsanJLTnFLWlRwaFdJYXVZQlFZ?=
+ =?utf-8?B?eno2bDR3TTlQZGdjYklFTW8vYmlsMG5QTmVNWGExNktmYTErTWZsV1gwVTNS?=
+ =?utf-8?B?eVllUWNta21BeU1qTkg2TUJHVmNZQU9HdHYyVEtZaGxheDVBanAvQVJ4SXA1?=
+ =?utf-8?Q?7VDNLmWej2eCqXuXA2ygYBg=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	Vs97DEhN+TbRqHLuWDuQOlCzhnKcy/xj4/dZiI8uxRjHqJx2z7U7yQxI2gOxGdU+IUfKT9xlEaJkPkTbPDtT3ieVhU0j4V2NyifSA9xL1gLEGt2ix4dPawXSFvtPs+XXodr77BRz5Nkrdo2/xwSra073C3HB6O7Do9gPUkZvjjZWuXQRYZKZcmNw+Wlgizjr8QOmMgyUeGUksdr3mCIZDx8ukrXqaSswCcqQ2SRz7JnCACKitJdzW4plZrD8C1d1Wn7Y2cAI6LZTZY4Gna9AGP2MXsRccbHxmE7hyROfMixhZYrBshZVHgVUDdQbAfQVHGgqDpqjl8cCXETGurPWYNPNTPDkRrAuJOZ+bqyfyaUwCw7NCf17mvX9WFz3sWDPKploGTwQFa0s59yyyRn1FPErDV2wevrP9Vp2XsUpdAMXRx4cSkQYJ0nfFfUWHUqSIbcG1fc92dq59BaOAl7FIqedk6rLtK1v7MMmd6NlRgrdKQOzTrOtGFV1yqtUh4sCa8kSiflsDX1ZfYcHtQoAKghCzyFmo5TxrZbxAlzbMeJf4GCOulzD4EOvZNbGhg4nOxuydXgpDL8WcOLFnMljpTTR6M5ppmQ+nf6nkw0I0hg=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 32470946-9754-4dff-3aab-08dc64411ef8
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6290.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 09:30:03.7237
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vxvXNXfQJZxMrWkroGv/5Ges20j93Ha+SERHecZG+LluqVRTQqVzJGmnWUtvv9bruqOBGsL34eS+BGQW8GcXQGORE+FISHPMG2vvTrnTY7dfXxchftuIq96IT3ICuzCU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB6518
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_07,2024-04-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404240040
+X-Proofpoint-GUID: LfC3cxizE5u0MecbjSJld7ABKpM-Dp1Q
+X-Proofpoint-ORIG-GUID: LfC3cxizE5u0MecbjSJld7ABKpM-Dp1Q
 
-Request in-kernel protection domain mapper to be started before starting
-Qualcomm DSP and release it once DSP is stopped. Once all DSPs are
-stopped, the PD mapper will be stopped too.
+Hi Greg,
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/remoteproc/Kconfig          |  4 ++++
- drivers/remoteproc/qcom_q6v5_adsp.c | 11 ++++++++++-
- drivers/remoteproc/qcom_q6v5_mss.c  | 10 +++++++++-
- drivers/remoteproc/qcom_q6v5_pas.c  | 12 +++++++++++-
- drivers/remoteproc/qcom_q6v5_wcss.c | 12 +++++++++++-
- 5 files changed, 45 insertions(+), 4 deletions(-)
+On 24/04/24 03:07, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.29 release.
+> There are 158 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 25 Apr 2024 21:38:28 +0000.
+> Anything received after that time might be too late.
+> 
 
-diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-index 48845dc8fa85..a0ce552f89a1 100644
---- a/drivers/remoteproc/Kconfig
-+++ b/drivers/remoteproc/Kconfig
-@@ -181,6 +181,7 @@ config QCOM_Q6V5_ADSP
- 	depends on QCOM_SYSMON || QCOM_SYSMON=n
- 	depends on RPMSG_QCOM_GLINK || RPMSG_QCOM_GLINK=n
- 	depends on QCOM_AOSS_QMP || QCOM_AOSS_QMP=n
-+	depends on QCOM_PD_MAPPER || QCOM_PD_MAPPER=n
- 	select MFD_SYSCON
- 	select QCOM_PIL_INFO
- 	select QCOM_MDT_LOADER
-@@ -201,6 +202,7 @@ config QCOM_Q6V5_MSS
- 	depends on QCOM_SYSMON || QCOM_SYSMON=n
- 	depends on RPMSG_QCOM_GLINK || RPMSG_QCOM_GLINK=n
- 	depends on QCOM_AOSS_QMP || QCOM_AOSS_QMP=n
-+	depends on QCOM_PD_MAPPER || QCOM_PD_MAPPER=n
- 	select MFD_SYSCON
- 	select QCOM_MDT_LOADER
- 	select QCOM_PIL_INFO
-@@ -221,6 +223,7 @@ config QCOM_Q6V5_PAS
- 	depends on QCOM_SYSMON || QCOM_SYSMON=n
- 	depends on RPMSG_QCOM_GLINK || RPMSG_QCOM_GLINK=n
- 	depends on QCOM_AOSS_QMP || QCOM_AOSS_QMP=n
-+	depends on QCOM_PD_MAPPER || QCOM_PD_MAPPER=n
- 	select MFD_SYSCON
- 	select QCOM_PIL_INFO
- 	select QCOM_MDT_LOADER
-@@ -243,6 +246,7 @@ config QCOM_Q6V5_WCSS
- 	depends on QCOM_SYSMON || QCOM_SYSMON=n
- 	depends on RPMSG_QCOM_GLINK || RPMSG_QCOM_GLINK=n
- 	depends on QCOM_AOSS_QMP || QCOM_AOSS_QMP=n
-+	depends on QCOM_PD_MAPPER || QCOM_PD_MAPPER=n
- 	select MFD_SYSCON
- 	select QCOM_MDT_LOADER
- 	select QCOM_PIL_INFO
-diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c b/drivers/remoteproc/qcom_q6v5_adsp.c
-index 1d24c9b656a8..02d0c626b03b 100644
---- a/drivers/remoteproc/qcom_q6v5_adsp.c
-+++ b/drivers/remoteproc/qcom_q6v5_adsp.c
-@@ -23,6 +23,7 @@
- #include <linux/remoteproc.h>
- #include <linux/reset.h>
- #include <linux/soc/qcom/mdt_loader.h>
-+#include <linux/soc/qcom/pd_mapper.h>
- #include <linux/soc/qcom/smem.h>
- #include <linux/soc/qcom/smem_state.h>
- 
-@@ -375,10 +376,14 @@ static int adsp_start(struct rproc *rproc)
- 	int ret;
- 	unsigned int val;
- 
--	ret = qcom_q6v5_prepare(&adsp->q6v5);
-+	ret = qcom_pdm_get();
- 	if (ret)
- 		return ret;
- 
-+	ret = qcom_q6v5_prepare(&adsp->q6v5);
-+	if (ret)
-+		goto put_pdm;
-+
- 	ret = adsp_map_carveout(rproc);
- 	if (ret) {
- 		dev_err(adsp->dev, "ADSP smmu mapping failed\n");
-@@ -446,6 +451,8 @@ static int adsp_start(struct rproc *rproc)
- 	adsp_unmap_carveout(rproc);
- disable_irqs:
- 	qcom_q6v5_unprepare(&adsp->q6v5);
-+put_pdm:
-+	qcom_pdm_release();
- 
- 	return ret;
- }
-@@ -478,6 +485,8 @@ static int adsp_stop(struct rproc *rproc)
- 	if (handover)
- 		qcom_adsp_pil_handover(&adsp->q6v5);
- 
-+	qcom_pdm_release();
-+
- 	return ret;
- }
- 
-diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-index 1779fc890e10..791f11e7adbf 100644
---- a/drivers/remoteproc/qcom_q6v5_mss.c
-+++ b/drivers/remoteproc/qcom_q6v5_mss.c
-@@ -26,6 +26,7 @@
- #include <linux/remoteproc.h>
- #include <linux/reset.h>
- #include <linux/soc/qcom/mdt_loader.h>
-+#include <linux/soc/qcom/pd_mapper.h>
- #include <linux/iopoll.h>
- #include <linux/slab.h>
- 
-@@ -1581,10 +1582,14 @@ static int q6v5_start(struct rproc *rproc)
- 	int xfermemop_ret;
- 	int ret;
- 
--	ret = q6v5_mba_load(qproc);
-+	ret = qcom_pdm_get();
- 	if (ret)
- 		return ret;
- 
-+	ret = q6v5_mba_load(qproc);
-+	if (ret)
-+		goto put_pdm;
-+
- 	dev_info(qproc->dev, "MBA booted with%s debug policy, loading mpss\n",
- 		 qproc->dp_size ? "" : "out");
- 
-@@ -1613,6 +1618,8 @@ static int q6v5_start(struct rproc *rproc)
- reclaim_mpss:
- 	q6v5_mba_reclaim(qproc);
- 	q6v5_dump_mba_logs(qproc);
-+put_pdm:
-+	qcom_pdm_release();
- 
- 	return ret;
- }
-@@ -1627,6 +1634,7 @@ static int q6v5_stop(struct rproc *rproc)
- 		dev_err(qproc->dev, "timed out on wait\n");
- 
- 	q6v5_mba_reclaim(qproc);
-+	qcom_pdm_release();
- 
- 	return 0;
- }
-diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-index 54d8005d40a3..653e54f975fc 100644
---- a/drivers/remoteproc/qcom_q6v5_pas.c
-+++ b/drivers/remoteproc/qcom_q6v5_pas.c
-@@ -23,6 +23,7 @@
- #include <linux/regulator/consumer.h>
- #include <linux/remoteproc.h>
- #include <linux/soc/qcom/mdt_loader.h>
-+#include <linux/soc/qcom/pd_mapper.h>
- #include <linux/soc/qcom/smem.h>
- #include <linux/soc/qcom/smem_state.h>
- 
-@@ -261,10 +262,14 @@ static int adsp_start(struct rproc *rproc)
- 	struct qcom_adsp *adsp = rproc->priv;
- 	int ret;
- 
--	ret = qcom_q6v5_prepare(&adsp->q6v5);
-+	ret = qcom_pdm_get();
- 	if (ret)
- 		return ret;
- 
-+	ret = qcom_q6v5_prepare(&adsp->q6v5);
-+	if (ret)
-+		goto put_pdm;
-+
- 	ret = adsp_pds_enable(adsp, adsp->proxy_pds, adsp->proxy_pd_count);
- 	if (ret < 0)
- 		goto disable_irqs;
-@@ -356,6 +361,9 @@ static int adsp_start(struct rproc *rproc)
- 	/* Remove pointer to the loaded firmware, only valid in adsp_load() & adsp_start() */
- 	adsp->firmware = NULL;
- 
-+put_pdm:
-+	qcom_pdm_release();
-+
- 	return ret;
- }
- 
-@@ -399,6 +407,8 @@ static int adsp_stop(struct rproc *rproc)
- 	if (handover)
- 		qcom_pas_handover(&adsp->q6v5);
- 
-+	qcom_pdm_release();
-+
- 	return ret;
- }
- 
-diff --git a/drivers/remoteproc/qcom_q6v5_wcss.c b/drivers/remoteproc/qcom_q6v5_wcss.c
-index 94f68c919ee6..6ed60f3f3eee 100644
---- a/drivers/remoteproc/qcom_q6v5_wcss.c
-+++ b/drivers/remoteproc/qcom_q6v5_wcss.c
-@@ -18,6 +18,7 @@
- #include <linux/regulator/consumer.h>
- #include <linux/reset.h>
- #include <linux/soc/qcom/mdt_loader.h>
-+#include <linux/soc/qcom/pd_mapper.h>
- #include "qcom_common.h"
- #include "qcom_pil_info.h"
- #include "qcom_q6v5.h"
-@@ -240,13 +241,17 @@ static int q6v5_wcss_start(struct rproc *rproc)
- 	struct q6v5_wcss *wcss = rproc->priv;
- 	int ret;
- 
-+	ret = qcom_pdm_get();
-+	if (ret)
-+		return ret;
-+
- 	qcom_q6v5_prepare(&wcss->q6v5);
- 
- 	/* Release Q6 and WCSS reset */
- 	ret = reset_control_deassert(wcss->wcss_reset);
- 	if (ret) {
- 		dev_err(wcss->dev, "wcss_reset failed\n");
--		return ret;
-+		goto put_pdm;
- 	}
- 
- 	ret = reset_control_deassert(wcss->wcss_q6_reset);
-@@ -288,6 +293,9 @@ static int q6v5_wcss_start(struct rproc *rproc)
- wcss_reset:
- 	reset_control_assert(wcss->wcss_reset);
- 
-+put_pdm:
-+	qcom_pdm_release();
-+
- 	return ret;
- }
- 
-@@ -735,6 +743,8 @@ static int q6v5_wcss_stop(struct rproc *rproc)
- 
- 	qcom_q6v5_unprepare(&wcss->q6v5);
- 
-+	qcom_pdm_release();
-+
- 	return 0;
- }
- 
+No problems seen on x86_64 and aarch64 with our testing.
 
--- 
-2.39.2
+Tested-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
 
+Thanks,
+Harshit
+
+
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.29-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
