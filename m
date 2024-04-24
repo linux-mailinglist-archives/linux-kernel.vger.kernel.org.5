@@ -1,181 +1,111 @@
-Return-Path: <linux-kernel+bounces-156603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48BD38B057A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:08:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 963EA8B057C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:08:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70869B27B92
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:08:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54B0028CFFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:08:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C197D158D83;
-	Wed, 24 Apr 2024 09:06:18 +0000 (UTC)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7237158DC6;
+	Wed, 24 Apr 2024 09:06:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XNcaRKTs"
+Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com [209.85.210.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C610E158A3B;
-	Wed, 24 Apr 2024 09:06:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC962561B
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:06:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713949578; cv=none; b=rXUHxzd0YNe/zqUNXTBd4JodPuwWD3GlbbfYN8bySfgliEULT7x0kOT2dFWODzQAUkroyyxiS2Y88TCWUH6X7eadX+d0FAWlj239kGDs3ogyqcoJmXAAZbfn8SmoAnTrf1eXJaGPCIcgGAuOlsuCF1ui044HhIQNkYyfTJCtms8=
+	t=1713949613; cv=none; b=HmyifzcyQPJTYCt8J5cGFwwyWROGJI2ZfWq1AnINjtbkWFH6VbeWDEn5CSm7mxeHQtrAqbNHWbM/kWSmkPmX5j99c65Oh2YtnFjnE60ZfMLkeq4Ifk3PV91KQ0nUw2ti26rod+wvIuc7jURqeUjO2EMVpHRYeHrezeMtaTVsnFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713949578; c=relaxed/simple;
-	bh=p1Bek1Bj7I+Sm34BIpKRNTqjcJV42xj1+Ln7FbugPyA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sWpwXRSdHdx/FsqRXR0RUmp5Sf9lV18u4VlkDQXNR2rcvtiTOhRIagmgFJBytyMlSiYrXLu/aXlpPc19Sfndtiqp9mcYsCtCHWntY3F34GZHiUqheaqVuZZdn5IBO5eTJAseVCQxHsVrGQY86snuCiqgtcF5HRq1hWTFWM5mqbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1713949613; c=relaxed/simple;
+	bh=PIWDBeJBTJ8nI6deAO9S/CefLEHkMF1CEvSU9ILhtCU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=f2AWqgSx84ffTcRR2Io7CoaaTsXp8ZLVRXLqpvow3qMDzgWEaNqqkUnQFc83V7l4qyyMr6+ID6p7Bp2ZvxBG7PqhTwf7coKziB25ZP7ShuXZ9bCUC4Xa8MZHx8dqnoFVV0X0uu5iMoOS9DMu4U60a2+MQY/0xcEW71+W+0GjceA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XNcaRKTs; arc=none smtp.client-ip=209.85.210.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-61ac183ee82so5998027b3.1;
-        Wed, 24 Apr 2024 02:06:13 -0700 (PDT)
+Received: by mail-pf1-f193.google.com with SMTP id d2e1a72fcca58-6ed04c91c46so6434536b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 02:06:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713949611; x=1714554411; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5/BejucCQJg/1a61zK573V93gjIoiZEwubJ52BTIMU0=;
+        b=XNcaRKTsXJ8hfjN814Caekn/Mzrp4pNDe6t/gjh0UoIMmjr5b6wxTlFyG+ZH5RbD+5
+         UVXqmXSy/HPP1SCS+6XnI9nEWr9ynfpwRbaRnmY4TH92MAbkovXUrTh5ob8EQlT4XAei
+         VW+biCuWOAhEpXuDvUEIsx/n760uTOKq6dUZxKv/4cyQIuzheiaJB4OY889WOaGtuLKd
+         HJZb0vzFWwuEutT51HHlI3K+oBSzjP+Zzj09LR63dezXmuwHF6wQMLjqkaIRTZnvNbne
+         Wa5gFi9knBa/5O6yVNDmgC39EiHgQsfC64hueL5D1k/PpmchT0Qv6Hf+F/xwGU1lzzU6
+         vWEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713949572; x=1714554372;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wLEQAzNUqvENBDpDsvbMZoQLKFDtnbH03RM0teNlmFQ=;
-        b=ZN1UIrSJ0lBDPmQNAMrWI56cy9/AMzLl8yKgZC2R7B9wDI2yGVnt+ibMyx6mnpxIRU
-         MgPKyRPMqIdaNSaKM42HPDQ0gYGaqMKQSzT0iOvtHaiiPnsMoavn1Xfs/Vbah391a39P
-         SnOKvKCsEjviApt1ZhRonIfmnSumRCWlE5VHFD4mfobKpUAqMjBkAQ3Lu5okkycqDCz8
-         GnVrtovMaPm1ukBd7srfsEaVyRUs8jvYaTecUR0rIIxPlIzx/T26fxu37F5r7d8y53En
-         +J+21niqOReR6duaBjU8Us1Ar2uiMas0gct3BdfQFVeTbExNhcV2WH4ige2V6nsc5+bd
-         Zbiw==
-X-Forwarded-Encrypted: i=1; AJvYcCV1JvBD+31PaRHZlCDTt+P10iS2QxHEVvkX7PAXxILg7mbUUM59AlXHK8IN4rISUN9Cx/tNYOoFaMjYLbAORuC3F5N3w+sOkVYHKTov1DJG0UOmyplSwSjg/nz28n3fwtrR20HN7p6FswrPvgoX4sKByZAQIRIO0aZNxTTAsScEKR9tPlVrnu4m5jXKqHInI1mExYxQZfAP9yQLxlxqfFbfOhbm4QzZeg==
-X-Gm-Message-State: AOJu0YzK77FRMqlfbjrGoAtXYMqAArqIlmyVzr3QYFdCnkGy7cfNT3wd
-	T7sov72iBV9OqWPjr4coGtCgQXHAZtYxSwgrGbf/tyOiy613WHjm2yvf8BmS
-X-Google-Smtp-Source: AGHT+IERBCGNAtoexrGTQ+HCOYODRwysSjABeI4L9ePF2iXI8N0TdPD+vn+HWIpfzdB6U8HO93gQiA==
-X-Received: by 2002:a25:9a48:0:b0:ddc:ca9c:5d40 with SMTP id r8-20020a259a48000000b00ddcca9c5d40mr4617632ybo.5.1713949572179;
-        Wed, 24 Apr 2024 02:06:12 -0700 (PDT)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id c2-20020a258802000000b00de51e5487b3sm1531550ybl.47.2024.04.24.02.06.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 02:06:11 -0700 (PDT)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso643781276.0;
-        Wed, 24 Apr 2024 02:06:11 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUJ5DuYKJtJZrpYyTxK1wmFaTxyaQcP56KjKUeUVT2Ihl5nAA2LT+qht/La3cz3KNkf/7eFvmPG1owoK6l5UCU13c0BDn+BJcUgQ+HmR9z78P+y0HEP1Sc1AuB53JF7JbB0srVRKqayHrlcZ8e1RmmhWlg3vznlbnSDcGSv7J88jk4vkvxvsOpIsPeJODTYubiPxxg+ZBpmC17HQX73X9qoHAMrbVTeLg==
-X-Received: by 2002:a25:aae3:0:b0:de0:ee2c:b828 with SMTP id
- t90-20020a25aae3000000b00de0ee2cb828mr1566199ybi.25.1713949571004; Wed, 24
- Apr 2024 02:06:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713949611; x=1714554411;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5/BejucCQJg/1a61zK573V93gjIoiZEwubJ52BTIMU0=;
+        b=gNNFndt5YoSR/nGtX4zD+bqV7HWHOW1Pmj2OZCu9HAkgGZf86hxOwsZaTMRefU6/u1
+         3TygnWmiiUmXwRRp+KzcLYXARSJkfs2t/rBt3uSRY9cdS+xk/kEqDLnztbpfRLZ+T7XV
+         R5jK0oEnqU1iI4ysKduTdXqRSEoZwuJAqEhElvKLGyF/mHGpKvGn75A0kvb+EzMvFgBS
+         +NnDFj6/4px8kRrUxPhch4w9ABpW70ySKa/qrxN7IPkg5BOXw0QvuOIpok0+J8P+549y
+         J18y7pnUoT7QTg9Tcrb6mt4dwz4hRnKnxhZqd6apsjKdrsxgwdjEGPVvWPiK9HLhsZNj
+         0rTA==
+X-Forwarded-Encrypted: i=1; AJvYcCWp3StpO8g+/mcRG9GGn4mxUBTC527AKejl6M7VSMo1fMHOatnCW6JfO2T/e0HqOkH1r4wsFcM0SDfggF8Xc6v/TvFGXAzXNG3FBiaY
+X-Gm-Message-State: AOJu0YySxcWO4M4u9Vnm+Qel7eb9XhDSxY7EVovIRjLbIYwXvGhfKER1
+	0jnJuARgyoD53RAzrskBWkuTh2bdPsk8zTI3dZ/uhDRwObKWATaC2Iz0pQJj3r2Wvg==
+X-Google-Smtp-Source: AGHT+IFKRzyx9snJqmoMOtX6aAXFm0HExvHrUY7JVErkB9slUDmbicNo+zAy+Vth61McqB3ocB3b5w==
+X-Received: by 2002:a05:6a20:7faa:b0:1a9:3cf2:508d with SMTP id d42-20020a056a207faa00b001a93cf2508dmr2047738pzj.38.1713949611015;
+        Wed, 24 Apr 2024 02:06:51 -0700 (PDT)
+Received: from localhost.localdomain ([14.116.239.33])
+        by smtp.gmail.com with ESMTPSA id u2-20020a170902e5c200b001e556734814sm11408569plf.134.2024.04.24.02.06.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 02:06:50 -0700 (PDT)
+From: Xinghui Li <korantwork@gmail.com>
+X-Google-Original-From: Xinghui Li <korantli@tencent.com>
+To: airlied@redhat.com,
+	kraxel@redhat.com,
+	wander@redhat.com
+Cc: virtualization@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Xinghui Li <korantli@tencent.com>
+Subject: [PATCH] drm/qxl: fix comment typo
+Date: Wed, 24 Apr 2024 17:06:13 +0800
+Message-Id: <20240424090613.2630952-1-korantli@tencent.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240423175900.702640-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240423175900.702640-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240423175900.702640-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 24 Apr 2024 11:05:58 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdV+oVFNUJse0th_PXKhtsUzXa7Mk7ozq5cKZoYX12AMRw@mail.gmail.com>
-Message-ID: <CAMuHMdV+oVFNUJse0th_PXKhtsUzXa7Mk7ozq5cKZoYX12AMRw@mail.gmail.com>
-Subject: Re: [PATCH v2 02/13] dt-bindings: pinctrl: renesas: Document
- RZ/V2H(P) SoC
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, linux-renesas-soc@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Prabhakar,
+There is one typo in drivers/gpu/drm/qxl/qxl_gem.c's comment, which
+'acess' should be 'access'. So fix it.
 
-Thanks for your patch!
+Signed-off-by: Xinghui Li <korantli@tencent.com>
+---
+ drivers/gpu/drm/qxl/qxl_gem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Tue, Apr 23, 2024 at 7:59=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
-om> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Add documentation for the pin controller found on the Renesas RZ/V2H(P)
-> (R9A09G057) SoC. The RZ/V2H PFC varies slightly compared to the RZ/G2L
-> family:
-> - Additional bits need to be set during pinmuxing.
-> - The GPIO pin count is different.
->
-> Hence, a SoC-specific compatible string, 'renesas,r9a09g057-pinctrl', is
-> added for the RZ/V2H(P) SoC.
->
-> Also, add the 'renesas,output-impedance' property. The drive strength
-> setting on RZ/V2H(P) depends on the different power rails coming out from
-> the PMIC (connected via I2C). These power rails (required for drive
-> strength) can be 1.2V, 1.8V, or 3.3V.
->
-> Pins are grouped into 4 groups:
->
-> Group 1: Impedance
-> - 150/75/38/25 ohms (at 3.3V)
-> - 130/65/33/22 ohms (at 1.8V)
->
-> Group 2: Impedance
-> - 50/40/33/25 ohms (at 1.8V)
->
-> Group 3: Impedance
-> - 150/75/37.5/25 ohms (at 3.3V)
-> - 130/65/33/22 ohms (at 1.8V)
->
-> Group 4: Impedance
-> - 110/55/30/20 ohms (at 1.8V)
-> - 150/75/38/25 ohms (at 1.2V)
->
-> The 'renesas,output-impedance' property, as documented, can be
-> [0, 1, 2, 3], indicating x1/x2/x3/x4 drive strength.
+diff --git a/drivers/gpu/drm/qxl/qxl_gem.c b/drivers/gpu/drm/qxl/qxl_gem.c
+index fc5e3763c359..2cfe29d72d81 100644
+--- a/drivers/gpu/drm/qxl/qxl_gem.c
++++ b/drivers/gpu/drm/qxl/qxl_gem.c
+@@ -74,7 +74,7 @@ int qxl_gem_object_create(struct qxl_device *qdev, int size,
+ 
+ /*
+  * If the caller passed a valid gobj pointer, it is responsible to call
+- * drm_gem_object_put() when it no longer needs to acess the object.
++ * drm_gem_object_put() when it no longer needs to access the object.
+  *
+  * If gobj is NULL, it is handled internally.
+  */
+-- 
+2.39.3
 
-The documentation says "x1/x2/x4/x6" for all but Group 4 (P20/P21).
-Still, the actual values don't seem to match the magnification factors...
-
-> As power rail information may not be available very early in the boot
-> process, the 'renesas,output-impedance' property is added instead of
-> reusing the 'output-impedance-ohms' property.
->
-> Also, allow bias-disable, bias-pull-down and bias-pull-up properties
-> as these can be used to configure the pins.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-
-> --- a/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yam=
-l
-> +++ b/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yam=
-l
-> @@ -111,6 +116,18 @@ additionalProperties:
->          output-high: true
->          output-low: true
->          line-name: true
-> +        bias-disable: true
-> +        bias-pull-down: true
-> +        bias-pull-up: true
-> +        renesas,output-impedance:
-> +          description: |
-> +            Output impedance for pins on RZ/V2H(P) SoC.
-> +            0: Corresponds to x1
-> +            1: Corresponds to x2
-> +            2: Corresponds to x3
-> +            3: Corresponds to x4
-
-Hence I'd drop the multiplication factors, and just say the meaning
-of the value is pin-dependent?
-
-> +          $ref: /schemas/types.yaml#/definitions/uint32
-> +          enum: [0, 1, 2, 3]
->
->      - type: object
->        additionalProperties:
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
