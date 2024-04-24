@@ -1,191 +1,112 @@
-Return-Path: <linux-kernel+bounces-156826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B55158B08CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:57:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F0988B08D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:59:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D95D61C222F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:57:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1E5E283F55
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:59:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9720715AAB1;
-	Wed, 24 Apr 2024 11:57:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1BCA15AD92;
+	Wed, 24 Apr 2024 11:59:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dd8B8+3v"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=penguintechs.org header.i=@penguintechs.org header.b="gvKW3VJF"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1C3158A0B
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 11:57:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1A7A15A49E
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 11:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713959861; cv=none; b=fu2fyB56W/XxH5HdtqpctcxFtX9mEzuHnkWpJHkFL24kh/NxBoCStW82zNXIwg6rHPYDcBLnjoQsC7SMNQ+QMO4oKsfs6xmkrumtGDCXUj5fPzTaB4BlhiNwJmw6hYTJWqtV056l51XdwOD5Y83Knr0Fgc5e3pNpjHXwACIiZew=
+	t=1713959982; cv=none; b=ouGj6tBw5TVbwu7vU4AvgRQbHVYLvuzgf9C78UlkVCYZ9c8Bq7iSsm8NrkcLhqf85scNes2fEs4xjDtBiWMqPar6eJO3qWUEfjbDntq8v1WrhQ8z6a4bjc5ME8W3LrvLmOBHnLgZ2/5r5iGXpI8JV9+VVsXRkJQkCNp6xszOUbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713959861; c=relaxed/simple;
-	bh=FXcbLFdw+XrDuJHSnNUSYiab+GPqRj8hnonc6pw41Zg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hFaou1p8YUifBvy44w2Lf04bm1QSilyaTa9wiBv24DkqwIgrx8dU6ObLeVyBYtX2EO1Mpkd1ggVRZyVlqV9FxOiw9z9AiK18HH47q/dBhVvjmmnoUl3iN9p3QclFD3UrTLO4hZxuUt/R5lPADmxSqf7Vh62Ajrz7+UN3qtFReVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dd8B8+3v; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713959859;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1hIPRMYCbtc11jovhEqN9ZXUbzG9dYFyhpKhWu6jMXQ=;
-	b=dd8B8+3v8FYJTOMwN5y4cgPCV0kHicB8DYUgDB2nv0gUurUJwCds8uSlXK/QV5b4jOVtMz
-	NOurqSQS4vEH7NeJvjBCbMiGuhD6EsNxB0zdJjdklnwicDk1MtSktPiIJOGPCN1mT6+03j
-	aA410eN9UPuD/ZBenx9VDuwxdFJJxv4=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-658-0xVtTMa4PSWmtwdteOOH_Q-1; Wed, 24 Apr 2024 07:57:38 -0400
-X-MC-Unique: 0xVtTMa4PSWmtwdteOOH_Q-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-434ed2e412fso29696151cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 04:57:38 -0700 (PDT)
+	s=arc-20240116; t=1713959982; c=relaxed/simple;
+	bh=/97R6QIg34AwQeVF34CbTFga/OXPyR0JSnF2W1DuNMQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=B6aX58bD4enRu2sR17tLzo0sZb13iX61dpeOEaz6YDysEoYWgjTqT03GVYMxba0QyEl0PklNitpq4yHzYRCtcI5qGaIP6pOoU++JivsfTeWNAOTJZ35vJ1ZsTeyUK/spnofYt5bGGHoeBRwGXPJ4XbncXLlfnvzKA+/qBJBeLHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=penguintechs.org; spf=pass smtp.mailfrom=penguintechs.org; dkim=pass (1024-bit key) header.d=penguintechs.org header.i=@penguintechs.org header.b=gvKW3VJF; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=penguintechs.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=penguintechs.org
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e8bbcbc2b7so51968235ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 04:59:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=penguintechs.org; s=google; t=1713959980; x=1714564780; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=A5052Z6jLpMWL6uEOrZWPgMF67wALF8EuBjYHXYfOto=;
+        b=gvKW3VJFBlAZj6IcaE3Uo2Pc9P7Wqx/V1Kxg89VMD7mzVnjjWtYf3E7oZGWYc8FU3e
+         F/NZs2orjfgLQY2GWFSY7ODrAccAfTJBVhJYrXXGmlk9Zc5uccJ9IPdLYJwrRN79Im/U
+         sPxFcPCywDA9gxSEy9hWfjhHHmL5ReQ4Voa4A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713959857; x=1714564657;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1hIPRMYCbtc11jovhEqN9ZXUbzG9dYFyhpKhWu6jMXQ=;
-        b=eGNzYCiyBZCipgw/Hr6qVcn0T/nbncPUvxFIejkC1B6qj3uhcpUU7XHK1ITABexguv
-         yZg/2jwy3Sq/La0KaVQSsbpOieMui+QHuMCQ9XHM3fAZJ6U1weQGIEr6/nFnlFLTSpHo
-         OwrranG2VzmjeN2PGoEC8hEzpeho+8tXT2BeCEOS1QQjZ6Ff7AT/pdE+yjUeCVCnDigD
-         JP/gGiO9dzT5eycyX6h/7rqNOrv3iPqoxtTrvcV8ZURQ4HW1RJ3FFEXlXDTa/9VtbVh2
-         pLx6CHVCa4SGOPa619DSacWMOpXHajOEA1GebJw2PkxfHXyhwkGUE0WeRwwtVdF4PQX9
-         Zumw==
-X-Forwarded-Encrypted: i=1; AJvYcCXn5MfVEtdC6vnGoUo15gfDowMFFtFvjlecx4NcSI6TR6Dn8zn0K809UgDol3sMpdo1AblDPVWYC5ww0AguaVtaGJjcCE28e3woBfYW
-X-Gm-Message-State: AOJu0YxXQ0DILghlir7+S7uYnW3a9sXXWlHHyV9xN9ir+/S8NvTvbBXF
-	/iLLY1r7qWmQ60/shZBif9sXadl7isI3iO3eXTkdgKT0Uf2Jc9FgUDhDAzDTrDrlmjqQMFDPHe4
-	K4tiySwnTMQtX/i9Mu6DKyMGurh3RXUuD4Zl42NLVBCYiLf8RnIYyJvoRBLpeKg==
-X-Received: by 2002:ac8:6e88:0:b0:434:f74e:30ec with SMTP id c8-20020ac86e88000000b00434f74e30ecmr2335525qtv.5.1713959857364;
-        Wed, 24 Apr 2024 04:57:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH67qXObSRwV9XSK7/IHdwF/55R6D0oF8GK75we9gygA2vGyGxSw/6wXenTHhcLxiIgQNd+zw==
-X-Received: by 2002:ac8:6e88:0:b0:434:f74e:30ec with SMTP id c8-20020ac86e88000000b00434f74e30ecmr2335503qtv.5.1713959856722;
-        Wed, 24 Apr 2024 04:57:36 -0700 (PDT)
-Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id ic10-20020a05622a68ca00b00436510ddc5esm6014392qtb.34.2024.04.24.04.57.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 04:57:36 -0700 (PDT)
-Date: Wed, 24 Apr 2024 07:57:34 -0400
-From: Peter Xu <peterx@redhat.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	David Hildenbrand <david@redhat.com>,
-	Mike Rapoport <rppt@linux.ibm.com>,
-	Shivansh Vij <shivanshvij@outlook.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] arm64/mm: Add uffd write-protect support
-Message-ID: <Zijzrje2FDXsSojP@x1n>
-References: <20240424111017.3160195-1-ryan.roberts@arm.com>
- <20240424111017.3160195-3-ryan.roberts@arm.com>
+        d=1e100.net; s=20230601; t=1713959980; x=1714564780;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A5052Z6jLpMWL6uEOrZWPgMF67wALF8EuBjYHXYfOto=;
+        b=jualsOXsZcMyLdkICQDHtwhKE6/4jP/b7kPizxZprDayp3psaRveb11oBh59FZajF9
+         dHcfR6VZNb3X9ijXZoll55wReHmEBva/hi5JaHazQFE1xbTIGaruKUoW5xIWCpE8OjWc
+         AZeFyuTLqOdwed0hsTxVIIq6xl2iDLZmqfsSnJCbtiKDKXrEiVuYoDM94x715xUEvzwf
+         9Hs69FMU1JYLKF0hEbZEgAEDxCx4jYEYjzHodmHB6Mc3Zy+xmey3SHK/3/rjdinKTiTJ
+         R/T/SOUTabDs1VJGFJHl2BMMtPnDvmp5SoO0g/VTV9EFQ9K4xd/uARa9ThgjIoZpwksh
+         CmBA==
+X-Forwarded-Encrypted: i=1; AJvYcCUSK810cmCG77XiFIgsn9VU/973PrZRAmMR2cvatx+c1MEWA17vOTxNNQJsaxChYKatuZ7e7B0yoZezqks3tJYcqPDf62cNv+EdCItm
+X-Gm-Message-State: AOJu0Yyh0Hm50KLvtSiQItKvmRN7yht273hwQrz3TVpUKGnEKWB93aPn
+	5nKZuNGcBZ6bfiUN9tuNIKK6ZKRhD71hblOWxtU5EwFItleFW8FeDO29fQaq3g==
+X-Google-Smtp-Source: AGHT+IFmdf+Gc+hmnEBImZPnmw5Z2cSjZpUVIvaJI84mAtrF1e03mwiYI7pASnI90qBpVQDshtHJuw==
+X-Received: by 2002:a17:902:cf09:b0:1e4:a667:5528 with SMTP id i9-20020a170902cf0900b001e4a6675528mr3243172plg.3.1713959979732;
+        Wed, 24 Apr 2024 04:59:39 -0700 (PDT)
+Received: from ?IPV6:2601:646:8700:dd30:5f3e:5ba7:e0ea:9a08? ([2601:646:8700:dd30:5f3e:5ba7:e0ea:9a08])
+        by smtp.gmail.com with ESMTPSA id o24-20020a170902779800b001e5119c0f9asm11756768pll.66.2024.04.24.04.59.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 04:59:39 -0700 (PDT)
+Message-ID: <6433c145-a448-45dd-a982-8b5df0ca5c16@penguintechs.org>
+Date: Wed, 24 Apr 2024 04:59:37 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240424111017.3160195-3-ryan.roberts@arm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Bluetooth: qca: set power_ctrl_enabled on NULL returned
+ by gpiod_get_optional()
+Content-Language: en-US
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+ Zijun Hu <quic_zijuhu@quicinc.com>, Marcel Holtmann <marcel@holtmann.org>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+References: <20240422130036.31856-1-brgl@bgdev.pl>
+ <99242a7c-53bf-4227-9623-7bc092f564b3@penguintechs.org>
+ <CAMRc=MepDwUbAKrWgm0CXKObqy8=igtug0QDgo-CgwxjZCAC2Q@mail.gmail.com>
+ <06217256-8a13-4ebf-a282-9782a91793e4@penguintechs.org>
+ <CAMRc=Mfwa2WSOLaUMaEM1czTcx31jynGqgxzLdCh7ROktQ_Vag@mail.gmail.com>
+From: Wren Turkal <wt@penguintechs.org>
+In-Reply-To: <CAMRc=Mfwa2WSOLaUMaEM1czTcx31jynGqgxzLdCh7ROktQ_Vag@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi, Ryan,
-
-On Wed, Apr 24, 2024 at 12:10:17PM +0100, Ryan Roberts wrote:
-> Let's use the newly-free PTE SW bit (58) to add support for uffd-wp.
+On 4/24/24 4:53 AM, Bartosz Golaszewski wrote:
+> This must be your email client wrapping lines over a certain limit.
+> Try and get the diff from lore[1], it should be fine.
 > 
-> The standard handlers are implemented for set/test/clear for both pte
-> and pmd. Additionally we must also track the uffd-wp state as a pte swp
-> bit, so use a free swap entry pte bit (3).
+> Bart
 > 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> [1]https://lore.kernel.org/lkml/CAMRc=MepDwUbAKrWgm0CXKObqy8=igtug0QDgo-CgwxjZCAC2Q@mail.gmail.com/
 
-Looks all sane here from userfault perspective, just one comment below.
+I don't think it's my client. The extra newlines are right there in the 
+lore link.
 
-> ---
->  arch/arm64/Kconfig                    |  1 +
->  arch/arm64/include/asm/pgtable-prot.h |  8 ++++
->  arch/arm64/include/asm/pgtable.h      | 55 +++++++++++++++++++++++++++
->  3 files changed, 64 insertions(+)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 7b11c98b3e84..763e221f2169 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -255,6 +255,7 @@ config ARM64
->  	select SYSCTL_EXCEPTION_TRACE
->  	select THREAD_INFO_IN_TASK
->  	select HAVE_ARCH_USERFAULTFD_MINOR if USERFAULTFD
-> +	select HAVE_ARCH_USERFAULTFD_WP if USERFAULTFD
->  	select TRACE_IRQFLAGS_SUPPORT
->  	select TRACE_IRQFLAGS_NMI_SUPPORT
->  	select HAVE_SOFTIRQ_ON_OWN_STACK
-> diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
-> index ef952d69fd04..f1e1f6306e03 100644
-> --- a/arch/arm64/include/asm/pgtable-prot.h
-> +++ b/arch/arm64/include/asm/pgtable-prot.h
-> @@ -20,6 +20,14 @@
->  #define PTE_DEVMAP		(_AT(pteval_t, 1) << 57)
->  #define PTE_PROT_NONE		(PTE_UXN)		 /* Reuse PTE_UXN; only when !PTE_VALID */
->  
-> +#ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
-> +#define PTE_UFFD_WP		(_AT(pteval_t, 1) << 58) /* uffd-wp tracking */
-> +#define PTE_SWP_UFFD_WP		(_AT(pteval_t, 1) << 3)	 /* only for swp ptes */
-> +#else
-> +#define PTE_UFFD_WP		(_AT(pteval_t, 0))
-> +#define PTE_SWP_UFFD_WP		(_AT(pteval_t, 0))
-> +#endif /* CONFIG_HAVE_ARCH_USERFAULTFD_WP */
-> +
->  /*
->   * This bit indicates that the entry is present i.e. pmd_page()
->   * still points to a valid huge page in memory even if the pmd
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index 23aabff4fa6f..3f4748741fdb 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -271,6 +271,34 @@ static inline pte_t pte_mkdevmap(pte_t pte)
->  	return set_pte_bit(pte, __pgprot(PTE_DEVMAP | PTE_SPECIAL));
->  }
->  
-> +#ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
-> +static inline int pte_uffd_wp(pte_t pte)
-> +{
-> +	bool wp = !!(pte_val(pte) & PTE_UFFD_WP);
-> +
-> +#ifdef CONFIG_DEBUG_VM
-> +	/*
-> +	 * Having write bit for wr-protect-marked present ptes is fatal, because
-> +	 * it means the uffd-wp bit will be ignored and write will just go
-> +	 * through. See comment in x86 implementation.
-> +	 */
-> +	WARN_ON_ONCE(wp && pte_write(pte));
-> +#endif
+Look at the line that starts with "@@". That line is wrapped. The 
+following line ("serdev_device *serdev)") should be at the end of the 
+previous line. The same thing happened on the second "@@" line as well.
 
-Feel free to drop this line, see:
-
-https://lore.kernel.org/r/20240417212549.2766883-1-peterx@redhat.com
-
-It's still in mm-unstable only.
-
-AFAICT ARM64 also is supported by check_page_table, I also checked ARM's
-ptep_modify_prot_commit() which uses set_pte_at(), so it should cover
-everything in a superior way already.
-
-With that dropped, feel free to add:
-
-Acked-by: Peter Xu <peterx@redhat.com>
-
-Thanks,
-
+wt
 -- 
-Peter Xu
-
+You're more amazing than you think!
 
