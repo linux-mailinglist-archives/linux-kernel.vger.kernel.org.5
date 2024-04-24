@@ -1,126 +1,114 @@
-Return-Path: <linux-kernel+bounces-156530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F9638B03F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:15:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B936C8B0401
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:16:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B11BF1C2323F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:15:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9A611C23213
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:16:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2BE2158852;
-	Wed, 24 Apr 2024 08:15:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 755E71420DF
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:15:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E48D0158874;
+	Wed, 24 Apr 2024 08:16:23 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ADD3158855
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:16:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713946538; cv=none; b=G5rKoaynE9zoGbe1kkJWELoR5ltl2vO0Rpk/0+wdPuNjyk+3yK7ENZjZRZax8EmWBkl6AxWkP6BjdD4KJ5I620Tj3S/RWqjeVS9Ua3z2c7twEhXmYibX7FZXyBtMyvD8WNz6sK6DA7skFuxCEHOyRqO/6/d+cjqaUiWr7jYy4DI=
+	t=1713946583; cv=none; b=n3Pr6Re6gRlNp+R3p4ag5sNMOSzrPHwNQtxkews/pAG2/pFu7Kg8vwOIjDozKoGWYklnEm0qgvjfDTBYOh1qGQK5BAljJcqaO7eYVX+2wyGSEwJyVrXgO/Qh1xTrom8Bh/Da0Zk8Zv+6omLZa8Ee4D2ArtRvcE4CLVFFFVInnqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713946538; c=relaxed/simple;
-	bh=t6A7FwupU41uLyUWfgUbQndg5gFkN3irKoyrRmKumQA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JFYA5fgz+HurL8x4P9AsFqMGpBlLazRo+u552GEghbH34qF7WEfwf/juIV/TxNm0GVTZq0+Bat6tWz0idvUvF+y9z+egez53fti04VpTwbsAx8q7udJYiKgGf/2ohILpc45Grkx4LkDfCLKCxU1TGrEx4C8S4pqiBCQONL7KMg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 276DA339;
-	Wed, 24 Apr 2024 01:16:03 -0700 (PDT)
-Received: from [10.57.74.127] (unknown [10.57.74.127])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 740D73F64C;
-	Wed, 24 Apr 2024 01:15:33 -0700 (PDT)
-Message-ID: <5edfe6b3-8f00-46c4-8ddb-d1add845541d@arm.com>
-Date: Wed, 24 Apr 2024 09:15:31 +0100
+	s=arc-20240116; t=1713946583; c=relaxed/simple;
+	bh=BRLvrIp/v4JKF9Aq6tuCRvLZntMqwmCwEM/Qriqe90I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c48wWq4TYw2plDRB1UINyFhcx/laVO70Ri4N7KNChJWSHWJF+ywiL7Q8t4EUZ5S9XXj878PeCXFXtjuwl26SntLRPH0ScpQeQPknbsRN5KbFz0PP9KNIKuop8cDSQW9JKCA0hM9dmAvOi8M8hERS3Fr5hwVIEQRkMYFIMWYlZbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rzXnM-0008LH-2q; Wed, 24 Apr 2024 10:16:00 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rzXnK-00E2qO-7E; Wed, 24 Apr 2024 10:15:58 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id C50B72BEC0D;
+	Wed, 24 Apr 2024 08:15:57 +0000 (UTC)
+Date: Wed, 24 Apr 2024 10:15:57 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+	Thomas Kopp <thomas.kopp@microchip.com>, Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux@ew.tq-group.com, alexander.stein@ew.tq-group.com
+Subject: Re: [PATCH 3/4] can: mcp251xfd: add gpio functionality
+Message-ID: <20240424-taupe-lizard-of-perception-3bb2d9-mkl@pengutronix.de>
+References: <20240417-mcp251xfd-gpio-feature-v1-0-bc0c61fd0c80@ew.tq-group.com>
+ <20240417-mcp251xfd-gpio-feature-v1-3-bc0c61fd0c80@ew.tq-group.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/5] mm: shmem: add anonymous share mTHP counters
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>,
- Baolin Wang <baolin.wang@linux.alibaba.com>, Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, hughd@google.com, willy@infradead.org,
- wangkefeng.wang@huawei.com, ying.huang@intel.com, shy828301@gmail.com,
- ziy@nvidia.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
- <05d0096e4ec3e572d1d52d33a31a661321ac1551.1713755580.git.baolin.wang@linux.alibaba.com>
- <CAGsJ_4xu4iL5pv7T1chyzGC2Vp9q1GwOp3wxb=bYMW-T-pj4dA@mail.gmail.com>
- <ce6be451-7c5a-402f-8340-be40699829c2@redhat.com>
- <fb2052ab-74d1-48f7-975b-15abc2a078e2@linux.alibaba.com>
- <140d4efa-28a0-449a-9570-9d44c23b55d1@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <140d4efa-28a0-449a-9570-9d44c23b55d1@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vpxobo6ttuwribyt"
+Content-Disposition: inline
+In-Reply-To: <20240417-mcp251xfd-gpio-feature-v1-3-bc0c61fd0c80@ew.tq-group.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 24/04/2024 08:11, David Hildenbrand wrote:
-> On 24.04.24 08:10, Baolin Wang wrote:
->>
->>
->> On 2024/4/23 19:37, David Hildenbrand wrote:
->>> On 23.04.24 03:17, Barry Song wrote:
->>>> On Mon, Apr 22, 2024 at 3:03 PM Baolin Wang
->>>> <baolin.wang@linux.alibaba.com> wrote:
->>>>>
->>>>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->>>>> ---
->>>>>    include/linux/huge_mm.h | 2 ++
->>>>>    mm/huge_memory.c        | 4 ++++
->>>>>    mm/shmem.c              | 5 ++++-
->>>>>    3 files changed, 10 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->>>>> index 26b6fa98d8ac..67b9c1acad31 100644
->>>>> --- a/include/linux/huge_mm.h
->>>>> +++ b/include/linux/huge_mm.h
->>>>> @@ -270,6 +270,8 @@ enum mthp_stat_item {
->>>>>           MTHP_STAT_ANON_SWPOUT,
->>>>>           MTHP_STAT_ANON_SWPOUT_FALLBACK,
->>>>>           MTHP_STAT_ANON_SWPIN_REFAULT,
->>>>> +       MTHP_STAT_SHMEM_ANON_ALLOC,
->>>>> +       MTHP_STAT_SHMEM_ANON_ALLOC_FALLBACK,
->>>>
->>>> not quite sure about this. for 2MB pmd-mapped THP shmem, we count them
->>>> as FILE_THP.
->>>> here we are counting as SHMEM_ANON. To me, SHMEM_ANON is more correct but
->>>> it doesn't align with pmd-mapped THP. David, Ryan, what do you think?
->>>
->>> The term "anonymous share" in the patch subject is weird to begin with
->>> ;) Easy to confuse with anonymous cow-shared memory. Let's just call it
->>> "anonymous shmem", which it is under the hood.
->>
->> Sure.
->>
->>> ... regarding the question: if we add FILE_ALLOC and friends, at least
->>> initially, we wouldn't account other large pagecache folios.
->>>
->>> ... likely we should add that then as well so the counter matches the
->>> actual name?
->>>
->>> If we later realize that we need separate FILE vs. SHMEM vs. WHATEVER
->>> counters, we can always add more fine-grained counters later. Doing it
->>> consistently w.r.t. traditional THPs first sounds reasonable.
->>
->> Um, once we expose it to userspace through the sysfs interface, the
->> sysfs interface should be explicit as much as possible and avoid
->> confusing users, otherwise it will be difficult to change this kind of
->> interface in the future. Personally, I prefer to Ryan's suggestion.
-> 
-> Inconsistency is confusing. As long as you avoid that, I don't particularly care.
 
-This is a good point. We have been careful to make sure the 2M ANON mTHP stats
-match the existing PMD-size stats. So we should definitely make sure that any
-future 2M FILE mTHP stats match too, which I guess means counting both SHMEM and
-FILE events.
+--vpxobo6ttuwribyt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So perhaps it makes more sense to add FILE counters to start with. If we need
-the SHMEM-specific counters, we could add them later?
+On 17.04.2024 15:43:56, Gregor Herburger wrote:
+> The mcp251xfd devices allow two pins to be configured as gpio. Add this
+> functionality to driver.
 
-I'm happy to go with the crowd on this...
+Can you please move the introduction of regmap cache into a separate
+patch.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--vpxobo6ttuwribyt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmYov7oACgkQKDiiPnot
+vG89DQf/TJX3tOwUNv0w4BAXHJYcVPOIVgnLB9H1JHzxooXpHruuv/4zVzMpFkrD
+9/UqZ28H5zoCN2c/66vuTkPgGJYmJKUiqnGbHxWtft6YMBDwHHWl+SgBk1Rh5pei
+sTscGd91QgsWzJrzcnnZNf0lYcY5m7CajN9UhPwRrP2dKYTFb2ZQewuj3XpCcWuY
+SsWLEB2k6QFuTb0sX2HB1I425QBFod00hbZIl+/zO+KI8qoXfLQtaPEbtfuDv0Ou
+tbIkDYlYDFm6z2+dtGqDOrdrjo4K94YDHGLdCsiBlDLk72ZqHMvS4Almpi/lI3vE
+Lq8ZRiBljoskgLxLhP6hd1Pu7h/29Q==
+=bRrN
+-----END PGP SIGNATURE-----
+
+--vpxobo6ttuwribyt--
 
