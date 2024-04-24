@@ -1,161 +1,142 @@
-Return-Path: <linux-kernel+bounces-156988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7FEB8B0B3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:40:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D91728B0B4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:41:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE278B27DF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:40:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79E481F2313A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:41:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6C615E5BB;
-	Wed, 24 Apr 2024 13:36:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4566615B986;
+	Wed, 24 Apr 2024 13:39:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GczbsT6q"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wvIuJ+ho"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2954515821F;
-	Wed, 24 Apr 2024 13:36:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C325E15D5DF
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713965807; cv=none; b=BbToZHHV+dszMGQlPSWhUjqICgOZngo8UMQYDdv0kgSaG1O977+ks8LW7pvhzcG45cpyV0zkIbOBmU4fe+wfMOdyJJh6RA/GfHS1y7UDw98RoVTKVSweE+6KA6gskEIdk2bj8lqoLFgZlw4mua10j7/yWfz1YdwVuBSt0v1Z7o8=
+	t=1713965952; cv=none; b=HrXMcFb7a0h29EO39VQy4cpyNPbVPyt/bFx9GNcbhm5uu0p3Ew1eg+5BFlfCNnoMxayI4QebXBsa/BbUTCrhWaDwRZvz3LEBaVBXMscW1iANi68KTyb1xXxsEe5RJFYEvShuMUIGyzNa8bZoIaKA7CJ0VDNwOuXqAx5LjbXyB3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713965807; c=relaxed/simple;
-	bh=DuQNMPYJW6nVPPpUrxmyaaPSFytPiiZGOb8vuk7RtvQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=HkpDVlc4RBr4pdncUrzWKzYrEl92WFggN/2XZzSaA3wakbA2DsP6pSKVnpE00K3C989Ncm0EPtZDiKE5OHRv0fysz/2iaVL0vRP2C4ECFLK/ejMvaOSYyb0X5OQsrMD2FvXWysE1Ba6hPjh7or2MuswCdWYJN00FgbJQXfozO/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=GczbsT6q; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O6YePx004880;
-	Wed, 24 Apr 2024 13:36:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=oYniM3lBZJlijcpoHr5Avlp7PJZDsiyAWcS90aQaz2g=; b=Gc
-	zbsT6qm1dxXj4F1fhsi090wTJ6mh+QDF7fCR1W4+Z97XnzeSNBGe82RwlBoVpVG6
-	WHhkS8Z0OEBDf3Br1PmyFsfczHImg9jzsurJNr8vwNgG1X6hy6K87d5xiNgNxu7R
-	OHmG8ZSI++80X6q9haS1eJgxPrRynAPqKrbLliMfdwmT59jihp7aq3jbusLmTdlh
-	Tf7OgMkG1qCxYY36grEcWAsceOXCIJliODKY8U0zn6T6QAV082PAyRsh3vNn+unZ
-	wCdkB/R98/BLPkP7Elis4mUW+QhwVGGiuqv2N/703swx8c02er2WnMjclkJTafTb
-	Sxm8gW5ZeCy/p+NA7VTQ==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9e0y2a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 13:36:38 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43ODacwR023204
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 13:36:38 GMT
-Received: from [10.253.14.221] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 24 Apr
- 2024 06:36:36 -0700
-Message-ID: <97ecc6fc-6b0e-4028-ac06-1952f133bd2a@quicinc.com>
-Date: Wed, 24 Apr 2024 21:36:34 +0800
+	s=arc-20240116; t=1713965952; c=relaxed/simple;
+	bh=D9UumX0rfFAl8bODnci2/+e3JYR71o9zPa56jancOjI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OOPKE1rjNvGnhKcFBr7SAvSJHoN9X/2H2gabnDZV0+5txUVBk591tTyARxdunWRoy52aQVMwNJkHgdjwRcYSG2qVA8Wwn1jFMEjWJr1hXV2PfytAAwb63ukTFexkeHLrrBwnw0F1XN4rgfYLiryk5+nogmiNNzXhm2KDuNmx6Zo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wvIuJ+ho; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41b2119da94so1864945e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:39:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713965949; x=1714570749; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=eIDjR8nmsolOxVRznr4LV9PEh0hWdtOUeRoonddM+RQ=;
+        b=wvIuJ+hotDgKpgQEaqeldHJkkdwHIUB5oagHQgo0gPAobcnB2oG6+iLLRpW9AEtULP
+         t/K1DYrXyMKb0fNsKRSkI3NAWzVsS82sTGfeB3htM5XF4QaPNj9bC90Ezc8Zlz2oKcyE
+         w/Qw0D1Qp/bWo3R4qFFG7mu3dCEo5dBAk/59SvFVCpjjDQelsGDFNpJIPU8euODtLiJR
+         YgiLfXtz3XP63VZbZAT/N8pvlbQo3hDxHIl8YqjyBRfiIGk7Oe/BzlNnnO1WDkkXkl9+
+         yR8LmRpD6rZhzWD3xPEWay99sjPrpBzq7WFLtPImLCFfXIoLS4X7e1ED54shnFnE2uDU
+         NpzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713965949; x=1714570749;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eIDjR8nmsolOxVRznr4LV9PEh0hWdtOUeRoonddM+RQ=;
+        b=JYy5iphMI7rjU5z+/sWpsHA82UMyH+XOtNgjoYPVzRH99R3BzhIRBW7Le53svDXsfx
+         MSpqwjLDd0Fo9S219MR4b4NbS/785eMgivNtfvQNZ6GfqwijA4H8UCbKUnDAxDMSbzJw
+         E5se4S9kLiDQfiDY2i9hWyK0KqGs4UDLyFG6ayrqkQASy1U4QJYmJovTG4z+BoRynlpt
+         scJgs9fGrc8BX5+NPl5lZ0x29DJx6Wbs7bry7/JcuHt3w6WMmgO0xwJ8sM8qeAyTQ+p0
+         3sBqektibaODgpLNwFSPPtB7CefpJ7z1RbucC81IMoxhEsmmrrkdCrWGS1lo8ieh9t3T
+         MICQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXqAM7RTpJ4XjeSYTI1S1V21GuL6yymWswt3RQXjmFm3j/KdelqS2Ha4MffE+el8iAmniqAi3U+OBk+cdA1SpZG8gx7NtOnHbei0Pcs
+X-Gm-Message-State: AOJu0YzCa18vc1wsLksDdVGcSOjkPT+M3D8YCNEVdVfJE59EphQJD++6
+	oIrI6yVjlC+BTEhht+AfniTu0BqItMQKgpTt/o6vZzA2ZyY8H4tyz+v9T+n7bPc=
+X-Google-Smtp-Source: AGHT+IGNGlL4K3RRWvrPnAS8pS+Nk+ThgYEusmDN6lyoq8bygca8tJqniABTWOqIDwkwqhh9NtmiVQ==
+X-Received: by 2002:a05:600c:1c13:b0:41a:3868:d222 with SMTP id j19-20020a05600c1c1300b0041a3868d222mr1706203wms.0.1713965948935;
+        Wed, 24 Apr 2024 06:39:08 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id fj3-20020a05600c0c8300b00416b2cbad06sm27796791wmb.41.2024.04.24.06.39.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 06:39:08 -0700 (PDT)
+Date: Wed, 24 Apr 2024 16:39:03 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc: Harry Wentland <harry.wentland@amd.com>,
+	Charlene Liu <charlene.liu@amd.com>, Leo Li <sunpeng.li@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Alvin Lee <alvin.lee2@amd.com>, Wenjing Liu <wenjing.liu@amd.com>,
+	Jun Lei <jun.lei@amd.com>, Tom Chung <chiahsuan.chung@amd.com>,
+	Dillon Varone <dillon.varone@amd.com>,
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] drm/amd/display: re-indent dc_power_down_on_boot()
+Message-ID: <d3a49914-65de-492f-9bf4-f3daa0c9f3cb@moroto.mountain>
+References: <e5f538ab-ebc8-400b-8104-4642b8089b4f@moroto.mountain>
+ <bbc315ed-3482-4abb-b3f6-88c335dcf9d2@amd.com>
+ <4a996c51-e101-47a0-8a89-78c6f9f01e0f@moroto.mountain>
+ <f3b0e0fe-edb9-420d-b4a1-71c267246875@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Bluetooth: qca: set power_ctrl_enabled on NULL
- returned by gpiod_get_optional()
-To: Wren Turkal <wt@penguintechs.org>,
-        Bartosz Golaszewski
-	<bartosz.golaszewski@linaro.org>
-CC: Bartosz Golaszewski <brgl@bgdev.pl>,
-        Marcel Holtmann
-	<marcel@holtmann.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240424122932.79120-1-brgl@bgdev.pl>
- <ba9b0e6e-3601-4460-ab5c-a02eb7708a4f@penguintechs.org>
- <CACMJSesZqCG=fdWe5C31a0iOFJ-ZpPRr70T_1TNLn7xqChZ4Sg@mail.gmail.com>
- <0e6bc9af-71f2-46b5-8b92-5da674b44ad7@quicinc.com>
- <a45016e9-1668-40eb-83a1-7a62162e319a@penguintechs.org>
-Content-Language: en-US
-From: quic_zijuhu <quic_zijuhu@quicinc.com>
-In-Reply-To: <a45016e9-1668-40eb-83a1-7a62162e319a@penguintechs.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: YEs_md7NkxeOFgCjzNTvvEsxMQQAy2Pp
-X-Proofpoint-ORIG-GUID: YEs_md7NkxeOFgCjzNTvvEsxMQQAy2Pp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-24_11,2024-04-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- suspectscore=0 phishscore=0 adultscore=0 impostorscore=0 clxscore=1015
- spamscore=0 priorityscore=1501 mlxlogscore=999 lowpriorityscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404240046
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f3b0e0fe-edb9-420d-b4a1-71c267246875@amd.com>
 
-On 4/24/2024 9:31 PM, Wren Turkal wrote:
-> On 4/24/24 6:22 AM, quic_zijuhu wrote:
->> On 4/24/2024 9:18 PM, Bartosz Golaszewski wrote:
->>> On Wed, 24 Apr 2024 at 15:10, Wren Turkal <wt@penguintechs.org> wrote:
->>>>
->>>> On 4/24/24 5:29 AM, Bartosz Golaszewski wrote:
->>>>> From: Bartosz Golaszewski<bartosz.golaszewski@linaro.org>
->>>>>
->>>>> Any return value from gpiod_get_optional() other than a pointer to a
->>>>> GPIO descriptor or a NULL-pointer is an error and the driver should
->>>>> abort probing. That being said: commit 56d074d26c58 ("Bluetooth:
->>>>> hci_qca:
->>>>> don't use IS_ERR_OR_NULL() with gpiod_get_optional()") no longer sets
->>>>> power_ctrl_enabled on NULL-pointer returned by
->>>>> devm_gpiod_get_optional(). Restore this behavior but bail-out on
->>>>> errors.
->>>>> While at it: also bail-out on error returned when trying to get the
->>>>> "swctrl" GPIO.
->>>>>
->>>>> Reported-by: Wren Turkal<wt@penguintechs.org>
->>>>> Reported-by: Zijun Hu<quic_zijuhu@quicinc.com>
->>>>> Closes:https://lore.kernel.org/linux-bluetooth/1713449192-25926-2-git-send-email-quic_zijuhu@quicinc.com/
->>>>> Fixes: 56d074d26c58 ("Bluetooth: hci_qca: don't use
->>>>> IS_ERR_OR_NULL() with gpiod_get_optional()")
->>>>> Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@linaro.org>
->>>>> Signed-off-by: Bartosz Golaszewski<bartosz.golaszewski@linaro.org>
->>>>
->>>> Tested-by: "Wren Turkal" <wt@penguintechs.org>
->>>>
->>>>
->>>> Like this?
->>>
->>> Yes, awesome, thanks.
->>>
->>> This is how reviewing works too in the kernel, look at what Krzysztof
->>> did under v1, he just wrote:
->>>
->>> Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@linaro.org>
->>>
->> v1 have obvious something wrong as i pointed and verified.
->> so i think it is not suitable to attach v1's review-by tag to v2 anyway.
+On Wed, Apr 24, 2024 at 03:33:11PM +0200, Christian König wrote:
+> Am 24.04.24 um 15:20 schrieb Dan Carpenter:
+> > On Wed, Apr 24, 2024 at 03:11:08PM +0200, Christian König wrote:
+> > > Am 24.04.24 um 13:41 schrieb Dan Carpenter:
+> > > > These lines are indented too far.  Clean the whitespace.
+> > > > 
+> > > > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > > > ---
+> > > >    drivers/gpu/drm/amd/display/dc/core/dc.c | 7 +++----
+> > > >    1 file changed, 3 insertions(+), 4 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
+> > > > index 8eefba757da4..f64d7229eb6c 100644
+> > > > --- a/drivers/gpu/drm/amd/display/dc/core/dc.c
+> > > > +++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
+> > > > @@ -5043,11 +5043,10 @@ void dc_interrupt_ack(struct dc *dc, enum dc_irq_source src)
+> > > >    void dc_power_down_on_boot(struct dc *dc)
+> > > >    {
+> > > >    	if (dc->ctx->dce_environment != DCE_ENV_VIRTUAL_HW &&
+> > > > -			dc->hwss.power_down_on_boot) {
+> > > > -
+> > > > -			if (dc->caps.ips_support)
+> > > > -				dc_exit_ips_for_hw_access(dc);
+> > > > +	    dc->hwss.power_down_on_boot) {
+> > > > +		if (dc->caps.ips_support)
+> > > > +			dc_exit_ips_for_hw_access(dc);
+> > > Well while at it can't the two ifs be merged here?
+> > > 
+> > > (I don't know this code to well, but it looks like it).
+> > > 
+> > I'm sorry, I don't see what you're saying.
 > 
-> @Zijun, your concern is that current DTs may not define the gpio and
-> this will cause the bluetooth not to work?
+> The indentation was so messed up that I though the call to
+> power_down_on_boot() was after both ifs, but it is still inside the first.
 > 
-> Would that not more appropriately be fixed by machine-specific fixups
-> for the DT?
-> 
-for lunched production, it is difficult or not possible to change such
-config.
+> So your patch is actually right, sorry for the noise.
 
->>
->>> And mailing list tools will pick it up.
->>>
->>> Bartosz
->>
-> 
+Okay, but let me send a v2 anyway to delete the extra blank line.
+
+regards,
+dan carpenter
 
 
