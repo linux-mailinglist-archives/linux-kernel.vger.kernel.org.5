@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-157270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D24D08B0F3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:58:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57A988B0F42
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:59:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FA981F24B56
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:58:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FADC298E24
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:59:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956F716192C;
-	Wed, 24 Apr 2024 15:58:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED1E3161314;
+	Wed, 24 Apr 2024 15:58:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="hY4JBgVW"
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2068.outbound.protection.outlook.com [40.107.96.68])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="umVpiWhr"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2046.outbound.protection.outlook.com [40.107.236.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18BD316130D
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4301A1607A2
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:58:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.46
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713974318; cv=fail; b=ghsvat8GLkpUtm/Jz34A47SZbOYnmq+5VHclwPliYT8EDLEmFrLa4607pxBV5XzkS8HY1WM1RAyQl5sUwKOar5n3BUDx7BVI+JQ+0A+fVEJTC/+ooPuzqwA2pOXvQD8gk3x0km0xK8SQL+J2rz/MZkvTtQNYFA3O845gEvxBUqg=
+	t=1713974327; cv=fail; b=Mbm/41DZOlpi7wCUVEDxNpTiM4OZwxaTgqRixIh/z6vY+Zr6iovPSgH6jOXVXZTiAwjocSJw4sqiDLMHrY3M5msje2eRVtnGU0u0wLZZ6yp5ZvZe1/P/hEeO2LWD1Hi3bc8XYDFni6YjgplEcwNuwoLEss9qFhbP9ikNRQzPJI4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713974318; c=relaxed/simple;
-	bh=IoPkAJCI+2qNOgE4ZNvBFMwjvGyVKF04WO2eSNkc3xM=;
+	s=arc-20240116; t=1713974327; c=relaxed/simple;
+	bh=hGY0aZ2pkvJy0ri57i/f7i49Ef7mViQiA4B9s/3dkZM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j6/eicrp2kWYPXnHCdZmAMnXFr9X5KrIh0y1Z3me7e6ctu+zXi7r97TBt1sQCumK5ka83UzABqBXHLuBW0Gv+NZ+RSWCSIj8B4RmuPLDRKeNGd3tb68dy2siYHYwELgNzevYGtzoCre/CMSNYo79X+GfLkU7WE++jr2XUv7v0/I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=hY4JBgVW; arc=fail smtp.client-ip=40.107.96.68
+	 MIME-Version:Content-Type; b=Z6r2kgnya6F8/OhZcBcq0qB/uF1/AqZivcZLph5M0c28VSwT9zxCEy03ZiSk2/6+bm/QXZxCk4BcurESMulbi36MlEqkKda4vvaGto2AFuWrfcdLcFTjU0HCLiVLVfiuaZYR5vXMtxZXEo/Som1w7e4l9/rybzptHbSlMvr1irY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=umVpiWhr; arc=fail smtp.client-ip=40.107.236.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ogv5Sm7TBIo1DZaOKiEnUDt+m7imYr18/4qYcHLI2E4vSi/39+8+MsrABjD0wtuX9Jpz5YwpR+vEQ4oqxrOK7uXdt5bX8HWnghZfEVprqm6Kw5HQEizTGJ34VfH/53RAL1qEGBMsXMql9m9jXzEiVVaBQtd2gYtNYaGa9QLFCsOX/9eJ8kY9uwRdirlrDQ884GETJeIAMCLLhc2tCWgIhjwIHmYtmM0JM13PhImUhPAAFfqezQVfAMN6VGPLQ0W7TtetYB4RgLNMTd8yarrutllu7s6SDfH6QI0m2mgriDdFlHHFZ+JHd2oBYD8tujy1WjO98KH++91y3+sTUUTPzQ==
+ b=d9Tjpi7fcvlURIg69BAMZzt0Q4AWeuQeHV/c5LRSZs1km0s+ZqncOkXrsuUfAgQ696qaWiwzscfvl1PiOnpHgnX1t7gBwJmG3rtfOWToRNDTV6OY6r6zX0y+yuCazPDjIO9eVYMUolptIxbhe/KMFyTTq/KNohyFi9hxxusdnJgcHmVyWl8qsp6gACcuH2FVhkTw6tLxaM2u4rOeLXD5Ee89a7mLm7/JCNy20CQcs38UZrcyft4Dibf2jnw6Tbc/CWE7qEQZA2Vkvug3cYy97pa+FZ001b0ThSV1EGKZ6wpacGyX6/LvyegFphM0mtjbEMhpxGsScerTJnwNM7C+4g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/fvoIpw98EGryWgKZZYrMRJWz18TwCVHQc7OK/87QBM=;
- b=nP4MOd4va4kyQft+EyLoJMXS9qwQf15vBFs2Pp+wHkkxMNKqSBfA0DeQW7X6cq4t8oT2o9J56/R0rnXaaXmqHZ+EnuxPRPNE9Xz482/m8O4ZpDVglHRFfWrkqulR06O/iLGsC6wcFs5yZRKDndhjzb+EGYCzS5xhwM2ePP49KqBgBcR2KIu4BPXsUDUOQunAya7oKzCgW+Omdkd6+LISmblh3BukypNwANgrYq4hzT+VNMZq4ZFWe+tKjGpP+tRKEuu9mxRq0Ib9AdDTXn4qVnem9ZvE05ZpF6Oa2CWoMxnxwj39BTYoRPqaVlEcWL+OQBuwLAGNIH0zwlOavRQiew==
+ bh=15ew4f9ZgZLu4/xHtI+LHBBQOnr2HhxMiiEK/WZoX5s=;
+ b=eV8+w/NSvT3wOUwD1dzegW7hv6oBKv6st+oIidzwS8L430UPt1Gu/7UqMpUe2KWl8eDzwzz231TjYR7yOEMCLaLupRIWJyZizZwoMmXy3RKi4LuYwJsXExNyBss8EIJUR0C2FRJTIQtlZC7aEVGsXNHihWXARnBibhAfW7Nq6Wt+5R7o2LmBEH/xhvUuaVCQVBUgqhY5mP/HXbK96cpei8vhbQ/6HVJWytQniNNFhjl5WsqQAAIVUMI7x5iQhylnvL1Blkm3rfl9MmqBTAGP+2a95DlMaX8z1qk7SNm1wiYpvSIOFhybnlfq3HZNeeogkMurrjOccNI+ViP/eEPSrg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/fvoIpw98EGryWgKZZYrMRJWz18TwCVHQc7OK/87QBM=;
- b=hY4JBgVWQ16yKsutxpLix2aTc/R+6xn27ZOoGZLzdQjVEEsTdXQGI6vDKkEKEBJi1Gl6nbhD4YWLWpJDaLxTWwxk4OFEPh/b3E9RymlFxrN5pbV3L19fYYnSgRsuw7ZNoU+4GNbggFKp6IlU3iqPKqne4Jrxyk57sXIA1XU/ro4=
-Received: from PH7PR17CA0002.namprd17.prod.outlook.com (2603:10b6:510:324::22)
- by MN0PR12MB6223.namprd12.prod.outlook.com (2603:10b6:208:3c1::12) with
+ bh=15ew4f9ZgZLu4/xHtI+LHBBQOnr2HhxMiiEK/WZoX5s=;
+ b=umVpiWhr/DYllRDBrFIb0VsItuVNbsLGz3RbM3/F+AH/aGhbabAY2b45dG1Z3UX8ZYPFqo9/TOiGxv2Pafmfbhy1RiQvo7xKOw85TtjCfxSbmrZyWi5VQiK8vBcoxMOlVZv7nXWWwu/PL0bY5sQaJbaPfOSvYMEUL3B0evHqGsA=
+Received: from PH7PR17CA0021.namprd17.prod.outlook.com (2603:10b6:510:324::27)
+ by MW4PR12MB7482.namprd12.prod.outlook.com (2603:10b6:303:212::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.23; Wed, 24 Apr
- 2024 15:58:33 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.24; Wed, 24 Apr
+ 2024 15:58:43 +0000
 Received: from CY4PEPF0000EE31.namprd05.prod.outlook.com
- (2603:10b6:510:324:cafe::f1) by PH7PR17CA0002.outlook.office365.com
- (2603:10b6:510:324::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22 via Frontend
- Transport; Wed, 24 Apr 2024 15:58:33 +0000
+ (2603:10b6:510:324:cafe::82) by PH7PR17CA0021.outlook.office365.com
+ (2603:10b6:510:324::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.23 via Frontend
+ Transport; Wed, 24 Apr 2024 15:58:43 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -64,11 +64,11 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  CY4PEPF0000EE31.mail.protection.outlook.com (10.167.242.37) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7519.19 via Frontend Transport; Wed, 24 Apr 2024 15:58:33 +0000
+ 15.20.7519.19 via Frontend Transport; Wed, 24 Apr 2024 15:58:42 +0000
 Received: from tlendack-t1.amdoffice.net (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Apr 2024 10:58:32 -0500
+ 15.1.2507.35; Wed, 24 Apr 2024 10:58:39 -0500
 From: Tom Lendacky <thomas.lendacky@amd.com>
 To: <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
 	<linux-coco@lists.linux.dev>, <svsm-devel@coconut-svsm.dev>
@@ -77,9 +77,9 @@ CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
 	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, "Peter
  Zijlstra" <peterz@infradead.org>, Dan Williams <dan.j.williams@intel.com>,
 	Michael Roth <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>
-Subject: [PATCH v4 01/15] x86/sev: Shorten snp_secrets_page_layout to snp_secrets_page
-Date: Wed, 24 Apr 2024 10:57:57 -0500
-Message-ID: <bc8d58302c6ab66c3beeab50cce3ec2c6bd72d6c.1713974291.git.thomas.lendacky@amd.com>
+Subject: [PATCH v4 02/15] x86/sev: Rename snp_init() in the boot/compressed/sev.c file
+Date: Wed, 24 Apr 2024 10:57:58 -0500
+Message-ID: <afda29585c2724b9698003f24cefa77eb35f4ffb.1713974291.git.thomas.lendacky@amd.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <cover.1713974291.git.thomas.lendacky@amd.com>
 References: <cover.1713974291.git.thomas.lendacky@amd.com>
@@ -95,130 +95,260 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE31:EE_|MN0PR12MB6223:EE_
-X-MS-Office365-Filtering-Correlation-Id: a95481e7-91a6-47de-fc9e-08dc647764d6
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE31:EE_|MW4PR12MB7482:EE_
+X-MS-Office365-Filtering-Correlation-Id: 79c73520-3685-40f2-9a19-08dc64776a66
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|7416005|1800799015|376005|82310400014|36860700004;
+	BCL:0;ARA:13230031|376005|82310400014|36860700004|7416005|1800799015;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Fcsi80JUm0GQamSUSBr/BS2m5dwj4/pJBKT4b7VkdBF63kOZD4o7QkTjryc5?=
- =?us-ascii?Q?aNMECxOHMJrtcBUUV7q4zBQEtpDIq9Du6k5WXxt4N4Kj300vvFR507Ga+jwo?=
- =?us-ascii?Q?CjqQQS+jUgQlfjgRS8jdLvWKIDwYWSbcDNNEGfW8Eql6ZkZMxXJO5OuwFRM0?=
- =?us-ascii?Q?8hoFa/7+zu3ct1dZXBUZDW+qoJcfTRRXwyMwwQxZGzW+fbymJZysTvblKbRd?=
- =?us-ascii?Q?mU6ZT+GOIoLB1F0XGWPXibXfcc1UjKrV/XniPNn5FKZKS9QngEQGN3y0jugo?=
- =?us-ascii?Q?x5zqTNXjiKkFi8c6u/HyB/jQGLSKz1rnPZbl3MVZN1WmN1AchYXVdE4No3NH?=
- =?us-ascii?Q?RWrX90U8NAt+g4qe5bFnBrSgAwixOJPVh/qDOjTawnGghZQXuXOHfzzgJN87?=
- =?us-ascii?Q?FxoGfM1C9RPORe2elOUMQaRvHjkIOjVks5HWKLJfeD6FJHg4fVRDW7euZ6dq?=
- =?us-ascii?Q?KzxuK5wZINBcWhVEC6TaDY/jBUvGIFSKMXUP2I16R3NVf8IX/ESNVN87l3Ox?=
- =?us-ascii?Q?ltTJkqF3zw/miXi04ImEcO2wxG9jah39DjjULTMkMFiCK6IVWzaQRMGj73dA?=
- =?us-ascii?Q?9jyYS8fQv/tW1JrmO8/AhsPL2KMSrOdgWFi/Wb+U5ElHW1OhsrqFcfuY9Ktz?=
- =?us-ascii?Q?HN9fYe1zzSXFRgHqvSYro3LB8hIZEg5BXw5X9RwLPVUwzh57vTS0BOixL6t+?=
- =?us-ascii?Q?d7sciFyhVkkOnzwh8sXtQBRZO/N2rk3aXs+0Z/h7G58kfqRVfoHpNd9MIHvb?=
- =?us-ascii?Q?wFblGG1bwin8+jMK0z0rUkEURXGvlWEy7nCjB3u8M2NVMRA3uO137drI+uvR?=
- =?us-ascii?Q?rIqGn4WWrWvMaOnSRc63umUC0K/Zi6LvfQhoMrnPb+GK+R1X2kR++5tCizn0?=
- =?us-ascii?Q?REWwKG0I1usyD4aGOlsHdh72KfvTCnYEIWnwxmQE7ZLoPLf7lGSMhLryB09l?=
- =?us-ascii?Q?WYGp+NaDecZ/gZxx7TB8AYgO1F3vppneEOkaA4TC83SM06M551wO8YuYqPw7?=
- =?us-ascii?Q?vN23JCrgs9lQeF63TYqpkdTKBvcie60cWLDZBvB+itWA4kAE5/pv1q6RT7kN?=
- =?us-ascii?Q?SnXZDulYOFxGdu/dM+7UoQMr9f9GNiiQULgr1Q3PnVVl6lv24SaldFLz9znN?=
- =?us-ascii?Q?uDi8sRZk9Qi4bzX5qe0XOeDb0ilxnXcaebxdq87gR6Ukj/nPppuTr+YJ2muo?=
- =?us-ascii?Q?fgGLhf4+a3tbUluMugF8uzFxmsNhVATGFs1IgD9zD8ZH4/IJeCHIDw1J/LtR?=
- =?us-ascii?Q?pC30JdADc9m7XYcdFYanfF+rUsnBbIAIVXyYj3N5A4hWFWCuWGLMohUESjc3?=
- =?us-ascii?Q?AA4zTdc7dFFRQtcBZG7h72R1GzJxBcdDEn9xRFzXTsnO3w/1oU7+nm3SJiD6?=
- =?us-ascii?Q?pTGnZ2hCEqMJ3FFAd5FInzp/LLU7?=
+	=?us-ascii?Q?Orpz8IxLAX9h6TLjK26euNOyQAe+4/vOXQ6Vvp2bu3s2jdp4I8t7OJo9ho4m?=
+ =?us-ascii?Q?PCvG7I+q2XK2vxGxVnOwbmDn34ICF+IGhLwVmQnS4EVN5kIUojbjRH4ShgG9?=
+ =?us-ascii?Q?1FKQVZ2lVS55Sash1EvNfufTM/WUSnUZ8zNKB+zVBjUMrQ/kwD+cB+dtK2rN?=
+ =?us-ascii?Q?YYqU1letawhnljdraicrayMXzjJgbKG9OHzDSbPHTyd9QvPd3aycjCx6cqAV?=
+ =?us-ascii?Q?knOhWK2etrCsgg5vJLYP7pu5KbXJR6DwLOA7qkpuu0OHhsPUOUR6wc2Ie8mo?=
+ =?us-ascii?Q?yDcCYkCUtsvRww2z/T/AfwIUXx56/jaKpIq2Jdz3t/3/ZBmE/jcR+9GD4wDJ?=
+ =?us-ascii?Q?WHNENsRBe3Wz3eo9jILPHKFIuK6uLNGz/kOcTJkBgbz9xkVZm0DBSYBMcGJf?=
+ =?us-ascii?Q?372SuiHAhg7mNZPMn4Ky7KGcKjy+ZbUXcANeYitNwcO6+sKY8VuEHvSJI2G/?=
+ =?us-ascii?Q?qwVoYpVXWpS9eJpmupfVoK2vX9Hh7+eDXIMZsGR5sOlz+uhl9wBOWaMcSYRH?=
+ =?us-ascii?Q?aMQSHVkdJT3OP4MnxdvTD6HwEfkJOVqL61J5GVKdRqESPoBP9+9tEhKg1y2E?=
+ =?us-ascii?Q?04ckep1VCNR+BvmZQ3MDFH8Gm+fDvfK+5HBJxtGH3XUq6ibIxMX+p0nn+2JY?=
+ =?us-ascii?Q?KZ+5Ln17D1Ez09exYjYTeUlCjUoZfBB8hIuhFJ798KNsBaYTy92bG+j7a+uV?=
+ =?us-ascii?Q?C1M92HWk3mTDHTc4sUk3BV6oOaJUzPyilnLVmURQe7xNBCvwLjKfYeF4eRel?=
+ =?us-ascii?Q?V5cq6JLlc9kFJ8tM0pS1CjtKtBvf7aUqf+D2dGuHTR1ix2eknggOGpLC6sDK?=
+ =?us-ascii?Q?Tz5HFSrnHsiJLaXce90gwclI01ou0l3tUImUg0vOBsSm6UlXklfhoJAMqvFo?=
+ =?us-ascii?Q?Kj3cOxzltnJXZ9dA/pHQRPoZalIxlXG5IkZ+5u2pqbzGoGkHgYxSLRZbwaMw?=
+ =?us-ascii?Q?SdbvU+2CZ6BAiuitDCCsKLSxOd7T00Rt841OBZnRv7FM/cEuKXYsPjjJhVox?=
+ =?us-ascii?Q?L6G5wRXt6wHbi/A2+JSZ2o5I1YEUVGxqcntX7ahgl2hexVRY5IPIgFUmuJIt?=
+ =?us-ascii?Q?Emh96suppSOW7jKW43OP9e6dGtCN4B8QfqAJ52EeWIemmRQ/eWw3P2N4xzts?=
+ =?us-ascii?Q?anuF2pXdtY4hjMwMc0pY578r/yjp29GvhiWlqaBFObpWZYWl2+ff26mEutLg?=
+ =?us-ascii?Q?+aZJW59cCjDw5tXcjzyfADEQA1d60raUFjcDlIouhIRnblulYxwbnERkojba?=
+ =?us-ascii?Q?vvKsAi9CeI8COUAkZUMBObF4GerRboTu34WZscOheMPUyM3Lkj7LfEnwGuip?=
+ =?us-ascii?Q?zrIRRfU90PVZra6Aonbns9kvh//vWX7+NaDy9KHpHzQIZM0R2feY4OOJk+sa?=
+ =?us-ascii?Q?alSOgHBD+2hth4TFZeEM/H/FiFtV?=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(82310400014)(36860700004);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(82310400014)(36860700004)(7416005)(1800799015);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 15:58:33.3990
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 15:58:42.7314
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a95481e7-91a6-47de-fc9e-08dc647764d6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79c73520-3685-40f2-9a19-08dc64776a66
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	CY4PEPF0000EE31.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6223
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7482
 
-Ending a struct name with "layout" is a little redundant, so shorten the
-snp_secrets_page_layout name to just snp_secrets_page.
+The snp_init() function in boot/compressed/sev.c is local to that file, is
+not called from outside of the file and is independent of the snp_init()
+function in kernel/sev.c. Change the name to better differentiate when
+each function is used.
+
+Move the renamed snp_init() and related functions up in the file to avoid
+having to add a forward declaration and make the function static.
 
 No functional change.
 
 Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
 ---
- arch/x86/include/asm/sev.h              | 2 +-
- arch/x86/kernel/sev.c                   | 4 ++--
- drivers/virt/coco/sev-guest/sev-guest.c | 6 +++---
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ arch/x86/boot/compressed/sev.c | 162 ++++++++++++++++-----------------
+ 1 file changed, 81 insertions(+), 81 deletions(-)
 
-diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-index 7f57382afee4..48bc397db649 100644
---- a/arch/x86/include/asm/sev.h
-+++ b/arch/x86/include/asm/sev.h
-@@ -140,7 +140,7 @@ struct secrets_os_area {
- #define VMPCK_KEY_LEN		32
- 
- /* See the SNP spec version 0.9 for secrets page format */
--struct snp_secrets_page_layout {
-+struct snp_secrets_page {
- 	u32 version;
- 	u32 imien	: 1,
- 	    rsvd1	: 31;
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 995f94467101..6949fbccec40 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -648,7 +648,7 @@ static u64 __init get_secrets_page(void)
- 
- static u64 __init get_snp_jump_table_addr(void)
- {
--	struct snp_secrets_page_layout *layout;
-+	struct snp_secrets_page *layout;
- 	void __iomem *mem;
- 	u64 pa, addr;
- 
-@@ -662,7 +662,7 @@ static u64 __init get_snp_jump_table_addr(void)
- 		return 0;
+diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
+index ec71846d28c9..5ad0ff4664f1 100644
+--- a/arch/x86/boot/compressed/sev.c
++++ b/arch/x86/boot/compressed/sev.c
+@@ -413,6 +413,85 @@ void snp_check_features(void)
  	}
+ }
  
--	layout = (__force struct snp_secrets_page_layout *)mem;
-+	layout = (__force struct snp_secrets_page *)mem;
++/* Search for Confidential Computing blob in the EFI config table. */
++static struct cc_blob_sev_info *find_cc_blob_efi(struct boot_params *bp)
++{
++	unsigned long cfg_table_pa;
++	unsigned int cfg_table_len;
++	int ret;
++
++	ret = efi_get_conf_table(bp, &cfg_table_pa, &cfg_table_len);
++	if (ret)
++		return NULL;
++
++	return (struct cc_blob_sev_info *)efi_find_vendor_table(bp, cfg_table_pa,
++								cfg_table_len,
++								EFI_CC_BLOB_GUID);
++}
++
++/*
++ * Initial set up of SNP relies on information provided by the
++ * Confidential Computing blob, which can be passed to the boot kernel
++ * by firmware/bootloader in the following ways:
++ *
++ * - via an entry in the EFI config table
++ * - via a setup_data structure, as defined by the Linux Boot Protocol
++ *
++ * Scan for the blob in that order.
++ */
++static struct cc_blob_sev_info *find_cc_blob(struct boot_params *bp)
++{
++	struct cc_blob_sev_info *cc_info;
++
++	cc_info = find_cc_blob_efi(bp);
++	if (cc_info)
++		goto found_cc_info;
++
++	cc_info = find_cc_blob_setup_data(bp);
++	if (!cc_info)
++		return NULL;
++
++found_cc_info:
++	if (cc_info->magic != CC_BLOB_SEV_HDR_MAGIC)
++		sev_es_terminate(SEV_TERM_SET_GEN, GHCB_SNP_UNSUPPORTED);
++
++	return cc_info;
++}
++
++/*
++ * Indicate SNP based on presence of SNP-specific CC blob. Subsequent checks
++ * will verify the SNP CPUID/MSR bits.
++ */
++static bool early_snp_init(struct boot_params *bp)
++{
++	struct cc_blob_sev_info *cc_info;
++
++	if (!bp)
++		return false;
++
++	cc_info = find_cc_blob(bp);
++	if (!cc_info)
++		return false;
++
++	/*
++	 * If a SNP-specific Confidential Computing blob is present, then
++	 * firmware/bootloader have indicated SNP support. Verifying this
++	 * involves CPUID checks which will be more reliable if the SNP
++	 * CPUID table is used. See comments over snp_setup_cpuid_table() for
++	 * more details.
++	 */
++	setup_cpuid_table(cc_info);
++
++	/*
++	 * Pass run-time kernel a pointer to CC info via boot_params so EFI
++	 * config table doesn't need to be searched again during early startup
++	 * phase.
++	 */
++	bp->cc_blob_address = (u32)(unsigned long)cc_info;
++
++	return true;
++}
++
+ /*
+  * sev_check_cpu_support - Check for SEV support in the CPU capabilities
+  *
+@@ -463,7 +542,7 @@ void sev_enable(struct boot_params *bp)
+ 		bp->cc_blob_address = 0;
  
- 	addr = layout->os_area.ap_jump_table_pa;
- 	iounmap(mem);
-diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
-index 87f241825bc3..04a7bd1e4314 100644
---- a/drivers/virt/coco/sev-guest/sev-guest.c
-+++ b/drivers/virt/coco/sev-guest/sev-guest.c
-@@ -59,7 +59,7 @@ struct snp_guest_dev {
+ 	/*
+-	 * Do an initial SEV capability check before snp_init() which
++	 * Do an initial SEV capability check before early_snp_init() which
+ 	 * loads the CPUID page and the same checks afterwards are done
+ 	 * without the hypervisor and are trustworthy.
+ 	 *
+@@ -478,7 +557,7 @@ void sev_enable(struct boot_params *bp)
+ 	 * Setup/preliminary detection of SNP. This will be sanity-checked
+ 	 * against CPUID/MSR values later.
  	 */
- 	struct snp_guest_msg secret_request, secret_response;
+-	snp = snp_init(bp);
++	snp = early_snp_init(bp);
  
--	struct snp_secrets_page_layout *layout;
-+	struct snp_secrets_page *layout;
- 	struct snp_req_data input;
- 	union {
- 		struct snp_report_req report;
-@@ -743,7 +743,7 @@ static const struct file_operations snp_guest_fops = {
- 	.unlocked_ioctl = snp_guest_ioctl,
- };
+ 	/* Now repeat the checks with the SNP CPUID table. */
  
--static u8 *get_vmpck(int id, struct snp_secrets_page_layout *layout, u32 **seqno)
-+static u8 *get_vmpck(int id, struct snp_secrets_page *layout, u32 **seqno)
+@@ -535,85 +614,6 @@ u64 sev_get_status(void)
+ 	return m.q;
+ }
+ 
+-/* Search for Confidential Computing blob in the EFI config table. */
+-static struct cc_blob_sev_info *find_cc_blob_efi(struct boot_params *bp)
+-{
+-	unsigned long cfg_table_pa;
+-	unsigned int cfg_table_len;
+-	int ret;
+-
+-	ret = efi_get_conf_table(bp, &cfg_table_pa, &cfg_table_len);
+-	if (ret)
+-		return NULL;
+-
+-	return (struct cc_blob_sev_info *)efi_find_vendor_table(bp, cfg_table_pa,
+-								cfg_table_len,
+-								EFI_CC_BLOB_GUID);
+-}
+-
+-/*
+- * Initial set up of SNP relies on information provided by the
+- * Confidential Computing blob, which can be passed to the boot kernel
+- * by firmware/bootloader in the following ways:
+- *
+- * - via an entry in the EFI config table
+- * - via a setup_data structure, as defined by the Linux Boot Protocol
+- *
+- * Scan for the blob in that order.
+- */
+-static struct cc_blob_sev_info *find_cc_blob(struct boot_params *bp)
+-{
+-	struct cc_blob_sev_info *cc_info;
+-
+-	cc_info = find_cc_blob_efi(bp);
+-	if (cc_info)
+-		goto found_cc_info;
+-
+-	cc_info = find_cc_blob_setup_data(bp);
+-	if (!cc_info)
+-		return NULL;
+-
+-found_cc_info:
+-	if (cc_info->magic != CC_BLOB_SEV_HDR_MAGIC)
+-		sev_es_terminate(SEV_TERM_SET_GEN, GHCB_SNP_UNSUPPORTED);
+-
+-	return cc_info;
+-}
+-
+-/*
+- * Indicate SNP based on presence of SNP-specific CC blob. Subsequent checks
+- * will verify the SNP CPUID/MSR bits.
+- */
+-bool snp_init(struct boot_params *bp)
+-{
+-	struct cc_blob_sev_info *cc_info;
+-
+-	if (!bp)
+-		return false;
+-
+-	cc_info = find_cc_blob(bp);
+-	if (!cc_info)
+-		return false;
+-
+-	/*
+-	 * If a SNP-specific Confidential Computing blob is present, then
+-	 * firmware/bootloader have indicated SNP support. Verifying this
+-	 * involves CPUID checks which will be more reliable if the SNP
+-	 * CPUID table is used. See comments over snp_setup_cpuid_table() for
+-	 * more details.
+-	 */
+-	setup_cpuid_table(cc_info);
+-
+-	/*
+-	 * Pass run-time kernel a pointer to CC info via boot_params so EFI
+-	 * config table doesn't need to be searched again during early startup
+-	 * phase.
+-	 */
+-	bp->cc_blob_address = (u32)(unsigned long)cc_info;
+-
+-	return true;
+-}
+-
+ void sev_prep_identity_maps(unsigned long top_level_pgt)
  {
- 	u8 *key = NULL;
- 
-@@ -897,8 +897,8 @@ static void unregister_sev_tsm(void *data)
- 
- static int __init sev_guest_probe(struct platform_device *pdev)
- {
--	struct snp_secrets_page_layout *layout;
- 	struct sev_guest_platform_data *data;
-+	struct snp_secrets_page *layout;
- 	struct device *dev = &pdev->dev;
- 	struct snp_guest_dev *snp_dev;
- 	struct miscdevice *misc;
+ 	/*
 -- 
 2.43.2
 
