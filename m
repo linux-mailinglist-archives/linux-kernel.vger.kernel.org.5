@@ -1,255 +1,118 @@
-Return-Path: <linux-kernel+bounces-157686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68FF68B1499
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:31:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2A748B149C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:32:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D8862874AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:31:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4FD11C224FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EBE214C588;
-	Wed, 24 Apr 2024 20:31:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vYv5SZQr"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B057D156881;
+	Wed, 24 Apr 2024 20:32:36 +0000 (UTC)
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFBC614C594
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 20:31:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98FC415665C;
+	Wed, 24 Apr 2024 20:32:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713990696; cv=none; b=TBVVUyKbRAzmWlGqKTk7rukCLYsolFyGR3c4dm51Ee3sbUna/noKcXpDic5N4nnPpTV39cPY96fHgCb95krV55dU3eRMbnM0xdCfslgP+pycBMTMLOQ79bk2/0KH8D6v7gYcOl7rBrtqfDHrXMewkXSVS7IDP6AyR38SqX2OJ74=
+	t=1713990756; cv=none; b=YL113ddPN+s0emQ1Jk1Sr/YwhldBfv5PzmWy2oV/0TX8tnrjoH4YmgKvakSebVsylBZCdsdf72jhy8dOxyS6GXEA4s0pS/iDLWUviCMvp+DB33G39YMZnjAbV0ZgU1LfB8PgRh0YUwBL/w9mXUlkRjTODc4WyjhxbbzBpzY1/K8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713990696; c=relaxed/simple;
-	bh=CtKCUQB4Kql7tmaWP27sTCH5+nmqkV3XR81u4Dirqt4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HJOrI7geH68gYNdd4TygrxHT8Ggfp6ntymtMV70nBkl9+6MUkKr4qItzyOwYz435/HQmCC5Juxp0FDA5Da0z2A1465kwo6jLJDIFRAftnwq3XirVat1TxP9cKbQ78OnkK6RJob7shAzhHhbHk/HbiArZN7Cua/y2pOYbhS9u82o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vYv5SZQr; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-34b1e35155aso208543f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:31:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713990693; x=1714595493; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z+e+2WTr+55fMN46zgpBMyY5FEksh29xdSRSoFD8QA8=;
-        b=vYv5SZQr4ZmBL4R7NDR/iUpjAIoLvukjMu3HB/xnTTdJcAftLO9uEraM8nj9Eki8XI
-         jvmQownnfIx0EsPiElD5QXKC2jx+8bm/+nugeY/9ZPno6EoysJL+GGcQL5Fai5h0z5Bt
-         5J8uImkvpqXVhrcvXNEysMb8tlLinyJcr+CirU7vflV8/gB0R6q3UtShTSJKjjdav8uF
-         D6ADHWhIIIbO3Q+FruvDgALEmdGJeDWBzIgc49JlbUN/zSAK+mMS7eG88qHB0wAtOzkx
-         Ml6rTYSkunFa4ke52Fqn78iPR7AZpmQbmWQq5XLmNYKPyxIqrwITyLkdJMewQH3+MAUk
-         +oGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713990693; x=1714595493;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z+e+2WTr+55fMN46zgpBMyY5FEksh29xdSRSoFD8QA8=;
-        b=Aa/Jg26K81QKA3zC9p+Qi4m567DZQ6w0+8z4MBICFyx+28OQnhakA6n4e4H4DewNxP
-         UdM72mxAzCl7PHc6a+RX08XEBImk7mNzLK/cE5GDz2VYAAHZ4BwfpELSZynrjw+5sHtW
-         G6TBlb3OVKdjp+DuXNyZv2G2Xp20ygzdWMccTWoi4bOpUkLTb+Jl8TODlPXyHdJAbBvg
-         7zLlnS62suw8ZNiBK7g0ApCd/ekieIBp77gzKsMHyYSSFoUaWCU8o6nJ7t3BRINRMqLu
-         nz2aphIf5zFkQXGrzIj9QuwfchUE9+LaZUMwV+mD15PP078tyxmkNt7Uir+TZL255st/
-         iaWA==
-X-Forwarded-Encrypted: i=1; AJvYcCW/wOmy/UCd+uMbI+McFDyhapg1lgEMICra6FNf9tfhy6X+Mmp9OjfGTPAVKHqIUjhrZLy04y/mdDZn0aUQJYrtH8/2ijv7pDYnf0ya
-X-Gm-Message-State: AOJu0Yz5X0Ojcu3AOuqHnca+Jei+Sij6bQvV8GAtWQqh19hSLS0Nj/aP
-	tdLpRzK2yof1ElsGLmV4ZE3OFDLSMoYXTd6VQS9dZ3cg3TcgtGUwgDgrb70t0g==
-X-Google-Smtp-Source: AGHT+IEGKcbjUU7gQUoARxLVWBP0bJ54qDWMxcamBa/BNEqC2QN8trrUllxOuvopFvTPyhfU9aNJYA==
-X-Received: by 2002:a05:600c:3b26:b0:418:a706:3209 with SMTP id m38-20020a05600c3b2600b00418a7063209mr3509802wms.31.1713990693060;
-        Wed, 24 Apr 2024 13:31:33 -0700 (PDT)
-Received: from google.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id v18-20020a5d43d2000000b0034a25339e47sm17107793wrr.69.2024.04.24.13.31.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 13:31:32 -0700 (PDT)
-Date: Wed, 24 Apr 2024 21:31:28 +0100
-From: Vincent Donnefort <vdonnefort@google.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-	kernel-team@android.com, rdunlap@infradead.org, rppt@kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH v21 2/5] ring-buffer: Introducing ring-buffer mapping
- functions
-Message-ID: <ZilsIJYbJ-JN4elq@google.com>
-References: <20240423232728.1492340-1-vdonnefort@google.com>
- <20240423232728.1492340-3-vdonnefort@google.com>
- <f972ce5a-0351-450c-98a2-38188eae5001@redhat.com>
+	s=arc-20240116; t=1713990756; c=relaxed/simple;
+	bh=SMmWu0O4kiOeIE8+kMaBKKvSrZyE8uK+V6ffxp7Bn5A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k+7AgTPokbpQjO3yj5JuCLidXIXHrXXUVHNktb9YPmJNNeUQEaYyCkl44n5cn/rmJBjZBtBnlViSE8AgSEW2AsH2KVo/oy1r5uOnj87DbP9Y0Ei7BxWQKkQGY8NKuSkI/N5V3PeO4hF5cXUgZmHGnPJFCT6Rs8PngheIOs7FXhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4D3D3240002;
+	Wed, 24 Apr 2024 20:32:29 +0000 (UTC)
+Message-ID: <41835766-b7d7-4f81-aca7-4a8136ba9971@ghiti.fr>
+Date: Wed, 24 Apr 2024 22:32:29 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f972ce5a-0351-450c-98a2-38188eae5001@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/2] Add notifier for PLL0 clock and set it 1.5GHz on
+Content-Language: en-US
+To: Xingyu Wu <xingyu.wu@starfivetech.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Conor Dooley <conor@kernel.org>,
+ Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Emil Renner Berthing <kernel@esmil.dk>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Hal Feng <hal.feng@starfivetech.com>, linux-kernel@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org,
+ devicetree@vger.kernel.org
+References: <20240410033148.213991-1-xingyu.wu@starfivetech.com>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20240410033148.213991-1-xingyu.wu@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: alex@ghiti.fr
 
-Hi David,
+Hi Xingyu,
 
-Thanks for your quick response.
+On 10/04/2024 05:31, Xingyu Wu wrote:
+> This patch is to add the notifier for PLL0 clock and set the PLL0 rate
+> to 1.5GHz to fix the lower rate of CPUfreq on the JH7110 SoC.
+>
+> The first patch is to add the notifier for PLL0 clock. Setting the PLL0
+> rate need the son clock (cpu_root) to switch its parent clock to OSC
+> clock and switch it back after setting PLL0 rate. It need to use the
+> cpu_root clock from SYSCRG and register the notifier in the SYSCRG
+> driver.
+>
+> The second patch is to set cpu_core rate to 500MHz and PLL0 rate to
+> 1.5GHz to fix the problem about the lower rate of CPUfreq on the
+> visionfive board. The cpu_core clock rate is set to 500MHz first to
+> ensure that the cpu frequency will not suddenly become high and the cpu
+> voltage is not enough to cause a crash when the PLL0 is set to 1.5GHz.
+> The cpu voltage and frequency are then adjusted together by CPUfreq.
+>
+> Changes since v3:
+> - Added the notifier for PLL0 clock.
+> - Set cpu_core rate in DTS
+>
+> v3: https://lore.kernel.org/all/20240402090920.11627-1-xingyu.wu@starfivetech.com/
+>
+> Changes since v2:
+> - Made the steps into the process into the process of setting PLL0 rate
+>
+> v2: https://lore.kernel.org/all/20230821152915.208366-1-xingyu.wu@starfivetech.com/
+>
+> Changes since v1:
+> - Added the fixes tag in the commit.
+>
+> v1: https://lore.kernel.org/all/20230811033631.160912-1-xingyu.wu@starfivetech.com/
+>
+> Xingyu Wu (2):
+>    clk: starfive: jh7110-sys: Add notifier for PLL clock
+>    riscv: dts: starfive: visionfive-2: Fix lower rate of CPUfreq by
+>      setting PLL0 rate to 1.5GHz
+>
+>   .../jh7110-starfive-visionfive-2.dtsi         |  6 ++++
+>   .../clk/starfive/clk-starfive-jh7110-sys.c    | 31 ++++++++++++++++++-
+>   drivers/clk/starfive/clk-starfive-jh71x0.h    |  2 ++
+>   3 files changed, 38 insertions(+), 1 deletion(-)
 
-On Wed, Apr 24, 2024 at 05:26:39PM +0200, David Hildenbrand wrote:
-> 
-> I gave it some more thought, and I think we are still missing something (I
-> wish PFNMAP/MIXEDMAP wouldn't be that hard).
-> 
-> > +
-> > +/*
-> > + *   +--------------+  pgoff == 0
-> > + *   |   meta page  |
-> > + *   +--------------+  pgoff == 1
-> > + *   | subbuffer 0  |
-> > + *   |              |
-> > + *   +--------------+  pgoff == (1 + (1 << subbuf_order))
-> > + *   | subbuffer 1  |
-> > + *   |              |
-> > + *         ...
-> > + */
-> > +#ifdef CONFIG_MMU
-> > +static int __rb_map_vma(struct ring_buffer_per_cpu *cpu_buffer,
-> > +			struct vm_area_struct *vma)
-> > +{
-> > +	unsigned long nr_subbufs, nr_pages, vma_pages, pgoff = vma->vm_pgoff;
-> > +	unsigned int subbuf_pages, subbuf_order;
-> > +	struct page **pages;
-> > +	int p = 0, s = 0;
-> > +	int err;
-> > +
-> 
-> I'd add some comments here like
-> 
-> /* Refuse any MAP_PRIVATE or writable mappings. */
-> > +	if (vma->vm_flags & VM_WRITE || vma->vm_flags & VM_EXEC ||
-> > +	    !(vma->vm_flags & VM_MAYSHARE))
-> > +		return -EPERM;
-> > +
-> 
-> /*
->  * Make sure the mapping cannot become writable later. Also, tell the VM
->  * to not touch these pages pages (VM_DONTCOPY | VM_DONTDUMP) and tell
->  * GUP to leave them alone as well (VM_IO).
->  */
-> > +	vm_flags_mod(vma,
-> > +		     VM_MIXEDMAP | VM_PFNMAP |
-> > +		     VM_DONTCOPY | VM_DONTDUMP | VM_DONTEXPAND | VM_IO,
-> > +		     VM_MAYWRITE);
-> 
-> I am still really unsure about VM_PFNMAP ... it's not a PFNMAP at all and,
-> as stated, vm_insert_pages() even complains quite a lot when it would have
-> to set VM_MIXEDMAP and VM_PFNMAP is already set, likely for a very good
-> reason.
-> 
-> Can't we limit ourselves to VM_IO?
-> 
-> But then, I wonder if it really helps much regarding GUP: yes, it blocks
-> ordinary GUP (see check_vma_flags()) but as insert_page_into_pte_locked()
-> does *not* set pte_special(), GUP-fast (gup_fast_pte_range()) will not
-> reject it.
-> 
-> Really, if you want GUP-fast to reject it, remap_pfn_range() and friends are
-> the way to go, that will set pte_special() such that also GUP-fast will
-> leave it alone, just like vm_normal_page() would.
-> 
-> So ... I know Linus recommended VM_PFNMAP/VM_IO to stop GUP, but it alone
-> won't stop all of GUP. We really have to mark the PTE as special, which
-> vm_insert_page() must not do (because it is refcounted!).
 
-Hum, apologies, I am not sure to follow the connection here. Why do you think
-the recommendation was to prevent GUP?
+I only took a quick look so I'm not sure: does patch 2 depend on patch 
+1? In that case, I think the Fixes tag should be applied to both patches.
 
-> 
-> Which means: do we really have to stop GUP from grabbing that page?
-> 
-> Using vm_insert_page() only with VM_MIXEDMAP (and without VM_PFNMAP|VM_IO)
-> would be better.
+And as this is a fix, will you respin a new version soon for 6.9?
 
-Under the assumption we do not want to stop all GUP, why not using VM_IO over
-VM_MIXEDMAP which is I believe more restrictive?
+Thanks,
 
-> 
-> If we want to stop all of GUP, remap_pfn_range() currently seems unavoidable
-> :(
-> 
-> 
-> > +
-> > +	lockdep_assert_held(&cpu_buffer->mapping_lock);
-> > +
-> > +	subbuf_order = cpu_buffer->buffer->subbuf_order;
-> > +	subbuf_pages = 1 << subbuf_order;
-> > +
-> > +	nr_subbufs = cpu_buffer->nr_pages + 1; /* + reader-subbuf */
-> > +	nr_pages = ((nr_subbufs) << subbuf_order) - pgoff + 1; /* + meta-page */
-> > +
-> > +	vma_pages = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
-> > +	if (!vma_pages || vma_pages > nr_pages)
-> > +		return -EINVAL;
-> > +
-> > +	nr_pages = vma_pages;
-> > +
-> > +	pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
-> > +	if (!pages)
-> > +		return -ENOMEM;
-> > +
-> > +	if (!pgoff) {
-> > +		pages[p++] = virt_to_page(cpu_buffer->meta_page);
-> > +
-> > +		/*
-> > +		 * TODO: Align sub-buffers on their size, once
-> > +		 * vm_insert_pages() supports the zero-page.
-> > +		 */
-> > +	} else {
-> > +		/* Skip the meta-page */
-> > +		pgoff--;
-> > +
-> > +		if (pgoff % subbuf_pages) {
-> > +			err = -EINVAL;
-> > +			goto out;
-> > +		}
-> > +
-> > +		s += pgoff / subbuf_pages;
-> > +	}
-> > +
-> > +	while (s < nr_subbufs && p < nr_pages) {
-> > +		struct page *page = virt_to_page(cpu_buffer->subbuf_ids[s]);
-> > +		int off = 0;
-> > +
-> > +		for (; off < (1 << (subbuf_order)); off++, page++) {
-> > +			if (p >= nr_pages)
-> > +				break;
-> > +
-> > +			pages[p++] = page;
-> > +		}
-> > +		s++;
-> > +	}
-> > +
-> > +	err = vm_insert_pages(vma, vma->vm_start, pages, &nr_pages);
-> 
-> vm_insert_pages() documents: "In case of error, we may have mapped a subset
-> of the provided pages. It is the caller's responsibility to account for this
-> case."
-> 
-> Which could for example happen, when allocating a page table fails.
-> 
-> Would we able to deal with that here?
+Alex
 
-As we are in the mmap path, on an error, I would expect the vma to be destroyed
-and those pages whom insertion succeeded to be unmapped?
-
-But perhaps shall we proactively zap_page_range_single()?
-
-> 
-> 
-> Again, I wish it would all be easier ...
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
-> 
 
