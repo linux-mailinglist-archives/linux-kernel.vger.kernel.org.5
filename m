@@ -1,145 +1,229 @@
-Return-Path: <linux-kernel+bounces-156586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EE5F8B0538
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:01:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F94B8B0580
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:08:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 998DD1F22FA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:01:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 456C728CFCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:08:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F21B158A24;
-	Wed, 24 Apr 2024 09:01:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80E93158D69;
+	Wed, 24 Apr 2024 09:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="WHhiHQrP"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="oiE7Rbnh"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715D8158A1D
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B66157489
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:08:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713949260; cv=none; b=n6xGNU+tt9KwlqY5zT/Xe40FiS3JMcc/MI74jZat96UsanJmoDiBZLW/ft1Gn6NpFNPamPOYdlHPxZn3+HgR8buLsRtns/QJUXmdyBGZH15O7vkMzGd8LoBJpcUpa1IpZ/7QNJHG8W6wh3oLRqMXv5sY2F1LQOBazdNVOdTT6ZM=
+	t=1713949713; cv=none; b=tn6FDik2d/Uz0ZPt+GuE2GCXZWdBmOjrjAQsfw6ZILLzrbJXt+8f3E+fNwaO7Xlxxb/+FpwO/a6FEo5Bx9VzAN2ogbhQaRAFET/oEAuzXU9BBfetvHg5mGVuNpOnlbsdKJ1ShPdvq6w4g5OWjYdwve4QUyZOyKfjd0j7uvZlqHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713949260; c=relaxed/simple;
-	bh=rlodAndDMyPA39Cl9zBq3gC2CE9mIUDdBUkS7hl2nGo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K9k26SASMiQBEik9EZhICfSZcS3F4HH2lJwATXLa2w1i0WpbXUcL40GF27JqSPwd9n7p468iqNPS9emtrLWIT6aeFI+BUSPQpZC1zc8I1wTslsLd3hYHZmsB4YVcS86dzr2SsfiuMk7/CRP92IyTu2Kl7zgbwkjTNXSHXynrW/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=WHhiHQrP; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=F/rZ
-	bYMw94pfUTMXvodaO2dpVGh5mtleHLV+nawJR/g=; b=WHhiHQrPoBK5rpd5VA86
-	giFZK/WK5QrP+Scmd3x1x3hLwHAF5BGRil3N9lSCG/OkS7EjhlOb3KHy5j81KxIJ
-	XaXBUVIuMGaM18HHTUgJRkx01WQ3RabIM3Zz5b5JakCGhRZrb6kOTPWQedekx4RO
-	R/H8oUjWLc1AF8CuHTrkFFdjh3jDINTYXczzFDoJQUKxUfdADEEN+AIaDHbZTkHW
-	svfje4hrAL8SZZycmdvgqYPnU2K6Cm4h1DkYBcpDF9Erlb7TJw1UvXCdUwuDhFWg
-	KO3RQsxqrhiqKIfhkyCrfRinbr1jsOR+GIFjr58RNV1q4R9FpRfaOVQoxeJtDkMu
-	uw==
-Received: (qmail 501040 invoked from network); 24 Apr 2024 11:00:53 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 24 Apr 2024 11:00:53 +0200
-X-UD-Smtp-Session: l3s3148p1@L6tq6NMWFsgujntt
-Date: Wed, 24 Apr 2024 11:00:53 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 00/18] i2c: remove printout on handled timeouts
-Message-ID: <sbkymvjmrufouqqscpmrui5kcd466gj6yn2bqwf3lhfk55mjos@n4ydx6wzyq4k>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Andy Shevchenko <andy.shevchenko@gmail.com>, linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
-References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
- <ZihNbtiVDkxgUDGk@surfacebook.localdomain>
+	s=arc-20240116; t=1713949713; c=relaxed/simple;
+	bh=Msw/f+57MQK6afEMuOsBELp1SeA+pbWBBWPgm728e/w=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=RLwawQ7sPvYYhNc/bD+asaC1cibtw051rs/t/M+MSpLUtvEy7wfT7zMcFnd0aarxO1+/MyCUZ9F8TJ/4bXU/KULI6F3cwREXLOPUz2Be4qH9jEVKcXxEW2BoOvI4dfBzcZNiMR1laLkIfxjquYpxbXoXL3EDiaheqFiD8Lo/qss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=oiE7Rbnh; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41a442c9dcbso25889215e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 02:08:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713949708; x=1714554508; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=rvbtxxL0KA7+nw2JDrdSITHMot8lmC1r+u81WvHz+K8=;
+        b=oiE7RbnhV18YVH9BixeqGUZG7Mo7pfAHwvHwP0KOjRp2OOqcHvxFUSKtXytKyBHN84
+         vwMWIMGM1yCzP+wlrsjGtkY2WfYtlnqIXgAmb/carwV3IVMHokmara41dAFQISTfC9Z6
+         kziTT+FLknabpZjQ9vLHblcFpFuDyJHDz3mg5N5iCtpQwe9H87RKSWWInGgic1NB3I6N
+         xyE1PSP6fiqM9yMXMMeARWDQWI9SSlsQTfqT8RnRdjV98Wm7MaINY+TpWTfmBCgvmgty
+         OZ88sp1TnckNb4CMmDe0j8FaytMnEbVzlC0PYdrP7TbYopy/0QvhvoAL6iN8ksWElfNG
+         gi7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713949708; x=1714554508;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rvbtxxL0KA7+nw2JDrdSITHMot8lmC1r+u81WvHz+K8=;
+        b=s6krcGYnzkMXobtvzK+W4jGw1709YPbSlfuyKQTyiHIRLEUH96hwyfGt2rm6tRSIYa
+         8Oeph/ON2NkNzywlpqyjlgj40gkDliYDDp5r+NpL44AyuTcmn5LGzlYV6cMwoJ5Wj7T7
+         LMtiZl3ZMoybGgII8tcJ1bJxXQjn3IN1iIO6Ry1Iulq0qY6ebZpTInTmuZVeG4TOY3bY
+         qKTQ/eQkERBDpY8C2KMDTu226/4zZKFis42FsqU078dCwdGvADDXZPnrJRN5CmaWYZFd
+         TechQn1QHHSjIZWvSd6MPEGk+m3fRW2rWJdVtKMyPlzSSYfGeXA1JlMCxEbmLgp3kwwg
+         41hg==
+X-Forwarded-Encrypted: i=1; AJvYcCVLnOdd/JiKtJROENrlj5xvekfh2XKOXyk49SYeEy6uCPuIve9NH9Z2JCaXZZBhodxVT28suPCbFt7xOXt10lk7c5NVyRFuq/Te1aqR
+X-Gm-Message-State: AOJu0YwRNhIOBc5g005wVKKgMSPUKE7CclIqbmO8NVBG6X3E3/iM7RXs
+	chF51cCQd+ZCWMHL3Jih/6xTZoYxMtaTX8Jpn0iAqT08bU9iMJiun+s5ZjZdMJo=
+X-Google-Smtp-Source: AGHT+IFezzal7JjWvHMGZYy61bCLzRhsiQD5U7WszFsfXL9gRrzNRJlTMjBSCQ2VYQubwKxlAGjtSw==
+X-Received: by 2002:a05:600c:468d:b0:418:f307:4b82 with SMTP id p13-20020a05600c468d00b00418f3074b82mr1358453wmo.39.1713949708334;
+        Wed, 24 Apr 2024 02:08:28 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:ab48:1b7:631c:952a])
+        by smtp.gmail.com with ESMTPSA id p16-20020a05600c1d9000b0041b0d4e1c27sm987467wms.42.2024.04.24.02.08.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 02:08:27 -0700 (PDT)
+References: <20240423161006.2522351-1-gnstark@salutedevices.com>
+ <20240423161006.2522351-3-gnstark@salutedevices.com>
+ <1jv848ezzo.fsf@starbuckisacylon.baylibre.com>
+ <4feb8fe3-af72-4483-87b2-30503328cfe2@salutedevices.com>
+User-agent: mu4e 1.10.8; emacs 29.2
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: George Stark <gnstark@salutedevices.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, u.kleine-koenig@pengutronix.de,
+ neil.armstrong@linaro.org, khilman@baylibre.com,
+ martin.blumenstingl@googlemail.com, thierry.reding@gmail.com,
+ hkallweit1@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kernel@salutedevices.com, George Stark
+ <gnstark@sberdevices.ru>, Dmitry Rokosov <ddrokosov@salutedevices.com>,
+ Kelvin Zhang <kelvin.zhang@amlogic.com>
+Subject: Re: [PATCH 2/2] pwm: meson: support meson A1 SoC family
+Date: Wed, 24 Apr 2024 11:02:10 +0200
+In-reply-to: <4feb8fe3-af72-4483-87b2-30503328cfe2@salutedevices.com>
+Message-ID: <1jmspjf7qs.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tk743gnx4tnmnqhg"
-Content-Disposition: inline
-In-Reply-To: <ZihNbtiVDkxgUDGk@surfacebook.localdomain>
+Content-Type: text/plain
 
 
---tk743gnx4tnmnqhg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed 24 Apr 2024 at 02:00, George Stark <gnstark@salutedevices.com> wrote:
 
-Hi Andy,
+> Hello Jerome
+>
+> Thanks for the review
+>
+>
+> On 4/23/24 20:35, Jerome Brunet wrote:
+>> On Tue 23 Apr 2024 at 19:10, George Stark <gnstark@salutedevices.com>
+>> wrote:
+>> 
+>>> From: George Stark <gnstark@sberdevices.ru>
+>>>
+>>> Add a compatible string and configuration for the meson A1 SoC family
+>>> PWM. Additionally, provide an external clock initialization helper
+>>> specifically designed for these PWM IPs.
+>>>
+>>> Signed-off-by: George Stark <gnstark@sberdevices.ru>
+>>> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+>>> ---
+>>>   drivers/pwm/pwm-meson.c | 35 +++++++++++++++++++++++++++++++++++
+>>>   1 file changed, 35 insertions(+)
+>>>
+>>> diff --git a/drivers/pwm/pwm-meson.c b/drivers/pwm/pwm-meson.c
+>>> index ea96c5973488..529a541ba7b6 100644
+>>> --- a/drivers/pwm/pwm-meson.c
+>>> +++ b/drivers/pwm/pwm-meson.c
+>>> @@ -462,6 +462,33 @@ static int meson_pwm_init_channels_meson8b_v2(struct pwm_chip *chip)
+>>>   	return meson_pwm_init_clocks_meson8b(chip, mux_parent_data);
+>>>   }
+>>>   +static int meson_pwm_init_channels_ext_clock(struct pwm_chip *chip)
+>> That kind on naming (ext) is almost sure to clash with whatever comes
+>> next.
+>> Just use the name of the first SoC using the method, a1 for instance.
+>
+> It's true that pwm core in a1 s4, t7 etc is the same AFAWK.
+> I just want to clarify your proposal:
+> I add a1 compatible to the dt-bindings with s4 as fallback,
+> t7 compatible will be added later in the same way.
 
-On Wed, Apr 24, 2024 at 03:08:14AM +0300, Andy Shevchenko wrote:
-> Wed, Apr 10, 2024 at 01:24:14PM +0200, Wolfram Sang kirjoitti:
-> > While working on another cleanup series, I stumbled over the fact that
-> > some drivers print an error on I2C or SMBus related timeouts. This is
-> > wrong because it may be an expected state. The client driver on top
-> > knows this, so let's keep error handling on this level and remove the
-> > prinouts from controller drivers.
-> >=20
-> > Looking forward to comments,
->=20
-> I do not see an equivalent change in I=C2=B2C core.
+If you know t7 is compatible as well, please add it to.
 
-There shouldn't be. The core neither knows if it is okay or not. The
-client driver knows.
+Other people (including from amlogic) have responded to thread around
+the s4 pwm topic. You should probably Cc them of your future submission.
 
-> IIRC in our case (DW or i801 or iSMT) we often have this message as the o=
-nly
+They may help test and review
 
-Often? How often?
+>
+> Here in the driver I don't mention a1 at all and use s4-centric naming e.g.:
+>
+> {
+> 	.compatible = "amlogic,meson-s4-pwm",
+> 	.data = &pwm_meson_s4_data
+> },
+> static const struct meson_pwm_data pwm_meson_s4_data = {
+> 	.channels_init = meson_pwm_init_channels_s4,
+> };
+>
+> right?
+>
+yes
 
-> one that points to the issues (on non-debug level), it will be much harde=
-r to
-> debug for our customers with this going away.
+>>> +{
+>>> +	struct device *dev = pwmchip_parent(chip);
+>>> +	struct meson_pwm *meson = to_meson_pwm(chip);
+>>> +	struct meson_pwm_channel *channels = meson->channels;
+>>> +	struct clk_bulk_data *clks = NULL;
+>>> +	unsigned int i;
+>>> +	int res;
+>>> +
+>>> +	res = devm_clk_bulk_get_all(dev, &clks);
+>>> +	if (res < 0) {
+>>> +		dev_err(dev, "can't get device clocks\n");
+>>> +		return res;
+>>> +	}
+>> I don't think allocating the 'clk_bulk_data *clks' is necessary or safe.
+>> We know exactly how many clocks we expect, there is no need for a get all.
+>> 
+>>> +
+>>> +	if (res != MESON_NUM_PWMS) {
+>>> +		dev_err(dev, "clock count must be %d, got %d\n",
+>>> +			MESON_NUM_PWMS, res);
+>>> +		return -EINVAL;
+>>> +	}
+>> ... and this only catches the problem after the fact.
+>> It is probably convinient but not necessary.
+>> 
+>>> +
+>>> +	for (i = 0; i < MESON_NUM_PWMS; i++)
+>>> +		channels[i].clk = clks[i].clk;
+>> channels[i].clk could be assigned directly of_clk_get() using clock
+>> indexes. No extra allocation needed.
+>
+> if we use of_clk_get then we'll have to free the clock objects in the
+> end. Could we use devm_clk_bulk_get instead?
 
-The proper fix is to print the error in the client driver. Maybe this
-needs a helper for client drivers which they can use like:
+Add the devm variant of of_clk_get() if you must.
+Use devm_add_action_or_reset() otherwise
 
-	i2c_report_error(client, retval, flags);
+>
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>>   static const struct meson_pwm_data pwm_meson8b_data = {
+>>>   	.parent_names = { "xtal", NULL, "fclk_div4", "fclk_div3" },
+>>>   	.channels_init = meson_pwm_init_channels_meson8b_legacy,
+>>> @@ -500,11 +527,19 @@ static const struct meson_pwm_data pwm_meson8_v2_data = {
+>>>   	.channels_init = meson_pwm_init_channels_meson8b_v2,
+>>>   };
+>>>   +static const struct meson_pwm_data pwm_meson_ext_clock_data = {
+>>> +	.channels_init = meson_pwm_init_channels_ext_clock,
+>>> +};
+>>> +
+>>>   static const struct of_device_id meson_pwm_matches[] = {
+>>>   	{
+>>>   		.compatible = "amlogic,meson8-pwm-v2",
+>>>   		.data = &pwm_meson8_v2_data
+>>>   	},
+>>> +	{
+>>> +		.compatible = "amlogic,meson-a1-pwm",
+>>> +		.data = &pwm_meson_ext_clock_data
+>>> +	},
+>>>   	/* The following compatibles are obsolete */
+>>>   	{
+>>>   		.compatible = "amlogic,meson8b-pwm",
+>> 
 
-The other thing which is also more helpful IMO is that we have
-trace_events for __i2c_transfer. There, you can see what was happening
-on the bus before the timeout. It can easily be that, if device X
-times out, it was because of the transfer before to device Y which locks
-up the bus. A simple "Bus timed out" message will not help you a lot
-there.
 
-And, keep in mind the false positives I mentioned in the coverletter.
-
-All the best,
-
-   Wolfram
-
-
---tk743gnx4tnmnqhg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYoykAACgkQFA3kzBSg
-KbbLuBAAjzqZT2iFY7Av9H0s+wlzFx3PbOQR9XN1fKqU/9jvT5vumaPsTH+2fUZY
-sOMPYFZUeYiZIcZqbWOUYa5Gkg5oZyrnNIbFOpV97VM9nHq5tMBrn80hdTccNBcn
-dga0E8zizsjSv80+pRwrfrfzzAALZnRZ8pPCPf6NjfnhVuhVbM3nfTJ1cDKPzYLw
-d0+t0YJKs0J2Ez92HZh4sxYyhELQ2hNFKLFcJqLBQI194Y6AQ/SP376ZTWRzaRCr
-KTLHH/wpuWERvzrQBBm+MOpZ14LKy+oKzOYKUndYCFw1dZOART808i/5Zcaqzop7
-FRZpqfJzwLh/JtT9GiunHLkHbLIRI59otzBHejzX/oCkIRylcxrn5DEkTFsKsdZ+
-Ay1VMdtxGSVMkha8uFlq51uW06MqpDdiEqbtjkOsNBepk8hbt0trJOkGuezlNOGp
-wmZeJ62f5JVrHxHHpjQwSkIy8Cm+vMtEKmJZ6exv7LRyAx2FhXFDzqwOAkNBZzNx
-H2P24MVMK31rQMLcQGBQavb7O4d3Jsq1glbLHShaHkQeZYBu4aFj/zQfe+meCak/
-HIpzWTFHiM2a8pAM/AnFy/Na/pUKFyE6Pwsk5cQg95VqC6sJzywwVI9AH1WaZ+cL
-tED/pttmbdvulRljvoIXXsYWtCy+ENKqygemMVgNK26O1aANdr4=
-=g/wq
------END PGP SIGNATURE-----
-
---tk743gnx4tnmnqhg--
+-- 
+Jerome
 
