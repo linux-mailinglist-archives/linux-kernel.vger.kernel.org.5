@@ -1,70 +1,111 @@
-Return-Path: <linux-kernel+bounces-157813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BA2D8B1699
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:56:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BB5E8B169A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:56:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3790B25EE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:56:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D7B61C24D92
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:56:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A095816F0C5;
-	Wed, 24 Apr 2024 22:55:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0157C16F0D6;
+	Wed, 24 Apr 2024 22:55:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oX74QSnT"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="aUxgXy7O"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF26616E885;
-	Wed, 24 Apr 2024 22:55:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0817B16E885
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:55:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713999350; cv=none; b=n+oBLEEOU4f9Ebd3qpLbQie/1Z1tlF7u1cgUAoXRC/ZCZ+d1HUDfiSUUfk8iCLea6eK2QiqAulwmQEuBDfW8HlkJjsnY2PKe3MgQcDZk8SUeTPpD7mmKWkS+dirMTgwfsZ/sKFARicfmWGpit9L7BRq03AY9F83kZcjOPv9EYqQ=
+	t=1713999358; cv=none; b=rR+pc5t8EDmq8xTZmBPk8yqfFLGy3Yp2LowhnqW1cFQggdOcAn9BfcA0dlDti/L2JBNsk3bXDQbHa0pDG5+mbVKpDse4iT1DS5rf22nmKKjZE3d98sSFQWrof1oLNwtKtw8nC93BB3SzjzQGDk0918YXGl6s8PZIQFrOHD1Ipyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713999350; c=relaxed/simple;
-	bh=SoqgKiPsjlfQQVdCnSt/8UdtE2eQVHk2pQpqV7bYkm8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J7ZMP5q6Z22U6CmEGUd1t107KRWMoCjplmv29pCzH6VB7Eof8ajtyxHwhWdx5p1bVAA0I/MoseVNGo/RQPI2BiRTJyP/Y/vzebQM2GSxXQWg3DzWyqTWxxPzcjdRMZIrzIPRiul2n9Lo2kJDPFn6dkXIgeJIckHKUhQfYEKmSXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oX74QSnT; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=dwfj4VPEjqw9mDDnRZx4vOPhgLD9BZ3niFJTQJzmgCs=; b=oX74QSnTBe9OiRjSCvr/7kbl7d
-	NkSGdybylOV3whKdAu6he/LUIeFu22yt11u/sc/VMEb0NNi/sC7NdCybLVfXqdoDTB6Lym0GkvBjt
-	wG0PTF1VLjqdEsJPpOvaPXme/0BYO1UQFMamqAjAIgk6Z2w+OvILurmB897JVD66BpG3hzggG7QNJ
-	zVevlgG/XCGCoETx7uuG6FH7LqNOc+Uh7e+/zMuKiRPjj59NV9v348jbXJCaVzaQEAXsCWEaiys5J
-	GHvukj5h799I859CQ03nabUpCTfZURBBrQnPterFBxi1JfionYbYRwOcblf4Au9QJoV7Hhhr+/fDM
-	obRCk6fg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzlWm-00000006I5S-03n4;
-	Wed, 24 Apr 2024 22:55:48 +0000
-Date: Wed, 24 Apr 2024 15:55:47 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: akpm@linux-foundation.org, ziy@nvidia.com, linux-mm@kvack.org
-Cc: fstests@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, willy@infradead.org, hare@suse.de,
-	john.g.garry@oracle.com, p.raghav@samsung.com, da.gomez@samsung.com
-Subject: Re: [PATCH 0/2] mm/huge_memory: couple fixes and one cleanup
-Message-ID: <ZimN87OsXRdws49d@bombadil.infradead.org>
-References: <20240424225449.1498244-1-mcgrof@kernel.org>
+	s=arc-20240116; t=1713999358; c=relaxed/simple;
+	bh=NuyleERn9RTaJ6vM0GogmLDMo9hWEnQBetMIdltGBQc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=L7gXrD1tuUlE56ODxnfQ8K7nYdTimhuQu7ul+tGEBgzu7aqlSTCZFGwUz5930GxjTCi73kSKRYMErfGWwFetaHYbYI5RFo+ncTRaDXnxd7ie0MeQr7UvZ6T7I3tkXp/1MaXP6fOUblY3KL0aqeA933UFLyKWAbk6NWjCucyvHq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=aUxgXy7O; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e86d56b3bcso3414485ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:55:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1713999356; x=1714604156; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GmG+fEHBP8gIP1ZYSdwFfbBD/WbACGMT2ciJ+XzN0e0=;
+        b=aUxgXy7OTjS07+Mpfyl+3y4VwkOmWc9BK1OLpeOsXqTgBpcFE1qblTPRRtb3Q5j08H
+         uUhMrGHSYAl/Qnp9yGEj/LTFj9JImc0yjTanDZsH4FSHJ24zaTyqoeflu+ktvsZtSo0q
+         KCzfeZ3s7EPqomcKS/onsO8dYTtxx8zboh1tg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713999356; x=1714604156;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GmG+fEHBP8gIP1ZYSdwFfbBD/WbACGMT2ciJ+XzN0e0=;
+        b=PvBwsDX5aKExL/0A1k1X7LFKamtEh3EU+0bNnwlPlJNTvA6pI0fiVmIvY+NPXnoI86
+         JdSHlo17jdeHANc8RVFJXhoEJJacs4rjGyyeixjASqg3juOg4kRO6VDD1YFXMsRfSu+Z
+         s07uc/Dj9m+JTesttF3UqpII57bUUnS6+SlTIjJ4tEnNpOpq1a5qmi90KBVAb1AFp00y
+         IPfwKLNGu197eS5+0U5DYKzRqb+njoMSzNmaAvNv2FEAGArztzmoA7YxzRTyHMmz4IfP
+         6A6EkBA7aBwJJtAvYhAOZt86lXQ8MPiYuBzQheRrFW5i1vejlfDrjl20cCLfLTZqo9lP
+         xvfg==
+X-Gm-Message-State: AOJu0YyIbmQKSPz1HFGIduFTP2oRq/dUIwI22G85MzBfeFnPp5+V39un
+	QqyyjKRR87UTRJdEUlEiJWS+us+caymdl/8mjXifa2TCxy/1P8LyPrx4Cwxrqw==
+X-Google-Smtp-Source: AGHT+IES3WvX2pVqJeL4yTDreo8etDtCdNWcnd0JVJ3wJluHIFmHzrhcFFQzqHe6VOya0h1XAiV08A==
+X-Received: by 2002:a17:903:32c1:b0:1e5:5041:b18a with SMTP id i1-20020a17090332c100b001e55041b18amr5506877plr.40.1713999356407;
+        Wed, 24 Apr 2024 15:55:56 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id o4-20020a1709026b0400b001e81c778784sm12396820plk.67.2024.04.24.15.55.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 15:55:55 -0700 (PDT)
+From: Kees Cook <keescook@chromium.org>
+To: linux-kernel@vger.kernel.org,
+	Max Filippov <jcmvbkbc@gmail.com>
+Cc: Kees Cook <keescook@chromium.org>,
+	linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org,
+	Eric Biederman <ebiederm@xmission.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] binfmt_elf_fdpic: fix /proc/<pid>/auxv
+Date: Wed, 24 Apr 2024 15:55:49 -0700
+Message-Id: <171399934703.3282693.5984373700910072392.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240322195418.2160164-1-jcmvbkbc@gmail.com>
+References: <20240322195418.2160164-1-jcmvbkbc@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424225449.1498244-1-mcgrof@kernel.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-The subject hints at a cleanup but I decided to leave that for another
-separate patch which I'll send next.
+On Fri, 22 Mar 2024 12:54:18 -0700, Max Filippov wrote:
+> Althought FDPIC linux kernel provides /proc/<pid>/auxv files they are
+> empty because there's no code that initializes mm->saved_auxv in the
+> FDPIC ELF loader.
+> 
+> Synchronize FDPIC ELF aux vector setup with ELF. Replace entry-by-entry
+> aux vector copying to userspace with initialization of mm->saved_auxv
+> first and then copying it to userspace as a whole.
+> 
+> [...]
 
-  Luis
+Applied to for-next/execve, thanks!
+
+[1/1] binfmt_elf_fdpic: fix /proc/<pid>/auxv
+      https://git.kernel.org/kees/c/10e29251be0e
+
+Take care,
+
+-- 
+Kees Cook
+
 
