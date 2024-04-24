@@ -1,51 +1,46 @@
-Return-Path: <linux-kernel+bounces-156628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B002A8B05F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:25:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CDF78B05F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:26:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 654DE282B22
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:25:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E888B2408B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:26:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42249158DAC;
-	Wed, 24 Apr 2024 09:25:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1AC158D98;
+	Wed, 24 Apr 2024 09:26:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="LT83gHWP"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="nzDhW7ej"
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833F71E4A9;
-	Wed, 24 Apr 2024 09:25:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E91991E4A9
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:26:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713950721; cv=none; b=Y5DJzUOSN34nQwjNWpemINibv3wRgVisbbWzSgM3TMThGwecGLqx/PEOZuYTvKurUL8CpvriDvtqgDFjMts3ig+twuXIiNF53uIr/GaeooHV08MY4twrv6yT888VPWHtYk7d2kDuYIN7+dwWYLWlHmLINP+xA4ZjSH4rSGtgrbI=
+	t=1713950791; cv=none; b=DX148o3wDFMQGfXMYmZzrAoUWHVw6H+9+5X3JXsd92OkKxa/Z73rso/vMEPiDZ5CAGEex0LnOT5bYfK/ux2OPCHBxQAd3uD94I4jNvCTB8ofRaNCV6XM6QpEvlXs4Wrv60U+mCWcvCoU8XM4HkPljItuscFGs6iKu0gegOtqxPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713950721; c=relaxed/simple;
-	bh=V6al9TEnXaXJHHNbaiADnf6F22lLGljjRC8QK+BRDhw=;
+	s=arc-20240116; t=1713950791; c=relaxed/simple;
+	bh=dmQN0eX1tcSqSjv18MnXnBI/Gk3ZwSHAA7agwUwijig=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=D4u7TzSHKMQUb0gZUFeAXfdm35HaJKjPalMaXqoUVc3Xbb3LN++QOH2GMDb+560TNHx33xJfl6YeQnaIThA9jEJ+VsfkL6/MHWEFrkT0JC68WzYjLamvx+xpc9QeFDDQCe4OLAY9cMpivSkATBfsoZ+cWct8d+uIy3aWcw+Vd/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=LT83gHWP; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0EC23FF80B;
-	Wed, 24 Apr 2024 09:25:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713950711;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vCTA/w4Ty3Z+TuBGcS7FPEpzwGTTQsZFVP+xb1fhJmk=;
-	b=LT83gHWPm6HQ0p2getgdOClRu9ZrSrN90V/UvffOrbM2zy3cxnhK2Q/zw7sp73ZV2mpwHC
-	XBR+omg4McDH+2NyyqCuLGUabUz/f5N7AKVkllvgpTP7gRaSDtjdGJlRtpQ3KAWYZyOKfY
-	TAmmxEK9RarVqxbxCSBgcq8J3dAj9F77tP7Ckb7gdDrMIG9LkFdV3TwoSPXcfXWEwwbl7q
-	3DmeWWXlfmBJjFLcwYuNUgHsktY2XnlQOGLTohyEc2UEf5SUmHBhTH+BriDtLxgjYSw+nZ
-	r6yzklMBFspwc46D+c2cwRi85zIgACfAeewXhtCGU+dvFSR58+5lqqTcaxwckQ==
-Message-ID: <22278de4-ade3-45fc-8cd5-dd35043ed6c8@bootlin.com>
-Date: Wed, 24 Apr 2024 11:25:09 +0200
+	 In-Reply-To:Content-Type; b=oG5kSLfco4HNsrbwA0wvpz8khOCDD7OpbM/YoHi8YieJvhgIRQMRx+YDkcZpELPo+yYWbLf6ppOs6BJjSK9fNB6KpUcPRxqnlGVx/LZCR4XapSyZy9dhcsh70adK6lwJAmxkPiVbGFkIAT9Ir8QWtexqLx8IcdC1jTveu52gKoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=nzDhW7ej; arc=none smtp.client-ip=115.124.30.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713950780; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=asuta3TdqTQKC4TQYKxp0fcNemSgX8yGS7cyyZty+I0=;
+	b=nzDhW7ejtkr33KCkuzY1HA+DADQN2SESFypUtoOw6jrdkwWPTI690PJszIJCXkJylX6KYVdNGN1hXfXgnW9EMiIm3hNvvovkyO+cEkRRH4wwVmuZzbcBV92HN7KiYn7WEcMhJxDn7tCH7MqPbFeWjQQ91Lcn6LEDgR+FEnGxYso=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033032014016;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W5BsIsB_1713950777;
+Received: from 30.97.56.58(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W5BsIsB_1713950777)
+          by smtp.aliyun-inc.com;
+          Wed, 24 Apr 2024 17:26:18 +0800
+Message-ID: <5f949c1f-c56e-4227-af60-05a2a19f4c2e@linux.alibaba.com>
+Date: Wed, 24 Apr 2024 17:26:17 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,276 +48,115 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] thermal: k3_j72xx_bandgap: implement suspend/resume
- support
-To: Daniel Lezcano <daniel.lezcano@linaro.org>, rafael@kernel.org
-Cc: rui.zhang@intel.com, lukasz.luba@arm.com, linux-pm@vger.kernel.org,
- linux-kernel@vger.kernel.org, gregory.clement@bootlin.com,
- thomas.petazzoni@bootlin.com, theo.lebrun@bootlin.com, u-kumar1@ti.com,
- Keerthy <j-keerthy@ti.com>
-References: <20240417120338.910769-1-thomas.richard@bootlin.com>
- <d8c1d7a4-60d0-4940-b604-ee62591fa3e8@linaro.org>
-Content-Language: en-US
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <d8c1d7a4-60d0-4940-b604-ee62591fa3e8@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [RFC PATCH 1/5] mm: memory: extend finish_fault() to support
+ large folio
+To: Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org,
+ hughd@google.com
+Cc: willy@infradead.org, david@redhat.com, wangkefeng.wang@huawei.com,
+ 21cnbao@gmail.com, ying.huang@intel.com, shy828301@gmail.com,
+ ziy@nvidia.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
+ <358aefb1858b63164894d7d8504f3dae0b495366.1713755580.git.baolin.wang@linux.alibaba.com>
+ <6aa25e2a-a6b6-4ab7-8300-053ca3c0d748@arm.com>
+ <c48ae381-f073-4b20-84ae-bd5e9e56ce29@linux.alibaba.com>
+ <6c418d70-a75d-4019-a0f5-56a61002d37a@arm.com>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <6c418d70-a75d-4019-a0f5-56a61002d37a@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: thomas.richard@bootlin.com
 
-On 4/22/24 17:46, Daniel Lezcano wrote:
-> On 17/04/2024 14:03, Thomas Richard wrote:
->> From: Théo Lebrun <theo.lebrun@bootlin.com>
->>
->> This add suspend-to-ram support.
->>
->> The derived_table is kept-as is, so the resume is only about
->> pm_runtime_* calls and restoring the same registers as the probe.
->>
->> Extract the hardware initialization procedure to a function called at
->> both probe-time & resume-time.
->>
->> The probe-time loop is split in two to ensure doing the hardware
->> initialization before registering thermal zones. That ensures our
->> callbacks cannot be called while in bad state.
->>
->> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
->> Acked-by: Keerthy <j-keerthy@ti.com>
->> Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
->> ---
->>
->> v3:
->>   - Remove __maybe_unused attributes and use the magic of PTR_IF()
-> 
-> Where are these changes ?
 
-- I removed __maybe_unused attribute for k3_j72xx_bandgap_suspend() and
-k3_j72xx_bandgap_resume()
-- The DEFINE_SIMPLE_DEV_PM_OPS macro is used to declare
-k3_j72xx_bandgap_pm_ops.
-- The pm_sleep_ptr macro is used.
 
-> 
->> v2:
->>   - Fix warnings/errors reported by kernel test robot
+On 2024/4/24 16:07, Ryan Roberts wrote:
+> On 24/04/2024 04:23, Baolin Wang wrote:
 >>
->>   drivers/thermal/k3_j72xx_bandgap.c | 112 ++++++++++++++++++++---------
->>   1 file changed, 79 insertions(+), 33 deletions(-)
 >>
->> diff --git a/drivers/thermal/k3_j72xx_bandgap.c
->> b/drivers/thermal/k3_j72xx_bandgap.c
->> index c74094a86982..a7244e05ed5c 100644
->> --- a/drivers/thermal/k3_j72xx_bandgap.c
->> +++ b/drivers/thermal/k3_j72xx_bandgap.c
->> @@ -178,6 +178,7 @@ struct k3_j72xx_bandgap {
->>       void __iomem *base;
->>       void __iomem *cfg2_base;
->>       struct k3_thermal_data *ts_data[K3_VTM_MAX_NUM_TS];
->> +    int cnt;
->>   };
->>     /* common data structures */
->> @@ -338,24 +339,53 @@ static void print_look_up_table(struct device
->> *dev, int *ref_table)
->>           dev_dbg(dev, "%d       %d %d\n", i, derived_table[i],
->> ref_table[i]);
->>   }
->>   +static void k3_j72xx_bandgap_init_hw(struct k3_j72xx_bandgap *bgp)
->> +{
->> +    struct k3_thermal_data *data;
->> +    int id, high_max, low_temp;
->> +    u32 val;
->> +
->> +    for (id = 0; id < bgp->cnt; id++) {
->> +        data = bgp->ts_data[id];
->> +        val = readl(bgp->cfg2_base + data->ctrl_offset);
->> +        val |= (K3_VTM_TMPSENS_CTRL_MAXT_OUTRG_EN |
->> +            K3_VTM_TMPSENS_CTRL_SOC |
->> +            K3_VTM_TMPSENS_CTRL_CLRZ | BIT(4));
->> +        writel(val, bgp->cfg2_base + data->ctrl_offset);
->> +    }
->> +
->> +    /*
->> +     * Program TSHUT thresholds
->> +     * Step 1: set the thresholds to ~123C and 105C WKUP_VTM_MISC_CTRL2
->> +     * Step 2: WKUP_VTM_TMPSENS_CTRL_j set the MAXT_OUTRG_EN  bit
->> +     *         This is already taken care as per of init
->> +     * Step 3: WKUP_VTM_MISC_CTRL set the ANYMAXT_OUTRG_ALERT_EN  bit
->> +     */
->> +    high_max = k3_j72xx_bandgap_temp_to_adc_code(MAX_TEMP);
->> +    low_temp = k3_j72xx_bandgap_temp_to_adc_code(COOL_DOWN_TEMP);
->> +
->> +    writel((low_temp << 16) | high_max, bgp->cfg2_base +
->> K3_VTM_MISC_CTRL2_OFFSET);
->> +    mdelay(100);
+>> On 2024/4/23 19:03, Ryan Roberts wrote:
+>>> On 22/04/2024 08:02, Baolin Wang wrote:
+>>>> Add large folio mapping establishment support for finish_fault() as a
+>>>> preparation,
+>>>> to support multi-size THP allocation of anonymous shared pages in the following
+>>>> patches.
+>>>>
+>>>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>>>> ---
+>>>>    mm/memory.c | 25 ++++++++++++++++++-------
+>>>>    1 file changed, 18 insertions(+), 7 deletions(-)
+>>>>
+>>>> diff --git a/mm/memory.c b/mm/memory.c
+>>>> index b6fa5146b260..094a76730776 100644
+>>>> --- a/mm/memory.c
+>>>> +++ b/mm/memory.c
+>>>> @@ -4766,7 +4766,10 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+>>>>    {
+>>>>        struct vm_area_struct *vma = vmf->vma;
+>>>>        struct page *page;
+>>>> +    struct folio *folio;
+>>>>        vm_fault_t ret;
+>>>> +    int nr_pages, i;
+>>>> +    unsigned long addr;
+>>>>          /* Did we COW the page? */
+>>>>        if ((vmf->flags & FAULT_FLAG_WRITE) && !(vma->vm_flags & VM_SHARED))
+>>>> @@ -4797,22 +4800,30 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+>>>>                return VM_FAULT_OOM;
+>>>>        }
+>>>>    +    folio = page_folio(page);
+>>>> +    nr_pages = folio_nr_pages(folio);
+>>>> +    addr = ALIGN_DOWN(vmf->address, nr_pages * PAGE_SIZE);
+>>>
+>>> I'm not sure this is safe. IIUC, finish_fault() is called for any file-backed
+>>> mapping. So you could have a situation where part of a (regular) file is mapped
+>>> in the process, faults and hits in the pagecache. But the folio returned by the
+>>> pagecache is bigger than the portion that the process has mapped. So you now end
+>>> up mapping beyond the VMA limits? In the pagecache case, you also can't assume
+>>> that the folio is naturally aligned in virtual address space.
+>>
+>> Good point. Yes, I think you are right, I need consider the VMA limits, and I
+>> should refer to the calculations of the start pte and end pte in do_fault_around().
 > 
->     100ms ?
-> 
-> Ok, I know you did not introduce this delay. But as it is a suspend /
-> resume, this delay will be called at each resume which is not acceptable
-> given its duration.
-> 
-> Please, investigate a way to get rid of this delay
+> You might also need to be careful not to increase reported RSS. I have a vague
+> recollection that David once mentioned a problem with fault-around because it
+> causes the reported RSS to increase for the process and this could lead to
+> different decisions in other places. IIRC Redhat had an advisory somewhere with
+> suggested workaround being to disable fault-around. For the anon-shared memory
+> case, it shouldn't be a problem because the user has opted into allocating
+> bigger blocks, but there may be a need to ensure we don't also start eagerly
+> mapping regular files beyond what fault-around is configured for.
 
-I talked to Keerthy, this delay was initially added to be sure the
-thresholds are programmed before enabling the interrupt.
-But for him, this delay is useless.
+Thanks for reminding. And I also agree with you that this should not be 
+a problem since user has selected the larger folio, which is not the 
+same as fault-around.
 
-I did the test, I removed the delay and I didn't see any thermal events.
-So we can remove it.
-I'll send a new version without the delay, and I'll mention it in the
-commit message.
+>>>>        vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd,
+>>>> -                      vmf->address, &vmf->ptl);
+>>>> +                       addr, &vmf->ptl);
+>>>>        if (!vmf->pte)
+>>>>            return VM_FAULT_NOPAGE;
+>>>>          /* Re-check under ptl */
+>>>> -    if (likely(!vmf_pte_changed(vmf))) {
+>>>> -        struct folio *folio = page_folio(page);
+>>>> -
+>>>> -        set_pte_range(vmf, folio, page, 1, vmf->address);
+>>>> -        ret = 0;
+>>>> -    } else {
+>>>> +    if (nr_pages == 1 && vmf_pte_changed(vmf)) {
+>>>>            update_mmu_tlb(vma, vmf->address, vmf->pte);
+>>>>            ret = VM_FAULT_NOPAGE;
+>>>> +        goto unlock;
+>>>> +    } else if (nr_pages > 1 && !pte_range_none(vmf->pte, nr_pages)) {
+>>>
+>>> I think you have grabbed this from do_anonymous_page()? But I'm not sure it
+>>> works in the same way here as it does there. For the anon case, if userfaultfd
+>>> is armed, alloc_anon_folio() will only ever allocate order-0. So we end up in
+>>
+>> IMO, the userfaultfd validation should do in the vma->vm_ops->fault() callback,
+>> to make sure the nr_pages is always 1 if userfaultfd is armed.
+> 
+> OK. Are you saying there is already logic to do that today? Great!
 
-> 
-> 
->> +    writel(K3_VTM_ANYMAXT_OUTRG_ALERT_EN, bgp->cfg2_base +
->> K3_VTM_MISC_CTRL_OFFSET);
->> +}
->> +
->>   struct k3_j72xx_bandgap_data {
->>       const bool has_errata_i2128;
->>   };
->>     static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
->>   {
->> -    int ret = 0, cnt, val, id;
->> -    int high_max, low_temp;
->> -    struct resource *res;
->> +    const struct k3_j72xx_bandgap_data *driver_data;
->> +    struct thermal_zone_device *ti_thermal;
->>       struct device *dev = &pdev->dev;
->> +    bool workaround_needed = false;
->>       struct k3_j72xx_bandgap *bgp;
->>       struct k3_thermal_data *data;
->> -    bool workaround_needed = false;
->> -    const struct k3_j72xx_bandgap_data *driver_data;
->> -    struct thermal_zone_device *ti_thermal;
->> -    int *ref_table;
->>       struct err_values err_vals;
->>       void __iomem *fuse_base;
->> +    int ret = 0, val, id;
->> +    struct resource *res;
->> +    int *ref_table;
-> 
-> No related to the changes but the patch is showing signs the driver
-> needs a code cleanup AFAICT
-> 
->>       const s64 golden_factors[] = {
->>           -490019999999999936,
->> @@ -422,10 +452,10 @@ static int k3_j72xx_bandgap_probe(struct
->> platform_device *pdev)
->>         /* Get the sensor count in the VTM */
->>       val = readl(bgp->base + K3_VTM_DEVINFO_PWR0_OFFSET);
->> -    cnt = val & K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK;
->> -    cnt >>= __ffs(K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK);
->> +    bgp->cnt = val & K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK;
->> +    bgp->cnt >>= __ffs(K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK);
->>   -    data = devm_kcalloc(bgp->dev, cnt, sizeof(*data), GFP_KERNEL);
->> +    data = devm_kcalloc(bgp->dev, bgp->cnt, sizeof(*data), GFP_KERNEL);
->>       if (!data) {
->>           ret = -ENOMEM;
->>           goto err_alloc;
->> @@ -449,8 +479,8 @@ static int k3_j72xx_bandgap_probe(struct
->> platform_device *pdev)
->>       else
->>           init_table(3, ref_table, pvt_wa_factors);
->>   -    /* Register the thermal sensors */
->> -    for (id = 0; id < cnt; id++) {
->> +    /* Precompute the derived table & fill each thermal sensor struct */
->> +    for (id = 0; id < bgp->cnt; id++) {
->>           data[id].bgp = bgp;
->>           data[id].ctrl_offset = K3_VTM_TMPSENS0_CTRL_OFFSET + id * 0x20;
->>           data[id].stat_offset = data[id].ctrl_offset +
->> @@ -470,13 +500,13 @@ static int k3_j72xx_bandgap_probe(struct
->> platform_device *pdev)
->>           else if (id == 0 && !workaround_needed)
->>               memcpy(derived_table, ref_table, TABLE_SIZE * 4);
->>   -        val = readl(data[id].bgp->cfg2_base + data[id].ctrl_offset);
->> -        val |= (K3_VTM_TMPSENS_CTRL_MAXT_OUTRG_EN |
->> -            K3_VTM_TMPSENS_CTRL_SOC |
->> -            K3_VTM_TMPSENS_CTRL_CLRZ | BIT(4));
->> -        writel(val, data[id].bgp->cfg2_base + data[id].ctrl_offset);
->> -
->>           bgp->ts_data[id] = &data[id];
->> +    }
->> +
->> +    k3_j72xx_bandgap_init_hw(bgp);
->> +
->> +    /* Register the thermal sensors */
->> +    for (id = 0; id < bgp->cnt; id++) {
->>           ti_thermal = devm_thermal_of_zone_register(bgp->dev, id,
->> &data[id],
->>                                  &k3_of_thermal_ops);
->>           if (IS_ERR(ti_thermal)) {
->> @@ -486,21 +516,7 @@ static int k3_j72xx_bandgap_probe(struct
->> platform_device *pdev)
->>           }
->>       }
->>   -    /*
->> -     * Program TSHUT thresholds
->> -     * Step 1: set the thresholds to ~123C and 105C WKUP_VTM_MISC_CTRL2
->> -     * Step 2: WKUP_VTM_TMPSENS_CTRL_j set the MAXT_OUTRG_EN  bit
->> -     *         This is already taken care as per of init
->> -     * Step 3: WKUP_VTM_MISC_CTRL set the ANYMAXT_OUTRG_ALERT_EN  bit
->> -     */
->> -    high_max = k3_j72xx_bandgap_temp_to_adc_code(MAX_TEMP);
->> -    low_temp = k3_j72xx_bandgap_temp_to_adc_code(COOL_DOWN_TEMP);
->> -
->> -    writel((low_temp << 16) | high_max, data[0].bgp->cfg2_base +
->> -           K3_VTM_MISC_CTRL2_OFFSET);
->> -    mdelay(100);
->> -    writel(K3_VTM_ANYMAXT_OUTRG_ALERT_EN, data[0].bgp->cfg2_base +
->> -           K3_VTM_MISC_CTRL_OFFSET);
->> +    platform_set_drvdata(pdev, bgp);
->>         print_look_up_table(dev, ref_table);
->>       /*
->> @@ -527,6 +543,35 @@ static void k3_j72xx_bandgap_remove(struct
->> platform_device *pdev)
->>       pm_runtime_disable(&pdev->dev);
->>   }
->>   +static int k3_j72xx_bandgap_suspend(struct device *dev)
->> +{
->> +    pm_runtime_put_sync(dev);
->> +    pm_runtime_disable(dev);
->> +    return 0;
->> +}
->> +
->> +static int k3_j72xx_bandgap_resume(struct device *dev)
->> +{
->> +    struct k3_j72xx_bandgap *bgp = dev_get_drvdata(dev);
->> +    int ret;
->> +
->> +    pm_runtime_enable(dev);
->> +    ret = pm_runtime_get_sync(dev);
->> +    if (ret < 0) {
->> +        pm_runtime_put_noidle(dev);
->> +        pm_runtime_disable(dev);
->> +        return ret;
->> +    }
->> +
->> +    k3_j72xx_bandgap_init_hw(bgp);
->> +
->> +    return 0;
->> +}
->> +
->> +static DEFINE_SIMPLE_DEV_PM_OPS(k3_j72xx_bandgap_pm_ops,
->> +                k3_j72xx_bandgap_suspend,
->> +                k3_j72xx_bandgap_resume);
->> +
->>   static const struct k3_j72xx_bandgap_data
->> k3_j72xx_bandgap_j721e_data = {
->>       .has_errata_i2128 = true,
->>   };
->> @@ -554,6 +599,7 @@ static struct platform_driver
->> k3_j72xx_bandgap_sensor_driver = {
->>       .driver = {
->>           .name = "k3-j72xx-soc-thermal",
->>           .of_match_table    = of_k3_j72xx_bandgap_match,
->> +        .pm = pm_sleep_ptr(&k3_j72xx_bandgap_pm_ops),
->>       },
->>   };
->>   
-> 
--- 
-Thomas Richard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+I mean I should add the userfaultfd validation in shmem_fault(), and may 
+be need add a warning in finish_fault() to catch this issue if other 
+vma->vm_ops->fault() will support large folio allocation?
 
+WARN_ON(nr_pages > 1 && userfaultfd_armed(vma));
 
