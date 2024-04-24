@@ -1,117 +1,127 @@
-Return-Path: <linux-kernel+bounces-157352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8331C8B1042
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:50:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70C948B1044
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:52:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF1C11F23BB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:50:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C97228392C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:52:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08DC816C854;
-	Wed, 24 Apr 2024 16:50:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 140E716C87C;
+	Wed, 24 Apr 2024 16:52:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q4tuAbwG"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jRsdDjEX"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27D2616ABE8;
-	Wed, 24 Apr 2024 16:50:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3DA216C450
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:52:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713977444; cv=none; b=oTz+GW9cQNN3AS8R+jYydxab4yq/RlTiaWmwKB4pvRDswgkbeF01f6KmjgrH1abM+xo00BN/3ysOI0MOdN4dQONKr2LIelQxiJSTSXykM0hKhnQ7XwzLbw++Q21Ms7i/hIonlkkxf+2GbSiS07Yv4IhKOCT/IzkHaCqya98N21s=
+	t=1713977534; cv=none; b=Qap/FFEZYg21KNzYgtBI/CoQNPPhfbbI6ZX1UJOUVgsKASHitRCY1GD6yQe0R+6sinAU7SAHTGXpQvFAWvCt84aE9LIW0jVfuAaEPrt9B5Uep2cSrCxiINe54XVCY36+lLZ7E5KrTfmz0CvHTgbAd0+UK4BAcOEnPLWC0/ZU2qY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713977444; c=relaxed/simple;
-	bh=EdrlcPLnGVycSPpEr02hj2ZTLSzXFjd113QA3iKYqIs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d49Asn6fZnoJDvYP7YqyYWClL0IW5mUjuxLC3M+tdzH1KCOWddFHeEWwWs0+msG6nzkudghGYXLH9K7hU9Zs+r6UdiMxQJvV+SiRlSwAKJLQtde5/cMAX8poYPDQmogtIXdSnbLtZcB6ISi8X4Pa/gArWiRVVrCZ2WAiZC3TidM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q4tuAbwG; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ee0642f718so906662b3a.0;
-        Wed, 24 Apr 2024 09:50:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713977442; x=1714582242; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=C0NdAJuF+6J2kXUl8f5yMWn7Na8Bw9VM1YHloavWwDc=;
-        b=Q4tuAbwGxC8YMQaJq8aQdL0uNbKc2bV2TGwu3BUoxD+zVJ8VbmbR9ohx9ImBWNwans
-         c/b5Cb5E+DeKw/P29m4d8cMhUpVJUNV0RxHhCmMCSf7ghevUw5/eggB6qW6/KDm2bO6E
-         TMOCoy0/D3qd89CBIWJdRPOFjPdnZDxqRxLW/j+lOD7cnGYwDpb3LRnBO06n0hQ2Zlz/
-         MrtYlUBcSdEBqThHmIOOhsdQY38l0/TUYNsrzJRZSVkfoMBNhuD4BZMLuyW0MTaGwyjy
-         Zk6gpCibx5DXkWnaoMxR2y2uGJAODl/CLnuv508SW8VAdq+0rCw0TDnoMaxdzKdcaixz
-         p4Uw==
+	s=arc-20240116; t=1713977534; c=relaxed/simple;
+	bh=amFktTsYZhx0I8VQucVLkG8QNDwrrrdIfd3JgGF66lA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DBjown+WhCbUpugqRCCYxF49ZQ5TGtMFpXhn9iEzbtW5hxcEvB4E1jSYI5T6vy8Gt0AgynOUmbd3UZ+7uxsiO6xAl0kq2SMmOw4RCvAlNaN7h5+ySnbLdtkJaCnuplxUEPcWNlubPt453vnN4bvcs9OgdQ4keA6TT0AGW56UX6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jRsdDjEX; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713977531;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=id9ycaUBE8n/nnS15W/vGnLyEDK1wrwv0iZjSLUyk1Y=;
+	b=jRsdDjEX0jnm7eZRpDe1+bklHVIpYP73FBP1gbmC6OS9vjsYTTpDiHoMG5eihXXeLvcPkV
+	jIExAl0WmKXaoPDxKyHQtZs2DY2JGNkcBQodGXluB5ceNFEwJvlhKvLgVWa5R8rOEcSt3G
+	IaRt8kVT0H9GJyE6kpslXCcpGK1914U=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-191-MO4qjSSVM_-0No0FTcS1Yg-1; Wed, 24 Apr 2024 12:52:10 -0400
+X-MC-Unique: MO4qjSSVM_-0No0FTcS1Yg-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-349c63ea688so11733f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:52:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713977442; x=1714582242;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C0NdAJuF+6J2kXUl8f5yMWn7Na8Bw9VM1YHloavWwDc=;
-        b=tFDQgB/DpRmN5uo6hg7es9OiJxeu5FX3CiBXsTE4wJuYLF8J4NsSVfo00g1whjfnGq
-         G0T/dUj117Et1XxAQ5mErp3PsWK4xOFES8XzUuOQd9xoteMfPzdrXFg3VkWmPi/xuQ3f
-         /ihHRlxrUeBUCwb++B0+hEhw90Dw9iNuMJ7vUSY4+9X9OIGI8qP94g9yZmKaTz+llGKV
-         15LrsbB47RlQVSJcskGgHmcw3sozioXKxW+wC39SBRxDb4AW7snAdhN2JupRGwQ6QDpJ
-         Idz00MMkjGtFDtPL69OAvGkuTKWQwTR3o3LLdz07vnVqRWW6TBFsCQTIUCjVMYcLxcmQ
-         EF2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXiZmUNm6tF+8CCSMf+TG/kJgTjHjTRsBfl9V3YjrWlpAxIa6I+kgWIPiW3cakfmzqaZA0niSiv/ot/2h1ElO6z+fa8Mes4eWT9LXNgLaP9RnH0FS8RjeRjwkiI31qyv7+7q0YXWl/NpQ==
-X-Gm-Message-State: AOJu0YwTTbGVoEj9v+iwUWwulWpie0HBtk3xjNVauvVe6XBz+wH5tcOg
-	tOWGNHXL4OZafwaufMh+8hHQu0wp7zJf0j36oqgvBrorpGKbTUoE
-X-Google-Smtp-Source: AGHT+IF7eqgzrHwVVGjjqO23Dkp/jyBqlHb26nGgNc0SrpkVDyhfZEK5f1RlgUaOzNYPEibfY3B/BQ==
-X-Received: by 2002:a05:6a20:564b:b0:1a9:509c:eba6 with SMTP id is11-20020a056a20564b00b001a9509ceba6mr326569pzc.25.1713977442298;
-        Wed, 24 Apr 2024 09:50:42 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id ka1-20020a056a00938100b006ecfb733248sm12051094pfb.13.2024.04.24.09.50.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 09:50:41 -0700 (PDT)
-Message-ID: <f98dffd7-bb1c-4023-9a73-fdf2107160d1@gmail.com>
-Date: Wed, 24 Apr 2024 09:50:40 -0700
+        d=1e100.net; s=20230601; t=1713977529; x=1714582329;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=id9ycaUBE8n/nnS15W/vGnLyEDK1wrwv0iZjSLUyk1Y=;
+        b=iezukfr1bdiM+njOWjC2Xeim8r6sbp1lYEYR/y8E8GEM5bgtm3yY414cUfsRma8gty
+         eBhmA1hX3RLFWfpKunwPkXRlH5Ck+Iaev1PBtQQhPsVBEOjHpsBAvwqGjEHrYHMAv+Xp
+         8WXscBoWvXH0Ng6lplBnfBrw1fJDeM8nFvEausFPXWvfAAW6ll51l26G4bK2+goCbyAV
+         ksKlN4xi4AUUd99lDOyS6qGKGsEsk7cfDtx1xCa7FnN6x0mddKbXFri8HftbTlZQLhX0
+         ayZrb58Kb+yQf/DQZ893CP3ENj/7NdiYiUp+RozMpiFqOvdnUfpVsp2c4Bw3JqIYNqyB
+         hI6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXpbMInTqz1mYJKznxT+0zoLAb849EDv+FDL5aGews01KhKTsh9ZBwaN2T4vFbyNqzapcCJ2JaFfIYmq15ltOY5WHBeymXlRwEf2i6R
+X-Gm-Message-State: AOJu0YzQ0ptQkzWafuY4Vx+ETuevYejOuO+BlTzownFpVluf7+67dhF+
+	Pxk7BIC9m1+kTLWYcC0R3pLFDfBUGIx68ILckJ9pYxKm4VNlyqC5+WV0TBqw/2x7GtnI7r7Kjcb
+	0D2Sny+cS4cYPwNrksMH8Dev5VERilNlG/jwyxeAhgzxumjMZbbWK8TyVC0b6tMYZ8OypEfoicd
+	GExXmXwGLp+gPmkRJfo80y+A1Rep5Nv9J+xfyc
+X-Received: by 2002:adf:a2d5:0:b0:34a:ef9b:b6d3 with SMTP id t21-20020adfa2d5000000b0034aef9bb6d3mr1894632wra.33.1713977529032;
+        Wed, 24 Apr 2024 09:52:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFR+Q8XeU6R6xECmEQz4NqbdTNaO1G1EnGJfcOAEAL7aKaYxgGlsEHUag2BDkifl8iK/Ykj8pEtfMPkXRl3N6s=
+X-Received: by 2002:adf:a2d5:0:b0:34a:ef9b:b6d3 with SMTP id
+ t21-20020adfa2d5000000b0034aef9bb6d3mr1894619wra.33.1713977528725; Wed, 24
+ Apr 2024 09:52:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] irqchip/irq-brcmstb-l2: Avoid saving mask on shutdown
-To: Thomas Gleixner <tglx@linutronix.de>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- linux-kernel@vger.kernel.org
-Cc: opendmb@gmail.com, Tim Ross <tim.ross@broadcom.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>,
- "open list:BROADCOM BMIPS MIPS ARCHITECTURE" <linux-mips@vger.kernel.org>,
- "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>
-References: <20240416194343.469318-1-florian.fainelli@broadcom.com>
- <87le55ulw5.ffs@tglx> <958c27b1-26d7-4927-976b-4502f33f31f7@gmail.com>
- <87il09ufl4.ffs@tglx>
-Content-Language: en-US
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <87il09ufl4.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240421180122.1650812-1-michael.roth@amd.com> <171388991368.1780702.14461882076074410508@amd.com>
+In-Reply-To: <171388991368.1780702.14461882076074410508@amd.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Wed, 24 Apr 2024 18:51:56 +0200
+Message-ID: <CABgObfa6vD+DQdmZoq0RYjwQqsYxsCvTS+vvANp5OXXOwS+PPw@mail.gmail.com>
+Subject: Re: [PATCH v14 00/22] Add AMD Secure Nested Paging (SEV-SNP)
+ Hypervisor Support
+To: Michael Roth <michael.roth@amd.com>
+Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
+	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, 
+	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, seanjc@google.com, 
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
+	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
+	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	pankaj.gupta@amd.com, liam.merwick@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/22/24 16:45, Thomas Gleixner wrote:
-> On Mon, Apr 22 2024 at 15:26, Florian Fainelli wrote:
->> On 4/22/24 14:29, Thomas Gleixner wrote:
->>>> +	if (save)
->>>> +		b->saved_mask = irq_reg_readl(gc, ct->regs.mask);
->>>
->>> what's the conditional actually buying you except more complex code?
->>
->> Not much this is an optimization that is simple to carry out. There can
->> be dozens of such L2 interrupt controllers in a given system and the
->> MMIO accesses start adding up eventually.
-> 
-> I'm impressed by saving ~12 microseconds per one dozen of interrupt
-> controllers on system shutdown :)
+On Tue, Apr 23, 2024 at 6:32=E2=80=AFPM Michael Roth <michael.roth@amd.com>=
+ wrote:
+> I just sent an additional set of fixups, patches 23-29. These add some
+> additional input validation on GHCB requests, mainly ensuring that
+> SNP-specific requests from non-SNP guests result in an error as soon as
+> they are received rather than reaching an error state indirectly further
+> into the call stack.
+>
+> It's a small diff (included below), but a bit of a pain to squash in
+> patch by patch due to close proximity with each other, so I've pushed an
+> updated branch here that already has them squashed in:
+>
+>   https://github.com/amdese/linux/commits/snp-host-v14b
 
-I know, right? More seriously are you willing to take that patch, should 
-I write a better justification?
--- 
-Florian
+Thanks, I pushed that to kvm-coco-queue. There was a missing signoff -
+I just added it since you actually added it in the past[1] and the
+patch only differs in context.
+
+Now off to getting those mm acks.
+
+Paolo
+
+[1] https://patchew.org/linux/20231230172351.574091-1-michael.roth@amd.com/=
+20231230172351.574091-33-michael.roth@amd.com/
 
 
