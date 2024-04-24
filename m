@@ -1,154 +1,140 @@
-Return-Path: <linux-kernel+bounces-156072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1BB98AFD8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:03:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CD248AFD8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:07:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89127281C4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:03:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4711C1F238D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7647C8BF8;
-	Wed, 24 Apr 2024 01:03:33 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3272A79CD
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 01:03:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D84995258;
+	Wed, 24 Apr 2024 01:07:11 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D572F4405;
+	Wed, 24 Apr 2024 01:07:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713920613; cv=none; b=pZhgkiHLjA/NfcVWPTlian6TLkIrwlfLRmRLRJri1Zq23J5nTltdkx2KTRsU4OkcDZDHYUHlM/73B/hOYkv192Zi85xCP6MjeIm4pB3WaPFaNjhZhkukY2GEqK8oUz4iZLnLHNp2QumBDbzX59NZdK4xYHRzDAT+ZK0BK3I1qTY=
+	t=1713920831; cv=none; b=Lmu2eDHs7veRuUbqD0ag+kTR33XgaupjYXpa6W1ca0Xz47G/ffk+aSTui3fqxFcqMANWcJAysQ2zgB+faQYVUrgjc2Yt2OyaAoDgYXvgOrYWZqgaVuTGM7eoLHx6BZEVRMxAP4rqdhU3bng5Mefb+Bg+Zlw0FhhyfCSTA43+9WM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713920613; c=relaxed/simple;
-	bh=lfMtsG0fjJ1aRZgDpYEgNCvgtXQ/a527BFAbUyw3jEU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=TbLmyNPzIENGNLL+2KBNYxVjOWqgfveKVO00gmjnsV3bWnf+Rt5+2xwPb07xC+zPh4f6NAfPspINRXlNy+OnHhdLqB/zu9wFFEMAI0VD7qKbmArZZO/UELIW/ocQQCt5hK/072FLySXmqEa7k6FyFgk7qR609xpTQKNoiIKrBOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-14-66285a5c905c
-From: Byungchul Park <byungchul@sk.com>
-To: tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	jbohac@suse.cz,
-	dyoung@redhat.com
-Cc: kernel_team@skhynix.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] x86/e820: apply 'mem=' boot command while reserving memory using boot_params
-Date: Wed, 24 Apr 2024 10:03:13 +0900
-Message-Id: <20240424010313.25264-1-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240423102320.GA47818@system.software.com>
-References: <20240423102320.GA47818@system.software.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrGLMWRmVeSWpSXmKPExsXC9ZZnkW5MlEaawZzjPBafN/xjs3ixoZ3R
-	omFiA4vFtI3iFjcObmazuLxrDpvFpQMLmCw2b5rKbPFjw2NWB06P7619LB6bVnWyebw7d47d
-	Y97JQI/3+66yeZxZcITd4/MmOY8TLV9YAziiuGxSUnMyy1KL9O0SuDI6bh1kLlggXLHg1Au2
-	Bsbr/F2MHBwSAiYS017qdTFygpkHTjWzgthsAuoSN278ZO5i5OIQEVjMKHHi3TuwBLOAtcSd
-	w10sILawQILEmt53TCA2i4CqxMsZU8FsXgFTiZtL/zNCDJWXWL3hADPILk4BS4lbV5VAwkIC
-	FhLfZu1kB5kvITCHTeLOhZ1sEPWSEgdX3GCZwMi7gJFhFaNQZl5ZbmJmjoleRmVeZoVecn7u
-	JkZg6C2r/RO9g/HTheBDjAIcjEo8vBUuGmlCrIllxZW5hxglOJiVRHh//VFJE+JNSaysSi3K
-	jy8qzUktPsQozcGiJM5r9K08RUggPbEkNTs1tSC1CCbLxMEp1cAo2qj/ftvL3w+rcz/3lO+Q
-	15vz9NH1nA2qCTd+KYvfyJa13rBKbNrBlVvEcpKLGzvtG3ZcYJrgWvqrru2pa52zz0nr/g8+
-	8UKvxPYuXeMz68epRKFXy5Z7fZ/yh4vfcVHIbJuU7x9lPixK3rVHbtKCNTfmbvaqYNXcamR4
-	T3DOxJ0e7JJTU14zKbEUZyQaajEXFScCAN8UJuY5AgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjluLIzCtJLcpLzFFi42Lh8rNu1o2O0kgzuLTYxuLzhn9sFi82tDNa
-	NExsYLGYtlHc4sbBzWwWh+eeZLW4vGsOm8WlAwuYLDZvmsps8WPDY1YHLo/vrX0sHptWdbJ5
-	vDt3jt1j3slAj/f7rrJ5LH7xgcnjzIIj7B6fN8l5nGj5whrAGcVlk5Kak1mWWqRvl8CV0XHr
-	IHPBAuGKBadesDUwXufvYuTkkBAwkThwqpkVxGYTUJe4ceMncxcjF4eIwGJGiRPv3oElmAWs
-	Je4c7mIBsYUFEiTW9L5jArFZBFQlXs6YCmbzCphK3Fz6nxFiqLzE6g0HgAZxcHAKWErcuqoE
-	EhYSsJD4Nmsn+wRGrgWMDKsYRTLzynITM3NM9YqzMyrzMiv0kvNzNzECQ2lZ7Z+JOxi/XHY/
-	xCjAwajEw1vhopEmxJpYVlyZe4hRgoNZSYT31x+VNCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8
-	XuGpCUIC6YklqdmpqQWpRTBZJg5OqQZGNjuemazi09XluU43tX/d+e/SxIuKKj79cbWfp/N3
-	xGomH9F6+XLlIa78AHWTyD81ZnPr6x82fdi3pCE9S7xXQoY3/Y2LrZL+LNvOR5sPOdT+nWr0
-	szPYa574p01Pv1RdqrGSPHT9+7+5t9YkrYiIm1JTbZ7I+VFLl/1Lfl3fmTi579kRUrZKLMUZ
-	iYZazEXFiQAdlHW6IQIAAA==
-X-CFilter-Loop: Reflected
+	s=arc-20240116; t=1713920831; c=relaxed/simple;
+	bh=XfXXMQt8Cl+rmsVBbFAJBYBZoxRvVkARuTYt10dpAPI=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=BKZqkqPnEwNGujFqBy9uk4qJfFKioEQTbDGkz4f3sA5LfDyIuqOAerpzpCR1pP0qtkjfgV3G+Erlrd31ryI3imUZTihucyi42xvJhWNYyqftJBGISn0EXbnsifqgXoYysofoskWt9g2AsuKnnESy+tN4BsXUnPLGdLVO3kSIQNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8BxmPA4Wyhm37EBAA--.9705S3;
+	Wed, 24 Apr 2024 09:07:04 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxjd41Wyhm_tkCAA--.12211S3;
+	Wed, 24 Apr 2024 09:07:04 +0800 (CST)
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+To: Mingwei Zhang <mizhang@google.com>
+Cc: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>,
+ Sean Christopherson <seanjc@google.com>,
+ Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
+ peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
+ jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com
+References: <18b19dd4-6d76-4ed8-b784-32436ab93d06@linux.intel.com>
+ <4c47b975-ad30-4be9-a0a9-f0989d1fa395@linux.intel.com>
+ <CAL715WJXWQgfzgh8KqL+pAzeqL+dkF6imfRM37nQ6PkZd09mhQ@mail.gmail.com>
+ <737f0c66-2237-4ed3-8999-19fe9cca9ecc@linux.intel.com>
+ <CAL715W+RKCLsByfM3-0uKBWdbYgyk_hou9oC+mC9H61yR_9tyw@mail.gmail.com>
+ <Zh1mKoHJcj22rKy8@google.com>
+ <CAL715WJf6RdM3DQt995y4skw8LzTMk36Q2hDE34n3tVkkdtMMw@mail.gmail.com>
+ <Zh2uFkfH8BA23lm0@google.com>
+ <4d60384a-11e0-2f2b-a568-517b40c91b25@loongson.cn>
+ <ZiaX3H3YfrVh50cs@google.com>
+ <d8f3497b-9f63-e30e-0c63-253908d40ac2@loongson.cn>
+ <d980dd10-e4c4-4774-b107-77b320cec9f9@linux.intel.com>
+ <b5e97aa1-7683-4eff-e1e3-58ac98a8d719@loongson.cn>
+ <1ec7a21c-71d0-4f3e-9fa3-3de8ca0f7315@linux.intel.com>
+ <5279eabc-ca46-ee1b-b80d-9a511ba90a36@loongson.cn>
+ <CAL715WJK893gQd1m9CCAjz5OkxsRc5C4ZR7yJWJXbaGvCeZxQA@mail.gmail.com>
+ <b3868bf5-4e16-3435-c807-f484821fccc6@loongson.cn>
+ <CAL715W++maAt2Ujfvmu1pZKS4R5EmAPebTU_h9AB8aFbdLFrTQ@mail.gmail.com>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <cd8a4fbb-a8a6-785d-f6e4-cc0f811fef84@loongson.cn>
+Date: Wed, 24 Apr 2024 09:07:01 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <CAL715W++maAt2Ujfvmu1pZKS4R5EmAPebTU_h9AB8aFbdLFrTQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8Cxjd41Wyhm_tkCAA--.12211S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7WF4xZw1UAw18Jr15AF4rCrX_yoW8XFyxpF
+	WjqFyrur4kAa1UAw4I9a1rXFWYkrWxJw43WasruFWUGws8Wr9agF18KFyYkFy3ursxt340
+	qF4DtayxAa45XacCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6r4j6r4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+	Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
+	Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
+	CYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48J
+	MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI
+	0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y
+	0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+	W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+	IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8qXdUUUUU
+	U==
 
-I might miss something.  Please lemme know if I go wrong.  Thanks.
 
-	Byungchul
 
-Changes from v1
-	1. before - handle boot_mem_limit assuming the default is U64_MAX.
-	   after  - handle boot_mem_limit assuming the default is 0.
+On 2024/4/24 上午1:02, Mingwei Zhang wrote:
+>>>
+>>> Maybe, (just maybe), it is possible to do PMU context switch at vcpu
+>>> boundary normally, but doing it at VM Enter/Exit boundary when host is
+>>> profiling KVM kernel module. So, dynamically adjusting PMU context
+>>> switch location could be an option.
+>> If there are two VMs with pmu enabled both, however host PMU is not
+>> enabled. PMU context switch should be done in vcpu thread sched-out path.
+>>
+>> If host pmu is used also, we can choose whether PMU switch should be
+>> done in vm exit path or vcpu thread sched-out path.
+>>
+> 
+> host PMU is always enabled, ie., Linux currently does not support KVM
+> PMU running standalone. I guess what you mean is there are no active
+> perf_events on the host side. Allowing a PMU context switch drifting
+> from vm-enter/exit boundary to vcpu loop boundary by checking host
+> side events might be a good option. We can keep the discussion, but I
+> won't propose that in v2.
+> 
+> I guess we are off topic. Sean's suggestion is that we should put
+> "perf" and "kvm" together while doing the context switch. I think this
+> is quite reasonable regardless of the PMU context switch location.
+> 
+> To execute this, I am thinking about adding a parameter or return
+> value to perf_guest_enter() so that once it returns back to KVM, KVM
+> gets to know which counters are active/inactive/cleared from the host
+> side. Knowing that, KVM can do the context switch more efficiently.
+yeap, that sounds great.
 
---->8---
-From e8bf247d6024b35af5300914dcff9135df9c1d66 Mon Sep 17 00:00:00 2001
-From: Byungchul Park <byungchul@sk.com>
-Date: Wed, 24 Apr 2024 09:55:25 +0900
-Subject: [PATCH v2] x86/e820: apply 'mem=' boot command while reserving memory using boot_params
+Regards
+Bibo Mao
 
-When a user specifies 'mem=' boot command, it's expected to limit the
-maximum address of usable memory for the kernel no matter what the
-memory map source is.  However, 'mem=' boot command doesn't work since
-it doesn't respect it when reserving memory using boot_params.
-
-Applied the restriction when reserving memory using boot_params.  While
-at it, renamed mem_size to a more specific name, boot_mem_limit.
-
-Signed-off-by: Byungchul Park <byungchul@sk.com>
----
- arch/x86/kernel/e820.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-index 6f1b379e3b38..e3f716128caf 100644
---- a/arch/x86/kernel/e820.c
-+++ b/arch/x86/kernel/e820.c
-@@ -880,11 +880,11 @@ static void __init early_panic(char *msg)
- 
- static int userdef __initdata;
- 
-+static u64 boot_mem_limit;
-+
- /* The "mem=nopentium" boot option disables 4MB page tables on 32-bit kernels: */
- static int __init parse_memopt(char *p)
- {
--	u64 mem_size;
--
- 	if (!p)
- 		return -EINVAL;
- 
-@@ -899,16 +899,16 @@ static int __init parse_memopt(char *p)
- 	}
- 
- 	userdef = 1;
--	mem_size = memparse(p, &p);
-+	boot_mem_limit = memparse(p, &p);
- 
- 	/* Don't remove all memory when getting "mem={invalid}" parameter: */
--	if (mem_size == 0)
-+	if (boot_mem_limit == 0)
- 		return -EINVAL;
- 
--	e820__range_remove(mem_size, ULLONG_MAX - mem_size, E820_TYPE_RAM, 1);
-+	e820__range_remove(boot_mem_limit, ULLONG_MAX - boot_mem_limit, E820_TYPE_RAM, 1);
- 
- #ifdef CONFIG_MEMORY_HOTPLUG
--	max_mem_size = mem_size;
-+	max_mem_size = boot_mem_limit;
- #endif
- 
- 	return 0;
-@@ -1036,6 +1036,9 @@ void __init e820__reserve_setup_data(void)
- 		early_memunmap(data, len);
- 	}
- 
-+	if (boot_mem_limit)
-+		e820__range_remove(boot_mem_limit, ULLONG_MAX - boot_mem_limit,
-+				E820_TYPE_RESERVED_KERN, 1);
- 	e820__update_table(e820_table);
- 
- 	pr_info("extended physical RAM map:\n");
--- 
-2.17.1
+> 
+> Thanks.
+> -Mingwei
+> 
 
 
