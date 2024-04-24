@@ -1,130 +1,161 @@
-Return-Path: <linux-kernel+bounces-156267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFE488B008A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:28:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DCE88B0088
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:28:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C3002816F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:28:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28D401F23D40
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:28:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A5CD140363;
-	Wed, 24 Apr 2024 04:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838891420A8;
+	Wed, 24 Apr 2024 04:28:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b="t7FgfskB"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IPEU6vip"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D82885C46
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 04:28:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E18913D8AA
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 04:28:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713932915; cv=none; b=lQGR1V2eboZ3fb9FDu7q6pWDSG/9MxtPMX0PXHmQQQwLBxj643nYkCIuCAPWjg6BEF14gluLRRTg+zO0pvHf0KL0q7O5WH4bTtYsIcJ/dnn50ypu1NixvdSd1xdF2fWkpTbH7O00BhnMlpeErpCVwPljNho3//3gmQzKQNr3Ots=
+	t=1713932901; cv=none; b=KWNvG7YAxBDED1oiE5zc6hcxN8gXaOjzJFEraiMmxkvk8k/zQfxEkL6WUZCy9NSqnuxct4pMbDjq//Pb4426Xg/TpOvEBnPiOFCs8FGutYTWemTPEdtfRarLynjY/I44FmM+6m3Xr8gytpt940eK/LDuVeE/QRidmRC6apXh8dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713932915; c=relaxed/simple;
-	bh=SVlBsh+OtGzs8Wz8fbFQpOEK85w5Obn5WGl0/vqVgpE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IqGgATx6/Jh+HdCKhwe2bcumMhVrWPM1M+CCQVbGSXwBrflI1jmDTTh+wg+xNGi4I71opNugW6xwker1K63PkjL/6r8/KcAFOwoGjQOxik1uiU60mqNAkxM4ITrhPiRg+HAJnD2wblP0ekBG7b3b5019rYkMP2fSkRy06uv1WWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org; spf=pass smtp.mailfrom=endlessos.org; dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b=t7FgfskB; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endlessos.org
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so400221276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 21:28:33 -0700 (PDT)
+	s=arc-20240116; t=1713932901; c=relaxed/simple;
+	bh=K2uPx8Z39cowyd3CKs/kv0/GPxaVvKugF3Okmkjpnuw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OxKcZiCv5yzFd9Y2NPy0VHY8DY1LrFmX57mwE6IjUlJTnVL0FISl7d3W/GVwojjyNjIbehhinJnHBeAsSAfLkHKQMwPxz7WzLmxAgwGC/5rZ6M9B2JYWpYdvSlYxg/DVnKX0NQo0+GGtnN2EiKu5tUHrE+K6ETTBcBCZwIs9oWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IPEU6vip; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a5883518135so144212266b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 21:28:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google; t=1713932913; x=1714537713; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MvX5ZYnBGyHu2whyk5II8GGcdhq7ix0Hf+Bdyx6MY/I=;
-        b=t7FgfskBYzOs7VRYTqgQgkWKMmCAJ04cv0dCJNem+2vSGrb0UQnJLu1yypQmkJ5rob
-         bMNU+UrCzIhzmBb9b5REd1BEVgGnW0u8dwmtHdREZ/uudX7EpT61VS1n96xIwrna7Xg0
-         1dEe9vw+pKtf6in0+lNXZ6mx/ga0ZuDYfm6Ae8xpK3COEz4pogeLuHVudumSHKliV8Xv
-         n82dDR5SUraRm+1DmnXjK261P3FDCWAl+aarjbMlEUWmz0S79aeokbxX8lHe7oXbuVNy
-         1CL5XV1cfBxq+tU8W82v6CyuE1l/jhYXEZXOx39SS7OFZb60ZK2+eJ1JzW50XYcItYTt
-         jT8Q==
+        d=linaro.org; s=google; t=1713932898; x=1714537698; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=R8Fs3EjOdj6derBzQe4RlSevlHJghueWR0mNYiVQCo8=;
+        b=IPEU6vipT+Xa7En49p+JNgPICicS70PpWZhTcU9qkqOUcGn6dXEImtS3aQ/R+/URtY
+         soActiicKwfRym0BFPKxltMPobDnunEP0RTFrC8ljNkvXULxUS0PErXtRMTfybdF9rqF
+         pnGxPpk2yUm7IDcxI0s0lIBRc5zQG3hgDvZJRuunDNByqpJ1oOKdq+VrPmgfRLC1qGw5
+         OhdsQTlaqIbwRyhT0jQi8V+WbGYPBIoy9sShYpCpRmLsX5qk32rylRjCqJWdpJiXep3C
+         yjf1LBEUrGFs9Yb6RKryi02mtkg8vPv0CA8wZ2wTpYTGMOLivV6X0aXvd8etoBvb3JR1
+         kvOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713932913; x=1714537713;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MvX5ZYnBGyHu2whyk5II8GGcdhq7ix0Hf+Bdyx6MY/I=;
-        b=oxuyL9u9hTn6koPFlzZAbMLotJ8c63FJLVXn2s2/diDLVZHqOtjReuOEcTw6nxLXTF
-         d5GyZlWVx8jFTjM05IdnXs/sNLnVxmEj9AgQB6jQJJ4ZxA+IMOsL5A4aK+I7VdDXa2CE
-         T2gv82lA3ubKbuyeWLTE5OGMgwhFzSvJN5D3VlNLp7FeOkKFFcxnZffsQsPO4ZXxGoV2
-         CW9MAcyoEZyX74Ev55SctVQ4ihUHx6+PJcb0iTevE0rH62GZ21V3jc39VZEO6aLmvgID
-         6zPGhZnjPZJS7THv2TclzVBtBSDvyvO+zHlGwSxhCYvLt7W51If4LmTfkRxBq3XmryLc
-         /zFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWapjganCf3A0gBnl3OD7t9As3SdX9jiEDG02k1hmG3UOFxK38Ew82i4O1NC4Q9ahEhO0/RYS1w09oPSZb0qrrcZRTfn8KkW5DQIF5T
-X-Gm-Message-State: AOJu0YwVzUkqQqWxoZKcABrpv4cRVJWsEPgwwNbdJtc/c28JG/TOJeyW
-	RpBiX2MeRZKFq1qQ3eqE5NU1BLDZVOciKQnUQ7gU0A5cjibxqHpV5sl6RgCqMEAy/ZDBD44Y2YJ
-	2u301Wh+vNDyDL4q4LZaT8iTm0pvXNSg5H9uK9A==
-X-Google-Smtp-Source: AGHT+IEgApdXc0FTtI/Xj8zQmgelnm3yr/jZQQiEnnLxc8JkipkVIQosbx1ZbD1ANvA85SasBfj8sm5x8fx4Ig2fyKk=
-X-Received: by 2002:a25:fc22:0:b0:dc7:421d:bcc0 with SMTP id
- v34-20020a25fc22000000b00dc7421dbcc0mr968151ybd.32.1713932913048; Tue, 23 Apr
- 2024 21:28:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713932898; x=1714537698;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R8Fs3EjOdj6derBzQe4RlSevlHJghueWR0mNYiVQCo8=;
+        b=Ke9oaq5e3lphG4Y7VFoOk9fSWJZUfkEd/ktyjDzwofL7pDCSV4r8x1/yW5Xt5omCZX
+         uzJkOA5D1Oza8xlliygnrql2yN17fH5cO6QHM5ch+QcIzrMHZLuMC8edfu1CvhrfhxBc
+         gsbGlvPTqf6ucp5r5hIhebNOOYhTEhQLNw22XNocbFucBTa2uUbx4vsd+XfgHaEbWea8
+         TcTe63ffT92e6SkoKUoiIqwW+xGmK0oe1uqUxc9ILwuw2JB1WUXiRnVG7RAVVohql4hB
+         Qwv4qxI9PBG6w2hZ+fbXK6Vtw6/ZR38Qnh5c9DqC9a5q660rVy+QjZx8QLUYmuQWUFee
+         vqhw==
+X-Forwarded-Encrypted: i=1; AJvYcCULhRjvSOi0/L2wY0K//2Lh31aSKLzq0w7Ef3Pgz3+n6fmGuqfEDkplV0WWqYBv2EbY0C8gkB5i5cotdFsfIGz0IYj/Omo98JcPyTNP
+X-Gm-Message-State: AOJu0YwAxoaMbJk9jem4A7qdCxwH+aAJr5i2lT3DgVSQp2fA9mEi1+RC
+	2SZncmrPqsaPSCQjyrKb5sA5m/jfNlT8zmBjgzvQPvwklg42L/5Y7LmLz2Cvn6Y=
+X-Google-Smtp-Source: AGHT+IHhibC5y0u82AOKA3V0ahASy6QI1S46tkSYPwpI/AUogp7DUC0A/o5LtZczFgCVrCna43jbXg==
+X-Received: by 2002:a17:906:d206:b0:a4d:fcc9:905c with SMTP id w6-20020a170906d20600b00a4dfcc9905cmr657577ejz.20.1713932898280;
+        Tue, 23 Apr 2024 21:28:18 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id bb6-20020a1709070a0600b00a55b020a821sm3841045ejc.13.2024.04.23.21.28.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 21:28:17 -0700 (PDT)
+Message-ID: <7d08f521-bdc9-4122-a636-a0a2c5bc328b@linaro.org>
+Date: Wed, 24 Apr 2024 06:28:15 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240216062642.247504-3-jhp@endlessos.org> <20240301214117.GA408641@bhelgaas>
-In-Reply-To: <20240301214117.GA408641@bhelgaas>
-From: Jian-Hong Pan <jhp@endlessos.org>
-Date: Wed, 24 Apr 2024 12:27:57 +0800
-Message-ID: <CAPpJ_eejyughPK4JXfjNdOvZegEy30tEusjPk4ESkvCQJCbPHg@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] PCI/ASPM: Fix L1.2 parameters when enable link state
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Johan Hovold <johan@kernel.org>, David Box <david.e.box@linux.intel.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
-	Mika Westerberg <mika.westerberg@linux.intel.com>, Damien Le Moal <dlemoal@kernel.org>, 
-	Nirmal Patel <nirmal.patel@linux.intel.com>, 
-	Jonathan Derrick <jonathan.derrick@linux.dev>, linux-pci@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux@endlessos.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/6] dt-bindings: iio: light: stk33xx: add vdd and leda
+ regulators
+To: Aren Moynihan <aren@peacevolution.org>,
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Ondrej Jirman <megi@xff.cz>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ linux-iio@vger.kernel.org, phone-devel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ Willow Barraco <contact@willowbarraco.fr>
+References: <20240423223309.1468198-2-aren@peacevolution.org>
+ <20240423223309.1468198-3-aren@peacevolution.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240423223309.1468198-3-aren@peacevolution.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Bjorn Helgaas <helgaas@kernel.org> =E6=96=BC 2024=E5=B9=B43=E6=9C=882=E6=97=
-=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=885:41=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> In subject:
->
->   PCI/ASPM: Fix L1.2 parameters before enabling L1.2
->
-> > +     if (state & link->aspm_capable & ASPM_STATE_L1_2_MASK) {
-> > +             parent_l1ss_cap =3D aspm_get_l1ss_cap(parent);
-> > +             child_l1ss_cap =3D aspm_get_l1ss_cap(child);
-> > +             aspm_calc_l12_info(link, parent_l1ss_cap, child_l1ss_cap)=
-;
->
-> Why doesn't this happen already via normal enumeration?  It looks like
-> this path should do it even without this patch:
->
->   pcie_aspm_init_link_state
->     pcie_aspm_cap_init
->       aspm_l1ss_init
+On 24/04/2024 00:33, Aren Moynihan wrote:
+> stk3310 and stk3311 are typically connected to power supplies for the
+> chip (vdd) and the infrared LED (leda). Add properties so we can power
+> these up / down appropriately.
+> 
+> Signed-off-by: Aren Moynihan <aren@peacevolution.org>
+> ---
+> 
 
-I watch the VMD remapped PCI devices' power states during this path.
-Their power states stay at "unknown" until someone sets their power
-state to "D0".
-And, because their power states stay at "unknown", the L1.2 of the
-link between VMD remapped PCIe Root Port and NVMe gets wrong configs
-when system goes through this path.
-So, system has to calculate the L1.2 information again after set PCI
-devices' power state to D0.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Sorry for the late reply.  Got my laptop back recently.
+Best regards,
+Krzysztof
 
-Jian-Hong Pan
-
-> > +     }
-> >       pcie_config_aspm_link(link, policy_to_aspm_state(link));
-> >
-> >       link->clkpm_default =3D (state & PCIE_LINK_STATE_CLKPM) ? 1 : 0;
-> > --
-> > 2.43.2
-> >
 
