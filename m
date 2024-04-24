@@ -1,206 +1,131 @@
-Return-Path: <linux-kernel+bounces-157118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFDBC8B0D12
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:48:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 558398B0D1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:48:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 062FAB260D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:48:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85DE71C246D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:48:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB8D15F409;
-	Wed, 24 Apr 2024 14:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4498915EFA3;
+	Wed, 24 Apr 2024 14:48:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gLHT0Dix"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="ogoM/PS1"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC01415EFBE
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 14:47:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D93715E209
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 14:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713970045; cv=none; b=ftLLkhCR98czljFNKcFJv2H8tZDa2TAR1u7naKvMOcXiGE/bg2Bv2UVcFMEo4FAIxllhSbCmnbL12trVQwKkqPoL6ghOPHkA6mhn8i1l/Cxg820gK5s8+j+/xgtZQ1UB1MzUccga9gaEzY1Qg8JjfdpLuZ3wKwc0ruq7YyxQJgE=
+	t=1713970094; cv=none; b=P0iX1eV5MH7TIyZRJLAY2/Ta2UG/J/w6XV8WccacTzxJlxWiCxlw6CFvQ8yxnl74VWIcVXZG96ol+YOqOwq43hYTfCUXi4KaSGQct1VKiIhsguo75P8zZi6U5pOxTt4r17A3QhtS3+ozScAOfmknPzatyneJEG2PwP+CaLRW2KM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713970045; c=relaxed/simple;
-	bh=jJfd4IpFSTzCj1thfurDYFV0ttjhLiG1qEH9ToU7uvk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=NW2SJwwa4Ie9cPVRVy0vHsmwNYu02gVS3J8IjPyD+iVOrJ7LIOFaLld+D8K6aiw2WoXhDNZ46RIqXYnKPthnUEZ6u2O4bCHSyBvmL45frLZUgtu6j88Ybu7/+m/bnZvK9lslhEYA8+9UplZNjuhUOA5bWy6PUSfswk7ZWvFxCnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gLHT0Dix; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-618891b439eso111701537b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 07:47:22 -0700 (PDT)
+	s=arc-20240116; t=1713970094; c=relaxed/simple;
+	bh=pZRMHeRrZ7PqTOAeDPMoXssbpZwAoT0QUjHK0yTI7G4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RcCNpSOZcUjJ2cn4ikL4+I2V2dE2jCKHrfa9a1o7wQR0VxRqB0a4mKXMbSItM6Wna08aIqfRV+l47LtkoGhvrn+8IGfgFpRm7Kh9MIxceTipfKE8k0IaVh8/3XcmbLcviWT4srnJlgoKbgSMTz/KFbhckQHsD8qVCsFp7m2MSyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=ogoM/PS1; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a5224dfa9adso192401466b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 07:48:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713970042; x=1714574842; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lBUMF9M0aXotFfthPHhv12Yga6tlL0sQVtn3IgcNIjg=;
-        b=gLHT0DixEIxV/L64q27Ss1sTGExF3Aum3m+EfcR2beLbl8Se9X1mGMXUryQayXTDFg
-         RLMG2fWpsiR2VD11DDaq89AFocj4WUR/BSX6H0cxCS7JpzZc0SrHNGpZwfF9DbOxopJr
-         t3oRxSCgD/tR2V4aZG55aTebrICmBqUaO+YFY4GKt36pcqOb7EIicstFYozXL8sYMru2
-         1d1yO2+BsT/FeNGqAkbSiD9ohhAH8bJTX6TvBpeh23aqu4Yh7UCVe3UXvqb72dUqYp99
-         f7r5aXvguNBRZ27ZW9Kbc2XNBaSMhJv8ZJRvTpfIdeIhcl+1N6w5xjUxbpPIC5iuE9hy
-         PUTw==
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1713970091; x=1714574891; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NVbaUyrmVafdj/cQpZaiAaBbKWO3w1dBZ7Hp+YT/Oh8=;
+        b=ogoM/PS1Y2jX+13pwUTQ0rudu54Dmu2iJ7RNx2vmuACcmsFTVv6vIHNhtekmDb3nCu
+         8BusBlotgIy49+T7uufsI7jkabpyw6Qgn0OOe9xrsHCF8b+/WiXRavurqvkpYDqGlY2W
+         bMdYlIbaX1V5LzLf1HkChyUNv5S35MFFI6vLVy+LVUycgNK0M1ntygEzSiL9dJFSH+JS
+         PjzZbANMK+XkJ3wqPfrrvKAnXwJmWfb3YtDwhpo7cbZnwWpLLczj6prwBaquXsTaPY7J
+         Dd9HshcE9GBUZzUwqvwxbq8eaUvX6emjkeYk+v4j1fiYaEu7x2CzW/PgSiDlkVmH2O/W
+         J5ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713970042; x=1714574842;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lBUMF9M0aXotFfthPHhv12Yga6tlL0sQVtn3IgcNIjg=;
-        b=IrfEOty4rAyjD0nSw/U7VJYDlcjy20o5zhAfi0y/VXUGdq1u3akJ7BMUAykcm6GExH
-         0JccLeJkz6/ox1F7ltrBYAy7GHN0AAcYIuRqaDI09tY7KsBgB7qli7ShD4B5cq3UY0sr
-         /v8hgeWhBNJMgWyz6T1Hxs1D3SiyPR7aiO1h32g38jiYxliXdOpGQvBokM7TbfHjZvTm
-         MdWRczkCpXuCiW3RNuSll6FiuLKakxriVN4VCQCul2H/+iMf3a2CkSTftkTvhLVOhkXn
-         DQLweguI2Py1fQWHCj4HhdYbSzTh9YwCzisLwEaKQToo+ZCEbmhG/GBxQPYN8D028CQe
-         Xe/A==
-X-Forwarded-Encrypted: i=1; AJvYcCXfBZrq6JUJTZt1Hzxy4DHlwtzih3aafreI6d9U2Sql6p3t2gE7/82ew/cfScQAQv8h55a8TcBAjrxrsW76dr97+U1sVz036p+4p3Md
-X-Gm-Message-State: AOJu0YyrkYeOqIiwclkjy+fwo1hwEnB3hEcV2fa60uMvNMC/0xIIAhp8
-	tp8Uog25PD76sADdf17N3aARhbeYkkdb7KZZrVUinBwDzb2GNVcIAFWeRUm8OORupzNJQAoHCll
-	z8g==
-X-Google-Smtp-Source: AGHT+IEs3VfA7KQdtkyHqJd0ahaIMhMEZs/CAyL0Jvui8r441EvbKI7ZhQcG9gTr1SgicGN29+v/lqbme1g=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1027:b0:de0:ecc6:4681 with SMTP id
- x7-20020a056902102700b00de0ecc64681mr234395ybt.1.1713970041911; Wed, 24 Apr
- 2024 07:47:21 -0700 (PDT)
-Date: Wed, 24 Apr 2024 07:47:20 -0700
-In-Reply-To: <9f67df9d-ab27-40b9-8849-3069649dc082@moroto.mountain>
+        d=1e100.net; s=20230601; t=1713970091; x=1714574891;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NVbaUyrmVafdj/cQpZaiAaBbKWO3w1dBZ7Hp+YT/Oh8=;
+        b=Hd902aMS0VOpkGEUXjuJt+K44M69JW5pGTE6ZxKLu7RlPmkRmgD36a5/M2GZx9PcMF
+         rXbGOWJn3cyyVg/lBmyCrBy4pRpoJs45628l19uySpZAVdGYv3b4segM4z+sckQFnE6B
+         XAND37bajEahpwz2pxibh6K/cdEWi9UHG/Z/bg5yFttDO1y3AjeyfUAVgOC36xeIXPUE
+         rUVC9UhKFJc1keVrdlucYC2CAFTw3MRsUWksUkSSZInX6FBBBkWxbDu1T6yw75VO5X4g
+         aLtBudhMukmm4A4hMIel7J3C1Wy7yr6V1m1kWgIpi/DO/XeieCRGEhxFd3S1wwWuuj0o
+         rfog==
+X-Forwarded-Encrypted: i=1; AJvYcCUdgUDcHPql9D5Li+HZf8JjEcuzmO8nzzrgPqzkKhOptpz8+fket9545yLtblThMmub6Kcx6Iciz8+kw0rDu51hAfKKZY1+b15F6lsM
+X-Gm-Message-State: AOJu0YxOlnx417wOT4YzfGJgj3H+7vMkX/lOKZlVsSCZGm0z9DlhWbtA
+	eO6VQHc+/Hg7hMcM4CTEJUAQ0kpl2Irih3wp999p5A6jh7E1mFGBXTtlQ/35qaboFJwMWi7ew60
+	T
+X-Google-Smtp-Source: AGHT+IHyL7UR+GGslunB2Saa9OzbsgaAEz0dYE5qzWUKj2z2emKP9Bh5u/mfXv0ND1AFRSdoAqJmPw==
+X-Received: by 2002:a17:906:5650:b0:a52:6e87:77ef with SMTP id v16-20020a170906565000b00a526e8777efmr6378733ejr.6.1713970091244;
+        Wed, 24 Apr 2024 07:48:11 -0700 (PDT)
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id q21-20020a170906771500b00a51d408d446sm8438326ejm.26.2024.04.24.07.48.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 07:48:10 -0700 (PDT)
+Date: Wed, 24 Apr 2024 16:48:06 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Breno Leitao <leitao@debian.org>, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, "K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Yury Norov <yury.norov@gmail.com>, linux-hyperv@vger.kernel.org,
+	shradhagupta@microsoft.com
+Subject: Re: [PATCH net-next v2 0/2] Add sysfs attributes for MANA
+Message-ID: <ZikbpoXWmcQrBP3V@nanopsycho>
+References: <1713954774-29953-1-git-send-email-shradhagupta@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240423073952.2001989-1-chentao@kylinos.cn> <878bf83c-cd5b-48d0-8b4e-77223f1806dc@web.de>
- <ZifMAWn32tZBQHs0@google.com> <20240423-0db9024011213dcffe815c5c@orel>
- <ZigI48_cI7Twb9gD@google.com> <9f67df9d-ab27-40b9-8849-3069649dc082@moroto.mountain>
-Message-ID: <ZikbeCsIom80tDPR@google.com>
-Subject: Re: [PATCH] KVM: selftests: Add 'malloc' failure check in test_vmx_nested_state
-From: Sean Christopherson <seanjc@google.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Andrew Jones <ajones@ventanamicro.com>, Markus Elfring <Markus.Elfring@web.de>, 
-	Kunwu Chan <chentao@kylinos.cn>, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org, 
-	Muhammad Usama Anjum <usama.anjum@collabora.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Kunwu Chan <kunwu.chan@hotmail.com>, Anup Patel <anup@brainfault.org>, 
-	Thomas Huth <thuth@redhat.com>, Oliver Upton <oliver.upton@linux.dev>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1713954774-29953-1-git-send-email-shradhagupta@linux.microsoft.com>
 
-On Wed, Apr 24, 2024, Dan Carpenter wrote:
-> On Tue, Apr 23, 2024 at 12:15:47PM -0700, Sean Christopherson wrote:
-> > On Tue, Apr 23, 2024, Andrew Jones wrote:
-> > > On Tue, Apr 23, 2024 at 07:56:01AM -0700, Sean Christopherson wrote:
-> > > > +others
-> > > >=20
-> > > > On Tue, Apr 23, 2024, Markus Elfring wrote:
-> > > > > =E2=80=A6
-> > > > > > This patch will add the malloc failure checking
-> > > > > =E2=80=A6
-> > > > >=20
-> > > > > * Please use a corresponding imperative wording for the change de=
-scription.
-> > > > >=20
-> > > > > * Would you like to add the tag =E2=80=9CFixes=E2=80=9D according=
-ly?
-> > > >=20
-> > > > Nah, don't bother with Fixes.  OOM will cause the test to fail rega=
-rdless, the
-> > > > fact that it gets an assert instead a NULL pointer deref is nice to=
- have, but by
-> > > > no means does it fix a bug.
-> > > >=20
-> > > > > > +++ b/tools/testing/selftests/kvm/x86_64/vmx_set_nested_state_t=
-est.c
-> > > > > > @@ -91,6 +91,7 @@ void test_vmx_nested_state(struct kvm_vcpu *v=
-cpu)
-> > > > > >  	const int state_sz =3D sizeof(struct kvm_nested_state) + getp=
-agesize();
-> > > > > >  	struct kvm_nested_state *state =3D
-> > > > > >  		(struct kvm_nested_state *)malloc(state_sz);
-> > > > > > +	TEST_ASSERT(state, "-ENOMEM when allocating kvm state");
-> > > > > =E2=80=A6
-> > > > >=20
-> > > > > Can =E2=80=9Cerrno=E2=80=9D be relevant for the error message con=
-struction?
-> > > >=20
-> > > > Probably not, but there's also no reason to assume ENOMEM.  TEST_AS=
-SERT() spits
-> > > > out the actual errno, and we can just say something like "malloc() =
-failed for
-> > > > blah blah blah". =20
-> > > >=20
-> > > > But rather than keeping playing whack-a-mole, what if we add macros=
- to perform
-> > > > allocations and assert on the result?  I have zero interest in chas=
-ing down all
-> > > > of the "unsafe" allocations, and odds are very good that we'll coll=
-ectively fail
-> > > > to enforce checking on new code.
-> > > >=20
-> > > > E.g. something like (obviously won't compile, just for demonstratio=
-n purposes)
-> > > >=20
-> > > > #define kvm_malloc(x)
-> > > > ({
-> > > > 	void *__ret;
-> > > >=20
-> > > > 	__ret  =3D malloc(x);
-> > > > 	TEST_ASSERT(__ret, "Failed malloc(" #x ")\n");
-> > > > 	__ret;
-> > > > })
-> > > >=20
-> > > > #define kvm_calloc(x, y)
-> > > > ({
-> > > > 	void *__ret;
-> > > >=20
-> > > > 	__ret  =3D calloc(x, y);
-> > > > 	TEST_ASSERT(__ret, "Failed calloc(" #x ", " #y ")\n");
-> > > > 	__ret;
-> > > > })
-> > >=20
-> > > Sounds good to me, but I'd call them test_malloc, test_calloc, etc. a=
-nd
-> > > put them in include/test_util.h
-> >=20
-> > Possibly terrible idea: what if we used kmalloc() and kcalloc()?  K is =
-for KVM :-)
->=20
-> That's a legit terrible idea...  It probably would trigger more static
-> checker warnings because the general policy is kmalloc() is kernel code
-> and we *have* to test for errors.
+Wed, Apr 24, 2024 at 12:32:54PM CEST, shradhagupta@linux.microsoft.com wrote:
+>These patches include adding sysfs attributes for improving
+>debuggability on MANA devices.
+>
+>The first patch consists on max_mtu, min_mtu attributes that are
+>implemented generically for all devices
+>
+>The second patch has mana specific attributes max_num_msix and num_ports
 
-Roger that.
+1) you implement only max, min is never implemented, no point
+introducing it.
+2) having driver implement sysfs entry feels *very wrong*, don't do that
+3) why DEVLINK_PARAM_GENERIC_ID_MSIX_VEC_PER_PF_MAX
+   and DEVLINK_PARAM_GENERIC_ID_MSIX_VEC_PER_PF_MIN
+   Are not what you want?
 
-> To be honest, I would have just rejected the first patch.  You
-> obviously know this and have said this earlier in the thread but just
-> for the other people, this is a userspace test that runs for a short
-> time and then exits.  If it gets killed because we don't have enough
-> memory that's fine.  It would be better to just fix the static checker
-> to not print pointless warnings or educate people to ignore warnings
-> like this.
-
-This particular patch may have been motiviated by a static checker, but I d=
-oubt
-static checkers are responsible for all of the many sanity checks on malloc=
-() in
-KVM selftests.  And while I agree that the sanity checks don't and much val=
-ue,
-deleting the existing checks and preventing checks from being reintroduced =
-would
-be a never ending battle.
-
-> Creating the test_malloc() to silence the warning also seems like an
-> okay idea as well.
-
-Yeah, it's not exactly my first choice, but the reality is that people writ=
-e KVM
-elftests by copying an existing test (often literally), and so the best way=
- to
-educate developers on the preferred approach/style is to have all existing =
-code
-adhere to a single approach/style.
+>
+>Shradha Gupta (2):
+>  net: Add sysfs atttributes for max_mtu min_mtu
+>  net: mana: Add new device attributes for mana
+>
+> Documentation/ABI/testing/sysfs-class-net     | 16 ++++++++++
+> .../net/ethernet/microsoft/mana/gdma_main.c   | 32 +++++++++++++++++++
+> net/core/net-sysfs.c                          |  4 +++
+> 3 files changed, 52 insertions(+)
+>
+>-- 
+>2.34.1
+>
+>
 
