@@ -1,113 +1,97 @@
-Return-Path: <linux-kernel+bounces-156221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33FB68AFFD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:38:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCB608AFFA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:29:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95789B2447F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:38:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 776CA285072
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:29:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B705144D3B;
-	Wed, 24 Apr 2024 03:36:56 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73CD0139CEB;
+	Wed, 24 Apr 2024 03:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="LxxRC0n0"
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B53613B583;
-	Wed, 24 Apr 2024 03:36:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 440508627C
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 03:29:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713929816; cv=none; b=hT5+dxINgQArWL1IZuKTPC5yyUx4nDSSFT8Dy2Yu3D7Y2KPh8oObtHmpuqlDpH159+KCDQ0BpkwOewsCr/77nYH4qCiwcWyU+jP1BIEil5/691vQzQrDArrnTbb+PJGAga4wq6MM/HrcNQlXgY78mVFTgi/YDZbiWmz0dOXEnSw=
+	t=1713929376; cv=none; b=OuCkunvFeLsd+Pr4clT3E1Bg2hRCP9QHWCZwlpithX9wsbAYHOkXO5XpEdnyRBDsyapYQb1mNH8KW4NyeP/Zdv7mBzTuleyP0IyZlwc51l9E4QhSARYuFZwfb31S9ZZjzarjPZQQmJGfyGARfJ2ZJVSYjqAU7OZeK+qT3gKwSbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713929816; c=relaxed/simple;
-	bh=eYmI2UoND9NW9g+AeXxMK4ItoLkzH/5fFHbVVsjmXDU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iFBBgPQxjSa/ZGDFsDeBbMZ0t0X1Qhc+thtWdEdZerf3rYg72nhLGahLVpPksscMTyrxBWEjkzYUsggO0tzHIXaY/z0u72o5SgqJ8L5vOEsvwAiXXt2xOjCHt8EGauBGz8xiDMUFZdJcThl6uFRFOW1Q96hiWYOof9uMSUJ1qTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VPPmY3w9Jz4f3l8D;
-	Wed, 24 Apr 2024 11:36:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 62AC71A0568;
-	Wed, 24 Apr 2024 11:36:50 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgBHZQ5Nfihmarc3Kw--.25590S9;
-	Wed, 24 Apr 2024 11:36:50 +0800 (CST)
-From: libaokun@huaweicloud.com
-To: netfs@lists.linux.dev
-Cc: dhowells@redhat.com,
-	jlayton@kernel.org,
-	linux-cachefs@redhat.com,
-	linux-erofs@lists.ozlabs.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	libaokun@huaweicloud.com,
-	Baokun Li <libaokun1@huawei.com>
-Subject: [PATCH 5/5] cachefiles: correct the return value of cachefiles_check_auxdata()
-Date: Wed, 24 Apr 2024 11:27:32 +0800
-Message-Id: <20240424032732.2711487-6-libaokun@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240424032732.2711487-1-libaokun@huaweicloud.com>
-References: <20240424032732.2711487-1-libaokun@huaweicloud.com>
+	s=arc-20240116; t=1713929376; c=relaxed/simple;
+	bh=IXrYvzj2ENQ3Q3iwFGC5oWcuhFxJU5EHiAiIWa60SKs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=puoojhwhC0OEG6IqtYkRFbOSSqCHEgJiyJG65cMVGR77GmwZCH43LvLijjFuNu6n59I84NW11oWOo16Yz9A6Myi12M/srEPU89+WGZw9iZJRq3K1JogV020RUNT4cVo1aX7PsCHQNmjeVxNo20fvmiYytqiutzHMbg6ipYuSnyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=LxxRC0n0; arc=none smtp.client-ip=115.124.30.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713929371; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=6+3vy5RW94Ou/P4a51UJp53U0IfxqdYqVf/uzowYFLE=;
+	b=LxxRC0n03NUBvT9tQlIeXfPIHiA3Ps/KzlyRLBHznHnmEDTJbRRLBpN0UzJ0f+4HwSRv2BpED8VsnoYErOf9wI8p3Fya2Qr6lOSb63a6FlVqY73yXBCvYx8x4xMQ7gC230TRFRdopXKanFt7lkYhA4sSVD1HOTTHTWpfYMAZ5Fo=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067109;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0W5Alj4X_1713929369;
+Received: from 30.97.48.214(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W5Alj4X_1713929369)
+          by smtp.aliyun-inc.com;
+          Wed, 24 Apr 2024 11:29:30 +0800
+Message-ID: <871467f7-1218-4c13-ae47-13e89bbbe0cc@linux.alibaba.com>
+Date: Wed, 24 Apr 2024 11:29:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBHZQ5Nfihmarc3Kw--.25590S9
-X-Coremail-Antispam: 1UD129KBjvdXoW7JFykurWUAF4kCF4DAr4xWFg_yoWfKFX_uF
-	Z7Ar4xXr4fGr4kJwsrA3y2qrWvqr1xAwn8Kr1Fgry2yw1aqFZ8XFWDtr98Ar1UWr4UK3WD
-	trZ7ZF13WF9FgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbPAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6r1F6r1fM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
-	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
-	F7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
-	1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
-	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-	v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
-	IY04v7M4kE6xkIj40Ew7xC0wCY1x0264kExVAvwVAq07x20xyl42xK82IYc2Ij64vIr41l
-	4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
-	AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
-	cVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4
-	v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
-	xVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUUpVbPUUUUU==
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] erofs: modify the error message when
+ prepare_ondemand_read failed
+To: Hongbo Li <lihongbo22@huawei.com>, xiang@kernel.org, chao@kernel.org
+Cc: huyue2@coolpad.com, jefflexu@linux.alibaba.com, dhavale@google.com,
+ linux-erofs mailing list <linux-erofs@lists.ozlabs.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <20240424023945.420828-1-lihongbo22@huawei.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <20240424023945.420828-1-lihongbo22@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Baokun Li <libaokun1@huawei.com>
 
-Pass the error code to ret when xlen < 0 to avoid misleading the caller.
+(+cc linux-erofs & LKML)
 
-Fixes: 72b957856b0c ("cachefiles: Implement metadata/coherency data storage in xattrs")
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- fs/cachefiles/xattr.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On 2024/4/24 10:39, Hongbo Li wrote:
+> When prepare_ondemand_read failed, wrong error message is printed.
+> The prepare_read is also implemented in cachefiles, so we amend it.
+> 
+> Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
 
-diff --git a/fs/cachefiles/xattr.c b/fs/cachefiles/xattr.c
-index 20e4a4391090..4dd8a993c60a 100644
---- a/fs/cachefiles/xattr.c
-+++ b/fs/cachefiles/xattr.c
-@@ -110,9 +110,11 @@ int cachefiles_check_auxdata(struct cachefiles_object *object, struct file *file
- 	if (xlen == 0)
- 		xlen = vfs_getxattr(&nop_mnt_idmap, dentry, cachefiles_xattr_cache, buf, tlen);
- 	if (xlen != tlen) {
--		if (xlen < 0)
-+		if (xlen < 0) {
-+			ret = xlen;
- 			trace_cachefiles_vfs_error(object, file_inode(file), xlen,
- 						   cachefiles_trace_getxattr_error);
-+		}
- 		if (xlen == -EIO)
- 			cachefiles_io_error_obj(
- 				object,
--- 
-2.39.2
+Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
+Could you resend the patch with proper mailing list cced with my
+"reviewed-by:" tag?  So I could apply with "b4" tool.
+
+Thanks,
+Gao Xiang
+
+> ---
+>   fs/erofs/fscache.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/erofs/fscache.c b/fs/erofs/fscache.c
+> index 8aff1a724805..62da538d91cb 100644
+> --- a/fs/erofs/fscache.c
+> +++ b/fs/erofs/fscache.c
+> @@ -151,7 +151,7 @@ static int erofs_fscache_read_io_async(struct fscache_cookie *cookie,
+>   		if (WARN_ON(len == 0))
+>   			source = NETFS_INVALID_READ;
+>   		if (source != NETFS_READ_FROM_CACHE) {
+> -			erofs_err(NULL, "prepare_read failed (source %d)", source);
+> +			erofs_err(NULL, "prepare_ondemand_read failed (source %d)", source);
+>   			return -EIO;
+>   		}
+>   
 
