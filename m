@@ -1,150 +1,98 @@
-Return-Path: <linux-kernel+bounces-157411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 945108B114A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:39:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD40F8B1151
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:40:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 770AEB237E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:39:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3D321C2556B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8204316D4DC;
-	Wed, 24 Apr 2024 17:39:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84CAC16D4DF;
+	Wed, 24 Apr 2024 17:40:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z8SOGWuO"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MJhb4G21"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4758716D4CC
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:39:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93B813777A
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713980354; cv=none; b=SSRGuVPY+JfscHRnVRwUNQ6i6FNFs60tDgDThCKuG6lfjLzOB5sweYKJSw3Cn56niMnKk3S24O0YANKqJEaniYnsJxM09ONG3wPbz3eFASOeEgI0il36SL070A2yev03PZs0P/48VBDK1hriSCc91MQRsMRkYZK1IXXFqikCA44=
+	t=1713980429; cv=none; b=XLyIAESHAsHIctAfSfLBNzckYMrcuajB1uiY5Tm5GEJrj+nHi6Gejc7Y5AnV1mWwJqaHf++2fNd8vFofbRrKFnbigLiAPyeB62x1fGpOk5fTrWpUjM7YZwgKoOtrUPnf3QMpds4yHW6yOBDLdpfBmTOudAau+8wMKB27dMzreug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713980354; c=relaxed/simple;
-	bh=z5NkQGPiv4L8AtwPo7Ek6ZUSPG+b0A9bAFw1kr+jIu0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SpKbo2C5saUCGIy9YPcmePMMWNXogpk8NoOHjHwTNObi+BJWWEXEeKVC0ojtazRBs+BdJuCbQlY0fXv3ApdNfxTWRnIEdHglyjUWYaCEcRMUtT7T18O2eqsBFugyZqGkyKhc7E2OYw5XZ5dEAc8Q0uzTejQFmN2MTIbuOQMbmSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z8SOGWuO; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51abf1a9332so58054e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 10:39:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713980351; x=1714585151; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ynaUrY5l+597sEJ6P7ZfnwDusY+Y+Lu9dBF7Lyaug0M=;
-        b=Z8SOGWuO5bHh1cEeYG1LjKvMS5JwybhRWzsB0TN0J574jfXdp5kCOGkHWmoAzB2Mo2
-         Z5axwrGhvXKD65UUwebGqJwzDh4amr6rqB1tgkxASXsnEZZRTwNtinBbiLxXkBAT4iCi
-         p4PRki4r7st/lwfWJlKoybyJdR/tpCUk+Cqgu7RbqIscIX8Pq/EWKuEAJEw1OvEYRdGq
-         bhtvD/SAQIx8RQ2E+xpWwnydxqO2BrzrtBdtFYYhLsDVHaNP4BiJBmVtWKdSUCoxK254
-         Fm0aVUJPrlXd8oWFA2/CPM+d1D7yT/CthUIgfSef9KQ6B9bbxNr5Q3xEyqG0GC7K6X1A
-         g/GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713980351; x=1714585151;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ynaUrY5l+597sEJ6P7ZfnwDusY+Y+Lu9dBF7Lyaug0M=;
-        b=WOTzENecFg29TcYrlzgl7p5A3AWy7JggxJb5KbjNNdJR+i9019P8uZazEMJEBuGrMo
-         0TXg1Alei8gJ2n2wbnPi62EiJoxuW+CXAIWphMywV4oV1Oim6k+2NTx53+H/BJgX4tEC
-         5imCyyiHnooljDuwWZwm4FXzaoDWv9b8r0aHZIHBqkBCOGK1ldeDuBvcOg+8xcBLU57U
-         FOi2mvRAblm/Tn/SzS/7JO7Qq0Vo1v7L3wYUMYwyiaP9A/hlgIIAemsPeQcAC0A3rWkJ
-         KnhoD0QvZ3gUZUJZXeTlUEgUZKhi26ycrue49MNVEsc2Snqlyed+8CUie2kxH/InRzuk
-         IaeA==
-X-Gm-Message-State: AOJu0Yz+J0fA+8GYJqNtgy/6anIG4KBnPMXonVmcFx8dUxY7fwJNojKX
-	K+xdDiGddi9mPXG0N+OAQEA2DOKrjCeT9IGrRqFzAiLZYUPHuzAymlV1aSF5a8b6D2eTYCTsLRo
-	UsoJFwXZIqiS4bWNDJLkw1uNq9HUaC2Y=
-X-Google-Smtp-Source: AGHT+IGA4hqEI61enJ9DfoX5fsFrF3OkliS1nO9fyos5bePwboWZ6OpjfqsYgEZaFOhR9vir/bkYtUhStH/yT7TMC2M=
-X-Received: by 2002:ac2:4ed0:0:b0:518:90fd:fa40 with SMTP id
- p16-20020ac24ed0000000b0051890fdfa40mr2071996lfr.2.1713980351078; Wed, 24 Apr
- 2024 10:39:11 -0700 (PDT)
+	s=arc-20240116; t=1713980429; c=relaxed/simple;
+	bh=cnMh4lZ8/DF2nts885keD3oVXLmD1/qliCT2gQ+qeR8=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=FTMxGdWHbmGEEP3TTxfW3afOJlfweakAkjZWK0PDQ3Q6Y0WAMTJeM21JFyPOBiNSqBfnIi9xoD38/kjR5zmgzxNl1WBthF98AwlVbmLCk7+KcJkAoh4ia0meHv/zaptYpBLjEC6Xvc9+Xgrtfzh+WFYOw3pjnPm2xPmPcp1UZfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MJhb4G21; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A99A1C2BD11;
+	Wed, 24 Apr 2024 17:40:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713980429;
+	bh=cnMh4lZ8/DF2nts885keD3oVXLmD1/qliCT2gQ+qeR8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=MJhb4G212OVVVFLWHMt8RXJ9Y735f1eTRks8+loZ8XR2iJGoHvjNweOgmLCk+VVvT
+	 2mxreSsKbVbzop6g+K7+LLHIcShmtQuzBQ+cLd3EPekMc37Cmj2NgfjUJ/ETD/NdZA
+	 cfeih1xiGj3OZsQAdV8CuGUgBIeoallpp3Ax2pnt2lqXOZbdIhLXipKlXJKHRx82jG
+	 hW8LzOn7TRUiIgm9p9/v6ckSAfk9vnErUrcUGJVe4DtbqTNqWeNvVSA+Vo8FNpzXcF
+	 37Vc1URkXcgmJHPJ6dRZjEgbTeelrISV4JAvAQlBOTmjt0uL263/X+2MwuSA3XCvbv
+	 xJafJ6eKK6j+g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 91EF2C00448;
+	Wed, 24 Apr 2024 17:40:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424155309.1719454-11-ardb+git@google.com> <20240424155309.1719454-15-ardb+git@google.com>
-In-Reply-To: <20240424155309.1719454-15-ardb+git@google.com>
-From: Brian Gerst <brgerst@gmail.com>
-Date: Wed, 24 Apr 2024 13:38:59 -0400
-Message-ID: <CAMzpN2g3E3Pj1wso0rUR5EWrHqTuUePsOWcQGf29wNkMa0+G3w@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/9] x86/purgatory: Avoid absolute reference to GDT
-To: Ard Biesheuvel <ardb+git@google.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org, 
-	Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Eric Biederman <ebiederm@xmission.com>, 
-	kexec@lists.infradead.org, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Kees Cook <keescook@chromium.org>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Masahiro Yamada <masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [f2fs-dev] [PATCH 1/3] f2fs: use folio_test_writeback
+From: patchwork-bot+f2fs@kernel.org
+Message-Id: 
+ <171398042958.20673.10102364996945847109.git-patchwork-notify@kernel.org>
+Date: Wed, 24 Apr 2024 17:40:29 +0000
+References: <20240409203411.1885121-1-jaegeuk@kernel.org>
+In-Reply-To: <20240409203411.1885121-1-jaegeuk@kernel.org>
+To: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
 
-On Wed, Apr 24, 2024 at 12:06=E2=80=AFPM Ard Biesheuvel <ardb+git@google.co=
-m> wrote:
->
-> From: Ard Biesheuvel <ardb@kernel.org>
->
-> The purgatory is almost entirely position independent, without any need
-> for any relocation processing at load time except for the reference to
-> the GDT in the entry code. Generate this reference at runtime instead,
-> to remove the last R_X86_64_64 relocation from this code.
->
-> While the GDT itself needs to be preserved in memory as long as it is
-> live, the GDT descriptor that is used to program the GDT can be
-> discarded so it can be allocated on the stack.
->
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Hello:
+
+This series was applied to jaegeuk/f2fs.git (dev)
+by Jaegeuk Kim <jaegeuk@kernel.org>:
+
+On Tue,  9 Apr 2024 20:34:09 +0000 you wrote:
+> Let's convert PageWriteback to folio_test_writeback.
+> 
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 > ---
->  arch/x86/purgatory/entry64.S | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/purgatory/entry64.S b/arch/x86/purgatory/entry64.S
-> index 9913877b0dbe..888661d9db9c 100644
-> --- a/arch/x86/purgatory/entry64.S
-> +++ b/arch/x86/purgatory/entry64.S
-> @@ -16,7 +16,11 @@
->
->  SYM_CODE_START(entry64)
->         /* Setup a gdt that should be preserved */
-> -       lgdt gdt(%rip)
-> +       leaq    gdt(%rip), %rax
-> +       pushq   %rax
-> +       pushw   $gdt_end - gdt - 1
-> +       lgdt    (%rsp)
-> +       addq    $10, %rsp
+>  fs/f2fs/compress.c |  2 +-
+>  fs/f2fs/data.c     |  3 +--
+>  fs/f2fs/f2fs.h     |  2 +-
+>  fs/f2fs/gc.c       |  2 +-
+>  fs/f2fs/inline.c   |  2 +-
+>  fs/f2fs/inode.c    |  3 ++-
+>  fs/f2fs/node.c     |  2 +-
+>  fs/f2fs/segment.c  | 10 +++++-----
+>  8 files changed, 13 insertions(+), 13 deletions(-)
 
-This misaligns the stack, pushing 16 bytes on the stack but only
-removing 10 (decimal).
+Here is the summary with links:
+  - [f2fs-dev,1/3] f2fs: use folio_test_writeback
+    (no matching commit)
+  - [f2fs-dev,2/3] f2fs: clear writeback when compression failed
+    (no matching commit)
+  - [f2fs-dev,3/3] f2fs: fix false alarm on invalid block address
+    https://git.kernel.org/jaegeuk/f2fs/c/04890641bf1f
 
->
->         /* load the data segments */
->         movl    $0x18, %eax     /* data segment */
-> @@ -83,8 +87,8 @@ SYM_DATA_START_LOCAL(gdt)
->          * 0x08 unused
->          * so use them as gdt ptr
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-obsolete comment
 
->          */
-> -       .word gdt_end - gdt - 1
-> -       .quad gdt
-> +       .word 0
-> +       .quad 0
->         .word 0, 0, 0
-
-This can be condensed down to:
-        .quad 0, 0
-
->
->         /* 0x10 4GB flat code segment */
-> --
-> 2.44.0.769.g3c40516874-goog
-
-Brian Gerst
 
