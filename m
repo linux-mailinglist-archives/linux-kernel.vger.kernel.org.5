@@ -1,132 +1,108 @@
-Return-Path: <linux-kernel+bounces-156803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C66AC8B085E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:32:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E57EE8B085B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:32:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6693A1F241AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:32:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2E1A2827A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:32:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22DBC15A4AA;
-	Wed, 24 Apr 2024 11:32:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97AC15A4AA;
+	Wed, 24 Apr 2024 11:32:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=carewolf.com header.i=@carewolf.com header.b="GVP2WCPU";
-	dkim=permerror (0-bit key) header.d=carewolf.com header.i=@carewolf.com header.b="hVvvLzGb"
-Received: from mailrelay6-3.pub.mailoutpod2-cph3.one.com (mailrelay6-3.pub.mailoutpod2-cph3.one.com [46.30.212.37])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KZ0cVilz"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A361B15A491
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 11:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.212.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A317A1598E6;
+	Wed, 24 Apr 2024 11:32:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713958371; cv=none; b=MELkhBUfB/vgIF7CTpM/I0flztLAh/8rZs0TX5FXDPPsojBq7jXzsDSnl6WQMI/RMnaYJw3gy9qqaESm28PuH3LmgOn5WnTcrn13MBM/QNBtDEn4gpfSCyP+kJSuWbAI2rUnbOA/vNJMOi/T+WmjBmWy+PHSfonEvO1YdLK19dE=
+	t=1713958358; cv=none; b=ru9f0WDm9zuaD/tGqVcIiJbaPJadqUP96NWWRKMQ8dGwzuobywYL0FoqjnhatjnRIxd7oeFswY9TXJGnpySEGprCVqMEiatLhee3VdnpmlGxdaXQIDx13aJjvglRPaY9x6Rj11a02yvNFLNIdjmNtZA6tnTOUiv7TEApAA9UwHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713958371; c=relaxed/simple;
-	bh=JCQMG7fP0cjNcmTnJ2sSDvS2UO71hAD4BPDVQWE7ZYk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=c8QCMAPX96a9DUmKu63AWiFJcRd38PHjzbH79eNos99UeZ92MCTS3hz4ovSBdvqAsSY0zpWCi2g01S0/LF74x7Locp3CBT64NB0mP2NBvhTmSN11j6gZa5x/JzCm/MP5C6PW3o2/LbbXITZe+L3kSRw1AKzKH/9vSYAu5t0aoVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carewolf.com; spf=none smtp.mailfrom=carewolf.com; dkim=pass (2048-bit key) header.d=carewolf.com header.i=@carewolf.com header.b=GVP2WCPU; dkim=permerror (0-bit key) header.d=carewolf.com header.i=@carewolf.com header.b=hVvvLzGb; arc=none smtp.client-ip=46.30.212.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carewolf.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=carewolf.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=carewolf.com; s=rsa2;
-	h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
-	 from;
-	bh=La1F9GWBKgOLv3pdQd/zEdcyB837+ewuRa+W1vOfcX0=;
-	b=GVP2WCPUXBc/8r+RqHisr+HQ9Hx5Qthrf1s754bea3Jd0pRDSeO1N2ev/HP5T+9K7lX3+puCd7NV0
-	 1Esg/fwDvuZViReuJDI09lvNy/1vyLuLuKaj0mQ5tk0JM6HofOx+b+/RQAshFDrXAfx14DwNcliYcD
-	 vbkUEdXX6qLcvKMbRnbdawBLUnCc7U8hgF9E6M6tpuULP87GfhvjwdvUZ0dYSiA/WCEJlNHS0ICoAM
-	 y99pq8quIsPDkwRvG9iKcPb28LL8rzJtG/F2UqEIl/xqlhFXsfJ3f+1eX49c5LP0Dm6ZSlUt880fqk
-	 +ayFa1im1WZwW3VwGSS2G3aH8Z8VURg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-	d=carewolf.com; s=ed2;
-	h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
-	 from;
-	bh=La1F9GWBKgOLv3pdQd/zEdcyB837+ewuRa+W1vOfcX0=;
-	b=hVvvLzGbrIiu1/uIWV5RFIPdTVhkyaeXPJiiF0BSVNIzYrzn4V+JmRmK9Bd/rWd2P4ccjX+BymW6m
-	 YV+newvCg==
-X-HalOne-ID: 360a4bc3-022e-11ef-8f41-f528319a6ef4
-Received: from carewolf.com (dynamic-2a02-3103-004c-5300-7231-17da-dcd1-9a4a.310.pool.telefonica.de [2a02:3103:4c:5300:7231:17da:dcd1:9a4a])
-	by mailrelay6.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
-	id 360a4bc3-022e-11ef-8f41-f528319a6ef4;
-	Wed, 24 Apr 2024 11:31:38 +0000 (UTC)
-From: kde@carewolf.com
-To: lains@riseup.net,
-	hadess@hadess.net,
-	jikos@kernel.org,
-	benjamin.tissoires@redhat.com,
-	linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Allan Sandfeld Jensen <allan.jensen@qt.io>,
-	Allan Sandfeld Jensen <kde@carewolf.com>
-Subject: [PATCH] Add Logitech HID++ devices
-Date: Wed, 24 Apr 2024 13:31:30 +0200
-Message-Id: <20240424113130.60386-1-kde@carewolf.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1713958358; c=relaxed/simple;
+	bh=Y9kdMVKHiAP1zSpHswbPKKYfi3WHHjOaEgGj1LB2NVA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tteuJv2Nr6WwCQRuAyjNbKAzn8DyZj1Q+pVqJtb0v5gnA6xIDDcDJo4GzU7Pq5yeZBSPGdycXLimQM8cJuJN3B3lWq7CX/aP6sibSi0ZAZglUQOGpVuED04w0M8VfB3EVleT/A63iuc2mD/+wEKYYINb9aEt607YOS8VNFHQPj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KZ0cVilz; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713958357; x=1745494357;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Y9kdMVKHiAP1zSpHswbPKKYfi3WHHjOaEgGj1LB2NVA=;
+  b=KZ0cVilz2mqLRXNxotA8qgjsnGGHtPm2MGOdyCEl1EVcAEo+MGCmvTKI
+   6284UiCB4RrpBL9WGI+sGpVP1dTTN/TNFbJAU+MzNZ0c8lkraC6jk3LGR
+   TK8bPnKmX6IxBDOiICDiLj5bHVR3TlYQO4GzaVoQg83zHjIINdZv9J+u+
+   bI0vGKz3uUwkQNuyVzXTnwLpo3ANViL0g8TbWqNpwUz8EgDTk6cdXYPDS
+   wTOHU9ygDNiZPn3Ii64eNBQFT7K0+vRzgYxZnBIzy/1/MTzuoC/HQjuCv
+   +uxoYlxzvZ6Qp+oqTfqi5YLt+mG6TwqWKdbOdsrppNO8r/nEjipMkKGgy
+   A==;
+X-CSE-ConnectionGUID: MSER4OpqTT+Qperd8Frtxw==
+X-CSE-MsgGUID: vWpgLBJzT2Wbc2bB65W4hg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="20278815"
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="20278815"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 04:32:36 -0700
+X-CSE-ConnectionGUID: tj9kQ+HMSXeDJxPM2ZuR4Q==
+X-CSE-MsgGUID: adCmwtbQSXaCJPrKolHRew==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="25288492"
+Received: from spandruv-mobl4.amr.corp.intel.com (HELO [10.212.109.188]) ([10.212.109.188])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 04:32:34 -0700
+Message-ID: <e565a9c3-9244-4a0b-9ad8-4beebd03d681@linux.intel.com>
+Date: Wed, 24 Apr 2024 04:32:32 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 14/16] thermal: gov_user_space: Use .trip_crossed()
+ instead of .throttle()
+To: Daniel Lezcano <daniel.lezcano@linaro.org>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Linux PM <linux-pm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ Lukasz Luba <lukasz.luba@arm.com>
+References: <13515747.uLZWGnKmhe@kreacher> <15186663.tv2OnDr8pf@kreacher>
+ <ZijNj7DzL9e01Vnt@mai.linaro.org>
+Content-Language: en-US
+From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+In-Reply-To: <ZijNj7DzL9e01Vnt@mai.linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Allan Sandfeld Jensen <allan.jensen@qt.io>
 
-Adds a few recognized Logitech HID++ capable mice over USB and Bluetooth
+On 4/24/24 02:14, Daniel Lezcano wrote:
+> On Wed, Apr 10, 2024 at 07:03:10PM +0200, Rafael J. Wysocki wrote:
+>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>>
+>> Notifying user space about trip points that have not been crossed is
+>> not particuarly useful, so modity the User Space governor to use the
+>> .trip_crossed() callback, which is only invoked for trips that have been
+>> crossed, instead of .throttle() that is invoked for all trips in a
+>> thermal zone every time the zone is updated.
+>>
+>> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>> ---
+> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>
+> I would also consider removing this governor which is pointless now that we
+> have the netlink notification mechanism
 
-Signed-off-by: Allan Sandfeld Jensen <kde@carewolf.com>
----
- drivers/hid/hid-logitech-hidpp.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+That is a good goal, But, not there yet to deprecate.
 
-diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
-index 3c00e6ac8e76..6907b8c48c4e 100644
---- a/drivers/hid/hid-logitech-hidpp.c
-+++ b/drivers/hid/hid-logitech-hidpp.c
-@@ -4352,13 +4352,17 @@ static const struct hid_device_id hidpp_devices[] = {
- 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC081) },
- 	{ /* Logitech G903 Gaming Mouse over USB */
- 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC086) },
-+	{ /* Logitech G Pro Gaming Mouse over USB */
-+	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC088) },
-+	{ /* MX Vertical over USB */
-+	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC08A) },
-+	{ /* Logitech G703 Hero Gaming Mouse over USB */
-+	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC090) },
- 	{ /* Logitech G903 Hero Gaming Mouse over USB */
- 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC091) },
- 	{ /* Logitech G920 Wheel over USB */
- 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_G920_WHEEL),
- 		.driver_data = HIDPP_QUIRK_CLASS_G920 | HIDPP_QUIRK_FORCE_OUTPUT_REPORTS},
--	{ /* Logitech G Pro Gaming Mouse over USB */
--	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC088) },
- 
- 	{ /* MX5000 keyboard over Bluetooth */
- 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb305),
-@@ -4373,13 +4377,19 @@ static const struct hid_device_id hidpp_devices[] = {
- 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb008) },
- 	{ /* MX Master mouse over Bluetooth */
- 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb012) },
-+	{ /* MX Master 2S mouse over Bluetooth */
-+	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb019) },
- 	{ /* MX Ergo trackball over Bluetooth */
- 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb01d) },
- 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb01e) },
-+	{ /* MX Vertical mouse over Bluetooth */
-+	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb020) },
- 	{ /* MX Master 3 mouse over Bluetooth */
- 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb023) },
- 	{ /* MX Master 3S mouse over Bluetooth */
- 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb034) },
-+	{ /* MX Anywhere 3SB mouse over Bluetooth */
-+	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb038) },
- 	{}
- };
- 
--- 
-2.39.2
+Thanks,
 
+Srinivas
+
+>
 
