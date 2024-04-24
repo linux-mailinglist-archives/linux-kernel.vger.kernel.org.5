@@ -1,120 +1,83 @@
-Return-Path: <linux-kernel+bounces-157731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FAE68B1522
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:20:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40F238B1523
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:20:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C05562889D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:20:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD61F1F24505
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:20:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 481D5156C41;
-	Wed, 24 Apr 2024 21:20:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18056156C57;
+	Wed, 24 Apr 2024 21:20:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fd8kvaDO"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="M8WWLQWq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E29713C9DE
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 21:20:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 579E913C9DE
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 21:20:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713993604; cv=none; b=Xfa654/1wIb8T2V0A4mlaT4X1SI3e1L77+33XaaT7c5jKSduoCb04H4XHjL4TEYkfO65ms69WsqXR8zPp+eneBTb05vgFtdF2gQgJ7MhXvA+xON2FCQyG9RCsVP+xfv8CMvByrZolojA+skBKTns2/po75RRKZuE0K/MwdAtTQA=
+	t=1713993611; cv=none; b=fe4W0182iOX+3NEnYRXXLVnaW/eRGkNjjQkVhLqwP18kZjceajCwlQJO14mhwPVTCJFle4LmFGqihSP2JV7SfJPQDgWUHMEw/zqkajQ3FmtFGwWnI8eI7H7gEKjp9e4D2VCcmSr437CwA7YxORcaCR3GVYPO3N8rirgn29g3QKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713993604; c=relaxed/simple;
-	bh=X6Q9ghuC9MoxCqz0X5W6CSwrUiieo8LutjHaTxzEVbg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d3GEk7C8RIkCRP3QKVjwMN9neeFJvgAY7UDGS7I5UohBGd1w2TfZtk4yf9/b3fG9WXNWPltnpFgWLOSMBkur13TWSl4s8NekrotcJHUyflTTYJcve6ktRKJWqFIffazTM/YqHCkPPVBBMAmh2y5MRUOsk1e9EndV6P8mMzDoGgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fd8kvaDO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E85A1C113CD;
-	Wed, 24 Apr 2024 21:20:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713993604;
-	bh=X6Q9ghuC9MoxCqz0X5W6CSwrUiieo8LutjHaTxzEVbg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fd8kvaDOeXZL5y64ttw8eQA9sONEoZWFri5CsY1hXnVWe+ukzQ8bOO55HLiBYCk2p
-	 C71r+T1woIoKpvMx2Psv1DCKbo2KtIY0qayeQ957IRTCGlAuX85mVXdOcNhNodAwa5
-	 nhDeAyHukDKqwe9RUMZNiarbpUnLym7XhK4c3AEYtMcS0ep+PwJzn0A+b4caZxJS4h
-	 UJ2ZEKhAPsvl0fVW/RvstOJd0RaJoCRpVjzPqYr+GIy3IB56EV/b7GHi0cUvqf6YvI
-	 8/0noULFpvVD7ejenEJIZQj4RmdDZyDP6q3/eLJn2aTUqIER3DB8NFpyWO9zCI3YL3
-	 7FOjRmQuH+0lA==
-Date: Wed, 24 Apr 2024 22:20:00 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Alexandre Ghiti <alex@ghiti.fr>
-Cc: Samuel Holland <samuel.holland@sifive.com>,
-	linux-riscv@lists.infradead.org,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] cache: sifive_ccache: Auxiliary device support
-Message-ID: <20240424-recolor-deviation-29a5dd4e9499@spud>
-References: <20240410232211.438277-1-samuel.holland@sifive.com>
- <d738dfc0-66af-4dad-bd60-a68c900bf807@ghiti.fr>
+	s=arc-20240116; t=1713993611; c=relaxed/simple;
+	bh=GrjNEdck+k+VpT+CPfrPUvz7/fnE4GeQWJaxKgyyI7Y=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=aP23N7qdme4xqUrKAb4XitcFWPlMiY+g0a8qNE5qj4sMOoSSytAR26PZpBwaehjYxs8kVXS7Sb9hGNnqlb4kWJnqM7MkBYrRJkXaVjPW96BacLjPQ0QPL+N6Dccy0bjFytlwhBEz7SR12im/32ddJBb7+AdKhuHAwpTZdzX84oA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=M8WWLQWq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9D60C113CD;
+	Wed, 24 Apr 2024 21:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1713993610;
+	bh=GrjNEdck+k+VpT+CPfrPUvz7/fnE4GeQWJaxKgyyI7Y=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=M8WWLQWqXAGC5AJWDe0qHoNDaRU9IdxcFIfG2aL6YAUWd30ejte+TtJWWSE88qtJ3
+	 AFiACzTGRSUgx/NraUv6oh9V7pvfQnkLZksYEP/Y4xPD3mi56ORmSnVPxS37oPBa6p
+	 WrcBJ6ufW+tUtZEDuL3sEjWZCPe0zEYeByuKo56s=
+Date: Wed, 24 Apr 2024 14:20:09 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Lance Yang <ioworker0@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>, maskray@google.com,
+ ziy@nvidia.com, ryan.roberts@arm.com, david@redhat.com, 21cnbao@gmail.com,
+ mhocko@suse.com, fengwei.yin@intel.com, zokeefe@google.com,
+ shy828301@gmail.com, xiehuan09@gmail.com, wangkefeng.wang@huawei.com,
+ songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] mm/vmscan: avoid split PMD-mapped THP during
+ shrink_folio_list()
+Message-Id: <20240424142009.149eb988cca33822ce0fd0f1@linux-foundation.org>
+In-Reply-To: <CAK1f24kaHcKOS1ajfLney-1+Pqrwrk_0LWqRr2DmZ+41YBzXug@mail.gmail.com>
+References: <20240422055213.60231-1-ioworker0@gmail.com>
+	<ZiiHSwG_bnLJbwfb@casper.infradead.org>
+	<CAK1f24kaHcKOS1ajfLney-1+Pqrwrk_0LWqRr2DmZ+41YBzXug@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xuJOMISUXHsgfGn1"
-Content-Disposition: inline
-In-Reply-To: <d738dfc0-66af-4dad-bd60-a68c900bf807@ghiti.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+On Wed, 24 Apr 2024 23:46:59 +0800 Lance Yang <ioworker0@gmail.com> wrote:
 
---xuJOMISUXHsgfGn1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Wed, Apr 24, 2024 at 12:15 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Mon, Apr 22, 2024 at 01:52:13PM +0800, Lance Yang wrote:
+> > > When the user no longer requires the pages, they would use
+> > > madvise(MADV_FREE) to mark the pages as lazy free. IMO, they would not
+> > > typically rewrite to the given range.
+> > >
+> > > At present, PMD-mapped THPs that are marked as lazyfree during
+> > > shrink_folio_list() are unconditionally split, which may be unnecessary.
+> > > If the THP is clean, its PMD is also clean, and there are no unexpected
+> 
+> "If the THP is clean, its PMD is also clean" can be confusing - sorry. It should
+> be modified to "If the THP and its PMD are both marked as clean".
 
-On Wed, Apr 24, 2024 at 10:19:18PM +0200, Alexandre Ghiti wrote:
-> Hi Samuel,
->=20
-> On 11/04/2024 01:22, Samuel Holland wrote:
-> > As of commit c90847bcbfb6 ("cache: sifive_ccache: Partially convert to a
-> > platform driver"), the cache subsystem binds a platform driver to the
-> > Composable Cache's DT node. This prevents the perf subsystem from doing
-> > the same for the new PMU driver[1]. To allow using both drivers at the
-> > same time without conflicts or module linkage dependencies, attach the
-> > PMU driver to the auxiliary device bus. While at it, prepare to use the
-> > auxiliary device bus for the EDAC driver as well, which significantly
-> > simplifies that driver. The actual EDAC driver conversion has to wait
-> > another development cycle to avoid dependencies between git trees.
-> >=20
-> > [1]: https://lore.kernel.org/linux-riscv/20240216000837.1868917-3-samue=
-l.holland@sifive.com/
-> >=20
-> >=20
-> > Samuel Holland (4):
-> >    cache: sifive_ccache: Silence unused variable warning
-> >    cache: sifive_ccache: Use of_iomap() helper
-> >    cache: sifive_ccache: Export base address for child drivers
-> >    cache: sifive_ccache: Add EDAC and PMU as auxiliary devices
-> >=20
-> >   drivers/cache/Kconfig              |  1 +
-> >   drivers/cache/sifive_ccache.c      | 94 +++++++++++++++++++++---------
-> >   include/soc/sifive/sifive_ccache.h |  8 +++
-> >   3 files changed, 74 insertions(+), 29 deletions(-)
-> >=20
->=20
-> I took a quick look and I'm not sure if the whole patchset is a fix for 6=
-=2E9
-> or if only patch 1 is?
-
-Only the first patch is IMO, but it is a fix for a patch I applied so
-it'll go this week via the soc tree with those auto-update fixes.
-
---xuJOMISUXHsgfGn1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZil3gAAKCRB4tDGHoIJi
-0tEpAQDcI7yoAdCPL60ujB1LzolN4SJJmStybk3ftfXpKvZmLwD/WvBnGvK5ezjN
-smI6d1HvJ3B7DEPaIjmTZJUFrQB1TA4=
-=7AyF
------END PGP SIGNATURE-----
-
---xuJOMISUXHsgfGn1--
+I made that changelog edit.
 
