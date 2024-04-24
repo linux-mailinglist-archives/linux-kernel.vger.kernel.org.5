@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-157654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 509068B1410
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:06:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C839B8B1411
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:06:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74FF91C22F2B
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB81DB28C1E
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:06:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C9911420A8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 253C3140368;
 	Wed, 24 Apr 2024 20:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="WoBQPCBR";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="NelOoBBl"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="v2nExSzp";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="EDAv7xX0"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37C4757FD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06E4713CAB3;
 	Wed, 24 Apr 2024 20:05:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713989105; cv=none; b=t+ZrgZy1/4Z5mVBrKoOeCLF9jFttpZxYaGdWTUfWIl3ehYCEqQDs2moqtsdbRp4cRlQuiKaEGBtUWEmpQ/GxUvQUcQIkRhU5Zo8ut0Itat2yO08HPaChGlysCN+/hgMzHmYhoOoYpu9bEWCzePXnPt3ZFUp0D3ROdaHrwpChs74=
+	t=1713989105; cv=none; b=uxyFxvPZaRct6LB4LcXS4NUxqXEYOafFh0Stse8YAxAnzuYojWw6Tx/yEr0TyymQPjfxOl01UKKIH0vciZaw3ZyaSc/macgLS5wTlWTW+Mm6NYD7o1yp/jEy3saygKvWjBQeNpHXLJ8gEic9zUVGjNNogHRbJbJOkV3JZm49fYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713989105; c=relaxed/simple;
-	bh=Omo5CBRnQNzZLqHZbU6UUsxVEWi4D8idwpi+1vpSeso=;
+	bh=ydiXp3xrHXeTRZFHo2zNN/Ib+OF3q0t/VTPrpNS7l1I=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=EJbtMlc1O1Y/D4FvCWrHP2i3a/CjfhXOWxRmlzOLUaXjX5pOpEPNclR/waPSCE26AGRlZoP2EUD+fp9W9wWB6iEVOlEdDZfs2JpePsaY7v+0wXRVRSzQf4Mm62RDHLuqYnN0M8wSFgdCMBf/Kqp81SVEcixuNCaFqdRcSmyjfXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=WoBQPCBR; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=NelOoBBl; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=WoZUF7fDowowh7egvQIc46EH3NXtceE8FRaw0mlv/gmDlCF1zlDaD1bTYTjFbHnuuGNTdKDU31AGl0Ja04pf/4qMeifT2gKXvb9GtykAZh1quJEzSqFQyBymGF3cdC4+AUvdkUzq3ZmoSyTNaXmH723rMDf4zlFmnCC4vqsqJ74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=v2nExSzp; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=EDAv7xX0; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Date: Wed, 24 Apr 2024 20:05:02 -0000
@@ -39,12 +39,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/q0VBAKkzUXwdueVWlVegI3m9Sa0i3AlI1zgiX8n2j0=;
-	b=WoBQPCBR6XPj3RKyIYrC0TwjcShFYRNUiP4ddFRtt2W1E08Xall/ud6+hJWrKqewMIrCA5
-	yvgbpZe8PfQVX33UM6QXhqrwcmfBtbCP71GGEngbdo8pRKyW8ytnZ4K1dRW8RGlCuWOdea
-	RZb/F2fH7QPoI0ri3ORk/KC5expW6SDC9SfV0Ws1YMUjADvwYwT4dNg+3zAjTbul/Mp9OD
-	GvUItysh5Mus2VHgS0XqC4AGZUr/Z+DxDxJd2129TMcPadFpS4gCTPzvS9ZVD6oI5KkIUU
-	3CvGSTwqkiy9Ug2+MExzcpaOki9umFT379qIIXzpiJduoIHybPGigmg9yYU2Cg==
+	bh=x0ugmBiDyq2dVmJdnmJR0ENqZv0slPHTVJDKJUXgyj4=;
+	b=v2nExSzpci4i/H06crtzPKA3MD9obDpqvKXcaIavdYLhJW5OG3YZ9JqtPWymVwfsdujgbk
+	qVRkaojPrJ2PNaZWpUvL4WuftuoulMOo+m7g+4svnKbxiAiYrcIHmsRZskX1Uc7ZMwJTew
+	dfEVIu/nf5yu3pkEy5IL4XmEg8EQRH2iG+YjaDUS2QHsYmBAWh3GVvn6kS7A7kuICF2Uao
+	Z/IlhJa6CFWinFErtg8ZoUttcr/wkA73TJI3pGRws0hkQlR5BVtQ83XgDaftLrD41vMi0I
+	kLb/7Xd6RO/6J0IldAV2nqSbApLoUPExcSBeKERVEq7JmRa1AGOLOZdcnfHgOA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1713989102;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -52,28 +52,27 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/q0VBAKkzUXwdueVWlVegI3m9Sa0i3AlI1zgiX8n2j0=;
-	b=NelOoBBlnQs3QYqzBdAJh+/L24G6VPhR0/8T2YKL8K9+4v86iaG+BOkvN74a1j0dqoDrBH
-	GPxPYa0zjsqL65Cw==
+	bh=x0ugmBiDyq2dVmJdnmJR0ENqZv0slPHTVJDKJUXgyj4=;
+	b=EDAv7xX0m1Wjjm6Kzstt3plifIxSZ+eybjEB06aw0uOKJVMJc2LueCyJ7Qc0Psc8BIQ6Yt
+	EL6JJp9PUh3fsGDQ==
 From: "tip-bot2 for Oleg Nesterov" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched/isolation: {revent boot crash when the boot
- CPU is nohz_full
-Cc: Chris von Recklinghausen <crecklin@redhat.com>,
- Oleg Nesterov <oleg@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
+Subject: [tip: sched/urgent] sched/isolation: Fix boot crash when maxcpus <
+ first housekeeping CPU
+Cc: Oleg Nesterov <oleg@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
  Phil Auld <pauld@redhat.com>, Frederic Weisbecker <frederic@kernel.org>,
  x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240411143905.GA19288@redhat.com>
-References: <20240411143905.GA19288@redhat.com>
+In-Reply-To: <20240413141746.GA10008@redhat.com>
+References: <20240413141746.GA10008@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171398910227.10875.3649946025664504959.tip-bot2@tip-bot2>
+Message-ID: <171398910207.10875.4426725644764756607.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -83,86 +82,77 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the sched/urgent branch of tip:
 
-Commit-ID:     8e3101b38dfc20848a23525b1e6e80bd1641d44c
-Gitweb:        https://git.kernel.org/tip/8e3101b38dfc20848a23525b1e6e80bd1641d44c
+Commit-ID:     b6ad00418eaf376b4f2a68a1696d6368c1381310
+Gitweb:        https://git.kernel.org/tip/b6ad00418eaf376b4f2a68a1696d6368c1381310
 Author:        Oleg Nesterov <oleg@redhat.com>
-AuthorDate:    Thu, 11 Apr 2024 16:39:05 +02:00
+AuthorDate:    Sat, 13 Apr 2024 16:17:46 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Wed, 24 Apr 2024 21:53:34 +02:00
 
-sched/isolation: {revent boot crash when the boot CPU is nohz_full
+sched/isolation: Fix boot crash when maxcpus < first housekeeping CPU
 
-Documentation/timers/no_hz.rst states that the "nohz_full=" mask must not
-include the boot CPU, which is no longer true after commit 08ae95f4fd3b
-("nohz_full: Allow the boot CPU to be nohz_full").
+housekeeping_setup() checks cpumask_intersects(present, online) to ensure
+that the kernel will have at least one housekeeping CPU after smp_init(),
+but this doesn't work if the maxcpus= kernel parameter limits the number of
+processors available after bootup.
 
-However after commit aae17ebb53cd ("workqueue: Avoid using isolated cpus'
-timers on queue_delayed_work") the kernel will crash at boot time in this
-case; housekeeping_any_cpu() returns an invalid CPU number until smp_init()
-brings the first housekeeping CPU up.
+For example, a kernel with "maxcpus=2 nohz_full=0-2" parameters crashes at
+boot time on a virtual machine with 4 CPUs.
 
-Change housekeeping_any_cpu() to check the result of cpumask_any_and() and
-return smp_processor_id() in this case.
+Change housekeeping_setup() to use cpumask_first_and() and check that the
+returned CPU number is valid and less than setup_max_cpus.
 
-This is just the simple and backportable workaround which fixes the
-symptom, but smp_processor_id() at boot time should be safe at least for
-type == HK_TYPE_TIMER, this more or less matches the tick_do_timer_boot_cpu
-logic.
+Another corner case is "nohz_full=0" on a machine with a single CPU or with
+the maxcpus=1 kernel argument. In this case non_housekeeping_mask is empty
+and tick_nohz_full_setup() makes no sense. And indeed, the kernel hits the
+WARN_ON(tick_nohz_full_running) in tick_sched_do_timer().
 
-There is no worry about cpu_down(); tick_nohz_cpu_down() will not allow to
-offline tick_do_timer_cpu (the 1st online housekeeping CPU).
+And how should the kernel interpret the "nohz_full=" parameter? It should
+be silently ignored, but currently cpulist_parse() happily returns the
+empty cpumask and this leads to the same problem.
 
-Fixes: aae17ebb53cd ("workqueue: Avoid using isolated cpus' timers on queue_delayed_work")
-Reported-by: Chris von Recklinghausen <crecklin@redhat.com>
+Change housekeeping_setup() to check cpumask_empty(non_housekeeping_mask)
+and do nothing in this case.
+
 Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Phil Auld <pauld@redhat.com>
 Acked-by: Frederic Weisbecker <frederic@kernel.org>
-Link: https://lore.kernel.org/r/20240411143905.GA19288@redhat.com
-Closes: https://lore.kernel.org/all/20240402105847.GA24832@redhat.com/
+Link: https://lore.kernel.org/r/20240413141746.GA10008@redhat.com
 ---
- Documentation/timers/no_hz.rst |  7 ++-----
- kernel/sched/isolation.c       | 11 ++++++++++-
- 2 files changed, 12 insertions(+), 6 deletions(-)
+ kernel/sched/isolation.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/timers/no_hz.rst b/Documentation/timers/no_hz.rst
-index f8786be..7fe8ef9 100644
---- a/Documentation/timers/no_hz.rst
-+++ b/Documentation/timers/no_hz.rst
-@@ -129,11 +129,8 @@ adaptive-tick CPUs:  At least one non-adaptive-tick CPU must remain
- online to handle timekeeping tasks in order to ensure that system
- calls like gettimeofday() returns accurate values on adaptive-tick CPUs.
- (This is not an issue for CONFIG_NO_HZ_IDLE=y because there are no running
--user processes to observe slight drifts in clock rate.)  Therefore, the
--boot CPU is prohibited from entering adaptive-ticks mode.  Specifying a
--"nohz_full=" mask that includes the boot CPU will result in a boot-time
--error message, and the boot CPU will be removed from the mask.  Note that
--this means that your system must have at least two CPUs in order for
-+user processes to observe slight drifts in clock rate.) Note that this
-+means that your system must have at least two CPUs in order for
- CONFIG_NO_HZ_FULL=y to do anything for you.
- 
- Finally, adaptive-ticks CPUs must have their RCU callbacks offloaded.
 diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 373d42c..2a262d3 100644
+index 2a262d3..5891e71 100644
 --- a/kernel/sched/isolation.c
 +++ b/kernel/sched/isolation.c
-@@ -46,7 +46,16 @@ int housekeeping_any_cpu(enum hk_type type)
- 			if (cpu < nr_cpu_ids)
- 				return cpu;
+@@ -118,6 +118,7 @@ static void __init housekeeping_setup_type(enum hk_type type,
+ static int __init housekeeping_setup(char *str, unsigned long flags)
+ {
+ 	cpumask_var_t non_housekeeping_mask, housekeeping_staging;
++	unsigned int first_cpu;
+ 	int err = 0;
  
--			return cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
-+			cpu = cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
-+			if (likely(cpu < nr_cpu_ids))
-+				return cpu;
-+			/*
-+			 * Unless we have another problem this can only happen
-+			 * at boot time before start_secondary() brings the 1st
-+			 * housekeeping CPU up.
-+			 */
-+			WARN_ON_ONCE(system_state == SYSTEM_RUNNING ||
-+				     type != HK_TYPE_TIMER);
+ 	if ((flags & HK_FLAG_TICK) && !(housekeeping.flags & HK_FLAG_TICK)) {
+@@ -138,7 +139,8 @@ static int __init housekeeping_setup(char *str, unsigned long flags)
+ 	cpumask_andnot(housekeeping_staging,
+ 		       cpu_possible_mask, non_housekeeping_mask);
+ 
+-	if (!cpumask_intersects(cpu_present_mask, housekeeping_staging)) {
++	first_cpu = cpumask_first_and(cpu_present_mask, housekeeping_staging);
++	if (first_cpu >= nr_cpu_ids || first_cpu >= setup_max_cpus) {
+ 		__cpumask_set_cpu(smp_processor_id(), housekeeping_staging);
+ 		__cpumask_clear_cpu(smp_processor_id(), non_housekeeping_mask);
+ 		if (!housekeeping.flags) {
+@@ -147,6 +149,9 @@ static int __init housekeeping_setup(char *str, unsigned long flags)
  		}
  	}
- 	return smp_processor_id();
+ 
++	if (cpumask_empty(non_housekeeping_mask))
++		goto free_housekeeping_staging;
++
+ 	if (!housekeeping.flags) {
+ 		/* First setup call ("nohz_full=" or "isolcpus=") */
+ 		enum hk_type type;
 
