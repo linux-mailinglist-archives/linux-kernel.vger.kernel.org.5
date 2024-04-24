@@ -1,117 +1,93 @@
-Return-Path: <linux-kernel+bounces-156199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDE5C8AFF20
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:07:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45A9B8AFF39
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:12:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70F901F2396A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:07:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7894F1C21F47
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:12:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDDFE86277;
-	Wed, 24 Apr 2024 03:06:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B9E13A269;
+	Wed, 24 Apr 2024 03:11:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LYfXxw3p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uADnoj4X"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FEB6339A1;
-	Wed, 24 Apr 2024 03:06:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D89D129A9C;
+	Wed, 24 Apr 2024 03:11:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713928017; cv=none; b=sqFoxDToICWEETc1pk8/HpyDCrmN+IJvTdS6a2uwsrOzctv+Osbmkl9C/IwoTdRripE49B1NDitUZsRnY8rGoeFtH+2xUixBGusoNL5uBF0sEg038++NmPLOuaR1LpTVaQktrcKH3yK3OYpZBLH7de1r8+1dD0L2cSrI4HVkGn0=
+	t=1713928310; cv=none; b=KeJBAt3QHFE+u4JlRBGwp6KjzknYWz7lSs5HUySwHVOZc5j3KfWOke61z/K8tzNxiVchoQGZgBXrrsDlHEGC7ERffsEGLM8vtDW9JhI0O2BBiETS/ptljNsrlM3dcUtx/x+gffGIz2pI2iAaB+7pNKp7OGU68XdY8Pg0HNe6v9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713928017; c=relaxed/simple;
-	bh=HAm8npkjU9W9knreApov7ysuQwghSu0sfaePTT/qFdM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MYm87SehUo5Jpxw3rGYAlhy+qBn4EDy/GSPaMcYefbaYUZJB05Hq5V4QbfkSdm8RVcgMHinfNkd3MnnB49apRwi9O+tmU+gBMh1N6P1muOiEvR2gz7Wl043VTPjYeCtFmv/qslGwtCmPjdoWAZJsU9ca7Aa7d8TOrYCi4cDfWW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LYfXxw3p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AED8C116B1;
-	Wed, 24 Apr 2024 03:06:56 +0000 (UTC)
+	s=arc-20240116; t=1713928310; c=relaxed/simple;
+	bh=UyarDLJm818fh1aTpD2RkbQ0/HhxARpsVNwSkNoBwEc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b+GqRPk6GSmbRclnivtfOVyVUm+FQCkcafVs95KQD5xKTIehm3TsAdH7kR61l0oYD//UOWUzrniE5fGnrfRbRW5I/gy4wBgmsi0pj0utj983noyUOWMHL4/KKJLSTZghGugYTlk/Qatga94DyaT/XahhfeUpaN6jccznW6gVFr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uADnoj4X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A834C4AF08;
+	Wed, 24 Apr 2024 03:11:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713928016;
-	bh=HAm8npkjU9W9knreApov7ysuQwghSu0sfaePTT/qFdM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LYfXxw3p4wmKieHARFTBzsmHd7aZLi/XmBIFSyRdmgBtB9/1KsRNKMXYtkwmWDczJ
-	 WgXdVF7y7GPi8iK+q/qIdEP5v8Gsak1sml73TpWMoXjdbKrHU6RntqsOVbS9/Nzu80
-	 2VjASi+6BRpmo1iKP/fL4A7yiRhu4l2EepmtyORboMix6Udl+Yj2hEsCYqHgdlfCY8
-	 /TR/UCjZfjIp0zNyMflTpeQB1Igx7pOpdVfyPupT2aOZ/+wG/UvAXQ0ag4Asxihi9X
-	 XV7ctIpglPk+qIle93BDb59IvJi+gEJOIp8bihRNVLlTKUYUxddDWq8KwMq4A4gA4O
-	 sGlPFPkDBbXXA==
-Date: Tue, 23 Apr 2024 20:06:56 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc: chandan.babu@oracle.com, linux-xfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH] xfs: Remove unused function xrep_dir_self_parent
-Message-ID: <20240424030656.GC360919@frogsfrogsfrogs>
-References: <20240424020638.81487-1-jiapeng.chong@linux.alibaba.com>
+	s=k20201202; t=1713928310;
+	bh=UyarDLJm818fh1aTpD2RkbQ0/HhxARpsVNwSkNoBwEc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=uADnoj4XNWf+GOdHb5EFyKOs++TfjS8KFG1vqAIQZHPzvRglW84F9pN9KkGBcecK8
+	 mPRMa76d55ZCO8p/g8aXmSYg8KPrP2Xe/WOdHDKtL3CC6SJm0v4vSZVEzaIhT5Z7SV
+	 lur7NZEeu3dzI9ylNvFtjKMw63O4hCkdy2coKJgth+rydXTfTAMv6fU7YOYZBbr8c6
+	 0FPQYjuMDxs8msTdO/N5rNjgYgC5lMNMCcKYogVtVmGEow9gdUd/xwC2jEYWKZR+P/
+	 k+fe0tD0ECwC8IQYdrgPk3/t2h/hmiPtKjewL9ErhznaABAMx2uaolBWbIl9JoOtbE
+	 AW0uEju1Jnwww==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-518a3e0d2ecso9501930e87.3;
+        Tue, 23 Apr 2024 20:11:50 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVjWqgtsQBZsiFBcv7zpXaxA41fMXo6AHBHrEeQ00wzkf2E23jOfmclhRig9R9RJEdaaj+OZHMkg7g4+jRK3gbtNYRsF5Km0kjs/6/xP27oitoF9CpWD4JyidfW6ORP12v2F5k9yl1Ghw4z+gmeMkOjnmmFmzC0JiV6IGRTwL4Y/75b7YbCVMXg5w==
+X-Gm-Message-State: AOJu0YwiWQQ4NI4KaDDHcLHccYWGArTckfP3T9RetoPz0f3rnnflJSbZ
+	VOoElwOPJff5zOqrCPJWiTe7Njzt7e6kYcNEMGhMoSEwxH7OerI5Lmu9jUcjZONFGU3dcHUp14l
+	rSRktmEi4KjfKrPUiZOOEHe60Wbo=
+X-Google-Smtp-Source: AGHT+IHV7f/90zOMTYFIY3BIf0OhGjiubsdyuLJlkyqQzhzjXWf4I96WT55HKfcE9PHwaMb0sTgdojt5rUIeb84uoq4=
+X-Received: by 2002:ac2:44a6:0:b0:513:d5ec:afb with SMTP id
+ c6-20020ac244a6000000b00513d5ec0afbmr992362lfm.40.1713928308279; Tue, 23 Apr
+ 2024 20:11:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424020638.81487-1-jiapeng.chong@linux.alibaba.com>
+References: <20240423074257.2480274-1-chenhuacai@loongson.cn> <1f15f7e3-32ff-486f-8e6f-bbe9183b05e5@web.de>
+In-Reply-To: <1f15f7e3-32ff-486f-8e6f-bbe9183b05e5@web.de>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Wed, 24 Apr 2024 11:11:36 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H5V9_Q-YH-GPevgeqH-2Vd3cyOcVzMiD-F1_gZsYpj5-w@mail.gmail.com>
+Message-ID: <CAAhV-H5V9_Q-YH-GPevgeqH-2Vd3cyOcVzMiD-F1_gZsYpj5-w@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Fix access error when read fault on a
+ write-only VMA
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: Huacai Chen <chenhuacai@loongson.cn>, Jiantao Shan <shanjiantao@loongson.cn>, 
+	loongarch@lists.linux.dev, loongson-kernel@lists.loongnix.cn, 
+	linux-arch@vger.kernel.org, kernel-janitors@vger.kernel.org, 
+	Arnd Bergmann <arnd@arndb.de>, LKML <linux-kernel@vger.kernel.org>, 
+	Guo Ren <guoren@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
+	Xuefeng Li <lixuefeng@loongson.cn>, Xuerui Wang <kernel@xen0n.name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 24, 2024 at 10:06:38AM +0800, Jiapeng Chong wrote:
-> The function are defined in the dir_repair.c file, but not called
-> elsewhere, so delete the unused function.
-> 
-> fs/xfs/scrub/dir_repair.c:186:1: warning: unused function 'xrep_dir_self_parent'.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8867
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Hi, Markus,
 
-Yep, not used anywhere in my patchsets.  Thank you for catching this and
-cleaning it up.
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+On Tue, Apr 23, 2024 at 5:45=E2=80=AFPM Markus Elfring <Markus.Elfring@web.=
+de> wrote:
+>
+> > As with most architectures, allow handling of read faults in VMAs that
+> > have VM_WRITE but without VM_READ (WRITE implies READ).
+> =E2=80=A6
+>
+> Will the tag =E2=80=9CFixes=E2=80=9D become relevant here?
+Yes, you are right, thank you.
 
---D
-
-> ---
->  fs/xfs/scrub/dir_repair.c | 21 ---------------------
->  1 file changed, 21 deletions(-)
-> 
-> diff --git a/fs/xfs/scrub/dir_repair.c b/fs/xfs/scrub/dir_repair.c
-> index 38957da26b94..f8450c7f99f4 100644
-> --- a/fs/xfs/scrub/dir_repair.c
-> +++ b/fs/xfs/scrub/dir_repair.c
-> @@ -176,27 +176,6 @@ xrep_setup_directory(
->  	return 0;
->  }
->  
-> -/*
-> - * If we're the root of a directory tree, we are our own parent.  If we're an
-> - * unlinked directory, the parent /won't/ have a link to us.  Set the parent
-> - * directory to the root for both cases.  Returns NULLFSINO if we don't know
-> - * what to do.
-> - */
-> -static inline xfs_ino_t
-> -xrep_dir_self_parent(
-> -	struct xrep_dir		*rd)
-> -{
-> -	struct xfs_scrub	*sc = rd->sc;
-> -
-> -	if (sc->ip->i_ino == sc->mp->m_sb.sb_rootino)
-> -		return sc->mp->m_sb.sb_rootino;
-> -
-> -	if (VFS_I(sc->ip)->i_nlink == 0)
-> -		return sc->mp->m_sb.sb_rootino;
-> -
-> -	return NULLFSINO;
-> -}
-> -
->  /*
->   * Look up the dotdot entry and confirm that it's really the parent.
->   * Returns NULLFSINO if we don't know what to do.
-> -- 
-> 2.20.1.7.g153144c
-> 
-> 
+Huacai
+>
+> Regards,
+> Markus
 
