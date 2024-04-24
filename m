@@ -1,212 +1,146 @@
-Return-Path: <linux-kernel+bounces-156208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E74A8AFF7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:22:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 337DE8AFF88
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:23:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8106C1C21C51
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:22:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5194DB22847
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:23:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8E3E140363;
-	Wed, 24 Apr 2024 03:22:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8773A1339BA;
+	Wed, 24 Apr 2024 03:23:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="iEOTLR6Q"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ewLyDrez"
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2CB086254;
-	Wed, 24 Apr 2024 03:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9C13947E
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 03:23:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713928931; cv=none; b=VY5NXC+9WrtnAFGv/KoxNfKK+f9VwpzmPlr3/4ktmHKIQk022O6BSY61WPfir6XQLd/U4dr2YdheE1l+sr8dQ/m3STU4kyuYQMkAZvF9rtWjE+cF6QmhOnAEsZckHmV82+mQQFsHimwun/YrWoNqqnxC0ndb42AtIIZ8g0F23CM=
+	t=1713929026; cv=none; b=O/ZDJaLEFvKtE9qmuRTHQNQquSKyHtLg5CXN7tATwNdWXjXksHDtxPJB+xjEWrvr23Ya5FGvzZwBDzXsGgyw8faP98xwLskhBkijdIAcB+I40yHg687WH19/CmNevMXSnH6kqsKyNlHsB235U/tFpwypYmTbF1d4eJ3bEIP5pzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713928931; c=relaxed/simple;
-	bh=9R7FIcQFKBEQQx5QXYjeUT1GVFuSq72auzeXMoCNvHU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=mYUxXXIGeCajkRB1B3fEHEiEHYXVY560rJ2Dkxh0WmtW79qbGBTx3pXpAmvgjED9bEFl2oI1bNoEPzvGv4vjHNaFpwCQCyvlYGrygaNV2QyDRLsHQLjHoRAf/Xo/YbNQDA9kyMH8GL9smoEbGZSNbVurJ4DNRSWmffTe7DalccM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=iEOTLR6Q; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O2tinR012807;
-	Wed, 24 Apr 2024 03:22:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references; s=
-	qcppdkim1; bh=brzh2YeNdUZBh+5oiJjhUjNiEloHl8YjISKgrD0j3MI=; b=iE
-	OTLR6Q9DGXmG+5pgn++NZx9fqUgPdNX1QpKbGhPQA157EoUg2yFGrUk+39GZ6x23
-	p/FZq4M0QA5nBDpBBd0IybTzCvBw3yUKjQHN2HXritpYMc696RyA3HErbhnDfCvP
-	wDYe2WAURhxxrnhZEto0106WDHzwDxhoh47USQy3WlpPK2DEjDY1ON5zFdVjRCdv
-	BVYLvmtPbUV4mkn5qCAd/oihCH4ClLejXd4LSXGxp/DyYPEl38uCDUSkQ4z1Kv/2
-	ECC/rASQ0UWInEn7pUhRadzT1Is7fvtoUm2t1SVGmxTYTQHNbCJvJTidPmLVMZoB
-	V4WRqQaja7xks6wUi9DA==
-Received: from aptaippmta02.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xppn5gbjx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 03:22:03 +0000 (GMT)
-Received: from pps.filterd (APTAIPPMTA02.qualcomm.com [127.0.0.1])
-	by APTAIPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 43O3M17U017025;
-	Wed, 24 Apr 2024 03:22:01 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APTAIPPMTA02.qualcomm.com (PPS) with ESMTP id 3xm6skgtj3-1;
-	Wed, 24 Apr 2024 03:22:01 +0000
-Received: from APTAIPPMTA02.qualcomm.com (APTAIPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43O3M07U017001;
-	Wed, 24 Apr 2024 03:22:01 GMT
-Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
-	by APTAIPPMTA02.qualcomm.com (PPS) with ESMTP id 43O3M10E017012;
-	Wed, 24 Apr 2024 03:22:01 +0000
-Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 4098150)
-	id C4D485B1C; Wed, 24 Apr 2024 11:22:00 +0800 (CST)
-From: Qiang Yu <quic_qianyu@quicinc.com>
-To: mani@kernel.org, quic_jhugo@quicinc.com
-Cc: mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
-        quic_mrana@quicinc.com, Qiang Yu <quic_qianyu@quicinc.com>
-Subject: [PATCH v5 3/3] bus: mhi: host: pci_generic: Add edl callback to enter EDL
-Date: Wed, 24 Apr 2024 11:21:55 +0800
-Message-Id: <1713928915-18229-4-git-send-email-quic_qianyu@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1713928915-18229-1-git-send-email-quic_qianyu@quicinc.com>
-References: <1713928915-18229-1-git-send-email-quic_qianyu@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 6307CEO8vJo6-1KKTXF_LYsnHkAwqg15
-X-Proofpoint-ORIG-GUID: 6307CEO8vJo6-1KKTXF_LYsnHkAwqg15
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-23_20,2024-04-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 lowpriorityscore=0
- malwarescore=0 phishscore=0 clxscore=1015 bulkscore=0 priorityscore=1501
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404240014
+	s=arc-20240116; t=1713929026; c=relaxed/simple;
+	bh=nSSuh1T9ImcHRaH8apSL1rAEpx5DhaOz29wKwH5gzrA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JldbSpYJEguz33Kv6zyt79viiJYNcpYBBF+14Jex31/e4llNXQYxIBI3gqWoHcu+MLlHqji8A8Zc7RKg+8W5msFws0nPITh+BvRi8jXTazVjUtON2Fx1JrE/bPDkEdpBh1ZgJouv13wFMIv+oV3uAE4m+oxmelPhldrudOzOdaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ewLyDrez; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713929020; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=32ZNU58IYfy83wAR8NxM0IwKi6rLOoazzzTunUN4tFw=;
+	b=ewLyDrez+edy8bY0c4+9scNLmH0X07LaUqrSiD7aKP8sH1QvPSnATQ7vVPZhlxq1vomKMHCTgP1rNDUhLDSml1BxE5nTCoH4caxk2VVMzlA7XWE1IGDBu6Zfwd9Zk33SMq22njYJIe5Z+B3gQJn5+jUN/bkn1aRPBSzVns03nw0=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033068173054;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W5AogkY_1713929017;
+Received: from 30.97.56.58(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W5AogkY_1713929017)
+          by smtp.aliyun-inc.com;
+          Wed, 24 Apr 2024 11:23:38 +0800
+Message-ID: <c48ae381-f073-4b20-84ae-bd5e9e56ce29@linux.alibaba.com>
+Date: Wed, 24 Apr 2024 11:23:36 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/5] mm: memory: extend finish_fault() to support
+ large folio
+To: Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org,
+ hughd@google.com
+Cc: willy@infradead.org, david@redhat.com, wangkefeng.wang@huawei.com,
+ 21cnbao@gmail.com, ying.huang@intel.com, shy828301@gmail.com,
+ ziy@nvidia.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
+ <358aefb1858b63164894d7d8504f3dae0b495366.1713755580.git.baolin.wang@linux.alibaba.com>
+ <6aa25e2a-a6b6-4ab7-8300-053ca3c0d748@arm.com>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <6aa25e2a-a6b6-4ab7-8300-053ca3c0d748@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Some of the MHI modems like SDX65 based ones are capable of entering the EDL
-mode as per the standard triggering mechanism defined in the MHI spec v1.2. So
-let's add a common mhi_pci_generic_edl_trigger() function that triggers the EDL
-mode in the device when user writes to the /sys/bus/mhi/devices/.../trigger_edl
-file.
 
-Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
----
- drivers/bus/mhi/host/pci_generic.c | 45 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
 
-diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
-index 51639bf..c65eaa8 100644
---- a/drivers/bus/mhi/host/pci_generic.c
-+++ b/drivers/bus/mhi/host/pci_generic.c
-@@ -27,12 +27,16 @@
- #define PCI_VENDOR_ID_THALES	0x1269
- #define PCI_VENDOR_ID_QUECTEL	0x1eac
- 
-+#define MHI_EDL_DB			91
-+#define MHI_EDL_COOKIE			0xEDEDEDED
-+
- /**
-  * struct mhi_pci_dev_info - MHI PCI device specific information
-  * @config: MHI controller configuration
-  * @name: name of the PCI module
-  * @fw: firmware path (if any)
-  * @edl: emergency download mode firmware path (if any)
-+ * @edl_trigger: capable of triggering EDL mode in the device (if supported)
-  * @bar_num: PCI base address register to use for MHI MMIO register space
-  * @dma_data_width: DMA transfer word size (32 or 64 bits)
-  * @mru_default: default MRU size for MBIM network packets
-@@ -44,6 +48,7 @@ struct mhi_pci_dev_info {
- 	const char *name;
- 	const char *fw;
- 	const char *edl;
-+	bool edl_trigger;
- 	unsigned int bar_num;
- 	unsigned int dma_data_width;
- 	unsigned int mru_default;
-@@ -292,6 +297,7 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx75_info = {
- 	.name = "qcom-sdx75m",
- 	.fw = "qcom/sdx75m/xbl.elf",
- 	.edl = "qcom/sdx75m/edl.mbn",
-+	.edl_trigger = true,
- 	.config = &modem_qcom_v2_mhiv_config,
- 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
- 	.dma_data_width = 32,
-@@ -302,6 +308,7 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
- 	.name = "qcom-sdx65m",
- 	.fw = "qcom/sdx65m/xbl.elf",
- 	.edl = "qcom/sdx65m/edl.mbn",
-+	.edl_trigger = true,
- 	.config = &modem_qcom_v1_mhiv_config,
- 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
- 	.dma_data_width = 32,
-@@ -312,6 +319,7 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx55_info = {
- 	.name = "qcom-sdx55m",
- 	.fw = "qcom/sdx55m/sbl1.mbn",
- 	.edl = "qcom/sdx55m/edl.mbn",
-+	.edl_trigger = true,
- 	.config = &modem_qcom_v1_mhiv_config,
- 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
- 	.dma_data_width = 32,
-@@ -928,6 +936,40 @@ static void health_check(struct timer_list *t)
- 	mod_timer(&mhi_pdev->health_check_timer, jiffies + HEALTH_CHECK_PERIOD);
- }
- 
-+static int mhi_pci_generic_edl_trigger(struct mhi_controller *mhi_cntrl)
-+{
-+	void __iomem *base = mhi_cntrl->regs;
-+	void __iomem *edl_db;
-+	int ret = 0;
-+	u32 val;
-+
-+	ret = mhi_device_get_sync(mhi_cntrl->mhi_dev);
-+	if (ret) {
-+		dev_err(mhi_cntrl->cntrl_dev, "Failed to wakeup the device\n");
-+		return ret;
-+	}
-+
-+	pm_wakeup_event(&mhi_cntrl->mhi_dev->dev, 0);
-+	mhi_cntrl->runtime_get(mhi_cntrl);
-+
-+	ret = mhi_get_channel_doorbell_offset(mhi_cntrl, &val);
-+	if (ret)
-+		goto err_get_chdb;
-+
-+	edl_db = base + val + (8 * MHI_EDL_DB);
-+
-+	mhi_cntrl->write_reg(mhi_cntrl, edl_db + 4, upper_32_bits(MHI_EDL_COOKIE));
-+	mhi_cntrl->write_reg(mhi_cntrl, edl_db, lower_32_bits(MHI_EDL_COOKIE));
-+
-+	mhi_soc_reset(mhi_cntrl);
-+
-+err_get_chdb:
-+	mhi_cntrl->runtime_put(mhi_cntrl);
-+	mhi_device_put(mhi_cntrl->mhi_dev);
-+
-+	return ret;
-+}
-+
- static int mhi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- {
- 	const struct mhi_pci_dev_info *info = (struct mhi_pci_dev_info *) id->driver_data;
-@@ -962,6 +1004,9 @@ static int mhi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	mhi_cntrl->runtime_put = mhi_pci_runtime_put;
- 	mhi_cntrl->mru = info->mru_default;
- 
-+	if (info->edl_trigger)
-+		mhi_cntrl->edl_trigger = mhi_pci_generic_edl_trigger;
-+
- 	if (info->sideband_wake) {
- 		mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
- 		mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
--- 
-2.7.4
+On 2024/4/23 19:03, Ryan Roberts wrote:
+> On 22/04/2024 08:02, Baolin Wang wrote:
+>> Add large folio mapping establishment support for finish_fault() as a preparation,
+>> to support multi-size THP allocation of anonymous shared pages in the following
+>> patches.
+>>
+>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>> ---
+>>   mm/memory.c | 25 ++++++++++++++++++-------
+>>   1 file changed, 18 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index b6fa5146b260..094a76730776 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -4766,7 +4766,10 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+>>   {
+>>   	struct vm_area_struct *vma = vmf->vma;
+>>   	struct page *page;
+>> +	struct folio *folio;
+>>   	vm_fault_t ret;
+>> +	int nr_pages, i;
+>> +	unsigned long addr;
+>>   
+>>   	/* Did we COW the page? */
+>>   	if ((vmf->flags & FAULT_FLAG_WRITE) && !(vma->vm_flags & VM_SHARED))
+>> @@ -4797,22 +4800,30 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+>>   			return VM_FAULT_OOM;
+>>   	}
+>>   
+>> +	folio = page_folio(page);
+>> +	nr_pages = folio_nr_pages(folio);
+>> +	addr = ALIGN_DOWN(vmf->address, nr_pages * PAGE_SIZE);
+> 
+> I'm not sure this is safe. IIUC, finish_fault() is called for any file-backed
+> mapping. So you could have a situation where part of a (regular) file is mapped
+> in the process, faults and hits in the pagecache. But the folio returned by the
+> pagecache is bigger than the portion that the process has mapped. So you now end
+> up mapping beyond the VMA limits? In the pagecache case, you also can't assume
+> that the folio is naturally aligned in virtual address space.
 
+Good point. Yes, I think you are right, I need consider the VMA limits, 
+and I should refer to the calculations of the start pte and end pte in 
+do_fault_around().
+
+>>   	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd,
+>> -				      vmf->address, &vmf->ptl);
+>> +				       addr, &vmf->ptl);
+>>   	if (!vmf->pte)
+>>   		return VM_FAULT_NOPAGE;
+>>   
+>>   	/* Re-check under ptl */
+>> -	if (likely(!vmf_pte_changed(vmf))) {
+>> -		struct folio *folio = page_folio(page);
+>> -
+>> -		set_pte_range(vmf, folio, page, 1, vmf->address);
+>> -		ret = 0;
+>> -	} else {
+>> +	if (nr_pages == 1 && vmf_pte_changed(vmf)) {
+>>   		update_mmu_tlb(vma, vmf->address, vmf->pte);
+>>   		ret = VM_FAULT_NOPAGE;
+>> +		goto unlock;
+>> +	} else if (nr_pages > 1 && !pte_range_none(vmf->pte, nr_pages)) {
+> 
+> I think you have grabbed this from do_anonymous_page()? But I'm not sure it
+> works in the same way here as it does there. For the anon case, if userfaultfd
+> is armed, alloc_anon_folio() will only ever allocate order-0. So we end up in
+
+IMO, the userfaultfd validation should do in the vma->vm_ops->fault() 
+callback, to make sure the nr_pages is always 1 if userfaultfd is armed.
+
+> the vmf_pte_changed() path, which will allow overwriting a uffd entry. But here,
+> there is nothing stopping nr_pages being greater than 1 when there could be a
+> uffd entry present, and you will fail due to the pte_range_none() check. (see
+> pte_marker_handle_uffd_wp()).
+
+So if we do the userfaultfd validation in ->fault() callback, then here 
+we can use the same logic as with anonymous case.
 
