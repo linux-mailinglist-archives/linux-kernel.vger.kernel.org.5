@@ -1,165 +1,198 @@
-Return-Path: <linux-kernel+bounces-156992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 013F48B0B53
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:42:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51AA68B0B5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:43:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FAAFB25895
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:42:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 752041C203F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:43:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E91E15D5AF;
-	Wed, 24 Apr 2024 13:40:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5B2615D5AD;
+	Wed, 24 Apr 2024 13:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=penguintechs.org header.i=@penguintechs.org header.b="NNnxgOV+"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="PIYwUILg";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="xf4MurGk";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="PIYwUILg";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="xf4MurGk"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD7A015AABA
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:40:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61CD5158DDD;
+	Wed, 24 Apr 2024 13:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713966028; cv=none; b=jisbLr/PCq7tXzI1VqxHmiYolbINUHH0H9SVsmttMaxpStCd0ab9GDFFRHeq/50vd3iSM4Rl1cKU+IzDWR3w3K+S2Xl4VcOAbMKZAtTUl3b6b7WsUIC3+/H7ds+Mb2MiS9tx6K9H3l0SdT848DFidylshxQZWE5WELFxIZM8nfo=
+	t=1713966148; cv=none; b=FHCzjS9GKjK+Cd/eVvOl1oyLOGF1gWCBJVSzg86CZ/QaLmN5dQIotMZT96urTN1UIn9h+faueHoSPmKEuY9p9TOHf3R2+xlSVzShceY//8qKbRKNp9RaydvccOPOvQA3dBSsZ9dezpnhyRE/zHCO/ddif+pJ6KlEI0eGluuprYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713966028; c=relaxed/simple;
-	bh=I2A//Dk/vBjLl7T5iGDpWDK7BZkYUxkQfGgZDceQaWQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OaT33LedRj6JYB29jrXman4aF6yhySfvV0oNPvXx4ZJSKn9tESBYgLNr87QFNqRvYUtaKgARzHG3uIM9hj+pqFwfW5+PHy3OQGFgqA5uLjRaMyP7vX0qV2xcU64uHCK8am73JfCl4RBx29zrv7jjfjh8OyrZKvDHZzxP3K0JI0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=penguintechs.org; spf=pass smtp.mailfrom=penguintechs.org; dkim=pass (1024-bit key) header.d=penguintechs.org header.i=@penguintechs.org header.b=NNnxgOV+; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=penguintechs.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=penguintechs.org
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ee12766586so801168b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:40:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=penguintechs.org; s=google; t=1713966026; x=1714570826; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TJTr0pS0+pBhQrdYz+DCxZJiknMJew6US2gBKZp5jg0=;
-        b=NNnxgOV+b+upddHwUfn7evO7ClnwTgs3JZ3Q5wzDKWkUV7xA1PMZWwcljvAxsHws3k
-         I/upEc1C/4ZmH6y3WuE+V5X0kymi4MX9torosH5D9uQ9kDH5BiC8L/3Axz5bHigmam4C
-         GBAYf2Ux3ME8SqRik4Tv9wEpwDxhyCLV+qIzI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713966026; x=1714570826;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TJTr0pS0+pBhQrdYz+DCxZJiknMJew6US2gBKZp5jg0=;
-        b=vk10QprsNb+5yGRJVT6icm+VFV22EC6w4W1Cc7QOnHQeryOMwFsZGz2gs3Fm9C4QkE
-         X0w5T+0pRJ24WP9xgd3ziBXCY0qBizVSnpCpUrNyrLN2oJ+bTXjbuH8D6BMM2zsdcLSC
-         5R2yjKlmFg5HqwqEftCWe6IiLf0veUyI+GgMEkdpdFpXCLD59snXtSoMF1UxBBDpZZH0
-         6pbvCf5OFCeRmpbmCOSTcamfxEOL4OEqtR2HVfyttR1lXBtDFSp+zJ7RqiBNFQhsg3tF
-         lQ1hEoh9iw6KAjZ4Y/v7kn+N1Y2H5yQnH08375O2dM0hrDNvg2o41wl7SAF4ZtknpUhT
-         XANA==
-X-Forwarded-Encrypted: i=1; AJvYcCVBAlwTlgcu6NuPWLgN/NtCuiXwTF8vjPAhX3YnqZ/Wt01/aolxp0ZVlUCMAz9QN89LAe/y8/rCWISiA6e1FOxyOG/g6ljQz9OZB7Yk
-X-Gm-Message-State: AOJu0YwE2R8gl6nS4mIZd643Ugw2kP6ZTuLnML+EC0xzPZ8l6QzCf4P6
-	MCfeZUxJ+7oxY0sUIT+CJnqb1qIaXTTcnePqNIaEJ46hBekgKA7E4s2OzIKMCA==
-X-Google-Smtp-Source: AGHT+IFIfpJMclSpyaqVixt8fNkXf3bVerhtpzCCQCYHw9tn9Ap8cn8nMs6xRuG89HGr3IACEMEtcw==
-X-Received: by 2002:a05:6a00:4f86:b0:6ed:41f4:1886 with SMTP id ld6-20020a056a004f8600b006ed41f41886mr3516900pfb.8.1713966025910;
-        Wed, 24 Apr 2024 06:40:25 -0700 (PDT)
-Received: from ?IPV6:2601:646:8700:dd30:5f3e:5ba7:e0ea:9a08? ([2601:646:8700:dd30:5f3e:5ba7:e0ea:9a08])
-        by smtp.gmail.com with ESMTPSA id m2-20020a638c02000000b005e857e39b10sm11258888pgd.56.2024.04.24.06.40.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 06:40:25 -0700 (PDT)
-Message-ID: <854acf89-43a4-42f8-b8ea-8f0c108f3aec@penguintechs.org>
-Date: Wed, 24 Apr 2024 06:40:24 -0700
+	s=arc-20240116; t=1713966148; c=relaxed/simple;
+	bh=bNx8k2bgyvRuen8Wg8IeG/ZTMn7ghMosAG2nurMOmkw=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=I1B8TZt+0vw4rIKU1PAmF72FPmVMXqqVfLshHHymE8fYU1TO8ku29g/LggIxut2NrIxXCUCyGTnwOYnI8H5X2D4HEYMAvP4/zdKzUVcwtYdzu0z53pfegmqqVwMgzuq1WyEZMp8nho2DSWFXEyBXi/0ngdExrfULPPoj6uyknRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=PIYwUILg; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=xf4MurGk; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=PIYwUILg; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=xf4MurGk; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4E1FC66E58;
+	Wed, 24 Apr 2024 13:42:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713966144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hg2qv+cKjg7lV92iv/LpJqsoqWYIPU+fAiMDC1vNkJ8=;
+	b=PIYwUILgn5mj7wcUSy00BMiX9xKR6H24XQQq4ebj+dW+Vl8ajUxzIPATCfc/09/PBKcVCF
+	fsWPHHocdGReX2JP8VQnAoML1grkNnCnXsRbDcLtZ5WwWZEp9Din5dB4fWpdHyvE4iBGYM
+	j0zL8YxdYIxkDGenRxU3LH7IWwJdzH8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713966144;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hg2qv+cKjg7lV92iv/LpJqsoqWYIPU+fAiMDC1vNkJ8=;
+	b=xf4MurGk5Ir4zd5WHE56JnEVwf7EDfCuhghqAkp+ILXhLX91wj+fASNqGMEjEfsSseSOTc
+	ZPPRzJf1pglOouDQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=PIYwUILg;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=xf4MurGk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713966144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hg2qv+cKjg7lV92iv/LpJqsoqWYIPU+fAiMDC1vNkJ8=;
+	b=PIYwUILgn5mj7wcUSy00BMiX9xKR6H24XQQq4ebj+dW+Vl8ajUxzIPATCfc/09/PBKcVCF
+	fsWPHHocdGReX2JP8VQnAoML1grkNnCnXsRbDcLtZ5WwWZEp9Din5dB4fWpdHyvE4iBGYM
+	j0zL8YxdYIxkDGenRxU3LH7IWwJdzH8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713966144;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hg2qv+cKjg7lV92iv/LpJqsoqWYIPU+fAiMDC1vNkJ8=;
+	b=xf4MurGk5Ir4zd5WHE56JnEVwf7EDfCuhghqAkp+ILXhLX91wj+fASNqGMEjEfsSseSOTc
+	ZPPRzJf1pglOouDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3803313690;
+	Wed, 24 Apr 2024 13:42:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id mMiDDEAMKWb7BgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Wed, 24 Apr 2024 13:42:24 +0000
+Date: Wed, 24 Apr 2024 15:42:34 +0200
+Message-ID: <87jzkmdghh.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc: Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+	linux-sound@vger.kernel.org
+Subject: Re: regression/bisected/6.9 commit 587d67fd929ad89801bcc429675bda90d53f6592 decrease 30% of gaming performance
+In-Reply-To: <87pluedgx5.wl-tiwai@suse.de>
+References: <CABXGCsNmEtrN9DK-XmESaPm_1xpXm8A+juE+44Jf6AK5JE0+TQ@mail.gmail.com>
+	<874jcl7e83.wl-tiwai@suse.de>
+	<CABXGCsMmRFW3EYJ3UvNd-LO7ZTOyoNqjc_3OAmaCDSL=LuxJqg@mail.gmail.com>
+	<87v851e2di.wl-tiwai@suse.de>
+	<CABXGCsNMBRUaY-V8mhUQKdq+CQW5+eGUWL_YCJWXo0cgh9bGJQ@mail.gmail.com>
+	<87h6glt9zc.wl-tiwai@suse.de>
+	<CABXGCsMcazRvmiN4XtiHQCE9=dB=M=VsRqB=v+RPmtuhBL29DA@mail.gmail.com>
+	<a6f4e20ea2a68f56a7d2c4d76280bca44d6bf421.camel@gmail.com>
+	<CABXGCsPdqfXeZUw1ocx8O3NdOEb+h4yQ77+zdNpcwP_4JrYXuQ@mail.gmail.com>
+	<CABXGCsMTbmU4CP8CHUqRVXWkGiErFtEVG4COy6RSRWsAuK_-CQ@mail.gmail.com>
+	<87pluedgx5.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Bluetooth: qca: set power_ctrl_enabled on NULL
- returned by gpiod_get_optional()
-Content-Language: en-US
-To: quic_zijuhu <quic_zijuhu@quicinc.com>,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Marcel Holtmann
- <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240424122932.79120-1-brgl@bgdev.pl>
- <ba9b0e6e-3601-4460-ab5c-a02eb7708a4f@penguintechs.org>
- <CACMJSesZqCG=fdWe5C31a0iOFJ-ZpPRr70T_1TNLn7xqChZ4Sg@mail.gmail.com>
- <0e6bc9af-71f2-46b5-8b92-5da674b44ad7@quicinc.com>
- <a45016e9-1668-40eb-83a1-7a62162e319a@penguintechs.org>
- <97ecc6fc-6b0e-4028-ac06-1952f133bd2a@quicinc.com>
-From: Wren Turkal <wt@penguintechs.org>
-In-Reply-To: <97ecc6fc-6b0e-4028-ac06-1952f133bd2a@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email,mega.nz:url,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,perf-with-revert-587d67fd929a-beb45974dd49.data:url,perf-with-revert-587d67fd929a.data:url]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 4E1FC66E58
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -3.51
 
-On 4/24/24 6:36 AM, quic_zijuhu wrote:
-> On 4/24/2024 9:31 PM, Wren Turkal wrote:
->> On 4/24/24 6:22 AM, quic_zijuhu wrote:
->>> On 4/24/2024 9:18 PM, Bartosz Golaszewski wrote:
->>>> On Wed, 24 Apr 2024 at 15:10, Wren Turkal <wt@penguintechs.org> wrote:
->>>>>
->>>>> On 4/24/24 5:29 AM, Bartosz Golaszewski wrote:
->>>>>> From: Bartosz Golaszewski<bartosz.golaszewski@linaro.org>
->>>>>>
->>>>>> Any return value from gpiod_get_optional() other than a pointer to a
->>>>>> GPIO descriptor or a NULL-pointer is an error and the driver should
->>>>>> abort probing. That being said: commit 56d074d26c58 ("Bluetooth:
->>>>>> hci_qca:
->>>>>> don't use IS_ERR_OR_NULL() with gpiod_get_optional()") no longer sets
->>>>>> power_ctrl_enabled on NULL-pointer returned by
->>>>>> devm_gpiod_get_optional(). Restore this behavior but bail-out on
->>>>>> errors.
->>>>>> While at it: also bail-out on error returned when trying to get the
->>>>>> "swctrl" GPIO.
->>>>>>
->>>>>> Reported-by: Wren Turkal<wt@penguintechs.org>
->>>>>> Reported-by: Zijun Hu<quic_zijuhu@quicinc.com>
->>>>>> Closes:https://lore.kernel.org/linux-bluetooth/1713449192-25926-2-git-send-email-quic_zijuhu@quicinc.com/
->>>>>> Fixes: 56d074d26c58 ("Bluetooth: hci_qca: don't use
->>>>>> IS_ERR_OR_NULL() with gpiod_get_optional()")
->>>>>> Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@linaro.org>
->>>>>> Signed-off-by: Bartosz Golaszewski<bartosz.golaszewski@linaro.org>
->>>>>
->>>>> Tested-by: "Wren Turkal" <wt@penguintechs.org>
->>>>>
->>>>>
->>>>> Like this?
->>>>
->>>> Yes, awesome, thanks.
->>>>
->>>> This is how reviewing works too in the kernel, look at what Krzysztof
->>>> did under v1, he just wrote:
->>>>
->>>> Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@linaro.org>
->>>>
->>> v1 have obvious something wrong as i pointed and verified.
->>> so i think it is not suitable to attach v1's review-by tag to v2 anyway.
->>
->> @Zijun, your concern is that current DTs may not define the gpio and
->> this will cause the bluetooth not to work?
->>
->> Would that not more appropriately be fixed by machine-specific fixups
->> for the DT?
->>
-> for lunched production, it is difficult or not possible to change such
-> config.
-
-I am not talking about the DT in the device. I am talking about the 
-mechanism the kernel has for applying fixups to DTs.
-
-If a dev builds a new kernel for a dev and finds it not to work, the 
-kernel would then have a fixup added, like described here: 
-https://docs.kernel.org/devicetree/usage-model.html#platform-identification
-
+On Wed, 24 Apr 2024 15:33:10 +0200,
+Takashi Iwai wrote:
 > 
->>>
->>>> And mailing list tools will pick it up.
->>>>
->>>> Bartosz
->>>
->>
+> On Wed, 24 Apr 2024 15:21:26 +0200,
+> Mikhail Gavrilov wrote:
+> > 
+> > On Thu, Apr 18, 2024 at 11:22 AM Mikhail Gavrilov
+> > <mikhail.v.gavrilov@gmail.com> wrote:
+> > >
+> > > On Tue, Apr 2, 2024 at 12:29 AM <mikhail.v.gavrilov@gmail.com> wrote:
+> > > >
+> > > > On Mon, 2024-04-01 at 21:50 +0500, Mikhail Gavrilov wrote:
+> > > > > On Mon, Apr 1, 2024 at 7:48 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > >
+> > > > > >
+> > > > > > Then it shouldn't be dmix/dsnoop.  You'd better try profiling
+> > > > > > what's
+> > > > > > going on there.  e.g. try to get perf results with and without the
+> > > > > > commit.
+> > > > >
+> > > > >
+> > > > > Here is original perf files:
+> > > > > [1] perf-with-revert-587d67fd929a.data -
+> > > > > https://mega.nz/file/EpZmXbgL#vEnxuODoB__jM6TwV6XbwC_TWMMqvT7qaWkJU22JY48
+> > > > > [2] perf-with-revert-587d67fd929a-beb45974dd49.data -
+> > > > > https://mega.nz/file/0lI31CDA#hKsv6vX7t5u-Sx1_p2E7-Y32-z5VFPlW2Y793oM-JRU
+> > > > >
+> > >
+> > > Excuse me. Can you have time to look in my perf files?
+> > >
+> > 
+> > This is a friendly reminder
 > 
+> Honestly speaking, it's your role to analyze what's going on.
+> Such a performance issue is pretty much dependent on the installed
+> system, so giving a perf data to me won't help much, unfortunately.
 
--- 
-You're more amazing than you think!
+That said, maybe the first thing you can try would be to check who is
+actually calling the corresponding function
+(snd_timer_close_locked()).  Put a debug print or a tracing hook to
+watch out for figuring out.  If the commit was really relevant, it
+must be called very frequently and concurrently, and I don't know
+really who does it except for dmix/dsnoop.
+
+
+Takashi
 
