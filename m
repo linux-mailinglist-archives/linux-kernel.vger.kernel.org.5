@@ -1,118 +1,115 @@
-Return-Path: <linux-kernel+bounces-156952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DCE48B0ACE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:25:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C1CD8B0AD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:29:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DAAA1F231B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:25:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C22301F2315F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:29:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F76415CD4A;
-	Wed, 24 Apr 2024 13:24:53 +0000 (UTC)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9711515B99E;
+	Wed, 24 Apr 2024 13:29:40 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8641C15B57E;
-	Wed, 24 Apr 2024 13:24:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F3AB15A4B0
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:29:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713965093; cv=none; b=Gt3d9qHyi48L6wSLmp5ZJg8yXFwE1/RTet3dLTMU60HUXcDW9DqY46220b0afe8pgxVptquRNWvqJ2rCho+9K1mFvye5oYM55qxTeaWWJPxIfEPNHKBuTeFGMNbloEVCSrg4bN+6qclfa/FYETAaX3tJMfsfWPe4+XKOLaLD0U4=
+	t=1713965380; cv=none; b=XHY9nPbBb1ntQgq/8H9cytgwuoAhZOgiG9xd3cdkG/WsYqqh/ge3saqH/eVzvCI9jc9AC4UntZweeBm4TNyCX/jVBDflvT9CydWDcBn6L2WSvxVIq1322ypEU7opRSe/ck6Q3Ajt7b9kXweNKcv3ke7V0ra6kud/V2xiB34tH4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713965093; c=relaxed/simple;
-	bh=8nSpm7d+EszE3CIUChwqBFG5Zc2nEDoIt/NW+sy6Ky8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ETX0Ih8q3DYuutbiWmAyU9ZoAJSxEMirVfolF4dH7SG98krUEUoO8g26NkwpAKumE9YphT9f+mOX64bUUBdQXeVZTkWnCvYsyZP4TL+JY236EKyTti0UjXm+i8utTi2ppQbZJ0d1ccZHsCpTNI3w/2ToWERwyKVQmaFvLaYAT1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-617cd7bd929so71735667b3.3;
-        Wed, 24 Apr 2024 06:24:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713965090; x=1714569890;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=51puU55Boep6afXIofcFUmMmV+ZDqAsVB5VCzE6Soos=;
-        b=gVh2Q19QZxkE3Rv46f+eGxshgQByeYmfk9we4yh1aDVf/tnKwPgjbP1WQQtEz5yDcW
-         7/y3eV29GN3JsEsR1vZBV0KuuNbsicj0aSl6B7+FMsgm7WZPFdLq97HecCF6jaOtr8DD
-         tPBgMf1SGr0ILoJUh2sZcUAdVjareuVvWoOFCaC8Hceu0Ayew9covjixGzmy3fqPmhxT
-         cGrUrz2tqbjHrAYEZwRXrpFwYilDoe+Gz6xwCVgK5qyBaZjLYWFuUzLHB1oB+AamOtXw
-         ioqJhhKoiU/QcXggoLIHK6rZU5XO1Qfhq32NhGwxTYqIyXNXWTErumPk/aep3pNux4ew
-         tZng==
-X-Forwarded-Encrypted: i=1; AJvYcCVn6qBQyknDR8KmZFWub72L/8zxRb4qjXVCBdFbLwTrOWyy3vyBD6UomTM3769pm515RpemBFDEiLlhwg9VeEw73rhuu/YQoiU51Bb3ZPPvps4V7rOM4vV7rRx45BVzbuoplK3ktQ4ByAhJp4qBLt3fRqc5Wq8nj7BvCfNkViDsV1ij0vaSkKKB1Qtb
-X-Gm-Message-State: AOJu0Yz/clEqJM/Pgetd9evGl/F/SqSH7e7WKMQ9fqiwo8TNNpmlOezM
-	YrWwZO0JhMiMp+JU++dGafOPxJ/P0hXnxY5SyvCBfCt2Pay5xxhM+Haj/zG9
-X-Google-Smtp-Source: AGHT+IGg+QUbIiGMOqaoITdcCaCCEQE4L980zRDOVEEGiMJIAAQ8PPAUcXL/EDLKZJ3hoIK87LDBMQ==
-X-Received: by 2002:a05:690c:f12:b0:61b:3304:ce04 with SMTP id dc18-20020a05690c0f1200b0061b3304ce04mr3137328ywb.34.1713965090336;
-        Wed, 24 Apr 2024 06:24:50 -0700 (PDT)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id x135-20020a0dd58d000000b006186a9d32b0sm3010003ywd.43.2024.04.24.06.24.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 06:24:50 -0700 (PDT)
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-de4665b4969so7032902276.2;
-        Wed, 24 Apr 2024 06:24:50 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUqDxsUjzBl5NDYfu2VvC2j4DizMU8s/S69QkJI0Az0jwYvLtQg0uoC/Byi7OQUOd6xQP+8cNkIhP6TYItxKv87rhI7EBCE8OicaeDxJi+sDtqtdD5LXX6Ufuq6dGVfoz0yJMcdh/dfdRcMjjXB9xld1ADT9sLwoyI2AXGFBD2rRMxiGOIRStPCaEBj
-X-Received: by 2002:a25:295:0:b0:de5:4bb4:25b9 with SMTP id
- 143-20020a250295000000b00de54bb425b9mr2790709ybc.12.1713965089779; Wed, 24
- Apr 2024 06:24:49 -0700 (PDT)
+	s=arc-20240116; t=1713965380; c=relaxed/simple;
+	bh=YeGnNM3NBl2Yub3N76MBgc5Ql6v7CSjam7WnrDHtTxQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cJfZ36qGtmULqDSWufCYUutm2/LVkgVhvDC2vZbLO23LI68Xe6IaEXyC2aXEfNTh0rFln+e7lVJZvPiMY1NaxK0NkBLvWmBjFkDdJjTpsW1c4Bn1MKqJY4diWclaxZOTMbW9AjZqHB3+tZpxvXD4+ltKGSSp1qVKgF0wTXpaVjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VPfs552B5zvPvj;
+	Wed, 24 Apr 2024 21:26:33 +0800 (CST)
+Received: from kwepemf500005.china.huawei.com (unknown [7.202.181.243])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6E58918006B;
+	Wed, 24 Apr 2024 21:29:35 +0800 (CST)
+Received: from huawei.com (10.67.174.161) by kwepemf500005.china.huawei.com
+ (7.202.181.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 24 Apr
+ 2024 21:29:34 +0800
+From: Cheng Yu <serein.chengyu@huawei.com>
+To: <mingo@redhat.com>, <peterz@infradead.org>, <juri.lelli@redhat.com>,
+	<vincent.guittot@linaro.org>, <dietmar.eggemann@arm.com>,
+	<rostedt@goodmis.org>, <bsegall@google.com>, <mgorman@suse.de>,
+	<bristot@redhat.com>, <vschneid@redhat.com>,
+	<changhuaixin@linux.alibaba.com>, <shanpeic@linux.alibaba.com>,
+	<dtcccc@linux.alibaba.com>, <tj@kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <zhangqiao22@huawei.com>, <judy.chenhui@huawei.com>,
+	<yusongping@huawei.com>, <serein.chengyu@huawei.com>
+Subject: [PATCH] sched/core: fix incorrect parameter burst in cpu_max_write()
+Date: Wed, 24 Apr 2024 21:24:38 +0800
+Message-ID: <20240424132438.514720-1-serein.chengyu@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240417114132.6605-1-paul.barker.ct@bp.renesas.com> <CAMuHMdWq2y0ELZpj38TZLequjB_=5_1VQe-1XCBjTLmW86xjog@mail.gmail.com>
-In-Reply-To: <CAMuHMdWq2y0ELZpj38TZLequjB_=5_1VQe-1XCBjTLmW86xjog@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 24 Apr 2024 15:24:38 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXRwCZeuR9mBcHX4APo43u9F=BhsW9g6vJqk_9UNVhuLA@mail.gmail.com>
-Message-ID: <CAMuHMdXRwCZeuR9mBcHX4APo43u9F=BhsW9g6vJqk_9UNVhuLA@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: renesas: rzg2l: Limit 2.5V power supply to
- Ethernet interfaces
-To: Paul Barker <paul.barker.ct@bp.renesas.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, linux-renesas-soc@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemf500005.china.huawei.com (7.202.181.243)
 
-On Wed, Apr 24, 2024 at 3:24=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
-> On Wed, Apr 17, 2024 at 1:41=E2=80=AFPM Paul Barker
-> <paul.barker.ct@bp.renesas.com> wrote:
-> > The RZ/G3S SoC supports configurable supply voltages for several of its
-> > I/O interfaces. All of these interfaces support both 1.8V and 3.3V
-> > supplies, but only the Ethernet and XSPI interfaces support a 2.5V
-> > supply.
-> >
-> > Voltage selection for the XSPI interface is not yet supported, so this
-> > leaves only the Ethernet interfaces currently supporting selection of a
-> > 2.5V supply. So we need to return an error if there is an attempt to
-> > select a 2.5V supply for any non-Ethernet interface.
-> >
-> > Fixes: 51996952b8b5 ("pinctrl: renesas: rzg2l: Add support to select po=
-wer source for Ethernet pins")
-> > Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
->
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> i.e. will queue in renesas-clk for v6.10.
+In the cgroup v2 cpu subsystem, assuming we have a
+cgroup named test, we set cpu.max and cpu.max.burst:
+    # echo 1000000 > /sys/fs/cgroup/test/cpu.max
+    # echo 1000000 > /sys/fs/cgroup/test/cpu.max.burst
+then we check cpu.max and cpu.max.burst:
+    # cat /sys/fs/cgroup/test/cpu.max
+    1000000 100000
+    # cat /sys/fs/cgroup/test/cpu.max.burst
+    1000000
 
-renesas-pinctrl, of course ;-)
+Next we set cpu.max again and check cpu.max and
+cpu.max.burst:
+    # echo 2000000 > /sys/fs/cgroup/test/cpu.max
+    # cat /sys/fs/cgroup/test/cpu.max
+    2000000 100000
+    # cat /sys/fs/cgroup/test/cpu.max.burst
+    1000
+we found that the cpu.max.burst value changed unexpectedly.
 
-Gr{oetje,eeting}s,
+In cpu_max_write(), the unit of the burst value returned
+by tg_get_cfs_burst() is microseconds, while in cpu_max_write(),
+the burst unit used for calculation should be nanoseconds,
+which leads to the bug.
 
-                        Geert
+To fix it, we get the burst value directly from
+tg->cfs_bandwidth.burst.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+Reported-by: Qixin Liao <liaoqixin@huawei.com>
+Fixes: f4183717b370 ("sched/fair: Introduce the burstable CFS controller")
+Signed-off-by: Cheng Yu <serein.chengyu@huawei.com>
+Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
+---
+ kernel/sched/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 7019a40457a6..d211d40a2edc 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -11402,7 +11402,7 @@ static ssize_t cpu_max_write(struct kernfs_open_file *of,
+ {
+ 	struct task_group *tg = css_tg(of_css(of));
+ 	u64 period = tg_get_cfs_period(tg);
+-	u64 burst = tg_get_cfs_burst(tg);
++	u64 burst = tg->cfs_bandwidth.burst;
+ 	u64 quota;
+ 	int ret;
+ 
+-- 
+2.25.1
+
 
