@@ -1,69 +1,73 @@
-Return-Path: <linux-kernel+bounces-157315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAF0F8B0FB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:26:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E48228B0FBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:27:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46A5A1F25FF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:26:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6567C1F2657B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38425165FA8;
-	Wed, 24 Apr 2024 16:26:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F0AE165FB3;
+	Wed, 24 Apr 2024 16:27:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="TMV7agaN"
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cXjElKKt"
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9FCA16190B
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52D86161911;
+	Wed, 24 Apr 2024 16:26:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713976004; cv=none; b=CEdUUSSvBCoxeQx72CiUXKj05HBBrve8wLlmPnShPiQXfWrZftyvh1IZV8vLInMzYQcyhDuqYXUsImFDgTYqs9pPl9Jsg7uMit1XV53cKvjwLFVMf4XiYlqzlgiClHI7/y9yKQAscmha9tvZ4eU0Jjk/0lc57LZfrM3Pxk+oSLE=
+	t=1713976020; cv=none; b=tcVE/p7cWCrfZo9U92owu69PVBvOpzjqhMQOD6+hYqP6FPLzMO3KizVZsmlVRxQiRhV2XNLNjGJNuEvLA7BG5H2s7UTtdXVzCqF4jyWCuXsIbnubQeGEz0tpV4+VHvGMROOp9EzOyQ3avDplnG0Fu8NDiUJu3FWAmUZkH/5MS3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713976004; c=relaxed/simple;
-	bh=xozH9oOvOdexvEgedSYrQwo8HKXL1/ITXJMznJtXSzA=;
+	s=arc-20240116; t=1713976020; c=relaxed/simple;
+	bh=MrekQsd6OaTvzphSNX4kb5YxwQEH0aINbyb83pngJpI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jOBbXL5V5VHftfGyF60J/m5ldMNKo0qsvACVmLZxT1FcFAFFpWA3mGl3256wq8N1Fy0hjSxlVadA9kMip9D3O2Wolzu71UKD++C0leWqbR5CBWGSG0IX3BZmTzusGVCA05jOo5jqTjOHugoVEyUgr+NPyS4SkQoxpgf4vvPCHEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=TMV7agaN; arc=none smtp.client-ip=209.85.222.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-78edc3ad5fdso11180085a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:26:42 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=KYWBqx6zyRapqTMvd+3sEO1nWHjirX+/RrrqZwXqEor0Uck5bMLJXMvmqfu67XL7V/6S22z2RS/3QINyeQZpT8/uQHbn+B/4wzwQxzjNjNUp/VsiXaM9E2mQQM86YvVw6gyDCUz1Mz8i1CbcXIzU990E86H5KS7M44bef80sV80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cXjElKKt; arc=none smtp.client-ip=209.85.222.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-790605809cbso393818185a.3;
+        Wed, 24 Apr 2024 09:26:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1713976002; x=1714580802; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OBiTLx87B4seWy4XBkeDMtLFDwXG03SqLl9+/M+TF74=;
-        b=TMV7agaN08VWaM+/0VNxyMYieTifVBygk2/sZDI1OgwmAP3np89bwJGdafUM7iz/am
-         zL/iz+RMP+mdGwzRMcknyZ9YFlA6L96dIJ3p6gO7NVDczvuL4AOz2Thd7hKBdwQw0103
-         R5d+r98DQrHGoK55Xw/cxnUMKWvlGbl1Bok9s=
+        d=gmail.com; s=20230601; t=1713976018; x=1714580818; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=re1VA/XQsH0motUnZZSRX7lW+nnZ1gYeiybIgvu9m1o=;
+        b=cXjElKKt61psJ/ALh931FrU0WSmdP0NeZpBJz4Koog2AUdo2c1wYZWt1d4aMtmtmkA
+         qmKUzJGSW3R4sBuZ6zo6q0CZcbzezHu7wj2wLzmbRATuvxWXE/6fwU2JeSIJyo4jJH92
+         kgXVhTJKqIBv9pBJCFfh1eAbfVU0S3wmksAjo/HPOZ/WFmq/GK/lp+kFBF+YPZpA083Z
+         Y8/BDmV5nbB4cv1nztZZmzAlJL0JXJy2GhJjDnzukeRTaZ0TWjT7vH/o/6E20OysGNeL
+         iG7wAMmSAsp2lfMq9Iz5RZhHpLPuDkdmF3nsw6zI9K3CkEb5SysP5qh5ixBzzK6PBG2Z
+         mm4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713976002; x=1714580802;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OBiTLx87B4seWy4XBkeDMtLFDwXG03SqLl9+/M+TF74=;
-        b=jkdD8Up1rau2G2QRlYT5tJ3AuV9x1ZtUNeGPXoHRRaECqT1vaUUo/AY4/sfw16fsli
-         f2azlLWwNlpGP8qm+jqCPSd6vuX9iCRCTGQz1o0zMDmR5O2r/6JpgQrTUEQR4Eu58YLV
-         SgVfzqSPUe4gG8JYccUCgdo79qZIzVtKPyUuuwjPEhp0b91sa27pANOo4KWtI664gEdE
-         qYzywFZLQh6nYZX3xlSDK2ztaaKSUpkBdr6BJwMISxtBgTl1m2mquVVtQhykN1Ib4xZu
-         RgXU13ooTI+nGPW4zAn9h4IROu59qIfFdHdzJ5bIGy+XC81gSCwo7xV5+RMKc1ei1Xyx
-         BTGg==
-X-Gm-Message-State: AOJu0YxVqO+jeD/O5+FCC2PCK6nYtSzXOcXw9AUwNaojhHITKdNIRblD
-	ce1wBLBsVUHCQj2EkENYg3axwqriyJCArLQhNbiffTiq7GPdyampbaePnnXwMg==
-X-Google-Smtp-Source: AGHT+IF905+8eoeSVhIusqNdOxOfR7pFr/pAGtp8mau3xMpkn8HaflI/+5yZzTS2DQYvrcFnx5UHQw==
-X-Received: by 2002:a05:620a:a58:b0:790:6b18:f5bd with SMTP id j24-20020a05620a0a5800b007906b18f5bdmr286895qka.3.1713976001730;
-        Wed, 24 Apr 2024 09:26:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713976018; x=1714580818;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=re1VA/XQsH0motUnZZSRX7lW+nnZ1gYeiybIgvu9m1o=;
+        b=pHKbEpKnF2I0DfnS81XI4GDStMTMKCy23HZ5CFxwhovCyHIWi3t2l6zEXHqGr3WmRS
+         r3SG8VoGl56tGaElx3LZzv9NASeDwXTvrCg0MXzsRJp9BbyQuBsysvi0uxKPHVi+eoFT
+         pDcfWrsWgpFMLJ4zWdn336xXtWF7K8911EgR8IDBtguI3qkIwD3SabGMCeN1QDiJp+zk
+         ffSf90euepo/3bvFwTL3iU0DNC9nS1P5a1X1eYS6sxxILRV03ryXJ7WB0N2qoUF73vBZ
+         8WYAqpqdF5Sa+cmQ+HLh8MIIh2UvH5qkAm/ZxaZsKI8euiHTXfi9zSx/EPIGRyxrzbtT
+         Ih3A==
+X-Forwarded-Encrypted: i=1; AJvYcCUCysQfum2N3lvP4T3X0jTn/fR3F1BvcPuWT060jbfx1pNrSmP69jxYP2sJOHwjFFGi7UlV1DmEMou6S+D1cx4nUhZ1Shnp9oGL2xkqTu6lcPQ7ddeReJJzGeocMd4bdx56CAZf
+X-Gm-Message-State: AOJu0YygWkMDdPPDsUKXb5us+/jseCDVFf1yUk9+8rpoZXJv6QbsXZvZ
+	69AtopV+aGf0uc74HJyYE2ZQsLc3fLf3Nz3k3QcGXclKVxFTDb3D
+X-Google-Smtp-Source: AGHT+IFM6NLmoPFoH6FJDBLabYzNV7CTdH+SzP4ipMiUJV0Fnx0XZAUUqt01+8Hm5ti+FGIm3K2t2A==
+X-Received: by 2002:ae9:f714:0:b0:790:9792:ccf9 with SMTP id s20-20020ae9f714000000b007909792ccf9mr97187qkg.26.1713976018075;
+        Wed, 24 Apr 2024 09:26:58 -0700 (PDT)
 Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id m6-20020ae9e006000000b0078efdcd9aa6sm6234018qkk.127.2024.04.24.09.26.39
+        by smtp.googlemail.com with ESMTPSA id y16-20020a37e310000000b0078d5fdc929fsm6230425qki.104.2024.04.24.09.26.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 09:26:40 -0700 (PDT)
-Message-ID: <dd469761-2a18-42f8-a98c-eb4ecbe9c85b@broadcom.com>
-Date: Wed, 24 Apr 2024 09:26:38 -0700
+        Wed, 24 Apr 2024 09:26:57 -0700 (PDT)
+Message-ID: <0886a749-c834-4f52-a25d-fc700dc26334@gmail.com>
+Date: Wed, 24 Apr 2024 09:26:54 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,190 +75,45 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] Define i2c_designware in a header file
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
- Jarkko Nikula <jarkko.nikula@linux.intel.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
- Lee Jones <lee@kernel.org>, Jiawen Wu <jiawenwu@trustnetic.com>,
- Mengyuan Lou <mengyuanlou@net-swift.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Andrew Lunn <andrew@lunn.ch>, Duanqiang Wen <duanqiangwen@net-swift.com>,
- "open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>,
- "open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
-References: <20240423233622.1494708-1-florian.fainelli@broadcom.com>
- <ZihKtSble151A5mT@surfacebook.localdomain>
- <e55c35c2-1bff-4b12-aa3b-713c6085d303@broadcom.com>
- <ZikWps1DIVPNJeOp@smile.fi.intel.com>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
- M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
- JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
- PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
- KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
- AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
- IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
- ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
- bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
- Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
- tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
- TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
- zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
- WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
- IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
- U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
- 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
- pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
- MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
- IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
- gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
- obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
- N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
- CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
- C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
- wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
- EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
- fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
- MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
- 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
- 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <ZikWps1DIVPNJeOp@smile.fi.intel.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000c19bc40616da22b0"
-
---000000000000c19bc40616da22b0
+Subject: Re: [PATCH 6.1 000/141] 6.1.88-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+References: <20240423213853.356988651@linuxfoundation.org>
 Content-Language: en-US
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240423213853.356988651@linuxfoundation.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 4/24/24 07:26, Andy Shevchenko wrote:
-> On Tue, Apr 23, 2024 at 06:21:21PM -0700, Florian Fainelli wrote:
->> On 4/23/2024 4:56 PM, Andy Shevchenko wrote:
->>> Tue, Apr 23, 2024 at 04:36:18PM -0700, Florian Fainelli kirjoitti:
->>>> This patch series depends upon the following two patches being applied:
->>>>
->>>> https://lore.kernel.org/all/20240422084109.3201-1-duanqiangwen@net-swift.com/
->>>> https://lore.kernel.org/all/20240422084109.3201-2-duanqiangwen@net-swift.com/
->>>>
->>>> There is no reason why each driver should have to repeat the
->>>> "i2c_designware" string all over the place, because when that happens we
->>>> see the reverts like the above being necessary.
->>>
->>> Isn't that a part of ABI between drivers, i.e. whenever ones want to
->>> request_module() or so they need to know what they are doing, no?
->>
->> Yes, the drivers should know, but as evidenced by the two patches above,
->> there was still room for error. If we have to abide by a certain contract,
->> which is platform_driver::driver::name, then we might as well have a header
->> defining it no?
+On 4/23/24 14:37, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.88 release.
+> There are 141 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Maybe, I simply don't like the manipulations with parts of the device instance
-> names / driver IDs / driver name, which all become mixed after this series.
+> Responses should be made by Thu, 25 Apr 2024 21:38:28 +0000.
+> Anything received after that time might be too late.
 > 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.88-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-That is fair enough, although there is definitively an expectation that 
-the clock name will match the dev_name() of the i2c bus, which is why it 
-changing or shortening the names as attempted by Duanqiang ended up not 
-working.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-This call in i2c-designware-platdrv.c is:
-
-dev->clk = devm_clk_get_optional(&pdev->dev, NULL);
-
-and because the name is NULL, we end-up searching for a clock named 
-dev_name(), and if we have a mismatch, then we won't find it.
-
-So the i2c_designware name is really something we must be sticking with, 
-or change *globally* for a) device(s) binding to the driver and b) a 
-successful clock search.
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
 Florian
 
-
---000000000000c19bc40616da22b0
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBUGupq8WueQNrj4
-kBMtABb0ERjusC1YZ0AqtHh6qam0MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDQyNDE2MjY0MlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCeOl/MwC6XzDpCk88VVFBbNwWo4oANEpej
-w2riAMtoUhBMb7jkESEUogxqKvm0rsfo4JHtkfawJM+qMxtVUaHPLoYxzRTQzd11tVLNgItqGOsM
-BBUNJ6KPIdb9/FFugIOcx9FmosKPGYzyqtiePy36YRT1g7Urv6+4Pr+6ZlLkFP9PH7hVpNwqsTKm
-pRBV1amPz1/8O4W+vp5BeKgwwAof3tzunhlwc1NDjYlZxk36iwoFRXA41BM5KCp4/PNENvw7XIuc
-SemJlZgrCqVXAQo8KCtqSdN+XpRGGwYkv+B07I0m8N8/r0oQKYotxPY3YqieZMdYhrxHoug2+OTO
-ozz+
---000000000000c19bc40616da22b0--
 
