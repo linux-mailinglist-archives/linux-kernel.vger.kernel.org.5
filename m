@@ -1,114 +1,142 @@
-Return-Path: <linux-kernel+bounces-156531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B936C8B0401
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:16:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 705348B0419
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:19:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9A611C23213
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:16:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 764DDB22553
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:18:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E48D0158874;
-	Wed, 24 Apr 2024 08:16:23 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41746158873;
+	Wed, 24 Apr 2024 08:18:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kQG+qraR"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ADD3158855
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:16:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E5729CA;
+	Wed, 24 Apr 2024 08:18:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713946583; cv=none; b=n3Pr6Re6gRlNp+R3p4ag5sNMOSzrPHwNQtxkews/pAG2/pFu7Kg8vwOIjDozKoGWYklnEm0qgvjfDTBYOh1qGQK5BAljJcqaO7eYVX+2wyGSEwJyVrXgO/Qh1xTrom8Bh/Da0Zk8Zv+6omLZa8Ee4D2ArtRvcE4CLVFFFVInnqE=
+	t=1713946727; cv=none; b=SODtBluztJhoSotqfmiP2Ko4HawuhQk+bjXCydmsaU55SjgtfgZXyf+hjBfL/nQn3Th9TnN8IWoqe6PHjRRRyi38lOKlcDan8tkHKqQZby3zPudRX0kuueNaJzKUpWoagCbzJTav5/vI5MjOB57g/foaY5BdMfnR7PxhwtuChlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713946583; c=relaxed/simple;
-	bh=BRLvrIp/v4JKF9Aq6tuCRvLZntMqwmCwEM/Qriqe90I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c48wWq4TYw2plDRB1UINyFhcx/laVO70Ri4N7KNChJWSHWJF+ywiL7Q8t4EUZ5S9XXj878PeCXFXtjuwl26SntLRPH0ScpQeQPknbsRN5KbFz0PP9KNIKuop8cDSQW9JKCA0hM9dmAvOi8M8hERS3Fr5hwVIEQRkMYFIMWYlZbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rzXnM-0008LH-2q; Wed, 24 Apr 2024 10:16:00 +0200
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rzXnK-00E2qO-7E; Wed, 24 Apr 2024 10:15:58 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id C50B72BEC0D;
-	Wed, 24 Apr 2024 08:15:57 +0000 (UTC)
-Date: Wed, 24 Apr 2024 10:15:57 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Gregor Herburger <gregor.herburger@ew.tq-group.com>
-Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
-	Thomas Kopp <thomas.kopp@microchip.com>, Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux@ew.tq-group.com, alexander.stein@ew.tq-group.com
-Subject: Re: [PATCH 3/4] can: mcp251xfd: add gpio functionality
-Message-ID: <20240424-taupe-lizard-of-perception-3bb2d9-mkl@pengutronix.de>
-References: <20240417-mcp251xfd-gpio-feature-v1-0-bc0c61fd0c80@ew.tq-group.com>
- <20240417-mcp251xfd-gpio-feature-v1-3-bc0c61fd0c80@ew.tq-group.com>
+	s=arc-20240116; t=1713946727; c=relaxed/simple;
+	bh=t/uLVgdRFsjN+GoDeqcqHTFvHC0C4nfbCxY7QDnPoHo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XWa5KJq201KjXloPPQ1ku0uuZ5KogHYgdrz+IbYrxYzqFYEeKNxFJ8Yn4EojYxf930Da7BOywB+5l75e8tZQ092ms64EVXJbc+4WFxcBmW3dUPLIeKqGNKUcvpte/6L4UjwbUjhbb8kzS2Dhulj45BE/jN0Q7ZcBSPhoGLMe3UA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kQG+qraR; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713946726; x=1745482726;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=t/uLVgdRFsjN+GoDeqcqHTFvHC0C4nfbCxY7QDnPoHo=;
+  b=kQG+qraR46vy6oIp2dhUu6JRHyRMtOWbMeQhdUfsNhNzNxsecoV/pzCg
+   +VbZfkfJI8Rglg6BAj3NaXI8ncYI1Zf7iVACjyF0wyqG5o8HqfFujbSW+
+   U4TY4nSjUyt25qlAWXR61+/vHk4jedLGPdiQUJ2TA0Ce6PDDcEpB4EX1J
+   VeI13FpRvJpbPAz8r+B8EcIbmEYGkSeVSOVmtZ9YLDSbrS3b23PnmK3H3
+   kz9QYxSploAOr/oR1K4RfkojrfnlH7XJiuSLui9urw/COpqLueWgvkUs4
+   HpBS3nMdOT9Cs+R9KtEayGKQC1U2z/xaRf3YyVlZTt4We5d+6bFwxhQd6
+   g==;
+X-CSE-ConnectionGUID: I1JiSvOdQkq7tTWJsy6Nnw==
+X-CSE-MsgGUID: ITH1f5B3TA+UazuT1M9Qsw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="20974024"
+X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
+   d="scan'208";a="20974024"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 01:18:45 -0700
+X-CSE-ConnectionGUID: 021vjcLYQpSIAYljBGoWeg==
+X-CSE-MsgGUID: p/iCYArfSLKoLGTy7FBMLQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
+   d="scan'208";a="25240028"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.124.245.127]) ([10.124.245.127])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 01:18:40 -0700
+Message-ID: <f843298c-db08-4fde-9887-13de18d960ac@linux.intel.com>
+Date: Wed, 24 Apr 2024 16:18:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vpxobo6ttuwribyt"
-Content-Disposition: inline
-In-Reply-To: <20240417-mcp251xfd-gpio-feature-v1-3-bc0c61fd0c80@ew.tq-group.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+To: Mingwei Zhang <mizhang@google.com>, maobibo <maobibo@loongson.cn>
+Cc: Sean Christopherson <seanjc@google.com>,
+ Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
+ peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
+ jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com
+References: <18b19dd4-6d76-4ed8-b784-32436ab93d06@linux.intel.com>
+ <4c47b975-ad30-4be9-a0a9-f0989d1fa395@linux.intel.com>
+ <CAL715WJXWQgfzgh8KqL+pAzeqL+dkF6imfRM37nQ6PkZd09mhQ@mail.gmail.com>
+ <737f0c66-2237-4ed3-8999-19fe9cca9ecc@linux.intel.com>
+ <CAL715W+RKCLsByfM3-0uKBWdbYgyk_hou9oC+mC9H61yR_9tyw@mail.gmail.com>
+ <Zh1mKoHJcj22rKy8@google.com>
+ <CAL715WJf6RdM3DQt995y4skw8LzTMk36Q2hDE34n3tVkkdtMMw@mail.gmail.com>
+ <Zh2uFkfH8BA23lm0@google.com>
+ <4d60384a-11e0-2f2b-a568-517b40c91b25@loongson.cn>
+ <ZiaX3H3YfrVh50cs@google.com>
+ <d8f3497b-9f63-e30e-0c63-253908d40ac2@loongson.cn>
+ <d980dd10-e4c4-4774-b107-77b320cec9f9@linux.intel.com>
+ <b5e97aa1-7683-4eff-e1e3-58ac98a8d719@loongson.cn>
+ <1ec7a21c-71d0-4f3e-9fa3-3de8ca0f7315@linux.intel.com>
+ <5279eabc-ca46-ee1b-b80d-9a511ba90a36@loongson.cn>
+ <CAL715WJK893gQd1m9CCAjz5OkxsRc5C4ZR7yJWJXbaGvCeZxQA@mail.gmail.com>
+ <b3868bf5-4e16-3435-c807-f484821fccc6@loongson.cn>
+ <CAL715W++maAt2Ujfvmu1pZKS4R5EmAPebTU_h9AB8aFbdLFrTQ@mail.gmail.com>
+Content-Language: en-US
+From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <CAL715W++maAt2Ujfvmu1pZKS4R5EmAPebTU_h9AB8aFbdLFrTQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
---vpxobo6ttuwribyt
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 4/24/2024 1:02 AM, Mingwei Zhang wrote:
+>>> Maybe, (just maybe), it is possible to do PMU context switch at vcpu
+>>> boundary normally, but doing it at VM Enter/Exit boundary when host is
+>>> profiling KVM kernel module. So, dynamically adjusting PMU context
+>>> switch location could be an option.
+>> If there are two VMs with pmu enabled both, however host PMU is not
+>> enabled. PMU context switch should be done in vcpu thread sched-out path.
+>>
+>> If host pmu is used also, we can choose whether PMU switch should be
+>> done in vm exit path or vcpu thread sched-out path.
+>>
+> host PMU is always enabled, ie., Linux currently does not support KVM
+> PMU running standalone. I guess what you mean is there are no active
+> perf_events on the host side. Allowing a PMU context switch drifting
+> from vm-enter/exit boundary to vcpu loop boundary by checking host
+> side events might be a good option. We can keep the discussion, but I
+> won't propose that in v2.
 
-On 17.04.2024 15:43:56, Gregor Herburger wrote:
-> The mcp251xfd devices allow two pins to be configured as gpio. Add this
-> functionality to driver.
+I suspect if it's really doable to do this deferring. This still makes 
+host lose the most of capability to profile KVM. Per my understanding, 
+most of KVM overhead happens in the vcpu loop, exactly speaking in 
+VM-exit handling. We have no idea when host want to create perf event to 
+profile KVM, it could be at any time.
 
-Can you please move the introduction of regmap cache into a separate
-patch.
 
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---vpxobo6ttuwribyt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmYov7oACgkQKDiiPnot
-vG89DQf/TJX3tOwUNv0w4BAXHJYcVPOIVgnLB9H1JHzxooXpHruuv/4zVzMpFkrD
-9/UqZ28H5zoCN2c/66vuTkPgGJYmJKUiqnGbHxWtft6YMBDwHHWl+SgBk1Rh5pei
-sTscGd91QgsWzJrzcnnZNf0lYcY5m7CajN9UhPwRrP2dKYTFb2ZQewuj3XpCcWuY
-SsWLEB2k6QFuTb0sX2HB1I425QBFod00hbZIl+/zO+KI8qoXfLQtaPEbtfuDv0Ou
-tbIkDYlYDFm6z2+dtGqDOrdrjo4K94YDHGLdCsiBlDLk72ZqHMvS4Almpi/lI3vE
-Lq8ZRiBljoskgLxLhP6hd1Pu7h/29Q==
-=bRrN
------END PGP SIGNATURE-----
-
---vpxobo6ttuwribyt--
+>
+> I guess we are off topic. Sean's suggestion is that we should put
+> "perf" and "kvm" together while doing the context switch. I think this
+> is quite reasonable regardless of the PMU context switch location.
+>
+> To execute this, I am thinking about adding a parameter or return
+> value to perf_guest_enter() so that once it returns back to KVM, KVM
+> gets to know which counters are active/inactive/cleared from the host
+> side. Knowing that, KVM can do the context switch more efficiently.
+>
+> Thanks.
+> -Mingwei
+>
 
