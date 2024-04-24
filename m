@@ -1,179 +1,143 @@
-Return-Path: <linux-kernel+bounces-157815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 785E28B169F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:57:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A03E8B16A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:57:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FE9328395F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:57:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6510EB263C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:57:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77E516EC15;
-	Wed, 24 Apr 2024 22:57:13 +0000 (UTC)
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E10116EC11;
+	Wed, 24 Apr 2024 22:57:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="isdLGzb9"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29181E86F;
-	Wed, 24 Apr 2024 22:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA1516EBEF;
+	Wed, 24 Apr 2024 22:57:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713999433; cv=none; b=eupzBi7QvzE+jXXPcg0cmkWMfr3uagnhzENi6dEG5A6IEy1vfBd14YW83pGUlGSfnnVpr/u29V4WWmhc7IftO2ch4wvAsGKrTMFlU6ZnjI03lReJzaWxxKtnAWVaBxumjVZzl3X1+u2MDPv7aLanUeEyLrWknyHCH78a2lnDeTw=
+	t=1713999460; cv=none; b=MaV6nu9fGketJhxhyHWpuCf6uz+kU2wiHe2ncK7uVUkoRLdkyk7z8nGWUlybqteFfygP5J7JN13hCryjMR0fn/IRKlGhc3HK+Wr2E2fstaJHBUgdmaaL5hU1JG6Fl/+C7qP1quob1gaO1ofgV8zmzSKmOs+7/DRT92cDrnco+KU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713999433; c=relaxed/simple;
-	bh=lwbYYbsXsxGhuf73dizS9HwSfF5+RHFNMCGuUOEMxTs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nDgRka9yI7h8Wx6HkueouTISUs57bTsSc6cpGUVmKY0oM/sHhNUtr3EByeGmbTrrBOD31J9KGoc7KCIgeObEylHvNCy6tQctyL1ntXjRW1cBvJ9BBgBkILGc9xnJ/3W3gSza/iWhma2qz9oA4dDj46ENT1XWaJAaZqLQqNkJNxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.50
+	s=arc-20240116; t=1713999460; c=relaxed/simple;
+	bh=dDpQLM/A90V6FHzG8I7BWr+7YixCe0fkfYcU2fZH4m0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=r3ZcpEBMe5rNJKddaZ2vhqoAj0+Ct5/IlAD4BkX/Qvzujm+Dhb/VD1oQfEWSgfBqwOgvxXqQSA0ClIhZYlxgyML2YXr0dO8mI5r6Xy7ZxFWKrkqkyE99MMseVG5Bg+6+9tPvV0gtT+mApI9lrmRy+3qy8MstoDOgumVBG1RA6YM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=isdLGzb9; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2ab88634cfaso369769a91.0;
-        Wed, 24 Apr 2024 15:57:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713999431; x=1714604231;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uzrWXePhPUiWACNXAmGYhUpfT1p86M5As1cmuIlv4Ac=;
-        b=b/+xAZUukfW7kxchLmzBjR11XAbufj2Z7E/4GoOO8/OIFzeakoMq/Ejqyn8v2kP8IF
-         fUbyE25BLWXQLyHIgsGiWST7MsANAZduXFz6mcogCTdmjXiH/HxZ4cJSVQpJQF5Exvlc
-         kIatI2IlrCMI2qfavnf9FnglIZfWJcmDyWpvaFuhzLfKov0uEpd0poYwnrF3sV72xPKC
-         pqWTHR1rXINCgL5JyG/9zNa3DFbX/opzNOYQpldkCPlTsfJ8K+bqa/yGc1TO5ZI5FKDH
-         i/1AZpN47Tf6MbT0h10fES2VWKaknaxUABZpKesVddqVOboTrHjfTeJ0uTB/B1514ZLG
-         RFZw==
-X-Forwarded-Encrypted: i=1; AJvYcCWgve+T1/0hnymFXppxS4Yb2higu8/Ztjm8HzrrJXI17Lr+ald6r49KXKw8lnP0gg7VWmct9os0mhtFVrwarVO7UHjaqvv7CBMjvPVbl1u1XaDQxmSf+JvJj6hGK+EF9z9qjeMB/MN6kqtuclu8FLSNiXlw5Ht7ws+ceybDT4aW7lQ56Q==
-X-Gm-Message-State: AOJu0Yw3Oi0KzacMt68snhJz/M3pVSIJ/GeXsxaQvzlpGGzkmcDlMLR/
-	TC40RyOdooM8DcjeFioroc17NRjJYn7Fb1M0ndLUPy0twB23yH+X3fFuSP63s6XFu6Pg8Sv1XVj
-	C8ZLQP7FEroV1kNCLXOeedreCZj0=
-X-Google-Smtp-Source: AGHT+IFRrbis0uqy/2CD0kwIlu5gblq93SIG+YoYnvbyRD4H07Pfm1cgyimWYJUENRLrNfLYbJtYySJK9WXohedY+DM=
-X-Received: by 2002:a17:90b:316:b0:2a5:24ab:1a94 with SMTP id
- ay22-20020a17090b031600b002a524ab1a94mr3352838pjb.49.1713999431268; Wed, 24
- Apr 2024 15:57:11 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=/6C2shD4qBCTT7YeBf2iTXjP2N2Wy5ZL4SfFDScrsFE=; b=isdLGzb9DsGv6ujvVfVDJszM0h
+	f0WjjfF7KgwVjGH6VHD29bbBaF+mAnPLlwf354oFmGP9JoV7Ilw2/PtXIsaYCyTMcmSe1a2hmR6TH
+	fhq2/sJevPoJjGv0OsfkfFGuyzptrHQV0hoiiYaShWW8J1rm6HpfQNKMX3GjJia/5eLkntxSkQUw6
+	+yQ0AhoAdH1Cd8o0J3RkMYTkuuOJjwYnJ+D0G+AqxjMZW8WOWcyrBhjPWJpjfrqDODcQm1AGqPhlM
+	6oZUE2Z8/Nyb5qATc61CXrN2AIofoe9npQB0LO7OwuijIHw/DuEK+7exmo+Jz6Nmen7E+N+01Ho8E
+	P5mfpiZw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rzlYX-00000006IUP-2Zdv;
+	Wed, 24 Apr 2024 22:57:37 +0000
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: akpm@linux-foundation.org,
+	ziy@nvidia.com,
+	linux-mm@kvack.org
+Cc: fstests@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	willy@infradead.org,
+	hare@suse.de,
+	john.g.garry@oracle.com,
+	p.raghav@samsung.com,
+	da.gomez@samsung.com,
+	mcgrof@kernel.org
+Subject: [PATCH] mm/huge_memory: move writeback and truncation checks early
+Date: Wed, 24 Apr 2024 15:57:36 -0700
+Message-ID: <20240424225736.1501030-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424024805.144759-1-howardchu95@gmail.com>
- <CAM9d7chOdrPyeGk=O+7Hxzdm5ziBXLES8PLbpNJvA7_DMrrGHA@mail.gmail.com>
- <Zil1ZKc7mibs6ONQ@x1> <CAP-5=fVYHjUk8OyidXbutBvZMPxf48LW7v-N3zvHBe5QME1vVQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fVYHjUk8OyidXbutBvZMPxf48LW7v-N3zvHBe5QME1vVQ@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 24 Apr 2024 15:57:00 -0700
-Message-ID: <CAM9d7cggak7qZcX7tFZvJ69H3cwEnWvNOnBsQrkFQkQVf+bUjQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Dump off-cpu samples directly
-To: Ian Rogers <irogers@google.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Howard Chu <howardchu95@gmail.com>, peterz@infradead.org, 
-	mingo@redhat.com, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
-	jolsa@kernel.org, adrian.hunter@intel.com, kan.liang@linux.intel.com, 
-	zegao2021@gmail.com, leo.yan@linux.dev, ravi.bangoria@amd.com, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Wed, Apr 24, 2024 at 3:19=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
-te:
->
-> On Wed, Apr 24, 2024 at 2:11=E2=80=AFPM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> >
-> > On Wed, Apr 24, 2024 at 12:12:26PM -0700, Namhyung Kim wrote:
-> > > Hello,
-> > >
-> > > On Tue, Apr 23, 2024 at 7:46=E2=80=AFPM Howard Chu <howardchu95@gmail=
-com> wrote:
-> > > >
-> > > > As mentioned in: https://bugzilla.kernel.org/show_bug.cgi?id=3D2073=
-23
-> > > >
-> > > > Currently, off-cpu samples are dumped when perf record is exiting. =
-This
-> > > > results in off-cpu samples being after the regular samples. Also, s=
-amples
-> > > > are stored in large BPF maps which contain all the stack traces and
-> > > > accumulated off-cpu time, but they are eventually going to fill up =
-after
-> > > > running for an extensive period. This patch fixes those problems by=
- dumping
-> > > > samples directly into perf ring buffer, and dispatching those sampl=
-es to the
-> > > > correct format.
-> > >
-> > > Thanks for working on this.
-> > >
-> > > But the problem of dumping all sched-switch events is that it can be
-> > > too frequent on loaded machines.  Copying many events to the buffer
-> > > can result in losing other records.  As perf report doesn't care abou=
-t
-> > > timing much, I decided to aggregate the result in a BPF map and dump
-> > > them at the end of the profiling session.
-> >
-> > Should we try to adapt when there are too many context switches, i.e.
-> > the BPF program can notice that the interval from the last context
-> > switch is too small and then avoid adding samples, while if the interva=
-l
-> > is a long one then indeed this is a problem where the workload is
-> > waiting for a long time for something and we want to know what is that,
-> > and in that case capturing callchains is both desirable and not costly,
-> > no?
+We should check as early as possible if we should bail due to writeback
+or truncation. This will allow us to add further sanity checks earlier
+as well.
 
-Sounds interesting.  Yeah we could make it adaptive based on the
-off-cpu time at the moment.
+This introduces no functional changes.
 
-> >
-> > The tool could then at the end produce one of two outputs: the most
-> > common reasons for being off cpu, or some sort of counter stating that
-> > there are way too many context switches?
-> >
-> > And perhaps we should think about what is best to have as a default, no=
-t
-> > to present just plain old cycles, but point out that the workload is
-> > most of the time waiting for IO, etc, i.e. the default should give
-> > interesting clues instead of expecting that the tool user knows all the
-> > possible knobs and try them in all sorts of combinations to then reach
-> > some conclusion.
-> >
-> > The default should use stuff that isn't that costly, thus not getting i=
-n
-> > the way of what is being observed, but at the same time look for common
-> > patterns, etc.
-> >
-> > - Arnaldo
->
-> I really appreciate Howard doing this work!
->
-> I wonder there are other cases where we want to synthesize events in
-> BPF, for example, we may have fast and slow memory on a system, we
-> could turn memory events on a system into either fast or slow ones in
-> BPF based on the memory accessed, so that fast/slow memory systems can
-> be simulated without access to hardware. This also feels like a perf
-> script type problem. Perhaps we can add something to the bpf-output
-> event so it can have multiple uses and not just off-cpu.
->
-> To turn the bpf-output samples into off-cpu events there is a pass
-> added to the saving. I wonder if that can be more generic, like a save
-> time perf inject.
->
-> I worry about dropping short samples we can create a property that
-> off-cpu time + on-cpu time !=3D wall clock time. Perhaps such short
-> things can get pushed into Namhyung's "at the end" approach while
-> longer things get samples. Perhaps we only do that when the frequency
-> is too great.
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ mm/huge_memory.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-Sounds good.  We might add an option to specify the threshold to
-determine whether to dump the data or to save it for later.  But ideally
-it should be able to find a good default.
+While working on min order support for LBS this came up as an improvement
+as we can check for the min order early earlier, so this sets the stage
+up for that.
 
->
-> It would be nice to start landing this work so I'm wondering what the
-> minimal way to do that is. It seems putting behavior behind a flag is
-> a first step.
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 86a8c7b3b8dc..32c701821e0d 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -3055,8 +3055,17 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+ 	if (new_order >= folio_order(folio))
+ 		return -EINVAL;
+ 
+-	/* Cannot split anonymous THP to order-1 */
+-	if (new_order == 1 && folio_test_anon(folio)) {
++	if (folio_test_writeback(folio))
++		return -EBUSY;
++
++	if (!folio_test_anon(folio)) {
++		/* Truncated ? */
++		if (!folio->mapping) {
++			ret = -EBUSY;
++			goto out;
++		}
++	} else if (new_order == 1) {
++		/* Cannot split anonymous THP to order-1 */
+ 		VM_WARN_ONCE(1, "Cannot split to order-1 folio");
+ 		return -EINVAL;
+ 	}
+@@ -3079,16 +3088,12 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+ 		}
+ 	}
+ 
+-
+ 	is_hzp = is_huge_zero_page(&folio->page);
+ 	if (is_hzp) {
+ 		pr_warn_ratelimited("Called split_huge_page for huge zero page\n");
+ 		return -EBUSY;
+ 	}
+ 
+-	if (folio_test_writeback(folio))
+-		return -EBUSY;
+-
+ 	if (folio_test_anon(folio)) {
+ 		/*
+ 		 * The caller does not necessarily hold an mmap_lock that would
+@@ -3111,12 +3116,6 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+ 
+ 		mapping = folio->mapping;
+ 
+-		/* Truncated ? */
+-		if (!mapping) {
+-			ret = -EBUSY;
+-			goto out;
+-		}
+-
+ 		/*
+ 		 * Do not split if mapping has minimum folio order
+ 		 * requirement.
+-- 
+2.43.0
 
-Agreed!
-
-Thanks,
-Namhyung
 
