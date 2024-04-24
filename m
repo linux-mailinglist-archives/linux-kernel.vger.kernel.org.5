@@ -1,116 +1,138 @@
-Return-Path: <linux-kernel+bounces-156344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42BCD8B0191
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:10:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B54138B0190
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:10:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F298C284638
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:10:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0B881C21B28
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71FE7156F2C;
-	Wed, 24 Apr 2024 06:10:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B2BF156C61;
+	Wed, 24 Apr 2024 06:10:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="tbA1ITQ7"
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VVrgq/H5"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D01D156C73
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7433A15687B;
+	Wed, 24 Apr 2024 06:10:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713939020; cv=none; b=Cf2fEoudKeMpF+Ww2ruj1YKRpZ6u5tPI8nfDjCNDI+Gyxy646wz/RWTJuOFnzCyHFmBWjFALp6P30eiPtRbcH3dG02KmlktllU3tyL+MylQspJv/riVqpQjpptiZGjMfVJX0+2PsHH3BlCFpvKxQj8chL25KVxlinIIBJZFhXt8=
+	t=1713939016; cv=none; b=ATupNJeMKfS1syXd3ONnPX9vk2cawpika2hVbfUvKxzCUpYIxybvy8iICqamXBW8dp/82lUDs0/f+L8la2btq2UTnouOmIbG6Sy2bHyQ+kPlyEPiSkJpfeohVeGmzEFe+KjkHuPI0WzkZWP+Hhk5sCLpYh0tYb1JrlVqr3D8C/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713939020; c=relaxed/simple;
-	bh=iepwPMFV2Y8AxOlDOJoQU7DjU3/vVTr6VfAN666ZhBA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GAIfPg4YSE3qUFnWtFRY84KDOXKsV3TcZkdzlCQgOWvkqZzgSx/MOQZkdbMS/LwfRV+D/Gb/N9oN6uKftaVruVmubikrjEgLq17K11h2dIV/uS8La9zFRUnuGnEubhwYYy34I6I6Xe1z9p2rX94skdy9I3Nex7syhXwFVaJGKgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=tbA1ITQ7; arc=none smtp.client-ip=115.124.30.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1713939012; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=UgkEafpjB4FkcGXYRGgNcZe1C+yfzAPApUHISBw8ick=;
-	b=tbA1ITQ7JOi4N3i5flMh6w+j1dMDnvZ1WLJNw01aR7lge1LVRC+2dv2ARfCyk1BJXPLT8EiGQSppRtsNCY6kL0CYfbshfojf+6hatBdC4/EcXIzRbed9sTZ+vr/duJN0LxeQotuiAaDLXvTsCkH11awgwAyKXbyjwZuMCfOzcZ0=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045046011;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W5BPSdR_1713939009;
-Received: from 30.97.56.58(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W5BPSdR_1713939009)
-          by smtp.aliyun-inc.com;
-          Wed, 24 Apr 2024 14:10:10 +0800
-Message-ID: <fb2052ab-74d1-48f7-975b-15abc2a078e2@linux.alibaba.com>
-Date: Wed, 24 Apr 2024 14:10:09 +0800
+	s=arc-20240116; t=1713939016; c=relaxed/simple;
+	bh=spACtKyCxDu9sb7L5eQSroWOYRxhtjHU/Rf9P9IGhHM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J6578IpFbgW+IBek+fUva94vg+9rCyCnJ1yqdKUsrss/D5n5Z7ABumHbjsaQlASpi1g3m0UQN5jj4sD9hfnYx2CX5M6jHl0CdA8yon5gPp5s9fSHa47KnxCBPFJGNQ/8xGzvJS+FMCECZs8WL8QDhIzkQLjxWVFDU1R6MBcNjYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VVrgq/H5; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-de4654c3423so908514276.0;
+        Tue, 23 Apr 2024 23:10:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713939013; x=1714543813; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CQD62Ewa/Pm8/wvoE00gVyYTVUY/vDTMKiupQNjrTRQ=;
+        b=VVrgq/H5slxrTDD9y1tqk9B6/Vw5XCsusz3eX+mQOXROIDr9dBZbpMYHbmbUIrfAKB
+         YRoliZS9CQsALBQR7eaHutpVAtW4y97mL8LNgOAHXooWAbQ6Az5J7871nyg+6P4DQoVJ
+         +z60S7WpuvJkX/6LY4/oIsATNyh6YqoZcSg5GJoaF2ikG9nhkAePb35iZCwNly0/ll2i
+         KQ5SwuMPXKycFqoi1kDn/NrhUaxeOG0EEnj87lsoIg7JZ/dls2nvgp5zrvzjSLO/peSN
+         HNtIGffZOPh12XYmdayMexLSqdN7dprOEQ+UfaSixLtrUtEMcfLzrSXdAcrjAPkJXucK
+         ghuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713939013; x=1714543813;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CQD62Ewa/Pm8/wvoE00gVyYTVUY/vDTMKiupQNjrTRQ=;
+        b=tEdktRGTGRHi5sFTiw7vraIg3L0IokFoNmBiPzx3IJVY+BFaYUYPx5WqguRSjgNlLm
+         joEMuZCPur3bZQEFYRs9FFEXT9gC2Oh1y6YpvKp29K2R/iSnFWCaKzmpbVIvXsa7Ztfd
+         uwwKl79dArucph2cHhiXTj6miaRAsKhTj0nXtCOIgqD/Z323H93acGP9JhD5X5aq0Kff
+         V492OiKUzY/CTTBxBdPva+TYfy7BG8A1DhOFVX/xym6MBmKTBkcqgohKUit06WDHSYPL
+         5woNdRRI1LztUPtJAIHwskh+duxyG6ydQiAd6ccME5C6EOtTlttdaisJ1XIz9Bsni1VI
+         KMMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+vxAB79HqSPjQwYbmuQzVGX7T5J+qzcQB5Yr4H8QRbYx7Hj0x8gpWnYhf7RnPnMSoZNC6CGb9uBugWvjnBVgMtTHcEKe9BU7Hb2Ds+CnxzKG79HPNg/+WaLuqwej0+z2E3a2U
+X-Gm-Message-State: AOJu0YwpsMTUfjXCEnqvQmVVDHwLiT6D/aAbzh76j395ss+nX50p+vxZ
+	2lDnMYbjNFH7zuX4fTTGSAPeSyux/8iaSVgIu+YC99dPSf2vwjrI
+X-Google-Smtp-Source: AGHT+IEaOALM/yuZxT0gddoKfUFAo2OImPPHSqyQT2w2gYutI2hgjCyWDDRGbA+qwsEQlonnW4QUSA==
+X-Received: by 2002:a0d:f385:0:b0:618:55bf:d023 with SMTP id c127-20020a0df385000000b0061855bfd023mr1127114ywf.5.1713939013421;
+        Tue, 23 Apr 2024 23:10:13 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2600:1700:2430:6f6f:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id dg13-20020a05690c0fcd00b0061b0f6d3e4esm2802120ywb.128.2024.04.23.23.10.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 23:10:12 -0700 (PDT)
+Date: Tue, 23 Apr 2024 23:10:09 -0700
+From: Richard Cochran <richardcochran@gmail.com>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: Andrew Lunn <andrew@lunn.ch>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Woojung Huh <woojung.huh@microchip.com>,
+	Arun Ramadoss <arun.ramadoss@microchip.com>,
+	Russell King <linux@armlinux.org.uk>, kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	UNGLinuxDriver@microchip.com,
+	linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH net-next v1 2/4] net: phy: micrel: lan8841: set default
+ PTP latency values
+Message-ID: <ZiiiQY9Z5-uyGZxR@hoboy.vegasvil.org>
+References: <20240417164316.1755299-1-o.rempel@pengutronix.de>
+ <20240417164316.1755299-3-o.rempel@pengutronix.de>
+ <c8e3f5d0-832b-4ab1-a65f-52f983ff110a@lunn.ch>
+ <ZiAtREiqPuvXkB4S@pengutronix.de>
+ <b44a4aee-f76f-4472-9b5c-343a09ed0d33@lunn.ch>
+ <ZiITWEZgTx9aPqIy@hoboy.vegasvil.org>
+ <ZideTxpOcPTbR9yt@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/5] mm: shmem: add anonymous share mTHP counters
-To: David Hildenbrand <david@redhat.com>, Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, hughd@google.com, willy@infradead.org,
- wangkefeng.wang@huawei.com, ryan.roberts@arm.com, ying.huang@intel.com,
- shy828301@gmail.com, ziy@nvidia.com, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
- <05d0096e4ec3e572d1d52d33a31a661321ac1551.1713755580.git.baolin.wang@linux.alibaba.com>
- <CAGsJ_4xu4iL5pv7T1chyzGC2Vp9q1GwOp3wxb=bYMW-T-pj4dA@mail.gmail.com>
- <ce6be451-7c5a-402f-8340-be40699829c2@redhat.com>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <ce6be451-7c5a-402f-8340-be40699829c2@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZideTxpOcPTbR9yt@pengutronix.de>
+
+On Tue, Apr 23, 2024 at 09:07:59AM +0200, Oleksij Rempel wrote:
+
+> Are the recommended FOSS projects managing calibration values per-
+> linkmode/port/device in user space?
+
+No, I haven't seen this.  I think the vendors should provide the
+numbers, like in the data sheet.  This is more useful and flexible
+than letting vendors hard code the numbers into the source code of
+device drivers.
+ 
+> What is recommended way for calibration? Using some recommended device?
+
+You can try the "Calibration procedures" in IEEE 1588-2019, Annex N.
+
+Or if you have end to end PPS outputs (from the GM server and the
+client) then you can simply compare them with an oscilloscope and
+correct any static offset with the ptp4l "delayAsymmetry"
+configuration option.
+
+Or if you have auxiliary event inputs on both server and client, feed
+a pulse generator into both, compare time stamps, etc.
+
+Also linuxptp supports Meinberg's NetSync Monitor method.
+
+Also there are commercial vendors that rent/sell test equipment for
+PTP networks.
+
+So there are many possibilities.
+
+HTH,
+Richard
 
 
-
-On 2024/4/23 19:37, David Hildenbrand wrote:
-> On 23.04.24 03:17, Barry Song wrote:
->> On Mon, Apr 22, 2024 at 3:03 PM Baolin Wang
->> <baolin.wang@linux.alibaba.com> wrote:
->>>
->>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->>> ---
->>>   include/linux/huge_mm.h | 2 ++
->>>   mm/huge_memory.c        | 4 ++++
->>>   mm/shmem.c              | 5 ++++-
->>>   3 files changed, 10 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->>> index 26b6fa98d8ac..67b9c1acad31 100644
->>> --- a/include/linux/huge_mm.h
->>> +++ b/include/linux/huge_mm.h
->>> @@ -270,6 +270,8 @@ enum mthp_stat_item {
->>>          MTHP_STAT_ANON_SWPOUT,
->>>          MTHP_STAT_ANON_SWPOUT_FALLBACK,
->>>          MTHP_STAT_ANON_SWPIN_REFAULT,
->>> +       MTHP_STAT_SHMEM_ANON_ALLOC,
->>> +       MTHP_STAT_SHMEM_ANON_ALLOC_FALLBACK,
->>
->> not quite sure about this. for 2MB pmd-mapped THP shmem, we count them
->> as FILE_THP.
->> here we are counting as SHMEM_ANON. To me, SHMEM_ANON is more correct but
->> it doesn't align with pmd-mapped THP. David, Ryan, what do you think?
-> 
-> The term "anonymous share" in the patch subject is weird to begin with 
-> ;) Easy to confuse with anonymous cow-shared memory. Let's just call it 
-> "anonymous shmem", which it is under the hood.
-
-Sure.
-
-> ... regarding the question: if we add FILE_ALLOC and friends, at least 
-> initially, we wouldn't account other large pagecache folios.
-> 
-> ... likely we should add that then as well so the counter matches the 
-> actual name?
-> 
-> If we later realize that we need separate FILE vs. SHMEM vs. WHATEVER 
-> counters, we can always add more fine-grained counters later. Doing it 
-> consistently w.r.t. traditional THPs first sounds reasonable.
-
-Um, once we expose it to userspace through the sysfs interface, the 
-sysfs interface should be explicit as much as possible and avoid 
-confusing users, otherwise it will be difficult to change this kind of 
-interface in the future. Personally, I prefer to Ryan's suggestion.
 
