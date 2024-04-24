@@ -1,181 +1,159 @@
-Return-Path: <linux-kernel+bounces-156774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57D378B07F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:03:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B2C58B07FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:04:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10A652820F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:03:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 530A51C219DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:04:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8886E1422C7;
-	Wed, 24 Apr 2024 11:03:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b="Ow7zLLXf"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3552815A488;
+	Wed, 24 Apr 2024 11:03:51 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A4BE159593
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 11:03:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E72B13DDD9;
+	Wed, 24 Apr 2024 11:03:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713956595; cv=none; b=t1xFrRmuPfg8CZ0dKuxtICn6Q8GsaYvBVmM+cX6IRfuJeR/lyUr72Z/ll/UuAKcXudw32L5Ij9nvd0p7X1wUpG54FMTqpU14xE/q3/ECb90mhNhu6po8FZ/QzCSM0fAspxWBaitLHWWzHrjJ1ty18vcwZlkPSKewnt4sVJ3RYWY=
+	t=1713956630; cv=none; b=IXacaWpaWGVn5Ild+hgMAXdYcptpyYxf0wOeFQhAna1U2Ve7OYcCT1+p/QdTFIngE5KtCQif1nSSbo24ZtzHp+rPBA5h6kBSuccjEcg0nSWbRDahxkW6RuOGnYiPNlrw/YpOQHgv4avHxQt5bVOZtU7TlhFcIiEzVPLu9SjkNOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713956595; c=relaxed/simple;
-	bh=uV0/1aSVVcRIoF8efqTChlHildc7U8iR42Xo+0S+bPc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lPqb4oROlU2cTxUR6gfqigqryaD3fauCSauILiXPPktV+La1akQZSgNmFZ96/22QDrF/oobYA2vANoKSAKp4UsVFF0bVRLRHzItlmQ4ZbBN2oP8SP9p8GbXCvaGCnpzDPpefCKL/461QnywqKC6T9jyHvNDrs+bExCnaKO1ilos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org; spf=pass smtp.mailfrom=endlessos.org; dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b=Ow7zLLXf; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endlessos.org
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ed9fc77bbfso5268838b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 04:03:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google; t=1713956594; x=1714561394; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ViRbv3+94h9HjFBDUVRxRf1hCf57UQ+V86PhnGFbsxM=;
-        b=Ow7zLLXfVVeT8oiGPskEQCGP3m190TxDiuU1G/wWEptygtCCmfvqa81TCUWDtWEGfq
-         kaIrkyb9Epn30zeBIUPDg0h9AeKZrVqAyER5RqllvUEY9BOisIF6wCK/WzO/N5igpk2D
-         SN7p9EWns0rFoUBohaiQzJi50Rg6akTJUexY07vE7Ct3Xe6SqCXHsCLXgi8+fJmIEywh
-         WHvY4gEOApKCaBBqSmGi/Sql5ebGb9tqSU6ZbwA3Tqk7EXCJMG5tAP5PVFFpHtqDBX3F
-         Ikgn8QhhhbAD2NAVC8fh+OtE1t82X+xFP3DZzFoRcDq4PisVSoPvyeM9V+Luo2onLhcz
-         bn7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713956594; x=1714561394;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ViRbv3+94h9HjFBDUVRxRf1hCf57UQ+V86PhnGFbsxM=;
-        b=rdiQqiEeJiAoY8Qd+q5yfC7JkJ5n5/fM34IkyYgoEEC7UEC9ojWjkR26lDdOtm625b
-         ld4DNauyDlZmtfrL1JKcAUj0yswIU6Wxx2rdZdGf5VryEWFIT5iFUPrWyR7WyEAVvbpK
-         zbINJJhpdWDsy+kU09KKKYuksDJfVxEK1bh1+tTdiISPDpjQp6lPAqPWtZcVz5VAPUup
-         D7UsfFrF54YgkYEEK6LmsSsiCWbzpZiml8CU1c7HblynhcpI37xAuZd8N1XtRjDqfrnb
-         ArOd2A/fncwyLnwPexJUHck8c89nBoEPLnHL//BcVGogVkLO5D7rdEU2y0m0Vb/3Ue0v
-         drAg==
-X-Forwarded-Encrypted: i=1; AJvYcCUoTog9VQ3BoqHZyYGcCp82LZOR6TdJVo1SYU0BKBK6yCuW1TF6W7XWXwE3m8Xmdxk2uh1ncSKVfB2Yjx3Jj6xhIpcoQCxqEmvdzqor
-X-Gm-Message-State: AOJu0YyPmYy0PrtIUOXYjky6SyZb+Fl1Xqh0ZRafjEaVkabRENm9DrYM
-	anF9IV46ETPyeiNVfX0LGGtOLv8zxb3/TbXeTMAsI/ixe+0GAUh73G3RE1/pBXk=
-X-Google-Smtp-Source: AGHT+IExdGa5rGS/22T53uS80/g8TO4jGAJIp46+PqMsXAM1a+dNmdOR9XUe5M3Ut5BW90bUdVCchg==
-X-Received: by 2002:a05:6a20:6a0b:b0:1a7:aa08:16de with SMTP id p11-20020a056a206a0b00b001a7aa0816demr2218545pzk.40.1713956593648;
-        Wed, 24 Apr 2024 04:03:13 -0700 (PDT)
-Received: from localhost.localdomain ([123.51.167.56])
-        by smtp.googlemail.com with ESMTPSA id it4-20020a056a00458400b006e623639a80sm11592482pfb.19.2024.04.24.04.03.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 04:03:13 -0700 (PDT)
-From: Jian-Hong Pan <jhp@endlessos.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Johan Hovold <johan@kernel.org>,
-	David Box <david.e.box@linux.intel.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Nirmal Patel <nirmal.patel@linux.intel.com>,
-	Jonathan Derrick <jonathan.derrick@linux.dev>,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jian-Hong Pan <jhp@endlessos.org>
-Subject: [PATCH v5 4/4] PCI/ASPM: Fix L1.2 parameters when enable link state
-Date: Wed, 24 Apr 2024 19:02:24 +0800
-Message-ID: <20240424110223.21799-2-jhp@endlessos.org>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713956630; c=relaxed/simple;
+	bh=ZewZQj8SyBk4zmFnulpPapr44UY0UKJuMvtL1fwo35o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hQp46GGMk38Sdp5He/80px2SjCtjuN34/ANd+TziTcgm1uwhsmBMHVimDQUCRGFrIftDZcIUTDn9jkpoAf6UN6c0JHNyt1VyFJ97bYAUJVwxjdkAZUCbPjMZ1TRFJT2pLu018XEyUp6yrXUuFdPY2LSXilDA7jK/dcBxp1iLX5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CA36C113CE;
+	Wed, 24 Apr 2024 11:03:41 +0000 (UTC)
+Message-ID: <8ce6b014-331a-4e22-be45-763f9a12fc33@xs4all.nl>
+Date: Wed, 24 Apr 2024 13:03:39 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 16/26] media: au0828: Use min macro
+Content-Language: en-US, nl
+To: Ricardo Ribalda <ribalda@chromium.org>,
+ Martin Tuma <martin.tuma@digiteqautomotive.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Hugues Fruchet <hugues.fruchet@foss.st.com>,
+ Alain Volmat <alain.volmat@foss.st.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Chen-Yu Tsai
+ <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Sowjanya Komatineni <skomatineni@nvidia.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Sergey Kozlov <serjk@netup.ru>, Abylay Ospan <aospan@netup.ru>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Dmitry Osipenko <digetx@gmail.com>,
+ Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+ Sylvain Petinot <sylvain.petinot@foss.st.com>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
+References: <20240419-fix-cocci-v2-0-2119e692309c@chromium.org>
+ <20240419-fix-cocci-v2-16-2119e692309c@chromium.org>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20240419-fix-cocci-v2-16-2119e692309c@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Currently, when enable link's L1.2 features with __pci_enable_link_state(),
-it configs the link directly without ensuring related L1.2 parameters, such
-as T_POWER_ON, Common_Mode_Restore_Time, and LTR_L1.2_THRESHOLD have been
-programmed.
+nitpick: subject should say "Use umin macro".
 
-This leads the link's L1.2 between PCIe Root Port and child device gets
-wrong configs when a caller tries to enabled it.
+	Hans
 
-Here is a failed example on ASUS B1400CEAE with enabled VMD:
-
-10000:e0:06.0 PCI bridge: Intel Corporation 11th Gen Core Processor PCIe Controller (rev 01) (prog-if 00 [Normal decode])
-    ...
-    Capabilities: [200 v1] L1 PM Substates
-        L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+ L1_PM_Substates+
-        	  PortCommonModeRestoreTime=45us PortTPowerOnTime=50us
-        L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-        	   T_CommonMode=45us LTR1.2_Threshold=101376ns
-        L1SubCtl2: T_PwrOn=50us
-
-10000:e1:00.0 Non-Volatile memory controller: Sandisk Corp WD Blue SN550 NVMe SSD (rev 01) (prog-if 02 [NVM Express])
-    ...
-    Capabilities: [900 v1] L1 PM Substates
-        L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1- L1_PM_Substates+
-                  PortCommonModeRestoreTime=32us PortTPowerOnTime=10us
-        L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-                   T_CommonMode=0us LTR1.2_Threshold=0ns
-        L1SubCtl2: T_PwrOn=10us
-
-According to "PCIe r6.0, sec 5.5.4", before enabling ASPM L1.2 on the PCIe
-Root Port and the child NVMe, they should be programmed with the same
-LTR1.2_Threshold value. However, they have different values in this case.
-
-Invoke aspm_calc_l12_info() to program the L1.2 parameters properly before
-enable L1.2 bits of L1 PM Substates Control Register in
-__pci_enable_link_state().
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=218394
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
----
-v2:
-- Prepare the PCIe LTR parameters before enable L1 Substates
-
-v3:
-- Only enable supported features for the L1 Substates part
-
-v4:
-- Focus on fixing L1.2 parameters, instead of re-initializing whole L1SS
-
-v5:
-- Fix typo and commit message
-- Split introducing aspm_get_l1ss_cap() to "PCI/ASPM: Introduce
-  aspm_get_l1ss_cap()"
-
- drivers/pci/pcie/aspm.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-index c55ac11faa73..553327dee991 100644
---- a/drivers/pci/pcie/aspm.c
-+++ b/drivers/pci/pcie/aspm.c
-@@ -1402,6 +1402,8 @@ EXPORT_SYMBOL(pci_disable_link_state);
- static int __pci_enable_link_state(struct pci_dev *pdev, int state, bool locked)
- {
- 	struct pcie_link_state *link = pcie_aspm_get_link(pdev);
-+	struct pci_dev *child = link->downstream, *parent = link->pdev;
-+	u32 parent_l1ss_cap, child_l1ss_cap;
- 
- 	if (!link)
- 		return -EINVAL;
-@@ -1433,6 +1435,16 @@ static int __pci_enable_link_state(struct pci_dev *pdev, int state, bool locked)
- 		link->aspm_default |= ASPM_STATE_L1_1_PCIPM | ASPM_STATE_L1;
- 	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
- 		link->aspm_default |= ASPM_STATE_L1_2_PCIPM | ASPM_STATE_L1;
-+	/*
-+	 * Ensure L1.2 parameters: Common_Mode_Restore_Times, T_POWER_ON and
-+	 * LTR_L1.2_THRESHOLD are programmed properly before enable bits for
-+	 * L1.2, per PCIe r6.0, sec 5.5.4.
-+	 */
-+	if (state & link->aspm_capable & ASPM_STATE_L1_2_MASK) {
-+		parent_l1ss_cap = aspm_get_l1ss_cap(parent);
-+		child_l1ss_cap = aspm_get_l1ss_cap(child);
-+		aspm_calc_l12_info(link, parent_l1ss_cap, child_l1ss_cap);
-+	}
- 	pcie_config_aspm_link(link, policy_to_aspm_state(link));
- 
- 	link->clkpm_default = (state & PCIE_LINK_STATE_CLKPM) ? 1 : 0;
--- 
-2.44.0
+On 19/04/2024 11:48, Ricardo Ribalda wrote:
+> Simplifies the code.
+> 
+> Found by cocci:
+> drivers/media/usb/au0828/au0828-video.c:605:11-12: WARNING opportunity for min()
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/usb/au0828/au0828-video.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/media/usb/au0828/au0828-video.c b/drivers/media/usb/au0828/au0828-video.c
+> index fd9fc43d47e0..2ec49ea479d5 100644
+> --- a/drivers/media/usb/au0828/au0828-video.c
+> +++ b/drivers/media/usb/au0828/au0828-video.c
+> @@ -602,10 +602,7 @@ static inline int au0828_isoc_copy(struct au0828_dev *dev, struct urb *urb)
+>  		vbi_field_size = dev->vbi_width * dev->vbi_height * 2;
+>  		if (dev->vbi_read < vbi_field_size) {
+>  			remain  = vbi_field_size - dev->vbi_read;
+> -			if (len < remain)
+> -				lencopy = len;
+> -			else
+> -				lencopy = remain;
+> +			lencopy = umin(len, remain);
+>  
+>  			if (vbi_buf != NULL)
+>  				au0828_copy_vbi(dev, vbi_dma_q, vbi_buf, p,
+> 
 
 
