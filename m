@@ -1,161 +1,206 @@
-Return-Path: <linux-kernel+bounces-157116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2420E8B0D0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:47:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFDBC8B0D12
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:48:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE03E28534B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:47:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 062FAB260D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:48:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7C215ECC9;
-	Wed, 24 Apr 2024 14:46:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB8D15F409;
+	Wed, 24 Apr 2024 14:47:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kZ53top6"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gLHT0Dix"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8191DFEB
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 14:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC01415EFBE
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 14:47:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713969999; cv=none; b=B9bs74PkT+IK7jREQPTqIpkjo/pswUFTu9QRFr9PQb0m9xOsdhnJPxa5P3pa6rKBBABY5/2y3Xj3qvNsIPo0Sy4Xm8xg4Y3qh6pT5mei7lgVe83UbmpvbPEFoqaXnuHaTNhjk/mv9P0yirMibPE8al37OMnQcDCjs3IWGIFEHoI=
+	t=1713970045; cv=none; b=ftLLkhCR98czljFNKcFJv2H8tZDa2TAR1u7naKvMOcXiGE/bg2Bv2UVcFMEo4FAIxllhSbCmnbL12trVQwKkqPoL6ghOPHkA6mhn8i1l/Cxg820gK5s8+j+/xgtZQ1UB1MzUccga9gaEzY1Qg8JjfdpLuZ3wKwc0ruq7YyxQJgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713969999; c=relaxed/simple;
-	bh=F+yMiTBe5/hoxx2NJhqcvizqF27UFcCyQ+BG9ETc4IQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=khilMTXOJ+tTde+x9BXVzG3rtN1PwkpHFhMnUQ5Ul6zW23VV7GwSMsoGYDXlIg/CfZuLG9phAyRCIM0dwrF5G54KEAzPRLOPypQpMStSMnHZdnGZSblcC3OH+kEyXqOWf19Piib/fV6xtccfvzZvhYZyJ+9CD4jvK+5qfDa2k6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kZ53top6; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so7114792a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 07:46:37 -0700 (PDT)
+	s=arc-20240116; t=1713970045; c=relaxed/simple;
+	bh=jJfd4IpFSTzCj1thfurDYFV0ttjhLiG1qEH9ToU7uvk=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=NW2SJwwa4Ie9cPVRVy0vHsmwNYu02gVS3J8IjPyD+iVOrJ7LIOFaLld+D8K6aiw2WoXhDNZ46RIqXYnKPthnUEZ6u2O4bCHSyBvmL45frLZUgtu6j88Ybu7/+m/bnZvK9lslhEYA8+9UplZNjuhUOA5bWy6PUSfswk7ZWvFxCnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gLHT0Dix; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-618891b439eso111701537b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 07:47:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713969996; x=1714574796; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=rmBHxU+K5+JFdDXXWYzqD2OyvFTC6VOaZA7L4t5ci3I=;
-        b=kZ53top66Zq27EgqxWEwQMaDQDRwMN1S3bPquFH+UeSuyh3d8TuKrpV1lxdvNDmAYN
-         cEfj+Ew2ZM+VT+Uznx7RadfgvDhnqTGrGVP9wQlmBgiTcsMWDa61cFMR8GIskc4EbnBc
-         48yaA9DfC7mpFaCOuZ4A6ZYKVNbO7HYLazC81IhXJ0NsJFC0L9Ra5MiI4llTKKxC6RFF
-         zm0EUGVH6J3jeQCi7aA4hEaTioaDNXyWUshW+MT3ImY3YXmddaS/5Aw2ExIWmn/xJujv
-         UJlZUsiV5yye4YwZiCby7hX6pU1Wt5rNMoaf1Ux7b3r1dw+UJ8zrY+tgJlToDm/AyMAI
-         09VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713969996; x=1714574796;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=google.com; s=20230601; t=1713970042; x=1714574842; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rmBHxU+K5+JFdDXXWYzqD2OyvFTC6VOaZA7L4t5ci3I=;
-        b=Kx4qdiR/ncdmP7WjZAMf0m49CIjv0mLzMptiWadakM8SqCuxgDGTIr2lxnmrVtGYjx
-         oTbyjM+1ylcxJxidvEXygbUmlVl2AHjgP57FvT/Bi1CBVSX9ZtV9g4Wt2DY3rk+Zo0wB
-         iv7l6cPIk93tjTHa/vozymU+KKi5fyiUzSaUFJIXfVtVSrs9nJHLOEAuyJrsRfLml3vg
-         lx3Cd3YTUtVbJhYGbrHjN8SUzcx+037IBapeG22saR3mzT919MZbElzi0CYjGFY5a+F2
-         uZfxGHewJ6uW//ShPxpbgw11wNqv9mx7gFV8YN1QB8SwckwoxXnzeVNAWYKtW13YhPF4
-         CNVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWrcnj5eV5XfEtu4Eb9Huy0XHE4tTglPaYspSV6CbdqtsBL90Q5jGu337JzACG+E2eHk3aJmwzTjoTl2xSY0yr+I4L5AhFvFvoY2v2V
-X-Gm-Message-State: AOJu0YwB+R+ztBqOGIUel/uRwX2PUVGAlH9RpgQvwmiu2FxXYxnOUrVh
-	uNQPPangJ8PJbSroQ5OtOMHdQ7V3fDH3oAJaZle3ECg4WCpySHI0gLo1y0Ros/Y=
-X-Google-Smtp-Source: AGHT+IHn78VhiqSOB7pwnrThAKv9zjattaN+a7GzLm9zrQ+WEJPEsTGOI3m9iM6/iprTZBhXzezPHw==
-X-Received: by 2002:a50:9b5b:0:b0:570:8d89:4c3f with SMTP id a27-20020a509b5b000000b005708d894c3fmr2047583edj.0.1713969996460;
-        Wed, 24 Apr 2024 07:46:36 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id k13-20020a508acd000000b0056ff510c327sm8224276edk.94.2024.04.24.07.46.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 07:46:35 -0700 (PDT)
-Message-ID: <0f8ba1b5-490e-4961-80e2-7942f66730ec@linaro.org>
-Date: Wed, 24 Apr 2024 16:46:34 +0200
+        bh=lBUMF9M0aXotFfthPHhv12Yga6tlL0sQVtn3IgcNIjg=;
+        b=gLHT0DixEIxV/L64q27Ss1sTGExF3Aum3m+EfcR2beLbl8Se9X1mGMXUryQayXTDFg
+         RLMG2fWpsiR2VD11DDaq89AFocj4WUR/BSX6H0cxCS7JpzZc0SrHNGpZwfF9DbOxopJr
+         t3oRxSCgD/tR2V4aZG55aTebrICmBqUaO+YFY4GKt36pcqOb7EIicstFYozXL8sYMru2
+         1d1yO2+BsT/FeNGqAkbSiD9ohhAH8bJTX6TvBpeh23aqu4Yh7UCVe3UXvqb72dUqYp99
+         f7r5aXvguNBRZ27ZW9Kbc2XNBaSMhJv8ZJRvTpfIdeIhcl+1N6w5xjUxbpPIC5iuE9hy
+         PUTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713970042; x=1714574842;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lBUMF9M0aXotFfthPHhv12Yga6tlL0sQVtn3IgcNIjg=;
+        b=IrfEOty4rAyjD0nSw/U7VJYDlcjy20o5zhAfi0y/VXUGdq1u3akJ7BMUAykcm6GExH
+         0JccLeJkz6/ox1F7ltrBYAy7GHN0AAcYIuRqaDI09tY7KsBgB7qli7ShD4B5cq3UY0sr
+         /v8hgeWhBNJMgWyz6T1Hxs1D3SiyPR7aiO1h32g38jiYxliXdOpGQvBokM7TbfHjZvTm
+         MdWRczkCpXuCiW3RNuSll6FiuLKakxriVN4VCQCul2H/+iMf3a2CkSTftkTvhLVOhkXn
+         DQLweguI2Py1fQWHCj4HhdYbSzTh9YwCzisLwEaKQToo+ZCEbmhG/GBxQPYN8D028CQe
+         Xe/A==
+X-Forwarded-Encrypted: i=1; AJvYcCXfBZrq6JUJTZt1Hzxy4DHlwtzih3aafreI6d9U2Sql6p3t2gE7/82ew/cfScQAQv8h55a8TcBAjrxrsW76dr97+U1sVz036p+4p3Md
+X-Gm-Message-State: AOJu0YyrkYeOqIiwclkjy+fwo1hwEnB3hEcV2fa60uMvNMC/0xIIAhp8
+	tp8Uog25PD76sADdf17N3aARhbeYkkdb7KZZrVUinBwDzb2GNVcIAFWeRUm8OORupzNJQAoHCll
+	z8g==
+X-Google-Smtp-Source: AGHT+IEs3VfA7KQdtkyHqJd0ahaIMhMEZs/CAyL0Jvui8r441EvbKI7ZhQcG9gTr1SgicGN29+v/lqbme1g=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1027:b0:de0:ecc6:4681 with SMTP id
+ x7-20020a056902102700b00de0ecc64681mr234395ybt.1.1713970041911; Wed, 24 Apr
+ 2024 07:47:21 -0700 (PDT)
+Date: Wed, 24 Apr 2024 07:47:20 -0700
+In-Reply-To: <9f67df9d-ab27-40b9-8849-3069649dc082@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Bluetooth: qca: set power_ctrl_enabled on NULL
- returned by gpiod_get_optional()
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Marcel Holtmann
- <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
- Wren Turkal <wt@penguintechs.org>, Zijun Hu <quic_zijuhu@quicinc.com>
-References: <20240424122932.79120-1-brgl@bgdev.pl>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Language: en-US
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240424122932.79120-1-brgl@bgdev.pl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20240423073952.2001989-1-chentao@kylinos.cn> <878bf83c-cd5b-48d0-8b4e-77223f1806dc@web.de>
+ <ZifMAWn32tZBQHs0@google.com> <20240423-0db9024011213dcffe815c5c@orel>
+ <ZigI48_cI7Twb9gD@google.com> <9f67df9d-ab27-40b9-8849-3069649dc082@moroto.mountain>
+Message-ID: <ZikbeCsIom80tDPR@google.com>
+Subject: Re: [PATCH] KVM: selftests: Add 'malloc' failure check in test_vmx_nested_state
+From: Sean Christopherson <seanjc@google.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Andrew Jones <ajones@ventanamicro.com>, Markus Elfring <Markus.Elfring@web.de>, 
+	Kunwu Chan <chentao@kylinos.cn>, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org, 
+	kernel-janitors@vger.kernel.org, 
+	Muhammad Usama Anjum <usama.anjum@collabora.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Kunwu Chan <kunwu.chan@hotmail.com>, Anup Patel <anup@brainfault.org>, 
+	Thomas Huth <thuth@redhat.com>, Oliver Upton <oliver.upton@linux.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 24/04/2024 14:29, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
+On Wed, Apr 24, 2024, Dan Carpenter wrote:
+> On Tue, Apr 23, 2024 at 12:15:47PM -0700, Sean Christopherson wrote:
+> > On Tue, Apr 23, 2024, Andrew Jones wrote:
+> > > On Tue, Apr 23, 2024 at 07:56:01AM -0700, Sean Christopherson wrote:
+> > > > +others
+> > > >=20
+> > > > On Tue, Apr 23, 2024, Markus Elfring wrote:
+> > > > > =E2=80=A6
+> > > > > > This patch will add the malloc failure checking
+> > > > > =E2=80=A6
+> > > > >=20
+> > > > > * Please use a corresponding imperative wording for the change de=
+scription.
+> > > > >=20
+> > > > > * Would you like to add the tag =E2=80=9CFixes=E2=80=9D according=
+ly?
+> > > >=20
+> > > > Nah, don't bother with Fixes.  OOM will cause the test to fail rega=
+rdless, the
+> > > > fact that it gets an assert instead a NULL pointer deref is nice to=
+ have, but by
+> > > > no means does it fix a bug.
+> > > >=20
+> > > > > > +++ b/tools/testing/selftests/kvm/x86_64/vmx_set_nested_state_t=
+est.c
+> > > > > > @@ -91,6 +91,7 @@ void test_vmx_nested_state(struct kvm_vcpu *v=
+cpu)
+> > > > > >  	const int state_sz =3D sizeof(struct kvm_nested_state) + getp=
+agesize();
+> > > > > >  	struct kvm_nested_state *state =3D
+> > > > > >  		(struct kvm_nested_state *)malloc(state_sz);
+> > > > > > +	TEST_ASSERT(state, "-ENOMEM when allocating kvm state");
+> > > > > =E2=80=A6
+> > > > >=20
+> > > > > Can =E2=80=9Cerrno=E2=80=9D be relevant for the error message con=
+struction?
+> > > >=20
+> > > > Probably not, but there's also no reason to assume ENOMEM.  TEST_AS=
+SERT() spits
+> > > > out the actual errno, and we can just say something like "malloc() =
+failed for
+> > > > blah blah blah". =20
+> > > >=20
+> > > > But rather than keeping playing whack-a-mole, what if we add macros=
+ to perform
+> > > > allocations and assert on the result?  I have zero interest in chas=
+ing down all
+> > > > of the "unsafe" allocations, and odds are very good that we'll coll=
+ectively fail
+> > > > to enforce checking on new code.
+> > > >=20
+> > > > E.g. something like (obviously won't compile, just for demonstratio=
+n purposes)
+> > > >=20
+> > > > #define kvm_malloc(x)
+> > > > ({
+> > > > 	void *__ret;
+> > > >=20
+> > > > 	__ret  =3D malloc(x);
+> > > > 	TEST_ASSERT(__ret, "Failed malloc(" #x ")\n");
+> > > > 	__ret;
+> > > > })
+> > > >=20
+> > > > #define kvm_calloc(x, y)
+> > > > ({
+> > > > 	void *__ret;
+> > > >=20
+> > > > 	__ret  =3D calloc(x, y);
+> > > > 	TEST_ASSERT(__ret, "Failed calloc(" #x ", " #y ")\n");
+> > > > 	__ret;
+> > > > })
+> > >=20
+> > > Sounds good to me, but I'd call them test_malloc, test_calloc, etc. a=
+nd
+> > > put them in include/test_util.h
+> >=20
+> > Possibly terrible idea: what if we used kmalloc() and kcalloc()?  K is =
+for KVM :-)
+>=20
+> That's a legit terrible idea...  It probably would trigger more static
+> checker warnings because the general policy is kmalloc() is kernel code
+> and we *have* to test for errors.
 
->  		qcadev->susclk = devm_clk_get_optional(&serdev->dev, NULL);
->  		if (IS_ERR(qcadev->susclk)) {
-> @@ -2355,10 +2360,13 @@ static int qca_serdev_probe(struct serdev_device *serdev)
->  		qcadev->bt_en = devm_gpiod_get_optional(&serdev->dev, "enable",
->  					       GPIOD_OUT_LOW);
->  		if (IS_ERR(qcadev->bt_en)) {
-> -			dev_warn(&serdev->dev, "failed to acquire enable gpio\n");
-> -			power_ctrl_enabled = false;
-> +			dev_err(&serdev->dev, "failed to acquire enable gpio\n");
-> +			return PTR_ERR(qcadev->bt_en);
->  		}
->  
-> +		if (!qcadev->bt_en)
-> +			power_ctrl_enabled = false;
+Roger that.
 
-This looks duplicated - you already have such check earlier.
+> To be honest, I would have just rejected the first patch.  You
+> obviously know this and have said this earlier in the thread but just
+> for the other people, this is a userspace test that runs for a short
+> time and then exits.  If it gets killed because we don't have enough
+> memory that's fine.  It would be better to just fix the static checker
+> to not print pointless warnings or educate people to ignore warnings
+> like this.
 
-Best regards,
-Krzysztof
+This particular patch may have been motiviated by a static checker, but I d=
+oubt
+static checkers are responsible for all of the many sanity checks on malloc=
+() in
+KVM selftests.  And while I agree that the sanity checks don't and much val=
+ue,
+deleting the existing checks and preventing checks from being reintroduced =
+would
+be a never ending battle.
 
+> Creating the test_malloc() to silence the warning also seems like an
+> okay idea as well.
+
+Yeah, it's not exactly my first choice, but the reality is that people writ=
+e KVM
+elftests by copying an existing test (often literally), and so the best way=
+ to
+educate developers on the preferred approach/style is to have all existing =
+code
+adhere to a single approach/style.
 
