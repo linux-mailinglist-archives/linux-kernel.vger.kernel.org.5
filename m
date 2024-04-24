@@ -1,250 +1,94 @@
-Return-Path: <linux-kernel+bounces-157428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 778E48B118E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:59:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A8698B1190
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:59:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ED372874C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:59:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55BA4B241FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7FA516D9A0;
-	Wed, 24 Apr 2024 17:59:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AECCB16D9C5;
+	Wed, 24 Apr 2024 17:59:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IXw0eajx"
-Received: from mail-pj1-f65.google.com (mail-pj1-f65.google.com [209.85.216.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="SKuMQCjf"
+Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.207])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D2EE16D4FC
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:59:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A4E13C672;
+	Wed, 24 Apr 2024 17:59:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713981545; cv=none; b=heLA6GIyq/qct67Bce7wpXHvfHYwiX8iYuI6I6MQ+BpmorkY6HyXG4ZDf9CBfUXPz77ftepyvGjbqQq1l7ePsRDHjrlwC80zwHpE1a3goQulLCijjqnW3W7i7LZcdafqFJpEpAwA6qOItfkUD1nuayao4+QcH3CQZFqEwtfGbaU=
+	t=1713981552; cv=none; b=s3h1144XhxG8ddUYwUvVsnFJ+IpKognlodgcCWL7LRcv4J5ctbcPpnXxXT08LhJ3BeIoAVyWPu0lksDW6B0B6JTqsdk6uMVVphF6gHVUsUDMEvIGL6Pg30IpBGCKNro0bSQMhuLvwZV9Hff5PhJWdiGAm4xZrX/Z+6o2tNaBAFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713981545; c=relaxed/simple;
-	bh=aXUvDLlg7BkvWoQ2kTdQMPh3yxIL3lbst4DZufPihpk=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=RnpOULJfy5wIxBqELbGvJJr2wfFxaK9BTL7Jj2mt9LN4aTcQblqkKK4TwVjLYmuinZSsljvpH+2i35ACCxPrRy4bMjsH4M4fcBB7eUNbreHFlpKQ96nrE/bhXmT3msdraz4UTP4LziXE28u8PZHzNXm6nNELuS25wBAEUNf7+tE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IXw0eajx; arc=none smtp.client-ip=209.85.216.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f65.google.com with SMTP id 98e67ed59e1d1-2a2d248a2e1so964752a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 10:59:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713981543; x=1714586343; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NszFlhE32epBglsn0xmSIWgwQN3Rjv1JbjP51BpVSrw=;
-        b=IXw0eajx1Ne+nReHASXmReXZJ4j5qbd1wiFcx9DSHkfqq6UAlWJ5nXVz7GKnVrKMsj
-         LsFRmqMruf4XYj+NIWfa6YHHNGMoMFvUYD2RPQKd5Rl+uy8ycowXRFzqtjSJbZOSJtA5
-         CeIlL2G9IRTsimzNxlTtZbKzVGuam8DI5j3nYQ/DmKh5a+WUMpXv0PQvgo7Juqvhls39
-         32IQZ2S9WqTjODC6jZlZg8i9wD6+5PgVECg380PfU+L5xhNpvZf6WP8Rhboc/sA2giY2
-         J6BTbg92FtagfuBdA6nev/QwBnnNV3c57bp0bZimNnVj3NAhQaf7afl/52tzCya4DRrq
-         iLLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713981543; x=1714586343;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NszFlhE32epBglsn0xmSIWgwQN3Rjv1JbjP51BpVSrw=;
-        b=rf250s4IxFjP+LRrBUhEC6czqwz8H9lQbSUxJJGm8TsN2hx5glSAyGyBdRwL1vnLnn
-         Tg3B0snSwpBao3XR1RZqmfwUD8xLCnoEXsUr8R60Iq0Uoo0bWVGNbqa62OBUhy69TrVP
-         o/UMQM4RREQYeNdjTCmOhnP9zgwci8mmBEx8QWvW0HBSmGh7BbBXVX1HF1xRIRHICKDa
-         N6eBIZM+9gRFR2wTrojPujanDcqFTf0mD/v5TpmtRv+XVWV5uBKK8WQAkHKIdlrls/Qs
-         TkH7inVwjzMQGqyF376mWtQN2BgLqKubhBY8qtVaKV49HWpQPkCFlelGFwRK42nP2YND
-         HdzA==
-X-Forwarded-Encrypted: i=1; AJvYcCULeiSRqV6eSWFBujuiC23dwGELrOrSgNTa7RDnUWPyE68yhOQssQymFyxZcQd73g6Xqe/TrO2QkiLgtlXD6Q1D/FCm7h6oa07+LjEa
-X-Gm-Message-State: AOJu0Yy3dQkmoalNvedcOtQ8g2UqGc4SNotkjtChXiECvq+JO1C7gUNG
-	ZLV5GmkfU3wBTHx9gvyr5qIX50x+e6qVLs4l0LQo+/jewHjgu2n8
-X-Google-Smtp-Source: AGHT+IEg3M+Tqa7HRWDFYAFkS/OOvNrun7/51RUt2ky/1fAKXZjtK93DAKpw++xohfVUHl64yfg/Lg==
-X-Received: by 2002:a17:90b:792:b0:2a5:506f:161c with SMTP id l18-20020a17090b079200b002a5506f161cmr621959pjz.4.1713981542730;
-        Wed, 24 Apr 2024 10:59:02 -0700 (PDT)
-Received: from [192.168.3.172] ([122.231.145.235])
-        by smtp.gmail.com with ESMTPSA id ns5-20020a17090b250500b002a5f44353d2sm13495542pjb.7.2024.04.24.10.58.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 10:59:02 -0700 (PDT)
-Message-ID: <dfbced2e-487c-413f-bfed-567a852ab1bc@gmail.com>
-Date: Thu, 25 Apr 2024 01:58:53 +0800
+	s=arc-20240116; t=1713981552; c=relaxed/simple;
+	bh=Uvo8L2oKNvPS/82Qykx5/RwOPOJlTRBGJtWHyAljGoY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=N3gA0HtjQ/WcT2PtCP3u6uTZccTmR8j1Rjs6E4I5rLZgh5XEAwLRjfmggmzCMXlaBE3UPb5XDcxRWfhQIzSxpYxC7KRZoivRhZai2PcYSB6VXus50cU8ojYDy38Ng6MJno0oCWrstlMbQILhrejFq/IF7y1BcJ+BK3DhtR7pk3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=SKuMQCjf; arc=none smtp.client-ip=192.19.144.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id A7741C004D03;
+	Wed, 24 Apr 2024 10:59:09 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com A7741C004D03
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1713981549;
+	bh=Uvo8L2oKNvPS/82Qykx5/RwOPOJlTRBGJtWHyAljGoY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=SKuMQCjf6SFHNgGBHHn5/RRaQOuG0SRw1UmiCgVOn/P/wiT5T9E2oSZ0snYuFkt6T
+	 ndwA9KIAnT/+H5EUyX0uMOS+pfXZ2M3u6WItaVHKMUMhvHl8xx/ZbU0HKJmOsLzEma
+	 A/VeGr3ZrK3EttkXjrIuLknLtcTK/BkATUorQYXs=
+Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id AE32518041CAC4;
+	Wed, 24 Apr 2024 10:59:07 -0700 (PDT)
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+To: bcm-kernel-feedback-list@broadcom.com,
+	=?iso-8859-9?b?QXL9bucg3E5BTA==?= via B4 Relay <devnull+arinc.unal.arinc9.com@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Hauke Mehrtens <hauke@hauke-m.de>,
+	Rafal Milecki <zajec5@gmail.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
+	Tom Brautaset <tbrautaset@gmail.com>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	=?iso-8859-9?b?QXL9bucg3E5BTA==?= <arinc.unal@arinc9.com>,
+	Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v3 1/5] dt-bindings: arm: bcm: add bindings for ASUS RT-AC3200
+Date: Wed, 24 Apr 2024 10:59:09 -0700
+Message-Id: <20240424175909.1526760-1-florian.fainelli@broadcom.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240423-for-soc-asus-rt-ac3200-ac5300-v3-1-23d33cfafe7a@arinc9.com>
+References: <20240423-for-soc-asus-rt-ac3200-ac5300-v3-0-23d33cfafe7a@arinc9.com> <20240423-for-soc-asus-rt-ac3200-ac5300-v3-1-23d33cfafe7a@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] mm: add per-order mTHP split counters
-From: Bang Li <libang.linux@gmail.com>
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, 21cnbao@gmail.com, ryan.roberts@arm.com,
- david@redhat.com, baolin.wang@linux.alibaba.com,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Bang Li <libang.linux@gmail.com>
-References: <20240424135148.30422-1-ioworker0@gmail.com>
- <20240424135148.30422-2-ioworker0@gmail.com>
- <1192295a-5b94-4c1a-b11c-7cd8ef0e62b7@gmail.com>
-Content-Language: en-US
-In-Reply-To: <1192295a-5b94-4c1a-b11c-7cd8ef0e62b7@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hey, sorry for making noise, there was something wrong with the format of
-the last email.
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-On 2024/4/25 1:12, Bang Li wrote:
-> Hey Lance,
->
-> On 2024/4/24 21:51, Lance Yang wrote:
->
->> At present, the split counters in THP statistics no longer include
->> PTE-mapped mTHP. Therefore, this commit introduces per-order mTHP split
->> counters to monitor the frequency of mTHP splits. This will assist
->> developers in better analyzing and optimizing system performance.
->>
->> /sys/kernel/mm/transparent_hugepage/hugepages-<size>/stats
->>          split_page
->>          split_page_failed
->>          deferred_split_page
->>
->> Signed-off-by: Lance Yang <ioworker0@gmail.com>
->> ---
->>   include/linux/huge_mm.h |  3 +++
->>   mm/huge_memory.c        | 14 ++++++++++++--
->>   2 files changed, 15 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->> index 56c7ea73090b..7b9c6590e1f7 100644
->> --- a/include/linux/huge_mm.h
->> +++ b/include/linux/huge_mm.h
->> @@ -272,6 +272,9 @@ enum mthp_stat_item {
->>       MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE,
->>       MTHP_STAT_ANON_SWPOUT,
->>       MTHP_STAT_ANON_SWPOUT_FALLBACK,
->> +    MTHP_STAT_SPLIT_PAGE,
->> +    MTHP_STAT_SPLIT_PAGE_FAILED,
->> +    MTHP_STAT_DEFERRED_SPLIT_PAGE,
->>       __MTHP_STAT_COUNT
->>   };
->>   diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->> index 055df5aac7c3..52db888e47a6 100644
->> --- a/mm/huge_memory.c
->> +++ b/mm/huge_memory.c
->> @@ -557,6 +557,9 @@ DEFINE_MTHP_STAT_ATTR(anon_fault_fallback, 
->> MTHP_STAT_ANON_FAULT_FALLBACK);
->>   DEFINE_MTHP_STAT_ATTR(anon_fault_fallback_charge, 
->> MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
->>   DEFINE_MTHP_STAT_ATTR(anon_swpout, MTHP_STAT_ANON_SWPOUT);
->>   DEFINE_MTHP_STAT_ATTR(anon_swpout_fallback, 
->> MTHP_STAT_ANON_SWPOUT_FALLBACK);
->> +DEFINE_MTHP_STAT_ATTR(split_page, MTHP_STAT_SPLIT_PAGE);
->> +DEFINE_MTHP_STAT_ATTR(split_page_failed, MTHP_STAT_SPLIT_PAGE_FAILED);
->> +DEFINE_MTHP_STAT_ATTR(deferred_split_page, 
->> MTHP_STAT_DEFERRED_SPLIT_PAGE);
->>     static struct attribute *stats_attrs[] = {
->>       &anon_fault_alloc_attr.attr,
->> @@ -564,6 +567,9 @@ static struct attribute *stats_attrs[] = {
->>       &anon_fault_fallback_charge_attr.attr,
->>       &anon_swpout_attr.attr,
->>       &anon_swpout_fallback_attr.attr,
->> +    &split_page_attr.attr,
->> +    &split_page_failed_attr.attr,
->> +    &deferred_split_page_attr.attr,
->>       NULL,
->>   };
->>   @@ -3083,7 +3089,7 @@ int split_huge_page_to_list_to_order(struct 
->> page *page, struct list_head *list,
->>       XA_STATE_ORDER(xas, &folio->mapping->i_pages, folio->index, 
->> new_order);
->>       struct anon_vma *anon_vma = NULL;
->>       struct address_space *mapping = NULL;
->> -    bool is_thp = folio_test_pmd_mappable(folio);
->> +    int order = folio_order(folio);
->>       int extra_pins, ret;
->>       pgoff_t end;
->>       bool is_hzp;
->> @@ -3262,8 +3268,10 @@ int split_huge_page_to_list_to_order(struct 
->> page *page, struct list_head *list,
->>           i_mmap_unlock_read(mapping);
->>   out:
->>       xas_destroy(&xas);
->> -    if (is_thp)
->> +    if (order >= HPAGE_PMD_ORDER)
->>           count_vm_event(!ret ? THP_SPLIT_PAGE : THP_SPLIT_PAGE_FAILED);
->> +    count_mthp_stat(order, !ret ? MTHP_STAT_SPLIT_PAGE :
->> +                      MTHP_STAT_SPLIT_PAGE_FAILED);
->>       return ret;
->>   }
->>   @@ -3327,6 +3335,8 @@ void deferred_split_folio(struct folio *folio)
->>       if (list_empty(&folio->_deferred_list)) {
->>           if (folio_test_pmd_mappable(folio))
->>               count_vm_event(THP_DEFERRED_SPLIT_PAGE);
->> +        count_mthp_stat(folio_order(folio),
->> +                MTHP_STAT_DEFERRED_SPLIT_PAGE);
->>           list_add_tail(&folio->_deferred_list, &ds_queue->split_queue);
->>           ds_queue->split_queue_len++;
->>   #ifdef CONFIG_MEMCG
->
-> My opinion can be ignored :). Would it be better to modify the 
-> deferred_split_folio
-> function as follows? I'm not sure.
->
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c index 
-> 055df5aac7c3..e8562e8630b1 100644 --- a/mm/huge_memory.c +++ 
-> b/mm/huge_memory.c @@ -3299,12 +3299,13 @@ void 
-> deferred_split_folio(struct folio *folio) struct mem_cgroup *memcg = 
-> folio_memcg(folio); #endif unsigned long flags; + int order = 
-> folio_order(folio); /* * Order 1 folios have no space for a deferred 
-> list, but we also * won't waste much memory by not adding them to the 
-> deferred list. */ - if (folio_order(folio) <= 1) + if (order <= 1) 
-> return; /* @@ -3325,8 +3326,9 @@ void deferred_split_folio(struct 
-> folio *folio) spin_lock_irqsave(&ds_queue->split_queue_lock, flags); 
-> if (list_empty(&folio->_deferred_list)) { - if 
-> (folio_test_pmd_mappable(folio)) + if (order >= HPAGE_PMD_ORDER) 
-> count_vm_event(THP_DEFERRED_SPLIT_PAGE); + count_mthp_stat(order, 
-> MTHP_STAT_DEFERRED_SPLIT_PAGE); list_add_tail(&folio->_deferred_list, 
-> &ds_queue->split_queue); ds_queue->split_queue_len++; #ifdef 
-> CONFIG_MEMCG thanks,
-> bang
->
+On Tue, 23 Apr 2024 12:50:45 +0300, Arınç ÜNAL via B4 Relay <devnull+arinc.unal.arinc9.com@kernel.org> wrote:
+> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+> 
+> Add ASUS RT-AC3200 under BCM4709 based boards.
+> 
+> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> ---
 
-My opinion can be ignored :). Would it be better to modify the 
-deferred_split_folio
-function as follows? I'm not sure.
-
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 055df5aac7c3..e8562e8630b1 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -3299,12 +3299,13 @@ void deferred_split_folio(struct folio *folio)
-         struct mem_cgroup *memcg = folio_memcg(folio);
-  #endif
-         unsigned long flags;
-+       int order = folio_order(folio);
-
-         /*
-          * Order 1 folios have no space for a deferred list, but we also
-          * won't waste much memory by not adding them to the deferred list.
-          */
--       if (folio_order(folio) <= 1)
-+       if (order <= 1)
-                 return;
-
-         /*
-@@ -3325,8 +3326,9 @@ void deferred_split_folio(struct folio *folio)
-
-         spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
-         if (list_empty(&folio->_deferred_list)) {
--               if (folio_test_pmd_mappable(folio))
-+               if (order >= HPAGE_PMD_ORDER)
-                         count_vm_event(THP_DEFERRED_SPLIT_PAGE);
-+               count_mthp_stat(order, MTHP_STAT_DEFERRED_SPLIT_PAGE);
-                 list_add_tail(&folio->_deferred_list, 
-&ds_queue->split_queue);
-                 ds_queue->split_queue_len++;
-  #ifdef CONFIG_MEMCG
-
-thanks,
-bang
+Applied to https://github.com/Broadcom/stblinux/commits/devicetree/next, thanks!
+--
+Florian
 
