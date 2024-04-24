@@ -1,114 +1,340 @@
-Return-Path: <linux-kernel+bounces-156556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46C1C8B047D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:38:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 970088B048C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:40:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 787AB1C22647
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:38:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DA96B25EAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D2CF156C7F;
-	Wed, 24 Apr 2024 08:38:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31444158A04;
+	Wed, 24 Apr 2024 08:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="duzIhUsy"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UOt8zGOU"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852231D52B
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:38:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21237156873
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:40:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713947929; cv=none; b=fSyXUS+MAn0AQTnibPeZdjri3rkCkrVfPLdCOfjoSkNLv4vwkZkZqZH55YvruI8WXBzoJT7TlgqK2ZoBmLHCmlbkb+ojo8ZuuP4jexJPkyM7DzDzPaHdNQp6un3rUzjz8cbsbc1F93DURWN7yDtnU5qeCszC/kZ2oIKvjIOu0OQ=
+	t=1713948003; cv=none; b=cAz3BtJas9P+WEky5JzEQ843fpJgQWPfet3mwrvgskV0c5wLTk1eCkJyenlAUtlP0mJa1HaxMmyKoEZUKIK2FDs5QCKMhzOZ3gdZtQWH9WzbVaIwg9eyHOzRfdvc8Rn6pgwu0xV3DDWVx6w99NNAvbC+d8BM2jylPwQi5ye1krs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713947929; c=relaxed/simple;
-	bh=hMMvxpDfbjDULv1fmXRnELIn09JQOXoi13BP9n0Ktzo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HmvoycvbPdpqlM39ClGRKiLqSjufbEE8Gg5Dng0sJRx1IxzfnoC7XCQk9CMjmNKTAL1fVDqWcGH+HtmM2lX7akdI6k3UjUvdJCsZTxmy+HV+ivrCLDBNf8ateCHbg4FrP1g8XcAPoUfly1yMG0zXMzPNCDp13b6l36qeLkj6ywU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=duzIhUsy; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713947929; x=1745483929;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hMMvxpDfbjDULv1fmXRnELIn09JQOXoi13BP9n0Ktzo=;
-  b=duzIhUsyQ6vjwkTaGsJmxpJSFD2i3M5sWE+Yt9+vY4slbPL6D8og1zph
-   0mmYWACGyWP9LB/pgczZSyLASUN4Tx3XG36JoKo+WXzwSnQ9YAvBHph6S
-   y2xNsNxkPVj3j/+0nPTDRUIUq5VEljiBVgv+NQz6N/DRVVP0aTbumjyAK
-   7/G3ruv6F0NBEvt6RcdznEj9yKJ5kXE1FSYF3IrHES5k4Y5199fcZtqx3
-   yygl0Oa1GbOiJSQHWZ66KFJpk5FBh5bRcnI1OFFJUfPaxLv+Br+2Ws034
-   R8agCo8KiKR7aVOsKmeY3zLANL5uWgPojpr0n+/XKgxy4KuYUEXeBc92B
-   Q==;
-X-CSE-ConnectionGUID: +uLxZ/PUTg2sqhJuWVLiIg==
-X-CSE-MsgGUID: Tmdh/qC0TOmpQclm7wKzqA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="13398958"
-X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="13398958"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 01:38:48 -0700
-X-CSE-ConnectionGUID: +3UgJW18TYqRu6s+Kb1SXw==
-X-CSE-MsgGUID: BmfrGwObTz612CZwmk9qVg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="24711899"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa008.fm.intel.com with ESMTP; 24 Apr 2024 01:38:43 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 3DCFA28A; Wed, 24 Apr 2024 11:38:42 +0300 (EEST)
-Date: Wed, 24 Apr 2024 11:38:42 +0300
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
-	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, 
-	Sean Christopherson <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>, 
-	kexec@lists.infradead.org, linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	Tao Liu <ltao@redhat.com>
-Subject: Re: [PATCHv10 04/18] cpu/hotplug, x86/acpi: Disable CPU offlining
- for ACPI MADT wakeup
-Message-ID: <k4t62qfiyapfh2hjp4bpnaa4bmtlajpm5q4an3qs4jimhldcwv@wtrp63ofrfk6>
-References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
- <20240409113010.465412-5-kirill.shutemov@linux.intel.com>
- <20240423160258.GBZifbsuoTIbWDapej@fat_crate.local>
+	s=arc-20240116; t=1713948003; c=relaxed/simple;
+	bh=uUzQknoBUwJwtT7gaiTdl3F+FfFeaiPbUFEIFshQxNk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z30g8u2xhtWbvF0z2ysnanO3Yz//uSr7WhYiPu87Ow3j5OfFj7l+jcF3bBdIrh1Y9hIxpOyW6KMA+LkJT+oQc4QyyaBUrIFDnzccXSE5yFupxQ9tc0VEDO4BI1mlZXNrVmf3PVDAH7+4yf+d9osvPR/7QeCBLpTGIKN/HB6GmvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UOt8zGOU; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-de528effbfbso3330078276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 01:40:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713948000; x=1714552800; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UHaqSpAGymwtsvS6Foy4yGMLTRuN1UnMi+BHoGsiUPI=;
+        b=UOt8zGOU+bVIhuMFD5/Ree0KWK0X9AsVFKC/N/IqF0F6knVWIuVIeKcnA6ddXwwF+N
+         cu2NRenvf47gcrnnS9BmBuT/3+fKPEmOPGn4OUa/+WfkUdihF02RcsIkbZXASu2Yt8aF
+         InV+wh7eoVq30/SoBLtgP5v5yWzgOKpZJRrfdCvC1AjUM3xJ0oW0tMnzcWdgAITf9uKQ
+         g5vWyeZrzxW97cTBiNZsATTL8VT8SeX/KSm8cw87veszDBv8JHcJNuYatUQSlGiOHu0l
+         hg66hiVXd1osMBI94x2Z1O6Am4Z9hUY8wrntgU/H/1sBfPIFw07d1ql31R2NthysYi+c
+         6Pzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713948000; x=1714552800;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UHaqSpAGymwtsvS6Foy4yGMLTRuN1UnMi+BHoGsiUPI=;
+        b=p2oq7STpTzvoQIwoJBPaAJVu3zNQcosBgrWIBMsq8OcbAhA/qL/hClYE+XW/kaAlaq
+         YPOBsz/Yf5O/nSX6TwRvrpBMbL2rbv6W35QRJQyEI5Me5zaHKHt6r4x7e68UICz+JD18
+         C1ayJHF+Ex5frMFlDNu3ZxVfswCELBvsMa0FGZgJ+9/QeTklWEmE50g3iEPW5NaQ426x
+         B/oDroP/4hZuW9RiX3ln4LaZWmqwTTjNqyjdzIfSqDJ1VTVCB59qFF6PdKp9lLvvSsuN
+         rInFwQbkL2SjfniyLc2tZ6XrULmVMe59R6bUCkyAV+e1kr7xzhd40mfmXcCoNz/IlrqZ
+         cxhw==
+X-Forwarded-Encrypted: i=1; AJvYcCW3Am+/E5qhpJ4t1aW+IMEMUp7O/ZzvjEoTr6lpype5yQPOJ58DLA9Q/sng7lLYD8hQlGk7/EmQh8A4X9LNgmof1m7vfeZeWfWTV8je
+X-Gm-Message-State: AOJu0Yw7yvzYmobMv3ojqTzCD0BeUr1zGbOdf2R3J3qSyR4jX5HqPeu3
+	fwJeRvuer47nSI5Rt/5tg12bSwM8GRpkAkQPzxgY1NaIVNCGUgrY8uaMGw045FrKvjcBHVdksV7
+	seh377ekgNp1qsNsQI9EBykSnISFoQqPRv7nLSA==
+X-Google-Smtp-Source: AGHT+IFDnpZbMqkhpI/711BZF++4IF4xeUvgOC6ptC6ig7fo1yY5yVY5F1iPkFHPvGzaMEaoj1B4FKG6CEXfohFmXsw=
+X-Received: by 2002:a25:81d1:0:b0:dc6:d808:cf75 with SMTP id
+ n17-20020a2581d1000000b00dc6d808cf75mr1890649ybm.20.1713948000082; Wed, 24
+ Apr 2024 01:40:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423160258.GBZifbsuoTIbWDapej@fat_crate.local>
+References: <20240422164658.217037-1-sui.jingfeng@linux.dev>
+ <Zie3ebHOEpWHj1qV@smile.fi.intel.com> <d5bc1e73-a553-451e-ab74-f5f0ca259c6b@linux.dev>
+ <hcltp2bbxxg2t7ibmzgiib7mgbwgmvzwnnq6mochdh7c4h76r3@bxj6yk5zq64e> <22979e28-ed48-467f-a5cf-82be57bcc2f7@linux.dev>
+In-Reply-To: <22979e28-ed48-467f-a5cf-82be57bcc2f7@linux.dev>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 24 Apr 2024 11:39:48 +0300
+Message-ID: <CAA8EJpr1vWVeGsoph9h=PPQRPKkjk+d7WVQpGwpPuhCQwkqCbg@mail.gmail.com>
+Subject: Re: [PATCH v2] software node: Implement device_get_match_data fwnode callback
+To: Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, dri-devel@lists.freedesktop.org, 
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Daniel Scally <djrscally@gmail.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Apr 23, 2024 at 06:02:58PM +0200, Borislav Petkov wrote:
-> > 
-> > Currently CPU hotplug is prevented based on the confidential computing
-> > attribute which is set for Intel TDX. But TDX is not the only possible
-> > user of the wake up method.
-> > 
-> > Disable CPU offlining on ACPI MADT wakeup enumeration.
-> 
-> Something's missing in that "justification". It should explain why
-> CC_ATTR_HOTPLUG_DISABLED is not needed anymore.
+On Wed, 24 Apr 2024 at 08:09, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+>
+> Hi,
+>
+>
+> On 2024/4/24 05:37, Dmitry Baryshkov wrote:
+> > On Wed, Apr 24, 2024 at 12:49:18AM +0800, Sui Jingfeng wrote:
+> >> Hi,
+> >>
+> >> Thanks a for you reviewing my patch.
+> >>
+> >>
+> >> On 2024/4/23 21:28, Andy Shevchenko wrote:
+> >>> On Tue, Apr 23, 2024 at 12:46:58AM +0800, Sui Jingfeng wrote:
+> >>>> Because the software node backend of the fwnode API framework lacks an
+> >>>> implementation for the .device_get_match_data function callback. This
+> >>>> makes it difficult to use(and/or test) a few drivers that originates
+> >>> Missing space before opening parenthesis.
+> >> OK, will be fixed at the next version.
+> >>
+> >>
+> >>>> from DT world on the non-DT platform.
+> >>>>
+> >>>> Implement the .device_get_match_data fwnode callback, device drivers or
+> >>>> platform setup codes are expected to provide a string property, named as
+> >>>> "compatible", the value of this software node string property is used to
+> >>>> match against the compatible entries in the of_device_id table.
+> >>> Yep and again, how is this related? If you want to test a driver originating
+> >>> from DT, you would probably want to have a DT (overlay) to be provided.
+> >> There are a few reasons, please fixed me if I'm wrong.
+> >>
+> >> DT (overlay) can be possible solution, but DT (overlay) still depend on DT.
+> >> For example, one of my x86 computer with Ubuntu 22.04 Linux/x86 6.5.0-28-generic
+> >> kernel configuration do not has the DT enabled. This means that the default kernel
+> >> configuration is decided by the downstream OS distribution. It is not decided by
+> >> usual programmers. This means that out-of-tree device drivers can never utilize
+> >> DT or DT overlay, right?
+> > No, this is not fully correct. The drivers anyway have to adopted for
+> > the platforms they are used with. It is perfectly fine to have a driver
+> > that supports both DT and ACPI at the same time.
+> >
+> >> I means that Linux kernel is intended to be used by both in-tree drivers and out-of-tree drivers.
+> >> Out-of-tree device drivers don't have a chance to alter kernel config, they can only managed to
+> >> get their source code compiled against the Linux kernel the host in-using.
+> >>
+> >> Some out-of-tree device drivers using DKMS to get their source code compiled,
+> >> with the kernel configuration already *fixed*. So they don't have a opportunity
+> >> to use DT overlay.
+> >>
+> >> Relying on DT overlay is *still* *DT* *dependent*, and I not seeing matured solution
+> >> get merged into upstream kernel yet. However, software node has *already* been merged
+> >> into Linux kernel. It can be used on both DT systems and non-DT systems. Software node
+> >> has the least requirement, it is *handy* for interact with drivers who only need a small
+> >> set properties.
+> >>
+> >> In short, I still think my patch maybe useful for some peoples. DT overlay support on
+> >> X86 is not matured yet, need some extra work. For out-of-tree kernel module on
+> >> downstream kernel. Select DT and DT overlay on X86 is out-of-control. And I don't want
+> >> to restrict the freedom of developers.
+> > I don't think upstream developers care about the downstream kernels.
+>
+>
+> Theupstream kernels are facing the same problem,by default drm-misc-x86_defconfigdon't has the CONFIG_OF and CONFIG_OF_OVERLAY  selected.
+> See [1] for an example.
+>
+> [1] https://cgit.freedesktop.org/drm/drm-tip/tree/drm-misc-x86_defconfig?h=rerere-cache
+>
+>
+> > But let me throw an argument why this patch (or something similar) looks
+> > to be necessary.
+>
+> Agreed till to here.
+>
+>
+> > Both on DT and non-DT systems the kernel allows using the non-OF based
+> > matching. For the platform devices there is platform_device_id-based
+> > matching.
+>
+>
+> Yeah, still sounds good.
+>
+>
+> > Currently handling the data coming from such device_ids requires using
+> > special bits of code,
+>
+>
+> It get started to deviate from here, as you are going to rash onto a narrow way.
+> Because you made the wrong assumption, it can be platform devices, it can *also*
+> be of platform device created by the of_platform_device_create(). The patch itself
+> won't put strong restrictions about its users.
 
-It was wrong from beginning. If ACPI MADT wake up method is used on the
-platform, we cannot handle offline, regardless if it is TDX or not.
+Devices created via of_platform_device_create() have associated
+device_node, so they won't have such an issue.
 
-> And looking at patch 3, I'm still unclear as to why this change is done.
-> Is it that the "ACPI MADT mailbox wakeup method" is going to be used by
-> TDX guests now too so that you don't need CC_ATTR_HOTPLUG_DISABLED
-> anymore?
+>
+>
+> > e.g. platform_get_device_id(pdev)->driver_data to
+> > get the data from the platform_device_id.
+>
+> Right, but you run into a narrow area and stuck yourself.
+> The so called non-DT, non-ACPI platform devices are all you basis of you argument, right?
+>
+> There have plenty i2c device and SPI device associated with software note properties.
+> After applied this patch, it means that device_get_match_data() can also works for
+> those device.
+>
+> And the approach you provide already generate a lot of *boilerplate*...
 
-ACPI MADT is the only wakeup method supported in TDX guests. But offline
-is broken is because of ACPI MADT, not because of TDX.
+Ok, so here you are making an assumption that mentioned i2c and spi
+devices should use the same match data for OF and non-OF cases. This
+is not correct. These devices are matched against i2c_device_id and
+spi_device_id. These structures have their own driver_data fields. It
+doesn't seem logical to return match data from the structure that
+wasn't used for matching and ignore the data from the device_id that
+actually matched the device.
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+So yes, a proper solution from my POV requires teaching subsystems to
+populate data in a generic way that later can be used by
+device_get_match_data(). This way we can also deprecate
+i2c_get_match_data() and spi_get_match_data() and always use
+device_get_match_data() instead.
+
+>
+> > Having such codepaths goes
+> > against the goal of unifying DT and non-DT paths via generic property /
+> > fwnode code.
+>
+>
+> Who's goal? your goal or community's goal? is it documented somewhere?
+>
+> Andy's goal is just to make those two drivers truely DT independent,
+> and I agree with Andy. I'm going to cooperate with Andy to achieve this
+> small goal.
+>
+> However, apparently, our goal is *different* with your goal, your goal
+> is a big goal. If you have such a ambitious goal, you can definitely do
+> something on behalf of yourself.
+>
+> For example, improving DT overlay support for the FPGA device, Or making
+> the of_device_id stuff truly platform neutral before telling people that
+> "XXXX doesn't depend on DT". I guess task of removing the of_node member
+> from the struct device already in you job list, as you want to unify
+> the DT and non-DT code paths...
+>
+> All I want is just be able to contribute, do something useful and do the
+> right thing. So please don't throw your personal goal or taste onto the
+> body of other people. Thanks.
+
+I'm not throwing my goals onto anybody. But using taste is actually a
+part of reviewing the patches. Surely you can disagree here.
+
+
+> > As such, I support Sui's idea
+>
+>
+> OK so far. But,
+>
+>
+> > of being able to use device_get_match_data
+> > for non-DT, non-ACPI platform devices.
+>
+> Please *stop* the making biased assumptions!
+> Please stop the making *biased* assumptions!
+> Please stop the making biased *assumptions*!
+>
+>
+> Currently, the various display drivers don't have the acpi_device_id associated.
+> This means that those drivers won't probed even in ACPI enabled systems either.
+> Adding acpi_device_id to those drivers is another topic. If you have that ambitious,
+> you can take the job. But this again is another problem.
+
+acpi_device_id is required if those devices are matched against ACPI nodes.
+
+> Back to the concern itself, I didn't mention what device or what drivers will
+> be benefits in my commit message. In fact, after applied this patch,
+> device_get_match_data() will works for the i2c device and SPI device associated
+> with software note. Hence, "non-DT, non-ACPI platform devices" are just an imaginary
+> of yourself. So please stop bring you own confusion to us.
+
+Ok, excuse me here.
+
+>
+> > Sui, if that fits your purpose,
+>
+>
+> That doesn't fits my purpose, please stop the recommendation, thanks.
+>
+>
+> > please make sure that with your patch
+> > (or the next iteration of it) you can get driver_data from the matched
+> > platform_device_id.
+>
+>
+> No, that's a another problem.
+>
+> The 'platform_get_device_id(pdev)->driver_data' you mentioned is completely
+> off the domain of fwnode API framework. You are completely deviate what we
+> are currently talking about.
+>
+> What we are talking about is something within the fwnode API framework.
+>
+> You can hack the device_get_match_data() function to call platform_get_device_id()
+> as a fallback code path when the fwnode subsystem couldn't return a match data to
+> you. But this is another problem.
+
+No. I was using this as a pointer for having non-DT driver data. As I
+wrote several paragraphs above, other subsystems use their own
+driver-specific match structures. Reworking subsystems one-by-one to
+be able to use generic codepath sounds to me like a way to go. Adding
+"compatible" property doesn't.
+
+> >>>> This also helps to keep the three backends of the fwnode API aligned as
+> >>>> much as possible, which is a fundamential step to make device driver
+> >>>> OF-independent truely possible.
+> >>>>
+> >>>> Fixes: ffb42e64561e ("drm/tiny/repaper: Make driver OF-independent")
+> >>>> Fixes: 5703d6ae9573 ("drm/tiny/st7735r: Make driver OF-independent")
+> >>> How is it a fix?
+> >>
+> >> Because the drm/tiny/repaper driver and drm/tiny/st7735r driver requires extra
+> >> device properties. We can not make them OF-independent simply by switching to
+> >> device_get_match_data(). As the device_get_match_data() is a *no-op* on non-DT
+> >> environment.
+> > This doesn't constitute a fix.
+>
+>
+> No, it does.
+>
+> > It's not that there is a bug that you are
+> > fixing. You are adding new feature ('support for non-DT platforms').
+>
+>
+> Yes, it's a bit of farfetched.
+>
+> But as our goal is to make driver OF-independent, as mentioned in the commit title.
+> when the needed feature is missing, the goal can not be achieved. Fix the missing.
+
+Ok, what is the _bug_ that is being fixed by this patch? If you check
+the 'submitting-patches.rst', you'll find this phrase as a description
+of the Fixes: tag.
+
+> >> Hence, before my patch is applied, the two "Make driver OF-independent" patch
+> >> have no effect. Using device_get_match_data() itself is exactly *same* with
+> >> using of_device_get_match_data() as long as the .device_get_match_data hook is
+> >> not implemented.
+
+As far as I can see, repaper correctly handles the case by falling
+back to the spi_id. So does st7735r.c.
+
+--
+With best wishes
+Dmitry
 
