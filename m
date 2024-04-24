@@ -1,132 +1,102 @@
-Return-Path: <linux-kernel+bounces-156233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F61A8B0000
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DCFDD8B0005
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:47:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C11E31C236B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:46:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A2D31C22844
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:47:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A42F13BC16;
-	Wed, 24 Apr 2024 03:45:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678AE13C9B5;
+	Wed, 24 Apr 2024 03:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="VBzYkDzE"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GzChvpK0"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C557385C59;
-	Wed, 24 Apr 2024 03:45:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 713EB139CEB;
+	Wed, 24 Apr 2024 03:47:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713930355; cv=none; b=s8aASUzJvECE79nwxtBDwNZ/bVI7ka5DpE9Wy2u6gSvgfYMoEkK90eYYa5q4UGpbGoIOgLrhQU9l4TdbxvICAl9nw9gaAX7ChxkM5S37FUBY57ONdG1Cg2bH4xmHeAKOUbz/3JzSpv4xnRId/+TsgMfiDPU7iqbnQWW3APFCC7U=
+	t=1713930438; cv=none; b=npgrKruCZSLNpoiMTlaIx4iROOYruME6j7R0jGfp+bNQZZl5WGAu/pVGI6Ic2FOVjm+lUBOW8j1pb6ggpFa+Aao3//yNGfwJhigR2V7kDBIsq9+QjnzeEUU7rb0KkdLqiV56qsjlKAl3jn2JRiBLEa1sCgydTCrRjOrd8h0vGgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713930355; c=relaxed/simple;
-	bh=5KHG4Klud08VnzfawmdvcmznP0NCKI9/pGgclfwlI9A=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=qmvzh7kFT6obA37E/zHxaV5mMLjdNbM5JE0Mt7x/XSBzVXG7lSXq0hRcjmUqa04tukTPlErCQZrvzE8qhUqECLFcacSCG2NPfzYNRGiOYVp9/GDoDyLTMYq0tEjIrwtRQZxeE75tWtEFJ5YzUiOPl1YhHl8n+x8h8B1CyBxLn70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=VBzYkDzE; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1713930352;
-	bh=kqTWpcHaimLGklEUrnsjykAcbnJGjdI278ZkeHnvtLE=;
-	h=Date:From:To:Cc:Subject:From;
-	b=VBzYkDzEWwQ1xjE0WHmXjQAxegMiItStqJJpKXXsBdf+D1WmUr0eHA9lTaLOrFAM+
-	 XI7sUd7tqN5tjjrw6oW2tJaSPq7Sj9YcxJ4orhRx6lKvJhY9+wXpWo5L5gMNmwf+2v
-	 DaEOe4q1O5VdYhINLAJuke3Q3cmdk2olkjzdU8ssrIO55v18miNHOTtmL2kSTeHTNr
-	 /pdOQnm6SKvcQlJKddluIMmgIA6X0EwJEEqybJdITfLNOFGpOa+qmSv+zsJnXSzyYn
-	 qqlScacsYROYnCQHO4hUx1l/R7aRt25/f3DuhW2EJRWw1hCXo4QOF3eKiZK53M5oBJ
-	 g1lGbUnlnqVvA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VPPz40vvfz4wnv;
-	Wed, 24 Apr 2024 13:45:52 +1000 (AEST)
-Date: Wed, 24 Apr 2024 13:45:51 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: "Paul E. McKenney" <paulmck@kernel.org>, Luis Chamberlain
- <mcgrof@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, "Mike Rapoport (IBM)"
- <rppt@kernel.org>, "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: linux-next: manual merge of the rcu tree with the modules tree
-Message-ID: <20240424134551.44531979@canb.auug.org.au>
+	s=arc-20240116; t=1713930438; c=relaxed/simple;
+	bh=kSwT2UXH4kCmR450oMEHo7WWZc1PeFTIYoxSot7nJLw=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=gTRUxvOwmf0xUKbXrwIk857uqsoF0J/TEqFPnLDcWTEBGXrGhiGBeGKPhwNAm/QRCAe2GW4ihzgUmIsia7+CKqt6X9sM48tFa+KflDDqlibzTXkNAFVyFMfrlhoo5UwWInjVycUGSNv0n3AukpdwnqxVPdXO2GtEl/FTM5mDRjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GzChvpK0; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713930437; x=1745466437;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=kSwT2UXH4kCmR450oMEHo7WWZc1PeFTIYoxSot7nJLw=;
+  b=GzChvpK0QK5GSsUeyRYCLBfZ7QBqovvFS9HdF4xGtJl+rBLp+Mj7ur/3
+   yCZWT+9FXHQbnwPm9AbUl1qM/Q081T4+/lrJ6w1OdFXdk8VFZ8RwxH9TC
+   VkS8iy9S4Z4iOreI6IYVBuSdwYBfeUrWG6DjYPfJUVmbO6oIz/BfJFi8R
+   K9q0OLrDZNzZqqfRiApjuGEIVZUtU8Oup6vzsLKZx9Y6vVq1E78n2Wkre
+   SMHD5RJNb1Rr3ErzGml7ntTnIZzhcpSIhdKl/TwZQiASjr3RmtXwd4dwQ
+   +rMquoeH6FLFCBMXCmp1nO1lHgoOOWCi2OEdTmUB74N0XwFurvl6UjUlA
+   g==;
+X-CSE-ConnectionGUID: 2PXKQt8vSGyHTMt7UZBvxg==
+X-CSE-MsgGUID: X1KcXKwBQ5CJ35okYtzwbA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="20963613"
+X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
+   d="scan'208";a="20963613"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 20:47:16 -0700
+X-CSE-ConnectionGUID: Da9Wx48VRwCX/60hF2hTQw==
+X-CSE-MsgGUID: K9uhtQWSSButsq5T4hLV+Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
+   d="scan'208";a="25185814"
+Received: from unknown (HELO [10.239.159.127]) ([10.239.159.127])
+  by orviesa008.jf.intel.com with ESMTP; 23 Apr 2024 20:47:15 -0700
+Message-ID: <6a08e3ea-572d-442b-9b58-7da0b0ad212e@linux.intel.com>
+Date: Wed, 24 Apr 2024 11:45:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=s271tOq0qvWSVNq73D9bg0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] iommu/vt-d: remove redundant assignment to variable
+ err
+To: Colin Ian King <colin.i.king@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ iommu@lists.linux.dev
+References: <20240411090535.306326-1-colin.i.king@gmail.com>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240411090535.306326-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---Sig_/=s271tOq0qvWSVNq73D9bg0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 4/11/24 5:05 PM, Colin Ian King wrote:
+> Variable err is being assigned a value that is never read. It is
+> either being re-assigned later on error exit paths, or never referenced
+> on the non-error path.
+> 
+> Cleans up clang scan build warning:
+> drivers/iommu/intel/dmar.c:1070:2: warning: Value stored to 'err' is
+> never read [deadcode.DeadStores]`
+> 
+> Signed-off-by: Colin Ian King<colin.i.king@gmail.com>
+> ---
+>   drivers/iommu/intel/dmar.c | 1 -
+>   1 file changed, 1 deletion(-)
 
-Hi all,
+Patch has been queued for iommu/vt-d.
 
-Today's linux-next merge of the rcu tree got a conflict in:
-
-  arch/Kconfig
-
-between commit:
-
-  3f26835b6c72 ("kprobes: remove dependency on CONFIG_MODULES")
-
-from the modules tree and commit:
-
-  900da4d2a57c ("arch: Select new NEED_TASKS_RCU Kconfig option")
-
-from the rcu tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/Kconfig
-index 0ce4df5afd95,93d5010dfc92..000000000000
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@@ -52,10 -52,10 +52,10 @@@ config GENERIC_ENTR
- =20
-  config KPROBES
-  	bool "Kprobes"
- -	depends on MODULES
-  	depends on HAVE_KPROBES
-  	select KALLSYMS
- +	select EXECMEM
-- 	select TASKS_RCU if PREEMPTION
-+ 	select NEED_TASKS_RCU
-  	help
-  	  Kprobes allows you to trap at almost any kernel address and
-  	  execute a callback function.  register_kprobe() establishes
-
---Sig_/=s271tOq0qvWSVNq73D9bg0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYogG8ACgkQAVBC80lX
-0GyMQQgAofxbv9h7HzukOk6AEY7+11fAkec8OxbeFBBYWkMek2D0batnoe1fJl8v
-BGc6EswaKuPbnAAjPrW9fzgh6joylgDJzOv771p2Jk8KAHFAw9AKDLZEgw4CHLhU
-ig36LlzGlh61IqGav3+1mYrLNQa1489uNq1u6V45eGq98ZN71Ekj3EXpIo/cymG8
-IozEegtYkO0DyGoI5qsObyP7wIiyMUm0GvyQmYDN2yGyfOzEfyJWU95B5meKwC3J
-sg40l7F+K3L8ybi98bzhrbx+7ppoLNgLw8Uw1sco/LBpZcs+gN3oDNPa0+NjIfbk
-SUT4yAPD927gj9TEVcJzn+rhQ6eASA==
-=oaCN
------END PGP SIGNATURE-----
-
---Sig_/=s271tOq0qvWSVNq73D9bg0--
+Best regards,
+baolu
 
