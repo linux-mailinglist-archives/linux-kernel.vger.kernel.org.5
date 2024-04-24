@@ -1,99 +1,127 @@
-Return-Path: <linux-kernel+bounces-156886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7658A8B09E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:43:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 038DF8B09E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:43:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 172331F25863
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:43:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C215B25851
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A15EB158DC2;
-	Wed, 24 Apr 2024 12:43:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6449D156C68;
+	Wed, 24 Apr 2024 12:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="KYPxvwZR"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="EpyztPFx";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="X+mJDKLP"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 774A133989;
-	Wed, 24 Apr 2024 12:43:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6560B33989;
+	Wed, 24 Apr 2024 12:43:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713962586; cv=none; b=GiDP7Zt/1JRRxO4HvCxNDukcwErPgb4XZ0MSPJlpFjvk9VR8zPWm3mJB4kjZ6U5g2YjcvUH3LVHl5NGdBr5+L7m4GqhRuU4e+MquwGv3UFf7CcdTEdQW0CbKRRPXBnZSaAQeb+rVqtnV1lRHdu/K7VsC2L0h/sJaIg6uB/ob0Gk=
+	t=1713962599; cv=none; b=CTDiaPgjdwZH499Xd+A7n2EiSeNmaBmgvN1o7vWnoHdsVDgq79AKPIg1MdU25uQ9pMz6+L2HFFuLwPNG302UlffZpZjYOnbHKNIti5k5yxYZL46GskQHnSCPv7Hkgomcxu8zgse/9IorFK9K/T2hOkD16Nd3RKTzRy2Q5IzlS9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713962586; c=relaxed/simple;
-	bh=EsHCFFqeXC3UpFgM4lcKScBITPJEM2RivFdqL6BqyIs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OjgTMNAAahZ37F7BTYEQzVOS1n6OAOkH2EwuF+mfed+G6B1bMxsKwUeYJrzBi9nMXJpUAqA0RygCAjeDSb70oQ0P/t/6un5uDI14H9+Oxy2EGSvOvvJdo5/ZAyx4FX0TFh3f9c/u5F8me/gOi04EtMZdfloCtImfHwyOz1Fvsn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=KYPxvwZR; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=9Fwu/iXQ1akt4L+GrdADymSlsnXBLzNXy+RDvydRMpg=; b=KYPxvwZRXoY6w+ZizdV+PLfpFj
-	3zSm+ScOya+jLE+RiFFiu8NOqc75y/OV+kUaqMRC5uJtVgf4D+ER/q3tTCfccGKpwg59Ux2lk7q0F
-	ZaC48jQsFbYdemORUieKZQAdGv1fegF9ymivG08W0sHq+kkrQwquWTDKcBOJtHz7ViKY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rzbxd-00DoUa-Iv; Wed, 24 Apr 2024 14:42:53 +0200
-Date: Wed, 24 Apr 2024 14:42:53 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux@ew.tq-group.com
-Subject: Re: [PATCH net-next] net: phy: marvell: add support for MV88E6020
- internal PHYs
-Message-ID: <19c4b8da-203e-4a81-9531-9ba4a4f750fd@lunn.ch>
-References: <20240424121022.160920-1-matthias.schiffer@ew.tq-group.com>
+	s=arc-20240116; t=1713962599; c=relaxed/simple;
+	bh=IRKcdmhT4sIety80BPi8y3Ndwm5wDa35FgP+JRKhwhg=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=SvMQQ6VyM+4QrnS0164FwVeniLr4bh7+wulhssEDkaVz6OgdmkFsG8csxq6j6s/7LVp5F17KEqvRFuCgKKd45fZKPWNPHRqarfKP9wiXMSG1wN3gLU6zJ+NqCt4VG++1a4bxZfPTjRLi0rr2CJGfOMXPIa6CZXEQLjJmXlqOSo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=EpyztPFx; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=X+mJDKLP; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 24 Apr 2024 12:43:15 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713962596;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OUQE+acBF3dvV/ZAfvhPLXrAIWvFtQLpqbB1lud0+Cs=;
+	b=EpyztPFxY+/m1m2t4kxVmUPlX9cT3It5DM8UChrA1/uJGo8ERIULz+yV7os+vVcU6iqAEr
+	5YCcj4HOTN6cEURCWS68oTjFIVvbxfjxl3oGH92mgHix01NwPon9wbfztm6KcsRBicy0XX
+	J6NKetpytrA8llnRQ/cL8a1Ek3oXiG4VDYRNlG88dt6Ta1xZQo9S5N7M/vmhUE1ILQw5W6
+	Oer0Rmz3SAijmpsW82oq+7+f4VocoPovvJ9Pe7ZBZY4cVe5sy9nFplNn69lGYJOV7UKEEs
+	gaqMoCeoqXH52N45AYULBFvNTspJsmC4PBvetZE8zIiG9E12r2jcfBKmrql5Zw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713962596;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OUQE+acBF3dvV/ZAfvhPLXrAIWvFtQLpqbB1lud0+Cs=;
+	b=X+mJDKLPi0SQpfnOwPR4UuOt5CoVpydMIZ27tSlBLIm1s/XOEdcvZn+ZIYchkEqAEfKx7h
+	HjVuN+uIa4K5BhCA==
+From: "tip-bot2 for David Kaplan" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/cpu: Fix check for RDPKRU in __show_regs()
+Cc: David Kaplan <david.kaplan@amd.com>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240421191728.32239-1-bp@kernel.org>
+References: <20240421191728.32239-1-bp@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424121022.160920-1-matthias.schiffer@ew.tq-group.com>
+Message-ID: <171396259581.10875.10910607244661766462.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 24, 2024 at 02:10:22PM +0200, Matthias Schiffer wrote:
-> The embedded PHYs of the MV88E6020 (88E6250 family) switch are very
-> basic - they do not even have an Extended Address / Page register.
-> 
-> This adds support for the PHYs to the driver to set up PHY interrupts
-> and retrieve error stats. The ethtool stat functions are slightly
-> refactored to allow dealing with different marvell_hw_stat definitions.
-> 
-> The same code should also work with other 88E6250 family switches
-> (6250/6220/6071/6070), but it is unclear whether these use the same PHY
-> ID - the spec only lists the prefix 0x01410c00 and describes the lower
-> 10 bits as reserved, but that seems too unspecific to be useful, as it
-> would cover several existing PHY IDs already supported by the driver.
+The following commit has been merged into the x86/urgent branch of tip:
 
-This sounds like:
+Commit-ID:     b53c6bd5d271d023857174b8fd3e32f98ae51372
+Gitweb:        https://git.kernel.org/tip/b53c6bd5d271d023857174b8fd3e32f98ae51372
+Author:        David Kaplan <david.kaplan@amd.com>
+AuthorDate:    Sun, 21 Apr 2024 21:17:28 +02:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Wed, 24 Apr 2024 14:30:21 +02:00
 
-https://elixir.bootlin.com/linux/latest/source/drivers/net/dsa/mv88e6xxx/chip.c#L3642
+x86/cpu: Fix check for RDPKRU in __show_regs()
 
-So the DSA driver will fill in the lower bits, and it should work for
-all devices in the family.
+cpu_feature_enabled(X86_FEATURE_OSPKE) does not necessarily reflect
+whether CR4.PKE is set on the CPU.  In particular, they may differ on
+non-BSP CPUs before setup_pku() is executed.  In this scenario, RDPKRU
+will #UD causing the system to hang.
 
-> @@ -4072,6 +4134,7 @@ static struct mdio_device_id __maybe_unused marvell_tbl[] = {
->  	{ MARVELL_PHY_ID_88E1540, MARVELL_PHY_ID_MASK },
->  	{ MARVELL_PHY_ID_88E1545, MARVELL_PHY_ID_MASK },
->  	{ MARVELL_PHY_ID_88E3016, MARVELL_PHY_ID_MASK },
-> +	{ MARVELL_PHY_ID_88E6020, MARVELL_PHY_ID_MASK },
->  	{ MARVELL_PHY_ID_88E6341_FAMILY, MARVELL_PHY_ID_MASK },
+Fix by checking CR4 for PKE enablement which is always correct for the
+current CPU.
 
-Please follow the naming convention. MARVELL_PHY_ID_88E6250_FAMILY.
+The scenario happens by inserting a WARN* before setup_pku() in
+identiy_cpu() or some other diagnostic which would lead to calling
+__show_regs().
 
-       Andrew
+  [ bp: Massage commit message. ]
+
+Signed-off-by: David Kaplan <david.kaplan@amd.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20240421191728.32239-1-bp@kernel.org
+---
+ arch/x86/kernel/process_64.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+index 7062b84..6d3d20e 100644
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -139,7 +139,7 @@ void __show_regs(struct pt_regs *regs, enum show_regs_mode mode,
+ 		       log_lvl, d3, d6, d7);
+ 	}
+ 
+-	if (cpu_feature_enabled(X86_FEATURE_OSPKE))
++	if (cr4 & X86_CR4_PKE)
+ 		printk("%sPKRU: %08x\n", log_lvl, read_pkru());
+ }
+ 
 
