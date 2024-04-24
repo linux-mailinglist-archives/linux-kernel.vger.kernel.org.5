@@ -1,153 +1,142 @@
-Return-Path: <linux-kernel+bounces-156946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 616488B0AB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:20:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5A168B0AAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:19:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77606B252C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:20:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61ABD283CB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D8115CD4A;
-	Wed, 24 Apr 2024 13:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lHgApBrG"
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41FBD15B562
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:19:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C958C15CD5C;
+	Wed, 24 Apr 2024 13:19:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D1A515B546;
+	Wed, 24 Apr 2024 13:19:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713964788; cv=none; b=E/8pso4AjGhP3vFN3i8tWn5DNnuZVLnNAJ0Vw1COhGw0SLLWkkQ7sNzGaYDWsuPzE98cvVWuCHffZzdh8JKctYppgtqDn0V3OAXtYEs6W8pdA+I/ubF6UkkgwvtPQzaqJUGSHKVl7xzCCZP/179zOh0GGK3iKia5ZMDSGd9ylEI=
+	t=1713964778; cv=none; b=B0dQrL9uwM7BwBtbqJuaGU0O5QvjEdWxJRrgsWdWJFjKJfNoOA1GaYH+e27mVLf0WY0jKhLoLb77IoWdNTbFGzzwrrztF72lVd/jjYziU1M2NO1HNnniJ3yYVeIIWSt+W51Ogn5+mkZd7bkNCr1SvIYIp48DRXKov+rea254YTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713964788; c=relaxed/simple;
-	bh=/GQoX1gc0yl6e/Pz8zk6L9EPOwroU4wExy1cX78SnUI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QyRKp3eRzczhXuUbfvbc8ZUfBP/c0zzD29oycPBqBvZe/RbpQ1HcZPj//15sM4nlR7a9ksLmyCr3uCQc6C3657yjUiDo/2bL9HrIYUYL/ZxwtnDePTbcnUXgk36jb9FLBYRToAZXaYEkn9HckliH3iuRYqZ8ipOdvWrlcPb06ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lHgApBrG; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-6082fd3e96eso120716a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:19:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713964786; x=1714569586; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8VvHJ58Y+Q3UWAzWsSTTjuIwD8U8vgOkrH/9YIF6f+M=;
-        b=lHgApBrG4E6j0tbQuXywkr1MB58N2Bx9nktuAzORtFE377i1FUVwrKNdg871OpwQvK
-         tmBuLsubIW6D+NgNoy9IcN4PgzuKaN/7pYR36T1Bwmxfh7+2yPQn7npHwO+e/kPs2K63
-         WmHL37zDXk4UHA6ztqWrVCiy4aFkqIrmHZVUI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713964786; x=1714569586;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8VvHJ58Y+Q3UWAzWsSTTjuIwD8U8vgOkrH/9YIF6f+M=;
-        b=qmDNkCdB3B84gDZ5bRA9DiIFPq3IxiCahJq7YTGyaeUYjOxhUr/ss2eMSw9TyYqR8E
-         j0IglX9FuCdHgHxVlDwylLNl/aKiblO19OsEXcEenxL8TUlaTUOq467eoSlpw4duqKO4
-         mnuoQtz31eJsIVrYeJZrx4Eaq5a4lAiVYt9Kt5TJfvS7/m+ViTYhLBhtVqwjlki2aCKX
-         +Jc9MBReTZMTNueZWiQb/Y57qCkqA4h1v+ehqQbwhTxc2KprH1mWjPZczjo2H1noNILv
-         q6XXfQQPHzOz5XJ2NSAYlHrrp4OLLa2H+7DNIjnmEOxGvU+38+DLmURqarEbFaCrnwU9
-         hd2g==
-X-Forwarded-Encrypted: i=1; AJvYcCWeA4+uPdZ74YYpjK+iKWDEoY62/WRRG4fwCtgHtkgKFrmGJ8Yt7taeGu/gdUVSl6ior61oP0cYyBQxLla9ofJwMooZUFme42B5ZMPL
-X-Gm-Message-State: AOJu0YxfLLlSqjoJl9wcjtvZTz9kPSShzCCeIpfEfh0eGE39cE7/2wYY
-	GX5yAfiiComq8rdg3EMxAWT9o7D+hzorLh4JyUGmGJm1W4eyE7zbAG/HYrBR82B9GIJWx+oBjs8
-	CuXpz+jY0iRCcC3emVGbY3V81ROzHLVdXQnaF
-X-Google-Smtp-Source: AGHT+IEUzUPrMZm5/9Nr7/HujqEqTFgw9lpTp1RH6c+ZBPmhrdCrzL9/trH59BuNk2ibQ8CFKYuYBk72hhVixMAIZqA=
-X-Received: by 2002:a17:90b:4f41:b0:2a5:275c:ed with SMTP id
- pj1-20020a17090b4f4100b002a5275c00edmr2474867pjb.23.1713964786600; Wed, 24
- Apr 2024 06:19:46 -0700 (PDT)
+	s=arc-20240116; t=1713964778; c=relaxed/simple;
+	bh=ra/7jHys5HrzBtDMjN1d+lExD93krBdyqnbBb71Q7v4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DwUwc3Fc0TB1TWjXIhHO7n4N6dhkruuZrxKc0cXsOHXQzMT7kjJ4RvMpNfUc4ruaQx/eloxiVnJS3hXKT1OopH6Pwn3A20iqtwYrUtkCEDIiBMiYILXpjuBfmkCoHJDCSoCh+Oy/5SW58TL6xMlDlBVFiZmshbBSit0cbxWT2jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 438422F;
+	Wed, 24 Apr 2024 06:20:02 -0700 (PDT)
+Received: from [10.57.86.198] (unknown [10.57.86.198])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2932E3F64C;
+	Wed, 24 Apr 2024 06:19:32 -0700 (PDT)
+Message-ID: <87ac462c-c453-4f3a-9b0e-5542727578aa@arm.com>
+Date: Wed, 24 Apr 2024 14:19:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <171318533841.254850.15841395205784342850.stgit@devnote2>
- <171318535003.254850.2125783941049872788.stgit@devnote2> <CABRcYmK_Btem8cBbz=j==RWxw11PQ8cNAUshNA540VD3O=2WEQ@mail.gmail.com>
-In-Reply-To: <CABRcYmK_Btem8cBbz=j==RWxw11PQ8cNAUshNA540VD3O=2WEQ@mail.gmail.com>
-From: Florent Revest <revest@chromium.org>
-Date: Wed, 24 Apr 2024 15:19:24 +0200
-Message-ID: <CABRcYmK+JMLDf41csuZB4aJSb9956wTy=5rpB1YDsSv0-MoZHg@mail.gmail.com>
-Subject: Re: [PATCH v9 01/36] tracing: Add a comment about ftrace_regs definition
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Alan Maguire <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 14/14] virt: arm-cca-guest: TSM_REPORT support for
+ realms
+Content-Language: en-GB
+To: Steven Price <steven.price@arm.com>, kvm@vger.kernel.org,
+ kvmarm@lists.linux.dev
+Cc: Sami Mujawar <sami.mujawar@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
+ Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
+ Oliver Upton <oliver.upton@linux.dev>, Zenghui Yu <yuzenghui@huawei.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Joey Gouly <joey.gouly@arm.com>, Alexandru Elisei
+ <alexandru.elisei@arm.com>, Christoffer Dall <christoffer.dall@arm.com>,
+ Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
+ Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+References: <20240412084056.1733704-1-steven.price@arm.com>
+ <20240412084213.1733764-1-steven.price@arm.com>
+ <20240412084213.1733764-15-steven.price@arm.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20240412084213.1733764-15-steven.price@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 24, 2024 at 2:23=E2=80=AFPM Florent Revest <revest@chromium.org=
-> wrote:
->
-> On Mon, Apr 15, 2024 at 2:49=E2=80=AFPM Masami Hiramatsu (Google)
-> <mhiramat@kernel.org> wrote:
-> >
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> >
-> > To clarify what will be expected on ftrace_regs, add a comment to the
-> > architecture independent definition of the ftrace_regs.
-> >
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > Acked-by: Mark Rutland <mark.rutland@arm.com>
-> > ---
-> >  Changes in v8:
-> >   - Update that the saved registers depends on the context.
-> >  Changes in v3:
-> >   - Add instruction pointer
-> >  Changes in v2:
-> >   - newly added.
-> > ---
-> >  include/linux/ftrace.h |   26 ++++++++++++++++++++++++++
-> >  1 file changed, 26 insertions(+)
-> >
-> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> > index 54d53f345d14..b81f1afa82a1 100644
-> > --- a/include/linux/ftrace.h
-> > +++ b/include/linux/ftrace.h
-> > @@ -118,6 +118,32 @@ extern int ftrace_enabled;
-> >
-> >  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
-> >
-> > +/**
-> > + * ftrace_regs - ftrace partial/optimal register set
-> > + *
-> > + * ftrace_regs represents a group of registers which is used at the
-> > + * function entry and exit. There are three types of registers.
-> > + *
-> > + * - Registers for passing the parameters to callee, including the sta=
-ck
-> > + *   pointer. (e.g. rcx, rdx, rdi, rsi, r8, r9 and rsp on x86_64)
-> > + * - Registers for passing the return values to caller.
-> > + *   (e.g. rax and rdx on x86_64)
->
-> Ooc, have we ever considered skipping argument registers that are not
-> return value registers in the exit code paths ? For example, why would
-> we want to save rdi in a return handler ?
->
-> But if we want to avoid the situation of having "sparse ftrace_regs"
-> all over again, we'd have to split ftrace_regs into a ftrace_args_regs
-> and a ftrace_ret_regs which would make this refactoring even more
-> painful, just to skip a few instructions. :|
->
-> I don't necessarily think it's worth it, I just wanted to make sure
-> this was considered.
+On 12/04/2024 09:42, Steven Price wrote:
+> From: Sami Mujawar <sami.mujawar@arm.com>
+> 
+> Introduce an arm-cca-guest driver that registers with
+> the configfs-tsm module to provide user interfaces for
+> retrieving an attestation token.
+> 
+> When a new report is requested the arm-cca-guest driver
+> invokes the appropriate RSI interfaces to query an
+> attestation token.
+> 
+> The steps to retrieve an attestation token are as follows:
+>    1. Mount the configfs filesystem if not already mounted
+>       mount -t configfs none /sys/kernel/config
+>    2. Generate an attestation token
+>       report=/sys/kernel/config/tsm/report/report0
+>       mkdir $report
+>       dd if=/dev/urandom bs=64 count=1 > $report/inblob
+>       hexdump -C $report/outblob
+>       rmdir $report
+> 
+> Signed-off-by: Sami Mujawar <sami.mujawar@arm.com>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: Steven Price <steven.price@arm.com>
+> ---
+>   drivers/virt/coco/Kconfig                     |   2 +
+>   drivers/virt/coco/Makefile                    |   1 +
+>   drivers/virt/coco/arm-cca-guest/Kconfig       |  11 +
+>   drivers/virt/coco/arm-cca-guest/Makefile      |   2 +
+>   .../virt/coco/arm-cca-guest/arm-cca-guest.c   | 208 ++++++++++++++++++
+>   5 files changed, 224 insertions(+)
+>   create mode 100644 drivers/virt/coco/arm-cca-guest/Kconfig
+>   create mode 100644 drivers/virt/coco/arm-cca-guest/Makefile
+>   create mode 100644 drivers/virt/coco/arm-cca-guest/arm-cca-guest.c
+> 
+> diff --git a/drivers/virt/coco/Kconfig b/drivers/virt/coco/Kconfig
+> index 87d142c1f932..4fb69804b622 100644
+> --- a/drivers/virt/coco/Kconfig
+> +++ b/drivers/virt/coco/Kconfig
+> @@ -12,3 +12,5 @@ source "drivers/virt/coco/efi_secret/Kconfig"
+>   source "drivers/virt/coco/sev-guest/Kconfig"
+>   
+>   source "drivers/virt/coco/tdx-guest/Kconfig"
+> +
+> +source "drivers/virt/coco/arm-cca-guest/Kconfig"
+> diff --git a/drivers/virt/coco/Makefile b/drivers/virt/coco/Makefile
+> index 18c1aba5edb7..a6228a1bf992 100644
+> --- a/drivers/virt/coco/Makefile
+> +++ b/drivers/virt/coco/Makefile
+> @@ -6,3 +6,4 @@ obj-$(CONFIG_TSM_REPORTS)	+= tsm.o
+>   obj-$(CONFIG_EFI_SECRET)	+= efi_secret/
+>   obj-$(CONFIG_SEV_GUEST)		+= sev-guest/
+>   obj-$(CONFIG_INTEL_TDX_GUEST)	+= tdx-guest/
+> +obj-$(CONFIG_ARM_CCA_GUEST)	+= arm-cca-guest/
+> diff --git a/drivers/virt/coco/arm-cca-guest/Kconfig b/drivers/virt/coco/arm-cca-guest/Kconfig
+> new file mode 100644
+> index 000000000000..c4039c10dce2
+> --- /dev/null
+> +++ b/drivers/virt/coco/arm-cca-guest/Kconfig
+> @@ -0,0 +1,11 @@
+> +config ARM_CCA_GUEST
+> +	tristate "Arm CCA Guest driver"
+> +	depends on ARM64
+> +	default m
+> +	select TSM_REPORTS
+> +	help
+> +	  The driver provides userspace interface to request and
+> +	  attestation report from the Realm Management Monitor(RMM).
+> +
+> +	  If you choose 'M' here, this module will be called
+> +	  realm-guest.
 
-Ah, well, I just reached patch 22 and noticed that there you add add:
+This needs to be updated to arm-cca-guest.
 
-+ * Basically, ftrace_regs stores the registers related to the context.
-+ * On function entry, registers for function parameters and hooking the
-+ * function call are stored, and on function exit, registers for function
-+ * return value and frame pointers are stored.
+Suzuki
 
-So ftrace_regs can be a a sparse structure then. That's fair enough with me=
-! ;)
 
