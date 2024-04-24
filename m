@@ -1,96 +1,154 @@
-Return-Path: <linux-kernel+bounces-156041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B0FF8AFD0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:03:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A6898AFD10
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:03:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBDF62840AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:03:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 800431C2205E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:03:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59C931C14;
-	Wed, 24 Apr 2024 00:02:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D61046BF;
+	Wed, 24 Apr 2024 00:03:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="C0BEo15Q"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EQk7ZzDZ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699C3193;
-	Wed, 24 Apr 2024 00:02:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA895363
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 00:03:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713916971; cv=none; b=IGohGt1BUeWHK7qU9Zq7nhM5TEDbKYgE53mN2xwcrUWSauuLzbrDESDrk47hhgfpeFAOzKfuPVgdSbqiW8ykkutHS5k9x00AuT/NvXMs/Wu1W0QJCJKpbjCerkEM5mwd+H9dfOXyshoMh8GpE3QprBAtOmpS7W1XyOmPF5MiShc=
+	t=1713917013; cv=none; b=L7Hyz7DoeMMKejP5ISl/jgQUiRpk4f1c9eOD4ku/rVIKQuKSRVBHxGzxZZ09CaCK+5oTEtL3uPp4j6OhrT75M/eYer5Lfgd/+ytReaI8KaOr9joh2Ly06J1VTP+YLTDOvRY/XWolQBJCwTJFZwuaDrU7I/JRUtm0xMUqdJNsKvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713916971; c=relaxed/simple;
-	bh=zvEIcMVTlwJZSglb1GiKi9TnhASLIxAL9lSNUP9cJFI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZDoNDcPO+mxgn2TnALIBNzB7yV1TbQI1sNdkm3VTO0ZDLLlqRB91i0+WpRx+FRTN6U48syqnU/q9b4itNWGtwcj0hddAl5FeV2xWnARHjTBfAZUzbeEONK4fJRSa556tgI8hr6yJxlJAbekudSI12r1QPUsWmjEGu9JNpvcrX10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=C0BEo15Q; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=L/ug2r4EVbSkWdawJ0j/nghtH+tymAoyGiGC07jOBcA=; b=C0BEo15Q9n41MglXN7Nc441kp3
-	Wjld1mD32vxcmfyS9ftxL9uaoaTenHu1cxmy3tSSmRkkIT90sj0gUR547uxUVRWcOypLMw3ntjG0d
-	P55ZuaelFIfdoHaIYaBsmodQRUF0UuwKu63Rz8vHFtT/m5cBUTfz3S0p7jOud7MFRWI0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rzQ5u-00DlJY-U9; Wed, 24 Apr 2024 02:02:38 +0200
-Date: Wed, 24 Apr 2024 02:02:38 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
-	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, corbet@lwn.net,
-	linux-doc@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
-	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
-	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
-	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
-	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
-	benjamin.bigler@bernformulastudent.ch
-Subject: Re: [PATCH net-next v4 08/12] net: ethernet: oa_tc6: implement
- transmit path to transfer tx ethernet frames
-Message-ID: <460a42cf-2b67-49f5-be4d-fcce6c824ba6@lunn.ch>
-References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
- <20240418125648.372526-9-Parthiban.Veerasooran@microchip.com>
+	s=arc-20240116; t=1713917013; c=relaxed/simple;
+	bh=gsUtGZZq6fUGo0XzPltRplyvYybIdyhTRnloCzmNZws=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qCs8/fnfxBWgcRAre+KZQDt0+W6dhpd344BsSFmLB+ykfRqZpYtdJUYC244Yj8jlWKR0IcbjSh4HJJ/qX0z0090/oJTMXlXY63aN5rEEfQvd3OP8LEwA0U5krzk53iroSUy1BKjBiyBoDZg5+KajUn72jgs5+ouSr5dPxphC8aY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EQk7ZzDZ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713917010;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+7QM8WAkcLyUMI8zMr5qB785VaErLLFUty72zypO/LA=;
+	b=EQk7ZzDZxXBotzc3+8IytlOV7huhSg/L2uu+xNqDxk5uL/X7x9bTrlmNsY/ewP6GT8fVOU
+	kSezsL5qepA1aDVv2rGmOF42IcAfg+K1On6Nigo6sHkYjU89RbYmbzIbmBj2Zj3D5Zrt4j
+	gzZWtt+J6pM70Ry/H03Iigzoyvh0Sbk=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-662-UXAYJzIdPwi4eCx9YA8LfQ-1; Tue, 23 Apr 2024 20:03:29 -0400
+X-MC-Unique: UXAYJzIdPwi4eCx9YA8LfQ-1
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6eb7e2c6c53so8404235a34.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:03:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713917008; x=1714521808;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+7QM8WAkcLyUMI8zMr5qB785VaErLLFUty72zypO/LA=;
+        b=JR+3LeUcz5a8LCa6rmqkYlTnX4CkgUgtT7OO7vK6OHKFpQGqbHunbKVm/LWcFZSktC
+         tCH10UWpq739507CBvPRq8V1eUu8L5hFK570rle0n8OLfkYL/E22PfqFMWhMevKyTLtt
+         G5zd5o9J36zoD4XDcJGRqaa7Ln7NSpR6B0JYA222ZORp6kNzQdptcJdTPqjQbUbY58ol
+         la9kDVQSZRiWwPVCT+/gdjDZSOr1JBOTD96XPg+N54DZJZ69salhupNSkpAGc/m6OJY0
+         XoSfiwhZwQhWlYKY5BENd5vT/O8Dpy9ERD1HkcoBpvOAtjyWFsq3A8rpGOBDIkL/WCXH
+         lI4A==
+X-Forwarded-Encrypted: i=1; AJvYcCVf2bqzVxo+9bYwn4K6pLeiB7MCFlT6Ok2Um21hLe0vu2eDn9wUj5ZYYRZcMsP3KY+sK3EyBihcSmYzqJ/pAaqEaO52Jj3Ntguh716h
+X-Gm-Message-State: AOJu0YxJi9HjZP+L4Z54GTIWg2uHomNzqrfhArE+by+xAOYwPCeZPYmO
+	ULgcLTbYjf/o0z+0CMZKwd07qcchqR2QnYdDYkQZZafVmtuoX7LrW9AihmaVx+qPzdCqqD2moLm
+	E93bYjV0wQiaUuLgpAa9f+L/atyMyVYR5WbWM7tJjJDOMHKb6GgW07Wcm44A7XA==
+X-Received: by 2002:a05:6870:b418:b0:221:1c2f:23ee with SMTP id x24-20020a056870b41800b002211c2f23eemr1001117oap.22.1713917008186;
+        Tue, 23 Apr 2024 17:03:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEOjc1kQNpUxZ3Tmzq9lEvctMcDPvQKtuoCt7wDBTr2svwK8MstO02ep08rCXVV0Zru+v4gUA==
+X-Received: by 2002:a05:6870:b418:b0:221:1c2f:23ee with SMTP id x24-20020a056870b41800b002211c2f23eemr1001083oap.22.1713917007834;
+        Tue, 23 Apr 2024 17:03:27 -0700 (PDT)
+Received: from [10.72.116.107] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id m2-20020a638c02000000b005e857e39b10sm10052652pgd.56.2024.04.23.17.03.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 17:03:27 -0700 (PDT)
+Message-ID: <afdd1884-b1fd-42cc-b657-e2d397a7c197@redhat.com>
+Date: Wed, 24 Apr 2024 08:03:19 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418125648.372526-9-Parthiban.Veerasooran@microchip.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/8] ceph: drop usage of page_index
+To: Kairui Song <kasong@tencent.com>, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ "Huang, Ying" <ying.huang@intel.com>, Matthew Wilcox <willy@infradead.org>,
+ Chris Li <chrisl@kernel.org>, Barry Song <v-songbaohua@oppo.com>,
+ Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>,
+ Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>,
+ David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Ilya Dryomov <idryomov@gmail.com>, Jeff Layton <jlayton@kernel.org>,
+ ceph-devel@vger.kernel.org
+References: <20240423170339.54131-1-ryncsn@gmail.com>
+ <20240423170339.54131-5-ryncsn@gmail.com>
+Content-Language: en-US
+From: Xiubo Li <xiubli@redhat.com>
+In-Reply-To: <20240423170339.54131-5-ryncsn@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> +static int oa_tc6_process_extended_status(struct oa_tc6 *tc6)
-> +{
-> +	u32 value;
-> +	int ret;
-> +
-> +	ret = oa_tc6_read_register(tc6, OA_TC6_REG_STATUS0, &value);
-> +	if (ret) {
-> +		netdev_err(tc6->netdev, "STATUS0 register read failed: %d\n",
-> +			   ret);
-> +		return -ENODEV;
-> +	}
-> +
-> +	/* Clear the error interrupts status */
-> +	ret = oa_tc6_write_register(tc6, OA_TC6_REG_STATUS0, value);
-> +	if (ret) {
-> +		netdev_err(tc6->netdev, "STATUS0 register write failed: %d\n",
-> +			   ret);
-> +		return -ENODEV;
 
-More examples where you replace one error code with a different one.
+On 4/24/24 01:03, Kairui Song wrote:
+> From: Kairui Song <kasong@tencent.com>
+>
+> page_index is needed for mixed usage of page cache and swap cache,
+> for pure page cache usage, the caller can just use page->index instead.
+>
+> It can't be a swap cache page here, so just drop it.
+>
+> Signed-off-by: Kairui Song <kasong@tencent.com>
+> Cc: Xiubo Li <xiubli@redhat.com>
+> Cc: Ilya Dryomov <idryomov@gmail.com>
+> Cc: Jeff Layton <jlayton@kernel.org>
+> Cc: ceph-devel@vger.kernel.org
+> ---
+>   fs/ceph/dir.c   | 2 +-
+>   fs/ceph/inode.c | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/ceph/dir.c b/fs/ceph/dir.c
+> index 0e9f56eaba1e..570a9d634cc5 100644
+> --- a/fs/ceph/dir.c
+> +++ b/fs/ceph/dir.c
+> @@ -141,7 +141,7 @@ __dcache_find_get_entry(struct dentry *parent, u64 idx,
+>   	if (ptr_pos >= i_size_read(dir))
+>   		return NULL;
+>   
+> -	if (!cache_ctl->page || ptr_pgoff != page_index(cache_ctl->page)) {
+> +	if (!cache_ctl->page || ptr_pgoff != cache_ctl->page->index) {
+>   		ceph_readdir_cache_release(cache_ctl);
+>   		cache_ctl->page = find_lock_page(&dir->i_data, ptr_pgoff);
+>   		if (!cache_ctl->page) {
+> diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+> index 7b2e77517f23..1f92d3faaa6b 100644
+> --- a/fs/ceph/inode.c
+> +++ b/fs/ceph/inode.c
+> @@ -1861,7 +1861,7 @@ static int fill_readdir_cache(struct inode *dir, struct dentry *dn,
+>   	unsigned idx = ctl->index % nsize;
+>   	pgoff_t pgoff = ctl->index / nsize;
+>   
+> -	if (!ctl->page || pgoff != page_index(ctl->page)) {
+> +	if (!ctl->page || pgoff != ctl->page->index) {
+>   		ceph_readdir_cache_release(ctl);
+>   		if (idx == 0)
+>   			ctl->page = grab_cache_page(&dir->i_data, pgoff);
 
-     Andrew
+LGTM.
+
+Reviewed-by: Xiubo Li <xiubli@redhat.com>
+
+
 
