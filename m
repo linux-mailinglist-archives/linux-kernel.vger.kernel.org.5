@@ -1,126 +1,230 @@
-Return-Path: <linux-kernel+bounces-156110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69EB38AFE10
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:53:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A8D18AFE12
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:55:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C47B1C22F72
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:53:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4F091F231B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1900C125C9;
-	Wed, 24 Apr 2024 01:53:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9820DCA7D;
+	Wed, 24 Apr 2024 01:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aAU/aA/F"
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hexhyh8x"
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E824101F2;
-	Wed, 24 Apr 2024 01:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9405C83
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 01:55:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713923589; cv=none; b=qjRSpMdaRiaRPv3xfsOg6MBJQiaOS9j1jwvztf0KcSba7SPVfERZEDoFLtshl/MgkYmOBGlUxPosN8/e/naCJ5OhkDP5s37acwNk9KAPsSN8y1CcHYOfQhtscxL0re0JsHCZr/gFH0+bx03Eneo01AI8Edp1Qa+B1uL+gLHDaAw=
+	t=1713923737; cv=none; b=BZR7KeMzhfQ2WgBxjM2bQ23Nfs8r1igueiVsWltZtybTrjJ5JBX00ttpeIHy/LLNrqTVvw5jkd5q+MEh5iWeDbj+M3ThQn+5lIqTTIpI0ZQhqZbi5fpHYdGJUpSFiMzJRXnKop2e346P0uTTDDJujAwWlBod34LRXpHV8aEnLwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713923589; c=relaxed/simple;
-	bh=PThITv7YBA7tYPbMYW9Vhx8MShzInnPREyhu+swHDo0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=G7fWWd+OwZzp7sC9xbc18a8CBy86SFUocYcM2v0uE2TwZQHclUKh82BEMbmn9VOZf8mcG6Tj3x17MrP7c885FhtTK3wOoDNbKZgzjt5HGjAj/ddUs4i7lgqmBHJ5pMGwN0aHzKu9vqSbGK1LZJTGUdZE2XcMLJ/N9zYoCAFZwNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aAU/aA/F; arc=none smtp.client-ip=209.85.160.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-22ed075a629so2542290fac.3;
-        Tue, 23 Apr 2024 18:53:07 -0700 (PDT)
+	s=arc-20240116; t=1713923737; c=relaxed/simple;
+	bh=dJ8KHPb1K0T0HL7uck76kf0jIQnZoTF13YWbmRrszFQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c3XF7DuFIAi9XCMQKmTY+MDx+qPpS3DLadB9XWcfTDUXdERaPFXXRLqfUhCkEPDHVquwienuyl9z7WPxZ23pkDPwR1K/Euep0Np5ZJs4Bmy5tBgZAyiQ5XULe9WJZ4moTCfjVHeAgkSGICi5xvolowgL/5/o+6hHJ0zLKK1O90M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=huaqin.corp-partner.google.com; spf=pass smtp.mailfrom=huaqin.corp-partner.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hexhyh8x; arc=none smtp.client-ip=209.85.219.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=huaqin.corp-partner.google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaqin.corp-partner.google.com
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-69b50b8239fso4313376d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 18:55:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713923587; x=1714528387; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+boyDLjblvWwLLkrJLcGOfn00OcpsPMnSVwVZAPX45M=;
-        b=aAU/aA/FtBvxN0uzuNAsnvB6YKxqPX5fAegN/QOVsPR4QahTndQ0NK0YZVadDorV3C
-         bv2Gx2buUf9UYB7IwSfoh3HoI97EaQ0mM7SE4wdSCFL7Zp/jmW7XU92wxMQv6J/4Biiu
-         XYnF4eE0Exs3ikxfwTU8kaLTLIZ7IqyyMifbNvxbyYe5hp8bKxulsupPgSCHXwWBlrSO
-         3qcty1NpyoshGk/q7Xt3nUpOz2GJMCy0eBS2ndvIfP0PqqVFno7j1tXkOC8DSGA/Tu2B
-         KR9NZ565ePP8zgOAnDxFyMI6ahidILAyNqlQmHGYM+mOcQ7YPL9qbNmBkK+tgeUk4PH5
-         fQ7Q==
+        d=google.com; s=20230601; t=1713923735; x=1714528535; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dJ8KHPb1K0T0HL7uck76kf0jIQnZoTF13YWbmRrszFQ=;
+        b=hexhyh8xcZ0ZFYkpPp6/AD7cxHlzBUcqwX7d7hlK63qcJbPz+oPMuf2PRnW8iv9Xp/
+         A7Zn2RFIC1smf3jZiG/U8FKcyMhNnHzXdsh3t5Jcl5aj8qV9U7yhkIRYisG3D7fO2J6F
+         cDEudocpsXjJA0ZJ90aqCVj4Ea7/CgtFGnxWJE/HME5JBOrKDax6zxAPnK1T1VJdknVw
+         +5JqPa2fQHuXYAOIiH+pgaxkvJMsOs0OCKKedBeGeW2QAkqxxcbmYQ0g1ODxtdUeaSOZ
+         g4zrUmYDUweDqEGqYKZGnLOdrM8jRvnyecRWPM0UGUGXlDI3m44bTdTvmS+CXX+dfIW8
+         v0Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713923587; x=1714528387;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+boyDLjblvWwLLkrJLcGOfn00OcpsPMnSVwVZAPX45M=;
-        b=hU9hO5synsMavBMa13HDo5kq4501TwthYwMZXrg8Oo4cGjSCBj4CgTnBASGgEJE1Jz
-         f+SAsY+VoVwRFghBIZFhI0neTvgj/zSeKMNPxPN/grM/3ikz48kHwU1hBT6FXS1hUeC3
-         ZKDQwjgV0FMS/JsdQi6jd5f2XQevzz3I/z0p/7slyAuFIgpLN9HEBCLmtmZv/J4Q3GCA
-         nFgePy0tZJHIrXXlXfr1xTC6MdPDLwqS0v6nachfrKgLn6Y+xJxFQzzO0FWBwQtboe7Q
-         Igg8UJcPaTg+onOzutmP47rEoMFEmqg5jvo9Zu2yxXG1oU6oHKDMjktQWutPPt34JL7n
-         b3ZA==
-X-Forwarded-Encrypted: i=1; AJvYcCWEdW9MGYfpRcQElhYVmzXnKljfSWSip02ug0jkXVnqgRO6uzjR99YYfStyiRJ7wwG64FKBN0DPE8kXFtM47a92hZ6AD2A4TZrljTcHukXAwPIAiktr1FwkB0VY553wCnMZP61rWtyOzHM=
-X-Gm-Message-State: AOJu0YwvWMnyyT0WawmPFK8oy2nXB73457KeH0n+VFfngguxNxu/WlEC
-	4cA83wfLiODh8f8dEnquR4OJ1E1qgh+sFBZNf5RJ/h3K9DnUQcfp
-X-Google-Smtp-Source: AGHT+IFWYc9hWRZOugTElp/4rhqr5aMbNkJE8+hQKtCwCpTLGfdCSwOigY0tmnjVvWdPGFRZsVa2Gg==
-X-Received: by 2002:a05:6870:a345:b0:238:b140:1ab with SMTP id y5-20020a056870a34500b00238b14001abmr1132265oak.48.1713923586779;
-        Tue, 23 Apr 2024 18:53:06 -0700 (PDT)
-Received: from localhost ([2806:103e:22:49d9:6aef:e478:d2bd:bbe])
-        by smtp.gmail.com with ESMTPSA id bm43-20020a0568081aab00b003c4f39fb9e7sm1899925oib.36.2024.04.23.18.53.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 18:53:06 -0700 (PDT)
-From: Miguel Miranda <mmikernel@gmail.com>
-To: thierry.reding@gmail.com,
-	jonathanh@nvidia.com,
-	linux-tegra@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: skhan@linuxfoundation.org,
-	javier.carrasco.cruz@gmail.com,
-	julia.lawall@inria.fr
-Subject: [PATCH] drivers/soc/tegra: Replace dev_node refcount management
-Date: Tue, 23 Apr 2024 19:53:06 -0600
-Message-Id: <20240424015306.1796838-1-mmikernel@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1713923735; x=1714528535;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dJ8KHPb1K0T0HL7uck76kf0jIQnZoTF13YWbmRrszFQ=;
+        b=b8rVm8UbdX2LuIwIlxF+lzWn1JT29a2+yw39ZDvHXg9pWYLk+e9gHs54sa+YDen3vo
+         EyVw5G25Mq8a9f2X9K1gftPt3ee/8HzEQYJgErMdxPQcDWqD/tUS2nmzSWHDh8rNTVgr
+         TysVRAVG29nKF/WhqSflW5RwC/di9S40IhAYFOJliN+g3dy2fFIR9zDdXM9XC/KuFIwt
+         xhfsaF+sm7zAL4HfH+RdeudeK08l5GLjWx9G2AgjmeqhN/HCTFh4eInamx+eVjgc/fkf
+         0nCgQzbzorN+72hbUlnCIfj89rSPG+8w9Fi0FM861CdqiRLJFikz/xYkQsWhW4FiI7P+
+         iVjg==
+X-Forwarded-Encrypted: i=1; AJvYcCURRldMZWZUWrdkPaiUrTESE+Ei79jXFE/99NSk2sSX3tYKBZMblNXFI003IvWbPQHJStYWjYG1NQA/4kpq8TL0s5y0cfJ9x9f4tbCe
+X-Gm-Message-State: AOJu0YyEpgjH6KCg0xF8cToN/eDguX9zA4cqekyRBwi+ogy5c1d8uunN
+	oGZ5Jn9JDS4fYfZZ5eovl1rm/Zh+BcEI10z0pZdqWnCYY2gyiUluDHHqJtyON1RZQ5uEw3o6qwK
+	f4yh7Ew6aiznaDlsuGLR5aW8ncYOplumVc2JJp55zVSsz0qyQgx9WDg==
+X-Google-Smtp-Source: AGHT+IG8v5tfIrvn8fxObpffuM620VUlRCBGMnFCE00GJ3FwLxmlptq8yaXk3f7Ff5Nt5Z+1L+yQIK3lS+SnBB4wIos=
+X-Received: by 2002:a05:6214:f2a:b0:6a0:7f43:eb1 with SMTP id
+ iw10-20020a0562140f2a00b006a07f430eb1mr8789131qvb.19.1713923735084; Tue, 23
+ Apr 2024 18:55:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240422060811.670693-1-xuxinxiong@huaqin.corp-partner.google.com>
+ <CAD=FV=WRLLuOkCJeM6RdAb6xLN-cPH+hfWbOv9-LujB-WMGEFw@mail.gmail.com>
+ <CAGoogDB-mj8_xu04w3V2ZxOBTWoXcPKrVR1NRt6BFcpjHX3-7Q@mail.gmail.com> <CAD=FV=WwsR9e-ZXJRY11FvdUZ66YPy9vqmY_=sGDw5Wqk1eV3w@mail.gmail.com>
+In-Reply-To: <CAD=FV=WwsR9e-ZXJRY11FvdUZ66YPy9vqmY_=sGDw5Wqk1eV3w@mail.gmail.com>
+From: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
+Date: Wed, 24 Apr 2024 09:55:24 +0800
+Message-ID: <CAGoogDBCzfKwkAA-VAs3_Cdw_4oFO94mt7yjy47Sp2RAtqtPxA@mail.gmail.com>
+Subject: Re: [PATCH] drm/panel-edp: Add panel CSOT MNB601LS1-1
+To: Doug Anderson <dianders@chromium.org>
+Cc: sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch, 
+	hsinyi@google.com, dri-devel@lists.freedesktop.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Remove the manual refcount management of device_node
-and instead, use scope-based resource management.
+Hi Doug, thank you!
+We had reported this info to the CSOT to correct the vendor id.
+If they confirm to fix this with the same product ID, we will submit a
+patch to fix this.
 
-While the pointer never gets out of scope it reduces
-somehow the risk of missing the of_node_put() call.
 
-Suggested-by: Julia Lawall <julia.lawall@inria.fr>
-Signed-off-by: Miguel Miranda <mmikernel@gmail.com>
----
-I only have a deprecated jetson nano dev-kit, but need
-to test this on hardware. I am exploring options to
-build a rootfs to test this using qemu-system-aarch64.
----
- drivers/soc/tegra/common.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/soc/tegra/common.c b/drivers/soc/tegra/common.c
-index dff6d5ef4e46..94d11102d90f 100644
---- a/drivers/soc/tegra/common.c
-+++ b/drivers/soc/tegra/common.c
-@@ -28,14 +28,12 @@ static const struct of_device_id tegra_machine_match[] = {
- bool soc_is_tegra(void)
- {
- 	const struct of_device_id *match;
--	struct device_node *root;
-+	struct device_node *root __free(device_node) = of_find_node_by_path("/");
- 
--	root = of_find_node_by_path("/");
- 	if (!root)
- 		return false;
- 
- 	match = of_match_node(tegra_machine_match, root);
--	of_node_put(root);
- 
- 	return match != NULL;
- }
--- 
-2.25.1
-
+Doug Anderson <dianders@chromium.org> =E4=BA=8E2024=E5=B9=B44=E6=9C=8824=E6=
+=97=A5=E5=91=A8=E4=B8=89 01:01=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Hi,
+>
+> On Mon, Apr 22, 2024 at 6:28=E2=80=AFPM Xuxin Xiong
+> <xuxinxiong@huaqin.corp-partner.google.com> wrote:
+> >
+> > Yes, I read the edid from the panels, one is CSO and the other is CSW.
+> > The details are as follows, please help check. Thank you!
+> >
+> >
+> > 1. MNC207QS1-1
+> > edid-decode (hex):
+> > 00 ff ff ff ff ff ff 00 0e 6f 00 12 e7 00 00 00
+> > 1e 21 01 04 a5 1b 12 78 03 8a d5 9c 5e 59 90 25
+> > 1b 50 54 00 00 00 01 01 01 01 01 01 01 01 01 01
+> > 01 01 01 01 01 01 ae 3f 80 18 71 b0 23 40 30 20
+> > 36 00 07 a4 10 00 00 1a 00 00 00 fd 00 28 3c 4b
+> > 4b 11 01 0a 20 20 20 20 20 20 00 00 00 fe 00 43
+> > 53 4f 54 20 54 39 0a 20 20 20 20 20 00 00 00 fe
+> > 00 4d 4e 43 32 30 37 51 53 31 2d 31 0a 20 00 32
+> > ----------------
+> > Block 0, Base EDID:
+> > EDID Structure Version & Revision: 1.4
+> > Vendor & Product Identification:
+> > Manufacturer: CSO
+> > Model: 4608
+> > Serial Number: 231
+> > Made in: week 30 of 2023
+> > Basic Display Parameters & Features:
+> > Digital display
+> > Bits per primary color channel: 8
+> > DisplayPort interface
+> > Maximum image size: 27 cm x 18 cm
+> > Gamma: 2.20
+> > Supported color formats: RGB 4:4:4
+> > First detailed timing includes the native pixel format and preferred re=
+fresh rate
+> > Display is continuous frequency
+> > Color Characteristics:
+> > Red : 0.6113, 0.3671
+> > Green: 0.3496, 0.5644
+> > Blue : 0.1474, 0.1064
+> > White: 0.3134, 0.3291
+> > Established Timings I & II: none
+> > Standard Timings: none
+> > Detailed Timing Descriptors:
+> > DTD 1: 1920x1200 60.000 Hz 8:5 74.100 kHz 163.020 MHz (263 mm x 164 mm)
+> > Hfront 48 Hsync 32 Hback 200 Hpol P
+> > Vfront 3 Vsync 6 Vback 26 Vpol N
+> > Display Range Limits:
+> > Monitor ranges (Bare Limits): 40-60 Hz V, 75-75 kHz H, max dotclock 170=
+ MHz
+> > Alphanumeric Data String: 'CSOT T9'
+> > Alphanumeric Data String: 'MNC207QS1-1'
+> > Checksum: 0x32
+> >
+> > 2. MNB601LS1-1
+> > edid-decode (hex):
+> >
+> > 00 ff ff ff ff ff ff 00 0e 77 00 11 00 00 00 00
+> > 00 22 01 04 95 1a 0e 78 03 a1 35 9b 5e 58 91 25
+> > 1c 50 54 00 00 00 01 01 01 01 01 01 01 01 01 01
+> > 01 01 01 01 01 01 09 1e 56 dc 50 00 28 30 30 20
+> > 36 00 00 90 10 00 00 1a 00 00 00 fd 00 28 3c 30
+> > 30 08 01 0a 20 20 20 20 20 20 00 00 00 fe 00 43
+> > 53 4f 54 20 54 39 0a 20 20 20 20 20 00 00 00 fe
+> > 00 4d 4e 42 36 30 31 4c 53 31 2d 31 0a 20 00 37
+> > ----------------
+> > Block 0, Base EDID:
+> > EDID Structure Version & Revision: 1.4
+> > Vendor & Product Identification:
+> > Manufacturer: CSW
+> > Model: 4352
+> > Made in: 2024
+> > Basic Display Parameters & Features:
+> > Digital display
+> > Bits per primary color channel: 6
+> > DisplayPort interface
+> > Maximum image size: 26 cm x 14 cm
+> > Gamma: 2.20
+> > Supported color formats: RGB 4:4:4
+> > First detailed timing includes the native pixel format and preferred re=
+fresh rate
+> > Display is continuous frequency
+> > Color Characteristics:
+> > Red : 0.6074, 0.3691
+> > Green: 0.3437, 0.5673
+> > Blue : 0.1445, 0.1123
+> > White: 0.3134, 0.3291
+> > Established Timings I & II: none
+> > Standard Timings: none
+> > Detailed Timing Descriptors:
+> > DTD 1: 1366x768 60.001 Hz 683:384 48.480 kHz 76.890 MHz (256 mm x 144 m=
+m)
+> > Hfront 48 Hsync 32 Hback 140 Hpol P
+> > Vfront 3 Vsync 6 Vback 31 Vpol N
+> > Display Range Limits:
+> > Monitor ranges (Bare Limits): 40-60 Hz V, 48-48 kHz H, max dotclock 80 =
+MHz
+> > Alphanumeric Data String: 'CSOT T9'
+> > Alphanumeric Data String: 'MNB601LS1-1'
+> > Checksum: 0x37
+>
+> OK. This made me look a little deeper. I believe that the three-letter
+> code is managed by UEFI and I found:
+>
+> https://uefi.org/PNP_ID_List
+>
+> ...as far as I can tell "CSW" is actually correct for CSOT but "CSO"
+> was _not_. Looks as if CSO was supposed to be for "California
+> Institute of Technology" (Caltech). :(
+>
+> We're probably OK with the recent work that Hsin-Yi did in commit
+> bf201127c1b8 ("drm/panel-edp: Match edp_panels with panel identity")
+> to match against the panel name even if Caltech does ship a "CSO"
+> 0x1200 in the future since it looks like the string you added matches
+> the panel.
+>
+> That being said, is there any chance that it's not too late and you
+> can get CSOT to fix the EDID on "MNC207QS1-1"? Can you also make sure
+> that they're aware of this and don't make the same mistake in the
+> future?
+>
+>
+> In any case, given this investigation and the EDID I'm going to say
+> that the panel you've added here is fine.
+>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+>
+> I've pushed your change to drm-misc-next:
+>
+> a6325ad47bc8 drm/panel-edp: Add panel CSOT MNB601LS1-1
+>
+> -Doug
 
