@@ -1,79 +1,51 @@
-Return-Path: <linux-kernel+bounces-157360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31B918B105C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:56:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E334C8B105E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:56:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBE702822FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:56:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12F111C24B1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E9716D302;
-	Wed, 24 Apr 2024 16:56:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF53E16D33D;
+	Wed, 24 Apr 2024 16:56:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V3t/UNtO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="2UpQJN3A"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3CB716C450
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:56:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED5616C87B;
+	Wed, 24 Apr 2024 16:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713977776; cv=none; b=mkHoIyeNy6/TsqANnbqsvC7HJJDieuui8Xubn9HpbZF8pLeN4I374mRJc4sBDldg0+vfDfUM3te7udV/qSDPvS8TvkxiNTQNG1usW9HyaDchrU3NAlUm7wsHihaoonQCUL/0JzcnvGotF+mllrMOWynyWqWCHdT6Qb2mSaFc0n8=
+	t=1713977784; cv=none; b=tfwIVM4rSq/JkZ4Wzsrje2uk3cJJmG7mUnEtYN+Xqf0SgONpk8qadPQ3FOwMdVfvF3/W9QLdBSc3XM6Iyc/ZKBTMoRPhibq3slSWaPVUIeCxGkTpcl4A6PaswJmQkrBzVSrfdVtN1wiek0w4D6kXbKhADmWXShceuvOUAKNGbKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713977776; c=relaxed/simple;
-	bh=uh4EFCiUkvNxBgNn87BtDStOjyNE9tszgONKqIyv2zU=;
+	s=arc-20240116; t=1713977784; c=relaxed/simple;
+	bh=jFSAdj8Fg1g/sV31cy/CgP0Fejcy6/GdPi/dUTUgELU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EjxNf5ZLmncne/P1nOd/xWBIptvVpX62qEIgrz3fPymUICWXhFbOSLKYM6XEmNIZurYrffo9ey/rjcAmP0j45bmzcf5Ey6YJGKiAD0ZhMjTh36EO5Pn+YOn6wLeupjwy5CT83jmJcUbCfWYL/usz2YYYmz03BMfQ5mJQyKPgvyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V3t/UNtO; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713977773;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QpwjXgW96cugkI20yNxhEPChiJUNlZGdch2EYu8uvM4=;
-	b=V3t/UNtOXoC+b6xDV2CEjsAQeki4xMT65SqOVeLIAg+Hk9Puw+zV3xMmF++4AWBF0RCQNQ
-	TpAGZd+OcSKSQmbLt8I1KLlIuHkTK+BRqoa62pKUWR2NE2nAXBQFYu3mPs3XrQdHdgsUui
-	reCgslcXcjc9U9xWQYOrR57wLWTzO+U=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-643-eD2EIFcIOwCkS1egBXq31g-1; Wed, 24 Apr 2024 12:56:12 -0400
-X-MC-Unique: eD2EIFcIOwCkS1egBXq31g-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a4e9ac44d37so5013266b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:56:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713977771; x=1714582571;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QpwjXgW96cugkI20yNxhEPChiJUNlZGdch2EYu8uvM4=;
-        b=YxuEbqN7dMdg5tB7IPROeB4VcxLIW9leVF1o0qB2AXXy1S76mbF/3HpN2P31kgAoCK
-         4vpHtL2VkWn2/SSzt1xZeeohym5C/T/YThc5E95mMll4S4WklmsW3jSlHig0I6rU4kX8
-         2flndTjZvo5JC4IBbp/wgf4ETeKUVL9mFZVqhdRdCP0N6L6lYWGJB+necny0gc8nqdV4
-         Z/+UxrAQCnuNhyX40cUDQgrRPpK/UwYzBvyEBxAWdN+d7y2PuoIDx3ezuk453549krXh
-         X6cH5LHVqrxhStp+IpErjEibfkwMcGSRYFUwj3BV8+GRsvzCeNRAtU9kr9Xt5is+0kQq
-         Uo5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVlh1D/zmAIyZ5uu/SLbA+7G/HKSnwpo27Vi5I/owDkaYRS10Emi3Uqk4cNg9kzce8pSg+SQfRWICnRvLc2mk/6LY+3ZmFTejgSt6Ch
-X-Gm-Message-State: AOJu0YxaSNp2Qvh9Cko+/cyEU3FZhjBqTSxjUNfVuggZl0t3/o3OdJT2
-	7JdZqjYbG9wIf1fGYmjWJovDnXgDMLEu+xbxHuWrbuarKMZfCEQaKD2vNo16ND9A7CS/6b1nWT9
-	RZJrn0xi9yrMqCZ6WalI/Bwzu8PfrrBnnh4Us5DNa+qKtHkXcZiLeNOT2FYyEdQ==
-X-Received: by 2002:a17:907:a0e:b0:a51:a288:5af9 with SMTP id bb14-20020a1709070a0e00b00a51a2885af9mr2726807ejc.51.1713977771191;
-        Wed, 24 Apr 2024 09:56:11 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEAzyv6HKiopDyaSXvCgdVur8CKCKopDhm7+o8rXN9GohklOErE6TQm1AsBp5DYN4EuFUjHog==
-X-Received: by 2002:a17:907:a0e:b0:a51:a288:5af9 with SMTP id bb14-20020a1709070a0e00b00a51a2885af9mr2726782ejc.51.1713977770773;
-        Wed, 24 Apr 2024 09:56:10 -0700 (PDT)
-Received: from [192.168.0.222] (host-79-51-196-100.retail.telecomitalia.it. [79.51.196.100])
-        by smtp.gmail.com with ESMTPSA id bt15-20020a170906b14f00b00a51eed4f0d7sm8575225ejb.130.2024.04.24.09.56.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 09:56:10 -0700 (PDT)
-Message-ID: <99c1761a-9c00-4167-86e5-8a69cb6d9e5d@redhat.com>
-Date: Wed, 24 Apr 2024 18:56:08 +0200
+	 In-Reply-To:Content-Type; b=coZuX/3ThjKEYhmHCQuT+UEVz0Oc4lZ2nMmohAyG7w1XxNLzTgS2Vt8z1tfNOhazcE2Z746zjYMywcsP4R5v4ThgTc1RFeuyoRgexL6TQ+Dr/3IxYCyG7NW3zwNaCq3ePHclmyJMMhCS5I8vKXz0wG50ftTwdSvPXzBN4jAb+Pw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=2UpQJN3A; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=Gr5w+NNXaBuu9MFvS/3sV7owIcp9t8FJfSpSoyXuyTk=; t=1713977782;
+	x=1714409782; b=2UpQJN3AUCGtXaPA6BYlPw/2ltZGacGaU5IfAUgvQoN83avPhpYvLvb0X3p9A
+	8WqmDNCyDBHF3IGYGF/UoiB6y5V4i+FnbI1gOaN+fdjmSkjaWrIEQnNu1j5sVpGfoTh87fRPvrZG1
+	0pVoaqEE6r9gSpW7wu6LXHF0IAOXxQSv2yoPPlGcn8xNJRqSZghxHnJY+sYBqtBnqZpOfNyTJaGck
+	+CeNB8N9Ws42AIpahmx0OjuS+/FuYo32G58ikk3wXH0Fxt7FBU5nrtx2q23oUfw9Ki5NGRxsEudXI
+	mZs21UUrlNemneRqzYW+KYaLfNUFqo9jCOIxAwmQ6gxNK9ix2Q==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rzfus-0000lM-MC; Wed, 24 Apr 2024 18:56:18 +0200
+Message-ID: <a810561a-14f3-412e-9903-acaba7a36160@leemhuis.info>
+Date: Wed, 24 Apr 2024 18:56:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,87 +53,168 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sched/fair: fix dlserver duplicate start and stop
-To: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
- Daniel Bristot de Oliveira <bristot@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org, Luca Abeni <luca.abeni@santannapisa.it>,
- Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
- Thomas Gleixner <tglx@linutronix.de>, Joel Fernandes
- <joel@joelfernandes.org>, Shuah Khan <skhan@linuxfoundation.org>,
- Phil Auld <pauld@redhat.com>, Suleiman Souhlal <suleiman@google.com>,
- Youssef Esmat <youssefesmat@google.com>
-References: <20240412192304.3201847-1-vineeth@bitbyteword.org>
-Content-Language: en-US, pt-BR, it-IT
-From: Daniel Bristot de Oliveira <bristot@redhat.com>
-In-Reply-To: <20240412192304.3201847-1-vineeth@bitbyteword.org>
+Subject: regression fixes sitting in subsystem git trees for a week or longer
+ (was: Re: [PATCH v2] HID: i2c-hid: Revert to await reset ACK before reading
+ report descriptor)
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Jiri Kosina <jikos@kernel.org>, Douglas Anderson <dianders@chromium.org>,
+ Hans de Goede <hdegoede@redhat.com>, linux-input@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Kenny Levinsen <kl@kl.wtf>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+References: <20240331182440.14477-1-kl@kl.wtf>
+ <14d1b38e-0f11-4852-9c52-92b4bedb0a77@leemhuis.info>
+ <CAO-hwJJtK2XRHK=HGaNUFb3mQhY5XbNGeCQwuAB0nmG2bjHX-Q@mail.gmail.com>
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+In-Reply-To: <CAO-hwJJtK2XRHK=HGaNUFb3mQhY5XbNGeCQwuAB0nmG2bjHX-Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1713977782;880531d9;
+X-HE-SMSGID: 1rzfus-0000lM-MC
 
-On 4/12/24 21:23, Vineeth Pillai (Google) wrote:
-> dlserver is started when a cfs task is enqueued to an empty runqueue.
-> Similarly dlserver is stopped when the last cfs task is dequeued. But
-> this logic doesn't take care of the cfs throttling scenarios where the
-> root cfs runqueue's h_nr_running stays zero while enqueue/dequeue can
-> happen on throttled runqueues. This causes duplicate calls to start/stop
-> and causes issues with deadline logic. One example is a WARN_ON in
-> task_non_contending because of duplicate calls to dl_server_stop().
+Linus,
+
+On 23.04.24 16:59, Benjamin Tissoires wrote:
+> On Mon, Apr 22, 2024 at 7:11 PM Linux regression tracking (Thorsten
+> Leemhuis) <regressions@leemhuis.info> wrote:
+>> On 31.03.24 20:24, Kenny Levinsen wrote:
+>
+> [previous subject: [PATCH v2] HID: i2c-hid: Revert to await reset ACK before reading report descriptor]
+>
+>>> In af93a167eda9, i2c_hid_parse was changed to continue with reading the
+>>> report descriptor before waiting for reset to be acknowledged.
+>>>
+>>> This has lead to two regressions:
+>>
+>> Lo! Jiri, Benjamin, quick question: is there a reason why this fix for a
+>> 6.8-rc1 regression after more than two and half weeks is not yet
+>> mainlined? Or is there some good reason why we should be should be extra
+>> cautious?
 > 
-> WARNING kernel: [ 1970.747755] ------------[ cut here ]------------
-> WARNING kernel: [ 1970.747767] WARNING: CPU: 0 PID: 14202 at kernel/sched/deadline.c:352 task_non_contending+0x404/0x500
+> No special reasons I guess. Neither Jiri nor I have sent a HID update
+> for this rc cycle, so it's still there, waiting to be pushed.
+> I've been quite busy with BPF lately and dropped the ball slightly on
+> the HID maintainer side, but I'm sure we'll send the PR to Linus this
+> week or the next.
+
+out of interest: what's your stance on regression fixes sitting in
+subsystem git trees for a week or longer before being mainlined?
+
+The quoted patch is such a case. It fixes a regression caused by a
+change that made it into 6.8-rc1, but the problem afaik was only
+reported on 2024-03-19, e.g. ~nine days after 6.8 was out[1]; Kenny, the
+author of the fix, apparently noticed and fixed the problem a bit later
+independently[2]. Jiri merged a newer version of the fix on
+2024-04-03[3], which was included in -next a day later -- the Thursday
+before 6.9-rc3.
+
+The fix thus would even have gotten two days of testing in -next, if
+Benjamin or Jiri would have send it your way for that pre-release. But
+from Benjamin's statement quoted above it seems the fix might even make
+-rc6.
+
+That obviously heavily reduces the time the fix will be tested before
+6.9 is released.
+
+It obviously also means that 6.8.y is as of now still unfixed, as the
+stable team usually only applies fixes once they landed in mainline.
+
+Which also means that even more people ran into the problem with
+6.8.y[4] or mainline even after Jiri merged the patch into the hid tree
+-- and maybe some of those people wasted their time on a bisection only
+to find out that a fix exists.
+
+That sounds, ehh, sub-optimal to me. Which is why I wonder what's your
+stance here, as I encounter similar situations frequently[5] -- which
+sometimes is kinda demotivating. :-/
+
+Ciao, Thorsten
+
+[1]
+https://lore.kernel.org/all/a587f3f3-e0d5-4779-80a4-a9f7110b0bd2@manjaro.org/
+
+[2] https://lore.kernel.org/all/20240331132332.6694-1-kl@kl.wtf/
+
+[3]
+https://lore.kernel.org/all/nycvar.YFH.7.76.2404031401411.20263@cbobk.fhfr.pm/
+
+[4] https://social.lol/@major/112294923280815017
+
+[5] This fix for example:
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=master&id=afc89870ea677bd5a44516eb981f7a259b74280c
+Reports:
+https://lore.kernel.org/lkml/ZYhQ2-OnjDgoqjvt@wens.tw/
+https://lore.kernel.org/lkml/1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com/
+
+> [...]
+>>> 1. We fail to handle reset acknowledgement if it happens while reading
+>>>    the report descriptor. The transfer sets I2C_HID_READ_PENDING, which
+>>>    causes the IRQ handler to return without doing anything.
+>>>
+>>>    This affects both a Wacom touchscreen and a Sensel touchpad.
+>>>
+>>> 2. On a Sensel touchpad, reading the report descriptor this quickly
+>>>    after reset results in all zeroes or partial zeroes.
+>>>
+>>> The issues were observed on the Lenovo Thinkpad Z16 Gen 2.
+>>>
+>>> The change in question was made based on a Microsoft article[0] stating
+>>> that Windows 8 *may* read the report descriptor in parallel with
+>>> awaiting reset acknowledgement, intended as a slight reset performance
+>>> optimization. Perhaps they only do this if reset is not completing
+>>> quickly enough for their tastes?
+>>>
+>>> As the code is not currently ready to read registers in parallel with a
+>>> pending reset acknowledgement, and as reading quickly breaks the report
+>>> descriptor on the Sensel touchpad, revert to waiting for reset
+>>> acknowledgement before proceeding to read the report descriptor.
+>>>
+>>> [0]: https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/plug-and-play-support-and-power-management
+>>>
+>>> Fixes: af93a167eda9 ("HID: i2c-hid: Move i2c_hid_finish_hwreset() to after reading the report-descriptor")
+>>> Signed-off-by: Kenny Levinsen <kl@kl.wtf>
+>>> ---
+>>>  drivers/hid/i2c-hid/i2c-hid-core.c | 13 ++++---------
+>>>  1 file changed, 4 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+>>> index 2df1ab3c31cc..72d2bccf5621 100644
+>>> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+>>> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+>>> @@ -735,9 +735,12 @@ static int i2c_hid_parse(struct hid_device *hid)
+>>>       mutex_lock(&ihid->reset_lock);
+>>>       do {
+>>>               ret = i2c_hid_start_hwreset(ihid);
+>>> -             if (ret)
+>>> +             if (ret == 0)
+>>> +                     ret = i2c_hid_finish_hwreset(ihid);
+>>> +             else
+>>>                       msleep(1000);
+>>>       } while (tries-- > 0 && ret);
+>>> +     mutex_unlock(&ihid->reset_lock);
+>>>
+>>>       if (ret)
+>>>               goto abort_reset;
+>>> @@ -767,16 +770,8 @@ static int i2c_hid_parse(struct hid_device *hid)
+>>>               }
+>>>       }
+>>>
+>>> -     /*
+>>> -      * Windows directly reads the report-descriptor after sending reset
+>>> -      * and then waits for resets completion afterwards. Some touchpads
+>>> -      * actually wait for the report-descriptor to be read before signalling
+>>> -      * reset completion.
+>>> -      */
+>>> -     ret = i2c_hid_finish_hwreset(ihid);
+>>>  abort_reset:
+>>>       clear_bit(I2C_HID_RESET_PENDING, &ihid->flags);
+>>> -     mutex_unlock(&ihid->reset_lock);
+>>>       if (ret)
+>>>               goto out;
+>>>
+>>
 > 
-> WARNING kernel: [ 1970.747868] CPU: 0 PID: 14202 Comm: tpm_manager_cli Tainted: G  W 5.15.152-22017-ga797d64dcd15 #1
-> WARNING kernel: [ 1970.747874] Hardware name: HP Meep/Meep, BIOS Google_Meep.11297.250.0 01/25/2021
-> WARNING kernel: [ 1970.747877] RIP: 0010:task_non_contending+0x404/0x500
 > 
-> WARNING kernel: [ 1970.747910] Call Trace:
-> WARNING kernel: [ 1970.747914]  <TASK>
-> WARNING kernel: [ 1970.747918]  ? __warn+0xa3/0x131
-> WARNING kernel: [ 1970.747923]  ? task_non_contending+0x404/0x500
-> WARNING kernel: [ 1970.747927]  ? report_bug+0x97/0xfa
-> WARNING kernel: [ 1970.747932]  ? handle_bug+0x41/0x66
-> WARNING kernel: [ 1970.747937]  ? exc_invalid_op+0x1b/0x4b
-> WARNING kernel: [ 1970.747941]  ? asm_exc_invalid_op+0x16/0x20
-> WARNING kernel: [ 1970.747946]  ? task_non_contending+0x404/0x500
-> WARNING kernel: [ 1970.747949]  ? dequeue_dl_entity+0x112/0x2cd
-> WARNING kernel: [ 1970.747952]  dl_server_stop+0x17/0x2b
-> WARNING kernel: [ 1970.747956]  dequeue_task_fair+0x262/0x4c4
-> WARNING kernel: [ 1970.747962]  __schedule+0x17c/0xf13
-> WARNING kernel: [ 1970.747966]  ? update_load_avg+0x9b/0x611
-> WARNING kernel: [ 1970.747970]  schedule+0x4e/0xd0
-> WARNING kernel: [ 1970.747974]  schedule_hrtimeout_range_clock+0x10f/0x126
-> WARNING kernel: [ 1970.747977]  ? add_wait_queue+0x4d/0x84
-> WARNING kernel: [ 1970.747982]  poll_schedule_timeout+0x33/0x50
-> WARNING kernel: [ 1970.747987]  do_sys_poll+0x4a3/0x626
-> WARNING kernel: [ 1970.747993]  ? __se_sys_ppoll+0xdf/0xdf
-> WARNING kernel: [ 1970.748000]  __se_sys_poll+0x70/0xf7
-> WARNING kernel: [ 1970.748003]  do_syscall_64+0x51/0xa1
-> WARNING kernel: [ 1970.748007]  entry_SYSCALL_64_after_hwframe+0x5c/0xc6
-> WARNING kernel: [ 1970.748012] RIP: 0033:0x7bc815769510
-
-I saw that as well.... but from a robot.. not with a reproducer.
-
-> dlserver should be started on an idle root cfs rq, when
->  - enqueue on a non-throttled cfs_rq causing the root cfs rq to
->    go non-idle, or
->  - untthrottle results in the root cfs rq to go non-idle.
 > 
-> Similarly dlserver should be stopped on a non-idle root cfs rq, when
->  - dequeue on a non-throttled cfs_rq causing the root cfs rq to
->    go idle, or
->  - throttle results in the root cfs rq to go idle.
-
-
-seem to make sense, I will add this check on v7.
-
-Btw, as this is an ongoing thread discussion, instead of sending a patch, next time,
-please reply to the patchset... it is easier for everybody to keep track.
-
--- Daniel
-
 
