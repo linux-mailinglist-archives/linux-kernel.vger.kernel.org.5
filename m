@@ -1,150 +1,150 @@
-Return-Path: <linux-kernel+bounces-157410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08C838B1136
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 945108B114A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:39:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E2E7B22988
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:38:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 770AEB237E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:39:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7151816D4CC;
-	Wed, 24 Apr 2024 17:37:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8204316D4DC;
+	Wed, 24 Apr 2024 17:39:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wagpp5/7";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bHbcfwKr"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z8SOGWuO"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5115E15821E;
-	Wed, 24 Apr 2024 17:37:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4758716D4CC
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:39:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713980276; cv=none; b=GWCy7vPzNHBcEOplbWf43LRo1baPmYXJrr4KXDINaMKxmjqiXh1kFMDNTLbyqYqVeoSGs7uwTE57702AfAAjKv7912r3Cwxik3Wbn0DRXzAYPni6CZAprNahEOW4xPBf/zQnrvq9qehNBBihdoG0kgTVjVoXlgLAOe5J2rDkEUA=
+	t=1713980354; cv=none; b=SSRGuVPY+JfscHRnVRwUNQ6i6FNFs60tDgDThCKuG6lfjLzOB5sweYKJSw3Cn56niMnKk3S24O0YANKqJEaniYnsJxM09ONG3wPbz3eFASOeEgI0il36SL070A2yev03PZs0P/48VBDK1hriSCc91MQRsMRkYZK1IXXFqikCA44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713980276; c=relaxed/simple;
-	bh=Nfg2Y4SmEDTeFM/e5TfSu/l2NIpcgIhs4FnO8pbGvck=;
-	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=QotfLIQ6cc45hZ/L/O9bO0U3zrZCmCapct4+Hz+6V0b2o3NfgUZ79EhYITvCWdwXCEcZZdWQ+4YZmzOIrV9zLi2KrBTpWryxEgERPLZQANKKdUeScfOf78K3f2pG41HSTGXIy7odaL9QUynuHu3uKlHIPJFCP0p4DekexvqynWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wagpp5/7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bHbcfwKr; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 24 Apr 2024 17:37:52 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713980273;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=jwhKVNavcoyb1EKysuNrb+LLqiWdy99Ko+lHf85CJUE=;
-	b=wagpp5/7j1QgfzDNbbU5rue15G3p0Qgfy9JqS8V8EDqtlqa+sn0AlXcsqQ7J5DDAJ9OK4T
-	K9xplRRBPCli9wFOhal/3Kp7bTI4kfec2lZ6ypvgZle9Tmrsfq2o6kvXcaAtSjyWWycbVk
-	/xXVMgiD4aedsJ+7+BKqtlclEtgx7p4CfQZ91JHIaRZW1OsAGjokTu2T7DDvAK4UU5h07W
-	7DevUQ0FkngkdlaER/+DB9KpUshdLsECYJQdqwLysVCq9+csXQ6FqFZDB48zUnMAiMt4FS
-	l2D4CzB4hAJoc251SQHee8wntz8yeycE1OFBsAXPE/p/lINLOoHmxeP7fXutgw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713980273;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=jwhKVNavcoyb1EKysuNrb+LLqiWdy99Ko+lHf85CJUE=;
-	b=bHbcfwKrhR9OM9XvANF1cgdHErgOth6ue1dNtIgu3atBlV2RWCmIy05wFIuzSWFAvzc/Ua
-	swW4kSlyUoQLsSCA==
-From: "tip-bot2 for Kirill A. Shutemov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/tdx: Preserve shared bit on mprotect()
-Cc: Chris Oo <cho@microsoft.com>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- Rick Edgecombe <rick.p.edgecombe@intel.com>,
- Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
- Tom Lendacky <thomas.lendacky@amd.com>, stable@vger.kernel.org,
- x86@kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1713980354; c=relaxed/simple;
+	bh=z5NkQGPiv4L8AtwPo7Ek6ZUSPG+b0A9bAFw1kr+jIu0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SpKbo2C5saUCGIy9YPcmePMMWNXogpk8NoOHjHwTNObi+BJWWEXEeKVC0ojtazRBs+BdJuCbQlY0fXv3ApdNfxTWRnIEdHglyjUWYaCEcRMUtT7T18O2eqsBFugyZqGkyKhc7E2OYw5XZ5dEAc8Q0uzTejQFmN2MTIbuOQMbmSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z8SOGWuO; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51abf1a9332so58054e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 10:39:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713980351; x=1714585151; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ynaUrY5l+597sEJ6P7ZfnwDusY+Y+Lu9dBF7Lyaug0M=;
+        b=Z8SOGWuO5bHh1cEeYG1LjKvMS5JwybhRWzsB0TN0J574jfXdp5kCOGkHWmoAzB2Mo2
+         Z5axwrGhvXKD65UUwebGqJwzDh4amr6rqB1tgkxASXsnEZZRTwNtinBbiLxXkBAT4iCi
+         p4PRki4r7st/lwfWJlKoybyJdR/tpCUk+Cqgu7RbqIscIX8Pq/EWKuEAJEw1OvEYRdGq
+         bhtvD/SAQIx8RQ2E+xpWwnydxqO2BrzrtBdtFYYhLsDVHaNP4BiJBmVtWKdSUCoxK254
+         Fm0aVUJPrlXd8oWFA2/CPM+d1D7yT/CthUIgfSef9KQ6B9bbxNr5Q3xEyqG0GC7K6X1A
+         g/GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713980351; x=1714585151;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ynaUrY5l+597sEJ6P7ZfnwDusY+Y+Lu9dBF7Lyaug0M=;
+        b=WOTzENecFg29TcYrlzgl7p5A3AWy7JggxJb5KbjNNdJR+i9019P8uZazEMJEBuGrMo
+         0TXg1Alei8gJ2n2wbnPi62EiJoxuW+CXAIWphMywV4oV1Oim6k+2NTx53+H/BJgX4tEC
+         5imCyyiHnooljDuwWZwm4FXzaoDWv9b8r0aHZIHBqkBCOGK1ldeDuBvcOg+8xcBLU57U
+         FOi2mvRAblm/Tn/SzS/7JO7Qq0Vo1v7L3wYUMYwyiaP9A/hlgIIAemsPeQcAC0A3rWkJ
+         KnhoD0QvZ3gUZUJZXeTlUEgUZKhi26ycrue49MNVEsc2Snqlyed+8CUie2kxH/InRzuk
+         IaeA==
+X-Gm-Message-State: AOJu0Yz+J0fA+8GYJqNtgy/6anIG4KBnPMXonVmcFx8dUxY7fwJNojKX
+	K+xdDiGddi9mPXG0N+OAQEA2DOKrjCeT9IGrRqFzAiLZYUPHuzAymlV1aSF5a8b6D2eTYCTsLRo
+	UsoJFwXZIqiS4bWNDJLkw1uNq9HUaC2Y=
+X-Google-Smtp-Source: AGHT+IGA4hqEI61enJ9DfoX5fsFrF3OkliS1nO9fyos5bePwboWZ6OpjfqsYgEZaFOhR9vir/bkYtUhStH/yT7TMC2M=
+X-Received: by 2002:ac2:4ed0:0:b0:518:90fd:fa40 with SMTP id
+ p16-20020ac24ed0000000b0051890fdfa40mr2071996lfr.2.1713980351078; Wed, 24 Apr
+ 2024 10:39:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171398027263.10875.3592375840753497804.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20240424155309.1719454-11-ardb+git@google.com> <20240424155309.1719454-15-ardb+git@google.com>
+In-Reply-To: <20240424155309.1719454-15-ardb+git@google.com>
+From: Brian Gerst <brgerst@gmail.com>
+Date: Wed, 24 Apr 2024 13:38:59 -0400
+Message-ID: <CAMzpN2g3E3Pj1wso0rUR5EWrHqTuUePsOWcQGf29wNkMa0+G3w@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/9] x86/purgatory: Avoid absolute reference to GDT
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org, 
+	Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Eric Biederman <ebiederm@xmission.com>, 
+	kexec@lists.infradead.org, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Kees Cook <keescook@chromium.org>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Masahiro Yamada <masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Wed, Apr 24, 2024 at 12:06=E2=80=AFPM Ard Biesheuvel <ardb+git@google.co=
+m> wrote:
+>
+> From: Ard Biesheuvel <ardb@kernel.org>
+>
+> The purgatory is almost entirely position independent, without any need
+> for any relocation processing at load time except for the reference to
+> the GDT in the entry code. Generate this reference at runtime instead,
+> to remove the last R_X86_64_64 relocation from this code.
+>
+> While the GDT itself needs to be preserved in memory as long as it is
+> live, the GDT descriptor that is used to program the GDT can be
+> discarded so it can be allocated on the stack.
+>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  arch/x86/purgatory/entry64.S | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/x86/purgatory/entry64.S b/arch/x86/purgatory/entry64.S
+> index 9913877b0dbe..888661d9db9c 100644
+> --- a/arch/x86/purgatory/entry64.S
+> +++ b/arch/x86/purgatory/entry64.S
+> @@ -16,7 +16,11 @@
+>
+>  SYM_CODE_START(entry64)
+>         /* Setup a gdt that should be preserved */
+> -       lgdt gdt(%rip)
+> +       leaq    gdt(%rip), %rax
+> +       pushq   %rax
+> +       pushw   $gdt_end - gdt - 1
+> +       lgdt    (%rsp)
+> +       addq    $10, %rsp
 
-Commit-ID:     a0a8d15a798be4b8f20aca2ba91bf6b688c6a640
-Gitweb:        https://git.kernel.org/tip/a0a8d15a798be4b8f20aca2ba91bf6b688c6a640
-Author:        Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-AuthorDate:    Wed, 24 Apr 2024 11:20:35 +03:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Wed, 24 Apr 2024 08:11:43 -07:00
+This misaligns the stack, pushing 16 bytes on the stack but only
+removing 10 (decimal).
 
-x86/tdx: Preserve shared bit on mprotect()
+>
+>         /* load the data segments */
+>         movl    $0x18, %eax     /* data segment */
+> @@ -83,8 +87,8 @@ SYM_DATA_START_LOCAL(gdt)
+>          * 0x08 unused
+>          * so use them as gdt ptr
 
-The TDX guest platform takes one bit from the physical address to
-indicate if the page is shared (accessible by VMM). This bit is not part
-of the physical_mask and is not preserved during mprotect(). As a
-result, the 'shared' bit is lost during mprotect() on shared mappings.
+obsolete comment
 
-_COMMON_PAGE_CHG_MASK specifies which PTE bits need to be preserved
-during modification. AMD includes 'sme_me_mask' in the define to
-preserve the 'encrypt' bit.
+>          */
+> -       .word gdt_end - gdt - 1
+> -       .quad gdt
+> +       .word 0
+> +       .quad 0
+>         .word 0, 0, 0
 
-To cover both Intel and AMD cases, include 'cc_mask' in
-_COMMON_PAGE_CHG_MASK instead of 'sme_me_mask'.
+This can be condensed down to:
+        .quad 0, 0
 
-Reported-and-tested-by: Chris Oo <cho@microsoft.com>
+>
+>         /* 0x10 4GB flat code segment */
+> --
+> 2.44.0.769.g3c40516874-goog
 
-Fixes: 41394e33f3a0 ("x86/tdx: Extend the confidential computing API to support TDX guests")
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/all/20240424082035.4092071-1-kirill.shutemov%40linux.intel.com
----
- arch/x86/include/asm/coco.h          | 1 +
- arch/x86/include/asm/pgtable_types.h | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
-index c086699..aa6c8f8 100644
---- a/arch/x86/include/asm/coco.h
-+++ b/arch/x86/include/asm/coco.h
-@@ -25,6 +25,7 @@ u64 cc_mkdec(u64 val);
- void cc_random_init(void);
- #else
- #define cc_vendor (CC_VENDOR_NONE)
-+static const u64 cc_mask = 0;
- 
- static inline u64 cc_mkenc(u64 val)
- {
-diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
-index 0b748ee..9abb8cc 100644
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -148,7 +148,7 @@
- #define _COMMON_PAGE_CHG_MASK	(PTE_PFN_MASK | _PAGE_PCD | _PAGE_PWT |	\
- 				 _PAGE_SPECIAL | _PAGE_ACCESSED |	\
- 				 _PAGE_DIRTY_BITS | _PAGE_SOFT_DIRTY |	\
--				 _PAGE_DEVMAP | _PAGE_ENC | _PAGE_UFFD_WP)
-+				 _PAGE_DEVMAP | _PAGE_CC | _PAGE_UFFD_WP)
- #define _PAGE_CHG_MASK	(_COMMON_PAGE_CHG_MASK | _PAGE_PAT)
- #define _HPAGE_CHG_MASK (_COMMON_PAGE_CHG_MASK | _PAGE_PSE | _PAGE_PAT_LARGE)
- 
-@@ -173,6 +173,7 @@ enum page_cache_mode {
- };
- #endif
- 
-+#define _PAGE_CC		(_AT(pteval_t, cc_mask))
- #define _PAGE_ENC		(_AT(pteval_t, sme_me_mask))
- 
- #define _PAGE_CACHE_MASK	(_PAGE_PWT | _PAGE_PCD | _PAGE_PAT)
+Brian Gerst
 
