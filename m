@@ -1,129 +1,126 @@
-Return-Path: <linux-kernel+bounces-157675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6608C8B1460
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:17:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 503008B1464
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:19:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 210EF283AE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:17:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C9F52829B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:19:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DDD13DDAA;
-	Wed, 24 Apr 2024 20:17:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8029A13DB8C;
+	Wed, 24 Apr 2024 20:19:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KCPCJb0F"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FdW7u1jz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11C1B13CAA7
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 20:17:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C470F1EB30;
+	Wed, 24 Apr 2024 20:19:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713989862; cv=none; b=VmxeYy9QQ3xDp34sLfCCVvheX3P7u0t+Xdg5jPyr6XD1HAy+v51R+//MhspxjKSBT7kwV11y+b8MpvFPkk5dLD2ewZKTvoXc/5+vQaYHUBtZm7Ob7+5W0X2wEQmazJ0SX6Vsuk1YbCjQzI4EgW9qTk8PJKDGayzJsv1NBEPK8Nc=
+	t=1713989948; cv=none; b=lwhxseaODYWzZ0HXOTlU1KZp0e34Uan/pqvpa8nGE3Q/Ov1ywll0aZiux1bAz2LfjcR7r/3RFlDkwmyYDqbvivlCKZF4uqXl2er0wqxu/o/IzqAQkSB2Me3Ufq0y2HOtlWWqwSGXqo22WWSa6TbOJYgOTnwMHSddiXzNwsiHVBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713989862; c=relaxed/simple;
-	bh=dEAeAjfbrXV9SIKake0QsuRWgkE1lxy9CxwcMeketdw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bm8UTWm3xselKExiVODs0xKRSW8UuqKYRIYxzAGI6+6dgBp79KZP8lvScTuK2V6GZlJFpipdQ0Xtw3MnXBe6kkckOGeFfuXOqq23Em7f3PYfb2YrICl3CW4EG3KI09vo+/M7jaZxcguYGX0FX5gqAsgBJamlLZrnFrc0DRsxN0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KCPCJb0F; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-345b857d7adso161002f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:17:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713989859; x=1714594659; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e1TRoahzIOImSP+56mBR9DLoPEbZMF1GvJHHVC9qChk=;
-        b=KCPCJb0FTVydEbVleTasU8bfTpswOMtgP+EED+8r5qDt6SlvMi2FOIHG0Y3epAhU3a
-         HcHR0FI6oUsgi78f2Op0NHX0WpLvLxhcMVIbI3QUdINjkh6x6n7YPdlnbb4gOw10T15D
-         Y7hufXHmmNdMkHsHCzEXwMYdwfOvcPsIWWSGG7wUkQENGg764+lqH8f1OnRY+ENiKiXU
-         TS8D7besDI8ilDhgRoC5wuTIdctao3v8rAZfnQANJGTwbxX3Y5JquqXYa8EUoNFZSLM4
-         n6cc5CniD85qHRZwF6gwGwVCqqn6pYFYKRR1a4n13QmE0a1kirDQth6ZnAzvHXvM5sGp
-         gyWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713989859; x=1714594659;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e1TRoahzIOImSP+56mBR9DLoPEbZMF1GvJHHVC9qChk=;
-        b=Zn0UOXoYvagqlVU2QUefWZfsZiMBQMqed3F5UR7uKWdBd92ks1Uj1MZY15tbV9Ziwy
-         4NARVRG3WpbtET/oEPlkceIR26+qYw30kALj6B1mHK2dNFfXOKla7S7ufa9/rYGmWcnU
-         kW5H1UhqQTO1g4CTS5MnNJ3Lferwd2Va+V+BXjxHt/h2VXmlnrAi75f9YBYRWSGD1Hof
-         8JJmvMagoPG1ZxZeaUutND+cDRzIwuZ0A+JmIgtw+yVwBJO655ql9aIzq/x5B0yOH3Ay
-         QGAhaZXESrokOTafOWcAIDBKkABAYgZZa/kCgdFMK5FpvV/yBD4qmJehKWqjjfokuRpw
-         qeXg==
-X-Forwarded-Encrypted: i=1; AJvYcCWRkTYH/iE0FnR29QsNrsb2UH9bg7L8OiJD+evzUfGzoAr+2Eh8xK7dHhmXGdJLGiV7WSu78aHHbIZpv3wyWr2kAJJeO8BufmC7B3YL
-X-Gm-Message-State: AOJu0Yw0zPfQFKWsDm4xiCxCU6itEVvauPbJi1zvNvVBJNlapPT5Noco
-	Gql4DG5NAaeZPoAtkBnEoDw6BWnEDWuLCr2t+M+Ys//gkroSICaTz8ix/dXIyOxzQpYq7IHR2N3
-	n7MMhkfyuydTVXVlotz0XnzOHsxeB9OLXq3T8
-X-Google-Smtp-Source: AGHT+IH9KfoH5xHOI8C9QM4ZJsQC3Y4H/TsPfsML0YoIhKpp/pUvcWcY6by5H/VlgrjXETeZjqkiWKcoDndPOoSvIcY=
-X-Received: by 2002:adf:fd05:0:b0:347:70ce:acbe with SMTP id
- e5-20020adffd05000000b0034770ceacbemr2582811wrr.67.1713989859203; Wed, 24 Apr
- 2024 13:17:39 -0700 (PDT)
+	s=arc-20240116; t=1713989948; c=relaxed/simple;
+	bh=63hZPOmkSg+IK89rduMeX1CZgesVdUrWtwIPoEX0wx8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T2KLbRX3tRTEBzFSYukzKs0V8X1O77DPyL+LeM6haEv5gf1RYJpArUV7pOwTnjPzy2qvN6d0k32TjNoVm384wDgaf0H+4rVrMVpg90EPkTSsPJax0OBvjRtvWUU5oka9LQRf+LoPysP23Li9ebOadTPiNAT1TQpqM3BnZy7JvVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FdW7u1jz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3CDFC113CD;
+	Wed, 24 Apr 2024 20:19:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713989948;
+	bh=63hZPOmkSg+IK89rduMeX1CZgesVdUrWtwIPoEX0wx8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FdW7u1jzxAWuLqFr++Z5rwBUKGJKPRkGswnMGsR/iCqFctDOhNzWCIc/6iJw0CCBS
+	 n/+rOibvY434+ZwL5uW15xDCcyFNfsmIBog8CnRpPnVPILZVhgxNehzvN6bBFu0aur
+	 a3vJGoJhdyE42nR7hYu2kwKfMUIKdvMKprt5Cwm3mmIobl9kiDYzI1we4eY677dv4G
+	 pZ4aes1aAviH4dpvMkL03Zwryw8/xQy52vOvJASrQBH4akfZrG5DrJRZCDinG+efHp
+	 j7W5tt9JHJJEM7czNa0I3PK2cSQa48OBFPNnehePSbI6wDoOWc6pKVlp7oR+UzquKD
+	 CcV3JBDWDME4Q==
+Date: Wed, 24 Apr 2024 21:19:04 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-riscv@lists.infradead.org,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] clock, reset: microchip: move all mpfs reset code to
+ the reset subsystem
+Message-ID: <20240424-glazing-handsaw-4c303fef4f7e@spud>
+References: <20240424-strangle-sharpener-34755c5e6e3e@spud>
+ <722f31da34e5e1cfef05fb966f6c8c96.sboyd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424123935.2f65e886@canb.auug.org.au> <20240424130757.531be2842c505a62246d180c@linux-foundation.org>
-In-Reply-To: <20240424130757.531be2842c505a62246d180c@linux-foundation.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 24 Apr 2024 20:17:27 +0000
-Message-ID: <CAJuCfpG-D+m4Uym=9LA5O5hYd=Y6fwVxELb17Dhmfkg87Rzr5w@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the modules tree with the mm tree
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>, "Mike Rapoport (IBM)" <rppt@kernel.org>, 
-	Kent Overstreet <kent.overstreet@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rh9OexgCGdhps0bi"
+Content-Disposition: inline
+In-Reply-To: <722f31da34e5e1cfef05fb966f6c8c96.sboyd@kernel.org>
+
+
+--rh9OexgCGdhps0bi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 24, 2024 at 8:08=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
->
-> On Wed, 24 Apr 2024 12:39:35 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
->
-> > Hi all,
-> >
-> > Today's linux-next merge of the modules tree got a conflict in:
-> >
-> >   kernel/module/main.c
-> >
-> > between commits:
-> >
-> >   7f014cdda4cb ("lib: code tagging module support")
-> >   5ab9b0c7ea5c ("lib: prevent module unloading if memory is not freed")
-> >
-> > from the mm-unstable branch of the mm tree and commits:
-> >
-> >   0746f9982603 ("module: make module_memory_{alloc,free} more self-cont=
-ained")
-> >   18da532eefc8 ("mm/execmem, arch: convert remaining overrides of modul=
-e_alloc to execmem")
-> >
-> > from the modules tree.
-> >
-> > I fixed it up (I think, see below) and can carry the fix as
-> > necessary. This is now fixed as far as linux-next is concerned, but any
-> > non trivial conflicts should be mentioned to your upstream maintainer
-> > when your tree is submitted for merging.  You may also want to consider
-> > cooperating with the maintainer of the conflicting tree to minimise any
-> > particularly complex conflicts.
->
-> That's a shame.  I don't see much that we can do to reduce the damage her=
-e.
->
-> Suren&Kent, please review (and preferably) test Stephen's handiwork in
-> linux-next?
+On Wed, Apr 24, 2024 at 11:33:32AM -0700, Stephen Boyd wrote:
+> Quoting Conor Dooley (2024-04-24 01:42:08)
+> > diff --git a/drivers/reset/reset-mpfs.c b/drivers/reset/reset-mpfs.c
+> > index 7f3fb2d472f4..710f9c1676f9 100644
+> > --- a/drivers/reset/reset-mpfs.c
+> > +++ b/drivers/reset/reset-mpfs.c
+> > @@ -121,11 +135,15 @@ static int mpfs_reset_probe(struct auxiliary_devi=
+ce *adev,
+> >  {
+> >         struct device *dev =3D &adev->dev;
+> >         struct reset_controller_dev *rcdev;
+> > +       struct mpfs_reset *rst;
+> > =20
+> > -       rcdev =3D devm_kzalloc(dev, sizeof(*rcdev), GFP_KERNEL);
+> > -       if (!rcdev)
+> > +       rst =3D devm_kzalloc(dev, sizeof(*rst), GFP_KERNEL);
+> > +       if (!rst)
+> >                 return -ENOMEM;
+> > =20
+> > +       rst->base =3D (void __iomem *)adev->dev.platform_data;
+>=20
+> Can use dev_get_platdata() here?
+>=20
+> 	rst->base =3D (void __iomem *)dev_get_platdata(dev);
+>=20
+> That's sad that a cast is necessary. Does it need __force as well? An
+> alternative would be to make a container struct for auxiliary_device and
+> put the pointer there.
 
-Sure, I'll try it out today afternoon. Thanks!
 
->
+Ye, I dunno if it was sparse that yelled at me, but either it or the
+compiler didn't approve. I don't really like the casting in and out, but
+the alternative I don't find elegant either, so I picked the one I deemed
+simpler. I'm happy to go with whichever you prefer.
+
+And re: __force, AFAIU that's only required while discarding the
+__iomem, so the cast into the platform_data has one:
+	adev->dev.platform_data =3D (__force void *)base;
+
+
+--rh9OexgCGdhps0bi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZilpOAAKCRB4tDGHoIJi
+0vP+AP9lEnMw5y7fvCuYaADjE2y57zzff3jp+ioyFjTJxoliCgEAyxCg4Pv3Ek/D
+Z4HW5TKPA2SEiWITrZbN9BnGFAfHOwg=
+=uuLw
+-----END PGP SIGNATURE-----
+
+--rh9OexgCGdhps0bi--
 
