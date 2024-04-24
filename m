@@ -1,168 +1,166 @@
-Return-Path: <linux-kernel+bounces-157383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47B6B8B10DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:22:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3F658B10DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:23:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9995289104
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:22:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BD831F274E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:23:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC90016D4C5;
-	Wed, 24 Apr 2024 17:22:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7B1A16D33A;
+	Wed, 24 Apr 2024 17:23:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RGTzcU2v"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WpNryyjv"
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA62216D31D;
-	Wed, 24 Apr 2024 17:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD435165FA8
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:23:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713979368; cv=none; b=NXXs/QN3v3g7uBGJk+IjhBE74c8l1yxymP20mPXuFEDjHZVIsLZIu5uaaV4irA3Kdd3zQtbWSf8m/uqedo06PAQDczbrpCBjJMHUx49nFKyGW5wUkYJ4dLSpqF3PapOanJKWcSQnDZeHw4UAWj6cl33THQn4QSHH/cfD9nS8rWs=
+	t=1713979414; cv=none; b=lKGurPaZEQXqK7yRmf35IoLmLS10ZiKHxkoiYSmUDk6U93j0jdqNvclFSAOIXjheW4CmzjrXyRCVcVw1yKR/Xt/T2W9cR+d+VjaJcWnIRPfagdsrCdD5zY870nTJHJK89ngg8S22V401xN1K3Xr9HV2X5XCWE8wRSOtGpO457ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713979368; c=relaxed/simple;
-	bh=Yb+OQoCeiGA6k2KlYFUZY/qCE6v4EL88MeEU0q3Gg7Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pPCn/OhgSmMC4XOjwUNCKEXIXXwyl0j0B5DtxxVgOQRwK1vIlkecTNc5KMdTb/b+5UfhzHjn0/eiRjuRtLY9ZQZClhWn46jTbnXuBYqiTUH4hGy48AQa6pjsQqr7qy1oV2mfbUCONJEkFcPxv4aS6vxEONzd5pq5Y9T3MS1nAXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RGTzcU2v; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e9451d8b71so689005ad.0;
-        Wed, 24 Apr 2024 10:22:46 -0700 (PDT)
+	s=arc-20240116; t=1713979414; c=relaxed/simple;
+	bh=P0oeJnxbTvn6pPPOyFFSDDnkr9guCkdiyf02byNplKI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=VEOYC0pkNuRFi/VEE2VTCTXsPgxYesIVg/oxtMnP/Jjktzlp6aq4ZsJNjuJRrx6dnhp2l11Fgx2N2OhdkXbegHK+I34jx+Nb58WQ0vdGD5N+oXm92Igh6lZq+thEyNbupLg5RzXhtO8KFO4cp7lFtEyZW4nw2ACgFYLsf8Stkvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WpNryyjv; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2a4b60f8806so161551a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 10:23:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713979366; x=1714584166; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vLMNR1xv0JaPuIH7/cMqGXZSflApU/kLSGpTxPwxekk=;
-        b=RGTzcU2vtQpn63Udk8JZ8lOkYkA/H7YkC4VH17Wu+GbpM+NdD/kIn+czZcHBrLcHUa
-         R3AcKiHkcTG8h3gugQHCUSvMt2i3Xd5jT3gSoNKixfCTlMu9tp3HzU/q51xOdl33DSyS
-         OAk6Gq/BcyZRXWT03F7438Lza0MagdiFaTmKQquN2ifRhxJKSk167bbErAPg9VJ6t2oi
-         8TgUmVBK/9nBDQExfNDR7f/85NmXsbGqFUgy1hCoaJBHlqrrFSIxkx9SKMUlMgV3Vmy4
-         MNVcP9dqmrkYK1Z+LNPDItRfbAUMZA6mvKyswfldq5Iq67qdINYf68DgliEK51aw/sAo
-         2kLw==
+        d=google.com; s=20230601; t=1713979412; x=1714584212; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZO0d6wOTbBKxXnynFNVxHpThLpJ4G8Z760Bc6T07xNM=;
+        b=WpNryyjvdaorIf+gazL8cCW91faGXyAhVlMeoFxLdbfJeAB7+rB/d2tUL9vhKPqCD8
+         s1Vo4+UsHJQXC0vfItz/QCUHGmNV2kzkj6hIUP61htN8Tq2Ku1tIbT8e5KEVItgODH9D
+         CtBoZR7qwGGwPVYtasvFfDMco9Y2hAT0ozt+mMZ/5RQSg2CJyFnpA3xpLI3ka8AaLh1f
+         Tf/GH//IMBLVvQ/jy0/UAsMSgb9JJNapy07SVHD3M/At0qQBCusgzWKghbTjT4f1L9SH
+         zII9OkN/BQqgR69WQx1+bZY9KiJe383kPQNPtkxYsuvnDkDPX0GDtdgn/RD7EXvgVnMw
+         vYnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713979366; x=1714584166;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vLMNR1xv0JaPuIH7/cMqGXZSflApU/kLSGpTxPwxekk=;
-        b=dtXkRmj8N7edJPeN3xmlm1u3GiSAqWyRt0TD7xcdFAesGZRltZEv57kMQUM/2wZe63
-         tRZi8y1Xn6h9KZTpKgUtWnVJ6CxiJ4i7DMPcdNQPHCxh2AwEyzSr+BIGjhsf2Rly2k0P
-         aW1nCpG+349HQc3C1DNoB4k2KfB/p2/v8sZM2WgWEd6uDW7c6zVRMQ14JrbgYBeA95RR
-         cxdEmy85ohqX8rjGbxIpLA6wQtkKpyoiVlZd7DSWuoFeJYk6DisD+moKbvRxzOHA5Hwy
-         Vu4tdNL1n8SBhNH6/TtHIv9JOKYKam2CHLvUGxRPOW6Ec9pOKmxNZmqTIqnDK3thUnJX
-         qWxg==
-X-Forwarded-Encrypted: i=1; AJvYcCUSQ39tjSeg+SgsdekWk+N/7F+Z9NJchjuUrq5knMnvcQC700YpXONZuW2qVfSX6H8TlaN9P/i33IHorCKpR20Avpr4lf0lQ+ZZsTEdw44rc9xtvHwhL+sZlB/7LBw7cx8mUZPiAgoxFrbfWg==
-X-Gm-Message-State: AOJu0YzAFFv0PGoi73ifCaKLQ2A7WvWmAjoJZwDBmsq4Ok6lGebe1znT
-	LBYhiiUjal2O1PNf44QHM10zh7Kcv9uNmUtZ8/7uNDe+vXryJas3/wWHBJnD5Hg=
-X-Google-Smtp-Source: AGHT+IEgmCxsGqxWGZUa8bERNgxHtuZTBX9uCMZ1jvAtytfz/tSJn0YI8J6GsPq3BJ3urcBbnegbQQ==
-X-Received: by 2002:a17:903:40c2:b0:1e0:ca47:4d96 with SMTP id t2-20020a17090340c200b001e0ca474d96mr3278846pld.3.1713979366074;
-        Wed, 24 Apr 2024 10:22:46 -0700 (PDT)
-Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id p14-20020a170902780e00b001e29ac7cc64sm12428454pll.231.2024.04.24.10.22.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 10:22:45 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: shaggy@kernel.org,
-	syzbot+241c815bda521982cb49@syzkaller.appspotmail.com
-Cc: brauner@kernel.org,
-	jlayton@kernel.org,
-	eadavis@qq.com,
-	jfs-discussion@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	Jeongjun Park <aha310510@gmail.com>
-Subject: [PATCH] jfs: Fix array-index-out-of-bounds in diFree
-Date: Thu, 25 Apr 2024 02:22:40 +0900
-Message-Id: <20240424172240.148883-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <0000000000000866ea0616cb082c@google.com>
-References: <0000000000000866ea0616cb082c@google.com>
+        d=1e100.net; s=20230601; t=1713979412; x=1714584212;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZO0d6wOTbBKxXnynFNVxHpThLpJ4G8Z760Bc6T07xNM=;
+        b=Lalj6EByzt1gUKZ/Uwyn23Tsaf37JKpsMgJvs3Ous2rjYvmMQwxXeYN3CCZB+mZhJf
+         19RjIvAO+VKnpUg5BZx+S4G5OHhBIx68TQhK/jZ+LoRjGasSptL3ugtE3DhYXnftS2O7
+         IbHOafU0NJmFo9nM0VUL8DVZDDLK5AXP2pMZrX4fwW1LGF3k8FuILHLOrW8N3egy6pOE
+         +027wTpVL7gXajrTbWdNr4MhrP/yOmwVRPUq8CUuH8HPXCzhpO1+u1z6xS2VIzin9H6D
+         ZTpUrcB3lQ6fF/p2eBSJOLDNHUI1qKlYru3CN9RzOjwJGGS4nFURqBRo1ABkFWDJC8lz
+         rE7A==
+X-Forwarded-Encrypted: i=1; AJvYcCUDjdc7A6pTPMoqyiA6FZbWRbUy6yVoKUbqWAZRrnb07Ns32lF6Scf4AW5J4Q7GPgmg8ZmQ7pOcCORq2AFLxVmz4LgMLovzrwOqah49
+X-Gm-Message-State: AOJu0YxTfPqObriII70bZRePgmy1arnz6vQQ1/4XPNuIt2e+cKFN3TQ3
+	Q/8GTrW3+7ykI7msVHRYQioTJLnTN4MCvtNcMJIOREX6dZx+LnNuJEDlLZ7hc2iSdhuTV9YEqoV
+	ggQ==
+X-Google-Smtp-Source: AGHT+IFLb/Jkoz6d/O3InlajLJrijyFnYCvcvHzvKbQYg9xjqAw0YfXYb31XQor7r51QWkPYwn7+3vaqaj0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90a:f187:b0:2a5:57ec:2658 with SMTP id
+ bv7-20020a17090af18700b002a557ec2658mr11546pjb.6.1713979412050; Wed, 24 Apr
+ 2024 10:23:32 -0700 (PDT)
+Date: Wed, 24 Apr 2024 10:23:30 -0700
+In-Reply-To: <26073e608fc450c6c0dcfe1f5cb1590f14c71e96.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <cover.1711035400.git.reinette.chatre@intel.com>
+ <6fae9b07de98d7f56b903031be4490490042ff90.camel@intel.com>
+ <Ziku9m_1hQhJgm_m@google.com> <26073e608fc450c6c0dcfe1f5cb1590f14c71e96.camel@intel.com>
+Message-ID: <ZilAEhUS-mmgjBK8@google.com>
+Subject: Re: [PATCH V4 0/4] KVM: x86: Make bus clock frequency for vAPIC timer configurable
+From: Sean Christopherson <seanjc@google.com>
+To: Rick P Edgecombe <rick.p.edgecombe@intel.com>
+Cc: "jmattson@google.com" <jmattson@google.com>, Chao Gao <chao.gao@intel.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "vkuznets@redhat.com" <vkuznets@redhat.com>, 
+	Vishal Annapurve <vannapurve@google.com>, Xiaoyao Li <xiaoyao.li@intel.com>, 
+	Reinette Chatre <reinette.chatre@intel.com>, Erdem Aktas <erdemaktas@google.com>, 
+	"pbonzini@redhat.com" <pbonzini@redhat.com>, "mlevitsk@redhat.com" <mlevitsk@redhat.com>, 
+	Isaku Yamahata <isaku.yamahata@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-[syzbot report]
-UBSAN: array-index-out-of-bounds in fs/jfs/jfs_imap.c:886:2
-index 524288 is out of range for type 'struct mutex[128]'
-CPU: 0 PID: 113 Comm: jfsCommit Not tainted 6.9.0-rc5-syzkaller-00036-g9d1ddab261f3 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- ubsan_epilogue lib/ubsan.c:231 [inline]
- __ubsan_handle_out_of_bounds+0x121/0x150 lib/ubsan.c:429
- diFree+0x21c3/0x2fb0 fs/jfs/jfs_imap.c:886
- jfs_evict_inode+0x32d/0x440 fs/jfs/inode.c:156
- evict+0x2a8/0x630 fs/inode.c:667
- txUpdateMap+0x829/0x9f0 fs/jfs/jfs_txnmgr.c:2367
- txLazyCommit fs/jfs/jfs_txnmgr.c:2664 [inline]
- jfs_lazycommit+0x49a/0xb80 fs/jfs/jfs_txnmgr.c:2733
- kthread+0x2f0/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
----[ end trace ]---
-Kernel panic - not syncing: UBSAN: panic_on_warn set ...
-CPU: 1 PID: 113 Comm: jfsCommit Not tainted 6.9.0-rc5-syzkaller-00036-g9d1ddab261f3 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- panic+0x349/0x860 kernel/panic.c:348
- check_panic_on_warn+0x86/0xb0 kernel/panic.c:241
- ubsan_epilogue lib/ubsan.c:236 [inline]
- __ubsan_handle_out_of_bounds+0x141/0x150 lib/ubsan.c:429
- diFree+0x21c3/0x2fb0 fs/jfs/jfs_imap.c:886
- jfs_evict_inode+0x32d/0x440 fs/jfs/inode.c:156
- evict+0x2a8/0x630 fs/inode.c:667
- txUpdateMap+0x829/0x9f0 fs/jfs/jfs_txnmgr.c:2367
- txLazyCommit fs/jfs/jfs_txnmgr.c:2664 [inline]
- jfs_lazycommit+0x49a/0xb80 fs/jfs/jfs_txnmgr.c:2733
- kthread+0x2f0/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-===========================================================
+On Wed, Apr 24, 2024, Rick P Edgecombe wrote:
+> On Wed, 2024-04-24 at 09:13 -0700, Sean Christopherson wrote:
+> > On Tue, Apr 16, 2024, Rick P Edgecombe wrote:
+> > > On Thu, 2024-03-21 at 09:37 -0700, Reinette Chatre wrote:
+> > > >=20
+> > > > Summary
+> > > > -------
+> > > > Add KVM_CAP_X86_APIC_BUS_FREQUENCY capability to configure the APIC
+> > > > bus clock frequency for APIC timer emulation.
+> > > > Allow KVM_ENABLE_CAPABILITY(KVM_CAP_X86_APIC_BUS_FREQUENCY) to set =
+the
+> > > > frequency in nanoseconds. When using this capability, the user spac=
+e
+> > > > VMM should configure CPUID leaf 0x15 to advertise the frequency.
+> > >=20
+> > > Looks good to me and...
+> > > Tested-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> > >=20
+> > > The only thing missing is actually integrating it into TDX qemu patch=
+es and
+> > > testing the resulting TD. I think we are making a fair assumption tha=
+t the
+> > > problem should be resolved based on the analysis, but we have not act=
+ually
+> > > tested that part. Is that right?
+> >=20
+> > Please tell me that Rick is wrong, and that this actually has been test=
+ed with
+> > a TDX guest.=C2=A0 I don't care _who_ tested it, or with what VMM it ha=
+s been
+> > tested, but _someone_ needs to verify that this actually fixes the TDX =
+issue.
+>=20
+> It is in the process of getting a TDX test developed (or rather updated).
+> Agreed, it requires verification that it fixes the original TDX issue. Th=
+at is
+> why I raised it.
+>=20
+> Reinette was working on this internally and some iterations were happenin=
+g, but
+> we are trying to work on the public list as much as possible per your ear=
+lier
+> comments. So that is why she posted it.
 
-Due to overflow, a value that is too large is entered into the agno 
-value. Therefore, we need to add code to check the agno value.
+I have no problem posting "early", but Documentation/process/maintainer-kvm=
+-x86.rst
+clearly states under Testing that:
 
-Reported-by: syzbot+241c815bda521982cb49@syzkaller.appspotmail.com
-Signed-off-by: Jeongjun Park <aha310510@gmail.com>
----
- fs/jfs/jfs_imap.c | 5 +++++
- 1 file changed, 5 insertions(+)
+  If you can't fully test a change, e.g. due to lack of hardware, clearly s=
+tate
+  what level of testing you were able to do, e.g. in the cover letter.
 
-diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
-index 2ec35889ad24..0aac083bc0db 100644
---- a/fs/jfs/jfs_imap.c
-+++ b/fs/jfs/jfs_imap.c
-@@ -881,6 +881,11 @@ int diFree(struct inode *ip)
- 	 */
- 	agno = BLKTOAG(JFS_IP(ip)->agstart, JFS_SBI(ip->i_sb));
- 
-+	if(agno >= MAXAG || agno < 0){
-+		jfs_error(ip->i_sb, "invalid array index (0 <= agno < MAXAG), agno = %d\n", agno);
-+		return -ENOMEM;
-+	}
-+
- 	/* Lock the AG specific inode map information
- 	 */
- 	AG_LOCK(imap, agno);
--- 
-2.34.1
+I was assuming that this was actually *fully* tested, because nothing sugge=
+sts
+otherwise.  And _that_ is a problem, e.g. I was planning on applying this s=
+eries
+for 6.10, which would have made for quite the mess if it turns out that thi=
+s
+doesn't actually solve the TDX problem.
+
+> There was at least some level of TDX integration in the past. I'm not sur=
+e what
+> exactly was tested, but we are going to re-verify it with the latest ever=
+ything.
+
+Honest question, is it a big lift to re-test the QEMU+KVM TDX changes, e.g.=
+ to
+verify this new capability actually does what we hope it does?  If testing =
+is a
+big lift, what are the pain points?  Or perhaps a better question is, is th=
+ere
+anything we (both upstream people, and end users like Google) can do to mak=
+e
+re-testing less awful?
 
