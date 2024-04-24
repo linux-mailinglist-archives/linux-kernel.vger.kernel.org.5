@@ -1,147 +1,266 @@
-Return-Path: <linux-kernel+bounces-157336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DD028B1000
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:36:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38A138B100E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:39:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04B711F233F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:36:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B50FB2B768
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 153CC16D323;
-	Wed, 24 Apr 2024 16:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82EFE16D4E4;
+	Wed, 24 Apr 2024 16:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dMo1QBHt"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="PL8c7wpa"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0493224E8
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:34:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB5B16C860
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:35:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713976500; cv=none; b=fFfVaoqAAK/KNoMA6fle/S6IVk0G16lC6LxmJGG4gQ4PeuA0vm+tfY57zQro2H7uIa8RSkFjzV+SBd1Eb/3TsskEPyw8Mrq6wlzlmIi79X5zs1WpC90beZFw8zABk/xSmnm5Xo5oYstXKcXV8SE4WPjR61ORJIThq9RghZHNie4=
+	t=1713976534; cv=none; b=o6IyngwiKE/mptcoM3efHb6VU65s7rN14T9Elb9m9eDIUx7juGGg/dWxKHsbEzSUTPGdVfRRpsybzLwT1B/AphPWPrtCAAC9XFEfNV3TLP988IUysbeQ4plCMB/Vg0Dli0dVyrOj1DROA5dKZl55Nix6UR1qGPteob7gIofSPjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713976500; c=relaxed/simple;
-	bh=iB+4XqNIdHt7yvtxsimmIldmqZ+s79xvMNaIc7fbl+M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YXu8YmOGcc6nr4VWaTRfsIrap8souxwx15skuYHR7LO+MyuadQwA2A5gunpTOdzhNRO21gObzJWBfBYbPLcDlxBAucIY+LewprnVCVO0GVgzu8bWbWYTJc4zmp1BziGFQCWsjtEdI5ePXJyifz9y56inYYo2+C3Q0ZPgUMALyCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dMo1QBHt; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-518931f8d23so7755490e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:34:58 -0700 (PDT)
+	s=arc-20240116; t=1713976534; c=relaxed/simple;
+	bh=cbPD5AXdZqg7wHEHasyEyHzjbBrLy1ouZefMJxilNWc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KPFqv212ZAdj25kA1vJWaN2aUtjU9vByuJjbVCcxqhrczekF+45nVyna6uzMa2ea2Ji1gJmNw9ak7GrBn7qFZuGGubuCYuIEuu8V/z1aG6M9Vx2GMUgjl/NsmPb2bsGadDu9ol60lYbPcyuwk/8F04Hx5mOSH6LwZ0i/isZgWMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=PL8c7wpa; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ed627829e6so112106b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:35:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713976497; x=1714581297; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zmM7lELFzDnGc6ZurObVedqGSv5yidRsKIMWiDcLanw=;
-        b=dMo1QBHtMYfsf4ULtJhXA9C51awBvbVyYudqDfRrWx6k/Pbdq37k425ORLSJ9dposp
-         /yUMzUQu3rLFzbDn6nzxwZ3yxUsv+wBJFBlQ1KGbBcZOhTuGaWg5066ND2GDmZS2y/py
-         aNLdCf4i69yvym2pDNpmHtWJ93EbFixAXT0JBcTVZmbgq9n3ZzNQgepHAiqOLWYbXVT/
-         34CwVrXoe7MG6/gCmDLz8CMy76kaRnLHDAZRve6Ha18rIVh7vuxQETT6JjZT7SY6t8K2
-         LxwHQlaQWTFFbggDGv0kF3fGy8EjJ6vJbwznV0dMkEv9wTD9iDFJReYvQm26Wx1msaAJ
-         UQTw==
+        d=broadcom.com; s=google; t=1713976532; x=1714581332; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QDlXmX3LIJhFJIpfRokk8mxlq8yv9fqJZfRbseWv0Ro=;
+        b=PL8c7wpaQ9RXqd8TnY38+RGdTrXP1F2rkPMBtfT1+6yQ+/RMmg8bWjRUrrHGdNzis/
+         eSxmZFNEjX/JhnFk/oYZmMtSD1fuALA/0kePlprqEzmAhhntTVE1coON/3+0a480OY41
+         ezRli0IUFPGr9tda6JI+C4vMK7HGy7m9sYGzM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713976497; x=1714581297;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zmM7lELFzDnGc6ZurObVedqGSv5yidRsKIMWiDcLanw=;
-        b=mVhO50EDkTR3NMxAU71iXhjIxaeoKWfTxcwSteNP7udqF9pT5LuROtnGNOlC3bbjFF
-         2M3G1Gfxmn4FABqa2XIO9/+gTk7MkN6ZHQcXG733PR5hx6VwUHgIjjWD8VFEDYiHIFLp
-         oUZ7x/xbh4EkELjW71EPJ/4VUl6+AnJR+JaTxQI9ymK8f3uuQALlu7uubEOUxD5dBXzl
-         JRyIxd0q0HP0EZvbCaCgpPi8dCll5LBffvxZfkkSW4iDUhsfGUIX3ds0lgsjbtwE00n6
-         uP+fkISXaCXODvdv7KDpvqFC35xWeE3xct+ohU3pxd7M0UkQGAssfbsyOD4qUdhAocZw
-         VkjA==
-X-Forwarded-Encrypted: i=1; AJvYcCXyCJQjXL38MwXsZU7K7Xh9SnanJSmOBIA1J+rXK8OHvfRIcWaK6pd22xlTJQNA5NnZY3ZdwmfKBJCW05RBZOKZ+7haL9XxOK0QYpdi
-X-Gm-Message-State: AOJu0Yyn4zyrrEcBlRwl1efb60X26Ee2IWEyJhThgaQSej8u1KB6c0sd
-	2wSPYl8Ncu5U+/lgWWRy+n4X3yNRa6FiWp/qOdT1YzWNjvmHMM6Ju+zIdZAwUM8=
-X-Google-Smtp-Source: AGHT+IHEuFcRmsP4kFacjkpHRKtzhOGVaaVSjSmCp/pdIJ+sH4pCvIEVYuesx7A1/mQPkGI1d1iWBQ==
-X-Received: by 2002:ac2:47e7:0:b0:519:1503:9566 with SMTP id b7-20020ac247e7000000b0051915039566mr1987909lfp.56.1713976496664;
-        Wed, 24 Apr 2024 09:34:56 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::8a5])
-        by smtp.gmail.com with ESMTPSA id n9-20020a056512388900b00518fadeed0fsm2430866lft.115.2024.04.24.09.34.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 09:34:56 -0700 (PDT)
-Date: Wed, 24 Apr 2024 19:34:54 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Sui Jingfeng <sui.jingfeng@linux.dev>, dri-devel@lists.freedesktop.org, 
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Daniel Scally <djrscally@gmail.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v2] software node: Implement device_get_match_data fwnode
- callback
-Message-ID: <kucey3jsydjye3ndflns3cqolcpizhnxgzz3fkmcatlnpbnwrk@22ulsqfh2vf6>
-References: <20240422164658.217037-1-sui.jingfeng@linux.dev>
- <Zie3ebHOEpWHj1qV@smile.fi.intel.com>
- <d5bc1e73-a553-451e-ab74-f5f0ca259c6b@linux.dev>
- <hcltp2bbxxg2t7ibmzgiib7mgbwgmvzwnnq6mochdh7c4h76r3@bxj6yk5zq64e>
- <ZikE4qOVO7rgIs9a@smile.fi.intel.com>
- <CAA8EJpr1FSjizAh6Dp5Bmux3NrGYh=BfHFL4D1fa87Og4ymY0w@mail.gmail.com>
- <Zikck2FJb4-PgXX0@smile.fi.intel.com>
+        d=1e100.net; s=20230601; t=1713976532; x=1714581332;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QDlXmX3LIJhFJIpfRokk8mxlq8yv9fqJZfRbseWv0Ro=;
+        b=CYr/9TbnhDbjbFf6sr5vKAK95BxMbnTW80cYH1okdtVSx8+itziZDLOztxhjHhY6pk
+         m7FGfya5Y6RB9uWzRfmyzc8oO+yOVkq4stjq7Dmgigz5kJGJDdtZm2zT6ZBYUDAvilKh
+         e4AQDE7JUWEFbu4L1LxFdifckUnhXbWO1rGHCJZ8eWiR3SuAUQWtgA1RwXC0oVCLhWyh
+         1P4JZmN1zewLLsHszgamXVWb1+PPzy7TVhN40LiQ5ULM6fNiTsnkdWd+0YfrC+TmowYp
+         EceSmgkwAkUD3MRgeww5DHeKlMvga5nZHvhqIhBlRd3v1h4AaY1NAfexyBwASUD+Fgyw
+         s48Q==
+X-Gm-Message-State: AOJu0YzKICGeK1/0Iy1KHAAwxNrYZiHdJu4/dp/ZjSCVCAC81e0JuK2e
+	0Bt2/eCvLYx7dqwAD7HLoFyU4CWtx/R2kN7J62EFkCDSrPu8lJhw4sS0dJF+SA==
+X-Google-Smtp-Source: AGHT+IH8siZIbBLYsd3D3xWrHMd9K+j8BpP6+9sNccUf33cr7fB4g9kMnEBlHrODYVAsC6PTc+S8gw==
+X-Received: by 2002:aa7:888d:0:b0:6ed:d189:a0b6 with SMTP id z13-20020aa7888d000000b006edd189a0b6mr4062488pfe.32.1713976532336;
+        Wed, 24 Apr 2024 09:35:32 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id s12-20020a056a00194c00b006ead124ff9fsm11623365pfk.136.2024.04.24.09.35.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 09:35:31 -0700 (PDT)
+Message-ID: <c0296f12-5850-4112-861d-a6a35e164852@broadcom.com>
+Date: Wed, 24 Apr 2024 09:35:28 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zikck2FJb4-PgXX0@smile.fi.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4] mfd: intel_quark_i2c_gpio: Utilize i2c-designware.h
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: linux-kernel@vger.kernel.org,
+ Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
+ Lee Jones <lee@kernel.org>, Jiawen Wu <jiawenwu@trustnetic.com>,
+ Mengyuan Lou <mengyuanlou@net-swift.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Andrew Lunn <andrew@lunn.ch>, Duanqiang Wen <duanqiangwen@net-swift.com>,
+ "open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>,
+ "open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
+References: <20240423233622.1494708-1-florian.fainelli@broadcom.com>
+ <20240423233622.1494708-4-florian.fainelli@broadcom.com>
+ <ZihL1mb1OzwdLSvN@surfacebook.localdomain>
+ <95ed17d4-06e5-4ed2-add1-a2bf14e29dd0@broadcom.com>
+ <CAHp75VdaYOy0uuLuNCVKY4Y_fxx5_+xCEFGSR3dCKxkkDfGxBQ@mail.gmail.com>
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
+ M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
+ JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
+ PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
+ KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
+ AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
+ IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
+ ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
+ bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
+ Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
+ tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
+ TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
+ zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
+ WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
+ IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
+ U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
+ 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
+ pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
+ MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
+ IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
+ gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
+ obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
+ N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
+ CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
+ C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
+ wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
+ EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
+ fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
+ MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
+ 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
+ 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
+In-Reply-To: <CAHp75VdaYOy0uuLuNCVKY4Y_fxx5_+xCEFGSR3dCKxkkDfGxBQ@mail.gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000633ac90616da42ed"
 
-On Wed, Apr 24, 2024 at 05:52:03PM +0300, Andy Shevchenko wrote:
-> On Wed, Apr 24, 2024 at 04:34:39PM +0300, Dmitry Baryshkov wrote:
-> > On Wed, 24 Apr 2024 at 16:11, Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > On Wed, Apr 24, 2024 at 12:37:16AM +0300, Dmitry Baryshkov wrote:
-> > > > On Wed, Apr 24, 2024 at 12:49:18AM +0800, Sui Jingfeng wrote:
-> > > > > On 2024/4/23 21:28, Andy Shevchenko wrote:
-> > > > > > On Tue, Apr 23, 2024 at 12:46:58AM +0800, Sui Jingfeng wrote:
+--000000000000633ac90616da42ed
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+On 4/24/24 05:37, Andy Shevchenko wrote:
+> On Wed, Apr 24, 2024 at 4:28â€¯AM Florian Fainelli
+> <florian.fainelli@broadcom.com> wrote:
+>> On 4/23/2024 5:01 PM, Andy Shevchenko wrote:
+>>> Tue, Apr 23, 2024 at 04:36:21PM -0700, Florian Fainelli kirjoitti:
+>>>> Rather than open code the i2c_designware string, utilize the newly
+>>>> defined constant in i2c-designware.h.
 > 
 > ...
 > 
-> > > > But let me throw an argument why this patch (or something similar) looks
-> > > > to be necessary.
-> > > >
-> > > > Both on DT and non-DT systems the kernel allows using the non-OF based
-> > > > matching. For the platform devices there is platform_device_id-based
-> > > > matching.
-> > > >
-> > > > Currently handling the data coming from such device_ids requires using
-> > > > special bits of code, e.g. platform_get_device_id(pdev)->driver_data to
-> > > > get the data from the platform_device_id. Having such codepaths goes
-> > > > against the goal of unifying DT and non-DT paths via generic property /
-> > > > fwnode code.
-> > > >
-> > > > As such, I support Sui's idea of being able to use device_get_match_data
-> > > > for non-DT, non-ACPI platform devices.
-> > >
-> > > I'm not sure I buy this. We have a special helpers based on the bus type to
-> > > combine device_get_match_data() with the respective ID table crawling, see
-> > > the SPI and I²C cases as the examples.
-> > 
-> > I was thinking that we might be able to deprecate these helpers and
-> > always use device_get_match_data().
+>>>> -#define INTEL_QUARK_I2C_CONTROLLER_CLK "i2c_designware.0"
+>>>> +#define INTEL_QUARK_I2C_CONTROLLER_CLK I2C_DESIGNWARE_NAME ".0"
+>>>
+>>> So, if you build a module separately for older version of the kernel (assuming
+>>> it allows you to modprobe), this won't work anymore.
+>>
+>> Sorry not following, was that comment supposed to be for patch #1 where
+>> I changed the i2c-designware-pci to i2c_designware-pci? modprobe
+>> recognizes both - and _ as interchangeable BTW.
 > 
-> True, but that is orthogonal to swnode match_data support, right?
-> There even was (still is?) a patch series to do something like a new
-> member to struct device_driver (? don't remember) to achieve that.
+> I'm talking about something different. Let's assume you have a running
+> kernel (w.o. signature or version requirement for the modules), then
+> you have a new patch on top of it and then for an unknown reason you
+> changed. e.g., designware to DW in that definition. The newly built
+> module may not be loaded on the running kernel. Also note, here is the
+> instance name and not an ID in use. The replacement is wrong
+> semantically.
+> 
 
-Maybe the scenario was not properly described in the commit message, or
-maybe I missed something. The usecase that I understood from the commit
-message was to use instatiated i2c / spi devices, which means
-i2c_device_id / spi_device_id. The commit message should describe why
-the usecase requires using 'compatible' property and swnode. Ideally it
-should describe how these devices are instantiated at the first place.
+See my response in the cover letter, the instance base name is not 
+independent from the i2c-designware-platdrv::driver::name because 
+otherwise the clock lookup done by devm_clk_get_optional() will fail. So 
+that change in this patch is entirely intentional and actually ensures 
+correctness if someone were to change the i2c_designware platform driver 
+name in the future for whatever reasons.
 
+As far as catering to the specific example you gave, is not this just 
+fraught with peril regardless of what is being changed in the kernel? 
+Any constant that is serves as a contract between independent parts 
+getting out of sync will result in some misbehavior. The only solution 
+that I can think of which is edging towards over engineering is to 
+export a string symbol which contains I2C_DESIGNWARE_NAME and then make 
+other modules dependent upon that symbol to enforce some sort of runtime 
+resolution, though I think your example could still be made to fail.
 -- 
-With best wishes
-Dmitry
+Florian
+
+
+--000000000000633ac90616da42ed
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKAvNOWBVAhBop1c
+EbYotzTKV40A+zsp1p0rcN7AS+d1MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTI0MDQyNDE2MzUzMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAPG+2m1TkxvX/8iQc2SnbrprppfwXqqYp7
+ThT/mwtcxz67QRUu0E6QCF4JihRUzZP5jhjRteLq7wcpbDvgSyCS4GnYyssbk6Xfbds2ID5/Gc3i
+b4OhA/29tpQ+W0xM4bAIW0oUYR+rAqsgvFteQONT9hkBPAb0pwMlM7bn8ZySQnY3JVzIWDifjM2n
+L++yQj3qDrK3DAalMrjsZYWjKOcm7SH1zqX9jryy51uxydwderFlp1Y7DgIYraHUYKxpMK4p1a7d
+tUQPwSIXwhk1gBQLOOZ39ipR6ICH2Fd9+gvFIPPP/klg6pDuEUkBBmq+JSVhW0w5h7Mcvb/MN8Br
+TRdp
+--000000000000633ac90616da42ed--
 
