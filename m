@@ -1,151 +1,176 @@
-Return-Path: <linux-kernel+bounces-156167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 645498AFEB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:49:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 672638AFEA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:46:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E53528A1D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:49:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39E9DB2222E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:46:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 319B8C138;
-	Wed, 24 Apr 2024 02:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B39B383CD3;
+	Wed, 24 Apr 2024 02:46:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EJ1jgSca"
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YCQUkFL5"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BDADDD7;
-	Wed, 24 Apr 2024 02:47:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CA4983A1E;
+	Wed, 24 Apr 2024 02:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713926837; cv=none; b=HCEwtVxplBjC0hJj+Dje0Wsh9Rr49Eq4TR5UQBbqaLyCC/oi28qkQ8kxTxIBVX+SrlPycjt9uID20uVgp+iMTKGMWw9TkgUIwLJc/qY8hhgDkNwW5aPzsSQPUmV2meiaXr7Q65IljqOlWgDBE1S6g8w/8m3Mf5rl52sFskYsUj8=
+	t=1713926788; cv=none; b=W2zLdHiXqYIOaXyzhhxsPtH6+tXyZMsgc05ATx+5WE19KtCxd2M2ShutPenPZbsbm0hKY7YYVVXbt6/f5wjMlcgbNy8jhWUx8wTbx5Uxs8o/wVtlUo+yeoxZCeh2iZahsO6ZdqXCJbfWvP9gCrg5UMFQ3BDseM02hTIV5Uk1qWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713926837; c=relaxed/simple;
-	bh=aW9QjOZxUq1CXz5OPtMFqXBshrzsl24lbOThqhik7eQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rgyjfXERmFlMsprTrw7R2B+LDNVpBDelMia/pNz07eBUL2nLGK6iCXM7oDAE/ZOgy8WmC5hzMjU59BDUeGBWg61dxY6zy4mEF2yP5cjEerxMHxh91SW5XaVUpLsSRhMznXf6h2v/7XKRHNNHGuyV9T4hL2eVqaN5JhWGmhvzaF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EJ1jgSca; arc=none smtp.client-ip=209.85.216.53
+	s=arc-20240116; t=1713926788; c=relaxed/simple;
+	bh=xBUEcmhUENIVfjoh2Y2J3tXoPs5E2mh53NO4x3kUDXE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VwqL4b65uSDD4DSssaGgLhOCxzP8VcdDe6y97j/n5NHcx6Edius8c+cEARIzUfHbfku5hpeKRw111M0uw6nma9LdPMz1/q9sYAci/Njb9eOdXJgh+xqQwaYIx8MzWh5PjEd1tG0PAQDnQ4b1OIRz7L48fC1A8JVt//6tinL1mOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YCQUkFL5; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2a78c2e253aso5039396a91.3;
-        Tue, 23 Apr 2024 19:47:15 -0700 (PDT)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e4f341330fso53967385ad.0;
+        Tue, 23 Apr 2024 19:46:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713926835; x=1714531635; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HXkLM1FkKW7lL5+iv6VksWN76QjCOZFWNl9wI9RaxME=;
-        b=EJ1jgScaAnIkBVR62GS3kZTnt8HgB0f6WTmKb+IX7eZ83AzhHKcSq1srwTDHvgSMxY
-         VBMRWcwxAJg0+HqJIxA+Fk4x6gLLSzoiv6cnnHInKnOcC2aBf6D0B8BavJCyC6B3namv
-         PAIUF3Cw4VC8olX9eaF8fdIdPJOtSEvYK5nKBKkMCjdo9x2XduI40dYT5nPW6DlaLYbQ
-         0xArKkhN3xMoNWLQIOoCpvjcGrhEsSXqanZqp8LhglO1WVjbNzmkoPg2Rjrc1UIdkiVo
-         +KrHIuqcTotvxyvxCNlhU0YWrjQj71EOU2aA5fnFOXVxHeQhywDEFHs29bJ/3oLaqTCj
-         Ki0A==
+        d=gmail.com; s=20230601; t=1713926787; x=1714531587; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lTvKMLpj2AZnqrPhNjBbKcnRSe3quDRxIzs6jtieELk=;
+        b=YCQUkFL57jYgfRvQaq0nBIAr4mRNTHJW4YHO8NYhk+jk1RuWGZGkpVJ21eZf/9x5PP
+         K9oku2CiZNewtNlF3CcuOhBXuDEfrBX51ZLwq2srGNzCbbeFKvpDXshFQ4iwMJoF65RU
+         +FBsm46nWMmvub2stNmtRlOegqHzvaUVWaIy4smeBTaBfiiU4iFPy1db0tZadtniTj/i
+         8Kz81bVJnfe6qw1nubPIo9nzdRHBViJBN3PmyvlVr7t1N7to6qdTNunCnYUnRfcRio9d
+         PurISUQ/t2vkY0A8MzeXRg8mwRid0gL/34+cT301/rzYJb5rWMq1bmTVdWnSC6Yb61OX
+         x/Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713926835; x=1714531635;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HXkLM1FkKW7lL5+iv6VksWN76QjCOZFWNl9wI9RaxME=;
-        b=o8ApYNe93QZoWqizpaNKWLWovmb+ddLtMpYRWszlCEkIik5h8PFHq9Tgz2SYmkzcrw
-         yeqylh5/SuPS5P0IkaPnpFJF2bvwacK3+YlITVh9jScbRqvzj9GrW7cWFga6C6sIPPq8
-         Mk8xsPhVcKQrVuOwMxuozKGQ5GMD6oNzhqvHbmAxgHaSXXEdaUq/gxSr7dynvNC92hUl
-         I/P94v89Iyt5zx6kMpiEoh156XwRcDIL1Ytx74HMU/OfctFi83OK5J9E3iVYzlTfBL4j
-         u1Ia8p6tmcPwCV6RjC91qjUEC2CBK/35NN/ZatgcM11I39m445Ag8XJ4jS+5ylvD/QkG
-         deHA==
-X-Forwarded-Encrypted: i=1; AJvYcCVwgOoXQPMfg0rNMacz6yFizIZyjNwzSsqRej35KmE5XfVEcRYaWbvCLv7WbMlk3FEGOeR/3ax0FmUne5TXSvJdK9IU
-X-Gm-Message-State: AOJu0YyCnV4uQ5Km0DjaEOYR9LNUFWtKN52vBsu0guExUH0j90pfTWi8
-	7jj2AuKe3PnjkhR3Xf3aViqoQqcCpzzhAZ7naYKxFu57UUoHP6vaKPySQiYgvtQj3tNQ88aaeWN
-	Fu7ymcrIgvLRUIj/WnaAbc3N1snc=
-X-Google-Smtp-Source: AGHT+IF7B6IXhe6a4ebfZwzaKW3gv0klAJb12GGo4Nk4A7NGsGQwWr4sW20qyiqsST9CEu+82Inmukj+01hI6yO5mVU=
-X-Received: by 2002:a17:90b:3448:b0:2a4:ca45:ded1 with SMTP id
- lj8-20020a17090b344800b002a4ca45ded1mr999701pjb.28.1713926835270; Tue, 23 Apr
- 2024 19:47:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713926787; x=1714531587;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lTvKMLpj2AZnqrPhNjBbKcnRSe3quDRxIzs6jtieELk=;
+        b=Trgv8LeEWajuG6gxQz4G/RNNeLMQms8HOEqsTB0w24gNRaUDjV01Qlj9dN+n8ENkl5
+         x7o3pLc/ghkSGC601++SRgonpQYhyM/nOA/zMITboix6mfqVCvaHPOWeSxz2vQJREiWE
+         yoopVK8vmWqJYm6xvoJWXUfquB5vD0ryCl9Gcu5o8gaxhFg83Ys2XbW4hv556tCYb8Yv
+         H9R4XKD3hgBB0V5DYFbTR3H62azqudoGbc0qtUj3lQR1s6di2DtcnTU4uUbhkwr+wq0l
+         XlCoftSaRJy+dBdlBaT4zHvnFnVPrTSowv1EB2JKqFrO35UJR2myKpZ/NpJMFmpGUalI
+         MdDw==
+X-Forwarded-Encrypted: i=1; AJvYcCUhtZNxIoTH56uuVgQs/J7o2xh/vaMk/jIAJhOu5lUQYhQx8iw0AxrEkbFh3yTqzBwEgzamJIMrlj+3RPHfmn/O/ED6LpMUQEL9DjW2S6CVrXeMCo4IoAhYFuRqaMy4HxYSFthSTFRq4gujrngOFkeFp2EKNNRqLRv+KEQvsqNf1bcYJg==
+X-Gm-Message-State: AOJu0YxtIjd7kKrgYCRuKd/AI8N+lOUrEdfonuCAlc0EK7jSUClfyAVw
+	3u5/mj57vEVYHwu1M3lYNdzBlZ2zKm0p3DtCF96eGZVed0NfnoKQqOS0IqbTWjeM7Q==
+X-Google-Smtp-Source: AGHT+IF79yN1BuL7Po0ptWnZUO05HzHm4l9+fwgVmQSQ/bfLGqHL4piuBpi0EwGBsi/CKkzw8U3sxg==
+X-Received: by 2002:a17:902:d481:b0:1e3:e25c:fa5c with SMTP id c1-20020a170902d48100b001e3e25cfa5cmr1395689plg.67.1713926786686;
+        Tue, 23 Apr 2024 19:46:26 -0700 (PDT)
+Received: from localhost.localdomain ([120.229.49.143])
+        by smtp.gmail.com with ESMTPSA id t6-20020a170902e84600b001e604438791sm10739243plg.156.2024.04.23.19.46.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 19:46:26 -0700 (PDT)
+From: Howard Chu <howardchu95@gmail.com>
+To: peterz@infradead.org
+Cc: mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	kan.liang@linux.intel.com,
+	zegao2021@gmail.com,
+	leo.yan@linux.dev,
+	ravi.bangoria@amd.com,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH v2 0/4] Dump off-cpu samples directly
+Date: Wed, 24 Apr 2024 10:48:01 +0800
+Message-ID: <20240424024805.144759-1-howardchu95@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240407090558.3395-1-jiangshanlai@gmail.com> <20240407090558.3395-4-jiangshanlai@gmail.com>
- <CAEXW_YRjuWMLvmZ_oVHEe837gPAyjBs5OMvZc=T1PXYB0apNmQ@mail.gmail.com>
-In-Reply-To: <CAEXW_YRjuWMLvmZ_oVHEe837gPAyjBs5OMvZc=T1PXYB0apNmQ@mail.gmail.com>
-From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Wed, 24 Apr 2024 10:47:03 +0800
-Message-ID: <CAJhGHyDrUu6g1J=ebVCUZDZBbL0FX0RZ-D6sPufs+Ek8_fkcSA@mail.gmail.com>
-Subject: Re: [PATCH V2 03/11] rcu: Reorder tree_exp.h after tree_plugin.h
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org, 
-	Lai Jiangshan <jiangshan.ljs@antgroup.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Josh Triplett <josh@joshtriplett.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Zqiang <qiang.zhang1211@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 24, 2024 at 1:58=E2=80=AFAM Joel Fernandes <joel@joelfernandes.=
-org> wrote:
->
-> On Sun, Apr 7, 2024 at 5:03=E2=80=AFAM Lai Jiangshan <jiangshanlai@gmail.=
-com> wrote:
-> >
-> > From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
-> >
-> > Enable tree_exp.h using some rcu preempt macros introduced in
-> > the next patch. The new macros touch core rcu-preempt fields
-> > and are better to be implemented in tree_plugin.h.
-> >
-> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
-> > ---
-> >  kernel/rcu/tree.c        | 2 +-
-> >  kernel/rcu/tree_plugin.h | 1 +
-> >  2 files changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index d9642dd06c25..57d1ae26861f 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -5245,6 +5245,6 @@ void __init rcu_init(void)
-> >  }
-> >
-> >  #include "tree_stall.h"
-> > -#include "tree_exp.h"
-> >  #include "tree_nocb.h"
-> >  #include "tree_plugin.h"
-> > +#include "tree_exp.h"
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > index b1264096d03a..d899b4afc21c 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -103,6 +103,7 @@ static void __init rcu_bootup_announce_oddness(void=
-)
-> >  #ifdef CONFIG_PREEMPT_RCU
-> >
-> >  static void rcu_report_exp_rnp(struct rcu_node *rnp, bool wake);
-> > +static bool sync_rcu_exp_done(struct rcu_node *rnp);
-> >  static void rcu_read_unlock_special(struct task_struct *t);
->
-> OK with me, but not sure if the reordering of header inclusion is
-> needed? You could get the same results by just adding declarations of
-> the new helpers to tree_exp.h.
+As mentioned in: https://bugzilla.kernel.org/show_bug.cgi?id=207323
 
-The new macros (in later patch) touch core rcu-preempt fields
-and are better to be implemented in tree_plugin.h.
+Currently, off-cpu samples are dumped when perf record is exiting. This
+results in off-cpu samples being after the regular samples. Also, samples
+are stored in large BPF maps which contain all the stack traces and
+accumulated off-cpu time, but they are eventually going to fill up after
+running for an extensive period. This patch fixes those problems by dumping
+samples directly into perf ring buffer, and dispatching those samples to the
+correct format.
 
->
-> Not sure if tree_plugin.h needs to be included last, I for some reason
-> thought it needed to be - but looks like not. I found a thread that
-> shed some light into the header file including C code thing as well,
-> which may or may not help:
-> https://lore.kernel.org/all/8ab3ca72-e20c-4b18-803f-bf6937c2cd70@paulmck-=
-laptop/#t
->
-> Thanks.
+Before, off-cpu samples are after regular samples
+
+```
+         swapper       0 [000] 963432.136150:    2812933    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+         swapper       0 [000] 963432.637911:    4932876    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+         swapper       0 [001] 963432.798072:    6273398    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+         swapper       0 [000] 963433.541152:    5279005    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+sh 1410180 [000] 18446744069.414584:    2528851 offcpu-time: 
+	    7837148e6e87 wait4+0x17 (/usr/lib/libc.so.6)
+
+
+sh 1410185 [000] 18446744069.414584:    2314223 offcpu-time: 
+	    7837148e6e87 wait4+0x17 (/usr/lib/libc.so.6)
+
+
+awk 1409644 [000] 18446744069.414584:     191785 offcpu-time: 
+	    702609d03681 read+0x11 (/usr/lib/libc.so.6)
+	          4a02a4 [unknown] ([unknown])
+```
+
+
+After, regular samples(cycles:P) and off-cpu(offcpu-time) samples are
+collected simultaneously:
+
+```
+upowerd     741 [000] 963757.428701:     297848 offcpu-time: 
+	    72b2da11e6bc read+0x4c (/usr/lib/libc.so.6)
+
+
+      irq/9-acpi      56 [000] 963757.429116:    8760875    cycles:P:  ffffffffb779849f acpi_os_read_port+0x2f ([kernel.kallsyms])
+upowerd     741 [000] 963757.429172:     459522 offcpu-time: 
+	    72b2da11e6bc read+0x4c (/usr/lib/libc.so.6)
+
+
+         swapper       0 [002] 963757.434529:    5759904    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
+perf 1419260 [000] 963757.434550: 1001012116 offcpu-time: 
+	    7274e5d190bf __poll+0x4f (/usr/lib/libc.so.6)
+	    591acfc5daf0 perf_evlist__poll+0x24 (/root/hw/perf-tools-next/tools/perf/perf)
+	    591acfb1ca50 perf_evlist__poll_thread+0x160 (/root/hw/perf-tools-next/tools/perf/perf)
+	    7274e5ca955a [unknown] (/usr/lib/libc.so.6)
+```
+
+Here's a simple flowchart:
+
+[parse_event (sample type: PERF_SAMPLE_RAW)] --> [config (bind fds,
+sample_id, sample_type)] --> [off_cpu_strip (sample type: PERF_SAMPLE_RAW)] -->
+[record_done(hooks off_cpu_finish)] --> [prepare_parse(sample type: OFFCPU_SAMPLE_TYPES)]
+
+Changes in v2:
+ - Remove unnecessary comments.
+ - Rename function off_cpu_change_type to off_cpu_prepare_parse
+
+Howard Chu (4):
+  perf record off-cpu: Parse off-cpu event, change config location
+  perf record off-cpu: BPF perf_event_output on sched_switch
+  perf record off-cpu: extract off-cpu sample data from raw_data
+  perf record off-cpu: delete bound-to-fail test
+
+ tools/perf/builtin-record.c             |  98 +++++++++-
+ tools/perf/tests/shell/record_offcpu.sh |  29 ---
+ tools/perf/util/bpf_off_cpu.c           | 242 +++++++++++-------------
+ tools/perf/util/bpf_skel/off_cpu.bpf.c  | 163 +++++++++++++---
+ tools/perf/util/evsel.c                 |   8 -
+ tools/perf/util/off_cpu.h               |  14 +-
+ tools/perf/util/perf-hooks-list.h       |   1 +
+ 7 files changed, 344 insertions(+), 211 deletions(-)
+
+-- 
+2.44.0
+
 
