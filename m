@@ -1,132 +1,262 @@
-Return-Path: <linux-kernel+bounces-156452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B4138B02F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:16:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E4D98B02F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:18:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D60E01C22973
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:16:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF9701F22C7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5D94157E6C;
-	Wed, 24 Apr 2024 07:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77F8157A7D;
+	Wed, 24 Apr 2024 07:18:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="PY9Mw9ZZ"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oKMi5ahd"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D59D360;
-	Wed, 24 Apr 2024 07:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E4FC156C60
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 07:18:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713943005; cv=none; b=mnHulsOCR6t/OiEnfwTXU/W8oklH1hbcmXQ4FN9sp1VBf+WaffTdYROPjTKcnbqzljjkPVMD3uFmEiVg9JlJ5wablx6Au+EA3f1AI902U5UFmJSU6RokuvAeLhIrkl2xdWmC/LQ2wVDjZ6TjOWkztQ+X+FMus10yvDFD1SP7ZRg=
+	t=1713943091; cv=none; b=FO0nTghcgxsEx2ZagB7+1Ka0W3bIjfWXQesUK/kWt5/i10WFRcO1I7RZaSo+YtvApH/0k0PWSm1ZiWJAw+kHFKcqsmuy7cDRSlVsnOBsYfM3DM+MCIB+KdaXzPc9NfqIwxQa/pLyAWyJETDN7Rlwx0KaQZC0lwEbyQ5JuhNvSkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713943005; c=relaxed/simple;
-	bh=E1fwd1W0aXVPo9e17+huq/xHPYPSatpsHlCko4mo2wM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BKxBtdPO/M2louBcvKP8xgLpNqJVHSJ1hYcRLEO9oi74NWWeSBcngXA6tFkGd6l1e8QQ1a1Evl2cAlQ7vyHPzEyvtk4GNZquj+A0aYyJt6wUFpA9jnTSJrSp23VcFfaFggm+yLpiijkjS7v10ZFDFvjTIHXUiVaAVXLSmEfRvtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=PY9Mw9ZZ; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43O7GVdB061921;
-	Wed, 24 Apr 2024 02:16:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713942991;
-	bh=0W2mD8fr9mkHJZVb38GrfhFcqGHaTgNh0tcswSRAXA8=;
-	h=From:To:CC:Subject:Date;
-	b=PY9Mw9ZZFu/IcIQv5tAVJOkJ83LP0jZFGuaqajzWdyaWanZ3TFMB23nu+sAhguFsz
-	 d8d04JJtQdiBPiCQfMq4Y6YOqG6glORbUsqJ0tSNWm85oVob7kYXQBZ7Yl/3eBN0CW
-	 gTLlh1NvrYcPlfPlcYuDIiVaUS/deoPLtWzhQJxY=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43O7GV03026334
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 24 Apr 2024 02:16:31 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 24
- Apr 2024 02:16:31 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 24 Apr 2024 02:16:30 -0500
-Received: from uda0500640.dal.design.ti.com (uda0500640.dhcp.ti.com [172.24.227.88])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43O7GQTH085742;
-	Wed, 24 Apr 2024 02:16:27 -0500
-From: Ravi Gunasekaran <r-gunasekaran@ti.com>
-To: <s-vadapalli@ti.com>, <rogerq@kernel.org>, <r-gunasekaran@ti.com>
-CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <richardcochran@gmail.com>, <jreeder@ti.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <srk@ti.com>,
-        <ed.trexel@hp.com>
-Subject: [PATCH net v2] net: ethernet: ti: am65-cpts: Fix PTPv1 message type on TX packets
-Date: Wed, 24 Apr 2024 12:46:26 +0530
-Message-ID: <20240424071626.32558-1-r-gunasekaran@ti.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1713943091; c=relaxed/simple;
+	bh=fh6/DxXJ6QlVYvQYFKUidpUtVMeGrajPzaBj/RdCU+g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mpLoLtfT14t/Nki25bYKySbvpg2cbAqrjnXjKkX03b1lzlMQPhutL5dduFyrn+jooWEK28L3eBQ8ZKPRjI+LLrCXyLrnKBXn7/UbngEiRykjaoc1i5bCc7mFl/mB1NcwGb0q0aFOy3T6O6smrQh9KNNcJdCPHGW/LO40uAiJDm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oKMi5ahd; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713943090; x=1745479090;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=fh6/DxXJ6QlVYvQYFKUidpUtVMeGrajPzaBj/RdCU+g=;
+  b=oKMi5ahdECFQ/bvLI5AwfNnr7JHGQLSArsMowS2+n8JGcek1qizXukZT
+   fdEQvi2CBAfJy19+IYObvdhgy3bLpfm6+TAB+Xt4o9zi5QSukDO8UfOyy
+   wPMWuLNoqbLab+X3y6zDrfOvtnxYtuPcwJT+S5JptA26Ai+Nd26mVzNKa
+   khPySd7awhlc66FkMoKFwUB2C5CBF4rabp4GEHKz8l12ek6WUsyWUyvMl
+   JzRd2NV/ik6daBXjx1c09q1aGU1EEL+1fhkkty0DQ08lU+7hXaSBbHAv6
+   mqNIoYirfAYYMgGrVcgyfU9pCIjtl73IdkmdL92AAvkEDTf8Z2UDqK2YB
+   A==;
+X-CSE-ConnectionGUID: l1d7sblvQNm3A3bL2AgXxA==
+X-CSE-MsgGUID: rbyENVBwTzmp6CwvIzocig==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="27073065"
+X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
+   d="scan'208";a="27073065"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 00:18:10 -0700
+X-CSE-ConnectionGUID: c6Nn8hQVRCmH8gGApFwHJw==
+X-CSE-MsgGUID: UM3Mw8hJSR2Nw6Kg6pt8NA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
+   d="scan'208";a="24664561"
+Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
+  by fmviesa010.fm.intel.com with ESMTP; 24 Apr 2024 00:18:07 -0700
+From: Lu Baolu <baolu.lu@linux.intel.com>
+To: Joerg Roedel <joro@8bytes.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>,
+	Jingqi Liu <Jingqi.liu@intel.com>,
+	Dimitri Sivanich <sivanich@hpe.com>,
+	Uros Bizjak <ubizjak@gmail.com>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 00/18] [PULL REQUEST] Intel IOMMU updates for v6.10
+Date: Wed, 24 Apr 2024 15:16:26 +0800
+Message-Id: <20240424071644.178250-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 
-From: Jason Reeder <jreeder@ti.com>
+Hi Joerg,
 
-The CPTS, by design, captures the messageType (Sync, Delay_Req, etc.)
-field from the second nibble of the PTP header which is defined in the
-PTPv2 (1588-2008) specification. In the PTPv1 (1588-2002) specification
-the first two bytes of the PTP header are defined as the versionType
-which is always 0x0001. This means that any PTPv1 packets that are
-tagged for TX timestamping by the CPTS will have their messageType set
-to 0x0 which corresponds to a Sync message type. This causes issues
-when a PTPv1 stack is expecting a Delay_Req (messageType: 0x1)
-timestamp that never appears.
+The following changes have been queued for v6.10-rc1:
 
-Fix this by checking if the ptp_class of the timestamped TX packet is
-PTP_CLASS_V1 and then matching the PTP sequence ID to the stored
-sequence ID in the skb->cb data structure. If the sequence IDs match
-and the packet is of type PTPv1 then there is a chance that the
-messageType has been incorrectly stored by the CPTS so overwrite the
-messageType stored by the CPTS with the messageType from the skb->cb
-data structure. This allows the PTPv1 stack to receive TX timestamps
-for Delay_Req packets which are necessary to lock onto a PTP Leader.
+ - Consolidate domain cache invalidation
+ - Remove private data from page fault message
+ - Allocate DMAR fault interrupts locally
+ - Cleanup and refactoring
 
-Fixes: f6bd59526ca5 ("net: ethernet: ti: introduce am654 common platform time sync driver")
-Signed-off-by: Jason Reeder <jreeder@ti.com>
-Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
----
-Changes since v1:
------------------
-* Added Fixes tag as per Paolo's suggestion
-* Rebased to latest tip
+Unfortunately, there is a merge conflict with the next branch, in
+drivers/iommu/intel/iommu.c. I resolved this conflict as below.
 
-v1: https://lore.kernel.org/all/20240419080547.10682-1-r-gunasekaran@ti.com/
+All patches are based on v6.9-rc5. The whole code after merging into the
+next branch is available at:
+https://github.com/LuBaolu/intel-iommu/commits/vtd-update-for-v6.10
 
- drivers/net/ethernet/ti/am65-cpts.c | 5 +++++
- 1 file changed, 5 insertions(+)
+diff --cc drivers/iommu/intel/iommu.c
+index 916cdb65d849,7abe76f92a3c..daf0e9b067e6
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@@ -860,9 -850,9 +845,9 @@@ static struct dma_pte *pfn_to_dma_pte(s
+  			break;
+  
+  		if (!dma_pte_present(pte)) {
+ -			uint64_t pteval;
+ +			uint64_t pteval, tmp;
+  
+- 			tmp_page = alloc_pgtable_page(domain->nid, gfp);
++ 			tmp_page = iommu_alloc_page_node(domain->nid, gfp);
+  
+  			if (!tmp_page)
+  				return NULL;
+@@@ -872,10 -862,9 +857,10 @@@
+  			if (domain->use_first_level)
+  				pteval |= DMA_FL_PTE_XD | DMA_FL_PTE_US | DMA_FL_PTE_ACCESS;
+  
+ -			if (cmpxchg64(&pte->val, 0ULL, pteval))
+ +			tmp = 0ULL;
+ +			if (!try_cmpxchg64(&pte->val, &tmp, pteval))
+  				/* Someone else set it while we were thinking; use theirs. */
+- 				free_pgtable_page(tmp_page);
++ 				iommu_free_page(tmp_page);
+  			else
+  				domain_flush_cache(domain, pte, sizeof(*pte));
+  		}
+@@@ -3226,7 -3402,16 +3211,7 @@@ static int intel_iommu_memory_notifier(
+  			LIST_HEAD(freelist);
+  
+  			domain_unmap(si_domain, start_vpfn, last_vpfn, &freelist);
+- 			put_pages_list(&freelist);
+ -
+ -			rcu_read_lock();
+ -			for_each_active_iommu(iommu, drhd)
+ -				iommu_flush_iotlb_psi(iommu, si_domain,
+ -					start_vpfn, mhp->nr_pages,
+ -					list_empty(&freelist), 0);
+ -			rcu_read_unlock();
++ 			iommu_put_pages_list(&freelist);
+  		}
+  		break;
+  	}
+@@@ -3921,9 -4107,26 +3906,9 @@@ static size_t intel_iommu_unmap_pages(s
+  static void intel_iommu_tlb_sync(struct iommu_domain *domain,
+  				 struct iommu_iotlb_gather *gather)
+  {
+ -	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
+ -	unsigned long iova_pfn = IOVA_PFN(gather->start);
+ -	size_t size = gather->end - gather->start;
+ -	struct iommu_domain_info *info;
+ -	unsigned long start_pfn;
+ -	unsigned long nrpages;
+ -	unsigned long i;
+ -
+ -	nrpages = aligned_nrpages(gather->start, size);
+ -	start_pfn = mm_to_dma_pfn_start(iova_pfn);
+ -
+ -	xa_for_each(&dmar_domain->iommu_array, i, info)
+ -		iommu_flush_iotlb_psi(info->iommu, dmar_domain,
+ -				      start_pfn, nrpages,
+ -				      list_empty(&gather->freelist), 0);
+ -
+ -	if (dmar_domain->nested_parent)
+ -		parent_domain_flush(dmar_domain, start_pfn, nrpages,
+ -				    list_empty(&gather->freelist));
+ +	cache_tag_flush_range(to_dmar_domain(domain), gather->start,
+ +			      gather->end, list_empty(&gather->freelist));
+- 	put_pages_list(&gather->freelist);
++ 	iommu_put_pages_list(&gather->freelist);
+  }
+  
+  static phys_addr_t intel_iommu_iova_to_phys(struct iommu_domain *domain,
+@@@ -4366,20 -4573,27 +4351,15 @@@ static int intel_iommu_iotlb_sync_map(s
+  	return 0;
+  }
+  
+- static void intel_iommu_remove_dev_pasid(struct device *dev, ioasid_t pasid)
++ static void intel_iommu_remove_dev_pasid(struct device *dev, ioasid_t pasid,
++ 					 struct iommu_domain *domain)
+  {
+  	struct device_domain_info *info = dev_iommu_priv_get(dev);
++ 	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
+  	struct dev_pasid_info *curr, *dev_pasid = NULL;
+  	struct intel_iommu *iommu = info->iommu;
+- 	struct dmar_domain *dmar_domain;
+- 	struct iommu_domain *domain;
+  	unsigned long flags;
+  
+- 	domain = iommu_get_domain_for_dev_pasid(dev, pasid, 0);
+- 	if (WARN_ON_ONCE(!domain))
+ -	/*
+ -	 * The SVA implementation needs to handle its own stuffs like the mm
+ -	 * notification. Before consolidating that code into iommu core, let
+ -	 * the intel sva code handle it.
+ -	 */
+ -	if (domain->type == IOMMU_DOMAIN_SVA) {
+ -		intel_svm_remove_dev_pasid(dev, pasid);
+--		goto out_tear_down;
+- 	dmar_domain = to_dmar_domain(domain);
+ -	}
+--
+  	spin_lock_irqsave(&dmar_domain->lock, flags);
+  	list_for_each_entry(curr, &dmar_domain->dev_pasids, link_domain) {
+  		if (curr->dev == dev && curr->pasid == pasid) {
 
-diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
-index c66618d91c28..f89716b1cfb6 100644
---- a/drivers/net/ethernet/ti/am65-cpts.c
-+++ b/drivers/net/ethernet/ti/am65-cpts.c
-@@ -784,6 +784,11 @@ static bool am65_cpts_match_tx_ts(struct am65_cpts *cpts,
- 		struct am65_cpts_skb_cb_data *skb_cb =
- 					(struct am65_cpts_skb_cb_data *)skb->cb;
- 
-+		if ((ptp_classify_raw(skb) & PTP_CLASS_V1) &&
-+		    ((mtype_seqid & AM65_CPTS_EVENT_1_SEQUENCE_ID_MASK) ==
-+		     (skb_cb->skb_mtype_seqid & AM65_CPTS_EVENT_1_SEQUENCE_ID_MASK)))
-+			mtype_seqid = skb_cb->skb_mtype_seqid;
-+
- 		if (mtype_seqid == skb_cb->skb_mtype_seqid) {
- 			u64 ns = event->timestamp;
- 
+With above in mind, please consider them for v6.10.
 
-base-commit: a59668a9397e7245b26e9be85d23f242ff757ae8
+Best regards,
+baolu
+
+Colin Ian King (1):
+  iommu/vt-d: Remove redundant assignment to variable err
+
+Dimitri Sivanich (1):
+  iommu/vt-d: Allocate DMAR fault interrupts locally
+
+Jason Gunthorpe (1):
+  iommu: Add ops->domain_alloc_sva()
+
+Jingqi Liu (2):
+  iommu/vt-d: Remove debugfs use of private data field
+  iommu/vt-d: Remove private data use in fault message
+
+Lu Baolu (12):
+  iommu/vt-d: Remove caching mode check before device TLB flush
+  iommu/vt-d: Add cache tag assignment interface
+  iommu/vt-d: Add cache tag invalidation helpers
+  iommu/vt-d: Add trace events for cache tag interface
+  iommu/vt-d: Use cache_tag_flush_all() in flush_iotlb_all
+  iommu/vt-d: Use cache_tag_flush_range() in tlb_sync
+  iommu/vt-d: Use cache_tag_flush_range_np() in iotlb_sync_map
+  iommu/vt-d: Cleanup use of iommu_flush_iotlb_psi()
+  iommu/vt-d: Use cache_tag_flush_range() in cache_invalidate_user
+  iommu/vt-d: Use cache helpers in arch_invalidate_secondary_tlbs
+  iommu/vt-d: Remove intel_svm_dev
+  iommu/vt-d: Remove struct intel_svm
+
+Uros Bizjak (1):
+  iommu/vt-d: Use try_cmpxchg64{,_local}() in iommu.c
+
+ include/linux/dmar.h          |   2 +-
+ include/linux/iommu.h         |   6 +-
+ drivers/iommu/amd/amd_iommu.h |   2 +-
+ drivers/iommu/intel/iommu.h   |  86 +++++--
+ drivers/iommu/intel/perf.h    |   1 -
+ drivers/iommu/intel/trace.h   |  97 ++++++++
+ drivers/iommu/irq_remapping.h |   2 +-
+ drivers/iommu/amd/init.c      |   2 +-
+ drivers/iommu/intel/cache.c   | 419 ++++++++++++++++++++++++++++++++++
+ drivers/iommu/intel/debugfs.c |   7 -
+ drivers/iommu/intel/dmar.c    |  10 +-
+ drivers/iommu/intel/iommu.c   | 300 +++---------------------
+ drivers/iommu/intel/nested.c  |  69 ++----
+ drivers/iommu/intel/svm.c     | 372 +++++++-----------------------
+ drivers/iommu/iommu-sva.c     |  16 +-
+ drivers/iommu/irq_remapping.c |   5 +-
+ drivers/iommu/intel/Makefile  |   2 +-
+ 17 files changed, 743 insertions(+), 655 deletions(-)
+ create mode 100644 drivers/iommu/intel/cache.c
+
 -- 
-2.17.1
+2.34.1
 
 
