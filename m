@@ -1,65 +1,85 @@
-Return-Path: <linux-kernel+bounces-157704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AAC78B14D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:45:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 813A78B14DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:46:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7735284538
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:45:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D2D81F23FCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:46:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332FE156962;
-	Wed, 24 Apr 2024 20:45:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE56156978;
+	Wed, 24 Apr 2024 20:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=morinfr.org header.i=@morinfr.org header.b="r1UM6bc8"
-Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+	dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b="GAav2AQv"
+Received: from meesny.iki.fi (meesny.iki.fi [195.140.195.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7FEB1772F;
-	Wed, 24 Apr 2024 20:44:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.2
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713991499; cv=none; b=aZPMkRMmpUB50zOg+UUW7VutS3tdQtjh+Hjy0DMmjU4dNHkRf3/2QL0xvmWIPwrCRizcNQ3MfgjRHvRQwm0EHQfEdDyZVQrm6jrhuos95Pq3Z6P4tFSML24YZLGCDmx/5GP5oKrcHrqiLA8LIa96RuQplmgYJgRfiKdr0DcM050=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713991499; c=relaxed/simple;
-	bh=nTEIRGVB1/SHv/Q71QQx9mQDZjVkaFHXUQ2ixRjCj+A=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D26E1772F;
+	Wed, 24 Apr 2024 20:46:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=195.140.195.201
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713991586; cv=pass; b=NUNJ1r0PQk4W2QnQ+JcvMdgNiwMh1vM5YntjoUkC4EnRprIKHORN4RqD6hQ0COnyajTbuSeVVSi3eszTx3RN9Ir+RvyDxL9f3Ih623HUKF34oJshQK76iVncouNv/+/qxywHDBR/J4nGYAKeKfk2FvZYzVfzs8X6oVWvncmbw68=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713991586; c=relaxed/simple;
+	bh=Za8essE1jwdIXvxMhQKUOCruzXPmu9sSKRXZnQaC/04=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZHe45oxSFpIFkDa1RAbq4CxEtRCs7nP61mLe3qINMea7lCEVR8pWjhn1KHY7NyR0WmqewahD4t3I8/8XR+U0O/5M/z1fW+sZ15eZvQYHKWuJBXjxv4Eh6w4bL/EfiqCaz5PmpB3MAfocfKGbq8owDKtXd/nWHu5IDJ5J+yBivU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=morinfr.org; spf=pass smtp.mailfrom=morinfr.org; dkim=pass (1024-bit key) header.d=morinfr.org header.i=@morinfr.org header.b=r1UM6bc8; arc=none smtp.client-ip=212.27.42.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=morinfr.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=morinfr.org
-Received: from bender.morinfr.org (unknown [82.66.66.112])
-	by smtp2-g21.free.fr (Postfix) with ESMTPS id AB10A20039E;
-	Wed, 24 Apr 2024 22:44:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=morinfr.org
-	; s=20170427; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=boX5e3fERJr2J8mbEA/m2P9U1AgJpSWICBhdrIjzhpw=; b=r1UM6bc8SMuhuUFYDvHlZ14NmL
-	36/h5ZaIIB1L62WGFhmdXCSjO1o2EeYOMiD6hBZHfSj1PJsTKtIeHMrIttl8uxREy2Smk45KacF98
-	axn+7NXEQtnT4z+ebKjhiABMxef4q3jR+KAqRPFcPBhNunMdQrYdhyNlkc6uELWLUjd8=;
-Received: from guillaum by bender.morinfr.org with local (Exim 4.96)
-	(envelope-from <guillaume@morinfr.org>)
-	id 1rzjTv-000nug-03;
-	Wed, 24 Apr 2024 22:44:43 +0200
-Date: Wed, 24 Apr 2024 22:44:42 +0200
-From: Guillaume Morin <guillaume@morinfr.org>
-To: David Hildenbrand <david@redhat.com>
-Cc: Guillaume Morin <guillaume@morinfr.org>, oleg@redhat.com,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	muchun.song@linux.dev
-Subject: Re: [RFC][PATCH] uprobe: support for private hugetlb mappings
-Message-ID: <ZilvOi7ceSXmwkNq@bender.morinfr.org>
-References: <ZiK50qob9yl5e0Xz@bender.morinfr.org>
- <b70a3d3a-ea8b-4b20-964b-b019c146945a@redhat.com>
- <ZiaoZlGc_8ZV3736@bender.morinfr.org>
- <22fcde31-16c4-42d0-ad99-568173ec4dd0@redhat.com>
- <ZibOQI9kwzE98n12@bender.morinfr.org>
- <8d5314ac-5afe-41d4-9d27-9512cd96d21c@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=U4rIjBBcDz/s/oh21wOsnsaTWeVMlOzpjgsqyM6Q7TkDqswWEKxpTW06gjZ1hYIkzd5w4PDI9O5AmbZtf/ah+GlPtZX6s9v2XUtWzLte978Y0MjMXPryuY2FFcq43MN+fRDaIkRiZs6mQ5Y4IvSfup84J7Ds9Gpdu0hEx6WQrlw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b=GAav2AQv; arc=pass smtp.client-ip=195.140.195.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
+Received: from hillosipuli.retiisi.eu (2a00-1190-d1dd-0-c641-1eff-feae-163c.v6.cust.suomicom.net [IPv6:2a00:1190:d1dd:0:c641:1eff:feae:163c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sailus)
+	by meesny.iki.fi (Postfix) with ESMTPSA id 4VPrcY0Z8bzyS9;
+	Wed, 24 Apr 2024 23:46:20 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+	t=1713991581;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ueBAWNliVb+VwYWcNCW4oPB3DbovNowk0vSZn5YeC5A=;
+	b=GAav2AQvk6wp8UACJNAfTGeZW/rfzYBrZmfq2WWWciDYQyXGEzRpy1LPzeNmxwlmsOWCow
+	s8EfObeDmqa90y4MpGXnD+v7NtOBzH2ejmF+928zPpgBz+ovCku59IQoU4KLwnOzf7lTjg
+	attx6CtUUBz6IEE0hQ2X5B+8geP5ihk=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+	s=meesny; t=1713991581;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ueBAWNliVb+VwYWcNCW4oPB3DbovNowk0vSZn5YeC5A=;
+	b=bDBs9eWWpWFJtV6jjgNZPGPuyBuJ1aCgoVHhhQ5C+B1dEet8lvWYy1DSkiDd5BvH+rMdR0
+	Hzb+foAtADbqM1Qx3lfTJ5gv1PnnfwGKmrvPSqozruqjXiu/KCqEKYuIe9umxkAGTXNuFw
+	7IXfQP7tR/O4Vy8bf0s23w9bAd7i1og=
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1713991581; a=rsa-sha256; cv=none;
+	b=oy5IIIBDtP7A1QwyhL++/T72Z1qleI+b3YkrxI2v1CJ8itMIjoCJ1PX9NxTZYSe/VGKQFJ
+	ZfVJx0kwK1ueA7bgaZs3fREY9oTQqHXh6nUTGS+AZASizoh17MgJcGCHxkxbstR6kqPIZT
+	4tC0n5mlFeg85M6US4uRMJLbNP9vQgk=
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by hillosipuli.retiisi.eu (Postfix) with ESMTPS id B596B634C96;
+	Wed, 24 Apr 2024 23:46:19 +0300 (EEST)
+Date: Wed, 24 Apr 2024 20:46:19 +0000
+From: Sakari Ailus <sakari.ailus@iki.fi>
+To: Sylvain Petinot <sylvain.petinot@foss.st.com>
+Cc: benjamin.mugnier@foss.st.com, mchehab@kernel.org, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] media: dt-bindings: Add ST VD56G3 camera sensor
+ binding
+Message-ID: <Zilvm98FNzWoGFL_@valkosipuli.retiisi.eu>
+References: <20240417133453.17406-1-sylvain.petinot@foss.st.com>
+ <20240417133453.17406-2-sylvain.petinot@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,58 +88,214 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8d5314ac-5afe-41d4-9d27-9512cd96d21c@redhat.com>
+In-Reply-To: <20240417133453.17406-2-sylvain.petinot@foss.st.com>
 
-On 24 Apr 22:09, David Hildenbrand wrote:
-> > > Let me try to see if we can get this done cleaner.
-> > > 
-> > > One ugly part (in general here) is the custom page replacement in the
-> > > registration part.
-> > > 
-> > > We are guaranteed to have a MAP_PRIVATE mapping. Instead of replacing pages
-> > > ourselves (which we likely shouldn't do ...) ... maybe we could use
-> > > FAULT_FLAG_UNSHARE faults such that we will get an anonymous folio
-> > > populated. (like KSM does nowadays)
-> > > 
-> > > Punching FOLL_PIN|FOLL_LONGTERM into GUP would achieve the same thing, but
-> > > using FOLL_WRITE would not work on many file systems. So maybe we have to
-> > > trigger an unsharing fault ourselves.
+Hi Sylvain,
+
+Thanks for the patch.
+
+On Wed, Apr 17, 2024 at 03:34:52PM +0200, Sylvain Petinot wrote:
+> Add devicetree bindings Documentation for ST VD56G3 & ST VD66GY camera
+> sensors. Update MAINTAINERS file.
 > 
-> ^ realizing that we already use FOLL_FORCE, so we can just use FOLL_WRITE to
-> break COW.
-
-It was never clear to me why uprobes was not doing FOLL_WRITE in the
-first place, I must say.
-
-One issue here is that FOLL_FORCE|FOLL_WRITE is not implemented for
-hugetlb mappings. However this was also on my TODO and I have a draft
-patch that implements it.
-
+> Signed-off-by: Sylvain Petinot <sylvain.petinot@foss.st.com>
+> ---
+>  .../bindings/media/i2c/st,st-vd56g3.yaml      | 143 ++++++++++++++++++
+>  MAINTAINERS                                   |   9 ++
+>  2 files changed, 152 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml
 > 
-> > > 
-> > > That would do the page replacement for us and we "should" be able to lookup
-> > > an anonymous folio that we can then just modify, like ptrace would.
-> > > 
-> > > But then, there is also unregistration part, with weird conditional page
-> > > replacement. Zapping the anon page if the content matches the content of the
-> > > original page is one thing. But why are we placing an existing anonymous
-> > > page by a new anonymous page when the content from the original page differs
-> > > (but matches the one from the just copied page?)?
-> > > 
-> > > I'll have to further think about that one. It's all a bit nasty.
-> > 
-> > Sounds good to me. I am willing to help with the code when you have a
-> > plan or testing as you see fit. Let me know.
-> 
-> I'm hacking on a redesign that removes the manual COW breaking logic and
-> *might* make it easier to integrate hugetlb. (very likely, but until I have
-> the redesign running I cannot promise anything :) )
-> 
-> I'll let you know once I have something ready so you could integrate the
-> hugetlb portion.
+> diff --git a/Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml b/Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml
+> new file mode 100644
+> index 000000000000..6792c02fea5c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml
+> @@ -0,0 +1,143 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright (c) 2024 STMicroelectronics SA.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/i2c/st,st-vd56g3.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: STMicroelectronics VD56G3 Global Shutter Image Sensor
+> +
+> +maintainers:
+> +  - Benjamin Mugnier <benjamin.mugnier@foss.st.com>
+> +  - Sylvain Petinot <sylvain.petinot@foss.st.com>
+> +
+> +description: |-
 
-Sounds good.
+> +  The STMicroelectronics VD56G3 is a 1.5 M pixel global shutter image sensor
+> +  with an active array size of 1124 x 1364 (portrait orientation).
+> +  It is programmable through I2C, the address is fixed to 0x10.
+> +  The sensor output is available via CSI-2, which is configured as either 1 or
+> +  2 data lanes.
+
+The flow of the text could be improved by wrapping the text before 80
+columns (not earlier). Most editors can do this.
+
+> +  The sensor provides 8 GPIOS that can be used for either
+> +    - frame synchronization (Master: out-sync or Slave: in-sync)
+> +    - external LED signal (synchronized with sensor integration periods)
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - st,st-vd56g3
+> +      - st,st-vd66gy
+> +    description:
+> +      Two variants are availables; VD56G3 is a monochrome sensor while VD66GY
+> +      is a colour variant.
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  VCORE-supply:
+> +    description: Digital core power supply (1.15V)
+> +
+> +  VDDIO-supply:
+> +    description: Digital IO power supply (1.8V)
+> +
+> +  VANA-supply:
+> +    description: Analog power supply (2.8V)
+> +
+> +  reset-gpios:
+> +    description: Sensor reset active low GPIO (XSHUTDOWN)
+> +    maxItems: 1
+> +
+> +  st,leds:
+> +    description:
+> +      Sensor's GPIOs used for external LED control.
+> +      Signal being the enveloppe of the integration time.
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 1
+> +    maxItems: 8
+> +    items:
+> +      minimum: 0
+> +      maximum: 7
+> +
+> +  port:
+> +    $ref: /schemas/graph.yaml#/$defs/port-base
+> +
+> +    properties:
+> +      endpoint:
+> +        $ref: /schemas/media/video-interfaces.yaml#
+> +        unevaluatedProperties: false
+> +
+> +        properties:
+> +          clock-lanes:
+> +            const: 0
+
+If the clock lane is always zero, you can drop the property.
+
+> +
+> +          data-lanes:
+> +            minItems: 1
+> +            maxItems: 2
+> +            items:
+> +              enum: [1, 2]
+> +
+> +          link-frequencies:
+> +            minItems: 1
+> +            maxItems: 1
+> +            items:
+> +              enum: [402000000, 750000000]
+
+Is this a property of the sensor or the driver? Presumably the driver?
+
+What about the input clock frequency?
+
+> +
+> +          lane-polarities:
+> +            minItems: 1
+> +            maxItems: 3
+> +            items:
+> +              enum: [0, 1]
+
+The items are already in video-interfaces.yaml.
+
+> +            description: Any lane can be inverted or not.
+> +
+> +        required:
+> +          - clock-lanes
+> +          - data-lanes
+> +          - link-frequencies
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - VCORE-supply
+> +  - VDDIO-supply
+> +  - VANA-supply
+> +  - reset-gpios
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        vd56g3: camera-sensor@10 {
+> +            compatible = "st,st-vd56g3";
+> +            reg = <0x10>;
+> +
+> +            clocks = <&camera_clk_12M>;
+> +
+> +            VCORE-supply = <&camera_vcore_v1v15>;
+> +            VDDIO-supply = <&camera_vddio_v1v8>;
+> +            VANA-supply = <&camera_vana_v2v8>;
+> +
+> +            reset-gpios = <&gpio 5 GPIO_ACTIVE_LOW>;
+> +            st,leds = <6>;
+> +
+> +            port {
+> +                vd56g3_ep: endpoint {
+> +                    clock-lanes = <0>;
+> +                    data-lanes = <1 2>;
+> +                    link-frequencies =
+> +                      /bits/ 64 <402000000>;
+
+No need for a newline after "=".
+
+> +                    remote-endpoint = <&csiphy0_ep>;
+> +                };
+> +            };
+> +        };
+> +    };
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 7c121493f43d..991e65627e18 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -20868,6 +20868,15 @@ S:	Maintained
+>  F:	Documentation/hwmon/stpddc60.rst
+>  F:	drivers/hwmon/pmbus/stpddc60.c
+>  
+> +ST VD56G3 DRIVER
+> +M:	Benjamin Mugnier <benjamin.mugnier@foss.st.com>
+> +M:	Sylvain Petinot <sylvain.petinot@foss.st.com>
+> +L:	linux-media@vger.kernel.org
+> +S:	Maintained
+> +T:	git git://linuxtv.org/media_tree.git
+> +F:	Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml
+> +F:	drivers/media/i2c/st-vd56g3.c
+> +
+>  ST VGXY61 DRIVER
+>  M:	Benjamin Mugnier <benjamin.mugnier@foss.st.com>
+>  M:	Sylvain Petinot <sylvain.petinot@foss.st.com>
 
 -- 
-Guillaume Morin <guillaume@morinfr.org>
+Kind regards,
+
+Sakari Ailus
 
