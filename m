@@ -1,117 +1,154 @@
-Return-Path: <linux-kernel+bounces-156427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1E318B02AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:58:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 976F98B02AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:58:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B95CB21E25
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:58:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 486D21F22520
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17039158DC7;
-	Wed, 24 Apr 2024 06:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 894AB157A5A;
+	Wed, 24 Apr 2024 06:54:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WQWkiIz+"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Yfefzyy+"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C05A215920D
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:54:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AFBE157A58
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:54:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713941678; cv=none; b=nkVZHa5kGLvpRuKrgubwlahOa3XHw8GsDNEjYlRMctgcD6/QXH28R0zqtQkJZxc24GBW+VKo4GE5sMR15cPRYCfhF8wSuu1k5E1C18Exmt960N3LnlEWHu6SDF3UificdSVmB2PTyZ4iVYF5mZmybBrIlpE+MX5Q8c09Sa0D3/Y=
+	t=1713941687; cv=none; b=VANpqtdUqkekBs0urVDCP3CQrWIO6TUBhhBED6gpHbBYmEG/ORpx2CyvKsd8tIfWLS6Xef7ObVtDRFD9tTYTH73z2juoez0FM+ozcMgnuxJL1T7FCxo/GZ9lD89L1HqmfEJ83Q+iWp45dA3LWPOUvXSTGRTNTbGoxWa9V0vwbGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713941678; c=relaxed/simple;
-	bh=kY2xucFKXDqqzr8S/qyR/W0doPVyCIPfsW6Hz83rCoM=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=e3e9RiNuLV6xTfeO0CMmjSmUZqGZWj6a3AxXwL/OLp0u4cuXXHf0gdRdilv+lpVxJiUMBUaMx+iiLGqWFa6Wql/yZuLCX9hMqfb7va/10eEx4buD3HrxeS12kxWmdXvqcbTdqR+HMV5N78PThGQB9P17KR320AZUms0DwZaqvSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WQWkiIz+; arc=none smtp.client-ip=209.85.221.43
+	s=arc-20240116; t=1713941687; c=relaxed/simple;
+	bh=Htpj673Hpy57DaifV2ero4o9X8d4/6knlPlOrZjhPyU=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=m5mRAZ7LrJMvU1RWqzVqHFFdoSCncZpsRgdhzSfqXeIzVKTSFW8ESoNM6m6aAqaCUna++yymBv2caWW/n/vDAdXPxYVxON/cRUrX4pVMsRAdCoWtFT7lXMgwRhUeoNJU2ibhqak5gW26dCQWCujot8v+v7isWdd+1KcjgQ8hBcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Yfefzyy+; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-346359c8785so5394971f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:54:36 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41af6701768so3992215e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:54:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713941675; x=1714546475; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1713941684; x=1714546484; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=RZlI2I66i4SsS04f2xb9wEuEKYSB3a9TLQrXJM4K3mE=;
-        b=WQWkiIz+QGXPz2Eg8x0BwMazyR0QTPrQc8T5GtsZ7RxMotYkom8yWgjABF90wYjjTI
-         /jZ0iZeFyIncJwWY4nIH2ve8PLR68juXZEECHpKeYq7qTQMbP3af8tcrW5GDGmf+2Jq1
-         FEs9+NTEaQdNsEMGlcqOlSwMbNxol3R2LPsZxQVTCKv2tk7aXu0YFLSFUe325qBfMq5p
-         qSyX9gFR9ngY/+lxIZJAJJkjBSZTBi0qZw0SjEAGKZ7zKdeVfBoKtZFDpUGq8BCyfIvu
-         U+YGEDw/Yg+OmhtH4OUaHEFpRlKDZQi5Q29GSj7VfnsBe+jVyPaFDrcgjbuNZbXkxzjq
-         wAJg==
+        bh=8bRCgW5T5C1zJ8E17b4jWTOUyWD7CH0mT1aVxTkcyF0=;
+        b=Yfefzyy+TG+J2CvFCzU6U6HxV3+zqDpF38SDUlUqjypdv6kSlR00DHYKQrB06KN3Cs
+         7BjUNNi4LTis071+iQT4uSiXkh7p+8Esq0GNmvFlaxM7EVP3swKLC+UXBduUMqBVA/Wm
+         bhPsENxB2GLihhahHULoHNo0YyBE5k4Bkh3ujjP/usSBikzlKpgK5xd7SNFMFrjWHp7O
+         08jq0OaNtknFPDQTy3N+ien2w/eQ6JTf6uKOWumUoFAiUS9eBC3/0k0evnZvJLpNTP5+
+         8wfBCmWYYgCvQ/gsJk2QRr1PZ+rQhjCTCeHajBcxcGVenxnV67LI9/+z/PoQjWOTl1xF
+         5uRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713941675; x=1714546475;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RZlI2I66i4SsS04f2xb9wEuEKYSB3a9TLQrXJM4K3mE=;
-        b=fkjQ/eujviYwguiUooggg0BXHlxsVoz+cqyH9EjylmHQtGDI1d5eQUdHNybId4ZlMP
-         s3OxTIzt/uznEqssO3aub3ZgpTnKP5Q/sZ/fBDQHxIhBUdecJU1sZurBmD8kmn6XXNk/
-         +4MydRvoSO1418BwSYKTq+Ll6dB0EXxNyaGFhVY1DSo9e+MMuIfip+W2oHhkh/MIQY1r
-         c88dZAW6R/ol87odhB8cuSV7OC0ynnu+RmTjsayDGlEjmFCmS8d8a3C+I/T/0TP9tZte
-         N/41aeXMAuOwptGkryyk9habeK/n6ALBW4f87Q6mzwmRWfTC7CD7cAky+7RU1ho3mrA+
-         8sxg==
-X-Forwarded-Encrypted: i=1; AJvYcCXjfuGHED1tmrkVGc2FkIQ7upAQgiLlfksHCx72/7OIUYjL7W4XwBA4BOlIiz0P+QxWiTct6W0MuKbrwBZQ3xQB6BAnoMNRsx/fG2JS
-X-Gm-Message-State: AOJu0Yx1J4qdQ7twRxteJefKK8uVO1OQyoz2DoNnMAYFG0bCW98dvZBN
-	yc+6j+9Dpsn81PMgVIrAhJwuNe1WODiGxGxsoRT1/i/woRfwdZPiBRSwwK8WHb8=
-X-Google-Smtp-Source: AGHT+IFZ+BTOKCS/fwmhCS7yyEZE+FWRqPHV7tu3vrn5Sle/H3rksFobZHYU3JN8cj+AiY4uqR/Rng==
-X-Received: by 2002:adf:a491:0:b0:34a:e1c4:8e38 with SMTP id g17-20020adfa491000000b0034ae1c48e38mr857302wrb.60.1713941675161;
-        Tue, 23 Apr 2024 23:54:35 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id t18-20020a5d6912000000b0034997769ae4sm16338534wru.15.2024.04.23.23.54.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 23:54:34 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Robert Richter <rric@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] arm64: dts: cavium: thunder2-99xx:: drop redundant reg-names
-Date: Wed, 24 Apr 2024 08:54:19 +0200
-Message-ID: <171394159881.43787.9165226045500607522.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240407102841.38617-1-krzysztof.kozlowski@linaro.org>
-References: <20240407102841.38617-1-krzysztof.kozlowski@linaro.org>
+        d=1e100.net; s=20230601; t=1713941684; x=1714546484;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8bRCgW5T5C1zJ8E17b4jWTOUyWD7CH0mT1aVxTkcyF0=;
+        b=Nfifaji8zx450o4KDnDOvGDp0MXa/FU6/NcUGeFTBmqcU6RPnQQxU8nNofktP2m9da
+         19/yo5cWVlx413uvZyLSy5yJ9BtjjYA7kDk6oBu3t7Ek28iS3Kyyp2nrEqcW3cNs4U+a
+         xEiXp9bIi2aSvSjBFT3+rheSghX68Y7dKqmsDTPMKO5cI5+w97GTDjdneqN5+aDvcpuc
+         sqlRW9G3oaNuWNG9RlcZfETJAYmDEQH99+u/W2MlLucUUHN3od0E3toa0Du7Lxg/KnRx
+         WZ71FG4BPDHkz9QZe1xIrNP8pBfF8xiw5rcepvRMz2iyjsSkkmPI1Y1+8FjkMh5fQHzS
+         Y6cw==
+X-Forwarded-Encrypted: i=1; AJvYcCVIAcl6ldF+M9zoz/B0CwIG7GBdqjh2e62/ptt+t4nbABOjcjsv4xEnevYJULdUbFwTDZLwY+6F49myY3KhHo024Z7m4Q+6jgAeKcwJ
+X-Gm-Message-State: AOJu0YwJoM/swIxoJTQNj0d/lBoIEjJ1RbKD6VT5SnRoHEpkySL0URoW
+	cgoVXcMjC3rtCUhtlwkJeyK/weilFFe8cEnJcdiWdUL62M4KtkVfBP+Pem72yW8=
+X-Google-Smtp-Source: AGHT+IEbswXmJDcA7EFPdf80BhUcAOFM/NRn/7lUivF6qZFsJoWShPkwWrvg7v9MpetcI3NV+PKGlQ==
+X-Received: by 2002:adf:ee06:0:b0:347:9e5a:3070 with SMTP id y6-20020adfee06000000b003479e5a3070mr790943wrn.17.1713941684224;
+        Tue, 23 Apr 2024 23:54:44 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:ed3e:c90b:dd74:51a7? ([2a01:e0a:982:cbb0:ed3e:c90b:dd74:51a7])
+        by smtp.gmail.com with ESMTPSA id n4-20020a5d4844000000b00349f098f4a6sm16235018wrs.53.2024.04.23.23.54.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 23:54:43 -0700 (PDT)
+Message-ID: <d377e5c4-7716-4f4e-8fe4-472e3230eebe@linaro.org>
+Date: Wed, 24 Apr 2024 08:54:42 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 1/2] drm/panel/lg-sw43408: depends on
+ CONFIG_DRM_DISPLAY_DP_HELPER
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ Caleb Connolly <caleb.connolly@linaro.org>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ kernel test robot <lkp@intel.com>
+References: <20240420-panel-sw43408-fix-v1-0-b282ff725242@linaro.org>
+ <20240420-panel-sw43408-fix-v1-1-b282ff725242@linaro.org>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <20240420-panel-sw43408-fix-v1-1-b282ff725242@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-On Sun, 07 Apr 2024 12:28:41 +0200, Krzysztof Kozlowski wrote:
-> There is no "reg-names" property in the PCI bindings and the value does
-> not conform to Devicetree coding style (upper-case letters, space), so
-> assume this was copied from downstream.
+On 20/04/2024 04:41, Dmitry Baryshkov wrote:
+> This panel driver uses DSC PPS functions and as such depends on the
+> DRM_DISPLAY_DP_HELPER. Add missing dependency
 > 
-> This fixes dtbs_check warning:
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202404200800.kYsRYyli-lkp@intel.com/
+
+No Fixes ?
+
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>   drivers/gpu/drm/panel/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
 > 
->   thunder2-99xx.dtb: pcie@30000000: Unevaluated properties are not allowed ('reg-names' was unexpected)
+> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> index ab67789e59a2..5e6692207beb 100644
+> --- a/drivers/gpu/drm/panel/Kconfig
+> +++ b/drivers/gpu/drm/panel/Kconfig
+> @@ -340,6 +340,7 @@ config DRM_PANEL_LG_SW43408
+>   	depends on OF
+>   	depends on DRM_MIPI_DSI
+>   	depends on BACKLIGHT_CLASS_DEVICE
+> +	depends on DRM_DISPLAY_DP_HELPER
+>   	help
+>   	  Say Y here if you want to enable support for LG sw43408 panel.
+>   	  The panel has a 1080x2160@60Hz resolution and uses 24 bit RGB per
 > 
-> [...]
 
-Almost a month passed, no replies from maintainers about picking it up. Dunno,
-looks abandoned, so let me grab this. If anyone else wants to pick it up, let
-me know.
-
-Applied, thanks!
-
-[1/1] arm64: dts: cavium: thunder2-99xx:: drop redundant reg-names
-      https://git.kernel.org/krzk/linux-dt/c/aa79fdba3d42dfbcb10d1bfeb3db9fbc73c4f793
-
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
