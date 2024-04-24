@@ -1,232 +1,181 @@
-Return-Path: <linux-kernel+bounces-157294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F21F98B0F6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:11:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F399F8B0F70
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:12:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A8611F2224B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:11:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D4B41C22CB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:12:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66ED9161308;
-	Wed, 24 Apr 2024 16:11:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qpzLpI7q"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 660E016131C;
+	Wed, 24 Apr 2024 16:11:57 +0000 (UTC)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E0513D893;
-	Wed, 24 Apr 2024 16:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5B513D893;
+	Wed, 24 Apr 2024 16:11:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713975062; cv=none; b=QsUPEtkzgSte2EJkeAgWa20RCAnsX21XE4EJGz82DKin63w75hKCvEUgWx9EbI1mia/fmE2rqEnZdhfTK5wf+LuPLvu64BdsyZlJxWQJEJxpnKpntsUxoSa8Ey1IYhZNs8kYu5t2EwC38PSBvFuRe4GUxlfEkJHBEDy673knh+U=
+	t=1713975117; cv=none; b=FojNT8BKOfia4ENK6Ml6L9l5ijDovb9A1SVlkWWJJ3bLfWZZSSm+BKQPyWkxvwPuE2rFNq2Y5C/WPSu2bCGREqwv0TN/AYuUFIOTUc+NoVKGUqoNEq0PEzfEDqEJfvGXmxNCtOLQsgSVFAM1s8RUm2IzF+hm7f5SWk8FqIz8EEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713975062; c=relaxed/simple;
-	bh=snJ2kvjLv4JICSYewZZ7ktNbZE4ctWt0P+tOpimZtcE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a+ALYj4Qy21vA5vdHfZtV/0H41Byqpfc6mmF+rn6JNnSmQPkxEdehyMbt5NaeGntulBIKxdO3nGnZWejzKuxaHuRAQ5yE7XU3m47keP5rcYO36uabgnHzGh8gFT8HSKZNhP3LZym1izf5xyMF5xsry2+8UX50rcx3g4Ac9fwx1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qpzLpI7q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB337C113CD;
-	Wed, 24 Apr 2024 16:11:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713975062;
-	bh=snJ2kvjLv4JICSYewZZ7ktNbZE4ctWt0P+tOpimZtcE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qpzLpI7qtDPWXFkwyiJfjsLgzkghRxg5EU30laQ4HsaEFeJQCMEZzz2TxGbDFiiNn
-	 HR/obA0SxGCTNB08q3crTlYR2cIbgRwvbf6i0IEUhHNAO7WTaa69KCdL3RoBRoRwkt
-	 HyZYJeDgMSE5zC8eBkjuXc/RW498CyroWd/74+8/ZZ12aADi3NdbN0yrtR09t9bCzg
-	 R0AxKWfwrz1PJPfaAZRBvobVRt2Kdob/dlNkT4kX5D7bsi0/MoRItAbIL2+e6wgzS0
-	 PaH4h+6b3V7AVejh0hMccLIMfvkkHA27eZ022P5siOviPSiZ1wt/mu3u1AN9W9BTmE
-	 EqeWGh0N324ew==
-Date: Wed, 24 Apr 2024 09:10:59 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Shuah Khan <skhan@linuxfoundation.org>
-Cc: shuah@kernel.org, tglx@linutronix.de, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: Make ksft_exit functions return void instead
- of int
-Message-ID: <20240424161059.GA904896@dev-arch.thelio-3990X>
-References: <20240417-ksft-exit-int-to-void-v1-1-eff48fdbab39@kernel.org>
- <bb5fd480-bd43-42c9-b326-2ee7addcda33@linuxfoundation.org>
- <20240424150513.GA304587@dev-arch.thelio-3990X>
- <ba14458b-8f69-4947-ade2-d77e3290d4ed@linuxfoundation.org>
+	s=arc-20240116; t=1713975117; c=relaxed/simple;
+	bh=GOoBxOlaIpmwICZK4WCVIt4VRYe8AudVtzbqmGtnuwo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=u1SoQF2cofIqJU24hAIp5cl6G9as/MzQn9h2GFXG2JMM5hn1GEWlHRd6UC63kdEe7SUElYEmsSXiSKXUNIdJQwyIIHdA0exG7dYMNK7n2/7ZRV9JCSkTPDqK62fP1GZxZIJ+jzyhu0m2oSb/R84OxNMFTyNPeGKPISVKobiGT+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-57222fc625aso1969334a12.3;
+        Wed, 24 Apr 2024 09:11:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713975113; x=1714579913;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N9Ytp1zYNtgWI9LiOFGXnBvOw75e8b/kBgDs3orvXtc=;
+        b=qk34nm37Msi386mL3VHEXAM4vwraOAt7iB2UOt2z4cEHbA9n2jjoLFTFKD9vt0TF+4
+         VubzmI/40jIlocpN0NTQPSI7tG5GLKV39Xz6m1/gPqulMHGhES61IVDWWSt4MEfubaNE
+         ri2w9n7UoX2xoSREM/Ff5fT6MczlJzSt6HDMvy/s0Qxg6qcBow8BVygfO3yL1DwMm5yn
+         N9JFJB076y/oAwYGEDke2kHO9UU215iBxqsPOwk3EtjjOthxlWuppIXae9gNynBYKhz1
+         e5AnZRFN+pHkBqeU96LD4jMDd9ke71nFJVWcigf5xxgP+Wruf6VlKB1a7onNCZ4PmZ6+
+         KXaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUki35BpZHdWSsjg8BA8ssSO2mzhYyw+/Jxef0xQ6JEZdVZEXypDFjFvM2qssq2/DhIEwlzj5XArRkZlNMw4Yj3K5VVI9srKC0xfZL7JiZz5hFESBFtDr6tNPmSwD9i6oMhIuxO
+X-Gm-Message-State: AOJu0YxfRcDlSlHgBhYPkM9cvKCJB4F8z8Om8nLK+Yjd1MFRmai84VMC
+	bAniZaohtlR+18pq2af+NKj1qldNUhgJfT7zNFmE3XT69ILIdR8d
+X-Google-Smtp-Source: AGHT+IExvaCXYmWGV1a44vGm02+XchJsxnbF0StXY1lQmClYXTH6GQ+7+l/4M6FWk+LO0PHH5HLuOw==
+X-Received: by 2002:a17:906:a114:b0:a55:b810:8678 with SMTP id t20-20020a170906a11400b00a55b8108678mr2700110ejy.23.1713975113289;
+        Wed, 24 Apr 2024 09:11:53 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-000.fbsv.net. [2a03:2880:30ff::face:b00c])
+        by smtp.gmail.com with ESMTPSA id ww4-20020a170907084400b00a51d88e6164sm8497371ejb.203.2024.04.24.09.11.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 09:11:52 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
+	Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
+	Liu Haijun <haijun.liu@mediatek.com>,
+	M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+	Ricardo Martinez <ricardo.martinez@linux.intel.com>,
+	Loic Poulain <loic.poulain@linaro.org>,
+	Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: leit@meta.com,
+	netdev@vger.kernel.org (open list:MEDIATEK T7XX 5G WWAN MODEM DRIVER),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] net: wwan: t7xx: Un-embed dummy device
+Date: Wed, 24 Apr 2024 09:11:07 -0700
+Message-ID: <20240424161108.3397057-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ba14458b-8f69-4947-ade2-d77e3290d4ed@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 24, 2024 at 10:00:12AM -0600, Shuah Khan wrote:
-> On 4/24/24 09:05, Nathan Chancellor wrote:
-> > On Wed, Apr 24, 2024 at 07:44:31AM -0600, Shuah Khan wrote:
-> > > On 4/17/24 09:37, Nathan Chancellor wrote:
-> > > > Commit f7d5bcd35d42 ("selftests: kselftest: Mark functions that
-> > > > unconditionally call exit() as __noreturn") marked functions that call
-> > > > exit() as __noreturn but it did not change the return type of these
-> > > > functions from 'void' to 'int' like it should have (since a noreturn
-> > > > function by definition cannot return an integer because it does not
-> > > > return...) because there are many tests that return the result of the
-> > > > ksft_exit function, even though it has never been used due to calling
-> > > > exit().
-> > > > 
-> > > > Prior to adding __noreturn, the compiler would not know that the functions
-> > > > that call exit() will not return, so code like
-> > > > 
-> > > >     void ksft_exit_fail(void)
-> > > >     {
-> > > >       exit(1);
-> > > >     }
-> > > > 
-> > > >     void ksft_exit_pass(void)
-> > > >     {
-> > > >       exit(0);
-> > > >     }
-> > > > 
-> > > >     int main(void)
-> > > >     {
-> > > >       int ret;
-> > > > 
-> > > >       ret = foo();
-> > > >       if (ret)
-> > > >         ksft_exit_fail();
-> > > >       ksft_exit_pass();
-> > > >     }
-> > > > 
-> > > > would cause the compiler to complain that main() does not return an
-> > > > integer, even though when ksft_exit_pass() is called, exit() will cause
-> > > > the program to terminate. So ksft_exit_...() returns int to make the
-> > > > compiler happy.
-> > > > 
-> > > >     int ksft_exit_fail(void)
-> > > >     {
-> > > >       exit(1);
-> > > >     }
-> > > > 
-> > > >     int ksft_exit_pass(void)
-> > > >     {
-> > > >       exit(0);
-> > > >     }
-> > > > 
-> > > >     int main(void)
-> > > >     {
-> > > >       int ret;
-> > > > 
-> > > >       ret = foo();
-> > > >       if (ret)
-> > > >         return ksft_exit_fail();
-> > > >       return ksft_exit_pass();
-> > > >     }
-> > > > 
-> > > > While this results in no warnings, it is weird semantically and it has
-> > > > issues as noted in the aforementioned __noreturn change. Now that
-> > > > __noreturn has been added to these functions, it is much cleaner to
-> > > > change the functions to 'void' and eliminate the return statements, as
-> > > > it has been made clear to the compiler that these functions terminate
-> > > > the program. Drop the return before all instances of ksft_exit_...() in
-> > > > a mechanical way. Only two manually changes were made to transform
-> > > > 
-> > > >     return !ret ? ksft_exit_pass() : ksft_exit_fail();
-> > > > 
-> > > > into the more idiomatic
-> > > > 
-> > > >     if (ret)
-> > > >       ksft_exit_fail();
-> > > >     ksft_exit_pass();
-> > > > 
-> > > > as well as a few style clean ups now that the code is shorter.
-> > > > 
-> > > > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> > > > ---
-> > > >    tools/testing/selftests/clone3/clone3_clear_sighand.c        |  2 +-
-> > > >    tools/testing/selftests/clone3/clone3_set_tid.c              |  4 +++-
-> > > >    tools/testing/selftests/ipc/msgque.c                         | 11 +++++------
-> > > >    tools/testing/selftests/kselftest.h                          | 12 ++++++------
-> > > >    .../selftests/membarrier/membarrier_test_multi_thread.c      |  2 +-
-> > > >    .../selftests/membarrier/membarrier_test_single_thread.c     |  2 +-
-> > > >    tools/testing/selftests/mm/compaction_test.c                 |  6 +++---
-> > > >    tools/testing/selftests/mm/cow.c                             |  2 +-
-> > > >    tools/testing/selftests/mm/gup_longterm.c                    |  2 +-
-> > > >    tools/testing/selftests/mm/gup_test.c                        |  4 ++--
-> > > >    tools/testing/selftests/mm/ksm_functional_tests.c            |  2 +-
-> > > >    tools/testing/selftests/mm/madv_populate.c                   |  2 +-
-> > > >    tools/testing/selftests/mm/mkdirty.c                         |  2 +-
-> > > >    tools/testing/selftests/mm/pagemap_ioctl.c                   |  4 ++--
-> > > >    tools/testing/selftests/mm/soft-dirty.c                      |  2 +-
-> > > >    tools/testing/selftests/pidfd/pidfd_fdinfo_test.c            |  2 +-
-> > > >    tools/testing/selftests/pidfd/pidfd_open_test.c              |  4 +++-
-> > > >    tools/testing/selftests/pidfd/pidfd_poll_test.c              |  2 +-
-> > > >    tools/testing/selftests/pidfd/pidfd_test.c                   |  2 +-
-> > > >    tools/testing/selftests/resctrl/resctrl_tests.c              |  6 +++---
-> > > >    tools/testing/selftests/sync/sync_test.c                     |  3 +--
-> > > >    tools/testing/selftests/timers/adjtick.c                     |  4 ++--
-> > > >    tools/testing/selftests/timers/alarmtimer-suspend.c          |  4 ++--
-> > > >    tools/testing/selftests/timers/change_skew.c                 |  4 ++--
-> > > >    tools/testing/selftests/timers/freq-step.c                   |  4 ++--
-> > > >    tools/testing/selftests/timers/leap-a-day.c                  | 10 +++++-----
-> > > >    tools/testing/selftests/timers/leapcrash.c                   |  4 ++--
-> > > >    tools/testing/selftests/timers/mqueue-lat.c                  |  4 ++--
-> > > >    tools/testing/selftests/timers/posix_timers.c                | 12 ++++++------
-> > > >    tools/testing/selftests/timers/raw_skew.c                    |  6 +++---
-> > > >    tools/testing/selftests/timers/set-2038.c                    |  4 ++--
-> > > >    tools/testing/selftests/timers/set-tai.c                     |  4 ++--
-> > > >    tools/testing/selftests/timers/set-timer-lat.c               |  4 ++--
-> > > >    tools/testing/selftests/timers/set-tz.c                      |  4 ++--
-> > > >    tools/testing/selftests/timers/skew_consistency.c            |  4 ++--
-> > > >    tools/testing/selftests/timers/threadtest.c                  |  2 +-
-> > > >    tools/testing/selftests/timers/valid-adjtimex.c              |  6 +++---
-> > > >    tools/testing/selftests/x86/lam.c                            |  2 +-
-> > > >    38 files changed, 81 insertions(+), 79 deletions(-)
-> > > > 
-> > > 
-> > > Please generate separate patches for each test so it is easy to apply
-> > > them and also reduce merge conflicts.
-> > 
-> > Is applying 30+ patches easier than applying just one? It is not a
-> > trivial amount of work for me to break this series up into individual
-> > patches but I will do so if you really want me to. I based this on the
-> > kselftest tree directly so that it would apply cleanly.
-> > 
-> 
-> I am not asking each file to be a separate patch.
+Embedding net_device into structures prohibits the usage of flexible
+arrays in the net_device structure. For more details, see the discussion
+at [1].
 
-What granularity would you like? One per folder in
-tools/testing/selftest (i.e., clone3, ipc, membarrier, etc)?
+Un-embed the net_device from the private struct by converting it
+into a pointer. Then use the leverage the new alloc_netdev_dummy()
+helper to allocate and initialize dummy devices.
 
-> > How does breaking apart the changes reduce merge conflicts? The diff is
-> > going to be the same and semantic conflicts can still occur due to the
-> > kselftest.h changes.
-> 
-> selftest patches go through various repos. With this patch touching
-> several tests, there will be conflicts with multiple trees.
-> 
-> If this patch can't be split due to dependency on kselftest.h, I will
-> pull it in, but I do need you to include all the maintainers.
+[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
 
-No, it can be split as long as the kselftest.h change is last. I just
-did not see the value of that at the time but I am not out to make life
-harder for maintainers so I will split it as you see fit.
+Signed-off-by: Breno Leitao <leitao@debian.org>
+--
+PS: This was compile-tested only due to lack of hardware.
+---
+ drivers/net/wwan/t7xx/t7xx_netdev.c | 20 ++++++++++++++++----
+ drivers/net/wwan/t7xx/t7xx_netdev.h |  2 +-
+ 2 files changed, 17 insertions(+), 5 deletions(-)
 
-> > > You are missing maintainers for clone3, mm, pidfd tests. I can take these
-> > > through kselftest tree, but I need the changes split.
-> > 
-> > Fair enough, I should have CC'd them, although given this is a change to
-> > the kselftest API, I was not sure they would care too much.
-> > 
-> 
-> The reason for cc'ing the maintainers is to keep them in the loop about this
-> change that could result in merge conflicts between kselftest tree and theirs.
-> 
-> Besides I would rather not have developers make calls on who should or shouldn't
-> care about a change. :)
+diff --git a/drivers/net/wwan/t7xx/t7xx_netdev.c b/drivers/net/wwan/t7xx/t7xx_netdev.c
+index 3ef4a8a4f8fd..91fa082e9cab 100644
+--- a/drivers/net/wwan/t7xx/t7xx_netdev.c
++++ b/drivers/net/wwan/t7xx/t7xx_netdev.c
+@@ -253,22 +253,27 @@ static void t7xx_ccmni_wwan_setup(struct net_device *dev)
+ 	dev->netdev_ops = &ccmni_netdev_ops;
+ }
+ 
+-static void t7xx_init_netdev_napi(struct t7xx_ccmni_ctrl *ctlb)
++static int t7xx_init_netdev_napi(struct t7xx_ccmni_ctrl *ctlb)
+ {
+ 	int i;
+ 
+ 	/* one HW, but shared with multiple net devices,
+ 	 * so add a dummy device for NAPI.
+ 	 */
+-	init_dummy_netdev(&ctlb->dummy_dev);
++	ctlb->dummy_dev = alloc_netdev_dummy(0);
++	if (!ctlb->dummy_dev)
++		return -ENOMEM;
++
+ 	atomic_set(&ctlb->napi_usr_refcnt, 0);
+ 	ctlb->is_napi_en = false;
+ 
+ 	for (i = 0; i < RXQ_NUM; i++) {
+ 		ctlb->napi[i] = &ctlb->hif_ctrl->rxq[i].napi;
+-		netif_napi_add_weight(&ctlb->dummy_dev, ctlb->napi[i], t7xx_dpmaif_napi_rx_poll,
++		netif_napi_add_weight(ctlb->dummy_dev, ctlb->napi[i], t7xx_dpmaif_napi_rx_poll,
+ 				      NIC_NAPI_POLL_BUDGET);
+ 	}
++
++	return 0;
+ }
+ 
+ static void t7xx_uninit_netdev_napi(struct t7xx_ccmni_ctrl *ctlb)
+@@ -279,6 +284,7 @@ static void t7xx_uninit_netdev_napi(struct t7xx_ccmni_ctrl *ctlb)
+ 		netif_napi_del(ctlb->napi[i]);
+ 		ctlb->napi[i] = NULL;
+ 	}
++	free_netdev(ctlb->dummy_dev);
+ }
+ 
+ static int t7xx_ccmni_wwan_newlink(void *ctxt, struct net_device *dev, u32 if_id,
+@@ -480,6 +486,7 @@ int t7xx_ccmni_init(struct t7xx_pci_dev *t7xx_dev)
+ {
+ 	struct device *dev = &t7xx_dev->pdev->dev;
+ 	struct t7xx_ccmni_ctrl *ctlb;
++	int ret;
+ 
+ 	ctlb = devm_kzalloc(dev, sizeof(*ctlb), GFP_KERNEL);
+ 	if (!ctlb)
+@@ -495,7 +502,12 @@ int t7xx_ccmni_init(struct t7xx_pci_dev *t7xx_dev)
+ 	if (!ctlb->hif_ctrl)
+ 		return -ENOMEM;
+ 
+-	t7xx_init_netdev_napi(ctlb);
++	ret = t7xx_init_netdev_napi(ctlb);
++	if (ret) {
++		t7xx_dpmaif_hif_exit(ctlb->hif_ctrl);
++		return ret;
++	}
++
+ 	init_md_status_notifier(t7xx_dev);
+ 	return 0;
+ }
+diff --git a/drivers/net/wwan/t7xx/t7xx_netdev.h b/drivers/net/wwan/t7xx/t7xx_netdev.h
+index f5ed6f99a145..b18312f49844 100644
+--- a/drivers/net/wwan/t7xx/t7xx_netdev.h
++++ b/drivers/net/wwan/t7xx/t7xx_netdev.h
+@@ -48,7 +48,7 @@ struct t7xx_ccmni_ctrl {
+ 	unsigned int			md_sta;
+ 	struct t7xx_fsm_notifier	md_status_notify;
+ 	bool				wwan_is_registered;
+-	struct net_device		dummy_dev;
++	struct net_device		*dummy_dev;
+ 	struct napi_struct		*napi[RXQ_NUM];
+ 	atomic_t			napi_usr_refcnt;
+ 	bool				is_napi_en;
+-- 
+2.43.0
 
-Sure, that makes sense.
-
-Cheers,
-Nathan
 
