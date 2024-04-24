@@ -1,120 +1,109 @@
-Return-Path: <linux-kernel+bounces-157612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E8018B138F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:31:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7EFF8B1392
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:32:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2640C28B239
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:31:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 689B328B5E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:32:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3127C78B4E;
-	Wed, 24 Apr 2024 19:31:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B760078C6D;
+	Wed, 24 Apr 2024 19:31:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="kEwbpGCb"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m6XF4RBW"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43C341BF37;
-	Wed, 24 Apr 2024 19:31:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 850CB7580C;
+	Wed, 24 Apr 2024 19:31:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713987077; cv=none; b=CR5wRtLb4gTcAKMeUKHTH1eMWPCVgPPJZDP6gZPS7W6BPFacBuTEpBsRWqi5kzDuO00qYE/5tqGEHjQuH1CRLB3A+uouKBFiOPE7fUK/UDDO9Zw+JFfiL+1xsQVQcgAKiaMo4Kw9CQCTwNO9seioBW7Xhf8mGf7yDFkwQpqvuKc=
+	t=1713987117; cv=none; b=t4Yzp4RTKMSvD94r48kAiQKm63qCsHayG1SwLsX4/DVcPkK7Tp2rgLsu/ztptm14c7U8OXg6n6/7qduV3xEpwnPfz+RVXdp94m2jRsvk37T9cdm0KmmYjg1KmzbA/lW10kEahlKltdGqY516xNJLwZNEURPxlhfrYhNjboTFm6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713987077; c=relaxed/simple;
-	bh=f5Ao0kXR9wgQ9qndsBddrePDZj2ijjLQhBhAGWqsY9M=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=tYCaxgyItm0/ETu2KH+m84XHg6uEFgEQUPCe8m6uGioJnWQ2x3qR3ZxT189YD/3Xlb6YUqoOOQWLrr3u3WF4wMcFs/jmX1n9hBWTjfRK3BFE+zx2txiyp32Q+SAz5gl+ajzQz+4w4b8adhqTPy3jyGSiFwEYhbsG8Ng8hrMBwks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=kEwbpGCb; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 76D3D47C41
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1713987075; bh=zV9bgV2MTfwKBqhBOhhlxAkLQT1T0lmWvKHJq+h7QSY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=kEwbpGCbXYNEgI2+Z1T9hwKhPOxm/JyjMUI38WtfH5sR3Hn/Q1TsnDkbgvE+ySRvo
-	 sE4JZnmvIMkmEPG8mCrq3jVb9XEss19Atd/OpCGz5rPPJ2DsailCfd3JpwnKGtfWr0
-	 wIFFJeKtu1UGf7w1dBJBBJNDN+DIi5ypndIzUXaiiEUq4DOazkjakK7wWDGPEIWMBb
-	 2agh85P0/pXIeYHekNK/7aLBQ3AB0RQx7Dk/UaH+AlY3a6o7G9juYxnKdfQwBaOXYW
-	 JWdCqD+YB/enk3OvQCkQeWLBIcCuvjO1H6C4xOSQRpMybjBPqnSZxRdfX4IN1lkg4L
-	 vU+cNI6QJ1luA==
-Received: from localhost (unknown [IPv6:2601:280:5e00:625::1fe])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 76D3D47C41;
-	Wed, 24 Apr 2024 19:31:15 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Kees Cook <keescook@chromium.org>, Alexander Lobakin
- <aleksander.lobakin@intel.com>, Jakub Kicinski <kuba@kernel.org>, Dan
- Williams <dan.j.williams@intel.com>, "Gustavo A. R. Silva"
- <gustavoars@kernel.org>, Keith Packard <keithp@keithp.com>,
- nex.sw.ncis.osdt.itp.upstreaming@intel.com, linux-doc@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kernel-doc: fix struct_group_tagged() parsing
-In-Reply-To: <20240411093208.2483580-1-aleksander.lobakin@intel.com>
-References: <20240411093208.2483580-1-aleksander.lobakin@intel.com>
-Date: Wed, 24 Apr 2024 13:31:14 -0600
-Message-ID: <87r0eusgl9.fsf@meer.lwn.net>
+	s=arc-20240116; t=1713987117; c=relaxed/simple;
+	bh=mQ/+d3gWAOcD9KnX2wfP3u+ftFZAlpcW1F7JU92hcsc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cUOG5mzQWvAMAM7MAYHVc+YCm5r8UXoJ+Sd5IcD1oQgLS8I0vaqgcfEMCJVgM2qEyQiQZNSz2HJKUeUDB/fawl4bX0pdJ9pn4P1xHmn+BKlGbi1D6e4q/1uWd5aRoLNQKDgDfI/u++dJ6M1gRPz6wL4th1kA3PkwYG2wJaI79U8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m6XF4RBW; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-518b9527c60so223846e87.0;
+        Wed, 24 Apr 2024 12:31:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713987114; x=1714591914; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IZ0TpkzmYZr6hTX7MZ3GhreDMH2peuAcdL3k38EcDhs=;
+        b=m6XF4RBWTs7iiwyd43H4qp5IrUv/S6g4+y0S500fZwxTCHoItfeifE6u8rqU9GpvVm
+         AnGTsrPirENBeZbbH9HQvB6WrQNO4139ZmWKPkrrZ3IARxZb6aTiqORGQAjbL9V8K2L7
+         jKI3vO4jFxWC74BypOOCxiM1t+ZYGzi0HrdTOL7MZW5UmSrY6a8Kf8kMliBQuFM5RfmV
+         KKA2hgind7wDHrgDBzM/6EbdhSqgJzXOF85Wwp93eU/qt4u6pqRvLUpmJ+ztr9Y9xiYK
+         2pgTxok5NbNKPHf+lrkIM3Bdz6iRN9YIFRRd/g6F38TIFG+VI7LHUDpB2xmML0IkEZQF
+         Cp+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713987114; x=1714591914;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IZ0TpkzmYZr6hTX7MZ3GhreDMH2peuAcdL3k38EcDhs=;
+        b=oY3R4nproGZjJm+fuUpHPHLIFJBNwg9/uvpwSKAbp+87nSBGf9w2fDdnO/nZpZFt9p
+         qwQacs4/El661scUNVQrA9l+QdFH1XZymPsvTj9CUOQoVXbEB7HHU1ZD6PT7HrwFhfW6
+         YKjnNX8npJqSW5wya8NqwyGeZVccU7lWINcndqqx9NpKseV0S9yDFvu2mH1QlbixxKqc
+         QER+6cvTJZ3rBNdFereqnn1MnVFsnOKx6VyYPjmfOeSQsWDZjz/w0exCvnWv7dsIEQWG
+         cadCVQN4mDQCg80o8fQ2MoazMfF17wskLvNMSHhd8xmqOs4zmh/3sfIp/TdAch2y6qV6
+         POMA==
+X-Forwarded-Encrypted: i=1; AJvYcCXCd1OkpA+IPv5vf2WQHTr7V8PJDrP4mlpssmFXMAT+cdBh1kYCJkIs8K7g+mkqvbPgUQwfE75IiOs/F/xQJUvXEIVv97YstfU7LC3TzYq1K5/hPJUk1zExU4pVTi7Q+9vWmOa0pcfKmT8=
+X-Gm-Message-State: AOJu0YzvwTfHluxfAHS2lPZjAzjhD4ZUI/CngqZsnAukKunM7Z2CNaEq
+	2DxOXur9G+7jnSQYfn0bG+GMrSux5BxiOwidk7y7bY7hfT2EWq13qKGQmNAfwxcJ2p+ufvr0hro
+	0d/dHOAktdwpeV2gfUGGKnKbhE1o8jXPB
+X-Google-Smtp-Source: AGHT+IHIaGYAxKkGvJ35yj7ZqMlmMinua0HY7IEEpin7dNCuHY4Mh1cMERg/mBPHCSACXd8sTXQWUXRgQWVjYKKxamo=
+X-Received: by 2002:a05:6512:39ca:b0:51c:9d2:f440 with SMTP id
+ k10-20020a05651239ca00b0051c09d2f440mr2034502lfu.38.1713987113376; Wed, 24
+ Apr 2024 12:31:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240424181245.41141-1-tony.luck@intel.com> <20240424181546.42446-1-tony.luck@intel.com>
+In-Reply-To: <20240424181546.42446-1-tony.luck@intel.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Wed, 24 Apr 2024 22:31:17 +0300
+Message-ID: <CAHp75Ve_vX=J9wKd5iEP4m7foGpjCQGWepMaSfwhewbPJA=1XA@mail.gmail.com>
+Subject: Re: [PATCH v4 67/71] media: atomisp: Switch to new Intel CPU model defines
+To: Tony Luck <tony.luck@intel.com>
+Cc: Borislav Petkov <bp@alien8.de>, Hans de Goede <hdegoede@redhat.com>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Sakari Ailus <sakari.ailus@linux.intel.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-media@vger.kernel.org, 
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Alexander Lobakin <aleksander.lobakin@intel.com> writes:
-
-> From: Kees Cook <keescook@chromium.org>
+On Wed, Apr 24, 2024 at 9:15=E2=80=AFPM Tony Luck <tony.luck@intel.com> wro=
+te:
 >
-> kernel-doc emits a warning on struct_group_tagged() if you describe your
-> struct group member:
->
-> include/net/libeth/rx.h:69: warning: Excess struct member 'fp' description in 'libeth_fq'
->
-> The code:
->
-> /**
->  * struct libeth_fq - structure representing a buffer queue
->  * @fp: hotpath part of the structure
->  * @pp: &page_pool for buffer management
-> [...]
->  */
-> struct libeth_fq {
-> 	struct_group_tagged(libeth_fq_fp, fp,
-> 		struct page_pool	*pp;
-> [...]
-> 	);
->
-> When a struct_group_tagged() is encountered, we need to build a
-> `struct TAG NAME;` from it, so that it will be treated as a valid
-> embedded struct.
-> Decouple the regex and do the replacement there. As far as I can see,
-> this doesn't produce any new warnings on the current mainline tree.
->
-> Reported-by: Jakub Kicinski <kuba@kernel.org>
-> Closes: https://lore.kernel.org/netdev/20240405212513.0d189968@kernel.org
-> Fixes: 50d7bd38c3aa ("stddef: Introduce struct_group() helper macro")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Co-developed-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> ---
->  scripts/kernel-doc | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> New CPU #defines encode vendor and family as well as model.
 
-So, in docs-next, applying this *adds* two warnings:
+Got less LoCs, so good change,
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
+See also one nit-pick below.
 
-> ./include/net/page_pool/types.h:77: warning: Function parameter or struct member 'fast' not described in 'page_pool_params'
-> ./include/net/page_pool/types.h:77: warning: Function parameter or struct member 'slow' not described in 'page_pool_params'
+..
 
-In truth, the warnings look correct.  I guess I'll leave this applied,
-but perhaps a fix for the warnings should go into the net tree?
+>  /* Both CHT and MOFD come with ISP2401 */
 
-Thanks,
+> +#define IS_ISP2401 __IS_SOCS(INTEL_ATOM_AIRMONT, \
+> +                            INTEL_ATOM_AIRMONT_MID)
 
-jon
+I would make it one line.
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
