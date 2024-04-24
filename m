@@ -1,95 +1,141 @@
-Return-Path: <linux-kernel+bounces-156494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC9A08B034D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:39:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF34B8B0351
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:40:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97BB928307B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:39:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13ED11F24FA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:40:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E771581ED;
-	Wed, 24 Apr 2024 07:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B47901581ED;
+	Wed, 24 Apr 2024 07:40:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZjzRsUt5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C01cGJHa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A1E823CB;
-	Wed, 24 Apr 2024 07:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEF9723CB;
+	Wed, 24 Apr 2024 07:40:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713944337; cv=none; b=hsIeqFPU1tYcjtcPzE0d7iV2XOugB60MXm9XclbyzAPlHQ18kESRm2SFy0FgelfAOAMgE71a6awIgYQS9UEvxlX2n4QhK0b8/P2C9PKBm6sXwaVDO2ExDBATw5qhgQEwExWg1HL6iVyUTRyI8ocSj7sDbym+UZgwWqO3GYKFoH4=
+	t=1713944414; cv=none; b=MO2P0Mt0zoJmw0B59rqFRQ0Roj3HcpQpC9XfMwUIPD0UBY44AVNFguQlsH+MBh/KBQDz8zeVdOR8P0Zxp4vy/q9QmPHlRlR/pk/Xbhqy2Gn/M4pgmDqpHmk0WD48n/NP4gEGT0QcO5xCdwoS+8tKqH1TIkwrhunerAwV4nlkIwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713944337; c=relaxed/simple;
-	bh=/C6i6shFbHn3gbJ9KAhYAslLBTv6twZor1UQWKrXaHQ=;
+	s=arc-20240116; t=1713944414; c=relaxed/simple;
+	bh=3HsOuSJtJ1IhE61NoIAbOBMWZ2YnkKaqYDMmNhQXJwc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VthgNnG5pn4PvXPh3VgQC7k1JgLiItztW1aJqvf/6cFwN12yz28jkRQDUdvgAPQ2C/cstn9aLxqsz4U4zxXokvQ5KlB8+dO+A6ukEEXhBOIFxgJEKPQ4JOyxqZTk8BhC3bJ2r3j9pwqfcl3fKx5Q9cU8BY4vLEcU7UBJ64DTG6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZjzRsUt5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16568C113CE;
-	Wed, 24 Apr 2024 07:38:57 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=IioKsgszjWSowr3INlGS4iT10HISIiy5VzqDa3Q8q/Ip3alNLcPwC+hY4UW5zZnnjKz0o7wevmzo9lyITAir3suK0LPxCa/cJcAvyxtBZkZNVe7KyJ4tgyOCvWdoje3jFauuTwIS2W6PvyMo26TBIY5NK84oJ+gp3x1CmsF7ezs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C01cGJHa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC58FC113CE;
+	Wed, 24 Apr 2024 07:40:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713944337;
-	bh=/C6i6shFbHn3gbJ9KAhYAslLBTv6twZor1UQWKrXaHQ=;
+	s=k20201202; t=1713944413;
+	bh=3HsOuSJtJ1IhE61NoIAbOBMWZ2YnkKaqYDMmNhQXJwc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZjzRsUt5QL3grxY+enwgylpbxZVN8mbJ676irHDo7IbqqlETE7BIqOw32zLyErDFC
-	 FFD9yyGh9SKWDspgQvnAoqZja+f1wuBpHLDSVitJIluVKtmwtrNjPZNkRU52hLPDuk
-	 iLO9ZTpwnOAig3yqayTYSDBNy5jJYZjgYJMPJfpF1YbGRV8wtDWpYx7w1rdbyXFNWS
-	 1pYciJDqRKJu9nzy7GmVNfYj8/Uf7jBXg375wYZWOkeNjiuoVafYzrZsG0eF/oEp2D
-	 o5m3Ze8X4oDKsb1yPwHocg3MrKls6RBGzKl7JXpfwjZrb23RbneTrn8SGQ2q3z2IfG
-	 PunK9EIIM9dbQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rzXDM-000000000eE-34EJ;
-	Wed, 24 Apr 2024 09:38:48 +0200
-Date: Wed, 24 Apr 2024 09:38:48 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Steev Klimaszewski <steev@kali.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>, Jiri Kosina <jikos@kernel.org>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] HID/arm64: dts: qcom: sc8280xp-x13s: fix touchscreen
- power on
-Message-ID: <Zii3CKdRzhHoCcPP@hovoldconsulting.com>
-References: <20240423134611.31979-1-johan+linaro@kernel.org>
- <CAKXuJqgJXCHSVcj+acnqauXidAFq0oXaaQTF31+-gSCSHK6cVA@mail.gmail.com>
+	b=C01cGJHaEbj4jAXPEmGr9XRdc9//r7NyYG9h0HHh0P2Gls9cq5hhbzvB6h9B8DvjO
+	 ZibdC8Jcg/THVBIjizJaXZc4UZiUqi9Lk3zil83977KEmEnW74mvGHqYdnssAacJC3
+	 4ByD9P+tI8VdtLHvmil0oTineLS9/01Tgj3lfCP6bgffEzLpLoRDk9GtqYJ44UXIzP
+	 /Yi/stzmzEJNPQIcoAT1yzE1U+POy1eSfYfxpMABGRKGg/lY8gMqk5RV5f+O22Y0/o
+	 hUq60Vg8VgsekAm5vJN+cnOm/ODkThHbfCm4zggIxZoUjzY7ahGGo6+NKoaBJPN3Qk
+	 ucpDjJ0lH0O/Q==
+Date: Wed, 24 Apr 2024 08:40:08 +0100
+From: Conor Dooley <conor@kernel.org>
+To: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org, Ved Shanbhogue <ved@rivosinc.com>
+Subject: Re: [RFC PATCH 2/7] dt-bindings: riscv: add Ssdbltrp ISA extension
+ description
+Message-ID: <20240424-rehydrate-sloppy-62132c72fe18@spud>
+References: <20240418142701.1493091-1-cleger@rivosinc.com>
+ <20240418142701.1493091-3-cleger@rivosinc.com>
+ <20240423-poser-splashed-56ab5340af48@spud>
+ <e39f2fea-868a-4a79-b7a5-bef8f15de688@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="SiSSfUusYQSVZJqq"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKXuJqgJXCHSVcj+acnqauXidAFq0oXaaQTF31+-gSCSHK6cVA@mail.gmail.com>
+In-Reply-To: <e39f2fea-868a-4a79-b7a5-bef8f15de688@rivosinc.com>
 
-On Tue, Apr 23, 2024 at 02:34:20PM -0500, Steev Klimaszewski wrote:
-> On Tue, Apr 23, 2024 at 8:47 AM Johan Hovold <johan+linaro@kernel.org> wrote:
 
-> > Note that my X13s does not have a touchscreen, but I have done partial
-> > verification of the implementation using that machine and the sc8280xp
-> > CRD reference design. Bjorn has promised to help out with final
-> > verification on an X13s with a touchscreen.
+--SiSSfUusYQSVZJqq
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I thought that I'd purchased a Thinkpad X13s without touchscreen, but
-> it turns out that I do have one, and since I do, I was able to test
-> this patchset, and it works on mine.
-> 
-> Tested-by: Steev Klimaszewski <steev@kali.org>
+On Wed, Apr 24, 2024 at 09:20:35AM +0200, Cl=E9ment L=E9ger wrote:
+>=20
+>=20
+> On 23/04/2024 18:30, Conor Dooley wrote:
+> > On Thu, Apr 18, 2024 at 04:26:41PM +0200, Cl=E9ment L=E9ger wrote:
+> >> Add description for the Ssdbltrp ISA extension which is not yet
+> >> ratified.
+> >>
+> >> Signed-off-by: Cl=E9ment L=E9ger <cleger@rivosinc.com>
+> >> ---
+> >>  Documentation/devicetree/bindings/riscv/extensions.yaml | 6 ++++++
+> >>  1 file changed, 6 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b=
+/Documentation/devicetree/bindings/riscv/extensions.yaml
+> >> index 63d81dc895e5..ce7021dbb556 100644
+> >> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
+> >> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> >> @@ -147,6 +147,12 @@ properties:
+> >>              and mode-based filtering as ratified at commit 01d1df0 ("=
+Add ability
+> >>              to manually trigger workflow. (#2)") of riscv-count-overf=
+low.
+> >> =20
+> >> +        - const: ssdbltrp
+> >> +          description: |
+> >> +            The standard Ssdbltrp supervisor-level extension for doub=
+le trap
+> >> +            handling as currently defined by commit e85847b ("Merge p=
+ull request
+> >> +            #32 from ved-rivos/0415_1 ") of riscv-double-trap.
+> >=20
+> > I see the proposed ratification for this is Sept 2024, and is marked as
+> > "Freeze Approved". Do you know when it is going to be frozen? Until
+> > this, I can't ack this patch. I had a look in the RVI JIRA
+> > https://jira.riscv.org/browse/RVS-2291?src=3Dconfmacro
+> > and it looks imminent, but it's unclear to me whether it actually has
+> > been or not.
+>=20
+> Hi Conor,
+>=20
+> Yeah, this series is a RFC since the spec is not yet ratified nor frozen
+> and its purpose is actually to get to a frozen state. As to when this
+> will be ratified, I guess Ved can probably answer that.
 
-Thanks for testing, Steev.
+Usually I'd just not ack the RFC patches, but I do at least check how
+far they might be from frozen before I move on, The jira for this one
+says "Actual ARC Freeze Approval:	18/Apr/24", which made me think
+a freeze was gonna happen soon.
 
-Johan
+--SiSSfUusYQSVZJqq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZii3WAAKCRB4tDGHoIJi
+0sIAAQDIxpw/HuOo9/JqvyU+02o1E9Ih6d0pVx2mM9tf0Irq2gD/W+zFzb+/rTjf
+GqZYpJl93UvUWXVzUj0PqNxDnSWcEQo=
+=7cO9
+-----END PGP SIGNATURE-----
+
+--SiSSfUusYQSVZJqq--
 
