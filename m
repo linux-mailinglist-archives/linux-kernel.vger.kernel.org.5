@@ -1,175 +1,159 @@
-Return-Path: <linux-kernel+bounces-156363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA7928B01CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:31:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2C328B01D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:34:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56CB82855BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:31:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 302BD1C21C9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:34:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9FC157480;
-	Wed, 24 Apr 2024 06:31:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE57D15748D;
+	Wed, 24 Apr 2024 06:34:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="UMg8UlpG"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2043.outbound.protection.outlook.com [40.107.223.43])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RWTar0a8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 480E91EA71
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:31:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.43
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713940306; cv=fail; b=BgSFed95InB5Nv4mfM9D+UN2XFIxHQaZFfsYkLh9Biys8qwGqW2DB8TwNU76QbmyUQWy6/tF4vvY7teF8yp3MbumtQTKxUxNmTDb2tJQHWDDK1ugZmb8UvlcRVK1yciO4nqHZ+2FDGXr1AvHO8U9Eo6JS7OUU7SC1xgXcExkVs0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713940306; c=relaxed/simple;
-	bh=7gDaoKLArV2L2lxqFVRKrzD4to/+Ud5J+WmGyy6DPCM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nrHwjQ5DSuh6Cs54qfG6FP6iSpbd//zyAUuP2Ddih7gOjJDEwmsmDghYFWnN4eInMAYgFI6ENRgIn1eouKGm4ibRl2NGirWXdT7dEV1OsK1363R90gWgzhHaI7os6X870bZiZTYyF7rN3DsK/wBXWEJQzz3nhwAlNMu/5sW8aGY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=UMg8UlpG; arc=fail smtp.client-ip=40.107.223.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DKrJGlVALY4tAfvb3rZT22PHgqrnZA6SZ8EdTwXrHbdhPxdxshP7XXQ3cAJ1lDENBnMVgFIh6UfWpPTo/FfiVoMWC+mxP6757YSUOgNH8LHOpD2f7/u9jdz5ftHmLOPX1UAUzN9ypVHULC6usy4Pkccn0YENyNsZ/HB4MvUhAWuqya4HGAhWRwFtxq7LEfj3vqqedSNiUCx/9yMxP4yi0qap0h2Dz/lOCKl3Qf53nUFeHxo0A2V61HboYeXNbuCtSrvibY6qTGw+W4srn6HeYQAV7tYwjfRfcGg7izpO7WFAbg5woiOF+okv6hOLc12K/83XL0TKQ2sjkEdxem4agA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RuHNGYB1oeKPKvaJGkDzaJIofDDeotzTYlPj///ahBY=;
- b=SIYgA6QTWhDxqMhq+6EPIxP2g0g9e/WhZok5zrz6DEX9xUnU5RaxRKX8dc4u4Q3LiMCM/ekFt7Cdxh9WVhLcwlSIIEyn22CummOludjx3QTZ5/5ttN+3hrAJVkqWJhJWtO6NBNify1f1WoaAmYv7YjqhmsNmNk8rJrqtMfLViPevJKsZC9hI/wJk626W5vXV5uPE+QeHtt/Tn7z5oaeHnhBSZhFmcA23YrfVTFaX3MnRMIGs8Gx+CrhNEW6R4s/nzDwFodBRsnvG8yLXO6IBjNKUircvudtDvSeOQpG+TxopMPpSOm99dKvHTPxCdy9qN7jdpPXYEjeg7ZAt/NJ8AA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RuHNGYB1oeKPKvaJGkDzaJIofDDeotzTYlPj///ahBY=;
- b=UMg8UlpGiBIog2c8BPinSXd9l57svK/3aEwjg2saEUOU4e7IHzFGuJk9BYEU6V1oCE1CJM+vGdtTUYlp2u0MjsObUehwzhSFASfyo9OvIPwmug1sOoIP/jjihnb5ux6NaJQyzAzMhFecb63uIwKlC0RmtaKymHELW+FQrfCI06o=
-Received: from BL0PR03CA0036.namprd03.prod.outlook.com (2603:10b6:208:2d::49)
- by BL1PR12MB5900.namprd12.prod.outlook.com (2603:10b6:208:398::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Wed, 24 Apr
- 2024 06:31:41 +0000
-Received: from MN1PEPF0000F0E4.namprd04.prod.outlook.com
- (2603:10b6:208:2d:cafe::54) by BL0PR03CA0036.outlook.office365.com
- (2603:10b6:208:2d::49) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22 via Frontend
- Transport; Wed, 24 Apr 2024 06:31:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MN1PEPF0000F0E4.mail.protection.outlook.com (10.167.242.42) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7519.19 via Frontend Transport; Wed, 24 Apr 2024 06:31:41 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 24 Apr
- 2024 01:31:41 -0500
-Received: from xsjarunbala50.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Wed, 24 Apr 2024 01:31:40 -0500
-From: Jay Buddhabhatti <jay.buddhabhatti@amd.com>
-To: <michal.simek@amd.com>, <gregkh@linuxfoundation.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	Jay Buddhabhatti <jay.buddhabhatti@amd.com>
-Subject: [PATCH] drivers: soc: xilinx: check return status of get_api_version()
-Date: Tue, 23 Apr 2024 23:31:18 -0700
-Message-ID: <20240424063118.23200-1-jay.buddhabhatti@amd.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D26B336D;
+	Wed, 24 Apr 2024 06:34:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713940470; cv=none; b=RK45h0FMjlxoDnQ8nHmkR40BWcupKCs3d3LDCLIu3A2o/6K7yZUEW/Kin5+OYxqFBi0bWB5TbNNl8oP0URkExJ6t881TE44lhCVg5T1+ghRXzYXjGEMzs5/IhMqQSnqzLWpPMVvxxhtYyG+4AEHg++0I3ZY+2p/ToxKXeW2y0TM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713940470; c=relaxed/simple;
+	bh=qhmThP7INdCC8VBW2wlRiFNJE/7ZEzBRMxYW6QhxoFA=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=PAQqmwtO/UBmiOlwZk+Vwa71VtOp6mbl39OK6blF6INqqFSGWeDzRpOW8As7oDc9HkCqoDPSCKUp4TP7ZPfKWbRDsM1+fgOG9jqt91ebtbDNX5UUbt1A4pSPnfzCcH7QVu53rwqIU2vPZnWfA4XXtawWyhdRED/PgmKkkpIiQqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RWTar0a8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B8E8C113CE;
+	Wed, 24 Apr 2024 06:34:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713940469;
+	bh=qhmThP7INdCC8VBW2wlRiFNJE/7ZEzBRMxYW6QhxoFA=;
+	h=From:Subject:Date:To:Cc:From;
+	b=RWTar0a8DvsCOmkBnZc1XtDy8jLSKLsyxGfEbMelOUS3FNkvVfyg2qLCEoAe/zejo
+	 nch9CXCF+72DS5YL4G1/NBQlMwdkS4sVlYbtugJeG49a6h7jFiaoY9fT0ftBK7evGh
+	 llHrzgHVTnex0e4DHzSv8KcDCZ8s4cHXklXGVJkA9f8gTpzOJGvvWzynoK9PFpyBcO
+	 rDUstvFlFXN50vWY/6UyAOOtJe+QEpGVamnBKMC9RtCkLgPz2dYYcIov/28yfyLA1X
+	 SRVq0lCvn0ndJ1+rtrXZrR2K3naOATxOjXXfEm7QIYD2wb4qtwg+FfCdFIWaKzQass
+	 oUiKLou3u+ujg==
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v2 00/19] backlight: Constify lcd_ops
+Date: Wed, 24 Apr 2024 08:33:26 +0200
+Message-Id: <20240424-video-backlight-lcd-ops-v2-0-1aaa82b07bc6@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (SATLEXMB04.amd.com: jay.buddhabhatti@amd.com does not
- designate permitted sender hosts)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E4:EE_|BL1PR12MB5900:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5b590fe0-44ca-4da2-b5e4-08dc6428341d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?OkJJQS2YouvvSsQodB506xsOyD36JwbK1heWdnUl6lycGWuuffQ59ZL3jXq9?=
- =?us-ascii?Q?rRbAUGU+el6D6udzTETH8VvAupwExBd9xqyVZ60+mPf5BkyikbfVlP81NnIW?=
- =?us-ascii?Q?wQ1P8eOQ69CKsntRvfPVEqdgZEPZpnUqNJ27MY5FW3mXE4fVjoG09rgDY+0m?=
- =?us-ascii?Q?pWeI6dbVcNDe4+iVUzSpdhL2aAEkjKi4i6TqJn2X+5HuOtpy2YAFMK+svQzW?=
- =?us-ascii?Q?DZFklNdv3rzz+8fud8KWy3xco4/9y8U9/W6Rzt+iuKcRfGFvgw4OdY+K8azo?=
- =?us-ascii?Q?F0D7i9FDq0GJwnwCQ6TauajNKIicU+wLEWz7tZoBjrKL0Ml68hNFRP7Rf9eT?=
- =?us-ascii?Q?HPqSHFIO8Gh25dC7g9JhQQFDfCX2b56Hpi42qEObIcjKE7m2tXxyIxEa+4Um?=
- =?us-ascii?Q?UJRAcksFSQkIvaw3iVG5SW2Rj4htYsmrI/EpOJ54/18LEd40CiINf09qidin?=
- =?us-ascii?Q?KZC2u2/C5VMMPQQ86VkbmMJ1WgzqDBBcq3iGkZ5/5/mKGEpb0nMgUMM2rDqk?=
- =?us-ascii?Q?bxvz8Echj+Ba9aJ6BjPWkrnK+kjJQuWwDo1sxk6gRocVrTEyIYjf8voei/DP?=
- =?us-ascii?Q?mTtShrzIKYiXCY6FGaYhhjyH3kM8j5UFchVpsl8UI/KnZInllHWXtg7rLzfD?=
- =?us-ascii?Q?YLCyZAj4zjiaoQMS/9nYIedk4j4AaIhwWF0faoO1bV0F3NJ5G/UYnt087Wm0?=
- =?us-ascii?Q?IrmNcVu1kHKt+AK4X4e34sTkeFJ3u5aWEOBw6sMWXo5m4hU1BDZ9tEtVhwvS?=
- =?us-ascii?Q?F0luwM2nU0yYwAtbMctDodVRE8aRXnVQWpayadtKztBWiWSiAg+bliYoliG1?=
- =?us-ascii?Q?u2C8PWKksnLEZ9RUVau0WpdLTs56pzK9hU+5b8Q++fkHp9BoGL6QsnXgJtYP?=
- =?us-ascii?Q?foaaL+c1rQjhbzDHPYZ07cqJcvKjeJJI+8c7zoyfLbDRno1hJjQxESsHesRY?=
- =?us-ascii?Q?2HSm43iOh7h5IewBRmi8asKc84EBcz49bRZQ51aC4AkLzk8OyOTe8IlSu5UK?=
- =?us-ascii?Q?LMrXtaQdxLX9V/n2ULMuEnYibekWEgWwtONIIz0NTCQxwOJEZzVvK7B0034P?=
- =?us-ascii?Q?9xQCOxdq/7V/9ap0gLK9PPxaPBeN0Tzu/56m1h0Ce4mxct5jWF9IWke5Cyyn?=
- =?us-ascii?Q?2uXBju1Ws6Ol4OH2mhJiNqEFwjhrhkU6Q0d0K6IkgNwh3PVyJ3EOhYFZm+Pi?=
- =?us-ascii?Q?S2i1OSPkq/sq3CjLmABExpjoXF6X5esxBV9dN4QOIyvsGx2GxexoMWz0/sOX?=
- =?us-ascii?Q?H44bT8KBAdITHiQPo7bSIZPIWc2b3OtKqqL12W+yS90/cKk2yoVKhSyVx3n+?=
- =?us-ascii?Q?8XZqk6IBnfZlsFEbi2J5A/kIQ7fJkHiGEGUPRxhiFQLU4IglYMR50OeJIVmU?=
- =?us-ascii?Q?IKyxyAV/CwSTB8c1pjrAIRfup9/T?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(376005)(82310400014)(1800799015);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 06:31:41.5130
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b590fe0-44ca-4da2-b5e4-08dc6428341d
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000F0E4.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5900
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALanKGYC/4WNTQqDMBBGryKz7hSNqX+r3qO4MMlEB8VIIqFFv
+ HtTL9Dle/C974BAnilAlx3gKXJgtyYQtwz0NKwjIZvEIHIhc1lIjGzIoRr0vPA47bhog24LKOr
+ KNLJsrVUNpPXmyfL7Kr/6xBOH3fnPdRSLn/3fjAXm2KqytlrZh6yG50x+peXu/Aj9eZ5fcJ8xu
+ L8AAAA=
+To: Lee Jones <lee@kernel.org>, 
+ Daniel Thompson <daniel.thompson@linaro.org>, 
+ Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>, 
+ =?utf-8?q?Bruno_Pr=C3=A9mont?= <bonbons@linux-vserver.org>, 
+ Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>, 
+ Alexander Shiyan <shc_work@mail.ru>, Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <festevam@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev, 
+ linux-omap@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>, 
+ Thomas Zimmermann <tzimmermann@suse.de>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2739; i=krzk@kernel.org;
+ h=from:subject:message-id; bh=qhmThP7INdCC8VBW2wlRiFNJE/7ZEzBRMxYW6QhxoFA=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmKKfa2cwIQ6siUozSMkADWp+Mx0tCvS7bXKbhN
+ kGbbX8WNSaJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZiin2gAKCRDBN2bmhouD
+ 14E6D/4vCOuf8a/6KvYfDc5C87F/x5Tj0g6zD9S7ZKUXm6YoQPhQot7+GqfYpM80vLaVm9IkH7R
+ nhERFkiurnMemsKWYDGZz8T9XskGMcNkH3tg/bnC6aP152F3HTC9WjrRZCjHFwCO+7gAUPt4p2i
+ rG2kA1WgBrSWx/YZ9anVXuy4El/xkp1VQPfT8JfAEiWteQM3hnyT36vrzlm5kTwbGhV747+rMEf
+ meeIhJ/nU/usE9ahohS1RDKIRlgeIKS79LJEppW8PnLZpeKCE+s7/0ANmN2vDujJ5W1nG53w5qx
+ fu8a32llePUQOwx3ryJ6ZPOL+d70Xn+qupqHkL2yV7YDBQcPvK7YtTIxwErpcV3hkeFCA4j1LHm
+ xUZf+sCmVr33GFFCPip+B2APJiVlJkPX4vevH7LFcHck/hoBYV2pdiWRnWS/SrE014rLC6v7GS1
+ uwShpE6kyTgs7UfIMi/CoD5tSHLrH6Gh14uNRYxaydE0cXMw5Wz5Sjono2PdP9WX2W7gaXUORfR
+ hu69i+67wp5rEQ9tYFOsf7PjpcQseQCCZ79Iklgi+NdKfb2zbAZooZ7QoUJiVLYOIu8CcpzxKCJ
+ 36tO34XyNIjlS8wILZfctqwOZHouL8Cj5ndg+NmB6b64GIVJTmeeX/W22nIelIBzqvOVDOhCAxW
+ gJl0a+pdXCHlMFw==
+X-Developer-Key: i=krzk@kernel.org; a=openpgp;
+ fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-Check return status of pm_get_api_version and return error in case of failure to
-avoid checking uninitialized pm_api_version variable from stack.
+Hi,
 
-The issue is also reported by smatch on x86 as "warning: 'pm_api_version' is
-used uninitialized".
+Changes in v2:
+- Collect tags, including wrongly places Thomas' tag (which requires me
+  to manually edit 15 other patches to drop it).
+- Combine here checkpatch patch:
+  https://lore.kernel.org/all/20240414185440.288812-1-krzk@kernel.org/
+- Link to v1: https://lore.kernel.org/r/20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org
 
-Fixes: b9b3a8be28b3 ("firmware: xilinx: Remove eemi ops for get_api_version")
-Signed-off-by: Jay Buddhabhatti <jay.buddhabhatti@amd.com>
+Dependencies
+============
+All further patches depend on the first patch.  Therefore everything
+could go via backlight tree (please ack) or via cross-tree pulls. Or
+whatever maintainer choose, just coordinate this with backlight.
+
+Best regards,
+Krzysztof
+
 ---
- drivers/soc/xilinx/zynqmp_power.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Krzysztof Kozlowski (19):
+      backlight: Constify lcd_ops
+      backlight: ams369fg06: Constify lcd_ops
+      backlight: corgi_lcd: Constify lcd_ops
+      backlight: hx8357: Constify lcd_ops
+      backlight: ili922x: Constify lcd_ops
+      backlight: ili9320: Constify lcd_ops
+      backlight: jornada720_lcd: Constify lcd_ops
+      backlight: l4f00242t03: Constify lcd_ops
+      backlight: lms283gf05: Constify lcd_ops
+      backlight: lms501kf03: Constify lcd_ops
+      backlight: ltv350qv: Constify lcd_ops
+      backlight: otm3225a: Constify lcd_ops
+      backlight: platform_lcd: Constify lcd_ops
+      backlight: tdo24m: Constify lcd_ops
+      HID: picoLCD: Constify lcd_ops
+      fbdev: clps711x: Constify lcd_ops
+      fbdev: imx: Constify lcd_ops
+      fbdev: omap: lcd_ams_delta: Constify lcd_ops
+      const_structs.checkpatch: add lcd_ops
 
-diff --git a/drivers/soc/xilinx/zynqmp_power.c b/drivers/soc/xilinx/zynqmp_power.c
-index 965b1143936a..8570ab1a6857 100644
---- a/drivers/soc/xilinx/zynqmp_power.c
-+++ b/drivers/soc/xilinx/zynqmp_power.c
-@@ -3,6 +3,7 @@
-  * Xilinx Zynq MPSoC Power Management
-  *
-  *  Copyright (C) 2014-2019 Xilinx, Inc.
-+ *  Copyright (C) 2024, Advanced Micro Devices, Inc.
-  *
-  *  Davorin Mista <davorin.mista@aggios.com>
-  *  Jolly Shah <jollys@xilinx.com>
-@@ -190,7 +191,9 @@ static int zynqmp_pm_probe(struct platform_device *pdev)
- 	u32 pm_api_version;
- 	struct mbox_client *client;
- 
--	zynqmp_pm_get_api_version(&pm_api_version);
-+	ret = zynqmp_pm_get_api_version(&pm_api_version);
-+	if (ret)
-+		return ret;
- 
- 	/* Check PM API version number */
- 	if (pm_api_version < ZYNQMP_PM_VERSION)
+ drivers/hid/hid-picolcd_lcd.c            | 2 +-
+ drivers/video/backlight/ams369fg06.c     | 2 +-
+ drivers/video/backlight/corgi_lcd.c      | 2 +-
+ drivers/video/backlight/hx8357.c         | 2 +-
+ drivers/video/backlight/ili922x.c        | 2 +-
+ drivers/video/backlight/ili9320.c        | 2 +-
+ drivers/video/backlight/jornada720_lcd.c | 2 +-
+ drivers/video/backlight/l4f00242t03.c    | 2 +-
+ drivers/video/backlight/lcd.c            | 4 ++--
+ drivers/video/backlight/lms283gf05.c     | 2 +-
+ drivers/video/backlight/lms501kf03.c     | 2 +-
+ drivers/video/backlight/ltv350qv.c       | 2 +-
+ drivers/video/backlight/otm3225a.c       | 2 +-
+ drivers/video/backlight/platform_lcd.c   | 2 +-
+ drivers/video/backlight/tdo24m.c         | 2 +-
+ drivers/video/fbdev/clps711x-fb.c        | 2 +-
+ drivers/video/fbdev/imxfb.c              | 2 +-
+ drivers/video/fbdev/omap/lcd_ams_delta.c | 2 +-
+ include/linux/lcd.h                      | 6 +++---
+ scripts/const_structs.checkpatch         | 1 +
+ 20 files changed, 23 insertions(+), 22 deletions(-)
+---
+base-commit: a59668a9397e7245b26e9be85d23f242ff757ae8
+change-id: 20240414-video-backlight-lcd-ops-276d8439ffb8
+
+Best regards,
 -- 
-2.17.1
+Krzysztof Kozlowski <krzk@kernel.org>
 
 
