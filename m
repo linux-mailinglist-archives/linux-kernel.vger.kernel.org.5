@@ -1,148 +1,161 @@
-Return-Path: <linux-kernel+bounces-157395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 022558B1103
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:29:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07DFF8B10F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:27:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 758FCB2C486
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:26:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66FEE282690
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:27:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B5016F0EF;
-	Wed, 24 Apr 2024 17:24:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wf7uOyy7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42EA016F29E;
+	Wed, 24 Apr 2024 17:24:56 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F7F16EC1C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A53416EC12;
 	Wed, 24 Apr 2024 17:24:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713979493; cv=none; b=F0sLoktt2ZqJHpQaH4FEYR2BSvzyTpwGhsOtXiCfhrenRVdyeT84hSCNDmCM8YpWLfzRPOLLi3U0nb4r7HxMpXiAue5QoJBKdP0bvfo9mc6F2s+pBQG5durRSltWUZvrKQKSsBgLzzqJ2oFgEYbkixO7iTi3s564ArUkcwHuS0g=
+	t=1713979495; cv=none; b=IL59b8+N8ryYAjQZeAJG8C2cljknJdVgpwVGLR8x3DQ5Ec8NAydCKIhwkE2XIo27FXSqbc71jR9p66V5QySF0ENMbPYIRe6cnDQFyepv1d5i3LteO8bWvGs6JY/02W/dzstG+9+ULTc5kH64m5aa/tyAMAAHASUdYiCRYu3f2jY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713979493; c=relaxed/simple;
-	bh=jLnC6a51kXShlJw2qowP2td/Td80RuzryZnAn9alooQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=PtR0Em4oSWwabzR03W2Vc6Nbvh6S/pWMLAgYhgIkk62vbpW6ni1DqktMFfPIHdDCOSvvDsVzKtxoXfwyS/BVcrmtMxicmu/jdNe36vap4ntfx5tfmG7SLvvMqfGy4MgYxuZdeW10CAAo8oDw/Sht8USfk+7bA9MabTam/Psj7kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wf7uOyy7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D51EDC32782;
-	Wed, 24 Apr 2024 17:24:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713979493;
-	bh=jLnC6a51kXShlJw2qowP2td/Td80RuzryZnAn9alooQ=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Wf7uOyy7k7KnS1BWaCftOUBBDmNwEqjDxrD2bRGq3sqLpzDu66SEp5QzmNLVwpTfl
-	 OQi/YyWlbrexteK+VwwTWbS+Ql6xMP2+EppRESjhdm+l1zetkgi2iFI9M2bN2e2fsr
-	 ZOP8yleTVnYvzSAH8P/nYu1vKN4IrBOx8vFQkItBnmkBFZe4GqyLxiCSz8Quaa6sWI
-	 TJxpuFsK5jZEc0UKyk5AQj9dUwVktSLP6AbXRU9ojT7de7xQMYfAci/kCK49jSM9LD
-	 6Qh5hK5KH4bprzAA26LROwUBWSFES6E1kuYrAAa07juuWXrSUMcZLq8zRScznC4iUx
-	 fjnFNIGqHplHQ==
-From: Nathan Chancellor <nathan@kernel.org>
-Date: Wed, 24 Apr 2024 10:24:13 -0700
-Subject: [PATCH v2 10/10] selftests: kselftest: Make ksft_exit functions
- return void instead of int
+	s=arc-20240116; t=1713979495; c=relaxed/simple;
+	bh=LKqpVipEJ5RO7oa344mviLVllKDE6mTQjJzr3s4gB5I=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Ndfz/xkRVSZfGvdr0jKWg8ap8eZZ1RVWwBjvtkprlWF+Xjw60qjVs0Kajov3UByuTWOFaSJWHxvvbqG1E4CIBT7Iw/hhGhAuhdEG+4n+BKpPy2RqEwMq2F35CEdM9OgBCQ4wHd3HB6+gDTn7xRM5yY7pJI0j1Uj5QWXanO61aeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VPm5J2bxkz6K6Lt;
+	Thu, 25 Apr 2024 01:22:28 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 30DCB140A34;
+	Thu, 25 Apr 2024 01:24:51 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 24 Apr
+ 2024 18:24:50 +0100
+Date: Wed, 24 Apr 2024 18:24:50 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
+	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
+	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, "James Morse"
+	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
+ Brucker <jean-philippe@linaro.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+	<linuxarm@huawei.com>
+CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "Dave
+ Hansen" <dave.hansen@linux.intel.com>, <justin.he@arm.com>,
+	<jianyong.wu@arm.com>
+Subject: Re: [PATCH v7 14/16] arm64: Kconfig: Enable hotplug CPU on arm64 if
+ ACPI_PROCESSOR is enabled.
+Message-ID: <20240424182450.0000694f@Huawei.com>
+In-Reply-To: <20240418135412.14730-15-Jonathan.Cameron@huawei.com>
+References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
+	<20240418135412.14730-15-Jonathan.Cameron@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240424-ksft-exit-int-to-void-v2-10-c35f3b8c9ca0@kernel.org>
-References: <20240424-ksft-exit-int-to-void-v2-0-c35f3b8c9ca0@kernel.org>
-In-Reply-To: <20240424-ksft-exit-int-to-void-v2-0-c35f3b8c9ca0@kernel.org>
-To: shuah@kernel.org
-Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Muhammad Usama Anjum <usama.anjum@collabora.com>, 
- Thomas Gleixner <tglx@linutronix.de>, Nathan Chancellor <nathan@kernel.org>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2619; i=nathan@kernel.org;
- h=from:subject:message-id; bh=jLnC6a51kXShlJw2qowP2td/Td80RuzryZnAn9alooQ=;
- b=owGbwMvMwCUmm602sfCA1DTG02pJDGmaDnFWTGLpkbE/c97N0rukZGv/etKc3Z+DTyzmXBC/o
- SJY+y1LRykLgxgXg6yYIkv1Y9XjhoZzzjLeODUJZg4rE8gQBi5OAZjIwWeMDB3WvA8+tyje8Kl5
- sNpY9XCeYkFjzsOOvcZ8S97P+KBy+w8jw5/IzW9n3mxau0d7Gouv689JYUsUt62XZE98/2x1fYK
- DMxsA
-X-Developer-Key: i=nathan@kernel.org; a=openpgp;
- fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Commit f7d5bcd35d42 ("selftests: kselftest: Mark functions that
-unconditionally call exit() as __noreturn") marked functions that call
-exit() as __noreturn but it did not change the return type of these
-functions from 'void' to 'int' like it should have (since a noreturn
-function by definition cannot return an integer because it does not
-return...) because there were many tests that return the result of the
-ksft_exit functions, even though it has never been used due to calling
-exit().
+On Thu, 18 Apr 2024 14:54:10 +0100
+Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
 
-Now that all uses of 'return ksft_exit...()' have been cleaned up
-properly, change the types of the ksft_exit...() functions to void to
-match their __noreturn nature.
+> In order to move arch_register_cpu() to be called via the same path
+> for initially present CPUs described by ACPI and hotplugged CPUs
+> ACPI_HOTPLUG_CPU needs to be enabled.
+> 
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> ---
+> v7: No change.
+> ---
+>  arch/arm64/Kconfig       |  1 +
+>  arch/arm64/kernel/acpi.c | 16 ++++++++++++++++
+>  2 files changed, 17 insertions(+)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 7b11c98b3e84..fed7d0d54179 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -5,6 +5,7 @@ config ARM64
+>  	select ACPI_CCA_REQUIRED if ACPI
+>  	select ACPI_GENERIC_GSI if ACPI
+>  	select ACPI_GTDT if ACPI
+> +	select ACPI_HOTPLUG_CPU if ACPI_PROCESSOR
+>  	select ACPI_IORT if ACPI
+>  	select ACPI_REDUCED_HARDWARE_ONLY if ACPI
+>  	select ACPI_MCFG if (ACPI && PCI)
+> diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
+> index dba8fcec7f33..a74e80d58df3 100644
+> --- a/arch/arm64/kernel/acpi.c
+> +++ b/arch/arm64/kernel/acpi.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/pgtable.h>
+>  
+>  #include <acpi/ghes.h>
+> +#include <acpi/processor.h>
+>  #include <asm/cputype.h>
+>  #include <asm/cpu_ops.h>
+>  #include <asm/daifflags.h>
+> @@ -413,6 +414,21 @@ void arch_reserve_mem_area(acpi_physical_address addr, size_t size)
+>  	memblock_mark_nomap(addr, size);
+>  }
+>  
+> +#ifdef CONFIG_ACPI_HOTPLUG_CPU
+> +int acpi_map_cpu(acpi_handle handle, phys_cpuid_t physid, u32 apci_id,
+> +		 int *pcpu)
+> +{
 
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- tools/testing/selftests/kselftest.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+There are shipping firmware's in the wild that have DSDT entries for
+way more CPUs than are actually present and don't bother with niceties like
+providing _STA() methods.
 
-diff --git a/tools/testing/selftests/kselftest.h b/tools/testing/selftests/kselftest.h
-index 9bb1664bcf95..f4221691a7da 100644
---- a/tools/testing/selftests/kselftest.h
-+++ b/tools/testing/selftests/kselftest.h
-@@ -327,13 +327,13 @@ void ksft_test_result_code(int exit_code, const char *test_name,
- 		break;						\
- 	} } while (0)
- 
--static inline __noreturn int ksft_exit_pass(void)
-+static inline __noreturn void ksft_exit_pass(void)
- {
- 	ksft_print_cnts();
- 	exit(KSFT_PASS);
- }
- 
--static inline __noreturn int ksft_exit_fail(void)
-+static inline __noreturn void ksft_exit_fail(void)
- {
- 	ksft_print_cnts();
- 	exit(KSFT_FAIL);
-@@ -360,7 +360,7 @@ static inline __noreturn int ksft_exit_fail(void)
- 		  ksft_cnt.ksft_xfail +	\
- 		  ksft_cnt.ksft_xskip)
- 
--static inline __noreturn __printf(1, 2) int ksft_exit_fail_msg(const char *msg, ...)
-+static inline __noreturn __printf(1, 2) void ksft_exit_fail_msg(const char *msg, ...)
- {
- 	int saved_errno = errno;
- 	va_list args;
-@@ -388,19 +388,19 @@ static inline __noreturn void ksft_exit_fail_perror(const char *msg)
- #endif
- }
- 
--static inline __noreturn int ksft_exit_xfail(void)
-+static inline __noreturn void ksft_exit_xfail(void)
- {
- 	ksft_print_cnts();
- 	exit(KSFT_XFAIL);
- }
- 
--static inline __noreturn int ksft_exit_xpass(void)
-+static inline __noreturn void ksft_exit_xpass(void)
- {
- 	ksft_print_cnts();
- 	exit(KSFT_XPASS);
- }
- 
--static inline __noreturn __printf(1, 2) int ksft_exit_skip(const char *msg, ...)
-+static inline __noreturn __printf(1, 2) void ksft_exit_skip(const char *msg, ...)
- {
- 	int saved_errno = errno;
- 	va_list args;
+As such, we need to check somewhere that the pcpu after this call is valid.
 
--- 
-2.44.0
+Given today this only applies to arm64 (as the x86 code has an implementation
+of this function that will replace an invalid ID with a valid one) I'll add
+a small catch here.
+
+	if (*pcpu < 0) {
+		pr_warn("Unable to map from CPU ACPI ID to anything useful\n");
+		return -EINVAL;
+	}
+
+I'll have an entirely polite discussion with the relevant team at somepoint, but
+on the plus side this is a sensible bit of hardening.
+
+Jonathan
+
+p.s. I want all those other cores!!!!
+
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(acpi_map_cpu); /* check why */
+> +
+> +int acpi_unmap_cpu(int cpu)
+> +{
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(acpi_unmap_cpu);
+> +#endif /* CONFIG_ACPI_HOTPLUG_CPU */
+> +
+>  #ifdef CONFIG_ACPI_FFH
+>  /*
+>   * Implements ARM64 specific callbacks to support ACPI FFH Operation Region as
 
 
