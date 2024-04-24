@@ -1,165 +1,144 @@
-Return-Path: <linux-kernel+bounces-157788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 920018B1631
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:32:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 263928B1637
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:33:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B59511C21DC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:32:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1CB0282411
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A477C15ECEE;
-	Wed, 24 Apr 2024 22:32:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B903616E86B;
+	Wed, 24 Apr 2024 22:32:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K8SXI46o"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="guZZAZsj"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD97523BE
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:32:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13C98157484
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:32:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713997946; cv=none; b=EP/PYZA/BpxNveNDaFnBo5gODhS9nEft7i6QTzVjIHVymyzbNRRjpzAM/Z+AmZWbX/ku+KYOdKAQXJ2D8ozEbqupWllt615EiIBwauuThbYmAc8KKHZbmkjMekIpBCJxhyOBxQzAFUmAWb6K5TfVwo0SJSiN6xSCavyJ2tU/RYk=
+	t=1713997975; cv=none; b=YVlPO1UbEwKp4axUmLAiIVtCLqyiMAFaKvafFpE0Ykd0+GMBkhTuWck0BFXRS4Ve6e9MDVUqT1vhDxPVLsI5PKujKlMuIDLXpF4etxF/FrtQT39QCCDbC9j3PuoYTbVug6iJz6WdOKfAvWrNctZjGOjem60BiMbFfLmZiHW+2bo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713997946; c=relaxed/simple;
-	bh=EQo+zGC16IkD24HLaYmrTErmXONgg+WietHKBFzN8Qs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OEeV3ZsJqGpj/D+CbSPttzOh/XzZs0AcqpEkd5EFO8jw9yrikeD5TeM+DRdnXqYXeIoZOuaCd3Ez5r869j0o2R0cvtzbFV8kTTp+a2V3eLKX/zhoUIeP0R+RDWnizxHUkLsuDdNv1KSO+/lJrOg0pNWrR+WjDxX4MNtbUD3nkmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K8SXI46o; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a55b3d57277so43267866b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:32:24 -0700 (PDT)
+	s=arc-20240116; t=1713997975; c=relaxed/simple;
+	bh=W8L5h+SzHiautt9SqcHIuNkveUNPF0/akp2X0XV3TX8=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=drT6eYNvecg35oJfmrannhtos7mFgYgBW71oBBTwD3X957g0rDcBTSRRLI7S2YQ1aS7pj58EnMNFwxI8hJ01Vv885pCx1RcUGj2iWogBHSgc0HrJpHdzGGC95Eb+I6MuBKMi4iqb9LgV0etx78nqtnVeQ44r2f4lgEQfVsn+3lE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--amitsd.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=guZZAZsj; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--amitsd.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-ddaf165a8d9so700587276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:32:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713997943; x=1714602743; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a1VSqOGp+cTDD3FwVgodoOnkI+tY2YGNCkhcEt2wmrs=;
-        b=K8SXI46o5GhTsTsE7YEEvqvJpA6hSALvNY9H9s2XVc9t4yon0eL4Cf5+74A8AXZ6AC
-         37UzEn4NO9hk91SFvcFg9hLRFqWtXtBMGyZBWnuGKnOYFKrHLCiYR6eBXayiTljD7oPZ
-         NSCXfCJAkBiVeId8FjsXhejgM1ciLtEJUCXu0RZofwQk+nY9kchpPL/H79EAOQPqrpQo
-         FTAlt4XuN4H0O9+yAoqOYxTzvKnpFzRUbqnar4mxZUPz12O81p3uXQA+73EFNkg2RSIx
-         8PxyyGvDN+27mybS+RY0Avec8F4bJr1ZThJm+9CYs6oUpMXCoyJtC6bMZ2G/Z5lhSRCo
-         j3fA==
+        d=google.com; s=20230601; t=1713997972; x=1714602772; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=1NbcoiaRXrJH9+uu8XHipFnZdxDGtv91eD3q0pnQrtk=;
+        b=guZZAZsjFFEmc9Y70Bii2275K6ywVGJRSZVAa3ZQeOPI4SHensdfdc518JrW5rxiNU
+         0GmPgzYBuFyDg+mX7wOUSo25inhHowcA173zPpyntnLPJ676zNqk2XLuP2mK0dCk9pMH
+         /OSUkOms7h1fq8iY8lnIkw+O2ZyxeBKi3uwuW9gbu6rGydfqzMV4QoThhr9q0m8/gmKR
+         wBlyOhMfLL6vbDHmvfwmQWLi6plnuT4NeKwcCCGN8oROdYaGVjqFIVf5iPuU/O8jZi3C
+         Sdsp5MFdIqyIuUMHBVzME+BSZRtTmS2lzol3/qn2HJ2giHolLMoPRYHH43RjoGdVYqyX
+         RfMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713997943; x=1714602743;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a1VSqOGp+cTDD3FwVgodoOnkI+tY2YGNCkhcEt2wmrs=;
-        b=J7Gchfn40szjyiKjeSqQuYRuAFzUK9IFohuIjCURK++E6Ah+GrXjg70EmZs2y7szSE
-         ncqr1Usqfk/XQqfx45vvl/0nDfsW7qemSOmWUNVhWQbtaZYolp8Zqs5zU5OBfbW7VDBq
-         QyejNH7nRUIgaRi/omsgVFcpvvh0RP4lryio3/DwrXArnVYFd59G14G7d1glyZF7Hs9z
-         7OxIzXnvIUCHDwEAVLAiOaWOgeOfnEV7TDHgl8PDArpU85s1z3ZjjFD5qWYGc5WydWeo
-         qCSS+dQfzhJOtf9sdtTadVs59Tx8j9epY3YN3k+Bu0Xe4YOrCo+FP5HGNMXozCcyWs6G
-         bLpg==
-X-Forwarded-Encrypted: i=1; AJvYcCUx1WBx4XGG9X+pTclBiw86NpAPfqJJVtycIwZkGw2WMmUZH7g1a+4coX3bxvWXuKgka4sDVQcsQVuj09WyR/Neu1NcDD5OMWZsZDqB
-X-Gm-Message-State: AOJu0YwIkoAV6EYKXOqPlFBlHM98ijuXDJGbkIYW+NUnmylYimg1qpzZ
-	jWIGNtEM1E6SV4IkJZ63IVtiP8drUUzm/6EG4DgboCV+Hgqlo26YSbKJIGLYdvCev0YVr4KLZJr
-	K8CLT+laHbXs1OE+cO72fCA22Cx0=
-X-Google-Smtp-Source: AGHT+IEqtFmD6v9c765dugMGoqkOjGlWjaNOWIqmuj7vQIcOYL0B0PAWJepn5edmJtBLhZQl5RDy339oHFM/1lING+A=
-X-Received: by 2002:a17:906:f9d1:b0:a52:5d89:5f27 with SMTP id
- lj17-20020a170906f9d100b00a525d895f27mr2602963ejb.14.1713997942903; Wed, 24
- Apr 2024 15:32:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713997972; x=1714602772;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1NbcoiaRXrJH9+uu8XHipFnZdxDGtv91eD3q0pnQrtk=;
+        b=Lq6sm9Z07I4DFeAvLyezJnMEthofjan4SjaQedggFlLrwmKzPi13Xl50U+X+ITxeOC
+         2mjSuDakNArj9FGiOc1rbFjYYXD6x8/8Osl0rxkQhuQdpMGyB05XISmc3IwXETzahOyP
+         7HEhvsoVSIRhS7otj9IC63MhYtndlVXEcsRXkTkbwwKjdT0C8T/jGAizSuA5hId0Aq0N
+         WswyE5DjMYjNn5VUWM3Xzdq1pI9O3ynJnFabX0MKm84JuHePETwUoJ7UbqV56lV+0aRj
+         bDbjYUdv4kdJQYOl1zxkJt0S4LarYcBhzjxHH+5qoBcclkKKpslJXQPuAoiWSliXBvXH
+         Y5vQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWiNtlURPgAQIXzCl8nHgkn6wb6efGzGyxWuxU+Lwejtiynb1/6tLcjXnA1cDC9fLpco7UON6vBUEtcI9UCZg0KiZ3tRyiIO6YgWfKS
+X-Gm-Message-State: AOJu0YwxYpmexcHtNJT/fzcuzg7ZVB7XOJqJgFtUY0tt0JqxTfUO5RIJ
+	HCpU4EE5eumPX5tkDbyTaVfN8Ssl2j93th6TC6XMLT3EWNgm9XB08mYxN6qLYyUST7t88XmwC6U
+	Alg==
+X-Google-Smtp-Source: AGHT+IEgyiK0mF15tmGzPHN/qd3iIL6vfDLxMFx9Q1Dz4XF8BvW7SaW9Nw5e/kMd+OXWdBo6XB2GfwuDVMk=
+X-Received: from amitsd-gti.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:827])
+ (user=amitsd job=sendgmr) by 2002:a25:d509:0:b0:de5:5693:4e8e with SMTP id
+ r9-20020a25d509000000b00de556934e8emr371664ybe.11.1713997972127; Wed, 24 Apr
+ 2024 15:32:52 -0700 (PDT)
+Date: Wed, 24 Apr 2024 15:32:16 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240424211031.475756-1-zi.yan@sent.com>
-In-Reply-To: <20240424211031.475756-1-zi.yan@sent.com>
-From: Yang Shi <shy828301@gmail.com>
-Date: Wed, 24 Apr 2024 15:32:11 -0700
-Message-ID: <CAHbLzkq61sTeRxU23gg3kMNBunxXH3GpkL6D56xcaepsDzFCJA@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/rmap: do not add fully unmapped large folio to
- deferred split list
-To: Zi Yan <ziy@nvidia.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Ryan Roberts <ryan.roberts@arm.com>, 
-	Barry Song <21cnbao@gmail.com>, David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+Message-ID: <20240424223227.1807844-1-amitsd@google.com>
+Subject: [PATCH v1] usb: typec: tcpm: unregister existing source caps before re-registration
+From: Amit Sunil Dhamne <amitsd@google.com>
+To: linux@roeck-us.net, heikki.krogerus@linux.intel.com, 
+	gregkh@linuxfoundation.org
+Cc: badhri@google.com, rdbabiera@google.com, 
+	Amit Sunil Dhamne <amitsd@google.com>, linux-usb@vger.kernel.org, stable@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 24, 2024 at 2:10=E2=80=AFPM Zi Yan <zi.yan@sent.com> wrote:
->
-> From: Zi Yan <ziy@nvidia.com>
->
-> In __folio_remove_rmap(), a large folio is added to deferred split list
-> if any page in a folio loses its final mapping. It is possible that
-> the folio is unmapped fully, but it is unnecessary to add the folio
-> to deferred split list at all. Fix it by checking folio->_nr_pages_mapped
-> before adding a folio to deferred split list. If the folio is already
-> on the deferred split list, it will be skipped.
->
-> Commit 98046944a159 ("mm: huge_memory: add the missing
-> folio_test_pmd_mappable() for THP split statistics") tried to exclude
-> mTHP deferred split stats from THP_DEFERRED_SPLIT_PAGE, but it does not
-> fix everything. A fully unmapped PTE-mapped order-9 THP was also added to
-> deferred split list and counted as THP_DEFERRED_SPLIT_PAGE, since nr is
-> 512 (non zero), level is RMAP_LEVEL_PTE, and inside deferred_split_folio(=
-)
-> the order-9 folio is folio_test_pmd_mappable(). However, this miscount
-> was present even earlier due to implementation, since PTEs are unmapped
-> individually and first PTE unmapping adds the THP into the deferred split
-> list.
+Check and unregister existing source caps in tcpm_register_source_caps
+function before registering new ones. This change fixes following
+warning when port partner resends source caps after negotiating PD contract
+for the purpose of re-negotiation.
 
-Shall you mention the miscounting for mTHP too? There is another patch
-series adding the counter support for mTHP.
+[  343.135030][  T151] sysfs: cannot create duplicate filename '/devices/virtual/usb_power_delivery/pd1/source-capabilities'
+[  343.135071][  T151] Call trace:
+[  343.135076][  T151]  dump_backtrace+0xe8/0x108
+[  343.135099][  T151]  show_stack+0x18/0x24
+[  343.135106][  T151]  dump_stack_lvl+0x50/0x6c
+[  343.135119][  T151]  dump_stack+0x18/0x24
+[  343.135126][  T151]  sysfs_create_dir_ns+0xe0/0x140
+[  343.135137][  T151]  kobject_add_internal+0x228/0x424
+[  343.135146][  T151]  kobject_add+0x94/0x10c
+[  343.135152][  T151]  device_add+0x1b0/0x4c0
+[  343.135187][  T151]  device_register+0x20/0x34
+[  343.135195][  T151]  usb_power_delivery_register_capabilities+0x90/0x20c
+[  343.135209][  T151]  tcpm_pd_rx_handler+0x9f0/0x15b8
+[  343.135216][  T151]  kthread_worker_fn+0x11c/0x260
+[  343.135227][  T151]  kthread+0x114/0x1bc
+[  343.135235][  T151]  ret_from_fork+0x10/0x20
+[  343.135265][  T151] kobject: kobject_add_internal failed for source-capabilities with -EEXIST, don't try to register things with the same name in the same directory.
 
->
-> With commit b06dc281aa99 ("mm/rmap: introduce
-> folio_remove_rmap_[pte|ptes|pmd]()"), kernel is able to unmap PTE-mapped
-> folios in one shot without causing the miscount, hence this patch.
->
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> ---
->  mm/rmap.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index a7913a454028..220ad8a83589 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1553,9 +1553,11 @@ static __always_inline void __folio_remove_rmap(st=
-ruct folio *folio,
->                  * page of the folio is unmapped and at least one page
->                  * is still mapped.
->                  */
-> -               if (folio_test_large(folio) && folio_test_anon(folio))
-> -                       if (level =3D=3D RMAP_LEVEL_PTE || nr < nr_pmdmap=
-ped)
-> -                               deferred_split_folio(folio);
-> +               if (folio_test_large(folio) && folio_test_anon(folio) &&
-> +                   list_empty(&folio->_deferred_list) &&
+Fixes: 8203d26905ee ("usb: typec: tcpm: Register USB Power Delivery Capabilities")
+Cc: linux-usb@vger.kernel.org
+Cc: stable@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>
+Signed-off-by: Amit Sunil Dhamne <amitsd@google.com>
+---
+ drivers/usb/typec/tcpm/tcpm.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Do we really need this check? deferred_split_folio() does the same
-check too. Bailing out earlier sounds ok too, but there may not be too
-much gain.
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index ab6ed6111ed0..d8eb89f4f0c3 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -2996,7 +2996,7 @@ static int tcpm_register_source_caps(struct tcpm_port *port)
+ {
+ 	struct usb_power_delivery_desc desc = { port->negotiated_rev };
+ 	struct usb_power_delivery_capabilities_desc caps = { };
+-	struct usb_power_delivery_capabilities *cap;
++	struct usb_power_delivery_capabilities *cap = port->partner_source_caps;
+ 
+ 	if (!port->partner_pd)
+ 		port->partner_pd = usb_power_delivery_register(NULL, &desc);
+@@ -3006,6 +3006,9 @@ static int tcpm_register_source_caps(struct tcpm_port *port)
+ 	memcpy(caps.pdo, port->source_caps, sizeof(u32) * port->nr_source_caps);
+ 	caps.role = TYPEC_SOURCE;
+ 
++	if (cap)
++		usb_power_delivery_unregister_capabilities(cap);
++
+ 	cap = usb_power_delivery_register_capabilities(port->partner_pd, &caps);
+ 	if (IS_ERR(cap))
+ 		return PTR_ERR(cap);
 
-> +                   ((level =3D=3D RMAP_LEVEL_PTE && atomic_read(mapped))=
- ||
-> +                    (level =3D=3D RMAP_LEVEL_PMD && nr < nr_pmdmapped)))
+base-commit: 0d31ea587709216d88183fe4ca0c8aba5e0205b8
+-- 
+2.44.0.769.g3c40516874-goog
 
-IIUC, this line is used to cover the case which has both partial
-PTE-mapping and PMD-mapping, then PMD mapping is unmapped fully. IIRC
-this case was not handled correctly before, the THP actually skipped
-deferred split queue. If so please add some description in the commit
-log.
-
-Otherwise the patch looks good to me. Reviewed-by: Yang Shi
-<shy828301@gmail.com>
-
-> +                       deferred_split_folio(folio);
->         }
->
->         /*
->
-> base-commit: 2541ee5668b019c486dd3e815114130e35c1495d
-> --
-> 2.43.0
->
 
