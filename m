@@ -1,135 +1,116 @@
-Return-Path: <linux-kernel+bounces-156652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 524CE8B0649
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:42:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 398548B064A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:43:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 719FDB26512
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:42:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 722DFB2693C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 890F1158A29;
-	Wed, 24 Apr 2024 09:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E7B7158DC1;
+	Wed, 24 Apr 2024 09:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C9g4xKEp"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IrxaxZu0"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F325158DBD;
-	Wed, 24 Apr 2024 09:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 865D3158D79;
+	Wed, 24 Apr 2024 09:43:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713951749; cv=none; b=NeRJzxc99VsWe2IERmQ9EAphrwc9TBL8IYZMxBeQS3aLrYxKQOnt9BU9271GG2Nvn6pgpbOsWCTU2ttviV9Mb/h2OydwMITWOH6ccI6HnzeRflM+HqHDvDNqcsUB9Pzs6WC7S8GWGYjwk7QFGiBNpiM2kd/8mxlHvcjP4QZz/Ig=
+	t=1713951792; cv=none; b=NvJ1ax9Zz5eYZNiEFIhxv6AZp7whoq8k7iMsf9ZuQWanY+2j4cHKOl1UqlAGofemfFh/iInmv7fyCM3o42myiJD43w11z4Q7pxPZSOhdcfKjlSo3kQLgQJfZVPd7oB0UTVHDYriFj5CYTU3pVCNyDO+bxJWUnE/V5rbYkQd06NI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713951749; c=relaxed/simple;
-	bh=54Ypi2YWKZZZ8mXiHCK6o59vKOH9tc6rq7rSTQM2KWo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Xad2HFObhgn1x06e4VODdjvphTdlJTehTdlaXyW9iqfRFR++uw5LpNtBUt0ozNHJTS/iN6HouZthxle+pVBKobsyfFfvSsjap2q3vwcjKVeC0uVuC7WrLa2EpE7uhURByNTOTNsmeDLhkaHtBBs/vBc6Kacqvy/2Xscfrw2yZCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C9g4xKEp; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3476dcd9c46so5055483f8f.0;
-        Wed, 24 Apr 2024 02:42:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713951745; x=1714556545; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hozz01DOL8TniYSNmk/0bph2Gyx1ufqAnTco042Ys5E=;
-        b=C9g4xKEpl3IrbqxToTA/ro6l0iYiKNZ+BpxpPb/BZ8mIBUBdCkN8rkSXdZC3V8xYSG
-         7pIgplcW+GKw5yfdpAUA/1W/I4cWMkKPvW+g32oz+6jUwinw0EuiRKuLVPcm7tXfp8t1
-         4d7o+nVnQF5QNJ/1pLqPZijQrw/MvqfIUjT4+ZOQPOrCKwedP3IMufF0cJ3INsSzcn+3
-         sVaCAlJUy0+oZK41HzFT1zKlqsWyc//p1EoGjqjwoMsncEqZdVjfDTZOkVahvm0bZaG4
-         YKnCT25jIeky8R/E00aJzXlZSl+NQ/yl2QWY9oqTSrcdcVvund9EHdt9JepJdINS3phO
-         bzCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713951745; x=1714556545;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hozz01DOL8TniYSNmk/0bph2Gyx1ufqAnTco042Ys5E=;
-        b=pqy5afIsAvdhOO35Nx1jsiYzSpoMGCwAhIctaKJNDleKlp7A3gh/2YjTeNQr5F03El
-         dzfUUBe0d2sB4aSeQ4Wlo+A9dT524HikFdS+gvqoNf0kE5ya6Cen9YqiXsOCLpu1j2Vl
-         gZXGB9UAnVx6R3yDINYrUU9UapB3zRehAvc+uqDd9N4fTk+qJkwZEDGnfHxBq3EMD6hq
-         mjXMIcJ7qrvbx7EDSrkmHMuXKOTw9jY1Ujfx8Hgy3kd6EKYW3OFUTqxcaAMd6Jtx5QuV
-         XqZ7kgZc5yAEqRr54KTJUB6spwWINyPhNDXlVVhMlwvQsneOmED5NtVSbeaUFkHklzHj
-         9laA==
-X-Forwarded-Encrypted: i=1; AJvYcCWYsNJtHqlQcAaDv9RaOkH/frrKloAmgJgfxTXl5DaCP+JZQyCdpo4mR2L9RY6VAy2FHktnoX0BmRUWOSm3csN5bizGzp17FVNruORwZRFlAV/rKlhfbHfduFBf65jJxbF4hotn
-X-Gm-Message-State: AOJu0YwVmp5tNcmp0+Z2jSFLP6/KJ0CxBOuGr0udZzOgWMvWwA5Fxp2u
-	B8QocufyIzVI8JTk5HwCQBNrQV/EbQhftJyMG6CN3MTe3W4V5nbw/VLO9bgx
-X-Google-Smtp-Source: AGHT+IFry4iQappguAVtadElpA1HZ/Ot1OseKqdtWnBdd6bsTbvInjhN53hmvfoIkjh3oOk9j3o3WA==
-X-Received: by 2002:a5d:4892:0:b0:34a:4eac:2e43 with SMTP id g18-20020a5d4892000000b0034a4eac2e43mr1309158wrq.68.1713951744933;
-        Wed, 24 Apr 2024 02:42:24 -0700 (PDT)
-Received: from rbolboac.. ([2a02:2f0e:320d:e800:6acb:a317:3d30:4165])
-        by smtp.gmail.com with ESMTPSA id a12-20020adfed0c000000b0034635bd6ba5sm16683339wro.92.2024.04.24.02.42.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 02:42:23 -0700 (PDT)
-From: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
-X-Google-Original-From: Ramona Gradinariu <ramona.gradinariu@analog.com>
-To: linux-kernel@vger.kernel.org,
-	jic23@kernel.org,
-	linux-iio@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	corbet@lwn.net
-Cc: Ramona Gradinariu <ramona.gradinariu@analog.com>
-Subject: [PATCH 1/1] docs: iio: adis16475: fix device files tables
-Date: Wed, 24 Apr 2024 12:41:52 +0300
-Message-Id: <20240424094152.103667-2-ramona.gradinariu@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240424094152.103667-1-ramona.gradinariu@analog.com>
-References: <20240424094152.103667-1-ramona.gradinariu@analog.com>
+	s=arc-20240116; t=1713951792; c=relaxed/simple;
+	bh=/65etkBmGsEVLl5U3yOh0Ou1arON2z5fXAP3GvQqTuc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mn85j7rB4j2BzifVYZJYIdwGej0Oo/237B1xe3Vl/Wh8PAyS44krbup4awEx8WcQTO9lkRWh6xw851hitEqkejHdDOnCdNDZV7S+aJrFC0lMYMqbxGUNinygTRnk2sUijRoZZFaoW+Di9hDIgtNBotQ6QApaiKhucRY/TClrPug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=IrxaxZu0; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=4/+2atuMXw1YbIUIXPrW9e5nnOBu2ouFfOljApBRNMk=; b=IrxaxZu0mztblG5X2rVAHfhx5L
+	HKUiLnRYlZsRor4VDhGBuxb+hHebhQ6/592Hbh9nuaauKQVN6HRRurLS8RxOir2nAKIFxUR55d5ps
+	6Th5U79HakGLbeM5AiCdJMkgMsoy37ILuTAOxPrvSZ/emPKq4wHWGe+d02A/3julAdl7Ir3muO+bn
+	8m1vQG0MHOemDUvOk8OQiUXrXYLSgwy/Im8ewxI8lYuu6b1eJVctstYfURgnfOoyG4dJZXTsVOqvv
+	9YXi+tZkqvPhbgKIV0XCHqi3GA8XyVNHfuNmC19n3LF4ga66Ilw0H4nzI9JgmEP1lLHij708zRFo+
+	v3Sd9+XA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rzZ9e-00000000dnn-1Rdk;
+	Wed, 24 Apr 2024 09:43:06 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 06D8E30040C; Wed, 24 Apr 2024 11:43:06 +0200 (CEST)
+Date: Wed, 24 Apr 2024 11:43:05 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Marius Fleischer <fleischermarius@gmail.com>
+Cc: Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	syzkaller@googlegroups.com, harrisonmichaelgreen@gmail.com
+Subject: Re: possible deadlock in __perf_event_task_sched_in
+Message-ID: <20240424094305.GT40213@noisy.programming.kicks-ass.net>
+References: <CAJg=8jw=5vKSE8ibuim0uFKQq=sA3sWULqM5auqKNJCq0=kqGg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJg=8jw=5vKSE8ibuim0uFKQq=sA3sWULqM5auqKNJCq0=kqGg@mail.gmail.com>
 
-Remove in_accel_calibbias_x and in_anglvel_calibbias_x device files
-description, as they do not exist and were added by mistake.
-Add correct naming for in_accel_y_calibbias and in_anglvel_y_calibbias
-device files and update their description.
+On Mon, Apr 22, 2024 at 11:44:27AM -0700, Marius Fleischer wrote:
+> Hi,
+> 
+> We would like to report the following bug which has been found by our
+> modified version of syzkaller.
+> 
+> We found this report (https://lkml.org/lkml/2021/9/12/333) that seems
+> to have a similar but different stack trace. We are unable to tell,
+> though, whether it is the same cause. We’d be grateful for your
+> advice.
 
-Fixes: 8243b2877eef ("docs: iio: add documentation for adis16475 driver")
-Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
----
- Documentation/iio/adis16475.rst | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+This is just the printk thing sucks again. Some WARN/printk got tripped
+in a non-suitable context.
 
-diff --git a/Documentation/iio/adis16475.rst b/Documentation/iio/adis16475.rst
-index 91cabb7d8d05..130f9e97cc17 100644
---- a/Documentation/iio/adis16475.rst
-+++ b/Documentation/iio/adis16475.rst
-@@ -66,11 +66,9 @@ specific device folder path ``/sys/bus/iio/devices/iio:deviceX``.
- +-------------------------------------------+----------------------------------------------------------+
- | in_accel_x_calibbias                      | Calibration offset for the X-axis accelerometer channel. |
- +-------------------------------------------+----------------------------------------------------------+
--| in_accel_calibbias_x                      | x-axis acceleration offset correction                    |
--+-------------------------------------------+----------------------------------------------------------+
- | in_accel_x_raw                            | Raw X-axis accelerometer channel value.                  |
- +-------------------------------------------+----------------------------------------------------------+
--| in_accel_calibbias_y                      | y-axis acceleration offset correction                    |
-+| in_accel_y_calibbias                      | Calibration offset for the Y-axis accelerometer channel. |
- +-------------------------------------------+----------------------------------------------------------+
- | in_accel_y_raw                            | Raw Y-axis accelerometer channel value.                  |
- +-------------------------------------------+----------------------------------------------------------+
-@@ -94,11 +92,9 @@ specific device folder path ``/sys/bus/iio/devices/iio:deviceX``.
- +---------------------------------------+------------------------------------------------------+
- | in_anglvel_x_calibbias                | Calibration offset for the X-axis gyroscope channel. |
- +---------------------------------------+------------------------------------------------------+
--| in_anglvel_calibbias_x                | x-axis gyroscope offset correction                   |
--+---------------------------------------+------------------------------------------------------+
- | in_anglvel_x_raw                      | Raw X-axis gyroscope channel value.                  |
- +---------------------------------------+------------------------------------------------------+
--| in_anglvel_calibbias_y                | y-axis gyroscope offset correction                   |
-+| in_anglvel_y_calibbias                | Calibration offset for the Y-axis gyroscope channel. |
- +---------------------------------------+------------------------------------------------------+
- | in_anglvel_y_raw                      | Raw Y-axis gyroscope channel value.                  |
- +---------------------------------------+------------------------------------------------------+
--- 
-2.34.1
 
+>  _printk+0xba/0xed kernel/printk/printk.c:2299
+>  ex_handler_msr.cold+0xb7/0x147 arch/x86/mm/extable.c:90
+>  fixup_exception+0x973/0xbb0 arch/x86/mm/extable.c:187
+>  __exc_general_protection arch/x86/kernel/traps.c:601 [inline]
+>  exc_general_protection+0xed/0x2f0 arch/x86/kernel/traps.c:562
+>  asm_exc_general_protection+0x22/0x30 arch/x86/include/asm/idtentry.h:562
+> RIP: 0010:__wrmsr arch/x86/include/asm/msr.h:103 [inline]
+> RIP: 0010:native_write_msr arch/x86/include/asm/msr.h:154 [inline]
+> RIP: 0010:wrmsrl arch/x86/include/asm/msr.h:271 [inline]
+> RIP: 0010:__x86_pmu_enable_event
+> arch/x86/events/intel/../perf_event.h:1120 [inline]
+> RIP: 0010:intel_pmu_enable_event+0x2d9/0xff0 arch/x86/events/intel/core.c:2694
+> Code: ea 03 49 81 cc 00 00 40 00 4d 21 f4 80 3c 02 00 0f 85 5b 0c 00
+> 00 44 8b ab 70 01 00 00 4c 89 e2 44 89 e0 48 c1 ea 20 44 89 e9 <0f> 30
+> 0f 1f 44 00 00 e8 1b 32 75 00 48 83 c4 20 5b 5d 41 5c 41 5d
+> RSP: 0018:ffffc900115af348 EFLAGS: 00010002
+> RAX: 0000000000530000 RBX: ffff888019dd6a50 RCX: 0000000000000188
+> RDX: 0000000000000002 RSI: ffffffff81029464 RDI: ffff888019dd6bc0
+> RBP: 0000000000000000 R08: 0000000000000001 R09: ffff888063e22ab7
+> R10: 0000000000000000 R11: 0000000000000001 R12: 0000000200530000
+> R13: 0000000000000188 R14: ffffffffffffffff R15: ffff888019dd6bb0
+>  x86_pmu_start+0x1cc/0x270 arch/x86/events/core.c:1520
+>  x86_pmu_enable+0x481/0xdf0 arch/x86/events/core.c:1337
+>  perf_pmu_enable kernel/events/core.c:1243 [inline]
+>  perf_pmu_enable kernel/events/core.c:1239 [inline]
+
+Most likely your VM is wonky and perf tries to poke an MSR that either
+doesn't exist or isn't emulated properly, who knows.
 
