@@ -1,243 +1,151 @@
-Return-Path: <linux-kernel+bounces-157208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EEC58B0E82
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:36:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 999588B0E78
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:34:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7B44B2BB47
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:34:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2700128316D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:34:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32922161338;
-	Wed, 24 Apr 2024 15:33:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B33AC1635D5;
+	Wed, 24 Apr 2024 15:33:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AjojJ9tv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yO6QmJH1"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3998B15EFDB;
-	Wed, 24 Apr 2024 15:33:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB2B1161B6B
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:33:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713972806; cv=none; b=jGtHUk3DDJ0GlVrrSpOQLtTnOQOSNMZHOgvJ9uveDnCem09gJrrl91d5+bDOC/mSuleGXLvB5ozn0PJWJsh76vKZv+R93n2ddOKgvLZsfkKaQ5yjVFDlpYfDIvQm7CbGCIlawDDy8ycatLP5+tPuxBBgETL4NiZTc2ehvKQjpRs=
+	t=1713972827; cv=none; b=IcDqwK1E3Qb7fCq76pLWTEskTcAUprIQLVohBLpcJDZ0RGE5MVjEtnFF0LOWY/qSvTlSW9o+jCfTUpgzoCi7h4cuiWD6Ov6m30pQFPibaupIQzMRpNPMCcAC5NKOSdTqcSf9QE9Tc5vI616PzRXgtQFEjFbCEXlJLl9e8VgElqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713972806; c=relaxed/simple;
-	bh=eKJo5gG7zxObnBLQvdDtMfVRz5h7TuiTzRdbx1XUkHM=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Q9mRk/gFAVqM9CFlAzgQ0yNpDzhvOtIiPi6q7CC9scVTAP9Nf52MKsRcHH59mI3/16QH5LCOwwZQEGdjvK6Dj1oGPf2/jcPk6Fb2X+lASUZS+zQoLfXL+q0IF4ERK/Rth0gYyYlT7LVPfuWs+DxwVnrFE0zTSJHMTo2rskdVuaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AjojJ9tv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07AC3C113CD;
-	Wed, 24 Apr 2024 15:33:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713972806;
-	bh=eKJo5gG7zxObnBLQvdDtMfVRz5h7TuiTzRdbx1XUkHM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AjojJ9tvZTHPOZR/m5u54kBnZ+v5gQoVRJnWRZb383Sp68Ye0+yfUFbFEmXumbr5M
-	 fU0B/yxWBm19YdtzwC5IAPD/LDrg3L7acdSS1QHmkF88ezMp4Cx1G007yY6CiUgS7+
-	 5qsWL2aYC1ehU1F3B12rZr+6awrFfyBSKJq++mg0YfXyrRRqS/d6R5FIgumS7w+T3i
-	 Wbg1yvs31EHYu3O2+FVP+9MhGxgi1l1CcsXkFotK9esfkKMe9wm/LKYaFYdDp9LDwX
-	 tOIIXPg6SyBNza2a5Z3gBjzNM00AJMrILFoS/KCwbC9ldyfTmKZQCyNGSNxRTvq1nH
-	 mQRYlqDADNIxw==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rzecd-007acO-2E;
-	Wed, 24 Apr 2024 16:33:23 +0100
-Date: Wed, 24 Apr 2024 16:33:22 +0100
-Message-ID: <86il06rd19.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra
-	<peterz@infradead.org>,
-	<linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>,
-	<x86@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	"Rafael J . Wysocki"
-	<rafael@kernel.org>,
-	Miguel Luis <miguel.luis@oracle.com>,
-	"James Morse"
-	<james.morse@arm.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe
- Brucker <jean-philippe@linaro.org>,
-	Catalin Marinas
-	<catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	<linuxarm@huawei.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov
-	<bp@alien8.de>,
-	"Dave Hansen" <dave.hansen@linux.intel.com>,
-	<justin.he@arm.com>,
-	<jianyong.wu@arm.com>
-Subject: Re: [PATCH v7 11/16] irqchip/gic-v3: Add support for ACPI's disabled but 'online capable' CPUs
-In-Reply-To: <20240424135438.00001ffc@huawei.com>
-References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
-	<20240418135412.14730-12-Jonathan.Cameron@huawei.com>
-	<20240422114020.0000294f@Huawei.com>
-	<87plugthim.wl-maz@kernel.org>
-	<20240424135438.00001ffc@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1713972827; c=relaxed/simple;
+	bh=im0LsoyR5JmTX5bx25GWvAq7Yqdo2jJ09USxUYdotcs=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=jxPiQnVSE6MdAVb1PhvBcUDMDbInt9obuW0nDw2gemlp34Lknt9JFNvs50zqe1tMeIGq/8RdATq9NMq2mFvUbMgLAHzDurwPtW1TkusKZdNTGVf05lPn0/NUyLgVfh+puGhwsbOOZOG+3L8fv39d60dRbMvQqNYImxJNfNp+R68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yO6QmJH1; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6ed25eb8e01so33169b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:33:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713972825; x=1714577625; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oBLx3rLWfM6jLhh3E0yucJs5ITLpqaNVOm7HyYGxb9Q=;
+        b=yO6QmJH1YwzX+MlB+3RQSSVdK/xVc3Oe4Zikek33sH7gVqxkS9P9cLvG1xPxwIMxpo
+         +IXHmA24K+/Jg/9hNWRiou5Y9AtI3xcLjRk/bO2QkfNHKjAfbeyBN8C01hKDbK4xXH4i
+         /gpvaNQpiXR72YyUFaqxRffRrL+O/srtGhUq6clqCgnUypPofzDYcYdHQKjIwJPRs15Z
+         t6FS+7NV/SAMsYtH+GjtC+Qz46VHXTiUfMzRsuISEma6TJbuAqFdAdU0ZmlqCqJw8Vjc
+         FdwwRwvIWRrzWbKO+4lHwmdJRy00U8ng2Id5QwH4Pxu5fNDDw3QhQGIXQuJuFrx1XY8a
+         3lXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713972825; x=1714577625;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oBLx3rLWfM6jLhh3E0yucJs5ITLpqaNVOm7HyYGxb9Q=;
+        b=MF5Ju6jYGpyRfu2WU+MxIqvQ918oIeXLxvYatrKJM4GZLzgbveKBShd7DoaD8hihpb
+         yRdE1i3gkAG4ouQ33ZLY/lrpds0hPyDuj1dhsHoV10v9lKzvxRh1JuTGIrFDiWQgBkar
+         pJWyw5Vbb93KJWkhw4DNmv7fspkIbqqWs14v663ox7lclO0vkM+/Uf1kX49QqCW7BOSg
+         XTH80YZ1pPH4RULsbTOI2kZ1G2ZnD7bZAPof0GzC3d2198Iw1jDzNBluQvkmETfNm5hT
+         SiNeLhWNPV+xEJy9HJjN/iybGUSbg7l8Z+pQsqAcKxd91eRToiM/iIC2H8MqqLT+ceH8
+         oahg==
+X-Forwarded-Encrypted: i=1; AJvYcCV9YpSRILLxlDidFPiX9Rm3+rlSGfjJQ6vSLMzau9sgMG85eZG2qtELfb69SQNGVQLoKUsatXdGmvTWyBbeBH8TiPks7tToG4BXSTx+
+X-Gm-Message-State: AOJu0YxuPs+G63cqKCAmGZedPJUJBDjsT3vWlNaiAAda35xgwPjselzx
+	EEyiKaMLQwBgPDEEvbWhyvg7CsfyIJWGx5wHfzjJA/RSBvpAI9iwtc0r7BbyA9yzQIN3whQv6aC
+	eBQ==
+X-Google-Smtp-Source: AGHT+IHRanNh8UKAP+r6FBzngsdsjXfKbEZNiE2LG/2ILik1bz7zM80jiWtBZGL7REkWCtfkC4u7AGdexeA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:14d0:b0:6ea:be19:3efb with SMTP id
+ w16-20020a056a0014d000b006eabe193efbmr378768pfu.3.1713972824837; Wed, 24 Apr
+ 2024 08:33:44 -0700 (PDT)
+Date: Wed, 24 Apr 2024 08:33:43 -0700
+In-Reply-To: <8e3ad8fa55a26d8726ef0b68e40f59cbcdac1f6c.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: Jonathan.Cameron@huawei.com, tglx@linutronix.de, peterz@infradead.org, linux-pm@vger.kernel.org, loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, linux@armlinux.org.uk, rafael@kernel.org, miguel.luis@oracle.com, james.morse@arm.com, salil.mehta@huawei.com, jean-philippe@linaro.org, catalin.marinas@arm.com, will@kernel.org, linuxarm@huawei.com, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, justin.he@arm.com, jianyong.wu@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Mime-Version: 1.0
+References: <20240423165328.2853870-1-seanjc@google.com> <20240423165328.2853870-4-seanjc@google.com>
+ <8e3ad8fa55a26d8726ef0b68e40f59cbcdac1f6c.camel@intel.com>
+Message-ID: <ZikmVzsvV-tt_pSs@google.com>
+Subject: Re: [PATCH 3/3] KVM: x86: Explicitly zero kvm_caps during vendor
+ module load
+From: Sean Christopherson <seanjc@google.com>
+To: Kai Huang <kai.huang@intel.com>
+Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, 24 Apr 2024 13:54:38 +0100,
-Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
-> 
-> On Tue, 23 Apr 2024 13:01:21 +0100
-> Marc Zyngier <maz@kernel.org> wrote:
-> 
-> > On Mon, 22 Apr 2024 11:40:20 +0100,
-> > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> > > 
-> > > On Thu, 18 Apr 2024 14:54:07 +0100
-> > > Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
-
-[...]
-
-> > >   
-> > > > +	/*
-> > > > +	 * Capable but disabled CPUs can be brought online later. What about
-> > > > +	 * the redistributor? ACPI doesn't want to say!
-> > > > +	 * Virtual hotplug systems can use the MADT's "always-on" GICR entries.
-> > > > +	 * Otherwise, prevent such CPUs from being brought online.
-> > > > +	 */
-> > > > +	if (!(gicc->flags & ACPI_MADT_ENABLED)) {
-> > > > +		pr_warn_once("CPU %u's redistributor is inaccessible: this CPU can't be brought online\n", cpu);
-> > > > +		set_cpu_present(cpu, false);
-> > > > +		set_cpu_possible(cpu, false);
-> > > > +		return 0;
-> > > > +	}  
+On Wed, Apr 24, 2024, Kai Huang wrote:
+> On Tue, 2024-04-23 at 09:53 -0700, Sean Christopherson wrote:
+> > Zero out all of kvm_caps when loading a new vendor module to ensure that
+> > KVM can't inadvertently rely on global initialization of a field, and add
+> > a comment above the definition of kvm_caps to call out that all fields
+> > needs to be explicitly computed during vendor module load.
 > > 
-> > It seems dangerous to clear those this late in the game, given how
-> > disconnected from the architecture code this is. Are we sure that
-> > nothing has sampled these cpumasks beforehand?
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  arch/x86/kvm/x86.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 44ce187bad89..8f3979d5fc80 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -92,6 +92,11 @@
+> >  #define MAX_IO_MSRS 256
+> >  #define KVM_MAX_MCE_BANKS 32
+> >  
+> > +/*
+> > + * Note, kvm_caps fields should *never* have default values, all fields must be
+> > + * recomputed from scratch during vendor module load, e.g. to account for a
+> > + * vendor module being reloaded with different module parameters.
+> > + */
+> >  struct kvm_caps kvm_caps __read_mostly;
+> >  EXPORT_SYMBOL_GPL(kvm_caps);
+> >  
+> > @@ -9755,6 +9760,8 @@ int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
+> >  		return -EIO;
+> >  	}
+> >  
+> > +	memset(&kvm_caps, 0, sizeof(kvm_caps));
+> > +
+> >  	x86_emulator_cache = kvm_alloc_emulator_cache();
+> >  	if (!x86_emulator_cache) {
+> >  		pr_err("failed to allocate cache for x86 emulator\n");
 > 
-> Hi Marc,
+> Why do the memset() here particularly?
+
+So that it happens as early as possible, e.g. in case kvm_mmu_vendor_module_init()
+or some other function comes along and modifies kvm_caps.
+
+> Isn't it better to put ...
 > 
-> Any firmware that does this is being considered as buggy already
-> but given it is firmware and the spec doesn't say much about this,
-> there is always the possibility.
-
-There is no shortage of broken firmware out there, and I expect this
-trend to progress.
-
-> Not much happens between the point where these are setup and
-> the point where the the gic inits and this code runs, but even if careful
-> review showed it was fine today, it will be fragile to future changes.
+> 	memset(&kvm_caps, 0, sizeof(kvm_caps));
+> 	kvm_caps.supported_vm_types = BIT(KVM_X86_DEFAULT_VM);
+> 	kvm_caps.supported_mce_cap = MCG_CTL_P | MCG_SER_P;
 > 
-> I'm not sure there is a huge disadvantage for such broken firmware in
-> clearing these masks from the point of view of what is used throughout
-> the rest of the kernel. Here I think we are just looking to prevent the CPU
-> being onlined later.
-
-I totally agree on the goal, I simply question the way you get to it.
-
+> ... together so it can be easily seen?
 > 
-> We could add a set_cpu_broken() with appropriate mask.
-> Given this is very arm64 specific I'm not sure Rafael will be keen on
-> us checking such a mask in the generic ACPI code, but we could check it in
-> arch_register_cpu() and just not register the cpu if it matches.
-> That will cover the vCPU hotplug case.
->
-> Does that sounds sensible, or would you prefer something else?
+> We can even have a helper to do above to "reset kvm_caps to default
+> values" I think.
 
+Hmm, I don't think a helper is necessary, but I do agree that having all of the
+explicit initialization in one place would be better.  The alternative would be
+to use |= for BIT(KVM_X86_DEFAULT_VM), and MCG_CTL_P | MCG_SER_P, but I don't
+think that would be an improvement.  I'll tweak the first two patches to set the
+hardcoded caps earlier.
 
-Such a 'broken_rdists' mask is exactly what I have in mind, just
-keeping it private to the GIC driver, and not expose it anywhere else.
-You can then fail the hotplug event early, and avoid changing the
-global masks from within the GIC driver. At least, we don't mess with
-the internals of the kernel, and the CPU is properly marked as dead
-(that mechanism should already work).
-
-I'd expect the handling side to look like this (will not compile, but
-you'll get the idea):
-
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index 6fb276504bcc..e8f02bfd0e21 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -1009,6 +1009,9 @@ static int __gic_populate_rdist(struct redist_region *region, void __iomem *ptr)
- 	u64 typer;
- 	u32 aff;
- 
-+	if (cpumask_test_cpu(smp_processor_id(), &broken_rdists))
-+		return 1;
-+
- 	/*
- 	 * Convert affinity to a 32bit value that can be matched to
- 	 * GICR_TYPER bits [63:32].
-@@ -1260,14 +1263,15 @@ static int gic_dist_supports_lpis(void)
- 		!gicv3_nolpi);
- }
- 
--static void gic_cpu_init(void)
-+static int gic_cpu_init(void)
- {
- 	void __iomem *rbase;
--	int i;
-+	int ret, i;
- 
- 	/* Register ourselves with the rest of the world */
--	if (gic_populate_rdist())
--		return;
-+	ret = gic_populate_rdist();
-+	if (ret)
-+		return ret;
- 
- 	gic_enable_redist(true);
- 
-@@ -1286,6 +1290,8 @@ static void gic_cpu_init(void)
- 
- 	/* initialise system registers */
- 	gic_cpu_sys_reg_init();
-+
-+	return 0;
- }
- 
- #ifdef CONFIG_SMP
-@@ -1295,7 +1301,11 @@ static void gic_cpu_init(void)
- 
- static int gic_starting_cpu(unsigned int cpu)
- {
--	gic_cpu_init();
-+	int ret;
-+
-+	ret = gic_cpu_init();
-+	if (ret)
-+		return ret;
- 
- 	if (gic_dist_supports_lpis())
- 		its_cpu_init();
-
-But the question is: do you rely on these masks having been
-"corrected" anywhere else?
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+The main reason I don't want to add a helper is that coming up with a name would
+be tricky.  E.g. "kvm_reset_caps()" isn't a great fit because the caps are "reset"
+throughout module loading.  "kvm_set_default_caps()" kinda fits, but they aren't
+so much that they are KVM's defaults, rather they are the caps that KVM can always
+support regardless of hardware support, e.g. supported_xcr0 isn't optional, it
+just depends on hardware.
 
