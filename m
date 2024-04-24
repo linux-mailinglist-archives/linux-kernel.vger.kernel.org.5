@@ -1,201 +1,212 @@
-Return-Path: <linux-kernel+bounces-157374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22C1A8B10BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:13:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52C4C8B10C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:16:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4628B1C23110
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:13:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAA58B293C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:15:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24F7716C6A5;
-	Wed, 24 Apr 2024 17:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E196C16D332;
+	Wed, 24 Apr 2024 17:15:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QB5gYiQP"
-Received: from mail-pj1-f68.google.com (mail-pj1-f68.google.com [209.85.216.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aDsUkAeb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E919115B576
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F18B815B576;
+	Wed, 24 Apr 2024 17:15:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713978780; cv=none; b=mgUR2cz5Q7eoeszuKLhQzzrcjvBJMen62ExWJHFKvgbLkve8CwjvW3oNFY+ieB/DGJaIus6gQDZdYSk7Gh2NgMsUC2daXy0OISdBuSrnMBjDBIRM+GuBafND+aqneFZx+7mRA3ta/6z9Hq7mjEFFdsV9T3+pcxKNwY6uhwjIYS4=
+	t=1713978949; cv=none; b=lZZKSED5hKSDEywelHb0fHo/2/CCOeRjjzCRJRJZZK2L7tFTi+KrTA8EkLkZFSGRusX84qeMLVPMq6xiPZIJqntYcL9y1qPQ+NQShKiWMFkS7YdJOhatChruAH+eWX9HwnXB8SHdWsh5cOyT5Pv3Wuo1Hgf2ZujdvD1YqNI6j+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713978780; c=relaxed/simple;
-	bh=xNgSO6vavVOEj+spHOS2Yy+4B4uhfmmasqmmAlwbHDU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uKHAyuloZ+fJCAilQp1vuOKjETwFsWxkFVTo1kNMeIZRdmc2KBB6EnDsRbmGSfNuwXVKaALES13EjYMulJMIlMgnpP+nvonxmHfnSFBONHTakZoEq+yaviyKF/COlc/HfjSbkq1J7XWOEVzM99uuj0IUMnrjKvOrkfNZ6rEbyFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QB5gYiQP; arc=none smtp.client-ip=209.85.216.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f68.google.com with SMTP id 98e67ed59e1d1-2ab791bce6fso115738a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 10:12:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713978778; x=1714583578; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dxegVweWqPE61Ew53tJ0ETeROIZotZvlHjzQVwAHEps=;
-        b=QB5gYiQPh1LsjY4SrHt0DgAy/FrJEAZ8TEyw6hb/W1JI5DZMrO+/kYdqXseyIhZE4t
-         CY13+TA8L7Pbn2Eyq1He96am8RbCT3ke/5qq3m/iO3VJxAs83nwhztn8N0HDUVyuJFIV
-         4rLINQrXz/ykDt8xoBZYSBEsO04HwAixL4h7092PQtQf8UFIfoPR2RTJbY/IZWRMfu2N
-         4b3LVfw8iaKQexnTF0gbJk/htT1xhgfI7diVbW3n0lnXg4Sc5XS+TrVn+4zUpssCTvD+
-         Ojq5Mr2wVuKJtRosI6R4AU5RadkBR2+8qKJeapLeKglGMpfR3TlhG4mxnDOkepT3QptT
-         PyVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713978778; x=1714583578;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dxegVweWqPE61Ew53tJ0ETeROIZotZvlHjzQVwAHEps=;
-        b=TORpHmMklCkzoaWYcc8NBetzCXZHiyfKlMBGspHpM9ywd/sQ83xq2zJ1Fxtvb4aaii
-         lwfaasU1DQ7VWwmNrov0Wh6eMe/Vju28rn/bc3tuJ2qdu1uqOsAV+VOxdRtvpZiNP1UG
-         L/Lsb6QWubfxd8TBefYHeK8HJE4W0uQSkUUKk6VdiHXXWNoIgcRGgZcRsiSVdCL1uH1Y
-         JHRYhGMVsdlOa2S5S36ypvQOofb4uxAP0/WcOFCpEXVEzbfreP1tifoWM1eAuE8aTie5
-         aGqQRFPZFPqxqrcJCyqedWF9x9eNuDgF1fcT57XhbB8CAv1+zOkK1dkWjIWiQSeEw44u
-         LKOw==
-X-Forwarded-Encrypted: i=1; AJvYcCXsuxkDCZgjPwKbwafjyL+/WuuTWh7qeIjxbl9OrKWmBhNer5sD3Y2iJY40xHQCOf1rNG8dIXcr84ROsLTW0M9KCqFaIHBxsFz9lx4o
-X-Gm-Message-State: AOJu0Yw8GqH/1rePxFT6RlkXuZVrys2Jm86du1c/npEg7TYiqLqNncOT
-	i+cLQVl6sn4NpN29Z6jEVEgtjXpALQS4mL/Jb1e1mV3MFMoSeSiZ
-X-Google-Smtp-Source: AGHT+IGwhhiu4+La+tG0OomZAWmseIzRLz3aE1iD1bwq3lJoIbnOV11f34aO0HHKjJs1M5qglz/5Zg==
-X-Received: by 2002:a17:90b:1c0d:b0:2ae:1316:a4a with SMTP id oc13-20020a17090b1c0d00b002ae13160a4amr3131444pjb.4.1713978778201;
-        Wed, 24 Apr 2024 10:12:58 -0700 (PDT)
-Received: from [192.168.3.172] ([122.231.145.235])
-        by smtp.gmail.com with ESMTPSA id d17-20020a170903209100b001e45c0d6ce6sm12165046plc.306.2024.04.24.10.12.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 10:12:57 -0700 (PDT)
-Message-ID: <1192295a-5b94-4c1a-b11c-7cd8ef0e62b7@gmail.com>
-Date: Thu, 25 Apr 2024 01:12:49 +0800
+	s=arc-20240116; t=1713978949; c=relaxed/simple;
+	bh=npblAWK7DFyXQvXOQl2/avJWn4QSgquFfcdlePygbCM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ADKLFO/u7YYeJQXBSdL1tsN940tcTJCW/Jd5f/w7/i8LKthZWXEbp7mojMGDWEXPk2oYQ9ktEvFps2mz80HQwtng3D0+bE+UhzHDHp1lchFchXs35rrZ2sl1pY2rqz7l0oRFeEilUS7A1/XJjVTFKPgQ00Br0EazQcmzlMxdNu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aDsUkAeb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FCF2C113CD;
+	Wed, 24 Apr 2024 17:15:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713978948;
+	bh=npblAWK7DFyXQvXOQl2/avJWn4QSgquFfcdlePygbCM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=aDsUkAebHzQS9aPZ5UAA9x/BNYa9s35Z/NlySbqBHZm3o5AhZ8lGrCMQroRBqjkDl
+	 CsRMtgywR3Orp+kkB1kzwY+16wR5fv5x2cZBFwqXGItuhX/nj7F7S9g9Guwb7+zHhG
+	 I45gi0R6iAS1q2kJvA6PqBKxiT6ZdYRFBvcwlqlcG6g78SwH0IAb8weJS8fFKrhj+J
+	 O9OSIZPDdN3DRCDjHlxeVs/bFJLpuDCaXfGswKQU83dSQEvrOcg1YcJBGd4XWRukIm
+	 D2NXtdjCK0MMGpNCVDh8qMOpTQdKA7FVPGp4yvpA+VyaMc7U4jEHJbTktdkULp9CuM
+	 wx1buCttxSuNw==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-518f8a69f82so26351e87.2;
+        Wed, 24 Apr 2024 10:15:48 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV8Pl7LOa0U1+AWCXmmH2BFgvljh40lUXDnm6oSZLiTy6pwXKlLfNPjiDrX1zrmjgvkkT/YGjGLsPoVu+tipHAFeAfRJb4EwhJW21UK0WHEk3w4VTI52VF0amQyCIa5kfEMXUS1B0Eh7HoNkdymhoHAjZ7I8BnAaK12uH2+aevZ4I92vmANV1fn
+X-Gm-Message-State: AOJu0Yyf6+pMQFLX0BuWGWPfQuOZJt8fjEGrBgHfhDsX3iYQRh1jBRvo
+	dSNcUr3flDWDMqL88JayIFSbXv99FZgW42tHGnqgs4kXjiLt8NEEm5rBFWAX/OC7pfIu5EG2sm3
+	GRwzyFMWQ9iW5DW/palKLi/OWWr0=
+X-Google-Smtp-Source: AGHT+IFByR9sAZYx99uDadvVjH6429abW58ugN7oeOIISGe6LBYkO77Hdh75n+FJj7K1fIY4Xvl2bvGC0kGF+f57Lbs=
+X-Received: by 2002:a19:ca08:0:b0:51a:f3b9:f774 with SMTP id
+ a8-20020a19ca08000000b0051af3b9f774mr2470034lfg.21.1713978946867; Wed, 24 Apr
+ 2024 10:15:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] mm: add per-order mTHP split counters
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, 21cnbao@gmail.com, ryan.roberts@arm.com,
- david@redhat.com, baolin.wang@linux.alibaba.com,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20240424135148.30422-1-ioworker0@gmail.com>
- <20240424135148.30422-2-ioworker0@gmail.com>
-Content-Language: en-US
-From: Bang Li <libang.linux@gmail.com>
-In-Reply-To: <20240424135148.30422-2-ioworker0@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240422112711.362779-1-mikko.rapeli@linaro.org>
+ <6e751959b9056884c1b9d3ba23e303d1737d8763.camel@HansenPartnership.com>
+ <ZiZhSfgeAdrbnaVL@nuoska> <CAC_iWjKA-xRH=3FK+=woXsB8AW4+_mVhJhUQnL8iFKxGzOwKiA@mail.gmail.com>
+ <e3038141413e25350f0e53496f7a7af1bf8419cf.camel@HansenPartnership.com>
+ <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com>
+ <e1da76ca4c7fe9319aaac5f8ff6eb46db433ec60.camel@HansenPartnership.com> <CAC_iWjLH=SDoTw_Pgr2hOKHkjEp_dKqwpUe9j6a=_WNW9UcxKw@mail.gmail.com>
+In-Reply-To: <CAC_iWjLH=SDoTw_Pgr2hOKHkjEp_dKqwpUe9j6a=_WNW9UcxKw@mail.gmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Wed, 24 Apr 2024 19:15:35 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGHT2wULF2zwNM_QxD29dRW_dtFX2sOvsLahPiRVB61qg@mail.gmail.com>
+Message-ID: <CAMj1kXGHT2wULF2zwNM_QxD29dRW_dtFX2sOvsLahPiRVB61qg@mail.gmail.com>
+Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
+To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, 
+	Mikko Rapeli <mikko.rapeli@linaro.org>, linux-efi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Lennart Poettering <lennart@poettering.net>, 
+	linux-integrity@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hey Lance,
-
-On 2024/4/24 21:51, Lance Yang wrote:
-
-> At present, the split counters in THP statistics no longer include
-> PTE-mapped mTHP. Therefore, this commit introduces per-order mTHP split
-> counters to monitor the frequency of mTHP splits. This will assist
-> developers in better analyzing and optimizing system performance.
+On Mon, 22 Apr 2024 at 17:22, Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
 >
-> /sys/kernel/mm/transparent_hugepage/hugepages-<size>/stats
->          split_page
->          split_page_failed
->          deferred_split_page
+> On Mon, 22 Apr 2024 at 17:31, James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
+> >
+> > On Mon, 2024-04-22 at 16:54 +0300, Ilias Apalodimas wrote:
+> > > Hi James
+> > >
+> > > On Mon, 22 Apr 2024 at 16:38, James Bottomley
+> > > <James.Bottomley@hansenpartnership.com> wrote:
+> > > >
+> > > > On Mon, 2024-04-22 at 16:32 +0300, Ilias Apalodimas wrote:
+> > > > > Hi all,
+> > > > >
+> > > > > On Mon, 22 Apr 2024 at 16:08, Mikko Rapeli
+> > > > > <mikko.rapeli@linaro.org>
+> > > > > wrote:
+> > > > > >
+> > > > > > Hi,
+> > > > > >
+> > > > > > On Mon, Apr 22, 2024 at 08:42:41AM -0400, James Bottomley
+> > > > > > wrote:
+> > > > > > > On Mon, 2024-04-22 at 14:27 +0300, Mikko Rapeli wrote:
+> > > > > > > > Userspace needs to know if TPM kernel drivers need to be
+> > > > > > > > loaded and related services started early in the boot if
+> > > > > > > > TPM device is used and available.
+> > > > > > >
+> > > > > > > This says what but not why.  We already have module
+> > > > > > > autoloading that works correctly for TPM devices, so why is
+> > > > > > > this needed?
+> > > > > > >
+> > > > > > > We do have a chicken and egg problem with IMA in that the TPM
+> > > > > > > driver needs to be present *before* any filesystem, including
+> > > > > > > the one the TPM modules would be on, is mounted so executions
+> > > > > > > can be measured into IMA (meaning that if you use IMA the TPM
+> > > > > > > drivers must be built in) but this sounds to be something
+> > > > > > > different. However, because of the IMA problem, most
+> > > > > > > distributions don't end up compiling TPM drivers as modules
+> > > > > > > anyway.
+> > > > > > >
+> > > > > > > Is what you want simply that tpm modules be loaded earlier?
+> > > > > >
+> > > > > > Yes, ealier is the problem. In my specific testing case the
+> > > > > > machine is qemu arm64 with swtpm with EFI firmware for secure
+> > > > > > boot and TPM support.
+> > > > > >
+> > > > > > Firmware uses TPM and does measurements and thus TPM event log
+> > > > > > is
+> > > > > > available on this machine and a bunch of other arm64 boards.
+> > > > > > Visible in early boot dmesg as TPMEventLog lines like:
+> > > > > >
+> > > > > > [    0.000000] efi: ESRT=0xf0ea5040 TPMFinalLog=0xf0ea9040
+> > > > > > RTPROP=0xf0ea7040 SMBIOS=0xf0ea3000 TPMEventLog=0xeb3b3040
+> > > > > > INITRD=0xeb3b2040 RNG=0xe5c0f040 MEMRESERVE=0xe5c0e040
+> > > > > >
+> > > > > > Different boards use different TPM HW and drivers so compiling
+> > > > > > all these in is possible but a bit ugly. systemd recently
+> > > > > > gained support for a specific tpm2.target which makes TPM
+> > > > > > support modular and also works with kernel modules for some TPM
+> > > > > > use cases but not rootfs encryption.
+> > > > > >
+> > > > > > In my test case we have a kernel+initramfs uki binary which is
+> > > > > > loaded by EFI firmware as a secure boot binary. TPM support on
+> > > > > > various boards is visible in devicetree but not as ACPI table
+> > > > > > entries. systemd currently detect TPM2 support either via ACPI
+> > > > > > table /sys/firmware/acpi/tables/TPM2 or TPM entry or via
+> > > > > > firmware measurement via
+> > > > > > /sys/kernel/security/tpm0/binary_bios_measurements
+> > > > > > .
+> > > > >
+> > > > > One corner case worth noting here is that scanning the device
+> > > > > tree won't always work for non-ACPI systems... The reason is that
+> > > > > a firmware TPM (running in OP-TEE) might or might not have a DT
+> > > > > entry, since OP-TEE can discover the device dynamically and
+> > > > > doesn't always rely on a DT entry.
+> > > > >
+> > > > > I don't particularly love the idea that an EventLog existence
+> > > > > automatically means a TPM will be there, but it seems that
+> > > > > systemd already relies on that and it does solve the problem we
+> > > > > have.
+> > > >
+> > > > Well, quite. That's why the question I was interested in, perhaps
+> > > > not asked as clearly as it could be is: since all the TPM devices
+> > > > rely on discovery mechanisms like ACPI or DT or the like which are
+> > > > ready quite early, should we simply be auto loading the TPM drivers
+> > > > earlier?
+> > >
+> > > This would be an elegant way to solve this and on top of that, we
+> > > have a single discovery mechanism from userspace -- e.g ls /dev/tpmX.
+> > > But to answer that we need more feedback from systemd. What 'earlier'
+> > > means? Autload it from the kernel before we go into launching the
+> > > initrd?
+> >
+> > Right, so this is another timing problem: we can't autoload modules
+> > *before* they appear in the filesystem and presumably they're on the
+> > initrd, so auto loading must be post initrd mount (and init execution)
+> > but otherwise quite early?
 >
-> Signed-off-by: Lance Yang <ioworker0@gmail.com>
-> ---
->   include/linux/huge_mm.h |  3 +++
->   mm/huge_memory.c        | 14 ++++++++++++--
->   2 files changed, 15 insertions(+), 2 deletions(-)
+> Exactly. But is that enough?
 >
-> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> index 56c7ea73090b..7b9c6590e1f7 100644
-> --- a/include/linux/huge_mm.h
-> +++ b/include/linux/huge_mm.h
-> @@ -272,6 +272,9 @@ enum mthp_stat_item {
->   	MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE,
->   	MTHP_STAT_ANON_SWPOUT,
->   	MTHP_STAT_ANON_SWPOUT_FALLBACK,
-> +	MTHP_STAT_SPLIT_PAGE,
-> +	MTHP_STAT_SPLIT_PAGE_FAILED,
-> +	MTHP_STAT_DEFERRED_SPLIT_PAGE,
->   	__MTHP_STAT_COUNT
->   };
->   
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 055df5aac7c3..52db888e47a6 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -557,6 +557,9 @@ DEFINE_MTHP_STAT_ATTR(anon_fault_fallback, MTHP_STAT_ANON_FAULT_FALLBACK);
->   DEFINE_MTHP_STAT_ATTR(anon_fault_fallback_charge, MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
->   DEFINE_MTHP_STAT_ATTR(anon_swpout, MTHP_STAT_ANON_SWPOUT);
->   DEFINE_MTHP_STAT_ATTR(anon_swpout_fallback, MTHP_STAT_ANON_SWPOUT_FALLBACK);
-> +DEFINE_MTHP_STAT_ATTR(split_page, MTHP_STAT_SPLIT_PAGE);
-> +DEFINE_MTHP_STAT_ATTR(split_page_failed, MTHP_STAT_SPLIT_PAGE_FAILED);
-> +DEFINE_MTHP_STAT_ATTR(deferred_split_page, MTHP_STAT_DEFERRED_SPLIT_PAGE);
->   
->   static struct attribute *stats_attrs[] = {
->   	&anon_fault_alloc_attr.attr,
-> @@ -564,6 +567,9 @@ static struct attribute *stats_attrs[] = {
->   	&anon_fault_fallback_charge_attr.attr,
->   	&anon_swpout_attr.attr,
->   	&anon_swpout_fallback_attr.attr,
-> +	&split_page_attr.attr,
-> +	&split_page_failed_attr.attr,
-> +	&deferred_split_page_attr.attr,
->   	NULL,
->   };
->   
-> @@ -3083,7 +3089,7 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
->   	XA_STATE_ORDER(xas, &folio->mapping->i_pages, folio->index, new_order);
->   	struct anon_vma *anon_vma = NULL;
->   	struct address_space *mapping = NULL;
-> -	bool is_thp = folio_test_pmd_mappable(folio);
-> +	int order = folio_order(folio);
->   	int extra_pins, ret;
->   	pgoff_t end;
->   	bool is_hzp;
-> @@ -3262,8 +3268,10 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
->   		i_mmap_unlock_read(mapping);
->   out:
->   	xas_destroy(&xas);
-> -	if (is_thp)
-> +	if (order >= HPAGE_PMD_ORDER)
->   		count_vm_event(!ret ? THP_SPLIT_PAGE : THP_SPLIT_PAGE_FAILED);
-> +	count_mthp_stat(order, !ret ? MTHP_STAT_SPLIT_PAGE :
-> +				      MTHP_STAT_SPLIT_PAGE_FAILED);
->   	return ret;
->   }
->   
-> @@ -3327,6 +3335,8 @@ void deferred_split_folio(struct folio *folio)
->   	if (list_empty(&folio->_deferred_list)) {
->   		if (folio_test_pmd_mappable(folio))
->   			count_vm_event(THP_DEFERRED_SPLIT_PAGE);
-> +		count_mthp_stat(folio_order(folio),
-> +				MTHP_STAT_DEFERRED_SPLIT_PAGE);
->   		list_add_tail(&folio->_deferred_list, &ds_queue->split_queue);
->   		ds_queue->split_queue_len++;
->   #ifdef CONFIG_MEMCG
+> >
+> > This might be quite a bit of work.  Logically, just moving the matching
+> > and loading code earlier might work, but we used to have a
+> > load_default_modules() at the end of init/main.c and it got removed
+> > (because it only eventually loaded elevator modules) everything is now
+> > loaded in it's various init routines, so to get, say, TPM ACPI modules
+> > loaded earlier, we'd have to run the ACPI device matching code earlier
+> > and so on for every other subsystem ...
+>
+> Being the devil's advocate here and as I stated I don't love this but ...
+> The kernel isn't technically doing anything wrong. We just expose an
+> *existing* EFI config table. The kernel also exposes filesystems so
+> people are free to do rm -rf *.
+> The fact that applications might use it as a means of "oh there's
+> probably a TPM" shouldn't be the end of the world. On top of that,
+> since it's an EFI config table we can keep it around and never break
+> any ABIs we create to userspace. If in the future we find a better
+> way, userspace can use that?
+>
+> So perhaps this is ok as long as make sure we understand why systemd
+> needs it that early?
+>
 
-My opinion can be ignored :). Would it be better to modify the 
-deferred_split_folio
-function as follows? I'm not sure.
+What I would like to know is which API systemd is attempting to use,
+and which -apparently- may never become available if no TPM is exposed
+by the kernel.
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c index 
-055df5aac7c3..e8562e8630b1 100644 --- a/mm/huge_memory.c +++ 
-b/mm/huge_memory.c @@ -3299,12 +3299,13 @@ void 
-deferred_split_folio(struct folio *folio) struct mem_cgroup *memcg = 
-folio_memcg(folio); #endif unsigned long flags; + int order = 
-folio_order(folio); /* * Order 1 folios have no space for a deferred 
-list, but we also * won't waste much memory by not adding them to the 
-deferred list. */ - if (folio_order(folio) <= 1) + if (order <= 1) 
-return; /* @@ -3325,8 +3326,9 @@ void deferred_split_folio(struct folio 
-*folio) spin_lock_irqsave(&ds_queue->split_queue_lock, flags); if 
-(list_empty(&folio->_deferred_list)) { - if 
-(folio_test_pmd_mappable(folio)) + if (order >= HPAGE_PMD_ORDER) 
-count_vm_event(THP_DEFERRED_SPLIT_PAGE); + count_mthp_stat(order, 
-MTHP_STAT_DEFERRED_SPLIT_PAGE); list_add_tail(&folio->_deferred_list, 
-&ds_queue->split_queue); ds_queue->split_queue_len++; #ifdef CONFIG_MEMCG thanks,
-bang
+Ideally, we should be able to take inspiration from the probe deferral
+work, and return -EAGAIN to convey that it is too early to signal
+either success or permanent failure.
 
+Exposing random firmware assets directly to user space to make guesses
+about this doesn't seem like a very robust approach to this issue.
 
