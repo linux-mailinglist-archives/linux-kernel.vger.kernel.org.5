@@ -1,269 +1,301 @@
-Return-Path: <linux-kernel+bounces-156062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE9468AFD69
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:44:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F70D8AFD73
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:51:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84AAC284119
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:44:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06990B22409
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:51:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AE214A23;
-	Wed, 24 Apr 2024 00:44:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09CA94C9B;
+	Wed, 24 Apr 2024 00:51:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CUD0FRpO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="GD0BBPhl";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="OYR84XU+"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157844A32
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 00:44:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713919466; cv=none; b=Yh47dc+ooKT99OeFEmlv4N4SfsNnkDEmUTM+e67b0sqEI+gZXJb8TdwjPvV1ZU9ap/Z2KBn7ucaVZC23Wq2HpHUHvDHf8BAYrkO9KIG9lf8hgI7Qt2RfLz8NRrp/lVM/kVw74yDS9QUeodliT/c/6aR9NmKE9paYbDhuBQ3j1pM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713919466; c=relaxed/simple;
-	bh=Vec3AELdicTqN0afSgEb3GoinhUyJSmXLRWU37K2U8k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P0GD+3pOQN6QjF8+OJ+DJcKnngHHYf1OVXXfRiYNaV7Q3Udayt4AkEe1OSBkxzQDIHrNuG7mO7cnwmJzUxo1HKur2VTGJ2kvkdNdb1sDT9auohiD9XoiD6KQw61jjYWSjFAPA6kKhCNyV2n+/OG02FP6PCQLb9JN2sDixyel3jI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CUD0FRpO; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713919464;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sqcm0DKufT9EZxiM+0OzeY88Sk4DHeOhk+mWIf/p4wo=;
-	b=CUD0FRpOBREHVvKTziLOVF0fwiZLSGMs2gG/8/+vxPUSda6frTNjaBGyp9Qmx2EjRYHCCN
-	l5n1/zhp1pYIOoUG7MOldhfv/NF5dwjq3HKT3/A3zqLprOizHC1NWFWvmflnC9B0e3U6Ez
-	ZesGc6ELp/cLhZ/B5MdaQUN0ivbV/ig=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-329-yaYLQIXhNlG86H2NRqmhDw-1; Tue, 23 Apr 2024 20:44:22 -0400
-X-MC-Unique: yaYLQIXhNlG86H2NRqmhDw-1
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-2a2c2b0d82aso7091884a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:44:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713919461; x=1714524261;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Sqcm0DKufT9EZxiM+0OzeY88Sk4DHeOhk+mWIf/p4wo=;
-        b=HiQ11rTvjtY4ayUhjZYadmkyWW4XRrZnuQ89fzFXOlw9xx4OTgryhdtd4uJjEcyimG
-         aIe2kMG8Yd2vOW+4PYhZB3keJb31vXb2hcn0aEYWRwM4E6qvLr6o5Q8UK9yM7BPVyzDz
-         0M+TZqbLS4rtsxMpSZG6d/dsTsjJPHzSX+q+KSqQXkY1ETCBm0RrY3ACoqHAlO6TX92l
-         lmq6vM18XZgidQaz0WDCQidQrGrd7oPUOoE7nsptn8r9mWM2M+uN84Jgcr4ynZyK/+2I
-         zu1rwk4g4fWDU4SYwpvmKujRZlH+LYTNLEv/4V0cckBPHMmyDhqPNeGF8KtR9mlD4gNF
-         ujag==
-X-Forwarded-Encrypted: i=1; AJvYcCXZtnEyNNm1sGI0KnLGleoZejHDNQZoJ6LB/n95vJx4LcCV1sCqbuUVqRaV1FtmxnJ1FU2BUPI8XKutt6vFHJa8T9Ki3diRXJ6Kmwps
-X-Gm-Message-State: AOJu0Yz9X2wtWaKOtJWcGc2+aDIZARBx4KpaHU/VyzZqtVdIV0yoklxl
-	P+xPGpMzQwdwLeV1s1WHk8zdkskIDk2eHKokAzDSL06Wx7WLA/EMLMO0XK8oYnr6/DGpIApyeB5
-	abBtg9EhKyvq47RRWodRfQdTboY/BDVksxei61VMlXZAPvCmKsjwqYSwq47DUZnqIOS2ZjVarlg
-	5BzUTMBVtfZxWK3n5wZ6y5R6QVd+ISKE6U2ZwE
-X-Received: by 2002:a17:90b:1103:b0:2a3:be59:e969 with SMTP id gi3-20020a17090b110300b002a3be59e969mr862693pjb.47.1713919461460;
-        Tue, 23 Apr 2024 17:44:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF0Gh2nYGbLqjL1EPBd4oIGhOxCQSJxaQwomV1RaYRhZ6h2DmJHdl+zUN+m5ZFLbiPKeZu77uBcGISXFd7KILg=
-X-Received: by 2002:a17:90b:1103:b0:2a3:be59:e969 with SMTP id
- gi3-20020a17090b110300b002a3be59e969mr862684pjb.47.1713919461083; Tue, 23 Apr
- 2024 17:44:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C6846AF;
+	Wed, 24 Apr 2024 00:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713919866; cv=fail; b=FJRTSUbmuXN92gOnkFGqN3JkmYGaDcAJcL0KMou4fPqUO/2MJQMCB0eCT8Z0pThYXl6Q7DBA+quyVb19fcD2ErbcasVXQTS1zqI62a8Z08PSRRqKeXiKMhimjf9MnFxU+CUVS7IGBf1ZVfmmyw/1QEk6RyjXva4qFRy7priabis=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713919866; c=relaxed/simple;
+	bh=mdGhMqSiQZerBk++Xe0KVYge4UF2kLAzEkKmT9z6O8c=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=R+2w5+NnW9m5A/QRGsFDVgIUrk3Q5tfCegQsIBJDt+WlRUfAsdOPr8z0m3qAR38mfNbN/8ZnOYOQkpZYttHbgIkJV0zgNkaDxIKkJbVHsRId9BRJIsWuyrZkLdDvIN7eu2uXG1CwRUXc+SfJ48vXsE5LXN+WAPMkcfWx32njFJo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=GD0BBPhl; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=OYR84XU+; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43NJdB9s017202;
+	Wed, 24 Apr 2024 00:50:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=mNTF1WGh2/KLRAMsF1z3mxFgoTJye32M8erqePALIvo=;
+ b=GD0BBPhlGDWTDpGATq2C5ejdDWmc/ywwL28PYrF2ehGuMnUB0OJZ9HKYvl8xW1DC7Y7F
+ nmqDyw290FPtDd8p61OmZZ0B4z3F+O5Thh573v+04tcfZFMS4h7AHphLZ/tyHxzkmI6h
+ lQ8K6bj7PJl4TgsNiqGcopGedtDMh1aiQl9/ZWAYJiNSMxcx2hZJcJGdXiXa/um2/WMJ
+ aoYZ508c/rY7hA/YioNvOFfS+xahFfq7Ry39s5wdcOtghBhSQvs2v5dH8pJGVRFFXfrI
+ 2t5A7qc0oxZZPdZZ3RIplXr72UYCNwHckXA8IPlwqipXI4FRT1wps0p6Ez6VixaniBGo MA== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xm4g4epf7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 24 Apr 2024 00:50:56 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43NMWvh0001710;
+	Wed, 24 Apr 2024 00:50:55 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xm458kbg5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 24 Apr 2024 00:50:55 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gCNmHV92NaxEqmwAsS+T/FR1hxT9lLnyfIGfSE6bnUAf7t5D6ruxA7rGouxCByA8e/zVKfCHt5yaQ0LHoz+j54b0MIqi2OtiPJV3L+IynM9o7NfzqgrAt2JqYPvh9qxODZG6Eq55pBieLeXtARPX4w774JvQgxf5kQYCTKF4I3R1S/CojM++E2exMreY08Y9PHwiOVgIwwyRSKH8DoVvEMYNO90vgWKrBRmxF4ka5v+L9aBEs0BRBLRbY98VUcdIe5co13c+Pxt/aOrVq0US5BRpEe0OVar2ZtBjq90zxxy+9r2xCIzd5WRN87wm7jIuZ/cdlzqSWc1LdpI5mRrfHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mNTF1WGh2/KLRAMsF1z3mxFgoTJye32M8erqePALIvo=;
+ b=VuOD5l90u+EVF9+sTGeG96RG6OFvYK07/yT0mjrSJW4/phqRXCEQyt6OjsD2auoxo0V/HS5NOhvpSNGyHtLqWuc5/K2Y97cYgxpBV5xy3qXRSOIPfGp1jK7KpPcwbLBB3Fhrd81FYMVoLpd9ebmT24pt8gy0G8A8ly0obVzaSD5T6tUnBPQX+hjAR58nFUyk6qeiqnhLjp4uvAA6r/B3XYdD5Wqn7WuUW4PEYQOlBfRJ3tWvEdAkY+wxanprPF4kD546nRXqreISToIL59YcfU652My3vmx7eiAdG72PjzLo/100JRlMQFg3Tq64tPhHDgA9WqZcWhjk2emtX81MCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mNTF1WGh2/KLRAMsF1z3mxFgoTJye32M8erqePALIvo=;
+ b=OYR84XU+FQQwvbVWsR29/YBlYouKNveorMJqqA+JB1Uxr4mysFq9dcKmoBu+H+Qsj8hJGwHvUyupaOKhAKnJIogV9B7YS61YtV8uAbdgQQjzbkacVvIK3lFebSKrXWCZjwtey90ap+yndGxb9goAmwVXtI0rUrRjErQS+fs8ik0=
+Received: from DS7PR10MB5280.namprd10.prod.outlook.com (2603:10b6:5:3a7::5) by
+ CH3PR10MB6689.namprd10.prod.outlook.com (2603:10b6:610:153::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Wed, 24 Apr
+ 2024 00:50:52 +0000
+Received: from DS7PR10MB5280.namprd10.prod.outlook.com
+ ([fe80::c7cc:f6b7:386e:fd5d]) by DS7PR10MB5280.namprd10.prod.outlook.com
+ ([fe80::c7cc:f6b7:386e:fd5d%6]) with mapi id 15.20.7472.045; Wed, 24 Apr 2024
+ 00:50:52 +0000
+Message-ID: <de2fa68c-e815-4b21-9b8c-f1893fe49b47@oracle.com>
+Date: Tue, 23 Apr 2024 20:50:45 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 3/3] x86: KVM: stats: Add a stat counter for GALog events
+To: Sean Christopherson <seanjc@google.com>, Chao Gao <chao.gao@intel.com>
+Cc: kvm@vger.kernel.org, pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
+        mark.kanda@oracle.com, suravee.suthikulpanit@amd.com,
+        mlevitsk@redhat.com
+References: <20240215160136.1256084-1-alejandro.j.jimenez@oracle.com>
+ <20240215160136.1256084-4-alejandro.j.jimenez@oracle.com>
+ <ZhTj8kdChoqSLpi8@chao-email>
+ <98493056-4a75-46ad-be79-eb6784034394@oracle.com>
+ <ZhkQsqRjy1ba+mRm@chao-email> <Zh7E3yIYHYGTGGoB@google.com>
+Content-Language: en-US
+From: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
+In-Reply-To: <Zh7E3yIYHYGTGGoB@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0242.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1a7::13) To DS7PR10MB5280.namprd10.prod.outlook.com
+ (2603:10b6:5:3a7::5)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412133017.483407-1-lulu@redhat.com> <20240412133017.483407-4-lulu@redhat.com>
- <20240417052723-mutt-send-email-mst@kernel.org> <CACGkMEtv56TSaA=W337hFU3VALfbrGMcEdu25O4Ecx7guUacyQ@mail.gmail.com>
- <20240422160348-mutt-send-email-mst@kernel.org> <CACGkMEsj1aYBBO+kh5wmTk9vh=QRj50FHPFZ6QX3gs1Jh+XQdA@mail.gmail.com>
- <20240423043538-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20240423043538-mutt-send-email-mst@kernel.org>
-From: Jason Wang <jasowang@redhat.com>
-Date: Wed, 24 Apr 2024 08:44:10 +0800
-Message-ID: <CACGkMEvbrH-ERbr-4DVpvK6+V_8Bh79YdYTdfWKhk5ziwcLDjg@mail.gmail.com>
-Subject: Re: [PATCH v5 3/5] vduse: Add function to get/free the pages for reconnection
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Cindy Lu <lulu@redhat.com>, linux-kernel@vger.kernel.org, 
-	virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR10MB5280:EE_|CH3PR10MB6689:EE_
+X-MS-Office365-Filtering-Correlation-Id: 75f8a8fa-b012-49fe-8bcc-08dc63f89769
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	=?utf-8?B?alVHamJjZVg5Z2pySVpPR1lycExzRnorVWkzUGp0bmhDNG9OT3lZR3FkblVs?=
+ =?utf-8?B?dUNtejVDNnRvdnNIQUx3RHYvQ1BkR2V1U2dyNkxyUGVtNGVyYVZ6KzNiWXFK?=
+ =?utf-8?B?T0JnTWRsRzI2emdFZ1RVQXdtS3UvQnRDSzh2bjhWc29ZTHZXL3crZFNoUHBh?=
+ =?utf-8?B?ZEQ0cThWRTRlMURkVXYzRHlqR3F6ajQ3ZDZGWC90c3orN2VIZUNkbkJhQll2?=
+ =?utf-8?B?emw0QWdwS2d5cStjbldrQ0tMdXRHU3VJbWVLNVRVcE5HaU56Q21MbGlVeGFa?=
+ =?utf-8?B?ckNLbTlrRkdKUXJ0RE9sOUlUbFFEcUZNdjRweXJGalVuZ3NQdlZkOTNhZWVZ?=
+ =?utf-8?B?N2FkVWdKV1UrOEVJS1NnS0dsdHF4OGlyL1lSZE00ZEVlWWFSa29lSkdVemEx?=
+ =?utf-8?B?Mm9lbG1tU0VnYmlOTnBpNnFiMkRYbDJteUR3VWNjaFRDd1NqdnEwVnVHaFJS?=
+ =?utf-8?B?QktjY2czNmY3dHdLWU5peEpsNFRZM2Q2a3JhQzRNQTA5ZGZuMkNRejk3bGpD?=
+ =?utf-8?B?QTdyeDVwUGwrb3BwMjdlTTBuNkY1dmN4WE9oYTVJM0t2ZTJXR0tHcjRUUGQz?=
+ =?utf-8?B?aTBkYUlsbFNtcDkxaStMeDUybTlnRHFxL2psS0pwZ3M3dHpHRlplaysvcmxQ?=
+ =?utf-8?B?ckVoM05HR3BaVVZ3UFFjMkZWZEtRTnhpdGJiejZ1d1QxblRJYWNvQUtnZk8y?=
+ =?utf-8?B?a2lMa25DMk9TNjVReDA0Y0FFc1R3SHp3d2VQaHB3SDlQQTI4bU8wTm9ETnYy?=
+ =?utf-8?B?R0IrNHNSc0M1QzMyTUpCRzdhMVF1RHB1MDh5QXJWRWRibG1FN0pUY2VNM1lY?=
+ =?utf-8?B?MXhBOExLTHpkS3Q5ZDM1NEtDcUpkU0RYMldYSTN3S2YyZDl1VjFnUWdHOTQr?=
+ =?utf-8?B?TWhnclJQaVlBWTVweE1HV3pBc0VZR0NhN2hIYVo5Y0NuYnlmalNSemx4dmZx?=
+ =?utf-8?B?S0RuUlJSVVF4cEdjNENZUnNPSkIvT0ZSaHhHNU9HbkVFeFFIcG5rZmtKdElG?=
+ =?utf-8?B?U0tJZG1PbFJsZUxMbENBZkV0c25JejhtTklkbHlrajljSW9QbTRhd2tXeHc1?=
+ =?utf-8?B?TERtMXRvU2lvOUxuRVBRRDVmNkQyUEYxWHZ1cEpUdGk4NHQxWFFhMkFoVFJR?=
+ =?utf-8?B?MXVLRlp6RWR4Mk1mN2UwYmJtNnRPNytHY0QySlhZdmp0TEFsUWFGTXBrTFFX?=
+ =?utf-8?B?UUlmSUhiRy9SdHRKSGxnOUZVNkJRNTdBTXNQWEVxRlhtZy9SS2o2L29TN2Jh?=
+ =?utf-8?B?d1ZLMk0vVGhaVmZEYWVvcnpDM0t6TTl4R0VOQnhYNjc5OVYyeENRdUF1cm4r?=
+ =?utf-8?B?ak16ZGl3ai91YnB3blcxQTdTeEJ6c1hjVldKY3FvczA5dlR6UFAyaVZVOHNQ?=
+ =?utf-8?B?cDVzMGttb1pmYkJVd29EQ0xVSFpEMlZCalV0ZWpqTStDYmxYSzBIUG9zendB?=
+ =?utf-8?B?TUdzZDE4UTJyTDFjUVJWWGM2MWFRVFRDdjlDZDhRNlZLdWQyTzl0WFBxOThq?=
+ =?utf-8?B?bFYreVJ2TmNrelVDVnhZcUJaRlErTU9udkNRZGxLL0FZT0lROWk2ZG5mZmJz?=
+ =?utf-8?B?Zzh5Y2FWQ1UrTFhGSjByS2doM2J2UUZXR1daZ2drZGF5NHJTK1A2YXhRSnRL?=
+ =?utf-8?B?ZkZJUFRRdjFNcS9tTDhGbjhlSEVQYXhFclc1b05MWGlIRGJ0RjIxS1hmR2Nn?=
+ =?utf-8?B?aWRmUGR2L2U2dTFtOWQ2cWFuc2hsY0V4aVhpS2ZRVEVjamRsRmlmYXBBPT0=?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR10MB5280.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?TmVXOHcvakQ1c2lLVnVCUXB0bWxxMkRHSXRDUytQOHViYS9vYXJQeDgrdENY?=
+ =?utf-8?B?eDRBeXBndnkvbXVINVh0VE5kM3RMKytPU3FFeklWTzkwMFA5SDVKM2hSVko5?=
+ =?utf-8?B?aVFxTmdoQlZ5ckdRL0dwZ3ZsYWtjNXJONjVNUlpUVnNXMTFENVlCSjF1bTRW?=
+ =?utf-8?B?cG9JTFFXaFBVeEdYOHlLWDFhNXJtL2lLUWlYWmFxVEduWlltTDVkZXpXdElo?=
+ =?utf-8?B?dFBlamtLbG5HeWZsbHhWUVh0QWp5OFFFVVovTEhzSnlTaktaUTE1cmtOOG5F?=
+ =?utf-8?B?L0FNbWphRUVqTG5GVlIvZ29taU9QR0t5K3cyMDRhTS9oSVB1T0oreCtzQmph?=
+ =?utf-8?B?K2lFZWYzMXVqSlpSeWhnR2VDUllsZGNKdDdpMCtRampjTnh3VXZmVW1nN0VD?=
+ =?utf-8?B?K2NqRWtpakw4V0h5TmtGb2JGa04rOXJmR1FPY0FZY2ZwdHZWNVFwcDFNY0F0?=
+ =?utf-8?B?b3lFSWpiVG5IeGdEWFVMb3RVL0hJaW1ZVldqejdQbC9PY2VqRG4yTm5DaERt?=
+ =?utf-8?B?SFJwR2NoeEZEaVFSYUlBTDR1d1NIdlRpZDROTDdlditlQ0NRR2pteThEb1Zj?=
+ =?utf-8?B?ZEE2ei82VDBtNVhTWEsxWlA2clRGWWZNb2oyT3QvRWo5dzVvNENqb0RwdlZE?=
+ =?utf-8?B?VlFnRVY0OXBUWlMyNUdrZHE1aXJFMHA3Y1VuYzI1bk94MU1RdmZpREtlSi9u?=
+ =?utf-8?B?RDBjSmJITGVkYWhKWnQ3b0FnRkN6d2lIRzMrb2xiOVZIcVdNSWJuZGhqcm1U?=
+ =?utf-8?B?eTJENEpRSVlQYU1JM1ViL3ZKOHR0c0E0YlBEa1Fwb3R3dEtiODMvSlVlaktS?=
+ =?utf-8?B?ZGZhYmFGQ3grZlgzcG9jeU8rK3A2UUFVZHpXN3lKcUNWNkZQcG95OERVTjRh?=
+ =?utf-8?B?R2NhbUo5Rk5YajZoWW1wNW1xVHpFV0RrNjhsWDM2UVk1WnQrQXB4NXBFMmlN?=
+ =?utf-8?B?Sk1rTHpJWVpLOXg5QW9NVjB2VERjaDJGUnQvNHg0UjJkeFZWRnpseFY1YWUy?=
+ =?utf-8?B?bDZUYmRNZ2dreFl4OVBJcys4MXlQSm4wVGFRYy9jUnQ0dWtkdklhbW1tNDBp?=
+ =?utf-8?B?bHhFWVV6SXMzNitzSTRWMEdGczBoV1pIRkNGYy9SYk5VR09jRytUdjhyTCtZ?=
+ =?utf-8?B?aDdEM2dKSUJ4V1BGZGhTd201NSs0WTV2YWU1NFpZTFpVZFRIV1d6WlVseVEv?=
+ =?utf-8?B?VEdkK1lNODJEaFl4aGJpV2VyRFNvb3AvOTR5emVic1NjNU8rcVFyaloyQ0ln?=
+ =?utf-8?B?dE96d3Nuc3NQNkpNMEtCVkZ2RCtqL09QY2N1NHY3YlBNN0Z3WThzS3lkQ3Fr?=
+ =?utf-8?B?VEhVc2dFQm9adlJJZzFRNFBOcm8ySXJvUVU3OUE4aG9zQXp2UnlxYjI2MGpu?=
+ =?utf-8?B?OEIyaDJjYnJVZjZyeW1ybjl6QWF5R1RxTmFVRmxJSHhSRjluWHQyVHRWQ1Fi?=
+ =?utf-8?B?Q3NmVllLRCtJVmJhWlord0N4NVlRZDVsbWZoVlEyZTd1VGljNzlZRm5Xb0Fw?=
+ =?utf-8?B?ZzdkTEV0Ymh0aDFvRmVpUGF1SEI2eGJQeGNUTTdyalBFR2kzakJQeGJoTC84?=
+ =?utf-8?B?WCs4TFhzWGNneUxKMGV3L0JlQkZXTk50MHlnbDB0bnp3bU5NdUk5MTFsR3JZ?=
+ =?utf-8?B?L3U2WVg5QmxDbUxRM09BMHdtL3RiTGN2UGtodkI2VHdiWEJQeXRRbmRtSXFF?=
+ =?utf-8?B?TnU5Zk13MVdJK3BkbHMxN2dZSlo2Y2JlMHNod3Nsa2p5Z0hDeUJscGE1OUIz?=
+ =?utf-8?B?R1dUcGp5QXVjRFlKUUxrRE5qT2JFZDJ0YXVPbWkyUXlmSHNoR0pycGVWWDRT?=
+ =?utf-8?B?S2xyU0NUYWIyeU84ZHhSQ0F0UXpqWFVEVWtTR3lQUndkTkQrdkdLRlNIU2Zh?=
+ =?utf-8?B?SGZmdEw0OXhoRkQ0ZUVicWxuRlJiOHdYSDV6SVJjNThoTkpjTTVuSVRXZWMz?=
+ =?utf-8?B?bjU1UDk1VjM1b3Z5bUJjTGpqTmtGSVFzTHQvU0k5NUZzbkIraDhtVWVGSW56?=
+ =?utf-8?B?QjFCZlhxOU4rY1dMUVlvTnRub2k5QWIxQ2wzUlpJWER0dDlTMXNrTDEzY0lW?=
+ =?utf-8?B?OU1oVU9BTVdMNGFXRzVTdnJtMUlhOHpTVEZmTURoaXUybjJmTEl5NENDUThx?=
+ =?utf-8?B?YmVaMXlOUEpudVZrVG1rV0dybjJtVEJYSnl6d01nd3pnQjR6MCtoeXVZdzk2?=
+ =?utf-8?B?RUE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	+2FP0NwZ3AXhDlcXIPCrH7RSrFTIWmXXvYzMq7YqaRFJzi1/9hHR5kiqtmxpzfSdhcGkNfcV5Aow3xSm5h9dvJO7GEJ3P6nemKQxXyoXZ1/05bmOZqwvpUv4KKqdYbSLojipGhpTdJwdMPea0Tc84jOviZgvcIMtpxyHDFKX8YydXn2X2DgfHpgfr2ixr2ro0lqx3jY8wbTQmBkmYsupHSilH4O0BUSGfa8ml4GTh+iF+5xsWdcil+lkYpOcb40PT5EdCjagNiX0c45OSBf7apLb/ZZOr/MdY/p0uiweUZe/57VYoW8nCK2VPJOXaM55qLe68bZhhrA99OaCmZcTqAuBmjc4GzmHH/i+rfv0Ii57qyj/kMWV+i39aBOH4nkJohs0Je6SIpG5U+/6nLqG2RV2dLtzrFPp2jt30WY9WnY8iSyxl/Dbwjo+HHlcMEgacMARHjWsjYdOhaJy0gJRUbiX5llzUPCpyogft4osUKjebh4djUJVdiK/mkANCQYsbp5fhXe8QL0DGISTfa2Mg8QdcLFuQIhLvQacEi0nQqpzPHexpX2hK9hQBlRcwttnNS9vGr6u8YvOGHV2qgD8qqFS0p3FhnDtD6CrxThAcV0=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75f8a8fa-b012-49fe-8bcc-08dc63f89769
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR10MB5280.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 00:50:52.5433
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ke7ROWxSc7dDyXH6MuoqJnkE4hqecxvL7B2jJdTD2PfzSQDJ6bLtZ5HrKmw/ctafYee5d1EvNBRBJI3mKJ8BX9BBUVKHCGOwXinNenrNBag=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB6689
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-23_20,2024-04-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404240003
+X-Proofpoint-GUID: UwCIkDyjfBbj8Nasfd7YZgN5nuCAXu8_
+X-Proofpoint-ORIG-GUID: UwCIkDyjfBbj8Nasfd7YZgN5nuCAXu8_
 
-On Tue, Apr 23, 2024 at 4:42=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
- wrote:
->
-> On Tue, Apr 23, 2024 at 11:09:59AM +0800, Jason Wang wrote:
-> > On Tue, Apr 23, 2024 at 4:05=E2=80=AFAM Michael S. Tsirkin <mst@redhat.=
-com> wrote:
-> > >
-> > > On Thu, Apr 18, 2024 at 08:57:51AM +0800, Jason Wang wrote:
-> > > > On Wed, Apr 17, 2024 at 5:29=E2=80=AFPM Michael S. Tsirkin <mst@red=
-hat.com> wrote:
-> > > > >
-> > > > > On Fri, Apr 12, 2024 at 09:28:23PM +0800, Cindy Lu wrote:
-> > > > > > Add the function vduse_alloc_reconnnect_info_mem
-> > > > > > and vduse_alloc_reconnnect_info_mem
-> > > > > > These functions allow vduse to allocate and free memory for rec=
-onnection
-> > > > > > information. The amount of memory allocated is vq_num pages.
-> > > > > > Each VQS will map its own page where the reconnection informati=
-on will be saved
-> > > > > >
-> > > > > > Signed-off-by: Cindy Lu <lulu@redhat.com>
-> > > > > > ---
-> > > > > >  drivers/vdpa/vdpa_user/vduse_dev.c | 40 ++++++++++++++++++++++=
-++++++++
-> > > > > >  1 file changed, 40 insertions(+)
-> > > > > >
-> > > > > > diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/=
-vdpa_user/vduse_dev.c
-> > > > > > index ef3c9681941e..2da659d5f4a8 100644
-> > > > > > --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> > > > > > +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> > > > > > @@ -65,6 +65,7 @@ struct vduse_virtqueue {
-> > > > > >       int irq_effective_cpu;
-> > > > > >       struct cpumask irq_affinity;
-> > > > > >       struct kobject kobj;
-> > > > > > +     unsigned long vdpa_reconnect_vaddr;
-> > > > > >  };
-> > > > > >
-> > > > > >  struct vduse_dev;
-> > > > > > @@ -1105,6 +1106,38 @@ static void vduse_vq_update_effective_cp=
-u(struct vduse_virtqueue *vq)
-> > > > > >
-> > > > > >       vq->irq_effective_cpu =3D curr_cpu;
-> > > > > >  }
-> > > > > > +static int vduse_alloc_reconnnect_info_mem(struct vduse_dev *d=
-ev)
-> > > > > > +{
-> > > > > > +     unsigned long vaddr =3D 0;
-> > > > > > +     struct vduse_virtqueue *vq;
-> > > > > > +
-> > > > > > +     for (int i =3D 0; i < dev->vq_num; i++) {
-> > > > > > +             /*page 0~ vq_num save the reconnect info for vq*/
-> > > > > > +             vq =3D dev->vqs[i];
-> > > > > > +             vaddr =3D get_zeroed_page(GFP_KERNEL);
-> > > > >
-> > > > >
-> > > > > I don't get why you insist on stealing kernel memory for somethin=
-g
-> > > > > that is just used by userspace to store data for its own use.
-> > > > > Userspace does not lack ways to persist data, for example,
-> > > > > create a regular file anywhere in the filesystem.
-> > > >
-> > > > Good point. So the motivation here is to:
-> > > >
-> > > > 1) be self contained, no dependency for high speed persist data
-> > > > storage like tmpfs
-> > >
-> > > No idea what this means.
-> >
-> > I mean a regular file may slow down the datapath performance, so
-> > usually the application will try to use tmpfs and other which is a
-> > dependency for implementing the reconnection.
->
-> Are we worried about systems without tmpfs now?
 
-Yes.
 
->
->
-> > >
-> > > > 2) standardize the format in uAPI which allows reconnection from
-> > > > arbitrary userspace, unfortunately, such effort was removed in new
-> > > > versions
-> > >
-> > > And I don't see why that has to live in the kernel tree either.
-> >
-> > I can't find a better place, any idea?
-> >
-> > Thanks
->
->
-> Well anywhere on github really. with libvhost-user maybe?
-> It's harmless enough in Documentation
-> if you like but ties you to the kernel release cycle in a way that
-> is completely unnecessary.
+On 4/16/24 14:35, Sean Christopherson wrote:
+> On Fri, Apr 12, 2024, Chao Gao wrote:
+>> On Tue, Apr 09, 2024 at 09:31:45PM -0400, Alejandro Jimenez wrote:
+>>>
+>>> On 4/9/24 02:45, Chao Gao wrote:
+>>>>> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+>>>>> index 4b74ea91f4e6..853cafe4a9af 100644
+>>>>> --- a/arch/x86/kvm/svm/avic.c
+>>>>> +++ b/arch/x86/kvm/svm/avic.c
+>>>>> @@ -165,8 +165,10 @@ int avic_ga_log_notifier(u32 ga_tag)
+>>>>> 	 * bit in the vAPIC backing page. So, we just need to schedule
+>>>>> 	 * in the vcpu.
+>>>>> 	 */
+>>>>> -	if (vcpu)
+>>>>> +	if (vcpu) {
+>>>>> 		kvm_vcpu_wake_up(vcpu);
+>>>>> +		++vcpu->stat.ga_log_event;
+>>>>> +	}
+>>>>>
+>>>>
+>>>> I am not sure why this is added for SVM only.
+>>>
+>>> I am mostly familiar with AVIC, and much less so with VMX's PI, so this is
+>>> why I am likely missing potential stats that could be useful to expose from
+>>> the VMX  side. I'll be glad to implement any other suggestions you have.
+>>>
+>>>
+>>> it looks to me GALog events are
+>>>> similar to Intel IOMMU's wakeup events. Can we have a general name? maybe
+>>>> iommu_wakeup_event
+>>>
+>>> I believe that after:
+>>> d588bb9be1da ("KVM: VMX: enable IPI virtualization")
+>>>
+>>> both the VT-d PI and the virtualized IPIs code paths will use POSTED_INTR_WAKEUP_VECTOR
+>>> for interrupts targeting a blocked vCPU. So on Intel hosts enabling IPI virtualization,
+>>> a counter incremented in pi_wakeup_handler() would record interrupts from both virtualized
+>>> IPIs and VT-d sources.
+>>>
+>>> I don't think it is correct to generalize this counter since AMD's implementation is
+>>> different; when a blocked vCPU is targeted:
+>>>
+>>> - by device interrupts, it uses the GA Log mechanism
+>>> - by an IPI, it generates an AVIC_INCOMPLETE_IPI #VMEXIT
+>>>
+>>> If the reasoning above is correct, we can add a VMX specific counter (vmx_pi_wakeup_event?)
+>>> that is increased in pi_wakeup_handler() as you suggest, and document the difference
+>>> in behavior so that is not confused as equivalent with the ga_log_event counter.
+>>
+>> Correct. If we cannot generalize the counter, I think it is ok to
+>> add the counter for SVM only. Thank you for the clarification.
+> 
+> There's already a generic stat, halt_wakeup, that more or less covers this case.
 
-Ok.
+I don't think we can extrapolate PI-originated wake ups from halt_wakeup, since it
+can/will also be triggered with APICv/AVIC disabled.
 
-Thanks
+> And despite what the comment says, avic_ga_log_notifier() does NOT schedule in
+> the task, kvm_vcpu_wake_up() only wakes up blocking vCPUs, no more, no less.
 
->
-> > >
-> > > > If the above doesn't make sense, we don't need to offer those pages=
- by VDUSE.
-> > > >
-> > > > Thanks
-> > > >
-> > > >
-> > > > >
-> > > > >
-> > > > >
-> > > > > > +             if (vaddr =3D=3D 0)
-> > > > > > +                     return -ENOMEM;
-> > > > > > +
-> > > > > > +             vq->vdpa_reconnect_vaddr =3D vaddr;
-> > > > > > +     }
-> > > > > > +
-> > > > > > +     return 0;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int vduse_free_reconnnect_info_mem(struct vduse_dev *de=
-v)
-> > > > > > +{
-> > > > > > +     struct vduse_virtqueue *vq;
-> > > > > > +
-> > > > > > +     for (int i =3D 0; i < dev->vq_num; i++) {
-> > > > > > +             vq =3D dev->vqs[i];
-> > > > > > +
-> > > > > > +             if (vq->vdpa_reconnect_vaddr)
-> > > > > > +                     free_page(vq->vdpa_reconnect_vaddr);
-> > > > > > +             vq->vdpa_reconnect_vaddr =3D 0;
-> > > > > > +     }
-> > > > > > +
-> > > > > > +     return 0;
-> > > > > > +}
-> > > > > >
-> > > > > >  static long vduse_dev_ioctl(struct file *file, unsigned int cm=
-d,
-> > > > > >                           unsigned long arg)
-> > > > > > @@ -1672,6 +1705,8 @@ static int vduse_destroy_dev(char *name)
-> > > > > >               mutex_unlock(&dev->lock);
-> > > > > >               return -EBUSY;
-> > > > > >       }
-> > > > > > +     vduse_free_reconnnect_info_mem(dev);
-> > > > > > +
-> > > > > >       dev->connected =3D true;
-> > > > > >       mutex_unlock(&dev->lock);
-> > > > > >
-> > > > > > @@ -1855,12 +1890,17 @@ static int vduse_create_dev(struct vdus=
-e_dev_config *config,
-> > > > > >       ret =3D vduse_dev_init_vqs(dev, config->vq_align, config-=
->vq_num);
-> > > > > >       if (ret)
-> > > > > >               goto err_vqs;
-> > > > > > +     ret =3D vduse_alloc_reconnnect_info_mem(dev);
-> > > > > > +     if (ret < 0)
-> > > > > > +             goto err_mem;
-> > > > > >
-> > > > > >       __module_get(THIS_MODULE);
-> > > > > >
-> > > > > >       return 0;
-> > > > > >  err_vqs:
-> > > > > >       device_destroy(&vduse_class, MKDEV(MAJOR(vduse_major), de=
-v->minor));
-> > > > > > +err_mem:
-> > > > > > +     vduse_free_reconnnect_info_mem(dev);
-> > > > > >  err_dev:
-> > > > > >       idr_remove(&vduse_idr, dev->minor);
-> > > > > >  err_idr:
-> > > > > > --
-> > > > > > 2.43.0
-> > > > >
-> > >
->
+True, both the GA log and the PI wake up handler just call kvm_vcpu_wake_up().
 
+> 
+> I'm also not at all convinced that KVM needs to differentiate between IPIs and
+> device interrupts that arrive when the vCPU isn't in the guest.  E.g. this can
+> kinda sorta be used to confirm IRQ affinity, but if the vCPU is happily running
+> in the guest, such a heuristic will get false negatives.
+> 
+> And for confirming that GA logging is working, that's more or less covered by the
+> proposed APICv stat.  If AVIC is enabled, the VM has assigned devices, and GA logging
+> *isn't* working, then you'll probably find out quite quickly because the VM will
+> have a lot of missed interrupts, e.g. vCPUs will get stuck in HLT.
+
+ACK, if the device interrupts are not being handled correctly there will be lots of
+complaints during device initialization as we have seen before.
+There is one scenario in which you can have APICv/AVIC enabled but only doing the
+IPI acceleration, while device interrupts are still using the legacy path.
+It requires booting the host kernel with 'amd_iommu_intr=legacy'(AMD) or with
+'intremap=nopost'(Intel), so that is a special case since you must explicitly
+request the behavior.
+
+In short, I typically use the GA Log tracepoint to confirm IOMMU AVIC is working
+as expected, so I wanted to provide the equivalent via the stats.
+If we want to have a common stat, we could have a pi_wakeup stat that is incremented
+both in ga_log and vmx_pi_wakeup_event, but I do understand that is not strictly
+necessary, specially if we want to be conservative with the number of stats.
+
+Thank you,
+Alejandro
 
