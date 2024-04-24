@@ -1,151 +1,170 @@
-Return-Path: <linux-kernel+bounces-157769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 845098B15E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:12:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE0F58B15EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:13:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C984B2306F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:12:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 933821F2248B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:13:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37B5216D9DF;
-	Wed, 24 Apr 2024 22:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0985316190B;
+	Wed, 24 Apr 2024 22:13:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gcwS3JUK"
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="keWecVF6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F02CC155358;
-	Wed, 24 Apr 2024 22:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49C48155358;
+	Wed, 24 Apr 2024 22:13:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713996707; cv=none; b=H9oNcnzkwjj36oj+ac8gD+PRPJSV/P0mXxwUJ/da9OqzNrwlwiEeS7162Xrculqak9DZsVg/3B5Ki99dQk+zpTpAf0cMDFn4VWZQgZjLoE0GVnLlDtU39BWXcF/BnGX73oLDKfj+H97HgIhcHdMk7UGrHNVRh2OGdbXsK2aDmXE=
+	t=1713996807; cv=none; b=LMkOey6aHvopGI1oUYjirXJ/aPlypAr8l+UqnPNggaa31GaSGFqFLkMuDe5iEOTaSebmbLfaGUcsgWNT+J0DL/sluTYL9aZ131oXzjUSlBtkEp2QIH/opsrQgWYx9KH8/wBxEHUgqGI/RPZ9A7yetAWEL3eqOhuMq2StaXk+yCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713996707; c=relaxed/simple;
-	bh=vvEngh34ePrOPT9U6Tqx7jBnZa20+xX3f6kTvkMFwaM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fjY2DX/lFUgVB5a7NQrVbPFQGWK/Jiy9zTfVH3Yf9BCF5zL3vSDfIJQWYblhl5wk1tqvAltP/a2DsjWr8F0qT+DfbAgR96GLFpYLHx718tvf31rLi0pxIR6eWYOL1/w2ZhE8zn2aM8kJ2+HlvcxscVzVtuhd8FvyCFYnjiyaxq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gcwS3JUK; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <12964e33-921a-440d-a423-0bff1b3f1c0a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713996703;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IZB3j2SB0jwlNoQ6VH7kP0jo6T5qEBoaB3VCHae1Bwg=;
-	b=gcwS3JUKmdhseL1Nl8c4QYX3M92cSRd6IPwTE4hmqMYtj4qL0ZBopu02SfzgXTq+Hhe+oG
-	h8JMPe1UkNA0X5kpwLYzDVPMNggX2+LmCK6BqPTNAwfVO55VQC9bqWvQ0iL+yaPYkySYvI
-	KPs1ZCXcwqhJcBwFnuAfb5eQYWmo680=
-Date: Wed, 24 Apr 2024 15:11:35 -0700
+	s=arc-20240116; t=1713996807; c=relaxed/simple;
+	bh=4bQJ7JirAI+w3LGE99LfMfq4WHSrk26qLx4ak0gTGNk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=DBt0RhAD/a+odQa7flc0oRQmS0OpOQXdEAiuvjtrk7XlwJ3aqvWH/iKrS28Z6W5I21E1BTeJMeVBkRlgJrJU786M76w1k2RTUy4BwHebQPHkW8+C+wvqZh7BoJLwEwkBriAS7d41oJuT/QiSKdx7aHiGYCfFyUdS9ngVvaEzMhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=keWecVF6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93A12C113CD;
+	Wed, 24 Apr 2024 22:13:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713996806;
+	bh=4bQJ7JirAI+w3LGE99LfMfq4WHSrk26qLx4ak0gTGNk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=keWecVF6rkVNdokOxM8bILl/lRA109CTZI0oJ0VCTvMEKv2mAgVGvf45kx3U/V96K
+	 Pv2IFRRReeyR2P2/DjAI5RuU94DzKH4k15Pm+ustdNLUR8c6algWXUO5NDRbMdqUUs
+	 zRlV6qxhASMrk/KHXhcR5y1NV3oVQbwMewgqZCJn3bInZW5q6TJCUuglXXLmw5469y
+	 v9ROhlQ+3ZBZx+B+ghYr2lzfVLNSZYlTeEPlgai/j/NB9i8PidI7XFaK6Tvzm/uVfY
+	 wpzRRC2iw7chCYcYmsIKeDvpHSyXsBfcO42aKww7ufl/56sd5uCKiGea5fkSfkWz/+
+	 6Dk3efyrWYDLg==
+Date: Wed, 24 Apr 2024 17:13:24 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] PCI: Correct error reporting with PCIe failed link
+ retraining
+Message-ID: <20240424221324.GA510262@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] libbpf: extending BTF_KIND_INIT to accommodate some
- unusual types
-Content-Language: en-GB
-To: Xin Liu <liuxin350@huawei.com>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
- jolsa@kernel.org, kongweibin2@huawei.com, kpsingh@kernel.org,
- linux-kernel@vger.kernel.org, liwei883@huawei.com, martin.lau@linux.dev,
- sdf@google.com, song@kernel.org, wuchangye@huawei.com,
- xiesongyang@huawei.com, yanan@huawei.com, yhs@fb.com, zhangmingyi5@huawei.com
-References: <a79006a7-a5af-4e30-8424-d54145bcd538@linux.dev>
- <20240424070621.740898-1-liuxin350@huawei.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240424070621.740898-1-liuxin350@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <alpine.DEB.2.21.2402100045590.2376@angie.orcam.me.uk>
 
+On Sat, Feb 10, 2024 at 01:43:50AM +0000, Maciej W. Rozycki wrote:
+> Only return successful completion status from `pcie_failed_link_retrain' 
+> if retraining has actually been done, preventing excessive delays from 
+> being triggered at call sites in a hope that communication will finally 
+> be established with the downstream device where in fact nothing has been 
+> done about the link in question that would justify such a hope.
+> 
+> Fixes: a89c82249c37 ("PCI: Work around PCIe link training failures")
+> Reported-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> Link: https://lore.kernel.org/r/aa2d1c4e-9961-d54a-00c7-ddf8e858a9b0@linux.intel.com/
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Cc: stable@vger.kernel.org # v6.5+
+> ---
+>  drivers/pci/quirks.c |   18 +++++++++++-------
+>  1 file changed, 11 insertions(+), 7 deletions(-)
+> 
+> linux-pcie-failed-link-retrain-status-fix.diff
+> Index: linux-macro/drivers/pci/quirks.c
+> ===================================================================
+> --- linux-macro.orig/drivers/pci/quirks.c
+> +++ linux-macro/drivers/pci/quirks.c
+> @@ -74,7 +74,8 @@
+>   * firmware may have already arranged and lift it with ports that already
+>   * report their data link being up.
+>   *
+> - * Return TRUE if the link has been successfully retrained, otherwise FALSE.
+> + * Return TRUE if the link has been successfully retrained, otherwise FALSE,
+> + * also when retraining was not needed in the first place.
 
-On 4/24/24 12:06 AM, Xin Liu wrote:
-> On Tue, 23 Apr 2024 13:12:04 -0700 Yonghong Song <yonghong.song@linux.dev> wrote:
->> On 4/23/24 6:15 AM, Xin Liu wrote:
->>> On Mon, 22 Apr 2024 10:43:38 -0700 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->>>
->>>> On Mon, Apr 22, 2024 at 7:46 AM Xin Liu <liuxin350@huawei.com> wrote:
->>>>> In btf__add_int, the size of the new btf_kind_int type is limited.
->>>>> When the size is greater than 16, btf__add_int fails to be added
->>>>> and -EINVAL is returned. This is usually effective.
->>>>>
->>>>> However, when the built-in type __builtin_aarch64_simd_xi in the
->>>>> NEON instruction is used in the code in the arm64 system, the value
->>>>> of DW_AT_byte_size is 64. This causes btf__add_int to fail to
->>>>> properly add btf information to it.
->>>>>
->>>>> like this:
->>>>>     ...
->>>>>      <1><cf>: Abbrev Number: 2 (DW_TAG_base_type)
->>>>>       <d0>   DW_AT_byte_size   : 64              // over max size 16
->>>>>       <d1>   DW_AT_encoding    : 5        (signed)
->>>>>       <d2>   DW_AT_name        : (indirect string, offset: 0x53): __builtin_aarch64_simd_xi
->>>>>      <1><d6>: Abbrev Number: 0
->>>>>     ...
->>>>>
->>>>> An easier way to solve this problem is to treat it as a base type
->>>>> and set byte_size to 64. This patch is modified along these lines.
->>>>>
->>>>> Fixes: 4a3b33f8579a ("libbpf: Add BTF writing APIs")
->>>>> Signed-off-by: Xin Liu <liuxin350@huawei.com>
->>>>> ---
->>>>>    tools/lib/bpf/btf.c | 2 +-
->>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
->>>>> index 2d0840ef599a..0af121293b65 100644
->>>>> --- a/tools/lib/bpf/btf.c
->>>>> +++ b/tools/lib/bpf/btf.c
->>>>> @@ -1934,7 +1934,7 @@ int btf__add_int(struct btf *btf, const char *name, size_t byte_sz, int encoding
->>>>>           if (!name || !name[0])
->>>>>                   return libbpf_err(-EINVAL);
->>>>>           /* byte_sz must be power of 2 */
->>>>> -       if (!byte_sz || (byte_sz & (byte_sz - 1)) || byte_sz > 16)
->>>>> +       if (!byte_sz || (byte_sz & (byte_sz - 1)) || byte_sz > 64)
->>>> maybe we should just remove byte_sz upper limit? We can probably
->>>> imagine 256-byte integers at some point, so why bother artificially
->>>> restricting it?
->>>>
->>>> pw-bot: cr
->>> In the current definition of btf_kind_int, bits has only 8 bits, followed
->>> by 8 bits of unused interval. When we expand, we should only use 16 bits
->>> at most, so the maximum value should be 8192(1 << 16 / 8), directly removing
->>> the limit of byte_sz. It may not fit the current design. For INT type btfs
->>> greater than 255, how to dump is still a challenge.
->> Looking at this patch. Now I remember that I have an old pahole patch
->> to address similar issues
->>     https://lore.kernel.org/bpf/20230426055030.3743074-1-yhs@fb.com/
->> which is not merged and I forgot that.
->>
->> In that particular case, the int size is 1024 bytes.
->> Currently the int type more than 16 bytes cannot be dumped in libbpf.
->> Do you have a particular use case to use your__builtin_aarch64_simd_xi() type
->> in bpf program? I guess probably not as BPF does not support
->> builtin function your__builtin_aarch64_simd_xi().
->>
-> Currently, there is no use case of byte_sz in btf, so let's remove
-> __builtin_aarch64_simd_xi first.At least this will support the kernel
-> compilation phase without causing the kernel to fail directly when
-> generating btf.
+Can you recast this?  I think it's slightly unclear what is returned
+when retraining is not needed.  I *think* you return FALSE when
+retraining is not needed.  Maybe this?
 
-Okay, I will resend my pahole patch later to address this issue.
+  Return TRUE if the link has been successfully retrained.  Return
+  FALSE if retraining was not needed or we attempted a retrain and it
+  failed.
 
->
->>> Does the current version support a maximum of 8192 bytes?
->>>
->>>>>                   return libbpf_err(-EINVAL);
->>>>>           if (encoding & ~(BTF_INT_SIGNED | BTF_INT_CHAR | BTF_INT_BOOL))
->>>>>                   return libbpf_err(-EINVAL);
->>>>> --
->>>>> 2.33.0
->>>>>
+>   */
+>  bool pcie_failed_link_retrain(struct pci_dev *dev)
+>  {
+> @@ -83,10 +84,11 @@ bool pcie_failed_link_retrain(struct pci
+>  		{}
+>  	};
+>  	u16 lnksta, lnkctl2;
+> +	bool ret = false;
+>  
+>  	if (!pci_is_pcie(dev) || !pcie_downstream_port(dev) ||
+>  	    !pcie_cap_has_lnkctl2(dev) || !dev->link_active_reporting)
+> -		return false;
+> +		return ret;
+
+We know the value here, so IMO it's easier to read if we return
+"false" instead of "ret".
+
+>  	pcie_capability_read_word(dev, PCI_EXP_LNKCTL2, &lnkctl2);
+>  	pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
+> @@ -98,9 +100,10 @@ bool pcie_failed_link_retrain(struct pci
+>  		lnkctl2 |= PCI_EXP_LNKCTL2_TLS_2_5GT;
+>  		pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, lnkctl2);
+>  
+> -		if (pcie_retrain_link(dev, false)) {
+> +		ret = pcie_retrain_link(dev, false) == 0;
+> +		if (!ret) {
+>  			pci_info(dev, "retraining failed\n");
+> -			return false;
+> +			return ret;
+
+Same here.  We're here because !ret was true, so ret must be false.
+I guess in the next patch you want to return the pcie_retrain_link()
+return value up the chain, so it will make sense there.
+
+>  		}
+>  
+>  		pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
+> @@ -117,13 +120,14 @@ bool pcie_failed_link_retrain(struct pci
+>  		lnkctl2 |= lnkcap & PCI_EXP_LNKCAP_SLS;
+>  		pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, lnkctl2);
+>  
+> -		if (pcie_retrain_link(dev, false)) {
+> +		ret = pcie_retrain_link(dev, false) == 0;
+> +		if (!ret) {
+>  			pci_info(dev, "retraining failed\n");
+> -			return false;
+> +			return ret;
+>  		}
+>  	}
+>  
+> -	return true;
+> +	return ret;
+
+It gets awfully subtle by the time we get here.  I guess we could set
+a "retrain_attempted" flag above and do this:
+
+  if (retrain_attempted)
+    return true;
+
+  return false;
+
+But I dunno if it's any better.  I understand the need for a change
+like this, but the whole idea of returning failure (false) for a
+retrain failure and also for a "no retrain needed" is a little
+mind-bending.
+
+>  }
+>  
+>  static ktime_t fixup_debug_start(struct pci_dev *dev,
 
