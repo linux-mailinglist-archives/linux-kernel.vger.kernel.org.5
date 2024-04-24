@@ -1,139 +1,166 @@
-Return-Path: <linux-kernel+bounces-157636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 902C78B13E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:00:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 852C98B13E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:00:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C22221C23732
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:00:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DFE61F245E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:00:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E33613C3C7;
-	Wed, 24 Apr 2024 19:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C05C313BC19;
+	Wed, 24 Apr 2024 20:00:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HZnTKSCL"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EDcyreCe"
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C97D134A8;
-	Wed, 24 Apr 2024 19:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E35ED134A8;
+	Wed, 24 Apr 2024 20:00:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713988796; cv=none; b=deIOXer+XyNChm7p96Dxw/Tuoj7qimHn/jJyeHT8HH388k0pMflRBQcV4yuzcdZdEiFtcZgsuuFqDCH+1u6HeoVMQIITZDiSGer7Frxzd0UevJu7WxunCwASXRzYO6qS9uqAAaC8kz7GtPfDppdbN9t+YjsN5vXWnoF1g3Jkub8=
+	t=1713988850; cv=none; b=iyKSMl1kUAKA8maViUNMXJRflltIEOhBjO8grHs9cYH53yqjKf8pCYaEhr3Ijnx27W0RKOh/eJ9BjUvf/pDIT/y4GYPVKSE9mysm3x5RA9A75cCRQtNeQ4KohLTIwD0pndeENlaM7s9svs40hv3Y7+yGqpxIMA/E+yOyqFvYrwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713988796; c=relaxed/simple;
-	bh=vi6AkKXBc9c+GYEXIEdFiWP8KbJ7sqIZMgCf/rw5r3I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=e/NnGBfRfYxMBb/Z1EQVnLN4KH/Zqnux9nxIuZmPS+NJSULSHqw2PoCim4mIGd8Z690BIJjTvfvdN+1VLGyH9IxfGvVznBmIRDFQkDw/Vx2+MDeSnJtQCha2yDzcXTv13ccc2NKqr6w3pLeBqBI8IM4oThSQg0272tHDo4MmG4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HZnTKSCL; arc=none smtp.client-ip=209.85.214.172
+	s=arc-20240116; t=1713988850; c=relaxed/simple;
+	bh=vtAPjlWlcBGTRf8Hs0iaIMYlThoupqnIr67GAokTmTM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sclt8BCSicfLq6eGpzTANvRINhvJN0rtXW8VJpTV7cBogk/zkaeIRITsZZl//3xQsbYapchna5yxWWqAH56Q/MXTQIUymxQlqjILo5su3aCp92QQNtYnET4+S2Vcu6G4rsCGUgQTAlFT+Ym4SPlKHvFNLZvsRvwRR1Lf7g5Enmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EDcyreCe; arc=none smtp.client-ip=209.85.215.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e834159f40so1895265ad.2;
-        Wed, 24 Apr 2024 12:59:54 -0700 (PDT)
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-6001399f22bso197198a12.0;
+        Wed, 24 Apr 2024 13:00:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713988794; x=1714593594; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=MIzvdFzDODP32w8DOczot1T9bmoGo9OmYm5q0ikidhs=;
-        b=HZnTKSCLR+KB/3JoEQErdBSIVmyNz5IO4WwKbQ+1uidIgdVX5+w1nnYyZ6q81mhuDT
-         waLRzS21nla7z3fh7BUiYWero1aAnJU5KXvkz3xpLUrQ4+mdFdYgSqaSMtQEQipPAtI1
-         CH9tSDH/p9hQvrd/vldSQ7RnQHqvzDVujbj4SRYtO/eWfMPZhiuYq2/qOI7uZeZldMbc
-         XVI/GjxfNxiEENT9FWekZS5CUY07/uUti60ptWOVrebCAC/US+xmPsOJNfo5cWk5wRY8
-         MYvdA19RzzObsv/DOE39xQIaWMCCRYZEpPZLWvv4dUdCcgPxJi+51rxzVLYk9aSQk0Qz
-         ONwQ==
+        d=gmail.com; s=20230601; t=1713988847; x=1714593647; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=jV6MUXeyQ8mtFanrkE7vNSEtzBB22JlN0e9Q4p3iGe0=;
+        b=EDcyreCe838k3yqGDE8pH23TeoEESEr6r+CZyO+EOZi8pbd0R3jY5/GmsZoyP7mShI
+         3xhJ7x5S+Vp/eKhdHPet/Y8nlFnYx0W8RmueUbc91ElInJs9SqkhJLwE+prEtPwvsLB7
+         G9csp7tG2fVqKuzkKadQrPtnQhLLTGccKTAXk0FIpSg4jXD62rg+XPugzT35R4/22FOM
+         xl2oEvAAw8jVkOt8p/E4mX7FbJdYqc1EujadEFp13479LCuS/AP0jDvn5y7+P/qlDYP3
+         prvLItpa/6V51Qvn7LXoBRv53YsH/l6D9sJlYArKX8/g1mRWR+kJgP8oW+TomYeDHqi2
+         +mxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713988794; x=1714593594;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1713988847; x=1714593647;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MIzvdFzDODP32w8DOczot1T9bmoGo9OmYm5q0ikidhs=;
-        b=VVAn7iOfb6isRgx5CySgCPFNp3OIoqKbq5S8xh6OQB+hj4PJaUSfdLNpuHkviA5cVD
-         UpvLQX0y7Q/E1AW4+FlB5UZN697MdVH3xKMc9HTV0XsMesoIWvG1gSyYl0bc1Z1IV794
-         bH5FH6Tx8t+xxBgEOJspW34LaPUQA2dd4ljef9zgK2I4qwFiXc7JHWcck9BBWeCqCSO5
-         BzlhOF0XXQRQffRASBj/JY5XPcBFIQhCEz5pfp9TMETx1Md4VM+nMLBkbn4Jpc8F0FAd
-         T/RZNk5VbBCr+2W5ThfPYUpI+lei5PhQP4njSlRXdKrdC4nDgUQJZHT9x3bsV3/Ad5Dj
-         WRLA==
-X-Forwarded-Encrypted: i=1; AJvYcCXHaED6sfJrLOL9D5HwOhq+4VrxuFaMzaiVNSjr4/2u+AGxSKH2DVZyUOp/OYXgnzCrV4TWTikiiug856SKAs9rzRF9bKvojUDdAxkF+ytSxZtdUlSsTNWT7zgw99JST/v+GOrWz+aQ
-X-Gm-Message-State: AOJu0YzFm77nvcD65MrrNIwFOZh2ke3xz3sehPTgd+mUy6isyYXWF5x0
-	tESa9uiHuaDOn0jBHwL44gVZvFNwKtRMmYKhcn0DLxR6Lmvb/KYz
-X-Google-Smtp-Source: AGHT+IG46JS2ISuXZa5cmelECZGUfN6vJslF2KAaKbURG3yvG0on7s7x8zCC1lYBcPjoCJQCQvHEbw==
-X-Received: by 2002:a17:902:c40d:b0:1e4:d548:81a0 with SMTP id k13-20020a170902c40d00b001e4d54881a0mr3732923plk.67.1713988794488;
-        Wed, 24 Apr 2024 12:59:54 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o10-20020a170902d4ca00b001e80154a400sm12286283plg.126.2024.04.24.12.59.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 12:59:53 -0700 (PDT)
+        bh=jV6MUXeyQ8mtFanrkE7vNSEtzBB22JlN0e9Q4p3iGe0=;
+        b=L+hf65MnvbQKsEkiwSenSgQoh8w1q+/7FQDouhPXTiiSJfU5p17uVrj8gBRHVDD/ok
+         x8YW+2Bo/7bp1KlFoIpYy3li70FIQLmT3qomBRxovZJ9AsCXqA0Xbv4VaybStVKGNTP2
+         PTeDKAikXUSCxi9xItWb71eQS3jTbUnoCrbuUVMJTMa3r4PlDctg1sYsUEpari+NewYy
+         /epW83tRmTYC2m24pR71u0tC11edbn6a7XK06X7LBVif5SVJKFmW97fVbJWL3mZsLljI
+         I09rm/ahbfuOIFEmz/ItBoCouP0gBneW5xjqiHSXqkGddfsrYbytoiyiDlyEK0SwdM4a
+         kjjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUS/r0kOEBXEaXd+A/e9/vvT6daEu/YMjAZAdVrxWEAzoXUx3wp+/4yqDW7Grj/2DV/m7c+bLxSZVyXth7BDu5r4lGDMBaVWgAoc/fZVBwcJ4GdZOIGj2B6Ytn9oEEPu/8vmJ4LiJ19Y1U=
+X-Gm-Message-State: AOJu0YxwxIjI1W7kqjBNUadPQtaeH+qYc+SwZ5yRTO16+YGsQdLM6C4x
+	IOuJ+qwxxpKg0UHanGWeR6dn0/yA3Cmvyhc/dzpEBv/HMLPpPT6q
+X-Google-Smtp-Source: AGHT+IF3tdT+Voe6FbyaDgPeESawKMwvuQSHi/XWYYqQ0IKRmNnkRDZlpZ1JDs1UUq4fy+Trdw+XXg==
+X-Received: by 2002:a17:90b:4d88:b0:2a5:c3a7:39d9 with SMTP id oj8-20020a17090b4d8800b002a5c3a739d9mr3315119pjb.45.1713988847192;
+        Wed, 24 Apr 2024 13:00:47 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a5-20020a1709027d8500b001e3c77db2aesm12349458plm.88.2024.04.24.13.00.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 13:00:46 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>,
-	Gerd Hoffmann <kraxel@redhat.com>
-Subject: [PATCH v2] usb: ohci: Prevent missed ohci interrupts
-Date: Wed, 24 Apr 2024 12:59:51 -0700
-Message-Id: <20240424195951.3749388-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
+Message-ID: <8b138aec-9565-4847-8c7c-8a1fe6972a04@roeck-us.net>
+Date: Wed, 24 Apr 2024 13:00:45 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 55/71] hwmon: (peci/cputemp) Switch to new Intel CPU
+ model defines
+To: Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+ Jean Delvare <jdelvare@suse.com>
+Cc: Iwona Winiarska <iwona.winiarska@intel.com>, linux-hwmon@vger.kernel.org,
+ linux-kernel@vger.kernel.org, patches@lists.linux.dev
+References: <20240424181245.41141-1-tony.luck@intel.com>
+ <20240424181534.42216-1-tony.luck@intel.com>
+Content-Language: en-US
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240424181534.42216-1-tony.luck@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Testing ohci functionality with qemu's pci-ohci emulation often results
-in ohci interface stalls, resulting in hung task timeouts.
+On 4/24/24 11:15, Tony Luck wrote:
+> New CPU #defines encode vendor and family as well as model.
+> 
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
 
-The problem is caused by lost interrupts between the emulation and the
-Linux kernel code. Additional interrupts raised while the ohci interrupt
-handler in Linux is running and before the handler clears the interrupt
-status are not handled. The fix for a similar problem in ehci suggests
-that the problem is likely caused by edge-triggered MSI interrupts. See
-commit 0b60557230ad ("usb: ehci: Prevent missed ehci interrupts with
-edge-triggered MSI") for details.
+Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-Ensure that the ohci interrupt code handles all pending interrupts before
-returning to solve the problem.
-
-Cc: Gerd Hoffmann <kraxel@redhat.com>
-Fixes: 306c54d0edb6 ("usb: hcd: Try MSI interrupts on PCI devices")
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-v2: Only repeat if the interface is still active
-
- drivers/usb/host/ohci-hcd.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
-index 4f9982ecfb58..bb6b50b4a356 100644
---- a/drivers/usb/host/ohci-hcd.c
-+++ b/drivers/usb/host/ohci-hcd.c
-@@ -888,6 +888,7 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
- 	/* Check for an all 1's result which is a typical consequence
- 	 * of dead, unclocked, or unplugged (CardBus...) devices
- 	 */
-+again:
- 	if (ints == ~(u32)0) {
- 		ohci->rh_state = OHCI_RH_HALTED;
- 		ohci_dbg (ohci, "device removed!\n");
-@@ -982,6 +983,13 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
- 	}
- 	spin_unlock(&ohci->lock);
- 
-+	/* repeat until all enabled interrupts are handled */
-+	if (ohci->rh_state != OHCI_RH_HALTED) {
-+		ints = ohci_readl(ohci, &regs->intrstatus);
-+		if (ints & ohci_readl(ohci, &regs->intrenable))
-+			goto again;
-+	}
-+
- 	return IRQ_HANDLED;
- }
- 
--- 
-2.39.2
+> ---
+>   drivers/hwmon/peci/cputemp.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hwmon/peci/cputemp.c b/drivers/hwmon/peci/cputemp.c
+> index a812c15948d9..e8dafa748a41 100644
+> --- a/drivers/hwmon/peci/cputemp.c
+> +++ b/drivers/hwmon/peci/cputemp.c
+> @@ -361,9 +361,9 @@ static int init_core_mask(struct peci_cputemp *priv)
+>   
+>   	/* Get the RESOLVED_CORES register value */
+>   	switch (peci_dev->info.model) {
+> -	case INTEL_FAM6_ICELAKE_X:
+> -	case INTEL_FAM6_ICELAKE_D:
+> -	case INTEL_FAM6_SAPPHIRERAPIDS_X:
+> +	case VFM_MODEL(INTEL_ICELAKE_X):
+> +	case VFM_MODEL(INTEL_ICELAKE_D):
+> +	case VFM_MODEL(INTEL_SAPPHIRERAPIDS_X):
+>   		ret = peci_ep_pci_local_read(peci_dev, 0, reg->bus, reg->dev,
+>   					     reg->func, reg->offset + 4, &data);
+>   		if (ret)
 
 
