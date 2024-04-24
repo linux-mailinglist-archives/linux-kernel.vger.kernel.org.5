@@ -1,151 +1,141 @@
-Return-Path: <linux-kernel+bounces-157209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 999588B0E78
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:34:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C4FE8B0E7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:35:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2700128316D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:34:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3287D1F29A22
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:35:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B33AC1635D5;
-	Wed, 24 Apr 2024 15:33:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 141451607AA;
+	Wed, 24 Apr 2024 15:34:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yO6QmJH1"
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HkZuXtm6"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB2B1161B6B
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:33:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD5B715ECE4;
+	Wed, 24 Apr 2024 15:34:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713972827; cv=none; b=IcDqwK1E3Qb7fCq76pLWTEskTcAUprIQLVohBLpcJDZ0RGE5MVjEtnFF0LOWY/qSvTlSW9o+jCfTUpgzoCi7h4cuiWD6Ov6m30pQFPibaupIQzMRpNPMCcAC5NKOSdTqcSf9QE9Tc5vI616PzRXgtQFEjFbCEXlJLl9e8VgElqo=
+	t=1713972887; cv=none; b=gsRpB87L34PdNQtAz9i9ZBQwO7RkLfY5kH+Nzhvcg4e/240OdxCYgaGs8NTKFq4EyAs1CEXIqKSTej9OrLiKQBJ3CQVS/lcXB9trlXlVgsEm84mbd/gMEfl57Ak30uBjZO8uRU/qmpFu7kggAdGvPODxu4ueyMbulMU8wp9Rxws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713972827; c=relaxed/simple;
-	bh=im0LsoyR5JmTX5bx25GWvAq7Yqdo2jJ09USxUYdotcs=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=jxPiQnVSE6MdAVb1PhvBcUDMDbInt9obuW0nDw2gemlp34Lknt9JFNvs50zqe1tMeIGq/8RdATq9NMq2mFvUbMgLAHzDurwPtW1TkusKZdNTGVf05lPn0/NUyLgVfh+puGhwsbOOZOG+3L8fv39d60dRbMvQqNYImxJNfNp+R68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yO6QmJH1; arc=none smtp.client-ip=209.85.210.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6ed25eb8e01so33169b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:33:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713972825; x=1714577625; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oBLx3rLWfM6jLhh3E0yucJs5ITLpqaNVOm7HyYGxb9Q=;
-        b=yO6QmJH1YwzX+MlB+3RQSSVdK/xVc3Oe4Zikek33sH7gVqxkS9P9cLvG1xPxwIMxpo
-         +IXHmA24K+/Jg/9hNWRiou5Y9AtI3xcLjRk/bO2QkfNHKjAfbeyBN8C01hKDbK4xXH4i
-         /gpvaNQpiXR72YyUFaqxRffRrL+O/srtGhUq6clqCgnUypPofzDYcYdHQKjIwJPRs15Z
-         t6FS+7NV/SAMsYtH+GjtC+Qz46VHXTiUfMzRsuISEma6TJbuAqFdAdU0ZmlqCqJw8Vjc
-         FdwwRwvIWRrzWbKO+4lHwmdJRy00U8ng2Id5QwH4Pxu5fNDDw3QhQGIXQuJuFrx1XY8a
-         3lXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713972825; x=1714577625;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oBLx3rLWfM6jLhh3E0yucJs5ITLpqaNVOm7HyYGxb9Q=;
-        b=MF5Ju6jYGpyRfu2WU+MxIqvQ918oIeXLxvYatrKJM4GZLzgbveKBShd7DoaD8hihpb
-         yRdE1i3gkAG4ouQ33ZLY/lrpds0hPyDuj1dhsHoV10v9lKzvxRh1JuTGIrFDiWQgBkar
-         pJWyw5Vbb93KJWkhw4DNmv7fspkIbqqWs14v663ox7lclO0vkM+/Uf1kX49QqCW7BOSg
-         XTH80YZ1pPH4RULsbTOI2kZ1G2ZnD7bZAPof0GzC3d2198Iw1jDzNBluQvkmETfNm5hT
-         SiNeLhWNPV+xEJy9HJjN/iybGUSbg7l8Z+pQsqAcKxd91eRToiM/iIC2H8MqqLT+ceH8
-         oahg==
-X-Forwarded-Encrypted: i=1; AJvYcCV9YpSRILLxlDidFPiX9Rm3+rlSGfjJQ6vSLMzau9sgMG85eZG2qtELfb69SQNGVQLoKUsatXdGmvTWyBbeBH8TiPks7tToG4BXSTx+
-X-Gm-Message-State: AOJu0YxuPs+G63cqKCAmGZedPJUJBDjsT3vWlNaiAAda35xgwPjselzx
-	EEyiKaMLQwBgPDEEvbWhyvg7CsfyIJWGx5wHfzjJA/RSBvpAI9iwtc0r7BbyA9yzQIN3whQv6aC
-	eBQ==
-X-Google-Smtp-Source: AGHT+IHRanNh8UKAP+r6FBzngsdsjXfKbEZNiE2LG/2ILik1bz7zM80jiWtBZGL7REkWCtfkC4u7AGdexeA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:14d0:b0:6ea:be19:3efb with SMTP id
- w16-20020a056a0014d000b006eabe193efbmr378768pfu.3.1713972824837; Wed, 24 Apr
- 2024 08:33:44 -0700 (PDT)
-Date: Wed, 24 Apr 2024 08:33:43 -0700
-In-Reply-To: <8e3ad8fa55a26d8726ef0b68e40f59cbcdac1f6c.camel@intel.com>
+	s=arc-20240116; t=1713972887; c=relaxed/simple;
+	bh=XHcrnAmOsOix8K/xKq2+ZtbSNEaC/vMNW+9wzdDr6Fg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=qDrsd/Q+RcT+4cSRBgxYXIIn9LDAQzwFS0F4GPZL2xGmwk/iiomLUKz6ULjZE7RQOAaUNt1jnV5ryHfaCW1I81EOnSZcf7ldqpbwKl2axCk1DvqgsQwour0dxmFjOWyrkITxy6HJBapxf46ByMsV6lkL+tfA4RIwa9zMNjuhyB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HkZuXtm6; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713972886; x=1745508886;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=XHcrnAmOsOix8K/xKq2+ZtbSNEaC/vMNW+9wzdDr6Fg=;
+  b=HkZuXtm6tdT37JcQxdnClG8nBIOnUwVPFKW3TNOkD9U4+WaZl69QbSEP
+   6TFWnBRJ13bTLR9TLSRgMANVhLfRbTmxa97uz3g0yoqaDclP3pHvdAZhp
+   NdyAoJ2wrbvhg7fGU8KVEStxkI4VZqujYCOZ4ERx9dIcU95+3YDfYM+Im
+   QiAeRkPzl7vBxnxhaCshEBcDGdIUhIuFleWeBDNpVRfjECQKK5ArTXzOd
+   GwXd1YoK+mcBFmz3cI7ZfF1XuBUUyMNyMEgBwo2Ub/rxbB+jFHLzSMO9C
+   Krcoi5Wjq+fFcxSX0BBH8RN5JwSDFHgUR+SqmjZs5o7YLRZCuwfz/nPX1
+   A==;
+X-CSE-ConnectionGUID: 4FgB68m7RAyv/UqpHxYLvg==
+X-CSE-MsgGUID: xFcruwniQJS01cUDfhrnJw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="35011179"
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="35011179"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 08:34:35 -0700
+X-CSE-ConnectionGUID: rM0GpW3TRuC8zyhzefLgaQ==
+X-CSE-MsgGUID: 6mtRVtWERXaa/MAJLWhc0g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="29556579"
+Received: from linux.intel.com ([10.54.29.200])
+  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 08:34:36 -0700
+Received: from [10.212.107.188] (kliang2-mobl1.ccr.corp.intel.com [10.212.107.188])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id 2E4F6206D89D;
+	Wed, 24 Apr 2024 08:34:33 -0700 (PDT)
+Message-ID: <54a2ecfc-5a31-4e11-9e97-5a96baf18a0d@linux.intel.com>
+Date: Wed, 24 Apr 2024 11:34:32 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240423165328.2853870-1-seanjc@google.com> <20240423165328.2853870-4-seanjc@google.com>
- <8e3ad8fa55a26d8726ef0b68e40f59cbcdac1f6c.camel@intel.com>
-Message-ID: <ZikmVzsvV-tt_pSs@google.com>
-Subject: Re: [PATCH 3/3] KVM: x86: Explicitly zero kvm_caps during vendor
- module load
-From: Sean Christopherson <seanjc@google.com>
-To: Kai Huang <kai.huang@intel.com>
-Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 00/16] Consistently prefer sysfs/json events
+To: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ Atish Patra <atishp@rivosinc.com>, linux-riscv@lists.infradead.org,
+ Beeman Strong <beeman@rivosinc.com>
+References: <20240416061533.921723-1-irogers@google.com>
+Content-Language: en-US
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20240416061533.921723-1-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 24, 2024, Kai Huang wrote:
-> On Tue, 2024-04-23 at 09:53 -0700, Sean Christopherson wrote:
-> > Zero out all of kvm_caps when loading a new vendor module to ensure that
-> > KVM can't inadvertently rely on global initialization of a field, and add
-> > a comment above the definition of kvm_caps to call out that all fields
-> > needs to be explicitly computed during vendor module load.
-> > 
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  arch/x86/kvm/x86.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 44ce187bad89..8f3979d5fc80 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -92,6 +92,11 @@
-> >  #define MAX_IO_MSRS 256
-> >  #define KVM_MAX_MCE_BANKS 32
-> >  
-> > +/*
-> > + * Note, kvm_caps fields should *never* have default values, all fields must be
-> > + * recomputed from scratch during vendor module load, e.g. to account for a
-> > + * vendor module being reloaded with different module parameters.
-> > + */
-> >  struct kvm_caps kvm_caps __read_mostly;
-> >  EXPORT_SYMBOL_GPL(kvm_caps);
-> >  
-> > @@ -9755,6 +9760,8 @@ int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
-> >  		return -EIO;
-> >  	}
-> >  
-> > +	memset(&kvm_caps, 0, sizeof(kvm_caps));
-> > +
-> >  	x86_emulator_cache = kvm_alloc_emulator_cache();
-> >  	if (!x86_emulator_cache) {
-> >  		pr_err("failed to allocate cache for x86 emulator\n");
+
+
+On 2024-04-16 2:15 a.m., Ian Rogers wrote:
+> As discussed in:
+> https://lore.kernel.org/lkml/20240217005738.3744121-1-atishp@rivosinc.com/
+> preferring sysfs/json events consistently (with or without a given
+> PMU) will enable RISC-V's hope to customize legacy events in the perf
+> tool.
 > 
-> Why do the memset() here particularly?
-
-So that it happens as early as possible, e.g. in case kvm_mmu_vendor_module_init()
-or some other function comes along and modifies kvm_caps.
-
-> Isn't it better to put ...
+> Some minor clean-up is performed on the way.
 > 
-> 	memset(&kvm_caps, 0, sizeof(kvm_caps));
-> 	kvm_caps.supported_vm_types = BIT(KVM_X86_DEFAULT_VM);
-> 	kvm_caps.supported_mce_cap = MCG_CTL_P | MCG_SER_P;
+> v2. Additional cleanup particularly adding better error messages. Fix
+>     some line length issues on the earlier patches.
 > 
-> ... together so it can be easily seen?
+> Ian Rogers (16):
+>   perf parse-events: Factor out '<event_or_pmu>/.../' parsing
+>   perf parse-events: Directly pass PMU to parse_events_add_pmu
+>   perf parse-events: Avoid copying an empty list
+>   perf pmu: Refactor perf_pmu__match
+>   perf tests parse-events: Use branches rather than cache-references
+>   perf parse-events: Legacy cache names on all PMUs and lower priority
+>   perf parse-events: Handle PE_TERM_HW in name_or_raw
+>   perf parse-events: Constify parse_events_add_numeric
+>   perf parse-events: Prefer sysfs/json hardware events over legacy
+>   perf parse-events: Inline parse_events_update_lists
+>   perf parse-events: Improve error message for bad numbers
+>   perf parse-events: Inline parse_events_evlist_error
+>   perf parse-events: Improvements to modifier parsing
+>   perf parse-event: Constify event_symbol arrays
+>   perf parse-events: Minor grouping tidy up
+>   perf parse-events: Tidy the setting of the default event name
 > 
-> We can even have a helper to do above to "reset kvm_caps to default
-> values" I think.
+>  tools/perf/tests/parse-events.c |   6 +-
+>  tools/perf/util/parse-events.c  | 482 ++++++++++++++++----------------
+>  tools/perf/util/parse-events.h  |  49 ++--
+>  tools/perf/util/parse-events.l  | 196 +++++++++----
+>  tools/perf/util/parse-events.y  | 261 +++++++----------
+>  tools/perf/util/pmu.c           |  27 +-
+>  tools/perf/util/pmu.h           |   2 +-
+>  7 files changed, 540 insertions(+), 483 deletions(-)
+> 
 
-Hmm, I don't think a helper is necessary, but I do agree that having all of the
-explicit initialization in one place would be better.  The alternative would be
-to use |= for BIT(KVM_X86_DEFAULT_VM), and MCG_CTL_P | MCG_SER_P, but I don't
-think that would be an improvement.  I'll tweak the first two patches to set the
-hardcoded caps earlier.
 
-The main reason I don't want to add a helper is that coming up with a name would
-be tricky.  E.g. "kvm_reset_caps()" isn't a great fit because the caps are "reset"
-throughout module loading.  "kvm_set_default_caps()" kinda fits, but they aren't
-so much that they are KVM's defaults, rather they are the caps that KVM can always
-support regardless of hardware support, e.g. supported_xcr0 isn't optional, it
-just depends on hardware.
+The series looks good to me.
+
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+
+Thanks,
+Kan
 
