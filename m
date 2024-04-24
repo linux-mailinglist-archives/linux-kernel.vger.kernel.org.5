@@ -1,70 +1,46 @@
-Return-Path: <linux-kernel+bounces-157003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41E6F8B0B77
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:49:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E8AF8B0B78
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:49:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7441C1C214AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:49:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A20341C21D19
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:49:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BCAD15D5A5;
-	Wed, 24 Apr 2024 13:49:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F4015D5B3;
+	Wed, 24 Apr 2024 13:49:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ILc4bfp8"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="e+SKJShN"
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49AAD15CD53
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABD0015CD53
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:49:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713966576; cv=none; b=Vl6wsEp4+KQVOWZwmMl3PoypJ/D+93Ud56h+/YJw6OecADb3MBrZm0bqBeK0ZWnARHMBBgvxpyGXFGdwK03WW+32Lmu5BqGJ9aoj0v3UKkL5c2HzO/0GWuIghn90Bbojiym3+EMW1DbBI0jqwcDmMJmXVzgUDK6LaKYU/yz98kE=
+	t=1713966584; cv=none; b=DsSNnCpypL/90eGehKo7gFK9KyTVpXqB4TeLrv4pIaI1WzyX73wO+wvIhEE0vKxAbpnOEPWn702ERDpQ/ZHlqvcaZ5M5NJ+haqm0qCuVm38cwnDgWz2RcpFI1EtscL9srF0thYPDGfktklP1NALcQHC05GfQKEfaeKyipOq6qPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713966576; c=relaxed/simple;
-	bh=BnENuuyvSSnIAyXgtHVPeaIV5FuuSZ0qrZUG3zD7EJE=;
+	s=arc-20240116; t=1713966584; c=relaxed/simple;
+	bh=AqknXv1NqiTdlllA1B+FsxVP9Gj0QfESOH4ACduGvkw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fhejNB3f35GsdL5nmPpkUBK+Ac7doVrdDz2nCDk5JUttODevXpdN6jkOdkC5Ucs5pyZHge6slLRakbMvlv5ZP5kMunOUNCRulvxN5AjkUP8twvLpegcmyMQfnadNiWs9SDtlvG/p+wbID1aGOLZCAsGNDUBX2ppZ1vQLTVyTcTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ILc4bfp8; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e2be2361efso1614075ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:49:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1713966574; x=1714571374; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JCs36F0PWzr7cYBSvNxUQg6C6ceYxo7oYx4QjH9HBWk=;
-        b=ILc4bfp8fUrmB+qMM2c9nlvnNBFqIbkhrCEgX2YFwXXNsTL91XDTDGAK53fhHBsf9G
-         UUdmj1Xl8+D1HoazinJIsNm4qZyJiCBtM1SnX7zVFDOPlmNqdYphGzuBoELhKQxhmnlB
-         ubU24Wk2X4BQDrefkCPFSt2Ow7Y9EI28TdudM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713966574; x=1714571374;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JCs36F0PWzr7cYBSvNxUQg6C6ceYxo7oYx4QjH9HBWk=;
-        b=khzgodbW9+POLJGyzp3szQfeeX154Cjt8Ws9HMd4QTF2FRn7Hdm/JywkIYEk+7qFky
-         WEtWTsTZkubCMnyDjLgBOgkIhK98b72QqEwZO4sbcrSFv5MeU+u87oQ2BRVLbYoKDMdU
-         Toebu8uuyd2Uv4doW92E/ZfCIEqupQGiInxtMfOD03qFu1XoY2lk1BTUqWAwjjb3atnm
-         zH+lzsMp0Ny8V8w0V6IYNk13Dp6yjZrjlPaEaeSYbASoxt+0CQKMVz2/1XagmDBia3qX
-         oYLjBcOy6G4iY+h3O8Bn3PUEPQCl0jjVHUDLCQd6UmNsw+W/SfGjDLxLLxS5/gAbf5Hj
-         FI7g==
-X-Forwarded-Encrypted: i=1; AJvYcCUmmDXS9EdICM/lNVlPgHdn0dYK+633AOszK7ULT2Xed03MQquNxWliMek1XoL+Ucf7Yl900yxIWH5ZZVEQPLu9M4pUvICcUNAGQMOI
-X-Gm-Message-State: AOJu0YxHNCAidVRWcbuqGmaCBmUJUfLQOLLsxcI7ErPKTDyhtSTaG2OK
-	iUPjEs+TCQhAIJQsPEzuq4ZbH3aeB8upcecyYFhkR9hMeWj6xxFIjTTeclPCPl4=
-X-Google-Smtp-Source: AGHT+IFiRaCL23pbSU0/Yn84eBCvHp/itg92YZttsTK+6l+gegZ0L2tqoYX/jbPAg4iNh82grdXwqw==
-X-Received: by 2002:a17:902:8495:b0:1e9:9ffb:bab with SMTP id c21-20020a170902849500b001e99ffb0babmr2583007plo.5.1713966574470;
-        Wed, 24 Apr 2024 06:49:34 -0700 (PDT)
-Received: from [192.168.43.82] ([223.185.79.208])
-        by smtp.gmail.com with ESMTPSA id p3-20020a170902780300b001e7b8c21ebesm12087790pll.225.2024.04.24.06.49.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 06:49:33 -0700 (PDT)
-Message-ID: <cc46c002-c771-499d-96f7-38db978ae975@linuxfoundation.org>
-Date: Wed, 24 Apr 2024 07:49:27 -0600
+	 In-Reply-To:Content-Type; b=IrgR8mS5JmLmkl8+l+3fqh+HseUxfSosyz/3rZy3BKNBdGbCzPr0ENQinGoPQJs9PLVp95xl1tR8mWloQDUbimeRfHOSY6wU7nLoBj6qXOBnuJbdpEmLtxER3STWis0BVuO8XI3C5Bsxiv7i87VYZxBntGDcWYEqZl7xjGG2WDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=e+SKJShN; arc=none smtp.client-ip=115.124.30.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713966578; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=cMUGdl9jNnlRyNkMOzdJJPy7mvaoUfHQxqz9NDcpeS0=;
+	b=e+SKJShN/EXn9jkl3iH+JxU9elE29Zbp1ne2FMSRDvbbefny7McetuaDcXMcQ75DXohedRZm+QcId69J6N6yDVIVrIRsnpnZeRH1sl9ZtNhcgVVq8yWFAFcdQSZUvOyojeQ299PF/oSj5Hrsmn/8P3WdWyRwALbVrJBaK6RE3Os=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045046011;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W5COgTr_1713966574;
+Received: from 192.168.0.106(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W5COgTr_1713966574)
+          by smtp.aliyun-inc.com;
+          Wed, 24 Apr 2024 21:49:36 +0800
+Message-ID: <813fe7fd-3004-4e8b-801d-95c33559a025@linux.alibaba.com>
+Date: Wed, 24 Apr 2024 21:49:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,60 +48,197 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/16] selftests/resctrl: resctrl_val() related
- cleanups & improvements
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- linux-kselftest@vger.kernel.org, Reinette Chatre
- <reinette.chatre@intel.com>, Shuah Khan <shuah@kernel.org>,
- Babu Moger <babu.moger@amd.com>,
- =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= <maciej.wieczor-retman@intel.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>, linux-kernel@vger.kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240408163247.3224-1-ilpo.jarvinen@linux.intel.com>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240408163247.3224-1-ilpo.jarvinen@linux.intel.com>
+Subject: Re: [RFC PATCH 0/5] add mTHP support for anonymous share pages
+To: Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org,
+ hughd@google.com
+Cc: willy@infradead.org, david@redhat.com, wangkefeng.wang@huawei.com,
+ 21cnbao@gmail.com, ying.huang@intel.com, shy828301@gmail.com,
+ ziy@nvidia.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
+ <4b998e7d-153f-48cc-a9bb-8c84bb675581@arm.com>
+ <c1f68109-7665-4905-996f-f1067dfa2cb6@linux.alibaba.com>
+ <80b5f87e-c156-4ccc-98f0-96f1fd864273@arm.com>
+ <ef4f15dd-da31-4a1e-bec5-62a7002c4f7c@linux.alibaba.com>
+ <5b8b22e7-6355-4b08-b5b5-1e33ebae6f16@arm.com>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <5b8b22e7-6355-4b08-b5b5-1e33ebae6f16@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 4/8/24 10:32, Ilpo Järvinen wrote:
-> Hi all,
-> 
-> This series does a number of cleanups into resctrl_val() and
-> generalizes it by removing test name specific handling from the
-> function.
-> 
-> One of the changes improves MBA/MBM measurement by narrowing down the
-> period the resctrl FS derived memory bandwidth numbers are measured
-> over. My feel is it didn't cause noticeable difference into the numbers
-> because they're generally good anyway except for the small number of
-> outliers. To see the impact on outliers, I'd need to setup a test to
-> run large number of replications and do a statistical analysis, which
-> I've not spent my time on. Even without the statistical analysis, the
-> new way to measure seems obviously better and makes sense even if I
-> cannot see a major improvement with the setup I'm using.
-> 
-> This series has some conflicts with SNC series from Maciej (Maciej has
-> privately agreed to base his series on top of this series) and also
-> with the MBA/MBM series from Babu.
-> 
-> --
->   i.
-> 
-> v3:
-> - Rename init functions to <testname>_init()
-> - Replace for loops with READ+WRITE statements for clarity
-> - Don't drop Return: entry from perf_open_imc_mem_bw() func comment
-> - New patch: Fix closing of IMC fds in case of error
-> - New patch: Make "bandwidth" consistent in comments & prints
-> - New patch: Simplify mem bandwidth file code
-> - Remove wrong comment
-> - Changed grp_name check to return -1 on fail (internal sanity check)
-> 
 
-I can apply these for Linux 6.10-rc1 once I get an Ack from Reinette.
 
-thanks,
--- Shuah
+On 2024/4/24 18:01, Ryan Roberts wrote:
+> On 24/04/2024 10:55, Baolin Wang wrote:
+>>
+>>
+>> On 2024/4/24 16:26, Ryan Roberts wrote:
+>>> On 24/04/2024 07:55, Baolin Wang wrote:
+>>>>
+>>>>
+>>>> On 2024/4/23 18:41, Ryan Roberts wrote:
+>>>>> On 22/04/2024 08:02, Baolin Wang wrote:
+>>>>>> Anonymous pages have already been supported for multi-size (mTHP) allocation
+>>>>>> through commit 19eaf44954df, that can allow THP to be configured through the
+>>>>>> sysfs interface located at
+>>>>>> '/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled'.
+>>>>>>
+>>>>>> However, the anonymous shared pages will ignore the anonymous mTHP rule
+>>>>>> configured through the sysfs interface, and can only use the PMD-mapped
+>>>>>> THP, that is not reasonable. Many implement anonymous page sharing through
+>>>>>> mmap(MAP_SHARED | MAP_ANONYMOUS), especially in database usage scenarios,
+>>>>>> therefore, users expect to apply an unified mTHP strategy for anonymous pages,
+>>>>>> also including the anonymous shared pages, in order to enjoy the benefits of
+>>>>>> mTHP. For example, lower latency than PMD-mapped THP, smaller memory bloat
+>>>>>> than PMD-mapped THP, contiguous PTEs on ARM architecture to reduce TLB miss
+>>>>>> etc.
+>>>>>
+>>>>> This sounds like a very useful addition!
+>>>>>
+>>>>> Out of interest, can you point me at any workloads (and off-the-shelf
+>>>>> benchmarks
+>>>>> for those workloads) that predominantly use shared anon memory?
+>>>>
+>>>> As far as I know, some database related workloads make extensive use of shared
+>>>> anonymous page, such as PolarDB[1] in our Alibaba fleet, or MySQL likely also
+>>>> uses shared anonymous memory. And I still need to do some investigation to
+>>>> measure the performance.
+>>>>
+>>>> [1] https://github.com/ApsaraDB/PolarDB-for-PostgreSQL
+>>>
+>>> Thanks for the pointer!
+>>>
+>>>>
+>>>>>> The primary strategy is that, the use of huge pages for anonymous shared pages
+>>>>>> still follows the global control determined by the mount option "huge="
+>>>>>> parameter
+>>>>>> or the sysfs interface at '/sys/kernel/mm/transparent_hugepage/shmem_enabled'.
+>>>>>> The utilization of mTHP is allowed only when the global 'huge' switch is
+>>>>>> enabled.
+>>>>>> Subsequently, the mTHP sysfs interface
+>>>>>> (/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled)
+>>>>>> is checked to determine the mTHP size that can be used for large folio
+>>>>>> allocation
+>>>>>> for these anonymous shared pages.
+>>>>>
+>>>>> I'm not sure about this proposed control mechanism; won't it break
+>>>>> compatibility? I could be wrong, but I don't think shmem's use of THP used to
+>>>>> depend upon the value of /sys/kernel/mm/transparent_hugepage/enabled? So it
+>>>>
+>>>> Yes, I realized this after more testing.
+>>>>
+>>>>> doesn't make sense to me that we now depend upon the
+>>>>> /sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled values (which by
+>>>>> default disables all sizes except 2M, which is set to "inherit" from
+>>>>> /sys/kernel/mm/transparent_hugepage/enabled).
+>>>>>
+>>>>> The other problem is that shmem_enabled has a different set of options
+>>>>> (always/never/within_size/advise/deny/force) to enabled (always/madvise/never)
+>>>>>
+>>>>> Perhaps it would be cleaner to do the same trick we did for enabled; Introduce
+>>>>> /mm/transparent_hugepage/hugepage-XXkb/shmem_enabled, which can have all the
+>>>>> same values as the top-level /sys/kernel/mm/transparent_hugepage/shmem_enabled,
+>>>>> plus the additional "inherit" option. By default all sizes will be set to
+>>>>> "never" except 2M, which is set to "inherit".
+>>>>
+>>>> Sounds good to me. But I do not want to copy all same values from top-level
+>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled':
+>>>> always within_size advise never deny force
+>>>>
+>>>> For mTHP's shmem_enabled interface, we can just keep below values:
+>>>> always within_size advise never
+>>>>
+>>>> Cause when checking if mTHP can be used for anon shmem, 'deny' is equal to
+>>>> 'never', and 'force' is equal to 'always'.
+>>>
+>>> I'll admit it wasn't completely clear to me after reading the docs, but my rough
+>>> understanding is:
+>>>
+>>>    - /sys/kernel/mm/transparent_hugepage/shmem_enabled controls
+>>>      mmap(SHARED|ANON) allocations (mostly; see rule 3)
+>>>    - huge=... controls tmpfs allocations
+>>>    - deny and force in shmem_enabled are equivalent to never and always for
+>>>      mmap(SHARED|ANON) but additionally override all tmpfs mounts so they act as
+>>>      if they were mounted with huge=never or huge=always
+>>>
+>>> Is that correct? If so, then I think it still makes sense to support per-size
+>>
+>> Correct.
+>>
+>>> deny/force. Certainly if a per-size control is set to "inherit" and the
+>>> top-level control is set to deny or force, you would need that to mean something.
+>>
+>> IMHO, the '/mm/transparent_hugepage/hugepage-XXkb/shmem_enabled' interface
+>> should only control the anonymous shmem. And 'huge=' controls tmpfs allocation,
+>> so we should not use anonymous control to override tmpfs control, which seems a
+>> little mess?
+> 
+> I agree it would be cleaner to only handle mmap(SHARED|ANON) here, and leave the
+> tmpfs stuff for another time. But my point is that
+> /mm/transparent_hugepage/shmem_enabled already interferes with tmpfs if the
+> value is deny or force. So if you have:
+> 
+> echo deny > /mm/transparent_hugepage/shmem_enabled
 
+IIUC, this global control will cause shmem_is_huge() to always return 
+false, so no matter how 
+'/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' is set, 
+anonymous shmem will not use mTHP. No?
+
+> echo inherit > /mm/transparent_hugepage/hugepage-64kB/shmem_enabled
+> 
+> What does that mean?
+> 
+>>
+>>>>> Of course the huge= mount option would also need to take a per-size option in
+>>>>> this case. e.g. huge=2048kB:advise,64kB:always
+>>>>
+>>>> IMO, I do not want to change the global 'huge=' mount option, which can control
+>>>> both anon shmem and tmpfs, but mTHP now is only applied for anon shmem. So let's
+>>>
+>>> How does huge= control anon shmem? I thought it was only for mounted
+>>> filesystems; so tmpfs? Perhaps my mental model for how this works is broken...
+>>
+>> Sorry for noise, you are right. So this is still the reason I don't want to
+>> change the semantics of 'huge=', which is used to control tmpfs.
+>>
+>>>> keep it be same with the global sysfs interface:
+>>>> /sys/kernel/mm/transparent_hugepage/shmem_enabled.
+>>>>
+>>>> For tmpfs large folio strategy, I plan to address it later, and we may need more
+>>>> discussion to determine if it should follow the file large folio strategy or not
+>>>> (no investigation now).
+>>>
+>>> OK. But until you get to tmpfs, you'll need an interim definition for what it
+>>> means if a per-size control is set to "inherit" and the top-level control is set
+>>> to deny/force.
+>>>
+>>>>
+>>>> Thanks for reviewing.
+>>>
+>>> No problem! Thanks for doing the work!
+>>>
+>>>>
+>>>>>> TODO:
+>>>>>>     - More testing and provide some performance data.
+>>>>>>     - Need more discussion about the large folio allocation strategy for a
+>>>>>> 'regular
+>>>>>> file' operation created by memfd_create(), for example using ftruncate(fd) to
+>>>>>> specify
+>>>>>> the 'file' size, which need to follow the anonymous mTHP rule too?
+>>>>>>     - Do not split the large folio when share memory swap out.
+>>>>>>     - Can swap in a large folio for share memory.
+>>>>>>
+>>>>>> Baolin Wang (5):
+>>>>>>      mm: memory: extend finish_fault() to support large folio
+>>>>>>      mm: shmem: add an 'order' parameter for shmem_alloc_hugefolio()
+>>>>>>      mm: shmem: add THP validation for PMD-mapped THP related statistics
+>>>>>>      mm: shmem: add mTHP support for anonymous share pages
+>>>>>>      mm: shmem: add anonymous share mTHP counters
+>>>>>>
+>>>>>>     include/linux/huge_mm.h |   4 +-
+>>>>>>     mm/huge_memory.c        |   8 ++-
+>>>>>>     mm/memory.c             |  25 +++++++---
+>>>>>>     mm/shmem.c              | 107 ++++++++++++++++++++++++++++++----------
+>>>>>>     4 files changed, 108 insertions(+), 36 deletions(-)
+>>>>>>
 
