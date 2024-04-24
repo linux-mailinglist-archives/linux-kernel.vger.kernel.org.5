@@ -1,171 +1,138 @@
-Return-Path: <linux-kernel+bounces-157835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AA498B1701
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E48898B1707
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:24:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CEC928313C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:22:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F8B928866F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:24:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D877516F0DD;
-	Wed, 24 Apr 2024 23:22:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADED916F0E9;
+	Wed, 24 Apr 2024 23:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h+2ubWx2"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZDBmXtqK"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DCE515747E
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:22:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 593B51E86F
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:23:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714000958; cv=none; b=oZiLrHoavYCket/+dn5c3se0FSvv4dQh/ChKk80fBGDqBLrG2y/A5RufP1x+SGCTDdNtPyMgn2uU8KhI1+b8lWAmib2wqbx5AqJ90PQ6px4j903NszCuoSh1yJ/JnYLGhlMpWK3/w7srdQqGlldejZyj4s/79IJ/o1fFbsRkH7k=
+	t=1714001035; cv=none; b=hLlBLwWvuatsq14yjpD6tcUrTxFgXaKR3N4SKEIU3bhi4PR7y10URN6ipeK0qU1E76XuUbVDhzDMcce1SHQRhgRrzQhi33aVJitzaTXlFGtPZqGQZ1CyyT3JM4Uv0rCkoCL/i6YZVaA1pEl5VpbqhX+a2vdt9E0mBxndso4GGss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714000958; c=relaxed/simple;
-	bh=Q5D0GlcovYCEkGzpI5doau3iBuWfQWrp9GB4JaXHZz0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=hpbgkrWshMJkDubqQ6e4Nh9vXG3rfIZhsBiOZ9T7GumpVo86YGgdFAZzEg8ABhA2PRwmLRgjNQ08ml7RgxxkoMyFulVzCF5SBzd5mwtd5LHiujkpqH6hIN0V70EgqLW9D9jZDbMYF2W4ZZg6axvm38RJeaPRAnFV1bjs3ZskHzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h+2ubWx2; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714000957; x=1745536957;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Q5D0GlcovYCEkGzpI5doau3iBuWfQWrp9GB4JaXHZz0=;
-  b=h+2ubWx25K6v5WhXL9XaDFX5XErGNfMEuDzupKRjot329WjZgEvYp4GS
-   ZEDmKsu67VQDMKH6h+OmdgaDm/Wo/eC0Uv8mK1joxaTcEZ+prZfAwri9R
-   5ILn0ToJnNqB5EEQBs+yncGMH34IfVpN1Ko2585nr5kIAIGXWUTlpUWrb
-   468xuyRw3z+vzt12ekAFpt+deijSzKEQzHXqsLf5tWGb2vDjyqSwesgk2
-   HAiqsFKQdliMvGAmBSwEU8x/RI9wEQnfonzskEgUXWUxiEg4p8gcGCQn9
-   QyU76a5sZexJBQfzNDgt57JsiMJwBE6iFBMvMUmFEb/l2vBGmFQAR9DAm
-   g==;
-X-CSE-ConnectionGUID: yCR1QY2OR1ajHABPER/1Jg==
-X-CSE-MsgGUID: whzfIZsVQFWGsaDgwPAFQQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="27176825"
-X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
-   d="scan'208";a="27176825"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 16:22:36 -0700
-X-CSE-ConnectionGUID: 3rNtiLX+Sxu7T6bFFxkoZw==
-X-CSE-MsgGUID: qd+OC7dYSpeeHCT5CYgkzQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
-   d="scan'208";a="56047914"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 24 Apr 2024 16:22:34 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rzlwd-0001lM-2O;
-	Wed, 24 Apr 2024 23:22:31 +0000
-Date: Thu, 25 Apr 2024 07:22:20 +0800
-From: kernel test robot <lkp@intel.com>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
-	Qais Yousef <qyousef@layalina.io>,
-	Lukasz Luba <lukasz.luba@arm.com>
-Subject: [tip:sched/core 26/27] drivers/base/arch_topology.c:204:17: sparse:
- sparse: incorrect type in initializer (different address spaces)
-Message-ID: <202404250740.VhQQoD7N-lkp@intel.com>
+	s=arc-20240116; t=1714001035; c=relaxed/simple;
+	bh=kWYPE52TsD9tInankw4Nl3ZO8d6bCgXJgGeWHlBI7E8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N4PzVRcNR7KRptnJb52Pv3cwTDa5elQ7nTfKAcpi14RIByzI6eMnfmN3Uv1VVjAyX84dMlMtLOGyFoR4EAQrVTYJQKOhl5Gbm9UyAy5c0duboMVBJD/11yniWo7mdhaXUvI1ZU61uYQJH3dWSVTvzS2HqJMJyDHXZZOEDcT6KLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZDBmXtqK; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2dd041acff1so4208491fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:23:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714001031; x=1714605831; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R4Xhz5NWCXtt8nKXxeIFmhH8Oed5NRQI3JQnJYBJb4s=;
+        b=ZDBmXtqKUgzM5W6Y9v/FaSWCHcLxNWr12HbqWLBMO6yf6A8OTiahKd3JK1posYwxSG
+         vuMm8PFjLRvrMt5lwZUyiweQsVDVF/F62rnhi0zCE97/mNJZDsIrMMajRsNQZSWmr4og
+         91mlctLys46RrYkEjgAGu3mrzHmHtO6IJiTk66weMjRoMXvW0gpylRits2TiFvcY1cMt
+         BY5wd9sliMz2uIigVPYvjLwCd1a6JIZf3M2FhGr/gSilxQWrA4VkRFCwDVXgAf+hN4jo
+         BJ3M7EGjRQdm3yamJoku/qFFDjGF1fVDfDEZ7VgXBFd+amcVrRPryrjanJWvvXizAaAS
+         nCGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714001031; x=1714605831;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R4Xhz5NWCXtt8nKXxeIFmhH8Oed5NRQI3JQnJYBJb4s=;
+        b=ox5hxNHuRaZScxbF6/DCTJt5P0Hd05CrvBVnoF7Lv4rUf9+MMBWIfhpAXUsm0xjVU2
+         C9uUbHljQCmrNZIFUF3DD4Abtgvt+oefSXefibqEk+TaXDgguqxNp7XXbiIZQ0s+2a9F
+         DCU9Q/wzKNGb+SQCXS5OGuuBdFwPp65NkSaUlBZ/JVvPbJrKxGGb6exOxDMMuxGegyRv
+         ftn2sB/YOi4hzp0KoSJqp/qXlWA/I1apATz8Cj65qMoj6MIaJb2spB7oCiAs7G74rc9M
+         mwe46WCIR5nLDQDAdhdikRKLqd5mBfWCU82JRQxq7zvDxCV1XDgH7uPfGMfuoIKw16Sp
+         bIxA==
+X-Forwarded-Encrypted: i=1; AJvYcCUS0yW5GsBB+oG8D6ZjDetxc0UWZlgzm224dPwWvvEgC5MKntEPpLVaALz9geuSfZRYwkXT/jPOxR5wcI8/9Yqf28pFK9bajgLBR2k2
+X-Gm-Message-State: AOJu0YzfkGETwkrYyBygXxyHg/8ttK4J6ZT49n9rwNJjyZ7bMVvJdcYn
+	+JGeNdLJBUsl1LTj7v4xi3IY0GUm4xk03JOEgDf3+X1h3M6EMeEy1T7uyl43vQ4YrWAYZHWR/Iq
+	dEiDbvHZsifkTTV63nxnZEQkGciPZ77QQMsAQ
+X-Google-Smtp-Source: AGHT+IHPC10+jHzeG+tgpIIgUMIPE4SuCr0QvH7By3qs7yKyt3sGcnqfFcju9V2mis/w27r/UIkSloxyYeZtRuWl320=
+X-Received: by 2002:ac2:4254:0:b0:519:63c1:6f45 with SMTP id
+ m20-20020ac24254000000b0051963c16f45mr2385942lfl.61.1714001031354; Wed, 24
+ Apr 2024 16:23:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240424125940.2410718-1-leitao@debian.org>
+In-Reply-To: <20240424125940.2410718-1-leitao@debian.org>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Wed, 24 Apr 2024 16:23:12 -0700
+Message-ID: <CAJD7tkaWw14fLvCKE5-3U-FLm_0bsMJHcxHEFJwgGdfsR4SzMw@mail.gmail.com>
+Subject: Re: [PATCH] memcg: Fix data-race KCSAN bug in rstats
+To: Breno Leitao <leitao@debian.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, leit@meta.com, 
+	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>, 
+	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <linux-mm@kvack.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Vincent,
+On Wed, Apr 24, 2024 at 6:00=E2=80=AFAM Breno Leitao <leitao@debian.org> wr=
+ote:
+>
+> A data-race issue in memcg rstat occurs when two distinct code paths
+> access the same 4-byte region concurrently. KCSAN detection triggers the
+> following BUG as a result.
+>
+>         BUG: KCSAN: data-race in __count_memcg_events / mem_cgroup_css_rs=
+tat_flush
+>
+>         write to 0xffffe8ffff98e300 of 4 bytes by task 5274 on cpu 17:
+>         mem_cgroup_css_rstat_flush (mm/memcontrol.c:5850)
+>         cgroup_rstat_flush_locked (kernel/cgroup/rstat.c:243 (discriminat=
+or 7))
+>         cgroup_rstat_flush (./include/linux/spinlock.h:401 kernel/cgroup/=
+rstat.c:278)
+>         mem_cgroup_flush_stats.part.0 (mm/memcontrol.c:767)
+>         memory_numa_stat_show (mm/memcontrol.c:6911)
+> <snip>
+>
+>         read to 0xffffe8ffff98e300 of 4 bytes by task 410848 on cpu 27:
+>         __count_memcg_events (mm/memcontrol.c:725 mm/memcontrol.c:962)
+>         count_memcg_event_mm.part.0 (./include/linux/memcontrol.h:1097 ./=
+include/linux/memcontrol.h:1120)
+>         handle_mm_fault (mm/memory.c:5483 mm/memory.c:5622)
+> <snip>
+>
+>         value changed: 0x00000029 -> 0x00000000
+>
+> The race occurs because two code paths access the same "stats_updates"
+> location. Although "stats_updates" is a per-CPU variable, it is remotely
+> accessed by another CPU at
+> cgroup_rstat_flush_locked()->mem_cgroup_css_rstat_flush(), leading to
+> the data race mentioned.
+>
+> Considering that memcg_rstat_updated() is in the hot code path, adding
+> a lock to protect it may not be desirable, especially since this
+> variable pertains solely to statistics.
+>
+> Therefore, annotating accesses to stats_updates with READ/WRITE_ONCE()
+> can prevent KCSAN splats and potential partial reads/writes.
+>
+> Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-head:   97450eb909658573dcacc1063b06d3d08642c0c1
-commit: d4dbc991714eefcbd8d54a3204bd77a0a52bd32d [26/27] sched/cpufreq: Rename arch_update_thermal_pressure() => arch_update_hw_pressure()
-config: arm64-randconfig-r132-20240425 (https://download.01.org/0day-ci/archive/20240425/202404250740.VhQQoD7N-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20240425/202404250740.VhQQoD7N-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404250740.VhQQoD7N-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
-   drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
->> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
-   drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
->> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
-   drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
->> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
-   drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
->> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
-   drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
->> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
-   drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
->> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
-   drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
-
-vim +204 drivers/base/arch_topology.c
-
-   164	
-   165	/**
-   166	 * topology_update_hw_pressure() - Update HW pressure for CPUs
-   167	 * @cpus        : The related CPUs for which capacity has been reduced
-   168	 * @capped_freq : The maximum allowed frequency that CPUs can run at
-   169	 *
-   170	 * Update the value of HW pressure for all @cpus in the mask. The
-   171	 * cpumask should include all (online+offline) affected CPUs, to avoid
-   172	 * operating on stale data when hot-plug is used for some CPUs. The
-   173	 * @capped_freq reflects the currently allowed max CPUs frequency due to
-   174	 * HW capping. It might be also a boost frequency value, which is bigger
-   175	 * than the internal 'capacity_freq_ref' max frequency. In such case the
-   176	 * pressure value should simply be removed, since this is an indication that
-   177	 * there is no HW throttling. The @capped_freq must be provided in kHz.
-   178	 */
-   179	void topology_update_hw_pressure(const struct cpumask *cpus,
-   180					      unsigned long capped_freq)
-   181	{
-   182		unsigned long max_capacity, capacity, hw_pressure;
-   183		u32 max_freq;
-   184		int cpu;
-   185	
-   186		cpu = cpumask_first(cpus);
-   187		max_capacity = arch_scale_cpu_capacity(cpu);
-   188		max_freq = arch_scale_freq_ref(cpu);
-   189	
-   190		/*
-   191		 * Handle properly the boost frequencies, which should simply clean
-   192		 * the HW pressure value.
-   193		 */
-   194		if (max_freq <= capped_freq)
-   195			capacity = max_capacity;
-   196		else
-   197			capacity = mult_frac(max_capacity, capped_freq, max_freq);
-   198	
-   199		hw_pressure = max_capacity - capacity;
-   200	
-   201		trace_hw_pressure_update(cpu, hw_pressure);
-   202	
-   203		for_each_cpu(cpu, cpus)
- > 204			WRITE_ONCE(per_cpu(hw_pressure, cpu), hw_pressure);
-   205	}
-   206	EXPORT_SYMBOL_GPL(topology_update_hw_pressure);
-   207	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+, and or posterity:
+Fixes: 9cee7e8ef3e3 ("mm: memcg: optimize parent iteration in
+memcg_rstat_updated()")
 
