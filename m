@@ -1,136 +1,151 @@
-Return-Path: <linux-kernel+bounces-156168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6D068AFEBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:49:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 645498AFEB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 04:49:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56C161F228A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:49:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E53528A1D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:49:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D6F413B583;
-	Wed, 24 Apr 2024 02:47:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 319B8C138;
+	Wed, 24 Apr 2024 02:47:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f9OuM49H"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EJ1jgSca"
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4213283CCA
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 02:47:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BDADDD7;
+	Wed, 24 Apr 2024 02:47:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713926854; cv=none; b=tRFOf2/5gfgBNitLPbYKhcRg9RttQRZo5tccSf8GNvvH8uj3qtNLhNID3/rdAWvLsLi4Ic0tJtwa8TR33IEZysxrCQx01ajEPMd1trVh1YzT+o6XXELg5XFved5We0P+xDT7QCKGhVxJ0GLl/b1BVtAE3EKiOt0KfcZvXYX1SYg=
+	t=1713926837; cv=none; b=HCEwtVxplBjC0hJj+Dje0Wsh9Rr49Eq4TR5UQBbqaLyCC/oi28qkQ8kxTxIBVX+SrlPycjt9uID20uVgp+iMTKGMWw9TkgUIwLJc/qY8hhgDkNwW5aPzsSQPUmV2meiaXr7Q65IljqOlWgDBE1S6g8w/8m3Mf5rl52sFskYsUj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713926854; c=relaxed/simple;
-	bh=+9UFQ7F0kNPXWU5psDxCx9iQ57zcJZT5siNRwuiOyJQ=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=t3amoUYucVRBb+srLlhiqvowQwUf12+OKHXEJHisZuzEhUsDUCThFFzuAMfzhW/Oe4HgtGMDocEeYw2ZKOWv+/K6sBnD59u43fS0MlCNAfDeGp9mJtEKE6/egW1bQW8OTRFFfLLpQm7zbqAVZhSUC4WcCkILC5h8UHU6UWFDNoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f9OuM49H; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713926853; x=1745462853;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+9UFQ7F0kNPXWU5psDxCx9iQ57zcJZT5siNRwuiOyJQ=;
-  b=f9OuM49HoAqnWIGWu43VFooPpL3CspHZEC3y12RRv164oPdfddwaH5LM
-   /1KWMBDVC1vCbFeUP0JatiJUtuPXRji1YG8lZKMEFtEjq0aO9wXgr9vwD
-   en566Z2hoVHK5IkugtM+ld9CGrw0wkIfBpZShuvGFK5zXu4fT1HwUOyd/
-   xY0PgUVbymGS8ZdUc555Iz6b/UoThH5rUzxBOUDOwmKSDD29aaGlfHwVc
-   kKHCLNyTaLU5xVnX63KnGOEUGiolVrOWwNcENvtAvM8xI45Bg1+yvhSwc
-   vNHZNQnbgxb1KN2RdgAm9M1UsnKl131QUvXV5rUgzZL5sJM6nHgyQDRM1
-   Q==;
-X-CSE-ConnectionGUID: u2a+hYUWT/u9hhrD2M6ZXA==
-X-CSE-MsgGUID: 8ZGzj2s6QuONV/B2ZQQZIA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="12473148"
-X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="12473148"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 19:47:33 -0700
-X-CSE-ConnectionGUID: w/MpCQrWRG6QdETBGVh0CA==
-X-CSE-MsgGUID: Iz00bPD7QRu5uiyvlwgPXQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="24449912"
-Received: from unknown (HELO [10.239.159.127]) ([10.239.159.127])
-  by orviesa010.jf.intel.com with ESMTP; 23 Apr 2024 19:47:30 -0700
-Message-ID: <4c8fbcc3-64cf-4add-8d82-9a2ce8dbd39d@linux.intel.com>
-Date: Wed, 24 Apr 2024 10:46:06 +0800
+	s=arc-20240116; t=1713926837; c=relaxed/simple;
+	bh=aW9QjOZxUq1CXz5OPtMFqXBshrzsl24lbOThqhik7eQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rgyjfXERmFlMsprTrw7R2B+LDNVpBDelMia/pNz07eBUL2nLGK6iCXM7oDAE/ZOgy8WmC5hzMjU59BDUeGBWg61dxY6zy4mEF2yP5cjEerxMHxh91SW5XaVUpLsSRhMznXf6h2v/7XKRHNNHGuyV9T4hL2eVqaN5JhWGmhvzaF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EJ1jgSca; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2a78c2e253aso5039396a91.3;
+        Tue, 23 Apr 2024 19:47:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713926835; x=1714531635; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HXkLM1FkKW7lL5+iv6VksWN76QjCOZFWNl9wI9RaxME=;
+        b=EJ1jgScaAnIkBVR62GS3kZTnt8HgB0f6WTmKb+IX7eZ83AzhHKcSq1srwTDHvgSMxY
+         VBMRWcwxAJg0+HqJIxA+Fk4x6gLLSzoiv6cnnHInKnOcC2aBf6D0B8BavJCyC6B3namv
+         PAIUF3Cw4VC8olX9eaF8fdIdPJOtSEvYK5nKBKkMCjdo9x2XduI40dYT5nPW6DlaLYbQ
+         0xArKkhN3xMoNWLQIOoCpvjcGrhEsSXqanZqp8LhglO1WVjbNzmkoPg2Rjrc1UIdkiVo
+         +KrHIuqcTotvxyvxCNlhU0YWrjQj71EOU2aA5fnFOXVxHeQhywDEFHs29bJ/3oLaqTCj
+         Ki0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713926835; x=1714531635;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HXkLM1FkKW7lL5+iv6VksWN76QjCOZFWNl9wI9RaxME=;
+        b=o8ApYNe93QZoWqizpaNKWLWovmb+ddLtMpYRWszlCEkIik5h8PFHq9Tgz2SYmkzcrw
+         yeqylh5/SuPS5P0IkaPnpFJF2bvwacK3+YlITVh9jScbRqvzj9GrW7cWFga6C6sIPPq8
+         Mk8xsPhVcKQrVuOwMxuozKGQ5GMD6oNzhqvHbmAxgHaSXXEdaUq/gxSr7dynvNC92hUl
+         I/P94v89Iyt5zx6kMpiEoh156XwRcDIL1Ytx74HMU/OfctFi83OK5J9E3iVYzlTfBL4j
+         u1Ia8p6tmcPwCV6RjC91qjUEC2CBK/35NN/ZatgcM11I39m445Ag8XJ4jS+5ylvD/QkG
+         deHA==
+X-Forwarded-Encrypted: i=1; AJvYcCVwgOoXQPMfg0rNMacz6yFizIZyjNwzSsqRej35KmE5XfVEcRYaWbvCLv7WbMlk3FEGOeR/3ax0FmUne5TXSvJdK9IU
+X-Gm-Message-State: AOJu0YyCnV4uQ5Km0DjaEOYR9LNUFWtKN52vBsu0guExUH0j90pfTWi8
+	7jj2AuKe3PnjkhR3Xf3aViqoQqcCpzzhAZ7naYKxFu57UUoHP6vaKPySQiYgvtQj3tNQ88aaeWN
+	Fu7ymcrIgvLRUIj/WnaAbc3N1snc=
+X-Google-Smtp-Source: AGHT+IF7B6IXhe6a4ebfZwzaKW3gv0klAJb12GGo4Nk4A7NGsGQwWr4sW20qyiqsST9CEu+82Inmukj+01hI6yO5mVU=
+X-Received: by 2002:a17:90b:3448:b0:2a4:ca45:ded1 with SMTP id
+ lj8-20020a17090b344800b002a4ca45ded1mr999701pjb.28.1713926835270; Tue, 23 Apr
+ 2024 19:47:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, "Zhang, Tina" <tina.zhang@intel.com>,
- "Liu, Yi L" <yi.l.liu@intel.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 00/12] Consolidate domain cache invalidation
-To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>
-References: <20240416080656.60968-1-baolu.lu@linux.intel.com>
- <BN9PR11MB52765F34E1168B538C7CEDFD8C112@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB52765F34E1168B538C7CEDFD8C112@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240407090558.3395-1-jiangshanlai@gmail.com> <20240407090558.3395-4-jiangshanlai@gmail.com>
+ <CAEXW_YRjuWMLvmZ_oVHEe837gPAyjBs5OMvZc=T1PXYB0apNmQ@mail.gmail.com>
+In-Reply-To: <CAEXW_YRjuWMLvmZ_oVHEe837gPAyjBs5OMvZc=T1PXYB0apNmQ@mail.gmail.com>
+From: Lai Jiangshan <jiangshanlai@gmail.com>
+Date: Wed, 24 Apr 2024 10:47:03 +0800
+Message-ID: <CAJhGHyDrUu6g1J=ebVCUZDZBbL0FX0RZ-D6sPufs+Ek8_fkcSA@mail.gmail.com>
+Subject: Re: [PATCH V2 03/11] rcu: Reorder tree_exp.h after tree_plugin.h
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org, 
+	Lai Jiangshan <jiangshan.ljs@antgroup.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Zqiang <qiang.zhang1211@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/23/24 5:06 PM, Tian, Kevin wrote:
->> From: Lu Baolu<baolu.lu@linux.intel.com>
->> Sent: Tuesday, April 16, 2024 4:07 PM
->>
->> The IOMMU hardware cache needs to be invalidated whenever the
->> mappings
->> in the domain are changed. Currently, domain cache invalidation is
->> scattered across different places, causing several issues:
->>
->> - IOMMU IOTLB Invalidation: This is done by iterating through the domain
->>    IDs of each domain using the following code:
->>
->>          xa_for_each(&dmar_domain->iommu_array, i, info)
->>                  iommu_flush_iotlb_psi(info->iommu, dmar_domain,
->>                                        start_pfn, nrpages,
->>                                        list_empty(&gather->freelist), 0);
->>
->>    This code could theoretically cause a use-after-free problem because
->>    there's no lock to protect the "info" pointer within the loop.
->>
->> - Inconsistent Invalidation Methods: Different domain types implement
->>    their own cache invalidation methods, making the code difficult to
->>    maintain. For example, the DMA domain, SVA domain, and nested domain
->>    have similar cache invalidation code scattered across different files.
->>
->> - SVA Domain Inconsistency: The SVA domain implementation uses a
->>    completely different data structure to track attached devices compared
->>    to other domains. This creates unnecessary differences and, even
->>    worse, leads to duplicate IOTLB invalidation when an SVA domain is
->>    attached to devices belonging to a same IOMMU.
->>
->> - Nested Domain Dependency: The special overlap between a nested domain
->>    and its parent domain requires a dedicated parent_domain_flush()
->>    helper function to be called everywhere the parent domain's mapping
->>    changes.
->>
->> - Limited Debugging Support: There are currently no debugging aids
->>    available for domain cache invalidation.
->>
->> By consolidating domain cache invalidation into a common location, we
->> can address the issues mentioned above and improve the code's
->> maintainability and debuggability.
->>
-> There are several small nits but overall this series looks good to me:
-> 
-> Reviewed-by: Kevin Tian<kevin.tian@intel.com>
+On Wed, Apr 24, 2024 at 1:58=E2=80=AFAM Joel Fernandes <joel@joelfernandes.=
+org> wrote:
+>
+> On Sun, Apr 7, 2024 at 5:03=E2=80=AFAM Lai Jiangshan <jiangshanlai@gmail.=
+com> wrote:
+> >
+> > From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+> >
+> > Enable tree_exp.h using some rcu preempt macros introduced in
+> > the next patch. The new macros touch core rcu-preempt fields
+> > and are better to be implemented in tree_plugin.h.
+> >
+> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+> > ---
+> >  kernel/rcu/tree.c        | 2 +-
+> >  kernel/rcu/tree_plugin.h | 1 +
+> >  2 files changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index d9642dd06c25..57d1ae26861f 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -5245,6 +5245,6 @@ void __init rcu_init(void)
+> >  }
+> >
+> >  #include "tree_stall.h"
+> > -#include "tree_exp.h"
+> >  #include "tree_nocb.h"
+> >  #include "tree_plugin.h"
+> > +#include "tree_exp.h"
+> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > index b1264096d03a..d899b4afc21c 100644
+> > --- a/kernel/rcu/tree_plugin.h
+> > +++ b/kernel/rcu/tree_plugin.h
+> > @@ -103,6 +103,7 @@ static void __init rcu_bootup_announce_oddness(void=
+)
+> >  #ifdef CONFIG_PREEMPT_RCU
+> >
+> >  static void rcu_report_exp_rnp(struct rcu_node *rnp, bool wake);
+> > +static bool sync_rcu_exp_done(struct rcu_node *rnp);
+> >  static void rcu_read_unlock_special(struct task_struct *t);
+>
+> OK with me, but not sure if the reordering of header inclusion is
+> needed? You could get the same results by just adding declarations of
+> the new helpers to tree_exp.h.
 
-Thanks! I will queue this series to Joerg for wider verification.
+The new macros (in later patch) touch core rcu-preempt fields
+and are better to be implemented in tree_plugin.h.
 
-Best regards,
-baolu
+>
+> Not sure if tree_plugin.h needs to be included last, I for some reason
+> thought it needed to be - but looks like not. I found a thread that
+> shed some light into the header file including C code thing as well,
+> which may or may not help:
+> https://lore.kernel.org/all/8ab3ca72-e20c-4b18-803f-bf6937c2cd70@paulmck-=
+laptop/#t
+>
+> Thanks.
 
