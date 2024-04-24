@@ -1,88 +1,88 @@
-Return-Path: <linux-kernel+bounces-156424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04E4C8B02A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:57:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A2588B02A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:57:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B05222859D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:57:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07F652828E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 06:57:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DADC7158DDC;
-	Wed, 24 Apr 2024 06:54:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D0DE158D84;
+	Wed, 24 Apr 2024 06:54:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pdJOyFxt"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VQtu8hvb"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9782E158DAC
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15956158DC7
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 06:54:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713941674; cv=none; b=dqcSaBFDzEmi14BGchwGtZMoYQGF0yXQ0LT7Ra6H9Wq6F8rXW/LUDZ86AgnhhNdHQdneUDNESK608zDQT5f5O3dLjkIpGk6ASc/ssSIQV3j7FdaJYRgpaEkw0C1sJ9GjT5Pa6VkQE0vP1cmhYAOf7EXXAWNZJ9qpSwyjWRWwm6o=
+	t=1713941675; cv=none; b=GVxOmL3329FX5ehCTvyscOWWIr2w6kLkJbSzDIjhSx7j4f1V9NidH9/yVFAVwiTvRo/+PqNMS+rrRDgDtbmZS8M1Ykhjzqpt0abG6MOw0grC0vEPnlhRX2B8Ei4P0uaUxepq1HdDUrhosLLrNaM9x+vvDOM4Yf5iqCZefjblIb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713941674; c=relaxed/simple;
-	bh=5sYxl+UaCDeqqMYybUb4bNjgCQWorMCRcRO1ytuBsCs=;
+	s=arc-20240116; t=1713941675; c=relaxed/simple;
+	bh=KiZGqCJkejFHYHtqQRdCaSdnyu3r5yGV15Z4OjCcx9c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uX6cgH/0RSjYOC9NOir3zkk0o5YBaFx/y1oDGz5sJv1vew+vqAdlTZei3UxF4s7ssXkz4KEb94VxQXOo8/48JaUR6KW4FbkY0dw2w46eeAcGMnJ3M+FW7OPcH2OLFpPF9jRyQyeOOYcQjNi9QaqpqK4CTSsDFQwawAysmM7v19Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pdJOyFxt; arc=none smtp.client-ip=209.85.221.46
+	 MIME-Version:Content-Type; b=qLrXnQRBW+L0t0AX03yLQnYK4++IFBVCPiZjFThrDfcNSDq5Xp2Dlqg/94RMWJRjRTGdiXJVry5WuCtJfroNX/ya1ogg3nfhL2mMGhonwSVmzdhH0nilcOCeAV5H1woPDCkS4apT3R4qaTjPY73AoMuQkINuQnre9+jpVZtt8b8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VQtu8hvb; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-346406a5fb9so5191149f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:54:32 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-34b66f0500aso1553014f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:54:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713941671; x=1714546471; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1713941672; x=1714546472; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=n2YujgyGecZeMQxLbGb9B2UsmPy4VXriFvistWzKOEs=;
-        b=pdJOyFxtGdmzMRY2QL7E9+jfoNc+PCCvaIdvmXoeN4ppIMLeH0GS7SKMlfduUXpJVO
-         Eo9YU+Zg2VIqohVy9o0o9SWrAsNz+odrKVIBxo0X1v3qZqN8PqAyoHP1J2TJhRJ8Mw2b
-         LTy1j/L5sc4n9LuzwTIoU5G4kf5s8D/QZSqRu0G8vYL+C7QxzicBJX41u4RSq9E7iSy6
-         y7pAyI6LOFEo6pgFT1CsAcrL8MD/AfGktba96gTvwDc0m1vsjgmKnGFG76dN3HuGf8dO
-         OyeDeALFKwyrc79ze9HK5h9x0ys3sqsiZM5v3JNkItJSiqmY9me9EsSdjlvzyUv9OVlp
-         bxiA==
+        bh=l3TeAm5A9mIePQuh7eHFd41oN1Sej5wKawK2CqOUpb4=;
+        b=VQtu8hvbZaeeEgJ2CgiaPevrapJpMRiLbDSA0hjz/jk/l9BtoooWqbqNBsUXIja33f
+         U5pLBP5nGPSPFR86vV4GS1WeylnKwpyo8bu1jGk+fp6mFY8c76gj+sGzIulqV4qixR11
+         eE/PSEl5qGIl2lpvi4g1cFiRy2ip7/tSXrxDrIy95/3k9McFj5xxnzhbdEYds5YbkJbV
+         IGg+0qgnCaeA1BpLPE5LkZJqCPDCHFw9m3h7GkYPZOddDof7IcpgYMOHDNy6PUeORSxU
+         Xy0DTZxNFC1ca9P/M6yDPPPW3qddPqY3lGzpJdseEV+55LDfwOlkgai131hq/VgCy1b4
+         Xojg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713941671; x=1714546471;
+        d=1e100.net; s=20230601; t=1713941672; x=1714546472;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n2YujgyGecZeMQxLbGb9B2UsmPy4VXriFvistWzKOEs=;
-        b=aCcRpYOBV5E/Kzfjba/cbu1P+DrGafRjFszyo6KIqFnOxhf92IFtx7C7ppuXFi4zJu
-         pPGIOEumPDoM1QPe9+4bBYcgjoPQvA8a9IIzaUtkKCnosJVtXTtIUo72InOu5NWN1mE3
-         JicF0SJYKI3aw0hoy/pZ1mgx+Pd1VrmOQlv/nOSVkOK1kGhlwNw7exeADbD6o9kJdTTk
-         NjYRg0QqBzc+ZAya0dCwZF/+9rXlziDNd03OCJvcSJmzpKy/gAbog6F0QvS14+0x24rG
-         VfCNadPzvas7zubVTmRWXHWcLYQ/Sf6pk7xkWKyXz3APh5OFO9uvaIkXeLrCtfBm4IMU
-         u3mg==
-X-Forwarded-Encrypted: i=1; AJvYcCVF450aaypA9pWngqEYUOqYXbhG2BBvG9zsTUoJec2AAk/w2QvrmJ4bEUrIqmDMcWV8IWOGc96B4KeV1Pj9/2lUra7i5sj5rMRwuSr6
-X-Gm-Message-State: AOJu0YwDnrFLulxaiJkFdk4bQ9CUvhN0I+ZufFW3VJRdGRoWzK2gi0PF
-	fY/uMncybKtxIO1t86hgdDhRMbBY3u67aDN1voeCk6YOqVI8HYPPJrk4U7dJwvk=
-X-Google-Smtp-Source: AGHT+IEb/SW08foe6uJmKrfgo2ULn693vJ0SzboRceBM+oGihPmtjWUwOYuhHCN3rosDOAIgjJj0LQ==
-X-Received: by 2002:adf:fdc6:0:b0:345:66a1:d949 with SMTP id i6-20020adffdc6000000b0034566a1d949mr843051wrs.0.1713941671027;
-        Tue, 23 Apr 2024 23:54:31 -0700 (PDT)
+        bh=l3TeAm5A9mIePQuh7eHFd41oN1Sej5wKawK2CqOUpb4=;
+        b=F7eR6mn2i5KIpv4IPyaT1GQA3OTaMccVwNWW3z4NLHpH0YSR0sAXVZ1NlGvyijqaPT
+         PyKpdr7McCqgMtEip1JE4VKpSFaUsKbz7bxI9YRzOc3x6ysLJBV3gheJhpW5nQG2neIt
+         yRV4Q9gyyIQ1oVSaq6T5NNRChTfvV/x4uvaf0lCPZjWnd3+36CvL+mctPhR9biI0tfCQ
+         mrMLf92QPGOAWhKpz+OnrTcnxKGwZuxsH7QcWOjGMR02ffgpUXbDX1uTA7x+Ke6JR2iM
+         du2Zae6I9YPiIXvlg9pfEQnSBzMCzyjJiOduVEZ2+O+M2avQiNCS5VnLdX1kkWBAuEBh
+         1bBg==
+X-Forwarded-Encrypted: i=1; AJvYcCVRsQAmyIwFcvtuFm7QMXvKzjpK1VQc1/aRli9ogKggKnOpobl/pkoMvZ1StVqydXFBZVuFvI6dPwjZdoKatjUIfU/AcgHVqDeYTft0
+X-Gm-Message-State: AOJu0YwlZiCFjWE36mXtzfqK5DMz+XtHL+vMqu91YsIAfGvhdiOTr+gg
+	3HuHLzj46EUufOoK8bSM9KJILIfNuxWk46RDla+HM8MoKcTODAfL2gneV0XB9jI=
+X-Google-Smtp-Source: AGHT+IE9AVXvlCGcToH9YiE2OC1NtyBkLHlUGA1GP639BRwyZEl0itzdMuBGifA4jGIBwqbrv562vA==
+X-Received: by 2002:adf:e352:0:b0:347:b501:477b with SMTP id n18-20020adfe352000000b00347b501477bmr837865wrj.33.1713941672467;
+        Tue, 23 Apr 2024 23:54:32 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id t18-20020a5d6912000000b0034997769ae4sm16338534wru.15.2024.04.23.23.54.29
+        by smtp.gmail.com with ESMTPSA id t18-20020a5d6912000000b0034997769ae4sm16338534wru.15.2024.04.23.23.54.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 23:54:30 -0700 (PDT)
+        Tue, 23 Apr 2024 23:54:31 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Tsahee Zidenberg <tsahee@annapurnalabs.com>,
-	Antoine Tenart <atenart@kernel.org>,
-	Rob Herring <robh@kernel.org>,
+To: Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
+	Orson Zhai <orsonzhai@gmail.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Chunyan Zhang <zhang.lyra@gmail.com>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Krzysztof Kozlowski <krzk@kernel.org>
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 1/5] arm64: dts: amazon: alpine-v2: add missing io-fabric unit addresses
-Date: Wed, 24 Apr 2024 08:54:16 +0200
-Message-ID: <171394159881.43787.8772365708305051790.b4-ty@linaro.org>
+Subject: Re: [PATCH 1/5] arm64: dts: sc9860: add missing aon-prediv unit address
+Date: Wed, 24 Apr 2024 08:54:17 +0200
+Message-ID: <171394159879.43787.6202891863696784201.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240402200744.79349-1-krzk@kernel.org>
-References: <20240402200744.79349-1-krzk@kernel.org>
+In-Reply-To: <20240401141128.98317-1-krzk@kernel.org>
+References: <20240401141128.98317-1-krzk@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,11 +93,11 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 02 Apr 2024 22:07:40 +0200, Krzysztof Kozlowski wrote:
-> Add io-fabric unit address, because it has ranges property.  This also
-> fixes dtc W=1 warnings:
+On Mon, 01 Apr 2024 16:11:24 +0200, Krzysztof Kozlowski wrote:
+> Nodes with "reg" property are supposed to have unit address, as reported
+> by dtc W=1 warning:
 > 
->   alpine-v2.dtsi:153.13-229.5: Warning (simple_bus_reg): /soc/io-fabric: simple-bus unit address format error, expected "fc000000"
+>   sc9860.dtsi:210.26-216.5: Warning (simple_bus_reg): /soc/aon-prediv: simple-bus unit address format error, expected "402d0000"
 > 
 > 
 
@@ -107,16 +107,16 @@ me know.
 
 Applied, thanks!
 
-[1/5] arm64: dts: amazon: alpine-v2: add missing io-fabric unit addresses
-      https://git.kernel.org/krzk/linux-dt/c/0d8ec5c9415f3ac1a8dd02bc8ec31db240d3329a
-[2/5] arm64: dts: amazon: alpine-v2: move non-MMIO node out of soc
-      https://git.kernel.org/krzk/linux-dt/c/c92b25ab66e76e197353761d5631e1a3299e777a
-[3/5] arm64: dts: amazon: alpine-v3: add missing io-fabric unit addresses
-      https://git.kernel.org/krzk/linux-dt/c/4c8bdd35ec797dc083cbc6ed30a5a41f471d6c8d
-[4/5] arm64: dts: amazon: alpine-v3: drop cache nodes unit addresses
-      https://git.kernel.org/krzk/linux-dt/c/6f7be4b3d912b22b708fe444ba11afa521068b21
-[5/5] arm64: dts: amazon: alpine-v3: correct gic unit addresses
-      https://git.kernel.org/krzk/linux-dt/c/b5efd50d10295ce732ee9c2e546245ad4b9c8db5
+[1/5] arm64: dts: sc9860: add missing aon-prediv unit address
+      https://git.kernel.org/krzk/linux-dt/c/2c20032e1ed34edee457c64c266d2c5bb1c52fc5
+[2/5] arm64: dts: sc9860: move GPIO keys to board
+      https://git.kernel.org/krzk/linux-dt/c/74be4a8d52fd49243d7c533649d2ebbfd0f34f97
+[3/5] arm64: dts: sc9860: move GIC to soc node
+      https://git.kernel.org/krzk/linux-dt/c/653f383e7c02869792810244c94df468e4e322b1
+[4/5] arm64: dts: whale2: add missing ap-apb unit address
+      https://git.kernel.org/krzk/linux-dt/c/09dddc24eb359ca82b2ae526d3b51583130f4f07
+[5/5] arm64: dts: sharkl3: add missing unit addresses
+      https://git.kernel.org/krzk/linux-dt/c/e80ab9c9782b8928c8a1392eae7ae52445bd3881
 
 Best regards,
 -- 
