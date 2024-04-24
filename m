@@ -1,77 +1,79 @@
-Return-Path: <linux-kernel+bounces-157318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 418CD8B0FBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:27:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3B438B0FBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:27:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71A211C24936
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:27:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A90122893A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:27:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7821635AD;
-	Wed, 24 Apr 2024 16:27:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F2EF1635AD;
+	Wed, 24 Apr 2024 16:27:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kC/ysrQz"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="aiTeEowU"
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA6416190A
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:27:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234FC161902
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713976050; cv=none; b=J7xCld/fHxsDm/l2aqxRHOh5vyH6IDbMlQ4fiJaVAJPMyKeL19EkLm2u6mYwBuNoMctuFe2GIs0ypmZ09rqNFptnCsy1kY94UtnLQgl3kyEsCM6zmtUayXCyptp0iJGLk7FV38CzQSJ0kWXElyshKeuqX3H5LLrAddssMkXpHxI=
+	t=1713976064; cv=none; b=l9H2RB5Pdmllkv/MLEA6YPOl6TYFBRfIq+zJsvynu3jRj7SVZFMScJz2GUpQmfT57O3vpYj80gc21pAF205x6DGdfCzhBdwbrSNBnrb+6RVt6FSSPEq0rQlbNYxXrETZ0hRzoZImlG/WQLlSfh7rpaS5pedaArIJ6hk/Mfi9ov4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713976050; c=relaxed/simple;
-	bh=RUQFXdH8cHsUkS7WjlnySjXvh+xuWtYB5a0k0jg62aQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=plylf3GTz2Ua81EVGJXXEXuqPON63/gGyjI9zPgRrfdUqJHywmuUWpIip5i56zB5O/f8VGQY0Bb6kQ2ArR5wAfQhFARJMW8hrHfzvZAavig+ORvgOXNZhYnX81m7xcn3e9ZypOJe+L2O5KxNwZQADJ7UnBnrFcgY4agPzHAdJjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kC/ysrQz; arc=none smtp.client-ip=209.85.210.178
+	s=arc-20240116; t=1713976064; c=relaxed/simple;
+	bh=GEZVzNOkB+uh4/dxLc6pmPztMxbGqhWXyqveAW752b8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=K2rw6QZDoC4MPSyhrB90AGHrZaOTWXJ12sYt6UXLQBglPcb1rVYOIMKZRvSVUushk5DUiB8EYxc+mvnYEM52wCdNGO3wQMjechXdNPXlL0eu0fJW39ZBb6h8jgnFAhDj2SyOmOM0J48er7VaOdjvizW1jgl6S3+eVrF8Hr5BjO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=aiTeEowU; arc=none smtp.client-ip=209.85.166.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ed112c64beso97555b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:27:29 -0700 (PDT)
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-369e3c29aedso341955ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:27:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713976049; x=1714580849; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1713976062; x=1714580862; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VqVdIKh+FGhuAkF80diaGZNWgnSMw4HuAlHZ0aOXJaQ=;
-        b=kC/ysrQzeC2HWDplE6JwbcbitP74A7X7oc62Xp1KOvuEBZO/Uwi+99DPeodb85PPe4
-         7ohxcItNZy/clQPJqPyuvQjt5uV/M4kKAXjIS7s1Vhwf7SG/mhARqHE8q//p3NST6U0Z
-         4bPHiF3gXHkpohHvsZJbbWJm+7lC5uhrWM76s=
+        bh=NJ24k+/qZiSqDjoeEMQOGzQq3ctUR4NA3Oy/Wx9fzCA=;
+        b=aiTeEowU6z9LwF+oow/2ydzxmgXiWd2pDucrRMcEt/tL8oInpCfq3hrbvhDMNTkQw9
+         M+KbDu2Trz5mn0uRn43qYxMk7EqHohYtergvjR1E9VdEUxzX2qC1obxvvXsby2R+bT9d
+         /RU/EwuXm2ZWAbycyNZ8HFaQoApfm1SGZ/eYA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713976049; x=1714580849;
+        d=1e100.net; s=20230601; t=1713976062; x=1714580862;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VqVdIKh+FGhuAkF80diaGZNWgnSMw4HuAlHZ0aOXJaQ=;
-        b=KGKQyk0hPYczw3+Qrv8CQY6aPW8yCv29vZT83eCFosGslJqFAMqps7S2dDJT2lqFrY
-         TD2KkPR4ww2tSJLgurgkhVxgW4jp27lZmdT7l/fZUsPmNxuqULD4b3WJiLisUB/V/Is/
-         yKIvj3PE1dVSzDDF6bSQs2qclBXD3dzO04E7stmz8qWHGq/9T82QUivBkIykSQP7yUhT
-         tr+fcP6CTv/pJfOjpHIpV1xBS3LQrlcYrGODhniLmepKi4Xsq26GxmjU7PHl03aV7RQL
-         oEar/qdJeHHKtr1Iy6ds8TZw6KtBdq1HP1TcoktOzra96z89Oh6/pNOtvJgXDvimrgZ3
-         1hrw==
-X-Forwarded-Encrypted: i=1; AJvYcCWpUNa00PC43ytABiRX3/5TEBBlgdA5ID8zWQ4JZlFBbyPo5lnVgtXBLi4e9a6/V4Zn+fbkD5JkOSoIG8ErmAP5XJSQYKvfMInATsYf
-X-Gm-Message-State: AOJu0Yxl4GGXEtsxgYKhmKBORcNWYkImVpgC9XYUyyvDpygwLY/byUMa
-	ieNK5fQX93Fs6SMazRlA+NyNulzdPSUJRGyxgUER+LOnqPnU7pgBpp3X5YF3SQ==
-X-Google-Smtp-Source: AGHT+IFKjIGKbQ918qemrQZuactvTy19Wo4N7YX9x+pAnt65I+/kRKl3YikmICPFbANqjjaaSMR3ew==
-X-Received: by 2002:a05:6a20:96c3:b0:1aa:59ff:5902 with SMTP id hq3-20020a056a2096c300b001aa59ff5902mr2898404pzc.9.1713976048655;
-        Wed, 24 Apr 2024 09:27:28 -0700 (PDT)
+        bh=NJ24k+/qZiSqDjoeEMQOGzQq3ctUR4NA3Oy/Wx9fzCA=;
+        b=T4GCWYT1AgkMzGjpXW7pmW0OnUKM4rXPSfp++iMBqIXJXEvflpz10L7VSoObQv/fe3
+         UJhCXYU9iIR8KheC+d4kaA5CjO5wZXkDgYMfwcbVagZ0D6p7zL9yE+X7xvDo6646fS42
+         CMk/lRbvibH8ILOkZmYZg0cwhNBfl+rZ7ZDk0CGDiT9A4xofv3Indjf76t1snliDOvBK
+         oYzVIrzsnMMBvs2GPVUO0kjWetf5jVb+uSQDmnPVrJGDZZINnIB0xIHaM2F14FYL7TOB
+         wkq/jmXbPrt2ZhLnUKwde8miJsoGu5E18lCO4zr+4ctFjrT4AeXzEJMGkIKTjyThKWN1
+         gyyw==
+X-Forwarded-Encrypted: i=1; AJvYcCX1D9H56/1eJNR4p1BdLvTCd4Fe/vYoDkNrY7NjsxSuOVmZQ/yFPJP8J8NHbiWndSgKA8EvzknzgoiebugPq3phxBZbUl6L8IhbXK/M
+X-Gm-Message-State: AOJu0Yx04jZK6Fjws7yb4jI3ULKRueQftNLujdC4nLyJd9aRwCVdfHIp
+	D1jZuybuXsYBl95oW+KV6nbPxkpMZkD3ovEOROkO4rD4yJXmau6jIomX5qQNgw==
+X-Google-Smtp-Source: AGHT+IFujxmRWPvW2lkO0rsroitXfE7K4ml/Ta21/l/tCLTdZaHyFkWSAQm0SfCotJPVXhhOoLi/Qg==
+X-Received: by 2002:a05:6e02:1546:b0:36a:1f88:d73a with SMTP id j6-20020a056e02154600b0036a1f88d73amr3206319ilu.15.1713976062260;
+        Wed, 24 Apr 2024 09:27:42 -0700 (PDT)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id bq15-20020a056a02044f00b005f806498270sm7830151pgb.9.2024.04.24.09.27.27
+        by smtp.gmail.com with ESMTPSA id s195-20020a6377cc000000b005f807af5156sm8550559pgc.41.2024.04.24.09.27.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 09:27:27 -0700 (PDT)
+        Wed, 24 Apr 2024 09:27:41 -0700 (PDT)
 From: Kees Cook <keescook@chromium.org>
-To: Marco Elver <elver@google.com>
+To: "Gustavo A . R . Silva" <gustavoars@kernel.org>
 Cc: Kees Cook <keescook@chromium.org>,
+	Marco Elver <elver@google.com>,
 	Andrey Konovalov <andreyknvl@gmail.com>,
 	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
 	kasan-dev@googlegroups.com,
 	linux-hardening@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Add ubsan.h to the UBSAN section
-Date: Wed, 24 Apr 2024 09:27:25 -0700
-Message-Id: <20240424162722.work.576-kees@kernel.org>
+Subject: [PATCH] ubsan: Remove 1-element array usage in debug reporting
+Date: Wed, 24 Apr 2024 09:27:39 -0700
+Message-Id: <20240424162739.work.492-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -79,49 +81,52 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=707; i=keescook@chromium.org;
- h=from:subject:message-id; bh=RUQFXdH8cHsUkS7WjlnySjXvh+xuWtYB5a0k0jg62aQ=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmKTLtBpO5sGKQbNTQQhxZ0ZsYqUs12l6Ughw85
- 8Dyfzf7pCWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZiky7QAKCRCJcvTf3G3A
- JoKXD/4pxNwOoTftHBpfo2Stn6qEj5ph8TjzUq5xw0sAvUVgJmxp7K702EyccN/XySiLP+3ZEmm
- 9RutTYSsj8CcQBjVrhOLb/xvlrEJaIspTh2p9EHB8piS8HHt6lpQE4YxgkeBiy7tas5vedCTzXa
- 1a+mb8j5zAyqx3nIcOVe+QbaQuQob4txxHUJZ/OFqTgCnpZQdi9IFSR2k5ILVhYuoBqyF01ESCI
- 1Osrm+i3pe257pYqItAU7opFf1pPETUEUoK/yCZ8oriu7XtP5WSovuV/aBZiCxemqQdqq6FmCOJ
- Yirj9oYJvuhXNEfkyi1N9RNTYWAyAfNuULtzx8BHLDMjtX4AKL31AYH4O/2DqoFb/3y1BWZyKBd
- cppLw0sEN52uyp84/RCvPiapZ7/M5JZbRbdoS7LKI0WQ9DdZsUVB0XJ8t9ckg3gaIGCbyRJmsQ2
- d7krynFko65NOjKREmXj2tWd9ajjgJAY6ASIurcHDqVhUjdbfcCSYjheAlDGbljc3pzaUPWvMdZ
- Iwyt3rCA32x51eV2YP4S7q9XgtONVibEmpI+uCnxfi/c6iReQpCHB2XmiLbIDLdkNo3TDyS0YA9
- S56kXblKN0pe2kQ7dvOsEd/FZzu6Nfn9CChe27WtPhDE6e1v9tVB/qxQOCIx6tHLFHvAYKafkbH
- mZ80ao2M K1vthAg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=870; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=GEZVzNOkB+uh4/dxLc6pmPztMxbGqhWXyqveAW752b8=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmKTL7qVV+POqCFN5Rg5p5AzaXPsrUUStXl0AY0
+ 2/iCDgk8fyJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZiky+wAKCRCJcvTf3G3A
+ JgZ6EAC1YjVsmehwoEeiwKbZH8CtHwwDua3KkjoeAjnsa4JmT7FMyssqFdeYvghQLki1LEFQiJL
+ mh+ewYa7wqJrHiNFUNAArgaFSXfav0zG0N7Li4WkqyIMyzK3O//6ZLfupr8H+KeORJgutmWoYUX
+ Sr80DS2sinwNvIceHPt4KoMM8kzjmKavQSWB8hcUXfgW1TiFqYtuZ4dWh40UZZbRZYa1KrdyLwM
+ vQ6GDVlVabhwqM9Aue0rPDePcMIHe+P9ta34JQgNs7sBZIBMz6XGus87lAr3W1BFXeSEIqTYACR
+ tTUE32k877NlLRBgX0sKixZgtggKOxdq5y9ZgTegc4FWD3abPH1eV0rS0G/v9D1MKoAb4gWXNxT
+ k9jqLyabuU69r55bgnMDS+XIK/EoO8MBA40PznF1o255GhHJNy0G8ZI5E0mRSmOqr+T5x4oWdUR
+ /ozw9paaPxEasFkFubkgOZYA8O0AcyKfRiWxwoD9iYUSSbuchLX8AflMIVIJYVZdgviE0zkXv47
+ 6oYNTpPFaGfes3IfGsqSSbPscFym2MSl5CAqYonhrpSfj7N3YYly2u4uIYSvsf4fnMqBk5UzZLi
+ /7z1cQ1+THvaMMuEHto0W1BAKlcdZAT9SwSDKgDppVnz4Wo2ZJrRwGO5R26+6lv/F8ZHx/5jaix
+ B5cxn5f5 9FQsSKQ==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-The "ubsan.h" file was missed in the creation of the UBSAN section. Add
-it.
+The "type_name" character array was still marked as a 1-element array.
+While we don't validate strings used in format arguments yet, let's fix
+this before it causes trouble some future day.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
 Cc: Marco Elver <elver@google.com>
 Cc: Andrey Konovalov <andreyknvl@gmail.com>
 Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
 Cc: kasan-dev@googlegroups.com
 Cc: linux-hardening@vger.kernel.org
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+ lib/ubsan.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7c121493f43d..5acac5887889 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22653,6 +22653,7 @@ F:	include/linux/ubsan.h
- F:	lib/Kconfig.ubsan
- F:	lib/test_ubsan.c
- F:	lib/ubsan.c
-+F:	lib/ubsan.h
- F:	scripts/Makefile.ubsan
- K:	\bARCH_HAS_UBSAN\b
+diff --git a/lib/ubsan.h b/lib/ubsan.h
+index 0abbbac8700d..50ef50811b7c 100644
+--- a/lib/ubsan.h
++++ b/lib/ubsan.h
+@@ -43,7 +43,7 @@ enum {
+ struct type_descriptor {
+ 	u16 type_kind;
+ 	u16 type_info;
+-	char type_name[1];
++	char type_name[];
+ };
  
+ struct source_location {
 -- 
 2.34.1
 
