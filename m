@@ -1,160 +1,130 @@
-Return-Path: <linux-kernel+bounces-156533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65E5D8B0426
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:20:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 044D18B0434
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:23:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BFEE1F25A74
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:20:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81B582840DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:23:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7656158861;
-	Wed, 24 Apr 2024 08:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61209158871;
+	Wed, 24 Apr 2024 08:23:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JZhefami"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="OK2tUl42"
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B092C29CA
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:20:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BAF329CA
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713946845; cv=none; b=AXWUKTGbRBHf5CDAb7OW/CZaqXoqN2gRovo+pxHlPrl80CvgRkQfeyIz77iiEsNfrdMhoCqlgUDDRvoK8u+TGQ5fGaoNVmgv/X/DCvvJJt2l+nxzweV4qk9QF6wv3BkyqBrEZKQ/H8QnNPDx3VePfU38gAqonQyiYykB3VrA4Fw=
+	t=1713946988; cv=none; b=s0ullyTiyD6fLy9lP4ELw6f9Tq20MYumIyw16k7xsMGkWBu7QoRLy/oPoHCjPJsLncXdGLTW+fWdtCHhWnoYY8MGi24RCp52MxRr0OtarjW/8wj7VzmTuNEd/JPFz4uth/CBId+d9tF9eUWoryDInMV2whTEG0/8xvszLmDVY8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713946845; c=relaxed/simple;
-	bh=1QNJYK93FeXMoYrHwvPfTLrJcp1g0jZn3gs7dBziX2I=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TVSd3EY/4cu2OmT8pvQwlSkSqBgLxBMIGz0ORoq8gX1VrS+1+xz8I741O4Ycb1RWybs1e3vySsbcQxMaS96KpEzKmYNWZLglp6QpdFks00xFl8p412mCfsUd7Lt4nVYvdJp0LxQqnz8mjF4gJKkugKYFV+zMA0ta6URHKFDf9m8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JZhefami; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713946844; x=1745482844;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=1QNJYK93FeXMoYrHwvPfTLrJcp1g0jZn3gs7dBziX2I=;
-  b=JZhefamiAzr+wcdQ/eJ2jGxMX1WaOAkit6UpIuZLaMMMY3CAO3J1ylyN
-   zoHEvvvptuMzJKw45ERUJWD0WAqB9Pt/30+iHpQlN3MMw8wku8dMGCyR8
-   GfmeLD6aEWNxPFQjy+BxaAm7WL2I2YCcen7DLCbRCiuJup5B+nfavAHIZ
-   16BGWhCSvLfgbff/Zfazn6Gz2OAcv44gVtcVtizpcEU0Igi3YxawYuWjK
-   /8HvujGN2pZyYmK6a3XeJ3U2RO0cYEL3Ye/skHPd+JNHfJrDZRP8DZ3j3
-   lcLCfVKnlh3jY/yKyPCy6/aUMvo2hrZml/oWGdLdVSF01kpww5IxU9dZn
-   g==;
-X-CSE-ConnectionGUID: IK8nQQZZRRe73TJ8h7iuyg==
-X-CSE-MsgGUID: ILyU0vxHS6WmRVUZYolGug==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="20260703"
-X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="20260703"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 01:20:43 -0700
-X-CSE-ConnectionGUID: GoCi5O30S86j6WTFUGcX2A==
-X-CSE-MsgGUID: FCaPRtp3SKqtDsPBjQrn5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="24601473"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa009.jf.intel.com with ESMTP; 24 Apr 2024 01:20:40 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 4459C28A; Wed, 24 Apr 2024 11:20:38 +0300 (EEST)
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@intel.com
-Cc: sathyanarayanan.kuppuswamy@linux.intel.com,
-	hpa@zytor.com,
-	seanjc@google.com,
-	elena.reshetova@intel.com,
-	rick.p.edgecombe@intel.com,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Chris Oo <cho@microsoft.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dexuan Cui <decui@microsoft.com>
-Subject: [PATCHv3] x86/tdx: Preserve shared bit on mprotect()
-Date: Wed, 24 Apr 2024 11:20:35 +0300
-Message-ID: <20240424082035.4092071-1-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1713946988; c=relaxed/simple;
+	bh=6QVLhBAJp84waL6ZUmhf4vEiQDIz+a6xaQzpqeWyOz0=;
+	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
+	 MIME-Version:Content-Type; b=cJn04liH4A5HpEWRpBAGbZ3d9ZJWtHzIiufI2Eqiq2gzVIE0ook+5Znqg9H0jCWss/V2l8suVA0uuBfEqp1x7s6g9IQVwUpjZiJSv3tQYWMml+5tLsxErSHD/lsbdWxYsecHMYQAE/iWvNYNryIJ4lxPpHWS/HHyn9IOhbUw7/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=OK2tUl42; arc=none smtp.client-ip=35.89.44.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
+	by cmsmtp with ESMTPS
+	id zIJQrBA6CPM1hzXuErUMPP; Wed, 24 Apr 2024 08:23:06 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id zXuCrYh5MVdenzXuDrOkgK; Wed, 24 Apr 2024 08:23:05 +0000
+X-Authority-Analysis: v=2.4 cv=M4FLKTws c=1 sm=1 tr=0 ts=6628c169
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=CMKPsDBNFkSOfaRWdswA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=TbpKAwI5ZCWHUvqoKmQdNYHV152Vc+5IbI4Iy0iPG/A=; b=OK2tUl42Nd5DJlk2bDu9dyqbVT
+	YLL9QYv9eJIwnvYM8KPWYxYTwi5+BCm73nnaL9/35BeSQnudEXgXIxNPXrByRJYcvc3W7HJedyARd
+	p3ESN8AW8HAMcxhb9Est69v0v/rNVoRQ+0egbLwHuPPyVqV32qZgYRY5vfD6QzspJDR+Ac0U4N2fw
+	5X/u3Z02tnCv+I4Sq+DBCpS9KJGVaCECAnjCQssIsECQlrnwnmHnM25J+pH41+cX2qXggx3LhAEjl
+	A6G7LSmSkFC7tnbK1xC8/tMTd5FyGzmDyoFyQPtZ9/Ss5qDxjDwFLLqAIwV7BytQjWgAj1Iv2eYnj
+	6z7A0e8g==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:59342 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rzXu9-003a5q-2m;
+	Wed, 24 Apr 2024 02:23:01 -0600
+Subject: Re: [PATCH 6.8 000/158] 6.8.8-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+References: <20240423213855.824778126@linuxfoundation.org>
+In-Reply-To: <20240423213855.824778126@linuxfoundation.org>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <462c8967-e599-58f4-c456-6c672d89cd74@w6rz.net>
+Date: Wed, 24 Apr 2024 01:22:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rzXu9-003a5q-2m
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:59342
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfHDRvTphjEWspK/CKxikcbQk1NEMtklMQE9GrGTPwlsaKhj02zYfHZJSaZ8L6yy59eIkBlLt54/D7B6HQeDp0EvvMdcG8xDE+k66ldW4JH54kTooaFxh
+ I2l1FPRiHzaZ3w7Qag115FUDvY1rjG4Brw1DZxjW/B3M1vIMiYq4YpAduNbwKFd1WJiWlDgd4wc4UKQgeibyjIi2I4yauskpAPo=
 
-The TDX guest platform takes one bit from the physical address to
-indicate if the page is shared (accessible by VMM). This bit is not part
-of the physical_mask and is not preserved during mprotect(). As a
-result, the 'shared' bit is lost during mprotect() on shared mappings.
+On 4/23/24 2:37 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.8.8 release.
+> There are 158 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 25 Apr 2024 21:38:28 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.8.8-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-_COMMON_PAGE_CHG_MASK specifies which PTE bits need to be preserved
-during modification. AMD includes 'sme_me_mask' in the define to
-preserve the 'encrypt' bit.
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-To cover both Intel and AMD cases, include 'cc_mask' in
-_COMMON_PAGE_CHG_MASK instead of 'sme_me_mask'.
-
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Fixes: 41394e33f3a0 ("x86/tdx: Extend the confidential computing API to support TDX guests")
-Reported-and-tested-by: Chris Oo <cho@microsoft.com>
-Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Dexuan Cui <decui@microsoft.com>
-
----
-
- v3:
-   - Fix more build issues for !CONFIG_ARCH_HAS_CC_PLATFORM:
-
-     Use "static const u64 cc_mask" instead of #define to fix build of
-     tpm2 and ath10k drivers.
-
- v2:
-   - Fix build for !CONFIG_ARCH_HAS_CC_PLATFORM
----
- arch/x86/include/asm/coco.h          | 1 +
- arch/x86/include/asm/pgtable_types.h | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
-index c086699b0d0c..aa6c8f8ca958 100644
---- a/arch/x86/include/asm/coco.h
-+++ b/arch/x86/include/asm/coco.h
-@@ -25,6 +25,7 @@ u64 cc_mkdec(u64 val);
- void cc_random_init(void);
- #else
- #define cc_vendor (CC_VENDOR_NONE)
-+static const u64 cc_mask = 0;
- 
- static inline u64 cc_mkenc(u64 val)
- {
-diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
-index 8857d811fb5d..2f321137736c 100644
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -148,7 +148,7 @@
- #define _COMMON_PAGE_CHG_MASK	(PTE_PFN_MASK | _PAGE_PCD | _PAGE_PWT |	\
- 				 _PAGE_SPECIAL | _PAGE_ACCESSED |	\
- 				 _PAGE_DIRTY_BITS | _PAGE_SOFT_DIRTY |	\
--				 _PAGE_DEVMAP | _PAGE_ENC | _PAGE_UFFD_WP)
-+				 _PAGE_DEVMAP | _PAGE_CC | _PAGE_UFFD_WP)
- #define _PAGE_CHG_MASK	(_COMMON_PAGE_CHG_MASK | _PAGE_PAT)
- #define _HPAGE_CHG_MASK (_COMMON_PAGE_CHG_MASK | _PAGE_PSE | _PAGE_PAT_LARGE)
- 
-@@ -173,6 +173,7 @@ enum page_cache_mode {
- };
- #endif
- 
-+#define _PAGE_CC		(_AT(pteval_t, cc_mask))
- #define _PAGE_ENC		(_AT(pteval_t, sme_me_mask))
- 
- #define _PAGE_CACHE_MASK	(_PAGE_PWT | _PAGE_PCD | _PAGE_PAT)
--- 
-2.43.0
+Tested-by: Ron Economos <re@w6rz.net>
 
 
