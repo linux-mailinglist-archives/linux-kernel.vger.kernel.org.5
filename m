@@ -1,144 +1,133 @@
-Return-Path: <linux-kernel+bounces-156101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57AD78AFDFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:47:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 881C38AFDFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 03:48:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B4D7B21F0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:47:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B00EF1C222FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:48:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F1C79F3;
-	Wed, 24 Apr 2024 01:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B6A4C8E1;
+	Wed, 24 Apr 2024 01:48:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PY8/f3X0"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="o15AEUCS"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD548748A
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 01:47:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C796AB6
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 01:48:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713923245; cv=none; b=g5iXGnIRbZoL+YBZbT4VfJZsoixBcvbThl2XB0Uo2ADRsnWaPGwEP67y2R/9MPTpxrF2pH5hjVJBh7fj0duCGAEI/PQb/RTqIVQrvfFO4ORVjSODra65+eHaeEFr0/hklXeOHUiCK9AECAjfaglkOpHP6HDovFCqZ1rPShqFA+g=
+	t=1713923321; cv=none; b=LrCl4HKb6l+KCcny4gpvM9LiL/mP5I+I4Uw4BJED7XdV6vEmDfhjGCaTa5QHgpWegPUNvdVjjvSurLVzqgAxjtq9dUJHbD5fZvU7jLCmThNIQmg/me4ytodFN8v5aPSaOBWabEOthKJOFhVvdVsZNyS/K3nQtPdatMKP01PgP2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713923245; c=relaxed/simple;
-	bh=ng27yw5ZrSFvmSZy3oZulctMXmjAV6Heti6o2RBiDGQ=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=NplODudnQnbZtrWS5B547VoyCOihs1x2YbK0mUaqeF5jTgdXzXEwNQkxx8fqHaik4roxKFeFaIvNiT2dk23hCLL5cK4dwTON0n1V6jCyGOmnaQcuPcItfkm9jqrctImz2IK5ISZ0bLQLpCu5pQALCypi1FvBRno3SJcGxhvVBD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PY8/f3X0; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713923243; x=1745459243;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ng27yw5ZrSFvmSZy3oZulctMXmjAV6Heti6o2RBiDGQ=;
-  b=PY8/f3X0aYszp13mN7Np7Wab0ry+s1LR6rD0SxNdik8mHjoujVOPZJTm
-   5rPFCff8XECn5WXWE2HzG16qZW6qt4gnKsoT59l9paNz6kMRd5IA6vt/2
-   1P3J8bD3KP9AxqIiI+385NIgXYSlkcAKPWHftztOE4hvSOEnk3ftQz3mD
-   OkdSvjSHTQIfkBduphX+q6sD/VjXcvpBfHpNWcXQA2VjQ0ioY7hmtvdwU
-   PpQOE+AKUvRAGZ+aQB8+AgmPVyf1yMSa70h0RnzgrqaMHuUSwZy+Mk7/k
-   OyWhmis6iaxcv1Rouy34HDU37Ve9BYg6o2EKwrn5AuoXGATBdS9bc7dmu
-   A==;
-X-CSE-ConnectionGUID: pgYPuh2dS1ypQN1s+om7lQ==
-X-CSE-MsgGUID: nsAo+CljTBegwhhPitLLrw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="9402457"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="9402457"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 18:47:22 -0700
-X-CSE-ConnectionGUID: E6DC0E5XSWCxGfB5A4Pdxg==
-X-CSE-MsgGUID: MKeA+Ex/TTuF+cgkG67zhg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24590466"
-Received: from unknown (HELO [10.239.159.127]) ([10.239.159.127])
-  by fmviesa007.fm.intel.com with ESMTP; 23 Apr 2024 18:47:20 -0700
-Message-ID: <09cc401c-8dbb-4790-9d38-c94a8b1e4fd4@linux.intel.com>
-Date: Wed, 24 Apr 2024 09:45:56 +0800
+	s=arc-20240116; t=1713923321; c=relaxed/simple;
+	bh=RdicOhedH6fXKExofIXMENzu6QODv5IBbyGEZIzzk0c=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=RnfZwSjN9cL7rZNoFwhgCsiWlb4vqMcdqtMYXp2PyQz4WUsTY9BNeHKB1nP9Zy63IBbFaPhKK9h7C5nkzdGl5c3rNy5rhhbSFKi73qcE+vl3D3oIOZ8rEET1R7fa8EesZiOs5IKGtSRTTsbGAvtiTuaoGoukMcKHu+5f7bgdXJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jthies.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=o15AEUCS; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jthies.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-de46f4eacd3so11955886276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 18:48:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713923317; x=1714528117; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vldaUho7GHzFh6OYGKkRA+VFfgKnJ5o8UAUi5iDSbWQ=;
+        b=o15AEUCS2uY6KFcqWTfRliIV49wh/PWm2HzVafsPn5+AQJ30lmTNZLQ5K6zyGFM81N
+         zwdEaLVTdu1zbUby89qUOGkpz3x28+wDi8XnQaFNmjznWHQ9SMkgKrCgEG3zhy+2RuOt
+         hxsHDUCVMDyU7rzOFyFys79EJgBqFy3x6BAfflzk3hHqbm9FOzRVRN01dmJnqBzETRdr
+         S9hx+EciRk5viHRM9ZIoEIEIlu27oT0uTrwZgq4XB4ExtfKee81X/ctDRmrP2qOt3Roc
+         RqW77eM2jcF1nQXjLWhC6RP7itfMGPUoZk5v8MG/Kbw34Jliog6YRsskGqQY3LniD200
+         8DwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713923317; x=1714528117;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vldaUho7GHzFh6OYGKkRA+VFfgKnJ5o8UAUi5iDSbWQ=;
+        b=F192M9gnOkMxg2I3HNKTaHNH49U+e+A0wBn17vjE43mfyPRdEoYNdczRWUPf58leCD
+         6blsvFHvH6H5EYFSbY6v3pEuJN+dKclTMBlv938+m09O+VfXtSgQVVaTMFR+xDeArYJy
+         qIo5Xlv93jpUkhg4Md9OdBriXgPfHgGtBuWyQpZqIAQoLr8aZfMeXX6pelI1U4bnan30
+         SWQvG/BprYh8cZD6tpJgbnfGZH7Q+Q2f1AjVsYxU5p1sL31rR1kZgZWmIFQgtF+SqgIF
+         aBBtLZJiRZBytXQGYw4XrLu0KYF3u2FcWoScLphImP9yyPaPZDlO+MHe7vNv9x7YqQNi
+         JrEA==
+X-Forwarded-Encrypted: i=1; AJvYcCXevoP46BYRu0fbKmMKS5MOtIkoL4xPxLRMuM44GfJW8b+pI3CfUDMATqGRa0YKEi8o1bNfCaB9UKUyz2iDzUgpA/ejx9AfgzboP8qK
+X-Gm-Message-State: AOJu0YwVnjRT4HDZNKDTY+QJFHJTQ3P13fUPeOAhUPuren/7cog00ugO
+	8J79YeGg4tw3PfKY336t1Y95gquEtjfBLP3CDT2BfM0t27mTw8K1jZszfffbLpKrn+PFjpUkjcr
+	PuA==
+X-Google-Smtp-Source: AGHT+IF0WeJbFdn6TbDUeZZI89JkTNRkPqdt5n7b0LaNEdfYTAFcNdaKWTEs+9w83/79o9wQzGCIGDYDxmM=
+X-Received: from jthies.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:23db])
+ (user=jthies job=sendgmr) by 2002:a05:6902:154b:b0:dc2:398d:a671 with SMTP id
+ r11-20020a056902154b00b00dc2398da671mr358141ybu.10.1713923317263; Tue, 23 Apr
+ 2024 18:48:37 -0700 (PDT)
+Date: Wed, 24 Apr 2024 01:48:17 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, "Zhang, Tina" <tina.zhang@intel.com>,
- "Liu, Yi L" <yi.l.liu@intel.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 02/12] iommu/vt-d: Add cache tag invalidation helpers
-To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>
-References: <20240416080656.60968-1-baolu.lu@linux.intel.com>
- <20240416080656.60968-3-baolu.lu@linux.intel.com>
- <40c3b216-f3bb-4058-88a1-45de433432f3@linux.intel.com>
- <BN9PR11MB5276DE66A1052497BB3E215D8C112@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276DE66A1052497BB3E215D8C112@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+Message-ID: <20240424014821.4154159-1-jthies@google.com>
+Subject: [PATCH v2 0/4] usb: typec: ucsi: Update UCSI alternate mode
+From: Jameson Thies <jthies@google.com>
+To: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org
+Cc: jthies@google.com, pmalani@chromium.org, bleung@google.com, 
+	abhishekpandit@chromium.org, andersson@kernel.org, 
+	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com, 
+	gregkh@linuxfoundation.org, hdegoede@redhat.com, neil.armstrong@linaro.org, 
+	rajaram.regupathy@intel.com, saranya.gopal@intel.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 4/23/24 4:42 PM, Tian, Kevin wrote:
->> From: Baolu Lu<baolu.lu@linux.intel.com>
->> Sent: Monday, April 22, 2024 1:30 PM
->>
->> On 4/16/24 4:06 PM, Lu Baolu wrote:
->>> +		case CACHE_TAG_NESTING_DEVTLB:
->>> +			/*
->>> +			 * Address translation cache in device side caches the
->>> +			 * result of nested translation. There is no easy way
->>> +			 * to identify the exact set of nested translations
->>> +			 * affected by a change in S2. So just flush the entire
->>> +			 * device cache.
->>> +			 */
->>> +			addr = 0;
->>> +			mask = MAX_AGAW_PFN_WIDTH;
->>> +			fallthrough;
->> I realized that the logic above is not right. Setting both @addr and
->> @mask to 0 doesn't means flush all caches on the device. I will change
->> it like below:
-> I didn't get. Above code doesn't set @mask to 0.
+Hi Heikki,
 
-Oh!? I have no idea why I read that as "mask = 0" now. Perhaps my brain
-was on vacation earlier. :-)
+This series appliess some changes to the UCSI driver to help support AP
+driven alternate mode entry. This includes...
 
-> 
->> diff --git a/drivers/iommu/intel/cache.c b/drivers/iommu/intel/cache.c
->> index e8418cdd8331..18debb82272a 100644
->> --- a/drivers/iommu/intel/cache.c
->> +++ b/drivers/iommu/intel/cache.c
->> @@ -302,9 +302,14 @@ void cache_tag_flush_range(struct dmar_domain
->> *domain, unsigned long start,
->>                            * affected by a change in S2. So just flush
->> the entire
->>                            * device cache.
->>                            */
->> -                       addr = 0;
->> -                       mask = MAX_AGAW_PFN_WIDTH;
->> -                       fallthrough;
->> +                       info = dev_iommu_priv_get(tag->dev);
->> +                       sid = PCI_DEVID(info->bus, info->devfn);
->> +
->> +                       qi_flush_dev_iotlb(iommu, sid, info->pfsid,
->> info->ats_qdep,
->> +                                          0, MAX_AGAW_PFN_WIDTH);
->> +                       quirk_extra_dev_tlb_flush(info, 0,
->> MAX_AGAW_PFN_WIDTH,
->> +                                                 IOMMU_NO_PASID,
->> info->ats_qdep);
->> +                       break;
-> and I didn't get this change. It goes backward by ignoring tag->pasid.
-> 
-> what's the exact problem of the fallthrough logic in original code?
+1. An update to the altmode sysfs group after registration to make
+"active" writable.
+2. A change to the ucsi_partner_task delay when queuing
+ucsi_check_altmodes to prevent it from running before other discovery
+functions.
+3. An update to always define a number of alternate modes for partners
+and plugs.
 
-Sorry! Please ignore this.
+Not related to AP driven altmode entry, there is an additional fix for a
+null derefrence in this series.
 
-Best regards,
-baolu
+I tested the series on a ChromeOS v6.8 kernel merged with usb-testing.
+That build had some additinal patches to enable a PPM in ChromeOS. Let
+me know if you have any questions.
+
+Thanks,
+Jameson
+
+Changes in V2:
+- Checks for error response from ucsi_register_displayport when
+registering DisplayPort alternate mode.
+
+Abhishek Pandit-Subedi (2):
+  usb: typec: ucsi: Fix null deref in trace
+  usb: typec: Update sysfs when setting ops
+
+Jameson Thies (2):
+  usb: typec: ucsi: Delay alternate mode discovery
+  usb: typec: ucsi: Always set number of alternate modes
+
+ drivers/usb/typec/altmodes/displayport.c |  2 +-
+ drivers/usb/typec/class.c                | 18 +++++++++++++++++-
+ drivers/usb/typec/ucsi/displayport.c     |  2 +-
+ drivers/usb/typec/ucsi/ucsi.c            | 21 ++++++++++++++++-----
+ drivers/usb/typec/ucsi/ucsi.h            |  2 +-
+ include/linux/usb/typec.h                |  3 +++
+ 6 files changed, 39 insertions(+), 9 deletions(-)
+
+
+base-commit: 0d31ea587709216d88183fe4ca0c8aba5e0205b8
+-- 
+2.44.0.769.g3c40516874-goog
+
 
