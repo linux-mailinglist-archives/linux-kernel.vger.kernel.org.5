@@ -1,54 +1,35 @@
-Return-Path: <linux-kernel+bounces-156694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 649398B06E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:05:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C81B8B06F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:07:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F92DB26B28
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:05:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8735283AD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:07:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F79D159560;
-	Wed, 24 Apr 2024 10:05:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="0eGGlTX2"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 403C0159560;
+	Wed, 24 Apr 2024 10:07:18 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B6D15920C;
-	Wed, 24 Apr 2024 10:04:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B13261E898;
+	Wed, 24 Apr 2024 10:07:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713953102; cv=none; b=cD9gL+gUdQ8zHfnDNjR+2ojUhjgRtIxUhm2oQjXvKcl27yknnJt9AqGf9XIYK2dBwrAim0qiPdlhviu6Gkv3WQZGfmh797Ueuap3hlHnrr0DiW4/9ezKcLX+hnoP87EWuTVQWkynuxhUpnj8shgukVhXqz4G8M3CZgt/TtKQxzw=
+	t=1713953237; cv=none; b=CM8LlWTJcB5g1/BXcp8YgIBtE+QyMgGLoFEQ6MuA9XM8QqMOOqawd+EbS0mzCU43vuMVFHYCUj8QrbrMMZ1TilqtSs8XkjOl9nU6jMCvWuEOCx4rVxJH4wpjO4hTQOk6dcbNfHDfJPd1u8tcF/tupMh1LlPL2UZEsP1AjywrqkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713953102; c=relaxed/simple;
-	bh=Dttdz89FIcwSI+qU5QOqEj7dsUHDKBbSrFIK3xtH5GI=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=qFpiqQmFzmM67Y2UDsh8Y9zw7Jak79IGnlJn/PDs54JyFV1mZzxNIZfPbpNuMJW9vyPc3C71sRtbSZePtbKhuatF99rDSRKk2NAImLowgxy/GW/7txdEm14al826Y4UUEXD9oIV6KsFuwUpoI9CNjqTWxi34hUk3GLNoOFDtmH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=0eGGlTX2; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713953096;
-	bh=Dttdz89FIcwSI+qU5QOqEj7dsUHDKBbSrFIK3xtH5GI=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=0eGGlTX2P4iDYJDDhzfSb/E3Ax5+NobVXVUIICoaLko7Nxr5TajiNpS69ohdVVWIg
-	 uL1nOqKdgQhj1JdK/yryl1h9Et2TgROJH7d/WXYUb4hkbAfm0Yk2HXrAi1vUHlp6r7
-	 mgNm7rSEUfc88c5ZIWg3u5NaYmdbLC6tIav9PT+xLpRcYCJxOH40V4OGy+uRfY4oUB
-	 BZX/8gKT3vWwKVo/mv+xtqlAZ5LJtfEpayziBiGqPjf4RjuYUETkAWBMw/iCQgzICM
-	 N6inOyg7qnPxIHhNtRu28OADXtOwsuSx8eNfNVnwUdM6qoygiXp17hGVxsajvAmeVT
-	 kDhuV7bAXSRYQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6882A378107C;
-	Wed, 24 Apr 2024 10:04:55 +0000 (UTC)
-Message-ID: <fd24398f-a915-4e9a-9c19-4eb644178987@collabora.com>
-Date: Wed, 24 Apr 2024 12:04:54 +0200
+	s=arc-20240116; t=1713953237; c=relaxed/simple;
+	bh=8lcnCIurDEsAwt5dZGIgZqL4JM8FXi3W5HBrOI9pPPw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JUUPEvKTzKycGO1XogTX67788Lbs29cGRp9fm9U9XkjT9frWwTajE44vrWUfHRDT46sDbeGdDj32XoQKyEusF1JioTtJvVvtDPTcNbdvHY7Pi32fsB8cAAnjRRDm+JUy6I5gnyu/PLGBqUeK3tktx3pZo8F9OLoc6lmM1g/9xnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D99A4C32782;
+	Wed, 24 Apr 2024 10:07:13 +0000 (UTC)
+Message-ID: <054e6a95-796a-4bff-b629-96928eeb1685@xs4all.nl>
+Date: Wed, 24 Apr 2024 12:07:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,69 +37,174 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] media: mediatek: imgsys: Support image processing
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: Olivia Wen <olivia.wen@mediatek.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>, Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Tinghan Shen <tinghan.shen@mediatek.com>,
- linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- jason-ch.chen@mediatek.com, yaya.chang@mediatek.com, teddy.chen@mediatek.com
-References: <20240424030351.5294-1-olivia.wen@mediatek.com>
- <20240424030351.5294-5-olivia.wen@mediatek.com>
- <ba25cb7b-ff93-4fcb-b943-154e960d45a0@collabora.com>
-Content-Language: en-US
-In-Reply-To: <ba25cb7b-ff93-4fcb-b943-154e960d45a0@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 2/2] media: amphion: Report the average qp of current
+ encoded frame
+Content-Language: en-US, nl
+To: Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org
+Cc: shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de,
+ kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+ xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
+ ming.qian@oss.nxp.com, imx@lists.linux.dev, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240329092352.2648837-1-ming.qian@nxp.com>
+ <20240329092352.2648837-2-ming.qian@nxp.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20240329092352.2648837-2-ming.qian@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Il 24/04/24 12:02, AngeloGioacchino Del Regno ha scritto:
-> Il 24/04/24 05:03, Olivia Wen ha scritto:
->> Integrate the imgsys core architecture driver for image processing on
->> the MT8188 platform.
->>
->> Signed-off-by: Olivia Wen <olivia.wen@mediatek.com>
+On 29/03/2024 10:23, Ming Qian wrote:
+> Report the average qp value of current encoded frame via the control
+> V4L2_CID_MPEG_VIDEO_AVERAGE_QP
 > 
-> This should be reordered before introducing the 8188 scp core 1 support commit,
-> but let's check with Mathieu before sending a v4.
+> Signed-off-by: Ming Qian <ming.qian@nxp.com>
+> ---
+>  drivers/media/platform/amphion/venc.c        | 4 ++++
+>  drivers/media/platform/amphion/vpu.h         | 2 ++
+>  drivers/media/platform/amphion/vpu_defs.h    | 1 +
+>  drivers/media/platform/amphion/vpu_helpers.c | 3 +++
+>  drivers/media/platform/amphion/vpu_v4l2.c    | 9 +++++++++
+>  drivers/media/platform/amphion/vpu_v4l2.h    | 1 +
+>  drivers/media/platform/amphion/vpu_windsor.c | 2 ++
+>  7 files changed, 22 insertions(+)
 > 
-> With that reordered,
-> 
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> diff --git a/drivers/media/platform/amphion/venc.c b/drivers/media/platform/amphion/venc.c
+> index 4eb57d793a9c..12cebafeaf3b 100644
+> --- a/drivers/media/platform/amphion/venc.c
+> +++ b/drivers/media/platform/amphion/venc.c
+> @@ -680,6 +680,9 @@ static int venc_ctrl_init(struct vpu_inst *inst)
+>  			       ~(1 << V4L2_MPEG_VIDEO_HEADER_MODE_JOINED_WITH_1ST_FRAME),
+>  			       V4L2_MPEG_VIDEO_HEADER_MODE_JOINED_WITH_1ST_FRAME);
+>  
+> +	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
+> +			  V4L2_CID_MPEG_VIDEO_AVERAGE_QP, 0, 51, 1, 0);
+> +
+>  	if (inst->ctrl_handler.error) {
+>  		ret = inst->ctrl_handler.error;
+>  		v4l2_ctrl_handler_free(&inst->ctrl_handler);
+> @@ -819,6 +822,7 @@ static int venc_get_one_encoded_frame(struct vpu_inst *inst,
+>  	vbuf->field = inst->cap_format.field;
+>  	vbuf->flags |= frame->info.pic_type;
+>  	vpu_set_buffer_state(vbuf, VPU_BUF_STATE_IDLE);
+> +	vpu_set_buffer_average_qp(vbuf, frame->info.average_qp);
+>  	dev_dbg(inst->dev, "[%d][OUTPUT TS]%32lld\n", inst->id, vbuf->vb2_buf.timestamp);
+>  	v4l2_m2m_buf_done(vbuf, VB2_BUF_STATE_DONE);
+>  	venc->ready_count++;
+> diff --git a/drivers/media/platform/amphion/vpu.h b/drivers/media/platform/amphion/vpu.h
+> index 0246cf0ac3a8..d21ca6bf2459 100644
+> --- a/drivers/media/platform/amphion/vpu.h
+> +++ b/drivers/media/platform/amphion/vpu.h
+> @@ -270,6 +270,7 @@ struct vpu_inst {
+>  	u8 xfer_func;
+>  	u32 sequence;
+>  	u32 extra_size;
+> +	u32 current_average_qp;
+>  
+>  	u32 flows[16];
+>  	u32 flow_idx;
+> @@ -306,6 +307,7 @@ struct vpu_vb2_buffer {
+>  	dma_addr_t chroma_v;
+>  	unsigned int state;
+>  	u32 tag;
+> +	u32 average_qp;
+>  };
+>  
+>  void vpu_writel(struct vpu_dev *vpu, u32 reg, u32 val);
+> diff --git a/drivers/media/platform/amphion/vpu_defs.h b/drivers/media/platform/amphion/vpu_defs.h
+> index 7320852668d6..428d988cf2f7 100644
+> --- a/drivers/media/platform/amphion/vpu_defs.h
+> +++ b/drivers/media/platform/amphion/vpu_defs.h
+> @@ -114,6 +114,7 @@ struct vpu_enc_pic_info {
+>  	u32 wptr;
+>  	u32 crc;
+>  	s64 timestamp;
+> +	u32 average_qp;
+>  };
+>  
+>  struct vpu_dec_codec_info {
+> diff --git a/drivers/media/platform/amphion/vpu_helpers.c b/drivers/media/platform/amphion/vpu_helpers.c
+> index d12310af9ebc..59139302cb1d 100644
+> --- a/drivers/media/platform/amphion/vpu_helpers.c
+> +++ b/drivers/media/platform/amphion/vpu_helpers.c
+> @@ -378,6 +378,9 @@ int vpu_helper_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
+>  	case V4L2_CID_MIN_BUFFERS_FOR_OUTPUT:
+>  		ctrl->val = inst->min_buffer_out;
+>  		break;
+> +	case V4L2_CID_MPEG_VIDEO_AVERAGE_QP:
+> +		ctrl->val = inst->current_average_qp;
+> +		break;
 
-Wait, no. Sorry. I just noticed that the commit message is totally wrong.
-
-This is not a media commit, but remoteproc, and you're not adding support for
-image processing with this commit - not in media at least.
-Also, you're not adding any imgsys core architecture driver.
-
-Please fix both commit description and title.
+This is not a volatile control. Instead, the control should be updated
+with the new average_qp in the vpu_vb2_buf_finish function.
 
 Regards,
-Angelo
 
-> 
->> ---
->>   include/linux/remoteproc/mtk_scp.h | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/include/linux/remoteproc/mtk_scp.h b/include/linux/remoteproc/mtk_scp.h
->> index 7c2b7cc9..344ff41 100644
->> --- a/include/linux/remoteproc/mtk_scp.h
->> +++ b/include/linux/remoteproc/mtk_scp.h
->> @@ -43,6 +43,7 @@ enum scp_ipi_id {
->>       SCP_IPI_CROS_HOST_CMD,
->>       SCP_IPI_VDEC_LAT,
->>       SCP_IPI_VDEC_CORE,
->> +    SCP_IPI_IMGSYS_CMD,
->>       SCP_IPI_NS_SERVICE = 0xFF,
->>       SCP_IPI_MAX = 0x100,
->>   };
-> 
+	Hans
+
+>  	default:
+>  		return -EINVAL;
+>  	}
+> diff --git a/drivers/media/platform/amphion/vpu_v4l2.c b/drivers/media/platform/amphion/vpu_v4l2.c
+> index c88738e8fff7..893f494ffb0b 100644
+> --- a/drivers/media/platform/amphion/vpu_v4l2.c
+> +++ b/drivers/media/platform/amphion/vpu_v4l2.c
+> @@ -63,6 +63,13 @@ unsigned int vpu_get_buffer_state(struct vb2_v4l2_buffer *vbuf)
+>  	return vpu_buf->state;
+>  }
+>  
+> +void vpu_set_buffer_average_qp(struct vb2_v4l2_buffer *vbuf, u32 qp)
+> +{
+> +	struct vpu_vb2_buffer *vpu_buf = to_vpu_vb2_buffer(vbuf);
+> +
+> +	vpu_buf->average_qp = qp;
+> +}
+> +
+>  void vpu_v4l2_set_error(struct vpu_inst *inst)
+>  {
+>  	vpu_inst_lock(inst);
+> @@ -536,9 +543,11 @@ static int vpu_vb2_buf_prepare(struct vb2_buffer *vb)
+>  static void vpu_vb2_buf_finish(struct vb2_buffer *vb)
+>  {
+>  	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+> +	struct vpu_vb2_buffer *vpu_buf = to_vpu_vb2_buffer(vbuf);
+>  	struct vpu_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+>  	struct vb2_queue *q = vb->vb2_queue;
+>  
+> +	inst->current_average_qp = vpu_buf->average_qp;
+>  	if (vbuf->flags & V4L2_BUF_FLAG_LAST)
+>  		vpu_notify_eos(inst);
+>  
+> diff --git a/drivers/media/platform/amphion/vpu_v4l2.h b/drivers/media/platform/amphion/vpu_v4l2.h
+> index 60f43056a7a2..56f2939fa84d 100644
+> --- a/drivers/media/platform/amphion/vpu_v4l2.h
+> +++ b/drivers/media/platform/amphion/vpu_v4l2.h
+> @@ -12,6 +12,7 @@ void vpu_inst_lock(struct vpu_inst *inst);
+>  void vpu_inst_unlock(struct vpu_inst *inst);
+>  void vpu_set_buffer_state(struct vb2_v4l2_buffer *vbuf, unsigned int state);
+>  unsigned int vpu_get_buffer_state(struct vb2_v4l2_buffer *vbuf);
+> +void vpu_set_buffer_average_qp(struct vb2_v4l2_buffer *vbuf, u32 qp);
+>  
+>  int vpu_v4l2_open(struct file *file, struct vpu_inst *inst);
+>  int vpu_v4l2_close(struct file *file);
+> diff --git a/drivers/media/platform/amphion/vpu_windsor.c b/drivers/media/platform/amphion/vpu_windsor.c
+> index 5f1101d7cf9e..e7d37aa4b826 100644
+> --- a/drivers/media/platform/amphion/vpu_windsor.c
+> +++ b/drivers/media/platform/amphion/vpu_windsor.c
+> @@ -499,6 +499,7 @@ struct windsor_pic_info {
+>  	u32 proc_dacc_rng_wr_cnt;
+>  	s32 tv_s;
+>  	u32 tv_ns;
+> +	u32 average_qp;
+>  };
+>  
+>  u32 vpu_windsor_get_data_size(void)
+> @@ -734,6 +735,7 @@ static void vpu_windsor_unpack_pic_info(struct vpu_rpc_event *pkt, void *data)
+>  	info->wptr = get_ptr(windsor->str_buff_wptr);
+>  	info->crc = windsor->frame_crc;
+>  	info->timestamp = timespec64_to_ns(&ts);
+> +	info->average_qp = windsor->average_qp;
+>  }
+>  
+>  static void vpu_windsor_unpack_mem_req(struct vpu_rpc_event *pkt, void *data)
 
 
