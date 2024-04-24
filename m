@@ -1,158 +1,212 @@
-Return-Path: <linux-kernel+bounces-157801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74A608B166B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:46:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 640C28B166E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:49:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BFE5B21A76
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:46:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1758B28424B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:49:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6809D16E87B;
-	Wed, 24 Apr 2024 22:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b="WcN84l6Q";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QS77Cz/3"
-Received: from wfout8-smtp.messagingengine.com (wfout8-smtp.messagingengine.com [64.147.123.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D79DC16E887;
+	Wed, 24 Apr 2024 22:48:51 +0000 (UTC)
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49782142E6F
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:46:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0654F155A50;
+	Wed, 24 Apr 2024 22:48:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713998781; cv=none; b=Cej+jJXbUJPAlBg7oRANLxp+aeFLRoASuog43IiMsJTdZQyYpabDud90Tgp/I3OV0/2JhQ1wiYtvkTZK+4d4DT7Ekp902XLmbhOdK6NXHlb/q7bmgzGHBI4jSQG/987FD/DVydd1C+j4Sg4WMlJuJ1GIzRNXUJtsJ3mAMZHI1z8=
+	t=1713998931; cv=none; b=I5Ngc9TKV9FWh926uZo8om2OAnRW6ae3GKd/pTuwXR2/BKSj5fQbMes0Zy9p+NO/bJEVuA9AcjPXacBoYRlpZVBM7dCs0wbjVqePp4xL5mawNzFko5iBpXCmsWtYUijtBooQogPXekZkqSC810BFcksegegSiNnJ+L//1OMdXns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713998781; c=relaxed/simple;
-	bh=PWMEcifnbOBNb9cFqvl7nyAKQSwJWVOg4tHQ66KBVo4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kKGEc8xMYWAuDYKqRq4vP7QDtgc9+9ehcciwg6QfyrPH6TlWbRy3paMsy4FpmVDmg/aED/DatMtKiJ5fSObgj9ztxLswcSDmcmxO2RL4av69E1RW6JLmRHG+oyxIcaXNqPkh8jgUhpABDEjtBaWaj6LV1W3hRe5EvfYD4j7rm+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com; spf=pass smtp.mailfrom=sent.com; dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b=WcN84l6Q; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QS77Cz/3; arc=none smtp.client-ip=64.147.123.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sent.com
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfout.west.internal (Postfix) with ESMTP id 747171C000B1;
-	Wed, 24 Apr 2024 18:46:17 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 24 Apr 2024 18:46:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:reply-to:subject
-	:subject:to:to; s=fm3; t=1713998776; x=1714085176; bh=qiywAs5hIZ
-	VDAA1bE5nB42rMvHU8KwAHDhD7k65/QJg=; b=WcN84l6Qu8p3lJjAlR3XpsLG0Z
-	nilPUeXyqxmJrVGYgtueVwL3KvtMWjVow+wydOkwq1Y/qSbOgqza8d00Qh2TFRUw
-	CqmqkZUwCkjGSmFWiuH9X226gVJuiVQ7qyzqakiy/Jt8mRwo2PcwMgJHNcLGmdAI
-	U13Bh8+VEOOIZME2pikyPa//RB9KgoUjfP+b9HtzL0OtJMhuZGf6Sk47bffB84xw
-	bz3EHcQvBq89PWQNg0I0PrVwggAfGLokZZzvQ2SBMgb4CsAWvqnHnKbau5LVJGMm
-	zJ33DETgVtV5AeDpJjUEl+D7wHbEY2pnDsP92u9Edp7JzrzmN02GYh3Cs9qQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm3; t=1713998776; x=1714085176; bh=qiywAs5hIZVDA
-	A1bE5nB42rMvHU8KwAHDhD7k65/QJg=; b=QS77Cz/3d2JacPLVmzr7R7fTijrMu
-	uBAe86oC+7GUW1D6p3IarpZ41hTvufb+funKYbeQ33cqO7XFSCHZgpinrCcqltrq
-	tm66kvrGaIqY8TBmTIh0AkTk8FRKmFJrIfbHMARUNe24OF4wfS2SOJO5nS9bz8xY
-	S8C10MIl/qxYa44Xe/zBJy8wTVnGmPPGEHLAqDPzLc8IbIvwpf4OMNVbxkjqAUW/
-	fodTu1oA+vI1nRbP9C12LdZ+xqS+EkVvy0Fh4TyEMH6J8StETSEBy6oABR1zAp8/
-	wtS40UwpQ4yPZd7zgDR2deJ3U6kXqmUqgtGzef/umvZgevBBIfYE36WhQ==
-X-ME-Sender: <xms:uIspZihuk9LY-BjwG9jI_ZWAXCTNnbAfkqNkw_-G949xy0ZCQHxY_A>
-    <xme:uIspZjDzk6J0fcl4LbXCO1CcdMh9ZAMfLYlL5XWT8ee_UJeqMi6djPwF7h5z6S7_P
-    WKcUmBuhWE92Urd3g>
-X-ME-Received: <xmr:uIspZqEDHO2OhRMPreLjxk-kT7s1LcxkIiZNtM2fi5Xhf5vK0Dej92riYJXVu7WXus-HWLLW9OaiyuCcRbDMCElKHXtQbocQoBmQQ3lsk-BW9vZS5rF11hdU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeliedgudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofhrggfgsedtkeertdertddtnecuhfhrohhmpegkihcujggr
-    nhcuoeiiihdrhigrnhesshgvnhhtrdgtohhmqeenucggtffrrghtthgvrhhnpeffjeeuie
-    efjedujedugfeitdefledtgfeufffhudelgfdtkeetkeefjeehkeehtdenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeiiihdrhigrnhesshgvnh
-    htrdgtohhm
-X-ME-Proxy: <xmx:uIspZrSdf1sBxzkXPnDIAFeepjQUcpOdLJHT4Cr5ZppKCOSPKRc1hw>
-    <xmx:uIspZvyhOVO54ihQovbaXOCzH4v5RWpoUwbB8A3-Uw4eJPQAf8pHVQ>
-    <xmx:uIspZp78SJQJViHIRqkPCbMjJTUWnZfG5-F_LApWOH7AM_7V5kcluA>
-    <xmx:uIspZswUTw522nAv0avpiLy_D7JWYC21_FALagNuZW0QqN4wQp9mSw>
-    <xmx:uIspZkqrfAvKSOUwAJxEkRt3lYhSQijts-nHE3g_zJwVpzbHLAcJ4f9r>
-Feedback-ID: iccd040f4:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 24 Apr 2024 18:46:16 -0400 (EDT)
-From: Zi Yan <zi.yan@sent.com>
-To: linux-mm@kvack.org
-Cc: Zi Yan <ziy@nvidia.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Yang Shi <shy828301@gmail.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Barry Song <21cnbao@gmail.com>,
-	David Hildenbrand <david@redhat.com>,
-	Lance Yang <ioworker0@gmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] mm/rmap: do not add fully unmapped large folio to deferred split list
-Date: Wed, 24 Apr 2024 18:46:14 -0400
-Message-ID: <20240424224614.477221-1-zi.yan@sent.com>
-X-Mailer: git-send-email 2.43.0
-Reply-To: Zi Yan <ziy@nvidia.com>
+	s=arc-20240116; t=1713998931; c=relaxed/simple;
+	bh=HWJ0tXck9M+iSd+3nJJ3wQ8Ni904YFXQtl5/s+z+x/Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AvF8iut72LmTa/riMeiQh9PBCG3HCixaHNUnyv0RtGt0Kk1JQET3YqoliOC2Z4pXgaIOkiUQuLgnLiVeAVrldetob/in4iXg7+D+TxOXwnxgADNZv4Paotp+wW2nE4PfaajEr3ydibs9d+kXcQlO5nJUHAAxmvFxTj9LoUVYq2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2a58209b159so360466a91.3;
+        Wed, 24 Apr 2024 15:48:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713998929; x=1714603729;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3+owEzSFWG5pFXPMumCZ4/vmcoV9pGQrrXPME2YLu4Y=;
+        b=dVc/3Hea8tIyT0BawA5mlkKD/YvzD6VANZ/w1woMnQBOwNEgynhMNx0DOLLixjRZQ1
+         Yi8ShI7BnEWvCUYvmyxE8qpj5sTtinYLZAXLGCWk83kIw94X7xi6MNJkI5aWBoRdQj7W
+         cPyxVzU+I3XOEVyzrqgmhlzP3BE2smHoN90uuJVM/96FICVYKtG76SILVHl45kK3opLA
+         kxAqen4hPJIS4KDnMjiVqVh2lUfdjhyW8dDvY7k/U5H4FUncEgIvEfoqxK9/F5zUPgTB
+         8Fr+qtF+71kGjx47UXrWiann9P2IuS3B4j0NSfFea1DO5muXvD3rF9TsOs0XtphgGm/f
+         9+nA==
+X-Forwarded-Encrypted: i=1; AJvYcCVuH0U+bCmoVSmBY6ThA4/QjcjrKNGHBnJ6MVUAyfwOQjaVa7hWYxtk5wozl8dluB5BDZn2wTSBm/nfJZ7aPwajqHkWzmLTZMVWk1HLsigoZVGRZyQLJFg2X9X07Sy4VhGS0xTsSmOxR6LddlmpZQ==
+X-Gm-Message-State: AOJu0YxxMJ4z2/occEpwfX/mZAmd14hLM+yjMpc6N+dmlPdvBhSPgJ7C
+	7a7CY6noHKM7dDXdi088LKsiGcQ0KfQHxedYG7c6BiYpztqjuO33LrU49wggc2usEFDrB5tUgZu
+	/Ny8N8jEhJK6b6o0YsktarxHCwn16iA==
+X-Google-Smtp-Source: AGHT+IFaBv/6c7bT0MScbt+rbE18T1j/g7V487YpBTYUJeYKtkTeGT5QDXYadnfxvQYT6EYKYSjH7qsu2rOKD+wybZA=
+X-Received: by 2002:a17:90b:3e87:b0:2ae:b8df:89e7 with SMTP id
+ rj7-20020a17090b3e8700b002aeb8df89e7mr4001520pjb.38.1713998929108; Wed, 24
+ Apr 2024 15:48:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240424001231.849972-1-namhyung@kernel.org> <CAP-5=fWNWiuiLOKyNHYcuT9xmJkciUBodjCX1E_TRrTMMsM4uw@mail.gmail.com>
+ <ZilzYDlzj7c1mQq4@x1>
+In-Reply-To: <ZilzYDlzj7c1mQq4@x1>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Wed, 24 Apr 2024 15:48:37 -0700
+Message-ID: <CAM9d7cg0bKF7+BtmkFxnHtiUZcgCWNG7eMqDccrZnM92G78vdQ@mail.gmail.com>
+Subject: Re: [PATCH] perf test: Add a new test for perf annotate
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Zi Yan <ziy@nvidia.com>
+On Wed, Apr 24, 2024 at 2:02=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> On Wed, Apr 24, 2024 at 11:09:48AM -0700, Ian Rogers wrote:
+> > On Tue, Apr 23, 2024 at 5:12=E2=80=AFPM Namhyung Kim <namhyung@kernel.o=
+rg> wrote:
+> > >
+> > > Add a basic perf annotate test
+> > >
+> > >   $ ./perf test annotate -vv
+> > >    76: perf annotate basic tests:
+> > >   --- start ---
+> > >   test child forked, pid 846989
+> > >    fbcd0-fbd55 l noploop
+> > >   perf does have symbol 'noploop'
+> > >   Basic perf annotate test
+> > >            : 0     0xfbcd0 <noploop>:
+> > >       0.00 :   fbcd0:       pushq   %rbp
+> > >       0.00 :   fbcd1:       movq    %rsp, %rbp
+> > >       0.00 :   fbcd4:       pushq   %r12
+> > >       0.00 :   fbcd6:       pushq   %rbx
+> > >       0.00 :   fbcd7:       movl    $1, %ebx
+> > >       0.00 :   fbcdc:       subq    $0x10, %rsp
+> > >       0.00 :   fbce0:       movq    %fs:0x28, %rax
+> > >       0.00 :   fbce9:       movq    %rax, -0x18(%rbp)
+> > >       0.00 :   fbced:       xorl    %eax, %eax
+> > >       0.00 :   fbcef:       testl   %edi, %edi
+> > >       0.00 :   fbcf1:       jle     0xfbd04
+> > >       0.00 :   fbcf3:       movq    (%rsi), %rdi
+> > >       0.00 :   fbcf6:       movl    $0xa, %edx
+> > >       0.00 :   fbcfb:       xorl    %esi, %esi
+> > >       0.00 :   fbcfd:       callq   0x41920
+> > >       0.00 :   fbd02:       movl    %eax, %ebx
+> > >       0.00 :   fbd04:       leaq    -0x7b(%rip), %r12   # fbc90 <sigh=
+andler>
+> > >       0.00 :   fbd0b:       movl    $2, %edi
+> > >       0.00 :   fbd10:       movq    %r12, %rsi
+> > >       0.00 :   fbd13:       callq   0x40a00
+> > >       0.00 :   fbd18:       movl    $0xe, %edi
+> > >       0.00 :   fbd1d:       movq    %r12, %rsi
+> > >       0.00 :   fbd20:       callq   0x40a00
+> > >       0.00 :   fbd25:       movl    %ebx, %edi
+> > >       0.00 :   fbd27:       callq   0x407c0
+> > >       0.10 :   fbd2c:       movl    0x89785e(%rip), %eax        # 993=
+590 <done>
+> > >       0.00 :   fbd32:       testl   %eax, %eax
+> > >      99.90 :   fbd34:       je      0xfbd2c
+> > >       0.00 :   fbd36:       movq    -0x18(%rbp), %rax
+> > >       0.00 :   fbd3a:       subq    %fs:0x28, %rax
+> > >       0.00 :   fbd43:       jne     0xfbd50
+> > >       0.00 :   fbd45:       addq    $0x10, %rsp
+> > >       0.00 :   fbd49:       xorl    %eax, %eax
+> > >       0.00 :   fbd4b:       popq    %rbx
+> > >       0.00 :   fbd4c:       popq    %r12
+> > >       0.00 :   fbd4e:       popq    %rbp
+> > >       0.00 :   fbd4f:       retq
+> > >       0.00 :   fbd50:       callq   0x407e0
+> > >       0.00 :   fbcd0:       pushq   %rbp
+> > >       0.00 :   fbcd1:       movq    %rsp, %rbp
+> > >       0.00 :   fbcd4:       pushq   %r12
+> > >       0.00 :   fbcd0:  push   %rbp
+> > >       0.00 :   fbcd1:  mov    %rsp,%rbp
+> > >       0.00 :   fbcd4:  push   %r12
+> > >   Basic annotate test [Success]
+> > >   ---- end(0) ----
+> > >    76: perf annotate basic tests                                     =
+  : Ok
+> > >
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> >
+> > Looks good, thanks for this!
+> >
+> > Reviewed-by: Ian Rogers <irogers@google.com>
+>
+> Thanks! Applied, with the following changes to improve the error
+> reporting, please holler if you disagree:
 
-In __folio_remove_rmap(), a large folio is added to deferred split list
-if any page in a folio loses its final mapping. It is possible that
-the folio is unmapped fully, but it is unnecessary to add the folio
-to deferred split list at all. Fix it by checking folio->_nr_pages_mapped
-before adding a folio to deferred split list. If the folio is already
-on the deferred split list, it will be skipped. This issue applies to
-both PTE-mapped THP and mTHP.
+LGTM!
 
-Commit 98046944a159 ("mm: huge_memory: add the missing
-folio_test_pmd_mappable() for THP split statistics") tried to exclude
-mTHP deferred split stats from THP_DEFERRED_SPLIT_PAGE, but it does not
-fix the above issue. A fully unmapped PTE-mapped order-9 THP was still
-added to deferred split list and counted as THP_DEFERRED_SPLIT_PAGE,
-since nr is 512 (non zero), level is RMAP_LEVEL_PTE, and inside
-deferred_split_folio() the order-9 folio is folio_test_pmd_mappable().
-However, this miscount was present even earlier due to implementation,
-since PTEs are unmapped individually and first PTE unmapping adds the THP
-into the deferred split list.
+Thanks,
+Namhyung
 
-With commit b06dc281aa99 ("mm/rmap: introduce
-folio_remove_rmap_[pte|ptes|pmd]()"), kernel is able to unmap PTE-mapped
-folios in one shot without causing the miscount, hence this patch.
-
-Signed-off-by: Zi Yan <ziy@nvidia.com>
-Reviewed-by: Yang Shi <shy828301@gmail.com>
----
- mm/rmap.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/mm/rmap.c b/mm/rmap.c
-index a7913a454028..2809348add7b 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1553,9 +1553,10 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
- 		 * page of the folio is unmapped and at least one page
- 		 * is still mapped.
- 		 */
--		if (folio_test_large(folio) && folio_test_anon(folio))
--			if (level == RMAP_LEVEL_PTE || nr < nr_pmdmapped)
--				deferred_split_folio(folio);
-+		if (folio_test_large(folio) && folio_test_anon(folio) &&
-+		    ((level == RMAP_LEVEL_PTE && atomic_read(mapped)) ||
-+		     (level == RMAP_LEVEL_PMD && nr < nr_pmdmapped)))
-+			deferred_split_folio(folio);
- 	}
- 
- 	/*
-
-base-commit: 2541ee5668b019c486dd3e815114130e35c1495d
--- 
-2.43.0
-
+>
+> diff --git a/tools/perf/tests/shell/annotate.sh b/tools/perf/tests/shell/=
+annotate.sh
+> index 7820d13eebaef535..1db1e8113d9943a6 100755
+> --- a/tools/perf/tests/shell/annotate.sh
+> +++ b/tools/perf/tests/shell/annotate.sh
+> @@ -36,7 +36,7 @@ test_basic() {
+>    echo "Basic perf annotate test"
+>    if ! perf record -o "${perfdata}" ${testprog} 2> /dev/null
+>    then
+> -    echo "Basic annotate [Failed record]"
+> +    echo "Basic annotate [Failed: perf record]"
+>      err=3D1
+>      return
+>    fi
+> @@ -44,7 +44,7 @@ test_basic() {
+>    # check if it has the target symbol
+>    if ! perf annotate -i "${perfdata}" 2> /dev/null | grep "${testsym}"
+>    then
+> -    echo "Basic annotate [Failed missing symbol]"
+> +    echo "Basic annotate [Failed: missing target symbol]"
+>      err=3D1
+>      return
+>    fi
+> @@ -52,7 +52,7 @@ test_basic() {
+>    # check if it has the disassembly lines
+>    if ! perf annotate -i "${perfdata}" 2> /dev/null | grep "${disasm_rege=
+x}"
+>    then
+> -    echo "Basic annotate [Failed missing disasm output]"
+> +    echo "Basic annotate [Failed: missing disasm output from default dis=
+assembler]"
+>      err=3D1
+>      return
+>    fi
+> @@ -61,7 +61,7 @@ test_basic() {
+>    if ! perf annotate -i "${perfdata}" "${testsym}" 2> /dev/null | \
+>           grep -m 3 "${disasm_regex}"
+>    then
+> -    echo "Basic annotate [Failed missing disasm output]"
+> +    echo "Basic annotate [Failed: missing disasm output when specifying =
+the target symbol]"
+>      err=3D1
+>      return
+>    fi
+> @@ -70,7 +70,7 @@ test_basic() {
+>    if ! perf annotate -i "${perfdata}" --objdump=3Dobjdump 2> /dev/null |=
+ \
+>           grep -m 3 "${disasm_regex}"
+>    then
+> -    echo "Basic annotate [Failed missing disasm output from objdump]"
+> +    echo "Basic annotate [Failed: missing disasm output from non default=
+ disassembler (using --objdump)]"
+>      err=3D1
+>      return
+>    fi
 
