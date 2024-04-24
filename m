@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-156730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73B8B8B0768
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:33:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A80F28B076B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:34:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 294671F22B4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:33:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E31F8B22A45
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:34:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB57159564;
-	Wed, 24 Apr 2024 10:33:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1DDB15957E;
+	Wed, 24 Apr 2024 10:34:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="QthLMQ3O"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="GlM+J1m4"
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F3B313DBB2;
-	Wed, 24 Apr 2024 10:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DA8B142621;
+	Wed, 24 Apr 2024 10:34:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713954821; cv=none; b=BzFmz2fwXOn6goSE1KF5dR9S9iWpZFrlOPdtzEVM8NKCWHPqnbJ+rN3DSiyx7fNzkpdz6OiBHgCxZcDU7JORaIaKO6MHv9xQDbWAwBnlQs3/B0fY7cNxwcG7HUJ3CIQ+K2axUjJ2N06T7nqICnx2l4Nqc32I9Y2pLGirWClVjMA=
+	t=1713954851; cv=none; b=molL5rueBkWpLEYqSQKMnAJ91PQN2pTfhaWTtp+bWja3NmxcUZb8ag1domkcKxO/vBh42ELktoNox2EDJE7XvEmrGlO2130uCWkCsucTYXBfNB/QW2RIPVTBN8MRiK9gGju+MVlJLCd7KRBWM8mbIec4+EqCaG0JfLTQMHoX7pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713954821; c=relaxed/simple;
-	bh=LDWhUK0jDEvgCD/wSr4IUcRjzC8SZUkMJLbsuVglrYo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=hFC5qY/snUHprD+uI0JgYEZqbGTpIK34Z1VSj+buASyvTrjWP9oLEHbhHn7AqnlqpTfjOYwABV/LeIc6NCUv/pp1I7ARPPJPaNgladCjGJjobkhVPttviu7TYOePkpOWmM8qJW4PGMrszxHPRGIrdB5/QPs6xI3hSu5+P6o0j6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=QthLMQ3O; arc=none smtp.client-ip=13.77.154.182
+	s=arc-20240116; t=1713954851; c=relaxed/simple;
+	bh=pBpwupSigKleZZTb+2kGSlklScf7AqbywhAP8CWXs1E=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=j5wAvqrxyTTwS3iye9QyekWxGvHzVEbsBzg1XvvGWajqBYiYfDuwuO233aOrn5ngXUW4phzgOmEOqt5YK7KRW1M+zv4V03O+2kKk6+R3BfyWUaCPlPFS9O81LePq6JMhyqmMRWbECkVLCxoddvfFq1giuCuMrlgRxbJ8JIzg5U0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=GlM+J1m4; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id E09C0208591D; Wed, 24 Apr 2024 03:33:39 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E09C0208591D
+	id B3906208591D; Wed, 24 Apr 2024 03:34:09 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B3906208591D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1713954819;
-	bh=V1mal6zq+xdeJfcmGXIqdRpTal7N99j0myea4I6HSlE=;
+	s=default; t=1713954849;
+	bh=fmV2dEL2yO9DxzlpnlosDU08cXJN2Bc3pZpwWQ9nU5k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QthLMQ3OGJ47JeoAeOwmOy2PnbZj8TbUaGhCtbHpoj/Dp9SZU4fZClI8Fnm/WU+UZ
-	 UiKYfYchd9ESdwLW/HcP1eN1eWlNhz1evt+EEt8UG6iGj3gm50vMcP0s9ma0KO2nPQ
-	 Ian4DEwomU69hf3sJHR4uXkTgclY3DFa5n+qjO98=
+	b=GlM+J1m4MN+NBqgAk6ui0SjVDAU87Ui6H78VbQ6O0ZFDGJ8hSHxYlZ28HX9DaNVlA
+	 i/rPA9pTXl7J4XLOTElJUGZU6fvsYMB28q1FxnkgJRWe0EKkquBlCZD+6tZjAviJsC
+	 qhzt/CtHlrb6osxvWM//xRbF9c71mqb4irSDoKk8=
 From: Shradha Gupta <shradhagupta@linux.microsoft.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -60,9 +60,9 @@ To: "David S. Miller" <davem@davemloft.net>,
 	linux-hyperv@vger.kernel.org
 Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
 	shradhagupta@microsoft.com
-Subject: [PATCH net-next v2 1/2] net: Add sysfs atttributes for max_mtu min_mtu
-Date: Wed, 24 Apr 2024 03:33:37 -0700
-Message-Id: <1713954817-30133-1-git-send-email-shradhagupta@linux.microsoft.com>
+Subject: [PATCH net-next v2 2/2] net: mana: Add new device attributes for mana
+Date: Wed, 24 Apr 2024 03:34:08 -0700
+Message-Id: <1713954848-30299-1-git-send-email-shradhagupta@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1713954774-29953-1-git-send-email-shradhagupta@linux.microsoft.com>
 References: <1713954774-29953-1-git-send-email-shradhagupta@linux.microsoft.com>
@@ -72,64 +72,70 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-Add sysfs attributes to read max_mtu and min_mtu value for
-network devices
+Add new device attributes to read num_ports and max_num_msix setting for
+MANA device.
 
 Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
 ---
- Changes in v2:
- * Created a new patch for generic attributes
+ Changes in v2
+ * Used the suggested method(v1 dicsussion) to implement sysfs device parameters
+   for MANA device
+ * Implemented attributes max_mtu and min_mtu generically for all device
+   drivers
 ---
- Documentation/ABI/testing/sysfs-class-net | 16 ++++++++++++++++
- net/core/net-sysfs.c                      |  4 ++++
- 2 files changed, 20 insertions(+)
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 32 +++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/Documentation/ABI/testing/sysfs-class-net b/Documentation/ABI/testing/sysfs-class-net
-index ebf21beba846..f68f3b9be6ec 100644
---- a/Documentation/ABI/testing/sysfs-class-net
-+++ b/Documentation/ABI/testing/sysfs-class-net
-@@ -352,3 +352,19 @@ Description:
- 		0  threaded mode disabled for this dev
- 		1  threaded mode enabled for this dev
- 		== ==================================
-+
-+What:           /sys/class/net/<iface>/max_mtu
-+Date:           April 2024
-+KernelVersion:  6.10
-+Contact:        netdev@vger.kernel.org
-+Description:
-+                Indicates the interface's maximum supported MTU value, in
-+                bytes, and in decimal format.
-+
-+What:           /sys/class/net/<iface>/min_mtu
-+Date:           April 2024
-+KernelVersion:  6.10
-+Contact:        netdev@vger.kernel.org
-+Description:
-+                Indicates the interface's minimum supported MTU value, in
-+                bytes, and in decimal format.
-diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
-index e3d7a8cfa20b..525b85d47676 100644
---- a/net/core/net-sysfs.c
-+++ b/net/core/net-sysfs.c
-@@ -114,6 +114,8 @@ NETDEVICE_SHOW_RO(addr_len, fmt_dec);
- NETDEVICE_SHOW_RO(ifindex, fmt_dec);
- NETDEVICE_SHOW_RO(type, fmt_dec);
- NETDEVICE_SHOW_RO(link_mode, fmt_dec);
-+NETDEVICE_SHOW_RO(max_mtu, fmt_dec);
-+NETDEVICE_SHOW_RO(min_mtu, fmt_dec);
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 1332db9a08eb..e35f984e34ce 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -1471,6 +1471,37 @@ static bool mana_is_pf(unsigned short dev_id)
+ 	return dev_id == MANA_PF_DEVICE_ID;
+ }
  
- static ssize_t iflink_show(struct device *dev, struct device_attribute *attr,
- 			   char *buf)
-@@ -671,6 +673,8 @@ static struct attribute *net_class_attrs[] __ro_after_init = {
- 	&dev_attr_carrier_up_count.attr,
- 	&dev_attr_carrier_down_count.attr,
- 	&dev_attr_threaded.attr,
-+	&dev_attr_max_mtu.attr,
-+	&dev_attr_min_mtu.attr,
- 	NULL,
++static ssize_t num_ports_show(struct device *dev,
++			      struct device_attribute *attr, char *buf)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++	struct gdma_context *gc = pci_get_drvdata(pdev);
++	struct mana_context *ac = gc->mana.driver_data;
++
++	return sysfs_emit(buf, "%d\n", ac->num_ports);
++}
++
++static DEVICE_ATTR_RO(num_ports);
++
++static ssize_t max_num_msix_show(struct device *dev,
++				 struct device_attribute *attr, char *buf)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++	struct gdma_context *gc = pci_get_drvdata(pdev);
++
++	return sysfs_emit(buf, "%d\n", gc->max_num_msix);
++}
++
++static DEVICE_ATTR_RO(max_num_msix);
++
++static struct attribute *mana_gd_device_attrs[] = {
++	&dev_attr_num_ports.attr,
++	&dev_attr_max_num_msix.attr,
++	NULL,
++};
++
++ATTRIBUTE_GROUPS(mana_gd_device);
++
+ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ {
+ 	struct gdma_context *gc;
+@@ -1613,6 +1644,7 @@ static const struct pci_device_id mana_id_table[] = {
  };
- ATTRIBUTE_GROUPS(net_class);
+ 
+ static struct pci_driver mana_driver = {
++	.dev_groups	= mana_gd_device_groups,
+ 	.name		= "mana",
+ 	.id_table	= mana_id_table,
+ 	.probe		= mana_gd_probe,
 -- 
 2.34.1
 
