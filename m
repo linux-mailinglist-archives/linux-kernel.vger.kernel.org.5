@@ -1,123 +1,121 @@
-Return-Path: <linux-kernel+bounces-156939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF8068B0A9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:14:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A6ED8B0AA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:15:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02C34B275EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:14:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE7F31F2228A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55AF115CD66;
-	Wed, 24 Apr 2024 13:14:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37CA015B562;
+	Wed, 24 Apr 2024 13:15:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ORTlE1Ye"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="nDxQOumJ"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C93015B98B;
-	Wed, 24 Apr 2024 13:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA6D315B130;
+	Wed, 24 Apr 2024 13:15:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713964461; cv=none; b=S5zwZLx1H0eXJgn0MYswhk3Z4r5Lq1HFvrFmaRNB3/IEW0oluAoIdJI9y88LAl7zV6Nvmj9VytjFXn9LzxH3dHcMyYC6j7ViqDpCFpyU3uQS5y0qdDrKrT+KaTUBK/Wu13pXT/yCqPy6DylWngySn2xkY8TwZFmv8vjEM/nAuTI=
+	t=1713964517; cv=none; b=vBE/HVSY6PpHvy0k/NDKJBqb1iRJTkTFAkuBrbI37pBb7Iw2rn/hSfjO8wCrNIcBy8UIyiCL0jjW7D2s6+uk+jrRvK4gvBGruYLrZ//NU5/JeuTOef4MtFxN5+6WBpFz4kOLWQIV+NUauy4KC3KganKUBG78P/YLlab3wXsCtwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713964461; c=relaxed/simple;
-	bh=nZHbG0wfUOw2pjAGM1BQC+MUTbN5dqrkOpU54Nd4FUg=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=ldcdWVMyo8eSEOCnjrgJd3CYVNsYVpPKuQ8kAFTTqr+IdtP5Z/vcqa9ysbmcMx/O5JQDxO6MLOt1HlqQW3u1jma93bRE1hi7MlGAUCCYdaYtFTCJhWh0iGmsuRY1sgsWTVQYhI/6VWfGNVj8TAABx2p/RY00OGgl7loa457GjdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ORTlE1Ye; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2EA4C113CE;
-	Wed, 24 Apr 2024 13:14:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713964461;
-	bh=nZHbG0wfUOw2pjAGM1BQC+MUTbN5dqrkOpU54Nd4FUg=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=ORTlE1Ye5jmyLa+PRETfxpDtYkkQ7C3qX5cd2GZTBFu5JFc0hMJBdS3i+/LMVLhfS
-	 Z0PEnSDaUBRqo1WR0zslDTfxi53nX6hXihrQXSx1erL1GJ57WHzziepcdO3qxYjeR2
-	 igV7pOdZw2T3i2GaadMKl00ugZTYH/lA6Im2blcLoK4RcERalQYpPASfWzf9jp8EbH
-	 yLxUIbeMyj0YJM+TPjzN3ABoRvh+dooF6L4NC9hSJZvfIQApm89Y4rEK3PYWU/b4/I
-	 FUVTSn0+NriFLtoXs0QmQrJ1k784SYw31I8APoZ/HZxhW9VO37klGicBbW8RGMtrYX
-	 lqInvfHhCuVQw==
-Date: Wed, 24 Apr 2024 08:14:19 -0500
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	s=arc-20240116; t=1713964517; c=relaxed/simple;
+	bh=ZpzSAiaL59N9XSN9rDcS3ezl9pXtDYQNg7pgIwvTRtk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=DaXhET9i5vgvn315SIwDwZWbGIPfKHPcgWRT9vFm8y/2VQTb5gDj52470XLSukfnWu2UmmjYUDYt7+r8RPoHfYgqAEbGFRGVdQ3zp8CE/U8NZSrYi5/ewsJP3kZYgIvKk9CSOErAlcTvML5EfLKW16uM0FrrJqRscsOwQvN99yA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=nDxQOumJ; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43OBsNvJ019281;
+	Wed, 24 Apr 2024 15:15:08 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=3KiGlLEEMBqAQpnigw8VFdSst9zFsrKpxO0S8JeWSSY=; b=nD
+	xQOumJpyT0pxzog09VN71zHwYTX7Wp/UNR7PPUKJKlYpZn663KYtY0bjStUo8j2y
+	YkKYiWzT8TZJA41J5Z8nhvSHqOe/mIYzjDU4hMPsgVE/QmU//1WeYEYEkDLvjLpZ
+	CLsSJqrPotWo5tHgJFYoet/OwS5eK9rpG8MLb7Gis4r8gwwlFX4LG6i02hna8s+G
+	0Q+Ql4eJrUB4JcBIpp3tJ67xAhIe6y6hFz284dpGSBylysbfR3inOPBuRi0cNmKX
+	vB7SMQ7ayuajBuWZuFrJCfn6JnIFCbxw79/Zza2jr5qfxraWB62veDm62yYXZbV/
+	VY3zBi6MXiPQXUVk/yvA==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xm4cngpmk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 15:15:08 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 7B2994002D;
+	Wed, 24 Apr 2024 15:15:04 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A76DC21ED4A;
+	Wed, 24 Apr 2024 15:14:38 +0200 (CEST)
+Received: from [10.48.86.79] (10.48.86.79) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 24 Apr
+ 2024 15:14:38 +0200
+Message-ID: <53a82587-2f1b-45df-b507-11810ad1b533@foss.st.com>
+Date: Wed, 24 Apr 2024 15:14:37 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-Cc: conor+dt@kernel.org, rajpat@codeaurora.org, luca.weiss@fairphone.com, 
- andersson@kernel.org, swboyd@chromium.org, devicetree@vger.kernel.org, 
- cros-qcom-dts-watchers@chromium.org, linux-arm-msm@vger.kernel.org, 
- quic_anupkulk@quicinc.com, mka@chromium.org, linux-kernel@vger.kernel.org, 
- konrad.dybcio@linaro.org, quic_msavaliy@quicinc.com, krzk+dt@kernel.org, 
- rojay@codeaurora.org
-In-Reply-To: <20240424075853.11445-1-quic_vdadhani@quicinc.com>
-References: <20240424075853.11445-1-quic_vdadhani@quicinc.com>
-Message-Id: <171396420160.3427004.14810050432348630573.robh@kernel.org>
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc7280: Remove CTS/RTS
- configuration
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bus: stm32_firewall: fix off by one in
+ stm32_firewall_get_firewall()
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+        Gatien Chevallier
+	<gatien.chevallier@foss.st.com>
+CC: Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+References: <17dce071-21ef-49f5-be45-f93bbf3642ec@moroto.mountain>
+Content-Language: en-US
+From: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+In-Reply-To: <17dce071-21ef-49f5-be45-f93bbf3642ec@moroto.mountain>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_10,2024-04-24_01,2023-05-22_02
 
+Hi Dan
 
-On Wed, 24 Apr 2024 13:28:53 +0530, Viken Dadhaniya wrote:
-> For IDP variant, GPIO 20/21 is used by camera use case and camera
-> driver is not able acquire these GPIOs as it is acquired by UART5
-> driver as RTS/CTS pin.
+On 4/12/24 10:25, Dan Carpenter wrote:
+> The "nb_firewall" variable is the number of elements in the firewall[]
+> array, which is allocated in stm32_firewall_populate_bus().  So change
+> this > comparison to >= to prevent an out of bound access.
 > 
-> UART5 is designed for debug UART for all the board variants of the
-> sc7280 chipset and RTS/CTS configuration is not required for debug
-> uart usecase.
-> 
-> Remove CTS/RTS configuration for UART5 instance and change compatible
-> string to debug UART.
-> 
-> Remove overwriting compatible property from individual target specific
-> file as it is not required.
-> 
-> Fixes: 38cd93f413fd ("arm64: dts: qcom: sc7280: Update QUPv3 UART5 DT node")
-> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-> 
+> Fixes: 5c9668cfc6d7 ("firewall: introduce stm32_firewall framework")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 > ---
-> v1 -> v2:
-> - Remove compatible property from target specific file.
-> - Update commit log.
-> ---
->  arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts |  1 -
->  arch/arm64/boot/dts/qcom/qcm6490-idp.dts           |  1 -
->  arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts       |  1 -
->  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi           |  1 -
->  arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi         |  1 -
->  arch/arm64/boot/dts/qcom/sc7280.dtsi               | 14 ++------------
->  6 files changed, 2 insertions(+), 17 deletions(-)
+>   drivers/bus/stm32_firewall.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/drivers/bus/stm32_firewall.c b/drivers/bus/stm32_firewall.c
+> index decb79449047..2fc9761dadec 100644
+> --- a/drivers/bus/stm32_firewall.c
+> +++ b/drivers/bus/stm32_firewall.c
+> @@ -53,7 +53,7 @@ int stm32_firewall_get_firewall(struct device_node *np, struct stm32_firewall *f
+>   			return err;
+>   		}
+>   
+> -		if (j > nb_firewall) {
+> +		if (j >= nb_firewall) {
+>   			pr_err("Too many firewall controllers");
+>   			of_node_put(provider);
+>   			return -EINVAL;
 
+Applied on stm32-next.
 
-My bot found new DTB warnings on the .dts files added or changed in this
-series.
-
-Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
-are fixed by another series. Ultimately, it is up to the platform
-maintainer whether these warnings are acceptable or not. No need to reply
-unless the platform maintainer has comments.
-
-If you already ran DT checks and didn't see these error(s), then
-make sure dt-schema is up to date:
-
-  pip3 install dtschema --upgrade
-
-
-New warnings running 'make CHECK_DTBS=y qcom/qcm6490-fairphone-fp5.dtb qcom/qcm6490-idp.dtb qcom/qcs6490-rb3gen2.dtb' for 20240424075853.11445-1-quic_vdadhani@quicinc.com:
-
-arch/arm64/boot/dts/qcom/qcm6490-idp.dtb: usb@8cf8800: interrupt-names: ['pwr_event', 'hs_phy_irq', 'dp_hs_phy_irq', 'dm_hs_phy_irq'] is too short
-	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
-
-
-
-
-
+Regards
+Alex
 
