@@ -1,84 +1,69 @@
-Return-Path: <linux-kernel+bounces-157402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27A8B8B110F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:33:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 856878B1112
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:34:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41AE81C23B1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:33:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A25A1C23C33
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:34:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A43116D4C6;
-	Wed, 24 Apr 2024 17:33:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 920AA16D4DC;
+	Wed, 24 Apr 2024 17:34:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P7WUNqQe"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sCoYCSHx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E1A16D309;
-	Wed, 24 Apr 2024 17:33:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFD9B16C423;
+	Wed, 24 Apr 2024 17:34:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713980025; cv=none; b=Xyjum1f33P5eJhIMTCnoAW9XP+zWKSfejlcVQ79w6MUlVfTyr9djLwatZ03VNKpxvWa356qWIB+NfCPrsZBUGvhH9GygBDxf4FeJxG5yYWA5pNzWOzbP0QuSKCOzpBpL/boHuK8OThtKDD6sYumj4Se+U8XjZTYchnn2irU/G3s=
+	t=1713980066; cv=none; b=tpfwgIJpb+0uKY71aQf68RKJG0nFqe6Att9YJ7xw6gMCYTvktZ1FmxmcC/gLZwm1Aojhl0Gphi5nmphmsSGV2x4oAiERhtiAMcBjQdPq9bU6wpjsoY6LRAZHccGcJzDGYg2azf/qnN39jVQLuELBRCTcJVY837aOjAVacJEnT4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713980025; c=relaxed/simple;
-	bh=VJtryPRdSbhoR83wh/nDtVyZr+nW68cEM8Mep7RI3F8=;
+	s=arc-20240116; t=1713980066; c=relaxed/simple;
+	bh=3g+rp8K8bwvWoF0UnQzgDY4BiHIy7JIhe8O7E/yKVB0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L/RvavFhjPgw3F9kLDdJuaYepK3WeHEerbV7FiFoxtJlHxE6vEH/fVaqNTztnYAZVa2Fm+II4e5H8X28/LW23WYNM42436Cp7OkxqqWzTF7WrRImxGbjq/9aPdUCKU7TzLjkKaraaiXUUTFlQG4TPxB4BN/bCFeIYsNQpBHB0xY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P7WUNqQe; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e651a9f3ffso445545ad.1;
-        Wed, 24 Apr 2024 10:33:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713980023; x=1714584823; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MHbc1IMizMcaJzF17qOyImQ9KDMCW7lW672qBB1+MZ8=;
-        b=P7WUNqQe+TcVMZ0qm9DebQaUXULDCVAGSYrPRztboOlMZ810rqQzlvRwD7/0CsV5CH
-         INTOg9n4NtsaTgCAA5Mo956UgCE92e1KZmiQfjN428owkZnuGyTnHrZVkMo9R3qLW/Lv
-         bo71jQudL433pEmOGESbwxOgNcn28j0hDXHPZe1w2sSuOdJSQzwKMV2FFYAYWYvdAj3m
-         3uZlPDxuUU1y76XzfjYgTTC4/WFpDtVXYeuW2nxosfY8srjZCNf249TgCtlVgstM0DXl
-         L03OeGkYsFdJ6MrKLaWNLTuLLNGJnXeUlcGqmKMp02WVdgIbM2CB7Lbps1NJwIh/t6af
-         u/Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713980023; x=1714584823;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MHbc1IMizMcaJzF17qOyImQ9KDMCW7lW672qBB1+MZ8=;
-        b=Dyqw1ldk/fTuClcPxI8CGzAqhGsyDCzoLy9OelsvrsEu4TG/TEJOM+lUU8PhbqETH5
-         NI88jrFCMQsVJOKh8rZO05TJyfGAbNmgDoeZpOTboQkPaj0dp3krp8v5aU5wa5QkjxpN
-         x5Rav4CPInzkW4Osne8qJK6BE3Lh3hyGcPMzojv2X7MwhqlfI4fJMl4SYI6kquwh84h6
-         Oja+Ip80QQ4yllsqoRyqOtnmwbzbKCBv65N2Mn6xNS96hf3AKoLMQuizTBTZkeDpPjKH
-         cwz80C9GHEpc5tOGyakHVdgh0qgzPnQBnzPQPxM1EzOdQaVnd99uFV2h7xDYvjrX+x9b
-         bwDg==
-X-Forwarded-Encrypted: i=1; AJvYcCWRZ7kore4J1cJezFw6HuOmmaBB6I1NmxeidLPVF/ZtymTE/DwqqbtRkgvQkowqIVxA6xF3kFa9/C0xCp8MdQu4gwxU9Vaj
-X-Gm-Message-State: AOJu0YyTnM5DkouVnkz+jSxVCmiyiuDMEYWv5urvSp+Add4q5F482U8N
-	YguS2Hh24/cu9wvtuI+3UiE9+WaSLQKYawIpA81gAKAN0CTHfXkjyx4XA5kC
-X-Google-Smtp-Source: AGHT+IEDHG570kcEbQkDBI/fAKBX6nHzx+s1iKH/aSwFx9HFu1aOZIdQeTBMPhX/rh/U5n6hNo9mHg==
-X-Received: by 2002:a17:903:1108:b0:1e4:ae60:91fe with SMTP id n8-20020a170903110800b001e4ae6091femr3456137plh.51.1713980022823;
-        Wed, 24 Apr 2024 10:33:42 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:4652])
-        by smtp.gmail.com with ESMTPSA id i3-20020a17090332c300b001e40d27bc2dsm12183772plr.26.2024.04.24.10.33.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 10:33:42 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 24 Apr 2024 07:33:41 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Sam Sun <samsun1006219@gmail.com>,
-	xingwei lee <xrivendell7@gmail.com>,
-	syzkaller-bugs@googlegroups.com,
-	Lai Jiangshan <jiangshan.ljs@antgroup.com>, stable@vger.kernel.org
-Subject: Re: [PATCH V2] workqueue: Fix divide error in
- wq_update_node_max_active()
-Message-ID: <ZilCdb2_LFOA71J-@slm.duckdns.org>
-References: <CAEkJfYPGS1_4JqvpSo0=FM0S1ytB8CEbyreLTtWpR900dUZymw@mail.gmail.com>
- <20240424135155.1339671-1-jiangshanlai@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Nsz+SVjhZsk1Xvh7uT45ILcN38XpV6fRXGrXCMlO+0UO+JqCfbP47O4CuP2zLnzyNOgICA4DNWnXyvHkt4agEPmF0583Z71dYVf+c+jHXZjnu35dUuhAc7fylic0LbrLQLUu75ky9x3ezwu9HNBnMu0eSTfFyiyUhbt2pq/Z708=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sCoYCSHx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79556C113CD;
+	Wed, 24 Apr 2024 17:34:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713980066;
+	bh=3g+rp8K8bwvWoF0UnQzgDY4BiHIy7JIhe8O7E/yKVB0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sCoYCSHxTJDj9oIeKKiCDiLnKfm4Ra5kMlyWGHLC7aj6qxhGt+QLuQeNe+8CSqOrp
+	 mPHN75Hr2JAWJnJMJu3I/PoYx+SHUqIqXsHi/kPp7anPOkVbJdIuk4Unu1+e6QiPxP
+	 2Or0glkWFDMkiGUTU2K8JxvJSrnmuAhA+Jhf0kblq4bDQL0x1bxa3O0aq5bit786fm
+	 0ic1QEkTy3GauWXYG3my6nWhlnDdqJrF/fTGs2TWkGbV9eDPPG00AKKlk1SijNEU9h
+	 WNZlKxcnXdXamxbYuH0abJiZKwJTByaz27XV8lUtuFUUGabWXniNwMRm+EBh3624Bh
+	 W91O6UY/Xba3Q==
+Date: Wed, 24 Apr 2024 18:34:19 +0100
+From: Simon Horman <horms@kernel.org>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: linux-kernel@vger.kernel.org,
+	Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
+	Lee Jones <lee@kernel.org>, Jiawen Wu <jiawenwu@trustnetic.com>,
+	Mengyuan Lou <mengyuanlou@net-swift.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Duanqiang Wen <duanqiangwen@net-swift.com>,
+	"open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>,
+	"open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
+Subject: Re: [PATCH 4/4] net: txgbe: Utilize i2c-designware.h
+Message-ID: <20240424173419.GO42092@kernel.org>
+References: <20240423233622.1494708-1-florian.fainelli@broadcom.com>
+ <20240423233622.1494708-5-florian.fainelli@broadcom.com>
+ <20240424161406.GM42092@kernel.org>
+ <59cbfcf1-d5c4-470b-8c81-67432d6ffc11@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,12 +72,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240424135155.1339671-1-jiangshanlai@gmail.com>
+In-Reply-To: <59cbfcf1-d5c4-470b-8c81-67432d6ffc11@broadcom.com>
 
-Applied to wq/for-6.9-fixes.
+On Wed, Apr 24, 2024 at 09:22:49AM -0700, Florian Fainelli wrote:
+> On 4/24/24 09:14, Simon Horman wrote:
+> > On Tue, Apr 23, 2024 at 04:36:22PM -0700, Florian Fainelli wrote:
+> > > Rather than open code the i2c_designware string, utilize the newly
+> > > defined constant in i2c-designware.h.
+> > > 
+> > > Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> > 
+> > Hi Florian,
+> > 
+> > FYI, this conflicts with:
+> > 
+> > c644920ce922 ("net: txgbe: fix i2c dev name cannot match clkdev")
+> > 
+> > But a patch-set has been submitted which reverts that commit:
+> > 
+> > https://lore.kernel.org/all/20240422084109.3201-1-duanqiangwen@net-swift.com/
+> 
+> That's right, I mentioned in the cover letter this was based on top of
+> Duanqiang's couple patches. Thanks Simon!
 
-Thanks.
+Thanks Florian,
 
--- 
-tejun
+Sorry for missing that.
+
 
