@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-157558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B3768B12D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:51:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23DF78B12D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:51:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBF831C24E8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:51:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5593F1C24CC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D081A716;
-	Wed, 24 Apr 2024 18:51:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBD041D556;
+	Wed, 24 Apr 2024 18:51:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JIzsY0rU"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YC9stBG4"
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4150B3D68;
-	Wed, 24 Apr 2024 18:51:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D335A19479;
+	Wed, 24 Apr 2024 18:51:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713984671; cv=none; b=S68Z/CDDFaYQ/ehVGNmjmlUBDATiKLb1cTKXuZ6hg2tbQHuRq6bhL328t9mAbmtvmgBZogTBf5aQDL5Nt4X5RF4vl4X1qKEqjoUCBNu2VHjFy511g1385xpuSZWpUpfhcNzXIlf5f9sP/CUqVI/s5LHbuqU2VRqncdQpKdkzzz0=
+	t=1713984673; cv=none; b=szONQ8QjoVENL3OT28557IxUApyWHEqA07snCgT/AKmFNyQQb+VA6npxkMyBT4sTbr2pM2Pc/LyFwD46vuTjqrb+gJbScIylY8yge28aNIHg9MB8Tl9692jupli6bKuoK+DI/PDqBp5A2EgRFY26HSEyqIbFqSrChl8ZZmCZknw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713984671; c=relaxed/simple;
-	bh=SStE9y303FO3ATf9eXjsLwO2XtEcu5VteWqqA950+Ok=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=apA02oV5pIRUsN166IstDeiNy1b2xnFfI2KbuxqjIZ+hlbH+KatwdMVh6Mm4GoKpzWwakBaN1YM+RbBoqgCuDyvIP/fX8S+coDEVm/vDyHvhdPUkgx1pijwaU/Fze/PJK+3MDD9f2mVkhoWMWKQCTTzlRuCYn2wU4SuR2ALTE9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JIzsY0rU; arc=none smtp.client-ip=209.85.215.178
+	s=arc-20240116; t=1713984673; c=relaxed/simple;
+	bh=aoossQlzk+5pxRemPeXnUmuEGyFVwNi8l6egUwStIKw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ScSxCfWa0+PrFFQOYspH7ZD+mqOtiIzMUyozx1o+ZbYZ5rHFUSCc5omtmePWwCJ12UXDjhknvKy43pQbOaqj4H1+Hm96rHclVxc3Zsntp25jqtl9EJuSxTlq7WMGo6Yyddz8w0Dk/F/bx71k+Y/HubchpypbQvGLxLA28XWWYO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YC9stBG4; arc=none smtp.client-ip=209.85.216.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5f7a42bf0adso148211a12.1;
-        Wed, 24 Apr 2024 11:51:09 -0700 (PDT)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2a519ac18b3so202190a91.2;
+        Wed, 24 Apr 2024 11:51:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713984669; x=1714589469; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=48mxMFWxRPbfhbz62qZsFgeMgLn9gqf3uPCw7ejtzBk=;
-        b=JIzsY0rUYTseNvFbGV1xMuc5T5ORXbbybwNYt4QQ95nEzJZAcoEf1ssPrLeM8qfNdK
-         manVZf8qVAQsT/Gs7LfO1nNyPUKDZuu8zEUY6ADEBvU486OXSg49ajagQxQxjq6JZBhE
-         aseBANB72FyVhm2366hHNzFz+ybJ8LEhWe3wZ/ZXNSvL9ckCfUTZruIIsvTBIL+wJ5/k
-         nJtmgxOW8oHXq7wwOskm5utLI1l1pyxHZoBUSnzPyMK6z76vLP9JMugi85FFkDjj0371
-         Kld1su9StKTiCL5PBEu2sH/Sh4IlprLClO1hcPCsyBcAnLtn4qd7ZfVpX/OiIa6EoNVe
-         2EFA==
+        d=gmail.com; s=20230601; t=1713984671; x=1714589471; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vAbLEAVuW4sSbM42C7LJb1PPQ7uzIoK60RBbrjt4ULU=;
+        b=YC9stBG45AopiYHBzSVGrtBdrpp5tLuEBYSIVGaRR+rGrim9i5sVY1ghFkKtnu2vNv
+         E3SHb9tJXHlRWgo84FG+D4rqnvQxVkqOzIkwgJKHqtZG74QwBIcqmrrKsIzqRoytNSjd
+         aV3s+GFjTIgjo7+a2yU/wPTfwSKPUIYry72hrHNtiJePZcMZ9e5Uq4Gj//Zw8WCbc/BP
+         k0NUx+9eOZhd1xi/+HdXnxjqgoWFmeK7FTkD4Vi8mgEUoZ/CWIX2lCUafTRx2qMbjtfE
+         24AgipDACX3EhZh7qTzXjIS9f1/FnolMoYUUMx68FzFOBatftCVylFBJdAm0WhEOedry
+         ks+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713984669; x=1714589469;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=48mxMFWxRPbfhbz62qZsFgeMgLn9gqf3uPCw7ejtzBk=;
-        b=NrdSONMlMQAVYZ98bh6qQLud4BhkG7NuyiQeqPCPO4f/XzYVA+uQahWLwBAmCsiJjc
-         E8sR8b5oi/NVc4xDOVfgzr4oQQFeNuSGi1W96/Otd5EUBSYFp2fjJaK6ZsNA9qWTU1EN
-         UF8Ga0IVxvz+3gML6pB1XLc2imJ+xO7c6nJ1bux6rIhkTy7Dgfsc9O3FwAoPwtz1PT3c
-         H0mzkf+QeQJVx1vFhHS4c5lrPST2EeZEnYtVlBGBvQNrKrHLCLrarGKaDP2XS3JwEFgp
-         BOhke9RdqL8AJbPgA7JNLLAvUMJgDxHmx300Hy6uWpysfX2PzCEh95KcZESpWoTRBy9R
-         d5GA==
-X-Forwarded-Encrypted: i=1; AJvYcCXhiZ1mIFS4OhuXe1fhVnhC1EsS9n/t1Kv5Ttaq7UJTeL8LYh9U8ayxlzmlh6z5M3Q4evm8jBzjY9YwZhyrQrxT2ccWIsI4Fs+crOKB1RVRPn372Yahxvb9HkCEQxg2ZtD/QPQF/qs2Vyc4Vax/aGnfIMS9RaMXeW+1uvHhsMYzRK1RcuA=
-X-Gm-Message-State: AOJu0YyBsgFGcXcORdodNV/wK5xNVwn+v+7N27P3OAJ5R4yZwur5R16c
-	7e2MqbOz5X4Q82LFAbZFrmgMxXfJ006A0YAYsg3sgcsrfokL+r0H
-X-Google-Smtp-Source: AGHT+IHkqSQ1b6O6+sYib4DgIQ/4zA0iPn9beMEBsE9puyrhvi9JxgtyrS6CkUdDbAEWb4Ui+Cy73Q==
-X-Received: by 2002:a17:90b:4b0e:b0:29b:10bc:acaf with SMTP id lx14-20020a17090b4b0e00b0029b10bcacafmr2947707pjb.30.1713984669425;
-        Wed, 24 Apr 2024 11:51:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713984671; x=1714589471;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vAbLEAVuW4sSbM42C7LJb1PPQ7uzIoK60RBbrjt4ULU=;
+        b=NgtcEy5kV2df/nbL78xY+YpuN9Q1Zavi0GLl5SlIscdOZcQC8O2Ka2xD5VIg+/GPeW
+         4yeqKVyqH43wfz5mHk4ul6IY8XBHxsSLMNXUYjG3bUarZ0xanYUAdiKpLisBvjpZ4l/O
+         zZb88BWrNPenxwMIny7tXEOXGG3QczIJZdiO09Zp4RFe4nZdzYdMfAJChSKCz2M+MDSK
+         q9JtXIPzg5XybXDaLKssIJiR8NQ3Fgyd07SmVbOH3F5zB5GQHv5Wy1oeSCsu9MdAWkud
+         UcMnGcg75aLUPYhIiUf7xwjcHLO4mkd00GdC+cC/B9bLYFhgimH9yIOGezH87Jp7qQJl
+         JSsg==
+X-Forwarded-Encrypted: i=1; AJvYcCU67Bp4lkzrZ3w0HMxuh+h4wlccwCsU1bV4mgdaek3LN2QXKXAVQliF+9uxOQEiNuVjE6Bmr3uEPUo16+DnVGrMfCNyeg9c83SYuY7JIobFunBLTndyLFwmWhQIXm35SZvM8GOjgKpXnmHXvqxKn529AO/EFI4FjXc30vstFjvN4YBew2k=
+X-Gm-Message-State: AOJu0YwbmFMrvc2o2EWIBiuNF4bXVAuCgdd7IbOTYoo0hOTCkSKk4MyW
+	w9tyK+ckW8TYKec4gUk7zzu5SpnRh9v9HlwZ6IzcEuqvPw0QARyc
+X-Google-Smtp-Source: AGHT+IHl4DSRBBK5EU7FX+5Xap62TW85oFKwK3LiNNqa2nIFMaTpiwS5/2XjpkpWxLT5r1xxzB4UQA==
+X-Received: by 2002:a17:90a:d90f:b0:2ae:e22f:38f5 with SMTP id c15-20020a17090ad90f00b002aee22f38f5mr3107642pjv.10.1713984671079;
+        Wed, 24 Apr 2024 11:51:11 -0700 (PDT)
 Received: from stbirv-lnx-1.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id u8-20020a170902e5c800b001e425d86ad9sm12268728plf.151.2024.04.24.11.51.07
+        by smtp.gmail.com with ESMTPSA id u8-20020a170902e5c800b001e425d86ad9sm12268728plf.151.2024.04.24.11.51.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 11:51:08 -0700 (PDT)
+        Wed, 24 Apr 2024 11:51:10 -0700 (PDT)
 From: Doug Berger <opendmb@gmail.com>
 To: Linus Walleij <linus.walleij@linaro.org>,
 	Bartosz Golaszewski <brgl@bgdev.pl>
@@ -78,10 +80,12 @@ Cc: Phil Elwell <phil@raspberrypi.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Doug Berger <opendmb@gmail.com>
-Subject: [PATCH 0/3] gpio: brcmstb: add support for gpio-ranges
-Date: Wed, 24 Apr 2024 11:50:36 -0700
-Message-Id: <20240424185039.1707812-1-opendmb@gmail.com>
+Subject: [PATCH 1/3] dt-bindings: gpio: brcmstb: add gpio-ranges
+Date: Wed, 24 Apr 2024 11:50:37 -0700
+Message-Id: <20240424185039.1707812-2-opendmb@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240424185039.1707812-1-opendmb@gmail.com>
+References: <20240424185039.1707812-1-opendmb@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,23 +94,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The Raspberry Pi 5 includes Broadcom STB GPIO IP as well as
-Broadcom 2712 pin controller IP.
+Add optional gpio-ranges device-tree property to the Broadcom
+Set-Top-Box GPIO controller.
 
-The community has expressed interest in linking the two drivers
-with the "gpio-ranges" property in device tree. This commit
-stack implements the necessary changes.
+Signed-off-by: Doug Berger <opendmb@gmail.com>
+---
+ Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Doug Berger (3):
-  dt-bindings: gpio: brcmstb: add gpio-ranges
-  gpio: of: support gpio-ranges for multiple gpiochip devices
-  gpio: brcmstb: add support for gpio-ranges
-
- .../bindings/gpio/brcm,brcmstb-gpio.yaml      |  3 +++
- drivers/gpio/gpio-brcmstb.c                   |  2 ++
- drivers/gpio/gpiolib-of.c                     | 23 +++++++++++++++++--
- 3 files changed, 26 insertions(+), 2 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.yaml b/Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.yaml
+index a1e71c974e79..f096f286da19 100644
+--- a/Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.yaml
++++ b/Documentation/devicetree/bindings/gpio/brcm,brcmstb-gpio.yaml
+@@ -62,6 +62,8 @@ properties:
+ 
+   interrupt-controller: true
+ 
++  gpio-ranges: true
++
+   wakeup-source:
+     type: boolean
+     description: >
+@@ -88,6 +90,7 @@ examples:
+         interrupt-parent = <&irq0_intc>;
+         interrupts = <0x6>;
+         brcm,gpio-bank-widths = <32 32 32 24>;
++        gpio-ranges = <&pinctrl 0 0 120>;
+     };
+ 
+     upg_gio_aon: gpio@f04172c0 {
 -- 
 2.34.1
 
