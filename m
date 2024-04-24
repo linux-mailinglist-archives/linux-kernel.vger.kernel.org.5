@@ -1,112 +1,96 @@
-Return-Path: <linux-kernel+bounces-156534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 044D18B0434
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:23:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 976A28B043E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:23:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81B582840DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:23:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FCD92840F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:23:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61209158871;
-	Wed, 24 Apr 2024 08:23:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC6015887D;
+	Wed, 24 Apr 2024 08:23:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="OK2tUl42"
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="D99h+jPI"
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BAF329CA
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:23:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC85158867
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:23:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713946988; cv=none; b=s0ullyTiyD6fLy9lP4ELw6f9Tq20MYumIyw16k7xsMGkWBu7QoRLy/oPoHCjPJsLncXdGLTW+fWdtCHhWnoYY8MGi24RCp52MxRr0OtarjW/8wj7VzmTuNEd/JPFz4uth/CBId+d9tF9eUWoryDInMV2whTEG0/8xvszLmDVY8k=
+	t=1713947029; cv=none; b=SA4F3o31LMYR3b56iNESwAAu1YF+IsrfkH63RJ2V2Y7dUiAJ51hbSmTXLGMFpHhiIgTzph7mP5gLd64HI0XM55nzx5145PdGNBjbppT8Owb+FIhe+o0+U56grAIgqLYTn2eRLGX+enNwGHgELQvuKxIhBHOVRXdiYj2BHWUZauI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713946988; c=relaxed/simple;
-	bh=6QVLhBAJp84waL6ZUmhf4vEiQDIz+a6xaQzpqeWyOz0=;
-	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
-	 MIME-Version:Content-Type; b=cJn04liH4A5HpEWRpBAGbZ3d9ZJWtHzIiufI2Eqiq2gzVIE0ook+5Znqg9H0jCWss/V2l8suVA0uuBfEqp1x7s6g9IQVwUpjZiJSv3tQYWMml+5tLsxErSHD/lsbdWxYsecHMYQAE/iWvNYNryIJ4lxPpHWS/HHyn9IOhbUw7/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=OK2tUl42; arc=none smtp.client-ip=35.89.44.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
-	by cmsmtp with ESMTPS
-	id zIJQrBA6CPM1hzXuErUMPP; Wed, 24 Apr 2024 08:23:06 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id zXuCrYh5MVdenzXuDrOkgK; Wed, 24 Apr 2024 08:23:05 +0000
-X-Authority-Analysis: v=2.4 cv=M4FLKTws c=1 sm=1 tr=0 ts=6628c169
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=CMKPsDBNFkSOfaRWdswA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=TbpKAwI5ZCWHUvqoKmQdNYHV152Vc+5IbI4Iy0iPG/A=; b=OK2tUl42Nd5DJlk2bDu9dyqbVT
-	YLL9QYv9eJIwnvYM8KPWYxYTwi5+BCm73nnaL9/35BeSQnudEXgXIxNPXrByRJYcvc3W7HJedyARd
-	p3ESN8AW8HAMcxhb9Est69v0v/rNVoRQ+0egbLwHuPPyVqV32qZgYRY5vfD6QzspJDR+Ac0U4N2fw
-	5X/u3Z02tnCv+I4Sq+DBCpS9KJGVaCECAnjCQssIsECQlrnwnmHnM25J+pH41+cX2qXggx3LhAEjl
-	A6G7LSmSkFC7tnbK1xC8/tMTd5FyGzmDyoFyQPtZ9/Ss5qDxjDwFLLqAIwV7BytQjWgAj1Iv2eYnj
-	6z7A0e8g==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:59342 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1rzXu9-003a5q-2m;
-	Wed, 24 Apr 2024 02:23:01 -0600
-Subject: Re: [PATCH 6.8 000/158] 6.8.8-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
-References: <20240423213855.824778126@linuxfoundation.org>
-In-Reply-To: <20240423213855.824778126@linuxfoundation.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <462c8967-e599-58f4-c456-6c672d89cd74@w6rz.net>
-Date: Wed, 24 Apr 2024 01:22:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	s=arc-20240116; t=1713947029; c=relaxed/simple;
+	bh=Zp3ox78TP6hxWDah/Xpqv+ArZs5jq62G8JwODJB4R/k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iCUfaepNzGxL46k6RYnAWT6D9126OUMLk8XWJR2pUlat/5txEeA0ztL90o6KyjZ7CFicWRMC+qV4o2ppVJJ/6+1i/TBHCr7FlG55EJKRwSxHmo35HONP47CmVi54pgB6LGe9xbra0OZb+D5a2U//SnhXYXBTdg/LEozbXyc+a1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=D99h+jPI; arc=none smtp.client-ip=209.85.221.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-4dcd4cb27beso1671992e0c.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 01:23:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713947027; x=1714551827; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=hPFo+IxgUQ2kIlqLDAB9FNtWLgx3YKcW7YRqfGcT4is=;
+        b=D99h+jPI02n6GqC0nTUgIBoOB/rxNVXaq+kV/nJeyIEeK9HKDBCFa35QkEhKnSrYSb
+         fSChGitjJDJuJORQ6mqbBpP5jjUy14U8DUJF25Xl1e+lkn80UzRJX93D1BU01eBY5GgG
+         T3bQ2c5PgSJ03ZWXGKDxrzkUd2DUPAoyANAOyL6kT20v6r01BnS9/6RyvwYfnxsMQqTt
+         bS0NNUoXToSapKYv02Cnsc0GkNtKrDhjL6X7WDSkRNbVBT3P0Og7sFHVomxUx55UuToQ
+         D2gtLw7CrXAo+63p52KAeMMDLKWgv8BM2WqJn5FMge0NkffY9VhFLDjpBPRAS+Gw1Rcv
+         wawA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713947027; x=1714551827;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hPFo+IxgUQ2kIlqLDAB9FNtWLgx3YKcW7YRqfGcT4is=;
+        b=Kkf6almMdhQSejewd8XRGSBed1WI1NjwqyfmZfGLYFdr0evWjHkkllTi8fardbjbo+
+         JsJ9IuzzLZH68ZOt1vQE55Wgs0mn4uicPpjOmNQXYQfUPRDsdinY6HHxgtL2+AzSlUXZ
+         /Wt7F36k/8nZKWbGSNjfd8S/hmjEEJ2Yqeo/CIRRQy9+3rxl04IQmor3xxeIzWB9Czyl
+         mJzpw1rVla6JlCP8qtU26QlZwWZGVwR2+NyJhPP0Dx1TGM+Ab9AqHC0nyGd4YY8XLo2J
+         uo7UgyYYatfLnUjP+XUsc+/kQrkjSL/g4pAd7R1l5V3mwrOLl+8TvRHK1GGkzwkbRwPZ
+         4D5g==
+X-Forwarded-Encrypted: i=1; AJvYcCUK8gUCaiNXeD+NNb9frkgm4JD8qUbQu+V364a9DVeYgdeUB+v2h54mRRQlyVuLPtHUc8f3IK7giCyY5lYSLyz+wBh6tkYjSUEb985/
+X-Gm-Message-State: AOJu0Yy7rFPjWAthpUeHWXz9dbARBvSquddHwBLKnncgVUaZA4Y+DPxt
+	kSQNuOAnIQdv17ZxOb0yTwyvBkBeXpLD3a8VMhMvruFm3zKGXdyyXQVYdM9lc+pUEcmd8PRMsf6
+	d1gGzGMsugdXPm3/J3lSdZgyEGDZLpvBnibc+Aw==
+X-Google-Smtp-Source: AGHT+IHZ7X76KDkGnfGA3Bl/vGPMhc2BLowSx3pIZsvhaqPdCqZCneOazFLgOUQklJc7AYOw6nVgw9sTtiQodVWHsnE=
+X-Received: by 2002:a05:6122:3284:b0:4dc:fbc5:d47 with SMTP id
+ cj4-20020a056122328400b004dcfbc50d47mr1633005vkb.16.1713947026616; Wed, 24
+ Apr 2024 01:23:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1rzXu9-003a5q-2m
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:59342
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfHDRvTphjEWspK/CKxikcbQk1NEMtklMQE9GrGTPwlsaKhj02zYfHZJSaZ8L6yy59eIkBlLt54/D7B6HQeDp0EvvMdcG8xDE+k66ldW4JH54kTooaFxh
- I2l1FPRiHzaZ3w7Qag115FUDvY1rjG4Brw1DZxjW/B3M1vIMiYq4YpAduNbwKFd1WJiWlDgd4wc4UKQgeibyjIi2I4yauskpAPo=
+References: <20240423213853.356988651@linuxfoundation.org>
+In-Reply-To: <20240423213853.356988651@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 24 Apr 2024 13:53:35 +0530
+Message-ID: <CA+G9fYuv0nH3K9BJTmJyxLXxvKQjh91KdUi4yjJ0ewncW5cSjw@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/141] 6.1.88-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org, Anders Roxell <anders.roxell@linaro.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 4/23/24 2:37 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.8.8 release.
-> There are 158 patches in this series, all will be posted as a response
+On Wed, 24 Apr 2024 at 03:14, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.1.88 release.
+> There are 141 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 >
@@ -114,17 +98,110 @@ On 4/23/24 2:37 PM, Greg Kroah-Hartman wrote:
 > Anything received after that time might be too late.
 >
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.8.8-rc1.gz
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.88-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
 > and the diffstat can be found below.
 >
 > thanks,
 >
 > greg k-h
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+As Pavel reported,
 
-Tested-by: Ron Economos <re@w6rz.net>
+LKFT also found these regressions on 6.1.
 
+The arm build failed with gcc-13 and clang-17 on the Linux stable-rc
+linux.6.1.y branch.
+
+arm:
+ * omap2plus_defconfig - failed
+ * defconfig  - failed
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Suspecting commit :
+-------
+  ASoC: ti: Convert Pandora ASoC to GPIO descriptors
+    [ Upstream commit 319e6ac143b9e9048e527ab9dd2aabb8fdf3d60f ]
+
+Build log:
+---
+arch/arm/mach-omap2/pdata-quirks.c:259:15: error: variable
+'pandora_soc_audio_gpios' has initializer but incomplete type
+  259 | static struct gpiod_lookup_table pandora_soc_audio_gpios = {
+      |               ^~~~~~~~~~~~~~~~~~
+arch/arm/mach-omap2/pdata-quirks.c:260:10: error: 'struct
+gpiod_lookup_table' has no member named 'dev_id'
+  260 |         .dev_id = "soc-audio",
+      |          ^~~~~~
+arch/arm/mach-omap2/pdata-quirks.c:260:19: warning: excess elements in
+struct initializer
+  260 |         .dev_id = "soc-audio",
+      |                   ^~~~~~~~~~~
+arch/arm/mach-omap2/pdata-quirks.c:260:19: note: (near initialization
+for 'pandora_soc_audio_gpios')
+arch/arm/mach-omap2/pdata-quirks.c:261:10: error: 'struct
+gpiod_lookup_table' has no member named 'table'
+  261 |         .table = {
+      |          ^~~~~
+arch/arm/mach-omap2/pdata-quirks.c:261:18: error: extra brace group at
+end of initializer
+  261 |         .table = {
+      |                  ^
+arch/arm/mach-omap2/pdata-quirks.c:261:18: note: (near initialization
+for 'pandora_soc_audio_gpios')
+arch/arm/mach-omap2/pdata-quirks.c:262:17: error: implicit declaration
+of function 'GPIO_LOOKUP'; did you mean 'IOP_LOOKUP'?
+[-Werror=implicit-function-declaration]
+  262 |                 GPIO_LOOKUP("gpio-112-127", 6, "dac", GPIO_ACTIVE_HIGH),
+      |                 ^~~~~~~~~~~
+      |                 IOP_LOOKUP
+arch/arm/mach-omap2/pdata-quirks.c:262:55: error: 'GPIO_ACTIVE_HIGH'
+undeclared here (not in a function); did you mean 'ACPI_ACTIVE_HIGH'?
+  262 |                 GPIO_LOOKUP("gpio-112-127", 6, "dac", GPIO_ACTIVE_HIGH),
+      |                                                       ^~~~~~~~~~~~~~~~
+      |                                                       ACPI_ACTIVE_HIGH
+arch/arm/mach-omap2/pdata-quirks.c:264:17: error: extra brace group at
+end of initializer
+  264 |                 { }
+      |                 ^
+arch/arm/mach-omap2/pdata-quirks.c:264:17: note: (near initialization
+for 'pandora_soc_audio_gpios')
+arch/arm/mach-omap2/pdata-quirks.c:261:18: warning: excess elements in
+struct initializer
+  261 |         .table = {
+      |                  ^
+arch/arm/mach-omap2/pdata-quirks.c:261:18: note: (near initialization
+for 'pandora_soc_audio_gpios')
+arch/arm/mach-omap2/pdata-quirks.c: In function 'omap3_pandora_legacy_init':
+arch/arm/mach-omap2/pdata-quirks.c:271:9: error: implicit declaration
+of function 'gpiod_add_lookup_table'
+[-Werror=implicit-function-declaration]
+  271 |         gpiod_add_lookup_table(&pandora_soc_audio_gpios);
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+arch/arm/mach-omap2/pdata-quirks.c: At top level:
+arch/arm/mach-omap2/pdata-quirks.c:259:34: error: storage size of
+'pandora_soc_audio_gpios' isn't known
+  259 | static struct gpiod_lookup_table pandora_soc_audio_gpios = {
+      |                                  ^~~~~~~~~~~~~~~~~~~~~~~
+cc1: some warnings being treated as errors
+make[3]: *** [scripts/Makefile.build:250:
+arch/arm/mach-omap2/pdata-quirks.o] Error 1
+
+
+steps to reproduce:
+---
+# tuxmake --runtime podman --target-arch arm --toolchain gcc-13
+--kconfig omap2plus_defconfig
+
+
+Links
+---
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2fWG4dRZzA7WgJqyLQ8Rm05WTUo/
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.87-142-gcde450ef0f2f/testrun/23640116/suite/build/test/gcc-13-omap2plus_defconfig/details/
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
