@@ -1,180 +1,167 @@
-Return-Path: <linux-kernel+bounces-157444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B4AD8B11BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:10:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47BCF8B11BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:11:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCF551C226A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:10:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BD411C22380
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD9A16D9C5;
-	Wed, 24 Apr 2024 18:10:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7F7F16D9CD;
+	Wed, 24 Apr 2024 18:11:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b="bAZ3Gy+e"
-Received: from meesny.iki.fi (meesny.iki.fi [195.140.195.201])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k9/cA3vg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 338C016DECE;
-	Wed, 24 Apr 2024 18:10:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=195.140.195.201
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713982216; cv=pass; b=GGiY/r6j5qtTWzrlasfMsIzatNLMU25wcOHoQ4coOKOZonlVf19QwgQNQvpka+QOyHxYHLJQSgJvVthWG7TI5shS71fB9anOsp6VyYnmKxaA4FMPY/Cxgs/wLRQTXwT0567d/4t6hRjJIslSHg9V3AV93QHjVsOcz2GyEjMxie4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713982216; c=relaxed/simple;
-	bh=skA7ahdKPFOTdweUO69mRPcseGb5VBfvaOW2mWZiiTI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BBHG6q50BUn4LGQmwLVRpkTHx+NoLWWDtHGEJFmhUkLmOO12ORocMOBm4AU78ku4BfTfiuzYoxJlBRsjTC2AM9htWEduDSUsC0LyacHgUElKEBypZ1wm917nRK6kDk080apd2Rad9ZWgBUBKDuTpMMWaLmk+wJKItOHXIPN55dM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b=bAZ3Gy+e; arc=pass smtp.client-ip=195.140.195.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
-Received: from hillosipuli.retiisi.eu (2a00-1190-d1dd-0-c641-1eff-feae-163c.v6.cust.suomicom.net [IPv6:2a00:1190:d1dd:0:c641:1eff:feae:163c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sailus)
-	by meesny.iki.fi (Postfix) with ESMTPSA id 4VPn8J2Qz8zyS9;
-	Wed, 24 Apr 2024 21:10:08 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-	t=1713982210;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kQ6EHsDoPYaKM1giwGjW2IWsbINRSBqdgRKvtgvBX3I=;
-	b=bAZ3Gy+efc5xeMEL9Rui0cCc9gM4xKOKEF/gnwgSkxIGCNaIhSLuy5tMzOHYmKpKmoI6Fm
-	DLxBdUBr5l4dh4ZamPtJfL4JhlSij9ddEaMGTPBA8mpZXfEOBSwdBMlqjNBb5O/2dQdwzL
-	zHauxGhAhzneQJ1Icv4iCjWf/t9l2Zg=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-	s=meesny; t=1713982210;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kQ6EHsDoPYaKM1giwGjW2IWsbINRSBqdgRKvtgvBX3I=;
-	b=SLqU3XavR6hWucY82Yi3Sjr9Klzvj+0VwMiaV9m/qwsDbpaWrQqatRVdylD5aO2Ye69/lF
-	OtpZ7+zBbVM7znOuR2By9nHNfTPCtZSRMJXYNRZdLyRf0oElIDHEWGdAXwcnPncuv9Ujuo
-	aubhGADNzIFk2OJIOZGhj0rNnNaHIwk=
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1713982210; a=rsa-sha256; cv=none;
-	b=SxWm+GEjjq50eUdh//FIwFIZryizApuy+3G785s7hE06BcJroc8SQayis32c8Ggh21Xpz7
-	qvYISE6HES673eh69POJxQViUw6TP/xmIUaOQwhSnN4jKksIG1R4NvPgrgEdd+sl2X4ryL
-	8aaUCIKTZVdip11LgpbJC2LMDPMN/Dg=
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by hillosipuli.retiisi.eu (Postfix) with ESMTPS id C47B2634C96;
-	Wed, 24 Apr 2024 21:10:05 +0300 (EEST)
-Date: Wed, 24 Apr 2024 18:10:05 +0000
-From: Sakari Ailus <sakari.ailus@iki.fi>
-To: Tommaso Merciai <tomm.merciai@gmail.com>
-Cc: martin.hecht@avnet.eu, michael.roeder@avnet.eu,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] media: i2c: alvium: fix alvium_get_fw_version()
-Message-ID: <ZilK_XO4C1k7uD_D@valkosipuli.retiisi.eu>
-References: <20240416141905.454253-1-tomm.merciai@gmail.com>
- <20240416141905.454253-2-tomm.merciai@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2359815CD6E;
+	Wed, 24 Apr 2024 18:11:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713982284; cv=none; b=VfBuvPAVdv4ju1Ni57jS7+qeY1KCbF+yBi2GudsQlrMFUcSZHjBDAzcynEB7usO66VIkb3xAyro20qJpTwcsUceIGrZDgAnD1PwIzMvLCqk47+EhSej9sfIuD9APR/PBHJ7zmbk4WtWtDq89SY7f2pbzMomAqQc5Y34FXdi11jk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713982284; c=relaxed/simple;
+	bh=7ItkOO8ka84a13QOYC/aAIFtqzRRzJtyWXnNHVtkfXs=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=uTsUL3CUGMDxhrs5Tz2UyRjsJ+cjQiEkO3b7zSYACJUDH7n8IrE33GJVW9pD8kQwIE3+iEczv8xXw0Pusdyz2dmq4Fx3J7NsAIwMxmGwYF8qjMfkzXuabMW3AUbuzYTaCEFTRj2jOVRnUPuOmr3wIn0C5sON/68FL9OyAqjCw0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k9/cA3vg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9C6EC113CD;
+	Wed, 24 Apr 2024 18:11:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713982283;
+	bh=7ItkOO8ka84a13QOYC/aAIFtqzRRzJtyWXnNHVtkfXs=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=k9/cA3vgWEuYDIlY9xYTJDAcqk4oed74YCEJbNg6AYjrBBi0bPg1rwO7LF11gJ2po
+	 kDUMN1//9aKMK217sOAG0VamcjNYaNNMW5W/ZVGCJDX7HjeaxPaHLZ4TtYZttkBF7e
+	 l3aodjBreSbnFH01sWt608pHXaX8+W6QGTiG4ndnQhnCpu4zoBEEJVJsuHeWS9yvNy
+	 ILSDfQWmpN7GDDvQtUvh0qKXAzwadxoGNkBFhE6+HUM1+5XotZ7RMLT/b/Qte4q3yg
+	 ChagwXxCFOmGxp9Gx0p8gU+y26SnIyFME+hoH9Vcm/CvVBk2dYsQsh59UZxSWv5zkX
+	 7R/oie8nU6Nkw==
+Message-ID: <128dc42a50bfe166993205108a5b23cd.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416141905.454253-2-tomm.merciai@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240422232404.213174-6-sboyd@kernel.org>
+References: <20240422232404.213174-1-sboyd@kernel.org> <20240422232404.213174-6-sboyd@kernel.org>
+Subject: Re: [PATCH v4 05/10] platform: Add test managed platform_device/driver APIs
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, patches@lists.linux.dev, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, devicetree@vger.kernel.org, Brendan Higgins <brendan.higgins@linux.dev>, David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rafael J . Wysocki <rafael@kernel.org>, Rob Herring <robh@kernel.org>, Saravana Kannan <saravanak@google.com>, Daniel Latypov <dlatypov@google.com>, Christian Marangi <ansuelsmth@gmail.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Maxime Ripard <maxime@cerno.tech>
+To: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>
+Date: Wed, 24 Apr 2024 11:11:21 -0700
+User-Agent: alot/0.10
 
-Hi Tommaso,
-
-On Tue, Apr 16, 2024 at 04:19:01PM +0200, Tommaso Merciai wrote:
-> Instead of reading device_fw reg as multiple regs let's read the entire
-> 64bit reg using one i2c read and store this info into alvium_fw_version
-> union fixing the dev_info formatting output.
-> 
-> Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> ---
->  drivers/media/i2c/alvium-csi2.c | 20 ++++++++------------
->  drivers/media/i2c/alvium-csi2.h | 15 +++++++++++----
->  2 files changed, 19 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> index e65702e3f73e..991b3bcc8b80 100644
-> --- a/drivers/media/i2c/alvium-csi2.c
-> +++ b/drivers/media/i2c/alvium-csi2.c
-> @@ -403,21 +403,17 @@ static int alvium_get_bcrm_vers(struct alvium_dev *alvium)
->  static int alvium_get_fw_version(struct alvium_dev *alvium)
->  {
->  	struct device *dev = &alvium->i2c_client->dev;
-> -	u64 spec, maj, min, pat;
-> +	union alvium_fw_version v;
->  	int ret = 0;
->  
-> -	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_SPEC_VERSION_R,
-> -			  &spec, &ret);
-> -	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_MAJOR_VERSION_R,
-> -			  &maj, &ret);
-> -	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_MINOR_VERSION_R,
-> -			  &min, &ret);
-> -	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_PATCH_VERSION_R,
-> -			  &pat, &ret);
-> -	if (ret)
-> -		return ret;
-> +	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW,
-> +			  &v.value, &ret);
-
-Doesn't this have the same endianness issues that earlier were resolved by
-doing the reads separately?
-
->  
-> -	dev_info(dev, "fw version: %llu.%llu.%llu.%llu\n", spec, maj, min, pat);
-> +	dev_info(dev, "fw version: %u.%u.%08x special: %u\n",
-> +		 (u32)v.alvium_fw_ver.major,
-> +		 (u32)v.alvium_fw_ver.minor,
-> +		 v.alvium_fw_ver.patch,
-> +		 (u32)v.alvium_fw_ver.special);
->  
->  	return 0;
->  }
-> diff --git a/drivers/media/i2c/alvium-csi2.h b/drivers/media/i2c/alvium-csi2.h
-> index 9463f8604fbc..9c4cfb35de8e 100644
-> --- a/drivers/media/i2c/alvium-csi2.h
-> +++ b/drivers/media/i2c/alvium-csi2.h
-> @@ -31,10 +31,7 @@
->  #define REG_BCRM_REG_ADDR_R				CCI_REG16(0x0014)
->  
->  #define REG_BCRM_FEATURE_INQUIRY_R			REG_BCRM_V4L2_64BIT(0x0008)
-> -#define REG_BCRM_DEVICE_FW_SPEC_VERSION_R		REG_BCRM_V4L2_8BIT(0x0010)
-> -#define REG_BCRM_DEVICE_FW_MAJOR_VERSION_R		REG_BCRM_V4L2_8BIT(0x0011)
-> -#define REG_BCRM_DEVICE_FW_MINOR_VERSION_R		REG_BCRM_V4L2_16BIT(0x0012)
-> -#define REG_BCRM_DEVICE_FW_PATCH_VERSION_R		REG_BCRM_V4L2_32BIT(0x0014)
-> +#define REG_BCRM_DEVICE_FW				REG_BCRM_V4L2_64BIT(0x0010)
->  #define REG_BCRM_WRITE_HANDSHAKE_RW			REG_BCRM_V4L2_8BIT(0x0018)
->  
->  /* Streaming Control Registers */
-> @@ -276,6 +273,16 @@ enum alvium_av_mipi_bit {
->  	ALVIUM_NUM_SUPP_MIPI_DATA_BIT
->  };
->  
-> +union alvium_fw_version {
-> +	struct {
-> +		u8 special;
-> +		u8 major;
-> +		u16 minor;
-> +		u32 patch;
-> +	} alvium_fw_ver;
-> +	u64 value;
-> +};
+Quoting Stephen Boyd (2024-04-22 16:23:58)
+> diff --git a/drivers/base/test/platform_kunit.c b/drivers/base/test/platf=
+orm_kunit.c
+> new file mode 100644
+> index 000000000000..54af6db2a6d8
+> --- /dev/null
+> +++ b/drivers/base/test/platform_kunit.c
+> @@ -0,0 +1,174 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Test managed platform driver
+> + */
 > +
->  struct alvium_avail_feat {
->  	u64 rev_x:1;
->  	u64 rev_y:1;
+[...]
+> +
+> +/**
+> + * platform_driver_register_kunit() - Register a KUnit test managed plat=
+form driver
+> + * @test: test context
+> + * @drv: platform driver to register
+> + *
+> + * Register a test managed platform driver. This allows callers to embed=
+ the
+> + * @drv in a container structure and use container_of() in the probe fun=
+ction
+> + * to pass information to KUnit tests. It can be assumed that the driver=
+ has
+> + * probed when this function returns.
+> + *
+> + * Example
+> + *
+> + * .. code-block:: c
+> + *
+> + *     struct kunit_test_context {
+> + *             struct platform_driver pdrv;
+> + *             const char *data;
+> + *     };
+> + *
+> + *     static inline struct kunit_test_context *
+> + *     to_test_context(struct platform_device *pdev)
+> + *     {
+> + *             return container_of(to_platform_driver(pdev->dev.driver),
+> + *                                 struct kunit_test_context,
+> + *                                 pdrv);
+> + *     }
+> + *
+> + *     static int kunit_platform_driver_probe(struct platform_device *pd=
+ev)
+> + *     {
+> + *             struct kunit_test_context *ctx;
+> + *
+> + *             ctx =3D to_test_context(pdev);
+> + *             ctx->data =3D "test data";
+> + *
+> + *             return 0;
+> + *     }
+> + *
+> + *     static void kunit_platform_driver_test(struct kunit *test)
+> + *     {
+> + *             struct kunit_test_context *ctx;
+> + *
+> + *             ctx =3D kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
+> + *             KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
+> + *
+> + *             ctx->pdrv.probe =3D kunit_platform_driver_probe;
+> + *             ctx->pdrv.driver.name =3D "kunit-platform";
+> + *             ctx->pdrv.driver.owner =3D THIS_MODULE;
+> + *
+> + *             KUNIT_EXPECT_EQ(test, 0, platform_driver_register_kunit(t=
+est, &ctx->pdrv));
+> + *             KUNIT_EXPECT_STREQ(test, ctx->data, "test data");
+> + *     }
+> + *
+> + * Return: 0 on success, negative errno on failure.
+> + */
+> +int platform_driver_register_kunit(struct kunit *test,
+> +                                  struct platform_driver *drv)
+> +{
+> +       int ret;
+> +
+> +       ret =3D platform_driver_register(drv);
+> +       if (ret)
+> +               return ret;
+> +
+> +       /*
+> +        * Wait for the driver to probe (or at least flush out of the def=
+erred
+> +        * workqueue)
+> +        */
+> +       wait_for_device_probe();
 
--- 
-Kind regards,
+Should this be removed? I was thinking that this isn't a pure wrapper
+around platform_driver_register() because it has this wait call.  Maybe
+it's better to have some other kunit API that can wait for a specific
+device to probe and timeout if it doesn't happen in that amount of time.
+That API would use the bus notifiers and look for
+BUS_NOTIFY_BOUND_DRIVER. Or maybe that function could setup a completion
+that the test can wait on.
 
-Sakari Ailus
+> +
+> +       return kunit_add_action_or_reset(test,
+> +                                        (kunit_action_t *)&platform_driv=
+er_unregister,
+> +                                        drv);
+> +}
+> +EXPORT_SYMBOL_GPL(platform_driver_register_kunit);
 
