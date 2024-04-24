@@ -1,125 +1,127 @@
-Return-Path: <linux-kernel+bounces-156813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5DAD8B0888
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:44:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A054E8B0892
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:45:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CCDB1F24242
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:44:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 412031F245F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:45:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B957115A4BC;
-	Wed, 24 Apr 2024 11:44:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0222015A4B7;
+	Wed, 24 Apr 2024 11:45:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nRG83O82"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jXo81/GF"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9C015A4A4;
-	Wed, 24 Apr 2024 11:44:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87BF15A4B0
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 11:45:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713959086; cv=none; b=kGxK5xGH2Vgmf8i9IAC4MqKdnksWF/jLGcJBbXERkqvYuPAf1EpByvyMAcKeSWIMB9dXBMCTTnhFxlGDKd8BgJPJ0GgOMCsqxwID7ouWBTfiTH5V+zW8AZr/FwFg05AVu5T+Mh+c/QL5/RP4+o0HKugISlK/jq5FGaHb5v+ipAg=
+	t=1713959138; cv=none; b=rZN/OdwXMehtniuLM4y/63UfgkWq3HU/Vkv2VXsl5Br7pVnE1NX2SlS2KI0xHNYexZrpgg6cxg/TGIvMKIZbHt2Iatn1fLmd+QEbJhUCIj3gBTyvghl3z+0rt5avHDQsACuanJCj7muFgVcoF81rHT68gak4H//iWszb0raKm/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713959086; c=relaxed/simple;
-	bh=xpUTnXpiZhsPhmL4RJ3EPHSMkblKDHr8KkYzdAZ0yCk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ib8iq4TY0XB/3SE1lsRD115gSTtEnoPTsnBBZJkJw6knEEmof+gXbWCjVx43yT81ak9fYZYf/ZgPO228Mvw6H9GfB/a4PB718h7iDNYj9SlomQAoakgiiY8DIfXI1+jdXm2QrMJdFuvzJ8Zna6DNAW9aLwAH945C9NvZZ8577V4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nRG83O82; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713959084; x=1745495084;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=xpUTnXpiZhsPhmL4RJ3EPHSMkblKDHr8KkYzdAZ0yCk=;
-  b=nRG83O82fqFh5ToFKb8WWksDMHNFIoOT0vIw3a97MLnz7KuTgy6424+2
-   vidFjkQaSabVFo6tKvTMYW/9KEXBfVuBoxorKKE/jIY3SDBXcOW8xwagg
-   ojYdMNTXbteJx2yxgaUsMfSVTHYurMw7CSjJNQvXTReHJ0oz2tAvxvQrV
-   gVoAVBI0cWTOOJAVjoQTFQXX9U8z2ETw8osUWYv4IBYorbkmnZ9jTCNNo
-   L4S736J3J34vEXveX+zsXOgz/3q1EwgznmJhMTMBDdsqMI5koeUJfGUpk
-   5jQf4yfBvIZQuRqQ2jEzZ6zYlNRn3r+THZSKohaXFTe77vDJacANzcI5w
-   w==;
-X-CSE-ConnectionGUID: +Yz0J4wjQxWqgwIEaeQ4mQ==
-X-CSE-MsgGUID: ZFekwH78SkiNYD0kuz4ATg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="10123653"
-X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="10123653"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 04:44:43 -0700
-X-CSE-ConnectionGUID: aOxPJhh6Rz+3u9n3Cu24IA==
-X-CSE-MsgGUID: SOx7EidETuuhviBZaSh38A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="47949188"
-Received: from spandruv-mobl4.amr.corp.intel.com (HELO [10.212.109.188]) ([10.212.109.188])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 04:44:43 -0700
-Message-ID: <d96da934-a996-418e-a175-4ba463d3916b@linux.intel.com>
-Date: Wed, 24 Apr 2024 04:44:41 -0700
+	s=arc-20240116; t=1713959138; c=relaxed/simple;
+	bh=LGpHzWFD89nzoHthfxKConElhbe2d1ooFKEdaJu+6GY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=DgbKytZHoPW8lpYP5SNFQkBy4d4RZyuPyOmt38VKeuF72aJyOiqIGPIX7xOfRHVo5r8fF9DLSVPGxTRTcVnBj9hX5z8b0NcA+w0zya/9Ggjoj9hK2/mSq5UFqH0ys3vq8QDsaoZCkuhlZDMUi8IsxKQrdheMbcLygX+nReoqQbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jXo81/GF; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41adf3580dbso4837495e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 04:45:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713959135; x=1714563935; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FlbfXfxbLk/Dc9+eU1RLGYFDghoFw/1H6VGbuUIl4lQ=;
+        b=jXo81/GF4NQgw8daA9WY9M43vqkaDe6g/94IAYMY3rXEmGiAchKW56dHRWmRRRQE1P
+         vCeTyouRLOlcP2O+FuBEFPbTFJjjiWggrLTTg7YIkm4jQWBykKcOjWQHUbr2DulEF8EJ
+         WMUcyTTvvP6aSkjWm1RVHylTXymle6vBbhUT3/xp1WUVA0Bb33avkXvzA7tZyyfi/EKs
+         YfJzwwXS3trh0qDfFDsyKzhSbORjO5mpTwstdcdyXRKzt3saSD1Z5dKq/YGG89U9hOsJ
+         ZrycGMCAWVL7hF4SYMwW3FcRBKJ01L2ATs6m4FUTx8NUv36pLareOA/EtHnzd99Vp/4y
+         s9Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713959135; x=1714563935;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FlbfXfxbLk/Dc9+eU1RLGYFDghoFw/1H6VGbuUIl4lQ=;
+        b=vDA7CPge5SfuMFJECKwpdz1OvEmV4jXq192Jsa9NldmXiluVjcK1xrfuQjXTh4Sw3e
+         L36KDZqXZmfV+Bf3JkMxQsYmh1RLpLNIMgpRNiQHRXc+uA83gvFk6gC2Yb23oSwqKQ9N
+         /FwwRxBU2zXw+Q+e3WJft6WAldei9mL082irhp0KyJciulHhCgkh61SQL5Mby4vUdsMX
+         CJWiyOfXIwh4Fyh+R2J/KqV06rmt53S5r33qMyZT/kfr51o7O3mxlsi+BPwbLjcmdH5i
+         f2Uh3MFtFVrShIvyFyOydSePIdADBRs8RS+3Hx/7ajmtBoAJVIamqguP19i/meV/OvCD
+         pxxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX8EAgsor/pz3YFaxtKTvNxGg21KHmPBmBDinvLdgb0ARZYij7kCOS421BxRs/oBkse4GOFxoRwsrL9Jvix8XsRkZ5UvcVIFhnzcOn4
+X-Gm-Message-State: AOJu0Yzi6qYaF64aerlFqbxi9RneulhH8M9ABNpREOFOJkwN0KLA5EKO
+	uj4Z89qZJlSJdkABt45d0NKR6hPU3TfQWqBn8w3ckHAvOkvUtHdQh2XcaceDn50=
+X-Google-Smtp-Source: AGHT+IE+LWq81rUtLmev/5MCrGpW7mTkC6YpW93QfAvEXZj/ZhSmYdQtXnSo2HsA+AYn6qnV1Fm+Vg==
+X-Received: by 2002:a05:600c:4750:b0:418:91ae:befc with SMTP id w16-20020a05600c475000b0041891aebefcmr3776672wmo.0.1713959134557;
+        Wed, 24 Apr 2024 04:45:34 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id n7-20020a05600c500700b0041b0cb8b716sm1458267wmr.39.2024.04.24.04.45.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 04:45:34 -0700 (PDT)
+Date: Wed, 24 Apr 2024 14:45:30 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Nuno Sa <nuno.sa@analog.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] iio: dac: adi-axi: fix a mistake in axi_dac_ext_info_set()
+Message-ID: <df7c6e1b-b619-40c3-9881-838587ed15d4@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 14/16] thermal: gov_user_space: Use .trip_crossed()
- instead of .throttle()
-To: Daniel Lezcano <daniel.lezcano@linaro.org>,
- "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Linux PM <linux-pm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- Lukasz Luba <lukasz.luba@arm.com>
-References: <13515747.uLZWGnKmhe@kreacher> <15186663.tv2OnDr8pf@kreacher>
- <ZijNj7DzL9e01Vnt@mai.linaro.org>
- <e565a9c3-9244-4a0b-9ad8-4beebd03d681@linux.intel.com>
- <917f9bec-80f3-4d10-9781-7b27f361101d@linaro.org>
-Content-Language: en-US
-From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-In-Reply-To: <917f9bec-80f3-4d10-9781-7b27f361101d@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
+The last parameter of these axi_dac_(frequency|scale|phase)_set()
+functions is supposed to be true for TONE_2 and false for TONE_1. The
+bug is the last call where it passes "private - TONE_2".  That
+subtraction is going to be zero/false for TONE_2 and and -1/true for
+TONE_1.  Fix the bug, and re-write it as "private == TONE_2" so it's
+more obvious what is happening.
 
-On 4/24/24 04:34, Daniel Lezcano wrote:
-> On 24/04/2024 13:32, Srinivas Pandruvada wrote:
->>
->> On 4/24/24 02:14, Daniel Lezcano wrote:
->>> On Wed, Apr 10, 2024 at 07:03:10PM +0200, Rafael J. Wysocki wrote:
->>>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->>>>
->>>> Notifying user space about trip points that have not been crossed is
->>>> not particuarly useful, so modity the User Space governor to use the
->>>> .trip_crossed() callback, which is only invoked for trips that have 
->>>> been
->>>> crossed, instead of .throttle() that is invoked for all trips in a
->>>> thermal zone every time the zone is updated.
->>>>
->>>> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->>>> ---
->>> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->>>
->>> I would also consider removing this governor which is pointless now 
->>> that we
->>> have the netlink notification mechanism
->>
->> That is a good goal, But, not there yet to deprecate.
->
-> What can be done to deprecate it ?
->
->
+Fixes: 4e3949a192e4 ("iio: dac: add support for AXI DAC IP core")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+This is from code review.  Untested.
+---
+ drivers/iio/dac/adi-axi-dac.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-First we need to migrate all the existing usage to netlink. We need to 
-add some more netlink notifications. That is relatively easy.
-
-The problem is user space changes are much slower to push than kernel. 
-Kernels changes gets deployed at faster pace in some distributions.
-
-Thanks,
-
-Srinivas
-
+diff --git a/drivers/iio/dac/adi-axi-dac.c b/drivers/iio/dac/adi-axi-dac.c
+index 9047c5aec0ff..880d83a014a1 100644
+--- a/drivers/iio/dac/adi-axi-dac.c
++++ b/drivers/iio/dac/adi-axi-dac.c
+@@ -383,15 +383,15 @@ static int axi_dac_ext_info_set(struct iio_backend *back, uintptr_t private,
+ 	case AXI_DAC_FREQ_TONE_1:
+ 	case AXI_DAC_FREQ_TONE_2:
+ 		return axi_dac_frequency_set(st, chan, buf, len,
+-					     private - AXI_DAC_FREQ_TONE_1);
++					     private == AXI_DAC_FREQ_TONE_2);
+ 	case AXI_DAC_SCALE_TONE_1:
+ 	case AXI_DAC_SCALE_TONE_2:
+ 		return axi_dac_scale_set(st, chan, buf, len,
+-					 private - AXI_DAC_SCALE_TONE_1);
++					 private == AXI_DAC_SCALE_TONE_2);
+ 	case AXI_DAC_PHASE_TONE_1:
+ 	case AXI_DAC_PHASE_TONE_2:
+ 		return axi_dac_phase_set(st, chan, buf, len,
+-					 private - AXI_DAC_PHASE_TONE_2);
++					 private == AXI_DAC_PHASE_TONE_2);
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
+-- 
+2.43.0
 
 
