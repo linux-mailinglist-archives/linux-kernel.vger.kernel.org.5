@@ -1,233 +1,140 @@
-Return-Path: <linux-kernel+bounces-156646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3B358B062D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D21F8B063B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:40:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7EAF1C22A24
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:39:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EEC81C21930
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:40:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51C2158D9B;
-	Wed, 24 Apr 2024 09:39:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF8A9158DC1;
+	Wed, 24 Apr 2024 09:40:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e0D+ujJw"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pbWQxf3y"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF75B158D74
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:38:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D118A158DA8;
+	Wed, 24 Apr 2024 09:40:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713951542; cv=none; b=uru8IpTACwGdqqliEtNpR5B3L/kw3jI3ve107l7zjjAY4pqvc8CyMW4kDJQCgtYwROemnAA4lfN3MWpsQHho3OYZR+ffzZxG8NXRHUKVGVPkiB0cuUaUg0SlRh7UmOIh9E0JaICcy0lJkUj25nQrnAFiE19aRBsPB22qX4ikjPI=
+	t=1713951638; cv=none; b=HNDJmORJxP5XQbGldExLXazruI4VJcuUzQjjwaaSTYY0l+FquiXyLY2dlrCl+p8Z3+oWBzZWsy62mL4BR/LJCN8AXnuSi5he3FIgesmKIuMjVsOhFspYR7/05hP7TK0UbY95I85Fz3WHEs0pokt4UsSLqPX1eSzo1v6bZ0Pa4vU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713951542; c=relaxed/simple;
-	bh=qc5CL3S71giAfySYaTVkfk5wuylLzDuZV+KpRU+IQUQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=twlu3jjRmntyGeq7mJjn8rRTkX0UfgJTQw4MVVrze7JnAyneYLJinDkmAq29Y6Yok5r0LY9oZOcFl8LqztgPwhnbynmp4XmKPKxIgSCFTv625DB45UtXeLlZ8KjFdFP7NBd1En0HwhUuanjQZsi2KfzA+wpUKN8AGOpWMmxQP8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e0D+ujJw; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713951538;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ZUMWB0R88eBXuTxuh6JHDZn3KqkUsFmowtEVe2WSZFc=;
-	b=e0D+ujJwdnAwg7Q9eWN6OJFLkoeltVbrRzxVo6AfAiYRdSJqrGHufFktarVqpc0GfSmZYa
-	iunF9ti3VFxP73j4Pyfzb0BoXsJxGCktO4hA1i0NtGK54+hXIPQetnrjR2EJG62EMUWHp1
-	ZGxQwBsVsWDKAAJ20NrmeHZRn1fK034=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-677-wwo1IJHAO9ueG5D8XpJjBA-1; Wed, 24 Apr 2024 05:38:55 -0400
-X-MC-Unique: wwo1IJHAO9ueG5D8XpJjBA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-416e58bdc0eso28592505e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 02:38:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713951534; x=1714556334;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZUMWB0R88eBXuTxuh6JHDZn3KqkUsFmowtEVe2WSZFc=;
-        b=o08CyiVM+st1RctkpUW8B7yC7dr5eZfJld3qfIRb2cho3lVYxwHKHHxBJTz//YRKU7
-         blkl86GhAaOBVCbH5/tYwlaVeQodHFD2LsSlpoggacNF/qq8a8jAigphgmpa4hpjjnVA
-         Lntc/gFmdmVX2pYRFsydtxaqGugUc0gVvrvmI+/YjPwAC11TAM8eEl3nB6RAWdTAEXT6
-         H+/sHAt/V/vocjR+M/SsEinH903l6ZBT9ZKbAOlwwj/FEVtEQN/gewwZ7vuz6TjZO/JN
-         Xo5NHAtn1GtzNokPIEZzr3JuOGHQNkrF5f8oWkzJ6oWiKZTYTtJtJxJFs7w2aC/sLGKh
-         o+aw==
-X-Gm-Message-State: AOJu0Yx6X+cbDlyoZPODj+3hwvUfn9JQt2JEyuHrdi5xdeT88ZSBwwYm
-	j9no1HMc+Fpu1UXBf1YNb9EjO2pdeJIn/+RUlIX3U/qwSVnn7ZEtFyok/TM4BEq7Sr/uV2NZlzA
-	vzkFvAehRhQx9e0KPIe440hct9ebR6gfKxztuqrGXrFrhS3iMi2Zsa+HiMnMBy3KZg5YPre90iS
-	3xeN+Tb4gXZMzUq8C5NzT/IRdsci3buqowk0Z37lTvBw==
-X-Received: by 2002:a05:600c:4ed4:b0:419:e25e:ef62 with SMTP id g20-20020a05600c4ed400b00419e25eef62mr1269897wmq.40.1713951534307;
-        Wed, 24 Apr 2024 02:38:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGm4M1VwrMlxKqcBLI0bDh8kyh4Nz7qvnr7GQWuHTSSZ/9CIqCuVx+jkSRRpDzKruNuXlPp3g==
-X-Received: by 2002:a05:600c:4ed4:b0:419:e25e:ef62 with SMTP id g20-20020a05600c4ed400b00419e25eef62mr1269861wmq.40.1713951533808;
-        Wed, 24 Apr 2024 02:38:53 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70d:1f00:7a4e:8f21:98db:baef? (p200300cbc70d1f007a4e8f2198dbbaef.dip0.t-ipconnect.de. [2003:cb:c70d:1f00:7a4e:8f21:98db:baef])
-        by smtp.gmail.com with ESMTPSA id bi12-20020a05600c3d8c00b0041a959036f2sm7117510wmb.43.2024.04.24.02.38.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 02:38:53 -0700 (PDT)
-Message-ID: <1af4fd61-7926-47c8-be45-833c0dbec08b@redhat.com>
-Date: Wed, 24 Apr 2024 11:38:51 +0200
+	s=arc-20240116; t=1713951638; c=relaxed/simple;
+	bh=mNayW+VecV2dc9vrrmAV27oQDPaUWep+d6YIBhCY27A=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bCP1EvPNqFIxDbfzPOS1BrXcqdLLdD6kWdNTPMSr6NyJ7wQ7hjtus8klbTUyxMvE0aghUAZncmrtSicBFnPUUWvvOz2o5C+YoRsOdD/BGamV1+xriWc36jOIGQUGt9JXd9Dc+h18k3bgSA8PoLDdrWcKC60E6t2O03NG3lwSVwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pbWQxf3y; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O7aedI025191;
+	Wed, 24 Apr 2024 09:40:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:reply-to:references
+	:mime-version:content-type:in-reply-to; s=qcppdkim1; bh=W2zEB8HQ
+	4tTQ0a1nADzmO6g2Mci2r9l3DcHJICevofY=; b=pbWQxf3yYXquwvvyxi2w+bTw
+	PtZW5sWRsQd2RFfedYbVIo/yM3AuLFx4D98oB5+xPLboCBWALmfz0qtNPiMKhXZU
+	lsYp+5xo830zYl17oEMadZeJeSEdZeTfib5GSiqOwp+8ZkaM50CqCgWWf+Z0VGxS
+	0GtPL2MQjkfZX0JBkAdulMKumQYod2VFqWzLWNLWxmwIS3kXxTgVUIOqng4kWxDK
+	ODUSuyyP9IhziqGKGbCnvW0TTJf/SGTB+Tp2mBwyLyjCC3g6dwXcb2XYkYqDj3SW
+	k3zEHcbAVk+D9i9DvxeuA8m7vV2Ra9eLmyZkHY9i5TGKojMDW5q5Sfg353WpNg==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9e0f3q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 09:40:10 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43O9e97n008033
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 09:40:09 GMT
+Received: from quicinc.com (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 24 Apr
+ 2024 02:40:01 -0700
+Date: Wed, 24 Apr 2024 15:09:57 +0530
+From: Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>
+To: Elliot Berman <quic_eberman@quicinc.com>
+CC: Alex Elder <elder@linaro.org>,
+        Srinivas Kandagatla
+	<srinivas.kandagatla@linaro.org>,
+        Murali Nalajal <quic_mnalajal@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Carl van Schaik
+	<quic_cvanscha@quicinc.com>,
+        Philip Derrin <quic_pderrin@quicinc.com>,
+        Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
+        Jonathan Corbet
+	<corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        "Fuad
+ Tabba" <tabba@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Andrew
+ Morton" <akpm@linux-foundation.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH v17 15/35] virt: gunyah: Add proxy-scheduled vCPUs
+Message-ID: <20240424093957.GY440762@quicinc.com>
+Reply-To: Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>
+References: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
+ <20240222-gunyah-v17-15-1e9da6763d38@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 01/18] mm: allow for detecting underflows with
- page_mapcount() again
-To: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, linux-doc@vger.kernel.org, cgroups@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>, Peter Xu
- <peterx@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
- Yin Fengwei <fengwei.yin@intel.com>, Yang Shi <shy828301@gmail.com>,
- Zi Yan <ziy@nvidia.com>, Jonathan Corbet <corbet@lwn.net>,
- Hugh Dickins <hughd@google.com>, Yoshinori Sato
- <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
- Muchun Song <muchun.song@linux.dev>, Miaohe Lin <linmiaohe@huawei.com>,
- Naoya Horiguchi <naoya.horiguchi@nec.com>,
- Richard Chang <richardycc@google.com>
-References: <20240409192301.907377-1-david@redhat.com>
- <20240409192301.907377-2-david@redhat.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240409192301.907377-2-david@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+In-Reply-To: <20240222-gunyah-v17-15-1e9da6763d38@quicinc.com>
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: XLbgIb0Y_-CpZ9y5rvGSoXb-QMYlvkEG
+X-Proofpoint-ORIG-GUID: XLbgIb0Y_-CpZ9y5rvGSoXb-QMYlvkEG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_07,2024-04-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ suspectscore=0 phishscore=0 adultscore=0 impostorscore=0 clxscore=1011
+ spamscore=0 priorityscore=1501 mlxlogscore=825 lowpriorityscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404240041
 
-On 09.04.24 21:22, David Hildenbrand wrote:
-> Commit 53277bcf126d ("mm: support page_mapcount() on page_has_type()
-> pages") made it impossible to detect mapcount underflows by treating
-> any negative raw mapcount value as a mapcount of 0.
-> 
-> We perform such underflow checks in zap_present_folio_ptes() and
-> zap_huge_pmd(), which would currently no longer trigger.
-> 
-> Let's check against PAGE_MAPCOUNT_RESERVE instead by using
-> page_type_has_type(), like page_has_type() would, so we can still catch
-> some underflows.
-> 
-> Fixes: 53277bcf126d ("mm: support page_mapcount() on page_has_type() pages")
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->   include/linux/mm.h | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index ef34cf54c14f..0fb8a40f82dd 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -1229,11 +1229,10 @@ static inline void page_mapcount_reset(struct page *page)
->    */
->   static inline int page_mapcount(struct page *page)
->   {
-> -	int mapcount = atomic_read(&page->_mapcount) + 1;
-> +	int mapcount = atomic_read(&page->_mapcount);
->   
->   	/* Handle page_has_type() pages */
-> -	if (mapcount < 0)
-> -		mapcount = 0;
-> +	mapcount = page_type_has_type(mapcount) ? 0 : mapcount + 1;
->   	if (unlikely(PageCompound(page)))
->   		mapcount += folio_entire_mapcount(page_folio(page));
->   
+* Elliot Berman <quic_eberman@quicinc.com> [2024-02-22 15:16:38]:
 
- From b49849001f3d2aad0af93cf2098065d7cbd9a959 Mon Sep 17 00:00:00 2001
-From: David Hildenbrand <david@redhat.com>
-Date: Wed, 24 Apr 2024 10:50:09 +0200
-Subject: [PATCH] !fixup: mm: allow for detecting underflows with
-  page_mapcount() again
+> +/**
+> + * struct gunyah_vm_exit_info - Reason for VM exit as reported by Gunyah
+> + * See Gunyah documentation for values.
+> + * @type: Describes how VM exited
+> + * @padding: padding bytes
+> + * @reason_size: Number of bytes valid for `reason`
+> + * @reason: See Gunyah documentation for interpretation. Note: these values are
+> + *          not interpreted by Linux and need to be converted from little-endian
+> + *          as applicable.
+> + */
+> +struct gunyah_vm_exit_info {
+> +	__u16 type;
 
-Let's make page_mapcount() slighly more efficient by inlining the
-page_type_has_type() check.
+Pls add an enum to describe the various exit types.
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
-  include/linux/mm.h | 5 +++--
-  1 file changed, 3 insertions(+), 2 deletions(-)
+> +	__u16 padding;
+> +	__u32 reason_size;
+> +	__u8 reason[GUNYAH_VM_MAX_EXIT_REASON_SIZE];
+> +};
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index dc33f8269fb52..cf700c5cdd58b 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1229,10 +1229,11 @@ static inline void page_mapcount_reset(struct page *page)
-   */
-  static inline int page_mapcount(struct page *page)
-  {
--	int mapcount = atomic_read(&page->_mapcount);
-+	int mapcount = atomic_read(&page->_mapcount) + 1;
-  
-  	/* Handle page_has_type() pages */
--	mapcount = page_type_has_type(mapcount) ? 0 : mapcount + 1;
-+	if (mapcount < PAGE_MAPCOUNT_RESERVE + 1)
-+		mapcount = 0;
-  	if (unlikely(PageCompound(page)))
-  		mapcount += folio_entire_mapcount(page_folio(page));
-  
--- 
-2.44.0
-
-
--- 
-Cheers,
-
-David / dhildenb
-
+- vatsa
 
