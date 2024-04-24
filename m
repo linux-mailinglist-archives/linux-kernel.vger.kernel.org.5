@@ -1,54 +1,35 @@
-Return-Path: <linux-kernel+bounces-156689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A9A58B06D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:03:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A8F88B06D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:04:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5CAE1F24892
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:03:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 285D5288423
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:03:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7348715991A;
-	Wed, 24 Apr 2024 10:02:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="gVnxQX4W"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604EB15921A;
+	Wed, 24 Apr 2024 10:03:50 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC57C159908;
-	Wed, 24 Apr 2024 10:02:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C38157498;
+	Wed, 24 Apr 2024 10:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713952957; cv=none; b=lF/N6TV5nVhE/X1mcTxp+aq3QOtE2HH96vMSwk2GpLYHHYHAu6t3JXQee/gheA1IPyA2Y00V3t+Z6dRQhICx+hVHplzsLFdOBKRe9kAnfOBZyUeax0Tdtzs3Wo++E//f11SAHi5qC7jZlCykAqbAFKWZkRpHVpMCWHcsddDGMTc=
+	t=1713953030; cv=none; b=IonG3TSPk7tUnda3Xysq8P6+siOkNsHxb8YC7sEB11vpA5aIh3uSZfNgEL0CEoJtAg1tm/9MTxDCQh8uQ1m3a7eG6lDab/8iPxyUHtgwO0GMPeZVcQs24pVlaI/NS3l3oIxnEOpfrYH6cY2SeReJRNI0KHTFfKR13RCB7nhRwgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713952957; c=relaxed/simple;
-	bh=nZK5irVR2uIXCl1fxQYGDrvG2jZj3KlZwFclmsGUUjc=;
+	s=arc-20240116; t=1713953030; c=relaxed/simple;
+	bh=of8KehQGF7cDuMBIGs5ksgB82Umnq66JY9p3LR+p260=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cW1l0cylXWsDYeRK83BedaI0AfYfKIo/bFc2nMe+LzIzaRf2WeOWvrksAKs5JpDTgwDbhkrIjR9Uu5EmhNFj7rlhwlwTpxTDN9tORmzE3whlxG9KreBkJen8fq/H2SkRGc+4bHfqMHGpLkTBzEal52PtPWLe40wfdxwHzhTnBvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=gVnxQX4W; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713952951;
-	bh=nZK5irVR2uIXCl1fxQYGDrvG2jZj3KlZwFclmsGUUjc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=gVnxQX4WvAFaZyHnI8bBEmo2M9V/VUoMmCAW3Cc5O4TwdKHj9MWP7NYjYUZ5lz+fP
-	 kKatbrN/7bWiU4Q9PKnbF3Et76Ap8sNkU3tvEC3MOoaVpo5OJeWJu1NcNnzAndvncF
-	 ftAgwckMUrv0CGW6fX6umdmHqhRYFmgZ4Y0tS+OvZ8Spfo3u5PfOdDtKDIOP5ZBvsC
-	 r/9ckIvPj0LXx3mxB5alDGGt57uvbwn4ocNFpIrFfFpWk380kv/Lb0CWiA1tPbZZMW
-	 +zQH4+Ng++PXuA4jNOH7gvT4rsmjQee/MQRxSGnpwUv/SMj42hKroHiR8ZhORmwo+u
-	 Ch33dWBiH77Kg==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 263D2378107C;
-	Wed, 24 Apr 2024 10:02:30 +0000 (UTC)
-Message-ID: <ba25cb7b-ff93-4fcb-b943-154e960d45a0@collabora.com>
-Date: Wed, 24 Apr 2024 12:02:29 +0200
+	 In-Reply-To:Content-Type; b=cTPoLRBc5EsRfJWj8AOooj46iYjyyqQ6iK04aZY9d+DCWxFwpV7qfoxqg6siWaOzXONEHxq+YZg4odQYky14EjkRD6+pT+0CiXAhhPa6apaVcHrJbd+Y6FhfwYhsWGf+xyFv5oWDMnXXhgDsdnGxW5iFw631n613Yiyx0KFGPX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26846C113CE;
+	Wed, 24 Apr 2024 10:03:45 +0000 (UTC)
+Message-ID: <25a33db9-3bc1-4d90-83d4-0bdbea9bc5d8@xs4all.nl>
+Date: Wed, 24 Apr 2024 12:03:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,54 +37,101 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] media: mediatek: imgsys: Support image processing
-To: Olivia Wen <olivia.wen@mediatek.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>, Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Tinghan Shen <tinghan.shen@mediatek.com>,
- linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- jason-ch.chen@mediatek.com, yaya.chang@mediatek.com, teddy.chen@mediatek.com
-References: <20240424030351.5294-1-olivia.wen@mediatek.com>
- <20240424030351.5294-5-olivia.wen@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20240424030351.5294-5-olivia.wen@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH 1/2] media: v4l2-ctrls: Add average qp control
+Content-Language: en-US, nl
+To: Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org
+Cc: shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de,
+ kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+ xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
+ ming.qian@oss.nxp.com, imx@lists.linux.dev, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240329092352.2648837-1-ming.qian@nxp.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20240329092352.2648837-1-ming.qian@nxp.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Il 24/04/24 05:03, Olivia Wen ha scritto:
-> Integrate the imgsys core architecture driver for image processing on
-> the MT8188 platform.
+On 29/03/2024 10:23, Ming Qian wrote:
+> Add a control V4L2_CID_MPEG_VIDEO_AVERAGE_QP to report the average qp
+> value of current encoded frame.
 > 
-> Signed-off-by: Olivia Wen <olivia.wen@mediatek.com>
-
-This should be reordered before introducing the 8188 scp core 1 support commit,
-but let's check with Mathieu before sending a v4.
-
-With that reordered,
-
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
+> Signed-off-by: Ming Qian <ming.qian@nxp.com>
 > ---
->   include/linux/remoteproc/mtk_scp.h | 1 +
->   1 file changed, 1 insertion(+)
+>  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 4 ++++
+>  drivers/media/v4l2-core/v4l2-ctrls-defs.c                 | 5 +++++
+>  include/uapi/linux/v4l2-controls.h                        | 2 ++
+>  3 files changed, 11 insertions(+)
 > 
-> diff --git a/include/linux/remoteproc/mtk_scp.h b/include/linux/remoteproc/mtk_scp.h
-> index 7c2b7cc9..344ff41 100644
-> --- a/include/linux/remoteproc/mtk_scp.h
-> +++ b/include/linux/remoteproc/mtk_scp.h
-> @@ -43,6 +43,7 @@ enum scp_ipi_id {
->   	SCP_IPI_CROS_HOST_CMD,
->   	SCP_IPI_VDEC_LAT,
->   	SCP_IPI_VDEC_CORE,
-> +	SCP_IPI_IMGSYS_CMD,
->   	SCP_IPI_NS_SERVICE = 0xFF,
->   	SCP_IPI_MAX = 0x100,
->   };
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index 2a165ae063fb..cef20b3f54ca 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -1653,6 +1653,10 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+>      Quantization parameter for a P frame for FWHT. Valid range: from 1
+>      to 31.
+>  
+> +``V4L2_CID_MPEG_VIDEO_AVERAGE_QP (integer)``
+> +    This read-only control returns the average qp value of the currently
+> +    encoded frame. Applicable to the H264 and HEVC encoders.
 
+qp -> QP
+
+Why is this applicable to H264/HEVC only? I think it is fine for any codec.
+
+This needs to document that the value applies to the last dequeued buffer
+(VIDIOC_DQBUF).
+
+> +
+>  .. raw:: latex
+>  
+>      \normalsize
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> index 8696eb1cdd61..88e86e4e539d 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> @@ -972,6 +972,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+>  	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:		return "Use LTR Frames";
+>  	case V4L2_CID_FWHT_I_FRAME_QP:				return "FWHT I-Frame QP Value";
+>  	case V4L2_CID_FWHT_P_FRAME_QP:				return "FWHT P-Frame QP Value";
+> +	case V4L2_CID_MPEG_VIDEO_AVERAGE_QP:			return "Average QP value";
+
+value -> Value
+
+Also move it up two lines so that it follows V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES
+rather than FWHT controls.
+
+>  
+>  	/* VPX controls */
+>  	case V4L2_CID_MPEG_VIDEO_VPX_NUM_PARTITIONS:		return "VPX Number of Partitions";
+> @@ -1507,6 +1508,10 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>  		*max = 0xffffffffffffLL;
+>  		*step = 1;
+>  		break;
+> +	case V4L2_CID_MPEG_VIDEO_AVERAGE_QP:
+> +		*type = V4L2_CTRL_TYPE_INTEGER;
+> +		*flags |= V4L2_CTRL_FLAG_VOLATILE | V4L2_CTRL_FLAG_READ_ONLY;
+
+Drop the volatile flag, this isn't a volatile value.
+
+> +		break;
+>  	case V4L2_CID_PIXEL_RATE:
+>  		*type = V4L2_CTRL_TYPE_INTEGER64;
+>  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index 99c3f5e99da7..974fd254e573 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -898,6 +898,8 @@ enum v4l2_mpeg_video_av1_level {
+>  	V4L2_MPEG_VIDEO_AV1_LEVEL_7_3 = 23
+>  };
+>  
+> +#define V4L2_CID_MPEG_VIDEO_AVERAGE_QP  (V4L2_CID_CODEC_BASE + 657)
+> +
+>  /*  MPEG-class control IDs specific to the CX2341x driver as defined by V4L2 */
+>  #define V4L2_CID_CODEC_CX2341X_BASE				(V4L2_CTRL_CLASS_CODEC | 0x1000)
+>  #define V4L2_CID_MPEG_CX2341X_VIDEO_SPATIAL_FILTER_MODE		(V4L2_CID_CODEC_CX2341X_BASE+0)
+
+Regards,
+
+	Hans
 
