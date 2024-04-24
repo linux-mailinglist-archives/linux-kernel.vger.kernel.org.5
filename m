@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-157161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B0488B0D98
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:07:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A46A48B0D9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:08:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 094EA28B121
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:07:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 460351F2852D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBEA416078B;
-	Wed, 24 Apr 2024 15:07:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71A36161301;
+	Wed, 24 Apr 2024 15:07:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TLNgThCM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OPspMI3f"
 Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3BC315FA6C;
-	Wed, 24 Apr 2024 15:07:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA0F15FCE1;
+	Wed, 24 Apr 2024 15:07:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713971243; cv=none; b=p5OINEqTKH6Tb6ksrxekN6JYr75HnRSjz4OEQPKTqGoqOYjhHTx5Y36m+ZY9I16mwoCMcDLB1VaffJ1BDiR/1mUctvoUhxshv7+H9YR/7KwSt0nlr5aNh50aWYX5ZShHwDI23+fGvA/rWVCR4mQoPsPoFUsdIv5aXm1omtC16A8=
+	t=1713971244; cv=none; b=XWyD9FF7vFdommE5SwM69utO2O8MuGhGyFeCcSdPjA3b8j9fORSnYCKH+NsziNCcXIgOsLf1N88PMDaSr198/sqvN3vq+jnpzv/n0rxu5WXrtDhBefyV71KxfcJ7zo6LH16sWe/KC1yR1mDqfPAXpDSH0ck6zAXZejt25hLQK60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713971243; c=relaxed/simple;
-	bh=UGWxHmZrSPG8/xRqYnebAtoN4G8LcvIkIQJroY+v/X4=;
+	s=arc-20240116; t=1713971244; c=relaxed/simple;
+	bh=0PBo9Of6CNy3BPbkd/tZVfSeHDs2kDzIZaMPAx/MRPk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=azcfP5YEgY8DAqxqeKNlLhk35PQMITA2x5vHKXaHerCddYP9m6ObHiIH3D7F7U/PClHmvRs/kV2zFD/UGJALGeek6yBDW2EZoQD7xkD1GFrhhzvP4Ly1astBn9Rw+jU5I0VHk5YykWaIjPKKw4HLbYg6y99H7HMolS4Q466aaxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TLNgThCM; arc=none smtp.client-ip=209.85.208.180
+	 MIME-Version; b=XzTCMdlYMUtKW59VjBdVqMTssxrPfBrtx66DytIVXxyA3FZ2AskzroinFKsjq4YZFjGahgxFfTIakZ26bKJyOyXneooJ24cigxCcv/sDta9oGTKxrQcso66Ys3YIdct9MgQ37i02ZRE4FT57YHRKwq73sJtoEkg1dRIbayjKFZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OPspMI3f; arc=none smtp.client-ip=209.85.208.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d88a869ce6so97872651fa.3;
-        Wed, 24 Apr 2024 08:07:21 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d895e2c6efso104758991fa.0;
+        Wed, 24 Apr 2024 08:07:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713971240; x=1714576040; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713971241; x=1714576041; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HGFEeAw7g7SRdmEPZBJXDlgsScugDV25Y9+Iq5aXYYE=;
-        b=TLNgThCMlQoL3ZRNS2U8qxuhzNWveQ1ygbV+12lZroF4rQuMWJL78seCYE1bFisQKV
-         5rFSlm1A8PyCQdpHpWWdw+n1NMRAbww6eKp2UsFNe9wItwWdAwMGBYJw4hJzrEjuGZDC
-         12shhuR1NkVHDeyFoM2ebLF9aB1Jdyfuy7G8usIZXENeIfEdKxnT0tsEL4iyeSnJP5Su
-         J9IqAS31gbDBJTzl7fFqhf15V12385unp/UMe0M790Thf/cp93wYRLHUe8CsWulR/r8X
-         foQJDhE9QFvSAVtDMeATsQZJOi5tvmNNyqNQ+2jUpASebNYsvTlBLcDHliyIiOhtZDtw
-         IEhQ==
+        bh=dckUSl5z4UaY1zLi6ZaUm7FPVPOD+pWKaRJKmeXicSI=;
+        b=OPspMI3fI7edIm7uN2XEaEpJd+l6xqf8iloUE3La6xqjJaiZZgXaxi3jNa+bkAJqBd
+         S5yNeKK2KYQCrzWSqGWxlxqTTLkGWQaZJIoZjil4nASfXExYyROAmfXp/wSvWaqjoWiB
+         NGM8FAPvUUWTHdzX8bMr/RGGkgzgXNqiw//1p0Ls2dAH0JVztDblGuZrFMNBC/+K3gI0
+         Zrm2uCLBJmESXGhZQFu3tWeG3BqqxuuClQI26lg2eQVvUBRuz5gTO+VmJJlABEwkJyNI
+         ihMPN8oYn0yGDA/zl/QJ9U07XQbbisvW80S5mzb5Kin6swSXDkezwEBX0WIOYpatmjnB
+         UEyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713971240; x=1714576040;
+        d=1e100.net; s=20230601; t=1713971241; x=1714576041;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HGFEeAw7g7SRdmEPZBJXDlgsScugDV25Y9+Iq5aXYYE=;
-        b=LkeFMCSh8+r4aPBKzJfmHSIQAYsFgpr73kImlqGmo8Jhjd7fUJm6otrCQKuDlhJNV+
-         r66tlPg4WPQLRUg0Qzj0ZgLTWu0r4p1yR3TvlhyEclxgE6MLLzNn8vh+SKMSJiCn4N7k
-         aatFa+8W4WJaBIzx5KS/Dox38Q9Iupi2RSAIG6dKdRrNSrpy3gAWeUfm3IhY+P+ZCRMq
-         Ye5ZN2R+lBFyYv4/VaZHfV+BsjX44WmhakHmYtrC15Y/1JxZFR0Y/xe+Ia+y2PEsKG5k
-         pImdjE7yqUSm3HZJgU1ZVCwXklFlm3CiN8/wshMdBTyj5RZiFmhWiRV7r3krx51uYr02
-         txOA==
-X-Forwarded-Encrypted: i=1; AJvYcCVJrQUnn17sc0edSQ/OQ3Ym27gKKzDSWaCcJmmyyOHS0bBxvCleRpnDXjocSQY3Y5AXPBg0gFrLnOvxjBsM3muMFsq3M/yNpmcvbY2bklEsGW/tEyl6nM9zG+LWDzIRMI7MUFGcvBoU
-X-Gm-Message-State: AOJu0YwluJyl7ALX+w8v2nCoXNWq7Ne5Qnr5OTcoZOAhejz0YP/6x7F8
-	U8LyCtG4prEqa9AgaiUGLEtiHFU/UoVawL2sdUNDUe7QTlfgOlSTjCMupQ==
-X-Google-Smtp-Source: AGHT+IGh6P9/jGPmZsaaKejTncr4C3FmUZ48Pp4QBCoWQcVIVrcCpb320zF2eFeI5o4F3q4MUhCN+w==
-X-Received: by 2002:a2e:81c2:0:b0:2da:736d:3cf5 with SMTP id s2-20020a2e81c2000000b002da736d3cf5mr1779681ljg.41.1713971239749;
-        Wed, 24 Apr 2024 08:07:19 -0700 (PDT)
+        bh=dckUSl5z4UaY1zLi6ZaUm7FPVPOD+pWKaRJKmeXicSI=;
+        b=sFyqgd9JmdVfmg4uaSS1ZCcmMakG2W2vcPicRi13ltNC1AsBZH6CX76puE4u9K5yss
+         xlkx4VZw9Wk3HWBBP1QeMGOwy5QUXzZySt0F5xWZ1Ky//iU8wig+Z/yF4D0uMEai1QmZ
+         opodPifb4zZCao4M4D8Y0BbcqkT3v87BTttRy6Ljsn7+O9/2WqL3ln9/hii54p6lCJb9
+         ZSD0tQ5Ecd10eLDjt5eT9/QGrcuMpWPaoEn5tC07MTFHkktj0UQ7FUh94m3ujcsRASxh
+         zLWKjaD2K7T64LrpBBXwMBG8+ZGPtazz6cdupJ0SG3tP/KyqIGK0CPOIJLGYce8m+UOl
+         Tmxg==
+X-Forwarded-Encrypted: i=1; AJvYcCVzmdBVEO7Ajp07Nm+wpLtcuTff04Gpr+udQHTfCDk9j4uLIjVWCc3/45MJav+XExDIHjZ4EFHenYP6k+GTTIJQ2lPYy1+QTmM6l4vRY9M416cJWnk9M+9S/uTW+/IWIebfEIMMqH+0
+X-Gm-Message-State: AOJu0YynbuSNwCqr52CxnWYa4A7jJbU/r/n2WOfRNkD0MNKjZdEQ76mE
+	he/7goNzLU1G4BNGBgWvqaRUkmJGYXmkzNqbjN+lWHSqCCfFfUK6
+X-Google-Smtp-Source: AGHT+IEE4EQyH+7OCx2jiJMXA2ZH8Vw1BDpJTqHiVv49d1ENUeSiB03CIDrUDitizpKbCjVxyKOH+w==
+X-Received: by 2002:a2e:9855:0:b0:2d8:144e:c464 with SMTP id e21-20020a2e9855000000b002d8144ec464mr1685917ljj.36.1713971241416;
+        Wed, 24 Apr 2024 08:07:21 -0700 (PDT)
 Received: from localhost ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id b39-20020a05651c0b2700b002dd1f5c8fb7sm1281148ljr.82.2024.04.24.08.07.19
+        by smtp.gmail.com with ESMTPSA id y18-20020a05651c221200b002de02f28ba1sm533935ljq.94.2024.04.24.08.07.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 08:07:19 -0700 (PDT)
+        Wed, 24 Apr 2024 08:07:21 -0700 (PDT)
 From: Serge Semin <fancer.lancer@gmail.com>
 To: Serge Semin <fancer.lancer@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -74,9 +74,9 @@ Cc: Andy Shevchenko <andy@kernel.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	linux-spi@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v4 3/4] spi: dw: Convert dw_spi::num_cs to u32
-Date: Wed, 24 Apr 2024 18:06:44 +0300
-Message-ID: <20240424150657.9678-4-fancer.lancer@gmail.com>
+Subject: [PATCH RESEND v4 4/4] spi: dw: Drop default number of CS setting
+Date: Wed, 24 Apr 2024 18:06:45 +0300
+Message-ID: <20240424150657.9678-5-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240424150657.9678-1-fancer.lancer@gmail.com>
 References: <20240424150657.9678-1-fancer.lancer@gmail.com>
@@ -88,11 +88,11 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Number of native chip-select lines is either retrieved from the "num-cs"
-DT-property or auto-detected in the generic DW APB/AHB SSI probe method.
-In the former case the property is supposed to be of the "u32" size.
-Convert the field type to being u32 then to be able to drop the temporary
-variable afterwards.
+DW APB/AHB SSI core now supports the procedure automatically detecting the
+number of native chip-select lines. Thus there is no longer point in
+defaulting to four CS if the platform doesn't specify the real number
+especially seeing the default number didn't correspond to any original DW
+APB/AHB databook.
 
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 Reviewed-by: Andy Shevchenko <andy@kernel.org>
@@ -100,25 +100,37 @@ Reviewed-by: Andy Shevchenko <andy@kernel.org>
 ---
 
 Changelog v2:
-- Just added.
+- Drop temporal variable and pass dws_spi::num_cs directly.
 ---
- drivers/spi/spi-dw.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-dw-mmio.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
-index 6cafeee8ee2a..fc267c6437ae 100644
---- a/drivers/spi/spi-dw.h
-+++ b/drivers/spi/spi-dw.h
-@@ -164,8 +164,8 @@ struct dw_spi {
- 	u32			max_freq;	/* max bus freq supported */
+diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
+index cc74cbe03431..c56de35eca98 100644
+--- a/drivers/spi/spi-dw-mmio.c
++++ b/drivers/spi/spi-dw-mmio.c
+@@ -320,7 +320,6 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
+ 	struct resource *mem;
+ 	struct dw_spi *dws;
+ 	int ret;
+-	int num_cs;
  
- 	u32			reg_io_width;	/* DR I/O width in bytes */
-+	u32			num_cs;		/* chip select lines */
- 	u16			bus_num;
--	u16			num_cs;		/* supported slave numbers */
- 	void (*set_cs)(struct spi_device *spi, bool enable);
+ 	dwsmmio = devm_kzalloc(&pdev->dev, sizeof(struct dw_spi_mmio),
+ 			GFP_KERNEL);
+@@ -364,11 +363,8 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
+ 				     &dws->reg_io_width))
+ 		dws->reg_io_width = 4;
  
- 	/* Current message transfer state info */
+-	num_cs = 4;
+-
+-	device_property_read_u32(&pdev->dev, "num-cs", &num_cs);
+-
+-	dws->num_cs = num_cs;
++	/* Rely on the auto-detection if no property specified */
++	device_property_read_u32(&pdev->dev, "num-cs", &dws->num_cs);
+ 
+ 	init_func = device_get_match_data(&pdev->dev);
+ 	if (init_func) {
 -- 
 2.43.0
 
