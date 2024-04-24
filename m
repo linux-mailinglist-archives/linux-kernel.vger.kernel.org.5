@@ -1,130 +1,114 @@
-Return-Path: <linux-kernel+bounces-156622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B81D08B05E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E1608B05E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:17:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E99D11C22A7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:17:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F7E71C22CD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:17:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 018C1158DD7;
-	Wed, 24 Apr 2024 09:17:01 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36489158D92;
+	Wed, 24 Apr 2024 09:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zoed2c3h"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A971158D87;
-	Wed, 24 Apr 2024 09:16:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79D3158A22
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:17:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713950220; cv=none; b=DPEvspKdsCK6SmNQmBc44gVFQ6jmsdAEchf8P7gOa+Uc6kVrYMYf34cBvjRuKFuO2bTGRGQePxfDQldp0QDdrFNnQ1mCcRTmt/i8D72UYy2n3DKv4GTEajubNPKKIEvykj4KlUdGON0YN9tzr8hmf8AJt3yPTouImZd150FSsG8=
+	t=1713950259; cv=none; b=UKdu7GL94xKOZqS5YaBYky8mTnnHLFBLLCFrtj99OGKxBmTPFvO/h388Y/Z/KyQuDmCP5PuMU32qnSnfiKFByMTJsaZS+CjaePQii8PYDoN0S6teb01xn33h4DCkTbshJhhUeP7C+D56HlDeYryvtiM+QkF0Aalu4JocXXt4I84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713950220; c=relaxed/simple;
-	bh=2kFrP6usDj5u4s7STZ+gSu3x3Vy8NjbK0EDKL6B6GBo=;
-	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
-	 In-Reply-To:Content-Type; b=QRtuXB4IkkXo7t2PEhZvMfzD5yLyhxl3hZi/2rInvow6cO+LCWCnoXwjvfXIu9N+sDik9Aiq9m3DPZUx1aAcBdPXGg3ewOF8c1Lf1UgjCD3hAEgXs0eBdm2fwsrvdzQERbdtSJuNLg/pzQMdvlFc0+VgjavttD1sqMUrLCxTmMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4VPYFV5Ptjz1RDHV;
-	Wed, 24 Apr 2024 17:13:50 +0800 (CST)
-Received: from kwepemd500014.china.huawei.com (unknown [7.221.188.63])
-	by mail.maildlp.com (Postfix) with ESMTPS id 42C9F1A0188;
-	Wed, 24 Apr 2024 17:16:55 +0800 (CST)
-Received: from [10.67.121.2] (10.67.121.2) by kwepemd500014.china.huawei.com
- (7.221.188.63) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Wed, 24 Apr
- 2024 17:16:54 +0800
-Message-ID: <6628CE06.2060901@hisilicon.com>
-Date: Wed, 24 Apr 2024 17:16:54 +0800
-From: Wei Xu <xuwei5@hisilicon.com>
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+	s=arc-20240116; t=1713950259; c=relaxed/simple;
+	bh=6v6pmpTVgPnI69pOfFGBY/7JqehyACnXXZ0pMSagnQQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nE8Mkj77gQezluUC0EZ192ij/Ro0sy7JpkGDS2dl2n9qEANz7W1yY7HuLEHAhNe+aSAsDXSW6A26O3O/OIYsskm4CAjcGi75lxMY9M+64gtHJUTv50Glzy17Q+P9LzeeLFwWRI/9Qmv/XzOandf7I6WIlRiQ8RiQzU9/PLqp41Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zoed2c3h; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41adf155cffso8686105e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 02:17:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713950256; x=1714555056; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=EvNYwGwejd/vmVQ4glqR5CH2PWp5Gxwed8vZAqZp1Hg=;
+        b=zoed2c3h0xMzyt9zrL4iIYxwpVShNECzfE1WZnOqufirHjLIDARNIHGb6AJ0uwbmNz
+         ED7jSiIdZsaPku9YeY/wiIL03xiY8yEZiqc/EK1P5Cnx9cvTvMYjnhJcftvxvi73K4d0
+         g30oR3e5/HWcHn9HeIF1WrHlJJ7ujQZ2Pf/7NfFlX493aAz9ASjWDgPZ90WMsikKs1NL
+         WXYumESkVxu39Ved948ynXbS7DMj1a3z6+DvqLon16QL3Om4RfuKl4EqZNpLBI32M53W
+         XcyfgXFOmbtdbHLXXssAAYGImnj3EkvvDNcEH0kfhQ6B4B8E7UHfhXWjg7pwr9aReRd9
+         nnMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713950256; x=1714555056;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EvNYwGwejd/vmVQ4glqR5CH2PWp5Gxwed8vZAqZp1Hg=;
+        b=k7EknaxcXb+WFUN3ecAqOjc59o44KhYJnt8pkLphOGb2R0u/crhZlVFmhxNPLla7Dd
+         GqIeZB1AdcR7Sc36wx6/n6RDByxLNCsnPjNY0D1leTh/9Dq9c/pSbwT/GiMxn4RYxnBC
+         qZjpl35GtiOo2guZ4vOwKndLfWmDKqLH1Djro1s95jrTC8RAjmuUr2aa6c+mhl2LMmiq
+         BvagWnFfgBiiePz7vuDiyjA8KlN10urxbXFQrnCIlfKUIUccn4tIJL7S0UUrPfwGySvm
+         N+0YgTWi7N/VrbBpkJvQbJ5wXRyTSMiqMyvulMVtea8K9ITqMzhB/XcgDsyjupKPiNZ1
+         o+tg==
+X-Forwarded-Encrypted: i=1; AJvYcCVlrELv0KBlAVB3zvWHFZe0sBUpvNGdjzGEdb52WH4LM0F8r/GN/Nvyt9tF0BLVQ0tfadmGGbLEO7j1XSjFmcWspCC8Kx/DA2DbKZY+
+X-Gm-Message-State: AOJu0YwIgImrg/Fm8nIDdFT68qWqvD+ZzKq3uCa8gmWW7Y9UmnJTRe3q
+	RIcRday47TlJdkAx6yha+92saNYJT/uG1s2BYcmpvkO9Xb+3ezaQd/Bb6FDbFuI=
+X-Google-Smtp-Source: AGHT+IETBR5NRDJvnmT+4jufXRV4MUnA6U+OX77MdwUghv6OF8LCeQsDz2Q0f1bV/GCLa2wnLyjtQg==
+X-Received: by 2002:a05:600c:35d4:b0:418:f184:53f8 with SMTP id r20-20020a05600c35d400b00418f18453f8mr1605318wmq.36.1713950256284;
+        Wed, 24 Apr 2024 02:17:36 -0700 (PDT)
+Received: from mai.linaro.org (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.gmail.com with ESMTPSA id g9-20020a05600c310900b0041a9fc2a6b5sm6491155wmo.20.2024.04.24.02.17.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 02:17:35 -0700 (PDT)
+Date: Wed, 24 Apr 2024 11:17:33 +0200
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Linux PM <linux-pm@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: Re: [PATCH v1 16/16] thermal: core: Relocate critical and hot trip
+ handling
+Message-ID: <ZijOLZfQgQYTBzVl@mai.linaro.org>
+References: <13515747.uLZWGnKmhe@kreacher>
+ <9337957.rMLUfLXkoz@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring
-	<robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH 1/9] arm64: dts: hisilicon: hip05: move non-MMIO node
- out of soc
-References: <20240402193148.62323-1-krzk@kernel.org> <171394159880.43787.12383182687947213751.b4-ty@linaro.org> <6628B1E9.1050300@hisilicon.com> <7adfe10b-cfb6-4242-9520-dd9819bf7f43@linaro.org> <6ce7bc63-1c47-4e3d-a3af-8f229f1c36f7@linaro.org>
-In-Reply-To: <6ce7bc63-1c47-4e3d-a3af-8f229f1c36f7@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemd500014.china.huawei.com (7.221.188.63)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9337957.rMLUfLXkoz@kreacher>
 
-Hi Krzysztof, 
+On Wed, Apr 10, 2024 at 07:44:34PM +0200, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Subject: [PATCH v1] 
+> 
+> Modify handle_thermal_trip() to call handle_critical_trips() only after
+> finding that the trip temperature has been crossed on the way up and
+> remove the redundant temperature check from the latter.
+> 
+> No intentional functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
 
-On 2024/4/24 16:37, Krzysztof Kozlowski wrote:
-> On 24/04/2024 09:23, Krzysztof Kozlowski wrote:
->> On 24/04/2024 09:16, Wei Xu wrote:
->>> Hi Krzysztof,
->>>
->>> On 2024/4/24 14:54, Krzysztof Kozlowski wrote:
->>>>
->>>> On Tue, 02 Apr 2024 21:31:40 +0200, Krzysztof Kozlowski wrote:
->>>>> Non-MMIO devices, which are BTW not really part of the SoC, should not
->>>>> be within simple-bus, as reported by dtc W=1 warning:
->>>>>
->>>>>   hip05.dtsi:301.30-305.5: Warning (simple_bus_reg): /soc/refclk200mhz: missing or empty reg/ranges property
->>>>>
->>>>>
->>>>
->>>> Almost a month passed, no replies from maintainers about picking it up. Dunno,
->>>> looks abandoned, so let me grab this. If anyone else wants to pick it up, let
->>>> me know.
->>>>
->>>
->>> Sorry for the late reply!
->>> I am applying these patches which are in the following git repo.
->>>   https://github.com/hisilicon/linux-hisi/tree/next/dt64
->>>
->>> And it is fine to me to go through your git tree.
->>> Thanks!
->>
->> So you picked them up? Why you did not notify anyone? b4 does it almost
->> automatically. How anyone can know what is happening with the patches?
->>
->> I will drop them from my tree.
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-OK.
-I will pick up them.
+-- 
 
-> 
-> One more thing:
-> 
-> Even though you applied these patches few days ago, they are still not
-> in linux-next (as of next-20240423), which suggests your tree is not in
-> next.
-> 
-> Please read entire presentation "Beginner Linux kernel maintainer's
-> toolbox" from LPC 2023 and improve your workflow by:
-> 1. Properly notifying patch status.
-> 2. Being part of the integration tree.
-> 3. ... and more, as explained in above talk.
-> 
-> There is a link to video and slides:
-> https://lpc.events/event/17/contributions/1498/
+ <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-Got it.Thanks!
-I will go through it.
-
-Best Regards,
-Wei
-
-> 
-> Best regards,
-> Krzysztof
-> 
-> .
-> 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
