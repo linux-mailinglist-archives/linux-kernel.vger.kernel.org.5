@@ -1,228 +1,252 @@
-Return-Path: <linux-kernel+bounces-157434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFFCF8B119E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:00:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19FB08B0F58
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:05:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A30EE28C6CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:00:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB83FB231DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:58:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D43D116D4F1;
-	Wed, 24 Apr 2024 18:00:19 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2093.outbound.protection.partner.outlook.cn [139.219.146.93])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 324B71607A2;
+	Wed, 24 Apr 2024 15:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="qk37VZM+"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2081.outbound.protection.outlook.com [40.107.223.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9375F16D4D1;
-	Wed, 24 Apr 2024 18:00:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B469015F406
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:58:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.81
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713981619; cv=fail; b=Cs/ywUA0RgJS/3xRfPleiaCCI3i6d0ZZw/luFX/usET1Nw+Huc/i5ijlXtaOUXjaIfB012sy+czn9oGJPekgwfQUlNh7T+x4GoS1b5bYcvNUchIITWD+jtW43esNqC6w/W7h7z/XZemOfYgdCTIL0DgGr249CE09nr0xYmq+CAg=
+	t=1713974315; cv=fail; b=rjYJD3pa8CbiC5p5JffAa4OZfv5nj40gBdXhwIXceoV+fScgjTflYxGE0Kx4WbTs+jbEVO81vfqA/zZsZ0dEIhxAs9oWRkUa1SjEdiSezEBKb/ADLG1VfEmKh701X0RKWbr6TYOGz/DamdML0g2Q1dHW/Os207ZmVnVswDWz1B4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713981619; c=relaxed/simple;
-	bh=muNbbZwLJWpwhQH4CvoKj6jHRw7OCbXlavC/YbTmxX0=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=PU0cQhKgFpGT5yfHCTpnN7jQ0Qrgwhu6ZSEHOpahCjMT+Li4iTRkvrw9DMBOWd/DBn60OBkN4gIl9Fp5p7B1AXRwF2311ZZijklG3U1ka/7/lYJjrxCnp5xEozKbKUWatDBSe8R7UPaarGelfAH0zYGJ23b2GSNSYuS/TUAnoHU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+	s=arc-20240116; t=1713974315; c=relaxed/simple;
+	bh=0skJtVuYgHwMivIdtqu2BTMhvuAH7Z4EE7+0vh1Iibs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=I2c4KtGMySO5BI8qgFKlS408WwEqkUJEJJZBQhf/fTXuL/Vn1dTkbnJ3xanGKrfgJfbPgMU0EH+s0g3r+NRUWQd/jXtFDVq/jHDUcvzFR7uNpqmQmnsXjzjrfLf+/Sw8w4yiK/LcXY5GCPE0RKGhmJ9O9BGzfU3HQatnV1DpvM0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=qk37VZM+; arc=fail smtp.client-ip=40.107.223.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZtHLnIFc8hTpaPssMxfhRGhud1+4ISQLhzVBwUck9PCZKdpL6e483mRs667ZK0NmkezYj36rbKUM4dWs7RthgX29mrbfrLiKVrVASx3igI5iZYP04EvjuhKFG2swiAGzA0yJdlXr+U/cJ4IwA4fNlNZrkJ6ZeLFEBD4vrmQOL0ZNoGus0xuPnlCDZVg4bF8b4CWE031Kb7TzZw+2XaaNgFfNxmjscekvuceXETjj/MVxfiAHOi1tWcNUAtFQT+IcxxqDmIcw3a5d+jUjdnNtiQu5r3Bxn/7GVqsJeVOJFwdQUGh2HC2pXotNuaCWDhmj7EG9aCC7pYhKuY1kUnotZQ==
+ b=e9MeKe4Lsh6yq4OS2j6Tgj7gPv3p+2gvntJQwqNUY9q3FbD6xTpJkgZ46AETAg7u+wBlEG6Nk546GAMIufJqsHZoEhselWaYtoDO7e9DO1M4q4KAhJrCbgnWyl7+3QNoDw/n6JyIX7ePA4YR0PoKk28EUJjIo31AWCV46OFkod0jXZfz7lDaH5PBqqwIiL18QGs1T2a/NFd0FoHxw+Uvd0+jaVB1cBLfCrTm+nHN7y6yCTlyAdWFtAS21V9p9hbnR6l25u3XmdSfKpJRpeMnQ8UZHT0fY43LDugrHEvlpyBk/CUD4G+1nf+QvBFervb5iQNCfZXf42h/lGvMYbt4/w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=muNbbZwLJWpwhQH4CvoKj6jHRw7OCbXlavC/YbTmxX0=;
- b=gNI3bxoAVEK2hrz1ahSObhD3ZaRsKaEMtnVfVYq263Yp0PFdpME83keNhaxCVPQmD/fUOH52DfGD7G0ZlmWHVclynY3ret0/h7uDBQc1jnmzbsRXCVDIqzJlx1PqkUwDGl9m7eGtvTMe2Dl8NmlOkiDN1H1P/VM+ZyCadGy+aL0tZIvQ8cajpj55gyr+/W/OAw8ycfC2HvT9upp+I8+iiHiJ7OiyE+SMrLFhMMbWSMsEwgELv31ZZk0LC6W1bLFc9LkAzIRmtms8fi+w30T2uPTPm9qjD/hiM/ffR6Fqx0u1VSi8PjEizp1x24zzJcMbfvTZh5OLyFLJc6MUj/thOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:20::14) by SH0PR01MB0570.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:7::11) with Microsoft SMTP Server (version=TLS1_2,
+ bh=S3+IC27TH5ORa8Zf4SF9NM2mgUInEyfUneTApO+k518=;
+ b=PRBWk5rOtiOCnEh8Tr1w5LRKQFVviM8E5+weJHhoETx8T5KRhyYvfArFhxFhRbh/nHoC2nKzKGZz5TuYRjdNcZd2DSpLfUMYxCXftDdFY98cwCO48rQhyOjsQctv68TbPdx4sPgBETKJGZ+ZwzGouvz8EokGICplxrGRRElFMDynMXoOx82XUo4WZu29gjCAzaj8pN/nBf3HHyc7oJ0iGji9hIZhA8MZNCilGEUyaSljtgduCkBfAW1xnXnHvngvVcBR4Xbpw4bpmP8fYZkQdC6Hsa/YwoY5TcwxbePA9Vx+2zphwo5sBL9hwzsAj11TJrIPO/NPFa7FuL1ziQcysA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S3+IC27TH5ORa8Zf4SF9NM2mgUInEyfUneTApO+k518=;
+ b=qk37VZM+gPXSi94cGTeyiEnZctibyLRqPdSUDZFIurRys6JI2XVa9HhMpGKv1OHLEV1SnYQTrWRoXICdxMjYlHO0gfoqV2SkojSm4Mz5tu3MSu6vmiCVR5BwunfVMUs3mBGRypD1AjJjNP+YHsXUlJvyo5Vz+3Z1MNsWWOC9fSY=
+Received: from PH7PR17CA0006.namprd17.prod.outlook.com (2603:10b6:510:324::28)
+ by SA3PR12MB9091.namprd12.prod.outlook.com (2603:10b6:806:395::10) with
+ Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Wed, 24 Apr
- 2024 15:26:52 +0000
-Received: from SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
- ([fe80::e0a:f88a:cad1:dc1c]) by SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
- ([fe80::e0a:f88a:cad1:dc1c%7]) with mapi id 15.20.7472.044; Wed, 24 Apr 2024
- 15:26:52 +0000
-From: Joshua Yeong <joshua.yeong@starfivetech.com>
-To: Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-	"robh@kernel.org" <robh@kernel.org>, "krzk+dt@kernel.org"
-	<krzk+dt@kernel.org>, "conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"conor@kernel.org" <conor@kernel.org>, "paul.walmsley@sifive.com"
-	<paul.walmsley@sifive.com>, "palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>, Leyfoon Tan
-	<leyfoon.tan@starfivetech.com>, JeeHeng Sia <jeeheng.sia@starfivetech.com>
-CC: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
-Subject: RE: [PATCH v3 1/2] cache: Add StarFive StarLink cache management for
- StarFive JH8100
-Thread-Topic: [PATCH v3 1/2] cache: Add StarFive StarLink cache management for
- StarFive JH8100
-Thread-Index:
- AQHalh1PRoL0YjHNUEq+ss3l976a9rF3N0uAgAA4OgCAAAhagIAAAw4wgAAEmwCAAAByQIAAA08AgAAGZ+A=
-Date: Wed, 24 Apr 2024 15:26:52 +0000
-Message-ID:
- <SH0PR01MB0841139F57DB0C3BB873094EF910A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
-References: <20240424075856.145850-1-joshua.yeong@starfivetech.com>
- <20240424075856.145850-2-joshua.yeong@starfivetech.com>
- <CAJM55Z-C7XkFo4STk3rdLG4kvPfed-AfrHB1QJ-Tzt1LDoKw9w@mail.gmail.com>
- <SH0PR01MB0841F8C45091E4A08020ADF2F910A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
- <CAJM55Z9NAeRb_3ZBJksXt+4fJMdcYw55bfAs0EpSnM8VWBKQag@mail.gmail.com>
- <SH0PR01MB08415B9CDDFB1A4FAB0FC4A9F910A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
- <CAJM55Z_G5EKSjHztCQ+gXDGwfpziZTE=HsHmwydJWB-uorMOqA@mail.gmail.com>
- <SH0PR01MB08410B2FCAE1D9AA754865BFF910A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
- <CAJM55Z-6vqSjL3GPT7GqC1k01zH8+zexSpcOFFUpuZELAQxARw@mail.gmail.com>
-In-Reply-To:
- <CAJM55Z-6vqSjL3GPT7GqC1k01zH8+zexSpcOFFUpuZELAQxARw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SH0PR01MB0841:EE_|SH0PR01MB0570:EE_
-x-ms-office365-filtering-correlation-id: 82c554d4-b2a9-4002-efc2-08dc6472f7f6
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 1TLfIxq7Lt/8d8R7qRoeEcb48oTuokfyhG+F9RsbQwLlgN3gjPcRUW77KYGHoDmcWgrUeUbxp8QYeIUNysXLyn2pGn48KtxnyGRkJq2wFZpT5tzSO0xSTMhNkT+baM1yTEx4vrnp8Yd5oqxbOOTOuWEzNyqM4FYtis9o1ZwOB/rLbTgPRBtQwIwoza4DlCgCZEJA17z8BOXYP8uc8USej79a/HTm9WsxW/D8fscNLzWVNXMjsBrBazvRH9RrzQVoTL1Qj+sZNwYKkpy0oeZHJN3jTnQT03/I7R1XyTCs8+BrSA4BN7fxGAGgY4QExLqwvLfshdcVVBb/B3ZGnuyZacaO2uPIFtdEJaV1yOA/C20DOw0cv8Tg0nWSOM6eKMkncwtKOjkUtFK57FpwgKMDONsbfPegZ8Fyg8EkKvfRd3MuObJ6Hgor95LWAFrMxEc0SO+/ODQkIVDj9MC6NdCVyoByKwNnhiZ70uBOOwAlrnGEiQ6C2Z2vpr4iXNWTq6iRPnKQch+/Dy55Ehwn/AxbJ++UM0sV2Ck32h5N1UVyWnenlRZYPVTwcOsLRMYGQBymTkW1amWWEnyasxmq4DTYgywA/mhe3KxJpE57iHQlgRX1xG+kM3Nump/IpLiioih/ScyLd0OpuWWId1Xqp421nw==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(41320700004)(366007)(921011)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?cldTWVllOTZMakIyMlJ6c0hvN3B2SjkwYTZJVEhnRDBLODdjMkZ4UUs0SkUy?=
- =?utf-8?B?QlNwc2tzUElaZzBLVUlFN091a3NRMUhmY2I3T3hSbFdaempxdm94YUFJcGk4?=
- =?utf-8?B?Rkk2K3FiNWo2WlFjN2NSMnNxditRcnhkUk90a2dYQ0hjUXlURjRPdUlOMkRW?=
- =?utf-8?B?REV2Q0FJN1hkZnBiWFZrZy9yVk5LbWl4d2NCK1VPb3hQaHN5UWNCNi9vZkRM?=
- =?utf-8?B?elVLRkVrTW1zRnhkQ1VmbExmb0w3djAwd0V1NHZadnJtc2o3bDV0TFBaYXdm?=
- =?utf-8?B?RGVpSkJZa2RvV2psOXpWa2p0eTdVc3dEdTNqQUlyVHM0OWVEN2pNbTdNc2xl?=
- =?utf-8?B?ZHZiV3J0Zzdwb0hVb2FRWVpseklVcTBVRmJIZnhFUUNPMUhOakl6aUJabmk0?=
- =?utf-8?B?NVVXSDVFQm5nN25iZE95dVM3a0NVdlpWVStpbitLd0M0MkJCTjh6bEE5aGV1?=
- =?utf-8?B?cjJhd3hXSnI3NlRTV0ViSnhoQUpZQWpmYXFqKzZrWTRNMTJITVRISkFROGN2?=
- =?utf-8?B?bGk4WXJPNy9WYzBUMDFsbjFLU1h0MzZ4bUNVRE0xQTdqVzZsaDJ1bFdENTNa?=
- =?utf-8?B?Sk1hVWhNaHM3czVvb2ZlZmFSWGdJTFdCQ0lVOU1SeEZiSFp2S1BLeGtNZjll?=
- =?utf-8?B?cDd6anhmMU0wL2R3RFhYcWVCaFJzUDhhUHBuUysvb3JvcDVNdnZXS3BselFZ?=
- =?utf-8?B?ektyUHFsM0lPR3ZMTk8zRC9zSklUaDIyWVNSVmFHRG1HemNobHRjU2ErMkll?=
- =?utf-8?B?ajl1dGVHWGtjR0xMKzVXbklXU3N2S3lveW1McnhISWt2Wk1KTkVoMWFOL0xh?=
- =?utf-8?B?QTBsMGt1S0hVQ3YzTE5ZbWhwaCtzTWJmdXpKK2g2WlBCejFNWWYraTAreDR2?=
- =?utf-8?B?QlJJZUNVWE43SWNmaFc2VlhNOHhITHY0YXBHd3c2NFpkYnM3NmtaNTdGemVW?=
- =?utf-8?B?Sk9kYVBScWNuVGlrRk5IdC9nNi84b0IrZHovbFpNdS9kTERSZ0c5WnZzTHNm?=
- =?utf-8?B?eDdRRGs3eENBdWpIRjRneU5jMTRKejh2RFVzbVMzeGRUa3NYN2k1MkxWVDU0?=
- =?utf-8?B?eDRFbjdYQ1REQnJJbTUxcjNkbUhsRGtHMzAwK09sRCtGaFdqOEp5MmlOREto?=
- =?utf-8?B?OUxjYytNYUVGa016MHR2V0I5elBCNHM5NnovaVJYVXpsVTVIaTVXNWc5Uy9j?=
- =?utf-8?B?bS9Nd3RSSXAvNmRKMEI2UkFMZ3YxNWI1dE9CcW9GUVdnNThtWkF6Qk45R1lk?=
- =?utf-8?B?YU5pU2NyK3dpZTRXMENOeGF3NEQxYkVkQTNDbEJtcHZXZC9PaS8zYmxVdERa?=
- =?utf-8?B?aXUrT0kxY3lMSjBrcFRpTWNGL2dIdlRFSlo2N2xDTmorcEJFaDZWUTN6aG44?=
- =?utf-8?B?TnhUdVFkdlZ5MVVzbGJPUGZiQVBXbGc5RGdHakFKc3lRdDJBK3hJTkl0aDRr?=
- =?utf-8?B?dTQ1L2ZJQjUvLzVJY2JLQlo5WEpxdUhBeXRQR2lNV1dEUERzVGFjS1FxWW4y?=
- =?utf-8?B?eStvT2lxQXF1MFR5TXU4U1VVY0IxYnU4N1ovc2pQTVlNbGtqQUtsSGw5UlB6?=
- =?utf-8?B?YTNOQ2REZm5ZaVZYcDgyTlBQU0ZTNmU5ay92NXFGRnBSdm53WlprcHg2Rjh1?=
- =?utf-8?B?dkdIVXpUS2tNNEZjQzVTdkhmdnhnTkVrcWgyOFNPOUFidkdwS3E1a3B3R1pF?=
- =?utf-8?B?NXIzdmlHL2lVbmQ2YXprQjg3SHVQVjM5OFBzQjd2TCtvc09yQmlOUlJjNXVt?=
- =?utf-8?B?cVdXUDFPOTFlT20zNkE4a1pJQzhEaUl5YzIyS0JhL0dvbG55OU91MjcyNWVI?=
- =?utf-8?B?N0FoMHhRRFVhZDQvSjlBcDBFLzNia1QrbFJyMTNWT01ZVndyYVVPMHJnbGVD?=
- =?utf-8?B?ZFZ3VkxtUWxxVU5zMW5pRHh6M2owUlJGb3FOcWxVc2N3TjlsT3RucjRBK2JQ?=
- =?utf-8?B?V3JyUURjWjU5U1pQbjNaZjN4Q0p3Y0pXdWlpWThiekxiR0t1NldkTm9rZmVJ?=
- =?utf-8?B?S2hVY0VFRWk0b2JrZWlFTmp3YjRHMTRMblltTnBaOS9TMkROVmVpL0RzUkR6?=
- =?utf-8?B?MjlLUlhLVmxJaWlwcGN6VXNaRWhCL0paM0YwOHFLZmFaekZNNTJDQWJhU2pW?=
- =?utf-8?B?MmIxZmp4aDlnbXUrWCtyZVdXS0ZjNFV4aUdoUiszaW1URUVlVG9MWTAwV0RG?=
- =?utf-8?B?UkE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ 2024 15:58:30 +0000
+Received: from CY4PEPF0000EE31.namprd05.prod.outlook.com
+ (2603:10b6:510:324:cafe::74) by PH7PR17CA0006.outlook.office365.com
+ (2603:10b6:510:324::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.23 via Frontend
+ Transport; Wed, 24 Apr 2024 15:58:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EE31.mail.protection.outlook.com (10.167.242.37) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7519.19 via Frontend Transport; Wed, 24 Apr 2024 15:58:26 +0000
+Received: from tlendack-t1.amdoffice.net (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Apr 2024 10:58:25 -0500
+From: Tom Lendacky <thomas.lendacky@amd.com>
+To: <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+	<linux-coco@lists.linux.dev>, <svsm-devel@coconut-svsm.dev>
+CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, "Peter
+ Zijlstra" <peterz@infradead.org>, Dan Williams <dan.j.williams@intel.com>,
+	Michael Roth <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>,
+	Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v4 00/15] Provide SEV-SNP support for running under an SVSM
+Date: Wed, 24 Apr 2024 10:57:56 -0500
+Message-ID: <cover.1713974291.git.thomas.lendacky@amd.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-Network-Message-Id: 82c554d4-b2a9-4002-efc2-08dc6472f7f6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2024 15:26:52.8469
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE31:EE_|SA3PR12MB9091:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5eda441f-2c62-4fed-5534-08dc647760aa
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?Tb1g+qhlz00S4ThQXHNv8nTYcz9BjzA34BzyYkc4h/NN2VUq3cOOi70qqj2M?=
+ =?us-ascii?Q?IDeuNUBruK5uBMYb1QKYpGem/nhbGeSvDpffLY5G1N1uVUDj3Pmrr/19tQlp?=
+ =?us-ascii?Q?Fe3JtvTv8UQY486Qg6m3pxBhUlfhq+JmXAXo630bPhV0wWgoOXDDKo+rFgUx?=
+ =?us-ascii?Q?j0dL+VzPdDGxzJh8gKSx7wzyeHmbKZvqJm+eldJJD7vv5Qf/IP8Otjd9S9dX?=
+ =?us-ascii?Q?fVTYXAP8S+ZOrv10cHCishTjb8q9p+uFa1aCUN1xuXmn8VdfQWsH3WH0pkTT?=
+ =?us-ascii?Q?LVxgm8jIf/bKJ8/R0qCj/pufQ0XdS9UjmwAImVRdm0rWPNXR8nNeHgHidCBL?=
+ =?us-ascii?Q?ZF/ikQuHtHJZsg9wH4XzkCN2xhVTa53CYoTpdCAyoEkoPCIqfSvYiyMBm8Np?=
+ =?us-ascii?Q?uBOQ+I3a8zqFXkEPIEDo4qgtc4A8aevbOE6prZETkF6/PvUfK4/0lIyPSUHs?=
+ =?us-ascii?Q?3ha1E/Xg+JTD7VcD6/kaUvcsq/3mS8r6H6HJWfQ/lKEc7B4ZLMlSqsFK6Kn9?=
+ =?us-ascii?Q?TOHDSM+9dZSck5CDRlEWmG/T4cx/iI9BqzWrCWiWYCC4E8ndW5rTaE/A5FhK?=
+ =?us-ascii?Q?1KX01oeQsu3NLZJnmRQNyd/e14by+q7zrnYE2bmZNhEKnkypzrIzf1IkWfq3?=
+ =?us-ascii?Q?sWRNSA4YGTZjt5jFZOMfKrTOa97nenTy17gOsyDQAEgT2akeneXzGN7nNzqJ?=
+ =?us-ascii?Q?8J+XRZaLtZQQFypdDrMgF+xg/yWsGiXYl2VDL9BaD54GKpFDgELlS01bVwvw?=
+ =?us-ascii?Q?gEU7AC8R3PkXLnQ7Zd9zR6bxj4HCzGvUoHgS/lI3qZC9wWgYvyEpdjU+77J8?=
+ =?us-ascii?Q?gy/4NvBg1zpmy9ZsWROPxksiY7a3GZyMBQyT6Akb3UcEj4TYuiyJclXJ1b5w?=
+ =?us-ascii?Q?yQKNaA31JRUD8CEg07CoQ0eIUN4mhelKTR8rVdEsd6OD6O5l+0ljDZawacOM?=
+ =?us-ascii?Q?hJeZFHrnkvXLG0xKPTh+rgkRq8nS+Z05AYoPlce0Mv8RMpNPhth0HpV7Z7jS?=
+ =?us-ascii?Q?xgR9g/kTeBpGIn8BX+bFYYQnvHX6zqdHeI2KqSLRmnR/G01NiT0AFzRYWEmI?=
+ =?us-ascii?Q?Qt66jPMMQ9lLOtSXnwLWWjnBQq+ooOQAoxlCvEnOH6CRqWsT7FfdleG5DUjZ?=
+ =?us-ascii?Q?PSrUX2cjRNsuN2XAVOq13MxSX3MhRrn/4mYPC41MLARKtVjP+FtJm0d/VRzD?=
+ =?us-ascii?Q?jPgbavsCssoep1RW5kniU3H1xZc9rDLfWQeHtVbtrk7OUiOyaMlceg7Y1bjO?=
+ =?us-ascii?Q?f4uMxeBBOa4c53ViuVHkwxLX89/8Q+2vXFxziO8/3LaWATcSEZBvtn/mxjQx?=
+ =?us-ascii?Q?BFvWtgULDC1VwVCffFEzY1dhFsD0UQJWTrVaykvx+qQjXbU6JuEpoA5EBWqH?=
+ =?us-ascii?Q?x/ydz37nnZvKtOStYsG7kkarLHOp?=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(7416005)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 15:58:26.4344
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0IduvzxDBKrH1+/dy6LN2w5SJPCtptpBYJ+ClvgX+piuQVWXiMEeye2Ofcdsa+D3zBVMonjPqf6Li/E39VhKSRbaSeIDtPYZ2tx3SjT/qNc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SH0PR01MB0570
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5eda441f-2c62-4fed-5534-08dc647760aa
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000EE31.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9091
 
-RW1pbCBSZW5uZXIgQmVydGhpbmcgd3JvdGU6IA0KPiBKb3NodWEgWWVvbmcgd3JvdGU6DQo+ID4g
-RW1pbCBSZW5uZXIgQmVydGhpbmcgd3JvdGU6DQo+ID4gPiBKb3NodWEgWWVvbmcgd3JvdGU6DQo+
-ID4gPiA+DQo+ID4gPiA+DQo+ID4gPiA+IEVtaWwgUmVubmVyIEJlcnRoaW5nIHdyb3RlOg0KPiA+
-ID4gPiA+IEpvc2h1YSBZZW9uZyB3cm90ZToNCj4gPiA+ID4gPiA+IEVtaWwgUmVubmVyIEJlcnRo
-aW5nIHdyb3RlOg0KPiA+ID4gPiA+ID4gPiBKb3NodWEgWWVvbmcgd3JvdGU6DQo+ID4gPiA+ID4g
-PiA+ID4gQWRkIFN0YXJGaXZlIFN0YXJsaW5rIGNhY2hlIG1hbmFnZW1lbnQgZHJpdmVyIGZvcg0K
-PiA+ID4gPiA+ID4gPiA+IEpIODEwMCBTb0MuIFRoaXMgZHJpdmVyIGVuYWJsZXMgUklTQy1WIG5v
-bi1zdGFuZGFyZCBjYWNoZQ0KPiA+ID4gPiA+ID4gPiA+IG9wZXJhdGlvbiBvbg0KPiA+ID4gPiA+
-ID4gPiA+IEpIODEwMCB0aGF0IGRvZXMgbm90IHN1cHBvcnQgWmljYm9tIGV4dGVuc2lvbiBpbnN0
-cnVjdGlvbnMuDQo+ID4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gPiBTaWduZWQtb2ZmLWJ5
-OiBKb3NodWEgWWVvbmcNCj4gPiA+ID4gPiA+ID4gPiA8am9zaHVhLnllb25nQHN0YXJmaXZldGVj
-aC5jb20+DQo+ID4gPiA+ID4gPiA+ID4gLS0tDQo+ID4gPiA+ID4gPiA+ID4gIGRyaXZlcnMvY2Fj
-aGUvS2NvbmZpZyAgICAgICAgICAgICAgICAgICB8ICAgOSArKw0KPiA+ID4gPiA+ID4gPiA+ICBk
-cml2ZXJzL2NhY2hlL01ha2VmaWxlICAgICAgICAgICAgICAgICAgfCAgIDUgKy0NCj4gPiA+ID4g
-PiA+ID4gPiAgZHJpdmVycy9jYWNoZS9zdGFyZml2ZV9zdGFybGlua19jYWNoZS5jIHwgMTM1DQo+
-ID4gPiA+ID4gPiA+ID4gKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4gPiA+ID4gPiA+ID4g
-IDMgZmlsZXMgY2hhbmdlZCwgMTQ3IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4g
-PiA+ID4gPiA+ID4gY3JlYXRlIG1vZGUNCj4gPiA+ID4gPiA+ID4gPiAxMDA2NDQgZHJpdmVycy9j
-YWNoZS9zdGFyZml2ZV9zdGFybGlua19jYWNoZS5jDQo+ID4gPiA+ID4gPiA+ID4NCj4gPiA+ID4g
-PiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jYWNoZS9LY29uZmlnIGIvZHJpdmVycy9jYWNo
-ZS9LY29uZmlnDQo+ID4gPiA+ID4gPiA+ID4gaW5kZXgNCj4gPiA+ID4gPiA+ID4gPiA5MzQ1Y2U0
-OTc2ZDcuLjkxODFjZDM5MWY1MyAxMDA2NDQNCj4gPiA+ID4gPiA+ID4gPiAtLS0gYS9kcml2ZXJz
-L2NhY2hlL0tjb25maWcNCj4gPiA+ID4gPiA+ID4gPiArKysgYi9kcml2ZXJzL2NhY2hlL0tjb25m
-aWcNCj4gPiA+ID4gPiA+ID4gPiBAQCAtMTQsNCArMTQsMTMgQEAgY29uZmlnIFNJRklWRV9DQ0FD
-SEUNCj4gPiA+ID4gPiA+ID4gPiAgCWhlbHANCj4gPiA+ID4gPiA+ID4gPiAgCSAgU3VwcG9ydCBm
-b3IgdGhlIGNvbXBvc2FibGUgY2FjaGUgY29udHJvbGxlciBvbiBTaUZpdmUNCj4gPiA+IHBsYXRm
-b3Jtcy4NCj4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiA+ICtjb25maWcgU1RBUkZJVkVf
-U1RBUkxJTktfQ0FDSEUNCj4gPiA+ID4gPiA+ID4gPiArCWJvb2wgIlN0YXJGaXZlIFN0YXJMaW5r
-IENhY2hlIGNvbnRyb2xsZXIiDQo+ID4gPiA+ID4gPiA+ID4gKwlkZXBlbmRzIG9uIFJJU0NWDQo+
-ID4gPiA+ID4gPiA+ID4gKwlkZXBlbmRzIG9uIEFSQ0hfU1RBUkZJVkUNCj4gPiA+ID4gPiA+ID4g
-PiArCXNlbGVjdCBSSVNDVl9ETUFfTk9OQ09IRVJFTlQNCj4gPiA+ID4gPiA+ID4gPiArCXNlbGVj
-dCBSSVNDVl9OT05TVEFOREFSRF9DQUNIRV9PUFMNCj4gPiA+ID4gPiA+ID4gPiArCWhlbHANCj4g
-PiA+ID4gPiA+ID4gPiArCSAgU3VwcG9ydCBmb3IgdGhlIFN0YXJMaW5rIGNhY2hlIGNvbnRyb2xs
-ZXIgb24gU3RhckZpdmUNCj4gPiA+IHBsYXRmb3Jtcy4NCj4gPiA+ID4gPiA+ID4NCj4gPiA+ID4g
-PiA+ID4gVGhpcyBpcyBhIGJpdCBtaXNsZWFkaW5nLiBUaGUgSkg3MXgwcyBkb24ndCBoYXZlIHRo
-aXMuIEl0J3MNCj4gPiA+ID4gPiA+ID4gb25seSBvbiB0aGUgSkg4MTAwIHNvIGZhciwgYW5kIGhv
-cGVmdWxseSBsYXRlciBTb0NzIHdpbGwNCj4gPiA+ID4gPiA+ID4ganVzdCBpbXBsZW1lbnQgUklT
-Qy1WDQo+ID4gPiA+ID4gc3RhbmRhcmRzIGZvciB0aGlzLg0KPiA+ID4gPiA+ID4gPiBTbyBtYXli
-ZSBzb21ldGhpbmcgbGlrZQ0KPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiAiU3VwcG9ydCBm
-b3IgdGhlIFN0YXJMaW5rIGNhY2hlIGNvbnRyb2xsZXIgb24gdGhlIFN0YXJGaXZlIEpIODEwMA0K
-PiBTb0MuIg0KPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IEhpIEVtaWws
-DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gVGhlIFN0YXJMaW5rLTUwMCBjYWNoZSBjb250cm9s
-bGVyIGlzIG5vdCBkZXNpZ25lZCBleGNsdXNpdmVseQ0KPiA+ID4gPiA+ID4gZm9yIEpIODEwMA0K
-PiA+ID4gU29DLg0KPiA+ID4gPiA+ID4gV2hpbGUgaXQgaXMgdHJ1ZSB0aGF0IGl0IGN1cnJlbnRs
-eSBleGlzdHMgb24gdGhlIFN0YXJGaXZlDQo+ID4gPiA+ID4gPiBwbGF0Zm9ybSwgQ1BVL1NvQyB0
-aGF0IGRvZXMgbm90IGNvbWUgd2l0aCBaaWNib20gZXh0ZW5zaW9ucw0KPiA+ID4gPiA+ID4gc3Vw
-cG9ydGVkIHdvdWxkIG5lZWQgdG8gcmVseSBvbiB0aGlzIGNhY2hlIGRyaXZlIHRvIGRvIGNhY2hl
-DQo+ID4gPiA+ID4gPiBtYW5hZ2VtZW50IG9wZXJhdGlvbnMuIEkgdGhpbmsgd2UgZG9u4oCZdCBu
-ZWVkIHRvIG1lbnRpb25lZA0KPiA+ID4gPiA+ID4gJ0pIODEwMA0KPiA+ID4gU29DJyBoZXJlLg0K
-PiA+ID4gPiA+DQo+ID4gPiA+ID4gV2FpdCwgaW4gdGhlIHByZXZpb3VzIG1haWwgeW91IHNhaWQg
-dGhhdCBmdXR1cmUgZGVzaWducyB3aWxsDQo+ID4gPiA+ID4gaW1wbGVtZW50IFppY2JvbSBhbmQg
-bm90IG5lZWQgdGhpcyB3b3JrLWFyb3VuZCwgYnV0IGhlcmUgeW91J3JlDQo+ID4gPiA+ID4gdGFs
-a2luZyBhYm91dCBvdGhlciBTb0NzIHRoYXQgZG8gbmVlZCBpdC4gU28gd2hpY2ggaXMgaXQ/DQo+
-ID4gPiA+DQo+ID4gPiA+IElmIHlvdSB2aXNpdCB0aGUgY29tcGFueSB3ZWJzaXRlIGFuZCBsb29r
-IGZvciBTdGFyTGluay01MDAsIHlvdQ0KPiA+ID4gPiB3aWxsIGZpbmQgdGhhdCBpdCBpcyBhIHN0
-YW5kYWxvbmUgSVAgdGhhdCB0aGUgY29tcGFueSBpcyBzZWxsaW5nDQo+ID4gPiA+IGFzIGFuIGlu
-dGVyY29ubmVjdC4gQW55b25lIHdobyBpbnRlZ3JhdGVzIFN0YXJMaW5rIHdpdGhvdXQgWmljYm9t
-DQo+ID4gPiA+IGV4dGVuc2lvbnMgbWF5IHV0aWxpemUgdGhlIGNhY2hlIG1hbmFnZW1lbnQgb3Bl
-cmF0aW9uIGZyb20gdGhpcyBJUC4NCj4gPiA+DQo+ID4gPiBTbyB0aGVuIHRoZSAib24gU3RhckZp
-dmUgcGxhdGZvcm1zIiBwYXJ0IGlzIHdyb25nPyBPciB3aWxsIHRoaXMNCj4gPiA+IGFsd2F5cyBn
-byB0b2dldGhlciB3aXRoIHRoZSBEdWJoZSBjb3Jlcz8NCj4gPg0KPiA+IEl0IHdvdWxkIGJlICdv
-biBTdGFyRml2ZSBwbGF0Zm9ybScgd2l0aG91dCAnSkg4MTAwIFNvQycgdGhhdCB5b3Ugc3VnZ2Vz
-dGVkLg0KPiA+IFN0YXJGaXZlJ3MgbmV3ZXIgY29yZXMgdGhhdCB3aWxsIGhhdmUgWmljYm9tIGV4
-dGVuc2lvbnMgc3VwcG9ydGVkLg0KPiA+IFRob3NlIENQVSBjb3JlIHdpbGwgbm90IG5lZWQgdG8g
-aGF2ZSB0aGlzIGNhY2hlIGNvbnRyb2xsZXIgZW5hYmxlZC4NCj4gDQo+IE5vLCB3aGF0IEkgbWVh
-bnQgd2FzIHRoYXQgaWYgeW91J3JlIHNlbGxpbmcgdGhlICJTdGFyTGluay01MDAiIElQIHRvIG90
-aGVyIFNvQw0KPiBtYW51ZmFjdHVyb3JzIHRoZW4gaXQgd2lsbCBub3QgYmUgcmVzdHJpY3RlZCB0
-byBTdGFyRml2ZSBwbGF0Zm9ybXMuIFNvIHRoZW4NCj4gIlN1cHBvcnQgZm9yIHRoZSBTdGFyTGlu
-ayBjYWNoZSBjb250cm9sbGVyIF9vbiBTdGFyRml2ZSBwbGF0Zm9ybXNfIiBpcyBubyBsb25nZXIN
-Cj4gdHJ1ZSwgcmlnaHQ/DQoNClllcywgeW91IGFyZSByaWdodCBvbiB0aGlzLiBBRkFJSyBKSDgx
-MDAgaW50ZWdyYXRlcyBTdGFyTGluay01MDAgYW5kIHdoaWNoIGlzIHdoeSANCndlIG5lZWQgdGhp
-cyBjYWNoZSBjb250cm9sbGVyIGRyaXZlciwgSSBkbyBub3Qga25vdyB3aG8vd2hhdCBlbHNlIHBy
-b2R1Y3RzIHRoYXQgDQptaWdodCB1c2UgdGhpcyBJUC4NCg0KPiANCj4gL0VtaWwNCg==
+This series adds SEV-SNP support for running Linux under an Secure VM
+Service Module (SVSM) at a less privileged VM Privilege Level (VMPL).
+By running at a less priviledged VMPL, the SVSM can be used to provide
+services, e.g. a virtual TPM, for Linux within the SEV-SNP confidential
+VM (CVM) rather than trust such services from the hypervisor.
+
+Currently, a Linux guest expects to run at the highest VMPL, VMPL0, and
+there are certain SNP related operations that require that VMPL level.
+Specifically, the PVALIDATE instruction and the RMPADJUST instruction
+when setting the VMSA attribute of a page (used when starting APs).
+
+If Linux is to run at a less privileged VMPL, e.g. VMPL2, then it must
+use an SVSM (which is running at VMPL0) to perform the operations that
+it is no longer able to perform.
+
+How Linux interacts with and uses the SVSM is documented in the SVSM
+specification [1] and the GHCB specification [2].
+
+This series introduces support to run Linux under an SVSM. It consists
+of:
+  - Detecting the presence of an SVSM
+  - When not running at VMPL0, invoking the SVSM for page validation and
+    VMSA page creation/deletion
+  - Adding a sysfs entry that specifies the Linux VMPL
+  - Modifying the sev-guest driver to use the VMPCK key associated with
+    the Linux VMPL
+  - Expanding the config-fs TSM support to request attestation reports
+    from the SVSM and allowing attributes to be hidden
+  - Detecting and allowing Linux to run in a VMPL other than 0 when an
+    SVSM is present
+
+The series is based off of and tested against the tip tree:
+  https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+
+  4e2b6e891aae ("Merge branch into tip/master: 'x86/shstk'")
+
+[1] https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58019.pdf
+[2] https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/56421.pdf
+
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Christoph Hellwig <hch@lst.de>
+
+---
+
+Changes in v4:
+- Add a pre-patch to rename the struct snp_secrets_page_layout to just
+  snp_secrets_page.
+- Move the config-fs visibility support to be group based and referenced
+  by an index. Remove the macro changes that set the visibility function
+  for an entry.
+- Make the TSM visibility support vendor specific via an ops callback.
+- Use the rmpadjust() function directly and remove the enforce_vmpl0()
+  function.
+- Consolidate common variables into arch/x86/kernel/sev-shared.c.
+
+Changes in v3:
+- Rename decompresor snp_setup() to early_snp_setup() to better indicate
+  when it is called.
+- Rename the "svsm" config-fs attribute into the more generic
+  "service_provider" attribute that takes a name as input.
+- Change config-fs visibility function to be a simple bool return type
+  instead of returning the mode.
+- Switch to using new RIP_REL_REF() macro and __head notation where
+  appropriate.
+
+Changes in v2:
+- Define X86_FEATURE_SVSM_PRESENT and set the bit in the CPUID table,
+  removing the need to set the CPUID bit in the #VC handler.
+- Rename the TSM service_version attribute to service_manifest_version.
+- Add support to config-fs to hide attributes and hide the SVSM attributes
+  when an SVSM is not present.
+
+
+Tom Lendacky (15):
+  x86/sev: Shorten snp_secrets_page_layout to snp_secrets_page
+  x86/sev: Rename snp_init() in the boot/compressed/sev.c file
+  x86/sev: Make the VMPL0 checking more straight forward
+  x86/sev: Check for the presence of an SVSM in the SNP Secrets page
+  x86/sev: Use kernel provided SVSM Calling Areas
+  x86/sev: Perform PVALIDATE using the SVSM when not at VMPL0
+  x86/sev: Use the SVSM to create a vCPU when not in VMPL0
+  x86/sev: Provide SVSM discovery support
+  x86/sev: Provide guest VMPL level to userspace
+  virt: sev-guest: Choose the VMPCK key based on executing VMPL
+  configfs-tsm: Allow the privlevel_floor attribute to be updated
+  fs/configfs: Add a callback to determine attribute visibility
+  x86/sev: Take advantage of configfs visibility support in TSM
+  x86/sev: Extend the config-fs attestation support for an SVSM
+  x86/sev: Allow non-VMPL0 execution when an SVSM is present
+
+ Documentation/ABI/testing/configfs-tsm        |  63 +++
+ .../arch/x86/amd-memory-encryption.rst        |  22 +
+ arch/x86/boot/compressed/sev.c                | 258 ++++++-----
+ arch/x86/include/asm/cpufeatures.h            |   1 +
+ arch/x86/include/asm/msr-index.h              |   2 +
+ arch/x86/include/asm/sev-common.h             |  18 +
+ arch/x86/include/asm/sev.h                    | 116 ++++-
+ arch/x86/include/uapi/asm/svm.h               |   1 +
+ arch/x86/kernel/sev-shared.c                  | 354 ++++++++++++++-
+ arch/x86/kernel/sev.c                         | 421 +++++++++++++++---
+ arch/x86/mm/mem_encrypt_amd.c                 |   8 +-
+ drivers/virt/coco/sev-guest/sev-guest.c       | 210 ++++++++-
+ drivers/virt/coco/tdx-guest/tdx-guest.c       |  29 +-
+ drivers/virt/coco/tsm.c                       | 173 +++++--
+ fs/configfs/dir.c                             |  20 +
+ include/linux/configfs.h                      |   3 +
+ include/linux/tsm.h                           |  62 ++-
+ 17 files changed, 1533 insertions(+), 228 deletions(-)
+
+-- 
+2.43.2
+
 
