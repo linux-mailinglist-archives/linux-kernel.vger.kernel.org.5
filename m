@@ -1,232 +1,269 @@
-Return-Path: <linux-kernel+bounces-156061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 639C58AFD68
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE9468AFD69
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:44:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E23A72842CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:44:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84AAC284119
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:44:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158434C84;
-	Wed, 24 Apr 2024 00:43:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AE214A23;
+	Wed, 24 Apr 2024 00:44:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="A2SEmj3V"
-Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CUD0FRpO"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4341723BE;
-	Wed, 24 Apr 2024 00:43:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157844A32
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 00:44:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713919433; cv=none; b=HkitpJgYKONyaAjERUuvHMWYCAgzElWdmuvseqhCDYB7nGY69Zhd2wxNy6OyEhfw5UfNZu5hLEWTWOM2DwIJfBHHSqbpzyK8DPx6xC6eo0tYRai/93iWVvJTC8v77gVoVsOusdHdEGTiNkJS4vQ60aD+UInZjGhoTW4Jq/nFEUY=
+	t=1713919466; cv=none; b=Yh47dc+ooKT99OeFEmlv4N4SfsNnkDEmUTM+e67b0sqEI+gZXJb8TdwjPvV1ZU9ap/Z2KBn7ucaVZC23Wq2HpHUHvDHf8BAYrkO9KIG9lf8hgI7Qt2RfLz8NRrp/lVM/kVw74yDS9QUeodliT/c/6aR9NmKE9paYbDhuBQ3j1pM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713919433; c=relaxed/simple;
-	bh=O8wl/Uhaoi25AoQcK8Qye2zjsMrxEmlq/WcSI1+5HuE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CjAHGyLR5dnxeuPh+aGil+PYO0Ku/7eHmCjGWyC7EpMnS+x+U2k8U9G73gqrZMarr3cYqgokn8HaJMTXkWH3AwSK75WKzByUUNzwHG2H9nkOyVfEsVUkD4LlOAeiyXNJNArr89R13GLg4QWmyZVALbfw+UeA05Qb/kwsGsMQUwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=A2SEmj3V; arc=none smtp.client-ip=52.119.213.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1713919431; x=1745455431;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TPqPRfF6wM4f85KoG+cWRKaYn2hNEwgBsXYhCaPG90g=;
-  b=A2SEmj3VwgqH3aANQ/GES5cjTBvJ+cr+ZWuQ5Q8ftMXvyoJvn7ssgx8o
-   AnMI+n/gWY1997QGDuEQfl4CJZwUNK4vyKdRwnFrKqJRWgrnKm35eHrg6
-   J/Z0CEj0/IS5ZjbvqyK17WpTtEGocci+T6PyUZN8/Sb4OUhBwoOkNhn5N
-   E=;
-X-IronPort-AV: E=Sophos;i="6.07,222,1708387200"; 
-   d="scan'208";a="649898425"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 00:43:48 +0000
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.38.20:38367]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.18.168:2525] with esmtp (Farcaster)
- id 8f7a98c8-b9a9-4758-bdd2-a2dc1fcce6d0; Wed, 24 Apr 2024 00:43:47 +0000 (UTC)
-X-Farcaster-Flow-ID: 8f7a98c8-b9a9-4758-bdd2-a2dc1fcce6d0
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Wed, 24 Apr 2024 00:43:45 +0000
-Received: from 88665a182662.ant.amazon.com (10.187.170.62) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Wed, 24 Apr 2024 00:43:42 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <syzbot+fa379358c28cc87cc307@syzkaller.appspotmail.com>
-CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<pabeni@redhat.com>, <syzkaller-bugs@googlegroups.com>, <kuniyu@amazon.com>
-Subject: Re: [syzbot] [net?] possible deadlock in __unix_gc
-Date: Tue, 23 Apr 2024 17:43:34 -0700
-Message-ID: <20240424004334.10593-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <000000000000f1761a0616c5c629@google.com>
-References: <000000000000f1761a0616c5c629@google.com>
+	s=arc-20240116; t=1713919466; c=relaxed/simple;
+	bh=Vec3AELdicTqN0afSgEb3GoinhUyJSmXLRWU37K2U8k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=P0GD+3pOQN6QjF8+OJ+DJcKnngHHYf1OVXXfRiYNaV7Q3Udayt4AkEe1OSBkxzQDIHrNuG7mO7cnwmJzUxo1HKur2VTGJ2kvkdNdb1sDT9auohiD9XoiD6KQw61jjYWSjFAPA6kKhCNyV2n+/OG02FP6PCQLb9JN2sDixyel3jI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CUD0FRpO; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713919464;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Sqcm0DKufT9EZxiM+0OzeY88Sk4DHeOhk+mWIf/p4wo=;
+	b=CUD0FRpOBREHVvKTziLOVF0fwiZLSGMs2gG/8/+vxPUSda6frTNjaBGyp9Qmx2EjRYHCCN
+	l5n1/zhp1pYIOoUG7MOldhfv/NF5dwjq3HKT3/A3zqLprOizHC1NWFWvmflnC9B0e3U6Ez
+	ZesGc6ELp/cLhZ/B5MdaQUN0ivbV/ig=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-329-yaYLQIXhNlG86H2NRqmhDw-1; Tue, 23 Apr 2024 20:44:22 -0400
+X-MC-Unique: yaYLQIXhNlG86H2NRqmhDw-1
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-2a2c2b0d82aso7091884a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:44:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713919461; x=1714524261;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Sqcm0DKufT9EZxiM+0OzeY88Sk4DHeOhk+mWIf/p4wo=;
+        b=HiQ11rTvjtY4ayUhjZYadmkyWW4XRrZnuQ89fzFXOlw9xx4OTgryhdtd4uJjEcyimG
+         aIe2kMG8Yd2vOW+4PYhZB3keJb31vXb2hcn0aEYWRwM4E6qvLr6o5Q8UK9yM7BPVyzDz
+         0M+TZqbLS4rtsxMpSZG6d/dsTsjJPHzSX+q+KSqQXkY1ETCBm0RrY3ACoqHAlO6TX92l
+         lmq6vM18XZgidQaz0WDCQidQrGrd7oPUOoE7nsptn8r9mWM2M+uN84Jgcr4ynZyK/+2I
+         zu1rwk4g4fWDU4SYwpvmKujRZlH+LYTNLEv/4V0cckBPHMmyDhqPNeGF8KtR9mlD4gNF
+         ujag==
+X-Forwarded-Encrypted: i=1; AJvYcCXZtnEyNNm1sGI0KnLGleoZejHDNQZoJ6LB/n95vJx4LcCV1sCqbuUVqRaV1FtmxnJ1FU2BUPI8XKutt6vFHJa8T9Ki3diRXJ6Kmwps
+X-Gm-Message-State: AOJu0Yz9X2wtWaKOtJWcGc2+aDIZARBx4KpaHU/VyzZqtVdIV0yoklxl
+	P+xPGpMzQwdwLeV1s1WHk8zdkskIDk2eHKokAzDSL06Wx7WLA/EMLMO0XK8oYnr6/DGpIApyeB5
+	abBtg9EhKyvq47RRWodRfQdTboY/BDVksxei61VMlXZAPvCmKsjwqYSwq47DUZnqIOS2ZjVarlg
+	5BzUTMBVtfZxWK3n5wZ6y5R6QVd+ISKE6U2ZwE
+X-Received: by 2002:a17:90b:1103:b0:2a3:be59:e969 with SMTP id gi3-20020a17090b110300b002a3be59e969mr862693pjb.47.1713919461460;
+        Tue, 23 Apr 2024 17:44:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF0Gh2nYGbLqjL1EPBd4oIGhOxCQSJxaQwomV1RaYRhZ6h2DmJHdl+zUN+m5ZFLbiPKeZu77uBcGISXFd7KILg=
+X-Received: by 2002:a17:90b:1103:b0:2a3:be59:e969 with SMTP id
+ gi3-20020a17090b110300b002a3be59e969mr862684pjb.47.1713919461083; Tue, 23 Apr
+ 2024 17:44:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D043UWC003.ant.amazon.com (10.13.139.240) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+References: <20240412133017.483407-1-lulu@redhat.com> <20240412133017.483407-4-lulu@redhat.com>
+ <20240417052723-mutt-send-email-mst@kernel.org> <CACGkMEtv56TSaA=W337hFU3VALfbrGMcEdu25O4Ecx7guUacyQ@mail.gmail.com>
+ <20240422160348-mutt-send-email-mst@kernel.org> <CACGkMEsj1aYBBO+kh5wmTk9vh=QRj50FHPFZ6QX3gs1Jh+XQdA@mail.gmail.com>
+ <20240423043538-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20240423043538-mutt-send-email-mst@kernel.org>
+From: Jason Wang <jasowang@redhat.com>
+Date: Wed, 24 Apr 2024 08:44:10 +0800
+Message-ID: <CACGkMEvbrH-ERbr-4DVpvK6+V_8Bh79YdYTdfWKhk5ziwcLDjg@mail.gmail.com>
+Subject: Re: [PATCH v5 3/5] vduse: Add function to get/free the pages for reconnection
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Cindy Lu <lulu@redhat.com>, linux-kernel@vger.kernel.org, 
+	virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: syzbot <syzbot+fa379358c28cc87cc307@syzkaller.appspotmail.com>
-Date: Tue, 23 Apr 2024 09:09:22 -0700
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    4d2008430ce8 Merge tag 'docs-6.9-fixes2' of git://git.lwn...
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=14a15280980000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=98d5a8e00ed1044a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=fa379358c28cc87cc307
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a8fb4f180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ceeb73180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/5670e5771b96/disk-4d200843.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/03314e6c8879/vmlinux-4d200843.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/41aca7a9505a/bzImage-4d200843.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+fa379358c28cc87cc307@syzkaller.appspotmail.com
-> 
-> ======================================================
-> WARNING: possible circular locking dependency detected
-> 6.9.0-rc5-syzkaller-00007-g4d2008430ce8 #0 Not tainted
-> ------------------------------------------------------
-> kworker/u8:1/11 is trying to acquire lock:
-> ffff88807cea4e70 (&u->lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
-> ffff88807cea4e70 (&u->lock){+.+.}-{2:2}, at: __unix_gc+0x40e/0xf70 net/unix/garbage.c:302
-> 
-> but task is already holding lock:
-> ffffffff8f6ab638 (unix_gc_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
-> ffffffff8f6ab638 (unix_gc_lock){+.+.}-{2:2}, at: __unix_gc+0x117/0xf70 net/unix/garbage.c:261
-> 
-> which lock already depends on the new lock.
-> 
-> 
-> the existing dependency chain (in reverse order) is:
-> 
-> -> #1 (unix_gc_lock){+.+.}-{2:2}:
->        lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
->        __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
->        _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
->        spin_lock include/linux/spinlock.h:351 [inline]
->        unix_notinflight+0x13d/0x390 net/unix/garbage.c:140
->        unix_detach_fds net/unix/af_unix.c:1819 [inline]
->        unix_destruct_scm+0x221/0x350 net/unix/af_unix.c:1876
->        skb_release_head_state+0x100/0x250 net/core/skbuff.c:1188
->        skb_release_all net/core/skbuff.c:1200 [inline]
->        __kfree_skb net/core/skbuff.c:1216 [inline]
->        kfree_skb_reason+0x16d/0x3b0 net/core/skbuff.c:1252
->        kfree_skb include/linux/skbuff.h:1262 [inline]
->        manage_oob net/unix/af_unix.c:2672 [inline]
->        unix_stream_read_generic+0x1125/0x2700 net/unix/af_unix.c:2749
->        unix_stream_splice_read+0x239/0x320 net/unix/af_unix.c:2981
+On Tue, Apr 23, 2024 at 4:42=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
+ wrote:
+>
+> On Tue, Apr 23, 2024 at 11:09:59AM +0800, Jason Wang wrote:
+> > On Tue, Apr 23, 2024 at 4:05=E2=80=AFAM Michael S. Tsirkin <mst@redhat.=
+com> wrote:
+> > >
+> > > On Thu, Apr 18, 2024 at 08:57:51AM +0800, Jason Wang wrote:
+> > > > On Wed, Apr 17, 2024 at 5:29=E2=80=AFPM Michael S. Tsirkin <mst@red=
+hat.com> wrote:
+> > > > >
+> > > > > On Fri, Apr 12, 2024 at 09:28:23PM +0800, Cindy Lu wrote:
+> > > > > > Add the function vduse_alloc_reconnnect_info_mem
+> > > > > > and vduse_alloc_reconnnect_info_mem
+> > > > > > These functions allow vduse to allocate and free memory for rec=
+onnection
+> > > > > > information. The amount of memory allocated is vq_num pages.
+> > > > > > Each VQS will map its own page where the reconnection informati=
+on will be saved
+> > > > > >
+> > > > > > Signed-off-by: Cindy Lu <lulu@redhat.com>
+> > > > > > ---
+> > > > > >  drivers/vdpa/vdpa_user/vduse_dev.c | 40 ++++++++++++++++++++++=
+++++++++
+> > > > > >  1 file changed, 40 insertions(+)
+> > > > > >
+> > > > > > diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/=
+vdpa_user/vduse_dev.c
+> > > > > > index ef3c9681941e..2da659d5f4a8 100644
+> > > > > > --- a/drivers/vdpa/vdpa_user/vduse_dev.c
+> > > > > > +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+> > > > > > @@ -65,6 +65,7 @@ struct vduse_virtqueue {
+> > > > > >       int irq_effective_cpu;
+> > > > > >       struct cpumask irq_affinity;
+> > > > > >       struct kobject kobj;
+> > > > > > +     unsigned long vdpa_reconnect_vaddr;
+> > > > > >  };
+> > > > > >
+> > > > > >  struct vduse_dev;
+> > > > > > @@ -1105,6 +1106,38 @@ static void vduse_vq_update_effective_cp=
+u(struct vduse_virtqueue *vq)
+> > > > > >
+> > > > > >       vq->irq_effective_cpu =3D curr_cpu;
+> > > > > >  }
+> > > > > > +static int vduse_alloc_reconnnect_info_mem(struct vduse_dev *d=
+ev)
+> > > > > > +{
+> > > > > > +     unsigned long vaddr =3D 0;
+> > > > > > +     struct vduse_virtqueue *vq;
+> > > > > > +
+> > > > > > +     for (int i =3D 0; i < dev->vq_num; i++) {
+> > > > > > +             /*page 0~ vq_num save the reconnect info for vq*/
+> > > > > > +             vq =3D dev->vqs[i];
+> > > > > > +             vaddr =3D get_zeroed_page(GFP_KERNEL);
+> > > > >
+> > > > >
+> > > > > I don't get why you insist on stealing kernel memory for somethin=
+g
+> > > > > that is just used by userspace to store data for its own use.
+> > > > > Userspace does not lack ways to persist data, for example,
+> > > > > create a regular file anywhere in the filesystem.
+> > > >
+> > > > Good point. So the motivation here is to:
+> > > >
+> > > > 1) be self contained, no dependency for high speed persist data
+> > > > storage like tmpfs
+> > >
+> > > No idea what this means.
+> >
+> > I mean a regular file may slow down the datapath performance, so
+> > usually the application will try to use tmpfs and other which is a
+> > dependency for implementing the reconnection.
+>
+> Are we worried about systems without tmpfs now?
 
-This is a normal socket calling recvmsg(),
+Yes.
 
+>
+>
+> > >
+> > > > 2) standardize the format in uAPI which allows reconnection from
+> > > > arbitrary userspace, unfortunately, such effort was removed in new
+> > > > versions
+> > >
+> > > And I don't see why that has to live in the kernel tree either.
+> >
+> > I can't find a better place, any idea?
+> >
+> > Thanks
+>
+>
+> Well anywhere on github really. with libvhost-user maybe?
+> It's harmless enough in Documentation
+> if you like but ties you to the kernel release cycle in a way that
+> is completely unnecessary.
 
->        do_splice_read fs/splice.c:985 [inline]
->        splice_file_to_pipe+0x299/0x500 fs/splice.c:1295
->        do_splice+0xf2d/0x1880 fs/splice.c:1379
->        __do_splice fs/splice.c:1436 [inline]
->        __do_sys_splice fs/splice.c:1652 [inline]
->        __se_sys_splice+0x331/0x4a0 fs/splice.c:1634
->        do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->        do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
->        entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> 
-> -> #0 (&u->lock){+.+.}-{2:2}:
->        check_prev_add kernel/locking/lockdep.c:3134 [inline]
->        check_prevs_add kernel/locking/lockdep.c:3253 [inline]
->        validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
->        __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
->        lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
->        __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
->        _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
->        spin_lock include/linux/spinlock.h:351 [inline]
+Ok.
 
-and this is for TCP_LISTEN introduced by this patch.
-https://lore.kernel.org/netdev/20240409201047.1032217-1-mhal@rbox.co/
+Thanks
 
-So, this is false positive.
+>
+> > >
+> > > > If the above doesn't make sense, we don't need to offer those pages=
+ by VDUSE.
+> > > >
+> > > > Thanks
+> > > >
+> > > >
+> > > > >
+> > > > >
+> > > > >
+> > > > > > +             if (vaddr =3D=3D 0)
+> > > > > > +                     return -ENOMEM;
+> > > > > > +
+> > > > > > +             vq->vdpa_reconnect_vaddr =3D vaddr;
+> > > > > > +     }
+> > > > > > +
+> > > > > > +     return 0;
+> > > > > > +}
+> > > > > > +
+> > > > > > +static int vduse_free_reconnnect_info_mem(struct vduse_dev *de=
+v)
+> > > > > > +{
+> > > > > > +     struct vduse_virtqueue *vq;
+> > > > > > +
+> > > > > > +     for (int i =3D 0; i < dev->vq_num; i++) {
+> > > > > > +             vq =3D dev->vqs[i];
+> > > > > > +
+> > > > > > +             if (vq->vdpa_reconnect_vaddr)
+> > > > > > +                     free_page(vq->vdpa_reconnect_vaddr);
+> > > > > > +             vq->vdpa_reconnect_vaddr =3D 0;
+> > > > > > +     }
+> > > > > > +
+> > > > > > +     return 0;
+> > > > > > +}
+> > > > > >
+> > > > > >  static long vduse_dev_ioctl(struct file *file, unsigned int cm=
+d,
+> > > > > >                           unsigned long arg)
+> > > > > > @@ -1672,6 +1705,8 @@ static int vduse_destroy_dev(char *name)
+> > > > > >               mutex_unlock(&dev->lock);
+> > > > > >               return -EBUSY;
+> > > > > >       }
+> > > > > > +     vduse_free_reconnnect_info_mem(dev);
+> > > > > > +
+> > > > > >       dev->connected =3D true;
+> > > > > >       mutex_unlock(&dev->lock);
+> > > > > >
+> > > > > > @@ -1855,12 +1890,17 @@ static int vduse_create_dev(struct vdus=
+e_dev_config *config,
+> > > > > >       ret =3D vduse_dev_init_vqs(dev, config->vq_align, config-=
+>vq_num);
+> > > > > >       if (ret)
+> > > > > >               goto err_vqs;
+> > > > > > +     ret =3D vduse_alloc_reconnnect_info_mem(dev);
+> > > > > > +     if (ret < 0)
+> > > > > > +             goto err_mem;
+> > > > > >
+> > > > > >       __module_get(THIS_MODULE);
+> > > > > >
+> > > > > >       return 0;
+> > > > > >  err_vqs:
+> > > > > >       device_destroy(&vduse_class, MKDEV(MAJOR(vduse_major), de=
+v->minor));
+> > > > > > +err_mem:
+> > > > > > +     vduse_free_reconnnect_info_mem(dev);
+> > > > > >  err_dev:
+> > > > > >       idr_remove(&vduse_idr, dev->minor);
+> > > > > >  err_idr:
+> > > > > > --
+> > > > > > 2.43.0
+> > > > >
+> > >
+>
 
-
->        __unix_gc+0x40e/0xf70 net/unix/garbage.c:302
->        process_one_work kernel/workqueue.c:3254 [inline]
->        process_scheduled_works+0xa10/0x17c0 kernel/workqueue.c:3335
->        worker_thread+0x86d/0xd70 kernel/workqueue.c:3416
->        kthread+0x2f0/0x390 kernel/kthread.c:388
->        ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->        ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-> 
-> other info that might help us debug this:
-> 
->  Possible unsafe locking scenario:
-> 
->        CPU0                    CPU1
->        ----                    ----
->   lock(unix_gc_lock);
->                                lock(&u->lock);
->                                lock(unix_gc_lock);
->   lock(&u->lock);
-> 
->  *** DEADLOCK ***
-> 
-> 3 locks held by kworker/u8:1/11:
->  #0: ffff888015089148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3229 [inline]
->  #0: ffff888015089148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_scheduled_works+0x8e0/0x17c0 kernel/workqueue.c:3335
->  #1: ffffc90000107d00 (unix_gc_work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3230 [inline]
->  #1: ffffc90000107d00 (unix_gc_work){+.+.}-{0:0}, at: process_scheduled_works+0x91b/0x17c0 kernel/workqueue.c:3335
->  #2: ffffffff8f6ab638 (unix_gc_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
->  #2: ffffffff8f6ab638 (unix_gc_lock){+.+.}-{2:2}, at: __unix_gc+0x117/0xf70 net/unix/garbage.c:261
-[...]
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-
-This suppressed the splat on my setup but just in case
-
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 4d2008430ce87061c9cefd4f83daf2d5bb323a96
-
-diff --git a/include/net/af_unix.h b/include/net/af_unix.h
-index 627ea8e2d915..6dcbccfaac04 100644
---- a/include/net/af_unix.h
-+++ b/include/net/af_unix.h
-@@ -85,6 +85,9 @@ enum unix_socket_lock_class {
- 	U_LOCK_NORMAL,
- 	U_LOCK_SECOND,	/* for double locking, see unix_state_double_lock(). */
- 	U_LOCK_DIAG, /* used while dumping icons, see sk_diag_dump_icons(). */
-+	U_LOCK_GC_LISTENER, /* used while determining gc candidates for listneing
-+			     * socket to remove a small race window.
-+			     */
- };
- 
- static inline void unix_state_lock_nested(struct sock *sk,
-diff --git a/net/unix/garbage.c b/net/unix/garbage.c
-index 6433a414acf8..0104be9d4704 100644
---- a/net/unix/garbage.c
-+++ b/net/unix/garbage.c
-@@ -299,7 +299,7 @@ static void __unix_gc(struct work_struct *work)
- 			__set_bit(UNIX_GC_MAYBE_CYCLE, &u->gc_flags);
- 
- 			if (sk->sk_state == TCP_LISTEN) {
--				unix_state_lock(sk);
-+				unix_state_lock_nested(sk, U_LOCK_GC_LISTENER);
- 				unix_state_unlock(sk);
- 			}
- 		}
 
