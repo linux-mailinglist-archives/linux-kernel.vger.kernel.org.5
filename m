@@ -1,48 +1,83 @@
-Return-Path: <linux-kernel+bounces-156643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A1C58B061E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EFC4C8B05E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:19:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D2231C23DE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:35:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F8E11C20CBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:19:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC04E158DA0;
-	Wed, 24 Apr 2024 09:35:10 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1641E898
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4828D158D9D;
+	Wed, 24 Apr 2024 09:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="OnPUXgpm"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 492A5158A2E;
+	Wed, 24 Apr 2024 09:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713951310; cv=none; b=SIwgBYJM7uRjkhNFpExYcfkclqGllKOkrzf5i++NYmfA1B9RQLFpylETLiOT51cEVs6Jd3kFKAQ+mDrZ2nbiS4A//8X9/Oj1RR0k1fm3GV5c0N09FZiFclidjvaO6KM0X+H3tke7accMNW5eLUt3jgX/ZoSZSrD971ZfD3Rn87E=
+	t=1713950340; cv=none; b=uVp1q5Wcye/gTpQsdUx3YEFC1D+XvQqkYEH8MkmPdpOPVA63RLFTF9mgj2CNPHdlqDNFQkBW7NQKApqtOM2k7tLCBVL+sMQHuzgjgx8ueoONlAvdQhIWecDEo8PIb0yCg7dDx8TXnuoVpw0Pk5d9OwsgjkyjtfvhsST4+XwysWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713951310; c=relaxed/simple;
-	bh=0sVXnFQ8TQVaHAYAngVYSibJXuqAt2MUBDi0xqpqPbs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TdwInaYNjWEi/IIZ+IsZeIdXpbx5Iuk4VEeOKa9fjbrLpPhImBb9exSTlXbi0y+o/0XcSsS9vuFgMsHaOwYLKn1YggizwOyIJ5ITpPx4nSFZzR4k71cGcVmZPnbfk5yeianHd1bCiska/36qqRM0pdQpzQ41HjYHM4lB0XIbqP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.2.5.185])
-	by gateway (Coremail) with SMTP id _____8CxZ_BF0ihmRuEBAA--.10366S3;
-	Wed, 24 Apr 2024 17:35:01 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.185])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxrldD0ihmC0YDAA--.8598S2;
-	Wed, 24 Apr 2024 17:35:00 +0800 (CST)
-From: Song Gao <gaosong@loongson.cn>
-To: maobibo@loongson.cn
-Cc: pbonzini@redhat.com,
-	zhaotianrui@loongson.cn,
-	chenhuacai@kernel.org,
-	kernel@xen0n.name,
-	loongarch@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] LoongArch: KVM: Add PMU support
-Date: Wed, 24 Apr 2024 17:18:13 +0800
-Message-Id: <20240424091813.1471440-1-gaosong@loongson.cn>
-X-Mailer: git-send-email 2.39.1
+	s=arc-20240116; t=1713950340; c=relaxed/simple;
+	bh=XzPjyDYDYh/LnN9lq803nlKb22vgozayDNt08Bh7Tmk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=V650+BCycM48U7G3jEqtmnen4q6tCg6vB0Lxfnkfya3FHOEBcUPRX9HtdDysn3qLRNxzeWr5KfYoUIflYue/lgARl36QD5Hin+t20mHEOqanYsvWabQIqpr2YPMuWcw0GD6aHWw9OjhhKRCKWSHmqdFmg9eC06wYiGikNmpSDXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=OnPUXgpm; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43O9IQEW107625;
+	Wed, 24 Apr 2024 04:18:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713950306;
+	bh=fm92eiiohkNb05SXu2g3dO+IN7kIuwMop1jUIlFTwUI=;
+	h=From:To:CC:Subject:Date;
+	b=OnPUXgpmBwsCby3g41zutZAYq4pYrwSC0iCzZlIFeb4+yjFrNQyHFHP4zy5ta2ykw
+	 bXi2w1PPHitKxQSL7q3AuyvnDNOxgpkh20LGWfTPcXwNZj5PqMEQLoiylFu9LS48J9
+	 xny5LkgdR2J9lYNaprJEXZrTSKkQa8n+DLQk0wos=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43O9IQKf074035
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 24 Apr 2024 04:18:26 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 24
+ Apr 2024 04:18:26 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 24 Apr 2024 04:18:26 -0500
+Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43O9IQvC055457;
+	Wed, 24 Apr 2024 04:18:26 -0500
+Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.25])
+	by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 43O9IPai015060;
+	Wed, 24 Apr 2024 04:18:25 -0500
+From: MD Danish Anwar <danishanwar@ti.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+        Heiner Kallweit
+	<hkallweit1@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Jan Kiszka
+	<jan.kiszka@siemens.com>,
+        Diogo Ivo <diogo.ivo@siemens.com>, Paolo Abeni
+	<pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
+	<edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        Vignesh Raghavendra
+	<vigneshr@ti.com>, <r-gunasekaran@ti.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        MD Danish Anwar <danishanwar@ti.com>
+Subject: [PATCH net-next] net: ti: icssg_prueth: Add SW TX / RX Coalescing based on hrtimers
+Date: Wed, 24 Apr 2024 14:48:23 +0530
+Message-ID: <20240424091823.1814136-1-danishanwar@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,409 +85,324 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8CxrldD0ihmC0YDAA--.8598S2
-X-CM-SenderInfo: 5jdr20tqj6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-	ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-	nUUI43ZEXa7xR_UUUUUUUUU==
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On LoongArch, the host and guest have their own PMU CSRs registers
-and they share PMU hardware resources. A set of PMU CSRs consists of
-a CTRL register and a CNTR register. We can set which PMU CSRs are used
-by the guest by writing to the GCFG register [24: 26] bits.
+Add SW IRQ coalescing based on hrtimers for RX and TX data path for ICSSG
+driver, which can be enabled by ethtool commands:
 
-On KVM side. we save the host PMU CSRs into structure kvm_context.
-If the host supports the PMU feature. When entering guest mode.
-we save the host PMU CSRs and restore the guest PMU CSRs. When exiting
-guest mode, we save the guest PMU CSRs and restore the host PMU CSRs.
+- RX coalescing
+  ethtool -C eth1 rx-usecs 50
 
-Signed-off-by: Song Gao <gaosong@loongson.cn>
+- TX coalescing can be enabled per TX queue
 
-v2->V3:
-  1. When saving the PMU context, clear the CTRL register
-     before reading the CNTR register.
-  2, Put kvm_lose_pmu() in kvm_handler_exit().
-v1->v2:
-  1. Add new vcpu->request flag KVM_REQ_PMU. If we use PMU,
-We need to set this flag;
-  2. Add kvm_check_pmu() to kvm_pre_enter_guest();
-  3. On _kvm_setcsr(), after modifying the PMU CSR register value,
-     if we use PMU, we need to set KVM_REQ_PMU.
+  - by default enables coalesing for TX0
+  ethtool -C eth1 tx-usecs 50
+  - configure TX0
+  ethtool -Q eth0 queue_mask 1 --coalesce tx-usecs 100
+  - configure TX1
+  ethtool -Q eth0 queue_mask 2 --coalesce tx-usecs 100
+  - configure TX0 and TX1
+  ethtool -Q eth0 queue_mask 3 --coalesce tx-usecs 100 --coalesce
+tx-usecs 100
+
+Minimum value for both rx-usecs and tx-usecs is 20us.
+
+Comapared to gro_flush_timeout and napi_defer_hard_irqs this patch
+allows to enable IRQ coalescing for RX path separately.
+
+Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
 ---
- arch/loongarch/include/asm/kvm_csr.h   |   5 +
- arch/loongarch/include/asm/kvm_host.h  |  20 +++
- arch/loongarch/include/asm/loongarch.h |   1 +
- arch/loongarch/kvm/exit.c              |   8 ++
- arch/loongarch/kvm/vcpu.c              | 192 ++++++++++++++++++++++++-
- 5 files changed, 224 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/ti/icssg/icssg_common.c  | 34 ++++++--
+ drivers/net/ethernet/ti/icssg/icssg_ethtool.c | 87 +++++++++++++++++++
+ drivers/net/ethernet/ti/icssg/icssg_prueth.c  | 17 +++-
+ drivers/net/ethernet/ti/icssg/icssg_prueth.h  | 11 ++-
+ 4 files changed, 142 insertions(+), 7 deletions(-)
 
-diff --git a/arch/loongarch/include/asm/kvm_csr.h b/arch/loongarch/include/asm/kvm_csr.h
-index 724ca8b7b401..289c3671ee25 100644
---- a/arch/loongarch/include/asm/kvm_csr.h
-+++ b/arch/loongarch/include/asm/kvm_csr.h
-@@ -208,4 +208,9 @@ static __always_inline void kvm_change_sw_gcsr(struct loongarch_csrs *csr,
- 	csr->csrs[gid] |= val & _mask;
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_common.c b/drivers/net/ethernet/ti/icssg/icssg_common.c
+index 1d62c05b5f7c..1561503becc7 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_common.c
++++ b/drivers/net/ethernet/ti/icssg/icssg_common.c
+@@ -122,7 +122,7 @@ void prueth_xmit_free(struct prueth_tx_chn *tx_chn,
  }
  
-+#define KVM_PMU_EVENT_ENABLED	(CSR_PERFCTRL_PLV0 |		\
-+					CSR_PERFCTRL_PLV1 |	\
-+					CSR_PERFCTRL_PLV2 |	\
-+					CSR_PERFCTRL_PLV3)
-+
- #endif	/* __ASM_LOONGARCH_KVM_CSR_H__ */
-diff --git a/arch/loongarch/include/asm/kvm_host.h b/arch/loongarch/include/asm/kvm_host.h
-index 2d62f7b0d377..e1d64e26e7cb 100644
---- a/arch/loongarch/include/asm/kvm_host.h
-+++ b/arch/loongarch/include/asm/kvm_host.h
-@@ -51,9 +51,14 @@ struct kvm_arch_memory_slot {
- 	unsigned long flags;
- };
- 
-+#define KVM_REQ_PMU			KVM_ARCH_REQ(0)
-+#define HOST_MAX_PMNUM			16
- struct kvm_context {
- 	unsigned long vpid_cache;
- 	struct kvm_vcpu *last_vcpu;
-+	/* Save host pmu csr */
-+	u64 perf_ctrl[HOST_MAX_PMNUM];
-+	u64 perf_cntr[HOST_MAX_PMNUM];
- };
- 
- struct kvm_world_switch {
-@@ -99,6 +104,8 @@ enum emulation_result {
- #define KVM_LARCH_LASX		(0x1 << 2)
- #define KVM_LARCH_SWCSR_LATEST	(0x1 << 3)
- #define KVM_LARCH_HWCSR_USABLE	(0x1 << 4)
-+#define KVM_GUEST_PMU_ENABLE	(0x1 << 5)
-+#define KVM_GUEST_PMU_ACTIVE	(0x1 << 6)
- 
- struct kvm_vcpu_arch {
- 	/*
-@@ -136,6 +143,9 @@ struct kvm_vcpu_arch {
- 	/* CSR state */
- 	struct loongarch_csrs *csr;
- 
-+	/* Guest max PMU CSR id */
-+	int max_pmu_csrid;
-+
- 	/* GPR used as IO source/target */
- 	u32 io_gpr;
- 
-@@ -195,6 +205,16 @@ static inline bool kvm_guest_has_lasx(struct kvm_vcpu_arch *arch)
- 	return arch->cpucfg[2] & CPUCFG2_LASX;
- }
- 
-+static inline bool kvm_guest_has_pmu(struct kvm_vcpu_arch *arch)
-+{
-+	return arch->cpucfg[LOONGARCH_CPUCFG6] & CPUCFG6_PMP;
-+}
-+
-+static inline int kvm_get_pmu_num(struct kvm_vcpu_arch *arch)
-+{
-+	return (arch->cpucfg[LOONGARCH_CPUCFG6] & CPUCFG6_PMNUM) >> CPUCFG6_PMNUM_SHIFT;
-+}
-+
- /* Debug: dump vcpu state */
- int kvm_arch_vcpu_dump_regs(struct kvm_vcpu *vcpu);
- 
-diff --git a/arch/loongarch/include/asm/loongarch.h b/arch/loongarch/include/asm/loongarch.h
-index 46366e783c84..644380b6ebec 100644
---- a/arch/loongarch/include/asm/loongarch.h
-+++ b/arch/loongarch/include/asm/loongarch.h
-@@ -119,6 +119,7 @@
- #define  CPUCFG6_PMP			BIT(0)
- #define  CPUCFG6_PAMVER			GENMASK(3, 1)
- #define  CPUCFG6_PMNUM			GENMASK(7, 4)
-+#define  CPUCFG6_PMNUM_SHIFT		4
- #define  CPUCFG6_PMBITS			GENMASK(13, 8)
- #define  CPUCFG6_UPM			BIT(14)
- 
-diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
-index ed1d89d53e2e..636cd1500135 100644
---- a/arch/loongarch/kvm/exit.c
-+++ b/arch/loongarch/kvm/exit.c
-@@ -83,6 +83,14 @@ static int kvm_handle_csr(struct kvm_vcpu *vcpu, larch_inst inst)
- 	rj = inst.reg2csr_format.rj;
- 	csrid = inst.reg2csr_format.csr;
- 
-+	if (csrid >= LOONGARCH_CSR_PERFCTRL0 && csrid <= vcpu->arch.max_pmu_csrid) {
-+		if (kvm_guest_has_pmu(&vcpu->arch)) {
-+			vcpu->arch.pc -= 4;
-+			kvm_make_request(KVM_REQ_PMU, vcpu);
-+			return EMULATE_DONE;
-+		}
-+	}
-+
- 	/* Process CSR ops */
- 	switch (rj) {
- 	case 0: /* process csrrd */
-diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
-index 3a8779065f73..2a694a52978e 100644
---- a/arch/loongarch/kvm/vcpu.c
-+++ b/arch/loongarch/kvm/vcpu.c
-@@ -30,6 +30,150 @@ const struct kvm_stats_header kvm_vcpu_stats_header = {
- 		       sizeof(kvm_vcpu_stats_desc),
- };
- 
-+static inline void kvm_save_host_pmu(struct kvm_vcpu *vcpu)
-+{
-+	struct kvm_context *context;
-+
-+	context = this_cpu_ptr(vcpu->kvm->arch.vmcs);
-+	context->perf_ctrl[0] = read_csr_perfctrl0();
-+	write_csr_perfctrl0(0);
-+	context->perf_ctrl[1] = read_csr_perfctrl1();
-+	write_csr_perfctrl1(0);
-+	context->perf_ctrl[2] = read_csr_perfctrl2();
-+	write_csr_perfctrl2(0);
-+	context->perf_ctrl[3] = read_csr_perfctrl3();
-+	write_csr_perfctrl3(0);
-+
-+	context->perf_cntr[0] = read_csr_perfcntr0();
-+	context->perf_cntr[1] = read_csr_perfcntr1();
-+	context->perf_cntr[2] = read_csr_perfcntr2();
-+	context->perf_cntr[3] = read_csr_perfcntr3();
-+}
-+
-+static inline void kvm_restore_host_pmu(struct kvm_vcpu *vcpu)
-+{
-+	struct kvm_context *context;
-+
-+	context = this_cpu_ptr(vcpu->kvm->arch.vmcs);
-+	write_csr_perfctrl0(context->perf_ctrl[0]);
-+	write_csr_perfcntr0(context->perf_cntr[0]);
-+	write_csr_perfctrl1(context->perf_ctrl[1]);
-+	write_csr_perfcntr1(context->perf_cntr[1]);
-+	write_csr_perfctrl2(context->perf_ctrl[2]);
-+	write_csr_perfcntr2(context->perf_cntr[2]);
-+	write_csr_perfctrl3(context->perf_ctrl[3]);
-+	write_csr_perfcntr3(context->perf_cntr[3]);
-+}
-+
-+
-+static inline void kvm_save_guest_pmu(struct kvm_vcpu *vcpu)
-+{
-+	struct loongarch_csrs *csr = vcpu->arch.csr;
-+
-+	kvm_save_hw_gcsr(csr, LOONGARCH_CSR_PERFCTRL0);
-+	kvm_write_hw_gcsr(LOONGARCH_CSR_PERFCTRL0, 0);
-+	kvm_save_hw_gcsr(csr, LOONGARCH_CSR_PERFCTRL1);
-+	kvm_write_hw_gcsr(LOONGARCH_CSR_PERFCTRL1, 0);
-+	kvm_save_hw_gcsr(csr, LOONGARCH_CSR_PERFCTRL2);
-+	kvm_write_hw_gcsr(LOONGARCH_CSR_PERFCTRL2, 0);
-+	kvm_save_hw_gcsr(csr, LOONGARCH_CSR_PERFCTRL3);
-+	kvm_write_hw_gcsr(LOONGARCH_CSR_PERFCTRL3, 0);
-+
-+	kvm_save_hw_gcsr(csr, LOONGARCH_CSR_PERFCNTR0);
-+	kvm_save_hw_gcsr(csr, LOONGARCH_CSR_PERFCNTR1);
-+	kvm_save_hw_gcsr(csr, LOONGARCH_CSR_PERFCNTR2);
-+	kvm_save_hw_gcsr(csr, LOONGARCH_CSR_PERFCNTR3);
-+}
-+
-+static inline void kvm_restore_guest_pmu(struct kvm_vcpu *vcpu)
-+{
-+	struct loongarch_csrs *csr = vcpu->arch.csr;
-+
-+	kvm_restore_hw_gcsr(csr, LOONGARCH_CSR_PERFCTRL0);
-+	kvm_restore_hw_gcsr(csr, LOONGARCH_CSR_PERFCNTR0);
-+	kvm_restore_hw_gcsr(csr, LOONGARCH_CSR_PERFCTRL1);
-+	kvm_restore_hw_gcsr(csr, LOONGARCH_CSR_PERFCNTR1);
-+	kvm_restore_hw_gcsr(csr, LOONGARCH_CSR_PERFCTRL2);
-+	kvm_restore_hw_gcsr(csr, LOONGARCH_CSR_PERFCNTR2);
-+	kvm_restore_hw_gcsr(csr, LOONGARCH_CSR_PERFCTRL3);
-+	kvm_restore_hw_gcsr(csr, LOONGARCH_CSR_PERFCNTR3);
-+}
-+
-+static void kvm_lose_pmu(struct kvm_vcpu *vcpu)
-+{
-+	unsigned long val;
-+	struct loongarch_csrs *csr = vcpu->arch.csr;
-+
-+	if (!(vcpu->arch.aux_inuse & KVM_GUEST_PMU_ENABLE))
-+		return;
-+	if (!(vcpu->arch.aux_inuse & KVM_GUEST_PMU_ACTIVE))
-+		return;
-+
-+	kvm_save_guest_pmu(vcpu);
-+	/* Disable pmu access from guest */
-+	write_csr_gcfg(read_csr_gcfg() & ~CSR_GCFG_GPERF);
-+
-+	/*
-+	 * Clear KVM_GUEST_PMU_ENABLE if the guest is not using PMU CSRs
-+	 * when exiting the guest, so that the next time trap into the guest.
-+	 * we don't need to deal with PMU CSRs contexts.
-+	 */
-+	val = kvm_read_sw_gcsr(csr, LOONGARCH_CSR_PERFCTRL0);
-+	val |= kvm_read_sw_gcsr(csr, LOONGARCH_CSR_PERFCTRL1);
-+	val |= kvm_read_sw_gcsr(csr, LOONGARCH_CSR_PERFCTRL2);
-+	val |= kvm_read_sw_gcsr(csr, LOONGARCH_CSR_PERFCTRL3);
-+	if (!(val & KVM_PMU_EVENT_ENABLED))
-+		vcpu->arch.aux_inuse &= ~KVM_GUEST_PMU_ENABLE;
-+	kvm_restore_host_pmu(vcpu);
-+
-+	/* KVM_GUEST_PMU_ACTIVE needs to be cleared when exiting the guest */
-+	vcpu->arch.aux_inuse &= ~KVM_GUEST_PMU_ACTIVE;
-+}
-+
-+static void kvm_own_pmu(struct kvm_vcpu *vcpu)
-+{
-+	unsigned long val;
-+
-+	kvm_save_host_pmu(vcpu);
-+	/* Set PM0-PM(num) to guest */
-+	val = read_csr_gcfg() & ~CSR_GCFG_GPERF;
-+	val |= (kvm_get_pmu_num(&vcpu->arch) + 1) << CSR_GCFG_GPERF_SHIFT;
-+	write_csr_gcfg(val);
-+	kvm_restore_guest_pmu(vcpu);
-+}
-+
-+static void kvm_restore_pmu(struct kvm_vcpu *vcpu)
-+{
-+	if (!(vcpu->arch.aux_inuse & KVM_GUEST_PMU_ENABLE))
-+		return;
-+
-+	kvm_make_request(KVM_REQ_PMU, vcpu);
-+}
-+
-+static void kvm_check_pmu(struct kvm_vcpu *vcpu)
-+{
-+	if (!kvm_check_request(KVM_REQ_PMU, vcpu))
-+		return;
-+
-+	kvm_own_pmu(vcpu);
-+
-+	/*
-+	 * Set KVM_GUEST PMU_ENABLE and GUEST_PMU_ACTIVE
-+	 * when guest has KVM_REQ_PMU request.
-+	 */
-+	vcpu->arch.aux_inuse |= KVM_GUEST_PMU_ENABLE;
-+	vcpu->arch.aux_inuse |= KVM_GUEST_PMU_ACTIVE;
-+
-+	/*
-+	 * Save the PMU CSRs context when there is a host PMU interrupt.
-+	 * and set KVM_REQ_PMU.
-+	 */
-+	if (read_csr_estat() & CPU_PMU) {
-+		kvm_lose_pmu(vcpu);
-+		kvm_make_request(KVM_REQ_PMU, vcpu);
-+	}
-+}
-+
- /*
-  * kvm_check_requests - check and handle pending vCPU requests
-  *
-@@ -100,6 +244,7 @@ static int kvm_pre_enter_guest(struct kvm_vcpu *vcpu)
- 		/* Make sure the vcpu mode has been written */
- 		smp_store_mb(vcpu->mode, IN_GUEST_MODE);
- 		kvm_check_vpid(vcpu);
-+		kvm_check_pmu(vcpu);
- 		vcpu->arch.host_eentry = csr_read64(LOONGARCH_CSR_EENTRY);
- 		/* Clear KVM_LARCH_SWCSR_LATEST as CSR will change when enter guest */
- 		vcpu->arch.aux_inuse &= ~KVM_LARCH_SWCSR_LATEST;
-@@ -130,6 +275,8 @@ static int kvm_handle_exit(struct kvm_run *run, struct kvm_vcpu *vcpu)
- 	/* Set a default exit reason */
- 	run->exit_reason = KVM_EXIT_UNKNOWN;
- 
-+	kvm_lose_pmu(vcpu);
-+
- 	guest_timing_exit_irqoff();
- 	guest_state_exit_irqoff();
- 	local_irq_enable();
-@@ -295,6 +442,21 @@ static int _kvm_setcsr(struct kvm_vcpu *vcpu, unsigned int id, u64 val)
- 
- 	kvm_write_sw_gcsr(csr, id, val);
- 
-+	/*
-+	 * After modifying the PMU CSR register value of the vcpu.
-+	 * If the PMU CSRs are used, we need to set KVM_REQ_PMU.
-+	 */
-+	if (id >= LOONGARCH_CSR_PERFCTRL0 && id <= LOONGARCH_CSR_PERFCNTR3) {
-+		unsigned long val;
-+
-+		val = kvm_read_sw_gcsr(csr, LOONGARCH_CSR_PERFCTRL0);
-+		val |= kvm_read_sw_gcsr(csr, LOONGARCH_CSR_PERFCTRL1);
-+		val |= kvm_read_sw_gcsr(csr, LOONGARCH_CSR_PERFCTRL2);
-+		val |= kvm_read_sw_gcsr(csr, LOONGARCH_CSR_PERFCTRL3);
-+		if (val & KVM_PMU_EVENT_ENABLED)
-+			kvm_make_request(KVM_REQ_PMU, vcpu);
-+	}
-+
- 	return ret;
- }
- 
-@@ -333,6 +495,12 @@ static int _kvm_get_cpucfg_mask(int id, u64 *v)
- 	case LOONGARCH_CPUCFG5:
- 		*v = GENMASK(31, 0);
- 		return 0;
-+	case LOONGARCH_CPUCFG6:
-+		if (cpu_has_pmp)
-+			*v = GENMASK(14, 0);
-+		else
-+			*v = 0;
-+		return 0;
- 	case LOONGARCH_CPUCFG16:
- 		*v = GENMASK(16, 0);
- 		return 0;
-@@ -351,7 +519,7 @@ static int _kvm_get_cpucfg_mask(int id, u64 *v)
- 
- static int kvm_check_cpucfg(int id, u64 val)
+ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
+-			     int budget)
++			     int budget, bool *tdown)
  {
--	int ret;
-+	int ret, host;
- 	u64 mask = 0;
- 
- 	ret = _kvm_get_cpucfg_mask(id, &mask);
-@@ -377,6 +545,18 @@ static int kvm_check_cpucfg(int id, u64 val)
- 			/* LASX architecturally implies LSX and FP but val does not satisfy that */
- 			return -EINVAL;
- 		return 0;
-+	case LOONGARCH_CPUCFG6:
-+		if (val & CPUCFG6_PMP) {
-+			host = read_cpucfg(LOONGARCH_CPUCFG6);
-+			if ((val & CPUCFG6_PMBITS) != (host & CPUCFG6_PMBITS))
-+				/* Guest pmbits must be the same with host */
-+				return -EINVAL;
-+			if ((val & CPUCFG6_PMNUM) > (host & CPUCFG6_PMNUM))
-+				return -EINVAL;
-+			if ((val & CPUCFG6_UPM) && !(host & CPUCFG6_UPM))
-+				return -EINVAL;
-+		}
-+		return 0;
- 	default:
- 		/*
- 		 * Values for the other CPUCFG IDs are not being further validated
-@@ -459,6 +639,10 @@ static int kvm_set_one_reg(struct kvm_vcpu *vcpu,
- 		if (ret)
+ 	struct net_device *ndev = emac->ndev;
+ 	struct cppi5_host_desc_t *desc_tx;
+@@ -145,6 +145,7 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
+ 		if (cppi5_desc_is_tdcm(desc_dma)) {
+ 			if (atomic_dec_and_test(&emac->tdown_cnt))
+ 				complete(&emac->tdown_complete);
++			*tdown = true;
  			break;
- 		vcpu->arch.cpucfg[id] = (u32)v;
-+		if (id == LOONGARCH_CPUCFG6) {
-+			vcpu->arch.max_pmu_csrid = LOONGARCH_CSR_PERFCTRL0 +
-+							2 * kvm_get_pmu_num(&vcpu->arch) + 1;
-+		}
- 		break;
- 	case KVM_REG_LOONGARCH_KVM:
- 		switch (reg->id) {
-@@ -552,7 +736,8 @@ static int kvm_loongarch_cpucfg_has_attr(struct kvm_vcpu *vcpu,
- 					 struct kvm_device_attr *attr)
- {
- 	switch (attr->attr) {
--	case 2:
-+	case LOONGARCH_CPUCFG2:
-+	case LOONGARCH_CPUCFG6:
- 		return 0;
- 	default:
- 		return -ENXIO;
-@@ -982,6 +1167,9 @@ static int _kvm_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 	/* Control guest page CCA attribute */
- 	change_csr_gcfg(CSR_GCFG_MATC_MASK, CSR_GCFG_MATC_ROOT);
+ 		}
  
-+	/* Restore hardware PMU CSRs */
-+	kvm_restore_pmu(vcpu);
+@@ -190,19 +191,35 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
+ 	return num_tx;
+ }
+ 
++static enum hrtimer_restart emac_tx_timer_callback(struct hrtimer *timer)
++{
++	struct prueth_tx_chn *tx_chns =
++			container_of(timer, struct prueth_tx_chn, tx_hrtimer);
 +
- 	/* Don't bother restoring registers multiple times unless necessary */
- 	if (vcpu->arch.aux_inuse & KVM_LARCH_HWCSR_USABLE)
- 		return 0;
++	enable_irq(tx_chns->irq);
++	return HRTIMER_NORESTART;
++}
++
+ static int emac_napi_tx_poll(struct napi_struct *napi_tx, int budget)
+ {
+ 	struct prueth_tx_chn *tx_chn = prueth_napi_to_tx_chn(napi_tx);
+ 	struct prueth_emac *emac = tx_chn->emac;
++	bool tdown = false;
+ 	int num_tx_packets;
+ 
+-	num_tx_packets = emac_tx_complete_packets(emac, tx_chn->id, budget);
++	num_tx_packets = emac_tx_complete_packets(emac, tx_chn->id, budget, &tdown);
+ 
+ 	if (num_tx_packets >= budget)
+ 		return budget;
+ 
+-	if (napi_complete_done(napi_tx, num_tx_packets))
+-		enable_irq(tx_chn->irq);
++	if (napi_complete_done(napi_tx, num_tx_packets)) {
++		if (unlikely(tx_chn->tx_pace_timeout_ns && !tdown))
++			hrtimer_start(&tx_chn->tx_hrtimer,
++				      ns_to_ktime(tx_chn->tx_pace_timeout_ns),
++				      HRTIMER_MODE_REL_PINNED);
++		else
++			enable_irq(tx_chn->irq);
++	}
+ 
+ 	return num_tx_packets;
+ }
+@@ -226,6 +243,8 @@ int prueth_ndev_add_tx_napi(struct prueth_emac *emac)
+ 		struct prueth_tx_chn *tx_chn = &emac->tx_chns[i];
+ 
+ 		netif_napi_add_tx(emac->ndev, &tx_chn->napi_tx, emac_napi_tx_poll);
++		hrtimer_init(&tx_chn->tx_hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_PINNED);
++		tx_chn->tx_hrtimer.function = &emac_tx_timer_callback;
+ 		ret = request_irq(tx_chn->irq, prueth_tx_irq,
+ 				  IRQF_TRIGGER_HIGH, tx_chn->name,
+ 				  tx_chn);
+@@ -870,7 +889,12 @@ int emac_napi_rx_poll(struct napi_struct *napi_rx, int budget)
+ 	}
+ 
+ 	if (num_rx < budget && napi_complete_done(napi_rx, num_rx))
+-		enable_irq(emac->rx_chns.irq[rx_flow]);
++		if (unlikely(emac->rx_pace_timeout_ns))
++			hrtimer_start(&emac->rx_hrtimer,
++				      ns_to_ktime(emac->rx_pace_timeout_ns),
++				      HRTIMER_MODE_REL_PINNED);
++		else
++			enable_irq(emac->rx_chns.irq[rx_flow]);
+ 
+ 	return num_rx;
+ }
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_ethtool.c b/drivers/net/ethernet/ti/icssg/icssg_ethtool.c
+index ca20325d4d3e..d7409d82c428 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_ethtool.c
++++ b/drivers/net/ethernet/ti/icssg/icssg_ethtool.c
+@@ -201,6 +201,88 @@ static void emac_get_rmon_stats(struct net_device *ndev,
+ 	rmon_stats->hist_tx[4] = emac_get_stat_by_name(emac, "tx_bucket5_frames");
+ }
+ 
++static int emac_get_coalesce(struct net_device *ndev, struct ethtool_coalesce *coal,
++			     struct kernel_ethtool_coalesce *kernel_coal,
++			     struct netlink_ext_ack *extack)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++	struct prueth_tx_chn *tx_chn;
++
++	tx_chn = &emac->tx_chns[0];
++
++	coal->rx_coalesce_usecs = emac->rx_pace_timeout_ns / 1000;
++	coal->tx_coalesce_usecs = tx_chn->tx_pace_timeout_ns / 1000;
++
++	return 0;
++}
++
++static int emac_get_per_queue_coalesce(struct net_device *ndev, u32 queue,
++				       struct ethtool_coalesce *coal)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++	struct prueth_tx_chn *tx_chn;
++
++	if (queue >= PRUETH_MAX_TX_QUEUES)
++		return -EINVAL;
++
++	tx_chn = &emac->tx_chns[queue];
++
++	coal->tx_coalesce_usecs = tx_chn->tx_pace_timeout_ns / 1000;
++
++	return 0;
++}
++
++static int emac_set_coalesce(struct net_device *ndev, struct ethtool_coalesce *coal,
++			     struct kernel_ethtool_coalesce *kernel_coal,
++			     struct netlink_ext_ack *extack)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++	struct prueth *prueth = emac->prueth;
++	struct prueth_tx_chn *tx_chn;
++
++	tx_chn = &emac->tx_chns[0];
++
++	if (coal->rx_coalesce_usecs && coal->rx_coalesce_usecs < ICSSG_MIN_COALESCE_USECS) {
++		dev_info(prueth->dev, "defaulting to min value of %dus for rx-usecs\n",
++			 ICSSG_MIN_COALESCE_USECS);
++		coal->rx_coalesce_usecs = ICSSG_MIN_COALESCE_USECS;
++	}
++
++	if (coal->tx_coalesce_usecs && coal->tx_coalesce_usecs < ICSSG_MIN_COALESCE_USECS) {
++		dev_info(prueth->dev, "defaulting to min value of %dus for tx-usecs\n",
++			 ICSSG_MIN_COALESCE_USECS);
++		coal->tx_coalesce_usecs = ICSSG_MIN_COALESCE_USECS;
++	}
++
++	emac->rx_pace_timeout_ns = coal->rx_coalesce_usecs * 1000;
++	tx_chn->tx_pace_timeout_ns = coal->tx_coalesce_usecs * 1000;
++
++	return 0;
++}
++
++static int emac_set_per_queue_coalesce(struct net_device *ndev, u32 queue,
++				       struct ethtool_coalesce *coal)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++	struct prueth *prueth = emac->prueth;
++	struct prueth_tx_chn *tx_chn;
++
++	if (queue >= PRUETH_MAX_TX_QUEUES)
++		return -EINVAL;
++
++	tx_chn = &emac->tx_chns[queue];
++
++	if (coal->tx_coalesce_usecs && coal->tx_coalesce_usecs < ICSSG_MIN_COALESCE_USECS) {
++		dev_info(prueth->dev, "defaulting to min value of %dus for tx-usecs for tx-%u\n",
++			 ICSSG_MIN_COALESCE_USECS, queue);
++		coal->tx_coalesce_usecs = ICSSG_MIN_COALESCE_USECS;
++	}
++
++	tx_chn->tx_pace_timeout_ns = coal->tx_coalesce_usecs * 1000;
++
++	return 0;
++}
++
+ const struct ethtool_ops icssg_ethtool_ops = {
+ 	.get_drvinfo = emac_get_drvinfo,
+ 	.get_msglevel = emac_get_msglevel,
+@@ -209,6 +291,11 @@ const struct ethtool_ops icssg_ethtool_ops = {
+ 	.get_ethtool_stats = emac_get_ethtool_stats,
+ 	.get_strings = emac_get_strings,
+ 	.get_ts_info = emac_get_ts_info,
++	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS | ETHTOOL_COALESCE_TX_USECS,
++	.get_coalesce = emac_get_coalesce,
++	.set_coalesce = emac_set_coalesce,
++	.get_per_queue_coalesce = emac_get_per_queue_coalesce,
++	.set_per_queue_coalesce = emac_set_per_queue_coalesce,
+ 	.get_channels = emac_get_channels,
+ 	.set_channels = emac_set_channels,
+ 	.get_link_ksettings = emac_get_link_ksettings,
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+index 186b0365c2e5..d620e88493c4 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
++++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+@@ -243,6 +243,16 @@ static void emac_adjust_link(struct net_device *ndev)
+ 	}
+ }
+ 
++static enum hrtimer_restart emac_rx_timer_callback(struct hrtimer *timer)
++{
++	struct prueth_emac *emac =
++			container_of(timer, struct prueth_emac, rx_hrtimer);
++	int rx_flow = PRUETH_RX_FLOW_DATA;
++
++	enable_irq(emac->rx_chns.irq[rx_flow]);
++	return HRTIMER_NORESTART;
++}
++
+ static int emac_phy_connect(struct prueth_emac *emac)
+ {
+ 	struct prueth *prueth = emac->prueth;
+@@ -582,8 +592,10 @@ static int emac_ndo_stop(struct net_device *ndev)
+ 		netdev_err(ndev, "tx teardown timeout\n");
+ 
+ 	prueth_reset_tx_chan(emac, emac->tx_ch_num, true);
+-	for (i = 0; i < emac->tx_ch_num; i++)
++	for (i = 0; i < emac->tx_ch_num; i++) {
+ 		napi_disable(&emac->tx_chns[i].napi_tx);
++		hrtimer_cancel(&emac->tx_chns[i].tx_hrtimer);
++	}
+ 
+ 	max_rx_flows = PRUETH_MAX_RX_FLOWS;
+ 	k3_udma_glue_tdown_rx_chn(emac->rx_chns.rx_chn, true);
+@@ -591,6 +603,7 @@ static int emac_ndo_stop(struct net_device *ndev)
+ 	prueth_reset_rx_chan(&emac->rx_chns, max_rx_flows, true);
+ 
+ 	napi_disable(&emac->napi_rx);
++	hrtimer_cancel(&emac->rx_hrtimer);
+ 
+ 	cancel_work_sync(&emac->rx_mode_work);
+ 
+@@ -801,6 +814,8 @@ static int prueth_netdev_init(struct prueth *prueth,
+ 	ndev->features = ndev->hw_features;
+ 
+ 	netif_napi_add(ndev, &emac->napi_rx, emac_napi_rx_poll);
++	hrtimer_init(&emac->rx_hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_PINNED);
++	emac->rx_hrtimer.function = &emac_rx_timer_callback;
+ 	prueth->emac[mac] = emac;
+ 
+ 	return 0;
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+index 82e38ef5635b..a78c5eb75fb8 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
++++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+@@ -108,6 +108,8 @@ struct prueth_tx_chn {
+ 	u32 descs_num;
+ 	unsigned int irq;
+ 	char name[32];
++	struct hrtimer tx_hrtimer;
++	unsigned long tx_pace_timeout_ns;
+ };
+ 
+ struct prueth_rx_chn {
+@@ -127,6 +129,9 @@ struct prueth_rx_chn {
+ 
+ #define PRUETH_MAX_TX_TS_REQUESTS	50 /* Max simultaneous TX_TS requests */
+ 
++/* Minimum coalesce time in usecs for both Tx and Rx */
++#define ICSSG_MIN_COALESCE_USECS 20
++
+ /* data for each emac port */
+ struct prueth_emac {
+ 	bool is_sr1;
+@@ -183,6 +188,10 @@ struct prueth_emac {
+ 
+ 	struct delayed_work stats_work;
+ 	u64 stats[ICSSG_NUM_STATS];
++
++	/* RX IRQ Coalescing Related */
++	struct hrtimer rx_hrtimer;
++	unsigned long rx_pace_timeout_ns;
+ };
+ 
+ /**
+@@ -320,7 +329,7 @@ void prueth_ndev_del_tx_napi(struct prueth_emac *emac, int num);
+ void prueth_xmit_free(struct prueth_tx_chn *tx_chn,
+ 		      struct cppi5_host_desc_t *desc);
+ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
+-			     int budget);
++			     int budget, bool *tdown);
+ int prueth_ndev_add_tx_napi(struct prueth_emac *emac);
+ int prueth_init_tx_chns(struct prueth_emac *emac);
+ int prueth_init_rx_chns(struct prueth_emac *emac,
+
+base-commit: 1c04b46cbdddc7882eeb671521035ea884245b9f
 -- 
-2.39.3
+2.34.1
 
 
