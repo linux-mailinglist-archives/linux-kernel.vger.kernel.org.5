@@ -1,94 +1,75 @@
-Return-Path: <linux-kernel+bounces-157834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41FD78B1700
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:20:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AA498B1701
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:22:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6504C1C24EBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:20:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CEC928313C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C7916F0E7;
-	Wed, 24 Apr 2024 23:20:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D877516F0DD;
+	Wed, 24 Apr 2024 23:22:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YjOkppfY"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h+2ubWx2"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9AC16EC1C
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:20:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DCE515747E
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:22:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714000823; cv=none; b=jNHcHLawSAJ1pz5aLCGVV0FtbjDQq6sJMkJt+gh+0SxNzqW85N/t0Bw7oTyAQxuZ4HLlHtz+0imgwjl3qbRIzgKOl/jjTJwcKaWjgEA4yzwbrjmR2RB0Y9CXAtfva/CcCzcXO9RnUGuPYlUB470rIQP/KY6rYDSilsc5TFR0N6c=
+	t=1714000958; cv=none; b=oZiLrHoavYCket/+dn5c3se0FSvv4dQh/ChKk80fBGDqBLrG2y/A5RufP1x+SGCTDdNtPyMgn2uU8KhI1+b8lWAmib2wqbx5AqJ90PQ6px4j903NszCuoSh1yJ/JnYLGhlMpWK3/w7srdQqGlldejZyj4s/79IJ/o1fFbsRkH7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714000823; c=relaxed/simple;
-	bh=xMdC6gPfhPx0eqt9pE8Cf6dx1C6F38ZaVJBhnbPRa2E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HWvKYD6ADgCg7mCbbWZav7g8rHPdcITM52L3I9W1vjHS1YJwjx7AICUDY5cynaP1bu70UiIMqdX9EU5zfVdgLzRUBDv+UJKDjQVNCDVAyAgAo77lzc7xjRMzFd8+22jCf8aWJkNLloacr6OJHJwxJygFL84+aUSAHozg2OUbAAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YjOkppfY; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1eab16dcfd8so1388875ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:20:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714000821; x=1714605621; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=53galFO5b9NlY6rYFvZBx1xxKB41abzyybNlJJlu7mM=;
-        b=YjOkppfYENLsgSowL4ZSX3/HwEPO/rWaGdecpkQt5gyw/H5ZATAG+gW+W2tC+ojKok
-         MDqG3tof6H/HtrbSwsMYkIbwjtGjzCmmqvw2O5Sw6eFYjDC33lZoOHsxxzCcHM0elPT6
-         YEf1+Ieh2UUWDqca+ScK4hNpsq1jjUD6IVZak=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714000821; x=1714605621;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=53galFO5b9NlY6rYFvZBx1xxKB41abzyybNlJJlu7mM=;
-        b=I9P2mss24xS27YNAWsCY3ODJ5E4GPDlrf/lDR+C4L45AkUN3ADyvGXBjD3efPRFWGk
-         0bHVu9kFPmk4ABLWBTFFVUeIKjuV+q6Xij6wUwQThMTs/epothOelGVJBCB6bEWXBXsv
-         9ksc+mCrs8lmyLkDTiRyE24Vw47Syyr7azKtf2aTSzxSlpRTy8Sr1lWX/CNimMUCW2ur
-         PhDqtL0tEfhKC9V+07uae10B1nS6AnMxzaB65BTQJirtJ1oJDTFUQZSvsXiueZMa7tbV
-         5jeuTPuHujEiNFFjgI4Qqtzx84HfLPJd3HDeQ+Xj3uifYf8sdXOFWDnFStpDwN/O0v/A
-         kFfw==
-X-Forwarded-Encrypted: i=1; AJvYcCUssl+hSN3vJt10G+QUi6dlJUw2Db2RaghwPkaaoxYQ58moFrNDleQpKL0/zycOJdL6vRNyZmzZfd6gxGUeTu9vp94kftSPtuorDdkN
-X-Gm-Message-State: AOJu0YzxjGa4Kxh0fUmsWmVppKNKOwI3xDdwX7EV9NxoqoFsXLCQhqFn
-	Hiq64vcyJlW1OB6JS6Rrozego0ERzKEUq16koDm1CqWXiPD3/sNFvyzqlhd4Kg==
-X-Google-Smtp-Source: AGHT+IFMkYJNAfNLSmk4oPnPeYVule+RDiUbFbapsmqTHjfPM7QXarEC91Pvng6lRM//0u2jQSClHg==
-X-Received: by 2002:a17:902:868f:b0:1dd:2eed:52a5 with SMTP id g15-20020a170902868f00b001dd2eed52a5mr3803324plo.37.1714000821414;
-        Wed, 24 Apr 2024 16:20:21 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c10-20020a170902d48a00b001dd0c5d5227sm12448914plg.193.2024.04.24.16.20.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 16:20:20 -0700 (PDT)
-Date: Wed, 24 Apr 2024 16:20:20 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Jakub Kicinski <kuba@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-	netdev@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 1/4] locking/atomic/x86: Silence intentional wrapping
- addition
-Message-ID: <202404241602.276D4ADA@keescook>
-References: <20240424191225.work.780-kees@kernel.org>
- <20240424191740.3088894-1-keescook@chromium.org>
- <20240424224141.GX40213@noisy.programming.kicks-ass.net>
- <202404241542.6AFC3042C1@keescook>
- <20240424225436.GY40213@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1714000958; c=relaxed/simple;
+	bh=Q5D0GlcovYCEkGzpI5doau3iBuWfQWrp9GB4JaXHZz0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=hpbgkrWshMJkDubqQ6e4Nh9vXG3rfIZhsBiOZ9T7GumpVo86YGgdFAZzEg8ABhA2PRwmLRgjNQ08ml7RgxxkoMyFulVzCF5SBzd5mwtd5LHiujkpqH6hIN0V70EgqLW9D9jZDbMYF2W4ZZg6axvm38RJeaPRAnFV1bjs3ZskHzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h+2ubWx2; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714000957; x=1745536957;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Q5D0GlcovYCEkGzpI5doau3iBuWfQWrp9GB4JaXHZz0=;
+  b=h+2ubWx25K6v5WhXL9XaDFX5XErGNfMEuDzupKRjot329WjZgEvYp4GS
+   ZEDmKsu67VQDMKH6h+OmdgaDm/Wo/eC0Uv8mK1joxaTcEZ+prZfAwri9R
+   5ILn0ToJnNqB5EEQBs+yncGMH34IfVpN1Ko2585nr5kIAIGXWUTlpUWrb
+   468xuyRw3z+vzt12ekAFpt+deijSzKEQzHXqsLf5tWGb2vDjyqSwesgk2
+   HAiqsFKQdliMvGAmBSwEU8x/RI9wEQnfonzskEgUXWUxiEg4p8gcGCQn9
+   QyU76a5sZexJBQfzNDgt57JsiMJwBE6iFBMvMUmFEb/l2vBGmFQAR9DAm
+   g==;
+X-CSE-ConnectionGUID: yCR1QY2OR1ajHABPER/1Jg==
+X-CSE-MsgGUID: whzfIZsVQFWGsaDgwPAFQQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="27176825"
+X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
+   d="scan'208";a="27176825"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 16:22:36 -0700
+X-CSE-ConnectionGUID: 3rNtiLX+Sxu7T6bFFxkoZw==
+X-CSE-MsgGUID: qd+OC7dYSpeeHCT5CYgkzQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
+   d="scan'208";a="56047914"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 24 Apr 2024 16:22:34 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rzlwd-0001lM-2O;
+	Wed, 24 Apr 2024 23:22:31 +0000
+Date: Thu, 25 Apr 2024 07:22:20 +0800
+From: kernel test robot <lkp@intel.com>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
+	Qais Yousef <qyousef@layalina.io>,
+	Lukasz Luba <lukasz.luba@arm.com>
+Subject: [tip:sched/core 26/27] drivers/base/arch_topology.c:204:17: sparse:
+ sparse: incorrect type in initializer (different address spaces)
+Message-ID: <202404250740.VhQQoD7N-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,68 +78,94 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240424225436.GY40213@noisy.programming.kicks-ass.net>
 
-On Thu, Apr 25, 2024 at 12:54:36AM +0200, Peter Zijlstra wrote:
-> On Wed, Apr 24, 2024 at 03:45:07PM -0700, Kees Cook wrote:
-> > On Thu, Apr 25, 2024 at 12:41:41AM +0200, Peter Zijlstra wrote:
-> > > On Wed, Apr 24, 2024 at 12:17:34PM -0700, Kees Cook wrote:
-> > > 
-> > > > @@ -82,7 +83,7 @@ static __always_inline bool arch_atomic_add_negative(int i, atomic_t *v)
-> > > >  
-> > > >  static __always_inline int arch_atomic_add_return(int i, atomic_t *v)
-> > > >  {
-> > > > -	return i + xadd(&v->counter, i);
-> > > > +	return wrapping_add(int, i, xadd(&v->counter, i));
-> > > >  }
-> > > >  #define arch_atomic_add_return arch_atomic_add_return
-> > > 
-> > > this is going to get old *real* quick :-/
-> > > 
-> > > This must be the ugliest possible way to annotate all this, and then
-> > > litter the kernel with all this... urgh.
-> > 
-> > I'm expecting to have explicit wrapping type annotations soon[1], but for
-> > the atomics, it's kind of a wash on how intrusive the annotations get. I
-> > had originally wanted to mark the function (as I did in other cases)
-> > rather than using the helper, but Mark preferred it this way. I'm happy
-> > to do whatever! :)
-> > 
-> > -Kees
-> > 
-> > [1] https://github.com/llvm/llvm-project/pull/86618
-> 
-> This is arse-about-face. Signed stuff wraps per -fno-strict-overflow.
-> We've been writing code for years under that assumption.
+Hi Vincent,
 
-Right, which is why this is going to take time to roll out. :) What we
-were really doing with -fno-strict-overflow was getting rid of undefined
-behavior. That was really really horrible; we don't need the compiler
-hallucinating.
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
-> You want to mark the non-wrapping case.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+head:   97450eb909658573dcacc1063b06d3d08642c0c1
+commit: d4dbc991714eefcbd8d54a3204bd77a0a52bd32d [26/27] sched/cpufreq: Rename arch_update_thermal_pressure() => arch_update_hw_pressure()
+config: arm64-randconfig-r132-20240425 (https://download.01.org/0day-ci/archive/20240425/202404250740.VhQQoD7N-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20240425/202404250740.VhQQoD7N-lkp@intel.com/reproduce)
 
-What we want is lack of ambiguity. Having done these kinds of things in
-the kernel for a while now, I have strong evidence that we get much better
-results with the "fail safe" approach, but start by making it non-fatal.
-That way we get full coverage, but we don't melt the world for anyone
-that doesn't want it, and we can shake things out over a few years. For
-example, it has worked well for CONFIG_FORTIFY, CONFIG_UBSAN_BOUNDS,
-KCFI, etc.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404250740.VhQQoD7N-lkp@intel.com/
 
-The riskier condition is having something wrap when it wasn't expected
-(e.g. allocations, pointer offsets, etc), so we start by defining our
-regular types as non-wrapping, and annotate the wrapping types (or
-specific calculations or functions).
+sparse warnings: (new ones prefixed by >>)
+>> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
+   drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
+>> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
+   drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
+>> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
+   drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
+>> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
+   drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
+>> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
+   drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
+>> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
+   drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
+>> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
+   drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
 
-For signed types in particular, wrapping is overwhelmingly the
-uncommon case, so from a purely "how much annotations is needed"
-perspective, marking wrapping is also easiest. Yes, there are cases of
-expected wrapping, but we'll track them all down and get them marked
-unambiguously. One thing on the short list is atomics, so here we are. :)
+vim +204 drivers/base/arch_topology.c
 
--Kees
+   164	
+   165	/**
+   166	 * topology_update_hw_pressure() - Update HW pressure for CPUs
+   167	 * @cpus        : The related CPUs for which capacity has been reduced
+   168	 * @capped_freq : The maximum allowed frequency that CPUs can run at
+   169	 *
+   170	 * Update the value of HW pressure for all @cpus in the mask. The
+   171	 * cpumask should include all (online+offline) affected CPUs, to avoid
+   172	 * operating on stale data when hot-plug is used for some CPUs. The
+   173	 * @capped_freq reflects the currently allowed max CPUs frequency due to
+   174	 * HW capping. It might be also a boost frequency value, which is bigger
+   175	 * than the internal 'capacity_freq_ref' max frequency. In such case the
+   176	 * pressure value should simply be removed, since this is an indication that
+   177	 * there is no HW throttling. The @capped_freq must be provided in kHz.
+   178	 */
+   179	void topology_update_hw_pressure(const struct cpumask *cpus,
+   180					      unsigned long capped_freq)
+   181	{
+   182		unsigned long max_capacity, capacity, hw_pressure;
+   183		u32 max_freq;
+   184		int cpu;
+   185	
+   186		cpu = cpumask_first(cpus);
+   187		max_capacity = arch_scale_cpu_capacity(cpu);
+   188		max_freq = arch_scale_freq_ref(cpu);
+   189	
+   190		/*
+   191		 * Handle properly the boost frequencies, which should simply clean
+   192		 * the HW pressure value.
+   193		 */
+   194		if (max_freq <= capped_freq)
+   195			capacity = max_capacity;
+   196		else
+   197			capacity = mult_frac(max_capacity, capped_freq, max_freq);
+   198	
+   199		hw_pressure = max_capacity - capacity;
+   200	
+   201		trace_hw_pressure_update(cpu, hw_pressure);
+   202	
+   203		for_each_cpu(cpu, cpus)
+ > 204			WRITE_ONCE(per_cpu(hw_pressure, cpu), hw_pressure);
+   205	}
+   206	EXPORT_SYMBOL_GPL(topology_update_hw_pressure);
+   207	
 
 -- 
-Kees Cook
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
