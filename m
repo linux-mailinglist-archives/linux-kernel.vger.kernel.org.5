@@ -1,181 +1,164 @@
-Return-Path: <linux-kernel+bounces-156324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 995398B0129
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:41:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D92258B0137
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:43:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D49AB1C20A02
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:41:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 671BB1F23FBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:43:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E59156668;
-	Wed, 24 Apr 2024 05:41:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402DB156874;
+	Wed, 24 Apr 2024 05:42:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WFF4Abbs"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="teMtBQW4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A4E156666
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6709613CFAD;
+	Wed, 24 Apr 2024 05:42:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713937306; cv=none; b=ffaQuQc3J+J/g9I9XLeb1rzuTxwv5i0uYasoWZIKqIo+gcvhKQFFCgpmHAOQCXFhgR3nIY7ZXnpyPhSkLuw5IfjGwE4xlJmDr0Bz1ovIq2g2YKBUOdGwjJbRGajYe2KD9Xoo+SWlmQ0bTN9QlZj/sP1LabkEO2uq2bDKSuhWv3g=
+	t=1713937372; cv=none; b=qnb0P1C1VJgJzzqns8rtJIlprurlkKKGGIlShpWI6UHBQRrfnlxU6/XZetNa+cWhhLIEJrXOfzmsUxxW/uGXaUJ4tEgZItVOz2mno+0w3W/PN0TI48yYYvoZAy2N9O16e/s+9ic9wj3Cg+iGGAtt/up6rG/kE0fcqvbE8G5Z5Yo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713937306; c=relaxed/simple;
-	bh=IyElVXqzTyQ3aKo0ohOGapMAuFHTguATuxVWkpi0DWg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZdWW2tMdpSTPzKWAMX4QibGAZ3KUaHqvPh202FmEOu9Ljj3+7xu9XSJJdfMA/enqJstEUnuKLOjNW11jLZhX6/+HUm9fdv5Hg7uH6ZKedvZLis3F6k30fgjw3W6pwbhRTTUNN8GJJGEHV71S4NtgxZBSMTqqlKU62LbUTFppL8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WFF4Abbs; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-346359c8785so5345465f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 22:41:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713937302; x=1714542102; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=2UrQ3g5twb3BBJ4fBE47g+swAJMT+h6KnPSpx3YI5X0=;
-        b=WFF4Abbs7E16RYrXIM9ggmREHhJbrusKL6X9mFsx14GWvFMiCh6ldWscjhHj8fdzPE
-         ywrAb//GYZmmfOFxKjCcb4rlpcQtwaKb0KKI3ByNMMNBm4Vq/USsto3jD+u6F/pu+/sp
-         +ZDl7rQ52A/NdiSYOidzNNioSX3BEqtR0h8jWEMMwF0pupvnztvK6eWEM/kAEA1QC+fs
-         Jrh5iamokbwh5PEz+p4sxn8eJ3ZFXrGnMxwpw68pzUjWwQOpuRlTdVDvSpwCOlYuabds
-         mVRVTxk+bAoro99mgLOoVRAfKZiN+kr22ziT3B3Vp+qEe+MsLGL5XH9+Ndeq6g/8KjAG
-         0Wig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713937302; x=1714542102;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2UrQ3g5twb3BBJ4fBE47g+swAJMT+h6KnPSpx3YI5X0=;
-        b=l/Ar6B51fumvmDvyo8SDlwrcRVukbQjqXXdH1pTYu85VgGokVynabdNsOgRppFciqa
-         LYgYz/4Ed6xbGDLa2aBefi/BJVK0YzH03Fti2ezDLI4uaZpKMOciYSJF8tsbsrVh9Un6
-         ff8wO2TJPZpIbiS9NBtphUtQsjIhi685STu/JR991YMFCU77NBbPXwM0J+EllY8qo5MI
-         jCHR7DK5q2oMzwWRtrWSsjHWtV+hmGfp96YgsZxR8sTi2C/5ivtFbiTUUsfNuQlo+vFl
-         whQ7cYnsn/eUvK9wBOCkT1Nll3e0htLgQi5tslSQSbduncsXOcKbYqY/rHtiU8SNUzed
-         UJ0w==
-X-Forwarded-Encrypted: i=1; AJvYcCXez3u+0VaMJrgFtLkLWIAGA6gwoT/j0MAjv3g0ZtnqkJiodRVu7PSoSCD54twXh1LaV0unUlDBmSyWwdjupOV+Xui5RisBDWL+WX/F
-X-Gm-Message-State: AOJu0YynCTO6pHcieowtct+2oN/miiOXYnOF2at2me76H/WodV+QrEaC
-	4fLBjH/YagZIPwulMS5JxApa2Eo77hdyWsGlys6H096SywE4VbYqzR/tf4i2by0=
-X-Google-Smtp-Source: AGHT+IGm3SzufQ8qmVUjMugp1zOSYoDMSOXVbTv38V7zcneIa30Z0wti+n3pHXkYuoPQi5lqYjjsjg==
-X-Received: by 2002:a5d:4fc4:0:b0:348:1ee3:48fa with SMTP id h4-20020a5d4fc4000000b003481ee348famr846511wrw.47.1713937301787;
-        Tue, 23 Apr 2024 22:41:41 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id l6-20020adfa386000000b00349e2fab2a2sm16376427wrb.12.2024.04.23.22.41.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 22:41:41 -0700 (PDT)
-Date: Wed, 24 Apr 2024 08:41:36 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Andrew Jones <ajones@ventanamicro.com>,
-	Markus Elfring <Markus.Elfring@web.de>,
-	Kunwu Chan <chentao@kylinos.cn>, linux-kselftest@vger.kernel.org,
-	kvm@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Kunwu Chan <kunwu.chan@hotmail.com>,
-	Anup Patel <anup@brainfault.org>, Thomas Huth <thuth@redhat.com>,
-	Oliver Upton <oliver.upton@linux.dev>
-Subject: Re: [PATCH] KVM: selftests: Add 'malloc' failure check in
- test_vmx_nested_state
-Message-ID: <9f67df9d-ab27-40b9-8849-3069649dc082@moroto.mountain>
-References: <20240423073952.2001989-1-chentao@kylinos.cn>
- <878bf83c-cd5b-48d0-8b4e-77223f1806dc@web.de>
- <ZifMAWn32tZBQHs0@google.com>
- <20240423-0db9024011213dcffe815c5c@orel>
- <ZigI48_cI7Twb9gD@google.com>
+	s=arc-20240116; t=1713937372; c=relaxed/simple;
+	bh=cROuNLbeki5Gd9BgCdNRN+Wlj5pUWw5rtrCSyV3YY6E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q4H9Uy31RPd6sStIwCkx1KjFqcAkwP3v7fDNYoyHLUJFkwYREZGZcWJOnnri3B+Y9RdYin7uag60m8CnM1U6rIC2dn+Nz+wc0zxdlHc8kIVN68vPNMTIAmxiGgSjN/DogZT+Bq6GLNwJMNDrKbMEYxr0mECtSHAisYKs0yTXS1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=teMtBQW4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1808BC2BD11;
+	Wed, 24 Apr 2024 05:42:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713937371;
+	bh=cROuNLbeki5Gd9BgCdNRN+Wlj5pUWw5rtrCSyV3YY6E=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=teMtBQW4kd5WLbV5Fdi/aI72LaRFrp+461u8eT36iUd1pwmgNBX90KxrEcNjK9404
+	 jbZBB+8muf/801f1IW+CoXY4JjEvYA4hFlaVifokOrt370JJ6xD1Y/n8Hj7xuSxTxD
+	 Sts3RciR4DQ22bWya07lOgfXR7+y0SuO0WhJrXRnqbsu4cYXgY37ZxH4tPO+QADSPl
+	 Wy5dZCanMBBU+fD0ZRfP8HUta6AxytSIvvdCXO1o5gVCJEMmK5jBeVpCOkZbNhrYYF
+	 tmmx4DRIB/Xwcba8p28nUI4mPXOCzywK3/g+Zg4eXpTjRJpEJvaJbk1lQRTq3LhUy9
+	 dTkuXNb3ImWMg==
+Message-ID: <7a3d4b8a-e89e-499e-92b7-9f63fbc84011@kernel.org>
+Date: Wed, 24 Apr 2024 07:42:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZigI48_cI7Twb9gD@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] dt-bindings: mmc: renesas,sdhi: Group single const
+ value items into an enum list
+To: Prabhakar <prabhakar.csengg@gmail.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-mmc@vger.kernel.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+ Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20240423182428.704159-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240423182428.704159-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240423182428.704159-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 23, 2024 at 12:15:47PM -0700, Sean Christopherson wrote:
-> On Tue, Apr 23, 2024, Andrew Jones wrote:
-> > On Tue, Apr 23, 2024 at 07:56:01AM -0700, Sean Christopherson wrote:
-> > > +others
-> > > 
-> > > On Tue, Apr 23, 2024, Markus Elfring wrote:
-> > > > …
-> > > > > This patch will add the malloc failure checking
-> > > > …
-> > > > 
-> > > > * Please use a corresponding imperative wording for the change description.
-> > > > 
-> > > > * Would you like to add the tag “Fixes” accordingly?
-> > > 
-> > > Nah, don't bother with Fixes.  OOM will cause the test to fail regardless, the
-> > > fact that it gets an assert instead a NULL pointer deref is nice to have, but by
-> > > no means does it fix a bug.
-> > > 
-> > > > > +++ b/tools/testing/selftests/kvm/x86_64/vmx_set_nested_state_test.c
-> > > > > @@ -91,6 +91,7 @@ void test_vmx_nested_state(struct kvm_vcpu *vcpu)
-> > > > >  	const int state_sz = sizeof(struct kvm_nested_state) + getpagesize();
-> > > > >  	struct kvm_nested_state *state =
-> > > > >  		(struct kvm_nested_state *)malloc(state_sz);
-> > > > > +	TEST_ASSERT(state, "-ENOMEM when allocating kvm state");
-> > > > …
-> > > > 
-> > > > Can “errno” be relevant for the error message construction?
-> > > 
-> > > Probably not, but there's also no reason to assume ENOMEM.  TEST_ASSERT() spits
-> > > out the actual errno, and we can just say something like "malloc() failed for
-> > > blah blah blah".  
-> > > 
-> > > But rather than keeping playing whack-a-mole, what if we add macros to perform
-> > > allocations and assert on the result?  I have zero interest in chasing down all
-> > > of the "unsafe" allocations, and odds are very good that we'll collectively fail
-> > > to enforce checking on new code.
-> > > 
-> > > E.g. something like (obviously won't compile, just for demonstration purposes)
-> > > 
-> > > #define kvm_malloc(x)
-> > > ({
-> > > 	void *__ret;
-> > > 
-> > > 	__ret  = malloc(x);
-> > > 	TEST_ASSERT(__ret, "Failed malloc(" #x ")\n");
-> > > 	__ret;
-> > > })
-> > > 
-> > > #define kvm_calloc(x, y)
-> > > ({
-> > > 	void *__ret;
-> > > 
-> > > 	__ret  = calloc(x, y);
-> > > 	TEST_ASSERT(__ret, "Failed calloc(" #x ", " #y ")\n");
-> > > 	__ret;
-> > > })
-> > 
-> > Sounds good to me, but I'd call them test_malloc, test_calloc, etc. and
-> > put them in include/test_util.h
+On 23/04/2024 20:24, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 > 
-> Possibly terrible idea: what if we used kmalloc() and kcalloc()?  K is for KVM :-)
+> Group single const value items into an enum list.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+> v1->v2
+> - Updated commit message
+> - Grouped single const value items into an enum list. 
+> ---
+>  .../devicetree/bindings/mmc/renesas,sdhi.yaml  | 18 +++++++-----------
+>  1 file changed, 7 insertions(+), 11 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml b/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
+> index 29f2400247eb..2bf90095742b 100644
+> --- a/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
+> @@ -13,15 +13,13 @@ properties:
+>    compatible:
+>      oneOf:
+>        - items:
+> -          - const: renesas,sdhi-sh73a0  # R-Mobile APE6
+> -      - items:
+> -          - const: renesas,sdhi-r7s72100 # RZ/A1H
+> -      - items:
+> -          - const: renesas,sdhi-r7s9210 # SH-Mobile AG5
+> -      - items:
+> -          - const: renesas,sdhi-r8a73a4 # R-Mobile APE6
+> -      - items:
+> -          - const: renesas,sdhi-r8a7740 # R-Mobile A1
+> +          - enum:
 
-That's a legit terrible idea...  It probably would trigger more static
-checker warnings because the general policy is kmalloc() is kernel code
-and we *have* to test for errors.
+You wanted to drop the items, but I still see it here.
 
-To be honest, I would have just rejected the first patch.  You
-obviously know this and have said this earlier in the thread but just
-for the other people, this is a userspace test that runs for a short
-time and then exits.  If it gets killed because we don't have enough
-memory that's fine.  It would be better to just fix the static checker
-to not print pointless warnings or educate people to ignore warnings
-like this.
+> +              - renesas,sdhi-sh73a0  # R-Mobile APE6
+> +              - renesas,sdhi-r7s72100 # RZ/A1H
+> +              - renesas,sdhi-r7s9210 # SH-Mobile AG5
+> +              - renesas,sdhi-r8a73a4 # R-Mobile APE6
+> +              - renesas,sdhi-r8a7740 # R-Mobile A1
+> +              - renesas,sdhi-mmc-r8a77470 # RZ/G1C
 
-Creating the test_malloc() to silence the warning also seems like an
-okay idea as well.
+Keep list alphabetically ordered.
 
-regards,
-dan carpenter
+
+
+Best regards,
+Krzysztof
 
 
