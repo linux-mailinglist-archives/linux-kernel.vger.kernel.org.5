@@ -1,223 +1,218 @@
-Return-Path: <linux-kernel+bounces-156516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A66D8B03B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:00:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EE2E8B03AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:59:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F14028210D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 08:00:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3CF51C23187
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:59:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5196158A1B;
-	Wed, 24 Apr 2024 07:59:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="i2PJh4MZ"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CEA315821F;
+	Wed, 24 Apr 2024 07:59:32 +0000 (UTC)
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2104.outbound.protection.partner.outlook.cn [139.219.146.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 375A0158A04;
-	Wed, 24 Apr 2024 07:59:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713945575; cv=none; b=dG87/rS3k5UPnTXB6+l4DUZ5dpX1o24p9VpT8wIbQknAKBj8itqyXhfswbFHrbFEfg0MtsryEsROiy11Fw6avdRwZr43CploBcQuno+uOCQHRmv7C6egtCvs9e7EvJlA8YhtR8IRAcK0+vN9G2yBjYQknyi2MaKMYt568Q60Rr0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713945575; c=relaxed/simple;
-	bh=csO/FoGDnIqZPOwAfcbC3nX1T7SQM6BW0okYxFMh2/c=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=LO6LpPPEsgYn8ZNT02G6aMWZlRPdgd3YoqA4t8QvJmJJvBYsGrxyJ0bwOmqwsPchDLjjIjLSvAgnH8i71wpdqp4e71YERjN8Vx6g1J7GCJOeLvUiHLiwR7lmBSNMNnAE1VKwzQaGnDc5ykSsIZezIaOFHJY27mXP+7+wzD159oQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=i2PJh4MZ; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O6X04K016507;
-	Wed, 24 Apr 2024 07:59:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=PEH4sUji3MUL
-	6m2mb+lBXxIoyjAO5ggAPg0WEO6ThWQ=; b=i2PJh4MZVSEqOo1JbTD8XMIAAc0g
-	FBviwqZMAp6q6Hca/ogvFpHznnsSak5C91w7/QfDNAiLAc8VVyHqR+JsH3FMJ8fs
-	0rP4jW9YvzkXWsxxtnd8AI3EuYrEMAvhRKd68N3o2loU4N2bMkEDqpVr8D5V0uxG
-	y0DNGeMbWZA92zA8yyeika9pKoaLRZbnr7iACF9tv+puQ3n4/wk+LTrqh8gJo+nu
-	N//X49F37Kx5SZhfgpz0AyxZ9a8NmqmquYs2FB6c1NvE7wcEcVxSsYeNtWVzgG9s
-	dcZLhcrgzH5XV7xwpemaX1Es68tdQSLVf6pLC/vaQhJDDLnoJkmely4rDA==
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9kr80c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 07:58:59 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 43O7wuTA007257;
-	Wed, 24 Apr 2024 07:58:56 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3xm6sktqje-1;
-	Wed, 24 Apr 2024 07:58:56 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43O7pKHj030861;
-	Wed, 24 Apr 2024 07:58:56 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-vdadhani-hyd.qualcomm.com [10.213.106.28])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 43O7wudp007248;
-	Wed, 24 Apr 2024 07:58:56 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 4047106)
-	id D1C3C5001C1; Wed, 24 Apr 2024 13:28:54 +0530 (+0530)
-From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-To: cros-qcom-dts-watchers@chromium.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, swboyd@chromium.org, robh@kernel.org,
-        krzk+dt@kernel.org, linux-arm-msm@vger.kernel.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rajpat@codeaurora.org, mka@chromium.org, rojay@codeaurora.org,
-        luca.weiss@fairphone.com
-Cc: quic_msavaliy@quicinc.com, quic_anupkulk@quicinc.com,
-        Viken Dadhaniya <quic_vdadhani@quicinc.com>
-Subject: [PATCH v2] arm64: dts: qcom: sc7280: Remove CTS/RTS configuration
-Date: Wed, 24 Apr 2024 13:28:53 +0530
-Message-Id: <20240424075853.11445-1-quic_vdadhani@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: r-TmsRXwjrRnVb4aGGvhmSVyWlnfnxfk
-X-Proofpoint-GUID: r-TmsRXwjrRnVb4aGGvhmSVyWlnfnxfk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-24_05,2024-04-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- clxscore=1011 priorityscore=1501 adultscore=0 lowpriorityscore=0
- mlxlogscore=999 impostorscore=0 phishscore=0 spamscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404240034
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61658157468;
+	Wed, 24 Apr 2024 07:59:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.104
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713945571; cv=fail; b=HsNmgGB2l7+rUqpaaq+z8D21zoqZCaGGgYJFJSwKqNBBKEva01WWZ5yqIQWuET59uiICAIbipCFWyksD4IWvqK+xb31dE2qn/w/8zWOdikJUpMozOMo5zIXYxJOicipmRwHdBYr6uxRxSHCPL/zWjxiCam8p+SxrJxQSC8Q2Ofc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713945571; c=relaxed/simple;
+	bh=5lKCkXk5FoGziSuhCLz72hHkExSqqRyFzqveEnFN0Go=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=du6LLJaN8solAOjMtNmYNXVRcahLIV7YX4xivK6Zb3poDI4ZGlmQgwDD0jPP6uYPrUJFHjUvwWjmUUsqYuxkHd8zjptJFJHjy5OpBtgzmwcQqwHEjX0y6ZkN8o4/QV1h70lE+/yFCvtm0UDk545/5NYYfvJohU7uevcqdl13zLI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N3Kn6fBCeMWR0n7fV/Uf9LVqTJjPCTO9iKv7AKKVtMV/4IaSEgIZlCmLDNGTO3vJf9gLANbZbolHLa0dgIgdhnI7ugG3jl9s18Y7g2Ezjw88ZjawFsOJUlzd+2RIGv4Nunckv/fl9QmFIMgaKW/w+Zp9j0w0hnzpZAdT+G5b2XK8tc3diYayzPg+lDb5e7p+jdkMtC63Wn0rMeQbfpzI1ybCbCZAggf1tBYt183wjet89nEBla6b7DyxUfTiio3opjfXM+Ic5quOmLI5SQR8HoG1DdZMnyAHTTVQVadkLwdpPOg36ZQJYk8lFp4gcd12kqVpL9nOHJ/Ge2w3+8ElBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UR6JvOax0G0YID2cOXh0FKMYs57WEA34jlTT5teKN64=;
+ b=hptbKkh79xxYdSbxmHmj+pONw2lSKcy1FIYQbLvI49eJNldmvTYkHBg8Zpwaz8tqOJ79xKEOqbwN5CbB52BZ1g1VramBMwHoj8yE+xRFvJWB1qXFsYjG7l2d3RP/O2JBIMer7zBrFzxaBxtDqZxsuvLskB+yw8Pp6XENmmgmMmalYliMJtqSIJNwvFdovWhgA6WxkoDZHQGb2CsvjUZS+B/tl0a5khaZLQGTGlAO4zHMJY+wbTn0ymWkR30/ewaI9lwLmBWgSxhhDs2ztN6g5onXaqx3EVlfb5oTnwnhfVpZX8sAPOPVx67KVfpBFlOFz9XXXl+28c54L5S7Fxj5yg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:20::14) by SH0PR01MB0460.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:8::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.33; Wed, 24 Apr
+ 2024 07:59:25 +0000
+Received: from SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ ([fe80::e0a:f88a:cad1:dc1c]) by SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ ([fe80::e0a:f88a:cad1:dc1c%7]) with mapi id 15.20.7472.044; Wed, 24 Apr 2024
+ 07:59:25 +0000
+From: Joshua Yeong <joshua.yeong@starfivetech.com>
+To: robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	conor@kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	joshua.yeong@starfivetech.com,
+	leyfoon.tan@starfivetech.com,
+	jeeheng.sia@starfivetech.com
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH v3 2/2] dt-bindings: cache: Add docs for StarFive Starlink cache controller
+Date: Wed, 24 Apr 2024 15:58:56 +0800
+Message-Id: <20240424075856.145850-3-joshua.yeong@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240424075856.145850-1-joshua.yeong@starfivetech.com>
+References: <20240424075856.145850-1-joshua.yeong@starfivetech.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BJXPR01CA0048.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:12::15) To SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:20::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SH0PR01MB0841:EE_|SH0PR01MB0460:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7f6bdcc4-cb93-4e7e-ace3-08dc64347592
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	FnStteJ3arhRaxj1TjzUGu6noHj/2TvqzNo2CIBu02oks6vKxBrf8dGc2Rc0nPWjvKU8xkO2OHMUdMn3v+X5wFJlWJLujKS8NXZ83B8qmQ9O6Dcz8k/+oIAdmLjiSorBSH/Mo0qEIgmTckC34hZOpEBGgxF6kK6d05MtsxyHIn4HYlMsXylFr6GBY/rEkJQoCIARzX0Ca6r/pEq5D5NRSiQKg5zYThqEHpPcncKDfRhlWMxjnmfCrJ9ImGKxCu0/9xPeVWQ1FIeYSMyKsE+mLfud1DBeXdBLteXnz9Q28b6AHptlSgPm6J9CFWnQjlzmsMga2dfapA33/4YmhsxmzSDOkDAHUIz0hlZPk0xyeiGZi3p3LdOOO5eCzKbO73z9wvp0R/rGZYNUUTRWqd/qM4WVTlxSwEVb0J10w6B4rwNVML9qI2J8fPn5YB0gVq0sS0BQE3PfFMCOc362vVLaEITME/B0d1g0cBWw514qNaQPPYmMbEjkYkK//hG5KjSfYZoawWid5FlldmPODb/P3atU+99ssSQtYWagBzzN8AUjzYYz2oRvIs6u1CE4cHEXQIV+pHo0Fmq4QOKmTjwJEUHbVc1dEj3uEQ57TpUP46Oav4q/RQ0kAK05g+Awpv+xGn2Fr85GfBUvpqHqleLfvw==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(366007)(52116005)(7416005)(41320700004)(1800799015)(921011)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?aLQMGYg1+y8ljUTGQOVprl6xHvknpNwJCln/pa/QOYofzvpKyc8SffenN+ct?=
+ =?us-ascii?Q?KeAAzSTlgaVcLKn/Ogytn+gNL7kMSODFQQWlPYu6csrM/tCwktnXfwCMZU+w?=
+ =?us-ascii?Q?GNWZSoBgVz9mLuqj6Mue3vsJ71F1BTVKT+3dRBHXVX4qWSNGjm0kXwDDqJJw?=
+ =?us-ascii?Q?guz39lUWh9y9Id/zN3XZvCCcc56QhK3CkwOGkjKaSrj2/kR8oIRRTAIoOizq?=
+ =?us-ascii?Q?bB8x+GJZ/9MphIJDWkqdsJGoulHf/bUL/W3n5PdBRhmpmdUAZKFU9xlRvYSx?=
+ =?us-ascii?Q?KDrC2Nw5CC79K2RzAXaGWiD9IG/qUCwb3VhavgssMnD/UI44ytHByKIDJWHI?=
+ =?us-ascii?Q?W0RKyuE7TzNR22Bn+g8/hRKfwmQOHz1+tz8awtbwAXuEdgRo6Fs7JBIkeo4a?=
+ =?us-ascii?Q?hp0xHIJsYBHzROJweKA7GU5Q2jG+7h7m4YxrYwpX26b3tZr1NqCjb7pm80F8?=
+ =?us-ascii?Q?siS6QVZc/DhPN5TxU/WlCQShK/PrwwmujV/LK5JhUKokbgNsZxWFji4w8OkA?=
+ =?us-ascii?Q?P1Bgz4s0ou/l4z5tmSMCaSBg2Guabf5YGcDJX4iZZOLYdNlfzv+Y/iRrdmdd?=
+ =?us-ascii?Q?/ufrCgK5Pjdg/ThEXQCcOnTl/DPj2DcA7o9OKCJO791MbmKW5Fwv713rENZv?=
+ =?us-ascii?Q?VNK2IZRrbA+4wy8V8en59M17Qge/RWnx8ibYmjFfCW/SuGDONZeBF71ueTfX?=
+ =?us-ascii?Q?Al8TL7pG2OnKhJjJBfxcwyew6qT5uBlOpWTdby7HzYa8vBatOwV8Aod3e6tt?=
+ =?us-ascii?Q?8H09KYpzPk+wc5U2vEiNqZ5fc0zxQz2zSM/X3zyPmgYZ1XrEY4iG9szi34iA?=
+ =?us-ascii?Q?GpVag+LzCxPFSI3bvm1xPSXnYmfWqA0VkdyGsNjSqja10F1wJZOpQ22DG0FS?=
+ =?us-ascii?Q?Bnds2tMgbhNtvQANNr5ix+ug7QuEvQ3aD52vi+3kBI+Gtj3KC3LLHJ6OT4Id?=
+ =?us-ascii?Q?ZmpEbq1c2y30Kq+JC9s8BisG/LlZm/FluHBccmZjwm/eLAzbQ8kHihT061BA?=
+ =?us-ascii?Q?72YiOS0zGYuaaAOvb3WhO9Xe/Gy0FTx1Doy/xHhZTu3HZVSpTyrVkpaYI7kv?=
+ =?us-ascii?Q?s12gcRWMPbgaVenkZCmSQrbukhbGwbnCzK74HW0lTIhfCdCN6l5OgIQU3t1Z?=
+ =?us-ascii?Q?mXLoeLnK1MvgqBlQos0Qq+t+Gt0jZpDlVtedhcPeqy2IbGZoRO3HUq5KVZaU?=
+ =?us-ascii?Q?XOeI7Fxw3jSRVxDCoQCjzO+dXivZijCqx5lebFyC+XhWQxUeUEMLC5393iFR?=
+ =?us-ascii?Q?HIsj4mragR7WHapBMrsJps3vXPR4jch7fB4A9qXGpHY/Ev1LvuTV2ZVeZsst?=
+ =?us-ascii?Q?JKmXRgsPRT8ePii57zGgCrg6OEsWjbb1KJS2JeQCuDpbPg4zXcB0VjWtt3zX?=
+ =?us-ascii?Q?LmBvdD7OhEbQ/lc4PCcl+CN+cVD+nmWxDIDWlOCPUQCfD/foOFeGji2Cuz83?=
+ =?us-ascii?Q?ovzHLPb462yFJnfPUQuh2ps7XBnlV78NLLQybUF2LsGyQj8M1ZoWb18Wq63G?=
+ =?us-ascii?Q?GJzXsbN6rQ9B9sIsCje9c7lcxJ9Pp8yOBgzb9oTF76nYmxCJpQ5HizekaRAa?=
+ =?us-ascii?Q?z3IqMIJ75PfhQ6hFy0ajN27FNWDj86ndFYGXlldku4YPAr0hLK1q7cnB2hJP?=
+ =?us-ascii?Q?0zKALOe1YwiEQRDFgxxYR+Y=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f6bdcc4-cb93-4e7e-ace3-08dc64347592
+X-MS-Exchange-CrossTenant-AuthSource: SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 07:59:25.6194
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +uOilfcSRANc591JY4yvfRq/SYFLFfMICxy81M/C/8v70TixVG6xtIqbp9HEe4XRaeG4tQz7rj3zdKeUesYm76W28+nyqqVYfsQp8f0UtXk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SH0PR01MB0460
 
-For IDP variant, GPIO 20/21 is used by camera use case and camera
-driver is not able acquire these GPIOs as it is acquired by UART5
-driver as RTS/CTS pin.
+Add DT binding documentation used by StarFive's
+JH8100 SoC Starlink cache controller.
 
-UART5 is designed for debug UART for all the board variants of the
-sc7280 chipset and RTS/CTS configuration is not required for debug
-uart usecase.
-
-Remove CTS/RTS configuration for UART5 instance and change compatible
-string to debug UART.
-
-Remove overwriting compatible property from individual target specific
-file as it is not required.
-
-Fixes: 38cd93f413fd ("arm64: dts: qcom: sc7280: Update QUPv3 UART5 DT node")
-Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-
+Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
 ---
-v1 -> v2:
-- Remove compatible property from target specific file.
-- Update commit log.
----
- arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts |  1 -
- arch/arm64/boot/dts/qcom/qcm6490-idp.dts           |  1 -
- arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts       |  1 -
- arch/arm64/boot/dts/qcom/sc7280-idp.dtsi           |  1 -
- arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi         |  1 -
- arch/arm64/boot/dts/qcom/sc7280.dtsi               | 14 ++------------
- 6 files changed, 2 insertions(+), 17 deletions(-)
+ .../cache/starfive,jh8100-starlink-cache.yaml | 66 +++++++++++++++++++
+ 1 file changed, 66 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/cache/starfive,jh8100-starlink-cache.yaml
 
-diff --git a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-index f3432701945f..8cd2fe80dbb2 100644
---- a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-+++ b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-@@ -864,7 +864,6 @@
- };
- 
- &uart5 {
--	compatible = "qcom,geni-debug-uart";
- 	status = "okay";
- };
- 
-diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-index 47ca2d000341..107302680f56 100644
---- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-@@ -658,7 +658,6 @@
- };
- 
- &uart5 {
--	compatible = "qcom,geni-debug-uart";
- 	status = "okay";
- };
- 
-diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-index a085ff5b5fb2..7256b51eb08f 100644
---- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-+++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-@@ -632,7 +632,6 @@
- };
- 
- &uart5 {
--	compatible = "qcom,geni-debug-uart";
- 	status = "okay";
- };
- 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-index a0059527d9e4..7370aa0dbf0e 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-@@ -495,7 +495,6 @@
- };
- 
- &uart5 {
--	compatible = "qcom,geni-debug-uart";
- 	status = "okay";
- };
- 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi b/arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi
-index f9b96bd2477e..7d1d5bbbbbd9 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi
-@@ -427,7 +427,6 @@
- };
- 
- uart_dbg: &uart5 {
--	compatible = "qcom,geni-debug-uart";
- 	status = "okay";
- };
- 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index fc9ec367e3a5..246fb7919d27 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -1440,12 +1440,12 @@
- 			};
- 
- 			uart5: serial@994000 {
--				compatible = "qcom,geni-uart";
-+				compatible = "qcom,geni-debug-uart";
- 				reg = <0 0x00994000 0 0x4000>;
- 				clocks = <&gcc GCC_QUPV3_WRAP0_S5_CLK>;
- 				clock-names = "se";
- 				pinctrl-names = "default";
--				pinctrl-0 = <&qup_uart5_cts>, <&qup_uart5_rts>, <&qup_uart5_tx>, <&qup_uart5_rx>;
-+				pinctrl-0 = <&qup_uart5_tx>, <&qup_uart5_rx>;
- 				interrupts = <GIC_SPI 606 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&rpmhpd SC7280_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
-@@ -5407,16 +5407,6 @@
- 				function = "qup04";
- 			};
- 
--			qup_uart5_cts: qup-uart5-cts-state {
--				pins = "gpio20";
--				function = "qup05";
--			};
--
--			qup_uart5_rts: qup-uart5-rts-state {
--				pins = "gpio21";
--				function = "qup05";
--			};
--
- 			qup_uart5_tx: qup-uart5-tx-state {
- 				pins = "gpio22";
- 				function = "qup05";
+diff --git a/Documentation/devicetree/bindings/cache/starfive,jh8100-starlink-cache.yaml b/Documentation/devicetree/bindings/cache/starfive,jh8100-starlink-cache.yaml
+new file mode 100644
+index 000000000000..6d61098e388b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/cache/starfive,jh8100-starlink-cache.yaml
+@@ -0,0 +1,66 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/cache/starfive,jh8100-starlink-cache.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: StarFive StarLink Cache Controller
++
++maintainers:
++  - Joshua Yeong <joshua.yeong@starfivetech.com>
++
++description:
++  StarFive's StarLink Cache Controller manages the L3 cache shared between
++  clusters of CPU cores. The cache driver enables RISC-V non-standard cache
++  management as an alternative to instructions in the RISC-V Zicbom extension.
++
++allOf:
++  - $ref: /schemas/cache-controller.yaml#
++
++# We need a select here so we don't match all nodes with 'cache'
++select:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - starfive,jh8100-starlink-cache
++
++  required:
++    - compatible
++
++properties:
++  compatible:
++    items:
++      - const: starfive,jh8100-starlink-cache
++      - const: cache
++
++  reg:
++    maxItems: 1
++
++unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++  - cache-block-size
++  - cache-level
++  - cache-sets
++  - cache-size
++  - cache-unified
++
++examples:
++  - |
++      soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        cache-controller@15000000 {
++          compatible = "starfive,jh8100-starlink-cache", "cache";
++          reg = <0x0 0x15000000 0x0 0x278>;
++          cache-block-size = <64>;
++          cache-level = <3>;
++          cache-sets = <8192>;
++          cache-size = <0x400000>;
++          cache-unified;
++        };
++      };
 -- 
-2.17.1
+2.25.1
 
 
