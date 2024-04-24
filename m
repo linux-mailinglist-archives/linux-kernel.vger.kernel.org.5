@@ -1,232 +1,167 @@
-Return-Path: <linux-kernel+bounces-157359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCEA88B105A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:56:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31B918B105C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:56:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0B661C24B26
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:56:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBE702822FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:56:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C5A416D331;
-	Wed, 24 Apr 2024 16:55:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E9716D302;
+	Wed, 24 Apr 2024 16:56:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HNC8fc1d"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V3t/UNtO"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C30613DBB2;
-	Wed, 24 Apr 2024 16:55:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3CB716C450
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:56:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713977752; cv=none; b=f+aLTBrAoUp9KNRaP5QwMQ+1b4DWTLY6/5ajevDXpVSD5aA+3CvTb2krWVikXHRb8dWTqT6dvSlq9KBgrxQ5rlH6qfFNkRKbkbaze7GQZCwEiV3OM9C1Plf7LY4gsIw6TBOYI9HkoT2Q9yqFyHld0517kGvkBkuLQxvp2R28Lg0=
+	t=1713977776; cv=none; b=mkHoIyeNy6/TsqANnbqsvC7HJJDieuui8Xubn9HpbZF8pLeN4I374mRJc4sBDldg0+vfDfUM3te7udV/qSDPvS8TvkxiNTQNG1usW9HyaDchrU3NAlUm7wsHihaoonQCUL/0JzcnvGotF+mllrMOWynyWqWCHdT6Qb2mSaFc0n8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713977752; c=relaxed/simple;
-	bh=XcBcA9wSG/hJqeu2uO50hcTfxZb6NSTZgAUm+I1++nY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GSB5yyRTWoVjCdepqiipGLsHJ+E4YoRpmgFRKPU8S3WTrZ7CcbTC1v2TZVBy3Pww+o8p+QYa/i+rYS5cGIKRTs2E0PiDh5eb8Pa1vNCBKn2nvV3J1i1v8lWntSSVLy/at/+iAmdg/6pGIz4axplZnxfK4GeVAq1C3mO5lCi+wq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HNC8fc1d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33A43C113CD;
-	Wed, 24 Apr 2024 16:55:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713977752;
-	bh=XcBcA9wSG/hJqeu2uO50hcTfxZb6NSTZgAUm+I1++nY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HNC8fc1dGCQBoAHHhdVOJtKeyApmqtVbNNuW6qLJgKphsscgz7l97oYolAN18RgzN
-	 X8WYFrZzikxmCz7NL0qeaGalJAZ5jQNK8gUgKsn5H1Z3PYEFOalGOnXFrSVIYbSrGX
-	 kbcf9513A+QXDgxB55zm0Sq15uyVVq7IMsVG3DbJTXPR+ORsYmWbLDmOyq86wT8c6K
-	 LKHbgYPtYyiGdLIl2qI2lkROy6qlDVj3h/IjId47UQ/iSub4blTTfIaJ5LRalDeVZU
-	 n5OK0F1Is3nUpC5UmnKHg/vK9oI2wd+ge3ok/OQyqpswlDGW5fs/lNby+JtnNu4c+C
-	 2nLvliZyH8T1A==
-Date: Wed, 24 Apr 2024 17:55:47 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
-Cc: sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch,
-	dianders@chromium.org, linus.walleij@linaro.org,
-	krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-	conor+dt@kernel.org, airlied@gmail.com,
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	xuxinxiong@huaqin.corp-partner.google.com
-Subject: Re: [PATCH v3 1/7] dt-bindings: display: panel: Add himax hx83102
- panel bindings
-Message-ID: <20240424-spelling-float-9b881cb80992@spud>
-References: <20240424023010.2099949-1-yangcong5@huaqin.corp-partner.google.com>
- <20240424023010.2099949-2-yangcong5@huaqin.corp-partner.google.com>
+	s=arc-20240116; t=1713977776; c=relaxed/simple;
+	bh=uh4EFCiUkvNxBgNn87BtDStOjyNE9tszgONKqIyv2zU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EjxNf5ZLmncne/P1nOd/xWBIptvVpX62qEIgrz3fPymUICWXhFbOSLKYM6XEmNIZurYrffo9ey/rjcAmP0j45bmzcf5Ey6YJGKiAD0ZhMjTh36EO5Pn+YOn6wLeupjwy5CT83jmJcUbCfWYL/usz2YYYmz03BMfQ5mJQyKPgvyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V3t/UNtO; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713977773;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QpwjXgW96cugkI20yNxhEPChiJUNlZGdch2EYu8uvM4=;
+	b=V3t/UNtOXoC+b6xDV2CEjsAQeki4xMT65SqOVeLIAg+Hk9Puw+zV3xMmF++4AWBF0RCQNQ
+	TpAGZd+OcSKSQmbLt8I1KLlIuHkTK+BRqoa62pKUWR2NE2nAXBQFYu3mPs3XrQdHdgsUui
+	reCgslcXcjc9U9xWQYOrR57wLWTzO+U=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-643-eD2EIFcIOwCkS1egBXq31g-1; Wed, 24 Apr 2024 12:56:12 -0400
+X-MC-Unique: eD2EIFcIOwCkS1egBXq31g-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a4e9ac44d37so5013266b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:56:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713977771; x=1714582571;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QpwjXgW96cugkI20yNxhEPChiJUNlZGdch2EYu8uvM4=;
+        b=YxuEbqN7dMdg5tB7IPROeB4VcxLIW9leVF1o0qB2AXXy1S76mbF/3HpN2P31kgAoCK
+         4vpHtL2VkWn2/SSzt1xZeeohym5C/T/YThc5E95mMll4S4WklmsW3jSlHig0I6rU4kX8
+         2flndTjZvo5JC4IBbp/wgf4ETeKUVL9mFZVqhdRdCP0N6L6lYWGJB+necny0gc8nqdV4
+         Z/+UxrAQCnuNhyX40cUDQgrRPpK/UwYzBvyEBxAWdN+d7y2PuoIDx3ezuk453549krXh
+         X6cH5LHVqrxhStp+IpErjEibfkwMcGSRYFUwj3BV8+GRsvzCeNRAtU9kr9Xt5is+0kQq
+         Uo5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVlh1D/zmAIyZ5uu/SLbA+7G/HKSnwpo27Vi5I/owDkaYRS10Emi3Uqk4cNg9kzce8pSg+SQfRWICnRvLc2mk/6LY+3ZmFTejgSt6Ch
+X-Gm-Message-State: AOJu0YxaSNp2Qvh9Cko+/cyEU3FZhjBqTSxjUNfVuggZl0t3/o3OdJT2
+	7JdZqjYbG9wIf1fGYmjWJovDnXgDMLEu+xbxHuWrbuarKMZfCEQaKD2vNo16ND9A7CS/6b1nWT9
+	RZJrn0xi9yrMqCZ6WalI/Bwzu8PfrrBnnh4Us5DNa+qKtHkXcZiLeNOT2FYyEdQ==
+X-Received: by 2002:a17:907:a0e:b0:a51:a288:5af9 with SMTP id bb14-20020a1709070a0e00b00a51a2885af9mr2726807ejc.51.1713977771191;
+        Wed, 24 Apr 2024 09:56:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEAzyv6HKiopDyaSXvCgdVur8CKCKopDhm7+o8rXN9GohklOErE6TQm1AsBp5DYN4EuFUjHog==
+X-Received: by 2002:a17:907:a0e:b0:a51:a288:5af9 with SMTP id bb14-20020a1709070a0e00b00a51a2885af9mr2726782ejc.51.1713977770773;
+        Wed, 24 Apr 2024 09:56:10 -0700 (PDT)
+Received: from [192.168.0.222] (host-79-51-196-100.retail.telecomitalia.it. [79.51.196.100])
+        by smtp.gmail.com with ESMTPSA id bt15-20020a170906b14f00b00a51eed4f0d7sm8575225ejb.130.2024.04.24.09.56.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 09:56:10 -0700 (PDT)
+Message-ID: <99c1761a-9c00-4167-86e5-8a69cb6d9e5d@redhat.com>
+Date: Wed, 24 Apr 2024 18:56:08 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Pj/RbvYXrqipqoo5"
-Content-Disposition: inline
-In-Reply-To: <20240424023010.2099949-2-yangcong5@huaqin.corp-partner.google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sched/fair: fix dlserver duplicate start and stop
+To: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
+ Daniel Bristot de Oliveira <bristot@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ linux-kernel@vger.kernel.org, Luca Abeni <luca.abeni@santannapisa.it>,
+ Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+ Thomas Gleixner <tglx@linutronix.de>, Joel Fernandes
+ <joel@joelfernandes.org>, Shuah Khan <skhan@linuxfoundation.org>,
+ Phil Auld <pauld@redhat.com>, Suleiman Souhlal <suleiman@google.com>,
+ Youssef Esmat <youssefesmat@google.com>
+References: <20240412192304.3201847-1-vineeth@bitbyteword.org>
+Content-Language: en-US, pt-BR, it-IT
+From: Daniel Bristot de Oliveira <bristot@redhat.com>
+In-Reply-To: <20240412192304.3201847-1-vineeth@bitbyteword.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+On 4/12/24 21:23, Vineeth Pillai (Google) wrote:
+> dlserver is started when a cfs task is enqueued to an empty runqueue.
+> Similarly dlserver is stopped when the last cfs task is dequeued. But
+> this logic doesn't take care of the cfs throttling scenarios where the
+> root cfs runqueue's h_nr_running stays zero while enqueue/dequeue can
+> happen on throttled runqueues. This causes duplicate calls to start/stop
+> and causes issues with deadline logic. One example is a WARN_ON in
+> task_non_contending because of duplicate calls to dl_server_stop().
+> 
+> WARNING kernel: [ 1970.747755] ------------[ cut here ]------------
+> WARNING kernel: [ 1970.747767] WARNING: CPU: 0 PID: 14202 at kernel/sched/deadline.c:352 task_non_contending+0x404/0x500
+> 
+> WARNING kernel: [ 1970.747868] CPU: 0 PID: 14202 Comm: tpm_manager_cli Tainted: G  W 5.15.152-22017-ga797d64dcd15 #1
+> WARNING kernel: [ 1970.747874] Hardware name: HP Meep/Meep, BIOS Google_Meep.11297.250.0 01/25/2021
+> WARNING kernel: [ 1970.747877] RIP: 0010:task_non_contending+0x404/0x500
+> 
+> WARNING kernel: [ 1970.747910] Call Trace:
+> WARNING kernel: [ 1970.747914]  <TASK>
+> WARNING kernel: [ 1970.747918]  ? __warn+0xa3/0x131
+> WARNING kernel: [ 1970.747923]  ? task_non_contending+0x404/0x500
+> WARNING kernel: [ 1970.747927]  ? report_bug+0x97/0xfa
+> WARNING kernel: [ 1970.747932]  ? handle_bug+0x41/0x66
+> WARNING kernel: [ 1970.747937]  ? exc_invalid_op+0x1b/0x4b
+> WARNING kernel: [ 1970.747941]  ? asm_exc_invalid_op+0x16/0x20
+> WARNING kernel: [ 1970.747946]  ? task_non_contending+0x404/0x500
+> WARNING kernel: [ 1970.747949]  ? dequeue_dl_entity+0x112/0x2cd
+> WARNING kernel: [ 1970.747952]  dl_server_stop+0x17/0x2b
+> WARNING kernel: [ 1970.747956]  dequeue_task_fair+0x262/0x4c4
+> WARNING kernel: [ 1970.747962]  __schedule+0x17c/0xf13
+> WARNING kernel: [ 1970.747966]  ? update_load_avg+0x9b/0x611
+> WARNING kernel: [ 1970.747970]  schedule+0x4e/0xd0
+> WARNING kernel: [ 1970.747974]  schedule_hrtimeout_range_clock+0x10f/0x126
+> WARNING kernel: [ 1970.747977]  ? add_wait_queue+0x4d/0x84
+> WARNING kernel: [ 1970.747982]  poll_schedule_timeout+0x33/0x50
+> WARNING kernel: [ 1970.747987]  do_sys_poll+0x4a3/0x626
+> WARNING kernel: [ 1970.747993]  ? __se_sys_ppoll+0xdf/0xdf
+> WARNING kernel: [ 1970.748000]  __se_sys_poll+0x70/0xf7
+> WARNING kernel: [ 1970.748003]  do_syscall_64+0x51/0xa1
+> WARNING kernel: [ 1970.748007]  entry_SYSCALL_64_after_hwframe+0x5c/0xc6
+> WARNING kernel: [ 1970.748012] RIP: 0033:0x7bc815769510
+
+I saw that as well.... but from a robot.. not with a reproducer.
+
+> dlserver should be started on an idle root cfs rq, when
+>  - enqueue on a non-throttled cfs_rq causing the root cfs rq to
+>    go non-idle, or
+>  - untthrottle results in the root cfs rq to go non-idle.
+> 
+> Similarly dlserver should be stopped on a non-idle root cfs rq, when
+>  - dequeue on a non-throttled cfs_rq causing the root cfs rq to
+>    go idle, or
+>  - throttle results in the root cfs rq to go idle.
 
 
---Pj/RbvYXrqipqoo5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+seem to make sense, I will add this check on v7.
 
-On Wed, Apr 24, 2024 at 10:30:04AM +0800, Cong Yang wrote:
-> In V1, discussed with Doug and Linus [1], we need break out as separate
-> driver for the himax83102-j02 controller. Beacuse "starry,himax83102-j02"
-> and in this series "BOE nv110wum-l60" "IVO t109nw41" panels use same
-> controller, they have some common CMDS. So add new documentation for
-> this panels.
+Btw, as this is an ongoing thread discussion, instead of sending a patch, next time,
+please reply to the patchset... it is easier for everybody to keep track.
 
-It'd be good to note in the commit message that the 3v3 supply is not
-present on these panels, given it was present in the other binding and
-not here.
+-- Daniel
 
-> [1]: https://lore.kernel.org/all/CACRpkdbzYZAS0=3DzBQJUC4CB2wj4s1h6n6aSAZ=
-QvdMV95r3zRUw@mail.gmail.com
->=20
-> Signed-off-by: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
-> ---
-> Chage since V3:
->=20
-> - Update commit message.
->=20
-> V2: https://lore.kernel.org/all/20240422090310.3311429-2-yangcong5@huaqin=
-=2Ecorp-partner.google.com
->=20
-> ---
->  .../display/panel/boe,tv101wum-nl6.yaml       |  2 -
->  .../bindings/display/panel/himax,hx83102.yaml | 73 +++++++++++++++++++
->  2 files changed, 73 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/display/panel/himax=
-,hx83102.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/display/panel/boe,tv101wum=
--nl6.yaml b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl=
-6.yaml
-> index 906ef62709b8..53fb35f5c9de 100644
-> --- a/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.ya=
-ml
-> +++ b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.ya=
-ml
-> @@ -32,8 +32,6 @@ properties:
->        - innolux,hj110iz-01a
->          # STARRY 2081101QFH032011-53G 10.1" WUXGA TFT LCD panel
->        - starry,2081101qfh032011-53g
-> -        # STARRY himax83102-j02 10.51" WUXGA TFT LCD panel
-> -      - starry,himax83102-j02
->          # STARRY ili9882t 10.51" WUXGA TFT LCD panel
->        - starry,ili9882t
-> =20
-> diff --git a/Documentation/devicetree/bindings/display/panel/himax,hx8310=
-2.yaml b/Documentation/devicetree/bindings/display/panel/himax,hx83102.yaml
-> new file mode 100644
-> index 000000000000..2e0cd6998ba8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/panel/himax,hx83102.yaml
-
-Filename matching a compatible please. What you've done here makes it
-seem like there's a fallback compatible missing, given this looks like
-the LCD panel controller and the starry compatible below is an LCD panel.
-
-> @@ -0,0 +1,73 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/panel/himax,hx83102.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Himax HX83102 MIPI-DSI LCD panel controller
-> +
-> +maintainers:
-> +  - Cong Yang <yangcong5@huaqin.corp-partner.google.com>
-> +
-> +allOf:
-> +  - $ref: panel-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +        # STARRY himax83102-j02 10.51" WUXGA TFT LCD panel
-> +      - starry,himax83102-j02
-> +
-> +  reg:
-> +    description: the virtual channel number of a DSI peripheral
-> +
-> +  enable-gpios:
-> +    description: a GPIO spec for the enable pin
-> +
-> +  pp1800-supply:
-> +    description: core voltage supply
-> +
-> +  avdd-supply:
-> +    description: phandle of the regulator that provides positive voltage
-> +
-> +  avee-supply:
-> +    description: phandle of the regulator that provides negative voltage
-> +
-> +  backlight:
-> +    description: phandle of the backlight device attached to the panel
-
-I'm not sure why this was given a description when port or rotation
-was not.
-
-Otherwise, this looks fine to me.
-
-Cheers,
-Conor.
-
-> +
-> +  port: true
-> +  rotation: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - enable-gpios
-> +  - pp1800-supply
-> +  - avdd-supply
-> +  - avee-supply
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    dsi {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +        panel@0 {
-> +            compatible =3D "starry,himax83102-j02";
-> +            reg =3D <0>;
-> +            enable-gpios =3D <&pio 45 0>;
-> +            avdd-supply =3D <&ppvarn_lcd>;
-> +            avee-supply =3D <&ppvarp_lcd>;
-> +            pp1800-supply =3D <&pp1800_lcd>;
-> +            backlight =3D <&backlight_lcd0>;
-> +            port {
-> +                panel_in: endpoint {
-> +                    remote-endpoint =3D <&dsi_out>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +...
-> --=20
-> 2.25.1
->=20
-
---Pj/RbvYXrqipqoo5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZik5kgAKCRB4tDGHoIJi
-0vQEAQCABxeP8C4PVO0oy7rmAnyax20mxLqgK/83cR+wn6PwTQD+MyzcuAspe9+N
-QVbJuxD7LhSAFPIPTocJGhAi2aFUpAY=
-=uy9b
------END PGP SIGNATURE-----
-
---Pj/RbvYXrqipqoo5--
 
