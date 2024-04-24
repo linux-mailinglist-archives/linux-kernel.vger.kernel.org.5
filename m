@@ -1,106 +1,80 @@
-Return-Path: <linux-kernel+bounces-157761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9482E8B15BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:03:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15DC78B15C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:04:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 278E02849F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:02:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 507781C21AF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:04:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17472159593;
-	Wed, 24 Apr 2024 22:02:54 +0000 (UTC)
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBFD0157474;
-	Wed, 24 Apr 2024 22:02:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 955FC15B564;
+	Wed, 24 Apr 2024 22:04:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LOTbOX7n"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D786B157492;
+	Wed, 24 Apr 2024 22:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713996173; cv=none; b=mXl/a3+0uz1DjaAdW8W7nj3cq7KNwQf+bh5/Cf6XaL6GLkw60Qaz3RIcbZh/wXaKjBjZ+ztyLbJQhquC8Oaz2b5BNkx6NN0BsE4usbKiDP5nmnIqsdzwCkf2WeqVxvUgOYywQHjJpnR08Z54/tshSlQENv52k5I+7pMWA/pgpl8=
+	t=1713996276; cv=none; b=pFlZiFe2qGxru1GJCovNdsvo5lD6VyvT0PYy+MSl4HSYhnL5gG2PswjQfwYK7NdJotlqQHRJiguwXeYvp1Up97QoR34/AB35ORmToVVXwjTKRNWw8LNMMK6I9OAgfd+LF7dcW1Ar77UJEZQYNdLJeVS9Tbz8fWe5Wd5OLdXnrEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713996173; c=relaxed/simple;
-	bh=889DZ02S6SUVQkUhisDCWyheeMIzXijzcmfyta4BrzA=;
+	s=arc-20240116; t=1713996276; c=relaxed/simple;
+	bh=ExMY2DGUIWSWHmlNIofPsgB8GGtX0pH1hq3K1IaRN+s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XxnUdwm19JGgbGrTE2dw4jAPlfrV/m8zAn1bx3ZtlBHLPNu5W6vka8h6Uka7fjq2Bq/X5R4XXYNlKuM/SsAGDKGbAZhgWEQrP5WFAHBRh1MLhBHnfdjrWFTgxI4QzDUK+EPI0Pz2PbMQKWhO7RLXeaQf1GJYce93JAGdO6Ek2Ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu; spf=pass smtp.mailfrom=1wt.eu; arc=none smtp.client-ip=163.172.96.212
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1wt.eu
-Received: (from willy@localhost)
-	by pcw.home.local (8.15.2/8.15.2/Submit) id 43OM2bnN010288;
-	Thu, 25 Apr 2024 00:02:37 +0200
-Date: Thu, 25 Apr 2024 00:02:37 +0200
-From: Willy Tarreau <w@1wt.eu>
-To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc: Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/nolibc: disable brk()/sbrk() tests on musl
-Message-ID: <20240424220237.GA10281@1wt.eu>
-References: <20240424-nolibc-musl-brk-v1-1-b49882dd9a93@weissschuh.net>
- <20240424021313.GA7774@1wt.eu>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WIuzDC1q3SENufP3erGN9UqNRLMCdpghAFX9//VerNzP3pvLLppZg/IsSkw8bw8/3+eRuzT+DY2ylu5R+Kd7HCD4MFkSbQS0KCUjEuSfth1zHgEHvtC+07ldAFFfvKrIHV+MEoY8FjLKKbtEd92HKDCDmk98eCJVAnt+aQg1WTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LOTbOX7n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39BB2C113CD;
+	Wed, 24 Apr 2024 22:04:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713996276;
+	bh=ExMY2DGUIWSWHmlNIofPsgB8GGtX0pH1hq3K1IaRN+s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LOTbOX7n9SyqWouZPINt8hRWgfHp50GI3RR0vlwFWRwu8VxSx7W8UGc3uBEcGpOtY
+	 +1aHPLIFTuleD51AdBad9RJ07NjR9Ul8dYPgNb/G3a52bDUKon7ImnhO1CN3VIPjNc
+	 HmPX+vQaXfwZPM8xwW5FqiYz0LJCU8IdemVt1RD67amUSi4gPUsNfOVNgB57cWGErt
+	 aUOEL0tjKykv7ORbbu+YRRZ1E1GCT5ktoBfjHQ06Obuz6jzoyBGw+j4LLdBsBFsfUv
+	 1cNo/tHc04WorrdbI+hM9RJpej8XJwlZxDvXivhZ7McCHJIv0HaSWuG0+MPc+RRfEF
+	 PFILxUhX3oI5g==
+Date: Wed, 24 Apr 2024 17:04:33 -0500
+From: Rob Herring <robh@kernel.org>
+To: Joshua Yeong <joshua.yeong@starfivetech.com>
+Cc: linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
+	conor+dt@kernel.org, krzk+dt@kernel.org,
+	jeeheng.sia@starfivetech.com, linux-riscv@lists.infradead.org,
+	leyfoon.tan@starfivetech.com, paul.walmsley@sifive.com,
+	palmer@dabbelt.com, devicetree@vger.kernel.org, conor@kernel.org
+Subject: Re: [PATCH v3 2/2] dt-bindings: cache: Add docs for StarFive
+ Starlink cache controller
+Message-ID: <171399595085.782407.16477944917789511195.robh@kernel.org>
+References: <20240424075856.145850-1-joshua.yeong@starfivetech.com>
+ <20240424075856.145850-3-joshua.yeong@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240424021313.GA7774@1wt.eu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20240424075856.145850-3-joshua.yeong@starfivetech.com>
 
-On Wed, Apr 24, 2024 at 04:13:13AM +0200, Willy Tarreau wrote:
-> On Wed, Apr 24, 2024 at 12:15:33AM +0200, Thomas Weiﬂschuh wrote:
-> > On musl calls to brk() and sbrk() always fail with ENOMEM.
-> > Detect this and skip the tests on musl.
-> > 
-> > Tested on glibc 2.39 and musl 1.2.5 in addition to nolibc.
-> > 
-> > Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
-> > ---
-> >  tools/testing/selftests/nolibc/nolibc-test.c | 10 +++++++---
-> >  1 file changed, 7 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-> > index 94bb6e11c16f..89be9ba95179 100644
-> > --- a/tools/testing/selftests/nolibc/nolibc-test.c
-> > +++ b/tools/testing/selftests/nolibc/nolibc-test.c
-> > @@ -942,6 +942,7 @@ int run_syscall(int min, int max)
-> >  	int ret = 0;
-> >  	void *p1, *p2;
-> >  	int has_gettid = 1;
-> > +	int has_brk;
-> >  
-> >  	/* <proc> indicates whether or not /proc is mounted */
-> >  	proc = stat("/proc", &stat_buf) == 0;
-> > @@ -954,6 +955,9 @@ int run_syscall(int min, int max)
-> >  	has_gettid = __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 30);
-> >  #endif
-> >  
-> > +	/* on musl setting brk()/sbrk() always fails */
-> > +	has_brk = brk(0) == 0;
-> > +
-> >  	for (test = min; test >= 0 && test <= max; test++) {
-> >  		int llen = 0; /* line length */
-> >  
-> > @@ -969,9 +973,9 @@ int run_syscall(int min, int max)
-> >  		CASE_TEST(kill_0);            EXPECT_SYSZR(1, kill(getpid(), 0)); break;
-> >  		CASE_TEST(kill_CONT);         EXPECT_SYSZR(1, kill(getpid(), 0)); break;
-> >  		CASE_TEST(kill_BADPID);       EXPECT_SYSER(1, kill(INT_MAX, 0), -1, ESRCH); break;
-> > -		CASE_TEST(sbrk_0);            EXPECT_PTRNE(1, sbrk(0), (void *)-1); break;
-> > -		CASE_TEST(sbrk);              if ((p1 = p2 = sbrk(4096)) != (void *)-1) p2 = sbrk(-4096); EXPECT_SYSZR(1, (p2 == (void *)-1) || p2 == p1); break;
-> > -		CASE_TEST(brk);               EXPECT_SYSZR(1, brk(sbrk(0))); break;
-> > +		CASE_TEST(sbrk_0);            EXPECT_PTRNE(has_brk, sbrk(0), (void *)-1); break;
-> > +		CASE_TEST(sbrk);              if ((p1 = p2 = sbrk(4096)) != (void *)-1) p2 = sbrk(-4096); EXPECT_SYSZR(has_brk, (p2 == (void *)-1) || p2 == p1); break;
-> > +		CASE_TEST(brk);               EXPECT_SYSZR(has_brk, brk(sbrk(0))); break;
-> >  		CASE_TEST(chdir_root);        EXPECT_SYSZR(1, chdir("/")); chdir(getenv("PWD")); break;
-> >  		CASE_TEST(chdir_dot);         EXPECT_SYSZR(1, chdir(".")); break;
-> >  		CASE_TEST(chdir_blah);        EXPECT_SYSER(1, chdir("/blah"), -1, ENOENT); break;
+
+On Wed, 24 Apr 2024 15:58:56 +0800, Joshua Yeong wrote:
+> Add DT binding documentation used by StarFive's
+> JH8100 SoC Starlink cache controller.
 > 
-> Looks good, thank you Thomas!
+> Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
+> ---
+>  .../cache/starfive,jh8100-starlink-cache.yaml | 66 +++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/cache/starfive,jh8100-starlink-cache.yaml
+> 
 
-BTW, Acked-by: Willy Tarreau <w@1wt.eu>
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
 
-Willy
 
