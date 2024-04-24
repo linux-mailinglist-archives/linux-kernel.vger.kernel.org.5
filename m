@@ -1,180 +1,98 @@
-Return-Path: <linux-kernel+bounces-157071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 110F78B0C78
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:28:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B011A8B0C7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:28:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48C3AB23FC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:28:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6619A1F21646
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:28:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB1E15E812;
-	Wed, 24 Apr 2024 14:28:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E9A415E80A;
+	Wed, 24 Apr 2024 14:28:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nB1GSJJb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Go2vKWSe"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B198E15B15C;
-	Wed, 24 Apr 2024 14:28:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2880815E5DC;
+	Wed, 24 Apr 2024 14:28:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713968900; cv=none; b=jCsDVQoAOHV/L7kOY8hXLn12xV5iNyKe3flvV5KIynDqv4TQLMIXWIYt3RLwgzyCpC6mvdAucSufZTuwipUti7pWw21fAti35LniFHnCya2y7zyHpX5gw4TExL/Emjf6Tu1Z+cI3RxJcROBE9YtrMjrDGLHE1fwhBpUmiKHMK4Y=
+	t=1713968912; cv=none; b=U+8Lppt3TVG9wIFIDLSaIu7w7vWD0q57tZX9k76Zu+fzFH+8uVNQTjqXzoEUH9SFjmW95mlH0GWzWMNqgPxbx6Fy7Hlej5NRJICRDgul7NDAShcCw8H34CiXc5AUm8sAXJtS9pl/etKPGN9UZqNnixI8HmyKZrjHZrLnOJUQrmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713968900; c=relaxed/simple;
-	bh=0bXj55cRRwgJmp1/Upxrw4MJ5bCblTkPE847LyJTv2E=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fNq2/s+6EZZVkighKt7aMZkXazHSnb4DkjIRtwVpzG4WYXDf3dQJdzbsZwLLDNnSOl5yyxl4B1+hNtPUdst+CbJzXvj96aBa0wbNwh5Mrt1TKyLIKkHGeSEK0wg+DSgbOaGH/7KaaU/ljQuIXNXApZlvmxSpV0TnxePQJcCtp1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nB1GSJJb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCDCEC113CD;
-	Wed, 24 Apr 2024 14:28:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713968900;
-	bh=0bXj55cRRwgJmp1/Upxrw4MJ5bCblTkPE847LyJTv2E=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=nB1GSJJbUfdncCQjgrtZ3L06InY0W628g/6DvkX25FfUkmkPG60pqJFLKMFaCXw8A
-	 1BnfAZH46DoQeN4JylqyKQimXYhD1H7sOwIPkdXsSVjzc27i8Jf/LgeMClX44SVXCV
-	 At0+LCdQybDKZJvnkUJDSX1DabRHpUUz2O13E0MkkLw1Q7Pq5SPCVFSqFFCOz3POGB
-	 4hzwulFHQfI++UhU4V6exonvtCSz6Ut8/efkCYQNL+02LkKwKq/ubkcd0jOKW8CiaZ
-	 lqXxw0fVIK2mEcUaLqKQEB33SPxBHwSQj9Gkce1c1IG80NlzMybqmQoBHsAVwM7eDT
-	 EdKK5MTw/MI0Q==
-Date: Wed, 24 Apr 2024 07:28:18 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Joe Damato <jdamato@fastly.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, tariqt@nvidia.com,
- saeedm@nvidia.com, mkarsten@uwaterloo.ca, gal@nvidia.com,
- nalramli@fastly.com, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, "open list:MELLANOX
- MLX4 core VPI driver" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net-next 3/3] net/mlx4: support per-queue statistics via
- netlink
-Message-ID: <20240424072818.2c68a1ab@kernel.org>
-In-Reply-To: <ZiieqiuqNiy_W0mr@LQ3V64L9R2>
-References: <20240423194931.97013-1-jdamato@fastly.com>
-	<20240423194931.97013-4-jdamato@fastly.com>
-	<Zig5RZOkzhGITL7V@LQ3V64L9R2>
-	<20240423175718.4ad4dc5a@kernel.org>
-	<ZiieqiuqNiy_W0mr@LQ3V64L9R2>
+	s=arc-20240116; t=1713968912; c=relaxed/simple;
+	bh=ZGUBvVU+wUeold3VQ/v7Mrd2/TfD5M94jQA+X7DngOg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nCWNMOgpyew3p908D26irs6Ig07dzOKS40+GGa3vI6D+fx0wYJ5Sm76JQZccyHJXHJp4Sa4zlnvdtEhsMk4EKmoJ9hBT2hQovyB/ynmTBQsVoWonjg4Xn5/IkAOcsSTNFPjKSTzFwfASI6bjHDHJulTXIGnf2/Xmn1s9JBwN6KM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Go2vKWSe; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713968911; x=1745504911;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZGUBvVU+wUeold3VQ/v7Mrd2/TfD5M94jQA+X7DngOg=;
+  b=Go2vKWSeungmNS2llwsqDKAFBmLRR3K2ZYLGC9jiiS2khVzOStQEtAg0
+   /wm9fqLGBJuIsBwM5q1AnXaiOge6ZBAMsGLfoa3ijdp3o/6qUP0nIvqri
+   LLmwnD0Uq/2QMibI5/bQqiT+TsQ5i3CWOo0hyJRtOrfST5eGb5nQjA6Vs
+   G79hcCaaeUh67s6UJ5/31VY8f+RG948X6XyAud4G1lKPzw5zmiAr1VD9j
+   7zKnTGyX1ndQNFgl3Q8NaNwaE/g8lqc8FzCpqp3Dqw834Rbrhr5YgfWNe
+   IrniIRH+RvYqHo92qGU2hE03M9BuS+PeDdB8PwU1dfoWBP8HIZoWU06U9
+   Q==;
+X-CSE-ConnectionGUID: QZo0Ngn2TuqcWdJgVKp+vg==
+X-CSE-MsgGUID: 94fFlIX1RAqDEgYASaq+7g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="20218493"
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="20218493"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 07:28:31 -0700
+X-CSE-ConnectionGUID: l5bvbc+iTUqK+RtYtKYzWQ==
+X-CSE-MsgGUID: wDZhpXciQBqy7isSHuYenQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="25244369"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 07:28:27 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rzdbk-00000000fuA-1MMn;
+	Wed, 24 Apr 2024 17:28:24 +0300
+Date: Wed, 24 Apr 2024 17:28:24 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+	Siddharth Vadapalli <s-vadapalli@ti.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v1 1/1] PCI: dra7xx: Add missing header inclusion
+Message-ID: <ZikXCMgYaQn_DGXw@smile.fi.intel.com>
+References: <20240423211817.3995488-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240423211817.3995488-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Tue, 23 Apr 2024 22:54:50 -0700 Joe Damato wrote:
-> On Tue, Apr 23, 2024 at 05:57:18PM -0700, Jakub Kicinski wrote:
-> > On Tue, 23 Apr 2024 12:42:13 -1000 Joe Damato wrote: =20
-> > > I realized in this case, I'll need to set the fields initialized to 0=
-xff
-> > > above to 0 before doing the increments below. =20
-> >=20
-> > I don't know mlx4 very well, but glancing at the code - are you sure we
-> > need to loop over the queues is the "base" callbacks?
-> >=20
-> > The base callbacks are for getting "historical" data, i.e. info which
-> > was associated with queues which are no longer present. You seem to
-> > sweep all queues, so I'd have expected "base" to just set the values=20
-> > to 0. And the real values to come from the per-queue callbacks. =20
->=20
-> Hmm. Sorry I must have totally misunderstood what the purpose of "base"
-> was. I've just now more closely looked at bnxt which (maybe?) is the only
-> driver that implements base and I think maybe I kind of get it now.
->=20
-> For some reason, I thought it meant "the total stats of all queues"; I di=
-dn't
-> know it was intended to provide "historical" data as you say.
->=20
-> Making it set everything to 0 makes sense to me. I suppose I could also s=
-imply
-> omit it? What do you think?
+On Wed, Apr 24, 2024 at 12:18:17AM +0300, Andy Shevchenko wrote:
+> Driver is using chained_irq_*() APIs, add the respective inclusion.
 
-The base is used to figure out which stats are reported when we dump=20
-a summary for the whole device. So you gotta set them to 0.
+This should be part of the series that I sent previously.
+20240423172208.2723892-1-andriy.shevchenko@linux.intel.com
 
-> > The init to 0xff looks quite sus. =20
->=20
-> Yes the init to 0xff is wrong, too. I noticed that, as well.
->=20
-> Here's what I have listed so far in my changelog for the v2 (which I have=
-n't
-> sent yet), but perhaps the maintainers of mlx4 can weigh in?
->=20
-> v1 -> v2:
->  - Patch 1/3 now initializes dropped to 0.
->  - Patch 3/3 includes several changes:
->    - mlx4_get_queue_stats_rx and mlx4_get_queue_stats_tx check if i is
->      valid before proceeding.
->    - All initialization to 0xff for stats fields has been omit. The
->      network stack does this before calling into the driver functions, so
->      I've adjusted the driver functions to only set values if there is
->      data to set, leaving the network stack's 0xff in place if not.
->    - mlx4_get_base_stats sets all stats to 0 (no locking etc needed).
+-- 
+With Best Regards,
+Andy Shevchenko
 
-All the ones you report right? Not just zero the struct.
-Any day now (tm) someone will add a lot more stats to the struct
-so the init should be selective only to the stats that are actually
-supported.
 
-> Let me know if that sounds vaguely correct?
->=20
-> > Also what does this:
-> >  =20
-> > >	if (!priv->port_up || mlx4_is_master(priv->mdev->dev)) =20
-> >=20
-> > do? =F0=9F=A4=94=EF=B8=8F what's a "master" in this context? =20
->=20
-> I have a guess, but I'd rather let the Mellanox folks provide the official
-> answer :)
-
-My guess is that on multi-port only one of the netdevs is "in charge"
-of the PCIe function. But these are queue stat, PCIe ownership may
-matter for refresh but not for having the stats. So my guess must be
-wrong..
-
-> > > Sorry about that; just realized that now and will fix that in the v2 =
-(along
-> > > with any other feedback I get), probably something:
-> > >=20
-> > >   if (priv->rx_ring_num) {
-> > >           rx->packets =3D 0;
-> > >           rx->bytes =3D 0;
-> > >           rx->alloc_fail =3D 0;
-> > >   }
-> > >=20
-> > > Here for the RX side and see below for the TX side. =20
-> >=20
-> > FWIW I added a simple test for making sure queue stats match interface
-> > stats, it's tools/testing/selftests/drivers/net/stats.py
-> >=20
-> > You have to export NETIF=3D$name to make it run on a real interface.
-> >=20
-> > To copy the tests to a remote machine I do:
-> >=20
-> > make -C tools/testing/selftests/ TARGETS=3D"net drivers/net drivers/net=
-/hw" install INSTALL_PATH=3D/tmp/ksft-net-drv
-> > rsync -ra --delete /tmp/ksft-net-drv root@${machine}:/root/
-> >=20
-> > HTH =20
->=20
-> Thanks, this is a great help actually.
->=20
-> I have a similar changeset for mlx5 (which is hardware I do have access t=
-o)
-> that adds the per-queue stats stuff so I'll definitely give your test a t=
-ry.
->=20
-> Seeing as I made a lot of errors in this series, I'll hold off on sending=
- the
-> mlx5 series until this mlx4 series is fixed and accepted, that way I can
-> produce a much better v1 for mlx5.
-
-mlx5 would be awesome! But no pressure on sending ASAP. I was writing a
-test for page pool allocation failures, which depends on qstat to check
-if driver actually saw the errors (I'll send it later today), and I
-couldn't confirm it working on mlx5 :(
 
