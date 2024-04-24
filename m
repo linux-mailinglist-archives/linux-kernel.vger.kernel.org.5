@@ -1,123 +1,154 @@
-Return-Path: <linux-kernel+bounces-156056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB35A8AFD56
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:27:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AAF08AFD58
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 02:28:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49C351F23146
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:27:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 977D41C22131
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:28:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 316BA256D;
-	Wed, 24 Apr 2024 00:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6CCA1C36;
+	Wed, 24 Apr 2024 00:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="BsXN047C"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="FvDEDUK4"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E59421C14;
-	Wed, 24 Apr 2024 00:27:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE13634
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 00:28:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713918465; cv=none; b=Wu+foObWQzYJEES+EBaWaYS8b4JtfhouJsPrprMHQ7HyBdm71kF54QRxtBsb2pgogICEDHVfcAW8WdXS62ayIO+FeuOloOpqiYNiJdV126igfJuKWgMGdMg2TqtkLuUYNPTpBjJGOWTWs/JwKvWpPqMPp3TJSqdnHjw70x8ydQ4=
+	t=1713918495; cv=none; b=CRnJeIIZt+nC9VOL87A59rd9wnhS4sTERHa2ukf/zhZPmbAC8qLnxaZn1ugv/Nr0hrVKErLh5cG8Mwh7IGpvlb5W2LLhvdrbXt2Pr0T6/921FmLWUmjJNkjfwUXH53QHYmEU+2kEwbnRxR06420Yes/S05MneMG6unjdF8jJX9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713918465; c=relaxed/simple;
-	bh=hMVdeOjzCcWM0sHJB6+XBEyYprE9EQmvrZy15OVVkKo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d8Z3Aci5WUdnhbHnAMqX9z9QwZLDKmkFQd5+H8E57GtpKqwp2FMd25B4GU47Z/askXc4OechMcABU65a05Rz9Y2hpVGScib9KYoWXJrLuOfhrsId+kLwtcP96RSKmBIJz63m0WnJgQh1qhr+4MYfkwZUs8qW/j6LMMPARxZNyHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=BsXN047C; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=/uUK99t9+7kF0ZmVH8V0LL/FNsMRpVs2GHtXWBhvpMU=; b=BsXN047C+kTFlWgmsKTX/+VHq+
-	IhpIQrBWh/QeHa2JZKz2QmefcwNxQJImlGrUv59ObYyrG06CMu+euwca+hJmkx+/Z8X74ur0tqs7I
-	rX4wzjOVFmaxNEfgh0EwTMEMNK19JYMRXv1gCatn1nOA/TFDUajEbdA6vlhnIAcBTmMs=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rzQTu-00DlRL-L9; Wed, 24 Apr 2024 02:27:26 +0200
-Date: Wed, 24 Apr 2024 02:27:26 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
-	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, corbet@lwn.net,
-	linux-doc@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
-	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
-	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
-	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
-	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
-	benjamin.bigler@bernformulastudent.ch
-Subject: Re: [PATCH net-next v4 11/12] microchip: lan865x: add driver support
- for Microchip's LAN865X MAC-PHY
-Message-ID: <231ce196-6a68-4f09-8f9a-976c5ce1495d@lunn.ch>
-References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
- <20240418125648.372526-12-Parthiban.Veerasooran@microchip.com>
+	s=arc-20240116; t=1713918495; c=relaxed/simple;
+	bh=R/OgSmiO5urrOxI3K+4q4wNzXhrJbrqWVoXEWuijYx8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LfTeiWUmPg35dGaK9xEZlwMifC/tWnKSAqPEGPcg7AS10N81sp8XdRXDn3HKEx86MIJE/8EyuirIvpGinsxxnbzCFCKczC0iJYXJtbnRgiYj9E+zNJCYZUJMtETiUa32T6j55gb759EN+DGrLWYAGRfarm/06B7IIiUQPk1ZuEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=FvDEDUK4; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-516d2b9cd69so7723604e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:28:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713918491; x=1714523291; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GXU+ikToE9vTgd0d2ogVMdIIk0usIDCY3palNyF75i4=;
+        b=FvDEDUK49YxIx6JmmZnqcjWAK8rb8EFRKf4UjII+hm7SJcl/MZqnBCRWM0ag8Q3+EO
+         yyz3VLEBGWAd2lZ2rl7iidbe69JZ/hDgOcEgytBi2RtPrWVdgPZfYZD72YXv8kKKfUlS
+         dSQLYMnW0iW6SR/lAUipjpC20TPZ/1YphTSWUyL7k/zYTRWAvZT2l8qsGwawqgCrMp9d
+         hE4u37bQYk97SxcHeSfgELYBVGSfRw3RmAGcSlora4d2oYxQ1nwEx4NAGUaQ8bhWRit/
+         z2w1Ap5K3RdbFDWeJU27yifdwjz97VnqHC5UOxsehTXEf0Zuex1cGWKgJCuNF3ywFSBT
+         WiOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713918491; x=1714523291;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GXU+ikToE9vTgd0d2ogVMdIIk0usIDCY3palNyF75i4=;
+        b=tV282EwilzVToyF1MhzR2HHpWXb7/KaAAqVS0CGrCZWhmjF4lQRgVkeNn7e35U2Kpc
+         DghNKlVNoB/BiyS8/j48lgZKEoJUX9VDB+1w7zYj1dZ8ZTOXI5Dv5Z5dVd44YE7dX1hO
+         pjm85znLgbZUHje71pYns1khRn4+7GZcbaldKsBMgad5WZ3ZdVjddVK3L3xPdzy0rQEd
+         G9ttQpnaeImELJsvpfMYQhCxlTB3xRXjGxhOTmLXJ2dalxWmgrpSt8fY+WYb1GmUA1pt
+         b3d6bth6cIuNEj1oOcijFHsmWt54xNFIf4984E/uma2M73oaJW6E6WdL9hbcpB/Zn4Nb
+         GpMw==
+X-Forwarded-Encrypted: i=1; AJvYcCVOE5f8VmgwWiSta/ityF7Zp0LflMMey8z5CVERaRfueSdXtSujVO8u0GvSCtbRNJFFTJONEEScLPR2vxo0vKy0sAb73dyzGrgcePoJ
+X-Gm-Message-State: AOJu0YwwnBNYUXnz0XmPmHBaBwHMk0ORVW1PSoFW01iIY7wstTZnKwmN
+	RnQEG+ZACIR7+7Oq3Ehskv34PvuvN+MkBuGYS6XFDtPGQXjbUFpHLXZfcVeprY9J9T92eAzqhk4
+	xY05+pTLJKveetC6czb8tPcVaJqPhluZoTVMKsQ==
+X-Google-Smtp-Source: AGHT+IFmAtveWqF5KaXct/eDRNhEoPLTdbLM1bttvHvTHWx51gYkcxlUgQIhdEx7nF7tg8XpB0fvpPToj5um1tKlVE0=
+X-Received: by 2002:a19:914d:0:b0:516:c696:9078 with SMTP id
+ y13-20020a19914d000000b00516c6969078mr607660lfj.50.1713918491483; Tue, 23 Apr
+ 2024 17:28:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418125648.372526-12-Parthiban.Veerasooran@microchip.com>
+References: <20240416061533.921723-1-irogers@google.com>
+In-Reply-To: <20240416061533.921723-1-irogers@google.com>
+From: Atish Kumar Patra <atishp@rivosinc.com>
+Date: Tue, 23 Apr 2024 17:28:00 -0700
+Message-ID: <CAHBxVyF-u__MY9BNkqxUJg4ra76CzT0p_JBVaQqZm=u4V4u5AQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/16] Consistently prefer sysfs/json events
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, Beeman Strong <beeman@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> +/* OPEN Alliance Configuration Register #0 */
-> +#define OA_TC6_REG_CONFIG0		0x0004
-> +#define CONFIG0_ZARFE_ENABLE		BIT(12)
+On Mon, Apr 15, 2024 at 11:15=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+>
+> As discussed in:
+> https://lore.kernel.org/lkml/20240217005738.3744121-1-atishp@rivosinc.com=
+/
+> preferring sysfs/json events consistently (with or without a given
+> PMU) will enable RISC-V's hope to customize legacy events in the perf
+> tool.
+>
 
-If this is a standard register, you should put these defined where
-other drivers can use them.
+Thanks for remapping legacy events in a generic way. This looks great
+and got rid of my
+ugly arch specific way of remapping.  Is there a good way for the
+driver (e.g via sysfs) to tell the perf tool
+whether to remap the legacy event or not ?
 
-> +static int lan865x_set_mac_address(struct net_device *netdev, void *addr)
-> +{
-> +	struct lan865x_priv *priv = netdev_priv(netdev);
-> +	struct sockaddr *address = addr;
-> +	int ret;
-> +
-> +	ret = eth_prepare_mac_addr_change(netdev, addr);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (ether_addr_equal(address->sa_data, netdev->dev_addr))
-> +		return 0;
-> +
-> +	ret = lan865x_set_hw_macaddr(priv, address->sa_data);
-> +	if (ret)
-> +		return ret;
-> +
-> +	eth_hw_addr_set(netdev, address->sa_data);
+In RISC-V the legacy systems without the new ISA extension may not
+want to remap if running
+the latest kernel.
 
-It seems more normal to call eth_commit_mac_addr_change(), which
-better pairs with eth_prepare_mac_addr_change().
+I described the problem in detail in the original thread as well.
+https://lore.kernel.org/lkml/63d73f09-84e5-49e1-99f5-60f414b22d70@rivosinc.=
+com/
 
-> +static int lan865x_set_zarfe(struct lan865x_priv *priv)
-> +{
-> +	u32 regval;
-> +	int ret;
-> +
-> +	ret = oa_tc6_read_register(priv->tc6, OA_TC6_REG_CONFIG0, &regval);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Set Zero-Align Receive Frame Enable */
-> +	regval |= CONFIG0_ZARFE_ENABLE;
-> +
-> +	return oa_tc6_write_register(priv->tc6, OA_TC6_REG_CONFIG0, regval);
-> +}
+FWIW, for the entire series.
+Tested-by: Atish Patra <atishp@rivosinc.com>
 
-There does not appear to be anything specific to your device here. So
-please make this a helper in the shared code, so any driver can use
-it.
-
-	Andrew
+> Some minor clean-up is performed on the way.
+>
+> v2. Additional cleanup particularly adding better error messages. Fix
+>     some line length issues on the earlier patches.
+>
+> Ian Rogers (16):
+>   perf parse-events: Factor out '<event_or_pmu>/.../' parsing
+>   perf parse-events: Directly pass PMU to parse_events_add_pmu
+>   perf parse-events: Avoid copying an empty list
+>   perf pmu: Refactor perf_pmu__match
+>   perf tests parse-events: Use branches rather than cache-references
+>   perf parse-events: Legacy cache names on all PMUs and lower priority
+>   perf parse-events: Handle PE_TERM_HW in name_or_raw
+>   perf parse-events: Constify parse_events_add_numeric
+>   perf parse-events: Prefer sysfs/json hardware events over legacy
+>   perf parse-events: Inline parse_events_update_lists
+>   perf parse-events: Improve error message for bad numbers
+>   perf parse-events: Inline parse_events_evlist_error
+>   perf parse-events: Improvements to modifier parsing
+>   perf parse-event: Constify event_symbol arrays
+>   perf parse-events: Minor grouping tidy up
+>   perf parse-events: Tidy the setting of the default event name
+>
+>  tools/perf/tests/parse-events.c |   6 +-
+>  tools/perf/util/parse-events.c  | 482 ++++++++++++++++----------------
+>  tools/perf/util/parse-events.h  |  49 ++--
+>  tools/perf/util/parse-events.l  | 196 +++++++++----
+>  tools/perf/util/parse-events.y  | 261 +++++++----------
+>  tools/perf/util/pmu.c           |  27 +-
+>  tools/perf/util/pmu.h           |   2 +-
+>  7 files changed, 540 insertions(+), 483 deletions(-)
+>
+> --
+> 2.44.0.683.g7961c838ac-goog
+>
 
