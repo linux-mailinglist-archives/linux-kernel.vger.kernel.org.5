@@ -1,101 +1,143 @@
-Return-Path: <linux-kernel+bounces-156718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03E4B8B073B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:24:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CD028B0746
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:26:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B54A9282531
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:24:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1DDC1F220D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:26:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1147159578;
-	Wed, 24 Apr 2024 10:24:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D5B1598E7;
+	Wed, 24 Apr 2024 10:26:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="Cs4Jp7Hd"
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dyD6o43s"
+Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D800158211;
-	Wed, 24 Apr 2024 10:24:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E3915956F;
+	Wed, 24 Apr 2024 10:26:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713954262; cv=none; b=hgSc0Te/E42RiSAy3KD1aUJp/VyZ4mM8n0QR3NW3X834juIdqVYpywISvYYeHCxZOenpBsDmzW1jhaOsUIHhZB1P4GDHOW9rQ/1C9GzwXgPsQqs85HklCwT6lrKbPR92GuB0EDgLb4uR86G9ZQXOnjpocnpSkDbUSccuM/Z8caI=
+	t=1713954366; cv=none; b=bdix13e7ml+9PLLUc4zAbiyYieSP71TESMr4GgmvrMiOSPpvTEmdHfQPx9hM9H1vQgVaTTiRfuHnvPvwJ6zcQbj/FTct3FAHfjufgENr+30b2fQmThvVcGGVCdAr1CIU7Vbrqqb2ro+JUcydPmjIux+QD7F3JRuYvQu5t3UXyNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713954262; c=relaxed/simple;
-	bh=Dr5dwzcjqw7dSzyi89UvoPy4zSpLCzrvPxvOavEG0FI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=iEfz9+6fvJ5pSHbT/enfyPyJUHjRGaqsTVFrxrYrtpdrFrrSN8qfIUKhgxCvKhdCmRFd6fS8X2sHyBr+1bzPiVsLIVgTjDYTgXmgn/XH9i0BQL9z/uHgVsY8yKuqY70bxtrZ5bvqRjGB7zdrCCu3BFDj8ziEHzsiBwXhZULNij4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=Cs4Jp7Hd; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=d/MD22uaUm8+BoL9TbUyYnjmK+2qYuIFAbrMDBfUVbA=; t=1713954259; x=1714559059; 
-	b=Cs4Jp7HdCyicJnycDLC4R7+83WTpkwmSTYKtstZd73WXn35NDWHYm4s5pg0N6PzIpFIUBzNDz0T
-	API3bAm2+NZz8KI7yAADJqZS5d19EijRkMFzzN1hucKXuhX7o8SFu7n8BrEyUoWpczraZmt1Vqteu
-	gIRhrJIcic/KWwIlOs6KDxfeNJR5SIgeVfj3Ig02Iwmoust/nYDF18Zb6/OTVMoLTUMAgbcRJBz+O
-	JOFWlmBFqyQXwOoK0cz3ZukHW5hNMn1FgiN5AA2Ud3Z+WNRhP+XAyBvBk2SM89YnsFV+dFLZlGoqP
-	gSMx1C1SVWlT3zQQPjOltSW6aVAe/eb+1vSg==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.97)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1rzZnU-00000000GUH-0cmV; Wed, 24 Apr 2024 12:24:16 +0200
-Received: from [80.95.105.245] (helo=[172.16.2.143])
-          by inpost2.zedat.fu-berlin.de (Exim 4.97)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1rzZnT-00000001u5A-2sRA; Wed, 24 Apr 2024 12:24:16 +0200
-Message-ID: <7dd171cc41474871408f06326aea5cb87923e454.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH v2] sh: Call paging_init() earlier in the init sequence
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Markus Elfring <Markus.Elfring@web.de>, Oreoluwa Babatunde
- <quic_obabatun@quicinc.com>, linux-sh@vger.kernel.org, 
- kernel-janitors@vger.kernel.org, kernel@quicinc.com, Rich Felker
- <dalias@libc.org>,  Rob Herring <robh@kernel.org>, Yoshinori Sato
- <ysato@users.sourceforge.jp>
-Cc: LKML <linux-kernel@vger.kernel.org>, Andrew Morton
-	 <akpm@linux-foundation.org>
-Date: Wed, 24 Apr 2024 12:24:14 +0200
-In-Reply-To: <f74fdb82-5d66-48f2-830e-3874570f022e@web.de>
-References: <20240423233150.74302-1-quic_obabatun@quicinc.com>
-	 <f74fdb82-5d66-48f2-830e-3874570f022e@web.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1713954366; c=relaxed/simple;
+	bh=AZWGz/WvtgoCzFOkz9gz6ilvmzSpiEaQFbmh8lEyIyM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RwF8VdG8fJVGdLH7O99SRBf81PWdilx6m+OQLjYCMdoMWt4aADHXFjcGv1EEe7iGWpmIqqRpHngITO91UzkUerlS/kRN/MadlMVMuLBq3gPkrZhBV74Kvo1Vma5ElXDKoRj2JSzO71d+2d8P+DrR4TmtoyQSYq9sM68iRPyan00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dyD6o43s; arc=none smtp.client-ip=217.70.178.240
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from relay3-d.mail.gandi.net (unknown [217.70.183.195])
+	by mslow1.mail.gandi.net (Postfix) with ESMTP id 3784DC670A;
+	Wed, 24 Apr 2024 10:24:35 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8A89D6000A;
+	Wed, 24 Apr 2024 10:24:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713954267;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OVEm7ob18VpKCaMTFhx5G9Kb6z4kp/qqC4mfGOtfzt0=;
+	b=dyD6o43s+X70tu36CaPntCI9S7G6Mpdm4x7hO6BsSEu9+z36dVwBteNQBwwE6iaBeSsi3c
+	QQheFRj/aPn5G/WMf+yvs9Pvyqlw7gnKvjlSXYYNjxagiLXQp4uGshTYl4sLZHiPtL+MgE
+	s2qOhPMm2usFpwEyyFnNGPXX+zYMyEEpxGsYdUiMcsnGAPgIlfSO7rrotuYJf7jDr2Z2LT
+	1g/pbBPsm0EBBk46JMYX/O0CmzfZ9cFAdHFXn0O/JWxV0P9p7bE8I/DuzdVuwIkfxdKMdc
+	Mi/GkwbyXIaSvZu9lxr4kZ1I7Da7PbFs5pHVPy69iriR07mtv50BcwN9qZbF3w==
+Message-ID: <8d49f316-bb17-4956-a62b-e64d460825d4@bootlin.com>
+Date: Wed, 24 Apr 2024 12:24:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 02/11] i2c: omap: wakeup the controller during
+ suspend() callback
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Andi Shyti <andi.shyti@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski
+ <brgl@bgdev.pl>, Tony Lindgren <tony@atomide.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, Vignesh R <vigneshr@ti.com>,
+ Peter Rosin <peda@axentia.se>, Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Siddharth Vadapalli <s-vadapalli@ti.com>, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, gregory.clement@bootlin.com,
+ theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>
+References: <20240422194423.GA414623@bhelgaas>
+Content-Language: en-US
+From: Thomas Richard <thomas.richard@bootlin.com>
+In-Reply-To: <20240422194423.GA414623@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: thomas.richard@bootlin.com
 
-On Wed, 2024-04-24 at 10:45 +0200, Markus Elfring wrote:
-> =E2=80=A6
-> > Hence, move the call to paging_init() to be earlier in the init
-> > sequence so that the reserved memory regions are set aside before any
-> > allocations are done using memblock.
-> =E2=80=A6
->=20
-> Will the tag =E2=80=9CFixes=E2=80=9D become relevant here?
+On 4/22/24 21:44, Bjorn Helgaas wrote:
+> On Mon, Apr 22, 2024 at 11:40:02AM +0200, Thomas Richard wrote:
+>> On 4/19/24 10:47, Andi Shyti wrote:
+>>> Hi Thomas,
+>>>
+>>>> +static int omap_i2c_suspend(struct device *dev)
+>>>> +{
+>>>> +	/*
+>>>> +	 * If the controller is autosuspended, there is no way to wakeup it once
+>>>> +	 * runtime pm is disabled (in suspend_late()).
+>>>> +	 * But a device may need the controller up during suspend_noirq() or
+>>>> +	 * resume_noirq().
+>>>> +	 * Wakeup the controller while runtime pm is enabled, so it is available
+>>>> +	 * until its suspend_noirq(), and from resume_noirq().
+>>>> +	 */
+>>>> +	return pm_runtime_resume_and_get(dev);
+>>>> +}
+>>>> +
+>>>> +static int omap_i2c_resume(struct device *dev)
+>>>> +{
+>>>> +	pm_runtime_mark_last_busy(dev);
+>>>> +	pm_runtime_put_autosuspend(dev);
+>>>> +
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>>  static const struct dev_pm_ops omap_i2c_pm_ops = {
+>>>>  	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+>>>>  				      pm_runtime_force_resume)
+>>>> +	SET_SYSTEM_SLEEP_PM_OPS(omap_i2c_suspend, omap_i2c_resume)
+>>>
+>>> If you don't have CONFIG_PM_SLEEP, though, this doesn't compile.
+>>
+>> Hello Andi,
+>>
+>> Yes indeed, the __maybe_unused attribute is missing for
+>> omap_i2c_suspend() and omap_i2c_resume().
+> 
+> Isn't there a way to avoid having to use the __maybe_unused attribute?
+> 
+> E.g., use DEFINE_SIMPLE_DEV_PM_OPS() as is done by these:
+> 
+>   82f9cefadac4 ("serial: 8250_exar: switch to DEFINE_SIMPLE_DEV_PM_OPS()")
+>   f243df0a0be0 ("media: platform: rzg2l-cru: rzg2l-csi2: Switch to RUNTIME_PM_OPS()")
+>   6ccc22a5afcb ("net: ravb: Switch to SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() and pm_ptr()")
 
-I'm not aware of any bugs that have been reported in this context.
+Yes you're right, I don't need the __maybe_unused attribute if I use
+NOIRQ_SYSTEM_SLEEP_PM_OPS().
 
-Adrian
+By the way I can add a patch in the series to remove all the
+__maybe_unused attributes of this driver.
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Regards,
+
+-- 
+Thomas Richard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
