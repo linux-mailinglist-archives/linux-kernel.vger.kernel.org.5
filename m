@@ -1,168 +1,160 @@
-Return-Path: <linux-kernel+bounces-156852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C54618B0921
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:20:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E8C38B092A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:21:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E45B288D33
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:20:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 358DAB22D83
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:21:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4073515ADB3;
-	Wed, 24 Apr 2024 12:20:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A763715ADAC;
+	Wed, 24 Apr 2024 12:21:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gs3LSytU"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Eo45agJf"
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5AF15A4BA
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 12:20:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A732C15A4BA
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 12:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713961251; cv=none; b=ewGuIL67yI5Exlsra1PYpioRKgAqAB2K61NRmQefJHD4iyHdER9T8faDADrDXZKcFIZA70Fvfp+C7UyMhsF2ZwN+8+Iz9lhj/IFaXB4hC7rsD16jRrUZZk6b0T3FxG6fJPeSXz9neuYNDpy3ri/zabSf8bvi3jkm/91klTlt2CI=
+	t=1713961302; cv=none; b=jYUeKet2WCXgzrPY4fa9FCmyAp0TBiGfr/lEZiXg7ft/M/P+3dslsEju6aTuqH9BxMxMKlAxL6k7Bp19B5I7gZMGaGAGZ/25sRGnhkV8NQodZ+jUpgztr1ZSazS38Ta6XdE5Fcg1fKtGv0P5gQzuH1ux8jM6L/xwZ1FlJGykvc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713961251; c=relaxed/simple;
-	bh=QXyTAYtBEHqfKfsBRuXbIP00XZG3dAzuEqxSavK2oRs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NG0QykFL85ltnAgi9lXEugFBURcQiT/EF8VWgz8/JjdUWlSxSBZVV/gSeeqIo7Rl2ogrDAfZ3sjUS9TkJIa6wY++yPo74MlIYGQfhDUiXA5db/W2fY8H31w4XJMsTMrCnld2KCtpf//obj8Z2NpYYMF1EKMb0+b8jOumCItl0oM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gs3LSytU; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-de462979e00so7715309276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:20:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713961248; x=1714566048; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QXyTAYtBEHqfKfsBRuXbIP00XZG3dAzuEqxSavK2oRs=;
-        b=gs3LSytU3jDhhIAmFOvLS8BZCOMsXNtyS9bgBy53UYKVGLN6zf5ssNiEdMdi0xTChr
-         ywCXPjONKVU5snKcK6O2uNUTa1SiX4G58vrrJ/kHUvS1alAKSq1LsXDvz/XViwd5sB1M
-         wKEjvvymoQHuag26UJdD7j/2NXHHFXiYLMjjweTUvv5h0RMCwWSAdFgFQJcfSxwyV0eS
-         6eoSMWzsXY4yuCBEJUNvMbxKEO7WVNqQUnPrxplOMZwTwsbtXKrqbYJH4dt4OE6HYUO8
-         Bmuww/JC2NcxyR1nhLCVaHJIN1OVDI/XsJGgDK/jDq6+g8rmSTbRkuT/9hhJHz6T6iYc
-         g3CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713961248; x=1714566048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QXyTAYtBEHqfKfsBRuXbIP00XZG3dAzuEqxSavK2oRs=;
-        b=UZ9PCDyYSdXfiyRAx2XwAcujr6G+9eGggnPKc+VIWLnh0CJ02/jq2HHXg3X/jxDww3
-         txRSL+oOqvEEPOZC8huOxReEtWBytT9aGMy5xx306XL/6IAvNdOKUdg0JZ2rDU5IjOhw
-         Rlr0T5LV7ZwhtreYwywK9FVaIdlanu/0ezE5vKlJD4LvBQKOPM3B1ZACikZIokNhhRQE
-         1PiaAsBnpXxycL9hDJgqpH81oFuwAo/VODS0SrYEjZ3P3tT4Zq9oSm/HhT+Ix4YJ1Ibv
-         tMUxvcr0isR+EcHnD8jbY4U+cOZ6lkkTtjb4LmXiqZsfg6Z7rD0UC6+EH2kZ1fTTqoGj
-         aAwA==
-X-Forwarded-Encrypted: i=1; AJvYcCUpUnLf/0qLSYRbPL2ahJhWQXJ9A3pkokT15uaX3Zc2WHzCGk/CIuW166mt4cU4wWnovZn/JI+ShPBuvh8Eibmq97RwNuKfe6fEOLOi
-X-Gm-Message-State: AOJu0Yw5blD6T97y0+lWkVSmSiGXzxBEEwEHwdbHraQ1Wiuh7v8lQPov
-	DJG4Dh2+5GS1/+fjxnA+iLhX6Kqg9aUQGfGM/lDTYuHv41B8XrajWZ1vCIEfukehWua1Jnix2eA
-	9w25jaFT9tBTk6ShIxjmsS+T8pcu/OX5Vit/V7w==
-X-Google-Smtp-Source: AGHT+IFlnUzjZT7CIke7TNCrSUx76xu1l/kSb/3YVpva/PnKnsHU1IGww6Ek7hw5Vt+mX8BVYvB8BjcE5mbTfmYmXDY=
-X-Received: by 2002:a05:6902:1024:b0:dca:e4fd:b6d6 with SMTP id
- x4-20020a056902102400b00dcae4fdb6d6mr2642434ybt.61.1713961248050; Wed, 24 Apr
- 2024 05:20:48 -0700 (PDT)
+	s=arc-20240116; t=1713961302; c=relaxed/simple;
+	bh=YxtpFFX7mHzwaAbOxjF4cbEoH2y8B5Deda1fqi3UAx8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PUY9yo6ooCQadcIy7+eEct55DRzXbsABg61d0seU+37/OJ5+DdtQWZZGKe0mMuByQApdBA1AuYGarND+gRSeEg/ul3rG7YAiG17dqg9ToeNBt342pVfwlu7e2vyYKOB01MVaoxvJRW9egpeIr0vHY3EJQ5biGxHYbtxVUtHsobc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Eo45agJf; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <32690d46-facf-4548-8915-d37604d2f54e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713961297;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0WdXEQJeti9xObmiI3NOcA4xzxVIiBqdDHBEiYkiDJE=;
+	b=Eo45agJfdnNkfpNmv/kQe73FfGgL2Myav7WMwL682HSubexjghgLAS10l7CBvwCXPoCKF/
+	y5B3Eb0GNXdL7fE5fLP7H0AyGsqO4lYMaVK+ZqmcRXhN5RGdiFDDMgYxucNIBNbpzmC96R
+	/cnf+LaxdT7G3Sa9hrdZXlhZ2coD2k4=
+Date: Wed, 24 Apr 2024 20:21:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422130036.31856-1-brgl@bgdev.pl> <99242a7c-53bf-4227-9623-7bc092f564b3@penguintechs.org>
- <CAMRc=MepDwUbAKrWgm0CXKObqy8=igtug0QDgo-CgwxjZCAC2Q@mail.gmail.com>
- <b982b73d-0540-409c-a6e2-0e03ecb11715@penguintechs.org> <0381f39c-38ba-4a2b-915c-f14c5f911eb9@penguintechs.org>
- <CAMRc=MfnEct7ThQhCA3AoY7hxq8j1mmFLNNkK17+RSvJxs67XQ@mail.gmail.com> <2371f538-ec53-4037-b171-c62bf4e06eb1@penguintechs.org>
-In-Reply-To: <2371f538-ec53-4037-b171-c62bf4e06eb1@penguintechs.org>
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Date: Wed, 24 Apr 2024 14:20:37 +0200
-Message-ID: <CACMJSeunUaj0cxLaN4MpFmX5vTOx_vnWjBN4Y2FavdQoQxFRkg@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: qca: set power_ctrl_enabled on NULL returned
- by gpiod_get_optional()
-To: Wren Turkal <wt@penguintechs.org>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Zijun Hu <quic_zijuhu@quicinc.com>, 
-	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2] software node: Implement device_get_match_data fwnode
+ callback
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ dri-devel@lists.freedesktop.org, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Daniel Scally <djrscally@gmail.com>,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>
+References: <20240422164658.217037-1-sui.jingfeng@linux.dev>
+ <Zie3ebHOEpWHj1qV@smile.fi.intel.com>
+ <d5bc1e73-a553-451e-ab74-f5f0ca259c6b@linux.dev>
+ <hcltp2bbxxg2t7ibmzgiib7mgbwgmvzwnnq6mochdh7c4h76r3@bxj6yk5zq64e>
+ <22979e28-ed48-467f-a5cf-82be57bcc2f7@linux.dev>
+ <CAA8EJpr1vWVeGsoph9h=PPQRPKkjk+d7WVQpGwpPuhCQwkqCbg@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <CAA8EJpr1vWVeGsoph9h=PPQRPKkjk+d7WVQpGwpPuhCQwkqCbg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 24 Apr 2024 at 14:17, Wren Turkal <wt@penguintechs.org> wrote:
->
-> On 4/24/24 4:56 AM, Bartosz Golaszewski wrote:
-> > On Wed, Apr 24, 2024 at 1:53=E2=80=AFPM Wren Turkal <wt@penguintechs.or=
-g> wrote:
-> >>
-> >> On 4/24/24 4:16 AM, Wren Turkal wrote:
-> >>> On 4/24/24 2:04 AM, Bartosz Golaszewski wrote:
-> >>>> On Wed, 24 Apr 2024 07:07:05 +0200, Wren Turkal<wt@penguintechs.org>
-> >>>> said:
-> >>>>> On 4/22/24 6:00 AM, Bartosz Golaszewski wrote:
-> >>>>>> From: Bartosz Golaszewski<bartosz.golaszewski@linaro.org>
-> >>>>>>
-> >>>>>> Any return value from gpiod_get_optional() other than a pointer to=
- a
-> >>>>>> GPIO descriptor or a NULL-pointer is an error and the driver shoul=
-d
-> >>>>>> abort probing. That being said: commit 56d074d26c58 ("Bluetooth:
-> >>>>>> hci_qca:
-> >>>>>> don't use IS_ERR_OR_NULL() with gpiod_get_optional()") no longer s=
-ets
-> >>>>>> power_ctrl_enabled on NULL-pointer returned by
-> >>>>>> devm_gpiod_get_optional(). Restore this behavior but bail-out on
-> >>>>>> errors.
-> >>>>> Nack. This patch does fixes neither the disable/re-enable problem n=
-or
-> >>>>> the warm boot problem.
-> >>>>>
-> >>>>> Zijun replied to this patch also with what I think is the proper
-> >>>>> reasoning for why it doesn't fix my setup.
-> >>>>>
-> >>>> Indeed, I only addressed a single issue here and not the code under =
-the
-> >>>> default: label of the switch case. Sorry.
-> >>>>
-> >>>> Could you give the following diff a try?
-> >>>
-> >>> I had a feeling that was what was going on. I'll give the patch a sho=
-t.
-> >>>
-> >>> wt
-> >>
-> >> Considering this patch is basically equivalent to patch 1/2 from Zijun=
-,
-> >> I am not surprised that is works similarly. I.e. on a cold boot, I can
-> >> disable/re-enable bluetooth as many time as I want.
-> >>
-> >
-> > Zijun didn't bail out on errors which is the issue the original patch
-> > tried to address and this one preserves.
-> >
-> >> However, since this patch doesn't include the quirk fix from Zijun's
-> >> patchset (patch 2/2), bluetooth fails to work after a warm boot.
-> >>
-> >
-> > That's OK, we have the first part right. Let's now see if we can reuse
-> > patch 2/2 from Zijun.
->
-> I'm compiling it right now. Be back soon.
->
+Hi,
 
-Well I doubt it's correct as it removed Krzysztof's fix which looks
-right. If I were to guess I'd say we need some mix of both.
 
-Bart
+On 2024/4/24 16:39, Dmitry Baryshkov wrote:
+>>> Sui, if that fits your purpose,
+>> That doesn't fits my purpose, please stop the recommendation, thanks.
+>>
+>>
+>>> please make sure that with your patch
+>>> (or the next iteration of it) you can get driver_data from the matched
+>>> platform_device_id.
+>> No, that's a another problem.
+>>
+>> The 'platform_get_device_id(pdev)->driver_data' you mentioned is completely
+>> off the domain of fwnode API framework. You are completely deviate what we
+>> are currently talking about.
+>>
+>> What we are talking about is something within the fwnode API framework.
+>>
+>> You can hack the device_get_match_data() function to call platform_get_device_id()
+>> as a fallback code path when the fwnode subsystem couldn't return a match data to
+>> you. But this is another problem.
+> No. I was using this as a pointer for having non-DT driver data.
 
-> >> @Zijun, this patch looks more idiomatic when I look at the surrounding
-> >> code than your patch 1/2. Notice how it doesn't use the "else if"
-> >> construct. It does the NULL test separately after checking for errors.
-> >>
-> >> --
-> >> You're more amazing than you think!
-> >
-> > Bart
->
-> --
-> You're more amazing than you think!
+Whatever.
+
+Whatever how does it going to be used by you, or whatever data the pointer you use to point to.
+Just remember one thing, it is not relevant to my patch itself.
+
+
+> As I
+> wrote several paragraphs above, other subsystems use their own
+> driver-specific match structures.
+
+
+Fine, but on the DT systems, they mostly probed via DT.
+Thus, the so-called driver-specific match structures won't be used.
+
+
+> Reworking subsystems one-by-one to
+> be able to use generic codepath sounds to me like a way to go.
+
+Fine, you are encouraged to do whatever you like, you don't have to told me.
+
+
+> Adding
+> "compatible" property doesn't.
+
+
+
+As I have told you several times, software node is kind of complement to ACPI, it's
+definitely need to follow the style of ACPI counterpart. Software node can be secondary
+node of the primary ACPI device node. With this understood, please read the implementation
+of acpi_of_match_device() before express objection. Or you can read several relevant commit
+such as 4222f38ca3b7a ('ACPI / bus: Do not traverse through non-existed device table')
+for knowing some extra background.
+
+Beside, users of the software node backend itself can do whatever they like.
+The value of the "compatible" property is *just* string, programmers
+are free to name their string property in their driver. It is not you to say no though.
+
+No offensive here, I means that both of us are not good at this domain. Especially me,
+but at the very least, I'm willing to listen to what expects in ACPI/swnode domain say.
+One day, you become the top maintainer of specific domain, and when I go to contribute
+then, I will also read to you reviews message carefully.
+
+Back to the technical itself, the "compatible" property is a standard property
+of ACPI _DSD object. This is written into the ACPI Spec. The value of the "compatible"
+property is just string, store it at 'platform_get_device_id(pdev)->driver_data' or in
+'of_device_id->compatible' or some other places doesn't really changes much in semantic.
+
+A device driver can be platform probed, DT probed, ACPI probed, I2C probed, SPI probed...
+Take the driver of I2C slave display bridge as an example, it can platform probed, DT probed,
+I2C probed, in the future, there may have programmers want to add acpi_device_id, then, it will
+gain the 'ACPI probed'.
+
+If each of them introduce a driver-specific match structure. Then, that going to introduce
+very heavy maintain overhead to the maintainers, not to mention to achieve your cheap slogan:
+"Unifying DT and non-DT paths via generic property / fwnode code".
+
+
+-- 
+Best regards,
+Sui
+
 
