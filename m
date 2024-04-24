@@ -1,224 +1,252 @@
-Return-Path: <linux-kernel+bounces-156496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0022A8B0359
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:41:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A3C88B035F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:42:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 238AD1C23666
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:41:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DB3C1C2307C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:42:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 372FC158204;
-	Wed, 24 Apr 2024 07:41:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0592A15820E;
+	Wed, 24 Apr 2024 07:42:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="H9R2Uiqz"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OSWGF7hB"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1ADE1534E0;
-	Wed, 24 Apr 2024 07:41:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 225341581E4;
+	Wed, 24 Apr 2024 07:42:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713944479; cv=none; b=rwtqNlGSS/M0+Q/GBE4K6DP5dZWqzllX1yRhhBKwwtwFPsCHdm9OkRtF2DX7JdTacKIAdMPPqFCqxfaikmu5YyUjt6LswKhecTj4UsuwY77+KZo13/7jEaDdONuOa8O2vvpd8d0SmJV1iQgoMsOYpcWnm/dv9POAEAggLM0enPE=
+	t=1713944531; cv=none; b=bFpp3BVtzDz1VFJxoq3EmmjIO9SpQU63Ku5OcO+ObwYcaQYvYFj8sV1JsmYErUTa9ivUZc9fXEwp+/R6k2F/lRQpdJQRVHPPkU4yp1NeInm85PUKOBv+Dvzrx6JLyI94uRmNNugCQoTuihzzJGK9zKxn36X/Bm6x7c0DjOQ62Lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713944479; c=relaxed/simple;
-	bh=euFLyW2mUNGGgNiXwy0oljlRB8crL8I7b65VqKg3OEE=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=EDO7O91hdmvfWenG4+uH9aHIGw6APOiLZOeL5dJUEE76MZofw+p90bougVtflkY8yAeO3RWe0d/7CHZabKvVevCVn6EQOftVtUMPzG/J9hXbwLfzk9mDQ7eL3/xpawla7FzJmBtfMkpSoYJHryKTFOKRWeB2900X27JlNN1JG68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=H9R2Uiqz; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240424074112euoutp028d29c7710f7c087eee559032f3e46581~JJ2rVDMWA1064410644euoutp02g;
-	Wed, 24 Apr 2024 07:41:12 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240424074112euoutp028d29c7710f7c087eee559032f3e46581~JJ2rVDMWA1064410644euoutp02g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1713944473;
-	bh=euFLyW2mUNGGgNiXwy0oljlRB8crL8I7b65VqKg3OEE=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=H9R2Uiqzrt7iYZRpYqEZMkbiPnTuybjRTzu+swHRR1ZJ4BrcX0oY35veJwuuxeUbe
-	 aQNHO5P1fZmCdsoUmq/bALd65Xw085eBa9TR0A393uOoRtf/89Do7uA+lBbj+qgbLT
-	 EkZRQaeydvBr0L76NbpRUCNNIdiNInkF6mPfy4ok=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240424074112eucas1p1863d3d7b98e0dbe97dd21ee66730e62b~JJ2rICFNZ0760407604eucas1p1p;
-	Wed, 24 Apr 2024 07:41:12 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id 1E.7D.09624.897B8266; Wed, 24
-	Apr 2024 08:41:12 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240424074112eucas1p259a4acc486ca5f8c6cbb4f736f2f984b~JJ2qnrul33139631396eucas1p2L;
-	Wed, 24 Apr 2024 07:41:12 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240424074112eusmtrp12bcebea7847b59366df6dd19bb3a048e~JJ2qmXIIM2835628356eusmtrp1k;
-	Wed, 24 Apr 2024 07:41:12 +0000 (GMT)
-X-AuditID: cbfec7f2-bfbff70000002598-08-6628b798d2b4
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id BC.B0.08810.797B8266; Wed, 24
-	Apr 2024 08:41:12 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240424074111eusmtip1681f98af2abf64a19d66d0e7ab3c9e0d~JJ2qThM-V2991229912eusmtip1-;
-	Wed, 24 Apr 2024 07:41:11 +0000 (GMT)
-Received: from localhost (106.110.32.44) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Wed, 24 Apr 2024 08:41:11 +0100
-Date: Wed, 24 Apr 2024 09:41:06 +0200
-From: Joel Granados <j.granados@samsung.com>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-CC: Luis Chamberlain <mcgrof@kernel.org>, <josh@joshtriplett.org>, Kees Cook
-	<keescook@chromium.org>, Eric Biederman <ebiederm@xmission.com>, Iurii
-	Zaikin <yzaikin@google.com>, Steven Rostedt <rostedt@goodmis.org>, Masami
-	Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Thomas
-	Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>, Stephen
-	Boyd <sboyd@kernel.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry
-	<wad@chromium.org>, Ingo Molnar <mingo@redhat.com>, Peter Zijlstra
-	<peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
-	<vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel
-	Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider
-	<vschneid@redhat.com>, Petr Mladek <pmladek@suse.com>, John Ogness
-	<john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Anil S Keshavamurthy
-	<anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>,
-	Balbir Singh <bsingharora@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
-	<john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
-	KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
-	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
-	<linux-fsdevel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <tools@kernel.org>
-Subject: Re: [PATCH v3 00/10] sysctl: Remove sentinel elements from kernel
- dir
-Message-ID: <20240424074106.c3dojqvobepifrut@joelS2.panther.com>
+	s=arc-20240116; t=1713944531; c=relaxed/simple;
+	bh=ifFeTKdxYgYlphUeuvIFx+Dv+oAd/73UKyLH3o1TNbk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h4gULGQP7HeUDrJOmIW5P3QMI79o3CVb5alW77/svjvvFndQAHKOgZLES38z4htbSzNUJe7IkCPBBOMT2IwkWd1xef900Fu22GcLT2/Ikp7Fr4BQO1Bt1qesM6fDpOLZ/ocCogBOryJPZzIMk2ckI80Ucitzy7Up4bHSjqZUtY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OSWGF7hB; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713944529; x=1745480529;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=ifFeTKdxYgYlphUeuvIFx+Dv+oAd/73UKyLH3o1TNbk=;
+  b=OSWGF7hB8rANZLgptV+yZEV71UJzebmz6o/CalukMQyXmFwAMypx3JQm
+   of6mvRzsH2VlL428VuzYSSL2TVMUsm5WBYtm7MS2TGnqT9zBJll65bZPg
+   mAg3RW6eZ6Q9d0UyaVGhF2fBtYl6sVBQIwEIdNRVr/tWhiWcFM2ydvNzu
+   3S0TeUW0QdchDHpmL0ywZSUTM02ywErAWF7tY1fF9D4pRTHqLBitVUOdb
+   6aGNcfdDAmwyjfv38jp4POUsOo5ar5MtVS+SzGIjq7TqW6YQW40RRc87s
+   3jpHPWzN3A8UJnvAP47Jqt65pOfGuP+S2dLfQU2a4rGYD6sAY4gLPFvP6
+   Q==;
+X-CSE-ConnectionGUID: M2RdbmPaROSCZP1d96XDNg==
+X-CSE-MsgGUID: hKUI3I5iTL288PPcJf6MUQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="9390861"
+X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
+   d="scan'208";a="9390861"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 00:42:07 -0700
+X-CSE-ConnectionGUID: zIrYEmJQTtywSUHadvP5bw==
+X-CSE-MsgGUID: vmWh2OsmQvu5mTjoxh3LlQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
+   d="scan'208";a="24692451"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by fmviesa008.fm.intel.com with ESMTP; 24 Apr 2024 00:42:02 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rzXGR-000104-2d;
+	Wed, 24 Apr 2024 07:41:59 +0000
+Date: Wed, 24 Apr 2024 15:41:58 +0800
+From: kernel test robot <lkp@intel.com>
+To: =?iso-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Peter Griffin <peter.griffin@linaro.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Sam Protsenko <semen.protsenko@linaro.org>
+Cc: oe-kbuild-all@lists.linux.dev, Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Will McVicker <willmcvicker@google.com>,
+	Roy Luo <royluo@google.com>, kernel-team@android.com,
+	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	=?iso-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+Subject: Re: [PATCH 4/7] phy: exynos5-usbdrd: set ref clk freq in
+ exynos850_usbdrd_utmi_init()
+Message-ID: <202404241533.iud4U7SP-lkp@intel.com>
+References: <20240423-usb-phy-gs101-v1-4-ebdcb3ac174d@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="3ox4bgvwus4z6gtg"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <36a1ea2f-92c2-4183-a892-00c5b48c419b@linaro.org>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2VTe0xTVxzOuff23sJSdik4T3DBiKJMBWTO5CxOIhsxN3FjbmZLYFu2Ri7g
-	gEJaq25mCTJAqLKhUNHyKhKe5SEtgvJeBxR5lFEYVt4KruMhiDwE5THqxc1k/32/73HyfX8c
-	Pi5sphz4J8WnWIlYFOJEWhPlTUsG12sVLgH7Litc0LMXKTiq+ruPQHNLfRSabdCTyDjyJ4mS
-	x84TKHWsjUJZmQs4Su2IItCjhFs4WiuPopBOX0ehyNt5GCrvzgCoIUm5LqjC0HJzKYkGflUQ
-	qO1iKKpqncdQbGIFgcy18RiqrrlLoK7KVBI1lLQTSF0UwUPZ9zoxVBiXz0OmhEcAJU79BVBW
-	7k5krFdhSJ20QiF9fD2G1kbmeag2dhhDqz2lBDIuThCoqvQGifS5KyTSahQ4MpQ+wFFsw3rX
-	W43PKNQnX6PQsLqch3Lu+Bx2Z4YmVwimML0QMCkRnQRTln8fY+4oBygmqraXYlQaGaPN281k
-	VY9hjNxkxJneiUOMpiCOZPp7qklmymCgmMwIBc4k3KgHx97ys/7Anw05eZqVuHt+Zx20ptGQ
-	4UX02eYX02QESLSRAys+pN+D8pl0TA6s+UI6D8DkOiPJHXMATs0lE9wxC+Biiw68ijRl5+Oc
-	kAtgz83r1L+u+ZKoDUULoLImjmeJELQzrI7Ixi2YpPfCjsn+dczn26/jOIXU4sfpRgHsSOog
-	LB47+hhU9BgpCxbQh2F7SwbGYVt49/roSw9On4VdI1rK8g5Ob4G5q3wLbUV7wiVVN8E13Qbn
-	swY38E+wpaz35VBIL7wBpysXME7whpd+NmyY7OC4vozi8NuwNfESwQUSAaxbfUJxhxrAnPPz
-	G+mDMKp7dCPhBWMGpwlLI0jbQNNjW66oDbxSnoxztADGxgg5906oHpwkEsB25WvTlK9NU/43
-	jaP3QlXVU/J/9B6YkzmBc/gQLC6eJlSAKgCbWZk0NJCVeojZM25SUahUJg50OxEWqgHrH6x1
-	Vf/0Nkgbn3HTAYwPdGDHevjhTfUfwIEQh4lZJ3vB8+UdAUKBv+iHH1lJ2LcSWQgr1YEtfMJp
-	s8DZfysrpANFp9hglg1nJa9UjG/lEIHZ1Q/7ms7ZbM++ag6TFadmRuZsPd72xKcy3LvnmtlH
-	EUOvfEqdc3/zq6N+XgcuD+TrPrw6Mdq/z/hNipjnmuRY6Wagl02nJ/2HG1V+j6NN2xodH9iF
-	jzSbJ++bQ+0lQ0JvW9GopyTJmq9zRMtMbFrtpgnF8Tyv1hmbCvsEh4NKk94GP+JVEx9Y2zJz
-	r73YNZt34oLT+Ged8oCgdxxxSfSXwd06l5KLbZOJCqSl9tR+f/R5u7mrIDh8MYP9On1Xmr/s
-	SPTRsc/Z0f3vhgwp85tDK4u+uKD/KDLFy/eXKwVMn2/8x86/eYwtag7Yn5n1GHl/U/L4J2RT
-	1P6H6hVDl3bX7wNOhDRI5LEbl0hF/wACtOw12wQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTe0xTVxzHdx+992LsdlcQb8AsG8qC4ApFYAcGjMyEXJw4lrlk02xa4fLY
-	oMU+BJdhCnQGSpyo4EZhUOh4WawWtIAwRAZWJiAgreW1gYisA0QnD5k81totM9l/n/P9fn/f
-	/HJyDoFwJjAXIkEgYUQCfqIbtgG9tWYYfev7eo9Yn6eLEFh6VoiApt+HUTC/PIyDJ+0GDPRP
-	GDHwnSUdBUWWLhyoSxcRUHRbjoLJ3CsIWNfLcdBmuIaDjIYqGOgHSiDQnqe0GiohWLmpw8Do
-	qXwUdOUkgaZbCzDIOluPgqmWkzBo/qkTBXeuFmGg/WI3CjQXZCxQfrcPBjXZ1Sxgzp2EwNmH
-	DyCgrnwT9LeqYKDJW8WB4WQrDNYnFligJWsMBmsmHQr6n06joElXhgFD5SoG6mrzEdCjG0dA
-	Vrt11ysdSzgYVqzjYEyjZ4GKxr1h3vRvM6soXVNcA9GFsj6Uvlw9CNONylGclrcM4bSqVkrX
-	VXnS6mYLTCvM/Qg9NB1C157PxugRUzNGP+zpwelSWT5C55a1QlHO+7nBIqFUwrweLxRLQtwO
-	8IAvlxcIuL5+gVzezrc/C/L1d/MODY5hEhOOMiLv0EPc+GXdB8kaMvX+nXOIDDr9sgJyICjS
-	j7pRXo0ooA0EhyyHqKLCLtxubKF080aWnR2pFZMCs4ceQ9TsvBq1H+ogSq/MfJ5CSXeqWVaO
-	2Bgjd1C3Z0asTBBOVs7OF9vyCNnBpsxTJZgt40jupUbOtKI2ZpNhVPcvJbC9dAyiBmtPsezG
-	q1Rnwf3nIYQ8SukX0lm2UoR0pSrXCJvsQIZSy6oB1L7pG9SC+td/OI16svoAyoUclS80KV9o
-	Uv7XZJc9KfOaBf6f7EVVlE4jdg6htNo5VAXh5yEnRipOiksS87hifpJYKojjRguTaiHrC9ff
-	WK5rgIr/eMxtg2ACaoO2WSfvXdL0Qi6oQChg3JzYf61si+WwY/jHvmJEwoMiaSIjboP8rbd4
-	GnHZFC20fheB5CAvwMef5xcQ6OMfGLDTbTM7IjmLzyHj+BLmS4ZJZkT/zsGEg4sMThEvFTj7
-	GfUNQ84drl5yzRx+Ziv9/sjx4YiV8Cl5sCLUHHmuryucXrpmzPn0Zspg/icbhxzKduX+aB42
-	TqaPawP93bsnX6l/1ze16zXRoz1+u6pUf7704aETKY/G1YQ2fJrp/Tgh0aNC/nXI2Im5sN5n
-	jdc528MlxjwTPx1eL/jWsLq7u3L2WDeRlhOdESnaav5hn/uAKT7ivR0VUn4kW1t6t1L7ec5H
-	QccPz+atR7GL245s8VYsemVuzxgw44uj+zsXNqceCN74hUU6c5m4lOD68zs997wsIr1HX0co
-	E4SUxHof3nT9m+C+tDBOpulIzFXdnn3OF8zi5DCDS91o1Ap50Q0Vx/N5nohIzP8b8evTHXYE
-	AAA=
-X-CMS-MailID: 20240424074112eucas1p259a4acc486ca5f8c6cbb4f736f2f984b
-X-Msg-Generator: CA
-X-RootMTR: 20240422142758eucas1p26e94cf6fbbbc99b27e941a172e8a4e41
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240422142758eucas1p26e94cf6fbbbc99b27e941a172e8a4e41
-References: <20240328-jag-sysctl_remove_empty_elem_kernel-v3-0-285d273912fe@samsung.com>
-	<CGME20240422142758eucas1p26e94cf6fbbbc99b27e941a172e8a4e41@eucas1p2.samsung.com>
-	<36a1ea2f-92c2-4183-a892-00c5b48c419b@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240423-usb-phy-gs101-v1-4-ebdcb3ac174d@linaro.org>
 
---3ox4bgvwus4z6gtg
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi André,
 
-On Mon, Apr 22, 2024 at 04:27:47PM +0200, Konrad Dybcio wrote:
->=20
->=20
-> On 3/28/24 16:44, Joel Granados wrote:
-> > What?
-> > These commits remove the sentinel element (last empty element) from the
-> > sysctl arrays of all the files under the "kernel/" directory that use a
-> > sysctl array for registration. The merging of the preparation patches
-> > [1] to mainline allows us to remove sentinel elements without changing
-> > behavior. This is safe because the sysctl registration code
-> > (register_sysctl() and friends) use the array size in addition to
-> > checking for a sentinel [2].
->=20
-> Hi,
->=20
-> looks like *this* "patch" made it to the sysctl tree [1], breaking b4
-> for everyone else (as there's a "--- b4-submit-tracking ---" magic in
-> the tree history now) on next-20240422
->=20
-> Please drop it (again, I'm only talking about this empty cover letter).
-I see it. Will remove it from sysctl-next
+kernel test robot noticed the following build errors:
 
-Thx for pointing it out.
+[auto build test ERROR on a59668a9397e7245b26e9be85d23f242ff757ae8]
 
-Best
+url:    https://github.com/intel-lab-lkp/linux/commits/Andr-Draszik/dt-bindings-phy-samsung-usb3-drd-phy-add-gs101-compatible/20240424-011137
+base:   a59668a9397e7245b26e9be85d23f242ff757ae8
+patch link:    https://lore.kernel.org/r/20240423-usb-phy-gs101-v1-4-ebdcb3ac174d%40linaro.org
+patch subject: [PATCH 4/7] phy: exynos5-usbdrd: set ref clk freq in exynos850_usbdrd_utmi_init()
+config: hexagon-randconfig-r123-20240424 (https://download.01.org/0day-ci/archive/20240424/202404241533.iud4U7SP-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20240424/202404241533.iud4U7SP-lkp@intel.com/reproduce)
 
->=20
-> Konrad
->=20
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git/com=
-mit/?h=3Dsysctl-next&id=3Dec04a7fa09ddedc1d6c8b86ae281897256c7fdf0
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404241533.iud4U7SP-lkp@intel.com/
 
---=20
+All errors (new ones prefixed by >>):
 
-Joel Granados
+   In file included from drivers/phy/samsung/phy-exynos5-usbdrd.c:13:
+   In file included from include/linux/io.h:14:
+   In file included from arch/hexagon/include/asm/io.h:328:
+   include/asm-generic/io.h:548:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __raw_readb(PCI_IOBASE + addr);
+                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:561:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+                                                           ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+                                                     ^
+   In file included from drivers/phy/samsung/phy-exynos5-usbdrd.c:13:
+   In file included from include/linux/io.h:14:
+   In file included from arch/hexagon/include/asm/io.h:328:
+   include/asm-generic/io.h:574:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+                                                           ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+                                                     ^
+   In file included from drivers/phy/samsung/phy-exynos5-usbdrd.c:13:
+   In file included from include/linux/io.h:14:
+   In file included from arch/hexagon/include/asm/io.h:328:
+   include/asm-generic/io.h:585:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writeb(value, PCI_IOBASE + addr);
+                               ~~~~~~~~~~ ^
+   include/asm-generic/io.h:595:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+                                                         ~~~~~~~~~~ ^
+   include/asm-generic/io.h:605:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+                                                         ~~~~~~~~~~ ^
+>> drivers/phy/samsung/phy-exynos5-usbdrd.c:798:10: error: call to undeclared function 'FIELD_PREP_CONST'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+                   reg |= FIELD_PREP_CONST(SSPPLLCTL_FSEL, 7);
+                          ^
+   6 warnings and 1 error generated.
 
---3ox4bgvwus4z6gtg
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+vim +/FIELD_PREP_CONST +798 drivers/phy/samsung/phy-exynos5-usbdrd.c
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmYot5IACgkQupfNUreW
-QU9JLgv/Xk/varStEW5HfSJDViPIf/SWclVUTpImKj1IK/P76DyvjPdXaekBKiYf
-iwRRN/qqbvDCYp9Hu3nOT5Pp6+kRDKIsMAhz0S+74V6N6kmYo+zuomJ6B5xYE5v/
-lBK2Pecvdic/IhnaYYJrr0kfNFfDpFNnZLEkI+Ao+u9Qho5sXoQqMzB0gdhGNBsA
-sg3tHBk72GQoBtnXD0vAgLe1a3nMIX58N5U8If5nMIY24dk5WDqk4uF+VeKuWoql
-bgEeNHnxrgX+7o65CXUKl3Y5P2r35p4lZ26nSKxUcy9rxCVluyqvcjOWKegC2RHc
-BsPdxqlq+sCS+Jl8GvV9RodvW+TseL8sYbm78PuhrBLmME46zyw8hMOIe9KTQGKz
-PL13bLzLyQ3kHjVyngfEnrobUBJWTO0wSEroqttx/GoKMeFBBubPV9DFnlYmt8qN
-+q1wOQc7/yuDYZHNo272pNOPnLogsjiXUihpXna2l3vN3L8QPb7v52yQHToJeDiK
-RZTL83Ww
-=o7gc
------END PGP SIGNATURE-----
+   750	
+   751	static void exynos850_usbdrd_utmi_init(struct exynos5_usbdrd_phy *phy_drd)
+   752	{
+   753		void __iomem *regs_base = phy_drd->reg_phy;
+   754		u32 reg;
+   755	
+   756		/*
+   757		 * Disable HWACG (hardware auto clock gating control). This will force
+   758		 * QACTIVE signal in Q-Channel interface to HIGH level, to make sure
+   759		 * the PHY clock is not gated by the hardware.
+   760		 */
+   761		reg = readl(regs_base + EXYNOS850_DRD_LINKCTRL);
+   762		reg |= LINKCTRL_FORCE_QACT;
+   763		writel(reg, regs_base + EXYNOS850_DRD_LINKCTRL);
+   764	
+   765		/* Start PHY Reset (POR=high) */
+   766		reg = readl(regs_base + EXYNOS850_DRD_CLKRST);
+   767		reg |= CLKRST_PHY_SW_RST;
+   768		writel(reg, regs_base + EXYNOS850_DRD_CLKRST);
+   769	
+   770		/* Enable UTMI+ */
+   771		reg = readl(regs_base + EXYNOS850_DRD_UTMI);
+   772		reg &= ~(UTMI_FORCE_SUSPEND | UTMI_FORCE_SLEEP | UTMI_DP_PULLDOWN |
+   773			 UTMI_DM_PULLDOWN);
+   774		writel(reg, regs_base + EXYNOS850_DRD_UTMI);
+   775	
+   776		/* Set PHY clock and control HS PHY */
+   777		reg = readl(regs_base + EXYNOS850_DRD_HSP);
+   778		reg |= HSP_EN_UTMISUSPEND | HSP_COMMONONN;
+   779		writel(reg, regs_base + EXYNOS850_DRD_HSP);
+   780	
+   781		/* Set VBUS Valid and D+ pull-up control by VBUS pad usage */
+   782		reg = readl(regs_base + EXYNOS850_DRD_LINKCTRL);
+   783		reg |= LINKCTRL_BUS_FILTER_BYPASS(0xf);
+   784		writel(reg, regs_base + EXYNOS850_DRD_LINKCTRL);
+   785	
+   786		reg = readl(regs_base + EXYNOS850_DRD_UTMI);
+   787		reg |= UTMI_FORCE_BVALID | UTMI_FORCE_VBUSVALID;
+   788		writel(reg, regs_base + EXYNOS850_DRD_UTMI);
+   789	
+   790		reg = readl(regs_base + EXYNOS850_DRD_HSP);
+   791		reg |= HSP_VBUSVLDEXT | HSP_VBUSVLDEXTSEL;
+   792		writel(reg, regs_base + EXYNOS850_DRD_HSP);
+   793	
+   794		reg = readl(regs_base + EXYNOS850_DRD_SSPPLLCTL);
+   795		reg &= ~SSPPLLCTL_FSEL;
+   796		switch (phy_drd->extrefclk) {
+   797		case EXYNOS5_FSEL_50MHZ:
+ > 798			reg |= FIELD_PREP_CONST(SSPPLLCTL_FSEL, 7);
+   799			break;
+   800		case EXYNOS5_FSEL_26MHZ:
+   801			reg |= FIELD_PREP_CONST(SSPPLLCTL_FSEL, 6);
+   802			break;
+   803		case EXYNOS5_FSEL_24MHZ:
+   804			reg |= FIELD_PREP_CONST(SSPPLLCTL_FSEL, 2);
+   805			break;
+   806		case EXYNOS5_FSEL_20MHZ:
+   807			reg |= FIELD_PREP_CONST(SSPPLLCTL_FSEL, 1);
+   808			break;
+   809		case EXYNOS5_FSEL_19MHZ2:
+   810			reg |= FIELD_PREP_CONST(SSPPLLCTL_FSEL, 0);
+   811			break;
+   812		default:
+   813			dev_warn(phy_drd->dev, "unsupported ref clk: %#.2x\n",
+   814				 phy_drd->extrefclk);
+   815			break;
+   816		}
+   817		writel(reg, regs_base + EXYNOS850_DRD_SSPPLLCTL);
+   818	
+   819		/* Power up PHY analog blocks */
+   820		reg = readl(regs_base + EXYNOS850_DRD_HSP_TEST);
+   821		reg &= ~HSP_TEST_SIDDQ;
+   822		writel(reg, regs_base + EXYNOS850_DRD_HSP_TEST);
+   823	
+   824		/* Finish PHY reset (POR=low) */
+   825		udelay(10); /* required before doing POR=low */
+   826		reg = readl(regs_base + EXYNOS850_DRD_CLKRST);
+   827		reg &= ~(CLKRST_PHY_SW_RST | CLKRST_PORT_RST);
+   828		writel(reg, regs_base + EXYNOS850_DRD_CLKRST);
+   829		udelay(75); /* required after POR=low for guaranteed PHY clock */
+   830	
+   831		/* Disable single ended signal out */
+   832		reg = readl(regs_base + EXYNOS850_DRD_HSP);
+   833		reg &= ~HSP_FSV_OUT_EN;
+   834		writel(reg, regs_base + EXYNOS850_DRD_HSP);
+   835	}
+   836	
 
---3ox4bgvwus4z6gtg--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
