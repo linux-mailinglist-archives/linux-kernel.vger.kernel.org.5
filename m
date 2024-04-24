@@ -1,70 +1,69 @@
-Return-Path: <linux-kernel+bounces-157378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEBCA8B10CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:19:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E4758B10D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:21:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C7F51C230DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:19:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2579F286E80
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:21:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6EFF16D338;
-	Wed, 24 Apr 2024 17:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C552416D33C;
+	Wed, 24 Apr 2024 17:21:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hUc+bY7X";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cq0zlA4j"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="VDJ1ZkhP";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="6ivm7y17"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9700616C86A;
-	Wed, 24 Apr 2024 17:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C35B815E7E9;
+	Wed, 24 Apr 2024 17:21:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713979186; cv=none; b=hUxkrzs7LdyeZTsPKNJydPXf//5Tfvca1FydAZvQNobnsNVQI4P0G6Nbnxnua2S8HnnemHI2lO+kSy+CSSJwzyGj286g9DOF8cqXebTWvBcNFVD4+z53MqchorYUZlaKLOmQ1XLQ16MK66Cz8G27ORXHjEkdt2357/GHqn3eHt8=
+	t=1713979308; cv=none; b=RKicyyrbbIai1k3toMXi26hMp8f1x/Iq++jodRf+ybFxuCtGXjIUHP1nMBiNR0Gdj1QU+C9kV/c8Yoz4XIJbMBIaEaPIEpJ4OTQhZ08SVUTPRiWq2ghYXiZh7ae7FiE7jOfgpYI1uxkOB0ZqSprftsxad5gzms+wXZ9SKVacY4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713979186; c=relaxed/simple;
-	bh=x7Ce+dUogthNuO8t6VNBi8u+MSlVwOVR1CCnQ/MIrsg=;
+	s=arc-20240116; t=1713979308; c=relaxed/simple;
+	bh=yWhj0o+HpJVDI3YWH2WAC02pq8ek+737Xwj6ZX/cwIk=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=EWU0rlmMgtvKRfTd1dpYd5ZF0/bXuPTrFbD0n2eZ57m8IJ1RM70Tt/sXUHXCckySUVHBdQXLMd1s55UYNIIpuP86dKlkGfuaC/GeZZh1sAmsl5B0jbaseYA9gd62QklvAvjXDIGUo79+F/pA57HHvqomsEcpm2DYfu1TP8tVdTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hUc+bY7X; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cq0zlA4j; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version:Content-Type; b=kUKQduk3TpCjY5x6zavPc+ypkmsFShAQXxnVa4JlmAT+xOk7dzb0z2d/BS0oogWUvz4AdL9SiA+FTLrPqJZwI8Abymwr2piNCA5TPY37RFtKY3dk81I9VO4cTPiBehzeXZ7jmZzWeURZ/pj7jX45oFpf5TX/QiqyOi7uF2srjN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=VDJ1ZkhP; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=6ivm7y17; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713979182;
+	s=2020; t=1713979304;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OIgX8hYJKedlWpKZHCISbN03B7+KCkzESKI9X941yRc=;
-	b=hUc+bY7XdaUe4i2b4TqKGtx9lDylLSmzldzEvAn8mQPtvdDYs0v5kWtB3Nm+Vu8JpW93Vg
-	gGUat+XkI/WTRN1zIU/3ouPh047NwBu6a8uufa1eNllk7BZumEazzM5tJEfP08+VOaHHk0
-	b2pSU387zODGqcMMv+7Dzzsy9CkqGTdg/QXNNJZ0r0tSUv6IdVSQgc3oN4/3hciLoDZi0C
-	Tjl1UwBQWMlIEHh4VniIZaHY/kzWdUoQUHfQMoPpnK8rB7LOemzTxp5tYcpR4cqsvg3387
-	6OY2gH33HcmtgCgw4jQZYeYWASq0HYq41H11rgELbVTmshv6Wz04FMkdsyZcng==
+	bh=GxtJ8OShK36uXTc4XHgLpeP8rPXbYQataNV1BNHE+3U=;
+	b=VDJ1ZkhPCbolPa6U0BU7/iQfGsvWyWHQTFALWjSUIRFAhDjYdt7++U3sy1e2tzXlzTqd3h
+	xoHq0AOfcOrCOqp/hiVhnK8NKJpWezD7EgZzG/h7XxmrPt7gBFTsCKsZaLo3jmz1GU4u39
+	X+PEh0h41PyAlwVSnzYxICLEBTd0ltJXPSXm+SxoVLFw+d+8L7Oxqwim62lKY0/QGapWaz
+	gp94+cJts2jGJGEF5a83gL5fspWe732POGUBzc+IuXWv7O8AAiyEqZ0hsT9x0XSbnW1mjz
+	RT2bodwaKz29Po54qnuLdxqM8Y5NavCYY+m7O/kcTzmGaLasjF4Skv5mnPC8tg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713979182;
+	s=2020e; t=1713979304;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OIgX8hYJKedlWpKZHCISbN03B7+KCkzESKI9X941yRc=;
-	b=cq0zlA4jo7geFavqDooN7ZB8M5yDubfi1Jxg4xvuyaqXGVTXw2TP9zlz2YlfTN80nG7xIi
-	w1fmOJpSR2WXIxDg==
-To: Florian Fainelli <f.fainelli@gmail.com>, Florian Fainelli
- <florian.fainelli@broadcom.com>, linux-kernel@vger.kernel.org
-Cc: opendmb@gmail.com, Tim Ross <tim.ross@broadcom.com>, Broadcom internal
- kernel review list <bcm-kernel-feedback-list@broadcom.com>, "open
- list:BROADCOM BMIPS MIPS ARCHITECTURE" <linux-mips@vger.kernel.org>,
- "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] irqchip/irq-brcmstb-l2: Avoid saving mask on shutdown
-In-Reply-To: <f98dffd7-bb1c-4023-9a73-fdf2107160d1@gmail.com>
-References: <20240416194343.469318-1-florian.fainelli@broadcom.com>
- <87le55ulw5.ffs@tglx> <958c27b1-26d7-4927-976b-4502f33f31f7@gmail.com>
- <87il09ufl4.ffs@tglx> <f98dffd7-bb1c-4023-9a73-fdf2107160d1@gmail.com>
-Date: Wed, 24 Apr 2024 19:19:18 +0200
-Message-ID: <87mspiu19l.ffs@tglx>
+	bh=GxtJ8OShK36uXTc4XHgLpeP8rPXbYQataNV1BNHE+3U=;
+	b=6ivm7y17CYzedN6WQ/3cjqsWR3bQhEbybD9eoP/9H813uVV+BZ5tdLljKX3+nrHf+8kSVq
+	1IDi4EGo59BBVpCw==
+To: Alex Williamson <alex.williamson@redhat.com>, Nipun Gupta
+ <nipun.gupta@amd.com>
+Cc: gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org, maz@kernel.org, git@amd.com, harpreet.anand@amd.com,
+ pieter.jansen-van-vuuren@amd.com, nikhil.agarwal@amd.com,
+ michal.simek@amd.com, abhijit.gangurde@amd.com, srivatsa@csail.mit.edu
+Subject: Re: [PATCH v6 1/2] genirq/msi: add wrapper msi allocation API and
+ export msi functions
+In-Reply-To: <20240423150920.12fe4a3e.alex.williamson@redhat.com>
+References: <20240423111021.1686144-1-nipun.gupta@amd.com>
+ <20240423150920.12fe4a3e.alex.williamson@redhat.com>
+Date: Wed, 24 Apr 2024 19:21:23 +0200
+Message-ID: <87jzkmu164.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,25 +72,14 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 
-On Wed, Apr 24 2024 at 09:50, Florian Fainelli wrote:
-> On 4/22/24 16:45, Thomas Gleixner wrote:
->> On Mon, Apr 22 2024 at 15:26, Florian Fainelli wrote:
->>> On 4/22/24 14:29, Thomas Gleixner wrote:
->>>>> +	if (save)
->>>>> +		b->saved_mask = irq_reg_readl(gc, ct->regs.mask);
->>>>
->>>> what's the conditional actually buying you except more complex code?
->>>
->>> Not much this is an optimization that is simple to carry out. There can
->>> be dozens of such L2 interrupt controllers in a given system and the
->>> MMIO accesses start adding up eventually.
->> 
->> I'm impressed by saving ~12 microseconds per one dozen of interrupt
->> controllers on system shutdown :)
+On Tue, Apr 23 2024 at 15:09, Alex Williamson wrote:
+> I see in https://lore.kernel.org/all/87edbyfj0d.ffs@tglx/ that Thomas
+> also suggested a new subject:
 >
-> I know, right? More seriously are you willing to take that patch, should 
-> I write a better justification?
+>     genirq/msi: Add MSI allocation helper and export MSI functions
+>
+> I'll address both of these on commit if there are no objections or
+> further comments.  Patch 2/ looks ok to me now as well.  Thanks,
 
-I don't have real objections other than rolling my eyes, but a better
-justification would be useful.
+No objections from my side.
 
