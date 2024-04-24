@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-156779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 864B78B080A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:10:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8B288B0817
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:11:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B830A1C21F88
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:10:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE605B226B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E44C15A494;
-	Wed, 24 Apr 2024 11:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10EBC15B128;
+	Wed, 24 Apr 2024 11:10:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bVAGBNaM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lLRpz56F"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B2DC13DDD9;
-	Wed, 24 Apr 2024 11:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DDD515ADBC;
+	Wed, 24 Apr 2024 11:10:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713957027; cv=none; b=LCxHOaftmUEMIDrjwUJSDqp4hvYtX+6n7hHt75PtIlCKEwRHkv/EA3aLwO8apF9L1TbNEeKKvs98GXw3CBVeZs8THtMGWr1tN+7RiB/CDdy5DIMxHUWD4VQsslNZlJ6Ut/ISy04jKrBRa1ZytNLKCwhsNQxCzV6iyZCM3TJpsa8=
+	t=1713957032; cv=none; b=lLlyj+LRTh1Sc7cylkYC44DDysd1GAUcuO+vgqXJ0UgFP1gIs/8K6WfPKDArs+MVYiCwMnUJZMTitff4vj1/6stwVJMsWYDoj9zEHZs/h9E8Idf90gZatYsEsOylSv5rqeJcohjtXYcn93O+YLEm5v0+Zr0IxMBsOgxJXgxTK8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713957027; c=relaxed/simple;
-	bh=Ckxhz825vmza6vvWz/TLutSmlDWafm3SUwU+g4hqtAQ=;
+	s=arc-20240116; t=1713957032; c=relaxed/simple;
+	bh=5gH5c9GDDi9WLsKl6Z7sGCJeqtsVrGwX2qo4yjbesBQ=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=A71NK1CgqxgdJFEx51u1hEQwRZMh/B5fPAbC8i+AHoP1BCPj71c/rYvQBZam0gBOyrCdur5EKV9BUTL20NmROHDplRZSTdD3AdUnZp/RWYWWBP3VO9f3G3AcxxGaJ4EdMbRUf9mcuPWBatpFLb2hoFJZsrJ9LRlCbYcGfIcbNaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bVAGBNaM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E210BC32781;
-	Wed, 24 Apr 2024 11:10:26 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=dg6ghaoKeDVST+B9NflYTEASFoXyO8NnPfJFS03QhDLapRcS0BO8CdCMUngg0XC4fQEjPmDvAD/gjftxxiKmDECFNYJRSDl27UennCUjSkpvQY/2godHFtOPgObeIlbuAr6kpEncYMDiY/PinoRwHBj44eXADoUYdi+WBCZoau0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lLRpz56F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C9438C4AF16;
+	Wed, 24 Apr 2024 11:10:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713957026;
-	bh=Ckxhz825vmza6vvWz/TLutSmlDWafm3SUwU+g4hqtAQ=;
+	s=k20201202; t=1713957031;
+	bh=5gH5c9GDDi9WLsKl6Z7sGCJeqtsVrGwX2qo4yjbesBQ=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=bVAGBNaM7DF00r6IsRzTLUj8CSJoy9XYR8ymyWFycWjZFrAU5SQq81tGhcuF2U/PC
-	 eUKTwL0QBd9POnCBbt8hJ9uLWdFYiP30TmXHtXKwCdUOYyidMwCqxJn/IRevcBVjOU
-	 55o+uv9QjLsMcdxJ/cKynz16F9GJPeYzm+bZKDqKWbKnMDOkg2MoiLb3Lh5yY73Tjc
-	 lQTG3EplQ3d9F44iTDCFeGVwg71NNMOA7/oSg33U0qPK9uxkOwu0YOVMwl1a2NnGj6
-	 SwbiUdScEGocf1tJ4IL3p7Tn947X9d5nZH7VEodftC4Br2fDlxnbbOPhn8qFxLFUKP
-	 ImdVKMeFRUnJA==
+	b=lLRpz56F9j55d+6+qu39aNUTMLy7csK6asaF+R997D3H77neV+fKWIP1P0g9HC7MX
+	 vGJzItw+ps3IDad3rYSXgqM1wQcZ92403W39GmvmGPSo4K3DqEchhOSBKmn3WmEzn8
+	 uWggEcPmCuqGgl3/IfYvFqD7ygaPulhp64ijkE8vgY5UDpOSfTu8/rnaAs1sxvS4lz
+	 D/qRuYL9JdEKYX8aSTSV4yd8zwI/wxWow/6s5PCtgnmOLYujO0BSP5opoGCyF/EjSZ
+	 n+KSCP7uroT83MKzNEyHF9oin4czDsVB0TennMitDo/oVxQUBgSAB6N6LjfJZ7Yq07
+	 0z+uVazcvXK+Q==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CF635C43614;
-	Wed, 24 Apr 2024 11:10:26 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BADCCCF21D8;
+	Wed, 24 Apr 2024 11:10:31 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -51,40 +51,63 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: phy: mediatek-ge-soc: follow netdev LED trigger
- semantics
+Subject: Re: [PATCH net-next v7 00/10] allocate dummy device dynamically
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171395702684.12181.223647631542261480.git-patchwork-notify@kernel.org>
-Date: Wed, 24 Apr 2024 11:10:26 +0000
-References: <4983a6b197ed999808c5690d01ec1ffb4f6407b7.1713656093.git.daniel@makrotopia.org>
-In-Reply-To: <4983a6b197ed999808c5690d01ec1ffb4f6407b7.1713656093.git.daniel@makrotopia.org>
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: dqfext@gmail.com, SkyLake.Huang@mediatek.com, andrew@lunn.ch,
- hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+ <171395703175.12181.16297886360257972212.git-patchwork-notify@kernel.org>
+Date: Wed, 24 Apr 2024 11:10:31 +0000
+References: <20240422123921.854943-1-leitao@debian.org>
+In-Reply-To: <20240422123921.854943-1-leitao@debian.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: aleksander.lobakin@intel.com, kuba@kernel.org, davem@davemloft.net,
+ pabeni@redhat.com, edumazet@google.com, elder@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ nbd@nbd.name, sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
+ lorenzo@kernel.org, taras.chornyi@plvision.eu, ath11k@lists.infradead.org,
+ ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+ geomatsi@gmail.com, kvalo@kernel.org, matthias.bgg@gmail.com,
+ angelogioacchino.delregno@collabora.com, quic_jjohnson@quicinc.com,
+ leon@kernel.org, dennis.dalessandro@cornelisnetworks.com,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ idosch@idosch.org
 
 Hello:
 
-This patch was applied to netdev/net.git (main)
+This series was applied to netdev/net-next.git (main)
 by David S. Miller <davem@davemloft.net>:
 
-On Sun, 21 Apr 2024 01:08:31 +0100 you wrote:
-> Only blink if the link is up on a LED which is programmed to also
-> indicate link-status.
+On Mon, 22 Apr 2024 05:38:53 -0700 you wrote:
+> struct net_device shouldn't be embedded into any structure, instead,
+> the owner should use the private space to embed their state into
+> net_device.
 > 
-> Otherwise, if both LEDs are in use to indicate different speeds, the
-> resulting blinking being inverted on LEDs which aren't switched on at
-> a specific speed is quite counter-intuitive.
+> But, in some cases the net_device is embedded inside the private
+> structure, which blocks the usage of zero-length arrays inside
+> net_device.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] net: phy: mediatek-ge-soc: follow netdev LED trigger semantics
-    https://git.kernel.org/netdev/net/c/5b5f724b05c5
+  - [net-next,v7,01/10] net: core: Fix documentation
+    https://git.kernel.org/netdev/net-next/c/c6e7f276841d
+  - [net-next,v7,02/10] net: free_netdev: exit earlier if dummy
+    https://git.kernel.org/netdev/net-next/c/f8d05679fb3f
+  - [net-next,v7,03/10] net: create a dummy net_device allocator
+    https://git.kernel.org/netdev/net-next/c/c661050f93d3
+  - [net-next,v7,04/10] net: marvell: prestera: allocate dummy net_device dynamically
+    https://git.kernel.org/netdev/net-next/c/ec24c06eb312
+  - [net-next,v7,05/10] net: mediatek: mtk_eth_sock: allocate dummy net_device dynamically
+    https://git.kernel.org/netdev/net-next/c/b209bd6d0bff
+  - [net-next,v7,06/10] net: ipa: allocate dummy net_device dynamically
+    https://git.kernel.org/netdev/net-next/c/1bdab0ee635d
+  - [net-next,v7,07/10] net: ibm/emac: allocate dummy net_device dynamically
+    https://git.kernel.org/netdev/net-next/c/2eb5e25d8495
+  - [net-next,v7,08/10] wifi: qtnfmac: Use netdev dummy allocator helper
+    https://git.kernel.org/netdev/net-next/c/4a8b77eff7e5
+  - [net-next,v7,09/10] wifi: ath10k: allocate dummy net_device dynamically
+    https://git.kernel.org/netdev/net-next/c/57738dab12d9
+  - [net-next,v7,10/10] wifi: ath11k: allocate dummy net_device dynamically
+    https://git.kernel.org/netdev/net-next/c/bca592ead825
 
 You are awesome, thank you!
 -- 
