@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-156304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 349E08B0107
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:30:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09D178B0109
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:30:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64DC51C2254C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:30:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CC95B230CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:30:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54E6155721;
-	Wed, 24 Apr 2024 05:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F74156668;
+	Wed, 24 Apr 2024 05:30:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ca908mHD"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GbDBCcQ6"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 889E8154BF3;
-	Wed, 24 Apr 2024 05:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AA3D1552FC;
+	Wed, 24 Apr 2024 05:30:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713936627; cv=none; b=n8N3aA3gEYA9sli57g/EpO+/JNUTs8Qq6q/2M4y+T4sW0dgIVD/bkoGIRj1/P5as0RC7Ba/D9zvqL/E+Rkts9I768cVUxggnGG4tmgonPvSnT1D0+W1dTU6rY+IxPe3H3FvuHr13Ewqbn0YJQ/Ka9AeQ02KpRGTjwik2E96O6Ts=
+	t=1713936647; cv=none; b=T/RKMeJX1PqyvIomq8X2o7m65276+XQxhICwE5nIL+0hLjiBfVicnFArYf7YpoW0+/puOyV2VJuU/j3XIrZrafYBRLAAaH8twogGv8u5kTYo+n3jHXFfEzDaAYIGb77hiblj2ugnJ526st0gEznOHziBlVerSga+Y6lukvUmGjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713936627; c=relaxed/simple;
-	bh=QpctZFOgjLCGZkae6U7fJY9a2aL5ED2kqQ9t0GVRrMI=;
+	s=arc-20240116; t=1713936647; c=relaxed/simple;
+	bh=LBRamLcaPYBt1vaIiWAE+5pLGZIJAaHQiWBQITKAtzg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UoNTw+ThwI9Vl2Np0eWcK1QiOKGYAGxAUKkSQZtiikF9pMf2I4urOgWDR/9cPbBbU61JDYFlP+raUDEEKtllFx9FArUSf3QvkxBYdGNZErpX0cJUVqO9+8fnM64ZCHo3jlstGxy/KFWMY+WwOgnSJAWrP3N0WgYWAnkALyZqoaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ca908mHD; arc=none smtp.client-ip=198.175.65.10
+	 MIME-Version; b=AtO5N+3fy8Y6iYjaAU3c4qbuU+hAea6uOD6ORP8ZQ/qlnVxt2LKpUwV2iNM/P/emXLh0e1/NSQwsBngTux0LI2dJyBpHOK1BFqmY7i2vk0YVavpK3IKcNGns3aWbA4QAfpdWHa8RpGRdUiRP0tMlSmmSs7H2DYw+8Ibbd8DnmhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GbDBCcQ6; arc=none smtp.client-ip=198.175.65.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713936626; x=1745472626;
+  t=1713936647; x=1745472647;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=QpctZFOgjLCGZkae6U7fJY9a2aL5ED2kqQ9t0GVRrMI=;
-  b=Ca908mHD+K3f0+0icjvlAJc5MLIAsXkbsycomwDEnCV8ulppjiXwrZS1
-   yOm+kDPX9TVErrFsuFTz08ZF+EJ+GymhKMIameKyfu4U9ZsWxU81UTvQj
-   ccFo6p7HPTtQroEKIffB8vKA0nRWyXY92Bn61b5S0Yuc3rz4/qFDz5V/6
-   oyoIHOTCSM4rAdysw4Ku+kcsEfiBz35AcOfp4m+ENLjOrBChQ3NI+OkQP
-   E/Yq7LdNP7h85n8ZF5lLoJbxu7X5nuOk0u2CpyvcqCYLlwoZt4u3FrAg8
-   BWDdwWTV6rkqfQFG4+F/Elk8uwAqVRNSCK6J+8TUe4OvVjHbFzvjYeYbS
-   Q==;
-X-CSE-ConnectionGUID: sG3NEsBaTF2l3y5PhUrbPA==
-X-CSE-MsgGUID: eaog4hBMStyZ7KXVeLi4zg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="27004324"
+  bh=LBRamLcaPYBt1vaIiWAE+5pLGZIJAaHQiWBQITKAtzg=;
+  b=GbDBCcQ6Xhf/sWegGNDkPrJvIYcbBl5d/ndugUt2g3C19OLp6Q2D/FO8
+   OAW9qhEEQzrPaahRWq7V0jwbP4Zexyx1Wz9Ffvro7ro39LsfBTYTP7HZq
+   GgNf+1QgG+Nyvo6XbSILBa/UcSf4XrzPM6ZsPGYeaaxV/lxSD/66+ZJgG
+   EYwjhvtjMmE/vzB0agsQYz8W6Mqht83jyAWjh9LCjN1GGSl/EyWAKT1uM
+   +V8kzpCvQyLJ229igZMiZgIp3mlpWF/Plb7u9e3QqzS1Te2Cz2u74IxqB
+   uRQnX9Sln+S0qwmw5luOLrZSzTdUIi5D3v50NWsBpAyX/CqDxp1Es88Pe
+   w==;
+X-CSE-ConnectionGUID: sMy9ySTkTHC22po1vnXNKg==
+X-CSE-MsgGUID: 2rUpQHQ9SQerxBnWKaR3UQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="27004358"
 X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="27004324"
+   d="scan'208";a="27004358"
 Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 22:30:26 -0700
-X-CSE-ConnectionGUID: Gj/C8lUAS9OBNw5v0pwjHA==
-X-CSE-MsgGUID: IUvD6jDHSJS/9jHbK9aPLw==
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 22:30:46 -0700
+X-CSE-ConnectionGUID: NJ2MBZ8YRCSg/pZQf2DG6g==
+X-CSE-MsgGUID: aZfxAwKdTxWSKMg1Rak9mA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,225,1708416000"; 
-   d="scan'208";a="62050113"
+   d="scan'208";a="62050299"
 Received: from unknown (HELO haibo-OptiPlex-7090.sh.intel.com) ([10.239.159.132])
-  by orviesa001.jf.intel.com with ESMTP; 23 Apr 2024 22:30:15 -0700
+  by orviesa001.jf.intel.com with ESMTP; 23 Apr 2024 22:30:35 -0700
 From: Haibo Xu <haibo1.xu@intel.com>
 To: sunilvl@ventanamicro.com,
 	arnd@arndb.de
@@ -75,22 +75,24 @@ Cc: xiaobo55x@gmail.com,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Robert Moore <robert.moore@intel.com>,
 	Conor Dooley <conor.dooley@microchip.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
 	Guo Ren <guoren@kernel.org>,
-	Greentime Hu <greentime.hu@sifive.com>,
-	Charlie Jenkins <charlie@rivosinc.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
 	Baoquan He <bhe@redhat.com>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Greentime Hu <greentime.hu@sifive.com>,
+	Zong Li <zong.li@sifive.com>,
 	Sami Tolvanen <samitolvanen@google.com>,
 	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
 	Samuel Holland <samuel.holland@sifive.com>,
-	Jisheng Zhang <jszhang@kernel.org>,
 	Chen Jiahao <chenjiahao16@huawei.com>,
-	James Morse <james.morse@arm.com>,
+	Jisheng Zhang <jszhang@kernel.org>,
 	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	James Morse <james.morse@arm.com>,
 	Evan Green <evan@rivosinc.com>,
+	Yang Li <yang.lee@linux.alibaba.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	Tony Luck <tony.luck@intel.com>,
 	Ard Biesheuvel <ardb@kernel.org>,
+	Tony Luck <tony.luck@intel.com>,
 	Yuntao Wang <ytcoode@gmail.com>,
 	Dan Williams <dan.j.williams@intel.com>,
 	Alison Schofield <alison.schofield@intel.com>,
@@ -101,9 +103,9 @@ Cc: xiaobo55x@gmail.com,
 	linux-riscv@lists.infradead.org,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [PATCH v3 3/6] ACPI: NUMA: Add handler for SRAT RINTC affinity structure
-Date: Wed, 24 Apr 2024 13:46:23 +0800
-Message-Id: <5f6167bbe37f19796b93dd20975853a2681e5ce8.1713778236.git.haibo1.xu@intel.com>
+Subject: [PATCH v3 4/6] ACPI: NUMA: Make some NUMA related parse functions common
+Date: Wed, 24 Apr 2024 13:46:24 +0800
+Message-Id: <bc3fabec0ce4c990adcae2bb136450f058f467af.1713778236.git.haibo1.xu@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1713778236.git.haibo1.xu@intel.com>
 References: <cover.1713778236.git.haibo1.xu@intel.com>
@@ -115,78 +117,45 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add RINTC affinity structure handler during parsing SRAT table.
+The acpi_numa_slit_init(), acpi_numa_memory_affinity_init()
+and acpi_parse_cfmws() functions are common enough to be used
+on platforms that support ACPI_NUMA(x86/arm64/loongarch).
+Remove the condition to avoid long defined(CONFIG_ARCH) check
+when new platform(riscv) support was enabled.
 
+Suggested-by: Sunil V L <sunilvl@ventanamicro.com>
 Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
 Reviewed-by: Sunil V L <sunilvl@ventanamicro.com>
 ---
- drivers/acpi/numa/srat.c | 32 +++++++++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+ drivers/acpi/numa/srat.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
 diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
-index e45e64993c50..bc8f34b2ad51 100644
+index bc8f34b2ad51..860900faa843 100644
 --- a/drivers/acpi/numa/srat.c
 +++ b/drivers/acpi/numa/srat.c
-@@ -167,6 +167,19 @@ acpi_table_print_srat_entry(struct acpi_subtable_header *header)
- 		}
- 	}
- 	break;
-+
-+	case ACPI_SRAT_TYPE_RINTC_AFFINITY:
-+		{
-+			struct acpi_srat_rintc_affinity *p =
-+			    (struct acpi_srat_rintc_affinity *)header;
-+			pr_debug("SRAT Processor (acpi id[0x%04x]) in proximity domain %d %s\n",
-+				 p->acpi_processor_uid,
-+				 p->proximity_domain,
-+				 (p->flags & ACPI_SRAT_RINTC_ENABLED) ?
-+				 "enabled" : "disabled");
-+		}
-+		break;
-+
- 	default:
- 		pr_warn("Found unsupported SRAT entry (type = 0x%x)\n",
- 			header->type);
-@@ -450,6 +463,21 @@ acpi_parse_gi_affinity(union acpi_subtable_headers *header,
+@@ -221,7 +221,6 @@ int __init srat_disabled(void)
+ 	return acpi_numa < 0;
  }
- #endif /* defined(CONFIG_X86) || defined (CONFIG_ARM64) */
  
-+static int __init
-+acpi_parse_rintc_affinity(union acpi_subtable_headers *header,
-+			  const unsigned long end)
-+{
-+	struct acpi_srat_rintc_affinity *rintc_affinity;
-+
-+	rintc_affinity = (struct acpi_srat_rintc_affinity *)header;
-+	acpi_table_print_srat_entry(&header->common);
-+
-+	/* let architecture-dependent part to do it */
-+	acpi_numa_rintc_affinity_init(rintc_affinity);
-+
-+	return 0;
-+}
-+
- static int __initdata parsed_numa_memblks;
+-#if defined(CONFIG_X86) || defined(CONFIG_ARM64) || defined(CONFIG_LOONGARCH)
+ /*
+  * Callback for SLIT parsing.  pxm_to_node() returns NUMA_NO_NODE for
+  * I/O localities since SRAT does not list them.  I/O localities are
+@@ -353,13 +352,6 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+ 	(*fake_pxm)++;
+ 	return 0;
+ }
+-#else
+-static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+-				   void *arg, const unsigned long table_end)
+-{
+-	return 0;
+-}
+-#endif /* defined(CONFIG_X86) || defined (CONFIG_ARM64) */
  
- static int __init
-@@ -503,7 +531,7 @@ int __init acpi_numa_init(void)
- 
- 	/* SRAT: System Resource Affinity Table */
- 	if (!acpi_table_parse(ACPI_SIG_SRAT, acpi_parse_srat)) {
--		struct acpi_subtable_proc srat_proc[4];
-+		struct acpi_subtable_proc srat_proc[5];
- 
- 		memset(srat_proc, 0, sizeof(srat_proc));
- 		srat_proc[0].id = ACPI_SRAT_TYPE_CPU_AFFINITY;
-@@ -514,6 +542,8 @@ int __init acpi_numa_init(void)
- 		srat_proc[2].handler = acpi_parse_gicc_affinity;
- 		srat_proc[3].id = ACPI_SRAT_TYPE_GENERIC_AFFINITY;
- 		srat_proc[3].handler = acpi_parse_gi_affinity;
-+		srat_proc[4].id = ACPI_SRAT_TYPE_RINTC_AFFINITY;
-+		srat_proc[4].handler = acpi_parse_rintc_affinity;
- 
- 		acpi_table_parse_entries_array(ACPI_SIG_SRAT,
- 					sizeof(struct acpi_table_srat),
+ static int __init acpi_parse_slit(struct acpi_table_header *table)
+ {
 -- 
 2.34.1
 
