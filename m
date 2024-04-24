@@ -1,70 +1,47 @@
-Return-Path: <linux-kernel+bounces-156873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156874-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E4138B09B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 04AC68B09B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 14:31:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 018C3287288
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:30:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B233928A6DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56D70156C71;
-	Wed, 24 Apr 2024 12:30:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C923F37142;
+	Wed, 24 Apr 2024 12:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=penguintechs.org header.i=@penguintechs.org header.b="TjZ03cbK"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="GAhL0bgc"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D92C13FD99
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 12:30:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829552F52
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 12:30:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713961812; cv=none; b=I0P08btMid2CvvuA9eC8aAKk1O7kvXd1fi9cL7ZAR1M8PzBEpGPGrwpJpJd7vBxF1DKb8Xk+ho5QRohhzOR9LHDzl1I5sUvg9UTgKxSVnrTP031hUD7UXDzVfpI4KdfChJNEtPtO6UNXZ+xm9exDSnhudOp660IbeT96Ne2KYug=
+	t=1713961857; cv=none; b=L+0VupIyoCXy6ME5OlujLAWYR3ZIQTyNAtN20WsmC/KPtf+gQkzLX8x+kx/sBlermhs8mBthNY7qbCcdqZqYIk3eVIVCYO6ZSjj+GP4zUjBz5/b32VZgD7lVb91bW3ULmFSTDrr/R97UsMhXCrtBZj5TZphUy+yajktj2IoArsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713961812; c=relaxed/simple;
-	bh=l4FB/9MAV2vZB9PDYYRqVsJ5eMKUxfbpz8L010+RzDc=;
+	s=arc-20240116; t=1713961857; c=relaxed/simple;
+	bh=Fq+btv0vT40giGM+xmyuiq6xJPvakVqB6nGXDaOHgBY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=De/wulR4YnF79aUtnV7SKVrFz59yKznLs7C5kfyotysWVFSZKJ3ZsmD7etCc26VnGUyAAjg9gUuzjfotQH2GZIaO7fzoSvxacsWlMdqJGEhGxAnFtBgTmfoA7u9bhdSTPTw7y6vrcQMu4IQ+FIqUMTeF4LTRp8AlhCVhkYYTaI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=penguintechs.org; spf=pass smtp.mailfrom=penguintechs.org; dkim=pass (1024-bit key) header.d=penguintechs.org header.i=@penguintechs.org header.b=TjZ03cbK; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=penguintechs.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=penguintechs.org
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ecee1f325bso5566169b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:30:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=penguintechs.org; s=google; t=1713961810; x=1714566610; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2Srymdr2tW2UrSVymHAuxU117AR4xE7R/7y8mad/3ac=;
-        b=TjZ03cbK5FYWn5fPjs5eoDuHZx48UujndyeRlbeiIzPV6gDyIZaa7ggwwRX0mGcYcm
-         fmuulx0EwQbWthSBkLm9/pJL1Jv3YproVKAOIcc3eHfLJN4RTpq33uojSY5dh65Cjnj1
-         iWrBfA/OtvMuCismKyeLMFvMHmV/aaSyRsO6c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713961810; x=1714566610;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Srymdr2tW2UrSVymHAuxU117AR4xE7R/7y8mad/3ac=;
-        b=CQD3nd1yMjQQ+rDlUPn2niAyJqMZfwMhxIs+EWMtuFf9YJr8eFs+iQdZQybP9Qu9qL
-         bV4PY9hlRDd3cf6HOC1k/0i+OiOQ558sRaWWq2et0pLOyfxfZyjzwCNlCz/ay9lQ0SXh
-         C5IZPpmi+AarB7/v1aK9Bx8LNe1vStfK0oXn+LJ4MHrk2cmCk3krt3HclYLoNifSMbhD
-         hpYgmyliAvZ1fNo8DrSRfwPdWUce7zLyDHz1JwlSkzQji72U/a35EYlOmsEi9nx8jCO4
-         /g5S99pytxHwUTQOTGCSDY6O+y/V+uK+Z7eAD9izsb3o9mPoBKGRy2fWvcexCnKU+cqB
-         +bVg==
-X-Forwarded-Encrypted: i=1; AJvYcCVD/bftzcdrW1/oqDNoh6kpvgBkMG/yAX1d6YHDwtgo+7hMVHWSYiltJKWkJ574jIvYIFY+GCDwToEYg1f/eM+lqUi9972LOCGduEJ5
-X-Gm-Message-State: AOJu0YwzzkpjPZwEu6qadgtiFGJDX5D6wHjGYIByvxGizZli7tBWAzxe
-	P8nYXSdlnq+mZFa3ytW6wbU7821TKGqW28QdtjtvFbsXNXfjlu0+Gvh0tNz0lA==
-X-Google-Smtp-Source: AGHT+IEUYR8+xMiieona8sk0iNUW9cTjDLQ/y86TSmhuwzEyQqdiMK6TCcwauJJQ755YKmf4W0a2KA==
-X-Received: by 2002:a05:6a00:148d:b0:6ea:9252:435 with SMTP id v13-20020a056a00148d00b006ea92520435mr3298139pfu.30.1713961810283;
-        Wed, 24 Apr 2024 05:30:10 -0700 (PDT)
-Received: from ?IPV6:2601:646:8700:dd30:5f3e:5ba7:e0ea:9a08? ([2601:646:8700:dd30:5f3e:5ba7:e0ea:9a08])
-        by smtp.gmail.com with ESMTPSA id ey14-20020a056a0038ce00b006f27e986e84sm7044852pfb.158.2024.04.24.05.30.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 05:30:09 -0700 (PDT)
-Message-ID: <835f54a6-bdf7-447b-b76b-185cdde99450@penguintechs.org>
-Date: Wed, 24 Apr 2024 05:30:08 -0700
+	 In-Reply-To:Content-Type; b=fLYZjaP5MrjOJiyI2BAy+eNApIM6hyuq3dj0B4/MUhawxw7WBZlaUSZ4+Ir7eve5mnymNE+yKqClOVXVk30glW39rV3fKOI181CjWGJcw6jAFGWOCKxDiESD9jLCZi0VECrfOCTDqB1lwU1KrNtysfJKx+NJVW/elpx7M7nWRhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=GAhL0bgc; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id B285DEBB;
+	Wed, 24 Apr 2024 14:30:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1713961802;
+	bh=Fq+btv0vT40giGM+xmyuiq6xJPvakVqB6nGXDaOHgBY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=GAhL0bgcXFl/SqZYK2T0fc85HfXyW5OaVJHOBfHn6lquy9WOqDsKBErEsDXVE+CJe
+	 87QzBLhV6pWQx6qHvB1A5zD+WEFGhVy/dQeLiCltnLXOCfvOn7IsaBjSfJLidzB9Uk
+	 95VWkK2VsWZsxGNF9DHV6Qy6bjyCr5mAIfmQCqw0=
+Message-ID: <911a0692-b1cd-4a97-9a99-2102d7f6f5ee@ideasonboard.com>
+Date: Wed, 24 Apr 2024 15:30:50 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,61 +49,189 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Bluetooth: qca: set power_ctrl_enabled on NULL returned
- by gpiod_get_optional()
+Subject: Re: [PATCH v4 10/13] drm: zynqmp_dp: Use AUX IRQs instead of polling
+To: Sean Anderson <sean.anderson@linux.dev>
+Cc: Daniel Vetter <daniel@ffwll.ch>, linux-arm-kernel@lists.infradead.org,
+ Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
+ David Airlie <airlied@gmail.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ dri-devel@lists.freedesktop.org
+References: <20240423171859.3953024-1-sean.anderson@linux.dev>
+ <20240423171859.3953024-11-sean.anderson@linux.dev>
 Content-Language: en-US
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
- linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
- Zijun Hu <quic_zijuhu@quicinc.com>, Marcel Holtmann <marcel@holtmann.org>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-References: <20240422130036.31856-1-brgl@bgdev.pl>
- <99242a7c-53bf-4227-9623-7bc092f564b3@penguintechs.org>
- <CAMRc=MepDwUbAKrWgm0CXKObqy8=igtug0QDgo-CgwxjZCAC2Q@mail.gmail.com>
- <b982b73d-0540-409c-a6e2-0e03ecb11715@penguintechs.org>
- <0381f39c-38ba-4a2b-915c-f14c5f911eb9@penguintechs.org>
- <CAMRc=MfnEct7ThQhCA3AoY7hxq8j1mmFLNNkK17+RSvJxs67XQ@mail.gmail.com>
- <2371f538-ec53-4037-b171-c62bf4e06eb1@penguintechs.org>
- <CACMJSeunUaj0cxLaN4MpFmX5vTOx_vnWjBN4Y2FavdQoQxFRkg@mail.gmail.com>
- <4c33304a-5dbc-450a-b874-e04ba9e93150@penguintechs.org>
- <CAMRc=MeDQFHX9r-sHNxqkfpi=LkHoRSL7i6dWokB-J+J03rBEg@mail.gmail.com>
-From: Wren Turkal <wt@penguintechs.org>
-In-Reply-To: <CAMRc=MeDQFHX9r-sHNxqkfpi=LkHoRSL7i6dWokB-J+J03rBEg@mail.gmail.com>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20240423171859.3953024-11-sean.anderson@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 4/24/24 5:27 AM, Bartosz Golaszewski wrote:
-> On Wed, Apr 24, 2024 at 2:24 PM Wren Turkal <wt@penguintechs.org> wrote:
->>>>>
->>>>> That's OK, we have the first part right. Let's now see if we can reuse
->>>>> patch 2/2 from Zijun.
->>>>
->>>> I'm compiling it right now. Be back soon.
->>>>
->>>
->>> Well I doubt it's correct as it removed Krzysztof's fix which looks
->>> right. If I were to guess I'd say we need some mix of both.
->>
->> Patch 2/2 remove K's fix? I thought only 1/2 did that.
->>
->> To be specific, I have applied your patch and Zijun's 2/2 only.
->>
+On 23/04/2024 20:18, Sean Anderson wrote:
+> Instead of polling the status register for the AUX status, just enable
+> the IRQs and signal a completion.
 > 
-> No, patch 1/2 from Zijun reverted my changes. Patch 2/2 removes
-> Krzysztof's changes and replaces them with a different if else. This
-> patch is a better alternative to Zijun's patch 1/2. For 2/2, I'll let
-> Krzysztof handle it.
+> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+> ---
+> 
 
-Got it. Thx.
+This one seems to cause a hang when I unload the modules. I didn't debug 
+it further yet, but most likely we get an AUX interrupt when disabling 
+the hardware, and the driver hasn't disabled the IRQ handler.
 
-BTW, should this patch's commit message include the following?
+  Tomi
 
-Tested-by: "Wren Turkal" <wt@penguintechs.org>
+> (no changes since v3)
+> 
+> Changes in v3:
+> - New
+> 
+>   drivers/gpu/drm/xlnx/zynqmp_dp.c | 35 +++++++++++++++++++++++---------
+>   1 file changed, 25 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> index 9d61b6b8f2d4..863668642190 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> @@ -285,6 +285,7 @@ struct zynqmp_dp_config {
+>    * @next_bridge: The downstream bridge
+>    * @config: IP core configuration from DTS
+>    * @aux: aux channel
+> + * @aux_done: Completed when we get an AUX reply or timeout
+>    * @phy: PHY handles for DP lanes
+>    * @num_lanes: number of enabled phy lanes
+>    * @hpd_work: hot plug detection worker
+> @@ -305,6 +306,7 @@ struct zynqmp_dp {
+>   	struct drm_bridge bridge;
+>   	struct work_struct hpd_work;
+>   	struct work_struct hpd_irq_work;
+> +	struct completion aux_done;
+>   	struct mutex lock;
+>   
+>   	struct drm_bridge *next_bridge;
+> @@ -941,12 +943,15 @@ static int zynqmp_dp_aux_cmd_submit(struct zynqmp_dp *dp, u32 cmd, u16 addr,
+>   				    u8 *buf, u8 bytes, u8 *reply)
+>   {
+>   	bool is_read = (cmd & AUX_READ_BIT) ? true : false;
+> +	unsigned long time_left;
+>   	u32 reg, i;
+>   
+>   	reg = zynqmp_dp_read(dp, ZYNQMP_DP_INTERRUPT_SIGNAL_STATE);
+>   	if (reg & ZYNQMP_DP_INTERRUPT_SIGNAL_STATE_REQUEST)
+>   		return -EBUSY;
+>   
+> +	reinit_completion(&dp->aux_done);
+> +
+>   	zynqmp_dp_write(dp, ZYNQMP_DP_AUX_ADDRESS, addr);
+>   	if (!is_read)
+>   		for (i = 0; i < bytes; i++)
+> @@ -961,17 +966,14 @@ static int zynqmp_dp_aux_cmd_submit(struct zynqmp_dp *dp, u32 cmd, u16 addr,
+>   	zynqmp_dp_write(dp, ZYNQMP_DP_AUX_COMMAND, reg);
+>   
+>   	/* Wait for reply to be delivered upto 2ms */
+> -	for (i = 0; ; i++) {
+> -		reg = zynqmp_dp_read(dp, ZYNQMP_DP_INTERRUPT_SIGNAL_STATE);
+> -		if (reg & ZYNQMP_DP_INTERRUPT_SIGNAL_STATE_REPLY)
+> -			break;
+> +	time_left = wait_for_completion_timeout(&dp->aux_done,
+> +						msecs_to_jiffies(2));
+> +	if (!time_left)
+> +		return -ETIMEDOUT;
+>   
+> -		if (reg & ZYNQMP_DP_INTERRUPT_SIGNAL_STATE_REPLY_TIMEOUT ||
+> -		    i == 2)
+> -			return -ETIMEDOUT;
+> -
+> -		usleep_range(1000, 1100);
+> -	}
+> +	reg = zynqmp_dp_read(dp, ZYNQMP_DP_INTERRUPT_SIGNAL_STATE);
+> +	if (reg & ZYNQMP_DP_INTERRUPT_SIGNAL_STATE_REPLY_TIMEOUT)
+> +		return -ETIMEDOUT;
+>   
+>   	reg = zynqmp_dp_read(dp, ZYNQMP_DP_AUX_REPLY_CODE);
+>   	if (reply)
+> @@ -1055,6 +1057,9 @@ static int zynqmp_dp_aux_init(struct zynqmp_dp *dp)
+>   			(w << ZYNQMP_DP_AUX_CLK_DIVIDER_AUX_FILTER_SHIFT) |
+>   			(rate / (1000 * 1000)));
+>   
+> +	zynqmp_dp_write(dp, ZYNQMP_DP_INT_EN, ZYNQMP_DP_INT_REPLY_RECEIVED |
+> +					      ZYNQMP_DP_INT_REPLY_TIMEOUT);
+> +
+>   	dp->aux.name = "ZynqMP DP AUX";
+>   	dp->aux.dev = dp->dev;
+>   	dp->aux.drm_dev = dp->bridge.dev;
+> @@ -1072,6 +1077,9 @@ static int zynqmp_dp_aux_init(struct zynqmp_dp *dp)
+>   static void zynqmp_dp_aux_cleanup(struct zynqmp_dp *dp)
+>   {
+>   	drm_dp_aux_unregister(&dp->aux);
+> +
+> +	zynqmp_dp_write(dp, ZYNQMP_DP_INT_DS, ZYNQMP_DP_INT_REPLY_RECEIVED |
+> +					      ZYNQMP_DP_INT_REPLY_TIMEOUT);
+>   }
+>   
+>   /* -----------------------------------------------------------------------------
+> @@ -1685,6 +1693,12 @@ static irqreturn_t zynqmp_dp_irq_handler(int irq, void *data)
+>   	if (status & ZYNQMP_DP_INT_HPD_IRQ)
+>   		schedule_work(&dp->hpd_irq_work);
+>   
+> +	if (status & ZYNQMP_DP_INTERRUPT_SIGNAL_STATE_REPLY)
+> +		complete(&dp->aux_done);
+> +
+> +	if (status & ZYNQMP_DP_INTERRUPT_SIGNAL_STATE_REPLY_TIMEOUT)
+> +		complete(&dp->aux_done);
+> +
+>   	return IRQ_HANDLED;
+>   }
+>   
+> @@ -1708,6 +1722,7 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub)
+>   	dp->dpsub = dpsub;
+>   	dp->status = connector_status_disconnected;
+>   	mutex_init(&dp->lock);
+> +	init_completion(&dp->aux_done);
+>   
+>   	INIT_WORK(&dp->hpd_work, zynqmp_dp_hpd_work_func);
+>   	INIT_WORK(&dp->hpd_irq_work, zynqmp_dp_hpd_irq_work_func);
 
-If so, please feel free to add it.
-
-wt
--- 
-You're more amazing than you think!
 
