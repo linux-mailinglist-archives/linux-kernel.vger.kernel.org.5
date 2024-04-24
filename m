@@ -1,184 +1,221 @@
-Return-Path: <linux-kernel+bounces-156723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E8F98B074C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:26:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B5148B0754
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 12:28:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFD8B282E6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:26:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA80B285B0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 10:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A3A15957D;
-	Wed, 24 Apr 2024 10:26:38 +0000 (UTC)
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [195.130.137.90])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE0A8159593;
+	Wed, 24 Apr 2024 10:28:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="J+sbYCbO"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B934F15956F
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 10:26:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.90
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B22ED152DE1;
+	Wed, 24 Apr 2024 10:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713954398; cv=none; b=hr/xQggj0Ojz783yC1yUo6RiQeqcKWBkGqsCAB8N68XpqGarUW2NeLalbge2RZiWbf8XqMB6Bqtk77U1p5NhCNibBQByrrcP/VjQY+DJ8M2LYABk2u2GGoGC0bz4hgztF7m2AELdODYGb29X01jJU6wy3y0ejY3m8BbIBRaf65Y=
+	t=1713954483; cv=none; b=JHz2JtQeFrfSVwRqytvi7tgjC/P2rc3MmBnyBMAaicqfo9YWbTYf9YOR7TDJ3Hlt4mqMJPb3YCUc1vcyvxNJyWR0uzV8WKVVu4Db6wX+T8JToEza+mqv8K75k7pUzi30rko2TyG2MGKkfA6EOpDKC7eAia9hn5JMOe14roG/HZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713954398; c=relaxed/simple;
-	bh=dG+revxQzK/A7VOH2CsUT2VQD1d/Iq8wWNut+VMBstc=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Ifq5rXuOpd6Y47EP3r177fRbAS3RyO18v6YxK5G068LVjLvNA8a/lV/Idtvzv5hsO6qseOMQVMsIeIiCp7+rxx26u6n1jfrkGkmqDRaNGUR/+0lSo0svGUwv7V9YCNhL5VP2/l33YsZM4By79R8v9FVELiF7MUEeo8iXjJCbE/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:76d0:2bff:fec8:549])
-	by albert.telenet-ops.be with bizsmtp
-	id EyST2C0070SSLxL06ySTPi; Wed, 24 Apr 2024 12:26:28 +0200
-Received: from geert (helo=localhost)
-	by ramsan.of.borg with local-esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rzZpa-0066TE-WE;
-	Wed, 24 Apr 2024 12:26:27 +0200
-Date: Wed, 24 Apr 2024 12:26:26 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Ming Lei <ming.lei@redhat.com>
-cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, 
-    janpieter.sollie@edpnet.be, Christoph Hellwig <hch@lst.de>, 
-    Mike Snitzer <snitzer@kernel.org>, dm-devel@lists.linux.dev, 
-    Song Liu <song@kernel.org>, linux-raid@vger.kernel.org, 
-    linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] block: allow device to have both virt_boundary_mask and
- max segment size
-In-Reply-To: <20240407131931.4055231-1-ming.lei@redhat.com>
-Message-ID: <7e38b67c-9372-a42d-41eb-abdce33d3372@linux-m68k.org>
-References: <20240407131931.4055231-1-ming.lei@redhat.com>
+	s=arc-20240116; t=1713954483; c=relaxed/simple;
+	bh=KMVHm+SIAgutMAbC6mgTihoI+YnjySmbBuGhkkDnQtM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=TZj5UKXGvgbqZdw7jp9xv+FwHVpytd0b2ALw2pAlIE9LwKDhsQNGp7Wi5rmhCq2kYYjVjb01w9itDVKvS+gnLIuia3fz+GITVbPypoiRTFfmRwcsknc34yQPKtrArFHl0HVvztH4OPYBp2AWDfbXeXoH20jxn9PuR377CXvMDFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=J+sbYCbO; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O6Xc50016794;
+	Wed, 24 Apr 2024 10:27:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=RQNt5PZZm3frh00wj8WKWSZPe7aKlTUmfVkfoQWkc4g=; b=J+
+	sbYCbOCxdLNqKvWyyG2apikUXBGiWrqSBsioJEOPuPWldzZZLss82Cw5wpyesS1t
+	xfq5MylLo5D6k4Oet2g8Zs1GOXK02jbfOvBUoJsBPp8CpVRveVZlFmPV8HPUWMUM
+	d7dQM2enkLhfNBahD0VEV9tDjIzrkHGJvPtvulnxA3Q/ZlVJoIZz0lHDuFuOrWUV
+	Pp8fhMYIlMd/5YO1ozlwZkifc+tSxiYT3HvVtvBWlZBbehuTT88cxwXjUKun2Gs1
+	EcUIXB7FCGUwaD8l5yjrkWccctFy3dteg2omVj+K8IfzXm7teDn/tjr8T5Jv8Lc3
+	ArUmhB/KVUptpc/5QTCg==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9fgj42-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 10:27:52 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43OARoPf012223
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 10:27:50 GMT
+Received: from [10.218.5.19] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 24 Apr
+ 2024 03:27:42 -0700
+Message-ID: <2e8f5e93-1f24-4451-ab9f-ad1e7d98bc65@quicinc.com>
+Date: Wed, 24 Apr 2024 15:57:39 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V5 RESEND 3/5] clk: qcom: gdsc: Add set and get hwmode
+ callbacks to switch GDSC mode
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "Stephen
+ Boyd" <sboyd@kernel.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Mauro Carvalho Chehab
+	<mchehab@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J .
+ Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>, Pavel Machek
+	<pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Andy
+ Gross" <agross@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abel Vesa <abel.vesa@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, Taniya Das <quic_tdas@quicinc.com>,
+        "Satya Priya
+ Kakitapalli" <quic_skakitap@quicinc.com>,
+        Imran Shaik
+	<quic_imrashai@quicinc.com>,
+        Ajit Pandey <quic_ajipan@quicinc.com>
+References: <20240413152013.22307-1-quic_jkona@quicinc.com>
+ <20240413152013.22307-4-quic_jkona@quicinc.com>
+ <e70e0379-cab0-4586-825e-ade6775ca67c@linaro.org>
+ <e419c6aa-6bb2-48ff-bacb-17a2e85856ea@quicinc.com>
+ <0ed739d8-7ef6-4b0d-bd61-62966c9a9362@linaro.org>
+Content-Language: en-US
+From: Jagadeesh Kona <quic_jkona@quicinc.com>
+In-Reply-To: <0ed739d8-7ef6-4b0d-bd61-62966c9a9362@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: UdaJqMHmAelHEwYEvmrTYsnUWBXurROV
+X-Proofpoint-GUID: UdaJqMHmAelHEwYEvmrTYsnUWBXurROV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_08,2024-04-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ impostorscore=0 clxscore=1015 priorityscore=1501 adultscore=0 phishscore=0
+ mlxlogscore=999 lowpriorityscore=0 suspectscore=0 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404240043
 
- 	Hi Ming,
 
-On Sun, 7 Apr 2024, Ming Lei wrote:
-> When one stacking device is over one device with virt_boundary_mask and
-> another one with max segment size, the stacking device have both limits
-> set. This way is allowed before d690cb8ae14b ("block: add an API to
-> atomically update queue limits").
->
-> Relax the limit so that we won't break such kind of stacking setting.
->
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218687
-> Reported-by: janpieter.sollie@edpnet.be
-> Fixes: d690cb8ae14b ("block: add an API to atomically update queue limits")
-> Link: https://lore.kernel.org/linux-block/ZfGl8HzUpiOxCLm3@fedora/
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Mike Snitzer <snitzer@kernel.org>
-> Cc: dm-devel@lists.linux.dev
-> Cc: Song Liu <song@kernel.org>
-> Cc: linux-raid@vger.kernel.org
-> Signed-off-by: Ming Lei <ming.lei@redhat.com>
 
-Thanks for your patch, which is now commit b561ea56a26415bf ("block:
-allow device to have both virt_boundary_mask and max segment size") in
-v6.9-rc4.
+On 4/24/2024 3:25 PM, Bryan O'Donoghue wrote:
+> On 24/04/2024 10:47, Jagadeesh Kona wrote:
+>>
+>>
+>> On 4/24/2024 5:18 AM, Bryan O'Donoghue wrote:
+>>> On 13/04/2024 16:20, Jagadeesh Kona wrote:
+>>>> Some GDSC client drivers require the GDSC mode to be switched 
+>>>> dynamically
+>>>> to HW mode at runtime to gain the power benefits. Typically such client
+>>>> drivers require the GDSC to be brought up in SW mode initially to 
+>>>> enable
+>>>> the required dependent clocks and configure the hardware to proper 
+>>>> state.
+>>>> Once initial hardware set up is done, they switch the GDSC to HW 
+>>>> mode to
+>>>> save power. At the end of usecase, they switch the GDSC back to SW mode
+>>>> and disable the GDSC.
+>>>>
+>>>> Introduce HW_CTRL_TRIGGER flag to register the set_hwmode_dev and
+>>>> get_hwmode_dev callbacks for GDSC's whose respective client drivers
+>>>> require the GDSC mode to be switched dynamically at runtime using
+>>>> dev_pm_genpd_set_hwmode() API.
+>>>>
+>>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+>>>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+>>>> ---
+>>>>   drivers/clk/qcom/gdsc.c | 37 +++++++++++++++++++++++++++++++++++++
+>>>>   drivers/clk/qcom/gdsc.h |  1 +
+>>>>   2 files changed, 38 insertions(+)
+>>>>
+>>>> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+>>>> index df9618ab7eea..c5f6be8181d8 100644
+>>>> --- a/drivers/clk/qcom/gdsc.c
+>>>> +++ b/drivers/clk/qcom/gdsc.c
+>>>> @@ -363,6 +363,39 @@ static int gdsc_disable(struct 
+>>>> generic_pm_domain *domain)
+>>>>       return 0;
+>>>>   }
+>>>> +static int gdsc_set_hwmode(struct generic_pm_domain *domain, struct 
+>>>> device *dev, bool mode)
+>>>> +{
+>>>> +    struct gdsc *sc = domain_to_gdsc(domain);
+>>>> +    int ret;
+>>>> +
+>>>> +    ret = gdsc_hwctrl(sc, mode);
+>>>> +    if (ret)
+>>>> +        return ret;
+>>>> +
+>>>> +    /* Wait for 1usec for mode transition to properly complete */
+>>>> +    udelay(1);
+>>>
+>>> A delay I suspect you don't need - if the HW spec says "takes 1 usec 
+>>> for this to take effect" that's 1 usec from io write completion from 
+>>> APSS to another system agent.
+>>>
+>>> You poll for the state transition down below anyway.
+>>>
+>>> I'd be pretty certain that's a redundant delay.
+>>>
+>>
+>> Thanks Bryan for your review!
+>>
+>> This 1usec delay is needed every time GDSC is moved in and out of HW 
+>> control mode and the reason for same is explained in one of the older 
+>> gdsc driver change at below link
+>>
+>> https://lore.kernel.org/all/1484027679-18397-1-git-send-email-rnayak@codeaurora.org/
+>>
+> 
+> Right.
+> 
+> If that is your precedent then you seem to be missing the mb(); between
+> 
+> gdsc_hwctrl();
+> 
+> /* mb(); here */
+> 
+> and this
+> 
+> udelay(1);
+> 
 
-With CONFIG_DMA_API_DEBUG_SG=y and IOMMU support enabled, this causes a
-warning on R-Car Gen3/Gen4 platforms:
+Sorry, earlier I shared the link to base patch series which has mb() 
+used, but in the mainlined series of the same patch mb() is removed as 
+per the review comments.
 
-     DMA-API: renesas_sdhi_internal_dmac ee160000.mmc: mapping sg segment longer than device claims to support [len=86016] [max=65536]
-     WARNING: CPU: 1 PID: 281 at kernel/dma/debug.c:1178 debug_dma_map_sg+0x2ac/0x330
-     Modules linked in:
-     CPU: 1 PID: 281 Comm: systemd-udevd Tainted: G        W          6.9.0-rc2-ebisu-00012-gb561ea56a264 #596
-     Hardware name: Renesas Ebisu board based on r8a77990 (DT)
-     pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-     pc : debug_dma_map_sg+0x2ac/0x330
-     lr : debug_dma_map_sg+0x2ac/0x330
-     sp : ffffffc083643470
-     x29: ffffffc083643470 x28: 0000000000000080 x27: 0000000000010000
-     x26: 0000000000000000 x25: 0000000000000001 x24: ffffffc0810afc30
-     x23: ffffffffffffffff x22: ffffffc080c8366f x21: ffffff8008849f80
-     x20: ffffff800cd24000 x19: ffffff80099a2810 x18: 0000000000000000
-     x17: ffffff800801a000 x16: ffffffc080453f00 x15: ffffffc0836430f0
-     x14: ffffffc08099fb50 x13: 0000000000000007 x12: 0000000000000000
-     x11: 0000000000000202 x10: ffffffc0810d99d0 x9 : ffffffc081189bb0
-     x8 : ffffffc083643178 x7 : ffffffc083643180 x6 : 00000000ffffdfff
-     x5 : 0000000000000000 x4 : 0000000000000000 x3 : 0000000000000000
-     x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffffff800ebad280
-     Call trace:
-      debug_dma_map_sg+0x2ac/0x330
-      __dma_map_sg_attrs+0xcc/0xd0
-      dma_map_sg_attrs+0xc/0x1c
-      renesas_sdhi_internal_dmac_map+0x64/0x94
-      renesas_sdhi_internal_dmac_pre_req+0x20/0x2c
-      mmc_blk_mq_issue_rq+0x62c/0x6c8
-      mmc_mq_queue_rq+0x194/0x218
-      blk_mq_dispatch_rq_list+0x36c/0x4d4
-      __blk_mq_sched_dispatch_requests+0x344/0x4e0
-      blk_mq_sched_dispatch_requests+0x28/0x5c
-      blk_mq_run_hw_queue+0x1a4/0x218
-      blk_mq_flush_plug_list+0x2fc/0x4a0
-      __blk_flush_plug+0x70/0x134
-      blk_finish_plug+0x24/0x34
-      read_pages+0x60/0x158
-      page_cache_ra_unbounded+0x98/0x184
-      do_page_cache_ra+0x44/0x50
-      force_page_cache_ra+0x98/0x9c
-      page_cache_sync_ra+0x30/0x54
-      filemap_get_pages+0xfc/0x4f8
-      filemap_read+0xe8/0x2b8
-      blkdev_read_iter+0x12c/0x144
-      vfs_read+0x104/0x150
-      ksys_read+0x6c/0xd4
-      __arm64_sys_read+0x14/0x1c
-      invoke_syscall+0x70/0xf4
-      el0_svc_common.constprop.0+0xb0/0xcc
-      do_el0_svc+0x1c/0x24
-      el0_svc+0x34/0x8c
-      el0t_64_sync_handler+0x88/0x124
-      el0t_64_sync+0x150/0x154
-     irq event stamp: 0
-     hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-     hardirqs last disabled at (0): [<ffffffc08007efa4>] copy_process+0x6ac/0x18d4
-     softirqs last  enabled at (0): [<ffffffc08007efa4>] copy_process+0x6ac/0x18d4
-     softirqs last disabled at (0): [<0000000000000000>] 0x0
+Please find the mainlined series link:-
+https://lore.kernel.org/all/1485145581-517-1-git-send-email-rnayak@codeaurora.org/
 
-Reverting this commit, or disabling IOMMU support fixes the issue.
+Thanks,
+Jagadeesh
 
-> --- a/block/blk-settings.c
-> +++ b/block/blk-settings.c
-> @@ -182,17 +182,13 @@ static int blk_validate_limits(struct queue_limits *lim)
-> 		return -EINVAL;
->
-> 	/*
-> -	 * Devices that require a virtual boundary do not support scatter/gather
-> -	 * I/O natively, but instead require a descriptor list entry for each
-> -	 * page (which might not be identical to the Linux PAGE_SIZE).  Because
-> -	 * of that they are not limited by our notion of "segment size".
-> +	 * Stacking device may have both virtual boundary and max segment
-> +	 * size limit, so allow this setting now, and long-term the two
-> +	 * might need to move out of stacking limits since we have immutable
-> +	 * bvec and lower layer bio splitting is supposed to handle the two
-> +	 * correctly.
-> 	 */
-> -	if (lim->virt_boundary_mask) {
-> -		if (WARN_ON_ONCE(lim->max_segment_size &&
-> -				 lim->max_segment_size != UINT_MAX))
-> -			return -EINVAL;
-> -		lim->max_segment_size = UINT_MAX;
-> -	} else {
-> +	if (!lim->virt_boundary_mask) {
-> 		/*
-> 		 * The maximum segment size has an odd historic 64k default that
-> 		 * drivers probably should override.  Just like the I/O size we
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
+> ---
+> bod
 
