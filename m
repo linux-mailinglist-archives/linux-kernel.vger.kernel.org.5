@@ -1,131 +1,133 @@
-Return-Path: <linux-kernel+bounces-156786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4319A8B081F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:12:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35F298B0822
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 13:13:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 753241C20CD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:12:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9A9A1F222B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:13:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A183215A480;
-	Wed, 24 Apr 2024 11:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4998E15A482;
+	Wed, 24 Apr 2024 11:13:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XTjHQZDe"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b="MsaehRY/"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C31715959F;
-	Wed, 24 Apr 2024 11:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B97FE15959F
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 11:12:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713957165; cv=none; b=fhNOgNNtXicjkL1WmE3M7hRN/anJUaqZqhenEYy09CRDApkQzktQzdRpfO5+YqiRXk4k4QcpGoUqi+GHnN+DJqGqelOoZkEm1y+GJFD0J3zmqi96ZuGCT5sX5hxuLB6ocnu40reCgl5zLqFe/1Fm54ZoV+pgeyb1wJvhEHVuFJI=
+	t=1713957180; cv=none; b=SY2zMcZ/sd/j1sKb8INDh952AZmYjWGOlv+S6goT1QIqRlgFmvE5cprvXXGt2QeB+8gB3xPyWOFl3JqWTV9DFmyUwCItq6BH5S06OWjD0atPyfaeiiHqZn6WClDtQZ5IiMUwG7xxeshYxOe67EsczIwR2Kb8mNehgm3CL0Yy3+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713957165; c=relaxed/simple;
-	bh=Capoar0JcgEEWJZHUFEG+h+Mq07L06tFTQf1pF2TJ/g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UGCgBUy0cIw6p1KbJaX0/viPJUczixW2wK6wM1xio11T28VU4VFlhG6DiUrT8qwILu21Vbv+HGVDqLcU5WODnOmrzckFfehVb3irwPIVIf68vFGo/rEzG3IoovOSlwUAR4zPGsX3SpXvMO91BzSNwu55veoXvwnyEnE9B0+PxOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XTjHQZDe; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5196fe87775so7595915e87.3;
-        Wed, 24 Apr 2024 04:12:43 -0700 (PDT)
+	s=arc-20240116; t=1713957180; c=relaxed/simple;
+	bh=wmj+hvwsoGodyJmaSnIB2YJCBKYfRJbs/41MVJPknx0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=niyCANza1XYlyDiR6MGx9CeKY76RMjy5vceC8Tc8pus7BDZW/dtjRF7CMRqnZfNjUtlDNIRViW5M72COUWilykioUdMvp8aWnA+IlXUTgzNtgnBHBu07ZaGSOAU19zPrVZ6OwTmfY+FmgjnnRRtHbxKrDv2fQbD1BPXDp3/gxXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com; spf=pass smtp.mailfrom=futuring-girl.com; dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b=MsaehRY/; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=futuring-girl.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6f043f9e6d7so7043603b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 04:12:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713957161; x=1714561961; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9moSbURQqGL8bMH7TAUq09FfsHi6dxjYFhtOBIYbTTE=;
-        b=XTjHQZDegr8lPGxqJzG5wAI45eLDyoNXEYU7itMf5owtmhL88vZ7/qqJikChYHOOlh
-         Re7pjOBdNRZgHh0PmmWJNTE8ysVxKb1dFuMdV52xsKtQMGOT/M8N0p1ExSOVbkTimH7X
-         r0IjvoOb6C6DxKTfVK48P4PVzQ2uiDpeyjjaNHUwJ+4XkA8jlq1VuWbOP8SL4QFa12iE
-         FeKyNaMnSH/2gH0AWhEtiCO2i0joa+owQXxsPRe6RdOq9TrFUJhIrSYWMf3aPxEKxAKE
-         zmL+Mv987hWFd6gh2bno/Zd0TcTqh2fxipTZ+rpGPS4Fyo6QS+giRLFbc7sk3W6XWMLQ
-         pwyg==
+        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1713957178; x=1714561978; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Jvc+crjB2MZ5Tq2wExAFBrGTQzTAygNqkxLF7Cs1xYc=;
+        b=MsaehRY/Bs4ShWvL4MrCaGi+QlcjgrVPtRtK86p4qLFDk1yGT+7lHSyfOiRL9qpCvq
+         S9KjEKW2iLM2A0aWmwTbrlaFrLyI031v+vCc5t5YkipUDdNp7963zN77QAyYTzfWMQC9
+         f82p4T4Bjl8tM1FoxIOxLPaqLKICVGsmbFwKRgdrnm/YybSJ5MVrQ0fyPnVsK9ETw6ZX
+         AfGvfnbsVrA8/ak0Bgv8TOrXJm7z4Nd7YuqsR71QCSL9zT9+bn8wtVic4Ngpnr0683XO
+         iYDDgkIxf/GLeZECucIIUdU3XpQXKJ1STUncOdq3WTOyzYHtUsIIPJDpdWm6H8XhuoeN
+         14RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713957161; x=1714561961;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9moSbURQqGL8bMH7TAUq09FfsHi6dxjYFhtOBIYbTTE=;
-        b=wOwVpo6gWPu49O6rj7mcU3mYmqPZSTqaaeivl70VCY7+TnON1reUT+KXwfripR+0TW
-         HIQVbMY4rUl5y2tzHpZeDX/BBXF8cqhTXurh8VDJL8jCWfMzCSr3axl+qpiojLlQFiTy
-         gLVazYSj/O8RETS5GIQBCjQsNfanE2Dg+33r7AebdvKqI6jTQ7bqU/SOEmAwsbrCOEox
-         GOVq1MSLQXj47bfU0MYLe8o+lQWzxNwMgVw7se437pxrc7UDIxtqYQUEiJryxdM3g3Uh
-         jXJ/PByHkCrHGs6iLbppGLXIJDIR184zvquKDoDxptcP517mc6ej7KiJkYi8b1XmiXM+
-         Pqpg==
-X-Forwarded-Encrypted: i=1; AJvYcCVKbqCvwdO9bxAbzZSsAxHcUfeFo7jSkWV/efdfWaHJNQ6C6Egp8fpuOTaqOL2fqydqrVVCR9DfZjSpcKafLsFhMjCOACtswg==
-X-Gm-Message-State: AOJu0YyPA/Frkc1JVqUOsEnN0Jh4bgpXepl27ln5RjJKYbmVcVyLhe52
-	fXsgKIhG1IvCUdwo0enVVfEOLrOZ9xSWoJz2ZbmUgRLl92jWz4gJ
-X-Google-Smtp-Source: AGHT+IE7URul0a2ErvggWgeKQb58UM48vJOunFG/fZWrOLZNlW5Eak6Ls56r51ivk2ioElOZxgvUJQ==
-X-Received: by 2002:ac2:58fa:0:b0:51c:1201:c056 with SMTP id v26-20020ac258fa000000b0051c1201c056mr294998lfo.53.1713957161166;
-        Wed, 24 Apr 2024 04:12:41 -0700 (PDT)
-Received: from ?IPV6:2001:678:a5c:1202:2659:d6e4:5d55:b864? (soda.int.kasm.eu. [2001:678:a5c:1202:2659:d6e4:5d55:b864])
-        by smtp.gmail.com with ESMTPSA id y32-20020a0565123f2000b00518ac6f0a31sm2361506lfa.18.2024.04.24.04.12.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 04:12:40 -0700 (PDT)
-Message-ID: <843bc3d3-5032-4913-84fb-dc2107f0b554@gmail.com>
-Date: Wed, 24 Apr 2024 13:12:39 +0200
+        d=1e100.net; s=20230601; t=1713957178; x=1714561978;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Jvc+crjB2MZ5Tq2wExAFBrGTQzTAygNqkxLF7Cs1xYc=;
+        b=SKOeih418axvH8mMvF/MrbQiM2z6FKk3jxHi3LLL03UVcKKWZIVm3eprPiLxQG5N8b
+         8L3J1Ftf+44Z88/TQT+G4V4vCepoYy7Ry9OJxKc4reyMRiqwIIal23atCLAKXpu18x+n
+         LeVItek4mLjja7CKvNHkSsXegEbblFdWJzXZ18smUICA9e57xZXngbMkmBapqKabnVHd
+         X+azYN0PNQ40iwFrIs+2RyfIvcFpb6EOwZnsEooKaUoHIXjrDST5orNBJgI+tZ+fqAFN
+         UP5ZLPlSy8hESuSmgug/j9TFZ2+cXh576RccpOA1TT5vKniaVgz61gVXfN8ortGtuKgu
+         LrzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWsLbiO5n2igyf9szm2RDOi6lJ6aWF3WgeSVjzCTf1Wcjpr86QxgB9kdiEDah2qZI5EX+q/fDnGS3SYLhpM1RKHWSy2QFaO/9soJFft
+X-Gm-Message-State: AOJu0YxXMxxOw/8KWy2mFq+3KdPrJEB3UFiBKqbM166isTpHmLLV/SDW
+	bk29Txfe/gk1kP3P/g7idn/rtzGO+RGDJPnP4EkS+RMp2GAv7v5kIkoCoWOoDwatSH+hpPTHqHf
+	N0IJ4WpjK1Qmja7R+ZRoUGKhkyFSougoyt836Nw==
+X-Google-Smtp-Source: AGHT+IFcZaHSY2rAs7RgXGpaZVJigXC9oX79iU65HlIGhBiIOwEOvRFy714w1FqNIYaJfLgwqpFMCv02vu2I4l7RZoo=
+X-Received: by 2002:a05:6a21:788c:b0:1a7:39a8:6ca4 with SMTP id
+ bf12-20020a056a21788c00b001a739a86ca4mr2434665pzc.29.1713957177991; Wed, 24
+ Apr 2024 04:12:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH-cgroup] cgroup/cpuset: Fix incorrect top_cpuset flags
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
- Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- Xiu Jianfeng <xiujianfeng@huawei.com>
-References: <20240424010020.181305-1-longman@redhat.com>
-Content-Language: en-US, sv-SE
-From: Klara Modin <klarasmodin@gmail.com>
-In-Reply-To: <20240424010020.181305-1-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240423213855.696477232@linuxfoundation.org>
+In-Reply-To: <20240423213855.696477232@linuxfoundation.org>
+From: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+Date: Wed, 24 Apr 2024 20:12:47 +0900
+Message-ID: <CAKL4bV6MWQQunGgCZRBzvO9RP=516Au2s-VD=16MfFvDgTGWZw@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/158] 6.6.29-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-04-24 03:00, Waiman Long wrote:
-> Commit 8996f93fc388 ("cgroup/cpuset: Statically initialize more
-> members of top_cpuset") uses an incorrect "<" relational operator for
-> the CS_SCHED_LOAD_BALANCE bit when initializing the top_cpuset. This
-> results in load_balancing turned off by default in the top cpuset which
-> is bad for performance.
-> 
-> Fix this by using the BIT() helper macro to set the desired top_cpuset
-> flags and avoid similar mistake from being made in the future.
-> 
-> Fixes: 8996f93fc388 ("cgroup/cpuset: Statically initialize more members of top_cpuset")
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->   kernel/cgroup/cpuset.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index e70008a1d86a..b0a97efa5f20 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -368,8 +368,8 @@ static inline void notify_partition_change(struct cpuset *cs, int old_prs)
->   }
->   
->   static struct cpuset top_cpuset = {
-> -	.flags = ((1 << CS_ONLINE) | (1 << CS_CPU_EXCLUSIVE) |
-> -		  (1 << CS_MEM_EXCLUSIVE) | (1 < CS_SCHED_LOAD_BALANCE)),
-> +	.flags = BIT(CS_ONLINE) | BIT(CS_CPU_EXCLUSIVE) |
-> +		 BIT(CS_MEM_EXCLUSIVE) | BIT(CS_SCHED_LOAD_BALANCE),
->   	.partition_root_state = PRS_ROOT,
->   	.relax_domain_level = -1,
->   	.remote_sibling = LIST_HEAD_INIT(top_cpuset.remote_sibling),
+Hi Greg
 
-I saw this made its way into today's next and can confirm it fixes the 
-issue I reported in [1].
+On Wed, Apr 24, 2024 at 6:44=E2=80=AFAM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.6.29 release.
+> There are 158 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 25 Apr 2024 21:38:28 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.6.29-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-Thanks,
-Tested-by: Klara Modin <klarasmodin@gmail.com>
+6.6.29-rc1 tested.
 
-1. 
-https://lore.kernel.org/lkml/f2edf788-6ff3-43b1-9445-ac237e7910ac@gmail.com
+Build successfully completed.
+Boot successfully completed.
+No dmesg regressions.
+Video output normal.
+Sound output normal.
 
+Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
+
+[    0.000000] Linux version 6.6.29-rc1rv
+(takeshi@ThinkPadX1Gen10J0764) (gcc (GCC) 13.2.1 20230801, GNU ld (GNU
+Binutils) 2.42.0) #1 SMP PREEMPT_DYNAMIC Wed Apr 24 18:35:14 JST 2024
+
+Thanks
+
+Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
 
