@@ -1,289 +1,210 @@
-Return-Path: <linux-kernel+bounces-157710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96B818B14F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:56:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0D308B14F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:57:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D168284CE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:56:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 586D41F23570
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:57:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32AAC156973;
-	Wed, 24 Apr 2024 20:56:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B047B156973;
+	Wed, 24 Apr 2024 20:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cODVlp3v"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NvauBmxk"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B62EA156966
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 20:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3767513A401
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 20:56:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713992161; cv=none; b=gjWw0xmiJfCGyk+0o8DO0Uoh2VltfiXbLwv0hsjo4Yb8wxhusA1ZMheV/vrVTo2wpBw9zu6dtcHt+55vkew4qz2R/Bz43tnWXDxsK50b8ZFNVm8aihFsV/1cGr7tQ9n4fmtS5AuBnkhhVhce095yz4Lh1RFElyaQ41Ptc5uz5pg=
+	t=1713992218; cv=none; b=j33rM1/qlY7athhEw2vVT1i3E2CUX6qluz+reNcx+tkBx/sl8talFP63McfAyv/KtVCoMiaDxNTIDSlE+9EvzTDDV1Id5dVCHcyXiUwpImiiB79IlZOENaD/I1kA6GmoGquoGqzq6fe446AXbc42pXefPOnx5ER9+0af9mKES3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713992161; c=relaxed/simple;
-	bh=w5zEssd+Z/vjP/3OsMpVa7aIy7cenpP2ZfPBUPA93Rs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Eyy0h8T7Lzej+SvAyu4zZJJeu9C/bcihDb1XagrHiw0Fam/E9kX5/PKnZV7H5WL0p0KNHikjUD2nqEmARxc8bfns02Uy9jdZR/AzPYGJtEohZz2SbYI88zPAfn2AAkap1pfaukn7MB3jL2PxBNW5zVAikYSJNF2pcE2JnefVkGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cODVlp3v; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1713992218; c=relaxed/simple;
+	bh=Q1WIubxiXQAmOvLWWlMyS3BDdZGIILkCqIs6jV7dbU0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Ht+a+uNCuuQhpDnQxUSyQHxYhgvNamkuGYoQFf0rcituYykBKWo2s+axi17HmsR+ShZ0v9fHCxEbSpYsxCm0xOBUDrsmtxuCjvmkZGMpFrbp00OU6bVhXgUUeR5QdlolW6y1ysfibTMcjFtFGFbIEBl+MPOR7mZTs7Zi85ZTCeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NvauBmxk; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713992158;
+	s=mimecast20190719; t=1713992216;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=pwf1N0pqao7hHUJlsTVeqzeGDUAlXHRYWippfBfxMg0=;
-	b=cODVlp3vT0J2CqdqOIONh9MgsUhrEVnFEZNbtw39Tx9DpYXeBuwrPeJy1bSTYswrMlV2Ne
-	7+h2F5VgMejlOs2vLH3tRQCExREuk/3fR+gytzgLpILlIqkkDEVl6hETDKl8bliBNL4IX4
-	8qT5VlzAtK9i0PyurZwnByCtG/CvPPo=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=4BJe6s4RlYV0QRX0OynnrSSs/GB0lHN5umnKIcoZWFU=;
+	b=NvauBmxkmVaSFrxmXZ5NuRfeD97vLMTQRLWTsxDUmF85uc98qnjTh/PmmLthiZutapI52G
+	DKXwSTmOJhfpKO3inJBPe3ga2P4c62BjOPVIPbWJycvmUzx65dZnppnOIji6O5Fpn4p3te
+	6MrFwOf3jgwixphAGMH2jB7mpruOTAc=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-349-nKM17sckNputeiY5rQG09g-1; Wed, 24 Apr 2024 16:55:57 -0400
-X-MC-Unique: nKM17sckNputeiY5rQG09g-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4183d08093bso1117085e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:55:57 -0700 (PDT)
+ us-mta-503-uSf-wx2_O8ioYkQcX4RF8g-1; Wed, 24 Apr 2024 16:56:54 -0400
+X-MC-Unique: uSf-wx2_O8ioYkQcX4RF8g-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-78f08178393so271471085a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 13:56:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713992156; x=1714596956;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pwf1N0pqao7hHUJlsTVeqzeGDUAlXHRYWippfBfxMg0=;
-        b=PCYhGumZRyCzmLWNH1sS0+VEJ9ZTI3S+DyZ0G9ptoGV/eEndkygzsuRut124GD3RS4
-         sBt58dKO++93Rn0co74R7TuRHXQRcQtDKsAlOaD9QfbUwHTkqFKTq1co8HWM697yNdm1
-         mZ6F/woDMbf2vJmXP9io+3U2Fb1b24/t1RFIYwX+ZL70VvfW6Dizd2W8Xx2JAz5dVW09
-         T0IPKpp6GKXB17BzLpyTTUpj1/zRnf4rzyv0qU/dhUOEVVsebnO8lw1app9g3nb1EwJB
-         REwYfe41/kLPSne0VbGsj9tIMITWsWD6lRmyYv3Gzdy6jEUWvwbXe9FmxrRz5oYBjs6r
-         IV+A==
-X-Forwarded-Encrypted: i=1; AJvYcCW6jSXLVX0aPL+W1l+Xxr9MBfCnALgOU54ZF5jitNlqwwK8hAOpcgJhTvFecRpDJ8Xj0lGenwqeKqDjss3iEEok2D1MgoqsCFC2HPop
-X-Gm-Message-State: AOJu0YwjWKSh9XzEk2z1l398rz/494rTUuLt8x7HJiUIR3KrK2e+AGOq
-	oWu3D4KmrUepwYa6oYXYMdU+hDU8KfMXPGPS/f+L+8fqwTJUR6CkTgr7fcMD++whRxs/vOdjLiC
-	+3/jAzbW+r0ia3rk688nrqFl6wBG/Dp2JY8OLp/xP5j8SO8EPjO+JRWL+IZzmEg==
-X-Received: by 2002:a05:600c:190d:b0:418:fea2:ed94 with SMTP id j13-20020a05600c190d00b00418fea2ed94mr2750208wmq.23.1713992156338;
-        Wed, 24 Apr 2024 13:55:56 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEozGXAqQGOfJt3u+VhzyJaF4t4KYaq0an+quDHunqz+3ck5Ll/n4JuxU/7P2GqC7u7V0lcbQ==
-X-Received: by 2002:a05:600c:190d:b0:418:fea2:ed94 with SMTP id j13-20020a05600c190d00b00418fea2ed94mr2750193wmq.23.1713992155893;
-        Wed, 24 Apr 2024 13:55:55 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70d:1f00:7a4e:8f21:98db:baef? (p200300cbc70d1f007a4e8f2198dbbaef.dip0.t-ipconnect.de. [2003:cb:c70d:1f00:7a4e:8f21:98db:baef])
-        by smtp.gmail.com with ESMTPSA id je12-20020a05600c1f8c00b004183edc31adsm28634639wmb.44.2024.04.24.13.55.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 13:55:55 -0700 (PDT)
-Message-ID: <04137a08-8918-422c-8512-beb2074a427e@redhat.com>
-Date: Wed, 24 Apr 2024 22:55:54 +0200
+        d=1e100.net; s=20230601; t=1713992214; x=1714597014;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :autocrypt:references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4BJe6s4RlYV0QRX0OynnrSSs/GB0lHN5umnKIcoZWFU=;
+        b=u6NuKrP3kVZVebqOzXxpRNM+g0KQigSas2jJeSMd4mo1zl57gOPczFS7uB6Ols4jZT
+         SA7rJBIMR6Sk+//yK4Hxt0yon34et/28bji+Ig70E3hHqA8lFQDLmyJh9eDnkuUTuMPj
+         DGkKc+DGeZeZD4B8hhXI/BxAcwbqYQfhYruOwa6hyzFqzbKh24yM1cucQ9JrgjO6wxML
+         JZbuh7T149k+3+xmOBayzCYOtsCnghN3BmgLvlwOHok7eFPxlKTbkiy0zOvZtv8sfqul
+         mUs9e8ZbrkmXFJRzLYH5yHjb2j8v7lAi25Kkm3o1zee2nES4m344cM4n98LNOg05yy79
+         BHhg==
+X-Forwarded-Encrypted: i=1; AJvYcCV9PSvE1ixvqJSt90DbHebW8TpKUKvRhmdY27njz9mMVcYQmCWdQsJsFNnMlkWRNxKqPGCWryyNIZVwvdb4ETmBBH3vWkm9OK9EgHhI
+X-Gm-Message-State: AOJu0YxjNQiG0MnKz2gSawxo2UkYCTZQzJ7kKimHgPAtfCaMVcnHwKCp
+	Ytrg3YYtZNUwFvccyuv5R0nXkc/kDL4eXr57ZCP/OyCTRPlHDIfEpj42QC94BwU3KnwuzXQrO7Q
+	5Cdlf7LiJXcx7hxZKkcs9EcLbsuXRAW9vyobJuOG+XPIofgzvqaZd+6WihTULbw==
+X-Received: by 2002:a05:620a:8b0c:b0:790:9796:4363 with SMTP id qw12-20020a05620a8b0c00b0079097964363mr1046112qkn.11.1713992214404;
+        Wed, 24 Apr 2024 13:56:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEgqz0sigaGgvDpu2vqLy+IaxYynTFpdTh/y82WdM0cAgd0gnBlRIyJYPfbzNakjTcJR3olTg==
+X-Received: by 2002:a05:620a:8b0c:b0:790:9796:4363 with SMTP id qw12-20020a05620a8b0c00b0079097964363mr1046093qkn.11.1713992214072;
+        Wed, 24 Apr 2024 13:56:54 -0700 (PDT)
+Received: from ?IPv6:2600:4040:5c6c:a300::789? ([2600:4040:5c6c:a300::789])
+        by smtp.gmail.com with ESMTPSA id du30-20020a05620a47de00b0078d65fbde2bsm6430606qkb.86.2024.04.24.13.56.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 13:56:53 -0700 (PDT)
+Message-ID: <3a0afe545747e5314a9cb6bbaa9ce90b259ddfac.camel@redhat.com>
+Subject: Re: Early boot regression from f0551af0213 ("x86/topology: Ignore
+ non-present APIC IDs in a present package")
+From: Lyude Paul <lyude@redhat.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org
+Date: Wed, 24 Apr 2024 16:56:52 -0400
+In-Reply-To: <87le59vw1y.ffs@tglx>
+References: <3d77cb89857ee43a9c31249f4eab7196013bc4b4.camel@redhat.com>
+	 <20240418082703.GCZiDZVyra7qOQbyqn@fat_crate.local>
+	 <fd040809d95b3e12b2fdc78a2409e187716bc66f.camel@redhat.com>
+	 <87plumxz4x.ffs@tglx>
+	 <abbb7d7ca781f6c664e4c5b1dffc19394ac79691.camel@redhat.com>
+	 <87le59vw1y.ffs@tglx>
+Autocrypt: addr=lyude@redhat.com; prefer-encrypt=mutual; keydata=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
+Organization: Red Hat Inc.
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v21 2/5] ring-buffer: Introducing ring-buffer mapping
- functions
-To: Vincent Donnefort <vdonnefort@google.com>
-Cc: rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
- kernel-team@android.com, rdunlap@infradead.org, rppt@kernel.org,
- linux-mm@kvack.org
-References: <20240423232728.1492340-1-vdonnefort@google.com>
- <20240423232728.1492340-3-vdonnefort@google.com>
- <f972ce5a-0351-450c-98a2-38188eae5001@redhat.com>
- <ZilsIJYbJ-JN4elq@google.com>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZilsIJYbJ-JN4elq@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 24.04.24 22:31, Vincent Donnefort wrote:
-> Hi David,
-> 
-> Thanks for your quick response.
-> 
-> On Wed, Apr 24, 2024 at 05:26:39PM +0200, David Hildenbrand wrote:
->>
->> I gave it some more thought, and I think we are still missing something (I
->> wish PFNMAP/MIXEDMAP wouldn't be that hard).
->>
->>> +
->>> +/*
->>> + *   +--------------+  pgoff == 0
->>> + *   |   meta page  |
->>> + *   +--------------+  pgoff == 1
->>> + *   | subbuffer 0  |
->>> + *   |              |
->>> + *   +--------------+  pgoff == (1 + (1 << subbuf_order))
->>> + *   | subbuffer 1  |
->>> + *   |              |
->>> + *         ...
->>> + */
->>> +#ifdef CONFIG_MMU
->>> +static int __rb_map_vma(struct ring_buffer_per_cpu *cpu_buffer,
->>> +			struct vm_area_struct *vma)
->>> +{
->>> +	unsigned long nr_subbufs, nr_pages, vma_pages, pgoff = vma->vm_pgoff;
->>> +	unsigned int subbuf_pages, subbuf_order;
->>> +	struct page **pages;
->>> +	int p = 0, s = 0;
->>> +	int err;
->>> +
->>
->> I'd add some comments here like
->>
->> /* Refuse any MAP_PRIVATE or writable mappings. */
->>> +	if (vma->vm_flags & VM_WRITE || vma->vm_flags & VM_EXEC ||
->>> +	    !(vma->vm_flags & VM_MAYSHARE))
->>> +		return -EPERM;
->>> +
->>
->> /*
->>   * Make sure the mapping cannot become writable later. Also, tell the VM
->>   * to not touch these pages pages (VM_DONTCOPY | VM_DONTDUMP) and tell
->>   * GUP to leave them alone as well (VM_IO).
->>   */
->>> +	vm_flags_mod(vma,
->>> +		     VM_MIXEDMAP | VM_PFNMAP |
->>> +		     VM_DONTCOPY | VM_DONTDUMP | VM_DONTEXPAND | VM_IO,
->>> +		     VM_MAYWRITE);
->>
->> I am still really unsure about VM_PFNMAP ... it's not a PFNMAP at all and,
->> as stated, vm_insert_pages() even complains quite a lot when it would have
->> to set VM_MIXEDMAP and VM_PFNMAP is already set, likely for a very good
->> reason.
->>
->> Can't we limit ourselves to VM_IO?
->>
->> But then, I wonder if it really helps much regarding GUP: yes, it blocks
->> ordinary GUP (see check_vma_flags()) but as insert_page_into_pte_locked()
->> does *not* set pte_special(), GUP-fast (gup_fast_pte_range()) will not
->> reject it.
->>
->> Really, if you want GUP-fast to reject it, remap_pfn_range() and friends are
->> the way to go, that will set pte_special() such that also GUP-fast will
->> leave it alone, just like vm_normal_page() would.
->>
->> So ... I know Linus recommended VM_PFNMAP/VM_IO to stop GUP, but it alone
->> won't stop all of GUP. We really have to mark the PTE as special, which
->> vm_insert_page() must not do (because it is refcounted!).
-> 
-> Hum, apologies, I am not sure to follow the connection here. Why do you think
-> the recommendation was to prevent GUP?
-
-Ah, I'm hallucinating! :) "not let people play games with the mapping" to me
-implied "make sure nobody touches it". If GUP is acceptable that makes stuff
-a lot easier. VM_IO will block some GUP, but not all of it.
-
-> 
->>
->> Which means: do we really have to stop GUP from grabbing that page?
->>
->> Using vm_insert_page() only with VM_MIXEDMAP (and without VM_PFNMAP|VM_IO)
->> would be better.
-> 
-> Under the assumption we do not want to stop all GUP, why not using VM_IO over
-> VM_MIXEDMAP which is I believe more restrictive?
-
-VM_MIXEDMAP will be implicitly set by vm_insert_page(). There is a lengthy comment
-for vm_normal_page() that explains all this madness. VM_MIXEDMAP is primarily
-relevant for COW mappings, which you just forbid completely.
-
-remap_pfn_range_notrack() documents the semantics of some of the other flags:
-
-	 *   VM_IO tells people not to look at these pages
-	 *	(accesses can have side effects).
-	 *   VM_PFNMAP tells the core MM that the base pages are just
-	 *	raw PFN mappings, and do not have a "struct page" associated
-	 *	with them.
-	 *   VM_DONTEXPAND
-	 *      Disable vma merging and expanding with mremap().
-	 *   VM_DONTDUMP
-	 *      Omit vma from core dump, even when VM_IO turned off.
-
-VM_PFNMAP is very likely really not what we want, unless we really perform raw
-PFN mappings ... VM_IO we can set without doing much harm.
-
-So I would suggest dropping VM_PFNMAP when using vm_insert_pages(), using only VM_IO
-and likely just letting vm_insert_pages() set VM_MIXEDMAP for you.
-
-[...]
-
->>
->> vm_insert_pages() documents: "In case of error, we may have mapped a subset
->> of the provided pages. It is the caller's responsibility to account for this
->> case."
->>
->> Which could for example happen, when allocating a page table fails.
->>
->> Would we able to deal with that here?
-> 
-> As we are in the mmap path, on an error, I would expect the vma to be destroyed
-> and those pages whom insertion succeeded to be unmapped?
-> 
-
-Ah, we simply fail ->mmap().
-
-In mmap_region(), if call_mmap() failed, we "goto unmap_and_free_vma" where we have
-
-/* Undo any partial mapping done by a device driver. */
-unmap_region(mm, &vmi.mas, vma, prev, next, vma->vm_start, vma->vm_end, vma->vm_end, true);
 
 
-> But perhaps shall we proactively zap_page_range_single()?
 
-No mmap_region() should indeed be handling it correctly already!
+On Sat, 2024-04-20 at 00:15 +0200, Thomas Gleixner wrote:
+> Paul!
 
--- 
+Lyude is fine BTW :P (I get the confusion though, Paul is usually not a
+last name lol)
+
+Anyway - unfortunately it doesn't seem like this patch helps :s, I'm
+still not seeing any difference and the backtrace I'm seeing at early
+boot looks the same. Any more information I can provide?
+
+>=20
+> On Fri, Apr 19 2024 at 13:38, Lyude Paul wrote:
+> > Awesome - can confirm the patch does indeed make the machine boot.
+> > Full
+> > dmesg from boot attached.
+>=20
+> Thanks for providing the data.
+>=20
+> [=C2=A0=C2=A0=C2=A0 0.089286] CPU topo: APIC ID 0 present 1
+> [=C2=A0=C2=A0=C2=A0 0.089294] CPU topo: APIC ID 0 present 0
+> [=C2=A0=C2=A0=C2=A0 0.089296] CPU topo: Hot-pluggable APIC ID 0 in presen=
+t package.
+>=20
+> ACPI is really a wonderland.
+>=20
+> Can you please test the patch below?
+>=20
+> Thanks,
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tglx
+> ---
+> Subject: x86/topology: Deal with more broken ACPI tables
+> From: Thomas Gleixner <tglx@linutronix.de>
+> Date: Thu, 18 Apr 2024 21:02:39 +0200
+>=20
+> Paul reported a regression which waas caused by the handling of non-
+> present
+> CPUs in a present package. It's caused by the ACPI table on the
+> system
+> which advertises APICs twice, present and non-present:
+>=20
+> =C2=A0 CPU topo: APIC ID 0 present 1
+> =C2=A0 CPU topo: APIC ID 0 present 0
+> =C2=A0 CPU topo: Hot-pluggable APIC ID 0 in present
+> package.=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=20
+> Which causes the topology to get confused to the point that it fails
+> to
+> bring the system up because the target APIC for the IOAPIC is not
+> available.
+>=20
+> Prevent this by checking whether a non-present CPU has been already
+> registered as present before. If so emit a firmware warning and
+> ignore the
+> registration request.
+>=20
+> Fixes: f0551af0213 ("x86/topology: Ignore non-present APIC IDs in a
+> present package")
+> Reported-by: Lyude Paul <lyude@redhat.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+> =C2=A0arch/x86/kernel/cpu/topology.c |=C2=A0=C2=A0=C2=A0 6 ++++++
+> =C2=A01 file changed, 6 insertions(+)
+>=20
+> --- a/arch/x86/kernel/cpu/topology.c
+> +++ b/arch/x86/kernel/cpu/topology.c
+> @@ -195,6 +195,12 @@ static __init void topo_register_apic(u3
+> =C2=A0	} else {
+> =C2=A0		u32 pkgid =3D topo_apicid(apic_id, TOPO_PKG_DOMAIN);
+> =C2=A0
+> +		if (test_bit(apic_id, phys_cpu_present_map)) {
+> +			pr_warn_once(FW_BUG "Already present APIC ID
+> %x registered again as non-present\n",
+> +				=C2=A0=C2=A0=C2=A0=C2=A0 apic_id);
+> +			return;
+> +		}
+> +
+> =C2=A0		/*
+> =C2=A0		 * Check for present APICs in the same package when
+> running
+> =C2=A0		 * on bare metal. Allow the bogosity in a guest.
+>=20
+
+--=20
 Cheers,
-
-David / dhildenb
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
 
 
