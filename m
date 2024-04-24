@@ -1,80 +1,81 @@
-Return-Path: <linux-kernel+bounces-157863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 513E78B1781
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:55:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B140E8B1787
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:58:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E37031F249C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:55:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2F971C21A52
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 23:58:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52C1016F283;
-	Wed, 24 Apr 2024 23:55:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0F216F914;
+	Wed, 24 Apr 2024 23:57:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WeyPt2Gv"
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="OGpXuUG6"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6162B16F0DE
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E215E16F28F
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:57:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714002943; cv=none; b=tCRezgvq5PCRIfwvzln/g8Lwn61j3kw8LKwkoNiIEXqDpD4deyASgRpUsiXMVzNu3RZHpIKyRTFYF6ffW6c7DgmnjH/vcU66xodDHsn6UKfPBI3XQ4lomzZIe9iq6kLzOVDY0uYHDJ6e+r/OayezEvXbbNWTdjk50OqC2kWyDtc=
+	t=1714003078; cv=none; b=Arya/iUuoothM4hbqbE7CNB3CDYvhQUY4qLJqfF40xWwzqjL8YcujL3IdpKepJlV/l4RDbD1eJn96HkRugbBlZvu+aheZLTZ3P/cqhMezFRL2GS2Jv+OxRLN9J3+oOUFhvRds3qIWt3kBTzvEwyoxJ8/jGT2IiMxjqYf2a/iM54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714002943; c=relaxed/simple;
-	bh=2/Hfa/dcWjkxZew9ys7tmCgP1thDGraOO4tncLETr3A=;
+	s=arc-20240116; t=1714003078; c=relaxed/simple;
+	bh=2BPOK2dXp68uRp32sm3Gx35HN6cr79+4gRYJiNQfSb0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kdQred5xI1R/YG7FPxngS6R3BHOzzZOzustZscGhU3B3O+dv2DdoC+YjM+N3UxOVsPudEE1M9egCA4Lo+/0YP8dRgk0L8wlGefSDCvvoIF+PGyGbqnGmAb/oZcSLWq0FEZCZdCtZ3ui7SmGGR7jj00A1y9X3QIM75QYoiDtHd3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=WeyPt2Gv; arc=none smtp.client-ip=209.85.160.50
+	 MIME-Version:Content-Type; b=OX+nweE/lVr/AItI0KTQHv4vQfkkD5rU1NJmfTa7DjP7gUkVudYiom+/DHioY8qGqBuM9jmzjfzO2NrP2DenAYYBuaBkYXWKyW7LbhRhXO0CSbj9Zj47Ktg5fIz5HNfAf7oPxyn+Y+TvLvUVLtTHe11NB5yUSExoC07RxUqX49k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=OGpXuUG6; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-238e171b118so268659fac.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:55:42 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e5c7d087e1so3707725ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 16:57:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714002941; x=1714607741; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1714003075; x=1714607875; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kk1vBtrkPJtfbNkGtrMy2gilqU9fSeCuVJ9F0az9iBg=;
-        b=WeyPt2Gv565dYBLzpmykhuB92ZbEINflIqMiaqPhWirBf4MQjRHShLrIKCx+9FK9Ds
-         ErBWdZPVsARWyBt1ROfTrzNWEyOLCk0qQmfa3YoQYLMZONgL6AfR7CpuIm9XczaMn9P9
-         EpxeSIhGdAyiGbWH5m1Z6x6CKbXjYkDKlvLZ8=
+        bh=e23zJ4CHX7X9QHhycswSvTOYU8EPrilYR7yjQqTKu0w=;
+        b=OGpXuUG6Wkwod7xRqgxyzZmooVCbNdmE1ig7rqUoSx8FjAW5zJ5xm5DjC717BX4t1i
+         KQmPN4+Z1stCbQSXEprOyU0F3FSImrrD6FecJakpDxIsMXQisRv/dDvpXuPzb9WvJIhj
+         QYitEDyrr52UxMLEU8jfknewcrKs/HSnTfoHM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714002941; x=1714607741;
+        d=1e100.net; s=20230601; t=1714003075; x=1714607875;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kk1vBtrkPJtfbNkGtrMy2gilqU9fSeCuVJ9F0az9iBg=;
-        b=aL1FQRC0M+t+BhL6ZqZTNR1MHqBCtylP35FYXsHpgWlghfohsIpXfgohekEm8tWjzP
-         hDNyqD4uJaVoMjhvuenN3vtxett79E8khKnNAoMWu91HE2IPgE6kmhbicL2hBKHh3lc+
-         UmDxc2OOxIdY6Qy1BSGj3Q1OYLkqquqn+iKAyBIMIBXzb4DeGheiuvWBT/Gq8S85TL+9
-         DdEQLqvEsh1tGYSRlMPDnd+fWkhyMMt3FoekK5VNkk7H4E4D6z8/biSn/LZPOJjM9qqF
-         yogBnYfB0+fLdxQtuCn+iAZeUCxnNeZzobJzEKDuxBSIsMv0FkqHaEY9X6/ndNLBpqqK
-         SPQw==
-X-Forwarded-Encrypted: i=1; AJvYcCWRRFgOi+uy4a9CYTVb6MLZiH4mxkw2f1sMcWnh1S7m0LsHj1VFPM2U3myDCWBpQf35KfmHejJNzEZOdB9Exx/Ilv1d6Kxd9atbYJAp
-X-Gm-Message-State: AOJu0Ywh7Deym59Z8l/3Z3XwbhW1/IDcLzeyxZjzjxVqvXoB0DYYaXCp
-	J2wzZSLEJiMCjIfrjt3SBkJI/16sZQ7PpqCVrJVGUaU2ExCtcXO/pXWJpgU6sg==
-X-Google-Smtp-Source: AGHT+IG98QMINTQzk0343aGIq+ANc+btBeXk8kVIqd9NLh5j28mHEFdPtL+/Va4lYd4ERDEzyibkTg==
-X-Received: by 2002:a05:6870:a686:b0:23b:1dd5:3df7 with SMTP id i6-20020a056870a68600b0023b1dd53df7mr2924743oam.47.1714002941396;
-        Wed, 24 Apr 2024 16:55:41 -0700 (PDT)
+        bh=e23zJ4CHX7X9QHhycswSvTOYU8EPrilYR7yjQqTKu0w=;
+        b=eiuqIOrbf3UyAGvL30Wji3NnIG+cgHmv1BgHyFL73+G1IbRjf5oW/vQQtxio5f3irJ
+         ZbHqvYH+43N+u4yB1JZri3zhb/nX0WldebLftQLfncQLs1cawSdILS8vG3bfboV4WTMA
+         9l0W1fosET7qTrwaX7b8jAVpHJFDKUBTmElz5fByKvQpZgJbVe8EU7Vwj56jX/z7mS3I
+         cas0LnKTpfb7jVWc+W6hN3dRkFs8l9iU1XzF9p2J2BFAhoFRSzEDu82GVB6g0pKYFAGk
+         SdWZkBLcozu0JUpta4FAjzXqvsDGnr5SxMqhcZjJQ9HmXVZEaT4evi/drDt4WynQnlMb
+         0Knw==
+X-Forwarded-Encrypted: i=1; AJvYcCVxCJFdmswkQtNnmq4FptWSzu8qeb9sWAfLK5p7nBGU12/N2Ac1FXgmUzCW1Fn+EboQLWpr6rJRmeY8Em5RSbVLXaDYd6YePCqkgLyP
+X-Gm-Message-State: AOJu0YzwZEfUcC03sXCrmgBS3eDvUoXGLu1s098D4VMevI4Shaw7nfKi
+	Yd4rqmTqVJ01k1Tk7oiW8VxH4Jzih/XzMcd6kbCZI3h/wLPAOlKJCH/cqgLT5w==
+X-Google-Smtp-Source: AGHT+IEg6R3vEh56TTakIcvssFRBm6oKPIjqtowedm88ZBAYnPxmpoFXQv3vGsHKFQfG284GpQnxiw==
+X-Received: by 2002:a17:903:2445:b0:1e5:4f00:3751 with SMTP id l5-20020a170903244500b001e54f003751mr4274814pls.3.1714003075262;
+        Wed, 24 Apr 2024 16:57:55 -0700 (PDT)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id fx25-20020a056a00821900b006e6c88d7690sm11952827pfb.160.2024.04.24.16.55.40
+        by smtp.gmail.com with ESMTPSA id p3-20020a170902780300b001e7b8c21ebesm12661739pll.225.2024.04.24.16.57.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 16:55:40 -0700 (PDT)
+        Wed, 24 Apr 2024 16:57:54 -0700 (PDT)
 From: Kees Cook <keescook@chromium.org>
-To: Justin Stitt <justinstitt@google.com>
+To: Tyler Hicks <code@tyhicks.com>,
+	Justin Stitt <justinstitt@google.com>
 Cc: Kees Cook <keescook@chromium.org>,
-	linux-fsdevel@vger.kernel.org,
+	ecryptfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] hfsplus: refactor copy_name to not use strncpy
-Date: Wed, 24 Apr 2024 16:55:38 -0700
-Message-Id: <171400293647.3284001.3215911382372065308.b4-ty@chromium.org>
+Subject: Re: [PATCH] fs: ecryptfs: replace deprecated strncpy with strscpy
+Date: Wed, 24 Apr 2024 16:57:48 -0700
+Message-Id: <171400306698.3284237.12157230203492551357.b4-ty@chromium.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240401-strncpy-fs-hfsplus-xattr-c-v2-1-6e089999355e@google.com>
-References: <20240401-strncpy-fs-hfsplus-xattr-c-v2-1-6e089999355e@google.com>
+In-Reply-To: <20240321-strncpy-fs-ecryptfs-crypto-c-v1-1-d78b74c214ac@google.com>
+References: <20240321-strncpy-fs-ecryptfs-crypto-c-v1-1-d78b74c214ac@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,21 +85,28 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Mon, 01 Apr 2024 18:10:48 +0000, Justin Stitt wrote:
-> strncpy() is deprecated with NUL-terminated destination strings [1].
+On Thu, 21 Mar 2024 00:38:54 +0000, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces. A good alternative is strscpy() as it guarantees
+> NUL-termination on the destination buffer.
 > 
-> The copy_name() method does a lot of manual buffer manipulation to
-> eventually arrive with its desired string. If we don't know the
-> namespace this attr has or belongs to we want to prepend "osx." to our
-> final string. Following this, we're copying xattr_name and doing a
-> bizarre manual NUL-byte assignment with a memset where n=1.
+> In crypto.c:
+> We expect cipher_name to be NUL-terminated based on its use with
+> the C-string format specifier %s and with other string apis like
+> strlen():
+> |	printk(KERN_ERR "Error attempting to initialize key TFM "
+> |		"cipher with name = [%s]; rc = [%d]\n",
+> |		tmp_tfm->cipher_name, rc);
+> and
+> |	int cipher_name_len = strlen(cipher_name);
 > 
 > [...]
 
 Applied to for-next/hardening, thanks!
 
-[1/1] hfsplus: refactor copy_name to not use strncpy
-      https://git.kernel.org/kees/c/628a89b6ef79
+[1/1] fs: ecryptfs: replace deprecated strncpy with strscpy
+      https://git.kernel.org/kees/c/9a2780409552
 
 Take care,
 
