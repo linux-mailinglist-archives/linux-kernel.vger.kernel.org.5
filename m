@@ -1,58 +1,64 @@
-Return-Path: <linux-kernel+bounces-157762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15DC78B15C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 982B38B15CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:07:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 507781C21AF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:04:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C696D1C214AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:07:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 955FC15B564;
-	Wed, 24 Apr 2024 22:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98E7F15FCF9;
+	Wed, 24 Apr 2024 22:07:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LOTbOX7n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gglyjX2m"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D786B157492;
-	Wed, 24 Apr 2024 22:04:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC366143878;
+	Wed, 24 Apr 2024 22:07:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713996276; cv=none; b=pFlZiFe2qGxru1GJCovNdsvo5lD6VyvT0PYy+MSl4HSYhnL5gG2PswjQfwYK7NdJotlqQHRJiguwXeYvp1Up97QoR34/AB35ORmToVVXwjTKRNWw8LNMMK6I9OAgfd+LF7dcW1Ar77UJEZQYNdLJeVS9Tbz8fWe5Wd5OLdXnrEE=
+	t=1713996460; cv=none; b=ic3Zv1h5TcH5bNPt3EK+txUeql7eJ6jOC5RZXA1RHGNjGnXxPFUakHMJisJ/c+kjhHrCr+DODzq7I+5y+vqWz26nos4Ht7+tS6EmHznOcsr5cdLVttM9XUltxncgiTPq8fwfxh5CU5nnpaC6rZMYIvrIXe1T2Ld5G06Y8WFXfoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713996276; c=relaxed/simple;
-	bh=ExMY2DGUIWSWHmlNIofPsgB8GGtX0pH1hq3K1IaRN+s=;
+	s=arc-20240116; t=1713996460; c=relaxed/simple;
+	bh=/DPND3sRbUXqaVE2P6wR2XgSsepaOJWscaAY5a5eyRs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WIuzDC1q3SENufP3erGN9UqNRLMCdpghAFX9//VerNzP3pvLLppZg/IsSkw8bw8/3+eRuzT+DY2ylu5R+Kd7HCD4MFkSbQS0KCUjEuSfth1zHgEHvtC+07ldAFFfvKrIHV+MEoY8FjLKKbtEd92HKDCDmk98eCJVAnt+aQg1WTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LOTbOX7n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39BB2C113CD;
-	Wed, 24 Apr 2024 22:04:35 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=R5qyYDZFj8Ivo6sBE9ry+JDqGRS4TU+MFmoOU/FFwCVDHdmCyTWjINtdP4S5/WXBUOC98FjoP65cFDCQKkvgs4/GKiX+pj0UeIIZq6e/0AsBHonCEf5BtN5xtPsbfKFj/9QjFqcqnezBMzSriCdvDgCerjYgxanKP9m2SjmZlK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gglyjX2m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAB78C113CD;
+	Wed, 24 Apr 2024 22:07:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713996276;
-	bh=ExMY2DGUIWSWHmlNIofPsgB8GGtX0pH1hq3K1IaRN+s=;
+	s=k20201202; t=1713996460;
+	bh=/DPND3sRbUXqaVE2P6wR2XgSsepaOJWscaAY5a5eyRs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LOTbOX7n9SyqWouZPINt8hRWgfHp50GI3RR0vlwFWRwu8VxSx7W8UGc3uBEcGpOtY
-	 +1aHPLIFTuleD51AdBad9RJ07NjR9Ul8dYPgNb/G3a52bDUKon7ImnhO1CN3VIPjNc
-	 HmPX+vQaXfwZPM8xwW5FqiYz0LJCU8IdemVt1RD67amUSi4gPUsNfOVNgB57cWGErt
-	 aUOEL0tjKykv7ORbbu+YRRZ1E1GCT5ktoBfjHQ06Obuz6jzoyBGw+j4LLdBsBFsfUv
-	 1cNo/tHc04WorrdbI+hM9RJpej8XJwlZxDvXivhZ7McCHJIv0HaSWuG0+MPc+RRfEF
-	 PFILxUhX3oI5g==
-Date: Wed, 24 Apr 2024 17:04:33 -0500
+	b=gglyjX2m1EEcHcu16zyVOtVS5vT7Ft2xxOvv0GSxSJEEwy0Y8VvLmvArojs/uNBtD
+	 OmJLT2dN1cUfnFl5iV5SDSmtQ25fjK3YnthCvaRVCFYjgGs75DURIxJvdAtMQVX9oS
+	 DVP5m84/teTSf10XHdMUx9u4PnwaF/kZViVkIcYaZF7y3fcTMzjTevmaIprYZCMhmX
+	 y8FlEnZYDq0j7UIjX90IXodcEQ+mWOiJQISuavS0EsWNXKvHMMDzdm82hp4esAtnmH
+	 Xsf2yEpMjSNWtCCkA8tVFXzHV4bbM3S2cd/ybS8+x/GAfZ8rULp98vC/6MEihLZkX0
+	 uAZd8QoU3GrLg==
+Date: Wed, 24 Apr 2024 17:07:37 -0500
 From: Rob Herring <robh@kernel.org>
-To: Joshua Yeong <joshua.yeong@starfivetech.com>
-Cc: linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
-	conor+dt@kernel.org, krzk+dt@kernel.org,
-	jeeheng.sia@starfivetech.com, linux-riscv@lists.infradead.org,
-	leyfoon.tan@starfivetech.com, paul.walmsley@sifive.com,
-	palmer@dabbelt.com, devicetree@vger.kernel.org, conor@kernel.org
-Subject: Re: [PATCH v3 2/2] dt-bindings: cache: Add docs for StarFive
- Starlink cache controller
-Message-ID: <171399595085.782407.16477944917789511195.robh@kernel.org>
-References: <20240424075856.145850-1-joshua.yeong@starfivetech.com>
- <20240424075856.145850-3-joshua.yeong@starfivetech.com>
+To: Peter Yin <peteryin.openbmc@gmail.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Jean Delvare <jdelvare@suse.com>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-kernel@vger.kernel.org,
+	patrick@stwcx.xyz, Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+	Lukas Wunner <lukas@wunner.de>, devicetree@vger.kernel.org,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+	Cosmo Chou <chou.cosmo@gmail.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andre Werner <andre.werner@systec-electronic.com>,
+	Guenter Roeck <linux@roeck-us.net>, linux-doc@vger.kernel.org,
+	Patrick Rudolph <patrick.rudolph@9elements.com>
+Subject: Re: [PATCH v1 2/3] dt-bindings: hwmon: Add infineon xdp710 driver
+ bindings
+Message-ID: <171399644638.795828.16272649417536972099.robh@kernel.org>
+References: <20240424095604.3425857-1-peteryin.openbmc@gmail.com>
+ <20240424095604.3425857-3-peteryin.openbmc@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,20 +67,18 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240424075856.145850-3-joshua.yeong@starfivetech.com>
+In-Reply-To: <20240424095604.3425857-3-peteryin.openbmc@gmail.com>
 
 
-On Wed, 24 Apr 2024 15:58:56 +0800, Joshua Yeong wrote:
-> Add DT binding documentation used by StarFive's
-> JH8100 SoC Starlink cache controller.
+On Wed, 24 Apr 2024 17:55:58 +0800, Peter Yin wrote:
+> Add a device tree bindings for xdp710 device
 > 
-> Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
+> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
 > ---
->  .../cache/starfive,jh8100-starlink-cache.yaml | 66 +++++++++++++++++++
->  1 file changed, 66 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/cache/starfive,jh8100-starlink-cache.yaml
+>  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+Acked-by: Rob Herring (Arm) <robh@kernel.org>
 
 
