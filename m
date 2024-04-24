@@ -1,106 +1,109 @@
-Return-Path: <linux-kernel+bounces-157508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 773978B1237
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7071E8B123E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:27:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31E9D28CB4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:26:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AEFB28CFF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:27:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1573116EC1E;
-	Wed, 24 Apr 2024 18:15:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ad6zUTS+"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 105EC1C689D;
-	Wed, 24 Apr 2024 18:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 579E51CB322;
+	Wed, 24 Apr 2024 18:15:45 +0000 (UTC)
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id B78A21C8FD8
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 18:15:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713982540; cv=none; b=M8Ca0uOoUSjTq2B6s1/Rg1b2RNsoXKHTfEPNx1wLoiF3FgY8m8beqkqMYuwfEiecXklP6RKZelUGy0qj/xw524sdQ3A4L2H5eCjKDF0ivWv/36Acg1EJ/jtxft/VyRhudEy/RDWeManSgVmNJ5WROuttHnOvOw+NxumxcMEFb7A=
+	t=1713982544; cv=none; b=RXJeCwVGCUcOGBaK9gC4GpiXZdj2DtHPKqEETemp2qRuf30vj++/Dfw9DQK7niHwdwAw6hq5/tDrEnlC5N/41zG0xCwvhXX2hN0H8CCdXB8lJ58HJEYTkCrJixYn0PtADizULrCHgRk+qSYj2mEFaBq1/oHtIr1ttZiN4WFfGx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713982540; c=relaxed/simple;
-	bh=WDk3Nytz3rdQKdrZoCkbG+T02Itdm5c/GxoSZ2n45IU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bm6r+FMANisNa0yeQXzmRhVMs3jwu+2yx+FUo0wuKXlGSl8Dn7F8Qdfns/K6UQk3pjP5foIBLoeGQOfs3NmePBgAq2uvVTlkmuUke1OYZzo97WId66EVHm+C9UAjvYKMIeyZARQMjP+NZAs0fD4iEs0RfvB+CtgBr46S9vvXUNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ad6zUTS+; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713982539; x=1745518539;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=WDk3Nytz3rdQKdrZoCkbG+T02Itdm5c/GxoSZ2n45IU=;
-  b=Ad6zUTS+N1H3WIWlBZ8ijcmN3ndTpWBWMnhpFvKYgPeXFVgkkjOJlCO8
-   Kvoo9dVv9G4p34H8xsAmqG1AGOaWiXBwoOOk/xJ5+l55EzCQNYF05TPwT
-   SoBBupFAgG6x7SnOZEEnzcRNIZQKZrvQBqsR9ZouDN0UR8UjS+ah0SGXY
-   Bc+7Q9xwWWjAwe5TjA5zWkcZ4rsABmWgQoTV2MLFnQpD3qRWPKTN2xMuN
-   ezFjbSbsAy1XCUdO3SxHjGTYlRcUigvQk0hVQ9tQpvB1z8j85vVB5GDXK
-   TzkAZmpiusZyRuFEJ13q53SfltOtvlwsALPnm72JJwIgwV963Xl7wpn52
-   A==;
-X-CSE-ConnectionGUID: dfJRNtIlS0C+wx+WdSSKBA==
-X-CSE-MsgGUID: kEtqkbaARriqT7FHLVLmrg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9503679"
-X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="9503679"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:15:38 -0700
-X-CSE-ConnectionGUID: eYYxRhxXS5eZvp1tM9t8tw==
-X-CSE-MsgGUID: /Pcz3vEuSeGMbovUk5PfpQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="55750299"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.105])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:15:38 -0700
-From: Tony Luck <tony.luck@intel.com>
-To: Borislav Petkov <bp@alien8.de>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev,
-	Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v4 59/71] platform/x86: intel_scu_wdt: Switch to new Intel CPU model defines
-Date: Wed, 24 Apr 2024 11:15:38 -0700
-Message-ID: <20240424181538.42292-1-tony.luck@intel.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240424181245.41141-1-tony.luck@intel.com>
-References: <20240424181245.41141-1-tony.luck@intel.com>
+	s=arc-20240116; t=1713982544; c=relaxed/simple;
+	bh=DlQyTPVSjb+PU7NRGFFp/uRnhLy9lXW2ebSsJ0iDs94=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JBRDiQ9DNLdpLKnJJW2ixTWSdqlLxQdn+DRmRCdOEiII6g74L2ZZJ0KeLNH6BMKITs0VyBRit+Kn87JH5AqEAPvtgM+h4awG/lQmK2UiwHdkGzEVqy4k8hmZryn3Am5DjOI100TmLoS1aHaM02Feb5BacvXtNfMDpvU+9OvfddM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 460785 invoked by uid 1000); 24 Apr 2024 14:15:39 -0400
+Date: Wed, 24 Apr 2024 14:15:39 -0400
+From: Alan Stern <stern@rowland.harvard.edu>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+  linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+  Gerd Hoffmann <kraxel@redhat.com>
+Subject: Re: [PATCH] usb: ohci: Prevent missed ohci interrupts
+Message-ID: <57511487-e622-476d-adb2-5dfc725032d4@rowland.harvard.edu>
+References: <20240424170250.3738037-1-linux@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240424170250.3738037-1-linux@roeck-us.net>
 
-New CPU #defines encode vendor and family as well as model.
+On Wed, Apr 24, 2024 at 10:02:50AM -0700, Guenter Roeck wrote:
+> Testing ohci functionality with qemu's pci-ohci emulation often results
+> in ohci interface stalls, resulting in hung task timeouts.
+> 
+> The problem is caused by lost interrupts between the emulation and the
+> Linux kernel code. Additional interrupts raised while the ohci interrupt
+> handler in Linux is running and before the handler clears the interrupt
+> status are not handled. The fix for a similar problem in ehci suggests
+> that the problem is likely caused by edge-triggered MSI interrupts. See
+> commit 0b60557230ad ("usb: ehci: Prevent missed ehci interrupts with
+> edge-triggered MSI") for details.
+> 
+> Ensure that the ohci interrupt code handles all pending interrupts before
+> returning to solve the problem.
+> 
+> Cc: Gerd Hoffmann <kraxel@redhat.com>
+> Fixes: 306c54d0edb6 ("usb: hcd: Try MSI interrupts on PCI devices")
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  drivers/usb/host/ohci-hcd.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
+> index 4f9982ecfb58..4d764eb6c1e5 100644
+> --- a/drivers/usb/host/ohci-hcd.c
+> +++ b/drivers/usb/host/ohci-hcd.c
+> @@ -888,6 +888,7 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
+>  	/* Check for an all 1's result which is a typical consequence
+>  	 * of dead, unclocked, or unplugged (CardBus...) devices
+>  	 */
+> +again:
+>  	if (ints == ~(u32)0) {
+>  		ohci->rh_state = OHCI_RH_HALTED;
+>  		ohci_dbg (ohci, "device removed!\n");
+> @@ -982,6 +983,11 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
+>  	}
+>  	spin_unlock(&ohci->lock);
+>  
+> +	/* repeat until all enabled interrupts are handled */
+> +	ints = ohci_readl(ohci, &regs->intrstatus);
+> +	if (ints & ohci_readl(ohci, &regs->intrenable))
+> +		goto again;
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- drivers/platform/x86/intel_scu_wdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If we take the repeat, we don't want to return IRQ_NOTMINE by accident.  To 
+prevent this, we should check that ohci->rh_state != OHCI_RH_HALTED before 
+re-reading ints and jumping back.
 
-diff --git a/drivers/platform/x86/intel_scu_wdt.c b/drivers/platform/x86/intel_scu_wdt.c
-index a5031a25632e..d0b6637861d3 100644
---- a/drivers/platform/x86/intel_scu_wdt.c
-+++ b/drivers/platform/x86/intel_scu_wdt.c
-@@ -50,7 +50,7 @@ static struct intel_mid_wdt_pdata tangier_pdata = {
- };
- 
- static const struct x86_cpu_id intel_mid_cpu_ids[] = {
--	X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT_MID, &tangier_pdata),
-+	X86_MATCH_VFM(INTEL_ATOM_SILVERMONT_MID, &tangier_pdata),
- 	{}
- };
- 
--- 
-2.44.0
+(If rh_state _is_ OHCI_RH_HALTED, it means the device is supposedly stopped 
+and disabled for generating further interrupt requests, so we shouldn't 
+need to worry about any outstanding intrstatus bits still set.)
 
+Alan Stern
+
+> +
+>  	return IRQ_HANDLED;
+>  }
+>  
+> -- 
+> 2.39.2
+> 
 
