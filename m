@@ -1,90 +1,88 @@
-Return-Path: <linux-kernel+bounces-157229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47C0F8B0ED7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:43:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EC588B0EDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:43:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 785D01C20A59
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:43:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF8271F29E26
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:43:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DACF916078B;
-	Wed, 24 Apr 2024 15:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 111D11635AB;
+	Wed, 24 Apr 2024 15:40:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AXzZwUfS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b="FmEJQvGh"
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E741422AF;
-	Wed, 24 Apr 2024 15:40:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F06416F0CA
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713973225; cv=none; b=hOdWGvAJ0K2vObTjkL4llivvkNWDP6wm8K1Yknk6FZ8SDJf1bU97xiGW1HU5caRd6LXgBdStlSdPWz2nKxI4vABWdPo8oRWhwEMGLyguQhDvmy4QcQky6pJE84rE0h2zgwPclJOqEhaBwvmslttTyLCtSdS8ukGuxY1p91ewTBw=
+	t=1713973234; cv=none; b=c8s7DvketmKBPmgja2IfUPusJZC4dymrNDdk+CNt1p9ZjwZamG0LCPNJDUW5XS6rGalKD8ZKCerTIL6HQWc+epmhc1hEZnpjhLjqcz3nQrAs2bHD6iYfSxUSXIfxxi2V55xup65u7pU6j087Yr3vzIJ5XF74YffR+IYjC2XCM7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713973225; c=relaxed/simple;
-	bh=AC95m6JL1F7JZG8sItYB3WOCvHcTlGuxSvUXzc4cQXo=;
-	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
-	 Cc:Message-ID:Date; b=ja+JXnbjBIlVZ7TXGgz4hGe5vKEIcmtQrYTMe+JK4pJzXmdEFM0JxyAymF1vROZLTB+TQBTfdJMBrB4/iHeiJvD54e14hAxMZLn98LqgM6dZVhOnyHE9+tjy38etL7tW2I4ogF66z8QYI2xVXqNDz/n4NSEoEatFOSANW+WtlhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AXzZwUfS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96481C113CD;
-	Wed, 24 Apr 2024 15:40:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713973224;
-	bh=AC95m6JL1F7JZG8sItYB3WOCvHcTlGuxSvUXzc4cQXo=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=AXzZwUfSlS63aY5NOuVanxUFc/7T2ibF20bWJKX5r7af+OvugTESTc8663kvPxhQv
-	 qyX2aUQXJUbWwyxmKga4BZ6Is04QHw9kUbxIThssBEtwu1ts2ZaNFJztqwnmh/zhiD
-	 G+s0mBzyM1uFIwFqd6FrXMjFWZa6ELu8hIUPi9gpx2iHulSbOp/jd2HA4kPlrqxnVB
-	 NXKEIn3g7LRh3oh89GFmbZ4LXf/HYT9A20nwKidgZ2JjiIs4ENj9uJGgTHdaah57le
-	 mW12s6BkIw8IYPiUXUoVDGI+V9LnICatyTiFSG/+g1SnQQMVMSC8MZl+cmjYHtziej
-	 5DmIXM0WF1dRg==
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1713973234; c=relaxed/simple;
+	bh=Tu2+814/Dq8TXDCPxBDdBge8JxaQTS/q6ngA7zuMIy8=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Disposition; b=lYweZoon1jg/z31DXSf7t5IoQ/W0xYnbMvwTJiV/lpGo9WhM14ViIIOOXSnOYN8yfIPmIE90Fqx8otzR6ECRXosVH2autiBgCDGjH472vt6N4w3r0I+4xnSSQ9hlcq354vnqY9RGYHOf/FnQBv5D8DAtzJoaqN6UwKeQzAWJz/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net; spf=pass smtp.mailfrom=craftyguy.net; dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b=FmEJQvGh; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=craftyguy.net
+Date: Wed, 24 Apr 2024 08:40:24 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=craftyguy.net;
+	s=key1; t=1713973229;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gg+XCabiBQTUKesq34TeNd0ZwGbgVR9S2ZKLjUE4Ojw=;
+	b=FmEJQvGhB2O1nQi+xxwSyVM76v9WM7dULhguJNyJlIFmzs0DpbJQh7WOlrI+Sbz18e/9de
+	QKpkvfdU5v6StuNa1GbIEq1N9Sa8ABmz2cUAkRfQPTwmZH+wnpdbcL+uAqPu4UokuzS9px
+	LxrEOLowd2zqhpACoPk0DAOyPlVXBUadIIKkZ4XsvsMTKwMLbTGr/RkAu7penHfaGxyteL
+	eYdio9d01hTFJpmr2y2rE2Gft6573tv1B+UN9vSaV45r3e1D2hLVZV47wrJc39HcfNa8D2
+	VxVK0E4NCsSdVlSS8JbUHDz9ImYNnAySqAIMBQtbxK2KOPn5T4mu+/HiDKpcSA==
+Message-ID: <20240424084024.GC5670@craftyguy.net>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Clayton Craft <clayton@craftyguy.net>
+To: Andrey Smirnov <andrew.smirnov@gmail.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>, platform-driver-x86@vger.kernel.org,
+ Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
+ Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+ linux-kernel <linux-kernel@vger.kernel.org>, linux-hwmon@vger.kernel.org,
+ gpiccoli@igalia.com
+Subject: Re: [PATCH] platform/x86: Add Steam Deck driver
+In-Reply-To: <CAHQ1cqE_iA0gKmqxS21JMAoFpz-ebhG+axVuUT9P62_JTB9kZQ@mail.gmail.com>
+References: <20220206022023.376142-1-andrew.smirnov@gmail.com>
+ <YgIu+Lrt0p85yog1@kroah.com>
+ <CAHQ1cqE_iA0gKmqxS21JMAoFpz-ebhG+axVuUT9P62_JTB9kZQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH wireless v2] wifi: ath10k: Fix an error code problem in
- ath10k_dbg_sta_write_peer_debug_trigger()
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20240422034243.938962-1-suhui@nfschina.com>
-References: <20240422034243.938962-1-suhui@nfschina.com>
-To: Su Hui <suhui@nfschina.com>
-Cc: quic_jjohnson@quicinc.com, jjohnson@kernel.org, nathan@kernel.org,
- ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
- Su Hui <suhui@nfschina.com>, c_mkenna@qti.qualcomm.com,
- linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
- kernel-janitors@vger.kernel.org
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <171397321994.2567832.9996590005061868676.kvalo@kernel.org>
-Date: Wed, 24 Apr 2024 15:40:21 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Su Hui <suhui@nfschina.com> wrote:
-
-> Clang Static Checker (scan-build) warns:
+On Sat, 12 Feb 2022 15:37:19 -0800 Andrey Smirnov <andrew.smirnov@gmail.com> wrote:
 > 
-> drivers/net/wireless/ath/ath10k/debugfs_sta.c:line 429, column 3
-> Value stored to 'ret' is never read.
-> 
-> Return 'ret' rather than 'count' when 'ret' stores an error code.
-> 
-> Fixes: ee8b08a1be82 ("ath10k: add debugfs support to get per peer tids log via tracing")
-> Signed-off-by: Su Hui <suhui@nfschina.com>
-> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+> Yeah, my bad, will add in v2.
 
-Patch applied to ath-next branch of ath.git, thanks.
+Hi Andrey,
 
-c511a9c12674 wifi: ath10k: Fix an error code problem in ath10k_dbg_sta_write_peer_debug_trigger()
+I want to run the latest mainline kernels on the Steam Deck and came across some
+newer patches of yours (and others) in Valve's steamOS kernel that may(?)
+replace the ones from this thread. They seem to be required for properly
+handling input, thermals, etc on this device. I rebased and used them
+successfully on 6.9-rc5[1], and was curious what the status is of upstreaming
+these (e.g. as a V2 here)? It would be wonderful to have support for this device
+upstreamed.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20240422034243.938962-1-suhui@nfschina.com/
+-Clayton
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+1. https://gitlab.com/postmarketOS/pmaports/-/tree/master/device/testing/linux-valve-jupiter?ref_type=heads
 
