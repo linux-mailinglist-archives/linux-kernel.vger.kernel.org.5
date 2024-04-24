@@ -1,280 +1,281 @@
-Return-Path: <linux-kernel+bounces-157536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64D538B1288
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:41:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCCE88B12AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 20:43:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68C311F20CCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:41:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AD1C1F217A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:43:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE12718B1A;
-	Wed, 24 Apr 2024 18:41:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BE852BAE3;
+	Wed, 24 Apr 2024 18:42:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ILxkC2G3"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eEarf3eR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CFCB1FDD;
-	Wed, 24 Apr 2024 18:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01AD119BDC;
+	Wed, 24 Apr 2024 18:42:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713984093; cv=none; b=VsMD/vSUc7OpX3EkQxXo3JeJQsrrnKLlsUy2h0kDxQIM3d12v/KeN6E/eNKtkwN8g9QUbX+NfsoeyoEJXSqFe85O27oA6b4NFpdJEdrTxXPu5pr7IZ2wNl8TvyukcbBanc7N8741tgMqWuluOWEsmQK/g1UxW6+c8zBEWvK1UU0=
+	t=1713984157; cv=none; b=Rp24EwxPJ3xFf2QuQcAbTCNhaFurn4s7HpSCIDwEumGtQyNQ4Fd13ma1c2Ca81YhwE1d5evWIPH8K2iZk3GEZuxyCWyPO2CG/Cj3pPck+WEX7C2gCH+Hn6umFDBJqvOtNj8YCGGa4ukUbEBxt7KoB+QPW895iE8qChB7nouLqFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713984093; c=relaxed/simple;
-	bh=kzZQaB5GtZ+QKzA70o+yGDoOKj7SVZ+KzMiOqdNiaoY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lhuOkVNaZO2rJL1IwHwkoZMiFp14HgEO7AedhpKePcx9YiiTaQgmL+7VxYGPO9XBu4cy5Ycs1I/Fp2I9xQSyX3vYqvZEjjEdqfUST0p43xOyMN4E//L7+ck3lTfMw47gdp4nZaOFUXOgOEcAvxyEgLuFz8BkOO9h9gYd1aWtt5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ILxkC2G3; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713984092; x=1745520092;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=kzZQaB5GtZ+QKzA70o+yGDoOKj7SVZ+KzMiOqdNiaoY=;
-  b=ILxkC2G3jeAoOtuo2EYbPqj8LUpguPxQ7q7mS03pZnep+OunkKsY5HVI
-   oi1bkuG26SD7W3RzoYlhVne4kMkd1HMFMyDRU8boHa953WwpnVY6osxka
-   N/tZGZr0Si1aSk7OBrYRXEOUd9n9B3xEPqPFbpYIVIFW+7msXdVuHK4fG
-   l4Yj70LGOVj83IzN88K8jpfQbqTz0Vk88R0nwkwET5H/yFp306ncebnzX
-   nINhSEF4JpOvD2wsSeXW3LHca/qQcOj3Rb7BEmg2eTBmSEOGykV4ukmUW
-   PlAeoxnP1ohTv+kN+HcfGO+xz2SSh88LiaGjffGLuhXNKKPKKriTE41bu
-   Q==;
-X-CSE-ConnectionGUID: a39ikSP3TaqENMk+mWlBaA==
-X-CSE-MsgGUID: YeCa1Kq2Qo2+NICH5tB68g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="13422967"
-X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="13422967"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 11:41:31 -0700
-X-CSE-ConnectionGUID: wqTHl7JJReqs5HYabPqhqA==
-X-CSE-MsgGUID: fxEjS7Z2SPqCu/yhMAcCUw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
-   d="scan'208";a="29593424"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 24 Apr 2024 11:41:28 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rzhYa-0001YS-2Z;
-	Wed, 24 Apr 2024 18:41:24 +0000
-Date: Thu, 25 Apr 2024 02:40:51 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
-	Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Michal Simek <monstr@monstr.eu>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
-	Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-	linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Eng Lee Teh <englee.teh@starfivetech.com>
-Subject: Re: [PATCH v1 1/2] spi: spi-cadence: Add optional reset control
- support
-Message-ID: <202404250235.htdVhIMY-lkp@intel.com>
-References: <20240424051317.2084059-2-jisheng.teoh@starfivetech.com>
+	s=arc-20240116; t=1713984157; c=relaxed/simple;
+	bh=sPDkpL2eRwrE9eObIY9L50bH2UWI7ApS/vbfGx6ztEQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=MTzoHgU5KaGYxkj6RKIbFLeflYdSfMgEAGiAW91twD9le9IRhEmlvyRh2tswEgt6+Ev7AB9ovS6bNlSQLlIS7l5JElGCmJReEQ+qqmks6Ai5psm+AMbNNtAH9CwTTks6xNs1LO/FX4t9BN6QWMQOk3/mYGcNbv9TDMw6fKMsGlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eEarf3eR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 64E0BC2BD11;
+	Wed, 24 Apr 2024 18:42:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713984156;
+	bh=sPDkpL2eRwrE9eObIY9L50bH2UWI7ApS/vbfGx6ztEQ=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=eEarf3eRS8S13iHsnQVM+zPY95vk5r87aVGns5ecd0W8HuT4AxyJIOoVAiiNmGFjo
+	 SKVfe0UJxIStt1JkUSTkQs62zzZNh+D2z2Z8LdtdrF/HdGleWlYGCkOYFZw3WyxYCJ
+	 6kWWnPr/ee+KaBmoQMuLXM3CLUtygywywwIMNeo1RUxCahePBQVRUXu0bAWmtbp6Sw
+	 2z1B73xwfz9O/8XLrFev5vTcT+Agb7uG7NNn7Ev3byVzfxtBhQ4Yq4L8SqFLt1+bQ/
+	 +kBaFtnf2zlVVIha0jNR8mVUemlXiIeVfdw499JCETYYPqB64KSoQltPUxxKbLopzX
+	 Esauv63Bzm0Ew==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 510EEC4345F;
+	Wed, 24 Apr 2024 18:42:36 +0000 (UTC)
+From: =?utf-8?q?Duje_Mihanovi=C4=87_via_B4_Relay?= <devnull+duje.mihanovic.skole.hr@kernel.org>
+Subject: [PATCH v10 00/12] Initial Marvell PXA1908 support
+Date: Wed, 24 Apr 2024 20:42:27 +0200
+Message-Id: <20240424-pxa1908-lkml-v10-0-36cdfb5841f9@skole.hr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424051317.2084059-2-jisheng.teoh@starfivetech.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAJNSKWYC/4XOy07DMBAF0F+pvMbRjMfPrvgPxMJxJtT0kSqBq
+ Kjqv+NWKg1mwXKudO7cs5h4zDyJ9eosRp7zlIdDORCeViJt4uGNZe5KIBQoAg8kj6eIAbzcbfc
+ 7aT0B+y5qk5wo5Dhyn0+3vpfXcm/y9DGMX7f6ma7pvUj/LppJgvSsfZ8iOQjhedoOO242o7j2z
+ OphnXJoVYDQWCCUKLvPd272uawd5pwqiEuICgG0ahQaMv9JvZzrqrm6zE0tedc5arVRlTULi6q
+ ypthoOoOBHDPpytofi4BQWVtsq3qGoDSk3lfW360G/GN9sT1HZ300Qbv6b3hYDfXmUKwyEYDYU
+ 7L9wl4ul2+zh41zRwIAAA==
+To: Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, 
+ Haojian Zhuang <haojian.zhuang@linaro.org>, 
+ =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, 
+ Lubomir Rintel <lkundrak@v3.sk>, Catalin Marinas <catalin.marinas@arm.com>, 
+ Will Deacon <will@kernel.org>, Kees Cook <keescook@chromium.org>, 
+ Tony Luck <tony.luck@intel.com>, 
+ "Guilherme G. Piccoli" <gpiccoli@igalia.com>, Rob Herring <robh@kernel.org>
+Cc: phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
+ Karel Balej <balejk@matfyz.cz>, David Wronek <david@mainlining.org>, 
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, 
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+ Conor Dooley <conor.dooley@microchip.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7607;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=sPDkpL2eRwrE9eObIY9L50bH2UWI7ApS/vbfGx6ztEQ=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBmKVKUheLEFTXl2YZbt0tv5QutN93eaG8G/mKUv
+ z4Kc1eyx6yJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZilSlAAKCRCaEZ6wQi2W
+ 4SaUD/9ng2dj5l2rC6pHjcNtgtFLtxDJE52mzpt4yGUv7L2WThINaw4VAT8piqnFbDQASA0HAX9
+ ug/HBkjWNcXeKnTgEU63ErhnZVA1B80LMegjVVnFpq08E8+zJQ/J1JDX3iKNekvtuo2AVbdM8qq
+ atMO8ycctvcdmLKC0WeMNC2BJc5GblsHEPRQhrTYVx+56wODJG/u2LOkuvklJdFwCcVOqpkCQba
+ LAs9j28SfFYMxJs/ekoptAEY02Lhe/OwGITJdooYZT01LeF58cRUEEvxa+aRlfHwL8egq6tQnWO
+ /q+phdnJmVs0IrdC+UXQMDIZqEyAjQ9WaLmk7/4ror7IVzVdLx119j3citB0aJjbExLrD7nUBkR
+ BGgQXMpJoHq+0ikxofgCLRVOJ0OBbhYW0PHK2oguAremgDtlEUiySaw5//u4SJbPQi5XUEUW32p
+ OEZfvkewDaPzG0WvJfywXRF3UL/OusYtsnSBu3mJ5A9XVDc3a1AO1Bn2nNW4pE2yadmZG3iFbtQ
+ qKPOD0emKuYUQBZMM+sR9ZetC1jwQ7KfsWi2mroHdppnwi9JcgKFTnVw7m6XE9QEonplJjFbdFC
+ 8JrOw/wWMgeTR87Ipbprh7nsdryXmKi/H7ZpkDRY31q0MAw095RHCbur8EBYL61ovGQVljnX2vp
+ OZLSRjns+mGXmsA==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-Endpoint-Received: by B4 Relay for duje.mihanovic@skole.hr/default with
+ auth_id=112
+X-Original-From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Reply-To: duje.mihanovic@skole.hr
 
-Hi Ji,
+Hello,
 
-kernel test robot noticed the following build errors:
+This series adds initial support for the Marvell PXA1908 SoC and
+"samsung,coreprimevelte", a smartphone using the SoC.
 
-[auto build test ERROR on broonie-spi/for-next]
-[also build test ERROR on robh/for-next krzk-dt/for-next linus/master v6.9-rc5 next-20240424]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+USB works and the phone can boot a rootfs from an SD card, but there are
+some warnings in the dmesg:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ji-Sheng-Teoh/spi-spi-cadence-Add-optional-reset-control-support/20240424-131551
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-patch link:    https://lore.kernel.org/r/20240424051317.2084059-2-jisheng.teoh%40starfivetech.com
-patch subject: [PATCH v1 1/2] spi: spi-cadence: Add optional reset control support
-config: arm-defconfig (https://download.01.org/0day-ci/archive/20240425/202404250235.htdVhIMY-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240425/202404250235.htdVhIMY-lkp@intel.com/reproduce)
+During SMP initialization:
+[    0.006519] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU1: 0x00000000000000
+[    0.006542] CPU features: Unsupported CPU feature variation detected.
+[    0.006589] CPU1: Booted secondary processor 0x0000000001 [0x410fd032]
+[    0.010710] Detected VIPT I-cache on CPU2
+[    0.010716] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU2: 0x00000000000000
+[    0.010758] CPU2: Booted secondary processor 0x0000000002 [0x410fd032]
+[    0.014849] Detected VIPT I-cache on CPU3
+[    0.014855] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU3: 0x00000000000000
+[    0.014895] CPU3: Booted secondary processor 0x0000000003 [0x410fd032]
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404250235.htdVhIMY-lkp@intel.com/
+SMMU probing fails:
+[    0.101798] arm-smmu c0010000.iommu: probing hardware configuration...
+[    0.101809] arm-smmu c0010000.iommu: SMMUv1 with:
+[    0.101816] arm-smmu c0010000.iommu:         no translation support!
 
-All error/warnings (new ones prefixed by >>):
+A 3.14 based Marvell tree is available on GitHub
+acorn-marvell/brillo_pxa_kernel, and a Samsung one on GitHub
+CoderCharmander/g361f-kernel.
 
->> drivers/spi/spi-cadence.c:593:15: error: implicit declaration of function 'devm_reset_control_get_optional_exclusive' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           xspi->rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
-                        ^
->> drivers/spi/spi-cadence.c:593:13: warning: incompatible integer to pointer conversion assigning to 'struct reset_control *' from 'int' [-Wint-conversion]
-           xspi->rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
-                      ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/spi/spi-cadence.c:600:2: error: implicit declaration of function 'reset_control_assert' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           reset_control_assert(xspi->rstc);
-           ^
->> drivers/spi/spi-cadence.c:601:2: error: implicit declaration of function 'reset_control_deassert' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           reset_control_deassert(xspi->rstc);
-           ^
-   drivers/spi/spi-cadence.c:601:2: note: did you mean 'reset_control_assert'?
-   drivers/spi/spi-cadence.c:600:2: note: 'reset_control_assert' declared here
-           reset_control_assert(xspi->rstc);
-           ^
-   1 warning and 3 errors generated.
+Andreas Färber attempted to upstream support for this SoC in 2017:
+https://lore.kernel.org/lkml/20170222022929.10540-1-afaerber@suse.de/
 
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 
-vim +/devm_reset_control_get_optional_exclusive +593 drivers/spi/spi-cadence.c
+Changes in v10:
+- Update trailers
+- Rebase on v6.9-rc5
+- Clock driver changes:
+  - Add a couple of forgotten clocks in APBC
+    - The clocks are thermal_clk, ipc_clk, ssp0_clk, ssp2_clk and swjtag
+    - The IDs and register offsets were already present, but I forgot to
+      actually register them
+  - Split each controller block into own file
+  - Drop unneeded -of in clock driver filenames
+  - Simplify struct pxa1908_clk_unit
+  - Convert to platform driver
+  - Add module metadata
+- DTS changes:
+  - Properly name pinctrl nodes
+  - Drop pinctrl #size-cells, #address-cells, ranges and #gpio-size-cells
+  - Fix pinctrl input-schmitt configuration
+- Link to v9: https://lore.kernel.org/20240402-pxa1908-lkml-v9-0-25a003e83c6f@skole.hr
 
-   550	
-   551	/**
-   552	 * cdns_spi_probe - Probe method for the SPI driver
-   553	 * @pdev:	Pointer to the platform_device structure
-   554	 *
-   555	 * This function initializes the driver data structures and the hardware.
-   556	 *
-   557	 * Return:	0 on success and error value on error
-   558	 */
-   559	static int cdns_spi_probe(struct platform_device *pdev)
-   560	{
-   561		int ret = 0, irq;
-   562		struct spi_controller *ctlr;
-   563		struct cdns_spi *xspi;
-   564		u32 num_cs;
-   565		bool target;
-   566	
-   567		target = of_property_read_bool(pdev->dev.of_node, "spi-slave");
-   568		if (target)
-   569			ctlr = spi_alloc_target(&pdev->dev, sizeof(*xspi));
-   570		else
-   571			ctlr = spi_alloc_host(&pdev->dev, sizeof(*xspi));
-   572	
-   573		if (!ctlr)
-   574			return -ENOMEM;
-   575	
-   576		xspi = spi_controller_get_devdata(ctlr);
-   577		ctlr->dev.of_node = pdev->dev.of_node;
-   578		platform_set_drvdata(pdev, ctlr);
-   579	
-   580		xspi->regs = devm_platform_ioremap_resource(pdev, 0);
-   581		if (IS_ERR(xspi->regs)) {
-   582			ret = PTR_ERR(xspi->regs);
-   583			goto remove_ctlr;
-   584		}
-   585	
-   586		xspi->pclk = devm_clk_get_enabled(&pdev->dev, "pclk");
-   587		if (IS_ERR(xspi->pclk)) {
-   588			dev_err(&pdev->dev, "pclk clock not found.\n");
-   589			ret = PTR_ERR(xspi->pclk);
-   590			goto remove_ctlr;
-   591		}
-   592	
- > 593		xspi->rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
-   594		if (IS_ERR(xspi->rstc)) {
-   595			ret = PTR_ERR(xspi->rstc);
-   596			dev_err(&pdev->dev, "Cannot get SPI reset.\n");
-   597			goto remove_ctlr;
-   598		}
-   599	
- > 600		reset_control_assert(xspi->rstc);
- > 601		reset_control_deassert(xspi->rstc);
-   602	
-   603		if (!spi_controller_is_target(ctlr)) {
-   604			xspi->ref_clk = devm_clk_get_enabled(&pdev->dev, "ref_clk");
-   605			if (IS_ERR(xspi->ref_clk)) {
-   606				dev_err(&pdev->dev, "ref_clk clock not found.\n");
-   607				ret = PTR_ERR(xspi->ref_clk);
-   608				goto remove_ctlr;
-   609			}
-   610	
-   611			pm_runtime_use_autosuspend(&pdev->dev);
-   612			pm_runtime_set_autosuspend_delay(&pdev->dev, SPI_AUTOSUSPEND_TIMEOUT);
-   613			pm_runtime_get_noresume(&pdev->dev);
-   614			pm_runtime_set_active(&pdev->dev);
-   615			pm_runtime_enable(&pdev->dev);
-   616	
-   617			ret = of_property_read_u32(pdev->dev.of_node, "num-cs", &num_cs);
-   618			if (ret < 0)
-   619				ctlr->num_chipselect = CDNS_SPI_DEFAULT_NUM_CS;
-   620			else
-   621				ctlr->num_chipselect = num_cs;
-   622	
-   623			ret = of_property_read_u32(pdev->dev.of_node, "is-decoded-cs",
-   624						   &xspi->is_decoded_cs);
-   625			if (ret < 0)
-   626				xspi->is_decoded_cs = 0;
-   627		}
-   628	
-   629		cdns_spi_detect_fifo_depth(xspi);
-   630	
-   631		/* SPI controller initializations */
-   632		cdns_spi_init_hw(xspi, spi_controller_is_target(ctlr));
-   633	
-   634		irq = platform_get_irq(pdev, 0);
-   635		if (irq < 0) {
-   636			ret = irq;
-   637			goto clk_dis_all;
-   638		}
-   639	
-   640		ret = devm_request_irq(&pdev->dev, irq, cdns_spi_irq,
-   641				       0, pdev->name, ctlr);
-   642		if (ret != 0) {
-   643			ret = -ENXIO;
-   644			dev_err(&pdev->dev, "request_irq failed\n");
-   645			goto clk_dis_all;
-   646		}
-   647	
-   648		ctlr->use_gpio_descriptors = true;
-   649		ctlr->prepare_transfer_hardware = cdns_prepare_transfer_hardware;
-   650		ctlr->prepare_message = cdns_prepare_message;
-   651		ctlr->transfer_one = cdns_transfer_one;
-   652		ctlr->unprepare_transfer_hardware = cdns_unprepare_transfer_hardware;
-   653		ctlr->mode_bits = SPI_CPOL | SPI_CPHA;
-   654		ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
-   655	
-   656		if (!spi_controller_is_target(ctlr)) {
-   657			ctlr->mode_bits |=  SPI_CS_HIGH;
-   658			ctlr->set_cs = cdns_spi_chipselect;
-   659			ctlr->auto_runtime_pm = true;
-   660			xspi->clk_rate = clk_get_rate(xspi->ref_clk);
-   661			/* Set to default valid value */
-   662			ctlr->max_speed_hz = xspi->clk_rate / 4;
-   663			xspi->speed_hz = ctlr->max_speed_hz;
-   664			pm_runtime_mark_last_busy(&pdev->dev);
-   665			pm_runtime_put_autosuspend(&pdev->dev);
-   666		} else {
-   667			ctlr->mode_bits |= SPI_NO_CS;
-   668			ctlr->target_abort = cdns_target_abort;
-   669		}
-   670		ret = spi_register_controller(ctlr);
-   671		if (ret) {
-   672			dev_err(&pdev->dev, "spi_register_controller failed\n");
-   673			goto clk_dis_all;
-   674		}
-   675	
-   676		return ret;
-   677	
-   678	clk_dis_all:
-   679		if (!spi_controller_is_target(ctlr)) {
-   680			pm_runtime_set_suspended(&pdev->dev);
-   681			pm_runtime_disable(&pdev->dev);
-   682		}
-   683	remove_ctlr:
-   684		spi_controller_put(ctlr);
-   685		return ret;
-   686	}
-   687	
+Changes in v9:
+- Update trailers and rebase on v6.9-rc2, no changes
+- Link to v8: https://lore.kernel.org/20240110-pxa1908-lkml-v8-0-fea768a59474@skole.hr
 
+Changes in v8:
+- Drop SSPA patch
+- Drop broken-cd from eMMC node
+- Specify S-Boot hardcoded initramfs location in device tree
+- Add ARM PMU node
+- Correct inverted modem memory base and size
+- Update trailers
+- Rebase on next-20240110
+- Link to v7: https://lore.kernel.org/20231102-pxa1908-lkml-v7-0-cabb1a0cb52b@skole.hr
+  and https://lore.kernel.org/20231102152033.5511-1-duje.mihanovic@skole.hr
+
+Changes in v7:
+- Suppress SND_MMP_SOC_SSPA on ARM64
+- Update trailers
+- Rebase on v6.6-rc7
+- Link to v6: https://lore.kernel.org/r/20231010-pxa1908-lkml-v6-0-b2fe09240cf8@skole.hr
+
+Changes in v6:
+- Address maintainer comments:
+  - Add "marvell,pxa1908-padconf" binding to pinctrl-single driver
+- Drop GPIO patch as it's been pulled
+- Update trailers
+- Rebase on v6.6-rc5
+- Link to v5: https://lore.kernel.org/r/20230812-pxa1908-lkml-v5-0-a5d51937ee34@skole.hr
+
+Changes in v5:
+- Address maintainer comments:
+  - Move *_NR_CLKS to clock driver from dt binding file
+- Allocate correct number of clocks for each block instead of blindly
+  allocating 50 for each
+- Link to v4: https://lore.kernel.org/r/20230807-pxa1908-lkml-v4-0-cb387d73b452@skole.hr
+
+Changes in v4:
+- Address maintainer comments:
+  - Relicense clock binding file to BSD-2
+- Add pinctrl-names to SD card node
+- Add vgic registers to GIC node
+- Rebase on v6.5-rc5
+- Link to v3: https://lore.kernel.org/r/20230804-pxa1908-lkml-v3-0-8e48fca37099@skole.hr
+
+Changes in v3:
+- Address maintainer comments:
+  - Drop GPIO dynamic allocation patch
+  - Move clock register offsets into driver (instead of bindings file)
+  - Add missing Tested-by trailer to u32_fract patch
+  - Move SoC binding to arm/mrvl/mrvl.yaml
+- Add serial0 alias and stdout-path to board dts to enable UART
+  debugging
+- Rebase on v6.5-rc4
+- Link to v2: https://lore.kernel.org/r/20230727162909.6031-1-duje.mihanovic@skole.hr
+
+Changes in v2:
+- Remove earlycon patch as it's been merged into tty-next
+- Address maintainer comments:
+  - Clarify GPIO regressions on older PXA platforms
+  - Add Fixes tag to commit disabling GPIO pinctrl calls for this SoC
+  - Add missing includes to clock driver
+  - Clock driver uses HZ_PER_MHZ, u32_fract and GENMASK
+  - Dual license clock bindings
+  - Change clock IDs to decimal
+  - Fix underscores in dt node names
+  - Move chosen node to top of board dts
+  - Clean up documentation
+  - Reorder commits
+  - Drop pxa,rev-id
+- Rename muic-i2c to i2c-muic
+- Reword some commits
+- Move framebuffer node to chosen
+- Add aliases for mmc nodes
+- Rebase on v6.5-rc3
+- Link to v1: https://lore.kernel.org/r/20230721210042.21535-1-duje.mihanovic@skole.hr
+
+---
+Andy Shevchenko (1):
+      clk: mmp: Switch to use struct u32_fract instead of custom one
+
+Duje Mihanović (11):
+      dt-bindings: pinctrl: pinctrl-single: add marvell,pxa1908-padconf compatible
+      pinctrl: single: add marvell,pxa1908-padconf compatible
+      dt-bindings: clock: Add Marvell PXA1908 clock bindings
+      clk: mmp: Add Marvell PXA1908 APBC driver
+      clk: mmp: Add Marvell PXA1908 APBCP driver
+      clk: mmp: Add Marvell PXA1908 APMU driver
+      clk: mmp: Add Marvell PXA1908 MPMU driver
+      dt-bindings: marvell: Document PXA1908 SoC
+      arm64: Kconfig.platforms: Add config for Marvell PXA1908 platform
+      arm64: dts: Add DTS for Marvell PXA1908 and samsung,coreprimevelte
+      MAINTAINERS: add myself as Marvell PXA1908 maintainer
+
+ .../devicetree/bindings/arm/mrvl/mrvl.yaml         |   5 +
+ .../devicetree/bindings/clock/marvell,pxa1908.yaml |  48 +++
+ .../bindings/pinctrl/pinctrl-single.yaml           |   4 +
+ MAINTAINERS                                        |   9 +
+ arch/arm64/Kconfig.platforms                       |   8 +
+ arch/arm64/boot/dts/marvell/Makefile               |   3 +
+ .../dts/marvell/pxa1908-samsung-coreprimevelte.dts | 328 +++++++++++++++++++++
+ arch/arm64/boot/dts/marvell/pxa1908.dtsi           | 300 +++++++++++++++++++
+ drivers/clk/mmp/Makefile                           |   2 +-
+ drivers/clk/mmp/clk-frac.c                         |  57 ++--
+ drivers/clk/mmp/clk-of-mmp2.c                      |  26 +-
+ drivers/clk/mmp/clk-of-pxa168.c                    |   4 +-
+ drivers/clk/mmp/clk-of-pxa1928.c                   |   6 +-
+ drivers/clk/mmp/clk-of-pxa910.c                    |   4 +-
+ drivers/clk/mmp/clk-pxa1908-apbc.c                 | 131 ++++++++
+ drivers/clk/mmp/clk-pxa1908-apbcp.c                |  84 ++++++
+ drivers/clk/mmp/clk-pxa1908-apmu.c                 | 123 ++++++++
+ drivers/clk/mmp/clk-pxa1908-mpmu.c                 | 112 +++++++
+ drivers/clk/mmp/clk.h                              |  10 +-
+ drivers/pinctrl/pinctrl-single.c                   |   1 +
+ include/dt-bindings/clock/marvell,pxa1908.h        |  88 ++++++
+ 21 files changed, 1296 insertions(+), 57 deletions(-)
+---
+base-commit: ed30a4a51bb196781c8058073ea720133a65596f
+change-id: 20230803-pxa1908-lkml-6830e8da45c7
+
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Duje Mihanović <duje.mihanovic@skole.hr>
+
+
 
