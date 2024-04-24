@@ -1,111 +1,179 @@
-Return-Path: <linux-kernel+bounces-157814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BB5E8B169A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:56:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 785E28B169F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:57:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D7B61C24D92
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:56:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FE9328395F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 22:57:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0157C16F0D6;
-	Wed, 24 Apr 2024 22:55:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="aUxgXy7O"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77E516EC15;
+	Wed, 24 Apr 2024 22:57:13 +0000 (UTC)
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0817B16E885
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:55:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29181E86F;
+	Wed, 24 Apr 2024 22:57:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713999358; cv=none; b=rR+pc5t8EDmq8xTZmBPk8yqfFLGy3Yp2LowhnqW1cFQggdOcAn9BfcA0dlDti/L2JBNsk3bXDQbHa0pDG5+mbVKpDse4iT1DS5rf22nmKKjZE3d98sSFQWrof1oLNwtKtw8nC93BB3SzjzQGDk0918YXGl6s8PZIQFrOHD1Ipyk=
+	t=1713999433; cv=none; b=eupzBi7QvzE+jXXPcg0cmkWMfr3uagnhzENi6dEG5A6IEy1vfBd14YW83pGUlGSfnnVpr/u29V4WWmhc7IftO2ch4wvAsGKrTMFlU6ZnjI03lReJzaWxxKtnAWVaBxumjVZzl3X1+u2MDPv7aLanUeEyLrWknyHCH78a2lnDeTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713999358; c=relaxed/simple;
-	bh=NuyleERn9RTaJ6vM0GogmLDMo9hWEnQBetMIdltGBQc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L7gXrD1tuUlE56ODxnfQ8K7nYdTimhuQu7ul+tGEBgzu7aqlSTCZFGwUz5930GxjTCi73kSKRYMErfGWwFetaHYbYI5RFo+ncTRaDXnxd7ie0MeQr7UvZ6T7I3tkXp/1MaXP6fOUblY3KL0aqeA933UFLyKWAbk6NWjCucyvHq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=aUxgXy7O; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e86d56b3bcso3414485ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:55:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713999356; x=1714604156; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GmG+fEHBP8gIP1ZYSdwFfbBD/WbACGMT2ciJ+XzN0e0=;
-        b=aUxgXy7OTjS07+Mpfyl+3y4VwkOmWc9BK1OLpeOsXqTgBpcFE1qblTPRRtb3Q5j08H
-         uUhMrGHSYAl/Qnp9yGEj/LTFj9JImc0yjTanDZsH4FSHJ24zaTyqoeflu+ktvsZtSo0q
-         KCzfeZ3s7EPqomcKS/onsO8dYTtxx8zboh1tg=
+	s=arc-20240116; t=1713999433; c=relaxed/simple;
+	bh=lwbYYbsXsxGhuf73dizS9HwSfF5+RHFNMCGuUOEMxTs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nDgRka9yI7h8Wx6HkueouTISUs57bTsSc6cpGUVmKY0oM/sHhNUtr3EByeGmbTrrBOD31J9KGoc7KCIgeObEylHvNCy6tQctyL1ntXjRW1cBvJ9BBgBkILGc9xnJ/3W3gSza/iWhma2qz9oA4dDj46ENT1XWaJAaZqLQqNkJNxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2ab88634cfaso369769a91.0;
+        Wed, 24 Apr 2024 15:57:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713999356; x=1714604156;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1713999431; x=1714604231;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GmG+fEHBP8gIP1ZYSdwFfbBD/WbACGMT2ciJ+XzN0e0=;
-        b=PvBwsDX5aKExL/0A1k1X7LFKamtEh3EU+0bNnwlPlJNTvA6pI0fiVmIvY+NPXnoI86
-         JdSHlo17jdeHANc8RVFJXhoEJJacs4rjGyyeixjASqg3juOg4kRO6VDD1YFXMsRfSu+Z
-         s07uc/Dj9m+JTesttF3UqpII57bUUnS6+SlTIjJ4tEnNpOpq1a5qmi90KBVAb1AFp00y
-         IPfwKLNGu197eS5+0U5DYKzRqb+njoMSzNmaAvNv2FEAGArztzmoA7YxzRTyHMmz4IfP
-         6A6EkBA7aBwJJtAvYhAOZt86lXQ8MPiYuBzQheRrFW5i1vejlfDrjl20cCLfLTZqo9lP
-         xvfg==
-X-Gm-Message-State: AOJu0YyIbmQKSPz1HFGIduFTP2oRq/dUIwI22G85MzBfeFnPp5+V39un
-	QqyyjKRR87UTRJdEUlEiJWS+us+caymdl/8mjXifa2TCxy/1P8LyPrx4Cwxrqw==
-X-Google-Smtp-Source: AGHT+IES3WvX2pVqJeL4yTDreo8etDtCdNWcnd0JVJ3wJluHIFmHzrhcFFQzqHe6VOya0h1XAiV08A==
-X-Received: by 2002:a17:903:32c1:b0:1e5:5041:b18a with SMTP id i1-20020a17090332c100b001e55041b18amr5506877plr.40.1713999356407;
-        Wed, 24 Apr 2024 15:55:56 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id o4-20020a1709026b0400b001e81c778784sm12396820plk.67.2024.04.24.15.55.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 15:55:55 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: linux-kernel@vger.kernel.org,
-	Max Filippov <jcmvbkbc@gmail.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	Eric Biederman <ebiederm@xmission.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH] binfmt_elf_fdpic: fix /proc/<pid>/auxv
-Date: Wed, 24 Apr 2024 15:55:49 -0700
-Message-Id: <171399934703.3282693.5984373700910072392.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240322195418.2160164-1-jcmvbkbc@gmail.com>
-References: <20240322195418.2160164-1-jcmvbkbc@gmail.com>
+        bh=uzrWXePhPUiWACNXAmGYhUpfT1p86M5As1cmuIlv4Ac=;
+        b=b/+xAZUukfW7kxchLmzBjR11XAbufj2Z7E/4GoOO8/OIFzeakoMq/Ejqyn8v2kP8IF
+         fUbyE25BLWXQLyHIgsGiWST7MsANAZduXFz6mcogCTdmjXiH/HxZ4cJSVQpJQF5Exvlc
+         kIatI2IlrCMI2qfavnf9FnglIZfWJcmDyWpvaFuhzLfKov0uEpd0poYwnrF3sV72xPKC
+         pqWTHR1rXINCgL5JyG/9zNa3DFbX/opzNOYQpldkCPlTsfJ8K+bqa/yGc1TO5ZI5FKDH
+         i/1AZpN47Tf6MbT0h10fES2VWKaknaxUABZpKesVddqVOboTrHjfTeJ0uTB/B1514ZLG
+         RFZw==
+X-Forwarded-Encrypted: i=1; AJvYcCWgve+T1/0hnymFXppxS4Yb2higu8/Ztjm8HzrrJXI17Lr+ald6r49KXKw8lnP0gg7VWmct9os0mhtFVrwarVO7UHjaqvv7CBMjvPVbl1u1XaDQxmSf+JvJj6hGK+EF9z9qjeMB/MN6kqtuclu8FLSNiXlw5Ht7ws+ceybDT4aW7lQ56Q==
+X-Gm-Message-State: AOJu0Yw3Oi0KzacMt68snhJz/M3pVSIJ/GeXsxaQvzlpGGzkmcDlMLR/
+	TC40RyOdooM8DcjeFioroc17NRjJYn7Fb1M0ndLUPy0twB23yH+X3fFuSP63s6XFu6Pg8Sv1XVj
+	C8ZLQP7FEroV1kNCLXOeedreCZj0=
+X-Google-Smtp-Source: AGHT+IFRrbis0uqy/2CD0kwIlu5gblq93SIG+YoYnvbyRD4H07Pfm1cgyimWYJUENRLrNfLYbJtYySJK9WXohedY+DM=
+X-Received: by 2002:a17:90b:316:b0:2a5:24ab:1a94 with SMTP id
+ ay22-20020a17090b031600b002a524ab1a94mr3352838pjb.49.1713999431268; Wed, 24
+ Apr 2024 15:57:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20240424024805.144759-1-howardchu95@gmail.com>
+ <CAM9d7chOdrPyeGk=O+7Hxzdm5ziBXLES8PLbpNJvA7_DMrrGHA@mail.gmail.com>
+ <Zil1ZKc7mibs6ONQ@x1> <CAP-5=fVYHjUk8OyidXbutBvZMPxf48LW7v-N3zvHBe5QME1vVQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fVYHjUk8OyidXbutBvZMPxf48LW7v-N3zvHBe5QME1vVQ@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Wed, 24 Apr 2024 15:57:00 -0700
+Message-ID: <CAM9d7cggak7qZcX7tFZvJ69H3cwEnWvNOnBsQrkFQkQVf+bUjQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Dump off-cpu samples directly
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Howard Chu <howardchu95@gmail.com>, peterz@infradead.org, 
+	mingo@redhat.com, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
+	jolsa@kernel.org, adrian.hunter@intel.com, kan.liang@linux.intel.com, 
+	zegao2021@gmail.com, leo.yan@linux.dev, ravi.bangoria@amd.com, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 22 Mar 2024 12:54:18 -0700, Max Filippov wrote:
-> Althought FDPIC linux kernel provides /proc/<pid>/auxv files they are
-> empty because there's no code that initializes mm->saved_auxv in the
-> FDPIC ELF loader.
-> 
-> Synchronize FDPIC ELF aux vector setup with ELF. Replace entry-by-entry
-> aux vector copying to userspace with initialization of mm->saved_auxv
-> first and then copying it to userspace as a whole.
-> 
-> [...]
+On Wed, Apr 24, 2024 at 3:19=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> On Wed, Apr 24, 2024 at 2:11=E2=80=AFPM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > On Wed, Apr 24, 2024 at 12:12:26PM -0700, Namhyung Kim wrote:
+> > > Hello,
+> > >
+> > > On Tue, Apr 23, 2024 at 7:46=E2=80=AFPM Howard Chu <howardchu95@gmail=
+com> wrote:
+> > > >
+> > > > As mentioned in: https://bugzilla.kernel.org/show_bug.cgi?id=3D2073=
+23
+> > > >
+> > > > Currently, off-cpu samples are dumped when perf record is exiting. =
+This
+> > > > results in off-cpu samples being after the regular samples. Also, s=
+amples
+> > > > are stored in large BPF maps which contain all the stack traces and
+> > > > accumulated off-cpu time, but they are eventually going to fill up =
+after
+> > > > running for an extensive period. This patch fixes those problems by=
+ dumping
+> > > > samples directly into perf ring buffer, and dispatching those sampl=
+es to the
+> > > > correct format.
+> > >
+> > > Thanks for working on this.
+> > >
+> > > But the problem of dumping all sched-switch events is that it can be
+> > > too frequent on loaded machines.  Copying many events to the buffer
+> > > can result in losing other records.  As perf report doesn't care abou=
+t
+> > > timing much, I decided to aggregate the result in a BPF map and dump
+> > > them at the end of the profiling session.
+> >
+> > Should we try to adapt when there are too many context switches, i.e.
+> > the BPF program can notice that the interval from the last context
+> > switch is too small and then avoid adding samples, while if the interva=
+l
+> > is a long one then indeed this is a problem where the workload is
+> > waiting for a long time for something and we want to know what is that,
+> > and in that case capturing callchains is both desirable and not costly,
+> > no?
 
-Applied to for-next/execve, thanks!
+Sounds interesting.  Yeah we could make it adaptive based on the
+off-cpu time at the moment.
 
-[1/1] binfmt_elf_fdpic: fix /proc/<pid>/auxv
-      https://git.kernel.org/kees/c/10e29251be0e
+> >
+> > The tool could then at the end produce one of two outputs: the most
+> > common reasons for being off cpu, or some sort of counter stating that
+> > there are way too many context switches?
+> >
+> > And perhaps we should think about what is best to have as a default, no=
+t
+> > to present just plain old cycles, but point out that the workload is
+> > most of the time waiting for IO, etc, i.e. the default should give
+> > interesting clues instead of expecting that the tool user knows all the
+> > possible knobs and try them in all sorts of combinations to then reach
+> > some conclusion.
+> >
+> > The default should use stuff that isn't that costly, thus not getting i=
+n
+> > the way of what is being observed, but at the same time look for common
+> > patterns, etc.
+> >
+> > - Arnaldo
+>
+> I really appreciate Howard doing this work!
+>
+> I wonder there are other cases where we want to synthesize events in
+> BPF, for example, we may have fast and slow memory on a system, we
+> could turn memory events on a system into either fast or slow ones in
+> BPF based on the memory accessed, so that fast/slow memory systems can
+> be simulated without access to hardware. This also feels like a perf
+> script type problem. Perhaps we can add something to the bpf-output
+> event so it can have multiple uses and not just off-cpu.
+>
+> To turn the bpf-output samples into off-cpu events there is a pass
+> added to the saving. I wonder if that can be more generic, like a save
+> time perf inject.
+>
+> I worry about dropping short samples we can create a property that
+> off-cpu time + on-cpu time !=3D wall clock time. Perhaps such short
+> things can get pushed into Namhyung's "at the end" approach while
+> longer things get samples. Perhaps we only do that when the frequency
+> is too great.
 
-Take care,
+Sounds good.  We might add an option to specify the threshold to
+determine whether to dump the data or to save it for later.  But ideally
+it should be able to find a good default.
 
--- 
-Kees Cook
+>
+> It would be nice to start landing this work so I'm wondering what the
+> minimal way to do that is. It seems putting behavior behind a flag is
+> a first step.
 
+Agreed!
+
+Thanks,
+Namhyung
 
