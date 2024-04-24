@@ -1,149 +1,543 @@
-Return-Path: <linux-kernel+bounces-157264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0385F8B0F2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:56:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD6C98B0F34
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:56:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 348641C23560
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:56:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 451E11F23FE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:56:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E10A1607B8;
-	Wed, 24 Apr 2024 15:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 898D01635AF;
+	Wed, 24 Apr 2024 15:55:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="baoMUWEX"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pF0UDVQE"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB7713DBB2
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6904C16130D
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:55:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713974107; cv=none; b=n6esy72TuZnh7Bz4dlDt+blJYg6l7ij13249sRU6SoqaUueHWYMBsF5rf19bFhzIgRP7BUR5NoUiYeU6vzSTdg16Owgm67T3h+w1u9UA61M+3ET5sGElfTAfwSH1yekMQNrAp4Xs35yHFHgI/5vDdA4Dv/J7LHKDL0phlW+hXoM=
+	t=1713974131; cv=none; b=GTmc1CbuMAv15zHSom1L14Xrifeb9PHCOHTwTPL4KGfad37y8vhqyTOhr4V0SN6amXG7IGcin1+SKTy6FBAEd+AJCzMmXoy/o501LSU80AbPl27v2f6hlwOVXkCUsaO3pXLx+2jKObUjl/3SuOVj/zkg6WYsthlo/ffTiackB/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713974107; c=relaxed/simple;
-	bh=HsMZly62yk0LjIJdFSVMMZ+wh/E5GqErZg/3nEX6vN4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lZQA52b7TV5nOEHv684rNE4R1iJenK6rRYOsw4rzygl6ZrXy5Z+ktTkp4thOlGa/rTFJp4kTzOrhLMu5HF8bgMx9vlUwvvtgZEvlBCkeUZKQM8fPq5yLlYRS3bvk5NU+SHDxqZY/fPeWg/8v87UkcU97kFyS9pGli2MB8NED9XI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=baoMUWEX; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2ddc2ea2091so32188191fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:55:05 -0700 (PDT)
+	s=arc-20240116; t=1713974131; c=relaxed/simple;
+	bh=d/dFuZbf/EaZvg14xvAtbup8GJ74G5rU2m4Y1omafpE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XliVT0hlc2spZ4IiMo1PZV1wxKfcaVgekHYKtovuNk03ntbJx3trnvHFCimEBjoxHHF7oy3e7W609+Sw0Rb5oevgSiZzeq3xXLoogXnvAL/nC6t6njB/Aj0pecmSrH87QyiXUjicmTWFflgu/7CnG5iUX35EPAtFqML4SBqgiDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pF0UDVQE; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-346b96f1483so29804f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 08:55:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713974104; x=1714578904; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jSeaEGRQ8F1CsZI2HaJ9BuNExNEc6Cm+h6xnz6hKmCA=;
-        b=baoMUWEXgw4BI7A2oVUcYwcjJA6/xe68U61DzoTIZxFdbdpe3QLRoTOVYlHgZx4/cK
-         knSqFqyQfbm+XtWFsQXs5xT5i/saFwuvjcjc1fKr2JShktq3iK0e5//0lmKZj4HqWn8b
-         FLRRvNY0aVdzogCQ7QQdXpnBYx4to7WH2aPNRnGaoAc0t42mvHeNA3HnEDZD9Dy5tqD+
-         8P0mEekk6f0OlobZMz9ASkrFqyYL9XX1/laYdyJDQLll8N2j12bU2adCGV5Hzrdgru/F
-         LZyzIuLkwss2ZssF48BonuYSICmWutEsdqW7rWN4a35n1xELB3owHwt4qOkIi0JHInPv
-         tj/g==
+        d=linaro.org; s=google; t=1713974128; x=1714578928; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OGygmmw5dUuftK+NtOQ8W0MuuBgiCdR1Jk9PiD/ccZY=;
+        b=pF0UDVQEIDiNaOZhdQp8SK5Xdn1zgyVoqpiGMlQoTXV5tSKyAJuQsm5kff732neyQ7
+         9aao+LKrHHUE8xZVZeUlTuOPpHRnryxH6ZiJ98Yq6guMsko4OgLDsFDG5Me60BMxiT56
+         44+k67H9c0WMNlK2cMc5/QpsYVX1/c2f43xMRe9WXVZ62OSOexjjQxNXcD19QfjG9mPH
+         xBN2/7rEP0mwS0sjMDcwMMjGnxKfasGEGQGLRoG1Dht4aNQIy3ZAYx9nEg0sFxLkBqpz
+         NFUfYX2PZ9LlPo5hCDCy49a0NgTYUsRXurFiB+L2eb5OF0zlGbMFmX8Ag4g2Ve2y0b7h
+         M/Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713974104; x=1714578904;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jSeaEGRQ8F1CsZI2HaJ9BuNExNEc6Cm+h6xnz6hKmCA=;
-        b=Vji6akldtctwRhzTDsPOB2Ra1gqEsS0Kgia2SMUEjZrNg56DExpZnna2cGOBCa6FZJ
-         /CVNmPLFJl9zCk6CxdGg5u4Jn6FMod95/ljE8ruqirjYLMZM7veUT/hkvab8LFnE50kg
-         m5X31E+uxezwD11ybiZjybmJNrzSMNByccQFpuTjylQlkca9Wha7hkkiLlasbxhRhNNQ
-         sqHV6b/FtYo3Az31zN8WXqn0Wx3L/KK5pMb1CClCo7r+IvygVi07Eb54Seud+uE2lXh6
-         nfOZj5+0jEv2MSnxXPtkuZX1NUZDp24dBdVo0TioI4SmantZ4ZhXdETH10k8Mk7vhSv5
-         GPmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVefW/WlOoyYEZTkKzSxkrfz+4PiPJAvplyDmdrLUTgZ33l9sCWNEsu40MsR7OJFiqr/NeydNgeQUZeFroMBl9AWtA6ZQTIpEuCVPSs
-X-Gm-Message-State: AOJu0Yw0uYTfimSglcwofrVrHz5Zm5WCqAJhidDtz6fzymi+UWw6oKic
-	m4c7fiikNkbW2sjrbhJwWovMXPYsmO6CaPvQBj8DhDHYY/D7pLAH/RRR6ZRYCaxGBNy+HaxOgWC
-	7Gnw9ZrPaAXn4isE8lILh7zjNWPE=
-X-Google-Smtp-Source: AGHT+IF3YYSs7Ve/Rrkw+AlyXQbdbQ7qJxbV6EtZApf4/yUkBYGePByNQAXisyiD/WNZhzbAMwBZBaCW8ifgNeAL9gA=
-X-Received: by 2002:a2e:9799:0:b0:2da:af46:2fb with SMTP id
- y25-20020a2e9799000000b002daaf4602fbmr1842270lji.15.1713974104091; Wed, 24
- Apr 2024 08:55:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713974128; x=1714578928;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OGygmmw5dUuftK+NtOQ8W0MuuBgiCdR1Jk9PiD/ccZY=;
+        b=vO8j4D9lxtK+SjQVjhPbOUFjxXkAXByfx3hRbbXvyD9wNM5vTaGAJXEYYajdBnbgle
+         MPVzAk6jkE01vM00kkqmFf9dlaSnSUM+M1rEkyw0matIb+/aGE7eVE8ltMTMG+zbfTwz
+         Ou5W6O21894zP0FLhbyCMUV0BzjejxTl31Uke0mdrPQt80eiH8lwrM2jDzy2Qky6bHf8
+         kNkgKlk6GuNgk599UmZmFQi/MGX3veKFz/NvaH4iDf6/aqJa3bN/eP8obd0Q/z7IkpOP
+         IrXHmeRNu7YzlnpiInfkn9Pu7xPAtVtEucmZSi4WN7WbpDy8B+Iu9hdZ0qnQPZLz7TCl
+         Nm1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCX1KjelLPYQdhjemy7YLlAY204vzvN7Y3tRtQHkEOLySc+SCrVnxq8SV176tmBmI8f/Ksmc1AJYcgZ7w539cF5SGJWfCkc2M/tRcEbZ
+X-Gm-Message-State: AOJu0YzabMKLBKWiSnH1c5DlWiT/I7eC3ZtsYNjrsNVpm0Zmh9KVhzVw
+	rPaEaRWkiZ9/MePrM04sd93amBRODPYwVBvHrlbtSSkT0sinU6H0miYsg8tpSLM=
+X-Google-Smtp-Source: AGHT+IHikMHMOXTMulwB47yle/P1Kf68zYdYPx2oI07Jwtj8DHkg3Wy57Z7buA+x9rEtvYYTZDgcOg==
+X-Received: by 2002:adf:e7c1:0:b0:34a:cb2:c52 with SMTP id e1-20020adfe7c1000000b0034a0cb20c52mr48257wrn.20.1713974127801;
+        Wed, 24 Apr 2024 08:55:27 -0700 (PDT)
+Received: from [192.168.0.102] ([176.61.106.227])
+        by smtp.gmail.com with ESMTPSA id x13-20020a5d54cd000000b0034335e47102sm17375359wrv.113.2024.04.24.08.55.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 08:55:27 -0700 (PDT)
+Message-ID: <17d36836-67cb-4d5a-a8b4-ecf1517a0020@linaro.org>
+Date: Wed, 24 Apr 2024 16:55:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424135148.30422-1-ioworker0@gmail.com> <ab18a4b1-bcbf-4417-b43a-5feae3b5ba66@redhat.com>
- <11455268-d522-4b3a-8961-892e42cc50f0@arm.com>
-In-Reply-To: <11455268-d522-4b3a-8961-892e42cc50f0@arm.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Wed, 24 Apr 2024 23:54:53 +0800
-Message-ID: <CAK1f24ncrREvYTajnzfm0r6oE1LqZQkx=yKMs7TtsxJpBmcLaA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] mm: introduce per-order mTHP split counters
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org, 21cnbao@gmail.com, 
-	baolin.wang@linux.alibaba.com, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/10] pwm: Add SI-EN SN3112 PWM support
+To: wuxilin123@gmail.com, =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?=
+ <u.kleine-koenig@pengutronix.de>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Junhao Xie <bigfoot@classfun.cn>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Tengfei Fan <quic_tengfan@quicinc.com>,
+ Molly Sophia <mollysophia379@gmail.com>
+Cc: linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-arm-msm@vger.kernel.org
+References: <20240424-ayn-odin2-initial-v1-0-e0aa05c991fd@gmail.com>
+ <20240424-ayn-odin2-initial-v1-2-e0aa05c991fd@gmail.com>
+Content-Language: en-US
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240424-ayn-odin2-initial-v1-2-e0aa05c991fd@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 24, 2024 at 11:20=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com=
-> wrote:
->
-> On 24/04/2024 16:00, David Hildenbrand wrote:
-> > On 24.04.24 15:51, Lance Yang wrote:
-> >> Hi all,
-> >>
-> >> At present, the split counters in THP statistics no longer include
-> >> PTE-mapped mTHP. Therefore, we want to introduce per-order mTHP split
-> >> counters to monitor the frequency of mTHP splits. This will assist
-> >> developers in better analyzing and optimizing system performance.
-> >>
-> >> /sys/kernel/mm/transparent_hugepage/hugepages-<size>/stats
-> >>          split_page
-> >>          split_page_failed
-> >>          deferred_split_page
-> >>
-> >> Thanks,
-> >> Lance
-> >> ---
-> >>
-> >> Lance Yang (2):
-> >>   mm: add per-order mTHP split counters
-> >>   mm: add docs for per-order mTHP split counters
-> >>
-> >>   Documentation/admin-guide/mm/transhuge.rst | 16 ----------------
-> >
-> > We really have to start documenting these, and what the sementics are.
->
-> I think the diffstat is backwards; the series definitely adds more lines =
-than it
+On 24/04/2024 16:29, Xilin Wu via B4 Relay wrote:
+> From: Junhao Xie <bigfoot@classfun.cn>
+> 
+> Add a new driver for the SI-EN SN3112 12-channel 8-bit PWM LED controller.
+> 
+> Signed-off-by: Junhao Xie <bigfoot@classfun.cn>
+> ---
+>   drivers/pwm/Kconfig      |  10 ++
+>   drivers/pwm/Makefile     |   1 +
+>   drivers/pwm/pwm-sn3112.c | 336 +++++++++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 347 insertions(+)
+> 
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index 1dd7921194f5..e21c37c7991e 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -553,6 +553,16 @@ config PWM_SL28CPLD
+>   	  To compile this driver as a module, choose M here: the module
+>   	  will be called pwm-sl28cpld.
+>   
+> +config PWM_SN3112
+> +	tristate "SI-EN SN3112 PWM driver"
+> +	depends on I2C
+> +	select REGMAP_I2C
+> +	help
+> +	  Generic PWM framework driver for SI-EN SN3112 LED controller.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called pwm-sn3112.
+> +
+>   config PWM_SPEAR
+>   	tristate "STMicroelectronics SPEAr PWM support"
+>   	depends on PLAT_SPEAR || COMPILE_TEST
+> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+> index 90913519f11a..6aab2d113159 100644
+> --- a/drivers/pwm/Makefile
+> +++ b/drivers/pwm/Makefile
+> @@ -50,6 +50,7 @@ obj-$(CONFIG_PWM_RZ_MTU3)	+= pwm-rz-mtu3.o
+>   obj-$(CONFIG_PWM_SAMSUNG)	+= pwm-samsung.o
+>   obj-$(CONFIG_PWM_SIFIVE)	+= pwm-sifive.o
+>   obj-$(CONFIG_PWM_SL28CPLD)	+= pwm-sl28cpld.o
+> +obj-$(CONFIG_PWM_SN3112)	+= pwm-sn3112.o
+>   obj-$(CONFIG_PWM_SPEAR)		+= pwm-spear.o
+>   obj-$(CONFIG_PWM_SPRD)		+= pwm-sprd.o
+>   obj-$(CONFIG_PWM_STI)		+= pwm-sti.o
+> diff --git a/drivers/pwm/pwm-sn3112.c b/drivers/pwm/pwm-sn3112.c
+> new file mode 100644
+> index 000000000000..38ef948602a3
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-sn3112.c
+> @@ -0,0 +1,336 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Driver for SN3112 12-channel 8-bit PWM LED controller
+> + *
+> + * Copyright (c) 2024 Junhao Xie <bigfoot@classfun.cn>
+> + *
+> + */
+> +
+> +#include <linux/i2c.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pwm.h>
+> +#include <linux/regmap.h>
+> +#include <linux/delay.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/regulator/consumer.h>
 
-Good spot! I'll sort it out.
+Includes should be alphabetised
 
-Thanks,
-Lance
+> +
+> +#define SN3112_CHANNELS 12
+> +#define SN3112_REG_ENABLE 0x00
+> +#define SN3112_REG_PWM_VAL 0x04
+> +#define SN3112_REG_PWM_EN 0x13
+> +#define SN3112_REG_APPLY 0x16
+> +#define SN3112_REG_RESET 0x17
+> +
+> +struct sn3112 {
+> +	struct device *pdev;
+> +	struct regmap *regmap;
+> +	struct mutex lock;
+> +	struct regulator *vdd;
+> +	uint8_t pwm_val[SN3112_CHANNELS];
+> +	uint8_t pwm_en_reg[3];
+> +	bool pwm_en[SN3112_CHANNELS];
+> +#if IS_ENABLED(CONFIG_GPIOLIB)
+> +	struct gpio_desc *sdb;
+> +#endif
+> +};
+> +
+> +static int sn3112_write_reg(struct sn3112 *priv, unsigned int reg,
+> +			    unsigned int val)
+> +{
+> +	int err;
+> +
+> +	dev_dbg(priv->pdev, "request regmap_write 0x%x 0x%x\n", reg, val);
+> +	err = regmap_write(priv->regmap, reg, val);
+> +	if (err)
+> +		dev_warn_ratelimited(
+> +			priv->pdev,
+> +			"regmap_write to register 0x%x failed: %pe\n", reg,
+> +			ERR_PTR(err));
 
-> removes. And patch 2 is adding 16 lines of docs, not removing them. How a=
-re you
-> generating this? `git format-patch` should do it correctly for you.
->
-> >
-> > E.g., is split_page_failed contained in split_page? Is deferred_split_p=
-age
-> > contained in split_page?
-> >
-> > But also: just don't call it "split_page". Drop the "_page".
-> >
-> > split
-> > split_failed
-> > split_deferred
->
-> I guess we are back in "should we be consistent with the existing vmstats=
-"
-> territory, which uses split_page/split_page_failed/deferred_split_page
->
-> But here, I agree that dropping _page is nicer.
->
-> >
-> > ?
-> >
->
+Multi-line should be encapsulated in {}
+
+if (err) {
+	stuff
+	goes here
+}
+
+> +	return err;
+> +}
+> +
+> +static int sn3112_set_en_reg(struct sn3112 *priv, unsigned int channel,
+> +			     bool enabled, bool write)
+> +{
+> +	unsigned int reg, bit;
+> +
+> +	if (channel >= SN3112_CHANNELS)
+> +		return -EINVAL;
+> +
+> +	/* LED_EN1: BIT5:BIT3 = OUT3:OUT1 */
+> +	if (channel >= 0 && channel <= 2)
+> +		reg = 0, bit = channel + 3;
+> +	/* LED_EN2: BIT5:BIT0 = OUT9:OUT4 */
+> +	else if (channel >= 3 && channel <= 8)
+> +		reg = 1, bit = channel - 3;
+> +	/* LED_EN3: BIT2:BIT0 = OUT12:OUT10 */
+> +	else if (channel >= 9 && channel <= 11)
+> +		reg = 2, bit = channel - 9;
+> +	else
+> +		return -EINVAL;
+> +
+> +	dev_dbg(priv->pdev, "channel %u enabled %u\n", channel, enabled);
+> +	dev_dbg(priv->pdev, "reg %u bit %u\n", reg, bit);
+> +	if (enabled)
+> +		set_bit(bit, (ulong *)&priv->pwm_en_reg[reg]);
+> +	else
+> +		clear_bit(bit, (ulong *)&priv->pwm_en_reg[reg]);
+> +	dev_dbg(priv->pdev, "set enable reg %u to %u\n", reg,
+> +		priv->pwm_en_reg[reg]);
+> +
+> +	if (!write)
+> +		return 0;
+newline
+> +	return sn3112_write_reg(priv, SN3112_REG_PWM_EN + reg,
+> +				priv->pwm_en_reg[reg]);
+> +}
+> +
+> +static int sn3112_set_val_reg(struct sn3112 *priv, unsigned int channel,
+> +			      uint8_t val, bool write)
+> +{
+> +	if (channel >= SN3112_CHANNELS)
+> +		return -EINVAL;
+newline
+> +	priv->pwm_val[channel] = val;
+> +	dev_dbg(priv->pdev, "set value reg %u to %u\n", channel,
+> +		priv->pwm_val[channel]);
+> +
+> +	if (!write)
+> +		return 0;
+newline
+> +	return sn3112_write_reg(priv, SN3112_REG_PWM_VAL + channel,
+> +				priv->pwm_val[channel]);
+> +}
+> +
+> +static int sn3112_write_all(struct sn3112 *priv)
+> +{
+> +	int i, ret;
+> +
+> +	/* regenerate enable register values */
+> +	for (i = 0; i < SN3112_CHANNELS; i++) {
+> +		ret = sn3112_set_en_reg(priv, i, priv->pwm_en[i], false);
+> +		if (ret != 0)
+> +			return ret;
+> +	}
+> +
+> +	/* use random value to clear all registers */
+> +	ret = sn3112_write_reg(priv, SN3112_REG_RESET, 0x66);
+> +	if (ret != 0)
+> +		return ret;
+> +
+> +	/* set software enable register */
+> +	ret = sn3112_write_reg(priv, SN3112_REG_ENABLE, 1);
+> +	if (ret != 0)
+> +		return ret;
+> +
+> +	/* rewrite pwm value register */
+> +	for (i = 0; i < SN3112_CHANNELS; i++) {
+> +		ret = sn3112_write_reg(priv, SN3112_REG_PWM_VAL + i,
+> +				       priv->pwm_val[i]);
+> +		if (ret != 0)
+> +			return ret;
+> +	}
+> +
+> +	/* rewrite pwm enable register */
+> +	for (i = 0; i < 3; i++) {
+> +		ret = sn3112_write_reg(priv, SN3112_REG_PWM_EN + i,
+> +				       priv->pwm_en_reg[i]);
+> +		if (ret != 0)
+> +			return ret;
+> +	}
+> +
+> +	/* use random value to apply changes */
+> +	ret = sn3112_write_reg(priv, SN3112_REG_APPLY, 0x66);
+> +	if (ret != 0)
+> +		return ret;
+> +
+> +	dev_dbg(priv->pdev, "reinitialized\n");
+> +	return 0;
+> +}
+> +
+> +static int sn3112_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
+> +{
+> +	struct sn3112 *priv = pwmchip_get_drvdata(chip);
+> +
+> +	if (pwm->hwpwm >= SN3112_CHANNELS)
+> +		return -EINVAL;
+> +
+> +	dev_dbg(priv->pdev, "sn3112 request channel %u\n", pwm->hwpwm);
+> +	pwm->args.period = 1000000;
+newline
+> +	return 0;
+> +}
+> +
+> +static int sn3112_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+> +			    const struct pwm_state *state)
+> +{
+> +	u64 val = 0;
+> +	struct sn3112 *priv = pwmchip_get_drvdata(chip);
+> +
+> +	if (pwm->hwpwm >= SN3112_CHANNELS)
+> +		return -EINVAL;
+> +
+> +	if (state->polarity != PWM_POLARITY_NORMAL)
+> +		return -EINVAL;
+> +
+> +	if (state->period <= 0)
+> +		return -EINVAL;
+> +
+> +	val = mul_u64_u64_div_u64(state->duty_cycle, 0xff, state->period);
+> +	dev_dbg(priv->pdev, "duty_cycle %llu period %llu\n", state->duty_cycle,
+> +		state->period);
+> +	dev_dbg(priv->pdev, "set channel %u value to %llu\n", pwm->hwpwm, val);
+> +	dev_dbg(priv->pdev, "set channel %u enabled to %u\n", pwm->hwpwm,
+> +		state->enabled);
+> +
+> +	mutex_lock(&priv->lock);
+> +	sn3112_set_en_reg(priv, pwm->hwpwm, state->enabled, true);
+> +	sn3112_set_val_reg(priv, pwm->hwpwm, val, true);
+> +	sn3112_write_reg(priv, SN3112_REG_APPLY, 0x66);
+> +	mutex_unlock(&priv->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct pwm_ops sn3112_pwm_ops = {
+> +	.apply = sn3112_pwm_apply,
+> +	.request = sn3112_pwm_request,
+> +};
+> +
+> +static const struct regmap_config sn3112_regmap_i2c_config = {
+> +	.reg_bits = 8,
+> +	.val_bits = 8,
+> +	.max_register = 24,
+> +	.cache_type = REGCACHE_NONE,
+> +};
+> +
+> +static int sn3112_pwm_probe(struct i2c_client *client)
+> +{
+> +	struct pwm_chip *chip;
+> +	struct sn3112 *priv;
+> +	int ret, i;
+> +
+> +	dev_dbg(&client->dev, "probing\n");
+You can probably live without that in an upstream driver..
+
+> +	chip = devm_pwmchip_alloc(&client->dev, SN3112_CHANNELS, sizeof(*priv));
+> +	if (IS_ERR(chip))
+> +		return PTR_ERR(chip);
+> +	priv = pwmchip_get_drvdata(chip);
+> +	priv->pdev = &client->dev;
+> +
+> +	/* initialize sn3112 (chip does not support read command) */
+> +	for (i = 0; i < SN3112_CHANNELS; i++)
+> +		priv->pwm_en[i] = false;
+> +	for (i = 0; i < SN3112_CHANNELS; i++)
+> +		priv->pwm_val[i] = 0;
+> +	for (i = 0; i < 3; i++)
+> +		priv->pwm_en_reg[i] = 0;
+
+Why does pwm_val have a define to constrain the array but pwm_en_reg 
+have hard-coded 3 ?
+
+Suggest using a #define for the 3 value for consistency / extensibility.
+
+> +
+> +	/* enable sn5112 power vdd */
+> +	priv->vdd = devm_regulator_get(priv->pdev, "vdd");
+> +	if (IS_ERR(priv->vdd)) {
+> +		ret = PTR_ERR(priv->vdd);
+> +		dev_err(priv->pdev, "Unable to get vdd regulator: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +#if IS_ENABLED(CONFIG_GPIOLIB)
+> +	/* sn5112 hardware shutdown pin */
+> +	priv->sdb = devm_gpiod_get_optional(priv->pdev, "sdb", GPIOD_OUT_LOW);
+> +	if (PTR_ERR(priv->sdb) == -EPROBE_DEFER)
+> +		return -EPROBE_DEFER;
+> +#endif
+> +
+> +	/* enable sn5112 power vdd */
+> +	ret = regulator_enable(priv->vdd);
+> +	if (ret < 0) {
+> +		dev_err(priv->pdev, "Unable to enable regulator: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	priv->regmap = devm_regmap_init_i2c(client, &sn3112_regmap_i2c_config);
+> +	if (IS_ERR(priv->regmap)) {
+> +		ret = PTR_ERR(priv->regmap);
+> +		dev_err(priv->pdev, "Failed to initialize register map: %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	i2c_set_clientdata(client, chip);
+> +	mutex_init(&priv->lock);
+> +
+> +	chip->ops = &sn3112_pwm_ops;
+> +	ret = pwmchip_add(chip);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +#if IS_ENABLED(CONFIG_GPIOLIB)
+> +	/* disable hardware shutdown pin */
+> +	if (priv->sdb)
+> +		gpiod_set_value(priv->sdb, 0);
+> +#endif
+> +
+> +	/* initialize registers */
+> +	ret = sn3112_write_all(priv);
+> +	if (ret != 0) {
+> +		dev_err(priv->pdev, "Failed to initialize sn3112: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	dev_info(&client->dev,
+> +		 "Found SI-EN SN3112 12-channel 8-bit PWM LED controller\n");
+newline
+> +	return 0;
+> +}
+> +
+> +static void sn3112_pwm_remove(struct i2c_client *client)
+> +{
+> +	struct pwm_chip *chip = i2c_get_clientdata(client);
+> +	struct sn3112 *priv = pwmchip_get_drvdata(chip);
+> +
+> +	dev_dbg(priv->pdev, "remove\n");
+suggest dropping from both probe() and remove()
+> +
+> +	/* set software enable register */
+> +	sn3112_write_reg(priv, SN3112_REG_ENABLE, 0);
+> +
+> +	/* use random value to apply changes */
+> +	sn3112_write_reg(priv, SN3112_REG_APPLY, 0x66);
+> +
+> +#if IS_ENABLED(CONFIG_GPIOLIB)
+> +	/* enable hardware shutdown pin */
+> +	if (priv->sdb)
+> +		gpiod_set_value(priv->sdb, 1);
+> +#endif
+> +
+> +	/* power-off sn5112 power vdd */
+> +	regulator_disable(priv->vdd);
+> +
+> +	pwmchip_remove(chip);
+> +}
+> +
+> +static const struct i2c_device_id sn3112_id[] = {
+> +	{ "sn3112", 0 },
+> +	{ /* sentinel */ },
+> +};
+> +MODULE_DEVICE_TABLE(i2c, sn3112_id);
+> +
+> +#ifdef CONFIG_OF
+> +static const struct of_device_id sn3112_dt_ids[] = {
+> +	{ .compatible = "si-en,sn3112-pwm", },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, sn3112_dt_ids);
+> +#endif
+> +
+> +static struct i2c_driver sn3112_i2c_driver = {
+> +	.driver = {
+> +		.name = "sn3112-pwm",
+> +		.of_match_table = of_match_ptr(sn3112_dt_ids),
+> +	},
+> +	.probe = sn3112_pwm_probe,
+> +	.remove = sn3112_pwm_remove,
+> +	.id_table = sn3112_id,
+> +};
+> +
+> +module_i2c_driver(sn3112_i2c_driver);
+> +
+> +MODULE_AUTHOR("BigfootACA <bigfoot@classfun.cn>");
+BigFootACA not Xilin Wu ?
+> +MODULE_DESCRIPTION("PWM driver for SI-EN SN3112");
+> +MODULE_LICENSE("GPL");
+> 
+
+Also please consider the following checkpatch errors
+
+WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
+#50:
+new file mode 100644
+
+CHECK: struct mutex definition without comment
+#83: FILE: drivers/pwm/pwm-sn3112.c:29:
++	struct mutex lock;
+
+CHECK: Prefer kernel type 'u8' over 'uint8_t'
+#85: FILE: drivers/pwm/pwm-sn3112.c:31:
++	uint8_t pwm_val[SN3112_CHANNELS];
+
+CHECK: Prefer kernel type 'u8' over 'uint8_t'
+#86: FILE: drivers/pwm/pwm-sn3112.c:32:
++	uint8_t pwm_en_reg[3];
+
+CHECK: Lines should not end with a '('
+#101: FILE: drivers/pwm/pwm-sn3112.c:47:
++		dev_warn_ratelimited(
+
+CHECK: Prefer kernel type 'u8' over 'uint8_t'
+#145: FILE: drivers/pwm/pwm-sn3112.c:91:
++			      uint8_t val, bool write)
+
 
