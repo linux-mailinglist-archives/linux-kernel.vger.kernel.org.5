@@ -1,64 +1,59 @@
-Return-Path: <linux-kernel+bounces-157631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EE418B13D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:53:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89C5C8B13D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 21:55:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 804161C2284F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:53:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E880E2843C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A58B13C68C;
-	Wed, 24 Apr 2024 19:53:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E550913BAEE;
+	Wed, 24 Apr 2024 19:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NTTcczTr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fL7kPjKK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A6F513AA3C;
-	Wed, 24 Apr 2024 19:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 309921848;
+	Wed, 24 Apr 2024 19:55:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713988401; cv=none; b=QiAoFxonruzAzcbNeQA2P7UzZdv5ondbKLuIvBqbE6aqx+Mm/hGUTadFEY434x90HoHky9NWmf4zkj3XnUN1Eyl6IyG3db+qtac5x+duVOfI9EqB3y/F+bl7ARgKJSYm1C4v5X86SczzOTzqdQwIDUDPmBLS3aQtqQhQdzCqofk=
+	t=1713988550; cv=none; b=afYOH8iejnNY+uSDBdaO+AWEWRpFkMBZcuVSjjODyZtluKvy5P8XjHF92bYsJBs//nxRJSg1RIED4Zre/AuJuk9c+FnUKwGAlA3iXc0UBK0QDthcDmbdx2OgBH7qQ010i5t8Bqb6B16vyEPqqqVu7hai6wAA6xnsuuPwipMDo6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713988401; c=relaxed/simple;
-	bh=HZkky1K43bSZGSblXrPp3EAM8NlSsdMp1ndHmpJJXwQ=;
+	s=arc-20240116; t=1713988550; c=relaxed/simple;
+	bh=7Ssf2orQYEw+x3rhVIDHWJRkaQA6YEMP4bdtPWzo4yw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F9sre4X63L8JWcpCzYErGtvkide1MuY7ZO0gxpgJW5AIE37SdYatd9t7WNx6meKxNoGogjTMYoM4hIsV0dvmMLcK27AtpTfj0bTFlDszFldAwLb8SWtgFTbbYuSsZhkDWDy8CQ2+vKZ1Rwhc1lgu0y37BbjgTk4/0hYp7bo8nLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NTTcczTr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1C2DC113CD;
-	Wed, 24 Apr 2024 19:53:20 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=l0QO4bO74IBn+Q1R3YzTL+QwyYFOLchQq/3C7Sb9rvYvo4PYjYc/l9cI5KfyaIyDfRoG6e+xcBL3yD48RFbBbFrlbus1rviWpDPqEzRNj85VjOQVFEBp8jWUMcIX1sZysmQ3b+imyr3AM63SBBmDhnUUvYDcPaGKKtlCxyVOXu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fL7kPjKK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62145C113CD;
+	Wed, 24 Apr 2024 19:55:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713988401;
-	bh=HZkky1K43bSZGSblXrPp3EAM8NlSsdMp1ndHmpJJXwQ=;
+	s=k20201202; t=1713988549;
+	bh=7Ssf2orQYEw+x3rhVIDHWJRkaQA6YEMP4bdtPWzo4yw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NTTcczTrGnFaxAa1kcfspxMTN3/ePhg12mnST33XA49fFlgQuXuSnkLe26jrPzCQC
-	 J1oxZAICxWCxa0bAApRRhf6JBaQ298OaMehmKj74FeKFuCnfBNpYeswE9haIIg+jmz
-	 Q/QZUKJAI7MbPzLLi+8YOH+Xfv/R053F0CiIy/BzGEVmHB91IganAP727lrF/IA+R6
-	 bm6D3XwKX35MsHWKr/tUh/MtpWNiq3t9KVNMlP07PO0lnGKkPp7XTeEu+B8yu+Hzin
-	 AiV94wDgJFifjC7MInUtd5m20iQLLKrdS+4QKpuas+p82FqLW4tgeDwJsB8Tm5FSZ3
-	 3Ak4vINNx/EJw==
-Date: Wed, 24 Apr 2024 14:53:18 -0500
+	b=fL7kPjKKJC8Gq9feBsmWL7LlQprwEbDpeEUaqHNugNcCw2wlfgM2r2WF3mkZ418WV
+	 Vt3DSfx27bPY8xYYhOThxm2o3tKmybOreCqqjOq2D/LVpnpgT7ihzdfVhFTjIxMWKj
+	 1txXvxJUrDsKDo2iaxllEVv6viVQu3Q/hlG/Qd9SA6Exh44CqqN7P3UX6D8QivaNlF
+	 +Gi+EdFQ/ybXlhm5AHsi7OiTXvkUvqQkjZ9cutzWbg4dyppbIvD56xlgqQdB+Yz1sz
+	 GGrW/Rm2z9sfi9S5Ej6qG4HPGCzEIn63tamHhhl1fKiaMLApJz5HsuS2NF9jXAJTmp
+	 k8qfDwq2x2mgA==
+Date: Wed, 24 Apr 2024 14:55:47 -0500
 From: Rob Herring <robh@kernel.org>
-To: Peter Griffin <peter.griffin@linaro.org>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, krzk+dt@kernel.org,
-	conor+dt@kernel.org, vkoul@kernel.org, kishon@kernel.org,
-	alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-	s.nawrocki@samsung.com, cw00.choi@samsung.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, James.Bottomley@hansenpartnership.com,
-	ebiggers@kernel.org, linux-scsi@vger.kernel.org,
-	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-clk@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	tudor.ambarus@linaro.org, andre.draszik@linaro.org,
-	saravanak@google.com, willmcvicker@google.com
-Subject: Re: [PATCH v2 03/14] dt-bindings: ufs: exynos-ufs: Add gs101
- compatible
-Message-ID: <20240424195318.GA367166-robh@kernel.org>
-References: <20240423205006.1785138-1-peter.griffin@linaro.org>
- <20240423205006.1785138-4-peter.griffin@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	devicetree@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+	Maxime Ripard <mripard@kernel.org>, linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
+	linux-arm-kernel@lists.infradead.org, Lee Jones <lee@kernel.org>
+Subject: Re: [PATCH] dt-bindings: mfd: allwinner,sun6i-a31-prcm: Use hyphens
+ in node names
+Message-ID: <171398853223.372037.811685185869412352.robh@kernel.org>
+References: <20240424045521.31857-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,95 +62,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240423205006.1785138-4-peter.griffin@linaro.org>
+In-Reply-To: <20240424045521.31857-1-krzysztof.kozlowski@linaro.org>
 
-On Tue, Apr 23, 2024 at 09:49:55PM +0100, Peter Griffin wrote:
-> Add dedicated google,gs101-ufs compatible for Google Tensor gs101
-> SoC.
+
+On Wed, 24 Apr 2024 06:55:21 +0200, Krzysztof Kozlowski wrote:
+> Underscores should not be used in node names (dtc with W=2 warns about
+> them), so replace them with hyphens.  This should have no impact on
+> known users: Linux MFD driver does not care about children node names.
+> DTS was already adjusted in commit 0f47ef3ff1bd ("arm: dts: allwinner: drop
+> underscore in node names"), so without this change, we observe
+> dtbs_check warnings:
 > 
-> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+>   sun6i-a31s-colorfly-e708-q1.dtb: prcm@1f01400: 'ahb0-clk', 'apb0-clk', 'apb0-gates-clk', 'apb0-rst', 'ar100-clk', 'ir-clk' do not match any of the regexes: '^.*_(clk|rst)$', 'pinctrl-[0-9]+'
+> 
+> Reported-by: Rob Herring <robh@kernel.org>
+> Closes: https://lore.kernel.org/all/CAL_JsqJfT-jui5P56CO4Fr37kr5iNN8dpxt8ecKeFmdVGnRYbA@mail.gmail.com/
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  .../bindings/ufs/samsung,exynos-ufs.yaml      | 38 +++++++++++++++++--
->  1 file changed, 35 insertions(+), 3 deletions(-)
+>  .../bindings/mfd/allwinner,sun6i-a31-prcm.yaml     | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml b/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
-> index b2b509b3944d..1179527d29d1 100644
-> --- a/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
-> +++ b/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
-> @@ -12,12 +12,10 @@ maintainers:
->  description: |
->    Each Samsung UFS host controller instance should have its own node.
->  
-> -allOf:
-> -  - $ref: ufs-common.yaml
-> -
->  properties:
->    compatible:
->      enum:
-> +      - google,gs101-ufs
->        - samsung,exynos7-ufs
->        - samsung,exynosautov9-ufs
->        - samsung,exynosautov9-ufs-vh
-> @@ -38,14 +36,24 @@ properties:
->        - const: ufsp
->  
->    clocks:
-> +    minItems: 2
->      items:
->        - description: ufs link core clock
->        - description: unipro main clock
-> +      - description: fmp clock
-> +      - description: ufs aclk clock
-> +      - description: ufs pclk clock
-> +      - description: sysreg clock
->  
->    clock-names:
-> +    minItems: 2
->      items:
->        - const: core_clk
->        - const: sclk_unipro_main
-> +      - const: fmp
-> +      - const: ufs_aclk
-> +      - const: ufs_pclk
 
-'ufs_' is redundant.
+Acked-by: Rob Herring (Arm) <robh@kernel.org>
 
-> +      - const: sysreg
->  
->    phys:
->      maxItems: 1
-> @@ -72,6 +80,30 @@ required:
->    - clocks
->    - clock-names
->  
-> +allOf:
-> +  - $ref: ufs-common.yaml
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: google,gs101-ufs
-> +
-> +    then:
-> +      properties:
-> +        clocks:
-> +          minItems: 6
-> +
-> +        clock-names:
-> +          minItems: 6
-> +
-> +    else:
-> +      properties:
-> +        clocks:
-> +          maxItems: 2
-> +
-> +        clock-names:
-> +          maxItems: 2
-> +
->  unevaluatedProperties: false
->  
->  examples:
-> -- 
-> 2.44.0.769.g3c40516874-goog
-> 
 
