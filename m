@@ -1,200 +1,277 @@
-Return-Path: <linux-kernel+bounces-157313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ACE08B0FAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:26:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12F6D8B0FAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:26:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33CE4281744
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:26:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36FFF1C2455E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:26:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E08159576;
-	Wed, 24 Apr 2024 16:26:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B212F1635AB;
+	Wed, 24 Apr 2024 16:26:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wc4n6SoB"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="le9GM7vT"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51B4915EFCC;
-	Wed, 24 Apr 2024 16:26:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D86161911;
+	Wed, 24 Apr 2024 16:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713975967; cv=none; b=rPe464n6V0UagO8JvQ5KNjUl17XFcd0fBTMBhk/HBwnkrUPStWeDWWVjl9w5rELpuxjccQU67Uq1IXxpLuBUa7AAxxkk0zXs8qLsYcMmIMAliv/ZNAXdtKsn6w9HOLj+zYNhf0UejqXbtMcGlI36NAi3eGt73glEStdUIFuKU50=
+	t=1713975987; cv=none; b=Jz/j/W3lSnjxTGUG4bO1hIdefxlJhg1wCDdJG/so78W53m6VjVMfp79mZb/vgoKfi2Jrx6b1QkK5G2m62IQSFVDvAUTQP1o0JwFNVZjraZeFeFGNtNNBHd0TCLMxc932SvXmxQtl6VndrW3zz5vJsxfNDBCojp6HX3GgVK9vIco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713975967; c=relaxed/simple;
-	bh=gP4mMntValkqDQMqIfmMFvbL8AE1ZP3kkKaH1beDZaI=;
-	h=Content-Type:Mime-Version:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=lunkZLeW0Fsp6e9JvN41FT8jdcM6BCRHWw0DyciKeNGftKj5ro/xzCe85rW7/VjlSJitoEmeDqC/bwQ3AYDerj+TtHSTl2UW3x7FE+pCv0YSRVcYWcAFeL5B9SN9SIkVGPmkx2US+gcDvLsaX8pgAw2asjHZjd9d+T0rXVWt+TA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wc4n6SoB; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2db6f5977e1so93296321fa.2;
-        Wed, 24 Apr 2024 09:26:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713975963; x=1714580763; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ISBo2m0d8ahl9D2i8C93sDQpbwRxzQ4Rapk/1JY7eWo=;
-        b=Wc4n6SoBYhDpYmPO++ZDnLgMs7EiTT701+rNguDAExO58UWI4De+Cm2ZR9Ik7Ptukt
-         1gGmKkg1B+yl+NFkBqC2WZbEpzBU7+v/ydp/62MgiFjcALzJmkI7B2vu9JRKGTtccKsg
-         +63l41oW8Ze86RSK+4B/GVGfxYsiNY+0FEJytWo4Q3qadKUun12O16XhlqUSZeVFIL8S
-         xfs2T01XwUXR5gtNNiGtDw2rilycC+RoLmL1xMNbCWcH+n8DuT+KZaF7wW5EY2lhqPkE
-         QdkjqsgdMnUvNfKVNHvkQfCIg1d0rGG7Ro88AKqezxznVXEP7uBRhHlJDKVkXXo2g0At
-         SvXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713975963; x=1714580763;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ISBo2m0d8ahl9D2i8C93sDQpbwRxzQ4Rapk/1JY7eWo=;
-        b=ElboJKxaynKMuWkwoI+vI+1b9MJxBetxIzenbra23aF+jRM4vMscLNilDTBDrfA4mI
-         qsoUTYHvnE9hB8aSpW1zYHRkIcdoFFkRqR8whxpbAQAVNigrBlDz4iezkRPSCocCk+h0
-         2vEcAj0apAG6Zm2kVJx+v0jrZPbuZyHbB+4q1PqdHpn5e1RBucve2fbBZQ7Pof/4vNlE
-         MthpQBlOMmGpdI1E6Ux/pvhHGw/mkJnnAAl8WYoJ4uiZlb1joRKCOlpRl0CRiNCXcb7H
-         jc9H8yCteaufpHrRXCMdBlXHfxgUQdcbfVGGv7fd9+Dba3ax2ncGEvTfVyBs/zMhj2hv
-         TrOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUhnIrFGgL53AFxO63oE5PTvSG9zwaSbEloIWJt6aWDDtumIlqJZTrnqe+UDqdp0G7SWvcTqXHHoPcrGHP27/j52WaiGAW/r5f/us5GWAw4dnMc2EzDdftJIXdvE9sgpaX7gd7acsddLUo=
-X-Gm-Message-State: AOJu0YyAWSAGp1Yr04/6mtKytkrUPX8u+TwIvj86/Z3ja2oFmV1Z+pgu
-	eBqV0xeK9nUIXt76vrSqp1/IN23WduyYG8UabVT6WSE37lsr9jwM
-X-Google-Smtp-Source: AGHT+IFoIL3diMSNcpcMTpKoxE8rPj3sYBmtgBGxHORX/lJgCJCCKlRdukkxdb/H2Qn0QLKV8oSeug==
-X-Received: by 2002:a2e:b5a6:0:b0:2dd:8eb5:dcd5 with SMTP id f6-20020a2eb5a6000000b002dd8eb5dcd5mr1714161ljn.14.1713975963164;
-        Wed, 24 Apr 2024 09:26:03 -0700 (PDT)
-Received: from localhost (p200300e41f162000f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f16:2000:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id i19-20020a50fc13000000b0056fed8e7817sm7883063edr.20.2024.04.24.09.26.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 09:26:02 -0700 (PDT)
-Content-Type: multipart/signed;
- boundary=6ba2911ab0d9061d591e2d0178dd10ab327ff50a605e39dd9da24fd42a86;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+	s=arc-20240116; t=1713975987; c=relaxed/simple;
+	bh=I6pFBHrPRU5Z2cCKG3RAl9CQCSHZHcaqr3fqNrtHn48=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oWVg8nFQnYHcHJZQ7uB+WQ5PVW3Kf6X0BbFvNfeGL3g8QOouwswFegggorT4yn86Haw4FQXj6LYggGrMV3b5n+Yv4whUipPyLpxHJ7q/zJgy3y9w7beEXD2FkHwNIHRuZcyghLDILLJ/GWzye79OC51hYZD4lqZWTyXMus9DJi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=le9GM7vT; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713975986; x=1745511986;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=I6pFBHrPRU5Z2cCKG3RAl9CQCSHZHcaqr3fqNrtHn48=;
+  b=le9GM7vTC5WSH/TOm6q+0FMdO3IqDmg+Ip6HSw0eiL4NDevV+nOkyN3Z
+   O+tp0oSucFe9bfOZHRT8SzG+PjF2JtKQ9j8kVCKaeSjw/Y6fmkD1gTOpi
+   1/LwA1kbbDFNfvlJqbOYjlMmGsowxKt0uUiwSwjU3XkLRcrXZnurlt3KD
+   LRBhtekkwkFC6HHZ2c35Jrp0/buJqrKdvs0hlIJ3KEK5TCefw0NsJ2VA9
+   XQZ9ULBPWqRXLLcklcDUZD+rs0YhvInQ7C0uIQd15juYJ6ZexyZn/zOXq
+   MlNy8XScJFucmwzHTQtazlmwZZddJSuyaTVM2dD/ipswAkWZVA8YtS100
+   w==;
+X-CSE-ConnectionGUID: F/mEqyh9T+yRtC22PPXnhA==
+X-CSE-MsgGUID: 9BGdpWXTQSiGh+6EP99ZXQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="13456323"
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="13456323"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 09:26:25 -0700
+X-CSE-ConnectionGUID: dZrLZyZVSOqLAc318XUrbQ==
+X-CSE-MsgGUID: jnd5jTFxRmOBEn1dWLhsBw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,226,1708416000"; 
+   d="scan'208";a="24779901"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by fmviesa009.fm.intel.com with ESMTP; 24 Apr 2024 09:26:21 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rzfRr-0001RZ-1g;
+	Wed, 24 Apr 2024 16:26:19 +0000
+Date: Thu, 25 Apr 2024 00:26:10 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Michal Simek <monstr@monstr.eu>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
+	Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+	linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Eng Lee Teh <englee.teh@starfivetech.com>
+Subject: Re: [PATCH v1 1/2] spi: spi-cadence: Add optional reset control
+ support
+Message-ID: <202404250029.8cjM4mtZ-lkp@intel.com>
+References: <20240424051317.2084059-2-jisheng.teoh@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Wed, 24 Apr 2024 18:26:01 +0200
-Message-Id: <D0SHRQVCGJBY.2DPLX9K6VXEYM@gmail.com>
-Cc: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-tegra@vger.kernel.org>, <amhetre@nvidia.com>, <bbasu@nvidia.com>
-Subject: Re: [Patch v3 1/2] dt-bindings: make sid and broadcast reg optional
-From: "Thierry Reding" <thierry.reding@gmail.com>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Sumit Gupta"
- <sumitg@nvidia.com>, <robh@kernel.org>, <conor+dt@kernel.org>,
- <maz@kernel.org>, <mark.rutland@arm.com>, <treding@nvidia.com>,
- <jonathanh@nvidia.com>
-X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
-References: <20240412130540.28447-1-sumitg@nvidia.com>
- <20240412130540.28447-2-sumitg@nvidia.com>
- <d26f9661-3e50-4a72-9097-fe63a27503f1@linaro.org>
-In-Reply-To: <d26f9661-3e50-4a72-9097-fe63a27503f1@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240424051317.2084059-2-jisheng.teoh@starfivetech.com>
 
---6ba2911ab0d9061d591e2d0178dd10ab327ff50a605e39dd9da24fd42a86
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Hi Ji,
 
-On Mon Apr 22, 2024 at 9:02 AM CEST, Krzysztof Kozlowski wrote:
-> On 12/04/2024 15:05, Sumit Gupta wrote:
-> > MC SID and Broadbast channel register access is restricted for Guest VM=
-.
->
-> Broadcast
->
-> > Make both the regions as optional for SoC's from Tegra186 onwards.
->
-> onward?
->
-> > Tegra MC driver will skip access to the restricted registers from Guest
-> > if the respective regions are not present in the memory-controller node
-> > of Guest DT.
-> >=20
-> > Suggested-by: Thierry Reding <treding@nvidia.com>
-> > Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> > ---
-> >  .../nvidia,tegra186-mc.yaml                   | 95 ++++++++++---------
-> >  1 file changed, 49 insertions(+), 46 deletions(-)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidi=
-a,tegra186-mc.yaml b/Documentation/devicetree/bindings/memory-controllers/n=
-vidia,tegra186-mc.yaml
-> > index 935d63d181d9..e0bd013ecca3 100644
-> > --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra=
-186-mc.yaml
-> > +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra=
-186-mc.yaml
-> > @@ -34,11 +34,11 @@ properties:
-> >            - nvidia,tegra234-mc
-> > =20
-> >    reg:
-> > -    minItems: 6
-> > +    minItems: 4
-> >      maxItems: 18
-> > =20
-> >    reg-names:
-> > -    minItems: 6
-> > +    minItems: 4
-> >      maxItems: 18
-> > =20
-> >    interrupts:
-> > @@ -151,12 +151,13 @@ allOf:
-> > =20
-> >          reg-names:
-> >            items:
-> > -            - const: sid
-> > -            - const: broadcast
-> > -            - const: ch0
-> > -            - const: ch1
-> > -            - const: ch2
-> > -            - const: ch3
-> > +            enum:
-> > +              - sid
-> > +              - broadcast
-> > +              - ch0
-> > +              - ch1
-> > +              - ch2
-> > +              - ch3
->
-> I understand why sid and broadcast are becoming optional, but why order
-> of the rest is now fully flexible?
+kernel test robot noticed the following build errors:
 
-The reason why the order of the rest doesn't matter is because we have
-both reg and reg-names properties and so the order in which they appear
-in the list doesn't matter. The only thing that matters is that the
-entries of the reg and reg-names properties match.
+[auto build test ERROR on broonie-spi/for-next]
+[also build test ERROR on robh/for-next krzk-dt/for-next linus/master v6.9-rc5 next-20240424]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> This does not even make sid/broadcast optional, but ch0!
+url:    https://github.com/intel-lab-lkp/linux/commits/Ji-Sheng-Teoh/spi-spi-cadence-Add-optional-reset-control-support/20240424-131551
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+patch link:    https://lore.kernel.org/r/20240424051317.2084059-2-jisheng.teoh%40starfivetech.com
+patch subject: [PATCH v1 1/2] spi: spi-cadence: Add optional reset control support
+config: nios2-randconfig-r081-20240424 (https://download.01.org/0day-ci/archive/20240425/202404250029.8cjM4mtZ-lkp@intel.com/config)
+compiler: nios2-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240425/202404250029.8cjM4mtZ-lkp@intel.com/reproduce)
 
-Yeah, this ends up making all entries optional, which isn't what we
-want. I don't know of a way to accurately express this in json-schema,
-though. Do you?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404250029.8cjM4mtZ-lkp@intel.com/
 
-If not, then maybe we need to resort to something like this and also
-mention explicitly in some comment that it is sid and broadcast that are
-optional.
+All error/warnings (new ones prefixed by >>):
 
-Thierry
+   drivers/spi/spi-cadence.c: In function 'cdns_spi_probe':
+>> drivers/spi/spi-cadence.c:593:22: error: implicit declaration of function 'devm_reset_control_get_optional_exclusive' [-Werror=implicit-function-declaration]
+     593 |         xspi->rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
+         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/spi/spi-cadence.c:593:20: warning: assignment to 'struct reset_control *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+     593 |         xspi->rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
+         |                    ^
+>> drivers/spi/spi-cadence.c:600:9: error: implicit declaration of function 'reset_control_assert' [-Werror=implicit-function-declaration]
+     600 |         reset_control_assert(xspi->rstc);
+         |         ^~~~~~~~~~~~~~~~~~~~
+>> drivers/spi/spi-cadence.c:601:9: error: implicit declaration of function 'reset_control_deassert' [-Werror=implicit-function-declaration]
+     601 |         reset_control_deassert(xspi->rstc);
+         |         ^~~~~~~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
 
---6ba2911ab0d9061d591e2d0178dd10ab327ff50a605e39dd9da24fd42a86
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+vim +/devm_reset_control_get_optional_exclusive +593 drivers/spi/spi-cadence.c
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmYpMpoACgkQ3SOs138+
-s6GyxxAAoN6Z69DQJQGqGUJCL6invi972MVm5AggYBlXmwj+NYR7dqdKsYmMBrG5
-7o2ODlJotzRPauv3NHWwOPg0RwFZw8yMvgVtNnY2bAUzGJphP7tTO7pN+EzS9V9e
-CX9tMg+8eUjO2ArnothckaFH4VFus1MAVOdcy0jm9HiE/9mj0L3sJ4Z+0PY6F29I
-31X1nkWersqcSuPEc3fO7xCMge8hWBSIpl1DHFwZYcgfW1RvjzQ99VDC3fsW0zS1
-9VTu0pDeWnh4LBpwk6NxD7mGjEhcbMH7Dh3vo11uqIF9eyXE3cLSEZjuWxbfea/a
-HwOZpTQYq7yH3fsbxAQHPvKW85ZOvgpzdJiHEd2DdPrFjNY06+/xx0tSoHNS1bCN
-T4AhOYLDMCyu7eh5uHqmLG9K7f6OpIZYkcgtAR+55z/IR2r6PLUKMXZcGtNK+L25
-G736aaFvywp9xxpnWNAzmQZPMwTfGtiWVhJcVNG9tw0bjNhar6sJlfag0TQIeSOr
-DDt7kNUuiypkyyfhTxXaeIpV2FU1hu8Xh0AmvpI/8xuSB4H6lm1ZW0hCE4zF0dyA
-QSqG3aMEPTQ4BadPJvJ4rK6dlk9AHT9dEHdDeaG7AFGFMxmhXVpGaG+TmFNn+78x
-x0RILdoILw1iKzZMhW2emocJXqfXBan7530waOFbXI3UT8RwIbQ=
-=wRVU
------END PGP SIGNATURE-----
+   550	
+   551	/**
+   552	 * cdns_spi_probe - Probe method for the SPI driver
+   553	 * @pdev:	Pointer to the platform_device structure
+   554	 *
+   555	 * This function initializes the driver data structures and the hardware.
+   556	 *
+   557	 * Return:	0 on success and error value on error
+   558	 */
+   559	static int cdns_spi_probe(struct platform_device *pdev)
+   560	{
+   561		int ret = 0, irq;
+   562		struct spi_controller *ctlr;
+   563		struct cdns_spi *xspi;
+   564		u32 num_cs;
+   565		bool target;
+   566	
+   567		target = of_property_read_bool(pdev->dev.of_node, "spi-slave");
+   568		if (target)
+   569			ctlr = spi_alloc_target(&pdev->dev, sizeof(*xspi));
+   570		else
+   571			ctlr = spi_alloc_host(&pdev->dev, sizeof(*xspi));
+   572	
+   573		if (!ctlr)
+   574			return -ENOMEM;
+   575	
+   576		xspi = spi_controller_get_devdata(ctlr);
+   577		ctlr->dev.of_node = pdev->dev.of_node;
+   578		platform_set_drvdata(pdev, ctlr);
+   579	
+   580		xspi->regs = devm_platform_ioremap_resource(pdev, 0);
+   581		if (IS_ERR(xspi->regs)) {
+   582			ret = PTR_ERR(xspi->regs);
+   583			goto remove_ctlr;
+   584		}
+   585	
+   586		xspi->pclk = devm_clk_get_enabled(&pdev->dev, "pclk");
+   587		if (IS_ERR(xspi->pclk)) {
+   588			dev_err(&pdev->dev, "pclk clock not found.\n");
+   589			ret = PTR_ERR(xspi->pclk);
+   590			goto remove_ctlr;
+   591		}
+   592	
+ > 593		xspi->rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
+   594		if (IS_ERR(xspi->rstc)) {
+   595			ret = PTR_ERR(xspi->rstc);
+   596			dev_err(&pdev->dev, "Cannot get SPI reset.\n");
+   597			goto remove_ctlr;
+   598		}
+   599	
+ > 600		reset_control_assert(xspi->rstc);
+ > 601		reset_control_deassert(xspi->rstc);
+   602	
+   603		if (!spi_controller_is_target(ctlr)) {
+   604			xspi->ref_clk = devm_clk_get_enabled(&pdev->dev, "ref_clk");
+   605			if (IS_ERR(xspi->ref_clk)) {
+   606				dev_err(&pdev->dev, "ref_clk clock not found.\n");
+   607				ret = PTR_ERR(xspi->ref_clk);
+   608				goto remove_ctlr;
+   609			}
+   610	
+   611			pm_runtime_use_autosuspend(&pdev->dev);
+   612			pm_runtime_set_autosuspend_delay(&pdev->dev, SPI_AUTOSUSPEND_TIMEOUT);
+   613			pm_runtime_get_noresume(&pdev->dev);
+   614			pm_runtime_set_active(&pdev->dev);
+   615			pm_runtime_enable(&pdev->dev);
+   616	
+   617			ret = of_property_read_u32(pdev->dev.of_node, "num-cs", &num_cs);
+   618			if (ret < 0)
+   619				ctlr->num_chipselect = CDNS_SPI_DEFAULT_NUM_CS;
+   620			else
+   621				ctlr->num_chipselect = num_cs;
+   622	
+   623			ret = of_property_read_u32(pdev->dev.of_node, "is-decoded-cs",
+   624						   &xspi->is_decoded_cs);
+   625			if (ret < 0)
+   626				xspi->is_decoded_cs = 0;
+   627		}
+   628	
+   629		cdns_spi_detect_fifo_depth(xspi);
+   630	
+   631		/* SPI controller initializations */
+   632		cdns_spi_init_hw(xspi, spi_controller_is_target(ctlr));
+   633	
+   634		irq = platform_get_irq(pdev, 0);
+   635		if (irq < 0) {
+   636			ret = irq;
+   637			goto clk_dis_all;
+   638		}
+   639	
+   640		ret = devm_request_irq(&pdev->dev, irq, cdns_spi_irq,
+   641				       0, pdev->name, ctlr);
+   642		if (ret != 0) {
+   643			ret = -ENXIO;
+   644			dev_err(&pdev->dev, "request_irq failed\n");
+   645			goto clk_dis_all;
+   646		}
+   647	
+   648		ctlr->use_gpio_descriptors = true;
+   649		ctlr->prepare_transfer_hardware = cdns_prepare_transfer_hardware;
+   650		ctlr->prepare_message = cdns_prepare_message;
+   651		ctlr->transfer_one = cdns_transfer_one;
+   652		ctlr->unprepare_transfer_hardware = cdns_unprepare_transfer_hardware;
+   653		ctlr->mode_bits = SPI_CPOL | SPI_CPHA;
+   654		ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
+   655	
+   656		if (!spi_controller_is_target(ctlr)) {
+   657			ctlr->mode_bits |=  SPI_CS_HIGH;
+   658			ctlr->set_cs = cdns_spi_chipselect;
+   659			ctlr->auto_runtime_pm = true;
+   660			xspi->clk_rate = clk_get_rate(xspi->ref_clk);
+   661			/* Set to default valid value */
+   662			ctlr->max_speed_hz = xspi->clk_rate / 4;
+   663			xspi->speed_hz = ctlr->max_speed_hz;
+   664			pm_runtime_mark_last_busy(&pdev->dev);
+   665			pm_runtime_put_autosuspend(&pdev->dev);
+   666		} else {
+   667			ctlr->mode_bits |= SPI_NO_CS;
+   668			ctlr->target_abort = cdns_target_abort;
+   669		}
+   670		ret = spi_register_controller(ctlr);
+   671		if (ret) {
+   672			dev_err(&pdev->dev, "spi_register_controller failed\n");
+   673			goto clk_dis_all;
+   674		}
+   675	
+   676		return ret;
+   677	
+   678	clk_dis_all:
+   679		if (!spi_controller_is_target(ctlr)) {
+   680			pm_runtime_set_suspended(&pdev->dev);
+   681			pm_runtime_disable(&pdev->dev);
+   682		}
+   683	remove_ctlr:
+   684		spi_controller_put(ctlr);
+   685		return ret;
+   686	}
+   687	
 
---6ba2911ab0d9061d591e2d0178dd10ab327ff50a605e39dd9da24fd42a86--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
