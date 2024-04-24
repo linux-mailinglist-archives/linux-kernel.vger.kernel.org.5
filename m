@@ -1,356 +1,126 @@
-Return-Path: <linux-kernel+bounces-156332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 299308B0154
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:50:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98B9F8B0157
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 07:51:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 289BBB234EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:50:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAC191C22B0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 05:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4718E15689A;
-	Wed, 24 Apr 2024 05:50:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67730156880;
+	Wed, 24 Apr 2024 05:51:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=siemens.com header.i=daniel.starke@siemens.com header.b="E78uxt4r"
-Received: from mta-64-228.siemens.flowmailer.net (mta-64-228.siemens.flowmailer.net [185.136.64.228])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="a1mNkCqv"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71DE1156875
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 05:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.136.64.228
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54856139CEB;
+	Wed, 24 Apr 2024 05:51:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713937822; cv=none; b=lTWbKr1eJDiQvsJiP0YMsF93FYkyVrghd7ugd22Ztnv9bqsl3NSzb+XD4I6ooeW4Y9Le80kh5AYQg04JRUwGE+K36aunceLAQhEjYKRh4+dd8K5NGC2DsNYEnc4ZFn47nzhYpU3CFxeAgUGtzIMVayxgWoKXppbLSixZu+9aOvo=
+	t=1713937876; cv=none; b=hoCxGY8AamYTqrn1ndSPMNhC4982Oag+xQ0HSE9uXfOZKA/b1LAtN3VlUv2juvDWVkZLuz4Q24MeyY76QszCiqPaNt3m5sGjy8KVMy5HsUkrge0EyFTcGuadsE+DNJpCDq8Pub6y2nCibXh5kPF2t190DVHeQisgLJ7291/sg+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713937822; c=relaxed/simple;
-	bh=WgCUbfzNS3QF4DTL9ufCocSLSVuxeOwnd2Vq2/rJecE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cHtRnKGJa/uakWVrtsGFltS2EJ8v7ELXqtHPP8+CZtTc1INWRxrKLBDXe4CzINjhrDkUR25NMiWWYDroz2HhKd8AZRT2N/wOieTfOvND1hYoNQ0m+/SnOyx1rNgsHVnMCstn2CNqSavVz9/1hNOGhsjUEpspIxDS4c9QVn/7ngo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com; dkim=pass (1024-bit key) header.d=siemens.com header.i=daniel.starke@siemens.com header.b=E78uxt4r; arc=none smtp.client-ip=185.136.64.228
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com
-Received: by mta-64-228.siemens.flowmailer.net with ESMTPSA id 20240424055012afe464e783b89bf954
-        for <linux-kernel@vger.kernel.org>;
-        Wed, 24 Apr 2024 07:50:12 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=daniel.starke@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
- bh=jJAfwSw6KITZv+CcSJwARJnFg2yhGSqyR70vWWtPD8k=;
- b=E78uxt4rxWd6hEOQoZDw9OUqvm+Z6VdUbxnclMmhO9vNdVnUzTfjPOP0WYiJ+EJhw8l+vW
- HF72aMNMt+pFxZXsExCgC1Y+fbHGxBQ207v053Xvwg9q9SLNlWom3y4B+Yk2ZaaNb8Oxcb7C
- bFQYm6CUCQJBmr1SLfqEkGt93WFhY=;
-From: "D. Starke" <daniel.starke@siemens.com>
-To: linux-serial@vger.kernel.org,
-	gregkh@linuxfoundation.org,
-	jirislaby@kernel.org,
-	ilpo.jarvinen@linux.intel.com
-Cc: linux-kernel@vger.kernel.org,
-	j51569436@gmail.com,
-	Daniel Starke <daniel.starke@siemens.com>
-Subject: [PATCH 2/2] tty: n_gsm: fix missing receive state reset after mode switch
-Date: Wed, 24 Apr 2024 07:48:42 +0200
-Message-Id: <20240424054842.7741-2-daniel.starke@siemens.com>
-In-Reply-To: <20240424054842.7741-1-daniel.starke@siemens.com>
-References: <20240424054842.7741-1-daniel.starke@siemens.com>
+	s=arc-20240116; t=1713937876; c=relaxed/simple;
+	bh=l2vWxvOw5UfkFOPYULi7WDW9p3pD3FL3o5F3q7jgeKs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=NfF0OdN4Z9cLEhzAZcOaULULsN6/fU5CT47M3VjHNBEib+3oBMiYqr1yhIVCy4Nuz0FkXwXhG7A895RNq9/ubYkKH1DVci4IM2AsZZWE2EL1+3Smddz05GnIXfe8JpfkrXTPN56SqswwxtZOQ9dqgSxcEv0HbnY8d++p/r7yzNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=a1mNkCqv; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43O5oRPD020478;
+	Wed, 24 Apr 2024 05:51:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=zPelWUZ4e8QErU4lsY21zWyZw6ld5HftWCm4DKBygrE=; b=a1
+	mNkCqvHUScqb0UsKZVA6hlc8DuBpInO7TQBYjgg6bszWlYaLPiz+l094UrPPm7q8
+	220m8/4T8DXWmSXG4/EFFIK8LAoWz0icmN0ByL64axdsFSBOATiDF+evCYEXr99e
+	FxKEnc+goLXClWVhwhkADLnKMSzAUbKwI0KV3WZfrMCHd1wevDzcP2wrcuoiV7+I
+	qC/KtDwGZBDVbhKXzTBU/vgjgGfcIFw2QSoeJcv7gxRstH7flLYxEXFq+Tp3Cs2/
+	jqo1OFIsm/1J5yzKUhb3+KGwiSH4zIhH5sirvV1bIgpKaoRmiY+p8+GJb0w+n2gE
+	0HsrCgDtZ7YW4UWZEi4g==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xpv9pg01w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 05:51:11 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43O5pALr007227
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Apr 2024 05:51:10 GMT
+Received: from [10.216.52.243] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 23 Apr
+ 2024 22:51:06 -0700
+Message-ID: <a2b28091-2b9a-4a0d-9d98-6226a2dafd58@quicinc.com>
+Date: Wed, 24 Apr 2024 11:21:02 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-314044:519-21489:flowmailer
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] arm64: dts: qcom: qcm6490-rb3: Enable gpi-dma and qup
+ node
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <robh@kernel.org>,
+        <krzk+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_msavaliy@quicinc.com>,
+        <quic_anupkulk@quicinc.com>
+References: <20240416105059.1167-1-quic_vdadhani@quicinc.com>
+ <CAA8EJprzdhDvmZdVXdHEJHpNA_Pj3=77v=y41EajFVe8LmAOnQ@mail.gmail.com>
+ <CAA8EJpob60Kog7ppTO=LZuJgn5Z91dwqyZ845gX8UXwrOqvZjQ@mail.gmail.com>
+From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+In-Reply-To: <CAA8EJpob60Kog7ppTO=LZuJgn5Z91dwqyZ845gX8UXwrOqvZjQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Jb1KpcqkyYA7y3QlMGAwlBU_-5fZEkSY
+X-Proofpoint-ORIG-GUID: Jb1KpcqkyYA7y3QlMGAwlBU_-5fZEkSY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-24_03,2024-04-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 mlxlogscore=568 clxscore=1015
+ adultscore=0 malwarescore=0 bulkscore=0 impostorscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404240024
 
-From: Daniel Starke <daniel.starke@siemens.com>
 
-The current implementation uses either gsm0_receive() or gsm1_receive()
-depending on whether the user configured the mux in basic or advanced
-option mode. Both functions share some state values over the same logical
-elements of the frame. However, both frame types differ in their nature.
-gsm0_receive() uses non-transparency framing, whereas gsm1_receive() uses
-transparency mechanism. Switching between both modes leaves the receive
-function in an undefined state when done during frame reception.
 
-Fix this by splitting both states. Add gsm0_receive_state_check_and_fix()
-and gsm1_receive_state_check_and_fix() to ensure that gsm->state is reset
-after a change of gsm->receive.
+On 4/16/2024 6:04 PM, Dmitry Baryshkov wrote:
+> On Tue, 16 Apr 2024 at 15:32, Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+>>
+>> On Tue, 16 Apr 2024 at 13:51, Viken Dadhaniya <quic_vdadhani@quicinc.com> wrote:
+>>>
+>>> Enable gpi-dma0, gpi-dma1 and qupv3_id_1 nodes for
+>>> busses usecase on RB3 platform.
+>>>
+>>> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+>>> ---
+>>>   arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 12 ++++++++++++
+>>>   1 file changed, 12 insertions(+)
+>>
+>>
+>> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> 
+> Well, actually:
+> 
+> Unreviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> 
+> Please place the gpi_dmaN nodes where they belong rather than sticking
+> them right before the qup nodes. The file should be sorted.
+> 
 
-Note that gsm->state is only accessed in:
-- gsm0_receive()
-- gsm1_receive()
-- gsm_error()
-
-Fixes: e1eaea46bb40 ("tty: n_gsm line discipline")
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Starke <daniel.starke@siemens.com>
----
- drivers/tty/n_gsm.c | 133 ++++++++++++++++++++++++++++++--------------
- 1 file changed, 92 insertions(+), 41 deletions(-)
-
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 7c697dab6f84..be35f7334ecd 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -245,16 +245,18 @@ enum gsm_encoding {
- 
- enum gsm_mux_state {
- 	GSM_SEARCH,
--	GSM_START,
--	GSM_ADDRESS,
--	GSM_CONTROL,
--	GSM_LEN,
--	GSM_DATA,
--	GSM_FCS,
--	GSM_OVERRUN,
--	GSM_LEN0,
--	GSM_LEN1,
--	GSM_SSOF,
-+	GSM0_ADDRESS,
-+	GSM0_CONTROL,
-+	GSM0_LEN0,
-+	GSM0_LEN1,
-+	GSM0_DATA,
-+	GSM0_FCS,
-+	GSM0_SSOF,
-+	GSM1_START,
-+	GSM1_ADDRESS,
-+	GSM1_CONTROL,
-+	GSM1_DATA,
-+	GSM1_OVERRUN,
- };
- 
- /*
-@@ -2847,6 +2849,30 @@ static void gsm_queue(struct gsm_mux *gsm)
- 	return;
- }
- 
-+/**
-+ * gsm0_receive_state_check_and_fix	-	check and correct receive state
-+ * @gsm: gsm data for this ldisc instance
-+ *
-+ * Ensures that the current receive state is valid for basic option mode.
-+ */
-+
-+static void gsm0_receive_state_check_and_fix(struct gsm_mux *gsm)
-+{
-+	switch (gsm->state) {
-+	case GSM_SEARCH:
-+	case GSM0_ADDRESS:
-+	case GSM0_CONTROL:
-+	case GSM0_LEN0:
-+	case GSM0_LEN1:
-+	case GSM0_DATA:
-+	case GSM0_FCS:
-+	case GSM0_SSOF:
-+		break;
-+	default:
-+		gsm->state = GSM_SEARCH;
-+		break;
-+	}
-+}
- 
- /**
-  *	gsm0_receive	-	perform processing for non-transparency
-@@ -2860,26 +2886,27 @@ static void gsm0_receive(struct gsm_mux *gsm, u8 c)
- {
- 	unsigned int len;
- 
-+	gsm0_receive_state_check_and_fix(gsm);
- 	switch (gsm->state) {
- 	case GSM_SEARCH:	/* SOF marker */
- 		if (c == GSM0_SOF) {
--			gsm->state = GSM_ADDRESS;
-+			gsm->state = GSM0_ADDRESS;
- 			gsm->address = 0;
- 			gsm->len = 0;
- 			gsm->fcs = INIT_FCS;
- 		}
- 		break;
--	case GSM_ADDRESS:	/* Address EA */
-+	case GSM0_ADDRESS:	/* Address EA */
- 		gsm->fcs = gsm_fcs_add(gsm->fcs, c);
- 		if (gsm_read_ea(&gsm->address, c))
--			gsm->state = GSM_CONTROL;
-+			gsm->state = GSM0_CONTROL;
- 		break;
--	case GSM_CONTROL:	/* Control Byte */
-+	case GSM0_CONTROL:	/* Control Byte */
- 		gsm->fcs = gsm_fcs_add(gsm->fcs, c);
- 		gsm->control = c;
--		gsm->state = GSM_LEN0;
-+		gsm->state = GSM0_LEN0;
- 		break;
--	case GSM_LEN0:		/* Length EA */
-+	case GSM0_LEN0:		/* Length EA */
- 		gsm->fcs = gsm_fcs_add(gsm->fcs, c);
- 		if (gsm_read_ea(&gsm->len, c)) {
- 			if (gsm->len > gsm->mru) {
-@@ -2889,14 +2916,14 @@ static void gsm0_receive(struct gsm_mux *gsm, u8 c)
- 			}
- 			gsm->count = 0;
- 			if (!gsm->len)
--				gsm->state = GSM_FCS;
-+				gsm->state = GSM0_FCS;
- 			else
--				gsm->state = GSM_DATA;
-+				gsm->state = GSM0_DATA;
- 			break;
- 		}
--		gsm->state = GSM_LEN1;
-+		gsm->state = GSM0_LEN1;
- 		break;
--	case GSM_LEN1:
-+	case GSM0_LEN1:
- 		gsm->fcs = gsm_fcs_add(gsm->fcs, c);
- 		len = c;
- 		gsm->len |= len << 7;
-@@ -2907,11 +2934,11 @@ static void gsm0_receive(struct gsm_mux *gsm, u8 c)
- 		}
- 		gsm->count = 0;
- 		if (!gsm->len)
--			gsm->state = GSM_FCS;
-+			gsm->state = GSM0_FCS;
- 		else
--			gsm->state = GSM_DATA;
-+			gsm->state = GSM0_DATA;
- 		break;
--	case GSM_DATA:		/* Data */
-+	case GSM0_DATA:		/* Data */
- 		gsm->buf[gsm->count++] = c;
- 		if (gsm->count >= MAX_MRU) {
- 			gsm->bad_size++;
-@@ -2922,14 +2949,14 @@ static void gsm0_receive(struct gsm_mux *gsm, u8 c)
- 				gsm->fcs = gsm_fcs_add_block(gsm->fcs, gsm->buf,
- 							     gsm->count);
- 			}
--			gsm->state = GSM_FCS;
-+			gsm->state = GSM0_FCS;
- 		}
- 		break;
--	case GSM_FCS:		/* FCS follows the packet */
-+	case GSM0_FCS:		/* FCS follows the packet */
- 		gsm->fcs = gsm_fcs_add(gsm->fcs, c);
--		gsm->state = GSM_SSOF;
-+		gsm->state = GSM0_SSOF;
- 		break;
--	case GSM_SSOF:
-+	case GSM0_SSOF:
- 		gsm->state = GSM_SEARCH;
- 		if (c == GSM0_SOF)
- 			gsm_queue(gsm);
-@@ -2942,6 +2969,29 @@ static void gsm0_receive(struct gsm_mux *gsm, u8 c)
- 	}
- }
- 
-+/**
-+ * gsm1_receive_state_check_and_fix	-	check and correct receive state
-+ * @gsm: gsm data for this ldisc instance
-+ *
-+ * Ensures that the current receive state is valid for advanced option mode.
-+ */
-+
-+static void gsm1_receive_state_check_and_fix(struct gsm_mux *gsm)
-+{
-+	switch (gsm->state) {
-+	case GSM_SEARCH:
-+	case GSM1_START:
-+	case GSM1_ADDRESS:
-+	case GSM1_CONTROL:
-+	case GSM1_DATA:
-+	case GSM1_OVERRUN:
-+		break;
-+	default:
-+		gsm->state = GSM_SEARCH;
-+		break;
-+	}
-+}
-+
- /**
-  *	gsm1_receive	-	perform processing for non-transparency
-  *	@gsm: gsm data for this ldisc instance
-@@ -2952,6 +3002,7 @@ static void gsm0_receive(struct gsm_mux *gsm, u8 c)
- 
- static void gsm1_receive(struct gsm_mux *gsm, u8 c)
- {
-+	gsm1_receive_state_check_and_fix(gsm);
- 	/* handle XON/XOFF */
- 	if ((c & ISO_IEC_646_MASK) == XON) {
- 		gsm->constipated = true;
-@@ -2964,11 +3015,11 @@ static void gsm1_receive(struct gsm_mux *gsm, u8 c)
- 	}
- 	if (c == GSM1_SOF) {
- 		/* EOF is only valid in frame if we have got to the data state */
--		if (gsm->state == GSM_DATA) {
-+		if (gsm->state == GSM1_DATA) {
- 			if (gsm->count < 1) {
- 				/* Missing FSC */
- 				gsm->malformed++;
--				gsm->state = GSM_START;
-+				gsm->state = GSM1_START;
- 				return;
- 			}
- 			/* Remove the FCS from data */
-@@ -2984,14 +3035,14 @@ static void gsm1_receive(struct gsm_mux *gsm, u8 c)
- 			gsm->fcs = gsm_fcs_add(gsm->fcs, gsm->buf[gsm->count]);
- 			gsm->len = gsm->count;
- 			gsm_queue(gsm);
--			gsm->state  = GSM_START;
-+			gsm->state  = GSM1_START;
- 			return;
- 		}
- 		/* Any partial frame was a runt so go back to start */
--		if (gsm->state != GSM_START) {
-+		if (gsm->state != GSM1_START) {
- 			if (gsm->state != GSM_SEARCH)
- 				gsm->malformed++;
--			gsm->state = GSM_START;
-+			gsm->state = GSM1_START;
- 		}
- 		/* A SOF in GSM_START means we are still reading idling or
- 		   framing bytes */
-@@ -3012,30 +3063,30 @@ static void gsm1_receive(struct gsm_mux *gsm, u8 c)
- 		gsm->escape = false;
- 	}
- 	switch (gsm->state) {
--	case GSM_START:		/* First byte after SOF */
-+	case GSM1_START:		/* First byte after SOF */
- 		gsm->address = 0;
--		gsm->state = GSM_ADDRESS;
-+		gsm->state = GSM1_ADDRESS;
- 		gsm->fcs = INIT_FCS;
- 		fallthrough;
--	case GSM_ADDRESS:	/* Address continuation */
-+	case GSM1_ADDRESS:	/* Address continuation */
- 		gsm->fcs = gsm_fcs_add(gsm->fcs, c);
- 		if (gsm_read_ea(&gsm->address, c))
--			gsm->state = GSM_CONTROL;
-+			gsm->state = GSM1_CONTROL;
- 		break;
--	case GSM_CONTROL:	/* Control Byte */
-+	case GSM1_CONTROL:	/* Control Byte */
- 		gsm->fcs = gsm_fcs_add(gsm->fcs, c);
- 		gsm->control = c;
- 		gsm->count = 0;
--		gsm->state = GSM_DATA;
-+		gsm->state = GSM1_DATA;
- 		break;
--	case GSM_DATA:		/* Data */
-+	case GSM1_DATA:		/* Data */
- 		if (gsm->count > gsm->mru || gsm->count > MAX_MRU) {	/* Allow one for the FCS */
--			gsm->state = GSM_OVERRUN;
-+			gsm->state = GSM1_OVERRUN;
- 			gsm->bad_size++;
- 		} else
- 			gsm->buf[gsm->count++] = c;
- 		break;
--	case GSM_OVERRUN:	/* Over-long - eg a dropped SOF */
-+	case GSM1_OVERRUN:	/* Over-long - eg a dropped SOF */
- 		break;
- 	default:
- 		pr_debug("%s: unhandled state: %d\n", __func__, gsm->state);
--- 
-2.34.1
-
+Updated in v2.
 
