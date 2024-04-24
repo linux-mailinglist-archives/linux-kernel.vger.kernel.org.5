@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-157273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70CD48B0F44
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 122408B0F4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 18:00:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F01621F213A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 15:59:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 951E21F25A0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 16:00:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DA615F406;
-	Wed, 24 Apr 2024 15:59:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 523C915FD15;
+	Wed, 24 Apr 2024 15:59:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="pf2W+TG0"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2041.outbound.protection.outlook.com [40.107.93.41])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="HSK7HZJ/"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2074.outbound.protection.outlook.com [40.107.93.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6391B1649DB
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:58:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F191635DD
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 15:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.74
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713974339; cv=fail; b=jLSBPLTopfNremhjAoieySFJTHe4SpS+QBVwJK5GLSgyt2+A7egO3qslEbuj4w9Yl7bZvQOJx/RwhGsxRgNDxD/0J5+7TvWeUsCg+bwigBHRlcn0qu8GmGNvEtb+3F/5V8McYHN0mIk7CSXicuAnBK53kRYXIlV7fatHWojEsK8=
+	t=1713974349; cv=fail; b=IUF6dxoe10/NWkQBgnYwrigWTFeNrK6HCRlLOx3hxJuDBDdTAN7B/byxGTGY7Dzd62G6h01+3IAtKzq6728kGGSRfSPHqG59peTSqdIgNTLulQ5qmpfr+wrrgx9fWLdLWTEaXYpcviLMCnAqFZVSBrvgb8p4RwxLMrUAqv0QfC4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713974339; c=relaxed/simple;
-	bh=1rq7LJSUQAHQZGrsm7htbyZqFp3tpiGuY2jCSOMF3HU=;
+	s=arc-20240116; t=1713974349; c=relaxed/simple;
+	bh=3YDaHiutIgYlNhCcDi1GSw7qspv9UJtm6SG6Fqae198=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j1YnPgGnlvdKNhvkaskAkFKbebAGh5vaCxl9tU6/CrlE55EQFo9ImMcKpiCOLa7cRw3CwI5JyPbm7p9735/VFMbjKverr9vy8EPP1pCMBmzVQwPgo7sOb9iUYFsEHjVStzOlHwDCBxLDbe1YMf7ZKzf6ZRqN1z9S2lKhpbB7+sU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=pf2W+TG0; arc=fail smtp.client-ip=40.107.93.41
+	 MIME-Version:Content-Type; b=WRKiyKVr7pGURkWCkSVGG4br0u12rKEx6rcXAI81iyTuYARPRLTAayBsuFHbEnuLu2CjAbofw7d9JzyITXTtZ7Ruv+5DzXjmyb0+AfHLgG8WuP6l8Lc2LLuALRgKxHmcrq+Qyzd3r8IG9wKjcGNi1F2hwxDGhJDUKqG/nV5s1B4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=HSK7HZJ/; arc=fail smtp.client-ip=40.107.93.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OftVwEIsqurTy8PitjHP7k6MiVUYRWYDio+Bmyp8rBt18MnbnKXtvEZl1NARivWNr846ypIMNYWq6niAH80M4HOcaD5qGEINi61bV1jcvC3f+Dz0LKvDX1lHUcOhferxpOrO81j/hONA5DozR2Vlb3w7yvDeE4zAygZFAH4MAI+KHKJ5veZvMYvzwDbyPW5Gf465rekokGkRZIpecjzBjvjpGIUE+/v+wwMWCHYjiXdxS4Cvroo69ORoQ3YAmkV79dmZwT8JdZJZnO40QwXG4cn/CBXc/Wnw/cEefC0tUb9huEAXgpOp+Yi7vEiCnR1qIq/8zby91rXoZQ3/9fTCww==
+ b=N5uW2qek0rTxI5FBvx+MYItgyVz0fgQiqA0uBZQhmWGUBrXyFkFytHc8RSN4JtjutXAXTM2xksY9/1jMnPZHc3eGFiY5yGdGq2D4xlE2AojvxCB93WHMu+vKwSui0tNI5OXKUHN16equDgeXUeZPkqSxpCKq07tV7YDbhLfdGH16J9mWvLqmDJWhzGsBx09s2WAR4AJFAzOrW+xFGdCFqrz3eJWLMPj5ZJPf6Zz1OT9vi2GG9/28rfo20We101MJOSw+y1qWXSkCzQiUlMvv3QimMeL0mMUfk/2eYJr7QMUzdX64ZPhi0RY3wM/Q4wrfiwvVpospfyZOh6yiPhU0hg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Qa9qGzd4f67WtUpq1M7yG8u8qe9Yy9BZe6DqeXmZ8FA=;
- b=Cn2YRaCrIrin9e2vGl0bilW0FvY4+/hicKlK7yzrKVi6awcVoV0DqegAgSR3LBy1U4q0C2JnfOZxpA2DdnyNYdUyFH1tfLVHOUioyGtDLCtvMuX3daXupBemNDYgE9XBHk9NCJ0L/J9/pQvjUemPaIz2WtLXHIXbS28Tf8TzwEAamfbz7eOVVbSIal3kO0KU7lf77BVJE18xB6j1DdCU3eagsZDdLEP3hJ3xU8zaiGoXw4jkoB8596o8Dfne5TtMuDOaz8OfwKAPHrMpZO9B8c1aXs/QurZtXoAeYNMOnpW5Obl+iDBx7vih6n6vE+bKI84Qy3xKcgiQu3WuiUhXdQ==
+ bh=kF5LZWyAiNqLqtvx7E6KrWBu6pECVjNrZrovtybdqYg=;
+ b=GjfVV5OMAwiBuJ1XqIYR4vLZyVYEemIs+8nR1+f1ZF/YP55bNioypa0CkPikhpg+/No8/mnHBMAsrzx3DficgijhdAA5NKsnM82kGrBxwMt5XmynBeM9TsAOiBgFxSObIomF6mb/R5pQwUu8TUOPuasz6HeEcyHq7rOTSdZCuHwPKjNbJVPRRZN4iVbWgr3V9xYfPMeqIXgSdIvuRnYfdMqwdAbajK6iy5rDlhwHSN6TBjwkkrKVRrpN6rb3/vQKka0R/qSBGfjewOgQaOQxATW7EOIO+AWTXZML+xvgOOim9r5oXFXc61jf8mO65+FYosdeoudTblX8HYLrmx/KFg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qa9qGzd4f67WtUpq1M7yG8u8qe9Yy9BZe6DqeXmZ8FA=;
- b=pf2W+TG0b6qDFYJAS+O9dypfwQiq42TjgBcyJNb6WBHUgxkMDHv20YEtsghPFJg/BJArNtMAIA4mDV7VluW/6Nbn19lvaffJWn50wWWYj6TiC31sx0MVSKRMX0Sl4LfUxe/yfcvGsQ+DK0EOeRBYw8MwFKua4adEJrTv2rp/A9g=
-Received: from BL0PR0102CA0064.prod.exchangelabs.com (2603:10b6:208:25::41) by
- MW4PR12MB7239.namprd12.prod.outlook.com (2603:10b6:303:228::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7519.22; Wed, 24 Apr 2024 15:58:54 +0000
-Received: from MN1PEPF0000F0E5.namprd04.prod.outlook.com
- (2603:10b6:208:25:cafe::23) by BL0PR0102CA0064.outlook.office365.com
- (2603:10b6:208:25::41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.33 via Frontend
- Transport; Wed, 24 Apr 2024 15:58:54 +0000
+ bh=kF5LZWyAiNqLqtvx7E6KrWBu6pECVjNrZrovtybdqYg=;
+ b=HSK7HZJ/nHElEewBALuDtHDsLjfs/4RkC7b9PcRenUl3tkbpYFTJ24MHoP6s23HznW5yfSVuGL8ETtHcCnFnz5NyJKLyi6GZjGmfFNXQukqBXy5OFmZ5Sogy50kYAr121Z4BQLryJN2TpR2VIxfUJGFAQyQlJ9zKHHjkNsgHwl4=
+Received: from MN2PR22CA0021.namprd22.prod.outlook.com (2603:10b6:208:238::26)
+ by SJ2PR12MB8064.namprd12.prod.outlook.com (2603:10b6:a03:4cc::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.23; Wed, 24 Apr
+ 2024 15:59:03 +0000
+Received: from MN1PEPF0000F0E2.namprd04.prod.outlook.com
+ (2603:10b6:208:238:cafe::55) by MN2PR22CA0021.outlook.office365.com
+ (2603:10b6:208:238::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22 via Frontend
+ Transport; Wed, 24 Apr 2024 15:59:02 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -61,13 +62,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MN1PEPF0000F0E5.mail.protection.outlook.com (10.167.242.43) with Microsoft
+ MN1PEPF0000F0E2.mail.protection.outlook.com (10.167.242.40) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7519.19 via Frontend Transport; Wed, 24 Apr 2024 15:58:54 +0000
+ 15.20.7519.19 via Frontend Transport; Wed, 24 Apr 2024 15:59:02 +0000
 Received: from tlendack-t1.amdoffice.net (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Apr 2024 10:58:53 -0500
+ 15.1.2507.35; Wed, 24 Apr 2024 10:59:00 -0500
 From: Tom Lendacky <thomas.lendacky@amd.com>
 To: <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
 	<linux-coco@lists.linux.dev>, <svsm-devel@coconut-svsm.dev>
@@ -76,9 +77,9 @@ CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
 	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, "Peter
  Zijlstra" <peterz@infradead.org>, Dan Williams <dan.j.williams@intel.com>,
 	Michael Roth <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>
-Subject: [PATCH v4 04/15] x86/sev: Check for the presence of an SVSM in the SNP Secrets page
-Date: Wed, 24 Apr 2024 10:58:00 -0500
-Message-ID: <6cf54cac47f212f4c2b59b123855d8c183989022.1713974291.git.thomas.lendacky@amd.com>
+Subject: [PATCH v4 05/15] x86/sev: Use kernel provided SVSM Calling Areas
+Date: Wed, 24 Apr 2024 10:58:01 -0500
+Message-ID: <07266b47e749267ef9a9ccbc9e8e9df78ed54857.1713974291.git.thomas.lendacky@amd.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <cover.1713974291.git.thomas.lendacky@amd.com>
 References: <cover.1713974291.git.thomas.lendacky@amd.com>
@@ -94,273 +95,498 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E5:EE_|MW4PR12MB7239:EE_
-X-MS-Office365-Filtering-Correlation-Id: 84658c38-b411-4e66-2d21-08dc64777151
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E2:EE_|SJ2PR12MB8064:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7f98f65f-f5b0-40e6-8e2e-08dc64777640
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|82310400014|376005|1800799015|7416005|36860700004;
+	BCL:0;ARA:13230031|376005|1800799015|82310400014|7416005|36860700004;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?PmGNqMO3veAitb+XPlMp5UVOCyeNq5T0n0WuDUVOIz4IOetlY0UZHcw4nCMy?=
- =?us-ascii?Q?35e8rMErkRvJ/EQYdS9RchM4Zj2FLq0W7QjGgMdC5cLPZCi4PGuu7QBWogkn?=
- =?us-ascii?Q?I66zD4gDvqRzv1R4Entd+kprQ9uMYrAYnPKd2KItTSp0GihcVa1ADoDe1ZSP?=
- =?us-ascii?Q?oV+1aSDXfka5TZD1kOFBAQUs5ZjUcL3VLO2E51SkGI0c+lqt8+Qd25VPWkQD?=
- =?us-ascii?Q?Lckw2xNmDgo971wXxzSYkXVh22JF0I4BuTldmPjNKRtFdipuXqNDMkbOhRkh?=
- =?us-ascii?Q?XYArAVAEunxZgd64b3eJqZi/zHLiI2VduGZauMWWExN37/cmYEL2MvzkMoXM?=
- =?us-ascii?Q?dQ+qYsMHKXW83w0mCM35f/80lJDZhNyN3ZW5mJYsnhTtNh7porOQxveN59Dz?=
- =?us-ascii?Q?tym76HRPc/wggxNfXFkv1fckc5D7Da+HMAiwN9IJzWi3FdzMQnhnmJzWoSWQ?=
- =?us-ascii?Q?uvTW2PX+XKMSaPO7sg0EKKEl1GgyeuocjDiybWnD4kggMWCvguRTcl6Y7n4S?=
- =?us-ascii?Q?S0tlMlVtityIVN3EhlDoJ9ODF3UZybo1+BrHXTWfbcDaPIqLHVlaK0ENHIpW?=
- =?us-ascii?Q?0Fe1JAI9hV6gxABSqg7hlw342tTxC5t1iT4HWksvGjJxegvjj+4w33je+HuR?=
- =?us-ascii?Q?MkpRcQVrVeTu1LX5sQ8qQgoEu13oyTispq1AhI26oVZB6CAEiBMnld60J/Jh?=
- =?us-ascii?Q?ztLMp0DYLvADDbLxmFjlvApeFMoJHswJkTbrBOBXN0HTtPP1awIXEoS8F5yG?=
- =?us-ascii?Q?takVZK+bJTzIhofkE19qJNu220EWHktrxGPT+v4Ucmsve8y7jhlsoTvmWSKg?=
- =?us-ascii?Q?M5aGi8qn16E5UUYcMyeB+WxSpIk4xO/1amxEUG3kgvmPFEYorS/jRhZGjCu+?=
- =?us-ascii?Q?Lrhnk9bkDn0JufccSBAznARufxhXeUnY8ePkRDg5LcaUL2ak0h0DyOUfR/Nx?=
- =?us-ascii?Q?g3Uuwnffq++MDojNkEP4DLvEWwg/5J4QIQrPm+WMt71KRzJPh2F2xVe+cC5E?=
- =?us-ascii?Q?fYjcxzNhSvHkKhKPLNfqGYRI1n2QGSMkdIdxFAVvchdaj1UwVHw2u5q2vLk3?=
- =?us-ascii?Q?ilS38sgv8qbsdDWI3he0zF1fXT/PcF11BVyu5GstBsSwFsLihASEzsL5MOIW?=
- =?us-ascii?Q?85zHKEYXCTbr7+wi7v33f8SHY6bdGTpekz1RVf+g5l8xa5WGJG0zwwqv+kGg?=
- =?us-ascii?Q?iNvW89MJTBgeDrF74yjTzBcJiKx0J2X8tt9yzYgxtqDqyOlhtIEvGeBupMUH?=
- =?us-ascii?Q?G3M5C+UaxLGIfx0b362GTSoVwlR+jo5kIvylQqvWbmpht57HVwjgFxbkGlNs?=
- =?us-ascii?Q?IsPlFEeOiw5DUqDl5sxq7YdnIhyqIY/Wav6ynlNBFnA148b4xWNK0XnANc/1?=
- =?us-ascii?Q?tHFqL8w/pwHlwG7OJauxwe5Mrwsx?=
+	=?us-ascii?Q?9PrZQq4VJQ2LyKvfb9OyjJrK8/VDvb0vdnB4K52Lkn6xwG9gj1tmh8VDVwji?=
+ =?us-ascii?Q?TKKD/qm95u7L3LrmmexK9dYiS3Stot8qSEEgIV5PjgNJc0z9HOMpdjQi6y1Z?=
+ =?us-ascii?Q?4x6k3NSIsopiyVNjTI41NkrD7oN/7rzn0F77Go7z9RNinjR4Dt/A6cuhFstY?=
+ =?us-ascii?Q?7vHYx7VhQG8RM5HZvT8zoD3TEUBkfAEOHDZP+LptceVRPyflcNTRAav9caDC?=
+ =?us-ascii?Q?pkTnHB9X5RSSi5kzAlfdyeIYp65iakOvzHFJwRyE5iXSK9hQdoDuoBA/kIXh?=
+ =?us-ascii?Q?peB3JIb6c+2KBhH8R/IoAzbFbGJVyrbdQSeK6bmA/5KYvQBOYvPNBoJMs+0b?=
+ =?us-ascii?Q?t45RfKTNcsSSaFv8XO2JrMIpBvHjzYFhj/xUvVNH/HmqruezXWM0AZFw7fWQ?=
+ =?us-ascii?Q?49q//bPmmNWOuP4pbsCUq0oIGgbBGOif5GJmDU8YhPuPbuybIIuSTO3xFXzt?=
+ =?us-ascii?Q?sslvXxa61ee4fph+gODezjklQ0sK9wX3iJn3jpQ9jD9ZEPv/c2zJvyCM5AWL?=
+ =?us-ascii?Q?o0yf1PxBD+1nNwFOUqFcU3ZU2XQAPfRV+AreoHZdXE+w62v9n6d2duDQgZh3?=
+ =?us-ascii?Q?Hcid8Tgp1H2ObgIe7D990TihkHWVQ7oUWM9S2dLMnY7e3BEsQQvlhZzW88fn?=
+ =?us-ascii?Q?X/PZOZLUMyfii/kWTWfsu1Y/Aan0G1WzC99DPwrw2T8ijmXU7iFA0h7x/Iq6?=
+ =?us-ascii?Q?uK0hdUOioT4JqheunbDKpKofVvab85tOIU/2XTGMBBpF+IYVuPAYoVxsys2a?=
+ =?us-ascii?Q?s83+wfZRMtYkdIanr1h43wQUniohswAvp87F/nmFknBn6vh8/mESoWmf6rZ+?=
+ =?us-ascii?Q?gaH4KrWHOpz1FZF0KEHEt2lyRjQG2w736ASAZIbU2//Wg/F0hQTpVV3grVrG?=
+ =?us-ascii?Q?R+FtMPHUphNBU4vhmxR7dQD/0L01bykPNyzQO6Sez6v62YgI5B3a+dcELjM4?=
+ =?us-ascii?Q?CoElxE38/IrF1QUZk7P5ZKYsycPLgBpIbO9YgWG4W9S/YBOWFsfk4RhaneKm?=
+ =?us-ascii?Q?8i8EojRewdJi0KDR3NXtVTLgo2KHcbbApHUokkHVXoP2wtgGJZ/x6b6JhSLK?=
+ =?us-ascii?Q?XYUM6r+quf2wJfR4lzLQpZvTijlEj3tsMlXCuwiCgyXQnNCIyu/1I7hJVbfc?=
+ =?us-ascii?Q?v2AZZyFDGy1ga3QDTlpsAsdcXcHj0uFkaluneo7H396Kq0sh9jniCCQcNa0I?=
+ =?us-ascii?Q?e6sk1+6R7OzA7gHKsgQmlEYAE/WqHXmahbPVZcwb/SK6Ti8Vq5UACmMYVzSf?=
+ =?us-ascii?Q?V/C7c7qF4NKV4MhuaVrepYwaTPZvaCf+NPIUgYkvBIDJoKrDf4+KRs4ZuJh6?=
+ =?us-ascii?Q?N3BdrDwuFP1HYkl7w8OMzOpd0SHIbsN2LNjWrZlLdEkVdXi7JXU5ccgh8kTo?=
+ =?us-ascii?Q?/s3QkH6RWwZe53ML9y/p8Cst1Iu5?=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(376005)(1800799015)(7416005)(36860700004);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(1800799015)(82310400014)(7416005)(36860700004);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 15:58:54.4330
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2024 15:59:02.7127
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84658c38-b411-4e66-2d21-08dc64777151
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f98f65f-f5b0-40e6-8e2e-08dc64777640
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000F0E5.namprd04.prod.outlook.com
+	MN1PEPF0000F0E2.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7239
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8064
 
-During early boot phases, check for the presence of an SVSM when running
-as an SEV-SNP guest.
+The SVSM Calling Area (CA) is used to communicate between Linux and the
+SVSM. Since the firmware supplied CA for the BSP is likely to be in
+reserved memory, switch off that CA to a kernel provided CA so that access
+and use of the CA is available during boot. The CA switch is done using
+the SVSM core protocol SVSM_CORE_REMAP_CA call.
 
-An SVSM is present if not running at VMPL0 and the 64-bit value at offset
-0x148 into the secrets page is non-zero. If an SVSM is present, save the
-SVSM Calling Area address (CAA), located at offset 0x150 into the secrets
-page, and set the VMPL level of the guest, which should be non-zero, to
-indicate the presence of an SVSM.
+An SVSM call is executed by filling out the SVSM CA and setting the proper
+register state as documented by the SVSM protocol. The SVSM is invoked by
+by requesting the hypervisor to run VMPL0.
+
+Once it is safe to allocate/reserve memory, allocate a CA for each CPU.
+After allocating the new CAs, the BSP will switch from the boot CA to the
+per-CPU CA. The CA for an AP is identified to the SVSM when creating the
+VMSA in preparation for booting the AP.
 
 Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
 ---
- .../arch/x86/amd-memory-encryption.rst        | 22 ++++++
- arch/x86/boot/compressed/sev.c                |  8 +++
- arch/x86/include/asm/sev-common.h             |  4 ++
- arch/x86/include/asm/sev.h                    | 25 ++++++-
- arch/x86/kernel/sev-shared.c                  | 70 +++++++++++++++++++
- arch/x86/kernel/sev.c                         |  7 ++
- 6 files changed, 135 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/sev-common.h |  13 ++
+ arch/x86/include/asm/sev.h        |  32 +++++
+ arch/x86/include/uapi/asm/svm.h   |   1 +
+ arch/x86/kernel/sev-shared.c      |  94 +++++++++++++-
+ arch/x86/kernel/sev.c             | 207 +++++++++++++++++++++++++-----
+ arch/x86/mm/mem_encrypt_amd.c     |   8 +-
+ 6 files changed, 320 insertions(+), 35 deletions(-)
 
-diff --git a/Documentation/arch/x86/amd-memory-encryption.rst b/Documentation/arch/x86/amd-memory-encryption.rst
-index 414bc7402ae7..32737718d4a2 100644
---- a/Documentation/arch/x86/amd-memory-encryption.rst
-+++ b/Documentation/arch/x86/amd-memory-encryption.rst
-@@ -130,4 +130,26 @@ SNP feature support.
- 
- More details in AMD64 APM[1] Vol 2: 15.34.10 SEV_STATUS MSR
- 
-+Secure VM Service Module (SVSM)
-+===============================
-+
-+SNP provides a feature called Virtual Machine Privilege Levels (VMPL). The most
-+privileged VMPL is 0 with numerically higher numbers having lesser privileges.
-+More details in AMD64 APM[1] Vol 2: 15.35.7 Virtual Machine Privilege Levels.
-+
-+The VMPL feature provides the ability to run software services at a more
-+privileged level than the guest OS is running at. This provides a secure
-+environment for services within the guest's SNP environment, while protecting
-+the service from hypervisor interference. An example of a secure service
-+would be a virtual TPM (vTPM). Additionally, certain operations require the
-+guest to be running at VMPL0 in order for them to be performed. For example,
-+the PVALIDATE instruction is required to be executed at VMPL0.
-+
-+When a guest is not running at VMPL0, it needs to communicate with the software
-+running at VMPL0 to perform privileged operations or to interact with secure
-+services. This software running at VMPL0 is known as a Secure VM Service Module
-+(SVSM). Discovery of an SVSM and the API used to communicate with it is
-+documented in Secure VM Service Module for SEV-SNP Guests[2].
-+
- [1] https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/programmer-references/24593.pdf
-+[2] https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58019.pdf
-diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
-index 0457a9d7e515..cb771b380a6b 100644
---- a/arch/x86/boot/compressed/sev.c
-+++ b/arch/x86/boot/compressed/sev.c
-@@ -12,6 +12,7 @@
-  */
- #include "misc.h"
- 
-+#include <linux/mm.h>
- #include <asm/bootparam.h>
- #include <asm/pgtable_types.h>
- #include <asm/sev.h>
-@@ -462,6 +463,13 @@ static bool early_snp_init(struct boot_params *bp)
- 	 */
- 	setup_cpuid_table(cc_info);
- 
-+	/*
-+	 * Record the SVSM Calling Area (CA) address if the guest is not
-+	 * running at VMPL0. The CA will be used to communicate with the
-+	 * SVSM to perform the SVSM services.
-+	 */
-+	setup_svsm_ca(cc_info);
-+
- 	/*
- 	 * Pass run-time kernel a pointer to CC info via boot_params so EFI
- 	 * config table doesn't need to be searched again during early startup
 diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
-index b463fcbd4b90..1225744a069b 100644
+index 1225744a069b..4cc716660d4b 100644
 --- a/arch/x86/include/asm/sev-common.h
 +++ b/arch/x86/include/asm/sev-common.h
-@@ -159,6 +159,10 @@ struct snp_psc_desc {
- #define GHCB_TERM_NOT_VMPL0		3	/* SNP guest is not running at VMPL-0 */
- #define GHCB_TERM_CPUID			4	/* CPUID-validation failure */
- #define GHCB_TERM_CPUID_HV		5	/* CPUID failure during hypervisor fallback */
-+#define GHCB_TERM_SECRETS_PAGE		6	/* Secrets page failure */
-+#define GHCB_TERM_NO_SVSM		7	/* SVSM is not advertised in the secrets page */
-+#define GHCB_TERM_SVSM_VMPL0		8	/* SVSM is present but has set VMPL to 0 */
-+#define GHCB_TERM_SVSM_CAA		9	/* SVSM is present but CAA is not page aligned */
+@@ -96,6 +96,19 @@ enum psc_op {
+ 	/* GHCBData[63:32] */				\
+ 	(((u64)(val) & GENMASK_ULL(63, 32)) >> 32)
  
- #define GHCB_RESP_CODE(v)		((v) & GHCB_MSR_INFO_MASK)
- 
++/* GHCB Run at VMPL Request/Response */
++#define GHCB_MSR_VMPL_REQ		0x016
++#define GHCB_MSR_VMPL_REQ_LEVEL(v)			\
++	/* GHCBData[39:32] */				\
++	(((u64)(v) & GENMASK_ULL(7, 0) << 32) |		\
++	/* GHCBDdata[11:0] */				\
++	GHCB_MSR_VMPL_REQ)
++
++#define GHCB_MSR_VMPL_RESP		0x017
++#define GHCB_MSR_VMPL_RESP_VAL(v)			\
++	/* GHCBData[63:32] */				\
++	(((u64)(v) & GENMASK_ULL(63, 32)) >> 32)
++
+ /* GHCB Hypervisor Feature Request/Response */
+ #define GHCB_MSR_HV_FT_REQ		0x080
+ #define GHCB_MSR_HV_FT_RESP		0x081
 diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-index 48bc397db649..56f7d843f7a4 100644
+index 56f7d843f7a4..8f180fd3cbf0 100644
 --- a/arch/x86/include/asm/sev.h
 +++ b/arch/x86/include/asm/sev.h
-@@ -152,9 +152,32 @@ struct snp_secrets_page {
- 	u8 vmpck2[VMPCK_KEY_LEN];
- 	u8 vmpck3[VMPCK_KEY_LEN];
- 	struct secrets_os_area os_area;
--	u8 rsvd3[3840];
-+
-+	u8 vmsa_tweak_bitmap[64];
-+
-+	/* SVSM fields */
-+	u64 svsm_base;
-+	u64 svsm_size;
-+	u64 svsm_caa;
-+	u32 svsm_max_version;
-+	u8 svsm_guest_vmpl;
-+	u8 rsvd3[3];
-+
-+	/* Remainder of page */
-+	u8 rsvd4[3744];
- } __packed;
+@@ -178,6 +178,36 @@ struct svsm_ca {
+ 	u8 svsm_buffer[PAGE_SIZE - 8];
+ };
  
-+/*
-+ * The SVSM Calling Area (CA) related structures.
-+ */
-+struct svsm_ca {
-+	u8 call_pending;
-+	u8 mem_available;
-+	u8 rsvd1[6];
++#define SVSM_SUCCESS				0
++#define SVSM_ERR_INCOMPLETE			0x80000000
++#define SVSM_ERR_UNSUPPORTED_PROTOCOL		0x80000001
++#define SVSM_ERR_UNSUPPORTED_CALL		0x80000002
++#define SVSM_ERR_INVALID_ADDRESS		0x80000003
++#define SVSM_ERR_INVALID_FORMAT			0x80000004
++#define SVSM_ERR_INVALID_PARAMETER		0x80000005
++#define SVSM_ERR_INVALID_REQUEST		0x80000006
++#define SVSM_ERR_BUSY				0x80000007
 +
-+	u8 svsm_buffer[PAGE_SIZE - 8];
++/*
++ * SVSM protocol structure
++ */
++struct svsm_call {
++	struct svsm_ca *caa;
++	u64 rax;
++	u64 rcx;
++	u64 rdx;
++	u64 r8;
++	u64 r9;
++	u64 rax_out;
++	u64 rcx_out;
++	u64 rdx_out;
++	u64 r8_out;
++	u64 r9_out;
 +};
++
++#define SVSM_CORE_CALL(x)		((0ULL << 32) | (x))
++#define SVSM_CORE_REMAP_CA		0
 +
  #ifdef CONFIG_AMD_MEM_ENCRYPT
  extern void __sev_es_ist_enter(struct pt_regs *regs);
  extern void __sev_es_ist_exit(void);
-diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-index b4f8fa0f722c..46ea4e5e118a 100644
---- a/arch/x86/kernel/sev-shared.c
-+++ b/arch/x86/kernel/sev-shared.c
-@@ -23,6 +23,21 @@
- #define sev_printk_rtl(fmt, ...)
+@@ -252,6 +282,7 @@ void snp_accept_memory(phys_addr_t start, phys_addr_t end);
+ u64 snp_get_unsupported_features(u64 status);
+ u64 sev_get_status(void);
+ void sev_show_status(void);
++void snp_remap_svsm_ca(void);
+ #else
+ static inline void sev_es_ist_enter(struct pt_regs *regs) { }
+ static inline void sev_es_ist_exit(void) { }
+@@ -281,6 +312,7 @@ static inline void snp_accept_memory(phys_addr_t start, phys_addr_t end) { }
+ static inline u64 snp_get_unsupported_features(u64 status) { return 0; }
+ static inline u64 sev_get_status(void) { return 0; }
+ static inline void sev_show_status(void) { }
++static inline void snp_remap_svsm_ca(void) { }
  #endif
  
-+/*
-+ * SVSM related information:
-+ *   When running under an SVSM, the VMPL that Linux is executing at must be
-+ *   non-zero. The VMPL is therefore used to indicate the presence of an SVSM.
-+ *
-+ *   During boot, the page tables are set up as identity mapped and later
-+ *   changed to use kernel virtual addresses. Maintain separate virtual and
-+ *   physical addresses for the CAA to allow SVSM functions to be used during
-+ *   early boot, both with identity mapped virtual addresses and proper kernel
-+ *   virtual addresses.
-+ */
-+static u8 vmpl __ro_after_init;
-+static struct svsm_ca *boot_svsm_caa __ro_after_init;
-+static u64 boot_svsm_caa_pa __ro_after_init;
-+
- /* I/O parameters for CPUID-related helpers */
- struct cpuid_leaf {
- 	u32 fn;
-@@ -1269,3 +1284,58 @@ static enum es_result vc_check_opcode_bytes(struct es_em_ctxt *ctxt,
+ #ifdef CONFIG_KVM_AMD_SEV
+diff --git a/arch/x86/include/uapi/asm/svm.h b/arch/x86/include/uapi/asm/svm.h
+index 80e1df482337..1814b413fd57 100644
+--- a/arch/x86/include/uapi/asm/svm.h
++++ b/arch/x86/include/uapi/asm/svm.h
+@@ -115,6 +115,7 @@
+ #define SVM_VMGEXIT_AP_CREATE_ON_INIT		0
+ #define SVM_VMGEXIT_AP_CREATE			1
+ #define SVM_VMGEXIT_AP_DESTROY			2
++#define SVM_VMGEXIT_SNP_RUN_VMPL		0x80000018
+ #define SVM_VMGEXIT_HV_FEATURES			0x8000fffd
+ #define SVM_VMGEXIT_TERM_REQUEST		0x8000fffe
+ #define SVM_VMGEXIT_TERM_REASON(reason_set, reason_code)	\
+diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+index 46ea4e5e118a..6f57eb804e70 100644
+--- a/arch/x86/kernel/sev-shared.c
++++ b/arch/x86/kernel/sev-shared.c
+@@ -18,9 +18,11 @@
+ #define sev_printk_rtl(fmt, ...)	printk_ratelimited(fmt, ##__VA_ARGS__)
+ #else
+ #undef WARN
+-#define WARN(condition, format...) (!!(condition))
++#define WARN(condition, format...)	(!!(condition))
+ #define sev_printk(fmt, ...)
+ #define sev_printk_rtl(fmt, ...)
++#undef vc_forward_exception
++#define vc_forward_exception(c)		panic("SNP: Hypervisor requested exception\n")
+ #endif
  
- 	return ES_UNSUPPORTED;
+ /*
+@@ -244,6 +246,96 @@ static enum es_result verify_exception_info(struct ghcb *ghcb, struct es_em_ctxt
+ 	return ES_VMM_ERROR;
  }
-+
-+/*
-+ * Maintain the GPA of the SVSM Calling Area (CA) in order to utilize the SVSM
-+ * services needed when not running in VMPL0.
-+ */
-+static void __head setup_svsm_ca(const struct cc_blob_sev_info *cc_info)
+ 
++static __always_inline void issue_svsm_call(struct svsm_call *call, u8 *pending)
 +{
-+	struct snp_secrets_page *secrets_page;
-+	u64 caa;
-+
-+	BUILD_BUG_ON(sizeof(*secrets_page) != PAGE_SIZE);
-+
 +	/*
-+	 * RMPADJUST modifies RMP permissions of a lesser-privileged (numerically
-+	 * higher) privilege level. Here, clear the VMPL1 permission mask of the
-+	 * GHCB page. If the guest is not running at VMPL0, this will fail.
-+	 *
-+	 * If the guest is running at VMPL0, it will succeed. Even if that operation
-+	 * modifies permission bits, it is still ok to do so currently because Linux
-+	 * SNP guests running at VMPL0 only run at VMPL0, so VMPL1 or higher
-+	 * permission mask changes are a don't-care.
-+	 *
-+	 * Use __pa() since this routine is running identity mapped when called,
-+	 * both by the decompressor code and the early kernel code.
++	 * Issue the VMGEXIT to run the SVSM:
++	 *   - Load the SVSM register state (RAX, RCX, RDX, R8 and R9)
++	 *   - Set the CA call pending field to 1
++	 *   - Issue VMGEXIT
++	 *   - Save the SVSM return register state (RAX, RCX, RDX, R8 and R9)
++	 *   - Perform atomic exchange of the CA call pending field
 +	 */
-+	if (!rmpadjust((unsigned long)__pa(&boot_ghcb_page), RMP_PG_SIZE_4K, 1))
-+		return;
-+
-+	/*
-+	 * Not running at VMPL0, ensure everything has been properly supplied
-+	 * for running under an SVSM.
-+	 */
-+	if (!cc_info || !cc_info->secrets_phys || cc_info->secrets_len != PAGE_SIZE)
-+		sev_es_terminate(SEV_TERM_SET_LINUX, GHCB_TERM_SECRETS_PAGE);
-+
-+	secrets_page = (struct snp_secrets_page *)cc_info->secrets_phys;
-+	if (!secrets_page->svsm_size)
-+		sev_es_terminate(SEV_TERM_SET_LINUX, GHCB_TERM_NO_SVSM);
-+
-+	if (!secrets_page->svsm_guest_vmpl)
-+		sev_es_terminate(SEV_TERM_SET_LINUX, GHCB_TERM_SVSM_VMPL0);
-+
-+	vmpl = secrets_page->svsm_guest_vmpl;
-+
-+	caa = secrets_page->svsm_caa;
-+	if (!PAGE_ALIGNED(caa))
-+		sev_es_terminate(SEV_TERM_SET_LINUX, GHCB_TERM_SVSM_CAA);
-+
-+	/*
-+	 * The CA is identity mapped when this routine is called, both by the
-+	 * decompressor code and the early kernel code.
-+	 */
-+	boot_svsm_caa = (struct svsm_ca *)caa;
-+	boot_svsm_caa_pa = caa;
++	asm volatile("mov %9, %%r8\n\t"
++		     "mov %10, %%r9\n\t"
++		     "movb $1, %11\n\t"
++		     "rep; vmmcall\n\t"
++		     "mov %%r8, %3\n\t"
++		     "mov %%r9, %4\n\t"
++		     "xchgb %5, %11\n\t"
++		     : "=a" (call->rax_out), "=c" (call->rcx_out), "=d" (call->rdx_out),
++		       "=m" (call->r8_out), "=m" (call->r9_out),
++		       "+r" (*pending)
++		     : "a" (call->rax), "c" (call->rcx), "d" (call->rdx),
++		       "r" (call->r8), "r" (call->r9),
++		       "m" (call->caa->call_pending)
++		     : "r8", "r9", "memory");
 +}
++
++static int __svsm_msr_protocol(struct svsm_call *call)
++{
++	u64 val, resp;
++	u8 pending;
++
++	val = sev_es_rd_ghcb_msr();
++
++	sev_es_wr_ghcb_msr(GHCB_MSR_VMPL_REQ_LEVEL(0));
++
++	pending = 0;
++	issue_svsm_call(call, &pending);
++
++	resp = sev_es_rd_ghcb_msr();
++
++	sev_es_wr_ghcb_msr(val);
++
++	if (pending)
++		return -EINVAL;
++
++	if (GHCB_RESP_CODE(resp) != GHCB_MSR_VMPL_RESP)
++		return -EINVAL;
++
++	if (GHCB_MSR_VMPL_RESP_VAL(resp) != 0)
++		return -EINVAL;
++
++	return call->rax_out;
++}
++
++static int __svsm_ghcb_protocol(struct ghcb *ghcb, struct svsm_call *call)
++{
++	struct es_em_ctxt ctxt;
++	u8 pending;
++
++	vc_ghcb_invalidate(ghcb);
++
++	/* Fill in protocol and format specifiers */
++	ghcb->protocol_version = ghcb_version;
++	ghcb->ghcb_usage       = GHCB_DEFAULT_USAGE;
++
++	ghcb_set_sw_exit_code(ghcb, SVM_VMGEXIT_SNP_RUN_VMPL);
++	ghcb_set_sw_exit_info_1(ghcb, 0);
++	ghcb_set_sw_exit_info_2(ghcb, 0);
++
++	sev_es_wr_ghcb_msr(__pa(ghcb));
++
++	pending = 0;
++	issue_svsm_call(call, &pending);
++
++	if (pending)
++		return -EINVAL;
++
++	switch (verify_exception_info(ghcb, &ctxt)) {
++	case ES_OK:
++		break;
++	case ES_EXCEPTION:
++		vc_forward_exception(&ctxt);
++		fallthrough;
++	default:
++		return -EINVAL;
++	}
++
++	return call->rax_out;
++}
++
+ static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
+ 					  struct es_em_ctxt *ctxt,
+ 					  u64 exit_code, u64 exit_info_1,
 diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 6949fbccec40..a500df807e79 100644
+index a500df807e79..21f3cc40d662 100644
 --- a/arch/x86/kernel/sev.c
 +++ b/arch/x86/kernel/sev.c
-@@ -2108,6 +2108,13 @@ bool __head snp_init(struct boot_params *bp)
+@@ -133,8 +133,13 @@ struct ghcb_state {
+ 	struct ghcb *ghcb;
+ };
  
- 	setup_cpuid_table(cc_info);
++/* For early boot SVSM communication */
++static struct svsm_ca boot_svsm_ca_page __aligned(PAGE_SIZE);
++
+ static DEFINE_PER_CPU(struct sev_es_runtime_data*, runtime_data);
+ static DEFINE_PER_CPU(struct sev_es_save_area *, sev_vmsa);
++static DEFINE_PER_CPU(struct svsm_ca *, svsm_caa);
++static DEFINE_PER_CPU(u64, svsm_caa_pa);
  
+ struct sev_config {
+ 	__u64 debug		: 1,
+@@ -150,6 +155,15 @@ struct sev_config {
+ 	       */
+ 	      ghcbs_initialized	: 1,
+ 
++	      /*
++	       * A flag used to indicate when the per-CPU SVSM CA is to be
++	       * used instead of the boot SVSM CA.
++	       *
++	       * For APs, the per-CPU SVSM CA is created as part of the AP
++	       * bringup, so this flag can be used globally for the BSP and APs.
++	       */
++	      cas_initialized	: 1,
++
+ 	      __reserved	: 62;
+ };
+ 
+@@ -572,9 +586,42 @@ static enum es_result vc_ioio_check(struct es_em_ctxt *ctxt, u16 port, size_t si
+ 	return ES_EXCEPTION;
+ }
+ 
++static __always_inline void vc_forward_exception(struct es_em_ctxt *ctxt)
++{
++	long error_code = ctxt->fi.error_code;
++	int trapnr = ctxt->fi.vector;
++
++	ctxt->regs->orig_ax = ctxt->fi.error_code;
++
++	switch (trapnr) {
++	case X86_TRAP_GP:
++		exc_general_protection(ctxt->regs, error_code);
++		break;
++	case X86_TRAP_UD:
++		exc_invalid_op(ctxt->regs);
++		break;
++	case X86_TRAP_PF:
++		write_cr2(ctxt->fi.cr2);
++		exc_page_fault(ctxt->regs, error_code);
++		break;
++	case X86_TRAP_AC:
++		exc_alignment_check(ctxt->regs, error_code);
++		break;
++	default:
++		pr_emerg("Unsupported exception in #VC instruction emulation - can't continue\n");
++		BUG();
++	}
++}
++
+ /* Include code shared with pre-decompression boot stage */
+ #include "sev-shared.c"
+ 
++static struct svsm_ca *__svsm_get_caa(void)
++{
++	return sev_cfg.cas_initialized ? this_cpu_read(svsm_caa)
++				       : boot_svsm_caa;
++}
++
+ static noinstr void __sev_put_ghcb(struct ghcb_state *state)
+ {
+ 	struct sev_es_runtime_data *data;
+@@ -600,6 +647,42 @@ static noinstr void __sev_put_ghcb(struct ghcb_state *state)
+ 	}
+ }
+ 
++static int svsm_protocol(struct svsm_call *call)
++{
++	struct ghcb_state state;
++	unsigned long flags;
++	struct ghcb *ghcb;
++	int ret;
++
++	/*
++	 * This can be called very early in the boot, use native functions in
++	 * order to avoid paravirt issues.
++	 */
++	flags = native_save_fl();
++	if (flags & X86_EFLAGS_IF)
++		native_irq_disable();
++
++	if (sev_cfg.ghcbs_initialized)
++		ghcb = __sev_get_ghcb(&state);
++	else if (boot_ghcb)
++		ghcb = boot_ghcb;
++	else
++		ghcb = NULL;
++
++	do {
++		ret = ghcb ? __svsm_ghcb_protocol(ghcb, call)
++			   : __svsm_msr_protocol(call);
++	} while (ret == SVSM_ERR_BUSY);
++
++	if (sev_cfg.ghcbs_initialized)
++		__sev_put_ghcb(&state);
++
++	if (flags & X86_EFLAGS_IF)
++		native_irq_enable();
++
++	return ret;
++}
++
+ void noinstr __sev_es_nmi_complete(void)
+ {
+ 	struct ghcb_state state;
+@@ -1346,6 +1429,18 @@ static void __init alloc_runtime_data(int cpu)
+ 		panic("Can't allocate SEV-ES runtime data");
+ 
+ 	per_cpu(runtime_data, cpu) = data;
++
++	if (vmpl) {
++		struct svsm_ca *caa;
++
++		/* Allocate the SVSM CA page if an SVSM is present */
++		caa = memblock_alloc(sizeof(*caa), PAGE_SIZE);
++		if (!caa)
++			panic("Can't allocate SVSM CA page\n");
++
++		per_cpu(svsm_caa, cpu) = caa;
++		per_cpu(svsm_caa_pa, cpu) = __pa(caa);
++	}
+ }
+ 
+ static void __init init_ghcb(int cpu)
+@@ -1395,6 +1490,31 @@ void __init sev_es_init_vc_handling(void)
+ 		init_ghcb(cpu);
+ 	}
+ 
++	/* If running under an SVSM, switch to the per-cpu CA */
++	if (vmpl) {
++		struct svsm_call call = {};
++		unsigned long flags;
++		int ret;
++
++		local_irq_save(flags);
++
++		/*
++		 * SVSM_CORE_REMAP_CA call:
++		 *   RAX = 0 (Protocol=0, CallID=0)
++		 *   RCX = New CA GPA
++		 */
++		call.caa = __svsm_get_caa();
++		call.rax = SVSM_CORE_CALL(SVSM_CORE_REMAP_CA);
++		call.rcx = this_cpu_read(svsm_caa_pa);
++		ret = svsm_protocol(&call);
++		if (ret != SVSM_SUCCESS)
++			panic("Can't remap the SVSM CA, ret=%#x (%d)\n", ret, ret);
++
++		sev_cfg.cas_initialized = true;
++
++		local_irq_restore(flags);
++	}
++
+ 	sev_es_setup_play_dead();
+ 
+ 	/* Secondary CPUs use the runtime #VC handler */
+@@ -1819,33 +1939,6 @@ static enum es_result vc_handle_exitcode(struct es_em_ctxt *ctxt,
+ 	return result;
+ }
+ 
+-static __always_inline void vc_forward_exception(struct es_em_ctxt *ctxt)
+-{
+-	long error_code = ctxt->fi.error_code;
+-	int trapnr = ctxt->fi.vector;
+-
+-	ctxt->regs->orig_ax = ctxt->fi.error_code;
+-
+-	switch (trapnr) {
+-	case X86_TRAP_GP:
+-		exc_general_protection(ctxt->regs, error_code);
+-		break;
+-	case X86_TRAP_UD:
+-		exc_invalid_op(ctxt->regs);
+-		break;
+-	case X86_TRAP_PF:
+-		write_cr2(ctxt->fi.cr2);
+-		exc_page_fault(ctxt->regs, error_code);
+-		break;
+-	case X86_TRAP_AC:
+-		exc_alignment_check(ctxt->regs, error_code);
+-		break;
+-	default:
+-		pr_emerg("Unsupported exception in #VC instruction emulation - can't continue\n");
+-		BUG();
+-	}
+-}
+-
+ static __always_inline bool is_vc2_stack(unsigned long sp)
+ {
+ 	return (sp >= __this_cpu_ist_bottom_va(VC2) && sp < __this_cpu_ist_top_va(VC2));
+@@ -2095,6 +2188,50 @@ static __head struct cc_blob_sev_info *find_cc_blob(struct boot_params *bp)
+ 	return cc_info;
+ }
+ 
++static __head void setup_svsm(struct cc_blob_sev_info *cc_info)
++{
++	struct svsm_call call = {};
++	int ret;
++	u64 pa;
++
 +	/*
 +	 * Record the SVSM Calling Area address (CAA) if the guest is not
 +	 * running at VMPL0. The CA will be used to communicate with the
@@ -368,9 +594,93 @@ index 6949fbccec40..a500df807e79 100644
 +	 */
 +	setup_svsm_ca(cc_info);
 +
++	/* Nothing to do if not running under an SVSM. */
++	if (!vmpl)
++		return;
++
++	/*
++	 * It is very early in the boot and the kernel is running identity
++	 * mapped but without having adjusted the pagetables to where the
++	 * kernel was loaded (physbase), so the get the CA address using
++	 * RIP-relative addressing.
++	 */
++	pa = (u64)&RIP_REL_REF(boot_svsm_ca_page);
++
++	/*
++	 * Switch over to the boot SVSM CA while the current CA is still
++	 * addressable. There is no GHCB at this point so use the MSR protocol.
++	 *
++	 * SVSM_CORE_REMAP_CA call:
++	 *   RAX = 0 (Protocol=0, CallID=0)
++	 *   RCX = New CA GPA
++	 */
++	call.caa = __svsm_get_caa();
++	call.rax = SVSM_CORE_CALL(SVSM_CORE_REMAP_CA);
++	call.rcx = pa;
++	ret = svsm_protocol(&call);
++	if (ret != SVSM_SUCCESS)
++		panic("Can't remap the SVSM CA, ret=%#x (%d)\n", ret, ret);
++
++	boot_svsm_caa = (struct svsm_ca *)pa;
++	boot_svsm_caa_pa = pa;
++}
++
+ bool __head snp_init(struct boot_params *bp)
+ {
+ 	struct cc_blob_sev_info *cc_info;
+@@ -2108,12 +2245,7 @@ bool __head snp_init(struct boot_params *bp)
+ 
+ 	setup_cpuid_table(cc_info);
+ 
+-	/*
+-	 * Record the SVSM Calling Area address (CAA) if the guest is not
+-	 * running at VMPL0. The CA will be used to communicate with the
+-	 * SVSM to perform the SVSM services.
+-	 */
+-	setup_svsm_ca(cc_info);
++	setup_svsm(cc_info);
+ 
  	/*
  	 * The CC blob will be used later to access the secrets page. Cache
- 	 * it here like the boot kernel does.
+@@ -2306,3 +2438,12 @@ void sev_show_status(void)
+ 	}
+ 	pr_cont("\n");
+ }
++
++void __init snp_remap_svsm_ca(void)
++{
++	if (!vmpl)
++		return;
++
++	/* Update the CAA to a proper kernel address */
++	boot_svsm_caa = &boot_svsm_ca_page;
++}
+diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.c
+index 422602f6039b..6155020e4d2d 100644
+--- a/arch/x86/mm/mem_encrypt_amd.c
++++ b/arch/x86/mm/mem_encrypt_amd.c
+@@ -2,7 +2,7 @@
+ /*
+  * AMD Memory Encryption Support
+  *
+- * Copyright (C) 2016 Advanced Micro Devices, Inc.
++ * Copyright (C) 2016-2024 Advanced Micro Devices, Inc.
+  *
+  * Author: Tom Lendacky <thomas.lendacky@amd.com>
+  */
+@@ -510,6 +510,12 @@ void __init sme_early_init(void)
+ 		 */
+ 		x86_init.resources.dmi_setup = snp_dmi_setup;
+ 	}
++
++	/*
++	 * Switch the SVSM CA mapping (if active) from identity mapped to
++	 * kernel mapped.
++	 */
++	snp_remap_svsm_ca();
+ }
+ 
+ void __init mem_encrypt_free_decrypted_mem(void)
 -- 
 2.43.2
 
