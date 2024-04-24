@@ -1,129 +1,124 @@
-Return-Path: <linux-kernel+bounces-156602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-156606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C28AF8B0571
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:07:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5F1C8B0585
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 11:10:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEDEFB2782B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:07:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57A731F255DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 09:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EF3E15990E;
-	Wed, 24 Apr 2024 09:05:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hFMZ9DJ3"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD0B158D6B;
+	Wed, 24 Apr 2024 09:10:24 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF2D158D90;
-	Wed, 24 Apr 2024 09:05:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECFF158A38
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 09:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713949558; cv=none; b=KYr46g9wAzNmMOnc28Ph50IEgd6RYsBcW881vrI8HFAoRIcb9CBwyunKmM0QxqoQCiMarUBQrQffiu6IVsVR74qgihn23eGZT/ap+DdMzOc6EyM0Z4NjGRQHpz2AQuDpf07jv0iehpxlcFDl5/rl3kEYOKg45bj485w+eDlW2Tk=
+	t=1713949823; cv=none; b=UoAM3Iec5vAS+OdF/hj6KYp2fL+mPSfBigwC6nkcl0/gjopU6P9OkjKFCY315BE/8CT389dIImUTefg2EuuYvpLoAP3H5b9E7w+Yjx3lp14bjAzAFov2f5VOMVHwMl4nab3GEt+T3FGcw8oKXXTWuaInIBErjAV/1jCajpJZJ58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713949558; c=relaxed/simple;
-	bh=oecI1I5F8ploSJtFJdVODKUb+t2YKq7ntuJtu7bZFnU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=MLBj0PvvjjKiyHbHXdszUFWZAB/0ft9Nec4ebGK9HO0Cn70QsC+lVHdrz4yY234+hw6xmyx9Uk7X8tYG+2X179H6za3EGKMUjMLlgbIx+SIYq9j4ZzwVGB+jh38GWrN7qEpT6AExAovdwHdKJNYsKgcPd5v0Jmyo+7pShqUebws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hFMZ9DJ3; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4701720014;
-	Wed, 24 Apr 2024 09:05:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713949551;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NzNqKTpVWMnrcgcJVGgyUqBdfYphefuKpHkJ0PXLDgQ=;
-	b=hFMZ9DJ380NRh+LxCs/eAs/MyW3K01JfQsT/RZ/v5EhraNlMnRUV0FupHUbex7pFCCxTj0
-	qn91YkqwDRhZx6VUbYONmo5UjAWNA7E+WGMk1aiOzbNjooubti+U+SxpydDrBmMcv62LFy
-	BudIXE6UzYgKaproP2PjRfMHmd3a5DsKsE9vXIDZHIvILsxL9NN+3t4QzTLI/oPjDThQxa
-	vLY612YbUoVVNzSZRLECK8fbGEf3dfDEhDlAZqhVtqhWmcgoC8UpAM7PJEoNB5iqkIozDm
-	qi+svxxgk6UeydLcPwMPqZDJziuHkCCMY/7S49GsSrM36fdtwH6+Kf8Ps6GcgQ==
-From: Romain Gantois <romain.gantois@bootlin.com>
-Date: Wed, 24 Apr 2024 11:06:23 +0200
-Subject: [PATCH net-next v4 5/5] ARM: dts: r9a06g032: describe GMAC1
+	s=arc-20240116; t=1713949823; c=relaxed/simple;
+	bh=8vA4orOaKDY+zHUQW1/tzx26tBDxJUvA8wUGfkL9DPc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UKd91rscwzDnPockrjt8YBH/IS+6ZFtShkM46JGkGdDCs6c07DHEiHr6wjodIEGnHA5D+7A7hlwkHj3nwx+tivfDxh5dbKQCUazM5XzNot4sHPLegdkgQfijl5Q2atmXn6mTSpkm4GuyVRlx92WOVQ0OW1Hbm2WEYLaO2f1zhgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rzYdj-0006Hi-91; Wed, 24 Apr 2024 11:10:07 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rzYdh-00E3JN-HA; Wed, 24 Apr 2024 11:10:05 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 186472BECA6;
+	Wed, 24 Apr 2024 09:10:05 +0000 (UTC)
+Date: Wed, 24 Apr 2024 11:10:04 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+	Thomas Kopp <thomas.kopp@microchip.com>, Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux@ew.tq-group.com, alexander.stein@ew.tq-group.com
+Subject: Re: [PATCH 3/4] can: mcp251xfd: add gpio functionality
+Message-ID: <20240424-witty-vicugna-of-purring-7bffcc-mkl@pengutronix.de>
+References: <20240417-mcp251xfd-gpio-feature-v1-0-bc0c61fd0c80@ew.tq-group.com>
+ <20240417-mcp251xfd-gpio-feature-v1-3-bc0c61fd0c80@ew.tq-group.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240424-rzn1-gmac1-v4-5-852a5f2ce0c0@bootlin.com>
-References: <20240424-rzn1-gmac1-v4-0-852a5f2ce0c0@bootlin.com>
-In-Reply-To: <20240424-rzn1-gmac1-v4-0-852a5f2ce0c0@bootlin.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Geert Uytterhoeven <geert+renesas@glider.be>, 
- Magnus Damm <magnus.damm@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Jose Abreu <joabreu@synopsys.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Russell King <linux@armlinux.org.uk>, 
- =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <clement.leger@bootlin.com>, 
- Serge Semin <fancer.lancer@gmail.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-renesas-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
- linux-arm-kernel@lists.infradead.org, 
- Romain Gantois <romain.gantois@bootlin.com>
-X-Mailer: b4 0.13.0
-X-GND-Sasl: romain.gantois@bootlin.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="farp7erk7y3aax3q"
+Content-Disposition: inline
+In-Reply-To: <20240417-mcp251xfd-gpio-feature-v1-3-bc0c61fd0c80@ew.tq-group.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-From: Clément Léger <clement.leger@bootlin.com>
 
-The r9a06g032 SoC of the RZ/N1 family features two GMAC devices named
-GMAC1/2, that are based on Synopsys cores. GMAC1 is connected to a
-RGMII/RMII converter that is already described in this device tree.
+--farp7erk7y3aax3q
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Clément Léger <clement.leger@bootlin.com>
-[rgantois: commit log]
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Romain Gantois <romain.gantois@bootlin.com>
----
- arch/arm/boot/dts/renesas/r9a06g032.dtsi | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+On 17.04.2024 15:43:56, Gregor Herburger wrote:
+> The mcp251xfd devices allow two pins to be configured as gpio. Add this
+> functionality to driver.
 
-diff --git a/arch/arm/boot/dts/renesas/r9a06g032.dtsi b/arch/arm/boot/dts/renesas/r9a06g032.dtsi
-index fa63e1afc4ef4..57c730f43442e 100644
---- a/arch/arm/boot/dts/renesas/r9a06g032.dtsi
-+++ b/arch/arm/boot/dts/renesas/r9a06g032.dtsi
-@@ -316,6 +316,24 @@ dma1: dma-controller@40105000 {
- 			data-width = <8>;
- 		};
- 
-+		gmac1: ethernet@44000000 {
-+			compatible = "renesas,r9a06g032-gmac", "renesas,rzn1-gmac", "snps,dwmac";
-+			reg = <0x44000000 0x2000>;
-+			interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "macirq", "eth_wake_irq", "eth_lpi";
-+			clocks = <&sysctrl R9A06G032_HCLK_GMAC0>;
-+			clock-names = "stmmaceth";
-+			power-domains = <&sysctrl>;
-+			snps,multicast-filter-bins = <256>;
-+			snps,perfect-filter-entries = <128>;
-+			tx-fifo-depth = <2048>;
-+			rx-fifo-depth = <4096>;
-+			pcs-handle = <&mii_conv1>;
-+			status = "disabled";
-+		};
-+
- 		gmac2: ethernet@44002000 {
- 			compatible = "renesas,r9a06g032-gmac", "renesas,rzn1-gmac", "snps,dwmac";
- 			reg = <0x44002000 0x2000>;
+Fails to build if CONFIG_GPIOLIB is not enabled.
 
--- 
-2.44.0
+|   CC [M]  drivers/net/can/spi/mcp251xfd/mcp251xfd-core.o
+| drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c: In function =E2=80=98mcp2=
+51fdx_gpio_setup=E2=80=99:
+| drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c:1877:39: error: =E2=80=98s=
+truct mcp251xfd_priv=E2=80=99 has no member named =E2=80=98gc=E2=80=99; did=
+ you mean =E2=80=98cc=E2=80=99?
+|  1877 |         struct gpio_chip *gc =3D &priv->gc;
+|       |                                       ^~
+|       |                                       cc
 
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--farp7erk7y3aax3q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmYozGkACgkQKDiiPnot
+vG9J1wf/do8Juj8Orh5bVD09ULKiTACR0iSR2akIljO+FR51Sj5s88bF3DJUn3xV
+ipozlNXXytRTXvW6K535zzoaX9Qs6slTyDKZjubYt/foqQ3KssuOZudP45iaIuWG
+47N6tvdqDN8pEvBdhKwOWl1FJygZ4CskxX3hDMgF/jgc8JqL+5Y6z8vGqf6DssEV
+3Mr1R9jpbVdQn8FUmp3262pK2p352LicKK3MUIKVMxmEfZ1LYaZXqvJwme2lFL6d
+jXglkz5U3mLhY0rxlh8++tbwv+a1VNt4kDZGwLt7PaTm2rd/qC0ku/KC/yZHr/fe
+VGuS8MVt9UCBMQiFyAu85AVHRVAEww==
+=jzV9
+-----END PGP SIGNATURE-----
+
+--farp7erk7y3aax3q--
 
