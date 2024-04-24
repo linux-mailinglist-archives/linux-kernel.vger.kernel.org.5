@@ -1,112 +1,216 @@
-Return-Path: <linux-kernel+bounces-157405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ED7E8B111D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:35:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53FE88B112F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 19:36:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 301D71F27B67
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:35:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BAB228AE0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 17:36:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD0316D4C3;
-	Wed, 24 Apr 2024 17:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3287116DEAF;
+	Wed, 24 Apr 2024 17:36:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C5owhCdw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JKfgM0ft"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD7413777A
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:35:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6285816D9DD;
+	Wed, 24 Apr 2024 17:36:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713980150; cv=none; b=PF4FBPL2EGBsxIKDtdkBUjzxwsgsaZHfqrUUyznLntGVjjcyxByFxjqPzvpKZ8wY00vMb3yci+ehhRpCb7EgYIqFMjGgwGqMpcOkPvNBDnMut8GdIJPtyFbQj6q/lSAnOAFAKTirOOVfbL/Fwu+d7AWg6F0FgwC6ditvtyxFAdc=
+	t=1713980163; cv=none; b=YGEABNFvOnqQS6ywZTm3YZqmt2BAbDKfCOzuC2w7VAyUyHJ3FGk4wSP2ysjCsznq9M6jL7AJ/bjV/Me9AbqYVvwBa2VLBSnn+v80C+n+le9gBiqNMhP4rRaQ9iYFRJF10FfnzTYRyWyn2PMERnPV/CupP9hyIe/XF/PSkA20sbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713980150; c=relaxed/simple;
-	bh=Zx21olM6TIaTxOuCCMQe79AYeFL/GNrR4k4CavTnoaI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sod3Q8YOAn8D/b5W/SWwOp/GHczPi+VYsCkNjVpq2k4SRh3NoJ09PwUd3yeOKLACfbi1wCFUZCUr/49jrEIvyW33TgAMFEDMW4dcU7sxDmtdhwUgtkfceGcYMqj83q4KL9Ui6E10zHywqQzfmE1WLePbEbg6rb5faI1zjI2wKsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C5owhCdw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1D0CC113CD;
-	Wed, 24 Apr 2024 17:35:49 +0000 (UTC)
+	s=arc-20240116; t=1713980163; c=relaxed/simple;
+	bh=TbPOTBmS82ynsL8h5jbyPu2ZW+Geh2onSqdzZPRv0KM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ovUm21U6UTJXtghB9k3fhdgHbJhhPJ/REzt/qsNMlPQHONM+hV6zjpH7fVRAirC5HZ6i8fCQadKPEsQfKe1U3prTqUmiZhFi8+4fd5KCotcuczPSbhocscDkYyGQcacVdXjw4AFruTZpUy/MhnKV0K5ks06uFZ1zQTJZ53TYuQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JKfgM0ft; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98DCAC113CD;
+	Wed, 24 Apr 2024 17:36:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713980149;
-	bh=Zx21olM6TIaTxOuCCMQe79AYeFL/GNrR4k4CavTnoaI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=C5owhCdw5/jNzo4EXhhD4qYlKIO1w4wRmFxlqkBkF429P6nWjaizzpCPRdYDgUO/x
-	 SFiBdn+15eoCMyccee/urI38e+ynLSuKp/oRoN4mXM/96/svlcmanFAqODmcSDvge4
-	 wQUonhmhf9DHZrBZ0566qz+IvE3nLr0oa5Dbj2DFK8GjZL8pOZBVEY7gomsn1nnq3V
-	 zXlJjhYzKKd3GhhFaRPG/6hJ7YlaoS2bI7miAeNHl+NSRH9PC9IpnVc5GbCr+q6VZP
-	 vOVbdrolEmedOWq4aNmfhYeT7Rortcgcv7OsjBze8oH93rpjK5BSoWefTalpogDFvI
-	 49H/wulrmnuww==
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>,
-	stable@kernel.org
-Subject: [PATCH] f2fs: fix false alarm on invalid block address
-Date: Wed, 24 Apr 2024 17:35:48 +0000
-Message-ID: <20240424173548.1515606-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+	s=k20201202; t=1713980162;
+	bh=TbPOTBmS82ynsL8h5jbyPu2ZW+Geh2onSqdzZPRv0KM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=JKfgM0ftEZPoaeN/UvrXohkYKSIHZLJOroZar5NdiSmXyCF6rKxzuOZdZ2KppyqRL
+	 oa9AT7DLeVcjxOkbrrxIUGMqd8TMkBZSUQV/sygfLlnSekXgyepCYG4FnrIrv9RD+e
+	 z/W1m431bgbvtK5653Ho5WlT53xwJqBvpfxu6iYipLNIECpOlexGRnchzCcSxBz0+A
+	 uc1aK8XzuECWRsmlEaulD3SslyUQLATMpBVF5noawuNy3R2o25eVC0VvDKTcedQjbT
+	 3oZOFU3P5PYQJKcdG/OAJfXjzkHMK69D63s2C85XUG+vHbTYTInNzmaZsBPg6wTkUc
+	 BZJz42GXHai4A==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Zi Shen Lim <zlim.lnx@gmail.com>,
+	Xu Kuohai <xukuohai@huawei.com>,
+	Florent Revest <revest@chromium.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf-next v2 1/2] arm64, bpf: add internal-only MOV instruction to resolve per-CPU addrs
+Date: Wed, 24 Apr 2024 17:35:49 +0000
+Message-Id: <20240424173550.16359-2-puranjay@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240424173550.16359-1-puranjay@kernel.org>
+References: <20240424173550.16359-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-f2fs_ra_meta_pages can try to read ahead on invalid block address which is
-not the corruption case.
+From: Puranjay Mohan <puranjay12@gmail.com>
 
-Cc: <stable@kernel.org> # v6.9+
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=218770
-Fixes: 31f85ccc84b8 ("f2fs: unify the error handling of f2fs_is_valid_blkaddr")
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Support an instruction for resolving absolute addresses of per-CPU
+data from their per-CPU offsets. This instruction is internal-only and
+users are not allowed to use them directly. They will only be used for
+internal inlining optimizations for now between BPF verifier and BPF
+JITs.
+
+Since commit 7158627686f0 ("arm64: percpu: implement optimised pcpu
+access using tpidr_el1"), the per-cpu offset for the CPU is stored in
+the tpidr_el1/2 register of that CPU.
+
+To support this BPF instruction in the ARM64 JIT, the following ARM64
+instructions are emitted:
+
+mov dst, src		// Move src to dst, if src != dst
+mrs tmp, tpidr_el1/2	// Move per-cpu offset of the current cpu in tmp.
+add dst, dst, tmp	// Add the per cpu offset to the dst.
+
+To measure the performance improvement provided by this change, the
+benchmark in [1] was used:
+
+Before:
+glob-arr-inc   :   23.597 ± 0.012M/s
+arr-inc        :   23.173 ± 0.019M/s
+hash-inc       :   12.186 ± 0.028M/s
+
+After:
+glob-arr-inc   :   23.819 ± 0.034M/s
+arr-inc        :   23.285 ± 0.017M/s
+hash-inc       :   12.419 ± 0.011M/s
+
+[1] https://github.com/anakryiko/linux/commit/8dec900975ef
+
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 ---
- fs/f2fs/checkpoint.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/arm64/include/asm/insn.h |  7 +++++++
+ arch/arm64/lib/insn.c         | 11 +++++++++++
+ arch/arm64/net/bpf_jit.h      |  6 ++++++
+ arch/arm64/net/bpf_jit_comp.c | 14 ++++++++++++++
+ 4 files changed, 38 insertions(+)
 
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index 5d05a413f451..55d444bec5c0 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -179,22 +179,22 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
- 		break;
- 	case META_SIT:
- 		if (unlikely(blkaddr >= SIT_BLK_CNT(sbi)))
--			goto err;
-+			goto check_only;
- 		break;
- 	case META_SSA:
- 		if (unlikely(blkaddr >= MAIN_BLKADDR(sbi) ||
- 			blkaddr < SM_I(sbi)->ssa_blkaddr))
--			goto err;
-+			goto check_only;
- 		break;
- 	case META_CP:
- 		if (unlikely(blkaddr >= SIT_I(sbi)->sit_base_addr ||
- 			blkaddr < __start_cp_addr(sbi)))
--			goto err;
-+			goto check_only;
- 		break;
- 	case META_POR:
- 		if (unlikely(blkaddr >= MAX_BLKADDR(sbi) ||
- 			blkaddr < MAIN_BLKADDR(sbi)))
--			goto err;
-+			goto check_only;
- 		break;
- 	case DATA_GENERIC:
- 	case DATA_GENERIC_ENHANCE:
-@@ -228,6 +228,7 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+diff --git a/arch/arm64/include/asm/insn.h b/arch/arm64/include/asm/insn.h
+index db1aeacd4cd9..8de0e39b29f3 100644
+--- a/arch/arm64/include/asm/insn.h
++++ b/arch/arm64/include/asm/insn.h
+@@ -135,6 +135,11 @@ enum aarch64_insn_special_register {
+ 	AARCH64_INSN_SPCLREG_SP_EL2	= 0xF210
+ };
+ 
++enum aarch64_insn_system_register {
++	AARCH64_INSN_SYSREG_TPIDR_EL1	= 0x4684,
++	AARCH64_INSN_SYSREG_TPIDR_EL2	= 0x6682,
++};
++
+ enum aarch64_insn_variant {
+ 	AARCH64_INSN_VARIANT_32BIT,
+ 	AARCH64_INSN_VARIANT_64BIT
+@@ -686,6 +691,8 @@ u32 aarch64_insn_gen_cas(enum aarch64_insn_register result,
+ }
+ #endif
+ u32 aarch64_insn_gen_dmb(enum aarch64_insn_mb_type type);
++u32 aarch64_insn_gen_mrs(enum aarch64_insn_register result,
++			 enum aarch64_insn_system_register sysreg);
+ 
+ s32 aarch64_get_branch_offset(u32 insn);
+ u32 aarch64_set_branch_offset(u32 insn, s32 offset);
+diff --git a/arch/arm64/lib/insn.c b/arch/arm64/lib/insn.c
+index a635ab83fee3..b008a9b46a7f 100644
+--- a/arch/arm64/lib/insn.c
++++ b/arch/arm64/lib/insn.c
+@@ -1515,3 +1515,14 @@ u32 aarch64_insn_gen_dmb(enum aarch64_insn_mb_type type)
+ 
+ 	return insn;
+ }
++
++u32 aarch64_insn_gen_mrs(enum aarch64_insn_register result,
++			 enum aarch64_insn_system_register sysreg)
++{
++	u32 insn = aarch64_insn_get_mrs_value();
++
++	insn &= ~GENMASK(19, 0);
++	insn |= sysreg << 5;
++	return aarch64_insn_encode_register(AARCH64_INSN_REGTYPE_RT,
++					    insn, result);
++}
+diff --git a/arch/arm64/net/bpf_jit.h b/arch/arm64/net/bpf_jit.h
+index 23b1b34db088..b627ef7188c7 100644
+--- a/arch/arm64/net/bpf_jit.h
++++ b/arch/arm64/net/bpf_jit.h
+@@ -297,4 +297,10 @@
+ #define A64_ADR(Rd, offset) \
+ 	aarch64_insn_gen_adr(0, offset, Rd, AARCH64_INSN_ADR_TYPE_ADR)
+ 
++/* MRS */
++#define A64_MRS_TPIDR_EL1(Rt) \
++	aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_TPIDR_EL1)
++#define A64_MRS_TPIDR_EL2(Rt) \
++	aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_TPIDR_EL2)
++
+ #endif /* _BPF_JIT_H */
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 76b91f36c729..ed8f9716d9d5 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -877,6 +877,15 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 			emit(A64_ORR(1, tmp, dst, tmp), ctx);
+ 			emit(A64_MOV(1, dst, tmp), ctx);
+ 			break;
++		} else if (insn_is_mov_percpu_addr(insn)) {
++			if (dst != src)
++				emit(A64_MOV(1, dst, src), ctx);
++			if (cpus_have_cap(ARM64_HAS_VIRT_HOST_EXTN))
++				emit(A64_MRS_TPIDR_EL2(tmp), ctx);
++			else
++				emit(A64_MRS_TPIDR_EL1(tmp), ctx);
++			emit(A64_ADD(1, dst, dst, tmp), ctx);
++			break;
+ 		}
+ 		switch (insn->off) {
+ 		case 0:
+@@ -2527,6 +2536,11 @@ bool bpf_jit_supports_arena(void)
  	return true;
- err:
- 	f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
-+check_only:
- 	return false;
  }
  
++bool bpf_jit_supports_percpu_insn(void)
++{
++	return true;
++}
++
+ void bpf_jit_free(struct bpf_prog *prog)
+ {
+ 	if (prog->jited) {
 -- 
-2.44.0.769.g3c40516874-goog
+2.40.1
 
 
