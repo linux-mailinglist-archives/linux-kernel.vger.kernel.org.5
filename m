@@ -1,85 +1,77 @@
-Return-Path: <linux-kernel+bounces-159161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66E808B2A16
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5473F8B2A18
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:50:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 870181C222BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:49:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 782E21C221FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B5D8153811;
-	Thu, 25 Apr 2024 20:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D485153814;
+	Thu, 25 Apr 2024 20:49:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=amd.com header.i=@amd.com header.b="1VM7/sqI"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2044.outbound.protection.outlook.com [40.107.243.44])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="eoYqLYQ1"
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2041.outbound.protection.outlook.com [40.107.14.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8814114D70C;
-	Thu, 25 Apr 2024 20:49:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64B5B152E0F;
+	Thu, 25 Apr 2024 20:49:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.14.41
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714078175; cv=fail; b=qkOYJVssn04J92GANSjGU+CvyrGvLx8dZo3GvGTqhbiFD5XoQOjr6VqoYuRjhHg0Gzn9Mrh/aftTEizESgtdRsGFsUC+yg7JthFpDFERbJWISQljNP6uMg89rtoafDiiHpdsddFWhcsjo1SEs8VI0E4ULBTpyP57EwiGy+bF3jQ=
+	t=1714078197; cv=fail; b=RyJi/yIyHMrg8sTmDfXZnR2Mfxq8nJSLy57NwV+DIQbo+01VDOIFSxa/Jf0EDKQdXsfMB3MgmaYogSIOWftEzk+/wxFJiBWjYtBgialw1n2WlSTafsOS4+8Z5D+HZjMCbC49tc2gxkpDYkgdEQcm1pb1r9oQRS9DO51LrsxIKP8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714078175; c=relaxed/simple;
-	bh=gSwI8HFvQF/j1qsV7aAHQWIMaHK/BtMk4P4WTIoG+gQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:In-Reply-To:
-	 Content-Type:MIME-Version; b=VRN/W76rTGpD8pa5bA29qCngixZZaUQfghIBUrESh6p3An/V9OsxqhF4GK0/ZnXuyuCQs13KIBhQQUue8vV3lBDofIZq3+A/sGiL8HtT1igRMP5NAPxTXbBroBrA7TNYXMnwibkNomPPN2SitZylRAq85jg/OuYHR4ekPqzNpUc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=1VM7/sqI; arc=fail smtp.client-ip=40.107.243.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	s=arc-20240116; t=1714078197; c=relaxed/simple;
+	bh=IfHLvgo7W2oLFtAJ2awdlAMA2dPp2o4vzZWQhW9MP3E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=G/scuhuvqT/IrxEOLrQb8BPhMKwTQoncibnz7jhyADrPyuH0fT+uFEYZoCdSnQrhx93y4uPL+3+FwqqrDyGN0wwyan5cFKs8kkDdD40NmaI2nIcfS+MET4pVxgDKotT05zv2JOMkUEabgayFpLVzyvrQGn+jx0oBYqLvFZgMEyU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=eoYqLYQ1; arc=fail smtp.client-ip=40.107.14.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hIs6oG1dT4yhYhe7+9xp27oNOFUAyD+rbPKHjn0p+R9DeNDlOytLsuEn429obj6kQhgQYi31kLePcGXhjvrQVkOrRNQkjSPIiWd9wPMU08A8uyYe0G5YoBxPWuRK7Kr3z/cgRLaGXnvTi6TJvAPPiU+HUiBdRUoLZdOn5An/L+pgFdIoSOg6L3RoXS1fzJ4txlYONBEdJfAdcRdrqxviFZ5n3e8t7wBj8L3p3cqZmp0rIF32jxE6r8toeyG7scDlZCjRmlxPCEB7Nsk1CduI/OPyRmkS9DBOmDxw774CJh2XrNyQ/QduM+nXglGUAKy38e7dhOWMbtZ6W+N2msGXyQ==
+ b=HwbI2oci21/BrB+3JLJbpMGeRavq676poGGgSOdYCE6SQrY73stAUucVq+zGQoJIG6jGCxymRm7o+CMMg0Qm8Y8Qc/VJvIR4wbDBTA3vpm2YmwMI7BW2aZFZGwVmfEyCkvwx9ws/SulM+NDgvQd6Uts+xHtSCz4XtGxmB7D+S4jeRezbp+9DGxlQH4IyGfXNnfAFuD3D5zqoQ60Az9NPcokjPJCXz3rc7OgwyqGLwagGVZ+QV07pjNqONjotrKgnZ5PDLraSaISW+gPGEHkuNKEnAlxgJUD/FBwRTxt8IGiPNKeTPip8d6/Dln10IjqtSdeR0iQIASmZWs9boGKtNw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9BMQUje9dF9FZbMYuGDnvSgxxY5WxcxOb9CwQH64fqA=;
- b=LnLQvwPhsPHCXfT1Xw2m52lO8MDub4vU/6pBC5cr5J/3pwghOxITmKxfTElImZczUG7PlQFeM+xTYgHDm+GkcVhoEt17EIBnP8V9ZR2znOtZRdJBZIzy8PjqBolo8WOp7A+RtVhfdkMkLDG6GWj6dMB4zp017fsR/fNkTYXx1zBZBnMofUjHQYY+ftzzCTWNR6oF8RnBDkHpEJYT6xJ/TZkyQtSceuGkCzokng1wXzCIfCD7crSjnReXa2fn0miPD7y6mO0mOWDUOS9mGTfe9JMleH4e7kFf4RyBWMO2Jr15+l1n6CeqvoBJ+idz41/t6ysCojRNHNM5wENTwR8R/Q==
+ bh=XPD76Jf3AOP8fBwbD30oBJP23cp8Q22qafm2eZgWNn8=;
+ b=QqkIspELT8/rBzIT8BiyJlFaBMnGoQgpAQWqOmdCgmD1Lkuh+zPMXj4X1SJUGaPnXOoS7Ja8LxGfXEmeJQyhnEZ8AM0BZ5pMyEqZtN6gqChAysrQD+mRAHmPFlJeUGdlc47rrPaV3puKsMhOl4VNq/+M3hreRzPjGXPihwlBwpJBvZvvQwUSCN3ejibq1HdVZEL1NPfcz0702b9quCTzdzveCVNSRIp57tYTXmFbEy89CtOOFafoiCe3Th7pMJmN5BqnmsjTATR8QUmEBl1Q1RxXKl2u8orKXUUvuKPvYIBRT31X66HQn46cZbkmkdW8JseHR9rqSl0oaieMFDoBdQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9BMQUje9dF9FZbMYuGDnvSgxxY5WxcxOb9CwQH64fqA=;
- b=1VM7/sqIVlKO2P+8NTj7XPhSCv59QAf+kwk2stCvUDr1toRmkW37zBqYsSBJb7vGokn1GMvT0zteQISJHVcH9s9ICxp5EsgHRmVJTB1TMqksinFFRjtS3etTR8FP0+HfsYIvXotTmyOTwDCNbeTB9KBRHvnGVgfzum73sn96cdc=
+ bh=XPD76Jf3AOP8fBwbD30oBJP23cp8Q22qafm2eZgWNn8=;
+ b=eoYqLYQ1o8ADPF7BA0uTOo/PrOHGzwxs2rKSiIqXeDUvjqa4vrEKFvvJWS7/yy+fLlA48ilPlgr6OSJjoqDZO5RRY7kyY095WIfGtdODlzdjQDzx3FLmJok+lKOD8wF8VXcJdjDcPGXT7GMBENLg0FeXK0xwgCPIRmx9RVgWabM=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB2869.namprd12.prod.outlook.com (2603:10b6:a03:132::30)
- by MN6PR12MB8565.namprd12.prod.outlook.com (2603:10b6:208:47d::22) with
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by GV1PR04MB9200.eurprd04.prod.outlook.com (2603:10a6:150:2b::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Thu, 25 Apr
- 2024 20:49:30 +0000
-Received: from BYAPR12MB2869.namprd12.prod.outlook.com
- ([fe80::56a2:cd83:43e4:fad0]) by BYAPR12MB2869.namprd12.prod.outlook.com
- ([fe80::56a2:cd83:43e4:fad0%4]) with mapi id 15.20.7472.045; Thu, 25 Apr 2024
- 20:49:29 +0000
-Subject: Re: [PATCH] PCI: pciehp: Clear LBMS on hot-remove to prevent link
- speed reduction
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
- linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Bjorn Helgaas <helgaas@kernel.org>,
- Mahesh J Salgaonkar <mahesh@linux.ibm.com>, Lukas Wunner <lukas@wunner.de>,
- Yazen Ghannam <yazen.ghannam@amd.com>,
- Ilpo Jarvinen <ilpo.jarvinen@linux.intel.com>,
- Bowman Terry <terry.bowman@amd.com>, Hagan Billy <billy.hagan@amd.com>,
- Simon Guinot <simon.guinot@seagate.com>,
- "Maciej W . Rozycki" <macro@orcam.me.uk>, pradeepvineshreddy.kodamati@amd.com
-References: <20240424033339.250385-1-Smita.KoralahalliChannabasappa@amd.com>
- <2f6e5a44-e64d-4801-96ff-c99cf034ebdf@linux.intel.com>
-From: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Message-ID: <a9ce9d8d-6ebd-3526-f806-5e9812eae762@amd.com>
-Date: Thu, 25 Apr 2024 13:49:28 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-In-Reply-To: <2f6e5a44-e64d-4801-96ff-c99cf034ebdf@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR05CA0111.namprd05.prod.outlook.com
- (2603:10b6:a03:334::26) To BYAPR12MB2869.namprd12.prod.outlook.com
- (2603:10b6:a03:132::30)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Thu, 25 Apr
+ 2024 20:49:52 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7472.044; Thu, 25 Apr 2024
+ 20:49:51 +0000
+Date: Thu, 25 Apr 2024 16:49:42 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: abelvesa@kernel.org, peng.fan@nxp.com, mturquette@baylibre.com,
+	sboyd@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+	kernel@pengutronix.de, festevam@gmail.com, imx@lists.linux.dev,
+	shengjiu.wang@gmail.com, linux-clk@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: imx: imx8mp: Add delay after power up
+Message-ID: <ZirB5sWBsOXucVsY@lizhi-Precision-Tower-5810>
+References: <1714040364-17127-1-git-send-email-shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1714040364-17127-1-git-send-email-shengjiu.wang@nxp.com>
+X-ClientProxiedBy: SJ0PR05CA0198.namprd05.prod.outlook.com
+ (2603:10b6:a03:330::23) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,274 +79,209 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2869:EE_|MN6PR12MB8565:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9df003d5-55e8-4e7a-a835-08dc65693397
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|GV1PR04MB9200:EE_
+X-MS-Office365-Filtering-Correlation-Id: 26d51271-f6d9-4650-f696-08dc65694098
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230031|52116005|376005|1800799015|7416005|366007|38350700005;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?TzBtdVhFNnRHOVM1ZE5CYzE4Rlc5MDdZdWwwSVJILzd1Y2VJZHhKNnVJZHlB?=
- =?utf-8?B?OC9oMnZFY1FKTkNBN1ZnanJPdDhmWnJjQTg2ZDB3Y1VXSDlad0dFc00yZ2Qv?=
- =?utf-8?B?UDgvQ3hsZXpaNEhrbFl1YU5FTGRHZTZnOGxEZktMUUVkTjdCTVVKck1lYU5P?=
- =?utf-8?B?Wmo4ancxRTV6QWpBNW5JbXF2UU9xTVFGVmJkRXZJK2NKRkN5MnlQdFU3NGJl?=
- =?utf-8?B?M2hNSXRkVTdZWGxLR0Jnd2pFeHRXa0dNdXN2eHMrZEhJQ1RkVmNEN01KM2JO?=
- =?utf-8?B?UWJtNkVObGk1enlkYXVuQ3laWCtvMzhPV0ZndXo1bXVBVHd0Wkg0UDh3bVht?=
- =?utf-8?B?UHRmeTVKT1N0d216VG9GRjFFcTZoSllZM2szWTVOeDF2QW0vYlFBWEwzT1pX?=
- =?utf-8?B?WFh0WVBpSDkweW82UGVHdkpNZHpYc0Q2aEFLV0lYL2RVemhXUStMZDdhUWFO?=
- =?utf-8?B?eVBnNVRlSEhmaGtCWW1DY2RNd1Fra0tQUVhHL1hua09sRHhzME9IOWQvTDBJ?=
- =?utf-8?B?b0NjNVhGekpSYWRnYjJvUkYwNkVRN0tqOFVKL2l1TU9zUjRvRlNRS0RQRzZS?=
- =?utf-8?B?WWZDcjhWKzlUR1hCTzd2RUVtalZiWkQrMmUrNDBON2U4ZU9WVmpnNmdtZFZS?=
- =?utf-8?B?MVpwQkVnM2VtWXhxM3BSd0d3ZW9EaEJGT0tOZmlKNjMrSExYVUJManpCWU5z?=
- =?utf-8?B?THBXSkNCOU55OGJEZEtpa0lBbnhQdFQ4YU5ERHdWN0ZvOWhUUHQzVzJEc09n?=
- =?utf-8?B?MDhRSzhLUkJKdGIxa0hnalA1bWg0bzJLOGozL1NYSWtJZWxhYzR1eFh1MlUr?=
- =?utf-8?B?QmgzbUZSVHJRdnRKRXVkZFpWL1JzY1BZWVI4NUdjRnNBWlV6Z3Jwb25udjdU?=
- =?utf-8?B?SVlOQjlxM3QyR1oxR0hWeDQ1RXdLd2lTUjFIYkgwWUIzcGxhK3JyTjZWdkRL?=
- =?utf-8?B?YkJYRzZWUHo2RHpMbDFic0xGTlhDTFVqRzFKM3psWlNTdDZPZitIWU5xMmVC?=
- =?utf-8?B?bEhGdzRmK0Y3WUphL3p6TzBQcVQ0WmlZYmt0RklaRjlTUDk2eEVFelhFUEtz?=
- =?utf-8?B?bUQ1QW9xalpEanF3Q2srUkRFT04rdzN1bHN2eUlwOGw5eW1JMm1TM1pYazZt?=
- =?utf-8?B?cEhoQ2UrR3d4VlMrMmZZeEdoZW1IeVc1elI1c0plWUp3Tmo0YjNCSzQxR2g1?=
- =?utf-8?B?NmZrbWtMdmZubjM4U0RYRU85S28zVkI5RjZhQjBIQXNPaFU3blBaNVdQTXIv?=
- =?utf-8?B?WDQwZUR5eEI2cks4YnkvdkZNUEpzc2JlVnRraVNrK00rVkllQ3ZlY3h3ZGs0?=
- =?utf-8?B?bXNWMTVVeHgzaHhZalA3eTdJZTBFV0JlOTdrVjkvZkI5cFpsSzV0TFhNUzdS?=
- =?utf-8?B?MjRSZHlucEwzTTBybG4wU3JqQ0Z0VUk1NXJrcVg1NUFPMEI3ZnhHUHdSZlBY?=
- =?utf-8?B?RCs3djk4Ylp1QzVPcGVFZjdPRk5mNDhCc3A1b3pVOGQ4NVcrY0NHKzk1K3dR?=
- =?utf-8?B?TWV6b2plOTNuVlc0clkzcThnMmJ2Y2gwbXFiRUxoOWx5MlFqZC9kS0pETHVm?=
- =?utf-8?B?Z29ZWktNWEpFb05ka2hqK0N4aldncmFzbXFMT0tDNmxlVnNHajVLVUpHbC9E?=
- =?utf-8?Q?SuGc1h9zsm8HVWq/brLx/H41QQQc9NvZgXp2PERKVjz0=3D?=
+	=?us-ascii?Q?tSEiG8E85uPgi6GZOpUyKMPcBVyobTrmul/GnWDPUGRa8HziYPtf/pmlYpOo?=
+ =?us-ascii?Q?Zb/eGnRFeNHS6poz8MdgRiODsr8jZjvc+NF+yvts9lzuRmkepfOBuGtZaQQK?=
+ =?us-ascii?Q?I06zi+HwmCVGjECojhqKoP1NGEBDU9KjxgnugNh7QcNeTqgKTqASdrcIZ5gF?=
+ =?us-ascii?Q?iZgaDffMRPCclr4TIZp6XtbHPr72KGa7UHMPIl02laebG+TZqjQ9MO2jkxcs?=
+ =?us-ascii?Q?TusrPpaYRb0OTBGPjHHqg5PkOvz5ZgjawN0hCGs1MGJN/IkDc6u822MRzkYY?=
+ =?us-ascii?Q?t+WV+TAvUPCsXDRIIS+Osh9HX/76MHGyg2v7/sQCfP+15311ba1Ta6CvlP40?=
+ =?us-ascii?Q?Z+tw5nV8BQGIWfDm11VSnnIbc2bMSqeJuBBGCp3zAs/OyednDxFPNKHu/UYe?=
+ =?us-ascii?Q?m76ZEbWZx/1pI41l8g6NBQ6OvKJ8A5eeJ8fewhmhOKks2NlAjXofwQdmUjqy?=
+ =?us-ascii?Q?OWvapWe8Re07PLQdQmeUu+uMSdFiq/mXtDylDMEQ9SpE0BbbSTybyGLWjn5C?=
+ =?us-ascii?Q?jSkEMJCcgVf4i2HXpcZGpN7h4AhRYqP+FyAjP6GNS9SA/8c5eDMkoP9mEDbG?=
+ =?us-ascii?Q?EvracvDZAKOyp0TLYlGaPrpjSHSl5jrGWWO3gTfvjvK75burcFj3TZx+BsF4?=
+ =?us-ascii?Q?F+FgxupWQEFD0F9Kz07574iJ+k+mHSZTnC98Yx0KGkbuyT9IzsO7K2aYo3JR?=
+ =?us-ascii?Q?LgnPwVxWeja9xTRAfjkvGeV3f5SKK8GdKoOARCuvlixN4t+wer4YSTBL1ZpX?=
+ =?us-ascii?Q?WB2uLEEpK8NItov+GOAylSI7Ji48yND65GdFnlWEoX/jIfCNTJwqenvIFlT5?=
+ =?us-ascii?Q?tpY0SI1JPSCltczfcu3GjThtX1ONktZmQrukitZRLIub+nieLvi9+JPW74Xl?=
+ =?us-ascii?Q?r9VM/JFOU7NMRwsMbEPaMP6BEAfjQFK1F/ZdVGbQk5t7D3HBqwrKzgmkNATs?=
+ =?us-ascii?Q?uxBbL8L0I6kptZxAB+PO82dAaWG4uWA3k+qmTNxjxY89UUPBWNb3f6JL4Jqw?=
+ =?us-ascii?Q?TRdVoXgvdfQlMg7uvlaTSIH9H8DpO1OrbeERYjxnUhMPSNLM9iBKOhY0sMas?=
+ =?us-ascii?Q?5iYEDjmMK/a5e4mN0qQGVnM+HXuyUd425xeUU6/WgD9l6C1Gv2TsTAVHCJMl?=
+ =?us-ascii?Q?ov51zhlDZDwIJwZEtW/ngRow8nNNzsbJvhvz5d1IgneKGiGyBfrEPTaQTkKY?=
+ =?us-ascii?Q?PT3eLCL4x/uZZNpvqK1jWUFohxfvtlUUgXBftN7Ti7x6RK1ONrs+Q9jxXIjq?=
+ =?us-ascii?Q?n4L+jDh2VRsBazed1gsbVhWloaAITfoYFQGCuyPDQA=3D=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(376005)(1800799015)(7416005)(366007)(38350700005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Y0hrUjA4VWNvc1NvNzFyT015VS9VY0hJWFpkZlBraGFYWG5zRk5uNFNlSVdh?=
- =?utf-8?B?bDIxMmJzb2JGSk9tanJFZFZTcy9HVHozY2pUUk9JSjZVeGxTeFJkMnVJSFB1?=
- =?utf-8?B?aU9EeFVjS253cmU5ZU52Mnh2b1JaRFNSKzc0dDhydVAxanczZDdta3JvMFF0?=
- =?utf-8?B?SlVwdEZQS29FZ3FyK3FZR1RtSG83Vm5JSHVwelJuVGNHSjAwZHFJbFBNeGsz?=
- =?utf-8?B?M0lWOXhZemxTV3BkVGp2M1piS3c2amUwUlZSRE56dmVaMitGcllzdXp2eTBZ?=
- =?utf-8?B?bjFKWDM3QWtiVkZ6d2xaMUVDdHFJQ2hINm9oaTMxTzBjaVliNzB6ajRQOEdr?=
- =?utf-8?B?bFdVY2FkakNXTHZtYWpqYXJLb0JKNG1rVktVeUphQlZvTkhlWHh5K2JzT1NE?=
- =?utf-8?B?YVJOdkxQM2g5S2NCYjlTK0xNaDhLOEFJRDVHbDV3UWRvaFpocHAyMTJBVVdp?=
- =?utf-8?B?YXpsQkVqMDlRNzJaSi9QM1FOZjhjT3g0SEptVVBBclZBbHVIbUV1emdHdEJn?=
- =?utf-8?B?RGl6ZEhiWnlvRUlFcHVZQ0ZvNWZRbVh2STl3NGw0a1VxTmZsV2ZGVW5MNllq?=
- =?utf-8?B?OFU3d0tGVEROTDM2SDdpUHFJRER3YnJFQTNGNWxjdFhZNGJ5M3dDZlFCSDlq?=
- =?utf-8?B?QXVEU2o4bFFraFBnZ0lvVEdEVEdyaEF5QlIwSk5OQUk5R1BTd0lKd1V3d0p0?=
- =?utf-8?B?NG5PV1BvMVFPUlJPZ1pnaS8zZEJkWUU1MFBGVXFhOU1uQ0Y0bTJIZ2krTVFU?=
- =?utf-8?B?RGg2ckwrZHlpYWwxamVYc2hjQ3pHTDJSZmpjcUVqNFVyTm0zWDhiUHI1dE5y?=
- =?utf-8?B?US9oSDNxQWRaVUVhdEQ5RmI3c1dYQ241Rnl1OEJWbklnbmlpSHEvRUs3eERY?=
- =?utf-8?B?OTRsUzBQallMQkhHSGxSUkw1cEpiYzZiNGpZang0enc3M2FYTEMxN2l5aS9J?=
- =?utf-8?B?ZVZXN3o3UnJIa0tpaVViWFBLOUN5MktZQmhwOE83dzltWFEyZi9rK3psa3NC?=
- =?utf-8?B?V2Q1NllOajJETkQyaHRTY2ZEbG51bWVZaEhMbHZJRm1RS1l5Tkg5UGs2RTly?=
- =?utf-8?B?em5jWk91UnBBWmo4M3RIS3JCNW1kcDBoRXFxeVFDK1Z5dnpCUGY3bG56bWRt?=
- =?utf-8?B?VGhuNzliaVZvWGp4SlJ6SCtNSzAwT2NxNXRET3B5eWwwZzNsR0tuWER5cC9M?=
- =?utf-8?B?REtkWmJ4elRGR2llWmJSSWUxZXJKMTVkMGRkdHQ5dkExYXJ5aDlnZGc5b1A5?=
- =?utf-8?B?WTB4UUd4SmZLYk5JbWtFaTlDN0hRQVFOTmR3WHVpMjZ5dEN3VE5VbDZyT09X?=
- =?utf-8?B?VVhZVzE1cnlDN3VzMURlV0x4ZVV1MjExbjZYa3UyR3R6cHVOdEo4WUF6WnNi?=
- =?utf-8?B?TDgvdmpVdkN2SFI3WkZzKzRnZm4zWm1sK0VKbkw2aDc5OGhhbldaVXdldkY3?=
- =?utf-8?B?WWVCNitaR1d2Qy9RUjViNDVkTG9IQU1ZR2pKOWorYUZsSEV5dGZDVm5rcE1i?=
- =?utf-8?B?SUt5Rk1qTTlMdGpxNGhPN3A5RmlpQVE5eVZOcW10WHJrSWVqend6cU1LOW9F?=
- =?utf-8?B?ZmF5cHNadXpQUktvWGhNSTBrQ1l5dG5weFJYMzRTS29DMGpyRDV0ZmVMUVgz?=
- =?utf-8?B?N3FLU2dlTWRubW4waTRDOUwvSUpic3RudmxKK2JiVFdJdGt2SHcrR2czQkwz?=
- =?utf-8?B?RnBtRWhVbmY1SzlDTVVBSkZEYWpnNmJTSUtOakZ2K21YSmFnTjMzVjF4M1Fq?=
- =?utf-8?B?SllCSW5iSmU3M3BxRUcvWS9jRUhkdzU1TUN6REhMUkxnNTIrMHVMUGQ3Uzl5?=
- =?utf-8?B?bkhXU01ST1ZvbWFwaE9PWGJIYVRnSVMydWMzZUlWOVN6N2FBcW1iVGpwV3FM?=
- =?utf-8?B?N1YvQ05nVzk5UTUvdzI4NllaY2tjMkxMejUvN1VCNkdySTM0QmtDcVJmRkRk?=
- =?utf-8?B?MEcrS1RGREhMTXJBMHA0ZVRoRkMxU0g3c2hxQUpteG9hcnBpNGlETWZncHBK?=
- =?utf-8?B?Q3NOOWdZMlIvMi9LY01CeitUV1E5RGVMKzlaUlNPQ0s4ZnQxMDNMUVlJTmFP?=
- =?utf-8?B?SDFKS0NDWStObk9XKzZCREFwNTBNcS82eURoRDM0Tk5Qbzg4ZW9Mc2dBeWFH?=
- =?utf-8?Q?78JIODStRaopQ5kYBC7V8ZMYq?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9df003d5-55e8-4e7a-a835-08dc65693397
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2869.namprd12.prod.outlook.com
+	=?us-ascii?Q?a8eMCIDyQi2sJ5Bqw+HMZF6MYiSzImg9hdPdlFNCCHWoJt9K0szTRomOekuP?=
+ =?us-ascii?Q?4wWlb5k3kwxc7DOr61X5ryfR+0641AQrPgk251l9ykWgH51vB3G2wBI0XThK?=
+ =?us-ascii?Q?ZgR3cuz9g+nexkbL1ZP/3EdoxRHgPpCWykPAQzKL7d9Sh+A9YE1VD9DwMnDL?=
+ =?us-ascii?Q?Mm68cOTpKof7W1EBff5FwD2q+LHPNzz0JvSVBZQKcn6JkVYOVNRwuq4QBCjG?=
+ =?us-ascii?Q?MPQ68nmnfAir18LfYDjtZ8BhH1hdTD40CxaFHT7cEjlfkLqzM+BG6/2D1n8U?=
+ =?us-ascii?Q?Ch//jeJP4xJjeBWQusXcVFz5tniA1twm7DuarxNj0iECpEQDrCSAak4KQRnJ?=
+ =?us-ascii?Q?IYDOFBlsomRzwQ7I3kVH6aTc7N3b2r1SE3a+roir2GqCQgluDeHxypeygiWV?=
+ =?us-ascii?Q?ZcuJCOg2M+W8CQipwJPRICO96Hs2LrGcS4irfp8HT6a8YdGDzeuKN+kYpNf2?=
+ =?us-ascii?Q?FzqmNuZn6FX95Dcd/m2NNHKPk8uKGlIpIgqNlzJOqdGxcsFRLyYBgx9SBlzb?=
+ =?us-ascii?Q?yM4aDREcW0+NzdOZyzuitSOQSBkKsoQnjtb+0q0rh+VwyGrM1zYM8GtU6URb?=
+ =?us-ascii?Q?ccJ4kKUMX25XBSwQtSoNa/5jxjeOJowIvGvPu9L0IqFzu0U3zc75vWjZBJ5x?=
+ =?us-ascii?Q?itX1oD9RrMU0q/GvTrkZ3V4FolNBHSfh07aR/rh+wAadSxbgNpLjsrl64hee?=
+ =?us-ascii?Q?gqLwuGKQGi6dY223gsWQhBCdGf6JUvRo51OmUCICrRXJEDHKPvEyvwGag+A1?=
+ =?us-ascii?Q?UCrCIHsLMnLSo/MEhMvZaNlJjGSHB4dDN2r3V+ZIxmxq1yBZdoBn7UrqPhKa?=
+ =?us-ascii?Q?IwwviAPHzalnpPS0AEc8C+xFE6LTtA49oNerL7BZlZFE5F2o6hHUknfxa0xZ?=
+ =?us-ascii?Q?zdannEDr68GHatGyoXb7VVOOTc6N8Z4XZvBxkGPHy8qPysHYr3vDKKyhgSi7?=
+ =?us-ascii?Q?DMw6HalzTVze9XrHy2JMa2pY/r2q1pfG5eX2+B33i7Y6fv2rAolhzD4ShY3a?=
+ =?us-ascii?Q?osRy1rAZuZsgAklyBlkDx+J71fK8QDclis8VJYtZUz9kTQ5zP+CDMsLs+khQ?=
+ =?us-ascii?Q?x/8LSTVUjQ9lDdduMWs3O/wLwTvMhaZ6eTl+kYIV2AIseYnPJmHkKl6dZhqu?=
+ =?us-ascii?Q?Ny4feStS4DxXVexgSPcxhLuF2R3ZczcqKlFLMog0W7jt8HIih0/Ocu2fQTS2?=
+ =?us-ascii?Q?uyCGc+5iPH2JHUlfIp+8srEN/OvRJXp48iYMf9X4Vp6kK9aHAZiYVryqllUA?=
+ =?us-ascii?Q?liZCrNvcQERIFwlMzELMmJbbqeKBf13rO2uMc2KCQUoaf2bOTznPvjn4u5+i?=
+ =?us-ascii?Q?Eazc0UrXdklCx+ZqgWyq+aHuQViP9eGuEn/BxJ4DuR9o9BIirL43JgC+J7nT?=
+ =?us-ascii?Q?xoI2wxSHlcMaNmhEl1zjhpUe1i0V9+ypE5uVdgFPocYw0kgqIuYSJPKT+WBY?=
+ =?us-ascii?Q?Om0KpaChWkCNfKd9cozdkpjfT8x3yTtWW8VxTG+VuYqxudnoyRn9dtNGUk4J?=
+ =?us-ascii?Q?D1L5t4A4QdUSH54tCoP7oXuHbpCFf2E+yLAoR8YMS/MC0j4E76tWFnBW7nx+?=
+ =?us-ascii?Q?IRlidDRXsHpxXO2PYlOxk6Wss89D/q115CNt191L?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26d51271-f6d9-4650-f696-08dc65694098
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 20:49:29.2459
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 20:49:51.0524
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SOUU0a6I4fkOTjTj7V3XN3bq5w4HCTqDP0CVjAMbaLh6V4ax3ZZozZckgHCA6LvUBza5jUmAQgt8DIYw5r9mjw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR12MB8565
+X-MS-Exchange-CrossTenant-UserPrincipalName: fTyzMcRZY1acBIhq9CW/RQlYGkiUHrzvDMJcvx5Nz18B2xJ473mQiYSQWzUl1BWb4eAl4LUvM/oQSS0/+jrcsg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR04MB9200
 
-Hi,
-
-On 4/24/2024 8:10 PM, Kuppuswamy Sathyanarayanan wrote:
+On Thu, Apr 25, 2024 at 06:19:24PM +0800, Shengjiu Wang wrote:
+> According to comments in drivers/pmdomain/imx/gpcv2.c:
 > 
-> On 4/23/24 8:33 PM, Smita Koralahalli wrote:
->> Clear Link Bandwidth Management Status (LBMS) if set, on a hot-remove event.
->>
->> The hot-remove event could result in target link speed reduction if LBMS
->> is set, due to a delay in Presence Detect State Change (PDSC) happening
->> after a Data Link Layer State Change event (DLLSC).
+> 	/* request the ADB400 to power up */
+> 	if (domain->bits.hskreq) {
+> 		regmap_update_bits(domain->regmap, domain->regs->hsk,
+> 				   domain->bits.hskreq, domain->bits.hskreq);
 > 
-> What is the actual impact? Since this happens during hot-remove,
-> and there is no device, the link retrain will fail, right?
-
-That's right. Link retrain fails resulting in reduced link speeds. It 
-shouldn't attempt link retrain in the first place if there is no device.
-
+> 		/*
+> 		 * ret = regmap_read_poll_timeout(domain->regmap, domain->regs->hsk, reg_val,
+> 		 *				  (reg_val & domain->bits.hskack), 0,
+> 		 *				  USEC_PER_MSEC);
+> 		 * Technically we need the commented code to wait handshake. But that needs
+> 		 * the BLK-CTL module BUS clk-en bit being set.
+> 		 *
+> 		 * There is a separate BLK-CTL module and we will have such a driver for it,
+> 		 * that driver will set the BUS clk-en bit and handshake will be triggered
+> 		 * automatically there. Just add a delay and suppose the handshake finish
+> 		 * after that.
+> 		 */
+> 	}
 > 
->>
->> In reality, PDSC and DLLSC events rarely come in simultaneously. Delay in
->> PDSC can sometimes be too late and the slot could have already been
->> powered down just by a DLLSC event. And the delayed PDSC could falsely be
->> interpreted as an interrupt raised to turn the slot on. This false process
->> of powering the slot on, without a link forces the kernel to retrain the
->> link if LBMS is set, to a lower speed to restablish the link thereby
->> bringing down the link speeds [2].
->>
->> According to PCIe r6.2 sec 7.5.3.8 [1], it is derived that, LBMS cannot
->> be set for an unconnected link and if set, it serves the purpose of
+> The BLK-CTL module needs to add delay to wait for a handshake request finished
+> before accessing registers, which is just after the enabling of power domain.
 > 
-> I did not find this detail in the spec. Can you copy paste the lines
-> in the spec that mentions the case where it cannot set in an
-> unconnected link? All I see are the cases where it can be set.
-
-This is the only line in the Spec: "Link Bandwidth Management Status - 
-This bit is Set by hardware to indicate that either of the following has 
-occurred without the Port transitioning through DL_Down status".
-
-I have mostly written down the inferences for the statement. And part of 
-the inferences I have even picked up from Bjorn's statements in the 
-below link: (probably all of them :))
-
-https://lore.kernel.org/all/alpine.DEB.2.21.2306080224280.36323@angie.orcam.me.uk/
-
-Repasting..
-
-"...LBMS cannot be set for an unconnected link, because the bit is only 
-allowed to be set for an event observed that has happened with a port 
-reporting no DL_Down status at any time throughout the event, which can 
-only happen with the physical layer up, which of course cannot happen 
-for an unconnected link....
-...
-.IOW the LBMS bit serves the purpose of indicating that there is 
-actually a device down an inactive link ...."
-
+> Otherwise there is error:
 > 
->> indicating that there is actually a device down an inactive link.
->> However, hardware could have already set LBMS when the device was
->> connected to the port i.e when the state was DL_Up or DL_Active. Some
+> [    2.180834] SError Interrupt on CPU1, code 0x00000000bf000002 -- SError
+> [    2.180849] CPU: 1 PID: 48 Comm: kworker/u16:2 Not tainted 6.9.0-rc5-next-20240424-00003-g21cec88845c6 #171
+> [    2.180856] Hardware name: NXP i.MX8MPlus EVK board (DT)
+> [    2.180861] Workqueue: events_unbound deferred_probe_work_func
+> [    2.180878] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [    2.180885] pc : clk_imx8mp_audiomix_runtime_resume+0x34/0x44
+> [    2.180900] lr : pm_generic_runtime_resume+0x2c/0x44
+> [    2.180910] sp : ffff800083423a20
+> [    2.180913] x29: ffff800083423a20 x28: 0000000000000000 x27: 0000000000000000
+> [    2.180922] x26: ffff0000c0e4e410 x25: 0000000000000000 x24: 0000000000000000
+> [    2.180935] x23: 0000000000000000 x22: ffff0000c02afd20 x21: 0000000000000000
+> [    2.180945] x20: ffff0000c162a000 x19: ffff0000c0e52810 x18: ffffffffffffffff
+> [    2.180959] x17: 0000000000000000 x16: 0000000000000100 x15: ffff8000834239f0
+> [    2.180970] x14: ffff0000c03d0a1c x13: ffff0000c0a03440 x12: 00000000000003c7
+> [    2.180982] x11: 0000000000000000 x10: ffff8000825010ba x9 : 0000000000000008
+> [    2.180993] x8 : 0000000000000008 x7 : 0000000000000000 x6 : 0000000000000000
+> [    2.181005] x5 : ffff8000838b0000 x4 : ffff0000c0e66088 x3 : ffff8000813852c0
+> [    2.181018] x2 : 0000000000000000 x1 : 0000000000000004 x0 : ffff8000838b0300
+> [    2.181035] Kernel panic - not syncing: Asynchronous SError Interrupt
+> [    2.181038] CPU: 1 PID: 48 Comm: kworker/u16:2 Not tainted 6.9.0-rc5-next-20240424-00003-g21cec88845c6 #171
+> [    2.181047] Hardware name: NXP i.MX8MPlus EVK board (DT)
+> [    2.181050] Workqueue: events_unbound deferred_probe_work_func
+> [    2.181064] Call trace:
+> [    2.181066]  dump_backtrace+0x90/0xe8
+> [    2.181080]  show_stack+0x18/0x24
+> [    2.181091]  dump_stack_lvl+0x34/0x8c
+> [    2.181104]  dump_stack+0x18/0x24
+> [    2.181117]  panic+0x39c/0x3d0
+> [    2.181129]  nmi_panic+0x48/0x94
+> [    2.181142]  arm64_serror_panic+0x6c/0x78
+> [    2.181149]  do_serror+0x3c/0x70
+> [    2.181157]  el1h_64_error_handler+0x30/0x48
+> [    2.181164]  el1h_64_error+0x64/0x68
+> [    2.181171]  clk_imx8mp_audiomix_runtime_resume+0x34/0x44
+> [    2.181183]  __genpd_runtime_resume+0x30/0x80
+> [    2.181195]  genpd_runtime_resume+0x110/0x244
+> [    2.181205]  __rpm_callback+0x48/0x1d8
+> [    2.181213]  rpm_callback+0x68/0x74
+> [    2.181224]  rpm_resume+0x468/0x6c0
+> [    2.181234]  __pm_runtime_resume+0x50/0x94
+> [    2.181243]  pm_runtime_get_suppliers+0x60/0x8c
+> [    2.181258]  __driver_probe_device+0x48/0x12c
+> [    2.181268]  driver_probe_device+0xd8/0x15c
+> [    2.181278]  __device_attach_driver+0xb8/0x134
+> [    2.181290]  bus_for_each_drv+0x84/0xe0
+> [    2.181302]  __device_attach+0x9c/0x188
+> [    2.181312]  device_initial_probe+0x14/0x20
+> [    2.181323]  bus_probe_device+0xac/0xb0
+> [    2.181334]  deferred_probe_work_func+0x88/0xc0
+> [    2.181344]  process_one_work+0x150/0x290
+> [    2.181357]  worker_thread+0x2f8/0x408
+> [    2.181370]  kthread+0x110/0x114
+> [    2.181381]  ret_from_fork+0x10/0x20
+> [    2.181391] SMP: stopping secondary CPUs
+> [    2.181400] Kernel Offset: disabled
+> [    2.181403] CPU features: 0x0,00000040,00100000,4200421b
+> [    2.181407] Memory Limit: none
+> [    2.463040] ---[ end Kernel panic - not syncing: Asynchronous SError Interrupt ]---
 > 
-> Isn't LBMS only set during DL_Down transition ? Why would it be
-> set during DL_Up?
-
-The statement in Spec is very confusing :/ LBMS could only be set when 
-the state is not DL_Down. But it could already be set before the port 
-enters DL_Down.
-
-Tried my attempt to collect some points here:
-https://lore.kernel.org/linux-pci/4852519a-c941-aa0c-2912-f6383c708ade@amd.com/
-
-Hoping I'm on the right track!
-
-Thanks
-Smita
-
+> Fixes: 1496dd413b2e ("clk: imx: imx8mp: Add pm_runtime support for power saving")
+> Reported-by: Francesco Dolcini <francesco@dolcini.it>
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  drivers/clk/imx/clk-imx8mp-audiomix.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
->> hardwares would have even attempted retrain going into recovery mode,
->> just before transitioning to DL_Down.
->>
->> Thus the set LBMS is never cleared and might force software to cause link
->> speed drops when there is no link [2].
->>
->> Dmesg before:
->> 	pcieport 0000:20:01.1: pciehp: Slot(59): Link Down
->> 	pcieport 0000:20:01.1: pciehp: Slot(59): Card present
->> 	pcieport 0000:20:01.1: broken device, retraining non-functional downstream link at 2.5GT/s
->> 	pcieport 0000:20:01.1: retraining failed
->> 	pcieport 0000:20:01.1: pciehp: Slot(59): No link
->>
->> Dmesg after:
->> 	pcieport 0000:20:01.1: pciehp: Slot(59): Link Down
->> 	pcieport 0000:20:01.1: pciehp: Slot(59): Card present
->> 	pcieport 0000:20:01.1: pciehp: Slot(59): No link
->>
->> [1] PCI Express Base Specification Revision 6.2, Jan 25 2024.
->>      https://members.pcisig.com/wg/PCI-SIG/document/20590
->> [2] Commit a89c82249c37 ("PCI: Work around PCIe link training failures")
->>
->> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
->> ---
->> 1. Should be based on top of fixes for link retrain status in
->> pcie_wait_for_link_delay()
->> https://patchwork.kernel.org/project/linux-pci/list/?series=824858
->> https://lore.kernel.org/linux-pci/53b2239b-4a23-a948-a422-4005cbf76148@linux.intel.com/
->>
->> Without the fixes patch output would be:
->> 	pcieport 0000:20:01.1: pciehp: Slot(59): Link Down
->> 	pcieport 0000:20:01.1: pciehp: Slot(59): Card present
->> 	pcieport 0000:20:01.1: broken device, retraining non-functional downstream link at 2.5GT/s
->> 	pcieport 0000:20:01.1: retraining failed
->> 	pcieport 0000:20:01.1: pciehp: Slot(59): No device found.
->>
->> 2. I initially attempted to wait for both events PDSC and DLLSC to happen
->> and then turn on the slot.
->> Similar to: https://lore.kernel.org/lkml/20190205210701.25387-1-mr.nuke.me@gmail.com/
->> but before turning on the slot.
->>
->> Something like:
->> -		ctrl->state = POWERON_STATE;
->> -		mutex_unlock(&ctrl->state_lock);
->> -		if (present)
->> +		if (present && link_active) {
->> +			ctrl->state = POWERON_STATE;
->> +			mutex_unlock(&ctrl->state_lock);
->> 			ctrl_info(ctrl, "Slot(%s): Card present\n",
->> 				  slot_name(ctrl));
->> -		if (link_active)
->> 			ctrl_info(ctrl, "Slot(%s): Link Up\n",
->> 				  slot_name(ctrl));
->> -		ctrl->request_result = pciehp_enable_slot(ctrl);
->> -		break;
->> +			ctrl->request_result = pciehp_enable_slot(ctrl);
->> +			break;
->> +		}
->> +		else {
->> +			mutex_unlock(&ctrl->state_lock);
->> +			break;
->> +		}
->>
->> This would also avoid printing the lines below on a remove event.
->> pcieport 0000:20:01.1: pciehp: Slot(59): Card present
->> pcieport 0000:20:01.1: pciehp: Slot(59): No link
->>
->> I understand this would likely be not applicable in places where broken
->> devices hardwire PDS to zero and PDSC would never happen. But I'm open to
->> making changes if this is more applicable. Because, SW cannot directly
->> track the interference of HW in attempting link retrain and setting LBMS.
->>
->> 3. I tried introducing delay similar to pcie_wait_for_presence() but I
->> was not successful in picking the right numbers. Hence hit with the same
->> link speed drop.
->>
->> 4. For some reason I was unable to clear LBMS with:
->> 	pcie_capability_clear_word(ctrl->pcie->port, PCI_EXP_LNKSTA,
->> 				   PCI_EXP_LNKSTA_LBMS);
->> ---
->>   drivers/pci/hotplug/pciehp_pci.c | 8 +++++++-
->>   1 file changed, 7 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/pci/hotplug/pciehp_pci.c b/drivers/pci/hotplug/pciehp_pci.c
->> index ad12515a4a12..9155fdfd1d37 100644
->> --- a/drivers/pci/hotplug/pciehp_pci.c
->> +++ b/drivers/pci/hotplug/pciehp_pci.c
->> @@ -92,7 +92,7 @@ void pciehp_unconfigure_device(struct controller *ctrl, bool presence)
->>   {
->>   	struct pci_dev *dev, *temp;
->>   	struct pci_bus *parent = ctrl->pcie->port->subordinate;
->> -	u16 command;
->> +	u16 command, lnksta;
->>   
->>   	ctrl_dbg(ctrl, "%s: domain:bus:dev = %04x:%02x:00\n",
->>   		 __func__, pci_domain_nr(parent), parent->number);
->> @@ -134,4 +134,10 @@ void pciehp_unconfigure_device(struct controller *ctrl, bool presence)
->>   	}
->>   
->>   	pci_unlock_rescan_remove();
->> +
->> +	/* Clear LBMS on removal */
->> +	pcie_capability_read_word(ctrl->pcie->port, PCI_EXP_LNKSTA, &lnksta);
->> +	if (lnksta & PCI_EXP_LNKSTA_LBMS)
->> +		pcie_capability_write_word(ctrl->pcie->port, PCI_EXP_LNKSTA,
->> +					   PCI_EXP_LNKSTA_LBMS);
->>   }
+> diff --git a/drivers/clk/imx/clk-imx8mp-audiomix.c b/drivers/clk/imx/clk-imx8mp-audiomix.c
+> index e4231e9c8f05..cb44c460548e 100644
+> --- a/drivers/clk/imx/clk-imx8mp-audiomix.c
+> +++ b/drivers/clk/imx/clk-imx8mp-audiomix.c
+> @@ -6,6 +6,7 @@
+>   */
+>  
+>  #include <linux/clk-provider.h>
+> +#include <linux/delay.h>
+>  #include <linux/device.h>
+>  #include <linux/io.h>
+>  #include <linux/mod_devicetable.h>
+> @@ -362,6 +363,12 @@ static int clk_imx8mp_audiomix_runtime_suspend(struct device *dev)
+>  
+>  static int clk_imx8mp_audiomix_runtime_resume(struct device *dev)
+>  {
+> +	/*
+> +	 * According to the drivers/pmdomain/imx/gpcv2.c
+> +	 * need to wait for handshake request to propagate
+> +	 */
+> +	udelay(5);
+> +
+
+https://lore.kernel.org/imx/20230727152503.2199550-1-shenwei.wang@nxp.com/T/#m2dc5111e9628235f031c0bad2a137222b0205a61
+
+supposed clk_imx8mp_audiomix_save_restore() is that write save data into
+some registers.
+
+See above link for detail, it may not delay 5us before write to register. 
+You need 
+	readl();
+	udelay(5);
+	writel();
+
+>  	clk_imx8mp_audiomix_save_restore(dev, false);
+>  
+>  	return 0;
+> -- 
+> 2.34.1
 > 
 
