@@ -1,106 +1,204 @@
-Return-Path: <linux-kernel+bounces-158980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47B3C8B27B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:47:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B1E58B27BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:50:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 024FF1F24B7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:47:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78A171F25B7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:50:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F37E514EC60;
-	Thu, 25 Apr 2024 17:47:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1D814EC42;
+	Thu, 25 Apr 2024 17:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JpCaPtHp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="SjUUi0IJ"
+Received: from smtp-bc0c.mail.infomaniak.ch (smtp-bc0c.mail.infomaniak.ch [45.157.188.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3548114E2FA;
-	Thu, 25 Apr 2024 17:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8610714E2FA
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 17:49:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714067255; cv=none; b=G5NeiZzzIf6bLca52NwWq+BoviAfX+UawbR9uXCbcmpAGVFmxVJd6cszljgmxk02tK36OAElCzMDBy0J7bW+xgyp8uB/vYZEgsczwrB3jaE0gqHDfr6iyiYV4u2e1p3r+2sGFhesPKgFUGtg1qNnq2ti3j152FJKnFVBHSbv0+I=
+	t=1714067404; cv=none; b=P5NpAGiPlQbYU0jrlQXPTTixHtFWs9ezDBKNVnYFXeP0fArW1P0w1Kq4840Z1OhndCn2N3A5Q8rZQPln3rsw104xwUISm6ilKzoWAdRoFuRyyAwvYFhRyuJXmGE1WCo8SeftQslbopDIVC/ywM7thp58TvhI4UOg4mpW9y9UQ/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714067255; c=relaxed/simple;
-	bh=BCcJL4EYGgNvGOmYP2zHLkNwqcWvBvq44rPg2J54MjY=;
+	s=arc-20240116; t=1714067404; c=relaxed/simple;
+	bh=Wcp+Os6j8PSxfC/nvGvMV2CKI+zcJnPAX63EWSKy9zQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C+1h3g5E6Z6JBA49MP2c2NzSlljCvJ4TTrh+DQJ+qZkJc2sv5x9AWYdg5SEPId1VFJaKYDz1EhR4j2rIX7YBVhIFUeFC0Th38E96ku+BMT0aaDkxvEE8hr4CIDIqAXODrkZrudqPDF/x24tAkbSdtYRy6eKDIkXU2TIamM6ikYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JpCaPtHp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9363C113CC;
-	Thu, 25 Apr 2024 17:47:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714067254;
-	bh=BCcJL4EYGgNvGOmYP2zHLkNwqcWvBvq44rPg2J54MjY=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=sVcnhKhMCNhK/akJfXPrYm4JFYdpZrsc/Zl91JGfSe8zv3Mepd2rnwMh1J4WtZtEgnPyBrkvt6Aho8gSpl8HjlWzb1AB9tZ11UrY6OPD5iIjzTcueHmMhBwnFH4I5KsYpnBfemCtCLw5ppJmT6c24UmRPx6J2R5I5uHn7GQ0ExE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=SjUUi0IJ; arc=none smtp.client-ip=45.157.188.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-4-0000.mail.infomaniak.ch (smtp-4-0000.mail.infomaniak.ch [10.7.10.107])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4VQNfW00KyzB2p;
+	Thu, 25 Apr 2024 19:49:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1714067394;
+	bh=Wcp+Os6j8PSxfC/nvGvMV2CKI+zcJnPAX63EWSKy9zQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JpCaPtHpcA9wnwNWxeBgTi2UfOmjEcDJD7emFgUmRckg1E0bVvYne5Kdt8ZHTdjxr
-	 cEAbNpKw1TpsCo2jn8HuHrwhA7R8t+tuMq1FLisbxAbeN2wYxdjegc0XDenkPcLHlw
-	 g49Jf9Rvqls+1eM9flBnsB9MkoGiXq2Rfx+vrJKH336ln4DZpXCdhuTqxajD7/A/DL
-	 4YvSITqRDmdH6OSONWSRAqAJLGbeG6zpezCoh2cNgP9stxejVmNB2vNbX3XrVhAjxS
-	 d+2q3ePXhbTE7gII29FWsvx5nW7Ghc8CzOscb0AZ0fNuOpK9a6CrK33nGrWWFf//Pr
-	 zFb8BIs8ml19Q==
-Date: Thu, 25 Apr 2024 10:47:32 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Cc: Christian Brauner <brauner@kernel.org>, amir73il@gmail.com,
-	hu1.chen@intel.com, miklos@szeredi.hu, malini.bhandaru@intel.com,
-	tim.c.chen@intel.com, mikko.ylinen@intel.com, lizhen.you@intel.com,
-	linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH v1 0/3] overlayfs: Optimize override/revert creds
-Message-ID: <20240425174732.GA270911@dev-arch.thelio-3990X>
-References: <20240403021808.309900-1-vinicius.gomes@intel.com>
- <20240424-befund-unantastbar-9b0154bec6e7@brauner>
- <87a5liy3le.fsf@intel.com>
- <20240425-nullnummer-pastinaken-c8cf2f7c41f3@brauner>
- <87y191wem5.fsf@intel.com>
+	b=SjUUi0IJOshpQJ9nZ56s7gT/r7Qb/c12WMGE5uDH6WhD3GXyz/oolIi7D2oxL/05R
+	 KBERmBy12eBABcWlzrPlKqCgOrfX/3Z4EudkMwQXRT57q0P9ODnE6NDxbRmnW67Tlf
+	 dLNcDx63I2XuiJKdzqBA6S1yAm81UU/zQGl+WHSY=
+Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4VQNfT6fSQzBnF;
+	Thu, 25 Apr 2024 19:49:53 +0200 (CEST)
+Date: Thu, 25 Apr 2024 19:49:52 +0200
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: kernel test robot <oliver.sang@intel.com>, 
+	Christian Brauner <brauner@kernel.org>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org, 
+	"David S. Miller" <davem@davemloft.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
+	Shuah Khan <shuah@kernel.org>, Will Drewry <wad@chromium.org>, 
+	Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>, 
+	linux-kselftest@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [linus:master] [selftests/harness]  0710a1a73f:
+ kernel-selftests.pidfd.pidfd_setns_test.fail
+Message-ID: <20240425.Oofoi5oghoo6@digikod.net>
+References: <202403291015.1fcfa957-oliver.sang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87y191wem5.fsf@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <202403291015.1fcfa957-oliver.sang@intel.com>
+X-Infomaniak-Routing: alpha
 
-On Thu, Apr 25, 2024 at 10:12:34AM -0700, Vinicius Costa Gomes wrote:
-> Christian Brauner <brauner@kernel.org> writes:
+FYI, I'm working on this issue.
+
+Regards,
+ Mickaël
+
+On Fri, Mar 29, 2024 at 10:42:51AM +0800, kernel test robot wrote:
 > 
-> > On Wed, Apr 24, 2024 at 12:15:25PM -0700, Vinicius Costa Gomes wrote:
-> >> I believe the crash and clang 17 compilation error point to the same
-> >> problem, that in ovl_rename() some 'goto' skips the declaration of the
-> >> (implicit) variable that the guard() macro generates. And it ends up
-> >> doing a revert_creds_light() on garbage memory when ovl_rename()
-> >> returns.
-> >
-> > If this is a compiler bug this warrants at least a comment in the commit
-> > message because right now people will be wondering why that place
-> > doesn't use a guard. Ideally we can just use guards everywhere though
-> > and report this as a bug against clang, I think.
-> >
 > 
-> I am seeing this like a bug/mising feature in gcc (at least in the
-> version I was using), as clang (correctly) refuses to compile the buggy
-> code (I agree with the error).
-
-Indeed, your description of the issue and the fact clang refuses to
-compile the problematic code makes me think that
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91951 is the relevant GCC
-issue.
-
-As an aside, just in case it comes up in the future, there is a
-potential issue in clang's scope checking where it would attempt to
-validate all labels in a function as potential destinations of 'asm
-goto()' instances in that same function, rather than just the labels
-that the 'asm goto()' could jump to, which can lead to false positive
-errors about jumping past the initialization of a variable declared with
-cleanup.
-
-https://github.com/ClangBuiltLinux/linux/issues/1886
-https://github.com/ClangBuiltLinux/linux/issues/2003
-
-Cheers,
-Nathan
+> Hello,
+> 
+> kernel test robot noticed "kernel-selftests.pidfd.pidfd_setns_test.fail" on:
+> 
+> commit: 0710a1a73fb45033ebb06073e374ab7d44a05f15 ("selftests/harness: Merge TEST_F_FORK() into TEST_F()")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> [test failed on linus/master 4cece764965020c22cff7665b18a012006359095]
+> 
+> in testcase: kernel-selftests
+> version: kernel-selftests-x86_64-4306b286-1_20240301
+> with following parameters:
+> 
+> 	group: pidfd
+> 
+> 
+> 
+> compiler: gcc-12
+> test machine: 36 threads 1 sockets Intel(R) Core(TM) i9-10980XE CPU @ 3.00GHz (Cascade Lake) with 32G memory
+> 
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+> 
+> 
+> 
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202403291015.1fcfa957-oliver.sang@intel.com
+> 
+> 
+> 
+> # timeout set to 300
+> # selftests: pidfd: pidfd_setns_test
+> # TAP version 13
+> # 1..7
+> # # Starting 7 tests from 2 test cases.
+> # #  RUN           global.setns_einval ...
+> # #            OK  global.setns_einval
+> # ok 1 global.setns_einval
+> # #  RUN           current_nsset.invalid_flags ...
+> # # pidfd_setns_test.c:161:invalid_flags:Expected self->child_pid_exited (0) > 0 (0)
+> # #            OK  current_nsset.invalid_flags
+> # ok 2 current_nsset.invalid_flags
+> # #  RUN           current_nsset.pidfd_exited_child ...
+> # # pidfd_setns_test.c:161:pidfd_exited_child:Expected self->child_pid_exited (0) > 0 (0)
+> # #            OK  current_nsset.pidfd_exited_child
+> # ok 3 current_nsset.pidfd_exited_child
+> # #  RUN           current_nsset.pidfd_incremental_setns ...
+> # # pidfd_setns_test.c:161:pidfd_incremental_setns:Expected self->child_pid_exited (0) > 0 (0)
+> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to user namespace of 45423 via pidfd 20
+> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to mnt namespace of 45423 via pidfd 20
+> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to pid namespace of 45423 via pidfd 20
+> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to uts namespace of 45423 via pidfd 20
+> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to ipc namespace of 45423 via pidfd 20
+> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to net namespace of 45423 via pidfd 20
+> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to cgroup namespace of 45423 via pidfd 20
+> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to pid_for_children namespace of 45423 via pidfd 20
+> # # pidfd_setns_test.c:391:pidfd_incremental_setns:Expected setns(self->child_pidfd1, info->flag) (-1) == 0 (0)
+> # # pidfd_setns_test.c:392:pidfd_incremental_setns:Too many users - Failed to setns to time namespace of 45423 via pidfd 20
+> # # pidfd_incremental_setns: Test terminated by timeout
+> # #          FAIL  current_nsset.pidfd_incremental_setns
+> # not ok 4 current_nsset.pidfd_incremental_setns
+> # #  RUN           current_nsset.nsfd_incremental_setns ...
+> # # pidfd_setns_test.c:161:nsfd_incremental_setns:Expected self->child_pid_exited (0) > 0 (0)
+> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to user namespace of 45524 via nsfd 19
+> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to mnt namespace of 45524 via nsfd 24
+> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to pid namespace of 45524 via nsfd 27
+> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to uts namespace of 45524 via nsfd 30
+> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to ipc namespace of 45524 via nsfd 33
+> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to net namespace of 45524 via nsfd 36
+> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to cgroup namespace of 45524 via nsfd 39
+> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to pid_for_children namespace of 45524 via nsfd 42
+> # # pidfd_setns_test.c:427:nsfd_incremental_setns:Expected setns(self->child_nsfds1[i], info->flag) (-1) == 0 (0)
+> # # pidfd_setns_test.c:428:nsfd_incremental_setns:Too many users - Failed to setns to time namespace of 45524 via nsfd 45
+> # # nsfd_incremental_setns: Test terminated by timeout
+> # #          FAIL  current_nsset.nsfd_incremental_setns
+> # not ok 5 current_nsset.nsfd_incremental_setns
+> # #  RUN           current_nsset.pidfd_one_shot_setns ...
+> # # pidfd_setns_test.c:161:pidfd_one_shot_setns:Expected self->child_pid_exited (0) > 0 (0)
+> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding user namespace of 45630 to list of namespaces to attach to
+> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding mnt namespace of 45630 to list of namespaces to attach to
+> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding pid namespace of 45630 to list of namespaces to attach to
+> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding uts namespace of 45630 to list of namespaces to attach to
+> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding ipc namespace of 45630 to list of namespaces to attach to
+> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding net namespace of 45630 to list of namespaces to attach to
+> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding cgroup namespace of 45630 to list of namespaces to attach to
+> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding pid_for_children namespace of 45630 to list of namespaces to attach to
+> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding time namespace of 45630 to list of namespaces to attach to
+> # # pidfd_setns_test.c:466:pidfd_one_shot_setns:Expected setns(self->child_pidfd1, flags) (-1) == 0 (0)
+> # # pidfd_setns_test.c:467:pidfd_one_shot_setns:Too many users - Failed to setns to namespaces of 45630
+> # # pidfd_one_shot_setns: Test terminated by timeout
+> # #          FAIL  current_nsset.pidfd_one_shot_setns
+> # not ok 6 current_nsset.pidfd_one_shot_setns
+> # #  RUN           current_nsset.no_foul_play ...
+> # # pidfd_setns_test.c:161:no_foul_play:Expected self->child_pid_exited (0) > 0 (0)
+> # # pidfd_setns_test.c:506:no_foul_play:Adding user namespace of 45737 to list of namespaces to attach to
+> # # pidfd_setns_test.c:506:no_foul_play:Adding mnt namespace of 45737 to list of namespaces to attach to
+> # # pidfd_setns_test.c:506:no_foul_play:Adding pid namespace of 45737 to list of namespaces to attach to
+> # # pidfd_setns_test.c:506:no_foul_play:Adding uts namespace of 45737 to list of namespaces to attach to
+> # # pidfd_setns_test.c:506:no_foul_play:Adding ipc namespace of 45737 to list of namespaces to attach to
+> # # pidfd_setns_test.c:506:no_foul_play:Adding net namespace of 45737 to list of namespaces to attach to
+> # # pidfd_setns_test.c:506:no_foul_play:Adding cgroup namespace of 45737 to list of namespaces to attach to
+> # # pidfd_setns_test.c:506:no_foul_play:Adding time namespace of 45737 to list of namespaces to attach to
+> # # pidfd_setns_test.c:510:no_foul_play:Expected setns(self->child_pidfd1, flags) (-1) == 0 (0)
+> # # pidfd_setns_test.c:511:no_foul_play:Too many users - Failed to setns to namespaces of 45737 vid pidfd 20
+> # # no_foul_play: Test terminated by timeout
+> # #          FAIL  current_nsset.no_foul_play
+> # not ok 7 current_nsset.no_foul_play
+> # # FAILED: 3 / 7 tests passed.
+> # # Totals: pass:3 fail:4 xfail:0 xpass:0 skip:0 error:0
+> not ok 7 selftests: pidfd: pidfd_setns_test # exit=1
+> make: Leaving directory '/usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-0710a1a73fb45033ebb06073e374ab7d44a05f15/tools/testing/selftests/pidfd'
+> 
+> 
+> 
+> The kernel config and materials to reproduce are available at:
+> https://download.01.org/0day-ci/archive/20240329/202403291015.1fcfa957-oliver.sang@intel.com
+> 
+> 
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+> 
+> 
 
