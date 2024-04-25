@@ -1,201 +1,259 @@
-Return-Path: <linux-kernel+bounces-159144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 508DD8B29DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 004998B29E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:32:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73D481C2096D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:32:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 244C61C219DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:32:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A995A0EA;
-	Thu, 25 Apr 2024 20:31:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF2F7152E19;
+	Thu, 25 Apr 2024 20:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="MYM15f//"
-Received: from CY4PR05CU001.outbound.protection.outlook.com (mail-westcentralusazon11020002.outbound.protection.outlook.com [40.93.198.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nkK0T2sV"
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A812339ADD;
-	Thu, 25 Apr 2024 20:31:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.198.2
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714077101; cv=fail; b=T2mkCtELYUrwse5A8zIOGurtNBsX2TDrMfzIau2t3fnEziZ+rQCczLiMGKhfOCQOVkZM3qbyywO6wK/AKy1sXsdLMKc/rTT7Jq83gusXrp0a19FK+/Bs8GOM2Q6NtxGXRVnlNn7zNUfbdNXaKtuOSBN7HoTPJJ/3G8yYiNaUvEI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714077101; c=relaxed/simple;
-	bh=EONNw4/k20Ja384tQdF5C/4LP9cVCIhvyh4YKzngxMQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=gHJP8sFZxCacj4XFE+82zgiY6yXho7O8XaMEI8zjSDFimRBvX5zLR2xpc0T8FE4Vx3WsSul4/YfEkKNqosvi5YasTY7Y5AULXaueBIULB/1PeF8RxjEgqTEEbALt21OQHvqP7KsAqoNvGk57ipG1Yuk1d9U8RYoL1xODOxJrfZ8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=MYM15f//; arc=fail smtp.client-ip=40.93.198.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RZGmuC8fnj8Uk/dtEotswFdQr+FNPg5qrbwlfDWxlm1n/ARFKMIOCopir8/LNTiBpUmabsO+5mTgZQwKE+NGolPeModsxlGxssPBA1HWhq6d9D6Dr0UAlnjmeyU9jeet77/7nV2T/HH7UdvX/zJvq2JbQF0EiGx688xzrGLkPvqFjoBPFsnJ3s/+Yh0L8yEiz+vzoLVW75xs6PRS3FfoM/9DdRDGKlApZD75zdoMfi0/TaMb0z9lSM/YSsofoT5NB2CBkGh9Q//wFzywz+7YIYabqETTQCUk8QUlCbdBBqOAGdvjqsf4LE+t3cgVmJzXdVkWfXBCfJGodjgm9lHekQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1q69pPUniXDpUf83RCa5rwKHqBRWs1IQv26fzShq0Pg=;
- b=NqEz74NfSePQ6DNuR9ZhlBFtEqVGk0JW8shYlhKXUnXSQanvizbIKKG5NXTwtBzcXX87qYrnYRLi8yEWBiEdtg5R0G5YtmrRE3QedJF+P/oXrgkawfEL1K1ogN7LjKUnSuYtXm3aHaqVEBBpir14RRh8AGCPShBtRlSmdL/RjFoIVi7edhJ7SjZdmNQAPJT43h801/eov6MMepE8fOfs3G1+DaIsdf7VF+Tcj7EUjlrDdDUXK5Ed6YDfZz8M3YDdiHLrn1kXdKdpbBmTXZ3EohVIwfBG+6+TMgUr1xb1aC5SdFWuLH690Ak7N9mCQbJ3+VTJIuQBqLYNE6l5cGPxWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1q69pPUniXDpUf83RCa5rwKHqBRWs1IQv26fzShq0Pg=;
- b=MYM15f//YzTABG8P4OQJzLTq273HFWfsRnsiodmB8aulDl2DupXt+efHl55zYjvwMoFREV/oc6epRxXRjKrfXQc4bTjXIv3unyCgzSm8kqPjmyakh0dM0bOqFX/czDuUHJc2zqYACiiNyFdVWStDhPDP4LaRbzAgiCrdhj95a/k=
-Received: from SJ1PR21MB3457.namprd21.prod.outlook.com (2603:10b6:a03:453::5)
- by MW1PEPF0000E7B2.namprd21.prod.outlook.com (2603:10b6:329:400:0:2:0:17)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.11; Thu, 25 Apr
- 2024 20:31:36 +0000
-Received: from SJ1PR21MB3457.namprd21.prod.outlook.com
- ([fe80::94ec:979:8364:85eb]) by SJ1PR21MB3457.namprd21.prod.outlook.com
- ([fe80::94ec:979:8364:85eb%4]) with mapi id 15.20.7544.010; Thu, 25 Apr 2024
- 20:31:36 +0000
-From: Long Li <longli@microsoft.com>
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>, Konstantin Taranov
-	<kotaranov@microsoft.com>, "sharmaajay@microsoft.com"
-	<sharmaajay@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org"
-	<leon@kernel.org>
-CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH rdma-next 5/6] RDMA/mana_ib: boundary check before
- installing cq callbacks
-Thread-Topic: [PATCH rdma-next 5/6] RDMA/mana_ib: boundary check before
- installing cq callbacks
-Thread-Index: AQHakbDErNzGLcyhkEy3fR/U9s4mD7F5e7Zg
-Date: Thu, 25 Apr 2024 20:31:36 +0000
-Message-ID:
- <SJ1PR21MB3457841DE12CD695FBFA4EA9CE172@SJ1PR21MB3457.namprd21.prod.outlook.com>
-References: <1713459125-14914-1-git-send-email-kotaranov@linux.microsoft.com>
- <1713459125-14914-6-git-send-email-kotaranov@linux.microsoft.com>
-In-Reply-To: <1713459125-14914-6-git-send-email-kotaranov@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=715674cb-eab0-4a63-acef-51da210cb4c0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-04-25T20:31:26Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR21MB3457:EE_|MW1PEPF0000E7B2:EE_
-x-ms-office365-filtering-correlation-id: 928de5ec-2206-4335-b58f-08dc6566b406
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|376005|1800799015|366007|38070700009;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?vk35BqksVe7ysgfP1UkfQhpgoidJKuXjWpfQFvHExVduC6GdeBq6aNDs+ZE8?=
- =?us-ascii?Q?2rGlyxMgIOBpxhr79sZJFl+16dv9C4UlO0lvpD5Ww/dJj1tAUNlqxkGeJw/j?=
- =?us-ascii?Q?u54PKygodKyrpy1leuaJKGYTT25+SJerGQhBNRmo/cUXxnEyjPSwP2d45d6X?=
- =?us-ascii?Q?Re3XnipFA2mVmfEpGDV/ZYZ8pphYxYmOXMGXexLTZkXj1HHVMHnh/TLj74aL?=
- =?us-ascii?Q?ky21yasunyGEUV/aWuBNFiYbM8bUXVJ3Cm/BlSnsnI4CYv5Z0qoliftRKQz1?=
- =?us-ascii?Q?a6aXS4ge8r93OrG+v5Ne6HU9JP6nA+kJdhodSyknFCYBvaLq3wwGR7f8B3T3?=
- =?us-ascii?Q?hMcVs4nR6Lzh2PD1+0AC9Y1xR7XXGpbvPfrxU/rAPgsbKc9EygBgQZejgXvu?=
- =?us-ascii?Q?cEiogf6OzhwdVUvkBbVcNLHzlAoxah8mY7hKczaguPfESeF6hXySpNMBQMGv?=
- =?us-ascii?Q?aurNaF48sarRPI/NY4jlkguAm4Vf9pbWjYDiOWofeM49BiwWAQqsOiOSwxJ2?=
- =?us-ascii?Q?bgaAnv1xMpOy7wC0CxF+kFNGi+vqcUqjIbtBlPStUoj2OhEMveLlooom9Rte?=
- =?us-ascii?Q?C0Hr5bTYYm/wCES4hD8UfbkIdkNf4Kfhf5Tipkp8G1KuQaoEiICo5rdc1aJM?=
- =?us-ascii?Q?83+d3t8y4c6AIbaWKCHBnAXnu3FE70N8Ut8ywBmkO6JdkmxIW7vK1SVy/GrI?=
- =?us-ascii?Q?OGv+BJcr2Qw6ewG0ZxpDoZinP+gJolXbjLAUw5V60Y451FeKD+M7NnHCYFVW?=
- =?us-ascii?Q?nVJpvZo/T2BWQzpQljEVgv5haIN6xykQQ1bTRnKw4xyLRo3PuxqmVDfcWmm3?=
- =?us-ascii?Q?wPiO8fd4yXiZD8Uz9ZSoyPcivk4UqTj+oTETmmeb5ISXXL1tEnmKKbIKpCB7?=
- =?us-ascii?Q?nKqQ5u4u/9MJG2YKEGznuexyUqaFLg8d5lTJIOKPyJm9fxdeKj0/Xi0b0QK9?=
- =?us-ascii?Q?eRt66pC/MBSlod56/JunJihsx5l1c+A/pD3/+IVXAsyJo40sFvpM+DguDlGF?=
- =?us-ascii?Q?mXgUtDSd93ESCgtsJEdI68FTM0pylWRVyUS7r+4wV1WyxpnNFLHcqs6DX0Op?=
- =?us-ascii?Q?DfjhizdIBhFthehhxkpbp5z4aVBvDjvHSLc+hSzC5FhQEmhNLZC3iCVKWxOt?=
- =?us-ascii?Q?ZoPrBCXlHVQPNNCopK562DgZazT5TKRC67U4dnfMqFqniT416LsjrbLfJHmW?=
- =?us-ascii?Q?+PIt1Z4lNIqd8aA8A9zUPcHnyvOCHBZipPaBRO1y8dXv/gnr0+p9/MVJDX1F?=
- =?us-ascii?Q?ADvBESSFXNslgzHpaRNUqeoM1B5CXk8FaaYyb186+kX+GSIGIQCTU/8tcclX?=
- =?us-ascii?Q?8SQH/yglMyQFARvKQT+7QOW1jOpDQmo2J0OBi4YnGK5xFw=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR21MB3457.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?2mcnlEc+nAazQDnTMOlfKJ7awdbpMjR8MM2vqi39cTC4XywX1Du51fS7CrBh?=
- =?us-ascii?Q?H5LHLT3ohxcx5EtABRQI5fBxOC3HMOSQunEbf6vpttMEFBjuVuXx95euhGU5?=
- =?us-ascii?Q?dmm54KZi/tnBRGR4yaa2n0nErypuqwH0bRridSuUZcMLlAK6vywvmPngAIiP?=
- =?us-ascii?Q?cBUTZgDe5DzjseH9SoUEeHyYD6IQftVIP4AiTv1aqEC6hzVHSrc2j+U0FFGp?=
- =?us-ascii?Q?2ffVZFFRMQY03vgntHZhGAd7C7XYuR/d6JrapFSdugkrMecKUdiqUdbwGYgi?=
- =?us-ascii?Q?1z1HsaTzDyb+CHuijc/s7YmUnD3Pa7AbAeXTzXiS9D4w0c56+E9NKiiQ7dEF?=
- =?us-ascii?Q?nt0CFtCk8260z9uAY5WTY+2SfCqffckR3Hv/oeGdh8Gzzhu0M+s/GHSrPzMm?=
- =?us-ascii?Q?2r5YrdZIwnaMJrHCnmmOX4EavIKMOdQ5xKibVUNB2ChqExW1n4tM1ffL/o9s?=
- =?us-ascii?Q?U/MqUbHmPJdoZkOeKDWdqE+T8X7tflb9qHS3nr3WmGDF56LKEgkIFs+vNCBR?=
- =?us-ascii?Q?ArJ/5R/tPXlq0mZa/Rd22j5FrWDWPKuSeQ2ERFSWPLsZMsZva/UAmzpXPUN5?=
- =?us-ascii?Q?q2cHX2nKmK2HdZBmQVIbQD2yUbgF3RvHvZVthY3IYZkdFqx1lx6LQCkMjiFe?=
- =?us-ascii?Q?F2B3APSuGMKMcXpLbydZzjwDTNAo9zyepzfgsU50LP1XZJhayvgwgEIzolLn?=
- =?us-ascii?Q?wr4LZopweHD/dJ9J63OapAdArmZ878vYmfglocZ7Y+A+977kCcAjhSWZILwJ?=
- =?us-ascii?Q?cUT2VE3zficPKnlT7pSGKcFtTaHL/Tr0nUvOwWurEURQLOOlC9bhuoCD8Uaq?=
- =?us-ascii?Q?DvPfawY4JpXlUhBqwGqEZAPYqiw+9FhQsZKowRt5nEyFCTEwfB6W3Vo8mgtS?=
- =?us-ascii?Q?i5I5UDGWoGaZqaRHoLJKQmeNEKlMKKAIF1xJ05qUD3NNCoqgzpysK7is1lFO?=
- =?us-ascii?Q?2AUHEtbSKyapAcDAZ1GeHWSJJJVs8FFXqTKcF+5F9IDw6VJ/qr8uijMwlywB?=
- =?us-ascii?Q?41mMG3l6ehFk3UnwQng+nhAXx3PhpdAm3oEtArQTs6ic6dxotmlbLXlxy2Qa?=
- =?us-ascii?Q?PCJNLTNoq3ic0wsmJU/bw/7KiSRtvjpJb5EhhKFaEfSltb4Jz6zq1ofETEkK?=
- =?us-ascii?Q?A4a+Yw116PwVcYQRWHNo7421Fvx2uerIPFNhiWR3h8kBWSFmeCCM+fRTlexd?=
- =?us-ascii?Q?Crqlwp84kslGjJQOouXnTl3f5WDOSLIEHV543oxaZRAFL5G27a11wY+djzoY?=
- =?us-ascii?Q?pm0CurQEVYVwhmHilmfCQxv970GMYQ8ptxsjfOsE9SzJw7QsGWkzQFOeNJ8O?=
- =?us-ascii?Q?JjEjFbalJ9zPPsKCUoFKnTccWZLxfAMdcAE4WLFZRMNCtv5JEVj9vSNpy5dz?=
- =?us-ascii?Q?415h9wSveY04eKlAw0c7ePnzVzlngmEa+C3FHo9N3gx2oEfUmqcZoo1lADAJ?=
- =?us-ascii?Q?pOozr1PqkBJT7Ghksa7ES/Ueqi8pqu0SV7Wjf2rhHJ53VqpQ5GoLUJ70yBTx?=
- =?us-ascii?Q?w+Hjnbwwz0R/D4PrHmEz7rKExT5Gh4PSIAEayLV499btQA/4ga1+6jHBC6Qx?=
- =?us-ascii?Q?2Pyy94CPI77tNBd5RKtcHEdfBPE06c3XLri7muYY?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3475A2E642;
+	Thu, 25 Apr 2024 20:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714077128; cv=none; b=FsXdfQILLG6vUSYf7srJB0DNcXzxPMSkcMkQ4Ske9fGPm8yvuLaZyn51jz0ZNhr0RkfublvwYoG2Ngv1d7u4wUyzlkz0ALdaMXWhRLgmz67EVJVuO8+l+ejxm9xRnsXnBR2K70+FYBfyLWKM3uE2XOlnylCofxcS6lAxLBmDcNY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714077128; c=relaxed/simple;
+	bh=hS/jArw8vMu09B6tBaWl8LvJP6mCxjtob00NxtV0vHQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X74vC2Ga9g/EoLtP1lKK4PNyxRO0SftYw6TXt95LWGTcs/jTxOjuR0GGXtxZ+D9eD/uQSqFRxBAembhEy7ohXaPWvaM+0emp8oVS7xl94CHQU8MKZb+M6BEl58q+cIr8DvO0luSydqkM/py6H1wGgs3y2r1uXLK3PsVhkwEgbns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nkK0T2sV; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2ab791bce6fso1055592a91.1;
+        Thu, 25 Apr 2024 13:32:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714077126; x=1714681926; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5ecCYdsRfAq9F7QiyokWt4NqIBEh3jL8fX+LDwEHR2g=;
+        b=nkK0T2sVtEffXdEurJ8MlDzjXufMGtGtTbQHDqzlQ9QMQ4wHvNh2AWNwJem0XybCrD
+         KatGeue954tdU7UcM96hsq+DMcVkQfp6ufP1qk2pCi7jMXxH552op1auQZJXp/YbKylL
+         LbmVIBDQGptl8pblp0CrU05uHUS6lJBZ5LLG9b5HdsW48/McxZiUkd9IISCI3u6ctFEb
+         OUV1v1V2HUjrL8MJeqLQ2poqd5UNfnpDyP+8qrYpAxuF3fc8dvyax5SVTB2Jwx8renMG
+         3WsELoDbeUaPT51qGDJ9NMZE3xIx0pRcP1lcM8xhmDJSKj5DvD6+lRAKQsgkp5lVtYPb
+         pwvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714077126; x=1714681926;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5ecCYdsRfAq9F7QiyokWt4NqIBEh3jL8fX+LDwEHR2g=;
+        b=SYhQARmlFhNaod1IaZc0I8Mbz3qm1WO8mHSbqJ874yhT8VeL7K7PWdk4pMXV0F5Rqz
+         7jcvqHg3fc4nyimkSXwvGueuI1kGMSj4g+LT43NhXBdtJ9Otr/yRgHs++7724wC1c8SW
+         PqiXl4pPhocBR21XcNMDeWEEQoqc5nihrMj99W8CWF+LNjjsIKyIAddivga/RbZOg6ZI
+         2ObwKJaZjyjJ3SbP6VE6l94N/w6ZwkWv4YSIh4k/8bSmtCWi1tkfUaFo0kU+Ue/ZoZcR
+         Ha25LTYHUkbskD0FZ2UvrdQsJHWHG5x8che0CVDmwbyVTQ8m1Gb4VwVhNouqo+b0rmal
+         0brg==
+X-Forwarded-Encrypted: i=1; AJvYcCWMKCgf2UU0vOFbKWmP91icc/vKr+hiPYVmotD1+AHksZeLLw9ox4Q0CB0z90FgMGXauEohj/VeSO7bLPdIVbgixrmTP9W4+WZ9TYHCTVlQLe3yKDMiKTF1iGj6SATPisycBVAKu5urwDdeL+4sRW6iw6FtDq0v64Z8VKxlV7iWeXAasqCa
+X-Gm-Message-State: AOJu0YwTFD6UFZ8v2XhsDdv1XlMxRJYSy25vJv32/otLfYSwoSUYp9PC
+	26huiCuxCRgj7ZJiiQkDgGj1c+sdvuUVPGBSX6Wzya0OrrA/0k9cuA01drdNqoKjJ6D1PGFdAeJ
+	O9925XRm+VEGNL5ux8QaZcpyxq1E=
+X-Google-Smtp-Source: AGHT+IH/LWFyAEfI/t2wcLsabsOk6rYcAK7fNyj6a+L8dH+sRryfqyZaprCZU27xKJ5ThMZfHpqQC31TIbuC8Rb11Uw=
+X-Received: by 2002:a17:90a:e2cd:b0:2ac:8198:848b with SMTP id
+ fr13-20020a17090ae2cd00b002ac8198848bmr827513pjb.18.1714077126413; Thu, 25
+ Apr 2024 13:32:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR21MB3457.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 928de5ec-2206-4335-b58f-08dc6566b406
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Apr 2024 20:31:36.1085
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Z8havIWEhrk/16hw7cW1MTghPA9CVqgZfLWn7MNTsSh+J7wc6QcLZAI05gKCnw1b84kWVjFDXbf6MIWM1chXJA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW1PEPF0000E7B2
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+In-Reply-To: <171318533841.254850.15841395205784342850.stgit@devnote2>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 25 Apr 2024 13:31:53 -0700
+Message-ID: <CAEf4BzYMToveELxsOJ9dXz3H-9omhxRLKgGK-ppYvmK8pgDsfA@mail.gmail.com>
+Subject: Re: [PATCH v9 00/36] tracing: fprobe: function_graph: Multi-function
+ graph and fprobe on fgraph
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Florent Revest <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Alan Maguire <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> Subject: [PATCH rdma-next 5/6] RDMA/mana_ib: boundary check before
-> installing cq callbacks
->=20
-> From: Konstantin Taranov <kotaranov@microsoft.com>
->=20
-> Add a boundary check inside mana_ib_install_cq_cb to prevent index overfl=
-ow.
->=20
-> Fixes: 2a31c5a7e0d8 ("RDMA/mana_ib: Introduce mana_ib_install_cq_cb helpe=
-r
-> function")
-> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-
-Reviewed-by: Long Li <longli@microsoft.com>
-
+On Mon, Apr 15, 2024 at 5:49=E2=80=AFAM Masami Hiramatsu (Google)
+<mhiramat@kernel.org> wrote:
+>
+> Hi,
+>
+> Here is the 9th version of the series to re-implement the fprobe on
+> function-graph tracer. The previous version is;
+>
+> https://lore.kernel.org/all/170887410337.564249.6360118840946697039.stgit=
+@devnote2/
+>
+> This version is ported on the latest kernel (v6.9-rc3 + probes/for-next)
+> and fixed some bugs + performance optimization patch[36/36].
+>  - [12/36] Fix to clear fgraph_array entry in registration failure, also
+>            return -ENOSPC when fgraph_array is full.
+>  - [28/36] Add new store_fprobe_entry_data() for fprobe.
+>  - [31/36] Remove DIV_ROUND_UP() and fix entry data address calculation.
+>  - [36/36] Add new flag to skip timestamp recording.
+>
+> Overview
+> --------
+> This series does major 2 changes, enable multiple function-graphs on
+> the ftrace (e.g. allow function-graph on sub instances) and rewrite the
+> fprobe on this function-graph.
+>
+> The former changes had been sent from Steven Rostedt 4 years ago (*),
+> which allows users to set different setting function-graph tracer (and
+> other tracers based on function-graph) in each trace-instances at the
+> same time.
+>
+> (*) https://lore.kernel.org/all/20190525031633.811342628@goodmis.org/
+>
+> The purpose of latter change are;
+>
+>  1) Remove dependency of the rethook from fprobe so that we can reduce
+>    the return hook code and shadow stack.
+>
+>  2) Make 'ftrace_regs' the common trace interface for the function
+>    boundary.
+>
+> 1) Currently we have 2(or 3) different function return hook codes,
+>  the function-graph tracer and rethook (and legacy kretprobe).
+>  But since this  is redundant and needs double maintenance cost,
+>  I would like to unify those. From the user's viewpoint, function-
+>  graph tracer is very useful to grasp the execution path. For this
+>  purpose, it is hard to use the rethook in the function-graph
+>  tracer, but the opposite is possible. (Strictly speaking, kretprobe
+>  can not use it because it requires 'pt_regs' for historical reasons.)
+>
+> 2) Now the fprobe provides the 'pt_regs' for its handler, but that is
+>  wrong for the function entry and exit. Moreover, depending on the
+>  architecture, there is no way to accurately reproduce 'pt_regs'
+>  outside of interrupt or exception handlers. This means fprobe should
+>  not use 'pt_regs' because it does not use such exceptions.
+>  (Conversely, kprobe should use 'pt_regs' because it is an abstract
+>   interface of the software breakpoint exception.)
+>
+> This series changes fprobe to use function-graph tracer for tracing
+> function entry and exit, instead of mixture of ftrace and rethook.
+> Unlike the rethook which is a per-task list of system-wide allocated
+> nodes, the function graph's ret_stack is a per-task shadow stack.
+> Thus it does not need to set 'nr_maxactive' (which is the number of
+> pre-allocated nodes).
+> Also the handlers will get the 'ftrace_regs' instead of 'pt_regs'.
+> Since eBPF mulit_kprobe/multi_kretprobe events still use 'pt_regs' as
+> their register interface, this changes it to convert 'ftrace_regs' to
+> 'pt_regs'. Of course this conversion makes an incomplete 'pt_regs',
+> so users must access only registers for function parameters or
+> return value.
+>
+> Design
+> ------
+> Instead of using ftrace's function entry hook directly, the new fprobe
+> is built on top of the function-graph's entry and return callbacks
+> with 'ftrace_regs'.
+>
+> Since the fprobe requires access to 'ftrace_regs', the architecture
+> must support CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS and
+> CONFIG_HAVE_FTRACE_GRAPH_FUNC, which enables to call function-graph
+> entry callback with 'ftrace_regs', and also
+> CONFIG_HAVE_FUNCTION_GRAPH_FREGS, which passes the ftrace_regs to
+> return_to_handler.
+>
+> All fprobes share a single function-graph ops (means shares a common
+> ftrace filter) similar to the kprobe-on-ftrace. This needs another
+> layer to find corresponding fprobe in the common function-graph
+> callbacks, but has much better scalability, since the number of
+> registered function-graph ops is limited.
+>
+> In the entry callback, the fprobe runs its entry_handler and saves the
+> address of 'fprobe' on the function-graph's shadow stack as data. The
+> return callback decodes the data to get the 'fprobe' address, and runs
+> the exit_handler.
+>
+> The fprobe introduces two hash-tables, one is for entry callback which
+> searches fprobes related to the given function address passed by entry
+> callback. The other is for a return callback which checks if the given
+> 'fprobe' data structure pointer is still valid. Note that it is
+> possible to unregister fprobe before the return callback runs. Thus
+> the address validation must be done before using it in the return
+> callback.
+>
+> This series can be applied against the probes/for-next branch, which
+> is based on v6.9-rc3.
+>
+> This series can also be found below branch.
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=
+=3Dtopic/fprobe-on-fgraph
+>
+> Thank you,
+>
 > ---
->  drivers/infiniband/hw/mana/cq.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana=
-/cq.c
-> index 6c3bb8c..8323085 100644
-> --- a/drivers/infiniband/hw/mana/cq.c
-> +++ b/drivers/infiniband/hw/mana/cq.c
-> @@ -70,6 +70,8 @@ int mana_ib_install_cq_cb(struct mana_ib_dev *mdev,
-> struct mana_ib_cq *cq)
->  	struct gdma_context *gc =3D mdev_to_gc(mdev);
->  	struct gdma_queue *gdma_cq;
->=20
-> +	if (cq->queue.id >=3D gc->max_num_cqs)
-> +		return -EINVAL;
->  	/* Create CQ table entry */
->  	WARN_ON(gc->cq_table[cq->queue.id]);
->  	gdma_cq =3D kzalloc(sizeof(*gdma_cq), GFP_KERNEL);
-> --
-> 2.43.0
 
+Hey Masami,
+
+I can't really review most of that code as I'm completely unfamiliar
+with all those inner workings of fprobe/ftrace/function_graph. I left
+a few comments where there were somewhat more obvious BPF-related
+pieces.
+
+But I also did run our BPF benchmarks on probes/for-next as a baseline
+and then with your series applied on top. Just to see if there are any
+regressions. I think it will be a useful data point for you.
+
+You should be already familiar with the bench tool we have in BPF
+selftests (I used it on some other patches for your tree).
+
+BASELINE
+=3D=3D=3D=3D=3D=3D=3D=3D
+kprobe         :   24.634 =C2=B1 0.205M/s
+kprobe-multi   :   28.898 =C2=B1 0.531M/s
+kretprobe      :   10.478 =C2=B1 0.015M/s
+kretprobe-multi:   11.012 =C2=B1 0.063M/s
+
+THIS PATCH SET ON TOP
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+kprobe         :   25.144 =C2=B1 0.027M/s (+2%)
+kprobe-multi   :   28.909 =C2=B1 0.074M/s
+kretprobe      :    9.482 =C2=B1 0.008M/s (-9.5%)
+kretprobe-multi:   13.688 =C2=B1 0.027M/s (+24%)
+
+These numbers are pretty stable and look to be more or less representative.
+
+As you can see, kprobes got a bit faster, kprobe-multi seems to be
+about the same, though.
+
+Then (I suppose they are "legacy") kretprobes got quite noticeably
+slower, almost by 10%. Not sure why, but looks real after re-running
+benchmarks a bunch of times and getting stable results.
+
+On the other hand, multi-kretprobes got significantly faster (+24%!).
+Again, I don't know if it is expected or not, but it's a nice
+improvement.
+
+If you have any idea why kretprobes would get so much slower, it would
+be nice to look into that and see if you can mitigate the regression
+somehow. Thanks!
+
+
+>  51 files changed, 2325 insertions(+), 882 deletions(-)
+>  create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_re=
+move_fprobe_repeat.tc
+>
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>
 
