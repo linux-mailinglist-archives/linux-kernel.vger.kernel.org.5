@@ -1,278 +1,146 @@
-Return-Path: <linux-kernel+bounces-158929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0113D8B26D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:51:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E38DE8B2764
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:15:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACA54284215
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:51:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14A8F1C2421C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:15:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3BB714D457;
-	Thu, 25 Apr 2024 16:51:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E1C14E2E2;
+	Thu, 25 Apr 2024 17:13:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NwgR5k2j"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b="BF09zJII"
+Received: from mail2.andi.de1.cc (vmd64148.contaboserver.net [161.97.139.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E305F513;
-	Thu, 25 Apr 2024 16:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6D8614D715;
+	Thu, 25 Apr 2024 17:13:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.97.139.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714063907; cv=none; b=Oectj7wjZUdUt2BhFYgXHqUm2xRMewhJsZsC6aBkYnItkYs+51F7CuuUsbYP8AzE6RX46JzD1kegFTzl8fMIOQpnYt4ym2QbkI3AjCZXd/odlMgwOuglkf8w3Q1H/PWUbOJdMwEZ7RO9BIdvEzKc2vwWcBXXwET1MUeWadJCS+Y=
+	t=1714065226; cv=none; b=s5WGckP6PqTNN7cluaDtCmbDyZRyrwSZ9kGyH2hvS4FsXFGzeNKis7vRjNzs0X/eCAKJDJLGbijhOziyTntnPkTpGvmQu6/vGPMurnAMpagu7eE9ZNxDIirkalo3O441IS2zsfrbhCOzeuaGZClSoxOvyVYyjY7MZrB/GIjQArk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714063907; c=relaxed/simple;
-	bh=0I62XfgogmDs67PefKBaNXZmEUAQ/udGEwyJ6srSYe4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QVurYHL8phk5hAcHfrHWimH4A5X+JrZvedBsON4ShcOXx1NyKXLzgmFFmFivfWTKZbsKrG+KNwGlPIIj0g3aejAomLSRi1UTj36SaFJvM0DSqL7XiR98QNiGY3VLysSjio6P4fRbNkj0jKt+NsAfPTRNdYboabHRE5VmPfYSdnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NwgR5k2j; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714063906; x=1745599906;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=0I62XfgogmDs67PefKBaNXZmEUAQ/udGEwyJ6srSYe4=;
-  b=NwgR5k2j5L5JBY9iusTJ9OMimY09XTMn48KcmwoENmQO0n5NNUpJOHdI
-   KKgwNKY8TINfqu7lJqICqHftaWOP5BidZPfDQcfI6CuV7gFbMc+QXkZvM
-   stOFtWlqIgmxAp0q4NlOhK84b01n8pnJU9etIbUnPyOwYlO+d4fhEby1J
-   4J4qyzs5Y2YL9n7zl1cQU+ZgxKIaJPR8KxGGoWZ4BRjUlfFaxjHj6rx0t
-   saE+eVz8jnhYP+MOUUU/Aby+BwYOhOamxe2o7PHw4kWNLGmakS0EJRTPN
-   nuXoIjYowIuCtZR9i0KLZoZmxlgz6AlnB6vGWcgBRUPNB8RIt2IXaNsRH
-   w==;
-X-CSE-ConnectionGUID: m9Rb2JagRaq5urDdDiFPxQ==
-X-CSE-MsgGUID: 8ZaU46KAR7We/6wqXMpkRQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="9628146"
-X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
-   d="scan'208";a="9628146"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 09:51:45 -0700
-X-CSE-ConnectionGUID: iD17EIcJQHKvKLjEl4tXqg==
-X-CSE-MsgGUID: jDKunPCiSoGC12ZAn0gfmg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
-   d="scan'208";a="29930122"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 09:51:45 -0700
-Date: Thu, 25 Apr 2024 09:51:44 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>,
-	Isaku Yamahata <isaku.yamahata@intel.com>,
-	linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-	michael.roth@amd.com, isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH 09/11] KVM: guest_memfd: Add interface for populating
- gmem pages with user data
-Message-ID: <20240425165144.GQ3596705@ls.amr.corp.intel.com>
-References: <20240404185034.3184582-1-pbonzini@redhat.com>
- <20240404185034.3184582-10-pbonzini@redhat.com>
- <20240423235013.GO3596705@ls.amr.corp.intel.com>
- <ZimGulY6qyxt6ylO@google.com>
- <20240425011248.GP3596705@ls.amr.corp.intel.com>
- <CABgObfY2TOb6cJnFkpxWjkAmbYSRGkXGx=+-241tRx=OG-yAZQ@mail.gmail.com>
- <Zip-JsAB5TIRDJVl@google.com>
+	s=arc-20240116; t=1714065226; c=relaxed/simple;
+	bh=6foYH7QWE2i5RWLOdtEMwKdsb2KccYTN2Q/k4s5TAV0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=csfUj3q6qKrnAA0fMe3TVWcBVY3aqY0tGIoOHtUQemZ4Uinoicn13fDqYcT77GV35Pz+7MVFRhv8eaoBf+c6f3goVSOlqCYbDkvHsdBUnrlzJwMsqZWRnqYCl+m+5+TKtx1RE075EXyUR3VcgnA31iQ35jM6VW8e+v4rewzEVwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info; spf=pass smtp.mailfrom=kemnade.info; dkim=pass (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b=BF09zJII; arc=none smtp.client-ip=161.97.139.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
+Received: from mail.andi.de1.cc ([2a02:c205:3004:2154::1])
+	by mail2.andi.de1.cc with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <andreas@kemnade.info>)
+	id 1s02MW-000ZvV-2b;
+	Thu, 25 Apr 2024 18:54:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=tiBrh8Wfbv/jy2lIqssR5GnzyzHFN9L4ULdDhyCPprk=; b=BF09zJIItbQMvEhpMdlWf3E8C0
+	JXoGZzZXjql074j600DVKUvMXesGkXx1Hoc1orZo2Bc68sp+DNB77gDM3H4nLdC9j1W/jCw83MSdw
+	zAZZ47RtPN89pHe4xcnuzg9ENcOrEs2Nqw723CCcgelqCFrGrgcnxALBOcmmtYUJt2LGlCpN2x5i5
+	ByadWtvFh7/fsn1wGHy/KjSCtfSSw3XDWq4ggOPt9j7czgGa1MxxpzDc0R1om9PwZwcatdgfT2JuR
+	S0nh5vN6V1XTz308JYoAWPm7pdkpD0fTKy2hIJQ6n34tIe6k3w8RchR/7kklYGVrtKEHWn7xMVLun
+	PD/tzQ5A==;
+Received: from p200300c2071a02001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:c2:71a:200:1a3d:a2ff:febf:d33a] helo=aktux)
+	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <andreas@kemnade.info>)
+	id 1s02MU-0001dn-1K;
+	Thu, 25 Apr 2024 18:54:19 +0200
+Date: Thu, 25 Apr 2024 18:54:17 +0200
+From: Andreas Kemnade <andreas@kemnade.info>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ o.rempel@pengutronix.de, u.kleine-koenig@pengutronix.de,
+ hdegoede@redhat.com, ye.xingchen@zte.com.cn, p.puschmann@pironex.com,
+ linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, caleb.connolly@linaro.org
+Subject: Re: [PATCH v2 2/2] Input: edt-ft5x06 - add ft5426
+Message-ID: <20240425185417.0a5f9c19@aktux>
+In-Reply-To: <CAHp75VckoDheCN-KQ0KcSk9rE_-cXFUujurtA4sK6KAixDttQQ@mail.gmail.com>
+References: <20240404222009.670685-1-andreas@kemnade.info>
+	<20240404222009.670685-3-andreas@kemnade.info>
+	<CAHp75VeZ9U_+1rJQjr4KvvzjYQGzfKtk+BK00vqvKcVn2-yP3g@mail.gmail.com>
+	<20240405182832.4e457695@aktux>
+	<CAHp75VckoDheCN-KQ0KcSk9rE_-cXFUujurtA4sK6KAixDttQQ@mail.gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zip-JsAB5TIRDJVl@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 25, 2024 at 09:00:38AM -0700,
-Sean Christopherson <seanjc@google.com> wrote:
+On Fri, 5 Apr 2024 20:21:19 +0300
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-> On Thu, Apr 25, 2024, Paolo Bonzini wrote:
-> > On Thu, Apr 25, 2024 at 3:12 AM Isaku Yamahata <isaku.yamahata@intel.com> wrote:
-> > > > >   get_user_pages_fast(source addr)
-> > > > >   read_lock(mmu_lock)
-> > > > >   kvm_tdp_mmu_get_walk_private_pfn(vcpu, gpa, &pfn);
-> > > > >   if the page table doesn't map gpa, error.
-> > > > >   TDH.MEM.PAGE.ADD()
-> > > > >   TDH.MR.EXTEND()
-> > > > >   read_unlock(mmu_lock)
-> > > > >   put_page()
-> > > >
-> > > > Hmm, KVM doesn't _need_ to use invalidate_lock to protect against guest_memfd
-> > > > invalidation, but I also don't see why it would cause problems.
-> > 
-> > The invalidate_lock is only needed to operate on the guest_memfd, but
-> > it's a rwsem so there are no risks of lock inversion.
-> > 
-> > > > I.e. why not
-> > > > take mmu_lock() in TDX's post_populate() implementation?
+> On Fri, Apr 5, 2024 at 7:28=E2=80=AFPM Andreas Kemnade <andreas@kemnade.i=
+nfo> wrote:
+> > On Fri, 5 Apr 2024 18:13:45 +0300
+> > Andy Shevchenko <andy.shevchenko@gmail.com> wrote: =20
+> > > On Fri, Apr 5, 2024 at 1:20=E2=80=AFAM Andreas Kemnade <andreas@kemna=
+de.info> wrote: =20
+>=20
+> ...
+>=20
+> > > > @@ -1484,6 +1484,7 @@ static const struct of_device_id edt_ft5x06_o=
+f_match[] =3D {
+> > > >         { .compatible =3D "edt,edt-ft5206", .data =3D &edt_ft5x06_d=
+ata },
+> > > >         { .compatible =3D "edt,edt-ft5306", .data =3D &edt_ft5x06_d=
+ata },
+> > > >         { .compatible =3D "edt,edt-ft5406", .data =3D &edt_ft5x06_d=
+ata },
+> > > > +       { .compatible =3D "focaltech,ft5426", .data =3D &edt_ft5506=
+_data }, =20
 > > >
-> > > We can take the lock.  Because we have already populated the GFN of guest_memfd,
-> > > we need to make kvm_gmem_populate() not pass FGP_CREAT_ONLY.  Otherwise we'll
-> > > get -EEXIST.
-> > 
-> > I don't understand why TDH.MEM.PAGE.ADD() cannot be called from the
-> > post-populate hook. Can the code for TDH.MEM.PAGE.ADD be shared
-> > between the memory initialization ioctl and the page fault hook in
-> > kvm_x86_ops?
-> 
-> Ah, because TDX is required to pre-fault the memory to establish the S-EPT walk,
-> and pre-faulting means guest_memfd() 
-> 
-> Requiring that guest_memfd not have a page when initializing the guest image
-> seems wrong, i.e. I don't think we want FGP_CREAT_ONLY.  And not just because I
-> am a fan of pre-faulting, I think the semantics are bad.
-> 
-> E.g. IIUC, doing fallocate() to ensure memory is available would cause LAUNCH_UPDATE
-> to fail.  That's weird and has nothing to do with KVM_PRE_FAULT.
-> 
-> I don't understand why we want FGP_CREAT_ONLY semantics.  Who cares if there's a
-> page allocated?  KVM already checks that the page is unassigned in the RMP, so
-> why does guest_memfd care whether or not the page was _just_ allocated?
-> 
-> AFAIK, unwinding on failure is completely uninteresting, and arguably undesirable,
-> because undoing LAUNCH_UPDATE or PAGE.ADD will affect the measurement, i.e. there
-> is no scenario where deleting pages from guest_memfd would allow a restart/resume
-> of the build process to truly succeed.
+> > > Why a different vendor prefix?
+> > > In case you need to use this one, keep the list sorted, currently this
+> > > splits the edt,* ones.
+> > > =20
+> > How do I know whether to use evervision or edt instead? =20
+>=20
+> Ask DT people, the vendor-prefixes lists both...
+>=20
+> > I sorted by the numbers. Looking at datasheets for other controllers I =
+see
+> > https://www.displayfuture.com/Display/datasheet/controller/FT5x06.pdf
+> > it only mentions FocalTech Systems Co., Ltd. =20
+>=20
+> But does the driver use that? AFAICS it uses edt. Perhaps it's due to
+> a business split, not to my knowledge anyway.
+>=20
+Well, lets cite edt-ft5x06.rst:
 
+"The edt-ft5x06 driver is useful for the EDT "Polytouch" family of capaciti=
+ve
+touch screens. Note that it is *not* suitable for other devices based on the
+focaltec ft5x06 devices, since they contain vendor-specific firmware. In
+particular this driver is not suitable for the Nook tablet."
 
-Just for record.  With the following twist to kvm_gmem_populate,
-KVM_TDX_INIT_MEM_REGION can use kvm_gmem_populate().  For those who are curious,
-I also append the callback implementation at the end.
+So chips from focaltech which can be equipped with different firmware? So
+edt prefix means EDT firmware?
 
---
+Looking around I found this:
+            if (tsdata->version =3D=3D EV_FT)
+                        swap(x, y);
+..
+               case 0x59:  /* Evervision Display with FT5xx6 TS */
+                        tsdata->version =3D EV_FT;
 
- include/linux/kvm_host.h | 2 ++
- virt/kvm/guest_memfd.c   | 3 ++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+I need swap(x.y), I am using touchscreen-swapped-x-y property now.
+So evervision prefix?
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index df957c9f9115..7c86b77f8895 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -2460,6 +2460,7 @@ bool kvm_arch_gmem_prepare_needed(struct kvm *kvm);
-  *       (passed to @post_populate, and incremented on each iteration
-  *       if not NULL)
-  * @npages: number of pages to copy from userspace-buffer
-+ * @prepare: Allow page allocation to invoke gmem_prepare hook
-  * @post_populate: callback to issue for each gmem page that backs the GPA
-  *                 range
-  * @opaque: opaque data to pass to @post_populate callback
-@@ -2473,6 +2474,7 @@ bool kvm_arch_gmem_prepare_needed(struct kvm *kvm);
-  * Returns the number of pages that were populated.
-  */
- long kvm_gmem_populate(struct kvm *kvm, gfn_t gfn, void __user *src, long npages,
-+		       bool prepare,
- 		       int (*post_populate)(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn,
- 					    void __user *src, int order, void *opaque),
- 		       void *opaque);
-diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
-index 3195ceefe915..18809e6dea8a 100644
---- a/virt/kvm/guest_memfd.c
-+++ b/virt/kvm/guest_memfd.c
-@@ -638,6 +638,7 @@ static int kvm_gmem_undo_get_pfn(struct file *file, struct kvm_memory_slot *slot
- }
- 
- long kvm_gmem_populate(struct kvm *kvm, gfn_t gfn, void __user *src, long npages,
-+		       bool prepare,
- 		       int (*post_populate)(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn,
- 					    void __user *src, int order, void *opaque),
- 		       void *opaque)
-@@ -667,7 +668,7 @@ long kvm_gmem_populate(struct kvm *kvm, gfn_t gfn, void __user *src, long npages
- 		gfn_t this_gfn = gfn + i;
- 		kvm_pfn_t pfn;
- 
--		ret = __kvm_gmem_get_pfn(file, slot, this_gfn, &pfn, &max_order, false);
-+		ret = __kvm_gmem_get_pfn(file, slot, this_gfn, &pfn, &max_order, prepare);
- 		if (ret)
- 			break;
- 
--- 
-2.43.2
-
-
-Here is the callback for KVM_TDX_INIT_MEM_REGION.
-Note: the caller of kvm_gmem_populate() acquires mutex_lock(&kvm->slots_lock)
-and idx = srcu_read_lock(&kvm->srcu).
-
-
-struct tdx_gmem_post_populate_arg {
-	struct kvm_vcpu *vcpu;
-	__u32 flags;
-};
-
-static int tdx_gmem_post_populate(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn,
-				  void __user *src, int order, void *_arg)
-{
-	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-	struct tdx_gmem_post_populate_arg *arg = _arg;
-	struct kvm_vcpu *vcpu = arg->vcpu;
-	struct kvm_memory_slot *slot;
-	gpa_t gpa = gfn_to_gpa(gfn);
-	struct page *page;
-	kvm_pfn_t mmu_pfn;
-	int ret, i;
-	u64 err;
-
-	/* Pin the source page. */
-	ret = get_user_pages_fast((unsigned long)src, 1, 0, &page);
-	if (ret < 0)
-		return ret;
-	if (ret != 1)
-		return -ENOMEM;
-
-	slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
-	if (!kvm_slot_can_be_private(slot) || !kvm_mem_is_private(kvm, gfn)) {
-		ret = -EFAULT;
-		goto out_put_page;
-	}
-
-	read_lock(&kvm->mmu_lock);
-
-	ret = kvm_tdp_mmu_get_walk_private_pfn(vcpu, gpa, &mmu_pfn);
-	if (ret < 0)
-		goto out;
-	if (ret > PG_LEVEL_4K) {
-		ret = -EINVAL;
-		goto out;
-	}
-	if (mmu_pfn != pfn) {
-		ret = -EAGAIN;
-		goto out;
-	}
-
-	ret = 0;
-	do {
-		err = tdh_mem_page_add(kvm_tdx, gpa, pfn_to_hpa(pfn),
-				       pfn_to_hpa(page_to_pfn(page)), NULL);
-	} while (err == TDX_ERROR_SEPT_BUSY);
-	if (err) {
-		ret = -EIO;
-		goto out;
-	}
-
-	WARN_ON_ONCE(!atomic64_read(&kvm_tdx->nr_premapped));
-	atomic64_dec(&kvm_tdx->nr_premapped);
-	tdx_account_td_pages(vcpu->kvm, PG_LEVEL_4K);
-
-	if (arg->flags & KVM_TDX_MEASURE_MEMORY_REGION) {
-		for (i = 0; i < PAGE_SIZE; i += TDX_EXTENDMR_CHUNKSIZE) {
-			err = tdh_mr_extend(kvm_tdx, gpa + i, NULL);
-			if (err) {
-				ret = -EIO;
-				break;
-			}
-		}
-	}
-
-out:
-	read_unlock(&kvm->mmu_lock);
-out_put_page:
-	put_page(page);
-	return ret;
-}
-
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Regards,
+Andreas
 
