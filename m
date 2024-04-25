@@ -1,104 +1,103 @@
-Return-Path: <linux-kernel+bounces-157892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 979768B1839
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:58:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A18B98B183A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:58:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8433B2356B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:58:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 555B01F2503C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:58:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E646AC2;
-	Thu, 25 Apr 2024 00:57:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 647187483;
+	Thu, 25 Apr 2024 00:58:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=classfun.cn header.i=@classfun.cn header.b="ZQHPPUN9"
-Received: from classfun.cn (unknown [129.204.178.38])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5848F2582;
-	Thu, 25 Apr 2024 00:57:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.204.178.38
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MMS5vYGQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F1F4C98;
+	Thu, 25 Apr 2024 00:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714006675; cv=none; b=WjtOIBsqOo+6Zh44RR5DKnJZadL/8nbE6RAlc41kEMdowdNjgY79j41RwucQtRO+eTx7zDEA5sIBjMWYVpiP9t3k6zIFkcGUbRtyC5DeiuKWo021uPel1Jqds//096Yn5yPD3Bam+prWAV3GMm3wQcyCMtYvAy3WNMlBPRjAuw0=
+	t=1714006702; cv=none; b=vF6GJHaDRZDvgqdGoswyD6lkuOctSTFX2p71sQ0981q4Y8ETnD4MkdvelXyPCrWUDRpESztEcqjmi7C2x38KhG1vAdixKQxj8/fbintfb6U28xfS/Y+ql8ci1D62ffnj3SsRrSxSPDXGsqdQtKD/COysxyELbrNA0SsjDTOg9E8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714006675; c=relaxed/simple;
-	bh=jJlA4qW0WfV3qbaZvbRCTVVym3gR466ShwgEbBIkoK8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YceyTm86PRTFviOTu1RFASdlbmpRGEx42wVHdp0+sfnXv5NHHGbmul99BdCBAigFrSeLcbYFT2IEeJmgxW7cqeJGsNRE0w64Hz99VdHEZR5VYSG9rOD8vhInYJAtgPndrbfUZDLdBW2xOnsQqPeMfWuTi8lFINeII4858AYQ6wM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=classfun.cn; spf=pass smtp.mailfrom=classfun.cn; dkim=pass (1024-bit key) header.d=classfun.cn header.i=@classfun.cn header.b=ZQHPPUN9; arc=none smtp.client-ip=129.204.178.38
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=classfun.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=classfun.cn
-Received: from [192.168.0.160] (unknown [220.162.71.180])
-	(Authenticated sender: bigfoot)
-	by classfun.cn (Postfix) with ESMTPSA id 98B5D7870F;
-	Thu, 25 Apr 2024 08:57:41 +0800 (CST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 classfun.cn 98B5D7870F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=classfun.cn;
-	s=default; t=1714006667;
-	bh=hs/RZj5lsMbnG9+JZAQhqO/qGFihPkInPVFOlxvoHxQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ZQHPPUN9ksQCpiKXMkNkPEBhLgiJp84hXip1H8YS4+GRIvikmPULvbqe92LpStBlk
-	 LgcZepbk2WDIuzfVanjEuSsFAmRnriCydDCxazv/skIjRgp85iKYb35xkn4vyGykGD
-	 lL/cMUezXevZs7YXjmQXzoJb/epMKGR79gabHK9Q=
-Message-ID: <361fc6a0-f0d0-49b2-b885-3b197294ec9f@classfun.cn>
-Date: Thu, 25 Apr 2024 08:57:21 +0800
+	s=arc-20240116; t=1714006702; c=relaxed/simple;
+	bh=ieGhYtG2g3/12L0LUEaCPkUzRxfucBkJXELVtQElB/o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zjp5zSRPvaWqoGL4s6l/yOFovIVxuTlCR9WM1q7xIeJE98MNRBhNn3u1U5PKwyJsXab66RpsgDzfunQ3bmMzvrMvD8KNoKPweJcclaRBq/8nUVrNkXavKbs7/mFI+vCDyWet7oXSNDx92lOrZYjvDbFICAcE1vA+++BmFm7TjX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MMS5vYGQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0139C113CD;
+	Thu, 25 Apr 2024 00:58:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714006702;
+	bh=ieGhYtG2g3/12L0LUEaCPkUzRxfucBkJXELVtQElB/o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MMS5vYGQrb2MZA3RaQKbV4Lqduqmsw0+pthcKCXdHnk5eZjGAIeJuFdehFXXDgN3N
+	 mVn5m3c09YpyiKpmgV8fuwpLvJw86pjSv4QwfUIHRHUIXRFEF20zb/vXKnO8NtunWA
+	 U+UdFaiMpQnK4ScRnpIXSOE0dgbuPw93SHm1OI7L0TwIn7IdJarFwa9ujfIYY0ZYPO
+	 4iaLSsRmco0v44yGiEJTGHwZBt3NjOTzg0XvFpSUH+j4wir7xemKOqM8aCG/34Q6TP
+	 n5bqe00/vF9QXBUD/G7NPbQ6MO320goTVlMB6NSlL4KnYl3LBVw1DPcX0uXyhNLoVE
+	 Gn14ep6aClvnw==
+Date: Thu, 25 Apr 2024 09:58:18 +0900
+From: Mark Brown <broonie@kernel.org>
+To: Tony Luck <tony.luck@intel.com>
+Cc: Borislav Petkov <bp@alien8.de>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev
+Subject: Re: [PATCH v4 68/71] ASoC: Intel: avs: es8336: Switch to new Intel
+ CPU model defines
+Message-ID: <ZimqqtNxeNPAYnJe@finisterre.sirena.org.uk>
+References: <20240424181245.41141-1-tony.luck@intel.com>
+ <20240424181550.42466-1-tony.luck@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/10] pwm: Add SI-EN SN3112 PWM support
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, wuxilin123@gmail.com,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Bjorn Andersson <andersson@kernel.org>,
- Tengfei Fan <quic_tengfan@quicinc.com>,
- Molly Sophia <mollysophia379@gmail.com>
-Cc: linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-arm-msm@vger.kernel.org
-References: <20240424-ayn-odin2-initial-v1-0-e0aa05c991fd@gmail.com>
- <20240424-ayn-odin2-initial-v1-2-e0aa05c991fd@gmail.com>
- <af62742c-8d6d-4fa9-b2e4-f83253e6e388@linaro.org>
-Content-Language: en-US
-From: Junhao Xie <bigfoot@classfun.cn>
-In-Reply-To: <af62742c-8d6d-4fa9-b2e4-f83253e6e388@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="E32mvQqMNueXGFVT"
+Content-Disposition: inline
+In-Reply-To: <20240424181550.42466-1-tony.luck@intel.com>
+X-Cookie: TANSTAAFL
 
-On 2024/4/25 03:37, Konrad Dybcio wrote:
-> On 4/24/24 17:29, Xilin Wu via B4 Relay wrote:
->> From: Junhao Xie <bigfoot@classfun.cn>
->>
->> Add a new driver for the SI-EN SN3112 12-channel 8-bit PWM LED controller.
->>
->> Signed-off-by: Junhao Xie <bigfoot@classfun.cn>
->> ---
->[...]
->> +    return sn3112_write_reg(priv, SN3112_REG_PWM_EN + reg,
->> +                priv->pwm_en_reg[reg]);
-> 
-> This looks like a weird reimplementation of regmap_update_bits
-> 
 
-We cannot use regmap_update_bits because this chip does not support read command.
-It will discard all read command.
+--E32mvQqMNueXGFVT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->> +}
->> +
-[...]
-> 
-> devm_pwmchip_add?
-> 
-> Konrad
+On Wed, Apr 24, 2024 at 11:15:50AM -0700, Tony Luck wrote:
+> New CPU #defines encode vendor and family as well as model.
 
-Thank you for your reply, I will fix them.
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--E32mvQqMNueXGFVT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYpqqoACgkQJNaLcl1U
+h9ACyQf+PzrGpxX4H1xd/ifpOXOFK3ZiBbC9zJKm4uNj/qbml5F6d8h6jRi9JDdt
+YLMES3X8Xb/XwviletXFrjCKPVydEuEovntVr7zrIYHB8pT3pLiUKO8i7+oRWs8M
+6dULTZe1TctUQdGigUzHdnwthwifqJhKztgOF7aRzfoH6XSh4X1ukIVdjQhpYJf1
+/zpsaWmMzZOaAqCAmVVXElrTdm8U46jONmC/i3D5V1S0Qyq2ohNFLNHcK6Hhv6fi
+7aIe8Unn49wJC2bCu7ex6RPe1ucoMdNRISgNWfKgV0XpuduAKwmIDqO1xyvk5Fw/
++ZGemR5LPlZfdV8ye9x0wHyv8aL2Bg==
+=CCkV
+-----END PGP SIGNATURE-----
+
+--E32mvQqMNueXGFVT--
 
