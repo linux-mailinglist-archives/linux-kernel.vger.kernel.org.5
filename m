@@ -1,113 +1,144 @@
-Return-Path: <linux-kernel+bounces-158613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AE298B22FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:40:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48DD18B2302
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:43:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC1BF284BDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:40:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDD431F22044
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:43:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 281A8149DFC;
-	Thu, 25 Apr 2024 13:40:09 +0000 (UTC)
-Received: from gardel.0pointer.net (gardel.0pointer.net [85.214.157.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9ACD149DF9;
+	Thu, 25 Apr 2024 13:43:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qh+fbmxw"
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C3084FC9;
-	Thu, 25 Apr 2024 13:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.157.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77324149C67
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 13:43:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714052408; cv=none; b=J8B9nvdWp43L+hDWVQLTz7/WS359VdQrwts49b323fm5v3T+wdVtM9kTSatvujEedTcvgb7DnG5e8uSSh9MARAgfJQHyEM3hceTfQv7Wwz+a/Bg0Sdb9NpY0R12UEPQ3eyVrOKJX+fC2eoxxZ8jXZWQbNzGE/gObJGldK9IHUHY=
+	t=1714052588; cv=none; b=OJffMB+PzvybDQ0dwdH4VxwTVymM0GqO4rbw6r2H/b3+F2+OaH1sXvda7hOu+GA48GAfZEjcrtAI4U/YSF6I53dS0alH/36fN2LFub/hr8JsZ0BsK639ILKRuaF09tHzrMkMDHEJX/ZOYNxHwNT1oNZkpfK/YoT1wRq9J6kaK+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714052408; c=relaxed/simple;
-	bh=6OjdQUER9XqbuZoiy6XBVKaC/+ezP3m6B3AQ4bYYUas=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WTts7WTYzz1LGVcvV9zLZB6w5G6mhddJ8kXlOcNKJ23YGMq9u3rcq3757lrDn18oviOoP5hlUzsK5dERLQco44Gd2K4JhJNjqkCDvAyhCBFa9WBUcoKrksfWsajr2Z5AWYbemd1/emjHNSOlQKDoVgZ4dYktRLVPYrDi2KsNZDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0pointer.de; spf=pass smtp.mailfrom=0pointer.de; arc=none smtp.client-ip=85.214.157.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0pointer.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0pointer.de
-Received: from gardel-login.0pointer.net (gardel-mail [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
-	by gardel.0pointer.net (Postfix) with ESMTP id 3FE88E80EF4;
-	Thu, 25 Apr 2024 15:40:02 +0200 (CEST)
-Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
-	id 845C2160029; Thu, 25 Apr 2024 15:40:00 +0200 (CEST)
-Date: Thu, 25 Apr 2024 15:40:00 +0200
-From: Lennart Poettering <mzxreary@0pointer.de>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Mikko Rapeli <mikko.rapeli@linaro.org>, linux-efi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org
-Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
-Message-ID: <ZipdML5KN6IPenX5@gardel-login>
-References: <6e751959b9056884c1b9d3ba23e303d1737d8763.camel@HansenPartnership.com>
- <ZiZhSfgeAdrbnaVL@nuoska>
- <CAC_iWjKA-xRH=3FK+=woXsB8AW4+_mVhJhUQnL8iFKxGzOwKiA@mail.gmail.com>
- <e3038141413e25350f0e53496f7a7af1bf8419cf.camel@HansenPartnership.com>
- <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com>
- <e1da76ca4c7fe9319aaac5f8ff6eb46db433ec60.camel@HansenPartnership.com>
- <CAC_iWjLH=SDoTw_Pgr2hOKHkjEp_dKqwpUe9j6a=_WNW9UcxKw@mail.gmail.com>
- <CAMj1kXGHT2wULF2zwNM_QxD29dRW_dtFX2sOvsLahPiRVB61qg@mail.gmail.com>
- <ZiopXE6-AucAB9NM@gardel-login>
- <f6259f0a28b80db78d28475105ae7f37655a58ee.camel@HansenPartnership.com>
+	s=arc-20240116; t=1714052588; c=relaxed/simple;
+	bh=FYUm8/jsSbolhzGW8nVV7JKBaPVgVAGk/UemDJ9yAkM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JLxAdj6bJMD7qBDNPjP1ZE5bqvJm6h0/k3JMvR26J+TS5o8detnSjJ1r3xAGRrtjoOKIeAme/8B9PaLURqlinlQjGC5aE9DYuHrSLuoI5sZOUFdvZ/rSqQQjO6+mLRqA1WgpPu3Nv2wbSc3aIVNUn8ugbFdNvMaRjCBTKfgAUw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qh+fbmxw; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c81f770b-5fe4-4212-bfce-fedb3fced94e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714052584;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=B40s8PwSIdtJ8VKzMJF2QOyXb1ZhIpWphE6PaQ8co9M=;
+	b=qh+fbmxwR9UmPyb42yBLOM0tKjcJwrT5TCPpL6XcRbRjtwl3SkYp0LCpqqX7DtT6w17ZVT
+	RIr44sEjAgn6gEvlxWLDAFYKtJDG+7B1ZT63He+26YwT7Z3geobad5WBLysQ4sVnZ+COzt
+	0l4agMa/b5XL31jQp8canBwG3bEzH54=
+Date: Thu, 25 Apr 2024 21:42:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6259f0a28b80db78d28475105ae7f37655a58ee.camel@HansenPartnership.com>
+Subject: Re: [PATCH v2] software node: Implement device_get_match_data fwnode
+ callback
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: dri-devel@lists.freedesktop.org, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Daniel Scally <djrscally@gmail.com>,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>
+References: <20240422164658.217037-1-sui.jingfeng@linux.dev>
+ <Zie3ebHOEpWHj1qV@smile.fi.intel.com>
+ <d5bc1e73-a553-451e-ab74-f5f0ca259c6b@linux.dev>
+ <hcltp2bbxxg2t7ibmzgiib7mgbwgmvzwnnq6mochdh7c4h76r3@bxj6yk5zq64e>
+ <ZikE4qOVO7rgIs9a@smile.fi.intel.com>
+ <CAA8EJpr1FSjizAh6Dp5Bmux3NrGYh=BfHFL4D1fa87Og4ymY0w@mail.gmail.com>
+ <Zikck2FJb4-PgXX0@smile.fi.intel.com>
+ <kucey3jsydjye3ndflns3cqolcpizhnxgzz3fkmcatlnpbnwrk@22ulsqfh2vf6>
+ <Zik3AjiWkytSVn-1@smile.fi.intel.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <Zik3AjiWkytSVn-1@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Do, 25.04.24 09:24, James Bottomley (James.Bottomley@HansenPartnership.com) wrote:
 
-> On Thu, 2024-04-25 at 11:58 +0200, Lennart Poettering wrote:
-> [...]
-> > General purpose distros typically don't build all TPM drivers into
-> > the kernel, but ship some in the initrd instead. Then, udev is
-> > responsible for iterating all buses/devices and auto-loading the
-> > necessary drivers. Each loaded bus driver might make more devices
-> > available for which more drivers then need to be loaded, and so on.
-> > Some of the busses are "slow" in the sense that we don't really know
-> > a precise time when we know that all devices have now shown up, there
-> > might always be slow devices that haven't popped up yet. Iterating
-> > through the entire tree of devices in sysfs is often quite slow in
-> > itself too, it's one of the most time consuming parts of the boot in
-> > fact. This all is done asynchronously hence: we
-> > enumerate/trigger/kmod all devices as quickly as we can, but we
-> > continue doing other stuff at the same time.
+On 2024/4/25 00:44, Andy Shevchenko wrote:
+> On Wed, Apr 24, 2024 at 07:34:54PM +0300, Dmitry Baryshkov wrote:
+>> On Wed, Apr 24, 2024 at 05:52:03PM +0300, Andy Shevchenko wrote:
+>>> On Wed, Apr 24, 2024 at 04:34:39PM +0300, Dmitry Baryshkov wrote:
+>>>> On Wed, 24 Apr 2024 at 16:11, Andy Shevchenko
+>>>> <andriy.shevchenko@linux.intel.com> wrote:
+>>>>> On Wed, Apr 24, 2024 at 12:37:16AM +0300, Dmitry Baryshkov wrote:
+>>>>>> On Wed, Apr 24, 2024 at 12:49:18AM +0800, Sui Jingfeng wrote:
+>>>>>>> On 2024/4/23 21:28, Andy Shevchenko wrote:
+>>>>>>>> On Tue, Apr 23, 2024 at 12:46:58AM +0800, Sui Jingfeng wrote:
+> ...
 >
-> So let me make a suggestion that you can use now.  Since all you
-> currently care about is the EFI/ACPI device, there is always a single
-> sysfs entry that corresponds to that (so you shouldn't need the log
-> entry as an indicator):
+>>>>>> But let me throw an argument why this patch (or something similar) looks
+>>>>>> to be necessary.
+>>>>>>
+>>>>>> Both on DT and non-DT systems the kernel allows using the non-OF based
+>>>>>> matching. For the platform devices there is platform_device_id-based
+>>>>>> matching.
+>>>>>>
+>>>>>> Currently handling the data coming from such device_ids requires using
+>>>>>> special bits of code, e.g. platform_get_device_id(pdev)->driver_data to
+>>>>>> get the data from the platform_device_id. Having such codepaths goes
+>>>>>> against the goal of unifying DT and non-DT paths via generic property /
+>>>>>> fwnode code.
+>>>>>>
+>>>>>> As such, I support Sui's idea of being able to use device_get_match_data
+>>>>>> for non-DT, non-ACPI platform devices.
+>>>>> I'm not sure I buy this. We have a special helpers based on the bus type to
+>>>>> combine device_get_match_data() with the respective ID table crawling, see
+>>>>> the SPI and I²C cases as the examples.
+>>>> I was thinking that we might be able to deprecate these helpers and
+>>>> always use device_get_match_data().
+>>> True, but that is orthogonal to swnode match_data support, right?
+>>> There even was (still is?) a patch series to do something like a new
+>>> member to struct device_driver (? don't remember) to achieve that.
+>> Maybe the scenario was not properly described in the commit message, or
+>> maybe I missed something. The usecase that I understood from the commit
+>> message was to use instatiated i2c / spi devices, which means
+>> i2c_device_id / spi_device_id. The commit message should describe why
+>> the usecase requires using 'compatible' property and swnode. Ideally it
+>> should describe how these devices are instantiated at the first place.
+> Yep. I also do not clearly understand the use case and why we need to have
+> a board file, because the swnodes all are about board files that we must not
+> use for the new platforms.
 >
-> /sys/bus/acpi/devices/MSFT0101\:00
->
-> That link (or a kobject uevent if you prefer to look for that) will
-> always appear regardless of whether a driver has attached or not.  When
-> the driver actually attaches, a driver/ directory will appear where the
-> link points.
->
-> The device link is added when the acpi scan is initiated as a
-> subsys_initcall, which is before all the filesystem initcalls, so it
-> should run before the initrd is mounted.
->
-> Is this enough for now and we can think about a more generic indicator
-> that all drivers have been probed later?
 
-That would only work on ACPI though, but on ACPI we already have a
-check that works?
+Would you like to tell us what's the 'board file'?
 
-Or to say this differently: how is that different/better from the
-check that already exists in systemd, which looks for
-/sys/firmware/acpi/tables/TPM2?
+I am asking because I can not understand those two words at all.
+I'm really don't know what's the meanings of 'board file'.
 
-Lennart
+Do you means that board file is something like the dts, or
+somethings describe the stuff on the motherboard but outside
+the CPU?
 
---
-Lennart Poettering, Berlin
+Does the hardware IP core belong to the "board file"?
+
+Can we using more concrete vocabulary instead of the vague
+vocabulary to communicate?
+
+
+-- 
+Best regards,
+Sui
+
 
