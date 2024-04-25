@@ -1,129 +1,119 @@
-Return-Path: <linux-kernel+bounces-158298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22E298B1E05
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:29:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF6068B1E08
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:29:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B241D1F2138F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:28:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2AB3284AF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:29:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 103468595B;
-	Thu, 25 Apr 2024 09:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A6084D12;
+	Thu, 25 Apr 2024 09:29:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ld0ONV5H"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="b+d9jwsz"
+Received: from mail-ed1-f73.google.com (mail-ed1-f73.google.com [209.85.208.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D76D284FC8;
-	Thu, 25 Apr 2024 09:28:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024FA6BB48
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:29:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714037306; cv=none; b=lXoNPrbHykCA8xlEeJ+6lyRiWfWoLSaeiLRdaXNlPB0kJX/0BIAkmOSIOOMDuH+hcNc9cVBoREx+S1EqvX6plIh1CTsXqdI5KeaFxeUD1ksMB/wIwVcFXvPw5+YJfeHtUZbnsXjj0PZdzuX1m4e/fjuQreLhPH/mgACviGvjHhk=
+	t=1714037348; cv=none; b=Eiz2CKAfKPh+8cRVlQH1t30JTF4On7+fNeRzovRxoJ650eXo4zavdoUGJwZJQC3jQJAm+caX9d4UA0yVks73sdvrGKTQSLAN2nzdrmn1wEXhyhL1mR2hcrJz54i/ZxnekxKiiUyD5zKJ/hQcfrt3oI5XJO/JOgKZz+GtUKphKdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714037306; c=relaxed/simple;
-	bh=dNnb/1qJ74rZ11oCWnJ46aTq5rkrxAFUBf2wVkykw+U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gMlqYZnD1xR1CZQYC/2GJsQ/ogQjFXZDzLYYmUMTj5/kd8D7rAOjbexT2Jb9URTITr07Y+z+37jH/OK7v3FcSgtAxe+2cinkjs67aRMtu70aVIe2kcgrHSNUUYxisKKj0NPY1nSTvzzFnAqIlITpcW84D7/xN4yUgSZimRWNcyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Ld0ONV5H; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=2Zgzdc8bVIwFztt65g+xgtay+uCO2f+ZzLbfkYk6v1c=; b=Ld0ONV5HzIehLPpXBpxGFTUgf/
-	Io2uQvl1my1KVYMM0jZLYVXTwiarZKNNfirjlNMPaMGXaylE46iZ1j/hQ+gG4jIyNPC25cGVPPoV3
-	Cb4F9kAQubErw+1DLHSftowhQyYxk+pSTtPuxgzebeuOwXGrylBQBjF96uAd0nlti7jSrHErSb/4V
-	oWQF0bp0TMhGFHLtbOOsGPO7j9GiBbQU2Iu3ysNICNY2+7LyiUG/tnSXU9Db4h2pC6T7tvwXtoycT
-	s7eU5zr9eXNVU5RvMf2fgEZmUbR6cOzZV2BjAJx1Eru+g7U4/5dKNWDh8T6M1PXBIOGWiAM2O2CG4
-	4Ze0hkfg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzvOm-0000000EoZi-3Xul;
-	Thu, 25 Apr 2024 09:28:13 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 74649300439; Thu, 25 Apr 2024 11:28:12 +0200 (CEST)
-Date: Thu, 25 Apr 2024 11:28:12 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Jakub Kicinski <kuba@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-	netdev@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 1/4] locking/atomic/x86: Silence intentional wrapping
- addition
-Message-ID: <20240425092812.GB21980@noisy.programming.kicks-ass.net>
-References: <20240424191225.work.780-kees@kernel.org>
- <20240424191740.3088894-1-keescook@chromium.org>
- <20240424224141.GX40213@noisy.programming.kicks-ass.net>
- <202404241542.6AFC3042C1@keescook>
- <20240424225436.GY40213@noisy.programming.kicks-ass.net>
- <20240424230500.GG12673@noisy.programming.kicks-ass.net>
- <202404241621.8286B8A@keescook>
+	s=arc-20240116; t=1714037348; c=relaxed/simple;
+	bh=bHYLFgsNSpBC5G8LSh4asIkQzCruyTt2NslAboXMSyQ=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=hBQrz+nmdV03Yk8bzZjFFK+uzU4HP3aKd2EXTbwoaIhMnlMRQWM/9vzIknTnfcjOGBvdmg39ih1b+zlAQKdM3XNWNxnU2FBE3gpCbQCBwsvIzbBrILrCqce/t17murelj6u8hCSLbzriEdyT2Ck4i9z0OP8aI43TFu1p8/bDiVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--glider.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=b+d9jwsz; arc=none smtp.client-ip=209.85.208.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--glider.bounces.google.com
+Received: by mail-ed1-f73.google.com with SMTP id 4fb4d7f45d1cf-5722efee02fso225671a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 02:29:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714037345; x=1714642145; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ekXrdxgsgLB9DZfBB9nJ5MWu9x1dRAv+tEq0T2dGKM8=;
+        b=b+d9jwsziLhOzHAf1+XAJ+gZEGC0Xnl34ZSh668UijhnHkeBj2Hh6ad+HBAweun0DE
+         NMYVYyh2TE3FOH/NLtTg4BgR5SeOhnnBfdnM1HfbtHWG/ZsjwYetn3i8ZpKQqqvPrWXH
+         58d4MD8oAgfDYAVbFFFdxdDtJLPv/pIfLfmLZNLdE2OykFXisFptNKRya3Zs6/9mjlRM
+         ml22wsi0MIffz7+e2NeYwj5ORyvnInGKzRrmVoKCH87cWlcufiBUQGDGEXyhPI4i3jO+
+         EEq/VTidk82Gd2XFHoH3W8mrIN8UJxL4p4BZYQc32kkbvyUWAJtZTsqSl4YIXRrJgwLZ
+         rQwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714037345; x=1714642145;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ekXrdxgsgLB9DZfBB9nJ5MWu9x1dRAv+tEq0T2dGKM8=;
+        b=WP/2RnoIbjnsgg6KekvjyAUWG6pVVXtpTzZpABGC3nEU2UnXq7oBvligBsnmRkKGQr
+         rLvKyfV0iUTOm8Jvy5cakSizNtjPRM1hi9Ux/9k683HqyJozJ1Nnp6aOQWD788wn+fSj
+         xSVnqyljS3CZCau1qll+pULzP7a631L9upYMSYoICYtCys3hWkFupDt2F6w1P7lOVjA5
+         KEVPVthPK11aZZ+aWkMGPAcCfGqJuWJAgbUkUkuPcJ5bxDIq/NggU6tSpcnl5vwGDoQ7
+         HOriynITqZ2Yq8vufcPCxZoy2hVc8NG13DsGH5RmhAnx+vP/4NIjp3vr/mvk190nMq7C
+         vMXA==
+X-Forwarded-Encrypted: i=1; AJvYcCXFal8PhceomWsjpwhv79uQx9ku7pzpXT3KRZJpjF7Du4+7nTYGIGMcd0SmvrqfMTaoWOKnB3vI9xEtkJ6IE1AW2NXo/O3XLgIesvW3
+X-Gm-Message-State: AOJu0YzrL91u7iGcCZ9kyNEOTSaS4zKW3Kkl3F8t//MRzEV0podRuFIi
+	bvgsjPOyPNKAziiXA7Jxn/iYBHO5fVnJAzcxVK2HEGkSNxJU2A7lcIa4yDH46cihE9BumzY2wfy
+	z6Q==
+X-Google-Smtp-Source: AGHT+IFNZjP+bk0FmJHhFl5v71ayEd4aDoEzYxpx2wokkSCwcAoyPwu91xHwhieZvZjmaOJnU1NI8YHI4JU=
+X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:7464:847c:5c22:b888])
+ (user=glider job=sendgmr) by 2002:a05:6402:3819:b0:572:308b:f7a1 with SMTP id
+ es25-20020a056402381900b00572308bf7a1mr5051edb.4.1714037343991; Thu, 25 Apr
+ 2024 02:29:03 -0700 (PDT)
+Date: Thu, 25 Apr 2024 11:28:59 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202404241621.8286B8A@keescook>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+Message-ID: <20240425092859.3370297-1-glider@google.com>
+Subject: [PATCH] kmsan: compiler_types: declare __no_sanitize_or_inline
+From: Alexander Potapenko <glider@google.com>
+To: glider@google.com
+Cc: elver@google.com, dvyukov@google.com, akpm@linux-foundation.org, 
+	ojeda@kernel.org, linux-kernel@vger.kernel.org, 
+	syzbot+355c5bb8c1445c871ee8@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Apr 24, 2024 at 04:30:50PM -0700, Kees Cook wrote:
+It turned out that KMSAN instruments READ_ONCE_NOCHECK(), resulting in
+false positive reports, because __no_sanitize_or_inline enforced inlining.
 
-> > That is, anything that actively warns about signed overflow when build
-> > with -fno-strict-overflow is a bug. If you want this warning you have to
-> > explicitly mark things.
-> 
-> This is confusing UB with "overflow detection". We're doing the latter.
+Properly declare __no_sanitize_or_inline under __SANITIZE_MEMORY__,
+so that it does not inline the annotated function.
 
-Well, all of this is confusing to me because it is not presented
-coherently.
+Reported-by: syzbot+355c5bb8c1445c871ee8@syzkaller.appspotmail.com
+Signed-off-by: Alexander Potapenko <glider@google.com>
+---
+ include/linux/compiler_types.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-The traditional 'must not let signed overflow' is because of the UB
-nonsense, which we fixed.
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index 0caf354cb94b5..a6a28952836cb 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -278,6 +278,17 @@ struct ftrace_likely_data {
+ # define __no_kcsan
+ #endif
+ 
++#ifdef __SANITIZE_MEMORY__
++/*
++ * Similarly to KASAN and KCSAN, KMSAN loses function attributes of inlined
++ * functions, therefore disabling KMSAN checks also requires disabling inlining.
++ *
++ * __no_sanitize_or_inline effectively prevents KMSAN from reporting errors
++ * within the function and marks all its outputs as initialized.
++ */
++# define __no_sanitize_or_inline __no_kmsan_checks notrace __maybe_unused
++#endif
++
+ #ifndef __no_sanitize_or_inline
+ #define __no_sanitize_or_inline __always_inline
+ #endif
+-- 
+2.44.0.769.g3c40516874-goog
 
-> > Signed overflow is not UB, is not a bug.
-> > 
-> > Now, it might be unexpected in some places, but fundamentally we run on
-> > 2s complement and expect 2s complement. If you want more, mark it so.
-> 
-> Regular C never provided us with enough choice in types to be able to
-> select the overflow resolution strategy. :( So we're stuck mixing
-> expectations into our types.
-
-Traditionally C has explicit wrapping for unsigned and UB on signed. We
-fixed the UB, so now expect wrapping for everything.
-
-You want to add overflow, so you should make that a special and preserve
-semantics for existing code.
-
-Also I would very strongly suggest you add an overflow qualifier to the
-type system and please provide sane means of qualifier manipulation --
-stripping qualifiers is painful :/
-
-> Regardless, yes, someone intent on wrapping gets their expected 2s
-> complement results, but in the cases were a few values started collecting
-> in some dark corner of protocol handling, having a calculation wrap around
-> is at best a behavioral bug and at worst a total system compromise.
-> Wrapping is the uncommon case here, so we mark those.
-
-Then feel free to sprinkle copious amounts of 'overflow' qualifiers in
-the protocol handling code.
 
