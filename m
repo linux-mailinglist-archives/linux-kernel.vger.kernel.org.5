@@ -1,112 +1,142 @@
-Return-Path: <linux-kernel+bounces-159328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4691D8B2D31
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:40:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B4718B2D35
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:42:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF4501F22481
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:40:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 675E31C2145A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90C16155A39;
-	Thu, 25 Apr 2024 22:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B074156675;
+	Thu, 25 Apr 2024 22:41:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JrN+gwGB"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zqcNn8Wb"
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815792599;
-	Thu, 25 Apr 2024 22:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1CF156228
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 22:41:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714084837; cv=none; b=i9A/SDT5YQ5u0WTJ4NKvBb4oQoLxKG30QiQVnjEGP6aFd0DHCFgo52LKDN2xaa9kcoC6k1OvyXek8mSqsp7Z1B2W9FPWp7HSKi/AZcGA3H06azeDvfEo4iAymb7TynhMPARkqtzxKGBZzSSs6n+79eEVo63cbG/rTN6xcfkRL2A=
+	t=1714084906; cv=none; b=g5QwsqTPpFmncs+emwfM4uk0OtKJZWAQ7jWno2GrNQ+tDPuO1B3opnyPEx74mvG0icrtfI9Ntmw4+QcNk3mCFTIb6adtHawTBHivjvCZMJUI7h2D0XzHQef7Knhw3FMXk/X/JiWQSNxhKmXnjbQDWOlU5AWgsy7BE25o61JtHpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714084837; c=relaxed/simple;
-	bh=isimwcOHdDK7dQ5J/GY/2fBT8r4/NY8PJ8OszygoMX4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q4aMOEyj39BtUTL457CtifU6Ma1pb6AEd8+zw6MryGIcgQlH+CYJ+ZMOItEI4YSFIYjgY9FwMr5iI/ttUXvg/kHIoZtdGOrnC4XWC1hhvt0OD/CjmZoFeONRBneS+rQiChWE1cE8+q6UZbg5lB/s3ZRvPnnqUDvkwcPIb2pgomY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=JrN+gwGB; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-	bh=Pv6DAoPFFNrD4sYIPF/agyqOANkVbxxZ+lZCZEZ+GiM=; b=JrN+gwGBiCeml7wT9b6Ytx+8zr
-	E199uP12fHkIKlQBzuWwF3kTvVpMlFuwd5s25SPo+4NkOMRvOr2Imy6xxJJF+njOuGptf8Zew0Ibq
-	KPjc39y8562tf4ByOhadWH7GuD1gVuM/dqzfYIrpG8Tk/3SOHdFDjAWP4tRmTTZFIb06BzcWIbp/4
-	tlRQRwmmabiIUYsZgpe6gtzHLjpAP7MLAxo2DDaJ65Ar8XiM7nHR40HOtJ4/3WYmDY6H/L9DPs1rC
-	Bl93lsDBs8NkuMqNge2MOiiMM7JSM+k1VTdlNjlGa+C+rM/tCKK6kFFrOAuAXEFAaCT73kRxIkhzH
-	dSMCCz5w==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s07lY-0000000AV5t-1zP9;
-	Thu, 25 Apr 2024 22:40:32 +0000
-Date: Thu, 25 Apr 2024 15:40:32 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Zi Yan <ziy@nvidia.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, fstests@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	willy@infradead.org, hare@suse.de, john.g.garry@oracle.com,
-	p.raghav@samsung.com, da.gomez@samsung.com
-Subject: Re: [PATCH 1/2] mm/huge_memory: skip invalid debugfs file entry for
- folio split
-Message-ID: <Zirb4GNjubOJzdoR@bombadil.infradead.org>
-References: <20240424225449.1498244-1-mcgrof@kernel.org>
- <20240424225449.1498244-2-mcgrof@kernel.org>
- <17447911-9578-45B2-A601-28CD0C5036D4@nvidia.com>
+	s=arc-20240116; t=1714084906; c=relaxed/simple;
+	bh=oxGSOLNPdfHpQYTSm/hGakG/iwIzMGgaLkQImWnGLjw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=Dwhin9fWI3i6pYmH3N0D05AnxUJQmdnjAj+jSDgMugit83QkpPAIeldpFJYEpj6tRDMMnNPFS1JNf6zSYDm7TlpRivbPHqAtl++ujtC+gwUBxw9W+BfQEhmCxM0oD+waWSlmclMe8vp9+suOHQ382DZldqmy+YRGJElPbfJKv34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zqcNn8Wb; arc=none smtp.client-ip=209.85.166.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-36b3738f01cso37575ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:41:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714084904; x=1714689704; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=72dpbNrttk8py6uXjyBWtA37O8ks8mKcpQBV78r/mRQ=;
+        b=zqcNn8WbgapFYp7OIbXfY00lWEoDjKCVlbSWbb9/WuFhZRa0tN6H1/MkPM5c7MZYHH
+         VAA+rUAt3PmkyfG8AqM0AwYX12C3XoE/2StZLpKPNHKi6mQKxN/hgADPyV1b5nAPm0R4
+         kmPK2Q+c0gmby9u3pDfOT5ROzIdev7YWeAOIc4WdN6KbQu39vgxe2nvPsnhDr1O/XB0J
+         M5Rd7619QLCSsXblAhx2X4WwTIBI7I8MXOHVSWr80BZK5vhV2C7c8Pf3A4RvbkpwXB4T
+         2Y40GqBT3Q0gNCUZaWDprPPYCS1xVLV/ByST4oweDN8XJzxiYQ3Mw8bTpoCIAe0tQ+D2
+         ggYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714084904; x=1714689704;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=72dpbNrttk8py6uXjyBWtA37O8ks8mKcpQBV78r/mRQ=;
+        b=s0zPGB/bg9LtN4KqFuglOxKRXlunTRW0+87PLaQA6kAVmZL4lB1RKMVWKHwgETZHUL
+         +OMYqual/cMAu5xq9IvXnCLIfYFi1jzAyMSvSOPYD4F2otRMpem21o32hYXAvIekBflV
+         bx+JKQGzand9jiGIulHgRTa4cKhrNvi/lSO5ONyK3xFedL5ZIzEH3QHuBXMl5Fycvh1I
+         V/jHAxtAthnWzL9zPnhw8ttH+GZJO7jPxpLzOLHeN5GdcU7erVpSqLcjeg0uhJYkDGWI
+         1gPULXhIedUh59sd8ZvuwS/tIdTE+TH8JJsFF8GcsLqLxP+NuqbdMzkRiRYwROw+5Vu7
+         TR4w==
+X-Forwarded-Encrypted: i=1; AJvYcCVyHMete/oSewo2mm2/YBtAvIGhWpfZZGBjvhoVOgdY+DW69I1zEtKViJ1AMlWUA4ifKK25Mc6hwiMt0AOfwXBl5WPpCN6cSbnuSGSq
+X-Gm-Message-State: AOJu0YxxPZMcVCwRio8ckI2M4YxZ/NgYTxX+bdWzCZXjNS1Hfa86OxFS
+	chufpNKVKTIbKUKrBJPQTEFb9/dGQe/8beVz5MwM+l3d95Amm2174ylyNe6s1BmfVvRuVmQuQ75
+	xxk4eHL8hxfFyMiIgYvi64wTa9yH2Cb7kCNw4
+X-Google-Smtp-Source: AGHT+IHO5QqtzXcXeR2dvYokk9K4IIju2HkHxTqgaAiF7cgesnW2Bl6zjmMWkLdEddMASLs6OyUmdiVOsQlsZKcWDhc=
+X-Received: by 2002:a05:6e02:dee:b0:36c:19db:c567 with SMTP id
+ m14-20020a056e020dee00b0036c19dbc567mr60918ilj.26.1714084904313; Thu, 25 Apr
+ 2024 15:41:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240425223406.471120-1-irogers@google.com>
+In-Reply-To: <20240425223406.471120-1-irogers@google.com>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 25 Apr 2024 15:41:30 -0700
+Message-ID: <CAP-5=fWryq6-W35ZyP4PAHJoJSA_7d2YV7zTG3vuL+WGa=_Mmw@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 0/3] Retirement latency perf stat support
+To: weilin.wang@intel.com, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Ze Gao <zegao2021@gmail.com>, 
+	Leo Yan <leo.yan@linux.dev>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	Dmitrii Dolgov <9erthalion6@gmail.com>, Song Liu <song@kernel.org>, 
+	James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <17447911-9578-45B2-A601-28CD0C5036D4@nvidia.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Wed, Apr 24, 2024 at 09:03:51PM -0400, Zi Yan wrote:
-> On 24 Apr 2024, at 18:54, Luis Chamberlain wrote:
->=20
-> > If the file entry is too long we may easily end up going out of bounds
-> > and crash after strsep() on sscanf(). To avoid this ensure we bound the
-> > string to an expected length before we use sscanf() on it.
-> >
-> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> > ---
-> >  mm/huge_memory.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> >
-> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > index 9e9879d2f501..8386d24a163e 100644
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -3623,6 +3623,7 @@ static ssize_t split_huge_pages_write(struct file=
- *file, const char __user *buf,
-> >  		char file_path[MAX_INPUT_BUF_SZ];
-> >  		pgoff_t off_start =3D 0, off_end =3D 0;
-> >  		size_t input_len =3D strlen(input_buf);
-> > +		size_t max_left_over;
-> >
-> >  		tok =3D strsep(&buf, ",");
-> >  		if (tok) {
-> > @@ -3632,6 +3633,14 @@ static ssize_t split_huge_pages_write(struct fil=
-e *file, const char __user *buf,
-> >  			goto out;
-> >  		}
-> >
-> > +		max_left_over =3D MAX_INPUT_BUF_SZ - strlen(file_path);
-> > +		if (!buf ||
-> > +		    strnlen(buf, max_left_over) < 7 ||
->=20
-> What is this magic number 7? strlen("0xN,0xN") as the minimal input strin=
-g size?
-> Maybe use sizeof("0xN,0xN") - 1 instead?
+On Thu, Apr 25, 2024 at 3:34=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> Support 'R' as a retirement latency modifier on events. When present
+> the evsel will fork perf record and perf report commands, parsing the
+> perf report output as the count value. The intent is to do something
+> similar to Weilin's series:
+> https://lore.kernel.org/lkml/20240402214436.1409476-1-weilin.wang@intel.c=
+om/
+>
+> While the 'R' and the retirement latency are Intel specific, in the
+> future I can imagine more evsel like commands that require child
+> processes. We can make the logic more generic at that point.
+>
+> The code is untested on hardware that supports retirement latency, and
+> with metrics with retirement latency in them. The record is also of
+> sleep and various things need tweaking but I think v1 is good enough
+> for people to give input.
+>
+> The first patch stops opening a dummy event for tool events. I came
+> across this while looking into the issue and we can likely just pick
+> it first. I kept it in the series for cleanliness sake.
+>
+> The code has benefitted greatly from Weilin's work and Namhyung's
+> great review input.
 
-Sure and I forgot the fixes tag, will send a v2.
+I forgot to mention this is based on the tmp.perf-tools-next branch
+due to the recent parse events clean ups that have already landed
+there:
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/lo=
+g/?h=3Dtmp.perf-tools-next
 
-  Luis
+Thanks,
+Ian
+
+> Ian Rogers (3):
+>   perf evsel: Don't open tool events
+>   perf parse-events: Add a retirement latency modifier
+>   perf evsel: Add retirement latency event support
+>
+>  tools/perf/util/evsel.c        | 186 ++++++++++++++++++++++++++++++++-
+>  tools/perf/util/evsel.h        |   4 +
+>  tools/perf/util/parse-events.c |   2 +
+>  tools/perf/util/parse-events.h |   1 +
+>  tools/perf/util/parse-events.l |   3 +-
+>  5 files changed, 192 insertions(+), 4 deletions(-)
+>
+> --
+> 2.44.0.769.g3c40516874-goog
+>
 
