@@ -1,125 +1,110 @@
-Return-Path: <linux-kernel+bounces-158010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A4D38B1A17
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:00:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 586A18B1A24
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:07:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA88D28397A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:00:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E4801C214F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:07:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5F2539FD8;
-	Thu, 25 Apr 2024 05:00:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43B223A1B7;
+	Thu, 25 Apr 2024 05:07:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PrFPrU8W"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HSv+OnR7"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF47A38398
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 04:59:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AE4539AF0
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 05:07:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714021200; cv=none; b=q3d0u87XDFFudz06bhzz2SBYjg6N9mWVmeQq8gNr/9tYrMkXaArwEXeUqxGF6msqPrfw5+YhMCqaJuN/BUwac1vdo14L8egnYoMM6xInqKbFLUt1UqDYRK38nU8YYO+deEyrnrBPmJXG+9BQnldERuZb58TLJotHKwQGUUtbQFo=
+	t=1714021647; cv=none; b=Xz5r1DmKANYtaNnw334q8dofobLnXoy7a3NBrV+yjECb5COkC0jKi0qy+ENUXBsatrMreW0KtpqC2iQUMiEGEc0p5173pBKXWMeJ30eFfYldCJn1phSzH9u0G5nclqKVa5pPPIdHqRb9rBR3SPKy1bplnK/pv3BQqvBWvvCy6Xk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714021200; c=relaxed/simple;
-	bh=/Idzeob/3VgiaD8N/eZMjeY2vkHnL1zemb4/6yGRVA4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=faN8H0sLNkv+kjinQXAjHEPvKnFXJof/n0IwViVN7NOiXqT+FF3Z2eh40vSIlZLPbI2G3EOfpqtIgDxpA23tmVcPPe3lkhDv534FZxsMdgOaST2FxkDIRKEWaR0054sVmE1Jj43TnxNWkkzIiDFUrbRRGVaFU2xbEQxb5Km/SDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PrFPrU8W; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ee0642f718so1274577b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 21:59:58 -0700 (PDT)
+	s=arc-20240116; t=1714021647; c=relaxed/simple;
+	bh=Ncm25OorSfz9ZnjTA4O3Y7gRy0DGBERjo58g7YZCcmA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m3j+th/eGZXF8zW4UHKv+01/rH4P3gLG/uYlvfWn4Sjak2lxlHZ0yn4m52W/L02jLDpRPTYbKLnnAt4jV0tUqm+pGjmMU0yBPq30VwXH+C7xwd3+znjM5ziq8OpaFEu0JZ7cOpHSqt2/TJMTtQ4+Rerl/x3znxcttBLNAP7Zwv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HSv+OnR7; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6f28bb6d747so544123b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:07:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714021198; x=1714625998; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DPqD64kC179CYiaasLh/j7lz8sMbAVUurPZoGZX691U=;
-        b=PrFPrU8Wl9DRUgP+DsmEg6BlfbzPmB8xfuyZxAK63updgjfy7iyh32pGhw2g/hb1hR
-         ELoBwtiriCouccjue6YxzmIugzz4RW3us6umvDVg12iOvQM+gs1SCxwy8YlG67D3Q0SJ
-         qiXhgN3lFDITgw8kGx1lrDK/eyXAQnYCRW6e/HPQVpAnol70oZhpvL738My/U5am16wk
-         fy8aRsLHM0O5eiGdolumWVjaIDAxCzwSaebLUzGuKTMpNccgFI4xpBChPZv14pHsBzto
-         D9sQY5slWazd1O91+TBjkV5CzF90KL2EeXVmux3EGooCFF03yAjr9IYb49WWsHwPkYfl
-         MbJw==
+        d=linaro.org; s=google; t=1714021644; x=1714626444; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=J1QZb4MudunGoT1d0CEZNxbpWlJt6A7q5DEKaxpPxYs=;
+        b=HSv+OnR7EEy3RGOUvgS8KFYsug0vpc5b5XAXoB3//KCXCPp8VsDrSh0rFn4ZmCOwpj
+         FfQW5QU3pQCIbBPL/jF5Z49t/qlX71WUMoZqHGQZeHDiv0l5/6MJV8f51eOgLqjS0eNR
+         d0TFLDJa8bGH50ssB4LcU+uhMXcE8bQH/HlBQia6cUIS+qjRoMLVfz0qB0PlEe/w6bme
+         8yN4eUqhewhPoGMc1OH1AEkPAzc3246v/fYE9y5MUre6GThThtR6S7g1VQRKsTrmAPxN
+         M2yrvX6H/EEY6beKea7XCQmqHHQ8BsyWEMDfb+frxaFdcfXdWqts1gVb+aA9hFtLNnga
+         Swvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714021198; x=1714625998;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DPqD64kC179CYiaasLh/j7lz8sMbAVUurPZoGZX691U=;
-        b=uSrXe5vdiSkKnFnDqQ6ACT1H2NwdJIja0R0dvqcITydjA4Kbv7cTPwUvtilG2fliqV
-         zsdORH4iuMMSWUrEaG7qf1NTjBXcqJg2AmEqUxtJW6ajN1y3m8sMSvum2S/vYbvLZRHg
-         wOsD19G7ANEf7jBQunvxHgj7+eMiKY2TXvujs4WuvKB4gCdZzuB4qsRTtHfMw4GtIbCn
-         T7iraiXoF5X9J0iKJld1CY1/rlonDq55pi2VCNW09vY4ei6KnJMv1/ZFq2cs2VR2mgw7
-         /D/CHXBp0wxBVyCljlIOGZ21laxsW0aLLYBIdZ3AZ5Uj9m+PGEOqBTlxt70g+rSFFswA
-         vosg==
-X-Gm-Message-State: AOJu0YxnQ2VIyWdV25O4qV4tc1syOJJcJ0e4SEqqeTmprnp+s+m/ei2h
-	MJf80LWd6IXOlQBQVezotieR+iQTlukiSyAvbdC6Q6NtDVCYQdtNIhg8Iqei8HY=
-X-Google-Smtp-Source: AGHT+IHRMb2o3vW7c223M+RfZSC4DS1dGnW7fRYIZ/r4b/rjzqjPMFQHjLRKYMXApqLT9UNpjp1j2w==
-X-Received: by 2002:a05:6a20:d48f:b0:1a7:48de:b2a4 with SMTP id im15-20020a056a20d48f00b001a748deb2a4mr3321649pzb.6.1714021198031;
-        Wed, 24 Apr 2024 21:59:58 -0700 (PDT)
-Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id j19-20020aa783d3000000b006eaf3fd91a1sm12314258pfn.62.2024.04.24.21.59.56
+        d=1e100.net; s=20230601; t=1714021644; x=1714626444;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J1QZb4MudunGoT1d0CEZNxbpWlJt6A7q5DEKaxpPxYs=;
+        b=wcDOT+i+HrCJ9N0mdNLerHak74vukRLJbql90Lm90GA356NqwDZFwMl69hgP/pjtRA
+         WVPSHlucI4UWiuHMkPhka7+fXewAHaBHjHRkTV2XADvRnWQeH+BQDaMttjYihvISomvL
+         ejQ9WodYO1SX7dEzdrqAB+YzegjMQTjJvLE7neUqKdToYjPT1DS0ZcgtPpGMkjYA74Yh
+         7I0n30K3KY1ZjsdvKfrhB/Dm8AAHoxggw1OLViIZWrriTM3C9KuYTt3PXsgKRv7OZqDz
+         1C59m9gmBpt5RiTiRySxluqq68HHzM0cPwYZ22No7CQ0NFi9DIEm1bij8oMRzczLvKSG
+         CIzg==
+X-Forwarded-Encrypted: i=1; AJvYcCUu462LdZymuBbUEc2REsRM6Kamx/PkjUTazTNKTGEtGzZJZVFbdf/H84zPI5YpyV9JX2cdT2GVwUKZNo6yKmemh07h7nP1nOi97Uhq
+X-Gm-Message-State: AOJu0Yz2lrDpSMYiwnCMl+jn3lRRmWdwiEHiPC5UaxEZkEGln5TUzjF9
+	WPIB3Q6d3Xrv0stjpcBraaoDPm3WkpOMtKoN0MTO1bM46j0Ml4oFMFvvOUwAnl8=
+X-Google-Smtp-Source: AGHT+IHJ+k3q96gkiNx4O1VRjqwvvQM6h0PmO0ZbYeZFT5gD1l1NPwbOgm2RMmcK2waLpaq8Sbt/HQ==
+X-Received: by 2002:a05:6a20:da81:b0:1ac:efbd:dc46 with SMTP id iy1-20020a056a20da8100b001acefbddc46mr5597081pzb.2.1714021644464;
+        Wed, 24 Apr 2024 22:07:24 -0700 (PDT)
+Received: from localhost ([122.172.87.52])
+        by smtp.gmail.com with ESMTPSA id j9-20020a170903024900b001e8d180766dsm10760282plh.278.2024.04.24.22.07.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 21:59:57 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: syzbot+241c815bda521982cb49@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [jfs?] UBSAN: array-index-out-of-bounds in diFree
-Date: Thu, 25 Apr 2024 13:59:53 +0900
-Message-Id: <20240425045953.6360-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <0000000000000866ea0616cb082c@google.com>
-References: <0000000000000866ea0616cb082c@google.com>
+        Wed, 24 Apr 2024 22:07:23 -0700 (PDT)
+Date: Thu, 25 Apr 2024 10:37:21 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Portia Stephens <portia.stephens@canonical.com>
+Cc: mmayer@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+	rafael@kernel.org, florian.fainelli@broadcom.com,
+	abelova@astralinux.ru, linux-pm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	stephensportia@gmail.com
+Subject: Re: [PATCH] cpufreq: brcmstb-avs-cpufreq: ISO C90 forbids mixed
+ declarations
+Message-ID: <20240425050721.vks2bq7gqwl2gfpe@vireshk-i7>
+References: <20240424050220.889814-1-portia.stephens@canonical.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240424050220.889814-1-portia.stephens@canonical.com>
 
-please test array-index-out-of-bounds in diFree
+On 24-04-24, 15:02, Portia Stephens wrote:
+> There is a compile warning because a NULL pointer check was added before
+> a struct was declared. This moves the NULL pointer check to after the
+> struct is delcared and moves the struct assignment to after the NULL
 
-#syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/ master
+            declared
 
----
- fs/jfs/jfs_dmap.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> pointer check.
+> 
+> Fixes: f661017e6d32 ("cpufreq: brcmstb-avs-cpufreq: add check for cpufreq_cpu_get's return value")
+> 
+> Signed-off-by: Portia Stephens <portia.stephens@canonical.com>
+> ---
+>  drivers/cpufreq/brcmstb-avs-cpufreq.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index cb3cda1390ad..773b9263e497 100644
---- a/fs/jfs/jfs_dmap.c
-+++ b/fs/jfs/jfs_dmap.c
-@@ -206,6 +206,7 @@ int dbMount(struct inode *ipbmap)
- 	bmp->db_agwidth = le32_to_cpu(dbmp_le->dn_agwidth);
- 	bmp->db_agstart = le32_to_cpu(dbmp_le->dn_agstart);
- 	bmp->db_agl2size = le32_to_cpu(dbmp_le->dn_agl2size);
-+	printk("dmMount : %d\n",bmp->db_agl2size);
- 	if (bmp->db_agl2size > L2MAXL2SIZE - L2MAXAG ||
- 	    bmp->db_agl2size < 0) {
- 		err = -EINVAL;
-@@ -316,6 +317,7 @@ int dbSync(struct inode *ipbmap)
- 	dbmp_le->dn_agwidth = cpu_to_le32(bmp->db_agwidth);
- 	dbmp_le->dn_agstart = cpu_to_le32(bmp->db_agstart);
- 	dbmp_le->dn_agl2size = cpu_to_le32(bmp->db_agl2size);
-+	printk("dbSync : %d\n",bmp->db_agl2size);
- 	for (i = 0; i < MAXAG; i++)
- 		dbmp_le->dn_agfree[i] = cpu_to_le64(bmp->db_agfree[i]);
- 	dbmp_le->dn_agsize = cpu_to_le64(bmp->db_agsize);
-@@ -3393,7 +3395,7 @@ int dbExtendFS(struct inode *ipbmap, s64 blkno,	s64 nblocks)
- 
- 	bmp->db_agl2size = l2agsize;
- 	bmp->db_agsize = 1 << l2agsize;
--
-+	printk("dbExtendFS : %d\n",bmp->db_agl2size);
- 	/* compute new number of AG */
- 	agno = bmp->db_numag;
- 	bmp->db_numag = newsize >> l2agsize;
+Applied. Thanks.
+
 -- 
-2.34.1
+viresh
 
