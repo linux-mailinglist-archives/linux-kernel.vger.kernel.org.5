@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-158948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52E1E8B273F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:10:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EBEF8B2748
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:12:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AC87287B5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:10:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1854CB23381
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 869DC14E2DF;
-	Thu, 25 Apr 2024 17:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D021514FA;
+	Thu, 25 Apr 2024 17:10:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="A7SE+Xt7";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="c/gJfHhG"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yNnF8av7";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="PinOisYW"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2501214A087;
-	Thu, 25 Apr 2024 17:10:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 073A914E2F8;
+	Thu, 25 Apr 2024 17:10:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714065041; cv=none; b=URVvwNZuJZbcHGFMpSaSp3rBt4lKWxzN7dgDm5XS7OcA7sJfkNqWP9KexmXDjrhQjjNaaXnblQeQ3V+V2yehAKAz4vQQIAjDGwUwm1N0gBDGR7+rwQmPED3ZSTk1Hijv7yQiZR+FysAtz0jk9fTNFJKtBaU2wt/ozoxjoT8WJ9A=
+	t=1714065044; cv=none; b=nbyMD4+4fLOwJcUfa6ke9jSBm+oinTTF8+oUP7XSOk93bF00qEYgp7MXpy9GgYvleEopRXE6roUBg011MDMUbGzUIIKTsWiAXnJC+Y65hzjjHxS22QmJxE9SwYZ3dUg3Ar3LbZbbc/zylxcaAHR50xxvHyJ/KZVar2gnszSy4Hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714065041; c=relaxed/simple;
-	bh=QKRyFG6BDsRjlzuadOI8XziTz3LtaCGqfDoi1f47NNI=;
-	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=GEEj0D2zEhMnR1eNlMavhZOJpBmATFzswtM06ptXkWwHbwzF3kCxAuwwXOLpz7qfrlwo8ZgmP0BBIImBobw2LtpAjCYTYhMnUKYlOL1gk03HhJE6dXxEWpIqziReicN1NTQS4+GLSI7A7ZcVIRg30Cn8LdR5soWYncSS6EeiD0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=A7SE+Xt7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=c/gJfHhG; arc=none smtp.client-ip=193.142.43.55
+	s=arc-20240116; t=1714065044; c=relaxed/simple;
+	bh=6MbGMOujy+tiqHsWvUKDC4jXi0u6ocHC+SQfYEKODMs=;
+	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=iOAynFeBYzKG7BSSRHnUqJ6Fn6LhBwkLIXoCPu2KopgTyJ6fP8Yr+xpo0Y+Z3GqdCodgFolduadRwZ7OfKktKnblEgFkMWajJZs3FbZq+7Dje7nN2OifEl38gWBJkWYhOAaYltycFuWocyXkp2WSJTpPDXd4S0RLlxSU2Lksdno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yNnF8av7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=PinOisYW; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 25 Apr 2024 17:10:35 -0000
+Date: Thu, 25 Apr 2024 17:10:36 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1714065036;
+	s=2020; t=1714065037;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=6DJ48fD03NBgyHxTniWcpj9wiq5z2vgFYOHvxjnIkkI=;
-	b=A7SE+Xt7uhZF9Gspv/tDYw28OKHKd9n+0MgMR2JAet8Uh8WmuKYsJs9c9ySbXw0/VadXQ0
-	NiyrPvBeeqIw4WFA4DlALoz9LSr56krUWc6oHZPp5hLd3SW3KBWiPHkCKDel2faCMlByTJ
-	BP0ZJsEqWqfLi6HxJBOdc9xhmOCGFgJW5sEwXRPIx7U2tTv+uWXKr4f/dmwGmWZJJ+dM/L
-	b6LQCLVc7zsutFxaRoJVvh1+qmP1cBrdWml0H284nSfx2Wj4vg6jwJMRb9yieNvCPJytGw
-	hVLKjLUZA4vZoWhvCwBdKTHFtcS5v97DAWifa9myMM+G3BW5fbYxVRIpA0jKHg==
+	bh=uv9cuuEliL13TRce8JcOpWFtAIXuxAJG8J8BE8Vx0S4=;
+	b=yNnF8av7EWDD/c7tgDlPbQcSYhYHb0DLcMLyL1Wou0Y3X913Efp+jRS0eQNRLkL3abjQKP
+	hKY4ty7jY6C5TBNV5yyYQS63rocuNfKUHpYjlg9yeBTOEwrSl06+neZiSrRPikbP5ziyj+
+	bE1WxJRFamwnr/2spmn/WQtByGCCb8595ihOn5kpOjUMbvS4LqMOHe8ZRCQdm+p0BS/NqD
+	BHzlbkSQaaQ+8KUqrbGxPuUI01RPeHgECJPkX8ezvAF+9jIaiKGmzh5MivGLHDoCinY1VS
+	4KXbT3MxMhhlAklt3EmKovtyeARo/94A+cps1yk7cKDqMqMNTHGHAzx4MVGjyw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1714065036;
+	s=2020e; t=1714065037;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=6DJ48fD03NBgyHxTniWcpj9wiq5z2vgFYOHvxjnIkkI=;
-	b=c/gJfHhGKJSVREcJ9rKkH1oZJcpxjquAtNnU4c27qTzeu1AELgV4867Niqf5xVVXZJMZh8
-	/BuEWDNN7uJ2BKDw==
+	bh=uv9cuuEliL13TRce8JcOpWFtAIXuxAJG8J8BE8Vx0S4=;
+	b=PinOisYWBT2ZolqDUkpMJr5LdkLnCh/x4jCbpaC0y/iw5N5TXrVfI6qLpInAJKn/2qxtnN
+	deNLrsk7SDrC7yCQ==
 From: "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] perf/x86/msr: Switch to new Intel CPU model defines
+Subject:
+ [tip: x86/cpu] perf/x86/intel/cstate: Switch to new Intel CPU model defines
 Cc: Tony Luck <tony.luck@intel.com>, Dave Hansen <dave.hansen@linux.intel.com>,
  x86@kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
@@ -63,7 +64,7 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171406503537.10875.15056829708453932461.tip-bot2@tip-bot2>
+Message-ID: <171406503691.10875.7504488684211839663.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -73,176 +74,177 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/cpu branch of tip:
 
-Commit-ID:     e8475a26a94f57f5e6c8e8799dd3f9b936647f0b
-Gitweb:        https://git.kernel.org/tip/e8475a26a94f57f5e6c8e8799dd3f9b936647f0b
+Commit-ID:     5ee800945a3466c3b126020c8f4ffc6b54d6986f
+Gitweb:        https://git.kernel.org/tip/5ee800945a3466c3b126020c8f4ffc6b54d6986f
 Author:        Tony Luck <tony.luck@intel.com>
-AuthorDate:    Wed, 24 Apr 2024 11:15:03 -07:00
+AuthorDate:    Wed, 24 Apr 2024 11:14:59 -07:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Thu, 25 Apr 2024 09:04:33 -07:00
+CommitterDate: Thu, 25 Apr 2024 09:04:32 -07:00
 
-perf/x86/msr: Switch to new Intel CPU model defines
+perf/x86/intel/cstate: Switch to new Intel CPU model defines
 
 New CPU #defines encode vendor and family as well as model.
 
 Signed-off-by: Tony Luck <tony.luck@intel.com>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lore.kernel.org/all/20240424181503.41614-1-tony.luck%40intel.com
+Link: https://lore.kernel.org/all/20240424181459.41500-1-tony.luck%40intel.com
 ---
- arch/x86/events/msr.c | 132 ++++++++++++++++++++---------------------
- 1 file changed, 66 insertions(+), 66 deletions(-)
+ arch/x86/events/intel/cstate.c | 144 ++++++++++++++++----------------
+ 1 file changed, 72 insertions(+), 72 deletions(-)
 
-diff --git a/arch/x86/events/msr.c b/arch/x86/events/msr.c
-index 9e237b3..45b1866 100644
---- a/arch/x86/events/msr.c
-+++ b/arch/x86/events/msr.c
-@@ -2,7 +2,7 @@
- #include <linux/perf_event.h>
- #include <linux/sysfs.h>
- #include <linux/nospec.h>
--#include <asm/intel-family.h>
-+#include <asm/cpu_device_id.h>
- #include "probe.h"
+diff --git a/arch/x86/events/intel/cstate.c b/arch/x86/events/intel/cstate.c
+index 326c8cd..54eb142 100644
+--- a/arch/x86/events/intel/cstate.c
++++ b/arch/x86/events/intel/cstate.c
+@@ -696,78 +696,78 @@ static const struct cstate_model srf_cstates __initconst = {
  
- enum perf_msr_id {
-@@ -43,75 +43,75 @@ static bool test_intel(int idx, void *data)
- 	    boot_cpu_data.x86 != 6)
- 		return false;
  
--	switch (boot_cpu_data.x86_model) {
--	case INTEL_FAM6_NEHALEM:
--	case INTEL_FAM6_NEHALEM_G:
--	case INTEL_FAM6_NEHALEM_EP:
--	case INTEL_FAM6_NEHALEM_EX:
+ static const struct x86_cpu_id intel_cstates_match[] __initconst = {
+-	X86_MATCH_INTEL_FAM6_MODEL(NEHALEM,		&nhm_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(NEHALEM_EP,		&nhm_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(NEHALEM_EX,		&nhm_cstates),
 -
--	case INTEL_FAM6_WESTMERE:
--	case INTEL_FAM6_WESTMERE_EP:
--	case INTEL_FAM6_WESTMERE_EX:
+-	X86_MATCH_INTEL_FAM6_MODEL(WESTMERE,		&nhm_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(WESTMERE_EP,		&nhm_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(WESTMERE_EX,		&nhm_cstates),
 -
--	case INTEL_FAM6_SANDYBRIDGE:
--	case INTEL_FAM6_SANDYBRIDGE_X:
+-	X86_MATCH_INTEL_FAM6_MODEL(SANDYBRIDGE,		&snb_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(SANDYBRIDGE_X,	&snb_cstates),
 -
--	case INTEL_FAM6_IVYBRIDGE:
--	case INTEL_FAM6_IVYBRIDGE_X:
+-	X86_MATCH_INTEL_FAM6_MODEL(IVYBRIDGE,		&snb_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(IVYBRIDGE_X,		&snb_cstates),
 -
--	case INTEL_FAM6_HASWELL:
--	case INTEL_FAM6_HASWELL_X:
--	case INTEL_FAM6_HASWELL_L:
--	case INTEL_FAM6_HASWELL_G:
+-	X86_MATCH_INTEL_FAM6_MODEL(HASWELL,		&snb_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(HASWELL_X,		&snb_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(HASWELL_G,		&snb_cstates),
 -
--	case INTEL_FAM6_BROADWELL:
--	case INTEL_FAM6_BROADWELL_D:
--	case INTEL_FAM6_BROADWELL_G:
--	case INTEL_FAM6_BROADWELL_X:
--	case INTEL_FAM6_SAPPHIRERAPIDS_X:
--	case INTEL_FAM6_EMERALDRAPIDS_X:
--	case INTEL_FAM6_GRANITERAPIDS_X:
--	case INTEL_FAM6_GRANITERAPIDS_D:
+-	X86_MATCH_INTEL_FAM6_MODEL(HASWELL_L,		&hswult_cstates),
 -
--	case INTEL_FAM6_ATOM_SILVERMONT:
--	case INTEL_FAM6_ATOM_SILVERMONT_D:
--	case INTEL_FAM6_ATOM_AIRMONT:
+-	X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT,	&slm_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT_D,	&slm_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ATOM_AIRMONT,	&slm_cstates),
 -
--	case INTEL_FAM6_ATOM_GOLDMONT:
--	case INTEL_FAM6_ATOM_GOLDMONT_D:
--	case INTEL_FAM6_ATOM_GOLDMONT_PLUS:
--	case INTEL_FAM6_ATOM_TREMONT_D:
--	case INTEL_FAM6_ATOM_TREMONT:
--	case INTEL_FAM6_ATOM_TREMONT_L:
+-	X86_MATCH_INTEL_FAM6_MODEL(BROADWELL,		&snb_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(BROADWELL_D,		&snb_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(BROADWELL_G,		&snb_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(BROADWELL_X,		&snb_cstates),
 -
--	case INTEL_FAM6_XEON_PHI_KNL:
--	case INTEL_FAM6_XEON_PHI_KNM:
-+	switch (boot_cpu_data.x86_vfm) {
-+	case INTEL_NEHALEM:
-+	case INTEL_NEHALEM_G:
-+	case INTEL_NEHALEM_EP:
-+	case INTEL_NEHALEM_EX:
+-	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_L,		&snb_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE,		&snb_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X,		&snb_cstates),
+-
+-	X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE_L,		&hswult_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE,		&hswult_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L,		&hswult_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,		&hswult_cstates),
+-
+-	X86_MATCH_INTEL_FAM6_MODEL(CANNONLAKE_L,	&cnl_cstates),
+-
+-	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNL,	&knl_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNM,	&knl_cstates),
+-
+-	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT,	&glm_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT_D,	&glm_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT_PLUS,	&glm_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_D,	&glm_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT,	&glm_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_L,	&glm_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GRACEMONT,	&adl_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ATOM_CRESTMONT_X,	&srf_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ATOM_CRESTMONT,	&grr_cstates),
+-
+-	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L,		&icl_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE,		&icl_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&icx_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,		&icx_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	&icx_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(EMERALDRAPIDS_X,	&icx_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(GRANITERAPIDS_X,	&icx_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(GRANITERAPIDS_D,	&icx_cstates),
+-
+-	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE_L,		&icl_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE,		&icl_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ROCKETLAKE,		&icl_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE,		&adl_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,		&adl_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(RAPTORLAKE,		&adl_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(RAPTORLAKE_P,	&adl_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(RAPTORLAKE_S,	&adl_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(METEORLAKE,		&adl_cstates),
+-	X86_MATCH_INTEL_FAM6_MODEL(METEORLAKE_L,	&adl_cstates),
++	X86_MATCH_VFM(INTEL_NEHALEM,		&nhm_cstates),
++	X86_MATCH_VFM(INTEL_NEHALEM_EP,		&nhm_cstates),
++	X86_MATCH_VFM(INTEL_NEHALEM_EX,		&nhm_cstates),
 +
-+	case INTEL_WESTMERE:
-+	case INTEL_WESTMERE_EP:
-+	case INTEL_WESTMERE_EX:
++	X86_MATCH_VFM(INTEL_WESTMERE,		&nhm_cstates),
++	X86_MATCH_VFM(INTEL_WESTMERE_EP,	&nhm_cstates),
++	X86_MATCH_VFM(INTEL_WESTMERE_EX,	&nhm_cstates),
 +
-+	case INTEL_SANDYBRIDGE:
-+	case INTEL_SANDYBRIDGE_X:
++	X86_MATCH_VFM(INTEL_SANDYBRIDGE,	&snb_cstates),
++	X86_MATCH_VFM(INTEL_SANDYBRIDGE_X,	&snb_cstates),
 +
-+	case INTEL_IVYBRIDGE:
-+	case INTEL_IVYBRIDGE_X:
++	X86_MATCH_VFM(INTEL_IVYBRIDGE,		&snb_cstates),
++	X86_MATCH_VFM(INTEL_IVYBRIDGE_X,	&snb_cstates),
 +
-+	case INTEL_HASWELL:
-+	case INTEL_HASWELL_X:
-+	case INTEL_HASWELL_L:
-+	case INTEL_HASWELL_G:
++	X86_MATCH_VFM(INTEL_HASWELL,		&snb_cstates),
++	X86_MATCH_VFM(INTEL_HASWELL_X,		&snb_cstates),
++	X86_MATCH_VFM(INTEL_HASWELL_G,		&snb_cstates),
 +
-+	case INTEL_BROADWELL:
-+	case INTEL_BROADWELL_D:
-+	case INTEL_BROADWELL_G:
-+	case INTEL_BROADWELL_X:
-+	case INTEL_SAPPHIRERAPIDS_X:
-+	case INTEL_EMERALDRAPIDS_X:
-+	case INTEL_GRANITERAPIDS_X:
-+	case INTEL_GRANITERAPIDS_D:
++	X86_MATCH_VFM(INTEL_HASWELL_L,		&hswult_cstates),
 +
-+	case INTEL_ATOM_SILVERMONT:
-+	case INTEL_ATOM_SILVERMONT_D:
-+	case INTEL_ATOM_AIRMONT:
++	X86_MATCH_VFM(INTEL_ATOM_SILVERMONT,	&slm_cstates),
++	X86_MATCH_VFM(INTEL_ATOM_SILVERMONT_D,	&slm_cstates),
++	X86_MATCH_VFM(INTEL_ATOM_AIRMONT,	&slm_cstates),
 +
-+	case INTEL_ATOM_GOLDMONT:
-+	case INTEL_ATOM_GOLDMONT_D:
-+	case INTEL_ATOM_GOLDMONT_PLUS:
-+	case INTEL_ATOM_TREMONT_D:
-+	case INTEL_ATOM_TREMONT:
-+	case INTEL_ATOM_TREMONT_L:
++	X86_MATCH_VFM(INTEL_BROADWELL,		&snb_cstates),
++	X86_MATCH_VFM(INTEL_BROADWELL_D,	&snb_cstates),
++	X86_MATCH_VFM(INTEL_BROADWELL_G,	&snb_cstates),
++	X86_MATCH_VFM(INTEL_BROADWELL_X,	&snb_cstates),
 +
-+	case INTEL_XEON_PHI_KNL:
-+	case INTEL_XEON_PHI_KNM:
- 		if (idx == PERF_MSR_SMI)
- 			return true;
- 		break;
- 
--	case INTEL_FAM6_SKYLAKE_L:
--	case INTEL_FAM6_SKYLAKE:
--	case INTEL_FAM6_SKYLAKE_X:
--	case INTEL_FAM6_KABYLAKE_L:
--	case INTEL_FAM6_KABYLAKE:
--	case INTEL_FAM6_COMETLAKE_L:
--	case INTEL_FAM6_COMETLAKE:
--	case INTEL_FAM6_ICELAKE_L:
--	case INTEL_FAM6_ICELAKE:
--	case INTEL_FAM6_ICELAKE_X:
--	case INTEL_FAM6_ICELAKE_D:
--	case INTEL_FAM6_TIGERLAKE_L:
--	case INTEL_FAM6_TIGERLAKE:
--	case INTEL_FAM6_ROCKETLAKE:
--	case INTEL_FAM6_ALDERLAKE:
--	case INTEL_FAM6_ALDERLAKE_L:
--	case INTEL_FAM6_ATOM_GRACEMONT:
--	case INTEL_FAM6_RAPTORLAKE:
--	case INTEL_FAM6_RAPTORLAKE_P:
--	case INTEL_FAM6_RAPTORLAKE_S:
--	case INTEL_FAM6_METEORLAKE:
--	case INTEL_FAM6_METEORLAKE_L:
-+	case INTEL_SKYLAKE_L:
-+	case INTEL_SKYLAKE:
-+	case INTEL_SKYLAKE_X:
-+	case INTEL_KABYLAKE_L:
-+	case INTEL_KABYLAKE:
-+	case INTEL_COMETLAKE_L:
-+	case INTEL_COMETLAKE:
-+	case INTEL_ICELAKE_L:
-+	case INTEL_ICELAKE:
-+	case INTEL_ICELAKE_X:
-+	case INTEL_ICELAKE_D:
-+	case INTEL_TIGERLAKE_L:
-+	case INTEL_TIGERLAKE:
-+	case INTEL_ROCKETLAKE:
-+	case INTEL_ALDERLAKE:
-+	case INTEL_ALDERLAKE_L:
-+	case INTEL_ATOM_GRACEMONT:
-+	case INTEL_RAPTORLAKE:
-+	case INTEL_RAPTORLAKE_P:
-+	case INTEL_RAPTORLAKE_S:
-+	case INTEL_METEORLAKE:
-+	case INTEL_METEORLAKE_L:
- 		if (idx == PERF_MSR_SMI || idx == PERF_MSR_PPERF)
- 			return true;
- 		break;
++	X86_MATCH_VFM(INTEL_SKYLAKE_L,		&snb_cstates),
++	X86_MATCH_VFM(INTEL_SKYLAKE,		&snb_cstates),
++	X86_MATCH_VFM(INTEL_SKYLAKE_X,		&snb_cstates),
++
++	X86_MATCH_VFM(INTEL_KABYLAKE_L,		&hswult_cstates),
++	X86_MATCH_VFM(INTEL_KABYLAKE,		&hswult_cstates),
++	X86_MATCH_VFM(INTEL_COMETLAKE_L,	&hswult_cstates),
++	X86_MATCH_VFM(INTEL_COMETLAKE,		&hswult_cstates),
++
++	X86_MATCH_VFM(INTEL_CANNONLAKE_L,	&cnl_cstates),
++
++	X86_MATCH_VFM(INTEL_XEON_PHI_KNL,	&knl_cstates),
++	X86_MATCH_VFM(INTEL_XEON_PHI_KNM,	&knl_cstates),
++
++	X86_MATCH_VFM(INTEL_ATOM_GOLDMONT,	&glm_cstates),
++	X86_MATCH_VFM(INTEL_ATOM_GOLDMONT_D,	&glm_cstates),
++	X86_MATCH_VFM(INTEL_ATOM_GOLDMONT_PLUS,	&glm_cstates),
++	X86_MATCH_VFM(INTEL_ATOM_TREMONT_D,	&glm_cstates),
++	X86_MATCH_VFM(INTEL_ATOM_TREMONT,	&glm_cstates),
++	X86_MATCH_VFM(INTEL_ATOM_TREMONT_L,	&glm_cstates),
++	X86_MATCH_VFM(INTEL_ATOM_GRACEMONT,	&adl_cstates),
++	X86_MATCH_VFM(INTEL_ATOM_CRESTMONT_X,	&srf_cstates),
++	X86_MATCH_VFM(INTEL_ATOM_CRESTMONT,	&grr_cstates),
++
++	X86_MATCH_VFM(INTEL_ICELAKE_L,		&icl_cstates),
++	X86_MATCH_VFM(INTEL_ICELAKE,		&icl_cstates),
++	X86_MATCH_VFM(INTEL_ICELAKE_X,		&icx_cstates),
++	X86_MATCH_VFM(INTEL_ICELAKE_D,		&icx_cstates),
++	X86_MATCH_VFM(INTEL_SAPPHIRERAPIDS_X,	&icx_cstates),
++	X86_MATCH_VFM(INTEL_EMERALDRAPIDS_X,	&icx_cstates),
++	X86_MATCH_VFM(INTEL_GRANITERAPIDS_X,	&icx_cstates),
++	X86_MATCH_VFM(INTEL_GRANITERAPIDS_D,	&icx_cstates),
++
++	X86_MATCH_VFM(INTEL_TIGERLAKE_L,	&icl_cstates),
++	X86_MATCH_VFM(INTEL_TIGERLAKE,		&icl_cstates),
++	X86_MATCH_VFM(INTEL_ROCKETLAKE,		&icl_cstates),
++	X86_MATCH_VFM(INTEL_ALDERLAKE,		&adl_cstates),
++	X86_MATCH_VFM(INTEL_ALDERLAKE_L,	&adl_cstates),
++	X86_MATCH_VFM(INTEL_RAPTORLAKE,		&adl_cstates),
++	X86_MATCH_VFM(INTEL_RAPTORLAKE_P,	&adl_cstates),
++	X86_MATCH_VFM(INTEL_RAPTORLAKE_S,	&adl_cstates),
++	X86_MATCH_VFM(INTEL_METEORLAKE,		&adl_cstates),
++	X86_MATCH_VFM(INTEL_METEORLAKE_L,	&adl_cstates),
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(x86cpu, intel_cstates_match);
 
