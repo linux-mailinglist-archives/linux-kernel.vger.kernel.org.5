@@ -1,433 +1,170 @@
-Return-Path: <linux-kernel+bounces-159185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07B368B2A67
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:07:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 255868B2A6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:08:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88D251F22927
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:07:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DED0E284596
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:08:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F6E415533B;
-	Thu, 25 Apr 2024 21:07:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8490C15573A;
+	Thu, 25 Apr 2024 21:07:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="gBC71TeA"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="dBARPjUJ"
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D662414F9ED;
-	Thu, 25 Apr 2024 21:07:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0233155723
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 21:07:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714079268; cv=none; b=LO/mE80FN9a3jZIxkpOX2UsHqNRpApgnsODY9LoP3Z/VrIMznYIk0GbOeiBjjkmXTU9hS5ycOEuOAejK5wkHJKg2ji65mF55Wr/CdBs5PbhYog57kdlrFIf5cB5M4U/9TpmXtMk9TwOIuhkNHgQzznqw1poseirUfFoKd1MxK2M=
+	t=1714079274; cv=none; b=ZT0W48cmoerD4wA51kxNCi2T995j4Stgo/ldLFh5sXDmLBHpUQkfvRSatKN940pBEHUJwg132CD7UUrUzKYVczYTFw3dxsbkphxp/a+xBq4B2TtJLB5M9h/xNpi80DmTdvOJgY7d0HqGbTZawuD6aTh6Bqrg0ABGX4EF8oMfaac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714079268; c=relaxed/simple;
-	bh=fNHD5/z9tsH+1kMTTiFfSiy3i3GZ8DqNyGrfC/OJUdQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X5qUEJk6w1NJYp4iaVHJifoF3qNi3dx/V6VonF8lyR1eyVNRrY1irH2tsuXMc89+bsUwh8TWmFJK+bof3jD50v63g3n2CNIGz5lVPpxTOb1/LUSrKpfZabhpBOi3EGKoTUqDo44YHl1L2JxdDACPJxELYtqplmIlQ9lI2ogHx8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=gBC71TeA; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1714079249; x=1714684049; i=w_armin@gmx.de;
-	bh=UnMXSkrNN4/pE2DpRg/rewlu1JJCmYcj/fYtcqtUDbE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=gBC71TeAYfq/wRDcnKsPt8/kV6Vw8PQTuKwiIOzZ++XcisI3B9enNuM3BDf+Tixm
-	 idpfKnuxiwN1DBnnNdy2I7TRkJOWJBDkefmIoS5Nc7g8ODyZnBqrW29WwlcTwuOPI
-	 4VCfvcdoCzQ6G9YjfOqDXUkr3oPt/biKZ/qII70Fnlsvqbl8Tu9DNB8bpHoVN2LkE
-	 aT7WWFkWlwiGkhcMavV3sMRLo0TSUyWs0Iqr2pcslEnfE9gH4QpKV3qEeFnh78DXn
-	 eM6uPANG7U5EWRL/GGfp06mhyg9EGLvrMLSFpkiXoxDbbtXY1jrtXrvNgS4WNwEWB
-	 VBsaHoZe9ZzkfhTamA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MVeI2-1s9xhd0g32-00RPXI; Thu, 25
- Apr 2024 23:07:29 +0200
-Message-ID: <7a215986-4702-443a-9e1d-a2fb1172276a@gmx.de>
-Date: Thu, 25 Apr 2024 23:07:22 +0200
+	s=arc-20240116; t=1714079274; c=relaxed/simple;
+	bh=JOPgLUe8I9YipPlrMgvXOgvept9vfI3FxbS5jEZ5FxU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Nf53frGhnPHeQdm7mgigQnQ0aRdbVgpsSACNKuYaw5tnBWFwezS+VvufIh3DMHt8IuxN5azFcJ2vmFszOo7ddBiUAa7+/kYi/lHcl71J2iTm1xLKdMjP7x4kp8yeuNS/lKw9NfFJcN7GHPiKGvHRbDNtO5f0CAMGLPYBIib4Ing=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=dBARPjUJ; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id CF8142C03E9;
+	Fri, 26 Apr 2024 09:07:49 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1714079269;
+	bh=JOPgLUe8I9YipPlrMgvXOgvept9vfI3FxbS5jEZ5FxU=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=dBARPjUJ7LXDkYLsqPLfN1vMVnEfK7FKOZAnV0tLJ8HYKeUxaqH8hK4Zu4G0DGvMk
+	 FfWZMmLl7XdttC571G7lmfC0Udifq0tztQpBCZqOHh3Uk/dPaomF6W6/YJy6TarxZc
+	 BNQ2zfCUH1ryTgrNjR7j/xUyA4Bff3sGgc9PfYZrTQzOa0lWgtpXo7lpO1OLiIP3rF
+	 gP+nPuk9aX1+yuVrnaualLP1xHw7LJSGi0DrpQAFI0FduEA4BhGVM4AZoqqIN11FV4
+	 kG7eXi3XMlYpJ4enFysDlHvHTaNWm+OO2PKNd4yS7i3LiSek0HcjLeE4jjVHzrdR4O
+	 Jjf55VHeXvd7Q==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B662ac6250001>; Fri, 26 Apr 2024 09:07:49 +1200
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Fri, 26 Apr 2024 09:07:49 +1200
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1544.009; Fri, 26 Apr 2024 09:07:49 +1200
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Chuck Lever III <chuck.lever@oracle.com>
+CC: Neil Brown <neilb@suse.de>, Jeff Layton <jlayton@kernel.org>, "Greg
+ Kroah-Hartman" <gregkh@linuxfoundation.org>, Linux NFS Mailing List
+	<linux-nfs@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: kernel BUG at net/sunrpc/svc.c:570 after updating from v5.15.153
+ to v5.15.155
+Thread-Topic: kernel BUG at net/sunrpc/svc.c:570 after updating from v5.15.153
+ to v5.15.155
+Thread-Index: AQHaleHzc3oveYbGkkq3WWVD/cih7bF12zkAgABlswCAAStOgIAACEqA///XTYCAAWPYAIAAA+uAgAAAv4A=
+Date: Thu, 25 Apr 2024 21:07:49 +0000
+Message-ID: <dc96f7d9-ffd9-487a-be44-9c30c6662d52@alliedtelesis.co.nz>
+References: <5D19EAF8-0F65-4CD6-9378-67234D407B96@oracle.com>
+ <171400185158.7600.16163546434537681088@noble.neil.brown.name>
+ <141fbaa0-f8fa-4bfe-8c2d-7749fcf78ab3@alliedtelesis.co.nz>
+ <6F1A5E20-1A0E-479C-AD5B-886D10739702@oracle.com>
+In-Reply-To: <6F1A5E20-1A0E-479C-AD5B-886D10739702@oracle.com>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AC58CAD9C8A21E469637C4B8E843D402@atlnz.lc>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86: dell-laptop: Implement platform_profile
-To: Lyndon Sanche <lsanche@lyndeno.ca>
-Cc: Matthew Garrett <mjg59@srcf.ucam.org>, =?UTF-8?Q?Pali_Roh=C3=A1r?=
- <pali@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
- Dell.Client.Kernel@dell.com
-References: <20240425172758.67831-1-lsanche@lyndeno.ca>
-Content-Language: en-US
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <20240425172758.67831-1-lsanche@lyndeno.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:72g8WantXvKJlC8MAAtqYdoe4QCNhC7sbqRMMVu5asvtHcnVJrz
- 6VEfNpSTmB0+gQc+ubjzYJJwrNOjKATGmeiXSusvQVgxko3vLCLPQ/lSfAS7jv1853cZlWg
- y1VkXXyLNVC3iEfPz9Bp7oqTnn6geZTxmYyI9gRcvh5bcE2t3PHuX78kmSDhY6gvwd93kmo
- NLsxM5QzTKVqjtnUYP3MQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:YGZVRjVDvxI=;4BUIvtPHMGhiuQGXtrps9VlL/x8
- 5C7ZH6dePrg6VPqREvl07ic1Bc4qVcEbwB/M/S/BhQDzRWm/wdkUqqjeJjAkpz74a6bZyarNW
- C3y/wQYW+LbYLlL+9iojAvBYAeYPrWgNvZ8fOH8o1RAorU+zlpxh44nm1fY09ENLiju97kde9
- fR4EFbUkFP207oEAcAR0cIhM3eHIQjFHqHPKHsp7TMofklJDBR2snyF1cOfAtTRF9yXQN47+5
- MyPrbeeUWFdp3ptxf9h77YXSVI9nsqhWzpEreZGTPSN4dlNjXAAOuaff/0tzvTvs8u7NDoWpq
- 8uDbISlOUQp0aaVMRYx315SaAXAuF/z/Uvi9eIjpwDUhP7aiP8je+DxD0MZ6RzgwJ2vrQD1Bf
- mQt2vwCEsHKktQDOAKH/pCAMmaPvYmz+k/9wcZ2axxypIPzc8PDzyiLhAyXIKH9Sums3jBpDw
- Rt99f68aR1MQXcIyoSDTLdyWCO2hj5cRX2AXJS1a1nd91W9toC/8nGORZtaxrQ5cc0FN//iRJ
- tETCzQfynjpu4MWi+P8AO+cWTfJ5K593UtW9vY68GWgmt4eut4K62tDFngV97VOiS1yy765EN
- mkdOMcFKDFO4DIlyrSuaIeHOrE+GMRCmwfomxvv/vVavt4cnm3P4Rn1qA9kberH2hNggxvik5
- kRY1PXNQhUnL2w3p2VUdauH1G69OVquOq4g/RhZJXcDcrcGq6E8uN6eJQ8QvsCjBiIu1LFvVD
- zk/cYv2YoUmDyUVn0JPx9fWk1Gchkpugm0bdc8lTa7Xg/oVcdfEMgR2FVCz2gTpmGlj+R8JEN
- hhFGpH3A8uz85bb4pYPnXqgKy9nYUpWoyv5u+CI7f4tQs=
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=dY4j3mXe c=1 sm=1 tr=0 ts=662ac625 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=yPCof4ZbAAAA:8 a=VwQbUJbxAAAA:8 a=g6u_1-914C6Wr_cfHq0A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=eNOiNizBAFBy3Wy_Y4PN:22
+X-SEG-SpamProfiler-Score: 0
 
-Am 25.04.24 um 19:27 schrieb Lyndon Sanche:
-
-> Some Dell laptops support configuration of preset
-> fan modes through smbios tables.
->
-> If the platform supports these fan modes, set up
-> platform_profile to change these modes. If not
-> supported, skip enabling platform_profile.
->
-> Signed-off-by: Lyndon Sanche <lsanche@lyndeno.ca>
-> ---
->   drivers/platform/x86/dell/dell-laptop.c | 220 ++++++++++++++++++++++++
->   drivers/platform/x86/dell/dell-smbios.h |   1 +
->   2 files changed, 221 insertions(+)
->
-> diff --git a/drivers/platform/x86/dell/dell-laptop.c b/drivers/platform/=
-x86/dell/dell-laptop.c
-> index 42f7de2b4522..7f9c4e0e5ef5 100644
-> --- a/drivers/platform/x86/dell/dell-laptop.c
-> +++ b/drivers/platform/x86/dell/dell-laptop.c
-> @@ -27,6 +27,7 @@
->   #include <linux/i8042.h>
->   #include <linux/debugfs.h>
->   #include <linux/seq_file.h>
-> +#include <linux/platform_profile.h>
->   #include <acpi/video.h>
->   #include "dell-rbtn.h"
->   #include "dell-smbios.h"
-> @@ -95,10 +96,18 @@ static struct backlight_device *dell_backlight_devic=
-e;
->   static struct rfkill *wifi_rfkill;
->   static struct rfkill *bluetooth_rfkill;
->   static struct rfkill *wwan_rfkill;
-> +static struct platform_profile_handler *thermal_handler;
->   static bool force_rfkill;
->   static bool micmute_led_registered;
->   static bool mute_led_registered;
->
-> +enum thermal_mode_bits {
-> +	DELL_BALANCED =3D 0,
-> +	DELL_COOL_BOTTOM =3D 1,
-> +	DELL_QUIET =3D 2,
-> +	DELL_PERFORMANCE =3D 3,
-> +};
-> +
->   module_param(force_rfkill, bool, 0444);
->   MODULE_PARM_DESC(force_rfkill, "enable rfkill on non whitelisted model=
-s");
->
-> @@ -2199,6 +2208,211 @@ static int mute_led_set(struct led_classdev *led=
-_cdev,
->   	return 0;
->   }
->
-> +// Derived from smbios-thermal-ctl
-> +//
-> +// cbClass 17
-> +// cbSelect 19
-> +// User Selectable Thermal Tables(USTT)
-> +// cbArg1 determines the function to be performed
-> +// cbArg1 0x0 =3D Get Thermal Information
-> +//  cbRES1         Standard return codes (0, -1, -2)
-> +//  cbRES2, byte 0  Bitmap of supported thermal modes. A mode is suppor=
-ted if its bit is set to 1
-> +//     Bit 0 Balanced
-> +//     Bit 1 Cool Bottom
-> +//     Bit 2 Quiet
-> +//     Bit 3 Performance
-> +//  cbRES2, byte 1 Bitmap of supported Active Acoustic Controller (AAC)=
- modes. Each mode
-> +//                 corresponds to the supported thermal modes in byte 0=
- A mode is supported if
-> +//                 its bit is set to 1.
-> +//     Bit 0 AAC (Balanced)
-> +//     Bit 1 AAC (Cool Bottom
-> +//     Bit 2 AAC (Quiet)
-> +//     Bit 3 AAC (Performance)
-> +//  cbRes3, byte 0 Current Thermal Mode
-> +//     Bit 0 Balanced
-> +//     Bit 1 Cool Bottom
-> +//     Bit 2 Quiet
-> +//     Bit 3 Performanc
-> +//  cbRes3, byte 1  AAC Configuration type
-> +//          0       Global (AAC enable/disable applies to all supported=
- USTT modes)
-> +//          1       USTT mode specific
-> +//  cbRes3, byte 2  Current Active Acoustic Controller (AAC) Mode
-> +//     If AAC Configuration Type is Global,
-> +//          0       AAC mode disabled
-> +//          1       AAC mode enabled
-> +//     If AAC Configuration Type is USTT mode specific (multiple bits m=
-ay be set),
-> +//          Bit 0 AAC (Balanced)
-> +//          Bit 1 AAC (Cool Bottom
-> +//          Bit 2 AAC (Quiet)
-> +//          Bit 3 AAC (Performance)
-> +//  cbRes3, byte 3  Current Fan Failure Mode
-> +//     Bit 0 Minimal Fan Failure (at least one fan has failed, one fan =
-working)
-> +//     Bit 1 Catastrophic Fan Failure (all fans have failed)
-> +//  cbArg1 0x1   (Set Thermal Information), both desired thermal mode a=
-nd
-> +//               desired AAC mode shall be applied
-> +//  cbArg2, byte 0  Desired Thermal Mode to set (only one bit may be se=
-t for this parameter)
-> +//     Bit 0 Balanced
-> +//     Bit 1 Cool Bottom
-> +//     Bit 2 Quiet
-> +//     Bit 3 Performance
-> +//  cbArg2, byte 1  Desired Active Acoustic Controller (AAC) Mode to se=
-t
-> +//     If AAC Configuration Type is Global,
-> +//         0  AAC mode disabled
-> +//         1  AAC mode enabled
-> +//
-> +//     If AAC Configuration Type is USTT mode specific (multiple bits m=
-ay be set for this parameter),
-
-Hi,
-
-checkpatch reports: WARNING: line length of 101 exceeds 100 columns
-
-> +//         Bit 0 AAC (Balanced)
-> +//         Bit 1 AAC (Cool Bottom
-> +//         Bit 2 AAC (Quiet)
-> +//         Bit 3 AAC (Performance)
-> +static int thermal_get_mode(void)
-> +{
-> +	struct calling_interface_buffer buffer;
-> +	int state;
-> +	int ret;
-> +
-> +	dell_fill_request(&buffer, 0x0, 0, 0, 0);
-> +	ret =3D dell_send_request(&buffer, CLASS_INFO, SELECT_THERMAL_MANAGEME=
-NT);
-> +	if (ret)
-> +		return ret;
-> +	state =3D buffer.output[2];
-> +	if ((state >> DELL_BALANCED) & 1)
-> +		return DELL_BALANCED;
-> +	else if ((state >> DELL_COOL_BOTTOM) & 1)
-> +		return DELL_COOL_BOTTOM;
-> +	else if ((state >> DELL_QUIET) & 1)
-> +		return DELL_QUIET;
-> +	else if ((state >> DELL_PERFORMANCE) & 1)
-> +		return DELL_PERFORMANCE;
-> +	else
-> +		return 0;
-
-This would return DELL_BALANCED if no option is set. Please return an appr=
-opriate error code.
-
-> +}
-> +
-> +static int thermal_get_supported_modes(int *supported_bits)
-> +{
-> +	struct calling_interface_buffer buffer;
-> +	int ret;
-> +
-> +	dell_fill_request(&buffer, 0x0, 0, 0, 0);
-> +	ret =3D dell_send_request(&buffer, CLASS_INFO, SELECT_THERMAL_MANAGEME=
-NT);
-> +	if (ret)
-> +		return ret;
-> +	*supported_bits =3D buffer.output[1] & 0xF;
-> +	return 0;
-> +}
-> +
-> +static int thermal_get_acc_mode(int *acc_mode)
-> +{
-> +	struct calling_interface_buffer buffer;
-> +	int ret;
-> +
-> +	dell_fill_request(&buffer, 0x0, 0, 0, 0);
-> +	ret =3D dell_send_request(&buffer, CLASS_INFO, SELECT_THERMAL_MANAGEME=
-NT);
-> +	if (ret)
-> +		return ret;
-> +	*acc_mode =3D ((buffer.output[3] >> 8) & 0xFF);
-> +	return 0;
-> +}
-> +
-> +static int thermal_set_mode(enum thermal_mode_bits state)
-> +{
-> +	struct calling_interface_buffer buffer;
-> +	int ret;
-> +	int acc_mode;
-> +
-> +	ret =3D thermal_get_acc_mode(&acc_mode);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dell_fill_request(&buffer, 0x1, (acc_mode << 8) | BIT(state), 0, 0);
-> +	ret =3D dell_send_request(&buffer, CLASS_INFO, SELECT_THERMAL_MANAGEME=
-NT);
-> +	return ret;
-> +}
-> +
-> +static int thermal_platform_profile_set(struct platform_profile_handler=
- *pprof,
-> +					enum platform_profile_option profile)
-> +{
-> +	int ret;
-> +
-> +	switch (profile) {
-> +	case PLATFORM_PROFILE_BALANCED:
-> +		ret =3D thermal_set_mode(DELL_BALANCED);
-> +		break;
-
-Maybe using "return thermal_set_mode()" would be better in this cases.
-
-> +	case PLATFORM_PROFILE_PERFORMANCE:
-> +		ret =3D thermal_set_mode(DELL_PERFORMANCE);
-> +		break;
-> +	case PLATFORM_PROFILE_QUIET:
-> +		ret =3D thermal_set_mode(DELL_QUIET);
-> +		break;
-> +	case PLATFORM_PROFILE_COOL:
-> +		ret =3D thermal_set_mode(DELL_COOL_BOTTOM);
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int thermal_platform_profile_get(struct platform_profile_handler=
- *pprof,
-> +					enum platform_profile_option *profile)
-> +{
-> +	switch (thermal_get_mode()) {
-
-Please check if thermal_get_mode() returned an error code and return it in=
- this case.
-
-> +	case DELL_BALANCED:
-> +		*profile =3D PLATFORM_PROFILE_BALANCED;
-> +		break;
-> +	case DELL_PERFORMANCE:
-> +		*profile =3D PLATFORM_PROFILE_PERFORMANCE;
-> +		break;
-> +	case DELL_COOL_BOTTOM:
-> +		*profile =3D PLATFORM_PROFILE_COOL;
-> +		break;
-> +	case DELL_QUIET:
-> +		*profile =3D PLATFORM_PROFILE_QUIET;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +int thermal_init(void)
-> +{
-> +	int ret;
-> +	int supported_modes;
-> +
-> +	ret =3D thermal_get_supported_modes(&supported_modes);
-> +
-> +	if (ret !=3D 0 || supported_modes =3D=3D 0)
-> +		return -ENXIO;
-> +
-> +	thermal_handler =3D kzalloc(sizeof(*thermal_handler), GFP_KERNEL);
-> +	if (!thermal_handler)
-> +		return -ENOMEM;
-> +	thermal_handler->profile_get =3D thermal_platform_profile_get;
-> +	thermal_handler->profile_set =3D thermal_platform_profile_set;
-> +
-> +	if ((supported_modes >> DELL_QUIET) & 1)
-> +		set_bit(PLATFORM_PROFILE_QUIET, thermal_handler->choices);
-> +	if ((supported_modes >> DELL_COOL_BOTTOM) & 1)
-> +		set_bit(PLATFORM_PROFILE_COOL, thermal_handler->choices);
-> +	if ((supported_modes >> DELL_BALANCED) & 1)
-> +		set_bit(PLATFORM_PROFILE_BALANCED, thermal_handler->choices);
-> +	if ((supported_modes >> DELL_PERFORMANCE) & 1)
-> +		set_bit(PLATFORM_PROFILE_PERFORMANCE, thermal_handler->choices);
-> +
-> +	platform_profile_register(thermal_handler);
-> +
-> +	return 0;
-
-Please check the return value of platform_profile_register() and return th=
-e error if this function fails,
-see commit fe0e04cf66a1 ("platform/surface: platform_profile: Propagate er=
-ror if profile registration fails")
-for an explanation.
-
-> +}
-> +
-> +void thermal_cleanup(void)
-> +{
-> +	platform_profile_remove();
-> +	kfree(thermal_handler);
-> +}
-> +
->   static struct led_classdev mute_led_cdev =3D {
->   	.name =3D "platform::mute",
->   	.max_brightness =3D 1,
-> @@ -2266,6 +2480,11 @@ static int __init dell_init(void)
->   		mute_led_registered =3D true;
->   	}
->
-> +	// Do not fail module if thermal modes not supported,
-> +	// just skip
-> +	if (thermal_init() !=3D 0)
-> +		pr_warn("Unable to setup platform_profile, skipping");
-> +
->   	if (acpi_video_get_backlight_type() !=3D acpi_backlight_vendor)
->   		return 0;
->
-> @@ -2344,6 +2563,7 @@ static void __exit dell_exit(void)
->   		platform_device_unregister(platform_device);
->   		platform_driver_unregister(&platform_driver);
->   	}
-> +	thermal_cleanup();
-
-Should only be called when thermal_init() was successful.
-
-Thanks,
-Armin Wolf
-
->   }
->
->   /* dell-rbtn.c driver export functions which will not work correctly (=
-and could
-> diff --git a/drivers/platform/x86/dell/dell-smbios.h b/drivers/platform/=
-x86/dell/dell-smbios.h
-> index eb341bf000c6..585d042f1779 100644
-> --- a/drivers/platform/x86/dell/dell-smbios.h
-> +++ b/drivers/platform/x86/dell/dell-smbios.h
-> @@ -19,6 +19,7 @@
->   /* Classes and selects used only in kernel drivers */
->   #define CLASS_KBD_BACKLIGHT 4
->   #define SELECT_KBD_BACKLIGHT 11
-> +#define SELECT_THERMAL_MANAGEMENT 19
->
->   /* Tokens used in kernel drivers, any of these
->    * should be filtered from userspace access
+DQpPbiAyNi8wNC8yNCAwOTowNSwgQ2h1Y2sgTGV2ZXIgSUlJIHdyb3RlOg0KPg0KPj4gT24gQXBy
+IDI1LCAyMDI0LCBhdCA0OjUx4oCvUE0sIENocmlzIFBhY2toYW0gPENocmlzLlBhY2toYW1AYWxs
+aWVkdGVsZXNpcy5jby5uej4gd3JvdGU6DQo+Pg0KPj4NCj4+IE9uIDI1LzA0LzI0IDExOjM3LCBO
+ZWlsQnJvd24gd3JvdGU6DQo+Pj4gT24gVGh1LCAyNSBBcHIgMjAyNCwgQ2h1Y2sgTGV2ZXIgSUlJ
+IHdyb3RlOg0KPj4+Pj4gT24gQXByIDI0LCAyMDI0LCBhdCA5OjMz4oCvQU0sIENodWNrIExldmVy
+IElJSSA8Y2h1Y2subGV2ZXJAb3JhY2xlLmNvbT4gd3JvdGU6DQo+Pj4+Pg0KPj4+Pj4+IE9uIEFw
+ciAyNCwgMjAyNCwgYXQgMzo0MuKAr0FNLCBDaHJpcyBQYWNraGFtIDxDaHJpcy5QYWNraGFtQGFs
+bGllZHRlbGVzaXMuY28ubno+IHdyb3RlOg0KPj4+Pj4+DQo+Pj4+Pj4gT24gMjQvMDQvMjQgMTM6
+MzgsIENocmlzIFBhY2toYW0gd3JvdGU6DQo+Pj4+Pj4+IE9uIDI0LzA0LzI0IDEyOjU0LCBDaHJp
+cyBQYWNraGFtIHdyb3RlOg0KPj4+Pj4+Pj4gSGkgSmVmZiwgQ2h1Y2ssIEdyZWcsDQo+Pj4+Pj4+
+Pg0KPj4+Pj4+Pj4gQWZ0ZXIgdXBkYXRpbmcgb25lIG9mIG91ciBidWlsZHMgYWxvbmcgdGhlIDUu
+MTUueSBMVFMgYnJhbmNoIG91cg0KPj4+Pj4+Pj4gdGVzdGluZyBjYXVnaHQgYSBuZXcga2VybmVs
+IGJ1Zy4gT3V0cHV0IGJlbG93Lg0KPj4+Pj4+Pj4NCj4+Pj4+Pj4+IEkgaGF2ZW4ndCBkdWcgaW50
+byBpdCB5ZXQgYnV0IHdvbmRlcmVkIGlmIGl0IHJhbmcgYW55IGJlbGxzLg0KPj4+Pj4+PiBBIGJp
+dCBtb3JlIGluZm8uIFRoaXMgaXMgaGFwcGVuaW5nIGF0ICJyZWJvb3QiIGZvciB1cy4gT3VyIGVt
+YmVkZGVkDQo+Pj4+Pj4+IGRldmljZXMgdXNlIGEgYml0IG9mIGEgaGFja2VkIHVwIHJlYm9vdCBw
+cm9jZXNzIHNvIHRoYXQgdGhleSBjb21lIGJhY2sNCj4+Pj4+Pj4gZmFzdGVyIGluIHRoZSBjYXNl
+IG9mIGEgZmFpbHVyZS4NCj4+Pj4+Pj4NCj4+Pj4+Pj4gSXQgZG9lc24ndCBoYXBwZW4gd2l0aCBh
+IHByb3BlciBgc3lzdGVtY3RsIHJlYm9vdGAgb3Igd2l0aCBhIFNZU1JRK0INCj4+Pj4+Pj4NCj4+
+Pj4+Pj4gSSBjYW4gdHJpZ2dlciBpdCB3aXRoIGBraWxsYWxsIC05IG5mc2RgIHdoaWNoIEknbSBu
+b3Qgc3VyZSBpcyBhDQo+Pj4+Pj4+IGNvbXBsZXRlbHkgbGVnaXQgdGhpbmcgdG8gZG8gdG8ga2Vy
+bmVsIHRocmVhZHMgYnV0IGl0J3MgcHJvYmFibHkgY2xvc2UNCj4+Pj4+Pj4gdG8gd2hhdCBvdXIg
+Y3VzdG9taXplZCByZWJvb3QgZG9lcy4NCj4+Pj4+PiBJJ3ZlIGJpc2VjdGVkIGJldHdlZW4gdjUu
+MTUuMTUzIGFuZCB2NS4xNS4xNTUgYW5kIGlkZW50aWZpZWQgY29tbWl0DQo+Pj4+Pj4gZGVjNmI4
+YmNhYzczICgibmZzZDogU2ltcGxpZnkgY29kZSBhcm91bmQgc3ZjX2V4aXRfdGhyZWFkKCkgY2Fs
+bCBpbg0KPj4+Pj4+IG5mc2QoKSIpIGFzIHRoZSBmaXJzdCBiYWQgY29tbWl0LiBCYXNlZCBvbiB0
+aGUgY29udGV4dCB0aGF0IHNlZW1zIHRvDQo+Pj4+Pj4gbGluZSB1cCB3aXRoIG15IHJlcHJvZHVj
+dGlvbi4gSSdtIHdvbmRlcmluZyBpZiBwZXJoYXBzIHNvbWV0aGluZyBnb3QNCj4+Pj4+PiBtaXNz
+ZWQgb3V0IG9mIHRoZSBzdGFibGUgdHJhY2s/IFVuZm9ydHVuYXRlbHkgSSdtIG5vdCBhYmxlIHRv
+IHJ1biBhIG1vcmUNCj4+Pj4+PiByZWNlbnQga2VybmVsIHdpdGggYWxsIG9mIHRoZSBuZnMgcmVs
+YXRlZCBzZXR1cCB0aGF0IGlzIGJlaW5nIHVzZWQgb24NCj4+Pj4+PiB0aGUgc3lzdGVtIGluIHF1
+ZXN0aW9uLg0KPj4+Pj4gVGhhbmtzIGZvciBiaXNlY3RpbmcsIHRoYXQgd291bGQgaGF2ZSBiZWVu
+IG15IGZpcnN0IHN1Z2dlc3Rpb24uDQo+Pj4+Pg0KPj4+Pj4gVGhlIGJhY2twb3J0IGluY2x1ZGVk
+IGFsbCBvZiB0aGUgTkZTRCBwYXRjaGVzIHVwIHRvIHY2LjIsIGJ1dA0KPj4+Pj4gdGhlcmUgbWln
+aHQgYmUgYSBtaXNzaW5nIHNlcnZlci1zaWRlIFN1blJQQyBwYXRjaC4NCj4+Pj4gU28gZGVjNmI4
+YmNhYzczICgibmZzZDogU2ltcGxpZnkgY29kZSBhcm91bmQgc3ZjX2V4aXRfdGhyZWFkKCkNCj4+
+Pj4gY2FsbCBpbiAgbmZzZCgpIikgaXMgZnJvbSB2Ni42LCBzbyBpdCB3YXMgYXBwbGllZCB0byB2
+NS4xNS55DQo+Pj4+IG9ubHkgdG8gZ2V0IGEgc3Vic2VxdWVudCBORlNEIGZpeCB0byBhcHBseS4N
+Cj4+Pj4NCj4+Pj4gVGhlIGltbWVkaWF0ZWx5IHByZXZpb3VzIHVwc3RyZWFtIGNvbW1pdCBpcyBt
+aXNzaW5nOg0KPj4+Pg0KPj4+PiAgICAzOTAzOTAyNDAxNDUgKCJuZnNkOiBkb24ndCBhbGxvdyBu
+ZnNkIHRocmVhZHMgdG8gYmUgc2lnbmFsbGVkLiIpDQo+Pj4+DQo+Pj4+IEZvciB0ZXN0aW5nLCBJ
+J3ZlIGFwcGxpZWQgdGhpcyB0byBteSBuZnNkLTUuMTUueSBicmFuY2ggaGVyZToNCj4+Pj4NCj4+
+Pj4gICAgaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvY2Vs
+L2xpbnV4LmdpdA0KPj4+Pg0KPj4+PiBIb3dldmVyIGV2ZW4gaWYgdGhhdCBmaXhlcyB0aGUgcmVw
+b3J0ZWQgY3Jhc2gsIHRoaXMgc3VnZ2VzdHMNCj4+Pj4gdGhhdCBhZnRlciB2Ni42LCBuZnNkIHRo
+cmVhZHMgYXJlIG5vdCBnb2luZyB0byByZXNwb25kIHRvDQo+Pj4+ICJraWxsYWxsIC05IG5mc2Qi
+Lg0KPj4+IEkgdGhpbmsgdGhpcyBsaWtlbHkgaXMgdGhlIHByb2JsZW0uICBUaGUgbmZzZCB0aHJl
+YWRzIG11c3QgYmUgYmVpbmcNCj4+PiBraWxsZWQgYnkgYSBzaWduYWwuDQo+Pj4gT25lIG9ubHkg
+b3RoZXIgY2F1c2UgZm9yIGFuIG5mc2QgdGhyZWFkIHRvIGV4aXQgaXMgaWYNCj4+PiBzdmNfc2V0
+X251bV90aHJlYWRzKCkgaXMgY2FsbGVkLCBhbmQgYWxsIHBsYWNlcyB0aGF0IGNhbGwgdGhhdCBo
+b2xkIGENCj4+PiByZWYgb24gdGhlIHNlcnYgc3RydWN0dXJlIHNvIHRoZSBmaW5hbCBwdXQgd29u
+J3QgaGFwcGVuIHdoZW4gdGhlIHRocmVhZA0KPj4+IGV4aXRzLg0KPj4+DQo+Pj4gQmVmb3JlIHRo
+ZSBwYXRjaCB0aGF0IGJpc2VjdCBmb3VuZCwgdGhlIG5mc2QgdGhyZWFkIHdvdWxkIGV4aXQgd2l0
+aA0KPj4+DQo+Pj4gICBzdmNfZ2V0KCk7DQo+Pj4gICBzdmNfZXhpdF90aHJlYWQoKTsNCj4+PiAg
+IG5mc2RfcHV0KCk7DQo+Pj4NCj4+PiBUaGlzIGFsc28gaG9sZHMgYSByZWYgYWNyb3NzIHRoZSBz
+dmNfZXhpdF90aHJlYWQoKSwgYW5kIGVuc3VyZXMgdGhlDQo+Pj4gZmluYWwgJ3B1dCcgaGFwcGVu
+cyBmcm9tIG5mc0RfcHV0KCksIG5vdCBzdmNfcHV0KCkgKGluDQo+Pj4gc3ZjX2V4aXRfdGhyZWFk
+KCkpLg0KPj4+DQo+Pj4gQ2hyaXM6IHdoYXQgd2FzIHRoZSBjb250ZXh0IHdoZW4gdGhlIGNyYXNo
+IGhhcHBlbmVkPyAgQ291bGQgdGhlIG5mc2QNCj4+PiB0aHJlYWRzIGhhdmUgYmVlbiBzaWduYWxs
+ZWQ/ICBUaGF0IGhhc24ndCBiZWVuIHRoZSBzdGFuZGFyZCB3YXkgdG8gc3RvcA0KPj4+IG5mc2Qg
+dGhyZWFkcyBmb3IgYSBsb25nIHRpbWUsIHNvIEknbSBhIGxpdHRsZSBzdXJwcmlzZWQgdGhhdCBp
+dCBpcw0KPj4+IGhhcHBlbmluZy4NCj4+IFdlIHVzZSBhIGhhY2tlZCB1cCB2ZXJzaW9uIG9mIHNo
+dXRkb3duIGZyb20gdXRpbC1saW51eCBhbmQgd2hpY2ggZG9lcyBhDQo+PiBga2lsbCAoLTEsIFNJ
+R1RFUk0pO2AgdGhlbiBga2lsbCAoLTEsIFNJR0tJTEwpO2AgKEkgZG9uJ3QgdGhpbmsgdGhhdA0K
+Pj4gcGFydGljdWxhciBiZWhhdmlvdXIgaXMgdGhlIGhhY2tlcnkpLiBJJ20gbm90IHN1cmUgaWYg
+LTEgd2lsbCBwaWNrIHVwDQo+PiBrZXJuZWwgdGhyZWFkcyBidXQgYmFzZWQgb24gdGhlIHN5bXB0
+b21zIGl0IGFwcGVhcnMgdG8gYmUgZG9pbmcgc28gKG9yDQo+PiBtYXliZSBzb21ldGhpbmcgZWxz
+ZSBpcyBpbiBpdCdzIFNJR1RFUk0gaGFuZGxlcikuIEkgZG9uJ3QgdGhpbmsgd2Ugd2VyZQ0KPj4g
+ZXZlciByZWFsbHkgaW50ZW5kaW5nIHRvIHNlbmQgdGhlIHNpZ25hbHMgdG8gbmZzZCBzbyB3aGV0
+aGVyIGl0IGFjdHVhbGx5DQo+PiB0ZXJtaW5hdGVzIG9yIG5vdCBJIGRvbid0IHRoaW5rIGlzIGFu
+IGlzc3VlIGZvciB1cy4gSSBjYW4gY29uZmlybSB0aGF0DQo+PiBhcHBseWluZyAzOTAzOTAyNDAx
+NDUgcmVzb2x2ZXMgdGhlIHN5bXB0b20gd2Ugd2VyZSBzZWVpbmcuDQo+IEknbSAyLzMgb2YgdGhl
+IHdheSB0aHJvdWdoIHRlc3RpbmcgNS4xNS4xNTYgd2l0aCAzOTAzOTAyNDAxNDUNCj4gYXBwbGll
+ZCwgc28gaXQgd291bGQgYmUganVzdCBhbm90aGVyIGRheSBiZWZvcmUgSSBjYW4gc2VuZCBhDQo+
+IHBhdGNoIHRvIHN0YWJsZUAuDQo+DQo+IE1heSBJIGFkZCBUZXN0ZWQtYnk6IENocmlzIFBhY2to
+YW0gPENocmlzLlBhY2toYW1AYWxsaWVkdGVsZXNpcy5jby5uej4gPw0KDQpTdXJlIGdvIGFoZWFk
+Lg0K
 
