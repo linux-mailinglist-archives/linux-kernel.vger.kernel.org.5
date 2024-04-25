@@ -1,111 +1,146 @@
-Return-Path: <linux-kernel+bounces-158867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F10978B25FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:08:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EEC78B2604
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:09:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3377282936
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:08:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FE571C214E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78CC414C5BF;
-	Thu, 25 Apr 2024 16:07:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D159A14C58E;
+	Thu, 25 Apr 2024 16:09:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JuESLOa/"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WMWkQFx+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C32E12C466;
-	Thu, 25 Apr 2024 16:07:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 102A214C5A1;
+	Thu, 25 Apr 2024 16:09:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714061278; cv=none; b=uLUgL934LwGmfzdWkUWf0iJsu48QTUG+rvPmlrxyBek4F2DOx9GNxYmWxKqZ7mzihcU+7u4lqv58CPzLfyqD9JtxhQ/151fZMj3FBNTGTndY/TjNMbCeL+RFa6b9n5qIvNAksNN3Mqon6bPaZA2Tv881jbhHNo1N8w/Bsc5zHTc=
+	t=1714061346; cv=none; b=TpuFpwYP6jsIxXbiuvKhCcQcttRPeMC/YEPE9YUEZ6kV36tlrTjoNHodQMPNXFnNH7uHiymtCR6W87Lm+YA1I70381UUUaPwTDv0wDLylJJWQoaDxx4QBM42Naf5WhZRHkVrD1whq8JHTCpIwWBcQsL/PdDLp0jNjHF3eAzuMLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714061278; c=relaxed/simple;
-	bh=kZSoVnPwHh86m3NoOdlMADSlVu0ywdgka1QLhDZJ0Ec=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=gDw6HX9mxALQ71JjbwOhGOgRHoSeauYhslgUm/CDuOPiSdprQUduvBPaIr8hb9/t8EVOosW7JD2JC1SL25LyuALqB+AS1+ewocfPQ0GjNx4mArurUVDlXs+GYtM4mxW8wWduqHu0GjPFVoP35nMZzvAECWJkq1QkYpdVDtkxGtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JuESLOa/; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41a1d88723bso8336075e9.0;
-        Thu, 25 Apr 2024 09:07:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714061276; x=1714666076; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gN8Y1W7KR/HV28QZoX9RNXIwZmbdrRKuGKHOSEwdMx8=;
-        b=JuESLOa/kdXz/mhcAg+eFEEbCqabNIuEDmwqLQdH4UdzDNJ1dt3jvZVSuqBuewzxcE
-         m+g7x5oKe6Z+n9TFPgz4SvHpVC4Ww6aM/4P5XRQRvAPi8qDyaEAjbJT3xHWh/Hf3bkXw
-         TYnKDPDbN0YqlI/EMKUqAxzT3/8A8J5y90AChJdbWhjYi7fQ5R/plNPRTA8mdilBivWY
-         mh6Q6DMc8Q5HkkjwjsJ/AXMnuBq8kXEVS443vdtAddIjB5KHDIY12Hs3pUcJTAJO9ypo
-         EyRg0FxpTuMqBDHSnXmAJMMYQHorYORVf6gae7V0splzVI694WxzEj1sX8TUw04ly/5J
-         Z8Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714061276; x=1714666076;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gN8Y1W7KR/HV28QZoX9RNXIwZmbdrRKuGKHOSEwdMx8=;
-        b=H4Ref1xZ+UCyKvq1319KqfrDC3Fd6Z0PhsndViWibqz95cQAjaAu7Bt/NNsxeyXSIO
-         o+Maqzt8uDbm8zchgM4kvFaJWAj7sGd/Z/ZPulhLEPTeUp69SMemGIS53LOi0B408eMB
-         0BDbdhsXuCiOy5F3qnigyTQJsIq45o6YP3QGXNdR53f9Kb1FWoTMBYDTh4caLAEY0foH
-         F4M612XzWppJ88iVyNtbd4KIpmLqqOYmO9JIxqKTjPhgxaHXKXPeWhew2lBGrg/W8DI9
-         +YX9UdH8MC4wM56Li4clklqg84L7Gh00u+kMz5JmteLEUOJa6qwtvnYHKXnNScEVDKi3
-         pztA==
-X-Forwarded-Encrypted: i=1; AJvYcCWBU6fPsd3QNRk6Zonuv108KaF9XE85jmOxbptIrmn1IC+rZQvQs7kDAf9l+5/K+Vq6G/uHCdnMn2CM+J2ICrfiRbiScraKOzX365En6n9O6Irt/QRfZQnztCLq+DWK9M/GymwI4dnf/Y4=
-X-Gm-Message-State: AOJu0Yy0ntNBtpX6LfLD6qkZB61VjbCdp/tGeXLtnEZKm2JYSE/Z3uXm
-	gSVpRY0aqNXISxB/hL2ct3BQmSMy9ygy0Lzd1ahGBVKKUFHek8jnzDcYDY4m
-X-Google-Smtp-Source: AGHT+IFlDxeIzTLQZ6oCjoR8SMYSRVnEsMxbx1edkXUA0vtbs8bw/ldbshuE6Rzl5C3HS2QqZZNG5A==
-X-Received: by 2002:a05:600c:1554:b0:418:a620:15a1 with SMTP id f20-20020a05600c155400b00418a62015a1mr4465333wmg.30.1714061275261;
-        Thu, 25 Apr 2024 09:07:55 -0700 (PDT)
-Received: from localhost (craw-09-b2-v4wan-169726-cust2117.vm24.cable.virginm.net. [92.238.24.70])
-        by smtp.gmail.com with ESMTPSA id j2-20020a05600c1c0200b0041ac3e13f1esm9643536wms.37.2024.04.25.09.07.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 09:07:54 -0700 (PDT)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Ivan Orlov <ivan.orlov0322@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ALSA: kunit: make read-only array buf_samples static const
-Date: Thu, 25 Apr 2024 17:07:54 +0100
-Message-Id: <20240425160754.114716-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1714061346; c=relaxed/simple;
+	bh=FTrKsEK9u+1f+WVvM2+molxlrqj0kgxFuQGWcVqqr7o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eQPmyddEFe/BS41uqtUCz/YXRe9tA4ahHRPGw48lfdGAtvStKoUHysxwK+FkppraKt+GxHKLjsYhSobM5/W0rih58jfq72bBDH0vBOjd4Im0dHsEz8gOzk0REiRl6tq9HbpCLB3pQJ+QmRVXp5d03e6NXeQBQv5f8q92cO8J+aI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WMWkQFx+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DC1CC113CC;
+	Thu, 25 Apr 2024 16:09:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714061345;
+	bh=FTrKsEK9u+1f+WVvM2+molxlrqj0kgxFuQGWcVqqr7o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WMWkQFx+x/CCWQeoUDVJPUbbOgW4mPlz09ekJzbhigPPuGd6Atk2xoiLq1+m6hFjN
+	 TDf0FMt7LkHtPRYpQmTcXErgNoscc2Hig9jimJ32RyxG2wAc+rlBbqlNgeNs7d366S
+	 va1LfGEmKf6S5ulBmUbbo4PWoZBAfqkM68q97SGAbnkrlvXF6TlFJRo6nyz4Dm0SWZ
+	 HLwBPde9lFS9C4gVm6lIOszZxTFgXG978zL6ITa2UI3mU7DXrJfZHX3JxMFy14J3Am
+	 lcqa+L5wpn+Lz1ONTxRaEcuNubfOichSvrGBMXf6RTKilkZoiDJmVPoYUa4W+WyMZZ
+	 rRefHBz9rP/uA==
+Date: Thu, 25 Apr 2024 17:08:58 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Niko Pasaloukos <nikolaos.pasaloukos@blaize.com>
+Cc: "robh@kernel.org" <robh@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"will@kernel.org" <will@kernel.org>,
+	"arnd@arndb.de" <arnd@arndb.de>, "olof@lixom.net" <olof@lixom.net>,
+	Neil Jones <neil.jones@blaize.com>,
+	Matt Redfearn <matthew.redfearn@blaize.com>,
+	James Cowgill <james.cowgill@blaize.com>,
+	"heiko.stuebner@cherry.de" <heiko.stuebner@cherry.de>,
+	"shawnguo@kernel.org" <shawnguo@kernel.org>,
+	"macromorgan@hotmail.com" <macromorgan@hotmail.com>,
+	"sre@kernel.org" <sre@kernel.org>,
+	"hvilleneuve@dimonoff.com" <hvilleneuve@dimonoff.com>,
+	"andre.przywara@arm.com" <andre.przywara@arm.com>,
+	"rafal@milecki.pl" <rafal@milecki.pl>,
+	"linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+	"andersson@kernel.org" <andersson@kernel.org>,
+	"konrad.dybcio@linaro.org" <konrad.dybcio@linaro.org>,
+	"geert+renesas@glider.be" <geert+renesas@glider.be>,
+	"neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+	"m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+	"nfraprado@collabora.com" <nfraprado@collabora.com>,
+	"u-kumar1@ti.com" <u-kumar1@ti.com>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v3 0/5] Add support for Blaize BLZP1600 SoC
+Message-ID: <20240425-purity-sniff-e17c1bcae41e@spud>
+References: <20240425091403.17483-1-nikolaos.pasaloukos@blaize.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="t3SiQWMSb1DFPZBL"
+Content-Disposition: inline
+In-Reply-To: <20240425091403.17483-1-nikolaos.pasaloukos@blaize.com>
 
-Don't populate the read-only array buf_samples on the stack at
-run time, instead make it static const.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- sound/core/sound_kunit.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--t3SiQWMSb1DFPZBL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/core/sound_kunit.c b/sound/core/sound_kunit.c
-index eb90f62228c0..e34c4317f5eb 100644
---- a/sound/core/sound_kunit.c
-+++ b/sound/core/sound_kunit.c
-@@ -167,7 +167,7 @@ static void _test_fill_silence(struct kunit *test, struct snd_format_test_data *
- 
- static void test_format_fill_silence(struct kunit *test)
- {
--	u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
-+	static const u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
- 	u8 *buffer;
- 	u32 i, j;
- 
--- 
-2.39.2
+On Thu, Apr 25, 2024 at 09:15:02AM +0000, Niko Pasaloukos wrote:
+> Adds basic support for the Blaize BLZP1600 SoC.
+> This SoC contains two cores of Cortex-A53 CPUs, one Blaize
+> Graph Streaming Processor (GSP) and several other IPs.
+>=20
+> V3 changes:
+>  * Removed unnecessary dt-bindings
+>  * Update SoBs
+>=20
+> V2 changes:
+>  * Update SoBs
+>  * `make dtbs_check` has no warnings
+>  * Fix dts names and removed dead code
+>  * DTS is separated from anything else
+>=20
+> Nikolaos Pasaloukos (5):
+>   dt-bindings: Add Blaize vendor prefix
+>   dt-bindings: arm: blaize: Add Blaize BLZP1600 SoC
+>   arm64: Add Blaize BLZP1600 SoC family
+>   arm64: Add initial support for Blaize BLZP1600 CB2
+>   arm64: defconfig: Enable ARCH_BLAIZE_BLZP1600
+>=20
+>  .../devicetree/bindings/arm/blaize.yaml       |  40 ++++
+>  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+>  arch/arm64/Kconfig.platforms                  |   5 +
+>  arch/arm64/boot/dts/Makefile                  |   1 +
+>  arch/arm64/boot/dts/blaize/Makefile           |   2 +
+>  .../boot/dts/blaize/blaize-blzp1600-cb2.dts   |  84 +++++++
+>  .../boot/dts/blaize/blaize-blzp1600-som.dtsi  |  23 ++
+>  .../boot/dts/blaize/blaize-blzp1600.dtsi      | 209 ++++++++++++++++++
+>  arch/arm64/configs/defconfig                  |   1 +
 
+I dunno if you've yet had any comment from Arnd on this series, but I'd
+expect that the blaize patches follow the same path via the soc tree as
+any other platform. I presume either you or one of the other Blaize guys
+on this patchset will be taking care of that, so it would be a good idea
+to add a MAINTAINERs entry covering the new arch/arm64/boot/dts/blaize
+directory. There should be some more info about some of the expectations
+at:
+https://docs.kernel.org/process/maintainer-soc.html
+
+--t3SiQWMSb1DFPZBL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiqAGQAKCRB4tDGHoIJi
+0r/KAQDcecWoUKa9ZVb67zgNMKGcUaACpAVq/7o/0yGK05aTCgD/SxtOa05ISKUg
+UkKxK6lXzfAPkCs9yRyq0dJFOAEDcg0=
+=9uV6
+-----END PGP SIGNATURE-----
+
+--t3SiQWMSb1DFPZBL--
 
