@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-158616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A01098B2303
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 23A7A8B230A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:44:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DC6B285805
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:43:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1842285361
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:44:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61293149DE7;
-	Thu, 25 Apr 2024 13:43:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 791CB149DF2;
+	Thu, 25 Apr 2024 13:44:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L0B7K8yx"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hW2IKNrm"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9850F149C4D;
-	Thu, 25 Apr 2024 13:43:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD2CC149DE9;
+	Thu, 25 Apr 2024 13:44:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714052607; cv=none; b=lzwJnALsNZjNaZmFid+N1FTAVlIDGEwWhu4kxyYN1rzs5dhUurRdlj45I/LW9M1yzIj0zeWrgshmyADstz3115kNJun32AGwyGz3YsQRbJBHIpeflMyM76KWkXBw+4G61Him8uKWJbRuejEmth4ee/DLVZEvPVfmwFi1TgXtcbA=
+	t=1714052655; cv=none; b=FKuO+b5T0ikJhYyS0p3SoC6LGOIpH91mIYVTlxbgYkZnseypCG77XmgisEn3oyinuKNj9BtZyDAOpAgUrADh6XqDpWgG6sTY3mFwN9KKOCKThpwc9f0tzrVJvyH10UkvYDLnIlw7KE94N5ZLWxQym9WyY0ZjJbXywNphTeTmaqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714052607; c=relaxed/simple;
-	bh=NPSlzCKVCsU2wq+izhAa1CU8nylnb03JghGzrs0lLp8=;
+	s=arc-20240116; t=1714052655; c=relaxed/simple;
+	bh=sevXQPHqwt+0Ww7Ab9Mk8uFLSxt6KOf9Ig3smUYioLc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T4rXTEka3DjwPBhpuB8Ml6VIDG0wHNsqWWOiggNIilXfRwtYX5jccGut4bji+UinQQcK2yzbB0hnmgMkevWk0ydYby1EzgN3js3jbVB8lykznTcyUnlj0oejgiAB3p18kyfrgfr7qXrH7q4BNKDr16VICJWs9goeX5O2k7Yu5kU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L0B7K8yx; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	 In-Reply-To:Content-Type; b=YINRKJnckh3veK/aW7alfPojaW50ieI0N0Z4T4I/xaxP/UzlUK9bHNpohnUhB41hHn/3GbNcugEOlUEs9uprc0hNVezCLYlWI44Y3RL6dk8NGDsRkCf6LBX3LZfzYYk9kNKEKtH+KGo8g9cfmMUnkPCkLTgGWT8solKMOjVi2jU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hW2IKNrm; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714052605; x=1745588605;
+  t=1714052654; x=1745588654;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=NPSlzCKVCsU2wq+izhAa1CU8nylnb03JghGzrs0lLp8=;
-  b=L0B7K8yxUkCPx3o+0k5xVcK15sWTjxHaBhpu1MYcrXMtDSRmXRcyWPQe
-   V2zDgG46Zy+tDu6uZGANJC8vVJJtt4qx3IOebcgc5hHlfmANKJLowgbR/
-   HBM/WtXq85EjBnKBs8/1E5hcFCQ29zwfeXxG5OnZ7JyD+Ad/azBoMrnkx
-   0SH7c0QXZTTM82vupZcOjJOXCyszo10U6hf7CXZqllsZBvhj68+saJDYp
-   lL9coC2WqOzlkSJ8ojEFOmP2goLebck6Su4BDDd5tSSqQL9n6MBJy4gsb
-   1mFx/l1DPgp7Y/HuMCI23WHYvixDhekaB4zP4ueAcPW7bGLWDHyHcwVeJ
-   w==;
-X-CSE-ConnectionGUID: yMdGrwlVSSOWcesWQ+zPBA==
-X-CSE-MsgGUID: ILZLXdEzSd+rXYP14MkZnQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="20352405"
+  bh=sevXQPHqwt+0Ww7Ab9Mk8uFLSxt6KOf9Ig3smUYioLc=;
+  b=hW2IKNrmAL43jO5tc892Tml9io+6se4xF3gpOR50e3k3wGUukp1CSCJG
+   CcJTK3PtHeKR9PCxqYlp+Pr3WPZSjd7P8tIUx7aR9x9y+5S+GxJ612oee
+   NWnnvVYZwynouoEM0B1PpDNXoM8YvVNLL4PqU0o4lvGoZrNHtOcSGvL2x
+   ePQZITJT/bOcU1IDl6Otnnj4Ygw478fauIb7/sNWV+5sS6NS1NrILSlOI
+   dQK4GtToslDuFczXxjp6hpn57L47EXDINybb5Wo8UNisu3JDo0s55Ja+A
+   wNh1FpBcaPgQPXecxF1ntsoCRjiEeA8kAtqWlatDw0VMITSmDOFsGvxmb
+   Q==;
+X-CSE-ConnectionGUID: M7HVa8i8QQ6IIdJWx2Asgg==
+X-CSE-MsgGUID: +LlEjvW1QHS1GFfI7TAIiw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9587385"
 X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
-   d="scan'208";a="20352405"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 06:43:25 -0700
-X-CSE-ConnectionGUID: YFV6ZcPxRf6rFe4wTzZqQA==
-X-CSE-MsgGUID: 6TzPwLkDQ9aQD+iZ9E0nzQ==
+   d="scan'208";a="9587385"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 06:44:13 -0700
+X-CSE-ConnectionGUID: 7OVoDDweRre70A69GO9ozQ==
+X-CSE-MsgGUID: mlJfMqBPSgudVBltKqVGDg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
-   d="scan'208";a="25143068"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.242.48]) ([10.124.242.48])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 06:43:22 -0700
-Message-ID: <4a66f882-12bf-4a07-a80a-a1600e89a103@intel.com>
-Date: Thu, 25 Apr 2024 21:43:20 +0800
+   d="scan'208";a="25564915"
+Received: from shivapri-mobl.amr.corp.intel.com (HELO [10.209.176.73]) ([10.209.176.73])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 06:44:12 -0700
+Message-ID: <59f78ca7-ea09-41d7-9e6e-b0ce1af484e4@linux.intel.com>
+Date: Thu, 25 Apr 2024 08:43:20 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,47 +66,51 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] KVM: x86: Fix supported VM_TYPES caps
-To: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240423165328.2853870-1-seanjc@google.com>
+Subject: Re: [PATCH v3 2/7] ASoC: codecs: wcd937x: add wcd937x codec driver
+To: Mohammad Rafi Shaik <quic_mohs@quicinc.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, quic_rohkumar@quicinc.com,
+ quic_pkumpatl@quicinc.com
+References: <20240425091857.2161088-1-quic_mohs@quicinc.com>
+ <20240425091857.2161088-3-quic_mohs@quicinc.com>
 Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20240423165328.2853870-1-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20240425091857.2161088-3-quic_mohs@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 4/24/2024 12:53 AM, Sean Christopherson wrote:
-> Fix a goof where KVM fails to re-initialize the set of supported VM types,
-> resulting in KVM overreporting the set of supported types when a vendor
-> module is reloaded with incompatible settings.  E.g. unload kvm-intel.ko,
-> reload with ept=0, and KVM will incorrectly treat SW_PROTECTED_VM as
-> supported.
 
-Hah, this reminds me of the bug of msrs_to_save[] and etc.
+> +struct wcd937x_priv {
+> +	struct sdw_slave *tx_sdw_dev;
+> +	struct sdw_slave *rx_sdw_dev;
 
-    7a5ee6edb42e ("KVM: X86: Fix initialization of MSR lists")
+Does this mean that the codec has 2 SoundWire interfaces?
 
-The series looks good to me.
+If yes, aren't there merits in splitting the implementation in two
+separate drivers, one for each interface and probing on the relevant partID?
 
-With v2 to move the reset of kvm_cap and set the
-hardcoded caps earlier,
+This is how the RT713 was handled. The mic function was exposed as the
+RT1713.
 
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+By representing the device as a single entity, things could be fun
+because the two interfaces are really independent. things like clock
+stop are handled at the interface level.
 
-> Fix a similar long-standing bug with supported_mce_cap that is much less
-> benign, and then harden against us making the same mistake in the future.
- >
-> Sean Christopherson (3):
->    KVM: x86: Fully re-initialize supported_vm_types on vendor module load
->    KVM: x86: Fully re-initialize supported_mce_cap on vendor module load
->    KVM: x86: Explicitly zero kvm_caps during vendor module load
-> 
->   arch/x86/kvm/x86.c | 15 +++++++++++----
->   1 file changed, 11 insertions(+), 4 deletions(-)
-> 
-> 
-> base-commit: a96cb3bf390eebfead5fc7a2092f8452a7997d1b
+The code in this driver is difficult to review, for example in the probe
+you wait for the TX part to complete the enumeration/initialization, but
+there's nothing mentioned or stated on the RX part, and there's really
+nothing related to the detection of this device. I don't actually see a
+sdw_driver at all, it's a platform driver.
 
+Would you mind adding a paragraph on how the SoundWire interfaces are
+handled and how the SoundWire bus is involved if there's no sdw_driver?
+
+Thanks!
 
