@@ -1,73 +1,80 @@
-Return-Path: <linux-kernel+bounces-158329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47A208B1E71
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:50:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2F1F8B1E75
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:50:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD3B01F24115
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:50:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F25FB287CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2D7E86259;
-	Thu, 25 Apr 2024 09:50:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB3D85953;
+	Thu, 25 Apr 2024 09:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kwOoN7TX"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P+5+CW2w"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE5777FBA3;
-	Thu, 25 Apr 2024 09:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF7584FA9;
+	Thu, 25 Apr 2024 09:50:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714038609; cv=none; b=nmUQk9hYo5fsMQgIYZyzGl0THhCPriitYLRC8SG49ULDPG8I9dxiffLZYixi45BmJSbZQJ7oAR9N/A+nuHGn7tmfOfvEsqHdSktcm5dakNzk2DDNzt/KxPzoWD/JlsTUBflzebAwHS+QcgRAzrj4MSUrHfx9SwRHPVgLQPbDj5o=
+	t=1714038625; cv=none; b=Aeznhcz3HEq5jx0GRzvbsZHI0tT5FBvXTxISRTZ51yD20te/u1aiOwe8/brVlFTdDPhQ5Y0l5V1qqj/JoZ/O4u0YJy1M2tTvUOFm5h7v38kCNuGkgw4AFkU2Y5BHDcb70yDruebXMoMSulj0zqjoxt8HUmFjnXM975cvr5Up/4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714038609; c=relaxed/simple;
-	bh=lzhmnZABYJ6effJEoylHkGZWlmwXEDBc5x3OW9hKrtM=;
+	s=arc-20240116; t=1714038625; c=relaxed/simple;
+	bh=uC4kA70xl93pLuFD/UoEPvIqfy9CGMqdBnnLhXJ/cBo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HInOtoGVPdtQVyRdFlLBdM26ngnZY0QywNzyWG8w1ZIFXw8MmAtDAprjSmpZTABEVUj1V3avUyzKIBQj891VqDAY8+hQ7m9pKQHRRQ8QH3iXSgwMA4QVV1FBxKSdA8M7meMkl07xkoaEcVA7YHXi5TdsWneRbWCkJf2p9qoc3bI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kwOoN7TX; arc=none smtp.client-ip=198.175.65.14
+	 Content-Type:Content-Disposition:In-Reply-To; b=m0RrrI19gRVwFEpxYvxqueOhkz1wUcivqBgg18MRUiCEaIGjTBJXZsmN2LmnV+IdkY5gj3kkZYr2dvRFyED63gwfliuBAStpbuX3PRVq2LW25BL/dbUE1eBsOMaw/U5Oy8sUHA8oMRJ1zLeBT9UQTdPt+gCwa1EgBD4yR8SXDwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P+5+CW2w; arc=none smtp.client-ip=198.175.65.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714038608; x=1745574608;
+  t=1714038625; x=1745574625;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=lzhmnZABYJ6effJEoylHkGZWlmwXEDBc5x3OW9hKrtM=;
-  b=kwOoN7TX70vEj8wcQNDiwD/NvNkJM8OxZzuW5XMefbQ0UhxYjkmXS/LE
-   bkMnfDT9OHhhfCjQ94HWRNGUc7WeR49Kd9c9eUxKL/ifzAE8WO8zpbeyH
-   y7WupuBL+mCcyHBixGz4Sq38ClHM+d4Lk1vaKq+4P9ISKX+t1Z3w00cyz
-   t6u9syvnD4Twjxu28C4iINaneIR8WpAwwZC0nfmYQOhLtJLw9gqVQfvUA
-   6M6oUVDK0lmT2HUyigQXb9G640fJy1waLZD+naM1ZY5bWkOncU0uackba
-   RIxw6TLYOJcSPKsS3eYm9Liom8COzaXwPK8+V6fOeXLILK8swtjV+g8v6
-   Q==;
-X-CSE-ConnectionGUID: UIfLH+Q1T/m3yyVjWVXHDw==
-X-CSE-MsgGUID: piyhR/6OR7+xpcxw3ddMjA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="13546842"
+  bh=uC4kA70xl93pLuFD/UoEPvIqfy9CGMqdBnnLhXJ/cBo=;
+  b=P+5+CW2wjWoxriDmMXkV0lP7dNpw1xrmOiVYlrV1lioC8DqWVM6RJXS5
+   yaq8r/ufyDpyz7oF/p5QAp69Wuj1LjpaW8oFM77v6Dz8OKUqezHTaWy2/
+   HxuoNievGncRYftJrwGq9ez82Ir2CzaqG8f59/yej7+hdcAM2wNtCgHtj
+   aVj82Pzxlj4lsw/ew4p9XQLei6HfLvySvldckUYBQOTaP+riB9k2ra145
+   WWDseSA2bCwdW1uNNcFxtr26cWIMcAR28yTLUOXpPvO55xTcT0gGnyUGk
+   Ycpz395fxtobQ8p0jIiQhjHQxD+/AORIMKAD6MD4+8zffOXZusvl4HWSf
+   w==;
+X-CSE-ConnectionGUID: GwBduIHkQ1aIAq7rPCE8FQ==
+X-CSE-MsgGUID: 0LCnd31GQJePku8meyYfpQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="13546863"
 X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
-   d="scan'208";a="13546842"
+   d="scan'208";a="13546863"
 Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 02:50:07 -0700
-X-CSE-ConnectionGUID: CJ8ivaOTSyWltEHO1/JLCA==
-X-CSE-MsgGUID: ppOww40jTT+X4yUH+htYoQ==
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 02:50:24 -0700
+X-CSE-ConnectionGUID: BWhnmIHyQm+oMO9OMsFKcw==
+X-CSE-MsgGUID: tnRuId7DRZe98pwRC8vrCw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
-   d="scan'208";a="29644066"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orviesa003.jf.intel.com with SMTP; 25 Apr 2024 02:50:04 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 25 Apr 2024 12:50:03 +0300
-Date: Thu, 25 Apr 2024 12:50:03 +0300
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: RD Babiera <rdbabiera@google.com>
-Cc: gregkh@linuxfoundation.org, badhri@google.com,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v1] usb: typec: tcpm: queue correct sop type in
- tcpm_queue_vdm_unlocked
-Message-ID: <ZionS22QrQrWS6S2@kuha.fi.intel.com>
-References: <20240423202546.3374218-2-rdbabiera@google.com>
+   d="scan'208";a="29644225"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 02:50:20 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rzvk8-00000000x7w-3GXg;
+	Thu, 25 Apr 2024 12:50:16 +0300
+Date: Thu, 25 Apr 2024 12:50:16 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, tony@atomide.com,
+	l.sanfilippo@kunbus.com, tglx@linutronix.de,
+	geert+renesas@glider.be, ulf.hansson@linaro.org, peng.fan@nxp.com,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [RFT PATCH v2] serial: core: Call device_set_awake_path() for
+ console port
+Message-ID: <ZionWJ7ods60zuYX@smile.fi.intel.com>
+References: <20240425070936.547100-1-claudiu.beznea.uj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,42 +83,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240423202546.3374218-2-rdbabiera@google.com>
+In-Reply-To: <20240425070936.547100-1-claudiu.beznea.uj@bp.renesas.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Tue, Apr 23, 2024 at 08:25:46PM +0000, RD Babiera wrote:
-> tcpm_queue_vdm_unlocked queues VDMs over SOP regardless of input
-> parameter tx_sop_type. Fix tcpm_queue_vdm() call.
+On Thu, Apr 25, 2024 at 10:09:36AM +0300, Claudiu wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > 
-> Fixes: 7e7877c55eb1 ("usb: typec: tcpm: add alt mode enter/exit/vdm support for sop'")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: RD Babiera <rdbabiera@google.com>
+> In case the UART port is used as a console, no_console_suspend is
+> available in bootargs and UART port is part of a software-controlled power
+> domain we need to call device_set_awake_path(). This lets the power
+> domain core code know that this domain should not be powered off
+> during system suspend. Otherwise, the UART port power domain is turned off,
+> nothing is printed while suspending and the suspend/resume process is
+> blocked. This was detected on the Renesas RZ/G3S SoC while adding support
+> for power domains.
+> 
+> Based on code investigation, this issue is present on other SoCs (e.g.,
+> Renesas R-Mobile A1 [1], IMX8QXP [2]) and different SoCs have particular
+> implementation to handle it. Due to this the patch added the call of
+> device_set_awake_path() in uart_suspend_port() instead of having it in
+> the platform specific UART driver.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> [1] https://elixir.bootlin.com/linux/v6.9-rc5/source/drivers/pmdomain/renesas/rmobile-sysc.c#L116
+> [2] https://elixir.bootlin.com/linux/v6.9-rc5/source/drivers/pmdomain/imx/scu-pd.c#L357
 
-> ---
-> Patch applies starting at 6.9 tree.
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index c26fb70c3ec6..3f38e7c7d13f 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -1565,7 +1565,7 @@ static void tcpm_queue_vdm_unlocked(struct tcpm_port *port, const u32 header,
->  				    const u32 *data, int cnt, enum tcpm_transmit_type tx_sop_type)
->  {
->  	mutex_lock(&port->lock);
-> -	tcpm_queue_vdm(port, header, data, cnt, TCPC_TX_SOP);
-> +	tcpm_queue_vdm(port, header, data, cnt, tx_sop_type);
->  	mutex_unlock(&port->lock);
->  }
->  
-> 
-> base-commit: 684e9f5f97eb4b7831298ffad140d5c1d426ff27
-> -- 
-> 2.44.0.769.g3c40516874-goog
+No need to have the HTTP links into the kernel sources, you may simply refer to
+the files in the source tree.
+
+[1] drivers/pmdomain/renesas/rmobile-sysc.c:L116
+[2] drivers/pmdomain/imx/scu-pd.c:L357
+
+> Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
+> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+
+The rest makes sense to me as we also have an internal hack to achieve
+something similar in the case of Intel LPSS (8250_dw).
+
+But I like Tony to comment on this, from my perspective it's good:
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
 -- 
-heikki
+With Best Regards,
+Andy Shevchenko
+
+
 
