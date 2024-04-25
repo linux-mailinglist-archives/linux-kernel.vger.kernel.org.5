@@ -1,171 +1,130 @@
-Return-Path: <linux-kernel+bounces-157868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3728C8B179F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:00:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 845A98B17A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:01:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2375285475
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:00:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6EE51C22416
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:01:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA872B9B7;
-	Thu, 25 Apr 2024 00:00:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E636433FE;
+	Thu, 25 Apr 2024 00:01:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iMjaJ6VT"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b="LiPBsvRd"
+Received: from a.peacevolution.org (a.peacevolution.org [206.189.193.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA23E139E
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:00:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E93918D;
+	Thu, 25 Apr 2024 00:01:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.193.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714003238; cv=none; b=ZMzcoAwb8TwR1fEzKzgFID65fBL2C6PwpCVQZzvKx2s0It4OR1HpSEHoRdP0qBIdyOtD+o3iFU8092Rau852qjgsfVWFacBAcsv8AXMZKvl7/DOwdE3cVBv9KBwmKajEC1syUBlhnD02AS8G5LBvwgblLDeBDPACsX43Srv/8bs=
+	t=1714003267; cv=none; b=m/JZKHfDQFKZuhavB+SBOYcYoEJGkJ9/jQEDtE5wPHR3b4LpkC0m8U3UVYZ8Xp0PmD0inhxVWLz4qVYzqIZmsAJTwDM92yr/HAcoTmnliX4AGjHdyHr0FpBJNIl1rd1GdV2W/LeIRqSLusVndEzH+rKm4PVuY6W4uf6BqffIh1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714003238; c=relaxed/simple;
-	bh=MBEImIE/uf/WSqljiC9XbZNccgouCdO8Skm4a/1yecU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FL6TucjJcrMBJCutl8iUe66FHcRIpDrfx9rfHg//ifogySs6wA+kzBMMPILJzUoaggRcEYpUY8sos2hXuUAq//Ydc9qyv3ioKWVCGSq+qF1+skhRq5SIDLhHmWw/hpWY0wevCtrWZRdLs5sxlIKThkbP/vQHMBRH4vjbKYGEPwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iMjaJ6VT; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so500997276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:00:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714003236; x=1714608036; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8amuByFemR4m00/qLVXHYywQQB/OO/nQVwREqVEGLXs=;
-        b=iMjaJ6VTO6QzBbOQsShcIZdpJmlk8p0WE6lBOGeIXijjWg21TZNxSSEjouFgrCHR3V
-         KdJgCbTU7BhnXmnkWbkwaN+KSWrK4nLLEAmdNaf10GzBKNCayf7g9TzihSAjx6DM2Jg8
-         8P6BL08ndLUmnsvJgXsYzAHRr1ysx7eAOlDxM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714003236; x=1714608036;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8amuByFemR4m00/qLVXHYywQQB/OO/nQVwREqVEGLXs=;
-        b=GlDWAGpMGPYS5S/rMTwYjHuQwNdscCdWlfBv7mWMztKkRiwsIWC7IDOkGgRu29gdy6
-         /Atiz2FNysS5kuBoEA1D49gw7upO1O17ek47WuRUWR5ES0ZzuFr6arpPMitAcU5l1lQH
-         wExU9MPtS0mSq8SZ8rMIPUyHMDlqksa2tbDwQzzFQ8k3AhTnZ3KZEvocJ2h7/TzEgVmJ
-         g7xFM+YGo5yeVbOp4mw9LIwJIpoL7LsHI/EQs0/aoQz/DrIijv1unVAHqatHsv2dT5/h
-         i8z6BYscQKY/7kfPkxh1eq9rruVGcYRw4P0Sluz+ap1vCOemX2bcd5Qlu0sZDflrgGnn
-         IYgg==
-X-Forwarded-Encrypted: i=1; AJvYcCUeu4DMa0svHe+7+ZYj0CxN4LViBc4L1PFAIAN48crwuqi4iHBmzcZNMosMw7iVdxT/IJc4N7opOps7cm7DrA4+ZeBX+7EPE562qFda
-X-Gm-Message-State: AOJu0YzSSXeH3h4XKQ1KGMCe95w9F8Fwd+EXvV84xdMoP1Z7Pax2/nbM
-	2hMsLIdL+FRgr78l8BhJSo5X9cv7gJ+3wOyupioiPj5yJ/qHfZv6EnwL208o9fPYjSIluutInOs
-	AitbjW/JavYLEHZWuqykEenIb4hXJGSdZhGvc
-X-Google-Smtp-Source: AGHT+IH7S3Ay2JrJHBsmbPvnAj1QI5yAXv3Ej/lVdIrjvv1IozZI+l3zW9bj/sSEleLf2fkzcVwUwR3dmow/4Hn/FWc=
-X-Received: by 2002:a25:26d2:0:b0:dcf:b5b7:c72 with SMTP id
- m201-20020a2526d2000000b00dcfb5b70c72mr4116337ybm.0.1714003235737; Wed, 24
- Apr 2024 17:00:35 -0700 (PDT)
+	s=arc-20240116; t=1714003267; c=relaxed/simple;
+	bh=YK8ZVJPPSgK6IuSHNRED/Qsya04fG5N0aal1ljRlwDM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qL0tdAwaOcHGk2GrOPdpmx89YZlqIEPK19V/Zowb1pD7dFOkmIrjUDT02KPlLNWOMKo7NrNos6vB0oOIUwCuW6x2iN3jHt68PyuhGXw5ktxnBrf6+Osw/mzvbBx6f+DuvKU0Qd+QxWGoM9arwIEZinuJx5L583p0H2kCiqB+4xk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org; spf=pass smtp.mailfrom=peacevolution.org; dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b=LiPBsvRd; arc=none smtp.client-ip=206.189.193.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=peacevolution.org
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+	by a.peacevolution.org (Postfix) with ESMTPA id 7A2A247A38;
+	Thu, 25 Apr 2024 00:00:56 +0000 (UTC)
+Date: Wed, 24 Apr 2024 20:00:53 -0400
+From: Aren <aren@peacevolution.org>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Jonathan Cameron <jic23@kernel.org>, 
+	Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Ondrej Jirman <megi@xff.cz>, 
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, linux-iio@vger.kernel.org, phone-devel@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+	Willow Barraco <contact@willowbarraco.fr>
+Subject: Re: [PATCH v2 2/6] iio: light: stk3310: Implement vdd supply and
+ power it off during suspend
+Message-ID: <djxnxb6zcg7r4pl6gicjkcmqp6zodm24tq5cwejlwidzmtvf5x@3fqdvbc7whul>
+References: <20240423223309.1468198-2-aren@peacevolution.org>
+ <20240423223309.1468198-4-aren@peacevolution.org>
+ <CAHp75VeRDSPvpmSbUyZPp0RMoTOE193U2ma18qxv_qZQKLCq8g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424014821.4154159-1-jthies@google.com> <20240424014821.4154159-2-jthies@google.com>
- <CAA8EJpq_DujhwoJ87Cg4gZ4LNdPu4i93EQ0VeKrCJPkeDj9ThQ@mail.gmail.com>
-In-Reply-To: <CAA8EJpq_DujhwoJ87Cg4gZ4LNdPu4i93EQ0VeKrCJPkeDj9ThQ@mail.gmail.com>
-From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Date: Wed, 24 Apr 2024 17:00:24 -0700
-Message-ID: <CANFp7mVGYhMYXdCGEJQ9GoqB-kpk4UquUWEcvqVnRFMrih+R9Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] usb: typec: ucsi: Fix null deref in trace
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Jameson Thies <jthies@google.com>, heikki.krogerus@linux.intel.com, 
-	linux-usb@vger.kernel.org, pmalani@chromium.org, bleung@google.com, 
-	andersson@kernel.org, fabrice.gasnier@foss.st.com, gregkh@linuxfoundation.org, 
-	hdegoede@redhat.com, neil.armstrong@linaro.org, rajaram.regupathy@intel.com, 
-	saranya.gopal@intel.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VeRDSPvpmSbUyZPp0RMoTOE193U2ma18qxv_qZQKLCq8g@mail.gmail.com>
+X-Spamd-Bar: /
+Authentication-Results: auth=pass smtp.auth=aren@peacevolution.org smtp.mailfrom=aren@peacevolution.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=peacevolution.org;
+	s=dkim; t=1714003257;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:content-transfer-encoding:in-reply-to:references;
+	bh=hsQaSgt/dWJwaX3rAci/jyhFbRrZYWXtUE6c6yp+e0s=;
+	b=LiPBsvRdEn3iltMiuPVD2b/4acdmis9HqCbFJnqStx+wTdODZwAd4Lc8uC1s/Sp2tXGvKv
+	7wqZf2bJET+q0VlHXBhd5fjgMm5rkaFCHTklFy8jpT968iftpUi7eM+9wKWaWirwDrKoPY
+	PT/UTF3sLvpEDML5Xhf39GimEbIT5qs=
 
-On Tue, Apr 23, 2024 at 7:06=E2=80=AFPM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> On Wed, 24 Apr 2024 at 04:48, Jameson Thies <jthies@google.com> wrote:
+On Wed, Apr 24, 2024 at 02:16:06AM +0300, Andy Shevchenko wrote:
+> On Wed, Apr 24, 2024 at 1:41 AM Aren Moynihan <aren@peacevolution.org> wrote:
 > >
-> > From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> > From: Ondrej Jirman <megi@xff.cz>
 > >
-> > ucsi_register_altmode checks IS_ERR on returned pointer and treats
-> > NULL as valid. This results in a null deref when
-> > trace_ucsi_register_altmode is called. Return an error from
-> > ucsi_register_displayport when it is not supported and register the
-> > altmode with typec_port_register_altmode.
-> >
-> > Reviewed-by: Jameson Thies <jthies@google.com>
-> > Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> > ---
-> > Changes in V2:
-> > - Checks for error response from ucsi_register_displayport when
-> > registering DisplayPort alternate mode.
-> >
-> >  drivers/usb/typec/ucsi/ucsi.c | 3 +++
-> >  drivers/usb/typec/ucsi/ucsi.h | 2 +-
-> >  2 files changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucs=
-i.c
-> > index cb52e7b0a2c5c..f3b413f94fd28 100644
-> > --- a/drivers/usb/typec/ucsi/ucsi.c
-> > +++ b/drivers/usb/typec/ucsi/ucsi.c
-> > @@ -361,6 +361,9 @@ static int ucsi_register_altmode(struct ucsi_connec=
-tor *con,
-> >                 switch (desc->svid) {
-> >                 case USB_TYPEC_DP_SID:
-> >                         alt =3D ucsi_register_displayport(con, override=
-, i, desc);
-> > +                       if (IS_ERR(alt) && PTR_ERR(alt) =3D=3D -EOPNOTS=
-UPP)
->
-> This makes it ignore EOPNOTSUPP if it is returned by the non-stub
-> implementation. I think the current state is actually better than the
-> implementation found in this patch. I'd suggest adding a comment to
-> ucsi_register_displayport() stub instead.
+> > VDD power input can be used to completely power off the chip during
+> > system suspend. Do so if available.
+> 
+> ...
+> 
+> >         ret = stk3310_init(indio_dev);
+> >         if (ret < 0)
+> > -               return ret;
+> > +               goto err_vdd_disable;
+> 
+> This is wrong. You will have the regulator being disabled _before_
+> IRQ. Note, that the original code likely has a bug which sets states
+> before disabling IRQ and removing a handler.
 
-So originally on my system, I didn't have the displayport driver
-config enabled. My expectation was that the alt-mode would show up but
-would not be controllable (like all other alt-modes without drivers).
-What ends up happening is that no alt-mode shows up and trying to
-enable the trace crashes.
+Oh! now I see the issue you were talking about last time around. I
+expect that means the irq shouldn't be managed with devres, so it can be
+the first thing freed in the remove function (I haven't checked the docs
+to see if there's an easier way yet).
 
-When the displayport support isn't there, I think it should just be
-enumerated as a normal, unsupported alt-mode.
+I'll add a patch to fix the order of the handling of the irq (both this and
+the issue Ondřej brought up).
 
+> Side note, you may make the driver neater with help of
+> 
+>   struct device *dev = &client->dev;
+> 
+> defined in this patch.
 
+Good point, it's minor, but it should be a net improvement.
 
->
-> > +                               alt =3D typec_port_register_altmode(con=
-->port, desc);
-> > +
-> >                         break;
-> >                 case USB_TYPEC_NVIDIA_VLINK_SID:
-> >                         if (desc->vdo =3D=3D USB_TYPEC_NVIDIA_VLINK_DBG=
-_VDO)
-> > diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucs=
-i.h
-> > index c4d103db9d0f8..c663dce0659ee 100644
-> > --- a/drivers/usb/typec/ucsi/ucsi.h
-> > +++ b/drivers/usb/typec/ucsi/ucsi.h
-> > @@ -496,7 +496,7 @@ ucsi_register_displayport(struct ucsi_connector *co=
-n,
-> >                           bool override, int offset,
-> >                           struct typec_altmode_desc *desc)
+> ...
+> 
+> >  static int stk3310_suspend(struct device *dev)
 > >  {
-> > -       return NULL;
-> > +       return ERR_PTR(-EOPNOTSUPP);
-> >  }
-> >
-> >  static inline void
-> > --
-> > 2.44.0.769.g3c40516874-goog
-> >
->
->
-> --
-> With best wishes
-> Dmitry
+> >         struct stk3310_data *data;
+> 
+> >         data = iio_priv(i2c_get_clientdata(to_i2c_client(dev)));
+> 
+> Side note: This may be updated (in a separate change) to use
+> dev_get_drvdata() directly.
+> 
+> Jonathan, do we have something like iio_priv_from_drvdata(struct
+> device *dev)? Seems many drivers may utilise it.
+> 
+
+At this rate I'm going to need to split off a separate style / code
+cleanup series so I don't keep introducing dumb bugs while rebasing this
+one.
+
+Thank you for your time
+ - Aren
 
