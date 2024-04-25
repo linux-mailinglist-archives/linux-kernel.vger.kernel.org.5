@@ -1,90 +1,84 @@
-Return-Path: <linux-kernel+bounces-158902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 841D88B2680
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:30:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F2DD8B2682
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:31:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 396521F23EFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:30:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90D2F1C21FCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:31:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BF7E14D44E;
-	Thu, 25 Apr 2024 16:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED39514D715;
+	Thu, 25 Apr 2024 16:30:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KIk/Fgpu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jHCB1Lyz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A69B1E864;
-	Thu, 25 Apr 2024 16:30:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39FC614E2CF;
+	Thu, 25 Apr 2024 16:30:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714062633; cv=none; b=gguokfIKnBh29oq+NJ06b2Ms9PijbdOnYXLp3MikgOZI1LkXFN/Dm0l6Z49+4F2qE+cw8lft+uw/Ix5Ll/jSf8N5E+31qvB3kg+Na3KJn6T3HoY+6UUVbYGQrDl2lMnga767hEtAQ4KkViLPMiIHNqcJLFDSE4qZsbtEMUcYHAU=
+	t=1714062638; cv=none; b=p2SEWaC+0G/exAKPaitqeeXj4r0xB5NHBKBtXQK9TwF5kN+ZOG+YmVMVas7kxOIlpCm7bcT56XOUDSuGhoVaqkLUvblkGWTGP0Fck/8zwpK1Ix8GvZafR7MgYr/+e/6c8KoXcUBx4wrIap+Zd1lYrHF9/KuCxhlIutrjWXi1B9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714062633; c=relaxed/simple;
-	bh=ANvZ/o/drE2FJG659vjthrk/HOXySmSBQTc5JTC0hrs=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=kMdYdhJp+nq+NFiwVrYFKmu5VviqPiIZqO3ORAunkHIMLzyDA1BAIddQj4FdYbFpytsoBDO1o4Wjb2cKUsclPQ1D9bv8p+CgGPvWj+LZy2da/+9QLPZEOSAoBMlmam2yUEq4+04kW/kGqMh0e09LyzXVQ4V7pnvkew07PnABjnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KIk/Fgpu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 20BFBC4AF07;
-	Thu, 25 Apr 2024 16:30:33 +0000 (UTC)
+	s=arc-20240116; t=1714062638; c=relaxed/simple;
+	bh=o6qnkohJ43I0c9dUSdw3e1QtuR0Qmn9fqg4+khVlmGU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KmGHIS6lI37Fv3gab74g0XqTvxepHLIujF9AbPkjU+yG3LJk4jWXaawOv3amQoL3TvBC//dtHZP0LFbJYx+9p6JsPRCcY3EQb51fNalNrP5h3d6RjkiOLn2/t2zxd0lzOliNUtZHjR/P2YpXAAq9PHwbcxl3jXmwKHp8L3fA4jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jHCB1Lyz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FFADC113CC;
+	Thu, 25 Apr 2024 16:30:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714062633;
-	bh=ANvZ/o/drE2FJG659vjthrk/HOXySmSBQTc5JTC0hrs=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=KIk/FgpuGT0zgB1iMWU+1LOhuQvumdhmoP1YpV0A4T1yqFPTLWey60DlH34yUmoEy
-	 g/ru7RLFpwN7S2umImvqLrBHO4cjGCVC9JF/UjUXM/q4pPdYO8P5I2taqJc5diUzKK
-	 hvfzfNa7ejihxfJyaUF53+pZYlAygOaL0Hvim3za7FZEELTwncetIxMHDdAg1vTeIZ
-	 jbnxkabBlNZnN6mt5M0EuClyzT8fRPWiyr6tOp3Cz4YBJRuMaiCI4OxiZhKDx1IaDa
-	 vnY/Xh030R8KpSXEX6MZKKKc4ImdhLVwIUgqLH0rs5j1+uempXfkpxBXHE1r5tKSfx
-	 SC8fYEB+SP4PA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0BA43C595CE;
-	Thu, 25 Apr 2024 16:30:33 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1714062637;
+	bh=o6qnkohJ43I0c9dUSdw3e1QtuR0Qmn9fqg4+khVlmGU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jHCB1LyzEL+j8iFGW5mQoqMy1mB1Uv50bhBymZOdc1h+qVy3ZCZe/494SBd2S1fj/
+	 OHbyMfU6/0D9dOG4YWHpFE/YcC1ckg+qNP1mvehERsCl4sfzKGv72r1+P3qZB62M70
+	 Jy5LZoZZ2BLzcVor9re17KnYDOVwyfMcUsYKvy9dBuq/yLNCihv5OWGWp8qfN4FiJi
+	 WfNS+53EGZrcPHi4G1E5qdqXyJDqcVKETUnmsr3we7x0gBZ8x83FlDqjJkXCiKPSJd
+	 dpuDmBiRVV3j53YaKEUYfcWmviAAL1RIV2IhIgpvumhO90gvGitPGCgu1DS7srJJwf
+	 g7evSH24HCbAw==
+Date: Thu, 25 Apr 2024 11:30:35 -0500
+From: Rob Herring <robh@kernel.org>
+To: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Cc: Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Olivier Moysan <olivier.moysan@foss.st.com>,
+	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+	Pascal Paillet <p.paillet@foss.st.com>, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH 0/3] ARM: st: use a correct pwr compatible for stm32mp15
+Message-ID: <20240425163035.GA2783061-robh@kernel.org>
+References: <20240425074835.760134-1-patrick.delaunay@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] Bluetooth: Fix use-after-free bugs caused by sco_sock_timeout
-From: patchwork-bot+bluetooth@kernel.org
-Message-Id: 
- <171406263304.12899.3794414646890970390.git-patchwork-notify@kernel.org>
-Date: Thu, 25 Apr 2024 16:30:33 +0000
-References: <20240425142345.47229-1-duoming@zju.edu.cn>
-In-Reply-To: <20240425142345.47229-1-duoming@zju.edu.cn>
-To: Duoming Zhou <duoming@zju.edu.cn>
-Cc: linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
- luiz.dentz@gmail.com, johan.hedberg@gmail.com, marcel@holtmann.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425074835.760134-1-patrick.delaunay@foss.st.com>
 
-Hello:
-
-This patch was applied to bluetooth/bluetooth-next.git (master)
-by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
-
-On Thu, 25 Apr 2024 22:23:45 +0800 you wrote:
-> When the sco connection is established and then, the sco socket
-> is releasing, timeout_work will be scheduled to judge whether
-> the sco disconnection is timeout. The sock will be deallocated
-> later, but it is dereferenced again in sco_sock_timeout. As a
-> result, the use-after-free bugs will happen. The root cause is
-> shown below:
+On Thu, Apr 25, 2024 at 09:48:31AM +0200, Patrick Delaunay wrote:
 > 
-> [...]
+> This patchset removes the unexpected comma in the PWR compatible
+> "st,stm32mp1,pwr-reg" and uses a new compatible "st,stm32mp1-pwr-reg"
+> in STM3MP15 device trees.
 
-Here is the summary with links:
-  - Bluetooth: Fix use-after-free bugs caused by sco_sock_timeout
-    https://git.kernel.org/bluetooth/bluetooth-next/c/1b69bacb11e6
+Why? I don't see any warnings from this. Yes, we wouldn't new cases 
+following this pattern, but I don't think it is worth maintaining 
+support for both strings. We're stuck with it. And the only way to 
+maintain forward compatibility is:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+compatible = "st,stm32mp1-pwr-reg", "st,stm32mp1,pwr-reg";
 
-
+Rob
 
