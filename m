@@ -1,135 +1,99 @@
-Return-Path: <linux-kernel+bounces-158269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17D108B1DB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E6CB48B1DB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:20:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9199283A0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:20:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A61602867A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:20:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D87B984D3C;
-	Thu, 25 Apr 2024 09:18:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="cUfaqNiQ"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D02085293;
+	Thu, 25 Apr 2024 09:18:49 +0000 (UTC)
+Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F89B839E5;
-	Thu, 25 Apr 2024 09:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E08C784FBC
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:18:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714036712; cv=none; b=GMJVU3AzpUVH/WZPbyC91g6WvoTcaGOmWLXU1yHy03mlCZSUez9EG++vKg18CP+N+nAL9R4CIzSg3gjIEj0YNAUJH1egpww8t58JO50oFFYmiWtSTG8ZmRxDOURsUcPVQPgrhuP3Dv/sh9ZXm2pz81JMO5gEU3hWHAzi07pVz7A=
+	t=1714036728; cv=none; b=oXt9IpFEcTBjaHEzIwT8fAutLxYZ3aLZQCQ0hEnd0hEHfX5lkk8jzUSCquMCuCXZsoxBJHINYw1gfZNRj+S1mAoymDUXl9RCZ3FIVUNEbhip2AeyvwACZ6bgsEV8MdabR4DKtfMSd7QHf3lXeGARj3AAlg5GaZFR3FNrtuXyz9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714036712; c=relaxed/simple;
-	bh=WJcbJq6LPOWVruhsjLEhcR+OLsCXSYTfrE6Km6Lfsek=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iKRpwcyPCcB/VqnttHK9kKbVaaAQ0iQp2PaAlPgtnM5FnAOwtEC86eBTPMYRWBO6FDPjiP+AVtdu7I6RQjmCEaFxvz29azQIEo9J8ywj3imD4UUyaZW6oxmkXIfWglf+LgZuruFZQMmSvZsePjys+szr3TMtnNdrGFw816jnW4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=cUfaqNiQ; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=jlPcJXkfaMmGAq8OZN68om84KUfyIjul/ITuXAN1MVw=; b=cUfaqNiQ1wHARDkNj7QYMhforS
-	oUBl99r29hGkUAx0ATQXOmidPsrbimAcpWld3NxErjYM+LG1bGal2QMllDh8Qo+YJh/byUx73lQcx
-	T9U064kALKGeNkvlWmHEYXJpp0/TnSoJiZl0lE6JLfitzsmNHVmkedxIJEUCzwBI+K0Wyc1mc/xAn
-	NkmIaqNeXf1zjcqNHbHl5q1iGmBz96CD9vvn0D3Pekz7DQtrKCIpBuDOYUfGyRfIstn3+qHMPdGDQ
-	wCLTiSQMnlvCroykbX41A+4lHANWK6RwM43Itb3tjEngRxTVWe47uz4Y6AlwWgnrjM92HpeWPK6Dc
-	TiTAk90Q==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzvEn-0000000EoTr-1G9l;
-	Thu, 25 Apr 2024 09:17:59 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 623D4300439; Thu, 25 Apr 2024 11:17:52 +0200 (CEST)
-Date: Thu, 25 Apr 2024 11:17:52 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Jakub Kicinski <kuba@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-	netdev@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 1/4] locking/atomic/x86: Silence intentional wrapping
- addition
-Message-ID: <20240425091752.GA21980@noisy.programming.kicks-ass.net>
-References: <20240424191225.work.780-kees@kernel.org>
- <20240424191740.3088894-1-keescook@chromium.org>
- <20240424224141.GX40213@noisy.programming.kicks-ass.net>
- <202404241542.6AFC3042C1@keescook>
- <20240424225436.GY40213@noisy.programming.kicks-ass.net>
- <202404241602.276D4ADA@keescook>
+	s=arc-20240116; t=1714036728; c=relaxed/simple;
+	bh=nLZE1rziuB8Cd4inrqdYD6bDm7SjRGECbSDY54hucVM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=c5OoMqejgJH4+vFq7VZJWvZcEUtawqWF6svahgfe47tmOet0rU3f1lVmn9Itse3FFPz/d0MrjnPdf+rj68PtsF45HFKu7qBqIeqarqgnou5nqqm4quQgSXcyJGm3RmHVZo9Mn+h345+8L75BfZ/gwnMB/6YBFgfsnGrcZFaLDeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from localhost (unknown [124.16.138.129])
+	by APP-01 (Coremail) with SMTP id qwCowABnbBjhHypmRq4sAA--.4146S2;
+	Thu, 25 Apr 2024 17:18:26 +0800 (CST)
+From: Chen Ni <nichen@iscas.ac.cn>
+To: joro@8bytes.org,
+	will@kernel.org,
+	robin.murphy@arm.com,
+	heiko@sntech.de,
+	jeffy.chen@rock-chips.com
+Cc: iommu@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Chen Ni <nichen@iscas.ac.cn>
+Subject: [PATCH] iommu/rockchip: Add missing check for of_find_device_by_node
+Date: Thu, 25 Apr 2024 17:18:13 +0800
+Message-Id: <20240425091813.965003-1-nichen@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202404241602.276D4ADA@keescook>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qwCowABnbBjhHypmRq4sAA--.4146S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XryxKFW5XrWxuF13XF45trb_yoWfGFc_W3
+	48uFnxWr4vyrs0kw12q34xWrZFkasIvrnrZrWjkw1SyFyDWr1xXw10vr4kJFW7Wr1jyF9r
+	Kryj93yfCryUWjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+	Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+	1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+	b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+	vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
+	cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+	nxnUUI43ZEXa7VUjMmh5UUUUU==
+X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
 
-On Wed, Apr 24, 2024 at 04:20:20PM -0700, Kees Cook wrote:
+Add check for the return value of of_find_device_by_node() and return
+the error if it fails in order to avoid NULL pointer dereference.
 
-> > This is arse-about-face. Signed stuff wraps per -fno-strict-overflow.
-> > We've been writing code for years under that assumption.
-> 
-> Right, which is why this is going to take time to roll out. :) What we
-> were really doing with -fno-strict-overflow was getting rid of undefined
-> behavior. That was really really horrible; we don't need the compiler
-> hallucinating.
+Fixes: 5fd577c3eac3 ("iommu/rockchip: Use OF_IOMMU to attach devices automatically")
+Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+---
+ drivers/iommu/rockchip-iommu.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Right, but that then got us well defined semantics for signed overflow.
+diff --git a/drivers/iommu/rockchip-iommu.c b/drivers/iommu/rockchip-iommu.c
+index 4b369419b32c..1225c1df6ef6 100644
+--- a/drivers/iommu/rockchip-iommu.c
++++ b/drivers/iommu/rockchip-iommu.c
+@@ -1152,6 +1152,8 @@ static int rk_iommu_of_xlate(struct device *dev,
+ 		return -ENOMEM;
+ 
+ 	iommu_dev = of_find_device_by_node(args->np);
++	if (!iommu_dev)
++		return -ENODEV;
+ 
+ 	data->iommu = platform_get_drvdata(iommu_dev);
+ 	data->iommu->domain = &rk_identity_domain;
+-- 
+2.25.1
 
-> > You want to mark the non-wrapping case.
-> 
-> What we want is lack of ambiguity. Having done these kinds of things in
-> the kernel for a while now, I have strong evidence that we get much better
-> results with the "fail safe" approach, but start by making it non-fatal.
-> That way we get full coverage, but we don't melt the world for anyone
-> that doesn't want it, and we can shake things out over a few years. For
-> example, it has worked well for CONFIG_FORTIFY, CONFIG_UBSAN_BOUNDS,
-> KCFI, etc.
-
-The non-fatal argument doesn't have bearing on the mark warp or mark
-non-wrap argument though.
-
-> The riskier condition is having something wrap when it wasn't expected
-> (e.g. allocations, pointer offsets, etc), so we start by defining our
-> regular types as non-wrapping, and annotate the wrapping types (or
-> specific calculations or functions).
-
-But but most of those you mention are unsigned. Are you saying you're
-making all unsigned variables non-wrap by default too? That's bloody
-insane.
-
-> For signed types in particular, wrapping is overwhelmingly the
-> uncommon case, so from a purely "how much annotations is needed"
-> perspective, marking wrapping is also easiest. Yes, there are cases of
-> expected wrapping, but we'll track them all down and get them marked
-> unambiguously. 
-
-But I am confused now, because above you seem to imply you're making
-unsigned non-wrap too, and there wrapping is *far* more common, and I
-must say I hate this wrapping_add() thing with a passion.
-
-> One thing on the short list is atomics, so here we are. :)
-
-Well, there are wrapping and non-wrapping users of atomic. If only C had
-generics etc.. (and yeah, _Generic doesn't really count).
 
