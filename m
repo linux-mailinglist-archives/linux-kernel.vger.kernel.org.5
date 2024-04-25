@@ -1,208 +1,141 @@
-Return-Path: <linux-kernel+bounces-159085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F4148B291B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B134E8B291F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:45:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CD111C2163B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:40:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D582E1C21716
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4C4152526;
-	Thu, 25 Apr 2024 19:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 471FC152531;
+	Thu, 25 Apr 2024 19:45:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="nT4RwQjZ"
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DMgrpv+K"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8354714EC4A
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 19:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820B938FB6;
+	Thu, 25 Apr 2024 19:45:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714074046; cv=none; b=aoSUXc7TZHUBSDN1mRodiZrCjN53f+YArSimkUUDVlqQRNvp9ySIV9icgxkqbofuCHRSNbUcnkiRORYKnW8PzJFj2bNDWDkrXe9ejxTR73GEnokIJATz0iEpWXqg/eLNhYwkRjR6d8AjK8bOniQMfCvE08ePQzM7BQadj3//50s=
+	t=1714074337; cv=none; b=bKWN30dCuT8XCu9IZadgJEx39TUxsmsUwK03YryMVppvqBmmp/0AmPEI3jWSoq5X4Xg9bRiqUF34CR5lA20OMLQ+ZfMCL5HyzNIh6u+FDdP9IcOivxES4QYF1lYo6vSwY1A7T0Ti14k9DvEHe5z91zPGxvtPEUhQwiX+wFbK8SE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714074046; c=relaxed/simple;
-	bh=NxRn6wwHeZl2W6m95OUrYBSMLuu68n9JunWUCNzxpKY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type:References; b=RiyQmIreU4uaR6Ok9nU2sMDG+2rG1txIeG935Vq+2gRHkN1kLd7PzMZyDUB49yQbIKojPiWlWWVeuq5ECnRAIPWW/vZc2Qg2h7+/hZWiUIONOOhCLE712m7hY6B7xDpErv3ykPuKSevghczOe8C1HhwwJ9Mg9Nkv2XZCeeJGC3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=nT4RwQjZ; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240425194035euoutp0178463ec110d1be1b0e3ea7cea2a4a638~JnUDkCe-p1887518875euoutp01y
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 19:40:35 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240425194035euoutp0178463ec110d1be1b0e3ea7cea2a4a638~JnUDkCe-p1887518875euoutp01y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1714074035;
-	bh=+ve4YzZPSzdZ+iyibvf0yaqAhYlUh+0zk0V42/Z+YIg=;
-	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=nT4RwQjZLbNKK3ZXH8LXA+L749MfFdKG9pEfyQ68SB1/pZDi4aIlVBXooQyu2TVg8
-	 qHZgZHzS0Kno0EI6VuLpcSHLJUAeN3qp3YrV3+nKVj9FE4b6qwk87ccn6i6mHEqtq0
-	 Ec1CD4srUUuUu106509GC4eX+jE9RG4kLsDwgFmc=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240425194034eucas1p10c61dbd2c10c7bb4da3435267dc04cf7~JnUC0H6uU1754517545eucas1p1K;
-	Thu, 25 Apr 2024 19:40:34 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges3new.samsung.com (EUCPMTA) with SMTP id 3C.01.09620.2B1BA266; Thu, 25
-	Apr 2024 20:40:34 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240425194033eucas1p2c1e98d1c55c970e246087e2dab180e84~JnUCPRHI62101121011eucas1p2T;
-	Thu, 25 Apr 2024 19:40:33 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240425194033eusmtrp227da945401031d3afe99d684284ef0d5~JnUCOzDG_2742827428eusmtrp2U;
-	Thu, 25 Apr 2024 19:40:33 +0000 (GMT)
-X-AuditID: cbfec7f5-d31ff70000002594-a2-662ab1b26f49
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id 70.AF.09010.1B1BA266; Thu, 25
-	Apr 2024 20:40:33 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240425194033eusmtip17d3bc8e97a0af5fefdf5d9fdf2bcd9d2~JnUB2lUxd1368613686eusmtip1X;
-	Thu, 25 Apr 2024 19:40:33 +0000 (GMT)
-Message-ID: <21ea292a-b1d1-43e2-92ab-9f1f63aaf729@samsung.com>
-Date: Thu, 25 Apr 2024 21:40:32 +0200
+	s=arc-20240116; t=1714074337; c=relaxed/simple;
+	bh=ii5cdCmylSrCYuAbjnq23PCiMMHhvORNNb2ZdSUJH64=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eIEm3wofRcsKj5hxDuB/A1nlF5K5zU/xdwzx5E/qWCn5fKgFoXhXfveiANFAwIWi1Zgw6ZGA15FfyAXlcgxoXXXdVIf8AoeCHIwkV+OOOlrHuRaTcZsU0q8Q1lurAO+x5sVnrr1Aquc5GXO4myr4mwhgBk0IyFC78T9+E4TqIZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DMgrpv+K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 553C0C113CC;
+	Thu, 25 Apr 2024 19:45:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714074337;
+	bh=ii5cdCmylSrCYuAbjnq23PCiMMHhvORNNb2ZdSUJH64=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=DMgrpv+Kf3nsvrblhKu8VsgYRAyRPmTW64jjD5rLF2diiiIzhJssj1a9nB5c8D0hw
+	 DOIsOdirt2STnNGPU+fjAupf7X3Q8LTjgs1NxHPC43clhNkyf3XayU8QVYJL3e1rX6
+	 u+Z4MG/NV1sg4WTNXSAyvBwLWRKcpbjy+a14qupyddby6jO0z5GGmRlt5nJGE8OgbN
+	 ZfxpkHOvXO2+NsFULVEM4+gigs4OAlTyHLG3cA/9+FIVa2YF0FY1SDxLI0bUmIUOHr
+	 HnFmisAnqwrxGiQHvtS8rFJmQspNEsmr1z9csfNojq0PG7v4DOHeclaMX+45mVOteZ
+	 RFYOJJJMfsFzA==
+Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6eba841d83cso303993a34.2;
+        Thu, 25 Apr 2024 12:45:37 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWankNtAt05l6L3ldIumLgzgvUDTMzcFDPQHYrimyRbKLqBLVYdJBe4EpX9mU3dgBs4zeVsGQeypNEhCtd4fhIRMkAI3yXKUMRpjtoaKC76DWWYNAkYBuB+F4CEb5XXuiroQ3RiqF0ivqzfXH+gld5r/vRDoFEv69zLkfnwSgvjUItk
+X-Gm-Message-State: AOJu0Ywat8tr+F9atp0ZyR8emR1SNo0b7kjHzJ/FZUsJlUibdRkMojn4
+	rfskSN1ya21qzEK0fnHTCol+kKkJ44nl/1lRD95kgfmHslEKwcBvAr9vUJmOLgHvXOlOIZ/wa85
+	sYw1tOTl5HnciVORhIxB75ajYVrM=
+X-Google-Smtp-Source: AGHT+IFxIDxbGkjQJjrh2p4HmiS3BMkC2fEIM3VrbMZA6XO7VFQQpL3NyCDuzrN3UZFVr6EJs2EN84BZ/GiY2Gx3Nb8=
+X-Received: by 2002:a4a:ba07:0:b0:5aa:14ff:4128 with SMTP id
+ b7-20020a4aba07000000b005aa14ff4128mr816756oop.1.1714074336594; Thu, 25 Apr
+ 2024 12:45:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: chipidea: move ci_ulpi_init after the phy
- initialization
-To: Michael Grzeschik <m.grzeschik@pengutronix.de>, Peter Chen
-	<peter.chen@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Language: en-US
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <20240328-chipidea-phy-misc-v1-1-907d9de5d4df@pengutronix.de>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnleLIzCtJLcpLzFFi42LZduzned1NG7XSDE5PF7ZoXryezeLyrjls
-	FouWtTJbbGm7wmTxa/8mFgdWj02rOtk89s9dw+7R/9fA4/MmuQCWKC6blNSczLLUIn27BK6M
-	tfvPMxbMEK34umAFcwNjj2AXIyeHhICJxIkDPYxdjFwcQgIrGCXaF11ih3C+MEqsP7oGKvOZ
-	UWLC2V5WmJYNS59CVS1nlNg18RAbhPORUWLb7ktgVbwCdhJnZr1lBrFZBFQlGp8/YIKIC0qc
-	nPmEBcQWFZCXuH9rBjuILSwQInF51RmwQSICnYwS21u+ADVzcDALWEv83JcPUsMsIC5x68l8
-	sDlsAoYSXW+72EBsTgEvie9Nr1khauQltr+dwwwyR0LgBIfEzS0bmCHOdpG4NHs9lC0s8er4
-	FnYIW0bi/06QoSAN7YwSC37fh3ImMEo0PL/FCFFlLXHn3C82iIs0Jdbv0ocIO0qsbL3MDhKW
-	EOCTuPFWEOIIPolJ26YzQ4R5JTrahCCq1SRmHV8Ht/bghUvMExiVZiEFyywkb85C8s4shL0L
-	GFlWMYqnlhbnpqcWG+ellusVJ+YWl+al6yXn525iBKaZ0/+Of93BuOLVR71DjEwcjIcYJTiY
-	lUR4b37USBPiTUmsrEotyo8vKs1JLT7EKM3BoiTOq5oinyokkJ5YkpqdmlqQWgSTZeLglGpg
-	kj/PK7vd4ZWx9Q3BOdMPLriXN+VkXX3ulkM/xZzvzr7VdMZ37sNTZ7IjCvYIbldbktL98NTs
-	Ci2xvtTntrWCbm3hErZr9sUu3/xa82jb5xR77zmCi+6n5bzazSDFcpBFSoFvr9WG5FXhctGb
-	OIJaljeK/OnkNZr49N2NeL+rInnL1sw6bPJasGLS3dJHCzb/DujcsX1yUFix4r/rCxIkOJcb
-	Xbl1Oud89JWL0qdLVV/7SnbkZTTqlHve/LVHvq/0LH9balSjzfnLOzJaBQ5sdJvv4p0Wuvq0
-	walDG8z38PcouBxVDWfWMf5t7bqKx1tJ0tRKqZjlM3N+TPAlf/PW31/OXV7n6CUVZrFs4ey7
-	SizFGYmGWsxFxYkAegJTe6IDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrAIsWRmVeSWpSXmKPExsVy+t/xu7obN2qlGWz+pGnRvHg9m8XlXXPY
-	LBYta2W22NJ2hcni1/5NLA6sHptWdbJ57J+7ht2j/6+Bx+dNcgEsUXo2RfmlJakKGfnFJbZK
-	0YYWRnqGlhZ6RiaWeobG5rFWRqZK+nY2Kak5mWWpRfp2CXoZa/efZyyYIVrxdcEK5gbGHsEu
-	Rk4OCQETiQ1Ln7J3MXJxCAksZZS4v2MOI0RCRuLktAZWCFtY4s+1LjaIoveMErfez2ADSfAK
-	2EmcmfWWGcRmEVCVaHz+gAkiLihxcuYTFhBbVEBe4v6tGewgtrBAiMTlVWfABokIdDNKrNjX
-	CLSBg4NZwFri5758kBohAU+J/qcQi5kFxCVuPZkPNpNNwFCi620X2F5OAS+J702voWrMJLq2
-	djFC2PIS29/OYZ7AKDQLyRmzkIyahaRlFpKWBYwsqxhFUkuLc9Nzi430ihNzi0vz0vWS83M3
-	MQKjatuxn1t2MK589VHvECMTB+MhRgkOZiUR3psfNdKEeFMSK6tSi/Lji0pzUosPMZoCw2Ii
-	s5Rocj4wrvNK4g3NDEwNTcwsDUwtzYyVxHk9CzoShQTSE0tSs1NTC1KLYPqYODilGphi9ix/
-	PfMGA/97uePT+evNtIK3sFYfvFivW3fzdu/J2u3rO716f9qqd0+55OAoubdlkgRj776I71sW
-	ZJ1TNDBr3762eY3+PtPg7dcyZ0gf7J60appK4/UiP5d6n6J19+cuL9foOB0R9MB7ZsHKuZEM
-	xW9S5lZtZ5qZfsHwvk2RmSyPd6XZ4pxP1W8WuWpF8ebc1C+o3ff89dII7dLtqbzm9w98PK5h
-	edt5cdCDlACFilfCn6s+lr3ZcDFQu/EHc3e9wkwNIVeZVxc2fqp4EH+z6XNSuBDDdHfmFVO1
-	HT7fsWIXYqqMX9gzy7Jrve7ibyvPsZpOv+cdnB+8eP6ltz18r7iWvzJ4+PDr6opv4TeUWIoz
-	Eg21mIuKEwEY5nfmMwMAAA==
-X-CMS-MailID: 20240425194033eucas1p2c1e98d1c55c970e246087e2dab180e84
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20240425194033eucas1p2c1e98d1c55c970e246087e2dab180e84
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240425194033eucas1p2c1e98d1c55c970e246087e2dab180e84
-References: <20240328-chipidea-phy-misc-v1-1-907d9de5d4df@pengutronix.de>
-	<CGME20240425194033eucas1p2c1e98d1c55c970e246087e2dab180e84@eucas1p2.samsung.com>
+References: <CAJZ5v0iUUmMUo86vBzYJjL4NjoFzpDwD1+c292aP+T++PLv6vQ@mail.gmail.com>
+ <CAHk-=wj8J78-12QfAoKaLdRi2g1=_U7sv02POShjotcJ6t4nzw@mail.gmail.com> <CAHk-=wj52PUZ0xtoLs79B9uar6h7FVaKC0gbD-a_wZxDjH2ViQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wj52PUZ0xtoLs79B9uar6h7FVaKC0gbD-a_wZxDjH2ViQ@mail.gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 25 Apr 2024 21:45:24 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0j7Do94XvUQrLgA_mFFyxdeb2RO08JwUzL0_QErOOrrAQ@mail.gmail.com>
+Message-ID: <CAJZ5v0j7Do94XvUQrLgA_mFFyxdeb2RO08JwUzL0_QErOOrrAQ@mail.gmail.com>
+Subject: Re: [GIT PULL] ACPI fixes for v6.9-rc6
+To: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Jarred White <jarredwhite@linux.microsoft.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, 
+	Linux PM <linux-pm@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Easwar Hariharan <eahariha@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Dear All,
-
-On 02.04.2024 08:23, Michael Grzeschik wrote:
-> The function ci_usb_phy_init is already handling the
-> hw_phymode_configure path which is also only possible after we have
-> a valid phy. So we move the ci_ulpi_init after the phy initialization
-> to be really sure to be able to communicate with the ulpi phy.
+On Thu, Apr 25, 2024 at 9:18=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-
-This patch landed in linux-next some time ago as commit 22ffd399e6e7 
-("usb: chipidea: move ci_ulpi_init after the phy initialization"). 
-Unfortunately it breaks host USB operation on DragonBoard410c 
-(arch/arm64/boot/dts/qcom/apq8016-sbc.dts). There is no error nor 
-warning in the kernel log besides the information about deferred probe 
-on the chipidea controller:
-
-platform ci_hdrc.0: deferred probe pending: (reason unknown)
-
-Tomorrow I will try to investigate which operation during driver probe 
-triggers it. If there is anything else to check that might help fixing 
-this issue, let me know.
-
-> ---
->   drivers/usb/chipidea/core.c | 8 ++++----
->   drivers/usb/chipidea/ulpi.c | 5 -----
->   2 files changed, 4 insertions(+), 9 deletions(-)
+> On Thu, 25 Apr 2024 at 11:58, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > And maybe this time, it's not a buggy mess?
 >
-> diff --git a/drivers/usb/chipidea/core.c b/drivers/usb/chipidea/core.c
-> index 835bf2428dc6e..bada13f704b62 100644
-> --- a/drivers/usb/chipidea/core.c
-> +++ b/drivers/usb/chipidea/core.c
-> @@ -1084,10 +1084,6 @@ static int ci_hdrc_probe(struct platform_device *pdev)
->   		return -ENODEV;
->   	}
->   
-> -	ret = ci_ulpi_init(ci);
-> -	if (ret)
-> -		return ret;
-> -
->   	if (ci->platdata->phy) {
->   		ci->phy = ci->platdata->phy;
->   	} else if (ci->platdata->usb_phy) {
-> @@ -1142,6 +1138,10 @@ static int ci_hdrc_probe(struct platform_device *pdev)
->   		goto ulpi_exit;
->   	}
->   
-> +	ret = ci_ulpi_init(ci);
-> +	if (ret)
-> +		return ret;
-> +
->   	ci->hw_bank.phys = res->start;
->   
->   	ci->irq = platform_get_irq(pdev, 0);
-> diff --git a/drivers/usb/chipidea/ulpi.c b/drivers/usb/chipidea/ulpi.c
-> index dfec07e8ae1d2..89fb51e2c3ded 100644
-> --- a/drivers/usb/chipidea/ulpi.c
-> +++ b/drivers/usb/chipidea/ulpi.c
-> @@ -68,11 +68,6 @@ int ci_ulpi_init(struct ci_hdrc *ci)
->   	if (ci->platdata->phy_mode != USBPHY_INTERFACE_MODE_ULPI)
->   		return 0;
->   
-> -	/*
-> -	 * Set PORTSC correctly so we can read/write ULPI registers for
-> -	 * identification purposes
-> -	 */
-> -	hw_phymode_configure(ci);
->   
->   	ci->ulpi_ops.read = ci_ulpi_read;
->   	ci->ulpi_ops.write = ci_ulpi_write;
+> Actually, even with MASK_VAL() fixed, I think it's *STILL* a buggy mess.
 >
-> ---
-> base-commit: 5bab5dc780c9ed0c69fc2f828015532acf4a7848
-> change-id: 20240328-chipidea-phy-misc-b3f2bc814784
+> Why? Beuse the *uses* of MASK_VAL() seem entirely bogus.
 >
-> Best regards,
+> In particular, we have this in cpc_write():
+>
+>         if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
+>                 val =3D MASK_VAL(reg, val);
+>
+>         switch (size) {
+>         case 8:
+>                 writeb_relaxed(val, vaddr);
+>                 break;
+>         case 16:
+>                 writew_relaxed(val, vaddr);
+>                 break;
+>         ...
+>
+> and I strongly suspect that it needs to update the 'vaddr' too. Something=
+ like
+>
+>         if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY) {
+>                 val =3D MASK_VAL(reg, val);
+>   #ifdef __LITTLE_ENDIAN
+>                 vaddr +=3D reg->bit_offset >> 3;
+>                 if (reg->bit_offset & 7)
+>                         return -EFAULT;
+>   #else
+>                 /* Fixme if we ever care */
+>                 if (reg->bit_offset)
+>                         return -EFAULT;
+>   #endif
+>         }
+>
+> *might* be changing this in the right direction, but it's unclear and
+> I neither know that CPC rules, nor did I think _that_ much about it.
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+This is a very nice catch, thank you!
 
+> Anyway, the take-away should be that all this code is entirely broken
+> and somebody didn't think enough about it.
+>
+> It's possible that that whole cpc_write() ACPI_ADR_SPACE_SYSTEM_MEMORY
+> case should be done as a 64-bit "read-mask-write" sequence.
+>
+> Possibly with "reg->bit_offset =3D=3D 0" and the 8/16/32/64-bit cases as =
+a
+> special case for "just do the write".
+>
+> Or, maybe writes with a non-zero bit offset shouldn't be allowed at
+> all, and there are CPC rules that aren't checked. I don't know. I only
+> know that the current code is seriously broken.
+
+In any case, this needs to be taken care of (Jared?).
+
+Thanks,
+Rafael
 
