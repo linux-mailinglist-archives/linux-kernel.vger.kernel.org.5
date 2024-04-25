@@ -1,456 +1,278 @@
-Return-Path: <linux-kernel+bounces-158276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF4F48B1DC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A83C78B1DE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:25:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FBFE1C2411D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:22:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD1701C23F51
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3179584E1D;
-	Thu, 25 Apr 2024 09:20:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2487A86AE3;
+	Thu, 25 Apr 2024 09:21:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GscxQdyx"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=BLAIZE.COM header.i=@BLAIZE.COM header.b="gh41LO5k"
+Received: from mx07-0063e101.pphosted.com (mx07-0063e101.pphosted.com [205.220.184.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4821127B58
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714036831; cv=none; b=pKpctTsbMYm78J+dI1Z3ykPi7f+Xye4+kOFAMQXeP6ir8pf/Q+84rw7jO9xsa+ttViH8zraDvBK2gBOa395C+z2tsPG/1hJVORVmqReBrGTEVyz0srZRKh3e4lyFsFCr7u/9n+pK0IHDEdE7PE0K3k60AZCjVfhbaDPWyk4MLHE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714036831; c=relaxed/simple;
-	bh=yMUi4isyenkaYN4wvPrZxjUN/50f1sxUh9DE/gBH5IU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OFnZDJtMGDjVCwz48wDejp+ap7WZG9RniSD+VzoB1buIuktXiA31eO91UdRS2O3aE2bfa4oR0LouPfXcj2xK1HFjGLJXLGRJSEu6T/fUT8WSR/M3M8xFlXeFOeMCLuq64i7KyXuR7W9Z2UcYXbLSmdh0YZmlwmmbKVwZO3dhuZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GscxQdyx; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714036828;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=SpCxz09SAGUu9P+wzuJ591zF5pdKBRWT7g1om/mMNi4=;
-	b=GscxQdyxXI88u36fIGrHewxX4Sas/xBX4bvfigPKQTIoGlwLxxYQ1U6cwoodQHsrXJ+dC2
-	rt+G1QO2jdkWn7ifCQexoHWnG356FO6C7jzuEQyU092qmZ0DpayrenfjmV5/GcAJG1wYce
-	wjHBU9OW5BKjmXHTlcTwAr7mu/E8p/Q=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-389-Gr-ES1RrP7WqvOv8UsxJmw-1; Thu, 25 Apr 2024 05:20:27 -0400
-X-MC-Unique: Gr-ES1RrP7WqvOv8UsxJmw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-41a3369659eso8362845e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 02:20:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714036826; x=1714641626;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SpCxz09SAGUu9P+wzuJ591zF5pdKBRWT7g1om/mMNi4=;
-        b=mGbH807/iTtHGZ0/Gu558gZ6zEkRhs1gDh03EJmOhfEDkoBzvNOSthE5fs28Yd1IZP
-         UvBxiaJvTnCsX1lkqRNm2TNiLNW+/1RZB5HyrjqW+k2t6BEeyu2mjeevj2wq2ScXBrky
-         WKhbWusOtSZ0iOZlpBReyh0lFPDvp3GBUQfi52ngePrcIALRWQ42s695fObGstywShlx
-         enxfwG3Tlk+7Q071uwa1t/FPSMm5qSEJLBTws9bkng29pRrY9UaP8OIFHVFUtpsDkhvZ
-         U/0tiDW4UOM2GqtWxyvZkrgDH3nZ6MOOvlIeH/yYpIBgGaI1SNxmXcNILPksnX5iHa2Z
-         7EfA==
-X-Forwarded-Encrypted: i=1; AJvYcCV0A0kiZi9g0fF/sCN+niCmUIdELxDM0H6y6tsDEtUkadthimCpOdmSVk5WihNc20THm18mkt/JnngurH+MMS4g534vHTbdy84paHJd
-X-Gm-Message-State: AOJu0YydC5kwW9OskUfSudL5o979aqJsiRONZvsfkwt9Pe/DHjFW7ni4
-	f3fanqDqdB021dHh1ly3PrL2HU1DCoWzqslrckq3RwY+9agTXhET8iKafBec+3TFn2/3wqVa0vr
-	6/hPoYnlCeoKbJKz3uqiMBoltLxyCpKRfe1oWnE59I3WVYL0NBKlnQWcgyRmVpQ==
-X-Received: by 2002:a05:600c:35c9:b0:41a:7c1d:3326 with SMTP id r9-20020a05600c35c900b0041a7c1d3326mr1745721wmq.8.1714036826169;
-        Thu, 25 Apr 2024 02:20:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFJy2/W6kxJCpKGluApAXIQv+ykYndF30YEAjHB1ywCX6UeFugX5R3DXt2d64we/En2Xfs0HQ==
-X-Received: by 2002:a05:600c:35c9:b0:41a:7c1d:3326 with SMTP id r9-20020a05600c35c900b0041a7c1d3326mr1745694wmq.8.1714036825715;
-        Thu, 25 Apr 2024 02:20:25 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c719:8200:487a:3426:a17e:d7b7? (p200300cbc7198200487a3426a17ed7b7.dip0.t-ipconnect.de. [2003:cb:c719:8200:487a:3426:a17e:d7b7])
-        by smtp.gmail.com with ESMTPSA id t13-20020a05600c450d00b00417f700eaeasm26976864wmo.22.2024.04.25.02.20.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 02:20:25 -0700 (PDT)
-Message-ID: <8665df72-0855-4f71-823b-5ff8d8342fd1@redhat.com>
-Date: Thu, 25 Apr 2024 11:20:24 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5213E6E605;
+	Thu, 25 Apr 2024 09:21:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.184.123
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714036917; cv=fail; b=jxDEmunFGqkGlG7GHMvtsY9mNAJcYU+Um3gsE8jA/wCVvJ/PG+lO0H38WXPyKVYBEfmBNTKrRO2qHI1V2PL7Miozezs6t/htHIfBEAGFmF4pTjxOwLwLVq7tmL4RvZl5Hno5szwP0tyLUG2dL+SMMDx+AWZw7mQ5BdOXnUYAa3I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714036917; c=relaxed/simple;
+	bh=Y5Gmv1CLIEQRAuCMQk3dA7naLHwxR7kXcjxrtXoB8qw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=PHbTLj6tQRuEbmVA7ZjB+5COzFDtSNVlQgKAF3lBTV4vmf6vALP2ClC823f4g7zXnRBX0exYd4i/34g8nR5xNXsjOEusIx5b7kTxQiICDp6sxCtd7Sje0fWC0iWBfROzgLqc7ykPtVBnBQaIYmnFF/ZfGYRmwZOkz7UG1kK02hI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=blaize.com; spf=pass smtp.mailfrom=blaize.com; dkim=pass (1024-bit key) header.d=BLAIZE.COM header.i=@BLAIZE.COM header.b=gh41LO5k; arc=fail smtp.client-ip=205.220.184.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=blaize.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=blaize.com
+Received: from pps.filterd (m0247495.ppops.net [127.0.0.1])
+	by mx08-0063e101.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43P9FG1n019220;
+	Thu, 25 Apr 2024 10:21:11 +0100
+Received: from pnzpr01cu001.outbound.protection.outlook.com (mail-centralindiaazlp17011007.outbound.protection.outlook.com [40.93.132.7])
+	by mx08-0063e101.pphosted.com (PPS) with ESMTPS id 3xny4n99f1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 10:21:11 +0100 (BST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YrRVz8bIEiyC7EYPsYLQWFSORnZ7jhwctlbhINBzrE6799Z2vLGfnSRZ8kBfWWHSnRpQ4R94dxXxPtql74hpSzHfdc5juZ+/CfCkOdXQZH9RP+QDCSK2DJhY1LP1t7YaJsKO7ZJq1XAYM1tTq75C3eC/syVyUfcG3sUQKAt7KrUNPe+EtyuSz1E8OsDAdxHwVyUKVGaTE4gTC4j/KjBzAqg4gz9mzwoSFgOsxD08XXwFwGaZ6GRjr/UjNkedeOjJpBKDthtJCdOLQTBA+8JhU61igqdoii5OH8feticfL1ELL0I+CrkOJ4Yxs/8UUbQ4Bck9vQ55f+CMLM/6z1Q83g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YgamFm34dKg5+jQujJYzyn1bQPjGPryfXA5AZZ4mWag=;
+ b=Fw/z5Ljcer+jRvgyH8G4zLes0ckKHgSaRXPEWMoyLQPGoHoORN2GAcdlIsDzzTTu85pZtwerRPoL8oZjtdtMDqdMIZ9RfrUpw8p6piSB7vV3L/0EI30gMY7GnjVAyDobUOmmh8fOxg6OXPEGHQI4UQzWPikrdCVV/cBy6E759viQyKm1eJ6HMP2Glf25KH8WTUv/Hr8JR/Bh7mfOC6P7PTWHuTtAHX/IDCgToRzKce83BwqBHZvB85hvRdDaU2/j53XjX1gs+fy6XuY7RSFfoel/OMvMZBGTkiRWFuKH59FXDEiTQJVgBS5koywwUKhaUO9X8fVdNAlsmL4X9ReuFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=blaize.com; dmarc=pass action=none header.from=blaize.com;
+ dkim=pass header.d=blaize.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=BLAIZE.COM;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YgamFm34dKg5+jQujJYzyn1bQPjGPryfXA5AZZ4mWag=;
+ b=gh41LO5k0zJI2fCXPd9+WSPASgzgtqdhhFCQB9A1wxGkRl8n046MkkcR6Cf154iQO5POTAnR+hV4KCw5SL2Y8GhtsSo344V0lB+YQzveZDrXc4znidGYnx5DeAhEVQVem3UNHR4i35hUJsvfRBGcCbdWeC3pvQL+H/eNZM8Aqio=
+Received: from MA0PR01MB10184.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a01:12a::5)
+ by PN3PR01MB9343.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:102::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Thu, 25 Apr
+ 2024 09:21:02 +0000
+Received: from MA0PR01MB10184.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::309a:12cf:74a4:5655]) by MA0PR01MB10184.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::309a:12cf:74a4:5655%3]) with mapi id 15.20.7472.044; Thu, 25 Apr 2024
+ 09:21:02 +0000
+Message-ID: <17953924-bf09-4eba-b8d6-1f828f39c0a2@blaize.com>
+Date: Thu, 25 Apr 2024 10:20:49 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/5] dt-bindings: arm: blaize: Add Blaize BLZP1600 SoC
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>, "arnd@arndb.de" <arnd@arndb.de>,
+        "olof@lixom.net" <olof@lixom.net>, Neil Jones <neil.jones@blaize.com>,
+        Matt Redfearn <matthew.redfearn@blaize.com>,
+        James Cowgill <james.cowgill@blaize.com>,
+        "heiko.stuebner@cherry.de" <heiko.stuebner@cherry.de>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "macromorgan@hotmail.com" <macromorgan@hotmail.com>,
+        "sre@kernel.org" <sre@kernel.org>,
+        "hvilleneuve@dimonoff.com" <hvilleneuve@dimonoff.com>,
+        "andre.przywara@arm.com" <andre.przywara@arm.com>,
+        "rafal@milecki.pl" <rafal@milecki.pl>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "andersson@kernel.org" <andersson@kernel.org>,
+        "konrad.dybcio@linaro.org" <konrad.dybcio@linaro.org>,
+        "geert+renesas@glider.be" <geert+renesas@glider.be>,
+        "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "nfraprado@collabora.com" <nfraprado@collabora.com>,
+        "u-kumar1@ti.com" <u-kumar1@ti.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+References: <20240425091403.17483-1-nikolaos.pasaloukos@blaize.com>
+ <20240425091403.17483-3-nikolaos.pasaloukos@blaize.com>
+ <f45a76b3-996f-4204-9b9c-289d40767708@linaro.org>
+Content-Language: en-GB
+From: Nikolaos Pasaloukos <nikolaos.pasaloukos@blaize.com>
+In-Reply-To: <f45a76b3-996f-4204-9b9c-289d40767708@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0348.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:18d::11) To MA0PR01MB10184.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:12a::5)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/5] add mTHP support for anonymous share pages
-To: Baolin Wang <baolin.wang@linux.alibaba.com>,
- Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org,
- hughd@google.com
-Cc: willy@infradead.org, wangkefeng.wang@huawei.com, 21cnbao@gmail.com,
- ying.huang@intel.com, shy828301@gmail.com, ziy@nvidia.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
- <4b998e7d-153f-48cc-a9bb-8c84bb675581@arm.com>
- <c1f68109-7665-4905-996f-f1067dfa2cb6@linux.alibaba.com>
- <80b5f87e-c156-4ccc-98f0-96f1fd864273@arm.com>
- <ef4f15dd-da31-4a1e-bec5-62a7002c4f7c@linux.alibaba.com>
- <5b8b22e7-6355-4b08-b5b5-1e33ebae6f16@arm.com>
- <813fe7fd-3004-4e8b-801d-95c33559a025@linux.alibaba.com>
- <76f816dd-3bbf-48c9-a630-3787051cf289@arm.com>
- <8c0d6358-3c16-4a57-822c-04b3b3403fe6@linux.alibaba.com>
- <4204b5f6-21f0-4aa2-a625-3dd2f416b649@arm.com>
- <94ae96f7-79ce-4b3f-a272-6af62d01a3f8@redhat.com>
- <71c1e953-84f9-4d47-bd4c-725a447627df@arm.com>
- <bf005e0f-6fda-4068-8af6-5f8c00257de7@redhat.com>
- <bc92c74e-80e2-4065-9b61-46adacdfd17a@linux.alibaba.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <bc92c74e-80e2-4065-9b61-46adacdfd17a@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MA0PR01MB10184:EE_|PN3PR01MB9343:EE_
+X-MS-Office365-Filtering-Correlation-Id: 682d651b-c115-4f91-24bd-08dc650906ac
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: 
+	BCL:0;ARA:13230031|1800799015|376005|7416005|366007|921011;
+X-Microsoft-Antispam-Message-Info: 
+	=?utf-8?B?NGlETi9DV21vQjhjaWxSalpyRzhMb2tvbFovTHlTaVdEZDE3aCsyM3FaQ1lG?=
+ =?utf-8?B?cGhEZXE1UW81a3NuVEdUNDI5dzBZZG1zWmNSWVk3RjN0YTBqUmdhVHdtRFZE?=
+ =?utf-8?B?SWx5Rk9NaHFlMWRwQUpQeVdPaXR5d3dLYVFiSXMvMDEvbzhlbDNobFM3V0ZC?=
+ =?utf-8?B?S1p5MVVGV2xlOUx0eEcyTDdRZTBId0ZrSXZyMTJrNmZQS0NBOXh4RkovWXZC?=
+ =?utf-8?B?cnVoZmpZcnd3Um9vaVZacjRiYTRZSURYMmM1RHlGMUhyWXNGRzFBTmZxcyt2?=
+ =?utf-8?B?R0w3Z3hheEVRVEltT3huOGc1TWlOSTNEbnM0ZUlFQlFHTW51dlF6SDRKQncv?=
+ =?utf-8?B?Z2c0dGxzUXptazFpQUlwNTJURmN4bWgxTm54MmU3eU1GOEVNbGRsaDBnOFVy?=
+ =?utf-8?B?RmdZR1pHL1RtZm1KNk00NnA3bVI1Q0NXUVQ2OVpNM2pvU3h0MW10NTR2NEVm?=
+ =?utf-8?B?L2VCWG5zVDhPd1JzcWFLRWFtTUUrV0xTZEI3VG5mZjBsNHIvS3dyTUNtbUpr?=
+ =?utf-8?B?S015UmR1elhmajRDcFNhQmdzQTVKem9tMlVmOUxMY3FuMGxmWlRiWFpLYWVL?=
+ =?utf-8?B?OTBMTnE2ejhwV000TkxzUkhKY3RaOUhIa3RGQmdUSDNRYXltcVgwQUdJM1g4?=
+ =?utf-8?B?bmFWZW1kNFAraEZvTWxzb1RFSFlhamRzVzNPZGJjVnUyR1k5RVFKdi9NWnRp?=
+ =?utf-8?B?NklwSmxzNURzMGg5TTZoKzFrdG0yR0dzczJuYnd0Q202RFRKUDdhRCsxRHRE?=
+ =?utf-8?B?Y0tLNS9sOGVhTUV5WTF5Z3FlaUZoVk91c3lLZXB4dkh6aU5PTTE0b1o0MXI5?=
+ =?utf-8?B?aTV0VDdQS1J5QmxuT29KdHl3ZHR6d29hVmswU0xUckIwVnNuTnNDb09jKyth?=
+ =?utf-8?B?RGpRbG01bG5OeWJ1em1FMGY1aXFrU21JMDdsTy83eG1tSVo3MHNRenM2WVho?=
+ =?utf-8?B?K1FnQmwrYWdpMTY0TDRkT1A1cVZnSEQzZHNvSnVoMG1HanYyQUJ0NlR0YVRa?=
+ =?utf-8?B?UGlJQnJMWTNNa1d5ZVkzMUltbEhsTXV5ZVNadDZZRlRCYjFzWE5LWWVoL3lT?=
+ =?utf-8?B?QlJIcWFRTUhPRTlFNW9peXV2UCtqbEtTYnhnUmlWVmkzMFBrZ2crVDdTeFpn?=
+ =?utf-8?B?dTlRbTZDZUdOVUkrRE9HdGxjeEZiNG9XZDFDRGxSd3QyWkhmZE9ZVTZrVS8x?=
+ =?utf-8?B?aHFjclU4UkZQSkF3K3FnU2V2OUlzdEZFdmo1UDVDUlNOTEN6S3ErWW5laHh6?=
+ =?utf-8?B?YW9YaFlFYXVUNFRFUXU0RFp4RDJGVEhIV24yc05Id3RLZnl2c2F0ZS9MbUhq?=
+ =?utf-8?B?TDVPS0prVDNDNld0ajFsVktTclNnNXRhRUNGczRzL3hqQUxWRzN5aHp6VjY0?=
+ =?utf-8?B?NHFHQ3p0NUtsMWZFZ0pzYkYwL1VVN3lVUC8zMG1aV3JEM0FzR0NXSTRKMUU0?=
+ =?utf-8?B?WittL25RQXZnVHcvTGhmb244RjlhVHkzb1JLcldpWGU2MkhyY2lEYjBXdlo4?=
+ =?utf-8?B?bGtJcHFFVVVOOWdiK0lFVXZLamY5ZGg2SmIzZUF6NllCTmhyNk91UGdNdjEx?=
+ =?utf-8?B?WnhhK3NSQXpnNG14OGhHWjVvLzFYclNtNkhwRXN5cFU1WWZhb0cxSUcvQXZ5?=
+ =?utf-8?B?aWlUc1dudVM2V1lSaS9NTHpBWFJDRUtqN1VuNFhtVFZEK3ZkVno0VlI3RTVY?=
+ =?utf-8?B?WnNkUE0rY1B4TGNJL1NoK0xCM0d4QTBxbFExbE0zVm5HWEdUWU9OQ293PT0=?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MA0PR01MB10184.INDPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007)(921011);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?dWRORmVmZ1FkMmhXd1gxaGdJNEkyUGF5WFRtbWh1a2t1dWdqcnp2TVE0cWha?=
+ =?utf-8?B?OUp2VWJZL0FIUjdUWlA5OTEvMklCNjUwd0pZSnI5ZVdodXhsWjFtUTByZE1m?=
+ =?utf-8?B?REFPWGQwNFhmTHZqdm5peWVGcjFQODMxYUl4ZGZvSGh1NnVjK3JENXdwTHFQ?=
+ =?utf-8?B?MUhDK2ZHdnZFeU9pelFSb3FDeFFqQ0NvYTZJalRIN0MwMFV2YU1CZXFFWm0z?=
+ =?utf-8?B?VDQvSnRHV0VQWjhaV09GWXd4amo4TW4xcUNnZmpWTExyV2JXekVJd1RTZmJw?=
+ =?utf-8?B?S0t4TktmYzFzMjNDN2JPMDlrT1cvV010MkwvTlNqVjlYVWNsaDczNGxSL2FG?=
+ =?utf-8?B?TENnV0VUdmtrV3NIZkN5bVFRR3ExVm1qUVNMUFlvU2JRZjllajFla0xQcEpV?=
+ =?utf-8?B?TVZrS2VMOEFwVUlMcTY4NU01V0l4TGtrS1N6THd4MlFHTXU1T3JqZHVzQUpJ?=
+ =?utf-8?B?UTJidDcrOS85N2dHcUoyRGFWY0VyT3Y0cXZ0ZGpORi9FRDBnVjhuM2tQeW5l?=
+ =?utf-8?B?ZTVTTmJrTDlYZytUN0VCWHAyOVhnQ1lOVjZ5VG9NVjFZcUt0SmxJZGxrbkVJ?=
+ =?utf-8?B?d3drcjFZMkZKQnJpM3lKczBDb2RZbUVZQk5maCtjcEplN1FJMVJ6OVNmaDh5?=
+ =?utf-8?B?ekZBMzJ3V2lEalo2RVMwWnlObkhSTXBtdTVqQTVZZnFXZElZV2pRRmxnL0ZE?=
+ =?utf-8?B?UDZicHN5azNJV0JCQTFTalI3WXJjSnlZM2dycG1nRkJuenBzdkM5NE81ZDRQ?=
+ =?utf-8?B?bFlrVVRMSUUzVllGV0J5YW1UT1gyN2NmL1Q0dmtQbElRRi9uSXg0QU5PMGZh?=
+ =?utf-8?B?Y1VKb0FwRzdwUnZDZHcwS3dKeUJlUmJxVHZ6SytkZ0Z3VXV0Ums1dnhrNXVF?=
+ =?utf-8?B?MStCSUtYVWlVMkNXUXZBY1JxSGpGTGJqRWw3QlRMM1JnWXE3bCtCS3NTcXkv?=
+ =?utf-8?B?UStoMFB5SjFnME9ZWnNUV28wbEE2UUlNdUJxRjJrTitZcWRqWTU5S0JMZWVq?=
+ =?utf-8?B?Zy9PN0Vvbkh1dk5YOW1xN3kwVlZRbjU2Sm1JSnQ3QTlwZzZCU1ZlU2J6eTZR?=
+ =?utf-8?B?Tk4xWDNwalo1bG14WkkvL3VkTG92VGE2ZWdzYjZvbXlzRHZYSER2WUV4dDVB?=
+ =?utf-8?B?RVlVTUFqS0NUaEk5RVhvbEFMQmFkaFNBbmZMbHdKV2JWWG1jTjljQjR0VFNt?=
+ =?utf-8?B?UW1wbXp2WEdoNk1YL2xmS3V3UlV4ZGREZWRkZ3llc2JMelFNYVpZZjBVYjhW?=
+ =?utf-8?B?MHJOZ0NjVHlMUlYzbmt6Q29YN2FpM3JnZ0h3S1hyS0RIL3AzU3BKOC9aTFZj?=
+ =?utf-8?B?YVduQ2V1Nk9uQ05ETmI2ejFod2FmeE9WajJ4Z0llN2pFTGRuWWJvOS9TRkY1?=
+ =?utf-8?B?MHRUWXdHdXhqQkR5VngrYmNzcUlxNU1KU25rSzU2aVRpZ2t6dGVTeUdZQjhU?=
+ =?utf-8?B?T0cyYVc2Sy9NS2ZESE1yRk5vZ1c0WGhUTGVkQ3luSVlzd09QR3dXTG5YOFZD?=
+ =?utf-8?B?dWF1U2x0U3lIMW0rUVg4aEt2VFRqM3pQcHBCajhpamxBNTN6WnRqVWVVRE4z?=
+ =?utf-8?B?ajhYd0w2SjJtSWxNdjM5KzU2OXJiQjJINmdhaHljRmdHeTBBcUJCeW9pMEN0?=
+ =?utf-8?B?M3dEcjB2UzdhaFRwQ0g3bHMrZnhwUy9wdHNoOGRpaUhOUW1sOE5sb3hlZ2Jt?=
+ =?utf-8?B?Tnp4eUc1aHFsZ1QrYmRqQi9uT2lvTVdrRVRSWVdPaDdrdElOVVI4dTU3eCtI?=
+ =?utf-8?B?QjlsTXF4OWdRYVEyczZWZ0k2WGp4Mnd3ZTBWQVhzM3ljcFB2VGgzQk1xMzJr?=
+ =?utf-8?B?ZHI1ZHNsclEzTkdqOHMyNG1BL2FNTVYrU3Bmdy9YVHJhZjdMelA0WUhsYWNM?=
+ =?utf-8?B?aXo3QmVsblZtUzBEaEFSQWUxY3kyeGpnSDhNeVBkZVJwN0p1TEdaeVJvZ3Rq?=
+ =?utf-8?B?L1pXRk5sa1NQbE1hYUZKZ002cXY3c2M5elk0b25MaENSTUZKamxCbFRzek92?=
+ =?utf-8?B?cHRyTzZ6ejFjMGQwZElSNmVXNm9kOTdqY0tINVUvb3NVUFdhUXZWM2pHNU1C?=
+ =?utf-8?B?Y0JKQjhDclVMa0FPejByem9pSlQzNWNLdDJWZXh3SWE3Q0pxUnpiRDVxNU1B?=
+ =?utf-8?B?TjFWSGZ6c2RDS2w2ZzJWUXV5Y01na1JoYUlPaXNsYUVOaXZhNkNZMUNNY3J0?=
+ =?utf-8?B?cTZkN1NqK3NQSG5MN2dDbUxBcDN0V2ZmdHlEWUlUdUNWT2lIanF0MkV6K0pU?=
+ =?utf-8?Q?/es5XWe9O2dL9h+ZYmnuTbfZYZA1FVw7k/m6fWjlkc=3D?=
+X-OriginatorOrg: blaize.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 682d651b-c115-4f91-24bd-08dc650906ac
+X-MS-Exchange-CrossTenant-AuthSource: MA0PR01MB10184.INDPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 09:21:02.5045
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 9d1c3c89-8615-4064-88a7-bb1a8537c779
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /+HePL+n4ahxUVEI0YVw7UW80K6CD+tFW4t0Xe8cVMUKiseMdKF7tq05cNDYAC/t7uQ0UqI5Efbwt03rEv/R1Tf6maSeDEgP+Bc0co1tWSc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3PR01MB9343
+X-Proofpoint-GUID: fcLep7KfcQ8bYnncS_hEScPJWp4opmE5
+X-Proofpoint-ORIG-GUID: fcLep7KfcQ8bYnncS_hEScPJWp4opmE5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-25_09,2024-04-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1015 bulkscore=0 mlxscore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=999 phishscore=0 adultscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.21.0-2404010002
+ definitions=main-2404250067
 
-On 25.04.24 11:05, Baolin Wang wrote:
-> 
-> 
-> On 2024/4/25 16:57, David Hildenbrand wrote:
->> On 25.04.24 10:46, Ryan Roberts wrote:
->>> On 25/04/2024 09:26, David Hildenbrand wrote:
->>>> On 25.04.24 10:17, Ryan Roberts wrote:
->>>>> On 25/04/2024 07:20, Baolin Wang wrote:
->>>>>>
->>>>>>
->>>>>> On 2024/4/24 22:20, Ryan Roberts wrote:
->>>>>>> On 24/04/2024 14:49, Baolin Wang wrote:
->>>>>>>>
->>>>>>>>
->>>>>>>> On 2024/4/24 18:01, Ryan Roberts wrote:
->>>>>>>>> On 24/04/2024 10:55, Baolin Wang wrote:
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> On 2024/4/24 16:26, Ryan Roberts wrote:
->>>>>>>>>>> On 24/04/2024 07:55, Baolin Wang wrote:
->>>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>> On 2024/4/23 18:41, Ryan Roberts wrote:
->>>>>>>>>>>>> On 22/04/2024 08:02, Baolin Wang wrote:
->>>>>>>>>>>>>> Anonymous pages have already been supported for multi-size
->>>>>>>>>>>>>> (mTHP)
->>>>>>>>>>>>>> allocation
->>>>>>>>>>>>>> through commit 19eaf44954df, that can allow THP to be
->>>>>>>>>>>>>> configured
->>>>>>>>>>>>>> through the
->>>>>>>>>>>>>> sysfs interface located at
->>>>>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled'.
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> However, the anonymous shared pages will ignore the
->>>>>>>>>>>>>> anonymous mTHP rule
->>>>>>>>>>>>>> configured through the sysfs interface, and can only use
->>>>>>>>>>>>>> the PMD-mapped
->>>>>>>>>>>>>> THP, that is not reasonable. Many implement anonymous page
->>>>>>>>>>>>>> sharing
->>>>>>>>>>>>>> through
->>>>>>>>>>>>>> mmap(MAP_SHARED | MAP_ANONYMOUS), especially in database usage
->>>>>>>>>>>>>> scenarios,
->>>>>>>>>>>>>> therefore, users expect to apply an unified mTHP strategy
->>>>>>>>>>>>>> for anonymous
->>>>>>>>>>>>>> pages,
->>>>>>>>>>>>>> also including the anonymous shared pages, in order to
->>>>>>>>>>>>>> enjoy the
->>>>>>>>>>>>>> benefits of
->>>>>>>>>>>>>> mTHP. For example, lower latency than PMD-mapped THP,
->>>>>>>>>>>>>> smaller memory
->>>>>>>>>>>>>> bloat
->>>>>>>>>>>>>> than PMD-mapped THP, contiguous PTEs on ARM architecture to
->>>>>>>>>>>>>> reduce TLB
->>>>>>>>>>>>>> miss
->>>>>>>>>>>>>> etc.
->>>>>>>>>>>>>
->>>>>>>>>>>>> This sounds like a very useful addition!
->>>>>>>>>>>>>
->>>>>>>>>>>>> Out of interest, can you point me at any workloads (and
->>>>>>>>>>>>> off-the-shelf
->>>>>>>>>>>>> benchmarks
->>>>>>>>>>>>> for those workloads) that predominantly use shared anon memory?
->>>>>>>>>>>>
->>>>>>>>>>>> As far as I know, some database related workloads make
->>>>>>>>>>>> extensive use of
->>>>>>>>>>>> shared
->>>>>>>>>>>> anonymous page, such as PolarDB[1] in our Alibaba fleet, or
->>>>>>>>>>>> MySQL likely
->>>>>>>>>>>> also
->>>>>>>>>>>> uses shared anonymous memory. And I still need to do some
->>>>>>>>>>>> investigation to
->>>>>>>>>>>> measure the performance.
->>>>>>>>>>>>
->>>>>>>>>>>> [1] https://github.com/ApsaraDB/PolarDB-for-PostgreSQL
->>>>>>>>>>>
->>>>>>>>>>> Thanks for the pointer!
->>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>>>> The primary strategy is that, the use of huge pages for
->>>>>>>>>>>>>> anonymous shared
->>>>>>>>>>>>>> pages
->>>>>>>>>>>>>> still follows the global control determined by the mount
->>>>>>>>>>>>>> option "huge="
->>>>>>>>>>>>>> parameter
->>>>>>>>>>>>>> or the sysfs interface at
->>>>>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled'.
->>>>>>>>>>>>>> The utilization of mTHP is allowed only when the global
->>>>>>>>>>>>>> 'huge' switch is
->>>>>>>>>>>>>> enabled.
->>>>>>>>>>>>>> Subsequently, the mTHP sysfs interface
->>>>>>>>>>>>>> (/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled)
->>>>>>>>>>>>>> is checked to determine the mTHP size that can be used for
->>>>>>>>>>>>>> large folio
->>>>>>>>>>>>>> allocation
->>>>>>>>>>>>>> for these anonymous shared pages.
->>>>>>>>>>>>>
->>>>>>>>>>>>> I'm not sure about this proposed control mechanism; won't it
->>>>>>>>>>>>> break
->>>>>>>>>>>>> compatibility? I could be wrong, but I don't think shmem's
->>>>>>>>>>>>> use of THP
->>>>>>>>>>>>> used to
->>>>>>>>>>>>> depend upon the value of
->>>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/enabled?
->>>>>>>>>>>>> So it
->>>>>>>>>>>>
->>>>>>>>>>>> Yes, I realized this after more testing.
->>>>>>>>>>>>
->>>>>>>>>>>>> doesn't make sense to me that we now depend upon the
->>>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled
->>>>>>>>>>>>> values
->>>>>>>>>>>>> (which by
->>>>>>>>>>>>> default disables all sizes except 2M, which is set to
->>>>>>>>>>>>> "inherit" from
->>>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/enabled).
->>>>>>>>>>>>>
->>>>>>>>>>>>> The other problem is that shmem_enabled has a different set
->>>>>>>>>>>>> of options
->>>>>>>>>>>>> (always/never/within_size/advise/deny/force) to enabled
->>>>>>>>>>>>> (always/madvise/never)
->>>>>>>>>>>>>
->>>>>>>>>>>>> Perhaps it would be cleaner to do the same trick we did for
->>>>>>>>>>>>> enabled;
->>>>>>>>>>>>> Introduce
->>>>>>>>>>>>> /mm/transparent_hugepage/hugepage-XXkb/shmem_enabled, which
->>>>>>>>>>>>> can have all
->>>>>>>>>>>>> the
->>>>>>>>>>>>> same values as the top-level
->>>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/shmem_enabled,
->>>>>>>>>>>>> plus the additional "inherit" option. By default all sizes
->>>>>>>>>>>>> will be set to
->>>>>>>>>>>>> "never" except 2M, which is set to "inherit".
->>>>>>>>>>>>
->>>>>>>>>>>> Sounds good to me. But I do not want to copy all same values
->>>>>>>>>>>> from
->>>>>>>>>>>> top-level
->>>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled':
->>>>>>>>>>>> always within_size advise never deny force
->>>>>>>>>>>>
->>>>>>>>>>>> For mTHP's shmem_enabled interface, we can just keep below
->>>>>>>>>>>> values:
->>>>>>>>>>>> always within_size advise never
->>>>>>>>>>>>
->>>>>>>>>>>> Cause when checking if mTHP can be used for anon shmem,
->>>>>>>>>>>> 'deny' is equal to
->>>>>>>>>>>> 'never', and 'force' is equal to 'always'.
->>>>>>>>>>>
->>>>>>>>>>> I'll admit it wasn't completely clear to me after reading the
->>>>>>>>>>> docs, but my
->>>>>>>>>>> rough
->>>>>>>>>>> understanding is:
->>>>>>>>>>>
->>>>>>>>>>>        - /sys/kernel/mm/transparent_hugepage/shmem_enabled
->>>>>>>>>>> controls
->>>>>>>>>>>          mmap(SHARED|ANON) allocations (mostly; see rule 3)
->>>>>>>>>>>        - huge=... controls tmpfs allocations
->>>>>>>>>>>        - deny and force in shmem_enabled are equivalent to
->>>>>>>>>>> never and
->>>>>>>>>>> always for
->>>>>>>>>>>          mmap(SHARED|ANON) but additionally override all tmpfs
->>>>>>>>>>> mounts so they
->>>>>>>>>>> act as
->>>>>>>>>>>          if they were mounted with huge=never or huge=always
->>>>>>>>>>>
->>>>>>>>>>> Is that correct? If so, then I think it still makes sense to
->>>>>>>>>>> support
->>>>>>>>>>> per-size
->>>>>>>>>>
->>>>>>>>>> Correct.
->>>>>>>>>>
->>>>>>>>>>> deny/force. Certainly if a per-size control is set to
->>>>>>>>>>> "inherit" and the
->>>>>>>>>>> top-level control is set to deny or force, you would need that
->>>>>>>>>>> to mean
->>>>>>>>>>> something.
->>>>>>>>>>
->>>>>>>>>> IMHO, the
->>>>>>>>>> '/mm/transparent_hugepage/hugepage-XXkb/shmem_enabled' interface
->>>>>>>>>> should only control the anonymous shmem. And 'huge=' controls
->>>>>>>>>> tmpfs
->>>>>>>>>> allocation,
->>>>>>>>>> so we should not use anonymous control to override tmpfs
->>>>>>>>>> control, which
->>>>>>>>>> seems a
->>>>>>>>>> little mess?
->>>>>>>>>
->>>>>>>>> I agree it would be cleaner to only handle mmap(SHARED|ANON)
->>>>>>>>> here, and leave
->>>>>>>>> the
->>>>>>>>> tmpfs stuff for another time. But my point is that
->>>>>>>>> /mm/transparent_hugepage/shmem_enabled already interferes with
->>>>>>>>> tmpfs if the
->>>>>>>>> value is deny or force. So if you have:
->>>>>>>>>
->>>>>>>>> echo deny > /mm/transparent_hugepage/shmem_enabled
->>>>>>>>
->>>>>>>> IIUC, this global control will cause shmem_is_huge() to always
->>>>>>>> return
->>>>>>>> false, so
->>>>>>>> no matter how
->>>>>>>> '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' is set,
->>>>>>>> anonymous shmem will not use mTHP. No?
->>>>>>>
->>>>>>> No, that's not how
->>>>>>> '/mm/transparent_hugepage/hugepage-xxxkB/enabled' works, and
->>>>>>> I think '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled'
->>>>>>> should follow
->>>>>>> the established pattern.
->>>>>>>
->>>>>>> For anon-private, each size is controlled by its
->>>>>>> /mm/transparent_hugepage/hugepage-xxxkB/enabled value. Unless that
->>>>>>> value is
->>>>>>> "inherit", in which case the value in
->>>>>>> /mm/transparent_hugepage/enabled is used
->>>>>>> for that size.
->>>>>>>
->>>>>>> That approach enables us to 1) maintain back-compat and 2) control
->>>>>>> each size
->>>>>>> independently
->>>>>>>
->>>>>>> 1) is met because the default is that all sizes are initially set
->>>>>>> to "never",
->>>>>>> except the PMD-size (e.g.
->>>>>>> /mm/transparent_hugepage/hugepage-2048kB/enabled)
->>>>>>> which is initially set to inherit. So any mTHP unaware SW can
->>>>>>> still modify
->>>>>>> /mm/transparent_hugepage/enabled and it will still only apply to
->>>>>>> PMD size.
->>>>>>>
->>>>>>> 2) is met because mTHP aware SW can come along and e.g. enable the
->>>>>>> 64K size
->>>>>>> (echo always > /mm/transparent_hugepage/hugepage-64kB/enabled)
->>>>>>> without
->>>>>>> having to
->>>>>>> modify the value in /mm/transparent_hugepage/enabled.
->>>>>>
->>>>>> Thanks for explanation. Initially, I want to make
->>>>>> ‘/mm/transparent_hugepage/shmem_enabled’ be a global control for
->>>>>> huge page, but
->>>>>> I think it should follow the same strategy as anon mTHP as you said.
->>>>>>
->>>>>>>>> echo inherit > /mm/transparent_hugepage/hugepage-64kB/shmem_enabled
->>>>>>>>>
->>>>>>>>> What does that mean?
->>>>>>>
->>>>>>> So I think /mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled
->>>>>>> will need to
->>>>>>> support the deny and force values. When applied to non-PMD sizes,
->>>>>>> "deny" can
->>>>>>> just be a noop for now, because there was no way to configure a
->>>>>>> tmpfs mount for
->>>>>>> non-PMD size THP in the first place. But I'm not sure what to do
->>>>>>> with "force"?
->>>>>>
->>>>>> OK. And I also prefer that "force" should be a noop too, since anon
->>>>>> shmem
->>>>>> control should not configure tmpfs huge page allocation.
->>>>>
->>>>> I guess technically they won't be noops, but (for the non-PMD-sizes)
->>>>> "force"
->>>>> will be an alias for "always" and "deny" will be an alias for "never"?
->>>>>
->>>>> I was just a bit concerned about later changing that behavior to
->>>>> also impact
->>>>> tmpfs once tmpfs supports mTHP; could that cause breaks? But
->>>>> thinking about it,
->>>>> I don't see that as a problem.
->>>>
->>>> Is the question what should happen if we "inherit" "force" or if someone
->>>> specifies "force" for a mTP size explicitly?
->>>
->>> Well I think it amounts to the same thing; there isn't much point in
->>> forbidding
->>> "force" to be set directly because it can still be set indirectly through
->>> "inherit". We can't forbid indirectly setting it, because "inherit"
->>> could be set
->>> first, then the top-level shmem_enabled changed to "force" after - and we
->>> wouldn't want to fail that.
+On 25/04/2024 10:16, Krzysztof Kozlowski wrote:
+> On 25/04/2024 11:15, Niko Pasaloukos wrote:
+>> Add device tree bindings for the Blaize BLZP1600 CB2
+>> development board (carrier board), which uses the
+>> BLZP1600 SoM.
 >>
->> The default for PMD should be "inherit", for the other mTHP sizes it
->> should be "never".
+>> Reviewed-by: James Cowgill <james.cowgill@blaize.com>
+>> Reviewed-by: Matt Redfearn <matt.redfearn@blaize.com>
+>> Reviewed-by: Neil Jones <neil.jones@blaize.com>
+>> Signed-off-by: Nikolaos Pasaloukos <nikolaos.pasaloukos@blaize.com>
+>> ---
+>>  .../devicetree/bindings/arm/blaize.yaml       | 40 +++++++++++++++++++
+>>  1 file changed, 40 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/arm/blaize.yaml
 >>
->> So we should fail if:
->> * Setting top-level to "force" when any non-PMD size is "inherit"
->> * Setting "inherit" of a non-PMD size when the top-level is force
+>> diff --git a/Documentation/devicetree/bindings/arm/blaize.yaml b/Documentation/devicetree/bindings/arm/blaize.yaml
+>> new file mode 100644
+>> index 000000000000..8034aeb7a2b4
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/arm/blaize.yaml
+>> @@ -0,0 +1,40 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: https://urldefense.com/v3/__http://devicetree.org/schemas/arm/blaize.yaml*__;Iw!!FddXBOku!i6XKbnL3gXmoklJKfuksrfCB61MTEFuw8JiIVn9sS0CzEmHpqDhXguC5Me3sUQt1gw4RxA4mo8TAHR8psxBV0Dmrs0veWKlRgo18$ 
+>> +$schema: https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml*__;Iw!!FddXBOku!i6XKbnL3gXmoklJKfuksrfCB61MTEFuw8JiIVn9sS0CzEmHpqDhXguC5Me3sUQt1gw4RxA4mo8TAHR8psxBV0Dmrs0veWEVjMhqf$ 
+>> +
+>> +title: Blaize Platforms
+>> +
+>> +maintainers:
+>> +  - James Cowgill <james.cowgill@blaize.com>
+>> +  - Matt Redfearn <matt.redfearn@blaize.com>
+>> +  - Neil Jones <neil.jones@blaize.com>
+>> +  - Nikolaos Pasaloukos <nikolaos.pasaloukos@blaize.com>
+>> +
+>> +description: |
+>> +  Blaize Platforms using SoCs designed by Blaize Inc.
+>> +
+>> +  The products currently based on the BLZP1600 SoC:
+>> +
+>> +  - BLZP1600-SoM: SoM module
+>> +  - BLZP1600-CB2: Development board CB2 based on BLZP1600-SoM
+>> +
+>> +  The compatible property should follow the format:
+>> +
+>> +  compatible = "blaize,blzp1600-cb2", "blaize,blzp1600";
 > 
-> IMO, for tmpfs this is true, but for anon shmem, this 2 cases should not
-> fail.
+> This is a friendly reminder during the review process.
+> 
+> It seems my or other reviewer's previous comments were not fully
+> addressed. Maybe the feedback got lost between the quotes, maybe you
+> just forgot to apply it. Please go back to the previous discussion and
+> either implement all requested changes or keep discussing them.
+> 
+> Thank you.
+> 
+> Best regards,
+> Krzysztof
+> 
 
-If force does not apply to an mTHP size, it should fail if it would get 
-inherited. Until it applies and we enable it.
+Apologies, you are right. Now with the threading fixed, I'll be able to gather all the feedback properly.
+I'll fix this on V4.
 
-I'm still confused about all the toggles here, so could be I am missing 
-something.
-
--- 
-Cheers,
-
-David / dhildenb
-
+Best regards,
+Niko
 
