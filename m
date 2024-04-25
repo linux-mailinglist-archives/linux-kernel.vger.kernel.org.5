@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-158501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CA608B2154
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:07:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B62B8B2155
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:08:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 040C728906B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:07:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A710EB24674
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:08:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC45C12BF22;
-	Thu, 25 Apr 2024 12:04:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7D7212C477;
+	Thu, 25 Apr 2024 12:04:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Mqh6DGJP"
-Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FOzBsD2J"
+Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9500F12BE89
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 12:04:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95C612BF1E
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 12:04:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714046675; cv=none; b=nU5hBJOYsr6wVaoaTUPE5aHZa/qfSCIj+nTuAQQy4f2cXLN64Zzp97GmYw7dN4x/SZVj/82rHGlGNGMGRBE/G6Q6cYnzhD3Lj3LIVt2XxqIGUYKqcfMuY+CcK27vu/BbCZkeHCBwsb43Wlcehlenw2V7G6Qsz5usI6aAfXuO61U=
+	t=1714046677; cv=none; b=mnnY1oQ3H1cjShfcnWazZZ4mHkBAHuryhaX7aiFkItYMJZlSKdJ34vmfP99g/6+dKdZWXIXUUpR5WI0QoVyJGskpy+TYlCKkIiczrarxJaMMzGSGKs9RFd+eUpbtMYULlZEZ6aou4rmb4j9bDKpdqIbjm0HzX7XAmnyZtVDdpEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714046675; c=relaxed/simple;
-	bh=xB/u3s8S3T1IKgqC6u8KUWKSRQdV5bZ5gXMpZZCOHLM=;
+	s=arc-20240116; t=1714046677; c=relaxed/simple;
+	bh=LIxvUo8B52UW+FUtyckKlDOxVWs+4s1TDbE/HoKC42k=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=pZRWXaAsQdStVmYYJrDSy3i8mFkTbU7af4uRVCmpzs8UA5pdCtIOQzdU4HUUZd/x0UvU0PXRzCuYEFL/ebTvVfVrVAhdaBM7CqrU6Z4BFEPKQFCuBM17GAT6w3EizIRIa1sAgD5JIKJmGJQy6ibdUJHwQBNeurq9wiA8xTuq6SU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Mqh6DGJP; arc=none smtp.client-ip=209.85.128.73
+	 To:Cc:Content-Type; b=SPyu/GzxmHdHGdq86asZ5UPlMnygwoWM+D4VsqXOvqc5vpnNNMkirbWJ3f+/av1hPqfjCxz1sEfNSoAszXYYhCLVCf1ccMmniB3yYJNwGeHFy3m5+hX5SPHeUB1CDbmDoJHEbMMjgSuckyohxzJhofryXOe9YX1w+elopZEWKdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FOzBsD2J; arc=none smtp.client-ip=209.85.221.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
-Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-416ac21981dso4727465e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 05:04:33 -0700 (PDT)
+Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-345c686ba9bso549171f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 05:04:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714046672; x=1714651472; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1714046674; x=1714651474; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8akamN8H2fCd/XiP05RGvYAImcl40m0IUyP0E7BzIt4=;
-        b=Mqh6DGJPNhNdUZ+/K0fk6P5LFoTflkDWC2KgLYvyCdQgkrlTnjvLgaoo+of0jHJ0Im
-         PmDsjdgj2RHlVARS3cQrvFVQ6uQlOBKc7GB5CQmJBcPB7O0KlEsFUiuxIqYIvqPOJF2C
-         pkTbJKnM7BdO2grBrjVlPvOPWPC9DMfkolqcj+Lzn/qWcACGKAmIpfpCTbqwcubRS8Gm
-         y4TiNg+AtMEgMtSFJVoeJAkjgDH7Zyo2JgZPdyKzPMahQvWL1cneRbdknkIuCt7DV/bZ
-         as6KaphZWdeXnzCU3Gh0p0NKizTM8jthiHrj3CmomeqBP+9OUzl86nfSh2qNDWD6MVGE
-         YBTA==
+        bh=7sbCECdJGjeZfGqEfdofY2INvouE2vkCUF5Dyf7luaA=;
+        b=FOzBsD2JCPirsRTJhXM3rj5GafOMYDRXFDyfGzDVQ5GiwQfiKJuw7S9BG3IxQnoT6b
+         8hJgbnRtSmuWffhhrWyIu01dnQ2MqoU0GSfyVWJPx7KRXoBAQq6L3Tkthh6zKNCWLFrJ
+         lw3pn0pF7/4vny8dnKlYBRxWEutHGpvvhgUTCDTL+VXby2rpI7yBq6DkMcHoHbcG2yhm
+         UpnpGGkq3FLPGcK2eUtiPXG6FHqudFD4yuT9YnmnCkZjwpRdIBgi7dGktmTLN2IpaQEi
+         Tk/Q4cEtVo+T2e8xdwP1LEz6H4Ln0aJrDRWrYY7PDF+avznnyTXSStjhtpZfHu3MDVFu
+         R9Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714046672; x=1714651472;
+        d=1e100.net; s=20230601; t=1714046674; x=1714651474;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8akamN8H2fCd/XiP05RGvYAImcl40m0IUyP0E7BzIt4=;
-        b=KczY0v990ypTlWZZqvG503w0Dzl3dCfyRCz5e6n1jq76zaor6ZUxH6qUbJHWXrsMvl
-         za4cHmxbFH/jPmrxdmP4fs6gJAPbevE+2E3Ejj2hhMkKGGV/+AqFXsZxfHYkD9TRC0c6
-         ktbdzVRtPKKoWej6qBVU906VKvjFaZrRsdPSFrKUqgFTH2PH1jUk/QfjMwxzp91guzq3
-         BiYmxr9W9Px6VHQl3gg2uttfrkBsh0aLSVoIgZdHgnH7iE0V7IqFvWZgjzAZKgKTKrqM
-         ClRtwdrHwzTw02aJGfI3B83LJ9ApfVscKmn36buoaJAFEOKWRO+ISXzjKVgVluPvyQQx
-         3qZw==
-X-Gm-Message-State: AOJu0YzlMk8tpFvU7mrUK78e1PhFCJlGMxulNFrAVES6Kkgq458xlY0S
-	PEuxhDSbTpshm6fpxkGxSV8fYWtvfVvJx8+g4jYriu/UzcqzoNSoPlLwVrcFr3P3keZpnBpUbgc
-	Ej52lfD1674zZMguxXZcXwnLLoQSLCtVpg2qYmr+Mpj5saGCgDMWuK6RB0ljWNAQ4aCsY9CuomW
-	GdRrUSQSGg9Zyj6mszGSBnyjgMbqeiwQ==
-X-Google-Smtp-Source: AGHT+IEwrNhI7GuAN3Y2JJ0TMUZeshLaV6URxBToDvPomkFUhkeVhH495cxM086PyyIHuXg+E1eNG1Ga
+        bh=7sbCECdJGjeZfGqEfdofY2INvouE2vkCUF5Dyf7luaA=;
+        b=RGBw7n/TLsoVzkKnUVh7twKxayeX4cDmKMXKUp7nmsZpa2YZGaE0Ub/YZmPhe4+X+x
+         3ptb1/Uha80FIA90okdREp5KYUnMWAewrcgYSJNs+ZcH6hlFh6dMCe7FU9C5H1GwkEat
+         G1a5zcQpvjUd90PULxWxg7jhcOWuvSgiGYjX8+UFhiaMdj5+G8Ho8KFyNTerpWT+tUl6
+         YCp7uDo5VkzJNTUV1UBWgPAc5Ttm9m2t6MBa4RKTigfb6F3v0eJfmn4hRrxiQsOWbCXy
+         Q1p4WI7KWp04v0WUZHD574mIn2ol5xKRrhszulXzHl6t2h1myzNsqRMsT+LpMrbZMBWV
+         e/Og==
+X-Gm-Message-State: AOJu0YxiUvkuuDn6EW+7Pn/jW9XdYQldQZzEKI1c/BgzSY/AMlJnowBD
+	C+jXNwMdDMIHxLwn74vXzh2wss5cIzO7GCLLyT2wa3s3JHnbhr/lguUDuLuVM9MkMJGiIL7txB+
+	zNfry72pBMbMX0IqLfpxVAuOOLjWn5ueUp/POpK6N3nZN9DdEBS+Ub4zP5tpT53eaeMKo5YTkgw
+	BfqA+m5aJRSkHm1DmwUKCvNnV7b0gN4Q==
+X-Google-Smtp-Source: AGHT+IEifglC5aNUwqI5yhOdJHBnVeUq3+nUuLwStermb7SBFhtGBttpJxDDl8ZWkxM+c5lqjtV9mwiu
 X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a05:600c:1d18:b0:418:f770:3216 with SMTP id
- l24-20020a05600c1d1800b00418f7703216mr61242wms.1.1714046671823; Thu, 25 Apr
- 2024 05:04:31 -0700 (PDT)
-Date: Thu, 25 Apr 2024 14:04:18 +0200
+ (user=ardb job=sendgmr) by 2002:adf:fd06:0:b0:346:ac36:9e49 with SMTP id
+ e6-20020adffd06000000b00346ac369e49mr14189wrr.12.1714046674007; Thu, 25 Apr
+ 2024 05:04:34 -0700 (PDT)
+Date: Thu, 25 Apr 2024 14:04:19 +0200
 In-Reply-To: <20240425120416.2041037-6-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,14 +73,14 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240425120416.2041037-6-ardb+git@google.com>
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2319; i=ardb@kernel.org;
- h=from:subject; bh=PvaxtPqIBzGmQAhUg+/lL22jj0S5lyyb5ES94EuVLJs=;
- b=owGbwMvMwCFmkMcZplerG8N4Wi2JIU3L7VCTlrWZ2rkPjTtsfiz4vLaofPYVRvXPZv/rvZ6+S
- FN4l9zQUcrCIMbBICumyCIw+++7nacnStU6z5KFmcPKBDKEgYtTACay/jDDL+ZpsaueHvVItXsw
- 92ZxWQLj4W4edZkPsc/uiWSsX7SA8x7D/8SV1w4UMjJ+vd9af7Eoyd7YSuOx5m3x7vfl0R9PyFa LMAIA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=969; i=ardb@kernel.org;
+ h=from:subject; bh=vkA+u9LN7+M2HsoLmktuyPNgmAZxryq/utHLnCKXETs=;
+ b=owGbwMvMwCFmkMcZplerG8N4Wi2JIU3L7fDdjRGzjs/xenpzblFClb7+3HWPv+1j4K4TvVhfG
+ mxl3jaho5SFQYyDQVZMkUVg9t93O09PlKp1niULM4eVCWQIAxenAExEUZyR4ePZHztUzHzkKqtj
+ dxT+vnFis85zw9PC33h+rl1/JUi0+Cgjw7K20p2pTcd82n478SydK8fM/6WF4a6bcs5tqyBjj8y nbAA=
 X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <20240425120416.2041037-7-ardb+git@google.com>
-Subject: [PATCH v2 1/4] x86/sev: Avoid WARN()s in early boot code
+Message-ID: <20240425120416.2041037-8-ardb+git@google.com>
+Subject: [PATCH v2 2/4] x86/xen/pvh: Move startup code into .ref.text
 From: Ard Biesheuvel <ardb+git@google.com>
 To: linux-kernel@vger.kernel.org
 Cc: x86@kernel.org, Ard Biesheuvel <ardb@kernel.org>, Tom Lendacky <thomas.lendacky@amd.com>, 
@@ -91,66 +91,33 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Ard Biesheuvel <ardb@kernel.org>
 
-Using WARN() before the kernel is even mapped is unlikely to do anything
-useful: the string literals are passed using their kernel virtual
-addresses which are not even mapped yet. But even if they were, calling
-into the printk machinery from the early 1:1 mapped code is not going to
-get very far.
+The Xen PVH startup code does not need to live in .head.text, given that
+its entry point is not at a fixed offset, and is communicated to the
+host/VMM via an ELF note.
 
-So drop the WARN()s entirely.
+So move it out of .head.text into another code section. To avoid
+spurious warnings about references to .init code, move it into .ref.text
+rather than .text. (Note that the ELF note itself is not .init and so
+moving this code into .init.text would result in warnings as well)
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/kernel/sev.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ arch/x86/platform/pvh/head.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 38ad066179d8..d18e10eaf839 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -720,7 +720,7 @@ early_set_pages_state(unsigned long vaddr, unsigned long paddr,
- 		if (op == SNP_PAGE_STATE_SHARED) {
- 			/* Page validation must be rescinded before changing to shared */
- 			ret = pvalidate(vaddr, RMP_PG_SIZE_4K, false);
--			if (WARN(ret, "Failed to validate address 0x%lx ret %d", paddr, ret))
-+			if (ret)
- 				goto e_term;
- 		}
+diff --git a/arch/x86/platform/pvh/head.S b/arch/x86/platform/pvh/head.S
+index f7235ef87bc3..0cf6008e834b 100644
+--- a/arch/x86/platform/pvh/head.S
++++ b/arch/x86/platform/pvh/head.S
+@@ -20,7 +20,7 @@
+ #include <asm/nospec-branch.h>
+ #include <xen/interface/elfnote.h>
  
-@@ -733,21 +733,16 @@ early_set_pages_state(unsigned long vaddr, unsigned long paddr,
+-	__HEAD
++	__REF
  
- 		val = sev_es_rd_ghcb_msr();
- 
--		if (WARN(GHCB_RESP_CODE(val) != GHCB_MSR_PSC_RESP,
--			 "Wrong PSC response code: 0x%x\n",
--			 (unsigned int)GHCB_RESP_CODE(val)))
-+		if (GHCB_RESP_CODE(val) != GHCB_MSR_PSC_RESP)
- 			goto e_term;
- 
--		if (WARN(GHCB_MSR_PSC_RESP_VAL(val),
--			 "Failed to change page state to '%s' paddr 0x%lx error 0x%llx\n",
--			 op == SNP_PAGE_STATE_PRIVATE ? "private" : "shared",
--			 paddr, GHCB_MSR_PSC_RESP_VAL(val)))
-+		if (GHCB_MSR_PSC_RESP_VAL(val))
- 			goto e_term;
- 
- 		if (op == SNP_PAGE_STATE_PRIVATE) {
- 			/* Page validation must be performed after changing to private */
- 			ret = pvalidate(vaddr, RMP_PG_SIZE_4K, true);
--			if (WARN(ret, "Failed to validate address 0x%lx ret %d", paddr, ret))
-+			if (ret)
- 				goto e_term;
- 		}
- 
-@@ -780,7 +775,7 @@ void __head early_snp_set_memory_private(unsigned long vaddr, unsigned long padd
- 	early_set_pages_state(vaddr, paddr, npages, SNP_PAGE_STATE_PRIVATE);
- }
- 
--void __init early_snp_set_memory_shared(unsigned long vaddr, unsigned long paddr,
-+void __head early_snp_set_memory_shared(unsigned long vaddr, unsigned long paddr,
- 					unsigned long npages)
- {
- 	/*
+ /*
+  * Entry point for PVH guests.
 -- 
 2.44.0.769.g3c40516874-goog
 
