@@ -1,238 +1,186 @@
-Return-Path: <linux-kernel+bounces-159212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CC188B2AC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:35:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 558FA8B2ACC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:35:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 502C3B21529
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:35:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78D781C21BE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B16155A43;
-	Thu, 25 Apr 2024 21:34:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CFE6155A55;
+	Thu, 25 Apr 2024 21:35:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="gmH+hgnV"
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zIEs2nrq"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E5FA153812;
-	Thu, 25 Apr 2024 21:34:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC36155723
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 21:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714080898; cv=none; b=TwjicXxRGIHGalQm6zYL81FOKC4BQL298m/HJkxbKg+ixPGQbJenH4nvQ9a7gOMDXLT5pj7CFNG3YfcGCbljfjIKh2qqp6WGWQHYMP7hjmwP/KA8sL30c4iY9Gz4hk03lat/tQPiXPWO3JOliFdGV7WQdxBX53mORnrV7FQEduI=
+	t=1714080917; cv=none; b=FKC9EtkFbW7KB9deawpjghxrrjmg9R5OWghJKLuTSC95mobR2Ly2Z3tmlnqU8YwCZqD/lA2JFcUATnvUiuwV7FEP6JOvPXkwQQofxI0qzaKACV1OmtN4RZquJhBuT3U9+ZZCN8IXp4I1lyu/a9zRtDAen82ytbxO/QdjCVHFhkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714080898; c=relaxed/simple;
-	bh=YtT+9N11G/oagDxFwRs8nvK/R4iQrquRafZwkitYN7k=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DJS3WdUpT8vq4u4vIbCa9ZtELWnFW9HggqSnKxrEPt2+zcOIiWYYiVuxfezKb4WTwE4xGMWcvTh/CIgpfdO/LQ+DE8LykRNtciNOpPOkTKM8Idoo8zOmetN/6UP2tMXol0/xTfcN8e2siuatnu8wkD2p7V2Ovw7+T6uZqY3+ofc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=gmH+hgnV; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1714080887; x=1714340087;
-	bh=UJd86kWm35t/O3VTlkvSGLGEC+zSkf49elPIO6KdbFY=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=gmH+hgnVw8qfTX37fl+0eCO6I/Bt3A4JMWO6ab7NggAjrSkyEDrWXQJrsFMbWnVm0
-	 YG5IznlBMmt2imUFw033mRKJY9Pm1VMmNgEUwfNmvOlHdYkle0+bfY5p8fYiwg+gsO
-	 nM/kUgoTuhQvi6s6aXDbs8WOZse0NU2XlEPjeZ0G7E5O35UIPXHJVBc98hhICRnqUG
-	 uovJko74t5sHFjX/Rcor62H4rwyYkfR9ZD7GhWZxoC0iikOIWkqKn8/GzBKvZgUlNb
-	 3gbBp/TI10NbdfMWpX4yttZ+Au0FvKc++6kFvKvPokn23FTxYdTNhKjSMvy1WndmoY
-	 FuozYaKBrN8cw==
-Date: Thu, 25 Apr 2024 21:34:44 +0000
-To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] rust: init: add re-initialization functions
-Message-ID: <20240425213419.3904105-2-benno.lossin@proton.me>
-In-Reply-To: <20240425213419.3904105-1-benno.lossin@proton.me>
-References: <20240425213419.3904105-1-benno.lossin@proton.me>
-Feedback-ID: 71780778:user:proton
-X-Pm-Message-ID: fd954416d514fda6cdb8e68aded583cacd674889
+	s=arc-20240116; t=1714080917; c=relaxed/simple;
+	bh=2qnfxzwBZ+1IL0G1LGYLrncnZO5VsqWJdO3vHTL8sE0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kbZdHz18C93htBgkMptrdNJ4yh48ZWYSI/c72W+JA46a3yocMguGI+jXuaK1bUBfHkA4Wm4bmCDr/cnrXzEAZ1JmhU8k/2VIE0ReL7H4L4R9DthZQWefNlwfiGcMYcLXCw981AlWb/DQ+gLM6M4U5ZmrrHDRXk74C3hC9e8Ybz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zIEs2nrq; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc236729a2bso1521051276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:35:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714080915; x=1714685715; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dNAVjZRL3SNvhEv7UtPjNVw2qSZLNXEHiDVYNBop7Cg=;
+        b=zIEs2nrqO3yO9rI/l50CxSWuWlEnVu0aVTy68lWKm6PAGnFHe55G+yxIqqbDk6w2ef
+         bZyxADXa0JJtf9apSYz7nbiZ1PFZlKD1xJ6QYmpWy6M5S9lviDwU+QjI3wB0vHHatDXK
+         7nQiGkaetqvNPlPFLKQh86Ef64ZAuKT+gZ/gGf9GFUbUx9Um6G2vgYSNYAJUUeeGI9E3
+         KxnUWMV22hbZjh0NKkwonQCDSb1ykK7Pw0WsAb9SQBcGAEF9Ubbi4j57rAOe7tinbUtq
+         n6FRtN0EpyZys6jX3FKdcPfeN3OhRVzhaJntcMHuMkGcAWnclQDROROWIkWN/YAxXGA8
+         NwjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714080915; x=1714685715;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dNAVjZRL3SNvhEv7UtPjNVw2qSZLNXEHiDVYNBop7Cg=;
+        b=SzmPJGA6mBZRiipHDuTERDiLY+FxsDAzXOTzzDWTnHUQ83i0ZENRsn4lN8MZdmA7FS
+         y6RM7jUM98n6dh9GHqpW1xO61lZa9bGz3v/jwEWXOtUwnPkIA368Zers/A0MJYJxwdkl
+         g2feKWKz+C01rUKNEcWp2dGokcBsASqjbLg7aK/Rzq+VVEiR1vbgSZkr+kVNIjQel7FD
+         VLeF5ZKCIrydkkkis+URpSGymtKNipmN7dp3FUNkcRKUQAdEHlAVid3E447jS9aAmje/
+         Nn+PqUllZuHcavfuJimEVuY5zFda8tMxPGnS1AcX6f3BQwjIXAmaj7t8KDaZexId/z1u
+         jeww==
+X-Forwarded-Encrypted: i=1; AJvYcCWKyGTpQBYgi9jdn6TMC8siB0HHxfOmH4pqSskosvN6Wagq9AwsKIrnoqTQGUYjV5wOvrQcbK3suxzOpnxSweXa0WvUO8nUskICbBiA
+X-Gm-Message-State: AOJu0YyG2ERMPcxnwm7655Vp/Wa0ibZctrXV0cLZLoS5npzSaug3dYNV
+	QEs6KgIUUFsV4PqqQ+gHG2EPpw5ctyThiJ27aPS6ZaTo2bNI7NnQ4rRXo4B0uyWLG0YqYYeCVpG
+	ByMI76AI2AiJ0elfOGQ3pIZGVnY3Tbo2xZ/O8
+X-Google-Smtp-Source: AGHT+IGQ7MeXm0dvILJ0AXWrIM9WmgMhHcldUahIe6fZQn6xXrjGpkS7ue/fUW0Lq66Lii1hOI5w9eO9wnXdvzFvETU=
+X-Received: by 2002:a25:c5cb:0:b0:de5:56ca:759b with SMTP id
+ v194-20020a25c5cb000000b00de556ca759bmr991751ybe.2.1714080914454; Thu, 25 Apr
+ 2024 14:35:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240321163705.3067592-1-surenb@google.com> <202404241852.DC4067B7@keescook>
+ <3eyvxqihylh4st6baagn6o6scw3qhcb6lapgli4wsic2fvbyzu@h66mqxcikmcp>
+ <CAJuCfpFtj7MVY+9FaKfq0w7N1qw8=jYifC0sBUAySk=AWBhK6Q@mail.gmail.com> <202404251254.FE91E2FD8@keescook>
+In-Reply-To: <202404251254.FE91E2FD8@keescook>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 25 Apr 2024 14:35:03 -0700
+Message-ID: <CAJuCfpHcz+GVjFqcjxq4=tCzJyPZFFRATWDNChyEUyV_Ru+g5A@mail.gmail.com>
+Subject: Re: [PATCH v6 00/37] Memory allocation profiling
+To: Kees Cook <keescook@chromium.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, akpm@linux-foundation.org, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, songmuchun@bytedance.com, 
+	jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Sometimes it is necessary to split allocation and initialization into
-two steps. One such situation is when reusing existing allocations
-obtained via `Box::drop_contents`. See [1] for an example.
-In order to support this use case add `re_[pin_]init` functions to the
-pin-init API. These functions operate on already allocated smart
-pointers that contain `MaybeUninit<T>`.
+On Thu, Apr 25, 2024 at 1:01=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> On Thu, Apr 25, 2024 at 08:39:37AM -0700, Suren Baghdasaryan wrote:
+> > On Wed, Apr 24, 2024 at 8:26=E2=80=AFPM Kent Overstreet
+> > <kent.overstreet@linux.dev> wrote:
+> > >
+> > > On Wed, Apr 24, 2024 at 06:59:01PM -0700, Kees Cook wrote:
+> > > > On Thu, Mar 21, 2024 at 09:36:22AM -0700, Suren Baghdasaryan wrote:
+> > > > > Low overhead [1] per-callsite memory allocation profiling. Not ju=
+st for
+> > > > > debug kernels, overhead low enough to be deployed in production.
+> > > >
+> > > > Okay, I think I'm holding it wrong. With next-20240424 if I set:
+> > > >
+> > > > CONFIG_CODE_TAGGING=3Dy
+> > > > CONFIG_MEM_ALLOC_PROFILING=3Dy
+> > > > CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT=3Dy
+> > > >
+> > > > My test system totally freaks out:
+> > > >
+> > > > ...
+> > > > SLUB: HWalign=3D64, Order=3D0-3, MinObjects=3D0, CPUs=3D4, Nodes=3D=
+1
+> > > > Oops: general protection fault, probably for non-canonical address =
+0xc388d881e4808550: 0000 [#1] PREEMPT SMP NOPTI
+> > > > CPU: 0 PID: 0 Comm: swapper Not tainted 6.9.0-rc5-next-20240424 #1
+> > > > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 0=
+2/06/2015
+> > > > RIP: 0010:__kmalloc_node_noprof+0xcd/0x560
+> > > >
+> > > > Which is:
+> > > >
+> > > > __kmalloc_node_noprof+0xcd/0x560:
+> > > > __slab_alloc_node at mm/slub.c:3780 (discriminator 2)
+> > > > (inlined by) slab_alloc_node at mm/slub.c:3982 (discriminator 2)
+> > > > (inlined by) __do_kmalloc_node at mm/slub.c:4114 (discriminator 2)
+> > > > (inlined by) __kmalloc_node_noprof at mm/slub.c:4122 (discriminator=
+ 2)
+> > > >
+> > > > Which is:
+> > > >
+> > > >         tid =3D READ_ONCE(c->tid);
+> > > >
+> > > > I haven't gotten any further than that; I'm EOD. Anyone seen anythi=
+ng
+> > > > like this with this series?
+> > >
+> > > I certainly haven't. That looks like some real corruption, we're in s=
+lub
+> > > internal data structures and derefing a garbage address. Check kasan =
+and
+> > > all that?
+> >
+> > Hi Kees,
+> > I tested next-20240424 yesterday with defconfig and
+> > CONFIG_MEM_ALLOC_PROFILING enabled but didn't see any issue like that.
+> > Could you share your config file please?
+>
+> Well *that* took a while to .config bisect. I probably should have found
+> it sooner, but CONFIG_DEBUG_KMEMLEAK=3Dy is what broke me. Without that,
+> everything is lovely! :)
+>
+> I can reproduce it now with:
+>
+> $ make defconfig kvm_guest.config
+> $ ./scripts/config -e CONFIG_MEM_ALLOC_PROFILING -e CONFIG_DEBUG_KMEMLEAK
 
-Signed-off-by: Benno Lossin <benno.lossin@proton.me>
-Link: https://lore.kernel.org/rust-for-linux/f026532f-8594-4f18-9aa5-57ad3f=
-5bc592@proton.me/ [1]
----
- rust/kernel/init.rs    | 88 ++++++++++++++++++++++++++++++------------
- rust/kernel/prelude.rs |  2 +-
- 2 files changed, 65 insertions(+), 25 deletions(-)
+Thanks! I'll use this to reproduce the issue and will see if we can
+handle that recursion in a better way.
 
-diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
-index 9608f2bd2211..b37b23f07bf7 100644
---- a/rust/kernel/init.rs
-+++ b/rust/kernel/init.rs
-@@ -1159,13 +1159,8 @@ fn try_pin_init<E>(init: impl PinInit<T, E>, flags: =
-Flags) -> Result<Pin<Self>,
-     where
-         E: From<AllocError>,
-     {
--        let mut this =3D <Box<_> as BoxExt<_>>::new_uninit(flags)?;
--        let slot =3D this.as_mut_ptr();
--        // SAFETY: When init errors/panics, slot will get deallocated but =
-not dropped,
--        // slot is valid and will not be moved, because we pin it later.
--        unsafe { init.__pinned_init(slot)? };
--        // SAFETY: All fields have been initialized.
--        Ok(unsafe { this.assume_init() }.into())
-+        let this =3D <Box<_> as BoxExt<_>>::new_uninit(flags)?;
-+        this.re_pin_init(init)
-     }
-=20
-     #[inline]
-@@ -1173,13 +1168,8 @@ fn try_init<E>(init: impl Init<T, E>, flags: Flags) =
--> Result<Self, E>
-     where
-         E: From<AllocError>,
-     {
--        let mut this =3D <Box<_> as BoxExt<_>>::new_uninit(flags)?;
--        let slot =3D this.as_mut_ptr();
--        // SAFETY: When init errors/panics, slot will get deallocated but =
-not dropped,
--        // slot is valid.
--        unsafe { init.__init(slot)? };
--        // SAFETY: All fields have been initialized.
--        Ok(unsafe { this.assume_init() })
-+        let this =3D <Box<_> as BoxExt<_>>::new_uninit(flags)?;
-+        this.re_init(init)
-     }
- }
-=20
-@@ -1189,13 +1179,8 @@ fn try_pin_init<E>(init: impl PinInit<T, E>, flags: =
-Flags) -> Result<Pin<Self>,
-     where
-         E: From<AllocError>,
-     {
--        let mut this =3D UniqueArc::new_uninit(flags)?;
--        let slot =3D this.as_mut_ptr();
--        // SAFETY: When init errors/panics, slot will get deallocated but =
-not dropped,
--        // slot is valid and will not be moved, because we pin it later.
--        unsafe { init.__pinned_init(slot)? };
--        // SAFETY: All fields have been initialized.
--        Ok(unsafe { this.assume_init() }.into())
-+        let this =3D UniqueArc::new_uninit(flags)?;
-+        this.re_pin_init(init)
-     }
-=20
-     #[inline]
-@@ -1203,13 +1188,68 @@ fn try_init<E>(init: impl Init<T, E>, flags: Flags)=
- -> Result<Self, E>
-     where
-         E: From<AllocError>,
-     {
--        let mut this =3D UniqueArc::new_uninit(flags)?;
--        let slot =3D this.as_mut_ptr();
-+        let this =3D UniqueArc::new_uninit(flags)?;
-+        this.re_init(init)
-+    }
-+}
-+
-+/// Smart pointer that can re-initialize its content.
-+pub trait InPlaceReInit<T> {
-+    /// The type `Self` turns into when re-initialized.
-+    type Initialized;
-+
-+    /// Re-initializes `self` with the given initializer.
-+    ///
-+    /// Does not drop the current value and considers it as uninitialized =
-memory.
-+    fn re_init<E>(self, init: impl Init<T, E>) -> Result<Self::Initialized=
-, E>;
-+
-+    /// Re-initializes `self` with the given initializer.
-+    ///
-+    /// Does not drop the current value and considers it as uninitialized =
-memory.
-+    fn re_pin_init<E>(self, init: impl PinInit<T, E>) -> Result<Pin<Self::=
-Initialized>, E>;
-+}
-+
-+impl<T> InPlaceReInit<T> for Box<MaybeUninit<T>> {
-+    type Initialized =3D Box<T>;
-+
-+    fn re_init<E>(mut self, init: impl Init<T, E>) -> Result<Self::Initial=
-ized, E> {
-+        let slot =3D self.as_mut_ptr();
-         // SAFETY: When init errors/panics, slot will get deallocated but =
-not dropped,
-         // slot is valid.
-         unsafe { init.__init(slot)? };
-         // SAFETY: All fields have been initialized.
--        Ok(unsafe { this.assume_init() })
-+        Ok(unsafe { self.assume_init() })
-+    }
-+
-+    fn re_pin_init<E>(mut self, init: impl PinInit<T, E>) -> Result<Pin<Se=
-lf::Initialized>, E> {
-+        let slot =3D self.as_mut_ptr();
-+        // SAFETY: When init errors/panics, slot will get deallocated but =
-not dropped,
-+        // slot is valid and will not be moved, because we pin it later.
-+        unsafe { init.__pinned_init(slot)? };
-+        // SAFETY: All fields have been initialized.
-+        Ok(unsafe { self.assume_init() }.into())
-+    }
-+}
-+
-+impl<T> InPlaceReInit<T> for UniqueArc<MaybeUninit<T>> {
-+    type Initialized =3D UniqueArc<T>;
-+
-+    fn re_init<E>(mut self, init: impl Init<T, E>) -> Result<Self::Initial=
-ized, E> {
-+        let slot =3D self.as_mut_ptr();
-+        // SAFETY: When init errors/panics, slot will get deallocated but =
-not dropped,
-+        // slot is valid.
-+        unsafe { init.__init(slot)? };
-+        // SAFETY: All fields have been initialized.
-+        Ok(unsafe { self.assume_init() })
-+    }
-+
-+    fn re_pin_init<E>(mut self, init: impl PinInit<T, E>) -> Result<Pin<Se=
-lf::Initialized>, E> {
-+        let slot =3D self.as_mut_ptr();
-+        // SAFETY: When init errors/panics, slot will get deallocated but =
-not dropped,
-+        // slot is valid and will not be moved, because we pin it later.
-+        unsafe { init.__pinned_init(slot)? };
-+        // SAFETY: All fields have been initialized.
-+        Ok(unsafe { self.assume_init() }.into())
-     }
- }
-=20
-diff --git a/rust/kernel/prelude.rs b/rust/kernel/prelude.rs
-index b37a0b3180fb..078b2b1d84ae 100644
---- a/rust/kernel/prelude.rs
-+++ b/rust/kernel/prelude.rs
-@@ -37,6 +37,6 @@
-=20
- pub use super::{str::CStr, ThisModule};
-=20
--pub use super::init::{InPlaceInit, Init, PinInit};
-+pub use super::init::{InPlaceInit, InPlaceReInit, Init, PinInit};
-=20
- pub use super::current;
---=20
-2.44.0
-
-
+>
+> -Kees
+>
+> --
+> Kees Cook
 
