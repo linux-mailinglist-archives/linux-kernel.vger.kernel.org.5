@@ -1,175 +1,166 @@
-Return-Path: <linux-kernel+bounces-158834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB82C8B2583
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:46:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4E088B2594
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:48:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 627C91F21A57
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:46:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01DCA1C214B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:48:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C7F14BFB0;
-	Thu, 25 Apr 2024 15:45:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A71B14BFBC;
+	Thu, 25 Apr 2024 15:48:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="y4hL6NT2";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Hj4n6C0W";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="y4hL6NT2";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Hj4n6C0W"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="p0D3vHvY"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73EA314A0BF;
-	Thu, 25 Apr 2024 15:45:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3361494BF;
+	Thu, 25 Apr 2024 15:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714059956; cv=none; b=ZqB8TKFZFnzRaObA50j33iYmylzpewHVx+dG0G4Fl4w1MHotrN8r4ME/sdAApowGJIJWFenr4gq59dT4yDwP3cKPCynC75k+1imPiltSEsoDBg3wLB35JvDnnCQfay9j9mw9L+xiEivLK7yQUP61LqjwmJi//9vcBWZl5JBntLQ=
+	t=1714060094; cv=none; b=WQ1gF2jkPxfmCd0TEe/Tmvwkd6IgF+SHU8zCk+zCL8cHa/BKv69TWaETP8noxVduWGx6vrJY+zQwvPohYaepdWPWZURNpiiKbFF3d9z+nokU2rrbQ0CfsCfws0pefuTezZ3jnxbAfqSM4wnql+CqaEqfzsG/0Et1arDS6cEqwhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714059956; c=relaxed/simple;
-	bh=aLNOpU0TwtjAVJpMES4C7c9D1YU51qnuvStJZTDomSs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R9RABA3+Ba8foK06orfVF+9gNijkBLfLd2U5XqtuZrDKhDtRGRrboiHCA8N/eWxy7LTzMojucT5N3vR3O+WoaczjBTBq74XIizuys5g525Mbmjg9wrdAs22kV1kkN6xiBzQCs6SQ7f11342PhUz9vPhRSxXCIGCKSBNUkFh7NLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=y4hL6NT2; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Hj4n6C0W; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=y4hL6NT2; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Hj4n6C0W; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 22F345BEDD;
-	Thu, 25 Apr 2024 15:45:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1714059952; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YKPCz/g8F0wqv3JnYeaXQhQSP8CzjdejwZMbbBUL74A=;
-	b=y4hL6NT2nKBm+Lw0yT9iuzbqw6I+9M3yfEErI6MkUHOcw/+R8y5Lk3kDncMCbjYIgyROTe
-	v0Vx9cYwjsMfF392vJ3UTQBx6ai1XpFUORWrix1qp4WIjk3ZBpaJVue3VFq7O6+5ar6dp+
-	Nx8QD6b++XI8FrSJnU6nGOfttmZAnzk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1714059952;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YKPCz/g8F0wqv3JnYeaXQhQSP8CzjdejwZMbbBUL74A=;
-	b=Hj4n6C0WmzL869N0tc8I6xMA3pEeUEXlu+lZ3T487I2dn65em9sqGr+vzUUcoEUWJTuO3X
-	KOTIjMxciHEbIWBg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1714059952; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YKPCz/g8F0wqv3JnYeaXQhQSP8CzjdejwZMbbBUL74A=;
-	b=y4hL6NT2nKBm+Lw0yT9iuzbqw6I+9M3yfEErI6MkUHOcw/+R8y5Lk3kDncMCbjYIgyROTe
-	v0Vx9cYwjsMfF392vJ3UTQBx6ai1XpFUORWrix1qp4WIjk3ZBpaJVue3VFq7O6+5ar6dp+
-	Nx8QD6b++XI8FrSJnU6nGOfttmZAnzk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1714059952;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YKPCz/g8F0wqv3JnYeaXQhQSP8CzjdejwZMbbBUL74A=;
-	b=Hj4n6C0WmzL869N0tc8I6xMA3pEeUEXlu+lZ3T487I2dn65em9sqGr+vzUUcoEUWJTuO3X
-	KOTIjMxciHEbIWBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6B2EE1393C;
-	Thu, 25 Apr 2024 15:45:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id l/JqE696KmamFwAAD6G6ig
-	(envelope-from <jdelvare@suse.de>); Thu, 25 Apr 2024 15:45:51 +0000
-Date: Thu, 25 Apr 2024 17:45:49 +0200
-From: Jean Delvare <jdelvare@suse.de>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-i2c@vger.kernel.org, Andi Shyti <andi.shyti@kernel.org>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] i2c: i801: remove printout on handled timeouts
-Message-ID: <20240425174549.236a9efe@endymion.delvare>
-In-Reply-To: <20240423121322.28460-2-wsa+renesas@sang-engineering.com>
-References: <20240423121322.28460-1-wsa+renesas@sang-engineering.com>
-	<20240423121322.28460-2-wsa+renesas@sang-engineering.com>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1714060094; c=relaxed/simple;
+	bh=IsAL6MSVVb0st0Jwbse2d6xJSQLj/y4fLVjgYoKxfLw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZTyuQNKHNt3YpVAGuXkxD8QpkcCKZWVsA1ogFIKOnmpYYtGXNAgdj+5I0xo/3I4rbLJaPBW8uulMBI87fFrIK3F4uOCbRim/lYHqpJ4n/7B0nSiXdnyLO49V6iMxjlD35fS4OWXrOJWOqVWwdUpUUZFlEPvNNzcYcSLOyGHqKwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=p0D3vHvY; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43PDESOr021448;
+	Thu, 25 Apr 2024 17:46:51 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=selector1; bh=4NMVoNz
+	2ja0mKMA3zgF7rxaTumBVu43eHSfBqn+yggE=; b=p0D3vHvYlFwZHcf7hV/v3de
+	Uc5+XgJ57P+DbpLWYQACVBnDzPoKmDmPoAlc3NJ38Ps5ez2VBy12W24CUp9/IbaL
+	ZQAWrOuTMjma+2AD9rc3FSxD5HOG9aOM4u3Pm8qnMoaAYDaVZnMsFfJCbHYFM4zM
+	qCAdfhYCG8fjNHXDpi2gn2vNS7KxnsSsawOsBHElZutUZ1kMufedlb25+cOPXk6S
+	9SWQ7XgnX2F36BXQbZbUCRiHYzpBmjjSIX9tvEyF5Kjs9psIcVc3DToH6fPEsX4P
+	OpYs3fy5KiO86yrx2+rU/od5VVi8KwCSoW0H8bBxoGb//zTGO/Ksqy1tZpCXlLg=
+	=
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xm51wen46-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 17:46:51 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id A1F5E4002D;
+	Thu, 25 Apr 2024 17:46:38 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 43D512258BA;
+	Thu, 25 Apr 2024 17:46:04 +0200 (CEST)
+Received: from localhost (10.48.86.112) by SHFDAG1NODE3.st.com (10.75.129.71)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 25 Apr
+ 2024 17:46:03 +0200
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+To: Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Rob Herring
+	<robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+CC: Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: [PATCH] arm64: dts: st: add power domain on stm32mp25
+Date: Thu, 25 Apr 2024 17:45:55 +0200
+Message-ID: <20240425174519.1.I443a218decda670093bc621165e3052db14d4c02@changeid>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -1.74
-X-Spam-Level: 
-X-Spamd-Result: default: False [-1.74 / 50.00];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	BAYES_HAM(-0.44)[78.70%];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	ARC_NA(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[renesas];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,sang-engineering.com:email,suse.de:email]
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-25_15,2024-04-25_01,2023-05-22_02
 
-On Tue, 23 Apr 2024 14:13:18 +0200, Wolfram Sang wrote:
-> I2C and SMBus timeouts are not something the user needs to be informed
-> about on controller level. The client driver may know if that really is
-> a problem and give more detailed information to the user. The controller
-> should just pass this information upwards. Remove the printout and turn
-> the SMBus-specific termination message to debug.
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
->  drivers/i2c/busses/i2c-i801.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
-> index e577abc776c1..d2d2a6dbe29f 100644
-> --- a/drivers/i2c/busses/i2c-i801.c
-> +++ b/drivers/i2c/busses/i2c-i801.c
-> @@ -399,9 +399,7 @@ static int i801_check_post(struct i801_priv *priv, int status)
->  	 * If the SMBus is still busy, we give up
->  	 */
->  	if (unlikely(status < 0)) {
-> -		dev_err(&priv->pci_dev->dev, "Transaction timeout\n");
->  		/* try to stop the current command */
-> -		dev_dbg(&priv->pci_dev->dev, "Terminating the current operation\n");
->  		outb_p(SMBHSTCNT_KILL, SMBHSTCNT(priv));
->  		usleep_range(1000, 2000);
->  		outb_p(0, SMBHSTCNT(priv));
-> @@ -410,7 +408,7 @@ static int i801_check_post(struct i801_priv *priv, int status)
->  		status = inb_p(SMBHSTSTS(priv));
->  		if ((status & SMBHSTSTS_HOST_BUSY) ||
->  		    !(status & SMBHSTSTS_FAILED))
-> -			dev_err(&priv->pci_dev->dev,
-> +			dev_dbg(&priv->pci_dev->dev,
->  				"Failed terminating the transaction\n");
->  		return -ETIMEDOUT;
->  	}
+Add power domains on STM32MP25x SoC for supported low power modes:
+- CPU_PD0/1: domain for idle of each core Cortex A35 (CStop)
+- CLUSTER_PD: D1 domain with Stop1 and LP-Stop1 modes support when
+  the Cortex A35 cluster and each device assigned to CPU1=CA35
+  are deactivated
+- RET_PD: D1 domain retention (VDDCore is reduced) to support
+          the LPLV-Stop1 mode
 
-Reviewed-by: Jean Delvare <jdelvare@suse.de>
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+---
 
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 16 ++++++++++++++++
+ arch/arm64/boot/dts/st/stm32mp253.dtsi |  9 +++++++++
+ 2 files changed, 25 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index af1444bf9442..4beb0a0bef4f 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -18,6 +18,8 @@ cpu0: cpu@0 {
+ 			device_type = "cpu";
+ 			reg = <0>;
+ 			enable-method = "psci";
++			power-domains = <&CPU_PD0>;
++			power-domain-names = "psci";
+ 		};
+ 	};
+ 
+@@ -104,6 +106,20 @@ intc: interrupt-controller@4ac00000 {
+ 	psci {
+ 		compatible = "arm,psci-1.0";
+ 		method = "smc";
++
++		CPU_PD0: power-domain-cpu0 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++		};
++
++		CLUSTER_PD: power-domain-cluster {
++			#power-domain-cells = <0>;
++			power-domains = <&RET_PD>;
++		};
++
++		RET_PD: power-domain-retention {
++			#power-domain-cells = <0>;
++		};
+ 	};
+ 
+ 	timer {
+diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+index af48e82efe8a..79c02ef2e51e 100644
+--- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+@@ -12,6 +12,8 @@ cpu1: cpu@1 {
+ 			device_type = "cpu";
+ 			reg = <1>;
+ 			enable-method = "psci";
++			power-domains = <&CPU_PD1>;
++			power-domain-names = "psci";
+ 		};
+ 	};
+ 
+@@ -20,4 +22,11 @@ arm-pmu {
+ 			     <GIC_SPI 369 IRQ_TYPE_LEVEL_HIGH>;
+ 		interrupt-affinity = <&cpu0>, <&cpu1>;
+ 	};
++
++	psci {
++		CPU_PD1: power-domain-cpu1 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++		};
++	};
+ };
 -- 
-Jean Delvare
-SUSE L3 Support
+2.25.1
+
 
