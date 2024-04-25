@@ -1,94 +1,88 @@
-Return-Path: <linux-kernel+bounces-158268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C50F08B1DAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 44D298B1D9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:18:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 021471C23C16
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:19:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 769601C212DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:18:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27B451272C0;
-	Thu, 25 Apr 2024 09:17:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66D0684FD8;
+	Thu, 25 Apr 2024 09:17:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HQBOLnHA"
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AvKF1S/6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 214E5128361
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:17:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 847D38286B;
+	Thu, 25 Apr 2024 09:17:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714036666; cv=none; b=lxoKhuyA3BP6Mte4fj4RAoXzkVkwgrkxcnts5jiHalc1q0J+5CTtMn4w8x3c5XSJbQhmPrd2RBh6UyO/UJysI58mojYESV7zvyMSNxKS66Vmc0dd68FzK9p6TPMqCD6WtjYUCceL8iYrqK/wjvZX7Am8vEL7PXyT2eEKiIIPEt8=
+	t=1714036641; cv=none; b=CyhWXy35/V6nVj0J1cEC4ADeEaoYu9dwKvF0K7GdEBxQd2oJep3NCpFtNPYv1jXzkRQ8DdalwoDqN6SdtsMXbgaqSnSr8dksxltPgcr3vOeWtCQPjanZpHhZkvDb28fVhg2G/iHQQY3qwpVy2pIXna2XOaMxj90MOYbucbP3Gec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714036666; c=relaxed/simple;
-	bh=65YKvGP5ldFEl9ghgHolAKwSIFb4oPQzeVo0l5Pgbv4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=S3lOiyplDuKnpewiV6TcJnEIU/2AAMzLErSYpTX0UscAnCKZJI1BytzYE0uUZgd631Ng1SmmaMk1a7igiFfhRbaY9qDb1I5fCwczmI1Om8FXxbNFzW5c0N/6gS92PJSyLBu3amNOqrN1Ug8YVV71XN2Xd6dwfpehVJdXdNAZ2No=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HQBOLnHA; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714036661;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=w9QN+P4vB8I0CAC9KqWe0wqLc0QQQLpQU5nSVu5xq8Q=;
-	b=HQBOLnHAvyMVhYpOUP0Uy4vb/0VlhxF6hu9ZovWP9+FnnMWH6ZO3dz+BEbGKZdPoUdksWg
-	MvsPvYKnkSYuX60kwCTS2RFbFOPiJYG9INYQrfQsbzEZFcgcJZ8ZhFkV9J/16qhEda74+B
-	rdodoLIv02D7/9owtFkLy+FjIkYsKW0=
-From: Youling Tang <youling.tang@linux.dev>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Youling Tang <tangyouling@kylinos.cn>
-Subject: [PATCH] bcachefs: Use filemap_read() to simplify the execution flow
-Date: Thu, 25 Apr 2024 17:16:59 +0800
-Message-Id: <20240425091659.6148-1-youling.tang@linux.dev>
+	s=arc-20240116; t=1714036641; c=relaxed/simple;
+	bh=RGX/DdMGDDuE1tp0jOp+5wSbZExkujiXoie6YdJkOD0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=RlgMhGEKwVMMT+ne8RJEa9cLBk74uES5857833YYd2oZZLrEoTnqUm2CWNcgnSyM1GybPDlmtOQliKylP1g4pe4ZpOzSTEfMPes1rjjelBEsuR7losFMNRNe07pDOUTvbTto+4K50qRTolz5zrN2Sr+9okZAO2+/SZhQVhXS24o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AvKF1S/6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE121C113CC;
+	Thu, 25 Apr 2024 09:17:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714036641;
+	bh=RGX/DdMGDDuE1tp0jOp+5wSbZExkujiXoie6YdJkOD0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=AvKF1S/6gtoXUv4PzyxQ1C0WVOiwNUK1Eb5Si8BYXRGF1imdQBhKFABUvFUmhIrNv
+	 o/OuEsamc7+qsQZ9Mg6bwdMmHiGJ5wcbDUKc9AvbS4Rvp+zN4cDKFg6V1Mg6HO502a
+	 dpcZpo9gDBqoMjb+YGczYw7K3cRZKpIUxcAehedpPGHYLv8ppEK94XkbclXImpR9Yn
+	 SZCQe2tG3+VcnVecgnjn+CXNijE3K/me3z5FIfHjrrgiZeqOveoTMru61nA5+yMA9f
+	 MkvP/24IjTELCl23B+xMxgRTyu5dos3NrrhDvEjBsYhrE5wykJMIins1XqRQD+1Tuu
+	 Rdec9whJVAW+g==
+From: Vinod Koul <vkoul@kernel.org>
+To: Sinan Kaya <okaya@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ "Rob Herring (Arm)" <robh@kernel.org>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>, devicetree@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+ dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240423161413.481670-1-robh@kernel.org>
+References: <20240423161413.481670-1-robh@kernel.org>
+Subject: Re: [PATCH 1/2] dmaengine: qcom: Drop hidma DT support
+Message-Id: <171403663749.79852.6031928118459897049.b4-ty@kernel.org>
+Date: Thu, 25 Apr 2024 14:47:17 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13.0
 
-From: Youling Tang <tangyouling@kylinos.cn>
 
-Using filemap_read() can reduce unnecessary code execution
-for non IOCB_DIRECT paths.
+On Tue, 23 Apr 2024 11:14:11 -0500, Rob Herring (Arm) wrote:
+> The DT support in hidma has been broken since commit 37fa4905d22a
+> ("dmaengine: qcom_hidma: simplify DT resource parsing") in 2018. The
+> issue is the of_address_to_resource() calls bail out on success rather
+> than failure. This driver is for a defunct QCom server platform where
+> DT use was limited to start with. As it seems no one has noticed the
+> breakage, just remove the DT support altogether.
+> 
+> [...]
 
-Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
----
- fs/bcachefs/fs-io-direct.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Applied, thanks!
 
-diff --git a/fs/bcachefs/fs-io-direct.c b/fs/bcachefs/fs-io-direct.c
-index 09d21aef879a..4072a6ba0d51 100644
---- a/fs/bcachefs/fs-io-direct.c
-+++ b/fs/bcachefs/fs-io-direct.c
-@@ -179,7 +179,7 @@ ssize_t bch2_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 	struct bch_inode_info *inode = file_bch_inode(file);
- 	struct address_space *mapping = file->f_mapping;
- 	size_t count = iov_iter_count(iter);
--	ssize_t ret;
-+	ssize_t ret = 0;
- 
- 	if (!count)
- 		return 0; /* skip atime */
-@@ -205,7 +205,7 @@ ssize_t bch2_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 			iocb->ki_pos += ret;
- 	} else {
- 		bch2_pagecache_add_get(inode);
--		ret = generic_file_read_iter(iocb, iter);
-+		ret = filemap_read(iocb, iter, ret);
- 		bch2_pagecache_add_put(inode);
- 	}
- out:
+[1/2] dmaengine: qcom: Drop hidma DT support
+      commit: d100ffe5048ef10065a2dac426d27dc458d9a94a
+[2/2] dt-bindings: dma: Drop unused QCom hidma binding
+      commit: e83cd59df0959bd9fbec76b7cff0b717ff8bc16f
+
+Best regards,
 -- 
-2.34.1
+~Vinod
+
 
 
