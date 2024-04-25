@@ -1,204 +1,157 @@
-Return-Path: <linux-kernel+bounces-157888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 706A48B1820
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:45:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 861868B1829
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:48:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 077841F25A4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:45:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA8381C23507
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:48:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9153E4C7B;
-	Thu, 25 Apr 2024 00:45:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B94117C9;
+	Thu, 25 Apr 2024 00:48:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pnBOa8Hk"
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="kI1TqP1B"
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C1FC81F
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BDA81F
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:48:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714005922; cv=none; b=HMOk6I0ZDJ+62yiagKaaAY99SlMPQeUQyLQeJ85vdwUlE1nr8qmsK/8XoB+Ye5fFFs9I48L/4puQolvPArqPpF/CgUuKcmiVi0+JYmbflj6rqeJuFXhnuWph8lokRrVVtp+p1PpyOytBBXAhYKDGC5i7gs/4XguBSt7J+ZnW7K4=
+	t=1714006088; cv=none; b=gMASWbnfWoyFf+JOeC9z4oM4JQ4wKpovrTF4XZYPLppDukCStWURCUZPRkCFVq3rVcTJ9y2bmiEQU8D7F6mHqFE4CecKNHXieMllX2HKWINbWdrShVLWQJNTZZRfBHQlj5+kckZq5qOkBYfbsUcq7d+SQZHZT5ywe8FVRcz4dUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714005922; c=relaxed/simple;
-	bh=C9Y7sI7S2lG7PgZ43yy72fujrqM9J0v4uwf6k/xCgvE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=UI+N5heHiwx7ix3CWu0MzLLx3BdXRqIA6TVvrUqUL2BCn6M0WaRXbBZllFPF50JRrUZMttzJ2obgs0Zigo2EDAtQH0bqJEJe5BZWVbWov88HabSWlnzJYpM5obVfWTETU0C83peGLjiH8QJv/nB+rlK1lVCRo76NQABVKjHDob0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pnBOa8Hk; arc=none smtp.client-ip=209.85.214.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1e91766a8c6so4012375ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:45:20 -0700 (PDT)
+	s=arc-20240116; t=1714006088; c=relaxed/simple;
+	bh=1FwFfqE9i616o1VTvMvnmB0Vi4XGdpO5ENmkg5Y9C+c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=spZdkvOlugpxSEZXTGoWCMBbYRMR8Ugl7bLlD9Tt6V7KGRs5Dsl0dAYTP0FY9FE0pySuGEXaDZ7pz4V6xG+crxK0qWqhNfeGzFg5PhRRU6MHhGRit+Km2AYxCFe+UK4ubart9BRp2wbFEm55qi7PysXwlrrUljfUSK7hv2TFsI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=kI1TqP1B; arc=none smtp.client-ip=209.85.167.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c70d8bb618so257463b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:48:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714005920; x=1714610720; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ehGLjycYzRvV+RegBC+30jOD4jldKpLBzIes+g3Te5M=;
-        b=pnBOa8HkR7a4mkmP50aCwSfpKIPU+FdpiJJblUV5hwiKAQH4ctrESEHh92BnFNaoSJ
-         O0+wmX55wbsLNDJAXaIiV8ZztVmxY7bN5fozNn8IaBKvFHL4RcVnSzWRC+j1yeqHeB+r
-         KZ8V2FbxYWDhrZvEoahar9EcCJBe82hXJ/bwQnwjg1hHCFHu6yF0k8WUc14Ur9xCqm0n
-         s6j4bWEy3+4paaYgE2gToY1H10YXE6gTkC4v1iq9WR8SjCCmRCCDAo5cO+OXHrAxgX3F
-         KmK4/YEtfLanvXuCU0beDPLGdVzKYAEMgs7dEDrdoYNvX/fzZxkN0Rurms5PiXSxoiKv
-         bDQQ==
+        d=ziepe.ca; s=google; t=1714006086; x=1714610886; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vuFHLVEWRvr8nT3POIEE+NeoEX4x7+oc0ycZrONvMnY=;
+        b=kI1TqP1BGfOUW+3TMPE2uwIyxhjc6xbmnjQ/Bml9DCoM58rWHuW38/NzytIPAEw+VD
+         AuFw06pEqUad5GJh8iWDM5PFc3PlqJAhvuUAu1SoFtneOqQR2DoCDJvLhywErXTl/tCS
+         kbY3mImmilGRW+yv9zmSuXbvpClVYJGCJHC5et054lL/FrXqTEgjrIB4kRBj3hRWvm2t
+         9aL04cWPSwEl0Wu/ibi0yL8zA8jRSnBSiCcJlHDuKA/cw0HPyqzfRMzzWSaFD5T+Wf3f
+         ZWadrqFY0YCYKLfKOf+uK4uX6xsI1QXntw2jUhtbFINQ7Q0QzfURvxlNxB16nt5kzb7A
+         sTXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714005920; x=1714610720;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ehGLjycYzRvV+RegBC+30jOD4jldKpLBzIes+g3Te5M=;
-        b=aBEL+UdgKgneZmo6BFXy/0bH9YWNdZ3P+QtO9EQNAZ0qWCdrG/fav3+R7OvfOdPY/x
-         +qotXJqvY25Md66XjYp3NoaP+4GWQMGdHbFqcgNTBI0uiANcBiT8Ag84++tmCox14fJf
-         NEiBycid90SNODYbHQGPpthRzrBfT0RaYTuJ11UXW31fftt6yD9l8YeKVH4iZ7TVEvF/
-         6P63J4FDYCnXTmQidVGzgiEJxT30GYtgO7ZZ7qp10xrYDgxVA+B5O//gm4cFIXwjKSB8
-         5jHOIhXKsb+2lNLubDKigvYiqCO4OBGCeDd/9Dpovq2YlnkBb2pZU8KegqvKI1Wa+5rz
-         93ww==
-X-Forwarded-Encrypted: i=1; AJvYcCUuK0OaYTF7HZ9ar6MGFYvxqBLwb4FooIm6kc+EOOJ0NVGB0xNDHd9rQD5V4qYcoa2l2/DT4+W7YphqO/oyMSY7RsKHukQSO+2H1jFa
-X-Gm-Message-State: AOJu0Ywa3japEi+RxlJH9Z8luPteZDZo/InCb8tlzM6+4ZQjtZ8yapey
-	OruH8q0CIXOlkJeL00aelAuYHGpCnYN97sk7tZ0+/0poTJSMjZaJqcO3MU7RtALDrs2skmfhv9S
-	91g==
-X-Google-Smtp-Source: AGHT+IFR9HYBLarlt9ZsOvhUbV8OSiFHhgh7AV7IIXgugq1S0Quy5L1i73/i89wy47ffAjGpD3+fDEtcXsg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:244e:b0:1e3:e6cb:a06e with SMTP id
- l14-20020a170903244e00b001e3e6cba06emr344607pls.5.1714005919640; Wed, 24 Apr
- 2024 17:45:19 -0700 (PDT)
-Date: Wed, 24 Apr 2024 17:45:18 -0700
-In-Reply-To: <20240421180122.1650812-17-michael.roth@amd.com>
+        d=1e100.net; s=20230601; t=1714006086; x=1714610886;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vuFHLVEWRvr8nT3POIEE+NeoEX4x7+oc0ycZrONvMnY=;
+        b=c18we6nbzFrvqjOHvk9cS2+saC/KYYIuBrbddTXUZ04N2ao3t2r3lO+2Kbm1A4hYY8
+         CfGCG7+BrbcISmaXWZFDzkapk90lJapeEkdgkhBStapeglfKFSJWMoj22BDMVbKra343
+         Qpu9/TgiqBPj/belhjKtvaekVgg42K8P9X+TutJt/Uz8+D2cqTJ9vlNocwgP2LcjsUiA
+         8SRcCX4Ckm24B/p7VmQ3G8rZLspM0mQagUR3WA7yM72ok9E1MRZ7mh6pzPtt7aBfqeEX
+         4i9qY6Eiu3hPmoP5jCXtEAgyAq5WfTthKCy1va7mj0O6bmoJBon1jVJ+UUb28KpOVSZo
+         PmtA==
+X-Forwarded-Encrypted: i=1; AJvYcCVe3pJvtuphl2JTQZqzm2UAbSLNHpzpI8sBLhE8vDR/x1j9MmuzUc9xL2sag5oj2ZI5cZYaYOyWwio5UacD2mipdyPKuZpoAyuK8pdQ
+X-Gm-Message-State: AOJu0Yzq8Y5JyOZJcTDFBjz/XkJct8ta5UwmDxf6mLLo4vLbbrjDuYP0
+	MBWK6lCo0UdHe1xZ2WtuvWCuheAU5YPqvng1kcS0KCfe5UKWm/NQjquUEPqCc3w=
+X-Google-Smtp-Source: AGHT+IEPuZwS/Tkiq24z8ESvoiDOcfXfHtKEsJScRX3bkfnzRD6SNCxN7/xPfUqfYppgfpYVzUwNDQ==
+X-Received: by 2002:a05:6870:b527:b0:22e:9792:97ed with SMTP id v39-20020a056870b52700b0022e979297edmr5451364oap.38.1714006085784;
+        Wed, 24 Apr 2024 17:48:05 -0700 (PDT)
+Received: from ziepe.ca ([12.97.180.36])
+        by smtp.gmail.com with ESMTPSA id xi9-20020a0568704f0900b002392041da7dsm2726725oab.48.2024.04.24.17.48.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 17:48:05 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rznHP-00AEjV-Rj;
+	Wed, 24 Apr 2024 21:48:03 -0300
+Date: Wed, 24 Apr 2024 21:48:03 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Tomasz Jeznach <tjeznach@rivosinc.com>
+Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Anup Patel <apatel@ventanamicro.com>,
+	Sunil V L <sunilvl@ventanamicro.com>,
+	Nick Kossifidis <mick@ics.forth.gr>,
+	Sebastien Boeuf <seb@rivosinc.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	iommu@lists.linux.dev, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux@rivosinc.com
+Subject: Re: [PATCH v2 7/7] iommu/riscv: Paging domain support
+Message-ID: <20240425004803.GK231144@ziepe.ca>
+References: <cover.1713456597.git.tjeznach@rivosinc.com>
+ <301244bc3ff5da484b46d3fecc931cdad7d2806f.1713456598.git.tjeznach@rivosinc.com>
+ <20240419125627.GD223006@ziepe.ca>
+ <CAH2o1u5+XD9YN=gdMVtfkyhKoKha0UpwKgOVbCAwOQa+saPfRw@mail.gmail.com>
+ <20240424233950.GJ231144@ziepe.ca>
+ <CAH2o1u4eZ-mRO7hiJzA-pwYDOo0+3vObpBZT3_MXW=zC9mXRbA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240421180122.1650812-1-michael.roth@amd.com> <20240421180122.1650812-17-michael.roth@amd.com>
-Message-ID: <ZimnngU7hn7sKoSc@google.com>
-Subject: Re: [PATCH v14 16/22] KVM: x86: Implement gmem hook for determining
- max NPT mapping level
-From: Sean Christopherson <seanjc@google.com>
-To: Michael Roth <michael.roth@amd.com>
-Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
-	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, 
-	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, pbonzini@redhat.com, 
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
-	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
-	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
-	pankaj.gupta@amd.com, liam.merwick@oracle.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAH2o1u4eZ-mRO7hiJzA-pwYDOo0+3vObpBZT3_MXW=zC9mXRbA@mail.gmail.com>
 
-On Sun, Apr 21, 2024, Michael Roth wrote:
-> ---
->  arch/x86/kvm/svm/sev.c | 32 ++++++++++++++++++++++++++++++++
->  arch/x86/kvm/svm/svm.c |  1 +
->  arch/x86/kvm/svm/svm.h |  7 +++++++
->  3 files changed, 40 insertions(+)
+On Wed, Apr 24, 2024 at 04:54:01PM -0700, Tomasz Jeznach wrote:
+> On Wed, Apr 24, 2024 at 4:39 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Wed, Apr 24, 2024 at 04:30:45PM -0700, Tomasz Jeznach wrote:
+> > > > > @@ -46,6 +46,10 @@ MODULE_LICENSE("GPL");
+> > > > >  #define dev_to_iommu(dev) \
+> > > > >       container_of((dev)->iommu->iommu_dev, struct riscv_iommu_device, iommu)
+> > > > >
+> > > > > +/* IOMMU PSCID allocation namespace. */
+> > > > > +static DEFINE_IDA(riscv_iommu_pscids);
+> > > > > +#define RISCV_IOMMU_MAX_PSCID                BIT(20)
+> > > > > +
+> > > >
+> > > > You may consider putting this IDA in the riscv_iommu_device() and move
+> > > > the pscid from the domain to the bond?
+> > > >
+> > >
+> > > I've been considering containing IDA inside riscv_iommu_device at some
+> > > point,  but it made PCSID management more complicated.  In the follow
+> > > up patches it is desired for PSCID to be unique across all IOMMUs in
+> > > the system (within guest's GSCID), as the protection domains might
+> > > (and will) be shared between more than single IOMMU device.
+> >
+> > The PCSID isn't scoped under the GSCID? That doesn't sound very good,
+> > it means VM's can't direct issue invalidation with their local view of
+> > the PCSID space?
+> >
 > 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index ff9b8c68ae56..243369e302f4 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -4528,3 +4528,35 @@ void sev_gmem_invalidate(kvm_pfn_t start, kvm_pfn_t end)
->  		cond_resched();
->  	}
->  }
-> +
-> +/*
-> + * Re-check whether an #NPF for a private/gmem page can still be serviced, and
-> + * adjust maximum mapping level if needed.
-> + */
-> +int sev_gmem_validate_fault(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, bool is_private,
+> To clarify: PSCID namespace is per GSCID.
+> However there might be more than one IOMMU in a single system sharing
+> the same GSCID
 
-This is a misleading name.  The primary purpose is not to validate the fault, the
-primary purpose is to get the max mapping level.  The fact that this can fail
-should not dictate the name.
+I assume this is because GSCID ends up shared with kvm?
 
-I also think we should skip the call if the max level is already PG_LEVEL_4K.
-Something _could_ race and invalidate the RMP, but that's _exactly_ why KVM
-guards the page fault path with mmu_invalidate_seq.
+> and with e.g. SVA domains attached to more than one
+> IOMMU. It was simpler to manage PCSID globally.
 
-Actually, is returning an error in this case even correct?  Me thinks no.  If
-something invalidates the RMP between kvm_gmem_get_pfn() and getting the mapping
-level, then KVM should retry, which mmu_invalidate_seq handles.  Returning
--EINVAL and killing the VM is wrong.
+If the PSCID is moved into the invalidation list like Intel structured
+it then it doesn't matter for SVA, or really anything.
 
-And IMO, "gmem" shouldn't be in the name, this is not a hook from guest_memfd,
-it's a hook for mapping private memory.  And as someone called out somwhere else,
-the "private" parameters is pointless.  And for that matter, so is the gfn.
+AFAIK the only reason to do otherwise is if you have a reason to share
+the ID with the CPU/MM and the IOMMU probably to coordinate
+invalidations. But if you do this then you really just always want to
+use the MM's global ID space in the first place...
 
-And even _if_ we want to return an error, we could even overload the return code
-to handle this, e.g. in the caller:
-	 
-	r = static_call(kvm_x86_max_private_mapping_level)(vcpu->kvm, fault->pfn);
-	if (r < 0) {
-		kvm_release_pfn_clean(fault->pfn);
-		return r;
-	}
+So I'm not sure :)
 
-	fault->max_level = min(fault->max_level, r);
-
-but what I think we want is:
-
----
-int sev_snp_private_max_mapping_level(struct kvm *kvm, kvm_pfn_t pfn)
-{
-	int level, rc;
-	bool assigned;
-
-	if (!sev_snp_guest(kvm))
-		return 0;
-
-	rc = snp_lookup_rmpentry(pfn, &assigned, &level);
-	if (rc || !assigned)
-		return PG_LEVEL_4K;
-
-	return level;
-}
-
-static u8 kvm_max_private_mapping_level(struct kvm *kvm, kvm_pfn_t pfn,
-					u8 max_level, int gmem_order)
-{
-	if (max_level == PG_LEVEL_4K)
-		return PG_LEVEL_4K;
-
-	max_level = min(kvm_max_level_for_order(gmem_order),max_level);
-	if (max_level == PG_LEVEL_4K)
-		return PG_LEVEL_4K;
-
-	return min(max_level,
-		   static_call(kvm_x86_private_max_mapping_level)(kvm, pfn);
-}
-
-static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
-				   struct kvm_page_fault *fault)
-{
-	struct kvm *kvm = vcpu->kvm;
-	int max_order, r;
-
-	if (!kvm_slot_can_be_private(fault->slot)) {
-		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
-		return -EFAULT;
-	}
-
-	r = kvm_gmem_get_pfn(kvm, fault->slot, fault->gfn, &fault->pfn, &max_order);
-	if (r) {
-		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
-		return r;
-	}
-
-	fault->map_writable = !(fault->slot->flags & KVM_MEM_READONLY);
-	fault->max_level = kvm_max_private_mapping_level(kvm, fault->pfn,
-							 fault->max_level, order);
-	return RET_PF_CONTINUE;
-}
-
----
-
-Side topic, the KVM_MEM_READONLY check is unnecessary, KVM doesn't allow RO memslots
-to coincide with guest_memfd.  I missed that in commit e563592224e0 ("KVM: Make
-KVM_MEM_GUEST_MEMFD mutually exclusive with KVM_MEM_READONLY").
+Jason
 
