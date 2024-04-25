@@ -1,128 +1,143 @@
-Return-Path: <linux-kernel+bounces-158646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB2CF8B2366
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:01:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0C278B236A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:02:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 284C71C21B2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:01:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8B27B28A5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 230A4149E0F;
-	Thu, 25 Apr 2024 14:01:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA44B149DF6;
+	Thu, 25 Apr 2024 14:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="CWylmAt7"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="4frgaUKc"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A4D149DF2
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:01:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91F9C5B201;
+	Thu, 25 Apr 2024 14:01:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714053703; cv=none; b=Z6Y1LskFdAePxq1Qk/31FAqdld0y1R6dj3EVeZl+l6WMy4V7Mu1YFo32qeGBwPlCCCX6VfYCE9obp/J5oylSzatjP2aZN6+ADsgoMua7ioEkZWXklwM7ZDpuxGEHM99f5ViuGiBk+78pTPY2VRpHgluEmEgdueAtxz2eZe2s22k=
+	t=1714053714; cv=none; b=dD1OAEPKv8aXZ18NYnHuucOzTcH1aV3IWs9Y7JH1xvYu9blRmSTnjXjNa1XztEApk/GQdCXzKidYZGlCMAqdz3PXIUxd4oE5uzT6zAFXl7/V7YioHNKrVNN8BPUc2Pw++Woaiet2kgLDEI1bqCsrwVJ+r/6cCn76RasgKq5PGrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714053703; c=relaxed/simple;
-	bh=ulYE0VHNMZy9EO2UbfcdnnLqLAB4c7Fjw+n0PZCpRjA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dilUfyAumNoBUN322qljzDOH/+YAaR5Ssqbpzrzl5/ce7MliJPNbCwHS+GGEe229Su3kOsHy45NUellCkookgYuLuW4TnBuOKm/NdwiQUi2MFGh238Fl73MO1hdIArLOB9V5B0IDJdyEiLXaY24ChsDPezSKY3Y6WH0qfd7hsMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=CWylmAt7; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	s=arc-20240116; t=1714053714; c=relaxed/simple;
+	bh=bTEo1oCkBfk7Xcu5w34Wr/A5wA3MyotrDp/CRfdJjXQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dNs+WgXRND+8ifiWcjKUQK8pEhvHWUpHqnDCYwia81zwcfJgeX10HENgUbGHmTnGnK76wreL6pghSU0xj1PeQoqu/PV1WI+0ps/wfbgPgFV4E/qzG7SX0pEPeZA8FMgP3QrnJAf4G5vGUSvuXYxhGUUXFa49BaYLgl4bwt7TPls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=4frgaUKc; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714053705;
+	bh=bTEo1oCkBfk7Xcu5w34Wr/A5wA3MyotrDp/CRfdJjXQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=4frgaUKcwMyzUIVVe207PbMSjp/UPnr4wAkZsotbfk2MivpbAJbQDtrQKUXInTVcQ
+	 mlQkFxLZ22dJkwyes3xfd8Js3HK2j6w6Y0fztZAWdJU212a/ccSTsjxJ74Xf/106sL
+	 6V7LfOsn1m0/dfj7fU8nQj346/L7QiHPSiy3YzTj6Biw/WpNJiDoSIeDTX2w1b4676
+	 DYyMhoKKKC2x0Is6P1JOme8u6VRSDPzsckvhQTSwQeun4EovRLY+NnOy5ZA0uFvw5h
+	 7630VaJ8LMu/stpSmRftyufsuUiiZAk/V3LAgosS/EkcOf/0u4tbuDJN0l4TfYN1tI
+	 tRYMdcFaNUxIQ==
+Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 82BB7411E1
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:01:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1714053698;
-	bh=Vh9MMkltQi2FaezzyNlR84OxmhjgaayN9uBNja5LyNc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:In-Reply-To;
-	b=CWylmAt7P6vxE//l4V0Ci8m/HrsttJBZ9hpCkyRiNK3ShN7QFIqhPZQHyX8KBmBHw
-	 ATVVEKMgGicekkW6Bqj2UJwSDheIT3O/zKdp06o8Azsd7WaZemSiNWJ/uOLlkUP13t
-	 g3b6TJq1M6C9+Zbb960Ud11/GtMT2K3xvrWyCMizqBR9bRp4/vDhsIPOFIfU6GTxCC
-	 fkXYDzJFcCHVjyRs/Vwn6of53TLbOl6kUC16uXtpjjoNtRSa07dTfcOQELIQrGhn74
-	 Nj9GTcYvu+/U9W1zRsrNYu/Sms0tHkP/9oJEeMk5DTOFL2Ov1ko5GP6PnGISSSU2/k
-	 Ihk2KAH1SrEog==
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5705ef0b425so560285a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:01:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714053698; x=1714658498;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vh9MMkltQi2FaezzyNlR84OxmhjgaayN9uBNja5LyNc=;
-        b=NHtrozP45PHtYafVtI2oY9nRi/BPa1zpH+pPdGY0AVu24Eu1Y0ZIKtRukcNZTH3780
-         ssuwU/FxixX0+V//P2hBdrvj1WZaR1vWWh3pVB3Pw0A2wMzmMmb/15bTQdknn8sNqbk0
-         ADCFYGT8q1kERuaZHEzUmgz8vWDTH8uxz0zYH4v1J+UOGDQMjVwQckJP0OUFbTe9rIir
-         PgGqCayBws8mPNOxeZDZqhgMGhXEWIgtMsdPcEtxsHK3UrxHkx6JK1+SAEo1BDi3h/kQ
-         cCwGcY1g7Rs7SMuQTXq7p7JVKhKnniaNgAWgOMqgHOgJO3Hc2YDICKbKUxI15QT9qB2e
-         fLSw==
-X-Forwarded-Encrypted: i=1; AJvYcCUnUJFhEh2tqNKJcSo6YH1YJZBfxQ775LKWK5O421BqXOHGYz/QlSBiMjyWLOI/DGWOpUNFEVoGqcezJ8cSRvdveutGjb1KqGSTWUq1
-X-Gm-Message-State: AOJu0Yw9aZBVCw/5YfdYKFtko0HQVwoCdMI/AB2qiYGn4XYvXVKSPE2y
-	KnGahf+D+fI6lDs+ILfLAufYyPXna/XIzCmR+AqdQzjAo7tAFc0IDHoi5ZZn083b4IW8ArQGvZK
-	d3gKy2eH4WMS94v+oLqFBw/dxoAgmZMq59jBzT60OPAA2CDoRybgNX9buGx1042cgVipBPoU2yJ
-	HCzg==
-X-Received: by 2002:a17:906:4a10:b0:a58:9707:6857 with SMTP id w16-20020a1709064a1000b00a5897076857mr3086703eju.12.1714053697250;
-        Thu, 25 Apr 2024 07:01:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFUGdvGOdoFM2DQyrp81U9KOxMYphBYPxvDtGDUe2+ZgkEDQFsgVuviPGlX+re7UWJw+WvOAA==
-X-Received: by 2002:a17:906:4a10:b0:a58:9707:6857 with SMTP id w16-20020a1709064a1000b00a5897076857mr3086667eju.12.1714053696684;
-        Thu, 25 Apr 2024 07:01:36 -0700 (PDT)
-Received: from localhost (host-82-49-69-7.retail.telecomitalia.it. [82.49.69.7])
-        by smtp.gmail.com with ESMTPSA id u24-20020a1709060b1800b00a58767c1120sm3711046ejg.10.2024.04.25.07.01.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 07:01:35 -0700 (PDT)
-Date: Thu, 25 Apr 2024 16:01:33 +0200
-From: Andrea Righi <andrea.righi@canonical.com>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] selftests/bpf: Add ring_buffer__consume_n test.
-Message-ID: <ZipiPZia5iY_UsHQ@gpd>
-References: <20240420155904.1450768-1-andrea.righi@canonical.com>
- <ZiVy9bYrX-w24huD@krava>
- <Zin12J-emVljvVrJ@gpd>
- <ZipLQmwPd--EajCk@krava>
+	(Authenticated sender: koike)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D490A3782153;
+	Thu, 25 Apr 2024 14:01:40 +0000 (UTC)
+Message-ID: <96624d87-2198-4176-9b98-208595380132@collabora.com>
+Date: Thu, 25 Apr 2024 11:01:38 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZipLQmwPd--EajCk@krava>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm: ci: fix the xfails for apq8016
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>, Rob Clark
+ <robdclark@gmail.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20240401204859.24223-1-quic_abhinavk@quicinc.com>
+ <357b6395-5fae-38c9-8b53-5edc9fcbae32@quicinc.com>
+Content-Language: en-US
+From: Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <357b6395-5fae-38c9-8b53-5edc9fcbae32@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 25, 2024 at 02:23:30PM +0200, Jiri Olsa wrote:
-> On Thu, Apr 25, 2024 at 08:19:04AM +0200, Andrea Righi wrote:
-> > On Sun, Apr 21, 2024 at 10:11:33PM +0200, Jiri Olsa wrote:
-> > ...
-> > > >  static struct test_ringbuf_map_key_lskel *skel_map_key;
-> > > > +static struct test_ringbuf_n_lskel *skel_n;
-> > > 
-> > > seems like there's no need for this to be static variable
-> > 
-> > Can you elaborate more? I think we want these pointers to be static to
-> > limit the scope to this file, no?
+
+
+On 08/04/2024 14:04, Abhinav Kumar wrote:
+> Hi Helen
 > 
-> I meant to move it directly inside ringbuf_n_subtest function,
-> I don't see reason why it's defined outside of that function
+> Gentle reminder on this.
+> 
+> If you are okay, we can land it via msm-next tree...
+> 
+> Thanks
+> 
+> Abhinav
+> 
+> On 4/1/2024 1:48 PM, Abhinav Kumar wrote:
+>> After IGT migrating to dynamic sub-tests, the pipe prefixes
+>> in the expected fails list are incorrect. Lets drop those
+>> to accurately match the expected fails.
+>>
+>> In addition, update the xfails list to match the current passing
+>> list. This should have ideally failed in the CI run because some
+>> tests were marked as fail even though they passed but due to the
+>> mismatch in test names, the matching didn't correctly work and was
+>> resulting in those failures not being seen.
+>>
+>> Here is the passing pipeline for apq8016 with this change:
+>>
+>> https://gitlab.freedesktop.org/drm/msm/-/jobs/57050562
+>>
+>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
-Oh I see! Yeah, that makes sense, I'll send a v3 soon.
+I'm sorry about my delay.
 
-Thanks,
--Andrea
+Acked-by: Helen Koike <helen.koike@collabora.com>
+
+I'm also merging it to msm-misc-next.
+
+Regards,
+Helen
+
+>> ---
+>>   drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt | 13 +------------
+>>   1 file changed, 1 insertion(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt 
+>> b/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
+>> index 44a5c62dedad..b14d4e884971 100644
+>> --- a/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
+>> +++ b/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
+>> @@ -1,17 +1,6 @@
+>>   kms_3d,Fail
+>>   kms_addfb_basic@addfb25-bad-modifier,Fail
+>> -kms_cursor_legacy@all-pipes-forked-bo,Fail
+>> -kms_cursor_legacy@all-pipes-forked-move,Fail
+>> -kms_cursor_legacy@all-pipes-single-bo,Fail
+>> -kms_cursor_legacy@all-pipes-single-move,Fail
+>> -kms_cursor_legacy@all-pipes-torture-bo,Fail
+>> -kms_cursor_legacy@all-pipes-torture-move,Fail
+>> -kms_cursor_legacy@pipe-A-forked-bo,Fail
+>> -kms_cursor_legacy@pipe-A-forked-move,Fail
+>> -kms_cursor_legacy@pipe-A-single-bo,Fail
+>> -kms_cursor_legacy@pipe-A-single-move,Fail
+>> -kms_cursor_legacy@pipe-A-torture-bo,Fail
+>> -kms_cursor_legacy@pipe-A-torture-move,Fail
+>> +kms_cursor_legacy@torture-bo,Fail
+>>   kms_force_connector_basic@force-edid,Fail
+>>   kms_hdmi_inject@inject-4k,Fail
+>>   kms_selftest@drm_format,Timeout
 
