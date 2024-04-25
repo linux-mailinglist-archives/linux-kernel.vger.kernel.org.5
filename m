@@ -1,293 +1,229 @@
-Return-Path: <linux-kernel+bounces-158808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAF758B2529
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:33:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DFA18B252B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:35:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 497731F21AD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:33:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C124C1C21908
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:35:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9948514B086;
-	Thu, 25 Apr 2024 15:33:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0DD614B08C;
+	Thu, 25 Apr 2024 15:35:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QIbvvrkK"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="UzmbdrpU"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2063.outbound.protection.outlook.com [40.107.21.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2FAC1494C7;
-	Thu, 25 Apr 2024 15:33:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714059207; cv=none; b=C+vtiFCZ0xJMu0D3vWt3aW1GYr6qVkquiZH4BbRJaREaYscirYSuHylOO1nap1wAbkjJi9Body3FYs4eOMYEQXYqGMLpOzYrbqge3Lwu7ggx9+X1euZ5G5n8QJmZ4ALw59KsNbYSazcO8QV/TNu7GdBkk6FzcPvTm/DtQlxKgyk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714059207; c=relaxed/simple;
-	bh=uETvjuL6VA80oZb6nmMYBmeEgAfME0bzzFzfDfGfFFU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=e7XWmwDZBMb/8TebfpN4LnRK1p1F99heVd5UVgEkqrQA/btGj4nawpYRIDC6CaWNDG8uzUCtT5wDehlBqk/SaOyF1sHxFWL7xL93zOFj1oPCH88IiHEzK5fRPXp3y9XNCM3QyPRSe/X8cIDH3XD8hB3CLWTT3hCEonGbzQZsI0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=QIbvvrkK; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 41CF9C0003;
-	Thu, 25 Apr 2024 15:33:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1714059202;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=7GD0LI976aIJ2x0Og8dFfyfrbQnj6djVaacg12k0eY4=;
-	b=QIbvvrkKutyTbQoJvvoKl2gfnk4fVOIxA6fEWWKm/5aPl392QS02ydABVQUKUCCjz2oQyU
-	kyObJgpB2PKZojlObiXlMyo4G4bt4NlfrZsDsEdTsWy2bO4i5GrfU2OLuWU1iqKhOIsy0l
-	dSde//6/ttIebJM3rC5bP7OFRMsijtuVpXcuuDKnCwNipqJ1jz+dl58i8W8+ck+s4ZiHXr
-	Xvw81uhn3P59oRzW9spDIahIrQsKOAJfO0NjYJi9uAiEn1w2bYWCmIBOvmvQMjfZl2XOPI
-	pS5cLAfgupKyv2vOg4jmMFLC0kNBSrZ0mQN74AVopcOp0vNgcBi74Xo59sI8Tw==
-From: Thomas Richard <thomas.richard@bootlin.com>
-To: rafael@kernel.org,
-	daniel.lezcano@linaro.org
-Cc: rui.zhang@intel.com,
-	lukasz.luba@arm.com,
-	linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	gregory.clement@bootlin.com,
-	thomas.petazzoni@bootlin.com,
-	theo.lebrun@bootlin.com,
-	u-kumar1@ti.com,
-	j-keerthy@ti.com,
-	Thomas Richard <thomas.richard@bootlin.com>
-Subject: [PATCH v4] thermal: k3_j72xx_bandgap: implement suspend/resume support
-Date: Thu, 25 Apr 2024 17:32:38 +0200
-Message-Id: <20240425153238.498750-1-thomas.richard@bootlin.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90BD1CF8A;
+	Thu, 25 Apr 2024 15:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.63
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714059300; cv=fail; b=n33pALEyHdE1muHSK/m7gt1NrZaqgSSV5fM2dpy1G9I+qGYaUXHeschgFyZmyaDcPsD7EarI9UrgIi9RMkhRPwRvw3gk1Y82uqYQYXvxtJ3hGjimNgTU6TMkiVKC3bl1vMZe69tvrRHnrfeXvHCufXk6ANgcXdfo7Euwlgqlvd4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714059300; c=relaxed/simple;
+	bh=ZkHRbbzmumSaGsE+/ljDDyVcXbpNuq6W6vJcwHIIZ98=;
+	h=From:Subject:Date:Message-Id:Content-Type:To:Cc:MIME-Version; b=j3eBZNg/sWLfvOsjJVqDEHg8WP5M5PWT6BV2j3Uewf10wqhXNUkKs0ZGpfwM/nNbVmDwe6L4z3Z8J6yqlFajHMiXngSb7SyidCGN+G5zkDRqdEfTT3c4+1cfW3ESlea2sZ+/hf+5M+5OEs+kwop/xFOw/6oJkFzaeAQ1WD8oqjI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=UzmbdrpU; arc=fail smtp.client-ip=40.107.21.63
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OQARlcxXkzx4PR2BxIbyOeRnTbmlbuXgmUDxwAFBsCzjm7tzRa0SHlHoWSzzKksQKNvxcemmeXc3OGxC+rtaJ95kkP6BJUvjLoVvaInxi/D0gj/mFtPhemmk+nPdqRqV/QiJhT0vmfAvZ7cUuukQ3WEmLgIvisJqNdG59iUK5zNL8jr7skUpQMvNy12UePmDlV8y9JjWR2OXwxn4lAa7XHCz3h8xOKzOH2LFzN6zP8SgSUOvCJyxm/J04DePhUxGEC9/614egNo00ol9qZnvHUDxAGfdrYhZu0H9YZNIf8KTVzuZGo52z8C40VHai2fctjSG7AWQ4m870Ybk4kjaOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=F/+Hk8PRdHtM4pvl9ueqaqoloknrvfi+d7L0BpGvuVg=;
+ b=YLxich6peQyIZA1UshFkJ0XN9SoPML0mWpBP9VOw602qQhMqAa7lBB8z+bJWxt+VcgHt117nBwbEYwbE3PuXsmY/6rUd1nVXR3yC/MPvo9mBfOolOoOodzvytAA8I98jIvLsszZCJvEzH6zzSb8fjOu0frR21heIegQr6PuysbNTmJ34TniwkEnzJcudGhaaxYHQaInnkgaXbiWa+xZootYxaq6ryq/IMs/cEq+gmfQ8WNc4IEVJybrQOODh1Y3R1QEA9dPLtXVzJBrjBpwYbcuzQNUKteScKeO+7woWalV85ygYpShZHqzQB8XuTn2+biCCg84R2tTUp3C9wNgdQQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=F/+Hk8PRdHtM4pvl9ueqaqoloknrvfi+d7L0BpGvuVg=;
+ b=UzmbdrpUeSQ5hcyU1shFKxZr/Fc6IMcjK3atpC/amKfR4RG4We32YhX7TMo6lfxD1GTrvJG7NYhlwisAvKHzFf50DSrS/UIVYZVcXGKwq2wkpr45HNxxSIAFKC99RfK+EQ/nRoCOKWuaZVbk1B1SOpLQbuNFsqOqPJmObbhRfmg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by DB8PR04MB7020.eurprd04.prod.outlook.com (2603:10a6:10:126::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Thu, 25 Apr
+ 2024 15:34:56 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7472.044; Thu, 25 Apr 2024
+ 15:34:56 +0000
+From: Frank Li <Frank.Li@nxp.com>
+Subject: [PATCH v5 0/3] arm64: dts: imx8dxl: add audio support for imx8dxl
+Date: Thu, 25 Apr 2024 11:34:40 -0400
+Message-Id: <20240425-b4-dts_dxl_audio-v5-0-46397f23ce35@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABB4KmYC/33NwQrCMBAE0F+RnI1sNhvTevI/RCRpVg1oWxotF
+ em/G71YoXicgTfzFIm7yElsFk/RcR9TbOoczHIhqrOrTyxjyFkgIAEBSk8y3NIhDJeDu4fYSEv
+ eAYIGZ1Fk1nZ8jMNncrfP+RzTreken4devds/Y72SIAOuAxpfkINiWw/tqmqu4j3V44SrYoZj5
+ kyMlqzXjspfricc59515gaUNUoddVnyL6cp1zOcMofKWPY2a2e/fBzHF+weFulrAQAA
+To: Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>
+Cc: devicetree@vger.kernel.org, imx@lists.linux.dev, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Frank Li <Frank.Li@nxp.com>
+X-Mailer: b4 0.13-dev-e586c
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1714059292; l=1670;
+ i=Frank.Li@nxp.com; s=20240130; h=from:subject:message-id;
+ bh=ZkHRbbzmumSaGsE+/ljDDyVcXbpNuq6W6vJcwHIIZ98=;
+ b=lEsNeZ8CR+sVDniTYvGaOqIpmJQbvXTUvw2RAEnnsU31EISu8iPbTNQJQ8hjua7YRNcmG3mq/
+ Xax0XE+Cp9ACPMxBZC66+mkkga8FCe7lKFxRz74gOL/D5rVMj7as4Mb
+X-Developer-Key: i=Frank.Li@nxp.com; a=ed25519;
+ pk=I0L1sDUfPxpAkRvPKy7MdauTuSENRq+DnA+G4qcS94Q=
+X-ClientProxiedBy: BY3PR10CA0002.namprd10.prod.outlook.com
+ (2603:10b6:a03:255::7) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: thomas.richard@bootlin.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DB8PR04MB7020:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9f44477f-b927-4aba-3721-08dc653d423d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230031|366007|1800799015|7416005|376005|52116005|38350700005;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?cmFUS2JmSGtUWXFueFNsL1ZvMTFPR2N6OEhjM3lyVS9XM3hDWmtiQWNYRFk0?=
+ =?utf-8?B?cUp5MlRCYnViSjZFYVMrdzRLSWNjRjNiQ29aRG9jeURhYmV1SWRJQzZGSTJ0?=
+ =?utf-8?B?WmRUWk9pdmJhbWF1aFh2cEUyWk4wTkNhNVBodEZxSnREMS9MT21yTWVtQ1Fz?=
+ =?utf-8?B?TWREMXBsRVV6T2xWaGJuRlowMGtkNXROMjZ0a0lxdkVXbjBodXZWendzc0Fa?=
+ =?utf-8?B?MDErWmNwWlQ3eE5Cczc1VXRZRUtaSi8yV3FDaysycURDdTJ1TzFEdHJGdXF4?=
+ =?utf-8?B?c0Z2VmVoOVZoMThZZ21kcERhbWZ2elp5am55eldjOTJFM290UVNqUkFnbHYv?=
+ =?utf-8?B?QlA4RUxVVm5NaExROERpK05xRnVaZE5MZnBDNnlGbzdwYlVOaWxzTWNNUEhG?=
+ =?utf-8?B?QWJ4OWkwNTVNZFpiUTFhUjhvSmlLSjRLdE1uckFWT2ZYUWF6SHhuUjliOGc3?=
+ =?utf-8?B?YTBLRmpPWnVNMlppY3NqclpWZ1NOSmEzTXpPZnErUEFTSlc1UElUNjFYbVpY?=
+ =?utf-8?B?UkNtN1U2Ym8rYnVRNmtjTnRPTW5JTmplOUJCSTZDOEhHOGVLVCtqY1JtMTFn?=
+ =?utf-8?B?M3RMVGthQkhJR09rejdzMVBLSHNVZWF4c0JNYXFMLy83R1g5OFR0L2p1a2VW?=
+ =?utf-8?B?RUg5ZDFHWFlwMnRmRkVVSkk2ZVVxc2FPcXdxLzk1L0treGl3UW42VXN2eFdi?=
+ =?utf-8?B?aEQ5VzNleEJqREFVOXpwMGdzN0p2N2JLVm9Lb3ZRcFJyaU55QktsV1ZVajJU?=
+ =?utf-8?B?TGR2dXpiL2JSeUM0N1l1Tm1CUExTNHBQZ281bmx3SHlQOWx5d3J3UzltSzQ3?=
+ =?utf-8?B?TkgyK1RTalhBUld1ZGloakNycEdHYVlYd09Idzhpc2cvQzFNNmFzMUVSSlpu?=
+ =?utf-8?B?bmRWeUZyanZtSkJtdVdqRkNOZXYzL1ZiWHRRdGY2UXZVTjVPSjRiK1JFMGNH?=
+ =?utf-8?B?ZDkzN1doM3F5Qzl0OHc2cTJwOUtJckQxWmUxSGlVbzUvUlpDSlYrZDg5NzBB?=
+ =?utf-8?B?eEJtYXRJdmZyYU5RZkt0cnovNjhGcUNlcGxCZUpxeW43ZGd4bHFGTG0zZ3lD?=
+ =?utf-8?B?RTZtWHpyUFlrZE1mYzNQczRKeDJKL0xrUEh3QlF2NnllbUZlRzQyWDkxSFl6?=
+ =?utf-8?B?Qk5SWlBXWlRESjNzOVRST1FmWUxtSHJYRitESEpzM3BDRkZuTUxQY1MrSHJZ?=
+ =?utf-8?B?WHM0Yk5pNVI0SWJZZEVKMGhmTFpXL0hwQXBGL29pNHV6QVNGaVlQRUs4RjFB?=
+ =?utf-8?B?YzAzbHdBR3JCSFV4MC9ETTA4dWU1OXB1SkhRWUdadVhLRzAwMUNHVzQ5RS90?=
+ =?utf-8?B?SE5GS3BNUEU1bC9ENEh6cHo5WmdxcHZtTDNYczNocDlaMS9tQWEvdDJwYmQ2?=
+ =?utf-8?B?VHQyeXJlT0lDNU9RKzJGVldhNmF4UkU4Nlp2eDZ4UFp0ZVFGaEpxS1hwb2d4?=
+ =?utf-8?B?UG1Zd1NJbEFiNURVRmtGT0FyTmVLTDFqelcyekNQT1hZL2dtVm1MTGtaaXJn?=
+ =?utf-8?B?V2tHNkxCbUNiNkpueDNGaXRSL3EvbU5oY3VhOU8xSkMzMXRJeXJuSnQxN0Ro?=
+ =?utf-8?B?N0NraTNOMWpGRjhSZ1VGVFZjZVNPc0ZqUmEveVNvWjlvYnRFbm5CaFJFZ3Vp?=
+ =?utf-8?B?bTJGWnNKOG43RzFRQm1YWDNUN2FFcElaSml4QndkU3M1NnIvRklvS3ZwWXAr?=
+ =?utf-8?B?Rm9GUmZwVng0WlVNZTQ2WlF0MGxZYzF3V1VXTzBrdUZvTTFYRGdsSGVRPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005)(52116005)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SXBzLzI4UXBhSzg5dHM0L01SWmtLRVFwVTZENVg5VW5FYys2Z01QQVM3aVlY?=
+ =?utf-8?B?eVBZZ3JOdVVhTERrbWhKWVdXaHg5WmtUWWZ6Ujk1QS9VaVNhWWltOFRvYzk0?=
+ =?utf-8?B?bTZVOHhwWlNXNVYyNTVnajBWQVlEb0tQRzcxaVFFUGNXOG1nYTVvZEV4Uzhy?=
+ =?utf-8?B?Z1VSOS9IR1FSNExGay9JL3JtUnB0Yy9TTTFNS1NUdit3WDZrUS9zRnIwSmdr?=
+ =?utf-8?B?WVhqalV1a2xEWVprVFFMOHRlYW5oUTVwRnlaRDJybWpFQ0VpQnJoRVh1aWJB?=
+ =?utf-8?B?OTJGQTNzNXRPdHRTbXpWQzRFUDJyQy9PWHBSQi9nOE4wZ2JKRUZ4Qy93cDNG?=
+ =?utf-8?B?ZDNoOXZaNWgwRDJIRjNNcXJwV29FRUduQi9kZ2c1RFdOM0lDZnlySllueW9G?=
+ =?utf-8?B?SFRxQVJzdWI1UUtWV1Fkd240aGFQaFFSRndPRUc4Z0M1eEV0V01lVFd2UVFu?=
+ =?utf-8?B?VjY3eHNBdXdVV3h4bi9ES2cwTUYwbzNMUzBNQU91clRFZUIyV0p5RVdMQU92?=
+ =?utf-8?B?ZGwxTFBZZWRTNjdrUFcra3MybUNSdzhUT0EwN2xPZ29BWVhyNkdzMVlWYk9H?=
+ =?utf-8?B?a3NWaTFKV3dGU1pNZWQwbFRwUmxjWS9DQmh5UXhRTTRJdmxwRE01bVRreDg2?=
+ =?utf-8?B?RTRJcGlzUW8rRVR5NnRMY1hJdURobVN2bzFBdk5iaGlEOFhSeUcxM1Z4a3Z0?=
+ =?utf-8?B?RFBmV1U2OUFkbklYUndVNVpSRXovRkVLSjhJOEZuaUtzcUhYbXl2dXoraHNI?=
+ =?utf-8?B?dEEzcjVZTjN6Z1paTkJSMXR2bVMyK0RCT3pWNmJzM2V2bTVkR1o4b2xGMjVE?=
+ =?utf-8?B?dEVzUWN6b29uZDVNczFXdGxQb0h6NzVWQkpWbERmVG5DSng0ZnlhVGpYQVFB?=
+ =?utf-8?B?bld4Y3hlUTBTd0EwdUlqRy9IS0xFbnlmZVdjZFpwVVFZZkJuYnBYQ0pUeGJZ?=
+ =?utf-8?B?Zks4Y3BZMzNiWURuVVFXSjczL2FzWkhFTjVNWEcrNm0vdlpYWDdVRzJGMTQ0?=
+ =?utf-8?B?SHFFdDR4K1hwcllmNXA3eUVueDJEc0VnY0tEa2VtTVJ0b3hvRG5KQVJUc0N4?=
+ =?utf-8?B?dXM5ZCtMR3pNN0M1cmlaL3hCd0pTS0hIVVFnTUU0S1NNWWFtTmpSSTAwRy9t?=
+ =?utf-8?B?V0VRWkYyMVBkcGNFSEx2R2FUamplL0E3WGVua1ZlY2ZVWjhIay9hVWhCUWJS?=
+ =?utf-8?B?N05OejFNZEVBVElsdzdnVjdKdkNUbHl5UWNVYnJqUWhFWWVjWGx0dUJGMzdt?=
+ =?utf-8?B?d1lDN2FUYm5kelR3bWVhUVlIWTVQTjRZd2ZNblh4WjJ3dGxOVXhrV29nTUdm?=
+ =?utf-8?B?MS9RaHJSNFRsOVgxTlNFWkYwNXVBZHNlVVJhazhNS1lkT2FWeFFvcmIvdkN0?=
+ =?utf-8?B?OC9iQ3Z3NFZiYmJaeERMQU9mQmhIR0F4L1hsMDg4bHBNVjJEUUdyMXFxQ000?=
+ =?utf-8?B?dG5EYlRlYkk0eG9tZ3Y5aUl6SjZGRUtnL1lSWmdVUkVuNUFvdlZvSVpaNFEr?=
+ =?utf-8?B?cTRIcTIydjlZNTdTYitqeGpCbkdJa1pQN3ZSaFlRNHo4V2pqSkgwTnZqSXVm?=
+ =?utf-8?B?aWF0UVIvNmJkNWV5bmlFU2pONENmV3lFaEwzc3J6eGgxQlk1WW1YU2o0ZHN6?=
+ =?utf-8?B?SUp1T2tTQjg3c05XMVBsbEFxa1AxZ0dvOStIOVJhRUpRM3BleCswV01wZkU3?=
+ =?utf-8?B?R0RZSG4vSENGSEtyT2xzV2lBRCtkazVSVXAwZzlJaTVHS2ZOdzF4OUJiVnlV?=
+ =?utf-8?B?U0ZwTW95MGdDNW1TUkZtUDUzelJ4V0psV1dFRjA4ZldBWmgyM2xlZU0rdk9G?=
+ =?utf-8?B?RjFBSCtRUmVIamt0aFEvVVl4WUx5eGN3S0lZY1ZpWngyeXpTZm5zVWZPc1dU?=
+ =?utf-8?B?V0hYa05HUVVZd0dFZHpQYTBGVXRobkVjb1RWNEVzQzYvQlJpUmMwVG5vUDNs?=
+ =?utf-8?B?NjU3VlRqMXltWENkcHI1TDBReC8vb3Ayb1RWTEZLNE42NHQ1SnFiR2pueGt6?=
+ =?utf-8?B?anJMNER1NlYvdENsVUU3OWdlMEg0aEgxVE5nMGdiNW5uNVg1S0pjMzZtb3hm?=
+ =?utf-8?B?OVA5VkE2cHBFSUt0a1FYT09WZlVMOFptcDVuY3o5aEFDNEEvWnBMV0xVYU9v?=
+ =?utf-8?Q?jf+4=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f44477f-b927-4aba-3721-08dc653d423d
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 15:34:55.9390
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8KswqgY+BWDQb0uyLJMZOU4txQUIE+gRlDxBFIemanyU1amHfxE29MgI3Pcxy9hYHeK/nqIqe2Rmr4bqXYVKcQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7020
 
-From: Théo Lebrun <theo.lebrun@bootlin.com>
+No new warning add
+by make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  CHECK_DTBS=y freescale/imx8dxl-evk.dtb
 
-This add suspend-to-ram support.
-
-The derived_table is kept-as is, so the resume is only about
-pm_runtime_* calls and restoring the same registers as the probe.
-
-Extract the hardware initialization procedure to a function called at
-both probe-time & resume-time.
-
-The probe-time loop is split in two to ensure doing the hardware
-initialization before registering thermal zones. That ensures our
-callbacks cannot be called while in bad state.
-
-The 100ms delay in the hardware initialization sequence was removed.
-It was initially added to be sure the thresholds are programmed before
-enabling the interrupt, but in fact it's not needed (tested on J7200
-platform).
-
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-Acked-by: Keerthy <j-keerthy@ti.com>
-Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
 ---
+Changes in v5:
+- remove fsl,imx7d-evk-wm8960
+- Link to v4: https://lore.kernel.org/r/20240423-b4-dts_dxl_audio-v4-0-0c57eb7399a7@nxp.com
 
-v4:
- - Remove the 100ms delay in the hardware initialization sequence
-v3:
- - Remove __maybe_unused attributes and use the magic of PTR_IF()
-v2:
- - Fix warnings/errors reported by kernel test robot
+Changes in v4:
+- fix wm8960-2 and wm8960-3's audio-routing =
+- Link to v3: https://lore.kernel.org/r/20240422-b4-dts_dxl_audio-v3-0-5017511f399e@nxp.com
 
- drivers/thermal/k3_j72xx_bandgap.c | 111 ++++++++++++++++++++---------
- 1 file changed, 78 insertions(+), 33 deletions(-)
+Changes in v3:
+- change bt_sco_codec to 'audio-codec-bt'
+- 'compatible' to first
+- audio-routing = "Headphone Jack", "HP_L",
+		  "Headphone Jack", "HP_R",
+- remove extra space in fsl,asrc-rate  = <48000>;
+- align clock at assigned-clocks =
+- using tab in pinctrl_sai<n>
+- Link to v2: https://lore.kernel.org/r/20240418-b4-dts_dxl_audio-v2-0-e4e2747b3a49@nxp.com
 
-diff --git a/drivers/thermal/k3_j72xx_bandgap.c b/drivers/thermal/k3_j72xx_bandgap.c
-index c74094a86982..9bc279ac131a 100644
---- a/drivers/thermal/k3_j72xx_bandgap.c
-+++ b/drivers/thermal/k3_j72xx_bandgap.c
-@@ -178,6 +178,7 @@ struct k3_j72xx_bandgap {
- 	void __iomem *base;
- 	void __iomem *cfg2_base;
- 	struct k3_thermal_data *ts_data[K3_VTM_MAX_NUM_TS];
-+	int cnt;
- };
- 
- /* common data structures */
-@@ -338,24 +339,52 @@ static void print_look_up_table(struct device *dev, int *ref_table)
- 		dev_dbg(dev, "%d       %d %d\n", i, derived_table[i], ref_table[i]);
- }
- 
-+static void k3_j72xx_bandgap_init_hw(struct k3_j72xx_bandgap *bgp)
-+{
-+	struct k3_thermal_data *data;
-+	int id, high_max, low_temp;
-+	u32 val;
-+
-+	for (id = 0; id < bgp->cnt; id++) {
-+		data = bgp->ts_data[id];
-+		val = readl(bgp->cfg2_base + data->ctrl_offset);
-+		val |= (K3_VTM_TMPSENS_CTRL_MAXT_OUTRG_EN |
-+			K3_VTM_TMPSENS_CTRL_SOC |
-+			K3_VTM_TMPSENS_CTRL_CLRZ | BIT(4));
-+		writel(val, bgp->cfg2_base + data->ctrl_offset);
-+	}
-+
-+	/*
-+	 * Program TSHUT thresholds
-+	 * Step 1: set the thresholds to ~123C and 105C WKUP_VTM_MISC_CTRL2
-+	 * Step 2: WKUP_VTM_TMPSENS_CTRL_j set the MAXT_OUTRG_EN  bit
-+	 *         This is already taken care as per of init
-+	 * Step 3: WKUP_VTM_MISC_CTRL set the ANYMAXT_OUTRG_ALERT_EN  bit
-+	 */
-+	high_max = k3_j72xx_bandgap_temp_to_adc_code(MAX_TEMP);
-+	low_temp = k3_j72xx_bandgap_temp_to_adc_code(COOL_DOWN_TEMP);
-+
-+	writel((low_temp << 16) | high_max, bgp->cfg2_base + K3_VTM_MISC_CTRL2_OFFSET);
-+	writel(K3_VTM_ANYMAXT_OUTRG_ALERT_EN, bgp->cfg2_base + K3_VTM_MISC_CTRL_OFFSET);
-+}
-+
- struct k3_j72xx_bandgap_data {
- 	const bool has_errata_i2128;
- };
- 
- static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
- {
--	int ret = 0, cnt, val, id;
--	int high_max, low_temp;
--	struct resource *res;
-+	const struct k3_j72xx_bandgap_data *driver_data;
-+	struct thermal_zone_device *ti_thermal;
- 	struct device *dev = &pdev->dev;
-+	bool workaround_needed = false;
- 	struct k3_j72xx_bandgap *bgp;
- 	struct k3_thermal_data *data;
--	bool workaround_needed = false;
--	const struct k3_j72xx_bandgap_data *driver_data;
--	struct thermal_zone_device *ti_thermal;
--	int *ref_table;
- 	struct err_values err_vals;
- 	void __iomem *fuse_base;
-+	int ret = 0, val, id;
-+	struct resource *res;
-+	int *ref_table;
- 
- 	const s64 golden_factors[] = {
- 		-490019999999999936,
-@@ -422,10 +451,10 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
- 
- 	/* Get the sensor count in the VTM */
- 	val = readl(bgp->base + K3_VTM_DEVINFO_PWR0_OFFSET);
--	cnt = val & K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK;
--	cnt >>= __ffs(K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK);
-+	bgp->cnt = val & K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK;
-+	bgp->cnt >>= __ffs(K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK);
- 
--	data = devm_kcalloc(bgp->dev, cnt, sizeof(*data), GFP_KERNEL);
-+	data = devm_kcalloc(bgp->dev, bgp->cnt, sizeof(*data), GFP_KERNEL);
- 	if (!data) {
- 		ret = -ENOMEM;
- 		goto err_alloc;
-@@ -449,8 +478,8 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
- 	else
- 		init_table(3, ref_table, pvt_wa_factors);
- 
--	/* Register the thermal sensors */
--	for (id = 0; id < cnt; id++) {
-+	/* Precompute the derived table & fill each thermal sensor struct */
-+	for (id = 0; id < bgp->cnt; id++) {
- 		data[id].bgp = bgp;
- 		data[id].ctrl_offset = K3_VTM_TMPSENS0_CTRL_OFFSET + id * 0x20;
- 		data[id].stat_offset = data[id].ctrl_offset +
-@@ -470,13 +499,13 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
- 		else if (id == 0 && !workaround_needed)
- 			memcpy(derived_table, ref_table, TABLE_SIZE * 4);
- 
--		val = readl(data[id].bgp->cfg2_base + data[id].ctrl_offset);
--		val |= (K3_VTM_TMPSENS_CTRL_MAXT_OUTRG_EN |
--			K3_VTM_TMPSENS_CTRL_SOC |
--			K3_VTM_TMPSENS_CTRL_CLRZ | BIT(4));
--		writel(val, data[id].bgp->cfg2_base + data[id].ctrl_offset);
--
- 		bgp->ts_data[id] = &data[id];
-+	}
-+
-+	k3_j72xx_bandgap_init_hw(bgp);
-+
-+	/* Register the thermal sensors */
-+	for (id = 0; id < bgp->cnt; id++) {
- 		ti_thermal = devm_thermal_of_zone_register(bgp->dev, id, &data[id],
- 							   &k3_of_thermal_ops);
- 		if (IS_ERR(ti_thermal)) {
-@@ -486,21 +515,7 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	/*
--	 * Program TSHUT thresholds
--	 * Step 1: set the thresholds to ~123C and 105C WKUP_VTM_MISC_CTRL2
--	 * Step 2: WKUP_VTM_TMPSENS_CTRL_j set the MAXT_OUTRG_EN  bit
--	 *         This is already taken care as per of init
--	 * Step 3: WKUP_VTM_MISC_CTRL set the ANYMAXT_OUTRG_ALERT_EN  bit
--	 */
--	high_max = k3_j72xx_bandgap_temp_to_adc_code(MAX_TEMP);
--	low_temp = k3_j72xx_bandgap_temp_to_adc_code(COOL_DOWN_TEMP);
--
--	writel((low_temp << 16) | high_max, data[0].bgp->cfg2_base +
--	       K3_VTM_MISC_CTRL2_OFFSET);
--	mdelay(100);
--	writel(K3_VTM_ANYMAXT_OUTRG_ALERT_EN, data[0].bgp->cfg2_base +
--	       K3_VTM_MISC_CTRL_OFFSET);
-+	platform_set_drvdata(pdev, bgp);
- 
- 	print_look_up_table(dev, ref_table);
- 	/*
-@@ -527,6 +542,35 @@ static void k3_j72xx_bandgap_remove(struct platform_device *pdev)
- 	pm_runtime_disable(&pdev->dev);
- }
- 
-+static int k3_j72xx_bandgap_suspend(struct device *dev)
-+{
-+	pm_runtime_put_sync(dev);
-+	pm_runtime_disable(dev);
-+	return 0;
-+}
-+
-+static int k3_j72xx_bandgap_resume(struct device *dev)
-+{
-+	struct k3_j72xx_bandgap *bgp = dev_get_drvdata(dev);
-+	int ret;
-+
-+	pm_runtime_enable(dev);
-+	ret = pm_runtime_get_sync(dev);
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(dev);
-+		pm_runtime_disable(dev);
-+		return ret;
-+	}
-+
-+	k3_j72xx_bandgap_init_hw(bgp);
-+
-+	return 0;
-+}
-+
-+static DEFINE_SIMPLE_DEV_PM_OPS(k3_j72xx_bandgap_pm_ops,
-+				k3_j72xx_bandgap_suspend,
-+				k3_j72xx_bandgap_resume);
-+
- static const struct k3_j72xx_bandgap_data k3_j72xx_bandgap_j721e_data = {
- 	.has_errata_i2128 = true,
- };
-@@ -554,6 +598,7 @@ static struct platform_driver k3_j72xx_bandgap_sensor_driver = {
- 	.driver = {
- 		.name = "k3-j72xx-soc-thermal",
- 		.of_match_table	= of_k3_j72xx_bandgap_match,
-+		.pm = pm_sleep_ptr(&k3_j72xx_bandgap_pm_ops),
- 	},
- };
- 
--- 
-2.39.2
+Changes in v2:
+- use general name: audio-codec
+- move vendor property to last
+- remove undocument property 'capture-only', since linux-next/master merge
+txt to yaml bind doc
+- Link to v1: https://lore.kernel.org/r/20240402-b4-dts_dxl_audio-v1-0-d26d25b84a08@nxp.com
+
+---
+Frank Li (3):
+      arm64: dts: imx8dxl-ss-adma: delete unused node
+      arm64: dts: imx8dxl-ss-adma: update audio node power domains and IRQ number
+      arm64: dts: imx8dxl-evk: add audio nodes
+
+ arch/arm64/boot/dts/freescale/imx8dxl-evk.dts      | 229 +++++++++++++++++++++
+ arch/arm64/boot/dts/freescale/imx8dxl-ss-adma.dtsi |  78 +++++++
+ 2 files changed, 307 insertions(+)
+---
+base-commit: 2d13a7797c3970a4eea160844d8905c93065634f
+change-id: 20240402-b4-dts_dxl_audio-74ba02030a72
+
+Best regards,
+---
+Frank Li <Frank.Li@nxp.com>
 
 
