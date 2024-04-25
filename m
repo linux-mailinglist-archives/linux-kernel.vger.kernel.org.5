@@ -1,117 +1,180 @@
-Return-Path: <linux-kernel+bounces-159044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F33878B2894
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:56:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2040C8B2896
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:57:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B01F1285D4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:56:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B9E8B25D97
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:57:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B91721514F4;
-	Thu, 25 Apr 2024 18:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A75DF14F9F5;
+	Thu, 25 Apr 2024 18:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="isG7sgCr"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TTm6ir8d"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EEE814E2CC;
-	Thu, 25 Apr 2024 18:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4426B14C594;
+	Thu, 25 Apr 2024 18:56:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714071387; cv=none; b=EiDHGew0iz2l9OWJhaO+Hal1Z6G5b/CDjIaOtg/Kiq7jW0mEvvIqW5WMY2X5K3QepeiETL2tZ3ho5RlvjGkwDbRTslGrhvjsT4Jo47w8TyIuPhMQVObo/9e89vzaGb4sojOWOHipRGuGISYmHQnBBmWxsrelW7T0lgi/kh2+gJM=
+	t=1714071408; cv=none; b=T/MsBMKQyBsUrEz+WpFHOpedMV+jLg7pJJb3NhztWR6hPVNxoYAdl1SZBBDlGfDjbILjJG6C9saxpAwAP5jHpRetXnirnAr0cLMnQU/Ni/UP92BJNh3khiA7tmx+Tl9vq0qMpNKnic+IbRq9WjxX1a3+47uQ8tEb10zAjMEPw3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714071387; c=relaxed/simple;
-	bh=sYiKYo5yrzo3uz+ciXwmOitpeX6FAmTwxbeLT5atQqw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TZJzwgg0m/fe0+nLO0xOI0pvzH46Q693UUpAbx0YLpweu2hCYwmm33t9NrwYy8bcFj1iV8sT/NWrkSXI9RZl4gxaQaaSdl8L9b62OhP+LpcmWR4Hdnf9k0ClW+f6GJjkpwcNh6DHRdu1fYvmvPh5HGDs8rAGZArR4mEXDN7+Ako=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=isG7sgCr; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43PIRJgY001502;
-	Thu, 25 Apr 2024 18:56:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=FTrp4nh
-	XYXjYe6/hbotlI8vnChMZIzJNtiB8ie3le3Q=; b=isG7sgCrjHEVuthVx7YdOA7
-	TWFfGGt6+Q2fycCTgdAMUhI21tbia9Y365NWBu4CeFow67l4SDvbj1A1W9Jql/7j
-	oWcZNIKPrqrbAWajW5yN2XwKygXBgquiD6/kPKISttSaNpQlhu/+F35CIy3tfeSZ
-	5OEnfAYuxeWMHbFznd5qyTolGspXoPe3ylmC3PQUdhCprifhQE3hV4GR5KpjGWcU
-	0X0KdGJO6krMCAgjp9CzKFDgzFt5D53kyU+rxll1gnItNbYf24ODk6qMdMIj542H
-	hgnGQOb/uHsewNVFf4ohmhIP5i7WI16i4hARq/KjMMyMFQAWpLy7YrNJJJyBKkw=
-	=
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqtph8b8b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 18:56:21 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43PIuKU3025128
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 18:56:20 GMT
-Received: from hu-amelende-lv.qualcomm.com (10.49.16.6) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Thu, 25 Apr 2024 11:56:19 -0700
-From: Anjelique Melendez <quic_amelende@quicinc.com>
-To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linus.walleij@linaro.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <quic_amelende@quicinc.com>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] dt-bindings: pinctrl: qcom,pmic-gpio: Fix "comptaible" typo for PMIH0108
-Date: Thu, 25 Apr 2024 11:56:03 -0700
-Message-ID: <20240425185603.3295450-1-quic_amelende@quicinc.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714071408; c=relaxed/simple;
+	bh=GyYS//eJdsqAA5UfCzd5uB8wCmszHJBWWtWWa6emUxo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QJdrFdpwwfn4H3E0Ff7nv0Svvbx9leoInOAdRG+2oj0shcjrMfOkanIkL3o3PM412/GgDWOQkgrjJHYhYQU9C05+/mzFZJm8n2CsJX8SLFLGlDl30bUFVHH7ASi9BkPAAjHSHzo720gPELLoGuCeg9sVgbKKuwz/au9xAUJuXPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TTm6ir8d; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714071407; x=1745607407;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GyYS//eJdsqAA5UfCzd5uB8wCmszHJBWWtWWa6emUxo=;
+  b=TTm6ir8dmKYyXMVLrLtnB1BA/RDmwYYXHduej1Sb/5gGanZGYBZ/VtnF
+   dZ3+209YvO/KmUL27zdmqhJKpm2m9TKRBn0bAihQ9OcRpqph2OsOidv2W
+   ixRKPPBl1tBy6ZiLtCOc/w/I1/1IqFtQ/51pl+p+r2hBU3BvnEemrh+y8
+   jlz6nKFcPmHIFGpdLEN4tzg3vMBGSlcEifetZMl5ngDxZXiDmoeJtmUmv
+   f/7m3lKQq2XkXerZwFSMUSEJa2XYXWbLqVWirOhYvIrOEw1Wp36lnlra+
+   3Yp6t7lTr/f76QOX+ESug7RhS0JXmz8P31vT6TJzERpuOPWt69C/8bgjj
+   g==;
+X-CSE-ConnectionGUID: ioMGhpM7TyyeuKxafuHrTA==
+X-CSE-MsgGUID: cvCQ6tj8Ru+TJnUBix38pw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="27239580"
+X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
+   d="scan'208";a="27239580"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 11:56:47 -0700
+X-CSE-ConnectionGUID: lPC2oQ9MTN2RMZAN0mpQyw==
+X-CSE-MsgGUID: HdQYBYCPRSOOpuzne7EUOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
+   d="scan'208";a="25056447"
+Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.252.128.24])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 11:56:47 -0700
+Date: Thu, 25 Apr 2024 11:56:44 -0700
+From: Alison Schofield <alison.schofield@intel.com>
+To: Robert Richter <rrichter@amd.com>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org, Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v4 6/7] ACPI/NUMA: Add log messages for memory ranges
+ found in CEDT
+Message-ID: <ZiqnbD0CB9WUL1zu@aschofie-mobl2>
+References: <20240424154846.2152750-1-rrichter@amd.com>
+ <20240424154846.2152750-7-rrichter@amd.com>
+ <6629474eab671_b6e0294e8@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <ZioGhwNWQyFjRtZ-@rric.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: DydczXE3DsI5ayXcHfairIjsqj9XyhDt
-X-Proofpoint-ORIG-GUID: DydczXE3DsI5ayXcHfairIjsqj9XyhDt
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-25_19,2024-04-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
- suspectscore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 adultscore=0
- mlxscore=0 phishscore=0 mlxlogscore=872 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2404250136
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZioGhwNWQyFjRtZ-@rric.localdomain>
 
-Fix "comptaible" typo in if schema for qcom,pmih0108-gpio.
+On Thu, Apr 25, 2024 at 09:30:15AM +0200, Robert Richter wrote:
+> On 24.04.24 10:54:22, Dan Williams wrote:
+> > Robert Richter wrote:
+> > > Adding a pr_info() when successfully adding a CFMWS memory range.
+> > > 
+> > > Suggested-by: Alison Schofield <alison.schofield@intel.com>
+> > > Signed-off-by: Robert Richter <rrichter@amd.com>
+> > > ---
+> > >  drivers/acpi/numa/srat.c | 10 +++++++++-
+> > >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+> > > index e3f26e71637a..c62e4636e472 100644
+> > > --- a/drivers/acpi/numa/srat.c
+> > > +++ b/drivers/acpi/numa/srat.c
+> > > @@ -338,8 +338,11 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+> > >  	 * found for any portion of the window to cover the entire
+> > >  	 * window.
+> > >  	 */
+> > > -	if (!numa_fill_memblks(start, end))
+> > > +	if (!numa_fill_memblks(start, end)) {
+> > > +		pr_info("CEDT: memblk extended [mem %#010Lx-%#010Lx]\n",
+> > > +			(unsigned long long) start, (unsigned long long) end - 1);
+> > 
+> > This looks like pr_debug() material to me.
+> 
+> This should have the same log level as the message below and/or its
+> corresponding SRAT message. CEDT mem blocks wouldn't be reported
+> otherwise only because a smaller (overlapping) entry was registered
+> before. That is why I used pr_info here.
 
-Fixes: 6acc46f8c065 ("dt-bindings: pinctrl: qcom,pmic-gpio: Add PMIH0108 and PMD8028 support")
-Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
----
- Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It does feel like this message belongs but maybe it should also 
+mimic the SRAT define message and emit what node maps this range
+if memblocks were extended.
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
-index bd9471de0c69..50846a2d09c8 100644
---- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
-@@ -309,7 +309,7 @@ allOf:
- 
-   - if:
-       properties:
--        comptaible:
-+        compatible:
-           contains:
-             enum:
-               - qcom,pmih0108-gpio
+But...seems this will emit a message for every CFMWS range, even those
+where no memblk needed to be extended - ie the range was fully described
+in the SRAT.
 
-base-commit: f3953d6d4f608bb3eb4cbd8145913db4627c4e74
--- 
-2.34.1
+Sadly, numa_fill_memblks() return of 'success' has double meaning.
+It can mean memblks were extended, or that (start, end) was found fully
+described. I don't see an good place to insert the message in
+numa_fill_memblks(). 
 
+Sorry, just stirring the pot here, with no clear suggestion on how
+to emit info.
+
+> 
+> > 
+> > >  		return 0;
+> > > +	}
+> > >  
+> > >  	/* No SRAT description. Create a new node. */
+> > >  	node = acpi_map_pxm_to_node(*fake_pxm);
+> > > @@ -354,8 +357,13 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+> > >  		pr_warn("ACPI NUMA: Failed to add memblk for CFMWS node %d [mem %#llx-%#llx]\n",
+> > >  			node, start, end);
+> > >  	}
+> > > +
+> > >  	node_set(node, numa_nodes_parsed);
+> > >  
+> > > +	pr_info("CEDT: Node %u PXM %u [mem %#010Lx-%#010Lx]\n",
+> > > +		node, *fake_pxm,
+> > > +		(unsigned long long) start, (unsigned long long) end - 1);
+> > > +
+> > 
+> > This makes sense to mirror the SRAT pr_info().
+> 
+> I evaluated this.
+> 
+
+I read Dan's comment as simple acceptance. Like, yeah this one is good
+because it mimics the SRAT pr_info.
+
+
+> SRAT shows this:
+> 
+> 	pr_info("SRAT: Node %u PXM %u [mem %#010Lx-%#010Lx]%s%s\n",
+> 		node, pxm,
+> 		(unsigned long long) start, (unsigned long long) end - 1,
+> 		hotpluggable ? " hotplug" : "",
+> 		ma->flags & ACPI_SRAT_MEM_NON_VOLATILE ? " non-volatile" : "");
+> 
+> There is no direct mapping of SRAT memory affinity flags (acpi-6.5
+> spec, table 5.59) and something in the CFMWS entry (cxl-3.1, table
+> 9-22). There is no "hotplug" flag and the "non-volatile" part would be
+> ambiguous, as some logic must be defined to handle the "volatile" and
+> "persistent" Window Restrictions. Since the CFMWS restrictions are not
+> used at all by the kernel my conclusion was to just dropped the flag
+> for the CEDT info.
+> 
+> Note there is a mapping defined for CDAT DSMAS and SRAT entries, see
+> CDAT 1.03 spec, Table 4.
+> 
+> -Robert
 
