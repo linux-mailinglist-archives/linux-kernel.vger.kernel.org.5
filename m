@@ -1,320 +1,384 @@
-Return-Path: <linux-kernel+bounces-158240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39CA68B1D67
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:06:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEC4D8B1D6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:06:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF505286640
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:06:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 143FA1F25998
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:06:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C74784FAB;
-	Thu, 25 Apr 2024 09:05:35 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A77685646;
+	Thu, 25 Apr 2024 09:05:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="QPBVXMSU"
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5660A839E0
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6DAD81AA3
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:05:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714035934; cv=none; b=mgvMH6ZlpUnqS6nPRVQlun5DOaH/u9+PIfrzaobABSPWpQ7eLYGHVe0JOpsOCCu+2UWif4Dqdgx5YK5wz+2uoc0jZK2jhPT7TAsK2rhWjo+b5eYDTH8tss69WWRiFZdN/qJHIM7DHjNxjqu0V5gW0+lP1oVS5VTWHjERF2dyQ+0=
+	t=1714035950; cv=none; b=a1xAu+S9tPb2WRqICwNc2v0pTlBNwMuBlKJa9Z6Rx8Fzv3RMXXi0uuunoyaJQ42uXaULK5sEQnCBHTlLtrmsNLweQ7OI1ZnqauhpZE9Yb6Jhy7PqbZdesS7RSH4AFTgcC8zUkUCClncheAQK0SV6QnOjNJ1WIF78dW41LhmeqIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714035934; c=relaxed/simple;
-	bh=RX+zX8jrmvHf1Z01Ezc1syopSi7zYBJfP5RwzdIbFK8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=IY/D0aEghxbMod966cLmhtOlQv+ItYr8aHFNpd2+yQFbgdsf9hzmpH8a4u5t/j+ntLMPzBzFmCKB3u7sb1jcWaV3R7qbOxZCvtcS+ZDOHvitf5LtQxGlIeGEV8LUyqywV1KJcXck/LIKniI3dL6uFTopSk+ir85rfBAkH/iNJa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36b3c9c65d7so7693305ab.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 02:05:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714035931; x=1714640731;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6TzcA1tOQMPKCuQfewMj/n825aXvUOXGh9ktRQv3gKc=;
-        b=PjfYbl81SqNisk4vnPI5YjsSBhAnOi0nA/3XCwyTZ2D9T7L6MIqfjbyznIUROo3gWp
-         KOeZnGrlkjpAO1hihK0Ovru+ly6CQcF255JglKVuJmcYV4Tl4f3EbxNnxAtSSOvBkGXl
-         e+sfCEaAkZUMOTwGPZw4mFEOED0IoxlDdakRLgbx98AlwLO+dXtfyTKIDvo647w9BCOK
-         BPI+9aGhlGE9JoG4DFknONLzEGCGuPp0H2wSwH+wh0+Y+jmUQdcAamCPap3cELhgwS1J
-         MOyEr3Fau1nAi+FGfadr+8lUAaoLc0RDsgLILqBssop2Smvq8YzneSL9hWhE0n9dp/YU
-         4kGg==
-X-Forwarded-Encrypted: i=1; AJvYcCX9UcF4MLSv0/KzgdfYoYxN71vxalUfgKJhcBqcQwilR7CCn8fKjemkvA+511cwdx5jGdEWHxIDxjiUNfcChhjuo4Y4C67joOWQaZyv
-X-Gm-Message-State: AOJu0YxiQczAJBvl5q6RN/t1zal2WdFaj9pS1wywAY9AhbkFzm/VAHGH
-	EP3l5jMdotIwdgo4Dr5gOeUoGgre8lJ2yejtBUVGoM5cYrj9P/1f44WymheECh/sEM9E9u2aprZ
-	mQgoVmPUX7ijPDJO93qLu6oaN3oZpRchofImDwSjdWIDT8t4CnxeQVk8=
-X-Google-Smtp-Source: AGHT+IGtkcV54puVSjIVr9KOB9ef1QeMLhXajVtd1EHCpWIz0na0JZwOP86pPfjf9mnzBXPs9RrBDkGchgAvmrKx10dzQz+j8LWL
+	s=arc-20240116; t=1714035950; c=relaxed/simple;
+	bh=wN09IT6B9svVG9MSbQFVbrmNzDMbbZpTjBc7aYkXS7E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SR68+PVemh13Un32K5I0UWKBaDHlTVnIN2xvnc1fH7G472/LcKUEK3N2QM0CPAy898kAs0Sjm9tl1BVJUCkwhBHrJTFDoMVHioVO6rpRET94r/Vf3fRVWhXY7le00s4nY77aYLy574HPQHnltRF4b4+RP7F6SYnLj/1whE4xpIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=QPBVXMSU; arc=none smtp.client-ip=115.124.30.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1714035938; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=EF2Iu2skwwn1SYvF2vDSYrIbUNPJaVughKfpjGvpDTc=;
+	b=QPBVXMSUQvq6xtLtoHV11n1lZDMjZnKT4mR2SvXeCDzJy+cZx7zzUzE1BbmG7a/bDsYzeJjoS2J0WW/OkdwqgI48+uEyB76Vo03cK52/i+dCld2uVqjRsGaMm80/40/AZy8Ej3Ey8DEyIh6+mjMlnOLNLiXO1uUccUWIqpm0Vck=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033032014031;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W5F.c.w_1714035934;
+Received: from 30.97.56.61(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W5F.c.w_1714035934)
+          by smtp.aliyun-inc.com;
+          Thu, 25 Apr 2024 17:05:36 +0800
+Message-ID: <bc92c74e-80e2-4065-9b61-46adacdfd17a@linux.alibaba.com>
+Date: Thu, 25 Apr 2024 17:05:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1feb:b0:36b:f94f:3022 with SMTP id
- dt11-20020a056e021feb00b0036bf94f3022mr355787ilb.5.1714035931604; Thu, 25 Apr
- 2024 02:05:31 -0700 (PDT)
-Date: Thu, 25 Apr 2024 02:05:31 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d5f4fc0616e816d4@google.com>
-Subject: [syzbot] [bpf?] [trace?] possible deadlock in force_sig_info_to_task
-From: syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	martin.lau@linux.dev, mathieu.desnoyers@efficios.com, mhiramat@kernel.org, 
-	rostedt@goodmis.org, sdf@google.com, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    977b1ef51866 Merge tag 'block-6.9-20240420' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17080d20980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f47e5e015c177e57
-dashboard link: https://syzkaller.appspot.com/bug?extid=83e7f982ca045ab4405c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/549d1add1da9/disk-977b1ef5.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/3e8e501c8aa2/vmlinux-977b1ef5.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d02f7cb905b8/bzImage-977b1ef5.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.9.0-rc4-syzkaller-00266-g977b1ef51866 #0 Not tainted
-------------------------------------------------------
-syz-executor.0/11241 is trying to acquire lock:
-ffff888020a2c0d8 (&sighand->siglock){-.-.}-{2:2}, at: force_sig_info_to_task+0x68/0x580 kernel/signal.c:1334
-
-but task is already holding lock:
-ffff8880b943e658 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:559
-
-which lock already depends on the new lock.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/5] add mTHP support for anonymous share pages
+To: David Hildenbrand <david@redhat.com>, Ryan Roberts
+ <ryan.roberts@arm.com>, akpm@linux-foundation.org, hughd@google.com
+Cc: willy@infradead.org, wangkefeng.wang@huawei.com, 21cnbao@gmail.com,
+ ying.huang@intel.com, shy828301@gmail.com, ziy@nvidia.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
+ <4b998e7d-153f-48cc-a9bb-8c84bb675581@arm.com>
+ <c1f68109-7665-4905-996f-f1067dfa2cb6@linux.alibaba.com>
+ <80b5f87e-c156-4ccc-98f0-96f1fd864273@arm.com>
+ <ef4f15dd-da31-4a1e-bec5-62a7002c4f7c@linux.alibaba.com>
+ <5b8b22e7-6355-4b08-b5b5-1e33ebae6f16@arm.com>
+ <813fe7fd-3004-4e8b-801d-95c33559a025@linux.alibaba.com>
+ <76f816dd-3bbf-48c9-a630-3787051cf289@arm.com>
+ <8c0d6358-3c16-4a57-822c-04b3b3403fe6@linux.alibaba.com>
+ <4204b5f6-21f0-4aa2-a625-3dd2f416b649@arm.com>
+ <94ae96f7-79ce-4b3f-a272-6af62d01a3f8@redhat.com>
+ <71c1e953-84f9-4d47-bd4c-725a447627df@arm.com>
+ <bf005e0f-6fda-4068-8af6-5f8c00257de7@redhat.com>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <bf005e0f-6fda-4068-8af6-5f8c00257de7@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-the existing dependency chain (in reverse order) is:
 
--> #1 (&rq->__lock){-.-.}-{2:2}:
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-       _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
-       raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:559
-       raw_spin_rq_lock kernel/sched/sched.h:1385 [inline]
-       _raw_spin_rq_lock_irqsave kernel/sched/sched.h:1404 [inline]
-       rq_lock_irqsave kernel/sched/sched.h:1683 [inline]
-       class_rq_lock_irqsave_constructor kernel/sched/sched.h:1737 [inline]
-       sched_mm_cid_exit_signals+0x17b/0x4b0 kernel/sched/core.c:12005
-       exit_signals+0x2a1/0x5c0 kernel/signal.c:3016
-       do_exit+0x6a8/0x27e0 kernel/exit.c:837
-       __do_sys_exit kernel/exit.c:994 [inline]
-       __se_sys_exit kernel/exit.c:992 [inline]
-       __pfx___ia32_sys_exit+0x0/0x10 kernel/exit.c:992
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+On 2024/4/25 16:57, David Hildenbrand wrote:
+> On 25.04.24 10:46, Ryan Roberts wrote:
+>> On 25/04/2024 09:26, David Hildenbrand wrote:
+>>> On 25.04.24 10:17, Ryan Roberts wrote:
+>>>> On 25/04/2024 07:20, Baolin Wang wrote:
+>>>>>
+>>>>>
+>>>>> On 2024/4/24 22:20, Ryan Roberts wrote:
+>>>>>> On 24/04/2024 14:49, Baolin Wang wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> On 2024/4/24 18:01, Ryan Roberts wrote:
+>>>>>>>> On 24/04/2024 10:55, Baolin Wang wrote:
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> On 2024/4/24 16:26, Ryan Roberts wrote:
+>>>>>>>>>> On 24/04/2024 07:55, Baolin Wang wrote:
+>>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> On 2024/4/23 18:41, Ryan Roberts wrote:
+>>>>>>>>>>>> On 22/04/2024 08:02, Baolin Wang wrote:
+>>>>>>>>>>>>> Anonymous pages have already been supported for multi-size 
+>>>>>>>>>>>>> (mTHP)
+>>>>>>>>>>>>> allocation
+>>>>>>>>>>>>> through commit 19eaf44954df, that can allow THP to be 
+>>>>>>>>>>>>> configured
+>>>>>>>>>>>>> through the
+>>>>>>>>>>>>> sysfs interface located at
+>>>>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled'.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> However, the anonymous shared pages will ignore the 
+>>>>>>>>>>>>> anonymous mTHP rule
+>>>>>>>>>>>>> configured through the sysfs interface, and can only use 
+>>>>>>>>>>>>> the PMD-mapped
+>>>>>>>>>>>>> THP, that is not reasonable. Many implement anonymous page 
+>>>>>>>>>>>>> sharing
+>>>>>>>>>>>>> through
+>>>>>>>>>>>>> mmap(MAP_SHARED | MAP_ANONYMOUS), especially in database usage
+>>>>>>>>>>>>> scenarios,
+>>>>>>>>>>>>> therefore, users expect to apply an unified mTHP strategy 
+>>>>>>>>>>>>> for anonymous
+>>>>>>>>>>>>> pages,
+>>>>>>>>>>>>> also including the anonymous shared pages, in order to 
+>>>>>>>>>>>>> enjoy the
+>>>>>>>>>>>>> benefits of
+>>>>>>>>>>>>> mTHP. For example, lower latency than PMD-mapped THP, 
+>>>>>>>>>>>>> smaller memory
+>>>>>>>>>>>>> bloat
+>>>>>>>>>>>>> than PMD-mapped THP, contiguous PTEs on ARM architecture to 
+>>>>>>>>>>>>> reduce TLB
+>>>>>>>>>>>>> miss
+>>>>>>>>>>>>> etc.
+>>>>>>>>>>>>
+>>>>>>>>>>>> This sounds like a very useful addition!
+>>>>>>>>>>>>
+>>>>>>>>>>>> Out of interest, can you point me at any workloads (and 
+>>>>>>>>>>>> off-the-shelf
+>>>>>>>>>>>> benchmarks
+>>>>>>>>>>>> for those workloads) that predominantly use shared anon memory?
+>>>>>>>>>>>
+>>>>>>>>>>> As far as I know, some database related workloads make 
+>>>>>>>>>>> extensive use of
+>>>>>>>>>>> shared
+>>>>>>>>>>> anonymous page, such as PolarDB[1] in our Alibaba fleet, or 
+>>>>>>>>>>> MySQL likely
+>>>>>>>>>>> also
+>>>>>>>>>>> uses shared anonymous memory. And I still need to do some 
+>>>>>>>>>>> investigation to
+>>>>>>>>>>> measure the performance.
+>>>>>>>>>>>
+>>>>>>>>>>> [1] https://github.com/ApsaraDB/PolarDB-for-PostgreSQL
+>>>>>>>>>>
+>>>>>>>>>> Thanks for the pointer!
+>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>>>> The primary strategy is that, the use of huge pages for 
+>>>>>>>>>>>>> anonymous shared
+>>>>>>>>>>>>> pages
+>>>>>>>>>>>>> still follows the global control determined by the mount 
+>>>>>>>>>>>>> option "huge="
+>>>>>>>>>>>>> parameter
+>>>>>>>>>>>>> or the sysfs interface at
+>>>>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled'.
+>>>>>>>>>>>>> The utilization of mTHP is allowed only when the global 
+>>>>>>>>>>>>> 'huge' switch is
+>>>>>>>>>>>>> enabled.
+>>>>>>>>>>>>> Subsequently, the mTHP sysfs interface
+>>>>>>>>>>>>> (/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled)
+>>>>>>>>>>>>> is checked to determine the mTHP size that can be used for 
+>>>>>>>>>>>>> large folio
+>>>>>>>>>>>>> allocation
+>>>>>>>>>>>>> for these anonymous shared pages.
+>>>>>>>>>>>>
+>>>>>>>>>>>> I'm not sure about this proposed control mechanism; won't it 
+>>>>>>>>>>>> break
+>>>>>>>>>>>> compatibility? I could be wrong, but I don't think shmem's 
+>>>>>>>>>>>> use of THP
+>>>>>>>>>>>> used to
+>>>>>>>>>>>> depend upon the value of 
+>>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/enabled?
+>>>>>>>>>>>> So it
+>>>>>>>>>>>
+>>>>>>>>>>> Yes, I realized this after more testing.
+>>>>>>>>>>>
+>>>>>>>>>>>> doesn't make sense to me that we now depend upon the
+>>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled 
+>>>>>>>>>>>> values
+>>>>>>>>>>>> (which by
+>>>>>>>>>>>> default disables all sizes except 2M, which is set to 
+>>>>>>>>>>>> "inherit" from
+>>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/enabled).
+>>>>>>>>>>>>
+>>>>>>>>>>>> The other problem is that shmem_enabled has a different set 
+>>>>>>>>>>>> of options
+>>>>>>>>>>>> (always/never/within_size/advise/deny/force) to enabled
+>>>>>>>>>>>> (always/madvise/never)
+>>>>>>>>>>>>
+>>>>>>>>>>>> Perhaps it would be cleaner to do the same trick we did for 
+>>>>>>>>>>>> enabled;
+>>>>>>>>>>>> Introduce
+>>>>>>>>>>>> /mm/transparent_hugepage/hugepage-XXkb/shmem_enabled, which 
+>>>>>>>>>>>> can have all
+>>>>>>>>>>>> the
+>>>>>>>>>>>> same values as the top-level
+>>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/shmem_enabled,
+>>>>>>>>>>>> plus the additional "inherit" option. By default all sizes 
+>>>>>>>>>>>> will be set to
+>>>>>>>>>>>> "never" except 2M, which is set to "inherit".
+>>>>>>>>>>>
+>>>>>>>>>>> Sounds good to me. But I do not want to copy all same values 
+>>>>>>>>>>> from
+>>>>>>>>>>> top-level
+>>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled':
+>>>>>>>>>>> always within_size advise never deny force
+>>>>>>>>>>>
+>>>>>>>>>>> For mTHP's shmem_enabled interface, we can just keep below 
+>>>>>>>>>>> values:
+>>>>>>>>>>> always within_size advise never
+>>>>>>>>>>>
+>>>>>>>>>>> Cause when checking if mTHP can be used for anon shmem, 
+>>>>>>>>>>> 'deny' is equal to
+>>>>>>>>>>> 'never', and 'force' is equal to 'always'.
+>>>>>>>>>>
+>>>>>>>>>> I'll admit it wasn't completely clear to me after reading the 
+>>>>>>>>>> docs, but my
+>>>>>>>>>> rough
+>>>>>>>>>> understanding is:
+>>>>>>>>>>
+>>>>>>>>>>       - /sys/kernel/mm/transparent_hugepage/shmem_enabled 
+>>>>>>>>>> controls
+>>>>>>>>>>         mmap(SHARED|ANON) allocations (mostly; see rule 3)
+>>>>>>>>>>       - huge=... controls tmpfs allocations
+>>>>>>>>>>       - deny and force in shmem_enabled are equivalent to 
+>>>>>>>>>> never and
+>>>>>>>>>> always for
+>>>>>>>>>>         mmap(SHARED|ANON) but additionally override all tmpfs 
+>>>>>>>>>> mounts so they
+>>>>>>>>>> act as
+>>>>>>>>>>         if they were mounted with huge=never or huge=always
+>>>>>>>>>>
+>>>>>>>>>> Is that correct? If so, then I think it still makes sense to 
+>>>>>>>>>> support
+>>>>>>>>>> per-size
+>>>>>>>>>
+>>>>>>>>> Correct.
+>>>>>>>>>
+>>>>>>>>>> deny/force. Certainly if a per-size control is set to 
+>>>>>>>>>> "inherit" and the
+>>>>>>>>>> top-level control is set to deny or force, you would need that 
+>>>>>>>>>> to mean
+>>>>>>>>>> something.
+>>>>>>>>>
+>>>>>>>>> IMHO, the 
+>>>>>>>>> '/mm/transparent_hugepage/hugepage-XXkb/shmem_enabled' interface
+>>>>>>>>> should only control the anonymous shmem. And 'huge=' controls 
+>>>>>>>>> tmpfs
+>>>>>>>>> allocation,
+>>>>>>>>> so we should not use anonymous control to override tmpfs 
+>>>>>>>>> control, which
+>>>>>>>>> seems a
+>>>>>>>>> little mess?
+>>>>>>>>
+>>>>>>>> I agree it would be cleaner to only handle mmap(SHARED|ANON) 
+>>>>>>>> here, and leave
+>>>>>>>> the
+>>>>>>>> tmpfs stuff for another time. But my point is that
+>>>>>>>> /mm/transparent_hugepage/shmem_enabled already interferes with 
+>>>>>>>> tmpfs if the
+>>>>>>>> value is deny or force. So if you have:
+>>>>>>>>
+>>>>>>>> echo deny > /mm/transparent_hugepage/shmem_enabled
+>>>>>>>
+>>>>>>> IIUC, this global control will cause shmem_is_huge() to always 
+>>>>>>> return
+>>>>>>> false, so
+>>>>>>> no matter how 
+>>>>>>> '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' is set,
+>>>>>>> anonymous shmem will not use mTHP. No?
+>>>>>>
+>>>>>> No, that's not how 
+>>>>>> '/mm/transparent_hugepage/hugepage-xxxkB/enabled' works, and
+>>>>>> I think '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' 
+>>>>>> should follow
+>>>>>> the established pattern.
+>>>>>>
+>>>>>> For anon-private, each size is controlled by its
+>>>>>> /mm/transparent_hugepage/hugepage-xxxkB/enabled value. Unless that 
+>>>>>> value is
+>>>>>> "inherit", in which case the value in 
+>>>>>> /mm/transparent_hugepage/enabled is used
+>>>>>> for that size.
+>>>>>>
+>>>>>> That approach enables us to 1) maintain back-compat and 2) control 
+>>>>>> each size
+>>>>>> independently
+>>>>>>
+>>>>>> 1) is met because the default is that all sizes are initially set 
+>>>>>> to "never",
+>>>>>> except the PMD-size (e.g. 
+>>>>>> /mm/transparent_hugepage/hugepage-2048kB/enabled)
+>>>>>> which is initially set to inherit. So any mTHP unaware SW can 
+>>>>>> still modify
+>>>>>> /mm/transparent_hugepage/enabled and it will still only apply to 
+>>>>>> PMD size.
+>>>>>>
+>>>>>> 2) is met because mTHP aware SW can come along and e.g. enable the 
+>>>>>> 64K size
+>>>>>> (echo always > /mm/transparent_hugepage/hugepage-64kB/enabled) 
+>>>>>> without
+>>>>>> having to
+>>>>>> modify the value in /mm/transparent_hugepage/enabled.
+>>>>>
+>>>>> Thanks for explanation. Initially, I want to make
+>>>>> ‘/mm/transparent_hugepage/shmem_enabled’ be a global control for 
+>>>>> huge page, but
+>>>>> I think it should follow the same strategy as anon mTHP as you said.
+>>>>>
+>>>>>>>> echo inherit > /mm/transparent_hugepage/hugepage-64kB/shmem_enabled
+>>>>>>>>
+>>>>>>>> What does that mean?
+>>>>>>
+>>>>>> So I think /mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled 
+>>>>>> will need to
+>>>>>> support the deny and force values. When applied to non-PMD sizes, 
+>>>>>> "deny" can
+>>>>>> just be a noop for now, because there was no way to configure a 
+>>>>>> tmpfs mount for
+>>>>>> non-PMD size THP in the first place. But I'm not sure what to do 
+>>>>>> with "force"?
+>>>>>
+>>>>> OK. And I also prefer that "force" should be a noop too, since anon 
+>>>>> shmem
+>>>>> control should not configure tmpfs huge page allocation.
+>>>>
+>>>> I guess technically they won't be noops, but (for the non-PMD-sizes) 
+>>>> "force"
+>>>> will be an alias for "always" and "deny" will be an alias for "never"?
+>>>>
+>>>> I was just a bit concerned about later changing that behavior to 
+>>>> also impact
+>>>> tmpfs once tmpfs supports mTHP; could that cause breaks? But 
+>>>> thinking about it,
+>>>> I don't see that as a problem.
+>>>
+>>> Is the question what should happen if we "inherit" "force" or if someone
+>>> specifies "force" for a mTP size explicitly?
+>>
+>> Well I think it amounts to the same thing; there isn't much point in 
+>> forbidding
+>> "force" to be set directly because it can still be set indirectly through
+>> "inherit". We can't forbid indirectly setting it, because "inherit" 
+>> could be set
+>> first, then the top-level shmem_enabled changed to "force" after - and we
+>> wouldn't want to fail that.
+> 
+> The default for PMD should be "inherit", for the other mTHP sizes it 
+> should be "never".
+> 
+> So we should fail if:
+> * Setting top-level to "force" when any non-PMD size is "inherit"
+> * Setting "inherit" of a non-PMD size when the top-level is force
 
--> #0 (&sighand->siglock){-.-.}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
-       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
-       force_sig_info_to_task+0x68/0x580 kernel/signal.c:1334
-       force_sig_fault_to_task kernel/signal.c:1733 [inline]
-       force_sig_fault+0x12c/0x1d0 kernel/signal.c:1738
-       __bad_area_nosemaphore+0x127/0x780 arch/x86/mm/fault.c:814
-       handle_page_fault arch/x86/mm/fault.c:1505 [inline]
-       exc_page_fault+0x612/0x8e0 arch/x86/mm/fault.c:1563
-       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-       strncpy_from_user+0x2c6/0x2f0 lib/strncpy_from_user.c:138
-       strncpy_from_user_nofault+0x71/0x140 mm/maccess.c:186
-       bpf_probe_read_user_str_common kernel/trace/bpf_trace.c:216 [inline]
-       ____bpf_probe_read_compat_str kernel/trace/bpf_trace.c:311 [inline]
-       bpf_probe_read_compat_str+0xe9/0x180 kernel/trace/bpf_trace.c:307
-       bpf_prog_e42f6260c1b72fb3+0x3d/0x3f
-       bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-       __bpf_prog_run include/linux/filter.h:657 [inline]
-       bpf_prog_run include/linux/filter.h:664 [inline]
-       __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
-       bpf_trace_run4+0x25a/0x490 kernel/trace/bpf_trace.c:2422
-       __traceiter_sched_switch+0x98/0xd0 include/trace/events/sched.h:222
-       trace_sched_switch include/trace/events/sched.h:222 [inline]
-       __schedule+0x2535/0x4a00 kernel/sched/core.c:6743
-       preempt_schedule_irq+0xfb/0x1c0 kernel/sched/core.c:7068
-       irqentry_exit+0x5e/0x90 kernel/entry/common.c:354
-       asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
-       force_sig_fault+0x0/0x1d0
-       __bad_area_nosemaphore+0x127/0x780 arch/x86/mm/fault.c:814
-       handle_page_fault arch/x86/mm/fault.c:1505 [inline]
-       exc_page_fault+0x612/0x8e0 arch/x86/mm/fault.c:1563
-       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-       __put_user_handle_exception+0x0/0x10
-       __do_sys_gettimeofday kernel/time/time.c:147 [inline]
-       __se_sys_gettimeofday+0xd9/0x240 kernel/time/time.c:140
-       emulate_vsyscall+0xe23/0x1290 arch/x86/entry/vsyscall/vsyscall_64.c:247
-       do_user_addr_fault arch/x86/mm/fault.c:1346 [inline]
-       handle_page_fault arch/x86/mm/fault.c:1505 [inline]
-       exc_page_fault+0x160/0x8e0 arch/x86/mm/fault.c:1563
-       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-       _end+0x6a9da000/0x0
+IMO, for tmpfs this is true, but for anon shmem, this 2 cases should not 
+fail.
 
-other info that might help us debug this:
+So I think we should allow this configuration, but for tmpfs huge page 
+allocation, we will not check the mTHP.
 
- Possible unsafe locking scenario:
+> Both will only happen if someone messes with the mTHP configuration 
+> manually.
+> 
+> And we should only offer "force" as an option for PMD-sized mTHP as long 
+> as the others are not supported. See below.
+> 
+>>
+>> So I think the question is just 'what should happen when "force" is 
+>> configured
+>> for a non-PMD-sized mTHP'?
+> 
+> We should hide it and not offer a configuration toggle that is inactive.
+> 
+> If someone wants to sense support for other mTHP "force" settings in the 
+> future, they can just parse if the "shmem_enabled" toggle offers "force" 
+> as an option. Then they know that it can actually be enabled and will 
+> also do what is promised.
 
-       CPU0                    CPU1
-       ----                    ----
-  lock(&rq->__lock);
-                               lock(&sighand->siglock);
-                               lock(&rq->__lock);
-  lock(&sighand->siglock);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor.0/11241:
- #0: ffff8880b943e658 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:559
- #1: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
- #1: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
- #1: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
- #1: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run4+0x16e/0x490 kernel/trace/bpf_trace.c:2422
-
-stack backtrace:
-CPU: 0 PID: 11241 Comm: syz-executor.0 Not tainted 6.9.0-rc4-syzkaller-00266-g977b1ef51866 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
- __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
- force_sig_info_to_task+0x68/0x580 kernel/signal.c:1334
- force_sig_fault_to_task kernel/signal.c:1733 [inline]
- force_sig_fault+0x12c/0x1d0 kernel/signal.c:1738
- __bad_area_nosemaphore+0x127/0x780 arch/x86/mm/fault.c:814
- handle_page_fault arch/x86/mm/fault.c:1505 [inline]
- exc_page_fault+0x612/0x8e0 arch/x86/mm/fault.c:1563
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-RIP: 0010:do_strncpy_from_user lib/strncpy_from_user.c:72 [inline]
-RIP: 0010:strncpy_from_user+0x2c6/0x2f0 lib/strncpy_from_user.c:139
-Code: cc cc cc cc e8 ab 95 b6 fc 45 31 ed eb e0 e8 a1 95 b6 fc 49 c7 c5 f2 ff ff ff eb d2 e8 93 95 b6 fc 49 c7 c5 f2 ff ff ff eb c4 <f3> 0f 1e fa e8 81 95 b6 fc eb a1 f3 0f 1e fa e8 76 95 b6 fc 4d 29
-RSP: 0018:ffffc90009f9f5e0 EFLAGS: 00050046
-RAX: 0000000000000002 RBX: ffff8880795c3584 RCX: ffff8880795c1e00
-RDX: ffffc90004bf1000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: 0000000000000001 R08: ffffffff84df6a34 R09: ffffffff82056cb7
-R10: 0000000000000003 R11: ffff8880795c1e00 R12: 0000000000000000
-R13: 0000000000000000 R14: ffffc90009f9f6a8 R15: 0000000000000000
- strncpy_from_user_nofault+0x71/0x140 mm/maccess.c:186
- bpf_probe_read_user_str_common kernel/trace/bpf_trace.c:216 [inline]
- ____bpf_probe_read_compat_str kernel/trace/bpf_trace.c:311 [inline]
- bpf_probe_read_compat_str+0xe9/0x180 kernel/trace/bpf_trace.c:307
- bpf_prog_e42f6260c1b72fb3+0x3d/0x3f
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run4+0x25a/0x490 kernel/trace/bpf_trace.c:2422
- __traceiter_sched_switch+0x98/0xd0 include/trace/events/sched.h:222
- trace_sched_switch include/trace/events/sched.h:222 [inline]
- __schedule+0x2535/0x4a00 kernel/sched/core.c:6743
- preempt_schedule_irq+0xfb/0x1c0 kernel/sched/core.c:7068
- irqentry_exit+0x5e/0x90 kernel/entry/common.c:354
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
-RIP: 0010:force_sig_fault+0x0/0x1d0 kernel/signal.c:1737
-Code: 9a 00 e9 31 ff ff ff e8 1e 7e 1a 0a 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 <f3> 0f 1e fa 55 48 89 e5 41 57 41 56 41 55 41 54 53 48 83 e4 e0 48
-RSP: 0018:ffffc90009f9fb78 EFLAGS: 00000286
-RAX: ffffffff8141f9d7 RBX: 0000000000000000 RCX: 0000000000040000
-RDX: 0000000000000019 RSI: 0000000000000001 RDI: 000000000000000b
-RBP: ffffc90009f9fc78 R08: ffffffff8141f976 R09: ffffffff81423712
-R10: 0000000000000014 R11: ffff8880795c1e00 R12: dffffc0000000000
-R13: ffffc90009f9fd70 R14: 1ffff920013f3fae R15: 0000000000000002
- __bad_area_nosemaphore+0x127/0x780 arch/x86/mm/fault.c:814
- handle_page_fault arch/x86/mm/fault.c:1505 [inline]
- exc_page_fault+0x612/0x8e0 arch/x86/mm/fault.c:1563
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-RIP: 0010:__put_user_handle_exception+0x0/0x10 arch/x86/lib/putuser.S:125
-Code: 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 01 cb 48 89 01 31 c9 0f 01 ca c3 cc cc cc cc 66 2e 0f 1f 84 00 00 00 00 00 66 90 <0f> 01 ca b9 f2 ff ff ff c3 cc cc cc cc 0f 1f 00 90 90 90 90 90 90
-RSP: 0018:ffffc90009f9fd98 EFLAGS: 00050202
-RAX: 000000006624d6a7 RBX: 0000000000000000 RCX: 0000000000000019
-RDX: 0000000000000000 RSI: ffffffff8bcaca20 RDI: ffffffff8c1eb160
-RBP: ffffc90009f9fe50 R08: ffffffff8fa7b6af R09: 1ffffffff1f4f6d5
-R10: dffffc0000000000 R11: fffffbfff1f4f6d6 R12: ffffc90009f9fde0
-R13: dffffc0000000000 R14: 1ffff920013f3fb8 R15: 0000000000000019
- __do_sys_gettimeofday kernel/time/time.c:147 [inline]
- __se_sys_gettimeofday+0xd9/0x240 kernel/time/time.c:140
- emulate_vsyscall+0xe23/0x1290 arch/x86/entry/vsyscall/vsyscall_64.c:247
- do_user_addr_fault arch/x86/mm/fault.c:1346 [inline]
- handle_page_fault arch/x86/mm/fault.c:1505 [inline]
- exc_page_fault+0x160/0x8e0 arch/x86/mm/fault.c:1563
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-RIP: 0033:_end+0x6a9da000/0x0
-Code: Unable to access opcode bytes at 0xffffffffff5fffd6.
-RSP: 002b:00007f9364a35b38 EFLAGS: 00010246
-RAX: ffffffffffffffda RBX: 00007f9363dabf80 RCX: 00007f9363c7dea9
-RDX: 00007f9364a35b40 RSI: 00007f9364a35c70 RDI: 0000000000000019
-RBP: 00007f9363cca4a4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000007 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f9363dabf80 R15: 00007ffc4b734e88
- </TASK>
-----------------
-Code disassembly (best guess):
-   0:	cc                   	int3
-   1:	cc                   	int3
-   2:	cc                   	int3
-   3:	cc                   	int3
-   4:	e8 ab 95 b6 fc       	call   0xfcb695b4
-   9:	45 31 ed             	xor    %r13d,%r13d
-   c:	eb e0                	jmp    0xffffffee
-   e:	e8 a1 95 b6 fc       	call   0xfcb695b4
-  13:	49 c7 c5 f2 ff ff ff 	mov    $0xfffffffffffffff2,%r13
-  1a:	eb d2                	jmp    0xffffffee
-  1c:	e8 93 95 b6 fc       	call   0xfcb695b4
-  21:	49 c7 c5 f2 ff ff ff 	mov    $0xfffffffffffffff2,%r13
-  28:	eb c4                	jmp    0xffffffee
-* 2a:	f3 0f 1e fa          	endbr64 <-- trapping instruction
-  2e:	e8 81 95 b6 fc       	call   0xfcb695b4
-  33:	eb a1                	jmp    0xffffffd6
-  35:	f3 0f 1e fa          	endbr64
-  39:	e8 76 95 b6 fc       	call   0xfcb695b4
-  3e:	4d                   	rex.WRB
-  3f:	29                   	.byte 0x29
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Sounds good to me.
 
