@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-159196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53D9A8B2A87
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:14:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CF498B2A8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:14:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 119412821C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:13:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60AD11C21B7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6661B156647;
-	Thu, 25 Apr 2024 21:13:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5982A155740;
+	Thu, 25 Apr 2024 21:13:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="LEZMi+nb"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="SkeZfCMz"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99448155A52;
-	Thu, 25 Apr 2024 21:13:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06572153821;
+	Thu, 25 Apr 2024 21:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714079589; cv=none; b=g8UDz6+vtxFUS1wegmPdPzbU+akay2BMBfPJpWj6Wy3HDbqdTEVV+Zd/4DESHPbbSy9a9jt1RCrPqocpz711Vgym6Nh3FK+cQyy3YGSw1NwgDDm4tsYF8wU9b5ymM1S07Hnrnk02EepZfr3MAumv0IzmXPoFXHVOgrP3kFLvPGI=
+	t=1714079600; cv=none; b=r962CDKLMC2NASYRcNj1S/xDaGn1zLJx52CNXhOmEHnwiesfxGGCBTgvaUveFN3aJs2hg0gRebjErJEXQvA+JWl72RG+yq61dzJ1NOQqdP+4WoGQ6d5hFCvy8geTF/yGldlh859IDVgSXpkr++hBqdbZ/sc4upToNOUjp2DbUHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714079589; c=relaxed/simple;
-	bh=3lRgwl07ECTUjJvGw/2q6kW8fZyLbF1g2JTUcrOzoog=;
+	s=arc-20240116; t=1714079600; c=relaxed/simple;
+	bh=yOKS8YZV/ybtzb2iS5zih1gwklhOMr+sQWecVjYkRXo=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KvhMjE/1U4ei5xG072pW4VDEKK6NpbMapiSGoajFJEdnPQjJdyKfIDhq/pcT+aQ+e+IEKxvo/KTa8mXW71CgLJMDRTZ+WXStCRvvyj152dcN4VTpnyoW7e+GHLHUvevt/GkPP4uojBYx4XlGorYQrDLZJzTDBO45UFNRxEcIlXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=LEZMi+nb; arc=none smtp.client-ip=198.47.23.249
+	 MIME-Version:Content-Type; b=tjJWn8FZWhblGfwSdRzc0545xDjr4ZgpNI0pYs40YAqdcwQrM1BtQZJKmDXnsTUSpj+iTwIm4Hf0YsFjXIk28TCZcaLX6mB7I76lEqALsTy2VVNcXxGFQgyyzvfG3OObislrUOtMZzk81AVfDtIXeTmIbc29xC6bCdmpQ0KoT8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=SkeZfCMz; arc=none smtp.client-ip=198.47.23.248
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43PLCtgc076491;
-	Thu, 25 Apr 2024 16:12:55 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43PLCwLt047734;
+	Thu, 25 Apr 2024 16:12:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714079575;
-	bh=MwxMLX+nQ9RYwCXFm5KnZ11LoO8s/Z05D9C/NhFp+TU=;
+	s=ti-com-17Q1; t=1714079578;
+	bh=FBAmrRWmRQ6wUPzz5WQOYydNI4nfgOmhde5mQvluM/E=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=LEZMi+nbXZ/kqnhlLlMdoQM8LBpMfRi/Y8JXkh1BrPJrD5hjjVhFdN2qjmrM0VrxK
-	 Ggo8JZ6EltHGKGkBzHaGl11D4g3vEy0sCNTKw+b5sFKwHK8wi6k6Ieg9AFGTVFBlDt
-	 hgSc25HvAQDbz9VAkMVitxe/I+55aomG2MQ3KrMc=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43PLCtn2027387
+	b=SkeZfCMzMvtJOEZAww70XLZMZ0di0a+IXruZPZ/eaOBEZq5KJm5189q4Sr9H10yM/
+	 yY7m5aUeZOfyVzn5Op/oONjD9BKMba6Obm+eeZno99dWMotKxpSWmpXkK7serciGX/
+	 sKAiepMxcOBuf4o9LIHjL8oP5Oj0U8ZVdwCGFsRI=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43PLCwPE031324
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 25 Apr 2024 16:12:55 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 25 Apr 2024 16:12:58 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 25
- Apr 2024 16:12:55 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2024 16:12:58 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 25 Apr 2024 16:12:54 -0500
+ Frontend Transport; Thu, 25 Apr 2024 16:12:58 -0500
 Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (a0497641-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.36])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43PLCYHH038718;
-	Thu, 25 Apr 2024 16:12:52 -0500
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43PLCYHI038718;
+	Thu, 25 Apr 2024 16:12:55 -0500
 From: Neha Malcom Francis <n-francis@ti.com>
 To: <robh@kernel.org>, <conor+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <vigneshr@ti.com>, <nm@ti.com>
 CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <kristo@kernel.org>, <u-kumar1@ti.com>,
         <n-francis@ti.com>
-Subject: [PATCH v4 5/6] arm64: dts: ti: k3-j7200-mcu: Add the MCU domain watchdog instances
-Date: Fri, 26 Apr 2024 02:42:32 +0530
-Message-ID: <20240425211233.2006233-6-n-francis@ti.com>
+Subject: [PATCH v4 6/6] arm64: dts: ti: k3-j7*-main: Add bootph-pre-ram to main_esm
+Date: Fri, 26 Apr 2024 02:42:33 +0530
+Message-ID: <20240425211233.2006233-7-n-francis@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240425211233.2006233-1-n-francis@ti.com>
 References: <20240425211233.2006233-1-n-francis@ti.com>
@@ -77,53 +77,36 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-There are 2 watchdog instances in the MCU domain. These instances are
-coupled with the MCU domain R55 instances. Reserve them as they are not
-used by A72.
+Add bootph-pre-ram to main_esm as R5 bootloader configures MAIN domain
+watchdog interrupts to generate the ESM pin events.
 
 Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
-Reviewed-by: Udit Kumar <u-kumar1@ti.com>
 ---
-Changes since v3:
-- no change
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 1 +
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 1 +
+ 2 files changed, 2 insertions(+)
 
- .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 26 +++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-index 7cf21c99956e..f6ca4ffb5ee1 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-@@ -686,4 +686,30 @@ mcu_mcan1: can@40568000 {
- 		bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
- 		status = "disabled";
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+index b24a6333563a..30ec36ce4ce7 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+@@ -1565,5 +1565,6 @@ main_esm: esm@700000 {
+ 		compatible = "ti,j721e-esm";
+ 		reg = <0x0 0x700000 0x0 0x1000>;
+ 		ti,esm-pins = <656>, <657>;
++		bootph-pre-ram;
  	};
-+
-+	/*
-+	 * The 2 RTI instances are couple with MCU R5Fs so keeping them
-+	 * reserved as these will be used by their respective firmware
-+	 */
-+	mcu_watchdog0: watchdog@40600000 {
-+		compatible = "ti,j7-rti-wdt";
-+		reg = <0x00 0x40600000 0x00 0x100>;
-+		clocks = <&k3_clks 262 1>;
-+		power-domains = <&k3_pds 262 TI_SCI_PD_EXCLUSIVE>;
-+		assigned-clocks = <&k3_clks 262 1>;
-+		assigned-clock-parents = <&k3_clks 262 5>;
-+		/* reserved for MCU_R5F0_0 */
-+		status = "reserved";
-+	};
-+
-+	mcu_watchdog1: watchdog@40610000 {
-+		compatible = "ti,j7-rti-wdt";
-+		reg = <0x00 0x40610000 0x00 0x100>;
-+		clocks = <&k3_clks 263 1>;
-+		power-domains = <&k3_pds 263 TI_SCI_PD_EXCLUSIVE>;
-+		assigned-clocks = <&k3_clks 263 1>;
-+		assigned-clock-parents = <&k3_clks 263 5>;
-+		/* reserved for MCU_R5F0_1 */
-+		status = "reserved";
-+	};
+ };
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+index 0dd5005b34aa..a5dc1e1bc1a9 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+@@ -2957,5 +2957,6 @@ main_esm: esm@700000 {
+ 		compatible = "ti,j721e-esm";
+ 		reg = <0x0 0x700000 0x0 0x1000>;
+ 		ti,esm-pins = <344>, <345>;
++		bootph-pre-ram;
+ 	};
  };
 -- 
 2.34.1
