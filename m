@@ -1,78 +1,82 @@
-Return-Path: <linux-kernel+bounces-158567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7998B8B2231
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:06:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 012628B2232
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:06:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D85DAB21BC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:06:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 678E91F253B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CB9A149C47;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83834149C56;
 	Thu, 25 Apr 2024 13:06:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="tLduG9PE"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CvPC1bQQ"
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CE961494DA;
-	Thu, 25 Apr 2024 13:06:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4771494DB;
+	Thu, 25 Apr 2024 13:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714050373; cv=none; b=EaPq22ryIbXMN79D3MmH6JE6qF0ur18pe1IH0ZoZRK9FnlG3x0uUVUjXz83EuNTQZzuvFmT9Rr0zCyWTD+I5wHMw4Ui7ntoWkt6FH1CG4jlxDM50fSfxLtvn1yYWPADMLtOPGFjzfiHZKDl3cTGMYRvdZWZYWg9PK5zAK8hAEAI=
+	t=1714050373; cv=none; b=qHtyEMS6gm3R/a0AvsSjgi0xV41WFtdXfjmhDK4zhF9QDD8c2eNqfg681xEgODm0WrQeNr6LZ7fSJbph7ZFwurIR7MlFcD04i32BZ+/af/aBk5uKLdXPukERb4wap3qTikq3CzqBivHg4GPu9GdWHOSYOOK3CSJm2AbKTrstFsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714050373; c=relaxed/simple;
-	bh=qEsA4fMSLkxiExCUcAUU2HEHNNs8axftNFScUXDPiew=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RGVisPSWWW+IZWHSS3IvlCDCyFPA9hKta7HV5fhaCZjX4T1VLV0CSGeTfbbWLhx+Bz0YQ4WLA5YsY5e6R5aCIv4CXsi0zTHahyfAm8vy0/95BnVNTI7urAg0uYLXjE/yjFWrEM2YuhULFeABL52BRX41ZaoHTNyFpsWgW9Dkewk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=tLduG9PE; arc=none smtp.client-ip=148.163.156.1
+	bh=r5eIBaaMhae73DJWS3RNUzKHwgxGkcwRmS6S6nLmHyc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=nIL6xIMVPgjTgBiTCh5Q3B5RXAHQpdHLI5DvtleVYx+bY6PAFOGO/92n+Gw1LvTzTC/v/jXU5lTyeoIchPGTrLq/EhjkM3K7Juz8rxQLXbo8RthCqL0gjIyhn1BAuBTKJn2cDYl9Yyj7HVBFKtfAU4rS9BWhRwhdRsVpExE/DEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CvPC1bQQ; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43PD26gN005234;
-	Thu, 25 Apr 2024 13:06:10 GMT
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43PCvs2T023569;
+	Thu, 25 Apr 2024 13:06:11 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=gsj6tYdabVaphThcZgq+iWqbQLRoqpAoC3FzceEswqw=;
- b=tLduG9PEYYUbvteT6UeisKhiq7fCfPx2v9VBHM5R6Z08Dd0hwdUZgh/glV8FJKqzf2sc
- 9jpwDEf2jH5BmQJ3ZmbAhdzZ1r+UrDmlE7a2/Pktc4WDiGmqsgLC0eeQeQtLS6iCa7W7
- ioR9I3ArKMwGB33bbz/3BhIF9JtuUWgUvM7fzvpiGWaAZKIKHi4QctbX2VYdMyIzQMdI
- RKJTvH8uMZ0rGup0PCdXrF+q5PedZbTy1S5iYt+qTPBCjacd9FQUSD6dFXAHuATcke1B
- f7zg1+jWlicbR1DA4h55hLCmPaf0uZaCwQfKJzyruf5ImgjX5Y759+qsL9ijDFWoqMZK KA== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xqqpwr0c9-1
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=IKHd4OBHw55uxepZCbnzDOP3+YjpSZ9rZrKd2kj33ks=;
+ b=CvPC1bQQkqvN5Pc19PurvhycX97HyLj7Hnxel524nMlEeRaCZ3ZGSi26qehukivdJeFi
+ uGLEz2r55zfZyv/b6jWQ414L2Dzp+G30FSDdG2eiBt1BoqJZ04vjBz8/ZoMXhfYmmYbN
+ 9tK8BhBVYc8NsjJNYtiWgnoaYsNS7y+HUWil6En5vHVKnGs5hpBCyFAgixgS3+Mg77UG
+ 53pEQBmK17szz0F9pEImNo7O9uVDZ9XfCpoPoNLu0+RmS7DX8U5BitZZb+MnLagSlAg5
+ 1NNIGtxhh4YjQZJ8qNaJ421ijGfMZ42cNlOqYTUYt4bolVUOoPPt7X6X14R4si6a9KRs aw== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xqqmu80ve-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 13:06:10 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43PAqnep020920;
+	Thu, 25 Apr 2024 13:06:09 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmre09ym1-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 25 Apr 2024 13:06:09 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43PCNv6b023068;
-	Thu, 25 Apr 2024 13:06:08 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xms1p9u6s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 13:06:08 +0000
 Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43PD621a35651882
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43PD63Dn41353684
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 25 Apr 2024 13:06:04 GMT
+	Thu, 25 Apr 2024 13:06:05 GMT
 Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6A3C62006A;
+	by IMSVA (Postfix) with ESMTP id 7B5F22004D;
+	Thu, 25 Apr 2024 13:06:03 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 851F02004B;
 	Thu, 25 Apr 2024 13:06:02 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2758C2004B;
-	Thu, 25 Apr 2024 13:06:01 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.171.50.16])
 	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 25 Apr 2024 13:06:01 +0000 (GMT)
+	Thu, 25 Apr 2024 13:06:02 +0000 (GMT)
 From: Claudio Imbrenda <imbrenda@linux.ibm.com>
 To: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
 Cc: hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
         svens@linux.ibm.com, gerald.schaefer@linux.ibm.com,
         borntraeger@de.ibm.com
-Subject: [PATCH v1 0/2] s390/pgtable: misc small improvements
-Date: Thu, 25 Apr 2024 15:05:53 +0200
-Message-ID: <20240425130555.73132-1-imbrenda@linux.ibm.com>
+Subject: [PATCH v1 1/2] s390/pgtable: switch read and write softbits for puds
+Date: Thu, 25 Apr 2024 15:05:54 +0200
+Message-ID: <20240425130555.73132-2-imbrenda@linux.ibm.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240425130555.73132-1-imbrenda@linux.ibm.com>
+References: <20240425130555.73132-1-imbrenda@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,33 +85,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: qKexw6tJUdX7hlIm233UcH7nHME1p4le
-X-Proofpoint-GUID: qKexw6tJUdX7hlIm233UcH7nHME1p4le
+X-Proofpoint-GUID: LAftu0HYrzyWLfydXxc_MOQomk8Tav0h
+X-Proofpoint-ORIG-GUID: LAftu0HYrzyWLfydXxc_MOQomk8Tav0h
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
  definitions=2024-04-25_13,2024-04-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=572 adultscore=0
- phishscore=0 suspectscore=0 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 mlxscore=0 spamscore=0 bulkscore=0 impostorscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ priorityscore=1501 spamscore=0 malwarescore=0 adultscore=0 mlxscore=0
+ mlxlogscore=687 suspectscore=0 bulkscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2404010000 definitions=main-2404250095
 
-This series has two small improvements for the s390 page tables.
+There is no reason for the read and write softbits to be swapped in the
+puds compared to pmds. They are different only because the softbits for
+puds were introduced at the same time when the softbits for pmds were
+swapped.
 
-The first aligns the layout of large puds with that of large pmds;
-there is no reason for the large pud read and write softbits to be
-swapped compared to large pmds.
+The current implementation is not wrong per se, since the macros are
+defined correctly; only the documentation does not reflect reality.
 
-The second introduces _REGION3_ENTRY_HARDWARE_BITS_LARGE, for
-completeness, which is a bitmask of the hardware bits for large puds.
+With this patch, the read and write softbits for large pmd and large
+puds will have the same layout, and will match the existing
+documentation.
 
-Claudio Imbrenda (2):
-  s390/pgtable: switch read and write softbits for puds
-  s390/pgtable: introduce _REGION3_ENTRY_HARDWARE_BITS_LARGE
+Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+---
+ arch/s390/include/asm/pgtable.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- arch/s390/include/asm/pgtable.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
+diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+index 60950e7a25f5..3da2995fd196 100644
+--- a/arch/s390/include/asm/pgtable.h
++++ b/arch/s390/include/asm/pgtable.h
+@@ -266,8 +266,8 @@ static inline int is_module_addr(void *addr)
+ #define _REGION3_ENTRY_DIRTY	0x2000	/* SW region dirty bit */
+ #define _REGION3_ENTRY_YOUNG	0x1000	/* SW region young bit */
+ #define _REGION3_ENTRY_LARGE	0x0400	/* RTTE-format control, large page  */
+-#define _REGION3_ENTRY_READ	0x0002	/* SW region read bit */
+-#define _REGION3_ENTRY_WRITE	0x0001	/* SW region write bit */
++#define _REGION3_ENTRY_WRITE	0x0002	/* SW region write bit */
++#define _REGION3_ENTRY_READ	0x0001	/* SW region read bit */
+ 
+ #ifdef CONFIG_MEM_SOFT_DIRTY
+ #define _REGION3_ENTRY_SOFT_DIRTY 0x4000 /* SW region soft dirty bit */
 -- 
 2.44.0
 
