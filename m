@@ -1,140 +1,183 @@
-Return-Path: <linux-kernel+bounces-158882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68ED88B2632
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:19:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF4D98B2637
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:20:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E87061F244A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:19:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F01C4B27D34
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:20:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7F5214D2A2;
-	Thu, 25 Apr 2024 16:19:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C84A14D2B2;
+	Thu, 25 Apr 2024 16:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iR18/QXa"
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b="PFkC5eKS"
+Received: from GBR01-LO4-obe.outbound.protection.outlook.com (mail-lo4gbr01on2138.outbound.protection.outlook.com [40.107.122.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4CF714C5BA
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 16:19:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714061974; cv=none; b=G50qIAwQMELgs/o/sXP5fFwfBB8+/c+T5ZapgbP25VhL635OiFX2/z0/njQvpYhb5dVEvWvRVsYgR1R7XHTzf+HBahdzpEThoR+XM7jq7d9Qp9XVdazOtTq9BMDysLg1Gi1z/Ix+93cnHoN6hXNNjgAOo4HtgUOHk9PemASMkeU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714061974; c=relaxed/simple;
-	bh=YMGGIiyahPr1ihVzKAGciOXoi6jScO2RrOFohqSxbog=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HMLi1L6kaKxFkjU3R3fcj+evR7fVVxfBJuoGIN6GCt6WGtpmlF8HloI/+GUNq4wsZt58LJb2IejlCbYzziL9MJuHk3ZfvdM7Z0MByOWyWSe7qwLjXE+ow3xhfjxGjaOAkYPsCRtonHtiZTiH3h3PIpqzD6XkVf8VuUwnvixidI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iR18/QXa; arc=none smtp.client-ip=209.85.222.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-78ecd752a7cso76899485a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:19:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714061971; x=1714666771; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YMGGIiyahPr1ihVzKAGciOXoi6jScO2RrOFohqSxbog=;
-        b=iR18/QXatk7X9rQRIAZIzNYR0/bbLm5lRfWjD7zv6VIb3zigTChIpTafga4cwPp9Eh
-         cBAkMD4/z0s6kgU77wMSQ2HizFsURrNNHUE5PBsEMfhP36QY0/WjfVHElamfPGaInbjS
-         eB7DNYVvQABmHU5cK7+kLyIHEBREzXXb4sbec=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714061971; x=1714666771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YMGGIiyahPr1ihVzKAGciOXoi6jScO2RrOFohqSxbog=;
-        b=s9DIEmzg0XKd5ksDEsWi995hsNHdcYmGart+BYyXV2V3n+4HuNqrHNF+SR07jTEakD
-         bGO6ijgkCwMPbSZGO1eeiNOYVCaIPCzKYSeQ0Cj0jFIq6oSBZJHPNNWZ1Mku124QPYQx
-         qhF68UtrRiRjwF03Gy5pMIZYNSOuInqxyLRq0BE5Eo0hozsDzqqnINOEd1oeuUHxBS3o
-         74RpliuSpLuh1498VHeUtnRRvpWDYeNGOKwpVDTCJjT3SgatiRVNKX35MNedwDz7bOYz
-         gXGBjOyFK8blWCIomSsLlVnrv0Pvfgs4ffsspjBE8Qrty7QKsp+1eEW1x1MFdfJDBTHA
-         9Pbw==
-X-Forwarded-Encrypted: i=1; AJvYcCU1h93C2d0JlnVXkGNAzdTTQ0QMfo+7rjRK3t3aQo8NqvLhIOq9SCXzTkhV7S+28aV+eyM5Tn/ERYiEluul18M/sjZ2vPF9GfSDtoxf
-X-Gm-Message-State: AOJu0YyD8QIaBljk7E/Q4tjKqZ+sQfTFQs/28QiIMmIXsGkUrd8LWIq6
-	pDWybVlb0Stn6FtiuR2/2ulHQVqZCKPcKDwaAQzG2Oo1arWMv4p5W14IukNK3zL5bBapBWJznkU
-	=
-X-Google-Smtp-Source: AGHT+IHOn4xoDYP/uj8AqTPn5Vjaw3w3V4hbfXuZrhCcNtyW1sl++xbJKlk7O+Xac3u4loHhtc2Emw==
-X-Received: by 2002:a05:620a:147b:b0:78e:ea6c:bd1a with SMTP id j27-20020a05620a147b00b0078eea6cbd1amr50155qkl.1.1714061971006;
-        Thu, 25 Apr 2024 09:19:31 -0700 (PDT)
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com. [209.85.160.176])
-        by smtp.gmail.com with ESMTPSA id q24-20020a05620a0c9800b0078d677e72f3sm7170797qki.118.2024.04.25.09.19.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 09:19:29 -0700 (PDT)
-Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-43989e6ca42so401371cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:19:29 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVsiouamWx8UrPkHMZbvkkkWIbPjTZHgtcBrUFXYnXT6KveBLpgusnb/0YQrfNKLn7+UIrp2Dl5BbyyUwzGAHXHhfJKEkC63xcxoLEW
-X-Received: by 2002:a05:622a:1825:b0:43a:5f02:bbe2 with SMTP id
- t37-20020a05622a182500b0043a5f02bbe2mr125019qtc.24.1714061968946; Thu, 25 Apr
- 2024 09:19:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B541F14D281;
+	Thu, 25 Apr 2024 16:20:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.122.138
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714062025; cv=fail; b=IY2U+B+xyiTphkon7rzOEedus8Pn56H4WZukGbfVTXhG/vxHaceW4Z6scDxmfdPFpTD+Otu3A4gY+m/LdEHBRNcuqPHX1GHV5bCCxX/ZJDSn0+HYg2/Sz1BkImP40mFzk8AWL0Bram/qduNfJVqrUqNfbRv7B1YKE0x/FnUWA0M=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714062025; c=relaxed/simple;
+	bh=V4TmXVZe06bVg3MxGuPMPL5PUad6wJoIOFu5bIErTic=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=i+rkXwIfxkRdMJzhX4+PF2Q83VWvZJYJAmRuZfhaf0L3bJu29z+uKnojTU023elmzwVz9jsGL5l7UZCNnR2YyuP2b39SQyOrRsLrBSPsrzqfRiH6ID3EapooVZ6zpirdt69EPEyj8fWYtTkBnEryxL6G+7wsxGWK/pi/o/J0jSM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=garyguo.net; spf=pass smtp.mailfrom=garyguo.net; dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b=PFkC5eKS; arc=fail smtp.client-ip=40.107.122.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=garyguo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=garyguo.net
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HWnrXqsAvKfnZ3ySC3pucBvorc4o7SoAXAicdV4mRefK5JMIMH++b0w4m+Heiuttrbc9TxE3YMxJQX3wRJmukP6j/tIaTUH2k15isVq/Xf9Lkfo+ntEgqBhfEoYxEIIrnh6dBUzcAyeQDEKm6X5tdVa2GGLLSaOmF+1rcAgl0WLIwkKHrCCsVZcpnBVuK9RJXrewZGxbl0Ymu8miBSNHgHxMGuzxdCKT4dsUGWL06IaeLwOZJJFoThe8CaDdazKY0TjlH+IcKxB4px133g7WmcnFIRA2N07+q+fZoqcAaaK4UdfFjehWYif4Ei73aeAtDIbMoRJFl9TjdVJtATTQYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xyoZazaRhnkLfJmtW0hIX7Gjev36GnuHZyUQrVpuKk0=;
+ b=jWRD6BA79CnvEE8wStl++0FEA2nWji63W+h5qGJAXr1C+xgD/MaLnQRQncooxvme7Z7UbQiDSqdBMRHK1W9rR+OiYoIFMYGuE+1gKbJWVaP6z4YzvtEopRAT4Q+P48tnceSna8ipUOtQAG4v2CmlGSbk9gl9we86Ee3WYBCIF0rf60SyWKPxYXd9x9cacjQvwxRV6iVbn5pcZt+0+4ADPTQ9v27YTnsKkzvToDNx9eVkJEjoQErAj2pCucHdGn2StC/Ef7umWt53xLVT+IK08lRyB3O7MHUedPyMuyC5oHWX7U6/JmNq7tSjoIp0ArQXdz1Z5GH1HaJpOTuoKxBMkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
+ dkim=pass header.d=garyguo.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xyoZazaRhnkLfJmtW0hIX7Gjev36GnuHZyUQrVpuKk0=;
+ b=PFkC5eKSoZ21NBU7qFw+cATzrzy6/tGZtUQihlZ6QZ2vAmxdpTYogxjddyv3rF+xYrkkUT/aRVReAiXK7JzIaEi9dgiwlpYSHAJIUt6cQal9Zx8iMvwVo3Gi4Dq71sMnPNZcM5S8Ap0YicqKgI4etYBhMBatyw5opd2Yd5YGiFw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=garyguo.net;
+Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:253::10)
+ by LOYP265MB1872.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:f2::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Thu, 25 Apr
+ 2024 16:20:20 +0000
+Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::1818:a2bf:38a7:a1e7]) by LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::1818:a2bf:38a7:a1e7%4]) with mapi id 15.20.7472.044; Thu, 25 Apr 2024
+ 16:20:20 +0000
+Date: Thu, 25 Apr 2024 17:20:18 +0100
+From: Gary Guo <gary@garyguo.net>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Benno Lossin <benno.lossin@proton.me>, Alice Ryhl
+ <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox
+ <willy@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton
+ <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, Alex Gaynor
+ <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>,
+ =?UTF-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, Andreas Hindborg
+ <a.hindborg@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Arve =?UTF-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>, Todd Kjos
+ <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes
+ <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren
+ Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, Trevor
+ Gross <tmgross@umich.edu>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, Christian
+ Brauner <brauner@kernel.org>
+Subject: Re: [PATCH v6 4/4] rust: add abstraction for `struct page`
+Message-ID: <20240425172018.015e1afd@eugeo>
+In-Reply-To: <ZiGlC5AtRRikE1AI@boqun-archlinux>
+References: <20240418-alice-mm-v6-0-cb8f3e5d688f@google.com>
+	<20240418-alice-mm-v6-4-cb8f3e5d688f@google.com>
+	<ZiFsCLb-BZWbBHsu@boqun-archlinux>
+	<87dc4cdf-ccf6-4b08-8915-313aad313f93@proton.me>
+	<ZiGlC5AtRRikE1AI@boqun-archlinux>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P265CA0184.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:311::10) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:253::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416091509.19995-1-johan+linaro@kernel.org>
- <CAD=FV=UBHvz2S5bd8eso030-E=rhbAypz_BnO-vmB1vNo+4Uvw@mail.gmail.com>
- <Zid6lfQMlDp3HQ67@hovoldconsulting.com> <CAD=FV=XoBwYmYGTdFNYMtJRnm6VAGf+-wq-ODVkxQqN3XeVHBw@mail.gmail.com>
- <ZioW9IDT7B4sas4l@hovoldconsulting.com> <CAD=FV=X5DGd9E40rve7bV7Z1bZx+oO0OzjsygEGQz-tJ=XbKBg@mail.gmail.com>
- <ZiqBQ3r3gRk2HBir@hovoldconsulting.com>
-In-Reply-To: <ZiqBQ3r3gRk2HBir@hovoldconsulting.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Thu, 25 Apr 2024 09:19:12 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UXHWUfg-Gh0u3PG67O5fHLhWqhGPQFQjZMmEYt3Pw-Wg@mail.gmail.com>
-Message-ID: <CAD=FV=UXHWUfg-Gh0u3PG67O5fHLhWqhGPQFQjZMmEYt3Pw-Wg@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: qca: fix invalid device address check
-To: Johan Hovold <johan@kernel.org>
-Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>, Johan Hovold <johan+linaro@kernel.org>, 
-	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Matthias Kaehlcke <mka@chromium.org>, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	Stephen Boyd <swboyd@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LO2P265MB5183:EE_|LOYP265MB1872:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6a6bba20-5763-4867-4808-08dc65439a5e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|1800799015|7416005|366007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?0JXJD7d9vA3WU51OmTdGDbR8i6JSRNEdEFvecg7QZgKPKQoaHGzvdEaugTDQ?=
+ =?us-ascii?Q?cVrIQVLTasRuuaEQhFtYwZf57KblPBe4oO3TyeolbUXqzrczAc3uLDehkvAo?=
+ =?us-ascii?Q?IbFFr6hyszD4IGyZYRo7YUErfQn2nsjRxq/ymSx6oLZ59N7gfmSkEqov2zSN?=
+ =?us-ascii?Q?ai9BKzTg39gi1c1Sd+Uuj+RI5KHFWTsrA1u789ADLktU73gJNIZqwwshDQKx?=
+ =?us-ascii?Q?+YUiuzjHQoVgJYirdio4vTv3hitxW/V5iVRUI62R8Unh8HG1xCfIKwY/BOxC?=
+ =?us-ascii?Q?fW3atFHDFt+oA2g7oT0xsWh+foephjtvZVS8+wOkW1gVm2saWtT5Gw48YLBS?=
+ =?us-ascii?Q?3m+/W2Fedu6MvhiKZhLNJO+D5AWKwOuBOjk33o15CKF+lQMklLJx+NdADdE2?=
+ =?us-ascii?Q?nzyfwXaUyxbk0UnRsGfL9HKYiCHSK/NSDEhD3KFuZ+K632Db+/JrdBBZNXE2?=
+ =?us-ascii?Q?mvspa+EIMbMf90o/zB4bFTTAsnLekjLEVhGsDO3mo9WGFiW4C0u8JxWhOzeR?=
+ =?us-ascii?Q?MmEf4CrfFszuJj5+8Gs0N+72SuHmwPUZqEEPi6PxF5p4zwA7XHV1Dk8eLjKh?=
+ =?us-ascii?Q?/BKM3Wyi7bOm/VUbvwBtcsPO3dq4I3R1yLFwc5cQlruMe1R2skgvU3qQeSBM?=
+ =?us-ascii?Q?a8OEWjZF3XxR7o9v8q4AP3eT/WPLCXMH6jg53ZJUWHkeetYS28/zHI7TD6UG?=
+ =?us-ascii?Q?+ejM6oibsgvDoxT69TefWi5owCg0064r/MkwN5j3D98ouuCbq/QTcVhG2UC5?=
+ =?us-ascii?Q?5vylqkQCgLGhyE2guocXWIEk8ntSOSGijcqcQ78PKiKcI0O8AjtstuOYXUh3?=
+ =?us-ascii?Q?TiqdMKL5KCiYNR3d+SO9TbDXe8K84+LBrLnu5ZTg7SH+Vm61cNpAB+mgrpDD?=
+ =?us-ascii?Q?L2YhRJF/zk1IizKN98XeKIpzFnfLgaTVhMbrZ+C/a8rMTpRclMEamrsQjMKR?=
+ =?us-ascii?Q?4qVZUwqLQXDMs4gIQylhfGKR9YEN8cDieH4oy2QiPKitXozVb2UazB+Ey3ns?=
+ =?us-ascii?Q?futL/Y9GsGUWtaJcbbNpOFFSzPOeQjOBVFzg4s5w7KPVV/F8fZEXrd7E2aBV?=
+ =?us-ascii?Q?6CHKl5WldIq9BA4xHvpySKRC0UGO8DBj09xXadR4tGfJsB197WLKKf03HzvN?=
+ =?us-ascii?Q?oQIshsYyNBF8GH3W9D0p+/TWwhgef7HADwkEMLxKXEOi9ktbDIp8GzggbFRv?=
+ =?us-ascii?Q?4LO4WboenSEiVFTM+r609nSTvxvzo2IfuuBe8OH1P1XNzFqWzNmns19RSR5r?=
+ =?us-ascii?Q?jKfywmZidR6Gs1vBRVgcKooMPmusDWyN44HQYOZGGw=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?0bplDmqb9JLh9F17Q2BmWQzSJIy6tUqtGNm972LLzx3cTLY4bJCMatJJU4VX?=
+ =?us-ascii?Q?qccoRAqNHyLHObQ3RvIRuAfVO5/TBFdF6SPOauqkvPBy5RTS+8igZpHE6QxP?=
+ =?us-ascii?Q?AjrXt6O+taxsPjaQ/0qDLYZabuz6Mugj25rQ9xpW7dy1Evc01HIPamCMZBoi?=
+ =?us-ascii?Q?9srtwYI+9dn6w0oaV+F1kgQNbgJOM1ZZ+6S1P4rvHHzes2xUsvNOxixepMCZ?=
+ =?us-ascii?Q?HJ+OX6AmsU24HZKmTkn/07W1txaF909/YfRjOZTIupszNYxYiLVPaohnylfu?=
+ =?us-ascii?Q?6IUAY0+a3c5BF9tPRjqicb0bEMC8xDnz5yTHFse9k7OUmuzHMS5JDqVUpqU/?=
+ =?us-ascii?Q?mjKIkSTDZ/4Q8R3GyhSYJ7EXYEYhoql0Sk/U+3isJZGxUU6SRw8OJxZuEXc9?=
+ =?us-ascii?Q?FDPSYC1p14FKMKkFpShTNpuhVOLy904HQL3SugXjCSyIqykhA+FtxifRBhVZ?=
+ =?us-ascii?Q?5DMveBr+S+FO5EneE1DGGaZ315uzzw3Pw6INScD8VzFrvQvbdxPTlNTYjqBV?=
+ =?us-ascii?Q?SyChcRRgaLKRCEzLMrti7sBICfLxKthZIHCQIlmtlFSvh2rb8eJcuRr+/Grz?=
+ =?us-ascii?Q?t6mu+GTrbN35SExk+hwGD4Q5Q24vJHYDnJU4a6nbOYE7AGDUeUy9zN/CmzZg?=
+ =?us-ascii?Q?RU+sQ9xTmQx7UnP0Vhd3623Zt7UThKJm+cT84xccq7Hvvq1fgDh7a44kaFcX?=
+ =?us-ascii?Q?SU40sHwBym1gcVzkVqkAruOp0i2b5z0d3xav5JRy4mMkyqpG/h62OsGvHzUp?=
+ =?us-ascii?Q?l8I4DK2L1YIsvwkBxx9lB8Zi19Fp66tUpWzONEyY5JIpNcoAuhI0hDwcZnM0?=
+ =?us-ascii?Q?FBE+Q8fpBj+rLqM1asryh5hERNEKCg3sHN2Mr1lWR1DbpxqEOWy44BgbqmQb?=
+ =?us-ascii?Q?Oe8gMSKIk8iWZuRkUqk5hW8HfA/UwPaqN9ikUDFJwbC/jq7b35zHMzuPZ1Uh?=
+ =?us-ascii?Q?ZMmVDmr1EQa7PYhOKRwScJOkiEYXjl8SJloNTD5/BoG2ImQ2++LSZxIvWRf4?=
+ =?us-ascii?Q?JbfFtlzOw1MuYTZnf32l7lLM5QCFBChdfO9U1VCFS27faMU8yknNVXt/hWVE?=
+ =?us-ascii?Q?UcmAjyvwpvo5gLwQIRdGQJxoUcwHwDFGpR4IWzBZAvY50pGKW1pdvT4BUpy2?=
+ =?us-ascii?Q?Xd0pfT33SJHyWv6Pw9UO9PT+uRX9tRSz4CwNJPQLuFVqfWWp9AvgpVVZTXyM?=
+ =?us-ascii?Q?IsSd1I2VVrDNa8TFw0GBuhYPLRT3rgjhPchdg6Y7MDfjxcZZ3SGxhnYO3hb9?=
+ =?us-ascii?Q?Me6UKOyQTRTr6dXXvE6GEfWdM8AARB2WxbwrRh6EQl++yavWQxZritILNWyZ?=
+ =?us-ascii?Q?mY8irwXturpa7wGdyt8hmieo0dwL0wdNIeoyqj0WugdCFh9FvZCqucmts3AO?=
+ =?us-ascii?Q?IYGKyzrG7LjfgpzuexGryYB+PBEERdjCBvCMizlaffLhWiqI8Q5bGZPwKQp8?=
+ =?us-ascii?Q?TTh9H6eXU57+oz5cwfQHJW4F7gWBeaA2oaeKRzgYVayAjueTcrVNgz4PwLgG?=
+ =?us-ascii?Q?gCO9yZVa0Xz5+2e4CUJBY6x64+gtVkp1UwxFahlRfn6IPHsvgOc53546k5nA?=
+ =?us-ascii?Q?l3j7ap7x+zUHwBbl7CP0Ghd922IoMz4tELwG/viO?=
+X-OriginatorOrg: garyguo.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a6bba20-5763-4867-4808-08dc65439a5e
+X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 16:20:20.8212
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jiQ8ftvZnnrUtMReH8auCDPUcCpPjL7c2oKFp8HUJUHvJCsVIbKcu9lbUYaxQ3rmyEjhtwzJa6po4taXagN3rw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LOYP265MB1872
 
-Hi,
+On Thu, 18 Apr 2024 15:56:11 -0700
+Boqun Feng <boqun.feng@gmail.com> wrote:
+ 
+> Hmm.. here is the thing, having `&UnsafeCell<[u8]>` means having a `*mut
+> [u8]>`, and it should always be safe to get a "length" of `*mut [u8]`,  
+> right? I haven't found any method doing that, but the length should be
+> just a part of fat pointer, so I think getting that is a defined
+> behavior. But maybe I'm missing something.
 
-On Thu, Apr 25, 2024 at 9:13=E2=80=AFAM Johan Hovold <johan@kernel.org> wro=
-te:
->
-> On Thu, Apr 25, 2024 at 11:22:50PM +0800, Doug Anderson wrote:
->
-> > Quick question. I haven't spent lots of time digging into the
-> > Bluetooth subsystem, but it seems like if the device tree property is
-> > there it should take precedence anyway, shouldn't it? In other words:
-> > if we think there is built-in storage for the MAC address but we also
-> > see a device tree property then we need to decide which of the two we
-> > are going to use. Are there any instances where there's a bogus DT
-> > property and we want the built-in storage to override it?
->
-> I guess we could decide to implement something like that, but note that
-> a devicetree may have an all-zero address defined by default which the
-> boot firmware may or may not fill in.
->
-> So we can't just use the presence of the address property as an
-> indication that the device has an address, but we could of course parse
-> it and see if it's non-zero first. (Actually, I think this bit about
-> checking for a non-zero address is already implemented.)
+You can just use `unsafe_cell.get().len()`. `len` method exists on
+raw slice pointers, gated by the `slice_ptr_len` feature, which will
+be stable in 1.79.0.
 
-This would make me feel safer. Given that you've now found that the
-MAC address is in the firmware, I worry that someone will update the
-firmware and change the default and we'll forget to update here.
-_Hopefully_ someone would notice before pushing the firmware out to
-the world, but it still seems like a more fragile solution than just
-seeing that there's a perfectly valid BT address in the device tree
-and using that.
-
-
-> Note however that we still need to determine when the controller address
-> is invalid for the common case where there is no devicetree property and
-> user space needs to provide an address before the controller can be used.
-
-Fair enough.
-
--Doug
+Best,
+Gary
 
