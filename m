@@ -1,216 +1,116 @@
-Return-Path: <linux-kernel+bounces-159129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D9CA8B29BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:27:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C29888B29CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:29:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 185111F21EBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:27:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78C741F2164D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:29:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E83BC15667C;
-	Thu, 25 Apr 2024 20:25:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F242155740;
+	Thu, 25 Apr 2024 20:26:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zgoj1QOv"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VW7gNDP9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F0B15351C
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:25:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2A61153BD0;
+	Thu, 25 Apr 2024 20:26:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714076719; cv=none; b=DxdR3AtwKeCptsEfgCYMPxTddudJsJCXmRHYNjOTbSFUxNjdpqFmjpTUwUxoUB21EVMrVl6DiQOxNL8vzBrb15OgonvANp7daDcdVq0RX/HOzfsLfxAl1o0syRneWhLpwqfI+mZwWgvqVGRXerHvmQbmszwf9eJgHCzB3X9nYe4=
+	t=1714076772; cv=none; b=WpQkG8qSySL0LEDrJt2+WAbmcU1GXsC+H/JPu26mkrsWNkAyY/jyh1YHMh+5bsWUJrsjevfWGcdz9NshfB2qLY4He8S+cGUo97QZ3Hn0gZmO4wxcdf0CtM4Bb87ZYBYNXxPOT51w6ivfCAKKf+K7F6VvfbAdItFciUOgJIU5yD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714076719; c=relaxed/simple;
-	bh=xO4ehkdHkpXs4do2sTUrFed9WVCph/g/nKGf3vA2ao0=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=rhspC8haxi8fDOAsq9ZTZ5sg38PiB3SVWbUBUKv8Xe1HCgJDiuBgvZsvzyI3L6Z7AjT+aOSeVuxBr+FxGNd5S6BQpZQF4vE7At+dkQhTrnAT8pmz28aE4zKHjPSLk+zlyJxDOxX99IYHvfy+/cVoJW3qi0C3PakFbrzLlASjhQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Zgoj1QOv; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714076717; x=1745612717;
-  h=date:from:to:cc:subject:message-id;
-  bh=xO4ehkdHkpXs4do2sTUrFed9WVCph/g/nKGf3vA2ao0=;
-  b=Zgoj1QOvsYAy2yTQONMDSZ8JsvSKxCTSCKJtpRYMDQNYHB8VZeIhyupt
-   GW6tENRxF4V25n6u0lAidekBQDmSOneRf/SYDAmM0uWRvdgcCj129c6Rn
-   yCxYdHh2h2+AJJl9/RMaT9tP+R+OACmGZhIToebSUne9SZu1Un0mAkCKk
-   J4ftOH0ZG6Ni1eqppzUb6psAEOJQVngbskQD2kch5bH5fjkcNnCOsMOLk
-   TKUG+k1dj9KLBegHjDX1OtBNHtO2NKukU6nds44viHV1Ygic0Gn1sttSn
-   ThtS/kEjugV2HcgsoD8nWs4XXckWjziPgu5sHXQW8KBkrorqEkIODCBxh
-   A==;
-X-CSE-ConnectionGUID: zqAlHOtsRISRQBSOaFlDeQ==
-X-CSE-MsgGUID: poaOl4ITRcekkz7A2nfqpw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="32289781"
-X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
-   d="scan'208";a="32289781"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 13:25:17 -0700
-X-CSE-ConnectionGUID: n98C90nAQ/CEACxaLgrXpQ==
-X-CSE-MsgGUID: yBB0eDazQCqSesWwOuvYEw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
-   d="scan'208";a="25694034"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by orviesa007.jf.intel.com with ESMTP; 25 Apr 2024 13:25:15 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s05ea-0002q6-2c;
-	Thu, 25 Apr 2024 20:25:12 +0000
-Date: Fri, 26 Apr 2024 04:25:07 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:sched/urgent] BUILD SUCCESS
- b6ad00418eaf376b4f2a68a1696d6368c1381310
-Message-ID: <202404260404.tePBfxY1-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1714076772; c=relaxed/simple;
+	bh=PLMeaxqZnXGaE83WfAZG3zNxwApXjTs0zbWw4UZmoUE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=PQmEUdIRkfPLGAC8zh93BDx7GK8aa2OOy5V2G+EQP4/A4ah/W8DXxV9yKrHwQ0euAX6SDbrTTNHhEwO63ha9NPkP+pIRrWAguFrhbig3vmhG08l+Wl+Cqr0DRdoGrxFpj9FW1gYQYyRJsDE+mal9EssDBkMvU3NQA1WUFf1+sjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VW7gNDP9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CA76C113CC;
+	Thu, 25 Apr 2024 20:26:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714076772;
+	bh=PLMeaxqZnXGaE83WfAZG3zNxwApXjTs0zbWw4UZmoUE=;
+	h=Date:From:To:Cc:Subject:From;
+	b=VW7gNDP9vOqWq9cksmCzMVacHjCCT0quq6Zas0rk7VESAmupkTvrAi9inIM1C08Tr
+	 nFzF7JWaCdIEDiIiDAc/rsQjhmYDdo12DdhyT8aVEIUn1aVJRNLnxns5YdYvOu1wLl
+	 adI89GnSFCM005U08gK6z08G8PAYF2J1DVXk2FMLbKp05DZ2IN1kSTtnXbdF1vbbly
+	 7HpqlDsweMzL3K1ZIyGbEe2OheFcyOK/s1hYDmfdm8qZb2aRX0mniqI5XOhqY3hk4Q
+	 C9fHoTXAo7PYJemzEv+/LKYLFEY6NqepK5flUBBLRMBUprtN01a11aGMB5JrlbeyhH
+	 YDtvt93cbp8Zg==
+Date: Thu, 25 Apr 2024 20:26:10 +0000
+From: Eric Van Hensbergen <ericvh@kernel.org>
+To: torvalds@linux-foundation.org
+Cc: v9fs@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] fs/9p: fixes for 6.9-rc6
+Message-ID: <Ziq8YlBcw4qj4K1O@3f3e8491d9e9>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="upXBWr4EQuAUIzK/"
+Content-Disposition: inline
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/urgent
-branch HEAD: b6ad00418eaf376b4f2a68a1696d6368c1381310  sched/isolation: Fix boot crash when maxcpus < first housekeeping CPU
 
-elapsed time: 1459m
+--upXBWr4EQuAUIzK/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-configs tested: 124
-configs skipped: 3
+The following changes since commit ed30a4a51bb196781c8058073ea720133a65596f:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+  Linux 6.9-rc5 (2024-04-21 12:35:54 -0700)
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                          axs101_defconfig   gcc  
-arc                          axs103_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                         haps_hs_defconfig   gcc  
-arm                               allnoconfig   clang
-arm                          collie_defconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240425   clang
-arm                   randconfig-002-20240425   clang
-arm                   randconfig-003-20240425   clang
-arm                   randconfig-004-20240425   clang
-arm                         s3c6400_defconfig   gcc  
-arm                          sp7021_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240425   clang
-hexagon               randconfig-002-20240425   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240425   gcc  
-i386         buildonly-randconfig-003-20240425   gcc  
-i386         buildonly-randconfig-006-20240425   gcc  
-i386                                defconfig   clang
-i386                  randconfig-004-20240425   gcc  
-i386                  randconfig-013-20240425   gcc  
-i386                  randconfig-014-20240425   gcc  
-i386                  randconfig-015-20240425   gcc  
-i386                  randconfig-016-20240425   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        stmark2_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                       lemote2f_defconfig   gcc  
-mips                     loongson1c_defconfig   gcc  
-mips                    maltaup_xpa_defconfig   gcc  
-mips                      pic32mzda_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                         alldefconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-003-20240425   clang
-powerpc                    sam440ep_defconfig   gcc  
-powerpc                     tqm8540_defconfig   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                 kfr2r09-romimage_defconfig   gcc  
-sh                        sh7757lcr_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-002-20240425   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64       buildonly-randconfig-002-20240425   gcc  
-x86_64       buildonly-randconfig-006-20240425   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-004-20240425   gcc  
-x86_64                randconfig-005-20240425   gcc  
-x86_64                randconfig-011-20240425   gcc  
-x86_64                randconfig-014-20240425   gcc  
-x86_64                randconfig-072-20240425   gcc  
-x86_64                randconfig-073-20240425   gcc  
-x86_64                randconfig-076-20240425   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                         virt_defconfig   gcc  
+are available in the Git repository at:
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+  git://git.kernel.org/pub/scm/linux/kernel/git/ericvh/v9fs.git tags/9p-for-6.9-rc6
+
+for you to fetch changes up to d05dcfdf5e1659b2949d13060284eff3888b644e:
+
+   fs/9p: mitigate inode collisions (2024-04-22 15:34:27 +0000)
+
+----------------------------------------------------------------
+fs/9p: fixes for 6.9-rc6
+
+Contains a single mitigation to help deal with an apparent
+race condition between client and server having to deal with
+inode number collisions.
+
+Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
+
+----------------------------------------------------------------
+Eric Van Hensbergen (1):
+      fs/9p: mitigate inode collisions
+
+ fs/9p/v9fs.h           | 11 ++++++-----
+ fs/9p/vfs_inode.c      | 37 +++++++++++++++++++++++++++++--------
+ fs/9p/vfs_inode_dotl.c | 28 ++++++++++++++++++++--------
+ fs/9p/vfs_super.c      |  2 +-
+ 4 files changed, 56 insertions(+), 22 deletions(-)
+
+--upXBWr4EQuAUIzK/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEElpbw0ZalkJikytFRiP/V+0pf/5gFAmYqvGEACgkQiP/V+0pf
+/5i7JBAArl4Mx9CEYQji918PaDOQCnY+U7LVfBNGz9uOwJtLmlpyLbfZF73OCsse
+BbaHlwkoPlJJ6n9G+Ik1o2soYgLc8tO3Ap40gheJuhld+RE6lxROIltepL/mBehF
+cAgj+XbN5YykglxhiqCuDVni+vuMy0rMlCBoA1JWy2m3GmXMXUSRKA+RQiPV83IB
+orUvdRi9rtZzDKqsysoAilRfHDvEYqquRLL00rejUnxGYjoqK0qvowHby+uIcmjo
+iROCS899UMSg4bIe0Y11g7F2aJNw2LtPFqujDwfTJeflIgN9E4oyUL1Pt4pdpvPh
+vE150w5nIHgazRDxlP/hgLVenMhmnZPIhpfcUf/8JHEVvZ/GLjpjft0lj5NO0hnH
+g89eiTMaTwppRN+b7CYNBq81zf261U37OzDMpw5mDez6ROQoP/0lgLUI+SV1kuAR
+GQUx6KV7oovosPr5oMES+vyvn/v26sWZYnPwT0FfckzkKlKGRdor9tMMWzlSpUC7
+fYK9JTPQGFsls/DZLE8jYRFN+aUZhBBHs8nfH35thtlnV4V2KvJdypNWkM4W9yQm
+b107FVqEbyaoAThuiq9WHJFtyLCUNsJvSUjnhd1OXYGkOedTprKQRxSn/orFnOKb
+kUiQnuEc0sRJLM/L1PLQKHUDO9DGLnDaRlnoR6WU6sBz4n092js=
+=Nzc0
+-----END PGP SIGNATURE-----
+
+--upXBWr4EQuAUIzK/--
 
