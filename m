@@ -1,207 +1,113 @@
-Return-Path: <linux-kernel+bounces-158835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7362A8B2587
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:46:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D19F58B2588
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:46:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD9B21F21F08
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:46:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C9591C21D3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:46:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F84114C5BA;
-	Thu, 25 Apr 2024 15:46:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA8914C58A;
+	Thu, 25 Apr 2024 15:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yXP2Ic6W"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="HMZCcv4d"
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D5AC14C5A1
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:46:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6FC614A600;
+	Thu, 25 Apr 2024 15:46:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714059968; cv=none; b=tLeCwd9KC1Z4j/rRUHr+Fj45sS2TnbKCTPKpV2i5QebntY92FVDWtBgGj6Hha1YXXbUkdYK+MmXzb1v21+sO+YamwleHDkuf1zGP0OBCjg/euGi1B7lzR+sBPfc9iKalcjcYun7Le5qPE6dP60BCA4lMrPvKkqbmTf0uhYE+u98=
+	t=1714059987; cv=none; b=bdHLhNSv/NML4pT/ecpmKLSiiZ+ypXL21HKC80MpCoA5AFxKz6Q4oFdJB5pvO4o4NOlvm4F/GWy5CWtr+ylWeNkFYIdNkMi3a+UdC/LRkbwL7VvzniRUf/GcqRJK4OtaMv3xHnUNdg1IH/TAGdqDFRmFMpRg+vAQDbe9CP8wySg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714059968; c=relaxed/simple;
-	bh=ARPhOPhDgTEQgJncPtrsgbR8sVcAO1VcNK+RH2Rvv7E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hZm7Ff8a3Lufj3cxmLNC4sXt2JFCJPSVZE1GYu6m5hJlo3K00Zvg5+y+pqrnaV8C6hBcgEsRsyAk0aINrpFzshOt5SKxwoZEAKu/Tvki46H9l5VTnbZLWuCNDoTjOMLma2DPUYhNgnw6hJ1iCtuXIKSCPmG/w3XB1OYgWSoxIHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yXP2Ic6W; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5724e69780bso278973a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:46:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714059965; x=1714664765; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=wCdxJ+q4o3pPwabMdF8nZZpueZWNvS6ScA7rit1v9g4=;
-        b=yXP2Ic6Wim+7n8MwPWojLInIF7f+vLFEv1td5ZrUzAT4WQeiqfzxriEoWPdihzaNDt
-         2VGTXp3x6ap8HyC+TbM5qRZVAwafwT/F6F428bYaEA8t+BbG1OXQ673A9MDs5izSSJ7t
-         CU/PVttdVqZc1ayqGPx4czgQN2q6PDXqpAeWaEyZSs6iAwTSbXDY7yIYKdEPXrXOZXV+
-         DMoa2fwc0+TTvIII1rCKl48t8FNJKjya9IASn4h75qKgL+pw3CuMI9IHHD9Vgbr5FV/e
-         ZmLUcg5NygOyAre8/nPEBVAwZFq1+h2WXYwuixBxMsGGj8DNv5hZf1wjEfbYs2TU2NBf
-         DWOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714059965; x=1714664765;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wCdxJ+q4o3pPwabMdF8nZZpueZWNvS6ScA7rit1v9g4=;
-        b=IWeNjsB5QndNOutnWvQIIuRh7DZFSm67kvpEhdHPn8+kpllfzuzNSjw6S9seP+TaEz
-         fO7p+WE4PKLluJ1hUpnlpFJ7hr/wk8B5nv9thCR2SBQIkrTeZHxVBCYEYKBRDZdDGsL8
-         44f64BuKdUjvLld3M+muqEhDL1+13Ozz8FVHsAO5QR9QNYHpyzADJHCTWIbuXaONzj0K
-         ePG5tAHrljBZHmbTzsjS5OV45UfEXiggN9xWnNjL3xU2H1BXkW6kEYHvwt/xTU2+Uz2d
-         3UpS0EqWnfeRU3jb1EYpRLZBndhq7Z65uscdua/nP1wjPPqXdPMFFnkTIuwYnX0w32D8
-         qQBg==
-X-Forwarded-Encrypted: i=1; AJvYcCV8V/BkUMHZyB4FwaTjWKx+YHWc0IKI7kD2TsYfTZWH4KosfRPm8ZZNpilzWZwi+KKpia7rEOLD48wK0EmTWT6kJ55ySUNdLM3Hpt1A
-X-Gm-Message-State: AOJu0Yw/XGB5WV3Fm77FkRw8Njf0ddjlhJ6R68XUpP8FAYi7hZbIiEgz
-	VlWQPHcV/oTaiPXI4AoPicKeMTxnIkboQ8a5taMvn4UZaRSLB/YF6WKGzvNaZuN9xqT4XzwGQ5O
-	S1c0=
-X-Google-Smtp-Source: AGHT+IGjb9BIma2IPdK9VWrOvvIht6IG4eG7JsAANZbuKMobxKYONjCipGocbaFdCGFyQRQnFZaCew==
-X-Received: by 2002:a50:d4d2:0:b0:56d:e6f6:f73c with SMTP id e18-20020a50d4d2000000b0056de6f6f73cmr3670436edj.42.1714059965005;
-        Thu, 25 Apr 2024 08:46:05 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id i19-20020a50fc13000000b0056fed8e7817sm8916217edr.20.2024.04.25.08.46.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 08:46:04 -0700 (PDT)
-Message-ID: <b79b5323-196f-41bc-b47a-d350c49d769a@linaro.org>
-Date: Thu, 25 Apr 2024 17:46:02 +0200
+	s=arc-20240116; t=1714059987; c=relaxed/simple;
+	bh=BdnPwz8X5VjIlyxGHTHB1xmygmV3v31FLtNCSVMN0D4=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=a8IzXX26VG5FoljMm0PUZhyg5jwdhUYBL+FcmU1jCUoTM+keO8JN34qdnDbzaEGNvVUsjUIqfZqQ00evQ5lFcBu9WfQlD61qVVVMoRwMjXXIMmIuLCi2ZoU3tFCToKs8R+Sp/gO4tgYtq/731Kw1x6Sov6sARVpptcq6wsg7L8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=HMZCcv4d; arc=none smtp.client-ip=185.70.40.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1714059977; x=1714319177;
+	bh=7jYU4x9SG+HzxaQPBZY9kv9tKEO30Ph+k3fkjG3u5NU=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=HMZCcv4d0BzKDpblcZGIwbOk3RmoAhA/+tFRH63hwaUiN4O86P6ylvMu1HKbeE+AU
+	 zHAQgUzL8N5vjrvfWjPFkgEYnyyhHV5d6r04PJAym1bBsX9T7e8adQy0u4bSQtu3BX
+	 bpZbFiu5Hzc4KnKODFcP9smXpANOcclBMQDmNDF0TfxBuHRMxD4szqeHKx8PJXi5nu
+	 C7AO959VexM/iJIJ5YeoFsfGh+kErnwPHeR3Or8pvg0aOkf/BygIY9DER4fGM1Z4Dr
+	 S6ha4tT7WwlKX5BemzU210QuVwlmAV+qregOx2x9knfQ0UdbnngE7U5pJSapoBQShZ
+	 m+IUKkNmNsVGg==
+Date: Thu, 25 Apr 2024 15:46:14 +0000
+To: Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
+Subject: Re: [PATCH 2/4] WIP: drm: Introduce rvkms
+Message-ID: <c04294b3-a08a-44af-b74a-27f6b873c6b8@proton.me>
+In-Reply-To: <6a16f0023b62beba4658677bebcc4786da1ea4be.camel@redhat.com>
+References: <20240322221305.1403600-1-lyude@redhat.com> <20240322221305.1403600-3-lyude@redhat.com> <b41f707d-7e06-4c1a-93f0-d74ee242b650@proton.me> <6a16f0023b62beba4658677bebcc4786da1ea4be.camel@redhat.com>
+Feedback-ID: 71780778:user:proton
+X-Pm-Message-ID: 045ae0f74a45c39b91a85c78c275bb36ea47dee4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] dt-bindings: hwmon: max31790: Add
- maxim,pwmout-pin-as-tach-input property
-To: Guenter Roeck <linux@roeck-us.net>,
- Chanh Nguyen <chanh@amperemail.onmicrosoft.com>,
- Conor Dooley <conor@kernel.org>
-Cc: Chanh Nguyen <chanh@os.amperecomputing.com>,
- Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Justin Ledford
- <justinledford@google.com>, devicetree@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
- OpenBMC Maillist <openbmc@lists.ozlabs.org>,
- Open Source Submission <patches@amperecomputing.com>,
- Phong Vo <phong@os.amperecomputing.com>,
- Thang Nguyen <thang@os.amperecomputing.com>,
- Quan Nguyen <quan@os.amperecomputing.com>
-References: <20240414042246.8681-1-chanh@os.amperecomputing.com>
- <20240414042246.8681-4-chanh@os.amperecomputing.com>
- <13b195e6-cbbd-4f74-a6fa-d874cb4aaa45@linaro.org>
- <065243cc-09cf-4087-8842-bd4394fb324f@amperemail.onmicrosoft.com>
- <d549cf2b-a7fa-4644-8fcb-3c420503ee01@amperemail.onmicrosoft.com>
- <20240423-gallantly-slurp-24adbfbd6f09@spud>
- <ab5cfd8c-0e88-4194-a77e-5ffbb6890319@amperemail.onmicrosoft.com>
- <396b47f5-9604-44ab-881f-94d0664bcab8@roeck-us.net>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Language: en-US
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <396b47f5-9604-44ab-881f-94d0664bcab8@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 25/04/2024 16:05, Guenter Roeck wrote:
-> On 4/25/24 03:33, Chanh Nguyen wrote:
+On 22.04.24 03:54, Lyude Paul wrote:
+> On Wed, 2024-03-27 at 21:06 +0000, Benno Lossin wrote:
+>> On 22.03.24 23:03, Lyude Paul wrote:
+>>> +
+>>> +pub(crate) type Connector =3D connector::Connector<DriverConnector>;
+>>> +
+>>> +impl connector::DriverConnector for DriverConnector {
+>>> +    type Initializer =3D impl PinInit<Self, Error>;
+>>> +
+>>> +    type State =3D ConnectorState;
+>>> +
+>>> +    type Driver =3D RvkmsDriver;
+>>> +
+>>> +    type Args =3D ();
+>>> +
+>>> +    fn new(dev: &Device<Self::Driver>, args: Self::Args) ->
+>>> Self::Initializer {
 >>
+>> And then here just return `Self`.
 >>
->> On 24/04/2024 00:02, Conor Dooley wrote:
->>> [EXTERNAL EMAIL NOTICE: This email originated from an external sender. Please be mindful of safe email handling and proprietary information protection practices.]
->>>
+>> This works, since there is a blanket impl `PinInit<T, E> for T`.
 >>
-> 
-> The quote doesn't make much sense.
-> 
->> Sorry Conor, there may be confusion here. I mean the mapping of the PWM output to the TACH input, which is on the MAX31790, and it is not sure a common feature on all fan controllers.
->>
-> 
-> I think the term "mapping" is a bit confusing here.
-> 
-> tach-ch, as I understand it, is supposed to associate a tachometer input
-> with a pwm output, meaning the fan speed measured with the tachometer input
-> is expected to change if the pwm output changes.
-> 
-> On MAX31790, it is possible to configure a pwm output pin as tachometer input pin.
-> That is something completely different. Also, the association is fixed.
-> If the first pwm channel is used as tachometer channel, it would show up as 7th
-> tachometer channel. If the 6th pwm channel is configured to be used as tachometer
-> input, it would show up as 12th tachometer channel.
-> 
-> Overall, the total number of channels on MAX31790 is always 12. 6 of them
-> are always tachometer inputs, the others can be configured to either be a
-> pwm output or a tachometer input.
-> 
-> pwm outputs on MAX31790 are always tied to the matching tachometer inputs
-> (pwm1 <--> tach1 etc) and can not be reconfigured, meaning tach-ch for
-> channel X would always be X.
-> 
->> I would like to open a discussion about whether we should use the tach-ch property on the fan-common.yaml
->>
->> I'm looking forward to hearing comments from everyone. For me, both tach-ch and vendor property are good.
->>
-> 
-> I am not even sure how to define tach-ch to mean "use the pwm output pin
-> associated with this tachometer input channel not as pwm output
-> but as tachometer input". That would be a boolean, not a number.
+>> Looking at how you use this API, I am not sure if you actually need
+>> pin-init for the type that implements `DriverConnector`.
+>> Do you need to store eg `Mutex<T>` or something else that needs
+>> pin-init in here in a more complex driver?
+>=20
+> Most likely yes - a lot of drivers have various private locks contained
+> within their subclassed mode objects. I'm not sure we will in rvkms's
+> connector since vkms doesn't really do much with connectors - but we at
+> a minimum be using pinned types (spinlocks and hrtimers) in our
+> DriverCrtc implementation once I've started implementing support for
+> vblanks[1]
+>=20
+> [1]
+> https://www.kernel.org/doc/html/v6.9-rc5/gpu/drm-kms.html?highlight=3Dvbl=
+ank#vertical-blanking
+>=20
+> In nova (the main reason I'm working on rvkms in the first place),
+> we'll definitely have locks in our connectors and possibly other types.
 
-Thanks for explanation. So this is basically pin controller function
-choice - kind of output or input, although not in terms of GPIO.
+I see, in that case it would be a good idea to either have an RFC of
+the nova driver (or something else that needs pinned types) as
+motivation for why it needs to be pin-initialized.
 
-Shouldn't we have then fan children which will be consumers of PWMs?
-Having a consumer makes pin PWM output. Then tach-ch says which pins are
-tachometer for given fan? Just like aspeed,g6-pwm-tach.yaml has?
-
-Best regards,
-Krzysztof
+--=20
+Cheers,
+Benno
 
 
