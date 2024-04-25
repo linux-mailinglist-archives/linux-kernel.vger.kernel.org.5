@@ -1,94 +1,105 @@
-Return-Path: <linux-kernel+bounces-158480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B2EB8B20B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:50:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DF018B20BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:50:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD6152830F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:50:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F27131F26176
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:50:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D85012BEB6;
-	Thu, 25 Apr 2024 11:50:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4319E12B154;
+	Thu, 25 Apr 2024 11:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XRFkJtJW"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Kyi2H011"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C4612BE89
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 11:49:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06F5C12AAE0
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 11:50:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714045800; cv=none; b=gDsLfxwBBmeKvooEYvq2Ei+rDe2qM5UCu8wJIVi6hr8AxCZmx5ODWI3bDQN7M4gKJ2lPqhhX3J7T2GKAtRpgMIcI+b3qmrwsvDhRgxf7kRiR0OY5WDzMCfd8/nPv0b1XX/CcQS0MvVgxOUhe7dtY3C7WNtTDGztH/iSPnfV08wU=
+	t=1714045826; cv=none; b=del4m6ttjxhHTZsbtgQhrDMF/rf1jjAG98tn62i4EajFAGhLbD7clK4xeOiED/PrPS13N1hgo+jRH+tl26gJjczpSh8wbT6z0ji9kfKTTP3iblZWdVO7FC2UodtMpuR1ZnUt8YNWOftgVLoAho0u4nYhvu3eBM1XW8oqZqFqmf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714045800; c=relaxed/simple;
-	bh=P8V7MCi9hduS/hZkRXSgoYkKYCb9Aj7iqmWztCrkDM4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hk4hVYA1IkLEdEFXYEclNlangfh+C/LpNMbGBKy4w3Puyf0mDwcBW7+XoMgtMEJVo6ApdLUDLEa9s7+XIgIKh9Siwa0RLob1JZ5pGfdVxpEXN2MJS0XLux6K+maSL3CwZbeVxyEhaS/kX1D/DB1/n8bkQ1brQyigK7zyjy6sNWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XRFkJtJW; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Oifw9qpN855aTC4DmsgN7sJLcbfvYepEMTuQVWv2urU=; b=XRFkJtJWZj5kAwdOO6wmYxN4wd
-	UwxVp5cVEbLRnswZP16F810uwmr2MZwOo5ksRiuMLd/eRnvXCEpiU5DQsF8FAk3KveUsv7JiFguLb
-	DNhbHxWiAodeawjNXlEX0fB5vWCCCsgP5PgxwbRBoklQXy0UraPF6/pZHUZ9RuOHsna/qukGHX+s4
-	qMd2e9GVZQRrjTXRPo4Uehh8+6WB2g96wt7sOoafXC5qqngz5jPXu6fwJJPM7wAQLezuFxoU+RF3h
-	+aiKc6+raTVCSG0K0n0rA8bsaxaUDcP3AUF7gjW9OGv9upPCRCmm+7SjqGRjTiSpsN9elEEdpiZ1t
-	gkimiX0Q==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzxbp-0000000ErD3-2v8o;
-	Thu, 25 Apr 2024 11:49:50 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 575D6300439; Thu, 25 Apr 2024 13:49:49 +0200 (CEST)
-Date: Thu, 25 Apr 2024 13:49:49 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Luis Machado <luis.machado@arm.com>
-Cc: mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-	linux-kernel@vger.kernel.org, kprateek.nayak@amd.com,
-	wuyun.abel@bytedance.com, tglx@linutronix.de, efault@gmx.de,
-	nd <nd@arm.com>, John Stultz <jstultz@google.com>
-Subject: Re: [RFC][PATCH 08/10] sched/fair: Implement delayed dequeue
-Message-ID: <20240425114949.GH12673@noisy.programming.kicks-ass.net>
-References: <20240405102754.435410987@infradead.org>
- <20240405110010.631664251@infradead.org>
- <3888d7c8-660e-479c-8c10-8295204e5f36@arm.com>
- <1461277e-af68-41e7-947c-9178b55810b1@arm.com>
- <20240425104220.GE21980@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1714045826; c=relaxed/simple;
+	bh=6X90SrMENmPj2F8E+j2MRnzGgHoMOcwnFY9jZAuri3U=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ZzWzt4y6k2Edhn17Yq5NgBH++8xpr+ya2fWz/Rmb3Pa8h3IkM1++tBXkhqvjz0Qe138LdTHW9slht0qufjYqH0gFLeetMqolO09GMI3kvBH2wYRjf+BsO7TUnXGsU0IN0OIlzp1mVGyehDp5b3xHGQnyn80zPzVGjf2Odq64r7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Kyi2H011; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3499f1bed15so1175171f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 04:50:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714045822; x=1714650622; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6X90SrMENmPj2F8E+j2MRnzGgHoMOcwnFY9jZAuri3U=;
+        b=Kyi2H0117xIsE8cvv7in4YmWqDUx33JTPlWpOsXzJ7clB2o8iFYfwTBa64+ZJKmIS6
+         kAYT1YvUKsWbZT7K9k48W8dDGAFDDC7Dm8aWJek+6nmIVLwfrH32pkTNSEnKHHBgb/Xm
+         LBFpet4OqALHQefnHOd1hCx0XLSxnJXC0WsDhy9W8Y+ByveTjcwgnf6WbDrm/Ecqszf1
+         lBo9dCOSr+/X4WxieS/r+RG0cls+B7e7yGU1h83p3tMgGtR51zA4JH1GK/9OaIoTqALY
+         Mzr85czlf/JGYe1HAtgnVrZMl4Nm0HDxpR1o5+5Xbw7OvMpt6EkWv6yfm9+Ys1T47UbR
+         IGUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714045822; x=1714650622;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6X90SrMENmPj2F8E+j2MRnzGgHoMOcwnFY9jZAuri3U=;
+        b=BaVM54hCTG4FHijsBhgmtVoNQshESmIFp2QdJI5bnRGsbNYxJi2Cbj3RLgpEdAeYXa
+         5RmTYHqa8uC13PqubDJZ1gt2KFQZq37qMvG4Z7wQ02VlnfwqI1bUXt6VfR3C3D4tFFQ2
+         bmllqkncY5rfh/CmOrevPRcOb8MBY52hbLPLIzrgV8yGTZMnlou4vsMq/plmrzVjd/Wh
+         uhviK3zJujRFuAYeaWr4u1kxLo8KJgM8569JyHBkzJdw/QVV3dlaiKw6lF4K1GIpvxsH
+         BmzWMrczjrJlcP4i32lz8KB8SEj+tbZVrEgdekzExvHq2uQyWFdyMz30lTNdI1yedliF
+         p5Ng==
+X-Forwarded-Encrypted: i=1; AJvYcCU82+3pfuZmNOyUpkLm/fJem+oXquateenFm944Eb1wMyaco4rgJDmrtEf3grjkoo3AdGytn3rk3GMhIbCbIW9Y4LjQGc2Os4H0MfBp
+X-Gm-Message-State: AOJu0YwNjD9Qikdf15Scs2/Zs1Z3WPuYYbM1li62Gq7RDdV1fEnb9lHp
+	L1JxtGirr9YfpFyH4mz/6prI/0XpseFKPDME4x3lozD+z7nkq7PUh0kLbN1aXNg=
+X-Google-Smtp-Source: AGHT+IFd3IUrl2RhAWqNwz+jhkozMToyJuHkmRsv7L8RtAZdqq/rmyIrab8etOh0MMSjsigMRTo70g==
+X-Received: by 2002:a05:6000:789:b0:349:bb17:6e60 with SMTP id bu9-20020a056000078900b00349bb176e60mr2805121wrb.2.1714045822352;
+        Thu, 25 Apr 2024 04:50:22 -0700 (PDT)
+Received: from [10.1.1.109] ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id he5-20020a05600c540500b00418e3c5bc8esm26152587wmb.18.2024.04.25.04.50.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 04:50:22 -0700 (PDT)
+Message-ID: <db857c14d2463f643dc602012329b75df8146c0b.camel@linaro.org>
+Subject: Re: [PATCH v2 05/14] arm64: dts: exynos: gs101: Add the hsi2 sysreg
+ node
+From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To: Peter Griffin <peter.griffin@linaro.org>, mturquette@baylibre.com, 
+ sboyd@kernel.org, robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+  vkoul@kernel.org, kishon@kernel.org, alim.akhtar@samsung.com,
+ avri.altman@wdc.com,  bvanassche@acm.org, s.nawrocki@samsung.com,
+ cw00.choi@samsung.com,  jejb@linux.ibm.com, martin.petersen@oracle.com, 
+ James.Bottomley@HansenPartnership.com, ebiggers@kernel.org
+Cc: linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-clk@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, tudor.ambarus@linaro.org, 
+	saravanak@google.com, willmcvicker@google.com
+Date: Thu, 25 Apr 2024 12:50:20 +0100
+In-Reply-To: <20240423205006.1785138-6-peter.griffin@linaro.org>
+References: <20240423205006.1785138-1-peter.griffin@linaro.org>
+	 <20240423205006.1785138-6-peter.griffin@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240425104220.GE21980@noisy.programming.kicks-ass.net>
 
-On Thu, Apr 25, 2024 at 12:42:20PM +0200, Peter Zijlstra wrote:
+On Tue, 2024-04-23 at 21:49 +0100, Peter Griffin wrote:
+> This has some configuration bits such as sharability that
+> are required by UFS.
+>=20
+> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
 
-> > I wonder if the delayed dequeue logic is having an unwanted effect on the calculation of
-> > utilization/load of the runqueue and, as a consequence, we're scheduling things to run on
-> > higher OPP's in the big cores, leading to poor decisions for energy efficiency.
-> 
-> Notably util_est_update() gets delayed. Given we don't actually do an
-> enqueue when a delayed task gets woken, it didn't seem to make sense to
-> update that sooner.
-
-The PELT runnable values will be inflated because of delayed dequeue.
-cpu_util() uses those in the @boost case, and as such this can indeed
-affect things.
-
-This can also slightly affect the cgroup case, but since the delay goes
-away as contention goes away, and the cgroup case must already assume
-worst case overlap, this seems limited.
-
-/me goes ponder things moar.
+Reviewed-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
 
