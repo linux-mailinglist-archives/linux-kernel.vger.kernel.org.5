@@ -1,392 +1,177 @@
-Return-Path: <linux-kernel+bounces-158975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38B0B8B279B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:29:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2E388B27A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:34:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71C0E286878
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:29:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A007B20CD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:34:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA38A14EC43;
-	Thu, 25 Apr 2024 17:29:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B790314EC51;
+	Thu, 25 Apr 2024 17:34:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lyndeno.ca header.i=@lyndeno.ca header.b="M61/zjIj";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XeSgxN2P"
-Received: from wfout4-smtp.messagingengine.com (wfout4-smtp.messagingengine.com [64.147.123.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mYeRQ5vz"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40AE014B077;
-	Thu, 25 Apr 2024 17:29:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AB743BBE6;
+	Thu, 25 Apr 2024 17:34:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714066186; cv=none; b=h19BFegfh2cDUWdWASBQCZrIJwgxjEJYe/4PRbmgXWSM7b6/JNBlOadnxRrX0MVx3xwEKHqShkP6Vqvij/5Im4Y122NB53OWpDc8wa5wXTtzDSFxyAmTTpvRRAfkRpHTjU6u4IViQMJf+JVh35CNUjPnCNHPhANTIsAaYGfh1Ss=
+	t=1714066445; cv=none; b=gYRCF75dt8al89K48j3anw88tWxTTUnWltJ7So30jf9eAIhWhmUxl7p1uTOXW47GFzRMHSlQXBB1X82k/jbqSa/3iaxYMl0t5DkBqEeX2viKg7VaAgycw8yTYht6uNYojJuJNIvarGDhkl3+g1ROK0WOxOSHFXQnhnGnE51heqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714066186; c=relaxed/simple;
-	bh=IdX1DsByIet9n5PBe8ieFNKHO8b7P4X3usY6bDnoiXM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oCYLveO2/nJHuu9kbMPQQV2kqxSpUTveh1+vpMO4zNRHBLL8w9ArZKC7ItZPag8dq1PjgV++HXjdMZUVSFDjHs3ZW8wVLUIBipRe3E8DOz06oc/enk1+Q94MteTM33vdWR/w9aOi4MbEfnZk0TS5wDqPRgz291iL6d5zDZsc1lQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lyndeno.ca; spf=pass smtp.mailfrom=lyndeno.ca; dkim=pass (2048-bit key) header.d=lyndeno.ca header.i=@lyndeno.ca header.b=M61/zjIj; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XeSgxN2P; arc=none smtp.client-ip=64.147.123.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lyndeno.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lyndeno.ca
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfout.west.internal (Postfix) with ESMTP id 9D4FA1C0016A;
-	Thu, 25 Apr 2024 13:29:42 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 25 Apr 2024 13:29:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lyndeno.ca; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm2; t=1714066182; x=1714152582; bh=Y5T8dXy+0IuzWwo5IEYIV
-	EtK9ssccq41CPbLF2/ePpA=; b=M61/zjIjAIP7ExRllpoB5mItmQ0m+RhGMEHZI
-	fN23T3TU9p2QRtz4vMsQ1cx8sDsVUsxepz+pnRq2dY7lW+RO3Ug+JMoIc+r4v0Uq
-	C72xwlqC3842+YlUHUxwLK9qkZIJUelL+4NAwBhCLCSqVWv2tPWT95ZRfRWjaVZw
-	V+ZbTTzmz50waLVkAi0eDZ5xMAwytC9w2Tt1fdv2Vj/CsBgbdguvvmb4Z0fhH2cp
-	CM32kZiZ6YfbvrDD6ewBKkE1p8Zkt4M8ackuf+EtTJoviHN3bgyDYq4cR84/yjJ5
-	ZCVGD1GvFDMtkeUzAZPuXGl28y3mLBwTFyUEWHh13OPDXdX3w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1714066182; x=1714152582; bh=Y5T8dXy+0IuzWwo5IEYIVEtK9ssc
-	cq41CPbLF2/ePpA=; b=XeSgxN2PgWn2ZxpvNL5XFITz1N143IivaspEkZNlhREB
-	vvavQLVosFYWvrWe7R+KTvzfCNjMF4mwVJdutyc4CGrGWuoVtADqFLO9uwRbQgOp
-	r3POSKgVvRGGt5Y7ayoM7onAW+i2KiWtDaX7iQOSvlr75t0mmKRYtxXQGyFgLmJi
-	6xyd9RBJAMQU6GajTLdUFcCD2Bg/d3hlVaYsVso57z2Vu307rQhwoKzBkWfiWnd8
-	GOf/O0lhj/2P7W+D6WPUU88van9PspQFt9MQtcmKxVmMOmoyesJZGgpHwJ/Yt99x
-	QpH6mztUb+frp2iCybjSDEmo6bkwyunvLuVStE86hA==
-X-ME-Sender: <xms:BZMqZjshkVjgQqzt-xabEfBeBsx0Eij41z9RpNoBNhjUMPgbyyukWw>
-    <xme:BZMqZkdEAC7eDhgA8EuuTgfm6rdLwL26s9jO-Xn4mjf5-8K2Xdo4jb3wXAIAsZVey
-    -IhFAYXuuvJYTPas7Y>
-X-ME-Received: <xmr:BZMqZmw0SU6lW8Zc3iQDRybEaNrs8b7ud0agSCx-iZ4WUtYUFwP3rG8eCKx4IA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeljedguddufecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enogetfedtuddqtdduucdludehmdenucfjughrpefhvfevufffkffoggfgsedtkeertder
-    tddtnecuhfhrohhmpefnhihnughonhcuufgrnhgthhgvuceolhhsrghntghhvgeslhihnh
-    guvghnohdrtggrqeenucggtffrrghtthgvrhhnpeeitdfhjeejgfejtdeihfdviedvuddt
-    vdfgfedvheeitedttdehvdefkeetkeffjeenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehlshgrnhgthhgvsehlhihnuggvnhhordgtrg
-X-ME-Proxy: <xmx:BZMqZiPGt1qAo82i-18wSsorE9Ckb42pFS6z5RIZ1la0onfqq4qU2w>
-    <xmx:BZMqZj-Tyvob3B0grhVKkHPumR3pZ6qNDjIKfY6w96baf5qi9Ywm2g>
-    <xmx:BZMqZiXohanuSkxxiggpi4h2s44K8DcR2PcxawuOcTXsbjzOinUmrg>
-    <xmx:BZMqZkenTgeN4yaYEtIdL2lLRD-kV9QCqNvovqRIeUygzFpsYxELJA>
-    <xmx:BpMqZvQPnuvEfwfLyb_xaqutp-mETrfMqK7l5FtjHrrSA1Ub81p14URv>
-Feedback-ID: i1719461a:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 25 Apr 2024 13:29:40 -0400 (EDT)
-From: Lyndon Sanche <lsanche@lyndeno.ca>
-To: lsanche@lyndeno.ca
-Cc: Matthew Garrett <mjg59@srcf.ucam.org>,
-	=?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Dell.Client.Kernel@dell.com
-Subject: [PATCH] platform/x86: dell-laptop: Implement platform_profile
-Date: Thu, 25 Apr 2024 11:27:57 -0600
-Message-ID: <20240425172758.67831-1-lsanche@lyndeno.ca>
-X-Mailer: git-send-email 2.42.0
+	s=arc-20240116; t=1714066445; c=relaxed/simple;
+	bh=mFHENVV6vhpMmnZt9+RJELuGt+rY1L4LZMOqsl7ey08=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f1kz83Q3OSGNE8G4RIqUZFIEyUWdzkKlU1pEwY6gy0XHJElWGmQ6uy68cigLJ8w4F4/Xq9iCTyHSgZvuLzWHBfFmkJC+YVuGzMIfDvFK/AkBdPjXtzbeHyV5KmFz460WQyfjNlrJgeyT6rY1gqlnnIFgvMTZ9MjgL1v+4lUobLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mYeRQ5vz; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a5883518135so145185666b.3;
+        Thu, 25 Apr 2024 10:34:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714066441; x=1714671241; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fo50ytJ6ZK8+zpSoUQ2gQuHrRRP6s/CTdF/t7IzIcyc=;
+        b=mYeRQ5vzXJoJ69PtnQCqCW4YgFAfpykC5rW9jws97iXgq1Or6e7ZVMtwB0+KclGYN2
+         6FDdgwfOEcaG68O7lHrRJYU1sz2ObvahnyW+qCyiOvqsTuqsrdFl0AOx1BjXgGpK7CaY
+         CDQ9/WKXUkyuRI4qt/9bQtiXcIcXvOCM7KUf6T2LYTFTBgJ3OR5Bq6Bw+meE2bTDs0Vm
+         RLhGta8lJrtwdIRKmRkbl/yQ//CCvRnIaJw+nx1n+Z+N9itM4TZ+/W08BA+V3KR/K2Ll
+         LkHQs9AEKgPIGLcS6NRvLAYhq8/4w3MCEIVbBGb6HjUoNq0rumHT+q9GsA568sx7kvhk
+         OxBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714066441; x=1714671241;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Fo50ytJ6ZK8+zpSoUQ2gQuHrRRP6s/CTdF/t7IzIcyc=;
+        b=q5HwPojQa5MU1W/Xk4MzhFwDIgulihKJQiRpXMvt9tZETfle2tVYy9dhwJaweGz2fF
+         b70TmRH0WRloerHYu7USpLJtTJU/X1Zh4pykw9exe/a4lG8MA3BJKFvHN0I72sARQ/+j
+         SRRNK5HhZ0C/azSYMiZDMFkGTYxe7VL134sdYlfSSxPEvcSTwR6ayAsxM6aSsyC5kokS
+         jIi+AeIGcaT+JKTPGV3+JSRcSQ6/KyrwAL9jYiXFHIWAUr1CeHLBJNbWd/S+BezxnjcO
+         ROQz6kMtgTWqjJUzDM+1m0XP7phGsrpgLryLnZMvdD4qd8LdgTeyhBHtAqzStQpJw7EV
+         VihQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUViTfCP1HYpkY7Ejxu3bSvbBkH4zCm4czC9YBBOTrL7Dour/xjal0KXO60FaAxlUNeO1vNxqFIJWCU1+4oG1ogWh8DTe44qGs0qFq5depVgTOmLgCBpRxjsFQsITTIpddRdqQypFyOfgmUAEWu/AS+9KQtIiwXagzBWSp5pppjTg==
+X-Gm-Message-State: AOJu0YyrOZAYtGdfXPtgpdKUvVVZdHZh7S9PJ0k7NC4UkyOeYZTiF6xP
+	e/Wgh0HMVf7UOsqv1qV3GZ56JeodN7nKcJSz11OuB7n9TOUjoWJV
+X-Google-Smtp-Source: AGHT+IEmDItiAhHInVlm2t4+GhLVyfRh9JVcxAOxRoJNRewZGhelNZ44VMfOOqWxYRhRImmfWz4TrA==
+X-Received: by 2002:a17:906:6ad3:b0:a58:9a74:5e6d with SMTP id q19-20020a1709066ad300b00a589a745e6dmr313324ejs.11.1714066441426;
+        Thu, 25 Apr 2024 10:34:01 -0700 (PDT)
+Received: from eichest-laptop ([2a02:168:af72:0:aab0:e3cb:ca44:d27])
+        by smtp.gmail.com with ESMTPSA id f20-20020a17090624d400b00a5575cde7cdsm9410001ejb.220.2024.04.25.10.34.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 10:34:00 -0700 (PDT)
+Date: Thu, 25 Apr 2024 19:33:59 +0200
+From: Stefan Eichenberger <eichest@gmail.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	lxu@maxlinear.com, hkallweit1@gmail.com, michael@walle.cc,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] net: phy: mxl-gpy: add new device tree property
+ to disable SGMII autoneg
+Message-ID: <ZiqUB0lwgw7vIozG@eichest-laptop>
+References: <Zh6/oVHUvnOVtHaC@shell.armlinux.org.uk>
+ <Zh94yqo2EHRq8eEq@eichest-laptop>
+ <ZiE156+BPpx/ciL6@shell.armlinux.org.uk>
+ <Zikd+GxuwMRC+5Ae@shell.armlinux.org.uk>
+ <Zikrv5UOWvSGjgcv@eichest-laptop>
+ <ZilLz8f6vQQCg4NB@shell.armlinux.org.uk>
+ <Zio9g9+wsFX39Vkx@eichest-laptop>
+ <ZippHJrnvzXsTiK4@shell.armlinux.org.uk>
+ <Zip8Hd/ozP3R8ASS@eichest-laptop>
+ <ZiqFOko7zFjfTdz4@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZiqFOko7zFjfTdz4@shell.armlinux.org.uk>
 
-Some Dell laptops support configuration of preset
-fan modes through smbios tables.
+On Thu, Apr 25, 2024 at 05:30:50PM +0100, Russell King (Oracle) wrote:
+> On Thu, Apr 25, 2024 at 05:51:57PM +0200, Stefan Eichenberger wrote:
+> > On Thu, Apr 25, 2024 at 03:30:52PM +0100, Russell King (Oracle) wrote:
+> > > On Thu, Apr 25, 2024 at 01:24:51PM +0200, Stefan Eichenberger wrote:
+> > > > I think it should also work for mvneta, at least
+> > > > the code looks almost the same. I get the following for the Port
+> > > > Auto-Negotiation Configuration Register:
+> > > > 
+> > > > For 1Gbit/s it switches to SGMII and enables inband AN:
+> > > > Memory mapped at address 0xffffa0112000.
+> > > > Value at address 0xF2132E0C (0xffffa0112e0c): 0xB0C6
+> > > 
+> > > So here the link is forced up which is wrong for inband, because then
+> > > we have no way to detect the link going down.
+> > 
+> > Yes I also saw this and didn't understand it. When I clear the force bit
+> > it will be set back to 1 again when AN is enabled. I thought this might
+> > be a bug of the controller.
+> 
+> No it isn't, the hardware never changes the value in this register.
+> The difference will be because of what I explained previously.
+> 
+> Because the mvneta and mvpp2 hardware is "weird" in that these two
+> registers provide both PCS and MAC functions, we have to deal with
+> them in a way that is split between the phylink PCS and MAC
+> operations.
+> 
+> This code was written at a time when all we had was MLO_AN_* and
+> none of the PHYLINK_PCS_NEG_* stuff. PCSes got passed the MLO_AN_*
+> constants which were the same as what was passed via the MAC
+> operations. This made the implementation entirely consistent.
+> 
+> However, that lead PCS implementers to go off and do their own
+> things, so we ended up with a range of different PCS behaviours
+> depending on the implementation (because the way people interpreted
+> MLO_AN_INBAND, interface mode, and the Autoneg bit in the advertising
+> mask was all different.
+> 
+> So to bring some consistency, I changed the PCS interface to what we
+> have now, in the belief that it would later allow us to solve the
+> 2500base-X problem.
+> 
+> However, I'd forgotten about the mvneta/mvpp2 details, but that was
+> fine at the time of this change because everything was still
+> consistent - we would only ever use PHYLINK_PCS_NEG_OUTBAND or
+> PHYLINK_PCS_NEG_NONE for non-MLO_AN_INBAND modes, and
+> PHYLINK_PCS_NEG_INBAND_* for interface modes that support inband
+> when using MLO_AN_INBAND.
+> 
+> Now, when trying to solve the 2500base-X problem which needs us to
+> use PHYLINK_PCS_NEG_OUTBAND in some situations, this means we can
+> end up with MLO_AN_INBAND + PHYLINK_PCS_NEG_OUTBAND, and this is
+> what is causing me problems (the link isn't forced up.)
+> 
+> Conversely, I suspect you have the situation where you have MLO_AN_PHY
+> or MLO_AN_FIXED being passed to the mac_config() and mac_link_up()
+> operations, but the PCS is being configured for a different mode.
+> 
+> I am wondering whether we should at the very least move the
+> configuration of the control register 0 and 2 to the pcs_config()
+> method so at least that's consistent with the PHYLINK_PCS_NEG_*
+> value passed to the PCS and thus the values programmed into the
+> autoneg config register. However, that still leaves a big hole in
+> how we handle the link forcing - which is necessary if inband AN
+> is disabled (in other words, if we need to read the link status
+> from the PHY as is done in MLO_AN_PHY mode.)
+> 
 
-If the platform supports these fan modes, set up
-platform_profile to change these modes. If not
-supported, skip enabling platform_profile.
+Now I got it, thanks a lot for the explanation. So the issue is that
+MLO_AN_INBAND + PHYLINK_PCS_NEG_OUTBAND is happening in my use case and
+therefore the link is not forced up because for that MLO_AN_PHY would be
+needed. I will also try to think about it.
 
-Signed-off-by: Lyndon Sanche <lsanche@lyndeno.ca>
----
- drivers/platform/x86/dell/dell-laptop.c | 220 ++++++++++++++++++++++++
- drivers/platform/x86/dell/dell-smbios.h |   1 +
- 2 files changed, 221 insertions(+)
+Thanks,
+Stefan
 
-diff --git a/drivers/platform/x86/dell/dell-laptop.c b/drivers/platform/x86/dell/dell-laptop.c
-index 42f7de2b4522..7f9c4e0e5ef5 100644
---- a/drivers/platform/x86/dell/dell-laptop.c
-+++ b/drivers/platform/x86/dell/dell-laptop.c
-@@ -27,6 +27,7 @@
- #include <linux/i8042.h>
- #include <linux/debugfs.h>
- #include <linux/seq_file.h>
-+#include <linux/platform_profile.h>
- #include <acpi/video.h>
- #include "dell-rbtn.h"
- #include "dell-smbios.h"
-@@ -95,10 +96,18 @@ static struct backlight_device *dell_backlight_device;
- static struct rfkill *wifi_rfkill;
- static struct rfkill *bluetooth_rfkill;
- static struct rfkill *wwan_rfkill;
-+static struct platform_profile_handler *thermal_handler;
- static bool force_rfkill;
- static bool micmute_led_registered;
- static bool mute_led_registered;
- 
-+enum thermal_mode_bits {
-+	DELL_BALANCED = 0,
-+	DELL_COOL_BOTTOM = 1,
-+	DELL_QUIET = 2,
-+	DELL_PERFORMANCE = 3,
-+};
-+
- module_param(force_rfkill, bool, 0444);
- MODULE_PARM_DESC(force_rfkill, "enable rfkill on non whitelisted models");
- 
-@@ -2199,6 +2208,211 @@ static int mute_led_set(struct led_classdev *led_cdev,
- 	return 0;
- }
- 
-+// Derived from smbios-thermal-ctl
-+//
-+// cbClass 17
-+// cbSelect 19
-+// User Selectable Thermal Tables(USTT)
-+// cbArg1 determines the function to be performed
-+// cbArg1 0x0 = Get Thermal Information
-+//  cbRES1         Standard return codes (0, -1, -2)
-+//  cbRES2, byte 0  Bitmap of supported thermal modes. A mode is supported if its bit is set to 1
-+//     Bit 0 Balanced
-+//     Bit 1 Cool Bottom
-+//     Bit 2 Quiet
-+//     Bit 3 Performance
-+//  cbRES2, byte 1 Bitmap of supported Active Acoustic Controller (AAC) modes. Each mode
-+//                 corresponds to the supported thermal modes in byte 0. A mode is supported if
-+//                 its bit is set to 1.
-+//     Bit 0 AAC (Balanced)
-+//     Bit 1 AAC (Cool Bottom
-+//     Bit 2 AAC (Quiet)
-+//     Bit 3 AAC (Performance)
-+//  cbRes3, byte 0 Current Thermal Mode
-+//     Bit 0 Balanced
-+//     Bit 1 Cool Bottom
-+//     Bit 2 Quiet
-+//     Bit 3 Performanc
-+//  cbRes3, byte 1  AAC Configuration type
-+//          0       Global (AAC enable/disable applies to all supported USTT modes)
-+//          1       USTT mode specific
-+//  cbRes3, byte 2  Current Active Acoustic Controller (AAC) Mode
-+//     If AAC Configuration Type is Global,
-+//          0       AAC mode disabled
-+//          1       AAC mode enabled
-+//     If AAC Configuration Type is USTT mode specific (multiple bits may be set),
-+//          Bit 0 AAC (Balanced)
-+//          Bit 1 AAC (Cool Bottom
-+//          Bit 2 AAC (Quiet)
-+//          Bit 3 AAC (Performance)
-+//  cbRes3, byte 3  Current Fan Failure Mode
-+//     Bit 0 Minimal Fan Failure (at least one fan has failed, one fan working)
-+//     Bit 1 Catastrophic Fan Failure (all fans have failed)
-+//  cbArg1 0x1   (Set Thermal Information), both desired thermal mode and
-+//               desired AAC mode shall be applied
-+//  cbArg2, byte 0  Desired Thermal Mode to set (only one bit may be set for this parameter)
-+//     Bit 0 Balanced
-+//     Bit 1 Cool Bottom
-+//     Bit 2 Quiet
-+//     Bit 3 Performance
-+//  cbArg2, byte 1  Desired Active Acoustic Controller (AAC) Mode to set
-+//     If AAC Configuration Type is Global,
-+//         0  AAC mode disabled
-+//         1  AAC mode enabled
-+//
-+//     If AAC Configuration Type is USTT mode specific (multiple bits may be set for this parameter),
-+//         Bit 0 AAC (Balanced)
-+//         Bit 1 AAC (Cool Bottom
-+//         Bit 2 AAC (Quiet)
-+//         Bit 3 AAC (Performance)
-+static int thermal_get_mode(void)
-+{
-+	struct calling_interface_buffer buffer;
-+	int state;
-+	int ret;
-+
-+	dell_fill_request(&buffer, 0x0, 0, 0, 0);
-+	ret = dell_send_request(&buffer, CLASS_INFO, SELECT_THERMAL_MANAGEMENT);
-+	if (ret)
-+		return ret;
-+	state = buffer.output[2];
-+	if ((state >> DELL_BALANCED) & 1)
-+		return DELL_BALANCED;
-+	else if ((state >> DELL_COOL_BOTTOM) & 1)
-+		return DELL_COOL_BOTTOM;
-+	else if ((state >> DELL_QUIET) & 1)
-+		return DELL_QUIET;
-+	else if ((state >> DELL_PERFORMANCE) & 1)
-+		return DELL_PERFORMANCE;
-+	else
-+		return 0;
-+}
-+
-+static int thermal_get_supported_modes(int *supported_bits)
-+{
-+	struct calling_interface_buffer buffer;
-+	int ret;
-+
-+	dell_fill_request(&buffer, 0x0, 0, 0, 0);
-+	ret = dell_send_request(&buffer, CLASS_INFO, SELECT_THERMAL_MANAGEMENT);
-+	if (ret)
-+		return ret;
-+	*supported_bits = buffer.output[1] & 0xF;
-+	return 0;
-+}
-+
-+static int thermal_get_acc_mode(int *acc_mode)
-+{
-+	struct calling_interface_buffer buffer;
-+	int ret;
-+
-+	dell_fill_request(&buffer, 0x0, 0, 0, 0);
-+	ret = dell_send_request(&buffer, CLASS_INFO, SELECT_THERMAL_MANAGEMENT);
-+	if (ret)
-+		return ret;
-+	*acc_mode = ((buffer.output[3] >> 8) & 0xFF);
-+	return 0;
-+}
-+
-+static int thermal_set_mode(enum thermal_mode_bits state)
-+{
-+	struct calling_interface_buffer buffer;
-+	int ret;
-+	int acc_mode;
-+
-+	ret = thermal_get_acc_mode(&acc_mode);
-+	if (ret)
-+		return ret;
-+
-+	dell_fill_request(&buffer, 0x1, (acc_mode << 8) | BIT(state), 0, 0);
-+	ret = dell_send_request(&buffer, CLASS_INFO, SELECT_THERMAL_MANAGEMENT);
-+	return ret;
-+}
-+
-+static int thermal_platform_profile_set(struct platform_profile_handler *pprof,
-+					enum platform_profile_option profile)
-+{
-+	int ret;
-+
-+	switch (profile) {
-+	case PLATFORM_PROFILE_BALANCED:
-+		ret = thermal_set_mode(DELL_BALANCED);
-+		break;
-+	case PLATFORM_PROFILE_PERFORMANCE:
-+		ret = thermal_set_mode(DELL_PERFORMANCE);
-+		break;
-+	case PLATFORM_PROFILE_QUIET:
-+		ret = thermal_set_mode(DELL_QUIET);
-+		break;
-+	case PLATFORM_PROFILE_COOL:
-+		ret = thermal_set_mode(DELL_COOL_BOTTOM);
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return ret;
-+}
-+
-+static int thermal_platform_profile_get(struct platform_profile_handler *pprof,
-+					enum platform_profile_option *profile)
-+{
-+	switch (thermal_get_mode()) {
-+	case DELL_BALANCED:
-+		*profile = PLATFORM_PROFILE_BALANCED;
-+		break;
-+	case DELL_PERFORMANCE:
-+		*profile = PLATFORM_PROFILE_PERFORMANCE;
-+		break;
-+	case DELL_COOL_BOTTOM:
-+		*profile = PLATFORM_PROFILE_COOL;
-+		break;
-+	case DELL_QUIET:
-+		*profile = PLATFORM_PROFILE_QUIET;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+int thermal_init(void)
-+{
-+	int ret;
-+	int supported_modes;
-+
-+	ret = thermal_get_supported_modes(&supported_modes);
-+
-+	if (ret != 0 || supported_modes == 0)
-+		return -ENXIO;
-+
-+	thermal_handler = kzalloc(sizeof(*thermal_handler), GFP_KERNEL);
-+	if (!thermal_handler)
-+		return -ENOMEM;
-+	thermal_handler->profile_get = thermal_platform_profile_get;
-+	thermal_handler->profile_set = thermal_platform_profile_set;
-+
-+	if ((supported_modes >> DELL_QUIET) & 1)
-+		set_bit(PLATFORM_PROFILE_QUIET, thermal_handler->choices);
-+	if ((supported_modes >> DELL_COOL_BOTTOM) & 1)
-+		set_bit(PLATFORM_PROFILE_COOL, thermal_handler->choices);
-+	if ((supported_modes >> DELL_BALANCED) & 1)
-+		set_bit(PLATFORM_PROFILE_BALANCED, thermal_handler->choices);
-+	if ((supported_modes >> DELL_PERFORMANCE) & 1)
-+		set_bit(PLATFORM_PROFILE_PERFORMANCE, thermal_handler->choices);
-+
-+	platform_profile_register(thermal_handler);
-+
-+	return 0;
-+}
-+
-+void thermal_cleanup(void)
-+{
-+	platform_profile_remove();
-+	kfree(thermal_handler);
-+}
-+
- static struct led_classdev mute_led_cdev = {
- 	.name = "platform::mute",
- 	.max_brightness = 1,
-@@ -2266,6 +2480,11 @@ static int __init dell_init(void)
- 		mute_led_registered = true;
- 	}
- 
-+	// Do not fail module if thermal modes not supported,
-+	// just skip
-+	if (thermal_init() != 0)
-+		pr_warn("Unable to setup platform_profile, skipping");
-+
- 	if (acpi_video_get_backlight_type() != acpi_backlight_vendor)
- 		return 0;
- 
-@@ -2344,6 +2563,7 @@ static void __exit dell_exit(void)
- 		platform_device_unregister(platform_device);
- 		platform_driver_unregister(&platform_driver);
- 	}
-+	thermal_cleanup();
- }
- 
- /* dell-rbtn.c driver export functions which will not work correctly (and could
-diff --git a/drivers/platform/x86/dell/dell-smbios.h b/drivers/platform/x86/dell/dell-smbios.h
-index eb341bf000c6..585d042f1779 100644
---- a/drivers/platform/x86/dell/dell-smbios.h
-+++ b/drivers/platform/x86/dell/dell-smbios.h
-@@ -19,6 +19,7 @@
- /* Classes and selects used only in kernel drivers */
- #define CLASS_KBD_BACKLIGHT 4
- #define SELECT_KBD_BACKLIGHT 11
-+#define SELECT_THERMAL_MANAGEMENT 19
- 
- /* Tokens used in kernel drivers, any of these
-  * should be filtered from userspace access
--- 
-2.42.0
 
 
