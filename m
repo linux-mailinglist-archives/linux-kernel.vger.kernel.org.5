@@ -1,212 +1,122 @@
-Return-Path: <linux-kernel+bounces-158105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92D578B1BA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:12:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B02A38B1B84
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:10:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE5BDB2474C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:12:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2EB01C22C8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 260A47F7F5;
-	Thu, 25 Apr 2024 07:10:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9366CDC5;
+	Thu, 25 Apr 2024 07:10:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="qAiszG6n"
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="w10Qpr/b"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9924F6F06D;
-	Thu, 25 Apr 2024 07:10:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 187936A352
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:10:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714029044; cv=none; b=B8+d/leG1SCOAdASBXe5ZLTsJrWQH0BzDX3MiQVyHUnR6MUmyPeaKbDF76lUVRSD0MSBipxjdUquUst8ou7F/igZiKoB24vd/bPmBKVR/txUV+AHKvnoY7iJIWFo2vett+gbbmTuSGfxDwsml/1xIr1eCk7R6I+EXLXqjHg6aRA=
+	t=1714029003; cv=none; b=VWp2UpdCHj2GTGy0As+aqhckCgFK+PsNDDs8K1zSCYqrdfN8o0k3d9zCqUbC2r+Fwq0LUIv1b4rO+4pB8Nq56FpqmK1rHOKWG3o0PQ9LWNph6/zyePZpmga7UQIDkHTtfowqItTDh8irKShv7vm6AJpnvMFPFodVe1A4EDhEjEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714029044; c=relaxed/simple;
-	bh=qfzy2c+zXk/cPUkUbNebr6FQtTLjdbmMKboKcleeKKk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZxPMRaJDBrz5JNi8ceV87yVIp4BJEAv1lx3lLidRkoHjFkPup2A6SD74FOBgEnwQCsfc9lXMf1vHgYRrn82FlItVxjDUhzQL1OV0Y55RR3LyyrupcFfjLft0i7zN2tVh/TRi94N8b3vLX5bj4JbGwSUnaeJKWj7U739Em/FAm6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=qAiszG6n; arc=none smtp.client-ip=148.163.135.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-	by mx0a-00128a01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43P5ss9X001033;
-	Thu, 25 Apr 2024 03:10:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=DKIM;
-	 bh=5+Aikj5kSEi+2qQ6QFsL+0wtIRLT+xDhtujqoHvM/5E=; b=qAiszG6ngrOI
-	oQD6+M0bkq9SsU2VfOkMenK93ba7AggOx3rl1Fi/jucDmQjBsSnALAslwctsCQPg
-	6TLbFJOHtWK837ENcMqu2TZ/Vo10fK/LztShvX6uQmxhx7SUGYZTOhlA3/ZfPVfS
-	v5EpvlaRd0YIdlyECCMNU8mijP6hvnWp2ZgmDBRNYNjJAPSjRyk+ssRky19aIRC4
-	iQllBnqVgZakNO/iaHon2u7ohyWTcyBKIj5W6nU9E25dZln2wScL6T4EMG9Ckxa4
-	bhS4JpBxqntpTT11UKE06fjH+uhM3U1DYKoblYu2pzSBu+PPd23MhzDWn1XRlGjC
-	3CwFwhRYDQ==
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-	by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3xq3qmbcjt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 03:10:22 -0400 (EDT)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-	by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 43P7ALPW053969
-	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 25 Apr 2024 03:10:21 -0400
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Thu, 25 Apr 2024 03:10:20 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Thu, 25 Apr 2024 03:10:20 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Thu, 25 Apr 2024 03:10:20 -0400
-Received: from JSANBUEN-L01.ad.analog.com (JSANBUEN-L01.ad.analog.com [10.117.220.64])
-	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 43P79tHl006908;
-	Thu, 25 Apr 2024 03:10:12 -0400
-From: Jose Ramon San Buenaventura <jose.sanbuenaventura@analog.com>
-To: <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>
-CC: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
-        "Rob
- Herring" <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        "Conor
- Dooley" <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Delphine CC
- Chiu" <Delphine_CC_Chiu@Wiwynn.com>
-Subject: [PATCH v3 2/2] hwmon: pmbus: adm1275: add adm1281 support
-Date: Thu, 25 Apr 2024 15:09:48 +0800
-Message-ID: <20240425070948.25788-3-jose.sanbuenaventura@analog.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240425070948.25788-1-jose.sanbuenaventura@analog.com>
-References: <20240425070948.25788-1-jose.sanbuenaventura@analog.com>
+	s=arc-20240116; t=1714029003; c=relaxed/simple;
+	bh=kFy2c2MMRc7/mbY6XyHT0rM8BuRQOTFXPjjUtO+dJqw=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=C9OrffgkxObqOks9d0pdZT9TJP+wcsSqFT/AVZ53tJfp6N0zI4Qj9e5RSoYNBPUX6/qarPOAcHOVR/hmP96hjs02ecQCku2FhTviJM2K64NyPFNdPaVeBk7jvzAdXRgwpItBFQVqMh3Ykj8Isfi1H/buf+CRL8aqXECYYQ7Vbbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=w10Qpr/b; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a55ab922260so82958966b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:10:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714029000; x=1714633800; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pKbtdaZh3aa5WKKWvhlJ2SkTdhHq3DflemRgyxWAUJY=;
+        b=w10Qpr/baTrdev26UCwAElEdXPrUBSkYufqNP5zfAEBPRP7y9riJj519ad6u9vEIiT
+         uJXlUC7az14fnUo9PUgtJYkMo3sFq7KOIef3WcvR42FRgoAaWeaaBazrBgCs1SkWsXt9
+         wdiK/zmH3zine7A6vms5+7DI8RvBpZyludQ6i2R0jiIFAOsHTyqM6QvfYfDBhT9nzLpS
+         i/Hofu/VxHWSkj0fMl2l6vvS3jEt4R0qS9VdvZ5267NkOhNVH6sZVgSuiO+t1YQ71C9F
+         G9HMg5zuV7RGo5BLWsMAOURV7+ODBeOe9vDpj0qEO93B0S4Nt65tyNSKlrXEQpAQ1esO
+         ATZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714029000; x=1714633800;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pKbtdaZh3aa5WKKWvhlJ2SkTdhHq3DflemRgyxWAUJY=;
+        b=FDEr+P8cBN2KP4IaaSoCCnjU1epgctYoYjr6KrnaF+iEflH6zYYGxx6/KTy/C7eeJD
+         73Od+z+hNfQmZ8kM83zjW3yHcVf3yBP6uemxvch6kpQWdtgqGTQFY1BJaI3WKLtBCh4M
+         opZXumJUerzM8VvzU47ylpyIrd8rfDIXPKfB3sZ646+IczY0J+jFrqyGOkwiFklDM95w
+         F5QPR8DSVFPi2yCSUo8As7tmxSpXXbNBOdkqvqvJTo9pc1JPxHxqy3EMr1oxuW9VW5hr
+         ZSSgu8tokdOAYXL+tnTQtfv9SN3S2QdiwQfGx+zBl/rDL6puFD4pCsA/w0MnT95QYqru
+         OX3g==
+X-Forwarded-Encrypted: i=1; AJvYcCW5V5Zrv7ymrQlWKz+Pn4etyveUEmzmyItA8xaTkb4WjnwlvzY/rkSV1uo1/7/duhqN00z5g59RQbpjFAPdwAWKuQxdbTYrxdW9FQg5
+X-Gm-Message-State: AOJu0YySupZGqU3pkCVg2y1NhG4Kev/edAHyfgJpF90HoCP3pf3j3PLm
+	6qKEht9vSLk8Oy1OdKCSx5Cyg2aNcH2BU7MPi+4Q8Vn+gNUU31Xze/ZoyCnRtZw=
+X-Google-Smtp-Source: AGHT+IEs7Co328LLOzTBckFT/nv1oG4AADn4/nugSXCSJvSnYFZ91QkC3IWACxkGxn3XSoA8+ThZGQ==
+X-Received: by 2002:a17:906:e0c7:b0:a51:f463:cfa6 with SMTP id gl7-20020a170906e0c700b00a51f463cfa6mr3235443ejb.29.1714029000353;
+        Thu, 25 Apr 2024 00:10:00 -0700 (PDT)
+Received: from [127.0.1.1] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id z6-20020a170906434600b00a518c69c4e3sm9136727ejm.23.2024.04.25.00.09.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 00:09:59 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Peter Griffin <peter.griffin@linaro.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
+ Krzysztof Kozlowski <krzk@kernel.org>, 
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, 
+ Chanwoo Choi <cw00.choi@samsung.com>, 
+ =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Will McVicker <willmcvicker@google.com>, kernel-team@android.com, 
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240423-hsi0-gs101-v1-1-2c3ddb50c720@linaro.org>
+References: <20240423-hsi0-gs101-v1-0-2c3ddb50c720@linaro.org>
+ <20240423-hsi0-gs101-v1-1-2c3ddb50c720@linaro.org>
+Subject: Re: (subset) [PATCH 1/3] dt-bindings: clock: google,gs101-clock:
+ add HSI0 clock management unit
+Message-Id: <171402899869.8385.7722233712941698013.b4-ty@linaro.org>
+Date: Thu, 25 Apr 2024 09:09:58 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: MK6N6urHKuwhvGwYap2MkelzAH8lyo8J
-X-Proofpoint-ORIG-GUID: MK6N6urHKuwhvGwYap2MkelzAH8lyo8J
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-25_06,2024-04-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 malwarescore=0
- spamscore=0 impostorscore=0 bulkscore=0 mlxscore=0 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404250050
+X-Mailer: b4 0.13.0
 
-Adding support for adm1281 which is similar to adm1275
 
-Signed-off-by: Jose Ramon San Buenaventura <jose.sanbuenaventura@analog.com>
----
- Documentation/hwmon/adm1275.rst | 14 +++++++++++---
- drivers/hwmon/pmbus/Kconfig     |  4 ++--
- drivers/hwmon/pmbus/adm1275.c   |  7 +++++--
- 3 files changed, 18 insertions(+), 7 deletions(-)
+On Tue, 23 Apr 2024 15:31:03 +0100, André Draszik wrote:
+> Add dt-schema documentation and clock IDs for the high speed interface
+> 0 HSI0 clock management unit. This is used (amongst others) for USB.
+> 
+> While the usual (sed) script has been used to derive the linux clock
+> IDs from the data sheet, one manual tweak was applied to fix a typo
+> which we don't want to carry:
+>     HSI0_USPDPDBG_USER -> HSI0_USBDPDBG_USER (note USB vs USP).
+> 
+> [...]
 
-diff --git a/Documentation/hwmon/adm1275.rst b/Documentation/hwmon/adm1275.rst
-index 804590eea..467daf8ce 100644
---- a/Documentation/hwmon/adm1275.rst
-+++ b/Documentation/hwmon/adm1275.rst
-@@ -43,6 +43,14 @@ Supported chips:
- 
-     Datasheet: www.analog.com/static/imported-files/data_sheets/ADM1278.pdf
- 
-+  * Analog Devices ADM1281
-+
-+    Prefix: 'adm1281'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adm1281.pdf
-+
-   * Analog Devices ADM1293/ADM1294
- 
-     Prefix: 'adm1293', 'adm1294'
-@@ -58,10 +66,10 @@ Description
- -----------
- 
- This driver supports hardware monitoring for Analog Devices ADM1075, ADM1272,
--ADM1275, ADM1276, ADM1278, ADM1293, and ADM1294 Hot-Swap Controller and
-+ADM1275, ADM1276, ADM1278, ADM1281, ADM1293, and ADM1294 Hot-Swap Controller and
- Digital Power Monitors.
- 
--ADM1075, ADM1272, ADM1275, ADM1276, ADM1278, ADM1293, and ADM1294 are hot-swap
-+ADM1075, ADM1272, ADM1275, ADM1276, ADM1278, ADM1281, ADM1293, and ADM1294 are hot-swap
- controllers that allow a circuit board to be removed from or inserted into
- a live backplane. They also feature current and voltage readback via an
- integrated 12 bit analog-to-digital converter (ADC), accessed using a
-@@ -144,5 +152,5 @@ temp1_highest		Highest observed temperature.
- temp1_reset_history	Write any value to reset history.
- 
- 			Temperature attributes are supported on ADM1272 and
--			ADM1278.
-+			ADM1278, and ADM1281.
- ======================= =======================================================
-diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-index 557ae0c41..9c1d0d7d5 100644
---- a/drivers/hwmon/pmbus/Kconfig
-+++ b/drivers/hwmon/pmbus/Kconfig
-@@ -51,8 +51,8 @@ config SENSORS_ADM1275
- 	tristate "Analog Devices ADM1275 and compatibles"
- 	help
- 	  If you say yes here you get hardware monitoring support for Analog
--	  Devices ADM1075, ADM1272, ADM1275, ADM1276, ADM1278, ADM1293,
--	  and ADM1294 Hot-Swap Controller and Digital Power Monitors.
-+	  Devices ADM1075, ADM1272, ADM1275, ADM1276, ADM1278, ADM1281,
-+	  ADM1293, and ADM1294 Hot-Swap Controller and Digital Power Monitors.
- 
- 	  This driver can also be built as a module. If so, the module will
- 	  be called adm1275.
-diff --git a/drivers/hwmon/pmbus/adm1275.c b/drivers/hwmon/pmbus/adm1275.c
-index e2c61d6fa..59ffc0828 100644
---- a/drivers/hwmon/pmbus/adm1275.c
-+++ b/drivers/hwmon/pmbus/adm1275.c
-@@ -18,7 +18,7 @@
- #include <linux/log2.h>
- #include "pmbus.h"
- 
--enum chips { adm1075, adm1272, adm1275, adm1276, adm1278, adm1293, adm1294 };
-+enum chips { adm1075, adm1272, adm1275, adm1276, adm1278, adm1281, adm1293, adm1294 };
- 
- #define ADM1275_MFR_STATUS_IOUT_WARN2	BIT(0)
- #define ADM1293_MFR_STATUS_VAUX_UV_WARN	BIT(5)
-@@ -482,6 +482,7 @@ static const struct i2c_device_id adm1275_id[] = {
- 	{ "adm1275", adm1275 },
- 	{ "adm1276", adm1276 },
- 	{ "adm1278", adm1278 },
-+	{ "adm1281", adm1281 },
- 	{ "adm1293", adm1293 },
- 	{ "adm1294", adm1294 },
- 	{ }
-@@ -555,7 +556,8 @@ static int adm1275_probe(struct i2c_client *client)
- 			   client->name, mid->name);
- 
- 	if (mid->driver_data == adm1272 || mid->driver_data == adm1278 ||
--	    mid->driver_data == adm1293 || mid->driver_data == adm1294)
-+	    mid->driver_data == adm1281 || mid->driver_data == adm1293 ||
-+	    mid->driver_data == adm1294)
- 		config_read_fn = i2c_smbus_read_word_data;
- 	else
- 		config_read_fn = i2c_smbus_read_byte_data;
-@@ -703,6 +705,7 @@ static int adm1275_probe(struct i2c_client *client)
- 			  PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT;
- 		break;
- 	case adm1278:
-+	case adm1281:
- 		data->have_vout = true;
- 		data->have_pin_max = true;
- 		data->have_temp_max = true;
+Applied, thanks!
+
+[1/3] dt-bindings: clock: google,gs101-clock: add HSI0 clock management unit
+      https://git.kernel.org/krzk/linux/c/dbf76c0d3da8d18a46f75130bdfae7b3b54407c5
+
+Best regards,
 -- 
-2.39.2
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 
