@@ -1,214 +1,154 @@
-Return-Path: <linux-kernel+bounces-158369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F2968B1EE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:14:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E5AF8B1EE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:15:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33EC1B29597
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:14:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BA8C28365C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:15:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E494F86250;
-	Thu, 25 Apr 2024 10:14:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nnmu7iQh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 148682E647;
-	Thu, 25 Apr 2024 10:14:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4BA86264;
+	Thu, 25 Apr 2024 10:15:17 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD82B6EB52;
+	Thu, 25 Apr 2024 10:15:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714040070; cv=none; b=F6vtE3azVk3DCO6ojz1RlM+hkL0VT2m2jYmzX2xLgaYHKl3ZZMRkEuzNmLryeH5+ftkTBhLzNfC/J7xiySeJcIoiyPZ+fMOnVUbVD/M+AuzQkmgQ7d635GmGdvnoLaaq71G/RdiVk8baAIHw4/KN2hrqoCjdECLQBu+ah8BNToo=
+	t=1714040117; cv=none; b=pRCEKk4ALXI9bL+z2ieJI7del5WD5WtSnjfUt0i3RbBQNcxYVFEwe0kB1x86v/Tmp0v444sBlbkq4wyQSmUxdDlbIzoTl28IgW6Gvg6zKGneDfsmqSXUq1A0MwghYgm4uryllZfVUGd2s7DiOV4vVL1u3AIXE6uQHi4m4NYJhik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714040070; c=relaxed/simple;
-	bh=yzEXhICXLlf+DKeiLzF5a0M6Y4JEBguOjBtSKPO2DvY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=e+H7IeZ0z3NaceHEd9s+6TQFyclw9QzRuK+zZa/2HaL6HiQwUj9LZuZ81rhPznnoPQfuy4VRVUdEH/S0PpcOjeVwuwnwOhOv2MCJkutBHIg/yrRL/NMwI2mLu6gc7wEscE1agAQJQKFkPHaQRPVvkiclquml2ehTW4ikZvO4ri8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nnmu7iQh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 507CEC113CC;
-	Thu, 25 Apr 2024 10:14:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714040069;
-	bh=yzEXhICXLlf+DKeiLzF5a0M6Y4JEBguOjBtSKPO2DvY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=nnmu7iQhIvbXI1vZWEhJwaUmzbMwcLal9wtRhydM7LjPI0yQbA+l1eqYFzsRZlSyN
-	 epdEMYSzfyxkiLiuTSy53EeEjRNcCSyuukvf+4Pu1dqwc1VXT/okoTX8wLS4JQyAFs
-	 EtdDoFDtzh95YvQ+ZpaQJxm9FVJzpgOQdEg5U9dAZCPA2SgjeB1JYl/fWe8IdNxQ9y
-	 MDKrqtrFINEHzfTkCw47EPx9Y8eI2XiniH32KQtUgEvCsUUP0lgr+tCdMRfxDcRBVJ
-	 /+4X+HSFSn9G1ZL4LFhKZuJb7qee68aBz9kZMUZHaEa2dYPIl0xkLc/ALxjI1mwqmU
-	 sSl0kAh9ryGzQ==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai
- <xukuohai@huawei.com>, Florent Revest <revest@chromium.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 2/2] bpf, arm64: inline
- bpf_get_smp_processor_id() helper
-In-Reply-To: <CAEf4BzZOFye13KdBUKA7E=41NVNy5fOzF3bxFzaeZAzkq0kh-w@mail.gmail.com>
-References: <20240424173550.16359-1-puranjay@kernel.org>
- <20240424173550.16359-3-puranjay@kernel.org>
- <CAEf4BzZOFye13KdBUKA7E=41NVNy5fOzF3bxFzaeZAzkq0kh-w@mail.gmail.com>
-Date: Thu, 25 Apr 2024 10:14:26 +0000
-Message-ID: <mb61pwmollpfh.fsf@kernel.org>
+	s=arc-20240116; t=1714040117; c=relaxed/simple;
+	bh=+s/Le6r8EFv4cqCtd1Bx2t0YRlTjI4h3wOhaGBCcfnQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eoPe6fdwObDZC/yDHDcmo1nvVxal6CDWtOFbxcadhKgM8VNDg0QbkmpJg13CFKALBwilUnP3WJchAZbsblW6DcrEKppdtXyGL/3qiM091rf/OXWFITboqSe6ouPuBKSLTs/UGGYuFG9EUL29cI1MfZfuHrAIbqepIL+vXaCpRDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A7D71007;
+	Thu, 25 Apr 2024 03:15:43 -0700 (PDT)
+Received: from [10.1.30.55] (e133047.arm.com [10.1.30.55])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F0983F64C;
+	Thu, 25 Apr 2024 03:15:12 -0700 (PDT)
+Message-ID: <9272d284-ec2c-4e35-be90-c8852278b648@arm.com>
+Date: Thu, 25 Apr 2024 11:15:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [linus:master] [timers] 7ee9887703: stress-ng.uprobe.ops_per_sec
+ -17.1% regression
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Oliver Sang <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, ying.huang@intel.com,
+ feng.tang@intel.com, fengwei.yin@intel.com,
+ Frederic Weisbecker <frederic@kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, linux-pm@vger.kernel.org
+References: <87zfth3l6y.fsf@somnus>
+Content-Language: en-US
+From: Christian Loehle <christian.loehle@arm.com>
+In-Reply-To: <87zfth3l6y.fsf@somnus>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On 25/04/2024 09:23, Anna-Maria Behnsen wrote:
+> Hi,
+> 
+> (adding cpuidle/power people to cc-list)
+> 
+> Oliver Sang <oliver.sang@intel.com> writes:
+> 
+>> hi, Frederic Weisbecker,
+>>
+>> On Tue, Apr 02, 2024 at 12:46:15AM +0200, Frederic Weisbecker wrote:
+>>> Le Wed, Mar 27, 2024 at 04:39:17PM +0800, kernel test robot a écrit :
+>>>>
+>>>>
+>>>> Hello,
+>>>>
+>>>>
+>>>> we reported
+>>>> "[tip:timers/core] [timers]  7ee9887703:  netperf.Throughput_Mbps -1.2% regression"
+>>>> in
+>>>> https://lore.kernel.org/all/202403011511.24defbbd-oliver.sang@intel.com/
+>>>>
+>>>> now we noticed this commit is in mainline and we captured further results.
+>>>>
+>>>> still include netperf results for complete. below details FYI.
+>>>>
+>>>>
+>>>> kernel test robot noticed a -17.1% regression of stress-ng.uprobe.ops_per_sec
+>>>> on:
+>>>
+>>> The good news is that I can reproduce.
+>>> It has made me spot something already:
+>>>
+>>>    https://lore.kernel.org/lkml/ZgsynV536q1L17IS@pavilion.home/T/#m28c37a943fdbcbadf0332cf9c32c350c74c403b0
+>>>
+>>> But that's not enough to fix the regression. Investigation continues...
+>>
+>> Thanks a lot for information! if you want us test any patch, please let us know.
+> 
+> Oliver, I would be happy to see, whether the patch at the end of the
+> message restores the original behaviour also in your test setup. I
+> applied it on 6.9-rc4. This patch is not a fix - it is just a pointer to
+> the kernel path, that might cause the regression. I know, it is
+> probable, that a warning in tick_sched is triggered. This happens when
+> the first timer is alredy in the past. I didn't add an extra check when
+> creating the 'defacto' timer thingy. But existing code handles this
+> problem already properly. So the warning could be ignored here.
+> 
+> For the cpuidle people, let me explain what I oberserved, my resulting
+> assumption and my request for help:
+> 
+> cpuidle governors use expected sleep length values (beside other data)
+> to decide which idle state would be good to enter. The expected sleep
+> length takes the first queued timer of the CPU into account and is
+> provided by tick_nohz_get_sleep_length(). With the timer pull model in
+> place the non pinned timers are not taken into account when there are
+> other CPUs up and running which could handle those timers. This could
+> lead to increased sleep length values. On my system during the stress-ng
+> uprobes test it was in the range of maximum 100us without the patch set
+> and with the patch set the maximum was in a range of 200sec. This is
+> intended behaviour, because timers which could expire on any CPU should
+> expire on the CPU which is busy anyway and the non busy CPU should be
+> able to go idle.
+> 
+> Those increased sleep length values were the only anomalies I could find
+> in the traces with the regression.
+> 
+> I created the patch below which simply fakes the sleep length values
+> that they take all timers of the CPU into account (also the non
+> pinned). This patch kind of restores the behavoir of
+> tick_nohz_get_sleep_length() before the change but still with the timer
+> pull model in place.
+> 
+> With the patch the regression was gone, at least on my system (using
+> cpuidle governor menu but also teo).
 
-> On Wed, Apr 24, 2024 at 10:36=E2=80=AFAM Puranjay Mohan <puranjay@kernel.=
-org> wrote:
->>
->> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inline
->> bpf_get_smp_processor_id().
->>
->> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
->>
->> Here is how the BPF and ARM64 JITed assembly changes after this commit:
->>
->>                                          BPF
->>                                         =3D=3D=3D=3D=3D
->>               BEFORE                                       AFTER
->>              --------                                     -------
->>
->> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_sm=
-p_processor_id();
->> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff800082=
-072008
->>                                                 (bf) r0 =3D r0
->
-> nit: hmm, you are probably using a bit outdated bpftool, it should be
-> emitted as:
->
-> (bf) r0 =3D &(void __percpu *)(r0)
+I assume the regression is reproducible for both?
+(The original report is using menu for anyone else looking at this)
 
-Yes, I was using the bpftool shipped with the distro. I tried it again
-with the latest bpftool and it emitted this as expected.
+> 
+> So my assumption here is, that cpuidle governors assume that a deeper
+> idle state could be choosen and selecting the deeper idle state makes an
+> overhead when returning from idle. But I have to notice here, that I'm
+> still not familiar with cpuidle internals... So I would be happy about
+> some hints how I can debug/trace cpuidle internals to falsify or verify
+> this assumption.
 
->
->>                                                 (61) r0 =3D *(u32 *)(r0 =
-+0)
->>
->>                                       ARM64 JIT
->>                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->>               BEFORE                                       AFTER
->>              --------                                     -------
->>
->> int cpu =3D bpf_get_smp_processor_id();      int cpu =3D bpf_get_smp_pro=
-cessor_id();
->> mov     x10, #0xfffffffffffff4d0           mov     x7, #0xffff8000ffffff=
-ff
->> movk    x10, #0x802b, lsl #16              movk    x7, #0x8207, lsl #16
->> movk    x10, #0x8000, lsl #32              movk    x7, #0x2008
->> blr     x10                                mrs     x10, tpidr_el1
->> add     x7, x0, #0x0                       add     x7, x7, x10
->>                                            ldr     w7, [x7]
->>
->> Performance improvement using benchmark[1]
->>
->>              BEFORE                                       AFTER
->>             --------                                     -------
->>
->> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   24.631=
- =C2=B1 0.027M/s
->> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   23.742=
- =C2=B1 0.023M/s
->> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   12.625=
- =C2=B1 0.004M/s
->>
->> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
->>
->> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
->> ---
->>  kernel/bpf/verifier.c | 11 ++++++++++-
->>  1 file changed, 10 insertions(+), 1 deletion(-)
->>
->
-> Besides the nits, lgtm.
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 9715c88cc025..3373be261889 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -20205,7 +20205,7 @@ static int do_misc_fixups(struct bpf_verifier_en=
-v *env)
->>                         goto next_insn;
->>                 }
->>
->> -#ifdef CONFIG_X86_64
->> +#if defined(CONFIG_X86_64) || defined(CONFIG_ARM64)
->
-> I think you can drop this, we are protected by
-> bpf_jit_supports_percpu_insn() check and newly added inner #if/#elif
-> checks?
+I'd say that sounds correct.
+Comparing cpu_idle_miss would be interesting for both.
 
-If I remove this and later add support of percpu_insn on RISCV without
-inlining bpf_get_smp_processor_id() then it will cause problems here
-right? because then the last 5-6 lines inside this if(){} will be
-executed for RISCV.
+Regards,
+Christian
 
->
->>                 /* Implement bpf_get_smp_processor_id() inline. */
->>                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
->>                     prog->jit_requested && bpf_jit_supports_percpu_insn(=
-)) {
->> @@ -20214,11 +20214,20 @@ static int do_misc_fixups(struct bpf_verifier_=
-env *env)
->>                          * changed in some incompatible and hard to supp=
-ort
->>                          * way, it's fine to back out this inlining logic
->>                          */
->> +#if defined(CONFIG_X86_64)
->>                         insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(u=
-nsigned long)&pcpu_hot.cpu_number);
->>                         insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, =
-BPF_REG_0);
->>                         insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BP=
-F_REG_0, 0);
->>                         cnt =3D 3;
->> +#elif defined(CONFIG_ARM64)
->> +                       struct bpf_insn cpu_number_addr[2] =3D { BPF_LD_=
-IMM64(BPF_REG_0, (u64)&cpu_number) };
->>
->
-> this &cpu_number offset is not guaranteed to be within 4GB on arm64?
-
-Unfortunately, the per-cpu section is not placed in the first 4GB and
-therefore the per-cpu pointers are not 32-bit on ARM64.
-
->
->> +                       insn_buf[0] =3D cpu_number_addr[0];
->> +                       insn_buf[1] =3D cpu_number_addr[1];
->> +                       insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, =
-BPF_REG_0);
->> +                       insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BP=
-F_REG_0, 0);
->> +                       cnt =3D 4;
->> +#endif
->>                         new_prog =3D bpf_patch_insn_data(env, i + delta,=
- insn_buf, cnt);
->>                         if (!new_prog)
->>                                 return -ENOMEM;
->> --
->> 2.40.1
->>
+> [snip]
 
