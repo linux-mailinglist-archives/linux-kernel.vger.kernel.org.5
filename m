@@ -1,103 +1,88 @@
-Return-Path: <linux-kernel+bounces-159363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF8128B2DB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:41:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BDEA8B2DBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:47:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EF761F23059
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:41:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8370B22479
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FBCF15EFC3;
-	Thu, 25 Apr 2024 23:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2F4156988;
+	Thu, 25 Apr 2024 23:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="teblGcka"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="YEheUZTh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C908215B978;
-	Thu, 25 Apr 2024 23:40:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E87B014E2EF;
+	Thu, 25 Apr 2024 23:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714088401; cv=none; b=EziVe0QIgD8++pRllBLAmcS/nfVLfOI9FrFPzw+diS8CHGp1JYgjkF9p+xEdg6IW++Ly53BLR+itfBjE7fk1wgIn2uDD14unfeEcF+vJQJyIlzYbynvn/7rzPD27+2uYXlogD50xIBEYb/fTDqgQ6VWQMwBYfNqwePOyW5Q7lG4=
+	t=1714088840; cv=none; b=MGZzgu2vqTqlFrhYzXccjgyulEjeFsgdOaeliIcz3P0YKTS68NJG6Wl9UJRCteOoaK3O47JBUJU6fzHhNmefPmOEj/nLpwbzYkPY/LCujQfvwAK4llQ/Km5yv+ftxk1kiH9khGlzMDV2zYvfkMe2kiO6hIhsmCPRO7OD8XPTMPo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714088401; c=relaxed/simple;
-	bh=evdB63NMsMmGAiCN8AeT5XYZiSR91S9n0SCVkkG/xt0=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=n/4hHD6ajXyqLIYAdqUI165CzEm8mKZdFC21cmkI2BvQKuDx1kzwPuun8TKt6iIjWeGqoU881ONltFgLcfq0H4NjfUMWKK+hMF6ChPM+/vrJ/WInQGGsJ6KEA+68wcZgdbaiwCpWqqGFFs6s4SbEGetGilxYQbJGJwN/Fn7vh58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=teblGcka; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23F17C32781;
-	Thu, 25 Apr 2024 23:40:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714088401;
-	bh=evdB63NMsMmGAiCN8AeT5XYZiSR91S9n0SCVkkG/xt0=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=teblGckagfhS08PQPJ3BrF/9Xn5U38ispWYhbhqJbagfZ99kM/adIoZIA2Kqj098I
-	 UBCSPmJtnGsjyX3XpboAtkP8phh40nHnJHcqLoS08tLoB7xPgcEhcpw/RU2wpGch0O
-	 JY9avPFhRXgc/0wGSIUyhWrBuwjUJECwPoVUniTFihTu2g645MYpC2G0fJhrb4cKBG
-	 8DyRNrsyRuL8Us0RLT+PyT+JSGG4JnjgGNYGEepNDdOJC5bXlAs5mGWY97UsIoap8K
-	 LxPC6jdTAWdvzs+Sn5ft24sXz8m7V4X6DYm2pxsG7osNpfW0pcecW5IcA/oAoUtJcS
-	 +pCqKkLWMzTDg==
-Date: Thu, 25 Apr 2024 18:40:00 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1714088840; c=relaxed/simple;
+	bh=beAuVYStInSqKxnLk3E/kVyZbTYG4nix+yBzCApaJDE=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=ShiRzrx8lgtc0XxH1+VenGSO2w9betFX8hylwGvEltPdghKkZkJR6HsadIoWIZS9DkRZVYrzuR3dmTRxd+QDEifWbRrxVhVRgI3NB+4kOmAGiWM1b0WoCb5/N4V6tj4KSGMbrkcms38mKiywtu5OAHD0kUhSiyHlP2SNHGhgCxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=YEheUZTh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2102FC113CC;
+	Thu, 25 Apr 2024 23:47:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1714088839;
+	bh=beAuVYStInSqKxnLk3E/kVyZbTYG4nix+yBzCApaJDE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=YEheUZThVQmfzJ+cH66dpEmbGfQvhm2WHLxdoorIxuxKL/2z1s5iFoXnh7sMjkCDh
+	 vPzE0Ppm0ZZMYyp5msXChAJq9xRrdbLEeS6ODAb0ttQzkvmtk09NiOq8pyzxzs01IF
+	 HF9ukneK6b5kQgqee9SDb/kWWL4Y4+C41KBEi1o4=
+Date: Thu, 25 Apr 2024 16:47:18 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, Matthew Wilcox
+ <willy@infradead.org>, Suren Baghdasaryan <surenb@google.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] alloc_tag: Tighten file permissions on /proc/allocinfo
+Message-Id: <20240425164718.e8e187dd0c5b0a87371d8316@linux-foundation.org>
+In-Reply-To: <202404251532.F8860056AE@keescook>
+References: <20240425200844.work.184-kees@kernel.org>
+	<w6nbxvxt3itugrvtcvnayj5ducoxifwbffd7qh6vcastw77mse@2ugphwusgttz>
+	<ZirCbPR1XwX2WJSX@casper.infradead.org>
+	<64cngpnwyav4odustofs6hgsh7htpc5nu23tx4lb3vxaltmqf2@sxn63f2gg4gu>
+	<202404251532.F8860056AE@keescook>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Eddie James <eajames@linux.ibm.com>
-Cc: devicetree@vger.kernel.org, linux-i2c@vger.kernel.org, 
- lakshmiy@us.ibm.com, linux-fsi@lists.ozlabs.org, 
- andrew@codeconstruct.com.au, linux-kernel@vger.kernel.org, 
- linux-aspeed@lists.ozlabs.org, joel@jms.id.au, krzk+dt@kernel.org, 
- linux-spi@vger.kernel.org, conor+dt@kernel.org
-In-Reply-To: <20240425213701.655540-7-eajames@linux.ibm.com>
-References: <20240425213701.655540-1-eajames@linux.ibm.com>
- <20240425213701.655540-7-eajames@linux.ibm.com>
-Message-Id: <171408839666.3902693.1860621022882259895.robh@kernel.org>
-Subject: Re: [PATCH v3 06/14] dt-bindings: fsi: Document the FSI controller
- common properties
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Thu, 25 Apr 2024 15:42:30 -0700 Kees Cook <keescook@chromium.org> wrote:
 
-On Thu, 25 Apr 2024 16:36:53 -0500, Eddie James wrote:
-> Since there are multiple FSI controllers documented, the common
-> properties should be documented separately and then referenced
-> from the specific controller documentation.
+> > The concern about leaking image layout could be addressed by sorting the
+> > output before returning to userspace.
 > 
-> Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> ---
->  .../bindings/fsi/fsi-controller.yaml          | 65 +++++++++++++++++++
->  1 file changed, 65 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/fsi/fsi-controller.yaml
+> It's trivial to change permissions from the default 0400 at boot time.
+> It can even have groups and ownership changed, etc. This is why we have
+> per-mount-namespace /proc instances:
 > 
+> # chgrp sysmonitor /proc/allocinfo
+> # chmod 0440 /proc/allocinfo
+> 
+> Poof, instant role-based access control. :)
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Conversely, the paranoid could set it to 0400 at boot also.
 
-yamllint warnings/errors:
+> I'm just trying to make the _default_ safe.
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/fsi/fsi-controller.example.dtb: /example-0/fsi@3400: failed to match any schema with compatible: ['fsi-controller']
+Agree with this.
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240425213701.655540-7-eajames@linux.ibm.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+Semi-seriously, how about we set the permissions to 0000 and force
+distributors/users to make a decision.
 
 
