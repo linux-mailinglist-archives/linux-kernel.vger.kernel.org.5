@@ -1,88 +1,84 @@
-Return-Path: <linux-kernel+bounces-158100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70A9D8B1B80
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:09:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0A9C8B1B9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:11:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01A711F23F3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:09:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DD2DB24438
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:11:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 092BC6BB48;
-	Thu, 25 Apr 2024 07:09:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBDB76CDA5;
+	Thu, 25 Apr 2024 07:10:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="Jp78PMpa"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="HwPhI3xo"
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD04169946
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BFF26F069;
+	Thu, 25 Apr 2024 07:10:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714028988; cv=none; b=UoC5shkDJzTlBHi+iDDIm3jkC2SMB/bqnkbU+joL5kF4tbtag2XSJ8InlhtK+ffAdjHPRxniz2znmbqzjJyrqtZa7w+L/V9el6mZ3o39pSbqrq+wTmFRrNaIPJcBqa6xRCRChb2jipzYChUv0q3PQYshSg8AOnJMMPulu6aYybg=
+	t=1714029043; cv=none; b=rvBgOXRku/XWVRVWB0b6llJMCLKavZzniK6gTWhZz3XETEUkWVDl0Kp2UkDu0/3PWUU+jF5G7kHTYAqWFeAY5jxcASw8OUce0vnQpV19RlXfNMnKFbHN5ULMkLvYjmsJ0szdoHuzncM5TGa+dOZf8IkTGE4XRmitEhrFliw9rcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714028988; c=relaxed/simple;
-	bh=i5csNzvKyzY2KMUo9Pio2GiNuzzW6XfxG41GjBSLsac=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ImhxInSvAl0/9xkhgKLuBehTSYotZYQ12z7hRU8JU41VnjjQ8S6TXli334RQTgykro+TgZKW7cjkPobTUaJJwwyOhEoTHNX9OKrYBCnJpSUu81mcuo+GZjI8eQ7IGrfix5STISW9sjg1AKPI3+01JeYcPivy58HQz5QBQQf90ow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=Jp78PMpa; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-41b4fd421c8so1353295e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:09:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1714028983; x=1714633783; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AQYF0WsVGtCo94Lb/d7hDTJ0GE5m3M9fEwjH6JMfTuk=;
-        b=Jp78PMpayEci9dugJllY9Tf2BIvaDqxcYGvOCvkWBJ5OQswdbCTymX4MlHzIW408jC
-         z/8IQuoEDlI4r+9/Q0khKbxp+6bXstuuMYkLfYklfkMKlFAXcc2Dgmpt/Ijv9ulofyU5
-         JmNhXDkW5giZL6W1hlObz42PO5B7WUvv/uG0J4n4TkgEaZFE3Sw4JxS7zryf420ZiAfZ
-         Dy8yd8l7H9cT3n9azbK/Y5rIdoMa8xpFCfNSdk4mWR31BNXazzGJSu0w5AlXoBRQsgaN
-         A9J9TD6j31fCBhmzPo1dcqd5xYqokn7NHHKMWcX/wPcWgH5MhSvazhu5CVKSRLLB7JXa
-         ttRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714028983; x=1714633783;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AQYF0WsVGtCo94Lb/d7hDTJ0GE5m3M9fEwjH6JMfTuk=;
-        b=lM4AVS3qB3mz1LX5QNydL4+ETRz8185j4EhJXIB3JGVdwalFhCpwZFBNJn3dZi5Jhg
-         /YhhB581v/6fC72K95aHD5m/V90kMWByWxuBLMNJrwv4utaLYJGoX+Ij1GqxdPdzhTr7
-         1KHWuRiL9HMm4urroykbsS7elJyM2rHjhr0r3t0Q1zGTNs98Vmslr+0TyfLtrHy6vsUC
-         7Tw3sDYrApQwUbodSrHl5Hgn0/nZPlaj0lWn/RlXivgUajwyXU/jWX4OoBb/iMj/WPNl
-         bNadcianLMEnyC/M1gJFyeqS9T5d5XG8qXS07y/O5mI14NHXZR33Oxt3YhFC2gzGlICX
-         63zA==
-X-Gm-Message-State: AOJu0YxfG7aSH09Rs8l93YQn/y2+4baSOFKsRv4XS/M23lD7bJhfr+gR
-	6o+bPY2iWqLPyXNJrl2mwRFYqgzrTUq+Ph3FZHyru+E0ReWpR7Snf/K6mp0ZscY=
-X-Google-Smtp-Source: AGHT+IHJkzXfp5uKvrRKk7fveyZHLxowyJC99U0qlzXF2CleQH23oiAt0ns4de/tUOZmilj4QuBnRw==
-X-Received: by 2002:a05:600c:19ca:b0:41a:141c:e199 with SMTP id u10-20020a05600c19ca00b0041a141ce199mr3737837wmq.8.1714028983029;
-        Thu, 25 Apr 2024 00:09:43 -0700 (PDT)
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.53])
-        by smtp.gmail.com with ESMTPSA id v11-20020a05600c444b00b00418d5b16f85sm26234186wmn.21.2024.04.25.00.09.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 00:09:42 -0700 (PDT)
-From: Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To: gregkh@linuxfoundation.org,
-	jirislaby@kernel.org,
-	tony@atomide.com,
-	andriy.shevchenko@linux.intel.com,
-	l.sanfilippo@kunbus.com,
-	tglx@linutronix.de,
-	geert+renesas@glider.be,
-	ulf.hansson@linaro.org,
-	peng.fan@nxp.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	claudiu.beznea@tuxon.dev,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [RFT PATCH v2] serial: core: Call device_set_awake_path() for console port
-Date: Thu, 25 Apr 2024 10:09:36 +0300
-Message-Id: <20240425070936.547100-1-claudiu.beznea.uj@bp.renesas.com>
+	s=arc-20240116; t=1714029043; c=relaxed/simple;
+	bh=OicsjI5hve5UOp2RU+b4OIl85M9vxjPjINQgH+1vvfs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VCT6fVxD557HEYGtoy7F5j8/JVrTf7kA/eJ44HD/ZG3g6MZkF0i35USs1xUJKTee4Thel0Ziw3fRphTK7V70GBMELyu0Au/9c36dpHsjLn4XcN8zZKcDBL37rHRm4xtsjrlP6NE8Y1DeHPUJ2YDdRQixbWZSDB4rU6q7c1lRocM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=HwPhI3xo; arc=none smtp.client-ip=148.163.135.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+	by mx0a-00128a01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43P57Uvg000945;
+	Thu, 25 Apr 2024 03:10:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=DKIM; bh=8v8v9Or7KoY1
+	qlT2j9aqexZMdaKJjYew5gQOnI4G+6o=; b=HwPhI3xoRGn4tYqydhKx/VoNcvEH
+	hc55Ka9f8DL/T3rAJc202NuJCI1Of52XI6mciKPU0PJ7RYIxKA90cTJ9tyXmblPo
+	ZEhomudUgM+WHHc+YbrRZj3ZEEXw7Ccvd4suV2Gkjr9ZI9zvdlBlPIiVoosxCB9p
+	8Vrp7ABJiD9zqzxQCelslg+KhS2ftwpPyJw1nnJITmG19N0H03oWbLMXSvFR1vfg
+	WqVfw4XSTiM61IEijA7zoO/Lk7xBhpD5v553ZIk0XRHw4MOzo6srSaaHthNrkx0N
+	mRsx+PqAoBU9DZj1yn4ttrVX5EoSFuC0aM/ZXKFNyLg9dwxtTptrts8Pew==
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+	by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3xq3qmbchq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 03:10:14 -0400 (EDT)
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+	by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 43P7AD42023009
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 25 Apr 2024 03:10:13 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Thu, 25 Apr 2024 03:10:12 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Thu, 25 Apr 2024 03:10:12 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Thu, 25 Apr 2024 03:10:12 -0400
+Received: from JSANBUEN-L01.ad.analog.com (JSANBUEN-L01.ad.analog.com [10.117.220.64])
+	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 43P79tHj006908;
+	Thu, 25 Apr 2024 03:09:58 -0400
+From: Jose Ramon San Buenaventura <jose.sanbuenaventura@analog.com>
+To: <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>
+CC: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+        "Rob
+ Herring" <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        "Conor
+ Dooley" <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Delphine CC
+ Chiu" <Delphine_CC_Chiu@Wiwynn.com>
+Subject: [PATCH v3 0/2] Add adm1281 support
+Date: Thu, 25 Apr 2024 15:09:46 +0800
+Message-ID: <20240425070948.25788-1-jose.sanbuenaventura@analog.com>
 X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -91,59 +87,40 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: uxnUrTglTl1R9yfRuAprsipuzKoOy6DJ
+X-Proofpoint-ORIG-GUID: uxnUrTglTl1R9yfRuAprsipuzKoOy6DJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-25_06,2024-04-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
+ lowpriorityscore=0 suspectscore=0 priorityscore=1501 malwarescore=0
+ spamscore=0 impostorscore=0 bulkscore=0 mlxscore=0 phishscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404250050
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+CHANGELOG:
 
-In case the UART port is used as a console, no_console_suspend is
-available in bootargs and UART port is part of a software-controlled power
-domain we need to call device_set_awake_path(). This lets the power
-domain core code know that this domain should not be powered off
-during system suspend. Otherwise, the UART port power domain is turned off,
-nothing is printed while suspending and the suspend/resume process is
-blocked. This was detected on the Renesas RZ/G3S SoC while adding support
-for power domains.
+v2 -> v3:
+        - removed extra boolean member in adm1275_data structure
+        - refactored commit message        
 
-Based on code investigation, this issue is present on other SoCs (e.g.,
-Renesas R-Mobile A1 [1], IMX8QXP [2]) and different SoCs have particular
-implementation to handle it. Due to this the patch added the call of
-device_set_awake_path() in uart_suspend_port() instead of having it in
-the platform specific UART driver.
+v1 -> v2:
+        - removed STATUS_CML case in read_byte_data function 
 
-[1] https://elixir.bootlin.com/linux/v6.9-rc5/source/drivers/pmdomain/renesas/rmobile-sysc.c#L116
-[2] https://elixir.bootlin.com/linux/v6.9-rc5/source/drivers/pmdomain/imx/scu-pd.c#L357
+Jose Ramon San Buenaventura (2):
+  dt-bindings: hwmon: adm1275: add adm1281
+  hwmon: pmbus: adm1275: add adm1281 support
 
-Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
----
-
-Changes in v2:
-- used device_set_awake_path() instead of device_set_wakeup_path()
-- moved the support in uart_suspend_port() to make it generic for
-  other drivers
-- fixed typos in commit description
-- updated the commit description to reflect the new changes and the fact
-  that support may be applied to other SoCs
-- added Suggested-by tag; this was initially proposed by Ulf to move it
-  in the serial driver then Geert propose to have it more generic in
-  uart_suspend_port()
+ .../devicetree/bindings/hwmon/adi,adm1275.yaml     |  4 +++-
+ Documentation/hwmon/adm1275.rst                    | 14 +++++++++++---
+ drivers/hwmon/pmbus/Kconfig                        |  4 ++--
+ drivers/hwmon/pmbus/adm1275.c                      |  7 +++++--
+ 4 files changed, 21 insertions(+), 8 deletions(-)
 
 
- drivers/tty/serial/serial_core.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-index d8d797a7a1e3..6270baab668c 100644
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -2409,6 +2409,7 @@ int uart_suspend_port(struct uart_driver *drv, struct uart_port *uport)
- 			uport->ops->stop_rx(uport);
- 			uart_port_unlock_irq(uport);
- 		}
-+		device_set_awake_path(uport->dev);
- 		goto unlock;
- 	}
- 
+base-commit: 96fca68c4fbf77a8185eb10f7557e23352732ea2
 -- 
 2.39.2
 
