@@ -1,171 +1,142 @@
-Return-Path: <linux-kernel+bounces-158735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EECD48B244A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B0558B244D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:45:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4CD5281F72
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:45:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6835281340
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:45:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C52D14A600;
-	Thu, 25 Apr 2024 14:45:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE4E14A61E;
+	Thu, 25 Apr 2024 14:45:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UrUamniA"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="hO8QjXa9"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A716514A605
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:45:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43CFC14A0BF
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:45:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714056314; cv=none; b=Eun4NoVFYMvPYNtSGtyvhHF8v8PFO1yN+d4FeOiUJbTLInP/D0gnycMF8UQMb4hi1TaIKV+oMKDHbMlfeGSpQAgSC8gwf2yVUcqUGi1hQ2vzLX5+eMURyrQzqsZ9E94MA/uD6iqf9xVLIqVUny3allYEj/ioyMCElNdgfQdCZTE=
+	t=1714056329; cv=none; b=bF4LvgT1rQFBHwmf61VYDKDCZWlHvGmCBBVJL1EQ3oZzPDU1JAWYj4f1fUgEJ7IYyUYXvX+ci8lG0ZrNQXY4z5vYtK0OkFeWhThtzE59Eb0s8a1Wl8GphAlAqT2FwOKIQysFyC+T+77XuYNLoC73As8FtZBDSJB0awVqFaH2994=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714056314; c=relaxed/simple;
-	bh=t3L626GQK5+C8xYKwo/jgNN4prZo8bdv5XDJYAotQcM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=aA+V2jfzyO130dBGq7WIhf12fe1LdvBfQb04l+427UnVXnxKcSAps+9csoAB2EzFVtaoUEfnOvA/WNX/tWjGnvW47K8AMLnt+Zkboc5ApRY5J+/tlcSga26Fg/ua8ynfWvg8mvyqk4bfZsDIjmvsMaOaKey/0q/9UBJLkC4dNww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UrUamniA; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714056311;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZubHCtXDSlDiNjtbhlVfa47NJZTf/QQgEF9HNNRnrpc=;
-	b=UrUamniAjxHgDo19E4Ic7F7/8kQgwjqgLNLY+m8OQoua4XW6EQHAhEF0x8FW3un7ddC+BX
-	doZuB3LR1169ixHIs6IWrBh1EJ9QeMG6HTUj+vFnhB5IQqkrJt6R1uu4gVl39wiuSVOR+u
-	OpEuCDhp6GW26CrgKmK4wcV+PFXiUs0=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-128-vFVO9z9ZMAGLjKHC3uKScQ-1; Thu, 25 Apr 2024 10:45:09 -0400
-X-MC-Unique: vFVO9z9ZMAGLjKHC3uKScQ-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2dccd9dee76so9512261fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:45:09 -0700 (PDT)
+	s=arc-20240116; t=1714056329; c=relaxed/simple;
+	bh=IJ3J9+qMMc5AcpPKGPwrAuPLaO9e0GfSfZ8R0+bwFng=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mJ3WKU3Ky3+oXatjWqhhmnzONbf8899kFYgz267hBNJsptB55Eim8ocrlfTN+xVXcydb5plu/yVSVoxfrMIMghQEtgN6gXW6vDiQjatTTbN9l6wcWvmvl40aYZlqiClWVnJCUmrj8wfRUnuWJDCzdF+3qQnOrg+xCmjup+gJ/RQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=hO8QjXa9; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ecf1d22d78so66949b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1714056328; x=1714661128; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Upe9hXc85SfykUK8OSJyDQtUplWhtMiTd1jA3tMRXuo=;
+        b=hO8QjXa9lALXbwUsKXaff/iSO59Zbkn009rIlqZSCTTs5fi3iWw7w0869tbnDvi0rr
+         uVk4tKOMW8eURFiwROT9wn9tu1s/k4yyjGRr4TfEno57Ab9msTY+G7tLLBikp7Djbv0K
+         VEmmMQ1Ob3RkrKeZUGT3O07/ag/h4VifsNM+E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714056308; x=1714661108;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZubHCtXDSlDiNjtbhlVfa47NJZTf/QQgEF9HNNRnrpc=;
-        b=jwUM/SbWRCkqSjJQEU0OQg5ahacejTVKId6zRSL15NCrsb0qDmWvjbxzj07sP6ol5M
-         QHeU0bWoJGnIxzFElxYRYmmzkGc6Te7w1dW5kcmwU6I/03IMoG5N37mye7Yy0RgievEZ
-         iJZqedtx34z84oFdeXiyCgAPuOMCY/AkjN5A/X4JJZMBDSwpd8Yp3J2DBBlRfJK8LKhq
-         hIMaiKBRI9lkODmwQi3Rz/eWvJ3eK4h/ifFS1uEkYL+K0qnREaXiG8O8U75FtnO/ya8L
-         EbkvOuq95ZUknq1/+4Jz8HZfOkWk+BU6LiCwnV9jHfgyHtmchc5obNm7hE5uYU0ZgzGa
-         aEIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXybpqdB0NL6+CyK+cjBpZttQTlOMKEK41rgfp69CK65AoT9I26BNBk3r7uQyvY/IwZZR+Df75ZQlzYyWwizURlb9pD/Mif15olq6Q+
-X-Gm-Message-State: AOJu0YxhxgdUHje4U+3Kc6X3U78/BdeTDYlS1vYk66+YcZAc2H6vf9U6
-	/M17gtmGUvikGJEOcSbuq/rTBdwx+2RVvb7p5rN/vRWAvCDg2zM+F6PD5izo9BTX2pvfW66+5rH
-	lCV4/BhhyZieKlFhICeU8eVUmozJfgrXZKN6Tc2KgbffUs7WNQIxbqd7AZt6s7w==
-X-Received: by 2002:a2e:8346:0:b0:2da:bbf4:81b8 with SMTP id l6-20020a2e8346000000b002dabbf481b8mr3523045ljh.14.1714056307861;
-        Thu, 25 Apr 2024 07:45:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH2uHszwgcgWYNWC1sA6fA2CDpWKf9lvVT0t3YBkpRT8qSW7BlgzlOt4c00AAdz79TQEB56HA==
-X-Received: by 2002:a2e:8346:0:b0:2da:bbf4:81b8 with SMTP id l6-20020a2e8346000000b002dabbf481b8mr3523014ljh.14.1714056307207;
-        Thu, 25 Apr 2024 07:45:07 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id v11-20020a05600c470b00b0041a963bf2cdsm11668719wmo.36.2024.04.25.07.45.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 07:45:06 -0700 (PDT)
-From: Javier Martinez Canillas <javierm@redhat.com>
-To: Steven Price <steven.price@arm.com>, Andy Yan <andyshrk@163.com>,
- boris.brezillon@collabora.com
-Cc: daniel@ffwll.ch, airlied@gmail.com, liviu.dudau@arm.com,
- maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Andy Yan
- <andy.yan@rock-chips.com>
-Subject: Re: [PATCH] drm/panthor: Add defer probe for firmware load
-In-Reply-To: <501d18c9-3116-4cd1-8091-b9f552e9fb5a@arm.com>
-References: <20240413114938.740631-1-andyshrk@163.com>
- <54e4a174-dea7-4588-b8a6-0310c210ffce@arm.com>
- <87frv9zthu.fsf@minerva.mail-host-address-is-not-set>
- <501d18c9-3116-4cd1-8091-b9f552e9fb5a@arm.com>
-Date: Thu, 25 Apr 2024 16:45:06 +0200
-Message-ID: <87y1918psd.fsf@minerva.mail-host-address-is-not-set>
+        d=1e100.net; s=20230601; t=1714056328; x=1714661128;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Upe9hXc85SfykUK8OSJyDQtUplWhtMiTd1jA3tMRXuo=;
+        b=ZN26kawqXdg4MuPRgO783fXJKUeNA6qc3WApzeRA4TnHjWltVd3m+skL1O609PedKC
+         npXJou1HEi8rd9bk3TjI3ZgHnBf8UGEO9kczTLHfVfOe0SZBKFj5wuAS0vxN1K8ABlOP
+         DxkDmUdRek0Iu3HX8h3+DKDmAfF6mOPHVbFsvH+9OazmlP5T4mxzj6k8UzITj2m4dtJV
+         i4+VzlcQ5sw8m74U9iOnZ+mUYUAEyZ8taykVZxd6E19+C5Dztvip6CDrDpwDoASo4wt/
+         i+G3bF6oeMDQ8Uy6FYG4zkz3AXrk6H2NAMar9d8ekzRamxZajacEF6yruhnlCYcwug2f
+         3oug==
+X-Forwarded-Encrypted: i=1; AJvYcCWbo9XZopuEaVI7xXjaR7zAUJW6QNEm7vVONHaRlJht/9woOCl6VPyVnkTMhd7Cn1WZ3Mt8D189BjRHEwAEbvH7h96dovLVw1dFUQQK
+X-Gm-Message-State: AOJu0YzUDWhxJkJDAbT7UvHAG8Zlh/jvNTrFalNZHvCjkCFp5n+TFNoP
+	nvCJYCThzYxj2kU9snh1L1P8+7qkQGRpHFcWYIUBdSB7iHEUlwsj8yPTq4XKyDY=
+X-Google-Smtp-Source: AGHT+IH2ZWIxVnWGlxZ14mWcvRqLtKyE6u0gRzo1WyBlfFhqv5treC26C0VPwnpQrTOD05hYIY1E7A==
+X-Received: by 2002:a05:6a00:731:b0:6ea:ba47:a63b with SMTP id 17-20020a056a00073100b006eaba47a63bmr6568081pfm.0.1714056327589;
+        Thu, 25 Apr 2024 07:45:27 -0700 (PDT)
+Received: from [192.168.43.82] ([223.185.79.208])
+        by smtp.gmail.com with ESMTPSA id k124-20020a633d82000000b005f7d61ec8afsm11351461pga.91.2024.04.25.07.45.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Apr 2024 07:45:27 -0700 (PDT)
+Message-ID: <3848a9ad-07aa-48da-a2b7-264c4a990b5b@linuxfoundation.org>
+Date: Thu, 25 Apr 2024 08:45:07 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 25/35] KVM: selftests: Convert lib's mem regions to
+ KVM_SET_USER_MEMORY_REGION2
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+ Sean Christopherson <seanjc@google.com>, Shuah Khan <shuah@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+ Oliver Upton <oliver.upton@linux.dev>, Huacai Chen <chenhuacai@kernel.org>,
+ Michael Ellerman <mpe@ellerman.id.au>, Anup Patel <anup@brainfault.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+ linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+ Xu Yilun <yilun.xu@intel.com>, Chao Peng <chao.p.peng@linux.intel.com>,
+ Fuad Tabba <tabba@google.com>, Jarkko Sakkinen <jarkko@kernel.org>,
+ Anish Moorthy <amoorthy@google.com>, David Matlack <dmatlack@google.com>,
+ Yu Zhang <yu.c.zhang@linux.intel.com>,
+ Isaku Yamahata <isaku.yamahata@intel.com>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?=
+ =?UTF-8?Q?n?= <mic@digikod.net>, Vlastimil Babka <vbabka@suse.cz>,
+ Vishal Annapurve <vannapurve@google.com>,
+ Ackerley Tng <ackerleytng@google.com>,
+ Maciej Szmigiero <mail@maciej.szmigiero.name>,
+ David Hildenbrand <david@redhat.com>, Quentin Perret <qperret@google.com>,
+ Michael Roth <michael.roth@amd.com>, Wang <wei.w.wang@intel.com>,
+ Liam Merwick <liam.merwick@oracle.com>,
+ Isaku Yamahata <isaku.yamahata@gmail.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Naresh Kamboju <naresh.kamboju@linaro.org>,
+ Anders Roxell <anders.roxell@linaro.org>,
+ Benjamin Copeland <ben.copeland@linaro.org>,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20231027182217.3615211-1-seanjc@google.com>
+ <20231027182217.3615211-26-seanjc@google.com>
+ <69ae0694-8ca3-402c-b864-99b500b24f5d@moroto.mountain>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <69ae0694-8ca3-402c-b864-99b500b24f5d@moroto.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Steven Price <steven.price@arm.com> writes:
+On 4/25/24 08:12, Dan Carpenter wrote:
+> On Fri, Oct 27, 2023 at 11:22:07AM -0700, Sean Christopherson wrote:
+>> Use KVM_SET_USER_MEMORY_REGION2 throughout KVM's selftests library so that
+>> support for guest private memory can be added without needing an entirely
+>> separate set of helpers.
+>>
+>> Note, this obviously makes selftests backwards-incompatible with older KVM
+>    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>> versions from this point forward.
+>    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> Is there a way we could disable the tests on older kernels instead of
+> making them fail?  Check uname or something?  There is probably a
+> standard way to do this...  It's these tests which fail.
 
-> Hi Javier,
->
-> On 25/04/2024 10:22, Javier Martinez Canillas wrote:
->> Steven Price <steven.price@arm.com> writes:
->> 
->> Hello Steven,
->> 
->>> On 13/04/2024 12:49, Andy Yan wrote:
->>>> From: Andy Yan <andy.yan@rock-chips.com>
->>>>
->>>> The firmware in the rootfs will not be accessible until we
->>>> are in the SYSTEM_RUNNING state, so return EPROBE_DEFER until
->>>> that point.
->>>> This let the driver can load firmware when it is builtin.
->>>
->>> The usual solution is that the firmware should be placed in the
->>> initrd/initramfs if the module is included there (or built-in). The same
->>> issue was brought up regarding the powervr driver:
->>>
->>> https://lore.kernel.org/dri-devel/20240109120604.603700-1-javierm@redhat.com/T/
->>>
->>> I'm not sure if that ever actually reached a conclusion though. The
->>> question was deferred to Greg KH but I didn't see Greg actually getting
->>> involved in the thread.
->>>
->> 
->> Correct, there was not conclusion reached in that thread.
->
-> So I think we need a conclusion before we start applying point fixes to
-> individual drivers.
->
+They shouldn't fail - the tests should be skipped on older kernels.
+If it is absolutely necessary to dd uname to check kernel version,
+refer to zram/zram_lib.sh for an example.
 
-Agreed.
-
-[...]
-
->> 
->> In the thread you referenced I suggested to add that logic in request_firmware()
->> (or add a new request_firmware_defer() helper function) that changes the request
->> firmare behaviour to return -EPROBE_DEFER instead of -ENOENT.
->
-> That would seem like a good feature if it's agreed that deferring on
-> request_firmware is a good idea.
->
-
-Yeah. I didn't attempt to type that patch because didn't get an answer
-from Greg and didn't want to spent the time writing and testing a patch
-to just be nacked.
-
->> Since as you mentioned, this isn't specific to panthor and an issue that I also
->> faced with the powervr driver.
->
-> I'm not in any way against the idea of deferring the probe until the
-> firmware is around - indeed it seems like a very sensible idea in many
-> respects. But I don't want panthor to be 'special' in this way.
->
-> If the consensus is that the firmware should live with the module (i.e.
-> either both in the initramfs or both in the rootfs) then the code is
-> fine as it is. That seemed to be the view of Sima in that thread and
-> seems reasonable to me - why put the .ko in the initrd if you can't
-> actually use it until the rootfs comes along?
->
-
-That's indeed a sensible position for me as well and is what I answered to
-the user who reported the powervr issue.
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+thanks,
+-- Shuah
 
