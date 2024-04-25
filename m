@@ -1,293 +1,176 @@
-Return-Path: <linux-kernel+bounces-158133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A99A88B1BF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:34:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42F828B1BFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:34:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D151E1C23D48
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:34:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57EBEB241A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:34:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C7C178C8E;
-	Thu, 25 Apr 2024 07:33:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1556E605;
+	Thu, 25 Apr 2024 07:34:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="UFG/y6CE"
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="1BZQmmrT"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2056.outbound.protection.outlook.com [40.107.220.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2986D1B0
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:33:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714030410; cv=none; b=bkt/0aqHZFX8xOD/9pDs0XsrW/TKFXawV8Rbrav3wWszPj1ELvJucfkxR5EA+9XOdBif9ufeum4gH8bKFx8q4+tJVKhuTJH5XnFj5NHj05Bl81VkTa1d4oCP9/kL/mEl7pcIpS9E3W5K9CuoIPySRKCGEKCVJm3cZJ8s50PjP/k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714030410; c=relaxed/simple;
-	bh=mHN9hs8IGVejgkls9jR3iaBoc87nNEzT105MD6zHbm8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WW8w/j/5TDAUO3oLx2zp0f9P/fu2tbzihkQFJezXGocFIlraS7b/FuA9Uo3CG+5Vh7+PeOLjAXC/dS2NZFK2CQ89YmGXiSNBYy8YWMCKld2RbI3VlAVzzt3LD/kHx7oBGwOph02Ck2itlwOTeeJXJQy6XmpLk0qWJyR4cfnBYoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=UFG/y6CE; arc=none smtp.client-ip=185.125.188.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 3B3943FE5F
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:33:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1714030407;
-	bh=/dNvDnYrusTnWvle5YeikJ1eJyd4ePVKnyqmYISNV5Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
-	b=UFG/y6CEYN1KF//NtoKQAQpJC/019f80KnsFXPWg6WI48UcQVOEF2Uxs/BiFndcTf
-	 Kld/aA+lUO+8abMQSZZ5tc1Vcx2EaswwYbOX10/2tYIa38Yde/lNCYdsvM5e4jaaZ7
-	 Xo64GA0Lsoc3c1Id53P+R9nfEShIYL47P81sSLJbhJFbQkkDnS6Lnv7ZH4jilBdkGw
-	 Ob9ZZLWA3Zy5nE/owABXMp3Yk/HjYFol05SjLj4jSj9Xg6GPhcNC+QXnrX9td33UAi
-	 sjIqbdXAgv29DSr/qi7GdWNJUL56aZs7HhNfwliyhVcydHRPT6OJDzKtyCXSvQ4kQ4
-	 R5YaYPBTNaOCA==
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2db6fbc1dedso5324131fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:33:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714030406; x=1714635206;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/dNvDnYrusTnWvle5YeikJ1eJyd4ePVKnyqmYISNV5Q=;
-        b=snC+rnAgxdWRxx0kKqcNjNhzd4QPDr3kGk7fo0GnZknAecRFWC1pIRho7gjeplsiHc
-         JJC9pjmhoECYtdSfnUvWewZ+9PmBSTc22Ht81MQBP57D1cJ8r3LvTSBnxKIRnusjdKwk
-         tafbiuRZw4kfqeLSqH4n1AHxGkVxDfcUZn7WJk7yYSKFwxetF/AvtQ6p2/GvyrCwUnK+
-         FTKhn6f9GJScpI8jhvDGUs35gW4z018C/u1YKBf597qiM+HPO1EmqDxMKih6lV+oGPxk
-         K6equ4qvgTbHx6XPaX/iH/7qTuR/x8kdA9bL46Nl2RLKDv14AkBPrageUZD0TKGcWpd+
-         NJGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWNt3/ruUgQRZYt0af1RB9PEN6KDML41tiU8SSM77zCKU0RlO+i85lLGqGO6FxKZ0qut4R5860B6m6gyJbtypEiXju3xi9pIe3gCQLK
-X-Gm-Message-State: AOJu0YyG3xm/Gijkq6wHDgesmNoJkjywhgQ+TNn4W2dBUZi/mnCQ+uNn
-	A/yEqIMiAJxleoB1kXkTtqZGLqJtIV6kiQAAhraw3hQ4cUXYXAhL8hhdBPiUKrnKEp6LpBw73VV
-	76klCsLm7S58rx19w4PyzndzSZNovFto00RiDLK8i5URBzc0rtQwFe4mkIH9eExxeKp21bYvopc
-	FqpkVZrtw2Gs++
-X-Received: by 2002:a2e:a443:0:b0:2d6:f5c6:e5a1 with SMTP id v3-20020a2ea443000000b002d6f5c6e5a1mr3734866ljn.12.1714030406308;
-        Thu, 25 Apr 2024 00:33:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGlQJtnvVjGkoBiH1AcBJyrCRFzXR25CaKZuxuIct87H/8ZtDjstKzHj+iLLTF07OP2hJibrQ==
-X-Received: by 2002:a2e:a443:0:b0:2d6:f5c6:e5a1 with SMTP id v3-20020a2ea443000000b002d6f5c6e5a1mr3734811ljn.12.1714030405402;
-        Thu, 25 Apr 2024 00:33:25 -0700 (PDT)
-Received: from localhost.localdomain (host-82-49-69-7.retail.telecomitalia.it. [82.49.69.7])
-        by smtp.gmail.com with ESMTPSA id f1-20020a170906ef0100b00a587cfd7a37sm3065742ejs.84.2024.04.25.00.33.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 00:33:24 -0700 (PDT)
-From: Andrea Righi <andrea.righi@canonical.com>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Andrea Righi <andrea.righi@canonical.com>
-Subject: [PATCH v2] selftests/bpf: Add ring_buffer__consume_n test.
-Date: Thu, 25 Apr 2024 09:33:19 +0200
-Message-ID: <20240425073319.75389-1-andrea.righi@canonical.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9CD5A7AB;
+	Thu, 25 Apr 2024 07:34:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.56
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714030461; cv=fail; b=MX6d/edWmwXicl81urGx62E+9sjJjZEFEkAOj+bC6gx7bYNibh4o7xjH3yYry5RySRq6DizmrrDeqlttm4Gy4iTU932eMDN45HtAqHRaNlQah6FtseaRe+I+ZmFmqq8T57nnkZNmK7NK+7qNVktEHkYhsxhJ0AQKxv3bfYn7XgY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714030461; c=relaxed/simple;
+	bh=ZuEGHPcuH0rhFOsItc/io4sxxAJ7I6Vn1sOWOAxn3vw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=jpAxKVOHcaKPCii8THgprBEsTGFpkEAIZdB+nlEOVLRo8VwCOzeSDtmUttjw/Wastgz7yE2A+qAUcdmwKres+7GSBvD/kIS+NkMo8er9zXFoGwppAvVvCgXhXD+BZ3KzABAUPdd8s04KgRE8BXKnXff95kqHy6UJthkiNxoQeV0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=1BZQmmrT; arc=fail smtp.client-ip=40.107.220.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BkCjc8fLRcDyXlK/v1x6PZpiBPjHtBeNg7nM25TYGfjJyNgkgXtKjUZezBmfCACq69jzNlRckB/E3gdjlumN3FEZEGvih8Qip4REwFkjHnf8UmmNhexpt3PiwQ0aP6MkpjKgkuFdbrrfh2argD9xYXA4rHA074qeP5+KKkGT1ZZ0bHKMaynjoC2jcbg66citQqy3gdXMSS+bo7VgKsShXbOf3nn1zgNQNWPhTmaD2HoQI+DDz1+MZ234pk+4C4OKztMbelrFGIRnlOutNMbYHARJJ8irrbXR4gAT8SXR7cY/ojqsP1aYLXXFwSyJ/f9FQacGDFka9autVKKmJImYIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=crdiQNhWVvR4MwiPX99kRfdpxdiklO/JdrU5iCS81Pc=;
+ b=GfKTcZk6UE/LkstjKJkwNjfAAhjF2pUBj17tBVhAspc69Ylns9G+U2/XsPWsHB6MdYYnuvZXH0ecfO3OsiVt7lsnSEUnDgBNh0QvMt7JCMlHTC5LFjaUM0kqFpWFW85Pdje2lMqXwZ2INpF0h/XfuWI0BLfUo3o+428j5E8/NudcBccmWpYFWwrq1lR98VG7DMmp3IxKClzkCt79o76goc0sGuZPbKw3hLaeaLfgE+XoGXetxjwKsupAEWTxTM/thIP3eFW8QFhlnlwGI6jvPYrKq6m8+Se0CcEExRgftG/8n4Ds+Zzw6cCHpbgqcM8euucJtWHVxdlNWb+zSAOe5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=crdiQNhWVvR4MwiPX99kRfdpxdiklO/JdrU5iCS81Pc=;
+ b=1BZQmmrTAXj/T1x5w6sAuPcoqbwr6L1uD6HoKl0YkCAUVGCzWe6kMeMGqplEoC/WwWk0sFl8fgKLgqv77+jZuokVla5A2ej0x8rGa+TJvw0dGXNQwzt1eVMDhQIYb852sHGYtrPNJcjOkEDdI/dAD5s9as25oz8tiiB7pngiM6w=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CYYPR12MB8750.namprd12.prod.outlook.com (2603:10b6:930:be::18)
+ by PH8PR12MB6675.namprd12.prod.outlook.com (2603:10b6:510:1c2::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Thu, 25 Apr
+ 2024 07:34:17 +0000
+Received: from CYYPR12MB8750.namprd12.prod.outlook.com
+ ([fe80::b965:1501:b970:e60a]) by CYYPR12MB8750.namprd12.prod.outlook.com
+ ([fe80::b965:1501:b970:e60a%4]) with mapi id 15.20.7519.021; Thu, 25 Apr 2024
+ 07:34:17 +0000
+Date: Thu, 25 Apr 2024 09:34:11 +0200
+From: Robert Richter <rrichter@amd.com>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org
+Subject: Re: [PATCH v4 0/7] SRAT/CEDT fixes and updates
+Message-ID: <ZioHc_L5PxvrMNaP@rric.localdomain>
+References: <20240424154846.2152750-1-rrichter@amd.com>
+ <66294584e3869_b6e0294c5@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66294584e3869_b6e0294c5@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+X-ClientProxiedBy: FR3P281CA0199.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a5::16) To CYYPR12MB8750.namprd12.prod.outlook.com
+ (2603:10b6:930:be::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CYYPR12MB8750:EE_|PH8PR12MB6675:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9f295082-d324-4626-f7e8-08dc64fa1cfe
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?L0+JnxAYV9ejjPabMG9EclIXRG05BFb8BT8qzZyk70iFropAp2JV4izMLA8w?=
+ =?us-ascii?Q?6CHb1BxbVNugn8+b6yDoqfZp9CGBB/IursEqUf/j3JYW5vLY8MHGCtBHMjR9?=
+ =?us-ascii?Q?/+GHLX7llS+5hAr9H66eboDAPITsRRCZG5btNpg++/NPIU20+WVBS8yh6ljw?=
+ =?us-ascii?Q?FY2Pdgo+sqi1XLIXgMuL8yx+mSVaRdkehuDatFuF4KB6IHla5qu/AxPqexyu?=
+ =?us-ascii?Q?azCoQQshIoCHQYEA3aCV0UnTpzl9VY67zQyomu3JqCp2vJEWbEzC3HoezQEZ?=
+ =?us-ascii?Q?Y8YfpBGBoW6QupBBauDxu6tCcXjNpswthPF3eETLpxM+IiA1yTs41LXjv5a0?=
+ =?us-ascii?Q?gjv3uALYnjlbtu1VnoTpIt/oF/L1LIvg8psRMwAMeF4IcN44UQHiY3ba9Fiq?=
+ =?us-ascii?Q?JAOjpkw3SPHNScaCp1CRFs5S3oFbbkqr8l98x58pclCVT9eK+6OXw0m2vB9O?=
+ =?us-ascii?Q?vfCsukSAB1glHgeoabySrGz2JoEhBizUDlKWlrJ9EZKY+x6TPHwRvF4Fmv2B?=
+ =?us-ascii?Q?+GLqD1e1qOGZeNif2cXvijKPNGKmI/6sZG+TRnI4WumUyo48DmOqEjq0m339?=
+ =?us-ascii?Q?5MN38KGsVv7HVdEU+moq0Ws+WaDNwmWMRIcIq7BuysR6bf1p0mvcebCVkikt?=
+ =?us-ascii?Q?8ZaQUt4eCvdNRcCPJK4hevcZhGFI33FTnKRpVHGzcmL0qrph6xmJq+MK2EJU?=
+ =?us-ascii?Q?9URpqhyznhaiAD52+k+YdlR5k4u52d0NLz0a1l70iOROFG20UzHjBQ6FGK6y?=
+ =?us-ascii?Q?0FECiYEppSkSjXbIn1p2CaSuqdVGpDc0e3mBmeKftjm4Lo+e9CnGGdlG8/5i?=
+ =?us-ascii?Q?ddzhxsS0qLI1V/YkPNXxfBBNVl/tJdaDhupzA9V8vcHfaRAH+z8AT8hR98nM?=
+ =?us-ascii?Q?+JCOU5KAAyu+jBB5gMOWoZR1+xG2dMhbKSR2UFZ1GI17bFAbtjgfr5r2pMPZ?=
+ =?us-ascii?Q?cpMLNB/HC3tJc9E+pzKLUSaTT+dOYLHDdeF6kUdB5q1EDiOCEMYbZflIpbrd?=
+ =?us-ascii?Q?IuXHojfPA4ljFw36UYDkAglt6p81cpyp4KW6S8dBuLnM1kTr5X8j4pzXR1td?=
+ =?us-ascii?Q?CMq8CK42VaWIvDy04huw5Ub74ttdxlqrwLXRYB4qQmflpTWdEKag5tNLNpLs?=
+ =?us-ascii?Q?L3iaEcAUd9dPWNzVXfQlWihoGHZI3qbwQwufqBQNOrAcxE9B0zsUMV/V2JHg?=
+ =?us-ascii?Q?+STJ2sBCjpIYXqeKY39tqYNY2rMyjBzZ8Q3cby3iOFnaZyT31LPEZ+8LVJmt?=
+ =?us-ascii?Q?S9I9fn8JAFrVdqUHyLswcVqvdanvH66h9jgQRACDfA=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYYPR12MB8750.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?AZIrkvbulsJ10EeKyHCWDdLMFm0n56+lymEKSh0qXfMUezTnzQr73lt8sy/1?=
+ =?us-ascii?Q?XXAAiLO44XkFcAnyQrvyEbPPGOrSQpid+0FB8TQB1hQkZN1stNf4uoqqdO+Y?=
+ =?us-ascii?Q?tyhqr3WA6jatydwNQrAebc3PtkFwBJUJ1vsGVvLUKs53TbzQGC/fF5TS3hPJ?=
+ =?us-ascii?Q?LTZuDX8014k91T91bBKKfs0OqYsa3tFp+Fr8xxuHKcDlWwIMRqsUteghgnos?=
+ =?us-ascii?Q?uUc5h6PA0/t6xHLKo+0wJ7zkb7NjuCmg5WflkQfpwxgN42jddX+Kuak3b8Xx?=
+ =?us-ascii?Q?KGHK58As1UvWZLnljSen6ERaarzNaJ0YG5RvHlpzhIezVQfAfb8tvnsawBei?=
+ =?us-ascii?Q?FqEjxvsnScHRnAE8Ehqyiu0VIFuEEMsDWtVfltCWRwUz55Tv7oBJjKXDaeNy?=
+ =?us-ascii?Q?p5WuxOuu8ZWtDNmddWzKy+Kms3N5WocGBPuweNQXsVDK3CtkiL1r6xlXdksv?=
+ =?us-ascii?Q?Kxcn9qhJYnkwCoY6JmggH+lMIvOKgYa+DBn4+wcVb4C3GBvtG8dLi7l5Y3mQ?=
+ =?us-ascii?Q?xavp+11Dn0RSQvT1ko4swu8BUuabxLMVfY5B3vUAc0hzo2zvrMcNjdOFCcsq?=
+ =?us-ascii?Q?RJuQCknW+pOjTR3wSCSEeGIfyo0pdbDIsgjZ/GFFsHxXWOgvcogUbZ3iNA8j?=
+ =?us-ascii?Q?paoqGuxm4xYsQZIa4RQbmnta99pvsVtDHer5/lxzSCKtazpPoc/UEjf4qhlR?=
+ =?us-ascii?Q?k6MoZsqoKAUizMANtFZULzfUEbKwjna7v8d0qVPJnFUbiogBHjqOcvf7RI/Z?=
+ =?us-ascii?Q?UUpItAXGXjbtdVPeMTl8ifZZPueJxLjLIWBLSOuDwyBtp4syPtLJ01vsRqyR?=
+ =?us-ascii?Q?O1GUbzn7EARZxxyP7TsD07hPxdbEz7BPijAnnNG3Eo04XjxonFIb/AdgbVwy?=
+ =?us-ascii?Q?B3VoY9aSLcGra8bgt1YMb1HO9P1jmw0kLpfcHIMCU/Ojat1K5G+phwzPH0PG?=
+ =?us-ascii?Q?AZvi9AMks+HoEx7fs0hbFcntcGQvBfhVmtB4LAk6F6wwYcszYNJXx56NbVK6?=
+ =?us-ascii?Q?jmFLZ2jFT63GberXQpLcZK/SJg9Df5Sg0Zf8N72sP9IOH3wbTfckqVDAvKiW?=
+ =?us-ascii?Q?PpJohbuyXOAotBtu0Hd26qgJeq3dGgDSkcqwXKUIwnFhxQ6NY6g7cppkaheD?=
+ =?us-ascii?Q?O03NnN3SoSiqkZrREx/7Mr9N5PJpblzTP4uuhwoqq4N1+Tl2k5wNizNcHm1o?=
+ =?us-ascii?Q?y7/MoMkvkn5aOKExzsw/1PtK2jEpd+w82FCo3kvLge4Jfu0hMOcvVWEmeB/O?=
+ =?us-ascii?Q?4KnEseElC2wE1BwYnCRX2x137VgFHpGitiwzCYAL1rEdsdr/HsDP+oP9uaHy?=
+ =?us-ascii?Q?y2PS0vN4vqugAmPt2rlMVeopJjLcgWohCrsVadJjeaqBW85yIy7hnVYgC0Pq?=
+ =?us-ascii?Q?g3SEHK/dwtqD8ULOqoPEcBANLFZeBARQqkxDQB8fZKPsaAcy/uQotZJJ9QqR?=
+ =?us-ascii?Q?tCy+KfpNPNmHvXoT6QjUeOCz6lEtjBdTUkhKBI6U3FPHw9THwC5lXczkqrXz?=
+ =?us-ascii?Q?KjVH+fyAr27j3jupSUU/HJQyOrqASPGlAa3pOiaoXhdnKKhZrkM3k1l3lhqq?=
+ =?us-ascii?Q?MtMiraM+rcC3hvO3ZqiJPy2Rt2a1l0M9Smhxx8vY?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f295082-d324-4626-f7e8-08dc64fa1cfe
+X-MS-Exchange-CrossTenant-AuthSource: CYYPR12MB8750.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 07:34:17.1757
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: q0G+9pPnkX/OJhDqFZa4dyDaL+jh3ObAic8Nl/ph0IGmtms2+H/GmwIrZJYJl3BvK/b2N0cn3FcoSW7g7dQfoQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6675
 
-Add a testcase for the ring_buffer__consume_n() API.
+On 24.04.24 10:46:44, Dan Williams wrote:
+> Robert Richter wrote:
+> > Some fixes and updates for SRAT/CEDT parsing code. Patches can be
+> > applied individually and are independent.
+> > 
+> > First patch fixes a page fault during boot. It should be marked
+> > stable.
+> > 
+> > 2nd patch reworks the code around numa_fill_memblks() (Dan's
+> > suggestion).
+> 
+> Just squash these 2 together. The -stable maintainers continue to assert
+> that fixes should do the right thing by mainline mainline standards and
+> let the -stable backport process decide if a different change needs to
+> be made for older kernels. I see no benefit for tracking 2 changes for
+> how numa_fill_memblks() is defined.
 
-The test produces multiple samples in a ring buffer, using a
-sys_getpid() fentry prog, and consumes them from user-space in batches,
-rather than consuming all of them greedily, like ring_buffer__consume()
-does.
+Ok, will drop #1 in a v5.
 
-Link: https://lore.kernel.org/lkml/CAEf4BzaR4zqUpDmj44KNLdpJ=Tpa97GrvzuzVNO5nM6b7oWd1w@mail.gmail.com
-Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
----
- tools/testing/selftests/bpf/Makefile          |  2 +-
- .../selftests/bpf/prog_tests/ringbuf.c        | 64 +++++++++++++++++++
- .../selftests/bpf/progs/test_ringbuf_n.c      | 47 ++++++++++++++
- 3 files changed, 112 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_n.c
+Thanks,
 
-ChangeLog v1 -> v2:
- - replace CHECK() with ASSERT_EQ()
- - fix skel -> skel_n
- - drop unused "seq" field from struct sample
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index edc73f8f5aef..6332277edeca 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -455,7 +455,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
- LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
- 	trace_printk.c trace_vprintk.c map_ptr_kern.c 			\
- 	core_kern.c core_kern_overflow.c test_ringbuf.c			\
--	test_ringbuf_map_key.c
-+	test_ringbuf_n.c test_ringbuf_map_key.c
- 
- # Generate both light skeleton and libbpf skeleton for these
- LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.c \
-diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-index 48c5695b7abf..d59500d13a41 100644
---- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-@@ -13,6 +13,7 @@
- #include <linux/perf_event.h>
- #include <linux/ring_buffer.h>
- #include "test_ringbuf.lskel.h"
-+#include "test_ringbuf_n.lskel.h"
- #include "test_ringbuf_map_key.lskel.h"
- 
- #define EDONE 7777
-@@ -60,6 +61,7 @@ static int process_sample(void *ctx, void *data, size_t len)
- }
- 
- static struct test_ringbuf_map_key_lskel *skel_map_key;
-+static struct test_ringbuf_n_lskel *skel_n;
- static struct test_ringbuf_lskel *skel;
- static struct ring_buffer *ringbuf;
- 
-@@ -326,6 +328,66 @@ static void ringbuf_subtest(void)
- 	test_ringbuf_lskel__destroy(skel);
- }
- 
-+/*
-+ * Test ring_buffer__consume_n() by producing N_TOT_SAMPLES samples in the ring
-+ * buffer, via getpid(), and consuming them in chunks of N_SAMPLES.
-+ */
-+#define N_TOT_SAMPLES	32
-+#define N_SAMPLES	4
-+
-+/* Sample value to verify the callback validity */
-+#define SAMPLE_VALUE	42L
-+
-+static int process_n_sample(void *ctx, void *data, size_t len)
-+{
-+	struct sample *s = data;
-+
-+	ASSERT_EQ(s->value, SAMPLE_VALUE, "sample_value");
-+
-+	return 0;
-+}
-+
-+static void ringbuf_n_subtest(void)
-+{
-+	int err, i;
-+
-+	skel_n = test_ringbuf_n_lskel__open();
-+	if (!ASSERT_OK_PTR(skel_n, "test_ringbuf_n_lskel__open"))
-+		return;
-+
-+	skel_n->maps.ringbuf.max_entries = getpagesize();
-+	skel_n->bss->pid = getpid();
-+
-+	err = test_ringbuf_n_lskel__load(skel_n);
-+	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__load"))
-+		goto cleanup;
-+
-+	ringbuf = ring_buffer__new(skel_n->maps.ringbuf.map_fd,
-+				   process_n_sample, NULL, NULL);
-+	if (!ASSERT_OK_PTR(ringbuf, "ring_buffer__new"))
-+		goto cleanup;
-+
-+	err = test_ringbuf_n_lskel__attach(skel_n);
-+	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__attach"))
-+		goto cleanup_ringbuf;
-+
-+	/* Produce N_TOT_SAMPLES samples in the ring buffer by calling getpid() */
-+	skel_n->bss->value = SAMPLE_VALUE;
-+	for (i = 0; i < N_TOT_SAMPLES; i++)
-+		syscall(__NR_getpgid);
-+
-+	/* Consume all samples from the ring buffer in batches of N_SAMPLES */
-+	for (i = 0; i < N_TOT_SAMPLES; i += err) {
-+		err = ring_buffer__consume_n(ringbuf, N_SAMPLES);
-+		ASSERT_EQ(err, N_SAMPLES, "rb_consume");
-+	}
-+
-+cleanup_ringbuf:
-+	ring_buffer__free(ringbuf);
-+cleanup:
-+	test_ringbuf_n_lskel__destroy(skel_n);
-+}
-+
- static int process_map_key_sample(void *ctx, void *data, size_t len)
- {
- 	struct sample *s;
-@@ -384,6 +446,8 @@ void test_ringbuf(void)
- {
- 	if (test__start_subtest("ringbuf"))
- 		ringbuf_subtest();
-+	if (test__start_subtest("ringbuf_n"))
-+		ringbuf_n_subtest();
- 	if (test__start_subtest("ringbuf_map_key"))
- 		ringbuf_map_key_subtest();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_n.c b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
-new file mode 100644
-index 000000000000..8669eb42dbe0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
-@@ -0,0 +1,47 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2024 Andrea Righi <andrea.righi@canonical.com>
-+
-+#include <linux/bpf.h>
-+#include <sched.h>
-+#include <unistd.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define TASK_COMM_LEN 16
-+
-+struct sample {
-+	int pid;
-+	long value;
-+	char comm[16];
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+} ringbuf SEC(".maps");
-+
-+int pid = 0;
-+long value = 0;
-+
-+SEC("fentry/" SYS_PREFIX "sys_getpgid")
-+int test_ringbuf_n(void *ctx)
-+{
-+	int cur_pid = bpf_get_current_pid_tgid() >> 32;
-+	struct sample *sample;
-+
-+	if (cur_pid != pid)
-+		return 0;
-+
-+	sample = bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
-+	if (!sample)
-+		return 0;
-+
-+	sample->pid = pid;
-+	sample->value = value;
-+	bpf_get_current_comm(sample->comm, sizeof(sample->comm));
-+
-+	bpf_ringbuf_submit(sample, 0);
-+
-+	return 0;
-+}
--- 
-2.43.0
-
+-Robert
 
