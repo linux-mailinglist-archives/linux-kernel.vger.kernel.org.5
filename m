@@ -1,105 +1,209 @@
-Return-Path: <linux-kernel+bounces-159064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BF3E8B28D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:13:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 796D98B28D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:13:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1888C283364
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:13:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 301ED285237
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:13:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E68F1514DE;
-	Thu, 25 Apr 2024 19:13:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E569314F9EA;
+	Thu, 25 Apr 2024 19:13:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D3cZYF/4"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="klBBUnKM"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31260381D9
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 19:12:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A53D1149E0A;
+	Thu, 25 Apr 2024 19:13:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714072379; cv=none; b=TGRl8uKsXxYYIqH3u5+nLZcykfCktSwWO2u/L0QzNFM3lx8VKtYn+6ZgqKxEktVTFmIE4N4qEsSM5fZAoTGqKekUKVS10nMaX7py4chuRL9NtyVdfZG4QN9UpqAdzbd3U5CBL1vZeVf/ojswKm1TZEzGpusSnJdcAknZVhTiubs=
+	t=1714072405; cv=none; b=OH4itRXSKdO5kTgXj8tnCQfFUO41UNrNAqsF+t2W/6bDdwNTm30hQRKxohn6oFFFl7z591vFPwM7Rym4ZfLVHQCinAbGgmR8vYhNKTyQQ6gmX4XMWz1Lr6R9H3Sd4diUgjLjb3S0yaohxA6Y2DqJ8Ep/cw/3XK2Tq7a/k1QFSPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714072379; c=relaxed/simple;
-	bh=eQKDUIkbcqXJvPnx+i1N+rPtXZr4oQXNIGA0HlIQiyg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YSht4wjaX4dc/ce3koDwD4PgL6nt9QNq34u+W9HZlGAP2PAxVWt3GM5QqQXURyWgQ2ShEWzcFdxcUAo+IaRgIf6Rv3V/aheSaQdFiDlXaPalhQ9PuT8yOwce1eSleWpZpANbKKRBx5D8ifWpAcZ3kxgq9sHzxNc74ynC74rWDIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D3cZYF/4; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714072378; x=1745608378;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=eQKDUIkbcqXJvPnx+i1N+rPtXZr4oQXNIGA0HlIQiyg=;
-  b=D3cZYF/4cpIoPuHlxA/1xYooHvxn6Q7wJ7dCjpZDcwEwTUkmG+58FvmB
-   d8pUjJskCk1pg7UmHCPVueuz+Y00q3Of8fvrcflkCguSyoTpN6VQkYGrQ
-   ytubdQq0+Y8ecSPByP36ez7D9ycutKeOgYYC+ViACSayLqBeeeuVpOha4
-   TA11ej7Bhi2Ot8lkyVz8AxsvqHbPkbUAFr5slj9UqogRb88p3aWDpReeS
-   hBXeaKdhfCmK0mtd3FM9JJKtoI4vL9exPHkpPhu3sCQBKdYlVv9nihbZk
-   1GRxrl9H77UVsozzjP698M9Eb7QOUMoTTZjHEVAad1GO7LNeAUj9RS1Yf
-   Q==;
-X-CSE-ConnectionGUID: QxywdN3wTu2XueyJ2LmpRA==
-X-CSE-MsgGUID: y3qyjebXQwyrv0QUHb0PvQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="9947183"
-X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
-   d="scan'208";a="9947183"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 12:12:57 -0700
-X-CSE-ConnectionGUID: df/CsiBnRgmg2dLfU5Xx2g==
-X-CSE-MsgGUID: eL3v1+bjRhWyfjtKO+H61w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
-   d="scan'208";a="29819636"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 12:12:52 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1s04WT-000000016tI-1sdd;
-	Thu, 25 Apr 2024 22:12:45 +0300
-Date: Thu, 25 Apr 2024 22:12:45 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [v1,1/3] drm/panel: ili9341: Correct use of device property APIs
-Message-ID: <ZiqrLfezhns4UycR@smile.fi.intel.com>
-References: <20240425142706.2440113-2-andriy.shevchenko@linux.intel.com>
- <c2d41916-0b6c-43b5-98eb-514eb0511f84@linux.dev>
- <ce6a480d-80b3-46b0-a32d-26bc6480d02f@linux.dev>
+	s=arc-20240116; t=1714072405; c=relaxed/simple;
+	bh=ZfmeYQkdz4pqX40RCWQIxQEoJzdI8OcUQe8qNHlrkrQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=UJWErnSReyBfb/48pYwQE6uy8P346bHI4zF2wY+ALG/C3CUCrIB5lys6/l5rBZYJPow9NpIqVWo31MMjzkbtcwfT7kukGSPI9tJ4fmSMfO9gjBa8YzELyg6PiM9hfTeD6xcRwIA3NMe0nFnNWZ1nV3huLSyIOvCK6TlTXZDdIO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=klBBUnKM; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43PEPg6H014184;
+	Thu, 25 Apr 2024 19:12:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=RYsoHTH1ui6IQhPYrmkWf3V3oM1DczC+i9q4NrDz1dE=; b=kl
+	BBUnKMyVxlmRxyJ3k/ohDJIq3V1e0IJ8OXpDkllIdrhNrj3TiSRBdhHHBqGHYBCE
+	BbIMJwszn1mn75xHsu5gmKIZrd5UdX+yGm0X1a+0I2d7V5z77AltsskWwGrix2di
+	vSuq+PebEkf9Kd1uUkc5xsUDD6GBqy1cZvG090IidK9SBNZfWT00PeiHy9keU2Lq
+	u+mvnL0lR+4BUvfy4ntfEzqQvw3bdeCRwH1lYWMxi/mmkbBr5sMYfo9NaAS5Y/C8
+	rqPvaUSAQxDypS/gTG8rsxDRd49yTHm3pi2mCUpQwuQ6sCP3R28nUPeOxJft2eab
+	0bV4FmLQDpz1rz1OoN1A==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqrwwrpdp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 19:12:58 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43PJCv3N016396
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 19:12:57 GMT
+Received: from [10.46.19.239] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 25 Apr
+ 2024 12:12:53 -0700
+Message-ID: <76cc402a-9513-433f-b40b-f3ae93c6d65f@quicinc.com>
+Date: Thu, 25 Apr 2024 12:12:52 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ce6a480d-80b3-46b0-a32d-26bc6480d02f@linux.dev>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH bpf-next v5 2/2] net: Add additional bit to support
+ clockid_t timestamp type
+Content-Language: en-US
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
+        "Martin
+ KaFai Lau" <martin.lau@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+CC: <kernel@quicinc.com>
+References: <20240424222028.1080134-1-quic_abchauha@quicinc.com>
+ <20240424222028.1080134-3-quic_abchauha@quicinc.com>
+ <662a6be8aed1a_1de39b2946c@willemb.c.googlers.com.notmuch>
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+In-Reply-To: <662a6be8aed1a_1de39b2946c@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ZmBQSq31OOhXWknDvtwH9ICT9aW7HGJ8
+X-Proofpoint-ORIG-GUID: ZmBQSq31OOhXWknDvtwH9ICT9aW7HGJ8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-25_19,2024-04-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
+ mlxscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 priorityscore=1501 phishscore=0
+ mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2404010003 definitions=main-2404250138
 
-On Fri, Apr 26, 2024 at 02:53:22AM +0800, Sui Jingfeng wrote:
-> On 2024/4/26 02:08, Sui Jingfeng wrote:
-
-Are you speaking to yourself? I'm totally lost.
-
-Please, if you want to give a constructive feedback, try to understand
-the topic from different aspects and then clearly express it.
-
--- 
-With Best Regards,
-Andy Shevchenko
 
 
+On 4/25/2024 7:42 AM, Willem de Bruijn wrote:
+> Abhishek Chauhan wrote:
+>> tstamp_type is now set based on actual clockid_t compressed
+>> into 2 bits.
+>>
+>> To make the design scalable for future needs this commit bring in
+>> the change to extend the tstamp_type:1 to tstamp_type:2 to support
+>> other clockid_t timestamp.
+>>
+>> We now support CLOCK_TAI as part of tstamp_type as part of this
+>> commit with exisiting support CLOCK_MONOTONIC and CLOCK_REALTIME.
+>>
+>> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+>> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+>> ---
+> 
+>> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+>> index e464d0ebc9c1..3ad0de07d261 100644
+>> --- a/include/linux/skbuff.h
+>> +++ b/include/linux/skbuff.h
+>> @@ -711,6 +711,8 @@ typedef unsigned char *sk_buff_data_t;
+>>  enum skb_tstamp_type {
+>>  	SKB_CLOCK_REALTIME,
+>>  	SKB_CLOCK_MONOTONIC,
+>> +	SKB_CLOCK_TAI,
+>> +	__SKB_CLOCK_MAX = SKB_CLOCK_TAI,
+>>  };
+>>  
+>>  /**
+>> @@ -831,8 +833,8 @@ enum skb_tstamp_type {
+>>   *	@decrypted: Decrypted SKB
+>>   *	@slow_gro: state present at GRO time, slower prepare step required
+>>   *	@tstamp_type: When set, skb->tstamp has the
+>> - *		delivery_time in mono clock base Otherwise, the
+>> - *		timestamp is considered real clock base.
+>> + *		delivery_time in mono clock base or clock base of skb->tstamp.
+> 
+> drop "in mono clock base or "
+> 
+Noted 
+>> + *		Otherwise, the timestamp is considered real clock base
+> 
+Noted 
+> drop this: whenever in realtime clock base, tstamp_type is zero, so
+> the above shorter statement always holds.
+> 
+>>   *	@napi_id: id of the NAPI struct this skb came from
+>>   *	@sender_cpu: (aka @napi_id) source CPU in XPS
+>>   *	@alloc_cpu: CPU which did the skb allocation.
+>> @@ -960,7 +962,7 @@ struct sk_buff {
+>>  	/* private: */
+>>  	__u8			__mono_tc_offset[0];
+>>  	/* public: */
+>> -	__u8			tstamp_type:1;	/* See skb_tstamp_type */
+>> +	__u8			tstamp_type:2;	/* See skb_tstamp_type */
+>>  #ifdef CONFIG_NET_XGRESS
+>>  	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
+>>  	__u8			tc_skip_classify:1;
+>> @@ -1090,15 +1092,17 @@ struct sk_buff {
+>>  #endif
+>>  #define PKT_TYPE_OFFSET		offsetof(struct sk_buff, __pkt_type_offset)
+>>  
+>> -/* if you move tc_at_ingress or mono_delivery_time
+>> +/* if you move tc_at_ingress or tstamp_type:2
+>>   * around, you also must adapt these constants.
+>>   */
+>>  #ifdef __BIG_ENDIAN_BITFIELD
+>> -#define SKB_MONO_DELIVERY_TIME_MASK	(1 << 7)
+>> -#define TC_AT_INGRESS_MASK		(1 << 6)
+>> +#define SKB_TSTAMP_TYPE_MASK		(3 << 6)
+>> +#define SKB_TSTAMP_TYPE_RSH		(6)
+>> +#define TC_AT_INGRESS_RSH		(5)
+> 
+> I had to find BPF_RSH to understand this abbreviation.
+> 
+> use SHIFT instead of RSH, as that is so domain specific?
+> 
+Noted! I will use complete words instead of abbreviations
+>> +#define TC_AT_INGRESS_MASK		(1 << 5)
+>>  #else
+>> -#define SKB_MONO_DELIVERY_TIME_MASK	(1 << 0)
+>> -#define TC_AT_INGRESS_MASK		(1 << 1)
+>> +#define SKB_TSTAMP_TYPE_MASK		(3)
+>> +#define TC_AT_INGRESS_MASK		(1 << 2)
+>>  #endif
+>>  #define SKB_BF_MONO_TC_OFFSET		offsetof(struct sk_buff, __mono_tc_offset)
+>>  
+> 
+>> -	if (skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_MONO) {
+>> +	if (skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_MONO ||
+>> +		  skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_TAI) {
+> 
+> Peculiar indentation?
+> 
+Let me check why the indentation here is messed up. Ideally i run checkpatch(shows 0 errors or warnings)
+ and also check before raising a patch. Internally it looks good but on the patch it shows differently. 
+
+> Just FYI that I'm not the best person to review the BPF part.
+> Thankfully Martin is helping you with that.
+> 
+I will wait for comments from Martin as well. 
+> 
+> 
 
