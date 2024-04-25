@@ -1,57 +1,59 @@
-Return-Path: <linux-kernel+bounces-159366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BDEA8B2DBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:47:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C7008B2DC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:49:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8370B22479
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:47:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 582552819A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:49:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2F4156988;
-	Thu, 25 Apr 2024 23:47:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC30156988;
+	Thu, 25 Apr 2024 23:49:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="YEheUZTh"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="eKTJZctI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E87B014E2EF;
-	Thu, 25 Apr 2024 23:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE4E14E2EF;
+	Thu, 25 Apr 2024 23:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714088840; cv=none; b=MGZzgu2vqTqlFrhYzXccjgyulEjeFsgdOaeliIcz3P0YKTS68NJG6Wl9UJRCteOoaK3O47JBUJU6fzHhNmefPmOEj/nLpwbzYkPY/LCujQfvwAK4llQ/Km5yv+ftxk1kiH9khGlzMDV2zYvfkMe2kiO6hIhsmCPRO7OD8XPTMPo=
+	t=1714088959; cv=none; b=pd0segRU15R1sGugpITR15DlyJP8GH7cGHqK+aVtA2UON0iS9s9WQPFcRliI1Thy8W56qNXqIvhi34MRiH359kFkVpTPZDepPF+QeUabeLtpL0RbqkqvheTQVF9il9yOr0gjnZine4CpxXzSgX6r70stiMCKBRka5oK+XJF+VrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714088840; c=relaxed/simple;
-	bh=beAuVYStInSqKxnLk3E/kVyZbTYG4nix+yBzCApaJDE=;
+	s=arc-20240116; t=1714088959; c=relaxed/simple;
+	bh=xThSuDa7B7/IrHBAvCAlq+cuUm1QUymQXFLtZ01/yBY=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=ShiRzrx8lgtc0XxH1+VenGSO2w9betFX8hylwGvEltPdghKkZkJR6HsadIoWIZS9DkRZVYrzuR3dmTRxd+QDEifWbRrxVhVRgI3NB+4kOmAGiWM1b0WoCb5/N4V6tj4KSGMbrkcms38mKiywtu5OAHD0kUhSiyHlP2SNHGhgCxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=YEheUZTh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2102FC113CC;
-	Thu, 25 Apr 2024 23:47:19 +0000 (UTC)
+	 Mime-Version:Content-Type; b=WcbUF4XJ0jpyaWvwliutNzGGm72U5enGEp0KWvk3nDV6WMf6O7FWpX995iqooaMNAbBC9NRBMau5KETgwi7k7ShOqU8XMNYYqafy8GulmOx2K8Otu+s2GxJb0hfZ/zY0G57Onzu2t8zLI9BhyN8HsB3qS85EqwyttC02kTW+who=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=eKTJZctI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DB97C113CC;
+	Thu, 25 Apr 2024 23:49:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1714088839;
-	bh=beAuVYStInSqKxnLk3E/kVyZbTYG4nix+yBzCApaJDE=;
+	s=korg; t=1714088958;
+	bh=xThSuDa7B7/IrHBAvCAlq+cuUm1QUymQXFLtZ01/yBY=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=YEheUZThVQmfzJ+cH66dpEmbGfQvhm2WHLxdoorIxuxKL/2z1s5iFoXnh7sMjkCDh
-	 vPzE0Ppm0ZZMYyp5msXChAJq9xRrdbLEeS6ODAb0ttQzkvmtk09NiOq8pyzxzs01IF
-	 HF9ukneK6b5kQgqee9SDb/kWWL4Y4+C41KBEi1o4=
-Date: Thu, 25 Apr 2024 16:47:18 -0700
+	b=eKTJZctIgAnNhEvYPY2857R1t3FtNk6ED3TJMxHDTM4ggwp1v4bCx0sn76PwQ1tM6
+	 a57YFhEymsUHaJEpgUqPEhS82jzBH4j1KLB5q2RRj2NtNf42wkSRgJI4tDt+9jXfhR
+	 6T1kjJKoagm96u759c62opUlD5ELcHmMgxoTiv04=
+Date: Thu, 25 Apr 2024 16:49:17 -0700
 From: Andrew Morton <akpm@linux-foundation.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, Matthew Wilcox
- <willy@infradead.org>, Suren Baghdasaryan <surenb@google.com>,
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, Kees Cook
+ <keescook@chromium.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, David
+ Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin
+ <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
  linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] alloc_tag: Tighten file permissions on /proc/allocinfo
-Message-Id: <20240425164718.e8e187dd0c5b0a87371d8316@linux-foundation.org>
-In-Reply-To: <202404251532.F8860056AE@keescook>
-References: <20240425200844.work.184-kees@kernel.org>
-	<w6nbxvxt3itugrvtcvnayj5ducoxifwbffd7qh6vcastw77mse@2ugphwusgttz>
-	<ZirCbPR1XwX2WJSX@casper.infradead.org>
-	<64cngpnwyav4odustofs6hgsh7htpc5nu23tx4lb3vxaltmqf2@sxn63f2gg4gu>
-	<202404251532.F8860056AE@keescook>
+Subject: Re: [PATCH] mm/slub: Avoid recursive loop with kmemleak
+Message-Id: <20240425164917.8c9603387b4cce11121024a8@linux-foundation.org>
+In-Reply-To: <CAJuCfpEMK-6+1CUDfiiKLGLfTEomJGjaeHOfsWZZBdaJ6DcvFQ@mail.gmail.com>
+References: <20240425205516.work.220-kees@kernel.org>
+	<ebc6pcoq4cle3ge526ch6q5hz2vvphmgwu2yqdveypjm24pa3b@cwsggjnoepaq>
+	<CAJuCfpEMK-6+1CUDfiiKLGLfTEomJGjaeHOfsWZZBdaJ6DcvFQ@mail.gmail.com>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -62,27 +64,27 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 25 Apr 2024 15:42:30 -0700 Kees Cook <keescook@chromium.org> wrote:
+On Thu, 25 Apr 2024 14:30:55 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
 
-> > The concern about leaking image layout could be addressed by sorting the
-> > output before returning to userspace.
+> > > --- a/mm/kmemleak.c
+> > > +++ b/mm/kmemleak.c
+> > > @@ -463,7 +463,7 @@ static struct kmemleak_object *mem_pool_alloc(gfp_t gfp)
+> > >
+> > >       /* try the slab allocator first */
+> > >       if (object_cache) {
+> > > -             object = kmem_cache_alloc(object_cache, gfp_kmemleak_mask(gfp));
+> > > +             object = kmem_cache_alloc_noprof(object_cache, gfp_kmemleak_mask(gfp));
+> >
+> > What do these get accounted to, or does this now pop a warning with
+> > CONFIG_MEM_ALLOC_PROFILING_DEBUG?
 > 
-> It's trivial to change permissions from the default 0400 at boot time.
-> It can even have groups and ownership changed, etc. This is why we have
-> per-mount-namespace /proc instances:
-> 
-> # chgrp sysmonitor /proc/allocinfo
-> # chmod 0440 /proc/allocinfo
-> 
-> Poof, instant role-based access control. :)
+> Thanks for the fix, Kees!
+> I'll look into this recursion more closely to see if there is a better
+> way to break it. As a stopgap measure seems ok to me. I also think
+> it's unlikely that one would use both tracking mechanisms on the same
+> system.
 
-Conversely, the paranoid could set it to 0400 at boot also.
-
-> I'm just trying to make the _default_ safe.
-
-Agree with this.
-
-Semi-seriously, how about we set the permissions to 0000 and force
-distributors/users to make a decision.
+I'd really like to start building mm-stable without having to route
+around memprofiling.  How about I include Kees's patch in that for now?
 
 
