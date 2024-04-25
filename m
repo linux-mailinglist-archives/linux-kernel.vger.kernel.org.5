@@ -1,289 +1,130 @@
-Return-Path: <linux-kernel+bounces-158301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C20C8B1E0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:32:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D64828B1E11
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:33:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FD201C222D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:32:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9881928293A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:33:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FBC384DE6;
-	Thu, 25 Apr 2024 09:32:39 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 951F528F7;
-	Thu, 25 Apr 2024 09:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23AA184FCD;
+	Thu, 25 Apr 2024 09:33:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lJ3D6S2Z"
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A99B84FBF
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:33:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714037558; cv=none; b=Hu439UqBATg02B8PDPyW6G9oxuqMn4ZG8hDWedtaT8bGzrLT81fklduBYwNcOpSF9MjkCI55YHwkTZeJLK0eSXi09cFXiq/XcokpOZD2RIIEXrdLHlzr/UXuNrHYr46D5IGbWtg3lfykhCS/ECC1ilGNHzptYBzCB8tAtWpBRcY=
+	t=1714037611; cv=none; b=FTnFdf7V1YjvsuPVoCV7g+q+CvrRqyNfAaDQlLQ2VYHcJLJdepnJgQRcHonj29v2yNKALFWazf1HZzlqX4Mzdh8AICR/ihuV6lRCEgQV5BbliIhhAgJtuLLsvLt13ZvV8tf8C/h1MMdaX5qAYzBOHwNPG+jGUG2wMz9aCuU4bqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714037558; c=relaxed/simple;
-	bh=vAAPcR08Lfk7tNRCkcxaWVf2F2/2MEJYOvGihhU5akI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q91twtLFLShnWtTkVkpeu1fv9ZJ2rzagpPOHLDmYItSicRtyJlynM9LV6xUS2Z+V8zwJM0Vh8V6uFMdHBPd2Ur6oBnomFWedo+VadzUuc6L4SnB0PW86EIBk6nuHq6IlaL9UGIoR9Cz4oPYPMomEZf2rGN3JnOnxMes7aH21Xkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A12E1007;
-	Thu, 25 Apr 2024 02:32:58 -0700 (PDT)
-Received: from [192.168.1.216] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3232C3F64C;
-	Thu, 25 Apr 2024 02:32:27 -0700 (PDT)
-Message-ID: <1d360b13-ea7a-4d13-bb16-ab3d0688ddd2@arm.com>
-Date: Thu, 25 Apr 2024 10:32:25 +0100
+	s=arc-20240116; t=1714037611; c=relaxed/simple;
+	bh=jsWz/PnALIkdN9qUdDwNKDeU0qNvhFKiyrmn/dMkRhk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XwDfnTPF26YutEcvfqOmpB0WHI/8VBReCbb1D+as7x/A1MaMGlfseUbAj9HZcwL3c90OHYIKs8uT3aEP/aUt1J+7rja8zy1BVDK2P0l6Uoe2s4OKNTNkiaU9eOf47YoMb3ivPC3ZvGxpjh1+ichdxkgEburTanTNI7EeQJtDF9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lJ3D6S2Z; arc=none smtp.client-ip=209.85.222.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7e61a25900cso295784241.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 02:33:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714037609; x=1714642409; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0g8AoNgNK5FpEulQUEfO2DSIFwhKhldAuDagIIonV0I=;
+        b=lJ3D6S2ZVjfVPfaSPDybSMArh7WEVgVxmJsLNyrZ2EwotLtHcAu2dvTZBxG/6iz1AZ
+         ARHTMzW0pWEwToS/UtBMIyiNElsu8MX20CBilt6k3NamxzVsAsFhgQEE7lZmWEK0pYgY
+         rj8TEqx1DZu05lU5D4VYmmttfCBwSHQGmuRjs2gZqB/k64DuQVAykdjhDRyy1WKOHW5v
+         4Caa76J/hBhB7eKpwO1YdbfL2hSer16w3zLObexh3ANlWYxenNENWF7GFrE8oWbHPF5X
+         cDoj3j1LmROMQDNOiLZYXjwYtYKuxRrW3ItZWQxznnvG49N9SBpMuSF/22ZKgZkfutZc
+         Wy7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714037609; x=1714642409;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0g8AoNgNK5FpEulQUEfO2DSIFwhKhldAuDagIIonV0I=;
+        b=oYDEMh87XVq/UMiPKdRWt7bw3h+i9H6OI9sxyTx75qEiLf+qZ8rgtWOpYWzNNNZPzx
+         8ZdtB3VcDDmSk9WM/gJNn5vOZ/BCrDhNu6m+JIejeJg9HVk2h81YiBOQmh+3KV/vXBtP
+         yX09RumTQ6H6o+pDHpO01698KCoHuFNhyYTo5fOXyqeInAXLtymQGphdnbUjbmKtfizZ
+         ibsBjPpVDkp9qVMJ61DiMrJCrVwSpkZ2Y96oG8RrynLGwoHcrEzMm2WQai5jUcb7Lyf7
+         1bCkfZ8or7xdkOBWpOdLLP83f3aH6iLOaAFPhz7K27+tdt1Y5MeWcXPpwOHXBfXl18fb
+         eeuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVMdZX2XwIfai58Xyq0H5D//f7pbIuqvjvXoVXYTa1DDQUO8M/uZ4oSfvz2h4kvfhIqAjkxOS4kTQB7MmCeo7KGzrHZuH8j5krBhXJt
+X-Gm-Message-State: AOJu0YzuiEWBMIf+jzWjiKnXblxCcUkeGePdacq/2aTtYFuEiwuHCZ8J
+	UUg/8k8QCRSre4DsexgliBUMg1UOEZmPdkG71R+OWjh3kwQTLuw3lfqcShk+oHQg/N4uAi53TDP
+	QRHJYlBzNuqY3+J1yLZXjGsOLsxzz9cE9Ne/a
+X-Google-Smtp-Source: AGHT+IFCvc0P3gNXdvnyCjs31aqeAWygOeIvfIkXydkJMxbuoBUSKjXhsNxdz1d3QA0O6jeJ/wXF1Kkwtu8TWptzKAM=
+X-Received: by 2002:a67:f74a:0:b0:47c:11ba:fea9 with SMTP id
+ w10-20020a67f74a000000b0047c11bafea9mr4095784vso.23.1714037608742; Thu, 25
+ Apr 2024 02:33:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [EXTERNAL] Re: [PATCH v7 5/7] coresight: tmc: Add support for
- reading crash data
-To: Linu Cherian <lcherian@marvell.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Sunil Kovvuri Goutham <sgoutham@marvell.com>,
- George Cherian <gcherian@marvell.com>,
- Anil Kumar Reddy H <areddy3@marvell.com>, Tanmay Jagdale
- <tanmay@marvell.com>, "mike.leach@linaro.org" <mike.leach@linaro.org>,
- "leo.yan@linaro.org" <leo.yan@linaro.org>
-References: <20240307033625.325058-1-lcherian@marvell.com>
- <20240307033625.325058-6-lcherian@marvell.com>
- <d707430f-00ee-4427-a9e4-6e42bc5b6aa9@arm.com>
- <PH0PR18MB5002D42E980EDF6317051B77CE092@PH0PR18MB5002.namprd18.prod.outlook.com>
- <a7b8d15f-5bcf-4774-a5b2-eb95d6174c43@arm.com>
- <PH0PR18MB5002CFB5DD77312CE0337896CE132@PH0PR18MB5002.namprd18.prod.outlook.com>
- <02191345-7048-4839-aecf-0e34479d49ef@arm.com>
- <PH0PR18MB5002E428481F88D92EA9FA22CE172@PH0PR18MB5002.namprd18.prod.outlook.com>
-Content-Language: en-US
-From: James Clark <james.clark@arm.com>
-In-Reply-To: <PH0PR18MB5002E428481F88D92EA9FA22CE172@PH0PR18MB5002.namprd18.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240425092859.3370297-1-glider@google.com>
+In-Reply-To: <20240425092859.3370297-1-glider@google.com>
+From: Marco Elver <elver@google.com>
+Date: Thu, 25 Apr 2024 11:32:52 +0200
+Message-ID: <CANpmjNPnn-1pr-Sz=xtQB6FwNrF5HJL_X0SMHL8HdMcYohD9ew@mail.gmail.com>
+Subject: Re: [PATCH] kmsan: compiler_types: declare __no_sanitize_or_inline
+To: Alexander Potapenko <glider@google.com>
+Cc: dvyukov@google.com, akpm@linux-foundation.org, ojeda@kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	syzbot+355c5bb8c1445c871ee8@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 
+On Thu, 25 Apr 2024 at 11:29, Alexander Potapenko <glider@google.com> wrote:
+>
+> It turned out that KMSAN instruments READ_ONCE_NOCHECK(), resulting in
+> false positive reports, because __no_sanitize_or_inline enforced inlining.
+>
+> Properly declare __no_sanitize_or_inline under __SANITIZE_MEMORY__,
+> so that it does not inline the annotated function.
 
+Maybe worth noting that this is only a problem for __always_inline,
+since that is inlining-by-force, and from the compiler's point of view
+WAI.
 
-On 25/04/2024 03:07, Linu Cherian wrote:
-> Hi James,
-> 
->> -----Original Message-----
->> From: James Clark <james.clark@arm.com>
->> Sent: Monday, April 22, 2024 1:48 PM
->> To: Linu Cherian <lcherian@marvell.com>; Suzuki K Poulose
->> <suzuki.poulose@arm.com>
->> Cc: linux-arm-kernel@lists.infradead.org; coresight@lists.linaro.org; linux-
->> kernel@vger.kernel.org; robh+dt@kernel.org;
->> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
->> devicetree@vger.kernel.org; Sunil Kovvuri Goutham
->> <sgoutham@marvell.com>; George Cherian <gcherian@marvell.com>; Anil
->> Kumar Reddy H <areddy3@marvell.com>; Tanmay Jagdale
->> <tanmay@marvell.com>; mike.leach@linaro.org; leo.yan@linaro.org
->> Subject: [EXTERNAL] Re: [PATCH v7 5/7] coresight: tmc: Add support for
->> reading crash data
->>
->> Prioritize security for external emails: Confirm sender and content safety
->> before clicking links or opening attachments
->>
->> ----------------------------------------------------------------------
->>
->>
->> On 21/04/2024 03:49, Linu Cherian wrote:
->>> Hi James,
->>>
->>>> -----Original Message-----
->>>> From: James Clark <james.clark@arm.com>
->>>> Sent: Monday, April 15, 2024 2:59 PM
->>>> To: Linu Cherian <lcherian@marvell.com>; Suzuki K Poulose
->>>> <suzuki.poulose@arm.com>
->>>> Cc: linux-arm-kernel@lists.infradead.org; coresight@lists.linaro.org;
->>>> linux- kernel@vger.kernel.org; robh+dt@kernel.org;
->>>> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
->>>> devicetree@vger.kernel.org; Sunil Kovvuri Goutham
->>>> <sgoutham@marvell.com>; George Cherian <gcherian@marvell.com>;
->> Anil
->>>> Kumar Reddy H <areddy3@marvell.com>; Tanmay Jagdale
->>>> <tanmay@marvell.com>; mike.leach@linaro.org; leo.yan@linaro.org
->>>> Subject: Re: [EXTERNAL] Re: [PATCH v7 5/7] coresight: tmc: Add
->>>> support for reading crash data
->>>>
->>>>
->>>>
->>>> On 15/04/2024 05:01, Linu Cherian wrote:
->>>>> Hi James,
->>>>>
->>>>>> -----Original Message-----
->>>>>> From: James Clark <james.clark@arm.com>
->>>>>> Sent: Friday, April 12, 2024 3:36 PM
->>>>>> To: Linu Cherian <lcherian@marvell.com>; Suzuki K Poulose
->>>>>> <suzuki.poulose@arm.com>
->>>>>> Cc: linux-arm-kernel@lists.infradead.org;
->>>>>> coresight@lists.linaro.org;
->>>>>> linux- kernel@vger.kernel.org; robh+dt@kernel.org;
->>>>>> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
->>>>>> devicetree@vger.kernel.org; Sunil Kovvuri Goutham
->>>>>> <sgoutham@marvell.com>; George Cherian <gcherian@marvell.com>;
->>>> Anil
->>>>>> Kumar Reddy H <areddy3@marvell.com>; Tanmay Jagdale
->>>>>> <tanmay@marvell.com>; mike.leach@linaro.org; leo.yan@linaro.org
->>>>>> Subject: [EXTERNAL] Re: [PATCH v7 5/7] coresight: tmc: Add support
->>>>>> for reading crash data
->>>>>>
->>>>>> Prioritize security for external emails: Confirm sender and content
->>>>>> safety before clicking links or opening attachments
->>>>>>
->>>>>> -------------------------------------------------------------------
->>>>>> --
->>>>>> -
->>>>>>
->>>>>>
->>>>>> On 07/03/2024 03:36, Linu Cherian wrote:
->>>>>>> * Introduce a new mode CS_MODE_READ_CRASHDATA for reading
->> trace
->>>>>>>   captured in previous crash/watchdog reset.
->>>>>>>
->>>>>>> * Add special device files for reading ETR/ETF crash data.
->>>>>>>
->>>>>>> * User can read the crash data as below
->>>>>>>
->>>>>>>   For example, for reading crash data from tmc_etf sink
->>>>>>>
->>>>>>>   #dd if=/dev/crash_tmc_etfXX of=~/cstrace.bin
->>>>>>>
->>>>>>> Signed-off-by: Anil Kumar Reddy <areddy3@marvell.com>
->>>>>>> Signed-off-by: Tanmay Jagdale <tanmay@marvell.com>
->>>>>>> Signed-off-by: Linu Cherian <lcherian@marvell.com>
->>>>>>> ---
->>>>>>> Changelog from v6:
->>>>>>> * Removed read_prevboot flag in sysfs
->>>>>>> * Added special device files for reading crashdata
->>>>>>> * Renamed CS mode READ_PREVBOOT to READ_CRASHDATA
->>>>>>> * Setting the READ_CRASHDATA mode is done as part of file open.
->>>>>>>
->>>>>>
->>>>>> [...]
->>>>>>
->>>>>>> @@ -619,6 +740,19 @@ static int tmc_probe(struct amba_device
->>>>>>> *adev,
->>>>>> const struct amba_id *id)
->>>>>>>  		coresight_unregister(drvdata->csdev);
->>>>>>>  	else
->>>>>>>  		pm_runtime_put(&adev->dev);
->>>>>>> +
->>>>>>> +	if (!is_tmc_reserved_region_valid(dev))
->>>>>>> +		goto out;
->>>>>>> +
->>>>>>> +	drvdata->crashdev.name =
->>>>>>> +		devm_kasprintf(dev, GFP_KERNEL, "%s_%s",
->> "crash",
->>>>>> desc.name);
->>>>>>> +	drvdata->crashdev.minor = MISC_DYNAMIC_MINOR;
->>>>>>> +	drvdata->crashdev.fops = &tmc_crashdata_fops;
->>>>>>> +	ret = misc_register(&drvdata->crashdev);
->>>>>>> +	if (ret)
->>>>>>> +		pr_err("%s: Failed to setup dev interface for
->> crashdata\n",
->>>>>>> +		       desc.name);
->>>>>>> +
->>>>>>
->>>>>> Is this all optional after the is_tmc_reserved_region_valid()?
->>>>>> Skipping to out seems to be more like an error condition, but in
->>>>>> this case it's not? Having it like this makes it more difficult to
->>>>>> add extra steps to the probe function. You could move it to a
->>>>>> function and flip
->>>> the condition which would be clearer:
->>>>>>
->>>>>
->>>>> Ack.
->>>>>
->>>>>>    if (is_tmc_reserved_region_valid(dev))
->>>>>>       register_crash_dev_interface(drvdata);
->>>>>>
->>>
->>> Did you meant changing the condition of "is_tmc_reserved_region_valid"
->> by "flip the condition".
->>> If yes, that’s not required IMHO, since the reserved region is still valid.
->>>
->>
->> By flip I mean remove the !. You had this:
->>
->>   	if (!is_tmc_reserved_region_valid(dev))
->> 		goto out;
->>
->> But instead you should put your registration code in a function, remove the !
->> and replace the goto with a function:
->>
->>     if (is_tmc_reserved_region_valid(dev))
->>         ret = register_crash_dev_interface(drvdata);
->>
->> Where register_crash_dev_interface() is everything you added in between
->> the goto and the out: label. The reason is that you've made it impossible to
->> extend the probe function with new behavior without having to understand
->> that this new bit must always come last. Otherwise new behavior would also
->> be skipped over if the reserved region doesn't exist.
->>
-> 
-> Thanks. That’s clear to me.
-> 
->>> IIUC, the idea here is to not to fail the tmc_probe due to an error
->>> condition in register_crash_dev_interface,  so that the normal condition is
->> not affected. Also the error condition can be notified to the user using a
->> pr_dbg / pr_err.
->>>
->>> Thanks.
->>>
->>
->> I'm not sure I follow exactly what you mean here, but for the one error
->> condition you are checking for on the call to misc_register() you can still
->> return that from the new function and check it in the probe.
-> 
-> Actually was trying to clarify that we may not want to fail the probe due to a failure in the register_crash_dev_interface, since the normal trace operations could continue without crash_dev interface.(Tracing with or without the reserved region doesn’t get affected as well).
->  Please see the changes below. That way the changes are simpler. 
-> 
-> 
-> @@ -507,6 +628,18 @@ static u32 tmc_etr_get_max_burst_size(struct device *dev)
->         return burst_size;
->  }
-> 
-> +static void register_crash_dev_interface(struct tmc_drvdata * drvdata,
-> +                                        const char *name)
-> +{
-> +       drvdata->crashdev.name =
-> +               devm_kasprintf(&drvdata->csdev->dev, GFP_KERNEL, "%s_%s", "crash", name);
-> +       drvdata->crashdev.minor = MISC_DYNAMIC_MINOR;
-> +       drvdata->crashdev.fops = &tmc_crashdata_fops;
-> +       if (misc_register(&drvdata->crashdev))
-> +               dev_dbg(&drvdata->csdev->dev,
-> +                       "Failed to setup user interface for crashdata\n");
-> +}
+> Reported-by: syzbot+355c5bb8c1445c871ee8@syzkaller.appspotmail.com
+> Signed-off-by: Alexander Potapenko <glider@google.com>
+
+Reviewed-by: Marco Elver <elver@google.com>
+
+> ---
+>  include/linux/compiler_types.h | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index 0caf354cb94b5..a6a28952836cb 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -278,6 +278,17 @@ struct ftrace_likely_data {
+>  # define __no_kcsan
+>  #endif
+>
+> +#ifdef __SANITIZE_MEMORY__
+> +/*
+> + * Similarly to KASAN and KCSAN, KMSAN loses function attributes of inlined
+> + * functions, therefore disabling KMSAN checks also requires disabling inlining.
+> + *
+> + * __no_sanitize_or_inline effectively prevents KMSAN from reporting errors
+> + * within the function and marks all its outputs as initialized.
+> + */
+> +# define __no_sanitize_or_inline __no_kmsan_checks notrace __maybe_unused
+> +#endif
 > +
->  static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
->  {
->         int ret = 0;
-> @@ -619,6 +752,10 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
->                 coresight_unregister(drvdata->csdev);
->         else
->                 pm_runtime_put(&adev->dev);
-> +
-> +       if (is_tmc_reserved_region_valid(dev))
-> +               register_crash_dev_interface(drvdata, desc.name);
-> +
->  out:
->         return ret;
->  }
-> 
-> Thanks.
-> Linu Cherian.
-
-Looks good to me!
+>  #ifndef __no_sanitize_or_inline
+>  #define __no_sanitize_or_inline __always_inline
+>  #endif
+> --
+> 2.44.0.769.g3c40516874-goog
+>
 
