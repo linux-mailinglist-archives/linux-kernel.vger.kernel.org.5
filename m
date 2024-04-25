@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-158903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 531298B267E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E4EC28B267F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:30:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F86E284849
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:30:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A101A284A23
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:30:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A79314D449;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F61414D457;
 	Thu, 25 Apr 2024 16:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uDkHDscP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eQDmqIgI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A6FC1EB5B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A6C21E877;
 	Thu, 25 Apr 2024 16:30:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714062633; cv=none; b=mIab+4AK7G9bXLibEw32xjFOAsxDgmTw5w/pu7o2WJy+At+9MuppC2Cy1lz09TO5kVMYC5fMCoUSZEKrzn1ve8dIsZGo47pmFJPAUM4yT4I2Gt9fMaxrsvlz8v2WQ5/5jKV87cjSzSHXwqD7zkAIjwJ3W5g05qzQGPJ4yuyIIWo=
+	t=1714062633; cv=none; b=fgx9kiQSXgXiHTVy6JadD5EBrMmdTW4ChCEctwYDClHObvtmb1H/8t9C2rTP0ir2xyiURCCti/iBrrCTJLkMq+FJSjav/NiUp0HSho8/8hgedd1GkRmYw68kpiSt9aST084WrDDHYjN5vOTCvAJxU28l4k0SY+zUmuzh0a9Ojec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714062633; c=relaxed/simple;
-	bh=jsV+g6dcp/pIHqii76sajx5QrBvzDbI+qZjPqKdiJd0=;
+	bh=BHCta2OxYcR8v7BuTv23WDtpEtEmrdZZfulRSy8cqDo=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=q9u6byww6sERN9y84Prv+ob1mkGn0RM9p5z0vdOERgwtS6qbkyto8xIs+LziMxf070y6MANrJMiSDE1igLQrOcAljVpodVmvAHQKFZy7l1atoS/3ZQDDmC69VKX09fqKOARWgc7+iksO8ukxNvSA6RSJscsmYY7GR8e1sufl8t0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uDkHDscP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 16B92C2BD10;
+	 In-Reply-To:To:Cc; b=hD6Nx4sX38eJcOtD1dHUC/u0gP5xbQAhpP5wXU18M2TW9F6z66dznyQEV4osS+jar3lCL7h0BIRaCj+dkssiAQ6CSPA0QgIXpT83tRvmOYZ1s5KBrUp9oCicJvfxLz6vVp7VCNulX8PVbp6AxarE2haWT3fSd44IcJZxR2jI+2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eQDmqIgI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1B61CC2BD11;
 	Thu, 25 Apr 2024 16:30:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1714062633;
-	bh=jsV+g6dcp/pIHqii76sajx5QrBvzDbI+qZjPqKdiJd0=;
+	bh=BHCta2OxYcR8v7BuTv23WDtpEtEmrdZZfulRSy8cqDo=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=uDkHDscPm4NVqXcNvLEVDtE0NMKO4lqqPrv2MlzVRfTZEE/mhaePesGRuT4JpQCSy
-	 /zk1xVQ8s8NrcPpkR3UQXZH9/GSuAl6SetXcBI4Qd/V3erkQYhn/lbSpx1ng5EOF/7
-	 wherGFQ2HpYMICMQBy9g3XYBmiS2MwDDfW+PHsJdunXOE4M93cFP/UEpXAnyzix0W2
-	 o5TwpGQDaeXZXoHQAi7bF9R4kyh88Xcm9sxFz9N5+6ytoTKIb+xEXWCjs7xLet/yok
-	 zKqwAL4fvEwZ/cbG4GLK9UtghvPIO0qeRvFlSKL4uCTlG9HAPAvDsOMkdchbrp1RMG
-	 6iINxv+Hg4ZMg==
+	b=eQDmqIgIMgq3ofNEMQUolGl4aNgGsMCSYY77LXfM0Esf+oHkpYUFXPQJ0MQzaiWz4
+	 tmSHtiOR0M1ixGr2vvEGGQJEw59VxB3NcZOV+Yu23gWAoltnonwpDp7wK+mbasaFuG
+	 /eLMrUAwASwu+BUC4SkwFhlMGaIFxPpletAtbGlNXqHGczYkjgFhOxfSFWrE7DVTgQ
+	 ywk5V5eSs7BgWGPAPp7+7PgeklYkf2051ZQHgpjcX28E4f+17MewZW6wmpjPnho/lt
+	 FDbXQ2b1JwxMVvVMQ/5V6Zw4pyd/t10oE0KDLckHp2gmu+YwR8y9YFQzVhko9jZJEx
+	 23onaOBuH68fQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F0F7DC43140;
-	Thu, 25 Apr 2024 16:30:32 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 04A54CF21C2;
+	Thu, 25 Apr 2024 16:30:33 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -51,37 +51,40 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] Bluetooth: qca: fix wcn3991 device address check
+Subject: Re: [PATCH] Bluetooth: HCI: fix slab-use-after-free in cmd_sync_work
 From: patchwork-bot+bluetooth@kernel.org
 Message-Id: 
- <171406263298.12899.12245456534188638302.git-patchwork-notify@kernel.org>
-Date: Thu, 25 Apr 2024 16:30:32 +0000
-References: <20240425075503.24357-1-johan+linaro@kernel.org>
-In-Reply-To: <20240425075503.24357-1-johan+linaro@kernel.org>
-To: Johan Hovold <johan+linaro@kernel.org>
-Cc: marcel@holtmann.org, luiz.dentz@gmail.com,
- linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, dianders@chromium.org, quic_janathot@quicinc.com
+ <171406263301.12899.1823558479194537202.git-patchwork-notify@kernel.org>
+Date: Thu, 25 Apr 2024 16:30:33 +0000
+References: <20240425041128.3093970-1-iam@sung-woo.kim>
+In-Reply-To: <20240425041128.3093970-1-iam@sung-woo.kim>
+To: Sungwoo Kim <iam@sung-woo.kim>
+Cc: daveti@purdue.edu, marcel@holtmann.org, johan.hedberg@gmail.com,
+ luiz.dentz@gmail.com, linux-bluetooth@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
 Hello:
 
 This patch was applied to bluetooth/bluetooth-next.git (master)
 by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-On Thu, 25 Apr 2024 09:55:03 +0200 you wrote:
-> Qualcomm Bluetooth controllers may not have been provisioned with a
-> valid device address and instead end up using the default address
-> 00:00:00:00:5a:ad.
+On Thu, 25 Apr 2024 00:11:28 -0400 you wrote:
+> Hello, could you review the UAF bug and its fix?
+> The stack trace is at the bottom.
 > 
-> This address is now used to determine if a controller has a valid
-> address or if one needs to be provided through devicetree or by user
-> space before the controller can be used.
+> mgmt sync cmd could be used after freed in this scenario:
+> 
+> set_local_name()       ... cmd is allocated, set_name_complete() is
+>                            queued in cmd_sync_work.
+> hci_error_reset()      ... hci device reset.
+>   hci_dev_close_sync() ... close hdev, at this point, cmd is freed.
+> set_name_complete()    ... callback from cmd_sync_work. cmd->param causes UAF.
 > 
 > [...]
 
 Here is the summary with links:
-  - Bluetooth: qca: fix wcn3991 device address check
-    https://git.kernel.org/bluetooth/bluetooth-next/c/0a0f9014b784
+  - Bluetooth: HCI: fix slab-use-after-free in cmd_sync_work
+    https://git.kernel.org/bluetooth/bluetooth-next/c/37dd04e4d594
 
 You are awesome, thank you!
 -- 
