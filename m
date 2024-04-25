@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-158392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDF0D8B1F30
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:30:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C80CA8B1F31
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:30:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C2371C23F87
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:30:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8558C281818
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:30:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 198E51DDCE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D31B1EB3F;
 	Thu, 25 Apr 2024 10:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u9L6hE0p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PHTSmmf9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 589B036D;
-	Thu, 25 Apr 2024 10:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD027FF;
+	Thu, 25 Apr 2024 10:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714041029; cv=none; b=ZcwCMwIBiOdtGh0/thnZJkniiFd3AACQ7Ky99cJJ/fCc/v33+27WU4ArSwsTQEQkUjFpREDpYkuiXB/XOBaVT1JUMIizj4geT8Ziry7XRFAll60rSN4CX+Hy0SAyxuWVHQRfT1yMvn0O9gimfLaskldXiQhQGy0BmOi8+1UkN38=
+	t=1714041029; cv=none; b=ps4HgqoPvtd5++7xIbL6+IRXUQLtXswMCj2fVzveWrSEOra1j8aWYTC72FTN2Nq3uojObalOiT30+IHk606heBKHGmdbxecjBFfgWOPWMy6UHcerzLRZgBSPNI0x7CSpfoOk24CGLBlvSIDxXidUhZM0n72qA1PW5sz2/M6ki5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714041029; c=relaxed/simple;
-	bh=aSnk4tl0PCA0sPVmmyPb/wJFTj+/FjtqDBcLndI6hl8=;
+	bh=tHxtzayUpNRFrnQheyyhBQiZQaqvq6KY8kVPxeurlEY=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=IKfwJILi/ZZVWbLKQuYoKgJSy86NMgxaJWiQSFb2rkO9Xm/jhiMbnpjqoshXLCqvOjrS1BJMO7h6kpLvy43uDWaZIzfWx+m7KoZ5oziLnQW0Xhe468i4nKcukg2d8j1c5EYwYhEqhiAOFgm5L9gdO3O90WKR1xueIVY8uOa3j3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u9L6hE0p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B4A95C2BBFC;
-	Thu, 25 Apr 2024 10:30:28 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=YqRlcMk497b3/1HDUgzO74U82HXxl+G++nJYPVUFNSMpA9V+KGEW09ARitPGIADRQ/KiA+9UrhHXBkvNTVDlOOyn9KwTfYCFGlX9OYTYSkMIxeqe1jCTI1HprllQ8RnsQSQjUXVWTsbG+cg6JjvUaus0A2ZrOGVf1Z+WKUDR9OE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PHTSmmf9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 178A8C32782;
+	Thu, 25 Apr 2024 10:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714041028;
-	bh=aSnk4tl0PCA0sPVmmyPb/wJFTj+/FjtqDBcLndI6hl8=;
+	s=k20201202; t=1714041029;
+	bh=tHxtzayUpNRFrnQheyyhBQiZQaqvq6KY8kVPxeurlEY=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=u9L6hE0pYWKliO5ohk+06svUmSV8CT+xaBOUS9f7QFBz7XGpoaWejbNjBh6xtcDsl
-	 rMyCMJndBv1TiAJCw3hd83051Kvfcx+jdAh4zVS4Jt62Qgba5dExpNbX/sdhrHxqWl
-	 fBPLbEOnfjQTVaiQrIfRlbuM9uX2Qh01fv8xKTHsC/9EgRsWA34i2x/Dz/BQ0ZZKfP
-	 gRITIn1DRPECkFefCEChkbppLw7N8luR97KTCTWUanLWqZgmWHaewjK71XBgo6hiGy
-	 cZs25MWlB7FGk7QbXCTZVnkrKTVMfKDqc6vVl7gH/4rpqmgUMYHGaTU5W9drpT6KDM
-	 v+HwGSw27xYYA==
+	b=PHTSmmf90Z19lLupDPl9bPDQbA1WVYSg/gRCAeARomRPmm+P9vioz9yT7EgGrGhA8
+	 I6wnLvZlnxsgdopPI0M9ciCydGCnhOD7mFAb6OcUSzt3RLQySn+8L3ySyyyPJL9Ebh
+	 xV77Zrw4G2V3D64jL0j6p38/a36GjQOWMthLBOkBKX4OCbqJD/NCdv+GCe90gc6Z+9
+	 FA2ft2v6JglXo4HWuiJcr+VxXYtjwMgroMuklNtMmZ1XG0dN9H1HgX7cMhDRuDLdc9
+	 TBw8y+ezsuIVlqthNn6jpo9/OQiAaBUbPXcsy+a9HhQ1Iw7j5xBtXH3ppgugNHASp5
+	 ekpZFifMVUmQw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9F19AC43140;
-	Thu, 25 Apr 2024 10:30:28 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0EAC6C43140;
+	Thu, 25 Apr 2024 10:30:29 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -51,39 +51,40 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: phy: dp83869: Fix MII mode failure
+Subject: Re: [PATCH net v2 1/2] net: dsa: mv88e6xxx: Add support for
+ model-specific pre- and post-reset handlers
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171404102864.28185.819517729147949329.git-patchwork-notify@kernel.org>
-Date: Thu, 25 Apr 2024 10:30:28 +0000
-References: <20240423084828.1309294-1-danishanwar@ti.com>
-In-Reply-To: <20240423084828.1309294-1-danishanwar@ti.com>
-To: MD Danish Anwar <danishanwar@ti.com>
-Cc: s-vadapalli@ti.com, pabeni@redhat.com, kuba@kernel.org,
- edumazet@google.com, davem@davemloft.net, linux@armlinux.org.uk,
- hkallweit1@gmail.com, andrew@lunn.ch, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, srk@ti.com, vigneshr@ti.com, r-gunasekaran@ti.com,
- rogerq@kernel.org
+ <171404102905.28185.154076817026264524.git-patchwork-notify@kernel.org>
+Date: Thu, 25 Apr 2024 10:30:29 +0000
+References: <addee2a493823b4a7e0ea966b1713f4ed6c04a2e.1713858017.git.matthias.schiffer@ew.tq-group.com>
+In-Reply-To: <addee2a493823b4a7e0ea966b1713f4ed6c04a2e.1713858017.git.matthias.schiffer@ew.tq-group.com>
+To: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc: andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ festevam@denx.de, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux@ew.tq-group.com
 
 Hello:
 
-This patch was applied to netdev/net.git (main)
+This series was applied to netdev/net-next.git (main)
 by David S. Miller <davem@davemloft.net>:
 
-On Tue, 23 Apr 2024 14:18:28 +0530 you wrote:
-> The DP83869 driver sets the MII bit (needed for PHY to work in MII mode)
-> only if the op-mode is either DP83869_100M_MEDIA_CONVERT or
-> DP83869_RGMII_100_BASE.
-> 
-> Some drivers i.e. ICSSG support MII mode with op-mode as
-> DP83869_RGMII_COPPER_ETHERNET for which the MII bit is not set in dp83869
-> driver. As a result MII mode on ICSSG doesn't work and below log is seen.
+On Tue, 23 Apr 2024 09:47:48 +0200 you wrote:
+> Instead of calling mv88e6xxx_g2_eeprom_wait() directly from
+> mv88e6xxx_hardware_reset(), add configurable pre- and post-reset hard
+> reset handlers. Initially, the handlers are set to
+> mv88e6xxx_g2_eeprom_wait() for all families that have get/set_eeprom()
+> to match the existing behavior. No functional change intended (except
+> for additional error messages on failure).
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] net: phy: dp83869: Fix MII mode failure
-    https://git.kernel.org/netdev/net/c/6c9cd59dbcb0
+  - [net,v2,1/2] net: dsa: mv88e6xxx: Add support for model-specific pre- and post-reset handlers
+    https://git.kernel.org/netdev/net-next/c/0fdd27b9d6d7
+  - [net,v2,2/2] net: dsa: mv88e6xxx: Avoid EEPROM timeout without EEPROM on 88E6250-family switches
+    https://git.kernel.org/netdev/net-next/c/e44894e2aa4e
 
 You are awesome, thank you!
 -- 
