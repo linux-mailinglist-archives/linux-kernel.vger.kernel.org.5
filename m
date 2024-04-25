@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-159051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75DD48B28A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:00:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D430A8B28A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:59:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7127CB24BE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:00:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 758AA1F211CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:59:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B665715216D;
-	Thu, 25 Apr 2024 18:59:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1B971509AE;
+	Thu, 25 Apr 2024 18:59:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="EF1JDHJJ"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="TOgwzaAl"
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9392C1514D9
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 18:59:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781F214E2CC;
+	Thu, 25 Apr 2024 18:59:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714071585; cv=none; b=N8bxoCx+snx701tq9fYo/FnQS3T1hiiOCztJPyAi1eueK1dcIWkYhx8uKGqjgn0sA0e4KZxsJd2YJBeIHUxVMPSqBBB7DHUHyv15ubxYc12TO2ZinAFDobok9Ar2FWf3l2Zc98qfRpyRUyYjNj8kgVk6ftgnbJcy+Lg4TXaw8e4=
+	t=1714071582; cv=none; b=IJFrliSOC/SR0Fl268EMd/7+mdImyuzO6zE28AR9ih2qFWZnBC5bPhfjy18+Ku2a3wL2ntWVMOetQZoccWWmHZe7UxbPZVnMlv/a1TXevb2/0T7Lb+wQi/YuXn1R7jkJDdl4vj1o+a0Blsq/txUOGUiVd6XxNj6EUNYed7BpJBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714071585; c=relaxed/simple;
-	bh=5C6zNSy4/2fDi0G/VYNh1plSgWvrbg3nFQBR/aDxNik=;
+	s=arc-20240116; t=1714071582; c=relaxed/simple;
+	bh=W1jleSnAzaiTkRZrgdNKbc8caMPKFs8+4nzn+DPMNlw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=IT1C1A0BuFqU85EcIzM8FI517FJen1AYGdDbFLUdMvolimOkqVwwObv5eu1i89Rx2ipYy0AMsFAeoaKqgW6mrvdpIPuRO2F5kQrliOnWmdEfDpf/VqVz+2LJWexXRdv0TzhvSvmzefjoM2fxIVDpq1WpRWdFYkRfm7Ml+pJ4sj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=EF1JDHJJ; arc=none smtp.client-ip=205.220.180.131
+	 In-Reply-To:Content-Type; b=fLhzvy9lR908RPhViX+yBHNrmmRkLZatVYbdFzGw4k/p/1K7wEoD0GdqI8+flloMjAC9u96HefGaD4/d+KL3F3DXJv+PEW8pO6iTk+sPb6YAboZ6p5f/ggOPqZXmXJLdRWLIAQBo3n5/28/JRWCRFgosC4QEWw7ZI/UVVAKlE94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=TOgwzaAl; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
 Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43PEYjV4002706;
-	Thu, 25 Apr 2024 18:59:26 GMT
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43PEP8FO013847;
+	Thu, 25 Apr 2024 18:59:37 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	message-id:date:mime-version:subject:to:cc:references:from
 	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=LpWQj2agrBscOTWLDNZ2TUQqcQ07PBdL0wdDCx/qiRo=; b=EF
-	1JDHJJjiRG6WGlfF2Oc5UdptJ6hIV2+ogBIqwjhmPo2dkwVjY2Q61+HhonI7zXaL
-	Y+jkVXwCwJ/jCVMP0uX9tzWniEyCf0z6DgCI3sDipIIwwgaqwbSdxi2RdvDnkCRb
-	j58t2Y5juxsm2LbCEIAn48pmx+NHsSo9kEpAxX3t7nI9uQbvo2kXGqUGDAQ2ob1q
-	4zkcdDnorIzvg076Y7LMQX82yHsYJKCby7m7Bdr1Eorg1JYoBSulIChAGCs5jb7l
-	bHrsKYXMvnGEfZPOJtK+mNQzG1i2ZThvR6T56dylubKr8968CPh8EEAO2clrHXUQ
-	bC7gjR9w+QD4U8OEpUzg==
+	qcppdkim1; bh=W1jleSnAzaiTkRZrgdNKbc8caMPKFs8+4nzn+DPMNlw=; b=TO
+	gwzaAl+F09iIn7kr8AsNWX/nRO7Gryl9chXZrysYrfdpJyqy5eT+plzotzwwWI3Z
+	yDybu11dzKq8yACGyvhXIn/Ob/QCegiO2BCD49oq2RHwnX4sn8xuwT3xAuVeT0Ji
+	ZI1KavkYVkHKtBgIHYjBwFohAps41JEMfcy5pDzTSmGp7tgP8ihwSZXSIolZzFyF
+	y/4oRcpxK8U0iVYZwcM2UXb8plhTPMPCKAtoj7IUlF8yPiDMkifUKG7bF+elt+AG
+	N45fZNEftehAgpx/dekJupq0c7jHfrsweYkTBvByY98fiws0CIbCeTuY9S30g3ZG
+	yFVh1dEDhVuA8/EU9iAg==
 Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqrwwrnfu-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqrwwrng3-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 18:59:25 +0000 (GMT)
+	Thu, 25 Apr 2024 18:59:36 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43PIxOKs030249
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43PIxZEQ030335
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 18:59:24 GMT
-Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+	Thu, 25 Apr 2024 18:59:35 GMT
+Received: from [10.110.58.36] (10.80.80.8) by nalasex01a.na.qualcomm.com
  (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 25 Apr
- 2024 11:59:23 -0700
-Message-ID: <8c55dba5-6308-685e-13da-e728197d8101@quicinc.com>
-Date: Thu, 25 Apr 2024 12:59:22 -0600
+ 2024 11:59:35 -0700
+Message-ID: <22bfac62-5476-9e8f-e5a4-381cf5ae7a04@quicinc.com>
+Date: Thu, 25 Apr 2024 11:59:27 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,85 +64,42 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH] drm/etnaviv: Create an accel device node if compute-only
+ Thunderbird/91.5.0
+Subject: Re: [PATCH v2 2/4] dt-bindings: pinctrl: qcom,pmic-gpio: Add PMIH0108
+ and PMD8028 support
 Content-Language: en-US
-To: Tomeu Vizoso <tomeu@tomeuvizoso.net>, <linux-kernel@vger.kernel.org>
-CC: Oded Gabbay <ogabbay@kernel.org>, Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner
-	<christian.gmeiner@gmail.com>,
-        David Airlie <airlied@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>,
-        <etnaviv@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>
-References: <20240424063753.3740664-1-tomeu@tomeuvizoso.net>
-From: Jeffrey Hugo <quic_jhugo@quicinc.com>
-In-Reply-To: <20240424063753.3740664-1-tomeu@tomeuvizoso.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Rob Herring <robh+dt@kernel.org>
+CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linus.walleij@linaro.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_subbaram@quicinc.com>,
+        <quic_collinsd@quicinc.com>, <quic_jprakash@quicinc.com>
+References: <20240326220628.2392802-1-quic_amelende@quicinc.com>
+ <20240326220628.2392802-3-quic_amelende@quicinc.com>
+ <CAL_JsqLZkU_74JK-BGOe83-redCi_TcV3dOOZs9DX3jThHfXrw@mail.gmail.com>
+From: Anjelique Melendez <quic_amelende@quicinc.com>
+In-Reply-To: <CAL_JsqLZkU_74JK-BGOe83-redCi_TcV3dOOZs9DX3jThHfXrw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 2PY6mTTuSoTIfvx0SDz3oNbowXinSuZ6
-X-Proofpoint-ORIG-GUID: 2PY6mTTuSoTIfvx0SDz3oNbowXinSuZ6
+X-Proofpoint-GUID: mWJmo5NWXpS-fRBK6WbBb_4dnvZy3VwP
+X-Proofpoint-ORIG-GUID: mWJmo5NWXpS-fRBK6WbBb_4dnvZy3VwP
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
  definitions=2024-04-25_19,2024-04-25_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
  mlxscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
  suspectscore=0 adultscore=0 priorityscore=1501 phishscore=0
- mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ mlxlogscore=681 bulkscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.19.0-2404010003 definitions=main-2404250136
 
-On 4/24/2024 12:37 AM, Tomeu Vizoso wrote:
-> If we expose a render node for NPUs without rendering capabilities, the
-> userspace stack will offer it to compositors and applications for
-> rendering, which of course won't work.
-> 
-> Userspace is probably right in not questioning whether a render node
-> might not be capable of supporting rendering, so change it in the kernel
-> instead by exposing a /dev/accel node.
-> 
-> Before we bring the device up we don't know whether it is capable of
-> rendering or not (depends on the features of its blocks), so first try
-> to probe a rendering node, and if we find out that there is no rendering
-> hardware, abort and retry with an accel node.
-> 
-> Signed-off-by: Tomeu Vizoso <tomeu@tomeuvizoso.net>
-> Cc: Oded Gabbay <ogabbay@kernel.org>
-
-I hope Oded chimes in as Accel maintainer.  I think Airlie/Vetter had 
-also previously mentioned they'd have opinions on what is Accel vs DRM.
-
-This gets a nack from me in its current state.  This is not a strong 
-nack, and I don't want to discourage you.  I think there is a path forward.
-
-The Accel subsystem documentation says that accel drivers will reside in 
-drivers/accel/ but this does not.
-
-Also, the commit text for "accel: add dedicated minor for accelerator 
-devices" mentions -
-
-"for drivers that
-declare they handle compute accelerator, using a new driver feature
-flag called DRIVER_COMPUTE_ACCEL. It is important to note that this
-driver feature is mutually exclusive with DRIVER_RENDER. Devices that
-want to expose both graphics and compute device char files should be
-handled by two drivers that are connected using the auxiliary bus
-framework."
-
-I don't see any of that happening here (two drivers connected by aux 
-bus, one in drivers/accel).
-
-I think this is the first case we've had of a combo DRM/Accel usecase, 
-and so there isn't an existing example to refer you to on how to 
-structure things.  I think you are going to be the first example where 
-we figure all of this out.
-
-On a more implementation note, ioctls for Accel devices should not be 
-marked DRM_RENDER_ALLOW.  Seems like your attempt to reuse as much of 
-the code as possible trips over this.
-
--Jeff
+On 4/23/2024 10:02 AM, Rob Herring wrote:
+> It took me a bit to find, but you've got a typo here. The result is
+> this "if" schema is always true unless you actually have an instance
+> with the typo too. Please send a fix.
+Thanks for finding typo! Fix is here: https://lore.kernel.org/all/20240425185603.3295450-1-quic_amelende@quicinc.com/
 
