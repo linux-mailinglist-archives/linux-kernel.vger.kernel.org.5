@@ -1,106 +1,241 @@
-Return-Path: <linux-kernel+bounces-158296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BCDB8B1DFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 227118B1E01
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:28:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9CAD1C2101C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:28:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 425A51C212C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:28:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F86084E13;
-	Thu, 25 Apr 2024 09:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="qLWhGMKF"
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 194A328F7;
+	Thu, 25 Apr 2024 09:28:21 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5F083CBE;
-	Thu, 25 Apr 2024 09:27:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA40E2E413;
+	Thu, 25 Apr 2024 09:28:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714037278; cv=none; b=W4Gzi0xd5qSb4134usYD4AUsKhBBzXf3kyjE1Kt57YZ7JZQ3al/jMz8aoKx6YcF5hIUdXQx+VtVYb8lByuWNAyiyM6TxXetGgeyFbg7hd8i0lLhxhX5/CD6ejbVUrhbMjNLLounGiAe5OnFbAWMdlEtnJUyw9ZrjAEN7Y7W2zhA=
+	t=1714037300; cv=none; b=tKPiT+tC2zGPMHws7+ltrS+r4x2Qpnz7u4XtOWTiEDTvgAHQcyyQyGK7Jy0QMjpWwk/fyIJLx5s8zs0gdxEShZuGohxvGJxQRrqSy8EPbcRwdLwDMQBim7rgCwWpi6A4ZXnOIc+uhyprFF+GQy13Mk/qC9aOUkwlN8aw/uyUpa4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714037278; c=relaxed/simple;
-	bh=CG/3877UELgCDWBuuRgZYINMib1453pKWIyDnNRgsDY=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=ktVzXFFyprTZfGrZlzVpyEEgVAHRDRI7r+qn3yFrEioEneXbeAAF24zAe1KMmE5UZbsl+hQsQFNUE52+neEcd7UWACYEmlEXnIlwfL6u55J+sMHL3bBM3S1xQ3Z/zLT2x12nn9C1sQuvT5v9XtpyVC8Q3OfYlTHfzi9zBt+EoFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=qLWhGMKF; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714037254; x=1714642054; i=markus.elfring@web.de;
-	bh=CG/3877UELgCDWBuuRgZYINMib1453pKWIyDnNRgsDY=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=qLWhGMKFk1vuJWeSDEkhUSldFi+mY93F5Fxm8bjUgHCEoWrlPCu9DfEF90t6xrCl
-	 GL7sol1xXFS5xA/87PxAGAVu4JMqBoyGsJZzJaAn9nXOr+7NDQCBr7Ym+ZNS42G20
-	 nMfQs9Mee/vRdReQqBiCXezFcgp/4wqQ+pUJ4UEz9Hw3T7qWx7KvtakUo0TdfOWD+
-	 mI8EmhZv8jjgqLs4ctyogrbvp+f2v7hC1PZ0gaU89lzFHt2jOjsyzTM7inmjAj/D1
-	 /p7zTbR/JGbboyK9OWrii9IHXTwHZRduBrhFLSWlFfnxEJpOCMr1GceLY9LvbR65a
-	 rG3ScKdMzYFlSARraw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MAcpg-1rotqQ2JKK-008f4O; Thu, 25
- Apr 2024 11:27:34 +0200
-Message-ID: <fcbdbb5d-27f8-4ee9-aa28-5d12e292940c@web.de>
-Date: Thu, 25 Apr 2024 11:27:29 +0200
+	s=arc-20240116; t=1714037300; c=relaxed/simple;
+	bh=X53gXm9/tqmyC1UcjhNK/jdNzr4IdK5+5LIjav6v2OE=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fRbM/VUDAx7BrG/vu2IsGguX9qsk8yAL4k0PgEdg162Yis3Y564ghuRkPCpih823DDXfzrQI3cUN6E0RLypz7xE56VHZ1+lJ0N5ZtOUvd3tdjWx98GqBIt91UW37yDpmvv+IOtv3Qpf0dKg1bE+jF23ETfaWGgbC5mOZ4NCkn7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VQ9Sl5smhz6K5yT;
+	Thu, 25 Apr 2024 17:25:43 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 39E0F140736;
+	Thu, 25 Apr 2024 17:28:09 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 25 Apr
+ 2024 10:28:08 +0100
+Date: Thu, 25 Apr 2024 10:28:06 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Marc Zyngier <maz@kernel.org>, <linuxarm@huawei.com>
+CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
+	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
+	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, "James Morse"
+	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
+ Brucker <jean-philippe@linaro.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <justin.he@arm.com>, <jianyong.wu@arm.com>
+Subject: Re: [PATCH v7 11/16] irqchip/gic-v3: Add support for ACPI's
+ disabled but 'online capable' CPUs
+Message-ID: <20240425102806.00003683@Huawei.com>
+In-Reply-To: <20240424135438.00001ffc@huawei.com>
+References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
+	<20240418135412.14730-12-Jonathan.Cameron@huawei.com>
+	<20240422114020.0000294f@Huawei.com>
+	<87plugthim.wl-maz@kernel.org>
+	<20240424135438.00001ffc@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: llfl@linux.alibaba.com, iommu@lists.linux.dev,
- kernel-janitors@vger.kernel.org, =?UTF-8?B?SsO2cmcgUsO2ZGVs?=
- <joro@8bytes.org>, Vasant Hegde <vasant.hegde@amd.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
- Will Deacon <will@kernel.org>, Xuchun Shang <xuchun.shang@linux.alibaba.com>
-References: <92ff13341044a39953f0ba116cf7f9881488f8c8.1714034489.git.llfl@linux.alibaba.com>
-Subject: Re: [PATCH] iommu/amd: Fix memory leak in alloc_pci_segment()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <92ff13341044a39953f0ba116cf7f9881488f8c8.1714034489.git.llfl@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:D5sXQVJ7FGYoeOoNxgYPzj7pMSo5O/sN+BquYBN6YaJ2f75nm4E
- 4pCyrflfI1xqLbgiTLt3QUAqeEc66mDV65cDApwR+F1DUV/oTsQbo/1koUo+KYoy3+fSoc5
- b8GMGYynirHKjAT5kPJ9LC/SzhlUmTNZwh5zfQlOXdL9oY3kCmuAdLrMdsxgVFNi4YOFffD
- 1+0QLddQgUWHgxn81FNKg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:N8eLJEPZoGY=;fVzaMJBxH0eL8XznHY7A369k02G
- 0PBpdW8CcwWhzUIDqwEL1HcSq5+nLXZBJjQXcRVfVPCdJowMzl0kMglEkQZN7T/gY5qj9ixzD
- SeLkWC4CwnSyEX3AZV94Hucq4GWgJxtq2tOaPTFd+Zu/5D2aUIY5AkPu4UHm1xR87J7KhpGlS
- FFMI9Yup0LkM/3uMN+pP2bjOgg1AbyQTi+90cvD3waA5Xi0RsvXsvG/fdHE9shB+9wYt68xt1
- rTD61yhfm+MuP7Tjpmc9K7LW3Ny7UAgR6oaoTmOD0M+h4L8Ohh8xnaGVbkqVNNjw08kl92Bai
- 9vMia2QtRKocfRV+dYwkXaO6GUr0oK1eDzVuivFlM9ht0shCmtesLnEhJRzZd0jh48pDdYecZ
- BiFWikFvDIYei1ULQsb6FccizWhOv1MMqWTLltVfB6kgb1x8lE/DZndgbCkpTYJWfNJVXTi+S
- q90QqNiPzLTMwlWHxpm1MLwTsgUaTpFopaiC6QxYSZQtcoZXPFUj+2WYx98Nz/zTHwoiNzLV3
- taQtQPZkgM5uk92l3dninTJfvm4Cj57yQuOOt0nW+me64YJnua74r9gaymgni0Jhr8RT9dsbH
- XXetydw26XFEoasVzuRYdBoKwIDihWsJIHtmQy2KR1GB4WtD4TCKCNdq/rUCZUc4HStehxjR4
- kMJwjs+Lkzi608ny7cTaUKMCyKXwtBxZ+OaKNd4/aJqm9Abum3EztAAO8Kvse89b5wWqiVnnd
- oqYBSM91yabV5r/l4KsG2D6gSL3wPzRViRu6q5vgRvij5SuMUABwmuKNfv4Qjq7u26SJyjvAB
- n+kTgQAOLOQhCJuQboneRuGu6Gl7LoqyYwbP47Ns6+RVw=
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-> Fix the memory leak issue that occurs when resource allocation fails in
-> alloc_pci_segment(). The dev_table, alias_table, and rlookup_table were
-> introduced individually in commits 04230c119930, 99fc4ac3d297,
-> and eda797a27795, but they all fail to release allocated resources
-> when other allocations fail.
-=E2=80=A6
+On Wed, 24 Apr 2024 13:54:38 +0100
+Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
 
-Please refer not only to commit hashes.
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/submitting-patches.rst?h=3Dv6.9-rc5#n99
+> On Tue, 23 Apr 2024 13:01:21 +0100
+> Marc Zyngier <maz@kernel.org> wrote:
+> 
+> > On Mon, 22 Apr 2024 11:40:20 +0100,
+> > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:  
+> > > 
+> > > On Thu, 18 Apr 2024 14:54:07 +0100
+> > > Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
+> > >     
+> > > > From: James Morse <james.morse@arm.com>
+> > > > 
+> > > > To support virtual CPU hotplug, ACPI has added an 'online capable' bit
+> > > > to the MADT GICC entries. This indicates a disabled CPU entry may not
+> > > > be possible to online via PSCI until firmware has set enabled bit in
+> > > > _STA.
+> > > > 
+> > > > This means that a "usable" GIC is one that is marked as either enabled,
+> > > > or online capable. Therefore, change acpi_gicc_is_usable() to check both
+> > > > bits. However, we need to change the test in gic_acpi_match_gicc() back
+> > > > to testing just the enabled bit so the count of enabled distributors is
+> > > > correct.
+> > > > 
+> > > > What about the redistributor in the GICC entry? ACPI doesn't want to say.
+> > > > Assume the worst: When a redistributor is described in the GICC entry,
+> > > > but the entry is marked as disabled at boot, assume the redistributor
+> > > > is inaccessible.
+> > > > 
+> > > > The GICv3 driver doesn't support late online of redistributors, so this
+> > > > means the corresponding CPU can't be brought online either. Clear the
+> > > > possible and present bits.
+> > > > 
+> > > > Systems that want CPU hotplug in a VM can ensure their redistributors
+> > > > are always-on, and describe them that way with a GICR entry in the MADT.
+> > > > 
+> > > > When mapping redistributors found via GICC entries, handle the case
+> > > > where the arch code believes the CPU is present and possible, but it
+> > > > does not have an accessible redistributor. Print a warning and clear
+> > > > the present and possible bits.
+> > > > 
+> > > > Signed-off-by: James Morse <james.morse@arm.com>
+> > > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > > > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>    
+> > > 
+> > > +CC Marc,
+> > > 
+> > > Whilst this has been unchanged for a long time, I'm not 100% sure
+> > > we've specifically drawn your attention to it before now.
+> > > 
+> > > Jonathan
+> > >     
+> > > > 
+> > > > ---
+> > > > v7: No Change.
+> > > > ---
+> > > >  drivers/irqchip/irq-gic-v3.c | 21 +++++++++++++++++++--
+> > > >  include/linux/acpi.h         |  3 ++-
+> > > >  2 files changed, 21 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> > > > index 10af15f93d4d..66132251c1bb 100644
+> > > > --- a/drivers/irqchip/irq-gic-v3.c
+> > > > +++ b/drivers/irqchip/irq-gic-v3.c
+> > > > @@ -2363,11 +2363,25 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
+> > > >  				(struct acpi_madt_generic_interrupt *)header;
+> > > >  	u32 reg = readl_relaxed(acpi_data.dist_base + GICD_PIDR2) & GIC_PIDR2_ARCH_MASK;
+> > > >  	u32 size = reg == GIC_PIDR2_ARCH_GICv4 ? SZ_64K * 4 : SZ_64K * 2;
+> > > > +	int cpu = get_cpu_for_acpi_id(gicc->uid);
+> > > >  	void __iomem *redist_base;
+> > > >  
+> > > >  	if (!acpi_gicc_is_usable(gicc))
+> > > >  		return 0;
+> > > >  
+> > > > +	/*
+> > > > +	 * Capable but disabled CPUs can be brought online later. What about
+> > > > +	 * the redistributor? ACPI doesn't want to say!
+> > > > +	 * Virtual hotplug systems can use the MADT's "always-on" GICR entries.
+> > > > +	 * Otherwise, prevent such CPUs from being brought online.
+> > > > +	 */
+> > > > +	if (!(gicc->flags & ACPI_MADT_ENABLED)) {
+> > > > +		pr_warn_once("CPU %u's redistributor is inaccessible: this CPU can't be brought online\n", cpu);
+> > > > +		set_cpu_present(cpu, false);
+> > > > +		set_cpu_possible(cpu, false);
+> > > > +		return 0;
+> > > > +	}    
+> > 
+> > It seems dangerous to clear those this late in the game, given how
+> > disconnected from the architecture code this is. Are we sure that
+> > nothing has sampled these cpumasks beforehand?  
+> 
+> Hi Marc,
+> 
+> Any firmware that does this is being considered as buggy already
+> but given it is firmware and the spec doesn't say much about this,
+> there is always the possibility.
+> 
+> Not much happens between the point where these are setup and
+> the point where the the gic inits and this code runs, but even if careful
+> review showed it was fine today, it will be fragile to future changes.
+> 
+> I'm not sure there is a huge disadvantage for such broken firmware in
+> clearing these masks from the point of view of what is used throughout
+> the rest of the kernel. Here I think we are just looking to prevent the CPU
+> being onlined later.
+> 
+> We could add a set_cpu_broken() with appropriate mask.
+> Given this is very arm64 specific I'm not sure Rafael will be keen on
+> us checking such a mask in the generic ACPI code, but we could check it in
+> arch_register_cpu() and just not register the cpu if it matches.
+> That will cover the vCPU hotplug case.
+> 
+> Does that sounds sensible, or would you prefer something else?
 
-Would you like to extend the change description (with an enumeration)?
+Hi Marc
 
-Regards,
-Markus
+Some experiments later (faking this on a physical board - I never liked
+CPU 120 anyway!) and using a different mask brings it's own minor pain.
+
+When all the rest of the CPUs are brought up cpuhp_bringup_mask() is called
+on cpu_present_mask so we need to do a dance in there to use a temporary
+mask with broken cpus removed.  I think it makes sense to cut that out
+at the top of the cpuhp_bringup_mask() pile of actions rather than trying
+to paper over each actual thing that is dying... (looks like an infinite loop
+somewhere but I haven't tracked down where yet).
+
+I'll spin a patch so you can see what it looks like, but my concern is
+we are just moving the risk from early users of these masks to later cases
+where code assumes cpu_present_mask definitely means they are present.
+That is probably a small set of cases but not nice either.
+
+Looks like one of those cases where we need to pick the lesser of two evils
+which is probably still the cpu_broken_mask approach.
+
+On plus side if we decide to go back to the original approach having seen
+that I already have the code :)
+
+Jonathan
+
+
+
+> 
+> Jonathan
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> > 
+> > Thanks,
+> > 
+> > 	M.
+> >   
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
 
