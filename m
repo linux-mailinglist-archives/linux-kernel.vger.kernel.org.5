@@ -1,89 +1,196 @@
-Return-Path: <linux-kernel+bounces-158727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B91728B243C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:42:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BB1F8B2444
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:43:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C3131F234B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:42:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 833F5B25E76
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3240D14A4F7;
-	Thu, 25 Apr 2024 14:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FFC214A4F1;
+	Thu, 25 Apr 2024 14:42:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tOAaRv2w"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E1dI3voJ"
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752AB1494BA;
-	Thu, 25 Apr 2024 14:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC4514A622;
+	Thu, 25 Apr 2024 14:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714056127; cv=none; b=Ziry5HUc4yE+nLaTLwz/1QwQtc55CgCyAzTHuiwfVGRLxYaGbVUhEEncrquIiUAW5TrWefU85DrPCHXrA/6c4kc9sUU1W8e0ntvQ17wEXrewVu+JgnYkWw0mtjD6vtnThl1v9EthfdpsQf4JBge22gNsHbnNd1Co3//R+PbBuPc=
+	t=1714056171; cv=none; b=AAqBK21NnX8dvcdDZgkzjXAW9YzokXobQxWX2OHJBeeJ6tm17pcMV2tW8obM8gCACsP5cN4ZgV2txIGq7zmNk0URV2CuMPoXGvqoeNEfe2CwruBYCC4skc7dxKWcUM7l/UhDk5ytfUtQwT9M10/PDbe9UacdjCHIndv/33I+97I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714056127; c=relaxed/simple;
-	bh=mTFoGyws6kpRq4o32kSDr7jpMe6moKYzAN96ttfnxA8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=l52oSqZeM2zwXd0cm2veDfh57jyr9djjERmIg5qeyWDs8DguoRgHoq7WN1N4EuH1rUUA00mtS+GDCu6AATL0GyUdwSMBBdUST1Dw7lSgivePQC6XXnzVUZ62lzYMSb60mrszxdRrB9G37EtxstZVBFu4pcLSXRS74974vKtlWr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tOAaRv2w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 773F9C2BD11;
-	Thu, 25 Apr 2024 14:42:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714056127;
-	bh=mTFoGyws6kpRq4o32kSDr7jpMe6moKYzAN96ttfnxA8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=tOAaRv2wU36NV0wM7C55Y3ZO9KzXigzhxS97uKbvXLOKL/RzkTbAf5Y7fFfSfKaF0
-	 ipFWywEpRI0ocsxmHGonNk0RwwP/80qdwA8U6MnYJns9qPKW16+oPNanRJzzWoMnFn
-	 ikcUl7PYL0FjgTapi93BtGP0nZsu+Cv59IWnsy4V4Kcz38qztAiSPjagvt39W3mFZ4
-	 m0ymFBK5aPIlQOT5Hf8BYtx+5CSrYDcn8vaWZocSApeBr9k8rpWOTYqEZpOjPe6l5z
-	 lA7/VUDh0dApLGAG9ntXkbODsBx/c+lgSpm1TUWNO9qQlLdJ38MwKsCtsXgaMigNcf
-	 d5ajRFjwpGz1Q==
-Date: Thu, 25 Apr 2024 07:42:05 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Kory Maincent <kory.maincent@bootlin.com>
-Cc: Jiri Pirko <jiri@resnulli.us>, Oleksij Rempel <o.rempel@pengutronix.de>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Andrew Lunn
- <andrew@lunn.ch>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Kyle Swenson
- <kyle.swenson@est.tech>, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH net-next v3 0/3] net: pse-pd: Fixes for few small issues
-Message-ID: <20240425074205.28677540@kernel.org>
-In-Reply-To: <20240425163002.5894c5e5@kmaincent-XPS-13-7390>
-References: <20240423-fix_poe-v3-0-e50f32f5fa59@bootlin.com>
-	<ZiebQLdu9dOh1v-T@nanopsycho>
-	<20240425103110.33c02857@kmaincent-XPS-13-7390>
-	<20240425070619.601d5e40@kernel.org>
-	<20240425163002.5894c5e5@kmaincent-XPS-13-7390>
+	s=arc-20240116; t=1714056171; c=relaxed/simple;
+	bh=RLEWmqtBtrpZPVVfXoZ4Fx5SjHlhnjzmtiqohhXwtUc=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=WY3HHA+qK7NUPbvQojIJLf8ax7/1e4LGVHuDdR/Z7uBe/5Tf02Adkrqpc4k3EOnTm+i1geNbqyPJvMRRYmpR+aTyNP7l3yqe/WcfAflHFCdizQpxR8CJOx5cT2v+X0VtUzYBoDQgXPuwrhcASooHDi7075r6R1xagOobSFyDe5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E1dI3voJ; arc=none smtp.client-ip=209.85.167.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3c74a75d9adso748181b6e.0;
+        Thu, 25 Apr 2024 07:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714056169; x=1714660969; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7aCWY+qk5d2DEjGUd6wNU0MLhGO6MuLkRc4d4CIwvHY=;
+        b=E1dI3voJcGZbAeG19/sgI4Fs+zzPv+pYt0yKJtYD42EYMkh7rzTceFKmsTpwzr+u7U
+         YoQ+i2xLihd8dHzYFt5ulVf26CsEwFeIDLfmgTA7to7x/4CbhT+meUgMRQMh3f+mZA9n
+         IIMDo8Kphu8z+mKnP7hEOwhpmCkLrfP9J6TwBDMM1iIBLvbg9gGMpOF2igw+89pUCtv0
+         +zkqGPA4KBIT4nWBr+9PBFrvcTgGeNmNvlmaZ/8BFtl1TeuFMk++PugPDo5dQkU8Ym6T
+         tCXyvpaDv7+pm+s+rWrs+3vW8JUizC7c7gRhwv3VRWovVoKXx4/c+InlEg9kKiBcxvsr
+         3wwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714056169; x=1714660969;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7aCWY+qk5d2DEjGUd6wNU0MLhGO6MuLkRc4d4CIwvHY=;
+        b=CWYZBx7/2VxguwKalomMtYAsfG12JM/RIeSR7GeFhXpx8ISLTXmWS3oXdqDnwYKgLf
+         Y4ThSNl6m9gxHH2ACKaU5COK4q5TIbt+/mPfBZpCdveoHR8WHusCSzfE/AKhVZBh9B5F
+         6flSfmYsaf2p+OhihyrAG6x3ptC8zNGuZJOn1B0h0+j0Q1QSanP/5uuu/h13bBPa4c3H
+         ZPg88rgbS7LDNI3GC1dKKyWc76O0VC4phVuK4rvDUJgmTW2BqL/1lyPueAb3oW8o/MM4
+         T0gnhOOOflwE8ok21FzOb12StmgVwBEm624kqNFQQ3dxsPMvZnreCUFBlJj41G4OChR1
+         bNnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUhF4Td7Nhy1dCskfTVbdLxiOtt5Y6LIs8IZLFjOk0GkT5MFTq7jbCqYC+IlvFj3CVnczCBIKzw5tt7pm5BMFFJdz5kTYm/PV4rt0NLVegCadZ6VR04+/btOPY1wQzoT7bGt/nHzPBI352Nz8+DpuS22PUp+IhEDElN
+X-Gm-Message-State: AOJu0Yx3tL3ruiul1Wlts1IeZExWLzglLdJFfiNXhUQUuH79icilBsFb
+	UBNAXr0rm4by3DRLaJbZPpB1NpSBaSoypLfIHg0qegrXAR1WGz0+
+X-Google-Smtp-Source: AGHT+IEGjh6A/kbKDvE+IilR4x+Cf/tT5YxgoM6mQWVZhNVQ8L5Oixu8z8lX92bn/hK8t3iZvDVkiA==
+X-Received: by 2002:a54:418b:0:b0:3c7:4579:7526 with SMTP id 11-20020a54418b000000b003c745797526mr5515852oiy.59.1714056169233;
+        Thu, 25 Apr 2024 07:42:49 -0700 (PDT)
+Received: from localhost (164.146.150.34.bc.googleusercontent.com. [34.150.146.164])
+        by smtp.gmail.com with ESMTPSA id c5-20020a05620a11a500b007907a91e573sm3203565qkk.130.2024.04.25.07.42.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 07:42:48 -0700 (PDT)
+Date: Thu, 25 Apr 2024 10:42:48 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Abhishek Chauhan <quic_abchauha@quicinc.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ bpf <bpf@vger.kernel.org>
+Cc: kernel@quicinc.com
+Message-ID: <662a6be8aed1a_1de39b2946c@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240424222028.1080134-3-quic_abchauha@quicinc.com>
+References: <20240424222028.1080134-1-quic_abchauha@quicinc.com>
+ <20240424222028.1080134-3-quic_abchauha@quicinc.com>
+Subject: Re: [RFC PATCH bpf-next v5 2/2] net: Add additional bit to support
+ clockid_t timestamp type
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, 25 Apr 2024 16:30:02 +0200 Kory Maincent wrote:
-> > Could you experiment with tweaking the posting?
-> > Maybe we can "bisect" the problem. =20
->=20
-> Do you want me to like post a v5 with the "pw-bot: cr" tag? But if I put =
-the
-> tag only on the cover letter it won't work then.
-> Maybe on all patches?
+Abhishek Chauhan wrote:
+> tstamp_type is now set based on actual clockid_t compressed
+> into 2 bits.
+> 
+> To make the design scalable for future needs this commit bring in
+> the change to extend the tstamp_type:1 to tstamp_type:2 to support
+> other clockid_t timestamp.
+> 
+> We now support CLOCK_TAI as part of tstamp_type as part of this
+> commit with exisiting support CLOCK_MONOTONIC and CLOCK_REALTIME.
+> 
+> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+> ---
 
-Probably not worth posting for a test. I'll try to be more careful when
-applying in the future, we can experiment with real postings.
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index e464d0ebc9c1..3ad0de07d261 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -711,6 +711,8 @@ typedef unsigned char *sk_buff_data_t;
+>  enum skb_tstamp_type {
+>  	SKB_CLOCK_REALTIME,
+>  	SKB_CLOCK_MONOTONIC,
+> +	SKB_CLOCK_TAI,
+> +	__SKB_CLOCK_MAX = SKB_CLOCK_TAI,
+>  };
+>  
+>  /**
+> @@ -831,8 +833,8 @@ enum skb_tstamp_type {
+>   *	@decrypted: Decrypted SKB
+>   *	@slow_gro: state present at GRO time, slower prepare step required
+>   *	@tstamp_type: When set, skb->tstamp has the
+> - *		delivery_time in mono clock base Otherwise, the
+> - *		timestamp is considered real clock base.
+> + *		delivery_time in mono clock base or clock base of skb->tstamp.
 
-> Was it the same for the PoE support patch series?
+drop "in mono clock base or "
 
-Yeah, I had to apply that one manually.
+> + *		Otherwise, the timestamp is considered real clock base
 
-> If so, we could look at it with my future patch series that will bring new
-> features to PoE.
+drop this: whenever in realtime clock base, tstamp_type is zero, so
+the above shorter statement always holds.
 
-=F0=9F=91=8D=EF=B8=8F
+>   *	@napi_id: id of the NAPI struct this skb came from
+>   *	@sender_cpu: (aka @napi_id) source CPU in XPS
+>   *	@alloc_cpu: CPU which did the skb allocation.
+> @@ -960,7 +962,7 @@ struct sk_buff {
+>  	/* private: */
+>  	__u8			__mono_tc_offset[0];
+>  	/* public: */
+> -	__u8			tstamp_type:1;	/* See skb_tstamp_type */
+> +	__u8			tstamp_type:2;	/* See skb_tstamp_type */
+>  #ifdef CONFIG_NET_XGRESS
+>  	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
+>  	__u8			tc_skip_classify:1;
+> @@ -1090,15 +1092,17 @@ struct sk_buff {
+>  #endif
+>  #define PKT_TYPE_OFFSET		offsetof(struct sk_buff, __pkt_type_offset)
+>  
+> -/* if you move tc_at_ingress or mono_delivery_time
+> +/* if you move tc_at_ingress or tstamp_type:2
+>   * around, you also must adapt these constants.
+>   */
+>  #ifdef __BIG_ENDIAN_BITFIELD
+> -#define SKB_MONO_DELIVERY_TIME_MASK	(1 << 7)
+> -#define TC_AT_INGRESS_MASK		(1 << 6)
+> +#define SKB_TSTAMP_TYPE_MASK		(3 << 6)
+> +#define SKB_TSTAMP_TYPE_RSH		(6)
+> +#define TC_AT_INGRESS_RSH		(5)
+
+I had to find BPF_RSH to understand this abbreviation.
+
+use SHIFT instead of RSH, as that is so domain specific?
+
+> +#define TC_AT_INGRESS_MASK		(1 << 5)
+>  #else
+> -#define SKB_MONO_DELIVERY_TIME_MASK	(1 << 0)
+> -#define TC_AT_INGRESS_MASK		(1 << 1)
+> +#define SKB_TSTAMP_TYPE_MASK		(3)
+> +#define TC_AT_INGRESS_MASK		(1 << 2)
+>  #endif
+>  #define SKB_BF_MONO_TC_OFFSET		offsetof(struct sk_buff, __mono_tc_offset)
+>  
+
+> -	if (skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_MONO) {
+> +	if (skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_MONO ||
+> +		  skb->tstamp_type == BPF_SKB_TSTAMP_DELIVERY_TAI) {
+
+Peculiar indentation?
+
+Just FYI that I'm not the best person to review the BPF part.
+Thankfully Martin is helping you with that.
+
+
+
 
