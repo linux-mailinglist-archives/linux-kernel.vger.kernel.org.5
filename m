@@ -1,134 +1,198 @@
-Return-Path: <linux-kernel+bounces-159054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD9438B28B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:04:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A12D08B28BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:06:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F14151C21D9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:04:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5862028338F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:06:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84AF81514DD;
-	Thu, 25 Apr 2024 19:04:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68BFA15219E;
+	Thu, 25 Apr 2024 19:06:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ufgi97AB"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="um+4zfWv"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8EED2D627;
-	Thu, 25 Apr 2024 19:03:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 773861514C9;
+	Thu, 25 Apr 2024 19:06:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714071840; cv=none; b=YQ+UsTVw12IjAWAzuHC1TBBznoFdnWu7sUwVUkWAdi8U2dP2fsLNy424mAOG+kmEMbiSrCx6uCMJ55AH/Dk4EVzau6W+RUW1IC7ydIAAO1zIBLfP/Afc00lb+WEAmL/38QaCdZF8EU2zy5z5jrFWPvzG8kcmUHycXdNaoUqp61g=
+	t=1714071984; cv=none; b=GhXzLHGhKWuDfMKP1QfIngEMTDdcd8AxskhnGOOWaqAcpGoORBrBfwwQOlZcAoe8cOfHg7z13b3YCGSWi+f+exXPEkPP2MEZvdsjt7cQ9GjDxE9UuqPKOf1Rmhd9P47tdI6NCcIma67w7kjYTlh2aPY9Kzd/gQQWGRe01LXnykY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714071840; c=relaxed/simple;
-	bh=l4wqcIAPZf476EKFqK75oCbeHyiGBYCR7vbC5Cof4UY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=tT1Ldjq8SwT5eKDYmsO7bHw2pmK+4WvhaeTfc5zFbyfN7yk9U0iaG3gOmOKDUR9Go6xYf2TyQoDP2P4o8yczLl6dTwZ0HuhhU5PitAy12mDnyWLIzz9+mCxkuo2NpHEY1rO/wvpRYLKVVPL/F1cRVZWKdCoiaAEYHIrz+nWYesw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ufgi97AB; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43PJ3aH2009932;
-	Thu, 25 Apr 2024 14:03:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714071816;
-	bh=f/j51iHm9g/xIoVM7pqMu6jNQnAkUZLA+0hNmM4kd8w=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=ufgi97ABTPRoFQWqSbgl/ZZltiQO6o7Qz7UVcJs9tS4YR2rkIijYrE3B3m4F37sPP
-	 WrkeVBek2v78cri71IDahZQE9VoKMvH4Q6Zrr6KQ/IFyHWxDGKk0igy4A0qg2ekPCl
-	 5jQGafl98XcGxWPBhK6EzM5fEq6rq6D72M0BrH2k=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43PJ3as2017054
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 25 Apr 2024 14:03:36 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 25
- Apr 2024 14:03:36 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 25 Apr 2024 14:03:36 -0500
-Received: from [128.247.81.8] (ula0226330.dhcp.ti.com [128.247.81.8])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43PJ3aml053300;
-	Thu, 25 Apr 2024 14:03:36 -0500
-Message-ID: <35e37395-c6d9-42ef-839c-bac47b50f3bf@ti.com>
-Date: Thu, 25 Apr 2024 14:03:36 -0500
+	s=arc-20240116; t=1714071984; c=relaxed/simple;
+	bh=rXPHYPL6HdSo2STxUL4eNTS6iDEG81Dn+FvYaRVVUkU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Zd7vEBGUzMySrJmrthwAbrzYWyd8TvXhVKcieduWfm23s3XJN0sR9uJjNWp/cHz/88XTkloNf91TgkdwitSHX9Lx6mcBvV7KMlMKUULfK/X3XIxCSuentMFm1HU3lVq01IKNllz6fyC0LgFh9+MMhIGeEt99WoGMH3Z5tVqBwdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=um+4zfWv; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
+ id 5882cd872318962f; Thu, 25 Apr 2024 21:06:20 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id E56CF66DF24;
+	Thu, 25 Apr 2024 21:06:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1714071980;
+	bh=rXPHYPL6HdSo2STxUL4eNTS6iDEG81Dn+FvYaRVVUkU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=um+4zfWv8vZv1ctF7A8GOS2yEy84fICIeqc2Yg8VfsAIBgOgZZ64ZH9mfYN/xTRP4
+	 BuRbiv3nplyzv6owFpB/2P6evwXQU3ihCUsZrJ1E4r40AWXuK4wrt15hFl7mG6tt58
+	 zclig/5MfH5GH+gNwsGOCXcuF2TnQR8inNWg9q2S8fvt+dTrpuwW2NoZrCUlBXfcfe
+	 bddNJexoe7pKz2lbs5BgdqnRaAOo79VkzNkUqwTMjkbUkQc1v75RwV0LnUt3ISl9o6
+	 QBUYny29qtHwZFZ0NUvQvHKc5gbMpzeoYAxoJy5bK5pfzrIugB9uBIuR360+IcjT8W
+	 ajtuAQrRjCfjQ==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: x86 Maintainers <x86@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Ricardo Neri <ricardo.neri@intel.com>, Tim Chen <tim.c.chen@intel.com>
+Subject: [RFC][PATCH v1 1/3] x86/sched: Introduce arch_rebuild_sched_domains()
+Date: Thu, 25 Apr 2024 21:04:02 +0200
+Message-ID: <3567858.iIbC2pHGDl@kreacher>
+In-Reply-To: <7663799.EvYhyI6sBW@kreacher>
+References: <7663799.EvYhyI6sBW@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 1/4] dt-bindings: remoteproc: k3-m4f: Add K3 AM64x SoCs
-To: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>
-CC: Nishanth Menon <nm@ti.com>, Bjorn Andersson <andersson@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>, <devicetree@vger.kernel.org>,
-        Conor
- Dooley <conor+dt@kernel.org>, Hari Nagalla <hnagalla@ti.com>,
-        <linux-kernel@vger.kernel.org>, Tero Kristo <kristo@kernel.org>,
-        Krzysztof
- Kozlowski <krzk+dt@kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        Vignesh
- Raghavendra <vigneshr@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-References: <20240424190612.17349-1-afd@ti.com>
- <20240424190612.17349-2-afd@ti.com>
- <171399099843.670532.4326365049493230346.robh@kernel.org>
- <20240425-herself-brigade-5b6b53dc5133@spud>
-Content-Language: en-US
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240425-herself-brigade-5b6b53dc5133@spud>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudeljedgudefgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopedutddprhgtphhtthhopeigkeeisehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehtghhlgieslhhinhhuthhrohhnihigrdguvgdprhgtphhtthhopehpvghtvghriiesihhnfhhrrggu
+ vggrugdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=20 Fuz1=20 Fuz2=20
 
-On 4/25/24 12:15 PM, Conor Dooley wrote:
-> On Wed, Apr 24, 2024 at 03:36:39PM -0500, Rob Herring wrote:
->>
->> On Wed, 24 Apr 2024 14:06:09 -0500, Andrew Davis wrote:
->>> From: Hari Nagalla <hnagalla@ti.com>
->>>
->>> K3 AM64x SoC has a Cortex M4F subsystem in the MCU voltage domain.
->>> The remote processor's life cycle management and IPC mechanisms are
->>> similar across the R5F and M4F cores from remote processor driver
->>> point of view. However, there are subtle differences in image loading
->>> and starting the M4F subsystems.
->>>
->>> The YAML binding document provides the various node properties to be
->>> configured by the consumers of the M4F subsystem.
->>>
->>> Signed-off-by: Martyn Welch <martyn.welch@collabora.com>
->>> Signed-off-by: Hari Nagalla <hnagalla@ti.com>
->>> Signed-off-by: Andrew Davis <afd@ti.com>
->>> ---
->>>   .../bindings/remoteproc/ti,k3-m4f-rproc.yaml  | 126 ++++++++++++++++++
->>>   1 file changed, 126 insertions(+)
->>>   create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
->>>
->>
->> My bot found errors running 'make dt_binding_check' on your patch:
->>
->> yamllint warnings/errors:
->>
->> dtschema/dtc warnings/errors:
->>
->>
->> doc reference errors (make refcheckdocs):
->> Warning: Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml references a file that doesn't exist: Documentation/devicetree/bindings/reserved-memory/reserved-memory.yaml
->> Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml: Documentation/devicetree/bindings/reserved-memory/reserved-memory.yaml
-> 
-> The file is now in dt-schema:
-> https://github.com/devicetree-org/dt-schema/blob/main/dtschema/schemas/reserved-memory/reserved-memory.yaml
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-So should I use "reserved-memory/reserved-memory.yaml" here, or just
-drop this line completely?
+Add arch_rebuild_sched_domains() for rebuilding scheduling domains and
+updating topology on x86 and make the ITMT code use it.
 
-Andrew
+First of all, this reduces code duplication somewhat and eliminates
+a need to use an extern variable, but it will also lay the ground for
+future work related to CPU capacity scaling.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ arch/x86/include/asm/topology.h |    6 ++++--
+ arch/x86/kernel/itmt.c          |   12 ++++--------
+ arch/x86/kernel/smpboot.c       |   10 +++++++++-
+ 3 files changed, 17 insertions(+), 11 deletions(-)
+
+Index: linux-pm/arch/x86/include/asm/topology.h
+===================================================================
+--- linux-pm.orig/arch/x86/include/asm/topology.h
++++ linux-pm/arch/x86/include/asm/topology.h
+@@ -235,8 +235,6 @@ struct pci_bus;
+ int x86_pci_root_bus_node(int bus);
+ void x86_pci_root_bus_resources(int bus, struct list_head *resources);
+ 
+-extern bool x86_topology_update;
+-
+ #ifdef CONFIG_SCHED_MC_PRIO
+ #include <asm/percpu.h>
+ 
+@@ -284,9 +282,13 @@ static inline long arch_scale_freq_capac
+ 
+ extern void arch_set_max_freq_ratio(bool turbo_disabled);
+ extern void freq_invariance_set_perf_ratio(u64 ratio, bool turbo_disabled);
++
++void arch_rebuild_sched_domains(void);
+ #else
+ static inline void arch_set_max_freq_ratio(bool turbo_disabled) { }
+ static inline void freq_invariance_set_perf_ratio(u64 ratio, bool turbo_disabled) { }
++
++static inline void arch_rebuild_sched_domains(void) { }
+ #endif
+ 
+ extern void arch_scale_freq_tick(void);
+Index: linux-pm/arch/x86/kernel/itmt.c
+===================================================================
+--- linux-pm.orig/arch/x86/kernel/itmt.c
++++ linux-pm/arch/x86/kernel/itmt.c
+@@ -54,10 +54,8 @@ static int sched_itmt_update_handler(str
+ 	old_sysctl = sysctl_sched_itmt_enabled;
+ 	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+ 
+-	if (!ret && write && old_sysctl != sysctl_sched_itmt_enabled) {
+-		x86_topology_update = true;
+-		rebuild_sched_domains();
+-	}
++	if (!ret && write && old_sysctl != sysctl_sched_itmt_enabled)
++		arch_rebuild_sched_domains();
+ 
+ 	mutex_unlock(&itmt_update_mutex);
+ 
+@@ -114,8 +112,7 @@ int sched_set_itmt_support(void)
+ 
+ 	sysctl_sched_itmt_enabled = 1;
+ 
+-	x86_topology_update = true;
+-	rebuild_sched_domains();
++	arch_rebuild_sched_domains();
+ 
+ 	mutex_unlock(&itmt_update_mutex);
+ 
+@@ -150,8 +147,7 @@ void sched_clear_itmt_support(void)
+ 	if (sysctl_sched_itmt_enabled) {
+ 		/* disable sched_itmt if we are no longer ITMT capable */
+ 		sysctl_sched_itmt_enabled = 0;
+-		x86_topology_update = true;
+-		rebuild_sched_domains();
++		arch_rebuild_sched_domains();
+ 	}
+ 
+ 	mutex_unlock(&itmt_update_mutex);
+Index: linux-pm/arch/x86/kernel/smpboot.c
+===================================================================
+--- linux-pm.orig/arch/x86/kernel/smpboot.c
++++ linux-pm/arch/x86/kernel/smpboot.c
+@@ -39,6 +39,7 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
++#include <linux/cpuset.h>
+ #include <linux/init.h>
+ #include <linux/smp.h>
+ #include <linux/export.h>
+@@ -125,7 +126,7 @@ static DEFINE_PER_CPU_ALIGNED(struct mwa
+ int __read_mostly __max_smt_threads = 1;
+ 
+ /* Flag to indicate if a complete sched domain rebuild is required */
+-bool x86_topology_update;
++static bool x86_topology_update;
+ 
+ int arch_update_cpu_topology(void)
+ {
+@@ -135,6 +136,13 @@ int arch_update_cpu_topology(void)
+ 	return retval;
+ }
+ 
++#ifdef CONFIG_X86_64
++void arch_rebuild_sched_domains(void) {
++	x86_topology_update = true;
++	rebuild_sched_domains();
++}
++#endif
++
+ static unsigned int smpboot_warm_reset_vector_count;
+ 
+ static inline void smpboot_setup_warm_reset_vector(unsigned long start_eip)
+
+
+
 
