@@ -1,122 +1,112 @@
-Return-Path: <linux-kernel+bounces-159359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 832528B2DA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:40:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1FD28B2DAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:40:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F3882848CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:40:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66EC81F22E9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:40:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61B0C156F23;
-	Thu, 25 Apr 2024 23:39:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6B9158D95;
+	Thu, 25 Apr 2024 23:40:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="C9r6VEVA"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vGqvj1g2"
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22B3E1DFF2
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 23:39:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A983715665E
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 23:39:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714088397; cv=none; b=jJtWQSNgJpdNwI9HDnlcY+lQybb9ztx/Y5YkdBACIZHhLvVUV8XkpqxqU6niPf2ojbWS/tD5A98lmpg19vrUhx3TR1GRiT7+rTDObZXsMSChLaTgwxto2Grqhbtv6YV108gRk3PP6wTNFoueEgEDAq6S+1cSM6ISXgICVHMuRAA=
+	t=1714088399; cv=none; b=sTxzB3Z3YRx2Jyqx7fEl0na+B2z7UwfsRk7WwHE8P7Uf0mde9WJiv5SmcyodMan/scbuj6T2iQ3rdzCsX8Ow04kX3K3PXkYSvqTJdZ/6ssIAikaRFHUgpyG1DBL0z3SPhx767F6qvUYOAE8QGzEneRuZekoiTQVslwltHv1eQ94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714088397; c=relaxed/simple;
-	bh=AkCyh7cWOKmp5pK+B1CaZPZ44MY5XL4t5zGDakr0MqA=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=YT5tI48Lse7O/upnyHWl4yMArpmcF59Eb9lulP9twQSDtUR5FuldWFkCEFuKToENNcWAkXahUDuTYMth05g4YDVRix8ayNL7KVpm5dLluP97dqbxViEnMqaFTFHz+74EH94p6SyDXC11hRbdzeluT9Nk4D860dHWELD+QR6ChRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=C9r6VEVA; arc=none smtp.client-ip=209.85.219.202
+	s=arc-20240116; t=1714088399; c=relaxed/simple;
+	bh=he1+vvXlMfNlWLI6LWMQzLKYVZpZflwhW5mVPorCCEc=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=mcbiEnJ0zP5V+BEe/JFwKbhr6H9UaiMHeS+KsF9DkAqJ/hbvdxa8Fkw3qUU/Urr3zCstJTBiMBFEmeCbI0qF8Swy8snRhWbMo+SEtt/MD/rvqy9itJpxFppCxZPfZMh1cPtgLDlT3eDupVGSYPWnYQY8Y682TPOwCYnvQSxVozg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vGqvj1g2; arc=none smtp.client-ip=209.85.216.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc647f65573so3698571276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 16:39:54 -0700 (PDT)
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2a5c5e69461so1897458a91.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 16:39:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714088394; x=1714693194; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gMRbfFNbJCNzsckpGMMH+pZKLS2T8rm0G9EjpmKb1aE=;
-        b=C9r6VEVAdy7RzfzH6o3nRMS4N63yrvuoVNG/ao+xMWDah9Nv0BW5/cHYc6aWbR00KI
-         sTNfJQ3e/kSf3M+UzEzzHSZou95kRNIYXRXgcAfpymBaMUX++LW77ZL9ScpIMrboRsqA
-         hj755zowK3oXtSIuk43xEnhpNbrj2NmboY4KkXO4LUj4rV572Mxe0lXMv4Pp7DUuPG/b
-         kvwKl6ILK/It8HDP+agN80+qwd+sTqqHyVm2Yj46XJHQk+DJ2C3Jw7df5WoM5eZSkwWv
-         8Xnb6oGDY9Lq8qj9jk0+OEvDQRgaKAW2VtQjlRBtSc2E0l2paiI2WUxlp03rId8IfBdI
-         Rldg==
+        d=google.com; s=20230601; t=1714088396; x=1714693196; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
+        bh=7egpFUZiACQcekVxaNpuXSMxIq5MtX0L1qRkEu6b+Fk=;
+        b=vGqvj1g28r0yi8omBoWVDZSYadn4NwBO94etafOSxsNDHlikzBhtPH8oUwDl/Dymf/
+         XlvV42jJdOpPfty+I0JTAWGMqQIfA4XdVt0NWsU+JT+cgbTWmQhiEkMFPbej3fHtqgat
+         c6PQ6260cFlVDClHcxABDkNnIp11T6YcJAXVlz3lwIXkNZsEFtJWQd5hI35dfxlu2F3D
+         mkhu0WtYquPSP3NbMOqU9H34TbD4PY3nDqizNNIezywfNfP8pkjJ2zkdlon+3VeaBui/
+         yo537PRpBPfMiISELMEir2l29g0BWX0/khppyEa7ajf2CDwn9iVC4PDZQQ5YGMANB2fn
+         naqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714088394; x=1714693194;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gMRbfFNbJCNzsckpGMMH+pZKLS2T8rm0G9EjpmKb1aE=;
-        b=ENopSn+B+aJqulY13BSKLA4uE2nTdIEJkfUDXehRysVpApFnrh9YecYaX0e93Pyf6r
-         v06igJh4s3JiqQmdw87VdynWhEVkP4/gi3rc00l+RVx7tHzlvV2nOwfHFeJVZvnxDXy6
-         F3NpYfBFwwO8LbDLI/Bi8KLS5jLkzSJlNgMwcwINDzVIQX7Yzd13tdouicOVJ1o23WJb
-         tBD4OjH4Y4C/4y1U5g5/pDNvJ27+p87QiT/fz7NPX/f4OljH25L8DEez7PZEPVFLtBU6
-         6YEnZELJbHqHHN43fvtkyL9FFOq740rGkq3RIwKaX03K9l5o9UE80FESHHh0dYocEsxR
-         DrRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUnpMxHGGZwuMhqgUp+aGQLdrO6klkAh1zNnGXWovI8/1U/bjogtsLyNTtJSaQHi5cpf5TKNKXeWZZi34VjiTBdATyPUj6hXSnP1ttm
-X-Gm-Message-State: AOJu0YxMj8DHi+VZ0Zp+d/isuyxPS8kYHGsB+Br7W4YorDex7EGrDQei
-	HmGc/93YCyIqW0ht/yTH5W8Ke+PuivBRQn3chHvB6pwLSBJ5aoClMgrgvPxHuTsRD6gJy8HNemf
-	6fA==
-X-Google-Smtp-Source: AGHT+IFv/0bOPnuO/M3uRcdFnrVAA8o6Pc8//cgxoEjvcb1rTZaB9AbcU7AC0hZ6XYV2LKHdZbxX5QdY3oc=
+        d=1e100.net; s=20230601; t=1714088396; x=1714693196;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7egpFUZiACQcekVxaNpuXSMxIq5MtX0L1qRkEu6b+Fk=;
+        b=p0G3jGhcdGmd+Yrm2YyPVDbzLeSTsiWu/DKTLhW0g6ivFjm3wlrmD87kYEg5MbZbfb
+         DsRSEscYM2y6TPLDGm5PI9BbvXlDG3ynEldDCgR5LZbPBfLUiHmDkmLEOqok+pOsjZKY
+         /JN5UqwUTg/yReeqgiW/uDPwFKb2iaj17gl4fc2tQg5C8Xkxf940cm43CYh0ExG1gACL
+         0Ke69lv6RUjTgO1KYp250j2qGxSSo/bA94w0xQh9F16NQfKdaM0RM82nT2J93tJaXn1o
+         G31xH4VXuXdegFi8nJgQJ60gm0KML6865KhWfj/s3P5r4whPcMqZGS4dv7NB7hIUA/1M
+         YztA==
+X-Forwarded-Encrypted: i=1; AJvYcCV0fpfCD2BIAcSszJc71T3OMd0m4c8P9mCjyqT6yGQgysAIoP48FywQ9NwE7HRqbnx7kxN7lanW3DabXC7eGI8bjZjPQySpSYVPkgf/
+X-Gm-Message-State: AOJu0YzcZb3/cnUJDFKvtt5pYw2j6+McYgLTMFs6xIwyByiJXHuQlmif
+	0a9zqKreCG/aXPUFTj26hxvonSWx3OTG8lvYc+f2iYBszQFE/3MfYRKdo7nHP2ercdR/a5ZXUNs
+	TQg==
+X-Google-Smtp-Source: AGHT+IFpNydi+RGS1Jthdz8Ql+lk2sE6LKmNRcPrMcbtOYRSnA4O+O1tBGwgspj5RQ3J5mqE4DImMHqS6hQ=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:154c:b0:dc7:7ce9:fb4d with SMTP id
- r12-20020a056902154c00b00dc77ce9fb4dmr324447ybu.12.1714088394229; Thu, 25 Apr
- 2024 16:39:54 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:90b:89:b0:2b0:25b6:6d44 with SMTP id
+ bb9-20020a17090b008900b002b025b66d44mr52334pjb.4.1714088396018; Thu, 25 Apr
+ 2024 16:39:56 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Thu, 25 Apr 2024 16:39:47 -0700
+Date: Thu, 25 Apr 2024 16:39:48 -0700
+In-Reply-To: <20240425233951.3344485-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240425233951.3344485-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <20240425233951.3344485-1-seanjc@google.com>
-Subject: [PATCH 0/4] KVM: Register cpuhp/syscore callbacks when enabling virt
+Message-ID: <20240425233951.3344485-2-seanjc@google.com>
+Subject: [PATCH 1/4] x86/reboot: Unconditionally define cpu_emergency_virt_cb typedef
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Register KVM's cpuhp and syscore callbacks when enabling virtualization in
-hardware, as the sole purpose of said callbacks is to disable and re-enable
-virtualization as needed.
+Define cpu_emergency_virt_cb even if the kernel is being built without KVM
+support so that KVM can reference the typedef in asm/kvm_host.h without
+needing yet more #ifdefs.
 
-The primary motivation for this series is to simplify dealing with enabling
-virtualization for Intel's TDX, which needs to temporarily enable virtualization
-when kvm-intek.ko is loaded, i.e. long before the first VM is created.
+No functional change intended.
 
-That said, this is a nice cleanup on its own, assuming I haven't broken
-something.  By registering the callbacks on-demand, the callbacks themselves
-don't need to check kvm_usage_count, because their very existence implies a
-non-zero count.
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/include/asm/reboot.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The meat is in patch 3, patches 1 and 2 are tangentially related x86
-cleanups, patch 4 renames helpers to further pave the way for TDX.
-
-Moderately well tested on x86, though I haven't (yet) done due dilegence on
-the suspend/resume and cphup paths.  I ran selftests on arm64 and nothing
-exploded.
+diff --git a/arch/x86/include/asm/reboot.h b/arch/x86/include/asm/reboot.h
+index 6536873f8fc0..d0ef2a678d66 100644
+--- a/arch/x86/include/asm/reboot.h
++++ b/arch/x86/include/asm/reboot.h
+@@ -25,8 +25,8 @@ void __noreturn machine_real_restart(unsigned int type);
+ #define MRR_BIOS	0
+ #define MRR_APM		1
  
-Sean Christopherson (4):
-  x86/reboot: Unconditionally define cpu_emergency_virt_cb typedef
-  KVM: x86: Register emergency virt callback in common code, via
-    kvm_x86_ops
-  KVM: Register cpuhp and syscore callbacks when enabling hardware
-  KVM: Rename functions related to enabling virtualization hardware
-
- arch/x86/include/asm/kvm_host.h |   3 +
- arch/x86/include/asm/reboot.h   |   2 +-
- arch/x86/kvm/svm/svm.c          |   5 +-
- arch/x86/kvm/vmx/main.c         |   2 +
- arch/x86/kvm/vmx/vmx.c          |   6 +-
- arch/x86/kvm/vmx/x86_ops.h      |   1 +
- arch/x86/kvm/x86.c              |   5 +
- virt/kvm/kvm_main.c             | 186 +++++++++++---------------------
- 8 files changed, 78 insertions(+), 132 deletions(-)
-
-
-base-commit: 7b076c6a308ec5bce9fc96e2935443ed228b9148
+-#if IS_ENABLED(CONFIG_KVM_INTEL) || IS_ENABLED(CONFIG_KVM_AMD)
+ typedef void (cpu_emergency_virt_cb)(void);
++#if IS_ENABLED(CONFIG_KVM_INTEL) || IS_ENABLED(CONFIG_KVM_AMD)
+ void cpu_emergency_register_virt_callback(cpu_emergency_virt_cb *callback);
+ void cpu_emergency_unregister_virt_callback(cpu_emergency_virt_cb *callback);
+ void cpu_emergency_disable_virtualization(void);
 -- 
 2.44.0.769.g3c40516874-goog
 
