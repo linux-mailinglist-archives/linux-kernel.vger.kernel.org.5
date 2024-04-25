@@ -1,173 +1,393 @@
-Return-Path: <linux-kernel+bounces-158222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44FB58B1D29
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:57:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23B318B1D2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:57:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B18B81F218E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:57:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 480AE1C20CBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:57:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DDE80611;
-	Thu, 25 Apr 2024 08:57:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 230A47FBB4;
+	Thu, 25 Apr 2024 08:57:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q0LrOlYX"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MBSPA2yH"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41F21DFE1
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB6D82485
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:57:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714035420; cv=none; b=C5UHj9UpEhNKIXSV7f+BIYG/JXkb6puDCSCVxnbOzCaLmI/M0faLtmYpYk6kVMrVvH1Lu5eKEUMSE2Zx+qdpi35672DmqEhmT9+S8ATGPfkGKdHf+ULM34+sh9sq0EbKaw/Y2WuNVR5Nifllg84X19Q8yor4F3k0ujz3M/mJCcg=
+	t=1714035431; cv=none; b=Cek5G99necl73jaExEbitNBD8RmFyz1JlmLPpV8UhliAbg1HHhZb9Oi7B3mm4pEXjNTdq58nmbFVEi7aFfhyLj/gvszYi2u9djcfo4k4hw96V+rfe/163P3AtPdxg1SWGcwI2VliySRF19oBfBDv/jIYB4KTWmYGT475R8y1GrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714035420; c=relaxed/simple;
-	bh=on8rRT8rMY6gATS+tExFOpawaAVnjFYUdZ/CCHFPpGs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XDWe4g20DESWdM27zs3VTaEBzhx8THo9cd0AE+DkuDNVDSnzfkZnWs2nGSF86V3FWCnIF+AoLq2qGv/2rwIcHzvXydP2u3SU+YFDc1iQwxwb/gfHkCMalukdvQZBDgeof0bERvOtVDLhWL+nXfn2/7TRQwMVaP//jH1NCQhdYsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q0LrOlYX; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e3ff14f249so5895085ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 01:56:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714035418; x=1714640218; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZHSLuFLizRd4+tmfCItUcblIOCsQpklxapzLMa2vQ8U=;
-        b=Q0LrOlYXdnaambgXodGjz65mpcf21CzXCy4kjrD09vxSUxWSf6uCDYb+GtvgBew/oo
-         c5sa37iQUBkvs4+WlVJ+l7OY8cVLZniPyasEoUfwMwxoPLMcfzwu6hX5JEEwqCQpWbWQ
-         gCQ3mdc9KfpRsZqLb9wRga0jdAUKEM8NVrzSSiBRnUzscx/H4aPf230zYJIgbmDGx2GT
-         ChGohaIE+a5TbFpdG7y3WI/Nk2NUhQgsMJIM+0JUiHaOtRxlm3f+mrVri2AQ20xq7zgn
-         dsgBclrQf3QGsD/hz2xu4dHEcK01Q+Rkqf0pgNXZrlVQwm7OK+26vtm0XXjuqXxMd2M7
-         ZmVQ==
+	s=arc-20240116; t=1714035431; c=relaxed/simple;
+	bh=NaGi0302C87IbtLwBCCCrtmGXxLbyjQAiOejwHAdJco=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VVUq75ghIGFazZpM2YPC29WPqewsiPOC8oY4Zx32shF6284jGtz1VmtMB+Yb4IP1Rr2OeGx/W/vAsN1SILqFEFRkHIxzBS+bohsAIWtoX3eY1CMcOla7lPOXOlN4pcyd+uFhn+kS+0EY4qqlLufCtjk/jhahiU+QQOK4flQJUO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MBSPA2yH; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714035428;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=z4Acf1+QJQLYid45sCXlTITj3Su+r1/KdkNqXgWo+Hw=;
+	b=MBSPA2yH7mwEFirmSeBF3BqoFRG3Ix32jUPt2T7Go34AeEIhX6UgrBCx1wOUuhcFrq4um/
+	RwqHv5RAM/WSGegk1biMKnIg3Np4VVDRBFWUydpyIu1Gw2bJr91DvgTdH15okhl0nnoB0J
+	NXnMUCIbbAKPXvg0bcIhF3lpjRQTCnY=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-246-Lwv3EbSbOziJ9OyDvBJgmA-1; Thu, 25 Apr 2024 04:57:07 -0400
+X-MC-Unique: Lwv3EbSbOziJ9OyDvBJgmA-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2d87f5937fcso6166251fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 01:57:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714035418; x=1714640218;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZHSLuFLizRd4+tmfCItUcblIOCsQpklxapzLMa2vQ8U=;
-        b=ezcesHXSGVmJtgA+Moi9VIcWu6Qiepim9oDUeUSBwhCq4I0VfnVjwC+Gi1oAgib8D0
-         7frQekvQcdmDFIpTF+XGHELiTNndwgocUHP8aTyAp5SAUwljvs93OOrnddruVnrV9Elc
-         sowk5U72B+39gydJoxvhc8GsL20ukSi96WXp+1vOVAYL0RBYmHRIZaxUVctuyXqD2iix
-         09SmSZEgL3uaNJ34iFpqIpV9B0HZq3aLy7NxB5Z6AI7aurEYADIQ0wRzYpoeB8vcxM9G
-         c3QrdEiabM0D7CjDk8Kt+EuhKUEKjjRCmq4EWthoHi/KYmqHrhl3M0x/aZ0Ppz+IxOl0
-         ujPg==
-X-Gm-Message-State: AOJu0YzjwhnlhwLhqs4fNRCuAauZipt2s1bF2Lhbo0sG1P3hPAeSVzuL
-	IEfSyDG1HPr58JSyrkJ3qrusnwQycQPsGShkehEdkN5j6Kw25dnf/2KqvVxkfCQ=
-X-Google-Smtp-Source: AGHT+IGFDPYxnNqVb0uxeIDsq0YU6Hv8MVh/1e7FD1DD6Xdu7piImLiN2dc6hRRTJ4XpQ0f9IhN88w==
-X-Received: by 2002:a17:902:f945:b0:1e0:bc64:a37a with SMTP id kx5-20020a170902f94500b001e0bc64a37amr2398111plb.8.1714035417912;
-        Thu, 25 Apr 2024 01:56:57 -0700 (PDT)
-Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id s27-20020a63525b000000b006008ee7e805sm6309811pgl.30.2024.04.25.01.56.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 01:56:57 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: syzbot+241c815bda521982cb49@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [jfs?] UBSAN: array-index-out-of-bounds in diFree
-Date: Thu, 25 Apr 2024 17:56:54 +0900
-Message-Id: <20240425085654.10967-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <0000000000000866ea0616cb082c@google.com>
-References: <0000000000000866ea0616cb082c@google.com>
+        d=1e100.net; s=20230601; t=1714035425; x=1714640225;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=z4Acf1+QJQLYid45sCXlTITj3Su+r1/KdkNqXgWo+Hw=;
+        b=D9zClB3Theho51Qj2K5oleFS/hVR09InEhmONTbiWlvdDLCcDT3R1a2dl6LTW8ZGzk
+         ncZZuq6RllmzyYRUJiqS9KJNu6tYdJR+KmGJ2qBvzfjGs4HN/geZQ3eWllDQyEiPKrcV
+         dd+4ik4SIALL3jIy53RhMXw4127nx7iX3kdb9FixN34a6iIUoCCy6/EAkCGgVrs55m3e
+         0n3c/8XQVe+7Ltmt91gOk9M90L4AaFjauY1x+4qIfvIW1mF2t1GxpkLUtz5r2fUd2UjY
+         p+ayOVLQG0TltY4nmj952S0R9HHgk75vOpYNXkExHe+v/m/MoJOIGuc7Fkf+DZoLvbT4
+         zMcw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+Q5Iw/tVoAoRskLw5lHPs4Ra+xHROLoU3mbZpLUeTsckfBA8BRki19ubYx2x+7iWoVEBKCN5S/5whtEAUWhG7tdycaOuAkNNeu/7B
+X-Gm-Message-State: AOJu0Yyllcdxs9hMtjky0eIvNi5ZQsAbmVt004Gwtt9ztvL47fA9SRxm
+	w0XPN7bAwACRZRhwG7YWPjaTIlDod3QTElhE7Sb+oxGSFRuofJkH1SvknYwTbs7HcIenNLfrbXq
+	dNAhEe6jh9WUyad7UlX0FmEPPhH6eyk02Lax5g7/+pdHTyerJIKFJiB0FLjmXde5lnaPxWw==
+X-Received: by 2002:a2e:848f:0:b0:2de:9e31:5011 with SMTP id b15-20020a2e848f000000b002de9e315011mr2537214ljh.24.1714035425472;
+        Thu, 25 Apr 2024 01:57:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF+0qMo5BWRinGlbLJjrts+NIrJBiHVAT3aROb6lBsPp9cMxfaGKSNmkMW+MkyNC+jdAHyaWw==
+X-Received: by 2002:a2e:848f:0:b0:2de:9e31:5011 with SMTP id b15-20020a2e848f000000b002de9e315011mr2537185ljh.24.1714035424954;
+        Thu, 25 Apr 2024 01:57:04 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c719:8200:487a:3426:a17e:d7b7? (p200300cbc7198200487a3426a17ed7b7.dip0.t-ipconnect.de. [2003:cb:c719:8200:487a:3426:a17e:d7b7])
+        by smtp.gmail.com with ESMTPSA id m25-20020a05600c3b1900b0041816c3049csm26789079wms.11.2024.04.25.01.57.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Apr 2024 01:57:04 -0700 (PDT)
+Message-ID: <bf005e0f-6fda-4068-8af6-5f8c00257de7@redhat.com>
+Date: Thu, 25 Apr 2024 10:57:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/5] add mTHP support for anonymous share pages
+To: Ryan Roberts <ryan.roberts@arm.com>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org,
+ hughd@google.com
+Cc: willy@infradead.org, wangkefeng.wang@huawei.com, 21cnbao@gmail.com,
+ ying.huang@intel.com, shy828301@gmail.com, ziy@nvidia.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
+ <4b998e7d-153f-48cc-a9bb-8c84bb675581@arm.com>
+ <c1f68109-7665-4905-996f-f1067dfa2cb6@linux.alibaba.com>
+ <80b5f87e-c156-4ccc-98f0-96f1fd864273@arm.com>
+ <ef4f15dd-da31-4a1e-bec5-62a7002c4f7c@linux.alibaba.com>
+ <5b8b22e7-6355-4b08-b5b5-1e33ebae6f16@arm.com>
+ <813fe7fd-3004-4e8b-801d-95c33559a025@linux.alibaba.com>
+ <76f816dd-3bbf-48c9-a630-3787051cf289@arm.com>
+ <8c0d6358-3c16-4a57-822c-04b3b3403fe6@linux.alibaba.com>
+ <4204b5f6-21f0-4aa2-a625-3dd2f416b649@arm.com>
+ <94ae96f7-79ce-4b3f-a272-6af62d01a3f8@redhat.com>
+ <71c1e953-84f9-4d47-bd4c-725a447627df@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <71c1e953-84f9-4d47-bd4c-725a447627df@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-please test array-index-out-of-bounds in diFree
+On 25.04.24 10:46, Ryan Roberts wrote:
+> On 25/04/2024 09:26, David Hildenbrand wrote:
+>> On 25.04.24 10:17, Ryan Roberts wrote:
+>>> On 25/04/2024 07:20, Baolin Wang wrote:
+>>>>
+>>>>
+>>>> On 2024/4/24 22:20, Ryan Roberts wrote:
+>>>>> On 24/04/2024 14:49, Baolin Wang wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 2024/4/24 18:01, Ryan Roberts wrote:
+>>>>>>> On 24/04/2024 10:55, Baolin Wang wrote:
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> On 2024/4/24 16:26, Ryan Roberts wrote:
+>>>>>>>>> On 24/04/2024 07:55, Baolin Wang wrote:
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> On 2024/4/23 18:41, Ryan Roberts wrote:
+>>>>>>>>>>> On 22/04/2024 08:02, Baolin Wang wrote:
+>>>>>>>>>>>> Anonymous pages have already been supported for multi-size (mTHP)
+>>>>>>>>>>>> allocation
+>>>>>>>>>>>> through commit 19eaf44954df, that can allow THP to be configured
+>>>>>>>>>>>> through the
+>>>>>>>>>>>> sysfs interface located at
+>>>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled'.
+>>>>>>>>>>>>
+>>>>>>>>>>>> However, the anonymous shared pages will ignore the anonymous mTHP rule
+>>>>>>>>>>>> configured through the sysfs interface, and can only use the PMD-mapped
+>>>>>>>>>>>> THP, that is not reasonable. Many implement anonymous page sharing
+>>>>>>>>>>>> through
+>>>>>>>>>>>> mmap(MAP_SHARED | MAP_ANONYMOUS), especially in database usage
+>>>>>>>>>>>> scenarios,
+>>>>>>>>>>>> therefore, users expect to apply an unified mTHP strategy for anonymous
+>>>>>>>>>>>> pages,
+>>>>>>>>>>>> also including the anonymous shared pages, in order to enjoy the
+>>>>>>>>>>>> benefits of
+>>>>>>>>>>>> mTHP. For example, lower latency than PMD-mapped THP, smaller memory
+>>>>>>>>>>>> bloat
+>>>>>>>>>>>> than PMD-mapped THP, contiguous PTEs on ARM architecture to reduce TLB
+>>>>>>>>>>>> miss
+>>>>>>>>>>>> etc.
+>>>>>>>>>>>
+>>>>>>>>>>> This sounds like a very useful addition!
+>>>>>>>>>>>
+>>>>>>>>>>> Out of interest, can you point me at any workloads (and off-the-shelf
+>>>>>>>>>>> benchmarks
+>>>>>>>>>>> for those workloads) that predominantly use shared anon memory?
+>>>>>>>>>>
+>>>>>>>>>> As far as I know, some database related workloads make extensive use of
+>>>>>>>>>> shared
+>>>>>>>>>> anonymous page, such as PolarDB[1] in our Alibaba fleet, or MySQL likely
+>>>>>>>>>> also
+>>>>>>>>>> uses shared anonymous memory. And I still need to do some investigation to
+>>>>>>>>>> measure the performance.
+>>>>>>>>>>
+>>>>>>>>>> [1] https://github.com/ApsaraDB/PolarDB-for-PostgreSQL
+>>>>>>>>>
+>>>>>>>>> Thanks for the pointer!
+>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>>>> The primary strategy is that, the use of huge pages for anonymous shared
+>>>>>>>>>>>> pages
+>>>>>>>>>>>> still follows the global control determined by the mount option "huge="
+>>>>>>>>>>>> parameter
+>>>>>>>>>>>> or the sysfs interface at
+>>>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled'.
+>>>>>>>>>>>> The utilization of mTHP is allowed only when the global 'huge' switch is
+>>>>>>>>>>>> enabled.
+>>>>>>>>>>>> Subsequently, the mTHP sysfs interface
+>>>>>>>>>>>> (/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled)
+>>>>>>>>>>>> is checked to determine the mTHP size that can be used for large folio
+>>>>>>>>>>>> allocation
+>>>>>>>>>>>> for these anonymous shared pages.
+>>>>>>>>>>>
+>>>>>>>>>>> I'm not sure about this proposed control mechanism; won't it break
+>>>>>>>>>>> compatibility? I could be wrong, but I don't think shmem's use of THP
+>>>>>>>>>>> used to
+>>>>>>>>>>> depend upon the value of /sys/kernel/mm/transparent_hugepage/enabled?
+>>>>>>>>>>> So it
+>>>>>>>>>>
+>>>>>>>>>> Yes, I realized this after more testing.
+>>>>>>>>>>
+>>>>>>>>>>> doesn't make sense to me that we now depend upon the
+>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled values
+>>>>>>>>>>> (which by
+>>>>>>>>>>> default disables all sizes except 2M, which is set to "inherit" from
+>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/enabled).
+>>>>>>>>>>>
+>>>>>>>>>>> The other problem is that shmem_enabled has a different set of options
+>>>>>>>>>>> (always/never/within_size/advise/deny/force) to enabled
+>>>>>>>>>>> (always/madvise/never)
+>>>>>>>>>>>
+>>>>>>>>>>> Perhaps it would be cleaner to do the same trick we did for enabled;
+>>>>>>>>>>> Introduce
+>>>>>>>>>>> /mm/transparent_hugepage/hugepage-XXkb/shmem_enabled, which can have all
+>>>>>>>>>>> the
+>>>>>>>>>>> same values as the top-level
+>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/shmem_enabled,
+>>>>>>>>>>> plus the additional "inherit" option. By default all sizes will be set to
+>>>>>>>>>>> "never" except 2M, which is set to "inherit".
+>>>>>>>>>>
+>>>>>>>>>> Sounds good to me. But I do not want to copy all same values from
+>>>>>>>>>> top-level
+>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled':
+>>>>>>>>>> always within_size advise never deny force
+>>>>>>>>>>
+>>>>>>>>>> For mTHP's shmem_enabled interface, we can just keep below values:
+>>>>>>>>>> always within_size advise never
+>>>>>>>>>>
+>>>>>>>>>> Cause when checking if mTHP can be used for anon shmem, 'deny' is equal to
+>>>>>>>>>> 'never', and 'force' is equal to 'always'.
+>>>>>>>>>
+>>>>>>>>> I'll admit it wasn't completely clear to me after reading the docs, but my
+>>>>>>>>> rough
+>>>>>>>>> understanding is:
+>>>>>>>>>
+>>>>>>>>>       - /sys/kernel/mm/transparent_hugepage/shmem_enabled controls
+>>>>>>>>>         mmap(SHARED|ANON) allocations (mostly; see rule 3)
+>>>>>>>>>       - huge=... controls tmpfs allocations
+>>>>>>>>>       - deny and force in shmem_enabled are equivalent to never and
+>>>>>>>>> always for
+>>>>>>>>>         mmap(SHARED|ANON) but additionally override all tmpfs mounts so they
+>>>>>>>>> act as
+>>>>>>>>>         if they were mounted with huge=never or huge=always
+>>>>>>>>>
+>>>>>>>>> Is that correct? If so, then I think it still makes sense to support
+>>>>>>>>> per-size
+>>>>>>>>
+>>>>>>>> Correct.
+>>>>>>>>
+>>>>>>>>> deny/force. Certainly if a per-size control is set to "inherit" and the
+>>>>>>>>> top-level control is set to deny or force, you would need that to mean
+>>>>>>>>> something.
+>>>>>>>>
+>>>>>>>> IMHO, the '/mm/transparent_hugepage/hugepage-XXkb/shmem_enabled' interface
+>>>>>>>> should only control the anonymous shmem. And 'huge=' controls tmpfs
+>>>>>>>> allocation,
+>>>>>>>> so we should not use anonymous control to override tmpfs control, which
+>>>>>>>> seems a
+>>>>>>>> little mess?
+>>>>>>>
+>>>>>>> I agree it would be cleaner to only handle mmap(SHARED|ANON) here, and leave
+>>>>>>> the
+>>>>>>> tmpfs stuff for another time. But my point is that
+>>>>>>> /mm/transparent_hugepage/shmem_enabled already interferes with tmpfs if the
+>>>>>>> value is deny or force. So if you have:
+>>>>>>>
+>>>>>>> echo deny > /mm/transparent_hugepage/shmem_enabled
+>>>>>>
+>>>>>> IIUC, this global control will cause shmem_is_huge() to always return
+>>>>>> false, so
+>>>>>> no matter how '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' is set,
+>>>>>> anonymous shmem will not use mTHP. No?
+>>>>>
+>>>>> No, that's not how '/mm/transparent_hugepage/hugepage-xxxkB/enabled' works, and
+>>>>> I think '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' should follow
+>>>>> the established pattern.
+>>>>>
+>>>>> For anon-private, each size is controlled by its
+>>>>> /mm/transparent_hugepage/hugepage-xxxkB/enabled value. Unless that value is
+>>>>> "inherit", in which case the value in /mm/transparent_hugepage/enabled is used
+>>>>> for that size.
+>>>>>
+>>>>> That approach enables us to 1) maintain back-compat and 2) control each size
+>>>>> independently
+>>>>>
+>>>>> 1) is met because the default is that all sizes are initially set to "never",
+>>>>> except the PMD-size (e.g. /mm/transparent_hugepage/hugepage-2048kB/enabled)
+>>>>> which is initially set to inherit. So any mTHP unaware SW can still modify
+>>>>> /mm/transparent_hugepage/enabled and it will still only apply to PMD size.
+>>>>>
+>>>>> 2) is met because mTHP aware SW can come along and e.g. enable the 64K size
+>>>>> (echo always > /mm/transparent_hugepage/hugepage-64kB/enabled) without
+>>>>> having to
+>>>>> modify the value in /mm/transparent_hugepage/enabled.
+>>>>
+>>>> Thanks for explanation. Initially, I want to make
+>>>> ‘/mm/transparent_hugepage/shmem_enabled’ be a global control for huge page, but
+>>>> I think it should follow the same strategy as anon mTHP as you said.
+>>>>
+>>>>>>> echo inherit > /mm/transparent_hugepage/hugepage-64kB/shmem_enabled
+>>>>>>>
+>>>>>>> What does that mean?
+>>>>>
+>>>>> So I think /mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled will need to
+>>>>> support the deny and force values. When applied to non-PMD sizes, "deny" can
+>>>>> just be a noop for now, because there was no way to configure a tmpfs mount for
+>>>>> non-PMD size THP in the first place. But I'm not sure what to do with "force"?
+>>>>
+>>>> OK. And I also prefer that "force" should be a noop too, since anon shmem
+>>>> control should not configure tmpfs huge page allocation.
+>>>
+>>> I guess technically they won't be noops, but (for the non-PMD-sizes) "force"
+>>> will be an alias for "always" and "deny" will be an alias for "never"?
+>>>
+>>> I was just a bit concerned about later changing that behavior to also impact
+>>> tmpfs once tmpfs supports mTHP; could that cause breaks? But thinking about it,
+>>> I don't see that as a problem.
+>>
+>> Is the question what should happen if we "inherit" "force" or if someone
+>> specifies "force" for a mTP size explicitly?
+> 
+> Well I think it amounts to the same thing; there isn't much point in forbidding
+> "force" to be set directly because it can still be set indirectly through
+> "inherit". We can't forbid indirectly setting it, because "inherit" could be set
+> first, then the top-level shmem_enabled changed to "force" after - and we
+> wouldn't want to fail that.
 
-#syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/ master
+The default for PMD should be "inherit", for the other mTHP sizes it 
+should be "never".
 
----
- fs/jfs/jfs_dmap.c | 4 +++-
- fs/jfs/jfs_imap.c | 8 ++++++--
- 2 files changed, 9 insertions(+), 3 deletions(-)
+So we should fail if:
+* Setting top-level to "force" when any non-PMD size is "inherit"
+* Setting "inherit" of a non-PMD size when the top-level is force
 
-diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index cb3cda1390ad..6681a6272ae7 100644
---- a/fs/jfs/jfs_dmap.c
-+++ b/fs/jfs/jfs_dmap.c
-@@ -206,6 +206,7 @@ int dbMount(struct inode *ipbmap)
- 	bmp->db_agwidth = le32_to_cpu(dbmp_le->dn_agwidth);
- 	bmp->db_agstart = le32_to_cpu(dbmp_le->dn_agstart);
- 	bmp->db_agl2size = le32_to_cpu(dbmp_le->dn_agl2size);
-+	printk("dmMount : %d\n",bmp->db_agl2size);
- 	if (bmp->db_agl2size > L2MAXL2SIZE - L2MAXAG ||
- 	    bmp->db_agl2size < 0) {
- 		err = -EINVAL;
-@@ -316,6 +317,7 @@ int dbSync(struct inode *ipbmap)
- 	dbmp_le->dn_agwidth = cpu_to_le32(bmp->db_agwidth);
- 	dbmp_le->dn_agstart = cpu_to_le32(bmp->db_agstart);
- 	dbmp_le->dn_agl2size = cpu_to_le32(bmp->db_agl2size);
-+	printk("dbSync : %d\n",bmp->db_agl2size);
- 	for (i = 0; i < MAXAG; i++)
- 		dbmp_le->dn_agfree[i] = cpu_to_le64(bmp->db_agfree[i]);
- 	dbmp_le->dn_agsize = cpu_to_le64(bmp->db_agsize);
-@@ -3393,7 +3395,7 @@ int dbExtendFS(struct inode *ipbmap, s64 blkno,	s64 nblocks)
- 
- 	bmp->db_agl2size = l2agsize;
- 	bmp->db_agsize = 1 << l2agsize;
--
-+	printk("dbExtendFS : %d\n",bmp->db_agl2size);
- 	/* compute new number of AG */
- 	agno = bmp->db_numag;
- 	bmp->db_numag = newsize >> l2agsize;
-diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
-index 2ec35889ad24..c39f7685aa97 100644
---- a/fs/jfs/jfs_imap.c
-+++ b/fs/jfs/jfs_imap.c
-@@ -339,7 +339,7 @@ int diRead(struct inode *ip)
- 
- 	/* get the ag for the iag */
- 	agstart = le64_to_cpu(iagp->agstart);
--
-+	printk("diRead : %ld\n",agstart);
- 	release_metapage(mp);
- 
- 	rel_inode = (ino & (INOSPERPAGE - 1));
-@@ -881,6 +881,8 @@ int diFree(struct inode *ip)
- 	 */
- 	agno = BLKTOAG(JFS_IP(ip)->agstart, JFS_SBI(ip->i_sb));
- 
-+	printk("%lu %d %d",JFS_IP(ip)->agstart, JFS_SBI(ip->i_sb)->bmap->db_agl2size, agno);
-+
- 	/* Lock the AG specific inode map information
- 	 */
- 	AG_LOCK(imap, agno);
-@@ -1298,6 +1300,7 @@ diInitInode(struct inode *ip, int iagno, int ino, int extno, struct iag * iagp)
- 	jfs_ip->ixpxd = iagp->inoext[extno];
- 	jfs_ip->agstart = le64_to_cpu(iagp->agstart);
- 	jfs_ip->active_ag = -1;
-+	printk("diInitInode : %lu",jfs_ip->agstart);
- }
- 
- 
-@@ -1908,6 +1911,7 @@ static int diAllocExt(struct inomap * imap, int agno, struct inode *ip)
- 		 */
- 		iagp->agstart =
- 		    cpu_to_le64(AGTOBLK(agno, imap->im_ipimap));
-+		printk("diAllocExt : %lu\n",iagp->agstart);
- 	} else {
- 		/* read the iag.
- 		 */
-@@ -2898,7 +2902,7 @@ int diExtendFS(struct inode *ipimap, struct inode *ipbmap)
- 		agstart = le64_to_cpu(iagp->agstart);
- 		n = agstart >> mp->db_agl2size;
- 		iagp->agstart = cpu_to_le64((s64)n << mp->db_agl2size);
--
-+		printk("diExtendFs : %lu %d\n",agstart, mp->db_agl2size);
- 		/* compute backed inodes */
- 		numinos = (EXTSPERIAG - le32_to_cpu(iagp->nfreeexts))
- 		    << L2INOSPEREXT;
+Both will only happen if someone messes with the mTHP configuration 
+manually.
+
+And we should only offer "force" as an option for PMD-sized mTHP as long 
+as the others are not supported. See below.
+
+> 
+> So I think the question is just 'what should happen when "force" is configured
+> for a non-PMD-sized mTHP'?
+
+We should hide it and not offer a configuration toggle that is inactive.
+
+If someone wants to sense support for other mTHP "force" settings in the 
+future, they can just parse if the "shmem_enabled" toggle offers "force" 
+as an option. Then they know that it can actually be enabled and will 
+also do what is promised.
+
 -- 
-2.34.1
+Cheers,
+
+David / dhildenb
+
 
