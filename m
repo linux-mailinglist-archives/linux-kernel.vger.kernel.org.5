@@ -1,116 +1,119 @@
-Return-Path: <linux-kernel+bounces-159295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A08068B2CC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:11:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B99A8B2CC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:11:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63285B27FFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:10:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D98E1C20E21
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B95F171679;
-	Thu, 25 Apr 2024 22:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mJvzAyPr"
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6986014A0A7
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 22:03:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71C48174ED1;
+	Thu, 25 Apr 2024 22:05:13 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A0C15665A;
+	Thu, 25 Apr 2024 22:05:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714082616; cv=none; b=KDS7a7CPlurDESNL78+K9MAsd6ne6c3iZsLT7M5lzjKNv8y++lyvsvzfcB0QBywd+FzfGMXeT2/HOV0FQh4rsdjB/sN3l8NF0RYnBaNArhbpdAkZb6NQhpOZnUxGOAhnxLILOLLyxVbHINHhu2J9ez20PieDP0P3iESUsPareF4=
+	t=1714082713; cv=none; b=pqF9ZCaPrBXjtngELU50XdW745AhdT0b2Y2xbvIjn2Q2Mwd91D/zjfKZsTehxxwcsJ2ZhjKiXVJaC4/45DXyzmccjB3qMZybi9ACd1+aCPOaYpdzOAJw0fZuFBzEo78buQ14B5nIGR1/KaB13c+YmtJ5UfEKcLHDHTLr6q2fHZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714082616; c=relaxed/simple;
-	bh=L4HyJHm2zmRW8kG0EAfkWOdZb0hKun9yEy1bDfqB/kE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TkCiToqZcJMDtFcCE9Z84mXTj43/ZWvaP3hRhep8G97Q9koRrYKAt1BTk8mUz5/ueP4U22TsVV+nXqPZBCxveiEQqGSnMJJQpQKp7/ogHDlz4hNA8NsrLFCMAoe+pVS7/RHwl5wCdmfhELXFVrGmQf0rBfo5K26EsH9UH9/Q3iM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=mJvzAyPr; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2a564ca6f67so1362939a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:03:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714082614; x=1714687414; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FPif3mAhk2mjxY5/ADz9MWVNfAUOyxoP0nyi2kzmfeM=;
-        b=mJvzAyPrhtth2hq/O3F4I9vVcRpHB0vPAmq9nrkcMc1ACIN2jKsvKtWxr4BYNjeB9O
-         HlaRbxKPGmv4IofjcryV8Npzcoso0t1UCdySSSf5BwXOEGfCNo2PqyUClQ2R1RbjODxe
-         MhjXOE7OXBeyIIepQSuWLnCspCSXzPOdV1aoM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714082614; x=1714687414;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FPif3mAhk2mjxY5/ADz9MWVNfAUOyxoP0nyi2kzmfeM=;
-        b=egx3PZaAa3FijzpAgXOcdt3/MMU7QAUeKTl1Zi9EtwWu5A/93IfQrGSz74z4CxpmcS
-         FJGQ/+L71M3fpG8oSOdD7Ozcr3mwFTOoRzUgL3o1+6lOdgUS8DmJBTYnSTtJEgoTkjth
-         9NFPgr5xmnEqws+nZKZ2E8b/+G1oyFB3+nBmokfzdp3wUdSx0J01ERLNEOeae5PPxJGC
-         EtKASGN9rbXDLb24Oaj6IsfwbiNP8m//kL1FTCfzYXD6k8Mj1vHud8nbreDg5Klf9AnX
-         DDYLgr13VPoTN5FWXXlwi3GbNqXQXPbBQyiKADgmZWr62NC0iseCUoDPbzdbKR+0gua+
-         MbjA==
-X-Forwarded-Encrypted: i=1; AJvYcCWtF+aezpd0AzoQUTfAxZK25PVjRvCJdReUEyLswl3Bvim/p4vG3QOIqNxTR/XLbftmsGlbRQwSiZOD6pzoXqeyKKAbV77Uj2hrvTF2
-X-Gm-Message-State: AOJu0YxSM5yQt5guhAyM4Cpfcf6+LoDFP3NRwkEk1rsTgUHqoS+fo6Kg
-	gyOODeFveAFRUBD38rvQ/aKEYwbNmB1h56rQLQ67gJ8ueX7X58T3xLpGZmvMXAWSikhAR0NqbJc
-	=
-X-Google-Smtp-Source: AGHT+IFasn/A+C3DUXeoAtwokegR3Wxvx2HwuaeZtpJ1eb4HcTbF2NtMz/V8UMWj1qVZcQ9FHM/P+A==
-X-Received: by 2002:a17:90a:eb03:b0:2a2:ba9:ba61 with SMTP id j3-20020a17090aeb0300b002a20ba9ba61mr1066092pjz.34.1714082614686;
-        Thu, 25 Apr 2024 15:03:34 -0700 (PDT)
-Received: from localhost (238.76.127.34.bc.googleusercontent.com. [34.127.76.238])
-        by smtp.gmail.com with UTF8SMTPSA id l8-20020a170903244800b001ea9580e6a0sm2574036pls.20.2024.04.25.15.03.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 15:03:34 -0700 (PDT)
-From: jeffxu@chromium.org
-To: aruna.ramakrishna@oracle.com
-Cc: andrew.brownsword@oracle.com,
-	dave.hansen@linux.intel.com,
-	linux-kernel@vger.kernel.org,
-	matthias.neugschwandtner@oracle.com,
-	tglx@linutronix.de,
-	jeffxu@chromium.org,
-	jeffxu@google.com,
-	jannh@google.com,
-	sroettger@google.com,
-	x86@kernel.org
-Subject: Re: [RFC PATCH v2 1/1] x86/pkeys: update PKRU to enable pkey 0 before XSAVE
-Date: Thu, 25 Apr 2024 22:03:32 +0000
-Message-ID: <20240425220332.3277193-1-jeffxu@chromium.org>
-X-Mailer: git-send-email 2.45.0.rc0.197.gbae5840b3b-goog
-In-Reply-To: <Zf1TX3QXjWQsVp2R@gmail.com>
-References: <Zf1TX3QXjWQsVp2R@gmail.com>
+	s=arc-20240116; t=1714082713; c=relaxed/simple;
+	bh=rzOpat6m+ksSiEzPcmXF9k/1yjbfIuVAexjK08+zs2I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YoDAbehfQXQXQA2XYYAPqVBMvoJZiTEoFaVGSptL2DofDgCS19g/qnaWTxVjMiuhcsaMtjjOegSf/UOPG63Zqb239HxXZSqBuuWH3LopZ9EarHsxXOa4+nc5wM6NDdO2Zt0yV3hdJB7TpH8ZhqgrV8ZfZ6n9W1biFQE1S444aK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 568602F;
+	Thu, 25 Apr 2024 15:05:38 -0700 (PDT)
+Received: from [10.57.64.58] (unknown [10.57.64.58])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1993F3F73F;
+	Thu, 25 Apr 2024 15:05:08 -0700 (PDT)
+Message-ID: <cf03d58a-93ad-46ce-bd59-8fbae3c311b2@arm.com>
+Date: Thu, 25 Apr 2024 23:05:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/3] thermal/debugfs: Prevent use-after-free from
+ occurring after cdev removal
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Linux PM <linux-pm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>
+References: <12427744.O9o76ZdvQC@kreacher> <13503555.uLZWGnKmhe@kreacher>
+Content-Language: en-US
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <13503555.uLZWGnKmhe@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Jeff Xu <jeffxu@chromium.org>
 
-Resend(previous email sent to the wrong thread)
 
->The semantics you've implemented for sigaltstacks are not the only possible 
->ones. In principle, a signal handler with its own stack might want to have 
->its own key(s) enabled. In a way a Linux signal handler is a mini-thread 
->created on the fly, with its own stack and its own attributes. Some thought 
->& analysis should go into which way to go here, and the best path should be 
->chosen. Fixing the SIGSEGV you observed should be a happy side effect of 
->other worthwile improvements.
->
-This is exactly right. we wants to use altstack with its own pkey. The pkey
-won't be writeable during thread's normal operation, only by signaling
-handling itself.
+On 4/25/24 14:57, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Since thermal_debug_cdev_remove() does not run under cdev->lock, it can
+> run in parallel with thermal_debug_cdev_state_update() and it may free
+> the struct thermal_debugfs object used by the latter after it has been
+> checked against NULL.
+> 
+> If that happens, thermal_debug_cdev_state_update() will access memory
+> that has been freed already causing the kernel to crash.
+> 
+> Address this by using cdev->lock in thermal_debug_cdev_remove() around
+> the cdev->debugfs value check (in case the same cdev is removed at the
+> same time in two differet threads) and its reset to NULL.
 
-Thanks
--Jeff
+s/differet/different/
 
->Thanks,
->
->	Ingo
->
+> 
+> Fixes: 755113d76786 ("thermal/debugfs: Add thermal cooling device debugfs information")
+> Cc :6.8+ <stable@vger.kernel.org> # 6.8+
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>   drivers/thermal/thermal_debugfs.c |   10 ++++++++--
+>   1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> Index: linux-pm/drivers/thermal/thermal_debugfs.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_debugfs.c
+> +++ linux-pm/drivers/thermal/thermal_debugfs.c
+> @@ -503,15 +503,21 @@ void thermal_debug_cdev_add(struct therm
+>    */
+>   void thermal_debug_cdev_remove(struct thermal_cooling_device *cdev)
+>   {
+> -	struct thermal_debugfs *thermal_dbg = cdev->debugfs;
+> +	struct thermal_debugfs *thermal_dbg;
+>   
+> +	mutex_lock(&cdev->lock);
+> +
+> +	thermal_dbg = cdev->debugfs;
+>   	if (!thermal_dbg)
+
+mutex_unlock(&cdev->lock) missing here
+
+>   		return;
+>   
+> +	cdev->debugfs = NULL;
+> +
+> +	mutex_unlock(&cdev->lock);
+> +
+>   	mutex_lock(&thermal_dbg->lock);
+>   
+>   	thermal_debugfs_cdev_clear(&thermal_dbg->cdev_dbg);
+> -	cdev->debugfs = NULL;
+>   
+>   	mutex_unlock(&thermal_dbg->lock);
+>   
+> 
+> 
+> 
+> 
 
