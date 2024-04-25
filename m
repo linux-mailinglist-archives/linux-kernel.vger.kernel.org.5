@@ -1,311 +1,274 @@
-Return-Path: <linux-kernel+bounces-157984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 609AB8B19CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:00:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BE348B19CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:01:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D81D71F24ABE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 04:00:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF5741C22F08
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 04:01:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 871F32B9DE;
-	Thu, 25 Apr 2024 04:00:23 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ABD42BAE8;
+	Thu, 25 Apr 2024 04:01:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="drfMRwZH"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2048.outbound.protection.outlook.com [40.107.243.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163721AACB
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 04:00:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714017622; cv=none; b=CtCx4Vf9ArvzbezPjRfXiHkRxCwX7dMenGMZ7/H++octCVLypmGoD5rf046uuZ3thpmhRA4Tw686HZy9OODDnBS9LJL5q6hdw4AOeLN6fNVebzQe/O8dhP2VKFo5tw1W1bWHmsGFDcWs4H6nFIg14F8+PeENcM2/yDSmsyGttQk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714017622; c=relaxed/simple;
-	bh=TPNPxwZ9vL4N9SlZkEDreRETsvDf83ZwbjXXy9p5hrs=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=jIwdvLgUHw1rXKGIPYCHaXEnDM5/L44pH9XSwuIbA2BAECdMdnfDn2Nokt5ufACjSYpNjlplgBYl9mZ6vdNGXOxF1Q7Svj/EkW/gdj5TtuC369XOMTNgrw6r/Ngv35+MUCAqDYnJd0/eY1mIIaediLZn1gXWQCROjeSY5fdZXGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36c1af8f2f3so6543515ab.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 21:00:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714017620; x=1714622420;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YkkHSSSTB0CocaopvtpYuNr0ZoJmuQtEpepwrvwJ4s4=;
-        b=nxFf1Vq17oh0+ok+YY5t+gws07DBRneIvOGBp4m9/8faTptkXc1tG7aLwEbk+v3kUZ
-         DH+77haMuXOvyo1S/aM5s5xU5Kr97tLiRkvV3A29qqDnlmmZx7pEK3bZhl5PNjzbwhBJ
-         q8ILskdSCgOoPR8vCIgUIGoUjNAkq0frKXSwPs+1VXSNauaGfS6I9fS1eYj38d9GdzBq
-         2FoEhBu1CRy14+unXOnKdfJhoXlFA75kIqaGm9DNN50wdkTY0AVPJAnG7i6s+ZjdCGQ3
-         hQHpZh8Jw72kSXP+sbDVRA330WWs6Sy1cwdSXCkAvRlWYht6/X+WoQtDLyhTBTNqTh3q
-         PLBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXOfVJ1bGkxASfN6PCaOxT6EmSEVdKr/9tVAMpR3Sd4bxR8Po4/BiSy1uv91eT0i3Lju6K7kGFYxigPddNC6hHCNMd7d8Xw8DGVbKCs
-X-Gm-Message-State: AOJu0YzJkg/MuZPqHG0jvTTC2rW6yemekDbEPM6/PLgg8R8YCZkBNxeK
-	bxZPssGaOPFT+KPNH2UcnIO3aeZ9cAdrFwKFmujl2AjY9OQmkCDdC54pg+k3CpWeE0k0kjwQlwj
-	xp5utIMh2u+ivSpiVrGZNuY6fGjZ/wF32hGfchIvaUHSHa/44MuCufhA=
-X-Google-Smtp-Source: AGHT+IHrZq+kGFtTQ+1wukUqwCFCkw/wL0DXgKMlBF50iVi/vAbI/MAb/zcLavaIOjPGgmiqQtDhFYOrBTCIuv06relNkA+1CFMV
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C62C1AACB;
+	Thu, 25 Apr 2024 04:01:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.48
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714017678; cv=fail; b=W3tLatGVvWuxo/+q6yuAocNKy9XFqeoRA/K0+ucdxlwe1KmYXqjgw1LErZuXaLsvJizx/afrQ7p/H16VOmwcm88WUdKNBF+olp/Nut/t90jOZLaymbwo6LOPpa1XCs0vYJtPYXAYeO90YonYJTtLngDq0ewMabZB7i8VvbwxnWw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714017678; c=relaxed/simple;
+	bh=fK1hrGdYsRFx1aqkdMvXieQC6G86S42RvdAQACk6jxo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=gvJ2TwoVm5soFE1TdbLrDD3XpVMrkTnNb/UU6t/znaWbwAP3gtMVx0y6D5Wv5MMCtGIeECq5twcT7WFXsUiO6qeWC5XwUe2p9Ysako3GkrDdFf4zVJ+FdoAT89Dd7M0wPMX/ne7mJKK3f+mUYrrF1ClX93zIx46zuVWi6d9mLIU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=drfMRwZH; arc=fail smtp.client-ip=40.107.243.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jdvq482rlxzv1OKgSCNkoz3OmaYHEyDZkdDXaiUkpcnKlouCZRGoh4O6XYVQhRH/XttYyBPM+aHh991Z824xkAiNDiZHPH9kh2jhhDLfjmMKwMUdCbOhAg70NcE3pZx1rg80hXxp9urNsZn6er8vmbEAnQAMMhRnhInkEIzbeITlGRImGESkcPlxPSJ9aLi9CMpuCb/q4RLdfx1ool9OWeKk7eevOJPP4d6MG2zLbX9uXLxQxFdG7w+4lT1aqjvSVOsHBduHu0Of3YuL21ZJN2v4XBnhO7PaAPe+VINppWehg2MEcO1P8I2UKyFYAVXncuQG8twiFrYLyBrfNFvdGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5UMiZ2bSCorAISNz0azH9BZPDLYrtlHBKr3FDAOzCBo=;
+ b=ZHZId1EmYBT6XXyi5ASbE8xwlKd7wO8nE9cSwwl0Ql2VJS86nelJLxwv3XDq/GdqFvKln/ajv83bGJEICGFBhEMhKCCDcmcokuyz9D0OPlvwYMBwRU9yBWIA7l7GuPwtS5+qIunYTwzdaX8CNkSqzuFEh7BgqMpwNP+4L+o8n2VAekDzxGEbJDjp+FrvHmVbtq4xyKz0CQKKXCqTt2jXkh1fb93eSw5oBWV0XeDMaWk8ZTuLCx9jcCuOYid7bWloyQ+qUtb3oIFG2kau3VqHkiMe5j3dh2RqrxEU9aztsHfkRWdnBQ/hFjdt0uAwrD2HV9IFCfn/NdcdRcsuCQB31A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5UMiZ2bSCorAISNz0azH9BZPDLYrtlHBKr3FDAOzCBo=;
+ b=drfMRwZHUYaQL9wDKOulLKdeR5gDjykFNPtcMGCtk4zWJ1cdV6dFSssY9mUTmtHm+NWL5YoY9zn+GGHv2vdtjBQ8xhlKp5a9EY3c+tT65kSr9L7JP49fpEG+mCkDMQ/9yIkpgExOPFEKCiUT+taxmHdWtW4e4DTTj/5vufUzQ4Yly/jJN2BNMMOvEc2fMuwMxIByCPSuPb28i4m2Ov29F+dfnZIgw/ocPOt03bfDnhFqDIvFbavFLR8bPbdaFEl3dgM98kNj+c0y1wYjI1zJdkSlNJyHY3NuupFvc3SE9TpHgUNgjO8X9VVnrFPOtai/oXy/FpLIgHyywfwYxiLdxQ==
+Received: from CH0PR08CA0004.namprd08.prod.outlook.com (2603:10b6:610:33::9)
+ by PH8PR12MB7182.namprd12.prod.outlook.com (2603:10b6:510:229::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Thu, 25 Apr
+ 2024 04:01:13 +0000
+Received: from DS3PEPF000099D7.namprd04.prod.outlook.com
+ (2603:10b6:610:33:cafe::76) by CH0PR08CA0004.outlook.office365.com
+ (2603:10b6:610:33::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.25 via Frontend
+ Transport; Thu, 25 Apr 2024 04:01:13 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ DS3PEPF000099D7.mail.protection.outlook.com (10.167.17.8) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7519.19 via Frontend Transport; Thu, 25 Apr 2024 04:01:12 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 24 Apr
+ 2024 21:00:56 -0700
+Received: from [10.110.48.28] (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 24 Apr
+ 2024 21:00:56 -0700
+Message-ID: <73de5556-e574-4ed7-a7fb-c4648e46206b@nvidia.com>
+Date: Wed, 24 Apr 2024 21:00:50 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a8b:b0:369:fba0:e97d with SMTP id
- k11-20020a056e021a8b00b00369fba0e97dmr239258ilv.3.1714017620291; Wed, 24 Apr
- 2024 21:00:20 -0700 (PDT)
-Date: Wed, 24 Apr 2024 21:00:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006588730616e3d3d8@google.com>
-Subject: [syzbot] [serial?] possible deadlock in uart_write (2)
-From: syzbot <syzbot+57cc2f20a84cb4346354@syzkaller.appspotmail.com>
-To: gregkh@linuxfoundation.org, jirislaby@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] mm/khugepaged: replace page_mapcount() check by
+ folio_likely_mapped_shared()
+To: David Hildenbrand <david@redhat.com>, <linux-kernel@vger.kernel.org>
+CC: <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>, Andrew Morton
+	<akpm@linux-foundation.org>, Jonathan Corbet <corbet@lwn.net>, "Kirill A .
+ Shutemov" <kirill.shutemov@linux.intel.com>, Zi Yan <ziy@nvidia.com>, "Yang
+ Shi" <yang.shi@linux.alibaba.com>, Ryan Roberts <ryan.roberts@arm.com>
+References: <20240424122630.495788-1-david@redhat.com>
+Content-Language: en-US
+From: John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <20240424122630.495788-1-david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099D7:EE_|PH8PR12MB7182:EE_
+X-MS-Office365-Filtering-Correlation-Id: fb108324-d7b5-4f0f-d67f-08dc64dc5927
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230031|1800799015|82310400014|376005|36860700004;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?V0dlajYvY1ZFMlc1RTlPQWFJOGxBUE9nOWlEUHdRSDhzdXZpS0NkMXBIMUN2?=
+ =?utf-8?B?Q3JtcVpwUjhsU3FZUkZKZ3U0TEVvcEplUHQrb1VJazFselhEU3FLaWpUSkFi?=
+ =?utf-8?B?ZTkySE13Wm4vOC94SkZMQVZNc2p5a0VYWGYrYWt5YnREQjVDNjVrWkN2Vmcy?=
+ =?utf-8?B?cW5RcjQ4SmFYUlkwNjlFR2thRERzOXdzc3Nlb3NVSkg5S1VoWVRBM0tCRzRJ?=
+ =?utf-8?B?T3dtTXh3ejkwU2lIVy9DU1czYm5kRHBRN2xLYzZzMjNwQVpYZTJsOG54Z2E3?=
+ =?utf-8?B?S1VwazdsQXpkRGI4d3dZdm1sbXN6bjBQcTZlS28wNnlTVHFBQkwrSXc3T0Zl?=
+ =?utf-8?B?TjJVRDVINTN0dTQwK3VnK0kxVnlTWjhjUjNydEYrcjVIOHV6dS8wd09TbHVu?=
+ =?utf-8?B?Z1UrM1BiNko2MW5mbjJSUWo3b0JBNjQ2aWtaUFhQeWYra1hlM01HenFqSjRx?=
+ =?utf-8?B?NHNyazdJL0Q4WmdNeVZVWlVDRTU2bGhZRWpEcDVaeHBmZVVsRWdFNFJtdEkv?=
+ =?utf-8?B?RUxGMzYyQk1mc1RUUlIvQWtsZjJtMlJTUldObUo3eWZvM2Y5SlZLYmw0bUJW?=
+ =?utf-8?B?NnJqVzVmd01zcE0wbnJvd3hYUGZobldXVlFSbUFUTCtzeHFqV2hEZXNxa0ZM?=
+ =?utf-8?B?Z1ZhRjhtR1Y4UU9mMmxWQmhLcU9Ub0JWM1NVdmVDOU1IdytDU3ZTU0c5VlBK?=
+ =?utf-8?B?S0ZEbS95OFZsc0d6UmVqV3RMd3pQZFJxTWdHYitMTFh2T0J1djM3UTVSUTEz?=
+ =?utf-8?B?K2NQdmJuRmo2MjR5c0p6QVdUWXgvNFB6enp0RkthZ0VubXpTaElPV1N6bkJp?=
+ =?utf-8?B?c01JQTA2a3ZJZDl0RTI3NGcwUE1WTjRoQlV1SVFtUHg1QVMvSDFELytBVi8v?=
+ =?utf-8?B?ZFNJcjRWcWRkMzdPYlEyRGZsb0F4dTc1MjN3aWtQdW12cFRaNUp2S01xRENJ?=
+ =?utf-8?B?bThiZ0FLaEt0QldJeHpkVWtLMlQydy9LVThGcjVmcWVobWE4SG1YM2lqd2hz?=
+ =?utf-8?B?czFYMW9XdjVGamRZQjhtMHNPV1ErdzhSMGxpY3kyT05tTm1JNENMNXM1eGxu?=
+ =?utf-8?B?UkRGNG8vOHV1UG5nVHFtWTR1bFhUcXRyc2EyWlJmYXczbjIwaklkQ2l0MEF1?=
+ =?utf-8?B?UmJ1anRzYm5VYXV1K0pqbVE2eWQ2NUd5a09DUXRYdkRNaEU1Yzg0elR3TlBB?=
+ =?utf-8?B?a2FBWGp0NlpBUHM4cE1yV09oQWExMzFwSEYwbjJXUy84TzJOVCsyWVJUVEVS?=
+ =?utf-8?B?blFLdkQ1eW5SU2VOMTkrNUlyZGwzM1FoTVZKdk10OElUbWZCMlJpVnc3a2tl?=
+ =?utf-8?B?Q0VZMXg1NXZOeURtWkw2YVZZVEtzTWNvWXoxY0FkTFo3UTF4K0FSRS9idy93?=
+ =?utf-8?B?NHNvc1FRUCtRSGFzalpnL3Zsa25qa3JGY0MrV1U0bWFyVjVWeEtxV2FyU3hU?=
+ =?utf-8?B?ZlJoVTdXT2QyL0RqOWJxRkg3eHFwNlRYY0VNektLRk4rQnVyKzNLN29PVThx?=
+ =?utf-8?B?dVA3ZFdRS0hFTldkWmY0cW9Xd1ltRTRReHZqQkdsbU5GVHVHV3pyZEk0alVQ?=
+ =?utf-8?B?L3RwbDJZemY5a0VWbXZTWVFjNXh4ak5QRXdJT3FCYnBkTW5jaXVlU3lYQmwx?=
+ =?utf-8?B?RWZtcmovTnBBNGJrK0Y0RWNpY2NhWjRVVHQwVnUxaHBEbWJxSXhMRWVXZzJX?=
+ =?utf-8?B?d0tZM0drTXU4YjVkbmh1QzFTejNNdlZseDBLZkhuMVBIL244d29rd3RLcy9p?=
+ =?utf-8?B?RnNtczA4MHYvbTVteWJ5ZUR1UDhUZm5tTExMSFlJK2JZaVg0cjBQWmVXWUJv?=
+ =?utf-8?Q?6pD43okSSASO2iLdaqe8kT8Ka2hq9XJrUry5Y=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(82310400014)(376005)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 04:01:12.9571
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb108324-d7b5-4f0f-d67f-08dc64dc5927
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS3PEPF000099D7.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7182
 
-Hello,
+On 4/24/24 5:26 AM, David Hildenbrand wrote:
 
-syzbot found the following issue on:
+Hi David,
 
-HEAD commit:    7b4f2bc91c15 Add linux-next specific files for 20240418
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15db8e10980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ae644165a243bf62
-dashboard link: https://syzkaller.appspot.com/bug?extid=57cc2f20a84cb4346354
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/524a18e6c5be/disk-7b4f2bc9.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/029f1b84d653/vmlinux-7b4f2bc9.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c02d1542e886/bzImage-7b4f2bc9.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+57cc2f20a84cb4346354@syzkaller.appspotmail.com
-
-sp0: Synchronizing with TNC
-------------[ cut here ]------------
-======================================================
-WARNING: possible circular locking dependency detected
-6.9.0-rc4-next-20240418-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.4/6662 is trying to acquire lock:
-ffffffff8e327d60 (console_owner){....}-{0:0}, at: console_trylock_spinning kernel/printk/printk.c:1994 [inline]
-ffffffff8e327d60 (console_owner){....}-{0:0}, at: vprintk_emit+0x3cf/0x770 kernel/printk/printk.c:2344
-
-but task is already holding lock:
-ffffffff94aa1878 (&port_lock_key){-.-.}-{2:2}, at: uart_port_lock_irqsave include/linux/serial_core.h:618 [inline]
-ffffffff94aa1878 (&port_lock_key){-.-.}-{2:2}, at: uart_write+0x10e/0x320 drivers/tty/serial/serial_core.c:604
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&port_lock_key){-.-.}-{2:2}:
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
-       uart_port_lock_irqsave include/linux/serial_core.h:618 [inline]
-       serial8250_console_write+0x1a8/0x1770 drivers/tty/serial/8250/8250_port.c:3352
-       console_emit_next_record kernel/printk/printk.c:2928 [inline]
-       console_flush_all+0x867/0xfd0 kernel/printk/printk.c:2994
-       console_unlock+0x13b/0x4d0 kernel/printk/printk.c:3063
-       vprintk_emit+0x5a6/0x770 kernel/printk/printk.c:2345
-       _printk+0xd5/0x120 kernel/printk/printk.c:2370
-       register_console+0x722/0xce0 kernel/printk/printk.c:3596
-       univ8250_console_init+0x49/0x50 drivers/tty/serial/8250/8250_core.c:723
-       console_init+0x1b8/0x6f0 kernel/printk/printk.c:3742
-       start_kernel+0x2d3/0x500 init/main.c:1034
-       x86_64_start_reservations+0x2a/0x30 arch/x86/kernel/head64.c:507
-       x86_64_start_kernel+0x99/0xa0 arch/x86/kernel/head64.c:488
-       common_startup_64+0x13e/0x147
-
--> #0 (console_owner){....}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
-       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-       console_trylock_spinning kernel/printk/printk.c:1994 [inline]
-       vprintk_emit+0x3ec/0x770 kernel/printk/printk.c:2344
-       _printk+0xd5/0x120 kernel/printk/printk.c:2370
-       __report_bug lib/bug.c:195 [inline]
-       report_bug+0x346/0x500 lib/bug.c:219
-       handle_bug+0x3e/0x70 arch/x86/kernel/traps.c:239
-       exc_invalid_op+0x1a/0x50 arch/x86/kernel/traps.c:260
-       asm_exc_invalid_op+0x1a/0x20 arch/x86/include/asm/idtentry.h:621
-       uart_write+0x2b0/0x320 drivers/tty/serial/serial_core.c:605
-       tnc_init drivers/net/hamradio/6pack.c:531 [inline]
-       sixpack_open+0x790/0xa80 drivers/net/hamradio/6pack.c:628
-       tty_ldisc_open drivers/tty/tty_ldisc.c:432 [inline]
-       tty_ldisc_reinit+0x2d4/0x4a0 drivers/tty/tty_ldisc.c:661
-       tty_reopen+0x20b/0x2d0 drivers/tty/tty_io.c:1366
-       tty_open_by_driver drivers/tty/tty_io.c:2082 [inline]
-       tty_open+0xa26/0xdf0 drivers/tty/tty_io.c:2135
-       chrdev_open+0x5b0/0x630 fs/char_dev.c:414
-       do_dentry_open+0x95a/0x1720 fs/open.c:955
-       do_open fs/namei.c:3650 [inline]
-       path_openat+0x289f/0x3280 fs/namei.c:3807
-       do_filp_open+0x235/0x490 fs/namei.c:3834
-       do_sys_openat2+0x13e/0x1d0 fs/open.c:1405
-       do_sys_open fs/open.c:1420 [inline]
-       __do_sys_openat fs/open.c:1436 [inline]
-       __se_sys_openat fs/open.c:1431 [inline]
-       __x64_sys_openat+0x247/0x2a0 fs/open.c:1431
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&port_lock_key);
-                               lock(console_owner);
-                               lock(&port_lock_key);
-  lock(console_owner);
-
- *** DEADLOCK ***
-
-3 locks held by syz-executor.4/6662:
- #0: ffff88805f95e1c0 (&tty->legacy_mutex){+.+.}-{3:3}, at: tty_lock_interruptible+0x68/0xc0 drivers/tty/tty_mutex.c:27
- #1: ffff88805f95e0a0 (&tty->ldisc_sem){++++}-{0:0}, at: __tty_ldisc_lock drivers/tty/tty_ldisc.c:289 [inline]
- #1: ffff88805f95e0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_lock+0x6c/0xc0 drivers/tty/tty_ldisc.c:313
- #2: ffffffff94aa1878 (&port_lock_key){-.-.}-{2:2}, at: uart_port_lock_irqsave include/linux/serial_core.h:618 [inline]
- #2: ffffffff94aa1878 (&port_lock_key){-.-.}-{2:2}, at: uart_write+0x10e/0x320 drivers/tty/serial/serial_core.c:604
-
-stack backtrace:
-CPU: 0 PID: 6662 Comm: syz-executor.4 Not tainted 6.9.0-rc4-next-20240418-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
- __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
- console_trylock_spinning kernel/printk/printk.c:1994 [inline]
- vprintk_emit+0x3ec/0x770 kernel/printk/printk.c:2344
- _printk+0xd5/0x120 kernel/printk/printk.c:2370
- __report_bug lib/bug.c:195 [inline]
- report_bug+0x346/0x500 lib/bug.c:219
- handle_bug+0x3e/0x70 arch/x86/kernel/traps.c:239
- exc_invalid_op+0x1a/0x50 arch/x86/kernel/traps.c:260
- asm_exc_invalid_op+0x1a/0x20 arch/x86/include/asm/idtentry.h:621
-RIP: 0010:uart_write+0x2b0/0x320 drivers/tty/serial/serial_core.c:605
-Code: 74 08 48 89 df e8 a0 9e be fc 48 83 3b 00 74 74 e8 05 4e 59 fc eb 97 e8 fe 4d 59 fc 45 31 e4 eb 08 e8 f4 4d 59 fc 45 31 ed 90 <0f> 0b 90 45 84 e4 74 0a e8 e3 4d 59 fc 45 31 f6 eb 84 e8 d9 4d 59
-RSP: 0018:ffffc90009fcf4b8 EFLAGS: 00010046
-RAX: ffffffff853d0f92 RBX: dffffc0000000000 RCX: 0000000000040000
-RDX: ffffc90013601000 RSI: 000000000001ba5f RDI: 000000000001ba60
-RBP: ffff88801f720f48 R08: 0000000000000003 R09: fffff520013f9e74
-R10: dffffc0000000000 R11: fffff520013f9e74 R12: 0000000000000000
-R13: 0000000000000246 R14: ffff88801f720be8 R15: ffffffff94aa1860
- tnc_init drivers/net/hamradio/6pack.c:531 [inline]
- sixpack_open+0x790/0xa80 drivers/net/hamradio/6pack.c:628
- tty_ldisc_open drivers/tty/tty_ldisc.c:432 [inline]
- tty_ldisc_reinit+0x2d4/0x4a0 drivers/tty/tty_ldisc.c:661
- tty_reopen+0x20b/0x2d0 drivers/tty/tty_io.c:1366
- tty_open_by_driver drivers/tty/tty_io.c:2082 [inline]
- tty_open+0xa26/0xdf0 drivers/tty/tty_io.c:2135
- chrdev_open+0x5b0/0x630 fs/char_dev.c:414
- do_dentry_open+0x95a/0x1720 fs/open.c:955
- do_open fs/namei.c:3650 [inline]
- path_openat+0x289f/0x3280 fs/namei.c:3807
- do_filp_open+0x235/0x490 fs/namei.c:3834
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1405
- do_sys_open fs/open.c:1420 [inline]
- __do_sys_openat fs/open.c:1436 [inline]
- __se_sys_openat fs/open.c:1431 [inline]
- __x64_sys_openat+0x247/0x2a0 fs/open.c:1431
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fd50cc7dea9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fd50d96c0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 00007fd50cdabf80 RCX: 00007fd50cc7dea9
-RDX: 0000000000000000 RSI: 0000000020000000 RDI: ffffffffffffff9c
-RBP: 00007fd50ccca4a4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fd50cdabf80 R15: 00007ffeacd13b38
- </TASK>
-WARNING: CPU: 0 PID: 6662 at drivers/tty/serial/serial_core.c:605 uart_write+0x2b0/0x320 drivers/tty/serial/serial_core.c:605
-Modules linked in:
-CPU: 0 PID: 6662 Comm: syz-executor.4 Not tainted 6.9.0-rc4-next-20240418-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:uart_write+0x2b0/0x320 drivers/tty/serial/serial_core.c:605
-Code: 74 08 48 89 df e8 a0 9e be fc 48 83 3b 00 74 74 e8 05 4e 59 fc eb 97 e8 fe 4d 59 fc 45 31 e4 eb 08 e8 f4 4d 59 fc 45 31 ed 90 <0f> 0b 90 45 84 e4 74 0a e8 e3 4d 59 fc 45 31 f6 eb 84 e8 d9 4d 59
-RSP: 0018:ffffc90009fcf4b8 EFLAGS: 00010046
-RAX: ffffffff853d0f92 RBX: dffffc0000000000 RCX: 0000000000040000
-RDX: ffffc90013601000 RSI: 000000000001ba5f RDI: 000000000001ba60
-RBP: ffff88801f720f48 R08: 0000000000000003 R09: fffff520013f9e74
-R10: dffffc0000000000 R11: fffff520013f9e74 R12: 0000000000000000
-R13: 0000000000000246 R14: ffff88801f720be8 R15: ffffffff94aa1860
-FS:  00007fd50d96c6c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffd65b98000 CR3: 0000000011650000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- tnc_init drivers/net/hamradio/6pack.c:531 [inline]
- sixpack_open+0x790/0xa80 drivers/net/hamradio/6pack.c:628
- tty_ldisc_open drivers/tty/tty_ldisc.c:432 [inline]
- tty_ldisc_reinit+0x2d4/0x4a0 drivers/tty/tty_ldisc.c:661
- tty_reopen+0x20b/0x2d0 drivers/tty/tty_io.c:1366
- tty_open_by_driver drivers/tty/tty_io.c:2082 [inline]
- tty_open+0xa26/0xdf0 drivers/tty/tty_io.c:2135
- chrdev_open+0x5b0/0x630 fs/char_dev.c:414
- do_dentry_open+0x95a/0x1720 fs/open.c:955
- do_open fs/namei.c:3650 [inline]
- path_openat+0x289f/0x3280 fs/namei.c:3807
- do_filp_open+0x235/0x490 fs/namei.c:3834
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1405
- do_sys_open fs/open.c:1420 [inline]
- __do_sys_openat fs/open.c:1436 [inline]
- __se_sys_openat fs/open.c:1431 [inline]
- __x64_sys_openat+0x247/0x2a0 fs/open.c:1431
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fd50cc7dea9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fd50d96c0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 00007fd50cdabf80 RCX: 00007fd50cc7dea9
-RDX: 0000000000000000 RSI: 0000000020000000 RDI: ffffffffffffff9c
-RBP: 00007fd50ccca4a4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fd50cdabf80 R15: 00007ffeacd13b38
- </TASK>
+Overall, I think this looks good, just a few questions, and of course
+some silly documentation nits.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> We want to limit the use of page_mapcount() to places where absolutely
+> required, to prepare for kernel configs where we won't keep track of
+> per-page mapcounts in large folios.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Just curious, can you elaborate on the motivation? I probably missed
+the discussions that explained why page_mapcount() in large folios
+is not desirable. Are we getting rid of a field in struct page/folio?
+Some other reason?
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+..
+> To summarize, in the common case, this change is not expected to matter
+> much. The more common application of khugepaged operates on
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+Based on the diffs (and some quick hacks for testing that I ran), I agree.
 
-If you want to undo deduplication, reply with:
-#syz undup
+..
+> 
+> This really needs the folio_likely_mapped_shared() optimization [1] that
+> resides in mm-unstable, I think, to reduce "false negatives".
+> 
+> The khugepage MM selftests keep working as expected, including:
+> 
+> 	Run test: collapse_max_ptes_shared (khugepaged:anon)
+> 	Allocate huge page... OK
+> 	Share huge page over fork()... OK
+> 	Trigger CoW on page 255 of 512... OK
+> 	Maybe collapse with max_ptes_shared exceeded.... OK
+> 	Trigger CoW on page 256 of 512... OK
+> 	Collapse with max_ptes_shared PTEs shared.... OK
+> 	Check if parent still has huge page... OK
+
+Well, a word of caution! These tests do not (yet) cover either of
+the interesting new cases that folio_likely_mapped_shared() presents:
+KSM or hugetlbfs interactions. In other words, false positives.
+
+
+> 
+> Where we check that collapsing in the parent behaves as expected after
+> COWing a lot of pages in the parent: a sane scenario that is essentially
+> unchanged and which does not depend on any action in the child process
+> (compared to the cases discussed in (B) above).
+> 
+> [1] https://lkml.kernel.org/r/20240409192301.907377-6-david@redhat.com
+> 
+> ---
+>   Documentation/admin-guide/mm/transhuge.rst |  3 ++-
+>   mm/khugepaged.c                            | 22 +++++++++++++++-------
+>   2 files changed, 17 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
+> index f82300b9193fe..076443cc10a6c 100644
+> --- a/Documentation/admin-guide/mm/transhuge.rst
+> +++ b/Documentation/admin-guide/mm/transhuge.rst
+> @@ -278,7 +278,8 @@ collapsed, resulting fewer pages being collapsed into
+>   THPs, and lower memory access performance.
+>   
+>   ``max_ptes_shared`` specifies how many pages can be shared across multiple
+> -processes. Exceeding the number would block the collapse::
+> +processes. khugepaged might treat pages of THPs as shared if any page of
+> +that THP is shared. Exceeding the number would block the collapse::
+>   
+>   	/sys/kernel/mm/transparent_hugepage/khugepaged/max_ptes_shared
+>   
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index 2f73d2aa9ae84..cf518fc440982 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -583,7 +583,8 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+>   		folio = page_folio(page);
+>   		VM_BUG_ON_FOLIO(!folio_test_anon(folio), folio);
+>   
+> -		if (page_mapcount(page) > 1) {
+> +		/* See hpage_collapse_scan_pmd(). */
+
+Why? Because it has an identical code snippet?
+
+I thought about asking if we should factor that out, just to
+keep the policy the same. Thoughts?
+
+> +		if (folio_likely_mapped_shared(folio)) {
+>   			++shared;
+>   			if (cc->is_khugepaged &&
+>   			    shared > khugepaged_max_ptes_shared) {
+> @@ -1317,8 +1318,20 @@ static int hpage_collapse_scan_pmd(struct mm_struct *mm,
+>   			result = SCAN_PAGE_NULL;
+>   			goto out_unmap;
+>   		}
+> +		folio = page_folio(page);
+>   
+> -		if (page_mapcount(page) > 1) {
+> +		if (!folio_test_anon(folio)) {
+> +			result = SCAN_PAGE_ANON;
+> +			goto out_unmap;
+> +		}
+> +
+> +		/*
+> +		 * We treat a single page as shared if any part of the THP
+> +		 * is shared. "False negatives" from
+> +		 * folio_likely_mapped_shared() are not expected to matter
+> +		 * much in practice.
+
+Maybe delete that second sentence? It is not really pulling its
+weight here. :)
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
 
