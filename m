@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-158960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E6888B2760
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:14:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 584A88B275F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:14:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFC3128613A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:14:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C3AE1C2425F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:14:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 347931514DE;
-	Thu, 25 Apr 2024 17:13:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2CB614EC71;
+	Thu, 25 Apr 2024 17:13:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="hacgZigG"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="VLq7HvOh"
 Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C59B14E2E7;
-	Thu, 25 Apr 2024 17:13:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F9714E2FB;
+	Thu, 25 Apr 2024 17:13:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714065193; cv=none; b=Lm8iR/f+24nhn3gURbtKh1jHa1M2pXICRA0rRqfAUAeyaqQW9d9R02lbooS4uUjuB5uq6DlzHlphusiIUyD7hQfsJxM1A0lSY4S4DPzXzybH+m41Ung9NTKyzKmLvIPPedbSsbD3UT76OpUdEhwVBORsuEQq8vRhj4sGLzelsZ0=
+	t=1714065193; cv=none; b=hSLa27X/f0U85EWaCYTntx5C3cxLCGaS1ZeMnPsBIUp+bCkQ0jiDwSh2SYMzqbs6ecxvMTvxLkKb7Ppzd2OkRK9gZPzjwzpU3nA1oji9PDjgxTQfUwPWyFbYYSX6dckWftdDx6wwcXXjaTPh9XArtDF4m+oF5tIztNcGuiS/1pE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714065193; c=relaxed/simple;
-	bh=lKHMkrDVVEE7R8BTBdZwOe8QEkELrApm+nqJkERY544=;
+	bh=FGaH4pLH7LYMjkdhr/geohJb9dwhyxxED5l1amL/Ogo=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jgXO3H+JdgqS1D46pBQLRAhh8fBSqHMwhYTPSO+hhuUlKJT5zCiGSM+6QCPZhUD5kwZPqDE1l4ULoHCVgwY+JbTg5srZJEQS25EoMbmYLNZppcFHbv+KqtnsSTCyEMwo31paqp7KugOh6cOQ7ItWoEj6DfYqU8ywao1uo/8f9vU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=hacgZigG; arc=none smtp.client-ip=45.89.224.132
+	 MIME-Version:Content-Type; b=Upx1qRsyXF1RxeEsuV/EExOThBM4/FDdso/quITtWUak8U+GGUIMH58e3n7tTdq3auM9WFzH6iwpqmhPRVTNw10KvLOy2Y1N+wISlVTw+GEJNAEXSGJVurZxNhoSGtpqqHcS4+sj3yYKZKGsi4te4BHMtSLVvRXGiDg6yFdS5+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=VLq7HvOh; arc=none smtp.client-ip=45.89.224.132
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
 Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 873B312000C;
+	by mx1.sberdevices.ru (Postfix) with ESMTP id AEA5212000D;
 	Thu, 25 Apr 2024 20:13:01 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 873B312000C
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru AEA5212000D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
 	s=mail; t=1714065181;
-	bh=JVrgXdX8kamEaJvltEQAZzfNIWpOQgobLePARW6BHyw=;
+	bh=A9GpIzQZVP3rm6DjUNEFW6D9Y7ngu+Gh1hs4Mrn4JxU=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=hacgZigGhvKMoaRiuJ83hvQiZTCQVWAhgAxc1glqBPpO9++CICyrJuodgqWxYRKMT
-	 M7kMt3bWzI/3qPgbuycHhk/Kzl4IbaDc81tsTXfMoqhIqzl/h5LvpVA9h40mKLA3CI
-	 +pzXh1ik+29My4jDStWMcCTVoNIcLfd7B//NXoJSIjRWEv5kJard8cZkSAo8CYDkeF
-	 PnwBCSLp6H0NmDA4y58qosiEed6bzLRr8KmB/L1M0FEJ7ITYuQUDeYqYExcclKvJkp
-	 4eqWJr7GxzgFbNxft8IoTZeVpz7S4TEGRhr7qli0bV10zyva2ylgBZSRn8lIn/lsBZ
-	 8yBDx/Pl4IoPA==
+	b=VLq7HvOhXhaz9LyhReNa/Tgut3dPhbsangs+j1NwAmTmF2zJIL5Bot/2PIhBvR+3H
+	 7IKC+vDzs3R7Fr7fXvA2Svn51kNKlHHIsYNGap3fhG4nvgoYGsa5rLbAGaCG8B67Km
+	 LFYXcHPMBgd/PtAfxMHqGeyqIe19EELLLfr4UNHphWQbK4K8Gb6RdmohGfCSRm7u3X
+	 gDC9XGAcxJKFjpizpXvXM21T0nT+K4Baxrq9L07hVryhWNBSR9xqfnRYw3ed1z+yc7
+	 9YpUq7CFSSw5O7edpiwqMNxiV2znJNwh/XB8Gb6w16TaHC/WJaURh4aZkFNWQvddIw
+	 k6mYR5mNeDmag==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
@@ -60,11 +60,10 @@ To: <u.kleine-koenig@pengutronix.de>, <neil.armstrong@linaro.org>,
 	<hkallweit1@gmail.com>
 CC: <linux-pwm@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<kernel@salutedevices.com>, George Stark <gnstark@salutedevices.com>, Dmitry
- Rokosov <ddrokosov@salutedevices.com>
-Subject: [PATCH v3 2/3] pwm: meson: Add check for error from clk_round_rate()
-Date: Thu, 25 Apr 2024 20:12:52 +0300
-Message-ID: <20240425171253.2752877-3-gnstark@salutedevices.com>
+	<kernel@salutedevices.com>, George Stark <gnstark@salutedevices.com>
+Subject: [PATCH v3 3/3] pwm: meson: Use mul_u64_u64_div_u64() for frequency calculating
+Date: Thu, 25 Apr 2024 20:12:53 +0300
+Message-ID: <20240425171253.2752877-4-gnstark@salutedevices.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240425171253.2752877-1-gnstark@salutedevices.com>
 References: <20240425171253.2752877-1-gnstark@salutedevices.com>
@@ -74,8 +73,8 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
 X-KSMG-Rule-ID: 10
@@ -95,50 +94,39 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/25 14:02:00 #24969020
 X-KSMG-AntiVirus-Status: Clean, skipped
 
-clk_round_rate() can return not only zero if requested frequency can not
-be provided but also negative error code so add check for it too.
-
-Also change type of variable holding clk_round_rate() result from
-unsigned long to long. It's safe due to clk_round_rate() returns long.
+While calculating frequency for the given period u64 numbers are
+multiplied before division what can lead to overflow in theory so use
+secure mul_u64_u64_div_u64() which handles overflow correctly.
 
 Fixes: 329db102a26d ("pwm: meson: make full use of common clock framework")
-Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Suggested-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 Signed-off-by: George Stark <gnstark@salutedevices.com>
 ---
- drivers/pwm/pwm-meson.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/pwm/pwm-meson.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pwm/pwm-meson.c b/drivers/pwm/pwm-meson.c
-index f4d70da621ec..4a652d500dfc 100644
+index 4a652d500dfc..b2f97dfb01bb 100644
 --- a/drivers/pwm/pwm-meson.c
 +++ b/drivers/pwm/pwm-meson.c
-@@ -148,7 +148,7 @@ static int meson_pwm_calc(struct pwm_chip *chip, struct pwm_device *pwm,
- 	struct meson_pwm *meson = to_meson_pwm(chip);
- 	struct meson_pwm_channel *channel = &meson->channels[pwm->hwpwm];
- 	unsigned int cnt, duty_cnt;
--	unsigned long fin_freq;
-+	long fin_freq;
- 	u64 duty, period, freq;
+@@ -176,7 +176,7 @@ static int meson_pwm_calc(struct pwm_chip *chip, struct pwm_device *pwm,
  
- 	duty = state->duty_cycle;
-@@ -168,12 +168,13 @@ static int meson_pwm_calc(struct pwm_chip *chip, struct pwm_device *pwm,
- 		freq = ULONG_MAX;
+ 	dev_dbg(pwmchip_parent(chip), "fin_freq: %ld Hz\n", fin_freq);
  
- 	fin_freq = clk_round_rate(channel->clk, freq);
--	if (fin_freq == 0) {
--		dev_err(pwmchip_parent(chip), "invalid source clock frequency\n");
--		return -EINVAL;
-+	if (fin_freq <= 0) {
-+		dev_err(pwmchip_parent(chip),
-+			"invalid source clock frequency %llu\n", freq);
-+		return fin_freq ? fin_freq : -EINVAL;
- 	}
- 
--	dev_dbg(pwmchip_parent(chip), "fin_freq: %lu Hz\n", fin_freq);
-+	dev_dbg(pwmchip_parent(chip), "fin_freq: %ld Hz\n", fin_freq);
- 
- 	cnt = div_u64(fin_freq * period, NSEC_PER_SEC);
+-	cnt = div_u64(fin_freq * period, NSEC_PER_SEC);
++	cnt = mul_u64_u64_div_u64(fin_freq, period, NSEC_PER_SEC);
  	if (cnt > 0xffff) {
+ 		dev_err(pwmchip_parent(chip), "unable to get period cnt\n");
+ 		return -EINVAL;
+@@ -191,7 +191,7 @@ static int meson_pwm_calc(struct pwm_chip *chip, struct pwm_device *pwm,
+ 		channel->hi = 0;
+ 		channel->lo = cnt;
+ 	} else {
+-		duty_cnt = div_u64(fin_freq * duty, NSEC_PER_SEC);
++		duty_cnt = mul_u64_u64_div_u64(fin_freq, duty, NSEC_PER_SEC);
+ 
+ 		dev_dbg(pwmchip_parent(chip), "duty=%llu duty_cnt=%u\n", duty, duty_cnt);
+ 
 -- 
 2.25.1
 
