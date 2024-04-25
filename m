@@ -1,114 +1,200 @@
-Return-Path: <linux-kernel+bounces-158702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF0848B2412
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:28:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16AAD8B2402
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:26:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90AF3B27AF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:25:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A5471C21F64
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:26:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB3714C595;
-	Thu, 25 Apr 2024 14:21:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WzsyKvTm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1F814A60A;
-	Thu, 25 Apr 2024 14:21:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922BB14A4C0;
+	Thu, 25 Apr 2024 14:24:07 +0000 (UTC)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [20.231.56.155])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 587CA149DFF;
+	Thu, 25 Apr 2024 14:24:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=20.231.56.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714054873; cv=none; b=U1bBJqyGwwpzc+whK/z2vyqHmToB+OdEdAHY0o80wLMO6VKD4GH8V63GEp1RgUc6CH4vJvv4A+/P0pRvZwVCZJlBGJpCcvNpw/xTirRXt+6SaZq5PL7ZyApPVomILSLXD0w7DI4bna/3iMDNw+fdrP/fsFEZlx6iGXjkfQkN9TQ=
+	t=1714055047; cv=none; b=S1ZWv8yOnFQVjg4yuJlnSh6nubr42iyCAVlFJBPn+yssLz8PX5TH3d8b6fz/YmPTS/Flj59v5+qeGf28e9uXhJYUb2EGHF1v1q5Xzk4KNAjegI4SSONntt5BP45eSDtpb/ca1wbqttW/eEguUHQbDU7drnYkDxyAoZkeFWbxiVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714054873; c=relaxed/simple;
-	bh=v4Zk7cp/J5uIKp7aMsO/8WP6RRDSuoxJeMH6/h7FcWI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AN7kKE9FqnjhwuWI2n4wiZke7ePrA9boDswMhuxLQ5qy1d0FCudtA4bCvckncRwaP28REfiP6WWS7400O7rEkEtX9jL7Ua6+yMLwfnUnRKoDBWaiyhpGwgG4EuJy2huS9z2CY5oOZOCOUJdGGaofURNrdPnAU+ph3vtqJTzHoi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WzsyKvTm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E2B7C113CC;
-	Thu, 25 Apr 2024 14:21:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714054873;
-	bh=v4Zk7cp/J5uIKp7aMsO/8WP6RRDSuoxJeMH6/h7FcWI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WzsyKvTmHwPQzRlLAIOkKY29XYfiuW/0qDmhR8I4Mabf9LqT3YFvdap7/N2MahDR1
-	 cu1zEjG4WYBnhI+9lZB6DK+immNjkaccNBjPaa7sBioyGFiNL608Y/Val2+iGqVCGv
-	 lx6c1ehaupDIloP7UiPjyAYj/91Xa+TIDINqisfIMJZH87KDRHRC357hStg7BdV8dL
-	 +M1dhojEpD9+jPTtZU8PhCHiPrAwUm4vV6pDeFqRZ6yDvzo9AMxcVdDDNVlNOTedg2
-	 8Np9c/oh0OAwXKfgMDNkhLfjN1U1YJeF5ik7ZcukktsPAvhsDZdiNfbown3+H3D27F
-	 v4R9Hb3TtPC9w==
-Date: Thu, 25 Apr 2024 11:21:08 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Howard Chu <howardchu95@gmail.com>
-Cc: peterz@infradead.org, mingo@redhat.com, namhyung@kernel.org,
-	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-	kan.liang@linux.intel.com, linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org, trivial@kernel.org
-Subject: Re: [PATCH] perf record: Fix comment misspellings
-Message-ID: <Zipm1B6qZ1NFANAc@x1>
-References: <20240425060427.1800663-1-howardchu95@gmail.com>
+	s=arc-20240116; t=1714055047; c=relaxed/simple;
+	bh=gLNgGHBuQgzzluyMUUJ+Kdz4LOLpi0EuVBnmnLiTLRk=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=qL7ziLId2MvILSJA80bOqHFd9QPvN+FILkz9PoyJK420ZyYR+eSSP6r54E+iFdn/DeCMvxyI8PIGUj5yIDAEgnMm6wKdEpb7oCt2jWUvQkVwD/6WEJb6s0SUOCewNTUK9wwRC00ILEutbi0LiTGAdP5uGo20N1hHb8yJETNMs/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=20.231.56.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from ubuntu.localdomain (unknown [106.117.97.39])
+	by mail-app2 (Coremail) with SMTP id by_KCgDnBIhxZypms8KaAQ--.38350S2;
+	Thu, 25 Apr 2024 22:23:48 +0800 (CST)
+From: Duoming Zhou <duoming@zju.edu.cn>
+To: linux-bluetooth@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	luiz.dentz@gmail.com,
+	johan.hedberg@gmail.com,
+	marcel@holtmann.org,
+	Duoming Zhou <duoming@zju.edu.cn>
+Subject: [PATCH] Bluetooth: Fix use-after-free bugs caused by sco_sock_timeout
+Date: Thu, 25 Apr 2024 22:23:45 +0800
+Message-Id: <20240425142345.47229-1-duoming@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:by_KCgDnBIhxZypms8KaAQ--.38350S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3ArWfuF4DKr4UCw4kWr1rZwb_yoW7try8pr
+	nxCayfWrW8Xry0qr4UZF4UtrW8Gr40y3Z8trs2vwnrJ3W5KF4rtryUCrWqgryUCr1jvFy7
+	AFWDAr4j9r1UJw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
+	JF0_Jw1lc2xSY4AK67AK6ry5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+	67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+	x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
+	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
+	IFyTuYvjfUnBMKDUUUU
+X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwQCAWYpDhwZjgAIsG
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240425060427.1800663-1-howardchu95@gmail.com>
 
-On Thu, Apr 25, 2024 at 02:04:27PM +0800, Howard Chu wrote:
-> Fix comment misspellings
+When the sco connection is established and then, the sco socket
+is releasing, timeout_work will be scheduled to judge whether
+the sco disconnection is timeout. The sock will be deallocated
+later, but it is dereferenced again in sco_sock_timeout. As a
+result, the use-after-free bugs will happen. The root cause is
+shown below:
 
-Thanks, applied to perf-tools-next,
+    Cleanup Thread               |      Worker Thread
+sco_sock_release                 |
+  sco_sock_close                 |
+    __sco_sock_close             |
+      sco_sock_set_timer         |
+        schedule_delayed_work    |
+  sco_sock_kill                  |    (wait a time)
+    sock_put(sk) //FREE          |  sco_sock_timeout
+                                 |    sock_hold(sk) //USE
 
-- Arnaldo
+The KASAN report triggered by POC is shown below:
+
+[   95.890016] ==================================================================
+[   95.890496] BUG: KASAN: slab-use-after-free in sco_sock_timeout+0x5e/0x1c0
+[   95.890755] Write of size 4 at addr ffff88800c388080 by task kworker/0:0/7
+..
+[   95.890755] Workqueue: events sco_sock_timeout
+[   95.890755] Call Trace:
+[   95.890755]  <TASK>
+[   95.890755]  dump_stack_lvl+0x45/0x110
+[   95.890755]  print_address_description+0x78/0x390
+[   95.890755]  print_report+0x11b/0x250
+[   95.890755]  ? __virt_addr_valid+0xbe/0xf0
+[   95.890755]  ? sco_sock_timeout+0x5e/0x1c0
+[   95.890755]  kasan_report+0x139/0x170
+[   95.890755]  ? update_load_avg+0xe5/0x9f0
+[   95.890755]  ? sco_sock_timeout+0x5e/0x1c0
+[   95.890755]  kasan_check_range+0x2c3/0x2e0
+[   95.890755]  sco_sock_timeout+0x5e/0x1c0
+[   95.890755]  process_one_work+0x561/0xc50
+[   95.890755]  worker_thread+0xab2/0x13c0
+[   95.890755]  ? pr_cont_work+0x490/0x490
+[   95.890755]  kthread+0x279/0x300
+[   95.890755]  ? pr_cont_work+0x490/0x490
+[   95.890755]  ? kthread_blkcg+0xa0/0xa0
+[   95.890755]  ret_from_fork+0x34/0x60
+[   95.890755]  ? kthread_blkcg+0xa0/0xa0
+[   95.890755]  ret_from_fork_asm+0x11/0x20
+[   95.890755]  </TASK>
+[   95.890755]
+[   95.890755] Allocated by task 506:
+[   95.890755]  kasan_save_track+0x3f/0x70
+[   95.890755]  __kasan_kmalloc+0x86/0x90
+[   95.890755]  __kmalloc+0x17f/0x360
+[   95.890755]  sk_prot_alloc+0xe1/0x1a0
+[   95.890755]  sk_alloc+0x31/0x4e0
+[   95.890755]  bt_sock_alloc+0x2b/0x2a0
+[   95.890755]  sco_sock_create+0xad/0x320
+[   95.890755]  bt_sock_create+0x145/0x320
+[   95.890755]  __sock_create+0x2e1/0x650
+[   95.890755]  __sys_socket+0xd0/0x280
+[   95.890755]  __x64_sys_socket+0x75/0x80
+[   95.890755]  do_syscall_64+0xc4/0x1b0
+[   95.890755]  entry_SYSCALL_64_after_hwframe+0x67/0x6f
+[   95.890755]
+[   95.890755] Freed by task 506:
+[   95.890755]  kasan_save_track+0x3f/0x70
+[   95.890755]  kasan_save_free_info+0x40/0x50
+[   95.890755]  poison_slab_object+0x118/0x180
+[   95.890755]  __kasan_slab_free+0x12/0x30
+[   95.890755]  kfree+0xb2/0x240
+[   95.890755]  __sk_destruct+0x317/0x410
+[   95.890755]  sco_sock_release+0x232/0x280
+[   95.890755]  sock_close+0xb2/0x210
+[   95.890755]  __fput+0x37f/0x770
+[   95.890755]  task_work_run+0x1ae/0x210
+[   95.890755]  get_signal+0xe17/0xf70
+[   95.890755]  arch_do_signal_or_restart+0x3f/0x520
+[   95.890755]  syscall_exit_to_user_mode+0x55/0x120
+[   95.890755]  do_syscall_64+0xd1/0x1b0
+[   95.890755]  entry_SYSCALL_64_after_hwframe+0x67/0x6f
+[   95.890755]
+[   95.890755] The buggy address belongs to the object at ffff88800c388000
+[   95.890755]  which belongs to the cache kmalloc-1k of size 1024
+[   95.890755] The buggy address is located 128 bytes inside of
+[   95.890755]  freed 1024-byte region [ffff88800c388000, ffff88800c388400)
+[   95.890755]
+[   95.890755] The buggy address belongs to the physical page:
+[   95.890755] page: refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88800c38a800 pfn:0xc388
+[   95.890755] head: order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+[   95.890755] anon flags: 0x100000000000840(slab|head|node=0|zone=1)
+[   95.890755] page_type: 0xffffffff()
+[   95.890755] raw: 0100000000000840 ffff888006842dc0 0000000000000000 0000000000000001
+[   95.890755] raw: ffff88800c38a800 000000000010000a 00000001ffffffff 0000000000000000
+[   95.890755] head: 0100000000000840 ffff888006842dc0 0000000000000000 0000000000000001
+[   95.890755] head: ffff88800c38a800 000000000010000a 00000001ffffffff 0000000000000000
+[   95.890755] head: 0100000000000003 ffffea000030e201 ffffea000030e248 00000000ffffffff
+[   95.890755] head: 0000000800000000 0000000000000000 00000000ffffffff 0000000000000000
+[   95.890755] page dumped because: kasan: bad access detected
+[   95.890755]
+[   95.890755] Memory state around the buggy address:
+[   95.890755]  ffff88800c387f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[   95.890755]  ffff88800c388000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[   95.890755] >ffff88800c388080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[   95.890755]                    ^
+[   95.890755]  ffff88800c388100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[   95.890755]  ffff88800c388180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[   95.890755] ==================================================================
+
+Fix this problem by adding a check protected by sco_conn_lock to judget
+whether the conn->hcon is null. Because the conn->hcon will be set to null,
+when the sock is releasing.
+
+Fixes: ba316be1b6a0 ("Bluetooth: schedule SCO timeouts with delayed_work")
+Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+---
+ net/bluetooth/sco.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+index 368e026f4d1..b19c9b0bbd8 100644
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -83,6 +83,10 @@ static void sco_sock_timeout(struct work_struct *work)
+ 	struct sock *sk;
  
-> Signed-off-by: Howard Chu <howardchu95@gmail.com>
-> ---
->  tools/lib/perf/mmap.c       | 2 +-
->  tools/perf/builtin-record.c | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
-> index 0c903c2372c9..c1a51d925e0e 100644
-> --- a/tools/lib/perf/mmap.c
-> +++ b/tools/lib/perf/mmap.c
-> @@ -279,7 +279,7 @@ union perf_event *perf_mmap__read_event(struct perf_mmap *map)
->  	if (!refcount_read(&map->refcnt))
->  		return NULL;
->  
-> -	/* non-overwirte doesn't pause the ringbuffer */
-> +	/* non-overwrite doesn't pause the ringbuffer */
->  	if (!map->overwrite)
->  		map->end = perf_mmap__read_head(map);
->  
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 3994adaf4607..34d103f4af57 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -332,7 +332,7 @@ static int record__aio_complete(struct mmap *md, struct aiocb *cblock)
->  	} else {
->  		/*
->  		 * aio write request may require restart with the
-> -		 * reminder if the kernel didn't write whole
-> +		 * remainder if the kernel didn't write whole
->  		 * chunk at once.
->  		 */
->  		rem_off = cblock->aio_offset + written;
-> @@ -402,7 +402,7 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
->  	 *
->  	 * Coping can be done in two steps in case the chunk of profiling data
->  	 * crosses the upper bound of the kernel buffer. In this case we first move
-> -	 * part of data from map->start till the upper bound and then the reminder
-> +	 * part of data from map->start till the upper bound and then the remainder
->  	 * from the beginning of the kernel buffer till the end of the data chunk.
->  	 */
->  
-> -- 
-> 2.44.0
+ 	sco_conn_lock(conn);
++	if (!conn->hcon) {
++		sco_conn_unlock(conn);
++		return;
++	}
+ 	sk = conn->sk;
+ 	if (sk)
+ 		sock_hold(sk);
+-- 
+2.17.1
+
 
