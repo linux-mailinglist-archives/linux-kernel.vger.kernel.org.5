@@ -1,190 +1,225 @@
-Return-Path: <linux-kernel+bounces-158079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABF4F8B1B2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:38:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74C498B1B2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:40:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BC7A1F231C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:38:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 991571C20E66
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DF265D477;
-	Thu, 25 Apr 2024 06:38:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30ED85A10B;
+	Thu, 25 Apr 2024 06:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xVLD9/r2"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ri0sHikJ"
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0080741C76
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 06:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B042E53E15
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 06:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714027115; cv=none; b=hapkGiAin2WT3PgTLhFkUTQ1U34CaAQgd/3GTFmDdgUANcSLepc6Qc3imvxzeD5R0c5t6C7ghsOtuh+v5V1DvY6bdd5W9P49D5sNZar0zP/awj6NeAj7sY2sLUegJU209gfweai8pKMydJ3sh6CZ1u3QuHgpo8rcbebCnhG6jO8=
+	t=1714027249; cv=none; b=jmjJbBt6Hu0TKy3K0DVvg8qCxQpZHrYGWrKdePIIs5CsyAF5lc1KffWZ6Wlla+EAj5dx/BtXE6USI7Y1svIf0riw+ZsSxMKDegJKL02ILx9Na7Ws+PGfC2PHwXxCZNfc+uP50a2E1ly0D/LdqtH8km6Sk1mvSCyhLCY67O9YipY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714027115; c=relaxed/simple;
-	bh=B5T6uCGj1pDni/NYsT6MdLthxu8xoernrZuqK8Jxlm0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d7MeQam8jdzsguSlu8/FZctG4+iSqeCjc2KQBepuv/UyGej2gAKpT10M9RSpr5bk7hVq4QWcH580cgwdi/gf2/AbrfLvzrDxjn/jH0VzR0JZ+JFEUCvh5CdksrZ2PtAA5yJGq+hdui3BdmrDcrIGvDW9lngZDC91kaG7Y2SeZeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xVLD9/r2; arc=none smtp.client-ip=209.85.221.48
+	s=arc-20240116; t=1714027249; c=relaxed/simple;
+	bh=7OKYbj4Uuksbo2Qf5HPNw17rjN6Qs+vtlgxGEBAQNdc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q4JWZnfYRedhgGx6Lp4775ihQ1ERz7tdRrs3ttLgHaiXi2Abi2Kx1dhRnD3KeqGemJ3gw2IdDAtBzQKz7CuJisGirWxdOab1M/lvn9dcyZukFX+0I9tu3VACDnoPAaVDIu4y+Tj4ORQhEXFJtopUqNL2D5uZuPu05ts0QOSwfMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ri0sHikJ; arc=none smtp.client-ip=209.85.221.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-34b3374ae22so634455f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:38:33 -0700 (PDT)
+Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-4daa5d0afb5so234700e0c.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:40:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714027112; x=1714631912; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=lHjKbzlAg7ZCvrMat5Fqytbf+Mh+26KkLocKS948pTo=;
-        b=xVLD9/r2tavlsiErcdb+gZW/7kZBUqYQHc/AVhpr1qu+TJdIsPgXgSq7WZlTiSHOED
-         0ryifCpM8NyyhXY2H8Trw8OawDhI20sd7LNe2W1et/DOF6LDVhQpG1UsxVFASpQY0qgv
-         IzcFmiUdtXZUgtm+HBGKOaAqx8Mur6kV4/P5TvdT3cMBs7brB+1j08Ry5SyKfvi5K/5e
-         1U69HR4xYhmzKntqUAayWpZmfBrO01Cp7AeuWOcdCBDA0f79Uxe04Ga8VcE5DpawVLmO
-         X8jTEtWsyAPZYrh21CgKmATUUr2K762mVw7IVc4JoG9u2apc7dsU7hqI8s2nz6EedesJ
-         WLGA==
+        d=linaro.org; s=google; t=1714027246; x=1714632046; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gHsnE6PXlZIvSfAKFrgueOgWtUt0jTx+nljG77Q1N3I=;
+        b=Ri0sHikJwc8crIntCl0kBjujGm4XAHjqV0j0f/l8xrPUPo+I9orCazk3fUMjPLiClg
+         qkDSNLg9mliIGbOweyM1Fj5v+whZaxAOM2WRVKhYrXpN7un8chfC0thMhXICZCW1Gs2k
+         mdlb7cJgPZnkSJaqCrLConknwBOcaeKD0Lddj9iDHTeUyWyCfbBUTgJQCj+aUsGrFdVV
+         QoXQNqzqCtZMiiIMYT+iJvHMJNaEQ+TH/5HQSiW5ubvIpGDL+ybDp9D1fLtGTbcs1+F1
+         LN5qDbNMZ6w4jiokal7mJJe28b++50R4X2I7Uy1jukTRqsk/lni7UCYjxIvkYOUafNJE
+         MLhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714027112; x=1714631912;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lHjKbzlAg7ZCvrMat5Fqytbf+Mh+26KkLocKS948pTo=;
-        b=toX38psbJ6/S5bYVXAGXEICHeKSqS3/ooGpqHPVJnJFF8YToRbnm88l6/4ouS320gm
-         qOLm5zezsr5IVJ7z1GwLEzeNpShlSRDDpFs7I6pcNL9t7ReJNlHYaEvr8iJe189m3xby
-         nZYYV+FKmCs8KXQIbRK8pitg3FsfcDtrcr9eUbA8KictIVHTfxLYJ6enbPPi5g+2jQWJ
-         Tqq7QcY9kej5ZXfRkWRzbeIkjRAWrp6vndgVUA4PoiEoiGZVqCtZC13YIOUZiNmfoh7/
-         FyxRn3ej3nNvT80HHSpLA9tBPhaGXrqI1IAy2ei2XZAHK0LcdCWqaxEhjLGxnp7btfUP
-         a+yQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWrf9rlZ2D/dydEa+cF1V5wd2YZ8PjuUr15fFWVRFUAlarLvkcN1t9EDfPfxcoL7lfySFCvK+a4e9HUt/6iOntVuPZIpi1E8/IZa7lh
-X-Gm-Message-State: AOJu0Yy8c4eJMoM37eaHyifxzBUC8Swx3crio5egJlJQJ+2jcnGiWo8+
-	FyewIHdW31XK9MAJcJ82r7bNObyuBdnL9iAFqoqR8rjo3aUc31rS9xSDzAtdHR4=
-X-Google-Smtp-Source: AGHT+IGAV0jSkFBvjQwGcfN5R6cF2rleJPcC0UdBWzMm/ZOSgnWSL6fQgwLcT8Eyq4spq4H/nIW2/w==
-X-Received: by 2002:a05:6000:12c3:b0:34a:d130:611b with SMTP id l3-20020a05600012c300b0034ad130611bmr3858845wrx.17.1714027112250;
-        Wed, 24 Apr 2024 23:38:32 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id d2-20020a5d6442000000b003479bec98cesm18858772wrw.115.2024.04.24.23.38.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 23:38:31 -0700 (PDT)
-Message-ID: <b48d5d30-61b0-4c11-8afd-1c07cbe05400@linaro.org>
-Date: Thu, 25 Apr 2024 08:38:29 +0200
+        d=1e100.net; s=20230601; t=1714027246; x=1714632046;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gHsnE6PXlZIvSfAKFrgueOgWtUt0jTx+nljG77Q1N3I=;
+        b=rntvwkYiYoXHlEvNx2Jidji4rvtBdeVUyCeozjt47G4WKAnp7cOVZELkdmtfRreuQc
+         9RGi+BYesEtVwYpK95YcM3DM4fSvbeELXWjJ3SdhW2m0B9RKyQkRGRyxxkCksDr8REjB
+         ztnQ15nXtkaQBcZ591bTfIF9/BXF4mq3k/ky2Wk7ATrQ9rblejUMknmMpAPW1WMXIukr
+         LUHW7Tsi2CYNqftVTcgdKCRodSF6/e6fjmpdTUr43TjeigdooxoqddwXwAOvJsXWb1c6
+         qe8me0DSMy0A09D5JzuqfB94JMt2nFkQYNZvLNQt+kW2KG+zzL8ChJJ96U9NNgOzdpsN
+         z36Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVEcAjvPRgJmLM9YUNKCsXRWf+3IZRuscvr2MJX+15iJ/daCD+709Vsi2WCJC46UJP4vq1FMLHJ+2CbF0oOoDfcxDx5M/p6Nt10I8Hx
+X-Gm-Message-State: AOJu0YzLkCf3WMJ0O8u7TvkR9Df6Gs+y21/XjsOuYbd9CUqh/bgQ4hC4
+	YF4df321zmCLFwgZYnloqVbKF3oe/yPaFxJyb96fCxmRAFL+/IVJw3BLgYe3wZSOLRPwTH2f/gj
+	rQJ05rRB406toG7vebLcYWI0mdCtP3LbmX5OVdA==
+X-Google-Smtp-Source: AGHT+IHy4yn17l8WHIexhBFucEWjWLbwAWQAgKSltStNJ3dC7QNXsxAi/oLT0hbpvn0uD0kdCJfydjnj6Vo6WxvlaAs=
+X-Received: by 2002:a05:6122:4686:b0:4da:aabe:6f6c with SMTP id
+ di6-20020a056122468600b004daaabe6f6cmr5538526vkb.7.1714027246474; Wed, 24 Apr
+ 2024 23:40:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 03/18] ASoC: dt-bindings: mt6357: Add audio codec
- document
-To: Alexandre Mergnat <amergnat@baylibre.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Rob Herring <robh@kernel.org>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-References: <20240226-audio-i350-v3-0-16bb2c974c55@baylibre.com>
- <20240226-audio-i350-v3-3-16bb2c974c55@baylibre.com>
- <481abafd-33af-44a6-8460-068b4a85d764@linaro.org>
- <a8730bb5-4f51-4c75-b049-6f00e3de5855@baylibre.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Language: en-US
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <a8730bb5-4f51-4c75-b049-6f00e3de5855@baylibre.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240423213855.824778126@linuxfoundation.org>
+In-Reply-To: <20240423213855.824778126@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Thu, 25 Apr 2024 12:10:34 +0530
+Message-ID: <CA+G9fYvB61RTie=PKQau1m2WWQNUQ++ZY+W_of4kXVh5P26B0w@mail.gmail.com>
+Subject: Re: [PATCH 6.8 000/158] 6.8.8-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+	Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 23/04/2024 19:07, Alexandre Mergnat wrote:
-> 
-> 
-> On 09/04/2024 17:55, Krzysztof Kozlowski wrote:
->>> +
->>> +additionalProperties: false
->>> +
->>> +examples:
->>> +  - |
->>> +    codec {
->>> +        mediatek,micbias0-microvolt = <1900000>;
->>> +        mediatek,micbias1-microvolt = <1700000>;
->>> +        mediatek,vaud28-supply = <&mt6357_vaud28_reg>;
->> Sorry, this does not work. Change voltage to 1111111 and check the results.
-> 
-> Actually it's worst ! I've removed the required property (vaud28-supply) but the dt check pass.
-> Same behavior for some other docs like mt6359.yaml
+On Wed, 24 Apr 2024 at 03:11, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.8.8 release.
+> There are 158 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 25 Apr 2024 21:38:28 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.8.8-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.8.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Yeah, the schema is not applied. There is nothing selecting it, so this
-is no-op schema. I don't know what exactly you want to describe, but
-usually either you miss compatible or this should be just part of parent
-node.
 
-> 
-> The at24.yaml doc works as expected, then I tried compare an find the issue, without success...
-> 
-> I've replaced "codec" by "audio-codec", according to [1].
-> I've tried multiple manner to implement the example code, without success. I'm wondering if what I 
-> try to do is the correct way or parse-able by the dt_check.
-> 
-> If I drop this file and implement all these new properties into the MFD PMIC documentation directly, 
-> I've the expected dt_check result (function to good or wrong parameters)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, x86_64, and i386.
 
-Yes.
+One regression on arm,
+the TI BeagleBoard-X15 device kunit test boot failed and
+it is always reproducible.
 
-Best regards,
-Krzysztof
+Not a problem on qemu-armv7.
 
+However, I am bisecting this problem and let you know shortly.
+
+Links:
+---
+ - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2fWFwcz=
+HZDFUGnjqyT1mZ6wIeS9
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.8.y/build/v6.=
+8.7-159-g9919cd9ab988/testrun/23660959/suite/boot/test/gcc-13-lkftconfig-ku=
+nit/details/
+
+log:
+--=20
+[   45.931457] BUG: KASAN: slab-out-of-bounds in
+krealloc_more_oob_helper+0x464/0x4c0
+[   45.950073] Write of size 1 at addr cacc68eb by task kunit_try_catch/176
+[   45.956817]
+[   45.958312] CPU: 0 PID: 176 Comm: kunit_try_catch Tainted: G    B
+W        N 6.8.8-rc1 #1
+[   45.966735] Hardware name: Generic DRA74X (Flattened Device Tree)
+[   45.972869]  unwind_backtrace from show_stack+0x18/0x1c
+[   45.978149]  show_stack from dump_stack_lvl+0x6c/0x8c
+[   45.983245]  dump_stack_lvl from print_report+0x158/0x510
+[   45.988677]  print_report from kasan_report+0xc8/0x104
+[   45.993865]  kasan_report from krealloc_more_oob_helper+0x464/0x4c0
+[   46.000183]  krealloc_more_oob_helper from kunit_try_run_case+0x224/0x59=
+8
+[   46.007019]  kunit_try_run_case from
+kunit_generic_run_threadfn_adapter+0x84/0xe4
+[   46.014556]  kunit_generic_run_threadfn_adapter from kthread+0x378/0x410
+[   46.021331]  kthread from ret_from_fork+0x14/0x28
+[   46.026062] Exception stack(0xf219bfb0 to 0xf219bff8)
+[   46.031158] bfa0:                                     00000000
+00000000 00000000 00000000
+[   46.039367] bfc0: 00000000 00000000 00000000 00000000 00000000
+00000000 00000000 00000000
+[   46.047607] bfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[   46.054260]
+[   46.055755] Allocated by task 176:
+[   46.059173]  kasan_save_track+0x30/0x5c
+[   46.063049]  __kasan_krealloc+0xf0/0x13c
+[   46.067016]  krealloc+0xb8/0xfc
+[   46.070190]  krealloc_more_oob_helper+0xd4/0x4c0
+[   46.074829]  kunit_try_run_case+0x224/0x598
+[   46.079040]  kunit_generic_run_threadfn_adapter+0x84/0xe4
+[   46.084472]  kthread+0x378/0x410
+[   46.087738]  ret_from_fork+0x14/0x28
+[   46.091339]
+[   46.092834] The buggy address belongs to the object at cacc6800
+[   46.092834]  which belongs to the cache kmalloc-256 of size 256
+[   46.104736] The buggy address is located 0 bytes to the right of
+[   46.104736]  allocated 235-byte region [cacc6800, cacc68eb)
+[   46.116363]
+[   46.117858] The buggy address belongs to the physical page:
+[   46.123474] page:af853d8a refcount:1 mapcount:0 mapping:00000000
+index:0x0 pfn:0x8acc6
+[   46.131439] head:af853d8a order:1 entire_mapcount:0
+nr_pages_mapped:0 pincount:0
+[   46.138885] flags: 0x840(slab|head|zone=3D0)
+[   46.143005] page_type: 0xffffffff()
+[   46.146514] raw: 00000840 c6801500 00000122 00000000 00000000
+80100010 ffffffff 00000001
+[   46.154663] raw: 00000000
+[   46.157287] page dumped because: kasan: bad access detected
+[   46.162902]
+[   46.164398] Memory state around the buggy address:
+[   46.169219]  cacc6780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[   46.175781]  cacc6800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[   46.182373] >cacc6880: 00 00 00 00 00 00 00 00 00 00 00 00 00 03 fc fc
+[   46.188934]                                                   ^
+[   46.194885]  cacc6900: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[   46.201446]  cacc6980: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[   46.208038] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+[   46.215454] hub 1-1:1.0: 4 ports detected
+[   46.215637] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+[   46.226745] BUG: KASAN: slab-out-of-bounds in
+krealloc_more_oob_helper+0x458/0x4c0
+[   46.234374] Write of size 1 at addr cacc68f0 by task kunit_try_catch/176
+<common> [   46.570037]  krealloc_less_oob_helper from
+kunit_try_run_case+0x224/0x598
+<common> [   46.576873]  kunit_try_run_case from
+kunit_generic_run_threadfn_adapter+0x84/0xe4
+<common> [   46.584411]  kunit_generic_run_threadfn_adapter from
+kthread+0x378/0x410
+
+## Build
+* kernel: 6.8.8-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.8.y
+* git commit: ea4e35f1afd7d7d003c345bf14862183910ecc6b
+* git describe: v6.8.7-159-gea4e35f1afd7
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.8.y/build/v6.8.7=
+-159-gea4e35f1afd7
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
