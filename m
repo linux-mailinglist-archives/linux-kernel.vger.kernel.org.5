@@ -1,187 +1,130 @@
-Return-Path: <linux-kernel+bounces-158427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 516918B1FEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADE818B1FFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:12:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69506B25932
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:09:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11328B234F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:12:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2672284E1E;
-	Thu, 25 Apr 2024 11:09:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ijSiRGLH"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1123484FAA;
+	Thu, 25 Apr 2024 11:12:20 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B29B122EE9
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 11:09:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC81200BF;
+	Thu, 25 Apr 2024 11:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714043363; cv=none; b=L0vM23u6xFU5an5vPMrR6DqwChZzl/Rf1vuUrCjKHHl2ixCxcdQFClqJK710GiLW7g+kxKBvxMadIfwb6ajCJtnJjdOSckkX6GzJ9pjVRdWuTCB0dCsGuu+AU/6SHG5kN8buQe3CPrvj3VvN/h39r6WXvCH0gJLuNkATX6yXWTs=
+	t=1714043539; cv=none; b=X4uhkS2HiCKOroQTBWE+fdLJ6BPj1K5tderjYZKfP2pYGCGuWIBuxIEv7r7lQXbwETMm+YHTJHmyrciBBSVSmUvm0D2no2aT62Dcw76qxzY2eiBstxA0ykv62sJOEBcLFJK4Lb4aZjM+n9/R2wrriiG843Q3cozc36z6To4vsUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714043363; c=relaxed/simple;
-	bh=Mbw+9z5w45yy8Q8t3780a67tdya1wvVokCnzj5gYSjM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mxQ1zNP/sh4EFIXrTOJ5d4d4Gyp19s8vGVHRvNFxgNz555vAtNY7YMeOuchVzzemGHFC14Fv415R3LHZkJwGJqydK1684vBIHJd6zFzt3wL2ZP+YGaGVjMXAaQiu52v/FyW8zB+MceR94PT2qoM0vo8GKdS3O2iPjnzc/TWcexM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ijSiRGLH; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a58c09e2187so14587666b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 04:09:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714043360; x=1714648160; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=c9UdWDP072YhVmMmy+gx/lGuyE5W1DiNfysfjQaT5Sk=;
-        b=ijSiRGLHxsbOoMJSXRuUSw05o+5AANnaE+B8g1jtwAO0XYYYrRRzdoJVNDdGuxXax+
-         V+uPThpk6NowPT0nxc9EVyb4JebS+W5SC0d6e+S9V1LmZACyEBq7VTbLVrXhebN31QVQ
-         4Qhq9111Z8E8VOkGV0sdp77XC5fVR5dhxlR7OKjoWoOfVUzrEof22rWPgNMNZcj4YpIl
-         4suYr0ThIWwPEvQeQMsypJ1br9IQS/Yv6nX6k9eEnnnHwbGXffzVLIBuO3IVJWGGqC2c
-         ffubftF5sVA6ykh4YFk+xEHtxnkOsfj3j6RGSfRla7KLd7VeVvAqvsQuOJEaiELMX3JE
-         W3uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714043360; x=1714648160;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=c9UdWDP072YhVmMmy+gx/lGuyE5W1DiNfysfjQaT5Sk=;
-        b=IbkrqfOJjBipo1/1gV/wqmqcIv3z2BjYLZJzL/e+M1AvQN/FEPkNXhVMXG/lpSnNb1
-         JEbV4FNQuhno5nQh0WHn65fWofnEEGLNXRtxFOlOwZORNTUlh/Axr8V2WpSL3L5khXrB
-         ZtvDn/GSDfaKPwdxRus2HY1rDXbe/ySAuhwlk72dXz57yBBcwvzZu4LgdfBwoa+FHynH
-         xR+EMINSHTD+wD6wHm11aPaPAKQL941YlJHqgaanro3AMNuXUOP6XlUMTF6C0X3719y1
-         NXNsQRA7cQlskknGInuvg0LT+uKy4v7lNX0ggjxesn0qhApZaXFr5TXuZ6b3hg97wi9M
-         VhBA==
-X-Forwarded-Encrypted: i=1; AJvYcCUQgIsVqAoRTzXNowuKuPBYs+TJxNw5U31C1ZEcDEQ/4VROnKGdCzn6Gq9/duKnSZQQ2wwteinsW5QJbYqNXt7xc/D4H0rH4pGIu/Ic
-X-Gm-Message-State: AOJu0YwqhjhqiGKkJlXis2tsFgbkh+YWsewyU0kxqsFkGB3WinctjH27
-	L6ruWRqXsrmjyKbx3Jbje9Eb5DhM4Kz3HtbXp9vOg3qscGGISOANQgZM/p0AG4c=
-X-Google-Smtp-Source: AGHT+IFezEl/F6F981YJi8PxBZQHnfeZfnyLNuh/b1BJVkMDy6YyT2AAEwZ93xnCyVlAnO2MWKBxNg==
-X-Received: by 2002:a17:906:11c4:b0:a55:33a5:911c with SMTP id o4-20020a17090611c400b00a5533a5911cmr3308962eja.25.1714043360000;
-        Thu, 25 Apr 2024 04:09:20 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id cd19-20020a170906b35300b00a4673706b4dsm9398364ejb.78.2024.04.25.04.09.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 04:09:19 -0700 (PDT)
-Message-ID: <57698077-d09d-4ada-90a3-69ddd10bbb55@linaro.org>
-Date: Thu, 25 Apr 2024 13:09:17 +0200
+	s=arc-20240116; t=1714043539; c=relaxed/simple;
+	bh=iqQqPqYqACrh9TGAaoZjcz+DJ2+3d5B5bVNJL98qTn0=;
+	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
+	 In-Reply-To:Content-Type; b=Ldfr0fU4suSn2XMbB7In6n5f3Dn51Hymkeo/z4yzYYUJ0xsixRx0iv8HofvGmPurx7VDzm25YFarYkg/C+WdWy7lGXPvjiqVTblQXPoJyWAD5uWrC64r0fplCCME6x3gStH2TXpcGCjpjSzHgQrxikP1bqbsOO33xxeV3R6LpQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VQCpM3Gmlzcb1f;
+	Thu, 25 Apr 2024 19:11:07 +0800 (CST)
+Received: from kwepemd500014.china.huawei.com (unknown [7.221.188.63])
+	by mail.maildlp.com (Postfix) with ESMTPS id 801151800AA;
+	Thu, 25 Apr 2024 19:12:12 +0800 (CST)
+Received: from [10.67.121.2] (10.67.121.2) by kwepemd500014.china.huawei.com
+ (7.221.188.63) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Thu, 25 Apr
+ 2024 19:12:11 +0800
+Message-ID: <662A3A8B.8030602@hisilicon.com>
+Date: Thu, 25 Apr 2024 19:12:11 +0800
+From: Wei Xu <xuwei5@hisilicon.com>
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/5] arm64: Add initial support for Blaize BLZP1600 CB2
-To: Nikolaos Pasaloukos <nikolaos.pasaloukos@blaize.com>,
- "robh@kernel.org" <robh@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
- "will@kernel.org" <will@kernel.org>, "arnd@arndb.de" <arnd@arndb.de>,
- "olof@lixom.net" <olof@lixom.net>, Neil Jones <neil.jones@blaize.com>,
- Matt Redfearn <matthew.redfearn@blaize.com>,
- James Cowgill <james.cowgill@blaize.com>,
- "heiko.stuebner@cherry.de" <heiko.stuebner@cherry.de>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "macromorgan@hotmail.com" <macromorgan@hotmail.com>,
- "sre@kernel.org" <sre@kernel.org>,
- "hvilleneuve@dimonoff.com" <hvilleneuve@dimonoff.com>,
- "andre.przywara@arm.com" <andre.przywara@arm.com>,
- "rafal@milecki.pl" <rafal@milecki.pl>,
- "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
- "andersson@kernel.org" <andersson@kernel.org>,
- "konrad.dybcio@linaro.org" <konrad.dybcio@linaro.org>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
- "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
- "nfraprado@collabora.com" <nfraprado@collabora.com>,
- "u-kumar1@ti.com" <u-kumar1@ti.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-References: <20240425091403.17483-1-nikolaos.pasaloukos@blaize.com>
- <20240425091403.17483-5-nikolaos.pasaloukos@blaize.com>
- <9b24ffdf-1247-4164-9841-6063106d76ea@linaro.org>
- <a5282012-d38c-4a02-9292-8eab156ddb98@blaize.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Language: en-US
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <a5282012-d38c-4a02-9292-8eab156ddb98@blaize.com>
-Content-Type: text/plain; charset=UTF-8
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring
+	<robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH 1/9] arm64: dts: hisilicon: hip05: move non-MMIO node
+ out of soc
+References: <20240402193148.62323-1-krzk@kernel.org> <171394159880.43787.12383182687947213751.b4-ty@linaro.org> <6628B1E9.1050300@hisilicon.com> <7adfe10b-cfb6-4242-9520-dd9819bf7f43@linaro.org> <6ce7bc63-1c47-4e3d-a3af-8f229f1c36f7@linaro.org>
+In-Reply-To: <6ce7bc63-1c47-4e3d-a3af-8f229f1c36f7@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemd500014.china.huawei.com (7.221.188.63)
 
-On 25/04/2024 12:41, Nikolaos Pasaloukos wrote:
->>> +
->>> +	soc {
+Hi Krzysztof, 
+
+On 2024/4/24 16:37, Krzysztof Kozlowski wrote:
+> On 24/04/2024 09:23, Krzysztof Kozlowski wrote:
+>> On 24/04/2024 09:16, Wei Xu wrote:
+>>> Hi Krzysztof,
+>>>
+>>> On 2024/4/24 14:54, Krzysztof Kozlowski wrote:
+>>>>
+>>>> On Tue, 02 Apr 2024 21:31:40 +0200, Krzysztof Kozlowski wrote:
+>>>>> Non-MMIO devices, which are BTW not really part of the SoC, should not
+>>>>> be within simple-bus, as reported by dtc W=1 warning:
+>>>>>
+>>>>>   hip05.dtsi:301.30-305.5: Warning (simple_bus_reg): /soc/refclk200mhz: missing or empty reg/ranges property
+>>>>>
+>>>>>
+>>>>
+>>>> Almost a month passed, no replies from maintainers about picking it up. Dunno,
+>>>> looks abandoned, so let me grab this. If anyone else wants to pick it up, let
+>>>> me know.
+>>>>
+>>>
+>>> Sorry for the late reply!
+>>> I am applying these patches which are in the following git repo.
+>>>   https://github.com/hisilicon/linux-hisi/tree/next/dt64
+>>>
+>>> And it is fine to me to go through your git tree.
+>>> Thanks!
 >>
->> This does not cause dtbs_check W=1 warnings? Surprising a bit... This
->> should cause big fat warning, so I have doubts patchset was tested.
+>> So you picked them up? Why you did not notify anyone? b4 does it almost
+>> automatically. How anyone can know what is happening with the patches?
 >>
->>
->> Best regards,
->> Krzysztof
->>
+>> I will drop them from my tree.
+
+Series applied to the HiSilicon arm64 dt tree:
+https://github.com/hisilicon/linux-hisi/tree/next/dt64
+
 > 
-> No it doesn't cause any warnings. I did:
-> make arch=arm64 dt_binding_check
-> make arch=arm64 dtbs_check W=1
-> I don't get any warnings. Could you please let me know what kind of
-> warning I should get? Am I doing something wrong and I don't get
-> the warning?
+> One more thing:
+> 
+> Even though you applied these patches few days ago, they are still not
+> in linux-next (as of next-20240423), which suggests your tree is not in
+> next.
+> 
+> Please read entire presentation "Beginner Linux kernel maintainer's
+> toolbox" from LPC 2023 and improve your workflow by:
+> 1. Properly notifying patch status.
+> 2. Being part of the integration tree.
+> 3. ... and more, as explained in above talk.
+> 
+> There is a link to video and slides:
+> https://lpc.events/event/17/contributions/1498/
 
-I was expecting one for missing soc unit address, but you are right -
-your ranges are empty, so "soc" is ok. I keep forgetting that
-distinction. Looks fine then.
+I have went through your slide which is very helpful and detailed.
+Thanks!
 
-Best regards,
-Krzysztof
+Best Regards,
+Wei
 
+> 
+> Best regards,
+> Krzysztof
+> 
+> .
+> 
 
