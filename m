@@ -1,170 +1,117 @@
-Return-Path: <linux-kernel+bounces-159186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 255868B2A6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F94C8B2A6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:09:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DED0E284596
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:08:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E16E2812C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8490C15573A;
-	Thu, 25 Apr 2024 21:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B75415535E;
+	Thu, 25 Apr 2024 21:09:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="dBARPjUJ"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="XO8Yqbl7"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0233155723
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 21:07:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 047F2152E19;
+	Thu, 25 Apr 2024 21:09:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714079274; cv=none; b=ZT0W48cmoerD4wA51kxNCi2T995j4Stgo/ldLFh5sXDmLBHpUQkfvRSatKN940pBEHUJwg132CD7UUrUzKYVczYTFw3dxsbkphxp/a+xBq4B2TtJLB5M9h/xNpi80DmTdvOJgY7d0HqGbTZawuD6aTh6Bqrg0ABGX4EF8oMfaac=
+	t=1714079348; cv=none; b=TMANQxtFycWO/z23euRMH7LvAd/bYVkbB7zPgM+2XMYUZovKxzxcphywJ6YV2KZWcxoL5XKAi9M6t3g01pp+CvHTLMIwH4Y0n8zUe2pjC29UijFmTC4svlBKT+KCeRdAETWxgQmyTl/us348cjdwdX53LmfCmox5YwCMu+QpYGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714079274; c=relaxed/simple;
-	bh=JOPgLUe8I9YipPlrMgvXOgvept9vfI3FxbS5jEZ5FxU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Nf53frGhnPHeQdm7mgigQnQ0aRdbVgpsSACNKuYaw5tnBWFwezS+VvufIh3DMHt8IuxN5azFcJ2vmFszOo7ddBiUAa7+/kYi/lHcl71J2iTm1xLKdMjP7x4kp8yeuNS/lKw9NfFJcN7GHPiKGvHRbDNtO5f0CAMGLPYBIib4Ing=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=dBARPjUJ; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	s=arc-20240116; t=1714079348; c=relaxed/simple;
+	bh=yerrk0rdVucOk+EbK40MqtQVv2YDm0HaAjFWfFyK+zM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=bJ3q20jCPiNY/Svlgq0XEtRX+CPTZ1GDxd2BGdDR+K9bT9mEW/tAS6NErZwO4CVMF6lo2uqWqvm81mW0fIbXV8QdOf0ZYxifvchsifuecURyloIEcjZwZKq5QXaEOIkcL8kWMWsezDXPNMdae44MZFJkyChtQ2ms/D0YAhSdUuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=XO8Yqbl7; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1714079343;
+	bh=HQ9mB3jJnTd7oaYs4J8bO4Q3lVS9XIz5rOMtPQW1/vY=;
+	h=Date:From:To:Cc:Subject:From;
+	b=XO8Yqbl7a3MRXgF8A0uYLRp/RGrKxdy/aktwyFujFVgB1QkiyIk6ZDRKaba72QV3E
+	 VSjYnPYYSYT2fm7rHCXM0XzxH9UzzHo9FtgIuIZQzrtn0orPEwByx4Uvtf/ueRtf+s
+	 +oR8rFPGTgetl6J4Y/avDY/l/UWW19DAU/cbB/7JKiQ3BKk5gF/5d9OMZ1q/jtnFHI
+	 K5ue4X6P1fnHxCEQ/V7+Dkpy5LsjRBIrkZtZ2emCHe23u+hijantsT3CjspH/RtDrx
+	 UuLGcgCdl1lwdQ2PDnGEJlkj9m7ZXV5ogRQXPInmiOrFWN9plDXL0EnyLTIeqoYRmt
+	 FLsmF1yC3YmCQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id CF8142C03E9;
-	Fri, 26 Apr 2024 09:07:49 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1714079269;
-	bh=JOPgLUe8I9YipPlrMgvXOgvept9vfI3FxbS5jEZ5FxU=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=dBARPjUJ7LXDkYLsqPLfN1vMVnEfK7FKOZAnV0tLJ8HYKeUxaqH8hK4Zu4G0DGvMk
-	 FfWZMmLl7XdttC571G7lmfC0Udifq0tztQpBCZqOHh3Uk/dPaomF6W6/YJy6TarxZc
-	 BNQ2zfCUH1ryTgrNjR7j/xUyA4Bff3sGgc9PfYZrTQzOa0lWgtpXo7lpO1OLiIP3rF
-	 gP+nPuk9aX1+yuVrnaualLP1xHw7LJSGi0DrpQAFI0FduEA4BhGVM4AZoqqIN11FV4
-	 kG7eXi3XMlYpJ4enFysDlHvHTaNWm+OO2PKNd4yS7i3LiSek0HcjLeE4jjVHzrdR4O
-	 Jjf55VHeXvd7Q==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B662ac6250001>; Fri, 26 Apr 2024 09:07:49 +1200
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Fri, 26 Apr 2024 09:07:49 +1200
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1544.009; Fri, 26 Apr 2024 09:07:49 +1200
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Chuck Lever III <chuck.lever@oracle.com>
-CC: Neil Brown <neilb@suse.de>, Jeff Layton <jlayton@kernel.org>, "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>, Linux NFS Mailing List
-	<linux-nfs@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: kernel BUG at net/sunrpc/svc.c:570 after updating from v5.15.153
- to v5.15.155
-Thread-Topic: kernel BUG at net/sunrpc/svc.c:570 after updating from v5.15.153
- to v5.15.155
-Thread-Index: AQHaleHzc3oveYbGkkq3WWVD/cih7bF12zkAgABlswCAAStOgIAACEqA///XTYCAAWPYAIAAA+uAgAAAv4A=
-Date: Thu, 25 Apr 2024 21:07:49 +0000
-Message-ID: <dc96f7d9-ffd9-487a-be44-9c30c6662d52@alliedtelesis.co.nz>
-References: <5D19EAF8-0F65-4CD6-9378-67234D407B96@oracle.com>
- <171400185158.7600.16163546434537681088@noble.neil.brown.name>
- <141fbaa0-f8fa-4bfe-8c2d-7749fcf78ab3@alliedtelesis.co.nz>
- <6F1A5E20-1A0E-479C-AD5B-886D10739702@oracle.com>
-In-Reply-To: <6F1A5E20-1A0E-479C-AD5B-886D10739702@oracle.com>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AC58CAD9C8A21E469637C4B8E843D402@atlnz.lc>
-Content-Transfer-Encoding: base64
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VQT4H1Jvwz4wny;
+	Fri, 26 Apr 2024 07:09:02 +1000 (AEST)
+Date: Fri, 26 Apr 2024 07:09:02 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
+ <johan.hedberg@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the bluetooth tree
+Message-ID: <20240426070902.0cfa1282@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=dY4j3mXe c=1 sm=1 tr=0 ts=662ac625 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=yPCof4ZbAAAA:8 a=VwQbUJbxAAAA:8 a=g6u_1-914C6Wr_cfHq0A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=eNOiNizBAFBy3Wy_Y4PN:22
-X-SEG-SpamProfiler-Score: 0
+Content-Type: multipart/signed; boundary="Sig_/xuqiCR+9hBizTPSexM=cJfu";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-DQpPbiAyNi8wNC8yNCAwOTowNSwgQ2h1Y2sgTGV2ZXIgSUlJIHdyb3RlOg0KPg0KPj4gT24gQXBy
-IDI1LCAyMDI0LCBhdCA0OjUx4oCvUE0sIENocmlzIFBhY2toYW0gPENocmlzLlBhY2toYW1AYWxs
-aWVkdGVsZXNpcy5jby5uej4gd3JvdGU6DQo+Pg0KPj4NCj4+IE9uIDI1LzA0LzI0IDExOjM3LCBO
-ZWlsQnJvd24gd3JvdGU6DQo+Pj4gT24gVGh1LCAyNSBBcHIgMjAyNCwgQ2h1Y2sgTGV2ZXIgSUlJ
-IHdyb3RlOg0KPj4+Pj4gT24gQXByIDI0LCAyMDI0LCBhdCA5OjMz4oCvQU0sIENodWNrIExldmVy
-IElJSSA8Y2h1Y2subGV2ZXJAb3JhY2xlLmNvbT4gd3JvdGU6DQo+Pj4+Pg0KPj4+Pj4+IE9uIEFw
-ciAyNCwgMjAyNCwgYXQgMzo0MuKAr0FNLCBDaHJpcyBQYWNraGFtIDxDaHJpcy5QYWNraGFtQGFs
-bGllZHRlbGVzaXMuY28ubno+IHdyb3RlOg0KPj4+Pj4+DQo+Pj4+Pj4gT24gMjQvMDQvMjQgMTM6
-MzgsIENocmlzIFBhY2toYW0gd3JvdGU6DQo+Pj4+Pj4+IE9uIDI0LzA0LzI0IDEyOjU0LCBDaHJp
-cyBQYWNraGFtIHdyb3RlOg0KPj4+Pj4+Pj4gSGkgSmVmZiwgQ2h1Y2ssIEdyZWcsDQo+Pj4+Pj4+
-Pg0KPj4+Pj4+Pj4gQWZ0ZXIgdXBkYXRpbmcgb25lIG9mIG91ciBidWlsZHMgYWxvbmcgdGhlIDUu
-MTUueSBMVFMgYnJhbmNoIG91cg0KPj4+Pj4+Pj4gdGVzdGluZyBjYXVnaHQgYSBuZXcga2VybmVs
-IGJ1Zy4gT3V0cHV0IGJlbG93Lg0KPj4+Pj4+Pj4NCj4+Pj4+Pj4+IEkgaGF2ZW4ndCBkdWcgaW50
-byBpdCB5ZXQgYnV0IHdvbmRlcmVkIGlmIGl0IHJhbmcgYW55IGJlbGxzLg0KPj4+Pj4+PiBBIGJp
-dCBtb3JlIGluZm8uIFRoaXMgaXMgaGFwcGVuaW5nIGF0ICJyZWJvb3QiIGZvciB1cy4gT3VyIGVt
-YmVkZGVkDQo+Pj4+Pj4+IGRldmljZXMgdXNlIGEgYml0IG9mIGEgaGFja2VkIHVwIHJlYm9vdCBw
-cm9jZXNzIHNvIHRoYXQgdGhleSBjb21lIGJhY2sNCj4+Pj4+Pj4gZmFzdGVyIGluIHRoZSBjYXNl
-IG9mIGEgZmFpbHVyZS4NCj4+Pj4+Pj4NCj4+Pj4+Pj4gSXQgZG9lc24ndCBoYXBwZW4gd2l0aCBh
-IHByb3BlciBgc3lzdGVtY3RsIHJlYm9vdGAgb3Igd2l0aCBhIFNZU1JRK0INCj4+Pj4+Pj4NCj4+
-Pj4+Pj4gSSBjYW4gdHJpZ2dlciBpdCB3aXRoIGBraWxsYWxsIC05IG5mc2RgIHdoaWNoIEknbSBu
-b3Qgc3VyZSBpcyBhDQo+Pj4+Pj4+IGNvbXBsZXRlbHkgbGVnaXQgdGhpbmcgdG8gZG8gdG8ga2Vy
-bmVsIHRocmVhZHMgYnV0IGl0J3MgcHJvYmFibHkgY2xvc2UNCj4+Pj4+Pj4gdG8gd2hhdCBvdXIg
-Y3VzdG9taXplZCByZWJvb3QgZG9lcy4NCj4+Pj4+PiBJJ3ZlIGJpc2VjdGVkIGJldHdlZW4gdjUu
-MTUuMTUzIGFuZCB2NS4xNS4xNTUgYW5kIGlkZW50aWZpZWQgY29tbWl0DQo+Pj4+Pj4gZGVjNmI4
-YmNhYzczICgibmZzZDogU2ltcGxpZnkgY29kZSBhcm91bmQgc3ZjX2V4aXRfdGhyZWFkKCkgY2Fs
-bCBpbg0KPj4+Pj4+IG5mc2QoKSIpIGFzIHRoZSBmaXJzdCBiYWQgY29tbWl0LiBCYXNlZCBvbiB0
-aGUgY29udGV4dCB0aGF0IHNlZW1zIHRvDQo+Pj4+Pj4gbGluZSB1cCB3aXRoIG15IHJlcHJvZHVj
-dGlvbi4gSSdtIHdvbmRlcmluZyBpZiBwZXJoYXBzIHNvbWV0aGluZyBnb3QNCj4+Pj4+PiBtaXNz
-ZWQgb3V0IG9mIHRoZSBzdGFibGUgdHJhY2s/IFVuZm9ydHVuYXRlbHkgSSdtIG5vdCBhYmxlIHRv
-IHJ1biBhIG1vcmUNCj4+Pj4+PiByZWNlbnQga2VybmVsIHdpdGggYWxsIG9mIHRoZSBuZnMgcmVs
-YXRlZCBzZXR1cCB0aGF0IGlzIGJlaW5nIHVzZWQgb24NCj4+Pj4+PiB0aGUgc3lzdGVtIGluIHF1
-ZXN0aW9uLg0KPj4+Pj4gVGhhbmtzIGZvciBiaXNlY3RpbmcsIHRoYXQgd291bGQgaGF2ZSBiZWVu
-IG15IGZpcnN0IHN1Z2dlc3Rpb24uDQo+Pj4+Pg0KPj4+Pj4gVGhlIGJhY2twb3J0IGluY2x1ZGVk
-IGFsbCBvZiB0aGUgTkZTRCBwYXRjaGVzIHVwIHRvIHY2LjIsIGJ1dA0KPj4+Pj4gdGhlcmUgbWln
-aHQgYmUgYSBtaXNzaW5nIHNlcnZlci1zaWRlIFN1blJQQyBwYXRjaC4NCj4+Pj4gU28gZGVjNmI4
-YmNhYzczICgibmZzZDogU2ltcGxpZnkgY29kZSBhcm91bmQgc3ZjX2V4aXRfdGhyZWFkKCkNCj4+
-Pj4gY2FsbCBpbiAgbmZzZCgpIikgaXMgZnJvbSB2Ni42LCBzbyBpdCB3YXMgYXBwbGllZCB0byB2
-NS4xNS55DQo+Pj4+IG9ubHkgdG8gZ2V0IGEgc3Vic2VxdWVudCBORlNEIGZpeCB0byBhcHBseS4N
-Cj4+Pj4NCj4+Pj4gVGhlIGltbWVkaWF0ZWx5IHByZXZpb3VzIHVwc3RyZWFtIGNvbW1pdCBpcyBt
-aXNzaW5nOg0KPj4+Pg0KPj4+PiAgICAzOTAzOTAyNDAxNDUgKCJuZnNkOiBkb24ndCBhbGxvdyBu
-ZnNkIHRocmVhZHMgdG8gYmUgc2lnbmFsbGVkLiIpDQo+Pj4+DQo+Pj4+IEZvciB0ZXN0aW5nLCBJ
-J3ZlIGFwcGxpZWQgdGhpcyB0byBteSBuZnNkLTUuMTUueSBicmFuY2ggaGVyZToNCj4+Pj4NCj4+
-Pj4gICAgaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvY2Vs
-L2xpbnV4LmdpdA0KPj4+Pg0KPj4+PiBIb3dldmVyIGV2ZW4gaWYgdGhhdCBmaXhlcyB0aGUgcmVw
-b3J0ZWQgY3Jhc2gsIHRoaXMgc3VnZ2VzdHMNCj4+Pj4gdGhhdCBhZnRlciB2Ni42LCBuZnNkIHRo
-cmVhZHMgYXJlIG5vdCBnb2luZyB0byByZXNwb25kIHRvDQo+Pj4+ICJraWxsYWxsIC05IG5mc2Qi
-Lg0KPj4+IEkgdGhpbmsgdGhpcyBsaWtlbHkgaXMgdGhlIHByb2JsZW0uICBUaGUgbmZzZCB0aHJl
-YWRzIG11c3QgYmUgYmVpbmcNCj4+PiBraWxsZWQgYnkgYSBzaWduYWwuDQo+Pj4gT25lIG9ubHkg
-b3RoZXIgY2F1c2UgZm9yIGFuIG5mc2QgdGhyZWFkIHRvIGV4aXQgaXMgaWYNCj4+PiBzdmNfc2V0
-X251bV90aHJlYWRzKCkgaXMgY2FsbGVkLCBhbmQgYWxsIHBsYWNlcyB0aGF0IGNhbGwgdGhhdCBo
-b2xkIGENCj4+PiByZWYgb24gdGhlIHNlcnYgc3RydWN0dXJlIHNvIHRoZSBmaW5hbCBwdXQgd29u
-J3QgaGFwcGVuIHdoZW4gdGhlIHRocmVhZA0KPj4+IGV4aXRzLg0KPj4+DQo+Pj4gQmVmb3JlIHRo
-ZSBwYXRjaCB0aGF0IGJpc2VjdCBmb3VuZCwgdGhlIG5mc2QgdGhyZWFkIHdvdWxkIGV4aXQgd2l0
-aA0KPj4+DQo+Pj4gICBzdmNfZ2V0KCk7DQo+Pj4gICBzdmNfZXhpdF90aHJlYWQoKTsNCj4+PiAg
-IG5mc2RfcHV0KCk7DQo+Pj4NCj4+PiBUaGlzIGFsc28gaG9sZHMgYSByZWYgYWNyb3NzIHRoZSBz
-dmNfZXhpdF90aHJlYWQoKSwgYW5kIGVuc3VyZXMgdGhlDQo+Pj4gZmluYWwgJ3B1dCcgaGFwcGVu
-cyBmcm9tIG5mc0RfcHV0KCksIG5vdCBzdmNfcHV0KCkgKGluDQo+Pj4gc3ZjX2V4aXRfdGhyZWFk
-KCkpLg0KPj4+DQo+Pj4gQ2hyaXM6IHdoYXQgd2FzIHRoZSBjb250ZXh0IHdoZW4gdGhlIGNyYXNo
-IGhhcHBlbmVkPyAgQ291bGQgdGhlIG5mc2QNCj4+PiB0aHJlYWRzIGhhdmUgYmVlbiBzaWduYWxs
-ZWQ/ICBUaGF0IGhhc24ndCBiZWVuIHRoZSBzdGFuZGFyZCB3YXkgdG8gc3RvcA0KPj4+IG5mc2Qg
-dGhyZWFkcyBmb3IgYSBsb25nIHRpbWUsIHNvIEknbSBhIGxpdHRsZSBzdXJwcmlzZWQgdGhhdCBp
-dCBpcw0KPj4+IGhhcHBlbmluZy4NCj4+IFdlIHVzZSBhIGhhY2tlZCB1cCB2ZXJzaW9uIG9mIHNo
-dXRkb3duIGZyb20gdXRpbC1saW51eCBhbmQgd2hpY2ggZG9lcyBhDQo+PiBga2lsbCAoLTEsIFNJ
-R1RFUk0pO2AgdGhlbiBga2lsbCAoLTEsIFNJR0tJTEwpO2AgKEkgZG9uJ3QgdGhpbmsgdGhhdA0K
-Pj4gcGFydGljdWxhciBiZWhhdmlvdXIgaXMgdGhlIGhhY2tlcnkpLiBJJ20gbm90IHN1cmUgaWYg
-LTEgd2lsbCBwaWNrIHVwDQo+PiBrZXJuZWwgdGhyZWFkcyBidXQgYmFzZWQgb24gdGhlIHN5bXB0
-b21zIGl0IGFwcGVhcnMgdG8gYmUgZG9pbmcgc28gKG9yDQo+PiBtYXliZSBzb21ldGhpbmcgZWxz
-ZSBpcyBpbiBpdCdzIFNJR1RFUk0gaGFuZGxlcikuIEkgZG9uJ3QgdGhpbmsgd2Ugd2VyZQ0KPj4g
-ZXZlciByZWFsbHkgaW50ZW5kaW5nIHRvIHNlbmQgdGhlIHNpZ25hbHMgdG8gbmZzZCBzbyB3aGV0
-aGVyIGl0IGFjdHVhbGx5DQo+PiB0ZXJtaW5hdGVzIG9yIG5vdCBJIGRvbid0IHRoaW5rIGlzIGFu
-IGlzc3VlIGZvciB1cy4gSSBjYW4gY29uZmlybSB0aGF0DQo+PiBhcHBseWluZyAzOTAzOTAyNDAx
-NDUgcmVzb2x2ZXMgdGhlIHN5bXB0b20gd2Ugd2VyZSBzZWVpbmcuDQo+IEknbSAyLzMgb2YgdGhl
-IHdheSB0aHJvdWdoIHRlc3RpbmcgNS4xNS4xNTYgd2l0aCAzOTAzOTAyNDAxNDUNCj4gYXBwbGll
-ZCwgc28gaXQgd291bGQgYmUganVzdCBhbm90aGVyIGRheSBiZWZvcmUgSSBjYW4gc2VuZCBhDQo+
-IHBhdGNoIHRvIHN0YWJsZUAuDQo+DQo+IE1heSBJIGFkZCBUZXN0ZWQtYnk6IENocmlzIFBhY2to
-YW0gPENocmlzLlBhY2toYW1AYWxsaWVkdGVsZXNpcy5jby5uej4gPw0KDQpTdXJlIGdvIGFoZWFk
-Lg0K
+--Sig_/xuqiCR+9hBizTPSexM=cJfu
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+The following commits are also in Linus Torvalds' tree as different
+commits (but the same patches):
+
+  2d7a4bf4bae8 ("Bluetooth: qca: fix NULL-deref on non-serdev suspend")
+  4405182b7a15 ("Bluetooth: hci_sync: Use advertised PHYs on hci_le_ext_cre=
+ate_conn_sync")
+  5a0265dc7990 ("Bluetooth: hci_sync: Using hci_cmd_sync_submit when removi=
+ng Adv Monitor")
+  5e7d1e242697 ("Bluetooth: qca: set power_ctrl_enabled on NULL returned by=
+ gpiod_get_optional()")
+  9c049d8a7595 ("Bluetooth: Fix type of len in {l2cap,sco}_sock_getsockopt_=
+old()")
+  a3aca621101b ("Bluetooth: MGMT: Fix failing to MGMT_OP_ADD_UUID/MGMT_OP_R=
+EMOVE_UUID")
+  aec46cd4ebff ("Bluetooth: qca: fix invalid device address check")
+  d19d765596e7 ("Bluetooth: hci_event: Fix sending HCI_OP_READ_ENC_KEY_SIZE=
+")
+  df5efbdaa7d5 ("Bluetooth: btusb: mediatek: Fix double free of skb in core=
+dump")
+  e10bb8abb81e ("Bluetooth: qca: fix NULL-deref on non-serdev setup")
+  e4e20e0a1700 ("Bluetooth: btusb: Add Realtek RTL8852BE support ID 0x0bda:=
+0x4853")
+  f33b1c9d33d9 ("Bluetooth: btusb: Fix triggering coredump implementation f=
+or QCA")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/xuqiCR+9hBizTPSexM=cJfu
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYqxm4ACgkQAVBC80lX
+0Gzy2QgApkpdfoVxTe+5lNjXPtlQ2Dpr+PvilgyHzg0cJoeWkubP2OSmadyTD7AR
+70+NPIy/uQDPkYB0xpp1jGTessV++eiZd7+lNDzK+dQ4s1XQbkgm8zeBAcPn/rew
+gBsAv26kr/VvH2bh6iQC5abjFkW/gdARtspwNYI8jOzh+zrZOiiowe8OsJ6NvrFg
+w1q7TGtunMMGFIpJWIdOFREMn5RdgJUOexTNN4iyZ4FqVVP8uSkful3pLocvGWr5
+/vdbrp+a2slxafulizTU7R/XHb5IR/+VYFh2gFoj+5LnEziq0ivAHxdNEnHfQPoY
+GnomAD9oCTR88pdh101JHcTPclZ3Cw==
+=1RjI
+-----END PGP SIGNATURE-----
+
+--Sig_/xuqiCR+9hBizTPSexM=cJfu--
 
