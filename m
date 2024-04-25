@@ -1,222 +1,226 @@
-Return-Path: <linux-kernel+bounces-158450-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D86B38B2050
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:32:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C89EF8B2053
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:34:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9151B22261
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:32:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC8FE1C217F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6781112A17B;
-	Thu, 25 Apr 2024 11:32:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ay3+2S6S"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D616712AAD4;
+	Thu, 25 Apr 2024 11:33:54 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A93DD83CCD
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 11:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6E884DEE;
+	Thu, 25 Apr 2024 11:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714044759; cv=none; b=U5zoRCBwA8yXM/w2Gmgj0YszRhm1VRIH9hEqVkWuvk//lRAmqD4opC2QGog7cPUL9hjkORdGMv90z7Kna2d8dl7/JjghU47wBNtByTKqlBTQmiDDWvAIW0C1/WJPwSAOUdxQXQfM+XzZH08mzNRboLx+BsD261dy/VqFHeP96bo=
+	t=1714044834; cv=none; b=CzMPE8c05WPrJBX+RaXHNImDaddJpiKi9TxIG9NCiXuccX0sXMvVEvvvmM+SCn7dzFbIjxUvMDo/UrPriXDI52J4Yprr2stnWdHg08EdsGyVqp2+Z+kEf+WEk4HZzHvmvGhW9xnJXzNBFeVNzib51/sbflXDvhuYhijavV/epZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714044759; c=relaxed/simple;
-	bh=zdsSqpe4Axcd6130ovyN7qM/3tKwuTVRh3eYm+1qfZ4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oZfvJz3q9xyxZpi+0WOAxbxCcE2Kate/jCCyGOuqVdsf0/gAphyzpsuPK5EOBpzpiTBc0pexu/uFISExqlOYcKXQBJ3TIue+C9XWRcBUGaaqL4HeLwjrDGsugDy1bNyFlRrzP6gM4SJWCBFcJllSM4oGSkbEdQgly5/IJV/gTlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ay3+2S6S; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e3ca546d40so6740495ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 04:32:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714044756; x=1714649556; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ffuFzFDT/hhmG/R8PcprPn2rgAavZDqODrquN+sri9E=;
-        b=ay3+2S6SpEW1bM0pgjcRHdVvc27tJL7qEMz+usUiEB3rLCfMUCQyZAirejLH4A2XrC
-         pMx92egTFNLWY4sX86MI9ZOtzInTpjx/QJIUZHygSmTNVb91ed+PrO0T9A3uPFglUEPM
-         svkdgnwJte2m2eHporinZ+y5ZW9bgPvBaAGpmoTo/pN5stpqYuApIYFMPCcNS6b5VTL+
-         wLnsrrokDxU8xE9QB22Z9EV20F1OkSzYhRvQdY2sj/aHMdEZ2XnVks3kKCTocxWusdob
-         FIwF4XhJzW85QH1455U9/meT6Fl92ZYcQChdMz6k+USEn1jnPkJzF34Zhij8XoMa8/ur
-         eiUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714044756; x=1714649556;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ffuFzFDT/hhmG/R8PcprPn2rgAavZDqODrquN+sri9E=;
-        b=vE9Y9QcrlruM3wEHEp8wEvOz0eV0tF5r3BWiFLb2cVCGDmtROleGWdOW9nOCtk33qX
-         xHRuqLHTrigkPQADp/W0OUzh0iBvTHdngLzAOwKgbdMPM7e7dkvw+qsqZnzvMgipjH6P
-         KkWEKyYiCguBrUUk+jdoC2D9oUCQ7V48K67FMpP43dhJkhJf3IElYxHWO9np47LDjiM7
-         iJf0dzpxrRqbYAnB7abrngcXJIqElHIkZKI95tL88YKONLGbW2ZhheaqInBaTBPqTjsq
-         67stA7L1fnAt+SheWoMSCf/ulvPn4FWCsHTEPXDb7OhFMq0C/ELdUOrz6oosx0dI3tLP
-         TqyQ==
-X-Gm-Message-State: AOJu0YwnOI+QtDKfnjJYy9YwGcOXOd+9PsS8nU+JoGIY1Z6ni98UKzxP
-	e45UI3JtxRs7RhA9PaU/7gUBE5Dm8rfw7kwSUdCnUgrx3c3gJVdiA8GvnVEdT3K6unH5ssvpygh
-	hmTF1dBmSYNNQ3NIJGpSAOUxa5r+pQWiz
-X-Google-Smtp-Source: AGHT+IFAoonKY+Ldbjb5uRtArPVjR8I2eZU4gdaiybP+CEgjB+Lv8nAczp2WQLanPJwYBun3KbKBIsySsFAIfcS6O8U=
-X-Received: by 2002:a17:902:8690:b0:1e2:7dc7:477 with SMTP id
- g16-20020a170902869000b001e27dc70477mr5255109plo.57.1714044755686; Thu, 25
- Apr 2024 04:32:35 -0700 (PDT)
+	s=arc-20240116; t=1714044834; c=relaxed/simple;
+	bh=5Q1ztjo0rbFrVlWVjogoIXWhHiTDXjAOBjW05MpCtEw=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RXSJCk1xJkGmiirW1CFA3TkB/uUq/2mHSRZtmq2iRn4gXuwwZ6EwpC9oDXabWOeS1pcpVUOWFBc3LJxPCBEYZMUc86PF5plJu98STudQRGLKCHnmcRhR99IbzdsA/eFGVs+fqjSWStlmGgqF+CSJWgH+Uk4Ct06Rd25eQxkZtEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VQDFh36gfz6K6XF;
+	Thu, 25 Apr 2024 19:31:20 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id A415B140AB8;
+	Thu, 25 Apr 2024 19:33:45 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 25 Apr
+ 2024 12:33:45 +0100
+Date: Thu, 25 Apr 2024 12:33:44 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Dan Williams <dan.j.williams@intel.com>
+CC: <linux-cxl@vger.kernel.org>, Sreenivas Bagalkote
+	<sreenivas.bagalkote@broadcom.com>, Brett Henning
+	<brett.henning@broadcom.com>, Harold Johnson <harold.johnson@broadcom.com>,
+	Sumanesh Samanta <sumanesh.samanta@broadcom.com>,
+	<linux-kernel@vger.kernel.org>, Davidlohr Bueso <dave@stgolabs.net>, "Dave
+ Jiang" <dave.jiang@intel.com>, Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>, "Ira Weiny" <ira.weiny@intel.com>,
+	<linuxarm@huawei.com>, <linux-api@vger.kernel.org>, Lorenzo Pieralisi
+	<lpieralisi@kernel.org>, "Natu, Mahesh" <mahesh.natu@intel.com>
+Subject: Re: RFC: Restricting userspace interfaces for CXL fabric management
+Message-ID: <20240425123344.000001a9@Huawei.com>
+In-Reply-To: <66284d5e8ac01_690a29431@dwillia2-xfh.jf.intel.com.notmuch>
+References: <20240321174423.00007e0d@Huawei.com>
+	<66109191f3d6d_2583ad29468@dwillia2-xfh.jf.intel.com.notmuch>
+	<20240410124517.000075f2@Huawei.com>
+	<66284d5e8ac01_690a29431@dwillia2-xfh.jf.intel.com.notmuch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424063753.3740664-1-tomeu@tomeuvizoso.net>
-In-Reply-To: <20240424063753.3740664-1-tomeu@tomeuvizoso.net>
-From: Christian Gmeiner <christian.gmeiner@gmail.com>
-Date: Thu, 25 Apr 2024 13:32:23 +0200
-Message-ID: <CAH9NwWdzeF0=USW_bckDhPSUrgTfnFuAq44m1OhEmTL4JnBzLg@mail.gmail.com>
-Subject: Re: [PATCH] drm/etnaviv: Create an accel device node if compute-only
-To: Tomeu Vizoso <tomeu@tomeuvizoso.net>
-Cc: linux-kernel@vger.kernel.org, Oded Gabbay <ogabbay@kernel.org>, 
-	Lucas Stach <l.stach@pengutronix.de>, Russell King <linux+etnaviv@armlinux.org.uk>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, etnaviv@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hi Tomeu,
+On Tue, 23 Apr 2024 17:07:58 -0700
+Dan Williams <dan.j.williams@intel.com> wrote:
 
->
-> If we expose a render node for NPUs without rendering capabilities, the
-> userspace stack will offer it to compositors and applications for
-> rendering, which of course won't work.
->
-> Userspace is probably right in not questioning whether a render node
-> might not be capable of supporting rendering, so change it in the kernel
-> instead by exposing a /dev/accel node.
->
-> Before we bring the device up we don't know whether it is capable of
-> rendering or not (depends on the features of its blocks), so first try
-> to probe a rendering node, and if we find out that there is no rendering
-> hardware, abort and retry with an accel node.
->
+> Jonathan Cameron wrote:
+> [..]
+> > > It is not clear to me that this material makes sense to house in
+> > > drivers/ vs tools/ or even out-of-tree just for maintenance burden
+> > > relief of keeping the universes separated. What does the Linux kernel
+> > > project get out of carrying this in mainline alongside the inband code?  
+> > 
+> > I'm not sure what you mean by in band.  Aim here was to discuss
+> > in-band drivers for switch CCI etc. Same reason from a kernel point of
+> > view for why we include embedded drivers.  I'll interpret in band
+> > as host driven and not inband as FM-API stuff.
+> >    
+> > > I do think the mailbox refactoring to support non-CXL use cases is
+> > > interesting, but only so far as refactoring is consumed for inband use
+> > > cases like RAS API.  
+> > 
+> > If I read this right, I disagree with the 'only so far' bit.
+> > 
+> > In all substantial ways we should support BMC use case of the Linux Kernel
+> > at a similar level to how we support forms of Linux Distros.  
+> 
+> I think we need to talk in terms of specifics, because in the general
+> case I do not see the blockage. OpenBMC currently is based on v6.6.28
+> and carries 136 patches. An additional patch to turn off raw commands
+> restrictions over there would not even be noticed.
 
-I really love this idea of moving away from a render node. What needs to be done
-on the userspace side?
+Hi Dan,
 
-> Signed-off-by: Tomeu Vizoso <tomeu@tomeuvizoso.net>
-> Cc: Oded Gabbay <ogabbay@kernel.org>
+That I'm fine with - it's a reasonable middle ground where we ensure
+they have a sensible upstream solution, but just patch around the
+taint etc in the downstream projects.
 
-Reviewed-by: Christian Gmeiner <cgmeiner@igalia.com>
+Note 136 patches is tiny for a distro and reflects their hard work
+upstreaming stuff.
 
-> ---
->  drivers/gpu/drm/etnaviv/etnaviv_drv.c | 46 ++++++++++++++++++++++-----
->  1 file changed, 38 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-> index 6500f3999c5f..8e7dd23115f4 100644
-> --- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-> +++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-> @@ -11,6 +11,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/uaccess.h>
->
-> +#include <drm/drm_accel.h>
->  #include <drm/drm_debugfs.h>
->  #include <drm/drm_drv.h>
->  #include <drm/drm_file.h>
-> @@ -488,10 +489,10 @@ static const struct drm_ioctl_desc etnaviv_ioctls[] = {
->         ETNA_IOCTL(PM_QUERY_SIG, pm_query_sig, DRM_RENDER_ALLOW),
->  };
->
-> -DEFINE_DRM_GEM_FOPS(fops);
-> +DEFINE_DRM_GEM_FOPS(render_fops);
-> +DEFINE_DRM_ACCEL_FOPS(accel_fops);
->
-> -static const struct drm_driver etnaviv_drm_driver = {
-> -       .driver_features    = DRIVER_GEM | DRIVER_RENDER,
-> +static struct drm_driver etnaviv_drm_driver = {
->         .open               = etnaviv_open,
->         .postclose           = etnaviv_postclose,
->         .gem_prime_import_sg_table = etnaviv_gem_prime_import_sg_table,
-> @@ -500,7 +501,6 @@ static const struct drm_driver etnaviv_drm_driver = {
->  #endif
->         .ioctls             = etnaviv_ioctls,
->         .num_ioctls         = DRM_ETNAVIV_NUM_IOCTLS,
-> -       .fops               = &fops,
->         .name               = "etnaviv",
->         .desc               = "etnaviv DRM",
->         .date               = "20151214",
-> @@ -508,15 +508,20 @@ static const struct drm_driver etnaviv_drm_driver = {
->         .minor              = 4,
->  };
->
-> -/*
-> - * Platform driver:
-> - */
-> -static int etnaviv_bind(struct device *dev)
-> +static int etnaviv_bind_with_type(struct device *dev, u32 type)
->  {
->         struct etnaviv_drm_private *priv;
->         struct drm_device *drm;
-> +       bool is_compute_only = true;
->         int ret;
->
-> +       etnaviv_drm_driver.driver_features = DRIVER_GEM | type;
-> +
-> +       if (type == DRIVER_RENDER)
-> +               etnaviv_drm_driver.fops = &render_fops;
-> +       else
-> +               etnaviv_drm_driver.fops = &accel_fops;
-> +
->         drm = drm_dev_alloc(&etnaviv_drm_driver, dev);
->         if (IS_ERR(drm))
->                 return PTR_ERR(drm);
-> @@ -553,6 +558,18 @@ static int etnaviv_bind(struct device *dev)
->
->         load_gpu(drm);
->
-> +       for (unsigned int i = 0; i < ETNA_MAX_PIPES; i++) {
-> +               struct etnaviv_gpu *g = priv->gpu[i];
-> +
-> +               if (g && (g->identity.minor_features8 & chipMinorFeatures8_COMPUTE_ONLY) == 0)
-> +                       is_compute_only = false;
-> +       }
-> +
-> +       if (type == DRIVER_RENDER && is_compute_only) {
-> +               ret = -EINVAL;
-> +               goto out_unbind;
-> +       }
-> +
->         ret = drm_dev_register(drm, 0);
->         if (ret)
->                 goto out_unbind;
-> @@ -571,6 +588,19 @@ static int etnaviv_bind(struct device *dev)
->         return ret;
->  }
->
-> +/*
-> + * Platform driver:
-> + */
-> +static int etnaviv_bind(struct device *dev)
-> +{
-> +       int ret = etnaviv_bind_with_type(dev, DRIVER_RENDER);
-> +
-> +       if (ret == -EINVAL)
-> +               return etnaviv_bind_with_type(dev, DRIVER_COMPUTE_ACCEL);
-> +
-> +       return ret;
-> +}
-> +
->  static void etnaviv_unbind(struct device *dev)
->  {
->         struct drm_device *drm = dev_get_drvdata(dev);
-> --
-> 2.44.0
->
+> 
+> > It may not be our target market as developers for particular parts of
+> > our companies, but we should not block those who want to support it.  
+> 
+> It is also the case that there is a responsibility to build maintainable
+> kernel interfaces that can be reasoned about, especially with devices as
+> powerful as CXL that are trusted to host system memory and be caching
+> agents. For example, I do not want to be in the position of auditing
+> whether proposed tunnels and passthroughs violate lockdown expectations.
+
+I agree with that - this can be made dependent on not locking down
+in the same way lots of other somewhat dangerous interfaces are.
+We can relax that restriction as things do get audited - sure
+tunnels aren't going to be on that allowed list in the short term.
+
+> 
+> Also, the assertion that these kernels will be built with
+> CONFIG_SECURITY_LOCKDOWN_LSM=n and likely CONFIG_STRICT_DEVMEM=n, then
+> the entire user-mode driver ABI is available for use. CXL commands are
+> simple polled mmio, does Linux really benefit from carrying drivers in
+> the kernel that the kernel itself does not care about?
+
+Sure we could it in userspace...  It's bad engineering, limits the design
+to polling only and uses a bunch of interfaces we put a lot of effort into
+telling people not to use except for debug.
+
+I really don't see the advantage in pushing a project/group of projects
+all of which are picking the upstream kernel up directly, to do a dirty
+hack. We loose all the advantages of a proper well maintained kernel
+driver purely on the argument that one use model is not the same as
+this one.  Sensible security lockdown requirements is fine (along
+with all the other kernel features that must be disable for that
+to work), making open kernel development on for a large Linux
+market harder is not.
+
+> 
+> [..]
+> > Switch CCI Driver: PCI driver doing everything beyond the CXL mbox specific bit.
+> > Type 3 Stack: All the normal stack just with the CXL Mailbox specific stuff factored
+> >               out. Note we can move different amounts of shared logic in here, but
+> >               in essence it deals with the extra layer on top of the raw MMPT mbox.
+> > MMPT Mbox: Mailbox as per the PCI spec.
+> > RAS API:   Shared RAS API specific infrastructure used by other drivers.  
+> 
+> Once the CXL mailbox core is turned into a library for kernel internal
+> consumers, like RAS API, or CXL accelerators, then it becomes easier to
+> add a Switch CCI consumer (perhaps as an out-of-tree module in tools/),
+> but it is still not clear why the kernel benefits from that arrangement.
+
+We can argue later on this. But from my point of view, in tree module not
+in tools is a must.  Doesn't have to be in drivers/cxl if its simply the
+association aspect that is a blocker.
+
+> 
+> This is less about blocking developers that have different goals it is
+> about finding the right projects / places to solve the problem
+> especially when disjoint design goals are in play and user space drivers
+> might be in reach.
+
+Key here is this is not a case of openBMC is the one true distro on 
+which all Linux BMCs and fabric management platforms are based.
+So we are really talking a random out of tree driver with all the maintenance
+overhead that brings.  Yuck.
+
+So I don't see there being any good solution out side of upstream support
+other than pushing this to be a userspace hack.
+
+> 
+> [..]
+> > > > The various CXL upstream developers and maintainers may have
+> > > > differing views of course, but my current understanding is we want
+> > > > to support 1 and 2, but are very resistant to 3!    
+> > > 
+> > > 1, yes, 2, need to see the patches, and agree on 3.  
+> > 
+> > If we end up with top architecture of the diagrams above, 2 will look pretty
+> > similar to last version of the switch-cci patches.  So raw commands only + taint.
+> > Factoring out MMPT is another layer that doesn't make that much difference in
+> > practice to this discussion. Good to have, but the reuse here would be one layer
+> > above that.
+> > 
+> > Or we just say go for second proposed architecture and 0 impact on the
+> > CXL specific code, just reuse of the MMPT layer.  I'd imagine people will get
+> > grumpy on code duplication (and we'll spend years rejecting patch sets that
+> > try to share the cdoe) but there should be no maintenance burden as
+> > a result.  
+> 
+> I am assuming that the shared code between MMPT and CXL will happen and
+> that all of the command infrastructure is where centralized policy can
+> not keep up.
+
+There is actually very little to MMPT, but sure there will be some sharing
+of code and the policy won't sit in that shared part as it is protocol
+specific.
+
+> If OpenBMC wants to land a driver that consumes the MMPT
+> core in tools/ that would seem to satisfy both the concerns of mainline
+> not shipping ABI that host kernels need to strictly reason about while
+> letting OpenBMC not need to carry out-of-tree patches indefinitely.
+
+We can argue that detail later, but tools is not in my opinion
+a valid solution to supporting properly maintained upstream drivers.
+Its a hack for test and example modules only.  The path of just
+blocking this driver in any locked down situation seems much more inline
+with kernel norms.  It is also extremely bad precedence.
+
+Jonathan
+
+p.s. I don't care in the slightest about openBMC (other than general
+warm fuzzy feelings about a good open source project), I do care
+rather more about BMCs and other fabric managers.
 
 
--- 
-greets
---
-Christian Gmeiner, MSc
 
-https://christian-gmeiner.info/privacypolicy
+
 
