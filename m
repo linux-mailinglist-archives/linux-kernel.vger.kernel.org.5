@@ -1,65 +1,158 @@
-Return-Path: <linux-kernel+bounces-159163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7780D8B2A21
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:50:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 884AE8B2A28
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:51:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDB3BB24766
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:50:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8277BB21DDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:51:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC362155385;
-	Thu, 25 Apr 2024 20:50:19 +0000 (UTC)
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52809152E13;
-	Thu, 25 Apr 2024 20:50:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFBA615531D;
+	Thu, 25 Apr 2024 20:51:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="W41FFbrH"
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A239153812
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714078219; cv=none; b=jRIZLt5yxZ2jyHlLQ0WLnJBuuX3h7iDl3FZqwHQmDbG3vy8v2esLYIEYCXDTHAc9JNK5HIxF9oqHR3OqnC+Of9dHI3JjwPoAg/qwwunp3rNgHY/o7gCKFJRZp6yP9JQzha7MGEFnxBes19CWeuSEmvP44mMHRsZvQSglZJUcFzY=
+	t=1714078281; cv=none; b=qRkKT9YnFcJdLR95blBOomUSbKz+ZBvBAvGpWiAWmQqosIg1e7KX7M704SjWTEIkU+T+Kh2Q0atVBqn1yGLXQszWjyb7tkMkcIEIFt9cvt28bskxmd+gU4NyQu/ITcEXPwhepv+yTZiZe3x6stSHxAOwPqbclWApnZ39Ru6Q0Vw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714078219; c=relaxed/simple;
-	bh=J0qO3MJ0+uKqJInfu7cnRjx6k5KHUkRHuoq6Q5hbvcY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GNEiKFyK2/8joMZYzy8nGWx9OihWFMMi5VPbtdkL4Nk7SI8dKOAbVDUy9tSLl27QjaUiZV/bDlQ9Y0I/G0b6hCtJDpYSt4QiHRbjpOqY3EF1p4NDSm+tGw65Ri4/t5CZIbbRERQW19zC/8aekAglRxKDj0OKtSk5wADuF5UPPyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Date: Thu, 25 Apr 2024 22:50:04 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Ismael Luceno <iluceno@suse.de>
-Cc: linux-kernel@vger.kernel.org, Firo Yang <firo.yang@suse.com>,
-	Andreas Taschner <andreas.taschner@suse.com>,
-	Michal =?utf-8?Q?Kube=C4=8Dek?= <mkubecek@suse.com>,
-	Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>,
-	lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	netdev@vger.kernel.org, coreteam@netfilter.org
-Subject: Re: [PATCH v3] ipvs: Fix checksumming on GSO of SCTP packets
-Message-ID: <ZirB_Arz_4xKXG4s@calendula>
-References: <20240425162842.23900-1-iluceno@suse.de>
+	s=arc-20240116; t=1714078281; c=relaxed/simple;
+	bh=lkRX1fG6qdg/TKVVEzeKQwdo6ddodtAmROeCQW1k9Po=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Bgsdg3HguVqKwhPT2/udOujYZ6fGyHqZaQnXqbYm+MC499WEK7jwdcx5TtLnWIWq5qm+MC3zom5nzO/ChCSrQbYy8vaOtR/Y+At9Kusoq/NCMLL1ZQxpQAsihQcgXl+S10El18xoY3scG0ENmlqTh09eUMPjjHWmMWObuTcRzrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=W41FFbrH; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id DC67A2C03E9;
+	Fri, 26 Apr 2024 08:51:09 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1714078269;
+	bh=lkRX1fG6qdg/TKVVEzeKQwdo6ddodtAmROeCQW1k9Po=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=W41FFbrH3N97H2ifsa3iVT5aoZY9y4a0ok1YVb9hJoxTCuXMBzXt756e3P8cDPvh8
+	 VeJyJqUx4c/ORaVNiEZA3mOhrNptlMncVR6SUVN+2qbqg5meKyGrEfAq7VkxZYSUAG
+	 TxnSB4UJrieTiAYaNdGqWi2r9mrHNCv2lhI0DYVBdFbIGz68j33nhGNZ7RT85RqKVa
+	 v4jGCh/1tzEAD5M6diuuP9R0pE9hoSHEe1Y4q/hE/moT0fcD32py0+oSuJlNVp8q3s
+	 n8/pX9p9dTtEgh4KKtFqJRIe4QMR/vODz3ZgBXIbKbz/+/8OJ3kkXPQT5mihiRvjhL
+	 qF95uCjQji0Ow==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B662ac23d0001>; Fri, 26 Apr 2024 08:51:09 +1200
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Fri, 26 Apr 2024 08:51:09 +1200
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1544.009; Fri, 26 Apr 2024 08:51:09 +1200
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: NeilBrown <neilb@suse.de>, Chuck Lever III <chuck.lever@oracle.com>
+CC: Jeff Layton <jlayton@kernel.org>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, Linux NFS Mailing List
+	<linux-nfs@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: kernel BUG at net/sunrpc/svc.c:570 after updating from v5.15.153
+ to v5.15.155
+Thread-Topic: kernel BUG at net/sunrpc/svc.c:570 after updating from v5.15.153
+ to v5.15.155
+Thread-Index: AQHaleHzc3oveYbGkkq3WWVD/cih7bF12zkAgABlswCAAStOgIAACEqA///XTYCAAWPYAA==
+Date: Thu, 25 Apr 2024 20:51:09 +0000
+Message-ID: <141fbaa0-f8fa-4bfe-8c2d-7749fcf78ab3@alliedtelesis.co.nz>
+References: <> <5D19EAF8-0F65-4CD6-9378-67234D407B96@oracle.com>
+ <171400185158.7600.16163546434537681088@noble.neil.brown.name>
+In-Reply-To: <171400185158.7600.16163546434537681088@noble.neil.brown.name>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E621C99F46B2FA4E83FFBC84D758A5C2@atlnz.lc>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240425162842.23900-1-iluceno@suse.de>
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=dY4j3mXe c=1 sm=1 tr=0 ts=662ac23d a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=yPCof4ZbAAAA:8 a=VwQbUJbxAAAA:8 a=VJ8-JLLbby-0TyR3JjMA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
+X-SEG-SpamProfiler-Score: 0
 
-Hi,
-
-On Thu, Apr 25, 2024 at 06:28:40PM +0200, Ismael Luceno wrote:
-> It was observed in the wild that pairs of consecutive packets would leave
-> the IPVS with the same wrong checksum, and the issue only went away when
-> disabling GSO.
-> 
-> IPVS needs to avoid computing the SCTP checksum when using GSO.
-
-This patch went already upstream.
-
-It was no clear to me that a v3 was needed.
-
-You will have to post a follow up.
+DQpPbiAyNS8wNC8yNCAxMTozNywgTmVpbEJyb3duIHdyb3RlOg0KPiBPbiBUaHUsIDI1IEFwciAy
+MDI0LCBDaHVjayBMZXZlciBJSUkgd3JvdGU6DQo+Pj4gT24gQXByIDI0LCAyMDI0LCBhdCA5OjMz
+4oCvQU0sIENodWNrIExldmVyIElJSSA8Y2h1Y2subGV2ZXJAb3JhY2xlLmNvbT4gd3JvdGU6DQo+
+Pj4NCj4+Pj4gT24gQXByIDI0LCAyMDI0LCBhdCAzOjQy4oCvQU0sIENocmlzIFBhY2toYW0gPENo
+cmlzLlBhY2toYW1AYWxsaWVkdGVsZXNpcy5jby5uej4gd3JvdGU6DQo+Pj4+DQo+Pj4+IE9uIDI0
+LzA0LzI0IDEzOjM4LCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPj4+Pj4gT24gMjQvMDQvMjQgMTI6
+NTQsIENocmlzIFBhY2toYW0gd3JvdGU6DQo+Pj4+Pj4gSGkgSmVmZiwgQ2h1Y2ssIEdyZWcsDQo+
+Pj4+Pj4NCj4+Pj4+PiBBZnRlciB1cGRhdGluZyBvbmUgb2Ygb3VyIGJ1aWxkcyBhbG9uZyB0aGUg
+NS4xNS55IExUUyBicmFuY2ggb3VyDQo+Pj4+Pj4gdGVzdGluZyBjYXVnaHQgYSBuZXcga2VybmVs
+IGJ1Zy4gT3V0cHV0IGJlbG93Lg0KPj4+Pj4+DQo+Pj4+Pj4gSSBoYXZlbid0IGR1ZyBpbnRvIGl0
+IHlldCBidXQgd29uZGVyZWQgaWYgaXQgcmFuZyBhbnkgYmVsbHMuDQo+Pj4+PiBBIGJpdCBtb3Jl
+IGluZm8uIFRoaXMgaXMgaGFwcGVuaW5nIGF0ICJyZWJvb3QiIGZvciB1cy4gT3VyIGVtYmVkZGVk
+DQo+Pj4+PiBkZXZpY2VzIHVzZSBhIGJpdCBvZiBhIGhhY2tlZCB1cCByZWJvb3QgcHJvY2VzcyBz
+byB0aGF0IHRoZXkgY29tZSBiYWNrDQo+Pj4+PiBmYXN0ZXIgaW4gdGhlIGNhc2Ugb2YgYSBmYWls
+dXJlLg0KPj4+Pj4NCj4+Pj4+IEl0IGRvZXNuJ3QgaGFwcGVuIHdpdGggYSBwcm9wZXIgYHN5c3Rl
+bWN0bCByZWJvb3RgIG9yIHdpdGggYSBTWVNSUStCDQo+Pj4+Pg0KPj4+Pj4gSSBjYW4gdHJpZ2dl
+ciBpdCB3aXRoIGBraWxsYWxsIC05IG5mc2RgIHdoaWNoIEknbSBub3Qgc3VyZSBpcyBhDQo+Pj4+
+PiBjb21wbGV0ZWx5IGxlZ2l0IHRoaW5nIHRvIGRvIHRvIGtlcm5lbCB0aHJlYWRzIGJ1dCBpdCdz
+IHByb2JhYmx5IGNsb3NlDQo+Pj4+PiB0byB3aGF0IG91ciBjdXN0b21pemVkIHJlYm9vdCBkb2Vz
+Lg0KPj4+PiBJJ3ZlIGJpc2VjdGVkIGJldHdlZW4gdjUuMTUuMTUzIGFuZCB2NS4xNS4xNTUgYW5k
+IGlkZW50aWZpZWQgY29tbWl0DQo+Pj4+IGRlYzZiOGJjYWM3MyAoIm5mc2Q6IFNpbXBsaWZ5IGNv
+ZGUgYXJvdW5kIHN2Y19leGl0X3RocmVhZCgpIGNhbGwgaW4NCj4+Pj4gbmZzZCgpIikgYXMgdGhl
+IGZpcnN0IGJhZCBjb21taXQuIEJhc2VkIG9uIHRoZSBjb250ZXh0IHRoYXQgc2VlbXMgdG8NCj4+
+Pj4gbGluZSB1cCB3aXRoIG15IHJlcHJvZHVjdGlvbi4gSSdtIHdvbmRlcmluZyBpZiBwZXJoYXBz
+IHNvbWV0aGluZyBnb3QNCj4+Pj4gbWlzc2VkIG91dCBvZiB0aGUgc3RhYmxlIHRyYWNrPyBVbmZv
+cnR1bmF0ZWx5IEknbSBub3QgYWJsZSB0byBydW4gYSBtb3JlDQo+Pj4+IHJlY2VudCBrZXJuZWwg
+d2l0aCBhbGwgb2YgdGhlIG5mcyByZWxhdGVkIHNldHVwIHRoYXQgaXMgYmVpbmcgdXNlZCBvbg0K
+Pj4+PiB0aGUgc3lzdGVtIGluIHF1ZXN0aW9uLg0KPj4+IFRoYW5rcyBmb3IgYmlzZWN0aW5nLCB0
+aGF0IHdvdWxkIGhhdmUgYmVlbiBteSBmaXJzdCBzdWdnZXN0aW9uLg0KPj4+DQo+Pj4gVGhlIGJh
+Y2twb3J0IGluY2x1ZGVkIGFsbCBvZiB0aGUgTkZTRCBwYXRjaGVzIHVwIHRvIHY2LjIsIGJ1dA0K
+Pj4+IHRoZXJlIG1pZ2h0IGJlIGEgbWlzc2luZyBzZXJ2ZXItc2lkZSBTdW5SUEMgcGF0Y2guDQo+
+PiBTbyBkZWM2YjhiY2FjNzMgKCJuZnNkOiBTaW1wbGlmeSBjb2RlIGFyb3VuZCBzdmNfZXhpdF90
+aHJlYWQoKQ0KPj4gY2FsbCBpbiAgbmZzZCgpIikgaXMgZnJvbSB2Ni42LCBzbyBpdCB3YXMgYXBw
+bGllZCB0byB2NS4xNS55DQo+PiBvbmx5IHRvIGdldCBhIHN1YnNlcXVlbnQgTkZTRCBmaXggdG8g
+YXBwbHkuDQo+Pg0KPj4gVGhlIGltbWVkaWF0ZWx5IHByZXZpb3VzIHVwc3RyZWFtIGNvbW1pdCBp
+cyBtaXNzaW5nOg0KPj4NCj4+ICAgIDM5MDM5MDI0MDE0NSAoIm5mc2Q6IGRvbid0IGFsbG93IG5m
+c2QgdGhyZWFkcyB0byBiZSBzaWduYWxsZWQuIikNCj4+DQo+PiBGb3IgdGVzdGluZywgSSd2ZSBh
+cHBsaWVkIHRoaXMgdG8gbXkgbmZzZC01LjE1LnkgYnJhbmNoIGhlcmU6DQo+Pg0KPj4gICAgaHR0
+cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvY2VsL2xpbnV4Lmdp
+dA0KPj4NCj4+IEhvd2V2ZXIgZXZlbiBpZiB0aGF0IGZpeGVzIHRoZSByZXBvcnRlZCBjcmFzaCwg
+dGhpcyBzdWdnZXN0cw0KPj4gdGhhdCBhZnRlciB2Ni42LCBuZnNkIHRocmVhZHMgYXJlIG5vdCBn
+b2luZyB0byByZXNwb25kIHRvDQo+PiAia2lsbGFsbCAtOSBuZnNkIi4NCj4gSSB0aGluayB0aGlz
+IGxpa2VseSBpcyB0aGUgcHJvYmxlbS4gIFRoZSBuZnNkIHRocmVhZHMgbXVzdCBiZSBiZWluZw0K
+PiBraWxsZWQgYnkgYSBzaWduYWwuDQo+IE9uZSBvbmx5IG90aGVyIGNhdXNlIGZvciBhbiBuZnNk
+IHRocmVhZCB0byBleGl0IGlzIGlmDQo+IHN2Y19zZXRfbnVtX3RocmVhZHMoKSBpcyBjYWxsZWQs
+IGFuZCBhbGwgcGxhY2VzIHRoYXQgY2FsbCB0aGF0IGhvbGQgYQ0KPiByZWYgb24gdGhlIHNlcnYg
+c3RydWN0dXJlIHNvIHRoZSBmaW5hbCBwdXQgd29uJ3QgaGFwcGVuIHdoZW4gdGhlIHRocmVhZA0K
+PiBleGl0cy4NCj4NCj4gQmVmb3JlIHRoZSBwYXRjaCB0aGF0IGJpc2VjdCBmb3VuZCwgdGhlIG5m
+c2QgdGhyZWFkIHdvdWxkIGV4aXQgd2l0aA0KPg0KPiAgIHN2Y19nZXQoKTsNCj4gICBzdmNfZXhp
+dF90aHJlYWQoKTsNCj4gICBuZnNkX3B1dCgpOw0KPg0KPiBUaGlzIGFsc28gaG9sZHMgYSByZWYg
+YWNyb3NzIHRoZSBzdmNfZXhpdF90aHJlYWQoKSwgYW5kIGVuc3VyZXMgdGhlDQo+IGZpbmFsICdw
+dXQnIGhhcHBlbnMgZnJvbSBuZnNEX3B1dCgpLCBub3Qgc3ZjX3B1dCgpIChpbg0KPiBzdmNfZXhp
+dF90aHJlYWQoKSkuDQo+DQo+IENocmlzOiB3aGF0IHdhcyB0aGUgY29udGV4dCB3aGVuIHRoZSBj
+cmFzaCBoYXBwZW5lZD8gIENvdWxkIHRoZSBuZnNkDQo+IHRocmVhZHMgaGF2ZSBiZWVuIHNpZ25h
+bGxlZD8gIFRoYXQgaGFzbid0IGJlZW4gdGhlIHN0YW5kYXJkIHdheSB0byBzdG9wDQo+IG5mc2Qg
+dGhyZWFkcyBmb3IgYSBsb25nIHRpbWUsIHNvIEknbSBhIGxpdHRsZSBzdXJwcmlzZWQgdGhhdCBp
+dCBpcw0KPiBoYXBwZW5pbmcuDQoNCldlIHVzZSBhIGhhY2tlZCB1cCB2ZXJzaW9uIG9mIHNodXRk
+b3duIGZyb20gdXRpbC1saW51eCBhbmQgd2hpY2ggZG9lcyBhIA0KYGtpbGwgKC0xLCBTSUdURVJN
+KTtgIHRoZW4gYGtpbGwgKC0xLCBTSUdLSUxMKTtgIChJIGRvbid0IHRoaW5rIHRoYXQgDQpwYXJ0
+aWN1bGFyIGJlaGF2aW91ciBpcyB0aGUgaGFja2VyeSkuIEknbSBub3Qgc3VyZSBpZiAtMSB3aWxs
+IHBpY2sgdXAgDQprZXJuZWwgdGhyZWFkcyBidXQgYmFzZWQgb24gdGhlIHN5bXB0b21zIGl0IGFw
+cGVhcnMgdG8gYmUgZG9pbmcgc28gKG9yIA0KbWF5YmUgc29tZXRoaW5nIGVsc2UgaXMgaW4gaXQn
+cyBTSUdURVJNIGhhbmRsZXIpLiBJIGRvbid0IHRoaW5rIHdlIHdlcmUgDQpldmVyIHJlYWxseSBp
+bnRlbmRpbmcgdG8gc2VuZCB0aGUgc2lnbmFscyB0byBuZnNkIHNvIHdoZXRoZXIgaXQgYWN0dWFs
+bHkgDQp0ZXJtaW5hdGVzIG9yIG5vdCBJIGRvbid0IHRoaW5rIGlzIGFuIGlzc3VlIGZvciB1cy4g
+SSBjYW4gY29uZmlybSB0aGF0IA0KYXBwbHlpbmcgMzkwMzkwMjQwMTQ1IHJlc29sdmVzIHRoZSBz
+eW1wdG9tIHdlIHdlcmUgc2VlaW5nLg0KDQo=
 
