@@ -1,123 +1,107 @@
-Return-Path: <linux-kernel+bounces-158863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0166D8B25EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:04:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD0298B26B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:42:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 971AB1F210BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:04:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B8501C21936
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 650D514D422;
-	Thu, 25 Apr 2024 16:03:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 746AE14D42C;
+	Thu, 25 Apr 2024 16:42:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="py0150OJ"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="mtUdiBGs"
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9ED14C5BA
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 16:03:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ABF78528D;
+	Thu, 25 Apr 2024 16:42:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714061033; cv=none; b=gdYuUxMvQl8YsQqZ9GlynQEzPSjRXuzclAaS4eZXXwfKEIlwtipyooy3xTiqVO5XHcpq6uGh7X+w/p2fnoI6gcmBVvEMtz1Z2ZD7zrBoFw9mFqJp//0e7DfsBrs/6XCJzooF5gatsBeKJy7npQTawi6/ZCSW3O+u7+qDXqDFoRM=
+	t=1714063341; cv=none; b=MudVVORRxx+EWOIvOpb9KNvxq2jW8vT3PTPubIOXZwqNrHQ9LaTAuZGJ1k877lMZWU+lwhzU9qKR9w+b5RSB/D3Z6vRGcTmaHkGCUrg8uh/3CqG0osxRMypt3ShT33RwgagHLizYlVidcIThX5xM+CwHzuttrexPIzcZ1hsNBkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714061033; c=relaxed/simple;
-	bh=2oqcmNS3jd8d2/9WZaZaIujWbPFQr6kvI2pAa+x+YxA=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=USf6AxVp0078DwRBCwwnioVS6Fmg1faZYK6n+SSsTnfbdjFLJfUpPakxTuCVdX3eQGA7BdxNGID/H2KsmOqFF8mM6iouxhBk//+H7yTW+l2epNYSN/i3cBjLnAIkTTtTCO5aFhbfvZlhL+ZAs56Ub3+LvOCVGEXwLDtrJ8dzlUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=py0150OJ; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-518a56cdbcfso1838078e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714061030; x=1714665830; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=90o4FgSL+CeIO1gyLTC5XITGjfeMRvZ6Pyb1+yyX+Xg=;
-        b=py0150OJutXqulUaeKnhAW9xaT2b0NaYvrgJY9bN+os8z/Odw/lX3mqnN5VMJDFy4k
-         R3QMNI7MaikB5/suno5zKVBzJqokUcD8/8K/9ECpoNf0XWAEOtBsWM07Qx3AnkjUkI2Z
-         TUAQMrWHDll4hhPHi9X2rEu+CzUsbTdzNPzA0t4CGLh4UXKW8457gwKJLdc7qBvV1Jy4
-         rPmjjfFzd32/vNp6XBTPW9sWRb3cFQjvfUJifNh0lMN7XsWn5dnC4EQdC2w/w+VMETve
-         04rfBWCeLtnSt7TrNGqXQWwMuG/ZnKNBWr6GCpdEu4CaEzEflVt9Ib12YSIgCEJTM+5G
-         Z3Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714061030; x=1714665830;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=90o4FgSL+CeIO1gyLTC5XITGjfeMRvZ6Pyb1+yyX+Xg=;
-        b=f1r5bM+AzIMzS6D8p0h+VWHCaE1qYk9ZzLLrkr3imCQqdoMuhbOjO6pmhNnfCjRZAs
-         IjgR2OhgBdugZ7eLncriJ1gk560M8w2+3O+GE78V2IjXPU8TMwo1dvfc58nv3RGaRSbo
-         YOO+a8L2hJxTLmN9LeyovdLTm2/rkUbMJSbTk0n47BVnsuxyNuthgJSlwDoP4cF61lPD
-         Ncp7NedFSzurcz5i933c9rOQr9848zbjOg1Yya1FserQ7c5VG0zrF9N5Hldv+w9QVYUd
-         8ip1ZLbhhq3UUULC3B+KhLZeQxaTGysD1YaqK2cVYT6Wr2Dv5+N0Uk+4GaiwVoW8N/pH
-         AreA==
-X-Forwarded-Encrypted: i=1; AJvYcCWvM7noArDXsjrRtoMQQBNVwXFmQD89uepB5NSBwc8axTAvBpc2G1TgbfFrLIPABd6dlyaD9A1KStLJ+2Oa06H6LV12R+W18fpGj3Kz
-X-Gm-Message-State: AOJu0YzU3GutYjH5a6Cn4ieArz25Q3p3HWhrfP/+KSeSIBbk/dSKXr7b
-	hj3D8R7ZXaXTi704DWBMmJxCYWh8ckIeAvJardhTyzwgh0bnD9ErhXmLV72UrR0=
-X-Google-Smtp-Source: AGHT+IH4W0cQvppH7SQIIXB9y9gkfeZnnN7nZLtEwV9kMHM6f50E3eDdLoX2AavWUT9QZExL/niKeA==
-X-Received: by 2002:ac2:5edd:0:b0:51b:4b94:a956 with SMTP id d29-20020ac25edd000000b0051b4b94a956mr5436845lfq.21.1714061029915;
-        Thu, 25 Apr 2024 09:03:49 -0700 (PDT)
-Received: from puffmais.c.googlers.com (8.239.204.35.bc.googleusercontent.com. [35.204.239.8])
-        by smtp.gmail.com with ESMTPSA id mm10-20020a170906cc4a00b00a58a44a4419sm1329562ejb.57.2024.04.25.09.03.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 09:03:49 -0700 (PDT)
-From: =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Subject: [PATCH 0/2] clock support for Samsung Exynos pin controller
- (Google Tensor gs101)
-Date: Thu, 25 Apr 2024 17:03:30 +0100
-Message-Id: <20240425-samsung-pinctrl-busclock-v1-0-898a200abe68@linaro.org>
+	s=arc-20240116; t=1714063341; c=relaxed/simple;
+	bh=Q/D/pXTwAfQjRhdoTeFpIBY9vbHFtbsg1krUpeEtO1I=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=G9v4k05XvJ5hW8jnqdWePAeDc1oqKG8BcZWlpVC4VFNaAyBwuko3o7sw76pVECCSjUl2LsvzwxejKkFmTuzQ5tMXy18suHQf47XzA2y2axYtyu6ZRzWbWVTk/stlfc/w6EJY2zmQyR1DsmypOyjBi7B97ezzKGjHkdulHjIN/3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=mtUdiBGs; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=2wfsuboutvaw7hlox4qfx64uai.protonmail; t=1714060471; x=1714319671;
+	bh=l6ejzdU+/oJTsZFPqAfrkNNF2qMH3A6mlJ13xMJmIUU=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=mtUdiBGsCrBGGwlAZiHmz9FeQhbxTP52ufvoZLR2FkOCkUvgOKCCx/ios0HZxuj+z
+	 bIZowo0duS37tSX/lMt/3KkW0jCAaF+RCCvMSxhORHB3AGi8paUuXHPI5N8AByQ9Yv
+	 iaUIfiOgaqW/lcOVOfUof735OWGY9Ki81MSDXCB02aldeRQT6rfmjkHCJpfQAWRgO5
+	 hiScGQ7GvgJLzVzSEfVDYp7PixaBHSw8YB03cTXRlmSvJYsS0JGNZ+BEsxcBtAFhnh
+	 OgnfgeseSEXrK06FVrh59KV1l93F8Lc8QQpfpDCb7egAaY0EVkGl0tU2ryWAk1AJsW
+	 5EkTfiQYzgQsw==
+Date: Thu, 25 Apr 2024 15:54:27 +0000
+To: Viresh Kumar <viresh.kumar@linaro.org>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, linux-pm@vger.kernel.org, Vincent Guittot <vincent.guittot@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>, rust-for-linux@vger.kernel.org, Manos Pitsidianakis <manos.pitsidianakis@linaro.org>, Erik Schilling <erik.schilling@linaro.org>, =?utf-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>, Joakim Bech <joakim.bech@linaro.org>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 3/3] cpufreq: Add Rust based cpufreq-dt driver
+Message-ID: <f02e0c3f-1e24-4ecc-8729-81d99f7543fc@proton.me>
+In-Reply-To: <20240422103050.tiecvamrd5upunou@vireshk-i7>
+References: <cover.1712314032.git.viresh.kumar@linaro.org> <1792467a772b7a8355c6d0cb0cbacfbffff08afd.1712314032.git.viresh.kumar@linaro.org> <4ff5f30b-f2b8-4625-b3cd-ac08e4ffb068@proton.me> <8c4f2053-acbc-4f4a-93de-18f149c80869@proton.me> <20240422103050.tiecvamrd5upunou@vireshk-i7>
+Feedback-ID: 71780778:user:proton
+X-Pm-Message-ID: 5d0be9780b09350ea47be15e0ac7434cd03a4b54
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIANJ+KmYC/x3MTQqEMAxA4atI1gba+jfMVcSFxqhhnCqNiiDe3
- eLyW7x3gXIQVvgmFwQ+RGXxETZNgKbWj4zSR4MzLje5K1Dbv+5+xFU8bWHGbleaF/qhLSy5rK/
- KT2kg5mvgQc53XTf3/QAY9rBvagAAAA==
-To: Krzysztof Kozlowski <krzk@kernel.org>, 
- Sylwester Nawrocki <s.nawrocki@samsung.com>, 
- Alim Akhtar <alim.akhtar@samsung.com>, 
- Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>, 
- Peter Griffin <peter.griffin@linaro.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, 
- Will McVicker <willmcvicker@google.com>, kernel-team@android.com, 
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
- linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-This series enables clock support on the Samsung Exynos pin controller
-driver.
+On 22.04.24 12:30, Viresh Kumar wrote:
+> On 07-04-24, 10:17, Benno Lossin wrote:
+>> On 07.04.24 11:54, Benno Lossin wrote:
+>>> On 05.04.24 13:09, Viresh Kumar wrote:
+>>>> +// Finds exact supply name from the OF node.
+>>>> +fn find_supply_name_exact(np: *mut bindings::device_node, name: &str)=
+ -> Option<CString> {
+>>>> +    let sname =3D CString::try_from_fmt(fmt!("{}-supply", name)).ok()=
+?;
+>>>> +
+>>>> +    // SAFETY: The OF node is guaranteed by the C code to be valid.
+>>>> +    let pp =3D unsafe { bindings::of_find_property(np, sname.as_ptr()=
+ as *mut _, ptr::null_mut()) };
+>>>
+>>> Drivers should avoid calling `unsafe` code as much as possible. They
+>>> also should not be calling `bindings` code directly. Please write (or
+>>> find) abstractions for these `unsafe` calls.
+>>
+>> Having re-read the cover letter, I see that you are already aware of
+>> this. If you need any help with creating the abstractions, feel free to
+>> reach out!
+>=20
+> Thanks Benno. I am not sure what's the right approach here as there
+> are so many missing things (frameworks) I need. Though I don't need
+> full support for them but just a handful of APIs.
+>=20
+> And then there is dependency on the generic support for device/driver,
+> platform device/driver, etc.
 
-This is required on Socs like Google Tensor gs101, which implement
-fine-grained clock control / gating, and as such a running bus clock is
-required for register access to work.
+I don't know exactly what you are referring to, but you can try to reach
+out to other people on our zulip. Splitting the work with others could
+help you :)
 
-Signed-off-by: André Draszik <andre.draszik@linaro.org>
----
-André Draszik (2):
-      dt-bindings: pinctrl: samsung: google,gs101-pinctrl needs a clock
-      pinctrl: samsung: support a bus clock
+Also if the frameworks that you need are particularly difficult to
+upstream, because they have a lot of dependencies, then you can try to
+create something similar to [1].
 
- .../bindings/pinctrl/samsung,pinctrl.yaml          |  17 ++++
- drivers/pinctrl/samsung/pinctrl-exynos.c           | 111 +++++++++++++++++++++
- drivers/pinctrl/samsung/pinctrl-samsung.c          |  74 ++++++++++++++
- drivers/pinctrl/samsung/pinctrl-samsung.h          |   2 +
- 4 files changed, 204 insertions(+)
----
-base-commit: a59668a9397e7245b26e9be85d23f242ff757ae8
-change-id: 20240425-samsung-pinctrl-busclock-151c23d76860
+[1]: https://github.com/Rust-for-Linux/linux/issues/1004
 
-Best regards,
--- 
-André Draszik <andre.draszik@linaro.org>
+--=20
+Cheers,
+Benno
 
 
