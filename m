@@ -1,217 +1,116 @@
-Return-Path: <linux-kernel+bounces-158307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AC928B1E1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:35:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 817248B1E17
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:35:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B79ED1C231DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:35:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB3BDB25809
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:34:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097F186641;
-	Thu, 25 Apr 2024 09:34:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B77C8526E;
+	Thu, 25 Apr 2024 09:34:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="UReQpdv3"
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YLxTctwn"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BAB384DE6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0550C84D1C;
 	Thu, 25 Apr 2024 09:34:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714037683; cv=none; b=FDxnCb16UP9bo4MNI/9m8tw8GyvdmOob53ACqjW44+tbPe69YO7O76T7LS2BoYTMIsnTBxrFlm5yjEVMokCYwmZKrB3YXS+pwWt+Jg7mzqM+FVDM38iPIpCRyeIkv+TU3g08VmGBTK2QovQiitlNTkrnMxGPiu0R0WIxO1Lvb5o=
+	t=1714037680; cv=none; b=mtDZdLLeH/ykSNop2yz8I9O3T3TTidZVID5LV+vTVI3K5kDXohoEZrAwh9WoP6WlfZZd5FK25eFF+QBt1Fo6guXt//Fqu2v3Gn5cjVH/D+CpFIFgGdux6Klpeh3fl6YwqNXcDMVYlU57sZsq1bR2aeA8sPOmnZ3eKnnT66FPNks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714037683; c=relaxed/simple;
-	bh=5JEtP0YgJBdXih/ZcnvEmCqK+JklmCvRY/KLEJlOKdw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DxLUKOtHwdT6kgcZmwjPfiJwa3B79rGbxOcZfSYqKeclVFtKEUQR4FkPE0ZI+LmC+xfuyGM37HPaWcwuiq4v9WFh7YFP0tk0x9XsVHm5LkuFD2PIVYBIYG8p9U0AtL26gsL8U2uEG/2vQILz1Ruab9of4goElFsgPsASsAMN7FE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=UReQpdv3; arc=none smtp.client-ip=115.124.30.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1714037676; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=XM7ij0If3WF0JBNX1i/Nd5TClC00Y289tpdDGzmcErU=;
-	b=UReQpdv3Rmk4Smm37AIcmn0MfVF2nC8hVYE9HSv1imvXW7H1ambynnrgn6P672UNt/3B39c3eYe5CfGE4bztMTGeleA/6ScJ8OXeTtI3w+prEw2/NqFzvN6D8yuvEtczxwQ9ibN4tlDoquh0Pv6X7BaWSrwdx0PrzmN+2BtoeTM=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033068173054;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W5F0WnH_1714037673;
-Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0W5F0WnH_1714037673)
-          by smtp.aliyun-inc.com;
-          Thu, 25 Apr 2024 17:34:35 +0800
-From: Ruidong Tian <tianruidong@linux.alibaba.com>
-To: robert.moore@intel.com,
-	rafael.j.wysocki@intel.com,
-	lenb@kernel.org,
-	rafael@kernel.org,
-	sudeep.holla@arm.com
-Cc: linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	tianruidong@linux.alibaba.com
-Subject: [PATCH v3 1/1] ACPICA: AEST: Add support for the AEST V2 table
-Date: Thu, 25 Apr 2024 17:34:26 +0800
-Message-Id: <20240425093426.76130-2-tianruidong@linux.alibaba.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20240425093426.76130-1-tianruidong@linux.alibaba.com>
-References: <20240425093426.76130-1-tianruidong@linux.alibaba.com>
+	s=arc-20240116; t=1714037680; c=relaxed/simple;
+	bh=xf+cGSpTyS5HTjPAzG6cQ2kpu/5/9RutGA1f+6j5JMg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mDNV37P14aa0oQ6Ce3/YF6mtKC6A1Tk8aJ13SjbZeLvh/V8F85SzYrGYwKhaEalEw67Rwg/nBIl0Li0Wv0q75gljsbEiM58Ew9BG+PyXEFeWjsrbpNb+qbcf6z79ilwG7i3OwFnJq4SkH3ktcyEc0L4dTcrFXwVUpRmDo1Q912g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YLxTctwn; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714037679; x=1745573679;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xf+cGSpTyS5HTjPAzG6cQ2kpu/5/9RutGA1f+6j5JMg=;
+  b=YLxTctwnKaN6VUetWsm7Lltw+mgjliLYhVgUnfMupLb4iSd+T/4p1cC6
+   m28YPul29bCkFDqsRpvr87U1ASsDX9b57w9bErdj6FS5Qr58l+NtbY2iG
+   FP4QsBSdaoHaso7ju73qLhEHNZiZDUf8mpW5yXkyZxpxyBWNPIrVx2/vZ
+   B6Cw868dFF/4u1uHg3maKpPSesL4ExS5NJ4FVf/g8UUyDxL/cuPWIKzfC
+   5ISXSp1HERpU9P8d6teDUM8bob2Li8D4yJOXBEqUz+HI4GnQm7HaWDoGj
+   k68SEjATP8VfS0p8YI8VASuo0FO8eZgdghUOZc2k7J2bvxNJQzUkIWJkX
+   w==;
+X-CSE-ConnectionGUID: GeuCZC5dTd6SfTe49aVdeg==
+X-CSE-MsgGUID: fmcjr6yQQb+23NsLzvAwig==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9577330"
+X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
+   d="scan'208";a="9577330"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 02:34:37 -0700
+X-CSE-ConnectionGUID: XEdt0L7yRv+zKzqu0H8pjQ==
+X-CSE-MsgGUID: JW2q2ci6SzKlPgRqJfpwRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
+   d="scan'208";a="48277830"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 02:34:33 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rzvUr-00000000wqq-3lRX;
+	Thu, 25 Apr 2024 12:34:29 +0300
+Date: Thu, 25 Apr 2024 12:34:29 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: linux-kernel@vger.kernel.org,
+	Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
+	Lee Jones <lee@kernel.org>, Jiawen Wu <jiawenwu@trustnetic.com>,
+	Mengyuan Lou <mengyuanlou@net-swift.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Duanqiang Wen <duanqiangwen@net-swift.com>,
+	"open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>,
+	"open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v2 2/4] mfd: intel-lpss: Utilize i2c-designware.h
+Message-ID: <ZiojpSXgKD2oCDtW@smile.fi.intel.com>
+References: <20240425002642.2053657-1-florian.fainelli@broadcom.com>
+ <20240425002642.2053657-3-florian.fainelli@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425002642.2053657-3-florian.fainelli@broadcom.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-ACPICA commit ebb49799c78891cbe370f1264844664a3d8b6f35
+On Wed, Apr 24, 2024 at 05:26:40PM -0700, Florian Fainelli wrote:
+> Rather than open code the i2c_designware string, utilize the newly
+> defined constant in i2c-designware.h.
 
-AEST V2 was published[1], add V2 support based on AEST V1.
+..
 
-[1]: https://developer.arm.com/documentation/den0085/latest/
+> +#include <linux/platform_data/i2c-designware.h>
 
-Link: https://github.com/acpica/acpica/commit/ebb4979
-Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
----
- include/acpi/actbl2.h | 88 ++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 82 insertions(+), 6 deletions(-)
+Please, group this with linux/dma/idma64.h below.
 
-diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-index 007cfdfd5d29..ae747c89d92c 100644
---- a/include/acpi/actbl2.h
-+++ b/include/acpi/actbl2.h
-@@ -78,8 +78,8 @@
-  *
-  * AEST - Arm Error Source Table
-  *
-- * Conforms to: ACPI for the Armv8 RAS Extensions 1.1 Platform Design Document
-- * September 2020.
-+ * Conforms to: ACPI for the Armv8 RAS Extensions 1.1(Sep 2020) and
-+ * 2.0(May 2023) Platform Design Document.
-  *
-  ******************************************************************************/
- 
-@@ -109,7 +109,9 @@ struct acpi_aest_hdr {
- #define ACPI_AEST_SMMU_ERROR_NODE           2
- #define ACPI_AEST_VENDOR_ERROR_NODE         3
- #define ACPI_AEST_GIC_ERROR_NODE            4
--#define ACPI_AEST_NODE_TYPE_RESERVED        5	/* 5 and above are reserved */
-+#define ACPI_AEST_PCIE_ERROR_NODE           5
-+#define ACPI_AEST_PROXY_ERROR_NODE          6
-+#define ACPI_AEST_NODE_TYPE_RESERVED        7 /* 7 and above are reserved */
- 
- /*
-  * AEST subtables (Error nodes)
-@@ -188,6 +190,12 @@ typedef struct acpi_aest_vendor {
- 
- } acpi_aest_vendor;
- 
-+struct acpi_aest_vendor_v2 {
-+	char acpi_hid[8];
-+	u32 acpi_uid;
-+	u8 vendor_specific_data[16];
-+};
-+
- /* 4: Gic Error */
- 
- typedef struct acpi_aest_gic {
-@@ -204,6 +212,18 @@ typedef struct acpi_aest_gic {
- #define ACPI_AEST_GIC_ITS                   3
- #define ACPI_AEST_GIC_RESERVED              4	/* 4 and above are reserved */
- 
-+/* 5: PCIe Error */
-+
-+struct acpi_aest_pcie {
-+	u32 iort_node_reference;
-+};
-+
-+/* 6: Proxy Error */
-+
-+struct acpi_aest_proxy {
-+	u64 node_address;
-+};
-+
- /* Node Interface Structure */
- 
- typedef struct acpi_aest_node_interface {
-@@ -219,11 +239,57 @@ typedef struct acpi_aest_node_interface {
- 
- } acpi_aest_node_interface;
- 
-+/* Node Interface Structure V2 */
-+
-+struct acpi_aest_node_interface_header {
-+	u8 type;
-+	u8 group_format;
-+	u8 reserved[2];
-+	u32 flags;
-+	u64 address;
-+	u32 error_record_index;
-+	u32 error_record_count;
-+};
-+
-+#define ACPI_AEST_NODE_GROUP_FORMAT_4K          0
-+#define ACPI_AEST_NODE_GROUP_FORMAT_16K         1
-+#define ACPI_AEST_NODE_GROUP_FORMAT_64K         2
-+
-+struct acpi_aest_node_interface_common {
-+	u32 error_node_device;
-+	u32 processor_affinity;
-+	u64 error_group_register_base;
-+	u64 fault_inject_register_base;
-+	u64 interrupt_config_register_base;
-+};
-+
-+struct acpi_aest_node_interface_4k {
-+	u64 error_record_implemented;
-+	u64 error_status_reporting;
-+	u64 addressing_mode;
-+	struct acpi_aest_node_interface_common common;
-+};
-+
-+struct acpi_aest_node_interface_16k {
-+	u64 error_record_implemented[4];
-+	u64 error_status_reporting[4];
-+	u64 addressing_mode[4];
-+	struct acpi_aest_node_interface_common common;
-+};
-+
-+struct acpi_aest_node_interface_64k {
-+	u64 error_record_implemented[14];
-+	u64 error_status_reporting[14];
-+	u64 addressing_mode[14];
-+	struct acpi_aest_node_interface_common common;
-+};
-+
- /* Values for Type field above */
- 
--#define ACPI_AEST_NODE_SYSTEM_REGISTER      0
--#define ACPI_AEST_NODE_MEMORY_MAPPED        1
--#define ACPI_AEST_XFACE_RESERVED            2	/* 2 and above are reserved */
-+#define ACPI_AEST_NODE_SYSTEM_REGISTER			0
-+#define ACPI_AEST_NODE_MEMORY_MAPPED			1
-+#define ACPI_AEST_NODE_SINGLE_RECORD_MEMORY_MAPPED	2
-+#define ACPI_AEST_XFACE_RESERVED			3   /* 2 and above are reserved */
- 
- /* Node Interrupt Structure */
- 
-@@ -237,6 +303,16 @@ typedef struct acpi_aest_node_interrupt {
- 
- } acpi_aest_node_interrupt;
- 
-+/* Node Interrupt Structure V2 */
-+
-+struct acpi_aest_node_interrupt_v2 {
-+	u8 type;
-+	u8 reserved[2];
-+	u8 flags;
-+	u32 gsiv;
-+	u8 reserved1[4];
-+};
-+
- /* Values for Type field above */
- 
- #define ACPI_AEST_NODE_FAULT_HANDLING       0
+..
+
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+in case this go anywhere.
+
 -- 
-2.33.1
+With Best Regards,
+Andy Shevchenko
+
 
 
