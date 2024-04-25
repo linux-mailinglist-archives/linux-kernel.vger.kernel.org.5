@@ -1,197 +1,119 @@
-Return-Path: <linux-kernel+bounces-158978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E11CC8B27AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:39:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 175A98B27B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:46:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 107A61C21622
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:39:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72D32B23DFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:46:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FE5914EC5C;
-	Thu, 25 Apr 2024 17:39:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB2D614EC5C;
+	Thu, 25 Apr 2024 17:46:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="daInXeQu"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lm2h3KA6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C28414EC42
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 17:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E353C14D717;
+	Thu, 25 Apr 2024 17:46:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714066763; cv=none; b=OjiWUDXj7oRJhRvnFiRgYNX1DHB8Yl1QNKkMLcCdaka4RQAzN45tzxb1wLTAYOB6zykRrtc3/XfShtzMNFQhqVxmNKs/Ti/HtoVYk2+xBKcc0mfiQPSyymClp1lnrhjepsJWECrLJ1ybn+uILF75gpJqBgztHLeZNndmWdGB/rc=
+	t=1714067163; cv=none; b=FKa2hChUm+IRNjfJfkHRf8Xy6sEgbyuDvz5ewAm6dsYEynPPQyieJzY2O3j/XzRCucLm5zO72fDeyZX3dgjSk+Ida+F+IQWiofVP7P3hVWsLkUUauJ+MMrxizcMgr0O+7wK0V5g3thKaZF7FCPK9gBdf3W+m8tAydt1CXq5WRfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714066763; c=relaxed/simple;
-	bh=kB9KMA3DcvNtLyh0bj0IRDkpYiWpOT4msDbmbXW4p7g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KYSFlxkAxRHXD/ILMsmVmBI3KkE79GDtL+EDnaKuwdkvWkUnb3FR3whMH0sEgQEOub5HqqiiQemQx5cR/Hi6aCGrF3/lSsozF3K5OLoLaeLs/zRNXucciARQ/i01Tr2Rn9oyn4IlHQ8VdcXJHD56Mmbt2gqeEVyXnCni+CUedP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=daInXeQu; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5ce2aada130so898465a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 10:39:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714066762; x=1714671562; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xGRp4J8KaAZoR1Iq7v17JFw6BNoCDdtd2vscqG11gNs=;
-        b=daInXeQuKW7uLwE9YPmL2yzFp19SkUFqvF4AsQMUS7hgBUtAKgAe5ExqLSbb6Ih3V6
-         05WwXwd0OAJzAKtJ1J7iYMQVqQMnYvaCbzqEyRMLaZoeCJ5/QppEjegzasyVYmGkPxWQ
-         R6iiHgLLuxtsP53/QLHAmxttdefaZe0SYKuo8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714066762; x=1714671562;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xGRp4J8KaAZoR1Iq7v17JFw6BNoCDdtd2vscqG11gNs=;
-        b=Vs4FuiZDeB8OP7x7JC2+Ml8+gK2RKzm/fYdKw5if//fkcqh+kPEP0dZz/9uS0wKaW3
-         2AJv/XfRhBl2C68wmmv/43F5yBgsBWLJF3QLX3kMBg8Orv3kns/jprCp4dqkJ/4YvGIV
-         lT0RBpvPopNlqkUHj11y7C5/uo2foTjd9eqOh82bTbm5QPGbRMJffSElj8fh0Uv7wg9t
-         jY8AGHki6crgZ6SGRPAjZiH5Ckix5AxgGxmrj0PpVVztxJeZlx3kJZ19Rz+JpT3zrZeP
-         gBReVq29f+n7Td5Q9i4+TwLTqBjr5SqBc+HGLGmvywmBX00Rnb38jeASjoPfHmEHQxnG
-         YD5A==
-X-Forwarded-Encrypted: i=1; AJvYcCXqlgiSdcBTpogaYrA7W65e0bBHcxXvcV8Ag2yitaYB3JvO6RiT4wA+Jw31991OB8n+5r12sR6K1CrV70e5tA1k8Q+UGrSWT9cGbwUQ
-X-Gm-Message-State: AOJu0YzjhpHQtaOfq5fXSdr3eaCMwE1eqYR2yraVRWR/8qaWSmd97S56
-	ET1+l4BsxZ39rcg5WUI4uCuAmd9ajeXITL/r5sBLFsjyygjQjrCLAO4UHWcZ9A==
-X-Google-Smtp-Source: AGHT+IHo6ruBh+6PnC5lx4dAR90eGtu9va6/DL9++gNNA1zkeY3/L32beujc9vp0VhFbPkSwUX9WUg==
-X-Received: by 2002:a05:6a20:5b12:b0:1ad:3d93:b71e with SMTP id kl18-20020a056a205b1200b001ad3d93b71emr347251pzb.59.1714066761597;
-        Thu, 25 Apr 2024 10:39:21 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ck16-20020a17090afe1000b002a2f6da006csm13262979pjb.52.2024.04.25.10.39.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 10:39:21 -0700 (PDT)
-Date: Thu, 25 Apr 2024 10:39:20 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Jakub Kicinski <kuba@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-	netdev@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 1/4] locking/atomic/x86: Silence intentional wrapping
- addition
-Message-ID: <202404251019.2DF0A48@keescook>
-References: <20240424191225.work.780-kees@kernel.org>
- <20240424191740.3088894-1-keescook@chromium.org>
- <20240424224141.GX40213@noisy.programming.kicks-ass.net>
- <202404241542.6AFC3042C1@keescook>
- <20240424225436.GY40213@noisy.programming.kicks-ass.net>
- <202404241602.276D4ADA@keescook>
- <20240425091752.GA21980@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1714067163; c=relaxed/simple;
+	bh=u6VHbUgWvnhPzuiFRQi98TDJ5VvKfyf8jXNG9LpvSfk=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=esys6tzNqwvxp/tlaF5stZNlAssAxc+nZETDBzle/3eY/0EDsGqlpYkDChTtjT2D28xFv8JrLK/CScM8V0XeepFst6h1haD2eJoLjNtXd8HBZU0RZB+M9tZ75IBt8dXMEyntTZfvRMBQAyMBdhW1jLUz7w9HXlPkKUj3Ct2RSeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lm2h3KA6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F085C113CC;
+	Thu, 25 Apr 2024 17:46:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714067162;
+	bh=u6VHbUgWvnhPzuiFRQi98TDJ5VvKfyf8jXNG9LpvSfk=;
+	h=From:Date:Subject:To:Cc:From;
+	b=lm2h3KA6eG7H6aTF+EDN+6I5AvJMFwua4IrDnXM/AiX2a++dLRWj+4cLoZZo/BWFK
+	 ORlrdMR4QRSwQcfPVpYgnPd88pRmSXWMh4z9I4eG30Cl4uZA0elkggC7TKnp/DedPw
+	 Ffo0qMglbuQw9EOkalxpTLDwB1qdfcAflg93P92dllXmVPlyIbmvfuvCq7snV5I/XL
+	 yd+tJOIYYcvOvLgJa8si4O3OcX5W9DqYbvJXGvOYNz9vNHqbL4ADTQLHFgmRXrYq44
+	 v0uZvW5+IWreNxR96oxn/ftKB7NTw1HUZmvuThWtk3AL3cXw2Tan2KZevN+lJQKJ+L
+	 iD518n9PePSuw==
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5ac970dded6so324714eaf.0;
+        Thu, 25 Apr 2024 10:46:02 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWPZBIqm86Nh+RROAG6X4ifEk2mp8t+Ki/HXxoAK4z/vRtjgRlf7hkDJro8RzXgY4Reulk7fp1FPued5KrrmWj2t8xGq1zcYaNV+Wsb4tJphkug2ckxxSk6N1HD9aHvHegZgAwShDQ=
+X-Gm-Message-State: AOJu0YwPi/LnYjqfPIZ+xkLMJuCtT6exXqCuAOqxXKqVbx6skFOzvfqF
+	2NOQy8MppyiEvdVT3fDcVtbgLuEivRXP07+gLRm1G7kiknCcYJ0GJ/V9JWxZ/pLkuz6Y+To8R1O
+	qjyhKyO1cjWV6Q8I93BwvrfvHYRQ=
+X-Google-Smtp-Source: AGHT+IGPajutv1KqTb4cDGtBjIo9HYS6TkwwfhsJ6bmXS7u4fTNJDVzpSMpWTqlnm6R6e9kA4jqZO5Rwhr+dhO6715s=
+X-Received: by 2002:a4a:d247:0:b0:5aa:6b2e:36f0 with SMTP id
+ e7-20020a4ad247000000b005aa6b2e36f0mr575585oos.0.1714067161748; Thu, 25 Apr
+ 2024 10:46:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240425091752.GA21980@noisy.programming.kicks-ass.net>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 25 Apr 2024 19:45:50 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0iUUmMUo86vBzYJjL4NjoFzpDwD1+c292aP+T++PLv6vQ@mail.gmail.com>
+Message-ID: <CAJZ5v0iUUmMUo86vBzYJjL4NjoFzpDwD1+c292aP+T++PLv6vQ@mail.gmail.com>
+Subject: [GIT PULL] ACPI fixes for v6.9-rc6
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Apr 25, 2024 at 11:17:52AM +0200, Peter Zijlstra wrote:
-> On Wed, Apr 24, 2024 at 04:20:20PM -0700, Kees Cook wrote:
-> 
-> > > This is arse-about-face. Signed stuff wraps per -fno-strict-overflow.
-> > > We've been writing code for years under that assumption.
-> > 
-> > Right, which is why this is going to take time to roll out. :) What we
-> > were really doing with -fno-strict-overflow was getting rid of undefined
-> > behavior. That was really really horrible; we don't need the compiler
-> > hallucinating.
-> 
-> Right, but that then got us well defined semantics for signed overflow.
+Hi Linus,
 
-Yes, and this gets us to the next step: disambiguation for general
-users. It's good that we have a well-defined overflow resolution strategy,
-but our decades of persistent wrap-around flaws in the kernel show
-that many devs (even experienced ones) produce code with unexpected and
-unwanted (to the logic of the code) wrap-around. So we have to find a
-way to distinguish wrapping and non-wrapping operations or types up
-front and in a clear way.
+Please pull from the tag
 
-> 
-> > > You want to mark the non-wrapping case.
-> > 
-> > What we want is lack of ambiguity. Having done these kinds of things in
-> > the kernel for a while now, I have strong evidence that we get much better
-> > results with the "fail safe" approach, but start by making it non-fatal.
-> > That way we get full coverage, but we don't melt the world for anyone
-> > that doesn't want it, and we can shake things out over a few years. For
-> > example, it has worked well for CONFIG_FORTIFY, CONFIG_UBSAN_BOUNDS,
-> > KCFI, etc.
-> 
-> The non-fatal argument doesn't have bearing on the mark warp or mark
-> non-wrap argument though.
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-6.9-rc6
 
-This gets at the strategy of refactoring our code to gain our unambiguous
-coverage. Since we can't sanely have a flag-day, we have to go piecemeal,
-and there will continue to be places where the coverage was missed, and
-so we want to progress through marking wrapping cases without BUGing the
-kernel. (We don't care about catching non-wrapping -- the exceptional
-condition is hitting an overflow.)
+with top-most commit 2ad984673beef7c3dbe9e3d2cabf046f338fdffc
 
-> > The riskier condition is having something wrap when it wasn't expected
-> > (e.g. allocations, pointer offsets, etc), so we start by defining our
-> > regular types as non-wrapping, and annotate the wrapping types (or
-> > specific calculations or functions).
-> 
-> But but most of those you mention are unsigned. Are you saying you're
-> making all unsigned variables non-wrap by default too? That's bloody
-> insane.
+ Merge branch 'acpi-cppc'
 
-We have a mix (and a regular confusion even in core code) where "int"
-gets passed around even though at one end or another of a call chain
-it's actually u32 or u16 or whatever. Regardless, yes, the next step
-after signed overflow mitigation would be unsigned overflow mitigation,
-and as you suggest, it's much more tricky.
+on top of commit ed30a4a51bb196781c8058073ea720133a65596f
 
-> > For signed types in particular, wrapping is overwhelmingly the
-> > uncommon case, so from a purely "how much annotations is needed"
-> > perspective, marking wrapping is also easiest. Yes, there are cases of
-> > expected wrapping, but we'll track them all down and get them marked
-> > unambiguously. 
-> 
-> But I am confused now, because above you seem to imply you're making
-> unsigned non-wrap too, and there wrapping is *far* more common, and I
-> must say I hate this wrapping_add() thing with a passion.
+ Linux 6.9-rc5
 
-Yes, most people are not a fan of the wrapping_*() helpers, which is why
-I'm trying to get a typedef attribute created. But again, to gain the
-"fail safe by default" coverage, we have to start with the assumption
-that the default is non-wrapping, and mark those that aren't. (Otherwise
-we're not actually catching unexpected cases.) And no, it's not going
-to be over-night. It's taken almost 5 years to disambiguate array bounds
-and we're still not done. :)
+to receive ACPI fixes for 6.9-rc6.
 
-> > One thing on the short list is atomics, so here we are. :)
-> 
-> Well, there are wrapping and non-wrapping users of atomic. If only C had
-> generics etc.. (and yeah, _Generic doesn't really count).
+These fix three recent regressions, one introduced while enabling a new
+platform firmware feature for power management, and two introduced by
+a recent CPPC library update.
 
-Non-wrapping users of atomics should be using refcount_t, which is
-our non-wrapping atomic type. But regardless, atomics are internally
-wrapping, yes?
+Specifics:
 
-Anyway, I suspect this whole plan needs wider discussion. I will write
-up a more complete RFC that covers my plans, including the rationale for
-why we should adopt this in a certain way. (These kinds of strategic RFCs
-don't usually get much traction since our development style is much more
-"show the patches", so that's why I have been just sending patches. But
-since it's a pretty big topic, I'll give it a shot...)
+ - Allow two overlapping Low-Power S0 Idle _DSM function sets to be used
+   at the same time (Rafael Wysocki).
 
--- 
-Kees Cook
+ - Fix bit offset computation in MASK_VAL() macro used for applying
+   a bitmask to a new CPPC register value (Jarred White).
+
+ - Fix access width field usage for PCC registers in CPPC (Vanshidhar
+   Konda).
+
+Thanks!
+
+
+---------------
+
+Jarred White (1):
+      ACPI: CPPC: Fix bit_offset shift in MASK_VAL() macro
+
+Rafael J. Wysocki (1):
+      ACPI: PM: s2idle: Evaluate all Low-Power S0 Idle _DSM functions
+
+Vanshidhar Konda (1):
+      ACPI: CPPC: Fix access width used for PCC registers
+
+---------------
+
+ drivers/acpi/cppc_acpi.c  | 57 ++++++++++++++++++++++++++++++++---------------
+ drivers/acpi/x86/s2idle.c |  8 +++----
+ 2 files changed, 42 insertions(+), 23 deletions(-)
 
