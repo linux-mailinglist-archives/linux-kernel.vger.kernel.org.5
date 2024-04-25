@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-158757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CD318B248B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:04:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E22868B248A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:03:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C26928698B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:04:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E20321C20B9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:03:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3419314B071;
-	Thu, 25 Apr 2024 15:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDDA214B061;
+	Thu, 25 Apr 2024 15:03:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="lYm5AtCr"
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="TIpy5pPs"
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5484A14A604
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D9E14A603
 	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714057419; cv=none; b=DfKoi2r6MBHzkjHMgdWqOnfGRTbSLvKmRKE2y3m2RvCm3TTYjFMFGVhVknBj7IcIwft7N30IGCQNJMnwO+09e1qOUQcFt3r/6QJDDJrYEHdh1la0xQQXdMMcP9sUsggaoSJ8f0iaD/4/bJhEkmvqcKIQRFyJwRvZgSid1Y0LLI0=
+	t=1714057419; cv=none; b=KckDQv9cBNot9l7kLhjr4lO4keyIvpwMPZjVOgkneHPBluLgZAvcsONX4VuYdt4oaPVboViERUwhqueFf/seB3QATGwAY2ypa9FxxcA41llgIga7CgRuAaV+j44DxBgutugBnOC5KDW+C379Ic0qBQNfGjl5q87GOX720+AB89w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714057419; c=relaxed/simple;
-	bh=c0UVqkjMuNtarShlxI0bIDMYPsBOuAUJ6QeQyiAWEuY=;
+	bh=InEifnlaJ03rA8QgNLlhw6s+Q05Y2oXvccfChwmxIgw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FqmWsIdowrCxo/cWB521GdhTjmlgmM7Cxo2sHAz2xUoL2c4GtXiN3+Aqq+3j8lEqgKNyS9JDNI9rr19fvl/7S+c4rokObQ6/qTXLyJZa6zlzc1YehiS/t47URPtLyyoDrx65THyKeZ0/Q2gwiDVUymnfW/Jy/kQxol/p+LI/Els=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=lYm5AtCr; arc=none smtp.client-ip=209.85.160.42
+	 MIME-Version:Content-Type; b=Olmdw8aJM1qwwpgK8LGNWHzaSoMzMhoFrbVzF1sFvbCDpfNKh+81MW/uaZ24BpZlffVLF+ar1E9o7ZjMUmzNCrmUqouM27nipdQmW1q3vHDsd4QyQ4zD4og8hx3LyZiEwSgCYbyBFmp/S9lyjwzJ4lvxGQq98+ar6mpIoHvZbMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=TIpy5pPs; arc=none smtp.client-ip=209.85.160.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-22fa7e4b0beso474301fac.1
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-22edbef3b4eso386342fac.3
         for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:03:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714057416; x=1714662216; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714057417; x=1714662217; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FuUgN+eqDnD1TSwHoUcLirGapuP4idukeuGNZ2DNfLI=;
-        b=lYm5AtCr7ClXsH4zVnZ7RefhauWfTi6b3MRzk5sA9543gVL5jRqOaiUiUffW0Tcstt
-         /dciL2CXA9/9BOvD3xvt9/ODK+pyoK6MSI/I0jaCQ8BhDBiVHAwR3oM71QiHVEPU11Kj
-         61XRfoylO6ui1TM8dl+dCj6U+nPQqm+NgnmxD+O98aKihv65YvXji0oJHRweIy3ugACJ
-         oC+sWjqiXHxQpE7WreUN10iv6LZ3Iv9FDIqrkqjcQzBstPS/VaWykDWt+G7fmx7cYDjl
-         rzM9icX9Oka5gT0ugLLIZV3pnf64nuWWxO8U15BqSF7by2iWlod9mcyTrkWbZMZi3JKw
-         k0Zg==
+        bh=ALDEBHn1/H2TDQekY233nOtWpDkhb+DBBbFG5htxIm8=;
+        b=TIpy5pPseRhnmR9FLqscjBFlJRI02XbEEfKOTANAFpAwSn6p5pHfYOVnIiUP4/lVR0
+         SCKs5RJgvLEh3rRb0B81op9pcu46ZfsUXwvYnuS/MC5NRTuIvi0+tQ6XV9UL/J1LXUyz
+         aWgVBNUa7mk1f9YLIeCFlhmG9O7et2EdzgopMH5N6yIib3QkFUp+2cAWo5GrSVDJkfW9
+         xEHr32rfuW2DbAQj9sh2djMryNRaUOhRwCptyrPdiVnzNK7xIdemr8RwDenECAQVIwp9
+         AYMicp9POLOtRaLRBcTCcgxqMNXjL86AXoWRMsEe+5/QwdH8VBM5fBvfzA6BY7RHhl0f
+         3bKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714057416; x=1714662216;
+        d=1e100.net; s=20230601; t=1714057417; x=1714662217;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FuUgN+eqDnD1TSwHoUcLirGapuP4idukeuGNZ2DNfLI=;
-        b=JV1OCQF/OIZm/cOImPDNNaI1yeRNZ9s/4uSIyGBOefBRlVMo5OfuCWxqPlknao/0mO
-         bzVzkyG2q2XD62606HK6IoAtxdhmJP7qx9GjzWVvwU1e8rSCoc2dvnwj/edZXfVjStw5
-         K3Y4FZ39lH/ueegrr+jAQikIXs0cclCzE2F58aaWdoJcBGTKMlB/dVrZqspzLPIOL+qO
-         hbtLCxa7QqtSjBjQnHqQy+waoHY9Me6c6YJoM/97SO93tSl9xdDlCOQi9mZdA7JhGkES
-         JeeoeqpbSsiWnxNN//83ouBx2dN6xbCYXNkZGeo2c2YdP2YXVhkkyjj0eO4GwcY7clH/
-         w/JA==
-X-Forwarded-Encrypted: i=1; AJvYcCUY3Mh6t5mLbpQhpgtVvNHZfjCbAB4gX6QpzVfnDuDatUlxTtyKtTka2fJn+Huti617eizwE2yHqMcPnhlSpjkJEKqDLsLRrG9CVo/g
-X-Gm-Message-State: AOJu0YwnGtxN+tcTs0i4TA7yni7ue5nTNGWBRCH9f/u1i5PRE0Y1aVnO
-	JjgZcOBf7LSpfX4+OSjbPhJrIaU7OK8tZXaM6hceAZfZAy6ecZr1SI6ATPW79H4=
-X-Google-Smtp-Source: AGHT+IFvAtaidOO7h0zkTLuuS0Zuix9lqDgu9+DKxThfm0jLTYtjgYSEE2bX05vg7lHkXPUfguF9Bw==
-X-Received: by 2002:a05:6870:9f86:b0:22e:de21:e084 with SMTP id xm6-20020a0568709f8600b0022ede21e084mr7083274oab.9.1714057415874;
-        Thu, 25 Apr 2024 08:03:35 -0700 (PDT)
+        bh=ALDEBHn1/H2TDQekY233nOtWpDkhb+DBBbFG5htxIm8=;
+        b=RFLOqcTC9sIReDBGzxRCeIbUFPWzTNfx6y0Gztw4gvOAgbVnkuktIN+1R0+q1vqtLs
+         KSCAuIQj8f9P9sQCZC7pnNVJMFsAP7mzasHI8/jtSnryQaTknoYBrhNOfidQ39qiIzBB
+         AauyRfk5jPd6/ETKQ44/3nDmsVvBx795G0nzCu6rFzMow1nG9H1VqIPkRA1mwKs9lX4w
+         mglt0fNeNuUXhx1xL4I+WohOOZMSsNYD8KjdBQB9VCRXHdfQ/nQBj5/J3qr9risIvhsg
+         JgH79kiogtpgtEOXQjrIrTWj0aYnmJlEMl/mkDhrbEdFP81KKw2Dq3h9v6Pbibkk+lSl
+         KMMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV6PKVR1bXtqs8Ug7RQXliQfR4GQFGTr0apXgnVco77OsbATpkPop0PKcOAsHxVDuBzOiri7b6TGuGGqzfeyxHs+XiWpM+h1q6/urpI
+X-Gm-Message-State: AOJu0YyNV2ckp2dsWN4bgVrdLO0FAby3NPVoPPdZMuvxP4EETCo2Xyy9
+	LO2ntAu4o3t8BlE3fh2CzwG+MRCTFToMMs9lt16eXLfZKgUHLu8XLrJr/ncSTrk=
+X-Google-Smtp-Source: AGHT+IF+ytB1gMG5gdlzfQf5qI8kdu3jxsrVIZyaQCoI1mcDdWPMWQNB0NwCuMDh4O5EGMwTLzBV2A==
+X-Received: by 2002:a05:6870:c394:b0:23b:8a59:f5b4 with SMTP id g20-20020a056870c39400b0023b8a59f5b4mr702248oao.2.1714057416777;
+        Thu, 25 Apr 2024 08:03:36 -0700 (PDT)
 Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id mp2-20020a056871328200b0023b6d4723edsm166739oac.14.2024.04.25.08.03.34
+        by smtp.gmail.com with ESMTPSA id mp2-20020a056871328200b0023b6d4723edsm166739oac.14.2024.04.25.08.03.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 08:03:35 -0700 (PDT)
+        Thu, 25 Apr 2024 08:03:36 -0700 (PDT)
 From: David Lechner <dlechner@baylibre.com>
 To: Jonathan Cameron <jic23@kernel.org>
 Cc: David Lechner <dlechner@baylibre.com>,
@@ -79,9 +79,9 @@ Cc: David Lechner <dlechner@baylibre.com>,
 	linux-kernel@vger.kernel.org,
 	imx@lists.linux.dev,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 2/3] iio: adc: mxs-lradc-adc: don't set masklength
-Date: Thu, 25 Apr 2024 10:03:28 -0500
-Message-ID: <20240425-b4-iio-masklength-cleanup-v1-2-d3d16318274d@baylibre.com>
+Subject: [PATCH 3/3] iio: buffer: initialize masklength accumulator to 0
+Date: Thu, 25 Apr 2024 10:03:29 -0500
+Message-ID: <20240425-b4-iio-masklength-cleanup-v1-3-d3d16318274d@baylibre.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240425-b4-iio-masklength-cleanup-v1-0-d3d16318274d@baylibre.com>
 References: <20240425-b4-iio-masklength-cleanup-v1-0-d3d16318274d@baylibre.com>
@@ -95,28 +95,31 @@ Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.12.4
 Content-Transfer-Encoding: 8bit
 
-The masklength field is marked as [INTERN] and should not be set by
-drivers, so remove the assignment in the mxs-lradc-adc driver.
+Since masklength is marked as [INTERN], no drivers should assign it and
+the value will always be 0. Therefore, the local ml accumulator variable
+in iio_buffers_alloc_sysfs_and_mask() will always start out as 0.
 
-__iio_device_register() will populate this field with the correct value.
+This changes the code to explicitly set ml to 0 to make it clear that
+drivers should not be trying to override the masklength field.
 
 Signed-off-by: David Lechner <dlechner@baylibre.com>
 ---
- drivers/iio/adc/mxs-lradc-adc.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/iio/industrialio-buffer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/adc/mxs-lradc-adc.c b/drivers/iio/adc/mxs-lradc-adc.c
-index 2e60c10ee4ff..8c7b64e78dbb 100644
---- a/drivers/iio/adc/mxs-lradc-adc.c
-+++ b/drivers/iio/adc/mxs-lradc-adc.c
-@@ -724,7 +724,6 @@ static int mxs_lradc_adc_probe(struct platform_device *pdev)
- 	iio->dev.of_node = dev->parent->of_node;
- 	iio->info = &mxs_lradc_adc_iio_info;
- 	iio->modes = INDIO_DIRECT_MODE;
--	iio->masklength = LRADC_MAX_TOTAL_CHANS;
+diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+index 1d950a3e153b..cec58a604d73 100644
+--- a/drivers/iio/industrialio-buffer.c
++++ b/drivers/iio/industrialio-buffer.c
+@@ -1744,7 +1744,7 @@ int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
  
- 	if (lradc->soc == IMX23_LRADC) {
- 		iio->channels = mx23_lradc_chan_spec;
+ 	channels = indio_dev->channels;
+ 	if (channels) {
+-		int ml = indio_dev->masklength;
++		int ml = 0;
+ 
+ 		for (i = 0; i < indio_dev->num_channels; i++)
+ 			ml = max(ml, channels[i].scan_index + 1);
 
 -- 
 2.43.2
