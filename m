@@ -1,216 +1,89 @@
-Return-Path: <linux-kernel+bounces-157975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFC118B19A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B6AF8B19A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:42:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9B521C212E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 03:42:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 382A41C21456
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 03:42:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0BD92E642;
-	Thu, 25 Apr 2024 03:42:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D73374F1;
+	Thu, 25 Apr 2024 03:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="ecWnuH+x"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oiiz9zVQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB4B199BC
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 03:42:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 379A7249F9;
+	Thu, 25 Apr 2024 03:42:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714016555; cv=none; b=nh62eW57YvmKOWpGUpSTyN9+tlMTXG/4E1eGoft0NacmMpaeQHQDs69zGgkHFMUfMPo3vTuBphxwV6XHXJOwPRoQFx6juGU8qPoJxvcLLLHhwtiyosPRqTOK9yU0a2A+NQZ9fDag49Symd00gmocbnAELluB0XPu8ji+NEHM0xE=
+	t=1714016556; cv=none; b=gYaORCZD5/vNf5n4MIRcXOUHWM9V0O6/Z9pgL72DQ/xFt3jOrKS/vGMAASJBCIpMZvS9tsx0gcLTZSIRD2FuExeG4+Dd+/luYAgVufELlBp0ot6BIUHYfEiuppchfm7c86KcQ3vupTjlLYg0CeWMwtj++tT3u3j9d0jt7uaPXlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714016555; c=relaxed/simple;
-	bh=SZZ/RMEMGHASsfDcKZ20F0oiNNZaJ4DafWTiVLPLgVM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B/M6GlaV0pTPsHTkwOxihFB2CvEO0wNBv6jCLAzttrkCOZNjHoAGCaORVKVdNx0Z7JprZS2mE7NGnJGDWvqX6X1xHZuIwklbDQCH+lWiPJvAxw2fnLZ39vBqY8U7KG+dZequNNvqAU3vlYUKR2m3qp59L2Mxwey7DvbxLOypuUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=ecWnuH+x; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ed2dc03df6so538641b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 20:42:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1714016554; x=1714621354; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TFC/YaLZv7yQ0eyRd7w4YHDkBUmQZEf/nvPZ7CB9pC8=;
-        b=ecWnuH+xZ8uYDnGcaEvYMTWSw9uLsn63fOTS/rN6bhtilEtZj9I3BCuYMnP+kq2fuW
-         Vhqdm8PkgLqfIa1hRcYq67BHVSYdk/y2ckHvG8tEFzyO16Y2l5tQHa+g53o71srAaNTT
-         uHDCyvlnFD00uF6dzpwLP2rt/O+D89Fg/g1bD8tjjnh66rwH6s8rpwQiVj527odz29HY
-         asV6HCgHStrXojMbDyyzAp1freRW6aJPgL/+rOQyiLUsdOTKuL7SJCmxpXWV3y4VLh2M
-         el5uTgTLjVlC/sizP3JTsEmG0rl5jmol7Gz0YiOg7Uzm8G8jYYjsr9kHyMel93AnImnq
-         rhsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714016554; x=1714621354;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=TFC/YaLZv7yQ0eyRd7w4YHDkBUmQZEf/nvPZ7CB9pC8=;
-        b=wesglJNgNFY5SfbF95KkcPhJ/VEL0iTdOBRtowXMh6jPktwBDoKegK9R+TqWoOLais
-         g+Zh7RHOhUfTsjJfMm/FNlmBJ2ye9RH0hRK2V8gpoEjvnd2TRA4UTcIpppZyzaFB3tv7
-         j+aqAeQ+RQxAw+KAr458CAqcRLyUS0HU5+v6TTZHCCP04JlHMYlYMJZcDn8CWYfOIbaa
-         cBRyktV7PhRMo7cHdzfXbxK7ypeHO2H8aVGCq/q87pU0tl5s0zRtJ/J4DSmgQz28hkbS
-         ZC8nRp5iXU7dwjbXaLbRO5ShRHRLTcjSWn1glbGQpDWfRahXSG6whh7Xf5Af/frZGlaT
-         DnVw==
-X-Forwarded-Encrypted: i=1; AJvYcCUdPl7rFR+Y12G5+Kz2JYPt959rHnGJtLBggkOuPxXvD0E5gBVJX+KlbCEj6Cj5JocHH9a0JLsPpcmRgt77hZDxA/D00Sdkj5+oFrv9
-X-Gm-Message-State: AOJu0YyeeCV+4hkkldTttEUMG20FYMDCBC4atxhF5F90JLU71Wk7409I
-	fzTNlVGTp8axmu72R42WzUA6+9ROKd2Reao3i10lVOs7hD/TA2wSHtMi3GR7BD8Mdcs94Ph+vHW
-	L
-X-Google-Smtp-Source: AGHT+IGDHeAbOWt5xjIMSRHX9LP133pX+NDtWq9rTdN4bteCp1aM+6ZXUcBnQZVGw2+uRdMca/c7UA==
-X-Received: by 2002:a05:6a00:148d:b0:6ea:9252:435 with SMTP id v13-20020a056a00148d00b006ea92520435mr6295917pfu.30.1714016553835;
-        Wed, 24 Apr 2024 20:42:33 -0700 (PDT)
-Received: from [10.3.132.118] ([61.213.176.5])
-        by smtp.gmail.com with ESMTPSA id i28-20020a63585c000000b005d5445349edsm11743801pgm.19.2024.04.24.20.42.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 20:42:33 -0700 (PDT)
-Message-ID: <c359d4d3-5aff-4536-983d-87af3198724d@bytedance.com>
-Date: Thu, 25 Apr 2024 11:42:28 +0800
+	s=arc-20240116; t=1714016556; c=relaxed/simple;
+	bh=meGItb0gYvU6XxtF1MngGAZWQ+39zegqnIascrO7roQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EwOgf+3QQ1QscZ7PQMbEhfSBMVP98umiRPpQUKG00QhKETJ7QmCmkb5V5Ze6Zz4cMhizRAEb32mnfpYLy9K+H7Z3wYssamzboH63DtIUrB35m6y+Y5h8YihjXXD6+mweBDa9UKb2jrpZrVA6YeRzH5oTDi4n06cRD3+ssFw4Vhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oiiz9zVQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B926C113CE;
+	Thu, 25 Apr 2024 03:42:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714016555;
+	bh=meGItb0gYvU6XxtF1MngGAZWQ+39zegqnIascrO7roQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Oiiz9zVQNbAlp33I8T93khpL3VupBBWMtSQiwaM3Uucc2N0y+hHdyFVIrSLSjbaAK
+	 pO3PhhVEVJuaxwt9zAToR4gWEZBI3gdFOImUsFtpwsjyJUBk1+b+jD4KBXkiaXpeZw
+	 zjcCkFf2+D5wB9cj9mBf1G58Ke03FafRDraxMb0iZhSj2IEsItVz72U9HIAPzEJw+f
+	 FVSu79CQbNKesa5KbI7rXP1kDOnPZt+qTTC3hHMQZd9RnT0vM6lS4CHz6snOjQ0Pxo
+	 HywsHZf7COFo0jgNonuzWQ6iR+Y+yr2JDKSgLqI1I+rdQdY6ruL6yywXGe/+nDlU0d
+	 aw75d72jfXQ4g==
+Date: Wed, 24 Apr 2024 20:42:33 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Fan Wu <wufan@linux.microsoft.com>
+Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+	serge@hallyn.com, tytso@mit.edu, axboe@kernel.dk, agk@redhat.com,
+	snitzer@kernel.org, eparis@redhat.com, paul@paul-moore.com,
+	linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org, fsverity@lists.linux.dev,
+	linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+	audit@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Deven Bowers <deven.desai@linux.microsoft.com>
+Subject: Re: [PATCH v17 17/21] ipe: enable support for fs-verity as a trust
+ provider
+Message-ID: <20240425034233.GB1401@sol.localdomain>
+References: <1712969764-31039-1-git-send-email-wufan@linux.microsoft.com>
+ <1712969764-31039-18-git-send-email-wufan@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [External] [PATCH 04/12] cachefiles: fix slab-use-after-free in
- cachefiles_ondemand_daemon_read()
-To: libaokun@huaweicloud.com, netfs@lists.linux.dev
-Cc: dhowells@redhat.com, jlayton@kernel.org, jefflexu@linux.alibaba.com,
- linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, Baokun Li <libaokun1@huawei.com>,
- zhujia.zj@bytedance.com
-References: <20240424033916.2748488-1-libaokun@huaweicloud.com>
- <20240424033916.2748488-5-libaokun@huaweicloud.com>
-From: Jia Zhu <zhujia.zj@bytedance.com>
-In-Reply-To: <20240424033916.2748488-5-libaokun@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1712969764-31039-18-git-send-email-wufan@linux.microsoft.com>
 
+On Fri, Apr 12, 2024 at 05:56:00PM -0700, Fan Wu wrote:
+> +config IPE_PROP_FS_VERITY
+> +	bool "Enable property for fs-verity files"
+> +	depends on FS_VERITY && FS_VERITY_BUILTIN_SIGNATURES
+> +	help
+> +	  This option enables the usage of properties "fsverity_signature"
+> +	  and "fsverity_digest". These properties evaluate to TRUE when
+> +	  a file is fsverity enabled and has a valid builtin signature
+> +	  whose signing cert is in the .fs-verity keyring or its
+> +	  digest matches the supplied value in the policy.
+> +
+> +	  if unsure, answer Y.
 
+Does this really need to depend on FS_VERITY_BUILTIN_SIGNATURES?  That's needed
+for fsverity_signature to work, but fsverity_digest would work without it.
 
-在 2024/4/24 11:39, libaokun@huaweicloud.com 写道:
-> From: Baokun Li <libaokun1@huawei.com>
-> 
-> We got the following issue in a fuzz test of randomly issuing the restore
-> command:
-> 
-> ==================================================================
-> BUG: KASAN: slab-use-after-free in cachefiles_ondemand_daemon_read+0xb41/0xb60
-> Read of size 8 at addr ffff888122e84088 by task ondemand-04-dae/963
-> 
-> CPU: 13 PID: 963 Comm: ondemand-04-dae Not tainted 6.8.0-dirty #564
-> Call Trace:
->   kasan_report+0x93/0xc0
->   cachefiles_ondemand_daemon_read+0xb41/0xb60
->   vfs_read+0x169/0xb50
->   ksys_read+0xf5/0x1e0
-> 
-> Allocated by task 116:
->   kmem_cache_alloc+0x140/0x3a0
->   cachefiles_lookup_cookie+0x140/0xcd0
->   fscache_cookie_state_machine+0x43c/0x1230
->   [...]
-> 
-> Freed by task 792:
->   kmem_cache_free+0xfe/0x390
->   cachefiles_put_object+0x241/0x480
->   fscache_cookie_state_machine+0x5c8/0x1230
->   [...]
-> ==================================================================
-> 
-> Following is the process that triggers the issue:
-> 
->       mount  |   daemon_thread1    |    daemon_thread2
-> ------------------------------------------------------------
-> cachefiles_withdraw_cookie
->   cachefiles_ondemand_clean_object(object)
->    cachefiles_ondemand_send_req
->     REQ_A = kzalloc(sizeof(*req) + data_len)
->     wait_for_completion(&REQ_A->done)
-> 
->              cachefiles_daemon_read
->               cachefiles_ondemand_daemon_read
->                REQ_A = cachefiles_ondemand_select_req
->                msg->object_id = req->object->ondemand->ondemand_id
->                                    ------ restore ------
->                                    cachefiles_ondemand_restore
->                                    xas_for_each(&xas, req, ULONG_MAX)
->                                     xas_set_mark(&xas, CACHEFILES_REQ_NEW)
-> 
->                                    cachefiles_daemon_read
->                                     cachefiles_ondemand_daemon_read
->                                      REQ_A = cachefiles_ondemand_select_req
->                copy_to_user(_buffer, msg, n)
->                 xa_erase(&cache->reqs, id)
->                 complete(&REQ_A->done)
->                ------ close(fd) ------
->                cachefiles_ondemand_fd_release
->                 cachefiles_put_object
->   cachefiles_put_object
->    kmem_cache_free(cachefiles_object_jar, object)
->                                      REQ_A->object->ondemand->ondemand_id
->                                       // object UAF !!!
-> 
-> When we see the request within xa_lock, req->object must not have been
-> freed yet, so grab the reference count of object before xa_unlock to
-> avoid the above issue.
-> 
-> Fixes: 0a7e54c1959c ("cachefiles: resend an open request if the read request's object is closed")
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+I'd prefer if people had the option of only turning on
+FS_VERITY_BUILTIN_SIGNATURES if they really need it.
 
-Reviewed-by: Jia Zhu <zhujia.zj@bytedance.com>
-
-> ---
->   fs/cachefiles/ondemand.c          | 2 ++
->   include/trace/events/cachefiles.h | 6 +++++-
->   2 files changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/cachefiles/ondemand.c b/fs/cachefiles/ondemand.c
-> index 56d12fe4bf73..bb94ef6a6f61 100644
-> --- a/fs/cachefiles/ondemand.c
-> +++ b/fs/cachefiles/ondemand.c
-> @@ -336,6 +336,7 @@ ssize_t cachefiles_ondemand_daemon_read(struct cachefiles_cache *cache,
->   	xas_clear_mark(&xas, CACHEFILES_REQ_NEW);
->   	cache->req_id_next = xas.xa_index + 1;
->   	refcount_inc(&req->ref);
-> +	cachefiles_grab_object(req->object, cachefiles_obj_get_read_req);
->   	xa_unlock(&cache->reqs);
->   
->   	if (msg->opcode == CACHEFILES_OP_OPEN) {
-> @@ -355,6 +356,7 @@ ssize_t cachefiles_ondemand_daemon_read(struct cachefiles_cache *cache,
->   			close_fd(((struct cachefiles_open *)msg->data)->fd);
->   	}
->   out:
-> +	cachefiles_put_object(req->object, cachefiles_obj_put_read_req);
->   	/* Remove error request and CLOSE request has no reply */
->   	if (ret || msg->opcode == CACHEFILES_OP_CLOSE) {
->   		xas_reset(&xas);
-> diff --git a/include/trace/events/cachefiles.h b/include/trace/events/cachefiles.h
-> index cf4b98b9a9ed..119a823fb5a0 100644
-> --- a/include/trace/events/cachefiles.h
-> +++ b/include/trace/events/cachefiles.h
-> @@ -33,6 +33,8 @@ enum cachefiles_obj_ref_trace {
->   	cachefiles_obj_see_withdrawal,
->   	cachefiles_obj_get_ondemand_fd,
->   	cachefiles_obj_put_ondemand_fd,
-> +	cachefiles_obj_get_read_req,
-> +	cachefiles_obj_put_read_req,
->   };
->   
->   enum fscache_why_object_killed {
-> @@ -127,7 +129,9 @@ enum cachefiles_error_trace {
->   	EM(cachefiles_obj_see_lookup_cookie,	"SEE lookup_cookie")	\
->   	EM(cachefiles_obj_see_lookup_failed,	"SEE lookup_failed")	\
->   	EM(cachefiles_obj_see_withdraw_cookie,	"SEE withdraw_cookie")	\
-> -	E_(cachefiles_obj_see_withdrawal,	"SEE withdrawal")
-> +	EM(cachefiles_obj_see_withdrawal,	"SEE withdrawal")	\
-> +	EM(cachefiles_obj_get_read_req,		"GET read_req")		\
-> +	E_(cachefiles_obj_put_read_req,		"PUT read_req")
->   
->   #define cachefiles_coherency_traces					\
->   	EM(cachefiles_coherency_check_aux,	"BAD aux ")		\
+- Eric
 
