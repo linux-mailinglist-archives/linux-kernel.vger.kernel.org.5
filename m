@@ -1,100 +1,128 @@
-Return-Path: <linux-kernel+bounces-158645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 352508B2363
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:01:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB2CF8B2366
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:01:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F435B27BAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:01:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 284C71C21B2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:01:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA76B149DF8;
-	Thu, 25 Apr 2024 14:01:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 230A4149E0F;
+	Thu, 25 Apr 2024 14:01:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EbeyGHjb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="CWylmAt7"
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E54D8149C6E;
-	Thu, 25 Apr 2024 14:01:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A4D149DF2
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:01:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714053695; cv=none; b=lCjuaz2HJK4w0p0RrTTKhXDLHbDN7gakVpRpnHTJPZtlplqgc+7Wz8Axhk9gJ/NJ1/MPPvVE8IZjYN0svzSRk2SI5sQry4GdfFnjnO3p6ULJ1N3s8NDsMiEq39ol1SMIiTni2NInoiEQcMw5TiE4Bsm6Rubrrby3keHkBq5fwAE=
+	t=1714053703; cv=none; b=Z6Y1LskFdAePxq1Qk/31FAqdld0y1R6dj3EVeZl+l6WMy4V7Mu1YFo32qeGBwPlCCCX6VfYCE9obp/J5oylSzatjP2aZN6+ADsgoMua7ioEkZWXklwM7ZDpuxGEHM99f5ViuGiBk+78pTPY2VRpHgluEmEgdueAtxz2eZe2s22k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714053695; c=relaxed/simple;
-	bh=gOKjqTrwy/H/hFGh4uedpQPBDplAM1BDzbOPolpCIYg=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=tlUc8Txksa3qvXJBbCng/tgeTnbsSEmpRThuQvQVVi2CuD7CWOJ0iIYMeU583DMIB/Ore7MZeaQzK7lKIpoqfLjqVOLTNROCj9iIdx9PWocW678P215RPSIQyD98wF7VA+VTCxO/p6lMw/Kais960MF0CcHmmYJe1t3++0rmI+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EbeyGHjb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2A1FC113CC;
-	Thu, 25 Apr 2024 14:01:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714053694;
-	bh=gOKjqTrwy/H/hFGh4uedpQPBDplAM1BDzbOPolpCIYg=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=EbeyGHjbiDenFYP6KGmF/qCZqSu6doaojbB9dgrUPfciACqeqsBTPpfSn1RekYtTw
-	 CufsNwYj+bScnknse+DnYbet1t3Ziqn8DUQop+Ej5fqex+ag8duuyQjzMwNHrvKX5B
-	 0Ux2whXse8jX/0w0y7hF/S5to5IUyRPihqrhgZWPTHf8o4Oz7cVs6J/938dIIkJamF
-	 Zf2ZNbxL3ibXeaFpaTfUETc+KvNDwmriW42SUVPHb164ERFpDsiSTB5azlqleLhvUp
-	 vYOyHC+vo5yGzw7KU11M3fJswSBNJ5nDpxTnL+vwYvJkuEyBP5HEa3kArC6GVEEvel
-	 xFhnAT+pLkxNQ==
+	s=arc-20240116; t=1714053703; c=relaxed/simple;
+	bh=ulYE0VHNMZy9EO2UbfcdnnLqLAB4c7Fjw+n0PZCpRjA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dilUfyAumNoBUN322qljzDOH/+YAaR5Ssqbpzrzl5/ce7MliJPNbCwHS+GGEe229Su3kOsHy45NUellCkookgYuLuW4TnBuOKm/NdwiQUi2MFGh238Fl73MO1hdIArLOB9V5B0IDJdyEiLXaY24ChsDPezSKY3Y6WH0qfd7hsMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=CWylmAt7; arc=none smtp.client-ip=185.125.188.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 82BB7411E1
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:01:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1714053698;
+	bh=Vh9MMkltQi2FaezzyNlR84OxmhjgaayN9uBNja5LyNc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:In-Reply-To;
+	b=CWylmAt7P6vxE//l4V0Ci8m/HrsttJBZ9hpCkyRiNK3ShN7QFIqhPZQHyX8KBmBHw
+	 ATVVEKMgGicekkW6Bqj2UJwSDheIT3O/zKdp06o8Azsd7WaZemSiNWJ/uOLlkUP13t
+	 g3b6TJq1M6C9+Zbb960Ud11/GtMT2K3xvrWyCMizqBR9bRp4/vDhsIPOFIfU6GTxCC
+	 fkXYDzJFcCHVjyRs/Vwn6of53TLbOl6kUC16uXtpjjoNtRSa07dTfcOQELIQrGhn74
+	 Nj9GTcYvu+/U9W1zRsrNYu/Sms0tHkP/9oJEeMk5DTOFL2Ov1ko5GP6PnGISSSU2/k
+	 Ihk2KAH1SrEog==
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5705ef0b425so560285a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:01:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714053698; x=1714658498;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vh9MMkltQi2FaezzyNlR84OxmhjgaayN9uBNja5LyNc=;
+        b=NHtrozP45PHtYafVtI2oY9nRi/BPa1zpH+pPdGY0AVu24Eu1Y0ZIKtRukcNZTH3780
+         ssuwU/FxixX0+V//P2hBdrvj1WZaR1vWWh3pVB3Pw0A2wMzmMmb/15bTQdknn8sNqbk0
+         ADCFYGT8q1kERuaZHEzUmgz8vWDTH8uxz0zYH4v1J+UOGDQMjVwQckJP0OUFbTe9rIir
+         PgGqCayBws8mPNOxeZDZqhgMGhXEWIgtMsdPcEtxsHK3UrxHkx6JK1+SAEo1BDi3h/kQ
+         cCwGcY1g7Rs7SMuQTXq7p7JVKhKnniaNgAWgOMqgHOgJO3Hc2YDICKbKUxI15QT9qB2e
+         fLSw==
+X-Forwarded-Encrypted: i=1; AJvYcCUnUJFhEh2tqNKJcSo6YH1YJZBfxQ775LKWK5O421BqXOHGYz/QlSBiMjyWLOI/DGWOpUNFEVoGqcezJ8cSRvdveutGjb1KqGSTWUq1
+X-Gm-Message-State: AOJu0Yw9aZBVCw/5YfdYKFtko0HQVwoCdMI/AB2qiYGn4XYvXVKSPE2y
+	KnGahf+D+fI6lDs+ILfLAufYyPXna/XIzCmR+AqdQzjAo7tAFc0IDHoi5ZZn083b4IW8ArQGvZK
+	d3gKy2eH4WMS94v+oLqFBw/dxoAgmZMq59jBzT60OPAA2CDoRybgNX9buGx1042cgVipBPoU2yJ
+	HCzg==
+X-Received: by 2002:a17:906:4a10:b0:a58:9707:6857 with SMTP id w16-20020a1709064a1000b00a5897076857mr3086703eju.12.1714053697250;
+        Thu, 25 Apr 2024 07:01:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFUGdvGOdoFM2DQyrp81U9KOxMYphBYPxvDtGDUe2+ZgkEDQFsgVuviPGlX+re7UWJw+WvOAA==
+X-Received: by 2002:a17:906:4a10:b0:a58:9707:6857 with SMTP id w16-20020a1709064a1000b00a5897076857mr3086667eju.12.1714053696684;
+        Thu, 25 Apr 2024 07:01:36 -0700 (PDT)
+Received: from localhost (host-82-49-69-7.retail.telecomitalia.it. [82.49.69.7])
+        by smtp.gmail.com with ESMTPSA id u24-20020a1709060b1800b00a58767c1120sm3711046ejg.10.2024.04.25.07.01.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 07:01:35 -0700 (PDT)
+Date: Thu, 25 Apr 2024 16:01:33 +0200
+From: Andrea Righi <andrea.righi@canonical.com>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests/bpf: Add ring_buffer__consume_n test.
+Message-ID: <ZipiPZia5iY_UsHQ@gpd>
+References: <20240420155904.1450768-1-andrea.righi@canonical.com>
+ <ZiVy9bYrX-w24huD@krava>
+ <Zin12J-emVljvVrJ@gpd>
+ <ZipLQmwPd--EajCk@krava>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 25 Apr 2024 17:01:28 +0300
-Message-Id: <D0T9BM4E1F5C.2TZMIRSHCKCQ2@kernel.org>
-To: "Lennart Poettering" <mzxreary@0pointer.de>, "Ard Biesheuvel"
- <ardb@kernel.org>
-Cc: "Ilias Apalodimas" <ilias.apalodimas@linaro.org>, "James Bottomley"
- <James.Bottomley@hansenpartnership.com>, "Mikko Rapeli"
- <mikko.rapeli@linaro.org>, <linux-efi@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-integrity@vger.kernel.org>
-Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240422112711.362779-1-mikko.rapeli@linaro.org>
- <6e751959b9056884c1b9d3ba23e303d1737d8763.camel@HansenPartnership.com>
- <ZiZhSfgeAdrbnaVL@nuoska>
- <CAC_iWjKA-xRH=3FK+=woXsB8AW4+_mVhJhUQnL8iFKxGzOwKiA@mail.gmail.com>
- <e3038141413e25350f0e53496f7a7af1bf8419cf.camel@HansenPartnership.com>
- <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com>
- <e1da76ca4c7fe9319aaac5f8ff6eb46db433ec60.camel@HansenPartnership.com>
- <CAC_iWjLH=SDoTw_Pgr2hOKHkjEp_dKqwpUe9j6a=_WNW9UcxKw@mail.gmail.com>
- <CAMj1kXGHT2wULF2zwNM_QxD29dRW_dtFX2sOvsLahPiRVB61qg@mail.gmail.com>
- <ZiopXE6-AucAB9NM@gardel-login>
-In-Reply-To: <ZiopXE6-AucAB9NM@gardel-login>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZipLQmwPd--EajCk@krava>
 
-On Thu Apr 25, 2024 at 12:58 PM EEST, Lennart Poettering wrote:
-> General purpose distros typically don't build all TPM drivers into the
-> kernel, but ship some in the initrd instead. Then, udev is responsible
-> for iterating all buses/devices and auto-loading the necessary
-> drivers. Each loaded bus driver might make more devices available for
+On Thu, Apr 25, 2024 at 02:23:30PM +0200, Jiri Olsa wrote:
+> On Thu, Apr 25, 2024 at 08:19:04AM +0200, Andrea Righi wrote:
+> > On Sun, Apr 21, 2024 at 10:11:33PM +0200, Jiri Olsa wrote:
+> > ...
+> > > >  static struct test_ringbuf_map_key_lskel *skel_map_key;
+> > > > +static struct test_ringbuf_n_lskel *skel_n;
+> > > 
+> > > seems like there's no need for this to be static variable
+> > 
+> > Can you elaborate more? I think we want these pointers to be static to
+> > limit the scope to this file, no?
+> 
+> I meant to move it directly inside ringbuf_n_subtest function,
+> I don't see reason why it's defined outside of that function
 
-I've had since day 0 that I've worked with TPM driver (i.e. since 2013
-or 2014) that module support should be removed.
+Oh I see! Yeah, that makes sense, I'll send a v3 soon.
 
-I've kept the module compilation only because huge turnback from the
-community.
-
-It does not make sense:
-
-1. Because it makes sense as part of "TCB".
-2. "TCB" is should in be vmlinux.
-3. TPM is also a subsystem with other clients in the kernel.
-
-At minimum the main TPM driver should IMHO just in vmlinux e.g. because
-it is rare to see distro kernel with TPM enabled and IMA disabled, I
-don't know any.
-
-That said, I would not mind either if TPM subsystem drivers were only
-y/n *except* tpm_vtpm_proxy.
-
-BR, Jarkko
+Thanks,
+-Andrea
 
