@@ -1,117 +1,59 @@
-Return-Path: <linux-kernel+bounces-158667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ED558B23A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DDA48B23A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:13:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3FD31C209BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:12:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F8F41C209A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:13:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E0F14A09F;
-	Thu, 25 Apr 2024 14:12:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 177B814A0B9;
+	Thu, 25 Apr 2024 14:12:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qkxol9Yc"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rea49bX5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5BC149E07
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:12:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5982A14A08A;
+	Thu, 25 Apr 2024 14:12:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714054359; cv=none; b=k9KbhPzyJV+JQDeAm/Ol1+PUkyFywjyIO0OcEPoNAJLyzIBEWTXCdhLKiwqn/z+luSzWitHV3yDarO5Pf+7kXqLteTuGjBPfWrLj9M0quLs+qykG1doCtlA8eo4MKl+5cBcm7KzDaJWgi9wzZNsLkPjx+7O8bqLV5kzvwmZD3J0=
+	t=1714054360; cv=none; b=NzoZ6BpixfD+ZRR8v1CeLpp5+NWEXijE8Qm+qOJkEcOdBmjzSpU5qplSJIxNGgtBi6QTzWsS+t/V63z5XhwtWDh12/6FJfU9QGKy+4CL0w8/cXMA9suXOQz7JJfejELQVAb0PvJ2GLq1ZiX9N7LIBpZO9Eze4J5kVVKCTQTBCnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714054359; c=relaxed/simple;
-	bh=OXlcNY8pu8S/MyjEy2GLENjCN5qdRSRqTym8qU2je0I=;
+	s=arc-20240116; t=1714054360; c=relaxed/simple;
+	bh=9cICcM8ZQlXyY6PN93HTqQikUXtMY8paiV5smzFHaps=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PAoZ6etRyOdKaRfOeFX3oIkxDHO6oo+ZwwJOpAd2UbgWr3CUm4yCS2U1UHxG0Jr9OvrqHpT8HSSYA9t69ij19B5tmpvKTpP2gKbhdU0+7PVyUKmCzgB5N66JOVQ4IJUW+JaE0c/eN0QHQg5AL4uM7Rj0mELSMRvDXIIx3mT3IkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qkxol9Yc; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d895e2c6efso15255991fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:12:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714054356; x=1714659156; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zgj3m/Cw0cxG7wHpYlRihQfjnwxhhxsXHcabhCA3Erw=;
-        b=qkxol9YcHy4N7TFJyEYLH7LFZlNrVSlQMe/1FAbMvE53CxVwyFKPhnJgjgr4SSRS62
-         ond/Iujmcy9zTgDJuDTZpPbK1wI6b0sTqyenMmvo+5VQ4nwOrLJUjv7myToPU52MULoN
-         d+Z4X6AS/W0n9EgbNifYU/HmsVElp/3mEdUdwHw6Qg4db0dEkr20kwe6LcO2VmUNy0MD
-         na+5YVJJChBvnTU7TQ7Hb0+aJtctizCnR0WoDgKG1cy7sG+Hu7u49n7rGCEhxtXqSZ8s
-         /+67fViRi42PttiDXYYEjgHFJwu4hNeTEkjtw82VzqxD2Pp6ZjFE0A5cVeQ7+OsBKMZP
-         xpAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714054356; x=1714659156;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zgj3m/Cw0cxG7wHpYlRihQfjnwxhhxsXHcabhCA3Erw=;
-        b=c4Ti/NhBq0mN14NxNkCz+XcAiyaHPU5oTD6sBWII0H3pfZumuYmHRZFiqc/ihVwqeg
-         8j0wV9PRI/kkU/HT97GPXl8tJAGhBRXx0kx+0MsRka7y9wsR5ujBo8Gvil3OM/Wkc3px
-         8v2KL/L5mo5BT66ecuDvdjg9IT2MLw6Nfv06tIlykCWCmXqZ8+373xqMsVQg/C8OxQlg
-         xXBdUHH8ClLW7tG/plxKKGdGDNrLTT/zPHn7gjAqNlvWwY5CisVUOlL9RsXZmNQqxRYE
-         iQaV6ZTdXNt81g8QcS7vHk3yHvaY3DtZfqs/InEv2phl4v8LWZLjYhmtZch2tySDKs4w
-         +YAw==
-X-Forwarded-Encrypted: i=1; AJvYcCXYfBllvTcAEUGAShTmEsoT5dt786OmBLQJ2idAcieMXiYG45/LulTFP6AGfE0Ipf227jPZgymy5AVriqCiWn7O2LeUEPVBfmk9rFRh
-X-Gm-Message-State: AOJu0Yy/+ZBNC7V4cjRD7g2x4Q3NqBNUtxOu8ZQe6lVyh5En4PUJRJYq
-	1vzHD/3YG1wDzVvE2xgPsuJkGKdxdQsjmV45FPM52KJrqrtkHAf27b54uVkbHkc=
-X-Google-Smtp-Source: AGHT+IG4h73e/VD0OiMdGC2ljHdBFoL8+iSdydmC9vOMTBe1nYjTZzgcSwjFqh+dbSJpqsAZN+aRMQ==
-X-Received: by 2002:a2e:818a:0:b0:2de:4b8d:ee31 with SMTP id e10-20020a2e818a000000b002de4b8dee31mr3860645ljg.37.1714054356205;
-        Thu, 25 Apr 2024 07:12:36 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id hg16-20020a05600c539000b0041aa8ad46d6sm10244618wmb.16.2024.04.25.07.12.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 07:12:35 -0700 (PDT)
-Date: Thu, 25 Apr 2024 17:12:31 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Sean Christopherson <seanjc@google.com>, Shuah Khan <shuah@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Anup Patel <anup@brainfault.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>,
-	Chao Peng <chao.p.peng@linux.intel.com>,
-	Fuad Tabba <tabba@google.com>, Jarkko Sakkinen <jarkko@kernel.org>,
-	Anish Moorthy <amoorthy@google.com>,
-	David Matlack <dmatlack@google.com>,
-	Yu Zhang <yu.c.zhang@linux.intel.com>,
-	Isaku Yamahata <isaku.yamahata@intel.com>,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Vishal Annapurve <vannapurve@google.com>,
-	Ackerley Tng <ackerleytng@google.com>,
-	Maciej Szmigiero <mail@maciej.szmigiero.name>,
-	David Hildenbrand <david@redhat.com>,
-	Quentin Perret <qperret@google.com>,
-	Michael Roth <michael.roth@amd.com>, Wang <wei.w.wang@intel.com>,
-	Liam Merwick <liam.merwick@oracle.com>,
-	Isaku Yamahata <isaku.yamahata@gmail.com>,
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	Anders Roxell <anders.roxell@linaro.org>,
-	Benjamin Copeland <ben.copeland@linaro.org>
-Subject: Re: [PATCH v13 25/35] KVM: selftests: Convert lib's mem regions to
- KVM_SET_USER_MEMORY_REGION2
-Message-ID: <69ae0694-8ca3-402c-b864-99b500b24f5d@moroto.mountain>
-References: <20231027182217.3615211-1-seanjc@google.com>
- <20231027182217.3615211-26-seanjc@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nL/CRbcjdXw//K6gt/kDv7a2T4ftgViheLOqdmpmuMovl2UEqS8dvYev4S/98rTdAlc/Uo692ZIg+c1DpCSVUmk075urHJeUhg/7Td3tiIYcS/URvHMXGrrrsTlzzYWrGxcLQATEqwIdcYTAAvt3RiFmTlebJHcsLx3p8gLepZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rea49bX5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DFE9C113CE;
+	Thu, 25 Apr 2024 14:12:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714054359;
+	bh=9cICcM8ZQlXyY6PN93HTqQikUXtMY8paiV5smzFHaps=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rea49bX5nph7NYR/01w0KxxTo8BJ8bTnw+Pdr3YLJRP3J8ZMr642uTwRKv/A1ITuK
+	 +irwwpQjSuC6pVao+lAFp1f3dib0FCzhZ6k8Rb2sC12D8ujlnxvjgA0iV4TmXvMnOD
+	 2yC0YAB9yVjewnyEWkYDVPSseVR3vxBnhGCZV5T+5UiW9MbzBDYMCxeGCymdyyPJck
+	 NICeSVqhbCC+GEXFqkQQlYQNHPgsckwCrAtwm+m+0bqwB6C3WuIsDHvb9Auy76qTBe
+	 GDx8QNT7ZnJPConRIOoZUxqJWSuQ1IqTjfgIeO/GEJH7DS8F5LE6C6zBv2Ui1vadqM
+	 LAroS/7iTRtog==
+Date: Thu, 25 Apr 2024 11:12:34 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 2/2] perf annotate: Update dso binary type when try
+ build-id
+Message-ID: <Zipk0p08bxO7werD@x1>
+References: <20240425005157.1104789-1-namhyung@kernel.org>
+ <20240425005157.1104789-2-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -120,44 +62,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231027182217.3615211-26-seanjc@google.com>
+In-Reply-To: <20240425005157.1104789-2-namhyung@kernel.org>
 
-On Fri, Oct 27, 2023 at 11:22:07AM -0700, Sean Christopherson wrote:
-> Use KVM_SET_USER_MEMORY_REGION2 throughout KVM's selftests library so that
-> support for guest private memory can be added without needing an entirely
-> separate set of helpers.
+On Wed, Apr 24, 2024 at 05:51:57PM -0700, Namhyung Kim wrote:
+> dso__disassemble_filename() tries to get the filename for objdump (or
+> capstone) using build-id.  But I found sometimes it didn't disassemble
+> some functions.  It turned out that those functions belong to a dso
+> which has no binary type set.  It seems it sets the binary type for some
+> special files only - like kernel (kallsyms or kcore) or BPF images.  And
+> there's a logic to skip dso with DSO_BINARY_TYPE__NOT_FOUND.
 > 
-> Note, this obviously makes selftests backwards-incompatible with older KVM
-  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> versions from this point forward.
-  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> As it's checked the build-id cache linke, it should set the binary type
+> as DSO_BINARY_TYPE__BUILD_ID_CACHE.
+> 
+> Fixes: 873a83731f1c ("perf annotate: Skip DSOs not found")
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/disasm.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/tools/perf/util/disasm.c b/tools/perf/util/disasm.c
+> index 412101f2cf2a..6d1125e687b7 100644
+> --- a/tools/perf/util/disasm.c
+> +++ b/tools/perf/util/disasm.c
+> @@ -1156,6 +1156,8 @@ static int dso__disassemble_filename(struct dso *dso, char *filename, size_t fil
+>  			}
+>  		}
+>  		mutex_unlock(&dso->lock);
+> +	} else if (dso->binary_type == DSO_BINARY_TYPE__NOT_FOUND) {
+> +		dso->binary_type = DSO_BINARY_TYPE__BUILD_ID_CACHE;
+>  	}
+>  
+>  	free(build_id_path);
 
-Is there a way we could disable the tests on older kernels instead of
-making them fail?  Check uname or something?  There is probably a
-standard way to do this...  It's these tests which fail.
+Fixed up to take into account a recent patch by Ian that turned that
+&dso->lock into dso__lock(dso):
 
- kvm_aarch32_id_regs
- kvm_access_tracking_perf_test
- kvm_arch_timer
- kvm_debug-exceptions
- kvm_demand_paging_test
- kvm_dirty_log_perf_test
- kvm_dirty_log_test
- kvm_guest_print_test
- kvm_hypercalls
- kvm_kvm_page_table_test
- kvm_memslot_modification_stress_test
- kvm_memslot_perf_test
- kvm_page_fault_test
- kvm_psci_test
- kvm_rseq_test
- kvm_smccc_filter
- kvm_steal_time
- kvm_vgic_init
- kvm_vgic_irq
- kvm_vpmu_counter_access
-
-regards,
-dan carpenter
-
+diff --git a/tools/perf/util/disasm.c b/tools/perf/util/disasm.c
+index 70650808e2e7bf88..2921b32357705a02 100644
+--- a/tools/perf/util/disasm.c
++++ b/tools/perf/util/disasm.c
+@@ -1156,6 +1156,8 @@ static int dso__disassemble_filename(struct dso *dso, char *filename, size_t fil
+ 			}
+ 		}
+ 		mutex_unlock(dso__lock(dso));
++	} else if (dso->binary_type == DSO_BINARY_TYPE__NOT_FOUND) {
++		dso->binary_type = DSO_BINARY_TYPE__BUILD_ID_CACHE;
+ 	}
+ 
+ 	free(build_id_path);
 
