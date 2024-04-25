@@ -1,124 +1,91 @@
-Return-Path: <linux-kernel+bounces-159344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35B058B2D5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:58:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E2AE8B2D61
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:00:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61D8BB223D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:58:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C145F1C21889
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:00:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27F1815686F;
-	Thu, 25 Apr 2024 22:58:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1126E15665E;
+	Thu, 25 Apr 2024 23:00:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XQHjP+/I"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="igobG6I1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2895E12BF28;
-	Thu, 25 Apr 2024 22:58:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D20155356
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 23:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714085889; cv=none; b=UKjIzWySvO4bE+i+R07JJinYA6FOo2fgfdBFLJ3wQsJ0Ok25V2DCMWZBkQBYtSET2LC27Og0tYkdXfrFfv03nMyQkP9h1Lncpdki3gcPrmb5lFvQhoHvgaKk2sdzBM2nGSLhUCDDRygz1qY/K/P0Xw/qlOeyUpgQChD9V6DnhaU=
+	t=1714086032; cv=none; b=Xxg3t2+Ga3gBzWXvlEPv/6BkiDrCYTUSik5O2WFmM/376eNYaIlcYROScM5iL83+LthSF8A+vikeDAFW+99nlx+9H/wDrw1aiDu1vtB7dLVkWh16PfJXh4+t6NXWxKeGyD5L8y4Z7LbURPoijkvmkIfNf4hkpneXAtj/tEH8aT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714085889; c=relaxed/simple;
-	bh=KZ6d6tmhKGWfhPvc5pe1zvmWKH4eLy2i/SVKQGqyco4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=c1vIRoD0mqVvzd8eT81Nx2JjmImmwuRoGApm7OfcIEB5r5siU77rQvOIqfyBWoBcXS7m1f/U+fkG12v5/s/R8XCY5r65N4mlj/rmGVwdfN2HctNxdKYVFd8toU0YMA5PjN9VHxnOPywOXT5opCRreZhCqQ36x9VUUBYu/SZ04Z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XQHjP+/I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3902C113CC;
-	Thu, 25 Apr 2024 22:58:05 +0000 (UTC)
+	s=arc-20240116; t=1714086032; c=relaxed/simple;
+	bh=0IGnkNdF8z2leS3iHikpEP2XzTkGqpBJAJtmSy49Z6E=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Upp0goxHJ89yNRI83c9AVI4FHfgHSfYZBblPpbEztF0HR+hPDuzKYLUzcWlz78Mg3SikBFLIdQMM9iciLReM7jXNOT3rBRJ6YNnNhYmDS5JJ/MUZR45Cl83fMu9uoc/99g96FXB+6k1k5WDvIWWoB972lv/R8NtZwURtyQOyhW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=igobG6I1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D1B12C113CE;
+	Thu, 25 Apr 2024 23:00:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714085888;
-	bh=KZ6d6tmhKGWfhPvc5pe1zvmWKH4eLy2i/SVKQGqyco4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=XQHjP+/IEP3Hod/NE4TIvhSjSrvdrjAy9k2SyFIAJjFzNY8+Nh3Sx4POcNt5btuMm
-	 3im4slzGoWYkGm7TS50kvWPPVYBYIGT0/MZhkPK2muqrQmmbWC0GyjmcZ0ybOYTxW9
-	 SMkcyLR9W1KlZ7QqBNuRE0iMGbU80vuL7IHG1jEi41QYuf83RSpP92ZQTtRVvOQLlr
-	 v3hS48+RITvJrg9TWBKbL4CriqzPOg3Tsg+Vt50QKETrvCXiqDRTehoqDAJ9x/Y1u/
-	 a3230EtuGUq8KzmygdeZcglcAOIPu4ukSmpzRXKV2jvztr04ZgWZjoIRpRbueNQj+A
-	 zP3uYbLEZ8C/g==
-Date: Thu, 25 Apr 2024 15:58:04 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>
-Cc: j.granados@samsung.com, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexander
- Aring <alex.aring@gmail.com>, Stefan Schmidt <stefan@datenfreihafen.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, David Ahern
- <dsahern@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, Matthieu Baerts
- <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>, Geliang Tang
- <geliang@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Remi
- Denis-Courmont <courmisch@gmail.com>, Allison Henderson
- <allison.henderson@oracle.com>, David Howells <dhowells@redhat.com>, Marc
- Dionne <marc.dionne@auristor.com>, Marcelo Ricardo Leitner
- <marcelo.leitner@gmail.com>, Xin Long <lucien.xin@gmail.com>, Wenjia Zhang
- <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>, "D. Wythe"
- <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>, Wen Gu
- <guwen@linux.alibaba.com>, Trond Myklebust
- <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, Chuck
- Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil
- Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo
- <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Jon Maloy
- <jmaloy@redhat.com>, Ying Xue <ying.xue@windriver.com>, Martin Schiller
- <ms@dev.tdt.de>, Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik
- <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>, Roopa Prabhu
- <roopa@nvidia.com>, Nikolay Aleksandrov <razor@blackwall.org>, Simon Horman
- <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>, Joerg Reuter
- <jreuter@yaina.de>, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook
- <keescook@chromium.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, dccp@vger.kernel.org,
- linux-wpan@vger.kernel.org, mptcp@lists.linux.dev,
- linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org,
- rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
- linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
- linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org,
- coreteam@netfilter.org, bridge@lists.linux.dev, lvs-devel@vger.kernel.org
-Subject: Re: [PATCH v4 1/8] net: Remove the now superfluous sentinel
- elements from ctl_table array
-Message-ID: <20240425155804.66f3bed5@kernel.org>
-In-Reply-To: <20240425-jag-sysctl_remset_net-v4-1-9e82f985777d@samsung.com>
-References: <20240425-jag-sysctl_remset_net-v4-0-9e82f985777d@samsung.com>
-	<20240425-jag-sysctl_remset_net-v4-1-9e82f985777d@samsung.com>
+	s=k20201202; t=1714086030;
+	bh=0IGnkNdF8z2leS3iHikpEP2XzTkGqpBJAJtmSy49Z6E=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=igobG6I1CIejK3yulBtwPYYuUDOux+sA3KDMxUeoo77zreXe2fsH0rwgnilrFa2kv
+	 rrVQ3QDCuLHqfxWwjpiQcbO5dOcRw+iEQs5KpJyMx6uCbwvcHLkGQSDtaxx8TxOePH
+	 MVcpp6xyKCqlEDichpFaY6xlVq8ZLYxBcm3hgEVseGIwG2YqKcOs7LrWr18srHhmWu
+	 mYsSStSFkag+e7aqShyVpn6N7xl5nE0bUgQi8+1u+ZqpZTARJOGZ0m/bxrlONDECIH
+	 1P2lSqGo8G6PAasWGvInZlaM5MvHlXoOynirIFBtRjV7mHNQIr9dMerZlJa6+CWUAa
+	 rl8zJrZklWfHg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BFD58CF21C3;
+	Thu, 25 Apr 2024 23:00:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH riscv/fixes] riscv: hwprobe: fix invalid sign extension for
+ RISCV_HWPROBE_EXT_ZVFHMIN
+From: patchwork-bot+linux-riscv@kernel.org
+Message-Id: 
+ <171408603078.8761.11289399768939570785.git-patchwork-notify@kernel.org>
+Date: Thu, 25 Apr 2024 23:00:30 +0000
+References: <20240409143839.558784-1-cleger@rivosinc.com>
+In-Reply-To: <20240409143839.558784-1-cleger@rivosinc.com>
+To: =?utf-8?b?Q2zDqW1lbnQgTMOpZ2VyIDxjbGVnZXJAcml2b3NpbmMuY29tPg==?=@codeaurora.org
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
 
-On Thu, 25 Apr 2024 14:02:59 +0200 Joel Granados via B4 Relay wrote:
-> -	for (i =3D 0; i < ARRAY_SIZE(mpls_table) - 1; i++)
-> +	for (i =3D 0; i < tabel_size; i++)
->  		table[i].data =3D (char *)net + (uintptr_t)table[i].data;
-> =20
->  	net->mpls.ctl =3D register_net_sysctl_sz(net, "net/mpls", table,
-> -					       ARRAY_SIZE(mpls_table));
-> +					       tabel_size);
+Hello:
 
-./net/mpls/af_mpls.c: In function =E2=80=98mpls_net_init=E2=80=99:
-./net/mpls/af_mpls.c:2676:25: error: =E2=80=98tabel_size=E2=80=99 undeclar=
-ed (first use in this function); did you mean =E2=80=98table_size=E2=80=99?
- 2676 |         for (i =3D 0; i < tabel_size; i++)
-      |                         ^~~~~~~~~~
-      |                         table_size
-./net/mpls/af_mpls.c:2676:25: note: each undeclared identifier is reported=
- only once for each function it appears in
-./net/mpls/af_mpls.c:2660:16: warning: unused variable =E2=80=98table_size=
-=E2=80=99 [-Wunused-variable]
- 2660 |         size_t table_size =3D ARRAY_SIZE(mpls_table);
-      |                ^~~~~~~~~~
---=20
-netdev FAQ tl;dr:
- - designate your patch to a tree - [PATCH net] or [PATCH net-next]
- - for fixes the Fixes: tag is required, regardless of the tree
- - don't post large series (> 15 patches), break them up
- - don't repost your patches within one 24h period
+This patch was applied to riscv/linux.git (fixes)
+by Palmer Dabbelt <palmer@rivosinc.com>:
 
-pw-bot: cr
+On Tue,  9 Apr 2024 16:38:37 +0200 you wrote:
+> The current definition yields a negative 32bits signed value which
+> result in a mask with is obviously incorrect. Replace it by using a
+> 1ULL bit shift value to obtain a single set bit mask.
+> 
+> Fixes: 5dadda5e6a59 ("riscv: hwprobe: export Zvfh[min] ISA extensions")
+> Signed-off-by: Clément Léger <cleger@rivosinc.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - [riscv/fixes] riscv: hwprobe: fix invalid sign extension for RISCV_HWPROBE_EXT_ZVFHMIN
+    https://git.kernel.org/riscv/c/5ea6764d9095
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
