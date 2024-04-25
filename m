@@ -1,404 +1,183 @@
-Return-Path: <linux-kernel+bounces-158087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E45F28B1B48
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:53:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B0B48B1B1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:36:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C36B284C0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:53:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F97C1F21F92
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6C75EE67;
-	Thu, 25 Apr 2024 06:53:42 +0000 (UTC)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 920645A0E6;
+	Thu, 25 Apr 2024 06:36:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JROX5upS"
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2125A116;
-	Thu, 25 Apr 2024 06:53:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2734C26293
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 06:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714028021; cv=none; b=bGQSORqsIwzb8jcXHKFjnglxzZqUysM5Ze9H90ZO2aU9VP1k6crod0mavUOi2FiPy0fNQEwnrOKw5TKamV5QVgOEJRnykPjYG9fx2IMKSbsuSsySQKwu09Qhd+tawL7XtZHbFwE51nWFA0nJhw5uYwXVUOQ1F5m0f40moYdWOiU=
+	t=1714027005; cv=none; b=Z7tle4EMCE1BRSasssOU9ZsV+3Hv0Q3ajjCbW8qqMJ+efiH+sr3zQfl4na5yXsTtKNJ3vgjwNxPv2V5rc7t6CAsjntP8ab2d5LSMjd6bcBiNusLYlppSKqvJ3NDUw95K2hJo/uQ6jYosJz1cqdTCppzakRG//z7hhyLrzgOOpBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714028021; c=relaxed/simple;
-	bh=5NHjR4r9zlXYGlJoGx2jHRHl7LB5Vt/SZKBRU9smnOU=;
-	h=From:To:Subject:Date:Message-Id; b=elgDsCeZM0FxaLsLICCbWCV+nDVidR7sDQ5jB8xMpCPz3qRJ6uyhNjsLU9WvlsbP0G9ct1x/kS81LEL0/KqEBgv2FxfWX/g4QzoVYAy2thjC8jKKk2KF+vmTuMdGmcpFntR+HX/oZuAizsX31AYqcpZUvc4jctY/H0yP4wDBLL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 19F1B1A0048;
-	Thu, 25 Apr 2024 08:53:28 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 82C361A007A;
-	Thu, 25 Apr 2024 08:53:27 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id D4271180222F;
-	Thu, 25 Apr 2024 14:53:25 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	shengjiu.wang@gmail.com,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] ASoC: dt-bindings: fsl,ssi: Convert to YAML
-Date: Thu, 25 Apr 2024 14:35:06 +0800
-Message-Id: <1714026906-16723-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+	s=arc-20240116; t=1714027005; c=relaxed/simple;
+	bh=fXX7PNIq+eqUBp26vAao/Ry5cR8n5yzz3VEhOgtDbKo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OoEU9a00ylRBhgtLmmIueGdV/UTUyl2qQPnkTfizx/bWWOC+LTvzcYTQyQAVoNFIRqjSAUCCR7mN5BuxRWE9sPsLOMDG0PrpZg52juwJmsYGYsLoYK6jjEPq4T5HsUeLAgVx+ey3xXNoiFYzmu9xNp0fqDjc36EjLSlm+IPo47A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JROX5upS; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5d3907ff128so517004a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:36:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714027003; x=1714631803; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8/CVMgQfWxFUq1jS+amCjYb3SFmeSwZaVXuqq9MhTDg=;
+        b=JROX5upSshUdovN1xafooW9z/xP+lzEbfTYbCvTGwiB/LjbtqTnrvAunR1JnQX6z5Q
+         VD0nSNiik1N/YCYMJIOd17mT+tfYSDvPUPWgGJ8zC1reGFm5F7udn0dPcSC8dPrUMfJa
+         qhd/hJ0yLiJpKLCp2ME1c2lFLlZ93Y5Ab4LhNiTKV7v2CpPDrYVrGWQx6Hu0VVg684Xh
+         bjhC75HPA95MUPkHACB3glYvKekJxrHmilooCqmmp1AV9D/VxecErEM9t5IVWfDvn3K3
+         UHbNNhe1aBAzO/3kLFavVbVSani92VWoetMQ9GXW1u6WgkwY+b+3morsHztbJolhB19o
+         v2Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714027003; x=1714631803;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8/CVMgQfWxFUq1jS+amCjYb3SFmeSwZaVXuqq9MhTDg=;
+        b=u/i9bV7fd7TFfqkJccPDW7OHIpb0CMQTAx821+Rkl5ncujd5PaWIUkzj/MR2i9jQiN
+         X7c5X6wvjWN3PrLLII2lRAcZSNh0R8MrM1Kn2sgAFhOS51k87cVJ8fM+BrVwNJZFmHD9
+         /Hax34FIdN7NzVOSpP3YNr3+RJ63AowvrwA3S64Wmih+4Aj59KUSKUDXrowmw+dHrOnu
+         dkAv0LOeMFGaHXH5UIWqGnwNdQPar9Aovs43ByHKKzll61od08fCp4Ja83yMeYhXaXM5
+         VF88YY01My0KsZZPIAc0MjL5YaRMVeSw9QkJ17GQhPhtuPvmkNE9bcvymZiV5T7qkmLI
+         Q7vA==
+X-Forwarded-Encrypted: i=1; AJvYcCW+k789K/EcnoFhv77ylC6ibLilM6OOdAJ/XlRIOn1HZCgVy0zPEdlwv+g5bQMNlVPB8559CYhT6xEMPHfgc8rqKzVnVPhzYH3k89fD
+X-Gm-Message-State: AOJu0YyeRZLi2McecHN3ndQIR9XHu6WmPgJMCvjBkWQGKSoSwR0IpyBw
+	Nju0j32ppm97/1yp1dII0RRx5z5rMeMiCtuhPqGbGDzxfzaByAF09Qr/DDRScnqXAUjCiyQKwWk
+	353FzKQpOx4+FOsgczkJrUVmAimO3ZMUugki6dw==
+X-Google-Smtp-Source: AGHT+IHyqZEcfsfPUmwPYTICqPTYsja7jffEAzz+Mo8AnWurcRqCd7FU3lPpsWSsWQ9HOzxVDXNmlkUL/ok4odKJ8/s=
+X-Received: by 2002:a17:90a:fa06:b0:2ac:d9f:de9b with SMTP id
+ cm6-20020a17090afa0600b002ac0d9fde9bmr5162954pjb.45.1714027003235; Wed, 24
+ Apr 2024 23:36:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <202404250740.VhQQoD7N-lkp@intel.com>
+In-Reply-To: <202404250740.VhQQoD7N-lkp@intel.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Thu, 25 Apr 2024 08:36:31 +0200
+Message-ID: <CAKfTPtBmhCFWmeb7oaM3t3WMb0_RUwY32gzgVzyruYaP9VpfUA@mail.gmail.com>
+Subject: Re: [tip:sched/core 26/27] drivers/base/arch_topology.c:204:17:
+ sparse: sparse: incorrect type in initializer (different address spaces)
+To: kernel test robot <lkp@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	x86@kernel.org, Ingo Molnar <mingo@kernel.org>, Qais Yousef <qyousef@layalina.io>, 
+	Lukasz Luba <lukasz.luba@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Convert the fsl,ssi binding to YAML.
+Hi,
 
-Add below compatible strings which were not listed
-in document:
+On Thu, 25 Apr 2024 at 01:22, kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Vincent,
+>
+> FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+> head:   97450eb909658573dcacc1063b06d3d08642c0c1
+> commit: d4dbc991714eefcbd8d54a3204bd77a0a52bd32d [26/27] sched/cpufreq: Rename arch_update_thermal_pressure() => arch_update_hw_pressure()
 
-fsl,imx50-ssi
-fsl,imx53-ssi
-fsl,imx25-ssi
-fsl,imx27-ssi
-fsl,imx6q-ssi
-fsl,imx6sl-ssi
-fsl,imx6sx-ssi
+I'm going to look at this more deeply but this patch only rename
+"thermal_pressure" by "hw_pressure" so unless I miss a renaming, this
+should not trigger anything new.
 
-Add below fsl,mode strings which were not listed.
-
-i2s-slave
-i2s-master
-lj-slave
-lj-master
-rj-slave
-rj-master
-
-Add 'ac97-gpios' property which were not listed.
-Then dtbs_check can pass.
-
-And remove the 'codec' description which should be
-in the 'codec' binding doc.
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
-changes in v3:
-- change fallback string to const
-- split fallback for imx21 and imx51
-- update orders of properties
-- add constraint for fsl,fifo-depth
-- minor change for example
-
-changes in v2:
-- change fallback string to const.
-- add dai-common.yaml
-- add ac97-gpios property
-
- .../devicetree/bindings/sound/fsl,ssi.txt     |  87 --------
- .../devicetree/bindings/sound/fsl,ssi.yaml    | 194 ++++++++++++++++++
- 2 files changed, 194 insertions(+), 87 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/fsl,ssi.txt
- create mode 100644 Documentation/devicetree/bindings/sound/fsl,ssi.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-deleted file mode 100644
-index 7e15a85cecd2..000000000000
---- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-+++ /dev/null
-@@ -1,87 +0,0 @@
--Freescale Synchronous Serial Interface
--
--The SSI is a serial device that communicates with audio codecs.  It can
--be programmed in AC97, I2S, left-justified, or right-justified modes.
--
--Required properties:
--- compatible:       Compatible list, should contain one of the following
--                    compatibles:
--                      fsl,mpc8610-ssi
--                      fsl,imx51-ssi
--                      fsl,imx35-ssi
--                      fsl,imx21-ssi
--- cell-index:       The SSI, <0> = SSI1, <1> = SSI2, and so on.
--- reg:              Offset and length of the register set for the device.
--- interrupts:       <a b> where a is the interrupt number and b is a
--                    field that represents an encoding of the sense and
--                    level information for the interrupt.  This should be
--                    encoded based on the information in section 2)
--                    depending on the type of interrupt controller you
--                    have.
--- fsl,fifo-depth:   The number of elements in the transmit and receive FIFOs.
--                    This number is the maximum allowed value for SFCSR[TFWM0].
-- - clocks:          "ipg" - Required clock for the SSI unit
--                    "baud" - Required clock for SSI master mode. Otherwise this
--		      clock is not used
--
--Required are also ac97 link bindings if ac97 is used. See
--Documentation/devicetree/bindings/sound/soc-ac97link.txt for the necessary
--bindings.
--
--Optional properties:
--- codec-handle:     Phandle to a 'codec' node that defines an audio
--                    codec connected to this SSI.  This node is typically
--                    a child of an I2C or other control node.
--- fsl,fiq-stream-filter: Bool property. Disabled DMA and use FIQ instead to
--		    filter the codec stream. This is necessary for some boards
--		    where an incompatible codec is connected to this SSI, e.g.
--		    on pca100 and pcm043.
--- dmas:		    Generic dma devicetree binding as described in
--		    Documentation/devicetree/bindings/dma/dma.txt.
--- dma-names:	    Two dmas have to be defined, "tx" and "rx", if fsl,imx-fiq
--		    is not defined.
--- fsl,mode:         The operating mode for the AC97 interface only.
--                    "ac97-slave" - AC97 mode, SSI is clock slave
--                    "ac97-master" - AC97 mode, SSI is clock master
--- fsl,ssi-asynchronous:
--                    If specified, the SSI is to be programmed in asynchronous
--                    mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
--                    all be connected to valid signals.  In synchronous mode,
--                    SRCK and SRFS are ignored.  Asynchronous mode allows
--                    playback and capture to use different sample sizes and
--                    sample rates.  Some drivers may require that SRCK and STCK
--                    be connected together, and SRFS and STFS be connected
--                    together.  This would still allow different sample sizes,
--                    but not different sample rates.
--- fsl,playback-dma: Phandle to a node for the DMA channel to use for
--                    playback of audio.  This is typically dictated by SOC
--                    design.  See the notes below.
--                    Only used on Power Architecture.
--- fsl,capture-dma:  Phandle to a node for the DMA channel to use for
--                    capture (recording) of audio.  This is typically dictated
--                    by SOC design.  See the notes below.
--                    Only used on Power Architecture.
--
--Child 'codec' node required properties:
--- compatible:       Compatible list, contains the name of the codec
--
--Child 'codec' node optional properties:
--- clock-frequency:  The frequency of the input clock, which typically comes
--                    from an on-board dedicated oscillator.
--
--Notes on fsl,playback-dma and fsl,capture-dma:
--
--On SOCs that have an SSI, specific DMA channels are hard-wired for playback
--and capture.  On the MPC8610, for example, SSI1 must use DMA channel 0 for
--playback and DMA channel 1 for capture.  SSI2 must use DMA channel 2 for
--playback and DMA channel 3 for capture.  The developer can choose which
--DMA controller to use, but the channels themselves are hard-wired.  The
--purpose of these two properties is to represent this hardware design.
--
--The device tree nodes for the DMA channels that are referenced by
--"fsl,playback-dma" and "fsl,capture-dma" must be marked as compatible with
--"fsl,ssi-dma-channel".  The SOC-specific compatible string (e.g.
--"fsl,mpc8610-dma-channel") can remain.  If these nodes are left as
--"fsl,elo-dma-channel" or "fsl,eloplus-dma-channel", then the generic Elo DMA
--drivers (fsldma) will attempt to use them, and it will conflict with the
--sound drivers.
-diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.yaml b/Documentation/devicetree/bindings/sound/fsl,ssi.yaml
-new file mode 100644
-index 000000000000..4ab10cd3b520
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/fsl,ssi.yaml
-@@ -0,0 +1,194 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/fsl,ssi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale Synchronous Serial Interface
-+
-+maintainers:
-+  - Shengjiu Wang <shengjiu.wang@nxp.com>
-+
-+description:
-+  Notes on fsl,playback-dma and fsl,capture-dma
-+  On SOCs that have an SSI, specific DMA channels are hard-wired for playback
-+  and capture.  On the MPC8610, for example, SSI1 must use DMA channel 0 for
-+  playback and DMA channel 1 for capture.  SSI2 must use DMA channel 2 for
-+  playback and DMA channel 3 for capture.  The developer can choose which
-+  DMA controller to use, but the channels themselves are hard-wired.  The
-+  purpose of these two properties is to represent this hardware design.
-+
-+  The device tree nodes for the DMA channels that are referenced by
-+  "fsl,playback-dma" and "fsl,capture-dma" must be marked as compatible with
-+  "fsl,ssi-dma-channel".  The SOC-specific compatible string (e.g.
-+  "fsl,mpc8610-dma-channel") can remain.  If these nodes are left as
-+  "fsl,elo-dma-channel" or "fsl,eloplus-dma-channel", then the generic Elo DMA
-+  drivers (fsldma) will attempt to use them, and it will conflict with the
-+  sound drivers.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - fsl,imx50-ssi
-+              - fsl,imx53-ssi
-+          - const: fsl,imx51-ssi
-+          - const: fsl,imx21-ssi
-+      - items:
-+          - enum:
-+              - fsl,imx25-ssi
-+              - fsl,imx27-ssi
-+              - fsl,imx35-ssi
-+              - fsl,imx51-ssi
-+          - const: fsl,imx21-ssi
-+      - items:
-+          - enum:
-+              - fsl,imx6q-ssi
-+              - fsl,imx6sl-ssi
-+              - fsl,imx6sx-ssi
-+          - const: fsl,imx51-ssi
-+      - items:
-+          - const: fsl,imx21-ssi
-+      - items:
-+          - const: fsl,mpc8610-ssi
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: The ipg clock for register access
-+      - description: clock for SSI master mode
-+    minItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: ipg
-+      - const: baud
-+    minItems: 1
-+
-+  dmas:
-+    oneOf:
-+      - items:
-+          - description: DMA controller phandle and request line for RX
-+          - description: DMA controller phandle and request line for TX
-+      - items:
-+          - description: DMA controller phandle and request line for RX0
-+          - description: DMA controller phandle and request line for TX0
-+          - description: DMA controller phandle and request line for RX1
-+          - description: DMA controller phandle and request line for TX1
-+
-+  dma-names:
-+    oneOf:
-+      - items:
-+          - const: rx
-+          - const: tx
-+      - items:
-+          - const: rx0
-+          - const: tx0
-+          - const: rx1
-+          - const: tx1
-+
-+  "#sound-dai-cells":
-+    const: 0
-+    description: optional, some dts node didn't add it.
-+
-+  cell-index:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0, 1, 2]
-+    description: The SSI index
-+
-+  ac97-gpios:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description: Please refer to soc-ac97link.txt
-+
-+  codec-handle:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Phandle to a 'codec' node that defines an audio
-+      codec connected to this SSI.  This node is typically
-+      a child of an I2C or other control node.
-+
-+  fsl,fifo-depth:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      The number of elements in the transmit and receive FIFOs.
-+      This number is the maximum allowed value for SFCSR[TFWM0].
-+    enum: [8, 15]
-+
-+  fsl,fiq-stream-filter:
-+    type: boolean
-+    description:
-+      Disabled DMA and use FIQ instead to filter the codec stream.
-+      This is necessary for some boards where an incompatible codec
-+      is connected to this SSI, e.g. on pca100 and pcm043.
-+
-+  fsl,mode:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    enum: [ ac97-slave, ac97-master, i2s-slave, i2s-master,
-+            lj-slave, lj-master, rj-slave, rj-master ]
-+    description: |
-+      "ac97-slave" - AC97 mode, SSI is clock slave
-+      "ac97-master" - AC97 mode, SSI is clock master
-+      "i2s-slave" - I2S mode, SSI is clock slave
-+      "i2s-master" - I2S mode, SSI is clock master
-+      "lj-slave" - Left justified mode, SSI is clock slave
-+      "lj-master" - Left justified mode, SSI is clock master
-+      "rj-slave" - Right justified mode, SSI is clock slave
-+      "rj-master" - Right justified mode, SSI is clock master
-+
-+  fsl,ssi-asynchronous:
-+    type: boolean
-+    description: If specified, the SSI is to be programmed in asynchronous
-+      mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
-+      all be connected to valid signals.  In synchronous mode,
-+      SRCK and SRFS are ignored.  Asynchronous mode allows
-+      playback and capture to use different sample sizes and
-+      sample rates.  Some drivers may require that SRCK and STCK
-+      be connected together, and SRFS and STFS be connected
-+      together.  This would still allow different sample sizes,
-+      but not different sample rates.
-+
-+  fsl,playback-dma:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: Phandle to a node for the DMA channel to use for
-+      playback of audio.  This is typically dictated by SOC
-+      design. Only used on Power Architecture.
-+
-+  fsl,capture-dma:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: Phandle to a node for the DMA channel to use for
-+      capture (recording) of audio.  This is typically dictated
-+      by SOC design. Only used on Power Architecture.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - fsl,fifo-depth
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/imx6qdl-clock.h>
-+    ssi@2028000 {
-+        compatible = "fsl,imx6q-ssi", "fsl,imx51-ssi";
-+        reg = <0x02028000 0x4000>;
-+        interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&clks IMX6QDL_CLK_SSI1_IPG>,
-+                 <&clks IMX6QDL_CLK_SSI1>;
-+        clock-names = "ipg", "baud";
-+        dmas = <&sdma 37 1 0>, <&sdma 38 1 0>;
-+        dma-names = "rx", "tx";
-+        #sound-dai-cells = <0>;
-+        fsl,fifo-depth = <15>;
-+    };
--- 
-2.34.1
-
+> config: arm64-randconfig-r132-20240425 (https://download.01.org/0day-ci/archive/20240425/202404250740.VhQQoD7N-lkp@intel.com/config)
+> compiler: aarch64-linux-gcc (GCC) 13.2.0
+> reproduce: (https://download.01.org/0day-ci/archive/20240425/202404250740.VhQQoD7N-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202404250740.VhQQoD7N-lkp@intel.com/
+>
+> sparse warnings: (new ones prefixed by >>)
+> >> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
+>    drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
+>    drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
+> >> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
+>    drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
+>    drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
+> >> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
+>    drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
+>    drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
+> >> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
+>    drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
+>    drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
+> >> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
+>    drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
+>    drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
+> >> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
+>    drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
+>    drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
+> >> drivers/base/arch_topology.c:204:17: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long * @@
+>    drivers/base/arch_topology.c:204:17: sparse:     expected void const [noderef] __percpu *__vpp_verify
+>    drivers/base/arch_topology.c:204:17: sparse:     got unsigned long *
+>
+> vim +204 drivers/base/arch_topology.c
+>
+>    164
+>    165  /**
+>    166   * topology_update_hw_pressure() - Update HW pressure for CPUs
+>    167   * @cpus        : The related CPUs for which capacity has been reduced
+>    168   * @capped_freq : The maximum allowed frequency that CPUs can run at
+>    169   *
+>    170   * Update the value of HW pressure for all @cpus in the mask. The
+>    171   * cpumask should include all (online+offline) affected CPUs, to avoid
+>    172   * operating on stale data when hot-plug is used for some CPUs. The
+>    173   * @capped_freq reflects the currently allowed max CPUs frequency due to
+>    174   * HW capping. It might be also a boost frequency value, which is bigger
+>    175   * than the internal 'capacity_freq_ref' max frequency. In such case the
+>    176   * pressure value should simply be removed, since this is an indication that
+>    177   * there is no HW throttling. The @capped_freq must be provided in kHz.
+>    178   */
+>    179  void topology_update_hw_pressure(const struct cpumask *cpus,
+>    180                                        unsigned long capped_freq)
+>    181  {
+>    182          unsigned long max_capacity, capacity, hw_pressure;
+>    183          u32 max_freq;
+>    184          int cpu;
+>    185
+>    186          cpu = cpumask_first(cpus);
+>    187          max_capacity = arch_scale_cpu_capacity(cpu);
+>    188          max_freq = arch_scale_freq_ref(cpu);
+>    189
+>    190          /*
+>    191           * Handle properly the boost frequencies, which should simply clean
+>    192           * the HW pressure value.
+>    193           */
+>    194          if (max_freq <= capped_freq)
+>    195                  capacity = max_capacity;
+>    196          else
+>    197                  capacity = mult_frac(max_capacity, capped_freq, max_freq);
+>    198
+>    199          hw_pressure = max_capacity - capacity;
+>    200
+>    201          trace_hw_pressure_update(cpu, hw_pressure);
+>    202
+>    203          for_each_cpu(cpu, cpus)
+>  > 204                  WRITE_ONCE(per_cpu(hw_pressure, cpu), hw_pressure);
+>    205  }
+>    206  EXPORT_SYMBOL_GPL(topology_update_hw_pressure);
+>    207
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
