@@ -1,369 +1,275 @@
-Return-Path: <linux-kernel+bounces-158781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A01A8B24D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:16:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F34FA8B24DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:16:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B94561F23AFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:16:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA66E28D0C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:16:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C42514AD0A;
-	Thu, 25 Apr 2024 15:16:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879CA14AD02;
+	Thu, 25 Apr 2024 15:16:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="t9e4rQt1"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="nvNux0f2"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2072.outbound.protection.outlook.com [40.107.92.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE75E149E0A
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:16:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714058182; cv=none; b=hCdObzA723TqLC9aWPb4iWGNmOb6GkXOVvNMkxClxr9qy3qki+HoaGDPfmSMHiKejRKeaWCILZk1SrsUM1P5kLPALflmR6+uDu7R1RaTsSt9eMUQdtpYgoFOs31NnOb5tWHeydovJW8UBS74ZL4qEaUVbZJxjXYp/Djxt9zeKRI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714058182; c=relaxed/simple;
-	bh=5yxhYykwugKSH3LzzWOU0n0bbIEo1Q8ay/PBp5JY8Pc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jyIxkNxoYuPmou5ROJzBUub6lLPyecXY50ztDgxfdx04GVWMm3kJv1+Q8Dz4NKyDnPRC6Mw+o2V+N76hLSHs2W94xH/wBvfoLWJVHOSjvM7ZaR0F7PaBCCrBdEe9CvQ+HfVOFejaN2iL8iZD+cmSSnS7GfqkRai0yzcpe0Hamuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=t9e4rQt1; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a5200afe39eso122737066b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:16:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714058178; x=1714662978; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=CyrXcSnM/MfOVZ3XMl41JkXc30kPx3wxBN2F1+zdXXg=;
-        b=t9e4rQt1aRIur5CMQojLglcZ+ldhcztsQ5PiRYx5uHM7DZRfCe0aiefrtq5ZudedKm
-         A5dsXCjsN7USbugtY8TumURKGJwB9EttkXinXHD5VIrfMr1bREvPp46J2RKPJ19jRecG
-         +Cjnxvqr/R0MUmFx/vEY1feh1wrAXGzxTkJD3wcUGj1jOxzhFv49p/DrllhNOe+aBzlO
-         EpJarK4EOoM85YVgBwcw5O+MANMKCfky0fKW9kt7DeVI7UsFUigThM5cPwfpNdcs/40k
-         csAj1DpiimT+UHKJ8RBMKUEn7mG/6yUf8p8QFx5O5A/FXNf2o7Cc78GaIhbo0QEqgz8w
-         TlOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714058178; x=1714662978;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CyrXcSnM/MfOVZ3XMl41JkXc30kPx3wxBN2F1+zdXXg=;
-        b=KZksKQIlnD4g9ZbS6fUH5oIzkHJ+6R8ixDz4kCxlIiHXQjHOvKLHM03L6lbYx554uE
-         0zTtDdw+A1+r9Sit6DgnMTQRXAS62cqkBKTFMmmNX7GqHZZc2aVC0KALhz8vN7OBQoXu
-         kBt0WWVxaczc+5Dun307jvsAmXE8plq6VqHA0pU8/zmO0jXL0pUS/ECDxoSkqRXUWCwc
-         Qg7jUq7c6QQK/VCoGifdJlKiK5eBYawGEE71nV8zl+6sV85/AoItiSvEIFmICMmUnYqf
-         5RafoGZjZ2cAJlgQsAWZ6uDOWLiBC1aq/kHvkBOjsn2UivHohYPRC0wAlFjUNNtGYoc7
-         QfJw==
-X-Forwarded-Encrypted: i=1; AJvYcCWEie8CyiJ+BAf92VUfBqgB1JYElx4TNVddE1xo/evY+hiLyGi3DgJdJ4Q0ZIe1LL+YQSUhFPJ77X0W/7pdV0nwOs+Lcj/vYcmddY5D
-X-Gm-Message-State: AOJu0YzJLqJQ857FInQ/yWizuzTcCHodgUfEFDN85YKjP0x6hWI4SHaZ
-	QQnmcJHWPY4fjRduKYJGoSZh8+8JMf4MnNg/tG4KLbn8xY7i+O/fHY5rzt183cw=
-X-Google-Smtp-Source: AGHT+IGqu80UeP2zZXNY3+qIMygrtn8SShEVi35k8vcUYyHt6Hg47hFykQyDe9+iZi2t5jjCeMYQQw==
-X-Received: by 2002:a17:906:c202:b0:a52:5493:a0b9 with SMTP id d2-20020a170906c20200b00a525493a0b9mr27837ejz.39.1714058177950;
-        Thu, 25 Apr 2024 08:16:17 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id i21-20020a170906a29500b00a526a992d82sm9663042ejz.4.2024.04.25.08.16.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 08:16:17 -0700 (PDT)
-Message-ID: <524f0bd3-1912-4a06-8c68-fea7ca563d68@linaro.org>
-Date: Thu, 25 Apr 2024 17:16:15 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEAB314A638
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:16:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.72
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714058208; cv=fail; b=XgnRngAxMr94qAlBqN8rwvzg+PHQoL943JkXipP8JdaM8mZkwYEevXhI3zaL4lS5dUgjaa/S7c/QOwfgZX1QJR9u8i2VEsZkN7Ay0JQvMljF6gwRdHKmNqubhEla3OZZwz08yGYPgPMAMRBolxMg3rMPfr7ESZoNjnu/gjtujrU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714058208; c=relaxed/simple;
+	bh=a8Teigtno+BU1RlpoDlHvRrv63c0jmlK8DwaYTvxvks=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=HpcedgHG7niUz3lZZnmnjEKc6kqQn4nyAvQoeKrYVk4CH9LpfmTuN39Gj2iCze2uoVSZyzAha11OxeYTMhx3OmoGedZzH2LHEbG3wDnso521icIIWiNo6lr3UC3LsaPGWxla9bAo6J4SlDnWVO3iZjjaP29UW46USKZXBz94OGI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=nvNux0f2; arc=fail smtp.client-ip=40.107.92.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dJFiNTgQ8zykWLmiUlb609fKjiJlvaMMahh/K2Ra7Sml8JERihm8TQGY0omPaWTwk+5K2QYA5gJGiT6057KNbb3Ddrh4W0YIXlDpGCQKQ0/yTC75MYRSQ//OETmIha/SY3UZGTo1UIDDQEKPK6E6hD+ptynJ993d9y/Yua0DHICCNMuL/JQ9zEy92PvFuOy8RMmCMPgivpP/HoucBPEGbI747w6L3ey9BDP9ZrxiEdk0RgDWss5Dyc+1LHJDoWBVkiPh2ceCGaagPt/3ebV0cWL/7bqctCNoGHdculNG3nXmngazkiLaJdaU/j3ugPIlA4OOYyq29RLBDyhpBh1gZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=a8Teigtno+BU1RlpoDlHvRrv63c0jmlK8DwaYTvxvks=;
+ b=DXh6utcJDWILEUzqs8s19/RLUan71Dl11xhEoN7uUf+whVtGhQKM/RC02yuTqdpDvRY0L9vy6dg7r5h3pHk7sGPh5jzy3LqP4dxlGbJsiE50SXagr6ZRQ45Xn0sDLudbpXGIOAjNOhgsSJuT2qX4W1MNiDaFsGGaIhK6rgarLpIx/Qp9U1L8dR27O+rVjIZb681XsTLNTvmOFIexVcyhKL31fwO4wN65s+oOqQdpSJbxlpOCXF7+PBEnpQ7oZq2uNl4KBNc9M2Htlnh8p1Ara/gWx2I0Fmurr1h4VGrMkRWSCteRGT2hRT56hUw6B6kk5/wuirqaX/B6ZhS4BM2fvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a8Teigtno+BU1RlpoDlHvRrv63c0jmlK8DwaYTvxvks=;
+ b=nvNux0f2xVYYq2N6IpP6Zqy7t6b9d3+kzHFRHWd9rcx8/bOsdUOV5NFqQj416nwQZhg/A8ln4pWTlWSH7sBxOuVrioTd0lxH4kCY8UValfa2r3Z9kd2nW5NVpUEV4fHC5mXrs+PxtqsCC93VSfyDyPWK2yK+KGe9sj4B2cVK0FBZ8lN+CQxyUGC9GbFnwaS7+3sVDgdn/68gLlw8SGrcmfzad1WJdF3VcQwhw35mbCFo7xMNzL02CJ43a2rHbTLsXJgHtmiOBKiwszKzIO4NUHhmwOxZBP9dWEI3SBIw8mSjqmeR5HMx8k8M+uYzcB9F6trMFrQ1X8FNtsW3dZuCPw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ PH0PR12MB8051.namprd12.prod.outlook.com (2603:10b6:510:26d::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Thu, 25 Apr
+ 2024 15:16:40 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::dc5c:2cf1:d5f5:9753]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::dc5c:2cf1:d5f5:9753%6]) with mapi id 15.20.7519.021; Thu, 25 Apr 2024
+ 15:16:36 +0000
+From: Zi Yan <ziy@nvidia.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Yang Shi <shy828301@gmail.com>, Ryan Roberts <ryan.roberts@arm.com>,
+ Barry Song <21cnbao@gmail.com>, Lance Yang <ioworker0@gmail.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm/rmap: do not add fully unmapped large folio to
+ deferred split list
+Date: Thu, 25 Apr 2024 11:16:33 -0400
+X-Mailer: MailMate (1.14r6030)
+Message-ID: <2586B1FF-91EF-41C2-AD98-7EF699716CAB@nvidia.com>
+In-Reply-To: <e1e3d368-4861-470f-b7ca-b222712adef5@redhat.com>
+References: <20240424224614.477221-1-zi.yan@sent.com>
+ <a5426fa6-442a-453f-a234-63d89675ea79@redhat.com>
+ <8BBD1B75-135D-42AA-8937-53B259803AA7@nvidia.com>
+ <e1e3d368-4861-470f-b7ca-b222712adef5@redhat.com>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_8878B8EE-4BC3-4587-A43A-51F5B64E621C_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: MN2PR08CA0012.namprd08.prod.outlook.com
+ (2603:10b6:208:239::17) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v3 1/2] dt-bindings: make sid and broadcast reg optional
-To: Thierry Reding <thierry.reding@gmail.com>, Sumit Gupta
- <sumitg@nvidia.com>, robh@kernel.org, conor+dt@kernel.org, maz@kernel.org,
- mark.rutland@arm.com, treding@nvidia.com, jonathanh@nvidia.com
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-tegra@vger.kernel.org, amhetre@nvidia.com, bbasu@nvidia.com
-References: <20240412130540.28447-1-sumitg@nvidia.com>
- <20240412130540.28447-2-sumitg@nvidia.com>
- <d26f9661-3e50-4a72-9097-fe63a27503f1@linaro.org>
- <D0SHRQVCGJBY.2DPLX9K6VXEYM@gmail.com> <D0SILCYU98EV.1XW7NZFC9013K@gmail.com>
- <9561dede-37d0-4183-8742-448058803f8e@linaro.org>
- <D0T3R7UPFO07.2VR2436TG4N8B@gmail.com>
- <d8eb6652-18b5-4ed6-9a44-7c2a0f3bc3bb@linaro.org>
- <D0TANBDMJHH2.5XTXRZ09K4OU@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Language: en-US
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <D0TANBDMJHH2.5XTXRZ09K4OU@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|PH0PR12MB8051:EE_
+X-MS-Office365-Filtering-Correlation-Id: 33b67a1d-abbb-4488-7111-08dc653ab2b8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?zWIA4WaZ9Ybe3WjlD07Uz2kZQKfoJs56uvc6oiLrdf6uZtzjyPrE+tktMu6I?=
+ =?us-ascii?Q?ry1hypW9GnkNdCq4GCFuQBKg12PhVn+war8MM1fBnR+/ICy5aDYsWm81LT2e?=
+ =?us-ascii?Q?LrmEpapPWWa+89E4f1NuF2GYrPXwugmiUYmWm946DmJNMWh1DHVTgjmfkkUu?=
+ =?us-ascii?Q?NpSDgZ01dxdXgMjiZ5FeR02d2UBsLq4KwCXr4jO45qMks/tiZPVMkLJrH0d+?=
+ =?us-ascii?Q?RRkRiLfiAcuSlivQjcaDDKqMvwVXBgT3wztLb27Tp7E6M80CZj3Diw1sLOBA?=
+ =?us-ascii?Q?RW/pveRxSUbZ0ojsqjrjnF/YB6jRIZEdACRXLPiHuXYH62uWKkFOk+BHkTLI?=
+ =?us-ascii?Q?mCqY7kJYADXjHOg1UgwlWQztnBUcWSb8+wAnZhVa9+YHJBTWyiW7zDV/N0S8?=
+ =?us-ascii?Q?iXbgOPKKZQhjj7vxp8u2YHsoCXS6yqRnKzhWpOC27mdrcjfFncVU/7rtlmVF?=
+ =?us-ascii?Q?cKx5wOu0cGfbGXfhwLXZXMoRLgy8QLJtHSa6UrEJd+9c4R1RkgbCg2RQBsap?=
+ =?us-ascii?Q?r67oAMLtSmv0mTFWl3e55UZoquBH9uMMUOGOCSCY8R5kxKEgiNjpYnoBu4BT?=
+ =?us-ascii?Q?Jki3pzuXY5zQ7OX0n3EItINzM2sMfEosMgjQ8qbmasMyxmsqtfj8P7+1E7fS?=
+ =?us-ascii?Q?cAtoH+04Q6EaklczhR6ZJuOPADPkWZBLdkVIfkKJXE9ow2PasfTxL5LHvfKF?=
+ =?us-ascii?Q?GULnM99RaFguZnjPg/qzDUR/WOQUhSO7cWNWOX+SiHQMtBAoIw3bJE6VaMXN?=
+ =?us-ascii?Q?wPul2wtFItFGMMiqDr3VHaABVEAH1s9yp+f4LQ71f0h8zwovwZyPW6HKiN0H?=
+ =?us-ascii?Q?kk9tuqSnMACEJSR1dEbgIeX0NnbPhtFWG3U76zeKp3V4ykJZx2qhJ7Ntivxu?=
+ =?us-ascii?Q?PsFaDE0eCruDErMSvN0nr8Gm6/atgGFmePRGqC7fjuVMmM57hilebycxQ86m?=
+ =?us-ascii?Q?6VKNQ/iJXcsTPCwwDskFiI/kVG1q7g6Wv5pda4w8+BTq5Q5u7aUuoHQaTdFw?=
+ =?us-ascii?Q?i5wxFlXwnK5HNAlHRTcWHmnt1BvF1hB9JrFTHyq8q+zCrtnIfoQ5cU86wkG+?=
+ =?us-ascii?Q?MEvgro2+RRkzeP+DY+yM0hHR2GFgHhcUly9rbnKt8VztULxAuu1XZbyObnni?=
+ =?us-ascii?Q?z2c94iXyn0m6qaxwV8FN/CCPv1NQ7uO0trseN5tZzXhHwPLPZLsDkhTiMpHl?=
+ =?us-ascii?Q?ODRMNuDQzrwUmLwFhomj95+LsEbCClty/0giLckszZSaNVpKcfGRtYqFEPpz?=
+ =?us-ascii?Q?DplJ03lcO+fkL4aKkPQtl0dAvgctrB7XqX4mOK5Bzg=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?RFO84OVbGqV42XLD57FDZlHYTBI++DXGYlQb8A5KolXMKxP7HDgAOmTAtPJa?=
+ =?us-ascii?Q?gyneqI8IIHt+NgvCYw3iQTy3aXhe8CIwdojAYx/Y2pnJCeNJvMISEEF+szcz?=
+ =?us-ascii?Q?uRhMwet3kNbWXC73lYsvc+xmt2NKyFuIJ/PAPyeIGySa33ML7cYHNsezDrJe?=
+ =?us-ascii?Q?531Q75GMFQ3ma9GSWNwss5vClACHsVMBw9e8jPRuUtYQygaMN60Ct7y1Y0XD?=
+ =?us-ascii?Q?2vrgQdytEBc8tB+nqnqsB1P58+2vzFvNtpgPRXzi0nyw5p0stfK0ipg+9dAh?=
+ =?us-ascii?Q?s0HTaQptWDw65AqXi8dn63Fc+8/64Is03/rNCuIj8upphUTT7Z/ek7QWamrJ?=
+ =?us-ascii?Q?wXbFzQqCTWhehqjRRjjCsL62cVRB9twuD5+nnRVHYhNo4Dxl5ljHzUolgKco?=
+ =?us-ascii?Q?W7Ht/whEdRkSaecj5Ta3SDOz90xYYjhhBJPmWTYfq2wFDRjuoD/Qjc5gMmba?=
+ =?us-ascii?Q?/k11uvioAZyIYcSp9jAJjqL8Pcqd8k+EfzxrHqlyoswZeHxQkqKCfkUVYrCs?=
+ =?us-ascii?Q?dZ1RpiIw6yHTH7c6WgQB3SJVGYhfAL+lTB/f5uK+OWap1atyAPoR/bPjzOsf?=
+ =?us-ascii?Q?GZEL9Q3GAvILIpZQesl7Ysy5BGicyVJtgORrHGmVECE0T/C34tDikC42GGK0?=
+ =?us-ascii?Q?gUdpjGnA46anyyubKhgq7mXgJYI7C1IRYfXUCYOPnltHGNH9o5PZrk3Y/tfb?=
+ =?us-ascii?Q?zgxppGN/kiWvKQsg00et9CR2Q2Ny+Fe/M5iNMPTW/HrR38lcy/GoaSBg4Ht2?=
+ =?us-ascii?Q?/tysUY37W/TjDHJxWdhcZiT/9fpFItztCYxiHI6+1BDBCYy/Dpc4HMDRMlG3?=
+ =?us-ascii?Q?uNLM8j8rPNKQxg4wKkbodiHq9Zd2VWgHVWCKMxCKTSCxdP7BS4EVvxr+39il?=
+ =?us-ascii?Q?v7qRvw9EfRf4afzyfjfOl/zMdCQq2tPZm53DKHftc08ycjWyUjJazxDlICay?=
+ =?us-ascii?Q?n08jntpwG1KeHkEiCoB6WB4/vZfTiRKudYnCDKi9ftygjFwD6fnRFZyLdTSe?=
+ =?us-ascii?Q?NJuSkHmL3ZznqClBk6q42s0EwMedxXek9+RB228TwqLTbzeQIHfZY/9rouBT?=
+ =?us-ascii?Q?PmPOceKdAWI9pRds4uXAZwM/ASdlzac8JyVfygpQBZmWCHpcRNZGKdkQp/Oz?=
+ =?us-ascii?Q?amH24pgygEMcFT17qDP/1L5/QT8WRNiSOVyoH1Q/hixRm++7+fVogpbjcyBL?=
+ =?us-ascii?Q?HkQsTWCsClBWaA16h2PQ+DSiu/m/zyRkp0rvjF8tX+SSuagU3a7/G6YN+JII?=
+ =?us-ascii?Q?+vi2Qj2pWgnIAZORcI6oFl0WlCh3YGz9lKUdyDpCOz4bCbpRMd//jyfqvPeN?=
+ =?us-ascii?Q?mBGQXVChvsEBQxy8uySuTd0NrvVNHySvmnnZx4CKdna2semETDBY+0BjJh2S?=
+ =?us-ascii?Q?P2Q1ns21Wiq1zd7KlYCQml7dxd7ipqqlPdJ9xnoNIrY5MH6XKxutykwJBAZE?=
+ =?us-ascii?Q?dxKKKhV36IOakeyywUh3q6eNfm2GODhwSvUTBgt/YySTWz/toXaQlCVTXmfd?=
+ =?us-ascii?Q?BBMlqlp0/3LY3baeNUhUI3eeDUVOoRofoHJsX7IEDgQqpZSiPI6yq/WZpIeK?=
+ =?us-ascii?Q?ddeEfUHCgGm+XvOrYe0=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 33b67a1d-abbb-4488-7111-08dc653ab2b8
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 15:16:36.1948
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZC4Wy56atFaNuQdOHPQ8Xa7+DHgzva4J3nQme1moI05KhzDxSk33PegDTBM+bW6q
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8051
 
-On 25/04/2024 17:03, Thierry Reding wrote:
-> On Thu Apr 25, 2024 at 11:45 AM CEST, Krzysztof Kozlowski wrote:
->> On 25/04/2024 11:39, Thierry Reding wrote:
->>> On Thu Apr 25, 2024 at 9:52 AM CEST, Krzysztof Kozlowski wrote:
->>>> On 24/04/2024 19:04, Thierry Reding wrote:
->>>>> On Wed Apr 24, 2024 at 6:26 PM CEST, Thierry Reding wrote:
->>>>>> On Mon Apr 22, 2024 at 9:02 AM CEST, Krzysztof Kozlowski wrote:
->>>>>>> On 12/04/2024 15:05, Sumit Gupta wrote:
->>>>>>>> MC SID and Broadbast channel register access is restricted for Guest VM.
->>>>>>>
->>>>>>> Broadcast
->>>>>>>
->>>>>>>> Make both the regions as optional for SoC's from Tegra186 onwards.
->>>>>>>
->>>>>>> onward?
->>>>>>>
->>>>>>>> Tegra MC driver will skip access to the restricted registers from Guest
->>>>>>>> if the respective regions are not present in the memory-controller node
->>>>>>>> of Guest DT.
->>>>>>>>
->>>>>>>> Suggested-by: Thierry Reding <treding@nvidia.com>
->>>>>>>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
->>>>>>>> ---
->>>>>>>>  .../nvidia,tegra186-mc.yaml                   | 95 ++++++++++---------
->>>>>>>>  1 file changed, 49 insertions(+), 46 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra186-mc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra186-mc.yaml
->>>>>>>> index 935d63d181d9..e0bd013ecca3 100644
->>>>>>>> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra186-mc.yaml
->>>>>>>> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra186-mc.yaml
->>>>>>>> @@ -34,11 +34,11 @@ properties:
->>>>>>>>            - nvidia,tegra234-mc
->>>>>>>>  
->>>>>>>>    reg:
->>>>>>>> -    minItems: 6
->>>>>>>> +    minItems: 4
->>>>>>>>      maxItems: 18
->>>>>>>>  
->>>>>>>>    reg-names:
->>>>>>>> -    minItems: 6
->>>>>>>> +    minItems: 4
->>>>>>>>      maxItems: 18
->>>>>>>>  
->>>>>>>>    interrupts:
->>>>>>>> @@ -151,12 +151,13 @@ allOf:
->>>>>>>>  
->>>>>>>>          reg-names:
->>>>>>>>            items:
->>>>>>>> -            - const: sid
->>>>>>>> -            - const: broadcast
->>>>>>>> -            - const: ch0
->>>>>>>> -            - const: ch1
->>>>>>>> -            - const: ch2
->>>>>>>> -            - const: ch3
->>>>>>>> +            enum:
->>>>>>>> +              - sid
->>>>>>>> +              - broadcast
->>>>>>>> +              - ch0
->>>>>>>> +              - ch1
->>>>>>>> +              - ch2
->>>>>>>> +              - ch3
->>>>>>>
->>>>>>> I understand why sid and broadcast are becoming optional, but why order
->>>>>>> of the rest is now fully flexible?
->>>>>>
->>>>>> The reason why the order of the rest doesn't matter is because we have
->>>>>> both reg and reg-names properties and so the order in which they appear
->>>>>> in the list doesn't matter. The only thing that matters is that the
->>>>>> entries of the reg and reg-names properties match.
->>>>>>
->>>>>>> This does not even make sid/broadcast optional, but ch0!
->>>>>>
->>>>>> Yeah, this ends up making all entries optional, which isn't what we
->>>>>> want. I don't know of a way to accurately express this in json-schema,
->>>>>> though. Do you?
->>>>>>
->>>>>> If not, then maybe we need to resort to something like this and also
->>>>>> mention explicitly in some comment that it is sid and broadcast that are
->>>>>> optional.
->>>>>
->>>>> Actually, here's another variant that is a bit closer to what we want:
->>>>>
->>>>> --- >8 ---
->>>>> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra186-mc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra186-mc.yaml
->>>>> index 935d63d181d9..86f1475926e4 100644
->>>>> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra186-mc.yaml
->>>>> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra186-mc.yaml
->>>>> @@ -34,11 +34,11 @@ properties:
->>>>>            - nvidia,tegra234-mc
->>>>>  
->>>>>    reg:
->>>>> -    minItems: 6
->>>>> +    minItems: 4
->>>>>      maxItems: 18
->>>>>  
->>>>>    reg-names:
->>>>> -    minItems: 6
->>>>> +    minItems: 4
->>>>>      maxItems: 18
->>>>>  
->>>>>    interrupts:
->>>>> @@ -146,17 +146,21 @@ allOf:
->>>>>      then:
->>>>>        properties:
->>>>>          reg:
->>>>> +          minItems: 4
->>>>>            maxItems: 6
->>>>>            description: 5 memory controller channels and 1 for stream-id registers
->>>>>  
->>>>>          reg-names:
->>>>> -          items:
->>>>> -            - const: sid
->>>>> -            - const: broadcast
->>>>> -            - const: ch0
->>>>> -            - const: ch1
->>>>> -            - const: ch2
->>>>> -            - const: ch3
->>>>> +          anyOf:
->>>>> +            - items:
->>>>> +                enum: [ sid, broadcast, ch0, ch1, ch2, ch3 ]
->>>>> +              uniqueItems: true
->>>>> +              minItems: 6
->>>>> +
->>>>> +            - items:
->>>>> +                enum: [ ch0, ch1, ch2, ch3 ]
->>>>> +              uniqueItems: true
->>>>> +              minItems: 4
->>>>>  
->>>>>    - if:
->>>>>        properties:
->>>>> @@ -165,29 +169,22 @@ allOf:
->>>>>      then:
->>>>>        properties:
->>>>>          reg:
->>>>> -          minItems: 18
->>>>> +          minItems: 16
->>>>>            description: 17 memory controller channels and 1 for stream-id registers
->>>>>  
->>>>>          reg-names:
->>>>> -          items:
->>>>> -            - const: sid
->>>>> -            - const: broadcast
->>>>> -            - const: ch0
->>>>> -            - const: ch1
->>>>> -            - const: ch2
->>>>> -            - const: ch3
->>>>> -            - const: ch4
->>>>> -            - const: ch5
->>>>> -            - const: ch6
->>>>> -            - const: ch7
->>>>> -            - const: ch8
->>>>> -            - const: ch9
->>>>> -            - const: ch10
->>>>> -            - const: ch11
->>>>> -            - const: ch12
->>>>> -            - const: ch13
->>>>> -            - const: ch14
->>>>> -            - const: ch15
->>>>> +          anyOf:
->>>>> +            - items:
->>>>> +                enum: [ sid, broadcast, ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7,
->>>>> +                        ch8, ch9, ch10, ch11, ch12, ch13, ch14, ch15 ]
->>>>> +              minItems: 18
->>>>> +              uniqueItems: true
->>>>> +
->>>>> +            - items:
->>>>> +                enum: [ ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8, ch9, ch10,
->>>>> +                        ch11, ch12, ch13, ch14, ch15 ]
->>>>> +              minItems: 16
->>>>> +              uniqueItems: true
+--=_MailMate_8878B8EE-4BC3-4587-A43A-51F5B64E621C_=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On 25 Apr 2024, at 11:15, David Hildenbrand wrote:
+
+> On 25.04.24 16:53, Zi Yan wrote:
+>> On 25 Apr 2024, at 3:19, David Hildenbrand wrote:
+>>
+>>> On 25.04.24 00:46, Zi Yan wrote:
+>>>> From: Zi Yan <ziy@nvidia.com>
 >>>>
->>>> No, because order is strict.
+>>>> In __folio_remove_rmap(), a large folio is added to deferred split l=
+ist
+>>>> if any page in a folio loses its final mapping. It is possible that
+>>>> the folio is unmapped fully, but it is unnecessary to add the folio
+>>>> to deferred split list at all. Fix it by checking folio->_nr_pages_m=
+apped
+>>>> before adding a folio to deferred split list. If the folio is alread=
+y
+>>>> on the deferred split list, it will be skipped. This issue applies t=
+o
+>>>> both PTE-mapped THP and mTHP.
+>>>>
+>>>> Commit 98046944a159 ("mm: huge_memory: add the missing
+>>>> folio_test_pmd_mappable() for THP split statistics") tried to exclud=
+e
+>>>> mTHP deferred split stats from THP_DEFERRED_SPLIT_PAGE, but it does =
+not
+>>>> fix the above issue. A fully unmapped PTE-mapped order-9 THP was sti=
+ll
 >>>
->>> Why? I realize that prior to this the order was indeed strict and it's
+>>> Once again: your patch won't fix it either.
+>>>
+>>>> added to deferred split list and counted as THP_DEFERRED_SPLIT_PAGE,=
+
+>>>> since nr is 512 (non zero), level is RMAP_LEVEL_PTE, and inside
+>>>> deferred_split_folio() the order-9 folio is folio_test_pmd_mappable(=
+).
+>>>> However, this miscount was present even earlier due to implementatio=
+n,
+>>>> since PTEs are unmapped individually and first PTE unmapping adds th=
+e THP
+>>>> into the deferred split list.
+>>>
+>>> It will still be present. Just less frequently.
 >>
->> That's the policy for entire Devicetree. I said why in other email:
->> because any bindings consumer can take it via indices.
->>
->>> common to have these listed in strict order in the DTS files. However,
->>> this is an arbitrary restriction that was introduced in the patch that
->>> added reg-names. However, */*-names properties have always assumed the
->>> ordering to be non-strict because each entry from the * property gets
->>> matched up with the corresponding entry in the *-names property, so the
->>> ordering is completely irrelevant.
->>
->> This was raised so many times... reg-names is just a helper. It does not
->> change the fact that order should be strict and if binding defined the
->> order, it is an ABI.
-> 
-> Sorry, but that's not how we've dealt with this in the past. Even though
-> this was now ten or more years ago, I distinctly recall that when we
-> started adding these *-names properties and at the time it was very much
-> implied that the order didn't matter.
+>> OK. Let me reread the email exchanges between you and Yang and clarify=
 
-Then you added it wrong and Rob was expressing the purpose of names
-multiple times. The names were for cases when you could not determine
-the order.
+>> the details in the commit log.
+>
+> Likely something like:
+>
+> --
+> In __folio_remove_rmap(), a large folio is added to deferred split list=
 
-The strict order was repeated so many times in the mailing list, I lost
-track.
+> if any page in a folio loses its final mapping. But, it is possible tha=
+t
+> the folio is now fully unmapped and adding it to the deferred split lis=
+t is unnecessary.
+>
+> For PMD-mapped THPs, that was not really an issue, because removing the=
+ last PMD mapping in the absence of PTE mappings would not have added the=
+ folio to the deferred split queue.
+>
+> However, for PTE-mapped THPs, which are now more prominent due to mTHP,=
+ we will always end up adding them to the deferred split queue.
+>
+> One side effect of this is that we will frequently increase the THP_DEF=
+ERRED_SPLIT_PAGE stat for PTE-mapped THP, making it look like we frequent=
+ly get many partially mapped folios -- although we are simply
+> unmapping the whole thing stepwise.
+>
+> Core-mm will now try batch-unmapping consecutive PTEs of PTE-mapped THP=
+s where possible. If we're lucky, we unmap the whole thing in one go and =
+can avoid adding the folio to the deferred split queue, reducing the THP_=
+DEFERRED_SPLIT_PAGE noise.
+>
+> But there will still be noise when we cannot batch-unmap a complete PTE=
+-mapped folio in one go -- or where this type of batching is not implemen=
+ted yet.
+> --
+>
+> Feel free to reuse what you consider reasonable.
 
-> The only use-case that I know of where order was always meant to matter
-> is backwards-compatibility for devices that used to have a single entry
-> (hence drivers couldn't rely on *-names to resolve the index) and then
-> had additional entries added. The *-names entry for that previously
-> single entry would now obviously have to always be first in the list to
-> preserve backwards-compatibility.
-> 
-> Besides, if reg-names was really only a helper, then it would also be
-> completely redundant. Many device tree bindings have *-names properties
-> marked as "required" precisely because of the role that they serve.
+Sure. Thank you a lot for drafting it!
 
-For most of the cases, so ones which do not have flexible order, it is
-redundant and for that reason Qualcomm has been switching away from
-xxx-names in several drivers.
+--
+Best Regards,
+Yan, Zi
 
-However it is not entirely redundant, because it allows bindings
-consumers to choose either index or name. Both are ABI, when documented
-in the binding with strict order.
+--=_MailMate_8878B8EE-4BC3-4587-A43A-51F5B64E621C_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
 
-https://lore.kernel.org/all/CAL_JsqJSYAsotjzvOUy_f7ZRfsSrfZyuEzq7eRwwKk12FBgxYg@mail.gmail.com/
+-----BEGIN PGP SIGNATURE-----
 
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmYqc9IPHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUme8P/jtVbLpaTivbJaO3O7dHNq0Tu/1N28oJzW4J
+SJFubeu7wRo2ifTiWBxr1psaqRNBEwJkSRpLN9u7uzVuBKPRTdZ1z2sMNdK85Nx/
+ESNHLkMZx2ANF6NXxcT23iYAhvnskG+KBT5ZnrE4u0E3fXsXj3pjoWCyavUUxXtT
+/Ys/1pJK955crI/ICd+VP4I6GuGq1lLzWL1pBCFPXwsWtUGy8POLbfPjDLA/5Nk+
+rWPKQ3j/24NOsWcxpUCM/avBZuegysSU7ob6HQH3g2+DNZiHiipZ19RZafEM6/sg
+0BMvgcYY4JGAb9rbSzGXLVwYiFl3sA1+V48q/Kx3R8ItsbmHKqgTbdUpL8TArqHN
+IbuH0Tv6F0iWFQ+6vGtBxw/XImKXQzzvKM3W5ZHAxtaUgONeXQnYURkM9K/+vjHK
+8qwJ4c/T57wavugMgEJXVjtftwlNu8GaZ4pEXMPdrkaLJR1dJgVKBrtGdiLv/mGq
+vJHQlQentH34/12prNRCWqxA2vR0MNQwWf5U1gzPVsWkiGvmVaeYHPwVjKHKifBv
+LkVefIlpcZnICxe7RmWKXhRPZjyUogmDvHMRPviETg7kANNXdF12xCzk4E4ELpTT
+JRlbT+gkP/MHDa6qr8L2oVhG3XPDz0s97Ag9ko5CaG15t3niq/PJRASKJvNsUP2c
+Qst+FF1R
+=1uvL
+-----END PGP SIGNATURE-----
 
-Best regards,
-Krzysztof
-
+--=_MailMate_8878B8EE-4BC3-4587-A43A-51F5B64E621C_=--
 
