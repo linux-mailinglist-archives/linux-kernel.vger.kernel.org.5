@@ -1,302 +1,498 @@
-Return-Path: <linux-kernel+bounces-158718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 557BA8B2422
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:31:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88CA18B2423
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:31:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 789CC1C22C7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:31:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40FB2288050
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D36914A4F0;
-	Thu, 25 Apr 2024 14:31:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C08E14A0A0;
+	Thu, 25 Apr 2024 14:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="jLH72VqO"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="SNfVupiL"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF8512C47C;
-	Thu, 25 Apr 2024 14:31:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A6D149C41
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:31:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714055477; cv=none; b=pdf8aTD0efttSyTBc30F73nn4Zw18SvI57KvQ5mx5rnkZhklwlzWAKItLBQuDpGqQy1hsD15lBELRmuPd1vO7Du0R9rEW94+1ZVVYvR1DojdGnKPoNPw/FB3oOON+BV2TCYyUhFlLZjhtarxkqIJQtDKZzR1xHKQp2jDDCvYQwE=
+	t=1714055496; cv=none; b=Mr87lnYODzmlC7kA0yxxaBtw2l6pB9HP4bwp0oQMckkfe4V9w04SG4ZbsRDiiuncZVUryyewropuVciPFPponcQzsPnznZVXh4Z9C48jHCF6ZkuzDlQ0dc6RPKVeFSYJjyuP2DkSQkg3s71Z75EBDEMIDmYHfVK105B7DUeahAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714055477; c=relaxed/simple;
-	bh=XNDONZ50zkNw24VHGSrLtBVRo25TyhBYrvxwY6adhPA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=huMQSaWQt86n6eHp4G82uX/osamrxeoz8+ZwFLomUFexmCK/TOBa7t8kmNUcUI2aCMmFsDHWU4Y/EXYN2oAGPKgoXfxXlpCN5h4XkF2JiVXsLD3mMsE9Y9COR9SOWLMAn5AnBX8m7BNTF1VU3WrKRlGco5Ur/8ZlqcAWy82wIVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=jLH72VqO; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=bhEOlHPHwzer5w9ZMmE08QQPlZ3NpIRrXVu+LpBumv4=; b=jLH72VqOH3gpURD01C2ne9BQzQ
-	vEWyeN+NPnbnu9rYbatMXdAw8ipHOyXtQ3jDk8Fp5vCppyACBIitFV4SsNvQzO/6LjE82J4cBIc7O
-	tesZD3ULKMHXIlVheHZuB96S3iZ0xubXxt6mkZyCDQfmTe2Bv93Smty/RhFLom3JekduJ7WUuFPow
-	jvowSjItxO6DtyotKyAm7HLiJFUJxxRG3HIuXFMYJe3cKLysaTNsjoFg51oRC7Q+GOrRzrcZJl0ST
-	NJ+QAABshwCgu8JVyQeD5/JW9Heij6jENzc/kvGkLq/spz3WUvmpcOUGLjEzyfJFUPUnubWPOISqb
-	8vN+3Npw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44198)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1s007j-0007WW-1L;
-	Thu, 25 Apr 2024 15:30:55 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1s007g-0005ea-OW; Thu, 25 Apr 2024 15:30:52 +0100
-Date: Thu, 25 Apr 2024 15:30:52 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Stefan Eichenberger <eichest@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	lxu@maxlinear.com, hkallweit1@gmail.com, michael@walle.cc,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] net: phy: mxl-gpy: add new device tree property
- to disable SGMII autoneg
-Message-ID: <ZippHJrnvzXsTiK4@shell.armlinux.org.uk>
-References: <5ed39628-4ac0-4c4e-9a16-fd4bf9a6db29@lunn.ch>
- <Zh6mIv1Ee+1h21Xo@shell.armlinux.org.uk>
- <Zh6z90iCpLqF4fla@eichest-laptop>
- <Zh6/oVHUvnOVtHaC@shell.armlinux.org.uk>
- <Zh94yqo2EHRq8eEq@eichest-laptop>
- <ZiE156+BPpx/ciL6@shell.armlinux.org.uk>
- <Zikd+GxuwMRC+5Ae@shell.armlinux.org.uk>
- <Zikrv5UOWvSGjgcv@eichest-laptop>
- <ZilLz8f6vQQCg4NB@shell.armlinux.org.uk>
- <Zio9g9+wsFX39Vkx@eichest-laptop>
+	s=arc-20240116; t=1714055496; c=relaxed/simple;
+	bh=sjedEuS2v7BXajhJ/g+/tRtZZIameKeLpYVYXqMP2pE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Z8j9nPJEEVRK1tfq8LrGkk/oWUNjxWkHCboDu70slATTN/veqc1ko1RNY2e8U5gQYBviVep+cG9kGTrhNLc6ZqTeMgQInU8rTQqW1rdTsSzz8K8VYfxc+rchkobb/UC0Ur9y8/ixWMn11w0i+hI2S3KxMgkRXL/0Eo4AGWoKoGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=SNfVupiL; arc=none smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43P8MXoL011467;
+	Thu, 25 Apr 2024 07:30:58 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=ekkaLXxx
+	lwh8xLUqlTrlwkSaQU4fhTmytSQGex+D3fI=; b=SNfVupiLJ19KVm8zvTLq6EDE
+	8r333vf/rCNxKER8/OJyjdB0NqGCt9uJHzDPKBskLGYBh3D+rtUSzUZAOYrW2SF6
+	V6d6dNOmT01qRLfXenLT615qJp3Rhx6KgsZ2Jd9A0Sk5cx1NAXb8AKAS83twVpG0
+	tHjRO1vNEtCFwPSblARHQgO5oced8GIPev2oQNwwu+YFdL/yx+r3FmvZ4T7btyLi
+	m7DYUY0+MWPRwhy3HgUeabpncuvc2PDthPuHP8A8A3qadoc0/IzLep9N10G/7BWA
+	eIUKYjil/NlfS3v5SlXKHFjpYICqLYCy0BdMA3EpgHXf8xiUuYzHyesTuTkFLg==
+Received: from dc5-exch05.marvell.com ([199.233.59.128])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3xpxn1gfkm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 07:30:58 -0700 (PDT)
+Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
+ DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Thu, 25 Apr 2024 07:30:56 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
+ (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Thu, 25 Apr 2024 07:30:56 -0700
+Received: from cn10ka.sclab.marvell.com (unknown [10.106.49.40])
+	by maili.marvell.com (Postfix) with ESMTP id 3F0AB3F704A;
+	Thu, 25 Apr 2024 07:30:56 -0700 (PDT)
+From: Tanmay Jagdale <tanmay@marvell.com>
+To: <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <nicolinc@nvidia.com>, <mshavit@google.com>,
+        <baolu.lu@linux.intel.com>, <thunder.leizhen@huawei.com>,
+        <set_pte_at@outlook.com>, <smostafa@google.com>
+CC: <sgoutham@marvell.com>, <gcherian@marvell.com>, <jcm@jonmasters.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, Tanmay Jagdale <tanmay@marvell.com>
+Subject: [PATCH V3 1/2] iommu/arm-smmu-v3: Add support for ECMDQ register mode
+Date: Thu, 25 Apr 2024 07:30:53 -0700
+Message-ID: <20240425143053.52305-1-tanmay@marvell.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zio9g9+wsFX39Vkx@eichest-laptop>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: VFXFUKtj7kR5LJwUtMTdP5yjAoiP5pUj
+X-Proofpoint-ORIG-GUID: VFXFUKtj7kR5LJwUtMTdP5yjAoiP5pUj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-25_14,2024-04-25_01,2023-05-22_02
 
-On Thu, Apr 25, 2024 at 01:24:51PM +0200, Stefan Eichenberger wrote:
-> On Wed, Apr 24, 2024 at 07:13:35PM +0100, Russell King (Oracle) wrote:
-> > On Wed, Apr 24, 2024 at 05:56:47PM +0200, Stefan Eichenberger wrote:
-> > > On Wed, Apr 24, 2024 at 03:58:00PM +0100, Russell King (Oracle) wrote:
-> > > > On Thu, Apr 18, 2024 at 04:01:59PM +0100, Russell King (Oracle) wrote:
-> > > > > On Wed, Apr 17, 2024 at 09:22:50AM +0200, Stefan Eichenberger wrote:
-> > > > > > I also checked the datasheet and you are right about the 1000base-X mode
-> > > > > > and in-band AN. What worked for us so far was to use SGMII mode even for
-> > > > > > 2.5Gbps and disable in-band AN (which is possible for SGMII). I think
-> > > > > > this works because as you wrote, the genphy just multiplies the clock by
-> > > > > > 2.5 and doesn't care if it's 1000base-X or SGMII. With your patches we
-> > > > > > might even be able to use in-band autonegoation for 10,100 and 1000Mbps
-> > > > > > and then just disable it for 2.5Gbps. I need to test it, but I have hope
-> > > > > > that this should work.
-> > > > > 
-> > > > > There is another way we could address this. If the querying support
-> > > > > had a means to identify that the endpoint supports bypass mode, we
-> > > > > could then have phylink identify that, and arrange to program the
-> > > > > mvpp2 end to be in 1000base-X + x2.5 clock + AN bypass, which would
-> > > > > mean it wouldn't require the inband 16-bit word to be present.
-> > > > > 
-> > > > > I haven't fully thought it through yet - for example, I haven't
-> > > > > considered how we should indicate to the PCS that AN bypass mode
-> > > > > should be enabled or disabled via the pcs_config() method.
-> > > > 
-> > > > Okay, I've been trying to put more effort into this, but it's been slow
-> > > > progress (sorry).
-> > > > 
-> > > > My thoughts from a design point of view were that we could just switch
-> > > > to PHYLINK_PCS_NEG_OUTBAND instead of PHYLINK_PCS_NEG_INBAND_* and
-> > > > everything at the PCS layer should be able to cope, but this is not the
-> > > > case, especially with mvneta/mvpp2.
-> > > > 
-> > > > The problem is that mvneta/mvpp2 (and probably more) expect that
-> > > > 
-> > > > 1) MLO_AN_INBAND means that the PCS will be using inband, and that
-> > > >    means the link up/down state won't be forced. This basically implies
-> > > >    that only PHYLINK_PCS_NEG_INBAND_* can be used can be used for the
-> > > >    PCS.
-> > > > 
-> > > > 2) !MLO_AN_INBAND means that an out-of-band mechanism will be used and
-> > > >    that means that the link needs to be forced (since there's no way
-> > > >    for the hardware to know whether the link should be up or down.)
-> > > >    It's therefore expected that only PHYLINK_PCS_NEG_OUTBAND will be
-> > > >    used for the PCS.
-> > > > 
-> > > > So, attempting to put a resolution of the PHY and PCS abilities into
-> > > > phylink_pcs_neg_mode() and select the appropriate PHYLINK_PCS_NEG_*
-> > > > mode alone just doesn't work. Yet... we need to do that in there when
-> > > > considering whether inband can be enabled or not for non-PHY links.
-> > > > 
-> > > > Basically, it needs a re-think how to solve this...
-> > > 
-> > > Today I was playing around with my combination of mxl-gpy and mvpp2 and
-> > > I got it working again with your patches applied. However, I hacked the
-> > > phylink driver to only rely on what the phy and pcs support. I know this
-> > > is not a proper solution, but it allowed me to verify the other changes.
-> > > My idea was if the phy and pcs support inband then use it, otherwise use
-> > > outband and ignore the rest.
-> > > 
-> > > Here is how my minimal phylink_pcs_neg_mode test function looks like:
-> > > 
-> > > static unsigned int phylink_pcs_neg_mode(struct phylink *pl,
-> > > 					 struct phylink_pcs *pcs,
-> > > 					 unsigned int mode,
-> > > 					 phy_interface_t interface,
-> > > 					 const unsigned long *advertising)
-> > > {
-> > > 	unsigned int phy_link_mode = 0;
-> > > 	unsigned int pcs_link_mode;
-> > > 
-> > > 	pcs_link_mode = phylink_pcs_query_inband(pcs, interface);
-> > > 	if (pl->phydev)
-> > > 		phy_link_mode = phy_query_inband(pl->phydev, interface);
-> > > 
-> > > 	/* If the PCS or PHY can not provide inband, then use
-> > > 	 * outband.
-> > > 	 */
-> > > 	if (!(pcs_link_mode & LINK_INBAND_VALID) ||
-> > > 	    !(phy_link_mode & LINK_INBAND_VALID))
-> > > 		return PHYLINK_PCS_NEG_OUTBAND;
-> > > 
-> > > 	return PHYLINK_PCS_NEG_INBAND_ENABLED;
-> > > }
-> > 
-> > Note that I've changed the flags that get reported to be disable (bit 0)/
-> > enable (bit 1) rather than valid/possible/required because the former
-> > makes the resolution easier.
-> > 
-> > The problem is that merely returning outband doesn't cause mvneta/mvpp2
-> > to force the link up. So for example, here's a SFP module which doesn't
-> > support any inband for 2500base-X nor SGMII:
-> > 
-> > mvneta f1034000.ethernet eno2: copper SFP: interfaces=[mac=4,9-12,19,22-23, sfp=
-> > 4,23,27]
-> > mvneta f1034000.ethernet eno2: copper SFP: chosen 2500base-x interface
-> > mvneta f1034000.ethernet eno2: PHY i2c:sfp:16 uses interfaces 4,23,27, validatin
-> > g 4,23
-> > mvneta f1034000.ethernet eno2:  interface 4 (sgmii) rate match none supports 2-3
-> > ,5-6,13
-> > mvneta f1034000.ethernet eno2:  interface 23 (2500base-x) rate match none suppor
-> > ts 6,13,47
-> > mvneta f1034000.ethernet eno2: PHY [i2c:sfp:16] driver [Broadcom BCM84881] (irq=
-> > POLL)
-> > mvneta f1034000.ethernet eno2: phy: 2500base-x setting supported 00,00000000,000
-> > 08000,0000206c advertising 00,00000000,00008000,0000206c
-> > mvneta f1034000.ethernet eno2: copper SFP: PHY link in-band modes 0x1
-> > mvneta f1034000.ethernet eno2: major config 2500base-x
-> > mvneta f1034000.ethernet eno2: link modes: pcs=02 phy=01
-> > mvneta f1034000.ethernet eno2: phylink_mac_config: mode=inband/2500base-x/none a
-> > dv=00,00000000,00008000,0000206c pause=04
-> > mvneta f1034000.ethernet eno2: phylink_sfp_module_start()
-> > mvneta f1034000.ethernet eno2: phylink_sfp_link_up()
-> > mvneta f1034000.ethernet eno2: phy link down 2500base-x/Unknown/Unknown/none/off
-> > mvneta f1034000.ethernet eno2: phy link up sgmii/1Gbps/Full/none/off
-> > mvneta f1034000.ethernet eno2: major config sgmii
-> > mvneta f1034000.ethernet eno2: link modes: pcs=03 phy=01
-> > mvneta f1034000.ethernet eno2: phylink_mac_config: mode=inband/sgmii/none adv=00,00000000,00008000,0000206c pause=00
-> > mvneta f1034000.ethernet eno2: pcs link down
-> > mvneta f1034000.ethernet eno2: pcs link down
-> > mvneta f1034000.ethernet eno2: can LPI, EEE enabled, active
-> > mvneta f1034000.ethernet eno2: enabling tx_lpi, timer 250us
-> > mvneta f1034000.ethernet eno2: Link is Up - 1Gbps/Full - flow control off
-> > 
-> > This looks like the link is up, but it isn't - note "pcs link down".
-> > If we look at the value of the GMAC AN status register:
-> > 
-> > Value at address 0xf1036c10: 0x0000600a
-> > 
-> > which indicates that the link is down, so no packets will pass.
-> 
-> What I changed in mvpp2 is to allow turing off inband in 2500base-x. The
-> mvpp2 driver can handle this use case in pcs_config, it will turn off AN
-> and force the link up.
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-pcs_config can't force the link up.
+Ensure that each core exclusively occupies an ECMDQ and all of them are
+enabled during initialization. During this initialization process, any
+errors will result in a fallback to using normal CMDQ.
 
-> I think it should also work for mvneta, at least
-> the code looks almost the same. I get the following for the Port
-> Auto-Negotiation Configuration Register:
-> 
-> For 1Gbit/s it switches to SGMII and enables inband AN:
-> Memory mapped at address 0xffffa0112000.
-> Value at address 0xF2132E0C (0xffffa0112e0c): 0xB0C6
+When GERROR is triggered by ECMDQ, all ECMDQs need to be traversed: the
+ECMDQs with errors will be processed and the ECMDQs without errors will
+be skipped directly. Compared with register SMMU_CMDQ_PROD, register
+SMMU_ECMDQ_PROD has one more 'EN' bit and one more 'ERRACK' bit. After
+the error indicated by SMMU_GERROR.CMDQP_ERR is fixed, the 'ERRACK'
+bit needs to be toggled to resume the corresponding ECMDQ. In order to
+lockless protection against the write operation to bit 'ERRACK' during
+error handling and the read operation to bit 'ERRACK' during command
+insertion. Send IPI to the faulty CPU and perform the toggle operation
+on the faulty CPU. Because the command insertion is protected by
+local_irq_save(), so no race.
 
-So here the link is forced up which is wrong for inband, because then
-we have no way to detect the link going down.
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Tanmay Jagdale <tanmay@marvell.com>
+---
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 219 +++++++++++++++++++-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  33 +++
+ 2 files changed, 251 insertions(+), 1 deletion(-)
 
-> For 2.5Gbit/s it disables inband AN and forces the link to be up:
-> Memory mapped at address 0xffffaff88000.
-> Value at address 0xF2132E0C (0xffffaff88e0c): 0x9042
-> 
-> Then the status register shows also link up for 2.5Gbit/s:
-> Memory mapped at address 0xffffa5fe2000.
-> Value at address 0xF2132E10 (0xffffa5fe2e10): 0x683B
-> 
-> What might be confusing is that the port type, bit 1 in MAC Control
-> Register0, is set to SGMII for 2.5Gbit/s, because we can only turn off
-> autonegotiation for SGMII:
-> Memory mapped at address 0xffff8c26c000.
-> Value at address 0xF2132E00 (0xffff8c26ce00): 0x8BFD
-
-Control register 0 bit 1 is the port type bit, which controls whether
-the port is in "1000base-X" mode or SGMII mode. This has no effect on
-the interpretation of the inband control word.
-
-Control register 2 bit 0 controls whether the port uses 802.3z
-format control words or SGMII format control words.
-
-> My example patch still uses the old macros:
-> 
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> index 97e38f61ac65..15fadfd61313 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -6223,9 +6223,12 @@ static unsigned int mvpp2_gmac_pcs_query_inband(struct phylink_pcs *pcs,
->  	 * When <PortType> = 1 (1000BASE-X) this field must be set to 1.
->  	 * Therefore, inband is "required".
->  	 */
-> -	if (phy_interface_mode_is_8023z(interface))
-> +	if (interface == PHY_INTERFACE_MODE_1000BASEX)
->  		return LINK_INBAND_VALID | LINK_INBAND_REQUIRED;
->  
-> +	if (interface == PHY_INTERFACE_MODE_2500BASEX)
-> +		return LINK_INBAND_VALID | LINK_INBAND_POSSIBLE;
-
-This is not correct though. If we set PortType = 1, then this applies:
-
-  Bit   Field        Type / InitVal   Description
-
-  2     InBandAnEn   RW               In-band Auto-Negotiation enable.
-..
-                                      When <PortType> = 1 (1000BASE-X)
-                                      this field must be set to 1.
-                                                                                                                      When <PortType> = 0 (SGMII) and this
-                                      field is 1, in-band Flow Control not
-				      supported.
-
-So, if we have the port in 1000base-X mode (PortType = 1) then bit 2
-of the Autoneg configuration register needs to be set to be compliant
-with the documentation. Therefore, since we set PortType = 1 for
-2500BASE-X (and note that I _do_ run 2500BASE-X with inband AN enabled
-over fibre transceivers here, so this is needed), we also need to
-enable InBandAnEn.
-
-This is exactly where the difficulty comes - because what you're
-suggesting will break currently working setups such as what I have
-here.
-
-Switching the port to SGMII mode for 2500base-X doesn't sound like a
-sensible thing to do.
-
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 41f93c3ab160..8e088ca4e8e1 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -352,6 +352,14 @@ static int arm_smmu_cmdq_build_cmd(u64 *cmd, struct arm_smmu_cmdq_ent *ent)
+ 
+ static struct arm_smmu_cmdq *arm_smmu_get_cmdq(struct arm_smmu_device *smmu)
+ {
++	if (smmu->ecmdq_enabled) {
++		struct arm_smmu_ecmdq *ecmdq;
++
++		ecmdq = *this_cpu_ptr(smmu->ecmdqs);
++
++		return &ecmdq->cmdq;
++	}
++
+ 	return &smmu->cmdq;
+ }
+ 
+@@ -434,6 +442,43 @@ static void arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu)
+ 	__arm_smmu_cmdq_skip_err(smmu, &smmu->cmdq.q);
+ }
+ 
++static void arm_smmu_ecmdq_err_ack(void *info)
++{
++	u32 prod, cons;
++	struct arm_smmu_queue *q = info;
++
++	prod = readl_relaxed(q->prod_reg);
++	cons = readl_relaxed(q->cons_reg);
++	prod &= ~ECMDQ_PROD_ERRACK;
++	prod |= cons & ECMDQ_CONS_ERR;
++	writel(prod, q->prod_reg);
++}
++
++static void arm_smmu_ecmdq_skip_err(struct arm_smmu_device *smmu)
++{
++	int i;
++	u32 prod, cons;
++	struct arm_smmu_queue *q;
++	struct arm_smmu_ecmdq *ecmdq;
++
++	if (!smmu->ecmdq_enabled)
++		return;
++
++	for (i = 0; i < smmu->nr_ecmdq; i++) {
++		ecmdq = *per_cpu_ptr(smmu->ecmdqs, i);
++		q = &ecmdq->cmdq.q;
++
++		prod = readl_relaxed(q->prod_reg);
++		cons = readl_relaxed(q->cons_reg);
++		if (((prod ^ cons) & ECMDQ_CONS_ERR) == 0)
++			continue;
++
++		__arm_smmu_cmdq_skip_err(smmu, q);
++
++		smp_call_function_single(i, arm_smmu_ecmdq_err_ack, q, true);
++	}
++}
++
+ /*
+  * Command queue locking.
+  * This is a form of bastardised rwlock with the following major changes:
+@@ -830,7 +875,10 @@ static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
+ 		 * d. Advance the hardware prod pointer
+ 		 * Control dependency ordering from the entries becoming valid.
+ 		 */
+-		writel_relaxed(prod, cmdq->q.prod_reg);
++		if (smmu->ecmdq_enabled)
++			writel_relaxed(prod | ECMDQ_PROD_EN, cmdq->q.prod_reg);
++		else
++			writel_relaxed(prod, cmdq->q.prod_reg);
+ 
+ 		/*
+ 		 * e. Tell the next owner we're done
+@@ -1838,6 +1886,9 @@ static irqreturn_t arm_smmu_gerror_handler(int irq, void *dev)
+ 	if (active & GERROR_CMDQ_ERR)
+ 		arm_smmu_cmdq_skip_err(smmu);
+ 
++	if (active & GERROR_CMDQP_ERR)
++		arm_smmu_ecmdq_skip_err(smmu);
++
+ 	writel(gerror, smmu->base + ARM_SMMU_GERRORN);
+ 	return IRQ_HANDLED;
+ }
+@@ -3154,6 +3205,20 @@ static int arm_smmu_cmdq_init(struct arm_smmu_device *smmu)
+ 	return 0;
+ }
+ 
++static int arm_smmu_ecmdq_init(struct arm_smmu_cmdq *cmdq)
++{
++	unsigned int nents = 1 << cmdq->q.llq.max_n_shift;
++
++	atomic_set(&cmdq->owner_prod, 0);
++	atomic_set(&cmdq->lock, 0);
++
++	cmdq->valid_map = (atomic_long_t *)bitmap_zalloc(nents, GFP_KERNEL);
++	if (!cmdq->valid_map)
++		return -ENOMEM;
++
++	return 0;
++}
++
+ static int arm_smmu_init_queues(struct arm_smmu_device *smmu)
+ {
+ 	int ret;
+@@ -3503,6 +3568,36 @@ static int arm_smmu_device_disable(struct arm_smmu_device *smmu)
+ 	return ret;
+ }
+ 
++static void arm_smmu_ecmdq_reset(struct arm_smmu_device *smmu)
++{
++	u32 reg;
++	int i, ret;
++	struct arm_smmu_queue *q;
++	struct arm_smmu_ecmdq *ecmdq;
++
++	if (!smmu->ecmdq_enabled)
++		return;
++
++	for (i = 0; i < smmu->nr_ecmdq; i++) {
++		ecmdq = *per_cpu_ptr(smmu->ecmdqs, i);
++
++		q = &ecmdq->cmdq.q;
++		writeq_relaxed(q->q_base, ecmdq->base + ARM_SMMU_ECMDQ_BASE);
++		writel_relaxed(q->llq.prod, ecmdq->base + ARM_SMMU_ECMDQ_PROD);
++		writel_relaxed(q->llq.cons, ecmdq->base + ARM_SMMU_ECMDQ_CONS);
++
++		/* enable ecmdq */
++		writel(ECMDQ_PROD_EN, q->prod_reg);
++		ret = readl_relaxed_poll_timeout(q->cons_reg, reg, reg & ECMDQ_CONS_ENACK,
++					  1, ARM_SMMU_POLL_TIMEOUT_US);
++		if (ret) {
++			dev_err(smmu->dev, "ecmdq[%d] enable failed\n", i);
++			smmu->ecmdq_enabled = false;
++			break;
++		}
++	}
++}
++
+ static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool bypass)
+ {
+ 	int ret;
+@@ -3557,6 +3652,8 @@ static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool bypass)
+ 		return ret;
+ 	}
+ 
++	arm_smmu_ecmdq_reset(smmu);
++
+ 	/* Invalidate any cached configuration */
+ 	cmd.opcode = CMDQ_OP_CFGI_ALL;
+ 	arm_smmu_cmdq_issue_cmd_with_sync(smmu, &cmd);
+@@ -3674,6 +3771,112 @@ static void arm_smmu_device_iidr_probe(struct arm_smmu_device *smmu)
+ 		}
+ 		break;
+ 	}
++};
++
++static int arm_smmu_ecmdq_layout(struct arm_smmu_device *smmu)
++{
++	int cpu;
++	struct arm_smmu_ecmdq __percpu *ecmdq;
++
++	if (num_possible_cpus() <= smmu->nr_ecmdq) {
++		ecmdq = devm_alloc_percpu(smmu->dev, *ecmdq);
++		if (!ecmdq)
++			return -ENOMEM;
++
++		for_each_possible_cpu(cpu)
++			*per_cpu_ptr(smmu->ecmdqs, cpu) = per_cpu_ptr(ecmdq, cpu);
++
++		/* A core requires at most one ECMDQ */
++		smmu->nr_ecmdq = num_possible_cpus();
++
++		return 0;
++	}
++
++	return -ENOSPC;
++}
++
++static int arm_smmu_ecmdq_probe(struct arm_smmu_device *smmu)
++{
++	int ret, cpu;
++	u32 i, nump, numq, gap;
++	u32 reg, shift_increment;
++	u64 offset;
++	void __iomem *cp_regs, *cp_base;
++
++	/* IDR6 */
++	reg = readl_relaxed(smmu->base + ARM_SMMU_IDR6);
++	nump = 1 << FIELD_GET(IDR6_LOG2NUMP, reg);
++	numq = 1 << FIELD_GET(IDR6_LOG2NUMQ, reg);
++	smmu->nr_ecmdq = nump * numq;
++	gap = ECMDQ_CP_RRESET_SIZE >> FIELD_GET(IDR6_LOG2NUMQ, reg);
++
++	cp_regs = ioremap(smmu->iobase + ARM_SMMU_ECMDQ_CP_BASE, PAGE_SIZE);
++	if (!cp_regs)
++		return -ENOMEM;
++
++	for (i = 0; i < nump; i++) {
++		u64 val, pre_addr = 0;
++
++		val = readq_relaxed(cp_regs + 32 * i);
++		if (!(val & ECMDQ_CP_PRESET)) {
++			iounmap(cp_regs);
++			dev_err(smmu->dev, "ecmdq control page %u is memory mode\n", i);
++			return -EFAULT;
++		}
++
++		if (i && ((val & ECMDQ_CP_ADDR) != (pre_addr + ECMDQ_CP_RRESET_SIZE))) {
++			iounmap(cp_regs);
++			dev_err(smmu->dev, "ecmdq_cp memory region is not contiguous\n");
++			return -EFAULT;
++		}
++
++		pre_addr = val & ECMDQ_CP_ADDR;
++	}
++
++	offset = readl_relaxed(cp_regs) & ECMDQ_CP_ADDR;
++	iounmap(cp_regs);
++
++	cp_base = devm_ioremap(smmu->dev, smmu->iobase + offset, ECMDQ_CP_RRESET_SIZE * nump);
++	if (!cp_base)
++		return -ENOMEM;
++
++	smmu->ecmdqs = devm_alloc_percpu(smmu->dev, struct arm_smmu_ecmdq *);
++	if (!smmu->ecmdqs)
++		return -ENOMEM;
++
++	ret = arm_smmu_ecmdq_layout(smmu);
++	if (ret)
++		return ret;
++
++	shift_increment = order_base_2(num_possible_cpus() / smmu->nr_ecmdq);
++
++	offset = 0;
++	for_each_possible_cpu(cpu) {
++		struct arm_smmu_ecmdq *ecmdq;
++		struct arm_smmu_queue *q;
++
++		ecmdq = *per_cpu_ptr(smmu->ecmdqs, cpu);
++		ecmdq->base = cp_base + offset;
++
++		q = &ecmdq->cmdq.q;
++
++		q->llq.max_n_shift = ECMDQ_MAX_SZ_SHIFT + shift_increment;
++		ret = arm_smmu_init_one_queue(smmu, q, ecmdq->base, ARM_SMMU_ECMDQ_PROD,
++				ARM_SMMU_ECMDQ_CONS, CMDQ_ENT_DWORDS, "ecmdq");
++		if (ret)
++			return ret;
++
++		ret = arm_smmu_ecmdq_init(&ecmdq->cmdq);
++		if (ret) {
++			dev_err(smmu->dev, "ecmdq[%d] init failed\n", i);
++			return ret;
++		}
++
++		offset += gap;
++	}
++	smmu->ecmdq_enabled = true;
++
++	return 0;
+ }
+ 
+ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+@@ -3789,6 +3992,9 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+ 	if (reg & IDR1_ATTR_TYPES_OVR)
+ 		smmu->features |= ARM_SMMU_FEAT_ATTR_TYPES_OVR;
+ 
++	if (reg & IDR1_ECMDQ)
++		smmu->features |= ARM_SMMU_FEAT_ECMDQ;
++
+ 	/* Queue sizes, capped to ensure natural alignment */
+ 	smmu->cmdq.q.llq.max_n_shift = min_t(u32, CMDQ_MAX_SZ_SHIFT,
+ 					     FIELD_GET(IDR1_CMDQS, reg));
+@@ -3896,6 +4102,16 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+ 
+ 	dev_info(smmu->dev, "ias %lu-bit, oas %lu-bit (features 0x%08x)\n",
+ 		 smmu->ias, smmu->oas, smmu->features);
++
++	if (smmu->features & ARM_SMMU_FEAT_ECMDQ) {
++		int err;
++
++		err = arm_smmu_ecmdq_probe(smmu);
++		if (err) {
++			dev_err(smmu->dev, "suppress ecmdq feature, errno=%d\n", err);
++			smmu->ecmdq_enabled = false;
++		}
++	}
+ 	return 0;
+ }
+ 
+@@ -4054,6 +4270,7 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
+ 	smmu->base = arm_smmu_ioremap(dev, ioaddr, ARM_SMMU_REG_SZ);
+ 	if (IS_ERR(smmu->base))
+ 		return PTR_ERR(smmu->base);
++	smmu->iobase = ioaddr;
+ 
+ 	if (arm_smmu_resource_size(smmu) > SZ_64K) {
+ 		smmu->page1 = arm_smmu_ioremap(dev, ioaddr + SZ_64K,
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+index 2a19bb63e5c6..335b9f975d74 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+@@ -41,6 +41,7 @@
+ #define IDR0_S2P			(1 << 0)
+ 
+ #define ARM_SMMU_IDR1			0x4
++#define IDR1_ECMDQ			(1 << 31)
+ #define IDR1_TABLES_PRESET		(1 << 30)
+ #define IDR1_QUEUES_PRESET		(1 << 29)
+ #define IDR1_REL			(1 << 28)
+@@ -114,6 +115,7 @@
+ #define ARM_SMMU_IRQ_CTRLACK		0x54
+ 
+ #define ARM_SMMU_GERROR			0x60
++#define GERROR_CMDQP_ERR		(1 << 9)
+ #define GERROR_SFM_ERR			(1 << 8)
+ #define GERROR_MSI_GERROR_ABT_ERR	(1 << 7)
+ #define GERROR_MSI_PRIQ_ABT_ERR		(1 << 6)
+@@ -159,6 +161,26 @@
+ #define ARM_SMMU_PRIQ_IRQ_CFG1		0xd8
+ #define ARM_SMMU_PRIQ_IRQ_CFG2		0xdc
+ 
++#define ARM_SMMU_IDR6			0x190
++#define IDR6_LOG2NUMP			GENMASK(27, 24)
++#define IDR6_LOG2NUMQ			GENMASK(19, 16)
++#define IDR6_BA_DOORBELLS		GENMASK(9, 0)
++
++#define ARM_SMMU_ECMDQ_BASE		0x00
++#define ARM_SMMU_ECMDQ_PROD		0x08
++#define ARM_SMMU_ECMDQ_CONS		0x0c
++#define ECMDQ_MAX_SZ_SHIFT		8
++#define ECMDQ_PROD_EN			(1 << 31)
++#define ECMDQ_CONS_ENACK		(1 << 31)
++#define ECMDQ_CONS_ERR			(1 << 23)
++#define ECMDQ_PROD_ERRACK		(1 << 23)
++
++#define ARM_SMMU_ECMDQ_CP_BASE		0x4000
++#define ECMDQ_CP_ADDR			GENMASK_ULL(51, 12)
++#define ECMDQ_CP_CMDQGS			GENMASK_ULL(2, 1)
++#define ECMDQ_CP_PRESET			(1UL << 0)
++#define ECMDQ_CP_RRESET_SIZE		0x10000
++
+ #define ARM_SMMU_REG_SZ			0xe00
+ 
+ /* Common MSI config fields */
+@@ -558,6 +580,11 @@ struct arm_smmu_cmdq {
+ 	atomic_t			lock;
+ };
+ 
++struct arm_smmu_ecmdq {
++	struct arm_smmu_cmdq		cmdq;
++	void __iomem			*base;
++};
++
+ struct arm_smmu_cmdq_batch {
+ 	u64				cmds[CMDQ_BATCH_ENTRIES * CMDQ_ENT_DWORDS];
+ 	int				num;
+@@ -627,6 +654,7 @@ struct arm_smmu_device {
+ 	struct device			*dev;
+ 	void __iomem			*base;
+ 	void __iomem			*page1;
++	phys_addr_t			iobase;
+ 
+ #define ARM_SMMU_FEAT_2_LVL_STRTAB	(1 << 0)
+ #define ARM_SMMU_FEAT_2_LVL_CDTAB	(1 << 1)
+@@ -649,6 +677,7 @@ struct arm_smmu_device {
+ #define ARM_SMMU_FEAT_E2H		(1 << 18)
+ #define ARM_SMMU_FEAT_NESTING		(1 << 19)
+ #define ARM_SMMU_FEAT_ATTR_TYPES_OVR	(1 << 20)
++#define ARM_SMMU_FEAT_ECMDQ		(1 << 21)
+ 	u32				features;
+ 
+ #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
+@@ -657,6 +686,10 @@ struct arm_smmu_device {
+ #define ARM_SMMU_OPT_CMDQ_FORCE_SYNC	(1 << 3)
+ 	u32				options;
+ 
++	struct arm_smmu_ecmdq *__percpu	*ecmdqs;
++	u32				nr_ecmdq;
++	bool				ecmdq_enabled;
++
+ 	struct arm_smmu_cmdq		cmdq;
+ 	struct arm_smmu_evtq		evtq;
+ 	struct arm_smmu_priq		priq;
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.34.1
+
 
