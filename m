@@ -1,86 +1,83 @@
-Return-Path: <linux-kernel+bounces-158042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44D8D8B1A8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:03:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ECBE8B1ABE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:14:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 775A81C2109B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:02:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1219B1F22F6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:14:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C743A3CF63;
-	Thu, 25 Apr 2024 06:02:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 240583EA9B;
+	Thu, 25 Apr 2024 06:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ShEoqoQw"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ehncrRY8"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB68A39FD3;
-	Thu, 25 Apr 2024 06:02:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB4927473;
+	Thu, 25 Apr 2024 06:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714024972; cv=none; b=RjOhsFWK1dKEK1rbsJDFXqDgeeAzklJx4eJveFjhYusyb1RfWnBOnS5uAcdrVkcrEEWykhuNmM/Wng7iZf0boZxZljM/2EbS2T+qdh6yQAxYzHZhmsohrAEQhbBuC/rMX0tU+76Pj2nFF8s0qYUgwAJwYTs0dRcNiEGB3NdyRzE=
+	t=1714025660; cv=none; b=i7kTpgoeKfhO8NGaX+rve9k/jj0peSPIydU0O0afBBgrz0kpMOHNzhpE7emN54x+oC3P77tQuG2n8vhnoqCeeWuJf8bSc7z9UjQvH2UCawdp6k39AXk7dVRJtQ/8UKyy17Iqv8ierBlcy1UVUjlw4gcwUwYBWRd4l41TWPbIRJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714024972; c=relaxed/simple;
-	bh=sC0IelbYeJYIu+qeRy7j6jZ4kH6RMzf84bLgmSYcag8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KckBvXCYjEwFA1pCHHFfEXIsIPzWTXjXY+M1H00lSSWZZlzBogxDcR4ALWaGj4xdMsTVgDCjzQMqoaUM7E9tmb6fCyJW2Z5Ok5zRUiGb93veMEDauAd1OLsq/L+SXDDSnee1muAhcEBQXKWlpGWkGJ5JN1f32Fuem+uE896p2MY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ShEoqoQw; arc=none smtp.client-ip=209.85.210.181
+	s=arc-20240116; t=1714025660; c=relaxed/simple;
+	bh=CRrjSsRbZZXBe3Zg1o6lhtldh9D/juwsek3Ag08YBpY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CuLhyDboeArDaSxSuzKQPQX5gqU+X4GyP8p62u30wnSKuLvwEBhPo3iVNlvsMUtJnsOcO2xAuDEQfBpBjI05fbvUD7BpC769Ngk3EwT0txffL86C4kd/unepNF3+sX1Y13OsKIOJueSM+cgX20wcKya3VwdTpfF/Hb+esO+1HPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ehncrRY8; arc=none smtp.client-ip=209.85.215.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6f0b9f943cbso597926b3a.0;
-        Wed, 24 Apr 2024 23:02:50 -0700 (PDT)
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-6082fd3e96eso481777a12.1;
+        Wed, 24 Apr 2024 23:14:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714024970; x=1714629770; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714025658; x=1714630458; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FTdEUJ7NZqvAT2gBeyJUpJaQhE398XmsjxeM6PTnkZY=;
-        b=ShEoqoQwRsDoWo7RGR2u7BoU8fvfABg26zldwvoEJib5xsm7JlnAIc/jAN1cJK6V6g
-         wF6QC8JwT0jgkFzzK8YvHf3ffATFinhr7KlKwOsgSBnR67/DvwyqT09hp8hEQcpXdcmc
-         aJkvHcm7dns/MiUJamnbrUOTDhypvPfpCqPfa+jxkohzZzAKFkTlrbmsRRJZofXdy/jj
-         56mN8gg0c4z04Xb9FvBpXbG5fbHmxEol4LrPrcXPPX68vn07b+xlSKHVd+kq6XBKnUei
-         GcVCIdsvtxtxHsaz3or9OayR25OepA4DsQ9CFcfoLNlEegFpWPY0qMyrhp2YZ+o/sxY7
-         QZrQ==
+        bh=P+cnrqP7ROZMYIZmqn7REt8CdXQIz/KakKw0fvi+u8k=;
+        b=ehncrRY8cmRafg0ysC+haERsyOjzcUwJmQpLoxvqi6sQR4GB3HOJ3dox8TX3Rrmo4D
+         lKQSpSsYiJta6+RA7OVjuNp02j3YE31zRuUQnoXberqwhvraTtyGcGFp8c655GmAf9Is
+         0ZsEbqZU2AfCQF/gmIn9RDV7DwjJEQMhWnzcVhbgocq1nxRXIXkvbT1nsRE2h4+WPkrC
+         +Lz/Df3DldSfpcBJjoGJXsH/VtO9CsOoi0FZ03oMB5La5qk2xo5uc99YPZ0dp1WxsPTa
+         /jvj7RfSfwQtLVhyR0D3gelu22vl6ltAgrJwplSq5cUdQywc5SNol+XcgzBpugtW2zof
+         avXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714024970; x=1714629770;
+        d=1e100.net; s=20230601; t=1714025658; x=1714630458;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FTdEUJ7NZqvAT2gBeyJUpJaQhE398XmsjxeM6PTnkZY=;
-        b=ayLCfkI3YJmqAaHT9FznjEJj/jnfFgCBKDc1sfL/FVrjAXZiFqULLV65kNutq1iTs1
-         bH52GBC8u43lEKRG6Hsfj436pT1F2QLhYsKnmOze3aB8rafDvRY5UbkI+yGoAjA/qQgy
-         r/zUI2Y0bHLALsAMqSpjWTw1VPLjeJ3fRGAbp296gJ1Ci4OGOwWJHr/mMe0Tv4kyfL0G
-         NnwQsB2/Y7GmMAi5nkeGRZ8jV35yrKqYgIYtm15o6ju+0oPnE5LO2LvGv3iiCig9X4jK
-         kI7t38w9T8Q2JbCrThnQ5vdKowagFjvM9wBFk2lbmm/KOtvPA9lzrwebld/aKwMCOkwR
-         Jr5g==
-X-Forwarded-Encrypted: i=1; AJvYcCWhjZHLgFSlRapXkcPBY36Lsth2tMhmfLgKgL2TU+axFQFrprvIBgtoJflF4+mHMumBZ1l7HB+Qq7fTikINE2PYbRlgg4Ynlb3HCH0zvIpD1lQczaSitk3f0svbYIapkLUie62ElXhPGIGGLmqN/Q==
-X-Gm-Message-State: AOJu0Yx878qumeuZqjb0gKWRx7UbKGn/n7MXOckbUa0qE9sTX6xKQIUB
-	T4uXD/vjh7kvAPlKOlEsbe9UsjxOJH4AZmXz8sgTnC+UyPuuolgd
-X-Google-Smtp-Source: AGHT+IE48rYcpwlz/npjcqGt64GIbI+VrEHs0XfecIpjAneEsL1ZMzBFdQZjZgdcdIoy+FiXSKJJog==
-X-Received: by 2002:a05:6a20:3c87:b0:1ad:7be1:a4a9 with SMTP id b7-20020a056a203c8700b001ad7be1a4a9mr5657957pzj.34.1714024970152;
-        Wed, 24 Apr 2024 23:02:50 -0700 (PDT)
-Received: from localhost.localdomain ([120.229.49.143])
-        by smtp.gmail.com with ESMTPSA id o6-20020a1709026b0600b001eab1ea2165sm598760plk.201.2024.04.24.23.02.44
+        bh=P+cnrqP7ROZMYIZmqn7REt8CdXQIz/KakKw0fvi+u8k=;
+        b=ftT5qiPu3qsGWvAIS298DsK9geOKVp9QgqPt8vbFSJgnl4zrEv3DVYgBW4c/JgASHE
+         SnTZ3KB7brL/ky52PwRxViuRwwuy/DlqnpZqBy4zdqHexNlTtFQgAMdSiOhPHuHeztRn
+         7z3K13ypmuPj8HvhHArhL/wD0cb9ee7cYa2uIsKAzpo1Br4DYE1fUQbB3WckHoPxenzA
+         UN5xPtVqrncwEjtxCSTWSp2rzH7fa/48dAiPKKyQn1EFKSrFNVUS5IMjK/SzlvfynU6D
+         5zA/aBAO8ieJdgTd7JpiFK7ODmqgYcP/VDVfolP4Ki8I5CW452OVi8QMgnvO4MU6+8fR
+         xu/A==
+X-Forwarded-Encrypted: i=1; AJvYcCWnWmaj0mV0/9u5nsQ6LqQf3i8Pdv7/4FesoKqswhTw4mEQPhwmzdSAbpVi3Ovq9DdiWngI+eYKAReC4II+AW+q2qxcqw+z2pS20Zy/HET3Jm22SBRFXLhxr746CiKw5uVS1aQl4qhDpakM
+X-Gm-Message-State: AOJu0YzFQQOqzna6Y0oFtUf9o7BEbEdSRDUlE26Qm7LK03WjnxZpflih
+	CcPPSjYC0PK+SPgNQqrIqOLpRaC+e4d1B1311OmAhRSVatONkipW2FmKZxYw
+X-Google-Smtp-Source: AGHT+IHs42AUj8gwluZCiYM0AKuesrQTubnz7h1dTGYRvbTsCK1ahmnIaAw4hwETEPrlhp7SKP1wKw==
+X-Received: by 2002:a05:6a20:7285:b0:1a7:5402:8a92 with SMTP id o5-20020a056a20728500b001a754028a92mr5639944pzk.31.1714025658299;
+        Wed, 24 Apr 2024 23:14:18 -0700 (PDT)
+Received: from shresth-aspirea71576g.abesec.ac.in ([139.5.197.146])
+        by smtp.gmail.com with ESMTPSA id r6-20020a17090a5c8600b002ade3490b4asm6461667pji.22.2024.04.24.23.14.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 23:02:49 -0700 (PDT)
-From: Howard Chu <howardchu95@gmail.com>
-To: peterz@infradead.org
-Cc: mingo@redhat.com,
-	acme@kernel.org,
-	namhyung@kernel.org,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	kan.liang@linux.intel.com,
-	linux-perf-users@vger.kernel.org,
+        Wed, 24 Apr 2024 23:14:17 -0700 (PDT)
+From: Shresth Prasad <shresthprasad7@gmail.com>
+To: davem@davemloft.net,
+	gregkh@linuxfoundation.org,
+	jirislaby@kernel.org
+Cc: sparclinux@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	trivial@kernel.org
-Subject: [PATCH] perf record: Fix comment misspellings
-Date: Thu, 25 Apr 2024 14:04:27 +0800
-Message-ID: <20240425060427.1800663-1-howardchu95@gmail.com>
+	linux-serial@vger.kernel.org,
+	skhan@linuxfoundation.org,
+	javier.carrasco.cruz@gmail.com,
+	Shresth Prasad <shresthprasad7@gmail.com>,
+	Julia Lawall <julia.lawall@inria.fr>
+Subject: [PATCH][next] tty: sunsu: Simplify device_node cleanup by using __free
+Date: Thu, 25 Apr 2024 11:33:04 +0530
+Message-ID: <20240425060303.8045-2-shresthprasad7@gmail.com>
 X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -90,49 +87,80 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fix comment misspellings
+Add `__free` function attribute to `ap` and `match` pointer
+initialisations which ensure that the pointers are freed as soon as they
+go out of scope, thus removing the need to manually free them using
+`of_node_put`.
 
-Signed-off-by: Howard Chu <howardchu95@gmail.com>
+This also removes the need for the `goto` statement and the `rc`
+variable.
+
+Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: Shresth Prasad <shresthprasad7@gmail.com>
 ---
- tools/lib/perf/mmap.c       | 2 +-
- tools/perf/builtin-record.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/tty/serial/sunsu.c | 37 +++++++++++--------------------------
+ 1 file changed, 11 insertions(+), 26 deletions(-)
 
-diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
-index 0c903c2372c9..c1a51d925e0e 100644
---- a/tools/lib/perf/mmap.c
-+++ b/tools/lib/perf/mmap.c
-@@ -279,7 +279,7 @@ union perf_event *perf_mmap__read_event(struct perf_mmap *map)
- 	if (!refcount_read(&map->refcnt))
- 		return NULL;
+diff --git a/drivers/tty/serial/sunsu.c b/drivers/tty/serial/sunsu.c
+index 67a5fc70bb4b..0f463da5e7ce 100644
+--- a/drivers/tty/serial/sunsu.c
++++ b/drivers/tty/serial/sunsu.c
+@@ -1382,44 +1382,29 @@ static inline struct console *SUNSU_CONSOLE(void)
  
--	/* non-overwirte doesn't pause the ringbuffer */
-+	/* non-overwrite doesn't pause the ringbuffer */
- 	if (!map->overwrite)
- 		map->end = perf_mmap__read_head(map);
+ static enum su_type su_get_type(struct device_node *dp)
+ {
+-	struct device_node *ap = of_find_node_by_path("/aliases");
+-	enum su_type rc = SU_PORT_PORT;
++	struct device_node *ap __free(device_node) =
++			    of_find_node_by_path("/aliases");
  
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 3994adaf4607..34d103f4af57 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -332,7 +332,7 @@ static int record__aio_complete(struct mmap *md, struct aiocb *cblock)
- 	} else {
- 		/*
- 		 * aio write request may require restart with the
--		 * reminder if the kernel didn't write whole
-+		 * remainder if the kernel didn't write whole
- 		 * chunk at once.
- 		 */
- 		rem_off = cblock->aio_offset + written;
-@@ -402,7 +402,7 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
- 	 *
- 	 * Coping can be done in two steps in case the chunk of profiling data
- 	 * crosses the upper bound of the kernel buffer. In this case we first move
--	 * part of data from map->start till the upper bound and then the reminder
-+	 * part of data from map->start till the upper bound and then the remainder
- 	 * from the beginning of the kernel buffer till the end of the data chunk.
- 	 */
+ 	if (ap) {
+ 		const char *keyb = of_get_property(ap, "keyboard", NULL);
+ 		const char *ms = of_get_property(ap, "mouse", NULL);
+-		struct device_node *match;
  
+ 		if (keyb) {
+-			match = of_find_node_by_path(keyb);
++			struct device_node *match __free(device_node) =
++					    of_find_node_by_path(keyb);
+ 
+-			/*
+-			 * The pointer is used as an identifier not
+-			 * as a pointer, we can drop the refcount on
+-			 * the of__node immediately after getting it.
+-			 */
+-			of_node_put(match);
+-
+-			if (dp == match) {
+-				rc = SU_PORT_KBD;
+-				goto out;
+-			}
++			if (dp == match)
++				return SU_PORT_KBD;
+ 		}
+ 		if (ms) {
+-			match = of_find_node_by_path(ms);
++			struct device_node *match __free(device_node) =
++					    of_find_node_by_path(ms);
+ 
+-			of_node_put(match);
+-
+-			if (dp == match) {
+-				rc = SU_PORT_MS;
+-				goto out;
+-			}
++			if (dp == match)
++				return SU_PORT_MS;
+ 		}
+ 	}
+-
+-out:
+-	of_node_put(ap);
+-	return rc;
++	return SU_PORT_PORT;
+ }
+ 
+ static int su_probe(struct platform_device *op)
 -- 
 2.44.0
 
