@@ -1,458 +1,168 @@
-Return-Path: <linux-kernel+bounces-158492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2142E8B2132
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:05:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D5268B2273
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:23:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCF61284BFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:05:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BF281F275FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:23:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F61B12FF67;
-	Thu, 25 Apr 2024 12:03:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L0uZlijw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B7E149C67;
+	Thu, 25 Apr 2024 13:23:06 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2113.outbound.protection.partner.outlook.cn [139.219.17.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E373B12AAE8;
-	Thu, 25 Apr 2024 12:03:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714046620; cv=none; b=U8gPYiJBy2Je/uECJsyZbwNSrX+lkc2fNG6vtvCyLgMGMAnLqrsiSYtfGCZ+y7PpwTILa+KujUD3mUymys/KNsviWrAmrmmSR6d6jdHys3aEcxlKz1PCYlEvVqZqV5rV810Vl+7X3xojVB9S1AhN6o/jwqzNiYOMhR6VHW+6Wmg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714046620; c=relaxed/simple;
-	bh=i9h9lVLyNDoxDbhZO/CotTk6I6QCc/e0ElCPZRrEKjA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=r2V5V1Y3xTOnnTPtTK7G5PqWTQAaRtvcXOzjx16NeqxmLie5eS9GkRso0muWeyOnxvPqmBxgChHNUNjH2veWQ/WrXXm4G2Smd8deYF8PfIMa7HlZUg1qn2B8JZp8ZLPQetnGrGDPiTCQLb/oA3dJSodvrAd1m+bpywq5iFsxdeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L0uZlijw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C17FAC4AF0A;
-	Thu, 25 Apr 2024 12:03:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714046619;
-	bh=i9h9lVLyNDoxDbhZO/CotTk6I6QCc/e0ElCPZRrEKjA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=L0uZlijwt55TeZl8wQ5iwj9JrKMGFgCrbt54SViix00Lc3xVib3ciC+XMRK9jRPiI
-	 lzrPfsxD1TKsv6J8yV3tfcFu9NpH8gz4h1DFr1CdkTF5JlAyTUjWI3j/cUwwyKKb3l
-	 dHlmEALCpxrRQv5GV4RQgqL9m6oxHwHTMDvWEp5kJyDtkm6jKKU0UDedIQXefCHtp6
-	 RgSrdO+VgE4VZcUw3rlT2+AiEQjd4UC0ccdNkWc7Lyiw1sI3GGB3EzLUIN8yNdZPH+
-	 3esRtuPB8SlNZKyzS7XTLIx9cWU1YvrvcnCnZsoRfl0myUfGOgoQjwcGLiu0GMwiDG
-	 PptImyuwRGY/A==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2CD8C19F53;
-	Thu, 25 Apr 2024 12:03:39 +0000 (UTC)
-From: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>
-Date: Thu, 25 Apr 2024 14:03:00 +0200
-Subject: [PATCH v4 2/8] net: ipv{6,4}: Remove the now superfluous sentinel
- elements from ctl_table array
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC4441494CA;
+	Thu, 25 Apr 2024 13:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.113
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714051386; cv=fail; b=h/WLcc3r9kq3EwFYGjs42hvpVc/VN1Y2sgdqWyQxBCuZ25D8vEjynZJMvvksvrFtSrBbo4l9Tk1U2oYI+OYH2X5Jfj6tv52utfx6UEH4THF0WVAdN2wN2KiSkeNwLcWVdPnrIkocGXiISNw/U54/sRiq2tvLZz1+K2Ac/OClfaU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714051386; c=relaxed/simple;
+	bh=mJtK3H9awnZNnuBREuluVaHJZfuUt6HWLYgginDbU1E=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=eRTruxAOW1m9LSiOpWr+mdW8Yu2Z+1GbLAqXNn6pj6X1SlTNGsD6MvK88MO9djAmKXTCKG/Mu1UlYz2hJtoNc91IFSXmGImsPgsmtLLMOKJ2LikVl6vcUycTlFrc1deC/81qTHOAnnDKlJwpPec/VbHb9K1hys6wR9RLbheVtJo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CloMHaO0qfiujrKCAssoepeUsLFV2hffdgXi6a8O868x2Z/CbsImRk7QOlhefGXh4wYrZf0aMDEgfExCGjJd90ZmIlQxEXU4+nh/lNtaicVvnHtnXi/P69yDNh5nkoTf4NrSu2U6qc03kwDoK0CQwzM+ZznRbqqZI4U5s6WGn3E9ed44SqcNhXXT/OzcpeX/UZ8VgW68LLBoW6YA5I/Pq5Zjn8Y6ZhMIcjwqSbe9zJAdshV/QyJY60AVjPRIABrYVm/hG753CeMtsel6UArzT/Q6agXfMfzZroOxCQpUulXyugnGj6TthUehJbibVLQ0whgRpU7N2XM1XEtOY4uoKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=z26SQYXXM7aqkVaWv8SVjN1n2EP0zi4jOnPPszLLW90=;
+ b=DukNqB+5ENdXx0Z4G7yYaoZNoUpoPf3oY++d8hezXmlsInMt3vvrwukPfymvX9KmdrPP2iqGSO/J4b2vl0bSE0ugGvVuXfJGEuxX8aV8E8x+Wp7ENtY/QJ6MV8Of8jgXtJDIvsLnNHxbscHOzxVgHtzYkv0UgxQnCfw0lIxbYDEhOOJbPRROslZGer9jpWu0zLMETRsL2+Dl3rIHIBgUaXngh5jTrrULUyO52g4UvjTKyuP6UQ4PaPxPzfGJ6CKAaobFxkr/qq13ox/vcXaQaJkdqAc19JQxNq/a/P1p5Os7xaG2oAhRCcAsYJtojZAXMYRpOVUQ4a20OfpN/XPcbw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:20::14) by SH0PR01MB0491.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:7::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Thu, 25 Apr
+ 2024 10:48:58 +0000
+Received: from SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ ([fe80::e0a:f88a:cad1:dc1c]) by SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ ([fe80::e0a:f88a:cad1:dc1c%7]) with mapi id 15.20.7472.044; Thu, 25 Apr 2024
+ 10:48:58 +0000
+From: Joshua Yeong <joshua.yeong@starfivetech.com>
+To: robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	conor@kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	joshua.yeong@starfivetech.com,
+	leyfoon.tan@starfivetech.com,
+	jeeheng.sia@starfivetech.com
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH v4 0/2] Add StarFive's StarLink Cache Controller
+Date: Thu, 25 Apr 2024 18:48:39 +0800
+Message-Id: <20240425104841.72379-1-joshua.yeong@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: NT0PR01CA0023.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:c::19) To SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:20::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240425-jag-sysctl_remset_net-v4-2-9e82f985777d@samsung.com>
-References: <20240425-jag-sysctl_remset_net-v4-0-9e82f985777d@samsung.com>
-In-Reply-To: <20240425-jag-sysctl_remset_net-v4-0-9e82f985777d@samsung.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Alexander Aring <alex.aring@gmail.com>, 
- Stefan Schmidt <stefan@datenfreihafen.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, David Ahern <dsahern@kernel.org>, 
- Steffen Klassert <steffen.klassert@secunet.com>, 
- Herbert Xu <herbert@gondor.apana.org.au>, 
- Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>, 
- Geliang Tang <geliang@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, 
- Remi Denis-Courmont <courmisch@gmail.com>, 
- Allison Henderson <allison.henderson@oracle.com>, 
- David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
- Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, 
- Xin Long <lucien.xin@gmail.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
- Jan Karcher <jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>, 
- Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>, 
- Trond Myklebust <trond.myklebust@hammerspace.com>, 
- Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
- Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
- Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
- Tom Talpey <tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>, 
- Ying Xue <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>, 
- Pablo Neira Ayuso <pablo@netfilter.org>, 
- Jozsef Kadlecsik <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>, 
- Roopa Prabhu <roopa@nvidia.com>, Nikolay Aleksandrov <razor@blackwall.org>, 
- Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>, 
- Joerg Reuter <jreuter@yaina.de>, Luis Chamberlain <mcgrof@kernel.org>, 
- Kees Cook <keescook@chromium.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- dccp@vger.kernel.org, linux-wpan@vger.kernel.org, mptcp@lists.linux.dev, 
- linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org, 
- rds-devel@oss.oracle.com, linux-afs@lists.infradead.org, 
- linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org, 
- linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net, 
- linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org, 
- coreteam@netfilter.org, bridge@lists.linux.dev, lvs-devel@vger.kernel.org, 
- Joel Granados <j.granados@samsung.com>
-X-Mailer: b4 0.13-dev-2d940
-X-Developer-Signature: v=1; a=openpgp-sha256; l=11538;
- i=j.granados@samsung.com; h=from:subject:message-id;
- bh=Shd3cYlWDDlfJ+MUEEcOjdltlTrPApiIrE2eV8K/mNk=;
- b=owJ4nAHtARL+kA0DAAoBupfNUreWQU8ByyZiAGYqRpXMw9iWseJ4/yyTr67zTuWR8Yh3mN1eW
- XuNcad+1Dae84kBswQAAQoAHRYhBK5HCVcl5jElzssnkLqXzVK3lkFPBQJmKkaVAAoJELqXzVK3
- lkFPy/4MAIKWA3Xzne4SABH7fsZqvxrO/+Kg9TSkh8U50Xyy3xxQgY53MYA6mjiuMQwmECu8ArT
- L3xWFnEUPpiNJ/3JKpHAxjzg5V2C+oaHSAjnXc4RGstcYXFYrIsV4JiwdEWBGeCGerN2RbhGOgj
- RqQC2/ZmrMpAXSSkLXDwiY3jBf1AS5VX2jfUhLKmwM8LVl3hKeFibJ1+Nb8NA0m3NySbBla9ahf
- 3UunvFOJ4M9w8wNZjbLNRoe4oIGEt5O23MPcoBRG/X+GAlJX4ZDlCBX7kwmBV1+LvRMKkUcfQou
- ZzG6aSgIglEwD9X1Gm2JcEFmAWB7ETlNjlMIESw0Vs7NJlwwhmbB/WfwTe2FRf04yE/9eMGi9DU
- NaZZU3Hc8A7nE6vVxzPgn0PZiwjp7pmh7Rm1dqWEhSd484JWOfeseN9WT5lqZDXOSpvxWTxjLxr
- /H0/psrVErr7HUfPpnHCsiEuiOudQNNtO7f9rzvQdKlo+HsPVbcWD9vb1tOPuBxmOaWOWlGE+a4
- 4E=
-X-Developer-Key: i=j.granados@samsung.com; a=openpgp;
- fpr=F1F8E46D30F0F6C4A45FF4465895FAAC338C6E77
-X-Endpoint-Received: by B4 Relay for j.granados@samsung.com/default with
- auth_id=70
-X-Original-From: Joel Granados <j.granados@samsung.com>
-Reply-To: j.granados@samsung.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SH0PR01MB0841:EE_|SH0PR01MB0491:EE_
+X-MS-Office365-Filtering-Correlation-Id: a51ad521-c5ba-4b84-4ab1-08dc65154f22
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	/N2e3Q34vsiCkTR0sashG/JOUQewiLv0YwoPyXLrpn/kCqISOM4pbC2UZTiSoRofcV/9XWcPIWpAsjWtrrkeZ/osPeqSa4SYRH+FvVKgVl0tLN+f1CsBIvB2hqCANFlxO3Nmoq+3/gEqODwW6IKHdeZ20sT0OkkZLzPPwo4CBv+yJXBh0LJeY6RCUER2EQyW32C/0k3fDG8KBDAhORy93I/hq9BFlj5jtENUbpWio5mSv5QNOmbMhXQyCqmd4U+LKSXEheTtY/TRPM4+CI9hzXwOk3kpBDOjPid7eq2S9CrlochkJQ3ev9k2LsXnLfoBTqjByDpaFolq5cBh9v7FjwsZznr4ryKsn73L7gY+13aeA3mK4baZXupB+R62SJ8GPLT3e3U4u5Kxhrl3zdHPrVcBu7s2YDUxm98UWyflzTLNB0QiJ96Pi5LUoYRBrhTyJUifeI03NlBcc6UPGNBRV4wLyga9maWbH0UIF1K77GsiGhPV7+Eq0t/xh6YoFDEwv6Bo0QmViGNXEH6wi7FF7lbYquKUaOx8c29KhP6YmeZL7dTNX88cI61tq8Dca4Hfur4U2CWphKRKEazYxMtDT3JFx+TM4RMyUTN/l3ui9ns5evX91m+7n5LvEk1xF8aknu6yWTA/fnDlisNdQbfXow==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(52116005)(366007)(41320700004)(1800799015)(7416005)(38350700005)(921011);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?BASsA5gDkVA7knwjQnlik7rzOm5T+bxTTX6qZKipjbSN/b1h45DIdnP/B+XL?=
+ =?us-ascii?Q?GqigR/0rIUHyT7BERpKqcZUDFtxLr9jYCplFvzD9+MJkKWMGHw15pXmT5GR9?=
+ =?us-ascii?Q?ITITzgSUtJCHh19ykPb53gd7j6Rw1gya63WD2iXugWjF5HVq7G0NA0Ny6YnG?=
+ =?us-ascii?Q?i9JM0gdle6mW703RI44MvhSpDGEYPRzN/tEN3q+ozCras1f7822Bf35CLTfQ?=
+ =?us-ascii?Q?EG6uEalNXUXi1wlJQlHvJjPTDubJgHx2O44fo9gKK/5GtBeFdwmM2GrH4FK3?=
+ =?us-ascii?Q?BCIodB+kkuU8tyWnTe3pOF56kQZlBVDfd/mKXN9QdVSkcdaJ6OEHVB1Hx/vA?=
+ =?us-ascii?Q?228Odpe05jI+I1xyz9rxKNrha0q2r3uxWsX9MYkMSGwwbw1WamSKIhI4bzOE?=
+ =?us-ascii?Q?ictc+OfFMjRe1a+sfWrQqJGvLt95Yt2X11oT5JSUY+0YaDk7U/C/4fl09POK?=
+ =?us-ascii?Q?E6TZ4KecJDE2Vy7WrbVlStI9i2JvCxi1YTQWldWdLBuNLSF/5f8vvzbWSEJK?=
+ =?us-ascii?Q?8y8E6fphtnWfUvAeCBWfSCYLTSh4HiBlEifD/UHZqBLXz6o5pOPbX0r9WmQX?=
+ =?us-ascii?Q?FNSA6bOzl0D6Uq1nKnjlgBM4qdBryi/Esf88+nyx27msi3gfY9B8j4fbHDG0?=
+ =?us-ascii?Q?uc2UZ68zIOtxSYV9Ce08gjgtixQEZDAWNiLkdyW9AG/E2gh2KyPb8QxFkZPP?=
+ =?us-ascii?Q?NvnuRa+W/VExHXCLbvmFC0qq8uuTB5vuOKng5lkS0r+5IXx9PmorSArA9e6O?=
+ =?us-ascii?Q?NFJf2MnQoqHunADHvq5ovUm/f4VzZcTuGavfNzTj2jtXWQlfhhP3bMAcJMPr?=
+ =?us-ascii?Q?x4fA5ref7ImLwd+20dF4u15ynJNjb900qq+jOj5OtyPBiiYHfiNL5LM0ZEGq?=
+ =?us-ascii?Q?eMLdMePixbJJ7Fs5J8ecOtJe43Fjb/d3eDv/cuDH0EawasdhiVJ0Gg7DvU9F?=
+ =?us-ascii?Q?a1uTkwP51DxFqWQ9O+X3c/dJ5DecQ2tVpKb6GDzWN0DXBeV/yW1wL5U0TFU5?=
+ =?us-ascii?Q?Kr44bjf9DDMliU12Rwu2SqxUjBoRTQ1el88HuQXisKE84Jafkb3NLi0yTkqD?=
+ =?us-ascii?Q?Y62eOIzHQ3RDN8H/4X/UOuk9HOlBmOosgZh7r5RAsDWicEtfssbKaIy0e0YU?=
+ =?us-ascii?Q?nRdL86//e4dTTXpNHLmTBNF4n86yNTxWtFEcVNwojvhYxIdrA6l+fI/fp8zL?=
+ =?us-ascii?Q?iLev/MYkrzEm++MRexqpDtQo/gIzg4V/lGOaP+KQpaUThGBQTxq+o9V6BN8V?=
+ =?us-ascii?Q?wDNZe8DJNrmW1I47dYph/QyU1juJme5X7LOm4G+JP0Jcs03vc1Vvf6PNC31u?=
+ =?us-ascii?Q?PNkwOVNGhqqOKeN5Kba40KGr8FX6KxBtr4oKGqelUbKawbxzWSDZm59WmvDX?=
+ =?us-ascii?Q?OJGihlrHqvjRYlkhT8QdKF70A79X2Er92IXDDQ7Ncr0tTVA6TXvgu0WPafn/?=
+ =?us-ascii?Q?KeUFzDEJV5Y6l9m2qrwUuSEy3BxB5bL6+ZYWmIK3sCVz6QF0begO/157P9Rb?=
+ =?us-ascii?Q?ycTUySJ7BFxP+TEcWPmsbSdM+Q9q21GXCcbIeuHSOhYjC4OLeNQ7CDyaiq81?=
+ =?us-ascii?Q?dtyft2yXoEAvoXXlrypIwdk9rsAGQtXmWSSeIkHBNXB/IIokJfLS8Oclu/vn?=
+ =?us-ascii?Q?tA=3D=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a51ad521-c5ba-4b84-4ab1-08dc65154f22
+X-MS-Exchange-CrossTenant-AuthSource: SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 10:48:58.2247
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 30EOpDCKskbcrG59U0ZLGl8uX/X4vLHmQ/xk3NtvtjLHDQg+vX2L7UDO3qwhe7gKtcm02dXlMoAGWqpO4gQYr1C05y7rzPyxoDghUrxoAiQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SH0PR01MB0491
 
-From: Joel Granados <j.granados@samsung.com>
+StarFive's StarLink Cache Controller flush/invalidates cache using non-
+conventional RISC-V Zicbom extension instructions. This driver provides the
+cache handling on StarFive RISC-V SoC.
 
-This commit comes at the tail end of a greater effort to remove the
-empty elements at the end of the ctl_table arrays (sentinels) which
-will reduce the overall build time size of the kernel and run time
-memory bloat by ~64 bytes per sentinel (further information Link :
-https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+Changes in v4:
+- Move cache controller initialization to arch_initcall()
+- Link to v3: https://lore.kernel.org/all/20240424075856.145850-1-joshua.yeong@starfivetech.com/
 
-* Remove sentinel element from ctl_table structs.
-* Remove the zeroing out of an array element (to make it look like a
-  sentinel) in sysctl_route_net_init And ipv6_route_sysctl_init.
-  This is not longer needed and is safe after commit c899710fe7f9
-  ("networking: Update to register_net_sysctl_sz") added the array size
-  to the ctl_table registration.
-* Remove extra sentinel element in the declaration of devinet_vars.
-* Removed the "-1" in __devinet_sysctl_register, sysctl_route_net_init,
-  ipv6_sysctl_net_init and ipv4_sysctl_init_net that adjusted for having
-  an extra empty element when looping over ctl_table arrays
-* Replace the for loop stop condition in __addrconf_sysctl_register that
-  tests for procname == NULL with one that depends on array size
-* Removing the unprivileged user check in ipv6_route_sysctl_init is
-  safe as it is replaced by calling ipv6_route_sysctl_table_size;
-  introduced in commit c899710fe7f9 ("networking: Update to
-  register_net_sysctl_sz")
-* Use a table_size variable to keep the value of ARRAY_SIZE
+Changes in v3:
+- Fix code syntax
+- Link to v2: https://lore.kernel.org/all/20240423072639.143450-1-joshua.yeong@starfivetech.com/
 
-Signed-off-by: Joel Granados <j.granados@samsung.com>
----
- net/ipv4/devinet.c         | 5 ++---
- net/ipv4/ip_fragment.c     | 2 --
- net/ipv4/route.c           | 8 ++------
- net/ipv4/sysctl_net_ipv4.c | 7 +++----
- net/ipv4/xfrm4_policy.c    | 1 -
- net/ipv6/addrconf.c        | 8 +++-----
- net/ipv6/icmp.c            | 1 -
- net/ipv6/reassembly.c      | 2 --
- net/ipv6/route.c           | 5 -----
- net/ipv6/sysctl_net_ipv6.c | 8 +++-----
- net/ipv6/xfrm6_policy.c    | 1 -
- 11 files changed, 13 insertions(+), 35 deletions(-)
+Changes in v2:
+- Change patch title from 'Add StarFive's StarLink-500 Cache Controller'
+- Remove StarFive alternative from errata framework
+- Fixes warning from https://lore.kernel.org/oe-kbuild-all/202403151625.boKDjHGr-lkp@intel.com/
+- Flush completion through atomic timeout function
+- Link to v1: https://lore.kernel.org/lkml/20240314061205.26143-1-joshua.yeong@starfivetech.com/
 
-diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
-index 7a437f0d4190..6195cc5be1fc 100644
---- a/net/ipv4/devinet.c
-+++ b/net/ipv4/devinet.c
-@@ -2515,7 +2515,7 @@ static int ipv4_doint_and_flush(struct ctl_table *ctl, int write,
- 
- static struct devinet_sysctl_table {
- 	struct ctl_table_header *sysctl_header;
--	struct ctl_table devinet_vars[__IPV4_DEVCONF_MAX];
-+	struct ctl_table devinet_vars[IPV4_DEVCONF_MAX];
- } devinet_sysctl = {
- 	.devinet_vars = {
- 		DEVINET_SYSCTL_COMPLEX_ENTRY(FORWARDING, "forwarding",
-@@ -2578,7 +2578,7 @@ static int __devinet_sysctl_register(struct net *net, char *dev_name,
- 	if (!t)
- 		goto out;
- 
--	for (i = 0; i < ARRAY_SIZE(t->devinet_vars) - 1; i++) {
-+	for (i = 0; i < ARRAY_SIZE(t->devinet_vars); i++) {
- 		t->devinet_vars[i].data += (char *)p - (char *)&ipv4_devconf;
- 		t->devinet_vars[i].extra1 = p;
- 		t->devinet_vars[i].extra2 = net;
-@@ -2652,7 +2652,6 @@ static struct ctl_table ctl_forward_entry[] = {
- 		.extra1		= &ipv4_devconf,
- 		.extra2		= &init_net,
- 	},
--	{ },
- };
- #endif
- 
-diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
-index a4941f53b523..e308779ed77b 100644
---- a/net/ipv4/ip_fragment.c
-+++ b/net/ipv4/ip_fragment.c
-@@ -580,7 +580,6 @@ static struct ctl_table ip4_frags_ns_ctl_table[] = {
- 		.proc_handler	= proc_dointvec_minmax,
- 		.extra1		= &dist_min,
- 	},
--	{ }
- };
- 
- /* secret interval has been deprecated */
-@@ -593,7 +592,6 @@ static struct ctl_table ip4_frags_ctl_table[] = {
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec_jiffies,
- 	},
--	{ }
- };
- 
- static int __net_init ip4_frags_ns_ctl_register(struct net *net)
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index c8f76f56dc16..deecfc0e5a91 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -3509,7 +3509,6 @@ static struct ctl_table ipv4_route_table[] = {
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec,
- 	},
--	{ }
- };
- 
- static const char ipv4_route_flush_procname[] = "flush";
-@@ -3543,7 +3542,6 @@ static struct ctl_table ipv4_route_netns_table[] = {
- 		.mode       = 0644,
- 		.proc_handler   = proc_dointvec,
- 	},
--	{ },
- };
- 
- static __net_init int sysctl_route_net_init(struct net *net)
-@@ -3561,16 +3559,14 @@ static __net_init int sysctl_route_net_init(struct net *net)
- 
- 		/* Don't export non-whitelisted sysctls to unprivileged users */
- 		if (net->user_ns != &init_user_ns) {
--			if (tbl[0].procname != ipv4_route_flush_procname) {
--				tbl[0].procname = NULL;
-+			if (tbl[0].procname != ipv4_route_flush_procname)
- 				table_size = 0;
--			}
- 		}
- 
- 		/* Update the variables to point into the current struct net
- 		 * except for the first element flush
- 		 */
--		for (i = 1; i < ARRAY_SIZE(ipv4_route_netns_table) - 1; i++)
-+		for (i = 1; i < table_size; i++)
- 			tbl[i].data += (void *)net - (void *)&init_net;
- 	}
- 	tbl[0].extra1 = net;
-diff --git a/net/ipv4/sysctl_net_ipv4.c b/net/ipv4/sysctl_net_ipv4.c
-index 7e4f16a7dcc1..8b12bf195004 100644
---- a/net/ipv4/sysctl_net_ipv4.c
-+++ b/net/ipv4/sysctl_net_ipv4.c
-@@ -575,7 +575,6 @@ static struct ctl_table ipv4_table[] = {
- 		.extra1		= &sysctl_fib_sync_mem_min,
- 		.extra2		= &sysctl_fib_sync_mem_max,
- 	},
--	{ }
- };
- 
- static struct ctl_table ipv4_net_table[] = {
-@@ -1502,11 +1501,11 @@ static struct ctl_table ipv4_net_table[] = {
- 		.proc_handler	= proc_dou8vec_minmax,
- 		.extra1		= SYSCTL_ONE,
- 	},
--	{ }
- };
- 
- static __net_init int ipv4_sysctl_init_net(struct net *net)
- {
-+	size_t table_size = ARRAY_SIZE(ipv4_net_table);
- 	struct ctl_table *table;
- 
- 	table = ipv4_net_table;
-@@ -1517,7 +1516,7 @@ static __net_init int ipv4_sysctl_init_net(struct net *net)
- 		if (!table)
- 			goto err_alloc;
- 
--		for (i = 0; i < ARRAY_SIZE(ipv4_net_table) - 1; i++) {
-+		for (i = 0; i < table_size; i++) {
- 			if (table[i].data) {
- 				/* Update the variables to point into
- 				 * the current struct net
-@@ -1533,7 +1532,7 @@ static __net_init int ipv4_sysctl_init_net(struct net *net)
- 	}
- 
- 	net->ipv4.ipv4_hdr = register_net_sysctl_sz(net, "net/ipv4", table,
--						    ARRAY_SIZE(ipv4_net_table));
-+						    table_size);
- 	if (!net->ipv4.ipv4_hdr)
- 		goto err_reg;
- 
-diff --git a/net/ipv4/xfrm4_policy.c b/net/ipv4/xfrm4_policy.c
-index c33bca2c3841..4c74fec034c5 100644
---- a/net/ipv4/xfrm4_policy.c
-+++ b/net/ipv4/xfrm4_policy.c
-@@ -152,7 +152,6 @@ static struct ctl_table xfrm4_policy_table[] = {
- 		.mode           = 0644,
- 		.proc_handler   = proc_dointvec,
- 	},
--	{ }
- };
- 
- static __net_init int xfrm4_net_sysctl_init(struct net *net)
-diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
-index 247bd4d8ee45..6e7e8c4f1ab6 100644
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -7181,14 +7181,12 @@ static const struct ctl_table addrconf_sysctl[] = {
- 		.extra1		= SYSCTL_ZERO,
- 		.extra2		= SYSCTL_TWO,
- 	},
--	{
--		/* sentinel */
--	}
- };
- 
- static int __addrconf_sysctl_register(struct net *net, char *dev_name,
- 		struct inet6_dev *idev, struct ipv6_devconf *p)
- {
-+	size_t table_size = ARRAY_SIZE(addrconf_sysctl);
- 	int i, ifindex;
- 	struct ctl_table *table;
- 	char path[sizeof("net/ipv6/conf/") + IFNAMSIZ];
-@@ -7197,7 +7195,7 @@ static int __addrconf_sysctl_register(struct net *net, char *dev_name,
- 	if (!table)
- 		goto out;
- 
--	for (i = 0; table[i].data; i++) {
-+	for (i = 0; i < table_size; i++) {
- 		table[i].data += (char *)p - (char *)&ipv6_devconf;
- 		/* If one of these is already set, then it is not safe to
- 		 * overwrite either of them: this makes proc_dointvec_minmax
-@@ -7212,7 +7210,7 @@ static int __addrconf_sysctl_register(struct net *net, char *dev_name,
- 	snprintf(path, sizeof(path), "net/ipv6/conf/%s", dev_name);
- 
- 	p->sysctl_header = register_net_sysctl_sz(net, path, table,
--						  ARRAY_SIZE(addrconf_sysctl));
-+						  table_size);
- 	if (!p->sysctl_header)
- 		goto free;
- 
-diff --git a/net/ipv6/icmp.c b/net/ipv6/icmp.c
-index 1635da07285f..91cbf8e8009f 100644
---- a/net/ipv6/icmp.c
-+++ b/net/ipv6/icmp.c
-@@ -1206,7 +1206,6 @@ static struct ctl_table ipv6_icmp_table_template[] = {
- 		.extra1		= SYSCTL_ZERO,
- 		.extra2		= SYSCTL_ONE,
- 	},
--	{ },
- };
- 
- struct ctl_table * __net_init ipv6_icmp_sysctl_init(struct net *net)
-diff --git a/net/ipv6/reassembly.c b/net/ipv6/reassembly.c
-index acb4f119e11f..afb343cb77ac 100644
---- a/net/ipv6/reassembly.c
-+++ b/net/ipv6/reassembly.c
-@@ -436,7 +436,6 @@ static struct ctl_table ip6_frags_ns_ctl_table[] = {
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec_jiffies,
- 	},
--	{ }
- };
- 
- /* secret interval has been deprecated */
-@@ -449,7 +448,6 @@ static struct ctl_table ip6_frags_ctl_table[] = {
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec_jiffies,
- 	},
--	{ }
- };
- 
- static int __net_init ip6_frags_ns_sysctl_register(struct net *net)
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 1f4b935a0e57..b49137c3031b 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -6428,7 +6428,6 @@ static struct ctl_table ipv6_route_table_template[] = {
- 		.extra1		=	SYSCTL_ZERO,
- 		.extra2		=	SYSCTL_ONE,
- 	},
--	{ }
- };
- 
- struct ctl_table * __net_init ipv6_route_sysctl_init(struct net *net)
-@@ -6452,10 +6451,6 @@ struct ctl_table * __net_init ipv6_route_sysctl_init(struct net *net)
- 		table[8].data = &net->ipv6.sysctl.ip6_rt_min_advmss;
- 		table[9].data = &net->ipv6.sysctl.ip6_rt_gc_min_interval;
- 		table[10].data = &net->ipv6.sysctl.skip_notify_on_dev_down;
--
--		/* Don't export sysctls to unprivileged users */
--		if (net->user_ns != &init_user_ns)
--			table[1].procname = NULL;
- 	}
- 
- 	return table;
-diff --git a/net/ipv6/sysctl_net_ipv6.c b/net/ipv6/sysctl_net_ipv6.c
-index 888676163e90..b8cbad351802 100644
---- a/net/ipv6/sysctl_net_ipv6.c
-+++ b/net/ipv6/sysctl_net_ipv6.c
-@@ -213,7 +213,6 @@ static struct ctl_table ipv6_table_template[] = {
- 		.proc_handler	= proc_doulongvec_minmax,
- 		.extra2		= &ioam6_id_wide_max,
- 	},
--	{ }
- };
- 
- static struct ctl_table ipv6_rotable[] = {
-@@ -248,11 +247,11 @@ static struct ctl_table ipv6_rotable[] = {
- 		.proc_handler	= proc_dointvec,
- 	},
- #endif /* CONFIG_NETLABEL */
--	{ }
- };
- 
- static int __net_init ipv6_sysctl_net_init(struct net *net)
- {
-+	size_t table_size = ARRAY_SIZE(ipv6_table_template);
- 	struct ctl_table *ipv6_table;
- 	struct ctl_table *ipv6_route_table;
- 	struct ctl_table *ipv6_icmp_table;
-@@ -264,7 +263,7 @@ static int __net_init ipv6_sysctl_net_init(struct net *net)
- 	if (!ipv6_table)
- 		goto out;
- 	/* Update the variables to point into the current struct net */
--	for (i = 0; i < ARRAY_SIZE(ipv6_table_template) - 1; i++)
-+	for (i = 0; i < table_size; i++)
- 		ipv6_table[i].data += (void *)net - (void *)&init_net;
- 
- 	ipv6_route_table = ipv6_route_sysctl_init(net);
-@@ -276,8 +275,7 @@ static int __net_init ipv6_sysctl_net_init(struct net *net)
- 		goto out_ipv6_route_table;
- 
- 	net->ipv6.sysctl.hdr = register_net_sysctl_sz(net, "net/ipv6",
--						      ipv6_table,
--						      ARRAY_SIZE(ipv6_table_template));
-+						      ipv6_table, table_size);
- 	if (!net->ipv6.sysctl.hdr)
- 		goto out_ipv6_icmp_table;
- 
-diff --git a/net/ipv6/xfrm6_policy.c b/net/ipv6/xfrm6_policy.c
-index 42fb6996b077..499b5f5c19fc 100644
---- a/net/ipv6/xfrm6_policy.c
-+++ b/net/ipv6/xfrm6_policy.c
-@@ -184,7 +184,6 @@ static struct ctl_table xfrm6_policy_table[] = {
- 		.mode		= 0644,
- 		.proc_handler   = proc_dointvec,
- 	},
--	{ }
- };
- 
- static int __net_init xfrm6_net_sysctl_init(struct net *net)
+Joshua Yeong (2):
+  cache: Add StarFive StarLink cache management for StarFive JH8100
+  dt-bindings: cache: Add docs for StarFive Starlink cache controller
 
--- 
-2.43.0
+Joshua Yeong (2):
+  cache: Add StarFive StarLink cache management
+  dt-bindings: cache: Add docs for StarFive Starlink cache controller
 
+ .../cache/starfive,jh8100-starlink-cache.yaml |  66 +++++++++
+ drivers/cache/Kconfig                         |   9 ++
+ drivers/cache/Makefile                        |   5 +-
+ drivers/cache/starfive_starlink_cache.c       | 130 ++++++++++++++++++
+ 4 files changed, 208 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/cache/starfive,jh8100-starlink-cache.yaml
+ create mode 100644 drivers/cache/starfive_starlink_cache.c
 
+--
+2.25.1
 
