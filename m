@@ -1,151 +1,111 @@
-Return-Path: <linux-kernel+bounces-158866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D56838B25F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:05:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F10978B25FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:08:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 608391F2388A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:05:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3377282936
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:08:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7463014C5BD;
-	Thu, 25 Apr 2024 16:05:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78CC414C5BF;
+	Thu, 25 Apr 2024 16:07:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DkC9S21D"
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JuESLOa/"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4937414BF9B
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 16:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C32E12C466;
+	Thu, 25 Apr 2024 16:07:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714061131; cv=none; b=H/9y/aVCrKTk+iv5CttNbrmMItyMaO/+5zZMsOZ+IuAbYfahzEIZL0oWRPk0isV8b5Glj4zhOym0N/a59adKDezK/ueJFZjjQ+gSWM6ShyLOUTWDu6VlYt5B6DsdjKJcYNGpn2KbBFh9G9tmcIbiMO7MSZGDv5cDbBL1aUI6UKw=
+	t=1714061278; cv=none; b=uLUgL934LwGmfzdWkUWf0iJsu48QTUG+rvPmlrxyBek4F2DOx9GNxYmWxKqZ7mzihcU+7u4lqv58CPzLfyqD9JtxhQ/151fZMj3FBNTGTndY/TjNMbCeL+RFa6b9n5qIvNAksNN3Mqon6bPaZA2Tv881jbhHNo1N8w/Bsc5zHTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714061131; c=relaxed/simple;
-	bh=ma3KkjWX6NDzygZRbgCm5HEg8q6NeJy/w77N/3RnFoQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C8QHD+M8HhHVW3cmRhjd9G09i4lTKa+cISxhMiYcD5ITYN3iC/eh4SCr+7tmFbjUiPHGeS0Ot/bz+x6ANkgIfZvD1f6AVqXUwUJV6V609KpCz0EvbyiGWjSYZnogiNHtpC3fKCoXrNr6zPTy4Kw+Mv3F5oTfrk3/bZ+UcEsw1Eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DkC9S21D; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78ef9ce897bso73869885a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:05:30 -0700 (PDT)
+	s=arc-20240116; t=1714061278; c=relaxed/simple;
+	bh=kZSoVnPwHh86m3NoOdlMADSlVu0ywdgka1QLhDZJ0Ec=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=gDw6HX9mxALQ71JjbwOhGOgRHoSeauYhslgUm/CDuOPiSdprQUduvBPaIr8hb9/t8EVOosW7JD2JC1SL25LyuALqB+AS1+ewocfPQ0GjNx4mArurUVDlXs+GYtM4mxW8wWduqHu0GjPFVoP35nMZzvAECWJkq1QkYpdVDtkxGtk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JuESLOa/; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41a1d88723bso8336075e9.0;
+        Thu, 25 Apr 2024 09:07:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714061128; x=1714665928; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yqoFEBYGvr1CzCDNq2rYrl60Aa+Kl8xqNL1Vi3kFg0Y=;
-        b=DkC9S21DgsYtrvfpLHjTJE8a2SMXYRUkBj407GH4yQ/MmXdH/KfjRFKgwyJb+TTfoP
-         RwwgLRzFp4lRn9V1aYc1YXPS+EysaUUzQ9Vw1fJnk2T6fJR5+oQEOmf6O558Q2IPNzQf
-         kDls+VJXkBl9Mib4KAq/PmnEmSgMqiyMt5BUI=
+        d=gmail.com; s=20230601; t=1714061276; x=1714666076; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gN8Y1W7KR/HV28QZoX9RNXIwZmbdrRKuGKHOSEwdMx8=;
+        b=JuESLOa/kdXz/mhcAg+eFEEbCqabNIuEDmwqLQdH4UdzDNJ1dt3jvZVSuqBuewzxcE
+         m+g7x5oKe6Z+n9TFPgz4SvHpVC4Ww6aM/4P5XRQRvAPi8qDyaEAjbJT3xHWh/Hf3bkXw
+         TYnKDPDbN0YqlI/EMKUqAxzT3/8A8J5y90AChJdbWhjYi7fQ5R/plNPRTA8mdilBivWY
+         mh6Q6DMc8Q5HkkjwjsJ/AXMnuBq8kXEVS443vdtAddIjB5KHDIY12Hs3pUcJTAJO9ypo
+         EyRg0FxpTuMqBDHSnXmAJMMYQHorYORVf6gae7V0splzVI694WxzEj1sX8TUw04ly/5J
+         Z8Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714061128; x=1714665928;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yqoFEBYGvr1CzCDNq2rYrl60Aa+Kl8xqNL1Vi3kFg0Y=;
-        b=p1WWfLDXguOQKPtEPcag0aRG4WNUAQZ5n39c4cISHW90Y3oL4eC2HR6fttPw+tRdKT
-         5mxnO0HISa+V3QSeY0VbgJhoHnBSyK4rzjmyxu8DXqFZUkxPKXI0Yy0mm4CEwXVHPcoU
-         VxCkpfVDqyeXFZVK3V7gFJDF8/MR5Z9pM6Y6SqhVxJhQ+b7cuhfxYptrOCMe0JE3/U+M
-         XzyiZ/0SGmpGNe5d9y3PjJgwUNuEK64kOEHH3YSdGM4w+hTIE20n+oLpJzYKXwiqDZP2
-         hRtwJ8Ph/DShGfjkbPSYUPtPXOmEiGU4I3P4mrwqUC2pTAas+Q0rDpTn4Sxi+ZPAFb1E
-         0OJg==
-X-Forwarded-Encrypted: i=1; AJvYcCXDpB7UAbo0gFpyMn/E9DmP+LFrGc2DTmQ9KY4PJ+qA6iIZuehBrXIdNbKZ9pQ52TXJPxqLXomg2k+exS6YuXhc24DwSpRXHcYrWzue
-X-Gm-Message-State: AOJu0Yz4n1Veyc6vQDulr41C9dXf7JAkNUExcwF/CccAhYwwsN/bvccu
-	Wx6fmkq1RinT+nzdh/LbS3lM1G9tri1IjY+iSQwPA3HmqYZaY13pvRWhknc31PXiFLzqOPmZITw
-	=
-X-Google-Smtp-Source: AGHT+IFrbS5z2BG+j25xBJi5v4BKY8iGQwLeTUunqvNxctdV43FVVocGzKaBtkXVmecG1nnCL37ujQ==
-X-Received: by 2002:a05:620a:2229:b0:78d:6845:58b9 with SMTP id n9-20020a05620a222900b0078d684558b9mr12084qkh.22.1714061127756;
-        Thu, 25 Apr 2024 09:05:27 -0700 (PDT)
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com. [209.85.160.169])
-        by smtp.gmail.com with ESMTPSA id y10-20020a37e30a000000b007907319aa02sm3915833qki.67.2024.04.25.09.05.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 09:05:27 -0700 (PDT)
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-439b1c72676so472081cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:05:27 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVG5ZEG/7tMrBj1zmSVUwdvSV6dYrCm8mAxPbxGQKCH5V9bME2CbPIGG+P0v8Xi1O1nhos//E+caQCMvlKhm1YW/p8BjikmfosdXTH/
-X-Received: by 2002:ac8:6782:0:b0:439:7526:1d80 with SMTP id
- b2-20020ac86782000000b0043975261d80mr330416qtp.22.1714061126221; Thu, 25 Apr
- 2024 09:05:26 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714061276; x=1714666076;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gN8Y1W7KR/HV28QZoX9RNXIwZmbdrRKuGKHOSEwdMx8=;
+        b=H4Ref1xZ+UCyKvq1319KqfrDC3Fd6Z0PhsndViWibqz95cQAjaAu7Bt/NNsxeyXSIO
+         o+Maqzt8uDbm8zchgM4kvFaJWAj7sGd/Z/ZPulhLEPTeUp69SMemGIS53LOi0B408eMB
+         0BDbdhsXuCiOy5F3qnigyTQJsIq45o6YP3QGXNdR53f9Kb1FWoTMBYDTh4caLAEY0foH
+         F4M612XzWppJ88iVyNtbd4KIpmLqqOYmO9JIxqKTjPhgxaHXKXPeWhew2lBGrg/W8DI9
+         +YX9UdH8MC4wM56Li4clklqg84L7Gh00u+kMz5JmteLEUOJa6qwtvnYHKXnNScEVDKi3
+         pztA==
+X-Forwarded-Encrypted: i=1; AJvYcCWBU6fPsd3QNRk6Zonuv108KaF9XE85jmOxbptIrmn1IC+rZQvQs7kDAf9l+5/K+Vq6G/uHCdnMn2CM+J2ICrfiRbiScraKOzX365En6n9O6Irt/QRfZQnztCLq+DWK9M/GymwI4dnf/Y4=
+X-Gm-Message-State: AOJu0Yy0ntNBtpX6LfLD6qkZB61VjbCdp/tGeXLtnEZKm2JYSE/Z3uXm
+	gSVpRY0aqNXISxB/hL2ct3BQmSMy9ygy0Lzd1ahGBVKKUFHek8jnzDcYDY4m
+X-Google-Smtp-Source: AGHT+IFlDxeIzTLQZ6oCjoR8SMYSRVnEsMxbx1edkXUA0vtbs8bw/ldbshuE6Rzl5C3HS2QqZZNG5A==
+X-Received: by 2002:a05:600c:1554:b0:418:a620:15a1 with SMTP id f20-20020a05600c155400b00418a62015a1mr4465333wmg.30.1714061275261;
+        Thu, 25 Apr 2024 09:07:55 -0700 (PDT)
+Received: from localhost (craw-09-b2-v4wan-169726-cust2117.vm24.cable.virginm.net. [92.238.24.70])
+        by smtp.gmail.com with ESMTPSA id j2-20020a05600c1c0200b0041ac3e13f1esm9643536wms.37.2024.04.25.09.07.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 09:07:54 -0700 (PDT)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Ivan Orlov <ivan.orlov0322@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	linux-sound@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ALSA: kunit: make read-only array buf_samples static const
+Date: Thu, 25 Apr 2024 17:07:54 +0100
+Message-Id: <20240425160754.114716-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240425075503.24357-1-johan+linaro@kernel.org>
-In-Reply-To: <20240425075503.24357-1-johan+linaro@kernel.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Thu, 25 Apr 2024 09:05:09 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Xztc8iYawafEUHOJ3e9=TrqJ4dgCfw8hC92xL2Dow4vQ@mail.gmail.com>
-Message-ID: <CAD=FV=Xztc8iYawafEUHOJ3e9=TrqJ4dgCfw8hC92xL2Dow4vQ@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: qca: fix wcn3991 device address check
-To: Johan Hovold <johan+linaro@kernel.org>
-Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org, Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Don't populate the read-only array buf_samples on the stack at
+run time, instead make it static const.
 
-On Thu, Apr 25, 2024 at 12:56=E2=80=AFAM Johan Hovold <johan+linaro@kernel.=
-org> wrote:
->
-> Qualcomm Bluetooth controllers may not have been provisioned with a
-> valid device address and instead end up using the default address
-> 00:00:00:00:5a:ad.
->
-> This address is now used to determine if a controller has a valid
-> address or if one needs to be provided through devicetree or by user
-> space before the controller can be used.
->
-> It turns out that the WCN3991 controllers used in Chromium Trogdor
-> machines use a different default address, 39:98:00:00:5a:ad, which also
-> needs to be marked as invalid so that the correct address is fetched
-> from the devicetree.
->
-> Qualcomm has unfortunately not yet provided any answers as to whether
-> the 39:98 encodes a hardware id and if there are other variants of the
-> default address that needs to be handled by the driver.
->
-> For now, add the Trogdor WCN3991 default address to the device address
-> check to avoid having these controllers start with the default address
-> instead of their assigned addresses.
->
-> Fixes: 00567f70051a ("Bluetooth: qca: fix invalid device address check")
-> Cc: stable@vger.kernel.org      # 6.5
-> Cc: Doug Anderson <dianders@chromium.org>
-> Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> ---
->  drivers/bluetooth/btqca.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
->
-> Luiz and Doug,
->
-> As the offending commit is now on its way into 6.9, let's just add the
-> default address that the Trogdor machines uses to the address check.
->
-> We can always amend this when/if Qualcomm provides some more details,
-> or, in the worst case, when users report that they need to re-pair their
-> Bluetooth gadgets if there are further variations of the default
-> address.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ sound/core/sound_kunit.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I can confirm that this at least gets my boards using their proper BT
-address. While I still wonder if this is the best strategy to go with,
-I can agree that this is an expedient fix to land it and works:
+diff --git a/sound/core/sound_kunit.c b/sound/core/sound_kunit.c
+index eb90f62228c0..e34c4317f5eb 100644
+--- a/sound/core/sound_kunit.c
++++ b/sound/core/sound_kunit.c
+@@ -167,7 +167,7 @@ static void _test_fill_silence(struct kunit *test, struct snd_format_test_data *
+ 
+ static void test_format_fill_silence(struct kunit *test)
+ {
+-	u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
++	static const u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
+ 	u8 *buffer;
+ 	u32 i, j;
+ 
+-- 
+2.39.2
 
-Tested-by: Douglas Anderson <dianders@chromium.org>
-
-We can continue discussion in response to your original patch [1] to
-figure out if this is going to be our long term strategy or not.
-
-[1] https://lore.kernel.org/r/20240416091509.19995-1-johan+linaro@kernel.or=
-g
 
