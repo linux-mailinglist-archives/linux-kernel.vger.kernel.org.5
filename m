@@ -1,166 +1,207 @@
-Return-Path: <linux-kernel+bounces-158839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4E088B2594
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:48:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7362A8B2587
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:46:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01DCA1C214B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:48:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD9B21F21F08
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:46:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A71B14BFBC;
-	Thu, 25 Apr 2024 15:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F84114C5BA;
+	Thu, 25 Apr 2024 15:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="p0D3vHvY"
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yXP2Ic6W"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3361494BF;
-	Thu, 25 Apr 2024 15:48:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D5AC14C5A1
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:46:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714060094; cv=none; b=WQ1gF2jkPxfmCd0TEe/Tmvwkd6IgF+SHU8zCk+zCL8cHa/BKv69TWaETP8noxVduWGx6vrJY+zQwvPohYaepdWPWZURNpiiKbFF3d9z+nokU2rrbQ0CfsCfws0pefuTezZ3jnxbAfqSM4wnql+CqaEqfzsG/0Et1arDS6cEqwhc=
+	t=1714059968; cv=none; b=tLeCwd9KC1Z4j/rRUHr+Fj45sS2TnbKCTPKpV2i5QebntY92FVDWtBgGj6Hha1YXXbUkdYK+MmXzb1v21+sO+YamwleHDkuf1zGP0OBCjg/euGi1B7lzR+sBPfc9iKalcjcYun7Le5qPE6dP60BCA4lMrPvKkqbmTf0uhYE+u98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714060094; c=relaxed/simple;
-	bh=IsAL6MSVVb0st0Jwbse2d6xJSQLj/y4fLVjgYoKxfLw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZTyuQNKHNt3YpVAGuXkxD8QpkcCKZWVsA1ogFIKOnmpYYtGXNAgdj+5I0xo/3I4rbLJaPBW8uulMBI87fFrIK3F4uOCbRim/lYHqpJ4n/7B0nSiXdnyLO49V6iMxjlD35fS4OWXrOJWOqVWwdUpUUZFlEPvNNzcYcSLOyGHqKwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=p0D3vHvY; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43PDESOr021448;
-	Thu, 25 Apr 2024 17:46:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=selector1; bh=4NMVoNz
-	2ja0mKMA3zgF7rxaTumBVu43eHSfBqn+yggE=; b=p0D3vHvYlFwZHcf7hV/v3de
-	Uc5+XgJ57P+DbpLWYQACVBnDzPoKmDmPoAlc3NJ38Ps5ez2VBy12W24CUp9/IbaL
-	ZQAWrOuTMjma+2AD9rc3FSxD5HOG9aOM4u3Pm8qnMoaAYDaVZnMsFfJCbHYFM4zM
-	qCAdfhYCG8fjNHXDpi2gn2vNS7KxnsSsawOsBHElZutUZ1kMufedlb25+cOPXk6S
-	9SWQ7XgnX2F36BXQbZbUCRiHYzpBmjjSIX9tvEyF5Kjs9psIcVc3DToH6fPEsX4P
-	OpYs3fy5KiO86yrx2+rU/od5VVi8KwCSoW0H8bBxoGb//zTGO/Ksqy1tZpCXlLg=
-	=
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xm51wen46-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 17:46:51 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id A1F5E4002D;
-	Thu, 25 Apr 2024 17:46:38 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 43D512258BA;
-	Thu, 25 Apr 2024 17:46:04 +0200 (CEST)
-Received: from localhost (10.48.86.112) by SHFDAG1NODE3.st.com (10.75.129.71)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 25 Apr
- 2024 17:46:03 +0200
-From: Patrick Delaunay <patrick.delaunay@foss.st.com>
-To: Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC: Patrick Delaunay <patrick.delaunay@foss.st.com>,
-        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: [PATCH] arm64: dts: st: add power domain on stm32mp25
-Date: Thu, 25 Apr 2024 17:45:55 +0200
-Message-ID: <20240425174519.1.I443a218decda670093bc621165e3052db14d4c02@changeid>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1714059968; c=relaxed/simple;
+	bh=ARPhOPhDgTEQgJncPtrsgbR8sVcAO1VcNK+RH2Rvv7E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hZm7Ff8a3Lufj3cxmLNC4sXt2JFCJPSVZE1GYu6m5hJlo3K00Zvg5+y+pqrnaV8C6hBcgEsRsyAk0aINrpFzshOt5SKxwoZEAKu/Tvki46H9l5VTnbZLWuCNDoTjOMLma2DPUYhNgnw6hJ1iCtuXIKSCPmG/w3XB1OYgWSoxIHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yXP2Ic6W; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5724e69780bso278973a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:46:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714059965; x=1714664765; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=wCdxJ+q4o3pPwabMdF8nZZpueZWNvS6ScA7rit1v9g4=;
+        b=yXP2Ic6Wim+7n8MwPWojLInIF7f+vLFEv1td5ZrUzAT4WQeiqfzxriEoWPdihzaNDt
+         2VGTXp3x6ap8HyC+TbM5qRZVAwafwT/F6F428bYaEA8t+BbG1OXQ673A9MDs5izSSJ7t
+         CU/PVttdVqZc1ayqGPx4czgQN2q6PDXqpAeWaEyZSs6iAwTSbXDY7yIYKdEPXrXOZXV+
+         DMoa2fwc0+TTvIII1rCKl48t8FNJKjya9IASn4h75qKgL+pw3CuMI9IHHD9Vgbr5FV/e
+         ZmLUcg5NygOyAre8/nPEBVAwZFq1+h2WXYwuixBxMsGGj8DNv5hZf1wjEfbYs2TU2NBf
+         DWOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714059965; x=1714664765;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wCdxJ+q4o3pPwabMdF8nZZpueZWNvS6ScA7rit1v9g4=;
+        b=IWeNjsB5QndNOutnWvQIIuRh7DZFSm67kvpEhdHPn8+kpllfzuzNSjw6S9seP+TaEz
+         fO7p+WE4PKLluJ1hUpnlpFJ7hr/wk8B5nv9thCR2SBQIkrTeZHxVBCYEYKBRDZdDGsL8
+         44f64BuKdUjvLld3M+muqEhDL1+13Ozz8FVHsAO5QR9QNYHpyzADJHCTWIbuXaONzj0K
+         ePG5tAHrljBZHmbTzsjS5OV45UfEXiggN9xWnNjL3xU2H1BXkW6kEYHvwt/xTU2+Uz2d
+         3UpS0EqWnfeRU3jb1EYpRLZBndhq7Z65uscdua/nP1wjPPqXdPMFFnkTIuwYnX0w32D8
+         qQBg==
+X-Forwarded-Encrypted: i=1; AJvYcCV8V/BkUMHZyB4FwaTjWKx+YHWc0IKI7kD2TsYfTZWH4KosfRPm8ZZNpilzWZwi+KKpia7rEOLD48wK0EmTWT6kJ55ySUNdLM3Hpt1A
+X-Gm-Message-State: AOJu0Yw/XGB5WV3Fm77FkRw8Njf0ddjlhJ6R68XUpP8FAYi7hZbIiEgz
+	VlWQPHcV/oTaiPXI4AoPicKeMTxnIkboQ8a5taMvn4UZaRSLB/YF6WKGzvNaZuN9xqT4XzwGQ5O
+	S1c0=
+X-Google-Smtp-Source: AGHT+IGjb9BIma2IPdK9VWrOvvIht6IG4eG7JsAANZbuKMobxKYONjCipGocbaFdCGFyQRQnFZaCew==
+X-Received: by 2002:a50:d4d2:0:b0:56d:e6f6:f73c with SMTP id e18-20020a50d4d2000000b0056de6f6f73cmr3670436edj.42.1714059965005;
+        Thu, 25 Apr 2024 08:46:05 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id i19-20020a50fc13000000b0056fed8e7817sm8916217edr.20.2024.04.25.08.46.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Apr 2024 08:46:04 -0700 (PDT)
+Message-ID: <b79b5323-196f-41bc-b47a-d350c49d769a@linaro.org>
+Date: Thu, 25 Apr 2024 17:46:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE3.st.com
- (10.75.129.71)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-25_15,2024-04-25_01,2023-05-22_02
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] dt-bindings: hwmon: max31790: Add
+ maxim,pwmout-pin-as-tach-input property
+To: Guenter Roeck <linux@roeck-us.net>,
+ Chanh Nguyen <chanh@amperemail.onmicrosoft.com>,
+ Conor Dooley <conor@kernel.org>
+Cc: Chanh Nguyen <chanh@os.amperecomputing.com>,
+ Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Justin Ledford
+ <justinledford@google.com>, devicetree@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+ OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+ Open Source Submission <patches@amperecomputing.com>,
+ Phong Vo <phong@os.amperecomputing.com>,
+ Thang Nguyen <thang@os.amperecomputing.com>,
+ Quan Nguyen <quan@os.amperecomputing.com>
+References: <20240414042246.8681-1-chanh@os.amperecomputing.com>
+ <20240414042246.8681-4-chanh@os.amperecomputing.com>
+ <13b195e6-cbbd-4f74-a6fa-d874cb4aaa45@linaro.org>
+ <065243cc-09cf-4087-8842-bd4394fb324f@amperemail.onmicrosoft.com>
+ <d549cf2b-a7fa-4644-8fcb-3c420503ee01@amperemail.onmicrosoft.com>
+ <20240423-gallantly-slurp-24adbfbd6f09@spud>
+ <ab5cfd8c-0e88-4194-a77e-5ffbb6890319@amperemail.onmicrosoft.com>
+ <396b47f5-9604-44ab-881f-94d0664bcab8@roeck-us.net>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <396b47f5-9604-44ab-881f-94d0664bcab8@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add power domains on STM32MP25x SoC for supported low power modes:
-- CPU_PD0/1: domain for idle of each core Cortex A35 (CStop)
-- CLUSTER_PD: D1 domain with Stop1 and LP-Stop1 modes support when
-  the Cortex A35 cluster and each device assigned to CPU1=CA35
-  are deactivated
-- RET_PD: D1 domain retention (VDDCore is reduced) to support
-          the LPLV-Stop1 mode
+On 25/04/2024 16:05, Guenter Roeck wrote:
+> On 4/25/24 03:33, Chanh Nguyen wrote:
+>>
+>>
+>> On 24/04/2024 00:02, Conor Dooley wrote:
+>>> [EXTERNAL EMAIL NOTICE: This email originated from an external sender. Please be mindful of safe email handling and proprietary information protection practices.]
+>>>
+>>
+> 
+> The quote doesn't make much sense.
+> 
+>> Sorry Conor, there may be confusion here. I mean the mapping of the PWM output to the TACH input, which is on the MAX31790, and it is not sure a common feature on all fan controllers.
+>>
+> 
+> I think the term "mapping" is a bit confusing here.
+> 
+> tach-ch, as I understand it, is supposed to associate a tachometer input
+> with a pwm output, meaning the fan speed measured with the tachometer input
+> is expected to change if the pwm output changes.
+> 
+> On MAX31790, it is possible to configure a pwm output pin as tachometer input pin.
+> That is something completely different. Also, the association is fixed.
+> If the first pwm channel is used as tachometer channel, it would show up as 7th
+> tachometer channel. If the 6th pwm channel is configured to be used as tachometer
+> input, it would show up as 12th tachometer channel.
+> 
+> Overall, the total number of channels on MAX31790 is always 12. 6 of them
+> are always tachometer inputs, the others can be configured to either be a
+> pwm output or a tachometer input.
+> 
+> pwm outputs on MAX31790 are always tied to the matching tachometer inputs
+> (pwm1 <--> tach1 etc) and can not be reconfigured, meaning tach-ch for
+> channel X would always be X.
+> 
+>> I would like to open a discussion about whether we should use the tach-ch property on the fan-common.yaml
+>>
+>> I'm looking forward to hearing comments from everyone. For me, both tach-ch and vendor property are good.
+>>
+> 
+> I am not even sure how to define tach-ch to mean "use the pwm output pin
+> associated with this tachometer input channel not as pwm output
+> but as tachometer input". That would be a boolean, not a number.
 
-Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
----
+Thanks for explanation. So this is basically pin controller function
+choice - kind of output or input, although not in terms of GPIO.
 
- arch/arm64/boot/dts/st/stm32mp251.dtsi | 16 ++++++++++++++++
- arch/arm64/boot/dts/st/stm32mp253.dtsi |  9 +++++++++
- 2 files changed, 25 insertions(+)
+Shouldn't we have then fan children which will be consumers of PWMs?
+Having a consumer makes pin PWM output. Then tach-ch says which pins are
+tachometer for given fan? Just like aspeed,g6-pwm-tach.yaml has?
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index af1444bf9442..4beb0a0bef4f 100644
---- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
-+++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -18,6 +18,8 @@ cpu0: cpu@0 {
- 			device_type = "cpu";
- 			reg = <0>;
- 			enable-method = "psci";
-+			power-domains = <&CPU_PD0>;
-+			power-domain-names = "psci";
- 		};
- 	};
- 
-@@ -104,6 +106,20 @@ intc: interrupt-controller@4ac00000 {
- 	psci {
- 		compatible = "arm,psci-1.0";
- 		method = "smc";
-+
-+		CPU_PD0: power-domain-cpu0 {
-+			#power-domain-cells = <0>;
-+			power-domains = <&CLUSTER_PD>;
-+		};
-+
-+		CLUSTER_PD: power-domain-cluster {
-+			#power-domain-cells = <0>;
-+			power-domains = <&RET_PD>;
-+		};
-+
-+		RET_PD: power-domain-retention {
-+			#power-domain-cells = <0>;
-+		};
- 	};
- 
- 	timer {
-diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-index af48e82efe8a..79c02ef2e51e 100644
---- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
-+++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-@@ -12,6 +12,8 @@ cpu1: cpu@1 {
- 			device_type = "cpu";
- 			reg = <1>;
- 			enable-method = "psci";
-+			power-domains = <&CPU_PD1>;
-+			power-domain-names = "psci";
- 		};
- 	};
- 
-@@ -20,4 +22,11 @@ arm-pmu {
- 			     <GIC_SPI 369 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-affinity = <&cpu0>, <&cpu1>;
- 	};
-+
-+	psci {
-+		CPU_PD1: power-domain-cpu1 {
-+			#power-domain-cells = <0>;
-+			power-domains = <&CLUSTER_PD>;
-+		};
-+	};
- };
--- 
-2.25.1
+Best regards,
+Krzysztof
 
 
