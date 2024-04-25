@@ -1,126 +1,141 @@
-Return-Path: <linux-kernel+bounces-158818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2292B8B2549
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:37:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE3708B2538
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:36:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 546171C21079
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:37:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C2F01C218E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC9114C59B;
-	Thu, 25 Apr 2024 15:36:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2476614B092;
+	Thu, 25 Apr 2024 15:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KQYc4p2Y"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oKLqiPgj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D18A314C585;
-	Thu, 25 Apr 2024 15:36:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66C9B7FBB0;
+	Thu, 25 Apr 2024 15:36:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714059410; cv=none; b=aNfz2sr7EhLoCTKKa2LPxrLBVY1lJZ9N0YF5izehFshIsQc19R0+YiKzsPi1Wy/JJd7iHSlLjkZH7g04zmIkH8sKhemzZO498Hm0qiVoP00vEXNVwBeBHQ1sbkebyF/9ThH3CPOL9IIK1qmxudf98k09ZET3uR/GTfWjEbfVXWo=
+	t=1714059383; cv=none; b=S5RBXioIq7LtTAaMi/ZSL09bn/G7Vcnh26LYHSpfK5ng2I+z7wqczrBzAJkC+FJIxNbDBnlBS7kMhF5FxeeCw0dKfZqQ+KeJulGTYB34km1qjPS4qxNzIFmjNjjlxE6k/1B9JEx+KZu+TRpix7MEZTVjbqSEZ15Ke/390udjvwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714059410; c=relaxed/simple;
-	bh=PDmEGB3SrxvZUBnjCVzoTIhpoJVzwszchmK2bG/LP+Q=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EEYSInf7j6NltNi4Td2s0fBFxq+W9cBilANsTmIdkY/kqhoG3XVdiO7i44ouz172bVRnyv0koGLC4mjck3VfQg4ttdPhUSE8W05WFnpO5fjqWsSZBFLxJidllN1XTHxrTdos8oaWvGrP8maM1/MbSMWWFTw0TSGKMXhuF4QAbgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KQYc4p2Y; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e9451d8b71so9945615ad.0;
-        Thu, 25 Apr 2024 08:36:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714059408; x=1714664208; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uuLAiBXQO6duyX3a2t5j57OCCXewrqZUvzn6yKvBMNk=;
-        b=KQYc4p2YAXN8z/1agMot8kT8/9udqC3lXLnbJiVXSaC4cp+lERi2t7rXD1ybBWfJ9t
-         r2UI1/qhNogb4zw4afN/oX5gFn5/zULGJXfoXH6vkiFXWo4GYffiER1MIiCUhXcH7vto
-         iOQDVPxMhCMatGuNS4RdHxs3AmwHpKT4NL3fwEGY27iK/mppFiR+59EnMFLOX5qkM74d
-         MzMjQxiomBcW4FNB6gudgT1mBBG95ZKrVcZQTILO7928lZVQAPks3pJnV50R3VwOHxOz
-         iZhj6i3xE3WeACYVDP3JfkGlaPw4HUkNW1yEFxvChYEd1W4SIEHQ5sxSu43Yk9b8cyfY
-         Tzsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714059408; x=1714664208;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uuLAiBXQO6duyX3a2t5j57OCCXewrqZUvzn6yKvBMNk=;
-        b=Yztu6eUBCCFgLfsYKbAUWuoOvl8m9kftoG6M+7L311A8Bl8Rci+/n5cKdtsjBaJTXk
-         7Dp7Ph55jorNYrUZ097OJNlyrgvbEzxaaVG0fZXCwa8FZxS5+xeMVezj07Q5M//Do3M5
-         w4lcxdYtJAM6bslw2kTRsSw//zzBTLedXNe8jAzycNweEkyon5D9Qa7r9ojv5qtBNDA9
-         vkf/GdFzADycz/jqfkjyv9SnAZ5ZWp8NJNNcb3oMYj/rHJmAsJUe4PqG5Cwo547fWv1a
-         s+T7FO5AbS1FhOKcNzEeNh8WGdMEforXYbmj4zjfsFyQZLGsrHTvUOpggY/YqEzGqvRC
-         269Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU9epNtEuA+Ak4F5kyr6EZS2EZPiDA65isE0vP2nCiNNBInsvPEBmjhBNLR12n/yBA2NwcFRarx+cZ/l7UhmmzqISizv3+FAA4Iro82BlajpW8Ngiz7sQN5XFVH+POxGqP1ZIOnmO/x/kdbWrS6hb/YzMhCZZd7RX3cv5D0+hfqoWMbzTG/jp/MBqZTcAyr81kF2NuFWGtKCgk9n1BJk8/gt2CvidrHPzi7iI/9XAeq1FFFgMoR+8hC9vHT
-X-Gm-Message-State: AOJu0YxOSMuhpGqRaFNTI++Z6eIxsqBtoVV3sWVF4vZeoJV3SfpKSO1O
-	3JPIjiG7RPA7If+pWr4RXdHfdjeawfvHpJX2cfCjA3LULeKIXGue
-X-Google-Smtp-Source: AGHT+IE9vJ8m+kjIx4Dc4HB0h4UKfRc6/ZD+hpDo/CuJ9kwLGxcrYF/dOl57soHdoWkmxhG5AbU+Fg==
-X-Received: by 2002:a17:902:f70a:b0:1e8:2c8d:b749 with SMTP id h10-20020a170902f70a00b001e82c8db749mr8602039plo.30.1714059407830;
-        Thu, 25 Apr 2024 08:36:47 -0700 (PDT)
-Received: from peter-bmc.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
-        by smtp.gmail.com with ESMTPSA id bi2-20020a170902bf0200b001e27ad5199csm13852586plb.281.2024.04.25.08.36.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 08:36:47 -0700 (PDT)
-From: Peter Yin <peteryin.openbmc@gmail.com>
-To: patrick@stwcx.xyz,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>,
-	Patrick Rudolph <patrick.rudolph@9elements.com>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Charles Hsu <ythsu0511@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hwmon@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-i2c@vger.kernel.org
-Subject: [PATCH v2 2/2] dt-bindings: hwmon: Add infineon xdp710 driver bindings
-Date: Thu, 25 Apr 2024 23:36:02 +0800
-Message-Id: <20240425153608.4003782-3-peteryin.openbmc@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240425153608.4003782-1-peteryin.openbmc@gmail.com>
-References: <20240425153608.4003782-1-peteryin.openbmc@gmail.com>
+	s=arc-20240116; t=1714059383; c=relaxed/simple;
+	bh=oiLQAN95u8wHE9d/PcfcEXC3op1EES65QUSwsxn6SZ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O+aiQ9MEfDh6Pk6M1ZUQIgn2+AhYEl728xuXtkW2Nhj/UUOVU0XrhonLqTnnjjxEmvWotezrfxk4yPvuYgX2/zV8dRIfS1Pgn2Qp5PE8XXr4Fq6AcwRkNVZVlFN7Kn95fC3NCfTTy2HeAMuTUyovwWNEbjUNw97UmruDtsx1l3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oKLqiPgj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 184B4C113CC;
+	Thu, 25 Apr 2024 15:36:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714059383;
+	bh=oiLQAN95u8wHE9d/PcfcEXC3op1EES65QUSwsxn6SZ0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oKLqiPgju7T8z0EiXfAs1oRfeJSjOWqcDuM+qiZC/VqRLhnLwS4vb5ymcNBH7UGAe
+	 hiYrRwev5vi00rusSe0PmlRplzqVGucXujI4TsrwwbHLgHICL2wQcK/lKZZiZL7iEd
+	 f9hIh9azY3KmtJbLsiNBjt/20J6NVzLvNZI5rReLZiaTI+ywNfJIREbfbwIkkU6QUH
+	 qIcQBfvIANnedtXLJhaZSbC4cOW+s0d6306GXVd3kno3EGsKYsohA9MV0pHVevrJSD
+	 1f1S/6zGCaRUk0DY6W3LkUfgLfJQmCasscUaRmanjDFEeeAct4vtadG895NYymbTeZ
+	 U+YDTs/OyRSNQ==
+Date: Thu, 25 Apr 2024 16:36:19 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Conor Dooley <conor.dooley@microchip.com>
+Cc: marius.cristea@microchip.com, jic23@kernel.org, lars@metafoo.de,
+	lgirdwood@gmail.com, broonie@kernel.org, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org, conor+dt@kernel.org
+Subject: Re: [PATCH v1] iio: adc: PAC1934: fix accessing out of bounds array
+ index
+Message-ID: <20240425-vastly-salad-e56b9225e662@spud>
+References: <20240425114232.81390-1-marius.cristea@microchip.com>
+ <20240425-canteen-alias-5a907b1deecc@wendy>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="M4AyjKAjLs9Ns3jd"
+Content-Disposition: inline
+In-Reply-To: <20240425-canteen-alias-5a907b1deecc@wendy>
 
-Add a device tree bindings for xdp710 device
 
-Acked-by: "Rob Herring (Arm)" <robh@kernel.org>
-Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
----
- Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+--M4AyjKAjLs9Ns3jd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-index e07be7bf8395..f982de168c4c 100644
---- a/Documentation/devicetree/bindings/trivial-devices.yaml
-+++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-@@ -134,6 +134,8 @@ properties:
-           - infineon,irps5401
-             # Infineon TLV493D-A1B6 I2C 3D Magnetic Sensor
-           - infineon,tlv493d-a1b6
-+            # Infineon Hot-swap controller xdp710
-+          - infineon,xdp710
-             # Infineon Multi-phase Digital VR Controller xdpe11280
-           - infineon,xdpe11280
-             # Infineon Multi-phase Digital VR Controller xdpe12254
--- 
-2.25.1
+On Thu, Apr 25, 2024 at 01:22:45PM +0100, Conor Dooley wrote:
+> On Thu, Apr 25, 2024 at 02:42:32PM +0300, marius.cristea@microchip.com wr=
+ote:
+> > From: Marius Cristea <marius.cristea@microchip.com>
+> >=20
+> > Fix accessing out of bounds array index for average
+> > current and voltage measurements. The device itself has
+> > only 4 channels, but in sysfs there are "fake"
+> > channels for the average voltages and currents too.
+> >=20
+> > Fixes: 0fb528c8255b: "iio: adc: adding support for PAC193x"
+> > Reported-by: Conor Dooley <conor.dooley@microchip.com>
+> > Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
 
+
+Huh, this is an empty message. I intended to send some tags, but must
+not have saved the buffer.
+
+Closes: https://lore.kernel.org/linux-iio/20240405-embellish-bonnet-ab5f105=
+60d93@wendy/
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+> > ---
+> >  drivers/iio/adc/pac1934.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >=20
+> > diff --git a/drivers/iio/adc/pac1934.c b/drivers/iio/adc/pac1934.c
+> > index f751260605e4..456f12faa348 100644
+> > --- a/drivers/iio/adc/pac1934.c
+> > +++ b/drivers/iio/adc/pac1934.c
+> > @@ -787,6 +787,15 @@ static int pac1934_read_raw(struct iio_dev *indio_=
+dev,
+> >  	s64 curr_energy;
+> >  	int ret, channel =3D chan->channel - 1;
+> > =20
+> > +	/*
+> > +	 * For AVG the index should be between 5 to 8.
+> > +	 * To calculate PAC1934_CH_VOLTAGE_AVERAGE,
+> > +	 * respectively PAC1934_CH_CURRENT real index, we need
+> > +	 * to remove the added offset (PAC1934_MAX_NUM_CHANNELS).
+> > +	 */
+> > +	if (channel >=3D PAC1934_MAX_NUM_CHANNELS)
+> > +		channel =3D channel - PAC1934_MAX_NUM_CHANNELS;
+> > +
+> >  	ret =3D pac1934_retrieve_data(info, PAC1934_MIN_UPDATE_WAIT_TIME_US);
+> >  	if (ret < 0)
+> >  		return ret;
+> >=20
+> > base-commit: b80ad8e3cd2712b78b98804d1f59199680d8ed91
+> > --=20
+> > 2.34.1
+> >=20
+
+
+
+--M4AyjKAjLs9Ns3jd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZip4cgAKCRB4tDGHoIJi
+0mHPAQCwPscxxdp0iUJ3vOyfhjjtaJ1mNh5Cm8R8/GsCcFznZQD+Ptu6tlhKrd9l
+epAaKawJi6jP3BjS/BYYF+/1gFlywww=
+=Bku/
+-----END PGP SIGNATURE-----
+
+--M4AyjKAjLs9Ns3jd--
 
