@@ -1,92 +1,136 @@
-Return-Path: <linux-kernel+bounces-158482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B87D58B20BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:51:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D54068B20C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:52:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 726FC288DAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:51:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13CE31C232EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66C5712AAE0;
-	Thu, 25 Apr 2024 11:51:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AABD812AAEC;
+	Thu, 25 Apr 2024 11:52:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JWzGBe3N"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Kadmz8lA";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZnFBdGsw"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85ADB84DFC
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 11:51:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E5F84DFC;
+	Thu, 25 Apr 2024 11:52:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714045896; cv=none; b=gz57DxKfTFxrqls9RWBLu7SiMvUIcfaQT5jDq+ByrzQFAPqUHEvNuE5WFQrmuWSvdNUw72JUvarog0oeDpI/6Spa7kQNk5baSbJ7cKHYVi6+LV4qTEV5m352LrV5MeNgcJ86S2NYBGtpCG7UqTe8HrNMii3HAXbTjXxGnebOwHQ=
+	t=1714045934; cv=none; b=ZNpTNIaL0dCX2CwyRk8vQJUtAJg1y5b8zKvoThdOumqa6a4+j4Fef3eEGNlqWVyItU+otQ1ZKA2pZbWJh2TTNdyKnti0BTETYWI8GpUPpWzLUEeUUibL8nekFdve+Sf3D838Is6Y90y00um4BS3XD/JDvgGNM8Rslf3jOPVItAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714045896; c=relaxed/simple;
-	bh=/rUbNNAzRPDeOqeCh75iw3Y0y+qWeu5vitmrU/m8/Fg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Md5jKnSIw2/2SeLJjubwIUb0Q/b8tl7BJqQYO0q0ojgsJ/Q8D23ToNnwRYsnW1CRp/Sold5oHxMkY8LuZ1cw4daRyZqygJk+BDrKTThv2Etxtmi7+4gLTJFc8vGob3n0Gyd4hdbDLvR4hV1WUfCz5jvqPxvoEfFh2g3HOaaeYJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=JWzGBe3N; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=k9AOqaMBu30O1n0Mg30P2SEwNlRJnCFCTjCpmOuWfGY=; b=JWzGBe3NUbCw77GZXh8npiBm09
-	ouRZga7ILcgq3OIxVDDjayKlg3Di9QS+THPwdNFpvf3uh36iMqmjYT9AmVwZDrEzytpNoAowx8yLM
-	9bzF9JTfugTck+NnTh27NO43lcONG7iGpxuXR8I4HWxLTkEchfgqAgTEdSd0W7apCsDOTqSdd32OW
-	YBWYZbSdLctovlvvDGOdFcxjvjJzPMWyhbY2eWBM3U7AbUajZxpXIBhGwSoaAM9UxQF2duR9V6fUS
-	/Ju/kKovZ72/b7s0Q3bpQPY/Czq8o02Es9T9hxAeUqcmSJ7iWSzIzt+ZEUeyZ2Ayi0nQGyyC1yzpD
-	ChD+cbtA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzxdO-0000000ErEB-0jnb;
-	Thu, 25 Apr 2024 11:51:28 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id CF459300439; Thu, 25 Apr 2024 13:51:25 +0200 (CEST)
-Date: Thu, 25 Apr 2024 13:51:25 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: hupu@oppo.com
-Cc: mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/fair.c: Fix the calculation method of 'lag'
-Message-ID: <20240425115125.GZ40213@noisy.programming.kicks-ass.net>
-References: <20240424085533.GS40213@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1714045934; c=relaxed/simple;
+	bh=ibYMa3jhzNP65WVjGG80S1ZgkEVT/nRrO3d7MImhra8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=kIBN0M1sOEM7pOjsMzVXV3aa+fp22NP/flUYmB76wCejUzhR0ck5q/iH1w2g/DEcNHy5eSnIgi7P+RByELBgc/KnScspAKppnN1WR+2bj2ESOlwiXmrUxlSF2153PFMdu7dpum70SR9IiV1kaU+MgFnSJung6dhN2KPjbEFCXk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Kadmz8lA; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZnFBdGsw; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Nam Cao <namcao@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1714045930;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fibyo5fIycycuHzgFLgvHTjArYf2fAIDmOJSGGnfeGs=;
+	b=Kadmz8lAwQLU3paaGZBH65Tjdo3KhzmylFuE02Dqc7LTfpnpfS3GfwxvL1yyQGORNj17EC
+	V+McuIKS7D0dxVPn3HBxgZd+D8kdby9OBv0FlQDAiCv4EiVxCvaAGQkbNtsbk9nCp1SHhN
+	ditgLrxqv7LYyRUkOCd9fvSf0B+2eRN7bbf2pSKWK/I0ZoTuORnXruLjq3mmIaCzmi3bpP
+	g5EYyjly4N7X9EIIFFWKmmXJYGEHXGFz3R8at4BrejfxGE4eLd6zROXFgm6g2xKQKi2Lg1
+	+s9dmyG0/YgbtpqP4Pe2Mva5mxCyJZXL9dmsMThEI8py4tcqac7YdGExA6nSHA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1714045930;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fibyo5fIycycuHzgFLgvHTjArYf2fAIDmOJSGGnfeGs=;
+	b=ZnFBdGswK+ol1V8O6CB2quAGkSrJbxl+WNQir6NbIJkdiz+PDXH5C9go+QLzuDZ5g2kBW8
+	aLndt7NlV0MzdbBw==
+To: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Baoquan He <bhe@redhat.com>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Chen Jiahao <chenjiahao16@huawei.com>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	rppt@kernel.org
+Cc: Nam Cao <namcao@linutronix.de>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	stable@vger.kernel.org
+Subject: [PATCH] riscv: fix overlap of allocated page and PTR_ERR
+Date: Thu, 25 Apr 2024 13:52:01 +0200
+Message-Id: <20240425115201.3044202-1-namcao@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424085533.GS40213@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 25, 2024 at 07:44:59PM +0800, hupu@oppo.com wrote:
-> > > From: hupu <hupu@oppo.com>
-> > >
-> > > I think the 'lag' calculation here is inaccurate.
-> > >
-> > > Assume that delta needs to be subtracted from v_i to ensure that the
-> > > vlag of task i after placement is the same as before.
-> >
-> > Why ?!? v_i is the unkown, it makes no sense to complicate things by
-> > adding extra unknowns.
-> >
-> > > At this time, the
-> > > vlag of task i after placement should be:
-> > > vl'_i = V' - (v_i - delta)
-> >
-> > But but but, you can't have V' without knowing v_i.
-> >
-> 
-> Thank you for your patient guidance. I overlooked a important fact that
-> v_i is unknown in the process of proof. Below is the complete proof
-> process, and it turns out that you are correct.
+On riscv32, it is possible for the last page in virtual address space
+(0xfffff000) to be allocated. This page overlaps with PTR_ERR, so that
+shouldn't happen.
 
-*phew*, thanks for checking!
+There is already some code to ensure memblock won't allocate the last page.
+However, buddy allocator is left unchecked.
+
+Fix this by reserving physical memory that would be mapped at virtual
+addresses greater than 0xfffff000.
+
+Reported-by: Björn Töpel <bjorn@kernel.org>
+Closes: https://lore.kernel.org/linux-riscv/878r1ibpdn.fsf@all.your.base.are.belong.to.us
+Fixes: 76d2a0493a17 ("RISC-V: Init and Halt Code")
+Signed-off-by: Nam Cao <namcao@linutronix.de>
+Cc: <stable@vger.kernel.org>
+---
+ arch/riscv/mm/init.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
+
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 968761843203..7c985435b3fc 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -235,18 +235,19 @@ static void __init setup_bootmem(void)
+ 		kernel_map.va_pa_offset = PAGE_OFFSET - phys_ram_base;
+ 
+ 	/*
+-	 * memblock allocator is not aware of the fact that last 4K bytes of
+-	 * the addressable memory can not be mapped because of IS_ERR_VALUE
+-	 * macro. Make sure that last 4k bytes are not usable by memblock
+-	 * if end of dram is equal to maximum addressable memory.  For 64-bit
+-	 * kernel, this problem can't happen here as the end of the virtual
+-	 * address space is occupied by the kernel mapping then this check must
+-	 * be done as soon as the kernel mapping base address is determined.
++	 * Reserve physical address space that would be mapped to virtual
++	 * addresses greater than (void *)(-PAGE_SIZE) because:
++	 *  - This memory would overlap with ERR_PTR
++	 *  - This memory belongs to high memory, which is not supported
++	 *
++	 * This is not applicable to 64-bit kernel, because virtual addresses
++	 * after (void *)(-PAGE_SIZE) are not linearly mapped: they are
++	 * occupied by kernel mapping. Also it is unrealistic for high memory
++	 * to exist on 64-bit platforms.
+ 	 */
+ 	if (!IS_ENABLED(CONFIG_64BIT)) {
+-		max_mapped_addr = __pa(~(ulong)0);
+-		if (max_mapped_addr == (phys_ram_end - 1))
+-			memblock_set_current_limit(max_mapped_addr - 4096);
++		max_mapped_addr = __va_to_pa_nodebug(-PAGE_SIZE);
++		memblock_reserve(max_mapped_addr, (phys_addr_t)-max_mapped_addr);
+ 	}
+ 
+ 	min_low_pfn = PFN_UP(phys_ram_base);
+-- 
+2.39.2
+
 
