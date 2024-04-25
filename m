@@ -1,354 +1,173 @@
-Return-Path: <linux-kernel+bounces-158221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D451E8B1D28
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 44FB58B1D29
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:57:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67D381F21D06
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:56:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B18B81F218E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2720811FE;
-	Thu, 25 Apr 2024 08:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DDE80611;
+	Thu, 25 Apr 2024 08:57:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JAcricNL"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q0LrOlYX"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551457FBB0
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41F21DFE1
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:56:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714035399; cv=none; b=qBsvitFygzpBwT5ICxQmKUHMSwfiHiw2zbuOGwXx1uLE02dq92+Z4xQijNGefkZdfWxRWDqidyTzoZOf4eDk/ZDgzAYa8RZzwy2sJfGX5pB22Tp4r2lKlIoaY1Abig4dWoqpPKAQBkII3wlBd5IZGsUD6hweuUDMnfafmMo029E=
+	t=1714035420; cv=none; b=C5UHj9UpEhNKIXSV7f+BIYG/JXkb6puDCSCVxnbOzCaLmI/M0faLtmYpYk6kVMrVvH1Lu5eKEUMSE2Zx+qdpi35672DmqEhmT9+S8ATGPfkGKdHf+ULM34+sh9sq0EbKaw/Y2WuNVR5Nifllg84X19Q8yor4F3k0ujz3M/mJCcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714035399; c=relaxed/simple;
-	bh=N/WOc/y37uAkYr9zVVieC5AyNNxl0w/zBIWTapyQM+A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TecXMv/6X7Cd/ubPnOnqSNJ681E6HAcFzRYWuI1FYQWJsnO690vOWM+SGow/02a/cV3E3xUWvqwVerY4FAXB+Ymz4yrQqRIQoS0yqubVaTtEREaO+81FC69uZji1oz4iusNe8Q3CCiCylE98KuvGtVOwyn4zF74PZrKjW08UmJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JAcricNL; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51ab4ee9df8so829219e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 01:56:37 -0700 (PDT)
+	s=arc-20240116; t=1714035420; c=relaxed/simple;
+	bh=on8rRT8rMY6gATS+tExFOpawaAVnjFYUdZ/CCHFPpGs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=XDWe4g20DESWdM27zs3VTaEBzhx8THo9cd0AE+DkuDNVDSnzfkZnWs2nGSF86V3FWCnIF+AoLq2qGv/2rwIcHzvXydP2u3SU+YFDc1iQwxwb/gfHkCMalukdvQZBDgeof0bERvOtVDLhWL+nXfn2/7TRQwMVaP//jH1NCQhdYsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q0LrOlYX; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e3ff14f249so5895085ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 01:56:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714035395; x=1714640195; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KKqGqtlUD/Lz0MbLYaR+VCjUnJhIc5ox17am+QQAiwE=;
-        b=JAcricNL1dfW0Uqx2Lqaxhgrqy+g1By0OFF7VYnoaFPWHGsPh3NmbKcgg3k8+fwSH4
-         diO05aRoNFs4cKZQGWQnTyWJO+defY0xXt2wGXiia35c+qR873eyg1saVGsTEWnws/Qu
-         JLBsCuqHy0lSHDoVrmQG4dWE+6VAgN+KU6CWb3Eo47+Clhn24VC1Z905C8gCqMsStNmp
-         1wH5aCiKq94MtT/rFRMF3qHNcH6Qmp5f6Dhom0Dc9T8I0nuwKG/lZ/brBFPSesG9TZIw
-         E1U/RjYzQ7kJsInCeuoFKJe5fu1bbZphqhQ8obxKfixKnJDU+2g1PV21Q/iU7P8HjY5W
-         J7lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714035395; x=1714640195;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1714035418; x=1714640218; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KKqGqtlUD/Lz0MbLYaR+VCjUnJhIc5ox17am+QQAiwE=;
-        b=a4u1NSz4gVK4GneAA3vR6+5diruAmFOwTa6UIqahdddRYP+/g1vtAPsDKdBBP1wRWV
-         qkTomPHkP4+e7Swwrk7LZEA9UZruXYRguXQMi/XFeLXlYHc3WBPzPlxotylRIg9k+rLd
-         ZZ4Ka34rCOatzHA7CrjP5Pr40kuL+rK+Eja+v+bxkjIKCajgS/olwXKvfJU2BGVtbOp2
-         MdxUQDtIl3mDuO19l/28owLePPuowiC9Ype3dx/lDGNfnk+xHMi2evJiDx993RsVrdDy
-         5Nw9Ciqk6XOx2Muf7sAeixcDVj3fAzxZOpA8rq42w8VfrsKh0qg92cr1hog2vxngjTyx
-         GfDg==
-X-Forwarded-Encrypted: i=1; AJvYcCUvslHpE1o8Tzsnj4MPZcTJEGr5AaRHi8CiksN6n57RS8upRMV6/QEQOOhBPT5AFb3634O0GAFQ9owqTfE9tIehExitqYA0ZkUjUIze
-X-Gm-Message-State: AOJu0YyiCnVoVQWdCAWahJnTL1E9usduoDLzD4Xo2RGmyRnNkOkWVKd5
-	3wfyxobTAKrayEV3ErTGabBm97FFp5iy9C37KI2qaPpI2wQP3QX75pMWuRKe+bTAVDTWufOdN2R
-	ElzI=
-X-Google-Smtp-Source: AGHT+IFCDpCuXESp5OEY/4ehtfOoWrdFjyUwXLBIWcg7XfekW3WmeuwZKKFV4eucQ+cs7rX7ODNyQQ==
-X-Received: by 2002:a05:6512:36c9:b0:51b:fe4b:da45 with SMTP id e9-20020a05651236c900b0051bfe4bda45mr2796709lfs.38.1714035395091;
-        Thu, 25 Apr 2024 01:56:35 -0700 (PDT)
-Received: from nuoska (87-100-245-199.bb.dnainternet.fi. [87.100.245.199])
-        by smtp.gmail.com with ESMTPSA id bi30-20020a0565120e9e00b0051acd59ead9sm2146081lfb.169.2024.04.25.01.56.34
+        bh=ZHSLuFLizRd4+tmfCItUcblIOCsQpklxapzLMa2vQ8U=;
+        b=Q0LrOlYXdnaambgXodGjz65mpcf21CzXCy4kjrD09vxSUxWSf6uCDYb+GtvgBew/oo
+         c5sa37iQUBkvs4+WlVJ+l7OY8cVLZniPyasEoUfwMwxoPLMcfzwu6hX5JEEwqCQpWbWQ
+         gCQ3mdc9KfpRsZqLb9wRga0jdAUKEM8NVrzSSiBRnUzscx/H4aPf230zYJIgbmDGx2GT
+         ChGohaIE+a5TbFpdG7y3WI/Nk2NUhQgsMJIM+0JUiHaOtRxlm3f+mrVri2AQ20xq7zgn
+         dsgBclrQf3QGsD/hz2xu4dHEcK01Q+Rkqf0pgNXZrlVQwm7OK+26vtm0XXjuqXxMd2M7
+         ZmVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714035418; x=1714640218;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZHSLuFLizRd4+tmfCItUcblIOCsQpklxapzLMa2vQ8U=;
+        b=ezcesHXSGVmJtgA+Moi9VIcWu6Qiepim9oDUeUSBwhCq4I0VfnVjwC+Gi1oAgib8D0
+         7frQekvQcdmDFIpTF+XGHELiTNndwgocUHP8aTyAp5SAUwljvs93OOrnddruVnrV9Elc
+         sowk5U72B+39gydJoxvhc8GsL20ukSi96WXp+1vOVAYL0RBYmHRIZaxUVctuyXqD2iix
+         09SmSZEgL3uaNJ34iFpqIpV9B0HZq3aLy7NxB5Z6AI7aurEYADIQ0wRzYpoeB8vcxM9G
+         c3QrdEiabM0D7CjDk8Kt+EuhKUEKjjRCmq4EWthoHi/KYmqHrhl3M0x/aZ0Ppz+IxOl0
+         ujPg==
+X-Gm-Message-State: AOJu0YzjwhnlhwLhqs4fNRCuAauZipt2s1bF2Lhbo0sG1P3hPAeSVzuL
+	IEfSyDG1HPr58JSyrkJ3qrusnwQycQPsGShkehEdkN5j6Kw25dnf/2KqvVxkfCQ=
+X-Google-Smtp-Source: AGHT+IGFDPYxnNqVb0uxeIDsq0YU6Hv8MVh/1e7FD1DD6Xdu7piImLiN2dc6hRRTJ4XpQ0f9IhN88w==
+X-Received: by 2002:a17:902:f945:b0:1e0:bc64:a37a with SMTP id kx5-20020a170902f94500b001e0bc64a37amr2398111plb.8.1714035417912;
+        Thu, 25 Apr 2024 01:56:57 -0700 (PDT)
+Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id s27-20020a63525b000000b006008ee7e805sm6309811pgl.30.2024.04.25.01.56.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 01:56:34 -0700 (PDT)
-Date: Thu, 25 Apr 2024 11:56:32 +0300
-From: Mikko Rapeli <mikko.rapeli@linaro.org>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Lennart Poettering <lennart@poettering.net>,
-	linux-integrity@vger.kernel.org
-Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
-Message-ID: <ZioawGrx8gi3mqMg@nuoska>
-References: <20240422112711.362779-1-mikko.rapeli@linaro.org>
- <6e751959b9056884c1b9d3ba23e303d1737d8763.camel@HansenPartnership.com>
- <ZiZhSfgeAdrbnaVL@nuoska>
- <CAC_iWjKA-xRH=3FK+=woXsB8AW4+_mVhJhUQnL8iFKxGzOwKiA@mail.gmail.com>
- <e3038141413e25350f0e53496f7a7af1bf8419cf.camel@HansenPartnership.com>
- <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com>
- <e1da76ca4c7fe9319aaac5f8ff6eb46db433ec60.camel@HansenPartnership.com>
- <CAC_iWjLH=SDoTw_Pgr2hOKHkjEp_dKqwpUe9j6a=_WNW9UcxKw@mail.gmail.com>
- <CAMj1kXGHT2wULF2zwNM_QxD29dRW_dtFX2sOvsLahPiRVB61qg@mail.gmail.com>
+        Thu, 25 Apr 2024 01:56:57 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: syzbot+241c815bda521982cb49@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [jfs?] UBSAN: array-index-out-of-bounds in diFree
+Date: Thu, 25 Apr 2024 17:56:54 +0900
+Message-Id: <20240425085654.10967-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <0000000000000866ea0616cb082c@google.com>
+References: <0000000000000866ea0616cb082c@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXGHT2wULF2zwNM_QxD29dRW_dtFX2sOvsLahPiRVB61qg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-Hi,
+please test array-index-out-of-bounds in diFree
 
-On Wed, Apr 24, 2024 at 07:15:35PM +0200, Ard Biesheuvel wrote:
-> On Mon, 22 Apr 2024 at 17:22, Ilias Apalodimas
-> <ilias.apalodimas@linaro.org> wrote:
-> >
-> > On Mon, 22 Apr 2024 at 17:31, James Bottomley
-> > <James.Bottomley@hansenpartnership.com> wrote:
-> > >
-> > > On Mon, 2024-04-22 at 16:54 +0300, Ilias Apalodimas wrote:
-> > > > Hi James
-> > > >
-> > > > On Mon, 22 Apr 2024 at 16:38, James Bottomley
-> > > > <James.Bottomley@hansenpartnership.com> wrote:
-> > > > >
-> > > > > On Mon, 2024-04-22 at 16:32 +0300, Ilias Apalodimas wrote:
-> > > > > > Hi all,
-> > > > > >
-> > > > > > On Mon, 22 Apr 2024 at 16:08, Mikko Rapeli
-> > > > > > <mikko.rapeli@linaro.org>
-> > > > > > wrote:
-> > > > > > >
-> > > > > > > Hi,
-> > > > > > >
-> > > > > > > On Mon, Apr 22, 2024 at 08:42:41AM -0400, James Bottomley
-> > > > > > > wrote:
-> > > > > > > > On Mon, 2024-04-22 at 14:27 +0300, Mikko Rapeli wrote:
-> > > > > > > > > Userspace needs to know if TPM kernel drivers need to be
-> > > > > > > > > loaded and related services started early in the boot if
-> > > > > > > > > TPM device is used and available.
-> > > > > > > >
-> > > > > > > > This says what but not why.  We already have module
-> > > > > > > > autoloading that works correctly for TPM devices, so why is
-> > > > > > > > this needed?
-> > > > > > > >
-> > > > > > > > We do have a chicken and egg problem with IMA in that the TPM
-> > > > > > > > driver needs to be present *before* any filesystem, including
-> > > > > > > > the one the TPM modules would be on, is mounted so executions
-> > > > > > > > can be measured into IMA (meaning that if you use IMA the TPM
-> > > > > > > > drivers must be built in) but this sounds to be something
-> > > > > > > > different. However, because of the IMA problem, most
-> > > > > > > > distributions don't end up compiling TPM drivers as modules
-> > > > > > > > anyway.
-> > > > > > > >
-> > > > > > > > Is what you want simply that tpm modules be loaded earlier?
-> > > > > > >
-> > > > > > > Yes, ealier is the problem. In my specific testing case the
-> > > > > > > machine is qemu arm64 with swtpm with EFI firmware for secure
-> > > > > > > boot and TPM support.
-> > > > > > >
-> > > > > > > Firmware uses TPM and does measurements and thus TPM event log
-> > > > > > > is
-> > > > > > > available on this machine and a bunch of other arm64 boards.
-> > > > > > > Visible in early boot dmesg as TPMEventLog lines like:
-> > > > > > >
-> > > > > > > [    0.000000] efi: ESRT=0xf0ea5040 TPMFinalLog=0xf0ea9040
-> > > > > > > RTPROP=0xf0ea7040 SMBIOS=0xf0ea3000 TPMEventLog=0xeb3b3040
-> > > > > > > INITRD=0xeb3b2040 RNG=0xe5c0f040 MEMRESERVE=0xe5c0e040
-> > > > > > >
-> > > > > > > Different boards use different TPM HW and drivers so compiling
-> > > > > > > all these in is possible but a bit ugly. systemd recently
-> > > > > > > gained support for a specific tpm2.target which makes TPM
-> > > > > > > support modular and also works with kernel modules for some TPM
-> > > > > > > use cases but not rootfs encryption.
-> > > > > > >
-> > > > > > > In my test case we have a kernel+initramfs uki binary which is
-> > > > > > > loaded by EFI firmware as a secure boot binary. TPM support on
-> > > > > > > various boards is visible in devicetree but not as ACPI table
-> > > > > > > entries. systemd currently detect TPM2 support either via ACPI
-> > > > > > > table /sys/firmware/acpi/tables/TPM2 or TPM entry or via
-> > > > > > > firmware measurement via
-> > > > > > > /sys/kernel/security/tpm0/binary_bios_measurements
-> > > > > > > .
-> > > > > >
-> > > > > > One corner case worth noting here is that scanning the device
-> > > > > > tree won't always work for non-ACPI systems... The reason is that
-> > > > > > a firmware TPM (running in OP-TEE) might or might not have a DT
-> > > > > > entry, since OP-TEE can discover the device dynamically and
-> > > > > > doesn't always rely on a DT entry.
-> > > > > >
-> > > > > > I don't particularly love the idea that an EventLog existence
-> > > > > > automatically means a TPM will be there, but it seems that
-> > > > > > systemd already relies on that and it does solve the problem we
-> > > > > > have.
-> > > > >
-> > > > > Well, quite. That's why the question I was interested in, perhaps
-> > > > > not asked as clearly as it could be is: since all the TPM devices
-> > > > > rely on discovery mechanisms like ACPI or DT or the like which are
-> > > > > ready quite early, should we simply be auto loading the TPM drivers
-> > > > > earlier?
-> > > >
-> > > > This would be an elegant way to solve this and on top of that, we
-> > > > have a single discovery mechanism from userspace -- e.g ls /dev/tpmX.
-> > > > But to answer that we need more feedback from systemd. What 'earlier'
-> > > > means? Autload it from the kernel before we go into launching the
-> > > > initrd?
-> > >
-> > > Right, so this is another timing problem: we can't autoload modules
-> > > *before* they appear in the filesystem and presumably they're on the
-> > > initrd, so auto loading must be post initrd mount (and init execution)
-> > > but otherwise quite early?
-> >
-> > Exactly. But is that enough?
-> >
-> > >
-> > > This might be quite a bit of work.  Logically, just moving the matching
-> > > and loading code earlier might work, but we used to have a
-> > > load_default_modules() at the end of init/main.c and it got removed
-> > > (because it only eventually loaded elevator modules) everything is now
-> > > loaded in it's various init routines, so to get, say, TPM ACPI modules
-> > > loaded earlier, we'd have to run the ACPI device matching code earlier
-> > > and so on for every other subsystem ...
-> >
-> > Being the devil's advocate here and as I stated I don't love this but ...
-> > The kernel isn't technically doing anything wrong. We just expose an
-> > *existing* EFI config table. The kernel also exposes filesystems so
-> > people are free to do rm -rf *.
-> > The fact that applications might use it as a means of "oh there's
-> > probably a TPM" shouldn't be the end of the world. On top of that,
-> > since it's an EFI config table we can keep it around and never break
-> > any ABIs we create to userspace. If in the future we find a better
-> > way, userspace can use that?
-> >
-> > So perhaps this is ok as long as make sure we understand why systemd
-> > needs it that early?
-> >
-> 
-> What I would like to know is which API systemd is attempting to use,
-> and which -apparently- may never become available if no TPM is exposed
-> by the kernel.
+#syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/ master
 
-ACPI TPM table entry, available without TPM drivers.
+---
+ fs/jfs/jfs_dmap.c | 4 +++-
+ fs/jfs/jfs_imap.c | 8 ++++++--
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
-TPM PCR bios measurement, available only with working TPM drivers.
-
-> Ideally, we should be able to take inspiration from the probe deferral
-> work, and return -EAGAIN to convey that it is too early to signal
-> either success or permanent failure.
-> 
-> Exposing random firmware assets directly to user space to make guesses
-> about this doesn't seem like a very robust approach to this issue.
-
-As I understand, there are two questions which systemd and userspace need aswers to:
-
-1) is there a TPM device
-
-2) was a TPM device used by firmware to measure boot
-
-If answer to 1) is yes, then drivers need to be loaded, but not necessarily
-in early boot before main rootfs mount. If answer to 2) is yes, then
-drivers and userspace components should be setup for TPM in early boot.
-
-The x86 and server grade arm standard for 1) is ACPI table TPM entry, basically
-/sys/firmware/acpi/tables/TPM2. For other HW, like embedded arm boards/SoCs,
-the TPM device can be on discoverable bus (optee firmware TPM etc)
-or in devicetree. These work correctly with udev etc and drivers get loaded
-in normal boot and thus answer 1).
-
-For 2), once kernel side TPM device has been initialized, driver built into the
-kernel or loaded before this check, userspace and systemd can check if
-/sys/firmware/acpi/tables/TPM2 is there, or alternatively if TPM driver
-is already working /sys/kernel/security/tpm0/binary_bios_measurements
-which indicates that firmware was measured with TPM. The latter really requires
-built in TPM drivers or modules which are loaded really early in boot, almost
-as first thing in userspace, before systemd does any checks for the TPM
-device existance. These steps happen in initramfs so that TPM can be used
-to protect main rootfs. systemd implements this with efi_has_tpm2()
-function in https://github.com/systemd/systemd/blob/main/src/shared/efi-api.c#L482
-
-One problem is how to support TPM devices as kernel modules. Linux distros
-should be able to build these drivers too as modules and systemd etc will
-take care to load them once devices are discovered, and then queue in
-other possibly complex userspace services/daemons so that TPM is useful and
-rootfs can be decrypted. /sys/kernel/security/tpm0/binary_bios_measurements is
-available only when the TPM driver is loaded and working. For example, if boot firmware has
-optee and firmware TPM (fTPM) as an early trusted application (early TA), then this
-only works when optee driver is initialized, tee-supplicant userspace daemon runs
-and tpm_ftpm_tee kernel driver for fTPM has been loaded to the kernel. tee-supplicant
-implements RPMB storage if board/HW does not support it directly. The optee and fTPM
-kernel drivers can be built into kernel, but they still need tee-supplicant in
-userspace.
-
-To answer 2), ACPI TPM table entry works without kernel drivers, but what
-about devices without ACPI support, or TPM on a discoverable bus like optee with fTPM?
-
-Parsing devicetree in userspace is really painful, but could possible be done.
-Or kernel could provide a sysfs indicator if there is a devicetree entry
-for TPM. But there are some devices where devicetree does not show a TPM
-device but one exists in the discoverable bus, optee fTPM.
-
-In all, granted limited, arm64 cases which I have seen, when firmare was aware
-of the TPM device and used it for measuring boot, then the TPM Event Log was
-provided to the kernel. The early boot log messages like show this:
-
-arm64 qemu with swtpm, u-boot based EFI firmware, TPM Event Log and TPM
-in devicetree, no ACPI:
-
-https://ledge.validation.linaro.org/scheduler/job/85933
-[    0.000000] efi: TPMFinalLog=0xbd649040 RTPROP=0xbd647040 SMBIOS 3.0=0xbe6a9000 TPMEventLog=0xbd5b0040 INITRD=0xbd5af040 MEMRESERVE=0xbd5ae040
-..
-		tpm_tis@0 {
-			tpm_event_log_size = <0x18f>;
-			compatible = "tcg,tpm-tis-mmio";
-			reg = <0x00 0x5000>;
-			tpm_event_log_addr = <0x00 0x40100000>;
-		};
-
-rockpi4b with firmware TPM, u-boot based EFI firmware, TPM Event Log but
-no TPM in devicetree, no ACPI:
-
-https://ledge.validation.linaro.org/scheduler/job/85936
-[    0.000000] efi: ESRT=0xf0ea5040 TPMFinalLog=0xf0ea9040 RTPROP=0xf0ea7040 SMBIOS=0xf0ea3000 TPMEventLog=0xeb381040 INITRD=0xeb380040 RNG=0xe5baf040 MEMRESERVE=0xe5bae040
-
-synquacer with firmware TPM and real TPM, u-boot based EFI firmware,
-TPM Event Log using fTPM but only real but disabled TPM in devicetree, no ACPI:
-
-https://ledge.validation.linaro.org/scheduler/job/85934
-[    0.000000] efi: ESRT=0xf9c90040 TPMFinalLog=0xf9c94040 RTPROP=0xf9c92040 SMBIOS=0xf9c8e000 TPMEventLog=0xf9bf7040 INITRD=0xf9bf6040 RNG=0xf9bf5040 MEMRESERVE=0xf9bf4040
-..
-	tpm_tis@10000000 {
-		compatible = "socionext,synquacer-tpm-mmio";
-		status = "disabled";
-		reg = <0x00 0x10000000 0x00 0x5000>;
-	};
-
-kv260/zyncmp-kria-starter with real TPM, u-boot based EFI firmware,
-TPM Event Log using TPM but no devicetree, no ACPI:
-
-https://ledge.validation.linaro.org/scheduler/job/85937
-[    0.000000] efi: ESRT=0x777f8040 TPMFinalLog=0x777fc040 RTPROP=0x777fa040 SMBIOS=0x777f6000 TPMEventLog=0x7775a040 INITRD=0x77759040 MEMRESERVE=0x77758040
-
-Ampere AVA with ACPI TPM entry but support disabled in firmare,
-no TPM Event Log, no devicetree, but an ACPI TPM entry:
-
-https://ledge.validation.linaro.org/scheduler/job/85935
-[    0.000000] ACPI: TPM2 0x00000000FFFEFD18 00004C (v04 Ampere Altra    00000002 AMP. 01000013)
-
-Some of these TPM indicators could be considered firmware bugs, but in all
-cases TPM firmware support can be detected via TPM Event Log
-so that answers question 2).
-
-TPM Event Log is not a random firmware interface. It is an optional interface
-to make TPM usable and in practice most TPM using firmware provide it to the kernel.
-The actual measurement and checks for it require the TPM HW and measurement PCRs,
-but the TPM Event Log is a strong indicator from firmware to the kernel, and userspace,
-that TPM is available and was used.
-
-Kernel already knows about TPM Event Log. The proper interface to read it is from
-securityfs file binary_bios_measurements implemented by loaded TPM driver.
-Existence of this measurement is know before TPM driver is loaded and this change
-only exports that to sysfs so that userspace can queue the TPM driver loading
-and userspace services/daemons in the early initramfs before main rootfs is available.
-
-Hope this helps,
-
--Mikko
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index cb3cda1390ad..6681a6272ae7 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -206,6 +206,7 @@ int dbMount(struct inode *ipbmap)
+ 	bmp->db_agwidth = le32_to_cpu(dbmp_le->dn_agwidth);
+ 	bmp->db_agstart = le32_to_cpu(dbmp_le->dn_agstart);
+ 	bmp->db_agl2size = le32_to_cpu(dbmp_le->dn_agl2size);
++	printk("dmMount : %d\n",bmp->db_agl2size);
+ 	if (bmp->db_agl2size > L2MAXL2SIZE - L2MAXAG ||
+ 	    bmp->db_agl2size < 0) {
+ 		err = -EINVAL;
+@@ -316,6 +317,7 @@ int dbSync(struct inode *ipbmap)
+ 	dbmp_le->dn_agwidth = cpu_to_le32(bmp->db_agwidth);
+ 	dbmp_le->dn_agstart = cpu_to_le32(bmp->db_agstart);
+ 	dbmp_le->dn_agl2size = cpu_to_le32(bmp->db_agl2size);
++	printk("dbSync : %d\n",bmp->db_agl2size);
+ 	for (i = 0; i < MAXAG; i++)
+ 		dbmp_le->dn_agfree[i] = cpu_to_le64(bmp->db_agfree[i]);
+ 	dbmp_le->dn_agsize = cpu_to_le64(bmp->db_agsize);
+@@ -3393,7 +3395,7 @@ int dbExtendFS(struct inode *ipbmap, s64 blkno,	s64 nblocks)
+ 
+ 	bmp->db_agl2size = l2agsize;
+ 	bmp->db_agsize = 1 << l2agsize;
+-
++	printk("dbExtendFS : %d\n",bmp->db_agl2size);
+ 	/* compute new number of AG */
+ 	agno = bmp->db_numag;
+ 	bmp->db_numag = newsize >> l2agsize;
+diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
+index 2ec35889ad24..c39f7685aa97 100644
+--- a/fs/jfs/jfs_imap.c
++++ b/fs/jfs/jfs_imap.c
+@@ -339,7 +339,7 @@ int diRead(struct inode *ip)
+ 
+ 	/* get the ag for the iag */
+ 	agstart = le64_to_cpu(iagp->agstart);
+-
++	printk("diRead : %ld\n",agstart);
+ 	release_metapage(mp);
+ 
+ 	rel_inode = (ino & (INOSPERPAGE - 1));
+@@ -881,6 +881,8 @@ int diFree(struct inode *ip)
+ 	 */
+ 	agno = BLKTOAG(JFS_IP(ip)->agstart, JFS_SBI(ip->i_sb));
+ 
++	printk("%lu %d %d",JFS_IP(ip)->agstart, JFS_SBI(ip->i_sb)->bmap->db_agl2size, agno);
++
+ 	/* Lock the AG specific inode map information
+ 	 */
+ 	AG_LOCK(imap, agno);
+@@ -1298,6 +1300,7 @@ diInitInode(struct inode *ip, int iagno, int ino, int extno, struct iag * iagp)
+ 	jfs_ip->ixpxd = iagp->inoext[extno];
+ 	jfs_ip->agstart = le64_to_cpu(iagp->agstart);
+ 	jfs_ip->active_ag = -1;
++	printk("diInitInode : %lu",jfs_ip->agstart);
+ }
+ 
+ 
+@@ -1908,6 +1911,7 @@ static int diAllocExt(struct inomap * imap, int agno, struct inode *ip)
+ 		 */
+ 		iagp->agstart =
+ 		    cpu_to_le64(AGTOBLK(agno, imap->im_ipimap));
++		printk("diAllocExt : %lu\n",iagp->agstart);
+ 	} else {
+ 		/* read the iag.
+ 		 */
+@@ -2898,7 +2902,7 @@ int diExtendFS(struct inode *ipimap, struct inode *ipbmap)
+ 		agstart = le64_to_cpu(iagp->agstart);
+ 		n = agstart >> mp->db_agl2size;
+ 		iagp->agstart = cpu_to_le64((s64)n << mp->db_agl2size);
+-
++		printk("diExtendFs : %lu %d\n",agstart, mp->db_agl2size);
+ 		/* compute backed inodes */
+ 		numinos = (EXTSPERIAG - le32_to_cpu(iagp->nfreeexts))
+ 		    << L2INOSPEREXT;
+-- 
+2.34.1
 
