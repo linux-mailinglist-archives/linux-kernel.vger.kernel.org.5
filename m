@@ -1,160 +1,165 @@
-Return-Path: <linux-kernel+bounces-158821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DE698B2559
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:40:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FD3A8B255C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:40:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44D8C1F24CBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:40:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBA7AB23DFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C89D314BF9B;
-	Thu, 25 Apr 2024 15:39:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6625B14BFBC;
+	Thu, 25 Apr 2024 15:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Lu6K1LeB"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="LbP6KbGP"
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC3B374F5
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:39:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD8EF14B086;
+	Thu, 25 Apr 2024 15:40:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714059593; cv=none; b=U3JuWoYl6vpmuREyYMHmX9RmRlJCk45kZW7n6DDupM+TTjm9s5Cq5UkNhW3TpC2CD/1enae4/ICEz4B04wy6iqTwmeWg/reGlZcFJHZIo58y54SgIqISBrc3Jsq+DT9tLNJsPKZUGDBZECYG+uj6dDdby16GIr8X6pVR+iMHpK0=
+	t=1714059627; cv=none; b=WU1EQ51rCLuQW4jfe5BYu5rtzSw0emZeZi6AL/JGviPr5NNb76+15ivA8/6c8V17TW0Rv7I7Vem1iNN//Ar1eErjO3NUMIhfusGaET9k2VffzH3TP6d507eCN/fwNCQV3wTVjM2rfu0Re4JBtnx860XiATSGBDY2uGEDnBQJ1Ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714059593; c=relaxed/simple;
-	bh=WF+dlvX2I/JhfKIJrRxXQkXnpq+LBXuSxxxOJYIm9Ew=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jUzOrR/zsP8f+vz6VR27XAVuIVmsGqfVNp/1wV4gDvuCDNiW8Ahqo56hk9dq4XFCYeMRcFkRbx0xkOMpxehc7rcWtJ1pYX32zbWoK/S/RkrMbPkcHexwWlOddoWF+Y+l8Da9ELWbH4lm9pO7MIr/3Mt0M07dTCi8AhBk/5kQsDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Lu6K1LeB; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-de45dba15feso1385016276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:39:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714059590; x=1714664390; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e0BChCss6w1nIzeILAtQLE3LhBpW3YXUB4HhPqTq7zU=;
-        b=Lu6K1LeBSNBNuTVNCNhOq9CVfWCgWKfOOjLOuPvMlbZ4TbQX9Y6s3T3Dfquhqvq1gF
-         mSGKoXEglg6vdgTDr5v9G47Ub46LTi7qUsk9DMx4zz8NmC2nBp58STboK2hpJPK6D8vG
-         o+k4gfJ4LMFLggYdCwnnrRUKnZBBA4vmXiIPPSCwSNsbpdnV+ZvkvC1X8/O9rc+7Ft5w
-         BDqipbhrArlE1vJtRM3CYBzMarSxplWxzeMnYt3vsxsEkfrb0jSHO8Nssq7cY4Ni3EIp
-         ivIsN7Lhc03KWHjEh+harc3wwEVQW9cNDWot+8WGoPk7E/RremVKM910I6z8wswDBghp
-         OxJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714059590; x=1714664390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e0BChCss6w1nIzeILAtQLE3LhBpW3YXUB4HhPqTq7zU=;
-        b=OHkYaPFirJr5mr4bwdyGTRs4arhsOOKwP0T8qiqZyRPW+31L+lEEHKsmK/xlMPpRWW
-         9MT6Fjj4IPOTm0hcjvjjYAmgToH5WLiJq6BzIWts5xgK4dmSwTTwBpDyYGFN/vlBTypO
-         x04KzYhGBZRdegn0DTBAoIr7KqYeYHVroOcmcHqy/pg63/9RPrFdRyUVd5JLG/3Iz+pT
-         r5gGb/nHlMhVOWlJGBM+2fqb7Lbx39/L4opPI4VPwQIUVP/uIHklqWou1YAH+hxXceUw
-         wsI7612oBh61CpKAFjzS0rpMvPmMMxYprH8PLuPLj12f7+LgM4yPCHYu5KZzUZnlu82G
-         ee+w==
-X-Forwarded-Encrypted: i=1; AJvYcCVsttpYgOPZEALkt7Lo2ooT9Exa33kjVuQ/l2hqRojjSXBxhlyADCIrrmVw3ygxKB2eP224zN4UTTFnQjxhQikh1SYTWxIZ7qSMe9pB
-X-Gm-Message-State: AOJu0Yy0kPM4Sa3R8GmVyVkI3Hwu7jZ9Jamplfs0YZbZpzi0kaL31CFx
-	95NcL5TivTnZSsrGbaJ4/uz31xF4jIcRJQI3y4Yq8OqL+fRNyRtRde2LvVwZbCUJwuw45achM9D
-	upBQSpa/rq1yuPKNjY/9PiONS3KF3KHWnf+dT
-X-Google-Smtp-Source: AGHT+IHMmrQCod73kiqRAvCkDsnHTcOLVG7U0Dhn6OWsLE5Eza4GBBk8ZEiq+Ddus8vlXjyfwMqyLLjmcyn5VeI1piA=
-X-Received: by 2002:a05:6902:54b:b0:de1:849:a6f3 with SMTP id
- z11-20020a056902054b00b00de10849a6f3mr5525501ybs.7.1714059589879; Thu, 25 Apr
- 2024 08:39:49 -0700 (PDT)
+	s=arc-20240116; t=1714059627; c=relaxed/simple;
+	bh=NeAGDssrBE1nQvK6n7Y2DS9FDrRvGrFq+guTHdUb4h8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tnzCeei0YJhm5ip8dfgH5iGwiEWX91XcqLTkFlOzgl1D8sQBN4FN8+KKgzVevlk+oLwUeEoe2Ot15UlcCBirRzEW16gURfIqNGOB+6wd8Nei56If1hYETA0X1MZihpM3ECf1dQdmtL0/DmlQWVJQc4mMgwhAL5zyRZxunp513Ok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=LbP6KbGP; arc=none smtp.client-ip=85.214.62.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
+Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: lukma@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id 1C0FC88FBA;
+	Thu, 25 Apr 2024 17:40:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1714059617;
+	bh=u//hZdEDeqpd2RqtJe+A8Jdt/tG07v39FbGKhW8tvuk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=LbP6KbGPMWulym3/278+9gtPppW5KiwrVyc3Y5STTU1TGaYIzT+aHVdfvVpJ/BA4/
+	 LzFp3/LGj/wgm/f5MTkKoDlD4q9MuyMxxhf8GOfxYgvR4TC90pcDgrC+qxvSgPkxiK
+	 ehF3jh3z1KrKckCgUpGhi2OIfjZol2kGdxcu8HXBDKLQjuT01KuiLp7OcwGbPHAXFx
+	 IWfp+iN+XLcGQXiTuGRKQ2vlBhXrlN680HfLCzFGScECzZkrbEoU27ads0pATEQIjB
+	 P83M+koOxY1vdI+wkGApQJmaWuKhKjR9R4ytV+CiuTU8pP0zovTj/2tPQRzND/KY5x
+	 F5WhymIsutHmA==
+From: Lukasz Majewski <lukma@denx.de>
+To: netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>,
+	Casper Andersson <casper.casan@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Tristram.Ha@microchip.com,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Ravi Gunasekaran <r-gunasekaran@ti.com>,
+	Simon Horman <horms@kernel.org>,
+	Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	Murali Karicheri <m-karicheri2@ti.com>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Ziyang Xuan <william.xuanziyang@huawei.com>,
+	Shigeru Yoshida <syoshida@redhat.com>,
+	"Ricardo B. Marliere" <ricardo@marliere.net>,
+	linux-kernel@vger.kernel.org,
+	Lukasz Majewski <lukma@denx.de>
+Subject: [net-next PATCH] hsr: Simplify code for announcing HSR nodes timer setup
+Date: Thu, 25 Apr 2024 17:39:58 +0200
+Message-Id: <20240425153958.2326772-1-lukma@denx.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321163705.3067592-1-surenb@google.com> <202404241852.DC4067B7@keescook>
- <3eyvxqihylh4st6baagn6o6scw3qhcb6lapgli4wsic2fvbyzu@h66mqxcikmcp>
-In-Reply-To: <3eyvxqihylh4st6baagn6o6scw3qhcb6lapgli4wsic2fvbyzu@h66mqxcikmcp>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 25 Apr 2024 08:39:37 -0700
-Message-ID: <CAJuCfpFtj7MVY+9FaKfq0w7N1qw8=jYifC0sBUAySk=AWBhK6Q@mail.gmail.com>
-Subject: Re: [PATCH v6 00/37] Memory allocation profiling
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Kees Cook <keescook@chromium.org>, akpm@linux-foundation.org, mhocko@suse.com, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, songmuchun@bytedance.com, 
-	jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 
-On Wed, Apr 24, 2024 at 8:26=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Wed, Apr 24, 2024 at 06:59:01PM -0700, Kees Cook wrote:
-> > On Thu, Mar 21, 2024 at 09:36:22AM -0700, Suren Baghdasaryan wrote:
-> > > Low overhead [1] per-callsite memory allocation profiling. Not just f=
-or
-> > > debug kernels, overhead low enough to be deployed in production.
-> >
-> > Okay, I think I'm holding it wrong. With next-20240424 if I set:
-> >
-> > CONFIG_CODE_TAGGING=3Dy
-> > CONFIG_MEM_ALLOC_PROFILING=3Dy
-> > CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT=3Dy
-> >
-> > My test system totally freaks out:
-> >
-> > ...
-> > SLUB: HWalign=3D64, Order=3D0-3, MinObjects=3D0, CPUs=3D4, Nodes=3D1
-> > Oops: general protection fault, probably for non-canonical address 0xc3=
-88d881e4808550: 0000 [#1] PREEMPT SMP NOPTI
-> > CPU: 0 PID: 0 Comm: swapper Not tainted 6.9.0-rc5-next-20240424 #1
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06=
-/2015
-> > RIP: 0010:__kmalloc_node_noprof+0xcd/0x560
-> >
-> > Which is:
-> >
-> > __kmalloc_node_noprof+0xcd/0x560:
-> > __slab_alloc_node at mm/slub.c:3780 (discriminator 2)
-> > (inlined by) slab_alloc_node at mm/slub.c:3982 (discriminator 2)
-> > (inlined by) __do_kmalloc_node at mm/slub.c:4114 (discriminator 2)
-> > (inlined by) __kmalloc_node_noprof at mm/slub.c:4122 (discriminator 2)
-> >
-> > Which is:
-> >
-> >         tid =3D READ_ONCE(c->tid);
-> >
-> > I haven't gotten any further than that; I'm EOD. Anyone seen anything
-> > like this with this series?
->
-> I certainly haven't. That looks like some real corruption, we're in slub
-> internal data structures and derefing a garbage address. Check kasan and
-> all that?
+Up till now the code to start HSR announce timer, which triggers sending
+supervisory frames, was assuming that hsr_netdev_notify() would be called
+at least twice for hsrX interface. This was required to have different
+values for old and current values of network device's operstate.
 
-Hi Kees,
-I tested next-20240424 yesterday with defconfig and
-CONFIG_MEM_ALLOC_PROFILING enabled but didn't see any issue like that.
-Could you share your config file please?
-Thanks,
-Suren.
+This is problematic for a case where hsrX interface is already in the
+operational state when hsr_netdev_notify() is called, so timer is not
+configured to trigger and as a result the hsrX is not sending supervisory
+frames to HSR ring.
+
+This error has been discovered when hsr_ping.sh script was run. To be
+more specific - for the hsr1 and hsr2 the hsr_netdev_notify() was
+called at least twice with different IF_OPER_{LOWERDOWN|DOWN|UP} states
+assigned in hsr_check_carrier_and_operstate(hsr). As a result there was
+no issue with sending supervisory frames.
+However, with hsr3, the notify function was called only once with
+operstate set to IF_OPER_UP and timer responsible for triggering
+supervisory frames was not fired.
+
+The solution is to use netif_oper_up() helper function to assess if
+network device is up and then setup timer. Otherwise the timer is
+activated.
+
+Signed-off-by: Lukasz Majewski <lukma@denx.de>
+---
+ net/hsr/hsr_device.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
+
+diff --git a/net/hsr/hsr_device.c b/net/hsr/hsr_device.c
+index cd1e7c6d2fc0..e91d897e2cee 100644
+--- a/net/hsr/hsr_device.c
++++ b/net/hsr/hsr_device.c
+@@ -61,39 +61,34 @@ static bool hsr_check_carrier(struct hsr_port *master)
+ 	return false;
+ }
+ 
+-static void hsr_check_announce(struct net_device *hsr_dev,
+-			       unsigned char old_operstate)
++static void hsr_check_announce(struct net_device *hsr_dev)
+ {
+ 	struct hsr_priv *hsr;
+ 
+ 	hsr = netdev_priv(hsr_dev);
+-
+-	if (READ_ONCE(hsr_dev->operstate) == IF_OPER_UP && old_operstate != IF_OPER_UP) {
++	if (netif_oper_up(hsr_dev)) {
+ 		/* Went up */
+ 		hsr->announce_count = 0;
+ 		mod_timer(&hsr->announce_timer,
+ 			  jiffies + msecs_to_jiffies(HSR_ANNOUNCE_INTERVAL));
+-	}
+-
+-	if (READ_ONCE(hsr_dev->operstate) != IF_OPER_UP && old_operstate == IF_OPER_UP)
++	} else {
+ 		/* Went down */
+ 		del_timer(&hsr->announce_timer);
++	}
+ }
+ 
+ void hsr_check_carrier_and_operstate(struct hsr_priv *hsr)
+ {
+ 	struct hsr_port *master;
+-	unsigned char old_operstate;
+ 	bool has_carrier;
+ 
+ 	master = hsr_port_get_hsr(hsr, HSR_PT_MASTER);
+ 	/* netif_stacked_transfer_operstate() cannot be used here since
+ 	 * it doesn't set IF_OPER_LOWERLAYERDOWN (?)
+ 	 */
+-	old_operstate = READ_ONCE(master->dev->operstate);
+ 	has_carrier = hsr_check_carrier(master);
+ 	hsr_set_operstate(master, has_carrier);
+-	hsr_check_announce(master->dev, old_operstate);
++	hsr_check_announce(master->dev);
+ }
+ 
+ int hsr_get_max_mtu(struct hsr_priv *hsr)
+-- 
+2.20.1
+
 
