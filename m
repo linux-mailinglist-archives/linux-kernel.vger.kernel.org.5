@@ -1,146 +1,134 @@
-Return-Path: <linux-kernel+bounces-158218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D5878B1D1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:52:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD35E8B1D24
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:53:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F17B1C20F26
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:52:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 946E0286601
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:53:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16B17FBBA;
-	Thu, 25 Apr 2024 08:52:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910158249A;
+	Thu, 25 Apr 2024 08:53:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JZmqsF4J"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BgQ6XWu4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8BAD1E4A6;
-	Thu, 25 Apr 2024 08:52:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC4E47FBB4;
+	Thu, 25 Apr 2024 08:53:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714035134; cv=none; b=WBYQ0gm+Ipd1TEpKiG0ppC32Y+8ymvIDdfr1A8S9Syub1zZNY9SyzE5+U4yY4pA4defCU96o9zAeb6zkxOJLbcwhr/xsRBtpx6yWIrmx1HMkBWwk8MZo1t3vTDD0cCDymKSqY7wUopmtpEllLjxEb0DZTXC4EbBzFN4wylQGsVo=
+	t=1714035200; cv=none; b=TG6L4TppqUKSvaYpKVi7s/G8OX/etq56RwpcYatmn72wOViaN9f3m/dhuCvSPRkc9XBD2jZbRgWlTEx7UuMEpmj78I2lBJgUtB2nnL3UscLRwA82hMsya7Uik4cBJZ/xukjiVvigKrRv0WotKI5JSeR/oLKnjufMBrcg/lJQ75o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714035134; c=relaxed/simple;
-	bh=chBR9FB2ZAl9HdeLR0mWAhYHpEkxBgAv2aOwNJJd82c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RirRg0+VUE2Ziz7cZOI+i+b7BWWm93ExwUkZAMTbDKfTBkH63tnEESrqbzye2wvHknOiTQpaZzKWiyPO9V7vc4bzJ0U4pTXznU0pATAEIa1bbBj/lxF+xqwZXPcm34OSh7Rf/r/4xNrCmfhxTZsHetgswdEWQkzavHJwhE0tLfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JZmqsF4J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 636F2C2BD10;
-	Thu, 25 Apr 2024 08:52:10 +0000 (UTC)
+	s=arc-20240116; t=1714035200; c=relaxed/simple;
+	bh=39w5XQsRAGKnURUuXsQ1Wk8XgraObcOPly8hISIv0IE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MaKcqaLt733L7UuVP31Qw6x0pvp0iDCODaHf+yi18LJK3+QUIo/0IZAvvA3nVaaQej5pqVgfBhB8Id3TAc5eEXzxIMqxihJvO30tLSJr6lliCxP4h1Mj8v44irwt+Gh6hdYwnQD1gSashr0753g5Dtsxmw+tOmc357vtDiff7bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BgQ6XWu4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53AFFC113CC;
+	Thu, 25 Apr 2024 08:53:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714035133;
-	bh=chBR9FB2ZAl9HdeLR0mWAhYHpEkxBgAv2aOwNJJd82c=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=JZmqsF4JYZtSEX7nRTxnFTX41Otk1vJ00X4APhwdPw3z3Yb6RZSQkuyhDSYJ8v3jO
-	 pAud1T0OL9XzKTBRJ1dCIRJfyHy73jhRf1JkeDgEEEVuQ2+t2OzFUYpmHewYm0Vovp
-	 8AtzLVTO8itMeAlad5BWBuoyuH47XCAMJUS4pk5kB57B9mlSdQUsAaPvrrokfPimUi
-	 9X1E/NId9ckBg9LRdWtgo+gsDYSeLtgTHFAYvl2A8FU9qJLIlza+TLasQbrMNoJSLb
-	 UQxePnp/fpY5GR5OycMYZ2cEGg4RXBicUeU2whf9CEgy796tL1UJC29M9BFWDFdW58
-	 S/rx+xvVR9Biw==
-Message-ID: <2b78be92-08a5-4bf8-a1e1-477ecbbe73da@kernel.org>
-Date: Thu, 25 Apr 2024 10:52:08 +0200
+	s=k20201202; t=1714035200;
+	bh=39w5XQsRAGKnURUuXsQ1Wk8XgraObcOPly8hISIv0IE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BgQ6XWu4j//NQ+XzmO9Edx2/vMnfoCNacDVh0oH6Igb9ft6E2ihSDh5gTNGuNBf2V
+	 9ALM3rKYjIQP8K0QnFcPOz6R7zhQ3nuAo6Jw0/bCIOhRHj2QYCS0L4UE/tzAWg2a/k
+	 mKycos2AMlSnwKLkFzY2So29mkpIjYmIYvKDNgrug0F91n+ZOLHbuh9wQH1aiR+peQ
+	 j97t1YIB5I/8A8z73fWpma6KnBND+XcB3y5eh6iLfFYVOF9aDsC6OES1hEm6BayZKF
+	 eHjxGjhzz8HVgO2XLyqdNhLSskCSBg3PYMZzT+cyyhuFN/P9vcXiNFcPiv6yKeJdbx
+	 pR9r4ZFdyHTWg==
+Date: Thu, 25 Apr 2024 10:53:10 +0200
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 12/16] selftests/bpf: wq: add bpf_wq_init()
+ checks
+Message-ID: <v7avo5guriv6vbxt25m6bf4gs6ifblolxsui2vmswkyavim4c6@w6yposzvdxtg>
+References: <20240420-bpf_wq-v2-0-6c986a5a741f@kernel.org>
+ <20240420-bpf_wq-v2-12-6c986a5a741f@kernel.org>
+ <CAEf4BzbqmrucgeXX9+Hgnhefne-go9nHYPmh_+JwuMHeNNsv-g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: regulator: st,stm32mp1-pwr-reg: add
- correct compatible
-To: Patrick Delaunay <patrick.delaunay@foss.st.com>,
- Alexandre TORGUE <alexandre.torgue@foss.st.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Pascal Paillet <p.paillet@foss.st.com>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
-References: <20240425074835.760134-1-patrick.delaunay@foss.st.com>
- <20240425094829.1.Ia0a99d90acb512aa020a6e7a8cca8cc1b71f1759@changeid>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240425094829.1.Ia0a99d90acb512aa020a6e7a8cca8cc1b71f1759@changeid>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbqmrucgeXX9+Hgnhefne-go9nHYPmh_+JwuMHeNNsv-g@mail.gmail.com>
 
-On 25/04/2024 09:48, Patrick Delaunay wrote:
-> Remove the unexpected comma in the compatible "st,stm32mp1,pwr-reg"
-> and define the new compatible "st,stm32mp1-pwr-reg".
-> The old compatible is only keep for compatibility with old device trees.
+On Apr 24 2024, Andrii Nakryiko wrote:
+> On Sat, Apr 20, 2024 at 2:10 AM Benjamin Tissoires <bentiss@kernel.org> wrote:
+> >
+> > Allows to test if allocation/free works
+> >
+> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> >
+> > ---
+> >
+> > changes in v2:
+> > - dropped mark_precise checks
+> > ---
+> >  tools/testing/selftests/bpf/bpf_experimental.h  |  1 +
+> >  tools/testing/selftests/bpf/prog_tests/wq.c     |  8 +++
+> >  tools/testing/selftests/bpf/progs/wq.c          | 10 ++++
+> >  tools/testing/selftests/bpf/progs/wq_failures.c | 78 +++++++++++++++++++++++++
+> >  4 files changed, 97 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+> > index 3329ea080865..785b91b629be 100644
+> > --- a/tools/testing/selftests/bpf/bpf_experimental.h
+> > +++ b/tools/testing/selftests/bpf/bpf_experimental.h
+> > @@ -470,4 +470,5 @@ extern int bpf_iter_css_new(struct bpf_iter_css *it,
+> >  extern struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css *it) __weak __ksym;
+> >  extern void bpf_iter_css_destroy(struct bpf_iter_css *it) __weak __ksym;
+> >
+> > +extern int bpf_wq_init(struct bpf_wq *wq, void *p__map, unsigned int flags) __weak __ksym;
+> >  #endif
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/wq.c b/tools/testing/selftests/bpf/prog_tests/wq.c
+> > index 9a07b8bc2c52..26ab69796103 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/wq.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/wq.c
+> > @@ -2,6 +2,7 @@
+> >  /* Copyright (c) 2024 Benjamin Tissoires */
+> >  #include <test_progs.h>
+> >  #include "wq.skel.h"
+> > +#include "wq_failures.skel.h"
+> >
+> >  void serial_test_wq(void)
+> >  {
+> > @@ -9,3 +10,10 @@ void serial_test_wq(void)
+> >
+> >         RUN_TESTS(wq);
+> >  }
+> > +
+> > +void serial_test_failures_wq(void)
+> > +{
+> > +       LIBBPF_OPTS(bpf_test_run_opts, topts);
+> > +
 > 
-> Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
-> ---
+> unused leftover?
+
+Oops, yeah. Looks like it.
+
+I'll send a removal of it while fixing 9/16
+
+Cheers,
+Benjamin
+
 > 
->  .../devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml  | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> > +       RUN_TESTS(wq_failures);
+> > +}
 > 
-> diff --git a/Documentation/devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml b/Documentation/devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml
-> index c9586d277f41..2a52f9e769c2 100644
-> --- a/Documentation/devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml
-> +++ b/Documentation/devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml
-> @@ -11,7 +11,9 @@ maintainers:
->  
->  properties:
->    compatible:
-> -    const: st,stm32mp1,pwr-reg
-> +    enum:
-> +      - st,stm32mp1-pwr-reg
-> +      - st,stm32mp1,pwr-reg
-
-Please make it oneOf:
- - const: new one
- - const: old one
-   deprecated: true
-
-Best regards,
-Krzysztof
-
+> [...]
 
