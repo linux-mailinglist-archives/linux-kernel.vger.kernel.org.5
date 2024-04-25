@@ -1,280 +1,322 @@
-Return-Path: <linux-kernel+bounces-157878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAF418B17F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D868D8B17F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:22:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E78A6B2287D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:21:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 032C9B245AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:22:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A40CA34;
-	Thu, 25 Apr 2024 00:21:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91CADA50;
+	Thu, 25 Apr 2024 00:22:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fV8BqA4W"
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="WUiGkYGn"
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9477736E
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:20:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02DA9A34
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:22:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714004461; cv=none; b=CR7fLqdAiB5MIZl0m8M7J/MP0zx1nTV93kjQ7Kh7tjchBdGigqLz8me4NJpGpiaQXDaioAGnUL7swPl5C9M/AYJIl0UBJqhG95jUkbI9XPwb6AqJkC9od9agK9HK0uy6YdQqs9LIXIbSuEUAkLAu7Uu+r6pH5LW3UrH21fId2hc=
+	t=1714004529; cv=none; b=TPS3QNGA3+z4rv/RIcwD8K/m5Oon8FO5GVBUIuPILO1EjDYQRjjTrkz/5XOT1EtyLqrm9PIa0JuhoNcZepcTYpun91Byl+p+rt8cIn4gtZWm/7tCeTTLve8u0pwf3ZZb61PKzD+jS/WLoAhwLUWfYR7NH2J6hiR1GczOuzIWXOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714004461; c=relaxed/simple;
-	bh=06siyUY10nF0CTm/YK6Y9Ga58CqckhhzWBrmGjY3X24=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sphnuDOp8903xhxMzBdBmPqfrMaDdZLqhlMZ1SFIE7z/cHiL0Z6HQ5ZMff3BsqW4Mvw6Cfir2xJwnzPmsxDm6vFlZtRWNFagiGU0gVRvLkQdw37Q/8rPaC9445H0UNRlvhXVsvFxqKUeUXKREC1xoBLGxY+HYGHm8KMLxTWAX1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=fV8BqA4W; arc=none smtp.client-ip=209.85.210.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6ea26393116so325586a34.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:20:59 -0700 (PDT)
+	s=arc-20240116; t=1714004529; c=relaxed/simple;
+	bh=8eJmrY/4exFZ0Pdl/HtN/auITI5ah8JknAcuLdalb2o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TkrB6THDN+w0VU430N49ajKLAD+VKOSat0/oSv36OUGfakGOlwMWtBMqq9tZC3QEgXZNO5eCW1I0/JDZPVb7ceR8vu6eSaDWy97jFCqqOUKxkuOwNXYK7nVlkkHE2NDzdclFZn6uv2VB4wYwsgNMImfq973d9j0JKxJo+AmDSA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WUiGkYGn; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-439b1c72676so126531cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:22:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714004458; x=1714609258; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4ObhZs+th7g8VscGs2I0yShbfHJZx8oS19i8kCf/KxY=;
-        b=fV8BqA4WHvVpKnWSIge2+UgIjcIzEX7TF2Bh+WxKoRMt2yWHDFJ243ROqPs5krfzH9
-         8X9f6V/xzFs6KAOUoxIMYT9ICG7trezUrcldIMdQbkaaLSgIc5If355y54sIHEsC5uFn
-         v9Ut8bG1q/elxRdqM6ybLutQD6pZoz6fKOOKc=
+        d=google.com; s=20230601; t=1714004527; x=1714609327; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qX36zL+8SnXnPofbhPQH1rVaLb6ttYTTZybT/hWsEJs=;
+        b=WUiGkYGn1Ttkf24eHCuTqM+iY9TO76pIzHL9E0j42HVy5+DB35sFJKfRLfBOPzfFdn
+         U+JwOO3PHlqflibJxKj5NcvGH91A/6OqqWPeFfo54rSSbfhWfTyUN9Uq+3U3gpyqS8rG
+         2Mm9pLOtZWDg5TIbNd3NXEjFLQLZzNPy9aWO82miQakYrCcLp9XvLHvQE+kjD2sIUXHe
+         tM4YxAJlM6Ta1E597FWsjX7uUYOZTEnMjKkn18CMufQODPgoxEkc6ZqFaOPJmPI8M+ev
+         uKbLeXWPM+jeoE9HeGhkMbxS6/zCSi/HEmgS9EzwZZ7P2MdahOsosN738VztsgFgsN0O
+         tPZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714004458; x=1714609258;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4ObhZs+th7g8VscGs2I0yShbfHJZx8oS19i8kCf/KxY=;
-        b=MQ8CBJ0/a/Kj0mIWtpMu/q05Palx04SJqWYV0F3XkWUQzCI2apZm5YqG8REBTC5Vwv
-         yGOUxJ5hkJxnh/OqldS0mKqShGrLb4aaJEnbzZ0A4HOhNlXGf1wfLJN8Oxa8SunXDD4N
-         PxG1W21cV0HfxBEe3Z9kbxnnA7EhPezAT4uy78UlCjtdh0WWD0e+izM3fFTmCphB8oDR
-         ciXv0wVQ3PL1SN7dM2hh8nae7pmWWacHrLMlCn0PtTkbhmjmsh0Z6DG8brQSex8i153g
-         YiWuJybppqEPGrZl2eUsYIzMzO2Nb+smhN9QNFzbY0kQkomXw8h4Z/+46ifWVi7fEzD0
-         9ipw==
-X-Forwarded-Encrypted: i=1; AJvYcCUfgoYPoSjNUEShlb035zy5uloCJKltyrHF5J7lorLi/Q0ZMsfPlQZ8ycY6+UD0x0SvkBPszcU1OQkFODrX4QCFz6krX0fvHis2OztR
-X-Gm-Message-State: AOJu0Yy2Vod6KHHtTTZnRT1NwdO42KOnI4J8cdMzbEy5pQ0m9Bv6Bs5I
-	wmprjKZBRDXEBeyZS5I5hg5wZgMRTIEwRgB0J6DOe+kbL4cNwLI78HpTre5LVg==
-X-Google-Smtp-Source: AGHT+IG5J2R7XHW8gknBTIc0tbqbR6H7suWvgk1m9INcP18Qp3bZh0OHj2EQjYRxMgRNbxalMUB3JQ==
-X-Received: by 2002:a05:6870:956f:b0:221:bf34:b15f with SMTP id v47-20020a056870956f00b00221bf34b15fmr3141193oal.25.1714004458468;
-        Wed, 24 Apr 2024 17:20:58 -0700 (PDT)
-Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:7c53:2204:2b1d:2152])
-        by smtp.gmail.com with ESMTPSA id z17-20020aa78891000000b006ecf217a5e1sm12012311pfe.189.2024.04.24.17.20.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 17:20:57 -0700 (PDT)
-From: Douglas Anderson <dianders@chromium.org>
-To: dri-devel@lists.freedesktop.org
-Cc: Javier Martinez Canillas <javierm@redhat.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	linus.walleij@linaro.org,
-	Cong Yang <yangcong5@huaqin.corp-partner.google.com>,
-	lvzhaoxiong@huaqin.corp-partner.google.com,
-	Hsin-Yi Wang <hsinyi@google.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/mipi-dsi: Reduce driver bloat of mipi_dsi_*_write_seq()
-Date: Wed, 24 Apr 2024 17:20:18 -0700
-Message-ID: <20240424172017.1.Id15fae80582bc74a0d4f1338987fa375738f45b9@changeid>
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+        d=1e100.net; s=20230601; t=1714004527; x=1714609327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qX36zL+8SnXnPofbhPQH1rVaLb6ttYTTZybT/hWsEJs=;
+        b=B7vUxz50QaWtldpCwomklaYvYminL7Mdzt5JtLyh3LXrrZIF6N2eGf9T3509fq4G6H
+         P4EuwL3miQyepyimiW85HFb5RByDctQ0pvV0wZ+J5dtGtgeTqg9MEU6djXbC50B9c2FM
+         kjqZRDPJRwSkHqAnJMAs21fCBeJlvFBe95ydxDpGxhOtmpH0WnOjqQPYt0XaKxQewNju
+         ge5FqZ7WbtRsifyu1DLEV70V7vMq+deNYMYn2QOGBWk94P5WFSafRnvt5e4a+4dvTlkI
+         183j6hUACiFJ+Ge2Fs04ol8JUiHB0unURYVB6wsHugoocHUxNhNOaviyW20m03FmUiZP
+         ibRg==
+X-Forwarded-Encrypted: i=1; AJvYcCU9kS7lrsAZ9NlqU4xTrkzgaxv2Ruqe4wJSQbjRhxxW6jvgicj2+XxJGxCK8TFOe9CS/wBDrDE5S00VUeIbROn2cRkTnGpYzP7NgXnc
+X-Gm-Message-State: AOJu0YxNduF2Q0FcyuBzoYRK2ulr/GUWqYVCeMEox8ylrY9UBhfn2Jaw
+	OgsUZ93HYQv+R94cSvfbHfL7JRxcJLc6yVFo7B3zBCgETEWM1JnUf3kKody5wF/7s7ScE9x69aZ
+	rbDVftPCsNlWsStaYB/jk30Y+c67IMeTMf6Gr
+X-Google-Smtp-Source: AGHT+IHgB4NlLUHPs3FdgauOg8a5+o89vMOPoBWLv+vZwU9HJB9ei+66DabBHm0TnslA9GBNspCREnBo0enCduLAjMM=
+X-Received: by 2002:ac8:53c1:0:b0:439:d5e3:1f31 with SMTP id
+ c1-20020ac853c1000000b00439d5e31f31mr132912qtq.4.1714004526570; Wed, 24 Apr
+ 2024 17:22:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240418081548.12160-1-lvzhaoxiong@huaqin.corp-partner.google.com>
+ <20240418081548.12160-3-lvzhaoxiong@huaqin.corp-partner.google.com>
+ <zanx5y3obqmewnbooovf52hx6vh7tpi4zsbse2dyzcqzddmzhw@kewxoa6n3mja>
+ <CACb=7PURWtS8bwT5EcAFHhu7deHd2Y8cNOattfdwyEYpOUcbnQ@mail.gmail.com>
+ <vbt2nxddw2dc7hkreq4iybv5zv5xyp32oajybeqsphgfrhzmn7@tskvckljmxpe>
+ <CACb=7PVTvV9nsFu1ZAXu7YTjSOAGZka+c__EJq3J3qgSJGEShw@mail.gmail.com>
+ <CAD=FV=VYAzqsGEBJai9b9n+HxHiG59L1vF73AEWcTwLS_ryjWw@mail.gmail.com>
+ <an2k3vgynq4as2sd5dy6ccmdiqedmo7qjsab5qyfhesd333i2a@235sqph3bze5>
+ <CAD=FV=VQ8rbwKk4WpHRER9p4cZp7UrrHRpgnErqbQxyxp4sg5w@mail.gmail.com>
+ <CAA8EJprv3qBd1hfdWHrfhY=S0w2O70dZnYb6TVsS6AGRPxsYdw@mail.gmail.com>
+ <CACb=7PVEpCFWf_aysRkeR0yWAXR5sTaXhNbi3TV3ffKj866+EQ@mail.gmail.com>
+ <CAA8EJprLvEt_pt4XzACQG7pU8KYagKbQ71xwtRF9KrLygTT3ow@mail.gmail.com>
+ <CAD=FV=V+jBvkKj1vvAsXuC5dSn0u_SQBQZHTrDZKoSG2V4fp3g@mail.gmail.com> <CAA8EJprU1KZHKAVUJiYaDRY6Wxihzw=ZDgdqQ9y7W3zdnRMfFg@mail.gmail.com>
+In-Reply-To: <CAA8EJprU1KZHKAVUJiYaDRY6Wxihzw=ZDgdqQ9y7W3zdnRMfFg@mail.gmail.com>
+From: Doug Anderson <dianders@google.com>
+Date: Wed, 24 Apr 2024 17:21:50 -0700
+Message-ID: <CAD=FV=WDTM6m6fHbs=+1Thnnsi2jCXBcAi89=8HeRYp73EUMQA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] drm/panel: kd101ne3: add new panel driver
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Hsin-Yi Wang <hsinyi@google.com>, 
+	lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>, mripard@kernel.org, 
+	airlied@gmail.com, daniel@ffwll.ch, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	cong yang <yangcong5@huaqin.corp-partner.google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The consensus of many DRM folks is that we want to move away from DSI
-drivers defining tables of init commands. Instead, we want to move to
-init functions that can use common DRM functions. The issue thus far
-has been that using the macros mipi_dsi_generic_write_seq() and
-mipi_dsi_dcs_write_seq() bloats the driver using them.
+Hi,
 
-Through a cooperative effort between Hsin-Yi Wang and Dmitry
-Baryshkov, we have realized that the majority of the bloat is the fact
-that we have the dev_err_ratelimited() directly in the macros. Let's
-hoist this call into drm_mipi_dsi.c by adding a "chatty" version of
-the functions that includes the print.
+On Wed, Apr 24, 2024 at 4:37=E2=80=AFPM Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On Thu, 25 Apr 2024 at 02:25, Doug Anderson <dianders@google.com> wrote:
+> >
+> > Hi,
+> >
+> > On Wed, Apr 24, 2024 at 3:51=E2=80=AFPM Dmitry Baryshkov
+> > <dmitry.baryshkov@linaro.org> wrote:
+> > >
+> > > On Thu, 25 Apr 2024 at 01:15, Hsin-Yi Wang <hsinyi@google.com> wrote:
+> > > >
+> > > > On Wed, Apr 24, 2024 at 2:49=E2=80=AFPM Dmitry Baryshkov
+> > > > <dmitry.baryshkov@linaro.org> wrote:
+> > > > >
+> > > > > On Thu, 25 Apr 2024 at 00:04, Doug Anderson <dianders@google.com>=
+ wrote:
+> > > > > >
+> > > > > > Hi,
+> > > > > >
+> > > > > > On Tue, Apr 23, 2024 at 2:20=E2=80=AFPM Dmitry Baryshkov
+> > > > > > <dmitry.baryshkov@linaro.org> wrote:
+> > > > > > >
+> > > > > > > On Tue, Apr 23, 2024 at 01:41:59PM -0700, Doug Anderson wrote=
+:
+> > > > > > > > Hi,
+> > > > > > > >
+> > > > > > > > On Tue, Apr 23, 2024 at 11:10=E2=80=AFAM Hsin-Yi Wang <hsin=
+yi@google.com> wrote:
+> > > > > > > > >
+> > > > > > > > > > > > > +#define _INIT_DCS_CMD(...) { \
+> > > > > > > > > > > > > +     .type =3D INIT_DCS_CMD, \
+> > > > > > > > > > > > > +     .len =3D sizeof((char[]){__VA_ARGS__}), \
+> > > > > > > > > > > > > +     .data =3D (char[]){__VA_ARGS__} }
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +#define _INIT_DELAY_CMD(...) { \
+> > > > > > > > > > > > > +     .type =3D DELAY_CMD,\
+> > > > > > > > > > > > > +     .len =3D sizeof((char[]){__VA_ARGS__}), \
+> > > > > > > > > > > > > +     .data =3D (char[]){__VA_ARGS__} }
+> > > > > > > > > > > >
+> > > > > > > > > > > > This is the third panel driver using the same appoa=
+ch. Can you use
+> > > > > > > > > > > > mipi_dsi_generic_write_seq() instead of the huge ta=
+ble? Or if you prefer
+> > > > > > > > > > > > the table, we should extract this framework to a co=
+mmon helper.
+> > > > > > > > > > > > (my preference is shifted towards mipi_dsi_generic_=
+write_seq()).
+> > > > > > > > > > > >
+> > > > > > > > > > > The drawback of mipi_dsi_generic_write_seq() is that =
+it can cause the
+> > > > > > > > > > > kernel size grows a lot since every sequence will be =
+expanded.
+> > > > > > > > > > >
+> > > > > > > > > > > Similar discussion in here:
+> > > > > > > > > > > https://lore.kernel.org/dri-devel/CAD=3DFV=3DWju3WS45=
+=3DEpXMUg7FjYDh3-=3Dmvm_jS7TF1tsaAzbb4Uw@mail.gmail.com/
+> > > > > > > > > > >
+> > > > > > > > > > > This patch would increase the module size from 157K t=
+o 572K.
+> > > > > > > > > > > scripts/bloat-o-meter shows chg +235.95%.
+> > > > > > > > > > >
+> > > > > > > > > > > So maybe the common helper is better regarding the ke=
+rnel module size?
+> > > > > > > > > >
+> > > > > > > > > > Yes, let's get a framework done in a useful way.
+> > > > > > > > > > I'd say, drop the _INIT_DELAY_CMD. msleep() and usleep_=
+range() should be
+> > > > > > > > > > used instead (and it's up to the developer to select co=
+rrect delay
+> > > > > > > > > > function).
+> > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +static const struct panel_init_cmd kingdisplay_k=
+d101ne3_init_cmd[] =3D {
+> > > > > > > > > > > > > +     _INIT_DELAY_CMD(50),
+> > > > > > > > > > > > > +     _INIT_DCS_CMD(0xE0, 0x00),
+> > > > > > > > > >
+> > > > > > > > > > [skipped the body of the table]
+> > > > > > > > > >
+> > > > > > > > > > > > > +     _INIT_DCS_CMD(0x0E, 0x48),
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +     _INIT_DCS_CMD(0xE0, 0x00),
+> > > > > > > > > >
+> > > > > > > > > > > > > +     _INIT_DCS_CMD(0X11),
+> > > > > > > > > >
+> > > > > > > > > > Also, at least this is mipi_dsi_dcs_exit_sleep_mode().
+> > > > > > > > > >
+> > > > > > > > > > > > > +     /* T6: 120ms */
+> > > > > > > > > > > > > +     _INIT_DELAY_CMD(120),
+> > > > > > > > > > > > > +     _INIT_DCS_CMD(0X29),
+> > > > > > > > > >
+> > > > > > > > > > And this is mipi_dsi_dcs_set_display_on().
+> > > > > > > > > >
+> > > > > > > > > > Having a single table enourages people to put known com=
+mands into the
+> > > > > > > > > > table, the practice that must be frowned upon and forbi=
+dden.
+> > > > > > > > > >
+> > > > > > > > > > We have functions for some of the standard DCS commands=
+ So, maybe
+> > > > > > > > > > instead of adding a single-table based approach we can =
+improve
+> > > > > > > > > > mipi_dsi_generic_write_seq() to reduce the bloat. E.g. =
+by moving the
+> > > > > > > > > > error handling to a common part of enable() / prepare()=
+ function.
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > For this panel, I think it can also refer to how
+> > > > > > > > > panel-kingdisplay-kd097d04.c does. Create the table for i=
+nit cmd data,
+> > > > > > > > > not what operation to use, and use mipi_dsi_generic_write=
+_seq() when
+> > > > > > > > > looping through the table.
+> > > > > > > >
+> > > > > > > > Even more similar discussion:
+> > > > > > > >
+> > > > > > > > https://lore.kernel.org/r/CAD=3DFV=3DUGDbNvAMjzWSOvxybGikQc=
+vW9JsRtbxHVg8_97YPEQCA@mail.gmail.com
+> > > > > > >
+> > > > > > > It seems I skipped that thread.
+> > > > > > >
+> > > > > > > I'd still suggest a code-based solution compared to table-bas=
+ed one, for
+> > > > > > > the reasons I've outlined before. Having a tables puts a pres=
+sure on the
+> > > > > > > developer to put commands there for which we already have a
+> > > > > > > command-specific function.
+> > > > > >
+> > > > > > The problem is that with these panels that need big init sequen=
+ces the
+> > > > > > code based solution is _a lot_ bigger. If it were a few bytes o=
+r a
+> > > > > > 1-2KB then fine, but when Hsin-Yi measured Linus W's attempt to=
+ move
+> > > > > > from a table to code it was 100K difference in code [1]. I woul=
+d also
+> > > > > > say that having these long init sequences done as separate comm=
+ands
+> > > > > > encourages people to skip checking the return values of each of=
+ the
+> > > > > > transfer functions and I don't love that idea.
+> > > > > >
+> > > > > > It would be ideal if these panels didn't need these long init
+> > > > > > sequences, but I don't have any inside knowledge here saying th=
+at they
+> > > > > > could be removed. So assume we can't get rid of the init sequen=
+ces it
+> > > > > > feels like we have to find some way to make the tables work for=
+ at
+> > > > > > least the large chunks of init code and encourage people to mak=
+e the
+> > > > > > tables readable...
+> > > > >
+> > > > >
+> > > > > I did a quick check on the boe-tv101wum-nl6 driver by converting =
+the
+> > > > > writes to use the following macro:
+> > > > >
+> > > > > #define mipi_dsi_dcs_write_cmd_seq(dsi, cmd, seq...)
+> > > > >              \
+> > > > >         do {                                                     =
+              \
+> > > > >                 static const u8 d[] =3D { cmd, seq };            =
+            \
+> > > > >                 ret =3D mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_S=
+IZE(d));    \
+> > > > >                 if (ret < 0)                                     =
+              \
+> > > > >                         goto err;                                =
+              \
+> > > > >         } while (0)
+> > > > >
+> > > > > And then at the end of the init funciton having
+> > > > >
+> > > > > err:
+> > > > >         dev_err(panel->dev,
+> > > > >                 "failed to write command %d\n", ret);
+> > > > >         return ret;
+> > > > > }
+> > > > >
+> > > >
+> > > > I'm not sure about the coding style rule here, would it be consider=
+ed
+> > > > unclear that caller of mipi_dsi_dcs_write_cmd_seq() needs to have e=
+rr
+> > > > block, but the block may not be directly used in that caller and is
+> > > > only jumped from the macro?
+> > >
+> > > I'm also not sure here. It was a quick and dirty test.
+> > > We might as well do something like
+> > >
+> > > ret =3D mipi_dsi_dcs_write_cmd_seq(dsi, ...);
+> > > if (ret)
+> > >     goto err;
+> > >
+> > > all over the place.
+> >
+> > Oh. This is actually very simple to fix and requires no code changes
+> > to clients. :-P We just need to hoist the printing out of the macro
+> > and into "drm_mipi_dsi.c". Let me double-confirm and then I'll post a
+> > patch.
+>
+> Sounds good. I have converted boe-tv101wum-nl6, ilitek-ili9882t and
+> innolux-p079zca drivers. Once you post your patch I can post those
+> too.
 
-Without any changes to clients this gives a dramatic savings. Building
-with my build system shows one example:
+I sent out a patch for it, though I didn't have time to do testing on
+real hardware:
 
-$ scripts/bloat-o-meter \
-  .../before/panel-novatek-nt36672e.ko \
-  .../after/panel-novatek-nt36672e.ko
+https://lore.kernel.org/r/20240424172017.1.Id15fae80582bc74a0d4f1338987fa37=
+5738f45b9@changeid
 
-add/remove: 0/1 grow/shrink: 1/1 up/down: 6/-19652 (-19646)
-Function                                     old     new   delta
-__UNIQUE_ID_vermagic520                       64      70      +6
-nt36672e_1080x2408_60hz_init               16592    7260   -9332
-nt36672e_1080x2408_60hz_init._rs           10320       -  -10320
-Total: Before=31503, After=11857, chg -62.36%
+I can poke more at it tomorrow...
 
-Note that given the change in location of the print it's harder to
-include the "cmd" in the printout for mipi_dsi_dcs_write_seq() since,
-theoretically, someone could call the new chatty function with a
-zero-size array and it would be illegal to dereference data[0].
-There's a printk format to print the whole buffer and this is probably
-more useful for debugging anyway. Given that we're doing this for
-mipi_dsi_dcs_write_seq(), let's also print the buffer for
-mipi_dsi_generic_write_seq() in the error case.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-The MIPI device I have in front of me (wormdingler) hasn't been
-converted to use these functions yet, so this is just compile
-tested. It's about my end of day so I'm sending this out since it's
-pretty straightforward. Hopefully others can confirm it works well for
-them and also saves space under their compilers.
-
- drivers/gpu/drm/drm_mipi_dsi.c | 54 ++++++++++++++++++++++++++++++++++
- include/drm/drm_mipi_dsi.h     | 31 ++++++++-----------
- 2 files changed, 67 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
-index 795001bb7ff1..5ded6aef38ed 100644
---- a/drivers/gpu/drm/drm_mipi_dsi.c
-+++ b/drivers/gpu/drm/drm_mipi_dsi.c
-@@ -764,6 +764,33 @@ ssize_t mipi_dsi_generic_write(struct mipi_dsi_device *dsi, const void *payload,
- }
- EXPORT_SYMBOL(mipi_dsi_generic_write);
- 
-+/**
-+ * mipi_dsi_generic_write_chatty() - mipi_dsi_generic_write() w/ an error log
-+ * @dsi: DSI peripheral device
-+ * @payload: buffer containing the payload
-+ * @size: size of payload buffer
-+ *
-+ * Just like mipi_dsi_generic_write() but includes a dev_err_ratelimited()
-+ * call for you.
-+ *
-+ * Return: The number of bytes transmitted on success or a negative error code
-+ * on failure.
-+ */
-+ssize_t mipi_dsi_generic_write_chatty(struct mipi_dsi_device *dsi,
-+				      const void *payload, size_t size)
-+{
-+	struct device *dev = &dsi->dev;
-+	int ret;
-+
-+	ret = mipi_dsi_generic_write(dsi, payload, size);
-+	if (ret < 0)
-+		dev_err_ratelimited(dev, "sending generic data %*ph failed: %d\n",
-+				    (int)size, payload, ret);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(mipi_dsi_generic_write_chatty);
-+
- /**
-  * mipi_dsi_generic_read() - receive data using a generic read packet
-  * @dsi: DSI peripheral device
-@@ -852,6 +879,33 @@ ssize_t mipi_dsi_dcs_write_buffer(struct mipi_dsi_device *dsi,
- }
- EXPORT_SYMBOL(mipi_dsi_dcs_write_buffer);
- 
-+/**
-+ * mipi_dsi_dcs_write_buffer_chatty - mipi_dsi_dcs_write_buffer() w/ an error log
-+ * @dsi: DSI peripheral device
-+ * @data: buffer containing data to be transmitted
-+ * @len: size of transmission buffer
-+ *
-+ * Just like mipi_dsi_dcs_write_buffer() but includes a dev_err_ratelimited()
-+ * call for you.
-+ *
-+ * Return: The number of bytes successfully transmitted or a negative error
-+ * code on failure.
-+ */
-+ssize_t mipi_dsi_dcs_write_buffer_chatty(struct mipi_dsi_device *dsi,
-+					 const void *data, size_t len)
-+{
-+	struct device *dev = &dsi->dev;
-+	int ret;
-+
-+	ret = mipi_dsi_dcs_write_buffer(dsi, data, len);
-+	if (ret < 0)
-+		dev_err_ratelimited(dev, "sending dcs data %*ph failed: %d\n",
-+				    (int)len, data, ret);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(mipi_dsi_dcs_write_buffer_chatty);
-+
- /**
-  * mipi_dsi_dcs_write() - send DCS write command
-  * @dsi: DSI peripheral device
-diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
-index 82b1cc434ea3..784e425dc4c8 100644
---- a/include/drm/drm_mipi_dsi.h
-+++ b/include/drm/drm_mipi_dsi.h
-@@ -256,6 +256,8 @@ int mipi_dsi_picture_parameter_set(struct mipi_dsi_device *dsi,
- 
- ssize_t mipi_dsi_generic_write(struct mipi_dsi_device *dsi, const void *payload,
- 			       size_t size);
-+ssize_t mipi_dsi_generic_write_chatty(struct mipi_dsi_device *dsi,
-+				      const void *payload, size_t size);
- ssize_t mipi_dsi_generic_read(struct mipi_dsi_device *dsi, const void *params,
- 			      size_t num_params, void *data, size_t size);
- 
-@@ -279,6 +281,8 @@ enum mipi_dsi_dcs_tear_mode {
- 
- ssize_t mipi_dsi_dcs_write_buffer(struct mipi_dsi_device *dsi,
- 				  const void *data, size_t len);
-+ssize_t mipi_dsi_dcs_write_buffer_chatty(struct mipi_dsi_device *dsi,
-+					 const void *data, size_t len);
- ssize_t mipi_dsi_dcs_write(struct mipi_dsi_device *dsi, u8 cmd,
- 			   const void *data, size_t len);
- ssize_t mipi_dsi_dcs_read(struct mipi_dsi_device *dsi, u8 cmd, void *data,
-@@ -317,14 +321,10 @@ int mipi_dsi_dcs_get_display_brightness_large(struct mipi_dsi_device *dsi,
- #define mipi_dsi_generic_write_seq(dsi, seq...)                                \
- 	do {                                                                   \
- 		static const u8 d[] = { seq };                                 \
--		struct device *dev = &dsi->dev;                                \
- 		int ret;                                                       \
--		ret = mipi_dsi_generic_write(dsi, d, ARRAY_SIZE(d));           \
--		if (ret < 0) {                                                 \
--			dev_err_ratelimited(dev, "transmit data failed: %d\n", \
--					    ret);                              \
-+		ret = mipi_dsi_generic_write_chatty(dsi, d, ARRAY_SIZE(d));    \
-+		if (ret < 0)                                                   \
- 			return ret;                                            \
--		}                                                              \
- 	} while (0)
- 
- /**
-@@ -333,18 +333,13 @@ int mipi_dsi_dcs_get_display_brightness_large(struct mipi_dsi_device *dsi,
-  * @cmd: Command
-  * @seq: buffer containing data to be transmitted
-  */
--#define mipi_dsi_dcs_write_seq(dsi, cmd, seq...)                           \
--	do {                                                               \
--		static const u8 d[] = { cmd, seq };                        \
--		struct device *dev = &dsi->dev;                            \
--		int ret;                                                   \
--		ret = mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));    \
--		if (ret < 0) {                                             \
--			dev_err_ratelimited(                               \
--				dev, "sending command %#02x failed: %d\n", \
--				cmd, ret);                                 \
--			return ret;                                        \
--		}                                                          \
-+#define mipi_dsi_dcs_write_seq(dsi, cmd, seq...)                               \
-+	do {                                                                   \
-+		static const u8 d[] = { cmd, seq };                            \
-+		int ret;                                                       \
-+		ret = mipi_dsi_dcs_write_buffer_chatty(dsi, d, ARRAY_SIZE(d)); \
-+		if (ret < 0)                                                   \
-+			return ret;                                            \
- 	} while (0)
- 
- /**
--- 
-2.44.0.769.g3c40516874-goog
-
+-Doug
 
