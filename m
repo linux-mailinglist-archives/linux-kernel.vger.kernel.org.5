@@ -1,224 +1,255 @@
-Return-Path: <linux-kernel+bounces-159107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 821C48B298A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:16:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EC468B298D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:17:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 106031F22AAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:16:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3524E28167C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:17:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C707311721;
-	Thu, 25 Apr 2024 20:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1C7615380A;
+	Thu, 25 Apr 2024 20:17:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="nJhedPiH"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z/NUikNX"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E731534FD;
-	Thu, 25 Apr 2024 20:16:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1914B1534FD
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:17:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714076177; cv=none; b=Ntf6qYSPvUW6abUgg6JNAsPOVKb4RC9ZUaq+81jthxars3wNxFFaaU1yf64tb4oWrBdV0QzwdTB5N2iA5z3Gk2p9+3gthIizUbx77pJahxUEM2HMSjC+zoV9zvK1E61B4Yv+l1Pqr+ioM4OmJXfeE/mS3ly5i8CJiCDxRZQzMho=
+	t=1714076240; cv=none; b=PkESxRuCRy/QMzuTX+SeyeMcVR61jFm9N9dKO6jFAgCV3e9cNWhcHyNTUqv+gpaolOOy7Zd5O2uy7P7qHsvKiIeSlod3lXg/GfS9vifJ3Avbw4Kipbb4XMbu/A2uHoonu1FIUS5X76IPm1JusmOYbWFk1GtnZocEcfFet8E+pxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714076177; c=relaxed/simple;
-	bh=K81+tA4eHurm+LtgiRStXLsxrTRQZz08hGj/EWeB+ik=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qyEbScivQMiOCGSHb/zpY+oQOZEWMqAisyIRDnPfanSxa6asfvsofo/8aHKmY7C1rCW7RuAITVcm8mFFFEdcWTpiWFfCl08dGoNA7o1A4cEBsnJFvafrYDNn+zFqIjV3utDLWH+nX4UcugTukUMsjJcdk+EDLoySXI0bIzx2e7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=nJhedPiH; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=elu4sjaKrKGg5mM6SIUrWQhAoZsJ922o9SojYoxFNkg=; b=nJhedPiHAWOTMqyxOiP4bSL9A4
-	1Q23PSsMWnLXfe/kNPXGuTmlweS2d0XZdlFaV1Uk8LB44wPBCOm5iLXduHDPVyydcObvtynGVC+Yn
-	/nn9PRJ95+UuY8K5xhHuVshJpaJWlfPCxNTxd3U7rHai/3uP43dr569zJTOexEY/NZusenqkbewCZ
-	F8F1+Fd068DzXbMf+bZuusDbCherckPQfZe/d2XVGAx3zpQxPBQlpZ+odGphvvxidfEhVhd1S7Tqy
-	XUtRbqi2qpfgr1jYuPRmsqbOedacI0FaAR4S8nN4ItkW1FG02f+hYRJTS5a1wC9WG/SLQP/vUglm4
-	VxDZT4lQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54552)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1s05Vc-0007qW-2b;
-	Thu, 25 Apr 2024 21:15:56 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1s05Vb-0005sC-1A; Thu, 25 Apr 2024 21:15:55 +0100
-Date: Thu, 25 Apr 2024 21:15:54 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Stefan Eichenberger <eichest@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	lxu@maxlinear.com, hkallweit1@gmail.com, michael@walle.cc,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] net: phy: mxl-gpy: add new device tree property
- to disable SGMII autoneg
-Message-ID: <Ziq5+gRXGmqt9bXM@shell.armlinux.org.uk>
-References: <Zh94yqo2EHRq8eEq@eichest-laptop>
- <ZiE156+BPpx/ciL6@shell.armlinux.org.uk>
- <Zikd+GxuwMRC+5Ae@shell.armlinux.org.uk>
- <Zikrv5UOWvSGjgcv@eichest-laptop>
- <ZilLz8f6vQQCg4NB@shell.armlinux.org.uk>
- <Zio9g9+wsFX39Vkx@eichest-laptop>
- <ZippHJrnvzXsTiK4@shell.armlinux.org.uk>
- <Zip8Hd/ozP3R8ASS@eichest-laptop>
- <ZiqFOko7zFjfTdz4@shell.armlinux.org.uk>
- <ZiqUB0lwgw7vIozG@eichest-laptop>
+	s=arc-20240116; t=1714076240; c=relaxed/simple;
+	bh=4BBDPsjN6dzEJ4giKnaR11KMRJazqH6XiUS8veZbFSM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Xhnh/m7OVjXiCrt6883RP/m3gaIqnZmTP9S3e0JoTlR9w3RYJcFdeF7M5N0p4/uBfjyHNstHjoAwyEKhQnT+Vo7406d0MybhF0//wd1fErJtODJjzAFCMxtBQYHdzzzmERwZv9E051dy1dSwZSyAXecikFKzkVcDkY0w8KVve7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Z/NUikNX; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a5872b74c44so161430466b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 13:17:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714076237; x=1714681037; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dMog2JZUZ8XbtVqoBAzMg/dsNmKbqiBjLxtU6d10Qw4=;
+        b=Z/NUikNXLNoK3TQtZK1qFP8vOt08KF6jSkM5UBR0TE0iIq6NRXahUIGoSOfOO5HuaY
+         pDAABTNq8Fk9l6RVZg/AWdREzGMCtvwjwa8z0FzsEkwu+LNDQAe+ubKzOS3uFYaMoWDc
+         kGauC6Hqalz6I1eVLjTq9T9TXBMiiorNCzGjTR5U6v5kkmBxFwpyQiCvZmCSFJXov3Q/
+         zxJOjEPRDhBSANYzEiBmrekrpjlWBn3EMJqlVbJuEMMo7j9HDviB6/ffnyIdYkqR2S0I
+         SkAXuD4SR2Z38lcelrF6uCGC/ecw9jVTKdW1zRTQAvqqZt0ICF92Y59G3FW/Z1U0IVEU
+         xpVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714076237; x=1714681037;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dMog2JZUZ8XbtVqoBAzMg/dsNmKbqiBjLxtU6d10Qw4=;
+        b=q0mz7o8gEm2aOKFIFarYDru3N8puRYedatP1+/3Iby1vjfV49+FUBIo+YR6QfTw73/
+         s2PjdfUweYjNWFvHyBfo+iv/CigSNnyAWMrG6kmL0NJ3SL69MDPx3jpe0hWzLtSBjkIp
+         5WKy7QSgVNqGfAps3OoeEbK/cT7y8x/53WLpDuBQorMLyU2WJkFWNliYCjMoGlEm7449
+         Auv38lTncEc4tzyJseKsQ7LyrmrEo6x8iPjvm8Zp5igtbuf3OxmtvPcpmBZTjLw/c7kj
+         c99zObiSvjB/Lt2mfp/yWtp0HItLZ1NUzpWfqbcVYV8OG8yMqp7IfjbCoH9hcEsx8EUk
+         Ei9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW8lwhE1aR6Uf9wtvVlHZxtJ4EKnayNB77Sux1p6JAbtqD0Kit1lY5UIpIby+YAnaXZj4nFkgPFqAIiVM/2Z1Ls/JpfIwFqlxq3+HXR
+X-Gm-Message-State: AOJu0YxSzxVywJrZb2cEh+vYOg36fRRKh6FaDIA1fN+e5cfyfQZdIoSI
+	FXvowmI3VlcB4PbeJHww511kTnhGRBiBVPLBGE88rD4eJRD1Yz/OEQDoTvjvWflNehO0/WTcgRp
+	EKxmVMN93Qq3a8w2M0BR/Qo16JozXajhzqwFM
+X-Google-Smtp-Source: AGHT+IGnRLA6abhkAbzojY7edB/w0Ptxz2eulZ6XO0QV0FgG7Zk4Y0oBfqeQG+5YpJZSfDseca++A/86xOPGwOkUqqA=
+X-Received: by 2002:a17:906:6ce:b0:a58:7505:16ff with SMTP id
+ v14-20020a17090606ce00b00a58750516ffmr456515ejb.64.1714076237097; Thu, 25 Apr
+ 2024 13:17:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZiqUB0lwgw7vIozG@eichest-laptop>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <ZiaX3H3YfrVh50cs@google.com> <d8f3497b-9f63-e30e-0c63-253908d40ac2@loongson.cn>
+ <d980dd10-e4c4-4774-b107-77b320cec9f9@linux.intel.com> <b5e97aa1-7683-4eff-e1e3-58ac98a8d719@loongson.cn>
+ <1ec7a21c-71d0-4f3e-9fa3-3de8ca0f7315@linux.intel.com> <5279eabc-ca46-ee1b-b80d-9a511ba90a36@loongson.cn>
+ <CAL715WJK893gQd1m9CCAjz5OkxsRc5C4ZR7yJWJXbaGvCeZxQA@mail.gmail.com>
+ <b3868bf5-4e16-3435-c807-f484821fccc6@loongson.cn> <CAL715W++maAt2Ujfvmu1pZKS4R5EmAPebTU_h9AB8aFbdLFrTQ@mail.gmail.com>
+ <f843298c-db08-4fde-9887-13de18d960ac@linux.intel.com> <Zikeh2eGjwzDbytu@google.com>
+ <7834a811-4764-42aa-8198-55c4556d947b@linux.intel.com> <CAL715WKh8VBJ-O50oqSnCqKPQo4Bor_aMnRZeS_TzJP3ja8-YQ@mail.gmail.com>
+ <6af2da05-cb47-46f7-b129-08463bc9469b@linux.intel.com>
+In-Reply-To: <6af2da05-cb47-46f7-b129-08463bc9469b@linux.intel.com>
+From: Mingwei Zhang <mizhang@google.com>
+Date: Thu, 25 Apr 2024 13:16:40 -0700
+Message-ID: <CAL715W+zeqKenPLP2Fm9u_BkGRKAk-mncsOxrg=EKs74qK5f1Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+To: "Liang, Kan" <kan.liang@linux.intel.com>
+Cc: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>, Sean Christopherson <seanjc@google.com>, 
+	maobibo <maobibo@loongson.cn>, Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com, 
+	peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com, 
+	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
+	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
+	chao.gao@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 25, 2024 at 07:33:59PM +0200, Stefan Eichenberger wrote:
-> Now I got it, thanks a lot for the explanation. So the issue is that
-> MLO_AN_INBAND + PHYLINK_PCS_NEG_OUTBAND is happening in my use case and
-> therefore the link is not forced up because for that MLO_AN_PHY would be
-> needed. I will also try to think about it.
+On Thu, Apr 25, 2024 at 9:13=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.c=
+om> wrote:
+>
+>
+>
+> On 2024-04-25 12:24 a.m., Mingwei Zhang wrote:
+> > On Wed, Apr 24, 2024 at 8:56=E2=80=AFPM Mi, Dapeng <dapeng1.mi@linux.in=
+tel.com> wrote:
+> >>
+> >>
+> >> On 4/24/2024 11:00 PM, Sean Christopherson wrote:
+> >>> On Wed, Apr 24, 2024, Dapeng Mi wrote:
+> >>>> On 4/24/2024 1:02 AM, Mingwei Zhang wrote:
+> >>>>>>> Maybe, (just maybe), it is possible to do PMU context switch at v=
+cpu
+> >>>>>>> boundary normally, but doing it at VM Enter/Exit boundary when ho=
+st is
+> >>>>>>> profiling KVM kernel module. So, dynamically adjusting PMU contex=
+t
+> >>>>>>> switch location could be an option.
+> >>>>>> If there are two VMs with pmu enabled both, however host PMU is no=
+t
+> >>>>>> enabled. PMU context switch should be done in vcpu thread sched-ou=
+t path.
+> >>>>>>
+> >>>>>> If host pmu is used also, we can choose whether PMU switch should =
+be
+> >>>>>> done in vm exit path or vcpu thread sched-out path.
+> >>>>>>
+> >>>>> host PMU is always enabled, ie., Linux currently does not support K=
+VM
+> >>>>> PMU running standalone. I guess what you mean is there are no activ=
+e
+> >>>>> perf_events on the host side. Allowing a PMU context switch driftin=
+g
+> >>>>> from vm-enter/exit boundary to vcpu loop boundary by checking host
+> >>>>> side events might be a good option. We can keep the discussion, but=
+ I
+> >>>>> won't propose that in v2.
+> >>>> I suspect if it's really doable to do this deferring. This still mak=
+es host
+> >>>> lose the most of capability to profile KVM. Per my understanding, mo=
+st of
+> >>>> KVM overhead happens in the vcpu loop, exactly speaking in VM-exit h=
+andling.
+> >>>> We have no idea when host want to create perf event to profile KVM, =
+it could
+> >>>> be at any time.
+> >>> No, the idea is that KVM will load host PMU state asap, but only when=
+ host PMU
+> >>> state actually needs to be loaded, i.e. only when there are relevant =
+host events.
+> >>>
+> >>> If there are no host perf events, KVM keeps guest PMU state loaded fo=
+r the entire
+> >>> KVM_RUN loop, i.e. provides optimal behavior for the guest.  But if a=
+ host perf
+> >>> events exists (or comes along), the KVM context switches PMU at VM-En=
+ter/VM-Exit,
+> >>> i.e. lets the host profile almost all of KVM, at the cost of a degrad=
+ed experience
+> >>> for the guest while host perf events are active.
+> >>
+> >> I see. So KVM needs to provide a callback which needs to be called in
+> >> the IPI handler. The KVM callback needs to be called to switch PMU sta=
+te
+> >> before perf really enabling host event and touching PMU MSRs. And only
+> >> the perf event with exclude_guest attribute is allowed to create on
+> >> host. Thanks.
+> >
+> > Do we really need a KVM callback? I think that is one option.
+> >
+> > Immediately after VMEXIT, KVM will check whether there are "host perf
+> > events". If so, do the PMU context switch immediately. Otherwise, keep
+> > deferring the context switch to the end of vPMU loop.
+> >
+> > Detecting if there are "host perf events" would be interesting. The
+> > "host perf events" refer to the perf_events on the host that are
+> > active and assigned with HW counters and that are saved when context
+> > switching to the guest PMU. I think getting those events could be done
+> > by fetching the bitmaps in cpuc.
+>
+> The cpuc is ARCH specific structure. I don't think it can be get in the
+> generic code. You probably have to implement ARCH specific functions to
+> fetch the bitmaps. It probably won't worth it.
+>
+> You may check the pinned_groups and flexible_groups to understand if
+> there are host perf events which may be scheduled when VM-exit. But it
+> will not tell the idx of the counters which can only be got when the
+> host event is really scheduled.
+>
+> > I have to look into the details. But
+> > at the time of VMEXIT, kvm should already have that information, so it
+> > can immediately decide whether to do the PMU context switch or not.
+> >
+> > oh, but when the control is executing within the run loop, a
+> > host-level profiling starts, say 'perf record -a ...', it will
+> > generate an IPI to all CPUs. Maybe that's when we need a callback so
+> > the KVM guest PMU context gets preempted for the host-level profiling.
+> > Gah..
+> >
+> > hmm, not a fan of that. That means the host can poke the guest PMU
+> > context at any time and cause higher overhead. But I admit it is much
+> > better than the current approach.
+> >
+> > The only thing is that: any command like 'perf record/stat -a' shot in
+> > dark corners of the host can preempt guest PMUs of _all_ running VMs.
+> > So, to alleviate that, maybe a module parameter that disables this
+> > "preemption" is possible? This should fit scenarios where we don't
+> > want guest PMU to be preempted outside of the vCPU loop?
+> >
+>
+> It should not happen. For the current implementation, perf rejects all
+> the !exclude_guest system-wide event creation if a guest with the vPMU
+> is running.
+> However, it's possible to create an exclude_guest system-wide event at
+> any time. KVM cannot use the information from the VM-entry to decide if
+> there will be active perf events in the VM-exit.
 
-Now that I've moved the setting of PortType and InBandAutoNegMode into
-the pcs_config() method, I now have (on mvneta):
+Hmm, why not? If there is any exclude_guest system-wide event,
+perf_guest_enter() can return something to tell KVM "hey, some active
+host events are swapped out. they are originally in counter #2 and
+#3". If so, at the time when perf_guest_enter() returns, KVM will ack
+that and keep it in its pmu data structure.
 
-Value at address 0xf1036c00: 0x00008bfd	- PortType = 0
-					  (SGMII, necessary to be able
-					   to set InBandAnEn=0 below)
+Now, when doing context switching back to host at just VMEXIT, KVM
+will check this data and see if host perf context has something active
+(of course, they are all exclude_guest events). If not, deferring the
+context switch to vcpu boundary. Otherwise, do the proper PMU context
+switching by respecting the occupied counter positions on the host
+side, i.e., avoid doubling the work on the KVM side.
 
-Value at address 0xf1036c08: 0x0000c018 - InBandAutoNegMode = 0
-					  (1000Base-X mode)
+Kan, any suggestion on the above approach? Totally understand that
+there might be some difficulty, since perf subsystem works in several
+layers and obviously fetching low-level mapping is arch specific work.
+If that is difficult, we can split the work in two phases: 1) phase
+#1, just ask perf to tell kvm if there are active exclude_guest events
+swapped out; 2) phase #2, ask perf to tell their (low-level) counter
+indices.
 
-Value at address 0xf1036c0c: 0x00009240	- 1000M, FD, unforced link
-					  InBandAnEn = 0
+Thanks.
+-Mingwei
 
-Value at address 0xf1036c10: 0x0000600a - Sync, 1000M, FD, but no link
-
-The reason that the link isn't being forced is because
-mvneta_mac_link_up() is being called with mode = MLO_AN_INBAND
-which expects the link to be controlled as a result of autoneg,
-but we've configured autoneg to be off.
-
-I'm wondering whether we need pl->cur_link_an_mode to be the desired
-mode for selecting the result from phylink_pcs_neg_mode(), but also
-maintain a separate pl->act_link_an_mode which phylink_pcs_neg_mode()
-chooses, dependent on whether the PCS is using inband or outband
-mode - and pl->act_link_an_mode is what gets passed to the MAC layer.
-That would at least keep the MAC MLO_AN_* consistent with what the
-PCS layer is using - and also has the advantage that it makes it
-clear that pl->act_link_an_mode only gets updated in the "major
-config" path.
-
-A quick test of that... seems to work:
-
-mvneta f1034000.ethernet eno2: PHY [i2c:sfp:16] driver [Broadcom BCM84881] (irq=POLL)
-mvneta f1034000.ethernet eno2: phy: 2500base-x setting supported 00,00000000,00008000,0000206c advertising 00,00000000,00008000,0000206c
-mvneta f1034000.ethernet eno2: major config 2500base-x
-mvneta f1034000.ethernet eno2: link modes: pcs=02 phy=01
-mvneta f1034000.ethernet eno2: phylink_mac_config: mode=inband/2500base-x/none adv=00,00000000,00008000,0000206c pause=04
-mvneta f1034000.ethernet eno2: phylink_sfp_module_start()
-mvneta f1034000.ethernet eno2: phylink_sfp_link_up()
-mvneta f1034000.ethernet eno2: phy link down 2500base-x/Unknown/Unknown/none/off
-mvneta f1034000.ethernet eno2: phy link up sgmii/1Gbps/Full/none/off
-mvneta f1034000.ethernet eno2: major config sgmii
-mvneta f1034000.ethernet eno2: link modes: pcs=03 phy=01
-mvneta f1034000.ethernet eno2: phylink_mac_config: mode=phy/sgmii/none adv=00,00000000,00008000,0000206c pause=00
-mvneta f1034000.ethernet eno2: pcs link down
-mvneta f1034000.ethernet eno2: pcs link down
-mvneta f1034000.ethernet eno2: can LPI, EEE enabled, active
-mvneta f1034000.ethernet eno2: enabling tx_lpi, timer 250us
-mvneta f1034000.ethernet eno2: Link is Up - 1Gbps/Full - flow control off
-
-Value at address 0xf1036c00: 0x00008bfd
-Value at address 0xf1036c08: 0x0000c018
-Value at address 0xf1036c0c: 0x00009242
-Value at address 0xf1036c10: 0x0000600b
-
-So we can see in the two phylink_mac_config calls that the mode has
-switched from "inband" to "phy" with this PHY (BCM84881) which
-doesn't support inband in any interface modes.
-
-However, there's still the issue with:
-
-link modes: pcs=02 phy=01
-phylink_mac_config: mode=inband/2500base-x/none adv=00,00000000,00008000,0000206c pause=04
-
-and this is because of the missing code in this part:
-
-	/* PHY present, inband mode depends on the capabilities
-	 * of both.
-	 */
-
-but there's also the issue that the PCS and PHY capabilities like that
-are incompatible. In this case, we're saved by the fact that if we do
-this act_link_an_mode thing:
-
-        pl->act_link_an_mode = pl->cur_link_an_mode;
-        if (pl->pcs_neg_mode == PHYLINK_PCS_NEG_OUTBAND &&
-            pl->act_link_an_mode == MLO_AN_INBAND)
-                pl->act_link_an_mode = MLO_AN_PHY;
-
-coupled with the new _behaviour_ of mvneta/mvpp2, we don't actually
-end up in the "1000base-X must have AN enabled" trap... but that is
-no basis to basing decisions at the phylink layer on.
-
-So, I'm wondering whether we need to be a little more creative here.
-Instead of simply passing a few bits, maybe something like:
-
-	31-24: bitfield of "partner" capabilities that are supported
-		for inband enabled mode
-	23-16: bitfield of "partner" capabilities that are supported
-		for inband disabled mode
-	15-8: bitfield of "partner" capabilities that are supported
-		for outband mode
-	2: bypass mode supported
-	1: inband enabled mode supported
-	0: inband disabled mode supported
-
-Now, a question will come up... what is different between inband
-disabled and outband mode?
-
-Consider 1000base-X fibre. 1000base-X is the media interface, and we
-need to be able to configure autoneg there, enabling or disabling it.
-If we don't support disabling autoneg (as is the case with mvneta
-et.al. over fibre) then being able to use ethtool to disable autoneg
-can't be used. In both these modes, the 1000base-X is the media side.
-
-However, 1000base-X can be used to connect to a PHY, and the PHY
-could do rate matching, so the we need to use an outband way to
-access the media side (we need to talk to the PHY.)
-
-Hence why PCS have a distinction between OUTBAND and INBAND_DISABLED.
-
-Now, with 2500base-X we run into the problem that e.g. mvneta
-operating in 1000base-X mode upclocked to 2.5G can only support
-INBAND_ENABLED and not INBAND_DISABLED (we can't just turn off the
-InBandAnEn bit). The change between INBAND_ENABLED and INBAND_DISABLED
-can happen with the link up.
-
-However, it can support OUTBAND by disabling the PortType bit and then
-turning off InBandAnEn (which can only be done with the link *down*
-and that is only guaranteed during a "major config" not through the
-ethtool settings API - which is why pcs_config() can't do this for 
-INBAND_DISABLED.)
-
-So, a little bit of progress but not at a usable solution yet.
-
-I'm afraid my current tree is in a hacky mess at the moment, I'll see
-about updating the published patches as soon as I can.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+>
+> The perf_guest_exit() will reload the host state. It's impossible to
+> save the guest state after that. We may need a KVM callback. So perf can
+> tell KVM whether to save the guest state before perf reloads the host sta=
+te.
+>
+> Thanks,
+> Kan
+> >>
+> >>
+> >>>
+> >>> My original sketch: https://lore.kernel.org/all/ZR3eNtP5IVAHeFNC@goog=
+lecom
+> >
 
