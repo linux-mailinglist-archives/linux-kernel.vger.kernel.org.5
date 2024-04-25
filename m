@@ -1,165 +1,132 @@
-Return-Path: <linux-kernel+bounces-158292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7BA38B1DF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 31FEA8B1DF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:27:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69D6F284DDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:26:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDD22283052
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C1CB84FD0;
-	Thu, 25 Apr 2024 09:23:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OtLCn4zr"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6488127E2E;
+	Thu, 25 Apr 2024 09:23:04 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E641F84FC8
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:22:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4DD4127E10
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:23:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714036980; cv=none; b=mf/QLvIKSdZzwWqNRF6ByiiKJNaCY/1XGg2Kh1GLCgFBFL7QbiF7wHcrargm3R4Cl1h/KrDsDZuBbJb0sTD2mx/b/FvjMDJE02GadFcXhXPq4bWslapfj4rP+Xr8Xmj82be1BgRjf/5iyagAj+glDn3GAixyjEbNhUXSkzHv1wY=
+	t=1714036984; cv=none; b=lUZH4d7eYkRJUNi2cZIHaIlyf94ciOV15joUFmuSmrG9FDQEEUoRltvIAl0qmdtNbouRZ78juaHwV+l5Y5YVz4l7ExdND5WjBIL+FTD2x6xkUHqF1hQfLyBmMLLxcmlW7VjSCf0LJ1nODbUN0/oZ9TEKn/IWRRBTWi4iV5AO7x8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714036980; c=relaxed/simple;
-	bh=Lcgg3hvKGEDl4Y9urblPbKPzWGNtZjBouwoTCr4upUM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=AZgZyT+QQfL9/koaVvxVpXRmlAx3qjCMTV1/oNstUlejugCoimcSANTTl23cY5yZDrvMNMMl1Lt3tikjour8WKgf4z9y8jkNBwO7+xnCxViPtPHfTCJ++NCR9U5vWLaocXku+R5j6UIvtl0cRCgaVWMh/4Lepwp8/Bd02hSKCF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OtLCn4zr; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714036977;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AxVOqCleBMDIW/ByJ67k7KAL9izw4KY+nAlh60+o9Hs=;
-	b=OtLCn4zr0BTQwF7PvFeugRZtbg+3RA3rW/yeFDoCXwOMgF1vXMXVVPht3uKcHfx4huiPOc
-	T9qnBbZ/YsjJKJphVc1ltVZCnWqGyS+Y8Qnay0HylcttxItH31EpgLdE7BpU+AI2VYvId1
-	xlxr7ByKN2D4JGEXCcH+pwLPQ9AtWrI=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-450-a88wwS7iPzqU-fdWEQ82pQ-1; Thu, 25 Apr 2024 05:22:56 -0400
-X-MC-Unique: a88wwS7iPzqU-fdWEQ82pQ-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-41ab7cdccd2so3837995e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 02:22:56 -0700 (PDT)
+	s=arc-20240116; t=1714036984; c=relaxed/simple;
+	bh=C8pKvelxTl855r1qnodZl3DM2DjQHEGYnIW4pA2VVEE=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Vt0FHOvn2Lnmx5R9313HTlaNNs7Iru7s5ZgPXJjMA+nXu/smNhXGF+rF5zfG01xAjksGhEtwOzQ02Dnb6Hx81xtmF4/UOOOz38WAOCr4Kr7CV58OqtrUszzk90H65lPBdqPB7HFudKj0e78ZdA1G8suh55b3+/H5sDMht0IOoxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d667dd202cso127176339f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 02:23:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714036975; x=1714641775;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AxVOqCleBMDIW/ByJ67k7KAL9izw4KY+nAlh60+o9Hs=;
-        b=kwRB++TQ68ExXXN7wUFCXH/t9q2JiZHurYdCS53JJ14ljliZZIQ9I8obkzUH6IF11T
-         Ia0Qloy3cx2I5AMFE+J7Yz9/ySyORGMrV99fY6RRj8YDOzRdowap2hKAuTRmsPkv18lS
-         xfsNQZEzwzpgReL0XVKqYgYD7lByV2GZ9j9+ZHfGoTzkHSF60lC/m65P1TeMnTu7SfiY
-         yiuprJj5wO/DfEt5E5EW/Nj6RFhNvBRzS/beA/7czVQOuOptvzHl5lD0GSWkeuHfDEfQ
-         etafPnQNFLCLJW8OjQHWwPhogjVFaXbwaB5iuVqDrdXpnaFVndGjM8QcrPsKCuYwt3Ya
-         bnng==
-X-Forwarded-Encrypted: i=1; AJvYcCVhn8uzzSTCoMAl+k/XE2EihGsyMktHJlZ+H1Hbag6ruCSQovN7rZPXMH0ec5qhMsWEbNGuXF/DXX3odZN798nWbg4pxmUSpifTZka4
-X-Gm-Message-State: AOJu0YxKbBSf7TYeYeu+aMSIDiFqo+qXy9/PJEdnbnxUwjzqL76h4SlE
-	m1boxso1UuW+Rgix+F+MbgVWYjhcyHSM5vS/AKUO/tzFEJG5mQyRc+lC28EvvaWlbl4ouCd+jbd
-	epMgjL2PHckgNnD6OWrt+V422Ij8CKExFR7UrYvB0/QlwMcz2em745QR0y2HuhA==
-X-Received: by 2002:a05:600c:a47:b0:41b:4d5d:9687 with SMTP id c7-20020a05600c0a4700b0041b4d5d9687mr783434wmq.24.1714036975230;
-        Thu, 25 Apr 2024 02:22:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFZx2CGKayPSYRJJU36QaH68kn0admzBOk1wBPDIGabrTkFGgP7cte5hNSk7Msg+eAtqgaAGg==
-X-Received: by 2002:a05:600c:a47:b0:41b:4d5d:9687 with SMTP id c7-20020a05600c0a4700b0041b4d5d9687mr783420wmq.24.1714036974803;
-        Thu, 25 Apr 2024 02:22:54 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id e6-20020a05600c4e4600b0041b43e301e8sm1716682wmq.42.2024.04.25.02.22.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 02:22:54 -0700 (PDT)
-From: Javier Martinez Canillas <javierm@redhat.com>
-To: Steven Price <steven.price@arm.com>, Andy Yan <andyshrk@163.com>,
- boris.brezillon@collabora.com
-Cc: daniel@ffwll.ch, airlied@gmail.com, liviu.dudau@arm.com,
- maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Andy Yan
- <andy.yan@rock-chips.com>
-Subject: Re: [PATCH] drm/panthor: Add defer probe for firmware load
-In-Reply-To: <54e4a174-dea7-4588-b8a6-0310c210ffce@arm.com>
-References: <20240413114938.740631-1-andyshrk@163.com>
- <54e4a174-dea7-4588-b8a6-0310c210ffce@arm.com>
-Date: Thu, 25 Apr 2024 11:22:53 +0200
-Message-ID: <87frv9zthu.fsf@minerva.mail-host-address-is-not-set>
+        d=1e100.net; s=20230601; t=1714036982; x=1714641782;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GxgnLbVsF+cdI25nLGbFIVjccBnjxuF1lXju4CE03lM=;
+        b=sLtJ+r+Ulj34uvP90R4X0Lygolz/8ExTIUuXjxqQmOaxrluG/oh1wpJBA4vwOAh5O+
+         hHTItxLrdHRNoW8BtvycaugCD1GRzCscTR80q4MaGQvF8NM7/amC1qvYCh4mcud3IGQb
+         wFgv04Ma9BnWm5Oxec3hhfwl1fIWEiYJ+zKafNAnnZGx2cTqdEwEy+Imh5o4ImnfwFPm
+         8Z+hfM/28lJQpvZMSHnW7Dm8nI4kzVIjotNd2/EMpsnEG+PT6368FD1eOVXC0LoxAtGt
+         Te5rkaEP3eitlol5HuQ4UArC5zlBbCTYVsd2f29hvJtyVlf2DOkWoiANy8bhdTMMZcUE
+         92GA==
+X-Forwarded-Encrypted: i=1; AJvYcCUcuBNkfk1hf5IFcTNsS+Wgv0DrkJL9z/XcFVWVBAt/ySh+clmrrU77uIsbbJq/JckTdWnO+5LdDOV22hZi4b5jma0Rrb4c+GR1FoyB
+X-Gm-Message-State: AOJu0Yyid6xnYUTEcgIoNxqcefylK+9FIQHv3jIVb3iGe2mk8YDOqxXW
+	Qcxiht8uMejvLEQsMjpcmZ/AXnW3CPqIYtTl0P3/4h1N7EbSHGEVqRExV5SoUu0hAtgKcc9GzG4
+	3LNMTsPg1e9bFsvsbMtpHQtb+zEWgjnSQH5Laxl6luM9h4pZNPEDoFwY=
+X-Google-Smtp-Source: AGHT+IEQD7NcOiXARGmbNmQ+ifrpftRyMRydp0cQoNoJfXA94iJc4xGfU8Kn6822jC9cSsNfRw9RgGxTKObJ7P+/k1fNJd/p1ehu
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a05:6638:3789:b0:487:2743:dcba with SMTP id
+ w9-20020a056638378900b004872743dcbamr2094jal.2.1714036981937; Thu, 25 Apr
+ 2024 02:23:01 -0700 (PDT)
+Date: Thu, 25 Apr 2024 02:23:01 -0700
+In-Reply-To: <20240425085654.10967-1-aha310510@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000070cba60616e855eb@google.com>
+Subject: Re: [syzbot] [jfs?] UBSAN: array-index-out-of-bounds in diFree
+From: syzbot <syzbot+241c815bda521982cb49@syzkaller.appspotmail.com>
+To: aha310510@gmail.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Steven Price <steven.price@arm.com> writes:
+Hello,
 
-Hello Steven,
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+UBSAN: array-index-out-of-bounds in diFree
 
-> On 13/04/2024 12:49, Andy Yan wrote:
->> From: Andy Yan <andy.yan@rock-chips.com>
->> 
->> The firmware in the rootfs will not be accessible until we
->> are in the SYSTEM_RUNNING state, so return EPROBE_DEFER until
->> that point.
->> This let the driver can load firmware when it is builtin.
->
-> The usual solution is that the firmware should be placed in the
-> initrd/initramfs if the module is included there (or built-in). The same
-> issue was brought up regarding the powervr driver:
->
-> https://lore.kernel.org/dri-devel/20240109120604.603700-1-javierm@redhat.com/T/
->
-> I'm not sure if that ever actually reached a conclusion though. The
-> question was deferred to Greg KH but I didn't see Greg actually getting
-> involved in the thread.
->
+140741783322624 13 524288
+------------[ cut here ]------------
+UBSAN: array-index-out-of-bounds in fs/jfs/jfs_imap.c:888:2
+index 524288 is out of range for type 'struct mutex[128]'
+CPU: 0 PID: 112 Comm: jfsCommit Not tainted 6.9.0-rc5-syzkaller-00042-ge88c4cfcb7b8-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ ubsan_epilogue lib/ubsan.c:231 [inline]
+ __ubsan_handle_out_of_bounds+0x121/0x150 lib/ubsan.c:429
+ diFree+0x21ec/0x2fe0 fs/jfs/jfs_imap.c:888
+ jfs_evict_inode+0x32d/0x440 fs/jfs/inode.c:156
+ evict+0x2a8/0x630 fs/inode.c:667
+ txUpdateMap+0x829/0x9f0 fs/jfs/jfs_txnmgr.c:2367
+ txLazyCommit fs/jfs/jfs_txnmgr.c:2664 [inline]
+ jfs_lazycommit+0x49a/0xb80 fs/jfs/jfs_txnmgr.c:2733
+ kthread+0x2f0/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+---[ end trace ]---
+Kernel panic - not syncing: UBSAN: panic_on_warn set ...
+CPU: 0 PID: 112 Comm: jfsCommit Not tainted 6.9.0-rc5-syzkaller-00042-ge88c4cfcb7b8-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ panic+0x349/0x860 kernel/panic.c:348
+ check_panic_on_warn+0x86/0xb0 kernel/panic.c:241
+ ubsan_epilogue lib/ubsan.c:236 [inline]
+ __ubsan_handle_out_of_bounds+0x141/0x150 lib/ubsan.c:429
+ diFree+0x21ec/0x2fe0 fs/jfs/jfs_imap.c:888
+ jfs_evict_inode+0x32d/0x440 fs/jfs/inode.c:156
+ evict+0x2a8/0x630 fs/inode.c:667
+ txUpdateMap+0x829/0x9f0 fs/jfs/jfs_txnmgr.c:2367
+ txLazyCommit fs/jfs/jfs_txnmgr.c:2664 [inline]
+ jfs_lazycommit+0x49a/0xb80 fs/jfs/jfs_txnmgr.c:2733
+ kthread+0x2f0/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-Correct, there was not conclusion reached in that thread.
 
->> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
->> ---
->> 
->>  drivers/gpu/drm/panthor/panthor_fw.c | 11 ++++++++++-
->>  1 file changed, 10 insertions(+), 1 deletion(-)
->> 
->> diff --git a/drivers/gpu/drm/panthor/panthor_fw.c b/drivers/gpu/drm/panthor/panthor_fw.c
->> index 33c87a59834e..25e375f8333c 100644
->> --- a/drivers/gpu/drm/panthor/panthor_fw.c
->> +++ b/drivers/gpu/drm/panthor/panthor_fw.c
->> @@ -1336,8 +1336,17 @@ int panthor_fw_init(struct panthor_device *ptdev)
->>  	}
->>  
->>  	ret = panthor_fw_load(ptdev);
->> -	if (ret)
->> +	if (ret) {
->> +		/*
->> +		 * The firmware in the rootfs will not be accessible until we
->> +		 * are in the SYSTEM_RUNNING state, so return EPROBE_DEFER until
->> +		 * that point.
->> +		 */
->> +		if (system_state < SYSTEM_RUNNING)
->
-> This should really only be in the case where ret == -ENOENT - any other
-> error and the firmware is apparently present but broken in some way, so
-> there's no point deferring.
->
-> I also suspect we'd need some change in panthor_fw_load() to quieten
-> error messages if we're going to defer on this, in which case it might
-> make more sense to move this logic into that function.
->
+Tested on:
 
-In the thread you referenced I suggested to add that logic in request_firmware()
-(or add a new request_firmware_defer() helper function) that changes the request
-firmare behaviour to return -EPROBE_DEFER instead of -ENOENT.
-
-Since as you mentioned, this isn't specific to panthor and an issue that I also
-faced with the powervr driver.
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+commit:         e88c4cfc Merge tag 'for-6.9-rc5-tag' of git://git.kern..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/ master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1151ccef180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5a05c230e142f2bc
+dashboard link: https://syzkaller.appspot.com/bug?extid=241c815bda521982cb49
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=145717bb180000
 
 
