@@ -1,178 +1,214 @@
-Return-Path: <linux-kernel+bounces-158368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CCF38B1EE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:13:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F2968B1EE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:14:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40A6C1C214BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:13:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33EC1B29597
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B04DA8624C;
-	Thu, 25 Apr 2024 10:13:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E494F86250;
+	Thu, 25 Apr 2024 10:14:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="NMnuMYdm"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nnmu7iQh"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7741084FC5;
-	Thu, 25 Apr 2024 10:13:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 148682E647;
+	Thu, 25 Apr 2024 10:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714040029; cv=none; b=elxHpio6Q6amkvt2kjI5ye/Y3NbY19PBjAHSpQDD/uo5kdTm4tSTzJQiB5TI9LZVHtp6FupYwVbpZXdunzt2imbQfzZycnD9geG6ODp1sARhHUngyvdPV6y9VN7Biqlu2TYE/CRsqblvQdsdlKe+2nzTNwlWKVRXd+jrz6h1iYw=
+	t=1714040070; cv=none; b=F6vtE3azVk3DCO6ojz1RlM+hkL0VT2m2jYmzX2xLgaYHKl3ZZMRkEuzNmLryeH5+ftkTBhLzNfC/J7xiySeJcIoiyPZ+fMOnVUbVD/M+AuzQkmgQ7d635GmGdvnoLaaq71G/RdiVk8baAIHw4/KN2hrqoCjdECLQBu+ah8BNToo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714040029; c=relaxed/simple;
-	bh=H6zHL7rUs2vabMzNYsm9w7b2QW4st9m6w0TxLm4FLFk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RAC5nZ63R+IPrhYFKdiFo962a6jN0ei3U//YJ1dvswpIAunC74yHg29YouEA10QK2tHbOP2RaVG1oxjz3EMxNjSWcX3w74yYpwFw2btwicPWcyB7xQ33U1TyAJkVgl5h2dUi4yonlDVv7hnywd6bSmRvmqr0GTRqqVjduQ0E0DQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=NMnuMYdm; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1714040015; x=1714644815; i=deller@gmx.de;
-	bh=pzkDqB4oCrdeansAkrKYjZ6pH+bsyogE99NCvj2aUQg=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=NMnuMYdmqQq1/cGfeJnBStCgm22HV3KdnkQsA9lFAvz3VAJ4lHe+suQrJUwXAC0L
-	 1J8PfzqdfCiaz0owdDv0FQJgTXfG8k2bdkBN9Ut8UOptbCeT5nJRFNs7DD3tUsa6E
-	 S57oRVW/o+VCFTiI+7yAHB5RRg3OSkrqRASxLl6kZyO/LQNUrn1MwYgqF/l/voLu9
-	 IUm2qeRyTZbMLCLRNZWAg40uHFMxIBzQgdxnwVvha8NiALn818vZr6sAu1sFEvxtt
-	 jprdJb+qktknewuz+5D1/SkqHmBJSd6mI/464XfAPtgdVKt8CBC8LsMVlzdgOUzD0
-	 dZrWplWRbF7tXprugQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.8.0.6] ([78.94.87.245]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MysW2-1suo7Z1ekM-00vzco; Thu, 25
- Apr 2024 12:13:35 +0200
-Message-ID: <784db573-5903-4c13-b0ad-fdeeb7b649de@gmx.de>
-Date: Thu, 25 Apr 2024 12:13:33 +0200
+	s=arc-20240116; t=1714040070; c=relaxed/simple;
+	bh=yzEXhICXLlf+DKeiLzF5a0M6Y4JEBguOjBtSKPO2DvY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=e+H7IeZ0z3NaceHEd9s+6TQFyclw9QzRuK+zZa/2HaL6HiQwUj9LZuZ81rhPznnoPQfuy4VRVUdEH/S0PpcOjeVwuwnwOhOv2MCJkutBHIg/yrRL/NMwI2mLu6gc7wEscE1agAQJQKFkPHaQRPVvkiclquml2ehTW4ikZvO4ri8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nnmu7iQh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 507CEC113CC;
+	Thu, 25 Apr 2024 10:14:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714040069;
+	bh=yzEXhICXLlf+DKeiLzF5a0M6Y4JEBguOjBtSKPO2DvY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=nnmu7iQhIvbXI1vZWEhJwaUmzbMwcLal9wtRhydM7LjPI0yQbA+l1eqYFzsRZlSyN
+	 epdEMYSzfyxkiLiuTSy53EeEjRNcCSyuukvf+4Pu1dqwc1VXT/okoTX8wLS4JQyAFs
+	 EtdDoFDtzh95YvQ+ZpaQJxm9FVJzpgOQdEg5U9dAZCPA2SgjeB1JYl/fWe8IdNxQ9y
+	 MDKrqtrFINEHzfTkCw47EPx9Y8eI2XiniH32KQtUgEvCsUUP0lgr+tCdMRfxDcRBVJ
+	 /+4X+HSFSn9G1ZL4LFhKZuJb7qee68aBz9kZMUZHaEa2dYPIl0xkLc/ALxjI1mwqmU
+	 sSl0kAh9ryGzQ==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai
+ <xukuohai@huawei.com>, Florent Revest <revest@chromium.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 2/2] bpf, arm64: inline
+ bpf_get_smp_processor_id() helper
+In-Reply-To: <CAEf4BzZOFye13KdBUKA7E=41NVNy5fOzF3bxFzaeZAzkq0kh-w@mail.gmail.com>
+References: <20240424173550.16359-1-puranjay@kernel.org>
+ <20240424173550.16359-3-puranjay@kernel.org>
+ <CAEf4BzZOFye13KdBUKA7E=41NVNy5fOzF3bxFzaeZAzkq0kh-w@mail.gmail.com>
+Date: Thu, 25 Apr 2024 10:14:26 +0000
+Message-ID: <mb61pwmollpfh.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] video: fbdev: replacing of_node_put with
- __free(device_node)
-To: Abdulrasaq Lawani <abdulrasaqolawani@gmail.com>, sam@ravnborg.org,
- tzimmermann@suse.de, christophe.jaillet@wanadoo.fr,
- u.kleine-koenig@pengutronix.de, julia.lawall@inria.fr
-Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
- javier.carrasco.cruz@gmail.com
-References: <20240423012021.56470-1-abdulrasaqolawani@gmail.com>
-Content-Language: en-US
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- xsFNBF3Ia3MBEAD3nmWzMgQByYAWnb9cNqspnkb2GLVKzhoH2QD4eRpyDLA/3smlClbeKkWT
- HLnjgkbPFDmcmCz5V0Wv1mKYRClAHPCIBIJgyICqqUZo2qGmKstUx3pFAiztlXBANpRECgwJ
- r+8w6mkccOM9GhoPU0vMaD/UVJcJQzvrxVHO8EHS36aUkjKd6cOpdVbCt3qx8cEhCmaFEO6u
- CL+k5AZQoABbFQEBocZE1/lSYzaHkcHrjn4cQjc3CffXnUVYwlo8EYOtAHgMDC39s9a7S90L
- 69l6G73lYBD/Br5lnDPlG6dKfGFZZpQ1h8/x+Qz366Ojfq9MuuRJg7ZQpe6foiOtqwKym/zV
- dVvSdOOc5sHSpfwu5+BVAAyBd6hw4NddlAQUjHSRs3zJ9OfrEx2d3mIfXZ7+pMhZ7qX0Axlq
- Lq+B5cfLpzkPAgKn11tfXFxP+hcPHIts0bnDz4EEp+HraW+oRCH2m57Y9zhcJTOJaLw4YpTY
- GRUlF076vZ2Hz/xMEvIJddRGId7UXZgH9a32NDf+BUjWEZvFt1wFSW1r7zb7oGCwZMy2LI/G
- aHQv/N0NeFMd28z+deyxd0k1CGefHJuJcOJDVtcE1rGQ43aDhWSpXvXKDj42vFD2We6uIo9D
- 1VNre2+uAxFzqqf026H6cH8hin9Vnx7p3uq3Dka/Y/qmRFnKVQARAQABzRxIZWxnZSBEZWxs
- ZXIgPGRlbGxlckBnbXguZGU+wsGRBBMBCAA7AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheA
- FiEERUSCKCzZENvvPSX4Pl89BKeiRgMFAl3J1zsCGQEACgkQPl89BKeiRgNK7xAAg6kJTPje
- uBm9PJTUxXaoaLJFXbYdSPfXhqX/BI9Xi2VzhwC2nSmizdFbeobQBTtRIz5LPhjk95t11q0s
- uP5htzNISPpwxiYZGKrNnXfcPlziI2bUtlz4ke34cLK6MIl1kbS0/kJBxhiXyvyTWk2JmkMi
- REjR84lCMAoJd1OM9XGFOg94BT5aLlEKFcld9qj7B4UFpma8RbRUpUWdo0omAEgrnhaKJwV8
- qt0ULaF/kyP5qbI8iA2PAvIjq73dA4LNKdMFPG7Rw8yITQ1Vi0DlDgDT2RLvKxEQC0o3C6O4
- iQq7qamsThLK0JSDRdLDnq6Phv+Yahd7sDMYuk3gIdoyczRkXzncWAYq7XTWl7nZYBVXG1D8
- gkdclsnHzEKpTQIzn/rGyZshsjL4pxVUIpw/vdfx8oNRLKj7iduf11g2kFP71e9v2PP94ik3
- Xi9oszP+fP770J0B8QM8w745BrcQm41SsILjArK+5mMHrYhM4ZFN7aipK3UXDNs3vjN+t0zi
- qErzlrxXtsX4J6nqjs/mF9frVkpv7OTAzj7pjFHv0Bu8pRm4AyW6Y5/H6jOup6nkJdP/AFDu
- 5ImdlA0jhr3iLk9s9WnjBUHyMYu+HD7qR3yhX6uWxg2oB2FWVMRLXbPEt2hRGq09rVQS7DBy
- dbZgPwou7pD8MTfQhGmDJFKm2jvOwU0EXchrcwEQAOsDQjdtPeaRt8EP2pc8tG+g9eiiX9Sh
- rX87SLSeKF6uHpEJ3VbhafIU6A7hy7RcIJnQz0hEUdXjH774B8YD3JKnAtfAyuIU2/rOGa/v
- UN4BY6U6TVIOv9piVQByBthGQh4YHhePSKtPzK9Pv/6rd8H3IWnJK/dXiUDQllkedrENXrZp
- eLUjhyp94ooo9XqRl44YqlsrSUh+BzW7wqwfmu26UjmAzIZYVCPCq5IjD96QrhLf6naY6En3
- ++tqCAWPkqKvWfRdXPOz4GK08uhcBp3jZHTVkcbo5qahVpv8Y8mzOvSIAxnIjb+cklVxjyY9
- dVlrhfKiK5L+zA2fWUreVBqLs1SjfHm5OGuQ2qqzVcMYJGH/uisJn22VXB1c48yYyGv2HUN5
- lC1JHQUV9734I5cczA2Gfo27nTHy3zANj4hy+s/q1adzvn7hMokU7OehwKrNXafFfwWVK3OG
- 1dSjWtgIv5KJi1XZk5TV6JlPZSqj4D8pUwIx3KSp0cD7xTEZATRfc47Yc+cyKcXG034tNEAc
- xZNTR1kMi9njdxc1wzM9T6pspTtA0vuD3ee94Dg+nDrH1As24uwfFLguiILPzpl0kLaPYYgB
- wumlL2nGcB6RVRRFMiAS5uOTEk+sJ/tRiQwO3K8vmaECaNJRfJC7weH+jww1Dzo0f1TP6rUa
- fTBRABEBAAHCwXYEGAEIACAWIQRFRIIoLNkQ2+89Jfg+Xz0Ep6JGAwUCXchrcwIbDAAKCRA+
- Xz0Ep6JGAxtdEAC54NQMBwjUNqBNCMsh6WrwQwbg9tkJw718QHPw43gKFSxFIYzdBzD/YMPH
- l+2fFiefvmI4uNDjlyCITGSM+T6b8cA7YAKvZhzJyJSS7pRzsIKGjhk7zADL1+PJei9p9idy
- RbmFKo0dAL+ac0t/EZULHGPuIiavWLgwYLVoUEBwz86ZtEtVmDmEsj8ryWw75ZIarNDhV74s
- BdM2ffUJk3+vWe25BPcJiaZkTuFt+xt2CdbvpZv3IPrEkp9GAKof2hHdFCRKMtgxBo8Kao6p
- Ws/Vv68FusAi94ySuZT3fp1xGWWf5+1jX4ylC//w0Rj85QihTpA2MylORUNFvH0MRJx4mlFk
- XN6G+5jIIJhG46LUucQ28+VyEDNcGL3tarnkw8ngEhAbnvMJ2RTx8vGh7PssKaGzAUmNNZiG
- MB4mPKqvDZ02j1wp7vthQcOEg08z1+XHXb8ZZKST7yTVa5P89JymGE8CBGdQaAXnqYK3/yWf
- FwRDcGV6nxanxZGKEkSHHOm8jHwvQWvPP73pvuPBEPtKGLzbgd7OOcGZWtq2hNC6cRtsRdDx
- 4TAGMCz4j238m+2mdbdhRh3iBnWT5yPFfnv/2IjFAk+sdix1Mrr+LIDF++kiekeq0yUpDdc4
- ExBy2xf6dd+tuFFBp3/VDN4U0UfG4QJ2fg19zE5Z8dS4jGIbLg==
-In-Reply-To: <20240423012021.56470-1-abdulrasaqolawani@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:cLoYK3RAKUWSdOY6pQlv7OlqIwml9+GVoL+EEXQ8NdchQNLb/zj
- GXFCxHpUtoQ2ueZvax1PU+p/UTXOGjnhrfOL16gGtIKh2Aljp74vzu1NlXaxblZMcHBmLMT
- MvizEjMG5UocoweYVAWJdHpGJDfEneRkOxzwBRaahxmhERpSZmEDQa9AoffIUn9loxGiqWc
- fQsg6ql/RgDFBP7ader6w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:7Bm6gTeIB1w=;mvdNqtr9er35ddS/XAQnZYH2em/
- p1B5ioWPV2HEdhWe7nLTc82QrOA/TzBvNHh1GAtWWp9VKwj3Ht0cGxtRk1iuG2uwu3jbBAu8o
- l323RTgmnb5WdjENF8+rT2meXJUsK3hnIH+ZXGrasI/XmKNpP+gTr3MFJXjNw/de+dDYe1zg2
- scNrCAGKLPVDtRVybE/lxQRjkUoM8njBeh+9t2DGfv46zcgmP9uydLXymZyoBT1EriohPPNm2
- KsbxMrtJwp13oB87JrR44N5SFC9cgaD2xELN4L3nGkleLsMNu+T6NLsidDbAzsEWcvwKEb2Co
- ZkcgZ8tk0JAAzdzpVMtrvhpWwRh+8jHYbGs6IZGFKOcPjWdf9VIP8uOjsFWM719kGaEBP0oV3
- 1qa2q8jaSm2ct5Ygz4Gutrs9pYF/HOLb5wBCxDqdONLjIFBDRZAII+Z6D1fR2dfNcCrxhhj9N
- SbtTMtHRU/34IdrNrSsXLYosbTPWBaqTB55x6VGrsab4Y8c/A8COcfDg/tYjpTVaToQJQeLsm
- i8kZej7MEZzPem+LzC7A5w06YON3ItjRKAdjHgFhXNv+SFYnxCIjfNptn4HdkGy4E4+Kla19G
- SQYIlqqS8UEA0zmO/8yvKukohVC+7vFZ5qNZwjU9QwsW+xTsLaRkHWEV2Xgh8/cQ7HoFKOHl/
- JIgcRBduB/BXrJtCnSwHV6gcD8MI/Qw5Ypt6RP9OR0Sq2S2DUIDhqUQeMxtVDn4ZntK5nP7Ya
- iPmviYJL5JB/Z+xBagMR8mdT9YXnBL89h+5EFYj7PSbzBzeHqeGa8tYECcDhAGFKRai5QlmBB
- kPixGUkKaNsPoTchhAuRfVwybotQvmXVq2ylqwYnso3cU=
 
-On 4/23/24 03:20, Abdulrasaq Lawani wrote:
-> Replaced instance of of_node_put with __free(device_node)
-> to simplify code and protect against any memory leaks
-> due to future changes in the control flow.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+
+> On Wed, Apr 24, 2024 at 10:36=E2=80=AFAM Puranjay Mohan <puranjay@kernel.=
+org> wrote:
+>>
+>> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inline
+>> bpf_get_smp_processor_id().
+>>
+>> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
+>>
+>> Here is how the BPF and ARM64 JITed assembly changes after this commit:
+>>
+>>                                          BPF
+>>                                         =3D=3D=3D=3D=3D
+>>               BEFORE                                       AFTER
+>>              --------                                     -------
+>>
+>> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_sm=
+p_processor_id();
+>> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff800082=
+072008
+>>                                                 (bf) r0 =3D r0
 >
-> Suggested-by: Julia Lawall <julia.lawall@inria.fr>
-> Signed-off-by: Abdulrasaq Lawani <abdulrasaqolawani@gmail.com>
-
-applied.
-Thanks!
-
-Helge
-
-> ---
->   drivers/video/fbdev/offb.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+> nit: hmm, you are probably using a bit outdated bpftool, it should be
+> emitted as:
 >
-> diff --git a/drivers/video/fbdev/offb.c b/drivers/video/fbdev/offb.c
-> index b421b46d88ef..ea38a260774b 100644
-> --- a/drivers/video/fbdev/offb.c
-> +++ b/drivers/video/fbdev/offb.c
-> @@ -357,7 +357,7 @@ static void offb_init_palette_hacks(struct fb_info *=
-info, struct device_node *dp
->   			par->cmap_type =3D cmap_gxt2000;
->   	} else if (of_node_name_prefix(dp, "vga,Display-")) {
->   		/* Look for AVIVO initialized by SLOF */
-> -		struct device_node *pciparent =3D of_get_parent(dp);
-> +		struct device_node *pciparent __free(device_node) =3D of_get_parent(d=
-p);
->   		const u32 *vid, *did;
->   		vid =3D of_get_property(pciparent, "vendor-id", NULL);
->   		did =3D of_get_property(pciparent, "device-id", NULL);
-> @@ -369,7 +369,6 @@ static void offb_init_palette_hacks(struct fb_info *=
-info, struct device_node *dp
->   			if (par->cmap_adr)
->   				par->cmap_type =3D cmap_avivo;
->   		}
-> -		of_node_put(pciparent);
->   	} else if (dp && of_device_is_compatible(dp, "qemu,std-vga")) {
->   #ifdef __BIG_ENDIAN
->   		const __be32 io_of_addr[3] =3D { 0x01000000, 0x0, 0x0 };
+> (bf) r0 =3D &(void __percpu *)(r0)
 
+Yes, I was using the bpftool shipped with the distro. I tried it again
+with the latest bpftool and it emitted this as expected.
+
+>
+>>                                                 (61) r0 =3D *(u32 *)(r0 =
++0)
+>>
+>>                                       ARM64 JIT
+>>                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>
+>>               BEFORE                                       AFTER
+>>              --------                                     -------
+>>
+>> int cpu =3D bpf_get_smp_processor_id();      int cpu =3D bpf_get_smp_pro=
+cessor_id();
+>> mov     x10, #0xfffffffffffff4d0           mov     x7, #0xffff8000ffffff=
+ff
+>> movk    x10, #0x802b, lsl #16              movk    x7, #0x8207, lsl #16
+>> movk    x10, #0x8000, lsl #32              movk    x7, #0x2008
+>> blr     x10                                mrs     x10, tpidr_el1
+>> add     x7, x0, #0x0                       add     x7, x7, x10
+>>                                            ldr     w7, [x7]
+>>
+>> Performance improvement using benchmark[1]
+>>
+>>              BEFORE                                       AFTER
+>>             --------                                     -------
+>>
+>> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   24.631=
+ =C2=B1 0.027M/s
+>> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   23.742=
+ =C2=B1 0.023M/s
+>> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   12.625=
+ =C2=B1 0.004M/s
+>>
+>> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
+>>
+>> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+>> ---
+>>  kernel/bpf/verifier.c | 11 ++++++++++-
+>>  1 file changed, 10 insertions(+), 1 deletion(-)
+>>
+>
+> Besides the nits, lgtm.
+>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 9715c88cc025..3373be261889 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -20205,7 +20205,7 @@ static int do_misc_fixups(struct bpf_verifier_en=
+v *env)
+>>                         goto next_insn;
+>>                 }
+>>
+>> -#ifdef CONFIG_X86_64
+>> +#if defined(CONFIG_X86_64) || defined(CONFIG_ARM64)
+>
+> I think you can drop this, we are protected by
+> bpf_jit_supports_percpu_insn() check and newly added inner #if/#elif
+> checks?
+
+If I remove this and later add support of percpu_insn on RISCV without
+inlining bpf_get_smp_processor_id() then it will cause problems here
+right? because then the last 5-6 lines inside this if(){} will be
+executed for RISCV.
+
+>
+>>                 /* Implement bpf_get_smp_processor_id() inline. */
+>>                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
+>>                     prog->jit_requested && bpf_jit_supports_percpu_insn(=
+)) {
+>> @@ -20214,11 +20214,20 @@ static int do_misc_fixups(struct bpf_verifier_=
+env *env)
+>>                          * changed in some incompatible and hard to supp=
+ort
+>>                          * way, it's fine to back out this inlining logic
+>>                          */
+>> +#if defined(CONFIG_X86_64)
+>>                         insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(u=
+nsigned long)&pcpu_hot.cpu_number);
+>>                         insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, =
+BPF_REG_0);
+>>                         insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BP=
+F_REG_0, 0);
+>>                         cnt =3D 3;
+>> +#elif defined(CONFIG_ARM64)
+>> +                       struct bpf_insn cpu_number_addr[2] =3D { BPF_LD_=
+IMM64(BPF_REG_0, (u64)&cpu_number) };
+>>
+>
+> this &cpu_number offset is not guaranteed to be within 4GB on arm64?
+
+Unfortunately, the per-cpu section is not placed in the first 4GB and
+therefore the per-cpu pointers are not 32-bit on ARM64.
+
+>
+>> +                       insn_buf[0] =3D cpu_number_addr[0];
+>> +                       insn_buf[1] =3D cpu_number_addr[1];
+>> +                       insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, =
+BPF_REG_0);
+>> +                       insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BP=
+F_REG_0, 0);
+>> +                       cnt =3D 4;
+>> +#endif
+>>                         new_prog =3D bpf_patch_insn_data(env, i + delta,=
+ insn_buf, cnt);
+>>                         if (!new_prog)
+>>                                 return -ENOMEM;
+>> --
+>> 2.40.1
+>>
 
