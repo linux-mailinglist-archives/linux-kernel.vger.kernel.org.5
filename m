@@ -1,160 +1,135 @@
-Return-Path: <linux-kernel+bounces-158155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 338F38B1C43
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:53:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D51918B1C49
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:55:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E01CD2865A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:53:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7675E1F216F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:55:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E6616EB40;
-	Thu, 25 Apr 2024 07:52:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF7C6E61F;
+	Thu, 25 Apr 2024 07:55:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gTFLni9e"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="IbEQ/MkV"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F32A6D1B0
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:52:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E36E6D1B3
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:55:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714031578; cv=none; b=Fj4L7/rUNfmme8LnX9fGhTjsrjZPye/MViif1OMUaDZxjZji2PkEb0/sHto2zLxmL4ynPgED4zT1B/L6L9n4E9DpBIjF3t8jyVFMk7Xq+mQkqYcqhrjm/ynFtjqV0UFyKnVsCdpDRD9twx2THaptMEsI3Uuls9NpQ0osa2BaEtY=
+	t=1714031744; cv=none; b=dawx63HoElwztjg33xyEjo3qhzRzGAz9jndat9PsGSwbF8T3x1X5AEHDWwPlY9Qr/KqQhOU5pBMpn3G5BHnsCQiswzE8kOvE8+29CTWGPyUDl5UZOQ7ih7Wrp0PbrwG90HJB15Lxbu5qbmcqQnwVw/0VIPtsx67Cg26+khNhU5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714031578; c=relaxed/simple;
-	bh=iqcU0wl8XLsCrSPqSSxHQIoKIH4GwM1u2GuiqgLi3XE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EqE5NnLNnjUBGckFWdZW8fEvWlAaGB57pNM0vWPufcB44d2ER1PTsZnKZf146ZcLocjM2wLbw59V7dvau5X/U5QRGcJaO+RyGkTzpg01ztBX3ZlLtkxxadNu3r70pQlyC8pHRFKCMZ+JjSTM5SVRoVHKUzcqhE3mG01cSSGoWaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gTFLni9e; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-343b7c015a8so549131f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:52:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714031576; x=1714636376; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=wQ6dakPzF37vXQVxSVDUoInS9Z2Cueqb/qk7m8i8nrg=;
-        b=gTFLni9evbdoxZ0Ebv9yZB0IOndbs8RlUCP709oRcDU5CMyS/84A1yIm2boqQVYePL
-         XSRaIgwR9AKuyNg+eugQVDNMxjQuNRXt0p0/XeyYDsXCh/2n8VCkHYauDOAlfxuMuqQt
-         2gfMV2SYmSxCCOwfTLE5TneLSrkUzxtAC0szzvVFr9VevJftvzevjr7CX9THOIFq/q6j
-         kx0BgTphjJiuFbWPdcfVvwtZcLa+VdziBnjEMl6jdBTMCWE8VPEGFCpwN/PGQQGG71zc
-         thTXMFXkY77otvozvasgdpR1+TKMR/CKhMpL+I6C0F3sPmwXLiHaavaXyTYW0p/qK47e
-         +wnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714031576; x=1714636376;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wQ6dakPzF37vXQVxSVDUoInS9Z2Cueqb/qk7m8i8nrg=;
-        b=Ag8wCiuh3Fqkefo1lipKoPWcKZQx3wsGhujZn/ip2G5N4Qzm9toNMq33j9vZEFmCYR
-         vEBxtAbvPu7/HZdgnWdH8NVy3Go6fcyL35umOs9ACn2H08wpi/kiRg2fOVEgNotC4jff
-         j5QHMricMkaD9+tHREWFxAixMo81OwqJ4mjYX+ER5tziHInYPYjZg+AjGQS0uHDOW+fD
-         oz7wRbPRy6MJayaQppKsUvMd4O/tnPyjpUrk9sa5mKGaBgUhLu0RtF+gqmYNPcxHv8EE
-         NntzQQKdOZe4AhFwgvJWTzJpf7O9xgzuuAKHMhVTElIqcLDWrI2m4VXMZHQlh8Valn8d
-         oI9A==
-X-Forwarded-Encrypted: i=1; AJvYcCWOQ6Oa7T2qoodWz1SddAThhwjlKGD8nLsWllRIaZNb+eLRVqOSYdmDzBZKb2brorH0LBBiClZNj5eIF5TQylvdmcYS9+VAg+6DdDsr
-X-Gm-Message-State: AOJu0YyEGVKWKrpt7mAtlmgRepoCmLko0tRqvucf1Q04/KtXZuugC/mT
-	vw6z0dAyXCir7SGeOxNWkhub5iTc9b5M1PtQvMtoU3VPZZQYbHaqcqj55xUdPy8=
-X-Google-Smtp-Source: AGHT+IHAWA8qIs+1LRJE6OkOV05b7ubwls3wd0MdT0C/MOGq56MiQqQuSAmDQ+1W+Ib212aGpGRI0Q==
-X-Received: by 2002:adf:e505:0:b0:347:d352:d5c0 with SMTP id j5-20020adfe505000000b00347d352d5c0mr3862703wrm.54.1714031575644;
-        Thu, 25 Apr 2024 00:52:55 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id m18-20020adff392000000b00345920fcb45sm19228877wro.13.2024.04.25.00.52.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 00:52:55 -0700 (PDT)
-Message-ID: <951cdadb-263e-47ac-8521-f9aaab7b1be2@linaro.org>
-Date: Thu, 25 Apr 2024 09:52:53 +0200
+	s=arc-20240116; t=1714031744; c=relaxed/simple;
+	bh=f4v6nriRsTGab93XHaryXtN37sBdVf9QHMiqI5braNY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=P+jqnu0i0QkyhnoBM79X7rlgCVgDqd/GIO+6ynKxPr1nqmzIEy1bUSgsF9M4SMux7K/RzrSBXLvu3cXbbLeJiIX8WIzVSWNOH26NWb6TslLzSwsVFzJ/USDxncJr0nN6+X8r7K0Wv5X5Dj5lw1u9Gi/LCY6op9sYehmLUfL0oEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=IbEQ/MkV; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43P7sg6t080566;
+	Thu, 25 Apr 2024 02:54:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714031682;
+	bh=f4v6nriRsTGab93XHaryXtN37sBdVf9QHMiqI5braNY=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To;
+	b=IbEQ/MkVMnUGNcEONW5OYhb69SIRfxMra3SEa7Vd2VhjC5lABPSgZv5JZLpjtybdK
+	 TAXXcbpNArLye4iaSaIJtlfjARTF5TS1cutpGSlWRdXpubf4ruB7JDpz+r50j1rVgf
+	 jtPHhXTDLyF1pyA9+e6Oq7pXkC0EFS9HQz+xWnPg=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43P7sgHX093892
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 25 Apr 2024 02:54:42 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 25
+ Apr 2024 02:54:41 -0500
+Received: from DLEE100.ent.ti.com ([fe80::ad4d:c227:3f85:880d]) by
+ DLEE100.ent.ti.com ([fe80::ad4d:c227:3f85:880d%17]) with mapi id
+ 15.01.2507.023; Thu, 25 Apr 2024 02:54:41 -0500
+From: "Xu, Baojun" <baojun.xu@ti.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC: "tiwai@suse.de" <tiwai@suse.de>,
+        "robh+dt@kernel.org"
+	<robh+dt@kernel.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "pierre-louis.bossart@linux.intel.com"
+	<pierre-louis.bossart@linux.intel.com>,
+        "Lu, Kevin" <kevin-lu@ti.com>,
+        "Ding,
+ Shenghao" <shenghao-ding@ti.com>,
+        "Navada Kanyana, Mukund" <navada@ti.com>,
+        "13916275206@139.com" <13916275206@139.com>,
+        "P O, Vijeth" <v-po@ti.com>,
+        "Holalu Yogendra, Niranjan" <niranjan.hy@ti.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
+        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "soyer@irl.hu" <soyer@irl.hu>
+Subject: Re: [EXTERNAL] Re: [PATCH v3 1/3] ALSA: hda/tas2781: Modification for
+ add tas2781 driver for SPI
+Thread-Topic: [EXTERNAL] Re: [PATCH v3 1/3] ALSA: hda/tas2781: Modification
+ for add tas2781 driver for SPI
+Thread-Index: AQHakUValxtzw4HJGk6cPNX38MLKCLFuQDOAgApofQE=
+Date: Thu, 25 Apr 2024 07:54:41 +0000
+Message-ID: <0c7b29075dc347299602668660adb4b6@ti.com>
+References: <20240418040240.2337-1-baojun.xu@ti.com>
+ <20240418040240.2337-2-baojun.xu@ti.com>,<ZiEKc4OTVlOt8llU@smile.fi.intel.com>
+In-Reply-To: <ZiEKc4OTVlOt8llU@smile.fi.intel.com>
+Accept-Language: en-GB, zh-CN, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v3 1/2] dt-bindings: make sid and broadcast reg optional
-To: Sumit Gupta <sumitg@nvidia.com>, robh@kernel.org, conor+dt@kernel.org,
- maz@kernel.org, mark.rutland@arm.com, treding@nvidia.com,
- jonathanh@nvidia.com
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-tegra@vger.kernel.org, amhetre@nvidia.com, bbasu@nvidia.com
-References: <20240412130540.28447-1-sumitg@nvidia.com>
- <20240412130540.28447-2-sumitg@nvidia.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Language: en-US
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240412130540.28447-2-sumitg@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 12/04/2024 15:05, Sumit Gupta wrote:
-> MC SID and Broadbast channel register access is restricted for Guest VM.
-> Make both the regions as optional for SoC's from Tegra186 onwards.
-> Tegra MC driver will skip access to the restricted registers from Guest
-> if the respective regions are not present in the memory-controller node
-> of Guest DT.
-> 
-> Suggested-by: Thierry Reding <treding@nvidia.com>
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> ---
-
-One more thing:
-
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
-
-The current prefix is just terrible... are you changing all bindings in
-entire kernel repository?
-
-Best regards,
-Krzysztof
-
+SGkgQW5keSwNCg0KVGhhbmtzIGZvciB5b3VyIGZlZWRiYWNrLg0KDQo+IEZyb206IEFuZHkgU2hl
+dmNoZW5rbyA8YW5kcml5LnNoZXZjaGVua29AbGludXguaW50ZWwuY29tPg0KPiBTZW50OiAxOCBB
+cHJpbCAyMDI0IDE5OjU2DQo+IFRvOiBYdSwgQmFvanVuDQo+IENjOiB0aXdhaUBzdXNlLmRlOyBy
+b2JoK2R0QGtlcm5lbC5vcmc7IGxnaXJkd29vZEBnbWFpbC5jb207IHBlcmV4QHBlcmV4LmN6OyBw
+aWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb207IEx1LCBLZXZpbjsgRGluZywgU2hl
+bmdoYW87IE5hdmFkYSBLYW55YW5hLCBNdWt1bmQ7IDEzOTE2Mjc1MjA2QDEzOS5jb207IFAgTywg
+VmlqZXRoOyBIb2xhbHUgWW9nZW5kcmEsIE5pcmFuamFuOyBhbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpYW0uci5naXJkd29vZEBpbnRl
+bC5jb207IHl1bmctY2h1YW4ubGlhb0BsaW51eC5pbnRlbC5jb207IGJyb29uaWVAa2VybmVsLm9y
+Zzsgc295ZXJAaXJsLmh1DQo+IFN1YmplY3Q6IFtFWFRFUk5BTF0gUmU6IFtQQVRDSCB2MyAxLzNd
+IEFMU0E6IGhkYS90YXMyNzgxOiBNb2RpZmljYXRpb24gZm9yIGFkZCB0YXMyNzgxIGRyaXZlciBm
+b3IgU1BJDQo+IA0KPiBPbiBUaHUsIEFwciAxOCwgMjAyNCBhdCAxMjrigIowMjrigIozN1BNICsw
+ODAwLCBCYW9qdW4gWHUgd3JvdGU6ID4gSW50ZWdyYXRlIHRhczI3ODEgY29uZmlncyBmb3IgSFAg
+TGFwdG9wcy4gRXZlcnkgdGFzMjc4MSBpbiB0aGUgbGFwdG9wID4gd2lsbCB3b3JrIGFzIGEgc2lu
+Z2xlIHNwZWFrZXIgb24gU1BJIGJ1cy4gVGhlIGNvZGUgc3VwcG9ydCByZWFsdGVrIGFzIFJlYWx0
+ZWsgPiB0aGUgcHJpbWFyeSBjb2RlYy7igIoNCj4gWmpRY21RUllGcGZwdEJhbm5lclN0YXJ0DQo+
+IFRoaXMgbWVzc2FnZSB3YXMgc2VudCBmcm9tIG91dHNpZGUgb2YgVGV4YXMgSW5zdHJ1bWVudHMu
+DQo+IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3UgcmVj
+b2duaXplIHRoZSBzb3VyY2Ugb2YgdGhpcyBlbWFpbCBhbmQga25vdyB0aGUgY29udGVudCBpcyBz
+YWZlLiBJZiB5b3Ugd2lzaCB0byByZXBvcnQgdGhpcyBtZXNzYWdlIHRvIElUIFNlY3VyaXR5LCBw
+bGVhc2UgZm9yd2FyZCB0aGUgbWVzc2FnZSBhcyBhbiBhdHRhY2htZW50IHRvIHBoaXNoaW5nQGxp
+c3QudGkuY29tDQo+IA0KPiBaalFjbVFSWUZwZnB0QmFubmVyRW5kDQo+IA0KPiBPbiBUaHUsIEFw
+ciAxOCwgMjAyNCBhdCAxMjowMjozN1BNICswODAwLCBCYW9qdW4gWHUgd3JvdGU6DQo+ID4gSW50
+ZWdyYXRlIHRhczI3ODEgY29uZmlncyBmb3IgSFAgTGFwdG9wcy4gRXZlcnkgdGFzMjc4MSBpbiB0
+aGUgbGFwdG9wDQo+ID4gd2lsbCB3b3JrIGFzIGEgc2luZ2xlIHNwZWFrZXIgb24gU1BJIGJ1cy4g
+VGhlIGNvZGUgc3VwcG9ydCByZWFsdGVrIGFzDQo+IA0KPiBSZWFsdGVrDQo+IA0KPiA+IHRoZSBw
+cmltYXJ5IGNvZGVjLg0KPiANCj4gLi4uDQo+IA0KPiA+ICBzb3VuZC9wY2kvaGRhL0tjb25maWcg
+ICAgICAgICAgICAgICAgICAgICAgICAgICB8IDE1ICsrKysrKysrKysrKysrKw0KPiA+ICBzb3Vu
+ZC9wY2kvaGRhL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyICsrDQo+IA0K
+PiBJcyB0aGlzIGNvcnJlY3Q/IFlvdSBhcmUgYWRkaW5nIGEgZGVhZCAiY29kZSIsIGlzbid0IGl0
+Pw0KPiANCg0KV2hhdCdzIG1lYW4gImRlYWQgY29kZSI/IEFmdGVyIGFkZCBDT05GSUdfU05EX0hE
+QV9TQ09ERUNfVEFTMjc4MV9TUEk9bQ0KaW4gbXkgY29uZmlnIGZpbGUsIHRoZSB3aG9sZSBwYXRj
+aCBjb2RlIGhhcyB3b3JrZWQuDQoNCj4gLi4uDQo+IA0KPiBUaGUgcmVzdCBMR1RNLg0KPiANCj4g
+LS0NCj4gV2l0aCBCZXN0IFJlZ2FyZHMsDQo+IEFuZHkgU2hldmNoZW5rbw0KPiANCg0KDQpCZXN0
+IFJlZ2FyZHMNCkppbQ0KDQo=
 
