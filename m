@@ -1,47 +1,77 @@
-Return-Path: <linux-kernel+bounces-158943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 452318B2730
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:07:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1AF88B2739
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:09:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D96BD1F25398
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:07:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E9381C23CED
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FFB414D710;
-	Thu, 25 Apr 2024 17:07:20 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C045149E0E
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 17:07:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 367EB14D718;
+	Thu, 25 Apr 2024 17:09:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gBjKE466"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3064B14D712;
+	Thu, 25 Apr 2024 17:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714064839; cv=none; b=D2tl4Ny2L3CzUdGhP8UOCgO0v24ZIG5/MfpUg/fk5MyEx+LCbKIvP1n/OAQa17QlnJL0htjrybTKs1o7KJh/McDYmHevGwjY+4LzZ3OglKiUMv9MtrpSEnMytsBMboXv6Z8TSng182cEXXCDecvDgaEOGc4NNNhaDbCMOIUdX+k=
+	t=1714064948; cv=none; b=u59ZO5tMxAWaLT35zFBLW/nmHBM4r1tx67byVkfOHSu1lkB8IrJ4t8aAbxK0HLVPtO4fedocRBw1pWMG2UL31Ecxvs/bvAV4yAqfba6XpMKageoLBkE45Au0TmkPVkDQA78PKe5OQ4Vkm5D6i4RL3Ks9mun7INsv0RAMS4nc1IY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714064839; c=relaxed/simple;
-	bh=tHJXdKY1e6AqpOg19P28+P4MIhlfRIV7LEXxAPsKJ0c=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=brwnmaxMqtRLl1gI94WcvMpJdCW+HiQNB0cGxg4cOVXsAlDyILigzJiCbFKUDTRJ0OTplluLnXNHzjC+uagVtNW4zZS0JDNnJ6+gEhF4YEzGNO8bhHG2IykynUJS/nO5Bjii073gKBn2+6+AtMhtiC2ejolrexmqMmgosE62Akc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3EC501007;
-	Thu, 25 Apr 2024 10:07:43 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.27])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1D1813F793;
-	Thu, 25 Apr 2024 10:07:14 -0700 (PDT)
-From: Ryan Roberts <ryan.roberts@arm.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Zi Yan <zi.yan@cs.rutgers.edu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-Cc: Ryan Roberts <ryan.roberts@arm.com>,
-	linux-mm@kvack.org,
+	s=arc-20240116; t=1714064948; c=relaxed/simple;
+	bh=LUmBuiTPCpuoP9GA3Fh0URX/lzsRO0Lx/ToLVC7HoAM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Jh8gb4USs73/UZRJbRrPO9ASbmkBSFDyVYtQCofoQJVWYtmtiGX4cRDRDC2BPMka/9yGPg9hGXA1ohZ4gQqiPEDCNSIAfqMVUAVCMReO2AbW/V48uc4vUd3ueUUqW5PCaa8u/2ZoTGXhM86bKBhNDzv4kmwoRl4iPSOWAsIJ2nU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gBjKE466; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714064947; x=1745600947;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=LUmBuiTPCpuoP9GA3Fh0URX/lzsRO0Lx/ToLVC7HoAM=;
+  b=gBjKE466sikYlw77vRuQFNG64NIMegdDvN6UfdxCPTNz62FtPwgONg+B
+   oEyj4UCoDAWZUMXcveH40o20WzngEMBplv+w8ERlzncFFy8u4az3d2u9k
+   KEqW5c4Lsw6CfTf/Et73dEcu/Nzn5lmpLjzzkoiE4QccMzDyT7Eav8A3C
+   InXHlVMeG/DeIvOfHhII8FA/D7chIkoOxobiqNHhNUHtbRyFh2SUOviv+
+   ge0EYMfiT+8QLzdrHk8igCV31sRz1OfK+biP20wQlsbHyTcs77yZ2R1b8
+   DJ7RGKdJP7d/jcgaG5ZaL2USDEaQEwy6Yx+aezUXSVEZBSUwFalOHJCvP
+   w==;
+X-CSE-ConnectionGUID: slri80CvTjWNB8b0r8X+cw==
+X-CSE-MsgGUID: qItOAcdwSNG+l8j5lNiV7A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="13554454"
+X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
+   d="scan'208";a="13554454"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 10:09:05 -0700
+X-CSE-ConnectionGUID: UcbMNhXLSkGenNFAfdS2QA==
+X-CSE-MsgGUID: 7vPWFdT8RT2VDXptYaxVLA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
+   d="scan'208";a="29595991"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa005.fm.intel.com with ESMTP; 25 Apr 2024 10:09:02 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 6FFA5136; Thu, 25 Apr 2024 20:09:01 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-mmc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v1] mm: Fix race between __split_huge_pmd_locked() and GUP-fast
-Date: Thu, 25 Apr 2024 18:07:04 +0100
-Message-Id: <20240425170704.3379492-1-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
+Cc: Aubin Constans <aubin.constans@microchip.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Subject: [PATCH v2 0/2] mmc: atmel-mci: Get rid of leftovers and clean up
+Date: Thu, 25 Apr 2024 20:08:43 +0300
+Message-ID: <20240425170900.3767990-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,91 +80,23 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-__split_huge_pmd_locked() can be called for a present THP, devmap or
-(non-present) migration entry. It calls pmdp_invalidate()
-unconditionally on the pmdp and only determines if it is present or not
-based on the returned old pmd. This is a problem for the migration entry
-case because pmd_mkinvalid(), called by pmdp_invalidate() must only be
-called for a present pmd.
+I used to have some patches against the driver, but it appears that part
+of it has been applied (in different form as done by someone else).
+However, there is still room to improve, hence this spring cleanup series.
 
-On arm64 at least, pmd_mkinvalid() will mark the pmd such that any
-future call to pmd_present() will return true. And therefore any
-lockless pgtable walker could see the migration entry pmd in this state
-and start interpretting the fields as if it were present, leading to
-BadThings (TM). GUP-fast appears to be one such lockless pgtable walker.
-I suspect the same is possible on other architectures.
+In v2:
+- dropped applied patches
+- fixed kernel-doc issue (LKP)
 
-Fix this by only calling pmdp_invalidate() for a present pmd. And for
-good measure let's add a warning to the generic implementation of
-pmdp_invalidate(). I've manually reviewed all other
-pmdp_invalidate[_ad]() call sites and believe all others to be
-conformant.
+Andy Shevchenko (2):
+  mmc: atmel-mci: Incapsulate used to be a platform data into host
+    structure
+  mmc: atmel-mci: Switch to use dev_err_probe()
 
-This is a theoretical bug found during code review. I don't have any
-test case to trigger it in practice.
+ drivers/mmc/host/atmel-mci.c | 72 ++++++++++++++----------------------
+ 1 file changed, 28 insertions(+), 44 deletions(-)
 
-Fixes: 84c3fc4e9c56 ("mm: thp: check pmd migration entry in common path")
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
-
-Applies on top of v6.9-rc5. Passes all the mm selftests on arm64.
-
-Thanks,
-Ryan
-
-
- mm/huge_memory.c     | 5 +++--
- mm/pgtable-generic.c | 2 ++
- 2 files changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 89f58c7603b2..80939ad00718 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2513,12 +2513,12 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
- 	 * for this pmd), then we flush the SMP TLB and finally we write the
- 	 * non-huge version of the pmd entry with pmd_populate.
- 	 */
--	old_pmd = pmdp_invalidate(vma, haddr, pmd);
-
--	pmd_migration = is_pmd_migration_entry(old_pmd);
-+	pmd_migration = is_pmd_migration_entry(*pmd);
- 	if (unlikely(pmd_migration)) {
- 		swp_entry_t entry;
-
-+		old_pmd = *pmd;
- 		entry = pmd_to_swp_entry(old_pmd);
- 		page = pfn_swap_entry_to_page(entry);
- 		write = is_writable_migration_entry(entry);
-@@ -2529,6 +2529,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
- 		soft_dirty = pmd_swp_soft_dirty(old_pmd);
- 		uffd_wp = pmd_swp_uffd_wp(old_pmd);
- 	} else {
-+		old_pmd = pmdp_invalidate(vma, haddr, pmd);
- 		page = pmd_page(old_pmd);
- 		folio = page_folio(page);
- 		if (pmd_dirty(old_pmd)) {
-diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
-index 4fcd959dcc4d..74e34ea90656 100644
---- a/mm/pgtable-generic.c
-+++ b/mm/pgtable-generic.c
-@@ -198,6 +198,7 @@ pgtable_t pgtable_trans_huge_withdraw(struct mm_struct *mm, pmd_t *pmdp)
- pmd_t pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
- 		     pmd_t *pmdp)
- {
-+	VM_WARN_ON(!pmd_present(*pmdp));
- 	pmd_t old = pmdp_establish(vma, address, pmdp, pmd_mkinvalid(*pmdp));
- 	flush_pmd_tlb_range(vma, address, address + HPAGE_PMD_SIZE);
- 	return old;
-@@ -208,6 +209,7 @@ pmd_t pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
- pmd_t pmdp_invalidate_ad(struct vm_area_struct *vma, unsigned long address,
- 			 pmd_t *pmdp)
- {
-+	VM_WARN_ON(!pmd_present(*pmdp));
- 	return pmdp_invalidate(vma, address, pmdp);
- }
- #endif
---
-2.25.1
+-- 
+2.43.0.rc1.1336.g36b5255a03ac
 
 
