@@ -1,150 +1,228 @@
-Return-Path: <linux-kernel+bounces-158047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0A228B1AA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:06:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D94D48B1AA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:06:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B03222838EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:06:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EDED283933
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:06:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF1313D3AC;
-	Thu, 25 Apr 2024 06:06:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F37E83D57D;
+	Thu, 25 Apr 2024 06:06:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mixn5Q1O"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NQhLAfcL"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B5F23A1AC;
-	Thu, 25 Apr 2024 06:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714025183; cv=none; b=RXsFCUZJC6oz1p7CNWZ+KhjjStrQLYr4zdschUFXtK0gzyb3e0n2TJnu7b/IR36olxBeQw4yEMPG6R9p32DbqJhhja2EPrOgoqon0l4x9hhRuSsQ0ZRfjWZUU4EVvZQBZ89EGXkiyc6t6DKz9yUZJy/c+EUABIZMListtZC7cFU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714025183; c=relaxed/simple;
-	bh=dvKTlg+kg92Mkx6G+gt4m/08khRB2H/WrYx/Ku1ZpbE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rHqFh3vhuus6sj3JsLVbthWygoIPh+nWJPY45h/hDR9KQkYNSgwRnilkmjjkroUCupct29SbTsgg5h8up+ILNAPPs7ar33L8YyRT6w7B692cFRbnME9zOBGqrNKYsI2AjsJbiDYdPUFC5OckQ+LM9652EsjsC2v2otqqLK60rA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mixn5Q1O; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso723735276.2;
-        Wed, 24 Apr 2024 23:06:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714025180; x=1714629980; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Kdu2kkuJAVCmKf8384cv38eneufBKUPC8ObGdfPhtmQ=;
-        b=Mixn5Q1OFXDc81vU1Qdk7R/RDlRfa2UKOxDOD7XfW5uvAxrahf6wGID1IzzdVPZp6L
-         XglxnuhY5ChneLfq1LG4chcmKLwn/p88UytBylHPAj1XUmf/LemcsH0X5epYlU9xQl2c
-         fuJA2aeoU98Ro2WcfcJr4mGGHSUYblr5xSx16+79DEurtuKPbAG2/i9jGDE1EmuMTxZ2
-         jkGynFnSxao8Dqg26mGdn92aXRB10EGBLD/DqK552YC3RLSVyWlyl2lmUVNBICYBGSq9
-         3IldWuDGHV3x8LKoJT6/8hZjp02k8tR9tHYPOl0WPHqSvq/jCZvLp3h5gjefQfN0AzPa
-         +e9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714025180; x=1714629980;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Kdu2kkuJAVCmKf8384cv38eneufBKUPC8ObGdfPhtmQ=;
-        b=FhWMeyavrreRrhYlYmWI0NwdEqpq87TmboVnNaksegQ8HL5M8xg6oTuIi0Y74hORzC
-         Hih/ZKxtczyrwGB4hfNlJlVQf1Z5V+AeJ49vh0fKuBaG3epPUwr28aQguYB2vb/Jfdzv
-         71Ki+N/g6XqICQSl9WGlhd9XUeuClkCzZ7N33CzUd/8U9wmw1tExz58yOL99yhYoMlsx
-         7kHOEvyxUqxTuEvgdodo9MBO1kCcdoZd5tnklufog/sZDipVcHuS8nI4Cx4emSjp3MGi
-         AmR8ujx6GAOQGobwc25QJo5spDX+gNBGgGIvodWDl6tL4COiF+pIMXdpruuGrUQsIfXd
-         EpxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV5aTSGdrrpCbzC7j3VOZHQziFjq/Ohgpn+vXhSGZ4xIQ0t+zoNcLN205ruwD+HxidSKIg6NV9HTPp9eI+rhQ92MOTKsinUo6noIpMC78WKhWPAik1sxi9apkjLj+ek4nvVO9ePXlRIkwzdrUIPYpI28rm+J2I509Ppa9BmLEW+vMzygOi29WfWG7I=
-X-Gm-Message-State: AOJu0YyWRIWUd3u2LxZ9odkbj6DiftUs5Knt5lxtfO2SfyUuvvlZCKH8
-	o0D2/tVts3agzgxt14T0Klvv0LZwNE0GtUjjL5UKaQ5rpCg2iRIFu0Cl+Lfyq4uWcQ5dIeql6C7
-	R/L/ffcmvC7K0ntznJtr9UK8Fj+E=
-X-Google-Smtp-Source: AGHT+IENHXhgpA97vo8Z8o1YE9P1ifZkeyeBBuDFVW1qXr8kV4Qe/F0s7PmxJlJbfZt8J+wV8LY3ZwcjiLWwmN0OIXE=
-X-Received: by 2002:a25:820a:0:b0:de4:70e2:16c with SMTP id
- q10-20020a25820a000000b00de470e2016cmr5037857ybk.14.1714025180256; Wed, 24
- Apr 2024 23:06:20 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C4A41ABE;
+	Thu, 25 Apr 2024 06:06:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714025195; cv=fail; b=SqyTFYGtcUSzm8QiJCYmu0CJe8i69C7gDkaiWGY3bNJdsJmXEcF2/bshrYHkuGhlH16eB+x0zmG7W6Rqw0KlK5CyW5rTRvHwjstE5mQk3hzFzqSwbg2t3XmBc/T+q4r8CbNMAUdhcqp+LOeEX+NR9vU9+VtxvUmhgvkkmlz1uvU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714025195; c=relaxed/simple;
+	bh=BhHYZvJ2pHmq6jSWebYAKIpj0xWe793cw7IKhlLjmzU=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=o7nOAC2btp/IjIWcImMrcUUaEoyppY9S13tYRTJKtSm+uFpKRjn5izbsNNUnZ1nCDKilyc3fERoxkLwABPP5omEYJIj4/nMBc5v6zleHueQuF9nHDrOOGgEBEfYgT+0ZJc1rCRrrpmV1MqgCOmpn5WEfV+4KLdTbgzuRLht/lLo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NQhLAfcL; arc=fail smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714025193; x=1745561193;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=BhHYZvJ2pHmq6jSWebYAKIpj0xWe793cw7IKhlLjmzU=;
+  b=NQhLAfcLBVLTKie3ya59//NcSb0WeCG7ifTKSX+ZKK5O6/lL3DKqVNj1
+   6jlkPMlr7QmVYD5WZOopsCbuSFQQ/H9Ht4PNSjJv7+OoaRCnK63+p1h4y
+   yIdgj/57CfByjn4w4hT/FH/3uSPzwtkdbGbTrRmxY42QqGBvuLtvq897H
+   Th5pQWFBkSwuSYqAZCUNw1v1w4CIHpcivZ1gazfALnDunqEMlPaLdE5n1
+   InYMePIznmPDKOwkkewAZWt4Mm2ZX83P37NnVOyfpkI3glyUE8HQX244b
+   WINq76MxSH9kO2iWtqlKkGhB108JiUUWmd3x5OxdJPO4a28hibyzoFCXf
+   A==;
+X-CSE-ConnectionGUID: FpXMUHJQTbSpEGaRnFe7Ww==
+X-CSE-MsgGUID: S+IDNFCqQkCNQkhgSrnBdQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="20379263"
+X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
+   d="scan'208";a="20379263"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 23:06:31 -0700
+X-CSE-ConnectionGUID: BvPbKnc6RbCKgC16vSEuOg==
+X-CSE-MsgGUID: x/5ZufbWTU6TsY3JA14Hcw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
+   d="scan'208";a="25040656"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Apr 2024 23:06:31 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Apr 2024 23:06:30 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 24 Apr 2024 23:06:30 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 24 Apr 2024 23:06:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bx5gQA3C1ZbFVPg0rAiSmVzPhscQTVFD6I5SoarENeiJkFy0MNmqDbIVc/rqTkkhY11RgbUCkGYGvdOeV/KPnSHb7S0cf3pQVPojH3lKQGIKDqd2t+GYOqnGfDocZeFzAzJL0XH3B7evk7XOzYaVv+ieJDzUNVsaQErwS8gsgyIIR2rzsP5CzLdiVobh9C6MYGZT9x8qx9MAC52pCxDuyMcro+ABsJ3Wwz6Z70OYvBfN+ajYhCB/HEnL+jW9W+Oe47IULqGIQod1PRM4uQUHGMZmXfEWQwuUZGxONPCKPCzWB6PPXOTQSsaRDDd3wGzbRYaEKaM9yvQfB+0yP1KfjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=A3a+mu+KwMGgIvCM9/TetpxmP8f3QyAHqvDJbwREIPI=;
+ b=bZMnaBAgsMCBdaw/xyvAf1Sx2YUf8x0NSiUvOn9RkHqbo0ORei2JK3karAc+Mg0ll0ebBstRFyq+6DuS/rl/npeNYRxyj1Atb6rfPlHefng6MK6d/2xQHzqqJpsP2qHb7iqN5se49PRUbkG5JAYh+Zk+8EWrqAj8ejpA5V4bXqT7AwTxDruHzDutVwdKb3gnsj6xIkJOi5/TvzyhVOTewaIF/TbaT7DcwcczkQqPni/LvSudfwkcO2/TT3ZRat53+L7ltWnrgzd0syHu0g7kGh/OZCETDxggjfLX5g8LQYHwo3J7uNHKu94kSknMJ3mneB+QsgFiJQkzKx+50POAVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MW4PR11MB6738.namprd11.prod.outlook.com (2603:10b6:303:20c::13)
+ by CH3PR11MB7204.namprd11.prod.outlook.com (2603:10b6:610:146::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.20; Thu, 25 Apr
+ 2024 06:06:23 +0000
+Received: from MW4PR11MB6738.namprd11.prod.outlook.com
+ ([fe80::416d:2690:e006:8f50]) by MW4PR11MB6738.namprd11.prod.outlook.com
+ ([fe80::416d:2690:e006:8f50%4]) with mapi id 15.20.7519.021; Thu, 25 Apr 2024
+ 06:06:23 +0000
+Message-ID: <a9b7f1fc-7b07-41e4-8957-876d428399be@intel.com>
+Date: Thu, 25 Apr 2024 09:06:16 +0300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Intel-wired-lan] [BUG] e1000e, scheduling while atomic (stable)
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	=?UTF-8?B?SsOpcsO0bWUgQ2FycmV0ZXJv?= <cJ-ko@zougloub.eu>
+CC: <netdev@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
+	<linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>, "Ruinskiy, Dima"
+	<dima.ruinskiy@intel.com>, "Lifshits, Vitaly" <vitaly.lifshits@intel.com>,
+	"Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+References: <a7eb665c74b5efb5140e6979759ed243072cb24a.camel@zougloub.eu>
+ <dff8729b-3ab6-4b54-a3b0-60fabf031d62@intel.com>
+ <2259bbeb9a012548779e3bf09a393fdb7d62dd0c.camel@zougloub.eu>
+ <2024042328-footprint-enrage-2db3@gregkh>
+Content-Language: en-US
+From: Sasha Neftin <sasha.neftin@intel.com>
+In-Reply-To: <2024042328-footprint-enrage-2db3@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: TL0P290CA0012.ISRP290.PROD.OUTLOOK.COM
+ (2603:1096:950:5::12) To MW4PR11MB6738.namprd11.prod.outlook.com
+ (2603:10b6:303:20c::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403021808.309900-1-vinicius.gomes@intel.com>
- <CAJfpeguqW4mPE9UyLmccisTex_gmwq6p9_6_EfVm-1oh6CrEBA@mail.gmail.com> <87frvay47x.fsf@intel.com>
-In-Reply-To: <87frvay47x.fsf@intel.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 25 Apr 2024 09:06:08 +0300
-Message-ID: <CAOQ4uxjdk47CVbihhsErzNQdUBiPshBOd8rg-PerBuOPjY=e5w@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] overlayfs: Optimize override/revert creds
-To: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Cc: Miklos Szeredi <miklos@szeredi.hu>, brauner@kernel.org, hu1.chen@intel.com, 
-	malini.bhandaru@intel.com, tim.c.chen@intel.com, mikko.ylinen@intel.com, 
-	lizhen.you@intel.com, linux-unionfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR11MB6738:EE_|CH3PR11MB7204:EE_
+X-MS-Office365-Filtering-Correlation-Id: bbdaad92-2ff3-40e9-ca72-08dc64edd57f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|366007;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?VjJISXBYY2NTL3AvYzVOcmNPdjJLNkdyTUZZUU11Mjk0SWs5Y1ZIZkpIeEhk?=
+ =?utf-8?B?ajdRVmprSUgvTlVRY095ZEdZMDNvYVZCNklVVmtRRkxnNXUzajBpNVNJUW5C?=
+ =?utf-8?B?bVJRQUNvL0JZbUxRK05QSjhDRXQxVjJRNmRKbFpvZDR0TXlibGJqZ1E5a2pS?=
+ =?utf-8?B?S1pFV2hTb2VldHRQNDZIbFZCaVVLTmxKT3hTSDlXbjh2RitHOEF4bGhtSEhU?=
+ =?utf-8?B?V2gwL1lReHVqd0tRSHJWMjN5TFR3T3Y0WmN3aWM4MXdKbkgyR3B3eVhmQ0dy?=
+ =?utf-8?B?ZjQ1WEQ3eHN0Sk4zRXY4L1lwNEkzcEVuSHlBU1pUUzRDamlCRFd3ZTVKMmhE?=
+ =?utf-8?B?UTI1U0dBNzNNbDdWemRVTXZOa3BtUGJFS1NGNkFOUnNsTk5ZeVJ6MFNsMmx2?=
+ =?utf-8?B?NWxYL2NCYzNobzZtdTBRYSthM2FRT1c1N0tMK2cxUFl0UDJGL0hFdnZGYkQ2?=
+ =?utf-8?B?c2JNL2FOaHhVNCtkNUtWOWJERkFSUFJLM0xCdDVjd1pBRFZGQWdWd1N1MTlu?=
+ =?utf-8?B?a2tKVTN2K0Y1MXZTcytTaU5wRnAzTHdIdEs5cUhYNXdZV2hNbkthY2dVejVo?=
+ =?utf-8?B?aFlkTG9WQWplQXdxMGNpREZ5RUZoVXkxTUk2OCtXNXBFZGRJa3RJekNlU2pn?=
+ =?utf-8?B?OEVtcDlET2Z3RUVLbUo0K0lldi8xbTJxOEt0QjZ6TTJmWmtMS3hXZVVKdjNt?=
+ =?utf-8?B?cnBKajVFZXJqYllVN0dZZmhCZUFySXZxUERiTVBXMUhJVTRHTmV1alA3UTJR?=
+ =?utf-8?B?NGlEQVJ2cHRCQTRaK3lUOFpjRVl0UkpDVHAxRnc3cEZoQXpURi9vZW5FRFBl?=
+ =?utf-8?B?L09VdldlNHZZWlZhK3VZQ3ZWcEdJaFBuYUNEQVdIanRXQVlFZ1ZiQ05XOVlX?=
+ =?utf-8?B?UGVVSElFQUVZYkRWYm44NnF0MTRMcGcxRmdtOEl3ZEVwTFhGbWgrQVNEbkhQ?=
+ =?utf-8?B?bzBDK2daNEJXUzBKSlBGUkJCL1FEazB3QllGKzd4RWZzTHhmZkE1NjVKQ3Uv?=
+ =?utf-8?B?eVM0ZTN1UlpTdVJUaDJQZzFxOUU2aEFrd3k3V2ZCc2xYWFROUlJkaGVnR1F2?=
+ =?utf-8?B?WTJmRzdPbjYrMVN6SHZsaHBBZGMyN0hWS29NL2FKZEdxSjVPSG8yZWtjdThs?=
+ =?utf-8?B?L1k4b2RKWkk1NDBQSU02Z1l6akRRSVR2T1hDS0gyWExsaTIyc2pxVnJQNVdR?=
+ =?utf-8?B?ZjRmbEN2cWVMbEw1NlpqQTc5dDlWTnBJYmcvbXVCN2wrSmpOcG5RV21RaDNQ?=
+ =?utf-8?B?aENreHBYSlVVWUZtWEUyMzV3b2pOR0ppZ0Z1ekJRUEJCMzM1Yjdmb1pJY1N1?=
+ =?utf-8?B?ckd2bm1qUEdCc3RzVG5DOG1pTTJudEthWGRWTk9iL0J2WWp5QkxIV3E1ZG1z?=
+ =?utf-8?B?dWZaQlVyZzJmVFYvOEFGOGJCdGo4dVUxZzJyeWczTkJVckJUb0NMMHdNRWxY?=
+ =?utf-8?B?TndtUjZaMkMxcEZIQlQzTGUxZTZ2eFU5dlFTTG85MlJBMTdMRVBWVXJKWTdJ?=
+ =?utf-8?B?WVR1NGJVQjZEMmR4NkpIVUFMTHlZQWJPZ2NoTjh4TGw4b0xmcTZmaTNvajFH?=
+ =?utf-8?B?RVQ1UWVnMEZSbC9WTytKNHQ5ZEtscm1DS1MrOFpjL2M1c20vZktKY2hFMkUv?=
+ =?utf-8?B?NDdjckI2eWJobGVXLzMxZGVlSHlKYzUvYi9QNG5ZMldHcXVMV25CVHVoN1ZK?=
+ =?utf-8?B?bDJPdlkvME12Y3NBU1FSU0s0NVdXd0svVmxmSUFKN3k3NjY5YnRyaFdBPT0=?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB6738.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UVNBODB6VGU5WlUvaDlEbElVMTRyWi82d1laYWdwT3J2VGt5eTBhSllQZDZC?=
+ =?utf-8?B?Zm9FTmV6ajF1cS9YVEtPSzI0OFRkZEV3ZjBGclZ4VWo4UFRaZTdKVDkwUWdx?=
+ =?utf-8?B?dkpHUDdoRFJ4dzlsVzVPd1JGVDJOb1RtengzQnFJZTVoeFZ5K25yc0lhVkk0?=
+ =?utf-8?B?VEVDSDZadk92QXJxNCs5SGMycTNPNS9rWUpVRkUyamJta1JnM3ppT3FOV1Vj?=
+ =?utf-8?B?aGVBeDU5T1prb1BacXkwUTVyNEdtVkpZbVd2V0kvMjNTaWxUdkRxcFNvMFlW?=
+ =?utf-8?B?cWp4UmNZTWFDSnFZdWx3TDB2NlNQNHRJektuY2M2RXZNVXFCOFBTQytHOVVS?=
+ =?utf-8?B?dVh6bDd4RWRaak5mbk9rN2ZKbkxRM1QweWI0TzhOR2wwZFFTL2l2dXBlRTZn?=
+ =?utf-8?B?SGs5OHRyajg3czYxUnRZNW5tVnlUMUZwVU10VzhuaUhPN1FoS25BYUNQZjl1?=
+ =?utf-8?B?REFQQzhMZkdzUE5UK0gwdU41cmRMbHdQOE1nZ0dHUkxYYkw5bmdnQ0pWT0FU?=
+ =?utf-8?B?L2RPRnVnc1pROVMwc1hRWlZEVVA2aFFRMEpIbngwTFliSGFvQU9BL0JNOC9Z?=
+ =?utf-8?B?UUU4TWlsc2FXZ0luZjRRWjVVeVYyR2h0aWNTR0djUnJXYTd6TTJzb2JUeGhQ?=
+ =?utf-8?B?OGUxUFhoZGxxTm9NVzBkV0dtY21XOW9TUStRYXF3d0lNaWxmQ2dhazhpVmd6?=
+ =?utf-8?B?U2p5ekJpMXFFSGhSRVpaWXk1WlVYYjhJbTRrSjFLd0RyRG5hYk9DK0M2dElK?=
+ =?utf-8?B?dG9CNDJvRzVOTEhKL0Z5WnRGOWhlSUIxcEJFUnNlc0UzM1ZWZmNmTnU1UlU4?=
+ =?utf-8?B?ZTVTUlBJdmdaMHozSkZ1MGhKWHpQdDVSbkp0WVN6Qm1ONnZaelNZV3JQZCtZ?=
+ =?utf-8?B?ckp5bUhISnE1dU92L2V1a3ZTbG1LblNmcGFIOUd6aDZUc0FGTlNQY0p4c1RB?=
+ =?utf-8?B?SWVDVEZLT1ZTMHB5TVg1QXBIWW5yK1lNdTlkMGJjbnNuVGhtOFdtR3Q4U0Jm?=
+ =?utf-8?B?TUFldEg0QVlRcHFBZlJYbU4xR083SHVhZEpjN1UrbkJYV3JUaU5nQnI5Witz?=
+ =?utf-8?B?Z1c5dVhwTkhadEtjRjNGWERWSXJCeU82TDdqZkYxNjlaVW1nbEdxS1RuNEFP?=
+ =?utf-8?B?cmdEd3lyTnVZRHYzbExzT2YrWnNPak5PNkVIaC9ZWnp3NE51MGpMUnFBL0U0?=
+ =?utf-8?B?dU5PQzYzWk91dEFlNHArbEVPTDZ4WCtLVTRTckN2TDZSdzUvRENrdkQ3ay9z?=
+ =?utf-8?B?SEJoS3BSb1Yxa0VpN2hxd3BsSmRZcFlUMHJhUVd3QlJreW4wOHc5cm1NMG1i?=
+ =?utf-8?B?dy9tTVlmcnVQL2lMWjIvVjQ2dzBhK0pGWUhzZ2RuS0ZhWFVPUUxpVEFLRldY?=
+ =?utf-8?B?ditsdnkvU1kxcFhscHhudzF4UFVBM0NoY291RXk4aEowNGZGWXFNdW5ZN0JY?=
+ =?utf-8?B?VlVoazRvbm1vNFQ2OUlQSlluRTJXWXkyamJtRWMveHZIaEQ2R3NXelVzK1dT?=
+ =?utf-8?B?VzYvSlFhdjN0eEQ5MHBiOWgyZDByOU5nN3NVc25Xb01tV1VqWFNrcmJTRmtk?=
+ =?utf-8?B?V3k0NUlBejdNN1AvMlI1K05SM3prRFcxaHRTQlJxSmZWS2NScjJ1WEphak95?=
+ =?utf-8?B?T2pLOU5HSlhNajI0YTc4Y1dGUnBTelVrZndNMENZbzcwVHhQWEVWYURPdWlT?=
+ =?utf-8?B?cTdPWmNWR0lZaFYxSVZaVGY3ZndkNm56WEFoYi9LYTJtVnVLSjNBTmJiOEd2?=
+ =?utf-8?B?d0JiYzhwS1JsSHJMSEVDdFp2bitNdGVTUXBrWUsxb0U0RnN1ZFJWYUZ6ZG9S?=
+ =?utf-8?B?dElQaW1sd3lTdUVLUXh3T2lrZzZlM0FBUDZ6djVmcXBZZ0djUm5DOEtsbEpm?=
+ =?utf-8?B?YTNLdTVJYVJVQVZ6MGVCaWJadndyRzdyd3BEN1ZDY0J6TjZLd3FIMkhqa2d0?=
+ =?utf-8?B?N242QnoydG5NTGZQMTJhUTBFU2ptQTJtMys0dmhNSzBhQktlc1J2K3ZVTmxK?=
+ =?utf-8?B?dDF4azRyYUl4dXRoTzVLNEdyYUo0U3JuRWhFNnVQQUd6L0NubzhJcDJiNHJx?=
+ =?utf-8?B?S3ZYWk9SbnVCMWYrRzBkOFRxaUlxR3dxalB4YVBUVm03aUU3MUtoNHJFSitP?=
+ =?utf-8?Q?hzZ3ttATuzaJrnYb9ro8lP2Np?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbdaad92-2ff3-40e9-ca72-08dc64edd57f
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB6738.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 06:06:23.5132
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Qox102h9xWCIjkfZk3zq/2EsRvMELNkJeCtbkBLlQYoGska1bFyyTbBg2mgmzZ9Y8zs9Ydee3o7rvvvRRxMuQQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7204
+X-OriginatorOrg: intel.com
 
-On Wed, Apr 24, 2024 at 10:01=E2=80=AFPM Vinicius Costa Gomes
-<vinicius.gomes@intel.com> wrote:
->
-> Miklos Szeredi <miklos@szeredi.hu> writes:
->
-> > On Wed, 3 Apr 2024 at 04:18, Vinicius Costa Gomes
-> > <vinicius.gomes@intel.com> wrote:
-> >
-> >>  - in ovl_rename() I had to manually call the "light" the overrides,
-> >>    both using the guard() macro or using the non-light version causes
-> >>    the workload to crash the kernel. I still have to investigate why
-> >>    this is happening. Hints are appreciated.
-> >
-> > Don't know.  Well, there's nesting (in ovl_nlink_end()) but I don't
-> > see why that should be an issue.
-> >
-> > I see why Amir suggested moving away from scoped guards, but that also
-> > introduces the possibility of subtle bugs if we don't audit every one
-> > of those sites carefully...
-> >
-> > Maybe patchset should be restructured to first do the
-> > override_creds_light() conversion without guards, and then move over
-> > to guards.   Or the other way round, I don't have a preference.  But
-> > mixing these two independent changes doesn't sound like a great idea
-> > in any case.
->
-> Sounds good. Here's I am thinking:
->
-> patch 1: introduce *_creds_light()
-> patch 2: move backing-file.c to *_creds_light()
-> patch 3: move overlayfs to *_creds_light()
-> patch 4: introduce the guard helpers
-> patch 5: move backing-file.c to the guard helpers
-> patch 6: move overlayfs to the guard helpers
->
-> (and yeah, the subject of the patches will be better than these ;-)
->
-> Is this what you had in mind?
->
+On 23/04/2024 19:23, Greg Kroah-Hartman wrote:
+> On Fri, Apr 19, 2024 at 12:20:05PM -0400, Jérôme Carretero wrote:
+>> Hi Sasha,
+>>
+>>
+>> Thank you, sorry for the delay but I coudln't reboot.
+>>
+>> Adding Greg KH because I don't know if stable will receive my e-mail
+>> (not subscribed) but the regression was integrated in stable:
+>>   commit 0a4e3c2d976aa4dd38951afd6267f74ef3fade0e
+>> so they should get the fix ASAP too.
+> 
+> The fix needs to show up in Linus's tree, is it on its way there?
 
-I think this series would make a lot of sense.
-It first addresses the issue that motivated your work
-and I expect patch 3 would be rather simple to review.
+yes. Routed via intel-wired-lan: 
+https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20240417190320.3159360-1-vitaly.lifshits@intel.com/
 
-Please use your best judgement to break patch 6 into more chewable
-pieces because the current ovl patch is quite large to review in one go.
-I will leave it up to you to find the right balance.
+> 
+> thanks,
+> 
+> greg k-h
 
-Also w.r.t the guard() vs. scoped_guard() question, remember that
-there is another option that may be better than either in some cases -
-re-factoring to a helper with a guard().
-
-One example that jumps to me is ovl_copyfile() - seems nicer
-to add a guard() in all the specific helpers then adding the scoped_guard()
-around the switch statement.
-
-But really this is a question of taste and avoiding unneeded code churn and
-unneeded nested scopes. There is no one clear way, so please use your
-judgement per case and we can debate on your choices in review.
-
-Thanks,
-Amir.
 
