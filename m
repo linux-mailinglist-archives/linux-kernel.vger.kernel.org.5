@@ -1,181 +1,283 @@
-Return-Path: <linux-kernel+bounces-158553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99E308B21F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A917C8B21FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:52:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE0201C20AFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:51:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C70061C208CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:52:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58CDF1494D5;
-	Thu, 25 Apr 2024 12:51:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9F0149C40;
+	Thu, 25 Apr 2024 12:52:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SHm59Osq"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WQ/fxeKn"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B521494A8
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 12:51:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64721494BC;
+	Thu, 25 Apr 2024 12:52:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714049505; cv=none; b=YjsK1pme7ONNhSejj49pEuLVdFmsBY/FUcjYu1UjctUNsbbByM9hcweLD9D8fIiB7ztYIvPs29urMhk+iACWz3ddNtFgkQqw62fluTDtnyYbfJcaDVFwAxmgq1yRQBHCBGp9KdswTFKMTimeTAMrdpxMhl/vEvdCD7J6kLBkLU4=
+	t=1714049566; cv=none; b=gPpx5mPbizl/5KG1yuzKD9XDmETgYE8AN/hTaITxHPUk3KSp8mVzJYdBXomAEVEBfFfijI6pzkQ+joH8VowgaCnHNH5BK4tIuOWKvmuUfeGCZ/RyT+s2mdBLtPRc4JOBuLiMTZg8JxsigQ/7VfJuQMk6UlHaKC/Hm1Qw34pgNPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714049505; c=relaxed/simple;
-	bh=uW0/rRa+VKsU1GkQJxdpA8DdFvn7tcaJIztIHYDoqEo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Lg/6UPJoydjl5CMKppq4i577iUbeNYxxTiWk03zuzWHpOq/o1dNgghWoGO6kmWVTM1L5EkGyujrMYaKxMixd0vNrh8i0qh+NfRIPgCdQxQAXtrhptbu13F5/XhiqBiJm5rCRkInvk53q6vzg/AJYmLtFMgm1rbgobjmLP9WFYms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SHm59Osq; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714049502;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=krmJ2ViUMfg+AINQ1obswbRFRThcZ9ZrIRj03SWk/yI=;
-	b=SHm59Osqy4gcX79arnphjQME3wm1jfXsk75iECFgDCSLwKP69htawMkqu2Sv67/j6JIAJM
-	4djy2uz6jdPIBVbCIEjLzxO59hIA0cprEJQ5X5RJyB8xlfMh34jPZm9uisguM+9ni/Rvj9
-	Tv04q4Vu6BjfPYlZl5AF5YJ0KuSoBRA=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-158-uqk8nDR-OyaymrRBcSgEYA-1; Thu, 25 Apr 2024 08:51:41 -0400
-X-MC-Unique: uqk8nDR-OyaymrRBcSgEYA-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-41a370b6acdso4281565e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 05:51:41 -0700 (PDT)
+	s=arc-20240116; t=1714049566; c=relaxed/simple;
+	bh=gwekB6RaRxlS2eDN29F2xhmseDxkCdGf0FrbJqw4PTE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mIXSXkm36WMUnd+HgTMyyuYBu0Z5G51/c9d2McMln+mlo888oh6D92hLtfJtMO3h3yEhlJWT5uRENot5x5pTDF1jtnJ/1nHkGNMmnLqLxb4Yajq9g0HY4/K/7x0vbwJkukrnr1jkz5dQ89YA2kdpSZXEYadIn09niLkwrAPV9rM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WQ/fxeKn; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-518f8a69f82so1035525e87.2;
+        Thu, 25 Apr 2024 05:52:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714049563; x=1714654363; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=N68U3YqC3rWgap6HAasJ+BwSMTaiU5pcUurN9g7aQI8=;
+        b=WQ/fxeKnZEMEyq3mtjpxAoBvyxKqd3PbW9lXR3pZxfz9DezyTzJjG2aVokSl1BvIQ0
+         Mt9tQoRgxMeAgQttu5FumNKrH3w01Mb0bbhqfBtx15euq5ovard6VFnuMTmAvOr0XKUa
+         nMHxuiRHdsLwAZYSMUXq6HuLhS/IO52ugi3oeAQXFDbNBAzvXFz9VjkKUt76/o9LSNDe
+         kVcSzX71gAg9k5qIWe8TvIMfmAe7qVltCTpkawvHHkXd6kHF8XqDK8YqMainJlovTh+O
+         PIHZs5RMAlKQcwsjIQwFaQdsxPek/5/psWv2hswqwKJPHl9ipo1N3fo14ltg2rbCQ+BM
+         LLJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714049500; x=1714654300;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=krmJ2ViUMfg+AINQ1obswbRFRThcZ9ZrIRj03SWk/yI=;
-        b=lUqctU2PVRaq5QuGbGTAncgT5zxBua27ZUV9Ebx2rJZV95Z+RGDM482b9cBkZHzsGS
-         Ws91NcqR37ywJq/JZVraY2z24pOb6tf+8srOFQjXD0zTtLxLij2mIkZgqqJUaM6KPDM4
-         k9l/7O2m3tMPYbMsRlqZXdMWKm+8m460awSz0+PDd/84zjs/waTC3qAU4zlDyDfzgmy6
-         zgBa30tc1RUr7r8rJPDtCnyEQ7BZOMurdSP7dJplhHAlmbq8CMEdcGXd/rgk3WXQ6NLL
-         AROEfHr6/Q7vFlSt6OaiVFZFLqB5VKM6ep2a9Cx5GJB20jXfDbhwRIhgUA6OtaNY4U6l
-         ALPw==
-X-Gm-Message-State: AOJu0YyCoB+F0rPi9LHQTel8rTEiXdnRU4cLyUNDjlYxpoDj+bJ6I5Jp
-	7yOoNG+mBAdhPxSNYCz1kLZW07TKSdG6yRX+88l/D7P/KxDr9ZBbFpSnZUdeFpD9c4DQvZjzJ8W
-	xmqERA896M96M2JA3YSVzVvWH0oyFCkaF+Y8H9X+ERVyliE5p5MJOhkobugWcmA==
-X-Received: by 2002:a05:600c:3b07:b0:418:a2ce:77ae with SMTP id m7-20020a05600c3b0700b00418a2ce77aemr3515970wms.27.1714049500319;
-        Thu, 25 Apr 2024 05:51:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGaJwcXDCrGcd7ftGYfOCokMw95T3AavJU6hlO4mLqIqCrKVVBEeKvQJbaF+RS72KWbICjGXw==
-X-Received: by 2002:a05:600c:3b07:b0:418:a2ce:77ae with SMTP id m7-20020a05600c3b0700b00418a2ce77aemr3515961wms.27.1714049499916;
-        Thu, 25 Apr 2024 05:51:39 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c719:8200:487a:3426:a17e:d7b7? (p200300cbc7198200487a3426a17ed7b7.dip0.t-ipconnect.de. [2003:cb:c719:8200:487a:3426:a17e:d7b7])
-        by smtp.gmail.com with ESMTPSA id h19-20020a05600c351300b00414659ba8c2sm27546670wmq.37.2024.04.25.05.51.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 05:51:39 -0700 (PDT)
-Message-ID: <4ec6eab0-9e8e-4381-97e6-927f5ee55e8e@redhat.com>
-Date: Thu, 25 Apr 2024 14:51:38 +0200
+        d=1e100.net; s=20230601; t=1714049563; x=1714654363;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N68U3YqC3rWgap6HAasJ+BwSMTaiU5pcUurN9g7aQI8=;
+        b=odHEQqc6WJZOLhrrLdS9jEdUKldV4euej52xo6gXfZtwPUxVPn7nz646RAXb4bst/e
+         bZCcRX2B1OJrCgC9FOg0VL3PLN7EbQ6smsJppU8fSYoVvTIIXsU6FTH5O7DDED9hHESP
+         yVYurgj4dTIAdzTy8Lb/a8fg2BM2MtHVX9W3otLHaKW4tMXlC+2Vg20oZzsd+XRne4Rn
+         LeeMPYTeFOGaz7GG4ekPEZqnfregQ42GXQySEGgZ1WUF0atN6KfRm4rlYDzahYxnlh5B
+         oVAKWaazV0M2xl5pXCv2Ooh7Umc+Y0hzFUeg+JgleeWTGaJo5CIIFwCtOA4WcHt5FKej
+         PvYA==
+X-Forwarded-Encrypted: i=1; AJvYcCXfaz7rrGPgYghkRFUjIuYV2/puihm7rAeICOoB01NocCdVNvS79dTGbHzMpggGN9jczjMSqgwvONGPk1krx4iDNvClfpC1a4Bt5DfeABjcbKO1ogGlCxvNWp2qMxYTHC3tfqVNsJwLuQ==
+X-Gm-Message-State: AOJu0YwBgKUGd/+07QMJAQJVqzlJ6a+Whl4mgJg0Sv/rQhJwE2yP6LH3
+	Jc3d/fKlyI6sAbPcWzB6Hp91gswEfXWIfQ+WlP52S+x1I2nPowt1
+X-Google-Smtp-Source: AGHT+IFuK6e4i06UOQNj7wogVGGgvwPVDzRokotzll1IQA8y85iZylmImbqf3eVrgV+eDhnOJy6oig==
+X-Received: by 2002:a05:6512:3f6:b0:51c:2012:f046 with SMTP id n22-20020a05651203f600b0051c2012f046mr2208675lfq.15.1714049562475;
+        Thu, 25 Apr 2024 05:52:42 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id f9-20020a0565123b0900b00516c403d243sm2810511lfv.60.2024.04.25.05.52.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 05:52:41 -0700 (PDT)
+Date: Thu, 25 Apr 2024 15:52:38 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Michal Simek <michal.simek@amd.com>, 
+	Alexander Stein <alexander.stein@ew.tq-group.com>, Tony Luck <tony.luck@intel.com>, 
+	James Morse <james.morse@arm.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
+	Robert Richter <rric@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Sherry Sun <sherry.sun@nxp.com>, Borislav Petkov <bp@suse.de>
+Subject: Re: [PATCH v5 01/20] EDAC/synopsys: Fix ECC status data and IRQ
+ disable race condition
+Message-ID: <whgp2xx4dv3szezz3bvmgutgazz6kvie3q7rgpr35zqzuzsygk@wppqzusteru4>
+References: <20240222181324.28242-1-fancer.lancer@gmail.com>
+ <20240222181324.28242-2-fancer.lancer@gmail.com>
+ <20240415183616.GDZh1zoFsBzvAEduRo@fat_crate.local>
+ <szcie4giwjykne4su6uu5wsmtsl3e3jd53rjfiwir6hm3ju7as@6eqh2xmj35ie>
+ <20240421100712.GAZiTlUOm1hrLQvaMi@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH linux-next] ksm: add ksm involvement information for each
- process
-To: xu.xin16@zte.com.cn, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- shr@devkernel.io
-References: <202404252049158858OT9IpNshMmQC1itDY1B1@zte.com.cn>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <202404252049158858OT9IpNshMmQC1itDY1B1@zte.com.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240421100712.GAZiTlUOm1hrLQvaMi@fat_crate.local>
 
-On 25.04.24 14:49, xu.xin16@zte.com.cn wrote:
-> From: xu xin <xu.xin16@zte.com.cn>
+On Sun, Apr 21, 2024 at 12:07:30PM +0200, Borislav Petkov wrote:
+> On Tue, Apr 16, 2024 at 01:06:11PM +0300, Serge Semin wrote:
+> > It looks indeed crazy because the method is called enable_intr() and
+> > is called in the IRQ handler. Right, re-enabling the IRQ in the handler
+> > doesn't look good. But under the hood it was just a way to fix the
+> > problem described in the commit you cited. enable_intr() just gets
+> > back the IRQ Enable flags cleared a bit before in the
+> > zynqmp_get_error_info() method.
+> > 
+> > The root cause of the problem is that the IRQ status/clear flags:
+> > ECCCLR.ecc_corrected_err_clr	(R/W1C)
+> > ECCCLR.ecc_uncorrected_err_clr	(R/W1C)
+> > ECCCLR.ecc_corr_err_cnt_clr	(R/W1C)
+> > ECCCLR.ecc_uncorr_err_cnt_clr	(R/W1C)
+> > etc
+> > 
+> > and the IRQ enable/disable flags (since v3.10a):
+> > ECCCLR.ecc_corrected_err_intr_en	(R/W)
+> > ECCCLR.ecc_uncorrected_err_intr_en	(R/W)
+> > 
+> > reside in a single register - ECCCLR (Synopsys has renamed it to
+> > ECCCTL since v3.10a due to adding the IRQ En/Dis flags).
+> > 
+> > Thus any concurrent access to that CSR like "Clear IRQ
+> > status/counters" and "IRQ disable/enable" need to be protected from
+> > the race condition.
 > 
-> In /proc/<pid>/ksm_stat, Add two extra ksm involvement items including
-> MMF_VM_MERGEABLE and MMF_VM_MERGE_ANY. It helps administrators to
-> better know the system's KSM behavior at process level.
+> Ok, let's pick this apart one-by-one. I'll return to the rest you're
+> explaining as needed.
 > 
-> MMF_VM_MERGEABLE: yes/no
-> 	whether a process'mm is added by madvise() into the candidate list
-> 	of KSM or not.
-> MMF_VM_MERGE_ANY: yes/no
-> 	whether a process'mm is added by prctl at process level into the
-> candidate list of KSM or not.
+> So, can writes to the status/counter bits while writing the *same* bit
+> to the IRQ enable/disable bit prevent any race conditions?
+
+No, because the clear and enable/disable bits belong to the same CSR.
+While you are writing the clear+same/enable bits, the concurrent IO
+may have changed the same/enable bits. Like this:
+
+     IRQ-handler                        |    IRQ-disabler
+                                        |
+ tmp = clear_sts_bits | enable_irq_bits;|
+                                        | ECCCLR = 0; // disable IRQ
+ ECCCLR = tmp;                          |
+----------------------------------------+--------------------------------------
+
+As a result even though the IRQ-disabler cleared the IRQ-enable bits,
+the IRQ-handler got them back to being set. The same will happen if we
+get to write the *same* bits in the handler:
+
+     IRQ-handler                        |    IRQ-disabler
+                                        |
+ tmp = ECCCLR | clear_sts_bits;         |
+                                        | ECCCLR = 0; // disable IRQs
+ ECCCLR = tmp;                          |
+----------------------------------------+--------------------------------------
+
+The last example is almost the same as what happens at the moment and
+what I am fixing in this patch. The difference is that there is a
+greater number of ECCCLR CSR changes performed in the IRQ-handler
+context, which makes the critical section even wider than it could be:
+
+     IRQ-handler                        |    IRQ-disabler
+                                        |
+zynqmp_get_error_info:                  |
+ ECCCLR = clear_sts_bits;               |
+ ECCCLR = 0; // actually redundant      |
+..                                     | ECCCLR = 0; // disable IRQs
+enable_intr:                            |
+ ECCCLR = enable_irq_bits;              |
+----------------------------------------+--------------------------------------
+
 > 
-> Signed-off-by: xu xin <xu.xin16@zte.com.cn>
-> ---
->   fs/proc/base.c | 4 ++++
->   1 file changed, 4 insertions(+)
+> Meaning, you only change the status and counter bits and you preserve
+> the same value in the IRQ disable/enable bit?
+
+AFAICS this won't help to solve the race condition because writing the
+preserved value of the enable/disable bits is the cause of the race
+condition. The critical section is in concurrent flushing of different
+values to the ECCCLR.*en bits. The only ways to solve that are:
+1. prevent the concurrent access
+2. serialize the critical section
+
 > 
-> diff --git a/fs/proc/base.c b/fs/proc/base.c
-> index 18550c071d71..421594b8510c 100644
-> --- a/fs/proc/base.c
-> +++ b/fs/proc/base.c
-> @@ -3217,6 +3217,10 @@ static int proc_pid_ksm_stat(struct seq_file *m, struct pid_namespace *ns,
->   		seq_printf(m, "ksm_zero_pages %lu\n", mm->ksm_zero_pages);
->   		seq_printf(m, "ksm_merging_pages %lu\n", mm->ksm_merging_pages);
->   		seq_printf(m, "ksm_process_profit %ld\n", ksm_process_profit(mm));
-> +		seq_printf(m, "MMF_VM_MERGEABLE: %s\n",
-> +				test_bit(MMF_VM_MERGEABLE, &mm->flags) ? "yes" : "no");
-> +		seq_printf(m, "MMF_VM_MERGE_ANY: %s\n",
-> +				test_bit(MMF_VM_MERGE_ANY, &mm->flags) ? "yes" : "no");
+> IOW, I'm thinking of shadowing that ECCCTL in software so that we update
+> it from the shadowed value.
 
-Not sure if exposing these internal flag names is appropriate. Better 
-describe what they do.
+I don't see the shadowing will help to prevent what is happening
+unless you know some shadow-register pattern I am not aware of. AFAIR
+the shadow register is normally utilized for the cases of:
+1. read ops returns an incorrect value or a CSR couldn't be read
+2. IO bus is too slow in order to speed-up the RMW-pattern
+In any case the shadowed value and the process of the data flushing
+would need to be protected with a lock anyway in order to sync the
+shadow register content and the actual value written to the CSR.
 
--- 
-Cheers,
+> 
+> Because, AFAIU, the spinlock won't help if you grab it, clear the
+> status/counter bits and disable the interrupt in the process. You want
+> to only clear the status/counter bits and leave the interrupt enabled.
+> 
+> Right?
 
-David / dhildenb
+Right, but the spinlock will help. What I need to do deal with two
+concurrent operations:
+IRQ-handler:  clear the status/counter bits and leave the IRQ enable
+              bits as is.
+IRQ-disabler: clear the IRQ enable bits
+These actions need to be serialized in order to prevent the race
+condition.
 
+> 
+> IOW, in one single write you do:
+> 
+> ECCCLR.ecc_corrected_err_clr=1
+> ECCCLR.ecc_uncorrected_err_clr=1
+> ECCCLR.ecc_corr_err_cnt_clr=1
+> ECCCLR.ecc_uncorr_err_cnt_clr=1
+> ECCCLR.ecc_corrected_err_intr_en=1
+> ECCCLR.ecc_uncorrected_err_intr_en=1
+> 
+> ?
+
+This won't be help because the concurrent IRQ-disabler could have
+already cleared the IRQ enable bits while the IRQ-handler is being
+executed and about to write to the ECCCLR register. Like this:
+
+     IRQ-handler                        |    IRQ-disabler
+                                        |
+ tmp = clear_sts_bits | enable_irq_bits;|
+                                        | ECCCLR = 0; // disable IRQ
+ ECCCLR = tmp;                          |
+----------------------------------------+--------------------------------------
+
+Even if we get to add the spin-lock serializing the ECCCLR writes it
+won't solve the problem since the IRQ-disabler critical section could
+be executed a bit before the IRQ-handler critical section so the later
+one will just re-enable the IRQs disabled by the former one.
+
+Here is what is suggested in my patch to fix the problem:
+
+     IRQ-handler                        |    IRQ-disabler
+                                        |
+zynqmp_get_error_info:                  |
+                                        | lock_irqsave
+                                        | ECCCLR = 0; // disable IRQs
+                                        | unlock_irqrestore
+ lock_irqsave;                          |
+ tmp = ECCCLR | clear_sts_bits;         |
+ ECCCLR = tmp;                          |
+ unlock_irqrestore;                     |
+----------------------------------------+--------------------------------------
+
+See, the IRQ-status/counters clearing and IRQ disabling processes are
+serialized so the former one wouldn't override the values written by
+the later one.
+
+Here is the way it would have looked in case of the shadow-register
+implementation:
+
+     IRQ-handler                        |    IRQ-disabler
+                                        |
+zynqmp_get_error_info:                  |
+                                        | lock_irqsave
+                                        | shadow_en_bits = 0;
+                                        | ECCCLR = shadow_en_bits; // disable IRQs
+                                        | unlock_irqrestore
+ lock_irqsave;                          |
+ tmp = clear_sts_bits | shadow_en_bits; |
+ ECCCLR = tmp;                          |
+ unlock_irqrestore;                     |
+----------------------------------------+--------------------------------------
+
+The shadow-register pattern just prevents one ECCCLR read op. The
+shadowed data sync would have needed the serialization anyway. Seeing
+the DW DDR uMCTL2 controller CSRs are always memory mapped, I don't
+see using the shadow-register CSR would worth being implemented unless
+you meant something different.
+
+-Serge(y)
+
+> 
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
 
