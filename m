@@ -1,177 +1,174 @@
-Return-Path: <linux-kernel+bounces-159169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD7258B2A31
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:54:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CE8D8B2A35
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:55:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2DBEB259D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:54:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 718FAB25E80
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68E98154BE0;
-	Thu, 25 Apr 2024 20:54:35 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2764611720;
-	Thu, 25 Apr 2024 20:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEAC41552F5;
+	Thu, 25 Apr 2024 20:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JUBElSyG"
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D264DAD2D
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714078475; cv=none; b=hVY9nY196sOlxSA5UkhHgKOcPHfl2fgnTEM8rMUgSBJwd5tgqoy6udTi+27YD/CdGCay+iccC9Ouwvv2Ajzw+Yx7h+X1WNtHjL9aAvl7cUSj6fZPB26adzQ4qAnj2CsqqWeRuLPyCpYZ35prgMbsSdBpw8dJNvDWFe1EuV7aoqw=
+	t=1714078504; cv=none; b=A7lyvDVJx7hx0oUHU9Iyf8+1TB3Miovh2LA8tgw+LPZJO6vC8cKoKwgE7xAZwJAm7wccIFRizZMcqfXn/CJxZUs69lA/lU0MwAnmBUHg58af3rhyfZyKvqHxqK+EQESPYl/icnpzrK+Saao9ZBfP7SSSsMTaGCK+Df5nLD493nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714078475; c=relaxed/simple;
-	bh=Ln6jSr30HJLbKHl6Ffl7zzzn7xZ/vqKzjdgoixZhPyE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Red/QolloJCp9tvezvlP6HNsqyNHkKiYBBjtyBLfvnRYnjJBUV8TRunjlSvq+nCkyMikKrEbl/xGGy0tGcH0IVZzKUZ0J48VlbLJ4zb0EpVQm2qpjwbq4qx6HPWSgxS18uOJqKPXomNoENwoKEof8O+RYzdgbh1fxxVGpYNmH4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC1AD2F;
-	Thu, 25 Apr 2024 13:55:00 -0700 (PDT)
-Received: from [10.57.64.58] (unknown [10.57.64.58])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A0F7D3F73F;
-	Thu, 25 Apr 2024 13:54:31 -0700 (PDT)
-Message-ID: <c99f1b95-edad-4a27-8bdf-76164955348f@arm.com>
-Date: Thu, 25 Apr 2024 21:54:29 +0100
+	s=arc-20240116; t=1714078504; c=relaxed/simple;
+	bh=daE5p8VJ4kRVjpcfiiAOvzh3uP/gYYfQQN1gJ/B+N7Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tdYl13UvZ4nhD2z3M5mXk+0/S2ypOT6HCAydSpnUNLfIUT8dHUZwbCGqDC+HTNppwHG6WRp5BWyujVEzP7uapvFLQsVExb4jRBwLKIzdiIC6KTbnSuskh/jx2W5PREp0dKk3U0/QajwoS+axf0wygg0uZn4A1m1IqwRzBd/skXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JUBElSyG; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 25 Apr 2024 16:54:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714078499;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fpcflvpS+Hn8wp3+pLJqk2pjx5fffShKDTtoZG3LoBU=;
+	b=JUBElSyG9xfRtJvIpXv6ronc83/E25ujffQIfGDyvIt1CXLlpFQAv2/G6yFAcHoI1rJwHL
+	yiO2HywL3hj+tjNSd+ql5HHs36k0UqVFfhBI3n9GUJGK0PjTXNsyW/dYtwe42g5B6AUFoa
+	A2b9FN6WrYeHgQZ5iS2H1SFMK63ASZY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: colyli@suse.de, msakai@redhat.com, peterz@infradead.org, 
+	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, akpm@linux-foundation.org, 
+	bfoster@redhat.com, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
+	jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: Re: [PATCH v4 00/16] treewide: Refactor heap related implementation
+Message-ID: <txga7kntgxylhmxqkzs3rdgmnjai2ftlstdezltkapdctn3ju6@ndyytejfyoc2>
+References: <20240425141826.840077-1-visitorckw@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] thermal/debugfs: Avoid printing zero duration for
- mitigation events in progress
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>
-References: <3297002.44csPzL39Z@kreacher> <7659098.EvYhyI6sBW@kreacher>
-Content-Language: en-US
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <7659098.EvYhyI6sBW@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425141826.840077-1-visitorckw@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
+Hey Stephen, I think this is ready for -next.
 
+https://github.com/visitorckw/linux.git refactor-heap-v4
 
-On 4/25/24 15:05, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Kuan, please add my acked-by to the bcachefs patch as well.
+
+Cheers,
+Kent
+
+On Thu, Apr 25, 2024 at 10:18:10PM +0800, Kuan-Wei Chiu wrote:
+> This patch series focuses on several adjustments related to heap
+> implementation. Firstly, a type-safe interface has been added to the
+> min_heap, along with the introduction of several new functions to
+> enhance its functionality. Additionally, the heap implementation for
+> bcache and bcachefs has been replaced with the generic min_heap
+> implementation from include/linux. Furthermore, several typos have been
+> corrected.
 > 
-> If a thermal mitigation event is in progress, its duration value has
-> not been updated yet, so 0 will be printed as the event duration by
-> tze_seq_show() which is confusing.
+> Previous discussion with Kent Overstreet:
+> https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu
 > 
-> Avoid doing that by marking the beginning of the event with the
-> KTIME_MIN duration value and making tze_seq_show() compute the current
-> event duration on the fly, in which case '>' will be printed instead of
-> '=' in the event duration value field.
+> Regards,
+> Kuan-Wei
 > 
-> Similarly, for trip points that have been crossed on the down, mark
-> the end of mitigation with the KTIME_MAX timestamp value and make
-> tze_seq_show() compute the current duration on the fly for the trip
-> points still involved in the mitigation, in which cases the duration
-> value printed by it will be prepended with a '>' character.
-> 
-> Fixes: 7ef01f228c9f ("thermal/debugfs: Add thermal debugfs information for mitigation episodes")
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > ---
->   drivers/thermal/thermal_debugfs.c |   39 ++++++++++++++++++++++++++++++++------
->   1 file changed, 33 insertions(+), 6 deletions(-)
 > 
-> Index: linux-pm/drivers/thermal/thermal_debugfs.c
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/thermal_debugfs.c
-> +++ linux-pm/drivers/thermal/thermal_debugfs.c
-> @@ -552,6 +552,7 @@ static struct tz_episode *thermal_debugf
->   
->   	INIT_LIST_HEAD(&tze->node);
->   	tze->timestamp = now;
-> +	tze->duration = KTIME_MIN;
->   
->   	for (i = 0; i < tz->num_trips; i++) {
->   		tze->trip_stats[i].min = INT_MAX;
-> @@ -680,6 +681,9 @@ void thermal_debug_tz_trip_down(struct t
->   	tze->trip_stats[trip_id].duration =
->   		ktime_add(delta, tze->trip_stats[trip_id].duration);
->   
-> +	/* Mark the end of mitigation for this trip point. */
-> +	tze->trip_stats[trip_id].timestamp = KTIME_MAX;
-> +
->   	/*
->   	 * This event closes the mitigation as we are crossing the
->   	 * last trip point the way down.
-> @@ -754,15 +758,25 @@ static int tze_seq_show(struct seq_file
->   	struct thermal_trip_desc *td;
->   	struct tz_episode *tze;
->   	const char *type;
-> +	u64 duration_ms;
->   	int trip_id;
-> +	char c;
->   
->   	tze = list_entry((struct list_head *)v, struct tz_episode, node);
->   
-> -	seq_printf(s, ",-Mitigation at %lluus, duration=%llums\n",
-> -		   ktime_to_us(tze->timestamp),
-> -		   ktime_to_ms(tze->duration));
-> +	if (tze->duration == KTIME_MIN) {
-> +		/* Mitigation in progress. */
-> +		duration_ms = ktime_to_ms(ktime_sub(ktime_get(), tze->timestamp));
-> +		c = '>';
-> +	} else {
-> +		duration_ms = ktime_to_ms(tze->duration);
-> +		c = '=';
-> +	}
-> +
-> +	seq_printf(s, ",-Mitigation at %lluus, duration%c%llums\n",
-> +		   ktime_to_us(tze->timestamp), c, duration_ms);
->   
-> -	seq_printf(s, "| trip |     type | temp(°mC) | hyst(°mC) |  duration  |  avg(°mC) |  min(°mC) |  max(°mC) |\n");
-> +	seq_printf(s, "| trip |     type | temp(°mC) | hyst(°mC) |  duration   |  avg(°mC) |  min(°mC) |  max(°mC) |\n");
-
-So this one more space accounts for the new 'c' symbol in the rows
-below that header, for the 'duration' column. Make sense.
-
->   
->   	for_each_trip_desc(tz, td) {
->   		const struct thermal_trip *trip = &td->trip;
-> @@ -794,12 +808,25 @@ static int tze_seq_show(struct seq_file
->   		else
->   			type = "hot";
->   
-> -		seq_printf(s, "| %*d | %*s | %*d | %*d | %*lld | %*d | %*d | %*d |\n",
-> +		if (trip_stats->timestamp != KTIME_MAX) {
-> +			/* Mitigation in progress. */
-> +			ktime_t delta = ktime_sub(ktime_get(),
-> +						  trip_stats->timestamp);
-> +
-> +			delta = ktime_add(delta, trip_stats->duration);
-> +			duration_ms = ktime_to_ms(delta);
-> +			c = '>';
-> +		} else {
-> +			duration_ms = ktime_to_ms(trip_stats->duration);
-> +			c = ' ';
-> +		}
-> +
-> +		seq_printf(s, "| %*d | %*s | %*d | %*d | %c%*lld | %*d | %*d | %*d |\n",
->   			   4 , trip_id,
->   			   8, type,
->   			   9, trip->temperature,
->   			   9, trip->hysteresis,
-> -			   10, ktime_to_ms(trip_stats->duration),
-> +			   c, 10, duration_ms,
->   			   9, trip_stats->avg,
->   			   9, trip_stats->min,
->   			   9, trip_stats->max);
+> You can preview this patch series on the 'refactor-heap-v4' branch of
+> the repository at the following link:
 > 
+> https://github.com/visitorckw/linux.git
 > 
+> Changes in v4:
+> - Change struct initializations to use designated initializers.
+> - Replace memcpy() with func->swp() in heap_del() due to issues with
+>   set_backpointer in bcachefs when setting idx.
+> - Fix an error in ec_stripes_heap_swap() where
+>   ec_stripes_heap_set_backpointer() should be called after swapping.
 > 
+> Changes in v3:
+> - Avoid heap->heap.nr to eliminate the nested types.
+> - Add MIN_HEAP_PREALLOCATED macro for preallocating some elements.
+> - Use min_heap_sift_up() in min_heap_push().
+> - Fix a bug in heap_del() where we should copy the last element to
+>   'data + idx * element_size' instead of 'data'.
+> - Add testcases for heap_del().
+> - Fix bugs in bcache/bcachefs patches where the parameter types in
+>   some compare functions should have been 'type **', but were
+>   mistakenly written as 'type *'.
 > 
-
-The comments in code in this particular case helps, since treating
-the KTIME_MIN/MAX values might become not obvious after a while.
-That LGTM
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+> Changes in v2:
+> - Add attribute __always_unused to the compare and swap functions
+>   that do not use the args parameter.
+> - Rename min_heapify() to min_heap_sift_down().
+> - Update lib/test_min_heap.c to use min_heap_init().
+> - Refine the commit message for bcache and bcachefs.
+> - Adjust the order of patches in the patch series.
+> 
+> Link to v3: https://lore.kernel.org/20240406164727.577914-1-visitorckw@gmail.com
+> Link to v2: https://lore.kernel.org/20240320145417.336208-1-visitorckw@gmail.com
+> Link to v1: https://lkml.kernel.org/20240319180005.246930-1-visitorckw@gmail.com
+> 
+> Kuan-Wei Chiu (16):
+>   perf/core: Fix several typos
+>   bcache: Fix typo
+>   bcachefs: Fix typo
+>   lib min_heap: Add type safe interface
+>   lib min_heap: Add min_heap_init()
+>   lib min_heap: Add min_heap_peek()
+>   lib min_heap: Add min_heap_full()
+>   lib min_heap: Add args for min_heap_callbacks
+>   lib min_heap: Add min_heap_sift_up()
+>   lib min_heap: Add min_heap_del()
+>   lib min_heap: Update min_heap_push() and min_heap_pop() to return bool
+>     values
+>   lib min_heap: Rename min_heapify() to min_heap_sift_down()
+>   lib min_heap: Update min_heap_push() to use min_heap_sift_up()
+>   lib/test_min_heap: Add test for heap_del()
+>   bcache: Remove heap-related macros and switch to generic min_heap
+>   bcachefs: Remove heap-related macros and switch to generic min_heap
+> 
+>  drivers/md/bcache/alloc.c      |  64 ++++++++---
+>  drivers/md/bcache/bcache.h     |   2 +-
+>  drivers/md/bcache/bset.c       |  84 ++++++++++-----
+>  drivers/md/bcache/bset.h       |  14 +--
+>  drivers/md/bcache/btree.c      |  17 ++-
+>  drivers/md/bcache/extents.c    |  53 ++++++----
+>  drivers/md/bcache/movinggc.c   |  41 +++++--
+>  drivers/md/bcache/sysfs.c      |   2 +
+>  drivers/md/bcache/util.c       |   2 +-
+>  drivers/md/bcache/util.h       |  67 +-----------
+>  drivers/md/bcache/writeback.c  |   3 +
+>  drivers/md/dm-vdo/repair.c     |  19 ++--
+>  drivers/md/dm-vdo/slab-depot.c |  14 +--
+>  fs/bcachefs/clock.c            |  43 ++++++--
+>  fs/bcachefs/clock_types.h      |   2 +-
+>  fs/bcachefs/ec.c               |  76 ++++++++-----
+>  fs/bcachefs/ec_types.h         |   2 +-
+>  fs/bcachefs/util.c             |   2 +-
+>  fs/bcachefs/util.h             | 118 +--------------------
+>  include/linux/min_heap.h       | 188 +++++++++++++++++++++++++--------
+>  kernel/events/core.c           |  29 ++---
+>  lib/test_min_heap.c            |  75 +++++++++----
+>  22 files changed, 522 insertions(+), 395 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
 
