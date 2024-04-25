@@ -1,128 +1,199 @@
-Return-Path: <linux-kernel+bounces-158203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63D0D8B1CEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:40:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ABEA8B1CF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:40:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF6BE1F22A30
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:39:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2D682861AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:40:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C221381AC6;
-	Thu, 25 Apr 2024 08:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8E1F8120A;
+	Thu, 25 Apr 2024 08:40:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eo/1B3fI"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o6V3kCL/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB17F2B9C9
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8F097E59F;
+	Thu, 25 Apr 2024 08:40:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714034384; cv=none; b=g+Tvv7HJUScN9n/yOmtd4kmqgOINiLunHSTin6ksiITS1Avo0j7F6AXgBeFkMZ5Y4bpxM6sd/TsiBetoY4yCHTUfbhUPKtVHzb09fNV+EShqqiamGBh4YnRNTy3BKalzZdzGRbaWzaR8ydkqzaNpUqiSXm+A6AxdqDFh4vewf3o=
+	t=1714034423; cv=none; b=b8XkpnkLxTx2LoXaamPH63TabhCcexcV34jlvaAYsVqoY1p4IrALmLgRrrq8NNm6bZK+3q0eRhxOsVUjMIqeU6b6Aa9KYbTsTXV6zSBZOM5L2jsJ4ngRnQ9zfstAj99S/rEerr4xvbB0sccDc0dJXFYnyTlNmcoZtBifjwt8tXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714034384; c=relaxed/simple;
-	bh=/9yyKzE8Zxtr4YeXsLr5diSzcU8HNZj+vrs/DZ3QOog=;
-	h=From:To:cc:Subject:MIME-Version:Content-Type:Date:Message-ID; b=eqebNlmnoCGu78hbbxaqLqoyKh691+sfzr3n2kwBCn04fKeYUUuM1MlZhQ5wOEBDc6jD+qLfxIrBT1Qc3Jc04B4As7L5LdIkmZIlawKn5jeRwGUQPQYek8JB++NKPO8QvzOFs39SrWEMZFfYuSULVdJ7nhZHnbA8bN4WB3YeFxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eo/1B3fI; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714034381;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=QZ3es0/m9Be3HXMWlawHrU+ruWvHPUrW+BQXBx/9QME=;
-	b=eo/1B3fI3Qc+epWmIop+kEN12yHGAdE4/sTxapg/hwu4FZsy1eEgOG6Y5WDMtP3h1A+J0H
-	PlHf9kSh8u05TvB5h+fmhZmDzFTbKllGsEPiORUUKTM2mkU2bVZZQAxLg2WcAQ6ry3jJ9h
-	q++w88MIwInb9ZhX5uDtanTftyFsNns=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-590-e4mtFl2tPqGayEHnj_tMnw-1; Thu,
- 25 Apr 2024 04:39:36 -0400
-X-MC-Unique: e4mtFl2tPqGayEHnj_tMnw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 85DBE29AA391;
-	Thu, 25 Apr 2024 08:39:35 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.200])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 829E551BF;
-	Thu, 25 Apr 2024 08:39:33 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-To: netdev@vger.kernel.org
-cc: dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
-    Steve French <sfrench@samba.org>,
-    Herbert Xu <herbert@gondor.apana.org.au>,
-    "David S. Miller" <davem@davemloft.net>,
-    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-    Paolo Abeni <pabeni@redhat.com>, netfs@lists.linux.dev,
-    linux-crypto@vger.kernel.org, linux-cifs@vger.kernel.org,
-    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net] Fix a potential infinite loop in extract_user_to_sg()
+	s=arc-20240116; t=1714034423; c=relaxed/simple;
+	bh=RMDuqvFO7/7Q9NiAuMf/yHRmFRq++Fy+RMe2Sg9URLU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LhogI60msJC0LexrlJwtVzIy0XPfl8m+4T7U2nPjcPEjy6Q+29DGNEY1qYugrebR7FqAFj4Ar8eHzQMhR7cAmKItMQY7lOXK8bQv8NHm+qAyh1/uegFRew/090eamoBmR69FYmgUZNjisAqvyoB7O/KPPlWh13oZL3NQj5TQRZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o6V3kCL/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 513E8C113CC;
+	Thu, 25 Apr 2024 08:40:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714034422;
+	bh=RMDuqvFO7/7Q9NiAuMf/yHRmFRq++Fy+RMe2Sg9URLU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=o6V3kCL/PuQPWmBEYYidX6qJmFsaPflYw4eDVCtdeywnIqBBtF/m9aqMrJ2r5acS9
+	 gh19cAiQSkmPQ9PbmFpmnad+DwkRwYupx1WCfKY47xi8Pe8xg19zJqW2PLxYtnveAD
+	 6NwLkW4DWta3PWXUWLMJzmQU1/t3thxv2Vr0Ty3MX+NQ8Nt6DEVTRRLMGoEmnu+R+N
+	 mCsXk/TrmFHmanUUNkS1Kinm7XcTqfPVsqo+LSAuu76ws/b1geeR2GrT18XEXWj2mj
+	 YZAMSEbFflMqN65atM1fLOQmWu1sD1L0hmj4E2bx1uAIjRHBmofpbPPM+2qf4V02A+
+	 G9oWGYSsyqmRQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rzueS-0000000070M-2S2B;
+	Thu, 25 Apr 2024 10:40:21 +0200
+Date: Thu, 25 Apr 2024 10:40:20 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Doug Anderson <dianders@chromium.org>
+Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Matthias Kaehlcke <mka@chromium.org>,
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>
+Subject: Re: [PATCH] Bluetooth: qca: fix invalid device address check
+Message-ID: <ZioW9IDT7B4sas4l@hovoldconsulting.com>
+References: <20240416091509.19995-1-johan+linaro@kernel.org>
+ <CAD=FV=UBHvz2S5bd8eso030-E=rhbAypz_BnO-vmB1vNo+4Uvw@mail.gmail.com>
+ <Zid6lfQMlDp3HQ67@hovoldconsulting.com>
+ <CAD=FV=XoBwYmYGTdFNYMtJRnm6VAGf+-wq-ODVkxQqN3XeVHBw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1967120.1714034372.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 25 Apr 2024 09:39:32 +0100
-Message-ID: <1967121.1714034372@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=XoBwYmYGTdFNYMtJRnm6VAGf+-wq-ODVkxQqN3XeVHBw@mail.gmail.com>
 
-    =
+On Tue, Apr 23, 2024 at 08:09:55AM -0700, Doug Anderson wrote:
+> On Tue, Apr 23, 2024 at 2:08 AM Johan Hovold <johan@kernel.org> wrote:
+> > On Mon, Apr 22, 2024 at 10:50:33AM -0700, Doug Anderson wrote:
+> > > On Tue, Apr 16, 2024 at 2:17 AM Johan Hovold <johan+linaro@kernel.org> wrote:
+> >
+> > > > As Chromium is the only known user of the 'local-bd-address' property,
+> > > > could you please confirm that your controllers use the 00:00:00:00:5a:ad
+> > > > address by default so that the quirk continues to be set as intended?
+> > >
+> > > I was at EOSS last week so didn't get a chance to test this, but I
+> > > just tested it now and I can confirm that it breaks trogdor. It
+> > > appears that trogdor devices seem to have a variant of your "default"
+> > > address. Instead of:
+> > >
+> > > 00:00:00:00:5a:ad
+> > >
+> > > We seem to have a default of this:
+> > >
+> > > 39:98:00:00:5a:ad
+> > >
+> > > ...so almost the same, but not enough the same to make it work with
+> > > your code. I checked 3 different trogdor boards and they were all the
+> > > same, though I can't 100% commit to saying that every trogdor device
+> > > out there has that same default address...
+> > >
+> > > Given that this breaks devices and also that it's already landed and
+> > > tagged for stable, what's the plan here? Do we revert? Do we add the
+> > > second address in and hope that there aren't trogdor devices out in
+> > > the wild that somehow have a different default?
+> >
+> > This patch is currently queued for 6.10 so there should be time to get
+> > this sorted.
+> >
+> > My fallback plan was to add further (device-specific) default addresses
+> > in case this turned out to be needed (e.g. this is what the Broadcom
+> > driver does).
 
-Fix extract_user_to_sg() so that it will break out of the loop if
-iov_iter_extract_pages() returns 0 rather than looping around forever.
+The offending commit was just sent on to the networking tree for 6.9 so
+I went ahead and added the Trogdor default address to the address check
+for now:
 
-[Note that I've included two fixes lines as the function got moved to a
-different file and renamed]
+	https://lore.kernel.org/r/20240425075503.24357-1-johan+linaro@kernel.org/
 
-Fixes: 85dd2c8ff368 ("netfs: Add a function to extract a UBUF or IOVEC int=
-o a BVEC iterator")
-Fixes: f5f82cd18732 ("Move netfs_extract_iter_to_sg() to lib/scatterlist.c=
-")
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Jeff Layton <jlayton@kernel.org>
-cc: Steve French <sfrench@samba.org>
-cc: Herbert Xu <herbert@gondor.apana.org.au>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: netfs@lists.linux.dev
-cc: linux-crypto@vger.kernel.org
-cc: linux-cifs@vger.kernel.org
-cc: linux-fsdevel@vger.kernel.org
-cc: netdev@vger.kernel.org
----
- lib/scatterlist.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We can always amend this later if it turns out to be needed.
 
-diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index 68b45c82c37a..7bc2220fea80 100644
---- a/lib/scatterlist.c
-+++ b/lib/scatterlist.c
-@@ -1124,7 +1124,7 @@ static ssize_t extract_user_to_sg(struct iov_iter *i=
-ter,
- 	do {
- 		res =3D iov_iter_extract_pages(iter, &pages, maxsize, sg_max,
- 					     extraction_flags, &off);
--		if (res < 0)
-+		if (res <=3D 0)
- 			goto failed;
- =
+> > I assume all Trogdor boards use the same controller, WCN3991 IIUC, but
+> > if you're worried about there being devices out there using a different
+> > address we could possibly also use the new
+> > "qcom,local-bd-address-broken" DT property as an indicator to set the
+> > bdaddr quirk.
+> 
+> They all should use the same controller, but I'm just worried because
+> I don't personally know anything about how this address gets
+> programmed nor if there is any guarantee from Qualcomm that it'll be
+> consistent. There are a whole pile of boards in the field, so unless
+> we have some certainty that they all have the same address it feels
+> risky.
 
- 		len =3D res;
+Hopefully Janaki and Qualcomm will provide some answers soon.
 
+And otherwise we have another fall back in that we can use the
+"qcom,local-bd-address-broken" property for Trogdor.
+
+> > We have Qualcomm on CC here so perhaps Janaki, who should have access to
+> > the documentation, can tell us what the default address on these older
+> > controllers looks like?
+> >
+> > Janaki, are there further default addresses out there that we need to
+> > consider?
+> >
+> > Perhaps "39:98" can even be inferred from the hardware id somehow (cf.
+> > bcm4377_is_valid_bdaddr())?
+> >
+> > Doug, could you please also post the QCA version info for Trogdor that's
+> > printed on boot?
+> 
+> You want this:
+> 
+> [    9.610575] ath10k_snoc 18800000.wifi: qmi chip_id 0x320
+> chip_family 0x4001 board_id 0x67 soc_id 0x400c0000
+> [    9.620634] ath10k_snoc 18800000.wifi: qmi fw_version 0x322102f2
+> fw_build_timestamp 2021-08-02 05:27 fw_build_id
+> QC_IMAGE_VERSION_STRING=WLAN.HL.3.2.2.c10-00754-QCAHLSWMTPL-1
+> [   14.607163] ath10k_snoc 18800000.wifi: wcn3990 hw1.0 target
+> 0x00000008 chip_id 0x00000000 sub 0000:0000
+ 
+> ...or this...
+> 
+> [   12.899095] Bluetooth: hci0: setting up wcn399x
+> [   13.526154] Bluetooth: hci0: QCA Product ID   :0x0000000a
+> [   13.531805] Bluetooth: hci0: QCA SOC Version  :0x40010320
+> [   13.537384] Bluetooth: hci0: QCA ROM Version  :0x00000302
+> [   13.543002] Bluetooth: hci0: QCA Patch Version:0x00000de9
+> [   13.565775] Bluetooth: hci0: QCA controller version 0x03200302
+
+Thanks, the Bluetooth driver output was what I was looking for but the
+wifi output may also provide some insight.
+
+> Just as a random guess from looking at "8" in the logs, maybe the
+> extra 8 in 3998 is the "target" above?
+
+Yeah, possibly, but it seems we won't be able to use the version info
+without further details from Qualcomm.
+
+> ...though that also makes me think that perhaps this chip doesn't
+> actually have space for a MAC address at all. Maybe they decided to
+> re-use the space to store the hardware ID and other information on all
+> of these devices?
+
+All of these controllers apparently have storage for the hardware ids so
+I'd be surprised if they didn't have room also for the address.
+
+Looking at the backstory for this, it seems like Qualcomm intentionally
+broke the bdaddr quirk so that controllers which had been provisioned
+with a valid address would continue to work back when WCN3990 was the
+only device that set the quirk. So presumably WCN3990 and later
+controllers all have OTP storage for the address (even if I guess in
+theory it could have been done just for, say, WCN3998 which was added
+just after):
+
+  5971752de44c ("Bluetooth: hci_qca: Set HCI_QUIRK_USE_BDADDR_PROPERTY for wcn3990") (2019-02-19, matthias)
+  e668eb1e1578 ("Bluetooth: hci_core: Don't stop BT if the BD address missing in dts") (2019-04-18, qcom)
+  523760b7ff88 ("Bluetooth: hci_qca: Added support for WCN3998") (2019-04-26, qcom)
+
+Johan
 
