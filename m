@@ -1,131 +1,143 @@
-Return-Path: <linux-kernel+bounces-158738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA70B8B2454
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:47:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A88E18B2457
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:48:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9FA3B26909
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:47:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E534281B9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:48:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B729C14A4FB;
-	Thu, 25 Apr 2024 14:47:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E12F014A603;
+	Thu, 25 Apr 2024 14:47:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="diHBnk+S"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="lGc1j8mm"
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E03A14A4CC
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:47:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0757312BE8C;
+	Thu, 25 Apr 2024 14:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714056454; cv=none; b=k2MzV7ZuewULorLy7R4b+UBg46eMIfhUfn4F65qn2+/h1WXL+LQwgUTOfQNz+Rofn3UUiJo09b4ItReiurYjg4cziYb2KMp1o9Sx+GGH4UJd+7Z2/YtzHZyRDzSiRAJxlRaKNFX6PxUvmysButTh+YWAsXTJAtmWrGT/D54Mxhs=
+	t=1714056475; cv=none; b=eQ/Oq+qpgJlVsqfqcW2iOm86BShR8C5O+lQyACiIJMikrXh0j9kdz8rg5Kf286Drf/IF3EPfkLdiWeArwC4mrhnLE192EmsSqn/Ew9HHnBgqID2Uv8A0wwKYE7HogAPI+60yZ7jU2BR3YVBr9ql/nX6OVgVYCtkjZZ0H16ZArfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714056454; c=relaxed/simple;
-	bh=/3Ptl6/dILtlcFf0CHKjc1lWsobe4sOIdkfxCyy5D/s=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=oYXt4Qa64uprpZ+OIxZzNG4wvH9Orq7YCXLPHdRyzy6TbJmyFkZuTDUMtTAk9ePVbGb710uH916wuEms4bwp4V7WB4eA7RUvIhA7s5LL28iO73CSdxYArZgjO29T2vi6uClIIY/R0EIjXlRNM4JjVplGwqvmVht8mrgm3CPmMC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=diHBnk+S; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-ddaf2f115f2so1787423276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:47:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714056450; x=1714661250; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KnP/oZP4ccxa1mrTRhNYPfpsHrss5qynOl3RJuOsATE=;
-        b=diHBnk+SfSxEhJeirTnI5ZIM8LL3QoFZQC1CmdW8Vd0zImECVKudhuSPA4Gi+n4+KJ
-         nmm5z/0mDYjmepV9QZPMMd1TqjYTFqgrFkyGi8itP9kJN8G5tAGWcSL8s0t7fgTEWQrl
-         KX8OC0/w3YXH/Ou+sRMWJbB+X6MEDgPQS3gDf1kqPyDJWJEzZ4nzz5TPiYLpAXBsnEgw
-         q+Asv+dhDkYt/Y3i/IDPMK2nVjpuRvbanzVsx4L898F03nZlGeyGPZJuZXD2ZVytmiuP
-         iLPpwKMNrPt9zB52DfW0S5Ol0uqj4Qmmp7VzNn0McqYjmg5zpNoXoU9+93pheeLeEbtA
-         S8pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714056450; x=1714661250;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KnP/oZP4ccxa1mrTRhNYPfpsHrss5qynOl3RJuOsATE=;
-        b=rQ73EZPFxyc1bO9/ho3Nzx2gyY5A6of93lD+Igik5psiDu4qVRk32T7QsXOlkJQB2z
-         m2a7RxNcDtXZBs8fwbgtR7fHyHudONprE+baYSRI+5yiwx53AS2Vd2FYZOFGIjCqCSdz
-         25mA/tu37C5z1VMkArUOeyvdj+fD2V4jGQxtlO66tbV8ACIqswTukrotHb7q06DBRpQr
-         cFCscibu7qu2WFZhV1r2erMehmq6PjoDO4HZMR89TOUxhtPm7iu4RnHsjfjKQXSjHD18
-         YW9gw92vffBXBMrHgW3I7D7p+vn1ybenQivFfufrO64wMH1nX+npWcghfdhK5l/kC34Q
-         Cncw==
-X-Forwarded-Encrypted: i=1; AJvYcCXIH2bdmysjHY2JuXP19fVKOTptbOx9awh74rrzH8K2f73v7QIvitM3Ytsljax+Bi30Je4wPQJBdUtnCSDt+W4V+dHUz8nliAXALtXu
-X-Gm-Message-State: AOJu0Yw0hMua8rf46/8v703Vfi7GItcSNjQzNEwyBxmbZJrmvhiZz7dL
-	LPRFUfI2ZkccI+wRa9lPoj8U6L/j5UeITbuoeItxDLOjpAgrxEirXX6GnvFRMQj/eTG2UN4nljE
-	G5g==
-X-Google-Smtp-Source: AGHT+IHcpvR4nfgTITxm6amC5T1Ujhg5dy2vcrW46iCRFNddlNNj+5lEziGBZsh0whUnNAfnw5b2pULpc2g=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1249:b0:dc6:dfd9:d423 with SMTP id
- t9-20020a056902124900b00dc6dfd9d423mr590089ybu.3.1714056450615; Thu, 25 Apr
- 2024 07:47:30 -0700 (PDT)
-Date: Thu, 25 Apr 2024 07:47:29 -0700
-In-Reply-To: <DS0PR11MB6373C82CB77354EFD779E0C3DC172@DS0PR11MB6373.namprd11.prod.outlook.com>
+	s=arc-20240116; t=1714056475; c=relaxed/simple;
+	bh=xirADQnND4LpW3On1CYVvqiaJ7dFeYmjfzo0yqz5Uvs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G2C93yoMv3y1wulCv1FH1hbGEamsSdUt+/fGFUzWv5AVDsTVywOJFhKX36jNtWnvnuOuJbyZRUD3NHD2kz8yw8aBmTtZYUZt8m/2iEjVuxpwN1dFjQ0tawQPq+HCC51zWV7WaGTejbnUbhzlf2glJUBvyqmoRYAH+pc38ZRPhvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=lGc1j8mm; arc=none smtp.client-ip=80.241.56.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4VQJcN6X9fz9sn3;
+	Thu, 25 Apr 2024 16:47:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1714056468;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2uONcSOBmYm/zEIn/RVoq3cLXjOll3fnF/QGfQtQU1Y=;
+	b=lGc1j8mmeffOqT4NiHrF7eoMXpDqgwvRCENRJJWBxgfN5pSWO/HKcAt9zSSDb0c3D4pvJa
+	CW6TS2aHiXV16VOTzsX0x0YtSjv3SeljbDFVXOO0oBtzZlm3AKnobxFZNd+vYqbV+CTv+r
+	tDnFzSd69F+bXUA01ebmZrATefPMztZaphHe2zCk2EPxMjAp1uVd2CxW+wi1v7nyguDKUF
+	ilTj3f3nl4coS3k23fbERU7i/f9+ZZpVVbPonTUT8gMYTpCLASLFCxl8ogCRmONnG+BEp+
+	ms5v36t6TERhrtEjb3ArfqGDXTEBZXNQypQOQNRA10K2e/IqwM7sSzZdT0ezWQ==
+Date: Thu, 25 Apr 2024 14:47:41 +0000
+From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+To: John Garry <john.g.garry@oracle.com>
+Cc: axboe@kernel.dk, brauner@kernel.org, djwong@kernel.org,
+	viro@zeniv.linux.org.uk, jack@suse.cz, akpm@linux-foundation.org,
+	willy@infradead.org, dchinner@redhat.com, tytso@mit.edu, hch@lst.de,
+	martin.petersen@oracle.com, nilay@linux.ibm.com,
+	ritesh.list@gmail.com, mcgrof@kernel.org,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, ojaswin@linux.ibm.com, p.raghav@samsung.com,
+	jbongio@google.com, okiselev@amazon.com
+Subject: Re: [PATCH RFC 2/7] filemap: Change mapping_set_folio_min_order() ->
+ mapping_set_folio_orders()
+Message-ID: <20240425144741.houv6uoflhwmcc2u@quentin>
+References: <20240422143923.3927601-1-john.g.garry@oracle.com>
+ <20240422143923.3927601-3-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240423221521.2923759-1-seanjc@google.com> <20240423221521.2923759-2-seanjc@google.com>
- <DS0PR11MB6373B95FF222DD6939CFEFC6DC172@DS0PR11MB6373.namprd11.prod.outlook.com>
- <ZipjhYUIAQMMkXci@google.com> <DS0PR11MB6373C82CB77354EFD779E0C3DC172@DS0PR11MB6373.namprd11.prod.outlook.com>
-Message-ID: <ZiptAV51VcTEhqgY@google.com>
-Subject: Re: [PATCH 1/4] KVM: x86: Add a struct to consolidate host values,
- e.g. EFER, XCR0, etc...
-From: Sean Christopherson <seanjc@google.com>
-To: Wei W Wang <wei.w.wang@intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240422143923.3927601-3-john.g.garry@oracle.com>
 
-On Thu, Apr 25, 2024, Wei W Wang wrote:
-> On Thursday, April 25, 2024 10:10 PM, Sean Christopherson wrote:
-> > We should shorten the name to arch_caps, but I don't think that's a net
-> > positive, e.g. unless we do a bulk rename, it'd diverge from several other
-> > functions/variables, and IMO it would be less obvious that the field holds
-> > MSR_IA32_ARCH_CAPABILITIES.
+On Mon, Apr 22, 2024 at 02:39:18PM +0000, John Garry wrote:
+> Borrowed from:
 > 
-> Yeah, the above isn't nice and no need to do bulk rename.
-> We could just shorten it here, e.g.:
-
-Works for me.
-
-> > > > @@ -325,11 +332,8 @@ int x86_emulate_instruction(struct kvm_vcpu
-> > > > *vcpu, gpa_t cr2_or_gpa,
-> > > >  			    int emulation_type, void *insn, int insn_len);
-> > fastpath_t
-> > > > handle_fastpath_set_msr_irqoff(struct kvm_vcpu *vcpu);
-> > > >
-> > > > -extern u64 host_xcr0;
-> > > > -extern u64 host_xss;
-> > > > -extern u64 host_arch_capabilities;
-> > > > -
-> > > >  extern struct kvm_caps kvm_caps;
-> > > > +extern struct kvm_host_values kvm_host;
-> > >
-> > > Have you considered merging the kvm_host_values and kvm_caps into one
-> > > unified structure?
-> > 
-> > No really.  I don't see any benefit, only the downside of having to come up
-> > with a name that is intuitive when reading code related to both.
+> https://lore.kernel.org/linux-fsdevel/20240213093713.1753368-2-kernel@pankajraghav.com/
+> (credit given in due course)
 > 
-> I thought the two structures perform quite similar jobs and most of the fields in
-> kvm_cap, e.g. has_tsc_control, supported_perf_cap, could also be interpreted
-> as host values?
+> We will need to be able to only use a single folio order for buffered
+> atomic writes, so allow the mapping folio order min and max be set.
 
-No, kvm_caps is filtered and/or generated information, e.g. supported_perf_cap
-and supported_xss incorporate host/hardware support, but they also incorporate
-KVM's own capabilities.
+> 
+> We still have the restriction of not being able to support order-1
+> folios - it will be required to lift this limit at some stage.
 
-kvm_host holds pure, unadultered host values.
+This is already supported upstream for file-backed folios:
+commit: 8897277acfef7f70fdecc054073bea2542fc7a1b
 
-XSS is a perfect example.  If we shoved the host value in kvm_caps, then we'd
-have kvm_caps.supported_xss and kvm_caps.xss, which would be incredibly confusing.
-So then we'd need to rename it to kvm_caps.host_xss, which is also confusing,
-just less so, and also results in a longer name with no added value.
+> index fc8eb9c94e9c..c22455fa28a1 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -363,9 +363,10 @@ static inline void mapping_set_gfp_mask(struct address_space *m, gfp_t mask)
+>  #endif
+>  
+>  /*
+> - * mapping_set_folio_min_order() - Set the minimum folio order
+> + * mapping_set_folio_orders() - Set the minimum and max folio order
+
+In the new series (sorry forgot to CC you), I added a new helper called
+mapping_set_folio_order_range() which does something similar to avoid
+confusion based on willy's suggestion:
+https://lore.kernel.org/linux-xfs/20240425113746.335530-3-kernel@pankajraghav.com/
+
+mapping_set_folio_min_order() also sets max folio order to be 
+MAX_PAGECACHE_ORDER order anyway. So no need of explicitly calling it
+here?
+
+>  /**
+> @@ -400,7 +406,7 @@ static inline void mapping_set_folio_min_order(struct address_space *mapping,
+>   */
+>  static inline void mapping_set_large_folios(struct address_space *mapping)
+>  {
+> -	mapping_set_folio_min_order(mapping, 0);
+> +	mapping_set_folio_orders(mapping, 0, MAX_PAGECACHE_ORDER);
+>  }
+>  
+>  static inline unsigned int mapping_max_folio_order(struct address_space *mapping)
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index d81530b0aac0..d5effe50ddcb 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -1898,9 +1898,15 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
+>  no_page:
+>  	if (!folio && (fgp_flags & FGP_CREAT)) {
+>  		unsigned int min_order = mapping_min_folio_order(mapping);
+> -		unsigned int order = max(min_order, FGF_GET_ORDER(fgp_flags));
+> +		unsigned int max_order = mapping_max_folio_order(mapping);
+> +		unsigned int order = FGF_GET_ORDER(fgp_flags);
+>  		int err;
+>  
+> +		if (order > max_order)
+> +			order = max_order;
+> +		else if (order < min_order)
+> +			order = max_order;
+
+order = min_order; ?
+--
+Pankaj
 
