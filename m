@@ -1,132 +1,234 @@
-Return-Path: <linux-kernel+bounces-158665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 971BB8B239B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:11:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6022C8B239D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:12:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C80CD1C20F7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:11:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB45D1F217C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:12:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA55B149E17;
-	Thu, 25 Apr 2024 14:10:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 000D8149E14;
+	Thu, 25 Apr 2024 14:11:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L5qEmBqq"
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="YDqbSUUZ"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDFA6171C2;
-	Thu, 25 Apr 2024 14:10:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD861494BF;
+	Thu, 25 Apr 2024 14:11:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714054246; cv=none; b=HCBDa/mPiuB9ZJjQu8UUGvfkVKpAWL6zKYlkKenok2JvEvaZ2lMhfbL7tkDRwy2ofRtZXguSHb3pQ7p6cHBVT87Iyr2V3grA9QRnTL5VmxtfbFHEkjTofZNvSEpH2ruZ2l1gMeq2T/MviPLZSVAcxS2e5fII7EYGwnF881UuJWc=
+	t=1714054317; cv=none; b=eR/RvYFar9HapuouFNd6HE+I7VnZuEIALFFLphuWi9JhTOvEZ1VyBIV8fyob58NSjpJmsUkZX2kQhnbysY2F8LHuafljxnn45B+LCYdD3fUOnqR6Fi+LHjdffhd76QLf3gzewacFYGPqjUsMsXBHVQ2rSzO7ulp0v8wjIhGa2t0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714054246; c=relaxed/simple;
-	bh=I9RuxejvwT5lszFHr8dtEp25xDltyZrOPajVFNie+N0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TqQ2GPaYImcwO1/TwEIuH2I/CsJ4qGsD7+OqeCgzFxJS2GPljXgwzblLG0mf0IfZYNr68oSVhvvUDKDonsy4jVBNpTh7pEosERL3emnwrysCgJvUV3qKTQ2Jarkqlak0Eec4ej1nONoY4KlNPIxV2KiO7dOrJPWgMDGAywRdlu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L5qEmBqq; arc=none smtp.client-ip=209.85.166.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7d5db134badso37872639f.2;
-        Thu, 25 Apr 2024 07:10:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714054244; x=1714659044; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=omf2YA5ZrMAZoe/viDc+5pR/0l+e+gj7ozLHZXJSd+A=;
-        b=L5qEmBqqSLa68A90cAWh+mjckXz6MlRWkQKeNWiF9Kw0m1Vr02kHSRE12aAbZAQDXu
-         C1+5WG8mVA8RdSwKQABxTB4P8wwX+VRprLw2aOlUwm67v/7br8U7kx5jMjV9YjJhgFPi
-         qZnTkXpIZmKz8MWVD1c/N4yZllOAOuYYb2GRfXqXDTE63f+hGzB6RSGkXyBiAN0K4+t/
-         qDUCa/NxuijKifqgT3zPrsZfSy3JZjSybIRmelzua0lgS5XzcsHHBROBReKJ3fC7kB58
-         iKEkNgbOZe+xgGszZu71FF4Gl2xjSmv+4bZmdRrUGLQWDxPTJw3AfElGq8DXuSPnj7Nx
-         kFww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714054244; x=1714659044;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=omf2YA5ZrMAZoe/viDc+5pR/0l+e+gj7ozLHZXJSd+A=;
-        b=xFTDec9LDCxDW+uInfssNx3Dlshho6ezTBxQBpHUuNJXdbrfkQF0oeL+1SpUjo/zJM
-         aqzbclIm0DprPo4SFfTQ5TB1STdJZnQRr+n4nBDnQCq5qi3vsWuQ3ak/tDL5YtQmjKkl
-         gl2qW3RluIKSsMNwIIQNzDd/XGu1++Z2zSTNVKadOPVRb/PyCeOwPxik9rx9h3sRE2wA
-         NyVHtvhf14/g6VmNwBXF0/GcnFtq6/dlswiz57iyA0XkB7wsyy8CeF8MwezZ332r8NM8
-         4nG8oVLIQJgNFzoj7wfi6/Lc4oh7bJhpvV1ZBzhnqF9bZ6/PlP9VoGVi8tFFy+Z6zp1x
-         qxhw==
-X-Forwarded-Encrypted: i=1; AJvYcCXD6SamtUsFIIpDFtKqiNQZhJuU4AxeLwwLjWWRvOd9DwiRwi+S7nxPFp9+MHASyw5Y557ECrlMj0tKZ3aIxkD3VU0G1bnwgRPIof02naazfiynO08MtMLHfxwmmQykf46Q8EXMv6FznawG7A==
-X-Gm-Message-State: AOJu0Ywyju/NkCvV+KqdBM+x92GKLgSdw0F94kaa/BlQ69Je7z+iCl4v
-	+kKuK91oMm6nFiRxlbOje2Dh8yd7OhRdPTVuJp4Xt6mhiHy5Nmub
-X-Google-Smtp-Source: AGHT+IEDaTjEy8k8m8tzbhSWJ6HsiVjaRVSd0iaXtgpvcsNwjfY56ICL0yTaVf6IzBy/8laib3r9Eg==
-X-Received: by 2002:a05:6e02:1e0a:b0:36c:c6c:dc27 with SMTP id g10-20020a056e021e0a00b0036c0c6cdc27mr6923795ila.10.1714054243955;
-        Thu, 25 Apr 2024 07:10:43 -0700 (PDT)
-Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id y5-20020a637d05000000b005f3d2a9a91bsm11616066pgc.89.2024.04.25.07.10.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 07:10:43 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: willy@infradead.org
-Cc: brauner@kernel.org,
-	jfs-discussion@lists.sourceforge.net,
-	jlayton@kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	shaggy@kernel.org,
-	syzbot+241c815bda521982cb49@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] jfs: Fix array-index-out-of-bounds in diFree
-Date: Thu, 25 Apr 2024 23:10:38 +0900
-Message-Id: <20240425141038.47054-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <ZipSO4ITxuy2faKx@casper.infradead.org>
-References: <ZipSO4ITxuy2faKx@casper.infradead.org>
+	s=arc-20240116; t=1714054317; c=relaxed/simple;
+	bh=KauxnHMHBOw91Q6QFJqIYZ6o7dfUdmnOhULj4HLawgM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YB/aWe8NmIxqI6mSzBGNMrBrh0HqQpnhfID5JVKe10N47Hjw0/utbzbDtYBzjJspUN9KBldfrvoItERIp9Przv9C6La8N1clwWSSJJEHKqn0N2OIIOab+y3SAy999WtC/pFw96EWTyGNBI9vkAJcYsp/U7fqLd1Y54TxgLF5CcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=YDqbSUUZ; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
+ id 7e8b731d164f542d; Thu, 25 Apr 2024 16:11:53 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id A59F566DF23;
+	Thu, 25 Apr 2024 16:11:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1714054313;
+	bh=KauxnHMHBOw91Q6QFJqIYZ6o7dfUdmnOhULj4HLawgM=;
+	h=From:To:Cc:Subject:Date;
+	b=YDqbSUUZibdd+9YKB0241Ep44y2G2ZSd5sWs99ZJSXIHNDGjWqCwAX0UiFagBKJmS
+	 Um3EEfqvtocF76IO9z8Lo7OnJWfRxUFNjcOgcExwnozp5lHelKnka0v1nm/gFftZ9U
+	 s+Jry418zJoblaW8zqn4/d29dpowt1BvzGtLfeTCGrGC7Kyvonb7OYeAfCeAdlMJNr
+	 rvfQtkNoW6ajIg6KBbP8wu+0hwvJDQrL/xhObbrdBbTqKyC/ySgq1RycZzoP6rF/rX
+	 zex79xkMtMoM/xdyj5K34I+L3BO1nmhVNlARxvd6okHdTVDI2RWkIma3AiLNvg1ohn
+	 DxnTnZy/F1VKw==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
+ LKML <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Lukasz Luba <lukasz.luba@arm.com>
+Subject: [PATCH v1] thermal: core: Move passive polling management to the core
+Date: Thu, 25 Apr 2024 16:11:52 +0200
+Message-ID: <5938055.MhkbZ0Pkbq@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudeljedgjeefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgeffhfdujeelhfdtgeffkeetudfhtefhhfeiteethfekvefgvdfgfeeikeeigfehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghl
+ rdhorhhgpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 
-Matthew Wilcox wrote:
-> If that's the problem then the correct place to detect & reject this is
-> during mount, not at inode free time.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I fixed the patch as you said. If you patch in this way, the 
-file system will not be affected by the vulnerability at all 
-due to the code structure.
+Passive polling is enabled by setting the 'passive' field in
+struct thermal_zone_device to a positive value so long as the
+'passive_delay_jiffies' field is greater than zero.  It causes
+the thermal core to actively check the thermal zone temperature
+periodically which in theory should be done after crossing a
+passive trip point on the way up in order to allow governors to
+react more rapidly to temperature changes and adjust mitigation
+more precisely.
 
-Thanks.
+However, the 'passive' field in struct thermal_zone_device is currently
+managed by governors which is quite problematic.  First of all, only
+two governors, Step-Wise and Power Allocator, update that field at
+all, so the other governors do not benefit from passive polling,
+although in principle they should.  Moreover, if the zone governor is
+changed from, say, Step-Wise to Fair-Share after 'passive' has been
+incremented by the former, it is not going to be reset back to zero by
+the latter even if the zone temperature falls down below all passive
+trip points.
+
+For this reason, make handle_thermal_trip() increment 'passive'
+to enable passive polling for the given thermal zone whenever a
+passive trip point is crossed on the way up and decrement it
+whenever a passive trip point is crossed on the way down.  Also
+remove the 'passive' field updates from governors and additionally
+clear it in thermal_zone_device_init() to prevent passive polling
+from being enabled after a system resume just beacuse it was enabled
+before suspending the system.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+This has been mentioned here:
+
+https://lore.kernel.org/linux-pm/61560bc6-d453-4b0c-a4ea-b375d547b143@linaro.org/
+
+and I need someone to double check if the Power Allocator governor does not
+need to be adjusted more for this change.
 
 ---
- fs/jfs/jfs_imap.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/thermal/gov_power_allocator.c |   12 +++++++-----
+ drivers/thermal/gov_step_wise.c       |   10 ----------
+ drivers/thermal/thermal_core.c        |   10 ++++++++--
+ 3 files changed, 15 insertions(+), 17 deletions(-)
 
-diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
-index 2ec35889ad24..ba0aa2f145cc 100644
---- a/fs/jfs/jfs_imap.c
-+++ b/fs/jfs/jfs_imap.c
-@@ -290,7 +290,7 @@ int diSync(struct inode *ipimap)
- int diRead(struct inode *ip)
+Index: linux-pm/drivers/thermal/thermal_core.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_core.c
++++ linux-pm/drivers/thermal/thermal_core.c
+@@ -389,6 +389,9 @@ static void handle_thermal_trip(struct t
+ 		if (tz->temperature < trip->temperature - trip->hysteresis) {
+ 			list_add(&td->notify_list_node, way_down_list);
+ 			td->notify_temp = trip->temperature - trip->hysteresis;
++
++			if (trip->type == THERMAL_TRIP_PASSIVE)
++				tz->passive--;
+ 		} else {
+ 			td->threshold -= trip->hysteresis;
+ 		}
+@@ -402,8 +405,10 @@ static void handle_thermal_trip(struct t
+ 		td->notify_temp = trip->temperature;
+ 		td->threshold -= trip->hysteresis;
+ 
+-		if (trip->type == THERMAL_TRIP_CRITICAL ||
+-		    trip->type == THERMAL_TRIP_HOT)
++		if (trip->type == THERMAL_TRIP_PASSIVE)
++			tz->passive++;
++		else if (trip->type == THERMAL_TRIP_CRITICAL ||
++			 trip->type == THERMAL_TRIP_HOT)
+ 			handle_critical_trips(tz, trip);
+ 	}
+ }
+@@ -444,6 +449,7 @@ static void thermal_zone_device_init(str
+ 	INIT_DELAYED_WORK(&tz->poll_queue, thermal_zone_device_check);
+ 
+ 	tz->temperature = THERMAL_TEMP_INVALID;
++	tz->passive = 0;
+ 	tz->prev_low_trip = -INT_MAX;
+ 	tz->prev_high_trip = INT_MAX;
+ 	list_for_each_entry(pos, &tz->thermal_instances, tz_node)
+Index: linux-pm/drivers/thermal/gov_step_wise.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/gov_step_wise.c
++++ linux-pm/drivers/thermal/gov_step_wise.c
+@@ -93,16 +93,6 @@ static void thermal_zone_trip_update(str
+ 		if (instance->initialized && old_target == instance->target)
+ 			continue;
+ 
+-		if (trip->type == THERMAL_TRIP_PASSIVE) {
+-			/* If needed, update the status of passive polling. */
+-			if (old_target == THERMAL_NO_TARGET &&
+-			    instance->target != THERMAL_NO_TARGET)
+-				tz->passive++;
+-			else if (old_target != THERMAL_NO_TARGET &&
+-				 instance->target == THERMAL_NO_TARGET)
+-				tz->passive--;
+-		}
+-
+ 		instance->initialized = true;
+ 
+ 		mutex_lock(&instance->cdev->lock);
+Index: linux-pm/drivers/thermal/gov_power_allocator.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/gov_power_allocator.c
++++ linux-pm/drivers/thermal/gov_power_allocator.c
+@@ -66,6 +66,7 @@ struct power_actor {
+  * struct power_allocator_params - parameters for the power allocator governor
+  * @allocated_tzp:	whether we have allocated tzp for this thermal zone and
+  *			it needs to be freed on unbind
++ * @update_cdevs:	whether or not update cdevs on the next run
+  * @err_integral:	accumulated error in the PID controller.
+  * @prev_err:	error in the previous iteration of the PID controller.
+  *		Used to calculate the derivative term.
+@@ -84,6 +85,7 @@ struct power_actor {
+  */
+ struct power_allocator_params {
+ 	bool allocated_tzp;
++	bool update_cdevs;
+ 	s64 err_integral;
+ 	s32 prev_err;
+ 	u32 sustainable_power;
+@@ -533,7 +535,7 @@ static void reset_pid_controller(struct
+ 	params->prev_err = 0;
+ }
+ 
+-static void allow_maximum_power(struct thermal_zone_device *tz, bool update)
++static void allow_maximum_power(struct thermal_zone_device *tz)
  {
- 	struct jfs_sb_info *sbi = JFS_SBI(ip->i_sb);
--	int iagno, ino, extno, rc;
-+	int iagno, ino, extno, rc, agno;
- 	struct inode *ipimap;
- 	struct dinode *dp;
- 	struct iag *iagp;
-@@ -339,6 +339,9 @@ int diRead(struct inode *ip)
+ 	struct power_allocator_params *params = tz->governor_data;
+ 	struct thermal_cooling_device *cdev;
+@@ -555,7 +557,7 @@ static void allow_maximum_power(struct t
+ 		 */
+ 		cdev->ops->get_requested_power(cdev, &req_power);
  
- 	/* get the ag for the iag */
- 	agstart = le64_to_cpu(iagp->agstart);
-+	agno = BLKTOAG(agstart, JFS_SBI(ip->i_sb));
-+	if(agno >= MAXAG || agno < 0)
-+		return -EIO;
+-		if (update)
++		if (params->update_cdevs)
+ 			__thermal_cdev_update(cdev);
  
- 	release_metapage(mp);
+ 		mutex_unlock(&cdev->lock);
+@@ -752,13 +754,13 @@ static void power_allocator_manage(struc
  
--- 
-2.34.1
+ 	if (trip && tz->temperature < trip->temperature) {
+ 		reset_pid_controller(params);
+-		allow_maximum_power(tz, tz->passive);
+-		tz->passive = 0;
++		allow_maximum_power(tz);
++		params->update_cdevs = false;
+ 		return;
+ 	}
+ 
+ 	allocate_power(tz, params->trip_max->temperature);
+-	tz->passive = 1;
++	params->update_cdevs = true;
+ }
+ 
+ static struct thermal_governor thermal_gov_power_allocator = {
+
+
+
 
