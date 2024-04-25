@@ -1,111 +1,116 @@
-Return-Path: <linux-kernel+bounces-158506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67B208B215E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:09:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 610538B216E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:11:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2348A28A737
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:09:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 019801F21094
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C91C12BF14;
-	Thu, 25 Apr 2024 12:08:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ACC412BF14;
+	Thu, 25 Apr 2024 12:10:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bOlIw5E4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="iAaz8KO3"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8164712B159;
-	Thu, 25 Apr 2024 12:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5576F12AAD5;
+	Thu, 25 Apr 2024 12:10:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714046915; cv=none; b=QWqdNrGscKe2IglXrq23o3IRj64wOkFGP5ANY87zKCS93kGCYPj9iJWXlMcG5PwCiAu5+iY+IcJoawmoKU2VLTZSUMSejj15cQf+9rNNddz1n2AmexrFtqYVdrZXE2xCCAoJORuO+IiJt7QgGWkDYMeaQuPNmfXgf6PIKYO1ICI=
+	t=1714047052; cv=none; b=FdeMfqkL9RomReMVHnzP3nK5pN4qcR/if00ZpklaJjljPrUfMfl+evS+nHOEWCHbS1doJnsPxmRsmKx+GyIMesats9rLT2Fyu7KcaeAF3w/C/7eal8dJpIAvkeaYtOyqKUQeB1lgD+qxAtreWiM1AcVlifAYF3XEa4M8NKU5pE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714046915; c=relaxed/simple;
-	bh=QJ/+TaI7LYFNkVXAUM2e6kETsZ4oE7E3AR7EDPAymsw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m/tobfTsLJfzLUqz6vvT7+5wW9Q1Mvf96a9j1y/CjzDpFOozgNd/mi3DDWPeSkgzMIvhXXua8d61F3rvLl1Zyn+dODRBvZLzXG+GW01JcS6/EalyZlCw5hLGOMASFe5yEAa1IMqEy+XYJRllugiU4ciKy0EVsBl3z4yiG+3Cydg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bOlIw5E4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 906E8C113CC;
-	Thu, 25 Apr 2024 12:08:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714046915;
-	bh=QJ/+TaI7LYFNkVXAUM2e6kETsZ4oE7E3AR7EDPAymsw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bOlIw5E4WknFvh5vVANsGtX1zP9GNXAj6BdyeFZYv8CKMxB183hLztSJqBenWQ/BQ
-	 VuHJIcAAWKPbrFGOKmH59x+jTcyKdR4pqdOgTjLulMKF0SxVx3SrTz1s3L1O1UTE4v
-	 9sse07Qg4KSV1x/h+1dhdbZKaGCsltSz6MA16Ywe4tnbEYmmvQyD2uHpwHFzJ7jaKY
-	 6D9GRcLCnD2PCnyrzC86OEdS6CJ+NQFUkkYeR2bjI1nT1q1QVBVP3BmLOpJpynYMGC
-	 QG2x92cZrbHu+RASqcDR9fqkM7Z5j7LEwpYLQ3vrnOmUXOR6ErVKqVX63QDErb5ZBY
-	 84HK+TIsDyZhA==
-Date: Thu, 25 Apr 2024 14:08:24 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: stsp <stsp2@yandex.ru>
-Cc: linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>, 
-	Eric Biederman <ebiederm@xmission.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Andy Lutomirski <luto@kernel.org>, Jan Kara <jack@suse.cz>, Jeff Layton <jlayton@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Alexander Aring <alex.aring@gmail.com>, 
-	David Laight <David.Laight@aculab.com>, linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org, 
-	Paolo Bonzini <pbonzini@redhat.com>, Christian =?utf-8?B?R8O2dHRzY2hl?= <cgzones@googlemail.com>
-Subject: Re: [PATCH v4 0/2] implement OA2_INHERIT_CRED flag for openat2()
-Message-ID: <20240425-loslassen-hexen-a1664a579ea1@brauner>
-References: <20240424105248.189032-1-stsp2@yandex.ru>
- <20240424-schummeln-zitieren-9821df7cbd49@brauner>
- <6b46528a-965f-410a-9e6f-9654c5e9dba2@yandex.ru>
- <20240425-ausfiel-beabsichtigen-a2ef9126ebda@brauner>
- <df51f2fd-385a-47bf-a072-a8988a801d52@yandex.ru>
+	s=arc-20240116; t=1714047052; c=relaxed/simple;
+	bh=HdZ2QnA7U2oMaAFrgywXWMXD05CJWf4ARPk2tQv0ZA0=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T/kJhKzP9TwG8EfiPaJt0c1YoVK6cCcviU0bUeweZok+y2jAZlY5Z4VDEt20y31IvmhT76XaAL+h1KQ7XtNxE8QzcryJgqsrItOGctzDMjiYpmY144Q0xzHqJNh/UnE76s/hs6MDZ43rvbynE17et/hA3rJ94xY4jTJlpJS5D8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=iAaz8KO3; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43PCAeRk024096;
+	Thu, 25 Apr 2024 07:10:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714047040;
+	bh=20RMvqPeKimzlfIcpbZ/jDK1eyJlbn4Lto3iHRS0I+c=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=iAaz8KO3mq1BoTNcTCvQizGESg7K6BExwxKzQBq53xfQPx2aXsbLx5b6YfHxRVxP/
+	 yBEh3mOHgceFWW4OqXp15nScHCP+sqVAuoPNjpL8mGQZU692UPEKi/TRtrfj/vz4ZP
+	 yrxGu6qtYYZvN5tGOorMVfUjOwmp4bW2Z7AafSIA=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43PCAe5k013375
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 25 Apr 2024 07:10:40 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 25
+ Apr 2024 07:10:40 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 25 Apr 2024 07:10:40 -0500
+Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43PCAdV1065347;
+	Thu, 25 Apr 2024 07:10:39 -0500
+Date: Thu, 25 Apr 2024 17:40:38 +0530
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC: Siddharth Vadapalli <s-vadapalli@ti.com>,
+        Krzysztof Kozlowski
+	<krzk@kernel.org>, <lee@kernel.org>,
+        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>
+Subject: Re: [PATCH] dt-bindings: mfd: syscon: Add ti,am62p-cpsw-mac-efuse
+ compatible
+Message-ID: <8a64294a-df1e-4331-aca5-0b23b637b9e1@ti.com>
+References: <30065bdc-ccef-4610-b1c1-7661f801b8e9@ti.com>
+ <4b1380a8-0136-4395-ba42-9bcff2e1bdb0@kernel.org>
+ <aabea385-16e0-4116-a12b-3ce1e06574e3@ti.com>
+ <eb7a0d5c-c197-44b9-baea-e9b54792b447@kernel.org>
+ <af61424e-7006-49f5-b614-3caa3674685a@ti.com>
+ <083e50de-1c99-4a58-8b55-4dec26d97c1b@kernel.org>
+ <9bca7d94-142e-4717-aea7-437805717a00@ti.com>
+ <a895ddc8-5c18-49d7-86c4-b995bb946914@ti.com>
+ <94bae793-ba4f-467f-917d-213fa3cd6faa@ti.com>
+ <20489a1e-51d1-42b3-9014-fc1c00b087db@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <df51f2fd-385a-47bf-a072-a8988a801d52@yandex.ru>
+In-Reply-To: <20489a1e-51d1-42b3-9014-fc1c00b087db@linaro.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-> But I am sure you still don't understand
-> what exactly the patch does, so why not
-> to ask instead of asserting?
-> You say uid/gid can be stolen, but no,
-> it can't: the creds are reverted. Only
-> fsuid/fsgid (and caps in v2 of the patch)
-> actually affect openat2(), but nothing is
-> "leaked" after openat2() finished.
+On Fri, Apr 05, 2024 at 08:55:18AM +0200, Krzysztof Kozlowski wrote:
+> On 05/04/2024 07:21, Siddharth Vadapalli wrote:
+> >>>> bindings in the changelog or cover letter.
+> >>>
+> >>> Thank you for clarifying. I will post the DTS patches corresponding to
+> >>> this patch and reference this patch in the DTS patch series.
+> >>
+> >> I have posted the DTS patch at:
+> >> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240404081845.622707-1-s-vadapalli@ti.com/
+> >> indicating the dependency on this bindings patch.
+> > 
+> > Hello Krzysztof,
+> > 
+> > Do I have to post a v2 for this patch? You had Acked it initially but I
+> 
+> No, I acked it. All this unnecessary talk was because you did not post a
+> user, but it is not a requirement, at least when we expect such user.
 
-I say "stolen" because the original opener has no say in this. You're
-taking their fsuid/fsgid and groups and overriding creds for the
-duration of the lookup and open. Something the original opener never
-consented to. But let's call it "borrowed" if you're hung up on
-terminology here.
+Lee,
 
-But ultimately it's the same complaint: the original opener has no way
-of controlling this behavior. Once ignored in my first reply, and now
-again conveniently cut off again. Let alone all the other objections.
+Could you please merge this patch? It applies cleanly on the latest
+linux-next tagged next-20240424.
 
-And fwiw, the same way you somehow feel like I haven't read your patch
-it seems you to consistently underestimate the implications of this
-change. Which is really strange because it's pretty obvious. It's
-effectively temporary setuid/setgid with some light limitations.
-
-Leaking directory descriptors across security boundaries becomes a lot
-more interesting with this patch applied. Something which has happened
-multiple times already and heavily figures in container escapes. And the
-RESOLVE_BENEATH/IN_ROOT restrictions only stave off symlink (and magic
-link) attacks. If a directory fd is leaked a container can take the
-fsuid/fsgid/groups from the original opener of that directory and write
-to disk with whatever it resolves to in that namespace's idmapping. It's
-basically a nice way to puzzle together arbitrary fsuid/fsgid and
-idmapping pairs in whatever namespace the opener happens to be in.
-
-And again it also messes with LSMs because you're changing credentials
-behind their back.
-
-And to the "unsuspecting userspace" point you dismissed earlier.
-Providing a dirfd to a lesser privileged process isn't horrendously
-dangerous right now. But with this change it sure is. For stuff like
-libpathrs or systemd's fdstore this change has immediate security
-implications.
+Regards,
+Siddharth.
 
