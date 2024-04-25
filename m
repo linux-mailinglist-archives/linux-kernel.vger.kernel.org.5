@@ -1,64 +1,70 @@
-Return-Path: <linux-kernel+bounces-158873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 473568B2611
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:12:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A22678B2617
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:14:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52E0DB249F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:12:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AE2A1F2255C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:14:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A7CA14D28C;
-	Thu, 25 Apr 2024 16:12:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A4E314D43A;
+	Thu, 25 Apr 2024 16:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g5/K6bIR"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ik7vF7AA"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08A6914C58E;
-	Thu, 25 Apr 2024 16:12:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFB014D282;
+	Thu, 25 Apr 2024 16:13:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714061559; cv=none; b=EqH5u8dpd6TDMyZMVVsVlb/mg1vf8rl1y5wnYxnHoOSz6/pbsWKJ1Lf9AVS1Egf5cKtTjv9bvwBbI/zcSJTBosvAnOsTrqd5Oqa1Uk3zWcW27Lj5ViLZ/XqaVLO8HnFmjxYXQPbP1g2ECcRYmcEqTAnf3nz2LK1rSnGVhcqAMYA=
+	t=1714061637; cv=none; b=G32xF0BMZVhrYQElWvwG+6RrN7jPeXmHQC/PlZQHmhC78nFv5Tch2lcpWek0D8oP36Ok9+ulfjpIj5V8T4WBvcJHg7Lmk42hfG+U97Pt0E78AfMgXX1H2874pUjwYfWjR4Do5A1fk/06sBao924sT0TKN7PfXCTA+kqb5RxM8l8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714061559; c=relaxed/simple;
-	bh=5NE/lyOaUfLlW/OASHe3DgI9W5o4P0QFA65CKeaSAiM=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=gFxfAEow8uxDRR402JXvdHNcoVriCX80pAVaDmijKPseYDm3CxgF35ouUfkQGWPjxNNPXTmkCD+c8Lz3yU3VdmSKjcAY3/cJWi+sqt3dTPrHQg4Vut/LkpSRoOsMoTZV7vuSrWhHH33CnXAA07CCUjabD2yKnW2syjJGKcYYk+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g5/K6bIR; arc=none smtp.client-ip=192.198.163.11
+	s=arc-20240116; t=1714061637; c=relaxed/simple;
+	bh=eLtrtiJAi4FDNby7Vd3QmuFgHx8HIqmusW8j3U4jF6E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VnIPNzCHjvaToBfdWlyJf+MNV32mg3Yoo4Ti/t6m491AwN1XRYtzi+/zWMz9kozk2PQjuj+eJDMt21fDrIqzWjwiBIKBelt57eqw2NA5n6f6nEKWNaNAneYUEQeHyQCvVoqDGylnfTcB9Isp8wpVrgwaxp+ua6JLwjvCqbUO670=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ik7vF7AA; arc=none smtp.client-ip=192.198.163.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714061557; x=1745597557;
-  h=message-id:date:mime-version:from:subject:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=5NE/lyOaUfLlW/OASHe3DgI9W5o4P0QFA65CKeaSAiM=;
-  b=g5/K6bIRKrGeq7LymE/tnim8X81Rp7a8IYeaNsldawIEWaiHj256paxo
-   dByl3UATZowu1RcoaosdbzsPNrRuMSWPP0RvxAkOs4W0PFjHNn+coT36y
-   995gkT52hH84oMdTxa+3oBaDA/Fl1i7Y7ORjxDtxqQI7590LlMPVA8XF7
-   laCTYY9uAIjMy23Sf/iV5PMuFRiy2r7Tg2j1C46a7SoZQjJfI/TNXja3w
-   RmOgxo1PzTTPgOVaxaU7ORFcx3sasypAG6SIWcPBbcNPdlFXDYXXjwFOg
-   7AFQJrqU3VVzmBeLtIlOnhSTF5TelebnZtmJru1kfwaaNLdfiJib5k1Vp
-   g==;
-X-CSE-ConnectionGUID: aWI2pbaNRriy95fzpqz8Lw==
-X-CSE-MsgGUID: vscR/ERlTXKA4RAyTWFVMA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="20376425"
+  t=1714061636; x=1745597636;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=eLtrtiJAi4FDNby7Vd3QmuFgHx8HIqmusW8j3U4jF6E=;
+  b=Ik7vF7AAgsNyxD5M95V6CPIQsbEHA9CILT6xtRFC9iaEsyPRU5UsggBh
+   LLs5SQsk0417tO3Zqxxr+hL2MCj4yGrI0ovIzVRs5YkYoJgGlYckiKRmw
+   5g1vskx6809BdA87yRny0vzUxFbKOgPk0rfrpmatoZaXwlJvaxInq5gQ2
+   DK6bWgRn9zRRn/vcqt3Z+8IsFqnnLdjjAQ2B+C9YuI6jsyS927d/xlUes
+   KXiV7TwoIQdAAUK5CxYak3I/lU1cThgn8Ouhx0vfgW3rc8IbaMShqOxm0
+   EIZ12ZnnoiJ09Cui+aw6UH4umqz3YoqBHB7Iug29SH5fJ/2U5ic2WQNS0
+   Q==;
+X-CSE-ConnectionGUID: 6RPntY8yRImmUHRnHoqYrg==
+X-CSE-MsgGUID: 3Im+XkFhQvCcJumvqZsNHw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="20451477"
 X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
-   d="scan'208";a="20376425"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 09:12:36 -0700
-X-CSE-ConnectionGUID: 55tzMgBXTLCWFo6GfzAnFw==
-X-CSE-MsgGUID: 1uyU9cEuQeOv5TAheGc1BQ==
+   d="scan'208";a="20451477"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 09:13:55 -0700
+X-CSE-ConnectionGUID: /kPodIciRMeXzmaoTEIePg==
+X-CSE-MsgGUID: EcJsFUZ9TMSFGj5p/O6djw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
-   d="scan'208";a="62607732"
-Received: from mhillikx-mobl.amr.corp.intel.com (HELO [10.212.81.51]) ([10.212.81.51])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 09:12:34 -0700
-Message-ID: <2f7f0dd1-14de-428f-94ce-fa03cce313fd@linux.intel.com>
-Date: Thu, 25 Apr 2024 11:12:33 -0500
+   d="scan'208";a="56069657"
+Received: from linux.intel.com ([10.54.29.200])
+  by orviesa002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 09:13:54 -0700
+Received: from [10.212.96.44] (kliang2-mobl1.ccr.corp.intel.com [10.212.96.44])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id 3F119206D89D;
+	Thu, 25 Apr 2024 09:13:52 -0700 (PDT)
+Message-ID: <6af2da05-cb47-46f7-b129-08463bc9469b@linux.intel.com>
+Date: Thu, 25 Apr 2024 12:13:50 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,63 +72,139 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 00/14] ASoC: Constify local snd_sof_dsp_ops
-To: Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org>
- <89f8f0be-2534-46c8-9058-cabea4f68568@linux.intel.com>
- <9d1eda85-32a0-4e53-86ca-ce3137439bd7@kernel.org>
- <d046d195-6fa3-4c52-bc5f-3e5e763bc692@linux.intel.com>
- <138ac465-1576-4e86-a05d-63f8acc6fb70@kernel.org>
- <3acfbe3c-8b83-4c40-83c2-437f963fd25a@linux.intel.com>
- <7490bce3-3bd6-4beb-b8be-d47a6b0a30f0@kernel.org>
- <eaa0c99a-3b41-4444-906c-d2f005d326b9@linux.intel.com>
- <aef907ab-1087-4f49-bea4-d43ee6cebb73@kernel.org>
- <735d6dbc-86e4-4747-9bd9-2574ead7d039@linux.intel.com>
- <65a5837d-36b3-41bd-b03f-d4f93b30d5c8@kernel.org>
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+To: Mingwei Zhang <mizhang@google.com>,
+ "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+Cc: Sean Christopherson <seanjc@google.com>, maobibo <maobibo@loongson.cn>,
+ Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
+ peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
+ jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com
+References: <ZiaX3H3YfrVh50cs@google.com>
+ <d8f3497b-9f63-e30e-0c63-253908d40ac2@loongson.cn>
+ <d980dd10-e4c4-4774-b107-77b320cec9f9@linux.intel.com>
+ <b5e97aa1-7683-4eff-e1e3-58ac98a8d719@loongson.cn>
+ <1ec7a21c-71d0-4f3e-9fa3-3de8ca0f7315@linux.intel.com>
+ <5279eabc-ca46-ee1b-b80d-9a511ba90a36@loongson.cn>
+ <CAL715WJK893gQd1m9CCAjz5OkxsRc5C4ZR7yJWJXbaGvCeZxQA@mail.gmail.com>
+ <b3868bf5-4e16-3435-c807-f484821fccc6@loongson.cn>
+ <CAL715W++maAt2Ujfvmu1pZKS4R5EmAPebTU_h9AB8aFbdLFrTQ@mail.gmail.com>
+ <f843298c-db08-4fde-9887-13de18d960ac@linux.intel.com>
+ <Zikeh2eGjwzDbytu@google.com>
+ <7834a811-4764-42aa-8198-55c4556d947b@linux.intel.com>
+ <CAL715WKh8VBJ-O50oqSnCqKPQo4Bor_aMnRZeS_TzJP3ja8-YQ@mail.gmail.com>
 Content-Language: en-US
-In-Reply-To: <65a5837d-36b3-41bd-b03f-d4f93b30d5c8@kernel.org>
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <CAL715WKh8VBJ-O50oqSnCqKPQo4Bor_aMnRZeS_TzJP3ja8-YQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
 
 
-On 4/23/24 11:06, Krzysztof Kozlowski wrote:
-> On 23/04/2024 17:57, Pierre-Louis Bossart wrote:
+On 2024-04-25 12:24 a.m., Mingwei Zhang wrote:
+> On Wed, Apr 24, 2024 at 8:56 PM Mi, Dapeng <dapeng1.mi@linux.intel.com> wrote:
 >>
->>> Are we talking about basic C now? Of course it does not mean that and I
->>> already explained what is the goal of this - the static or global memory
->>> in the driver can be moved to rodata.
 >>
->> the dsp_ops used by the Intel drivers cannot be moved to rodata in all
->> cases. the baseline is constant, all extensions for TGL+ are dynamically
->> allocated and modified.
+>> On 4/24/2024 11:00 PM, Sean Christopherson wrote:
+>>> On Wed, Apr 24, 2024, Dapeng Mi wrote:
+>>>> On 4/24/2024 1:02 AM, Mingwei Zhang wrote:
+>>>>>>> Maybe, (just maybe), it is possible to do PMU context switch at vcpu
+>>>>>>> boundary normally, but doing it at VM Enter/Exit boundary when host is
+>>>>>>> profiling KVM kernel module. So, dynamically adjusting PMU context
+>>>>>>> switch location could be an option.
+>>>>>> If there are two VMs with pmu enabled both, however host PMU is not
+>>>>>> enabled. PMU context switch should be done in vcpu thread sched-out path.
+>>>>>>
+>>>>>> If host pmu is used also, we can choose whether PMU switch should be
+>>>>>> done in vm exit path or vcpu thread sched-out path.
+>>>>>>
+>>>>> host PMU is always enabled, ie., Linux currently does not support KVM
+>>>>> PMU running standalone. I guess what you mean is there are no active
+>>>>> perf_events on the host side. Allowing a PMU context switch drifting
+>>>>> from vm-enter/exit boundary to vcpu loop boundary by checking host
+>>>>> side events might be a good option. We can keep the discussion, but I
+>>>>> won't propose that in v2.
+>>>> I suspect if it's really doable to do this deferring. This still makes host
+>>>> lose the most of capability to profile KVM. Per my understanding, most of
+>>>> KVM overhead happens in the vcpu loop, exactly speaking in VM-exit handling.
+>>>> We have no idea when host want to create perf event to profile KVM, it could
+>>>> be at any time.
+>>> No, the idea is that KVM will load host PMU state asap, but only when host PMU
+>>> state actually needs to be loaded, i.e. only when there are relevant host events.
+>>>
+>>> If there are no host perf events, KVM keeps guest PMU state loaded for the entire
+>>> KVM_RUN loop, i.e. provides optimal behavior for the guest.  But if a host perf
+>>> events exists (or comes along), the KVM context switches PMU at VM-Enter/VM-Exit,
+>>> i.e. lets the host profile almost all of KVM, at the cost of a degraded experience
+>>> for the guest while host perf events are active.
+>>
+>> I see. So KVM needs to provide a callback which needs to be called in
+>> the IPI handler. The KVM callback needs to be called to switch PMU state
+>> before perf really enabling host event and touching PMU MSRs. And only
+>> the perf event with exclude_guest attribute is allowed to create on
+>> host. Thanks.
 > 
-> Yes and these drivers will not benefit. Did I changed them here? I think
-> I didn't, because then it would not compile.
+> Do we really need a KVM callback? I think that is one option.
+> 
+> Immediately after VMEXIT, KVM will check whether there are "host perf
+> events". If so, do the PMU context switch immediately. Otherwise, keep
+> deferring the context switch to the end of vPMU loop.
+> 
+> Detecting if there are "host perf events" would be interesting. The
+> "host perf events" refer to the perf_events on the host that are
+> active and assigned with HW counters and that are saved when context
+> switching to the guest PMU. I think getting those events could be done
+> by fetching the bitmaps in cpuc.
 
-So we do agree that's there's no benefit on any Intel platform released
-in the last 4 years...
+The cpuc is ARCH specific structure. I don't think it can be get in the
+generic code. You probably have to implement ARCH specific functions to
+fetch the bitmaps. It probably won't worth it.
 
-The CI tests [1] don't show any regression, nothing was broken on our
-devices so I guess there's no further objection.
+You may check the pinned_groups and flexible_groups to understand if
+there are host perf events which may be scheduled when VM-exit. But it
+will not tell the idx of the counters which can only be got when the
+host event is really scheduled.
 
-Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> I have to look into the details. But
+> at the time of VMEXIT, kvm should already have that information, so it
+> can immediately decide whether to do the PMU context switch or not.
+> 
+> oh, but when the control is executing within the run loop, a
+> host-level profiling starts, say 'perf record -a ...', it will
+> generate an IPI to all CPUs. Maybe that's when we need a callback so
+> the KVM guest PMU context gets preempted for the host-level profiling.
+> Gah..
+> 
+> hmm, not a fan of that. That means the host can poke the guest PMU
+> context at any time and cause higher overhead. But I admit it is much
+> better than the current approach.
+> 
+> The only thing is that: any command like 'perf record/stat -a' shot in
+> dark corners of the host can preempt guest PMUs of _all_ running VMs.
+> So, to alleviate that, maybe a module parameter that disables this
+> "preemption" is possible? This should fit scenarios where we don't
+> want guest PMU to be preempted outside of the vCPU loop?
+> 
 
-[1] https://github.com/thesofproject/linux/pull/4949
+It should not happen. For the current implementation, perf rejects all
+the !exclude_guest system-wide event creation if a guest with the vPMU
+is running.
+However, it's possible to create an exclude_guest system-wide event at
+any time. KVM cannot use the information from the VM-entry to decide if
+there will be active perf events in the VM-exit.
+
+The perf_guest_exit() will reload the host state. It's impossible to
+save the guest state after that. We may need a KVM callback. So perf can
+tell KVM whether to save the guest state before perf reloads the host state.
+
+Thanks,
+Kan
+>>
+>>
+>>>
+>>> My original sketch: https://lore.kernel.org/all/ZR3eNtP5IVAHeFNC@googlecom
+> 
 
