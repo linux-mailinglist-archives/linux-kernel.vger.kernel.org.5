@@ -1,114 +1,104 @@
-Return-Path: <linux-kernel+bounces-159197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CF498B2A8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:14:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91D2B8B2A8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:14:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60AD11C21B7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:14:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 325281F21FC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5982A155740;
-	Thu, 25 Apr 2024 21:13:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1ED815575C;
+	Thu, 25 Apr 2024 21:14:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="SkeZfCMz"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kEEX3I+M"
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06572153821;
-	Thu, 25 Apr 2024 21:13:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BE4A15250D
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 21:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714079600; cv=none; b=r962CDKLMC2NASYRcNj1S/xDaGn1zLJx52CNXhOmEHnwiesfxGGCBTgvaUveFN3aJs2hg0gRebjErJEXQvA+JWl72RG+yq61dzJ1NOQqdP+4WoGQ6d5hFCvy8geTF/yGldlh859IDVgSXpkr++hBqdbZ/sc4upToNOUjp2DbUHI=
+	t=1714079643; cv=none; b=ay8scXghwZSwXy59c/XaehBjnbkxULhk82vuOHt5EjPe3mv1GXqC8OvoIV7MphpCdyi3XC1OVHQKLTVWLmfMMj+2gePK6Fbr592uahPnMyhy8q785NF7S/ZyPkdgO3qGuJdbmIDfX4nycvRl3gIPuwf0FSAhuZ7ZTbHotlDjFWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714079600; c=relaxed/simple;
-	bh=yOKS8YZV/ybtzb2iS5zih1gwklhOMr+sQWecVjYkRXo=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tjJWn8FZWhblGfwSdRzc0545xDjr4ZgpNI0pYs40YAqdcwQrM1BtQZJKmDXnsTUSpj+iTwIm4Hf0YsFjXIk28TCZcaLX6mB7I76lEqALsTy2VVNcXxGFQgyyzvfG3OObislrUOtMZzk81AVfDtIXeTmIbc29xC6bCdmpQ0KoT8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=SkeZfCMz; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43PLCwLt047734;
-	Thu, 25 Apr 2024 16:12:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714079578;
-	bh=FBAmrRWmRQ6wUPzz5WQOYydNI4nfgOmhde5mQvluM/E=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=SkeZfCMzMvtJOEZAww70XLZMZ0di0a+IXruZPZ/eaOBEZq5KJm5189q4Sr9H10yM/
-	 yY7m5aUeZOfyVzn5Op/oONjD9BKMba6Obm+eeZno99dWMotKxpSWmpXkK7serciGX/
-	 sKAiepMxcOBuf4o9LIHjL8oP5Oj0U8ZVdwCGFsRI=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43PLCwPE031324
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 25 Apr 2024 16:12:58 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 25
- Apr 2024 16:12:58 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 25 Apr 2024 16:12:58 -0500
-Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (a0497641-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.36])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43PLCYHI038718;
-	Thu, 25 Apr 2024 16:12:55 -0500
-From: Neha Malcom Francis <n-francis@ti.com>
-To: <robh@kernel.org>, <conor+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <vigneshr@ti.com>, <nm@ti.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kristo@kernel.org>, <u-kumar1@ti.com>,
-        <n-francis@ti.com>
-Subject: [PATCH v4 6/6] arm64: dts: ti: k3-j7*-main: Add bootph-pre-ram to main_esm
-Date: Fri, 26 Apr 2024 02:42:33 +0530
-Message-ID: <20240425211233.2006233-7-n-francis@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240425211233.2006233-1-n-francis@ti.com>
-References: <20240425211233.2006233-1-n-francis@ti.com>
+	s=arc-20240116; t=1714079643; c=relaxed/simple;
+	bh=AeG56uVFyyntK5nYKOlngFLCNZ/j6pt77ZKNiGCZxgc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ynk1xiL48zjHEs6RWVkLxe6cqLjUyPIz8thO3CvjdHNPZYtJo2KUtC9+0E5WtILXV/FoJ6j9WGyYL9+rB+cR8HnzjNG+OEipSAARjsL0UiYnAuS6m09MugR4HN1wrYUExTKcl+jLwCdrzpNxzBmNQwFkP1RVRxuXmwye6l68ADM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kEEX3I+M; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b5ffd984-4031-4a8a-adbc-75a1e1dfe765@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714079639;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J76MnMVIJlI0gv+q1JeGEsHaLLINN3L3MN1gfgnkVec=;
+	b=kEEX3I+MfQAQorpZQKFqFgOoyVx5v5JiEspZso99d7xz1SnkdI7qoymNr1/OVt5hZKi6bI
+	w+sRc96P7rI1XkTvAy/AGrQGtyl/mZb4CN64O6JnK+wX34E12JhxF0lbfkt3iXMFErca2/
+	qyTbpUP7TjNEdfwA5l1aXqEkapKlPAU=
+Date: Fri, 26 Apr 2024 05:13:43 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Subject: Re: [v1,1/3] drm/panel: ili9341: Correct use of device property APIs
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+ Randy Dunlap <rdunlap@infradead.org>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Jessica Zhang <quic_jesszhan@quicinc.com>,
+ Sam Ravnborg <sam@ravnborg.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+References: <20240425142706.2440113-2-andriy.shevchenko@linux.intel.com>
+ <c2d41916-0b6c-43b5-98eb-514eb0511f84@linux.dev>
+ <ce6a480d-80b3-46b0-a32d-26bc6480d02f@linux.dev>
+ <ZiqrLfezhns4UycR@smile.fi.intel.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <ZiqrLfezhns4UycR@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Add bootph-pre-ram to main_esm as R5 bootloader configures MAIN domain
-watchdog interrupts to generate the ESM pin events.
+Hi,
 
-Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
----
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 1 +
- arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 1 +
- 2 files changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-index b24a6333563a..30ec36ce4ce7 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-@@ -1565,5 +1565,6 @@ main_esm: esm@700000 {
- 		compatible = "ti,j721e-esm";
- 		reg = <0x0 0x700000 0x0 0x1000>;
- 		ti,esm-pins = <656>, <657>;
-+		bootph-pre-ram;
- 	};
- };
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-index 0dd5005b34aa..a5dc1e1bc1a9 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-@@ -2957,5 +2957,6 @@ main_esm: esm@700000 {
- 		compatible = "ti,j721e-esm";
- 		reg = <0x0 0x700000 0x0 0x1000>;
- 		ti,esm-pins = <344>, <345>;
-+		bootph-pre-ram;
- 	};
- };
+On 2024/4/26 03:12, Andy Shevchenko wrote:
+> On Fri, Apr 26, 2024 at 02:53:22AM +0800, Sui Jingfeng wrote:
+>> On 2024/4/26 02:08, Sui Jingfeng wrote:
+> Are you speaking to yourself? I'm totally lost.
+>
+> Please, if you want to give a constructive feedback, try to understand
+> the topic from different aspects and then clearly express it.
+>
+
+OK,
+
+The previous email analysis the non-DT cases exhaustively, this email intend to
+demonstrate the more frequently use case.
+
+That is, in the *DT('OF')* based systems,
+device_get_match_data() is completely equivalent to 
+of_device_get_match_data().
+So the net results of applying this patch are "no gains and no lost".
+
+Things will become clear if we divide the whole problem into two cases(DT and non-DT)
+to discuss, that's it. That's all I can tell.
+
+Sorry about my broken written and sorry for the noise. Thanks for your education in
+the past.
+
 -- 
-2.34.1
+Best regards,
+Sui
 
 
