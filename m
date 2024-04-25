@@ -1,109 +1,181 @@
-Return-Path: <linux-kernel+bounces-158550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97EE98B21ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:49:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99E308B21F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:51:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9646B2716E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:49:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE0201C20AFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0C81494D3;
-	Thu, 25 Apr 2024 12:49:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58CDF1494D5;
+	Thu, 25 Apr 2024 12:51:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="qTgf5U0F"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SHm59Osq"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E119827715;
-	Thu, 25 Apr 2024 12:49:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B521494A8
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 12:51:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714049386; cv=none; b=Vhtob1+9dKZt0fZN+iNBSR1tZGPg9nC2a1dq12C90H1SdzSV8t739xh7KF0ZrSl0PIXqYkiMhjfgMb4F+QJRcUQItjYmSzopYoRWF7iqzC5W52syoK4Oy3YqAZYlKolhlw8LBnFahvBQwyafRgXIgSNrczIuWolBidyLHis+f9Q=
+	t=1714049505; cv=none; b=YjsK1pme7ONNhSejj49pEuLVdFmsBY/FUcjYu1UjctUNsbbByM9hcweLD9D8fIiB7ztYIvPs29urMhk+iACWz3ddNtFgkQqw62fluTDtnyYbfJcaDVFwAxmgq1yRQBHCBGp9KdswTFKMTimeTAMrdpxMhl/vEvdCD7J6kLBkLU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714049386; c=relaxed/simple;
-	bh=Q0rC6Dg58DuHJs63AQMz3PHeklpFh0kC3hGfFEJpx5g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WLtN5nRoqRsiu+u01vmm22xxUX98rkaaXpp3dDtH6IQfdCY9uPPTZbpbCGP0G+vWdGMTuqsK7RR10utWFbfe6JukB8K5MVhky9F1qiYTEQwZgaHd0L9hh1L0+9IdLDx5jktbt6xArMixmweI7JdiUd1NX7PZzVoW4Uz0LNbKmFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=qTgf5U0F; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=qG/+pHxKsF0EjW0aqfIbxlagHCNmLhwnFQVaN8EkrzI=; b=qTgf5U0FU8QWZno94l4Qit5vhd
-	2gOVOZHD/qrfAxf9yqFl/Gui9Xh8UKSAv+qlpXToy+NUlp8TEdhg11ZE4fr/scCGtsLssCnNF9WGm
-	BHytA9YXTYwqGGn7WL5Y7QimDOeh5bPA8EA1V53qxsh83fWMsARGbgKwoe83TAYeYY8w=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rzyXa-00DywX-3U; Thu, 25 Apr 2024 14:49:30 +0200
-Date: Thu, 25 Apr 2024 14:49:30 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: MD Danish Anwar <danishanwar@ti.com>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Jan Kiszka <jan.kiszka@siemens.com>,
-	Diogo Ivo <diogo.ivo@siemens.com>, Paolo Abeni <pabeni@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, srk@ti.com,
-	Vignesh Raghavendra <vigneshr@ti.com>, r-gunasekaran@ti.com,
-	Roger Quadros <rogerq@kernel.org>
-Subject: Re: [PATCH net-next] net: ti: icssg_prueth: Add SW TX / RX
- Coalescing based on hrtimers
-Message-ID: <2a4bea87-04bf-4373-8220-69650b435710@lunn.ch>
-References: <20240424091823.1814136-1-danishanwar@ti.com>
- <98588a89-4970-4d75-be8a-ac410d77789f@lunn.ch>
- <1c5809f2-b69d-48d1-8c27-285f164ebeb8@ti.com>
+	s=arc-20240116; t=1714049505; c=relaxed/simple;
+	bh=uW0/rRa+VKsU1GkQJxdpA8DdFvn7tcaJIztIHYDoqEo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Lg/6UPJoydjl5CMKppq4i577iUbeNYxxTiWk03zuzWHpOq/o1dNgghWoGO6kmWVTM1L5EkGyujrMYaKxMixd0vNrh8i0qh+NfRIPgCdQxQAXtrhptbu13F5/XhiqBiJm5rCRkInvk53q6vzg/AJYmLtFMgm1rbgobjmLP9WFYms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SHm59Osq; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714049502;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=krmJ2ViUMfg+AINQ1obswbRFRThcZ9ZrIRj03SWk/yI=;
+	b=SHm59Osqy4gcX79arnphjQME3wm1jfXsk75iECFgDCSLwKP69htawMkqu2Sv67/j6JIAJM
+	4djy2uz6jdPIBVbCIEjLzxO59hIA0cprEJQ5X5RJyB8xlfMh34jPZm9uisguM+9ni/Rvj9
+	Tv04q4Vu6BjfPYlZl5AF5YJ0KuSoBRA=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-158-uqk8nDR-OyaymrRBcSgEYA-1; Thu, 25 Apr 2024 08:51:41 -0400
+X-MC-Unique: uqk8nDR-OyaymrRBcSgEYA-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-41a370b6acdso4281565e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 05:51:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714049500; x=1714654300;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=krmJ2ViUMfg+AINQ1obswbRFRThcZ9ZrIRj03SWk/yI=;
+        b=lUqctU2PVRaq5QuGbGTAncgT5zxBua27ZUV9Ebx2rJZV95Z+RGDM482b9cBkZHzsGS
+         Ws91NcqR37ywJq/JZVraY2z24pOb6tf+8srOFQjXD0zTtLxLij2mIkZgqqJUaM6KPDM4
+         k9l/7O2m3tMPYbMsRlqZXdMWKm+8m460awSz0+PDd/84zjs/waTC3qAU4zlDyDfzgmy6
+         zgBa30tc1RUr7r8rJPDtCnyEQ7BZOMurdSP7dJplhHAlmbq8CMEdcGXd/rgk3WXQ6NLL
+         AROEfHr6/Q7vFlSt6OaiVFZFLqB5VKM6ep2a9Cx5GJB20jXfDbhwRIhgUA6OtaNY4U6l
+         ALPw==
+X-Gm-Message-State: AOJu0YyCoB+F0rPi9LHQTel8rTEiXdnRU4cLyUNDjlYxpoDj+bJ6I5Jp
+	7yOoNG+mBAdhPxSNYCz1kLZW07TKSdG6yRX+88l/D7P/KxDr9ZBbFpSnZUdeFpD9c4DQvZjzJ8W
+	xmqERA896M96M2JA3YSVzVvWH0oyFCkaF+Y8H9X+ERVyliE5p5MJOhkobugWcmA==
+X-Received: by 2002:a05:600c:3b07:b0:418:a2ce:77ae with SMTP id m7-20020a05600c3b0700b00418a2ce77aemr3515970wms.27.1714049500319;
+        Thu, 25 Apr 2024 05:51:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGaJwcXDCrGcd7ftGYfOCokMw95T3AavJU6hlO4mLqIqCrKVVBEeKvQJbaF+RS72KWbICjGXw==
+X-Received: by 2002:a05:600c:3b07:b0:418:a2ce:77ae with SMTP id m7-20020a05600c3b0700b00418a2ce77aemr3515961wms.27.1714049499916;
+        Thu, 25 Apr 2024 05:51:39 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c719:8200:487a:3426:a17e:d7b7? (p200300cbc7198200487a3426a17ed7b7.dip0.t-ipconnect.de. [2003:cb:c719:8200:487a:3426:a17e:d7b7])
+        by smtp.gmail.com with ESMTPSA id h19-20020a05600c351300b00414659ba8c2sm27546670wmq.37.2024.04.25.05.51.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Apr 2024 05:51:39 -0700 (PDT)
+Message-ID: <4ec6eab0-9e8e-4381-97e6-927f5ee55e8e@redhat.com>
+Date: Thu, 25 Apr 2024 14:51:38 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1c5809f2-b69d-48d1-8c27-285f164ebeb8@ti.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH linux-next] ksm: add ksm involvement information for each
+ process
+To: xu.xin16@zte.com.cn, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ shr@devkernel.io
+References: <202404252049158858OT9IpNshMmQC1itDY1B1@zte.com.cn>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <202404252049158858OT9IpNshMmQC1itDY1B1@zte.com.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> I did some benchmarking today with,
-> 	1. Default driver (without any IRQ coalescing enabled)
-> 	2. IRQ Coalescing (With this patch)
-> 	3. Default IRQ Coalescing (Suggested by you in the above patch)
+On 25.04.24 14:49, xu.xin16@zte.com.cn wrote:
+> From: xu xin <xu.xin16@zte.com.cn>
 > 
-> I have pasted the full logs at [1].
+> In /proc/<pid>/ksm_stat, Add two extra ksm involvement items including
+> MMF_VM_MERGEABLE and MMF_VM_MERGE_ANY. It helps administrators to
+> better know the system's KSM behavior at process level.
 > 
-> Below are the final numbers,
+> MMF_VM_MERGEABLE: yes/no
+> 	whether a process'mm is added by madvise() into the candidate list
+> 	of KSM or not.
+> MMF_VM_MERGE_ANY: yes/no
+> 	whether a process'mm is added by prctl at process level into the
+> candidate list of KSM or not.
 > 
-> ==============================================================
-> Method                  | Tput_TX | CPU_TX | Tput_RX | CPU_RX |
-> ==============================================================
-> Default Driver           943 Mbps    31%      517 Mbps  38%   |
-> IRQ Coalescing (Patch)   943 Mbps    28%      518 Mbps  25%   |
-> Default IRQ Coalescing   942 Mbps    32%      521 Mbps  25%   |
-> ==============================================================
+> Signed-off-by: xu xin <xu.xin16@zte.com.cn>
+> ---
+>   fs/proc/base.c | 4 ++++
+>   1 file changed, 4 insertions(+)
 > 
-> I see that the performance number is more or less same for all three
-> methods only the CPU load seems to be varying. The IRQ coalescing patch
-> (using hrtimer) seems to improve the cpu load by 3-4% in TX and 13% in
-> RX. Whereas the default method that you have suggested doesn't give any
-> improvemnet in tx however cpu load improves in RX with the same amount
-> as method 2.
-> 
-> Please let me know if this patch is OK to you based on the benchmarking?
+> diff --git a/fs/proc/base.c b/fs/proc/base.c
+> index 18550c071d71..421594b8510c 100644
+> --- a/fs/proc/base.c
+> +++ b/fs/proc/base.c
+> @@ -3217,6 +3217,10 @@ static int proc_pid_ksm_stat(struct seq_file *m, struct pid_namespace *ns,
+>   		seq_printf(m, "ksm_zero_pages %lu\n", mm->ksm_zero_pages);
+>   		seq_printf(m, "ksm_merging_pages %lu\n", mm->ksm_merging_pages);
+>   		seq_printf(m, "ksm_process_profit %ld\n", ksm_process_profit(mm));
+> +		seq_printf(m, "MMF_VM_MERGEABLE: %s\n",
+> +				test_bit(MMF_VM_MERGEABLE, &mm->flags) ? "yes" : "no");
+> +		seq_printf(m, "MMF_VM_MERGE_ANY: %s\n",
+> +				test_bit(MMF_VM_MERGE_ANY, &mm->flags) ? "yes" : "no");
 
-It is good to include benchmark results in patches which claim to
-improve performance. Please add the default and the patch version
-results to the commit message.
+Not sure if exposing these internal flag names is appropriate. Better 
+describe what they do.
 
-The numbers show your more complex version does bring benefits, so it
-is O.K. to use it. I just wounder how many other drivers would benefit
-from a one line change.
+-- 
+Cheers,
 
-	Andrew
+David / dhildenb
+
 
