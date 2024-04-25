@@ -1,47 +1,80 @@
-Return-Path: <linux-kernel+bounces-158126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158127-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A4888B1BE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:29:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C54DB8B1BE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:29:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1E9E1F25105
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:29:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88DEE286516
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:29:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A1E6D1A0;
-	Thu, 25 Apr 2024 07:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2290A6CDC0;
+	Thu, 25 Apr 2024 07:29:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eao7xs7e"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D8vhQrod"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22E776CDB9
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0E0134A8
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:29:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714030145; cv=none; b=B/oiyL0gNEZ8pyJZ0R6eTLIFMwriKVE27Qmi3p+kysduaB8/Bup3UKbfTXhTbCztRwlU0ZAEm2enuAbGPiruNjRY/YvIUq71JsP2SYqAR3DNwJchNT0b6QYU1qufMHZn/4Rf4gMLNMG1nLvq/uC4mZHdbvgTzZu2B24PZysUi1o=
+	t=1714030182; cv=none; b=gle5+KeTJlYZyCETjiERcXSc73FReHNhOcmFqsdQE00+k5m7wSymIGtlL1MWGtMhlNlKE9ISg8Z2LDgWejL2q35ot+ef2AdVCL29e4p0b7E5zWqzo1YZ6q5QFozXXed1gr2ry7jBoBuuhAUAEBLM2yzSz9zjBjBEp6CUdjoaPRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714030145; c=relaxed/simple;
-	bh=TMu1jwfsQ/Oo8+E5Wa0QXw/UAq3TJMY5lLS+uU0OvlU=;
+	s=arc-20240116; t=1714030182; c=relaxed/simple;
+	bh=n4yOjaqQMfW6MWUI1B5lXeWOVGs/OvJdf1OZqJ+b788=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=setJqVibSPW/4CHdvJz5OFs9FnmXkeuVvXoR8d7Z+RuY2hv5A1qpTczDzVL+o8SFJJHPDq71UYYkztiWquG2ceNuInF1/KCt6gmAK8RkmtUtnRB1T1V86vNc0+Cq3T7CeC+5WsgMfpo2P183+VcQ1aAub1e6Qpi4Rh1A/V5i/Vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eao7xs7e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04D5BC113CC;
-	Thu, 25 Apr 2024 07:29:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714030144;
-	bh=TMu1jwfsQ/Oo8+E5Wa0QXw/UAq3TJMY5lLS+uU0OvlU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=eao7xs7eNO2j399czeIB2LCNOIZelmdeBPAPqbI/lRYrpPgvFZ0ItANB/zruhYRPb
-	 CcF/KlcJ7KrXW4I+wA5XbEv2ldnuqTFQpMdrlVzNqTg1xnUSsnyHGgWnuTp65BM9i+
-	 iv/bl5Kd99oLtq7Lbr2M8y/RXKjq5cMZlegMnYhrM4FTuppHb2YDf/1AQE7HyoTMaO
-	 TehQPpKLVZaSCMQntuIei7apafd6It+A1VpKBhqR8AOjy6l7dmaYxfv6MUjtpHBwaJ
-	 m7kycPHcc5RyQiPMQh8bUsusjmSBQd9EPKVSeeg56OLOX9ns98ai4p+uvMOCkDGSuK
-	 w+MTBD8xE9o2w==
-Message-ID: <49a4cc15-299f-432c-85c7-ab1b1daaaad1@kernel.org>
-Date: Thu, 25 Apr 2024 15:29:00 +0800
+	 In-Reply-To:Content-Type; b=u4NeFpQa4xX+gXsb7lREc5jbeNiHPfiiMHJRoYalXS8X0t/gGh1LQBrAv3PkAhNllwCoIAyeBjJnP3RRZOcO784KIGYyAwdtXjW6c4/t+TPUYhldRLcvoiOkSf4B/rXcz8ALLoGf5X0Nu9Q9pJbYu54cKq/TarkKCw2+gSxehDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=D8vhQrod; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714030179;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=RMYQGBBYMEvS6EmN6ufrhtWPqR1g4JyqmTGbCXmfH3k=;
+	b=D8vhQrodpMZgx00OFLqncNBOnYP/lDffjpAxydz9H8czO8+Eq/6oqolHtgvAHGxpATeBBV
+	xq1aKR5B7BqdGy/bdTyBJDoxEyg1E6AkiIYHAgo7bI+hOpgB2avJfF+58CcMmKBDMD2YKw
+	p0UsMDcoufk7e/30WtkL+H/OzNGqFwo=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-213-gpPghExLNV20YhTHlIf1iw-1; Thu, 25 Apr 2024 03:29:37 -0400
+X-MC-Unique: gpPghExLNV20YhTHlIf1iw-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-41552c04845so3446815e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:29:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714030176; x=1714634976;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RMYQGBBYMEvS6EmN6ufrhtWPqR1g4JyqmTGbCXmfH3k=;
+        b=Z/FR+Hwf7jfb9TX0Fo+VnULMbYjjJ5Mr2LRSujIHOAwYnW1PWupAWyYeU0qdULbEp4
+         HUm7Fc2cQYpXOxh/n/mmy3BsYY06KJZDGFIDEl8Q7LjH/ha+5psYzlrPEDwMMF5xPeGi
+         ndt9babB106K9/+3Ayi5cW8RKztdmQl+H3J0JvT9rGxebC/M4WiX1W3ia9cLL1rqmfhZ
+         ed/Zv7nExMqh48iU29mHC+NfambTBEans4f4gaZlxLcITG0JSiULo2BDnH4MrqIVogG/
+         mYRXgyYxOD8HVdgLywmOTJJ4IeFJV06F2ktoCup83EP2jue8/VzgZlFFv8Mqb0eY1ZxI
+         +EZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX94JCcXW6AkUBCNJ/U1y2OpuMlKob0ulRAln/l6AnHoIznLzNdF2IwnUgx5IfXYdZSJLDzuxx4RjgH2xcZSBDLGFhvVVIv+xYwiuvY
+X-Gm-Message-State: AOJu0YzBI6nikDUdO/wXwnJEEbu8gWAteC977wF+8mouxFpx/7YFjpDQ
+	DwTSsKl9YIbcDAeOlbLgBYwRzrJwjx5beIRYb3aQwxrx3FKWyZWITopMTVpY+wO0ekWs+5OkIX2
+	U2sVQq/TbU9AXYo0mtDW1iGrUSGDc0/R98oMsyYkNr/hEx1986qUIilQEdeWiIA==
+X-Received: by 2002:a05:600c:4ec7:b0:418:ef3:6cfb with SMTP id g7-20020a05600c4ec700b004180ef36cfbmr3715352wmq.26.1714030176552;
+        Thu, 25 Apr 2024 00:29:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGcySYjBe6iLrFDrsovNekMi7rOefapvteuYB5+bzhxPm+ObCUpBQE40Dwe70crOQqu8ZsEsQ==
+X-Received: by 2002:a05:600c:4ec7:b0:418:ef3:6cfb with SMTP id g7-20020a05600c4ec700b004180ef36cfbmr3715332wmq.26.1714030176133;
+        Thu, 25 Apr 2024 00:29:36 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c719:8200:487a:3426:a17e:d7b7? (p200300cbc7198200487a3426a17ed7b7.dip0.t-ipconnect.de. [2003:cb:c719:8200:487a:3426:a17e:d7b7])
+        by smtp.gmail.com with ESMTPSA id p9-20020a05600c1d8900b0041b13c5c9f9sm3951658wms.17.2024.04.25.00.29.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Apr 2024 00:29:35 -0700 (PDT)
+Message-ID: <38205f34-88ee-4a67-bffb-ec16e9edf7ca@redhat.com>
+Date: Thu, 25 Apr 2024 09:29:34 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,228 +82,146 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH 3/3] f2fs: fix false alarm on invalid block
- address
-To: Juhyung Park <qkrwngud825@gmail.com>, Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-References: <20240409203411.1885121-1-jaegeuk@kernel.org>
- <20240409203411.1885121-3-jaegeuk@kernel.org>
- <050a93dc-d9a8-44bd-9a83-83718e95f04d@kernel.org>
- <Zhmf4klcOr4eplin@google.com>
- <CAD14+f0Scnc1GTjqR1izHqPerCqgHsLMR9mfKocUxw_4hyZ+Zg@mail.gmail.com>
+Subject: Re: [PATCH v3] mm/rmap: do not add fully unmapped large folio to
+ deferred split list
+To: Lance Yang <ioworker0@gmail.com>
+Cc: Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Yang Shi <shy828301@gmail.com>, Ryan Roberts <ryan.roberts@arm.com>,
+ Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org
+References: <20240424224614.477221-1-zi.yan@sent.com>
+ <CAK1f24mHG+CZL38CAp++9urMkciWqd0wAgyFi+QjfCTAVk3Rew@mail.gmail.com>
+ <5e6bf4c6-c4a5-4be3-b203-ecc77ba4e5d9@redhat.com>
+ <CAK1f24n3SBcMm=VrKEcMSn3VQ6qMpjE=Lg3fh3_QxFt8wtaSWQ@mail.gmail.com>
 Content-Language: en-US
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <CAD14+f0Scnc1GTjqR1izHqPerCqgHsLMR9mfKocUxw_4hyZ+Zg@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CAK1f24n3SBcMm=VrKEcMSn3VQ6qMpjE=Lg3fh3_QxFt8wtaSWQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 2024/4/19 18:27, Juhyung Park wrote:
-> On Sat, Apr 13, 2024 at 5:57 AM Jaegeuk Kim <jaegeuk@kernel.org> wrote:
+On 25.04.24 09:27, Lance Yang wrote:
+> On Thu, Apr 25, 2024 at 3:21 PM David Hildenbrand <david@redhat.com> wrote:
 >>
->> On 04/11, Chao Yu wrote:
->>> On 2024/4/10 4:34, Jaegeuk Kim wrote:
->>>> f2fs_ra_meta_pages can try to read ahead on invalid block address which is
->>>> not the corruption case.
+>> On 25.04.24 05:45, Lance Yang wrote:
+>>> Hey Zi,
 >>>
->>> In which case we will read ahead invalid meta pages? recovery w/ META_POR?
-> 
-> In my case, it seems like it's META_SIT, and it's triggered right after mount.
-
-Ah, I see, actually it hits at this case, thanks for the information.
-
-Thanks,
-
-> fsck detects invalid_blkaddr, and when the kernel mounts it, it
-> immediately flags invalid_blkaddr again:
-> 
-> [    6.333498] init: [libfs_mgr] Running /system/bin/fsck.f2fs -a -c
-> 10000 --debug-cache /dev/block/sda13
-> [    6.337671] fsck.f2fs: Info: Fix the reported corruption.
-> [    6.337947] fsck.f2fs: Info: not exist /proc/version!
-> [    6.338010] fsck.f2fs: Info: can't find /sys, assuming normal block device
-> [    6.338294] fsck.f2fs: Info: MKFS version
-> [    6.338319] fsck.f2fs:   "5.10.160-android12-9-ge5cfec41c8e2"
-> [    6.338366] fsck.f2fs: Info: FSCK version
-> [    6.338380] fsck.f2fs:   from "5.10-arter97"
-> [    6.338393] fsck.f2fs:     to "5.10-arter97"
-> [    6.338414] fsck.f2fs: Info: superblock features = 1499 :  encrypt
-> verity extra_attr project_quota quota_ino casefold
-> [    6.338429] fsck.f2fs: Info: superblock encrypt level = 0, salt =
-> 00000000000000000000000000000000
-> [    6.338442] fsck.f2fs: Info: checkpoint stop reason: shutdown(180)
-> [    6.338455] fsck.f2fs: Info: fs errors: invalid_blkaddr
-> [    6.338468] fsck.f2fs: Info: Segments per section = 1
-> [    6.338480] fsck.f2fs: Info: Sections per zone = 1
-> [    6.338492] fsck.f2fs: Info: total FS sectors = 58971571 (230357 MB)
-> [    6.340599] fsck.f2fs: Info: CKPT version = 2b7e3b29
-> [    6.340620] fsck.f2fs: Info: version timestamp cur: 19789296, prev: 18407008
-> [    6.677041] fsck.f2fs: Info: checkpoint state = 46 :  crc
-> compacted_summary orphan_inodes sudden-power-off
-> [    6.677052] fsck.f2fs: [FSCK] Check node 1 / 712937 (0.00%)
-> [    8.997922] fsck.f2fs: [FSCK] Check node 71294 / 712937 (10.00%)
-> [   10.629205] fsck.f2fs: [FSCK] Check node 142587 / 712937 (20.00%)
-> [   12.278186] fsck.f2fs: [FSCK] Check node 213880 / 712937 (30.00%)
-> [   13.768177] fsck.f2fs: [FSCK] Check node 285173 / 712937 (40.00%)
-> [   17.446971] fsck.f2fs: [FSCK] Check node 356466 / 712937 (50.00%)
-> [   19.891623] fsck.f2fs: [FSCK] Check node 427759 / 712937 (60.00%)
-> [   23.251327] fsck.f2fs: [FSCK] Check node 499052 / 712937 (70.00%)
-> [   28.493457] fsck.f2fs: [FSCK] Check node 570345 / 712937 (80.00%)
-> [   29.640800] fsck.f2fs: [FSCK] Check node 641638 / 712937 (90.00%)
-> [   30.718347] fsck.f2fs: [FSCK] Check node 712931 / 712937 (100.00%)
-> [   30.724176] fsck.f2fs:
-> [   30.737160] fsck.f2fs: [FSCK] Max image size: 167506 MB, Free space: 62850 MB
-> [   30.737164] fsck.f2fs: [FSCK] Unreachable nat entries
->           [Ok..] [0x0]
-> [   30.737638] fsck.f2fs: [FSCK] SIT valid block bitmap checking
->           [Ok..]
-> [   30.737640] fsck.f2fs: [FSCK] Hard link checking for regular file
->           [Ok..] [0xd]
-> [   30.737641] fsck.f2fs: [FSCK] valid_block_count matching with CP
->           [Ok..] [0x28b98e6]
-> [   30.737644] fsck.f2fs: [FSCK] valid_node_count matching with CP (de
-> lookup)  [Ok..] [0xae0e9]
-> [   30.737646] fsck.f2fs: [FSCK] valid_node_count matching with CP
-> (nat lookup) [Ok..] [0xae0e9]
-> [   30.737647] fsck.f2fs: [FSCK] valid_inode_count matched with CP
->           [Ok..] [0xa74a3]
-> [   30.737649] fsck.f2fs: [FSCK] free segment_count matched with CP
->           [Ok..] [0x7aa3]
-> [   30.737662] fsck.f2fs: [FSCK] next block offset is free
->           [Ok..]
-> [   30.737663] fsck.f2fs: [FSCK] fixing SIT types
-> [   30.737867] fsck.f2fs: [FSCK] other corrupted bugs
->           [Ok..]
-> [   30.737893] fsck.f2fs: [update_superblock: 765] Info: Done to
-> update superblock
-> [   30.960610] fsck.f2fs:
-> [   30.960618] fsck.f2fs: Done: 24.622956 secs
-> [   30.960620] fsck.f2fs:
-> [   30.960622] fsck.f2fs: c, u, RA, CH, CM, Repl=
-> [   30.960627] fsck.f2fs: 10000 10000 43600517 42605434 995083 985083
-> [   30.963274] F2FS-fs (sda13): Using encoding defined by superblock:
-> utf8-12.1.0 with flags 0x0
-> [   30.995360] __f2fs_is_valid_blkaddr: type=2
-> 
-> (Manually added that print ^)
-> 
-> [   30.995369] ------------[ cut here ]------------
-> [   30.995375] WARNING: CPU: 7 PID: 1 at f2fs_handle_error+0x18/0x3c
-> [   30.995378] CPU: 7 PID: 1 Comm: init Tainted: G S      W
-> 5.10.209-arter97-r15-kernelsu-g0867d0e4f1d2 #6
-> [   30.995379] Hardware name: Qualcomm Technologies, Inc. Cape QRD
-> with PM8010 (DT)
-> [   30.995380] pstate: 22400005 (nzCv daif +PAN -UAO +TCO BTYPE=--)
-> [   30.995382] pc : f2fs_handle_error+0x18/0x3c
-> [   30.995384] lr : __f2fs_is_valid_blkaddr+0x2a4/0x2b0
-> [   30.995385] sp : ffffff80209e79b0
-> [   30.995386] x29: ffffff80209e79b0 x28: 0000000000000037
-> [   30.995388] x27: 00000000000001c7 x26: 0000000020120121
-> [   30.995389] x25: 00000000000000d9 x24: 0000000000000000
-> [   30.995390] x23: ffffffff00f1a700 x22: 0000000000000828
-> [   30.995391] x21: ffffff80462aa000 x20: ffffff80462aa000
-> [   30.995392] x19: 0000000000000002 x18: ffffffffffffffff
-> [   30.995393] x17: 0000000000000000 x16: 00000000ffff0000
-> [   30.995394] x15: 0000000000000004 x14: ffffffd1675ac6d0
-> [   30.995395] x13: 0000000000000003 x12: 0000000000000003
-> [   30.995396] x11: 00000000ffffffff x10: 0000000000000000
-> [   30.995397] x9 : 0000000100000001 x8 : 0000000100000000
-> [   30.995398] x7 : 64696c61765f7369 x6 : ffffffd1681279e8
-> [   30.995399] x5 : 000000000000001f x4 : 0000000000000001
-> [   30.995400] x3 : 0000000000000000 x2 : ffffff89f03dedc8
-> [   30.995401] x1 : 0000000000000002 x0 : ffffff80462aa000
-> [   30.995403] Call trace:
-> [   30.995404] f2fs_handle_error+0x18/0x3c
-> [   30.995405] __f2fs_is_valid_blkaddr+0x2a4/0x2b0
-> [   30.995406] f2fs_is_valid_blkaddr+0x10/0x20
-> [   30.995407] f2fs_ra_meta_pages+0xe0/0x230
-> [   30.995409] build_sit_entries+0xa8/0x580
-> [   30.995411] f2fs_build_segment_manager+0x124/0x170
-> [   30.995412] f2fs_fill_super+0x78c/0xd1c
-> [   30.995415] mount_bdev+0x168/0x1ac
-> [   30.995416] f2fs_mount+0x18/0x24
-> [   30.995418] legacy_get_tree.llvm.9147845779559715083+0x30/0x5c
-> [   30.995419] vfs_get_tree+0x30/0xe0
-> [   30.995421] do_new_mount+0x140/0x358
-> [   30.995422] path_mount+0x1fc/0x4e8
-> [   30.995423] __arm64_sys_mount+0x150/0x294
-> [   30.995425] el0_svc_common.llvm.15698454952154965787+0xa8/0x138
-> [   30.995426] do_el0_svc+0x24/0x90
-> [   30.995429] el0_svc+0x10/0x1c
-> [   30.995430] el0_sync_handler+0xcc/0xe4
-> [   30.995432] el0_sync+0x1a0/0x1c0
-> [   30.995433] ---[ end trace 3b83295e0cdac94e ]---
-> [   31.005011] F2FS-fs (sda13): Mounted with checkpoint version = 2b7e3b29
-> [   31.005176] init: [libfs_mgr]
-> __mount(source=/dev/block/bootdevice/by-name/userdata,target=/data,type=f2fs)=0:
-> Success
-> [   31.007749] init: Userdata mounted using /vendor/etc/fstab.qcom result : 0
-> 
-> 
-> I was bisecting a long boot time (24 additional seconds) issue, which
-> is always reproducible, and found commit 31f85ccc84b8 ("f2fs: unify
-> the error handling of f2fs_is_valid_blkaddr") to be causing it.
-> 
-> I'll just revert that patch locally. Seems like Jaegeuk's dev branch
-> doesn't have the fix for this specifically yet.
-> 
-> Thanks.
-> 
->>
->> I was trying to debug another issue, but found the root cause. Let me drop this
->> patch.
->>
->>>
->>> Thanks,
->>>
+>>> On Thu, Apr 25, 2024 at 6:46 AM Zi Yan <zi.yan@sent.com> wrote:
 >>>>
->>>> Fixes: 31f85ccc84b8 ("f2fs: unify the error handling of f2fs_is_valid_blkaddr")
->>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>>>> From: Zi Yan <ziy@nvidia.com>
+>>>>
+>>>> In __folio_remove_rmap(), a large folio is added to deferred split list
+>>>> if any page in a folio loses its final mapping. It is possible that
+>>>> the folio is unmapped fully, but it is unnecessary to add the folio
+>>>
+>>> Agreed. If a folio is fully unmapped, then that's unnecessary to add
+>>> to the deferred split list.
+>>>
+>>>> to deferred split list at all. Fix it by checking folio->_nr_pages_mapped
+>>>> before adding a folio to deferred split list. If the folio is already
+>>>> on the deferred split list, it will be skipped. This issue applies to
+>>>> both PTE-mapped THP and mTHP.
+>>>>
+>>>> Commit 98046944a159 ("mm: huge_memory: add the missing
+>>>> folio_test_pmd_mappable() for THP split statistics") tried to exclude
+>>>> mTHP deferred split stats from THP_DEFERRED_SPLIT_PAGE, but it does not
+>>>> fix the above issue. A fully unmapped PTE-mapped order-9 THP was still
+>>>> added to deferred split list and counted as THP_DEFERRED_SPLIT_PAGE,
+>>>> since nr is 512 (non zero), level is RMAP_LEVEL_PTE, and inside
+>>>> deferred_split_folio() the order-9 folio is folio_test_pmd_mappable().
+>>>> However, this miscount was present even earlier due to implementation,
+>>>> since PTEs are unmapped individually and first PTE unmapping adds the THP
+>>>> into the deferred split list.
+>>>>
+>>>> With commit b06dc281aa99 ("mm/rmap: introduce
+>>>> folio_remove_rmap_[pte|ptes|pmd]()"), kernel is able to unmap PTE-mapped
+>>>> folios in one shot without causing the miscount, hence this patch.
+>>>>
+>>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>>>> Reviewed-by: Yang Shi <shy828301@gmail.com>
 >>>> ---
->>>>    fs/f2fs/checkpoint.c | 9 +++++----
->>>>    1 file changed, 5 insertions(+), 4 deletions(-)
+>>>>    mm/rmap.c | 7 ++++---
+>>>>    1 file changed, 4 insertions(+), 3 deletions(-)
 >>>>
->>>> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
->>>> index eac698b8dd38..b01320502624 100644
->>>> --- a/fs/f2fs/checkpoint.c
->>>> +++ b/fs/f2fs/checkpoint.c
->>>> @@ -179,22 +179,22 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
->>>>              break;
->>>>      case META_SIT:
->>>>              if (unlikely(blkaddr >= SIT_BLK_CNT(sbi)))
->>>> -                   goto err;
->>>> +                   goto check_only;
->>>>              break;
->>>>      case META_SSA:
->>>>              if (unlikely(blkaddr >= MAIN_BLKADDR(sbi) ||
->>>>                      blkaddr < SM_I(sbi)->ssa_blkaddr))
->>>> -                   goto err;
->>>> +                   goto check_only;
->>>>              break;
->>>>      case META_CP:
->>>>              if (unlikely(blkaddr >= SIT_I(sbi)->sit_base_addr ||
->>>>                      blkaddr < __start_cp_addr(sbi)))
->>>> -                   goto err;
->>>> +                   goto check_only;
->>>>              break;
->>>>      case META_POR:
->>>>              if (unlikely(blkaddr >= MAX_BLKADDR(sbi) ||
->>>>                      blkaddr < MAIN_BLKADDR(sbi)))
->>>> -                   goto err;
->>>> +                   goto check_only;
->>>>              break;
->>>>      case DATA_GENERIC:
->>>>      case DATA_GENERIC_ENHANCE:
->>>> @@ -228,6 +228,7 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
->>>>      return true;
->>>>    err:
->>>>      f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->>>> +check_only:
->>>>      return false;
->>>>    }
+>>>> diff --git a/mm/rmap.c b/mm/rmap.c
+>>>> index a7913a454028..2809348add7b 100644
+>>>> --- a/mm/rmap.c
+>>>> +++ b/mm/rmap.c
+>>>> @@ -1553,9 +1553,10 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
+>>>>                    * page of the folio is unmapped and at least one page
+>>>>                    * is still mapped.
+>>>>                    */
+>>>> -               if (folio_test_large(folio) && folio_test_anon(folio))
+>>>> -                       if (level == RMAP_LEVEL_PTE || nr < nr_pmdmapped)
+>>>> -                               deferred_split_folio(folio);
+>>>> +               if (folio_test_large(folio) && folio_test_anon(folio) &&
+>>>> +                   ((level == RMAP_LEVEL_PTE && atomic_read(mapped)) ||
+>>>> +                    (level == RMAP_LEVEL_PMD && nr < nr_pmdmapped)))
+>>>
+>>> Perhaps we only need to check the mapcount?
+>>>
+>>> IIUC, if a large folio that was PMD/PTE mapped is fully unmapped here,
+>>> then folio_mapcount() will return 0.
 >>
->>
->> _______________________________________________
->> Linux-f2fs-devel mailing list
->> Linux-f2fs-devel@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>> See discussion on v1. folio_large_mapcount() would achieve the same
+>> without another folio_test_large() check, but in the context of this
+>> patch it doesn't really matter.
+> 
+> Got it. Thanks for pointing that out!
+> I'll take a closer look at the discussion in v1.
+
+Forgot to add: as long as the large mapcount patches are not upstream, 
+folio_large_mapcount() would be expensive. So this patch can be added 
+independent of the other stuff.
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
