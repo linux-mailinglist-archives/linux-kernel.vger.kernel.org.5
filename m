@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-158050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 170878B1AAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:07:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FEBF8B1AB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:07:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AFD31C20899
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:07:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93DDA1C21040
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:07:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31AAA41ABE;
-	Thu, 25 Apr 2024 06:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6092B3CF5E;
+	Thu, 25 Apr 2024 06:07:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="Y5e2dBGQ"
-Received: from HK3PR03CU002.outbound.protection.outlook.com (mail-eastasiaazon11011004.outbound.protection.outlook.com [52.101.128.4])
+	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="ay6JBWHJ"
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2083.outbound.protection.outlook.com [40.107.255.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92AE13D0C2;
-	Thu, 25 Apr 2024 06:07:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.128.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BED0942070;
+	Thu, 25 Apr 2024 06:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.83
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714025247; cv=fail; b=BvcUB+Efwr4joEzusAlge3KWCNjGkxFBOIVPvey1b1QDdUH7G5h8VeMR5rlN5K0M2mpNfCVWcYjcyI7AiZflO2w9VWOxn40Q3wKhhK1gXr9k7/F0zN2JlYY9y8dWixaoSBs2mLUpHSfhecrmNQT20yVUd0gfW+4wyxjndzXghPc=
+	t=1714025250; cv=fail; b=QSZli3sylTOLGm+ANtjCe+s5xiQHhrXJAJ1XrWV5xjDr6JHvi66BGYS8duBfkJEsF7SK/kZcI7mCLwYzap0nDmwaneRdgR1hiKdV1ABhkXBlFO7zgsApMYyF2a+55qHqlmxjcUhRR+zIKsnRCV0n79li5k48pwz0gFimhNTR7Is=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714025247; c=relaxed/simple;
-	bh=Ets9jNCtF0ud3ki/R93AiQLAOXz6YIl6ltUCaKWl3iw=;
+	s=arc-20240116; t=1714025250; c=relaxed/simple;
+	bh=9cc+XI2VCZnU4mWObH71nYa4BCUSIRKS3wTzvn3mzMY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PDJ+d+4VzMUPsk8HG5NI/JZ8y4APcUDcYrZV29/CkWm+bUurkJTlMumKJd6M3HkIvqm4LNhU80vpY4XQ+J3+gxSJTSPLXSB1auU3GUB4rhclYXzzp8K0aTyZzM5RkyBA3GphXugN1J6WJb125HiriB4UHj4Kr9Wh2bzolmPz+zY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=Y5e2dBGQ; arc=fail smtp.client-ip=52.101.128.4
+	 MIME-Version:Content-Type; b=I92cPG2AF+6PN+wNMaHEk2/eQABWhru1RAqFhE6fFfPA7durQWf4tzgPBfYdi6KGalzwmSLR1w7NU4bIvaVMn66vld5g7LGUesRht35WJ3qbEOCirtXja9p0+by5+ylop2vYDVj29g2cI/CvdBs3DbWvPSbvqdm30Sffwqq+a7o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=ay6JBWHJ; arc=fail smtp.client-ip=40.107.255.83
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiwynn.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R5nL6D8RjhfmU4y6br8Z8sYaFDiG7daUyK+aDrkmr2ZqJIx0KdQKrhn77dn3t9Llb5HMHIVRNxuSFGmkg/qimRPxhp1OdjGeWrNXwhOCNSv1tFQrniEgnQtVHEc40rk7Hd+GElF0fZlcBRvqilof4r/SOaNjU0f2mMz97sYZQRXeBuzNNUDhEdK7GhwYj6h7XikLrYysEFpir/mCgvWne7pV9+nEtUrhpK5k6+ggS0lNiSbg8ZEGgAxQaRiWpvqRCIXhKmvQFLeP21j9c8i/ZEjCUMpWDx/kZtuHaw3Z3tXtaMmZznWb+Qu+XdVN6A18u9GGJQq+GJZSgguNNqh7KA==
+ b=f8WbSc+tHTxqxiiKymnBx/fGcEzbouJ32G+gy6LT/xploYRi63ngsmoOrFHDuoGZ1RBmEBTlxizylPpDfo2pFTbjv9V9SarzfJT+O4kLDoQbYcL2xNVBHV03X7pqXUH24UsnZcMi1+jOZR2BdNXcGnjmJIbhuFBQN3ug3ecTsnsQU1nfkeJQZNBF8fzEUbK7pOj57q3Vf4p0emA+WPGddE0ipCsHZXZbod+tfYG8J537Omw8yYNb9IYHeXsVQ8OCALbR3H3jit/zVRJj+QWNREWX2stt5LOsHlf4eZ+MCO30wAIHAAWW+FuuCn9R7EzbPTbnKs/R2b6L9yQMnjTgtg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5Eg87oFJzWC7xCt0aHVYxZaLsHmigJmRYeA5ee+//qo=;
- b=ZqVRNfOSIHkpeNZHxDbFYoVX5CvtB/K7ExCSqFZehE5dyyDAGYMI2l6805+ByUzbuvwXrHngc3JitVBVPjkExDg2a4sVdwP0JjLr4ZTcVQoSv0X0/PrWMsi44bk+yDUFTSRoM5/g3nVpY5jSxLIHjbvFBQcI9AIjOj7Y/2n55Z20r21CG1EdGm/gTiNT3ot/WTaDWIirwBPpeGR/FLdvvCwKobcDCiamweqw7qLX/BHTYCW31XtakKyyRv9uxjZYpUQKGyBmi6mfO/4PlAGcl8hLJdH/yWPzj5Svrxp+WsewBfyz4f4rjnv0fQYsxCc55+oVx7TlyPc4Mb8ecxll8A==
+ bh=DhKd5eugbyroswwz7UaRSsSWJlu4McTkV2n49tT+a+k=;
+ b=ikeVoz0xQs9y0yepvR36O3dGjc1dLug/DcXgFtyqicMw9eR1mMZ18HQiFxD4KZB1+GUinHu22bgVLzvM26RXn1GJlnn0jEsLMnQdIsiHsxpraIXBkGk6J3R4cIPn5ctHo6h8ihjQ9sOZrDhIvn4MirrjG0FWMKD6Png9BbuFclPKreB59/cDcttjMpsn5G3TBw+hChtD6zBk3yQplrS4JdNsG/5nyONmHcPLw5QGeiqbCHGopMBE0+pd1zeBOyk7NWqHiyf1UasDbYUUp7qjWOmkKPvNoqDK6Upra6KxdW7859Lll12F1K60V3KCAWuwfUY2zd6IQSqXuy2siw43Iw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
  211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
  (p=quarantine sp=quarantine pct=100) action=quarantine
@@ -44,18 +44,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5Eg87oFJzWC7xCt0aHVYxZaLsHmigJmRYeA5ee+//qo=;
- b=Y5e2dBGQXOpKCYPzF//VjhLpORTmnQB3XNK2RVV5iMv7abennK61VxkX4aFO9JCMrqzL9iyKFbm1Mu8o6CI/0WGN8SXiSg+VQdQvK6fi5FQS/uJGq8xwBgwuXx0+nmdXSGahbZHfOosyNUDCMc/pIZ+4MBXRVS31UvKKxNS+9lnGER/Xok93zAujBT3vbbi+2FaqIaL6q534pX0CkoPBdb/xFDYf5kd5gyA6LxbNHke+PHZ9tlZJnSaxlZIOxAIINTJifwnAXWhy+qsL6zZMX3WRXKMhWpFYrPHY6X9dI1sN0WgJXdK3EOV5fMY9BEOBjXIjc7ZEfVYNqXV8fEJy8w==
-Received: from SG2PR04CA0215.apcprd04.prod.outlook.com (2603:1096:4:187::14)
- by SEZPR04MB8173.apcprd04.prod.outlook.com (2603:1096:101:24f::10) with
+ bh=DhKd5eugbyroswwz7UaRSsSWJlu4McTkV2n49tT+a+k=;
+ b=ay6JBWHJ9bSXJvf3ejxAcQ9DlyjmBvtNosHY/qc9qeFrg3WY/boXCIfeE0MlwQkgunGfr3ugdp3IpBIKNcBioFYWFV8tEVj2z+21md5PEQcAv3fDA9zAvzb3KqDcKcp+PRQgmm3uVQVn0K0ea6Mo8dY390hwSHdM2REgO0mqbh6cuZ7mr4OBR6tP3hZ9Ax2FkTn7LYfvQs28c/wKv/9CPtzKWD4pyzv+G+rkc2NycFi+49hUCuKJ9LZFKnVhGCgSt3VIuKIb5dHOULUJubET4PjfwiYEAYvfueC5b4sIGjtFVR5pRVP0NuGpQKSJN+Cfy12Mo3FpqP3uF+NKCsi4fg==
+Received: from SG2PR04CA0209.apcprd04.prod.outlook.com (2603:1096:4:187::12)
+ by TYZPR04MB7132.apcprd04.prod.outlook.com (2603:1096:400:44d::5) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Thu, 25 Apr
- 2024 06:07:19 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.24; Thu, 25 Apr
+ 2024 06:07:24 +0000
 Received: from SG1PEPF000082E5.apcprd02.prod.outlook.com
- (2603:1096:4:187:cafe::31) by SG2PR04CA0215.outlook.office365.com
- (2603:1096:4:187::14) with Microsoft SMTP Server (version=TLS1_2,
+ (2603:1096:4:187:cafe::8c) by SG2PR04CA0209.outlook.office365.com
+ (2603:1096:4:187::12) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.25 via Frontend
- Transport; Thu, 25 Apr 2024 06:07:19 +0000
+ Transport; Thu, 25 Apr 2024 06:07:24 +0000
 X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
  smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
  header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
@@ -65,7 +65,7 @@ Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
 Received: from localhost.localdomain (211.20.1.79) by
  SG1PEPF000082E5.mail.protection.outlook.com (10.167.240.8) with Microsoft
  SMTP Server id 15.20.7519.19 via Frontend Transport; Thu, 25 Apr 2024
- 06:07:18 +0000
+ 06:07:24 +0000
 From: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
 To: patrick@stwcx.xyz,
 	Rob Herring <robh@kernel.org>,
@@ -78,9 +78,9 @@ Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-aspeed@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/2] Revise mux and hardware in yosemite4 dts
-Date: Thu, 25 Apr 2024 14:06:24 +0800
-Message-Id: <20240425060626.2558515-2-Delphine_CC_Chiu@wiwynn.com>
+Subject: [PATCH v1 2/2] Add nct7363 in yosemite4 dts
+Date: Thu, 25 Apr 2024 14:06:25 +0800
+Message-Id: <20240425060626.2558515-3-Delphine_CC_Chiu@wiwynn.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240425060626.2558515-1-Delphine_CC_Chiu@wiwynn.com>
 References: <20240425060626.2558515-1-Delphine_CC_Chiu@wiwynn.com>
@@ -93,200 +93,236 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG1PEPF000082E5:EE_|SEZPR04MB8173:EE_
+X-MS-TrafficTypeDiagnostic: SG1PEPF000082E5:EE_|TYZPR04MB7132:EE_
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: c701d320-1df3-4fa1-4d78-08dc64edf6f4
+X-MS-Office365-Filtering-Correlation-Id: 5d7d6c7e-4b38-42f6-c74a-08dc64edfa36
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230031|36860700004|1800799015|82310400014|376005|7416005;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?kSmoJ168Ik8EMU2SSc2s2fkPk8Q+h+7os1cv08l4lNtdhqLoznEnaN8DoVCY?=
- =?us-ascii?Q?cJWttraWxNLmLOuIvC4D0TclKdyKGbwFwplAPqa0b1n3MxA5BB1v5OQU//6s?=
- =?us-ascii?Q?Rz9bEgpUryJv4hkdW2rQeCUM+SIcZs6C/2/0VyJ5cXyVMUlh6iIdS7GAX0aG?=
- =?us-ascii?Q?17Y5hyQQ0vFoupU2yURpMCi+7t6fEBNtFcEunNDk+EE/uOJWiYwXHDP7QAIp?=
- =?us-ascii?Q?rH2JubE+SHjMtO08CJpz29CigU/B7exExhIsnLfUl4TygzX30jKX3STcpK96?=
- =?us-ascii?Q?MumJWyiWlL91N80AocvUuyaC/RmAVNG3JX9NwXM8YjweLydiO9wRB5YSSucy?=
- =?us-ascii?Q?0SgUUjJjvT0ITeWDbx8rrZ/M/OUZpXQWcV/fgCrM8fQ+05qjf9uqULNaiPKT?=
- =?us-ascii?Q?Pac3Fwt7MeCtS4odGnla1nQ0+NUKE3by10ipVxvzwKKNZTIo9yEs6zsKZaS0?=
- =?us-ascii?Q?iD3pEFNGbFXVu9+SOMEzG04kM3mF4OkOJBHED2Ga+LsPDhfFxsp3LTSSEmuZ?=
- =?us-ascii?Q?rymf/RpWNfiwzRg/QRHYP2quCt/wQopBHOGanEUa7ZXVbf+o5EK/MCG1l0Zv?=
- =?us-ascii?Q?xnEnd5NsHGQJorBJVvmouwYHx2HIA0UNtZBh6rMSdcofA9ZIjBPQ64XmZtRB?=
- =?us-ascii?Q?VR8qfxe3gR8sCwtbBaNvf+17NKdZxCZS9HkHm4v0Xpx1MU8rnDCAJchElMvC?=
- =?us-ascii?Q?0Qn5pf7tGFK6ovppDbeWLTaF3+kOjJ4NWOZaYuDqD9ml7zooUbyvacEJKfpG?=
- =?us-ascii?Q?TlPLJA5dxe5TNWJA7iN6h3MldJaQnyj3igCxIdALvFeFAVdvw/jom0eRSgjl?=
- =?us-ascii?Q?7hmksZUoTe/Rm7fi72BxzeIUoZTm+kkMcf77w1YK4xBxw2ifoajcbX+IMe8w?=
- =?us-ascii?Q?MsMvUpWmOFz6mFyLbT3DoT4UZYOGUUFbeR69GWxNLdq/MFPRgMNmTK4kU4KV?=
- =?us-ascii?Q?bSPoX2vjcRZrwKjm8uUwhJkcGO0JximWBeczZGr7neByjPl7NmVfWLgdvBDh?=
- =?us-ascii?Q?IyyO0wOsnlzNCSfV1X2kkV5g6mAmIoQ8PhmetK5Fk0EsIQDQokLr/41V1kfJ?=
- =?us-ascii?Q?zLeeWVhDgssJ9HNBsRI4nwWCqHBtkPRygVBIQgfHAAR+FZfzzP022+XJk0Vq?=
- =?us-ascii?Q?jxqf119w5Gmw6DXqap6wh4J+btNKzN2t09mdEnGWQnA8M0KgjRfFUmjBrjc3?=
- =?us-ascii?Q?HnvXlOm/s88+2ABOlHC6U1pVNVJD0lPLdLnE2KVo2TwmxpynZEz3f/WC+/Pr?=
- =?us-ascii?Q?szh/fEwazUrgz5cCiOiZsB/RZ8/oSj5OYh6Cvpef0ik1Xu0ruuCLnKiTV4oB?=
- =?us-ascii?Q?ihimYnxg3kmKu5NYoRRfc0f6FxyuxFjNIpX2/HAygalgCUF41I4s1EDvn+lX?=
- =?us-ascii?Q?C40Y7H4q7EsKaS9/OCJPtRYTc7se?=
+	=?us-ascii?Q?r2wibwp52lCUxka1Oxullj4jDc0nZ+fLRbaPBlwbtlZTVjr4FPB5ra8H7JUM?=
+ =?us-ascii?Q?a7tNquuhGmBSCyYGRKr1LkIWIqEF3UaDCOYTUTOCnUpq0sUdVTzQryxQbrs7?=
+ =?us-ascii?Q?RPav3tDReM7QVD04O0v2NfyEDHhBeyELkXZC+p7Jx9szwLAfYBUSmo9qCezP?=
+ =?us-ascii?Q?bIpPf7q1lhbg1Q+2Mp0CBExLQ7k4wgyPwmmcTDob/bEAMK8qWPi7gSAtA71S?=
+ =?us-ascii?Q?CZycsl0zcy3MQ2VDN0RIVKD6q7/Lj4/LQOs89MCrQHz9QIZZEGpYOAs6p+AR?=
+ =?us-ascii?Q?12N9uHo1gc9KyRd1WUEHAS9SBnW/qN+RAIKP6XkHA8jATcKN5Z6dV2MFzqUp?=
+ =?us-ascii?Q?3u650xFuqflG0uoApA/pvj7jk2iKIf7lFwMpl7mPtyrcn6c4aZ2gviH2VBOE?=
+ =?us-ascii?Q?24yP9itnAvzV/5dj5H3UOM46zWSTUVJhsW3T5Qw3cj/Y+Juk2nL/BPn2sBvs?=
+ =?us-ascii?Q?TC0fjuffIso6EmtZviR55K2CJeDrNxYXrEQaE0uvLCbg91j6A0xcU8+ShLqw?=
+ =?us-ascii?Q?hCkXr/XhYUPg/CAXHH6UykvSBJPO2B3UNYubttheQvN93ot6Zr6H4GMgqHfu?=
+ =?us-ascii?Q?b5kAFHLAe1+ujfkSoA5uuwcod8BsLihvPnnND4KX696zEynZaZbLtyxhDG2n?=
+ =?us-ascii?Q?Zy75DQZCgEziXZpQ7eywEDmvrKHKDifVIUYnCD2oR6cDlXiDiiaFweTbMo/X?=
+ =?us-ascii?Q?xyxoDU5SepndKGO2yJ/oBzFGQYJS77bb+pzVOf7SKkxSNoti9EdisD+Ac7dI?=
+ =?us-ascii?Q?D1YC8bBKfxgRMJSVS5YioLHUaQ3lghtz6RcN4+PWb61mGvAdT7kxfnF5oTNK?=
+ =?us-ascii?Q?dKEJ70zzJkpvq/7jnDV2EJanQp0s9H/K7NXg6jJUSO82rlXawfsU1jcMtX5n?=
+ =?us-ascii?Q?lhWCrbFG/w+LNy0HP8eNI1IUiRWAAXwxEM6G43uqq1EFpw8kjWTt6vyB8E2c?=
+ =?us-ascii?Q?8mxdOJC50KZA2tClXZPjaJVltIwqcRdHAcNcqUF5EPnLmubwKFRYm2ZgEqLK?=
+ =?us-ascii?Q?ePjZMmjhounWze10NUSo2Uv4o9GYI3o0/01FDW0RNCeEKS9dgBq2Y/kNQQ+S?=
+ =?us-ascii?Q?Sqh+/ffkfGIwgewuBWk+IhXuc2ccAyNwwghvWyhozKQ9WdX1cg2qdjIyILdZ?=
+ =?us-ascii?Q?mkeqDWQAneCUuililCZ/zM2/eA3SCKfDQHWSlOui4fxyADpTa5rQm6eAGoCU?=
+ =?us-ascii?Q?omXvLKnnfGcsIreU37FFR/F8oCtI3hc+VCiyz5bFN948zbPg3LlWHhVTDUyU?=
+ =?us-ascii?Q?5bHBUXAOI1m9QWh4HZLTyh6Tx7OgJJmFkRBcpcNLD+7nHuBxA6WIE/1cmt8j?=
+ =?us-ascii?Q?ihwY9UeK44lPR2laIV6wNLrEbWtUpCfIuaVhzN5vUldhogiJUKECJEImiQlJ?=
+ =?us-ascii?Q?J0+NTLw=3D?=
 X-Forefront-Antispam-Report:
-	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(36860700004)(7416005)(376005)(1800799015)(82310400014);DIR:OUT;SFP:1101;
+	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(36860700004)(1800799015)(82310400014)(376005)(7416005);DIR:OUT;SFP:1101;
 X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 06:07:18.5656
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 06:07:24.0344
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c701d320-1df3-4fa1-4d78-08dc64edf6f4
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d7d6c7e-4b38-42f6-c74a-08dc64edfa36
 X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
 X-MS-Exchange-CrossTenant-AuthSource:
 	SG1PEPF000082E5.apcprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR04MB8173
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR04MB7132
 
 ARM: dts: aspeed: yosemite4:
-Change hardware configuration, consequently modifying the mux in the dts.
+Add nct7363(0x21 and 0x23) in yosemite4.dts
 
 Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
 ---
- .../aspeed/aspeed-bmc-facebook-yosemite4.dts  | 78 ++++++++++++++-----
- 1 file changed, 58 insertions(+), 20 deletions(-)
+ .../aspeed/aspeed-bmc-facebook-yosemite4.dts  | 144 ++++++++++++++++++
+ 1 file changed, 144 insertions(+)
 
 diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-index 64075cc41d92..e45293762316 100644
+index e45293762316..06b709b0a706 100644
 --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
 +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-@@ -433,16 +433,14 @@ eeprom@51 {
- 		reg = <0x51>;
- 	};
- 
--	i2c-mux@71 {
--		compatible = "nxp,pca9846";
-+	i2c-mux@74 {
-+		compatible = "nxp,pca9546";
- 		#address-cells = <1>;
- 		#size-cells = <0>;
--
--		idle-state = <0>;
- 		i2c-mux-idle-disconnect;
--		reg = <0x71>;
-+		reg = <0x74>;
- 
--		i2c@0 {
-+		inux30: i2c@0{
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <0>;
-@@ -450,26 +448,46 @@ i2c@0 {
- 			adc@1f {
- 				compatible = "ti,adc128d818";
- 				reg = <0x1f>;
--				ti,mode = /bits/ 8 <2>;
-+				ti,mode = /bits/ 8 <1>;
+@@ -467,6 +467,42 @@ channel@5 {
+                                 };
  			};
  
- 			pwm@20{
--				compatible = "max31790";
--				reg = <0x20>;
-+				compatible = "maxim,max31790";
- 				#address-cells = <1>;
- 				#size-cells = <0>;
-+				reg = <0x20>;
-+				channel@4 {
-+					reg = <4>;
-+					sensor-type = "TACH";
++			hwmon0: hwmon@21 {
++				compatible = "nuvoton,nct7363";
++				reg = <0x21>;
++				#pwm-cells = <2>;
++
++				fan-3 {
++					pwms = <&hwmon0 2 20000>;
++					tach-ch = /bits/ 8 <0x00>;
 +				};
 +
-+				channel@5 {
-+					reg = <5>;
-+					sensor-type = "TACH";
++				fan-4 {
++					pwms = <&hwmon0 5 20000>;
++					tach-ch = /bits/ 8 <0x01>;
 +				};
- 			};
- 
++
++				fan-5 {
++					pwms = <&hwmon0 5 20000>;
++					tach-ch = /bits/ 8 <0x02>;
++				};
++
++				fan-0 {
++					pwms = <&hwmon0 0 20000>;
++					tach-ch = /bits/ 8 <0x09>;
++				};
++
++				fan-1 {
++					pwms = <&hwmon0 0 20000>;
++					tach-ch = /bits/ 8 <0x0c>;
++				};
++
++				fan-2 {
++					pwms = <&hwmon0 2 20000>;
++					tach-ch = /bits/ 8 <0x0e>;
++				};
++			};
++
  			gpio@22{
  				compatible = "ti,tca6424";
  				reg = <0x22>;
-+				gpio-controller;
-+				#gpio-cells = <2>;
+@@ -474,6 +510,42 @@ gpio@22{
+                                 #gpio-cells = <2>;
  			};
  
--			pwm@23{
--				compatible = "max31790";
--				reg = <0x23>;
-+			pwm@2f{
-+				compatible = "maxim,max31790";
- 				#address-cells = <1>;
- 				#size-cells = <0>;
-+				reg = <0x2f>;
-+				channel@4 {
-+					reg = <4>;
-+					sensor-type = "TACH";
++			hwmon1: hwmon@23 {
++				compatible = "nuvoton,nct7363";
++				reg = <0x23>;
++				#pwm-cells = <2>;
++
++				fan-3 {
++					pwms = <&hwmon0 2 20000>;
++					tach-ch = /bits/ 8 <0x00>;
 +				};
 +
-+				channel@5 {
-+					reg = <5>;
-+					sensor-type = "TACH";
-+				};
- 			};
- 
- 			adc@33 {
-@@ -492,34 +510,54 @@ gpio@61 {
- 			};
- 		};
- 
--		i2c@1 {
-+		imux31: i2c@1 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
--			reg = <0>;
-+			reg = <1>;
- 
- 			adc@1f {
- 				compatible = "ti,adc128d818";
- 				reg = <0x1f>;
--				ti,mode = /bits/ 8 <2>;
-+				ti,mode = /bits/ 8 <1>;
- 			};
- 
- 			pwm@20{
--				compatible = "max31790";
--				reg = <0x20>;
-+				compatible = "maxim,max31790";
- 				#address-cells = <1>;
- 				#size-cells = <0>;
-+				reg = <0x20>;
-+				channel@4 {
-+					reg = <4>;
-+					sensor-type = "TACH";
++				fan-4 {
++					pwms = <&hwmon0 5 20000>;
++					tach-ch = /bits/ 8 <0x01>;
 +				};
 +
-+				channel@5 {
-+					reg = <5>;
-+					sensor-type = "TACH";
++				fan-5 {
++					pwms = <&hwmon0 5 20000>;
++					tach-ch = /bits/ 8 <0x02>;
 +				};
++
++				fan-0 {
++					pwms = <&hwmon0 0 20000>;
++					tach-ch = /bits/ 8 <0x09>;
++				};
++
++				fan-1 {
++					pwms = <&hwmon0 0 20000>;
++					tach-ch = /bits/ 8 <0x0c>;
++				};
++
++				fan-2 {
++					pwms = <&hwmon0 2 20000>;
++					tach-ch = /bits/ 8 <0x0e>;
++				};
++			};
++
+ 			pwm@2f{
+ 				compatible = "maxim,max31790";
+ 				#address-cells = <1>;
+@@ -537,6 +609,42 @@ channel@5 {
+                                 };
  			};
  
++			hwmon2: hwmon@21 {
++				compatible = "nuvoton,nct7363";
++				reg = <0x21>;
++				#pwm-cells = <2>;
++
++				fan-3 {
++					pwms = <&hwmon2 2 20000>;
++					tach-ch = /bits/ 8 <0x00>;
++				};
++
++				fan-4 {
++					pwms = <&hwmon2 5 20000>;
++					tach-ch = /bits/ 8 <0x01>;
++				};
++
++				fan-5 {
++					pwms = <&hwmon2 5 20000>;
++					tach-ch = /bits/ 8 <0x02>;
++				};
++
++				fan-0 {
++					pwms = <&hwmon2 0 20000>;
++					tach-ch = /bits/ 8 <0x09>;
++				};
++
++				fan-1 {
++					pwms = <&hwmon2 0 20000>;
++					tach-ch = /bits/ 8 <0x0c>;
++				};
++
++				fan-2 {
++					pwms = <&hwmon2 2 20000>;
++					tach-ch = /bits/ 8 <0x0e>;
++				};
++			};
++
  			gpio@22{
  				compatible = "ti,tca6424";
  				reg = <0x22>;
-+				gpio-controller;
-+				#gpio-cells = <2>;
+@@ -544,6 +652,42 @@ gpio@22{
+                                 #gpio-cells = <2>;
  			};
  
--			pwm@23{
--				compatible = "max31790";
--				reg = <0x23>;
-+			pwm@2f{
-+				compatible = "maxim,max31790";
- 				#address-cells = <1>;
- 				#size-cells = <0>;
-+				reg = <0x2f>;
-+				channel@4 {
-+					reg = <4>;
-+					sensor-type = "TACH";
++			hwmon3: hwmon@23 {
++				compatible = "nuvoton,nct7363";
++				reg = <0x23>;
++				#pwm-cells = <2>;
++
++				fan-3 {
++					pwms = <&hwmon3 2 20000>;
++					tach-ch = /bits/ 8 <0x00>;
 +				};
 +
-+				channel@5 {
-+					reg = <5>;
-+					sensor-type = "TACH";
++				fan-4 {
++					pwms = <&hwmon3 5 20000>;
++					tach-ch = /bits/ 8 <0x01>;
 +				};
- 			};
- 
- 			adc@33 {
++
++				fan-5 {
++					pwms = <&hwmon3 5 20000>;
++					tach-ch = /bits/ 8 <0x02>;
++				};
++
++				fan-0 {
++					pwms = <&hwmon3 0 20000>;
++					tach-ch = /bits/ 8 <0x09>;
++				};
++
++				fan-1 {
++					pwms = <&hwmon3 0 20000>;
++					tach-ch = /bits/ 8 <0x0c>;
++				};
++
++				fan-2 {
++					pwms = <&hwmon3 2 20000>;
++					tach-ch = /bits/ 8 <0x0e>;
++				};
++			};
++
+ 			pwm@2f{
+ 				compatible = "maxim,max31790";
+ 				#address-cells = <1>;
 -- 
 2.25.1
 
