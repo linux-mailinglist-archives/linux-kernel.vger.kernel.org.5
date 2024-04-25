@@ -1,38 +1,39 @@
-Return-Path: <linux-kernel+bounces-158546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9705A8B21E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:49:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 661858B21E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:48:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9B011C20A1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:49:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B95C1F22EB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:48:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACF74149C50;
-	Thu, 25 Apr 2024 12:48:49 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9851494CA;
+	Thu, 25 Apr 2024 12:48:48 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6959512BF29
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 12:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5736827715
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 12:48:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714049329; cv=none; b=oSL7DCdGuXQpilF9xg91bcdrmX/2t5JWFHA6MGiQNxhZpYXAK0CwPxsumlN9BErWIks6+zH4EJll3YOrhZT3GduhDW3F4nda9m9dsLm/dFskPAywKv+yggyYn8zKtLiVWOUjfK+dCKwAs8eF/7RY0WLs0DmQ9rmw5tf+vJoXXwQ=
+	t=1714049327; cv=none; b=WoBWZBRvdv8RoyyPvZ+bMRu1GeVUZv7q1oayj3TPLg14tcLcwKbQaDQ6z8qhhl3teYggoHlVoWZ46WOEYhmRvLkazRiwfbIT7Hvb2C++N1ksqme9hPaCjcsau/lmpGBa3WLFAPd+1dm1J33ecSjsILHDCHx3cS9sqOP4BmuzPlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714049329; c=relaxed/simple;
-	bh=ZHMcQbBSYof64DylecLYGkgdGxUJ5RsY1fCpIJYqfa8=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YSthA1Rjffe8lU1F6B5R4RorjSVktrdyUUKXQTnYvrZob6WI8VmwngX8fENYF/GA+9KOWwJmrutRYRQhyFBG0GGsaT84eLWJQmCgZSnnA7Coc8Dcfz8CG9i5iF+ZHlowb59TTuYGmovDa5eP0WdVkww200mEBPi/LVIVxDD8bc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	s=arc-20240116; t=1714049327; c=relaxed/simple;
+	bh=gXeNCjxT3gJZfn41DbjCUhvZyt8PxO6qbccvtxOwzgA=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JTVbycanbahQAX/bp8lHnXKZVgxeP7/WQGAqsBh7h3aJaDoYjwQmn5yCgUD8G1Jo9yT2OGDOhKFYZTlDNvMnuLMC0+Xsnikm9aj2a0wqr+5FJYzhP+eGDpwJCHnr+2EFaxKIai2ofExHRBNisD82IRfaog6/OW8zLA6FeMgIZMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VQFtv62VFzXj9L;
-	Thu, 25 Apr 2024 20:45:11 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VQFvH16Y8zwTrt;
+	Thu, 25 Apr 2024 20:45:31 +0800 (CST)
 Received: from dggpeml500002.china.huawei.com (unknown [7.185.36.158])
-	by mail.maildlp.com (Postfix) with ESMTPS id EE08D18007F;
-	Thu, 25 Apr 2024 20:48:42 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 21A23140258;
+	Thu, 25 Apr 2024 20:48:43 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  dggpeml500002.china.huawei.com (7.185.36.158) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -43,10 +44,12 @@ To: <will@kernel.org>, <jonathan.cameron@huawei.com>, <yangyicong@huawei.com>,
 CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
 	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>, <hejunhao3@huawei.com>,
 	<chenhao418@huawei.com>
-Subject: [PATCH 0/3] drivers/perf: hisi: Fixed some issues with hisi pmu
-Date: Thu, 25 Apr 2024 20:46:24 +0800
-Message-ID: <20240425124627.13764-1-hejunhao3@huawei.com>
+Subject: [PATCH 1/3] drivers/perf: hisi_pcie: Fix out-of-bound access when valid event group
+Date: Thu, 25 Apr 2024 20:46:25 +0800
+Message-ID: <20240425124627.13764-2-hejunhao3@huawei.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20240425124627.13764-1-hejunhao3@huawei.com>
+References: <20240425124627.13764-1-hejunhao3@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,24 +61,57 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  dggpeml500002.china.huawei.com (7.185.36.158)
 
-This patchset includes 3 bug fixes changes to hisi PMU:
-- Fix out-of-bound access when valid event group in hns pmu
-- Fixes the memory leak in hns pmu
-- Fix out-of-bound access when valid event group in pcie pmu
+The perf tool allows users to create event groups through following
+cmd [1], but the driver does not check whether the array index is out of
+bounds when writing data to the event_group array. If the number of events
+in an event_group is greater than HISI_PCIE_MAX_COUNTERS, the memory write
+overflow of event_group array occurs.
 
-Hao Chen (1):
-  drivers/perf: hisi: hns3: Actually use devm_add_action_or_reset()
+Add array index check to fix the possible array out of bounds violation,
+and return directly when write new events are written to array bounds.
 
-Junhao He (2):
-  drivers/perf: hisi_pcie: Fix out-of-bound access when valid event
-    group
-  drivers/perf: hisi: hns3: Fix out-of-bound access when valid event
-    group
+There are 9 different events in an event_group.
+[1] perf stat -e '{pmu/event1/, ... ,pmu/event9/}'
 
+Fixes: 8404b0fbc7fb ("drivers/perf: hisi: Add driver for HiSilicon PCIe PMU")
+Signed-off-by: Junhao He <hejunhao3@huawei.com>
+---
  drivers/perf/hisilicon/hisi_pcie_pmu.c | 14 +++++++++++++-
- drivers/perf/hisilicon/hns3_pmu.c      | 16 ++++++++++++++--
- 2 files changed, 27 insertions(+), 3 deletions(-)
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+index 5d1f0e9fdb08..dba399125658 100644
+--- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
++++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+@@ -350,15 +350,27 @@ static bool hisi_pcie_pmu_validate_event_group(struct perf_event *event)
+ 			return false;
+ 
+ 		for (num = 0; num < counters; num++) {
++			/*
++			 * If we find a related event, then it's a valid group
++			 * since we don't need to allocate a new counter for it.
++			 */
+ 			if (hisi_pcie_pmu_cmp_event(event_group[num], sibling))
+ 				break;
+ 		}
+ 
++		/*
++		 * Otherwise it's a new event but if there's no available counter,
++		 * fail the check since we cannot schedule all the events in
++		 * the group simultaneously.
++		 */
++		if (num == HISI_PCIE_MAX_COUNTERS)
++			return false;
++
+ 		if (num == counters)
+ 			event_group[counters++] = sibling;
+ 	}
+ 
+-	return counters <= HISI_PCIE_MAX_COUNTERS;
++	return true;
+ }
+ 
+ static int hisi_pcie_pmu_event_init(struct perf_event *event)
 -- 
 2.33.0
 
