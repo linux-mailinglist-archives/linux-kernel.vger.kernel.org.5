@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-158761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40CD28B2498
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:05:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 557818B2496
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:05:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7387F1C20D05
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:05:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72B6BB28CCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:05:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 743F014C587;
-	Thu, 25 Apr 2024 15:04:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D492914BF9B;
+	Thu, 25 Apr 2024 15:04:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="hD/VSJRx"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="SEuX8jlN"
 Received: from nbd.name (nbd.name [46.4.11.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B30C314A622;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B191D12AAC6;
 	Thu, 25 Apr 2024 15:04:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714057487; cv=none; b=XvoWXxTzEjOWs87GjZa362eV5JSWDiBBp9junGmkOw35aj0Sw8iyXit0TdNiE0K/JWkH3tQ2MllygrE5CTKqvsmRJEJYi8gSID7F7Dpvczh+X/1qTtKHVhIpxsZnLsW3PQwYTOfHAIZOVnyqACe9O/GfGDOvvwn2TkgY/GLpOWg=
+	t=1714057486; cv=none; b=rfH5DaHz05ypdZcp8RHjXgyXeBze2yBHkSS1uRQ1+Y1zgsez3DxrHcif28bjLZYqnWrUJ2y5imnatwMR/P8stKW2hwXh0FTSmsh0XN2Z8bTCl2Es9F4z28tqtN8Rb9uEaxX6hpQhMmm0N/0f05losjOk3iLdO9OUgnkznrabA7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714057487; c=relaxed/simple;
-	bh=xkbQXKmazw6w+kcLk9VywCo7DsNUfS8mDLITIh/5LOE=;
+	s=arc-20240116; t=1714057486; c=relaxed/simple;
+	bh=8NeEE50o/WAF7alz523Mftf7uWVPcr6hQyPB9rlVopU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Gqf8onIMNIrW0FrXusWSQZIc6WPK8QPNLerlN+EHAQte33OqQ7NFw2i9PC1CiRZyHgFgSKA9Q234v2t7wfof4qBrKIIQ0pcZiomaTmKmQkCylkgqCttMkmMbPdfucWz1o7hv1Uo/P0EyGiZkRAXP6PDSbr72W5B+sJaL10skFpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=hD/VSJRx; arc=none smtp.client-ip=46.4.11.11
+	 MIME-Version; b=c0x2Sr9g5+bnmv9S2IECV1XyOBDMqR6Ds5QjrY9FUUZbm9BlS5WEtHFGYVdE9ozt6nFxKyN+VL7JIo6qEoEUPIFsqbRsV4pYEtR7b7N/ktC4YNPeIZmiGpVC8W5nao3x46pa1IQtNotpQDiraNNi1UHdvzayiP9j0gvLDhGr+0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=SEuX8jlN; arc=none smtp.client-ip=46.4.11.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
@@ -36,14 +36,14 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=OCIv8NKbFSIrG2P/zL2p2VLnmoGImlU9tFnH2NRB5co=; b=hD/VSJRxFi2x3P2U7Hb1223zqU
-	JnPovQAdw3HKPO9fTbcwZ0nk1aDrSZuNmr9mKQmOi+BXllFAJt1K/XOxI+Zyh6gFcVjgGqi5SnkH+
-	EWW/DgeQp1jB4PCOuRTnAApKzygRdd28FLTTSRFAC8Lp6ifi4prz7VoRRBY1bDxMMR5M=;
+	bh=tDIhibAnoiRO2OlDgF5FLoNbCcri4UG1OGQ0HjCzYwU=; b=SEuX8jlNPizloEeHmgbL72blD/
+	KXHENMhshaTigm/P3jaU3S48aytd4QCqnG2q+RdKy/ycPQfPTL22qQOTtJHp0xiiSkhbfoFeC/ryA
+	9fJQ3R8TLPX9LELIn/Kf2iG4wCQ7AA8Skx54vRikvV9GwKNWlZm9Ph+l2Bd+HH5JovDM=;
 Received: from p54ae9c93.dip0.t-ipconnect.de ([84.174.156.147] helo=localhost.localdomain)
 	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
 	(Exim 4.96)
 	(envelope-from <nbd@nbd.name>)
-	id 1s00eJ-007MWz-0K;
+	id 1s00eJ-007MWz-2k;
 	Thu, 25 Apr 2024 17:04:35 +0200
 From: Felix Fietkau <nbd@nbd.name>
 To: netdev@vger.kernel.org,
@@ -54,9 +54,9 @@ To: netdev@vger.kernel.org,
 	Paolo Abeni <pabeni@redhat.com>
 Cc: willemdebruijn.kernel@gmail.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 net-next v2 2/5] net: add support for segmenting TCP fraglist GSO packets
-Date: Thu, 25 Apr 2024 17:04:25 +0200
-Message-ID: <20240425150432.44142-3-nbd@nbd.name>
+Subject: [PATCH v2 net-next v2 3/5] net: add code for TCP fraglist GRO
+Date: Thu, 25 Apr 2024 17:04:26 +0200
+Message-ID: <20240425150432.44142-4-nbd@nbd.name>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240425150432.44142-1-nbd@nbd.name>
 References: <20240425150432.44142-1-nbd@nbd.name>
@@ -68,117 +68,76 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Preparation for adding TCP fraglist GRO support. It expects packets to be
-combined in a similar way as UDP fraglist GSO packets.
-For IPv4 packets, NAT is handled in the same way as UDP fraglist GSO.
+This implements fraglist GRO similar to how it's handled in UDP, however
+no functional changes are added yet. The next change adds a heuristic for
+using fraglist GRO instead of regular GRO.
 
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 ---
- net/ipv4/tcp_offload.c   | 69 ++++++++++++++++++++++++++++++++++++++++
- net/ipv6/tcpv6_offload.c |  3 ++
- 2 files changed, 72 insertions(+)
+ net/ipv4/tcp_offload.c   | 22 ++++++++++++++++++++++
+ net/ipv6/tcpv6_offload.c |  9 +++++++++
+ 2 files changed, 31 insertions(+)
 
 diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
-index fab0973f995b..e455f884190c 100644
+index e455f884190c..68157130c264 100644
 --- a/net/ipv4/tcp_offload.c
 +++ b/net/ipv4/tcp_offload.c
-@@ -28,6 +28,72 @@ static void tcp_gso_tstamp(struct sk_buff *skb, unsigned int ts_seq,
- 	}
- }
+@@ -336,6 +336,19 @@ struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb)
+ 	flush |= (ntohl(th2->seq) + skb_gro_len(p)) ^ ntohl(th->seq);
+ 	flush |= skb_cmp_decrypted(p, skb);
  
-+static void __tcpv4_gso_segment_csum(struct sk_buff *seg,
-+				     __be32 *oldip, __be32 *newip,
-+				     __be16 *oldport, __be16 *newport)
-+{
-+	struct tcphdr *th;
-+	struct iphdr *iph;
++	if (NAPI_GRO_CB(p)->is_flist) {
++		flush |= (__force int)(flags ^ tcp_flag_word(th2));
++		flush |= skb->ip_summed != p->ip_summed;
++		flush |= skb->csum_level != p->csum_level;
++		flush |= !pskb_may_pull(skb, skb_gro_offset(skb));
++		flush |= NAPI_GRO_CB(p)->count >= 64;
 +
-+	if (*oldip == *newip && *oldport == *newport)
-+		return;
++		if (flush || skb_gro_receive_list(p, skb))
++			mss = 1;
 +
-+	th = tcp_hdr(seg);
-+	iph = ip_hdr(seg);
-+
-+	inet_proto_csum_replace4(&th->check, seg, *oldip, *newip, true);
-+	inet_proto_csum_replace2(&th->check, seg, *oldport, *newport, false);
-+	*oldport = *newport;
-+
-+	csum_replace4(&iph->check, *oldip, *newip);
-+	*oldip = *newip;
-+}
-+
-+static struct sk_buff *__tcpv4_gso_segment_list_csum(struct sk_buff *segs)
-+{
-+	struct sk_buff *seg;
-+	struct tcphdr *th, *th2;
-+	struct iphdr *iph, *iph2;
-+	__be32 flags, flags2;
-+
-+	seg = segs;
-+	th = tcp_hdr(seg);
-+	iph = ip_hdr(seg);
-+	flags = tcp_flag_word(th);
-+	flags2 = tcp_flag_word(tcp_hdr(seg->next));
-+
-+	if ((tcp_hdr(seg)->dest == tcp_hdr(seg->next)->dest) &&
-+	    (tcp_hdr(seg)->source == tcp_hdr(seg->next)->source) &&
-+	    (ip_hdr(seg)->daddr == ip_hdr(seg->next)->daddr) &&
-+	    (ip_hdr(seg)->saddr == ip_hdr(seg->next)->saddr) &&
-+	    (flags == flags2))
-+		return segs;
-+
-+	while ((seg = seg->next)) {
-+		th2 = tcp_hdr(seg);
-+		iph2 = ip_hdr(seg);
-+
-+		__tcpv4_gso_segment_csum(seg,
-+					 &iph2->saddr, &iph->saddr,
-+					 &th2->source, &th->source);
-+		__tcpv4_gso_segment_csum(seg,
-+					 &iph2->daddr, &iph->daddr,
-+					 &th2->dest, &th->dest);
++		goto out_check_final;
 +	}
 +
-+	return segs;
-+}
-+
-+static struct sk_buff *__tcp4_gso_segment_list(struct sk_buff *skb,
-+					      netdev_features_t features)
-+{
-+	skb = skb_segment_list(skb, features, skb_mac_header_len(skb));
-+	if (IS_ERR(skb))
-+		return skb;
-+
-+	return __tcpv4_gso_segment_list_csum(skb);
-+}
-+
- static struct sk_buff *tcp4_gso_segment(struct sk_buff *skb,
- 					netdev_features_t features)
- {
-@@ -37,6 +103,9 @@ static struct sk_buff *tcp4_gso_segment(struct sk_buff *skb,
- 	if (!pskb_may_pull(skb, sizeof(struct tcphdr)))
- 		return ERR_PTR(-EINVAL);
+ 	if (flush || skb_gro_receive(p, skb)) {
+ 		mss = 1;
+ 		goto out_check_final;
+@@ -402,6 +415,15 @@ INDIRECT_CALLABLE_SCOPE int tcp4_gro_complete(struct sk_buff *skb, int thoff)
+ 	const struct iphdr *iph = ip_hdr(skb);
+ 	struct tcphdr *th = tcp_hdr(skb);
  
-+	if (skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST)
-+		return __tcp4_gso_segment_list(skb, features);
++	if (NAPI_GRO_CB(skb)->is_flist) {
++		skb_shinfo(skb)->gso_type |= SKB_GSO_FRAGLIST | SKB_GSO_TCPV4;
++		skb_shinfo(skb)->gso_segs = NAPI_GRO_CB(skb)->count;
 +
- 	if (unlikely(skb->ip_summed != CHECKSUM_PARTIAL)) {
- 		const struct iphdr *iph = ip_hdr(skb);
- 		struct tcphdr *th = tcp_hdr(skb);
++		__skb_incr_checksum_unnecessary(skb);
++
++		return 0;
++	}
++
+ 	th->check = ~tcp_v4_check(skb->len - thoff, iph->saddr,
+ 				  iph->daddr, 0);
+ 
 diff --git a/net/ipv6/tcpv6_offload.c b/net/ipv6/tcpv6_offload.c
-index 4b07d1e6c952..b3b8e1f6b92a 100644
+index b3b8e1f6b92a..c97d55cf036f 100644
 --- a/net/ipv6/tcpv6_offload.c
 +++ b/net/ipv6/tcpv6_offload.c
-@@ -51,6 +51,9 @@ static struct sk_buff *tcp6_gso_segment(struct sk_buff *skb,
- 	if (!pskb_may_pull(skb, sizeof(*th)))
- 		return ERR_PTR(-EINVAL);
+@@ -32,6 +32,15 @@ INDIRECT_CALLABLE_SCOPE int tcp6_gro_complete(struct sk_buff *skb, int thoff)
+ 	const struct ipv6hdr *iph = ipv6_hdr(skb);
+ 	struct tcphdr *th = tcp_hdr(skb);
  
-+	if (skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST)
-+		return skb_segment_list(skb, features, skb_mac_header_len(skb));
++	if (NAPI_GRO_CB(skb)->is_flist) {
++		skb_shinfo(skb)->gso_type |= SKB_GSO_FRAGLIST | SKB_GSO_TCPV6;
++		skb_shinfo(skb)->gso_segs = NAPI_GRO_CB(skb)->count;
 +
- 	if (unlikely(skb->ip_summed != CHECKSUM_PARTIAL)) {
- 		const struct ipv6hdr *ipv6h = ipv6_hdr(skb);
- 		struct tcphdr *th = tcp_hdr(skb);
++		__skb_incr_checksum_unnecessary(skb);
++
++		return 0;
++	}
++
+ 	th->check = ~tcp_v6_check(skb->len - thoff, &iph->saddr,
+ 				  &iph->daddr, 0);
+ 	skb_shinfo(skb)->gso_type |= SKB_GSO_TCPV6;
 -- 
 2.44.0
 
