@@ -1,134 +1,198 @@
-Return-Path: <linux-kernel+bounces-157886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2E148B1819
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:42:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 940368B17CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:10:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A8762831AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:42:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD5C6B250B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A86601C14;
-	Thu, 25 Apr 2024 00:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 360BB15B3;
+	Thu, 25 Apr 2024 00:10:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="Rewpzcqr"
-Received: from msa.smtpout.orange.fr (msa-217.smtpout.orange.fr [193.252.23.217])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ga8+6L2e"
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DF86816;
-	Thu, 25 Apr 2024 00:42:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.23.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F4518D
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:10:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714005743; cv=none; b=j/MDqKtBhLDKh/bURHp8/xb0h4OlOHETPDggi6QbIu48AXhAAqk6SPjUWOFKqdcwRWHIwnx+GNdtQsPYQBtMgjnjnQBBcN7HB0h/xetg32mRNkUrNBSXQg7PnLS5M6fCkefx2le8bGdrqYnXRPbk2eChKLVW2D7ahzRNM6a72Qk=
+	t=1714003811; cv=none; b=JkCNGG/VaL1sVcOH/wcUYHKIVb1uY35NpJ9hdPQyQV/6RvtJKCpq1qJiBtSAyR1tGdPhT1yq7wTTDWkfphCiXmhU51OJb2wqopMAJ/MRNt8q0TtRcjZZVImdGzIhPxO/ozpj4zgoZcPS5Ee2FRFTc1z0NSMLW59Q6T411yrN41s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714005743; c=relaxed/simple;
-	bh=Hre7W80W6Sa6/1VsF3RTEXPkgnH7ao/VPskpGPGZYhA=;
+	s=arc-20240116; t=1714003811; c=relaxed/simple;
+	bh=DF+ESX/R/dueU+A3uqXJP5ou+tI9D6uyGkPn/g9QVjM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TjjDbzIU8G/bnXMbuRAGfs7vPhIi8eK3I6YRw2Nx8mll0fklt5iE+k0LBGLjTPI598pSAHrLsCnPunBRE1HadWSP0cHNc8A1gCB9VgnA5bGfkysfyp2RmwUwGpiSgGoThIVfHK0oTSXAQnioZYZX2XC2VRtC9vJLKnWTckVJMbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=Rewpzcqr; arc=none smtp.client-ip=193.252.23.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.37] ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id zZxwrgXWsHa8WzZxwrW7sY; Wed, 24 Apr 2024 12:35:09 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1713954909;
-	bh=h2zecfNezQcLS7/TPEc/i/RBRBH4yoSAoRIJo8Y12us=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=RewpzcqrFLLCX8GSjycSHK/O7YxBxMhCOig8ckghUv80CaJFslEskHhJ1Y8ioT2Hu
-	 tQkdEdydNfFXFCgq/t5JH+UCKBSCRD0QQKPW2FXw53Z3qAQ+i5dCDtotEqjXk5A7Jh
-	 4lmyuc5ygkVRv32F1a528mNyAo+WgSTElkNu4YopJ//yCdVRXZciBexmZeS/kUPJxT
-	 geFAUo18k7wvt00zkCqux9gJGwpUuC1zCh86UOu72UcqLLKBtZvMlfk4Ex0fjgOwH9
-	 6KfIOFqKj2C657lUcx2eEGGMBzSXh6GKymFn0DmcYZNvr6e/ZbgYmcn4MypF44DIfw
-	 3pQZzecB/H2+A==
-X-ME-Helo: [192.168.1.37]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 24 Apr 2024 12:35:09 +0200
-X-ME-IP: 86.243.17.157
-Message-ID: <93c12354-2e4d-4b21-bc96-eeb55442e365@wanadoo.fr>
-Date: Wed, 24 Apr 2024 12:35:04 +0200
+	 In-Reply-To:Content-Type; b=VcvUqBcSMU10cC72jkv++RnQ0RgI6wiICUIzoM2Vt3FdeMOuc7/IrGvchLmbqaqHQRiHn6x4gvC3ee9NG1fHblpX9w1skDnJlSjc/kmIqqC6cZj21ikAwuD8Y3I1O5Nh0DgAlambhXlnN3dfutNukCHlIB4+jP+A57JZfir/rgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ga8+6L2e; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c63232b1-2ee5-487a-b987-7cc6b47d3da3@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714003806;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E+Epq0W0s0kfKHDsYK6tgREeHnKIEVotS1o9KZ8bfzg=;
+	b=ga8+6L2eqZLrf7yR2ttx2CCUXBMtoD7bUT1GmbfLB+ctWlCwZnkRFPNg6pqNJlwLvvx8fT
+	jLbIenkvtRISEBJTpzzQx7mHuAEoqAvAKpE/bSFtApRKJyQWvPAmFuyDCWMtSNMQ1tFmJc
+	g0zn5Cta0tZVSkjWjqZKR2qTBpte+N8=
+Date: Thu, 25 Apr 2024 01:10:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 6/7] regulator: Add refactored mtk-dvfsrc-regulator
- driver
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: amergnat@baylibre.com, broonie@kernel.org, conor+dt@kernel.org,
- devicetree@vger.kernel.org, djakov@kernel.org, gustavoars@kernel.org,
- henryc.chen@mediatek.com, keescook@chromium.org, kernel@collabora.com,
- krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-pm@vger.kernel.org,
- matthias.bgg@gmail.com, robh@kernel.org, wenst@chromium.org
-References: <20240424095416.1105639-1-angelogioacchino.delregno@collabora.com>
- <20240424095416.1105639-7-angelogioacchino.delregno@collabora.com>
-Content-Language: en-MW
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20240424095416.1105639-7-angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH net-next] net: phy: micrel: Add support for PTP_PF_EXTTS
+ for lan8814
+To: Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc: andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, richardcochran@gmail.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240423195732.3353522-1-horatiu.vultur@microchip.com>
+ <adf60fa5-052f-4135-acab-91a02a9aff61@linux.dev>
+ <20240424191204.h2jajp57kpgccaql@DEN-DL-M31836.microchip.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <20240424191204.h2jajp57kpgccaql@DEN-DL-M31836.microchip.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Le 24/04/2024 à 11:54, AngeloGioacchino Del Regno a écrit :
-> The previous driver never worked, and never got even compiled because
-> it was missing the DVFSRC driver entirely, including needed neaders.
+On 24/04/2024 20:12, Horatiu Vultur wrote:
+> The 04/24/2024 11:57, Vadim Fedorenko wrote:
 > 
-> This is a full (or nearly full) refactoring of the MediaTek DVFSRC
-> controlled Regulators driver, retaining support for the MT6873, MT8183
-> and MT8192 SoC, and adding MT8195.
+> Hi Vadim,
 > 
-> As part of the refactoring, this driver is now probed using its own
-> devicetree compatible, as this is a child of the main DVFSRC driver
-> and gets probed as a subnode of that.
+>>
+>> On 23/04/2024 20:57, Horatiu Vultur wrote:
+>>> Extend the PTP programmable gpios to implement also PTP_PF_EXTTS
+>>> function. The pins can be configured to capture both of rising
+>>> and falling edge. Once the event is seen, then an interrupt is
+>>> generated and the LTC is saved in the registers.
+>>> On lan8814 only GPIO 3 can be configured for this.
+>>>
+>>> This was tested using:
+>>> ts2phc -m -l 7 -s generic -f ts2phc.cfg
+>>>
+>>> Where the configuration was the following:
+>>> ---
+>>> [global]
+>>> ts2phc.pin_index  3
+>>>
+>>> [eth0]
+>>> ---
+>>>
+>>> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+>>
+>> I'm not sure what happened to (fac63186f116 net: phy: micrel: Add
+>> support for PTP_PF_EXTTS for lan8841), looks like this patch is the
+>> rework previous with the limit to GPIO 3 only. In this case comments
+>> below are applicable.
 > 
-> Reviewed-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-> ---
->   drivers/regulator/mtk-dvfsrc-regulator.c | 196 +++++++++++++++++++++++
->   1 file changed, 196 insertions(+)
->   create mode 100644 drivers/regulator/mtk-dvfsrc-regulator.c
+> These are two different PHYs:
+> 1. lan8814 which is a quad PHY and the patch is this PHY
+> 2. lan8841 which is a single PHY. And the commit that you mention it was
+>     for that PHY.
+> So this commit is not rework of the commit that you mention.
+
+Ah, I see, sorry for the mess..
+
 > 
+> ...
+> 
+>>
+>>> +static int lan8814_ptp_extts(struct ptp_clock_info *ptpci,
+>>> +                          struct ptp_clock_request *rq, int on)
+>>> +{
+>>> +     struct lan8814_shared_priv *shared = container_of(ptpci, struct lan8814_shared_priv,
+>>> +                                                       ptp_clock_info);
+>>> +     struct phy_device *phydev = shared->phydev;
+>>> +     int pin;
+>>> +
+>>> +     if (rq->extts.flags & ~(PTP_ENABLE_FEATURE |
+>>> +                             PTP_EXTTS_EDGES |
+>>> +                             PTP_STRICT_FLAGS))
+>>> +             return -EOPNOTSUPP;
+>>> +
+>>> +     pin = ptp_find_pin(shared->ptp_clock, PTP_PF_EXTTS,
+>>> +                        rq->extts.index);
+>>> +     if (pin == -1 || pin != LAN8814_PTP_EXTTS_NUM)
+>>> +             return -EINVAL;
+>>
+>> I'm not sure how will enable request pass this check?
+>> In lan8814_ptp_probe_once pins are initialized with PTP_PF_NONE,
+>> and ptp_find_pin will always return -1, which will end up with
+>> -EINVAL here and never hit lan8814_ptp_extts_on/lan8814_ptp_extts_off
+>>
+> 
+> Why ptp_find_pin will always return -1? Because we can set the function
+> of the pin.
 
-..
+ah, I see, PTP_PIN_SETFUNC + PTP_EXTTS_REQUEST ioctls will do the
+configuration. Maybe make GPIO 3 as PTP_PF_EXTTS function by default?
 
-> +static int dvfsrc_vcore_regulator_probe(struct platform_device *pdev)
-> +{
-> +	struct regulator_config config = { .dev = &pdev->dev };
-> +	const struct dvfsrc_regulator_pdata *pdata;
-> +	int i;
-> +
-> +	pdata = device_get_match_data(&pdev->dev);
-> +	if (!pdata)
-> +		return -EINVAL;
-> +
-> +	for (i = 0; i < pdata->size; i++) {
-> +		struct regulator_desc *vrdesc = &pdata->descs[i];
-> +		struct regulator_dev *rdev;
-> +
-> +		rdev = devm_regulator_register(&pdev->dev, vrdesc, &config);
-> +		if (IS_ERR(rdev)) {
-> +			dev_err(&pdev->dev, "failed to register %s\n", vrdesc->name);
-> +			return PTR_ERR(rdev);
+> ...
+> 
+>   >       }
+>>> @@ -3148,6 +3263,10 @@ static int lan8814_ptpci_verify(struct ptp_clock_info *ptp, unsigned int pin,
+>>>                if (pin >= LAN8814_PTP_PEROUT_NUM || pin != chan)
+>>>                        return -1;
+>>>                break;
+>>> +     case PTP_PF_EXTTS:
+>>> +             if (pin != LAN8814_PTP_EXTTS_NUM)
+>>
+>> Here the check states that exactly GPIO 3 can have EXTTS function, but
+>> later in the config...
+> 
+> ...
+>>
+>>> +                     return -1;
+>>> +             break;
+>>>        default:
+>>>                return -1;
+>>>        }
+>>>
+>>> @@ -3541,7 +3721,7 @@ static int lan8814_ptp_probe_once(struct phy_device *phydev)
+>>>        snprintf(shared->ptp_clock_info.name, 30, "%s", phydev->drv->name);
+>>>        shared->ptp_clock_info.max_adj = 31249999;
+>>>        shared->ptp_clock_info.n_alarm = 0;
+>>> -     shared->ptp_clock_info.n_ext_ts = 0;
+>>> +     shared->ptp_clock_info.n_ext_ts = LAN8814_PTP_EXTTS_NUM;
+>>
+>> Here ptp_clock is configured to have 3 pins supporting EXTTS.
+>> Looks like it should be n_ext_ts = 1;
+> 
+> Good point, let me have a look at this.
 
-Hi,
+I have checked it while checking enable part. Conditions in ptp_ioctl
+give no options to limit lowest number of pin which supports EXTTS.
 
-Nit: (in case of v6)
+I think that the ptp_clock_info documentation is misleading here:
 
-	dev_err_probe()?
+* @n_ext_ts:  The number of external time stamp channels.
 
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
+should be replaced to something like "max index of external time
+stamp channel".
 
-..
+With all above the patch LGTM!
 
-CJ
+Reviewed-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+
+> 
+>>
+>>>        shared->ptp_clock_info.n_pins = LAN8814_PTP_GPIO_NUM;
+>>>        shared->ptp_clock_info.pps = 0;
+>>>        shared->ptp_clock_info.pin_config = shared->pin_config;
+>>
+>>
+> 
 
 
