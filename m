@@ -1,152 +1,121 @@
-Return-Path: <linux-kernel+bounces-158886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47F4C8B2649
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:22:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2F028B264B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:22:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77E0A1C2223A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:22:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D1EE285320
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:22:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E110F14D2B5;
-	Thu, 25 Apr 2024 16:22:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870D814D444;
+	Thu, 25 Apr 2024 16:22:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uOAxSmAM"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bUqpvLz9"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8917114D2A8
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 16:22:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E9B114D42C
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 16:22:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714062141; cv=none; b=jhQ81JNX8SUOFOuJPB9uoL3L3zsIJIjTuDMFwAQDR7hd2AS96GIOmUNO0Ti8rGT4WiflT3Xj7wHqK9QlYgJG+kyJVbDUMf9JFlR0QqsnLXsgNqUuxIjTdNpcA65TACHmmcNsvjtTLUJS7Yu6p5eDiplWDvRogJYEpWZhqpgY59s=
+	t=1714062145; cv=none; b=beVwQGR6eoq05oEgjksBPs0lZg4tOmqrlMj6NoRaw/v9gFfZDlQk3ldkOlaWRS5aKXENW8ImCjn3ZExhgRhxqcm89voL2kaYMRWFhyNRcOM6RHyjURVLLfI7SOYtZmelbfO0yR8KYIZt6oblKQxgbg2iFv2V9kkWLZxzXSnK+Os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714062141; c=relaxed/simple;
-	bh=ieQm+pX9ecLlYdE6XA9WVavDiEeCE981RVxr7pvK7dE=;
+	s=arc-20240116; t=1714062145; c=relaxed/simple;
+	bh=+naKcIk5EvH6BPYm2Cjrzgy9Fbzr4w1ZLSAaG7qX8IU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GVKS6siwIGn8UWWXOL8eba8+hYudTHIvqm0VQqTDznaeAbpJ5gMVIBqepPT3rsIcYLj/TmRyeN6/tXVRnQUiMO0rED2eDZJMxHQx6rxK0lqxIfc7GLawIR0bmtpX4S3CcF3FoY8HYhdmJ+bIjAKiNEuycfejon+4/pDlNaTTOcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uOAxSmAM; arc=none smtp.client-ip=209.85.219.174
+	 To:Cc:Content-Type; b=Ol6BXpjvY8P7Sj8cD5Z6QnMzSEqkQ9P+NLmzXa3WBSzHZ5yHUooqt7xrGbus2IS2qPQUNQu1LbQ5pT+ys5ZcbhzhYQMqVF1U5CoYmHBWmw+RnyANiXpmJDEUkr3w6feIjqg+gCayD8M1OB7OpUWAdX2TmYkodSH+QuVAmNH+pbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bUqpvLz9; arc=none smtp.client-ip=209.85.219.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-de54c2a3eeaso1278442276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:22:18 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so1284196276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:22:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714062137; x=1714666937; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714062142; x=1714666942; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rT8CtB6u0TXgJ8oVknrhHpM21jHgaIduXHq4luZbdGI=;
-        b=uOAxSmAMIf5P0Bh2TTi1QvHnOHZx8YQ+p22It6c/7xS3zUVej5a6Fu+TgaF8LHbahL
-         OVThoZ/2s5urHC6fZhKo3dTDHg60LmhJInS3W781fTkpHkPz6+ySC4wIfY/MYQU7sQVZ
-         J8HJAishJ2x1qufq7wF75kQqKF3ajiK7ifoKs4Bhri51qwqaEfutx5xrCi9P4Sc82TQb
-         8rX0Z01ksCp9uSAEAW4iz8X1+eiiZymceyPzcQ6oYE1775kK0hQS8zTCIdipqGqw5oyg
-         gUdPUc4kf4C4t5ir++xAqvZAJeZQAsRrDtOdoKt0YXFVpvD+SWtyUKA/8gzdNowjnlZ1
-         A+5A==
+        bh=uLxrhcQ9oc44OMZc8b5Iq8eE4NFzuTcQxbVwCcXluvg=;
+        b=bUqpvLz9bsxLTCDE07ke0cqh1yMoBKVFRmjI6B69KtshzMntZOfkCc8XGXKwoiwSYn
+         KaS5VpDEcM+a9Nx3oBNiooP1EiDj6czchZnSLikZ1N8vmtLBGy9a4cv9H7f1JDeSt/dQ
+         KdnrIbvtVfN67jSr4U/LfZHV/QJa6hCAzOAuWu7k4IQiFvEZvmtCs+dlJ8n2RG8G2uBn
+         CQzBwUHniIk2ZThuM7MsVUJcRo961kU5acB133pZ3c6jaTsoBPkI+r4ZSZb/GxK8w+15
+         wczQ3MnmasOx1mrwhtyz3KC+LS93hgK36dYdi+U8S03T50wzHb1X8clG0x8RIyjexmL7
+         dc6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714062137; x=1714666937;
+        d=1e100.net; s=20230601; t=1714062142; x=1714666942;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rT8CtB6u0TXgJ8oVknrhHpM21jHgaIduXHq4luZbdGI=;
-        b=hSs4NGk7MMXeR48KylbtltxEOyOj4necq34LOnQW0cUaqJ+9XfBe2NL1CR7yvy/PDd
-         09I8FCPqPSpUmiPYtPRwjW2Z7Ww6Jddcq0hbGXZXXPr6c46z0D2ntpL+GiepMozSLGVi
-         B208jGHfLZ0br/rS536gfZ665lVkEplNizuaBc0AGDXQnVZm43q4rulTMGNlPMyECrs0
-         lmu9eZAI817VBc+nSBevt6yWdY/LX3k+oEhKcT1bRA6tSGCc4l63LCcjvhEfxSxzsSc6
-         Bg5D/UyXP/O/gP5DGgfxu9ZByY1Eox0LGn3NdaPBiSZbOdCr78Z1yFRstNlkOebafDIJ
-         B4cg==
-X-Forwarded-Encrypted: i=1; AJvYcCVeQy2qzUG2TPpKc3xD6Mn4iJu1ZKItAYe4xkKks+hvpZFgyF5BlW/dFLtvaoUR0JKWojv74HiGnM7gyq0xrkOl1UPcZ16//TfbWn0I
-X-Gm-Message-State: AOJu0YyjcyqYdmaiLPpLU8PtXKPBGfVj5aNphb32CmM0UmiNSLkcCPyA
-	WbMiweHyRWXIg7z3FBihDTtSBLFaD2HAW1x6sukBNrt19zmLBqsIdjjRl05d++5UvT9/2Ax5Bzj
-	2/VCsHgdYhGkI/EY3wEOg2XGYXwTYgKm/Ajn19nHTK4uY9oRX
-X-Google-Smtp-Source: AGHT+IFGFpz8NUcmngKe2j/efRClh3UKrfm6xwT5VVEWp2uX1W5JdiP8Rvm3CEsEcWTSAQExtQt3FdMEpkaO1GcsGc8=
-X-Received: by 2002:a05:6902:546:b0:dd1:40cf:942b with SMTP id
- z6-20020a056902054600b00dd140cf942bmr119986ybs.48.1714062137592; Thu, 25 Apr
- 2024 09:22:17 -0700 (PDT)
+        bh=uLxrhcQ9oc44OMZc8b5Iq8eE4NFzuTcQxbVwCcXluvg=;
+        b=NpbUeswftVQFw76K/vIUBdyimrXMn74EC7fkmzkbhPL5fhurUyxVezgOrEqt+0yc51
+         co5iJLj/xwRqfCc9Q6+2oqJcb15CKmWu6N34woBn732hLbjZklMIwkfW+yMLXwKtijo2
+         ZBw/cpTHMoDRrtQ4KTGmKJgIKeMhx+zEow9DQ/keGYG5VtR+/YdWPN7355Hs9+b76flZ
+         0Kyb/M0tV0HpFbQGQRX+zSMBPqWvOYsQoi42ihV3RnzGFBIv9jnmyZ7jisK4pMWVP1m+
+         136IExA2WPzmsIyOW7QWnZ+P0wDQoJUD4NDeT7UkpT2l94uPLsH1uhyv63R7MCVkM8ml
+         y86Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUyLxF5EQ4zmjegr8AIPMjzSOu7aW0zaBunoY2q7L9WaM7jjWER/nC34yFbtu3FYVJ5z2vZqKE9I88bBmT7hmCVqFTMJe+Z0lKmriIa
+X-Gm-Message-State: AOJu0Ywkpfckpg89c7a1cDpsbZSPzd2jvtRQ/SHqWGMyF2ARGJbK47EB
+	eUE+ixNVnmPO6kl4G08/83JU6nLnXrWo/7Sflyng5Vzj7fqRD89gcRvxTNKP6yGQRAA6SjQEey5
+	eF4k7wsRMQaGqYdB0LJgo7zyAEcezrKhq72quhQ==
+X-Google-Smtp-Source: AGHT+IFtKn6b6GJpNn67zl9+P4j1OLHkcP6FUpJ4JOoi5sUsm1euCeUryXi8PiHOutOriprJEFlsIAFazJXA+fzp6kc=
+X-Received: by 2002:a25:bfc8:0:b0:db9:9134:bb28 with SMTP id
+ q8-20020a25bfc8000000b00db99134bb28mr137095ybm.4.1714062141958; Thu, 25 Apr
+ 2024 09:22:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410195618.1632778-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240410195618.1632778-1-andriy.shevchenko@linux.intel.com>
+References: <20240414-mmc-const-sdhci-ops-v2-0-262f81faadac@kernel.org>
+In-Reply-To: <20240414-mmc-const-sdhci-ops-v2-0-262f81faadac@kernel.org>
 From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Thu, 25 Apr 2024 18:21:41 +0200
-Message-ID: <CAPDyKFoHQos4=+JUE-+=Sgr-GiVyF3HWiEHrCrdKNtcEsTPEGA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] mmc: slot-gpio: Use irq_handler_t type
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Alexander Stein <alexander.stein@ew.tq-group.com>, linux-mmc@vger.kernel.org, 
+Date: Thu, 25 Apr 2024 18:21:46 +0200
+Message-ID: <CAPDyKFoC1fSvWifKtFV9D=hNkGuOL7eVnDdw2ZGVedsYrombdA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] mmc: Constify struct sdhci_ops
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>, Angelo Dureghello <adureghello@baylibre.com>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Orson Zhai <orsonzhai@gmail.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>, 
+	Ben Dooks <ben-linux@fluff.org>, Jaehoon Chung <jh80.chung@samsung.com>, linux-mmc@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 10 Apr 2024 at 21:56, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Sun, 14 Apr 2024 at 16:07, Krzysztof Kozlowski <krzk@kernel.org> wrote:
 >
-> The irq_handler_t is already defined globally, let's use it
-> in slot-gpio code.
+> Hi,
 >
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Changes in v2:
+> - Patch 5 - sdhci-s3c: add __maybe_unused, reported by kernel test
+>   robot.
+> - Link to v1: https://lore.kernel.org/r/20240414-mmc-const-sdhci-ops-v1-0-178539d68093@kernel.org
+>
+> The local struct sdhci_ops can be made const for code safety.
+> No dependencies.
+>
+> Best regards,
+> Krzysztof
+>
+> ---
+> Krzysztof Kozlowski (5):
+>       mmc: sdhci-esdhc-mcf: Constify struct sdhci_ops
+>       mmc: sdhci-omap: Constify struct sdhci_ops
+>       mmc: sdhci-sprd: Constify struct sdhci_ops
+>       mmc: sdhci_am654: Constify struct sdhci_ops
+>       mmc: sdhci-s3c: Choose sdhci_ops based on variant
+>
+>  drivers/mmc/host/sdhci-esdhc-mcf.c |  2 +-
+>  drivers/mmc/host/sdhci-omap.c      |  2 +-
+>  drivers/mmc/host/sdhci-s3c.c       | 31 +++++++++++++++++--------------
+>  drivers/mmc/host/sdhci-sprd.c      |  2 +-
+>  drivers/mmc/host/sdhci_am654.c     |  6 +++---
+>  5 files changed, 23 insertions(+), 20 deletions(-)
+> ---
 
 Applied for next, thanks!
 
 Kind regards
 Uffe
-
-
-> ---
->  drivers/mmc/core/slot-gpio.c  | 5 ++---
->  include/linux/mmc/slot-gpio.h | 5 ++---
->  2 files changed, 4 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/mmc/core/slot-gpio.c b/drivers/mmc/core/slot-gpio.c
-> index 39f45c2b6de8..8e4750558101 100644
-> --- a/drivers/mmc/core/slot-gpio.c
-> +++ b/drivers/mmc/core/slot-gpio.c
-> @@ -19,7 +19,7 @@
->  struct mmc_gpio {
->         struct gpio_desc *ro_gpio;
->         struct gpio_desc *cd_gpio;
-> -       irqreturn_t (*cd_gpio_isr)(int irq, void *dev_id);
-> +       irq_handler_t cd_gpio_isr;
->         char *ro_label;
->         char *cd_label;
->         u32 cd_debounce_delay_ms;
-> @@ -162,8 +162,7 @@ EXPORT_SYMBOL(mmc_gpio_set_cd_wake);
->  /* Register an alternate interrupt service routine for
->   * the card-detect GPIO.
->   */
-> -void mmc_gpio_set_cd_isr(struct mmc_host *host,
-> -                        irqreturn_t (*isr)(int irq, void *dev_id))
-> +void mmc_gpio_set_cd_isr(struct mmc_host *host, irq_handler_t isr)
->  {
->         struct mmc_gpio *ctx = host->slot.handler_priv;
->
-> diff --git a/include/linux/mmc/slot-gpio.h b/include/linux/mmc/slot-gpio.h
-> index 5d3d15e97868..3e4d4836a2bb 100644
-> --- a/include/linux/mmc/slot-gpio.h
-> +++ b/include/linux/mmc/slot-gpio.h
-> @@ -8,8 +8,8 @@
->  #ifndef MMC_SLOT_GPIO_H
->  #define MMC_SLOT_GPIO_H
->
-> +#include <linux/interrupt.h>
->  #include <linux/types.h>
-> -#include <linux/irqreturn.h>
->
->  struct mmc_host;
->
-> @@ -21,8 +21,7 @@ int mmc_gpiod_request_cd(struct mmc_host *host, const char *con_id,
->                          unsigned int debounce);
->  int mmc_gpiod_request_ro(struct mmc_host *host, const char *con_id,
->                          unsigned int idx, unsigned int debounce);
-> -void mmc_gpio_set_cd_isr(struct mmc_host *host,
-> -                        irqreturn_t (*isr)(int irq, void *dev_id));
-> +void mmc_gpio_set_cd_isr(struct mmc_host *host, irq_handler_t isr);
->  int mmc_gpio_set_cd_wake(struct mmc_host *host, bool on);
->  void mmc_gpiod_request_cd_irq(struct mmc_host *host);
->  bool mmc_can_gpio_cd(struct mmc_host *host);
-> --
-> 2.43.0.rc1.1336.g36b5255a03ac
->
 
