@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-158382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91BFB8B1F09
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:20:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDBDE8B1F0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:22:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 350911F242AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:20:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB7F2B2B5A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:21:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1278663E;
-	Thu, 25 Apr 2024 10:20:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EDDE127B6A;
+	Thu, 25 Apr 2024 10:20:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pQrMK/mE"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="n3g76SjW"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0ECD84E19;
-	Thu, 25 Apr 2024 10:20:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8B9D126F03;
+	Thu, 25 Apr 2024 10:20:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714040448; cv=none; b=gZKQcZfFm0MaZY56W0LfPciBc7W99cG3se6m1rFSenuzovjXn0cD7Tziqa82Eq5qjcQqerUnaGudSU4QnFZ8F9X158qmyDZSC5m2OtQnDz1KJxtZsrLo9/NTemFlkywoZI3nu1ODf02sgIqKnBEZhq0C/ruZxkAVcKtQtq23XUw=
+	t=1714040453; cv=none; b=lTtPSyvpYL7BdVvdQtEWr7YNmvilIy3EkmB+LIFvwF3JborUSAWyVajE5P+B/JEzv3djhLm1g5vmD7SxjdpH/iC0qlAmjKX9hLfYoItWjWeU62SYOcs33llwjw8VGhVsPQFv+QA8kNpqKd0f2n1cjeYwXN8wpOCJ0/pCV3t1cd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714040448; c=relaxed/simple;
-	bh=hh3Kw6YahM6tTCYxpSRjyLVkH6XMqAqyxT4fZak8Pc4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jrH34eDJ1EnpVyYqMyAJdDTyROkZqZpsDobMf43plBNs/1+BMy4S0ACFRss+Ris4XGKD91troIwDZJ8K42WiHUt7L+GCPuW4Yv7x2ctn9xAPWvD6tAen40m3gxdanfhGuT+QfoBkQxqkN3sAFJUuHGATwlRLjVqG9fcx/nNI3I4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=pQrMK/mE; arc=none smtp.client-ip=198.47.23.249
+	s=arc-20240116; t=1714040453; c=relaxed/simple;
+	bh=8g2CnGZyb7xwCbqbVwALmmM3qVngD949Tq5krzFrwo0=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rulzP5q83vSLw+uxxRxuxDcO2SdpuT3FHel/N21tQEOcfgyLbTev2vJDCpWHkKOf1Y0RiZm/YCkQg5Sp751uRWccHKKcyF71zW+A0HvUbmKd1zQB6o9AX026jH3aTsSTJfxeb+hituStg0esV3O7A3cIsPuANfY5DQk6t0uCPPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=n3g76SjW; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43PAKfqL122853;
-	Thu, 25 Apr 2024 05:20:41 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43PAKg0s021777;
+	Thu, 25 Apr 2024 05:20:42 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714040441;
-	bh=jx0wZ+Xj9hfZLPL5M0DAVCFD8HH/8ENzF9Ty3x44gcs=;
-	h=From:To:CC:Subject:Date;
-	b=pQrMK/mEB2Yf2073TCol9SbE/uBrkElKHiIOJpLr68UBdDzBLQWabdXgkqnzGHBpg
-	 8vKr1wy7jxodX26dBTzEE+VwdFd/uciXgzp+KDWBJXyImyuN6pKVlQZG/oAvHkef4L
-	 X0jm6x1XjrAW0ID0mmldPsYZFpp80w7CowSgA/34=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43PAKf1q021883
+	s=ti-com-17Q1; t=1714040442;
+	bh=VGSwaQD/OezQ5bUYrulb0rLuXOZdsEO8Ir+zmvrw0Rw=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=n3g76SjWjWG6zk2CozLamRmbmzdoMdrLf6ylva8be5uXyVZuILvk33sJZEV7uEEqx
+	 NXo6jkz2GsofBZjc+Vs9VJA1Al6aQOIi3MBXZuarFiQgo5hsducDLteRCQ3YIvG08C
+	 qMIqklRoJ3+VdFB3DbbhFqUeANAhXvxQGeJ59noY=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43PAKgob090550
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 25 Apr 2024 05:20:41 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 25 Apr 2024 05:20:42 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 25
- Apr 2024 05:20:40 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2024 05:20:42 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 25 Apr 2024 05:20:40 -0500
+ Frontend Transport; Thu, 25 Apr 2024 05:20:42 -0500
 Received: from localhost (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43PAKeax002339;
-	Thu, 25 Apr 2024 05:20:40 -0500
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43PAKfH6002387;
+	Thu, 25 Apr 2024 05:20:42 -0500
 From: Chintan Vankar <c-vankar@ti.com>
 To: Conor Dooley <conor+dt@kernel.org>,
         Krzysztof Kozlowski
@@ -67,10 +68,12 @@ To: Conor Dooley <conor+dt@kernel.org>,
 CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         Chintan Vankar <c-vankar@ti.com>
-Subject: [PATCH v2 0/2] Add support for CPSW3G port 2 on AM62A7-SK
-Date: Thu, 25 Apr 2024 15:50:36 +0530
-Message-ID: <20240425102038.1995252-1-c-vankar@ti.com>
+Subject: [PATCH v2 1/2] arm64: dts: ti: k3-am62a7-sk: Add alias for CPSW3G MAC port 1
+Date: Thu, 25 Apr 2024 15:50:37 +0530
+Message-ID: <20240425102038.1995252-2-c-vankar@ti.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240425102038.1995252-1-c-vankar@ti.com>
+References: <20240425102038.1995252-1-c-vankar@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,32 +84,36 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hello,
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
 
-This series adds support for CPSW3G MAC port 2 with the SK-Ethernet-DC01
-Add-On daughtercard. Also, the missing alias for CPSW3G MAC Port 1 is
-added to the am62a7-sk board file in order to allow kernel to fetch MAC
-address populated by U-Boot for CPSW3G MAC Port 1.
+Add alias for CPSW3G MAC port 1 to enable kernel to fetch MAC Address
+directly from U-Boot.
 
-This series is based on linux-next tagged next-20240424.
+Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+Signed-off-by: Chintan Vankar <c-vankar@ti.com>
+---
 
 Link to v1:
-https://lore.kernel.org/r/20230424111945.3865240-1-s-vadapalli@ti.com/
+https://lore.kernel.org/r/20230424111945.3865240-2-s-vadapalli@ti.com/
 
 Changes from v1 to v2:
-- Since support for device tree overlays for am62a7-sk is already enabled
-  by commit "635ed9715194", it is removed from this series.
+- No changes.
 
-Siddharth Vadapalli (2):
-  arm64: dts: ti: k3-am62a7-sk: Add alias for CPSW3G MAC port 1
-  arm64: dts: ti: k3-am62a7: Add overlay for second CPSW3G Port
+ arch/arm64/boot/dts/ti/k3-am62a7-sk.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
- arch/arm64/boot/dts/ti/Makefile               |  3 +
- .../dts/ti/k3-am62a7-sk-ethernet-dc01.dtso    | 61 +++++++++++++++++++
- arch/arm64/boot/dts/ti/k3-am62a7-sk.dts       |  1 +
- 3 files changed, 65 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am62a7-sk-ethernet-dc01.dtso
-
+diff --git a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
+index f241637a5642..7ac3049302ae 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
+@@ -22,6 +22,7 @@ aliases {
+ 		serial3 = &main_uart1;
+ 		mmc0 = &sdhci0;
+ 		mmc1 = &sdhci1;
++		ethernet0 = &cpsw_port1;
+ 	};
+ 
+ 	chosen {
 -- 
 2.34.1
 
