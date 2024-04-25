@@ -1,168 +1,131 @@
-Return-Path: <linux-kernel+bounces-158957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 391798B2758
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:13:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EB1E8B2761
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:14:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B1C81C24182
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:13:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7AC30B253F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D60EB14F118;
-	Thu, 25 Apr 2024 17:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3C51514E6;
+	Thu, 25 Apr 2024 17:13:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ejqPYHRW"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="ORREfMPk"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B2414E2CC;
-	Thu, 25 Apr 2024 17:12:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5E414E2F7;
+	Thu, 25 Apr 2024 17:13:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714065169; cv=none; b=Nu28HIvRNWjdyjkfdqDpL8YJN0G3aNDnN8Fo+HQCD2AdWfGM39u9YI+77QWWl2kga+lgDJ1Bztd3komTtZFtu+6uIPlHcTQVgcTOCRhSz1CE/QVVI3DCKWq6LWQtShlmtNlDXhqczO04o5Efn/5ezjZiHsf279hAWHqSS0s86aQ=
+	t=1714065193; cv=none; b=QIREEtsDhfTcRwWAAqGCOLeAocE5qlgrxaEJTVnCrVaXOMVLLnO9PugQ6H5NG5EzoVADBAK0MCWwSCKb4QU2Hv7TkYPYpWBnCX2Ub85uW/m6d54xHuYpwcd0Dgrwexr/XW0D8OMRFfC6RxM9sYsjz7xh7NRPAhG5b2YUag4lekM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714065169; c=relaxed/simple;
-	bh=WiDWAopP55QKKCOgKkzDDn2ErC+ijp8is0bjkrl9Lwc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=KgeTkkO1RFBYMg7zWOTcggPXRSQkq1DTpaVtF+tLYQ0B/Vj8TDC6PM6Rffo7xdR4FGqD4Y3LCh4doVBpO46K+S+n3MvnvxABl12X3e6yl0UwBqGoeL9eSPf1ZSKBgsMasWeMj6eFrSD3Vz9Rbb+OQiZUoVkEEwLda122TWCKlJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ejqPYHRW; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714065167; x=1745601167;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=WiDWAopP55QKKCOgKkzDDn2ErC+ijp8is0bjkrl9Lwc=;
-  b=ejqPYHRWwL5c6K7Fn3S8rT+GryR7Dpip1RscsOJZxJJ4ypHUJYFikA0s
-   w7Ezn75fh6975LejOOAsGzJRgG1knvv3OpDuXX2WCL/LZ8+/Vf06FziNJ
-   r2jQhM52Ui9LLCGGIL4oEBIjHl3i+gspNsqUTVmijb6YqaqDPw2ZysExc
-   4Kml+EKFZ2n9ZngKw9+VquKT76U+5lTReL8BqkS08FuQI9MjhhHb4yKVC
-   nl1MEjUm7fVpI3/r/j1q3iIGmF8H2gBYx6WJv+2UzAUrnh3coxGbE87WM
-   DL0F/E5pCYPnUdQWlZrKjfX0yXqHAP4o9RLGQyp/Q1x58pAeZGmwxs1Gc
-   g==;
-X-CSE-ConnectionGUID: 7VBb9mEOR1uWQuZoozYBlQ==
-X-CSE-MsgGUID: GIgASEMATauIk36qADx/2Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="9619266"
-X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
-   d="scan'208";a="9619266"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 10:12:35 -0700
-X-CSE-ConnectionGUID: cIeHjDXdQUWrsDzxppDG2g==
-X-CSE-MsgGUID: z67CDhjiR4OHpq6kq9o8ew==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
-   d="scan'208";a="29773015"
-Received: from unknown (HELO vcostago-mobl3) ([10.124.220.196])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 10:12:35 -0700
-From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: amir73il@gmail.com, hu1.chen@intel.com, miklos@szeredi.hu,
- malini.bhandaru@intel.com, tim.c.chen@intel.com, mikko.ylinen@intel.com,
- lizhen.you@intel.com, linux-unionfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/3] overlayfs: Optimize override/revert creds
-In-Reply-To: <20240425-nullnummer-pastinaken-c8cf2f7c41f3@brauner>
-References: <20240403021808.309900-1-vinicius.gomes@intel.com>
- <20240424-befund-unantastbar-9b0154bec6e7@brauner>
- <87a5liy3le.fsf@intel.com>
- <20240425-nullnummer-pastinaken-c8cf2f7c41f3@brauner>
-Date: Thu, 25 Apr 2024 10:12:34 -0700
-Message-ID: <87y191wem5.fsf@intel.com>
+	s=arc-20240116; t=1714065193; c=relaxed/simple;
+	bh=wyCx0FITpwp4glIQ6MUVGka31eqtr+ov+bKyWJRFq0E=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fiYxdNxi+Emsae7DLhxEE07S66l5OxvuzFlsYbnI1zuoDUaQjGNbqTEJTN+80Q+lRNy+QgSPKszRrcMD67a5A6by7e78VgKx42gg3OeTFLr6YfeFFK7hN0vgA7alFcw4m8af0ZMNjQDCNzqOKPCMDZHpIx7cHcJ0PAb5Wi81feE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=ORREfMPk; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id B8DA612000A;
+	Thu, 25 Apr 2024 20:13:00 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B8DA612000A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1714065180;
+	bh=wYm8pN+1CoBvKNj1w9JY3v9T8uYFYIB1Dq2+Zmhr2MM=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=ORREfMPkmA0Wgtmivtkg+frz3yhlTjoi0+atbo1fDIuChe6tjw4LWhe2HMY6luhsO
+	 sfEyNxMNOLg9OA6q/SQu9XOzCHkbBMZ3cumhsCC3Yr6lWOcYWhpcbt4q59WwFKyfIB
+	 RkbyiJcl/ebgGGBDCc7N9MYmh9jQVqsmjxaynT7IDEn3WtUFyshQBOugpuB15r+cjP
+	 y56dpqXo+28Adz+jK3vJVkv5kzYNwDI2my7ERlNF8Q4EAoyDyoz6auLzOKYBGiaaAP
+	 YiVPBfd1VKuxN31noe/VH34JdGF9y7I0PFim5tkavKnubxKT6p5J+MDm7hnR6bEyrj
+	 N2r1laVzFFoag==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Thu, 25 Apr 2024 20:13:00 +0300 (MSK)
+Received: from work.sberdevices.ru (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 25 Apr 2024 20:13:00 +0300
+From: George Stark <gnstark@salutedevices.com>
+To: <u.kleine-koenig@pengutronix.de>, <neil.armstrong@linaro.org>,
+	<khilman@baylibre.com>, <jbrunet@baylibre.com>,
+	<martin.blumenstingl@googlemail.com>, <thierry.reding@gmail.com>,
+	<hkallweit1@gmail.com>
+CC: <linux-pwm@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<kernel@salutedevices.com>, George Stark <gnstark@salutedevices.com>
+Subject: [PATCH v3 0/3] meson pwm small fixes
+Date: Thu, 25 Apr 2024 20:12:50 +0300
+Message-ID: <20240425171253.2752877-1-gnstark@salutedevices.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184930 [Apr 25 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 18 0.3.18 b9d6ada76958f07c6a68617a7ac8df800bc4166c, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, lore.kernel.org:7.1.1;100.64.160.123:7.1.2;smtp.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/04/25 14:26:00
+X-KSMG-LinksScanning: Clean, bases: 2024/04/25 09:59:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/25 14:02:00 #24969020
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-Christian Brauner <brauner@kernel.org> writes:
+Just some small fixes for meson pwm.
 
-> On Wed, Apr 24, 2024 at 12:15:25PM -0700, Vinicius Costa Gomes wrote:
->> Christian Brauner <brauner@kernel.org> writes:
->> 
->> > On Tue, Apr 02, 2024 at 07:18:05PM -0700, Vinicius Costa Gomes wrote:
->> >> Hi,
->> >> 
->> >> Changes from RFC v3:
->> >>  - Removed the warning "fixes" patches, as they could hide potencial
->> >>    bugs (Christian Brauner);
->> >>  - Added "cred-specific" macros (Christian Brauner), from my side,
->> >>    added a few '_' to the guards to signify that the newly introduced
->> >>    helper macros are preferred.
->> >>  - Changed a few guard() to scoped_guard() to fix the clang (17.0.6)
->> >>    compilation error about 'goto' bypassing variable initialization;
->> >> 
->> >> Link to RFC v3:
->> >> 
->> >> https://lore.kernel.org/r/20240216051640.197378-1-vinicius.gomes@intel.com/
->> >> 
->> >> Changes from RFC v2:
->> >>  - Added separate patches for the warnings for the discarded const
->> >>    when using the cleanup macros: one for DEFINE_GUARD() and one for
->> >>    DEFINE_LOCK_GUARD_1() (I am uncertain if it's better to squash them
->> >>    together);
->> >>  - Reordered the series so the backing file patch is the first user of
->> >>    the introduced helpers (Amir Goldstein);
->> >>  - Change the definition of the cleanup "class" from a GUARD to a
->> >>    LOCK_GUARD_1, which defines an implicit container, that allows us
->> >>    to remove some variable declarations to store the overriden
->> >>    credentials (Amir Goldstein);
->> >>  - Replaced most of the uses of scoped_guard() with guard(), to reduce
->> >>    the code churn, the remaining ones I wasn't sure if I was changing
->> >>    the behavior: either they were nested (overrides "inside"
->> >>    overrides) or something calls current_cred() (Amir Goldstein).
->> >> 
->> >> New questions:
->> >>  - The backing file callbacks are now called with the "light"
->> >>    overriden credentials, so they are kind of restricted in what they
->> >>    can do with their credentials, is this acceptable in general?
->> >
->> > Until we grow additional users, I think yes. Just needs to be
->> > documented.
->> >
->> 
->> Will add some documentation for it, then.
->> 
->> >>  - in ovl_rename() I had to manually call the "light" the overrides,
->> >>    both using the guard() macro or using the non-light version causes
->> >>    the workload to crash the kernel. I still have to investigate why
->> >>    this is happening. Hints are appreciated.
->> >
->> > Do you have a reproducer? Do you have a splat from dmesg?
->> 
->> Just to be sure, with this version of the series the crash doesn't
->> happen. It was only happening when I was using the guard() macro
->> everywhere.
->> 
->> I just looked at my crash collection and couldn't find the splats, from
->> what I remember I lost connection to the machine, and wasn't able to
->> retrieve the splat.
->> 
->> I believe the crash and clang 17 compilation error point to the same
->> problem, that in ovl_rename() some 'goto' skips the declaration of the
->> (implicit) variable that the guard() macro generates. And it ends up
->> doing a revert_creds_light() on garbage memory when ovl_rename()
->> returns.
->
-> If this is a compiler bug this warrants at least a comment in the commit
-> message because right now people will be wondering why that place
-> doesn't use a guard. Ideally we can just use guards everywhere though
-> and report this as a bug against clang, I think.
->
+Changelog:
+v1->v2:
+  pwm: meson: Drop unneeded check in .get_state()
+    - update commit message
+    - drop Fixes tag. It's not actually a bug
+    previous version: [1]
 
-I am seeing this like a bug/mising feature in gcc (at least in the
-version I was using), as clang (correctly) refuses to compile the buggy
-code (I agree with the error).
+  pwm: meson: Add check for error from clk_round_rate()
+    - update commit message
+    - change unsigned long fin_freq; to long fin_freq;
+    previous version: [2]
 
-But I will add a comment to the code explaining why guard() cannot be
-used in that case.
+v2->v3:
+  pwm: meson: Add check for error from clk_round_rate()
+    - change format modifier in dev_dbg() for fin_freq var to %lu
+    previous version: [3]
 
+  pwm: meson: Use mul_u64_u64_div_u64() for frequency calculating
+    new patch
 
-Cheers,
--- 
-Vinicius
+[1] https://lore.kernel.org/lkml/20240423161356.2522636-2-gnstark@salutedevices.com/T/#m6d1d5cf100dc5b77f85e2a7d01c0b0097b6a04da
+[2] https://lore.kernel.org/lkml/20240423161356.2522636-2-gnstark@salutedevices.com/T/#ma84e2d490bf79bda12f8393773c1af37b48d5473
+[3] https://lore.kernel.org/linux-arm-kernel/20240424132408.2565916-1-gnstark@salutedevices.com/T/#m52b7e5a34c3e8907235d73c2827b92cb13c93dd3
+
+George Stark (3):
+  pwm: meson: Drop unneeded check in .get_state()
+  pwm: meson: Add check for error from clk_round_rate()
+  pwm: meson: Use mul_u64_u64_div_u64() for frequency calculating
+
+ drivers/pwm/pwm-meson.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
+
+--
+2.25.1
+
 
