@@ -1,131 +1,145 @@
-Return-Path: <linux-kernel+bounces-158320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66AC48B1E4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:44:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8DC88B1E50
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:45:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A29BB21822
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:44:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 267E11C21D0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:45:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0609284FAE;
-	Thu, 25 Apr 2024 09:44:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53C1184FD0;
+	Thu, 25 Apr 2024 09:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mi/OYYS+"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="d0krcBJi";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="Nq8CLYD8"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B036BB5D;
-	Thu, 25 Apr 2024 09:44:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C68D484DFB;
+	Thu, 25 Apr 2024 09:44:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714038271; cv=none; b=gOQacb2nu1H9L6IJewSmvReW6pWBtuX4LxtYQSyWYcXCC2mBxJbVM12/dBJNYSV+NxXQHZ5ToP7kKTkzZn31YteSY+xRbPVlg6WyIMIvSVlRAl4mwB+ZdrzKqqcaZoDqnluqr+waCFH7PC+78DszC/ElUTkg+5Jnfs2P3N9C+N4=
+	t=1714038296; cv=none; b=NR+xtk2td+kreOpJziw0yV9jEiTlb9LmxspcALPX8yduU2wZ6SOJaPmZniuCWRZ3Sa92BVrys64BaQ2BnNXhlEKZm/rktmb6X3Q8NcWMLt7DjG/2cpjnr8Q2OmOp2uDHjb/rYkcwX5MTTn8074Zhl7YzhMsbY3ZWE8yG6dWkrUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714038271; c=relaxed/simple;
-	bh=RIWhI1bFnANBxSRse/8d8uJ97qpTjDGgsn4giEnnhWQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oulRzRw2sQc6JPslAFJxhBz+jx+WXXnFf7qUbzl5lJNFtUINy6H1YOkIWDwU6y1jULGuENzdxmCeFhReWzOTFuPS26YSoi/D8JRTa43latOlGEalX0eysHjpbcjPPMn7zH7L3viFQVznNXWsqRoI0GpyAsKhcrsEOOaeGdb9Pzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mi/OYYS+; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714038270; x=1745574270;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RIWhI1bFnANBxSRse/8d8uJ97qpTjDGgsn4giEnnhWQ=;
-  b=mi/OYYS+YXk+8m0Vm4/WrniwnniqAuk86OhPjKURlWFNWOTO9WST4KaB
-   BSIe28y23I0pXh6ODPIevtpGlKm0etH60uTBDw49Zx/QwovN1gPXbzTYa
-   1Zzormos+rTnMFtmGbCujMUB59rMOFn6OUTHhDBMf//H1gUEIsylSJQ2e
-   tRpJXMzE0Iw8CbGiUZdXTWvfyedULW6Ybq8tkIRoU2YptNg0Y0yQbLpvr
-   m77BDWMSIGpnWmQhki7Dikz6F7vQ2marCVUad2tkc+df5nLhA7Q4ObFmM
-   pr0h7goGMWJ5PVgMPG8MzOOW3fYbG8byatiFEgZ8m9EIJmu6sHNyNPZI2
+	s=arc-20240116; t=1714038296; c=relaxed/simple;
+	bh=3DB11IKP/T9/3xhOrWwdKlbwGKlVUxdv7gsOBmdeDHI=;
+	h=Subject:Date:From:To:Cc:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JzVAEJY6opSqDj/GkcrW11mPFJ7IhK0cy5fiVWxRz1n/XeJL1jYPkPzr18AgBJ7OQ91pqJUywNf8akwaO+v7Sz3Zh9KXydX9RQpt3Nxw04TLwfvlzaCTFgTSeOC77q8oM++XN0iUtLcjOTfK4LnB/j6x+2qjYh8gJdKGLmUjMP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=d0krcBJi; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=Nq8CLYD8 reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1714038292; x=1745574292;
+  h=date:from:to:cc:message-id:references:mime-version:
+   content-transfer-encoding:in-reply-to:subject;
+  bh=HLlh2QL5TbXjyNAR69Yvmpo/xTGS9Lo12NgQNCZ06YQ=;
+  b=d0krcBJiCro8dwV/UsQ41hTNK00RhxCS9pxR/t7ur4wyBZ+SNfGTqVzW
+   77IMTjoM2UunbSDklUQeCOESuBSnZjdWRFFhz+d9nAZ2acsexxsdaz2Q8
+   qYBXxTFMTQDqS5eZ5JeccM0O5Kw/YHhoPnXFd4cLTJ9KUV7tC4n1NL8rI
+   wImJT8RfCrJmHE+cVywmIEmGzJncWd9dVEa9pwW/DRk98NUOQsM+UTD5y
+   ZsxY0vlxepmzu7vwsJ8L33B87fmKxyDJaLisBleyGsjLnkxyXcf+MZAOZ
+   GaAjsBkjmASW5boKxt74t7kgKT/0J0Nx+a8QWc93pG1VJuhhtSKx+ac7E
    g==;
-X-CSE-ConnectionGUID: sEl50lsvQCGBkGsdIFp+5A==
-X-CSE-MsgGUID: Kx2gl+b6Qx2dxq52kPuIcQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="13497987"
-X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
-   d="scan'208";a="13497987"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 02:44:30 -0700
-X-CSE-ConnectionGUID: 7CAGqqmSSGC/zC+FQUQB4Q==
-X-CSE-MsgGUID: 0lQA6bR/SsSeVZZKLLskbQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
-   d="scan'208";a="29501528"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 02:44:25 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rzveQ-00000000x2c-16BM;
-	Thu, 25 Apr 2024 12:44:22 +0300
-Date: Thu, 25 Apr 2024 12:44:22 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: linux-kernel@vger.kernel.org,
-	Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
-	Lee Jones <lee@kernel.org>, Jiawen Wu <jiawenwu@trustnetic.com>,
-	Mengyuan Lou <mengyuanlou@net-swift.com>,
+X-IronPort-AV: E=Sophos;i="6.07,228,1708383600"; 
+   d="scan'208";a="36610690"
+Subject: Re: Re: [PATCH 1/4] can: mcp251xfd: stop timestamp before sending chip to
+ sleep
+Received: from vmailcow01.tq-net.de ([10.150.86.48])
+  by mx1.tq-group.com with ESMTP; 25 Apr 2024 11:44:48 +0200
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BCAC516E686;
+	Thu, 25 Apr 2024 11:44:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
+	s=dkim; t=1714038284;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=HLlh2QL5TbXjyNAR69Yvmpo/xTGS9Lo12NgQNCZ06YQ=;
+	b=Nq8CLYD8RZR4BApO/dYg4PxApypWD1JWXYNDBi/QoJZKiDwzuBjz23RL6l+nX4XByGNPHU
+	JTMkKfte6NNmdQYX8pu5+xfAhavNby5URmwXf5jTSeDp+nLjuJ7kK1X65VVJfvXSXVKPep
+	NyOPhpcMVH3GSF6xsvBdqxYhekw4348A+7ngA3vEUDkZ9xOe7/qQf1G3vTIlU9Lp+Qo9IQ
+	/9qHR5VCjjDvZPrM8bYobzMlAT1v1gMaJObL/fKP6O0wdFrlhe8MTlQ9XcoAKE2PGJjPEG
+	0IdG3KOk9DEhyoEOeN5yuaNa1rC46QDyoO6syTp1xZHQbBCm7s+GQWGnXBv5KQ==
+Date: Thu, 25 Apr 2024 11:44:36 +0200
+From: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Thomas Kopp <thomas.kopp@microchip.com>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Duanqiang Wen <duanqiangwen@net-swift.com>,
-	"open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>,
-	"open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2 4/4] net: txgbe: Utilize i2c-designware.h
-Message-ID: <Ziol9s5w9fHjOcY9@smile.fi.intel.com>
-References: <20240425002642.2053657-1-florian.fainelli@broadcom.com>
- <20240425002642.2053657-5-florian.fainelli@broadcom.com>
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux@ew.tq-group.com,
+	alexander.stein@ew.tq-group.com
+Message-ID: <ZiomBNoSsXlYfKN2@herburgerg-w2>
+References: <20240417-mcp251xfd-gpio-feature-v1-0-bc0c61fd0c80@ew.tq-group.com>
+ <20240417-mcp251xfd-gpio-feature-v1-1-bc0c61fd0c80@ew.tq-group.com>
+ <20240424-adaptable-zircon-badger-1fefd9-mkl@pengutronix.de>
+ <ZinnV+GA20LWGUOV@herburgerg-w2>
+ <20240425-tall-quiet-wren-f00e44-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240425002642.2053657-5-florian.fainelli@broadcom.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240425-tall-quiet-wren-f00e44-mkl@pengutronix.de>
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Wed, Apr 24, 2024 at 05:26:42PM -0700, Florian Fainelli wrote:
-> Rather than open code the i2c_designware string, utilize the newly
-> defined constant in i2c-designware.h.
+On Thu, Apr 25, 2024 at 08:29:13AM +0200, Marc Kleine-Budde wrote:
+> On 25.04.2024 07:17:11, Gregor Herburger wrote:
+> > On Wed, Apr 24, 2024 at 01:54:54PM +0200, Marc Kleine-Budde wrote:
+> > > On 17.04.2024 15:43:54, Gregor Herburger wrote:
+> > > > MCP2518FD exits Low-Power Mode (LPM) when CS is asserted. When chip
+> > > > is send to sleep and the timestamp workqueue is not stopped chip is
+> > > > waked by SPI transfer of mcp251xfd_timestamp_read.
+> > > 
+> > > How does the Low-Power Mode affect the GPIO lines? Is there a difference
+> > > if the device is only in sleep mode?
+> > 
+> > The MCP251XFD_REG_IOCON is cleared when leaving Low-Power Mode. This is
+> > why I implemented regcache.
+> 
+> But that means you have to power the chip if a GPIO is requested. You
+> have to power up the chip in the request() callback and power it down in
+> the free() callback.
 
-..
+Ah I see. Currently the GPIO rigister is cached and only written to the
+chip if the netdevice is set up. I think to have a more generic gpio controller
+the chip should wake up when the GPIO is requested. Also the chip should
+not go to sleep while GPIO is requested and netdevice is set down.
 
-> +++ b/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
-> @@ -8,6 +8,7 @@
->  #include <linux/clkdev.h>
->  #include <linux/i2c.h>
->  #include <linux/pci.h>
-> +#include <linux/platform_data/i2c-designware.h>
+> I've 2 patches laying around, one that moves the timestamp
+> init/start/stop into the chip_start/stop. And another one that moves the
+> soft reset and basic configuration of the chip into the runtime pm
+> functions. I have to make both patches compatible and send them to the
+> list. Feel free to pick them up and integrate them into your series.
 
-Same comment, make this a separate group, it will be easier to see the quite
-specific niche headers, that are not related to the generic libraries / or
-subsystem-level ones.
+I will have a look at them.
+> 
+> regards,
+> Marc
+> 
+> -- 
+> Pengutronix e.K.                 | Marc Kleine-Budde          |
+> Embedded Linux                   | https://www.pengutronix.de |
+> Vertretung Nürnberg              | Phone: +49-5121-206917-129 |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
->  #include <linux/pcs/pcs-xpcs.h>
-
-..
-
-> -	snprintf(clk_name, sizeof(clk_name), "i2c_designware.%d",
-> -		 pci_dev_id(pdev));
-> +	snprintf(clk_name, sizeof(clk_name), "%s.%d",
-> +		 I2C_DESIGNWARE_NAME, pci_dev_id(pdev));
-
-Why do you make it %s? It was constant literal and is, no need to use %s.
-
+Best regards
+Gregor
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht München, HRB 105018
+Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
+https://www.tq-group.com/
 
