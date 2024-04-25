@@ -1,117 +1,150 @@
-Return-Path: <linux-kernel+bounces-159069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBAB28B28E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E5E628B28E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:15:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A28BD1F23D65
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:15:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BC041F239F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2A0152DE6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3270153582;
 	Thu, 25 Apr 2024 19:15:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="YFYyARut"
-Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="mkBhHeMD"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F7A614F9EA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DEFE15099C;
 	Thu, 25 Apr 2024 19:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714072505; cv=none; b=m2ZXfu5Cwwj5SMdz9JqKQlM+8q9j/KcME3Jk0D63bxzw3/uoYimKuLxNyQ//JuQgmMZZ51Fk9VMvYaLORdxtAE5d/AZeR9YwOsdm0KQ7LVPy1MIGtCLxG+KiJyFK+oz16An3cUGOHR3+WPK4TKV5zde6wjduKQYOUL7IgMqRl1Y=
+	t=1714072506; cv=none; b=JBmVLO9ARbL1AWNbwUJLpKkU4prZ3OxA139Zz8vOS4l2HjINSCEACkqlA4mWTeTxUwh8+Bwsp/e9SYpUlE/39/lDR7/SGWSp3hNyndq+VMeXFqf8ov3igLZnqYR9icJtPIERcsH3IByQc/T1d42zfO6bFO3JXZXC5Lj3JBmjUSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714072505; c=relaxed/simple;
-	bh=AQfbI7vOuFm8YP/Xkec/49RruMYlAkAUez61BlDr6HQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=lFWcsOmyPJgdSjtAqVr0ZiW1V/+IV2sa6yorXouGs430PzTs7Z1Kp3Dp9qhoi5yrnrgXw6AG9FDhGmxmlY8uYnCgog5mASKC+E10Dt1zA8Y/TeYZCgVg+uXVWXxviCRqbNSwlQqJMnizQ5EbizYlnUi3OkYmfv0Th2tt6jmkbQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=YFYyARut; arc=none smtp.client-ip=128.199.32.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
-	t=1714072502; bh=AQfbI7vOuFm8YP/Xkec/49RruMYlAkAUez61BlDr6HQ=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=YFYyARutU8agXJa2F8fjT4vlV8GvAQZj8i237mYGywFyCEOkAOHmzNmeNHpSB6MT5
-	 piRR7jY+knRYcMgkwHFupGeajR7pKnpY4x2+KkD9xy4Z0YbF0wJoY1zTqoFhkBfj72
-	 1YbW1suYm7lF94KgnRPjLsDKXS+hHo7/dFgPfDJE=
-From: Luca Weiss <luca@z3ntu.xyz>
-Date: Thu, 25 Apr 2024 21:14:31 +0200
-Subject: [PATCH 2/2] dt-bindings: soc: qcom,smp2p: Mark qcom,ipc as
- deprecated
+	s=arc-20240116; t=1714072506; c=relaxed/simple;
+	bh=WFHgedParJiMztTbyoW1ulB0kaEI8f5AmAhdKpkopQ0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MJe0XT3iJ1n1iR6oDAH/VTIq17i7FNGFonZT+7wlRmfDVd2to+wh9IYxB7Po7ES1F7x6VlhJ97x6sdTju+QYTtWpJg557fsY4TUhw/xf8IF7gA5TvCWecx61DfY87Tm/hwhX1HAvKUQBWn/A/lqymQ4ePsyLf8Qu5P0UeIxAesA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=mkBhHeMD reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
+ id 1aa4fdb3953d0eae; Thu, 25 Apr 2024 21:15:02 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id A994C66DF24;
+	Thu, 25 Apr 2024 21:15:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1714072502;
+	bh=WFHgedParJiMztTbyoW1ulB0kaEI8f5AmAhdKpkopQ0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=mkBhHeMDkFuruz3i4m9nfl4ILiv/W57tM4XRJwYb0D+hzXDHH9pxCrG8BnfpqestL
+	 vnCRACGgo0n09Pf6xSzjlVDRO+7ZVaxJtdofIpflk4bMqDhFmtDaixsf39NTfcEsDP
+	 H+4JdBO+BP5HcCKosoEK/+TDVx4LZOjx2cZgaw7tda463dnV4x+y+nKfPSe0MorTwB
+	 DVWrq6simKnZGkr2yUtNJ/6dhYqJWMRNoIj409KtJ0uH3tNRAr8DEUvEVQYfpTvgVF
+	 JcLGaLgLZl87QIJKTuelkbspVSbOO0hyBmBwvsh9hBX2Khr627deOVoj1Xuv0Vn1/l
+	 xc2iJMisqmv+A==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: x86 Maintainers <x86@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Ricardo Neri <ricardo.neri@intel.com>, Tim Chen <tim.c.chen@intel.com>
+Subject:
+ [RFC][PATCH v1 2/3] x86/sched: Add basic support for CPU capacity scaling
+Date: Thu, 25 Apr 2024 21:15:01 +0200
+Message-ID: <5784915.DvuYhMxLoT@kreacher>
+In-Reply-To: <2738703.mvXUDI8C0e@kreacher>
+References:
+ <7663799.EvYhyI6sBW@kreacher> <3227587.5fSG56mABF@kreacher>
+ <2738703.mvXUDI8C0e@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240425-qcom-ipc-deprecate-v1-2-a8d8034253ea@z3ntu.xyz>
-References: <20240425-qcom-ipc-deprecate-v1-0-a8d8034253ea@z3ntu.xyz>
-In-Reply-To: <20240425-qcom-ipc-deprecate-v1-0-a8d8034253ea@z3ntu.xyz>
-To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- Bjorn Andersson <andersson@kernel.org>, 
- Mathieu Poirier <mathieu.poirier@linaro.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Andy Gross <agross@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- Luca Weiss <luca@z3ntu.xyz>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1179; i=luca@z3ntu.xyz;
- h=from:subject:message-id; bh=AQfbI7vOuFm8YP/Xkec/49RruMYlAkAUez61BlDr6HQ=;
- b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBmKqu0A0raTWi5QiSyZMZPNUcsBx00rHW6j1Es1
- wsMpEQlTC2JAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZiqrtAAKCRBy2EO4nU3X
- VtU9D/9+qWpTms/tpH8LMz8s6RPt7yhwX/HudrWqZdPNLIVhqzjbTjoSjFVFgwhv2jMMQrp78ps
- Vogq2hWhGvvKsuygor7Aa2BpqIABh1RzBB24sUhAH4Nxl3jv2Gt8BJ5y/9BTpwPnVMSB6DQPYKJ
- qKuTIK1t0yBAOx0jF3VMPi5STLwX9uAOj0NgR1Kz85m9kymTVbC8l2RUU/rq22acEihMFvvUUjS
- 1U1QMSU28MAFHJKTjLL7LwkBDaVckuKeA/pcMjb9i8pFwmZwWGT2rJHvL3wJkT0l0KV9w6eUhNb
- nEqGxaDmoKmxNOhHlOyRFq7+9ZCcbQsMHKl9tXG/ABh8FmLk3CxK5dP/ekz39n/rvTLRg+ca5I1
- pxTys4uLWVF33vZ6AvbB9xkqJoBluYLMyO4qFXzxANjPBAiOUrNr2ditDlr6tWKeQ1Z2ZTH7uXT
- vqI3JGQv4p3dfU/MzS9kt6DzJhXDPdR8EylUcbPo8WqVLoxLrSkjL39cENJ6KKcdJEcx/eSRZQP
- gWZQnsQYZyMjNclhY8gs8tQEcZHmTB3aXYybcSqOcPrFYxuvNQlIGzMfTME4ImgUvWp/BNuCLgj
- g8tKlcAoh9pd/YhOuU7Rkhv/HuVwHTo24Q9j5G0p6jQcAEU0537WmhNbcE50gEltBbSV3cHMWRs
- eov2tS+j/EhNQ2w==
-X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
- fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudeljedgudefiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopedutddprhgtphhtthhopeigkeeisehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehtghhlgieslhhinhhuthhrohhnihigrdguvgdprhgtphhtthhopehpvghtvghriiesihhnfhhrrggu
+ vggrugdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=10 Fuz1=10 Fuz2=10
 
-Deprecate the qcom,ipc way of accessing the mailbox in favor of the
-'mboxes' property.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Update the example to use mboxes.
+In order be able to compute the sizes of tasks consistently across all
+CPUs in a hybrid system, it is necessary to provide CPU capacity scaling
+information to the scheduler via arch_scale_cpu_capacity().
 
-Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+Add support for it via arch_cpu_scale per-CPU variables that can be set
+by whoever has sufficient information on the CPU capacities.
+
+By default, arch_cpu_scale is equal to SCHED_CAPACITY_SCALE for all
+CPUs, so this change by itself is not expected to alter the current
+behavior of the kernel.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- Documentation/devicetree/bindings/soc/qcom/qcom,smp2p.yaml | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/topology.h |   15 +++++++++++++++
+ arch/x86/kernel/smpboot.c       |    3 +++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,smp2p.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,smp2p.yaml
-index 58500529b90f..141d666dc3f7 100644
---- a/Documentation/devicetree/bindings/soc/qcom/qcom,smp2p.yaml
-+++ b/Documentation/devicetree/bindings/soc/qcom/qcom,smp2p.yaml
-@@ -41,6 +41,7 @@ properties:
-     description:
-       Three entries specifying the outgoing ipc bit used for signaling the
-       remote end of the smp2p edge.
-+    deprecated: true
+Index: linux-pm/arch/x86/include/asm/topology.h
+===================================================================
+--- linux-pm.orig/arch/x86/include/asm/topology.h
++++ linux-pm/arch/x86/include/asm/topology.h
+@@ -280,11 +280,26 @@ static inline long arch_scale_freq_capac
+ }
+ #define arch_scale_freq_capacity arch_scale_freq_capacity
  
-   qcom,local-pid:
-     $ref: /schemas/types.yaml#/definitions/uint32
-@@ -128,7 +129,7 @@ examples:
-         compatible = "qcom,smp2p";
-         qcom,smem = <431>, <451>;
-         interrupts = <GIC_SPI 143 IRQ_TYPE_EDGE_RISING>;
--        qcom,ipc = <&apcs 8 18>;
-+        mboxes = <&apcs 18>;
-         qcom,local-pid = <0>;
-         qcom,remote-pid = <4>;
++DECLARE_PER_CPU(unsigned long, arch_cpu_scale);
++
++static inline unsigned long arch_scale_cpu_capacity(int cpu)
++{
++	return READ_ONCE(per_cpu(arch_cpu_scale, cpu));
++}
++#define arch_scale_cpu_capacity arch_scale_cpu_capacity
++
++static inline void arch_set_cpu_capacity(int cpu, unsigned long cap)
++{
++	WRITE_ONCE(per_cpu(arch_cpu_scale, cpu), cap);
++}
++
+ extern void arch_set_max_freq_ratio(bool turbo_disabled);
+ extern void freq_invariance_set_perf_ratio(u64 ratio, bool turbo_disabled);
  
+ void arch_rebuild_sched_domains(void);
+ #else
++static inline void arch_set_cpu_capacity(int cpu, unsigned long cap) { }
++
+ static inline void arch_set_max_freq_ratio(bool turbo_disabled) { }
+ static inline void freq_invariance_set_perf_ratio(u64 ratio, bool turbo_disabled) { }
+ 
+Index: linux-pm/arch/x86/kernel/smpboot.c
+===================================================================
+--- linux-pm.orig/arch/x86/kernel/smpboot.c
++++ linux-pm/arch/x86/kernel/smpboot.c
+@@ -141,6 +141,9 @@ void arch_rebuild_sched_domains(void) {
+ 	x86_topology_update = true;
+ 	rebuild_sched_domains();
+ }
++
++/* CPU capacity scaling support */
++DEFINE_PER_CPU(unsigned long, arch_cpu_scale) = SCHED_CAPACITY_SCALE;
+ #endif
+ 
+ static unsigned int smpboot_warm_reset_vector_count;
 
--- 
-2.44.0
+
 
 
