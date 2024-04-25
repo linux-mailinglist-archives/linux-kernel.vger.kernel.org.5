@@ -1,277 +1,125 @@
-Return-Path: <linux-kernel+bounces-159322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CCB48B2D1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:29:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55EB68B2D25
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:34:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 529B8283529
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:28:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B5FB1C2194D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:34:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 215D215A4BE;
-	Thu, 25 Apr 2024 22:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5523F86268;
+	Thu, 25 Apr 2024 22:34:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MSLoNH/j"
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Qoa4adkT"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A811D157492;
-	Thu, 25 Apr 2024 22:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FB12599
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 22:34:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714084068; cv=none; b=ETFvRU21WNzLYO2wFaB4/ZFLhhFuK3Ibt43orI0S6NauyF98/o1r1MIeE6U3x9X68F2AXVHC6GKm+BbWco0uxhkKTR6Eq5kZ+sxeA2gCQkW104Wra/jqkMw1xvcpzu6dPnbLRnpT4T9DlO2eeGAThBnzT3Qnh8EwXeIAulZsrSA=
+	t=1714084458; cv=none; b=YDBi8iKAEkjxOL6Gje2M0d0ESv5d3NSr12lVcsn2/IRTTx7er5ChODxxe3gUtHSEVFQao7UjGymvA8xMx7GC+dJMOhEIU1EAoBuSVs3jw8+VKc4lj0faYkM9kTrI4Ckhb8uIjFlgOJ2HrED3LNA+/ab/3b+oh8v+TRsM0mMsYKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714084068; c=relaxed/simple;
-	bh=TIHi716ql6W7JkAg87hK+/NlxNNTNr3j5+ozLhVFT40=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Atc245ZJhjiM6HOuePBS5LMtH59BXhIUbprh12R/99TQrg66PuyCNATzYDrYX5j9t5JAcLJcjIHQWv8/A0wgtdS43Fkzj02NwrqGFR+BAs3ZTYC3qsL+aOPqev3M/WcYRNeFzJ1FwYkz6bvbaLD77HjkpyhSlK243ucv2VJrIXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MSLoNH/j; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-437274f3bd4so14856211cf.1;
-        Thu, 25 Apr 2024 15:27:46 -0700 (PDT)
+	s=arc-20240116; t=1714084458; c=relaxed/simple;
+	bh=u3et4SImCb3YPPJX9fDXXvlB2s1vG4/taao+OPDBknE=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=pbJQyCuh5JrM2pKRAXXKH9rZ+4Le+NWS3kW4DVkqpLq2M2lk2ST6CwKVBhv7/LYb1p+2NBFKxxQFz4AdHHDQcyPeOAy5VlDcJBFHZkIf8KRRhiXvi5eHFjLuDHoS9oZMSqt7hKmf5RdV826gXHIE9gNJogqZNExvZj46qMZW8X4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Qoa4adkT; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61ae546adf3so24898647b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:34:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714084065; x=1714688865; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0OvkLf2eq0KdJa5mTu/U97lc17pEWUvnY93iweSl7Ps=;
-        b=MSLoNH/j9jJqS9KhNtXVpZCWEkim81Ofeb48/cPQeHrnJ/DAtxryu9scsQuc1mn3wD
-         5VEhn11ck0Akeuf5epch3ZI1OL1+vO9JRznKRUAZRaqaFqqB6ycyDGI4IEboPBJUe+Xr
-         ZFFbbarSD7d8aFE30dxC570El4qrGsfH42WMtovI8HkrYeLHlZ9S4eGazVYwHcj4NyvF
-         R02b5xTtin9aDeZKH896eyFoL0/rXwfV6asr4pkHRe5zp3CfPCHBv0O27gIG8OKVkJ5p
-         StTXhWW8zOciKnrZBgAh22pmPXadySt5sr5GQ1NmDAYXKfoeaHIHA5ZyhwNOi4V8OMPG
-         zqfw==
+        d=google.com; s=20230601; t=1714084455; x=1714689255; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZJJk73p5r9jx3t8Jke0lmFYDY3+/7qA+0Gxv92CMnvA=;
+        b=Qoa4adkTKdEGzt79TRvuIifoI5taET5PjO5tgtqQ8tkUkEie9XIfBP2py+LNPRvw1A
+         LhlITKWD84084uOyYlXsw9kBtCxTfDQNtlRKoHv/wmMI8w7wIM2CoTYzwN10m44BArew
+         zqCsoJbunhCI+QeRWUb61tYy6Xcf74QqaRCF/fQ7s73zsMVIhyqzSOjPNl5pDNs8ygKR
+         slFhYTzdu53j16WOn0BVIkzvNt1oSmEMOzcePNP0Le5Va49Y1jJCCH++pisy5G6nFjSA
+         H+NVN9TpO/e2XU8pZxggmgKpqDcwN9KBIx8Gw3d3MYJjcdFlrDKh7mETLX5+nw+9Lwlx
+         DWrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714084065; x=1714688865;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0OvkLf2eq0KdJa5mTu/U97lc17pEWUvnY93iweSl7Ps=;
-        b=VkIY9yzWsWmTBnJnuqCmhI97RgqHLjVVBPLFXjBy9NUICF09fJHomoJ78NGscPNjit
-         wOVNkcc/yPuvP9Mjr4HW6McQ4vphnY4TTOp6vtg9liMK2B0ASugqOPTxgBGnPukcTCWx
-         jZTnyhS16l2z1ssedJH2fxKe93mv/u4cIavYMHgsz6d+4ZOsXl65YyMtUdpS2R66BfPC
-         ECJIex1D5anbJL2eLEofferhLT9hC0IpiWBUf5JJIEmgjw3W3wAdnWXah+HBawJesT9p
-         gGEySP+9+m2ESytV8pgYaCGJ7AtWfTnKfcrA15pUbD1aL65mB6verDFxa31LhXKkS/ob
-         xOlg==
-X-Forwarded-Encrypted: i=1; AJvYcCVssdsckpAkWfYGJ0cX4vEiISbFIo894fN5rdG8Tm0kzvtvvtlJSHB2jtRkW2FYmV65Ks/J/D1ZWCrY7kKXL8wZsVdjQhrmxEs4ZGgzTgHTj54pkvtH4Pwpbw9g7umjerfRHIHhy6pD28DryqRbnqdW9rAUv9/RYGGUBJoV
-X-Gm-Message-State: AOJu0YygdEYMYEFET/gvAZC4Weh2bKHCbiqumr4+wB7CrWHZ2PveEic0
-	YFgDfd/eBFoQAdzDZBCgnPpBGujP8o1xzUa4l1if9TW/IA3ASLwS
-X-Google-Smtp-Source: AGHT+IEvYIrJDD4VlmLOC/re5SMBDT1fVdq1LMdJYKJtl+4L1DmRdQolO07gBLUWkLZ10McV2jdRMg==
-X-Received: by 2002:ac8:7d89:0:b0:439:ec1e:327d with SMTP id c9-20020ac87d89000000b00439ec1e327dmr2054796qtd.10.1714084065494;
-        Thu, 25 Apr 2024 15:27:45 -0700 (PDT)
-Received: from stbirv-lnx-1.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id t4-20020a05622a180400b004371724f711sm7341928qtc.80.2024.04.25.15.27.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 15:27:45 -0700 (PDT)
-From: Doug Berger <opendmb@gmail.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
-	bcm-kernel-feedback-list@broadcom.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Doug Berger <opendmb@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH net v2 3/3] net: bcmgenet: synchronize UMAC_CMD access
-Date: Thu, 25 Apr 2024 15:27:21 -0700
-Message-Id: <20240425222721.2148899-4-opendmb@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240425222721.2148899-1-opendmb@gmail.com>
-References: <20240425222721.2148899-1-opendmb@gmail.com>
+        d=1e100.net; s=20230601; t=1714084455; x=1714689255;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZJJk73p5r9jx3t8Jke0lmFYDY3+/7qA+0Gxv92CMnvA=;
+        b=VfVBVQcPkYT080ZGDMaA0l7sfMV77YaH0Mbja8SJ2+JWP+LVJ89IQ4aNYSU/fY72kj
+         9YNpsztFTDAogeSaTI22unYjnJCcQ13b74HGyvHUIO8ffu1yBQOFiBiZSBOgpherNn0E
+         txAVYJ+3nHBdycqhdekcAfcNljVQxEFDbkIB+0GyFtMrDASf9Ey7WB+aJFdyoGAjIDbX
+         UAo+3iUwg+43Wn5d/NQQbu4XBjxDlVDQwkUQ7Knufn+NjlzJIPVNPlFAQBp7DWMs2m/V
+         VcINS4Hso+Wy/gs4kQZoKlR3ZtBDLhAfhIUsS80El7PyxKQ3y17Ch8o9HDW7c/kt4ixO
+         GaBw==
+X-Forwarded-Encrypted: i=1; AJvYcCXDGEs5YaSwjaK8hNzcbwv3PcgUpcIZegI99i/F12ZLeyn9c6LJWF7J5WrQn0PdfGPg09l2Dm6D8CkxDgLy60w56dSvJmA4H2UScKEK
+X-Gm-Message-State: AOJu0Yy1ywEJW5eyUedpETIGES28tFTJJWzdrf7HieOKdm33h93d2ZyY
+	JSTQaqeW4GwRqQvezZqp/TLrfORBHvSinE0WTK7h9bMyHLj9BCSY4mM2OG9OcLYH9PR8rDO7e3l
+	bbze+PA==
+X-Google-Smtp-Source: AGHT+IESkc4K7XHM6bNS+4yg1KNJp7FaXL9c5WJvsUk5NRy2l3NzTgt7ORt5BdiPwvkajo96EI9OSQB3G0pD
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:8708:517d:aade:8c87])
+ (user=irogers job=sendgmr) by 2002:a05:6902:1028:b0:de5:3003:4b64 with SMTP
+ id x8-20020a056902102800b00de530034b64mr120115ybt.1.1714084454877; Thu, 25
+ Apr 2024 15:34:14 -0700 (PDT)
+Date: Thu, 25 Apr 2024 15:34:03 -0700
+Message-Id: <20240425223406.471120-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+Subject: [RFC PATCH v1 0/3] Retirement latency perf stat support
+From: Ian Rogers <irogers@google.com>
+To: weilin.wang@intel.com, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Ze Gao <zegao2021@gmail.com>, 
+	Leo Yan <leo.yan@linux.dev>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	Dmitrii Dolgov <9erthalion6@gmail.com>, Song Liu <song@kernel.org>, 
+	James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The UMAC_CMD register is written from different execution
-contexts and has insufficient synchronization protections to
-prevent possible corruption. Of particular concern are the
-acceses from the phy_device delayed work context used by the
-adjust_link call and the BH context that may be used by the
-ndo_set_rx_mode call.
+Support 'R' as a retirement latency modifier on events. When present
+the evsel will fork perf record and perf report commands, parsing the
+perf report output as the count value. The intent is to do something
+similar to Weilin's series:
+https://lore.kernel.org/lkml/20240402214436.1409476-1-weilin.wang@intel.com/
 
-A spinlock is added to the driver to protect contended register
-accesses (i.e. reg_lock) and it is used to synchronize accesses
-to UMAC_CMD.
+While the 'R' and the retirement latency are Intel specific, in the
+future I can imagine more evsel like commands that require child
+processes. We can make the logic more generic at that point.
 
-Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
-Cc: stable@vger.kernel.org
-Signed-off-by: Doug Berger <opendmb@gmail.com>
----
- drivers/net/ethernet/broadcom/genet/bcmgenet.c     | 12 +++++++++++-
- drivers/net/ethernet/broadcom/genet/bcmgenet.h     |  4 +++-
- drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c |  8 +++++++-
- drivers/net/ethernet/broadcom/genet/bcmmii.c       |  2 ++
- 4 files changed, 23 insertions(+), 3 deletions(-)
+The code is untested on hardware that supports retirement latency, and
+with metrics with retirement latency in them. The record is also of
+sleep and various things need tweaking but I think v1 is good enough
+for people to give input.
 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index 5452b7dc6e6a..c7e7dac057a3 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -2467,14 +2467,18 @@ static void umac_enable_set(struct bcmgenet_priv *priv, u32 mask, bool enable)
- {
- 	u32 reg;
- 
-+	spin_lock_bh(&priv->reg_lock);
- 	reg = bcmgenet_umac_readl(priv, UMAC_CMD);
--	if (reg & CMD_SW_RESET)
-+	if (reg & CMD_SW_RESET) {
-+		spin_unlock_bh(&priv->reg_lock);
- 		return;
-+	}
- 	if (enable)
- 		reg |= mask;
- 	else
- 		reg &= ~mask;
- 	bcmgenet_umac_writel(priv, reg, UMAC_CMD);
-+	spin_unlock_bh(&priv->reg_lock);
- 
- 	/* UniMAC stops on a packet boundary, wait for a full-size packet
- 	 * to be processed
-@@ -2490,8 +2494,10 @@ static void reset_umac(struct bcmgenet_priv *priv)
- 	udelay(10);
- 
- 	/* issue soft reset and disable MAC while updating its registers */
-+	spin_lock_bh(&priv->reg_lock);
- 	bcmgenet_umac_writel(priv, CMD_SW_RESET, UMAC_CMD);
- 	udelay(2);
-+	spin_unlock_bh(&priv->reg_lock);
- }
- 
- static void bcmgenet_intr_disable(struct bcmgenet_priv *priv)
-@@ -3597,16 +3603,19 @@ static void bcmgenet_set_rx_mode(struct net_device *dev)
- 	 * 3. The number of filters needed exceeds the number filters
- 	 *    supported by the hardware.
- 	*/
-+	spin_lock(&priv->reg_lock);
- 	reg = bcmgenet_umac_readl(priv, UMAC_CMD);
- 	if ((dev->flags & (IFF_PROMISC | IFF_ALLMULTI)) ||
- 	    (nfilter > MAX_MDF_FILTER)) {
- 		reg |= CMD_PROMISC;
- 		bcmgenet_umac_writel(priv, reg, UMAC_CMD);
-+		spin_unlock(&priv->reg_lock);
- 		bcmgenet_umac_writel(priv, 0, UMAC_MDF_CTRL);
- 		return;
- 	} else {
- 		reg &= ~CMD_PROMISC;
- 		bcmgenet_umac_writel(priv, reg, UMAC_CMD);
-+		spin_unlock(&priv->reg_lock);
- 	}
- 
- 	/* update MDF filter */
-@@ -4005,6 +4014,7 @@ static int bcmgenet_probe(struct platform_device *pdev)
- 		goto err;
- 	}
- 
-+	spin_lock_init(&priv->reg_lock);
- 	spin_lock_init(&priv->lock);
- 
- 	/* Set default pause parameters */
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.h b/drivers/net/ethernet/broadcom/genet/bcmgenet.h
-index 7523b60b3c1c..43b923c48b14 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.h
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
- /*
-- * Copyright (c) 2014-2020 Broadcom
-+ * Copyright (c) 2014-2024 Broadcom
-  */
- 
- #ifndef __BCMGENET_H__
-@@ -573,6 +573,8 @@ struct bcmgenet_rxnfc_rule {
- /* device context */
- struct bcmgenet_priv {
- 	void __iomem *base;
-+	/* reg_lock: lock to serialize access to shared registers */
-+	spinlock_t reg_lock;
- 	enum bcmgenet_version version;
- 	struct net_device *dev;
- 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c b/drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c
-index 7a41cad5788f..1248792d7fd4 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c
-@@ -2,7 +2,7 @@
- /*
-  * Broadcom GENET (Gigabit Ethernet) Wake-on-LAN support
-  *
-- * Copyright (c) 2014-2020 Broadcom
-+ * Copyright (c) 2014-2024 Broadcom
-  */
- 
- #define pr_fmt(fmt)				"bcmgenet_wol: " fmt
-@@ -151,6 +151,7 @@ int bcmgenet_wol_power_down_cfg(struct bcmgenet_priv *priv,
- 	}
- 
- 	/* Can't suspend with WoL if MAC is still in reset */
-+	spin_lock_bh(&priv->reg_lock);
- 	reg = bcmgenet_umac_readl(priv, UMAC_CMD);
- 	if (reg & CMD_SW_RESET)
- 		reg &= ~CMD_SW_RESET;
-@@ -158,6 +159,7 @@ int bcmgenet_wol_power_down_cfg(struct bcmgenet_priv *priv,
- 	/* disable RX */
- 	reg &= ~CMD_RX_EN;
- 	bcmgenet_umac_writel(priv, reg, UMAC_CMD);
-+	spin_unlock_bh(&priv->reg_lock);
- 	mdelay(10);
- 
- 	if (priv->wolopts & (WAKE_MAGIC | WAKE_MAGICSECURE)) {
-@@ -203,6 +205,7 @@ int bcmgenet_wol_power_down_cfg(struct bcmgenet_priv *priv,
- 	}
- 
- 	/* Enable CRC forward */
-+	spin_lock_bh(&priv->reg_lock);
- 	reg = bcmgenet_umac_readl(priv, UMAC_CMD);
- 	priv->crc_fwd_en = 1;
- 	reg |= CMD_CRC_FWD;
-@@ -210,6 +213,7 @@ int bcmgenet_wol_power_down_cfg(struct bcmgenet_priv *priv,
- 	/* Receiver must be enabled for WOL MP detection */
- 	reg |= CMD_RX_EN;
- 	bcmgenet_umac_writel(priv, reg, UMAC_CMD);
-+	spin_unlock_bh(&priv->reg_lock);
- 
- 	reg = UMAC_IRQ_MPD_R;
- 	if (hfb_enable)
-@@ -256,7 +260,9 @@ void bcmgenet_wol_power_up_cfg(struct bcmgenet_priv *priv,
- 	}
- 
- 	/* Disable CRC Forward */
-+	spin_lock_bh(&priv->reg_lock);
- 	reg = bcmgenet_umac_readl(priv, UMAC_CMD);
- 	reg &= ~CMD_CRC_FWD;
- 	bcmgenet_umac_writel(priv, reg, UMAC_CMD);
-+	spin_unlock_bh(&priv->reg_lock);
- }
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmmii.c b/drivers/net/ethernet/broadcom/genet/bcmmii.c
-index 86a4aa72b3d4..c4a3698cef66 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmmii.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmmii.c
-@@ -76,6 +76,7 @@ static void bcmgenet_mac_config(struct net_device *dev)
- 	reg |= RGMII_LINK;
- 	bcmgenet_ext_writel(priv, reg, EXT_RGMII_OOB_CTRL);
- 
-+	spin_lock_bh(&priv->reg_lock);
- 	reg = bcmgenet_umac_readl(priv, UMAC_CMD);
- 	reg &= ~((CMD_SPEED_MASK << CMD_SPEED_SHIFT) |
- 		       CMD_HD_EN |
-@@ -88,6 +89,7 @@ static void bcmgenet_mac_config(struct net_device *dev)
- 		reg |= CMD_TX_EN | CMD_RX_EN;
- 	}
- 	bcmgenet_umac_writel(priv, reg, UMAC_CMD);
-+	spin_unlock_bh(&priv->reg_lock);
- 
- 	active = phy_init_eee(phydev, 0) >= 0;
- 	bcmgenet_eee_enable_set(dev,
+The first patch stops opening a dummy event for tool events. I came
+across this while looking into the issue and we can likely just pick
+it first. I kept it in the series for cleanliness sake.
+
+The code has benefitted greatly from Weilin's work and Namhyung's
+great review input.
+
+Ian Rogers (3):
+  perf evsel: Don't open tool events
+  perf parse-events: Add a retirement latency modifier
+  perf evsel: Add retirement latency event support
+
+ tools/perf/util/evsel.c        | 186 ++++++++++++++++++++++++++++++++-
+ tools/perf/util/evsel.h        |   4 +
+ tools/perf/util/parse-events.c |   2 +
+ tools/perf/util/parse-events.h |   1 +
+ tools/perf/util/parse-events.l |   3 +-
+ 5 files changed, 192 insertions(+), 4 deletions(-)
+
 -- 
-2.34.1
+2.44.0.769.g3c40516874-goog
 
 
