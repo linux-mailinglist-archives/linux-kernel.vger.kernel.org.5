@@ -1,206 +1,344 @@
-Return-Path: <linux-kernel+bounces-159153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DB308B2A04
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E2948B2A06
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:44:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2CE51F22AB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:43:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 972DD1F229CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:44:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3979C153801;
-	Thu, 25 Apr 2024 20:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE271553B5;
+	Thu, 25 Apr 2024 20:43:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DJAW2FW+"
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J5ZeiFT4"
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 481E915250D
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:43:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE56315381B;
+	Thu, 25 Apr 2024 20:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714077813; cv=none; b=AWZ8jvmVRqZF+LPhpTSLeRFeHtKGrI0rxFIVQkF2T6R95HkuGZCWgigkigIgfJU0bF5X7EcZGtsK/hrQ22kPY9ydb46iHDqpUPaN+Vrs0AHSdQ6K50hy+RqzXtEAQQ6HWt/7Yfv1DTVYkuDwK5kVIPif5WotwromTVmbjWeQDG0=
+	t=1714077825; cv=none; b=G89dwNuTNbmwGJvEvVV3OelI7f4CR9wi9JSiAV5mNw0KdTxlPXoyKKy2mVRYib/Jss5D7lnmkxILstwcrVKTvVfZBTkqBteMt0NZVaNSnFFaUi5m6nwScGAUaNa1KvIGQ1n6tcQqFO8CyT+G1A6EhMI+gWLwzRBWm63slNy4+cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714077813; c=relaxed/simple;
-	bh=3hvw0+YukQ3HV4tpP34vO998x2VY2TniSSuewZeedqw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UQqq6A9p3uYAFFQ3fxDw4UVkU83d07fs6n+O0UBc39xDE475WQulhTJSLxKtdWgIr580cKsYFLv52Jlw6S0zpwthIsJBPL2tJRKlK+PDX4o2FOVNHbzeQBgzgbHtT1flJ8Iun8AcVhIIDHn5W4mQSaDEQ1uol4UwqSnXSNqqX5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DJAW2FW+; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2599705c-0a64-4742-b1d7-330e9fde6e7a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714077808;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=u2mtItP+V03mGsYiNN70hhu7OHc79xAcYyNtntuYPhE=;
-	b=DJAW2FW+hkuxUhr1TylwYEe1ZWXxjgdQVUkI0WgbomDCeHx40HNnOZ+0CtTRk2Y9d99vDm
-	NxsClUQHg7mixWEJF7rc5Z+lOolnKYNLibvs93PK0jKZeNsmCbDg5ZEJuzxT6S7qXEbAZE
-	tP8vF3HcdiVvel/D5rkp0lwlmCfR5io=
-Date: Fri, 26 Apr 2024 04:43:18 +0800
+	s=arc-20240116; t=1714077825; c=relaxed/simple;
+	bh=SQ00Biuzgi8ooOKmj4SDQQLUJ9vx5PPWa/yT4EKopUs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KJT9rP+8BSlGqU/HJTJNRKUHQWT6a27kwxgt58ULIA7AqBvcf9qMc8AkdN6S4IoPehU0kukcnbwIDmOv7LO8ulDlrn2NMhGa8p3EWq0G4emLcfSdNFL9dEbSocrb+lIDhsVSd5GNeTK+HygOpYdX32mc3q77zUS3H7UojGdPSPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J5ZeiFT4; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5e152c757a5so973354a12.2;
+        Thu, 25 Apr 2024 13:43:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714077823; x=1714682623; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1gI9GtX2kU2O+gI3EzYjJFlSgaBQf6k4DIS3uLiY3BU=;
+        b=J5ZeiFT4KOLnAaQnP1QEHH/ltoWHfneGQLSMvzJfz7pTsV4W7ZKeIHZCznoMv5WFlU
+         HPeeTBPSldcZTAA5XzggZemaEmR4adsdTbMLLqzpkY/67QXiyPwKaEMwJnxTdsvv3uNC
+         JsCAvTC6h2eIv6XAN4iz2x5CXYV4yo/Qo6UjwmsAM/DBa/6bvFN6kc+dFsoC2mn/fDx2
+         RuGe1NRUhdPyfZ4p47n1LWxDc6ebobJimNAclByfQCNHUNNrT7lAu802NhQbtQ0gks0Z
+         y0blGYNZzvyGJNPmEYZ4SUXOi4HsEtyy/WE0u9nxugbj4Xp0Al8GqB6QMko62Nb00B/E
+         OJiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714077823; x=1714682623;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1gI9GtX2kU2O+gI3EzYjJFlSgaBQf6k4DIS3uLiY3BU=;
+        b=jKJEB4E2FpiiPTa7J/zFVYJK90FLi4s8GG+IEjnD89k2qdzWpTlq7NfJZBfbO4H91g
+         ShHmjyFqkN2W1u+6GCf/7b+rwu/H6ZTP5jbP7A0PRVPAZDvK0Aso1ttKPJFFCVfHDcS5
+         D8hpSvjBCvfOgwBx+/cyweCoHmsWnDwBSrtSEU8CkFAWhqhWAjaSJZA76vwajKeexvah
+         qXJ7IXVrjXPLFVu5cgwgA/1nhFCxOUsnnxDjlyFJ8NTBwXDLoXiAoyXWARIklXbMGmeu
+         IAFpyryhHmqUNHpKquTpd9vPfcU/4FJveiY5Vwi4ym8Fqjvj/KakHyzgd8XyyqgLTKBO
+         VdWw==
+X-Forwarded-Encrypted: i=1; AJvYcCUliVTy9cpglN4G4OJ6EEF//fTqfOJ/mYhrW5AFjKjQ3gDZoitOE41/f4MrdVAXD5px53SBo15Gg4HoAj+f+cNOxRfogsxpN4ZcNgn+fmOa8YXNvIpyVpeY5n75BmugLBWz
+X-Gm-Message-State: AOJu0YxKxcOHVI4lWqmLnQNJZalrm4Z/h4vcJ86xug0bLHVw39SE27Ym
+	JahX1oGxFfzajtNxNWlGduVS3N/5eyhKgYELebh/20EzYpi4Q1p6x/ZyAkiZZWOTg4uiOQ6Ptfd
+	47/n/bX0J1uzJ/pZNgu2nTUfS7ok=
+X-Google-Smtp-Source: AGHT+IFTFS8ouyJ8nLmy+93w5RtLBwRt63tqP78ViX1kn334RBkekxMginP1hbtj1x9tbPoLxWGu1XDSuDtNLzlHmj0=
+X-Received: by 2002:a17:90a:7895:b0:2aa:e719:3901 with SMTP id
+ x21-20020a17090a789500b002aae7193901mr777681pjk.20.1714077823135; Thu, 25 Apr
+ 2024 13:43:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [v1,1/3] drm/panel: ili9341: Correct use of device property APIs
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
- Randy Dunlap <rdunlap@infradead.org>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Jessica Zhang <quic_jesszhan@quicinc.com>,
- Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-References: <20240425142706.2440113-2-andriy.shevchenko@linux.intel.com>
- <c2d41916-0b6c-43b5-98eb-514eb0511f84@linux.dev>
- <ZiqqiAztCaiAgI8e@smile.fi.intel.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <ZiqqiAztCaiAgI8e@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240424173550.16359-1-puranjay@kernel.org> <20240424173550.16359-3-puranjay@kernel.org>
+ <CAEf4BzZOFye13KdBUKA7E=41NVNy5fOzF3bxFzaeZAzkq0kh-w@mail.gmail.com>
+ <mb61pwmollpfh.fsf@kernel.org> <CAEf4BzZe-rtewAvDeNwqoud+x+fTraiLM1mzdvae_5yNrWsWyg@mail.gmail.com>
+ <mb61po79x9sqr.fsf@kernel.org>
+In-Reply-To: <mb61po79x9sqr.fsf@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 25 Apr 2024 13:43:31 -0700
+Message-ID: <CAEf4BzbxehG2_K8=xqfOdB4_FGVfdO3qaFMhQpvsc5JZg=NkUg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf, arm64: inline bpf_get_smp_processor_id()
+ helper
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>, 
+	Florent Revest <revest@chromium.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-
-On 2024/4/26 03:10, Andy Shevchenko wrote:
-> On Fri, Apr 26, 2024 at 02:08:16AM +0800, Sui Jingfeng wrote:
->> On 2024/4/25 22:26, Andy Shevchenko wrote:
->>> It seems driver missed the point of proper use of device property APIs.
->>> Correct this by updating headers and calls respectively.
->> You are using the 'seems' here exactly saying that you are not 100% sure.
->>
->> Please allow me to tell you the truth: This patch again has ZERO effect.
->> It fix nothing. And this patch is has the risks to be wrong.
-> Huh?! Really, stop commenting the stuff you do not understand.
-
-
-I'm actually a professional display drivers developer at the downstream
-in the past, despite my contribution to upstream is less. But I believe
-that all panel driver developers know what I'm talking about. So please
-have take a look at my replies.
-
-
->> Simple because the "ili9341_probe() ---> ili9341_dbi_prob()" code path
->> is DT dependent.
->>
->> First of all, the devm_of_find_backlight() is called in ili9341_dbi_probe()
->> under *non-DT* environment, devm_of_find_backlight() is just a just a
->> no-op and will return NULL. NULL is not an error code, so ili9341_dbi_probe()
->> won't rage quit. But the several side effect is that the backlight will
->> NOT works at all.
-> Is it a problem?
-
-Yes, it is.
-  
-
-The core problem is that the driver you are modifying has *implicit* *dependency* on DT.
-The implicit dependency is due to the calling of devm_of_find_backlight(). This function
-is a no-op under non-DT systems. Therefore, before the devm_of_find_backlight() and
-the device_get_match_data() function can truly DT independent.
-
-Removing the "OF" dependency just let the tigers run out from the jail.
-
-It is not really meant to targeting at you, but I thinks, all of drm_panel drivers
-that has the devm_of_find_backlight() invoked will suffer such concerns.
-In short, the reason is that the *implicit* *dependency* populates and
-the undefined behavior gets triggered.
-
-
-I'm sure you know that device_get_match_data() is same with of_device_get_match_data()
-for DT based systems. For non DT based systems, device_get_match_data() is just *undefined*
-Note that ACPI is not in the scope of the discussion here, as all of the drm bridges and
-panels driver under drivers/gpu/drm/ hasn't the ACPI support yet. Therefore, at present,
-it safe to say that device_get_match_data() is *undefined* under no-DT environment.
-
-Removing the "OF" dependency hints to us that it allows the driver to be probed as a
-pure SPI device under non DT systems. When device_get_match_data() is called, it returns
-NULL to us now. As a result, the drm driver being modified will tears down.
-
-See bellow code snippet extracted frompanel-ilitek-ili9341.c:
-
-
-```
-	ili->conf = of_device_get_match_data(dev);
-	if (!ili->conf) {
-		dev_err(dev, "missing device configuration\n");
-		return -ENODEV;
-	}
-```
-
->> It is actually considered as fatal bug for *panels* if the backlight of
->> it is not light up, at least the brightness of *won't* be able to adjust.
->> What's worse, if there is no sane platform setup code at the firmware
->> or boot loader stage to set a proper initial state. The screen is complete
->> dark. Even though the itself panel is refreshing framebuffers, it can not
->> be seen by human's eye. Simple because of no backlight.
-> Can you imagine that I may have different hardware that considered
-> this is non-fatal error?
+On Thu, Apr 25, 2024 at 11:56=E2=80=AFAM Puranjay Mohan <puranjay@kernel.or=
+g> wrote:
 >
-Yes, I can imagine.
-
-I believe you have the hardware which make you patch correct to run
-in 99.9% of all cases. But as long as there one bug happened, you patch
-are going to be blamed.
-
-Because its your patch that open the door, both from the perceptive of
-practice and from the perceptive of the concept (static analysis).
-
->> Second, the ili9341_dbi_probe() requires additional device properties to
->> be able to works very well on the rotation screen case. See the calling
->> of "device_property_read_u32(dev, "rotation", &rotation)" in
->> ili9341_dbi_probe() function.
-> Yes, exactly, and how does it object the purpose of this patch?
-
-Because under *non-DT* environment, your commit message do not give a
-valid description, how does the additional device property can be acquired
-is not demonstrated.
-
-And it is exactly your patch open the non-DT code path (way or possibility).
-It isn't has such risks before your patch is applied. In other words,
-previously, the driver has the 'OF' dependency as the guard, all of the
-potential risk(or problem) are suppressed. It is a extremely safe policy,
-and it is also a extremely perfect defend.
-
-And suddenly, you patch release the dangerous tiger from the cage.
-So I think you can imagine...
-
->> Combine with those two factors, it is actually can conclude that the
->> panel-ilitek-ili9394 driver has the *implicit* dependency on 'OF'.
->> Removing the 'OF' dependency from its Kconfig just trigger the
->> leakage of such risks.
-> What?!
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 >
-Posting a patch is actually doing the defensive works, such a saying
-may not sound fair for you, but this is just the hash cruel reality.
-Sorry for saying that. :(
+> > On Thu, Apr 25, 2024 at 3:14=E2=80=AFAM Puranjay Mohan <puranjay@kernel=
+org> wrote:
+> >>
+> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> >>
+> >> > On Wed, Apr 24, 2024 at 10:36=E2=80=AFAM Puranjay Mohan <puranjay@ke=
+rnel.org> wrote:
+> >> >>
+> >> >> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inlin=
+e
+> >> >> bpf_get_smp_processor_id().
+> >> >>
+> >> >> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
+> >> >>
+> >> >> Here is how the BPF and ARM64 JITed assembly changes after this com=
+mit:
+> >> >>
+> >> >>                                          BPF
+> >> >>                                         =3D=3D=3D=3D=3D
+> >> >>               BEFORE                                       AFTER
+> >> >>              --------                                     -------
+> >> >>
+> >> >> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_g=
+et_smp_processor_id();
+> >> >> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff8=
+00082072008
+> >> >>                                                 (bf) r0 =3D r0
+> >> >
+> >> > nit: hmm, you are probably using a bit outdated bpftool, it should b=
+e
+> >> > emitted as:
+> >> >
+> >> > (bf) r0 =3D &(void __percpu *)(r0)
+> >>
+> >> Yes, I was using the bpftool shipped with the distro. I tried it again
+> >> with the latest bpftool and it emitted this as expected.
+> >
+> > Cool, would be nice to update the commit message with the right syntax
+> > for next revision, thanks!
+> >
+>
+> Sure, will do.
+>
+> >>
+> >> >
+> >> >>                                                 (61) r0 =3D *(u32 *=
+)(r0 +0)
+> >> >>
+> >> >>                                       ARM64 JIT
+> >> >>                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> >> >>
+> >> >>               BEFORE                                       AFTER
+> >> >>              --------                                     -------
+> >> >>
+> >> >> int cpu =3D bpf_get_smp_processor_id();      int cpu =3D bpf_get_sm=
+p_processor_id();
+> >> >> mov     x10, #0xfffffffffffff4d0           mov     x7, #0xffff8000f=
+fffffff
+> >> >> movk    x10, #0x802b, lsl #16              movk    x7, #0x8207, lsl=
+ #16
+> >> >> movk    x10, #0x8000, lsl #32              movk    x7, #0x2008
+> >> >> blr     x10                                mrs     x10, tpidr_el1
+> >> >> add     x7, x0, #0x0                       add     x7, x7, x10
+> >> >>                                            ldr     w7, [x7]
+> >> >>
+> >> >> Performance improvement using benchmark[1]
+> >> >>
+> >> >>              BEFORE                                       AFTER
+> >> >>             --------                                     -------
+> >> >>
+> >> >> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   2=
+4.631 =C2=B1 0.027M/s
+> >> >> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   2=
+3.742 =C2=B1 0.023M/s
+> >> >> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   1=
+2.625 =C2=B1 0.004M/s
+> >> >>
+> >> >> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
+> >> >>
+> >> >> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> >> >> ---
+> >> >>  kernel/bpf/verifier.c | 11 ++++++++++-
+> >> >>  1 file changed, 10 insertions(+), 1 deletion(-)
+> >> >>
+> >> >
+> >> > Besides the nits, lgtm.
+> >> >
+> >> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> >> >
+> >> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >> >> index 9715c88cc025..3373be261889 100644
+> >> >> --- a/kernel/bpf/verifier.c
+> >> >> +++ b/kernel/bpf/verifier.c
+> >> >> @@ -20205,7 +20205,7 @@ static int do_misc_fixups(struct bpf_verifi=
+er_env *env)
+> >> >>                         goto next_insn;
+> >> >>                 }
+> >> >>
+> >> >> -#ifdef CONFIG_X86_64
+> >> >> +#if defined(CONFIG_X86_64) || defined(CONFIG_ARM64)
+> >> >
+> >> > I think you can drop this, we are protected by
+> >> > bpf_jit_supports_percpu_insn() check and newly added inner #if/#elif
+> >> > checks?
+> >>
+> >> If I remove this and later add support of percpu_insn on RISCV without
+> >> inlining bpf_get_smp_processor_id() then it will cause problems here
+> >> right? because then the last 5-6 lines inside this if(){} will be
+> >> executed for RISCV.
+> >
+> > Just add
+> >
+> > #else
+> > return -EFAULT;
+>
+> I don't think we can return.
 
+ah, because it's not an error condition, right
 
->> My software node related patches can help to reduce part of the potential
->> risks, but it still need some extra work. And it is not landed yet.
-> Your patch has nothing to do with this series.
+>
+> > #endif
+> >
+> > ?
+> >
+> > I'm trying to avoid this duplication of the defined(CONFIG_xxx) checks
+> > for supported architectures.
+>
+> Does the following look correct?
+>
+> I will do it like this:
+>
+>                 /* Implement bpf_get_smp_processor_id() inline. */
+>                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
+>                     prog->jit_requested && bpf_jit_supports_percpu_insn()=
+) {
+>                         /* BPF_FUNC_get_smp_processor_id inlining is an
+>                          * optimization, so if pcpu_hot.cpu_number is eve=
+r
+>                          * changed in some incompatible and hard to suppo=
+rt
+>                          * way, it's fine to back out this inlining logic
+>                          */
+> #if defined(CONFIG_X86_64)
+>                         insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(un=
+signed long)&pcpu_hot.cpu_number);
+>                         insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
+PF_REG_0);
+>                         insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
+_REG_0, 0);
+>                         cnt =3D 3;
+> #elif defined(CONFIG_ARM64)
+>                         struct bpf_insn cpu_number_addr[2] =3D { BPF_LD_I=
+MM64(BPF_REG_0, (u64)&cpu_number) };
+>
+>                         insn_buf[0] =3D cpu_number_addr[0];
+>                         insn_buf[1] =3D cpu_number_addr[1];
+>                         insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
+PF_REG_0);
+>                         insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
+_REG_0, 0);
+>                         cnt =3D 4;
+> #else
+>                         goto next_insn;
+> #endif
 
-With my patch applied, this is way to meet the gap under non-DT systems.
-Users of this driver could managed to attach(complete) absent properties
-to the SPI device with software node properties. Register the swnode
-properties group into the system prior the panel driver is probed. There
-may need some quirk. But at the least there has a way to go.  When there
-has a way to go, things become self-consistent. Viewed from both the
-practice of viewpoint and the concept of viewpoint.
+yep, I just wrote a large comment about goto next_insns above and then
+saw you already proposed that :) Yep, I think this is the way.
 
-And the dangerous tiger will steer its way to the direction of "ACPI
-support is missing". But both of will be safe then.
+>                         new_prog =3D bpf_patch_insn_data(env, i + delta, =
+insn_buf, cnt);
+>                         if (!new_prog)
+>                                 return -ENOMEM;
+>
+>                         delta    +=3D cnt - 1;
+>                         env->prog =3D prog =3D new_prog;
+>                         insn      =3D new_prog->insnsi + i + delta;
+>                         goto next_insn;
+>                 }
+>
+>
+> >>
+> >> >
+> >> >>                 /* Implement bpf_get_smp_processor_id() inline. */
+> >> >>                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id =
+&&
+> >> >>                     prog->jit_requested && bpf_jit_supports_percpu_=
+insn()) {
+> >> >> @@ -20214,11 +20214,20 @@ static int do_misc_fixups(struct bpf_veri=
+fier_env *env)
+> >> >>                          * changed in some incompatible and hard to=
+ support
+> >> >>                          * way, it's fine to back out this inlining=
+ logic
+> >> >>                          */
+> >> >> +#if defined(CONFIG_X86_64)
+> >> >>                         insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u=
+32)(unsigned long)&pcpu_hot.cpu_number);
+> >> >>                         insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_RE=
+G_0, BPF_REG_0);
+> >> >>                         insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_=
+0, BPF_REG_0, 0);
+> >> >>                         cnt =3D 3;
+> >> >> +#elif defined(CONFIG_ARM64)
+> >> >> +                       struct bpf_insn cpu_number_addr[2] =3D { BP=
+F_LD_IMM64(BPF_REG_0, (u64)&cpu_number) };
+> >> >>
+> >> >
+> >> > this &cpu_number offset is not guaranteed to be within 4GB on arm64?
+> >>
+> >> Unfortunately, the per-cpu section is not placed in the first 4GB and
+> >> therefore the per-cpu pointers are not 32-bit on ARM64.
+> >
+> > I see. It might make sense to turn x86-64 code into using MOV64_IMM as
+> > well to keep more of the logic common. Then it will be just the
+> > difference of an offset that's loaded. Give it a try?
+>
+> I think MOV64_IMM would have more overhead than MOV32_IMM and if we can
+> use it in x86-64 we should keep doing it that way. Wdyt?
 
--- 
-Best regards,
-Sui
+My assumption (which I didn't check) was that BPF JITs should optimize
+such MOV64_IMM that have a constant fitting within 32-bits with a
+faster and smaller instruction. But I'm fine leaving it as is, of
+course.
 
+>
+> >>
+> >> >
+> >> >> +                       insn_buf[0] =3D cpu_number_addr[0];
+> >> >> +                       insn_buf[1] =3D cpu_number_addr[1];
+> >> >> +                       insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_RE=
+G_0, BPF_REG_0);
+> >> >> +                       insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_=
+0, BPF_REG_0, 0);
+> >> >> +                       cnt =3D 4;
+> >> >> +#endif
+> >> >>                         new_prog =3D bpf_patch_insn_data(env, i + d=
+elta, insn_buf, cnt);
+> >> >>                         if (!new_prog)
+> >> >>                                 return -ENOMEM;
+> >> >> --
+> >> >> 2.40.1
+> >> >>
 
