@@ -1,185 +1,245 @@
-Return-Path: <linux-kernel+bounces-158350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CEE08B1EB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:03:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4853E8B1EA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:02:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB4F41F2147E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:03:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BF671C2188F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:02:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82B438626F;
-	Thu, 25 Apr 2024 10:03:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 449328594A;
+	Thu, 25 Apr 2024 10:02:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="s4D1kSDZ"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2050.outbound.protection.outlook.com [40.107.92.50])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="W8DfLn07"
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 248C784FD4
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 10:03:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714039426; cv=fail; b=C7zkyxBpEJmhAYlilrIXTxWaXl/gX/ZfT9PxcMYlzW+QO/7vYeCC0R7fL6aPj79Pe2IVHQdYKh84kw+IISFoBrg7+fX3sypCF5ARcBoEP9cVKCZ5P462m96kWbv1nw4EpBXu+/Ui7jW6MC5htbRPwWooTyA0sixypsHslSpe1CE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714039426; c=relaxed/simple;
-	bh=ArjcDJXa9u5BDmuB9C/ZVB+7BnypxsKAiKk1XAM86MU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uArb2JwSDS6t2Is+GZZpa7vSTQCpdGSCGPEtl1NFcm4x6lgFd3DpA3xDbIokYKko8WKZNxs0wfdvGjC1ARMaokR3+kuqdnCcp0ZFrjBiGjk/r0dGKhVl7gb8gtR6wcWFol6LFbLdHgyNadWv437Z/XKo4tMO6qXCx3ZIp7uYgMA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=s4D1kSDZ; arc=fail smtp.client-ip=40.107.92.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fy/CQyo6lLKfzCRw9W3+/iCRr/YvoTqnPnMkECGZDHuk+g1LaztILYcLhqc/Pf8zwuZMUBpZCTpiF10Ukb1snzuRD+B7D2NrKOxhRhIThqZ/sfO5vziGRG+5GNP5BORQ/tozXE/0kfevgorzEVAOYRLLVqWfPigGA87FUNRE0BgRpKkp6H4AFerm3MgwGoegab6EOGKP8ogYHlmJBBIO+mbywT2OIkaVx4NPsB1xFhxxChSFO2/+TpjtdcC5OG9sWuGP8NpED6U9+23rsn441bGSWQk8y88B7cQd0c52VRWIJXiPCTNPwxHPWgMW8gIvxmQ//lu/B/Rw6uqdW0g9Cg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y4gZZGd45zLqJSduWMpnITSF1PuE8Qi8BF0SxGUP3o8=;
- b=EXdX/j0TsLUk1zcZ4Y0yLJH8FIE8N39Esy1/H4qHlhFAx7AL8COv5JQnXMasB6Sl8znpsRzF4IygpDvoqTuYvGp8IA2+3rQSxK1/7MM9aZ71093vyhBpzDNjdIKPbv5WH5TO66mF335/lmtEBrU1h4Uhjh6XpxAtwseoyKbjX6Sxvn72ea745vzXcwvizSSD8E7QuekSpiKyEeoSaCYkIsAw2FymIraJNEA/qjywiZg9iaYXfCTr9fjc6N2b7PjVIMly+MGJY9DEJEarCaCbfc+teU/pVm6Hp3B8MCr4IRlmLxbjbtBGCbc9JlVPryueRB90FPo2ngpDSewKJZ4S1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y4gZZGd45zLqJSduWMpnITSF1PuE8Qi8BF0SxGUP3o8=;
- b=s4D1kSDZwJVatAlpQSD1NIDCBXPjCggIlwm8U4c/G1XbCpj8CvT1pS7h2H381vuYXCkMyLfqMo8U927DWI7iA+Hq+pIeQfjwSUWrkvDGkShNoRkINQxOKm5ln1siRW6ecZS7sNCSff2LPQ2Ksl5nCo0QE9LseJaXQxfgKQBywyM=
-Received: from CH0PR07CA0007.namprd07.prod.outlook.com (2603:10b6:610:32::12)
- by MN0PR12MB5811.namprd12.prod.outlook.com (2603:10b6:208:377::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Thu, 25 Apr
- 2024 10:03:42 +0000
-Received: from DS3PEPF000099D8.namprd04.prod.outlook.com
- (2603:10b6:610:32:cafe::3d) by CH0PR07CA0007.outlook.office365.com
- (2603:10b6:610:32::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.26 via Frontend
- Transport; Thu, 25 Apr 2024 10:03:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- DS3PEPF000099D8.mail.protection.outlook.com (10.167.17.9) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7519.19 via Frontend Transport; Thu, 25 Apr 2024 10:03:42 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 25 Apr
- 2024 05:03:41 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 25 Apr
- 2024 05:03:41 -0500
-Received: from xsjarunbala50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Thu, 25 Apr 2024 05:03:40 -0500
-From: Jay Buddhabhatti <jay.buddhabhatti@amd.com>
-To: <michal.simek@amd.com>, <gregkh@linuxfoundation.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	Jay Buddhabhatti <jay.buddhabhatti@amd.com>
-Subject: [PATCH v2] drivers: soc: xilinx: check return status of get_api_version()
-Date: Thu, 25 Apr 2024 03:01:36 -0700
-Message-ID: <20240425100136.13933-1-jay.buddhabhatti@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240424063118.23200-1-jay.buddhabhatti@amd.com>
-References: <20240424063118.23200-1-jay.buddhabhatti@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B4C685937
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 10:02:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714039349; cv=none; b=hkOTAaO4tmP4ydh98Bf54TP1RIXUEh57csA/6CZbffrCdX2SKLBNiA5xCwak4N3veiN+VJwDq3TVfbJYnGL21xbx/oQUgnbjkZ7hBP270ITsBR7ZcN1xa8q+N5nrlqpWmjA5sBQkEkTjpHhjDlG41wvzDjmvNWYqa0MR8PDTM2I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714039349; c=relaxed/simple;
+	bh=D43HqWGhew4NIlfYNq2zcvYW4hjhv7WDJP0gbSppSjk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
+	 Content-Type:References; b=uwz0KPFD6U3B7NqLWy2LvoHmcfKDZQxnFxqSwXG40vgPoOTP7zfFYM/b1Fq3+gqPLPh9ECIFwoDGkg8YgLEESHtpmVib8nO7YpLyZC+Vs6XMIJvXRO8nV785/jDMXsJGvUM+JTSo7kehKS3FE8d8qk0CffwvtfqZVEfns8lhYiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=W8DfLn07; arc=none smtp.client-ip=210.118.77.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240425100224euoutp0190086f67ecdb4303bea3c56f98bd2a01~JfbPfy2pk2968929689euoutp01P
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 10:02:24 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240425100224euoutp0190086f67ecdb4303bea3c56f98bd2a01~JfbPfy2pk2968929689euoutp01P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1714039344;
+	bh=Y6uoDojVa9FO4WIczvH/+BJUzC+PPsT0muqBC0r2gWc=;
+	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+	b=W8DfLn0716RZvl0n96ZdlqNw30VTExVehVwBvENIVmDTZS7ZmeewIbkF/eMzuiyQW
+	 u+UyU4DdC8XO/hSw9pEkRsdBy+0NtkMQCxoSk7/aLhq8erdX+5VYKCrZvUpYNA69Mr
+	 DI5NLUcsUbqoAsz2rxkuKAN8wFUWqBKgJfoxzvZ0=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20240425100224eucas1p2826dc59bf516e2775094366d4e02a2cb~JfbPZXAP62727127271eucas1p2M;
+	Thu, 25 Apr 2024 10:02:24 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+	eusmges2new.samsung.com (EUCPMTA) with SMTP id DF.9F.09875.03A2A266; Thu, 25
+	Apr 2024 11:02:24 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240425100224eucas1p2155f5d9988a5c4a14aeb3fb7318d0fe0~JfbPE9FH02304423044eucas1p2Z;
+	Thu, 25 Apr 2024 10:02:24 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240425100224eusmtrp190c7b8612e52a54c2f6a6bd5beff8adf~JfbPEV75V0846808468eusmtrp1K;
+	Thu, 25 Apr 2024 10:02:24 +0000 (GMT)
+X-AuditID: cbfec7f4-131ff70000002693-b6-662a2a300b70
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id E8.C2.09010.03A2A266; Thu, 25
+	Apr 2024 11:02:24 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240425100223eusmtip1fe4ba78b15c82c6ab9b1e6df341fe876~JfbOtxlDN2878028780eusmtip1s;
+	Thu, 25 Apr 2024 10:02:23 +0000 (GMT)
+Message-ID: <5f9052f0-ef5f-4c4f-85f9-f07fffd2b5ef@samsung.com>
+Date: Thu, 25 Apr 2024 12:02:23 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D8:EE_|MN0PR12MB5811:EE_
-X-MS-Office365-Filtering-Correlation-Id: f37209d3-fe99-4fc4-7087-08dc650efc90
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?iA0lTY1bFj2TfvJhc4g6O2mXGieZjKRS6k1AcE/FRs+d6ljNe9lF7PNmbnvT?=
- =?us-ascii?Q?bp9cJE1WO7xu+Y5LvFgI73OwvWJhY+cS5vBUc5Z67C3Wfoy1D0bdLvqearL/?=
- =?us-ascii?Q?skZB/J77pysZtqMyn/MEhz/ZoY5Xkx8wj7LwII5A0qTHoTZuKOTaQRXYIOzK?=
- =?us-ascii?Q?IraKqv9i4XK6E7aBLles3cdGkdo5vjHi8ARLfUlh6YEzXKtR2mSEERouuaH9?=
- =?us-ascii?Q?UCDc1Yk4/pZ7OpQhAInx3SqXldJcdVoehSWAymHQtgjJ3iT8MQ+uHj6BEaq2?=
- =?us-ascii?Q?itlGfTV2HoDa+huWuNrpSEbnchlJOY4RL56vnBIENgdiaJCDbwkV4zCOv+sI?=
- =?us-ascii?Q?O4fxwu3bnteAqbKl0TZneTwSLbJ1hk8ydx/Q3QaxrYH1wtvXIsmCRGLlEtjL?=
- =?us-ascii?Q?moEM4eEnGIdfWco2htD6UXrYCwRQLoA9DjTIwjWM6UcF8cx81KfoHzZ1KIfu?=
- =?us-ascii?Q?IR2CbRgzBMpmzGS751TC/GEwBS9NgppZYBOcnueZk++jZ+MiYEwgCn5A0fjL?=
- =?us-ascii?Q?wlRBmYb0JLXtqK3K1nO0hnXCfFJO3TtJ/Uw5i8KtN/Xnd9LpMBd1RUGngWPJ?=
- =?us-ascii?Q?L0fm4ZhCYRxb+Slyhkn0xLZ4qBGoV8r8ip7OnZhvXq8sQPlhcTWU1f4wtbiC?=
- =?us-ascii?Q?BE7RDFQFG7N41BdptiKGW/LvrcewclmsSfP/406+/fmMp1VkT2Nu9Yo75cX5?=
- =?us-ascii?Q?1BmunaErKuD9DBU/vMX6qTducvTKE5Sy7swlOz9Q9HDSAzLdNjrkM9+LK5U0?=
- =?us-ascii?Q?0GQcNkWN58mxNIU6q8pUjLjCTt2aHSm5rZ73PbMSz8LOAxS0Cc9v+FpqjAx4?=
- =?us-ascii?Q?A8kHOahQR9yQyHVs/4NuhIL2onLUV42vTSagRXMskVOuSF0L/PnRe8I4wJXu?=
- =?us-ascii?Q?jRCMg+MuFIIIihdk+Y3H0WM8IECuUrgrjRTSzm+NWYb0oaaXBtT36BXL7NJ9?=
- =?us-ascii?Q?USVwfjlFIB/WXx7hZZ4e+U7aK9oqHTAGZVyd70MyJpRbtd3MRrUu2kSg03eC?=
- =?us-ascii?Q?iqF9cWZp+rvjiYmz/gNY3SU6SybGZxl+hFDB40i6IXe4texmRluK4wDp5iFM?=
- =?us-ascii?Q?7/fXaVUqCuJO6Ticcahdbs97Hq+DCeafczvK1kztaHWLFMdtic21B99BisLc?=
- =?us-ascii?Q?vzlH++RPEvQNLNBC+l/CFdW3imn5N96+tRP34Dc/AZJrf5Xj5okXfuYA0Kpl?=
- =?us-ascii?Q?OWT1zDYDA5C0mYj9KXgBnN8Ys8GziTlagiVb/EVJyA0V42OxFCaMhhYYbf+t?=
- =?us-ascii?Q?TcBAP+JhJBjHsLHgd3JoWqXnKkDodDtBwdide3T1LcHg2Nf8dJHsZVCoERJ1?=
- =?us-ascii?Q?nXBYxMigGOtmYpPX1RKFdm4qsncCK/mn8ksFt9qLpvAT9us5l3aGC1MFbtsH?=
- =?us-ascii?Q?x/xxPCGt4ZepSpj57kylOrXkLuir?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(1800799015)(36860700004)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 10:03:42.0258
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f37209d3-fe99-4fc4-7087-08dc650efc90
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099D8.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5811
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Input: cyapa - add missing input core locking to
+ suspend/resume functions
+To: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Andrzej Pietrasiewicz
+	<andrzej.p@collabora.com>
+Content-Language: en-US
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <20231009121018.1075318-1-m.szyprowski@samsung.com>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplleLIzCtJLcpLzFFi42LZduznOV0DLa00gxMnFSyWPb7HYnF40QtG
+	i5ufvrFaXN41h82BxWPH3SWMHjtn3WX3+LxJLoA5issmJTUnsyy1SN8ugStj0qfFTAUdqhVd
+	e96yNDDekuti5OSQEDCROLHlGHMXIxeHkMAKRom1Uy8wQThfGCUmv9kP5XxmlHh3+AczTMvP
+	U8/ZIBLLGSX2Ll0KVfWRUaJn9gx2kCpeATuJ1U+XMoLYLAKqEp2TDzBBxAUlTs58wgJiiwrI
+	S9y/BVEvLJAg8bJ7OliNiICtxI4VEDazQJLEl0W/oGxxiVtP5oPZbAKGEl1vu9hAbE4BB4lJ
+	MyeyQ9TIS2x/Owfq0i0cEnPu1UDYLhILPz1gg7CFJV4d38IOYctInJ7cwwLygIRAO6PEgt/3
+	mSCcCYwSDc9vMUJUWUvcOfcLqJsDaIOmxPpd+hBhR4mWX3uZQMISAnwSN94KQtzAJzFp23Rm
+	iDCvREebEES1msSs4+vg1h68cIl5AqPSLKRQmYXky1lIvpmFsHcBI8sqRvHU0uLc9NRio7zU
+	cr3ixNzi0rx0veT83E2MwJRy+t/xLzsYl7/6qHeIkYmD8RCjBAezkgjvzY8aaUK8KYmVValF
+	+fFFpTmpxYcYpTlYlMR5VVPkU4UE0hNLUrNTUwtSi2CyTBycUg1MnRsl/vn02clVLnj65OAb
+	0Sl8jEzXzlScedi7SOOSsowZo5XClB8Pzr25KWmz4/9K98MeHQqXWaSaXPhu2t2YPYXX/tRh
+	UxGN5wmO3b94PU4eSiuXZt/EXeFl839afHT745KLx9n3L1eoni+4WEe+bLtukdR5xYfh9pte
+	aN89JslfNElWU/HP6aKXvKHNPufKvbcv+vhh1fPeRasfhOhbBc7cfYHJLW3Ri6zz4W/uTW8W
+	WLvRuvpWqwdzOYNKWV7ZVjGfT79N5t0x0PgsaKHlM+EI58eXUab7HhekrW1Nijw7Vdqr69es
+	Dv7G7W+ETxjsn3A4Nbxp/Sqrmb56e48tWbXypkr11y1WceKzlz//qsRSnJFoqMVcVJwIACde
+	VNeYAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprOIsWRmVeSWpSXmKPExsVy+t/xu7oGWlppBk8esFkse3yPxeLwoheM
+	Fjc/fWO1uLxrDpsDi8eOu0sYPXbOusvu8XmTXABzlJ5NUX5pSapCRn5xia1StKGFkZ6hpYWe
+	kYmlnqGxeayVkamSvp1NSmpOZllqkb5dgl7GpE+LmQo6VCu69rxlaWC8JdfFyMkhIWAi8fPU
+	c7YuRi4OIYGljBKdK3awQCRkJE5Oa2CFsIUl/lzrYgOxhQTeM0qs++oJYvMK2EmsfrqUEcRm
+	EVCV6Jx8gAkiLihxcuYTsDmiAvIS92/NYAexhQUSJF52TwerERGwldixAsJmFkiSOLPnOSvE
+	EZMZJX5MWQ6VEJe49WQ+mM0mYCjR9RbiCE4BB4lJMyeyQ9SYSXRt7WKEsOUltr+dwzyBUWgW
+	kjtmIRk1C0nLLCQtCxhZVjGKpJYW56bnFhvpFSfmFpfmpesl5+duYgTG0LZjP7fsYFz56qPe
+	IUYmDsZDjBIczEoivDc/aqQJ8aYkVlalFuXHF5XmpBYfYjQFBsZEZinR5HxgFOeVxBuaGZga
+	mphZGphamhkrifN6FnQkCgmkJ5akZqemFqQWwfQxcXBKNTBZaDXcZz9w9PgBPvZ3DNzuW6Ji
+	+qonbvGX/tq9c9ay1Ee/Ly7rclfwLbzXZH3GPbDV7N7KXJ99wWdLzp32u+x3w8+wIOPiZXdB
+	yYNz2y0qour5apI+PH7LvH8Ln8RUj2CPAyvFf3FNE1rtyCw1f9UMaZsDuZO3SpQ6Ku1Xasra
+	6VonHfTq+r8zUmt/nJl+bXrLluOb2i8rffN7eWBCQvdK8bivX75++XL80901LbPnROYfKS9W
+	meO+p7F12rKEsulbl3P98IpN2flQsHTfHZvmzRvUZ6d9aPNePyHm2MXdga8u7Sl4Jh/y9FN+
+	oY3c6hMrvH7cTwietvO6z52XK27WLV9wx3dvX4aChJz3sqfhNUosxRmJhlrMRcWJACLDF00q
+	AwAA
+X-CMS-MailID: 20240425100224eucas1p2155f5d9988a5c4a14aeb3fb7318d0fe0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20231009121026eucas1p19ed2a6a88fa6b899ef9b915a73ad87b5
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231009121026eucas1p19ed2a6a88fa6b899ef9b915a73ad87b5
+References: <CGME20231009121026eucas1p19ed2a6a88fa6b899ef9b915a73ad87b5@eucas1p1.samsung.com>
+	<20231009121018.1075318-1-m.szyprowski@samsung.com>
 
-Currently return status is not getting checked for get_api_version
-and because of that for x86 arch we are getting below smatch error.
+On 09.10.2023 14:10, Marek Szyprowski wrote:
+> Grab input->mutex during suspend/resume functions like it is done in
+> other input drivers. This fixes the following warning during system
+> suspend/resume cycle on Samsung Exynos5250-based Snow Chromebook:
+>
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 1680 at drivers/input/input.c:2291 input_device_enabled+0x68/0x6c
+> Modules linked in: ...
+> CPU: 1 PID: 1680 Comm: kworker/u4:12 Tainted: G        W          6.6.0-rc5-next-20231009 #14109
+> Hardware name: Samsung Exynos (Flattened Device Tree)
+> Workqueue: events_unbound async_run_entry_fn
+>   unwind_backtrace from show_stack+0x10/0x14
+>   show_stack from dump_stack_lvl+0x58/0x70
+>   dump_stack_lvl from __warn+0x1a8/0x1cc
+>   __warn from warn_slowpath_fmt+0x18c/0x1b4
+>   warn_slowpath_fmt from input_device_enabled+0x68/0x6c
+>   input_device_enabled from cyapa_gen3_set_power_mode+0x13c/0x1dc
+>   cyapa_gen3_set_power_mode from cyapa_reinitialize+0x10c/0x15c
+>   cyapa_reinitialize from cyapa_resume+0x48/0x98
+>   cyapa_resume from dpm_run_callback+0x90/0x298
+>   dpm_run_callback from device_resume+0xb4/0x258
+>   device_resume from async_resume+0x20/0x64
+>   async_resume from async_run_entry_fn+0x40/0x15c
+>   async_run_entry_fn from process_scheduled_works+0xbc/0x6a8
+>   process_scheduled_works from worker_thread+0x188/0x454
+>   worker_thread from kthread+0x108/0x140
+>   kthread from ret_from_fork+0x14/0x28
+> Exception stack(0xf1625fb0 to 0xf1625ff8)
+> ...
+> ---[ end trace 0000000000000000 ]---
+> ...
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 1680 at drivers/input/input.c:2291 input_device_enabled+0x68/0x6c
+> Modules linked in: ...
+> CPU: 1 PID: 1680 Comm: kworker/u4:12 Tainted: G        W          6.6.0-rc5-next-20231009 #14109
+> Hardware name: Samsung Exynos (Flattened Device Tree)
+> Workqueue: events_unbound async_run_entry_fn
+>   unwind_backtrace from show_stack+0x10/0x14
+>   show_stack from dump_stack_lvl+0x58/0x70
+>   dump_stack_lvl from __warn+0x1a8/0x1cc
+>   __warn from warn_slowpath_fmt+0x18c/0x1b4
+>   warn_slowpath_fmt from input_device_enabled+0x68/0x6c
+>   input_device_enabled from cyapa_gen3_set_power_mode+0x13c/0x1dc
+>   cyapa_gen3_set_power_mode from cyapa_reinitialize+0x10c/0x15c
+>   cyapa_reinitialize from cyapa_resume+0x48/0x98
+>   cyapa_resume from dpm_run_callback+0x90/0x298
+>   dpm_run_callback from device_resume+0xb4/0x258
+>   device_resume from async_resume+0x20/0x64
+>   async_resume from async_run_entry_fn+0x40/0x15c
+>   async_run_entry_fn from process_scheduled_works+0xbc/0x6a8
+>   process_scheduled_works from worker_thread+0x188/0x454
+>   worker_thread from kthread+0x108/0x140
+>   kthread from ret_from_fork+0x14/0x28
+> Exception stack(0xf1625fb0 to 0xf1625ff8)
+> ...
+> ---[ end trace 0000000000000000 ]---
+>
+> Fixes: d69f0a43c677 ("Input: use input_device_enabled()")
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-    CC      drivers/soc/xilinx/zynqmp_power.o
-drivers/soc/xilinx/zynqmp_power.c: In function 'zynqmp_pm_probe':
-drivers/soc/xilinx/zynqmp_power.c:295:12: warning: 'pm_api_version' is
-used uninitialized [-Wuninitialized]
-    295 |         if (pm_api_version < ZYNQMP_PM_VERSION)
-        |            ^
-    CHECK   drivers/soc/xilinx/zynqmp_power.c
-drivers/soc/xilinx/zynqmp_power.c:295 zynqmp_pm_probe() error:
-uninitialized symbol 'pm_api_version'.
+Gentle ping?
 
-So, check return status of pm_get_api_version and return error in case
-of failure to avoid checking uninitialized pm_api_version variable.
+> ---
+>   drivers/input/mouse/cyapa.c | 12 +++++++++++-
+>   1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/input/mouse/cyapa.c b/drivers/input/mouse/cyapa.c
+> index a84098448f5b..cf23f95b5f11 100644
+> --- a/drivers/input/mouse/cyapa.c
+> +++ b/drivers/input/mouse/cyapa.c
+> @@ -1347,10 +1347,16 @@ static int cyapa_suspend(struct device *dev)
+>   	u8 power_mode;
+>   	int error;
+>   
+> -	error = mutex_lock_interruptible(&cyapa->state_sync_lock);
+> +	error = mutex_lock_interruptible(&cyapa->input->mutex);
+>   	if (error)
+>   		return error;
+>   
+> +	error = mutex_lock_interruptible(&cyapa->state_sync_lock);
+> +	if (error) {
+> +		mutex_unlock(&cyapa->input->mutex);
+> +		return error;
+> +	}
+> +
+>   	/*
+>   	 * Runtime PM is enable only when device is in operational mode and
+>   	 * users in use, so need check it before disable it to
+> @@ -1385,6 +1391,8 @@ static int cyapa_suspend(struct device *dev)
+>   		cyapa->irq_wake = (enable_irq_wake(client->irq) == 0);
+>   
+>   	mutex_unlock(&cyapa->state_sync_lock);
+> +	mutex_unlock(&cyapa->input->mutex);
+> +
+>   	return 0;
+>   }
+>   
+> @@ -1394,6 +1402,7 @@ static int cyapa_resume(struct device *dev)
+>   	struct cyapa *cyapa = i2c_get_clientdata(client);
+>   	int error;
+>   
+> +	mutex_lock(&cyapa->input->mutex);
+>   	mutex_lock(&cyapa->state_sync_lock);
+>   
+>   	if (device_may_wakeup(dev) && cyapa->irq_wake) {
+> @@ -1412,6 +1421,7 @@ static int cyapa_resume(struct device *dev)
+>   	enable_irq(client->irq);
+>   
+>   	mutex_unlock(&cyapa->state_sync_lock);
+> +	mutex_unlock(&cyapa->input->mutex);
+>   	return 0;
+>   }
+>   
 
-Fixes: b9b3a8be28b3 ("firmware: xilinx: Remove eemi ops for get_api_version")
-Signed-off-by: Jay Buddhabhatti <jay.buddhabhatti@amd.com>
----
-V1: https://lore.kernel.org/lkml/20240424063118.23200-1-jay.buddhabhatti@amd.com/
-V1->V2: Removed AMD copyright
----
- drivers/soc/xilinx/zynqmp_power.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/soc/xilinx/zynqmp_power.c b/drivers/soc/xilinx/zynqmp_power.c
-index 965b1143936a..b82c01373f53 100644
---- a/drivers/soc/xilinx/zynqmp_power.c
-+++ b/drivers/soc/xilinx/zynqmp_power.c
-@@ -190,7 +190,9 @@ static int zynqmp_pm_probe(struct platform_device *pdev)
- 	u32 pm_api_version;
- 	struct mbox_client *client;
- 
--	zynqmp_pm_get_api_version(&pm_api_version);
-+	ret = zynqmp_pm_get_api_version(&pm_api_version);
-+	if (ret)
-+		return ret;
- 
- 	/* Check PM API version number */
- 	if (pm_api_version < ZYNQMP_PM_VERSION)
+Best regards
 -- 
-2.17.1
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
 
