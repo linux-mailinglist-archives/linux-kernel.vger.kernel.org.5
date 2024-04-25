@@ -1,269 +1,188 @@
-Return-Path: <linux-kernel+bounces-158973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DC588B2793
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:27:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA08E8B2798
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:28:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15E992832D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:27:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC32EB2762F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A60414EC45;
-	Thu, 25 Apr 2024 17:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE11414EC4F;
+	Thu, 25 Apr 2024 17:27:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hrK8xcgB"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="A7tCBzb7"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0F2B14B077;
-	Thu, 25 Apr 2024 17:27:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 998E614D716
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 17:27:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714066023; cv=none; b=TOkp2aDocMggg5MqoF728bCjNOeNFm4G6/0L1+rEfM1bax3DjNC72MCPegOc9L+U2dGQkwH2JSGVJ2uBtC62xO4MIh1EXI8H09ZGMFwcFf8qvwcPb8ds3VDbgmIRd0A5ayXR06ya01pQ5KGVFAMqxlXIsU4CMty14nxEhcoXfwQ=
+	t=1714066074; cv=none; b=p6c/V6S6tjOQOewvxEhuqGNQs0FzKFP+A4IdUdFGy6o796/yDbZ7NMzsmTf4W5UF90ynGJ71idzG7z8amgYrE5bEIRoNvfoxWwB0b7L4TsB2W3PKihURWYMfI97Z5Ls3D/nQjuENWY3eWqEByI+Mx2NGH7ekRiaLRLIGHGmfPLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714066023; c=relaxed/simple;
-	bh=UwM45O+uiXeyA4vPnBKUJQTx2u/U7RSqQt9xERpAiq0=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qbtt7sMmW6xWtE3GW9hhytWbMXj7HzmqnqNzdc7Hs65c0XxRLCZ1uvQDnvr0lAToPwfb9AbENFKyxXZBpL+rbCVq+atYB/icfJsVYuf7VvTXS29+lDvBejMzjfnA7+HnojVfuXTVZYEpsySx5lWASCM1pDcvtmwl2nGK5PQYJH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hrK8xcgB; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e86d56b3bcso11607365ad.1;
-        Thu, 25 Apr 2024 10:27:01 -0700 (PDT)
+	s=arc-20240116; t=1714066074; c=relaxed/simple;
+	bh=ucctMWTxaxZbiTCOKrWgMO9r0QtqypX2GQdfC7kk5CQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Qe3jo8kVjv/b0NPuGdzC3Nxb7xwRSocyRVURkMFG7kEp4TQPXlMo3arx6iNnBGiqHcgSB6YsMEtxPrLT8o9o9uq1nC1pkpW8zbHrbDPDO42UED6Ti1IS92fHy16JWKv1LxCcfdt5hvRvN/KIGlg2rMmktTxnFxoCqx+0m78BWa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=A7tCBzb7; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ee0642f718so1784219b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 10:27:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714066021; x=1714670821; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=K0g4XLw3B45byIB1RDNUY38GqRrTXx8Au6b71CzhcTY=;
-        b=hrK8xcgBVbFv3+I/Ni3ltmFcNRXXjE2Xlre1nyjT+m9eU2SB2x6NQU8AAM0aUC/e1O
-         tR4Txtn9XBxYBYwksbKE5QwiAdb+KZ3xe0ZXSzDtEo/6ePtqpKHO53KVnSs/eXChCIF+
-         eo5rh+yaqtiwxgNAlM1VPdJY4r9XZKnaFtMaLrMaaH5YwwNer5x3FBbj/tOm+NZ3PTx2
-         741ZRCnR/POrYMzgGoytzJqSEZxWJz5rcubKCjNZO4/1k2mm/Z1g/jRSikQ8hlUxRaNm
-         CF4BO/xGK4JSaq+ta2VpHIjDTdklWB9SVbuEo+pZHKcRq+Pg+sqSlX/c1XJYTnmXnheM
-         Wl2g==
+        d=broadcom.com; s=google; t=1714066073; x=1714670873; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=OOqmW9EMXSCXAzKPIqERIeQh9xbCR10AzpPSejSv1nY=;
+        b=A7tCBzb7ZD5sBXbQUb+cNHt4oQd5KJzMRnsKv/ZF1KwovVZneHtY/gnne96wfVGQh/
+         pn7Np/lsMN8k5sYPPdAZAAHWqgvleJwEg0JOzOmjb03gMQeJtINaP/htNPFpfVj8SOMs
+         k5fGiKKTXpf9bU/sdQalM2jBbPmSha9JI8neU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714066021; x=1714670821;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1714066073; x=1714670873;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=K0g4XLw3B45byIB1RDNUY38GqRrTXx8Au6b71CzhcTY=;
-        b=QCFRW9u0UaN/uExrOmMY/aiAkPn6zUQBb4y0r1iKm6POAUrQgDU0Ns18jc2b57/b1e
-         0s73vgOX3Ft3YK16dLJVhGCBw0AdrIUB4A0KOCtrGUdhzJtf0DUIyh08neB+jaBMuUg7
-         MkwHN/mULg3R6KOP/gh0wkzl8pbVo31R/EkdjhrOvYVih+p+WYf6PYXhAx5m1Cogh3AS
-         asSY7BMIwpz8ZjW1lT1kMXG88UumZTOGAHpVJathioUuBTcaD8YCUcLt7pMQD5OTHlOT
-         FcQ4dDPH/sIeVEgnfCpL4YJvmmkr91aYja9GJ2V92IcLC9g0MJrMBYiQCKG85DSLpk3G
-         IzSw==
-X-Forwarded-Encrypted: i=1; AJvYcCXjc39NHT4agjp6zVGZte8+Dxrh7CsflT9P9d4lOzeMYttT1h6I6QwFscwxCGalzwlwnTmtz4YgVsqPiEhcUrkPtv5/lTEgRLk4TlcHY/b9E3OoHqMWNfDRJiEoB6eC0jnfeGgykcpGgpEwj1FScUYFou/EFxW9S9J1PfRFuvdWZwmwmDY=
-X-Gm-Message-State: AOJu0YxalK7+C2Gw0LSzw9B5RcondJ5aF8mWLk1hDnY41qww/3AWKF5I
-	Jd78gsNOImsYlWCPgqx53uiL7IIwn80odpax8SmMRjTLp2Nb33G7
-X-Google-Smtp-Source: AGHT+IHw1urF2jSmmVEyN/pDFpaeHgkS2s4n3bNqIbCZc/EzsYBVznM5xl8ZZJoveHKfQd5yVAxpTA==
-X-Received: by 2002:a17:902:8e83:b0:1e0:e85b:2d30 with SMTP id bg3-20020a1709028e8300b001e0e85b2d30mr174445plb.42.1714066020873;
-        Thu, 25 Apr 2024 10:27:00 -0700 (PDT)
-Received: from debian ([2601:641:300:14de:8052:4ab9:f3ac:ce61])
-        by smtp.gmail.com with ESMTPSA id jv12-20020a170903058c00b001eab3baad5dsm1680463plb.4.2024.04.25.10.26.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 10:27:00 -0700 (PDT)
-From: fan <nifan.cxl@gmail.com>
-X-Google-Original-From: fan <fan@debian>
-Date: Thu, 25 Apr 2024 10:26:54 -0700
-To: shiju.jose@huawei.com
-Cc: linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-	linux-mm@kvack.org, dan.j.williams@intel.com, dave@stgolabs.net,
-	jonathan.cameron@huawei.com, dave.jiang@intel.com,
-	alison.schofield@intel.com, vishal.l.verma@intel.com,
-	ira.weiny@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, david@redhat.com,
-	Vilas.Sridharan@amd.com, leo.duran@amd.com, Yazen.Ghannam@amd.com,
-	rientjes@google.com, jiaqiyan@google.com, tony.luck@intel.com,
-	Jon.Grimm@amd.com, dave.hansen@linux.intel.com, rafael@kernel.org,
-	lenb@kernel.org, naoya.horiguchi@nec.com, james.morse@arm.com,
-	jthoughton@google.com, somasundaram.a@hpe.com,
-	erdemaktas@google.com, pgonda@google.com, duenwen@google.com,
-	mike.malvestuto@intel.com, gthelen@google.com,
-	wschwartz@amperecomputing.com, dferguson@amperecomputing.com,
-	wbs@os.amperecomputing.com, nifan.cxl@gmail.com,
-	tanxiaofei@huawei.com, prime.zeng@hisilicon.com,
-	kangkang.shen@futurewei.com, wanghuiqiang@huawei.com,
-	linuxarm@huawei.com
-Subject: Re: [RFC PATCH v8 04/10] cxl/mbox: Add SET_FEATURE mailbox command
-Message-ID: <ZiqSXtrV14Kglr6i@debian>
-References: <20240419164720.1765-1-shiju.jose@huawei.com>
- <20240419164720.1765-5-shiju.jose@huawei.com>
+        bh=OOqmW9EMXSCXAzKPIqERIeQh9xbCR10AzpPSejSv1nY=;
+        b=OrYZBfy8rs8CJBfCwDa97q63Z0ufqDFtL4r0Qo9la2f0nUUOXH2lOmDzuegqMj2wj0
+         urv8qYWBsUE3BHCMSjyYmIPo62u5pc+cdcesqzjXVYt0cOL4uFihqFtHieaJ1CLH5+LE
+         RE7W0K0smHOEPlTADOT8pPLDrNmjk1z/afGZ4iYZCeCdQqVgy+DZK57EagNlsPUhW54b
+         rBKMKM2lZSrxwe9mQxIelcvnNbLAqq7oTsNs0uD/Okjm5kmFonEzI+tk510aX06lT+NJ
+         TXl2HuhlOZ0Vft2aKZkPOt0qKnaXIeKWrWD7MGtg/KLc6IOBKucYZHUP8mUkEwdKyKwg
+         /qfQ==
+X-Gm-Message-State: AOJu0YxhojQ+ivnBB6j799jsNzHqdOLJD3ZlcRPILpU8dc2Cfhqtq0v5
+	NRLuzgse4r6QardExuKM5LrD0fiXrhH+PYthY97SJYd+3k3yfAsHJzUJU9kf0w==
+X-Google-Smtp-Source: AGHT+IEyj9gBxZv62LFLgGLraFFkbznKTsTduDdrNLHM9g1XxKCbQgndWqkDDmR8l5zO3xGctaJgyw==
+X-Received: by 2002:a05:6a20:2454:b0:1a9:509c:eba6 with SMTP id t20-20020a056a20245400b001a9509ceba6mr594000pzc.25.1714066072683;
+        Thu, 25 Apr 2024 10:27:52 -0700 (PDT)
+Received: from [192.168.1.162] ([50.35.46.55])
+        by smtp.gmail.com with ESMTPSA id i22-20020aa78b56000000b006f095e6b702sm13095672pfd.73.2024.04.25.10.27.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Apr 2024 10:27:52 -0700 (PDT)
+Message-ID: <8356c1a0-4a4d-42e6-94dc-97abad2f8e04@broadcom.com>
+Date: Thu, 25 Apr 2024 10:27:48 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240419164720.1765-5-shiju.jose@huawei.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 1/8] x86/vmware: Correct macro names
+To: Borislav Petkov <bp@alien8.de>
+Cc: linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+ hpa@zytor.com, dave.hansen@linux.intel.com, mingo@redhat.com,
+ tglx@linutronix.de, x86@kernel.org, netdev@vger.kernel.org,
+ richardcochran@gmail.com, linux-input@vger.kernel.org,
+ dmitry.torokhov@gmail.com, zackr@vmware.com,
+ linux-graphics-maintainer@vmware.com, pv-drivers@vmware.com,
+ timothym@vmware.com, akaher@vmware.com, dri-devel@lists.freedesktop.org,
+ daniel@ffwll.ch, airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
+ maarten.lankhorst@linux.intel.com, horms@kernel.org,
+ kirill.shutemov@linux.intel.com
+References: <adcbfb9a-a4e1-4a32-b786-6c204d941e9f@broadcom.com>
+ <20240424231407.14098-1-alexey.makhalov@broadcom.com>
+ <20240425152130.GJZip0-l040XCyUapN@fat_crate.local>
+Content-Language: en-US
+From: Alexey Makhalov <alexey.makhalov@broadcom.com>
+Autocrypt: addr=alexey.makhalov@broadcom.com; keydata=
+ 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 EuY0
+In-Reply-To: <20240425152130.GJZip0-l040XCyUapN@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, Apr 20, 2024 at 12:47:13AM +0800, shiju.jose@huawei.com wrote:
-> From: Shiju Jose <shiju.jose@huawei.com>
-> 
-> Add support for SET_FEATURE mailbox command.
-> 
-> CXL spec 3.1 section 8.2.9.6 describes optional device specific features.
-> CXL devices supports features with changeable attributes.
-> The settings of a feature can be optionally modified using Set Feature
-> command.
-> 
-> Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
-> ---
->  drivers/cxl/core/mbox.c | 73 +++++++++++++++++++++++++++++++++++++++++
->  drivers/cxl/cxlmem.h    | 33 +++++++++++++++++++
->  2 files changed, 106 insertions(+)
-> 
-> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> index 999965871048..4ca1238e8fec 100644
-> --- a/drivers/cxl/core/mbox.c
-> +++ b/drivers/cxl/core/mbox.c
-> @@ -1371,6 +1371,79 @@ size_t cxl_get_feature(struct cxl_memdev_state *mds,
->  }
->  EXPORT_SYMBOL_NS_GPL(cxl_get_feature, CXL);
->  
-> +/*
-> + * FEAT_DATA_MIN_PAYLOAD_SIZE - min extra number of bytes should be
-> + * available in the mailbox for storing the actual feature data so that
-> + * the feature data transfer would work as expected.
-> + */
-> +#define FEAT_DATA_MIN_PAYLOAD_SIZE 10
-> +int cxl_set_feature(struct cxl_memdev_state *mds,
-> +		    const uuid_t feat_uuid, u8 feat_version,
-> +		    void *feat_data, size_t feat_data_size,
-> +		    u8 feat_flag)
-> +{
-> +	struct cxl_memdev_set_feat_pi {
-> +		struct cxl_mbox_set_feat_hdr hdr;
-> +		u8 feat_data[];
-> +	}  __packed;
-> +	size_t data_in_size, data_sent_size = 0;
-> +	struct cxl_mbox_cmd mbox_cmd;
-> +	size_t hdr_size;
-> +	int rc = 0;
-> +
-> +	struct cxl_memdev_set_feat_pi *pi __free(kfree) =
-> +					kmalloc(mds->payload_size, GFP_KERNEL);
-> +	pi->hdr.uuid = feat_uuid;
-> +	pi->hdr.version = feat_version;
-> +	feat_flag &= ~CXL_SET_FEAT_FLAG_DATA_TRANSFER_MASK;
-> +	hdr_size = sizeof(pi->hdr);
-> +	/*
-> +	 * Check minimum mbox payload size is available for
-> +	 * the feature data transfer.
-> +	 */
-> +	if (hdr_size + FEAT_DATA_MIN_PAYLOAD_SIZE > mds->payload_size)
-> +		return -ENOMEM;
-> +
-> +	if ((hdr_size + feat_data_size) <= mds->payload_size) {
-> +		pi->hdr.flags = cpu_to_le32(feat_flag |
-> +				       CXL_SET_FEAT_FLAG_FULL_DATA_TRANSFER);
-> +		data_in_size = feat_data_size;
-> +	} else {
-> +		pi->hdr.flags = cpu_to_le32(feat_flag |
-> +				       CXL_SET_FEAT_FLAG_INITIATE_DATA_TRANSFER);
-> +		data_in_size = mds->payload_size - hdr_size;
-> +	}
-> +
-> +	do {
-> +		pi->hdr.offset = cpu_to_le16(data_sent_size);
-> +		memcpy(pi->feat_data, feat_data + data_sent_size, data_in_size);
-> +		mbox_cmd = (struct cxl_mbox_cmd) {
-> +			.opcode = CXL_MBOX_OP_SET_FEATURE,
-> +			.size_in = hdr_size + data_in_size,
-> +			.payload_in = pi,
-> +		};
-> +		rc = cxl_internal_send_cmd(mds, &mbox_cmd);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		data_sent_size += data_in_size;
-> +		if (data_sent_size >= feat_data_size)
-> +			return 0;
-> +
-> +		if ((feat_data_size - data_sent_size) <= (mds->payload_size - hdr_size)) {
-> +			data_in_size = feat_data_size - data_sent_size;
-> +			pi->hdr.flags = cpu_to_le32(feat_flag |
-> +					       CXL_SET_FEAT_FLAG_FINISH_DATA_TRANSFER);
-> +		} else {
-> +			pi->hdr.flags = cpu_to_le32(feat_flag |
-> +					       CXL_SET_FEAT_FLAG_CONTINUE_DATA_TRANSFER);
-> +		}
-> +	} while (true);
-> +
-> +	return rc;
-Dead code.
 
-Fan
 
-> +}
-> +EXPORT_SYMBOL_NS_GPL(cxl_set_feature, CXL);
-> +
->  int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
->  		       struct cxl_region *cxlr)
->  {
-> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-> index c822eb30e6d1..1c50a3e2eced 100644
-> --- a/drivers/cxl/cxlmem.h
-> +++ b/drivers/cxl/cxlmem.h
-> @@ -529,6 +529,7 @@ enum cxl_opcode {
->  	CXL_MBOX_OP_GET_LOG		= 0x0401,
->  	CXL_MBOX_OP_GET_SUPPORTED_FEATURES	= 0x0500,
->  	CXL_MBOX_OP_GET_FEATURE		= 0x0501,
-> +	CXL_MBOX_OP_SET_FEATURE		= 0x0502,
->  	CXL_MBOX_OP_IDENTIFY		= 0x4000,
->  	CXL_MBOX_OP_GET_PARTITION_INFO	= 0x4100,
->  	CXL_MBOX_OP_SET_PARTITION_INFO	= 0x4101,
-> @@ -777,6 +778,34 @@ struct cxl_mbox_get_feat_in {
->  	u8 selection;
->  }  __packed;
->  
-> +/*
-> + * Set Feature CXL 3.1 Spec 8.2.9.6.3
-> + */
-> +
-> +/*
-> + * Set Feature input payload
-> + * CXL rev 3.1 section 8.2.9.6.3 Table 8-101
-> + */
-> +/* Set Feature : Payload in flags */
-> +#define CXL_SET_FEAT_FLAG_DATA_TRANSFER_MASK	GENMASK(2, 0)
-> +enum cxl_set_feat_flag_data_transfer {
-> +	CXL_SET_FEAT_FLAG_FULL_DATA_TRANSFER,
-> +	CXL_SET_FEAT_FLAG_INITIATE_DATA_TRANSFER,
-> +	CXL_SET_FEAT_FLAG_CONTINUE_DATA_TRANSFER,
-> +	CXL_SET_FEAT_FLAG_FINISH_DATA_TRANSFER,
-> +	CXL_SET_FEAT_FLAG_ABORT_DATA_TRANSFER,
-> +	CXL_SET_FEAT_FLAG_DATA_TRANSFER_MAX
-> +};
-> +#define CXL_SET_FEAT_FLAG_DATA_SAVED_ACROSS_RESET	BIT(3)
-> +
-> +struct cxl_mbox_set_feat_hdr {
-> +	uuid_t uuid;
-> +	__le32 flags;
-> +	__le16 offset;
-> +	u8 version;
-> +	u8 rsvd[9];
-> +}  __packed;
-> +
->  /* Get Poison List  CXL 3.0 Spec 8.2.9.8.4.1 */
->  struct cxl_mbox_poison_in {
->  	__le64 offset;
-> @@ -916,6 +945,10 @@ size_t cxl_get_feature(struct cxl_memdev_state *mds,
->  		       size_t feat_out_size,
->  		       size_t feat_out_min_size,
->  		       enum cxl_get_feat_selection selection);
-> +int cxl_set_feature(struct cxl_memdev_state *mds,
-> +		    const uuid_t feat_uuid, u8 feat_version,
-> +		    void *feat_data, size_t feat_data_size,
-> +		    u8 feat_flag);
->  int cxl_poison_state_init(struct cxl_memdev_state *mds);
->  int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
->  		       struct cxl_region *cxlr);
-> -- 
-> 2.34.1
+On 4/25/24 8:21 AM, Borislav Petkov wrote:
+> On Wed, Apr 24, 2024 at 04:14:06PM -0700, Alexey Makhalov wrote:
+>> VCPU_RESERVED and LEGACY_X2APIC are not VMware hypercall commands.
+>> These are bits in return value of VMWARE_CMD_GETVCPU_INFO command.
+>> Change VMWARE_CMD_ prefix to GETVCPU_INFO_ one. And move bit-shift
+>> operation to the macro body.
 > 
+> I don't understand:
+> 
+> $ git grep GETVCPU_INFO
+> arch/x86/kernel/cpu/vmware.c:51:#define VMWARE_CMD_GETVCPU_INFO  68
+> arch/x86/kernel/cpu/vmware.c:478:       VMWARE_CMD(GETVCPU_INFO, eax, ebx, ecx, edx);
+> 
+> so that's a VMWARE_CMD 68, at least the prefix says so.
+> 
+> And those two are *bits* in that eax which that hypercall returns.
+> 
+> Or are those two bits generic but defined in a vmware-specific
+> hypercall?
+> 
+> Hm.
+> 
+
+These are VMware hypercall commands:
+#define VMWARE_CMD_GETVERSION    10
+#define VMWARE_CMD_GETHZ         45
+#define VMWARE_CMD_GETVCPU_INFO  68
+#define VMWARE_CMD_STEALCLOCK    91
+
+
+These are VMware-specific macros to analyze return values of 
+corresponding commands. They are prefixed with command name.
+#define GETVCPU_INFO_LEGACY_X2APIC           BIT(3)
+#define GETVCPU_INFO_VCPU_RESERVED           BIT(31)
+
+#define STEALCLOCK_NOT_AVAILABLE (-1)
+#define STEALCLOCK_DISABLED        0
+#define STEALCLOCK_ENABLED         1
+
+
+Name VMWARE_CMD_LEGACY_X2APIC was not correct as LEGACY_X2APIC is not a 
+command but the meaning of 3rd bit of a return value of 
+VMWARE_CMD_GETVCPU_INFO. So, change it to GETVCPU_INFO_LEGACY_X2APIC.
+The same change with GETVCPU_INFO_VCPU_RESERVED.
+Both these bits are not generic.
+
+--Alexey
 
