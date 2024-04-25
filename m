@@ -1,250 +1,210 @@
-Return-Path: <linux-kernel+bounces-158015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8EC48B1A2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:11:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B69E8B1A37
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:14:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 470B71F21471
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:11:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1745A2865AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BFD3AC0C;
-	Thu, 25 Apr 2024 05:11:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B8E3A1C9;
+	Thu, 25 Apr 2024 05:14:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="MktUHUxp"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WzOfmeAu"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DA2823CE;
-	Thu, 25 Apr 2024 05:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.148.174
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714021900; cv=fail; b=lbgMm4haFZUUQKIIdKcoowgyfOGhT9FoFm6itOXMv5GaQkspKpJ4Hnt2pjNXQlJcGRgDZyFFlRYYJ0eUHDcJAm/rdW5I2W7Y4kNhm/jnZcqFBMO+TfF6e59TSZpQRCa0Uo7ybOOn3D67vipdt5/V7+flzTKZt1j8mZBxenUBnUM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714021900; c=relaxed/simple;
-	bh=NkAla3AsBELsFKv7IBgm3x2NExapi5k8cOvCpeNozSQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=MSW29By2F+W/bWsgqJs5ZLAgc8Z52u30DBdsp7+7tj7Qrcf9nJqNqrp3CNEmhjHJGM3fZ33XylPN2KMOlZLv750pxvzlyvCNs33z4uqHIRc2/pnGyitmpI4eNTpJrjw2fLPQy3sS7m4V0HjYqocfAuRCdY8ajX6xNs+30p+ZZFI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=MktUHUxp; arc=fail smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43P21hwW031357;
-	Wed, 24 Apr 2024 22:11:25 -0700
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2041.outbound.protection.outlook.com [104.47.74.41])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3xq284bard-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Apr 2024 22:11:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EHwGq1/A5Tj1Y+bzWE7SuscKbDheDCaN30F4nN0lDtp82rO7bcW/+3ttxyr2RzL/z7ur8NXAQvDXet94rxFr/18COmS88z4RtBnYejMNLhvqd5pIxqjh7MzVuBIygTk/C76nQeuObpW2gBDWz92VtdTfnNrGPAUEGFMhV6GHLCwiAHzPkbriOKK2SZvrJy5VmtZOTF5o44p5I2+YNcBnAu7G7FWG5z92RkWYiqTiGVjiWcWkNl/DYu4NPCbutFvMDII9kgxQxGv5gRYslF3zE6PrtSJVVRzFBDEv5BvUiqgt7AQowLwXyjQEbPPhuzwZnA4BimGLAXo4VME/ikFdzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=I9Dp1BFQZ+Te02XBGH/v425mUbkQonkhoL/QnhLhzFE=;
- b=COPhnqtuimLxKd+AW0OJ7nZnbU2vePteh2uY9mXT88yLpX81Ltwhj0qFhwDGoJUSwQyoTEZ3Z6tJbflAJ++8QqdGYPo68kexI10Cb/7r0VkF66bzDTVZVpwr+KxiiuJs2W0dZ+af0iNGdvjGpVYHc6qm41BCnrxmDufrIYWu4rAPwdLp7UZIkP04gpfVfW0p9DZBOnOtkBoe4YrOmsZR4b0u4+ZT5oIHH+6RhbRxQGzA2WV6XuBaM/6M0j2GWB0PiOJ7vRNqLljKgZtQFyjUtSJeowzTHSQAN9/5JrINVfrYfnTQPWS+vehNyo7iKWPT9jPlhHvB8QO16immQC/AJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I9Dp1BFQZ+Te02XBGH/v425mUbkQonkhoL/QnhLhzFE=;
- b=MktUHUxpgOUtZ1fvwvgrGCTuhim0JAdEPO2xhyDq8ZfsGJzZOObVqryWaeKf5EuJabXh8FEXUpnV9dJtehhTAn6o2PVkDBSMezNUjbdhBZHXS9jfu7nP2O4dB83nPFDgl/lg5XvEnv1/rYBHzaJS2T9jvPPrmViaIFrVouCTBrQ=
-Received: from CH0PR18MB4339.namprd18.prod.outlook.com (2603:10b6:610:d2::17)
- by DM8PR18MB4424.namprd18.prod.outlook.com (2603:10b6:8:39::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7472.44; Thu, 25 Apr 2024 05:11:22 +0000
-Received: from CH0PR18MB4339.namprd18.prod.outlook.com
- ([fe80::61a0:b58d:907c:16af]) by CH0PR18MB4339.namprd18.prod.outlook.com
- ([fe80::61a0:b58d:907c:16af%5]) with mapi id 15.20.7472.044; Thu, 25 Apr 2024
- 05:11:22 +0000
-From: Geethasowjanya Akula <gakula@marvell.com>
-To: Jiri Pirko <jiri@resnulli.us>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net"
-	<davem@davemloft.net>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        Sunil Kovvuri Goutham
-	<sgoutham@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>
-Subject: RE: [EXTERNAL] Re: [net-next PATCH v2 7/9] octeontx2-pf: Add support
- to sync link state between representor and VFs
-Thread-Topic: [EXTERNAL] Re: [net-next PATCH v2 7/9] octeontx2-pf: Add support
- to sync link state between representor and VFs
-Thread-Index: AQHalJsVB1fMpBcrLE6y6oPYaOQD67F11OkAgAAswtCAAYApgIAA8oPg
-Date: Thu, 25 Apr 2024 05:11:22 +0000
-Message-ID: 
- <CH0PR18MB43397A40A3073E3F995286E5CD172@CH0PR18MB4339.namprd18.prod.outlook.com>
-References: <20240422095401.14245-1-gakula@marvell.com>
- <20240422095401.14245-8-gakula@marvell.com> <ZieyWKC7ReztKRWF@nanopsycho>
- <BL1PR18MB43427F05CB1F5D153DD54907CD112@BL1PR18MB4342.namprd18.prod.outlook.com>
- <ZikaJcqEqwhN-RSE@nanopsycho>
-In-Reply-To: <ZikaJcqEqwhN-RSE@nanopsycho>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CH0PR18MB4339:EE_|DM8PR18MB4424:EE_
-x-ms-office365-filtering-correlation-id: d242269a-20ce-4a1c-e2e8-08dc64e625e4
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- =?us-ascii?Q?KamvEpcoXbyOcV/Pw7/xQ4Z/i9ruqJ9siuWEQB/P73buCL2XD4QZAYf3Ss69?=
- =?us-ascii?Q?h8QxofuhClUkmJma58Y2+g27oilTUNmKjqzagR0OnXzx2Iyv1U7QbtBDQrdU?=
- =?us-ascii?Q?/wkPZ2ENvzG67Nxa3d0ekRtmVwoZyrNVViTL8Gw50m9YVtNqpUG7iWhMRtWc?=
- =?us-ascii?Q?jdTO60TAGsKP00f5NsmQMLLJ7OGsrchrXa/vzi2SnAadSP7Wqy4vFiED89a6?=
- =?us-ascii?Q?vt65jvZSsD+DJp8s/8sI5q30VtYjeMwRNxs+7/OSWBkyKGcFbLo5mEMKmKRC?=
- =?us-ascii?Q?oTUgMZnpYfWntqeQLQGoVUwrFIfHsbJ83y+sqqt2y2EyULDUDOsYaM9606r9?=
- =?us-ascii?Q?tXJrmj+EXjbBhDKsBcx8381GX++iV+LeBHQPUCrjdmIMY4YqZkN5tOmhBj+f?=
- =?us-ascii?Q?IOox9U+n9WfuMV7+MsjqGeKy/FZ1N2W2D9JXfqdUObzU+/NKpIZPJhp7NOCp?=
- =?us-ascii?Q?XVfAA6Af7alzCZTM7KYP/tZQOz00dyrXQqUFpodxJidODoYhgSu6bz5s8nRH?=
- =?us-ascii?Q?5pR4v++yz0ykd0DZdrpC9L3sJ2nlUBDzkOMv/ggo2d90PMuYZqQrOS7D2K38?=
- =?us-ascii?Q?NB7WfRQdgvXnzFCloQD9vt0MrISnGcTwTvWzgvSRmy3ncASxeWrWcSyICNZk?=
- =?us-ascii?Q?+pCy1/54G+6UjWN/VL9GYh0auATK6AErbAJny5rkV6nCALtxu5dw9myKvGrF?=
- =?us-ascii?Q?UWIU7LwFWQjci8VciJdmD6RJ0QG424NThcD41xsJ9j++MCPE/1BlhnH59KeB?=
- =?us-ascii?Q?Qi5Cmmf+Mn3aHqmXLEWhMSoC8zVjJBxVtgL3vnaEpd8x9dZKu9glhsK/l+dc?=
- =?us-ascii?Q?tIXXrEaudEJlef/x73ScrW2wpycafZg/svBT574sy+DROczqS5mj4hToNxAH?=
- =?us-ascii?Q?e02kKlRcgnAZcszIE6RGRvCx5w7xp4PaLlatHTYa5JOf6PKvA6pHNTHhZc3R?=
- =?us-ascii?Q?UmpCBDmZ3XMylHIuxuKUVOx94KSt42+YyFXuN8jjuXGBbcCXkgaTItA+DpW6?=
- =?us-ascii?Q?NZkHG9MAo3zkqSd5IQedpV+CqPwMqRNzd0Z8xHRQ1LfKM1BZuRgDzEIRilR9?=
- =?us-ascii?Q?sJrCU39880jAD0VtHJyxJsOHnH71S8d6RBfnvNdbQgWv+9vFBZ8KZ94PgCFJ?=
- =?us-ascii?Q?brNhdk0uHRqMQpn79ViiNV3uz3d0VfIrtyFnehLrirfRG/l3o1RSeDGBeBEl?=
- =?us-ascii?Q?5PgozeC46y4XG/jAJyEpYEem6WTdHEOfu5FK1mGzVhe1VQ0vvz09uf2yqwjT?=
- =?us-ascii?Q?qzstfjTJ6DmXY0SsWdftR70hiBx9O5lOE7h7u8Wj8jAfHWLDSAMItYcffouA?=
- =?us-ascii?Q?iF6tJ+tx4RsNtLE9AOFCvSAfaY3TSjfTEuGaspJ+S/A5oQ=3D=3D?=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR18MB4339.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?f2Nepk1YTbIrRO+t3DXQjM/HnVwE/hS5wQcEi0oVbPWv5oa+shacVVn9Q2p3?=
- =?us-ascii?Q?tcK6hCIaZBR6n4kJfIVGv7HfhkLHqZL1ZGcqUC40moWEHB1iJGXyqn7MnRbS?=
- =?us-ascii?Q?HPR5DnLTb+0pTbKHNh1k8qKmL/Vw/49l3e0rHW/BtPVCgGAlASLwyLNK+jTX?=
- =?us-ascii?Q?7h2Q4xrIgMRWbZFpwO4VVzofjBjh8DBB93xGxv6w4xetR9C2ymslRVnAVmYr?=
- =?us-ascii?Q?HKhFdYOAdtF/6y6eoBI12kLvyC/OBzxYLFC4yCHMeVP4ke8/1Y1smVsPy6Tc?=
- =?us-ascii?Q?QKQuKIjp728j+ylaZR4PR7fc6eba/SnU59oEv+urzs25BpW3QxE9nfCpYiqB?=
- =?us-ascii?Q?bnrFJQASCQyOB1ZSn4M4dkaEy2Y+rR0FgMnQJIoKfWSYWvoTVpaOk8Du9owI?=
- =?us-ascii?Q?L01uh0XesztgFXGCkORrLlSNF5Ui1TchRtCigFnaUZ5aV5dLc3V1GOH7tjCM?=
- =?us-ascii?Q?O4bsrvIxRdNyHFKicklFzmbL7zY0S3md1nM5b5CCNfHq1jnv7CsmTxFtlEk4?=
- =?us-ascii?Q?xHEYVp9uOBYvHBpPE/6+zWIAa/B0PjxuntgoY893VL6RkWBZfJPwU9Qa1kNC?=
- =?us-ascii?Q?PbHOgpysEfyX/CoYbcy0xVXhYpH20IMZX3nd6O9w9vETNBQQ26ZUtJVN/nbL?=
- =?us-ascii?Q?dNAX7+ctLrcwuzZLI9FiKJsaZNdwMeFVMsSOBbYm5dZtrvElu6OfacoIb96p?=
- =?us-ascii?Q?uLtN0uzu6dNEnBSSEkCTqjA37TpQ0C0SAddR8AAJf9YL4mXFqad/PegrcXgP?=
- =?us-ascii?Q?kfPpY60v1L0bTJftUQ001XaBy98/w2ZoAfKok+Wtir1iR6nuDL9reRxvRVLW?=
- =?us-ascii?Q?6s2NX5ZzQzczNrHG7h/F6nsCQCKzs/dxHp+YzRPpBLqSI4qxFAB6MEku3B8S?=
- =?us-ascii?Q?Y943AF3FvSRrYRctCNTN5mh1HiYw5eSyR+jge1wAaoBRSbzEMDp0cmHlYZC4?=
- =?us-ascii?Q?ieD1bEJrYWJHgUvEmtRun+a2wLu/7udgMNf7cmWyQfLXsQEm1QrR2KSjV0dt?=
- =?us-ascii?Q?KjFi0ztL4t0b2NmRx51JgNp7AgcteI3sf8SlcHBZY4JW41QOYZ5nH6Q8/C8T?=
- =?us-ascii?Q?mHRdexum2FhklqOlEp1EIcLjWfQ+RjFdAcCi8S0PFlBQbTIsyJjreaxHATtq?=
- =?us-ascii?Q?ejkGhfnZy2M757/kRukez3RVOGjyGStWHwKvivBh3DUPnojoeHNFQ7vL41jZ?=
- =?us-ascii?Q?uQBXh6NqC97PkBZ0KhiriX7Eadax4GrVJKIk72Xr8YRO5IKXr0RsPyMHF3oI?=
- =?us-ascii?Q?/xJmlmlhAZewI03JleY70cCV4/19cvTAk7CrQMWJ4h9L7J8ffrZuFIaEn9BQ?=
- =?us-ascii?Q?9qMOEeQHmIWVLjx4dngfor6W31HWV9Xq/0XyJqrfYEGjBy0oncw5VS5PVbHF?=
- =?us-ascii?Q?GbUmJgPPqsydK7sE5fCpnnnw1T2PsCNulY24aCIgdxLvnUKmTPUATBEo3/VL?=
- =?us-ascii?Q?tA2PsWXiLcz9SC70tVqcE9W7MzT6zaaEgRosU9iX+XdfnvN0ZCmRfiNb5gHM?=
- =?us-ascii?Q?p3ax6iIMTR0U9PTHZ3HckK7SNtH0Yiz/SAJluLVmxSdvZk1qqDGOR/uF0LmU?=
- =?us-ascii?Q?O9dqcyFm4MRvI688IBw=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77AF037152
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 05:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714022041; cv=none; b=S4U+MOttPEHLaHw70hJCF6mr/2jrJanhjF8NAMHC+6ZqSmujpGzRJrS0bmA2xMPd/6NBSGIDpJYG9LdEyW2TOPvISWJhLli4TcsKz3PYub2f2WMJXIB0ggDc1akNYWlHC3ehEHsdHC33eiUAsNaL5XLWv/SQWde3v9AcTaFHcHE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714022041; c=relaxed/simple;
+	bh=omg8p74JGGqp9q57a+PVg8jb0v7WqFRnbLG3SgPaduc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X3VlU1jDJ3ElyvUCoZpSeHeOm8L4OXSmnf8kM2dt2hFUKwTB1w8KiXeUjdR+SOR3jdnF1teMXJMWeWPKJI4S4jSmBnVo3S3Pa8MxyQh3FAt/ECT2XGpc+OpHJowV1cGYfPFe/JYlPbaoJPyJUxWsLqnQN3uxdTUIwSzEnvRGuW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WzOfmeAu; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-571ba432477so482278a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:13:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714022038; x=1714626838; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zMsvfQXS9e2cwUupmSavWVeAMqTjyBi4FVMWejO9Cz0=;
+        b=WzOfmeAuanJKumysbAv7lfQOxbn9TS6cGjGF/7macdnae3mJOOj0zIMdZ2AvfVbWpZ
+         KNhwgSLKu/GmHsX/Jd3iJ2dzGCYlBhMHo/lL90GJxQHe0o9OzdoeibLQxefH/hZSGMGU
+         zUemIlptuBgVZ/NuffanV6nFt+H+4T2NNeFEKqbehfftx7zEyOY65jECBBo4xt2jCEn4
+         Law8upNv6M4p5dGSuB6kXV1rkufJrne0qwOqc1TveyZZRrJw6QYUQfgCb670Bz28gs3I
+         5Gx27yQvwLuZju9Br14M9MbFtFdLsmVQqkAAc51vyFXfVugMBjE7z+j1VeiLvsDn3f3I
+         hFAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714022038; x=1714626838;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zMsvfQXS9e2cwUupmSavWVeAMqTjyBi4FVMWejO9Cz0=;
+        b=maUwKq03XpASN+yCgBu9JYZHdkCHgwkDFX9EnpgXEjMuHPanxUUfu8yz2poXARFjRg
+         W2KBMjwn3oXueNdrJ64gGjytdcu1G+SscboWuwF16d+qPYCvGwCzXqVykmTiHf/OrI5a
+         x/4KvHfVLaRXGADCP4EBqB0wtogMVDOobAfOvpBf0j2alz/PN+iuxKENn/2Pnb4j4LnO
+         mmZ2aBVBvApedBlAglZZUj6mcDSLWQCotnUn5nxmobT+WHMjFZB8OHyTGuvnNYulFWzE
+         N58h1pXQeQrYaXG9+r5N7t9ThptZCeR6sgpTPI0Uym76vypir6VorD3iXSLHgPy2FLkK
+         msxg==
+X-Forwarded-Encrypted: i=1; AJvYcCX5hD9TAbgUXCrbtJYbwfoGpyi3/FO1M3K8Kc934YowSCaw+50J3Dq2/Rx03Q7BSi4lf0nSvwfihJvcY7mLxdRm7j8CRfgVTuAkEKCe
+X-Gm-Message-State: AOJu0YzSaNXT6xayVsy1HCTkK8DH6cf1MkBuDHIF8A624S65KDiJ2pCs
+	eVcoNwmQIbcuYtu+ghI8RBGqlFMPwWeUwpaLrDBMZo6Vd4ue0Q6ft+DGOrreu1mmghIr4gzfmt7
+	AGY3emTLwJlr/qZsuGqWOlId/+MbY9wmbfng=
+X-Google-Smtp-Source: AGHT+IHp9Wwgtcn/BAPagOWZJypIB6On/thivfMjn03wEozTaGluYrlaW0ODr8J/d9SV1L5TtrwdJxDtaE7pDS1r7bo=
+X-Received: by 2002:a05:6402:35cb:b0:570:5b98:dfda with SMTP id
+ z11-20020a05640235cb00b005705b98dfdamr3302150edc.23.1714022037500; Wed, 24
+ Apr 2024 22:13:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR18MB4339.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d242269a-20ce-4a1c-e2e8-08dc64e625e4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Apr 2024 05:11:22.0240
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wrF7VB1uG44wjYDEfv3h5s0PWrfG3MgLpbM5ot0zXBTEqD+VNtC7asjI5YZIurjg501IR0UNUQ4ftFQy/i2Ccg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR18MB4424
-X-Proofpoint-GUID: k1x6ZXk_RldlDoHW5yLLZPzJgSLYMn7A
-X-Proofpoint-ORIG-GUID: k1x6ZXk_RldlDoHW5yLLZPzJgSLYMn7A
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-25_04,2024-04-24_01,2023-05-22_02
+References: <20240424135148.30422-1-ioworker0@gmail.com> <20240424135148.30422-2-ioworker0@gmail.com>
+ <CAHbLzkq2cnZNj+0V1c=cbdQukpHCQsLCtEQLEzpH2mdjOZj_cQ@mail.gmail.com>
+In-Reply-To: <CAHbLzkq2cnZNj+0V1c=cbdQukpHCQsLCtEQLEzpH2mdjOZj_cQ@mail.gmail.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Thu, 25 Apr 2024 13:13:46 +0800
+Message-ID: <CAK1f24my7H-Redm4LGBe1vWG1GO3Jo3bo2LTd3jU+gwJ4vfbNQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: add per-order mTHP split counters
+To: Yang Shi <shy828301@gmail.com>
+Cc: Zi Yan <ziy@nvidia.com>, akpm@linux-foundation.org, 21cnbao@gmail.com, 
+	ryan.roberts@arm.com, david@redhat.com, baolin.wang@linux.alibaba.com, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hey Yang,
 
+Thanks for taking time to review!
 
-> -----Original Message-----
-> From: Jiri Pirko <jiri@resnulli.us>
-> Sent: Wednesday, April 24, 2024 8:12 PM
-> To: Geethasowjanya Akula <gakula@marvell.com>
-> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; kuba@kernel.org=
-;
-> davem@davemloft.net; pabeni@redhat.com; edumazet@google.com; Sunil
-> Kovvuri Goutham <sgoutham@marvell.com>; Subbaraya Sundeep Bhatta
-> <sbhatta@marvell.com>; Hariprasad Kelam <hkelam@marvell.com>
-> Subject: Re: [EXTERNAL] Re: [net-next PATCH v2 7/9] octeontx2-pf: Add
-> support to sync link state between representor and VFs
->=20
-> Tue, Apr 23, 2024 at 06:09:02PM CEST, gakula@marvell.com wrote:
+On Thu, Apr 25, 2024 at 3:44=E2=80=AFAM Yang Shi <shy828301@gmail.com> wrot=
+e:
+>
+> On Wed, Apr 24, 2024 at 6:53=E2=80=AFAM Lance Yang <ioworker0@gmail.com> =
+wrote:
+> >
+> > At present, the split counters in THP statistics no longer include
+> > PTE-mapped mTHP. Therefore, this commit introduces per-order mTHP split
+> > counters to monitor the frequency of mTHP splits. This will assist
+> > developers in better analyzing and optimizing system performance.
+> >
+> > /sys/kernel/mm/transparent_hugepage/hugepages-<size>/stats
+> >         split_page
+> >         split_page_failed
+> >         deferred_split_page
+>
+> The deferred_split_page counter may easily go insane with the fix from
+> https://lore.kernel.org/linux-mm/20240411153232.169560-1-zi.yan@sent.com/
+>
+> Zi Yan,
+>
+> Will you submit v2 for this patch soon?
+
+Thanks for bringing this to my attention!
+I'll follow Zi Yan's patch, then submit the next version.
+
+Thanks,
+Lance
+
+>
+>
+> >
+> > Signed-off-by: Lance Yang <ioworker0@gmail.com>
+> > ---
+> >  include/linux/huge_mm.h |  3 +++
+> >  mm/huge_memory.c        | 14 ++++++++++++--
+> >  2 files changed, 15 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> > index 56c7ea73090b..7b9c6590e1f7 100644
+> > --- a/include/linux/huge_mm.h
+> > +++ b/include/linux/huge_mm.h
+> > @@ -272,6 +272,9 @@ enum mthp_stat_item {
+> >         MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE,
+> >         MTHP_STAT_ANON_SWPOUT,
+> >         MTHP_STAT_ANON_SWPOUT_FALLBACK,
+> > +       MTHP_STAT_SPLIT_PAGE,
+> > +       MTHP_STAT_SPLIT_PAGE_FAILED,
+> > +       MTHP_STAT_DEFERRED_SPLIT_PAGE,
+> >         __MTHP_STAT_COUNT
+> >  };
+> >
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > index 055df5aac7c3..52db888e47a6 100644
+> > --- a/mm/huge_memory.c
+> > +++ b/mm/huge_memory.c
+> > @@ -557,6 +557,9 @@ DEFINE_MTHP_STAT_ATTR(anon_fault_fallback, MTHP_STA=
+T_ANON_FAULT_FALLBACK);
+> >  DEFINE_MTHP_STAT_ATTR(anon_fault_fallback_charge, MTHP_STAT_ANON_FAULT=
+_FALLBACK_CHARGE);
+> >  DEFINE_MTHP_STAT_ATTR(anon_swpout, MTHP_STAT_ANON_SWPOUT);
+> >  DEFINE_MTHP_STAT_ATTR(anon_swpout_fallback, MTHP_STAT_ANON_SWPOUT_FALL=
+BACK);
+> > +DEFINE_MTHP_STAT_ATTR(split_page, MTHP_STAT_SPLIT_PAGE);
+> > +DEFINE_MTHP_STAT_ATTR(split_page_failed, MTHP_STAT_SPLIT_PAGE_FAILED);
+> > +DEFINE_MTHP_STAT_ATTR(deferred_split_page, MTHP_STAT_DEFERRED_SPLIT_PA=
+GE);
+> >
+> >  static struct attribute *stats_attrs[] =3D {
+> >         &anon_fault_alloc_attr.attr,
+> > @@ -564,6 +567,9 @@ static struct attribute *stats_attrs[] =3D {
+> >         &anon_fault_fallback_charge_attr.attr,
+> >         &anon_swpout_attr.attr,
+> >         &anon_swpout_fallback_attr.attr,
+> > +       &split_page_attr.attr,
+> > +       &split_page_failed_attr.attr,
+> > +       &deferred_split_page_attr.attr,
+> >         NULL,
+> >  };
+> >
+> > @@ -3083,7 +3089,7 @@ int split_huge_page_to_list_to_order(struct page =
+*page, struct list_head *list,
+> >         XA_STATE_ORDER(xas, &folio->mapping->i_pages, folio->index, new=
+_order);
+> >         struct anon_vma *anon_vma =3D NULL;
+> >         struct address_space *mapping =3D NULL;
+> > -       bool is_thp =3D folio_test_pmd_mappable(folio);
+> > +       int order =3D folio_order(folio);
+> >         int extra_pins, ret;
+> >         pgoff_t end;
+> >         bool is_hzp;
+> > @@ -3262,8 +3268,10 @@ int split_huge_page_to_list_to_order(struct page=
+ *page, struct list_head *list,
+> >                 i_mmap_unlock_read(mapping);
+> >  out:
+> >         xas_destroy(&xas);
+> > -       if (is_thp)
+> > +       if (order >=3D HPAGE_PMD_ORDER)
+> >                 count_vm_event(!ret ? THP_SPLIT_PAGE : THP_SPLIT_PAGE_F=
+AILED);
+> > +       count_mthp_stat(order, !ret ? MTHP_STAT_SPLIT_PAGE :
+> > +                                     MTHP_STAT_SPLIT_PAGE_FAILED);
+> >         return ret;
+> >  }
+> >
+> > @@ -3327,6 +3335,8 @@ void deferred_split_folio(struct folio *folio)
+> >         if (list_empty(&folio->_deferred_list)) {
+> >                 if (folio_test_pmd_mappable(folio))
+> >                         count_vm_event(THP_DEFERRED_SPLIT_PAGE);
+> > +               count_mthp_stat(folio_order(folio),
+> > +                               MTHP_STAT_DEFERRED_SPLIT_PAGE);
+> >                 list_add_tail(&folio->_deferred_list, &ds_queue->split_=
+queue);
+> >                 ds_queue->split_queue_len++;
+> >  #ifdef CONFIG_MEMCG
+> > --
+> > 2.33.1
 > >
 > >
-> >> -----Original Message-----
-> >> From: Jiri Pirko <jiri@resnulli.us>
-> >> Sent: Tuesday, April 23, 2024 6:37 PM
-> >> To: Geethasowjanya Akula <gakula@marvell.com>
-> >> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
-> >> kuba@kernel.org; davem@davemloft.net; pabeni@redhat.com;
-> >> edumazet@google.com; Sunil Kovvuri Goutham
-> <sgoutham@marvell.com>;
-> >> Subbaraya Sundeep Bhatta <sbhatta@marvell.com>; Hariprasad Kelam
-> >> <hkelam@marvell.com>
-> >> Subject: [EXTERNAL] Re: [net-next PATCH v2 7/9] octeontx2-pf: Add
-> >> support to sync link state between representor and VFs
-> >>
-> >> Prioritize security for external emails: Confirm sender and content
-> >> safety before clicking links or opening attachments
-> >>
-> >> ---------------------------------------------------------------------
-> >> - Mon, Apr 22, 2024 at 11:53:59AM CEST, gakula@marvell.com wrote:
-> >> >Implements mbox function to sync the link state between VFs and its
-> >> >representors. Same mbox is use to notify other updates like mtu etc.
-> >> >
-> >> >This patch enables
-> >> >- Reflecting the link state of representor based on the VF state and
-> >> >link state of VF based on representor.
-> >>
-> >> Could you please elaborate a bit more how exactly this behaves?
-> >> Examples would help.
-> >>
-> >We patch implement the below requirement mentioned the representors
-> documentation.
-> >Eg: ip link set r0p1 up/down  will disable carrier on/off of the corresp=
-onding
-> representee(eth0) interface.
-> >
-> >
-> >"
-> >The representee's link state is controlled through the representor. Sett=
-ing the
-> representor administratively UP or DOWN should cause carrier ON or OFF at
-> the representee.
->=20
-> Put these into patch description please.
-Sure. Will rewrite commit message with commands and its output in next vers=
-ion.
->=20
-> >"
-> >
-> >>
-> >> >- On VF interface up/down a notification is sent via mbox to
-> >> >representor
-> >> >  to update the link state.
-> >> >- On representor interafce up/down will cause the link state update o=
-f VF.
-> >> >
 
