@@ -1,306 +1,285 @@
-Return-Path: <linux-kernel+bounces-158742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 440898B245B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:51:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A6ED8B245F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:51:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64FC31C2139C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:51:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F128C28260D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1B6E14A0A0;
-	Thu, 25 Apr 2024 14:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B3A014A604;
+	Thu, 25 Apr 2024 14:51:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="g49clDRz"
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2063.outbound.protection.outlook.com [40.107.100.63])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mctKP4oF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EA3B14A4EC
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:51:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.63
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714056668; cv=fail; b=Gy5R3zIKBH9hqSDPUfpG4m4WNG/daXLzDbufBpHIwtlztLICUrkSWoCBUBTsIqvlQyedxEE5s9ju14S+pdrm9i0ofndATZFH8klsuOl/G7gamhhW+OgJQXf0FPMerZ9hc8jGQgbmpY51ogcI4v6AY5LC/fuojsLADWvU2n3IXJs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714056668; c=relaxed/simple;
-	bh=WW9nl2wSfSJhyWcgw6xZDAGUYNnEoh/DdnMGDdVLSVQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=SzXiTtjkplUp85yZyuk2h5G6uoviEJRwil56BZjm/1W96EL01LZxy+AZCSXMy+6/vRVw39afqbOtdKE6NNEydP9nM0VMyO8eY2RNCZ6484ZhuyEyCqSuL0tyhxJWCoK3v6BMSErfknyWKYjKN1HYK0pL5S50hivyPWOqmwu4f/k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=g49clDRz; arc=fail smtp.client-ip=40.107.100.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HaQwKD3REr27g/BLnLRickt6voM0kdx90YBKCT2dffRRaQEnlZ4/EISMdzemDZqdOGUAf9iyawTx7ZkI21xmc1gcrD0LGNAJ0GI6FRL98uEiQPuZkPXFKnWOYdO8iz/DPnXbVyuUL0ynFev5RmSQKSESP1rRtZHtxzx9wgWIiu5LorJMZB3Sj8f1U+rRlszoJvLUZJ6ZrsaLgj6grJYePvGT3ks20jf2/o5JBJI4nCWe2oBdsA2r6WB5LdB0InIyLh8g9ZYuyrtk5U0Fx9ZU60XEVsYiizOholNfMB78nON3dXvuFktxJEdptNHEdR5wQ34SMKN1cg2S4eFr1DhVxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gWrd4FROV710w5QwG99U7ZaWwQ0cfZLHfw6ucqyrW9I=;
- b=JmJpgG1IiUYfntij/KQcPvhiRYeAUL/vEWrTNGyuRC17fXpt1z+Y7xBtARxhphRD0azk9qJX5mnvKVxp8ot8/NbhWgKfXA2631B36kcdV2d0r5a11TSfTxhpY0EMa7cJl3vhrqqyC3ODSiZ5ioswogQieRdIBHnWK+HNffkbvFAw/1FFa8xOr85cVA7yeVh8affB/YY3rXBBeqH0k3Ao0/x+g5S31LM4Z1BWbbSYGmqzUF4nxTM18Y4WIt1ypma2SqA9hFgSS/JQ9aLGsRaG6CfkomPDAR5xc194Hp+5+oqGJE+QLvItNDxFmUx2VXx+4qGFB/Vd42P5KnKOw5L6pw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gWrd4FROV710w5QwG99U7ZaWwQ0cfZLHfw6ucqyrW9I=;
- b=g49clDRzXnxhNtjfiLxU6pLmDnYijG7wtjSYFxEaLpLPIOQelFUGGJp36CJYLDOhsw3ut4WWz/gFp6s6HTEdeZm/9xKbwoMSEKZwH+bqpGJnlCrH6zriXysFlgW3vW4atAjRyP0cc2vcy5QT7IQws6wTGCpoR7RMZ2EJLX/aIJOsMMMPM/C++nAxyrAdw9JguqcDwvunBfrLGcNY54dQlN65mJpY1Sa/QSwsSG2cg1l5lPouA1ZdEV9E+CFdx0LlBqff5UbZibeaSJS8XB3Q9Dj5yfR4CCPKScdeh3ebq+WrKqtdLbZ3q7JR1qipM4OS2opOrAvlUrCIAvsLsqIfpQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- MN0PR12MB6343.namprd12.prod.outlook.com (2603:10b6:208:3c0::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Thu, 25 Apr
- 2024 14:51:00 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::dc5c:2cf1:d5f5:9753]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::dc5c:2cf1:d5f5:9753%6]) with mapi id 15.20.7519.021; Thu, 25 Apr 2024
- 14:51:00 +0000
-From: Zi Yan <ziy@nvidia.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
- Andrew Morton <akpm@linux-foundation.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Ryan Roberts <ryan.roberts@arm.com>, Barry Song <21cnbao@gmail.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm/rmap: do not add fully unmapped large folio to
- deferred split list
-Date: Thu, 25 Apr 2024 10:50:58 -0400
-X-Mailer: MailMate (1.14r6030)
-Message-ID: <935E19A6-752C-49E7-8D25-8091195E0104@nvidia.com>
-In-Reply-To: <815e2114-f739-4f2f-b09f-a23a2fc3214b@redhat.com>
-References: <20240424211031.475756-1-zi.yan@sent.com>
- <CAHbLzkq61sTeRxU23gg3kMNBunxXH3GpkL6D56xcaepsDzFCJA@mail.gmail.com>
- <C617533C-4926-4FBA-8275-4446FDF48F31@nvidia.com>
- <815e2114-f739-4f2f-b09f-a23a2fc3214b@redhat.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_632007BF-731A-4F69-82A3-A1AF8048BB9F_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: MN2PR01CA0012.prod.exchangelabs.com (2603:10b6:208:10c::25)
- To DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40BFB14A0A0;
+	Thu, 25 Apr 2024 14:51:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714056683; cv=none; b=bwdtpjNxonCAnigTOdQSaFo3+Rzf8fai6tip6VICKEZiPYplysNDeoFeopFWs7OpF5qzL9eh7Ria6uwzu+H2RcY4ywA3+sPfzHi9C/Rw8M43ukvZw1c4SEOpnTCJ6JWQQskpLhVsrS7fWMqFdfK7SBSPYbp7dgVGCy/h+1Qz0U4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714056683; c=relaxed/simple;
+	bh=o8Pwp1MZGLbsmzWgTZQD2ayx4dF5M3ZVcoIncXTsEvk=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=hTZTFhooG0Q6HZPTRURfbKB/SKZ6xct9DIgxUCV+zZMhZ4K1AZ33SBzgMOToXdmqiEFEA5BhukX19nwjekAHgWuhAxgUQqVEd3X6FTpbK1zKtb3iCHeYk6VU0RSOTgw2qB5BjfnM5Ua47p1s2Sn4ZZrdsThl2E8NJgqytKIXP9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mctKP4oF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82B66C113CC;
+	Thu, 25 Apr 2024 14:51:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714056682;
+	bh=o8Pwp1MZGLbsmzWgTZQD2ayx4dF5M3ZVcoIncXTsEvk=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=mctKP4oFCAgStrgwKriN2CadcZcMD3lKZVHIQp2VbFiYUUuPl7AKRDoeeCQK06xIy
+	 +sucQB6AkeQRQUYT24oHkB6VZpgPEPVmz3GVb8qLiOtkOaVaJMFMj9X4GJDnwtwXKn
+	 WKX81BsMia3nl5QssVLSDmm1FpcG9XmxE4b7p1obdENy1QKly+hYxhEc1Zd1Zyvyly
+	 dyh0vEJmhahVcNhYySeAIKeyJHfADQMyHDd+24h3ztSDprb9vja6c0qzQV+0uLe96M
+	 I/pz4JnBlkyriA2CHw3eQV7Ecj1pMbOYq3u0MkSrlfqKbeRHGjsC8stQxneXEfaHmJ
+	 GSln53+WHO6lQ==
+Date: Thu, 25 Apr 2024 09:51:21 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|MN0PR12MB6343:EE_
-X-MS-Office365-Filtering-Correlation-Id: ca135c3e-4810-4d84-6972-08dc65371f32
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|366007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?b2pwUmtlR0poQlFGVW1vN3FKaHc0R2tZSGdzSHRLSWZkdkdsOHhwZW5TbkVh?=
- =?utf-8?B?cHNFZS8yYXhEWEp1TDBnUzVFOFR1NjBkcVJubERqd3h3eHRBUEhudTF2Tzl5?=
- =?utf-8?B?b3hucXNtM1Jkc2tUYjBPaHNVNzJVUnRHMWZpWHJ4UGJOcy9SM0liNUFKcnFZ?=
- =?utf-8?B?S1daUk9oZ3VTYlFQNjdnQUNHQU5vbzI5UHFmU1FLb0dvMXBLSTNUUktONG1l?=
- =?utf-8?B?Mm9jQTNMRXljMWl2MG1qL0FqZiszeUY5cmZJVnNlc2ZHV1cwbFlXZy80MFB1?=
- =?utf-8?B?MzBEMjlTeXMxU0JSVjhjcnZvQkNkWFlEb3luRStib2Uvcmd0cHJTZlhkS293?=
- =?utf-8?B?czlYa3lmMVJtTDNLT3RqbnN2L1dFRTVmWktCV3RrR3diVU5MUHY4Z0w1cjYx?=
- =?utf-8?B?UTE1NHpjWXpZMUxmYllUaXA3RnJqUTZGNjJYREY4VGlpd0M5N0FnbDBRcXlY?=
- =?utf-8?B?UHkvUzArU1NwdkxPR2JvOURPUGt0c2M5Q2FoNE9JL3FkeEJMNVFrSm9XbjBx?=
- =?utf-8?B?RDY3MHNMNXlpSmJJSkFXb2RxTHZJQWdKM1FwL3pnWkcranY4dHRhajdRUlZT?=
- =?utf-8?B?VjF0L0p0SXZkdW5PNlI5SFdlT210TmZOVXV6dGdWd0l1ZzJianpLTEFHc043?=
- =?utf-8?B?NzZzWkdlVFVEZ0YrTDlySnk5UFBTTWRJelcvaE4yYXVrZkNrb2h3WDgrZHFM?=
- =?utf-8?B?Zyt2bDg2RkQvVFZMWHJpb0s4OTZsSEpoVkZSUUR3RGVBc3FxYk9ISFhOUTRG?=
- =?utf-8?B?U2Mwc0ZNNVkwRFdsNHYxZjdjdkVkUGkwdkRPVi9mR08yNHg0cHFRU3BVU2FW?=
- =?utf-8?B?azRqL2JsSnhlYkpKNHUvdzM0ajdNNG5heVBYRDhBRGlUTkFGTnpSN0hqQUhK?=
- =?utf-8?B?U085RTdKdXFJYVNXbmZZUGNubDZoVkxoYkN4bUhSdlhWcytOejI3a1A1NWUv?=
- =?utf-8?B?QUNLVCs4YloyTndsN1FtRkxjWjF6QndHTmcwWEZEZFc1anlML0w1RlQ3QnBs?=
- =?utf-8?B?QkNFcERHbmRwTENwY05vUktINmpPekYzMXVTaC9zb3JEZ0YzcVpQVVZOS2Vr?=
- =?utf-8?B?dUZBRFdhdHQyY1VzeldiZGVhL1g4bE4vOE9ZTWZlMEdPYjZTWmVSYk5DNXhJ?=
- =?utf-8?B?b3k2WHMzOVB2RUxNRTBEOUYxbjJ6dGx5cTI3NjBMa25wM2UvdlVDK2pORHF6?=
- =?utf-8?B?a3VQbnF0OWVUWFFkOEFnRCtpZWtZOFpacGFxRElhYTIwV2thOTNjS0RQVXpq?=
- =?utf-8?B?aWxwc2JHUHE3VnlNRzQyOXh3Y0NoWVFjZkt2WFhreUhyZXRKeVluMDA4Qmp5?=
- =?utf-8?B?Qi9lREI2RHJKTTBmTnZBdEVMWVlzT3hzZW12emVvTm1KOEs1RmM2S1dLVnpZ?=
- =?utf-8?B?bXh1cTlOZWtBSTd3d1NocUFsdVpxVmE1N24wVEZiZTlWSnJDeTExMlJVNEJ6?=
- =?utf-8?B?bnJQUDlCOXVNSnQ4T0pTRHhXc0JqcC90STlHTGxCK28xUUZ6ZGxnL2thR00r?=
- =?utf-8?B?V1hpcGovZUhWWTRiNjRlc1IySGdES09GNEhwM2xGNGZ6L0lHTHNOMWNWdGF4?=
- =?utf-8?B?K2NtVUNLbWRTMjJBYW9ubm9mMXJvVWgrRDRyYXIwYWRZd2lWMml6Sk9NTUs0?=
- =?utf-8?B?SzUzY1FHZS9DbHZnR1NQMTdzN1VJYWVXNkl2TUEwekhmWFVmcHgyVFJEak84?=
- =?utf-8?B?YW9IRGdCRnBWVE5NSHg1RTZEYVdQUU1OS3lsSzBUa2V1MmxjWTJtSFR3PT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bWJLeXowaWtvVDFCZkJ1eldVeWRFUm9rSmVHWlRQdkxQSDlqUE85a2VpeEww?=
- =?utf-8?B?UjBiV1I3UDIxWHRoQVAxK2VjZlNNMkRtUksyOTJBQTdTR3Z3M1hQN1pkY0Fh?=
- =?utf-8?B?ME5Ha21vYnNiZ1VEdWJ1K2VJS2Z5VGpDblMxZ00vNUhhVVFDVGlqQ2Q4WjlI?=
- =?utf-8?B?UFZnV1VtMjdWQ3haWGpXaEp0bHEwNWRoT1ZoRFhiQUluZDRVdGJxVm9jQ01y?=
- =?utf-8?B?WDBJYmhyRDQ4VGd5azJGOUhUc0g3ZzJ6eFFPbE9mT3F0UGNSVGMvTVBjQ05R?=
- =?utf-8?B?UitFY3V5YUZXUHpGUXN3Mi9nT0U2S2M2R0FYL1k0bGorM0JWZkpzTlUrMHpJ?=
- =?utf-8?B?b0IvbWpYd3JhRzVvYlcxUWJuUDQwSEg5K2grL25mV1N2Sk1NR2ljdTQ4eWY0?=
- =?utf-8?B?cy9XeURmT2JFSVhzTjV5K0ErMHI5U3lWU3VjbUFXeVZTK2NuWkI3QUZrV3RT?=
- =?utf-8?B?QnRRUC9xQm5TankwTGZ1eFFjUHYwWndHeXZaeE41V05GRkphV2xPdXZxV0dU?=
- =?utf-8?B?WW5kcHpnVTArMzNTVlpxTktNamRsM2dCRE43emhMSU10Y2dIMGlyTWxnN1Fs?=
- =?utf-8?B?azhkcmhTeEFxSzRFNHhraWZ1TnIxbXk3K29KOERadFdsK3VpYWNtcFRiMGRX?=
- =?utf-8?B?WUFXVnpEV25EZkZsbm1Ic3dLZXNvR251NmxsbTFXclZibGozSktWV0pEb1hZ?=
- =?utf-8?B?TklnQ0h5NHkxQXI0Q3Y5NU9GTkNjeWlrQjIzZjVqUHdLR0hPcHhac3JIMU5p?=
- =?utf-8?B?UG15NFF0cmVhTjZYQmtwOE5KNUtrS2dmSGZZTXpTTlI1dUZhSjVBK0h4RzNl?=
- =?utf-8?B?N2UyZ2Z2RDNlZ0hWV0FzbzJKRG1ZNnQ4eE5BVXBiZ0MwNlp3OTNaRndBR2VX?=
- =?utf-8?B?T2wvaWhVZUVBamZuME1DZjdRbWQzVXYrQk9ybXVWTlJyL2t2cWZuMWpsWlNq?=
- =?utf-8?B?QXJwbmFXaTAxSHRMN3Z2dFR1dUtYcE1KMVU4ZEVyTUJnSHhPM0NJZFZCYXh1?=
- =?utf-8?B?Nm5BUml0UTVrK29tbmY1YUczV0R4MGg2NzRGVUNzV3FWU1BtdE5nREZQVzkw?=
- =?utf-8?B?R01Xa2tDcEtmdFBlZ3h3czFMYW1Qd1BVVXNBM3VXb29HYkM5OVZ0Q2NDeDEx?=
- =?utf-8?B?UXpjWTRVR1NTV1pHVXZVQTVxSzljbS9CWFIxMFpBZDVpTGpTbGl6eWtTT3Fu?=
- =?utf-8?B?MGlRbjNRd2tOTkR2SE9FMFkvNW4yazFDV1lucmZFTE53NTk0VTA0Tm1zdER5?=
- =?utf-8?B?dmdzRDdaRDBGVVkzWkgvU1RtaVI4NTIxTFRML1pHcFpza0hjT3FBTldDYm1U?=
- =?utf-8?B?UE9BSlJnRkZwMjdCQTJwWmluTnlSaktXRWtOM3NRK2VDQTlBTjhPMUx6ejQ3?=
- =?utf-8?B?Y3BjckFkNzB6eS9oQVpJQmIxNjRFVGduREJSaHIrL0ZYWUVsalJtVVAwNXVO?=
- =?utf-8?B?WWNxb1RPaFlvTUJYWThraGI5bzUwYzRHdDhPYU5EWlRIVzNqYkQvdThUcW5a?=
- =?utf-8?B?bnpZUlk3M2dvdWJvZlB1M1RiM3l5KzNqMkVvQkFoNWdTS2VXV0lCN0RmV2Mz?=
- =?utf-8?B?UHl4SkU3NnRnREhFVk14eURmSUZZbWljNUFsSTRHbDZydkdvcjRFUVVRQUZY?=
- =?utf-8?B?WXJWeEo0VWhzdXZxL1F1V3VTZXJzaFlIbFU4SVhZT2dUdXRuNFNlL0tmZHp1?=
- =?utf-8?B?ZytaZXpMbi9ueDNpSHErNjZROExJQnNRVW5Gd1J0R3ozeU05c09ZeDFBZnhZ?=
- =?utf-8?B?UGRBUWhCNHdZTFJvQnFsSENranVGQWxtaXNpeldieWdqMTRCbHNheXFuZjV3?=
- =?utf-8?B?RnhDaUF6SVpCcUtzMk1leVlTclF2OWpJWWEyNzFFdjFTSHZqUWt5SnM0MTVt?=
- =?utf-8?B?azZjcTFvalBPdjFCb3d0QlpJazJMUGM5elpwZFJlQzl2aHZ2cnVSZWRUZUdR?=
- =?utf-8?B?a0ZSUGZtbHFXVHRiSmQ0aU44OGVBVlQza1cvZFV4SkJja2ovQTJJR3V2Smdu?=
- =?utf-8?B?ei9OeEJRY2lWSGV2b3ZzUDRGdXVqSDdqQk1NZURyNDlQQ1JoY2VDTVA3TERa?=
- =?utf-8?B?bjF1eUF2ZjM2SGlGQ3ZCTWxUbGdEY2xCcHVpMzlGRWlrUXEzWnFNRTdkdTZs?=
- =?utf-8?Q?HtyU=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ca135c3e-4810-4d84-6972-08dc65371f32
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 14:51:00.2601
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LtnsK/YNf5PoLCYLq2+BDHN/BnvRVh95lQIoYUDruLNvWmnKhXERJzudYTKV381z
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6343
-
---=_MailMate_632007BF-731A-4F69-82A3-A1AF8048BB9F_=
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 25 Apr 2024, at 3:15, David Hildenbrand wrote:
-
-> On 25.04.24 00:39, Zi Yan wrote:
->> On 24 Apr 2024, at 18:32, Yang Shi wrote:
->>
->>> On Wed, Apr 24, 2024 at 2:10=E2=80=AFPM Zi Yan <zi.yan@sent.com> wrot=
-e:
->>>>
->>>> From: Zi Yan <ziy@nvidia.com>
->>>>
->>>> In __folio_remove_rmap(), a large folio is added to deferred split l=
-ist
->>>> if any page in a folio loses its final mapping. It is possible that
->>>> the folio is unmapped fully, but it is unnecessary to add the folio
->>>> to deferred split list at all. Fix it by checking folio->_nr_pages_m=
-apped
->>>> before adding a folio to deferred split list. If the folio is alread=
-y
->>>> on the deferred split list, it will be skipped.
->>>>
->>>> Commit 98046944a159 ("mm: huge_memory: add the missing
->>>> folio_test_pmd_mappable() for THP split statistics") tried to exclud=
-e
->>>> mTHP deferred split stats from THP_DEFERRED_SPLIT_PAGE, but it does =
-not
->>>> fix everything. A fully unmapped PTE-mapped order-9 THP was also add=
-ed to
->>>> deferred split list and counted as THP_DEFERRED_SPLIT_PAGE, since nr=
- is
->>>> 512 (non zero), level is RMAP_LEVEL_PTE, and inside deferred_split_f=
-olio()
->>>> the order-9 folio is folio_test_pmd_mappable(). However, this miscou=
-nt
->>>> was present even earlier due to implementation, since PTEs are unmap=
-ped
->>>> individually and first PTE unmapping adds the THP into the deferred =
-split
->>>> list.
->>>
->>> Shall you mention the miscounting for mTHP too? There is another patc=
-h
->>> series adding the counter support for mTHP.
->>
->> OK, will add it.
->
-> I thought I made it clear: this patch won't "fix" it. Misaccounting wil=
-l still happen. Just less frequently.
->
-> Please spell that out.
-
-Sure. Sorry I did not make that clear.
+From: Rob Herring <robh@kernel.org>
+To: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc: Will Deacon <will@kernel.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Haojian Zhuang <haojian.zhuang@linaro.org>, Tony Luck <tony.luck@intel.com>, 
+ "Guilherme G. Piccoli" <gpiccoli@igalia.com>, linux-kernel@vger.kernel.org, 
+ Rob Herring <robh+dt@kernel.org>, Kees Cook <keescook@chromium.org>, 
+ linux-gpio@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, ~postmarketos/upstreaming@lists.sr.ht, 
+ Conor Dooley <conor.dooley@microchip.com>, devicetree@vger.kernel.org, 
+ Tony Lindgren <tony@atomide.com>, linux-arm-kernel@lists.infradead.org, 
+ Lubomir Rintel <lkundrak@v3.sk>, linux-clk@vger.kernel.org, 
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+ phone-devel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, 
+ Stephen Boyd <sboyd@kernel.org>, Karel Balej <balejk@matfyz.cz>, 
+ David Wronek <david@mainlining.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Catalin Marinas <catalin.marinas@arm.com>
+In-Reply-To: <20240424-pxa1908-lkml-v10-0-36cdfb5841f9@skole.hr>
+References: <20240424-pxa1908-lkml-v10-0-36cdfb5841f9@skole.hr>
+Message-Id: <171405653276.2527711.56458295308032188.robh@kernel.org>
+Subject: Re: [PATCH v10 00/12] Initial Marvell PXA1908 support
 
 
->
->>>
->>>>
->>>> With commit b06dc281aa99 ("mm/rmap: introduce
->>>> folio_remove_rmap_[pte|ptes|pmd]()"), kernel is able to unmap PTE-ma=
-pped
->>>> folios in one shot without causing the miscount, hence this patch.
->>>>
->>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
->>>> ---
->>>>   mm/rmap.c | 8 +++++---
->>>>   1 file changed, 5 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/mm/rmap.c b/mm/rmap.c
->>>> index a7913a454028..220ad8a83589 100644
->>>> --- a/mm/rmap.c
->>>> +++ b/mm/rmap.c
->>>> @@ -1553,9 +1553,11 @@ static __always_inline void __folio_remove_rm=
-ap(struct folio *folio,
->>>>                   * page of the folio is unmapped and at least one p=
-age
->>>>                   * is still mapped.
->>>>                   */
->>>> -               if (folio_test_large(folio) && folio_test_anon(folio=
-))
->>>> -                       if (level =3D=3D RMAP_LEVEL_PTE || nr < nr_p=
-mdmapped)
->>>> -                               deferred_split_folio(folio);
->>>> +               if (folio_test_large(folio) && folio_test_anon(folio=
-) &&
->>>> +                   list_empty(&folio->_deferred_list) &&
->>>
->>> Do we really need this check? deferred_split_folio() does the same
->>> check too. Bailing out earlier sounds ok too, but there may not be to=
-o
->>> much gain.
->>
->> Sure, I can remove it.
->
-> Please leave it. It's a function call that cannot be optimized out othe=
-rwise.
+On Wed, 24 Apr 2024 20:42:27 +0200, Duje Mihanović wrote:
+> Hello,
+> 
+> This series adds initial support for the Marvell PXA1908 SoC and
+> "samsung,coreprimevelte", a smartphone using the SoC.
+> 
+> USB works and the phone can boot a rootfs from an SD card, but there are
+> some warnings in the dmesg:
+> 
+> During SMP initialization:
+> [    0.006519] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU1: 0x00000000000000
+> [    0.006542] CPU features: Unsupported CPU feature variation detected.
+> [    0.006589] CPU1: Booted secondary processor 0x0000000001 [0x410fd032]
+> [    0.010710] Detected VIPT I-cache on CPU2
+> [    0.010716] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU2: 0x00000000000000
+> [    0.010758] CPU2: Booted secondary processor 0x0000000002 [0x410fd032]
+> [    0.014849] Detected VIPT I-cache on CPU3
+> [    0.014855] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU3: 0x00000000000000
+> [    0.014895] CPU3: Booted secondary processor 0x0000000003 [0x410fd032]
+> 
+> SMMU probing fails:
+> [    0.101798] arm-smmu c0010000.iommu: probing hardware configuration...
+> [    0.101809] arm-smmu c0010000.iommu: SMMUv1 with:
+> [    0.101816] arm-smmu c0010000.iommu:         no translation support!
+> 
+> A 3.14 based Marvell tree is available on GitHub
+> acorn-marvell/brillo_pxa_kernel, and a Samsung one on GitHub
+> CoderCharmander/g361f-kernel.
+> 
+> Andreas Färber attempted to upstream support for this SoC in 2017:
+> https://lore.kernel.org/lkml/20170222022929.10540-1-afaerber@suse.de/
+> 
+> Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+> 
+> Changes in v10:
+> - Update trailers
+> - Rebase on v6.9-rc5
+> - Clock driver changes:
+>   - Add a couple of forgotten clocks in APBC
+>     - The clocks are thermal_clk, ipc_clk, ssp0_clk, ssp2_clk and swjtag
+>     - The IDs and register offsets were already present, but I forgot to
+>       actually register them
+>   - Split each controller block into own file
+>   - Drop unneeded -of in clock driver filenames
+>   - Simplify struct pxa1908_clk_unit
+>   - Convert to platform driver
+>   - Add module metadata
+> - DTS changes:
+>   - Properly name pinctrl nodes
+>   - Drop pinctrl #size-cells, #address-cells, ranges and #gpio-size-cells
+>   - Fix pinctrl input-schmitt configuration
+> - Link to v9: https://lore.kernel.org/20240402-pxa1908-lkml-v9-0-25a003e83c6f@skole.hr
+> 
+> Changes in v9:
+> - Update trailers and rebase on v6.9-rc2, no changes
+> - Link to v8: https://lore.kernel.org/20240110-pxa1908-lkml-v8-0-fea768a59474@skole.hr
+> 
+> Changes in v8:
+> - Drop SSPA patch
+> - Drop broken-cd from eMMC node
+> - Specify S-Boot hardcoded initramfs location in device tree
+> - Add ARM PMU node
+> - Correct inverted modem memory base and size
+> - Update trailers
+> - Rebase on next-20240110
+> - Link to v7: https://lore.kernel.org/20231102-pxa1908-lkml-v7-0-cabb1a0cb52b@skole.hr
+>   and https://lore.kernel.org/20231102152033.5511-1-duje.mihanovic@skole.hr
+> 
+> Changes in v7:
+> - Suppress SND_MMP_SOC_SSPA on ARM64
+> - Update trailers
+> - Rebase on v6.6-rc7
+> - Link to v6: https://lore.kernel.org/r/20231010-pxa1908-lkml-v6-0-b2fe09240cf8@skole.hr
+> 
+> Changes in v6:
+> - Address maintainer comments:
+>   - Add "marvell,pxa1908-padconf" binding to pinctrl-single driver
+> - Drop GPIO patch as it's been pulled
+> - Update trailers
+> - Rebase on v6.6-rc5
+> - Link to v5: https://lore.kernel.org/r/20230812-pxa1908-lkml-v5-0-a5d51937ee34@skole.hr
+> 
+> Changes in v5:
+> - Address maintainer comments:
+>   - Move *_NR_CLKS to clock driver from dt binding file
+> - Allocate correct number of clocks for each block instead of blindly
+>   allocating 50 for each
+> - Link to v4: https://lore.kernel.org/r/20230807-pxa1908-lkml-v4-0-cb387d73b452@skole.hr
+> 
+> Changes in v4:
+> - Address maintainer comments:
+>   - Relicense clock binding file to BSD-2
+> - Add pinctrl-names to SD card node
+> - Add vgic registers to GIC node
+> - Rebase on v6.5-rc5
+> - Link to v3: https://lore.kernel.org/r/20230804-pxa1908-lkml-v3-0-8e48fca37099@skole.hr
+> 
+> Changes in v3:
+> - Address maintainer comments:
+>   - Drop GPIO dynamic allocation patch
+>   - Move clock register offsets into driver (instead of bindings file)
+>   - Add missing Tested-by trailer to u32_fract patch
+>   - Move SoC binding to arm/mrvl/mrvl.yaml
+> - Add serial0 alias and stdout-path to board dts to enable UART
+>   debugging
+> - Rebase on v6.5-rc4
+> - Link to v2: https://lore.kernel.org/r/20230727162909.6031-1-duje.mihanovic@skole.hr
+> 
+> Changes in v2:
+> - Remove earlycon patch as it's been merged into tty-next
+> - Address maintainer comments:
+>   - Clarify GPIO regressions on older PXA platforms
+>   - Add Fixes tag to commit disabling GPIO pinctrl calls for this SoC
+>   - Add missing includes to clock driver
+>   - Clock driver uses HZ_PER_MHZ, u32_fract and GENMASK
+>   - Dual license clock bindings
+>   - Change clock IDs to decimal
+>   - Fix underscores in dt node names
+>   - Move chosen node to top of board dts
+>   - Clean up documentation
+>   - Reorder commits
+>   - Drop pxa,rev-id
+> - Rename muic-i2c to i2c-muic
+> - Reword some commits
+> - Move framebuffer node to chosen
+> - Add aliases for mmc nodes
+> - Rebase on v6.5-rc3
+> - Link to v1: https://lore.kernel.org/r/20230721210042.21535-1-duje.mihanovic@skole.hr
+> 
+> ---
+> Andy Shevchenko (1):
+>       clk: mmp: Switch to use struct u32_fract instead of custom one
+> 
+> Duje Mihanović (11):
+>       dt-bindings: pinctrl: pinctrl-single: add marvell,pxa1908-padconf compatible
+>       pinctrl: single: add marvell,pxa1908-padconf compatible
+>       dt-bindings: clock: Add Marvell PXA1908 clock bindings
+>       clk: mmp: Add Marvell PXA1908 APBC driver
+>       clk: mmp: Add Marvell PXA1908 APBCP driver
+>       clk: mmp: Add Marvell PXA1908 APMU driver
+>       clk: mmp: Add Marvell PXA1908 MPMU driver
+>       dt-bindings: marvell: Document PXA1908 SoC
+>       arm64: Kconfig.platforms: Add config for Marvell PXA1908 platform
+>       arm64: dts: Add DTS for Marvell PXA1908 and samsung,coreprimevelte
+>       MAINTAINERS: add myself as Marvell PXA1908 maintainer
+> 
+>  .../devicetree/bindings/arm/mrvl/mrvl.yaml         |   5 +
+>  .../devicetree/bindings/clock/marvell,pxa1908.yaml |  48 +++
+>  .../bindings/pinctrl/pinctrl-single.yaml           |   4 +
+>  MAINTAINERS                                        |   9 +
+>  arch/arm64/Kconfig.platforms                       |   8 +
+>  arch/arm64/boot/dts/marvell/Makefile               |   3 +
+>  .../dts/marvell/pxa1908-samsung-coreprimevelte.dts | 328 +++++++++++++++++++++
+>  arch/arm64/boot/dts/marvell/pxa1908.dtsi           | 300 +++++++++++++++++++
+>  drivers/clk/mmp/Makefile                           |   2 +-
+>  drivers/clk/mmp/clk-frac.c                         |  57 ++--
+>  drivers/clk/mmp/clk-of-mmp2.c                      |  26 +-
+>  drivers/clk/mmp/clk-of-pxa168.c                    |   4 +-
+>  drivers/clk/mmp/clk-of-pxa1928.c                   |   6 +-
+>  drivers/clk/mmp/clk-of-pxa910.c                    |   4 +-
+>  drivers/clk/mmp/clk-pxa1908-apbc.c                 | 131 ++++++++
+>  drivers/clk/mmp/clk-pxa1908-apbcp.c                |  84 ++++++
+>  drivers/clk/mmp/clk-pxa1908-apmu.c                 | 123 ++++++++
+>  drivers/clk/mmp/clk-pxa1908-mpmu.c                 | 112 +++++++
+>  drivers/clk/mmp/clk.h                              |  10 +-
+>  drivers/pinctrl/pinctrl-single.c                   |   1 +
+>  include/dt-bindings/clock/marvell,pxa1908.h        |  88 ++++++
+>  21 files changed, 1296 insertions(+), 57 deletions(-)
+> ---
+> base-commit: ed30a4a51bb196781c8058073ea720133a65596f
+> change-id: 20230803-pxa1908-lkml-6830e8da45c7
+> 
+> Best regards,
+> --
+> Duje Mihanović <duje.mihanovic@skole.hr>
+> 
+> 
 
-OK. If you think it is worth optimizing that function call, I will keep i=
-t.
+
+My bot found new DTB warnings on the .dts files added or changed in this
+series.
+
+Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
+are fixed by another series. Ultimately, it is up to the platform
+maintainer whether these warnings are acceptable or not. No need to reply
+unless the platform maintainer has comments.
+
+If you already ran DT checks and didn't see these error(s), then
+make sure dt-schema is up to date:
+
+  pip3 install dtschema --upgrade
 
 
---
-Best Regards,
-Yan, Zi
+New warnings running 'make CHECK_DTBS=y marvell/pxa1908-samsung-coreprimevelte.dtb' for 20240424-pxa1908-lkml-v10-0-36cdfb5841f9@skole.hr:
 
---=_MailMate_632007BF-731A-4F69-82A3-A1AF8048BB9F_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
+arch/arm64/boot/dts/marvell/pxa1908-samsung-coreprimevelte.dtb: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 0, 0, 0]]}
+	from schema $id: http://devicetree.org/schemas/root-node.yaml#
+arch/arm64/boot/dts/marvell/pxa1908-samsung-coreprimevelte.dtb: pinmux@1e000: pinctrl-single,gpio-range: [[8, 55, 55, 0], [8, 110, 32, 0], [8, 52, 1, 0]] is too long
+	from schema $id: http://devicetree.org/schemas/pinctrl/pinctrl-single.yaml#
+arch/arm64/boot/dts/marvell/pxa1908-samsung-coreprimevelte.dtb: mmc@80000: pinctrl-names: ['default'] is too short
+	from schema $id: http://devicetree.org/schemas/mmc/sdhci-pxa.yaml#
+arch/arm64/boot/dts/marvell/pxa1908-samsung-coreprimevelte.dtb: mmc@80000: Unevaluated properties are not allowed ('pinctrl-names' was unexpected)
+	from schema $id: http://devicetree.org/schemas/mmc/sdhci-pxa.yaml#
 
------BEGIN PGP SIGNATURE-----
 
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmYqbdIPHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhU6DsP/1FJeK3NdoYepMuNpvyJfGXE+nlnSkIx4cd3
-h/jh6q43eQriaDdosq827FOa1qiAMc0bNlK//4FOQmoTEh3kU9TspLqlCZapCrHo
-2acWnyQ7TqzKFVgIWaZLqUvqeYn9PQw9cdBrA7vrXw/eNQPQPLoiN+Yqj07C/tJS
-ZQ8xQV6aZcj54Ks1dyxwwrTVDmmb98CDNUx8nPgtIYBwE2bDIi5vxMoK/CN+EZRi
-fi1/xZ3dbIcYCYb1JyRjS48N4VDIIs9rLUifQfuN8bEhP2msBEAeYoREpuNJFAUI
-ajrh7wOLw8DbXuH8U2WoWI0hASENyHUW26Obbvb4waF0Exzm3rOhrLOKQqIRLmlD
-9JY1c8wtUxUmLiyArEsH6isaFKDnmM2QzGK3kyufU4D4os9zVLsX5rRXYhjGy9AI
-nTEfkVzYxIIent+nFv/VydSZEdwEAtAzKWOQh4lVnEfXuI5OVBgwX4UhJrAmZPph
-EbJI6lbCJG5n3hEbdXXVOBukH7VTnqD99B/i5NFXlBkObYSYx7OOZZmcNWuhQIxE
-E/1b6H/S4xBhgWQVnb2sezlLBgSRuOtjNAeKcL6u4PBcWPsrDbJFf2bENSSOfdRr
-5rKi750F5cqKFwsRnIabjgjiTO0xAMVWPH6xlmm6cGfegGXicaWK4ffgvhDVEpQH
-w0oslKRS
-=ZMi9
------END PGP SIGNATURE-----
 
---=_MailMate_632007BF-731A-4F69-82A3-A1AF8048BB9F_=--
+
+
 
