@@ -1,166 +1,114 @@
-Return-Path: <linux-kernel+bounces-158117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 338CB8B1BD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:22:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48D838B1BD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:23:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9AA51F250E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:22:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79BE91C22A76
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:23:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6CE56BFCC;
-	Thu, 25 Apr 2024 07:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1A9F6DCE3;
+	Thu, 25 Apr 2024 07:23:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uGg1s3Vu"
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HXd1znKR"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D443A268
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:22:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711073A268
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:23:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714029766; cv=none; b=iiT1YDP3wrYsQuyyT5osWCkb731SP2AWB7LtBTCJI1S8VcC0Y/9E+TJloqld+7mfoMJbtSpP4ztO59AoRc+Z2zxOvOImCV2M6Un126IE+0N/T0wIqbDF7e94eSwr0WYzvifZw2fcGcY8EP/VhtLi2ne0jiP2a7PXPeAUZZyoJB8=
+	t=1714029817; cv=none; b=DeBHexcz2azvUk8IqbsB3qjKY2qviEC2/n+v8d1RvSH/Im7Ro3pupfQrwTdd2Ju5eHx2U6ibPEHY/ha6/6qbeRQV4r/2ItH8PJTJwLPVpW6w1Qdr2BkGU5x5YiFVrFF1MAyertZRhXh8gamQIjcqaWcERjLk3JmEN4DCSNoZcOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714029766; c=relaxed/simple;
-	bh=nWP0uJlqGHLcY558e1BVtlGLpdNXHwpcc1niEhs6pd8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pqLcZxam68Gk4PDLc+RGZiYviLDjH2sGYXMH8sVWmuNCi1o/C1SMsjhGDd3FqUlmPUDT5l+TBLsymi2XgAQfxBVaG4dkmRsbOCkfBJqB0c8uPL020Cvoy4sx01CQqOJahDMowr5InRw6aH6M0cTB9ei9GYXeWIcLVMZ+9nN4rkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uGg1s3Vu; arc=none smtp.client-ip=209.85.161.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5aa2551d33dso457711eaf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:22:44 -0700 (PDT)
+	s=arc-20240116; t=1714029817; c=relaxed/simple;
+	bh=SzpkZG/BeOZDLG+Zvq2cvblBayTSaO3vjmv7avb8+ds=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UR84LYl0rfBYWawUvv1UmF/lyaGoFUJruINlboMKMtJl01ys9qztHnyVSS/BwxwHz5rnNuNg55xtJoiZPMwBXbUFc11jl0IQigIbtsZWayrMK8Od3PDFdGs/z1AW2Zxuvx9wpewRU3hTBLRb+mYkLbVIWeANwQ937lk+00vCnzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HXd1znKR; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-34af8b880e8so393611f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:23:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714029763; x=1714634563; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K1eBQVaboKafOVXFDPe1fYNkoEELHKBEMQnicl+9GfA=;
-        b=uGg1s3VuO1ZrDMAKhwrGugBMMh5Xvq7fXC2PPR/D+RD95dtVh5/0rxv383Go1HNqOL
-         dogilihB7fc44lN4Yx1LoRys7imZQv5xwdVOKDcbpVb8Ogzsnq8HWxN3N1lmyUCKzH0N
-         WScoGJTvLzrW/zzU1YITjVYURysztZs2xU//R4FdB51usk6plGwqQbriQhFGxjshcLOU
-         7ntt4JIDA1Fe/9hjnGCflzDa7UQ0DM4Pq+UzckrrLZ3qZa2OrvMh/DR4xzrcmreJWuhf
-         D+c0gd2RyB5eIMaZyrHJO/yYku3ZPffi5VyFRvtuipeqKxhKSFegGgNXbyYDeuWAeC1t
-         pxEQ==
+        d=linaro.org; s=google; t=1714029814; x=1714634614; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fyqYJZkfjwdUua+TcDwE6H7zALfuiwgInOkn4JY+Ffs=;
+        b=HXd1znKRYU/FCgEjLYkIpLHYeN6zelOUXvW70+u6KBbq+xh/Echb8Z3U8olpfqfXkb
+         QGezHMlS6IUq2X2U7vVJq1666nAlWjbKuW/EEYiprMHNK/OloaDmpeDcRKLQd3+ckjsZ
+         qTpO9D/6ja3u5nXFMgX4MTdm+22by9MB/niZRdyBdOh1NrZPUJXSFYATm+L7de4/pb6D
+         /qUZuue32oFbzsnAVLnm5u6/MrSAr41+qvfGpCptyBNFpgdQLxUfzSOlMULkijMkhk2J
+         ODtAZf4MYZTTsvmIgqaOR30Q+evxXZdn1PYrKRRgy7Bn0Eg3ioj92jrqY3deT1NxMA1f
+         YEjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714029763; x=1714634563;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K1eBQVaboKafOVXFDPe1fYNkoEELHKBEMQnicl+9GfA=;
-        b=XYltMYqxBwiYGKE/bwzyPy8GmKfOR+2FZI/IW/uHmoxyE7RvsA1KhNU6spLHhdKw+7
-         Uee01ck8ZW+VPHTs6BpER6ZXSzoHMOIkkaCcD31rJg+YRj+sypV/HpmKyIjypsik+3X4
-         +ASFOaEDD1QwE0e1k4AmgFKhD0cD/MlwpZZcIZp4xX+KQhYUTGcTsp0iAMPl0L1ZWBlS
-         9BeRR9WmjhaNcjeIIGmPWqfeJmE+OSDuRCPdyXxd+gQbC38OcpcD1gJ2Z5FlufapP/Ub
-         lmaj3C/T/X0lkndhjJxbz4hCU2ViC91sFHGwCxhaLb/hc8YFnzL9CVEXNiE6OGTDJi66
-         pi2g==
-X-Forwarded-Encrypted: i=1; AJvYcCUlu9rBn0IjvTJIK/sY1YT5ySAd/0qw5WmXBtwg4Aww4S5rhGDudB4RSHoA1DJkMOLbJMaWp8QbF93Pwd/4v0srSiA6JyvK8JzMiS4T
-X-Gm-Message-State: AOJu0YzL6dHt9U5oxbhghlSox6vtHES23TCaR2kMHnIGkQjNMZJid4H8
-	WeszETXUTgKtmu/FDFRUaHWN5RPU29sridNE6VrWyu7LiV5dOllIXLo4NGALfaZLeI2bOQViL7p
-	WWeU/WsOssBAjVe3wl3q6vb9aq9ynG1vAzGkM
-X-Google-Smtp-Source: AGHT+IH1PWHwg9n77tQRksuEOzxZE4efRPhvf6GNA0HjKXxBwPeDgkZXXC4Zay2WtZe+7P2OqcWBKdLsNkwwG4F8L/Y=
-X-Received: by 2002:a4a:e689:0:b0:5af:4b3c:e2f8 with SMTP id
- u9-20020a4ae689000000b005af4b3ce2f8mr4532348oot.0.1714029763326; Thu, 25 Apr
- 2024 00:22:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714029814; x=1714634614;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fyqYJZkfjwdUua+TcDwE6H7zALfuiwgInOkn4JY+Ffs=;
+        b=uav1io4+Hi3lxsU+RG+e3Gq6ktKKmAMjOtkLg+FSQjLHfU6/tb5UqYrap8MvWW1f4E
+         hssl4zqnD8Hj4qiPmGG9K34VM1s/Zm6Fkd1Yz9SmuA/6uQghXsBD9d9lNbjHwlfLi7zF
+         uSsMKOomh0sCBDHsogdbyoj/Rg7w+oloSLkytdZv5tF/tB5+PQuFZTAI0zvwg7n8Ru+h
+         Xsoyl93O0eLFuorNe9x9nUoMewMcxQxr7miS5umIK+n+FZB03nEH9ZtGg6JzV5zpNEMk
+         wEm/3nDxxQ/LOYCW84lKan21MXhDvHGJ4crK6CTZ+0MeGyMGdpNXmL7CvTvEZUDqA1qo
+         oDJw==
+X-Forwarded-Encrypted: i=1; AJvYcCVJC8dDTvIfcw5tia+p3gxw1NJ9d2/mPxa5lbKJ3fPI5AzRz51v70yoBoieYBl8Q0Dw0iyI0ObG4a2U7qirpNW+Qh4++87tXpWcG4Uh
+X-Gm-Message-State: AOJu0YyvZZkibiFWld4lNCF/QCY8Wdzi+htW2pgsJ3EnLnSSyVlyNVr7
+	VpMV1hH7ssv2O6ONOb7TyWdpkaDpQ8Q11s/arScr20EIMJaiqdh4uAhQCA9xJto=
+X-Google-Smtp-Source: AGHT+IF9upKBqBUrgVowAM5vRClJmwFn72xk3n62VcAc5CgAfgBJavs62vuM/qOhHT/YvDf1UPIGsA==
+X-Received: by 2002:a05:6000:1b87:b0:343:cee1:cbc1 with SMTP id r7-20020a0560001b8700b00343cee1cbc1mr1258604wru.14.1714029813746;
+        Thu, 25 Apr 2024 00:23:33 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id cs18-20020a056000089200b003437799a373sm19176297wrb.83.2024.04.25.00.23.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 00:23:33 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [GIT PULL] w1: drivers for v6.10
+Date: Thu, 25 Apr 2024 09:23:29 +0200
+Message-ID: <20240425072330.10049-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410164558.316665885@linutronix.de> <20240410165552.572304080@linutronix.de>
- <20240418163811.GA23440@redhat.com> <20240418181821.GA26239@redhat.com>
- <20240419110632.GA3198@redhat.com> <87sezbu69x.ffs@tglx> <87plufttru.ffs@tglx>
-In-Reply-To: <87plufttru.ffs@tglx>
-From: Andrei Vagin <avagin@google.com>
-Date: Thu, 25 Apr 2024 00:22:31 -0700
-Message-ID: <CAEWA0a6E1=XouGERJtUa7R6Aia2azeOOF02_=cbjCPdB4gyZKA@mail.gmail.com>
-Subject: Re: [patch V2 26/50] signal: Get rid of resched_timer logic
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Oleg Nesterov <oleg@redhat.com>, LKML <linux-kernel@vger.kernel.org>, 
-	Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>, 
-	John Stultz <jstultz@google.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
-	Eric Biederman <ebiederm@xmission.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 23, 2024 at 6:48=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de=
-> wrote:
->
-> On Tue, Apr 23 2024 at 23:18, Thomas Gleixner wrote:
-> > On Fri, Apr 19 2024 at 13:06, Oleg Nesterov wrote:
-> >> Today SI_TIMER < 0. We could introduce SI_TIMER_KERNEL > 0 with the mi=
-nimal
-> >> changes, but this can't help because the commit 66dd34ad31e59 allows t=
-o send
-> >> any siginfo to itself.
->
-> Well that predates the __SI_CODE() removal. So I doubt it's required
-> today, but what do I know about CRIU.
+Hi Greg,
 
-CRIU needs to restore siginfo-s of pending signals so that a task sees
-the same siginfo in a signal handler as it would be without
-checkpoint/restore. CRIU will not be affected, if rt_sigqueueinfo denies
-any non-negative si_code that is never reported by the kernel.
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
 
-> >> Otoh, I have no idea how CRIU restores the posix timers. If a process =
-has
-> >> a pending blocked SI_TIMER signal, then I guess it actually needs to e=
-nqueue
-> >> this signal at restore time, but resched_timer will be never true?
-> >
-> > It can't restore the correct sys_si_private value because that is
-> > nowhere exposed to user space.
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
 
-We are open to ideas how it can be restored properly.
+are available in the Git repository at:
 
->
-> It is exposed via PTRACE_PEEKSIGINFO, but it's useless.
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-w1.git tags/w1-drv-6.10
 
-When PTRACE_PEEKSIGINFO was added, it didn't expose it.  Then it was
-changed by cc731525f26a ("signal: Remove kernel internal si_code magic").
+for you to fetch changes up to cde37a5bdb0ed2c4c7b86ef688e5fdb697525a57:
 
-The idea of PTRACE_PEEKSIGINFO is to get a siginfo that a process would
-see in a signal handler.
+  w1: gpio: Don't use "proxy" headers (2024-03-25 12:06:37 +0100)
 
->
-> > There is no special treatment for SI_TIMER, so the signal restore might
-> > just end up queueing a random extra SI_TIMER signal if there was one
-> > pending.
->
-> It does. The sys_si_private value is not going to match the timer side
-> value and obviously the missing prealloc flag prevents it from trying to
-> rearm the timer.
->
-> > I checked the CRIU source and it looks like this just "works" by
-> > reconstructing and rearming the timer with the last expiry value. As
-> > that is in the past it will fire immediately and queue the signal.
->
-> It's not necessarily in the past, but it will fire eventually and in the
-> case of a blocked signal there will be two SI_TIMER signals queued.
->
-> So the patch is not completely wrong except that there is nothing which
-> prevents setting sys_si_private via rt_sigqueueinfo(), but that's
-> obviously a solvable problem. With that solved the condition:
->
->                 *resched_timer =3D
->                         (first->flags & SIGQUEUE_PREALLOC) &&
->                         (info->si_code =3D=3D SI_TIMER) &&
->                         (info->si_sys_private);
->
-> really can be reduced to:
->
->        info->code =3D=3D SI_TIMER && info->si_sys_private
->
-> In fact it makes a lot of sense _not_ to allow user space to set
-> info->si_sys_private because that's a kernel internal value and should
-> never be exposed to user space in the first place.
+----------------------------------------------------------------
+1-Wire bus drivers for v6.10
 
-We can zero out all of them in rt_sigqueueinfo.
+Few cleanups of 1-Wire GPIO driver to make it more robust and easier to
+read.
 
-Thanks,
-Andrei
+----------------------------------------------------------------
+Andy Shevchenko (5):
+      w1: gpio: Make use of device properties
+      w1: gpio: Switch to use dev_err_probe()
+      w1: gpio: Use sizeof(*pointer) instead of sizeof(type)
+      w1: gpio: Remove duplicate NULL checks
+      w1: gpio: Don't use "proxy" headers
+
+ drivers/w1/masters/w1-gpio.c | 62 ++++++++++++++++++--------------------------
+ 1 file changed, 25 insertions(+), 37 deletions(-)
 
