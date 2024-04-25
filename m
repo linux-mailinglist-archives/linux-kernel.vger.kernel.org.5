@@ -1,152 +1,150 @@
-Return-Path: <linux-kernel+bounces-157885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E471D8B1809
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:29:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC9828B181D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:43:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A28D028A76C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:29:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AD191F21E91
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:43:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F9CF17C9;
-	Thu, 25 Apr 2024 00:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D2B14C98;
+	Thu, 25 Apr 2024 00:43:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VS2+FkXu"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b="Ls+97lZT"
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F90631;
-	Thu, 25 Apr 2024 00:29:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4029115B3
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:43:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714004943; cv=none; b=bLqqBpSOC60xq43Yx1P+p7C8ReUHFBeJW1S1ImO0TbCjTbAUxEldwGaikIRD67LEEj4gRt4shCjf9DTE5bXGXanFlIf0uQEUscrhtGDw/I0U/TqXWLT1wzbepWNjwPDWKQYokT/weOd+aj1o1gOzHDP5fBj7QuI5G60mLDAPBZU=
+	t=1714005796; cv=none; b=g6wPg2/U2pXTmu2Rzi/rlEU3FF63QP5zBqP6Oqji72cIWqZBFiCAhZZDwzUqIrmP3FEiXIAQ0DeCgU2g0neBlPRK8oIc+FsYeieA7d7Nk/0XEgUMzbRAH2aV83gnWJusznnwGDOGoSwwO/OIDg7z9M2dVVz4oPa1Zefu5paYEx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714004943; c=relaxed/simple;
-	bh=dfYIhluWI9VFQ+0sliYM+gC/g3orSZlMV5F8bbaGEmA=;
+	s=arc-20240116; t=1714005796; c=relaxed/simple;
+	bh=236gG8N4hj2YoDKj8i1xC+LA41Hwr3up0ZGcQlhtubw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=H9xODm+KQKa829y6Y5Ozw2/qKSTj8m14FW24UvUuWN4CN7CyeQMCGyRpqhH539jpPRwJXODcHLHUO8Q0aeioPhWJKqJXlxtye46iVPkvLi0LGSBDlt00IZhBgE8iCHirWdT3sYBOF3qXdTVesw5KQWdiUNUq3IEz9Zm+YVRUCeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VS2+FkXu; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso244953b3a.2;
-        Wed, 24 Apr 2024 17:29:02 -0700 (PDT)
+	 To:Cc:Content-Type; b=jZdu2SUKj6KcY5juzI3BsjV2aErgAM8o0ON2GC0aO+FA3dceBVP1Zm/MRavQBl1oMpNCKGRxXrTPIJna1ie5E0cXMBFEB0as30nbwZ/kp+67/sfwxkErcyNCQSSEpdtokVcyslKWzTh/GhLbzbKQnXUQEtgQjdMq6ZXysuaD9eQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net; spf=pass smtp.mailfrom=amacapital.net; dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b=Ls+97lZT; arc=none smtp.client-ip=209.85.221.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amacapital.net
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4daa91c0344so155994e0c.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:43:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714004941; x=1714609741; darn=vger.kernel.org;
+        d=amacapital-net.20230601.gappssmtp.com; s=20230601; t=1714005794; x=1714610594; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BBjD5Ob95OzRJ4oN6s6QCeuOKrDd2KPsOMku1YCrrZM=;
-        b=VS2+FkXuXhRiMsnNi3qPuOJXzlqpqu2Oo9sILBaWOlIAcFqgJNSVLc+o0iV2ZE3nzn
-         Rbt6BN5nmhbcBa6PishwCokxnuEfuJjqsxaX/DECYSd1V9sDzCSBVLf8Xz/H1HH8guZ8
-         twjw5W8tmqrWbo+QTdOTE9YzLvrQ8BSvBF5ViZIA3U6yyGmKGGBWN15xgvIIBNsxKVba
-         rCWQFXyc916yvZqdhxb3Cmq2I3s3vzmJNy4dMaD6Q+iFUmqv9G0kT42AZr1U/CYWa3Jf
-         d4G//aHWXXAuIxsEyUwMVRgzCiPAEMKl3k9Lp20c7bnVev/JzC1OH2JrE4/5MdS2OjfX
-         qeLQ==
+        bh=fR7n1uhPFN3B2i3X955I2o/YTQLtqjqYe3qbWIU7RC4=;
+        b=Ls+97lZTFoJ2/KChiAz0ijZpt+w8uKkyx0sDOpeeR2wRJst8ppj7IQMNXK9YVsfify
+         KoldSLY5TOixc/CYJyNmoOIazKBu0O+8EAqWAX2KkZ9TAs0DCI8gxS9zjsxYjn1CKJH7
+         PbXCVxti/h7UYwMEyc3k3ILN4giSD9R5dq1B1UKU80WGrP7FUY+jrywp8RsI/yMW1O/o
+         Ec3sLVg0flnk54tkfSDXo5pofBMFom1oY/kALI1e7e6RTggr/8BP48Jy9/KGp6A9c1m5
+         69ZFDoNxsXokabU95Vt4hFjFP5loY+NeWmG/5sPqG2tKPo6FF6QUc8CVEwBb2O7951xc
+         Hp5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714004941; x=1714609741;
+        d=1e100.net; s=20230601; t=1714005794; x=1714610594;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BBjD5Ob95OzRJ4oN6s6QCeuOKrDd2KPsOMku1YCrrZM=;
-        b=sOUhhT6hVOF0+Q2aY5Ix/kL/St03FJjQweUDsC6K7mU0hVumVDDOqbr+7OOjXsYYXM
-         O76Nfy48JgLJBTF4d577PRe7yUV/D9Nz5rbLolVtpFtAJbY2Uce7YiUZYtnpSklKq7IF
-         6Z9KmhYQUYFNvX/pxhHbkly+7jmoklVg+2cqLN7z321FSVxIDD8kMvvVa1DZNFJ66HYa
-         INOF4qEfW9rUnX7pv6RgQZoXgZu5Z8rkX3LfMHjjSveOeR+4ZF1T20vhK+/KXUyD/knR
-         hCAdaLzNpmAsXr3KySAdCRDY3yXZTumILckHqNLxpKDnRoslME6DyJnOTw9yaan3CWNF
-         D2PQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWZ271I2ll9lH6IQg3IASW2Eak21jc8OZLCfd0EENRG3njK/7IghlOf0P8B7pG/U0BjXmd4ToyATTfAj3MkE+CaH6D7g4O65ihRjaZEugRbM0+9PA5wcNfJWHaPLnt76jmUmUYTbVCrLzdii6Wymswph1K6ftmumi63nFEH13aS8xSQ
-X-Gm-Message-State: AOJu0YzD9rowDyuucbuz94dt9skTtRzSY4rfVdLaKtQbQuWa7hRzk2Ko
-	BGeGXiX/cN9ISibPe5dis5nP50y79IUkk8YHqzlvqn84Wcrktu2rwwjgPx5ziqS55ulClkOUYlH
-	JYAt3r15olSJVHqi6Ch3mUXRVtY0=
-X-Google-Smtp-Source: AGHT+IERSh3vqLDqkb6Kdf7/fBtvb2Q6VMXuHjz6M3uNzuIRzyS3tPf2LjcwjWCO5I0j7e1nTNDzYKEbE/+kJ2EjcPU=
-X-Received: by 2002:a05:6a21:2d85:b0:1a9:c757:a22d with SMTP id
- ty5-20020a056a212d8500b001a9c757a22dmr4633205pzb.14.1714004941537; Wed, 24
- Apr 2024 17:29:01 -0700 (PDT)
+        bh=fR7n1uhPFN3B2i3X955I2o/YTQLtqjqYe3qbWIU7RC4=;
+        b=VrXd8mSvEqlQ5IfoymIEjcYWH/cke985QQ7x/p+jVKsfApF1Qr/3k1q1Gdy2cBawIP
+         XSbeD0dzADaWS324FjdqxiwerEI3/uhyBGk2DTfW91rUl3BeJtYSqlWOQFUgFMn024sN
+         0B//zMF+h+fTH+o4XQ0KlcwqiMjCfgSfBEgSJ0v7n9jQs1V3qsK4wKM0f5J3aqzOsy7P
+         c1koBU55G6CSTTINM7UoNHyImX7WhGq1b86rX5qhRrEc7r3NJSNpMqgHbiRU3zRhvuXv
+         fZU10Hv4AakW0C6kQbpetQMGI80lw005RV192IX9TNAQbVvKcWF5Zy9s850bNeuVP3U3
+         r9Vw==
+X-Gm-Message-State: AOJu0YykPz/yKBiUQvqFvByA22hDbu2PptbubcrR9+r+vVxFdDK9wiQ3
+	ypt7kQLpcPvxengzjnkqoQ9xK1NfWExGt+wxC6Mc0VRdTs0GMosa8aR1CUeZ5kiZBz8o9t3ThMy
+	bwI/GI6VrKsLYO3neAaf5x+uhstfhgyhfpZE8
+X-Google-Smtp-Source: AGHT+IGDxdao24yBIAE6mF2nR1EaA/sS73/iozSWk/HWHCQsnJdooMo1NGAL8N9vsDwXEby001pQKmbZiPPUcRArhTo=
+X-Received: by 2002:a05:6122:790:b0:4d4:1ec7:76e5 with SMTP id
+ k16-20020a056122079000b004d41ec776e5mr4505317vkr.16.1714005793771; Wed, 24
+ Apr 2024 17:43:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240420-bpf_wq-v2-0-6c986a5a741f@kernel.org> <20240420-bpf_wq-v2-12-6c986a5a741f@kernel.org>
-In-Reply-To: <20240420-bpf_wq-v2-12-6c986a5a741f@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 24 Apr 2024 17:28:49 -0700
-Message-ID: <CAEf4BzbqmrucgeXX9+Hgnhefne-go9nHYPmh_+JwuMHeNNsv-g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 12/16] selftests/bpf: wq: add bpf_wq_init() checks
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
+References: <20240423110148.13114-1-stsp2@yandex.ru> <4D2A1543-273F-417F-921B-E9F994FBF2E8@amacapital.net>
+ <0e2e48be-86a8-418c-95b1-e8ca17469198@yandex.ru>
+In-Reply-To: <0e2e48be-86a8-418c-95b1-e8ca17469198@yandex.ru>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Wed, 24 Apr 2024 17:43:02 -0700
+Message-ID: <CALCETrWswr5jAzD9BkdCqLX=d8vReO8O9dVmZfL7HXdvwkft9g@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] implement OA2_INHERIT_CRED flag for openat2()
+To: stsp <stsp2@yandex.ru>
+Cc: linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>, 
+	Eric Biederman <ebiederm@xmission.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Andy Lutomirski <luto@kernel.org>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
+	Alexander Aring <alex.aring@gmail.com>, linux-fsdevel@vger.kernel.org, 
+	linux-api@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
+	=?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>, 
+	Aleksa Sarai <cyphar@cyphar.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 20, 2024 at 2:10=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.=
-org> wrote:
+On Wed, Apr 24, 2024 at 3:57=E2=80=AFAM stsp <stsp2@yandex.ru> wrote:
 >
-> Allows to test if allocation/free works
+> 23.04.2024 19:44, Andy Lutomirski =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >> On Apr 23, 2024, at 4:02=E2=80=AFAM, Stas Sergeev <stsp2@yandex.ru> wr=
+ote:
+> >>
+> >> =EF=BB=BFThis patch-set implements the OA2_INHERIT_CRED flag for opena=
+t2() syscall.
+> >> It is needed to perform an open operation with the creds that were in
+> >> effect when the dir_fd was opened. This allows the process to pre-open
+> >> some dirs and switch eUID (and other UIDs/GIDs) to the less-privileged
+> >> user, while still retaining the possibility to open/create files withi=
+n
+> >> the pre-opened directory set.
+> > I like the concept, as it=E2=80=99s a sort of move toward a capability =
+system. But I think that making a dirfd into this sort of capability would =
+need to be much more explicit. Right now, any program could do this entirel=
+y by accident, and applying OA2_INHERIT_CRED to an fd fished out of /proc s=
+eems hazardous.
 >
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> While I still don't quite understand
+> the threat of /proc symlinks, I posted
+> v4 which disallows them.
 >
-> ---
->
-> changes in v2:
-> - dropped mark_precise checks
-> ---
->  tools/testing/selftests/bpf/bpf_experimental.h  |  1 +
->  tools/testing/selftests/bpf/prog_tests/wq.c     |  8 +++
->  tools/testing/selftests/bpf/progs/wq.c          | 10 ++++
->  tools/testing/selftests/bpf/progs/wq_failures.c | 78 +++++++++++++++++++=
-++++++
->  4 files changed, 97 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testi=
-ng/selftests/bpf/bpf_experimental.h
-> index 3329ea080865..785b91b629be 100644
-> --- a/tools/testing/selftests/bpf/bpf_experimental.h
-> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
-> @@ -470,4 +470,5 @@ extern int bpf_iter_css_new(struct bpf_iter_css *it,
->  extern struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css=
- *it) __weak __ksym;
->  extern void bpf_iter_css_destroy(struct bpf_iter_css *it) __weak __ksym;
->
-> +extern int bpf_wq_init(struct bpf_wq *wq, void *p__map, unsigned int fla=
-gs) __weak __ksym;
->  #endif
-> diff --git a/tools/testing/selftests/bpf/prog_tests/wq.c b/tools/testing/=
-selftests/bpf/prog_tests/wq.c
-> index 9a07b8bc2c52..26ab69796103 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/wq.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/wq.c
-> @@ -2,6 +2,7 @@
->  /* Copyright (c) 2024 Benjamin Tissoires */
->  #include <test_progs.h>
->  #include "wq.skel.h"
-> +#include "wq_failures.skel.h"
->
->  void serial_test_wq(void)
->  {
-> @@ -9,3 +10,10 @@ void serial_test_wq(void)
->
->         RUN_TESTS(wq);
->  }
-> +
-> +void serial_test_failures_wq(void)
-> +{
-> +       LIBBPF_OPTS(bpf_test_run_opts, topts);
-> +
 
-unused leftover?
+I like that, but you're blocking it the wrong way.  My concern is that
+someone does dfd =3D open("/proc/PID/fd/3") and then openat(dfd, ...,
+OA2_INHERIT_CRED);  IIRC open("/proc/PID/fd/3") is extremely magical
+and returns the _same open file description_ (struct file) as PID's fd
+3.
 
-> +       RUN_TESTS(wq_failures);
-> +}
+> > So perhaps if an open file description for a directory could have somet=
+hing like FMODE_CRED, and if OA2_INHERIT_CRED also blocked .., magic links,=
+ symlinks to anywhere above the dirfd (or maybe all symlinks) and absolute =
+path lookups, then this would be okay.
+>
+> So I think this all is now done.
 
-[...]
+But you missed the FMODE_CRED part!
+
+So here's the problem: right now, in current Linux, a dirfd pointing
+to a directory that you can open anyway doesn't convey any new powers.
+So, if I'm a regular program, and I do open("/etc", O_PATH), I get an
+fd.  And if I get an fd pointing at /etc from somewhere else, I get
+the same thing (possibly with different f_cred, but f_cred is largely
+a hack to restrict things that would otherwise be insecure because
+they were designed a bit wrong from the beginning).
+
+But, with your patch, these fds suddenly convey a very strong
+privilege: that of their f_cred *over the entire subtree to which they
+refer*.  And you can attack it using exactly your intended use case:
+if any program opens a dirfd and then drops privileges, well, oops, it
+didn't actually fully drop privilege.
+
+So I think that, if this whole concept has any chance of working well,
+it needs to be opt-in *at the time of the original open*.  So a
+privilege-carrying open would be an entirely new option like
+O_CAPTURE_CREDS or FMODE_CREDS.  And OA2_INHERIT_CREDS is rejected if
+the dirfd doesn't have that special mode.
 
