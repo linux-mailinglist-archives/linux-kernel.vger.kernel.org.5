@@ -1,321 +1,187 @@
-Return-Path: <linux-kernel+bounces-158316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0567C8B1E38
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:40:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 326328B1E3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:41:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29AD01C21964
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:40:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55DFE1C2191A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:41:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC03384E19;
-	Thu, 25 Apr 2024 09:39:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB95E84E13;
+	Thu, 25 Apr 2024 09:40:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZkIVTPyL"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JZ7XluEL"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09E5784D2C;
-	Thu, 25 Apr 2024 09:39:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FBD784D3B
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:40:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714037989; cv=none; b=QS146jc+h3HglgzP0MoOYsZgiiIj0UHDh9Wdj/nYfPJK9yskK2AxnDRg3nDNDDQr4NLOJq+pdUPsmLrdy3FEvG/2oO1EXJ14rGvRdyVT0c3bg+0Hi+fM2h6hYyKv/HRs/KSOq9WpKaX01btwTjOGhcnDE/iEzDY+iOozBMRyO0I=
+	t=1714038056; cv=none; b=Jh7SW3UgDsixI8mTIeC+9e209dwZG2a0rWJ68V9fniAAjP5Gk7KBbVxu/2PKrg6Ga6HkHQdpStJ7vU0Kv7KuAf/wmLlix3UoR27i1uy6k5RSQlp8WZHhSTbB9ei183ckKoDU9mLtVuAJeTQvLrNgWqugESNwfUPTKjauDhsBG98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714037989; c=relaxed/simple;
-	bh=qzN7MLLBq9f4CvPJfFmQCyWJNSAG003xU4q77TyJx2g=;
-	h=Content-Type:Mime-Version:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=Pr0HHvDX0VA8rQpqC9t+eY2FajLljenXJ7VYrTHn1TdKrIlwdqYU1CzIs+xeBzrXh3TkaOfd6fonv3rvFd1sKmn7Cm3aRLWkjZ5hJe2pT3jMI4GVuJkPD5cLDPRB2LWWJdE1eiZYD5cqcgZjfusmOwX/vuuT7HpXfK7YJ+xupis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZkIVTPyL; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a5200202c1bso93479666b.0;
-        Thu, 25 Apr 2024 02:39:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714037986; x=1714642786; darn=vger.kernel.org;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZeoF2LD/FnGiNx/2NgLwbKv13uzKEYK6tBaU9lBoRUQ=;
-        b=ZkIVTPyLB5Xqlc5TJI9csy0fYxvJPEnNovoWjBM4HWzDkn9mHQQRVe/4Sumc7kyw9L
-         WZW2B8DBhPpqeUOCINdGyFDEqpmBHUU8Od5PDZln15FRa/IrRFYyCqOhQucNWnGqvZv8
-         z1WsWjfgSWqpjlJb/NsSGe7mGzO3y4tB3X0qxQpJA5BJHv4XzISY2WfG6GNnYp4y1Ets
-         qti4mCtArUZSsDAAsvm5j3pk5NuBfn8SE9sx7RnNSDtYWJA7SLEx0OC6nXHGTO1156+Q
-         u/SaYsg7+W/e9OxCi5pjK6gIb48f8hLiilB3tOuJ0IQdpCONi7WgnW8mIyaJaqp8Dsrq
-         u8FA==
+	s=arc-20240116; t=1714038056; c=relaxed/simple;
+	bh=B0UaMrfggGcH0NuJgBoeH/FZELb8DvPiOgF/+f2euR4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HiYksWJIvFMBoXSO+V0tnbKkhkJBlYgTa8ZqAQ4fhEcdStyCL5IkG3A1VHkKzrlY0VmorF97AnYYC0BaqGQSufN/CvtDkGPoFNn9hS3IR0NkevoNR4py3+u1qMP55qAN0lqkkkDK1/nRcP8AfOADP95NjmPS39Iy+fnl8tWk6SI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JZ7XluEL; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714038054;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=v38K8DHxFEe4iXrXoGabe9MWX7Uzru577IllYM1Hxig=;
+	b=JZ7XluEL7yXYkvnpuTsCDeyZ/+dJb2UnNnfLyo4CU3iJZwQaQ16WdU5XVA5t+uByeXIbsg
+	/DFnoGVEJ4uMgSmXAURVKCJ3zzzJf+5tDNjTpUnl6B4002jpbFnmCgOMBs5dLQfY9aanaU
+	dkjNE+ZVC2DR7WWsV3yTxFK+WclNpTw=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-360-1VOS2cIiPM-o7AbPesiScA-1; Thu, 25 Apr 2024 05:40:51 -0400
+X-MC-Unique: 1VOS2cIiPM-o7AbPesiScA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-343e46df264so503314f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 02:40:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714037986; x=1714642786;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZeoF2LD/FnGiNx/2NgLwbKv13uzKEYK6tBaU9lBoRUQ=;
-        b=HuF+vGuIpIlCt2e589IKiigQ1dS7sKxm+iG78llph7aRRaH2DfV/QsJXBj2h8WKfif
-         ecSHdqclMj4r4IFmYbIFzLQosZgpBK1L2dfTe2AutoJv2KzS6M2yWVtvmOD6UpjNHMsY
-         OQcVclh2rbWQWt6WvzyHKyqpNiI3DE0M2S+6CoSGq3xwzgb7AVNJt/2Xdi7goCbBYOax
-         HKyfNMidb/fB3xO3l2IaGPt1kbWPdiyI5MVL3/NRDx1lD3UxpT+R62poH7W6ly/05Cky
-         6Z5j8BV/Z+LYP8AJQiERqmW5rp9kd14lKfs7iHQ5H8wJydsfV2fedFQvZRmjh3xngYYS
-         Ljwg==
-X-Forwarded-Encrypted: i=1; AJvYcCVLhXXdDomxOw5XuruEy8YetISsRr5OcYlpuryxkdIZq6dhx39+4Gq48NQBNvyaaOBPcLmJJ4RlzbJl9ULCmmiXnWssiWc6W6LT4TmmCW55d417fGJoNQ/FgvCTGsB8AT+LKMUUqgcie1Y=
-X-Gm-Message-State: AOJu0YznaUCg0ThJb59ztAG5lpaHjHuDEvm6MquuJi2dYFIY+5q4ROJD
-	sbYEQcsamz5uLWxiz68qvblOdFTZ44jK8vo7AJnA/2cq18Br9Jfp
-X-Google-Smtp-Source: AGHT+IFc68idvTShi9eRcrAEx83sc450bQhgs6O8zQ7zAp7rnY3edp8EcAC8YYT2edBv37yqvEfJiA==
-X-Received: by 2002:a17:907:2685:b0:a55:a1d4:84f5 with SMTP id bn5-20020a170907268500b00a55a1d484f5mr4896891ejc.43.1714037985945;
-        Thu, 25 Apr 2024 02:39:45 -0700 (PDT)
-Received: from localhost (p200300e41f162000f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f16:2000:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id gl20-20020a170906e0d400b00a5889ee66d6sm2289894ejb.45.2024.04.25.02.39.45
+        d=1e100.net; s=20230601; t=1714038051; x=1714642851;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v38K8DHxFEe4iXrXoGabe9MWX7Uzru577IllYM1Hxig=;
+        b=HMhknNehwwZuUZtIOd9LITliqtrTCBs0Ek1eF8LBkYpECBrThHR6qFvirYfw1nYWiZ
+         tHBTHFfIsuvukr8E3AN4NgBgruYOa+hKpIn106c5SfXml5Xj2UA/SlirdXXhmxsnBndZ
+         yyByhNthst4vFugnENu+ilLV1RiS3X2DgVb4O6VBys0LvVhMZ6Qznll0Ev8G1X+MuLRE
+         9Z7ThKm6/sFIeT6hscl9BxOzq131r+icqYrdKocOP3cp1WJnFG2dfcmDZa9w0QnzHIGd
+         9szZ+sIVp1KV42eWAypVNP2Ht8Y1Bi7vq5iXLmrJ77H2touXDkwLsjpXHykgwMKTBvu+
+         SKJw==
+X-Forwarded-Encrypted: i=1; AJvYcCVbIhGLeSnPXQZktLW0gth8HbICcbhyuMI9nkCVb8q9wC/sVYDwCNPxJrxuFwM1jM01CBJgVL5M8oImrMlgEKu40wTzIcCc85g3R1P/
+X-Gm-Message-State: AOJu0Yxbj9I+oB2GScdD7kZIrDF7MQag4c//CQzGUPvbVyTfsMxqPOlV
+	Qx18DbubPyDAKE/n1LZauv/+6hTKcx3niKvc3hbBW0mqA1dWxola3+BgvCxHutNrh6IP5cvNXU7
+	a1tJ1wxPG/886ptaEoQJbyyzF7+E1bvT9OGR7wwJvO/NZR3eff8bNDNXGhIGnsA==
+X-Received: by 2002:adf:ed0b:0:b0:349:fc93:1dc with SMTP id a11-20020adfed0b000000b00349fc9301dcmr3572198wro.8.1714038050809;
+        Thu, 25 Apr 2024 02:40:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEWXrnyfBd1VmrKlXc5UDNH3YOWGt4ItpbfDi7CcurW+2K9XvvVA34hnoa6v1pHskx7y6GGFg==
+X-Received: by 2002:adf:ed0b:0:b0:349:fc93:1dc with SMTP id a11-20020adfed0b000000b00349fc9301dcmr3572175wro.8.1714038050414;
+        Thu, 25 Apr 2024 02:40:50 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c719:8200:487a:3426:a17e:d7b7? (p200300cbc7198200487a3426a17ed7b7.dip0.t-ipconnect.de. [2003:cb:c719:8200:487a:3426:a17e:d7b7])
+        by smtp.gmail.com with ESMTPSA id e4-20020adff344000000b0034349225fbcsm19331393wrp.114.2024.04.25.02.40.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 02:39:45 -0700 (PDT)
-Content-Type: multipart/signed;
- boundary=11bf7723ce2ee8c4dc9f5d8a9625e732e4266a15537986345fdef71c5bc5;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+        Thu, 25 Apr 2024 02:40:50 -0700 (PDT)
+Message-ID: <37374089-895f-4c6f-a2f5-33859eb02b13@redhat.com>
+Date: Thu, 25 Apr 2024 11:40:48 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Thu, 25 Apr 2024 11:39:44 +0200
-Message-Id: <D0T3R7UPFO07.2VR2436TG4N8B@gmail.com>
-Subject: Re: [Patch v3 1/2] dt-bindings: make sid and broadcast reg optional
-From: "Thierry Reding" <thierry.reding@gmail.com>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Sumit Gupta"
- <sumitg@nvidia.com>, <robh@kernel.org>, <conor+dt@kernel.org>,
- <maz@kernel.org>, <mark.rutland@arm.com>, <treding@nvidia.com>,
- <jonathanh@nvidia.com>
-Cc: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-tegra@vger.kernel.org>, <amhetre@nvidia.com>, <bbasu@nvidia.com>
-X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
-References: <20240412130540.28447-1-sumitg@nvidia.com>
- <20240412130540.28447-2-sumitg@nvidia.com>
- <d26f9661-3e50-4a72-9097-fe63a27503f1@linaro.org>
- <D0SHRQVCGJBY.2DPLX9K6VXEYM@gmail.com>
- <D0SILCYU98EV.1XW7NZFC9013K@gmail.com>
- <9561dede-37d0-4183-8742-448058803f8e@linaro.org>
-In-Reply-To: <9561dede-37d0-4183-8742-448058803f8e@linaro.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/huge_memory: move writeback and truncation checks
+ early
+To: Luis Chamberlain <mcgrof@kernel.org>, akpm@linux-foundation.org,
+ ziy@nvidia.com, linux-mm@kvack.org
+Cc: fstests@vger.kernel.org, linux-xfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org, willy@infradead.org, hare@suse.de,
+ john.g.garry@oracle.com, p.raghav@samsung.com, da.gomez@samsung.com
+References: <20240424225736.1501030-1-mcgrof@kernel.org>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240424225736.1501030-1-mcgrof@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---11bf7723ce2ee8c4dc9f5d8a9625e732e4266a15537986345fdef71c5bc5
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+On 25.04.24 00:57, Luis Chamberlain wrote:
+> We should check as early as possible if we should bail due to writeback
+> or truncation. This will allow us to add further sanity checks earlier
+> as well.
+> 
+> This introduces no functional changes.
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>   mm/huge_memory.c | 23 +++++++++++------------
+>   1 file changed, 11 insertions(+), 12 deletions(-)
+> 
+> While working on min order support for LBS this came up as an improvement
+> as we can check for the min order early earlier, so this sets the stage
+> up for that.
+> 
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 86a8c7b3b8dc..32c701821e0d 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -3055,8 +3055,17 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+>   	if (new_order >= folio_order(folio))
+>   		return -EINVAL;
+>   
+> -	/* Cannot split anonymous THP to order-1 */
+> -	if (new_order == 1 && folio_test_anon(folio)) {
+> +	if (folio_test_writeback(folio))
+> +		return -EBUSY;
+> +
 
-On Thu Apr 25, 2024 at 9:52 AM CEST, Krzysztof Kozlowski wrote:
-> On 24/04/2024 19:04, Thierry Reding wrote:
-> > On Wed Apr 24, 2024 at 6:26 PM CEST, Thierry Reding wrote:
-> >> On Mon Apr 22, 2024 at 9:02 AM CEST, Krzysztof Kozlowski wrote:
-> >>> On 12/04/2024 15:05, Sumit Gupta wrote:
-> >>>> MC SID and Broadbast channel register access is restricted for Guest=
- VM.
-> >>>
-> >>> Broadcast
-> >>>
-> >>>> Make both the regions as optional for SoC's from Tegra186 onwards.
-> >>>
-> >>> onward?
-> >>>
-> >>>> Tegra MC driver will skip access to the restricted registers from Gu=
-est
-> >>>> if the respective regions are not present in the memory-controller n=
-ode
-> >>>> of Guest DT.
-> >>>>
-> >>>> Suggested-by: Thierry Reding <treding@nvidia.com>
-> >>>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> >>>> ---
-> >>>>  .../nvidia,tegra186-mc.yaml                   | 95 ++++++++++------=
----
-> >>>>  1 file changed, 49 insertions(+), 46 deletions(-)
-> >>>>
-> >>>> diff --git a/Documentation/devicetree/bindings/memory-controllers/nv=
-idia,tegra186-mc.yaml b/Documentation/devicetree/bindings/memory-controller=
-s/nvidia,tegra186-mc.yaml
-> >>>> index 935d63d181d9..e0bd013ecca3 100644
-> >>>> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,te=
-gra186-mc.yaml
-> >>>> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,te=
-gra186-mc.yaml
-> >>>> @@ -34,11 +34,11 @@ properties:
-> >>>>            - nvidia,tegra234-mc
-> >>>> =20
-> >>>>    reg:
-> >>>> -    minItems: 6
-> >>>> +    minItems: 4
-> >>>>      maxItems: 18
-> >>>> =20
-> >>>>    reg-names:
-> >>>> -    minItems: 6
-> >>>> +    minItems: 4
-> >>>>      maxItems: 18
-> >>>> =20
-> >>>>    interrupts:
-> >>>> @@ -151,12 +151,13 @@ allOf:
-> >>>> =20
-> >>>>          reg-names:
-> >>>>            items:
-> >>>> -            - const: sid
-> >>>> -            - const: broadcast
-> >>>> -            - const: ch0
-> >>>> -            - const: ch1
-> >>>> -            - const: ch2
-> >>>> -            - const: ch3
-> >>>> +            enum:
-> >>>> +              - sid
-> >>>> +              - broadcast
-> >>>> +              - ch0
-> >>>> +              - ch1
-> >>>> +              - ch2
-> >>>> +              - ch3
-> >>>
-> >>> I understand why sid and broadcast are becoming optional, but why ord=
-er
-> >>> of the rest is now fully flexible?
-> >>
-> >> The reason why the order of the rest doesn't matter is because we have
-> >> both reg and reg-names properties and so the order in which they appea=
-r
-> >> in the list doesn't matter. The only thing that matters is that the
-> >> entries of the reg and reg-names properties match.
-> >>
-> >>> This does not even make sid/broadcast optional, but ch0!
-> >>
-> >> Yeah, this ends up making all entries optional, which isn't what we
-> >> want. I don't know of a way to accurately express this in json-schema,
-> >> though. Do you?
-> >>
-> >> If not, then maybe we need to resort to something like this and also
-> >> mention explicitly in some comment that it is sid and broadcast that a=
-re
-> >> optional.
-> >=20
-> > Actually, here's another variant that is a bit closer to what we want:
-> >=20
-> > --- >8 ---
-> > diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidi=
-a,tegra186-mc.yaml b/Documentation/devicetree/bindings/memory-controllers/n=
-vidia,tegra186-mc.yaml
-> > index 935d63d181d9..86f1475926e4 100644
-> > --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra=
-186-mc.yaml
-> > +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra=
-186-mc.yaml
-> > @@ -34,11 +34,11 @@ properties:
-> >            - nvidia,tegra234-mc
-> > =20
-> >    reg:
-> > -    minItems: 6
-> > +    minItems: 4
-> >      maxItems: 18
-> > =20
-> >    reg-names:
-> > -    minItems: 6
-> > +    minItems: 4
-> >      maxItems: 18
-> > =20
-> >    interrupts:
-> > @@ -146,17 +146,21 @@ allOf:
-> >      then:
-> >        properties:
-> >          reg:
-> > +          minItems: 4
-> >            maxItems: 6
-> >            description: 5 memory controller channels and 1 for stream-i=
-d registers
-> > =20
-> >          reg-names:
-> > -          items:
-> > -            - const: sid
-> > -            - const: broadcast
-> > -            - const: ch0
-> > -            - const: ch1
-> > -            - const: ch2
-> > -            - const: ch3
-> > +          anyOf:
-> > +            - items:
-> > +                enum: [ sid, broadcast, ch0, ch1, ch2, ch3 ]
-> > +              uniqueItems: true
-> > +              minItems: 6
-> > +
-> > +            - items:
-> > +                enum: [ ch0, ch1, ch2, ch3 ]
-> > +              uniqueItems: true
-> > +              minItems: 4
-> > =20
-> >    - if:
-> >        properties:
-> > @@ -165,29 +169,22 @@ allOf:
-> >      then:
-> >        properties:
-> >          reg:
-> > -          minItems: 18
-> > +          minItems: 16
-> >            description: 17 memory controller channels and 1 for stream-=
-id registers
-> > =20
-> >          reg-names:
-> > -          items:
-> > -            - const: sid
-> > -            - const: broadcast
-> > -            - const: ch0
-> > -            - const: ch1
-> > -            - const: ch2
-> > -            - const: ch3
-> > -            - const: ch4
-> > -            - const: ch5
-> > -            - const: ch6
-> > -            - const: ch7
-> > -            - const: ch8
-> > -            - const: ch9
-> > -            - const: ch10
-> > -            - const: ch11
-> > -            - const: ch12
-> > -            - const: ch13
-> > -            - const: ch14
-> > -            - const: ch15
-> > +          anyOf:
-> > +            - items:
-> > +                enum: [ sid, broadcast, ch0, ch1, ch2, ch3, ch4, ch5, =
-ch6, ch7,
-> > +                        ch8, ch9, ch10, ch11, ch12, ch13, ch14, ch15 ]
-> > +              minItems: 18
-> > +              uniqueItems: true
-> > +
-> > +            - items:
-> > +                enum: [ ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8, c=
-h9, ch10,
-> > +                        ch11, ch12, ch13, ch14, ch15 ]
-> > +              minItems: 16
-> > +              uniqueItems: true
->
-> No, because order is strict.
+Why earlier than basic input parameter checks (new_order?
 
-Why? I realize that prior to this the order was indeed strict and it's
-common to have these listed in strict order in the DTS files. However,
-this is an arbitrary restriction that was introduced in the patch that
-added reg-names. However, */*-names properties have always assumed the
-ordering to be non-strict because each entry from the * property gets
-matched up with the corresponding entry in the *-names property, so the
-ordering is completely irrelevant.
+Sorry, but I don't see the reason for that change. It's all happening 
+extremely early, what are we concerned about?
 
-Thierry
+It's likely better to send that patch with the actual patch "to add 
+further sanity checks earlier as well", and why they have to be that early.
 
---11bf7723ce2ee8c4dc9f5d8a9625e732e4266a15537986345fdef71c5bc5
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+Cheers,
 
------BEGIN PGP SIGNATURE-----
+David / dhildenb
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmYqJOEACgkQ3SOs138+
-s6Eqtg/7BN1yeZ9CIf1/eTU5EZ9NIerk1mQmCpM/rWLIzVMx25rIypFiE5T5uWOS
-gposhJ8vBKKFwLg94bpJm0+M5zOWxt1B6lZbUXZFQO8WDzPUgGXW0wr63PS0vOfY
-x5fYrNS8XXS1b6UuYofnVIPzSxBoyDMIscN0+Ihejrt5ax9pJLM+6UMIgz9VDAXa
-/JhPUfcq9JMyEQN3VAMddS72pJMkLEEFjKAPYgBxpKQFyS08op+mgdQzBjJ+oouB
-2tx9U1a5bjtcMxvF0wfuCqBhGUz3s1n3SiFkmkjBfh5qc2q9GG9D64g1kKxiFdHI
-HHGcpic7pHUNz4Ym8B1w62PlnK7SLC9J4shF/z/MD0whu5YLyuFspdFeBxcW/Axg
-rMFB8xsFQo5RvsvMrU6WiPSJj4NlMZKqEdCakXjevLvHu7x7Mgsjko96HW/qXCjV
-S51OyulhmqM04emY1t3kqHmO/6F+QcPNvovMP+FrLN2MH1qSY91hamSI0NRVanZB
-TFiK3q1UfeY7fgf+hzXlNhePcisunYo46CzItzZZMD7HhkxamwEEc6olAmO37vFh
-M5igQu/+0pAR3UfWpmAiiG5cjG9diiKibgWYWTlhnTBhc28Zrc/vOP+7aZPlWuOw
-Mv7X2FoZkHr9kYD1vpQ+i/Wl18FIeNMEzAlv33YAZnuoNmJgvnM=
-=gP+z
------END PGP SIGNATURE-----
-
---11bf7723ce2ee8c4dc9f5d8a9625e732e4266a15537986345fdef71c5bc5--
 
