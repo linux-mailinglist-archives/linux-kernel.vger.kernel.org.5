@@ -1,213 +1,123 @@
-Return-Path: <linux-kernel+bounces-158542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8348A8B21DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:47:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B2138B21DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:47:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10C5A1F232F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:47:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1757928264C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:47:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C77F1494D4;
-	Thu, 25 Apr 2024 12:47:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A8E1494D2;
+	Thu, 25 Apr 2024 12:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Pen0amWr"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UO3Prxdo";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rO0YkVen"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 542771494BC;
-	Thu, 25 Apr 2024 12:47:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C56012BF26;
+	Thu, 25 Apr 2024 12:46:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714049229; cv=none; b=fwlKVacpscwMpVP0a14+tWYEN/eoP5sQs1oFjtfrpLbTMTF+Q6IC9W2sQJhkmQNEnV3VZec1lZEx3gwwqXYMAcmHKlOO6sDIamlRz0eJnaBHmq8KWr2yHyqCAaCQBHam+wOKLfKO3Bmkuj6Hy8cnC+UwtwC5QXiz3nWvH/FbX/s=
+	t=1714049212; cv=none; b=e/mvhkUXBrGjwINaGe78AUj09b9lRKvY/UlPewrw+Vgf0aXIhrfvC1V6GzL3gbBk6Zokh7Pke3DQJJlFqk5g1V9BPUaDpOgIwLq17qxfoJFzQgcVmzO6i8Et5E6hPu6ugX1ceVaJ30I7IXcW3LpkSXNMvUFZyd8sxmaA4mal2a0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714049229; c=relaxed/simple;
-	bh=muUhXiiFvw6CmVYuFQQzSbA6lR8IAuX9Fve4Zs4lebA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Ua6G016s98axuUGfwqdDqzw2RUcorfjCEtIFs4lAPI61OtS9XjR5c8tHzqurEobf5vUNbh5/P9H6o7Kdyib/XjIKZm61u7hbeJbbu0FHNoXWHvUzAciQVZFCBzXYnWKrnvAiDrF+Cix4xdMlhKx8YFltQLv7UXEzIXGy4t9fsNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Pen0amWr; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43PAtahB009689;
-	Thu, 25 Apr 2024 12:46:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=nRbXEeGjOvvozUqHckfHFo1Wz0ZBZB4XRCcsgzFu0ZA=; b=Pe
-	n0amWrXZTDoVK3m8z6ilAsZBUX8igmaAkRkQHsp8xgGHnUudXwNCiEuN8Ir8ZQ+p
-	crhyF3U3oeyB0dm+mzFZAPNpz/d9bp9xFBO3YPim/789/IvvjIL/yZIsnT5DDmxx
-	8OEQEggl/mI0zDJu8nM2IbR+QsECnae0Mc+ctsNPZrrsII3xx9PJHEp3nnrnNZ0h
-	NcMypK4G6xbptunjocopQS7NcrxQJnlIAvJXQ+mSXyn049s2+zWaLO9uljfAcy/K
-	gPfexTWG9GsBM8tAGI+iEFah1TBw+ihiTY61RyWNAJlr5C4PVhuHBj/VVbWKAR0w
-	uOkY50UgMP0ki8qI5Lng==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqenpaffe-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 12:46:54 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43PCks5l009466
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 12:46:54 GMT
-Received: from [10.111.139.7] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 25 Apr
- 2024 05:46:50 -0700
-Message-ID: <782b1aaa-b091-0e79-0adc-a7b6ade5d53f@quicinc.com>
-Date: Thu, 25 Apr 2024 18:16:48 +0530
+	s=arc-20240116; t=1714049212; c=relaxed/simple;
+	bh=7I3uNiAKkTZbyzrbvRO6/IoX/oE6N2txpsfgRt+sSIE=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=KbDxW9E3wyJc/S3/pBPJKd24VmkAVVWqS4SrWXoLBWD2TSlx11smbnwu5xbbkQG+T+lm76R0z1SQEwKBYOuNY1nEN6lvS6A+pcgY+0jdP2rl3t9wi46kZdNvg/5WVsd1sXNfSYATInJv68P0srBOlJ9vX18fmuObYWP5Aw9/Nt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UO3Prxdo; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rO0YkVen; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 25 Apr 2024 12:46:48 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1714049209;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I6FSSItB5bP1S5Sxr7VrKCW2jb0AYSfQBCr4NLQySyc=;
+	b=UO3PrxdoW9gPDHwd8h0M4tDTvG2pu2Z0LaKV2WG5RyOuCa11/egJZLNBeAXB2QKEsrb3lH
+	KeJAudS6pynNdRfl2TePsM82N632spz8B3QFBH6eVO+b5qduG/VOuwvpZXcZU+LgHNa7TY
+	IzhFDH+fhVaGJ4QpDrDGNyf69bqqUe17lwaRgE/0iSjhxdHQBlZtS3veBN32SIj91gbVcc
+	5hs6MgEAnCFiBmGcKJfJ4EsRpYQDj6Eqz9hfaGaUYmMgdU5FyfvNhC4G6AePHfWf41Bw3L
+	0YUoS+5ocQKOWGaosbzDhvasapt6lJxG6XlC3+MpXUfdZipmLMNb6tnApR8ANQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1714049209;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I6FSSItB5bP1S5Sxr7VrKCW2jb0AYSfQBCr4NLQySyc=;
+	b=rO0YkVenapbvMNTCcHmykkenOAP3Ibsjo6/TJezBncdoJ0vNPPXATarGH5WIw9bads0QWN
+	8bw0/8BPZuRbtCCA==
+From: "tip-bot2 for Guanrui Huang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: irq/core] irqchip/gic-v3-its: Remove BUG_ON in its_vpe_irq_domain_alloc
+Cc: Guanrui Huang <guanrui.huang@linux.alibaba.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Zenghui Yu <yuzenghui@huawei.com>,
+ Marc Zyngier <maz@kernel.org>, x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240418061053.96803-3-guanrui.huang@linux.alibaba.com>
+References: <20240418061053.96803-3-guanrui.huang@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 16/19] media: venus: pm_helpers: Commonize getting
- clocks and GenPDs
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Stanimir Varbanov
-	<stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross
-	<agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Mauro Carvalho
- Chehab" <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-CC: Marijn Suijten <marijn.suijten@somainline.org>,
-        Stanimir Varbanov
-	<stanimir.varbanov@linaro.org>,
-        Mauro Carvalho Chehab
-	<mchehab+huawei@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230911-topic-mars-v3-0-79f23b81c261@linaro.org>
- <20230911-topic-mars-v3-16-79f23b81c261@linaro.org>
-From: Dikshita Agarwal <quic_dikshita@quicinc.com>
-In-Reply-To: <20230911-topic-mars-v3-16-79f23b81c261@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <171404920851.10875.11267717296229772633.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ORwtTOs1n1-MgjlJUKWT0hjJ_rMyjq6u
-X-Proofpoint-ORIG-GUID: ORwtTOs1n1-MgjlJUKWT0hjJ_rMyjq6u
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-25_12,2024-04-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- spamscore=0 adultscore=0 phishscore=0 clxscore=1015 bulkscore=0
- lowpriorityscore=0 impostorscore=0 mlxscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404250093
 
+The following commit has been merged into the irq/core branch of tip:
 
+Commit-ID:     382d2ffe86efb1e2fa803d2cf17e5bfc34e574f3
+Gitweb:        https://git.kernel.org/tip/382d2ffe86efb1e2fa803d2cf17e5bfc34e574f3
+Author:        Guanrui Huang <guanrui.huang@linux.alibaba.com>
+AuthorDate:    Thu, 18 Apr 2024 14:10:53 +08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 25 Apr 2024 14:38:24 +02:00
 
-On 3/27/2024 11:38 PM, Konrad Dybcio wrote:
-> As has been the story with the past few commits, much of the resource
-> acquisition logic is totally identical between different generations
-> and there's no good reason to invent a new function for each one.
-> 
-> Commonize core_get() and rename it to venus_get_resources() to be more
-> meaningful.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  drivers/media/platform/qcom/venus/core.c       | 8 +++-----
->  drivers/media/platform/qcom/venus/pm_helpers.c | 5 +----
->  drivers/media/platform/qcom/venus/pm_helpers.h | 3 +--
->  3 files changed, 5 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-> index 1f4a86b1bd73..6914fa991efb 100644
-> --- a/drivers/media/platform/qcom/venus/core.c
-> +++ b/drivers/media/platform/qcom/venus/core.c
-> @@ -334,11 +334,9 @@ static int venus_probe(struct platform_device *pdev)
->  			return PTR_ERR(core->resets[i]);
->  	}
->  
-> -	if (core->pm_ops->core_get) {
-> -		ret = core->pm_ops->core_get(core);
-> -		if (ret)
-> -			return ret;
-> -	}
-> +	ret = venus_get_resources(core);
-> +	if (ret)
-> +		return ret;
->  
->  	ret = dma_set_mask_and_coherent(dev, res->dma_mask);
->  	if (ret)
-> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-> index 583153bbb74e..ba5199d9e5c9 100644
-> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
-> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-> @@ -326,7 +326,6 @@ static int load_scale_v1(struct venus_inst *inst)
->  }
->  
->  static const struct venus_pm_ops pm_ops_v1 = {
-> -	.core_get = venus_clks_get,
->  	.load_scale = load_scale_v1,
->  };
->  
-> @@ -395,7 +394,6 @@ static int venc_power_v3(struct device *dev, int on)
->  }
->  
->  static const struct venus_pm_ops pm_ops_v3 = {
-> -	.core_get = venus_clks_get,
->  	.vdec_get = vdec_get_v3,
->  	.vdec_power = vdec_power_v3,
->  	.venc_get = venc_get_v3,
-> @@ -920,7 +918,7 @@ static int core_resets_reset(struct venus_core *core)
->  	return ret;
->  }
->  
-> -static int core_get_v4(struct venus_core *core)
-> +int venus_get_resources(struct venus_core *core)
->  {
->  	struct device *dev = core->dev;
->  	const struct venus_resources *res = core->res;
-> @@ -1109,7 +1107,6 @@ static int load_scale_v4(struct venus_inst *inst)
+irqchip/gic-v3-its: Remove BUG_ON in its_vpe_irq_domain_alloc
 
-With this change vcodec_clks_get will be called for legacy targets as well
-in venus probe itself, which is currently being called in vdec/venc_probe
-for v1 and v3 targets.
-This needs to be validated on legacy v1 and v3 devices.
+This BUG_ON() is useless, because the same effect will be obtained 
+by letting the code run its course and vm being dereferenced,
+triggering an exception.
 
-Thanks,
-Dikshita
->  }
->  
->  static const struct venus_pm_ops pm_ops_v4 = {
-> -	.core_get = core_get_v4,
->  	.vdec_get = vdec_get_v4,
->  	.vdec_put = vdec_put_v4,
->  	.vdec_power = vdec_power_v4,
-> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.h b/drivers/media/platform/qcom/venus/pm_helpers.h
-> index 3014b39aa6e3..7a55a55029f3 100644
-> --- a/drivers/media/platform/qcom/venus/pm_helpers.h
-> +++ b/drivers/media/platform/qcom/venus/pm_helpers.h
-> @@ -10,8 +10,6 @@ struct venus_core;
->  #define POWER_OFF	0
->  
->  struct venus_pm_ops {
-> -	int (*core_get)(struct venus_core *core);
-> -
->  	int (*vdec_get)(struct device *dev);
->  	void (*vdec_put)(struct device *dev);
->  	int (*vdec_power)(struct device *dev, int on);
-> @@ -28,6 +26,7 @@ struct venus_pm_ops {
->  const struct venus_pm_ops *venus_pm_get(enum hfi_version version);
->  int venus_core_power(struct venus_core *core, int on);
->  void vcodec_domains_put(struct venus_core *core);
-> +int venus_get_resources(struct venus_core *core);
->  
->  static inline int venus_pm_load_scale(struct venus_inst *inst)
->  {
-> 
+So just remove this check.
+
+Signed-off-by: Guanrui Huang <guanrui.huang@linux.alibaba.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Zenghui Yu <yuzenghui@huawei.com>
+Acked-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20240418061053.96803-3-guanrui.huang@linux.alibaba.com
+
+---
+ drivers/irqchip/irq-gic-v3-its.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index 20f9542..98e5593 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -4526,8 +4526,6 @@ static int its_vpe_irq_domain_alloc(struct irq_domain *domain, unsigned int virq
+ 	struct page *vprop_page;
+ 	int base, nr_ids, i, err = 0;
+ 
+-	BUG_ON(!vm);
+-
+ 	bitmap = its_lpi_alloc(roundup_pow_of_two(nr_irqs), &base, &nr_ids);
+ 	if (!bitmap)
+ 		return -ENOMEM;
 
