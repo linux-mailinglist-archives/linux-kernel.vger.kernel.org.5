@@ -1,265 +1,197 @@
-Return-Path: <linux-kernel+bounces-159208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65ACB8B2ABC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:28:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 959EA8B2AC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:29:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D42061F21AAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:28:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B910A1C21788
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:29:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 206D0155A39;
-	Thu, 25 Apr 2024 21:27:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54FD1153812;
+	Thu, 25 Apr 2024 21:29:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iEXu8/Cm"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="pz4CWDRp"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71AF8153812;
-	Thu, 25 Apr 2024 21:27:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11209155723
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 21:28:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714080473; cv=none; b=lcsPzImFrLrPA/vpjTM/dBWpT7RTlCNGvWUk8ew65fa5yYxwajjqeMOrRaTq9+9f1PGoLmSyApYRUyuVLDTwTjStd+LWtLwtev0f19RlEZxZ9i/JKcylJFeQF/pryKoclE2Mr8Wr0nxjaxFeZmvPidK5a3JhDS28ovtRHA/i97o=
+	t=1714080539; cv=none; b=gZjTmQlHiPVNvRUHOxEjcW2nbv2jSsWezmjTKeJ/HsXigvPXEbTeeivbjaDsePT2l7lZd6uE6VY8O4p//xV8ZcfQ2COL4lBaojxEMQ2qlS+hmjSkbbY78wZchwfaGkIIy1mmKz2KMVEDdz+5Qr3pryAtvmmd/fjsc6TtaRDoPU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714080473; c=relaxed/simple;
-	bh=psx9BZYmFV9bz0acvXBcIrIlmbT+veMViuEJI/CsI8Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MyW4B9WujNzCAKW0i2yK6uRIkFo3RGfX08/oQ9iYvdaOa2uM1nT5ipHwomx9uo4jqjjRUC1DoxYd6BvoGl7Fn3981waG6MaY+uKhLRyXi5JjeZ5nZBBawvrT79I1f6ZdsHo8aBc0/SxV6H8lBxhE7hahbppDk523CEKT/Xu/R+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iEXu8/Cm; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56e1f3462caso2008091a12.3;
-        Thu, 25 Apr 2024 14:27:51 -0700 (PDT)
+	s=arc-20240116; t=1714080539; c=relaxed/simple;
+	bh=9jSpEdYa004FZK9qFbCHvGP08fb/ZcRrODOXMtJYP10=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dlKSIs3RVowXpYAU3wV1/+JiitZOD9kTfZTQA9Y/HDGXT/spxuyJ2EtkQkv24r7rUUxgMCRg0Ij2ywfGPsI8i7+lAxc1wAjmEtE4CnC3Cr5qSfY8y2uI6y1yQw2C8xGFL2tqOvkt9RNze/WZPfjUVvvKMFuOODH+qNIXpZ4n3mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=pz4CWDRp; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2db13ca0363so23106991fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:28:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714080470; x=1714685270; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ltvE+80RPDAHmMR3jhekEzOsCMsm5ckdzFq4WbDQd+w=;
-        b=iEXu8/CmN2/tDXzaY7Wm+zt9qSLnIrXxM5MxWoMUyayg9O5bjh7rP3Pc7ZzFGrGo7z
-         2vK6QLl83wiC7pG7+3BBWDw2w7Y99Zxkr6YC9jj5ShSxb++Rxawau/XkO6OGkRDDjRqD
-         EU92HdgkJvI6LGNm5fQTe21Xnu0ADi0+o7fzt6V3+L4I9922QGWDB6Ogwxowb3EpI8j4
-         Gm5s43+koPPNrO8mtVsgDQYs6pc/b/nTbAC9ria4+Bp7IagLTfBxChhHyfaZNt6J1mgw
-         EzwmW1KZOOAtaWCeDA9fO+12Ck1XRcSF6gF1nv6tCoP4V7ZWGm/5thH4zZSLBmc4twlT
-         pW1g==
+        d=joelfernandes.org; s=google; t=1714080535; x=1714685335; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=worxA1pvOBzETE6ru+4nE/r4sL2lZnf/28s/MZcUJIE=;
+        b=pz4CWDRp3uu2HuFk85IPAGft8u/aGzemt3y/ZCBw8HlqpNpXmdV1hJn3JkIbdtmcDu
+         4wrnjVz7IqpqMK6uvHnWrAYTYb5AwcSh/E2HUN1i37QymskWxJ553PxzRGMJFZqKLo1t
+         A7+MV4mwyVYYnHwN2x3f12VEIjN9D4juRbs78=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714080470; x=1714685270;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ltvE+80RPDAHmMR3jhekEzOsCMsm5ckdzFq4WbDQd+w=;
-        b=AaNYSG86FCwy8L+LKGVTL4Y7gpkQp8zIZkigQz0UY1qQSGxBtG4ecr3JwAu9GKmT8h
-         yVs27J+t7gVCjYxoPwXVcPI7HwG+Vup3QqCuKVJGhbupIw0MuY2HEXTREpbC0q5mBr49
-         2oulVY4VFNVC8a8WL4Fa5+oC6BXgb0P7FbLcu9USQP6iJtwg98H/PhG3YHbW9ELz7UjJ
-         bAd7Ne1wnZ97FfdtkRe3QyMaQfzlacxC+t3rf89Uko278I6DOLq2Ryfee85EaGhl5ZNL
-         yHCJ7B4xjaLtbS1xX5M60rPR41vG2z1tP75K8z/G64xFJb7nw+jqUKSGbpDvhHmomU+S
-         rt/A==
-X-Forwarded-Encrypted: i=1; AJvYcCVGnmC4P6vDcxpnSPartnzRXM9HrA5ikKKSt6H/yC4gkSL1P/0D2L6C8k2ZEq4KhiyUE+InXfr1qUp9mncMW5bISzRQmN28jhVODUq3hD12QvGpqRUwu8u6Zbbx38RuyKT00Aiqol0O
-X-Gm-Message-State: AOJu0YxE/QvDy5lapIJTdMp36dTT8agbVXBUS1C07hcy94/VgG9ymS/8
-	AIC3El4Nw3sggThjZ/YfvRmnqDf/eMo/E7rrHaa5o3sNL2PRtCYu
-X-Google-Smtp-Source: AGHT+IE1B+VlQAB2FC+41+K1812I6TzbwNtx7BU3K/bBv752Q+yhsmjuLUH8WkNlU2pM/T8QJ7hV3g==
-X-Received: by 2002:a50:d7da:0:b0:56d:f54a:8765 with SMTP id m26-20020a50d7da000000b0056df54a8765mr599235edj.23.1714080469364;
-        Thu, 25 Apr 2024 14:27:49 -0700 (PDT)
-Received: from ?IPV6:2a02:a466:68ed:1:7697:d12:5d01:2fe6? (2a02-a466-68ed-1-7697-d12-5d01-2fe6.fixed6.kpn.net. [2a02:a466:68ed:1:7697:d12:5d01:2fe6])
-        by smtp.gmail.com with ESMTPSA id em8-20020a056402364800b0057021b811eesm9384295edb.67.2024.04.25.14.27.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 14:27:48 -0700 (PDT)
-Message-ID: <d94f37cf-8140-4f89-aa67-53f9291faff3@gmail.com>
-Date: Thu, 25 Apr 2024 23:27:47 +0200
+        d=1e100.net; s=20230601; t=1714080535; x=1714685335;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=worxA1pvOBzETE6ru+4nE/r4sL2lZnf/28s/MZcUJIE=;
+        b=K2S6OwqJFm/VAqN7oLJT2Fe/2xyh1S8wDh00F5QaTjTKj4Z2fUoG5DoWtqJ9EgnE0f
+         YWExvn13u02Hqq+lnIRAWIMdXIzvJADDpQcy830p5JCOxoBGYiZB70ux+OU4riWkmx+D
+         Mxj60ffzgNkNViFq86Y+697W5HD2nx/3YFuSF9wc3foDVRp8rSKISh+6xc0JWm3OPWRr
+         dVm1tCm/tUlzut0/hgC5jj1D05MpVusHABlEVFYChg0b9TB3OE5utFsuAQgJ4EOMT+f0
+         K5RkaNJVaSycLGxQbwIF1b8jBABfS4woqylJky9qGg6dbaqbauoAJocWWpRJY9pOGvo1
+         xBbA==
+X-Forwarded-Encrypted: i=1; AJvYcCWlNoGgcbHNoTRPeu285tEgakLUOxULLl3mEhYnoniKlUWMnriDLCXse7OE/2JtuWK1+vr5brvzInC3XRu/qiz5QkHd0YDtpAkSP++3
+X-Gm-Message-State: AOJu0Yz8QECEwk0vCnw1SQPIkxfLqDSeUbCtZx3nW5gSpg+j7tu+xYSV
+	IlYS9t5uzSzkvIfQCgLFjIPQBcrd/y+eb2VSs883qtsfam867+bY5RdvupjGVUbEruQt9SUG9sl
+	ylYhZAa1nUlnUBZx3faP7T4Me9XCsFuZI9F4OIg==
+X-Google-Smtp-Source: AGHT+IHaIK3YEoQ9riwqLhBdcM1GA+h2JOcJaGvfWSnc0sw5XqoKi6JS93ZzTHZQUDXxOjnkurTGbbwgIi+Fm4Tasds=
+X-Received: by 2002:a05:651c:230c:b0:2d8:6ca7:2165 with SMTP id
+ bi12-20020a05651c230c00b002d86ca72165mr383002ljb.46.1714080534673; Thu, 25
+ Apr 2024 14:28:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] usb: gadget: u_ether: Replace netif_stop_queue with
- netif_device_detach
-To: Hardik Gajjar <hgajjar@de.adit-jv.com>,
- Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: gregkh@linuxfoundation.org, s.hauer@pengutronix.de, jonathanh@nvidia.com,
- linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
- quic_linyyuan@quicinc.com, paul@crapouillou.net, quic_eserrao@quicinc.com,
- erosca@de.adit-jv.com
-References: <20240115132720.GA98840@vmlxhi-118.adit-jv.com>
- <f25283fc-4550-4725-960b-2ea783fd62e1@gmail.com>
- <aeee83d8-dee3-42ed-b705-988b17800721@gmail.com>
- <20240405113855.GA121923@vmlxhi-118.adit-jv.com>
- <321e908e-0d10-4e36-8dc4-6997c73fe2eb@gmail.com>
- <ZhbOZsp-XHemVhQz@smile.fi.intel.com>
- <20240411142637.GA110162@vmlxhi-118.adit-jv.com>
- <ZhgSPCq6sVejRjbj@smile.fi.intel.com>
- <be8904bd-71ea-4ae1-b0bc-9170461fd0d9@gmail.com>
- <Zh6BsK8F3gCzGJfE@smile.fi.intel.com>
- <20240417151342.GA56989@vmlxhi-118.adit-jv.com>
-Content-Language: en-US
-From: Ferry Toth <fntoth@gmail.com>
-In-Reply-To: <20240417151342.GA56989@vmlxhi-118.adit-jv.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20231111024835.2164816-1-tj@kernel.org> <20231111024835.2164816-13-tj@kernel.org>
+ <20240323023732.GA162856@joelbox2> <Zf9Tz2wHT6KYtqEG@slm.duckdns.org>
+In-Reply-To: <Zf9Tz2wHT6KYtqEG@slm.duckdns.org>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Thu, 25 Apr 2024 17:28:40 -0400
+Message-ID: <CAEXW_YR02g=DetfwM98ZoveWEbGbGGfb1KAikcBeC=Pkvqf4OA@mail.gmail.com>
+Subject: Re: [PATCH 12/36] sched_ext: Implement BPF extensible scheduler class
+To: Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, mingo@redhat.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
+	vschneid@redhat.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@kernel.org, joshdon@google.com, brho@google.com, pjt@google.com, 
+	derkling@google.com, haoluo@google.com, dvernet@meta.com, 
+	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com, 
+	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kernel-team@meta.com, 
+	Andrea Righi <andrea.righi@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Sat, Mar 23, 2024 at 6:12=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello, Joel.
+>
+> On Fri, Mar 22, 2024 at 10:37:32PM -0400, Joel Fernandes wrote:
+> ...
+> > I was wondering about the comment above related to 'wakeup_preempt', co=
+uld
+> > you clarify why it is not useful (NOOP) in the sched-ext class?
+> >
+> > wakeup_preempt() may be called via:
+> > sched_ttwu_pending() ->
+> >       ttwu_do_activate() ->
+> >               wakeup_preempt()
+> >
+> >
+> > at which point the enqueue of the task could have already happened via:
+> >
+> > sched_ttwu_pending() ->
+> >       ttwu_do_activate() ->
+> >               activate_task() ->
+> >                       enqueue_task()
+> >
+> > But the comment above says "task isn't tied to the CPU" ?
+>
+> In sched_ext, a scheduling queue isn't tied to a particular CPU. For
+> example, it's trivial to share a single global scheduling queue across th=
+e
+> whole system or any subset of CPUs. To support this behavior, tasks can b=
+e
+> hot-migrated in the dispatch path just before it starts executing:
+>
+>  https://github.com/sched-ext/sched_ext/blob/sched_ext/kernel/sched/ext.c=
+#L1335
+>
+> So, the CPU picked by ops.select_cpu() in the enqueue path often doesn't
+> determine the CPU the task is going to execute on. If the picked CPU matc=
+hes
+> the CPU the task is eventually going to run on, there's a small performan=
+ce
+> advantage as the later hot migration can be avoided.
+>
+> As the task isn't actually tied to the CPU being picked, it's a bit awkwa=
+rd
+> to ask "does this task preempt this CPU?" Instead, preemption is implemen=
+ted
+> by calling scx_bpf_kick_cpu() w/ SCX_KICK_PREEMPT or using the
+> SCX_ENQ_PREEMPT flag from the enqueue path which allows preempting any CP=
+U.
+>
 
-Op 17-04-2024 om 17:13 schreef Hardik Gajjar:
-> On Tue, Apr 16, 2024 at 04:48:32PM +0300, Andy Shevchenko wrote:
->> On Thu, Apr 11, 2024 at 10:52:36PM +0200, Ferry Toth wrote:
->>> Op 11-04-2024 om 18:39 schreef Andy Shevchenko:
->>>> On Thu, Apr 11, 2024 at 04:26:37PM +0200, Hardik Gajjar wrote:
->>>>> On Wed, Apr 10, 2024 at 08:37:42PM +0300, Andy Shevchenko wrote:
->>>>>> On Sun, Apr 07, 2024 at 10:51:51PM +0200, Ferry Toth wrote:
->>>>>>> Op 05-04-2024 om 13:38 schreef Hardik Gajjar:
->>
->> ...
->>
->>>>>>> Exactly. And this didn't happen before the 2 patches.
->>>>>>>
->>>>>>> To be precise: /sys/class/net/usb0 is not removed and it is a link, the link
->>>>>>> target /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/net/usb0 no
->>>>>>> longer exists
->>>>> So, it means that the /sys/class/net/usb0 is present, but the symlink is
->>>>> broken. In that case, the dwc3 driver should recreate the device, and the
->>>>> symlink should become active again
->>>
->>> Yes, on first enabling gadget (when device mode is activated):
->>>
->>> root@yuna:~# ls /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
->>> driver  net  power  sound  subsystem  suspended  uevent
->>>
->>> Then switching to host mode:
->>>
->>> root@yuna:~# ls /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
->>> ls: cannot access
->>> '/sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/': No such file
->>> or directory
->>>
->>> Then back to device mode:
->>>
->>> root@yuna:~# ls /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
->>> driver  power  sound  subsystem  suspended  uevent
->>>
->>> net is missing. But, network functions:
->>>
->>> root@yuna:~# ping 10.42.0.1
->>> PING 10.42.0.1 (10.42.0.1): 56 data bytes
->>>
->>> Mass storage device is created and removed each time as expected.
->>
->> So, what's the conclusion? Shall we move towards revert of those two changes?
-> 
-> 
-> As promised, I have the tested the this patch with the dwc3 gadget. I could not reproduce
-> the issue.
-> 
-> I can see the usb0 exist all the time and accessible regardless of the role switching of the USB mode (peripheral <-> host)
-> 
-> Following are the logs:
-> //Host to device
-> 
-> console:/sys/bus/platform/devices/a800000.ssusb # echo "peripheral" > mode
-> console:/sys/bus/platform/devices/a800000.ssusb # ls a800000.dwc3/gadget/net/
-> usb0
-> 
-> //device to host
-> console:/sys/bus/platform/devices/a800000.ssusb # echo "host" > mode
-> console:/sys/bus/platform/devices/a800000.ssusb # ls a800000.dwc3/gadget/net/
-> usb0
+Got it. I took some time to look at it some more. Now I am wondering
+why check_preempt_curr() has to be separately implemented for a class
+and why the enqueue() handler of each class cannot take care of
+preempting curr via setting resched flags.
 
-That is weird. When I switch to host mode (using the physical switch), 
-the whole gadget directory is removed (now testing 6.9.0-rc5)
+The only reason I can see is that, activate_task() is not always
+followed by a check_preempt_curr() and sometimes there is an
+unconditional resched_curr() happening following the call to
+activate_task().
 
-Switching back to device mode, that gadget directory is recreated. And 
-gadget/sound as well, but not gadget/net.
+But such issues don't affect sched_ext in its current form I guess.
 
-> s a800000.dwc3/gadget/net/usb0                                                <
-> addr_assign_type    duplex             phys_port_name
-> addr_len            flags              phys_switch_id
-> address             gro_flush_timeout  power
-> broadcast           ifalias            proto_down
-> carrier             ifindex            queues
-> carrier_changes     iflink             speed
-> carrier_down_count  link_mode          statistics
-> carrier_up_count    mtu                subsystem
-> dev_id              name_assign_type   tx_queue_len
-> dev_port            netdev_group       type
-> device              operstate          uevent
-> dormant             phys_port_id       waiting_for_supplier
-> console:/sys/bus/platform/devices/a800000.ssusb # ifconfig -a usb0
-> usb0      Link encap:Ethernet  HWaddr 3a:8b:63:97:1a:9a
->            BROADCAST MULTICAST  MTU:1500  Metric:1
->            RX packets:0 errors:0 dropped:0 overruns:0 frame:0
->            TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
->            collisions:0 txqueuelen:1000
->            RX bytes:0 TX bytes:0
-> 
-> console:/sys/bus/platform/devices/a800000.ssusb #
-> 
-> I strongly advise against reverting the patch solely based on the observed issue of removing the /sys/class/net/usb0 directory while the usb0 interface remains available.
+Btw, if sched_ext were to be implemented as a higher priority class
+above CFS [1], then check_preempt_curr() may preempt without even
+calling the class's check_preempt_curr() :
 
-There's more to it. I also mentioned that switching the role or 
-unplugging the cable leaves the usb0 connection.
+void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags)
+{
+        if (p->sched_class =3D=3D rq->curr->sched_class)
+                rq->curr->sched_class->check_preempt_curr(rq, p, flags);
+        else if (sched_class_above(p->sched_class, rq->curr->sched_class))
+                resched_curr(rq);
 
-I have while in host mode:
-root@yuna:~# ifconfig -a usb0
-usb0: flags=-28605<UP,BROADCAST,RUNNING,MULTICAST,DYNAMIC>  mtu 1500
-         inet 10.42.0.221  netmask 255.255.255.0  broadcast 10.42.0.255
-         inet6 fe80::a8bb:ccff:fedd:eef1  prefixlen 64  scopeid 0x20<link>
+But if I understand, sched_ext is below CFS at the moment, so that
+should not be an issue.
 
+[1] By the way, now that I brought up the higher priority class thing,
+I might as well discuss it here :-D :
 
-You don't see that because you didn't create a connection at all.
+One of my use cases is about scheduling high priority latency sensitive thr=
+eads:
+I think if sched_ext could have 2 classes, one lower than CFS and one
+above CFS, that would be beneficial to those who want a gradual
+transition to use scx, instead of switching all tasks to scx at once.
 
-> Instead, I recommend enabling FTRACE to trace the functions involved and identify which faulty call is responsible for removing usb0.
+One reason is EAS (in CFS).  It may be beneficial for people to use
+the existing EAS for everything but latency critical tasks (much like
+how people use RT class for those). This is quite involved and
+reimplementing EAS in BPF may be quite a project. Not that it
+shouldn't be implemented that way, but EAS is about a decade old with
+all kinds of energy modeling, math and what not. Having scx higher
+than cfs alongside the lower one is less of an invasive approach than
+switching everything on the system to scx.
 
-Switching from device -> host -> device:
+Do you have any opinions on that? If it makes sense, I can work on
+such an implementation.
 
-root@yuna:~# trace-cmd record -p function_graph -l *gether_*
-   plugin 'function_graph'
-Hit Ctrl^C to stop recording
-^CCPU0 data recorded at offset=0x1c8000
-     188 bytes in size (4096 uncompressed)
-CPU1 data recorded at offset=0x1c9000
-     0 bytes in size (0 uncompressed)
-root@yuna:~# trace-cmd report
-cpus=2
-      irq/68-dwc3-725   [000]   514.575337: funcgraph_entry:      # 
-2079.480 us |  gether_disconnect();
-      irq/68-dwc3-946   [000]   524.263731: funcgraph_entry:      + 
-11.640 us  |  gether_disconnect();
-      irq/68-dwc3-946   [000]   524.263743: funcgraph_entry:      ! 
-116.520 us |  gether_connect();
-      irq/68-dwc3-946   [000]   524.268029: funcgraph_entry:      # 
-2057.260 us |  gether_disconnect();
-      irq/68-dwc3-946   [000]   524.270089: funcgraph_entry:      ! 
-109.000 us |  gether_connect();
+Another reason for this is, general purpose systems run very varied
+workloads, and big dramatic changes are likely to be reverted due to
+power and performance regressions.  Hence, the request for a higher
+scx, so that we (high priority task scx users) can take baby steps.
 
+thanks,
 
-> According to current kernel architecture of u_ether driver, only gether_cleanup should remove the usb0 interface along with its kobject and sysfs interface.
-> I suggest sharing the analysis here to understand why this practice is not followed in your use case or driver ?
-
-Yes, I'll try to trace where that happens.
-
-Nevertheless, the disappearance of the net/usb0 directory seems 
-harmless? But the usb: net device remaining after disconnect or role 
-switch is not good, as the route remains.
-
-May be they are 2 separate problems. Could you try to reproduce what 
-happens if you make eem connection and then unplug?
-
-> I am curious why the driver was developed without adhering to the kernel's gadget architecture.
-> 
->>
->>>>> I have the dwc3 IP base usb controller, Let me check with this patch and
->>>>> share result here.  May be we need some fix in dwc3
->>> Would have been nice if someone could test on other controller as well. But
->>> another instance of dwc3 is also very welcome.
->>>> It's quite possible, please test on your side.
->>>> We are happy to test any fixes if you come up with.
->>
->> -- 
->> With Best Regards,
->> Andy Shevchenko
->>
->>
-
+ - Joel
 
