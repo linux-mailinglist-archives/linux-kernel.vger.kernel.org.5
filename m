@@ -1,227 +1,228 @@
-Return-Path: <linux-kernel+bounces-158127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C54DB8B1BE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DFDD8B1BEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:30:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88DEE286516
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:29:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 386CA286504
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2290A6CDC0;
-	Thu, 25 Apr 2024 07:29:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58C66D1A8;
+	Thu, 25 Apr 2024 07:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D8vhQrod"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="mvFO8R/e"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2075.outbound.protection.outlook.com [40.107.101.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0E0134A8
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:29:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714030182; cv=none; b=gle5+KeTJlYZyCETjiERcXSc73FReHNhOcmFqsdQE00+k5m7wSymIGtlL1MWGtMhlNlKE9ISg8Z2LDgWejL2q35ot+ef2AdVCL29e4p0b7E5zWqzo1YZ6q5QFozXXed1gr2ry7jBoBuuhAUAEBLM2yzSz9zjBjBEp6CUdjoaPRE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714030182; c=relaxed/simple;
-	bh=n4yOjaqQMfW6MWUI1B5lXeWOVGs/OvJdf1OZqJ+b788=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u4NeFpQa4xX+gXsb7lREc5jbeNiHPfiiMHJRoYalXS8X0t/gGh1LQBrAv3PkAhNllwCoIAyeBjJnP3RRZOcO784KIGYyAwdtXjW6c4/t+TPUYhldRLcvoiOkSf4B/rXcz8ALLoGf5X0Nu9Q9pJbYu54cKq/TarkKCw2+gSxehDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=D8vhQrod; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714030179;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=RMYQGBBYMEvS6EmN6ufrhtWPqR1g4JyqmTGbCXmfH3k=;
-	b=D8vhQrodpMZgx00OFLqncNBOnYP/lDffjpAxydz9H8czO8+Eq/6oqolHtgvAHGxpATeBBV
-	xq1aKR5B7BqdGy/bdTyBJDoxEyg1E6AkiIYHAgo7bI+hOpgB2avJfF+58CcMmKBDMD2YKw
-	p0UsMDcoufk7e/30WtkL+H/OzNGqFwo=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-213-gpPghExLNV20YhTHlIf1iw-1; Thu, 25 Apr 2024 03:29:37 -0400
-X-MC-Unique: gpPghExLNV20YhTHlIf1iw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-41552c04845so3446815e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:29:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714030176; x=1714634976;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RMYQGBBYMEvS6EmN6ufrhtWPqR1g4JyqmTGbCXmfH3k=;
-        b=Z/FR+Hwf7jfb9TX0Fo+VnULMbYjjJ5Mr2LRSujIHOAwYnW1PWupAWyYeU0qdULbEp4
-         HUm7Fc2cQYpXOxh/n/mmy3BsYY06KJZDGFIDEl8Q7LjH/ha+5psYzlrPEDwMMF5xPeGi
-         ndt9babB106K9/+3Ayi5cW8RKztdmQl+H3J0JvT9rGxebC/M4WiX1W3ia9cLL1rqmfhZ
-         ed/Zv7nExMqh48iU29mHC+NfambTBEans4f4gaZlxLcITG0JSiULo2BDnH4MrqIVogG/
-         mYRXgyYxOD8HVdgLywmOTJJ4IeFJV06F2ktoCup83EP2jue8/VzgZlFFv8Mqb0eY1ZxI
-         +EZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX94JCcXW6AkUBCNJ/U1y2OpuMlKob0ulRAln/l6AnHoIznLzNdF2IwnUgx5IfXYdZSJLDzuxx4RjgH2xcZSBDLGFhvVVIv+xYwiuvY
-X-Gm-Message-State: AOJu0YzBI6nikDUdO/wXwnJEEbu8gWAteC977wF+8mouxFpx/7YFjpDQ
-	DwTSsKl9YIbcDAeOlbLgBYwRzrJwjx5beIRYb3aQwxrx3FKWyZWITopMTVpY+wO0ekWs+5OkIX2
-	U2sVQq/TbU9AXYo0mtDW1iGrUSGDc0/R98oMsyYkNr/hEx1986qUIilQEdeWiIA==
-X-Received: by 2002:a05:600c:4ec7:b0:418:ef3:6cfb with SMTP id g7-20020a05600c4ec700b004180ef36cfbmr3715352wmq.26.1714030176552;
-        Thu, 25 Apr 2024 00:29:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGcySYjBe6iLrFDrsovNekMi7rOefapvteuYB5+bzhxPm+ObCUpBQE40Dwe70crOQqu8ZsEsQ==
-X-Received: by 2002:a05:600c:4ec7:b0:418:ef3:6cfb with SMTP id g7-20020a05600c4ec700b004180ef36cfbmr3715332wmq.26.1714030176133;
-        Thu, 25 Apr 2024 00:29:36 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c719:8200:487a:3426:a17e:d7b7? (p200300cbc7198200487a3426a17ed7b7.dip0.t-ipconnect.de. [2003:cb:c719:8200:487a:3426:a17e:d7b7])
-        by smtp.gmail.com with ESMTPSA id p9-20020a05600c1d8900b0041b13c5c9f9sm3951658wms.17.2024.04.25.00.29.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 00:29:35 -0700 (PDT)
-Message-ID: <38205f34-88ee-4a67-bffb-ec16e9edf7ca@redhat.com>
-Date: Thu, 25 Apr 2024 09:29:34 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD473A268;
+	Thu, 25 Apr 2024 07:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.75
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714030225; cv=fail; b=aLNJiVYUNv4igXCRjjlUogXsoghtpmiHTxErsXcpQU5WlMBCStXkymugW1DDpSq1cyuKKreDnJGRXEMfS0BwjAR7F8w+LIJsU0XfLKespPzwHU1JDbJwWyh4nNN3q103b4BCX23A5gTPxOD8Zc1e7acUxT583xvskv1FP1q7sdo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714030225; c=relaxed/simple;
+	bh=HgwuEx6nfRguAc2Id/ZCUVFrkFjtNUtqhZcU/Tm40q0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=T5Fiq+UBRpNcVGXaFZmvLecCby/4lk+4msp9QjabciP/qo83TvNtvKbvqtl9zcCFh5Ozl2BaQWrPbJ5IlvLbE4lW2RARg6SqPfSPJSigaykSLF5NXxeCRBiSnxOgiB3LBE6clnYcwN5kHmE2pSUfl4S7iW/cjcDpCXgrb77uhig=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=mvFO8R/e; arc=fail smtp.client-ip=40.107.101.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fRvCcIR2lJmFkJhGNRYiph4o9LcBklvXNQhYDcSOQsj7QZKTWxmLesLdZtjG7zRR1PAXEF008OV1FH6UH+xKrkWqQeiZY507xyMgZ4NbA4JPvqEAZdJe4JcQXQCFoZ5yvH5cpER6t2cmsvJ3rcFGhS1AXGhRwUCEMDYpPmuXaFyr/5XidNnCf/jSpQHzeQbQEbG/VG0BVDpcYDO7o3ovS2Dcy9Xal7jFpRqXs1AIVeut8tN64QvikX/5ElvEy0TqoTe/KysbRX6FkW58HutX00pcmJt1ZKYULGxZyrb7Oo4FDn792NiY0ByOs2Tix5qsvxRwQbCoeODkg9KcQcAGSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Mc/EDStv86+lbgcmbb0QjishdtrY/mC+G/6n0aM3r3I=;
+ b=bXr3rO8e6qrgIBYhsFmB1VdEAB/yG6PJQ0wXMoXtKXs2Q1wF02JtaQb3S7PFSkKdgydCNtG/skNAibsReR2/dC29Y6gsQ7vHN06M/DnE3SGZ2mMQ2SVGcUyACFoFR+ZCu60ERCZgapxemuF1NEq9bQuNwAK47N9insFRyysE0bqZEPzQGfkN/DGyQyRfsmZSlj90gUT3AG+IYIZXRYTl0pLg+aOtTWZ9fx8eeLCcGMyoEzXKo+p11aug6fIYMQqZD9KqPgGZvzFCv5GaodlnOsYv++Pw2itLKxs6P4apBNc87/Jlp/wCI3cdYosrKObfIGeN9tXXHrORzJGB8E9oFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Mc/EDStv86+lbgcmbb0QjishdtrY/mC+G/6n0aM3r3I=;
+ b=mvFO8R/epkGMsZW0M8NUVk87aZbLiBTacZg4YYZSLpRfvRgWSX2OZz8B/lVfHm7rCM5HyB0GwhbWUqbR7yEFr22DEVcMo1ZPMem86/Du1Eg5ihOWA6d6/2OnbWuiL45W/Bes1ogHED0x235qjXE9esAfHqNN1tpzns0lcugQuVs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CYYPR12MB8750.namprd12.prod.outlook.com (2603:10b6:930:be::18)
+ by PH8PR12MB6675.namprd12.prod.outlook.com (2603:10b6:510:1c2::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Thu, 25 Apr
+ 2024 07:30:21 +0000
+Received: from CYYPR12MB8750.namprd12.prod.outlook.com
+ ([fe80::b965:1501:b970:e60a]) by CYYPR12MB8750.namprd12.prod.outlook.com
+ ([fe80::b965:1501:b970:e60a%4]) with mapi id 15.20.7519.021; Thu, 25 Apr 2024
+ 07:30:21 +0000
+Date: Thu, 25 Apr 2024 09:30:15 +0200
+From: Robert Richter <rrichter@amd.com>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org, Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v4 6/7] ACPI/NUMA: Add log messages for memory ranges
+ found in CEDT
+Message-ID: <ZioGhwNWQyFjRtZ-@rric.localdomain>
+References: <20240424154846.2152750-1-rrichter@amd.com>
+ <20240424154846.2152750-7-rrichter@amd.com>
+ <6629474eab671_b6e0294e8@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6629474eab671_b6e0294e8@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+X-ClientProxiedBy: FR0P281CA0086.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:1e::22) To CYYPR12MB8750.namprd12.prod.outlook.com
+ (2603:10b6:930:be::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] mm/rmap: do not add fully unmapped large folio to
- deferred split list
-To: Lance Yang <ioworker0@gmail.com>
-Cc: Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
- Andrew Morton <akpm@linux-foundation.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Yang Shi <shy828301@gmail.com>, Ryan Roberts <ryan.roberts@arm.com>,
- Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org
-References: <20240424224614.477221-1-zi.yan@sent.com>
- <CAK1f24mHG+CZL38CAp++9urMkciWqd0wAgyFi+QjfCTAVk3Rew@mail.gmail.com>
- <5e6bf4c6-c4a5-4be3-b203-ecc77ba4e5d9@redhat.com>
- <CAK1f24n3SBcMm=VrKEcMSn3VQ6qMpjE=Lg3fh3_QxFt8wtaSWQ@mail.gmail.com>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CAK1f24n3SBcMm=VrKEcMSn3VQ6qMpjE=Lg3fh3_QxFt8wtaSWQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CYYPR12MB8750:EE_|PH8PR12MB6675:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3e83e008-6cf4-4719-581b-08dc64f9908b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?lC6RgoqYKVq+GcgUppkE0BFx5T1KyPuE3scnmqIoNeAlK7/rNuAreH3yHicm?=
+ =?us-ascii?Q?M7FXDQkDIBzsfhjoDLzfnrHVb6R0PwVn8JE2juXGyNG7bRpkQv2WGvBTUYlT?=
+ =?us-ascii?Q?TvrauIfsdtKYND5g+E4nSxGE16SJ9iMcxrtmZzXIYW2ItGsEMexJ0c03Rq7l?=
+ =?us-ascii?Q?5X5Oy0u/ZPEUPmTfmVrq226Tt7pzPmXTqhQiW9jsbnT+DOzsQnWzyUFmjflg?=
+ =?us-ascii?Q?PddS7Wn1zR+LL3Wi++B+RSy+uaiH9/pStg1rmDVa9gZpJItM1342+YvT1jv0?=
+ =?us-ascii?Q?jzSi2UWZ9hZSLdBSu0+jaB4XK2I3tdBCgnffvknZQJNmprnxMBIN6lU8Pfog?=
+ =?us-ascii?Q?SN4UZg/SzMediuS5T8VQaFqlj4ehOL2/gQnn6A4LhFK+3b47X+noLjvw0yNx?=
+ =?us-ascii?Q?/FOQJiz5qBL4rbQ8JjmwzHgKBqeDlkaeodgt0sGaZkoO1pz7fKRZInRIyl20?=
+ =?us-ascii?Q?5bsja0zM/jWpxwK9LufydPEnM2RJZTH3g4vlGgayn4rxaJY5KONuulhqMnhP?=
+ =?us-ascii?Q?h+4jYWRBet+rfQb1VHEqHlc+fAmPrPw4uusOAeFAx3kesbbyP2wEG6tP+cuX?=
+ =?us-ascii?Q?T/E2QzIKOOJgsW73uOJo/pSvCioAzpFOZZKMzcMonz8cpPTNUZSOvy4cATLH?=
+ =?us-ascii?Q?Xx2r7YQBvXSae+ZlmLT9kE56S7xEVVj+wOyCHLg6Ds8oqkhLE5TG8YeOjre9?=
+ =?us-ascii?Q?gJfnGm9Jivk7TfWtmSzipxhZ0SXukwM2++t8gWnCOs+psGACuaafexDf4fyS?=
+ =?us-ascii?Q?FY1GPdkE4CE9i0M/6MmshG6/CvBIAObE6SVhx1gre0BptYiLDVDQsajpa9lR?=
+ =?us-ascii?Q?G5FIbj8CO7wIeSr8Sermm1kMajgR44qG8vsXZ9s6LUjSU+EM/Pl0V13IwhDf?=
+ =?us-ascii?Q?3RS8boOwITP/4SzJvFPOcfCfaXjhn3PAnWLuH1Xxvu1kAupf1iyVQuL0Fmrh?=
+ =?us-ascii?Q?Y32WxNhfWlZNXfX18anvbC+c67lsKfrJ8XKZwQA54Hb0lhHQheNQXnvsp2PQ?=
+ =?us-ascii?Q?Em8OZZ4EoyennL8fljV4u541g0UsgdrF7GEp6xcOGhhASmCT0sClh9z/0iM2?=
+ =?us-ascii?Q?oxFSpErCD/lHsEWPLFQfW1H4onFu3l0dDtU3VyJpw5fVwx/GN//nHUHTIQ0w?=
+ =?us-ascii?Q?e8LMEyf0p7xI2+kx7oobcbsmCm5fd4H+Xzdhlbh9P46FQgkBJXOhRSFkNmqe?=
+ =?us-ascii?Q?Z+Zt71OzB3036oPJTIRGB/wNT5ZO+FvlThDUtshLd6+I+AR1cdifQ8jnpYKt?=
+ =?us-ascii?Q?Uo4+nQejZXjj1ERaj+i1batSxujFYl5uPskDevJSgQ=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYYPR12MB8750.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?20DIords1STceVkWHEoDRZvEaCU5i7wclHFeAKIM3TyeTuLBlxY3A0X3Va3T?=
+ =?us-ascii?Q?anF5qsZuvNMN7o9vF9unjpawY8jbz2CFfm1JE1dIYZi59gltPluWAHvHaumt?=
+ =?us-ascii?Q?nFd5MDlL3HESdATCz7jWbptxUMSYvQnfMvmjK9N82bK/kmQudw940iVgAfuS?=
+ =?us-ascii?Q?KyvVdzD74jjp/cRuBYkV/c/JS1tJONtHyKEhC/ZQOn/uhAMTmkZshQGd7lyV?=
+ =?us-ascii?Q?3DsqsTTalHBaCaMb2Q8+fewoL/CJANM8dzl9NAssW9INTwfuwZ3Y8veOs5Vw?=
+ =?us-ascii?Q?x0RpeXqkrMW7xGNNbFj8zEBgppbaXLCCYPI3CX1OM6sXnudBI3NXzBJDHqny?=
+ =?us-ascii?Q?4cPlUxhzWOJekRgINJuB2d9ZLvDYzVaoSr2BMTcDgU6cRJpr3FEWdntci8LD?=
+ =?us-ascii?Q?iT68d0I1+lbxWLGDjZOQMAlYA99uEB5vvE1mkFUMeIUm+t14d5yaTHpcikb5?=
+ =?us-ascii?Q?orJRijascnv4z2IKqE07kKim1HIzUwtCXspUQo6vyFxMr31g8vc6EHUxjUy7?=
+ =?us-ascii?Q?PAjonn8CNi+U/c4FrSqgnl4nYHFIvkE3paodLQ0UuUwWmF5wLNa1nrpTU22A?=
+ =?us-ascii?Q?faRTpH+VCBnIqQFhd2j6xUbg/q1VJfmNVP2t+ubEvUmaCdwqEKsLSNnP95Je?=
+ =?us-ascii?Q?W/3Xn7rzvqNJZlIYoC/Z78koMQDgc9jmLl/KrLOWGds/9PqerSCRxDDXHtA1?=
+ =?us-ascii?Q?7kWNNmSueCFa8o7y027eTlV0NgxhU84Z0dMtD6n36FZUUv39BsaO7ak/MSpQ?=
+ =?us-ascii?Q?P+ytsbdYCf1WWsvn2xd2brT1bHCmR2ALktW52Z7qe/PbxbIzAFd3oTzTZZkN?=
+ =?us-ascii?Q?rLmqwzN3a6uYtB1tlC0pV+l+PNJ4RBg0NWrnhNx1s7oVPX8wbYZr4Hc/VazW?=
+ =?us-ascii?Q?qsR+D78DXmFk3ed0qtKxW+Em5WYq25ah8lsicD/R5RjQ4ST2XcdduWXNXaYu?=
+ =?us-ascii?Q?HuqOrGFR0fNjWsGbTbdJ3fEetcWVAEAPcg6/zRfTLITtY/k0dQRbNgKEINba?=
+ =?us-ascii?Q?WdryVm04WsFTUPi0L3IOoOWQJGpoYaRdZYafU4wrale4+zM/02d2x0N3E0ar?=
+ =?us-ascii?Q?z5xp65mFpUagtXXqAzhFvnsxsO/M3wpBiDYBn7gWizDmoWYFPI16ItZtajc5?=
+ =?us-ascii?Q?SZVU87KiCEsmefHkEEwCl7PB97+q/w6n/lFx8vi1sA43M6RYSEkCdRciu5bB?=
+ =?us-ascii?Q?C9U1PeQUtY7HlKNEkbY66AkMJE6zZHp1fadsDnSGtmAXLnBbaeJ4Vgm2bRJk?=
+ =?us-ascii?Q?ZspxmWswX3iRZ8ltNRSsWfUnAjuLMzQ2gcVUU5G3Aa14OPG113Xk6HHmBnUo?=
+ =?us-ascii?Q?XGTsqnN8USqpxuNNopCSF6knOxuRRZVcBDtH6arHW/hQMO5aPBPxds/a9HTL?=
+ =?us-ascii?Q?E/tyTyNf8GLE3Ndc9hDElXCy0nF/rsbZVe6y1ewyOh55vHxXa2gF0zXzeM4o?=
+ =?us-ascii?Q?b/TgfNokBVA3hf/cBhn5loZeihkp0qzBZVvFRYJvDamO+1IgaY9wbEsqRRRg?=
+ =?us-ascii?Q?z8HtpXw/VRkeFeJH0KEvcKWOE2mtDduZfhRplSqSFDWbCZn8KcOoqB93kfVG?=
+ =?us-ascii?Q?U9HswDAeGJrwZwQGOzf1yZ4pyb/2F7V4f769b79b?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3e83e008-6cf4-4719-581b-08dc64f9908b
+X-MS-Exchange-CrossTenant-AuthSource: CYYPR12MB8750.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 07:30:21.5820
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8pfetLUK8AzuYuOM6iws4VaH085s7M7LrDfcfOu3vlt8RR54W+FQr5etvfZHdmRMxLlHhsVi60nKWdi8LJV51w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6675
 
-On 25.04.24 09:27, Lance Yang wrote:
-> On Thu, Apr 25, 2024 at 3:21 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 25.04.24 05:45, Lance Yang wrote:
->>> Hey Zi,
->>>
->>> On Thu, Apr 25, 2024 at 6:46 AM Zi Yan <zi.yan@sent.com> wrote:
->>>>
->>>> From: Zi Yan <ziy@nvidia.com>
->>>>
->>>> In __folio_remove_rmap(), a large folio is added to deferred split list
->>>> if any page in a folio loses its final mapping. It is possible that
->>>> the folio is unmapped fully, but it is unnecessary to add the folio
->>>
->>> Agreed. If a folio is fully unmapped, then that's unnecessary to add
->>> to the deferred split list.
->>>
->>>> to deferred split list at all. Fix it by checking folio->_nr_pages_mapped
->>>> before adding a folio to deferred split list. If the folio is already
->>>> on the deferred split list, it will be skipped. This issue applies to
->>>> both PTE-mapped THP and mTHP.
->>>>
->>>> Commit 98046944a159 ("mm: huge_memory: add the missing
->>>> folio_test_pmd_mappable() for THP split statistics") tried to exclude
->>>> mTHP deferred split stats from THP_DEFERRED_SPLIT_PAGE, but it does not
->>>> fix the above issue. A fully unmapped PTE-mapped order-9 THP was still
->>>> added to deferred split list and counted as THP_DEFERRED_SPLIT_PAGE,
->>>> since nr is 512 (non zero), level is RMAP_LEVEL_PTE, and inside
->>>> deferred_split_folio() the order-9 folio is folio_test_pmd_mappable().
->>>> However, this miscount was present even earlier due to implementation,
->>>> since PTEs are unmapped individually and first PTE unmapping adds the THP
->>>> into the deferred split list.
->>>>
->>>> With commit b06dc281aa99 ("mm/rmap: introduce
->>>> folio_remove_rmap_[pte|ptes|pmd]()"), kernel is able to unmap PTE-mapped
->>>> folios in one shot without causing the miscount, hence this patch.
->>>>
->>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
->>>> Reviewed-by: Yang Shi <shy828301@gmail.com>
->>>> ---
->>>>    mm/rmap.c | 7 ++++---
->>>>    1 file changed, 4 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/mm/rmap.c b/mm/rmap.c
->>>> index a7913a454028..2809348add7b 100644
->>>> --- a/mm/rmap.c
->>>> +++ b/mm/rmap.c
->>>> @@ -1553,9 +1553,10 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
->>>>                    * page of the folio is unmapped and at least one page
->>>>                    * is still mapped.
->>>>                    */
->>>> -               if (folio_test_large(folio) && folio_test_anon(folio))
->>>> -                       if (level == RMAP_LEVEL_PTE || nr < nr_pmdmapped)
->>>> -                               deferred_split_folio(folio);
->>>> +               if (folio_test_large(folio) && folio_test_anon(folio) &&
->>>> +                   ((level == RMAP_LEVEL_PTE && atomic_read(mapped)) ||
->>>> +                    (level == RMAP_LEVEL_PMD && nr < nr_pmdmapped)))
->>>
->>> Perhaps we only need to check the mapcount?
->>>
->>> IIUC, if a large folio that was PMD/PTE mapped is fully unmapped here,
->>> then folio_mapcount() will return 0.
->>
->> See discussion on v1. folio_large_mapcount() would achieve the same
->> without another folio_test_large() check, but in the context of this
->> patch it doesn't really matter.
+On 24.04.24 10:54:22, Dan Williams wrote:
+> Robert Richter wrote:
+> > Adding a pr_info() when successfully adding a CFMWS memory range.
+> > 
+> > Suggested-by: Alison Schofield <alison.schofield@intel.com>
+> > Signed-off-by: Robert Richter <rrichter@amd.com>
+> > ---
+> >  drivers/acpi/numa/srat.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+> > index e3f26e71637a..c62e4636e472 100644
+> > --- a/drivers/acpi/numa/srat.c
+> > +++ b/drivers/acpi/numa/srat.c
+> > @@ -338,8 +338,11 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+> >  	 * found for any portion of the window to cover the entire
+> >  	 * window.
+> >  	 */
+> > -	if (!numa_fill_memblks(start, end))
+> > +	if (!numa_fill_memblks(start, end)) {
+> > +		pr_info("CEDT: memblk extended [mem %#010Lx-%#010Lx]\n",
+> > +			(unsigned long long) start, (unsigned long long) end - 1);
 > 
-> Got it. Thanks for pointing that out!
-> I'll take a closer look at the discussion in v1.
+> This looks like pr_debug() material to me.
 
-Forgot to add: as long as the large mapcount patches are not upstream, 
-folio_large_mapcount() would be expensive. So this patch can be added 
-independent of the other stuff.
+This should have the same log level as the message below and/or its
+corresponding SRAT message. CEDT mem blocks wouldn't be reported
+otherwise only because a smaller (overlapping) entry was registered
+before. That is why I used pr_info here.
 
--- 
-Cheers,
+> 
+> >  		return 0;
+> > +	}
+> >  
+> >  	/* No SRAT description. Create a new node. */
+> >  	node = acpi_map_pxm_to_node(*fake_pxm);
+> > @@ -354,8 +357,13 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+> >  		pr_warn("ACPI NUMA: Failed to add memblk for CFMWS node %d [mem %#llx-%#llx]\n",
+> >  			node, start, end);
+> >  	}
+> > +
+> >  	node_set(node, numa_nodes_parsed);
+> >  
+> > +	pr_info("CEDT: Node %u PXM %u [mem %#010Lx-%#010Lx]\n",
+> > +		node, *fake_pxm,
+> > +		(unsigned long long) start, (unsigned long long) end - 1);
+> > +
+> 
+> This makes sense to mirror the SRAT pr_info().
 
-David / dhildenb
+I evaluated this.
 
+SRAT shows this:
+
+	pr_info("SRAT: Node %u PXM %u [mem %#010Lx-%#010Lx]%s%s\n",
+		node, pxm,
+		(unsigned long long) start, (unsigned long long) end - 1,
+		hotpluggable ? " hotplug" : "",
+		ma->flags & ACPI_SRAT_MEM_NON_VOLATILE ? " non-volatile" : "");
+
+There is no direct mapping of SRAT memory affinity flags (acpi-6.5
+spec, table 5.59) and something in the CFMWS entry (cxl-3.1, table
+9-22). There is no "hotplug" flag and the "non-volatile" part would be
+ambiguous, as some logic must be defined to handle the "volatile" and
+"persistent" Window Restrictions. Since the CFMWS restrictions are not
+used at all by the kernel my conclusion was to just dropped the flag
+for the CEDT info.
+
+Note there is a mapping defined for CDAT DSMAS and SRAT entries, see
+CDAT 1.03 spec, Table 4.
+
+-Robert
 
