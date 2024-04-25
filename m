@@ -1,312 +1,404 @@
-Return-Path: <linux-kernel+bounces-158931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 748638B26E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:55:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 428148B26F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:56:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63652B215C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:55:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE43C2851DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:56:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D74114D701;
-	Thu, 25 Apr 2024 16:55:36 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED2814E2E0;
+	Thu, 25 Apr 2024 16:56:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I+2bBlbp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3982D131746;
-	Thu, 25 Apr 2024 16:55:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BDD014E2D4;
+	Thu, 25 Apr 2024 16:56:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714064136; cv=none; b=sKFNPQ+NmhcjdkuP62mq76Lcfd39SM8+3PtDdAp42/JFGKkdFgiRvi7jQYbeLel3My7I8e1xRN9rVbi570T9Xuu3V8uRk1YulL9RjEnw0bCwfPsbB9SxetSlQ40SYQ8ljlrb33RCiUFSYKsaURHtABZ/8WoTtsjgfO7C0Q7CVIY=
+	t=1714064185; cv=none; b=adXx+PFDQDqDi5yZ+owZ36u9i7EUyfSj5OuAjdzUq8lhXMsbYI2+9guDqB8u1CPM/8U+jIETKPsauiYTWlhm2m1/CYKyDhpmJ8Z2aVuxj02kSr/ohrgE8o77TuD/HcV6NNLcmRcUao4Qz65l8RGkI/I+Oo6bHjYmZy3vWzdxU6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714064136; c=relaxed/simple;
-	bh=Wv+cmZ5IUPEpcmXXIlZlfrK9jeGJtrDRrdh31P+6h9U=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sbziDiixjNWlesBeRuWW7oAr23yqeTlkDTnd60KIQ/kL8nwTHccRazXVatCRaPrM3bFHKPn+XbmghDemofpYzNk+8iub3dDC/ZFP8O3kK3dn86S5nVBogUgztTWq7JrnuaRNttRRE/gr3em984Ec/eIhiikOLFM3XZHymyLVfkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VQMNv1Wtbz6K6H3;
-	Fri, 26 Apr 2024 00:53:03 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 274411400DB;
-	Fri, 26 Apr 2024 00:55:29 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 25 Apr
- 2024 17:55:28 +0100
-Date: Thu, 25 Apr 2024 17:55:27 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Marc Zyngier <maz@kernel.org>, <linuxarm@huawei.com>,
-	<linuxarm@huawei.com>
-CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
-	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
-	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, "James Morse"
-	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
- Brucker <jean-philippe@linaro.org>, Catalin Marinas
-	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Ingo Molnar
-	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <justin.he@arm.com>, <jianyong.wu@arm.com>
-Subject: Re: [PATCH v7 11/16] irqchip/gic-v3: Add support for ACPI's
- disabled but 'online capable' CPUs
-Message-ID: <20240425175502.00007def@huawei.com>
-In-Reply-To: <20240425155726.000063f7@huawei.com>
-References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
-	<20240418135412.14730-12-Jonathan.Cameron@huawei.com>
-	<20240422114020.0000294f@Huawei.com>
-	<87plugthim.wl-maz@kernel.org>
-	<20240424135438.00001ffc@huawei.com>
-	<86il06rd19.wl-maz@kernel.org>
-	<20240425133150.000009fa@Huawei.com>
-	<20240425155726.000063f7@huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1714064185; c=relaxed/simple;
+	bh=Atp8C0xu28D1QHhbI+/+kdM/y7paXO13iMBXxeH1mio=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c9jSqf7VfmAbGE5gJlTVdWf629EhCBMnZteMsv+57+6gXoflLRw6KCXiPDkyQiO0YNx/w4nPsoOgZV7NZ4I9Cdgj9dXv3XchyEMByxd4VEFUOqZ3aDYm4zuZERdFM2NqMh08LiY1K3o1k1PrBeDSR4yABwN1VsYwFti6279xZGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I+2bBlbp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E60BC2BD11;
+	Thu, 25 Apr 2024 16:56:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714064185;
+	bh=Atp8C0xu28D1QHhbI+/+kdM/y7paXO13iMBXxeH1mio=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=I+2bBlbpL2K3sB0dWqKbW0KQfb2IzQPEX5hqGNNJqrBN/zYVee98UFMadRfUxr4O0
+	 MhhMnj4Hq165xgullAd5Zdt310Uu2fzyUxUlAKum5btv9PZnaZmiMuYfb/kijQnZji
+	 Vk5VlvFjAYJxGgLpEkOeVIqmav6W0meYNDAyJhXnsQ/t6QqXlQloDQTdsAyJpfiU7m
+	 TtMPLSYuTdlz/QKg6FhttG8qrr+gkwsxAbWF3Btw9CPArc42wmWNX+phP+gsQrMKKH
+	 ro+OGtnZ+SfQqjd9kDtlTzhcaD1lMMCZhTFgkfTO6s2o2/0ZIMtyQHjPQyoJl8GLpj
+	 KLasmAGQIktmw==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2dd19c29c41so14276451fa.3;
+        Thu, 25 Apr 2024 09:56:25 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWiHM7Kq7i7Hb+pcjUjV70rw+2q3hscJjejEcCwEC14bCYPj4IULU/LAlX9C0fx5Mos8h4T6O3bkwnQ69eMJNALtO7PyOOKweuqrk4n2+1aADpTo5laRiI42b1DJRJbNhD8RmTZQMn44A==
+X-Gm-Message-State: AOJu0YxmkBaQpr9xON7VcyK0KEXUpJ5abvQlaTMpRJdDuRufKaeWTMb2
+	9EvAS4ouTBE1v/lZ9+pDyH69t0WtcgUP6iqfphx0YxzEx2QvlP5WjnXG/8Qmpi3CikRkZpxJbSb
+	pbDkte1M8bRc2WdK6Z2f4Jp7/OQ==
+X-Google-Smtp-Source: AGHT+IH7YfbmVhza2t6tUTycBo8DCokXEg7YYW8Q+9NWxtxjdzxdEjMKAXck7iiq7K7XPtBsRZhxcaXy0YjHPFrw/yI=
+X-Received: by 2002:a05:651c:2116:b0:2de:d48a:953b with SMTP id
+ a22-20020a05651c211600b002ded48a953bmr2463543ljq.23.1714064183502; Thu, 25
+ Apr 2024 09:56:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+References: <20240425091403.17483-1-nikolaos.pasaloukos@blaize.com> <20240425091403.17483-5-nikolaos.pasaloukos@blaize.com>
+In-Reply-To: <20240425091403.17483-5-nikolaos.pasaloukos@blaize.com>
+From: Rob Herring <robh@kernel.org>
+Date: Thu, 25 Apr 2024 11:56:10 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJG3NuUcfK3CGhUa1g1eHEpjmmkWQtJoiWimiCsUwhq+Q@mail.gmail.com>
+Message-ID: <CAL_JsqJG3NuUcfK3CGhUa1g1eHEpjmmkWQtJoiWimiCsUwhq+Q@mail.gmail.com>
+Subject: Re: [PATCH v3 4/5] arm64: Add initial support for Blaize BLZP1600 CB2
+To: Niko Pasaloukos <nikolaos.pasaloukos@blaize.com>
+Cc: "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>, 
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>, 
+	"will@kernel.org" <will@kernel.org>, "arnd@arndb.de" <arnd@arndb.de>, "olof@lixom.net" <olof@lixom.net>, 
+	Neil Jones <neil.jones@blaize.com>, Matt Redfearn <matthew.redfearn@blaize.com>, 
+	James Cowgill <james.cowgill@blaize.com>, 
+	"heiko.stuebner@cherry.de" <heiko.stuebner@cherry.de>, "shawnguo@kernel.org" <shawnguo@kernel.org>, 
+	"macromorgan@hotmail.com" <macromorgan@hotmail.com>, "sre@kernel.org" <sre@kernel.org>, 
+	"hvilleneuve@dimonoff.com" <hvilleneuve@dimonoff.com>, 
+	"andre.przywara@arm.com" <andre.przywara@arm.com>, "rafal@milecki.pl" <rafal@milecki.pl>, 
+	"linus.walleij@linaro.org" <linus.walleij@linaro.org>, "andersson@kernel.org" <andersson@kernel.org>, 
+	"konrad.dybcio@linaro.org" <konrad.dybcio@linaro.org>, 
+	"geert+renesas@glider.be" <geert+renesas@glider.be>, 
+	"neil.armstrong@linaro.org" <neil.armstrong@linaro.org>, 
+	"m.szyprowski@samsung.com" <m.szyprowski@samsung.com>, 
+	"nfraprado@collabora.com" <nfraprado@collabora.com>, "u-kumar1@ti.com" <u-kumar1@ti.com>, 
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 25 Apr 2024 16:00:17 +0100
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+On Thu, Apr 25, 2024 at 4:15=E2=80=AFAM Niko Pasaloukos
+<nikolaos.pasaloukos@blaize.com> wrote:
+>
+> Adds support for the Blaize CB2 development board based on
+> BLZP1600 SoC. This consists of a Carrier-Board-2 and a SoM.
+>
+> The blaize-blzp1600.dtsi is the common part for the SoC,
+> blaize-blzp1600-som.dtsi is the common part for the SoM and
+> blaize-blzp1600-cb2.dts is the board specific file.
+>
+> Co-developed-by: James Cowgill <james.cowgill@blaize.com>
+> Signed-off-by: James Cowgill <james.cowgill@blaize.com>
+> Co-developed-by: Matt Redfearn <matt.redfearn@blaize.com>
+> Signed-off-by: Matt Redfearn <matt.redfearn@blaize.com>
+> Co-developed-by: Neil Jones <neil.jones@blaize.com>
+> Signed-off-by: Neil Jones <neil.jones@blaize.com>
+> Signed-off-by: Nikolaos Pasaloukos <nikolaos.pasaloukos@blaize.com>
+> ---
+>  arch/arm64/boot/dts/Makefile                  |   1 +
+>  arch/arm64/boot/dts/blaize/Makefile           |   2 +
+>  .../boot/dts/blaize/blaize-blzp1600-cb2.dts   |  84 +++++++
+>  .../boot/dts/blaize/blaize-blzp1600-som.dtsi  |  23 ++
+>  .../boot/dts/blaize/blaize-blzp1600.dtsi      | 209 ++++++++++++++++++
+>  5 files changed, 319 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/blaize/Makefile
+>  create mode 100644 arch/arm64/boot/dts/blaize/blaize-blzp1600-cb2.dts
+>  create mode 100644 arch/arm64/boot/dts/blaize/blaize-blzp1600-som.dtsi
+>  create mode 100644 arch/arm64/boot/dts/blaize/blaize-blzp1600.dtsi
+>
+> diff --git a/arch/arm64/boot/dts/Makefile b/arch/arm64/boot/dts/Makefile
+> index 30dd6347a929..601b6381ea0c 100644
+> --- a/arch/arm64/boot/dts/Makefile
+> +++ b/arch/arm64/boot/dts/Makefile
+> @@ -9,6 +9,7 @@ subdir-y +=3D apm
+>  subdir-y +=3D apple
+>  subdir-y +=3D arm
+>  subdir-y +=3D bitmain
+> +subdir-y +=3D blaize
+>  subdir-y +=3D broadcom
+>  subdir-y +=3D cavium
+>  subdir-y +=3D exynos
+> diff --git a/arch/arm64/boot/dts/blaize/Makefile b/arch/arm64/boot/dts/bl=
+aize/Makefile
+> new file mode 100644
+> index 000000000000..595e7a350300
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/blaize/Makefile
+> @@ -0,0 +1,2 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +dtb-$(CONFIG_ARCH_BLAIZE_BLZP1600) +=3D blaize-blzp1600-cb2.dtb
+> diff --git a/arch/arm64/boot/dts/blaize/blaize-blzp1600-cb2.dts b/arch/ar=
+m64/boot/dts/blaize/blaize-blzp1600-cb2.dts
+> new file mode 100644
+> index 000000000000..0bdec7e81380
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/blaize/blaize-blzp1600-cb2.dts
+> @@ -0,0 +1,84 @@
+> +// SPDX-License-Identifier: GPL-2.0
 
-> On Thu, 25 Apr 2024 13:31:50 +0100
-> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> 
-> > On Wed, 24 Apr 2024 16:33:22 +0100
-> > Marc Zyngier <maz@kernel.org> wrote:
-> >   
-> > > On Wed, 24 Apr 2024 13:54:38 +0100,
-> > > Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:    
-> > > > 
-> > > > On Tue, 23 Apr 2024 13:01:21 +0100
-> > > > Marc Zyngier <maz@kernel.org> wrote:
-> > > >       
-> > > > > On Mon, 22 Apr 2024 11:40:20 +0100,
-> > > > > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:      
-> > > > > > 
-> > > > > > On Thu, 18 Apr 2024 14:54:07 +0100
-> > > > > > Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:      
-> > > 
-> > > [...]
-> > >     
-> > > > > >         
-> > > > > > > +	/*
-> > > > > > > +	 * Capable but disabled CPUs can be brought online later. What about
-> > > > > > > +	 * the redistributor? ACPI doesn't want to say!
-> > > > > > > +	 * Virtual hotplug systems can use the MADT's "always-on" GICR entries.
-> > > > > > > +	 * Otherwise, prevent such CPUs from being brought online.
-> > > > > > > +	 */
-> > > > > > > +	if (!(gicc->flags & ACPI_MADT_ENABLED)) {
-> > > > > > > +		pr_warn_once("CPU %u's redistributor is inaccessible: this CPU can't be brought online\n", cpu);
-> > > > > > > +		set_cpu_present(cpu, false);
-> > > > > > > +		set_cpu_possible(cpu, false);
-> > > > > > > +		return 0;
-> > > > > > > +	}        
-> > > > > 
-> > > > > It seems dangerous to clear those this late in the game, given how
-> > > > > disconnected from the architecture code this is. Are we sure that
-> > > > > nothing has sampled these cpumasks beforehand?      
-> > > > 
-> > > > Hi Marc,
-> > > > 
-> > > > Any firmware that does this is being considered as buggy already
-> > > > but given it is firmware and the spec doesn't say much about this,
-> > > > there is always the possibility.      
-> > > 
-> > > There is no shortage of broken firmware out there, and I expect this
-> > > trend to progress.
-> > >     
-> > > > Not much happens between the point where these are setup and
-> > > > the point where the the gic inits and this code runs, but even if careful
-> > > > review showed it was fine today, it will be fragile to future changes.
-> > > > 
-> > > > I'm not sure there is a huge disadvantage for such broken firmware in
-> > > > clearing these masks from the point of view of what is used throughout
-> > > > the rest of the kernel. Here I think we are just looking to prevent the CPU
-> > > > being onlined later.      
-> > > 
-> > > I totally agree on the goal, I simply question the way you get to it.
-> > >     
-> > > > 
-> > > > We could add a set_cpu_broken() with appropriate mask.
-> > > > Given this is very arm64 specific I'm not sure Rafael will be keen on
-> > > > us checking such a mask in the generic ACPI code, but we could check it in
-> > > > arch_register_cpu() and just not register the cpu if it matches.
-> > > > That will cover the vCPU hotplug case.
-> > > >
-> > > > Does that sounds sensible, or would you prefer something else?      
-> > > 
-> > > 
-> > > Such a 'broken_rdists' mask is exactly what I have in mind, just
-> > > keeping it private to the GIC driver, and not expose it anywhere else.
-> > > You can then fail the hotplug event early, and avoid changing the
-> > > global masks from within the GIC driver. At least, we don't mess with
-> > > the internals of the kernel, and the CPU is properly marked as dead
-> > > (that mechanism should already work).
-> > > 
-> > > I'd expect the handling side to look like this (will not compile, but
-> > > you'll get the idea):    
-> > Hi Marc,
-> > 
-> > In general this looks good - but...
-> > 
-> > I haven't gotten to the bottom of why yet (and it might be a side
-> > effect of how I hacked the test by lying in minimal fashion and
-> > just frigging the MADT read functions) but the hotplug flow is only getting
-> > as far as calling __cpu_up() before it seems to enter an infinite loop.
-> > That is it never gets far enough to fail this test.
-> > 
-> > Getting stuck in a psci cpu_on call.  I'm guessing something that
-> > we didn't get to in the earlier gicv3 calls before bailing out is blocking that?
-> > Looks like it gets to
-> > SMCCC smc
-> > and is never seen again.
-> > 
-> > Any ideas on where to look?  The one advantage so far of the higher level
-> > approach is we never tried the hotplug callbacks at all so avoided hitting
-> > that call.  One (little bit horrible) solution that might avoid this would 
-> > be to add another cpuhp state very early on and fail at that stage.
-> > I'm not keen on doing that without a better explanation than I have so far!  
-> 
-> Whilst it still doesn't work I suspect I'm loosing ability to print to the console
-> between that point and somewhat later and real problem is elsewhere.
+Preferred license is GPL-2.0 plus a permissive license.
 
-Hi again,
+> +/*
+> + * Copyright (c) 2023 Blaize, Inc. All rights reserved.
 
-Found it I think.  cpuhp calls between cpu:bringup and ap:online 
-arm made from notify_cpu_starting() are clearly marked as nofail with a comment.
-STARTING must not fail!
+2024 now.
 
-https://elixir.bootlin.com/linux/latest/source/kernel/cpu.c#L1642
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "blaize-blzp1600-som.dtsi"
+> +#include <dt-bindings/net/ti-dp83867.h>
+> +
+> +/ {
+> +       model =3D "Blaize BLZP1600 SoM1600P CB2 Development Board";
+> +
+> +       compatible =3D "blaize,blzp1600-cb2", "blaize,blzp1600";
+> +
+> +       aliases {
+> +               serial0 =3D &uart0;
+> +       };
+> +
+> +       chosen {
+> +               stdout-path =3D "serial0:115200";
+> +       };
+> +};
+> +
+> +&i2c0 {
+> +       clock-frequency =3D <100000>;
+> +       status =3D "okay";
+> +};
+> +
+> +&i2c1 {
+> +       clock-frequency =3D <100000>;
+> +       status =3D "okay";
+> +};
+> +
+> +&i2c3 {
+> +       clock-frequency =3D <100000>;
+> +       status =3D "okay";
+> +
+> +       gpio_expander: gpio@74 {
+> +               compatible =3D "ti,tca9539";
+> +               reg =3D <0x74>;
+> +               gpio-controller;
+> +               #gpio-cells =3D <2>;
+> +               gpio-line-names =3D "RSP_PIN_7",  /* GPIO_0 */
+> +                                 "RSP_PIN_11", /* GPIO_1 */
+> +                                 "RSP_PIN_13", /* GPIO_2 */
+> +                                 "RSP_PIN_15", /* GPIO_3 */
+> +                                 "RSP_PIN_27", /* GPIO_4 */
+> +                                 "RSP_PIN_29", /* GPIO_5 */
+> +                                 "RSP_PIN_31", /* GPIO_6 */
+> +                                 "RSP_PIN_33", /* GPIO_7 */
+> +                                 "RSP_PIN_37", /* GPIO_8 */
+> +                                 "RSP_PIN_16", /* GPIO_9 */
+> +                                 "RSP_PIN_18", /* GPIO_10 */
+> +                                 "RSP_PIN_22", /* GPIO_11 */
+> +                                 "RSP_PIN_28", /* GPIO_12 */
+> +                                 "RSP_PIN_32", /* GPIO_13 */
+> +                                 "RSP_PIN_36", /* GPIO_14 */
+> +                                 "TP31";       /* GPIO_15 */
+> +       };
+> +
+> +       gpio_expander_m2: gpio@75 {
+> +               compatible =3D "ti,tca9539";
+> +               reg =3D <0x75>;
+> +               gpio-controller;
+> +               #gpio-cells =3D <2>;
+> +               gpio-line-names =3D "M2_W_DIS1_N",        /* GPIO_0 */
+> +                                 "M2_W_DIS2_N",        /* GPIO_1 */
+> +                                 "M2_UART_WAKE_N",     /* GPIO_2 */
+> +                                 "M2_COEX3",           /* GPIO_3 */
+> +                                 "M2_COEX_RXD",        /* GPIO_4 */
+> +                                 "M2_COEX_TXD",        /* GPIO_5 */
+> +                                 "M2_VENDOR_PIN40",    /* GPIO_6 */
+> +                                 "M2_VENDOR_PIN42",    /* GPIO_7 */
+> +                                 "M2_VENDOR_PIN38",    /* GPIO_8 */
+> +                                 "M2_SDIO_RST_N",      /* GPIO_9 */
+> +                                 "M2_SDIO_WAKE_N",     /* GPIO_10 */
+> +                                 "M2_PETN1",           /* GPIO_11 */
+> +                                 "M2_PERP1",           /* GPIO_12 */
+> +                                 "M2_PERN1",           /* GPIO_13 */
+> +                                 "UIM_SWP",            /* GPIO_14 */
+> +                                 "UART1_TO_RSP";       /* GPIO_15 */
+> +       };
+> +};
+> diff --git a/arch/arm64/boot/dts/blaize/blaize-blzp1600-som.dtsi b/arch/a=
+rm64/boot/dts/blaize/blaize-blzp1600-som.dtsi
+> new file mode 100644
+> index 000000000000..efac0d6b3d60
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/blaize/blaize-blzp1600-som.dtsi
+> @@ -0,0 +1,23 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Blaize, Inc. All rights reserved.
+> + */
+> +
+> +#include "blaize-blzp1600.dtsi"
+> +
+> +/ {
+> +       memory@1000 {
+> +               device_type =3D "memory";
+> +               reg =3D <0x0 0x00001000 0xfffff000>;
 
-Whilst I have no immediate idea why that comment is there it is pretty strong
-argument against trying to have the CPUHP_AP_IRQ_GIC_STARTING callback fail
-and expecting it to carry on working :( 
-There would have been a nice print message, but given I don't appear to have
-a working console after that stage I never see it.
+Memory starting at 4K. That's odd. I suspect you have something
+reserved there and memory really starts at 0? If so, it is preferred
+that you describe memory including that 4KB and then reserve it in
+/memreserve/ section or /reserved-memory node.
 
-So the best I have yet come up with for this is the option of a new callback registered
-in gic_smp_init()
 
-cpuhp_setup_state_nocalls(CPUHP_BP_PREPARE_DYN,
-			  "irqchip/arm/gicv3:checkrdist",
-			  gic_broken_rdist, NULL);
+> +       };
+> +};
+> +
+> +/* i2c4 bus is available only on the SoM, not on the board */
+> +&i2c4 {
+> +       clock-frequency =3D <100000>;
+> +       status =3D "okay";
+> +};
+> +
+> +&uart0 {
+> +       status =3D "okay";
+> +};
+> diff --git a/arch/arm64/boot/dts/blaize/blaize-blzp1600.dtsi b/arch/arm64=
+/boot/dts/blaize/blaize-blzp1600.dtsi
+> new file mode 100644
+> index 000000000000..26d8943d60ab
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/blaize/blaize-blzp1600.dtsi
+> @@ -0,0 +1,209 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Blaize, Inc. All rights reserved.
+> + */
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +/ {
+> +       interrupt-parent =3D <&gic>;
+> +       #address-cells =3D <2>;
+> +       #size-cells =3D <1>;
+> +
+> +       cpus {
+> +               #address-cells =3D <2>;
+> +               #size-cells =3D <0>;
+> +
+> +               cpu0: cpu@0 {
+> +                       compatible =3D "arm,cortex-a53";
+> +                       device_type =3D "cpu";
+> +                       enable-method =3D "psci";
+> +                       reg =3D <0x0 0x0>;
+> +                       next-level-cache =3D <&l2>;
+> +               };
+> +
+> +               cpu1: cpu@1 {
+> +                       compatible =3D "arm,cortex-a53";
+> +                       device_type =3D "cpu";
+> +                       enable-method =3D "psci";
+> +                       reg =3D <0x0 0x1>;
+> +                       next-level-cache =3D <&l2>;
+> +               };
+> +
+> +               l2: l2-cache0 {
+> +                       compatible =3D "cache";
+> +                       cache-level =3D <2>;
+> +                       cache-unified;
+> +               };
+> +       };
+> +
+> +       timer {
+> +               compatible =3D "arm,armv8-timer";
+> +               interrupts =3D /* Physical Secure PPI */
+> +                            <GIC_PPI 13 (GIC_CPU_MASK_RAW(0x3) |
+> +                                         IRQ_TYPE_LEVEL_LOW)>,
+> +                            /* Physical Non-Secure PPI */
+> +                            <GIC_PPI 14 (GIC_CPU_MASK_RAW(0x3) |
+> +                                         IRQ_TYPE_LEVEL_LOW)>,
+> +                            /* Hypervisor PPI */
+> +                            <GIC_PPI 10 (GIC_CPU_MASK_RAW(0x3) |
+> +                                         IRQ_TYPE_LEVEL_LOW)>,
+> +                            /* Virtual PPI */
+> +                            <GIC_PPI 11 (GIC_CPU_MASK_RAW(0x3) |
+> +                                         IRQ_TYPE_LEVEL_LOW)>;
+> +       };
+> +
+> +       psci {
+> +               compatible =3D "arm,psci-1.0", "arm,psci-0.2";
+> +               method =3D "smc";
+> +       };
+> +
+> +       pmu {
+> +               compatible =3D "arm,cortex-a53-pmu";
+> +               interrupts =3D <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>,
+> +                            <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>;
+> +               interrupt-affinity =3D <&cpu0>, <&cpu1>;
+> +       };
+> +
+> +       sram@0 {
+> +               /*
+> +                * On BLZP1600 there is no general purpose (non-secure) S=
+RAM.
+> +                * A small DDR memory space has been reserved for general=
+ use.
+> +                */
+> +               compatible =3D "mmio-sram";
+> +               reg =3D <0x0 0x00000000 0x00001000>;
 
-with callback being simply 
+Ah, there it is. This isn't mmio-sram.
 
-static int gic_broken_rdist(unsigned int cpu)
-{
-	if (cpumask_test_cpu(cpu, &broken_rdists))
-		return -EINVAL;
+> +               #address-cells =3D <1>;
+> +               #size-cells =3D <1>;
+> +               ranges =3D <0 0x0 0x00000000 0x1000>;
+> +
+> +               /* SCMI reserved buffer space on DDR space */
+> +               scmi0_shm: scmi-sram@800 {
+> +                       compatible =3D "arm,scmi-shmem";
+> +                       reg =3D <0x800 0x80>;
+> +               };
 
-	return 0;
-}
+Just put this node into /reserved-memory.
 
-That gets called cpuhp_up_callbacks() and is allows to fail and roll back the steps.
+> +       };
+> +
+> +       firmware {
+> +               scmi {
+> +                       compatible =3D "arm,scmi-smc";
+> +                       arm,smc-id =3D <0x82002000>;
+> +                       #address-cells =3D <1>;
+> +                       #size-cells =3D <0>;
+> +
+> +                       shmem =3D <&scmi0_shm>;
+> +
+> +                       scmi_clk: protocol@14 {
+> +                               reg =3D <0x14>;
+> +                               #clock-cells =3D <1>;
+> +                       };
+> +
+> +                       scmi_rst: protocol@16 {
+> +                               reg =3D <0x16>;
+> +                               #reset-cells =3D <1>;
+> +                       };
+> +               };
+> +       };
+> +
+> +       soc {
+> +               compatible =3D "simple-bus";
+> +               #address-cells =3D <2>;
+> +               #size-cells =3D <1>;
+> +               ranges;
 
-Not particularly satisfying but keeps the logic confined to the gicv3 driver.
+It is preferred if you limit this to actual ranges needed. Looks like
+nothing below 0x200000000, but I imagine this is incomplete.
 
-What do you think?
-
-Jonathan
-
-> 
-> Jonathan
-> 
-> > 
-> > Thanks,
-> > 
-> > J
-> > 
-> >    
-> > > diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> > > index 6fb276504bcc..e8f02bfd0e21 100644
-> > > --- a/drivers/irqchip/irq-gic-v3.c
-> > > +++ b/drivers/irqchip/irq-gic-v3.c
-> > > @@ -1009,6 +1009,9 @@ static int __gic_populate_rdist(struct redist_region *region, void __iomem *ptr)
-> > >  	u64 typer;
-> > >  	u32 aff;
-> > >  
-> > > +	if (cpumask_test_cpu(smp_processor_id(), &broken_rdists))
-> > > +		return 1;
-> > > +
-> > >  	/*
-> > >  	 * Convert affinity to a 32bit value that can be matched to
-> > >  	 * GICR_TYPER bits [63:32].
-> > > @@ -1260,14 +1263,15 @@ static int gic_dist_supports_lpis(void)
-> > >  		!gicv3_nolpi);
-> > >  }
-> > >  
-> > > -static void gic_cpu_init(void)
-> > > +static int gic_cpu_init(void)
-> > >  {
-> > >  	void __iomem *rbase;
-> > > -	int i;
-> > > +	int ret, i;
-> > >  
-> > >  	/* Register ourselves with the rest of the world */
-> > > -	if (gic_populate_rdist())
-> > > -		return;
-> > > +	ret = gic_populate_rdist();
-> > > +	if (ret)
-> > > +		return ret;
-> > >  
-> > >  	gic_enable_redist(true);
-> > >  
-> > > @@ -1286,6 +1290,8 @@ static void gic_cpu_init(void)
-> > >  
-> > >  	/* initialise system registers */
-> > >  	gic_cpu_sys_reg_init();
-> > > +
-> > > +	return 0;
-> > >  }
-> > >  
-> > >  #ifdef CONFIG_SMP
-> > > @@ -1295,7 +1301,11 @@ static void gic_cpu_init(void)
-> > >  
-> > >  static int gic_starting_cpu(unsigned int cpu)
-> > >  {
-> > > -	gic_cpu_init();
-> > > +	int ret;
-> > > +
-> > > +	ret = gic_cpu_init();
-> > > +	if (ret)
-> > > +		return ret;
-> > >  
-> > >  	if (gic_dist_supports_lpis())
-> > >  		its_cpu_init();
-> > > 
-> > > But the question is: do you rely on these masks having been
-> > > "corrected" anywhere else?
-> > > 
-> > > Thanks,
-> > > 
-> > > 	M.
-> > >     
-> > 
-> > 
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel  
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
+Rob
 
