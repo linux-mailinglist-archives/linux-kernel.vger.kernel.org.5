@@ -1,161 +1,89 @@
-Return-Path: <linux-kernel+bounces-158728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ACE58B243D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B91728B243C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:42:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50BAC1F236AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:42:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C3131F234B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:42:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56DFD14A603;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3240D14A4F7;
 	Thu, 25 Apr 2024 14:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="x4Wwt5C6"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tOAaRv2w"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E40149C79
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:42:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752AB1494BA;
+	Thu, 25 Apr 2024 14:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714056127; cv=none; b=DuYhZvtjZ4xGG5JicH+osOUF4aJzjCv66YQRNwtFvrYuivIbaFUwsMAjx9ffbQjnk265ltjzsD3hVTCfA63f1+6YhCcW3qiVjDYWPAoYpSsdkAsf7K/XwPjEmYkAO1TU7RxKcd56gNh500IK0qi3qwzaKXIDFYN2KhczNB+MEoo=
+	t=1714056127; cv=none; b=Ziry5HUc4yE+nLaTLwz/1QwQtc55CgCyAzTHuiwfVGRLxYaGbVUhEEncrquIiUAW5TrWefU85DrPCHXrA/6c4kc9sUU1W8e0ntvQ17wEXrewVu+JgnYkWw0mtjD6vtnThl1v9EthfdpsQf4JBge22gNsHbnNd1Co3//R+PbBuPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714056127; c=relaxed/simple;
-	bh=2HTb1/D2zJKsTz0x8dg2JPZ7AoAiGX0TfTBOVZ7lUok=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=PzN+LZUWT6kBj0oT+4VPb6IC7WiftppBpHDl4as3l8GH58c6Z7q/Es++6e2NANXiXv6C3oANUafEELUk+Jg6pLmA13xmURJS8PGK6brgBpiUwcqU7acxu7c+zTFdlTi0ty35ro6d8bSygn1J5k2H42rQI+pqoREPLlz05WACpaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=x4Wwt5C6; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-de5823bd7eeso2353032276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714056125; x=1714660925; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lDWCaTYULwF8F3zi592tmuoj8LcUAihXwO8QYVH28dw=;
-        b=x4Wwt5C6hHRlcYDRs995liII8ZAoKfJ/K+N8bnJmVXX2igKQ7cMdCugkF51lNBM9Op
-         P6hjJKUzNHAb9hkUtPhOWcFZHYjm97E3EZ+J6bJrLpKmgg4mQ5uJrHN4IQwHGbNpvxEP
-         S2JwivEI1xD1IuUD422B+FRmrHvRpNFUWuWK03UBJA1l70O9wYS+WByYZGStRykVZh2/
-         9EzKxkpElQH1Qd367hEAjELuWkofggcE7SgC6WEeQZGMK9d3fIRJBT+tT2xfSpeVj1aA
-         FDmQ9TN2CzewaSN/aAzpySL4zYwCk+KlJpscn6sbBp2Mi8qR9u1KuOWCmi+u2OsSuM7I
-         Gx3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714056125; x=1714660925;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lDWCaTYULwF8F3zi592tmuoj8LcUAihXwO8QYVH28dw=;
-        b=B7U2LGAKH+8UgQIUzXKhvugL4kY797TSKYb0enAW/T+s/CWxUtOSMPRTr77rMdYU1j
-         ehOigMnuVCNlTAY5YeqHDtBEOXMdeZNtwYplDt+1MaUeKEvLxks4OY6qsvQPWExPv0j2
-         pQRg/SvOJzW9TxGMZEkCHf8pQ0FCWt/Lm5uKDyImRd/zQBlc2a+/OP0ad9NahuEdltyq
-         E/zKXZb4bFt4GLBZ5O6GUFUT1s34aBkSyRC48N5FC8D6o8FVKPr8vNJ++3J49rBjwhbD
-         DVI9Sz7UCxp96ViO8RAybUJl417o5q8+PeqfCN+eQtkNM5DEb+6TwnhFTg8PN5HwIQpt
-         Vuhw==
-X-Forwarded-Encrypted: i=1; AJvYcCXmEQEc5FZJeX+a8QopTAzgUNu6KwuEmbGx8gd0S7vNBuoaEuVVKAPPaSycXTOV65zWnJXPn63mBdr0XGYvzkFMR0I/KOzWipwu+pEM
-X-Gm-Message-State: AOJu0Ywb37wzqNuwc0+yfgAV0H4+Sgw2Dv+12+ysV9ySHXHN5nrYw8en
-	wWwdMiYCzKm0JWFqSVwxWrFU4M41VT/exs0knGwCKpsCQZ3gWDeRg9NaQgdVAgL7eHh6JJxuWGW
-	L3A==
-X-Google-Smtp-Source: AGHT+IF/g7wUX2d++6yDgZVRNlO+BsKqxODd8ENXt8KXPp295gAemRTfNn6a6plk1Xwk4cOuJTp3H44r+mI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:c12:b0:de4:6624:b763 with SMTP id
- fs18-20020a0569020c1200b00de46624b763mr945449ybb.0.1714056125345; Thu, 25 Apr
- 2024 07:42:05 -0700 (PDT)
-Date: Thu, 25 Apr 2024 07:42:03 -0700
-In-Reply-To: <64cc46778ccc93e28ec8d39b3b4e31842154f382.camel@intel.com>
+	bh=mTFoGyws6kpRq4o32kSDr7jpMe6moKYzAN96ttfnxA8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=l52oSqZeM2zwXd0cm2veDfh57jyr9djjERmIg5qeyWDs8DguoRgHoq7WN1N4EuH1rUUA00mtS+GDCu6AATL0GyUdwSMBBdUST1Dw7lSgivePQC6XXnzVUZ62lzYMSb60mrszxdRrB9G37EtxstZVBFu4pcLSXRS74974vKtlWr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tOAaRv2w; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 773F9C2BD11;
+	Thu, 25 Apr 2024 14:42:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714056127;
+	bh=mTFoGyws6kpRq4o32kSDr7jpMe6moKYzAN96ttfnxA8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=tOAaRv2wU36NV0wM7C55Y3ZO9KzXigzhxS97uKbvXLOKL/RzkTbAf5Y7fFfSfKaF0
+	 ipFWywEpRI0ocsxmHGonNk0RwwP/80qdwA8U6MnYJns9qPKW16+oPNanRJzzWoMnFn
+	 ikcUl7PYL0FjgTapi93BtGP0nZsu+Cv59IWnsy4V4Kcz38qztAiSPjagvt39W3mFZ4
+	 m0ymFBK5aPIlQOT5Hf8BYtx+5CSrYDcn8vaWZocSApeBr9k8rpWOTYqEZpOjPe6l5z
+	 lA7/VUDh0dApLGAG9ntXkbODsBx/c+lgSpm1TUWNO9qQlLdJ38MwKsCtsXgaMigNcf
+	 d5ajRFjwpGz1Q==
+Date: Thu, 25 Apr 2024 07:42:05 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Kory Maincent <kory.maincent@bootlin.com>
+Cc: Jiri Pirko <jiri@resnulli.us>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Andrew Lunn
+ <andrew@lunn.ch>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Kyle Swenson
+ <kyle.swenson@est.tech>, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH net-next v3 0/3] net: pse-pd: Fixes for few small issues
+Message-ID: <20240425074205.28677540@kernel.org>
+In-Reply-To: <20240425163002.5894c5e5@kmaincent-XPS-13-7390>
+References: <20240423-fix_poe-v3-0-e50f32f5fa59@bootlin.com>
+	<ZiebQLdu9dOh1v-T@nanopsycho>
+	<20240425103110.33c02857@kmaincent-XPS-13-7390>
+	<20240425070619.601d5e40@kernel.org>
+	<20240425163002.5894c5e5@kmaincent-XPS-13-7390>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240309012725.1409949-1-seanjc@google.com> <20240309012725.1409949-9-seanjc@google.com>
- <ZfRtSKcXTI/lAQxE@intel.com> <ZfSLRrf1CtJEGZw2@google.com>
- <1e063b73-0f9a-4956-9634-2552e6e63ee1@intel.com> <ZgyBckwbrijACeB1@google.com>
- <ZilmVN0gbFlpnHO9@google.com> <64cc46778ccc93e28ec8d39b3b4e31842154f382.camel@intel.com>
-Message-ID: <Zipru9eB9oDOOuxf@google.com>
-Subject: Re: [PATCH v6 8/9] KVM: VMX: Open code VMX preemption timer rate mask
- in its accessor
-From: Sean Christopherson <seanjc@google.com>
-To: Kai Huang <kai.huang@intel.com>
-Cc: Xiaoyao Li <xiaoyao.li@intel.com>, "luto@kernel.org" <luto@kernel.org>, Xin3 Li <xin3.li@intel.com>, 
-	"x86@kernel.org" <x86@kernel.org>, 
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "peterz@infradead.org" <peterz@infradead.org>, 
-	Zhao1 Liu <zhao1.liu@intel.com>, "mingo@redhat.com" <mingo@redhat.com>, 
-	"tglx@linutronix.de" <tglx@linutronix.de>, "bp@alien8.de" <bp@alien8.de>, 
-	"pbonzini@redhat.com" <pbonzini@redhat.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	Shan Kang <shan.kang@intel.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 25, 2024, Kai Huang wrote:
-> On Wed, 2024-04-24 at 13:06 -0700, Sean Christopherson wrote:
-> > > > static inline u32 vmx_basic_vmcs_mem_type(u64 vmx_basic)
-> > > > {
-> > > > 	return (vmx_basic & GENMASK_ULL(53, 50)) >>
-> > > > 		VMX_BASIC_MEM_TYPE_SHIFT;
-> > > > }
-> > > > 
-> > > > looks not intuitive than original patch.
-> > > 
-> > > Yeah, agreed, that's taking the worst of both worlds.  I'll update patch 5 to drop
-> > > VMX_BASIC_MEM_TYPE_SHIFT when effectively "moving" it into vmx_basic_vmcs_mem_type().
-> > 
-> > Drat.  Finally getting back to this, dropping VMX_BASIC_MEM_TYPE_SHIFT doesn't
-> > work because it's used by nested_vmx_setup_basic(), as is VMX_BASIC_VMCS_SIZE_SHIFT,
-> > which is presumably why past me kept them around.
-> > 
-> > I'm leaning towards keeping things as proposed in this series.  I don't see us
-> > gaining a third copy, or even a third user, i.e. I don't think we are creating a
-> > future problem by open coding the shift in vmx_basic_vmcs_mem_type().  And IMO
-> > code like this
-> > 
-> > 	return (vmx_basic & VMX_BASIC_MEM_TYPE_MASK) >>
-> > 	       VMX_BASIC_MEM_TYPE_SHIFT;
-> > 
-> > is an unnecessary obfuscation when there is literally one user (the accessor).
-> > 
-> > Another idea would be to delete VMX_BASIC_MEM_TYPE_SHIFT and VMX_BASIC_VMCS_SIZE_SHIFT,
-> > and either open code the values or use local const variables, but that also seems
-> > like a net negative, e.g. splits the effective definitions over too many locations.
-> 
-> Alternatively, we can add macros like below to <asm/vmx.h> close to
-> vmx_basic_vmcs_size() etc, so it's straightforward to see.
-> 
-> +#define VMX_BSAIC_VMCS12_SIZE	((u64)VMCS12_SIZE << 32)
-> +#define VMX_BASIC_MEM_TYPE_WB	(MEM_TYPE_WB << 50)
+On Thu, 25 Apr 2024 16:30:02 +0200 Kory Maincent wrote:
+> > Could you experiment with tweaking the posting?
+> > Maybe we can "bisect" the problem. =20
+>=20
+> Do you want me to like post a v5 with the "pw-bot: cr" tag? But if I put =
+the
+> tag only on the cover letter it won't work then.
+> Maybe on all patches?
 
-Hmm, it's a bit hard to see it's specifically VMCS12 size, and given that prior
-to this series, VMX_BASIC_MEM_TYPE_WB = 6, I'm hesitant to re-introduce/redefine
-that macro with a different value.
+Probably not worth posting for a test. I'll try to be more careful when
+applying in the future, we can experiment with real postings.
 
-What if we add a helper in vmx.h to encode the VMCS info?  Then the #defines for
-the shifts can go away because the open coded shifts are colocated and more
-obviously related.  E.g.
+> Was it the same for the PoE support patch series?
 
-  static inline u64 vmx_basic_encode_vmcs_info(u32 revision, u16 size, u8 memtype)
-  {
-	return revision | ((u64)size << 32) | ((u64)memtype << 50);
-  }
+Yeah, I had to apply that one manually.
 
+> If so, we could look at it with my future patch series that will bring new
+> features to PoE.
 
-and
-
-  static void nested_vmx_setup_basic(struct nested_vmx_msrs *msrs)
-  {
-	/*
-	 * This MSR reports some information about VMX support. We
-	 * should return information about the VMX we emulate for the
-	 * guest, and the VMCS structure we give it - not about the
-	 * VMX support of the underlying hardware.
-	 */
-	msrs->basic = vmx_basic_encode_vmcs_info(VMCS12_REVISION, VMCS12_SIZE,
-						 X86_MEMTYPE_WB);
-
-	msrs->basic |= VMX_BASIC_TRUE_CTLS
-	if (cpu_has_vmx_basic_inout())
-		msrs->basic |= VMX_BASIC_INOUT;
-  }
+=F0=9F=91=8D=EF=B8=8F
 
