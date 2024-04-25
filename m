@@ -1,113 +1,111 @@
-Return-Path: <linux-kernel+bounces-159290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03C688B2CB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:09:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63B958B2CB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:09:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACA0D1F28A2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:09:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 208BE2866EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B54AE15E7E9;
-	Thu, 25 Apr 2024 21:58:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1A17168AE6;
+	Thu, 25 Apr 2024 21:59:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="oJ5XjVHB"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RpPGXvQL"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB37A156223
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 21:58:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC94015623A
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 21:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714082335; cv=none; b=G7OfBxu+sy+OWXIDLJXH37iZC3Sx1jCWzfDCxaDU8DdA9poke5o7ljMnCtr6SeVfubabMt2Qb/+l/oBmCNKtXjpJZSrB3k3jfCxQbadu1h1YNpC3aLvULprSeFKRaGaImevdl79uSC3y05e8+YCYh1K3NFYTkMUnD6m5ATUNRWg=
+	t=1714082396; cv=none; b=iPU7aTjIXdOHxQ/1MiWgGDKc4HPED9LTgp+FpB2OOA5IAvniitV9H39+fVrMpUfBLQXkThukXArMvc/G/WDz30m/2XjW2mflwbXL2GGlP9lZlhgbDCG7JWYXcIFP/8kDpsOrCkPPqNlAhGmPwes7JBOtgduJcbeFmvg42jNCqOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714082335; c=relaxed/simple;
-	bh=h9WGtGVSwWrsCyL4fa5pUTm2x1e6K+XNP8TVlAlh9sA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kkJbADMSVBN9NctX67xK6Sz6Cd6/kYnCesc25HtnDACX3BHPs9/a/oNA5vyPxFy3o18njYsY+r/RAzCdk0banCatgA+MBaDaKNAPq3wE8rEZ608o5DZQr5Xw7CbkIUJ54YP8rY3TgR0OavjEmGNxjZ88NjCmOHKODQIJaZBc81M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=oJ5XjVHB; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1eab16dcfd8so11671175ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:58:53 -0700 (PDT)
+	s=arc-20240116; t=1714082396; c=relaxed/simple;
+	bh=NNgi4h1D/vIB8B9WWNK8rKrvsAEbOXnhHyZ/SEcHCmI=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=LMrCoxNQRXNBCFlOjRW2ysWXRz16ug8uwFPVXdTgqCqbTEj8mwuelUAzmpht3IcvWAjrWjnCCI3xTNwf27WTbgiClA+Kx0Jym6nsa5Q5HMobrytMW/0GPg9b22nfFd96tdq0MnPDDAFmb7DWH/3RuTNeN+P2xVhThV6LZEACP2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RpPGXvQL; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-ddaf165a8d9so2689542276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:59:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714082333; x=1714687133; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gyKXqHXdhexBTnprpfz03So0iJGmYp1QrUkCgj2t6No=;
-        b=oJ5XjVHBylrAWI01KbxfC8BsPMly7CdIMdGP5f9i6whN3OyhSvtphwD5tGjOC+ZfMj
-         gH+NK4jz6y9HkdvRYS81XePhMfHWX3ds3IjEZfR30eiZe7eia88M49WpnOTCEKS8TVH8
-         hXWjxNmGRt50joqEayCExELQL1aXoBFU7G/Mo=
+        d=google.com; s=20230601; t=1714082394; x=1714687194; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=l7hgyv8FDM1wHsZylAaox/6RJL9rO8NR1hm+CUZNluQ=;
+        b=RpPGXvQLN5T72+EZ89vA5DmogVgx+oXqVHRhOhPbTq5v2RshNEkJwQoaKR9Gwayf4M
+         szDAs2juRpSrI0wuMLUje923oRPRLU8cvhFmiG+wUBbj5NQV3Z1Yvb7pBLBCPQcGIBxA
+         wSFC96C+nr0oY0pTpswnEmVLql+ZzsBrwfakdJWAjTjGiHp8//TB4gU0ZZySz2t8sjl+
+         tXK+rPVFu42yTSrrYzr3TnHfWJjnWAjF8QaIQolshNYuuHRMYSwB/9FuXNVtUVj01A+D
+         I/p7el/OPi4x1No3XNP7M7YCDj5mUTlExpuqJeeTUh9l/ZwLfSs68aycDvcw8bVjq16x
+         0K/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714082333; x=1714687133;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gyKXqHXdhexBTnprpfz03So0iJGmYp1QrUkCgj2t6No=;
-        b=E8oumCPT3FLQArHX7bkyJSAZz2bqe2MI1oZEeO0lW344VFAhggpv69j8pqaAoIOExm
-         QsAizbJSWMxmtnjbbhAtsSwozOKHuwSkO4JvnYV2g3FUyXfI/qAcy43RbY5VsiSQepjD
-         W5Jzv7mhkWo/CO5l+IQ2Xdfbhb2zkZbKqRINua7efBCZ5f+dU7by4yhra65NQ+XIqjZ5
-         NXLNGa+pcFzYs4/sjX89xog3MLXuY6j1WMEDEK7Sy1AgnYY7xk6I85fbzykesPizpZOX
-         S6rSCWi8Xng5DJ1ZThVlteCUeaiD5/I8g/WXoqdKDXmZ8EJBqA6Ze+x5oWDKNoR33+5q
-         11Rw==
-X-Forwarded-Encrypted: i=1; AJvYcCV6s3uwGLuYRVfQ5E+UHCvVFmH4n+C2Emzfdum/d58F+sO1LPxArXDmhu+XyiL6mwmEzZOT7u8LnQQkQP4v/am+8WCu67XPDrl1mnMQ
-X-Gm-Message-State: AOJu0Yz1lWmMGr+UflxdcgSWiVy2AYx/DSfGp/zv8LkN86z8RGzpW7VY
-	z4tEQy+lHW7kZLWA5Yr0+/Obppc2YVxeVjqRu79q704zk7Y/zKkameolxBTGGQ==
-X-Google-Smtp-Source: AGHT+IH/cxWENQqM4AYQ883OVrqAX84qQPWXFY3IeDRzC/0u/0+YpURZK7f/PMCC8mVKz9gGpn3XFA==
-X-Received: by 2002:a17:902:8f81:b0:1e7:b6f4:971 with SMTP id z1-20020a1709028f8100b001e7b6f40971mr816885plo.27.1714082333016;
-        Thu, 25 Apr 2024 14:58:53 -0700 (PDT)
-Received: from localhost (238.76.127.34.bc.googleusercontent.com. [34.127.76.238])
-        by smtp.gmail.com with UTF8SMTPSA id f8-20020a170902ab8800b001e4a1f40221sm14221025plr.84.2024.04.25.14.58.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 14:58:52 -0700 (PDT)
-From: jeffxu@chromium.org
-To: aruna.ramakrishna@oracle.com
-Cc: andrew.brownsword@oracle.com,
-	dave.hansen@linux.intel.com,
-	linux-kernel@vger.kernel.org,
-	matthias.neugschwandtner@oracle.com,
-	tglx@linutronix.de,
-	jeffxu@chromium.org,
-	jeffxu@google.com,
-	jannh@google.com,
-	sroettger@google.com,
-	x86@kernel.org
-Subject: Re: [RFC PATCH v2 1/1] x86/pkeys: update PKRU to enable pkey 0 before XSAVE
-Date: Thu, 25 Apr 2024 21:58:46 +0000
-Message-ID: <20240425215846.3276082-1-jeffxu@chromium.org>
-X-Mailer: git-send-email 2.45.0.rc0.197.gbae5840b3b-goog
-In-Reply-To: <20240321215622.3396410-2-aruna.ramakrishna@oracle.com>
-References: <20240321215622.3396410-2-aruna.ramakrishna@oracle.com>
+        d=1e100.net; s=20230601; t=1714082394; x=1714687194;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=l7hgyv8FDM1wHsZylAaox/6RJL9rO8NR1hm+CUZNluQ=;
+        b=bt3tv5zTV7yw/ig0koN9NqLAImmg7Bpr8z1H5oOImA0BGVApWCDEgYliQVKXvKw3UR
+         0CuYU3S/oqsY/NVKrDIGXu/v7l3uwmYGIe/fax+MOwCu8hePtLBOokOKelu6PHhC1Wwy
+         RsiHGKsp45AfDEO+d+neBXcMqIwbIGVuQ186Ztjh/Nd930uwePL2N0xGSW8mmjnvlsgM
+         3antBxFsVzX6bVB75mYxLYf4oF0SCo+diTvxDPxKZU71JUg57t4XoDxHb8qENBQyh9kW
+         Ov8tYDKhT82YNVjQt+Zj/HIM5nfczKJlCM7KmcrcqM0rJ8XhZpvvE+7DCvoMrHtsWWCE
+         6D6A==
+X-Forwarded-Encrypted: i=1; AJvYcCWcbdCUH04M7dOstSdMPjdzrf/B6yS/OOIgqcoHf3IXf6CuVov1xgxhsn/Wu6mv8xMRRSmbvU8BmjhX9/5l/F6tQD+2AB0JPvqA4bQg
+X-Gm-Message-State: AOJu0Yz9mrUn6kqVv4UAIE6tUqXaHgGzCelgj8Xt/BVQqtd6mQQ6IaOn
+	mGarMJMTFm2ehzOu4WUpyB8UZh9V747sQglgSYXgIFU3bE+/Qd5Lsl5ABJKFtAPtTU9js7N2ZPe
+	kNTSYs0jhjW+kuyEaBg==
+X-Google-Smtp-Source: AGHT+IFRO3Uz01eedNagD4MaFbj1TCHrH2OYWaLnefGokv8XltZrBBnf3FkfF5XHqG41ekpe3LfbjjoxDN9hT4L2
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:154b:b0:de4:7a4b:903 with SMTP
+ id r11-20020a056902154b00b00de47a4b0903mr112080ybu.3.1714082393698; Thu, 25
+ Apr 2024 14:59:53 -0700 (PDT)
+Date: Thu, 25 Apr 2024 21:59:51 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+Message-ID: <20240425215951.2310105-1-yosryahmed@google.com>
+Subject: [PATCH] x86/mm: remove unused CR3_HW_ASID_BITS
+From: Yosry Ahmed <yosryahmed@google.com>
+To: x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Jeff Xu <jeffxu@chromium.org>
+Commit 6fd166aae78c ("x86/mm: Use/Fix PCID to optimize user/kernel
+switches") removed the last usage of CR3_HW_ASID_BITS and opted to use
+X86_CR3_PCID_BITS instead. Remove CR3_HW_ASID_BITS.
 
->The semantics you've implemented for sigaltstacks are not the only possible 
->ones. In principle, a signal handler with its own stack might want to have 
->its own key(s) enabled. In a way a Linux signal handler is a mini-thread 
->created on the fly, with its own stack and its own attributes. Some thought 
->& analysis should go into which way to go here, and the best path should be 
->chosen. Fixing the SIGSEGV you observed should be a happy side effect of 
->other worthwile improvements.
->
-This is exactly right. we wants to use altstack with its own pkey. The pkey
-won't be writeable during thread's normal operation, only by signaling
-handling itself.
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ arch/x86/mm/tlb.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Thanks
--Jeff
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 44ac64f3a047c..a2ba5bb201705 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -85,9 +85,6 @@
+  *
+  */
+ 
+-/* There are 12 bits of space for ASIDS in CR3 */
+-#define CR3_HW_ASID_BITS		12
+-
+ /*
+  * When enabled, MITIGATION_PAGE_TABLE_ISOLATION consumes a single bit for
+  * user/kernel switches
+-- 
+2.44.0.769.g3c40516874-goog
 
->Thanks,
->
->	Ingo
->
 
