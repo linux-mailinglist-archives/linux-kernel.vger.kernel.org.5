@@ -1,143 +1,242 @@
-Return-Path: <linux-kernel+bounces-158419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 390C38B1FBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:01:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0AED8B1FC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:02:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69E111C225D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:01:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F2A61C21970
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D3AE249F7;
-	Thu, 25 Apr 2024 11:01:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3647B23746;
+	Thu, 25 Apr 2024 11:01:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cIC6uP1i"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IYAdT0Ew"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E17D1EB3E;
-	Thu, 25 Apr 2024 11:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C79501EB3E
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 11:01:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714042883; cv=none; b=hWpXzVPgMzm+F29mb9F3n7YBmvHRuFgy+JfVAbwweC+2CEP2mg2xSQuqlmges6qJu/0+vsgDkkggQ1SgoUfT8osE8g5xa/JF+UNTKT+WGg9P+AXpV6VlbQeZEiPZvlO9l3+0lgwJf97Kdk1wGx5vItAsNH6yWQQPZaMBggx8s6Q=
+	t=1714042918; cv=none; b=i4cN4fDe0CTCyjDd5pQtAsXeWqR4kenCI1sl0FSQ0tRYyZN54zrr/arJXCtLtKTuXm/OWhc2dIqkZ7P6oA1EloH1MJ4fJHPyPEtbXCFYpGnWYBjWnAwuNVpjyfUmX6gd0881QG1NET1aRY6yFIlTYb+6a5ugNv7JLjebBs6HfEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714042883; c=relaxed/simple;
-	bh=HReixTAFEcX9Geh8zF/+sultK6S116pjfJ2ejirmo3g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GPXJRfMurXpWfnzDH0RUgupbISYaqpum0+ysvsZe2RfzsZxR5gFQ/PTQtA6DkQdSZYgDMReGRs+AWKv9TQSG76OzVXWfjjw1rXUP2xO0XCCzQ/i1xC1fMaqi5bj5vQFPYbe9zuEBZOxG4WBNXAeoqzIlgwEy8/VdmkOGZipZnLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cIC6uP1i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE91CC113CC;
-	Thu, 25 Apr 2024 11:01:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714042883;
-	bh=HReixTAFEcX9Geh8zF/+sultK6S116pjfJ2ejirmo3g=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cIC6uP1i2RcUJc5F2lJlf1ztmEl9fW60og7UoX1Z1ImQFxbO9ONJbtHOQONPWljt3
-	 klAoqaRi6km0o2xEg8MDEyBMmeWMwy2jbNMr9bmFHbyXHOVhhwLPDDKR1uiQBIDwZY
-	 qBAb00g+RgptbzQ10tmcKwftsWXc8VRuykLKtTHB95mBdMa+EhiLaXh3QxHh3waVTC
-	 X3i+qZJeWm6apIS3G3QsGrQVqsRvSfcs/vfgrWs1VgqrIy5JoEuur1MXCn1EvDVnnf
-	 u+fWrhON1sSitxXcNtqTzmYvXozd/HlPD0VVDiMSdTAaWaeKEKdQ2DOc/Rm54f0eQB
-	 qPCRacNX0QrGA==
-Message-ID: <3f961aca-6dff-4d51-bb0b-c974ed80b646@kernel.org>
-Date: Thu, 25 Apr 2024 13:01:16 +0200
+	s=arc-20240116; t=1714042918; c=relaxed/simple;
+	bh=J8JNHH5jxuyS3NlCBc/iWMwx7Bvw3C4Sv3E+pZUfzVQ=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=M+BcbK/MdqPF97XY2X+XVIsPm7U8JHF2AUMgJlu8UU/mfzFyrIqrQpnRvFbCmiYDcRYlg0BjkYVoX5zQ2/p1SzKdfZQc0PN/ooLeQ/J71j+IQooXsLIroSmC12LV9bwERWdWkynjbQ8Eswblca1gl23KocJA3pM0k1ukn0r/MXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IYAdT0Ew; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714042917; x=1745578917;
+  h=date:from:to:cc:subject:message-id;
+  bh=J8JNHH5jxuyS3NlCBc/iWMwx7Bvw3C4Sv3E+pZUfzVQ=;
+  b=IYAdT0Ewe3713HWNJtb6snAQ+0kaB56aG4aRO02z0kTGAd6/WHZK+AnY
+   98gAwuT7+I+v0wITtgYcYBZ4m23gov3KnbhL8dBkxBplo7jKIDyOB13r2
+   LXfSIrY9qCB1vi/rNsP7/6k6R5u5eEi3CgZ2kY5VaFJLJsD5UlnMjmq05
+   3MXYPmF19vueDvZTRONYz8Sz8fx8RnDABD16FwpSfw4eBYmoayLGGCde9
+   RocxzwwMEIVlZNEQqd1LuxggwirS32cKyxuWBZYL7wGG/yoSKb5wTetCx
+   FQQXSfbuTKW0fatTvssQIlbn4/U/gKNjPgsopZOyQR+3uoia2SAXyjlAI
+   A==;
+X-CSE-ConnectionGUID: xqrTmsTJTDSp+onrbLFQew==
+X-CSE-MsgGUID: ogaglKwRR/K4BQyTNBf/HQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9878448"
+X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
+   d="scan'208";a="9878448"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 04:01:56 -0700
+X-CSE-ConnectionGUID: SzBdKnc2Suul4vBClPjZeA==
+X-CSE-MsgGUID: +NsRQa/NReuEfm2rbWdUFQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
+   d="scan'208";a="29825921"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 25 Apr 2024 04:01:55 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rzwrQ-0002Hp-1U;
+	Thu, 25 Apr 2024 11:01:52 +0000
+Date: Thu, 25 Apr 2024 19:01:44 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ 97450eb909658573dcacc1063b06d3d08642c0c1
+Message-ID: <202404251941.JCTGaWJs-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/7] ASoC: dt-bindings: document wcd937x Audio Codec
-To: Mohammad Rafi Shaik <quic_mohs@quicinc.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, quic_rohkumar@quicinc.com,
- quic_pkumpatl@quicinc.com
-References: <20240425091857.2161088-1-quic_mohs@quicinc.com>
- <20240425091857.2161088-2-quic_mohs@quicinc.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240425091857.2161088-2-quic_mohs@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-On 25/04/2024 11:18, Mohammad Rafi Shaik wrote:
-> From: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
-> 
-> Document the Qualcomm WCD9370/WCD9375 Audio Codec and the soundwire
-> devices can be found on Qualcomm QCM6490 based platforms.
-> 
-> The Qualcomm WCD9370/WCD9375 Audio Codec communicates
-> with the host SoC over 2 Soundwire links to provide:
-> - 3 TX ADC paths with 4 differential AMIC inputs
-> - 6 DMIC inputs that are shared with AMIC input
-> - 4 Microphone BIAS
-> - RX paths with 4 PAs – HPHL/R, EAR and AUX
-> - Stereo Headphone output
-> - MBHC engine for Headset Detection
-> 
-> Co-developed-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-> Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-> Signed-off-by: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: 97450eb909658573dcacc1063b06d3d08642c0c1  sched/pelt: Remove shift of thermal clock
 
-1. That's odd order of tags. Who created the first patch?
+elapsed time: 1473m
 
-2. Last time you received report that this was not tested. Now there is
-again report.
-Are you sure you test patches before sending?
+configs tested: 150
+configs skipped: 3
 
-Best regards,
-Krzysztof
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs103_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                         haps_hs_defconfig   gcc  
+arc                     nsimosci_hs_defconfig   gcc  
+arc                 nsimosci_hs_smp_defconfig   gcc  
+arc                   randconfig-001-20240425   gcc  
+arc                   randconfig-002-20240425   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                          collie_defconfig   gcc  
+arm                                 defconfig   clang
+arm                        multi_v7_defconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240425   gcc  
+arm64                 randconfig-002-20240425   gcc  
+arm64                 randconfig-003-20240425   gcc  
+arm64                 randconfig-004-20240425   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240425   gcc  
+csky                  randconfig-002-20240425   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240425   gcc  
+i386         buildonly-randconfig-003-20240425   gcc  
+i386         buildonly-randconfig-006-20240425   gcc  
+i386                  randconfig-004-20240425   gcc  
+i386                  randconfig-013-20240425   gcc  
+i386                  randconfig-014-20240425   gcc  
+i386                  randconfig-015-20240425   gcc  
+i386                  randconfig-016-20240425   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240425   gcc  
+loongarch             randconfig-002-20240425   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                     loongson1c_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240425   gcc  
+nios2                 randconfig-002-20240425   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc                    or1ksim_defconfig   gcc  
+openrisc                 simple_smp_defconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240425   gcc  
+parisc                randconfig-002-20240425   gcc  
+parisc64                         alldefconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                      ep88xc_defconfig   gcc  
+powerpc               randconfig-001-20240425   gcc  
+powerpc               randconfig-002-20240425   gcc  
+powerpc                    sam440ep_defconfig   gcc  
+powerpc                     tqm8540_defconfig   gcc  
+powerpc64             randconfig-001-20240425   gcc  
+powerpc64             randconfig-002-20240425   gcc  
+powerpc64             randconfig-003-20240425   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv             nommu_k210_sdcard_defconfig   gcc  
+riscv                 randconfig-001-20240425   gcc  
+riscv                 randconfig-002-20240425   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240425   gcc  
+s390                  randconfig-002-20240425   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240425   gcc  
+sh                    randconfig-002-20240425   gcc  
+sh                          rsk7201_defconfig   gcc  
+sh                          rsk7264_defconfig   gcc  
+sh                        sh7757lcr_defconfig   gcc  
+sh                   sh7770_generic_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240425   gcc  
+sparc64               randconfig-002-20240425   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240425   gcc  
+um                           x86_64_defconfig   clang
+x86_64       buildonly-randconfig-002-20240425   gcc  
+x86_64       buildonly-randconfig-006-20240425   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   clang
+x86_64                randconfig-004-20240425   gcc  
+x86_64                randconfig-005-20240425   gcc  
+x86_64                randconfig-011-20240425   gcc  
+x86_64                randconfig-014-20240425   gcc  
+x86_64                randconfig-072-20240425   gcc  
+x86_64                randconfig-073-20240425   gcc  
+x86_64                randconfig-076-20240425   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                randconfig-001-20240425   gcc  
+xtensa                randconfig-002-20240425   gcc  
+xtensa                         virt_defconfig   gcc  
+xtensa                    xip_kc705_defconfig   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
