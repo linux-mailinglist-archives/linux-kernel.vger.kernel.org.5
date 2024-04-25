@@ -1,285 +1,119 @@
-Return-Path: <linux-kernel+bounces-158965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DE3A8B276E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:15:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75AE38B2778
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:17:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAF90B2462D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:15:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5D5A1C235BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:17:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 582A114E2FB;
-	Thu, 25 Apr 2024 17:15:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D2314E2E7;
+	Thu, 25 Apr 2024 17:16:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mcbg9PHG"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q3rwQr1+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FF514D718;
-	Thu, 25 Apr 2024 17:15:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA3514D715;
+	Thu, 25 Apr 2024 17:16:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714065328; cv=none; b=U48KlzWleczYMG5SWYWgntlweldu1vtBfpSYjMGPFAhfPf58duYFjDpar9zD9vin1iKNXDUBnyfi23he2F5OaJjHCO2W7vxEqP3J9ddrvzX4sR9iUGUycevU4OZ3z9cdmHcALni/AaBTICwTcJh8+Kh2OaV3v73wwNOE/1+UiiY=
+	t=1714065413; cv=none; b=ieVuYrGwFb1faE6Wvv0R4Dpvt4Lztg9BhQzcpceAd1dJXsRPHSlws3gFHqLEIgWJdm6gfYi3+u6lVCrgnsM7WD00GJchoGeL4f7ST4ijEW+7zH5wNtYM/HXdNfAehnuQxAi65VfovuvDKyAoTByschJEgzOMeWXUysKxI7uyLKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714065328; c=relaxed/simple;
-	bh=2xQDR6NFZCtXF7RpfS+uji8N/vLY4TVqhQZO8U0feO8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NtA1NPWLlqtOJcGPQwj45yD6LbfUfz2EdADEjyHnj2QKz9aYQ0Ff2S4+YluA/idA+QzJZROnSgimJE3BdeJ637mFVsahz5cb2UWIDbUvwgwErkwehRqHsANvtQs3yEx8KUy/1LUSn+sf1XmQpyZ/bskzG6l682MVfZ/5KKcr9NY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mcbg9PHG; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-51aa6a8e49aso1528095e87.3;
-        Thu, 25 Apr 2024 10:15:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714065325; x=1714670125; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JDfFIP9QiMHYxpbImeHAGt5krbC7PZbjLfYtRfH7qbA=;
-        b=mcbg9PHGaRGI7CgKEA+WcLqm/p4uALGiPFbk4vbRJb+VI92Mr0quZsdRbE7AF/uOSs
-         rSrir14+vFwS8fkO5DOz6MCJzkT2jZp7FYCuhTiSYz9T+cz+O4PjWXDsgosJhL2TlZ7q
-         zyFX9MQxb9tiViWjS5J60JWpnfJ1lL8L4KZXR7GRz1mIdu3gywp++stIonXnFAVFpMfF
-         FuPloKVmtJpGFYIZXIYLMstI1X/y9BRPD5fc2odlsIzjMPfWjDxsLwsv8InuEwpMw9at
-         AgUH8kUnqbBEmiAT++0wjemjFudUYP1LEda8q1TMsiaZu/cVQVh1Rzdj6Mgnyh7ah4YL
-         LVLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714065325; x=1714670125;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JDfFIP9QiMHYxpbImeHAGt5krbC7PZbjLfYtRfH7qbA=;
-        b=StFOAeeNBbZS0dExrv4ZBvW5K9A+g8gEDh2IfSu+yl7UxrNU2OiD+ugldltDqfZSKM
-         6G/jh6PS4oSSarSszTPVOolts6Z0ZuaaEado83CieMtY9vFvLoz+gEu3KU4716L2naPz
-         23xRoIDh4YxKrzLKI2o9DZVHWksdQfA5SiSLLEVow13wXB6cz3y3ZB0e71J6r1cnwukI
-         +RSjMy5LUq7aXHFFsL5BMHB9Q7oFqFLh4jQaTbEuBQgsonKGSbSMWG7QvUnH/mYvEf1F
-         KETvk3ZTgQtjML6x99SwwlA97iXc7f61tKQvcdLKPs7NxG88gzaMxgavRs4vzvg72k/Z
-         70gA==
-X-Forwarded-Encrypted: i=1; AJvYcCVWd7v+aTtOZhJrRHwV9NbjePqO6dpNvMRqy7s18VTZK/M+5Zn89nlmLBR+BkfauQ7MSu1BEPK544em5JWDpU/v/M/x7hZtaVckjWaCw6ew1jfebFeNgU4ltgNILLZ/bRItE/q483mo4pMAIyHG4+IFvJ9k2sgesBhVx+lMwqp7y0m7
-X-Gm-Message-State: AOJu0YwNmi53inPtJ8hfgdtn2fSuC5EwtEPPSKIlW6dKbAfI9mxNOymv
-	XpGPh9MUZy+DSnZVbd5ap0Cr3gVFM+BoP/MfgrGo/0dXzekNFYtW
-X-Google-Smtp-Source: AGHT+IElR1C/Z2Be7tJG3CYWLnhU8+BKLNDALkpbBtJNqpLWZEpJsf2yzO8L//p9AuofBMVszJ8+jQ==
-X-Received: by 2002:a05:6512:3606:b0:51b:400a:7d8d with SMTP id f6-20020a056512360600b0051b400a7d8dmr3838768lfs.68.1714065324325;
-        Thu, 25 Apr 2024 10:15:24 -0700 (PDT)
-Received: from krava ([2a00:102a:4022:13b8:3d99:aea7:b18a:a8d7])
-        by smtp.gmail.com with ESMTPSA id h8-20020aa7c948000000b0057204902580sm5147729edt.48.2024.04.25.10.15.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 10:15:23 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 25 Apr 2024 19:15:20 +0200
-To: Andrea Righi <andrea.righi@canonical.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3] selftests/bpf: Add ring_buffer__consume_n test.
-Message-ID: <ZiqPqEIBNEwPO2Am@krava>
-References: <20240425140627.112728-1-andrea.righi@canonical.com>
+	s=arc-20240116; t=1714065413; c=relaxed/simple;
+	bh=h3nuslD7o3VWJfas8RPx62jlgO84B3ru7Ne0t4ZCwWo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H16hw+5XnQZUTQQalwk/euf//m0YTXlgN+D4dhwRGduCXkmSmM0m9TeJ9byhwwGASAzg2gV/ZE/ieeXP612cG9OInDSRzrHp9fJFzzVr3H7f8tV6secJ2s8yu5Izx8d8lI/CuSFsa3PR0oBOCVLM0P7QxWFy+deplr3T9vYDTJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q3rwQr1+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45ABAC113CC;
+	Thu, 25 Apr 2024 17:16:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714065413;
+	bh=h3nuslD7o3VWJfas8RPx62jlgO84B3ru7Ne0t4ZCwWo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Q3rwQr1+fYZV/qTG7uDmYccAUXd/63FxMe5uciWqmaI9hW6mDDwpggQ3oomNLwTE6
+	 FP/GNqBajwR+w9nBZensVdHrVoVwGf7G7OKcoa+RHAtyw1niecffkX86SFj4H2okGl
+	 rK3GAvoUQ6QMQzA6G2PHOXR41GmWpsPs1n/zBpToKMHCtkekJ8j0l3OMaHyr1BSjKR
+	 /WTqN/g7HkG/GL4Ij7LSPFlEPUvlQ4XyiuRH686nfy0vTD108h56S1MfdCgIFVRR26
+	 kQ7uoKnpJDXoNKLpJLgxBXIOisV0OVHcGYXJPYuKfZCGUeR0H2WVvds+hz7rWSloTv
+	 O26c82nConYxw==
+Date: Thu, 25 Apr 2024 18:16:48 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Andrew Davis <afd@ti.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tero Kristo <kristo@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Hari Nagalla <hnagalla@ti.com>, linux-remoteproc@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 1/4] dt-bindings: remoteproc: k3-m4f: Add K3 AM64x SoCs
+Message-ID: <20240425-bribe-suitcase-1adc5b66021e@spud>
+References: <20240424190612.17349-1-afd@ti.com>
+ <20240424190612.17349-2-afd@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="aOAHaQZ3KdQOTFmk"
+Content-Disposition: inline
+In-Reply-To: <20240424190612.17349-2-afd@ti.com>
+
+
+--aOAHaQZ3KdQOTFmk
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240425140627.112728-1-andrea.righi@canonical.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 25, 2024 at 04:06:27PM +0200, Andrea Righi wrote:
-> Add a testcase for the ring_buffer__consume_n() API.
-> 
-> The test produces multiple samples in a ring buffer, using a
-> sys_getpid() fentry prog, and consumes them from user-space in batches,
-> rather than consuming all of them greedily, like ring_buffer__consume()
-> does.
-> 
-> Link: https://lore.kernel.org/lkml/CAEf4BzaR4zqUpDmj44KNLdpJ=Tpa97GrvzuzVNO5nM6b7oWd1w@mail.gmail.com
-> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+On Wed, Apr 24, 2024 at 02:06:09PM -0500, Andrew Davis wrote:
+> From: Hari Nagalla <hnagalla@ti.com>
+>=20
+> K3 AM64x SoC has a Cortex M4F subsystem in the MCU voltage domain.
+> The remote processor's life cycle management and IPC mechanisms are
+> similar across the R5F and M4F cores from remote processor driver
+> point of view. However, there are subtle differences in image loading
+> and starting the M4F subsystems.
+>=20
+> The YAML binding document provides the various node properties to be
+> configured by the consumers of the M4F subsystem.
+>=20
+> Signed-off-by: Martyn Welch <martyn.welch@collabora.com>
+> Signed-off-by: Hari Nagalla <hnagalla@ti.com>
+> Signed-off-by: Andrew Davis <afd@ti.com>
+> +  mboxes:
+> +    description: |
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+> +  memory-region:
+> +    description: |
 
-jirka
+Not sure that either chomping operator is needed here, but that's a nit.
+With the incorrect link fixed up,
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-> ---
->  tools/testing/selftests/bpf/Makefile          |  2 +-
->  .../selftests/bpf/prog_tests/ringbuf.c        | 64 +++++++++++++++++++
->  .../selftests/bpf/progs/test_ringbuf_n.c      | 47 ++++++++++++++
->  3 files changed, 112 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_n.c
-> 
-> ChangeLog v2 -> v3:
->  - move skel_n inside ringbuf_n_subtest()
-> 
-> ChangeLog v1 -> v2:
->  - replace CHECK() with ASSERT_EQ()
->  - fix skel -> skel_n
->  - drop unused "seq" field from struct sample
-> 
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index edc73f8f5aef..6332277edeca 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -455,7 +455,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
->  LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
->  	trace_printk.c trace_vprintk.c map_ptr_kern.c 			\
->  	core_kern.c core_kern_overflow.c test_ringbuf.c			\
-> -	test_ringbuf_map_key.c
-> +	test_ringbuf_n.c test_ringbuf_map_key.c
->  
->  # Generate both light skeleton and libbpf skeleton for these
->  LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.c \
-> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> index 48c5695b7abf..2f064d6952f0 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> @@ -13,6 +13,7 @@
->  #include <linux/perf_event.h>
->  #include <linux/ring_buffer.h>
->  #include "test_ringbuf.lskel.h"
-> +#include "test_ringbuf_n.lskel.h"
->  #include "test_ringbuf_map_key.lskel.h"
->  
->  #define EDONE 7777
-> @@ -326,6 +327,67 @@ static void ringbuf_subtest(void)
->  	test_ringbuf_lskel__destroy(skel);
->  }
->  
-> +/*
-> + * Test ring_buffer__consume_n() by producing N_TOT_SAMPLES samples in the ring
-> + * buffer, via getpid(), and consuming them in chunks of N_SAMPLES.
-> + */
-> +#define N_TOT_SAMPLES	32
-> +#define N_SAMPLES	4
-> +
-> +/* Sample value to verify the callback validity */
-> +#define SAMPLE_VALUE	42L
-> +
-> +static int process_n_sample(void *ctx, void *data, size_t len)
-> +{
-> +	struct sample *s = data;
-> +
-> +	ASSERT_EQ(s->value, SAMPLE_VALUE, "sample_value");
-> +
-> +	return 0;
-> +}
-> +
-> +static void ringbuf_n_subtest(void)
-> +{
-> +	struct test_ringbuf_n_lskel *skel_n;
-> +	int err, i;
-> +
-> +	skel_n = test_ringbuf_n_lskel__open();
-> +	if (!ASSERT_OK_PTR(skel_n, "test_ringbuf_n_lskel__open"))
-> +		return;
-> +
-> +	skel_n->maps.ringbuf.max_entries = getpagesize();
-> +	skel_n->bss->pid = getpid();
-> +
-> +	err = test_ringbuf_n_lskel__load(skel_n);
-> +	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__load"))
-> +		goto cleanup;
-> +
-> +	ringbuf = ring_buffer__new(skel_n->maps.ringbuf.map_fd,
-> +				   process_n_sample, NULL, NULL);
-> +	if (!ASSERT_OK_PTR(ringbuf, "ring_buffer__new"))
-> +		goto cleanup;
-> +
-> +	err = test_ringbuf_n_lskel__attach(skel_n);
-> +	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__attach"))
-> +		goto cleanup_ringbuf;
-> +
-> +	/* Produce N_TOT_SAMPLES samples in the ring buffer by calling getpid() */
-> +	skel_n->bss->value = SAMPLE_VALUE;
-> +	for (i = 0; i < N_TOT_SAMPLES; i++)
-> +		syscall(__NR_getpgid);
-> +
-> +	/* Consume all samples from the ring buffer in batches of N_SAMPLES */
-> +	for (i = 0; i < N_TOT_SAMPLES; i += err) {
-> +		err = ring_buffer__consume_n(ringbuf, N_SAMPLES);
-> +		ASSERT_EQ(err, N_SAMPLES, "rb_consume");
-> +	}
-> +
-> +cleanup_ringbuf:
-> +	ring_buffer__free(ringbuf);
-> +cleanup:
-> +	test_ringbuf_n_lskel__destroy(skel_n);
-> +}
-> +
->  static int process_map_key_sample(void *ctx, void *data, size_t len)
->  {
->  	struct sample *s;
-> @@ -384,6 +446,8 @@ void test_ringbuf(void)
->  {
->  	if (test__start_subtest("ringbuf"))
->  		ringbuf_subtest();
-> +	if (test__start_subtest("ringbuf_n"))
-> +		ringbuf_n_subtest();
->  	if (test__start_subtest("ringbuf_map_key"))
->  		ringbuf_map_key_subtest();
->  }
-> diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_n.c b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
-> new file mode 100644
-> index 000000000000..8669eb42dbe0
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
-> @@ -0,0 +1,47 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2024 Andrea Righi <andrea.righi@canonical.com>
-> +
-> +#include <linux/bpf.h>
-> +#include <sched.h>
-> +#include <unistd.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_misc.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +#define TASK_COMM_LEN 16
-> +
-> +struct sample {
-> +	int pid;
-> +	long value;
-> +	char comm[16];
-> +};
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_RINGBUF);
-> +} ringbuf SEC(".maps");
-> +
-> +int pid = 0;
-> +long value = 0;
-> +
-> +SEC("fentry/" SYS_PREFIX "sys_getpgid")
-> +int test_ringbuf_n(void *ctx)
-> +{
-> +	int cur_pid = bpf_get_current_pid_tgid() >> 32;
-> +	struct sample *sample;
-> +
-> +	if (cur_pid != pid)
-> +		return 0;
-> +
-> +	sample = bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
-> +	if (!sample)
-> +		return 0;
-> +
-> +	sample->pid = pid;
-> +	sample->value = value;
-> +	bpf_get_current_comm(sample->comm, sizeof(sample->comm));
-> +
-> +	bpf_ringbuf_submit(sample, 0);
-> +
-> +	return 0;
-> +}
-> -- 
-> 2.43.0
-> 
+Cheers,
+Conor.
+
+
+--aOAHaQZ3KdQOTFmk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiqQAAAKCRB4tDGHoIJi
+0uyVAQCqBjDR1HNWDm/Ft288FX/CtCgwrAAwaYRV3CVSjfCgEAD+JrQLglCD8B37
+8LYXCjdNLlQdR1B6Hs5HAhHIfZxW8gs=
+=n4e7
+-----END PGP SIGNATURE-----
+
+--aOAHaQZ3KdQOTFmk--
 
