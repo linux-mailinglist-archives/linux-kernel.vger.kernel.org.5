@@ -1,150 +1,204 @@
-Return-Path: <linux-kernel+bounces-157887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC9828B181D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:43:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 706A48B1820
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:45:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AD191F21E91
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:43:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 077841F25A4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 00:45:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D2B14C98;
-	Thu, 25 Apr 2024 00:43:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9153E4C7B;
+	Thu, 25 Apr 2024 00:45:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b="Ls+97lZT"
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pnBOa8Hk"
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4029115B3
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:43:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C1FC81F
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714005796; cv=none; b=g6wPg2/U2pXTmu2Rzi/rlEU3FF63QP5zBqP6Oqji72cIWqZBFiCAhZZDwzUqIrmP3FEiXIAQ0DeCgU2g0neBlPRK8oIc+FsYeieA7d7Nk/0XEgUMzbRAH2aV83gnWJusznnwGDOGoSwwO/OIDg7z9M2dVVz4oPa1Zefu5paYEx4=
+	t=1714005922; cv=none; b=HMOk6I0ZDJ+62yiagKaaAY99SlMPQeUQyLQeJ85vdwUlE1nr8qmsK/8XoB+Ye5fFFs9I48L/4puQolvPArqPpF/CgUuKcmiVi0+JYmbflj6rqeJuFXhnuWph8lokRrVVtp+p1PpyOytBBXAhYKDGC5i7gs/4XguBSt7J+ZnW7K4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714005796; c=relaxed/simple;
-	bh=236gG8N4hj2YoDKj8i1xC+LA41Hwr3up0ZGcQlhtubw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jZdu2SUKj6KcY5juzI3BsjV2aErgAM8o0ON2GC0aO+FA3dceBVP1Zm/MRavQBl1oMpNCKGRxXrTPIJna1ie5E0cXMBFEB0as30nbwZ/kp+67/sfwxkErcyNCQSSEpdtokVcyslKWzTh/GhLbzbKQnXUQEtgQjdMq6ZXysuaD9eQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net; spf=pass smtp.mailfrom=amacapital.net; dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b=Ls+97lZT; arc=none smtp.client-ip=209.85.221.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amacapital.net
-Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4daa91c0344so155994e0c.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:43:15 -0700 (PDT)
+	s=arc-20240116; t=1714005922; c=relaxed/simple;
+	bh=C9Y7sI7S2lG7PgZ43yy72fujrqM9J0v4uwf6k/xCgvE=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=UI+N5heHiwx7ix3CWu0MzLLx3BdXRqIA6TVvrUqUL2BCn6M0WaRXbBZllFPF50JRrUZMttzJ2obgs0Zigo2EDAtQH0bqJEJe5BZWVbWov88HabSWlnzJYpM5obVfWTETU0C83peGLjiH8QJv/nB+rlK1lVCRo76NQABVKjHDob0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pnBOa8Hk; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1e91766a8c6so4012375ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 17:45:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20230601.gappssmtp.com; s=20230601; t=1714005794; x=1714610594; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fR7n1uhPFN3B2i3X955I2o/YTQLtqjqYe3qbWIU7RC4=;
-        b=Ls+97lZTFoJ2/KChiAz0ijZpt+w8uKkyx0sDOpeeR2wRJst8ppj7IQMNXK9YVsfify
-         KoldSLY5TOixc/CYJyNmoOIazKBu0O+8EAqWAX2KkZ9TAs0DCI8gxS9zjsxYjn1CKJH7
-         PbXCVxti/h7UYwMEyc3k3ILN4giSD9R5dq1B1UKU80WGrP7FUY+jrywp8RsI/yMW1O/o
-         Ec3sLVg0flnk54tkfSDXo5pofBMFom1oY/kALI1e7e6RTggr/8BP48Jy9/KGp6A9c1m5
-         69ZFDoNxsXokabU95Vt4hFjFP5loY+NeWmG/5sPqG2tKPo6FF6QUc8CVEwBb2O7951xc
-         Hp5g==
+        d=google.com; s=20230601; t=1714005920; x=1714610720; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ehGLjycYzRvV+RegBC+30jOD4jldKpLBzIes+g3Te5M=;
+        b=pnBOa8HkR7a4mkmP50aCwSfpKIPU+FdpiJJblUV5hwiKAQH4ctrESEHh92BnFNaoSJ
+         O0+wmX55wbsLNDJAXaIiV8ZztVmxY7bN5fozNn8IaBKvFHL4RcVnSzWRC+j1yeqHeB+r
+         KZ8V2FbxYWDhrZvEoahar9EcCJBe82hXJ/bwQnwjg1hHCFHu6yF0k8WUc14Ur9xCqm0n
+         s6j4bWEy3+4paaYgE2gToY1H10YXE6gTkC4v1iq9WR8SjCCmRCCDAo5cO+OXHrAxgX3F
+         KmK4/YEtfLanvXuCU0beDPLGdVzKYAEMgs7dEDrdoYNvX/fzZxkN0Rurms5PiXSxoiKv
+         bDQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714005794; x=1714610594;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fR7n1uhPFN3B2i3X955I2o/YTQLtqjqYe3qbWIU7RC4=;
-        b=VrXd8mSvEqlQ5IfoymIEjcYWH/cke985QQ7x/p+jVKsfApF1Qr/3k1q1Gdy2cBawIP
-         XSbeD0dzADaWS324FjdqxiwerEI3/uhyBGk2DTfW91rUl3BeJtYSqlWOQFUgFMn024sN
-         0B//zMF+h+fTH+o4XQ0KlcwqiMjCfgSfBEgSJ0v7n9jQs1V3qsK4wKM0f5J3aqzOsy7P
-         c1koBU55G6CSTTINM7UoNHyImX7WhGq1b86rX5qhRrEc7r3NJSNpMqgHbiRU3zRhvuXv
-         fZU10Hv4AakW0C6kQbpetQMGI80lw005RV192IX9TNAQbVvKcWF5Zy9s850bNeuVP3U3
-         r9Vw==
-X-Gm-Message-State: AOJu0YykPz/yKBiUQvqFvByA22hDbu2PptbubcrR9+r+vVxFdDK9wiQ3
-	ypt7kQLpcPvxengzjnkqoQ9xK1NfWExGt+wxC6Mc0VRdTs0GMosa8aR1CUeZ5kiZBz8o9t3ThMy
-	bwI/GI6VrKsLYO3neAaf5x+uhstfhgyhfpZE8
-X-Google-Smtp-Source: AGHT+IGDxdao24yBIAE6mF2nR1EaA/sS73/iozSWk/HWHCQsnJdooMo1NGAL8N9vsDwXEby001pQKmbZiPPUcRArhTo=
-X-Received: by 2002:a05:6122:790:b0:4d4:1ec7:76e5 with SMTP id
- k16-20020a056122079000b004d41ec776e5mr4505317vkr.16.1714005793771; Wed, 24
- Apr 2024 17:43:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714005920; x=1714610720;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ehGLjycYzRvV+RegBC+30jOD4jldKpLBzIes+g3Te5M=;
+        b=aBEL+UdgKgneZmo6BFXy/0bH9YWNdZ3P+QtO9EQNAZ0qWCdrG/fav3+R7OvfOdPY/x
+         +qotXJqvY25Md66XjYp3NoaP+4GWQMGdHbFqcgNTBI0uiANcBiT8Ag84++tmCox14fJf
+         NEiBycid90SNODYbHQGPpthRzrBfT0RaYTuJ11UXW31fftt6yD9l8YeKVH4iZ7TVEvF/
+         6P63J4FDYCnXTmQidVGzgiEJxT30GYtgO7ZZ7qp10xrYDgxVA+B5O//gm4cFIXwjKSB8
+         5jHOIhXKsb+2lNLubDKigvYiqCO4OBGCeDd/9Dpovq2YlnkBb2pZU8KegqvKI1Wa+5rz
+         93ww==
+X-Forwarded-Encrypted: i=1; AJvYcCUuK0OaYTF7HZ9ar6MGFYvxqBLwb4FooIm6kc+EOOJ0NVGB0xNDHd9rQD5V4qYcoa2l2/DT4+W7YphqO/oyMSY7RsKHukQSO+2H1jFa
+X-Gm-Message-State: AOJu0Ywa3japEi+RxlJH9Z8luPteZDZo/InCb8tlzM6+4ZQjtZ8yapey
+	OruH8q0CIXOlkJeL00aelAuYHGpCnYN97sk7tZ0+/0poTJSMjZaJqcO3MU7RtALDrs2skmfhv9S
+	91g==
+X-Google-Smtp-Source: AGHT+IFR9HYBLarlt9ZsOvhUbV8OSiFHhgh7AV7IIXgugq1S0Quy5L1i73/i89wy47ffAjGpD3+fDEtcXsg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:244e:b0:1e3:e6cb:a06e with SMTP id
+ l14-20020a170903244e00b001e3e6cba06emr344607pls.5.1714005919640; Wed, 24 Apr
+ 2024 17:45:19 -0700 (PDT)
+Date: Wed, 24 Apr 2024 17:45:18 -0700
+In-Reply-To: <20240421180122.1650812-17-michael.roth@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240423110148.13114-1-stsp2@yandex.ru> <4D2A1543-273F-417F-921B-E9F994FBF2E8@amacapital.net>
- <0e2e48be-86a8-418c-95b1-e8ca17469198@yandex.ru>
-In-Reply-To: <0e2e48be-86a8-418c-95b1-e8ca17469198@yandex.ru>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Wed, 24 Apr 2024 17:43:02 -0700
-Message-ID: <CALCETrWswr5jAzD9BkdCqLX=d8vReO8O9dVmZfL7HXdvwkft9g@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] implement OA2_INHERIT_CRED flag for openat2()
-To: stsp <stsp2@yandex.ru>
-Cc: linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>, 
-	Eric Biederman <ebiederm@xmission.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Andy Lutomirski <luto@kernel.org>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
-	Alexander Aring <alex.aring@gmail.com>, linux-fsdevel@vger.kernel.org, 
-	linux-api@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
-	=?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>, 
-	Aleksa Sarai <cyphar@cyphar.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20240421180122.1650812-1-michael.roth@amd.com> <20240421180122.1650812-17-michael.roth@amd.com>
+Message-ID: <ZimnngU7hn7sKoSc@google.com>
+Subject: Re: [PATCH v14 16/22] KVM: x86: Implement gmem hook for determining
+ max NPT mapping level
+From: Sean Christopherson <seanjc@google.com>
+To: Michael Roth <michael.roth@amd.com>
+Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
+	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, 
+	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, pbonzini@redhat.com, 
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
+	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
+	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	pankaj.gupta@amd.com, liam.merwick@oracle.com
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, Apr 24, 2024 at 3:57=E2=80=AFAM stsp <stsp2@yandex.ru> wrote:
->
-> 23.04.2024 19:44, Andy Lutomirski =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >> On Apr 23, 2024, at 4:02=E2=80=AFAM, Stas Sergeev <stsp2@yandex.ru> wr=
-ote:
-> >>
-> >> =EF=BB=BFThis patch-set implements the OA2_INHERIT_CRED flag for opena=
-t2() syscall.
-> >> It is needed to perform an open operation with the creds that were in
-> >> effect when the dir_fd was opened. This allows the process to pre-open
-> >> some dirs and switch eUID (and other UIDs/GIDs) to the less-privileged
-> >> user, while still retaining the possibility to open/create files withi=
-n
-> >> the pre-opened directory set.
-> > I like the concept, as it=E2=80=99s a sort of move toward a capability =
-system. But I think that making a dirfd into this sort of capability would =
-need to be much more explicit. Right now, any program could do this entirel=
-y by accident, and applying OA2_INHERIT_CRED to an fd fished out of /proc s=
-eems hazardous.
->
-> While I still don't quite understand
-> the threat of /proc symlinks, I posted
-> v4 which disallows them.
->
+On Sun, Apr 21, 2024, Michael Roth wrote:
+> ---
+>  arch/x86/kvm/svm/sev.c | 32 ++++++++++++++++++++++++++++++++
+>  arch/x86/kvm/svm/svm.c |  1 +
+>  arch/x86/kvm/svm/svm.h |  7 +++++++
+>  3 files changed, 40 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index ff9b8c68ae56..243369e302f4 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -4528,3 +4528,35 @@ void sev_gmem_invalidate(kvm_pfn_t start, kvm_pfn_t end)
+>  		cond_resched();
+>  	}
+>  }
+> +
+> +/*
+> + * Re-check whether an #NPF for a private/gmem page can still be serviced, and
+> + * adjust maximum mapping level if needed.
+> + */
+> +int sev_gmem_validate_fault(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, bool is_private,
 
-I like that, but you're blocking it the wrong way.  My concern is that
-someone does dfd =3D open("/proc/PID/fd/3") and then openat(dfd, ...,
-OA2_INHERIT_CRED);  IIRC open("/proc/PID/fd/3") is extremely magical
-and returns the _same open file description_ (struct file) as PID's fd
-3.
+This is a misleading name.  The primary purpose is not to validate the fault, the
+primary purpose is to get the max mapping level.  The fact that this can fail
+should not dictate the name.
 
-> > So perhaps if an open file description for a directory could have somet=
-hing like FMODE_CRED, and if OA2_INHERIT_CRED also blocked .., magic links,=
- symlinks to anywhere above the dirfd (or maybe all symlinks) and absolute =
-path lookups, then this would be okay.
->
-> So I think this all is now done.
+I also think we should skip the call if the max level is already PG_LEVEL_4K.
+Something _could_ race and invalidate the RMP, but that's _exactly_ why KVM
+guards the page fault path with mmu_invalidate_seq.
 
-But you missed the FMODE_CRED part!
+Actually, is returning an error in this case even correct?  Me thinks no.  If
+something invalidates the RMP between kvm_gmem_get_pfn() and getting the mapping
+level, then KVM should retry, which mmu_invalidate_seq handles.  Returning
+-EINVAL and killing the VM is wrong.
 
-So here's the problem: right now, in current Linux, a dirfd pointing
-to a directory that you can open anyway doesn't convey any new powers.
-So, if I'm a regular program, and I do open("/etc", O_PATH), I get an
-fd.  And if I get an fd pointing at /etc from somewhere else, I get
-the same thing (possibly with different f_cred, but f_cred is largely
-a hack to restrict things that would otherwise be insecure because
-they were designed a bit wrong from the beginning).
+And IMO, "gmem" shouldn't be in the name, this is not a hook from guest_memfd,
+it's a hook for mapping private memory.  And as someone called out somwhere else,
+the "private" parameters is pointless.  And for that matter, so is the gfn.
 
-But, with your patch, these fds suddenly convey a very strong
-privilege: that of their f_cred *over the entire subtree to which they
-refer*.  And you can attack it using exactly your intended use case:
-if any program opens a dirfd and then drops privileges, well, oops, it
-didn't actually fully drop privilege.
+And even _if_ we want to return an error, we could even overload the return code
+to handle this, e.g. in the caller:
+	 
+	r = static_call(kvm_x86_max_private_mapping_level)(vcpu->kvm, fault->pfn);
+	if (r < 0) {
+		kvm_release_pfn_clean(fault->pfn);
+		return r;
+	}
 
-So I think that, if this whole concept has any chance of working well,
-it needs to be opt-in *at the time of the original open*.  So a
-privilege-carrying open would be an entirely new option like
-O_CAPTURE_CREDS or FMODE_CREDS.  And OA2_INHERIT_CREDS is rejected if
-the dirfd doesn't have that special mode.
+	fault->max_level = min(fault->max_level, r);
+
+but what I think we want is:
+
+---
+int sev_snp_private_max_mapping_level(struct kvm *kvm, kvm_pfn_t pfn)
+{
+	int level, rc;
+	bool assigned;
+
+	if (!sev_snp_guest(kvm))
+		return 0;
+
+	rc = snp_lookup_rmpentry(pfn, &assigned, &level);
+	if (rc || !assigned)
+		return PG_LEVEL_4K;
+
+	return level;
+}
+
+static u8 kvm_max_private_mapping_level(struct kvm *kvm, kvm_pfn_t pfn,
+					u8 max_level, int gmem_order)
+{
+	if (max_level == PG_LEVEL_4K)
+		return PG_LEVEL_4K;
+
+	max_level = min(kvm_max_level_for_order(gmem_order),max_level);
+	if (max_level == PG_LEVEL_4K)
+		return PG_LEVEL_4K;
+
+	return min(max_level,
+		   static_call(kvm_x86_private_max_mapping_level)(kvm, pfn);
+}
+
+static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
+				   struct kvm_page_fault *fault)
+{
+	struct kvm *kvm = vcpu->kvm;
+	int max_order, r;
+
+	if (!kvm_slot_can_be_private(fault->slot)) {
+		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
+		return -EFAULT;
+	}
+
+	r = kvm_gmem_get_pfn(kvm, fault->slot, fault->gfn, &fault->pfn, &max_order);
+	if (r) {
+		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
+		return r;
+	}
+
+	fault->map_writable = !(fault->slot->flags & KVM_MEM_READONLY);
+	fault->max_level = kvm_max_private_mapping_level(kvm, fault->pfn,
+							 fault->max_level, order);
+	return RET_PF_CONTINUE;
+}
+
+---
+
+Side topic, the KVM_MEM_READONLY check is unnecessary, KVM doesn't allow RO memslots
+to coincide with guest_memfd.  I missed that in commit e563592224e0 ("KVM: Make
+KVM_MEM_GUEST_MEMFD mutually exclusive with KVM_MEM_READONLY").
 
