@@ -1,308 +1,111 @@
-Return-Path: <linux-kernel+bounces-158415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78C298B1FB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:53:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43C5F8B1FB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:53:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BD641C21471
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:53:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D865F1F23DA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:53:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49F62BAE3;
-	Thu, 25 Apr 2024 10:52:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="QlWajjdN";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="U4y5qpqw"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F7820DC8;
-	Thu, 25 Apr 2024 10:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762B7374D3;
+	Thu, 25 Apr 2024 10:52:42 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9E42C182
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 10:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714042345; cv=none; b=dtvatAGUZhukRTUULB9y3+hZNmmrGQKZWruiVmIreEs5NWHFKmVjP9xcVrMdtHic6uYUdCObJsSj7uaAHcKwbMIabPGBHEJrmXBG4pihSBN1VXVtragva6BQJUbrz7RXwah+Mo2pLr2IM0L+OCgX+RA7rR6cSJbxgn/t6umG/iQ=
+	t=1714042362; cv=none; b=cpTgRM33zm82pX0dB9SOVR4pgOSRRrSEjAaaDfmUsVqJwCYn9nLX/Tf/6NBkTMd/7S/HpMVLq/iWwueiKRSI9J0aLM9Lw4ar0UDrbvaorajA6B27Xa4Ro71KSdkRaUXdSJAHK9QAe67T1CMuPvTyyUQ+V1gHB/rjGTRyFfLN1hk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714042345; c=relaxed/simple;
-	bh=Fic6qblhF901hVzLcQS+UpzL9vdMv0SYUh64qwB2vAo=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=nUj3swWTvKjSq0+sark4lDZGozBPE9S5DAkKjJBhNQe0LqeA1+WvZu1K2ArtLtdAknY/+qm63fGH/Hqvy9PwHLKdcJ7arlGtJBGCByz+HFBtzHhFnQtRlV11WUNylaLyPU++G1+iRu94uZ3Jul9jqsuOagmOX20NRgWaEwf3Z+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=QlWajjdN; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=U4y5qpqw; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 25 Apr 2024 10:52:11 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1714042336;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1iXo++Ick+NWWK7svuJ4Wi+1QnDX3j2y1rs8SOguEoM=;
-	b=QlWajjdNpdf/2gtX+lX8lP5CpUvuitR7Ok57MiQDhxPfeNKOjWlgYFahxWuBjtPYYFua3g
-	61r6vxCG9BPqgKOXDIykGMd6qzHkoOxDJpkVl7ssuabxlhH6SSwL16/DYn+guubigz2D0b
-	1Bf8Perq0WDjbGiWGZsvS1e7tgQItRFPTIzZuSL/WC1J6VwsrLIJasaBYV19BXIbvaXPlU
-	LTz6Lnup8hX6wr64wkFb2/A86apGLUhh/ccVG+XoKuk2B4UDIiuVysCHY2ThE1zpVthGXX
-	bz5z0WpK/msdOIK7k8pmHl4uZfz0g/tRlJiFRnNJAou6BqC1vr58P3+ihRZ/Lg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1714042336;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1iXo++Ick+NWWK7svuJ4Wi+1QnDX3j2y1rs8SOguEoM=;
-	b=U4y5qpqwYRAHFrxCj48j9NZ3tjfE3UKTZRb+P8iQvAuhKQsYnhOkfUdDGWBovF2ZJf2NGI
-	+Jb36zn3X7bmPJAg==
-From: "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] x86/bugs: Switch to new Intel CPU model defines
-Cc: Tony Luck <tony.luck@intel.com>, "Borislav Petkov (AMD)" <bp@alien8.de>,
- Josh Poimboeuf <jpoimboe@kernel.org>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240424181507.41693-1-tony.luck@intel.com>
-References: <20240424181507.41693-1-tony.luck@intel.com>
+	s=arc-20240116; t=1714042362; c=relaxed/simple;
+	bh=Ar1GqtbHV7TvYScxEgkS4ik5kDQlPzxCfA0GlbTjt+w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NQITheqAIhFE85bElxwa2FxrBh6bALCagNtqdmLp+NikxruXC0NHnBwm61jjSG/3AK/o/X/jSZncQxgq9W2I0oglGMXSYcyPQ8a7aDQycWjeWjWB47wZTVFwdD664DlgjTyfxSha+Zw7BlKGpy+9n3ifKXdl7peuyJMT1ObiM/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D9E71007;
+	Thu, 25 Apr 2024 03:53:07 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6CBBC3F7BD;
+	Thu, 25 Apr 2024 03:52:38 -0700 (PDT)
+Message-ID: <e3175546-5357-4946-97b1-7677b0596772@arm.com>
+Date: Thu, 25 Apr 2024 11:52:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171404233152.10875.11625691068275436335.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] iommu/amd: Fix memory leak in alloc_pci_segment()
+To: "Kun(llfl)" <llfl@linux.alibaba.com>, Joerg Roedel <joro@8bytes.org>,
+ Vasant Hegde <vasant.hegde@amd.com>
+Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+ Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <a06d50c3a82214a82ccb88c22aa4e4a1d595b39c.1714040214.git.llfl@linux.alibaba.com>
+From: Robin Murphy <robin.murphy@arm.com>
+Content-Language: en-GB
+In-Reply-To: <a06d50c3a82214a82ccb88c22aa4e4a1d595b39c.1714040214.git.llfl@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-The following commit has been merged into the x86/cpu branch of tip:
+On 25/04/2024 11:17 am, Kun(llfl) wrote:
+> Fix the memory leak issue that occurs when resource allocation fails in
+> alloc_pci_segment(). The dev_table, alias_table, and rlookup_table were
+> introduced individually in three commits. But they all fail to release
+> allocated resources when other allocations fail.
 
-Commit-ID:     b24e466abf6ef1c82dac2df813551ffead832ab4
-Gitweb:        https://git.kernel.org/tip/b24e466abf6ef1c82dac2df813551ffead832ab4
-Author:        Tony Luck <tony.luck@intel.com>
-AuthorDate:    Wed, 24 Apr 2024 11:15:07 -07:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Thu, 25 Apr 2024 12:42:13 +02:00
+As far as I can tell the returned error should end up being handled in 
+state_next(), which *will* then clean these up again, at least in the 
+!irq_remapping_enabled path. If there's any cleanup missing from the 
+other path, then I think it should be fixed there, since it may well 
+represent more than just these particular allocations.
 
-x86/bugs: Switch to new Intel CPU model defines
+Thanks,
+Robin.
 
-New CPU #defines encode vendor and family as well as model.
-
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Link: https://lore.kernel.org/r/20240424181507.41693-1-tony.luck@intel.com
----
- arch/x86/kernel/cpu/common.c | 154 ++++++++++++++++------------------
- 1 file changed, 76 insertions(+), 78 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 2e70827..cdaa795 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -114,17 +114,17 @@ static const struct x86_cpu_id ppin_cpuids[] = {
- 	X86_MATCH_FEATURE(X86_FEATURE_INTEL_PPIN, &ppin_info[X86_VENDOR_INTEL]),
- 
- 	/* Legacy models without CPUID enumeration */
--	X86_MATCH_INTEL_FAM6_MODEL(IVYBRIDGE_X, &ppin_info[X86_VENDOR_INTEL]),
--	X86_MATCH_INTEL_FAM6_MODEL(HASWELL_X, &ppin_info[X86_VENDOR_INTEL]),
--	X86_MATCH_INTEL_FAM6_MODEL(BROADWELL_D, &ppin_info[X86_VENDOR_INTEL]),
--	X86_MATCH_INTEL_FAM6_MODEL(BROADWELL_X, &ppin_info[X86_VENDOR_INTEL]),
--	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X, &ppin_info[X86_VENDOR_INTEL]),
--	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X, &ppin_info[X86_VENDOR_INTEL]),
--	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D, &ppin_info[X86_VENDOR_INTEL]),
--	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X, &ppin_info[X86_VENDOR_INTEL]),
--	X86_MATCH_INTEL_FAM6_MODEL(EMERALDRAPIDS_X, &ppin_info[X86_VENDOR_INTEL]),
--	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNL, &ppin_info[X86_VENDOR_INTEL]),
--	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNM, &ppin_info[X86_VENDOR_INTEL]),
-+	X86_MATCH_VFM(INTEL_IVYBRIDGE_X, &ppin_info[X86_VENDOR_INTEL]),
-+	X86_MATCH_VFM(INTEL_HASWELL_X, &ppin_info[X86_VENDOR_INTEL]),
-+	X86_MATCH_VFM(INTEL_BROADWELL_D, &ppin_info[X86_VENDOR_INTEL]),
-+	X86_MATCH_VFM(INTEL_BROADWELL_X, &ppin_info[X86_VENDOR_INTEL]),
-+	X86_MATCH_VFM(INTEL_SKYLAKE_X, &ppin_info[X86_VENDOR_INTEL]),
-+	X86_MATCH_VFM(INTEL_ICELAKE_X, &ppin_info[X86_VENDOR_INTEL]),
-+	X86_MATCH_VFM(INTEL_ICELAKE_D, &ppin_info[X86_VENDOR_INTEL]),
-+	X86_MATCH_VFM(INTEL_SAPPHIRERAPIDS_X, &ppin_info[X86_VENDOR_INTEL]),
-+	X86_MATCH_VFM(INTEL_EMERALDRAPIDS_X, &ppin_info[X86_VENDOR_INTEL]),
-+	X86_MATCH_VFM(INTEL_XEON_PHI_KNL, &ppin_info[X86_VENDOR_INTEL]),
-+	X86_MATCH_VFM(INTEL_XEON_PHI_KNM, &ppin_info[X86_VENDOR_INTEL]),
- 
- 	{}
- };
-@@ -1122,8 +1122,8 @@ static void identify_cpu_without_cpuid(struct cpuinfo_x86 *c)
- #define VULNWL(vendor, family, model, whitelist)	\
- 	X86_MATCH_VENDOR_FAM_MODEL(vendor, family, model, whitelist)
- 
--#define VULNWL_INTEL(model, whitelist)		\
--	VULNWL(INTEL, 6, INTEL_FAM6_##model, whitelist)
-+#define VULNWL_INTEL(vfm, whitelist)		\
-+	X86_MATCH_VFM(vfm, whitelist)
- 
- #define VULNWL_AMD(family, whitelist)		\
- 	VULNWL(AMD, family, X86_MODEL_ANY, whitelist)
-@@ -1140,32 +1140,32 @@ static const __initconst struct x86_cpu_id cpu_vuln_whitelist[] = {
- 	VULNWL(VORTEX,	6, X86_MODEL_ANY,	NO_SPECULATION),
- 
- 	/* Intel Family 6 */
--	VULNWL_INTEL(TIGERLAKE,			NO_MMIO),
--	VULNWL_INTEL(TIGERLAKE_L,		NO_MMIO),
--	VULNWL_INTEL(ALDERLAKE,			NO_MMIO),
--	VULNWL_INTEL(ALDERLAKE_L,		NO_MMIO),
-+	VULNWL_INTEL(INTEL_TIGERLAKE,		NO_MMIO),
-+	VULNWL_INTEL(INTEL_TIGERLAKE_L,		NO_MMIO),
-+	VULNWL_INTEL(INTEL_ALDERLAKE,		NO_MMIO),
-+	VULNWL_INTEL(INTEL_ALDERLAKE_L,		NO_MMIO),
- 
--	VULNWL_INTEL(ATOM_SALTWELL,		NO_SPECULATION | NO_ITLB_MULTIHIT),
--	VULNWL_INTEL(ATOM_SALTWELL_TABLET,	NO_SPECULATION | NO_ITLB_MULTIHIT),
--	VULNWL_INTEL(ATOM_SALTWELL_MID,		NO_SPECULATION | NO_ITLB_MULTIHIT),
--	VULNWL_INTEL(ATOM_BONNELL,		NO_SPECULATION | NO_ITLB_MULTIHIT),
--	VULNWL_INTEL(ATOM_BONNELL_MID,		NO_SPECULATION | NO_ITLB_MULTIHIT),
-+	VULNWL_INTEL(INTEL_ATOM_SALTWELL,	NO_SPECULATION | NO_ITLB_MULTIHIT),
-+	VULNWL_INTEL(INTEL_ATOM_SALTWELL_TABLET, NO_SPECULATION | NO_ITLB_MULTIHIT),
-+	VULNWL_INTEL(INTEL_ATOM_SALTWELL_MID,	NO_SPECULATION | NO_ITLB_MULTIHIT),
-+	VULNWL_INTEL(INTEL_ATOM_BONNELL,	NO_SPECULATION | NO_ITLB_MULTIHIT),
-+	VULNWL_INTEL(INTEL_ATOM_BONNELL_MID,	NO_SPECULATION | NO_ITLB_MULTIHIT),
- 
--	VULNWL_INTEL(ATOM_SILVERMONT,		NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
--	VULNWL_INTEL(ATOM_SILVERMONT_D,		NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
--	VULNWL_INTEL(ATOM_SILVERMONT_MID,	NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
--	VULNWL_INTEL(ATOM_AIRMONT,		NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
--	VULNWL_INTEL(XEON_PHI_KNL,		NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
--	VULNWL_INTEL(XEON_PHI_KNM,		NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
-+	VULNWL_INTEL(INTEL_ATOM_SILVERMONT,	NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
-+	VULNWL_INTEL(INTEL_ATOM_SILVERMONT_D,	NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
-+	VULNWL_INTEL(INTEL_ATOM_SILVERMONT_MID,	NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
-+	VULNWL_INTEL(INTEL_ATOM_AIRMONT,	NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
-+	VULNWL_INTEL(INTEL_XEON_PHI_KNL,	NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
-+	VULNWL_INTEL(INTEL_XEON_PHI_KNM,	NO_SSB | NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
- 
--	VULNWL_INTEL(CORE_YONAH,		NO_SSB),
-+	VULNWL_INTEL(INTEL_CORE_YONAH,		NO_SSB),
- 
--	VULNWL_INTEL(ATOM_AIRMONT_MID,		NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
--	VULNWL_INTEL(ATOM_AIRMONT_NP,		NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT),
-+	VULNWL_INTEL(INTEL_ATOM_AIRMONT_MID,	NO_L1TF | MSBDS_ONLY | NO_SWAPGS | NO_ITLB_MULTIHIT),
-+	VULNWL_INTEL(INTEL_ATOM_AIRMONT_NP,	NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT),
- 
--	VULNWL_INTEL(ATOM_GOLDMONT,		NO_MDS | NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO),
--	VULNWL_INTEL(ATOM_GOLDMONT_D,		NO_MDS | NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO),
--	VULNWL_INTEL(ATOM_GOLDMONT_PLUS,	NO_MDS | NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO | NO_EIBRS_PBRSB),
-+	VULNWL_INTEL(INTEL_ATOM_GOLDMONT,	NO_MDS | NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO),
-+	VULNWL_INTEL(INTEL_ATOM_GOLDMONT_D,	NO_MDS | NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO),
-+	VULNWL_INTEL(INTEL_ATOM_GOLDMONT_PLUS,	NO_MDS | NO_L1TF | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO | NO_EIBRS_PBRSB),
- 
- 	/*
- 	 * Technically, swapgs isn't serializing on AMD (despite it previously
-@@ -1175,9 +1175,9 @@ static const __initconst struct x86_cpu_id cpu_vuln_whitelist[] = {
- 	 * good enough for our purposes.
- 	 */
- 
--	VULNWL_INTEL(ATOM_TREMONT,		NO_EIBRS_PBRSB),
--	VULNWL_INTEL(ATOM_TREMONT_L,		NO_EIBRS_PBRSB),
--	VULNWL_INTEL(ATOM_TREMONT_D,		NO_ITLB_MULTIHIT | NO_EIBRS_PBRSB),
-+	VULNWL_INTEL(INTEL_ATOM_TREMONT,	NO_EIBRS_PBRSB),
-+	VULNWL_INTEL(INTEL_ATOM_TREMONT_L,	NO_EIBRS_PBRSB),
-+	VULNWL_INTEL(INTEL_ATOM_TREMONT_D,	NO_ITLB_MULTIHIT | NO_EIBRS_PBRSB),
- 
- 	/* AMD Family 0xf - 0x12 */
- 	VULNWL_AMD(0x0f,	NO_MELTDOWN | NO_SSB | NO_L1TF | NO_MDS | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO | NO_BHI),
-@@ -1198,10 +1198,8 @@ static const __initconst struct x86_cpu_id cpu_vuln_whitelist[] = {
- #define VULNBL(vendor, family, model, blacklist)	\
- 	X86_MATCH_VENDOR_FAM_MODEL(vendor, family, model, blacklist)
- 
--#define VULNBL_INTEL_STEPPINGS(model, steppings, issues)		   \
--	X86_MATCH_VENDOR_FAM_MODEL_STEPPINGS_FEATURE(INTEL, 6,		   \
--					    INTEL_FAM6_##model, steppings, \
--					    X86_FEATURE_ANY, issues)
-+#define VULNBL_INTEL_STEPPINGS(vfm, steppings, issues)		   \
-+	X86_MATCH_VFM_STEPPINGS(vfm, steppings, issues)
- 
- #define VULNBL_AMD(family, blacklist)		\
- 	VULNBL(AMD, family, X86_MODEL_ANY, blacklist)
-@@ -1226,43 +1224,43 @@ static const __initconst struct x86_cpu_id cpu_vuln_whitelist[] = {
- #define RFDS		BIT(7)
- 
- static const struct x86_cpu_id cpu_vuln_blacklist[] __initconst = {
--	VULNBL_INTEL_STEPPINGS(IVYBRIDGE,	X86_STEPPING_ANY,		SRBDS),
--	VULNBL_INTEL_STEPPINGS(HASWELL,		X86_STEPPING_ANY,		SRBDS),
--	VULNBL_INTEL_STEPPINGS(HASWELL_L,	X86_STEPPING_ANY,		SRBDS),
--	VULNBL_INTEL_STEPPINGS(HASWELL_G,	X86_STEPPING_ANY,		SRBDS),
--	VULNBL_INTEL_STEPPINGS(HASWELL_X,	X86_STEPPING_ANY,		MMIO),
--	VULNBL_INTEL_STEPPINGS(BROADWELL_D,	X86_STEPPING_ANY,		MMIO),
--	VULNBL_INTEL_STEPPINGS(BROADWELL_G,	X86_STEPPING_ANY,		SRBDS),
--	VULNBL_INTEL_STEPPINGS(BROADWELL_X,	X86_STEPPING_ANY,		MMIO),
--	VULNBL_INTEL_STEPPINGS(BROADWELL,	X86_STEPPING_ANY,		SRBDS),
--	VULNBL_INTEL_STEPPINGS(SKYLAKE_X,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS),
--	VULNBL_INTEL_STEPPINGS(SKYLAKE_L,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
--	VULNBL_INTEL_STEPPINGS(SKYLAKE,		X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
--	VULNBL_INTEL_STEPPINGS(KABYLAKE_L,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
--	VULNBL_INTEL_STEPPINGS(KABYLAKE,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
--	VULNBL_INTEL_STEPPINGS(CANNONLAKE_L,	X86_STEPPING_ANY,		RETBLEED),
--	VULNBL_INTEL_STEPPINGS(ICELAKE_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
--	VULNBL_INTEL_STEPPINGS(ICELAKE_D,	X86_STEPPING_ANY,		MMIO | GDS),
--	VULNBL_INTEL_STEPPINGS(ICELAKE_X,	X86_STEPPING_ANY,		MMIO | GDS),
--	VULNBL_INTEL_STEPPINGS(COMETLAKE,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
--	VULNBL_INTEL_STEPPINGS(COMETLAKE_L,	X86_STEPPINGS(0x0, 0x0),	MMIO | RETBLEED),
--	VULNBL_INTEL_STEPPINGS(COMETLAKE_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
--	VULNBL_INTEL_STEPPINGS(TIGERLAKE_L,	X86_STEPPING_ANY,		GDS),
--	VULNBL_INTEL_STEPPINGS(TIGERLAKE,	X86_STEPPING_ANY,		GDS),
--	VULNBL_INTEL_STEPPINGS(LAKEFIELD,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED),
--	VULNBL_INTEL_STEPPINGS(ROCKETLAKE,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS),
--	VULNBL_INTEL_STEPPINGS(ALDERLAKE,	X86_STEPPING_ANY,		RFDS),
--	VULNBL_INTEL_STEPPINGS(ALDERLAKE_L,	X86_STEPPING_ANY,		RFDS),
--	VULNBL_INTEL_STEPPINGS(RAPTORLAKE,	X86_STEPPING_ANY,		RFDS),
--	VULNBL_INTEL_STEPPINGS(RAPTORLAKE_P,	X86_STEPPING_ANY,		RFDS),
--	VULNBL_INTEL_STEPPINGS(RAPTORLAKE_S,	X86_STEPPING_ANY,		RFDS),
--	VULNBL_INTEL_STEPPINGS(ATOM_GRACEMONT,	X86_STEPPING_ANY,		RFDS),
--	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RFDS),
--	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT_D,	X86_STEPPING_ANY,		MMIO | RFDS),
--	VULNBL_INTEL_STEPPINGS(ATOM_TREMONT_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RFDS),
--	VULNBL_INTEL_STEPPINGS(ATOM_GOLDMONT,	X86_STEPPING_ANY,		RFDS),
--	VULNBL_INTEL_STEPPINGS(ATOM_GOLDMONT_D,	X86_STEPPING_ANY,		RFDS),
--	VULNBL_INTEL_STEPPINGS(ATOM_GOLDMONT_PLUS, X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_IVYBRIDGE,		X86_STEPPING_ANY,		SRBDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_HASWELL,		X86_STEPPING_ANY,		SRBDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_HASWELL_L,		X86_STEPPING_ANY,		SRBDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_HASWELL_G,		X86_STEPPING_ANY,		SRBDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_HASWELL_X,		X86_STEPPING_ANY,		MMIO),
-+	VULNBL_INTEL_STEPPINGS(INTEL_BROADWELL_D,	X86_STEPPING_ANY,		MMIO),
-+	VULNBL_INTEL_STEPPINGS(INTEL_BROADWELL_G,	X86_STEPPING_ANY,		SRBDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_BROADWELL_X,	X86_STEPPING_ANY,		MMIO),
-+	VULNBL_INTEL_STEPPINGS(INTEL_BROADWELL,		X86_STEPPING_ANY,		SRBDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_SKYLAKE_X,		X86_STEPPING_ANY,		MMIO | RETBLEED | GDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_SKYLAKE_L,		X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_SKYLAKE,		X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_KABYLAKE_L,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_KABYLAKE,		X86_STEPPING_ANY,		MMIO | RETBLEED | GDS | SRBDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_CANNONLAKE_L,	X86_STEPPING_ANY,		RETBLEED),
-+	VULNBL_INTEL_STEPPINGS(INTEL_ICELAKE_L,		X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_ICELAKE_D,		X86_STEPPING_ANY,		MMIO | GDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_ICELAKE_X,		X86_STEPPING_ANY,		MMIO | GDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_COMETLAKE,		X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_COMETLAKE_L,	X86_STEPPINGS(0x0, 0x0),	MMIO | RETBLEED),
-+	VULNBL_INTEL_STEPPINGS(INTEL_COMETLAKE_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED | GDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_TIGERLAKE_L,	X86_STEPPING_ANY,		GDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_TIGERLAKE,		X86_STEPPING_ANY,		GDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_LAKEFIELD,		X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RETBLEED),
-+	VULNBL_INTEL_STEPPINGS(INTEL_ROCKETLAKE,	X86_STEPPING_ANY,		MMIO | RETBLEED | GDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_ALDERLAKE,		X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_ALDERLAKE_L,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_RAPTORLAKE,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_RAPTORLAKE_P,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_RAPTORLAKE_S,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_ATOM_GRACEMONT,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_ATOM_TREMONT,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RFDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_ATOM_TREMONT_D,	X86_STEPPING_ANY,		MMIO | RFDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_ATOM_TREMONT_L,	X86_STEPPING_ANY,		MMIO | MMIO_SBDS | RFDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_ATOM_GOLDMONT,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_ATOM_GOLDMONT_D,	X86_STEPPING_ANY,		RFDS),
-+	VULNBL_INTEL_STEPPINGS(INTEL_ATOM_GOLDMONT_PLUS, X86_STEPPING_ANY,		RFDS),
- 
- 	VULNBL_AMD(0x15, RETBLEED),
- 	VULNBL_AMD(0x16, RETBLEED),
+> Fixes: 04230c119930 ("iommu/amd: Introduce per PCI segment device table")
+> Fixes: 99fc4ac3d297 ("iommu/amd: Introduce per PCI segment alias_table"),
+> Fixes: eda797a27795 ("iommu/amd: Introduce per PCI segment rlookup table").
+> Reported-by: Xuchun Shang <xuchun.shang@linux.alibaba.com>
+> Signed-off-by: Kun(llfl) <llfl@linux.alibaba.com>
+> ---
+>   drivers/iommu/amd/init.c | 15 ++++++++++++---
+>   1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+> index ac6754a85f35..4ce567f39473 100644
+> --- a/drivers/iommu/amd/init.c
+> +++ b/drivers/iommu/amd/init.c
+> @@ -1642,13 +1642,22 @@ static struct amd_iommu_pci_seg *__init alloc_pci_segment(u16 id,
+>   	list_add_tail(&pci_seg->list, &amd_iommu_pci_seg_list);
+>   
+>   	if (alloc_dev_table(pci_seg))
+> -		return NULL;
+> +		goto alloc_dev_fail;
+>   	if (alloc_alias_table(pci_seg))
+> -		return NULL;
+> +		goto alloc_alias_fail;
+>   	if (alloc_rlookup_table(pci_seg))
+> -		return NULL;
+> +		goto alloc_rlookup_fail;
+>   
+>   	return pci_seg;
+> +
+> +alloc_rlookup_fail:
+> +	free_rlookup_table(pci_seg);
+> +alloc_alias_fail:
+> +	free_alias_table(pci_seg);
+> +alloc_dev_fail:
+> +	free_dev_table(pci_seg);
+> +	kfree(pci_seg);
+> +	return NULL;
+>   }
+>   
+>   static struct amd_iommu_pci_seg *__init get_pci_segment(u16 id,
 
