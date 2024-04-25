@@ -1,77 +1,80 @@
-Return-Path: <linux-kernel+bounces-159323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55EB68B2D25
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:34:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F7058B2D26
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:34:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B5FB1C2194D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:34:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7AB8B21C54
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5523F86268;
-	Thu, 25 Apr 2024 22:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07BFB156250;
+	Thu, 25 Apr 2024 22:34:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Qoa4adkT"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2amSNHXc"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FB12599
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 22:34:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B30E175A5
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 22:34:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714084458; cv=none; b=YDBi8iKAEkjxOL6Gje2M0d0ESv5d3NSr12lVcsn2/IRTTx7er5ChODxxe3gUtHSEVFQao7UjGymvA8xMx7GC+dJMOhEIU1EAoBuSVs3jw8+VKc4lj0faYkM9kTrI4Ckhb8uIjFlgOJ2HrED3LNA+/ab/3b+oh8v+TRsM0mMsYKY=
+	t=1714084460; cv=none; b=tye5c2dnpd12sJ++wnUnc0FDpQvsxU/0lYJjKsCRC3QASvLu41dnXZk0WPapIoOl4D+Z+1OsWwGQisvbrDGvkXYBZHnnAGSw+k3S34UDqXexEDJSmI5kY9oTocE62X6qESmel25P5Z0J1XAMn6hOmwBsNMKY95ZqhpVctwdsB3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714084458; c=relaxed/simple;
-	bh=u3et4SImCb3YPPJX9fDXXvlB2s1vG4/taao+OPDBknE=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=pbJQyCuh5JrM2pKRAXXKH9rZ+4Le+NWS3kW4DVkqpLq2M2lk2ST6CwKVBhv7/LYb1p+2NBFKxxQFz4AdHHDQcyPeOAy5VlDcJBFHZkIf8KRRhiXvi5eHFjLuDHoS9oZMSqt7hKmf5RdV826gXHIE9gNJogqZNExvZj46qMZW8X4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Qoa4adkT; arc=none smtp.client-ip=209.85.128.201
+	s=arc-20240116; t=1714084460; c=relaxed/simple;
+	bh=dphi9qBP63ALc85YmSjwCdzNIVpfkRQLHJHQrbhmr1k=;
+	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
+	 To:Content-Type; b=lRQw6qYawkahuEryNosd3f4KJTHXWJF09Kr/EWDSb959WKYS/z5wnYDawjPk2O7VRfRvWUv0zsYWBC/XGlzTBtTec3XlIh7UhrPvKjRIw57R0AAQMKQpkttWG+JN6o18r3dMmfOp4UrYlHkH5zfjB+nHlX2XfzCwye0CYL1VU9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2amSNHXc; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61ae546adf3so24898647b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:34:15 -0700 (PDT)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcdc3db67f0so3457295276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:34:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714084455; x=1714689255; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZJJk73p5r9jx3t8Jke0lmFYDY3+/7qA+0Gxv92CMnvA=;
-        b=Qoa4adkTKdEGzt79TRvuIifoI5taET5PjO5tgtqQ8tkUkEie9XIfBP2py+LNPRvw1A
-         LhlITKWD84084uOyYlXsw9kBtCxTfDQNtlRKoHv/wmMI8w7wIM2CoTYzwN10m44BArew
-         zqCsoJbunhCI+QeRWUb61tYy6Xcf74QqaRCF/fQ7s73zsMVIhyqzSOjPNl5pDNs8ygKR
-         slFhYTzdu53j16WOn0BVIkzvNt1oSmEMOzcePNP0Le5Va49Y1jJCCH++pisy5G6nFjSA
-         H+NVN9TpO/e2XU8pZxggmgKpqDcwN9KBIx8Gw3d3MYJjcdFlrDKh7mETLX5+nw+9Lwlx
-         DWrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714084455; x=1714689255;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+        d=google.com; s=20230601; t=1714084457; x=1714689257; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZJJk73p5r9jx3t8Jke0lmFYDY3+/7qA+0Gxv92CMnvA=;
-        b=VfVBVQcPkYT080ZGDMaA0l7sfMV77YaH0Mbja8SJ2+JWP+LVJ89IQ4aNYSU/fY72kj
-         9YNpsztFTDAogeSaTI22unYjnJCcQ13b74HGyvHUIO8ffu1yBQOFiBiZSBOgpherNn0E
-         txAVYJ+3nHBdycqhdekcAfcNljVQxEFDbkIB+0GyFtMrDASf9Ey7WB+aJFdyoGAjIDbX
-         UAo+3iUwg+43Wn5d/NQQbu4XBjxDlVDQwkUQ7Knufn+NjlzJIPVNPlFAQBp7DWMs2m/V
-         VcINS4Hso+Wy/gs4kQZoKlR3ZtBDLhAfhIUsS80El7PyxKQ3y17Ch8o9HDW7c/kt4ixO
-         GaBw==
-X-Forwarded-Encrypted: i=1; AJvYcCXDGEs5YaSwjaK8hNzcbwv3PcgUpcIZegI99i/F12ZLeyn9c6LJWF7J5WrQn0PdfGPg09l2Dm6D8CkxDgLy60w56dSvJmA4H2UScKEK
-X-Gm-Message-State: AOJu0Yy1ywEJW5eyUedpETIGES28tFTJJWzdrf7HieOKdm33h93d2ZyY
-	JSTQaqeW4GwRqQvezZqp/TLrfORBHvSinE0WTK7h9bMyHLj9BCSY4mM2OG9OcLYH9PR8rDO7e3l
-	bbze+PA==
-X-Google-Smtp-Source: AGHT+IESkc4K7XHM6bNS+4yg1KNJp7FaXL9c5WJvsUk5NRy2l3NzTgt7ORt5BdiPwvkajo96EI9OSQB3G0pD
+        bh=PRyB6ZTPXeEQyqvBeQnDzSQ3aoVG6ArsSOU0946h4+I=;
+        b=2amSNHXcRHIuqrk5p78qfYCdZuvrfmWEnVxzH037tSXvS7iyCUKXnuuJmw8br7kZqS
+         vIQgqLW+oYNsN/v7YmgCkfGJN5C12yNuWyUWHZcVQg/Rdc4A8tJZJkR4w6DBDgcsaVlY
+         vtJJmezZKTKGO4zhcvwLupF0uwW/GHzcMp9yT888fSsfQd9nA7nwJ964WYaRr4drS5HT
+         +8pYrJkbr1jXoah5ZxQFePrlFP20oMgl4KAQtmanYUPXg1jvuMHIXOMBPKM9/osACd7V
+         5PQnk2ZZFt6E2poZp4qIzv/9MqjO8enI8pVfPniATMI4LOZ4WryceomMy2wTII/gVaKl
+         rhQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714084457; x=1714689257;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PRyB6ZTPXeEQyqvBeQnDzSQ3aoVG6ArsSOU0946h4+I=;
+        b=tewJWBfJo42Q6T+Lik4/+JTG9oXset3YZObDi8hGtg9c/5tnb+yHWxmMJVxMcGV+GV
+         cBVJh47Mi8y9jelDsxODgDKvo9Mcklf0lCvODLwaDXy3a4DXRSNsVAXvDtAwkFX9v97N
+         BKsggG6GtNIpNblTSADAkbVe0JjQr3G/qyE2ASRCAID7UAEggZQmGVg+4U78kjH/EgpN
+         ozJjJlShUtQeOKZOtngtAXOwE9M7/nTkOt2ws+Q7DcD9YhrNtsQIrbeOEarlQ9tdYm6f
+         szdcMJ6VagxpJdNZRG95M2cg7ToS1nK22+IGwPHo29QaoL0IZQXCc5xOQ0U6aAXU+qFH
+         6DGA==
+X-Forwarded-Encrypted: i=1; AJvYcCVAmYe5wjotKIQz7ekCUIFnXPOT+xBMl40ph/a1oEaV5cg/nQ/5Nso3O8ZQ2qcXBzhT3cglTWzRBgvew6FtjxN4C4YsfuRowZmeDxrN
+X-Gm-Message-State: AOJu0YzLdukg7Q8uLLMu9NvFV8N+enDpzm1b87+fH35LGskoXOvvAVJX
+	My8cBv+4LA8yETbiykLoC/BX5M27E+5eJyfMJEkcria0Tz80nxIZY0wzRYFH1wxhQWZ+6CEpmb7
+	Yi2Cf4g==
+X-Google-Smtp-Source: AGHT+IEQ/sIEgXuPsq1khlWSJrM0X0hALhujw4KeoPWU3mHHONJFz2LIsLabZBngG/PF7TMXMHovH8xNLJZ4
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:8708:517d:aade:8c87])
- (user=irogers job=sendgmr) by 2002:a05:6902:1028:b0:de5:3003:4b64 with SMTP
- id x8-20020a056902102800b00de530034b64mr120115ybt.1.1714084454877; Thu, 25
- Apr 2024 15:34:14 -0700 (PDT)
-Date: Thu, 25 Apr 2024 15:34:03 -0700
-Message-Id: <20240425223406.471120-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a05:6902:c04:b0:dd9:2782:d1c6 with SMTP id
+ fs4-20020a0569020c0400b00dd92782d1c6mr339697ybb.1.1714084457578; Thu, 25 Apr
+ 2024 15:34:17 -0700 (PDT)
+Date: Thu, 25 Apr 2024 15:34:04 -0700
+In-Reply-To: <20240425223406.471120-1-irogers@google.com>
+Message-Id: <20240425223406.471120-2-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240425223406.471120-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Subject: [RFC PATCH v1 0/3] Retirement latency perf stat support
+Subject: [RFC PATCH v1 1/3] perf evsel: Don't open tool events
 From: Ian Rogers <irogers@google.com>
 To: weilin.wang@intel.com, Peter Zijlstra <peterz@infradead.org>, 
 	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -85,40 +88,29 @@ To: weilin.wang@intel.com, Peter Zijlstra <peterz@infradead.org>,
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Support 'R' as a retirement latency modifier on events. When present
-the evsel will fork perf record and perf report commands, parsing the
-perf report output as the count value. The intent is to do something
-similar to Weilin's series:
-https://lore.kernel.org/lkml/20240402214436.1409476-1-weilin.wang@intel.com/
+Tool events are set up as software dummy events. Don't open them to
+save some work and a file descriptor. The evsel's fds are initialized
+to -1, so it suffices to just early return.
+---
+ tools/perf/util/evsel.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-While the 'R' and the retirement latency are Intel specific, in the
-future I can imagine more evsel like commands that require child
-processes. We can make the logic more generic at that point.
-
-The code is untested on hardware that supports retirement latency, and
-with metrics with retirement latency in them. The record is also of
-sleep and various things need tweaking but I think v1 is good enough
-for people to give input.
-
-The first patch stops opening a dummy event for tool events. I came
-across this while looking into the issue and we can likely just pick
-it first. I kept it in the series for cleanliness sake.
-
-The code has benefitted greatly from Weilin's work and Namhyung's
-great review input.
-
-Ian Rogers (3):
-  perf evsel: Don't open tool events
-  perf parse-events: Add a retirement latency modifier
-  perf evsel: Add retirement latency event support
-
- tools/perf/util/evsel.c        | 186 ++++++++++++++++++++++++++++++++-
- tools/perf/util/evsel.h        |   4 +
- tools/perf/util/parse-events.c |   2 +
- tools/perf/util/parse-events.h |   1 +
- tools/perf/util/parse-events.l |   3 +-
- 5 files changed, 192 insertions(+), 4 deletions(-)
-
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 3536404e9447..2743d40665ff 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -2005,6 +2005,11 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+ 	int pid = -1, err, old_errno;
+ 	enum rlimit_action set_rlimit = NO_CHANGE;
+ 
++	if (evsel__is_tool(evsel)) {
++		/* Tool events are set up as dummy but don't need opening. */
++		return 0;
++	}
++
+ 	err = __evsel__prepare_open(evsel, cpus, threads);
+ 	if (err)
+ 		return err;
 -- 
 2.44.0.769.g3c40516874-goog
 
