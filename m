@@ -1,116 +1,146 @@
-Return-Path: <linux-kernel+bounces-158112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D2928B1BC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:19:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 908FC8B1BBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:19:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E713D1F25040
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:19:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54C69286431
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:19:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33C6A6EB53;
-	Thu, 25 Apr 2024 07:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4C3F6BFD4;
+	Thu, 25 Apr 2024 07:19:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="EM9lWjBC"
-Received: from mout.web.de (mout.web.de [212.227.17.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wfPZZ0LM"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C17CB6D1AB;
-	Thu, 25 Apr 2024 07:19:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68AAF6BB48
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:19:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714029557; cv=none; b=eXtVOz3iOrrMFn+c7eLPRBwuYwnufdKqE0QuqcxEbPx9y8J+BFN8020YZ/k6xJDXpgyz8i1Uf94G1wOUBHzYUG+mfUH1j0IwM3q1wnhFvmI3w3mbRtZ/N0R4tt0HXs8v95Au9KyZWahJYlmZTBz+wjnzWx4hbRQM6NBkZHVUpWk=
+	t=1714029545; cv=none; b=L0tCks2kMztOzQPVZqAtBUnPeHCBf6vvI4n89epMGTU2qryOIcmJNEf9e+RswX58tws+Hs0wTnlLBS6orzyXna326c5DqhBRJBK3c9YjfYSpSpDDNvNPQ1ZDFiHyEGWwiBexPEvm/bTx9Lrfmn+DJfb8iJW+n9zk9l1UnMsIYew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714029557; c=relaxed/simple;
-	bh=CkiPK6tPqwTWT75wFXMOzJWbLEmZiPmM/GP+SAqz6Rg=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=ju2xhfyUQQcGVuDmFGQrZti2E9111CoSPDeBSK+uYaq3FmgWZv+yU9d44I1HgE7P9zjdwMEfr+niXvlnTr1iEOlwhmjGgMA38wJS3HX+brkTZF9FxkYPEtcR2Y1ymGQtFXkDcan8Y+N2Gddqv8BkN0k7OHeLTWxklBP2O+nmxWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=EM9lWjBC; arc=none smtp.client-ip=212.227.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714029523; x=1714634323; i=markus.elfring@web.de;
-	bh=UG4sKAfbqH7myYcMHGqgIq6lkAMmjpUkaFC72KScITI=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=EM9lWjBCK2tncZmJ6ss0AUjKryv5ckQ3zFJmosZZMH0dV1Wve5jdAWECUt8b9fTZ
-	 q/1YSuw2XxtIvH/At79iHCBSRXhwNIKqo05iESwcZVkb0xqai2OCRQ4IO2gWgOfLd
-	 Aa+9WrK5QJMC2S4lPi7Hr+5FGjozkvSwVOHrI6MVKT4CJzLEvKbhngXwBYSaARbb4
-	 5BKxXsPtXhNXwEKTvrRnW/SKrXcw2UVjArQ5wgUhRN2hxDrZfSzIcQ8Z3EOHraubR
-	 SKW0MQY5y08aqi6HHZn4WGfdwHNnJf0aSXYUfxSu2cP0ufdiG0MrQeRnpwnCgUEq1
-	 Oo3nyXh15FexYUh/EQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MTvrs-1s8F613Vre-00RZYm; Thu, 25
- Apr 2024 09:18:43 +0200
-Message-ID: <e68e09e0-75f3-43b8-b947-22cc0d1a0dae@web.de>
-Date: Thu, 25 Apr 2024 09:18:29 +0200
+	s=arc-20240116; t=1714029545; c=relaxed/simple;
+	bh=8ZIuLwdqyRl99K9D+WymS75aTRlcgfTHWE8UcmGPEg4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IySuplPpGNCX1jNCQ3+6mmr9nMmeYrkJ3+YqCune2b4Zv6ciK1rpakPIFempWM5Ynb3qXIY2adhkHvluYZs38W6CiaAaDgwZXEVlvEN6jlFQ5RuI2rl7YytfM4iEKCuxJCY9mfBx1DZ1jnO0aCyGZwVzPkukszLwII0JbArqwO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wfPZZ0LM; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a5544fd07easo83239666b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:19:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714029541; x=1714634341; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UiWg4ZuYlxN9cQPVnhmdQjPdfi8HEtEf8/z5K2DVwdU=;
+        b=wfPZZ0LMykS77q2e8D7mUPxnQiJh2FeMzI22SKLZSGi2cfbDr14r8Vxjj7pKuPXV1T
+         SFvSAXpB7A1IDmAYVf0LYCmvU6a4qoLWXUm7ypM/pt0HyN9sgdEgcucoWMteHldq8i3j
+         9IO/TD0jMl+A1LXQiXmcTxEzUhxZWKSfRQTbcAX9jNcTZZ79i+rYewGv9e4g5bfrh0TD
+         i7/yTHlZT5Uc8uIbnMmXVSXM96gyxCiTAfn8m5wcdbK3jwCNSXSH7F7rUcczweqLN8sf
+         Ww+5ntwd2c2UhEsajGUxAL38Ru1nqHDxRCXbRAXqwh0m+k0tDIlYpXFijOIg4vFAcink
+         Vq8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714029541; x=1714634341;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UiWg4ZuYlxN9cQPVnhmdQjPdfi8HEtEf8/z5K2DVwdU=;
+        b=SsfyxJf7QwMraIYQc1vWHhnpOG3vOLZydrqM5EQNhrfZs5Rl6jKT69t5s2phT0Fill
+         NQsX6zcSbGzCV86jD7VNg7BoaQs0awWucL/N7yAX8UdLdnopx3QHrIaIkvx3hjC4779G
+         atUV23+OhZAdELxWRrkx9clIoKTf17HMeeDij7LiI4/lI7epNIRDJxtX7pgFcVKR1RUX
+         e4APWXI1gA6EAV3ceSSFanQfrDgArFILNqmsNtEENBJcdRYob6l09OWr+3F4af3xXAJh
+         bjkH3hFSiXBTA9fX3utphr+4/pC+8dcJgaemX0c5/1wf1pDro/DXBiRsTCm4UayUAm6w
+         9gvw==
+X-Forwarded-Encrypted: i=1; AJvYcCXFfMoT2nJpCxsb+RGEHlP9lymi/A3x0TGEJU47ePDMlX2yJ20w1GWxrDRjQGsKZ7Bf+S0ZrDoRt5Yq6DKgQ/5HnbXjar41di+nbKBd
+X-Gm-Message-State: AOJu0YzFuD+RHlGtNiN8vj2FaM1PoWJCai9VL6HpL4nsCWDHeGS7pqgu
+	MdwJSi6TYJLPcdJYQEYIL9PNa+BWYqKeICO/9Q8Ce3qQZNZnn2GLacGEs2PQhxM=
+X-Google-Smtp-Source: AGHT+IHIPqKC4UKrFERHT+wWEYW/Paz6CXd8QxzmTWJl10ZcPGrFWZEyzu2/SlGkUFW1fQN5nzOzBg==
+X-Received: by 2002:a17:906:cec7:b0:a58:7edb:f4be with SMTP id si7-20020a170906cec700b00a587edbf4bemr3172637ejb.46.1714029541042;
+        Thu, 25 Apr 2024 00:19:01 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id hd38-20020a17090796a600b00a556f41c68asm9091174ejc.182.2024.04.25.00.18.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 00:19:00 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Olof Johansson <olof@lixom.net>,
+	Arnd Bergmann <arnd@arndb.de>,
+	arm@kernel.org,
+	soc@kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Peter Griffin <peter.griffin@linaro.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [GIT PULL 1/2] ARM: dts: samsung: dts for v6.10
+Date: Thu, 25 Apr 2024 09:18:54 +0200
+Message-ID: <20240425071856.9235-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Song Gao <gaosong@loongson.cn>, loongarch@lists.linux.dev,
- kernel-janitors@vger.kernel.org, maobibo@loongson.cn
-Cc: LKML <linux-kernel@vger.kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- Paolo Bonzini <pbonzini@redhat.com>, Tianrui Zhao <zhaotianrui@loongson.cn>,
- Wang Xuerui <kernel@xen0n.name>
-References: <20240424091813.1471440-1-gaosong@loongson.cn>
-Subject: Re: [PATCH v3] LoongArch: KVM: Add PMU support
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240424091813.1471440-1-gaosong@loongson.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:00Jnv0z4yJ3cAcza9B6oPnCQFtB1U6bhddC/nn2ON13kEk8asxJ
- A8n3AEZDTno08y/MUZOejQT3W3Q+sZtxhuInM0aWNc5MJZmvxS4DKqpgcM67HqJBeox83S5
- D+Wgj18GUmiAZXMg0vETLEYHuUqzA4HVDjZ2QaW3nSAemdEZwGAvUlxXggZ07IawQnWhfab
- c/GRv7IXWjghmnvzlJ7Qw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:55oR3qD1Jro=;h76wbUubNa2cPLWxoDAUCdSVh/R
- HZV3wZCsGKlbF+GFp5NQCRx9PudSBVq/iBF/mM3cJoE5xK0+II0QYCUSdG9qmqkfdMoYSE2Ks
- /XyMF0mksHOwr0GZ/x0XE/F0HtyBl4ta9PpHyhjNvSLqIZHnFDcDGQTYAqI5x1d/CjYJkJnSF
- VJpWNLYfGweFqKTzftiIExPJ+Lbf2eswnEp+cfKL1YFX/BpL19MRsiNzfvD5oKoCNVf26jpmT
- jVf79c2H+93zqUmtRn8jbfGeLGOCRq6oT5o+31WCEZrIOjFMUtYZmhUWlkIk2RQKLR5CaIm69
- r33ionVKW56gbB4tHvLBTKMkFjceBGF773Fik1uTFCaIq4Zx0XzThgu1LV5kN5D6vLSnEgmEZ
- lkPLiR4pTqSWFtGod/ZA2tEAPwu/uGogFoPdnNITXIGmc/EcoHEbfnvdJ7PKx6yRc4hGza8+M
- OwqPN/5vLJiClKIOyNV6s9oJXTvWXG/c8hFwAlBr1Sli5f/Dmukb0eANOCzLq/3/JUuy/KBAG
- /EV+2vSh6be3MbUqdMld5hvo3kNUP9GyGZZWDW0Pf0eZlBNp90BxIzO0TDq528vwFPHpu64bB
- 3lAf3xaST8iBcR2FlsZNk/+VddgupadL4Au5xTulx//fQvffUWJGc2ENX+xWWuRyYEkwuoDy6
- tpEWB/tRnomO1SzEmxcNiOnaElc4cXjG3Xcw2nhiuDV1GublthXK9qxg0cvpSYC9Pm1nDixLT
- vCJULBSOqdSqEAopNbqucg8s1uJeaRNWEaMH1QsTbnYiYH63uXVrG9auv1pOLSxRkV9t44/xo
- 0NLbPw6EDuf/Kzs5/Tn2h4liqsOi0pHxlS3eUwLblQ1Zs=
+Content-Transfer-Encoding: 8bit
 
-=E2=80=A6
-> On KVM side. we save the host PMU CSRs into structure kvm_context.
-> If the host supports the PMU feature. When entering guest mode.
-> we save the host PMU CSRs and restore the guest PMU CSRs.
-=E2=80=A6
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
 
-I suggest to reconsider the usage of a few dots in such a wording approach=
-.
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
 
+are available in the Git repository at:
 
-=E2=80=A6
-Signed-off-by: Song Gao <gaosong@loongson.cn>
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-dt-6.10
 
-v2->V3:
-=E2=80=A6
+for you to fetch changes up to 7bff1d35c1294c011b0269b8eaeb8f930df386fe:
 
-* Please put your version descriptions behind a marker line.
-  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
-Documentation/process/submitting-patches.rst?h=3Dv6.9-rc5#n713
+  ARM: dts: exynos4212-tab3: limit usable memory range (2024-03-26 10:06:05 +0100)
 
-* How do you think about to avoid the repetition of version identifiers he=
-re?
+----------------------------------------------------------------
+Samsung DTS ARM changes for v6.10
 
+1. Few cleanups of deprecated properties and node names pointed out by
+   bindings newly converted to DT schema.
+2. Fix S5PV210 NAND node size-cells, pointed out by DT schema.
+3. Add FIFO depth to each SPI node so we can avoid matching this through
+   DTS alias.  Difference SPI instances on given SoC have different FIFO
+   depths.
+4. Fix Exynos4212 Galaxy Tab3 usable memory, because stock bootloader is
+   not telling us truth.
 
-Regards,
-Markus
+----------------------------------------------------------------
+Artur Weber (1):
+      ARM: dts: exynos4212-tab3: limit usable memory range
+
+Krzysztof Kozlowski (7):
+      ARM: dts: samsung: smdkv310: fix keypad no-autorepeat
+      ARM: dts: samsung: exynos4412-origen: fix keypad no-autorepeat
+      ARM: dts: samsung: smdk4412: fix keypad no-autorepeat
+      ARM: dts: samsung: smdk4412: align keypad node names with dtschema
+      ARM: dts: samsung: exynos5800-peach-pi: switch to undeprecated DP HPD GPIOs
+      ARM: dts: samsung: s5pv210: align onenand node name with bindings
+      ARM: dts: samsung: s5pv210: correct onenand size-cells
+
+Tudor Ambarus (5):
+      ARM: dts: samsung: exynos3250: specify the SPI FIFO depth
+      ARM: dts: samsung: exynos4: specify the SPI FIFO depth
+      ARM: dts: samsung: exynos5250: specify the SPI FIFO depth
+      ARM: dts: samsung: exynos5420: specify the SPI FIFO depth
+      ARM: dts: samsung: s5pv210: specify the SPI FIFO depth
+
+ arch/arm/boot/dts/samsung/exynos3250.dtsi         |  2 ++
+ arch/arm/boot/dts/samsung/exynos4.dtsi            |  3 +++
+ arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts |  2 +-
+ arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi    |  6 ++++++
+ arch/arm/boot/dts/samsung/exynos4412-origen.dts   |  2 +-
+ arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts | 12 ++++++------
+ arch/arm/boot/dts/samsung/exynos5250.dtsi         |  3 +++
+ arch/arm/boot/dts/samsung/exynos5420.dtsi         |  3 +++
+ arch/arm/boot/dts/samsung/exynos5800-peach-pi.dts |  2 +-
+ arch/arm/boot/dts/samsung/s5pv210.dtsi            |  6 ++++--
+ 10 files changed, 30 insertions(+), 11 deletions(-)
 
