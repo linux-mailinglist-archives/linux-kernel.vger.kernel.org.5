@@ -1,91 +1,88 @@
-Return-Path: <linux-kernel+bounces-158512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8450E8B2189
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:20:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A78B8B218C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:22:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAF3EB235F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:20:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 014A11F2221F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:22:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF1EA12BF38;
-	Thu, 25 Apr 2024 12:20:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1007412C461;
+	Thu, 25 Apr 2024 12:22:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OmSj4y3p"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="4TbXn6nB"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1711612AAC5;
-	Thu, 25 Apr 2024 12:20:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44BFA12AAC5;
+	Thu, 25 Apr 2024 12:22:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714047629; cv=none; b=ImRdus8Efex8fx5luMbz8HRie3DzHcwErJUjQZgkeFbmnAFZQU1vfclXqx4LCG7XjqozXsFo2RqOJKR4tU02/T0nSkjjCyKfZyq3r80XCW4gIandnFXJX7Hno0A5j+olcGoOvpJb9MNCRny2K88S5XkDupwkG6oar22q7jOygxI=
+	t=1714047757; cv=none; b=fOKL2HLt/30kLbUZ5oAsqu2O8GT0OnV3bF+1UsqVtwyUzf5NXkBbYMUves9SxkFpj6ICJW0rjbdhkXVYtZud2icLc4CXxNomAkxHbnSljOi5QoDf9Vq5RjNwdDkpJHXTgVfeT4UCqPS8smfxen5omz3Z/kpH0Ou4sKtNMLCyA8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714047629; c=relaxed/simple;
-	bh=l1sxznDkPi1u8WbFQi2cdXM6MGe1jOyjijxGtYed49M=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=uUlSE/MuNnJLeWchgCWDwbEKgckvhhqlQ1Ps31onlvPAoXEy0lsnG9KXtHLJufMpj8cZbtWD10faSER3H/zUW99k7tASu2sxVTHG31jYilBHrehj3FDqrMNIt5lxTIxbeK0Bvcrdylpl23RGYm8IW6qAIL4DbIYzatcuBkOoiCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OmSj4y3p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9B2CFC113CE;
-	Thu, 25 Apr 2024 12:20:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714047628;
-	bh=l1sxznDkPi1u8WbFQi2cdXM6MGe1jOyjijxGtYed49M=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=OmSj4y3prXyf1ODlC+95tfDwt/d55zci2cyz92vZpvIdqSEfwPqT9Kgs8nPajSYxI
-	 XsoyMxdqz4AAKedUoR3ZqWQKJAb02srM3Y7QNKNQghQ93xDLqxS1UWK8lqM5q5sfhP
-	 r/yjg0VfJPYJW/44uJwVOAfbc7WCB1p0vrD0DU7WFFV+i3Y3/ceRh8pRi8iP7ngk3o
-	 /tPdwAtIvEdvz0ROM4USi8T5tVL9qbWQ81/izzha8v1Vx7cNM4GvNtmkq74ynCRYrE
-	 TyGa0gWh51dPy8/VsYVDOECPc6lya0kdCzkA1Rfe/buAyOG3l2db1DtJlH3d60fOB2
-	 5wdc+k3cXooFw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8F47BC43614;
-	Thu, 25 Apr 2024 12:20:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1714047757; c=relaxed/simple;
+	bh=ac90Xptu+LlZdA2H1bGYh9aUekchXQrWaju28h5LvBk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MSuDLOgUpcTysxOxNN5ViLTe8nsCEFtRcHv0m1yW0zUlOl2Sq24c4N0AC0vdbeuyir2iZXhyGX3Z3EcpUkon5RYOscM17mjZX8FcZ+/C9q0dQP7VQ0oS0QIvwwk4kTjxDjyGtbRwEGawNP5szfyMhnAKpOw/b9oMCzFDZKH88Xw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=4TbXn6nB; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=5kmdkkgmxltKWTQk4TRnBXqD+WYMw+Ii9wmT2IhgF+M=; b=4TbXn6nBSXtbGSFyjPidJ1dkTq
+	kz/vOUst+cMP+R+woJCvf0tZuMWXcuOX0colAum5jIVBfBm/SXHNXBeeceqHvotdSH/HILVeE6koe
+	cX9y+AEKR1R2rJaUaQ3oHb1hnnteqOY0OehYypL2iAbMc+DXeL7fQMDSYtD8WInPgX3Dw7QNR7sD7
+	odBbDcjEWk5tVXeTaaj/0WXRP5Th7DYNboCY4dgxJ093XmvKw/c12GYHXui/ikYmMTr65HG28mqvr
+	VsPCzIHWpTW2W1cKeCAlGmQONjP4Jp0T1sDxHWDRAzdxKdjxxUWQwdkGZ48Wfkv8iZZKxHHNiCap7
+	iFlZDxNg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rzy7W-00000008CMg-2JzU;
+	Thu, 25 Apr 2024 12:22:34 +0000
+Date: Thu, 25 Apr 2024 05:22:34 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, djwong@kernel.org, hch@infradead.org,
+	brauner@kernel.org, david@fromorbit.com, chandanbabu@kernel.org,
+	tytso@mit.edu, jack@suse.cz, yi.zhang@huawei.com,
+	chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v5 4/9] xfs: convert delayed extents to unwritten when
+ zeroing post eof blocks
+Message-ID: <ZipLCm2N-fYKCuGv@infradead.org>
+References: <20240320110548.2200662-5-yi.zhang@huaweicloud.com>
+ <20240423111735.1298851-1-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: bridge: remove redundant check of f->dst
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171404762858.28186.14186712070509213799.git-patchwork-notify@kernel.org>
-Date: Thu, 25 Apr 2024 12:20:28 +0000
-References: <tencent_616D84217798828E5D1021857C528B713406@qq.com>
-In-Reply-To: <tencent_616D84217798828E5D1021857C528B713406@qq.com>
-To: linke li <lilinke99@qq.com>
-Cc: xujianhao01@gmail.com, roopa@nvidia.com, razor@blackwall.org,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- bridge@lists.linux.dev, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240423111735.1298851-1-yi.zhang@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Hello:
+On Tue, Apr 23, 2024 at 07:17:35PM +0800, Zhang Yi wrote:
+> +	if ((flags & IOMAP_ZERO) && imap.br_startoff <= offset_fsb &&
+> +	    isnullstartblock(imap.br_startblock)) {
+> +		xfs_fileoff_t eof_fsb = XFS_B_TO_FSB(mp, XFS_ISIZE(ip));
+> +
+> +		if (offset_fsb >= eof_fsb)
+> +			goto convert_delay;
+> +		if (end_fsb > eof_fsb) {
+> +			end_fsb = eof_fsb;
+> +			xfs_trim_extent(&imap, offset_fsb, end_fsb - offset_fsb);
 
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+Nit: overly long line here.
 
-On Tue, 23 Apr 2024 18:53:26 +0800 you wrote:
-> In br_fill_forward_path(), f->dst is checked not to be NULL, then
-> immediately read using READ_ONCE and checked again. The first check is
-> useless, so this patch aims to remove the redundant check of f->dst.
-> 
-> Signed-off-by: linke li <lilinke99@qq.com>
-> ---
->  net/bridge/br_device.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+I've also tried to to a more comprehensive review, but this depends on
+the rest of the series, which isn't in my linux-xfs folder for April.
 
-Here is the summary with links:
-  - net: bridge: remove redundant check of f->dst
-    https://git.kernel.org/netdev/net-next/c/e7d96e750f2b
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+I've your're not doing and instant revision it's usually much easier to
+just review the whole series.
 
