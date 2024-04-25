@@ -1,197 +1,127 @@
-Return-Path: <linux-kernel+bounces-158624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AB978B232B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA9AB8B2333
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:55:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1D492874A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:53:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7559287E8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ACA7149DE3;
-	Thu, 25 Apr 2024 13:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A0B149DE3;
+	Thu, 25 Apr 2024 13:55:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B/y6tfKz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="Y0bJFXvP"
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D67A1494C4;
-	Thu, 25 Apr 2024 13:53:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CDB1494D2;
+	Thu, 25 Apr 2024 13:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714053188; cv=none; b=pAtBgY6qfJ2iqQtaRIoYE/ke4U8OAQlojqZa+qirfEeLEMdbTsSbHWOXEszfx5LYs4+5Ywf+cAWQbS8otgj8uKvRQ/oVyHHNpZ7y8HHD0xMk5T8qcl/HAMvgvH0mXpvEm87M1k4xliwFPgXt3xu8nxmyibWrDU20kmB64bFp4lk=
+	t=1714053315; cv=none; b=MvOubfZ4ti/3vNix/Z8jVLmcTtk6rabBpSIlvQhSmx9KcGFu1tXAgAsqr8SdUmzebXGg2F4HIqtq8fBfbcLwqWJpLCNf+HkSS0df/YGgvboq1W6jJbpEv63keBdX761sZp3UA7qDEZNhydGWR+oi1SnmqvRPgJ6pRTfpkxEFkB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714053188; c=relaxed/simple;
-	bh=q8Fc8bGuKfZhJ9bV0xXSD+ms886NX3ElTyriE5uXRjQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OptD8Fq/pVVB52bjxctv+bqhzU9nAo1Avu2Fwu1JwURax6ssGn3/H+d1ffsD0KWWdBZv00zsIcNv3BtWPAk0EXq1SQoDKed5RLGKW0O080i3Rvyw6E/4F/AzDzck4RVW6eLNDaCTgt+fulbM6CUYyCw7O2Qq03hYHiN8pISlkmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B/y6tfKz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F03FDC113CC;
-	Thu, 25 Apr 2024 13:53:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714053188;
-	bh=q8Fc8bGuKfZhJ9bV0xXSD+ms886NX3ElTyriE5uXRjQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B/y6tfKzgFh32a1GAYHkZYBY4XB5U60kptxA3VLkB7ThcyhGxdwn3537Inle8EDAl
-	 DWbmehmNneYuzgjywEOTgoo/CLdCSQ88tiMkyi2IC7O+t2Uwn48C4tvYIbmAw4WdhS
-	 HR1zyVofPZP0RXl1mbctHuebcCDvx2bLsPqX/Y5aFCYOfyafnP6CHDpux950e9dMfI
-	 uw1ZsfeghqQzhVYEm0euFEa5wN3f3/kQNh0NFT6cKC1CbPEFlsqaT4+RmxrqhEC0mg
-	 a4r2igcre9HEd1B7phjo67twtiYQbZpj+ueTLIp55OPkp4Mce0enx8R+rgVZhc9WF3
-	 tNWZtCuYSVSqQ==
-Date: Thu, 25 Apr 2024 19:23:00 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Qiang Yu <quic_qianyu@quicinc.com>
-Cc: mani@kernel.org, quic_jhugo@quicinc.com, mhi@lists.linux.dev,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	quic_cang@quicinc.com, quic_mrana@quicinc.com
-Subject: Re: [PATCH v4 1/3] bus: mhi: host: Add sysfs entry to force device
- to enter EDL
-Message-ID: <20240425135300.GE3449@thinkpad>
-References: <1713868417-37856-1-git-send-email-quic_qianyu@quicinc.com>
- <1713868417-37856-2-git-send-email-quic_qianyu@quicinc.com>
+	s=arc-20240116; t=1714053315; c=relaxed/simple;
+	bh=DMy17TiCyjh/k8annerxF/kUrrwnYDuM432VfQVIIjg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=LQ+IThiHKFW8c+dxSSR2dcrWqLCOk62ETxaBYRf/o2vwEEbi9JuLNXaO0F8jNRxpTNLxPT6rCjv21ge/8IafeTXLwJAI/kDG9wl26EfC36fkvesqy93tT3g9qRn8GjGdwFjZJ0+SDY2FOrATtFX9h+L4HRW0j3QXvZJIPXSv6RI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=Y0bJFXvP; arc=none smtp.client-ip=91.207.212.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43PDZjKu032412;
+	Thu, 25 Apr 2024 15:54:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=qQMU7VYo5fU0zpRtzK2tuitYtZnTvgB4cuzbACisKiA=; b=Y0
+	bJFXvPbZDB44bmNvch6hUZSAAQxVZkqpbz+emUz5lnClsGLFE648hfukePk/lD/D
+	ufuLBuAAjfD70FvnIrTEBx4gK1PX3lpJq1u+vPGcQEXJoGbbDBRSGt/+3tF6LKsO
+	Mq1kdAxih2o/FTgzZ5gDeKSgO2rH6ipw0vKOKGnLSrwZbbZXb88av6Uv2ZCTN3Oz
+	w6skHbWWiVsIGiAn1Kblwnqj7c+azlTgKSt/Y6g/9GKm9sofl7Nl8PqfehxCXqiD
+	VlekJ6Q2thdJ93XbyBYg0JdXaxRh2KE7mqlJa/sbMe1nLSbBqyvgBnWxhFdduXaC
+	lGxChjD1bQyNqg3wHetw==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xm4kbdmmf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 15:54:50 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 83AD640044;
+	Thu, 25 Apr 2024 15:54:46 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A6D00221E9F;
+	Thu, 25 Apr 2024 15:54:08 +0200 (CEST)
+Received: from [10.48.86.112] (10.48.86.112) by SHFDAG1NODE3.st.com
+ (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 25 Apr
+ 2024 15:54:08 +0200
+Message-ID: <c5d14ef4-15a3-40f1-b9f8-780525b0b172@foss.st.com>
+Date: Thu, 25 Apr 2024 15:54:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1713868417-37856-2-git-send-email-quic_qianyu@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] ARM: dts: st: update the pwr compatible for stm32mp15
+To: Krzysztof Kozlowski <krzk@kernel.org>,
+        Alexandre TORGUE
+	<alexandre.torgue@foss.st.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof
+ Kozlowski <krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime
+ Coquelin <mcoquelin.stm32@gmail.com>
+CC: <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20240425074835.760134-1-patrick.delaunay@foss.st.com>
+ <20240425094829.3.I493dfe2bde7f40beb48455f8ff8368cc8a869cdc@changeid>
+ <b4e60272-cd79-417a-9028-fee243951f4a@kernel.org>
+Content-Language: en-US
+From: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+In-Reply-To: <b4e60272-cd79-417a-9028-fee243951f4a@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-25_13,2024-04-25_01,2023-05-22_02
 
-On Tue, Apr 23, 2024 at 06:33:35PM +0800, Qiang Yu wrote:
-> Add sysfs entry to allow users of MHI bus force device to enter EDL.
-> Considering that the way to enter EDL mode varies from device to device and
-> some devices even do not support EDL. Hence, add a callback edl_trigger in
-> mhi controller as part of the sysfs entry to be invoked and MHI core will
-> only create EDL sysfs entry for mhi controller that provides edl_trigger
-> callback. All of the process a specific device required to enter EDL mode
-> can be placed in this callback.
-> 
-> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+Hi,
 
-One nitpick below. But I'll fix it while applying.
+On 4/25/24 10:57, Krzysztof Kozlowski wrote:
+> On 25/04/2024 09:48, Patrick Delaunay wrote:
+>> Remove the unexpected comma in the compatible "st,stm32mp1,pwr-reg",
+>> and use the new supported compatible "st,stm32mp1-pwr-reg" in STM3MP15
+>> SoC dtsi.
+>>
+>> Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+>> ---
+>>
+>>   arch/arm/boot/dts/st/stm32mp151.dtsi | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+> This will break the users and is not bisectable, so patch should wait at
+> least one cycle. This will preserve bisectability, although users will
+> be affected anyway.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-> ---
->  Documentation/ABI/stable/sysfs-bus-mhi | 13 +++++++++++++
->  drivers/bus/mhi/host/init.c            | 33 +++++++++++++++++++++++++++++++++
->  include/linux/mhi.h                    |  2 ++
->  3 files changed, 48 insertions(+)
-> 
-> diff --git a/Documentation/ABI/stable/sysfs-bus-mhi b/Documentation/ABI/stable/sysfs-bus-mhi
-> index 1a47f9e..b44f467 100644
-> --- a/Documentation/ABI/stable/sysfs-bus-mhi
-> +++ b/Documentation/ABI/stable/sysfs-bus-mhi
-> @@ -29,3 +29,16 @@ Description:	Initiates a SoC reset on the MHI controller.  A SoC reset is
->                  This can be useful as a method of recovery if the device is
->                  non-responsive, or as a means of loading new firmware as a
->                  system administration task.
-> +
-> +What:           /sys/bus/mhi/devices/.../trigger_edl
-> +Date:           April 2024
-> +KernelVersion:  6.9
+Sorry, I didn't know this constraint
 
-6.9 is done, now we are working for 6.10 (feature wise).
+But Ok, I remove this patch in serie V2 and push it later.
 
-- Mani
 
-> +Contact:        mhi@lists.linux.dev
-> +Description:    Writing a non-zero value to this file will force devices to
-> +                enter EDL (Emergency Download) mode. This entry only exists for
-> +                devices capable of entering the EDL mode using the standard EDL
-> +                triggering mechanism defined in the MHI spec v1.2. Once in EDL
-> +                mode, the flash programmer image can be downloaded to the
-> +                device to enter the flash programmer execution environment.
-> +                This can be useful if user wants to use QDL (Qualcomm Download,
-> +                which is used to download firmware over EDL) to update firmware.
-> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
-> index 44f9349..7104c18 100644
-> --- a/drivers/bus/mhi/host/init.c
-> +++ b/drivers/bus/mhi/host/init.c
-> @@ -127,6 +127,30 @@ static ssize_t soc_reset_store(struct device *dev,
->  }
->  static DEVICE_ATTR_WO(soc_reset);
->  
-> +static ssize_t trigger_edl_store(struct device *dev,
-> +			       struct device_attribute *attr,
-> +			       const char *buf, size_t count)
-> +{
-> +	struct mhi_device *mhi_dev = to_mhi_device(dev);
-> +	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-> +	unsigned long val;
-> +	int ret;
-> +
-> +	ret = kstrtoul(buf, 10, &val);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (!val)
-> +		return -EINVAL;
-> +
-> +	ret = mhi_cntrl->edl_trigger(mhi_cntrl);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return count;
-> +}
-> +static DEVICE_ATTR_WO(trigger_edl);
-> +
->  static struct attribute *mhi_dev_attrs[] = {
->  	&dev_attr_serial_number.attr,
->  	&dev_attr_oem_pk_hash.attr,
-> @@ -1018,6 +1042,12 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
->  	if (ret)
->  		goto err_release_dev;
->  
-> +	if (mhi_cntrl->edl_trigger) {
-> +		ret = sysfs_create_file(&mhi_dev->dev.kobj, &dev_attr_trigger_edl.attr);
-> +		if (ret)
-> +			goto err_release_dev;
-> +	}
-> +
->  	mhi_cntrl->mhi_dev = mhi_dev;
->  
->  	mhi_create_debugfs(mhi_cntrl);
-> @@ -1051,6 +1081,9 @@ void mhi_unregister_controller(struct mhi_controller *mhi_cntrl)
->  	mhi_deinit_free_irq(mhi_cntrl);
->  	mhi_destroy_debugfs(mhi_cntrl);
->  
-> +	if (mhi_cntrl->edl_trigger)
-> +		sysfs_remove_file(&mhi_dev->dev.kobj, &dev_attr_trigger_edl.attr);
-> +
->  	destroy_workqueue(mhi_cntrl->hiprio_wq);
->  	kfree(mhi_cntrl->mhi_cmd);
->  	kfree(mhi_cntrl->mhi_event);
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index cde01e1..d968e1a 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -353,6 +353,7 @@ struct mhi_controller_config {
->   * @read_reg: Read a MHI register via the physical link (required)
->   * @write_reg: Write a MHI register via the physical link (required)
->   * @reset: Controller specific reset function (optional)
-> + * @edl_trigger: CB function to trigger EDL mode (optional)
->   * @buffer_len: Bounce buffer length
->   * @index: Index of the MHI controller instance
->   * @bounce_buf: Use of bounce buffer
-> @@ -435,6 +436,7 @@ struct mhi_controller {
->  	void (*write_reg)(struct mhi_controller *mhi_cntrl, void __iomem *addr,
->  			  u32 val);
->  	void (*reset)(struct mhi_controller *mhi_cntrl);
-> +	int (*edl_trigger)(struct mhi_controller *mhi_cntrl);
->  
->  	size_t buffer_len;
->  	int index;
-> -- 
-> 2.7.4
-> 
-> 
+>
+> Best regards,
+> Krzysztof
 
--- 
-மணிவண்ணன் சதாசிவம்
+Regards,
+
+Patrick
+
 
