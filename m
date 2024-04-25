@@ -1,91 +1,138 @@
-Return-Path: <linux-kernel+bounces-159355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87EEC8B2D82
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:20:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD3C98B2D86
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:21:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4396728529F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:20:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62DEF1F22CBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0A16156658;
-	Thu, 25 Apr 2024 23:20:06 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CD5A15666F;
+	Thu, 25 Apr 2024 23:21:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Vu9PR72t"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0626484D0D
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 23:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E15A15664A;
+	Thu, 25 Apr 2024 23:21:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714087206; cv=none; b=YLXS8RZYj19yFLv6dXJtNZbfr09BtA8daji22Z8OAN0KqDx9Rhy7UO4q1j5BpwL4IZtcJf1yOoXpUo7iky988ymMhPU5QL1RSLDI0vFhaKvYZFTvgQZ60hMoLuChbhlnXcZCK3N9xNZXN7Iwb0zDv1tYYn+OeGjbl//YqZY6PqY=
+	t=1714087265; cv=none; b=LSmvEdLySDOe9EnRqfRUxxLr4jl0UL6bzQJ5MY8WQkcTDVOsXakTunCEHQyvjmkmHabqXmfa3JT4nZqVRUW/7wZNWXFWKigOy+I3dNCv1dxNIfq2j9Va5P7G0V6La89b1Ap/lFv3X6rDcnlX7Mfx1ox2Jp1GpaQPrHTcSEtpLMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714087206; c=relaxed/simple;
-	bh=xzK1Vob21ErSaLtkfL4z9yaWSZHnVhNHv5z4PJDnnF8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=C2s+uZEQ0N2405kejxNMYsnKnuiPo5C3Ikx1V7oYfr9644PtNvjvDRVU7DK2VHNTy7/hSkQS6zX/HXJ67erPzJ3lWSWPQR2cvULJlg+rT0828bIzaokr92a+ZvF1b8pKxieHLATMIOH4O0KOknbaovIDqpDq6YnJ6bXM6a5K8sM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36b3738efadso16642175ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 16:20:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714087204; x=1714692004;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xB9Gu8tUSe6AAsZJaVMSGhlCOvsBshLr7iGacbDXhRo=;
-        b=dUar0u6sopUun1R617904mIaAAj5h6pjvB22nME4gSYr2+zQyzt3FtdXRr2e7c86/U
-         bEuaKk4XZmX76hvaMBC/rusotfRRqpCqVgXUHXDw0bykBKqV5+hvR0xPjVireDqIQkSK
-         Mpx96X11h1kHxfqZkm4FmrjBjVBu6ctctOefx4bmXa6Rfom09APnpGDK2sKw6CmGMi6n
-         toLcryXETHFizFWMcqjLvlMVrmGCc9zmgFGraEa7rW0dEIl3CEcpWcEVVl7dgfeuS2ns
-         xEbNBDVSyhXqy/3AblZJdo3aI0cLIcpXL7UjXlQJxGmLPOEABqWDmM59kUrp7wjzfykT
-         p+3w==
-X-Forwarded-Encrypted: i=1; AJvYcCVu1SrNnXFDK+nD35vtf1qE49QfhvzlNlcA5EOdkOgUlEUF8org948OmhqPL1VtjAG6o/WPRetGrtx8vM+tAlaFViX34Vf9MI1WlFOv
-X-Gm-Message-State: AOJu0Yx7iLxl03HFh+XRSZnXX72fJwXmEIKaVacW0hy0EWQHruYwlc4z
-	akkx/hl1Py4Xcf/Gw7BMpHgAgJLpX8Pfj+hEP9wFgWeQvz3RQPWpdLuMYnuNZ1GgQgZDXyNGccE
-	Xjh4K2dRAb1vsy09NkkhccTssYIHoiW7KoAJ3+gWE+nuFPeV68tbs1AY=
-X-Google-Smtp-Source: AGHT+IFPm4Yd7TKUcqfpjEQw2ZVYnARKqk2ax3G5wjHt+VTSvXFJDYNragebXjZcUwJ4egc1wBJU7WTDAAaCywzngWnNr3egQlBw
+	s=arc-20240116; t=1714087265; c=relaxed/simple;
+	bh=pFLOWFAKLZl326kN1M3nfbqivRN7E2erUMVpSWctlPo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=vCvMcN8+8pEnuM4uXVCCupYqL361uHQL028HV882VtFntpPjznVe0fsLSFG5SGLUeLLSmLVvnbXG/UMJWduhBWsmbDKSHOIq0xhHOSXXJb1siF426kBcadT85dXCOlknOhBYhFjfvm3HzvmISfSFK+wEdc+gkItHdyMBH27Gbig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Vu9PR72t; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43PN3jcJ025178;
+	Thu, 25 Apr 2024 23:21:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Z3/6zU11FTdUX6G1mY0fYoZwfDYlLT+dxZNI6+urIMI=; b=Vu
+	9PR72th1kbrclW8KWDktYPQTRUQzTdMXlGraqCCzVqUOAMKuQeALSLAe2XMAOlhb
+	ZN30oC193axfnABF3t4XLvPer9tv4J//Rw0ISSJXM1AHEcl/PI6z/GQqUTekLGox
+	CEWv7rnyf1YlHTdxnj6DcgebT7gK030Ea3SohMozneqsuv7FCsPMuFwXAW88FBy1
+	SeW6+AYckv6/2HYwtppOlKuSvO/eN4QP5z4uZVJkZI8qBDDFgLc7RaD6bUJxvam8
+	blUSnv3MkDA/dCFlpPU7SFxZqSLdqIdeQxpkKkM/VxJNuT5P98W22Ch+NW+nbEik
+	WgAwnMTZDpNtnJsc0KUw==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqenh3wcx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 23:20:59 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43PNKxde028896
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 23:20:59 GMT
+Received: from [10.46.19.239] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 25 Apr
+ 2024 16:20:55 -0700
+Message-ID: <c5329e9a-6947-4070-a24b-8985724b9981@quicinc.com>
+Date: Thu, 25 Apr 2024 16:20:54 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4116:b0:485:549f:eed8 with SMTP id
- ay22-20020a056638411600b00485549feed8mr46320jab.0.1714087203887; Thu, 25 Apr
- 2024 16:20:03 -0700 (PDT)
-Date: Thu, 25 Apr 2024 16:20:03 -0700
-In-Reply-To: <20240425225501.3242-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e6f1170616f406c9@google.com>
-Subject: Re: [syzbot] [usb?] WARNING in wdm_rxwork/usb_submit_urb (2)
-From: syzbot <syzbot+c6a1953c27ace6cc34e5@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: sa8775p: mark ethernet devices as
+ DMA-coherent
+Content-Language: en-US
+To: Sagar Cheluvegowda <quic_scheluve@quicinc.com>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: <kernel@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240425-mark_ethernet_devices_dma_coherent-v1-1-ad0755044e26@quicinc.com>
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+In-Reply-To: <20240425-mark_ethernet_devices_dma_coherent-v1-1-ad0755044e26@quicinc.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 5tN3PmuJ0LIL42exdfcKXM6qZdzo9NLR
+X-Proofpoint-GUID: 5tN3PmuJ0LIL42exdfcKXM6qZdzo9NLR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-25_21,2024-04-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=758 bulkscore=0 clxscore=1011 suspectscore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404250171
 
-Hello,
-
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-INFO: rcu detected stall in corrupted
-
-rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: {
- 0-....
- } 2638 jiffies s: 1161 root: 0x0/.
-rcu: blocking rcu_node structures (internal RCU debug):
 
 
-
-Tested on:
-
-commit:         a160e120 usb: dwc3: qcom: Add multiport suspend/resume..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=1009807b180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fe204286ac73e15
-dashboard link: https://syzkaller.appspot.com/bug?extid=c6a1953c27ace6cc34e5
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1622eccf180000
-
+On 4/25/2024 4:07 PM, Sagar Cheluvegowda wrote:
+> Ethernet devices are cache coherent, mark it as such in the dtsi.
+> 
+> Change-Id: Id180fae617f2e348c0a80c6664b131cc57fcb4d6
+Remove internal change id. 
+Not required for upstreaming any changes. 
+> Signed-off-by: Sagar Cheluvegowda <quic_scheluve@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/sa8775p.dtsi | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> index 231cea1f0fa8..5ab4ca978837 100644
+> --- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> @@ -2504,6 +2504,7 @@ ethernet1: ethernet@23000000 {
+>  			phy-names = "serdes";
+>  
+>  			iommus = <&apps_smmu 0x140 0xf>;
+> +			dma-coherent;
+>  
+>  			snps,tso;
+>  			snps,pbl = <32>;
+> @@ -2538,6 +2539,7 @@ ethernet0: ethernet@23040000 {
+>  			phy-names = "serdes";
+>  
+>  			iommus = <&apps_smmu 0x120 0xf>;
+> +			dma-coherent;
+>  
+>  			snps,tso;
+>  			snps,pbl = <32>;
+> 
+> ---
+> base-commit: a93289b830ce783955b22fbe5d1274a464c05acf
+> change-id: 20240425-mark_ethernet_devices_dma_coherent-6c6154b84165
+> 
+> Best regards,
 
