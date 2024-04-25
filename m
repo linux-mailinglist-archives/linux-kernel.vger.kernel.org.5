@@ -1,50 +1,40 @@
-Return-Path: <linux-kernel+bounces-158422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2252E8B1FC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:03:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 548148B1FDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:05:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5D37283D94
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:03:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 854E91C217A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BCBD249F7;
-	Thu, 25 Apr 2024 11:02:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="Ys1qysBY"
-Received: from forward502c.mail.yandex.net (forward502c.mail.yandex.net [178.154.239.210])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E051325601;
+	Thu, 25 Apr 2024 11:05:22 +0000 (UTC)
+Received: from mail.schimsalabim.eu (vps01.schimsalabim.eu [85.214.219.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E26B41CFA9;
-	Thu, 25 Apr 2024 11:02:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084841CFA9;
+	Thu, 25 Apr 2024 11:05:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714042974; cv=none; b=oghj9Cqw+nxOdOEuXbfejyp9/2AXbvnIgD28/W9grGTz7Cn2JEPU/voSmUH0/7gVPBedegPGdgyNvY7lEzMc4X8hdsb92wkV/13Rp4c31MBzjLyUL/1gYha5fZwOG/6qPYtHtuHxDbZPDWQJAa46pxVK97n8opiR/lsw/rrnczw=
+	t=1714043122; cv=none; b=YHMfctuccjCXs+rP2Ct0qa6l4Cjnte6vt0YQcei/qSgXDOntB3YB+Om4wcbLA2C4/96C8bdAiOG/idi1+K8IiJCOBA1VGa03nS8sb389+tGnBUjv4TnpMbsaNrNCcsTEQLwv49SWpIKFobHMK21Lq3snQZ36N2qQSe+V5QlNLNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714042974; c=relaxed/simple;
-	bh=2qKI2Z1ZihKH3PK5JUq5HKpKbyzL6k/kwMrkHl1Ysfk=;
+	s=arc-20240116; t=1714043122; c=relaxed/simple;
+	bh=R6sayboPC5Q+DTt0RvBB94u+E4yjWkvlzV6GPTzDwAY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qNnu24760Grvgk4kH54Hnjc6/Jj7XwYozzm03xbPLE2/6K6AOGEsP9ZfRmETFxWOWY+tpeMBatrSc2UmEOKjAJgSAk9oJ813y5wTze1IZSbRNgXWXr8IlZvHYpWXiNhNF7JOlrTpZjKlvnadnUaVtdb/JuhkN5BCtn8HanREaic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=Ys1qysBY; arc=none smtp.client-ip=178.154.239.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
-Received: from mail-nwsmtp-smtp-production-main-33.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-33.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:6e90:0:640:af43:0])
-	by forward502c.mail.yandex.net (Yandex) with ESMTPS id D2E2F60E0A;
-	Thu, 25 Apr 2024 14:02:42 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-33.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id e2Ko8LKdv8c0-v4eo7DhA;
-	Thu, 25 Apr 2024 14:02:41 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1714042961; bh=2qKI2Z1ZihKH3PK5JUq5HKpKbyzL6k/kwMrkHl1Ysfk=;
-	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
-	b=Ys1qysBYUJJ1W0O+zWJaRNKGCx4zGCUmj6SO3MNr5tEDBXqc54vJCvaZgr3CI7P0f
-	 4FFjmlXKC7Hy8HWYHKDOUJo6iAFqeCUzCOWx3dHCGSZTRvMIE1mOUOdySPBPE8g0Uk
-	 sfu0nUY70YTmqPH0ORwV8lgZK0IAwELbGt2JLzlU=
-Authentication-Results: mail-nwsmtp-smtp-production-main-33.iva.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-Message-ID: <08d4dde6-d333-4992-abc6-35291a44c65f@yandex.ru>
-Date: Thu, 25 Apr 2024 14:02:40 +0300
+	 In-Reply-To:Content-Type; b=V7pWA9bVlxngX1PmgHlVeC/26bR17VKI+mDdYRqAdctrMrUIewNTcwnsRkNFIWUASSvWiJXs4x+DvngxamBSG6HlhiQhsNWnes/O9eI/TodIO16ltg5ohHoB+ytHcFye2JNr7PzX646/lPj+gd1kW7NjjaIGUPf8qPfNZbzPbE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=schimsalabim.eu; spf=pass smtp.mailfrom=schimsalabim.eu; arc=none smtp.client-ip=85.214.219.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=schimsalabim.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=schimsalabim.eu
+Received: from [192.168.0.158] (82-217-109-137.cable.dynamic.v4.ziggo.nl [82.217.109.137])
+	(authenticated bits=0)
+	by h2374449.stratoserver.net (8.14.7/8.14.7) with ESMTP id 43PB42GA030072
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Thu, 25 Apr 2024 13:04:02 +0200
+Message-ID: <e256942d-eba1-4800-bd02-c490167dea12@schimsalabim.eu>
+Date: Thu, 25 Apr 2024 13:03:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,47 +42,120 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] implement OA2_INHERIT_CRED flag for openat2()
+Subject: Re: [PATCH] ASoC: sunxi: DMIC: Add controls for adjusting the mic
+ gains
+To: =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@gmail.com>,
+        Ban Tao <fengzheng923@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20240422150213.4040734-1-joao@schimsalabim.eu>
+ <5772237.DvuYhMxLoT@jernej-laptop>
 Content-Language: en-US
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
- Eric Biederman <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
- Alexander Aring <alex.aring@gmail.com>, linux-fsdevel@vger.kernel.org,
- linux-api@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
- =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>,
- Aleksa Sarai <cyphar@cyphar.com>
-References: <20240423110148.13114-1-stsp2@yandex.ru>
- <4D2A1543-273F-417F-921B-E9F994FBF2E8@amacapital.net>
- <0e2e48be-86a8-418c-95b1-e8ca17469198@yandex.ru>
- <CALCETrWswr5jAzD9BkdCqLX=d8vReO8O9dVmZfL7HXdvwkft9g@mail.gmail.com>
-From: stsp <stsp2@yandex.ru>
-In-Reply-To: <CALCETrWswr5jAzD9BkdCqLX=d8vReO8O9dVmZfL7HXdvwkft9g@mail.gmail.com>
+From: Joao Schim <joao@schimsalabim.eu>
+In-Reply-To: <5772237.DvuYhMxLoT@jernej-laptop>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-25.04.2024 03:43, Andy Lutomirski пишет:
-> But you missed the FMODE_CRED part!
+On 4/24/24 20:42, Jernej Škrabec wrote:
+> Hi Joao,
+Hi Jernej,  thanks for your prompt response.
+>
+> Dne ponedeljek, 22. april 2024 ob 17:02:13 GMT +2 je Joao Schim napisal(a):
+>> The AllWinner H6 and later SoCs that sport a DMIC block contain a set of registers to control
+>> the gain (left + right) of each of the four supported channels.
+>>
+>> Add ASoC controls for changing each of the stereo channel gains using alsamixer and alike
+> Add SoB tag.
+Yeah, i realized that too late. Thanks for bringing that to my 
+attention. I will add it in v1.
+>
+>> ---
+>>   sound/soc/sunxi/sun50i-dmic.c | 34 ++++++++++++++++++++++++++++++++++
+>>   1 file changed, 34 insertions(+)
+>>
+>> diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
+>> index c76628bc86c6..f8613d8c3462 100644
+>> --- a/sound/soc/sunxi/sun50i-dmic.c
+>> +++ b/sound/soc/sunxi/sun50i-dmic.c
+>> @@ -14,6 +14,7 @@
+>>   #include <sound/dmaengine_pcm.h>
+>>   #include <sound/pcm_params.h>
+>>   #include <sound/soc.h>
+>> +#include <sound/tlv.h>
+>>   
+>>   #define SUN50I_DMIC_EN_CTL			(0x00)
+>>   	#define SUN50I_DMIC_EN_CTL_GLOBE			BIT(8)
+>> @@ -43,6 +44,17 @@
+>>   	#define SUN50I_DMIC_CH_NUM_N_MASK			GENMASK(2, 0)
+>>   #define SUN50I_DMIC_CNT				(0x2c)
+>>   	#define SUN50I_DMIC_CNT_N				(1 << 0)
+>> +#define SUN50I_DMIC_D0D1_VOL_CTR		(0x30)
+>> +	#define SUN50I_DMIC_D0D1_VOL_CTR_0R			(0)
+>> +	#define SUN50I_DMIC_D0D1_VOL_CTR_0L			(8)
+>> +	#define SUN50I_DMIC_D0D1_VOL_CTR_1R			(16)
+>> +	#define SUN50I_DMIC_D0D1_VOL_CTR_1L			(24)
+>> +#define SUN50I_DMIC_D2D3_VOL_CTR                (0x34)
+>> +        #define SUN50I_DMIC_D2D3_VOL_CTR_2R                     (0)
+>> +        #define SUN50I_DMIC_D2D3_VOL_CTR_2L                     (8)
+>> +        #define SUN50I_DMIC_D2D3_VOL_CTR_3R                     (16)
+>> +        #define SUN50I_DMIC_D2D3_VOL_CTR_3L                     (24)
+>> +
+>>   #define SUN50I_DMIC_HPF_CTRL			(0x38)
+>>   #define SUN50I_DMIC_VERSION			(0x50)
+>>   
+>> @@ -273,8 +285,30 @@ static const struct of_device_id sun50i_dmic_of_match[] = {
+>>   };
+>>   MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
+>>   
+>> +static const DECLARE_TLV_DB_SCALE(sun50i_dmic_vol_scale, -12000, 75, 1);
+> DECLARE_TLV_DB_SCALE is old name, SNDRV_CTL_TLVD_DECLARE_DB_SCALE should be
+> used instead.
+I can't seem to find that define in HEAD. what code-base are you 
+referring to that i should checkout ?
+>
+> Other than that, it looks fine.
 
-OK, I thought its not needed if fd
-is limited to the one created by the
-same process. But your explanation
-is quite clear on that its needed anyway,
-or otherwise the unsuspecting process
-doesn't fully drop his privs.
-Thank you for explaining that bit.
-Which leaves just one question: is
-such an opt-in enough or not?
-Viro points it may not be enough,
-but doesn't explain why exactly.
+Thanks.
 
-Maybe we need such an opt-in, and
-it should be dropped on exec() and
-on passing via unix fd? I don't know
-what additional restrictions are needed,
-as Viro didn't clarify that part, but the
-opt-in is needed for sure.
+> Best regards,
+> Jernej
+>
+>> +
+>> +static const struct snd_kcontrol_new sun50i_dmic_controls[] = {
+>> +
+>> +        SOC_DOUBLE_TLV("DMIC Channel 0 Capture Volume", SUN50I_DMIC_D0D1_VOL_CTR,
+>> +                       SUN50I_DMIC_D0D1_VOL_CTR_0L, SUN50I_DMIC_D0D1_VOL_CTR_0R,
+>> +                       0xFF, 0, sun50i_dmic_vol_scale),
+>> +        SOC_DOUBLE_TLV("DMIC Channel 1 Capture Volume", SUN50I_DMIC_D0D1_VOL_CTR,
+>> +                       SUN50I_DMIC_D0D1_VOL_CTR_1L, SUN50I_DMIC_D0D1_VOL_CTR_1R,
+>> +                       0xFF, 0, sun50i_dmic_vol_scale),
+>> +        SOC_DOUBLE_TLV("DMIC Channel 2 Capture Volume", SUN50I_DMIC_D2D3_VOL_CTR,
+>> +                       SUN50I_DMIC_D2D3_VOL_CTR_2L, SUN50I_DMIC_D2D3_VOL_CTR_2R,
+>> +                       0xFF, 0, sun50i_dmic_vol_scale),
+>> +        SOC_DOUBLE_TLV("DMIC Channel 3 Capture Volume", SUN50I_DMIC_D2D3_VOL_CTR,
+>> +                       SUN50I_DMIC_D2D3_VOL_CTR_3L, SUN50I_DMIC_D2D3_VOL_CTR_3R,
+>> +                       0xFF, 0, sun50i_dmic_vol_scale),
+>> +
+>> +
+>> +};
+>> +
+>>   static const struct snd_soc_component_driver sun50i_dmic_component = {
+>>   	.name           = "sun50i-dmic",
+>> +	.controls	= sun50i_dmic_controls,
+>> +	.num_controls	= ARRAY_SIZE(sun50i_dmic_controls),
+>>   };
+>>   
+>>   static int sun50i_dmic_runtime_suspend(struct device *dev)
+>>
+>
+>
+>
+Kind regards,
+
+Joao
 
 
