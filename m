@@ -1,192 +1,112 @@
-Return-Path: <linux-kernel+bounces-158217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A95AC8B1D1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:51:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E10488B1D21
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:53:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66A18286D8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:51:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 988B51F21D39
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:53:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7A282860;
-	Thu, 25 Apr 2024 08:51:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8422581211;
+	Thu, 25 Apr 2024 08:52:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PNYLgnAE"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="dIfdBXPI"
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71E18005B
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:51:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7D377F486;
+	Thu, 25 Apr 2024 08:52:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714035080; cv=none; b=jCCdzqX2Ol8T+Rq0VwpnUQhCXk5rFOyzoftp9W16XuDmawngpY/wU5A6tDGO2Tc6CmccwBIkUulpcGM6OreOh8bv2Vfgd3nl6BqtVRwKKYnJzsa5nYq/h09kBka/OllcMq1xqo4U5BU5GMHN6NJrVqFHYvVj+udc0NkIx9G1ySA=
+	t=1714035174; cv=none; b=aYGpJc6AmtUGwE+Vl/bGXKhjbCz/r1/BBjFVKIfTcA4outpucsnb8oGfdx7WO+krrmVRJag3LV4EaitOHTaJ/7aLSqRGIMWtgsPuQPlLKVncDrhvREyvC1yHSPR0E+bMAdSbYYYAYhTnDcpU1de5xx12kmZ26BiEPpqyuxFv3WI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714035080; c=relaxed/simple;
-	bh=Xdket+Zp5Bk9sCxRhK7vg441aA/Gtyn3e8E68FzlA6Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GkmZwlpFihGPe8gSQUzkJdda3YNzCyAqalF1SyqGk1TBYhU6uyH8JiNS8dlS46x6kXiXI9G5zfTZOSRqVhYQScxUO4709H6hCEiB/RahUNXVuArfXcqSysZImErLDM4HeUiDppG2H7wSBHxTSc8512Hi4aJHPHr1T8KUvQQuiBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PNYLgnAE; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6f043f9e6d7so776180b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 01:51:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714035078; x=1714639878; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vl8rW2P7HEl/Ypq+RoNZ5toKYl3n27Whut7rMt4auOQ=;
-        b=PNYLgnAEpXuWxFkQkEj9dDVC7cxFLbOhWlRlkAfE4kkb10daTQIDi5wtRFkr1wrP0W
-         BtJcuQj9WjP0+lMZDCny+gHQGSQNl8McTzF9NukzNtoFohSG1wx7w5lk7yCf0VUbCICg
-         UpFBKNCvE6ZW1G9TiLOEqM4/jFPtxqRYoLBrdX+KBTvNWz97ww3x6XOd1zdxLC7ID+X2
-         OHU8oporxn+aZg1ZYjX5F5BDGkhVgEP8QCGiHvtv/IWmK9hg+MGGnQ+OQR7AZv3xtcDE
-         MvhzdfjLsFvsztA0tkzEIHI78IyVJcPoNFU8xLTx9vuwphud+ISOa26ZVla8dk/+M81o
-         6PgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714035078; x=1714639878;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vl8rW2P7HEl/Ypq+RoNZ5toKYl3n27Whut7rMt4auOQ=;
-        b=suAhglZSZPlrI/YTY3LbM4GMe3MtJBUiFADd4zm6UllM4DU6B4cZmV2tCMpK18gqtg
-         zHvdabjbAxbtfw+oFtumLJARcXISaB/wGTnm9WIjy7Oepcd/CYYCJOtRz4Nm3Bfd9fBx
-         5S55Jv4g4XIjAV+GWk0PxF9jDa+UsfY0fswUWpS/GeD6eoHz9tNy5rg/v7kVlS/vGLK5
-         9EOde1vNGPEzpOpBvUltYLV4aSfO9gx8H3ZewOXcNXCkGCmGI+JjGlPdCatU4lHK/nH2
-         N/zrtFrKn74zhRJuw4xSraHULSBaaIKwdCPftP+j3COMtmurC7GBS4djFpSQHrEdnnd3
-         XbKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVSZVLj6aeKbNG2W86I0tPowwT0WhIS7Nei3OrgXZjcwyNrAluzxvZroa8vwrk7K71HUHVqHkoBee7uK/iTelp35hcNbhF9f39Yk47d
-X-Gm-Message-State: AOJu0YysA5hl+c6v8Km/GQlCJL2KjRbQVrx2tWFim9NgkFnifWTcd6mu
-	Nxq0kFNUQjGpDK1xjz/9u3NNaClURGDS2vKLOHHemB8I/K2CTB//
-X-Google-Smtp-Source: AGHT+IHDX6sdZrvZkxaCoo0VmJnhVORLaihIWpzeuSV1kWLK87UQ5GYEwi9sToqIQkLdlYAJLx62xg==
-X-Received: by 2002:a05:6a20:12c6:b0:1ac:3b5d:94b3 with SMTP id v6-20020a056a2012c600b001ac3b5d94b3mr5794669pzg.2.1714035077796;
-        Thu, 25 Apr 2024 01:51:17 -0700 (PDT)
-Received: from LancedeMBP.lan ([112.10.240.252])
-        by smtp.gmail.com with ESMTPSA id s23-20020a62e717000000b006ed045e3a70sm12676544pfh.25.2024.04.25.01.51.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 01:51:17 -0700 (PDT)
-From: Lance Yang <ioworker0@gmail.com>
-To: david@redhat.com,
-	ziy@nvidia.com
-Cc: ioworker0@gmail.com,
-	21cnbao@gmail.com,
-	akpm@linux-foundation.org,
-	fengwei.yin@intel.com,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	maskray@google.com,
-	mhocko@suse.com,
-	minchan@kernel.org,
-	peterx@redhat.com,
-	ryan.roberts@arm.com,
-	shy828301@gmail.com,
-	songmuchun@bytedance.com,
-	wangkefeng.wang@huawei.com,
-	willy@infradead.org,
-	xiehuan09@gmail.com,
-	zokeefe@google.com
-Subject: Re: [PATCH v2 1/1] mm/vmscan: avoid split PMD-mapped THP during shrink_folio_list()
-Date: Thu, 25 Apr 2024 16:50:51 +0800
-Message-Id: <20240425085051.74889-1-ioworker0@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <CAK1f24nb6FkipH3OZa0uwbBWkefS3f2BrJ_GTxkS2j6+6bgODQ@mail.gmail.com>
-References: <CAK1f24nb6FkipH3OZa0uwbBWkefS3f2BrJ_GTxkS2j6+6bgODQ@mail.gmail.com>
+	s=arc-20240116; t=1714035174; c=relaxed/simple;
+	bh=2ii76LUBj9Ob19+f2whv+RVZumtvMFFoj0WwOmyLIt0=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=ao5sl5IWpyoDek6F6JF+utecVMQCIUsmDzAT0xk/pvp/QYfwIg71IfJ4EQs/FMhNcEmpt5/HWnrcpEaqdOzCYv6HltYDkyQ90JMtos+7zlwTi6wl/iXoioI0QEid6C8flc8PDcY6PuyDb2TP4Bl5lZPhS76Qo6on+G8p9tG3USs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=dIfdBXPI; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1714035117; x=1714639917; i=markus.elfring@web.de;
+	bh=2ii76LUBj9Ob19+f2whv+RVZumtvMFFoj0WwOmyLIt0=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=dIfdBXPIujAhwTh6VZnWtncvA1XWiKqV9vpmVx6mtVKkAZ7C8ihefH1HCRvrH5ep
+	 I+sZZEO/50ZvJcBLfa9cg1dIuGapn7oIVC/UKYrWQT9fJlUQGqisN3JMVLrsS2k8C
+	 lxYiUrwi4R9M9J1/J9KJnFryPFEZgCzK/PvUXqBa55tzsBGo3ttIqzqMS47M0YmFU
+	 XjsufLLyLN9ZdVyHpVCPqJIIwFqgrBOkPrzMnZKGzk2F0NPOkJP2zBAHXHkUF/wI9
+	 /203G0Qb5/JOkJdR/f/1VFCLWJU5VZKDahErizDNM9HMhGZYoXoivB/ENICtwOG+W
+	 gYjApMmG+MBiuJNjIQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MRW2D-1sNLPF40Qf-00NUmb; Thu, 25
+ Apr 2024 10:51:57 +0200
+Message-ID: <6e028bfa-9063-42ac-b40f-cf17a81c2af2@web.de>
+Date: Thu, 25 Apr 2024 10:51:53 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+To: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+ linux-usb@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ Jameson Thies <jthies@google.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Benson Leung <bleung@google.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Prashant Malani <pmalani@chromium.org>,
+ Rajaram Regupathy <rajaram.regupathy@intel.com>,
+ Saranya Gopal <saranya.gopal@intel.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+References: <20240424014821.4154159-2-jthies@google.com>
+Subject: Re: [PATCH v2 1/4] usb: typec: ucsi: Fix null deref in trace
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240424014821.4154159-2-jthies@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:MWIAd9tfE9Cl5DWSBlawdxc9rLXN4r3w9oVfMsROo9DFxAP9QSb
+ dAN5xhx39A6eJxpcr09q4YAV5nIQda6BWSBQrr3iHiQ9Y6JZm0SFInuOSpWh/yELwxqOoob
+ 9yiOlZC1rEZLPD//da/dOOGv0mPtYh2Q+7Quv9Zzg6a2dDM8q2XN3iutK6lkbuRhoLxDduv
+ Dovre41suigX1sdGsANlA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:82+JCbADl/Q=;8624TNLGloARLOYQ/BOLV+yGdVj
+ tRYpiSQQIjL3i73JQ6pzaVWf4ROTq73TDcxAFVMTQivqidd3asU5pIHmHYQ21sgSYa2DWuM1u
+ Ask9GZR9uCK5j43oaBoHQmvv2kWliElxtpcOMlZe1ZdXTaAudOnLQGewybrzEV7Av44h0qh9J
+ UG54OdL/iJwJP4UcwgwN0AKGTf7GCAWd5LKEDrYpAY/5HmMqegr4x6WUb8XhNJJaXIIA1g5+L
+ asGyFg2JlK6QcAkMa6n4fOWhNXjyGjgkhM1OpR/jQaskTU+xIuyLqppuGLKCnbE1yIUTolRyO
+ ETCHoNDJDJJkcdnmlQ4J/R+y/aDC7ieB5LVLzJURXLmyjCK+UtYcQ/bnPrjaoljlsK7kIoVEx
+ 6qqtnmvq0VovcVOWntybaAu89CdGzsZ0BKCcGjMk1tHV3ZYtbwk8YSPXQQft1nxV1wCKSBg0r
+ NNVR2gB4LFQkgtV0SMk5GGgRnI0//fxAO+Zb/cukiRXpXgqgyyQC99CjxQ1daa4kEPTXxDcz/
+ iOAIev88+eyHDm23vE3vGj11niorw5Xn34hsnCc/sHBbeDbr6IvZcIVQg9CnVcwXGYTOULCSp
+ j4kCYRCah/NPB1B1wHa6re98hlx7vmblpTn3QXXD1J6i3EfXch2X193YY5EBJ9kg0OCaOGrKh
+ ld+zLLhNeRMAlExFy5EUOTxSW+0anFoKlmXp17hTPHuEVH/G8Rc9BpVjWwmP0qB3jLIRMlH9A
+ TYlmjYdkTH/22/XwVSbc+NqcwFl2Pr5zv6Xnd19LbOl4ZmExDVvdDk5Qq16Um3oSLCjaMsrAA
+ k6gea/TJZQ0IAvFXJQuTYftUJZTX+oALHCqiquNotVzQ8=
 
-Hey Zi, David,
+=E2=80=A6
+> ucsi_register_altmode checks IS_ERR on returned pointer and treats
+> NULL as valid. This results in a null deref when
+> trace_ucsi_register_altmode is called.
+=E2=80=A6
 
-How about this change(diff against mm-unstable) as follows?
+Can it be nicer to use the term =E2=80=9Cnull pointer dereference=E2=80=9D=
+ for
+the commit message here?
 
-I'd like to add __try_to_unmap_huge_pmd() as a new internal function
-specifically for unmapping PMD-mapped folios. If, for any reason, we cannot
-unmap the folio, then we'll still split it as previously done.
-
-Currently, __try_to_unmap_huge_pmd() only handles lazyfree THPs, but it
-can be extended to support other large folios that are PMD-mapped in the
-future if needed.
-
-diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-index 670218f762c8..0f906dc6d280 100644
---- a/include/linux/rmap.h
-+++ b/include/linux/rmap.h
-@@ -100,8 +100,6 @@ enum ttu_flags {
- 					 * do a final flush if necessary */
- 	TTU_RMAP_LOCKED		= 0x80,	/* do not grab rmap lock:
- 					 * caller holds it */
--	TTU_LAZYFREE_THP	= 0x100, /* avoid splitting PMD-mapped THPs
--					  * that are marked as lazyfree. */
- };
- 
- #ifdef CONFIG_MMU
-diff --git a/mm/rmap.c b/mm/rmap.c
-index a7913a454028..879c8923abfc 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1606,6 +1606,19 @@ void folio_remove_rmap_pmd(struct folio *folio, struct page *page,
- #endif
- }
- 
-+static bool __try_to_unmap_huge_pmd(struct vm_area_struct *vma,
-+				    unsigned long addr, struct folio *folio)
-+{
-+	VM_WARN_ON_FOLIO(!folio_test_pmd_mappable(folio), folio);
-+
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	if (folio_test_anon(folio) && !folio_test_swapbacked(folio))
-+		return discard_trans_pmd(vma, addr, folio);
-+#endif
-+
-+	return false;
-+}
-+
- /*
-  * @arg: enum ttu_flags will be passed to this argument
-  */
-@@ -1631,14 +1644,11 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
- 	if (flags & TTU_SYNC)
- 		pvmw.flags = PVMW_SYNC;
- 
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
--	if (flags & TTU_LAZYFREE_THP)
--		if (discard_trans_pmd(vma, address, folio))
-+	if (flags & TTU_SPLIT_HUGE_PMD) {
-+		if (__try_to_unmap_huge_pmd(vma, address, folio))
- 			return true;
--#endif
--
--	if (flags & TTU_SPLIT_HUGE_PMD)
- 		split_huge_pmd_address(vma, address, false, folio);
-+	}
- 
- 	/*
- 	 * For THP, we have to assume the worse case ie pmd for invalidation.
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index e2686cc0c037..49bd94423961 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1277,13 +1277,6 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
- 
- 			if (folio_test_pmd_mappable(folio))
- 				flags |= TTU_SPLIT_HUGE_PMD;
--
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
--			if (folio_test_anon(folio) && !was_swapbacked &&
--			    (flags & TTU_SPLIT_HUGE_PMD))
--				flags |= TTU_LAZYFREE_THP;
--#endif
--
- 			/*
- 			 * Without TTU_SYNC, try_to_unmap will only begin to
- 			 * hold PTL from the first present PTE within a large
--- 
-
-Thanks,
-Lance
+Regards,
+Markus
 
