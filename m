@@ -1,135 +1,140 @@
-Return-Path: <linux-kernel+bounces-158489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 058D08B20D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:02:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 877BF8B20D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:03:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF4CC1F24F19
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:02:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B424BB2421A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:03:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B302212BE86;
-	Thu, 25 Apr 2024 12:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90DFC12B163;
+	Thu, 25 Apr 2024 12:03:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ssZnt+F6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bzEEEkKb"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC9884E0E;
-	Thu, 25 Apr 2024 12:02:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A0A12AACA
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 12:02:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714046535; cv=none; b=LcW0FfjMglvyzK+P9A/2sz74AdHpYZmk5W23chi8/ocY6Zr0YqfEc3pSE8wNWy3kC8V0qKfSzW2l1Hh5Y8t3sghl9iw9AGYZabyX1rF85fUULVADoEXJZ88FPHWoxqh9l2YDE15UsooloBDRSMfP8wiqa1D1SNyEtIeIUDrwFeE=
+	t=1714046580; cv=none; b=PtZXETF9swJhEiLloKWTXQ0zk/oxLO2WAtvPT6vPkfjSsQ6W8p5/nTjP0CDYtPleqo15l5i/DyOS4Szkk2Kdx3dGrhAYAzq3YAvSE/X9gV9x89vWBWKuAUGKKqNqc23eEXQ5xMIF3ahSBrjiulsxsCjlDbkwVMpcONjOwPnJZz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714046535; c=relaxed/simple;
-	bh=IsokxEzMjspQdJ6vbgSWEZO+bwVScekTaycFJ/Dr5nM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FadfTfHAfGLJboiZmGniFIpW3JDMjvoVp1tz97fGMXMJCyqZ0CPWQZF0JgxOdvuxheheGOuFau418tbZWUudqyLz1xiDV2tSKpulI37YCX5Vw+G/cH5wyyPuOEl5NecqKd6V3iKZiqwyOv7BRzk+Im4hqxuajuZG6lxafkPjaBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ssZnt+F6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69D7DC113CC;
-	Thu, 25 Apr 2024 12:02:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714046534;
-	bh=IsokxEzMjspQdJ6vbgSWEZO+bwVScekTaycFJ/Dr5nM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ssZnt+F6c5C7fMP2Rv+zpjBsDZUzPNNQxiUU3+aKm/gMy76wi/kViatVTn0CwizWF
-	 GKQmIY/KZtpsqcd3hGGWRqVBKFxKqfg/qhEFgvkPtoQ1Ivpaij54PeyWnWD86GOw+a
-	 ETQQ/q97VlYlkalLlE2f1QK8rzoFmCIfRROFKBF8GkTtOEAtg3pTvxbwd7F6CjYsDs
-	 wYIImnz+C3zwgR/vFCMBBUwSGAHZyw9Ar48HwrAeH/dS3xzUEh87u1PeUlPfub/0qb
-	 ADx988KGvC5r/QxV6gr3xd8jHidY7Afv0fAUZA3fRMj9svI5UE6nozaR80ECjOqEnn
-	 GH0q3p3x2sheA==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rzxnq-000000001yQ-0MAo;
-	Thu, 25 Apr 2024 14:02:14 +0200
-Date: Thu, 25 Apr 2024 14:02:14 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Brian Norris <computersforpeace@gmail.com>,
-	Jaiganesh Narayanan <njaigane@codeaurora.org>,
-	Doug Anderson <dianders@chromium.org>,
-	linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pinctrl: qcom: Fix behavior in abscense of open-drain
- support
-Message-ID: <ZipGRl_QC_x83MFt@hovoldconsulting.com>
-References: <20240424-tlmm-open-drain-v1-1-9dd2041f0532@quicinc.com>
+	s=arc-20240116; t=1714046580; c=relaxed/simple;
+	bh=jphqvKLIukinGvb9JMFC352rTpP7/8VXNF6oX6moPJg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=rXDPa4H/LXxOZq1Lhx5OFP78JDBCPn0fFXRmAmxPaMe8Blf+X24bZmLuNumZU5GthQb5P/8ZfR5OoE6VlJXNX4w/inQq34syx2duCsQyMuHeh31mA1yWD5wG91ZWwDUJehqfvoh8hPlU54+jeQVb2oU/z57Sbmxfbg9NzQuNi8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bzEEEkKb; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-343d7ff2350so725591f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 05:02:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714046578; x=1714651378; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=AZtgfXbbk2xQsw1Lmj4dmQHGao3EmNipVbMSfwpwCWw=;
+        b=bzEEEkKbvW6eGqugSTDMMWOARDxCjrBsB73AuYu3mBKufCDyBoIybIf87+O8o/cYlo
+         8dnUdZWz7hHWcsuR391z2Ojkb/pqqxZqlQCHdC9bYZibdNsvuloWttCqT6b+XqmLs4Uv
+         48OkKDEBz208iJOfdVhxV5zKokj68aeJKRxLGZ6kpVaNuokK5jDs2vFgsAlG3QyMuBq5
+         VwKvIsDJBDYPid3YjzSDE2MX8GJsE1DbbKcCmdBGjKYCi93pw9si3bzybCHJJSzcPQ9a
+         WcWzOPre5zrY/q+I0opcdwYUupRIXZA/bVJR06FpAjSm/HHD48shBQnHYzjWRnbAbEMz
+         2zFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714046578; x=1714651378;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AZtgfXbbk2xQsw1Lmj4dmQHGao3EmNipVbMSfwpwCWw=;
+        b=l8wfFoeJL+SYo1vLk+1B5iGYhfEG0MCFVop9NNbu2hZiuGhO++Vshus2RxbyMj2nwK
+         YQhfhNJssgnuiePHRV6StGBhndqhXAf+26vsQsGVEfxNwR0gFFv0MQ/IZ8zZ9dpiCfhr
+         EQ7nsR+uhSRllV9lqL+tLDSXr6FSAR8Vy/7BUn0bsFzswr7bku/RCRiY887W/AKaTu/s
+         I4iFbCRLfqqs/OV2JLBSzeKp23p9wMinlzjNG6UzsFcnFrM5IsEqzRYVHgp0fWEyKdXP
+         +PzsKPdpQGbjJT1RYc+CVQlmyJn6hXk9N///DRSgIRr86GiV9/xbWV6fqBzRCM09tmIN
+         swsw==
+X-Forwarded-Encrypted: i=1; AJvYcCUuB9QaotRIICMcJV3hO6IYiytLV8qA87L74Dheus3U+f6nv4DFcfbNhGHSTDPLyoxe70URmkYHjzoP0MYR0tJN0fGgGd/jWZzt/35U
+X-Gm-Message-State: AOJu0YznU4G5O6L9pi1GakwaEQrKV5JaZ1o9j5UCowKg8Jh/9wq4t6he
+	POFdhF9+R+yC0uueW6wtpAg29JNmDn1ayuoB4x3cmQ8m1qGocMSZn98CG8oqgw4=
+X-Google-Smtp-Source: AGHT+IEzZdSed4XOrE4rETuECmfdaxcVqf4C7+1LXgTcZDv2J71RTHhX+CpK/z2WbiePkXS0N6SWDw==
+X-Received: by 2002:adf:eeca:0:b0:34b:147f:df67 with SMTP id a10-20020adfeeca000000b0034b147fdf67mr3840631wrp.53.1714046577733;
+        Thu, 25 Apr 2024 05:02:57 -0700 (PDT)
+Received: from [10.1.1.109] ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id w20-20020adfe054000000b0034a366f26b0sm18062178wrh.87.2024.04.25.05.02.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 05:02:57 -0700 (PDT)
+Message-ID: <52403f522a4f7513c5ee5dae48856988f7141825.camel@linaro.org>
+Subject: Re: [PATCH v2 06/14] arm64: dts: exynos: gs101: Add ufs, ufs-phy
+ and ufs regulator dt nodes
+From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To: Peter Griffin <peter.griffin@linaro.org>, mturquette@baylibre.com, 
+ sboyd@kernel.org, robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+  vkoul@kernel.org, kishon@kernel.org, alim.akhtar@samsung.com,
+ avri.altman@wdc.com,  bvanassche@acm.org, s.nawrocki@samsung.com,
+ cw00.choi@samsung.com,  jejb@linux.ibm.com, martin.petersen@oracle.com, 
+ James.Bottomley@HansenPartnership.com, ebiggers@kernel.org
+Cc: linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-clk@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, tudor.ambarus@linaro.org, 
+	saravanak@google.com, willmcvicker@google.com
+Date: Thu, 25 Apr 2024 13:02:55 +0100
+In-Reply-To: <20240423205006.1785138-7-peter.griffin@linaro.org>
+References: <20240423205006.1785138-1-peter.griffin@linaro.org>
+	 <20240423205006.1785138-7-peter.griffin@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424-tlmm-open-drain-v1-1-9dd2041f0532@quicinc.com>
 
-On Wed, Apr 24, 2024 at 08:45:31PM -0700, Bjorn Andersson wrote:
-> When a GPIO is configured as OPEN_DRAIN gpiolib will in
-> gpiod_direction_output() attempt to configure the open-drain property of
-> the hardware and if this fails fall back to software emulation of this
-> state.
-> 
-> The TLMM block in most Qualcomm platform does not implement such
-> functionality, so this call would be expected to fail. But due to lack
-> of checks for this condition, the zero-initialized od_bit will cause
-> this request to silently corrupt the lowest bit in the config register
-> (which typically is part of the bias configuration) and happily continue
-> on.
-> 
-> Fix this by checking if the od_bit value is unspecified and if so fail
-> the request to avoid the unexpected state, and to make sure the software
-> fallback actually kicks in.
-
-Fortunately, this is currently not a problem as the gpiochip driver does
-not implement the set_config() callback, which means that the attempt to
-change the pin configuration currently always fails with -ENOTSUP (see
-gpio_do_set_config()).
-
-Specifically, this means that the software fallback kicks in, which I
-had already verified.
-
-Now, perhaps there is some other path which can allow you to end up
-here, but it's at least not via gpiod_direction_output().
-
-The msm pinctrl binding does not allow 'drive-open-drain' so that path
-should also be ok unless you have a non-conformant devicetree.
-
-> It is assumed for now that no implementation will come into existence
-> with BIT(0) being the open-drain bit, simply for convenience sake.
-> 
-> Fixes: 13355ca35cd1 ("pinctrl: qcom: ipq4019: add open drain support")
-
-I guess hardware open-drain mode has never been properly tested on
-ipq4019.
-
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+On Tue, 2024-04-23 at 21:49 +0100, Peter Griffin wrote:
+> Enable the ufs controller, ufs phy and ufs regulator in device tree.
+>=20
+> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
 > ---
->  drivers/pinctrl/qcom/pinctrl-msm.c | 2 ++
->  drivers/pinctrl/qcom/pinctrl-msm.h | 3 ++-
->  2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-> index aeaf0d1958f5..329474dc21c0 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-> @@ -313,6 +313,8 @@ static int msm_config_reg(struct msm_pinctrl *pctrl,
->  			*mask |= BIT(g->i2c_pull_bit) >> *bit;
->  		break;
->  	case PIN_CONFIG_DRIVE_OPEN_DRAIN:
-> +		if (!g->od_bit)
-> +			return -EOPNOTSUPP;
+> =C2=A0.../boot/dts/exynos/google/gs101-oriole.dts=C2=A0=C2=A0 | 18 ++++++=
+++++
+> =C2=A0arch/arm64/boot/dts/exynos/google/gs101.dtsi=C2=A0 | 36 +++++++++++=
+++++++++
+> =C2=A02 files changed, 54 insertions(+)
+>=20
 
-I believe this should be -ENOTSUPP, which the rest of the driver and
-subsystem appear to use.
+[...]
 
->  		*bit = g->od_bit;
->  		*mask = 1;
->  		break;
+> +
+> +		ufs_0: ufs@14700000 {
+> +			compatible =3D "google,gs101-ufs";
+> +			reg =3D <0x14700000 0x200>,
+> +			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 <0x14701100 0x200>,
+> +			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 <0x14780000 0xa000>,
+> +			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 <0x14600000 0x100>;
+> +			reg-names =3D "hci", "vs_hci", "unipro", "ufsp";
+> +			interrupts =3D <GIC_SPI 532 IRQ_TYPE_LEVEL_HIGH 0>;
+> +			clocks =3D <&cmu_hsi2 CLK_GOUT_HSI2_UFS_EMBD_I_ACLK>,
+> +				 <&cmu_hsi2 CLK_GOUT_HSI2_UFS_EMBD_I_CLK_UNIPRO>,
+> +				 <&cmu_hsi2 CLK_GOUT_HSI2_UFS_EMBD_I_FMP_CLK>,
+> +				 <&cmu_hsi2 CLK_GOUT_HSI2_QE_UFS_EMBD_HSI2_ACLK>,
+> +				 <&cmu_hsi2 CLK_GOUT_HSI2_QE_UFS_EMBD_HSI2_PCLK>,
+> +				 <&cmu_hsi2 CLK_GOUT_HSI2_SYSREG_HSI2_PCLK>;
+> +			clock-names =3D "core_clk", "sclk_unipro_main", "fmp",
+> +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "ufs_aclk", "ufs_pclk", "sysreg";
+> +			freq-table-hz =3D <0 0>, <0 0>, <0 0>, <0 0>, <0 0>, <0 0>;
+> +			pinctrl-names =3D "default";
+> +			pinctrl-0 =3D <&ufs_rst_n &ufs_refclk_out>;
 
-Johan
+The preferred order is pinctrl-0 before pinctrl-names (similar to clock-nam=
+es and reg-names).
+
+Other than that,
+
+Acked-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
+
 
