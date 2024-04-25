@@ -1,146 +1,187 @@
-Return-Path: <linux-kernel+bounces-157925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 682B88B18B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 03:59:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 059578B18BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 04:00:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C960628356E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:59:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 861711F24C6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 02:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F14C312B7F;
-	Thu, 25 Apr 2024 01:59:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ECBE10A16;
+	Thu, 25 Apr 2024 02:00:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DKH8/s3J"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jk0Kd28s"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07FB2107B3
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 01:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76C0D101D4
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 02:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714010344; cv=none; b=IZbkwiexXiN7PMCYovkIQi7W3v2EO02tSZwCaUUuiwxExWmC8Od1NVWcjmokVSkh6ikSY40tcmkqXM2am1JKrQo386VmQxFLS9wFG3h3dAEs9gwDCo2J4ET8n59Lm9savJqtYVdsIaHnlM3f4zdBxvwzZGLFEN3Mri4HKySff8Y=
+	t=1714010431; cv=none; b=MvdQCemSqTuEQ3UBfXEuLyfxtI3aJB1JeeD4k1Y6DsmaqqtvpiyC8TJBOzaXMyo1f/tgpPeJBePkrxEvUdr6yKxtdV6WrUQ1pnPjY/oIUd2lLIEzeELTzLvpYBYbYheQ3RIOkc3+YkpyE06j/d79j+fvzUF6Jb23g8yL2fIvm1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714010344; c=relaxed/simple;
-	bh=p/cGThLZ3QnfmTN7NW9NTr5bcTYchPjUIQ6WCPhs4IQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L7qGIqFE5RJQn4LHzclEYqqwzN0TsERQxOl5LFfzXE0ELiJXABDmPt2N9AuDAks+DuO2usNhcOjhpuxwcbRp8YrDZV5/aHQ6aORm4xA4tULnoJNXJbTpTgcN5menaIK8kqY3EVhgniigScaoPIOszJkHS3Jd6Nch6q2YL5va7IY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DKH8/s3J; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e8bbcbc2b7so4541445ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 18:59:02 -0700 (PDT)
+	s=arc-20240116; t=1714010431; c=relaxed/simple;
+	bh=u2ACMwnzEzXhDYZsafzJwTREA+87ZRtPcXNjed9WdZ4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Mdm9wnDBk92wOLx4H8jJPd/QwAqagtvQ4T5yMBiOI0dsw89SxMQOKlEQ+bYNVm7n7URAaRDp5HgD78QmJkFhRZGLrr5q06oCbTIjhAO7jNJveDOHq51Z/1WVGXURLC211xTj7x5u2hEEJvvxNmp71LUzhWVCJehibF/V3oGnlXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jk0Kd28s; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e3f17c6491so3940355ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 19:00:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714010342; x=1714615142; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=S4qlJ+DG6HoUrdCik4e+F/ZipKmWdndDCcmvcXd31J0=;
-        b=DKH8/s3JRXewO3uRlUu4fCoood6Fz58WtrLazwyrSzra0mwJ9mITfxLQXdn+2npsKd
-         AatPjRBUoHypnwwljhYrMkOBSBRQ25yB0gdmKwZCLwWouMGpc1BCWIwfh3ujF+UbXo0+
-         jbQQehQ52/2q73gd0IoDWpbdw+s06PcKXfokQ=
+        d=gmail.com; s=20230601; t=1714010430; x=1714615230; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2G0+Wm78u1m1Y1Ar32t4xbeUy1ixUQlMtqNrn414qck=;
+        b=jk0Kd28sdrGp8YqmnWEgM6GTqJyIdhQWF9NvcYQBbd4PQWzh8myQgpQsH49txXvi5F
+         uSMqKGbBX40QNiAFIuiQzCf5VbC3nziUmuvSY46m6GcrdeOB/g9tqhohebR99Ni0vO2n
+         AoWo2P9ZAjVN2TDvT8bFcfRpMNCV32KdfjYz6oHUxM1CwrESPfqaJs+GLMpRbYw/6Wx4
+         JeB1TpNdcLk2droVImq6c4gN1ygb1DIkvVroti/dYhWcRELvq9TlynCJ6RAqFzd6TwA0
+         4G9+cjn+6JbwLf4AWsh1anFVx4gvWxUwdlzYT+zh6ALbUsxvoG+E/gry4U9cKg4HAFP+
+         SB6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714010342; x=1714615142;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S4qlJ+DG6HoUrdCik4e+F/ZipKmWdndDCcmvcXd31J0=;
-        b=CAA8M4zcGUV8HY+zl7JGU9yei01fVmQ1ahjUPmVbLcH2iZseVatOhdYZRBG3aJAZa0
-         NXzsgE6XkaM4sDI5ip77UDANidGsX7xVbwdM8pSpWkcBv9FcfL/H8jDbj8kPA2LG2l8v
-         XfQWCxphgSCWLUdO5nHWDfS+ow1F0PnICFulqBkgNUrngpqNNJnxo12mqjJZl438wkdJ
-         q7rTbJgIDTNOFC7eOsxsYqKZ/q8uBPXLpNjuctC+ysQyXwGb6Dwf3jcm0olJMHTuR69F
-         dMUJWj3jil+94nGGzYDI2l3b+N8Eiwk+0A7mOpJ76lNsAxKed57ONvy7dNwAbPvZ8cf1
-         5XEg==
-X-Forwarded-Encrypted: i=1; AJvYcCUFOdmeA0hPFX+ltBoIgXgMJYGjO0LKU13JAG/xSF/6J+VhkH2WPsaf/OSPVxabfM+wK6PECSC4kVTKnZvk7Nxhp90ne9uvY9TY1oqT
-X-Gm-Message-State: AOJu0Yw5kouCXtCJvja1qSTVFcBTQlSQuxbpZcZBc1tArM2THkRPRmKt
-	AiB30NL2l6XCNCzMZ58gxh/qa3o5o90zRZUbPaXsAp79+87k16bDOtMjIqmWyQ==
-X-Google-Smtp-Source: AGHT+IFgnziqKVsPlDFcaVY3O1lcKny/l/El36yYFOjaOKnKn279lG8Ph9ngGazPAxyRWX6j+oUVIg==
-X-Received: by 2002:a17:903:2290:b0:1e8:92:c5e2 with SMTP id b16-20020a170903229000b001e80092c5e2mr6592452plh.47.1714010342304;
-        Wed, 24 Apr 2024 18:59:02 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g2-20020a170902934200b001e25da6f2f2sm12553004plp.68.2024.04.24.18.59.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 18:59:01 -0700 (PDT)
-Date: Wed, 24 Apr 2024 18:59:01 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
-	liam.howlett@oracle.com, penguin-kernel@i-love.sakura.ne.jp,
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org,
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
-	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
-	jhubbard@nvidia.com, tj@kernel.org, muchun.song@linux.dev,
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
-	hughd@google.com, andreyknvl@gmail.com, ndesaulniers@google.com,
-	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
-	ytcoode@gmail.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
-	glider@google.com, elver@google.com, dvyukov@google.com,
-	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com,
-	rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
-	kernel-team@android.com, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v6 00/37] Memory allocation profiling
-Message-ID: <202404241852.DC4067B7@keescook>
-References: <20240321163705.3067592-1-surenb@google.com>
+        d=1e100.net; s=20230601; t=1714010430; x=1714615230;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2G0+Wm78u1m1Y1Ar32t4xbeUy1ixUQlMtqNrn414qck=;
+        b=cuxGBEKY0vYr5YXBR2eCZ67DCBXC4j1bd23LpRgixYbaVpL6ZBQMXWGWvinB9Sqtf9
+         vmznm6aaZN1z0NWQpGYaTmTrxgvvvSElXin1DhmlCuJo9Kg1vNvDUBQUerUsU/PoucND
+         azp8siBIOyexo2b9Mjl8Y6R5ZweiQWFUybc6xC9c5kxH3fuIdDCW5AtL5LUFzkIKSRt2
+         aIlopLVxdOkWZW6G77v1Ck8drZkT9CkTYosArU1trdbUNQnESpD1d0GUf0GI8WfVKkjQ
+         8AC3jAE84vYUarBj72tLb4wk9JCgd74WH0Kzg3YX+qj/hoTqs/+zOeSCH21XoDeM+4Ee
+         riLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWPj5D5Bz4Ad8I136CJrSJJO4/C0XIvHwQD9+SQLNKuOmNakSV1iWVceRiuBz9sTbOQ9HjcAzwJ7vbfi991z7lsEwP9ocTku/WlJx+w
+X-Gm-Message-State: AOJu0YwAPLIQGzhLWoWoVkeMDy3e5jeTEfETe31hqLHWR4DrOAWRffK/
+	KAs2+8/bh13IqaQ6xaTgZPBbWZgL9NcfvYy9blo+Xo0KQfK/Ag1p
+X-Google-Smtp-Source: AGHT+IFwSyw5l00ZnoQha04nf7et1J/NW5XLQWQzotuk3bq3stn0qxI0YJS7POJE1/QStRkjEqy3Ig==
+X-Received: by 2002:a17:903:22c5:b0:1e5:5c49:ad4b with SMTP id y5-20020a17090322c500b001e55c49ad4bmr5841309plg.38.1714010429480;
+        Wed, 24 Apr 2024 19:00:29 -0700 (PDT)
+Received: from localhost.localdomain (2001-b400-e28c-ffb4-2cc3-282e-c13e-4090.emome-ip6.hinet.net. [2001:b400:e28c:ffb4:2cc3:282e:c13e:4090])
+        by smtp.gmail.com with ESMTPSA id l5-20020a170902d34500b001dd578121d4sm12576907plk.204.2024.04.24.19.00.27
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 24 Apr 2024 19:00:29 -0700 (PDT)
+From: Eric Lin <ericlinsechs@gmail.com>
+To: 
+Cc: Eric Lin <ericlinsechs@gmail.com>,
+	Jakub Jelinek <jakub@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ilog2: improve ilog2 for constant arguments
+Date: Thu, 25 Apr 2024 09:59:28 +0800
+Message-ID: <20240425015936.41844-1-ericlinsechs@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321163705.3067592-1-surenb@google.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 21, 2024 at 09:36:22AM -0700, Suren Baghdasaryan wrote:
-> Low overhead [1] per-callsite memory allocation profiling. Not just for
-> debug kernels, overhead low enough to be deployed in production.
+Commit 2f78788b55ba ("ilog2: improve ilog2 for constant arguments")
+used __builtin_clzll builtin to avoid generating a lot of code
+which interferes badly with GCC inlining heuristics.
 
-Okay, I think I'm holding it wrong. With next-20240424 if I set:
+Cc: Jakub Jelinek <jakub@redhat.com>
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Eric Lin <ericlinsechs@gmail.com>
+---
+ tools/include/linux/log2.h | 78 ++++----------------------------------
+ 1 file changed, 8 insertions(+), 70 deletions(-)
 
-CONFIG_CODE_TAGGING=y
-CONFIG_MEM_ALLOC_PROFILING=y
-CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT=y
-
-My test system totally freaks out:
-
-..
-SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
-Oops: general protection fault, probably for non-canonical address 0xc388d881e4808550: 0000 [#1] PREEMPT SMP NOPTI
-CPU: 0 PID: 0 Comm: swapper Not tainted 6.9.0-rc5-next-20240424 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
-RIP: 0010:__kmalloc_node_noprof+0xcd/0x560
-
-Which is:
-
-__kmalloc_node_noprof+0xcd/0x560:
-__slab_alloc_node at mm/slub.c:3780 (discriminator 2)
-(inlined by) slab_alloc_node at mm/slub.c:3982 (discriminator 2)
-(inlined by) __do_kmalloc_node at mm/slub.c:4114 (discriminator 2)
-(inlined by) __kmalloc_node_noprof at mm/slub.c:4122 (discriminator 2)
-
-Which is:
-
-        tid = READ_ONCE(c->tid);
-
-I haven't gotten any further than that; I'm EOD. Anyone seen anything
-like this with this series?
-
--Kees
-
+diff --git a/tools/include/linux/log2.h b/tools/include/linux/log2.h
+index e20a67d538b8..6180e8f879c4 100644
+--- a/tools/include/linux/log2.h
++++ b/tools/include/linux/log2.h
+@@ -68,76 +68,14 @@ unsigned long __rounddown_pow_of_two(unsigned long n)
+  *
+  * selects the appropriately-sized optimised version depending on sizeof(n)
+  */
+-#define ilog2(n)				\
+-(						\
+-	__builtin_constant_p(n) ? (		\
+-		(n) < 2 ? 0 :			\
+-		(n) & (1ULL << 63) ? 63 :	\
+-		(n) & (1ULL << 62) ? 62 :	\
+-		(n) & (1ULL << 61) ? 61 :	\
+-		(n) & (1ULL << 60) ? 60 :	\
+-		(n) & (1ULL << 59) ? 59 :	\
+-		(n) & (1ULL << 58) ? 58 :	\
+-		(n) & (1ULL << 57) ? 57 :	\
+-		(n) & (1ULL << 56) ? 56 :	\
+-		(n) & (1ULL << 55) ? 55 :	\
+-		(n) & (1ULL << 54) ? 54 :	\
+-		(n) & (1ULL << 53) ? 53 :	\
+-		(n) & (1ULL << 52) ? 52 :	\
+-		(n) & (1ULL << 51) ? 51 :	\
+-		(n) & (1ULL << 50) ? 50 :	\
+-		(n) & (1ULL << 49) ? 49 :	\
+-		(n) & (1ULL << 48) ? 48 :	\
+-		(n) & (1ULL << 47) ? 47 :	\
+-		(n) & (1ULL << 46) ? 46 :	\
+-		(n) & (1ULL << 45) ? 45 :	\
+-		(n) & (1ULL << 44) ? 44 :	\
+-		(n) & (1ULL << 43) ? 43 :	\
+-		(n) & (1ULL << 42) ? 42 :	\
+-		(n) & (1ULL << 41) ? 41 :	\
+-		(n) & (1ULL << 40) ? 40 :	\
+-		(n) & (1ULL << 39) ? 39 :	\
+-		(n) & (1ULL << 38) ? 38 :	\
+-		(n) & (1ULL << 37) ? 37 :	\
+-		(n) & (1ULL << 36) ? 36 :	\
+-		(n) & (1ULL << 35) ? 35 :	\
+-		(n) & (1ULL << 34) ? 34 :	\
+-		(n) & (1ULL << 33) ? 33 :	\
+-		(n) & (1ULL << 32) ? 32 :	\
+-		(n) & (1ULL << 31) ? 31 :	\
+-		(n) & (1ULL << 30) ? 30 :	\
+-		(n) & (1ULL << 29) ? 29 :	\
+-		(n) & (1ULL << 28) ? 28 :	\
+-		(n) & (1ULL << 27) ? 27 :	\
+-		(n) & (1ULL << 26) ? 26 :	\
+-		(n) & (1ULL << 25) ? 25 :	\
+-		(n) & (1ULL << 24) ? 24 :	\
+-		(n) & (1ULL << 23) ? 23 :	\
+-		(n) & (1ULL << 22) ? 22 :	\
+-		(n) & (1ULL << 21) ? 21 :	\
+-		(n) & (1ULL << 20) ? 20 :	\
+-		(n) & (1ULL << 19) ? 19 :	\
+-		(n) & (1ULL << 18) ? 18 :	\
+-		(n) & (1ULL << 17) ? 17 :	\
+-		(n) & (1ULL << 16) ? 16 :	\
+-		(n) & (1ULL << 15) ? 15 :	\
+-		(n) & (1ULL << 14) ? 14 :	\
+-		(n) & (1ULL << 13) ? 13 :	\
+-		(n) & (1ULL << 12) ? 12 :	\
+-		(n) & (1ULL << 11) ? 11 :	\
+-		(n) & (1ULL << 10) ? 10 :	\
+-		(n) & (1ULL <<  9) ?  9 :	\
+-		(n) & (1ULL <<  8) ?  8 :	\
+-		(n) & (1ULL <<  7) ?  7 :	\
+-		(n) & (1ULL <<  6) ?  6 :	\
+-		(n) & (1ULL <<  5) ?  5 :	\
+-		(n) & (1ULL <<  4) ?  4 :	\
+-		(n) & (1ULL <<  3) ?  3 :	\
+-		(n) & (1ULL <<  2) ?  2 :	\
+-		1 ) :				\
+-	(sizeof(n) <= 4) ?			\
+-	__ilog2_u32(n) :			\
+-	__ilog2_u64(n)				\
++#define ilog2(n) \
++( \
++	__builtin_constant_p(n) ?	\
++	((n) < 2 ? 0 :			\
++	 63 - __builtin_clzll(n)) :	\
++	(sizeof(n) <= 4) ?		\
++	__ilog2_u32(n) :		\
++	__ilog2_u64(n)			\
+  )
+ 
+ /**
 -- 
-Kees Cook
+2.43.0
+
 
