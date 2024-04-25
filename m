@@ -1,255 +1,179 @@
-Return-Path: <linux-kernel+bounces-159108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EC468B298D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:17:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEFAD8B298F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:17:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3524E28167C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:17:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BE631F22F7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1C7615380A;
-	Thu, 25 Apr 2024 20:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 915CC154434;
+	Thu, 25 Apr 2024 20:17:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z/NUikNX"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wzcPx2gP"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2088.outbound.protection.outlook.com [40.107.102.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1914B1534FD
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:17:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714076240; cv=none; b=PkESxRuCRy/QMzuTX+SeyeMcVR61jFm9N9dKO6jFAgCV3e9cNWhcHyNTUqv+gpaolOOy7Zd5O2uy7P7qHsvKiIeSlod3lXg/GfS9vifJ3Avbw4Kipbb4XMbu/A2uHoonu1FIUS5X76IPm1JusmOYbWFk1GtnZocEcfFet8E+pxY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714076240; c=relaxed/simple;
-	bh=4BBDPsjN6dzEJ4giKnaR11KMRJazqH6XiUS8veZbFSM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Xhnh/m7OVjXiCrt6883RP/m3gaIqnZmTP9S3e0JoTlR9w3RYJcFdeF7M5N0p4/uBfjyHNstHjoAwyEKhQnT+Vo7406d0MybhF0//wd1fErJtODJjzAFCMxtBQYHdzzzmERwZv9E051dy1dSwZSyAXecikFKzkVcDkY0w8KVve7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Z/NUikNX; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a5872b74c44so161430466b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 13:17:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714076237; x=1714681037; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dMog2JZUZ8XbtVqoBAzMg/dsNmKbqiBjLxtU6d10Qw4=;
-        b=Z/NUikNXLNoK3TQtZK1qFP8vOt08KF6jSkM5UBR0TE0iIq6NRXahUIGoSOfOO5HuaY
-         pDAABTNq8Fk9l6RVZg/AWdREzGMCtvwjwa8z0FzsEkwu+LNDQAe+ubKzOS3uFYaMoWDc
-         kGauC6Hqalz6I1eVLjTq9T9TXBMiiorNCzGjTR5U6v5kkmBxFwpyQiCvZmCSFJXov3Q/
-         zxJOjEPRDhBSANYzEiBmrekrpjlWBn3EMJqlVbJuEMMo7j9HDviB6/ffnyIdYkqR2S0I
-         SkAXuD4SR2Z38lcelrF6uCGC/ecw9jVTKdW1zRTQAvqqZt0ICF92Y59G3FW/Z1U0IVEU
-         xpVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714076237; x=1714681037;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dMog2JZUZ8XbtVqoBAzMg/dsNmKbqiBjLxtU6d10Qw4=;
-        b=q0mz7o8gEm2aOKFIFarYDru3N8puRYedatP1+/3Iby1vjfV49+FUBIo+YR6QfTw73/
-         s2PjdfUweYjNWFvHyBfo+iv/CigSNnyAWMrG6kmL0NJ3SL69MDPx3jpe0hWzLtSBjkIp
-         5WKy7QSgVNqGfAps3OoeEbK/cT7y8x/53WLpDuBQorMLyU2WJkFWNliYCjMoGlEm7449
-         Auv38lTncEc4tzyJseKsQ7LyrmrEo6x8iPjvm8Zp5igtbuf3OxmtvPcpmBZTjLw/c7kj
-         c99zObiSvjB/Lt2mfp/yWtp0HItLZ1NUzpWfqbcVYV8OG8yMqp7IfjbCoH9hcEsx8EUk
-         Ei9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW8lwhE1aR6Uf9wtvVlHZxtJ4EKnayNB77Sux1p6JAbtqD0Kit1lY5UIpIby+YAnaXZj4nFkgPFqAIiVM/2Z1Ls/JpfIwFqlxq3+HXR
-X-Gm-Message-State: AOJu0YxSzxVywJrZb2cEh+vYOg36fRRKh6FaDIA1fN+e5cfyfQZdIoSI
-	FXvowmI3VlcB4PbeJHww511kTnhGRBiBVPLBGE88rD4eJRD1Yz/OEQDoTvjvWflNehO0/WTcgRp
-	EKxmVMN93Qq3a8w2M0BR/Qo16JozXajhzqwFM
-X-Google-Smtp-Source: AGHT+IGnRLA6abhkAbzojY7edB/w0Ptxz2eulZ6XO0QV0FgG7Zk4Y0oBfqeQG+5YpJZSfDseca++A/86xOPGwOkUqqA=
-X-Received: by 2002:a17:906:6ce:b0:a58:7505:16ff with SMTP id
- v14-20020a17090606ce00b00a58750516ffmr456515ejb.64.1714076237097; Thu, 25 Apr
- 2024 13:17:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7DAA1534F9;
+	Thu, 25 Apr 2024 20:17:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.88
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714076242; cv=fail; b=UGNGlt4Z909Dyy0jb0cF32TxKm7fvMIFXQG56+A6MzvQDV12l2ZtgEOF9qt4N+oSxbqwAo5FidamhvDtk+Ab8m9uz4g8QUI4JvEm7UbTiR9oq57rQhv2NhW1QEXk7UxyAFgkwZrtnOoO7vfrksFl2nPEXcDTVJIOWB974H7OyPI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714076242; c=relaxed/simple;
+	bh=F3f5h8reMschUPK3e7+c9iNVgk51YiBeqhXLlyouEII=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AuxBvTiSJ1YIQD19WGt0Sq917lLyIRLO5S04+R8H4OArWIBPylMEh4k3VrDDlCS9v5yWpd8eWXx8Urd1we73PPOznT7AoFLhxlrB4ugZW6S1UAhcVY9Eo5Ehz0nbwhNrCKCKPCxRyBbKYO5bEy7gGudmsWc/KdX5gdDwXHzN+Yw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=wzcPx2gP; arc=fail smtp.client-ip=40.107.102.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SZAZ3PgwYt79+8Ur5bSIXy5CYO80NBe2ug4x+tqrop3CsmztN/tvanfckGPPDmX3z4hyP+KzJ4koPfFexTLUK+7XfLnfXNjCdCLeNMVaFEjbItr4EaL9XmjJIg4++e3FzbmL+Z+KFgEQ7D+Kz3vpFqWgyukw/lOi/nlkV8v/i2YEQUlS5vrsBgosDJAmGZ9gKUdJfg7JQMrGNGmQKO0rP9LEa0+z+6/TGVA9OtClzOh58ruRl+KvMOLJMlFXUer+UOw3pD+0kVe20RwrAN1looDVtzgoHLiqwh49/g8SVFB3K9XgpqNYNWf7Pcw7yPm9nbpfnwXwJuvLGDpmYxCDBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bcNahZo6O+lTVlvaqJ9+d5hSn+Kru65CFHHZoEggtC4=;
+ b=Ji+i5xYedR4PDFnoo8oJf0r92iGV8O6fi12+7jAxUeTcJ08NftfEdJzfviLHu3mmESjUe8cJgoCVodk5duyY55El9qWKFHJcejERSL4zkuyJZ93jDwxWv0bEUhnD75BYIjO15Oi1T8bJqjIrvkJiF/W3dKKXhW8BwhJGhrZICs/+0TP33hrin0+m7gCmoXw2dzRc+PQgNKtP1xoVM8nEMCZXAVRk+RDAaAFOnhD5hPP19Dm1gjM7GWMP99T8S2hqjWm1gJQpnpQ0W/7aQttfOXfztSMzGNqydi6RZv8Iwz9NnV9KoA5bmKiUUekD60XNStzPL0Rfzrelswte19ZN9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bcNahZo6O+lTVlvaqJ9+d5hSn+Kru65CFHHZoEggtC4=;
+ b=wzcPx2gP2fEqavnJJr2b7Q/DQ8G+2VHVvUTHuTZq7W/MB3e9Wjknyk1Q4SccpmXku1eBcnSvOOUJxa+RzKM+/kt9hnGmtJeDkGKZDRHgwcjMqQ8MibCN/YrZlgzjb3ITJAw/fy7nA8/Omt1k273Oh3p4UVGyRxuARkzyNStd3sM=
+Received: from MN2PR19CA0060.namprd19.prod.outlook.com (2603:10b6:208:19b::37)
+ by SN7PR12MB7023.namprd12.prod.outlook.com (2603:10b6:806:260::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Thu, 25 Apr
+ 2024 20:17:16 +0000
+Received: from BL02EPF0001A101.namprd05.prod.outlook.com
+ (2603:10b6:208:19b:cafe::9c) by MN2PR19CA0060.outlook.office365.com
+ (2603:10b6:208:19b::37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.23 via Frontend
+ Transport; Thu, 25 Apr 2024 20:17:16 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL02EPF0001A101.mail.protection.outlook.com (10.167.241.132) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7519.19 via Frontend Transport; Thu, 25 Apr 2024 20:17:16 +0000
+Received: from bmoger-ubuntu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 25 Apr
+ 2024 15:17:16 -0500
+From: Babu Moger <babu.moger@amd.com>
+To: <fenghua.yu@intel.com>, <reinette.chatre@intel.com>, <shuah@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<ilpo.jarvinen@linux.intel.com>, <babu.moger@amd.com>,
+	<maciej.wieczor-retman@intel.com>, <peternewman@google.com>,
+	<eranian@google.com>
+Subject: [PATCH v2 0/4] selftests/resctrl: Enable MBM and MBA tests on AMD
+Date: Thu, 25 Apr 2024 15:16:58 -0500
+Message-ID: <cover.1714073751.git.babu.moger@amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1708637563.git.babu.moger@amd.com>
+References: <cover.1708637563.git.babu.moger@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZiaX3H3YfrVh50cs@google.com> <d8f3497b-9f63-e30e-0c63-253908d40ac2@loongson.cn>
- <d980dd10-e4c4-4774-b107-77b320cec9f9@linux.intel.com> <b5e97aa1-7683-4eff-e1e3-58ac98a8d719@loongson.cn>
- <1ec7a21c-71d0-4f3e-9fa3-3de8ca0f7315@linux.intel.com> <5279eabc-ca46-ee1b-b80d-9a511ba90a36@loongson.cn>
- <CAL715WJK893gQd1m9CCAjz5OkxsRc5C4ZR7yJWJXbaGvCeZxQA@mail.gmail.com>
- <b3868bf5-4e16-3435-c807-f484821fccc6@loongson.cn> <CAL715W++maAt2Ujfvmu1pZKS4R5EmAPebTU_h9AB8aFbdLFrTQ@mail.gmail.com>
- <f843298c-db08-4fde-9887-13de18d960ac@linux.intel.com> <Zikeh2eGjwzDbytu@google.com>
- <7834a811-4764-42aa-8198-55c4556d947b@linux.intel.com> <CAL715WKh8VBJ-O50oqSnCqKPQo4Bor_aMnRZeS_TzJP3ja8-YQ@mail.gmail.com>
- <6af2da05-cb47-46f7-b129-08463bc9469b@linux.intel.com>
-In-Reply-To: <6af2da05-cb47-46f7-b129-08463bc9469b@linux.intel.com>
-From: Mingwei Zhang <mizhang@google.com>
-Date: Thu, 25 Apr 2024 13:16:40 -0700
-Message-ID: <CAL715W+zeqKenPLP2Fm9u_BkGRKAk-mncsOxrg=EKs74qK5f1Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>, Sean Christopherson <seanjc@google.com>, 
-	maobibo <maobibo@loongson.cn>, Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com, 
-	peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com, 
-	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
-	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A101:EE_|SN7PR12MB7023:EE_
+X-MS-Office365-Filtering-Correlation-Id: c1b59ebf-8615-474f-d828-08dc6564b3c5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?C1Ypqb9pllalvaeoqjrKaFSWN2aZdstZenZE7tYYxrTUf9zN74WYXsFvevfZ?=
+ =?us-ascii?Q?LUdsj8KSlN/0t58YNqoH5QNqRQlu1dBrARrUiKYChSR2aiBxIfv5OMq3MTbS?=
+ =?us-ascii?Q?z+STI0EM4kXzmUHt1jqdhHbnGxE1CUqjNJgnR8J0Vyhhe+V8A2n1n04C0zXV?=
+ =?us-ascii?Q?XZI8cgZeW2rfNUQF3N81UsQBfWRkg5dT0vytOShNDDSUsve/yA+mllhq3NwN?=
+ =?us-ascii?Q?7cWPQwtbb7zIpkEg6Ijrc/D6KFfYdnF3LKqEC3ii/5KHAFPHdhS6WJUosZ4Q?=
+ =?us-ascii?Q?/c2SCSdNdKB8l7FRHSHjkvVDK8IE9g0HpYWjap9fyvJcnZKVeVh8KQ/CAth6?=
+ =?us-ascii?Q?9m+tqrU4UnMlOCEsDAP7XlOQsQNe7m8FgCRHw/qMQ+hFoWXKGqQGOtNSop8N?=
+ =?us-ascii?Q?tHl1H4a1gpo/smy9QZuIy8/YXDt0wYXMUoI7Fu+irG6KZUjh6U3XytiWm0L/?=
+ =?us-ascii?Q?xj0/6zMND8dVo0phmU1kLwgiomE3xV/FANjapEmRLqssa7xnmA/tE7thLCVM?=
+ =?us-ascii?Q?jmECSLzWZruXktOZiDgJYKWD8u2pTMhAiivdC92xMg4r7CaE47ABr8+9WYKf?=
+ =?us-ascii?Q?5gH20YHBuCJ5K3FyWD0Dynif/hTthXvLDRSxwkUvO+H4uE18ZLb8Eu2/IEgg?=
+ =?us-ascii?Q?p6lexvehY4Kk7rSwwhKUjoSwAz37KpMqu0HhGdvIQ7mvVrlm9KSBKzfvj0OV?=
+ =?us-ascii?Q?el2o8SMz33ZkvnhjPP7HkY2dJdbbZeKsaGZR4/aenqg8nH5XFE6EHrrqk8rZ?=
+ =?us-ascii?Q?S2dn9juuBwxspOmvuS2icUth2UVPqXJMIllk5AnjJTAkf1iNkN+MQQmyY2xv?=
+ =?us-ascii?Q?kU8toe1h6Ytf2xfOzAfJkReVvFcU/ktzfX/JesvQWnXnePqqwu7lHG50yZkS?=
+ =?us-ascii?Q?rKchUH2f9nHyX8y0AQB4wGck6rfdj614mH86xbDs77Zjne4eRdjSzKwsFPCn?=
+ =?us-ascii?Q?Tb5zPKbGBEMMsOf2yWA232ewtMLsn3TcxgoD3qeWwezGo2nPNcUKfsm0KMIK?=
+ =?us-ascii?Q?lTXVmQmE8tK8Qxcl5EMnyBzs+ZfzmWpaX4Opgli8sonS4UPr/3mV6hGUSf6u?=
+ =?us-ascii?Q?DexcxIa43UqzWsNqIqJE96p29cDB8ry1/l+DLnrxc6OsADh0R81Txz/21LDB?=
+ =?us-ascii?Q?CgZL7TUIGX/gMijR+tmslJdF9wyT+CoLuP04xY+tvlto3tQe8xIZtQADJrjx?=
+ =?us-ascii?Q?TXN8K35+/qm9cS9QgrUsAxJ5UMSERD8+MeiQjdC0Nyx8Tew3FMjt93Wr6Mc9?=
+ =?us-ascii?Q?oQGtm0JQtMmWMPmjUmcdp6ZAMUfNfCJqeL4DI092a4BM1FCG9SPawJeREBCq?=
+ =?us-ascii?Q?LqzSlgJadyl3yGku7A7dNDEVa3gPURLiTJYkxqUyOIv7RQH6I6oiyvmbSZ89?=
+ =?us-ascii?Q?T5UPn4uNsniQgBXsJrMDKmg+cT+L?=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(36860700004)(82310400014)(1800799015);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 20:17:16.6521
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c1b59ebf-8615-474f-d828-08dc6564b3c5
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL02EPF0001A101.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7023
 
-On Thu, Apr 25, 2024 at 9:13=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.c=
-om> wrote:
->
->
->
-> On 2024-04-25 12:24 a.m., Mingwei Zhang wrote:
-> > On Wed, Apr 24, 2024 at 8:56=E2=80=AFPM Mi, Dapeng <dapeng1.mi@linux.in=
-tel.com> wrote:
-> >>
-> >>
-> >> On 4/24/2024 11:00 PM, Sean Christopherson wrote:
-> >>> On Wed, Apr 24, 2024, Dapeng Mi wrote:
-> >>>> On 4/24/2024 1:02 AM, Mingwei Zhang wrote:
-> >>>>>>> Maybe, (just maybe), it is possible to do PMU context switch at v=
-cpu
-> >>>>>>> boundary normally, but doing it at VM Enter/Exit boundary when ho=
-st is
-> >>>>>>> profiling KVM kernel module. So, dynamically adjusting PMU contex=
-t
-> >>>>>>> switch location could be an option.
-> >>>>>> If there are two VMs with pmu enabled both, however host PMU is no=
-t
-> >>>>>> enabled. PMU context switch should be done in vcpu thread sched-ou=
-t path.
-> >>>>>>
-> >>>>>> If host pmu is used also, we can choose whether PMU switch should =
-be
-> >>>>>> done in vm exit path or vcpu thread sched-out path.
-> >>>>>>
-> >>>>> host PMU is always enabled, ie., Linux currently does not support K=
-VM
-> >>>>> PMU running standalone. I guess what you mean is there are no activ=
-e
-> >>>>> perf_events on the host side. Allowing a PMU context switch driftin=
-g
-> >>>>> from vm-enter/exit boundary to vcpu loop boundary by checking host
-> >>>>> side events might be a good option. We can keep the discussion, but=
- I
-> >>>>> won't propose that in v2.
-> >>>> I suspect if it's really doable to do this deferring. This still mak=
-es host
-> >>>> lose the most of capability to profile KVM. Per my understanding, mo=
-st of
-> >>>> KVM overhead happens in the vcpu loop, exactly speaking in VM-exit h=
-andling.
-> >>>> We have no idea when host want to create perf event to profile KVM, =
-it could
-> >>>> be at any time.
-> >>> No, the idea is that KVM will load host PMU state asap, but only when=
- host PMU
-> >>> state actually needs to be loaded, i.e. only when there are relevant =
-host events.
-> >>>
-> >>> If there are no host perf events, KVM keeps guest PMU state loaded fo=
-r the entire
-> >>> KVM_RUN loop, i.e. provides optimal behavior for the guest.  But if a=
- host perf
-> >>> events exists (or comes along), the KVM context switches PMU at VM-En=
-ter/VM-Exit,
-> >>> i.e. lets the host profile almost all of KVM, at the cost of a degrad=
-ed experience
-> >>> for the guest while host perf events are active.
-> >>
-> >> I see. So KVM needs to provide a callback which needs to be called in
-> >> the IPI handler. The KVM callback needs to be called to switch PMU sta=
-te
-> >> before perf really enabling host event and touching PMU MSRs. And only
-> >> the perf event with exclude_guest attribute is allowed to create on
-> >> host. Thanks.
-> >
-> > Do we really need a KVM callback? I think that is one option.
-> >
-> > Immediately after VMEXIT, KVM will check whether there are "host perf
-> > events". If so, do the PMU context switch immediately. Otherwise, keep
-> > deferring the context switch to the end of vPMU loop.
-> >
-> > Detecting if there are "host perf events" would be interesting. The
-> > "host perf events" refer to the perf_events on the host that are
-> > active and assigned with HW counters and that are saved when context
-> > switching to the guest PMU. I think getting those events could be done
-> > by fetching the bitmaps in cpuc.
->
-> The cpuc is ARCH specific structure. I don't think it can be get in the
-> generic code. You probably have to implement ARCH specific functions to
-> fetch the bitmaps. It probably won't worth it.
->
-> You may check the pinned_groups and flexible_groups to understand if
-> there are host perf events which may be scheduled when VM-exit. But it
-> will not tell the idx of the counters which can only be got when the
-> host event is really scheduled.
->
-> > I have to look into the details. But
-> > at the time of VMEXIT, kvm should already have that information, so it
-> > can immediately decide whether to do the PMU context switch or not.
-> >
-> > oh, but when the control is executing within the run loop, a
-> > host-level profiling starts, say 'perf record -a ...', it will
-> > generate an IPI to all CPUs. Maybe that's when we need a callback so
-> > the KVM guest PMU context gets preempted for the host-level profiling.
-> > Gah..
-> >
-> > hmm, not a fan of that. That means the host can poke the guest PMU
-> > context at any time and cause higher overhead. But I admit it is much
-> > better than the current approach.
-> >
-> > The only thing is that: any command like 'perf record/stat -a' shot in
-> > dark corners of the host can preempt guest PMUs of _all_ running VMs.
-> > So, to alleviate that, maybe a module parameter that disables this
-> > "preemption" is possible? This should fit scenarios where we don't
-> > want guest PMU to be preempted outside of the vCPU loop?
-> >
->
-> It should not happen. For the current implementation, perf rejects all
-> the !exclude_guest system-wide event creation if a guest with the vPMU
-> is running.
-> However, it's possible to create an exclude_guest system-wide event at
-> any time. KVM cannot use the information from the VM-entry to decide if
-> there will be active perf events in the VM-exit.
 
-Hmm, why not? If there is any exclude_guest system-wide event,
-perf_guest_enter() can return something to tell KVM "hey, some active
-host events are swapped out. they are originally in counter #2 and
-#3". If so, at the time when perf_guest_enter() returns, KVM will ack
-that and keep it in its pmu data structure.
+The MBM (Memory Bandwidth Monitoring) and MBA (Memory Bandwidth Allocation)
+features are not enabled for AMD systems. The reason was lack of perf
+counters to compare the resctrl test results.
 
-Now, when doing context switching back to host at just VMEXIT, KVM
-will check this data and see if host perf context has something active
-(of course, they are all exclude_guest events). If not, deferring the
-context switch to vcpu boundary. Otherwise, do the proper PMU context
-switching by respecting the occupied counter positions on the host
-side, i.e., avoid doubling the work on the KVM side.
+Starting with the commit
+25e56847821f ("perf/x86/amd/uncore: Add memory controller support"), AMD
+now supports the UMC (Unified Memory Controller) perf events. These events
+can be used to compare the test results.
 
-Kan, any suggestion on the above approach? Totally understand that
-there might be some difficulty, since perf subsystem works in several
-layers and obviously fetching low-level mapping is arch specific work.
-If that is difficult, we can split the work in two phases: 1) phase
-#1, just ask perf to tell kvm if there are active exclude_guest events
-swapped out; 2) phase #2, ask perf to tell their (low-level) counter
-indices.
+This series adds the support to detect the UMC events and enable MBM/MBA
+tests for AMD systems.
 
-Thanks.
--Mingwei
+v2: Changes.
+    a. Rebased on top of tip/master (Apr 25, 2024)
+    b. Addressed Ilpo comments except the one about close call.
+       It seems more clear to keep READ and WRITE separate.
+       https://lore.kernel.org/lkml/8e4badb7-6cc5-61f1-e041-d902209a90d5@linux.intel.com/
+    c. Used ksft_perror call when applicable.
+    d. Added vendor check for non contiguous CBM check.
+  
+v1: https://lore.kernel.org/lkml/cover.1708637563.git.babu.moger@amd.com/
 
->
-> The perf_guest_exit() will reload the host state. It's impossible to
-> save the guest state after that. We may need a KVM callback. So perf can
-> tell KVM whether to save the guest state before perf reloads the host sta=
-te.
->
-> Thanks,
-> Kan
-> >>
-> >>
-> >>>
-> >>> My original sketch: https://lore.kernel.org/all/ZR3eNtP5IVAHeFNC@goog=
-lecom
-> >
+Babu Moger (4):
+  selftests/resctrl: Rename variable imcs and num_of_imcs() to generic
+    names
+  selftests/resctrl: Pass sysfs controller name of the vendor
+  selftests/resctrl: Add support for MBM and MBA tests on AMD
+  selftests/resctrl: Enable MBA/MBA tests on AMD
+
+ tools/testing/selftests/resctrl/cat_test.c    |   2 +-
+ tools/testing/selftests/resctrl/mba_test.c    |   1 -
+ tools/testing/selftests/resctrl/mbm_test.c    |   1 -
+ tools/testing/selftests/resctrl/resctrl_val.c | 142 +++++++++++++-----
+ 4 files changed, 103 insertions(+), 43 deletions(-)
+
+-- 
+2.34.1
+
 
