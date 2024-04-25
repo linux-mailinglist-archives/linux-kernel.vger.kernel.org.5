@@ -1,139 +1,176 @@
-Return-Path: <linux-kernel+bounces-159009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4E098B280F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D16128B2815
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:18:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7996A1F21F08
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:17:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F6261F21D03
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:18:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42726156C65;
-	Thu, 25 Apr 2024 18:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AEAE14F13A;
+	Thu, 25 Apr 2024 18:15:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="f6jRa0OD"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZJWBDeku"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C02150990
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 18:14:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E40737152;
+	Thu, 25 Apr 2024 18:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714068889; cv=none; b=JsO4X7RNYutxhp8vcxBAqqdFufcrDj5sTQ/8YYxMgKfgSiK5syBSOH7r6Vc8xv48Rw/JMV99Xi768Ha6X2kCowkCZ+t12ZpdfgfQO9Nr/qXdLkBHgOvS8F0IQAE8+uMNeEnlnK6OBDH02EsAkwVW01IluZzJWG0nRzBCK2wUVqs=
+	t=1714068913; cv=none; b=gb80gZkGlf6TkHPhk4PMqBY1a4s36J+iQ/VWQrljwIeObGBt9O3WVaH5BBlRWpgn++7CQgNf1tHySRP1X13xKhwsaFW/Us9anz+aTdAgOw2gLgVKOFjpdbSTkOjXBfeQEieUMUGr8SCszGPTsaYTnLJxC8uFy03WS5CfD44BQyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714068889; c=relaxed/simple;
-	bh=h3nH2RXwDRleABI7UvTpJNwiSjFJO/iubybYunLFYQY=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=M5xB7pIkVNNr+fuOSDnv4X7FGFhvpshf35sf7lPZirrO7XiaRV55FXEXR/+9f9/NWY7/sFzkpiswKqIdAnVfccqGy7c2ueSWvIUvQ09vro67UXUmLnrWBo/BgIPJAL0+HpmHPlRzP8+3jiod9c10E0KXuVA5C/gt9W8Fgs97D0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=f6jRa0OD; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6150e36ca0dso23829217b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 11:14:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714068887; x=1714673687; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=7x2xDm7ORIVYu8+DJIH/haFx3NIITex91VRf9yc3OHU=;
-        b=f6jRa0ODT67ORWX27GVK/+mTZ31jdHbXp/6k3hpIfU/jHbO8lCsZAAGv8q6TDhrwnt
-         iGlQdIiqywZdu8dD5gZSdyqYjXuGKkJhCy5DuFfcf8ZCG3gNuSJpTz6a5SZGZIJUrLnB
-         XUHPvzcNBNIqNru0lO1hPsf02GKQrU7y9s4eXm7swjbYswE+UOp5jWWTtBkFRulndO7f
-         F5hQbSwxevLP4xxsPF3U1N35v9yyPGyHDL0IU5+3p2BZdthJ7ZDDTaH7MMkg6SgQ81Xf
-         9jqp3FZQo43e5Je8X6t32xRuPg1MSz9Qm/vgRi2EECB1PUJ/TzJA58TdDk0ONWNB2Scm
-         g8Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714068887; x=1714673687;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7x2xDm7ORIVYu8+DJIH/haFx3NIITex91VRf9yc3OHU=;
-        b=Cy082AkguOVPdJjxeeip4K7FNo6LTuSRGoyEG2sHA6UTuBU8bZDvUpKbLP/b8zjG7f
-         sp/uek9dRL89kbCW2iRDQnXh666uK+rOcCNyU1/9xH1DKlvwpTk3a82fUf9Gww6DwD0R
-         INP+ySUsABhztJN7rhC17NTIgRAUtMiSKfpxUzQbQpdPRHlpOoF1YxfetyfkcCj3s3yg
-         HOIkZEZG5oU4c2cO4k17J3itGHzj+D6Od0KGVlfAaVs6clXeWvRhPRh/WvLvnrL/kOT+
-         J7+hPrenXuL57fMn+Tvc0w86BBVyNT1Hv0oOHzklE99/KgYc3Z8MQ4PKZQL+TyPSbTkK
-         xnKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXclZMwCOfmvfeo4E014G5beWW27xo1Dnk/FSyX96yJcrFd0qTe+vtQyxULyLlo8wQHlRrA9jZyFs4Km/qxFp69DP5VSP+k0mKdT9b0
-X-Gm-Message-State: AOJu0YxpjEgR9gBpFoVQJQshWrwT2H/mNlVr+j8McrC1RsLG81wUYUIb
-	Ag2WV0rrsFoBkWk9KOd9Oji5cKJwglAa6ff52V1nR0hIzHJ0AAv3wimf0/7K4SuDq704IMYoHZ8
-	39Q==
-X-Google-Smtp-Source: AGHT+IHGxfcO/CIV3+AB7r4yk31j4bBnsDca+v9/E+BSPM3jBz9ZdrHoD7SFSvI0zaKSkrDLyCCPkzvrZLU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:a106:0:b0:61a:d016:60ff with SMTP id
- y6-20020a81a106000000b0061ad01660ffmr36102ywg.2.1714068887134; Thu, 25 Apr
- 2024 11:14:47 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Thu, 25 Apr 2024 11:14:22 -0700
-In-Reply-To: <20240425181422.3250947-1-seanjc@google.com>
+	s=arc-20240116; t=1714068913; c=relaxed/simple;
+	bh=Hm6KipD1mulch7bD1DZAgbKR/1NijPMuo19jswflu5Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PdlB1MpV6NhSuHokn1I4d75mgVGS5whGgF9Plfby9rq2onOnY9ZRalSYi6pm//AIusW0WM24h+a02W4SdQPpTMnakGW12BYvhXXztY0Usz7vweaKOFYAbP/ZE83ahR0KD+ccJYKYjz+hw169FU/zniWb/Tp8gOCYR244Y8zV1UE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZJWBDeku; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B7BEC113CC;
+	Thu, 25 Apr 2024 18:15:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714068912;
+	bh=Hm6KipD1mulch7bD1DZAgbKR/1NijPMuo19jswflu5Y=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ZJWBDekujMaZTxITnfz63f0TBOuYRBt6cLsvLq0oXjS7mp+yWwQJ2n0Gc+NJa1+XA
+	 NiPq3fy9ze94j9jf3Pe9qVkOQb4aOd0YjWBYXfXwUgylbW8WSenerWz16a9VPfloL8
+	 ZnzHkPgILJoP9EBX5dFijWCVffaelHIgdeVH5/PsdGXnVNpBpEE6AblK2qvxkXmAuM
+	 A/5QQsqwzK+lvvLtXnReB/5JSVfOKAGg8IFJuqJkGnRal5knMdl6kJgvLSuQJ+xjmQ
+	 H7yA+ptUyH59GHtyHtnyzDuihxOOADjNqf6v22h+X5G3uaz8qPPzFQGN8Him12oqnc
+	 GA5vFbayPsCSA==
+Message-ID: <56a32a2d-2f6f-4f7b-8359-6f3062c010e2@kernel.org>
+Date: Thu, 25 Apr 2024 20:15:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240425181422.3250947-1-seanjc@google.com>
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <20240425181422.3250947-11-seanjc@google.com>
-Subject: [PATCH 10/10] KVM: x86: Suppress userspace access failures on
- unsupported, "emulated" MSRs
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Tom Lendacky <thomas.lendacky@amd.com>, Weijiang Yang <weijiang.yang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: samsung: google,gs101-pinctrl
+ needs a clock
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Alim Akhtar <alim.akhtar@samsung.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>,
+ Peter Griffin <peter.griffin@linaro.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Will McVicker <willmcvicker@google.com>, kernel-team@android.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240425-samsung-pinctrl-busclock-v1-0-898a200abe68@linaro.org>
+ <20240425-samsung-pinctrl-busclock-v1-1-898a200abe68@linaro.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
+In-Reply-To: <20240425-samsung-pinctrl-busclock-v1-1-898a200abe68@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Extend KVM's suppression of userspace MSR access failures to MSRs that KVM
-reports as emulated, but are ultimately unsupported, e.g. if the VMX MSRs
-are emulated by KVM, but are unsupported given the vCPU model.
+On 25/04/2024 18:03, André Draszik wrote:
+> The pin controller on Google Tensor gs101 requires a bus clock for
+> register access to work. Add it.
+> 
+> Signed-off-by: André Draszik <andre.draszik@linaro.org>
+> 
+> ---
+> As we only have the one clock here, please let me know if the
+> clock-names should be removed. Having it does make
+> /sys/kernel/debug/clk/clk_summary look nicer / more meaningful though
+> :-)
+> ---
+>  .../devicetree/bindings/pinctrl/samsung,pinctrl.yaml    | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/samsung,pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/samsung,pinctrl.yaml
+> index 118549c25976..49cc36b76fd0 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/samsung,pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/samsung,pinctrl.yaml
+> @@ -73,6 +73,13 @@ properties:
+>      minItems: 1
+>      maxItems: 2
+>  
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: pclk
+> +
+>    wakeup-interrupt-controller:
+>      $ref: samsung,pinctrl-wakeup-interrupt.yaml
+>  
+> @@ -120,6 +127,16 @@ required:
+>  
+>  allOf:
+>    - $ref: pinctrl.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: google,gs101-pinctrl
+> +    then:
+> +      required:
+> +        - clocks
+> +        - clock-names
 
-Suggested-by: Weijiang Yang <weijiang.yang@intel.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/x86.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+else:
+  properties:
+    clocks: false
+    clock-names: false
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 4c91189342ff..14cfa25ef0e7 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -491,7 +491,7 @@ static bool kvm_is_immutable_feature_msr(u32 msr)
- 	return false;
- }
- 
--static bool kvm_is_msr_to_save(u32 msr_index)
-+static bool kvm_is_advertised_msr(u32 msr_index)
- {
- 	unsigned int i;
- 
-@@ -500,6 +500,11 @@ static bool kvm_is_msr_to_save(u32 msr_index)
- 			return true;
- 	}
- 
-+	for (i = 0; i < num_emulated_msrs; i++) {
-+		if (emulated_msrs[i] == msr_index)
-+			return true;
-+	}
-+
- 	return false;
- }
- 
-@@ -529,11 +534,11 @@ static __always_inline int kvm_do_msr_access(struct kvm_vcpu *vcpu, u32 msr,
- 
- 	/*
- 	 * Userspace is allowed to read MSRs, and write '0' to MSRs, that KVM
--	 * reports as to-be-saved, even if an MSR isn't fully supported.
-+	 * advertises to userspace, even if an MSR isn't fully supported.
- 	 * Simply check that @data is '0', which covers both the write '0' case
- 	 * and all reads (in which case @data is zeroed on failure; see above).
- 	 */
--	if (host_initiated && !*data && kvm_is_msr_to_save(msr))
-+	if (host_initiated && !*data && kvm_is_advertised_msr(msr))
- 		return 0;
- 
- 	if (!ignore_msrs) {
--- 
-2.44.0.769.g3c40516874-goog
+but anyway this is all a bit fragile, because pinctrl is not a driver
+and you rely on initcall ordering.
+
+> 
+
+Best regards,
+Krzysztof
 
 
