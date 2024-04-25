@@ -1,99 +1,177 @@
-Return-Path: <linux-kernel+bounces-159168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ADEC8B2A2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD7258B2A31
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:54:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4688FB256DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:54:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2DBEB259D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:54:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A11154436;
-	Thu, 25 Apr 2024 20:54:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="RCA2hdoW"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A06BB11720;
-	Thu, 25 Apr 2024 20:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68E98154BE0;
+	Thu, 25 Apr 2024 20:54:35 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2764611720;
+	Thu, 25 Apr 2024 20:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714078460; cv=none; b=qY64Lv6ge71xAtivzFn7Xi18XI7EDYM407k6GnJcWGg7K4irJT4Kbk4XIH0qt19oHcz7FUODBEJq05TI/LVG9gUco/4ADEUGtfhAHbbc9AIlk/AUvqHPGXmaMGuL8yPJVPhtl7zlZ9aCOPB5tSP92waFRjealoPOCdkTFrmY/ZM=
+	t=1714078475; cv=none; b=hVY9nY196sOlxSA5UkhHgKOcPHfl2fgnTEM8rMUgSBJwd5tgqoy6udTi+27YD/CdGCay+iccC9Ouwvv2Ajzw+Yx7h+X1WNtHjL9aAvl7cUSj6fZPB26adzQ4qAnj2CsqqWeRuLPyCpYZ35prgMbsSdBpw8dJNvDWFe1EuV7aoqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714078460; c=relaxed/simple;
-	bh=WciR8uDABQl1urcVq8d2U2T1d9Ad3gU29yvgUKJCx24=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=fsekKH/C+zlBpO+fFOkwclT4ZG6MY4Q/lZnbG3AeWQsLEwEY/rceQ9ZOGBt+Nfs+YWCiU/+vPmkuUc6qfXtpNjVHAYsDhtBRAupfNERkzJBybd6MKeRqS8aFRnSvYOVlS02qzNe4bFG75PFU4V5Ypnv9uyb9ZU/QoRduOU8HiE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=RCA2hdoW; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1714078451;
-	bh=gfXvOeYACH2+rkJ+XuVNqc9MT4wcwdx7LxeCiLrPwv4=;
-	h=Date:From:To:Cc:Subject:From;
-	b=RCA2hdoWzBY/YjkDjSkfV/XVLssKMqwcjxgmCBc2ay9rDzPe/Q5zNC8W1mmEHMxLD
-	 rKbvJfvavRS5aqoZhH1ukO+nva8tIXEQb41BiWQCOh8Sf1dfY4T2+GeBkpFtizDkpV
-	 nwd2bt+BdL6Any5wwWakQz8PGs6OtafEKZxMU8Y7L+DPD812DrO+CD1EfsJHjcp/kO
-	 77SDIGya7oC6fPHFD7K/d+BahjLVYNyl3h3b4St3jnY8D136uuKiw+xWyrbLGV43ZZ
-	 /SlxVhli4V9eDIJ5ZiytGKBugosCrDHOHszZLU8aS1eByGKLJAeM4JXssBzhD8j9/W
-	 UnwuLyBe4srYQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VQSl75wqHz4wny;
-	Fri, 26 Apr 2024 06:54:11 +1000 (AEST)
-Date: Fri, 26 Apr 2024 06:53:43 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the cpufreq-arm
- tree
-Message-ID: <20240426065343.4a29617b@canb.auug.org.au>
+	s=arc-20240116; t=1714078475; c=relaxed/simple;
+	bh=Ln6jSr30HJLbKHl6Ffl7zzzn7xZ/vqKzjdgoixZhPyE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Red/QolloJCp9tvezvlP6HNsqyNHkKiYBBjtyBLfvnRYnjJBUV8TRunjlSvq+nCkyMikKrEbl/xGGy0tGcH0IVZzKUZ0J48VlbLJ4zb0EpVQm2qpjwbq4qx6HPWSgxS18uOJqKPXomNoENwoKEof8O+RYzdgbh1fxxVGpYNmH4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC1AD2F;
+	Thu, 25 Apr 2024 13:55:00 -0700 (PDT)
+Received: from [10.57.64.58] (unknown [10.57.64.58])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A0F7D3F73F;
+	Thu, 25 Apr 2024 13:54:31 -0700 (PDT)
+Message-ID: <c99f1b95-edad-4a27-8bdf-76164955348f@arm.com>
+Date: Thu, 25 Apr 2024 21:54:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7V8n3cVK.wQM4k+lHGVZzo_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] thermal/debugfs: Avoid printing zero duration for
+ mitigation events in progress
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>
+References: <3297002.44csPzL39Z@kreacher> <7659098.EvYhyI6sBW@kreacher>
+Content-Language: en-US
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <7659098.EvYhyI6sBW@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
---Sig_/7V8n3cVK.wQM4k+lHGVZzo_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Commit
+On 4/25/24 15:05, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> If a thermal mitigation event is in progress, its duration value has
+> not been updated yet, so 0 will be printed as the event duration by
+> tze_seq_show() which is confusing.
+> 
+> Avoid doing that by marking the beginning of the event with the
+> KTIME_MIN duration value and making tze_seq_show() compute the current
+> event duration on the fly, in which case '>' will be printed instead of
+> '=' in the event duration value field.
+> 
+> Similarly, for trip points that have been crossed on the down, mark
+> the end of mitigation with the KTIME_MAX timestamp value and make
+> tze_seq_show() compute the current duration on the fly for the trip
+> points still involved in the mitigation, in which cases the duration
+> value printed by it will be prepended with a '>' character.
+> 
+> Fixes: 7ef01f228c9f ("thermal/debugfs: Add thermal debugfs information for mitigation episodes")
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>   drivers/thermal/thermal_debugfs.c |   39 ++++++++++++++++++++++++++++++++------
+>   1 file changed, 33 insertions(+), 6 deletions(-)
+> 
+> Index: linux-pm/drivers/thermal/thermal_debugfs.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_debugfs.c
+> +++ linux-pm/drivers/thermal/thermal_debugfs.c
+> @@ -552,6 +552,7 @@ static struct tz_episode *thermal_debugf
+>   
+>   	INIT_LIST_HEAD(&tze->node);
+>   	tze->timestamp = now;
+> +	tze->duration = KTIME_MIN;
+>   
+>   	for (i = 0; i < tz->num_trips; i++) {
+>   		tze->trip_stats[i].min = INT_MAX;
+> @@ -680,6 +681,9 @@ void thermal_debug_tz_trip_down(struct t
+>   	tze->trip_stats[trip_id].duration =
+>   		ktime_add(delta, tze->trip_stats[trip_id].duration);
+>   
+> +	/* Mark the end of mitigation for this trip point. */
+> +	tze->trip_stats[trip_id].timestamp = KTIME_MAX;
+> +
+>   	/*
+>   	 * This event closes the mitigation as we are crossing the
+>   	 * last trip point the way down.
+> @@ -754,15 +758,25 @@ static int tze_seq_show(struct seq_file
+>   	struct thermal_trip_desc *td;
+>   	struct tz_episode *tze;
+>   	const char *type;
+> +	u64 duration_ms;
+>   	int trip_id;
+> +	char c;
+>   
+>   	tze = list_entry((struct list_head *)v, struct tz_episode, node);
+>   
+> -	seq_printf(s, ",-Mitigation at %lluus, duration=%llums\n",
+> -		   ktime_to_us(tze->timestamp),
+> -		   ktime_to_ms(tze->duration));
+> +	if (tze->duration == KTIME_MIN) {
+> +		/* Mitigation in progress. */
+> +		duration_ms = ktime_to_ms(ktime_sub(ktime_get(), tze->timestamp));
+> +		c = '>';
+> +	} else {
+> +		duration_ms = ktime_to_ms(tze->duration);
+> +		c = '=';
+> +	}
+> +
+> +	seq_printf(s, ",-Mitigation at %lluus, duration%c%llums\n",
+> +		   ktime_to_us(tze->timestamp), c, duration_ms);
+>   
+> -	seq_printf(s, "| trip |     type | temp(°mC) | hyst(°mC) |  duration  |  avg(°mC) |  min(°mC) |  max(°mC) |\n");
+> +	seq_printf(s, "| trip |     type | temp(°mC) | hyst(°mC) |  duration   |  avg(°mC) |  min(°mC) |  max(°mC) |\n");
 
-  51090b2ef6ea ("dt-bindings: cpufreq: cpufreq-qcom-hw: Add SM4450 compatib=
-les")
+So this one more space accounts for the new 'c' symbol in the rows
+below that header, for the 'duration' column. Make sense.
 
-is missing a Signed-off-by from its committer.
+>   
+>   	for_each_trip_desc(tz, td) {
+>   		const struct thermal_trip *trip = &td->trip;
+> @@ -794,12 +808,25 @@ static int tze_seq_show(struct seq_file
+>   		else
+>   			type = "hot";
+>   
+> -		seq_printf(s, "| %*d | %*s | %*d | %*d | %*lld | %*d | %*d | %*d |\n",
+> +		if (trip_stats->timestamp != KTIME_MAX) {
+> +			/* Mitigation in progress. */
+> +			ktime_t delta = ktime_sub(ktime_get(),
+> +						  trip_stats->timestamp);
+> +
+> +			delta = ktime_add(delta, trip_stats->duration);
+> +			duration_ms = ktime_to_ms(delta);
+> +			c = '>';
+> +		} else {
+> +			duration_ms = ktime_to_ms(trip_stats->duration);
+> +			c = ' ';
+> +		}
+> +
+> +		seq_printf(s, "| %*d | %*s | %*d | %*d | %c%*lld | %*d | %*d | %*d |\n",
+>   			   4 , trip_id,
+>   			   8, type,
+>   			   9, trip->temperature,
+>   			   9, trip->hysteresis,
+> -			   10, ktime_to_ms(trip_stats->duration),
+> +			   c, 10, duration_ms,
+>   			   9, trip_stats->avg,
+>   			   9, trip_stats->min,
+>   			   9, trip_stats->max);
+> 
+> 
+> 
+> 
 
---=20
-Cheers,
-Stephen Rothwell
+The comments in code in this particular case helps, since treating
+the KTIME_MIN/MAX values might become not obvious after a while.
+That LGTM
 
---Sig_/7V8n3cVK.wQM4k+lHGVZzo_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYqwtcACgkQAVBC80lX
-0GzPZAf8DnHYPrVmmiA8pIfZ4ALUUljGPlr3rzu3TQ+/jPPixfGsjjvl2G2g8hvo
-RbbZj99BtucGYUh0LpD8d8L7CupQcEr03FhORtMu4/gIvoUu4BQ15AIXZ7GYqZOM
-xMzugM4d6ndv+1p1tsPicECBYoi4Ex5RYuNN02wTgY8b51lKexp3Sn5xAZPN7C/A
-C1igimtCe0wm5vM2OmGjd7sCChzk6qJ/9f/xQBkZusOyuIp5AYW8ZIfzWrRV1WO4
-P+aRs3J+26pn89+feKdKiCsYtq234irwDplUiv2VqyazZwTdljVTNUrldOUYGKS5
-q4TyN8Nwe0Wx3yJGqyfpV9UGP0ctpg==
-=r6BK
------END PGP SIGNATURE-----
-
---Sig_/7V8n3cVK.wQM4k+lHGVZzo_--
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
