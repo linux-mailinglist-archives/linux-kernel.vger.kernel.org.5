@@ -1,86 +1,142 @@
-Return-Path: <linux-kernel+bounces-159343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 323AE8B2D50
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:57:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FAA78B2D4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:56:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E260C284F35
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:57:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09D3A1F21A83
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:56:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F22D155A56;
-	Thu, 25 Apr 2024 22:57:35 +0000 (UTC)
-Received: from mail115-24.sinamail.sina.com.cn (mail115-24.sinamail.sina.com.cn [218.30.115.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE55D156250;
+	Thu, 25 Apr 2024 22:56:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="t5vApXQj"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0212212BF28
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 22:57:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A484155A34
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 22:56:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714085854; cv=none; b=V4YD/BWfbRSE/Rx4AUNbs5pZ223RPO4E9NKC04107PHVp5cKlISU3QHcu5hjGF9FQc8d8xitYsqnrr2MnxjYc6f/B5kyeaVrcRX1sYaD6RsP1TaGdu2GhjSJsfZ0qJ6j7C+AGJCvHscLdi1B4jncsdZIlcyrq1K3UE5OObzfCjo=
+	t=1714085794; cv=none; b=MQXxSxcpnZ7zTy781FhD3gxqCH2EkGHs5N6GBhGeJIAQhH5bANmCtyHZc2g/qeEOacuS08Sh5scrqUDcGvBCivUE+/tDlVkQiuEExl78J+j2a+z6IS9ZEQ23Z+Rm3kYIvhBZgjvWGdyGizhl+Hs22JVrv/7wHCYTJOwiqQuadOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714085854; c=relaxed/simple;
-	bh=LGzbZC8/xoQQsXyfN11J1Puhk0Soqjo6+qmLU5QDD1k=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EAbJKQ8hrgqMgA4iwy1CnlElbcCLjhym3n9Z6hvI7hSs+7CNg3dC2iam+uCX9HUEnPM1tA1y75YVkbhiYcBfbVUkAbxHmHV9KSWWyYtvX6PWx+nbpPt2u6jjBZc2izV1uYIqoWE6Yh1aewBnLyJKmFAJB0phYJcF6qGhBLEhMc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([116.24.11.235])
-	by sina.com (10.75.12.45) with ESMTP
-	id 662ADF4300003BBD; Thu, 26 Apr 2024 06:55:01 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 31961131457685
-X-SMAIL-UIID: F35C7840F749482288CF30E0B3AFBC17-20240426-065501-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+c6a1953c27ace6cc34e5@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [usb?] WARNING in wdm_rxwork/usb_submit_urb (2)
-Date: Fri, 26 Apr 2024 06:55:01 +0800
-Message-Id: <20240425225501.3242-1-hdanton@sina.com>
-In-Reply-To: <00000000000092e8f90616e4627f@google.com>
-References: 
+	s=arc-20240116; t=1714085794; c=relaxed/simple;
+	bh=KYtF1y9QVO5lRyrlFu3LypLQR8DFwKeNUbD5+t8eWAo=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=LLpbXqoujAwWBX5yL2ORNrrhckGKOlnY3oj2+fjnysMUUYiCmiXybz61NCBOnKERBSbCim/YnxRjQxzaZGLxJHFvNjvpFWbJ5F7WR4VoqnC9OrPBIYv61SpahskZE3xJfdttN5a7vhgg1uPZJjLw9HZKvguNQ+NFjFhfMut2fws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=t5vApXQj; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61b76ab0b46so26496157b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714085790; x=1714690590; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kkB0Oe3ETNpX0Q3btEZQH9RDe4KISQYsNCkxgD0xRNI=;
+        b=t5vApXQj+HlsAVwouSNLkjD55s92sAE0x9Hx/6jIOoG7BURTbLdTbFKkVUSm4X/Wr6
+         7GcwrOVdagftITNEQO7s9IWVtBSc9pigDktf4TIay8KKPK9tkJLuWtiAeVsNXAqJ4KMd
+         yz+QoLXGsELnta+HaJZ6DzvNkDMVENKFx9i4yBghUyToYUZQoN6KbI4IeN4hk5LstTHW
+         f3pqZAep21f8Agz+Hr1rQ/jlwJ4KXcCZey9ZCNgmZL/61munn9Hx+BZokU0TxHqRqM6V
+         /zL+Vgqn6aTRrQ7L6Lg0soQTvqVKxNBEt6TsUqbCv4aEFpB0TogbFp2l40uw0D59LIoc
+         SIsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714085790; x=1714690590;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=kkB0Oe3ETNpX0Q3btEZQH9RDe4KISQYsNCkxgD0xRNI=;
+        b=VsfsMMQmXzBPmN8cer5g0NFhU7ewUSg5cddYBk0ChLU9F1bpYWpQYl/oB3hsWNF22d
+         J0pbYndzUhFUvGVH7BU4r0FViYoum0P+ftlWczMxPQwZh7KYmyX+C5hrLkLrduTOAaB8
+         fefUhiWJEfNBgZ7JaRqVYcubMJdxX0/3RtkFCwvU7mF/AMsLL0PZtTdkIFBzO+sMR9CE
+         0+oPEt6c8POf9MvcZ24OOWIJYgqZTz3vMfN4R10WImlkRkNTMphctfspFfvgYttXo/AS
+         apm/eUde0jRPTcyUOTvftjNGKXWiR284yFonHRvOVAvY9BsPeycbSaPu5gw+DuqnfmoW
+         GYFA==
+X-Forwarded-Encrypted: i=1; AJvYcCWKKEiIDsDi5oCYcv3pg5f5oPTSGg1Wbm/uVNmt/bIe5G0WFpgfmU0MgBlZTxGD+r3JMbe5PwvU1/W2NLLL3WyCxOOknhFw5UPsoAMw
+X-Gm-Message-State: AOJu0Yz3SnqTqyJOtvJFVQ2dCiQu+F+K74dUA/rYo2KiHvvFRDdZlndY
+	YzR0XpV31ff/aeI5BQaT4FeFnY7Mgt2zhmWyvYX2CAIKVoxrQq6sY5XOOoQYpQ6esv+Vy+zhZ9C
+	cFw==
+X-Google-Smtp-Source: AGHT+IFK9QispM2ICO/aS/Bc4lsJTNQ0CRIQjWqhFAfzup1zpNtFb4vtBZLcBygyOTGdpJexadd4ZWJU6fQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:15:b0:61a:b2d4:a3fb with SMTP id
+ bc21-20020a05690c001500b0061ab2d4a3fbmr220432ywb.8.1714085790530; Thu, 25 Apr
+ 2024 15:56:30 -0700 (PDT)
+Date: Thu, 25 Apr 2024 15:56:28 -0700
+In-Reply-To: <4195a811-7084-42fe-ad10-27d898fb3196@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240412084056.1733704-1-steven.price@arm.com>
+ <20240412084309.1733783-1-steven.price@arm.com> <20240412084309.1733783-2-steven.price@arm.com>
+ <CA+EHjTwDaP6qULmjEGH=Eye=vjFikr9iJHEyzzX+cr_sH57vcA@mail.gmail.com> <4195a811-7084-42fe-ad10-27d898fb3196@arm.com>
+Message-ID: <ZirfnPFPo1cMwFQc@google.com>
+Subject: Re: [PATCH v2 01/43] KVM: Prepare for handling only shared mappings
+ in mmu_notifier events
+From: Sean Christopherson <seanjc@google.com>
+To: Steven Price <steven.price@arm.com>
+Cc: Fuad Tabba <tabba@google.com>, kvm@vger.kernel.org, kvmarm@lists.linux.dev, 
+	Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>, 
+	James Morse <james.morse@arm.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Joey Gouly <joey.gouly@arm.com>, Alexandru Elisei <alexandru.elisei@arm.com>, 
+	Christoffer Dall <christoffer.dall@arm.com>, linux-coco@lists.linux.dev, 
+	Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 24 Apr 2024 21:40:22 -0700
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    a160e1202ca3 usb: dwc3: qcom: Add multiport suspend/resume..
-> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=166f3d27180000
+On Thu, Apr 25, 2024, Steven Price wrote:
+> On 25/04/2024 10:48, Fuad Tabba wrote:
+> > On Fri, Apr 12, 2024 at 9:43=E2=80=AFAM Steven Price <steven.price@arm.=
+com> wrote:
+> >>  bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range=
+);
+> >> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> >> index fb49c2a60200..3486ceef6f4e 100644
+> >> --- a/virt/kvm/kvm_main.c
+> >> +++ b/virt/kvm/kvm_main.c
+> >> @@ -633,6 +633,13 @@ static __always_inline kvm_mn_ret_t __kvm_handle_=
+hva_range(struct kvm *kvm,
+> >>                          * the second or later invocation of the handl=
+er).
+> >>                          */
+> >>                         gfn_range.arg =3D range->arg;
+> >> +
+> >> +                       /*
+> >> +                        * HVA-based notifications aren't relevant to =
+private
+> >> +                        * mappings as they don't have a userspace map=
+ping.
+> >> +                        */
+> >> +                       gfn_range.only_private =3D false;
+> >> +                       gfn_range.only_shared =3D true;
+> >>                         gfn_range.may_block =3D range->may_block;
+> >=20
+> > I'd discussed this with Sean when he posted this earlier. Having two
+> > booleans to encode three valid states could be confusing. In response,
+> > Sean suggested using an enum instead:
+> > https://lore.kernel.org/all/ZUO1Giju0GkUdF0o@google.com/
+>=20
+> That would work fine too! Unless I've missed it Sean hasn't posted an
+> updated patch. My assumption is that this will get merged (in whatever
+> form) before the rest of the series as part of that other series. It
+> shouldn't be too hard to adapt.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git  usb-testing
+Yeah, there's no updated patch.
 
---- x/drivers/usb/class/cdc-wdm.c
-+++ y/drivers/usb/class/cdc-wdm.c
-@@ -311,11 +311,12 @@ static void wdm_int_callback(struct urb
- 		&& !test_bit(WDM_DISCONNECTING, &desc->flags)
- 		&& !test_bit(WDM_SUSPENDING, &desc->flags)) {
- 		rv = usb_submit_urb(desc->response, GFP_ATOMIC);
-+		if (rv)
-+			clear_bit(WDM_RESPONDING, &desc->flags);
- 		dev_dbg(&desc->intf->dev, "submit response URB %d\n", rv);
- 	}
- 	spin_unlock_irqrestore(&desc->iuspin, flags);
- 	if (rv < 0) {
--		clear_bit(WDM_RESPONDING, &desc->flags);
- 		if (rv == -EPERM)
- 			return;
- 		if (rv == -ENOMEM) {
---
+Fuad, if you have a strong preference, I recommend chiming in on the TDX se=
+ries[*],
+as that is the series that's likely going to be the first user, and I don't=
+ have
+a strong preference on bools versus an enum.
+
+[*] https://lore.kernel.org/all/e324ff5e47e07505648c0092a5370ac9ddd72f0b.17=
+08933498.git.isaku.yamahata@intel.com
 
