@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-158006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82F228B1A07
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:50:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A06F68B1A09
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:52:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 352D01F24EFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 04:50:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FA8E1F22514
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 04:52:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 112D539FD7;
-	Thu, 25 Apr 2024 04:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD87B39FDA;
+	Thu, 25 Apr 2024 04:52:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hUFvEoHA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KiaxAdkq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D5335F0C;
-	Thu, 25 Apr 2024 04:50:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 255D718E02;
+	Thu, 25 Apr 2024 04:52:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714020610; cv=none; b=gJMbXSmnyjFko6O/dPlL4EnhBP4EJpsOHmunwpjKgr4Op5qlMOpDi05Jtv289RH/2fm+PflsBPaEgS2KHPwQh9ggBup44soOj8Q28WmE3WeO33VHT35znEUF3iY7R/AYEiaibi7wj1ynsHcdoHiTNM8C2thaRH32DOGSWmexcC4=
+	t=1714020723; cv=none; b=Fm6jIMncQO86JNsr1IpJaGEauh3HGgtts5V3+hR3MJivkUqgZaIrdBll1S65dEDRYwfKrnqdxy0mOMdi+dqfR/IsFuCVbA8hz4n3PWZq5BXiOoyJ6idTl3tGkTvXpCWuSY0qUI9SN4rRfWrrhLyad6UxOfPedz9b5RiceDFHCEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714020610; c=relaxed/simple;
-	bh=vi1NdzYR3K7bIhRidGu6Jw31GKlJa67y6775qr/tFeY=;
+	s=arc-20240116; t=1714020723; c=relaxed/simple;
+	bh=p7hjWUgR2R06dl3ei0tERDhkngFe7TKEuv52mjeiL5k=;
 	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=llSR7SVgOHiw57EJuE1QhZlfaPm+AZH0Pjn7m8k2fTNGqfIERPw8i/M099ra3CApJ5EZLsF2QCKJH8q5hixOpG15XtSi3p5U9iPKCoHuwb0xRd7MROEE5dlvZcE7dRABCIlAMWBBlBEaR6jiwZkD6jnx/5Zi6AY26NgJIrZsVwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hUFvEoHA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A83F9C113CC;
-	Thu, 25 Apr 2024 04:50:07 +0000 (UTC)
+	 References:In-Reply-To; b=YPyInGZu3qzDUzSgbsuyKcKTd3WOmXlTCo0DHQ2TJoATXpwN0BgPQxQqclq+0knqqOsHSPY4nzqinuvrm3o6zIPRwHbJ56XxkIUqUADAVbqrcsq0QkjQPAaPekxS6D375iQaA0+Jbz/s4zE1RfQ51ZnzYHQQfU0xlVfciuQ7r3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KiaxAdkq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30FEEC113CC;
+	Thu, 25 Apr 2024 04:51:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714020609;
-	bh=vi1NdzYR3K7bIhRidGu6Jw31GKlJa67y6775qr/tFeY=;
+	s=k20201202; t=1714020722;
+	bh=p7hjWUgR2R06dl3ei0tERDhkngFe7TKEuv52mjeiL5k=;
 	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=hUFvEoHAAnvHmwO5hhpYt6YnDOT1AzDcYkoNypUB/ZCKvPqXSJo5klNoEI7D61kwG
-	 Y6Uo87dHMg60h5ptPzW2pTmU1+smuxeF2ZpU/Lw6d6chBUeszm7hkdXOQ0Wwiu/xQl
-	 HZCcXjivMharCTttbDUNiGPSxsufuhg+0bd+wxgdy6C/UidJDXfdYHNpxHqoma2HnU
-	 jZdhr3JQVwazfZ1ULmTbujzaU7b+C1+FneXegjIhGGb/EUrmx/hs1k4erLkZZW3/E2
-	 ckgiOWWtxyEAfZJQdaK220BOygj0CrHZty/t7mLTbjHc8UmEwoCj2t+zin65A1fKbs
-	 UM7pFaivXZckQ==
+	b=KiaxAdkqqt8DPt6Nx4tssIeQoaNyqm4bSg1T6g8X3IVz3zUBEtkmlWuLfozSxqh4I
+	 F2ToYlUTcWMLnVGmHmqBFOxA+K+/9Bv+gzvLDRcAt9Jj6pABjdGp6AsLqpYZ3Hw3dc
+	 t8VjDL6yYzo/6vmbZtbGx2HCxOHkYtwMxiMR7S07OIk0Z6/p/9vbLYq6ec+S4rA4Dc
+	 vK8+PPe1Hv6CGTBAekkqBJH1kR2PonEWVoNwFdgHH+glGj9cn4xN7B/SL0TzrfflZF
+	 s1w0WYN1lhEguuFjXWHSTFhOFl1KSgesFYSt0jAyE3UtZ9oGSrgVYYcqeLd8AdpbqX
+	 PZW+8UIIOt+Wg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,70 +48,68 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Thu, 25 Apr 2024 07:50:05 +0300
-Message-Id: <D0SXLFYAGQVS.1HPM5FELWRYRT@kernel.org>
-Cc: "Jason Gunthorpe" <jgg@ziepe.ca>, <linux-integrity@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <patches@lists.linux.dev>
-Subject: Re: [PATCH v4 01/71] tpm: Switch to new Intel CPU model defines
+Date: Thu, 25 Apr 2024 07:51:56 +0300
+Message-Id: <D0SXMUQP947S.3KBGA0PH06PDX@kernel.org>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v12 14/14] selftests/sgx: Add scripts for EPC cgroup
+ testing
 From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, "Tony Luck"
- <tony.luck@intel.com>, "Borislav Petkov" <bp@alien8.de>, "Peter Huewe"
- <peterhuewe@gmx.de>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>,
+ <dave.hansen@linux.intel.com>, <kai.huang@intel.com>, <tj@kernel.org>,
+ <mkoutny@suse.com>, <linux-kernel@vger.kernel.org>,
+ <linux-sgx@vger.kernel.org>, <x86@kernel.org>, <cgroups@vger.kernel.org>,
+ <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
 X-Mailer: aerc 0.17.0
-References: <20240424181245.41141-1-tony.luck@intel.com>
- <20240424181444.41174-1-tony.luck@intel.com>
- <D0SXK2EUPF4G.M74BAD7ZDET9@kernel.org>
-In-Reply-To: <D0SXK2EUPF4G.M74BAD7ZDET9@kernel.org>
+References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
+ <20240416032011.58578-15-haitao.huang@linux.intel.com>
+ <D0LLS28WEXYA.G15BAG7WOJGR@kernel.org>
+ <D0LLVE07V8O0.S8XF3CY2DQ9A@kernel.org>
+ <op.2mbs1m05wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <D0LODQCRSTRA.2KSPCDB0FLK0X@kernel.org>
+ <op.2mqzodbxwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2mqzodbxwjvjmi@hhuan26-mobl.amr.corp.intel.com>
 
-On Thu Apr 25, 2024 at 7:48 AM EEST, Jarkko Sakkinen wrote:
-> On Wed Apr 24, 2024 at 9:14 PM EEST, Tony Luck wrote:
-> > New CPU #defines encode vendor and family as well as model.
-> >
-> > Signed-off-by: Tony Luck <tony.luck@intel.com>
-> > Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > ---
-> >  drivers/char/tpm/tpm.h          | 2 +-
-> >  drivers/char/tpm/tpm_tis_core.h | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
-> > index 61445f1dc46d..7b38ce007bdc 100644
-> > --- a/drivers/char/tpm/tpm.h
-> > +++ b/drivers/char/tpm/tpm.h
-> > @@ -28,7 +28,7 @@
-> >  #include <linux/tpm_eventlog.h>
-> > =20
-> >  #ifdef CONFIG_X86
-> > -#include <asm/intel-family.h>
-> > +#include <asm/cpu_device_id.h>
-> >  #endif
-> > =20
-> >  #define TPM_MINOR		224	/* officially assigned */
-> > diff --git a/drivers/char/tpm/tpm_tis_core.h b/drivers/char/tpm/tpm_tis=
-_core.h
-> > index 13e99cf65efe..c940fd18988e 100644
-> > --- a/drivers/char/tpm/tpm_tis_core.h
-> > +++ b/drivers/char/tpm/tpm_tis_core.h
-> > @@ -210,7 +210,7 @@ static inline int tpm_tis_verify_crc(struct tpm_tis=
-_data *data, size_t len,
-> >  static inline bool is_bsw(void)
-> >  {
-> >  #ifdef CONFIG_X86
-> > -	return ((boot_cpu_data.x86_model =3D=3D INTEL_FAM6_ATOM_AIRMONT) ? 1 =
-: 0);
-> > +	return ((boot_cpu_data.x86_vfm =3D=3D INTEL_ATOM_AIRMONT) ? 1 : 0);
-
-Umh I guess one could complain about extra parentheses ;-)
-
-Not sure if I care, if no other updates needed, probably don't.
-
-> >  #else
-> >  	return false;
-> >  #endif
+On Wed Apr 24, 2024 at 10:42 PM EEST, Haitao Huang wrote:
+> Hi Jarkko
+> On Tue, 16 Apr 2024 11:08:11 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
+=20
+> wrote:
 >
-> +1
+> > On Tue Apr 16, 2024 at 5:54 PM EEST, Haitao Huang wrote:
+> >> I did declare the configs in the config file but I missed it in my pat=
+ch
+> >> as stated earlier. IIUC, that would not cause this error though.
+> >>
+> >> Maybe I should exit with the skip code if no CGROUP_MISC (no more
+> >> CGROUP_SGX_EPC) is configured?
+> > OK, so I wanted to do a distro kernel test here, and used the default
+> > OpenSUSE kernel config. I need to check if it has CGROUP_MISC set.
 >
-> BR, Jarkko
+> I couldn't figure out why this failure you have encountered. I think =20
+> OpenSUSE kernel most likely config CGROUP_MISC.
+>
+> Also if CGROUP_MISC not set, then there should be error happen earlier on=
+ =20
+> echoing "+misc" to cgroup.subtree_control at line 20. But your log =20
+> indicates only error on echoing "sgx_epc ..." to =20
+> /sys/fs/cgroup/...//misc.max.
+>
+> I can only speculate that can could happen (if sgx epc cgroup was compile=
+d =20
+> in) when the cgroup-fs subdirectories in question already have populated =
+=20
+> config that is conflicting with the scripts.
+>
+> Could you double check or start from a clean environment?
+> Thanks
+> Haitao
+
+I can re-check next week once I'm back from Estonia. I'm travelling now
+to https://lu.ma/uncloud.
 
 BR, Jarkko
 
