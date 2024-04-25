@@ -1,138 +1,213 @@
-Return-Path: <linux-kernel+bounces-158860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 744AE8B25E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:03:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE5478B25CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:58:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF824B26714
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:03:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2CD51C20C41
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:58:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CD8114D281;
-	Thu, 25 Apr 2024 16:03:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E14F14C59D;
+	Thu, 25 Apr 2024 15:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pWS/aITh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="eHnj5UQC";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="dezGulnG";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="gBx+i3ZL";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="WNnfGfMb"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A881494BF;
-	Thu, 25 Apr 2024 16:03:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AE7C149E05;
+	Thu, 25 Apr 2024 15:58:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714060990; cv=none; b=R2/FG6xEhD1nSZ8xidYK4HdbV/q5XkVGOvKm1A3AOm+HT6672SF/VYu9n3M/y7bSLVnUQvdsmbueACJb18z8+sq9ZntcQfk0IDeIVQPEqkUXdpeHU5B9dhlauRNm5AcJOP5aIIR01DgoEiDCcZm9a3GbjpdGjq4tfknBWJezRfw=
+	t=1714060706; cv=none; b=MeZ5JqnxNjkDnG7V57Yf2RKWVZVrc1oDpf8Y8z6TrKi6EVbZWMiTH7ALJSDcUeroIzxdZFbf6e7tJqMUPrcBCitHbHWhBO7cy3LHWEw4KkodRqrvwZV3grpZQUeROb55LLxxAbJDM3MfyvJofcOIze/IUC+uVdO38cQ7UbQYrSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714060990; c=relaxed/simple;
-	bh=3hP3govGe0OHHTR4xCJ9CZzV7UIniHmuOXenpQjPGHM=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=jpayrqBEwoLX2VKWaHLXNEYGswEFqxEmckzBDEXWbhluJWVWhsdoeInocvAl6APkvZ9bwbwMUHeYh3l17uD6FFqqKF9g/NTYlqn5Y7PO+Tw0QFKkilr4xooBJUaJpSMhir4VvJ389bypBvmVsJndFtIhQDpyoVAzqwp2hnNUCM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pWS/aITh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACBA9C113CE;
-	Thu, 25 Apr 2024 16:03:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714060990;
-	bh=3hP3govGe0OHHTR4xCJ9CZzV7UIniHmuOXenpQjPGHM=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=pWS/aIThsXtBIX+S9GHI0HOm1qEbdbgE3Mv/ZcTnQ9kLV0W7SOP1KgU+O79ook+wV
-	 24PedWk/FlcF36EhhcLbn88aAkgn/rLgqrG/ErHpOsUURYJO0zippRVB8jhvCHBcE5
-	 9E1pYkNz3+5vAppMZ4SrfUlEQzjSPAy4ZFtQBpZKFiPQy8IehsCSCvr45hRe4ZNjBY
-	 fxJoOw4DMGvU5ZavFFlKFYoByumDNYBUwTLbeG3P7C1NlJo++2iG25jSXjwD4px6eE
-	 ZQQllJgrFU7HnhlQbp17Lu56AFaxVqYCLuUoGgnz1WyuoBNt9+G1lSnWLkPTUpJBT9
-	 2D2ZPlFbqjH1Q==
-From: Kalle Valo <kvalo@kernel.org>
-To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Cc: Wu Yunchuan <yunchuan@nfschina.com>,  Johannes Berg
- <johannes.berg@intel.com>,  "Breno Leitao" <leitao@debian.org>,
-  <linux-wireless@vger.kernel.org>,  <linux-kernel@vger.kernel.org>,
-  <lvc-project@linuxtesting.org>,
-  <syzbot+1bc2c2afd44f820a669f@syzkaller.appspotmail.com>
-Subject: Re: [PATCH v2] wifi: ar5523: enable proper endpoint verification
-References: <20240408121425.29392-1-n.zhandarovich@fintech.ru>
-	<171406032921.2967849.6111681305541795423.kvalo@kernel.org>
-Date: Thu, 25 Apr 2024 18:58:19 +0300
-In-Reply-To: <171406032921.2967849.6111681305541795423.kvalo@kernel.org>
-	(Kalle Valo's message of "Thu, 25 Apr 2024 15:52:23 +0000 (UTC)")
-Message-ID: <87a5lhh1t0.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1714060706; c=relaxed/simple;
+	bh=OxG/QwOLFpTqJqioQwvBPSs3kg69DSi3qMbneBAzDeU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YsY5MbIQfPoURwFVYRxkQvUKiSspXUBQxait9NcMxWOZRBjrAmLuIKPMoYDGxo19NOKW3a3JJl7Y5GWAiBTKdM9HOFigBbaqofum3NW1HpUGxvGvecz28zwEdYYQci2fUXHmazlN3zEz1edRJayjKZMM+TGjUsy8BNyiCAS5cRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=eHnj5UQC; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=dezGulnG; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=gBx+i3ZL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=WNnfGfMb; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3DEB95BF28;
+	Thu, 25 Apr 2024 15:58:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714060703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LTL/RRFbpvk/+mxrp2TJpSluJhlsQ2v73kcoSRWVGhE=;
+	b=eHnj5UQCzV0zNnpUZ924ax6ZKfd40F7KYQoI8HzJnDEDLW3gASgaxWtXN5PlMdCqrmxkGy
+	emmB7ET2pkVBpLoIyXl72ypf6w7BtuGBk9Xr4OZmiw0B0pjeeVUk0fx9QdIKBN/XgooVGF
+	bmOkC/+aXmCGJrXyFWk+1I6BPrcS/oo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714060703;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LTL/RRFbpvk/+mxrp2TJpSluJhlsQ2v73kcoSRWVGhE=;
+	b=dezGulnGTk4qBg8G8dYpBDLJyWDu5hsA8Otf+SfM2Ch3UZ6NeItmL8nbc4fLgKbQNT8LsD
+	9PVMRL2Wn6s2WpBw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=gBx+i3ZL;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=WNnfGfMb
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714060702; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LTL/RRFbpvk/+mxrp2TJpSluJhlsQ2v73kcoSRWVGhE=;
+	b=gBx+i3ZLtMmip8gNfQiPjMMQ0wKkImktVreGs+zMgnqKx8Ll/dCVKKdqU0Cs+OH8UXXgut
+	V9z8G8YtyyBHqvo7K6PglFKDkK9tiriblWJt0WLuaFzE4D/09e31ZnnnTGjhRRsibRdguk
+	Lzo3jy39kRGW3b4P2zjfzYKGKjpK2m8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714060702;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LTL/RRFbpvk/+mxrp2TJpSluJhlsQ2v73kcoSRWVGhE=;
+	b=WNnfGfMbL1lk3g5SDW720qUCxh+Lz9Md4whWA2zq5Dcwe+FfD8EqOq7FpwQ/kKRMSEb3eK
+	I3uES+suPrONTuDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 887691393C;
+	Thu, 25 Apr 2024 15:58:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id N86UGp19KmZBGwAAD6G6ig
+	(envelope-from <jdelvare@suse.de>); Thu, 25 Apr 2024 15:58:21 +0000
+Date: Thu, 25 Apr 2024 17:58:19 +0200
+From: Jean Delvare <jdelvare@suse.de>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-i2c@vger.kernel.org, Andi Shyti <andi.shyti@kernel.org>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] i2c: ali1535: remove printout on handled timeouts
+Message-ID: <20240425175819.20c1d9aa@endymion.delvare>
+In-Reply-To: <20240423121322.28460-3-wsa+renesas@sang-engineering.com>
+References: <20240423121322.28460-1-wsa+renesas@sang-engineering.com>
+	<20240423121322.28460-3-wsa+renesas@sang-engineering.com>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Flag: NO
+X-Spam-Score: -4.51
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 3DEB95BF28
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	HAS_ORG_HEADER(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_RCPT(0.00)[renesas];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sang-engineering.com:email,suse.de:dkim,suse.de:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.de:+]
 
-Kalle Valo <kvalo@kernel.org> writes:
+Hi Wolfram,
 
-> Nikita Zhandarovich <n.zhandarovich@fintech.ru> wrote:
->
->> Syzkaller reports [1] hitting a warning about an endpoint in use
->> not having an expected type to it.
->> 
->> Fix the issue by checking for the existence of all proper
->> endpoints with their according types intact.
->> 
->> Sadly, this patch has not been tested on real hardware.
->> 
->> [1] Syzkaller report:
->> ------------[ cut here ]------------
->> usb 1-1: BOGUS urb xfer, pipe 3 != type 1
->> WARNING: CPU: 0 PID: 3643 at drivers/usb/core/urb.c:504
->> usb_submit_urb+0xed6/0x1880 drivers/usb/core/urb.c:504
->> ...
->> Call Trace:
->>  <TASK>
->>  ar5523_cmd+0x41b/0x780 drivers/net/wireless/ath/ar5523/ar5523.c:275
->>  ar5523_cmd_read drivers/net/wireless/ath/ar5523/ar5523.c:302 [inline]
->>  ar5523_host_available drivers/net/wireless/ath/ar5523/ar5523.c:1376 [inline]
->>  ar5523_probe+0x14b0/0x1d10 drivers/net/wireless/ath/ar5523/ar5523.c:1655
->>  usb_probe_interface+0x30f/0x7f0 drivers/usb/core/driver.c:396
->>  call_driver_probe drivers/base/dd.c:560 [inline]
->>  really_probe+0x249/0xb90 drivers/base/dd.c:639
->>  __driver_probe_device+0x1df/0x4d0 drivers/base/dd.c:778
->>  driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:808
->>  __device_attach_driver+0x1d4/0x2e0 drivers/base/dd.c:936
->>  bus_for_each_drv+0x163/0x1e0 drivers/base/bus.c:427
->>  __device_attach+0x1e4/0x530 drivers/base/dd.c:1008
->>  bus_probe_device+0x1e8/0x2a0 drivers/base/bus.c:487
->>  device_add+0xbd9/0x1e90 drivers/base/core.c:3517
->>  usb_set_configuration+0x101d/0x1900 drivers/usb/core/message.c:2170
->>  usb_generic_driver_probe+0xbe/0x100 drivers/usb/core/generic.c:238
->>  usb_probe_device+0xd8/0x2c0 drivers/usb/core/driver.c:293
->>  call_driver_probe drivers/base/dd.c:560 [inline]
->>  really_probe+0x249/0xb90 drivers/base/dd.c:639
->>  __driver_probe_device+0x1df/0x4d0 drivers/base/dd.c:778
->>  driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:808
->>  __device_attach_driver+0x1d4/0x2e0 drivers/base/dd.c:936
->>  bus_for_each_drv+0x163/0x1e0 drivers/base/bus.c:427
->>  __device_attach+0x1e4/0x530 drivers/base/dd.c:1008
->>  bus_probe_device+0x1e8/0x2a0 drivers/base/bus.c:487
->>  device_add+0xbd9/0x1e90 drivers/base/core.c:3517
->>  usb_new_device.cold+0x685/0x10ad drivers/usb/core/hub.c:2573
->>  hub_port_connect drivers/usb/core/hub.c:5353 [inline]
->>  hub_port_connect_change drivers/usb/core/hub.c:5497 [inline]
->>  port_event drivers/usb/core/hub.c:5653 [inline]
->>  hub_event+0x26cb/0x45d0 drivers/usb/core/hub.c:5735
->>  process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
->>  worker_thread+0x669/0x1090 kernel/workqueue.c:2436
->>  kthread+0x2e8/0x3a0 kernel/kthread.c:376
->>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
->>  </TASK>
->> 
->> Reported-and-tested-by: syzbot+1bc2c2afd44f820a669f@syzkaller.appspotmail.com
->> Fixes: b7d572e1871d ("ar5523: Add new driver")
->> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
->
-> Does anyone have a real device to test this? I have had so much problems with
-> syzbot fixes in the past that I'm hesitant to take such patches without
-> testing.
+On Tue, 23 Apr 2024 14:13:19 +0200, Wolfram Sang wrote:
+> I2C and SMBus timeouts are not something the user needs to be informed
+> about on controller level. The client driver may know if that really is
+> a problem and give more detailed information to the user. The controller
+> should just pass this information upwards. Remove the printout.
+> 
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+>  drivers/i2c/busses/i2c-ali1535.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-ali1535.c b/drivers/i2c/busses/i2c-ali1535.c
+> index 461eb23f9d47..9d7b4efe26ad 100644
+> --- a/drivers/i2c/busses/i2c-ali1535.c
+> +++ b/drivers/i2c/busses/i2c-ali1535.c
+> @@ -285,10 +285,8 @@ static int ali1535_transaction(struct i2c_adapter *adap)
+>  		 && (timeout++ < MAX_TIMEOUT));
+>  
+>  	/* If the SMBus is still busy, we give up */
+> -	if (timeout > MAX_TIMEOUT) {
+> +	if (timeout > MAX_TIMEOUT)
+>  		result = -ETIMEDOUT;
+> -		dev_err(&adap->dev, "SMBus Timeout!\n");
+> -	}
+>  
+>  	if (temp & ALI1535_STS_FAIL) {
+>  		result = -EIO;
+> @@ -313,10 +311,8 @@ static int ali1535_transaction(struct i2c_adapter *adap)
+>  	}
+>  
+>  	/* check to see if the "command complete" indication is set */
+> -	if (!(temp & ALI1535_STS_DONE)) {
+> +	if (!(temp & ALI1535_STS_DONE))
+>  		result = -ETIMEDOUT;
+> -		dev_err(&adap->dev, "Error: command never completed\n");
+> -	}
+>  
+>  	dev_dbg(&adap->dev, "Transaction (post): STS=%02x, TYP=%02x, "
+>  		"CMD=%02x, ADD=%02x, DAT0=%02x, DAT1=%02x\n",
 
-Actually should we just remove ar5523 driver? Has anyone heard anyone
-using this driver still?
+I'm skeptical about that one, although this might be mainly an issue
+with the code flow rather than your proposed changes.
+
+There are 2 conditions which cause result to be set to -ETIMEDOUT.
+After removing the messages, there's no way to differentiate between
+these two cases, which could make bug investigation more difficult.
+
+Another concern is that it is possible (at least theoretically) to hit
+the first timeout condition and NOT return -TIMEDOUT. This is because
+the code flow tests a number of conditions in a non-exclusive way, so
+errnos may overwrite each other. I don't like this design. The
+consequence is that the calling device driver may not be able to report
+the timeout, while this was the reason you gave for removing the
+message.
+
+That being said, this is a very old driver, maintained in best effort
+mode, I actually very much doubt it has any user left, so there's
+little point in spending too much time on this. My gut feeling is that
+the first "result = -ETIMEDOUT" isn't actually needed in practice and
+will always be overwritten by another errno later in the code flow
+(possibly the second "result = -ETIMEDOUT"). So most likely your change
+is safe.
+
+Reviewed-by: Jean Delvare <jdelvare@suse.de>
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Jean Delvare
+SUSE L3 Support
 
