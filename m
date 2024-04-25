@@ -1,138 +1,128 @@
-Return-Path: <linux-kernel+bounces-158056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EAEA8B1AC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:15:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B5A58B1AC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:15:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A01142834AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:15:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3323D1F22639
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26153F9D2;
-	Thu, 25 Apr 2024 06:15:05 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05AD63FE5D;
+	Thu, 25 Apr 2024 06:15:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gki+LGyl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B22B27473
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 06:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4399B3D549;
+	Thu, 25 Apr 2024 06:15:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714025705; cv=none; b=Zw7Z2PnvA18jPRM9tSdpqo5aIG5FgodMPS96Gx9sAMrCtpF16HC02PayLQHVOjgmAdFSe/S8fZWK9zzNUXXgjRrxTTCiJGdlpmfyKsfvipoP4QxBzEbjluw90wYAlIpfSqTswnYYrXUVXtWZsMgMf56a4SmgPefWSDZ/N0oRFgk=
+	t=1714025720; cv=none; b=B2ZYQU59ln6IA9Xbjq/xkka+e4rLhDJ4pqgFFpWwWgF/bT6Mi4jq6pmnn36i6UUZQPj+54lycDU3yx2G66lZ8unQJiCMz40Z3rpDDXaT2/YNu808h66YDq2v8p1ETPfzp+rRUdA8SDTe11a7iO6wDGcPGCtpIPABCy59UtF2Nro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714025705; c=relaxed/simple;
-	bh=KsjKRFHHKQ+0GZOnUi9xLCWM4ubx9cXXQiLPw7we0eA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mXopc4gaHqVXIMMsLmkrI6KapI5pvFQ/83DNSLsIVqGtIQxdeOQwrvDtF6DIMbw3c39prg3j/ihSviM7ER5S1A2nlLQtfohZv3tWp21xRGFkn9PnNwziiaa5cdeMnyMZDDh0tPihEek/74KXqr/xlwOR4/bfvZxSjxYiSE7wopE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rzsNW-0005pe-V0; Thu, 25 Apr 2024 08:14:42 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rzsNT-00EDGW-EW; Thu, 25 Apr 2024 08:14:39 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rzsNT-008Mht-17;
-	Thu, 25 Apr 2024 08:14:39 +0200
-Date: Thu, 25 Apr 2024 08:14:39 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Xilin Wu <wuxilin123@gmail.com>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Junhao Xie <bigfoot@classfun.cn>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Bjorn Andersson <andersson@kernel.org>, 
-	Tengfei Fan <quic_tengfan@quicinc.com>, Molly Sophia <mollysophia379@gmail.com>, 
-	linux-pwm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 02/10] pwm: Add SI-EN SN3112 PWM support
-Message-ID: <nuq56pinjqonlo4crfibtb2ddlwvldurkphomsyyqp6iupqpbk@u6kun3qvstw2>
-References: <20240424-ayn-odin2-initial-v1-0-e0aa05c991fd@gmail.com>
- <20240424-ayn-odin2-initial-v1-2-e0aa05c991fd@gmail.com>
- <af62742c-8d6d-4fa9-b2e4-f83253e6e388@linaro.org>
+	s=arc-20240116; t=1714025720; c=relaxed/simple;
+	bh=Zi+Q8/M0MwglYcmuX7ZtdOt4NHaHuQTPUkYiJl0ajSo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Mn6ghdB+eb6zTaxTiHW8Cqa4uMpF9bOjBZYKC0s4NPgMnIMR6lHZtBdvYQmHX9RK8/5q78sojgIxrUuHNQxMne7Qzg+F8ny/jV2+wr2Xc4NP96h3HlgdcF3ipsCevrxgWQDAxcXm041nkYJHzWJtIrKKpLrq4zr75N/+hxBmodI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gki+LGyl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D19D3C113CC;
+	Thu, 25 Apr 2024 06:15:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714025719;
+	bh=Zi+Q8/M0MwglYcmuX7ZtdOt4NHaHuQTPUkYiJl0ajSo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=gki+LGylkXyeh4fj+SzwH9PNtfTFm110vhoFOOa8rsGS1dwrAuiWz0ttWmu3eWlIT
+	 OtyzKzBVEhME6girYTP5QpF5D6w4cwQ6zDFfEKrj7DtjSj5zGhSmFsVfZRNKKN8bcv
+	 l2IihBy5pTQmc9QJh+KakJlHsCuQ75ZRduTIVl+YGp0ir6GclaCTHrYA2/irShu5Cy
+	 jYYhZ+7ekTRQ1mQSWBhIct6OiaUHK5cBYnpaLhuAushGIaMxKglzafigRcczSk4MmB
+	 PErZTLMAsiP382H8HETZdlhxiyJOyssEmeIkh4I93GzkWW17/DMu9Yb+ZvQMuOMFJt
+	 bW18AbmGwM/ew==
+Message-ID: <f43600b5-dbb0-43a0-bd82-f950f9604b28@kernel.org>
+Date: Thu, 25 Apr 2024 08:15:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rl24wix7isqmyofu"
-Content-Disposition: inline
-In-Reply-To: <af62742c-8d6d-4fa9-b2e4-f83253e6e388@linaro.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: Tree for Apr 24
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20240424202112.4fc0e0d4@canb.auug.org.au>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240424202112.4fc0e0d4@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 24/04/2024 12:21, Stephen Rothwell wrote:
+> Hi all,
+> 
+> News: there will be no linux-next release tomorrow.
+> 
+> Changes since 20240423:
 
---rl24wix7isqmyofu
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Stephen,
 
-Hello,
+If you did not publish next for 25 Apr, maybe you can refetch
+memory-controllers tree (krzk/linux-mem-ctrl.git)?
 
-On Wed, Apr 24, 2024 at 09:37:25PM +0200, Konrad Dybcio wrote:
-> On 4/24/24 17:29, Xilin Wu via B4 Relay wrote:
-> > +
-> > +	/* use random value to apply changes */
-> > +	ret =3D sn3112_write_reg(priv, SN3112_REG_APPLY, 0x66);
->=20
-> "a random value"? sounds suspicious..
+I applied set of patches yesterday evening and I got build results after
+I finished working, so did not react on multiple failures caused by
+these patches.
 
-I smiled about that one, too, remembering https://xkcd.com/221/
+I noticed the failures now, I dropped patchset and refreshed my for-next
+branch.
 
-> [...]
-> > +#if IS_ENABLED(CONFIG_GPIOLIB)
-> > +	/* enable hardware shutdown pin */
-> > +	if (priv->sdb)
-> > +		gpiod_set_value(priv->sdb, 1);
-> > +#endif
-> > +
-> > +	/* power-off sn5112 power vdd */
-> > +	regulator_disable(priv->vdd);
-> > +
-> > +	pwmchip_remove(chip);
->=20
-> devm_pwmchip_add?
+Best regards,
+Krzysztof
 
-Note using devm_xyz only works if all requests before are also using
-devm. (There are a few exceptions, but these need proper thinking and
-extensive commenting.)
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---rl24wix7isqmyofu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYp9M4ACgkQj4D7WH0S
-/k5jTgf+JqJAnfN3fXmdz5yWJWeCDGj4DZTK3E0EJ2lu7asHWc+Pp6fM19DKN/F0
-dsr14eDwjo1po1ptkFeRa04QeB7yeqMay3j0d5X4XUOm/SIHEI2Mn/ky5ZlVOwr7
-ciorY8ICvuZ4YI/4306YGVmlbcndaA9ubGwykp0c9JYUqdSMWgwBGy4dVqHoKPmR
-RiM2SBTJAVd5Qw2LmSMMZ+uU25dWYCiM4eHrkbphTMhYItgqvTWkZhiTEdDVmU/p
-2RqsoyKgfJKcMfW8eF31vZd7qkRjPErqQU76uzhW0Cm9nPDJERrXkkB+fGEzOcAh
-6ros37wvCLEtFIp5fA2kOsh/PhCMeQ==
-=Hs3D
------END PGP SIGNATURE-----
-
---rl24wix7isqmyofu--
 
