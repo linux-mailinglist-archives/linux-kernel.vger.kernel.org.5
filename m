@@ -1,133 +1,163 @@
-Return-Path: <linux-kernel+bounces-158795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 963698B24FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:23:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A860D8B24FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:23:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88DD0B25D25
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:23:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DADD61C21B10
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D655A14A63D;
-	Thu, 25 Apr 2024 15:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA51014AD2F;
+	Thu, 25 Apr 2024 15:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mUue0AZn"
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="psH61Q4b"
+Received: from nbd.name (nbd.name [46.4.11.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A25A337152
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:23:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 930DD37152;
+	Thu, 25 Apr 2024 15:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714058593; cv=none; b=ayhc1U4B0pCScVSrM5Da7FHk3xNNq1PvcABYL3TM5Kn+RUOfPnGR5t7Y4ch7iPX9ZxuMYkATIvsQRoSY+PdW7/9V5McR42usFZNOPqT7MDkg26vsS8z+0fgvzqC39VvTTc3AVY1PsrBe4FPy1Yzt6ObSS6IoHN1w4vX7RexvuBY=
+	t=1714058588; cv=none; b=XqX1pmHTAo6dVwa68dPJdKPSqEx8FWQ4vEgrSSs3wdE3Jh0K+b2dj/k/vV3DWtjsnzlGO/On9oVns4VUA+1+zhsB2dJ85R+CrwJFplMZ8tQX0sVrRoCoK4qcJ3CLd5hcdk2ULUiFdXP9Lth+oouITSuXp3Qrw0Mgq2mjmmsI148=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714058593; c=relaxed/simple;
-	bh=XwZ+JO6jMDuVSzFezGDh19khl4PM1718Rezhq94PIV0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gI0gZZHFozp7kUAPfsbdXTFUhzqyLT3ZsHngriP3+m4sRFIXfHzknWE/+H6nGXwxF6uFh5afoc2sWMmGj3AR1GMuTqoD9/IZL54U2befUjoTl1ktOdw6HA/RY/7PAoOVc6Ibw3dQVe6d/cnVzpLwtPCoz9cbXAln3gc37AfaPEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=mUue0AZn; arc=none smtp.client-ip=209.85.222.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-78f02298dc6so97614685a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:23:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714058589; x=1714663389; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XwZ+JO6jMDuVSzFezGDh19khl4PM1718Rezhq94PIV0=;
-        b=mUue0AZnE5ty6DERUkqssfyVsxShep+2qc0Pd6+0HUBtR1cBgRvCNiD9HBCOxrEVnq
-         9e5vaC8oLgprfoc+0HgVrJ8Ul7OvVLC288jUPlV5MAzrQjdFqZSfZz0birXYRC62Pe3k
-         +aJXOSNuZ8J7HEryfBSyVcLmEvBEAVRNDcLXM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714058589; x=1714663389;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XwZ+JO6jMDuVSzFezGDh19khl4PM1718Rezhq94PIV0=;
-        b=loR3jkFCBWMt/J9h4uWiIqv3ZG9/P5rVxQbXuN39kqMFB/xCos8WuwwLnlt6r12Uoc
-         siMYrKYbZ5bKpfYViZPEUweKv3n1WS9GN1CYetyVw4M6RaGu547bf2BLfop1hqk94RKz
-         WTLZDyxl/6EyhoKQ9ti+4MGFFWDiWWnRUZdUsKql4/asch0bhM0ebeuTOBIMaOEPvgLF
-         zLi4swUVhtOYsv6Q/0v8thoemckR/ToY+DcDvnVSx1SuTT1O2pw/Fm3uA34I7R9gGwau
-         NNaIFdQA7xW4IeUxvomBIcLH7cunIqoDf/5bwTIdYFYQoY/gf62Y38r4szTG53NfTH+Z
-         KGvg==
-X-Forwarded-Encrypted: i=1; AJvYcCWhNNn+3hqyVO0+DFdaZEnLht88rZNle6QyAZZzcM71Q7B8uMAcXO+sqXPgWvqX6u1ltna940+rULoDX0xtFYLqkEDSe5l26UWgSVPJ
-X-Gm-Message-State: AOJu0Yw+e1QazYihIZy0igBK8PJztMNhV5TC0O2ojfXP9Xo/oZmC5cq2
-	Hm1u32nWvzQTfC6mf73GBQI81+9ttqxYpcDl+ERb2UUaCTd1UxxdnFxJ+tizh7qgCPWgMciKskM
-	=
-X-Google-Smtp-Source: AGHT+IEni6Mnn+/IE8u9hcNtyGBuY2W/Vx4E3kI7d6sDIjdZjaZqj1+BsvQ99dEk7mixXoXOYOiRfg==
-X-Received: by 2002:a05:620a:2987:b0:790:98c8:a765 with SMTP id r7-20020a05620a298700b0079098c8a765mr148231qkp.1.1714058588996;
-        Thu, 25 Apr 2024 08:23:08 -0700 (PDT)
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com. [209.85.160.172])
-        by smtp.gmail.com with ESMTPSA id o17-20020ae9f511000000b0078f1044bd68sm6850083qkg.50.2024.04.25.08.23.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 08:23:08 -0700 (PDT)
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-436ed871225so320741cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:23:07 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWRiUl7Emvk2CvGnL4dylQ+rEkUKWzIcwOWbWuiB2tIWWNr56tzH1LIliov0/LSEDPDHzWBRuVCxIXEUB3r0teFSPSOF/pUv9AkjGlf
-X-Received: by 2002:a05:622a:5097:b0:43a:381f:6b11 with SMTP id
- fp23-20020a05622a509700b0043a381f6b11mr264680qtb.19.1714058587159; Thu, 25
- Apr 2024 08:23:07 -0700 (PDT)
+	s=arc-20240116; t=1714058588; c=relaxed/simple;
+	bh=z8lrEkssKXGBLJ8WkduXGmy1x5LH5bVsT2GuLG5sXL0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZO1Viz/otyGB3mntSgGMTfO+zedobUXxVS9Tj7CToJussuPI0f4+uKrQptYFrq4WxN4nlv+08JHWwh2gdjqrb5Qe43oLVKC0bpp3xHyMq1r03PKPEnra8rWyQGi/mdb/L1+uUDy59eN7Mgy6pMZ8YdG9sig18u5QDHP9iXGJl0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=psH61Q4b; arc=none smtp.client-ip=46.4.11.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
+	s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=nmfOIPw0cblvIi139skBSZ3vxXW7qyAEkUTJ1CSEWBs=; b=psH61Q4bee0D2Q/u6VtWaKFK++
+	qPVxrGGEM0n2JQMPEkCi4gMDe0tVSeP6LyQmdA56xM5MCZj6jtGtJVO8Tw0A03nUFOTdLDw9tnyhJ
+	lRWowSxGCWCr2WuKhOdinAlLfm0J2fIQDBMI5w5ZeJGJC/5WsFtQ/GwZx7+r6vviAL+U=;
+Received: from p54ae9c93.dip0.t-ipconnect.de ([84.174.156.147] helo=nf.local)
+	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <nbd@nbd.name>)
+	id 1s00w8-007N20-0b;
+	Thu, 25 Apr 2024 17:23:00 +0200
+Message-ID: <89c406c9-9017-49cb-9084-c0a0fc3ad6f3@nbd.name>
+Date: Thu, 25 Apr 2024 17:22:59 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416091509.19995-1-johan+linaro@kernel.org>
- <CAD=FV=UBHvz2S5bd8eso030-E=rhbAypz_BnO-vmB1vNo+4Uvw@mail.gmail.com>
- <Zid6lfQMlDp3HQ67@hovoldconsulting.com> <CAD=FV=XoBwYmYGTdFNYMtJRnm6VAGf+-wq-ODVkxQqN3XeVHBw@mail.gmail.com>
- <ZioW9IDT7B4sas4l@hovoldconsulting.com>
-In-Reply-To: <ZioW9IDT7B4sas4l@hovoldconsulting.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Thu, 25 Apr 2024 23:22:50 +0800
-X-Gmail-Original-Message-ID: <CAD=FV=X5DGd9E40rve7bV7Z1bZx+oO0OzjsygEGQz-tJ=XbKBg@mail.gmail.com>
-Message-ID: <CAD=FV=X5DGd9E40rve7bV7Z1bZx+oO0OzjsygEGQz-tJ=XbKBg@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: qca: fix invalid device address check
-To: Johan Hovold <johan@kernel.org>
-Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>, Johan Hovold <johan+linaro@kernel.org>, 
-	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Matthias Kaehlcke <mka@chromium.org>, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	Stephen Boyd <swboyd@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 net-next v2 2/5] net: add support for segmenting TCP
+ fraglist GSO packets
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+ "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: linux-kernel@vger.kernel.org
+References: <20240425150432.44142-1-nbd@nbd.name>
+ <20240425150432.44142-3-nbd@nbd.name>
+ <662a73ffea9df_1e1a162941e@willemb.c.googlers.com.notmuch>
+Content-Language: en-US
+From: Felix Fietkau <nbd@nbd.name>
+Autocrypt: addr=nbd@nbd.name; keydata=
+ xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
+ ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
+ Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
+ AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
+ vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
+ wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
+ TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
+ l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
+ dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
+ HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
+ VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
+ CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
+ VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
+ Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
+ DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
+ wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
+ f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
+ aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
+ FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
+ TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
+ GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCeMncXpbbWNT2AtoAYICrKyX5R3iMAoMhw
+ cL98efvrjdstUfTCP2pfetyN
+In-Reply-To: <662a73ffea9df_1e1a162941e@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On 25.04.24 17:17, Willem de Bruijn wrote:
+> Felix Fietkau wrote:
+>> Preparation for adding TCP fraglist GRO support. It expects packets to be
+>> combined in a similar way as UDP fraglist GSO packets.
+>> For IPv4 packets, NAT is handled in the same way as UDP fraglist GSO.
+>> 
+>> Signed-off-by: Felix Fietkau <nbd@nbd.name>
+>> ---
+>>  net/ipv4/tcp_offload.c   | 69 ++++++++++++++++++++++++++++++++++++++++
+>>  net/ipv6/tcpv6_offload.c |  3 ++
+>>  2 files changed, 72 insertions(+)
+>> 
+>> diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
+>> index fab0973f995b..e455f884190c 100644
+>> --- a/net/ipv4/tcp_offload.c
+>> +++ b/net/ipv4/tcp_offload.c
+>> @@ -28,6 +28,72 @@ static void tcp_gso_tstamp(struct sk_buff *skb, unsigned int ts_seq,
+>>  	}
+>>  }
+>>  
+>> +static void __tcpv4_gso_segment_csum(struct sk_buff *seg,
+>> +				     __be32 *oldip, __be32 *newip,
+>> +				     __be16 *oldport, __be16 *newport)
+>> +{
+>> +	struct tcphdr *th;
+>> +	struct iphdr *iph;
+>> +
+>> +	if (*oldip == *newip && *oldport == *newport)
+>> +		return;
+>> +
+>> +	th = tcp_hdr(seg);
+>> +	iph = ip_hdr(seg);
+>> +
+>> +	inet_proto_csum_replace4(&th->check, seg, *oldip, *newip, true);
+>> +	inet_proto_csum_replace2(&th->check, seg, *oldport, *newport, false);
+>> +	*oldport = *newport;
+>> +
+>> +	csum_replace4(&iph->check, *oldip, *newip);
+>> +	*oldip = *newip;
+>> +}
+>> +
+>> +static struct sk_buff *__tcpv4_gso_segment_list_csum(struct sk_buff *segs)
+>> +{
+>> +	struct sk_buff *seg;
+>> +	struct tcphdr *th, *th2;
+>> +	struct iphdr *iph, *iph2;
+>> +	__be32 flags, flags2;
+>> +
+>> +	seg = segs;
+>> +	th = tcp_hdr(seg);
+>> +	iph = ip_hdr(seg);
+>> +	flags = tcp_flag_word(th);
+>> +	flags2 = tcp_flag_word(tcp_hdr(seg->next));
+> 
+> Vestigial, now that flag overwrite is removed in v2?
 
-On Thu, Apr 25, 2024 at 4:40=E2=80=AFPM Johan Hovold <johan@kernel.org> wro=
-te:
->
-> > > I assume all Trogdor boards use the same controller, WCN3991 IIUC, bu=
-t
-> > > if you're worried about there being devices out there using a differe=
-nt
-> > > address we could possibly also use the new
-> > > "qcom,local-bd-address-broken" DT property as an indicator to set the
-> > > bdaddr quirk.
-> >
-> > They all should use the same controller, but I'm just worried because
-> > I don't personally know anything about how this address gets
-> > programmed nor if there is any guarantee from Qualcomm that it'll be
-> > consistent. There are a whole pile of boards in the field, so unless
-> > we have some certainty that they all have the same address it feels
-> > risky.
->
-> Hopefully Janaki and Qualcomm will provide some answers soon.
->
-> And otherwise we have another fall back in that we can use the
-> "qcom,local-bd-address-broken" property for Trogdor.
+Will fix, thanks.
 
-Quick question. I haven't spent lots of time digging into the
-Bluetooth subsystem, but it seems like if the device tree property is
-there it should take precedence anyway, shouldn't it? In other words:
-if we think there is built-in storage for the MAC address but we also
-see a device tree property then we need to decide which of the two we
-are going to use. Are there any instances where there's a bogus DT
-property and we want the built-in storage to override it?
+> All this code is very similar to __udpv4_gso_segment_list_csum. But
+> the zero checksum handling in __udpv4_gso_segment_csum makes it just
+> different enough that I also do not immediately see a straightforward
+> way to avoid duplicating.
 
--Doug
+Also, the checksum field is in a different location in the udp header. I 
+don't think avoiding duplication makes sense here.
+
+- Felix
 
