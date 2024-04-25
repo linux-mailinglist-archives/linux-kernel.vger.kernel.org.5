@@ -1,208 +1,81 @@
-Return-Path: <linux-kernel+bounces-158559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 336D68B2204
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:54:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CEF48B2207
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:54:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E46BB2815E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:54:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C888B28715
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:54:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13B6149E1D;
-	Thu, 25 Apr 2024 12:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95473149C6D;
+	Thu, 25 Apr 2024 12:53:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HmPVATzK"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pSBnG9S5"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98F83149E00;
-	Thu, 25 Apr 2024 12:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4CE1494D8;
+	Thu, 25 Apr 2024 12:53:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714049588; cv=none; b=DIz3mXQTO5vP/My78hAaw5n8zVKHexLyjkRp+dilWwLkvddkPAVFP0N5KBOK+ZfgdxypSt6t1fsfaqcXMPMV/GkQWA8GjhoITVmLXQp7ui3sAeHeXn/5AeKkiBTTjfOUw4VM7EFr2s3smuMxWsFJKUANp0YLMrkZKzhjcbBqqV0=
+	t=1714049606; cv=none; b=kNZ9R2KNPY3019MXaFL3yzxg9RA80YDd/7woaqLOOgkaztwz4yT/grHU72lJqJ/W15QYVzrJ8YsN74sXBBtIUT9sICu/CpuGOUPtugD/gpyiRFGCiPkbCghPx+Fnb0zDsmyKhe0cZUs/GFLgXJ/2jej4oX15KnmSDBhZ6B3nnpg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714049588; c=relaxed/simple;
-	bh=XfQQ/z9BtUlkZgytQuO3SdEdKCJLzgISzH2+HARnjeE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JYXCzoF4U/PeCCHLBjRzAu49zYHgmwT58cfgLtMbue7eQENADgcJ48RE9McB3DaTJVkcItdbR64b/+AgetlrvqLeLNVN3Nk5ExzGM0cR9olhFfOZTiWxlSKsMpHLXJTboOLS3NC2NefXafkcjrJ5qVd4nwn7qwAc5MkTISwdpy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HmPVATzK; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714049587; x=1745585587;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=XfQQ/z9BtUlkZgytQuO3SdEdKCJLzgISzH2+HARnjeE=;
-  b=HmPVATzKXMv6gKa0jtoWQm9OM3wiXAMHoo6g7kWPJ7QNhMbJOALdRbnA
-   b3tFeJmFOnJqKL0azf2IYlyiiaGKLKqwm8s8cffCCa/X7/2QVID99mZOR
-   4Iz+HYXOBeZEBLwtrmwS0upM8zWM1MNOsndB3tqsOa9idgmn3URmIrwwF
-   UNo/9paxS3lDz+bJyr9jYvVPh4o2dlQQVzFrsWz8VBX+BijNIHy8MHY6/
-   FubRipl9rol1syFOmQZoXdxqWDTd0nsUz0om0izPIOdjEPJpO/n3i8s0Z
-   hb7lFWH6rZc2OcRCJt/PlvHGRwJDyvpA8fCMwWmf9rWnlOy5Ro1zME4LE
-   g==;
-X-CSE-ConnectionGUID: LZX3ITRvTgyTjOS1mjkapg==
-X-CSE-MsgGUID: lg1NI6+ETb2b1+KTwpFu0g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="10267430"
-X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
-   d="scan'208";a="10267430"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 05:53:06 -0700
-X-CSE-ConnectionGUID: mF1UQcu1QwmzL4T9hwsi8w==
-X-CSE-MsgGUID: dsuxEbtlSv+UCs0CdtCYYw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
-   d="scan'208";a="29691994"
-Received: from tdx-lm.sh.intel.com ([10.239.53.27])
-  by orviesa003.jf.intel.com with ESMTP; 25 Apr 2024 05:53:04 -0700
-From: Wei Wang <wei.w.wang@intel.com>
-To: seanjc@google.com,
-	pbonzini@redhat.com
-Cc: kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Wei Wang <wei.w.wang@intel.com>
-Subject: [PATCH v3 3/3] KVM: x86/pmu: Add KVM_PMU_CALL() to simplify static calls of kvm_pmu_ops
-Date: Thu, 25 Apr 2024 20:52:52 +0800
-Message-Id: <20240425125252.48963-4-wei.w.wang@intel.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20240425125252.48963-1-wei.w.wang@intel.com>
-References: <20240425125252.48963-1-wei.w.wang@intel.com>
+	s=arc-20240116; t=1714049606; c=relaxed/simple;
+	bh=fy8j5zTS5R9p5dLel/NsA3+rvhAU+p9UzfYeBFb2gz0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p7vqkIuYnBl1wTWUajJ5pWYFVF8GkDy339Hke4F8KY1r6g+6DbPGcKpPBQ2dEcfOKI4irgaW9KUV0E6vD9ThBsl4yhiM/jVGQdNyQ18soZ8ETFlLZfE6JFZK0OsnFDUhwwTiDA0qDqZVQGer1MC4KPirciR61qj+AprpqUQsa2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=pSBnG9S5; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=KAaKjBOmTmKtiwXbnEwj76/jYmsGdqRarPPNKoQCzpQ=; b=pSBnG9S50M2h95Gw323PvYrCgU
+	eS3udHqR1Aurzel+p6jTZ6oKATg1OaRBD1LcpDgbeVilplQdGrZbWJY8VQrMpK9MeDRKbqZTLzJYK
+	IAkhW223WdCj1azUPJ2lNZu9lsdB/kPXanRPhTAsbsiQ/HMrHuo0mIT5MqyqgLrcStQi8lLtxWdzn
+	0/vlJ6WPiUc4BgNOtOpETbKz2+VpO6mStBkqx0OsgBBY7FFBdIV345P+vxJTCIiYOpWsVg6Tki0Sx
+	QY0QucCSuYkWnSX/Kb9e/irflumoOnJirnxvx5RCZr8p4m8QnCAPuS4EgY8jdZmsZyvHoR0y5INSW
+	f3n+YjHw==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rzybD-000000033Bg-24jW;
+	Thu, 25 Apr 2024 12:53:15 +0000
+Date: Thu, 25 Apr 2024 13:53:15 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Jeongjun Park <aha310510@gmail.com>
+Cc: brauner@kernel.org, eadavis@qq.com,
+	jfs-discussion@lists.sourceforge.net, jlayton@kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	shaggy@kernel.org,
+	syzbot+241c815bda521982cb49@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] jfs: Fix array-index-out-of-bounds in diFree
+Message-ID: <ZipSO4ITxuy2faKx@casper.infradead.org>
+References: <ZilEXC3qLiqMTs29@casper.infradead.org>
+ <20240425124433.28645-1-aha310510@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425124433.28645-1-aha310510@gmail.com>
 
-Similar to KVM_X86_CALL(), KVM_PMU_CALL() is added to streamline the usage
-of static calls of kvm_pmu_ops, which improves code readability.
+On Thu, Apr 25, 2024 at 09:44:33PM +0900, Jeongjun Park wrote:
+> Through direct testing and debugging, I've determined that this 
+> vulnerability occurs when mounting an incorrect image, leading to 
+> the potential passing of an excessively large value to 
+> 'sbi->bmap->db_agl2size'. Importantly, there have been no instances 
+> of memory corruption observed within 'sbi->bmap->db_agl2size'. 
+> 
+> Therefore, I think implementing a patch that terminates the 
+> function in cases where an invalid value is detected.
 
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Wei Wang <wei.w.wang@intel.com>
----
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/pmu.c              | 24 ++++++++++++------------
- 2 files changed, 13 insertions(+), 12 deletions(-)
-
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 90cdb7256a69..eafffc2e5732 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1853,6 +1853,7 @@ extern bool __read_mostly enable_apicv;
- extern struct kvm_x86_ops kvm_x86_ops;
- 
- #define KVM_X86_CALL(func) static_call(kvm_x86_##func)
-+#define KVM_PMU_CALL(func) static_call(kvm_x86_pmu_##func)
- 
- #define KVM_X86_OP(func) \
- 	DECLARE_STATIC_CALL(kvm_x86_##func, *(((struct kvm_x86_ops *)0)->func));
-diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-index 6c92bc7647b3..2ec943e3d5ba 100644
---- a/arch/x86/kvm/pmu.c
-+++ b/arch/x86/kvm/pmu.c
-@@ -542,7 +542,7 @@ int kvm_pmu_check_rdpmc_early(struct kvm_vcpu *vcpu, unsigned int idx)
- 	if (!kvm_pmu_ops.check_rdpmc_early)
- 		return 0;
- 
--	return static_call(kvm_x86_pmu_check_rdpmc_early)(vcpu, idx);
-+	return KVM_PMU_CALL(check_rdpmc_early)(vcpu, idx);
- }
- 
- bool is_vmware_backdoor_pmc(u32 pmc_idx)
-@@ -591,7 +591,7 @@ int kvm_pmu_rdpmc(struct kvm_vcpu *vcpu, unsigned idx, u64 *data)
- 	if (is_vmware_backdoor_pmc(idx))
- 		return kvm_pmu_rdpmc_vmware(vcpu, idx, data);
- 
--	pmc = static_call(kvm_x86_pmu_rdpmc_ecx_to_pmc)(vcpu, idx, &mask);
-+	pmc = KVM_PMU_CALL(rdpmc_ecx_to_pmc)(vcpu, idx, &mask);
- 	if (!pmc)
- 		return 1;
- 
-@@ -607,7 +607,7 @@ int kvm_pmu_rdpmc(struct kvm_vcpu *vcpu, unsigned idx, u64 *data)
- void kvm_pmu_deliver_pmi(struct kvm_vcpu *vcpu)
- {
- 	if (lapic_in_kernel(vcpu)) {
--		static_call(kvm_x86_pmu_deliver_pmi)(vcpu);
-+		KVM_PMU_CALL(deliver_pmi)(vcpu);
- 		kvm_apic_local_deliver(vcpu->arch.apic, APIC_LVTPC);
- 	}
- }
-@@ -622,14 +622,14 @@ bool kvm_pmu_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr)
- 	default:
- 		break;
- 	}
--	return static_call(kvm_x86_pmu_msr_idx_to_pmc)(vcpu, msr) ||
--		static_call(kvm_x86_pmu_is_valid_msr)(vcpu, msr);
-+	return KVM_PMU_CALL(msr_idx_to_pmc)(vcpu, msr) ||
-+	       KVM_PMU_CALL(is_valid_msr)(vcpu, msr);
- }
- 
- static void kvm_pmu_mark_pmc_in_use(struct kvm_vcpu *vcpu, u32 msr)
- {
- 	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
--	struct kvm_pmc *pmc = static_call(kvm_x86_pmu_msr_idx_to_pmc)(vcpu, msr);
-+	struct kvm_pmc *pmc = KVM_PMU_CALL(msr_idx_to_pmc)(vcpu, msr);
- 
- 	if (pmc)
- 		__set_bit(pmc->idx, pmu->pmc_in_use);
-@@ -654,7 +654,7 @@ int kvm_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		msr_info->data = 0;
- 		break;
- 	default:
--		return static_call(kvm_x86_pmu_get_msr)(vcpu, msr_info);
-+		return KVM_PMU_CALL(get_msr)(vcpu, msr_info);
- 	}
- 
- 	return 0;
-@@ -713,7 +713,7 @@ int kvm_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		break;
- 	default:
- 		kvm_pmu_mark_pmc_in_use(vcpu, msr_info->index);
--		return static_call(kvm_x86_pmu_set_msr)(vcpu, msr_info);
-+		return KVM_PMU_CALL(set_msr)(vcpu, msr_info);
- 	}
- 
- 	return 0;
-@@ -740,7 +740,7 @@ static void kvm_pmu_reset(struct kvm_vcpu *vcpu)
- 
- 	pmu->fixed_ctr_ctrl = pmu->global_ctrl = pmu->global_status = 0;
- 
--	static_call(kvm_x86_pmu_reset)(vcpu);
-+	KVM_PMU_CALL(reset)(vcpu);
- }
- 
- 
-@@ -778,7 +778,7 @@ void kvm_pmu_refresh(struct kvm_vcpu *vcpu)
- 	if (!vcpu->kvm->arch.enable_pmu)
- 		return;
- 
--	static_call(kvm_x86_pmu_refresh)(vcpu);
-+	KVM_PMU_CALL(refresh)(vcpu);
- 
- 	/*
- 	 * At RESET, both Intel and AMD CPUs set all enable bits for general
-@@ -796,7 +796,7 @@ void kvm_pmu_init(struct kvm_vcpu *vcpu)
- 	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
- 
- 	memset(pmu, 0, sizeof(*pmu));
--	static_call(kvm_x86_pmu_init)(vcpu);
-+	KVM_PMU_CALL(init)(vcpu);
- 	kvm_pmu_refresh(vcpu);
- }
- 
-@@ -818,7 +818,7 @@ void kvm_pmu_cleanup(struct kvm_vcpu *vcpu)
- 			pmc_stop_counter(pmc);
- 	}
- 
--	static_call(kvm_x86_pmu_cleanup)(vcpu);
-+	KVM_PMU_CALL(cleanup)(vcpu);
- 
- 	bitmap_zero(pmu->pmc_in_use, X86_PMC_IDX_MAX);
- }
--- 
-2.27.0
-
+If that's the problem then the correct place to detect & reject this is
+during mount, not at inode free time.
 
