@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-158089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9875F8B1B51
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:57:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2EAD8B1B56
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:59:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1A9DB21825
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:57:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15331285599
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:59:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF9FA66B5E;
-	Thu, 25 Apr 2024 06:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1BBD5FDA5;
+	Thu, 25 Apr 2024 06:59:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xr4NYuYx"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="J3LtZaxz"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5489B5A116
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 06:56:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 583AA5A4E9
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 06:59:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714028217; cv=none; b=uPEtI8EA5VgthqjbdqtfvLfPPKSZkIwipPVQZqx0TzRKuioGVtvWuxvI4xURtxhfYMz263pgGc3kHc5OtKzOSun0+qqH2hHSQ3XfUuygwX+2aUKkVbrAazXdYudGJzh0sSsiDp/foDu3jLOVpzn7bSBZ1i06x1ngWmNHnIZgmT4=
+	t=1714028355; cv=none; b=Sn3WRBL9pneJPwZpXsDOpmnBhsL/Z6F8CphG5OrTK9egzohlsyoCK6e3V1ZQN3JlhwK+KDqR9EU64kmWhb6HvSyUBoqsWHLMAxzG9bQFITebTFK82ol3rkHcHOVl/fht3gwotvsI0pw+73TfSdGdSFmc/auCJye1JDO9cc9cjeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714028217; c=relaxed/simple;
-	bh=gutV/l3zNwt39H6PkS3oMjEZAnVl5VIlC/aAXWw6L1E=;
+	s=arc-20240116; t=1714028355; c=relaxed/simple;
+	bh=z5jx6HtgVTpu9E6jNxPG5tEWAnqSpYuFVdPfk3SZAEI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ks2xGst/Pn5ZqqvUdhCyX/7ya5jKnDSaIb1qdsm4DfIau+8N0UFbXmNVTiTHU3j3Aey3ADecDl6TdAUrF/6Z0xg1aNrp9Bjy3L3ZouzWWvVSzimiV+a4iMSRhg/GbkLMncPDV1R/d3WjWFHJ5pwsf2sSADwX7w434Ejc2WaaGhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xr4NYuYx; arc=none smtp.client-ip=209.85.208.54
+	 In-Reply-To:Content-Type; b=XF85hC54YhyX44yZxG3oDMZkrOK/kFF8EKNj1ATc+xtAptGm5Bi5KhDNAFY8PEhZoePqxAW0iPP07fx5rsNybUKfJ0V/WlZSChWQe0SE1/l/dY08YgK4fZausv4SQ0PCTc2hT72NYTOBo2SRN3tjjJTKorwM62WF7H8equ+WIVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=J3LtZaxz; arc=none smtp.client-ip=209.85.208.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56e6acb39d4so694323a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:56:56 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5723eff7f38so153198a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:59:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714028215; x=1714633015; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714028351; x=1714633151; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=4kDeA/DdCP44UQEEZZWDJudGGyAKphhBXeK2Po9a8ow=;
-        b=xr4NYuYxsW+Wnz/4JZ9G/s7/8+bCqeywM3lAGGmGxprMnzNJ0p9u5cAOj9qsLVBCnB
-         3m+T5lDk1yxuRzFLD5Lfmbreb/nvJeXxfE0EeDFETNbY6YE+i0xCGGcGPn5hMXNQK+iY
-         rBbKt436tJ02pd/9ve5GrKVCfzWbJFWbJdenZND+mT4BGOFe/hBpvm6JTNOWf7amL+Vo
-         Mkq/Bc2L6TI/BbtQShhm89an5u8Qm25rm3K+YNTNJR0wYWUGAVU7rXwbtk9UBbL6Ht1K
-         afp2Zce00CiN4Qv2K8oPPVHwgGf7GuhyGEjENcKmdiPbnMF47onWY6u12WvGFkc653Yn
-         EVIQ==
+        bh=OJt7GQviSaHwmxCYZtnsF3ZT5cKCAy7SutbGqK4H06k=;
+        b=J3LtZaxzFi3ubBGGx54b+GoGWLjKznoDE/p9GOKYn7I7DDoZ7/GPzXu7IpSTO9O3Xt
+         w80+JWGkuDxXQW5962LMJoZGZ5QSd6qLauktyRTPuQorb9jND3S8zyLNoRTefbYjhBWh
+         fVEBImvkNh3/Zely8vOZGGq0ySeIbOTSbkFJ3kTF8KafZOTT7zYqFfEmGm4GgR2ZszoT
+         rEXF0X3LgZYu5jJxDeCxp3y30p5zP+iQU/EcnBvOkdFChITgYkkdZC21LVxIk1N+SD8Q
+         Zj2l3PugucDvlxNxaka6rvz/N1s7hSTioMbIcs6RrOAOY/GB6qfoi2c37ekm274CrPLp
+         fO1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714028215; x=1714633015;
+        d=1e100.net; s=20230601; t=1714028351; x=1714633151;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4kDeA/DdCP44UQEEZZWDJudGGyAKphhBXeK2Po9a8ow=;
-        b=g8STkGJ388Nd+8lbni/DqUkTl2zBC8o44+WO1VSkixymRqRdIdRYp2QYqivj0QGU9g
-         Gb+Vfwunji9lNEUZCp+PyunJuBfjSnF4Hp8khIMpie4MoPbG2TitU8TjH4vKJ48Omavx
-         nAQOt2/uKGrxVTaH9BLB94CPce7nCdRzsDU5y5YODolaD4LuTiGCfz0y5/Hz7bYTuWIR
-         n23Q6c58QXoFYFxOlX/BvD7xAxlTi/C4JZFy2Vq05ALl2o4hfAK0M68zyN1adVtZGjMj
-         O4fd9tFt0fk4dXyw7/QJ0hb0JREdEOA6O2c2O5kiingw51Kz2n3Px5OBmUib9n1tjPBO
-         /ANg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwcJFbF8JQRhiWoZwCRcdR8Kft27O0nZAF0RedXzeUDVbT/KVyBOfdPxqVHBMnafOdN7ivNA852FImSvpZ3xrXYhYV2Ph/0TiCm5W0
-X-Gm-Message-State: AOJu0Yw3HBZvjNuVZw2cG9TeA+4sijioFypKOuH6ylVcU1LexSx7nBv7
-	8VZbloPQYxgfRSIS6jRxdpJ/jP2p6zUqujaXO8ulwWFQbk1fuiwdcR4/aKNoEyY=
-X-Google-Smtp-Source: AGHT+IEb+mDFzxt8WPf8QMuzryOz1XEZwoFaFKxpdKbvv3biGHTvP4YoubTjU+2b4haqab6XVhpoLg==
-X-Received: by 2002:a50:a445:0:b0:570:1ea8:c50a with SMTP id v5-20020a50a445000000b005701ea8c50amr3528815edb.6.1714028214573;
-        Wed, 24 Apr 2024 23:56:54 -0700 (PDT)
+        bh=OJt7GQviSaHwmxCYZtnsF3ZT5cKCAy7SutbGqK4H06k=;
+        b=uLLULvKBAe15Un/Z5ndtgAXJLBVA/OlP0+j06j+Dg1Z7TktY/FkXU7eyyy4VX+6lwt
+         AwrJnZ6Tj3HQQELmaE6LqkUytvZ6l5e/DeUUmzvDrlC5oLhWd2SbA6SOYgbvGoIizbEy
+         tN3X0ih/Ik9rctF6fnQZ6oDLgzjhj/5ZcYqSVhLzpNtJ3qH2n+aIS1d/c6rNxI1yAxF8
+         Ebjc4OxFPOE132dv6LMnDluxOHzPDnApQvZqIDWToKUeHsPYf6MVXmYgNSRo+pQ/ZZjL
+         TpXKP8DGxsX0MK5498vp9BzRKU6puYTzNt/vTGndInrrolLr3qrOvPm7DiDO1OfMQio2
+         THrw==
+X-Forwarded-Encrypted: i=1; AJvYcCVqmK61oWt7bYSSCyyfds0xj0bGEDFQtZPWJQHGo4oFa+CcqU958PXrv/O3m/Ln4tiVIg51HBQQ+YvMAaFhTzjd7W2FzKI5xvy5ODLz
+X-Gm-Message-State: AOJu0Yz1unxsx/ZErjS9OSdir8l1Sa0jNHgQ1Nc2otpi9speVSj26qSy
+	awJiIOdZF3rsBXGA+MXBFsGEqghd0gdQsV1J29l1CKH8uMWhVXgBVui3JS/zfqU=
+X-Google-Smtp-Source: AGHT+IF5dhSBGr5KQdhtsEFv63O6COLGuBL0vfdDLKinDeAYNw8vV70ZSY/l7q4ZEmvoEvefnUGz7w==
+X-Received: by 2002:a50:8e08:0:b0:56e:2a0a:c133 with SMTP id 8-20020a508e08000000b0056e2a0ac133mr3786854edw.22.1714028351586;
+        Wed, 24 Apr 2024 23:59:11 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id q10-20020a056402248a00b0056fe7c5475bsm8666953eda.10.2024.04.24.23.56.53
+        by smtp.gmail.com with ESMTPSA id cs14-20020a0564020c4e00b005723e8610d2sm395020edb.77.2024.04.24.23.59.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 23:56:54 -0700 (PDT)
-Message-ID: <b9b3ccaf-7ad1-485a-9ee8-9a9922936e79@linaro.org>
-Date: Thu, 25 Apr 2024 08:56:52 +0200
+        Wed, 24 Apr 2024 23:59:11 -0700 (PDT)
+Message-ID: <2a6f758d-eade-4feb-bc93-f1a6811a6f88@linaro.org>
+Date: Thu, 25 Apr 2024 08:59:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,24 +76,18 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/7] dt-bindings: clock: Add binding constants for
- BLZP1600
-To: Nikolaos Pasaloukos <nikolaos.pasaloukos@blaize.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: James Cowgill <james.cowgill@blaize.com>,
- Matt Redfearn <matthew.redfearn@blaize.com>,
- Neil Jones <neil.jones@blaize.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+Subject: Re: [PATCH 1/3] dt-bindings: gpio: brcmstb: add gpio-ranges
+To: Doug Berger <opendmb@gmail.com>, Linus Walleij
+ <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Phil Elwell <phil@raspberrypi.com>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  Conor Dooley <conor+dt@kernel.org>,
- "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-References: <20240424133241.19210-1-nikolaos.pasaloukos@blaize.com>
- <fd4072dc-7cd3-4d13-a15b-d63c675a5994@linaro.org>
- <c11194fb-0449-4b36-adf1-c15d7a66344d@blaize.com>
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ bcm-kernel-feedback-list@broadcom.com, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240424185039.1707812-1-opendmb@gmail.com>
+ <20240424185039.1707812-2-opendmb@gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Content-Language: en-US
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -140,39 +134,18 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <c11194fb-0449-4b36-adf1-c15d7a66344d@blaize.com>
+In-Reply-To: <20240424185039.1707812-2-opendmb@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 24/04/2024 18:14, Nikolaos Pasaloukos wrote:
->> No, they cannot be invalid. IDs start from 0 and are incremented by one.
->> If you have holes, it is not a binding.
->>
->> Drop the header or use it properly, so as virtual IDs.
->>
->> Best regards,
->> Krzysztof
->>
-> My intention was to avoid using magic numbers on the DeviceTree. That's why I added them here.
-> Also, we have some custom drivers which we plan to upload and their schemas need those files.
-> The alternative would be to use magic numbers for our clocks and resets.
+On 24/04/2024 20:50, Doug Berger wrote:
+> Add optional gpio-ranges device-tree property to the Broadcom
+> Set-Top-Box GPIO controller.
 > 
-> In the commit message and on the header file I have mentioned that these are numbers matching
-> the hardware specification (1 to 1) of the chip not just enums.
-> Some IDs are invalid because of a hardware gap, some others are invalid because the SCMI
-> service will return an error that the number is invalid.
-> 
-> Is there another way to prevent the magic numbers in the schemas and device-tree.
-> 
-> Thank you very much for your fast and detailed review.
+> Signed-off-by: Doug Berger <opendmb@gmail.com>
+> ---
 
-Bindings describe the interface between DTS and drivers (OS or some sort
-of other software). The purpose of binding headers is to document the
-constants which are used by both, because they are part of that
-interface. Therefore constants are pure abstraction.
-
-Let me rephrase the question: Why you do not have headers for interrupt
-numbers? All addresses? GPIO pin numbers?
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
