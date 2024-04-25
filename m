@@ -1,132 +1,132 @@
-Return-Path: <linux-kernel+bounces-158942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFCA78B272F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:07:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72C408B2767
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:15:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66DDD286A45
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:07:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A347E1C2420D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:15:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B8014EC51;
-	Thu, 25 Apr 2024 17:06:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF7C514E2CC;
+	Thu, 25 Apr 2024 17:15:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LSxMwlMp"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ExqcqHuT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D5E214D714;
-	Thu, 25 Apr 2024 17:06:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB6714A61B;
+	Thu, 25 Apr 2024 17:15:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714064799; cv=none; b=Fm6jPfkFJaXqTelfuG3Rmf4AIOwsd2wfM77XwZeL3g0yGDxEiiXz0vsNQPvM5STY91A2cS3P5ZV10qcuZcha9ImAN+XSLVgG0NSWu4Sm58lWuvkIMzDlVUt6wtddOU9mQXP2Th94RusAvi6VnZ7+iWdzbpm3v/Us1rNar9I7gLo=
+	t=1714065308; cv=none; b=EM3xrI5jxsUcv5zl8MFKiBRrvMxmSPom5JbqCLIhk/vTsEzcfHDmjKJKBnVnyhq8ZhicMuNL5Kkch1ge2fQH7YINAwItRVlRHDDl/w8vHmURMuahkkTUxJRnYHwu9pGBvIra5UyAOzfCrfQTSKe0lOKPjJy3/tBJZ5+JMirNZ+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714064799; c=relaxed/simple;
-	bh=viLFxt1UKi1dyqI1aIAAm7qzEwjgBkF02Wj6Ul74LOg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=RoNa5mlnC/5ke5OV8cfeohHFSuz+nxR79A+8JLEI2IeDqG0kIwluF0jNfYHsydeeyz/0Nmntjiw6wBxbFtBwkUd0gqtKENZCoNd8twZcWwgx0KYV8cIgIcS+o7Ps4oTsheHtJY7OCvp/7DXJUTVlv+y7L394xRy5NAc7m7eJVTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LSxMwlMp; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714064798; x=1745600798;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=viLFxt1UKi1dyqI1aIAAm7qzEwjgBkF02Wj6Ul74LOg=;
-  b=LSxMwlMp3HYil4vH0cQSHLnh32fDysNd+SvG0rc25/7r5mzxMFgjKw0L
-   A1vof1YfE4g11mjW1Se/K8itHmCJ0wmDtuk51k7JDvF/+n0M7FJN0Auug
-   1J7BeMsS1p9D+/hX8+/V0bOkMVqgZut42XCPZvqgLFvEsjDZjImp89OQo
-   0zXvurikM0/+5TVPmh1ESrVfXfQ15scWPP8DyHtgRQete0PFwIFHS9Ts2
-   8ru1kDWEB6A1aj9Ld9Ai68JljDlrbzxGTgU5WNSSQKyC6NI5aIUqS8Xgs
-   RyNyFGPSiHvj+A6gHMhXIwuQ17L16kTbeVFy/M075AWx0Mqu1BgV3oriH
-   A==;
-X-CSE-ConnectionGUID: aDu/UwrgRriZbG3ggQqQVA==
-X-CSE-MsgGUID: 2G9wZ0OJQVi9aCapuu/70A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="27225313"
-X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
-   d="scan'208";a="27225313"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 10:06:36 -0700
-X-CSE-ConnectionGUID: IsLwwQsIR5OEGidYcPIygw==
-X-CSE-MsgGUID: xGxh8KMGSv+CauYiu7SldA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
-   d="scan'208";a="25548563"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orviesa006.jf.intel.com with ESMTP; 25 Apr 2024 10:06:35 -0700
-From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Zhang Rui <rui.zhang@intel.com>,
-	Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	linux-pm@vger.kernel.org,
-	linux-hwmon@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Ricardo Neri <ricardo.neri@intel.com>
-Subject: [PATCH v2 3/3] hwmon: (coretemp) Extend the bitmask to read temperature to 0xff
-Date: Thu, 25 Apr 2024 10:13:11 -0700
-Message-Id: <20240425171311.19519-4-ricardo.neri-calderon@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240425171311.19519-1-ricardo.neri-calderon@linux.intel.com>
-References: <20240425171311.19519-1-ricardo.neri-calderon@linux.intel.com>
+	s=arc-20240116; t=1714065308; c=relaxed/simple;
+	bh=m+ephHm0ktzUHv+2tMHBzb7a/y8rw/VfVyjK2cEuWxk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H/hCO/Gdd8EyjZwuDKDuFt9N6GP0+48D6u1el7BGwDM4fizdJUkM3m6qZPVXZjv9n+ZdiNCGZVvUTLwdTBHC/anI0x3zDpKkvfIy1e+EWAoeJSDcZpAfG7UtNB5W/nLRIytXV5OKiXF3yoUOunYshiRsql5KHyb7wKzc1QkzMcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ExqcqHuT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFE9AC113CC;
+	Thu, 25 Apr 2024 17:15:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714065307;
+	bh=m+ephHm0ktzUHv+2tMHBzb7a/y8rw/VfVyjK2cEuWxk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ExqcqHuT/50DwLLO+RyJy0maUckYmNplHrF+X8bS2/2+2GfMfo0PeVaoA2YB49Scq
+	 +KIFcZa131OFqCqeB/NZVbKlG+XoHcmvc67iVyoy+WS+rxBaFZ8mPzMaB9XjqYhvE7
+	 FlMWWPNx2SF+4VNR6Snu6Xwllbre+37DQVbYoC1epUsfWkywWQjPNev0jm16i6/WGR
+	 9b75RZxk45nThFadmZbcjg7k4wwy2jZRIk77ZAy6M2hBn+Y51jxa9N1hYuaDVXGb2n
+	 u4Io65aoeRa2ZgS/zUX8ugjWMOdTaBR8bwG0EsB2hyVjgVQGO8/O0ZHbNOsyugWMG2
+	 6ybwhCpdakKIQ==
+Date: Thu, 25 Apr 2024 18:15:02 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Andrew Davis <afd@ti.com>, Nishanth Menon <nm@ti.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>, devicetree@vger.kernel.org,
+	Conor Dooley <conor+dt@kernel.org>, Hari Nagalla <hnagalla@ti.com>,
+	linux-kernel@vger.kernel.org, Tero Kristo <kristo@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	linux-remoteproc@vger.kernel.org,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-arm-kernel@lists.infradead.org,
+	Mathieu Poirier <mathieu.poirier@linaro.org>
+Subject: Re: [PATCH v8 1/4] dt-bindings: remoteproc: k3-m4f: Add K3 AM64x SoCs
+Message-ID: <20240425-herself-brigade-5b6b53dc5133@spud>
+References: <20240424190612.17349-1-afd@ti.com>
+ <20240424190612.17349-2-afd@ti.com>
+ <171399099843.670532.4326365049493230346.robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="TCVN+A/7bPxeCTEb"
+Content-Disposition: inline
+In-Reply-To: <171399099843.670532.4326365049493230346.robh@kernel.org>
 
-The Intel Software Development manual defines the temperature digital
-readout as the bits [22:16] of the IA32_[PACKAGE]_THERM_STATUS registers.
-Bit 23 is specified as reserved.
 
-In recent processors, however, the temperature digital readout uses bits
-[23:16]. In those processors, using the bitmask 0x7f would lead to
-incorrect readings if the temperature deviates from TjMax by more than
-127 degrees Celsius.
+--TCVN+A/7bPxeCTEb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Although not guaranteed, bit 23 is likely to be 0 in processors from a few
-generations ago. The temperature reading would still be correct in those
-processors when using a 0xff bitmask.
+On Wed, Apr 24, 2024 at 03:36:39PM -0500, Rob Herring wrote:
+>=20
+> On Wed, 24 Apr 2024 14:06:09 -0500, Andrew Davis wrote:
+> > From: Hari Nagalla <hnagalla@ti.com>
+> >=20
+> > K3 AM64x SoC has a Cortex M4F subsystem in the MCU voltage domain.
+> > The remote processor's life cycle management and IPC mechanisms are
+> > similar across the R5F and M4F cores from remote processor driver
+> > point of view. However, there are subtle differences in image loading
+> > and starting the M4F subsystems.
+> >=20
+> > The YAML binding document provides the various node properties to be
+> > configured by the consumers of the M4F subsystem.
+> >=20
+> > Signed-off-by: Martyn Welch <martyn.welch@collabora.com>
+> > Signed-off-by: Hari Nagalla <hnagalla@ti.com>
+> > Signed-off-by: Andrew Davis <afd@ti.com>
+> > ---
+> >  .../bindings/remoteproc/ti,k3-m4f-rproc.yaml  | 126 ++++++++++++++++++
+> >  1 file changed, 126 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-=
+m4f-rproc.yaml
+> >=20
+>=20
+> My bot found errors running 'make dt_binding_check' on your patch:
+>=20
+> yamllint warnings/errors:
+>=20
+> dtschema/dtc warnings/errors:
+>=20
+>=20
+> doc reference errors (make refcheckdocs):
+> Warning: Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yam=
+l references a file that doesn't exist: Documentation/devicetree/bindings/r=
+eserved-memory/reserved-memory.yaml
+> Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml: Docume=
+ntation/devicetree/bindings/reserved-memory/reserved-memory.yaml
 
-Model-specific provisions can be made for older processors in which bit 23
-is not 0 should the need arise.
+The file is now in dt-schema:
+https://github.com/devicetree-org/dt-schema/blob/main/dtschema/schemas/rese=
+rved-memory/reserved-memory.yaml
 
-Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
----
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Lukasz Luba <lukasz.luba@arm.com>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: linux-hwmon@vger.kernel.org
-Cc: linux-pm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org # v6.7+
----
-Changes since v1:
- * Corrected wrong sentence in commit message. (Rui)
- * Removed dependency on INTEL_TCC. (Guenter)
----
- drivers/hwmon/coretemp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--TCVN+A/7bPxeCTEb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
-index 616bd1a5b864..1b9203b20d70 100644
---- a/drivers/hwmon/coretemp.c
-+++ b/drivers/hwmon/coretemp.c
-@@ -411,7 +411,7 @@ static ssize_t show_temp(struct device *dev,
- 		 * Return it instead of reporting an error which doesn't
- 		 * really help at all.
- 		 */
--		tdata->temp = tjmax - ((eax >> 16) & 0x7f) * 1000;
-+		tdata->temp = tjmax - ((eax >> 16) & 0xff) * 1000;
- 		tdata->last_updated = jiffies;
- 	}
- 
--- 
-2.34.1
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiqPlgAKCRB4tDGHoIJi
+0sbaAQDUEiX6pWAsD/ZrFUySgnDTCekGE9Qk4UGS04emWMM5gQEAvfTX55Juni7i
+C/c/kdcf21tIlJbRPz6ahqTIWokjAgc=
+=X94X
+-----END PGP SIGNATURE-----
+
+--TCVN+A/7bPxeCTEb--
 
