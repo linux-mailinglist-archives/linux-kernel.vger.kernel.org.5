@@ -1,104 +1,221 @@
-Return-Path: <linux-kernel+bounces-158103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE4F78B1B94
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:11:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E8508B1BAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:14:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B32F31F23C94
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:11:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 456C528371C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA5E56EB55;
-	Thu, 25 Apr 2024 07:10:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA806BFD2;
+	Thu, 25 Apr 2024 07:14:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="MmasBUph"
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NkFkTG2A"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265FC6CDA5;
-	Thu, 25 Apr 2024 07:10:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD4F3CF5E;
+	Thu, 25 Apr 2024 07:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714029040; cv=none; b=uZlhU/LfITufdr6wUyubmn7V68w/ZlTtzgNBBFxXy8bUwO01JD1et/nSI0mp7VLDgueIne3fITim+YnlqFAhs+pEgdNN6rxk/Zj2zxO9lJq1zbr3218wWdisDtRsno2+CyirAzvAvpVOwdFPn2Nmhvjdz3kt18Hz7V5BGdSQI2o=
+	t=1714029254; cv=none; b=dAx52MDaa94sqdngmsr4p/5DnEPnH1fdWswlk8sJCeS7ACx1Gxjp/1jYp3P0iGAsk8Auctth0sucfi01YMrBctAEhNYvWc0r5Gk1oECy+DRSIJYVz58t6W5IFshxJMqevOFokJx14Ntm0CSYmdmAuvNz7y23qhfiIj3AUQeQu0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714029040; c=relaxed/simple;
-	bh=rmNCwj/QZXocvFu/SV+UsAbq1yc1Onrw5e/MM6tpI4o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gieOt1pLr+D0qMK4OYcfBKCyFuFyZJ7Do7RWMt3ayutKnlctUSr2Giaov9NdiRm4Za70PQzA3qkWCBKWf1/H9AA4Nu5ldrBgQ/XdgGVcB+r1Ht+ee3gDsTp/K9jbn607DyqrWZKqMU3wvsVD4YOAM1Fwrm2yuESrIdV3F2KqHVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=MmasBUph; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1714029027;
-	bh=rmNCwj/QZXocvFu/SV+UsAbq1yc1Onrw5e/MM6tpI4o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MmasBUphC0hDmcDselWsqNDchcFNLbtyyIXYaTEfQv4BLOsVbY80KeyHb5BvHn9uV
-	 mXfX+53b9fklgAHnv4JHOlIL0SSIIXm5AmCALLJVlcCrmQacW/Cc+9xB5aBl8A7Dwb
-	 B9LRLV8RKBn3hp3tvoCofURazzoY7NMe3hrGTd84=
-Date: Thu, 25 Apr 2024 09:10:27 +0200
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, 
-	Joel Granados <j.granados@samsung.com>, Kees Cook <keescook@chromium.org>, 
-	Eric Dumazet <edumazet@google.com>, Dave Chinner <david@fromorbit.com>, 
-	linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-mm@kvack.org, linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-xfs@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, 
-	kexec@lists.infradead.org, linux-hardening@vger.kernel.org, bridge@lists.linux.dev, 
-	lvs-devel@vger.kernel.org, linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, 
-	linux-sctp@vger.kernel.org, linux-nfs@vger.kernel.org, apparmor@lists.ubuntu.com
-Subject: Re: [PATCH v3 00/11] sysctl: treewide: constify ctl_table argument
- of sysctl handlers
-Message-ID: <9e657181-866a-4626-82d0-e0030051b003@t-8ch.de>
-References: <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
- <20240424201234.3cc2b509@kernel.org>
+	s=arc-20240116; t=1714029254; c=relaxed/simple;
+	bh=Uw5k8snV45DhizBJ9JPEOBZducDLygG+f5i+Ls5pmA0=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=YtvB6+aTUEVk8COFrm6DG4OfKsX2ZAf2keugh72V6sw4JEZy+cPpHTj4bj3mD0tM/QI4WX1JxqlJzxicreUjkFWu+Qjt0OuHpsXMXIyZsV5751TFhcDhTXyXkGEYvW9BfXrE8DuO4+jHwPl6VCZPfw0eJtAMUw8XbkSxODHks5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NkFkTG2A; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43P2jExE001827;
+	Thu, 25 Apr 2024 07:14:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=OPIXK7D3p+DrH1TF2OY64X+UHr1QtuBR8aKkWrFHsYA=; b=Nk
+	FkTG2Aedng8VcjMQArU8om7cPPYPXKikWSYwljzfjA68F++N8PdAcxRqusvVsVJp
+	D8g2RTf/WaimUkzMniGrtW1/G4/QBAmG64yhLbtjqbtXf7TshkiU9kuBVksNN6LD
+	m8DEc3NrzO3uhKT1e75g2Ggy9jaY5TMXGSd0HooyKFUi06ZiYe8EJ93Mc5cnoXBD
+	3veRZGcijGiigQ1+KuCOMCdAESaNd0KFuTZqezv4QRImqDmpaNGIwuWgnWZIWdyb
+	5efG+6+fvjDq0qLxfPlbMxY7sUulhEQepDPSwr+AJE7aRiNcl9RHjIrVVIQ0NCu/
+	f6XJY9UihSsI0UW5SO7w==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqenhrsuy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 07:14:02 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43P7E1x4021022
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 07:14:02 GMT
+Received: from hu-vvalluru-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Thu, 25 Apr 2024 00:13:58 -0700
+Date: Thu, 25 Apr 2024 12:43:54 +0530
+From: Venkata Prahlad Valluru <quic_vvalluru@quicinc.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_abhinavk@quicinc.com>,
+        <quic_nankam@quicinc.com>
+Subject: [PATCH] arm64: dts: qcom: qcs6490-rb3gen2: enable hdmi bridge
+Message-ID: <20240425071354.GA12900@hu-vvalluru-hyd.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240424201234.3cc2b509@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Yl6rC1WRpP1-43TSVpgpoTTrp5ghBaXr
+X-Proofpoint-GUID: Yl6rC1WRpP1-43TSVpgpoTTrp5ghBaXr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-25_06,2024-04-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 bulkscore=0 malwarescore=0 adultscore=1 clxscore=1011
+ priorityscore=1501 phishscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404250050
 
-On 2024-04-24 20:12:34+0000, Jakub Kicinski wrote:
-> On Tue, 23 Apr 2024 09:54:35 +0200 Thomas Weißschuh wrote:
-> > The series was split from my larger series sysctl-const series [0].
-> > It only focusses on the proc_handlers but is an important step to be
-> > able to move all static definitions of ctl_table into .rodata.
-> 
-> Split this per subsystem, please.
+Enable lt9611uxc bridge for qcs6490 rb3 gen2 platform.
 
-Unfortunately this would introduce an enormous amount of code churn.
+Signed-off-by: Prahlad Valluru <quic_vvalluru@quicinc.com>
+---
+ arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 86 ++++++++++++++++++++
+ 1 file changed, 86 insertions(+)
 
-The function prototypes for each callback have to stay consistent.
-So a another callback member ("proc_handler_new") is needed and users
-would be migrated to it gradually.
+diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+index a085ff5b5fb2..ff963f94c0e3 100644
+--- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
++++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+@@ -51,6 +51,18 @@
+ 			};
+ 		};
+ 	};
++	
++	hdmi-connector {
++		compatible = "hdmi-connector";
++		label = "HDMI";
++		type = "a";
++
++		port {
++			hdmi_con: endpoint {
++				remote-endpoint = <&lt9611_out>;
++			};
++		};
++	};
+ 
+ 	reserved-memory {
+ 		xbl_mem: xbl@80700000 {
+@@ -530,6 +542,45 @@
+ 			   <GCC_WPSS_RSCP_CLK>;
+ };
+ 
++&i2c0 {
++	clock-frequency = <400000>;
++	status = "okay";
++
++	lt9611_codec: hdmi-bridge@2b {
++		compatible = "lontium,lt9611uxc";
++		reg = <0x2b>;
++
++		interrupts-extended = <&tlmm 24 IRQ_TYPE_EDGE_FALLING>;
++		reset-gpios = <&pm7250b_gpios 2 GPIO_ACTIVE_HIGH>;
++
++		vcc-supply = <&vreg_l11c_2p8>;
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&lt9611_irq_pin &lt9611_rst_pin>;
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++
++				lt9611_a: endpoint {
++					remote-endpoint = <&mdss_dsi0_out>;
++				};
++			};
++
++			port@2 {
++				reg = <2>;
++
++				lt9611_out: endpoint {
++					remote-endpoint = <&hdmi_con>;
++				};
++			};
++		};
++	};
++};
++
+ &i2c1 {
+ 	status = "okay";
+ 
+@@ -602,6 +653,21 @@
+ 	status = "okay";
+ };
+ 
++&mdss_dsi {
++        vdda-supply = <&vreg_l6b_1p2>;
++        status = "okay";
++};
++
++&mdss_dsi0_out {
++        remote-endpoint = <&lt9611_a>;
++        data-lanes = <0 1 2 3>;
++};
++
++&mdss_dsi_phy {
++        vdds-supply = <&vreg_l10c_0p88>;
++        status = "okay";
++};
++
+ &qupv3_id_0 {
+ 	status = "okay";
+ };
+@@ -711,3 +777,23 @@
+ 	function = "gpio";
+ 	bias-disable;
+ };
++
++&pm7250b_gpios {
++        lt9611_rst_pin: lt9611-rst-state {
++                pins = "gpio2";
++                function = "normal";
++
++                output-high;
++                input-disable;
++                power-source = <0>;
++        };
++};
++
++&tlmm {
++        lt9611_irq_pin: lt9611-irq {
++                pins = "gpio24";
++                function = "gpio";
++                drive-strength = <8>;
++                bias-disable;
++        };
++};
+-- 
+2.17.1
 
-But then *all* definitions of "struct ctl_table" throughout the tree need to
-be touched.
-In contrast, the proposed series only needs to change the handler
-implementations, not their usage sites.
-
-There are many, many more usage sites than handler implementations.
-
-Especially, as the majority of sysctl tables use the standard handlers
-(proc_dostring, proc_dobool, ...) and are not affected by the proposed
-aproach at all.
-
-And then we would have introduced a new handler name "proc_handler_new"
-and maybe have to do the whole thing again to rename it back to
-the original and well-known "proc_handler".
-
-
-Of course if somebody has a better aproach, I'm all ears.
-
-
-Thomas
 
