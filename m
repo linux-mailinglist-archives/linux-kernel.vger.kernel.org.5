@@ -1,133 +1,114 @@
-Return-Path: <linux-kernel+bounces-158146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 562648B1C27
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:49:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B9D48B1C38
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:51:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75A38B23332
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:49:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F7FC1F22175
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:51:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 628876E5F6;
-	Thu, 25 Apr 2024 07:48:56 +0000 (UTC)
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 276276EB6F;
+	Thu, 25 Apr 2024 07:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="h+zgT3Dq"
+Received: from nbd.name (nbd.name [46.4.11.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0CCE5D477;
-	Thu, 25 Apr 2024 07:48:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2394D6D1D7;
+	Thu, 25 Apr 2024 07:51:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714031335; cv=none; b=MfiNw1Ic6mKVDn9nuJYW8B7em7lEVoNHzipyJHJ1Z6MuOmuKhUsI/VHHUKqe7r0II238hm0j5xST1RepoMbHiqyKSjBirDi/Z3hNJfwJpHSa9cx1MmGvZ2kTjyHScAi+YG80qrhawD9J1P0Vl88LseYhZpVsORAywduncAYa+So=
+	t=1714031488; cv=none; b=dhwAKJeDY8VzIkeZCz5Qfw6WM4KhNw4evwIECkdl9YU5VgoO0H0Za+jOm5SblxEBkbcTPfKb31G7VyHq4uhXUdv/cf6bCYn//Y4GLtigENFZOVWzvk3aBLtBaUoGklFwFCZtwf6wuPuSap4RUIiPIYBTt5fcnyKcMZ2Do9SV8zA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714031335; c=relaxed/simple;
-	bh=QWzMqnvNDE3uWpTxgV5Wt0uL05nTU10AMdyKsaDyklo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=erq9r3H6ntdhqxpOFq9UnIwMUtT9WXcA8NBggdrGotswXbrHpMtjnTDROcgg2WVlaRV9Q/9ciGhMTVWsVrieaLNiEdylD9KfeqJpPGJUjLmkz4vEwNQf4wYVWYbUMmR/v69n9ffbFOv66Nw7Ic/e+LSbvgOaSB2TB9cfBjrwkPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-617cd7bd929so6972277b3.3;
-        Thu, 25 Apr 2024 00:48:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714031332; x=1714636132;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jCeLs5NAma1XU37XgksPfxny5o1JTn/LLmRqHaQAAv4=;
-        b=oBTZ/fM+KgsoyB6VwO+2xK6hqHtiXcghR+qvILjU7p5ICnoi2zNFMqQZEJUnYD2ZFe
-         ODZ8uBCLBW/+pTauzs9Nch2CHbDEdOJnXDDZ7vFvqsiJs5FjhmqhD0TTsjiX6o+ZABLB
-         MqeM/f5VhREVHK2sXsCUZMT505PzRqVC9x9qxoy6uefmjlsg5+RtOMSzAhnLZpLcZyt5
-         +ieCj6eWidYQjwzKtp+YXG8I86lUg0M8BemwTOM++uq5EcxDnhf/UCs+tSgAQSPxkk+Z
-         j6tsFCdf/XkD684u6vnv7f0OGevERxRQPdwCvQDo17wEpK49jAhzQITlmrS8vv0eVeH+
-         bpqA==
-X-Forwarded-Encrypted: i=1; AJvYcCXjoI9DSIO39MCFkBW4GB8avXjTsTUTQ4HEbnmQE1JOnaCJyW8MjhYR7JTlpIsopiLQdpL41J+QpGsy68wfHwVPchlCjKm9RQ164GmrvKJWyecREB8xM7gFJVsrDtxA9D9h2cM15M/L8ODZ/icDOiC1M9FsT2fypgPf5KnD3tbvgWrKQVU=
-X-Gm-Message-State: AOJu0YzQjJMUiKJ1MDL+xgC+Q57rSGHbrCrKv0EvpMl5iq2H2yel9Zir
-	n17A/QjliZ/p2RmqHf2qeS4oAm0WoE3RecWCgy6BeLnk93gLQj/2i5MZuSNyfCA=
-X-Google-Smtp-Source: AGHT+IE8f1uBQL5109KAnWBYTJPPcWetC/Iced96NtbTjIMA1h56Su4gVQVTQW5GAZS82XBh7TnJJg==
-X-Received: by 2002:a05:690c:64c3:b0:61a:dc61:25e2 with SMTP id ht3-20020a05690c64c300b0061adc6125e2mr5247377ywb.49.1714031332194;
-        Thu, 25 Apr 2024 00:48:52 -0700 (PDT)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id y76-20020a0dd64f000000b00609f4170662sm3444253ywd.54.2024.04.25.00.48.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 00:48:51 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6184acc1ef3so6633687b3.0;
-        Thu, 25 Apr 2024 00:48:51 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWqzvnLZ8UI4QbwgPaqbVZqQymjU2WOO1r8Z04I7cVK+BGwlU9DyNL/8YvCugB6ZqwYfF9Myoym4kfjHnandmfM6KIo/MtISDxTuMXf/WROio32h1I5ZJ5vdpMH85qP4/Elah6pk754IlgKDWe0H0rGkFR5AtCTUTks6iU/Ec6w+g2wAr4=
-X-Received: by 2002:a25:109:0:b0:de5:5aaa:7881 with SMTP id
- 9-20020a250109000000b00de55aaa7881mr5977202ybb.49.1714031331725; Thu, 25 Apr
- 2024 00:48:51 -0700 (PDT)
+	s=arc-20240116; t=1714031488; c=relaxed/simple;
+	bh=E8nqpW5ZzmfZlyFxMTgnUG0S6w7Wm5x7ngIcV+KYTrs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=F+Y/TATiWuXPmvcLazlu+9n5VONof9WPThfUhnvUx3kFBwO6rvzIlEgijfRsngWSn4gyrfdnJK7F2bPxQdoUBW8isjpfTl+/nFvptWAZgu8rTvER5eMEgcTbM3w4EosTxcRjFN45ggdm0g0tawZzjmK2Cd0DtY0leEpBBPgWihU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=h+zgT3Dq; arc=none smtp.client-ip=46.4.11.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
+	s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=IalwHlFT6sSBOYgqoWx3ZddcL59v2TYDVEDNgoSvy0w=; b=h+zgT3DqsdtXGefzg157RtSARo
+	CRH/apCaMvTZJ/qFG/uMw8dVDp5W8aPYvxIa+1HOPXaAzUak4tQU9iqh+EO3Mh2raFGIIqRYn1Wvc
+	mVjfm95ATzwhv+Ohef72DtCFa2ZWhZ7D2PhozT57hB27OomjLeDEqB9j9CzIkIRT0sMM=;
+Received: from p54ae9c93.dip0.t-ipconnect.de ([84.174.156.147] helo=nf.local)
+	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <nbd@nbd.name>)
+	id 1rztsu-007BVh-23;
+	Thu, 25 Apr 2024 09:51:12 +0200
+Message-ID: <1bc0ac3d-b18d-4969-a090-6803fa4dd5b4@nbd.name>
+Date: Thu, 25 Apr 2024 09:51:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240425070936.547100-1-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240425070936.547100-1-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 25 Apr 2024 09:48:39 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX_uojDmx3pH--KsBcae=1VmcNupedGBwovVQcU+z14sg@mail.gmail.com>
-Message-ID: <CAMuHMdX_uojDmx3pH--KsBcae=1VmcNupedGBwovVQcU+z14sg@mail.gmail.com>
-Subject: Re: [RFT PATCH v2] serial: core: Call device_set_awake_path() for
- console port
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, tony@atomide.com, 
-	andriy.shevchenko@linux.intel.com, l.sanfilippo@kunbus.com, 
-	tglx@linutronix.de, geert+renesas@glider.be, ulf.hansson@linaro.org, 
-	peng.fan@nxp.com, linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
-	linux-pm@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 2/4] net: add support for segmenting TCP fraglist
+ GSO packets
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+ "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: linux-kernel@vger.kernel.org
+References: <20240424180458.56211-1-nbd@nbd.name>
+ <20240424180458.56211-3-nbd@nbd.name>
+ <6629c805d808e_1bd6b029424@willemb.c.googlers.com.notmuch>
+From: Felix Fietkau <nbd@nbd.name>
+Content-Language: en-US
+Autocrypt: addr=nbd@nbd.name; keydata=
+ xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
+ ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
+ Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
+ AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
+ vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
+ wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
+ TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
+ l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
+ dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
+ HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
+ VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
+ CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
+ VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
+ Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
+ DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
+ wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
+ f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
+ aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
+ FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
+ TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
+ GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCeMncXpbbWNT2AtoAYICrKyX5R3iMAoMhw
+ cL98efvrjdstUfTCP2pfetyN
+In-Reply-To: <6629c805d808e_1bd6b029424@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 25, 2024 at 9:09=E2=80=AFAM Claudiu <claudiu.beznea@tuxon.dev> =
-wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> In case the UART port is used as a console, no_console_suspend is
-> available in bootargs and UART port is part of a software-controlled powe=
-r
-> domain we need to call device_set_awake_path(). This lets the power
-> domain core code know that this domain should not be powered off
-> during system suspend. Otherwise, the UART port power domain is turned of=
-f,
-> nothing is printed while suspending and the suspend/resume process is
-> blocked. This was detected on the Renesas RZ/G3S SoC while adding support
-> for power domains.
->
-> Based on code investigation, this issue is present on other SoCs (e.g.,
-> Renesas R-Mobile A1 [1], IMX8QXP [2]) and different SoCs have particular
-> implementation to handle it. Due to this the patch added the call of
-> device_set_awake_path() in uart_suspend_port() instead of having it in
-> the platform specific UART driver.
->
-> [1] https://elixir.bootlin.com/linux/v6.9-rc5/source/drivers/pmdomain/ren=
-esas/rmobile-sysc.c#L116
-> [2] https://elixir.bootlin.com/linux/v6.9-rc5/source/drivers/pmdomain/imx=
-/scu-pd.c#L357
->
-> Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
-> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On 25.04.24 05:03, Willem de Bruijn wrote:
+> Felix Fietkau wrote:
+>> Preparation for adding TCP fraglist GRO support. It expects packets to be
+>> combined in a similar way as UDP fraglist GSO packets.
+>> One difference is the fact that this code assumes that the TCP flags of
+>> all packets have the same value. This allows simple handling of flags
+>> mutations.
+> 
+> Can you clarify this some more? We expect potentially different flags
+> on first and last packet in a TSO train. With fraglist, the segments
+> keep their original flags, as the headers are only pulled. When do
+> segment flags need to be replaced with those of the first segment?
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Maybe I just misunderstood a comment that Paolo made earlier regarding 
+TCP header mutations. Will review this again and compare with regular TSO.
 
-Works fine on R-Mobile APE6 with console suspend support removed from
-rmobile-sysc.c
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+- Felix
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
