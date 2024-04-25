@@ -1,403 +1,273 @@
-Return-Path: <linux-kernel+bounces-158070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B708F8B1B06
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB5FE8B1B09
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:28:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 750D32840FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:28:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 525D62841FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:28:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0B75A116;
-	Thu, 25 Apr 2024 06:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE7295473A;
+	Thu, 25 Apr 2024 06:28:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pgf1X8se"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=amlogic.com header.i=@amlogic.com header.b="CHpSNlxZ"
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2123.outbound.protection.outlook.com [40.107.255.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAFD940C03;
-	Thu, 25 Apr 2024 06:28:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714026492; cv=none; b=COktXs6a7Dhsf3kffuItWyspkIk+daAX90GJ/14Ow9LWqcMb6rK7n3UahoIAKaHKe8BfYDvapO5KbDLiOJK5IdyP2i8oT1Voc1lcxMIbE5QdgEaPtW0b46KHzeFEeWYce9Sob8whYJVKou7IsLE1hTZLxepiP7Q8W9rnpEp3jcE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714026492; c=relaxed/simple;
-	bh=pMGdU3FRhPiA5xxqEp2nuiQ5CIEIiPPzHAy4OyHVNWU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p145Ekz26WCeq3Fuv1V67eLJ+tyvWzOeBxE5h44vMIhbTId26+IB77eDR50+aJXPc/+Xur+yWQ1+FjGrKoOrg0oCjBDh/+5LN2uTgFWC65nROOMpmScykn44r1g66vOOzi8ZXCyctYMBnvBsEqEmS8EtMoS/mRET9ngy/QBc8Ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pgf1X8se; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6419DC2BD10;
-	Thu, 25 Apr 2024 06:28:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714026491;
-	bh=pMGdU3FRhPiA5xxqEp2nuiQ5CIEIiPPzHAy4OyHVNWU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Pgf1X8seF8O5V9Xtfub1hocqhBPJJyoT/jz6F+IF7cCSxrHQvohrsJaRqIeIzdA00
-	 Ru4agpKHEuzGolT2vJJy4HeXPoW1j+Fnk3vZ9Xl7IB3wNulHiI6RuTzB0XHteT2EDt
-	 aq1E0KUaz0+TuLbQobXhw067tVv+HRLGlmJgVgZ1m8IlC5Z+KUyunNuFhDRAZY+P5R
-	 4OHwKGDc0CP/rjbeujR9jt7X3uP2nzBoh7HS0+6+wFDASrCG3NPMkCFnNIwNTFfI0L
-	 /ceJMSutRZ8DUQv9RdFr+qaIHCHF2SK59haKvNQGSa+PwS498rI7ltAjILs80OscEG
-	 RXwnKdZp92S4Q==
-Message-ID: <0d1c6ed9-0c20-4b0e-876d-4b0adf5aa75d@kernel.org>
-Date: Thu, 25 Apr 2024 08:28:00 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC4FD3EA9B;
+	Thu, 25 Apr 2024 06:28:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.123
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714026521; cv=fail; b=DjJhzmFlzYpuQvnyD/Di4i0Fleg8ICIia33Zypab+xq/frvdZqRaY7RHEsPV/1+92voB4L1K5eu8sskTT7+7ngN+qyPd/UMu+Kr20qhRnlsHj8rEs5iCuSryoukKEPvcdBjk4q1J11/km4tqd0INeDNdbs8TmcT9Jc0SpbVrq2U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714026521; c=relaxed/simple;
+	bh=YXzyZjLBqYXsjzAZ2teiWcfZypo7fHV8a1OuEvXr+kQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=G9a4tnPYYf3PzwLV6PS5JTS9USuSVOoFrhAfVQwYFgbhOapZuJTsPa9m2+/N0AEv5+3z6quiOlk1MZeNFmqAAqHGJr3QtQTQBa+mUpCvQpfGO1DugSDs99LV++cBjADH3L0iazcNiQI7Qlttxi2w9nu8xndvRjNxIBjc5GezpUM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amlogic.com; spf=pass smtp.mailfrom=amlogic.com; dkim=pass (2048-bit key) header.d=amlogic.com header.i=@amlogic.com header.b=CHpSNlxZ; arc=fail smtp.client-ip=40.107.255.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amlogic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amlogic.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TqQbqK/Nj1SpfS5naA/5OcwrGIGI/9TmbfNb5dTaOXoDDUNNdypZOMdWZujsvubR+WS3KF0jna7rq0/f1yjysGJ+KzK1Kk56De/lNpj/WaBTjHdnBR5Y581zjYWPj4c9uLWLQZVmXb8muKWkZgqBuVFIgR1KgjiLwDwe3+5PzoDU1VTBhqEIe3WhLhcBzPg+3rPfTkwN/XND7n/EkYj9kbH4Cv16DC2TFUs2eI7RtPsTND+tDqdBUQx5+Y2dr20WcRCE6T3X+qo48kYaA+2FJxUd5wDaumEIb7duk1V/PT+kVV1NCiFUf2MEsg4+Gzippumgk4gtOQHsNf+XFNbuqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+4I+htJ0sWB6j5qPI4BTJL5RfnU2oduo5QELRVQOB/U=;
+ b=Y0pkaM4nXOeLF6QZ42bwoVjn8ZiV3bdFPYG04O7M22n4oQycVdFAqbCyvBFby9SbOzWV+vBeKUyVEQ8lQggLZINw4bn7RSFgN9HEnGA9Gp0fpUg2E8jF7Thl/x2ZKMVroSC/wGW2G13FZjJBsQq9nRSqC/sjWtbPFSfXp6Rc/uILBiJhSrcRHVHaDHqo6d9svan4UxC/6I1nnQbVCEMo0d1gtNNQgDqAekQxdPUAbsvsfH7zUeexsu8LBUN2Jf8iMnwWSVZ6jpCeuz/07cPSozVJp6hWriEM0vT5djNSu+qN5av0QySIvsG5supzaYhCyhd2s9vZMQus9UR414uPIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amlogic.com; dmarc=pass action=none header.from=amlogic.com;
+ dkim=pass header.d=amlogic.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amlogic.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+4I+htJ0sWB6j5qPI4BTJL5RfnU2oduo5QELRVQOB/U=;
+ b=CHpSNlxZU1b4DZf0BgnC7fYEWB1bgjb0sdhKyolwojVmKunVkqmzyO4MwrAiD7h+43kOV3AYZtZb8l/qezcqxbd8BZbKVRwXJQ4Inmqeezqqm2StjHZu6eRWpr6eY4CHvJW2ZVQGyqVyUm8eAEcuHB/14BSzqJeYXAOg1Q/78j/DSJw2z1MpoAMmT636kkh5SiYDkjCdnGrDjBuCfC9zJ/1GB93OYkb4NPZlBWaLbmcFVlu1IfeWjhh/OnNKBB00ttVfsfQN+EstjVZ/okgGoazNO2IkWXHE0SK8w8x6+RhTKPrneX4w3gvNSFaVxI1exWCol5g+oDuBzW530pF12A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amlogic.com;
+Received: from TYZPR03MB6896.apcprd03.prod.outlook.com (2603:1096:400:289::14)
+ by JH0PR03MB8639.apcprd03.prod.outlook.com (2603:1096:990:8e::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Thu, 25 Apr
+ 2024 06:28:33 +0000
+Received: from TYZPR03MB6896.apcprd03.prod.outlook.com
+ ([fe80::f4ff:211b:7c34:16c8]) by TYZPR03MB6896.apcprd03.prod.outlook.com
+ ([fe80::f4ff:211b:7c34:16c8%6]) with mapi id 15.20.7544.008; Thu, 25 Apr 2024
+ 06:28:33 +0000
+Message-ID: <9a9ab302-5da5-47bb-85f1-d2295fa9f8c9@amlogic.com>
+Date: Thu, 25 Apr 2024 14:28:27 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 5/5] clk: meson: c3: add c3 clock peripherals
+ controller driver
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>
+Cc: linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
+ Chuan Liu <chuan.liu@amlogic.com>
+References: <20240424050928.1997820-1-xianwei.zhao@amlogic.com>
+ <20240424050928.1997820-6-xianwei.zhao@amlogic.com>
+ <20240424200107.GA372179-robh@kernel.org>
+From: Xianwei Zhao <xianwei.zhao@amlogic.com>
+In-Reply-To: <20240424200107.GA372179-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TYAPR01CA0162.jpnprd01.prod.outlook.com
+ (2603:1096:404:7e::30) To TYZPR03MB6896.apcprd03.prod.outlook.com
+ (2603:1096:400:289::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/10] arm64: dts: qcom: Add AYN Odin 2
-To: wuxilin123@gmail.com, =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?=
- <u.kleine-koenig@pengutronix.de>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Junhao Xie <bigfoot@classfun.cn>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Tengfei Fan <quic_tengfan@quicinc.com>,
- Molly Sophia <mollysophia379@gmail.com>
-Cc: linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-arm-msm@vger.kernel.org
-References: <20240424-ayn-odin2-initial-v1-0-e0aa05c991fd@gmail.com>
- <20240424-ayn-odin2-initial-v1-10-e0aa05c991fd@gmail.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240424-ayn-odin2-initial-v1-10-e0aa05c991fd@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYZPR03MB6896:EE_|JH0PR03MB8639:EE_
+X-MS-Office365-Filtering-Correlation-Id: b3016ab3-4aac-40b8-413b-08dc64f0ee3c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?YzlkTGlZMlhTeGMzSUw0TXN0VzJLY0ttZGNXYy8razNhT0lwQXUwYmQ0Z0c2?=
+ =?utf-8?B?dTEvQ1lQM2ZnajhNY2U3K1RHbG9HYUg1M1VaWURWdWI4LzNRbUN6Njh5NlU5?=
+ =?utf-8?B?YUhGaUxHbisyaytlZHR1am92U3g2bytBNU5uQ2J2TUJkd3dmR1hZNXFPbkZZ?=
+ =?utf-8?B?UWV0SkZlOUFJUUlZdkpZblhSL1BHOUR5OFJIVFU5a1R6b1pvUzZNNW9DQ3Zk?=
+ =?utf-8?B?b0g4dXhRNlMxMzlUTmkwdDNBcnNCem9oMVB5STIwL0JQYVY0KzF1dWswdC82?=
+ =?utf-8?B?OXdTUThrS3MrV29MUm85dkFGQUhYZFdpQkZueVF2a3ZyWFdiYWFCeHdKSjhF?=
+ =?utf-8?B?SUNtaURYNGJFcnJSaTdtdXlOd1k5VmdKSWhZdHZlcWlySDUxZ210WTJ3cWdF?=
+ =?utf-8?B?eWZFT3pVU1E5YVJab0g4ZzhDNHdGR1hxYmRLL1NtUGZHbGpQRHQ5NCtLb0pM?=
+ =?utf-8?B?OFBUaTArSG5wUG1xcjAvVkZhb0hHZVREV2pnbDYrWUFzUkc2MGpNc2RyaG1Y?=
+ =?utf-8?B?S0RqaFFlT3h1c0tNQk1jRDRjM2ZBZG9weG1qcTdnUGFNM29idmFNRVNGSVZK?=
+ =?utf-8?B?YkFrdmt2OXdKK0pOdFBFZWZRM2k1R2NYNnQ0Tmc0TkVVWWhhY2xTVkFKMldB?=
+ =?utf-8?B?Y0RDbjQxTmx2V1M0WlBySVRGNkJpNVhUdW0vNi9UbytTR2M3SFQxSnUzdWFs?=
+ =?utf-8?B?aWhSOUxWcE1nOS9OeC8zMmZiZkpQcCs2QTM4bllROE9qT2xScHZCNXZYb05Y?=
+ =?utf-8?B?NmZuU0VFa0hZNzY5V2lPMU45Tmd0L3ZXTXFJblpkdC92OVdzeGFEUFJ0MGJ5?=
+ =?utf-8?B?MnpaZTVvRFZOUzQyaHI1TzhsZmwxdGdqQ3N4SmI1U3pkWEJLenZhZUdPVHYw?=
+ =?utf-8?B?VXNPK0t4bmlOQ3R4SWpHTXpvRU9EZHA4TVBLYkYrNHVTZWcwdjNFd3g0OTVj?=
+ =?utf-8?B?L1lrTWdVQmVNSVlOWk1HbXVTZVdoUG5vN1ZBUFBUR1VvcThGY0x6UTFFaitu?=
+ =?utf-8?B?V3BncjhQcTV6NE9JMUNub0hzbzMwekZoRW5oRlNDN2t4dVZCOE8rZEtwOFA5?=
+ =?utf-8?B?UEI0aldlNFZhU2Q1ZkJXL1NhMkU2ZFlhTkdoVnlQb1o2eEhkYTVUdGV6N1RV?=
+ =?utf-8?B?a0RWOTlXSnptQVVnemJyYXp3RnpuYWVER0ZXNThDeURoM0NEOUg2M2RETFpM?=
+ =?utf-8?B?ZzNXNjVQVjVHTkdObDRISlQ3N1FqWnJkOFBhK24ydVQ0Um5hL20vZUFuRmJE?=
+ =?utf-8?B?V1AxQ1dNdWxZdWJORGdLMHZka0ZZOWFFZWpTQnhhUHZhSnp4Z0svMndtTEU3?=
+ =?utf-8?B?U0FNeXRNZnhkSkp5eWV4ZDB1VkZmbit4bEJMY1VmUkpaRllXeW0rc0pWVHdq?=
+ =?utf-8?B?ZWFycDc1eVk1VHZCakcxZE1QY2I4S2FIL2tSYmZYNVFOTWpxMDdVOTdoVXkw?=
+ =?utf-8?B?eDliby9Md3Nxa3pMRTVaNU5XUktKUEJhQTZyTlFFdit3U2dJTUZlTDl4RVJI?=
+ =?utf-8?B?SmJZbmRiSkNnNmJRdU5oVjl1M1doMlVIYkRTOUttcnl6TWRnQVZITVQza2pQ?=
+ =?utf-8?B?K0Zjci8zZVJ3N3FiK2E4QWVPN09CdW5qeSsxcVVhcktKNkFwVXdEUTNEYWlK?=
+ =?utf-8?B?WkhlR0hnMFVHY0xVR1Q1eWl3MjN0T0ozQXN4NldUSUIzaVNaeXBwQ09MMnBU?=
+ =?utf-8?B?clRacDI1WThRWUs5ZS9tdGY2VmNGVnloNzd5SzhJSmIxZTVWYjJIdUd3PT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6896.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005)(7416005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Sm9zNi80QkNiRjNKdkZWK2NqRGVLais4OGJHd1RUOU8rb2RkZWhMYUJxcld2?=
+ =?utf-8?B?SVFkVndqWlB6ei9IN1B2Q0N6L1ZBZDFEYWlIYzhyL2NGMi9hTElkTVloZ2VC?=
+ =?utf-8?B?bWljRjdrV2sxNjcwZ3BFQmFtTlE4ZG04NXVCTDRWblF4clduekp4dUpESGZV?=
+ =?utf-8?B?YmFJWUZqdkFiNHRWZDdMcURybmV5SW1UL09DZlkrWjEwakFxdmpQVmhxRGNj?=
+ =?utf-8?B?YW5yTHd1ampxd3oyZHdkSVUxdFRRZk1qMFJ3RGJNajBTNlpnd3l4SER5NUtk?=
+ =?utf-8?B?SGhkTzBUWHNrbVNoYzBiK2tiajlma1NNQXAzNzRoR0hXUnE1dUMrbkNEUklB?=
+ =?utf-8?B?dW05dWJZTERRZ3JhRzZjNDFyblQxNGRFNXFHemJ3QkJrL2VpU3NRbG5hLytS?=
+ =?utf-8?B?ZW13Y01xVDNxSVQ5dHhsbmFYYVVCMFpFWmo0Nzdaeks0YTM0dmFHajlDVS9V?=
+ =?utf-8?B?aEJLd1YrSTV2NGRqWlNIcG12YWJwSXArZUJZYUU4djY2NjBwRnp2a3FSMitL?=
+ =?utf-8?B?dTV2Ums2djZsV2YwNVhScmdVdWFJdkRhc2Z5c2VNd29NR0hWRWFRRVdZM0t2?=
+ =?utf-8?B?VFlvY3JDTUFCWHpWVk5MZm1VMHBETUJUckJ3M2FVdzBrU04xdnh3QWNGYjhz?=
+ =?utf-8?B?Q0w5QkZpN00vQmhsQzFQdVMvMDVSc2kvNDg5MjRYREtyTjBHVHpENm0yVTRW?=
+ =?utf-8?B?eFpUQTJlOXdUNitIdnpHS05MNkhxYVcvVjRocEJVVENwRlF5QTIvTXMyOXJX?=
+ =?utf-8?B?bEtNYVhwZHQzZ3QrNDY2cUVsM3YwTkllcXRWSjA1QmZmS2NVeVJhZVBUa0pi?=
+ =?utf-8?B?QzFScGd5UnlHbXlxbWFwMi9IYmZMTGpOVS85ZURjeEczbGVOazRUNW9MMGY2?=
+ =?utf-8?B?eWI0bklYbUFKeEdIaFZkZEFyVktUdW8rTUZjL0hzK2g4VGc3OE1jNDFZOFg2?=
+ =?utf-8?B?Zm1wNFhvWnUrSWcvM29CcHFCU2dPdm1vM2gvTHh4Um8vc2pSQlJ6cHRDalpu?=
+ =?utf-8?B?d0ZJQlVMOGpLRTJvSGh3TVJGUndvWjF5OEpYNWJrQ21QRlpCLzBKNHJONjVz?=
+ =?utf-8?B?RmRTTHZLQmszWFcrUGVUN1NKNzRITlczOUZJc01VTGY0aUZsY1F0dFNJZFIr?=
+ =?utf-8?B?ZENUTzNWNzRLU0ZnOHhsT0c3KzJPL0c2eS9xd1RJMW5Ld3lTNmwvWjJ2WG53?=
+ =?utf-8?B?alIvWU5oUWV6WjNpVzRVRnI5Y2JWMFVDdlMyVWIrdkdkb2xIdmhwWUdLa1BQ?=
+ =?utf-8?B?RW44RnhkVnIzam4zMSt0NEJOS2U4QmM0b1hyTlhRNkJmZ2ttYkE5MVp3ZVZ0?=
+ =?utf-8?B?c01WaURZVW5TQ3cxTERlZzhxR1JVcTYvQjJlMmpjdG1uL1VCLzhsZm0raTNo?=
+ =?utf-8?B?Y2N5L0QzWGxqdlpxZHFYSWNlNElTWjl1aHF0M1JyTXZHUEkxcmpHK3V3ZlU1?=
+ =?utf-8?B?MmtiVW1oTkpQYjgraXhBTTlleXFTeWRZb0hHMXdsODkrV1lvTTZ6UENZcGxm?=
+ =?utf-8?B?T0VwdlI3cTlYUEQvaVIxSUV0VDBHT3ZJT25kZTNlMkhtWkpGK0draFZBSlF6?=
+ =?utf-8?B?RlcvdlMzUVllYjRXcGlkemdHdzFrcTFTbnZoWGZRaVk2SWZXcEVWeDkyMldH?=
+ =?utf-8?B?MmFBdzBHQ1lkbzJyVnBJb1NCYncrNHFqbWczN254Qm50SjVDKzVNQlBqcllu?=
+ =?utf-8?B?b1dFM3JWbEtxbTV3Z0V2STV5TEpkTVlwTlAzOE5ZaFhpOEplUFZQTjYvSEpI?=
+ =?utf-8?B?c2QzL2VxU0RDRGJJd0pDbHdGd2Z2bmozYXN2WDY1NVlkNGdhUm8vU0t0NHVw?=
+ =?utf-8?B?a3dPQWRjS2N1eGQzUWFvR1lDRkEyL2FxYXRqcThLKzA0Z21HWDB4WjRWbzFP?=
+ =?utf-8?B?OXgzS3lVN2dpZDl1aWVRMW93eXJjVzZzaWw1VUZobU5OZVRYV25mcENraE1S?=
+ =?utf-8?B?NFF1OGRRWnFFQU8vb1BSeEhnVENacnB5eHlpeWVUMERrKzhBWGJ4QU50RVl1?=
+ =?utf-8?B?dmM0K09Eckt4K0RYdE4zaXllSTEweGxHUWN2ZlhzTDRybGRUcFZSQUxabGhI?=
+ =?utf-8?B?alduKzVVbkFUSmhnMlVmNnR2dldyV1QyQTJaSUkvWjNBQnlqRVlMNjFmQnFO?=
+ =?utf-8?B?S24wSjFvY3F5T09FNXRuYWRBdFVodGR0aGo0VFBlekdQUStHa3E1OVJ4MjFU?=
+ =?utf-8?B?ZXc9PQ==?=
+X-OriginatorOrg: amlogic.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b3016ab3-4aac-40b8-413b-08dc64f0ee3c
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6896.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 06:28:33.2668
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0df2add9-25ca-4b3a-acb4-c99ddf0b1114
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2Dz2r8mZf8JnZLa2IRlRzsPWJPNuZq8er+PYOrCnv93HhayA4uX1dEPmO3KPiCVQJc/aH7oYGmPukxsUOz7hifiLn2e0o/NnpYf88+YMP/w=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR03MB8639
 
-On 24/04/2024 17:29, Xilin Wu via B4 Relay wrote:
-> From: Xilin Wu <wuxilin123@gmail.com>
+Hi Rob,
+    Thanks for your review.
+
+On 2024/4/25 04:01, Rob Herring wrote:
+> [ EXTERNAL EMAIL ]
 > 
-> AYN Odin 2 is a gaming handheld based on QCS8550, which is derived
-> from SM8550 but without modem RF system.
+> On Wed, Apr 24, 2024 at 01:09:28PM +0800, Xianwei Zhao wrote:
+>> Add the C3 peripherals clock controller driver in the C3 SoC family.
+>>
+>> Co-developed-by: Chuan Liu <chuan.liu@amlogic.com>
+>> Signed-off-by: Chuan Liu <chuan.liu@amlogic.com>
+>> Signed-off-by: Xianwei Zhao <xianwei.zhao@amlogic.com>
+>> ---
+>>   drivers/clk/meson/Kconfig          |   15 +
+>>   drivers/clk/meson/Makefile         |    1 +
+>>   drivers/clk/meson/c3-peripherals.c | 2366 ++++++++++++++++++++++++++++
+>>   3 files changed, 2382 insertions(+)
+>>   create mode 100644 drivers/clk/meson/c3-peripherals.c
+>>
+>> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
+>> index 9f975a980581..0b85d584910e 100644
+>> --- a/drivers/clk/meson/Kconfig
+>> +++ b/drivers/clk/meson/Kconfig
+>> @@ -142,6 +142,21 @@ config COMMON_CLK_C3_PLL
+>>          AKA C3. Say Y if you want the board to work, because PLLs are the parent
+>>          of most peripherals.
+>>
+>> +config COMMON_CLK_C3_PERIPHERALS
+>> +     tristate "Amlogic C3 peripherals clock controller"
+>> +     depends on ARM64
+>> +     depends on ARM_SCMI_PROTOCOL
+> 
+> I may have missed it, but I don't see the dependency on SCMI in this
+> driver.
 > 
 
+Some clock sources for peripherals controller from SCMI module.
+In previous version, Jerome suggest us the clock  that relevant 
+registers can only be accessed securely is implemented through SCMI.
 
+>> +     depends on COMMON_CLK_SCMI
+>> +     depends on COMMON_CLK_C3_PLL
+>> +     default y
+>> +     select COMMON_CLK_MESON_REGMAP
+>> +     select COMMON_CLK_MESON_DUALDIV
+>> +     select COMMON_CLK_MESON_CLKC_UTILS
+>> +     help
+>> +       Support for the Peripherals clock controller on Amlogic C302X and
+>> +       C308L devices, AKA C3. Say Y if you want the peripherals clock to
+>> +       work.
+>> +
+>>   config COMMON_CLK_G12A
+>>        tristate "G12 and SM1 SoC clock controllers support"
+>>        depends on ARM64
+>> diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
+>> index 4420af628b31..20ad9482c892 100644
+>> --- a/drivers/clk/meson/Makefile
+>> +++ b/drivers/clk/meson/Makefile
+>> @@ -20,6 +20,7 @@ obj-$(CONFIG_COMMON_CLK_AXG_AUDIO) += axg-audio.o
+>>   obj-$(CONFIG_COMMON_CLK_A1_PLL) += a1-pll.o
+>>   obj-$(CONFIG_COMMON_CLK_A1_PERIPHERALS) += a1-peripherals.o
+>>   obj-$(CONFIG_COMMON_CLK_C3_PLL) += c3-pll.o
+>> +obj-$(CONFIG_COMMON_CLK_C3_PERIPHERALS) += c3-peripherals.o
+>>   obj-$(CONFIG_COMMON_CLK_GXBB) += gxbb.o gxbb-aoclk.o
+>>   obj-$(CONFIG_COMMON_CLK_G12A) += g12a.o g12a-aoclk.o
+>>   obj-$(CONFIG_COMMON_CLK_MESON8B) += meson8b.o meson8-ddr.o
+>> diff --git a/drivers/clk/meson/c3-peripherals.c b/drivers/clk/meson/c3-peripherals.c
+>> new file mode 100644
+>> index 000000000000..0f834ced0ee9
+>> --- /dev/null
+>> +++ b/drivers/clk/meson/c3-peripherals.c
+>> @@ -0,0 +1,2366 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Amlogic C3 Peripherals Clock Controller Driver
+>> + *
+>> + * Copyright (c) 2023 Amlogic, inc.
+>> + * Author: Chuan Liu <chuan.liu@amlogic.com>
+>> + */
+>> +
+>> +#include <linux/clk-provider.h>
+>> +#include <linux/of_device.h>
+> 
+> I don't think you need this header.
+> 
 
-> +
-> +/ {
-> +	model = "AYN Odin 2";
-> +	compatible = "ayn,odin2", "qcom,qcs8550", "qcom,sm8550";
-> +	chassis-type = "handset";
-> +
-> +	qcom,msm-id = <QCOM_ID_QCS8550 0x20000>;
-> +	qcom,board-id = <0x1001f 0>;
+Yes, I will fix it with c3-pll.c.
 
-No, these are not allowed. You did not test your dts.
-
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
-
-> +
-> +	aliases {
-> +		serial0 = &uart7;
-> +		serial1 = &uart14;
-> +		serial2 = &uart15;
-> +	};
-> +
-> +	backlight: backlight {
-> +		compatible = "pwm-backlight";
-> +		pwms = <&pmk8550_pwm 0 860000>;
-> +		brightness-levels = <1023 0>;
-> +		num-interpolated-steps = <1023>;
-> +		default-brightness-level = <600>;
-> +		power-supply = <&vph_pwr>;
-> +		enable-gpios = <&pmk8550_gpios 5 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pwm_backlight_default>;
-> +		status = "okay";
-
-Drop, why do you need it? Do you see it anywhere else in the backlight
-nodes in DTS?
-
-
-> +	};
-> +
-> +	fan_pwr: fan-pwr-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "fan_pwr";
-> +
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +
-> +		gpio = <&tlmm 109 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&fan_pwr_en>;
-> +
-> +		regulator-state-mem {
-> +			regulator-off-in-suspend;
-> +		};
-> +	};
-> +
-> +	gpio-keys {
-> +		compatible = "gpio-keys";
-> +
-> +		pinctrl-0 = <&volume_up_n>, <&m1_m2_keys_default>;
-> +		pinctrl-names = "default";
-> +
-> +		key-volume-up {
-> +			label = "Volume Up";
-> +			linux,code = <KEY_VOLUMEUP>;
-> +			gpios = <&pm8550_gpios 6 GPIO_ACTIVE_LOW>;
-> +			debounce-interval = <15>;
-> +			linux,can-disable;
-> +			wakeup-source;
-> +		};
-> +
-> +		m1-button {
-> +			label = "M1";
-> +			linux,code = <BTN_TRIGGER_HAPPY1>;
-> +			gpios = <&tlmm 57 GPIO_ACTIVE_LOW>;
-> +		};
-> +
-> +		m2-button {
-> +			label = "M2";
-> +			linux,code = <BTN_TRIGGER_HAPPY2>;
-> +			gpios = <&tlmm 58 GPIO_ACTIVE_LOW>;
-> +		};
-> +	};
-> +
-> +	hdmi-out {
-> +		compatible = "hdmi-connector";
-> +		type = "d";
-> +		hpd-gpios = <&tlmm 9 GPIO_ACTIVE_HIGH>;
-> +
-> +		port {
-> +			hdmi_con: endpoint {
-> +				remote-endpoint = <&lt8912_out>;
-> +			};
-> +		};
-> +	};
-> +
-> +	hdmi_pwr: hdmi-pwr-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "hdmi_pwr";
-> +
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +
-> +		gpio = <&tlmm 10 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +	};
-> +
-> +	vdd_lcm_2p8: vdd-lcm-2p8-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vdd_lcm_2p8";
-> +
-> +		regulator-min-microvolt = <2800000>;
-> +		regulator-max-microvolt = <2800000>;
-> +
-> +		gpio = <&tlmm 142 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +	};
-> +
-> +	led_left_side: led-controller-1 {
-> +		compatible = "pwm-leds-multicolor";
-> +
-> +		multi-led {
-> +			label = "left-side";
-> +			color = <LED_COLOR_ID_RGB>;
-> +			max-brightness = <255>;
-> +
-> +			led-red {
-> +				color = <LED_COLOR_ID_RED>;
-> +				pwms = <&pwm_rgb_left 0>;
-> +			};
-> +
-> +			led-green {
-> +				color = <LED_COLOR_ID_GREEN>;
-> +				pwms = <&pwm_rgb_left 1>;
-> +			};
-> +
-> +			led-blue {
-> +				color = <LED_COLOR_ID_BLUE>;
-> +				pwms = <&pwm_rgb_left 2>;
-> +			};
-> +		};
-> +	};
-> +
-> +	led_left_joystick: led-controller-2 {
-> +		compatible = "pwm-leds-multicolor";
-> +
-> +		multi-led {
-> +			label = "left-joystick";
-> +			color = <LED_COLOR_ID_RGB>;
-> +			max-brightness = <255>;
-> +
-> +			led-red {
-> +				color = <LED_COLOR_ID_RED>;
-> +				pwms = <&pwm_rgb_left 6>;
-> +			};
-> +
-> +			led-green {
-> +				color = <LED_COLOR_ID_GREEN>;
-> +				pwms = <&pwm_rgb_left 7>;
-> +			};
-> +
-> +			led-blue {
-> +				color = <LED_COLOR_ID_BLUE>;
-> +				pwms = <&pwm_rgb_left 8>;
-> +			};
-> +		};
-> +	};
-> +
-> +	led_right_side: led-controller-3 {
-> +		compatible = "pwm-leds-multicolor";
-> +
-> +		multi-led {
-> +			label = "right-side";
-> +			color = <LED_COLOR_ID_RGB>;
-> +			max-brightness = <255>;
-> +
-> +			led-red {
-> +				color = <LED_COLOR_ID_RED>;
-> +				pwms = <&pwm_rgb_right 0>;
-> +			};
-> +
-> +			led-green {
-> +				color = <LED_COLOR_ID_GREEN>;
-> +				pwms = <&pwm_rgb_right 1>;
-> +			};
-> +
-> +			led-blue {
-> +				color = <LED_COLOR_ID_BLUE>;
-> +				pwms = <&pwm_rgb_right 2>;
-> +			};
-> +		};
-> +	};
-> +
-> +	led_right_joystick: led-controller-4 {
-> +		compatible = "pwm-leds-multicolor";
-> +
-> +		multi-led {
-> +			label = "right-joystick";
-> +			color = <LED_COLOR_ID_RGB>;
-> +			max-brightness = <255>;
-> +
-> +			led-red {
-> +				color = <LED_COLOR_ID_RED>;
-> +				pwms = <&pwm_rgb_right 6>;
-> +			};
-> +
-> +			led-green {
-> +				color = <LED_COLOR_ID_GREEN>;
-> +				pwms = <&pwm_rgb_right 7>;
-> +			};
-> +
-> +			led-blue {
-> +				color = <LED_COLOR_ID_BLUE>;
-> +				pwms = <&pwm_rgb_right 8>;
-> +			};
-> +		};
-> +	};
-> +
-> +	mcu_3v3: mcu-3v3-regulator {
-
-Name all regulators regulator-n, where n is decimal number. Then order
-the nodes by name.
-
-
-..
-
-> +
-> +&i2c4 {
-> +	clock-frequency = <400000>;
-> +	status = "okay";
-> +
-> +	touchscreen@20 {
-> +		compatible = "syna,rmi4-i2c";
-> +		reg = <0x20>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		interrupts-extended = <&tlmm 25 0x2008>;
-> +
-> +		pinctrl-names = "default", "sleep";
-> +		pinctrl-0 = <&ts_int_default>;
-> +		pinctrl-1 = <&ts_int_sleep>;
-> +
-> +		vio-supply = <&vreg_l12b_1p8>;
-> +
-> +		syna,startup-delay-ms = <200>;
-> +		syna,reset-delay-ms = <200>;
-> +
-> +		rmi4-f01@1 {
-> +			syna,nosleep-mode = <0x1>;
-> +			reg = <0x1>;
-> +		};
-> +
-> +		rmi4-f12@12 {
-> +			reg = <0x12>;
-> +			syna,rezero-wait-ms = <20>;
-> +			syna,clip-x-low = <0>;
-> +			syna,clip-y-low = <0>;
-> +			syna,clip-x-high = <1080>;
-> +			syna,clip-y-high = <1920>;
-> +			syna,sensor-type = <1>;
-> +			touchscreen-inverted-x;
-> +		};
-> +	};
-
-Please confirm the status of dtbs_check for your board. I am pretty sure
-it fails.
-
-Best regards,
-Krzysztof
-
+>> +#include <linux/platform_device.h>
+>> +#include "clk-regmap.h"
+>> +#include "clk-dualdiv.h"
+>> +#include "meson-clkc-utils.h"
+>> +#include <dt-bindings/clock/amlogic,c3-peripherals-clkc.h>
 
