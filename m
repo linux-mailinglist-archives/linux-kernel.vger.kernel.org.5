@@ -1,384 +1,151 @@
-Return-Path: <linux-kernel+bounces-158242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEC4D8B1D6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:06:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C11B8B1D69
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:06:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 143FA1F25998
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:06:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1D081F25859
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:06:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A77685646;
-	Thu, 25 Apr 2024 09:05:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DE24839E0;
+	Thu, 25 Apr 2024 09:05:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="QPBVXMSU"
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KwI1RkiD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6DAD81AA3
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D17796EB4D;
+	Thu, 25 Apr 2024 09:05:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714035950; cv=none; b=a1xAu+S9tPb2WRqICwNc2v0pTlBNwMuBlKJa9Z6Rx8Fzv3RMXXi0uuunoyaJQ42uXaULK5sEQnCBHTlLtrmsNLweQ7OI1ZnqauhpZE9Yb6Jhy7PqbZdesS7RSH4AFTgcC8zUkUCClncheAQK0SV6QnOjNJ1WIF78dW41LhmeqIo=
+	t=1714035948; cv=none; b=SAE0gMDzXFBLRSk5H7c1B9qzgcQt4YGLh2BYpmYGATWpJT3NsWdFYl3oWftwlQ6sHpunOdMLQcXyCP/QYBDgV9uVBBlLwD6L+fwfOBAsQ3vKgzlvDot7URjALB1qt8N8fMV503fuYJyiNqnYdlP2gEBbDy4PAO+2bSG0RtADvbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714035950; c=relaxed/simple;
-	bh=wN09IT6B9svVG9MSbQFVbrmNzDMbbZpTjBc7aYkXS7E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SR68+PVemh13Un32K5I0UWKBaDHlTVnIN2xvnc1fH7G472/LcKUEK3N2QM0CPAy898kAs0Sjm9tl1BVJUCkwhBHrJTFDoMVHioVO6rpRET94r/Vf3fRVWhXY7le00s4nY77aYLy574HPQHnltRF4b4+RP7F6SYnLj/1whE4xpIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=QPBVXMSU; arc=none smtp.client-ip=115.124.30.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1714035938; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=EF2Iu2skwwn1SYvF2vDSYrIbUNPJaVughKfpjGvpDTc=;
-	b=QPBVXMSUQvq6xtLtoHV11n1lZDMjZnKT4mR2SvXeCDzJy+cZx7zzUzE1BbmG7a/bDsYzeJjoS2J0WW/OkdwqgI48+uEyB76Vo03cK52/i+dCld2uVqjRsGaMm80/40/AZy8Ej3Ey8DEyIh6+mjMlnOLNLiXO1uUccUWIqpm0Vck=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033032014031;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W5F.c.w_1714035934;
-Received: from 30.97.56.61(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W5F.c.w_1714035934)
-          by smtp.aliyun-inc.com;
-          Thu, 25 Apr 2024 17:05:36 +0800
-Message-ID: <bc92c74e-80e2-4065-9b61-46adacdfd17a@linux.alibaba.com>
-Date: Thu, 25 Apr 2024 17:05:34 +0800
+	s=arc-20240116; t=1714035948; c=relaxed/simple;
+	bh=CyBxhvSJqvOeVqh/PVEluM40ihBbVCYqOjncj69jKxA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s/RGF5jtAszWjG/MI/7BgLDDMC0YUk6WyMsa4RmHfWyXP9z+xHQFumUzYywLjTj8SkhvKl3O/kTTFwoVWgiTyCtH1YdXtxIYaGjWvOPGdZCJvFKq0cauLZ15Cnf+u2Gl1KfX8d30O2sCI/aly9YtGzBd8I4taUM03rRsE5f4IeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KwI1RkiD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDA9DC2BD10;
+	Thu, 25 Apr 2024 09:05:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714035948;
+	bh=CyBxhvSJqvOeVqh/PVEluM40ihBbVCYqOjncj69jKxA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KwI1RkiDn7OGmmWnZf7cVb4SHqfIG1KbOnc0Hx8VR8PYobCDWCNuCh2J2RPIw3ljG
+	 PSwpaHJ2AX9MKFX0Wk2l7Jh+VEQ73UqtZE01RRzjP47b8luNRzsl4H9Bv2jEd5lUo6
+	 iD6/wO2XiRxD9/NN2AT0+IgZqzjhpG7NwGau5LS+/Q26qEDYaIDDgszfgiZugsVvQB
+	 TDNhrD5WF8Ev/uvWKSrADPBEFFPNA5yRcD7fG/MITceyWdK1KpcyN/kfMR1JYnA4ng
+	 +maSydeNDM3zZpbr8144/T3aTHcHWrWc8A1JMx8ZR0uBwkU8TseUXxaFdMHGP6ra6j
+	 GD1f69o+5A7oQ==
+Date: Thu, 25 Apr 2024 14:35:44 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Jie Hai <haijie1@huawei.com>
+Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: dmatest: fix timeout caused by kthread_stop
+Message-ID: <Zioc6Jn9nvPVrd7j@matsya>
+References: <20230720114102.51053-1-haijie1@huawei.com>
+ <ZiAEbOMxy9pBcOX5@matsya>
+ <d0ea4a88-900a-ad38-0580-017ae20c2fd4@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/5] add mTHP support for anonymous share pages
-To: David Hildenbrand <david@redhat.com>, Ryan Roberts
- <ryan.roberts@arm.com>, akpm@linux-foundation.org, hughd@google.com
-Cc: willy@infradead.org, wangkefeng.wang@huawei.com, 21cnbao@gmail.com,
- ying.huang@intel.com, shy828301@gmail.com, ziy@nvidia.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
- <4b998e7d-153f-48cc-a9bb-8c84bb675581@arm.com>
- <c1f68109-7665-4905-996f-f1067dfa2cb6@linux.alibaba.com>
- <80b5f87e-c156-4ccc-98f0-96f1fd864273@arm.com>
- <ef4f15dd-da31-4a1e-bec5-62a7002c4f7c@linux.alibaba.com>
- <5b8b22e7-6355-4b08-b5b5-1e33ebae6f16@arm.com>
- <813fe7fd-3004-4e8b-801d-95c33559a025@linux.alibaba.com>
- <76f816dd-3bbf-48c9-a630-3787051cf289@arm.com>
- <8c0d6358-3c16-4a57-822c-04b3b3403fe6@linux.alibaba.com>
- <4204b5f6-21f0-4aa2-a625-3dd2f416b649@arm.com>
- <94ae96f7-79ce-4b3f-a272-6af62d01a3f8@redhat.com>
- <71c1e953-84f9-4d47-bd4c-725a447627df@arm.com>
- <bf005e0f-6fda-4068-8af6-5f8c00257de7@redhat.com>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <bf005e0f-6fda-4068-8af6-5f8c00257de7@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d0ea4a88-900a-ad38-0580-017ae20c2fd4@huawei.com>
 
-
-
-On 2024/4/25 16:57, David Hildenbrand wrote:
-> On 25.04.24 10:46, Ryan Roberts wrote:
->> On 25/04/2024 09:26, David Hildenbrand wrote:
->>> On 25.04.24 10:17, Ryan Roberts wrote:
->>>> On 25/04/2024 07:20, Baolin Wang wrote:
->>>>>
->>>>>
->>>>> On 2024/4/24 22:20, Ryan Roberts wrote:
->>>>>> On 24/04/2024 14:49, Baolin Wang wrote:
->>>>>>>
->>>>>>>
->>>>>>> On 2024/4/24 18:01, Ryan Roberts wrote:
->>>>>>>> On 24/04/2024 10:55, Baolin Wang wrote:
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> On 2024/4/24 16:26, Ryan Roberts wrote:
->>>>>>>>>> On 24/04/2024 07:55, Baolin Wang wrote:
->>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> On 2024/4/23 18:41, Ryan Roberts wrote:
->>>>>>>>>>>> On 22/04/2024 08:02, Baolin Wang wrote:
->>>>>>>>>>>>> Anonymous pages have already been supported for multi-size 
->>>>>>>>>>>>> (mTHP)
->>>>>>>>>>>>> allocation
->>>>>>>>>>>>> through commit 19eaf44954df, that can allow THP to be 
->>>>>>>>>>>>> configured
->>>>>>>>>>>>> through the
->>>>>>>>>>>>> sysfs interface located at
->>>>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled'.
->>>>>>>>>>>>>
->>>>>>>>>>>>> However, the anonymous shared pages will ignore the 
->>>>>>>>>>>>> anonymous mTHP rule
->>>>>>>>>>>>> configured through the sysfs interface, and can only use 
->>>>>>>>>>>>> the PMD-mapped
->>>>>>>>>>>>> THP, that is not reasonable. Many implement anonymous page 
->>>>>>>>>>>>> sharing
->>>>>>>>>>>>> through
->>>>>>>>>>>>> mmap(MAP_SHARED | MAP_ANONYMOUS), especially in database usage
->>>>>>>>>>>>> scenarios,
->>>>>>>>>>>>> therefore, users expect to apply an unified mTHP strategy 
->>>>>>>>>>>>> for anonymous
->>>>>>>>>>>>> pages,
->>>>>>>>>>>>> also including the anonymous shared pages, in order to 
->>>>>>>>>>>>> enjoy the
->>>>>>>>>>>>> benefits of
->>>>>>>>>>>>> mTHP. For example, lower latency than PMD-mapped THP, 
->>>>>>>>>>>>> smaller memory
->>>>>>>>>>>>> bloat
->>>>>>>>>>>>> than PMD-mapped THP, contiguous PTEs on ARM architecture to 
->>>>>>>>>>>>> reduce TLB
->>>>>>>>>>>>> miss
->>>>>>>>>>>>> etc.
->>>>>>>>>>>>
->>>>>>>>>>>> This sounds like a very useful addition!
->>>>>>>>>>>>
->>>>>>>>>>>> Out of interest, can you point me at any workloads (and 
->>>>>>>>>>>> off-the-shelf
->>>>>>>>>>>> benchmarks
->>>>>>>>>>>> for those workloads) that predominantly use shared anon memory?
->>>>>>>>>>>
->>>>>>>>>>> As far as I know, some database related workloads make 
->>>>>>>>>>> extensive use of
->>>>>>>>>>> shared
->>>>>>>>>>> anonymous page, such as PolarDB[1] in our Alibaba fleet, or 
->>>>>>>>>>> MySQL likely
->>>>>>>>>>> also
->>>>>>>>>>> uses shared anonymous memory. And I still need to do some 
->>>>>>>>>>> investigation to
->>>>>>>>>>> measure the performance.
->>>>>>>>>>>
->>>>>>>>>>> [1] https://github.com/ApsaraDB/PolarDB-for-PostgreSQL
->>>>>>>>>>
->>>>>>>>>> Thanks for the pointer!
->>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>>>> The primary strategy is that, the use of huge pages for 
->>>>>>>>>>>>> anonymous shared
->>>>>>>>>>>>> pages
->>>>>>>>>>>>> still follows the global control determined by the mount 
->>>>>>>>>>>>> option "huge="
->>>>>>>>>>>>> parameter
->>>>>>>>>>>>> or the sysfs interface at
->>>>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled'.
->>>>>>>>>>>>> The utilization of mTHP is allowed only when the global 
->>>>>>>>>>>>> 'huge' switch is
->>>>>>>>>>>>> enabled.
->>>>>>>>>>>>> Subsequently, the mTHP sysfs interface
->>>>>>>>>>>>> (/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled)
->>>>>>>>>>>>> is checked to determine the mTHP size that can be used for 
->>>>>>>>>>>>> large folio
->>>>>>>>>>>>> allocation
->>>>>>>>>>>>> for these anonymous shared pages.
->>>>>>>>>>>>
->>>>>>>>>>>> I'm not sure about this proposed control mechanism; won't it 
->>>>>>>>>>>> break
->>>>>>>>>>>> compatibility? I could be wrong, but I don't think shmem's 
->>>>>>>>>>>> use of THP
->>>>>>>>>>>> used to
->>>>>>>>>>>> depend upon the value of 
->>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/enabled?
->>>>>>>>>>>> So it
->>>>>>>>>>>
->>>>>>>>>>> Yes, I realized this after more testing.
->>>>>>>>>>>
->>>>>>>>>>>> doesn't make sense to me that we now depend upon the
->>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled 
->>>>>>>>>>>> values
->>>>>>>>>>>> (which by
->>>>>>>>>>>> default disables all sizes except 2M, which is set to 
->>>>>>>>>>>> "inherit" from
->>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/enabled).
->>>>>>>>>>>>
->>>>>>>>>>>> The other problem is that shmem_enabled has a different set 
->>>>>>>>>>>> of options
->>>>>>>>>>>> (always/never/within_size/advise/deny/force) to enabled
->>>>>>>>>>>> (always/madvise/never)
->>>>>>>>>>>>
->>>>>>>>>>>> Perhaps it would be cleaner to do the same trick we did for 
->>>>>>>>>>>> enabled;
->>>>>>>>>>>> Introduce
->>>>>>>>>>>> /mm/transparent_hugepage/hugepage-XXkb/shmem_enabled, which 
->>>>>>>>>>>> can have all
->>>>>>>>>>>> the
->>>>>>>>>>>> same values as the top-level
->>>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/shmem_enabled,
->>>>>>>>>>>> plus the additional "inherit" option. By default all sizes 
->>>>>>>>>>>> will be set to
->>>>>>>>>>>> "never" except 2M, which is set to "inherit".
->>>>>>>>>>>
->>>>>>>>>>> Sounds good to me. But I do not want to copy all same values 
->>>>>>>>>>> from
->>>>>>>>>>> top-level
->>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled':
->>>>>>>>>>> always within_size advise never deny force
->>>>>>>>>>>
->>>>>>>>>>> For mTHP's shmem_enabled interface, we can just keep below 
->>>>>>>>>>> values:
->>>>>>>>>>> always within_size advise never
->>>>>>>>>>>
->>>>>>>>>>> Cause when checking if mTHP can be used for anon shmem, 
->>>>>>>>>>> 'deny' is equal to
->>>>>>>>>>> 'never', and 'force' is equal to 'always'.
->>>>>>>>>>
->>>>>>>>>> I'll admit it wasn't completely clear to me after reading the 
->>>>>>>>>> docs, but my
->>>>>>>>>> rough
->>>>>>>>>> understanding is:
->>>>>>>>>>
->>>>>>>>>>       - /sys/kernel/mm/transparent_hugepage/shmem_enabled 
->>>>>>>>>> controls
->>>>>>>>>>         mmap(SHARED|ANON) allocations (mostly; see rule 3)
->>>>>>>>>>       - huge=... controls tmpfs allocations
->>>>>>>>>>       - deny and force in shmem_enabled are equivalent to 
->>>>>>>>>> never and
->>>>>>>>>> always for
->>>>>>>>>>         mmap(SHARED|ANON) but additionally override all tmpfs 
->>>>>>>>>> mounts so they
->>>>>>>>>> act as
->>>>>>>>>>         if they were mounted with huge=never or huge=always
->>>>>>>>>>
->>>>>>>>>> Is that correct? If so, then I think it still makes sense to 
->>>>>>>>>> support
->>>>>>>>>> per-size
->>>>>>>>>
->>>>>>>>> Correct.
->>>>>>>>>
->>>>>>>>>> deny/force. Certainly if a per-size control is set to 
->>>>>>>>>> "inherit" and the
->>>>>>>>>> top-level control is set to deny or force, you would need that 
->>>>>>>>>> to mean
->>>>>>>>>> something.
->>>>>>>>>
->>>>>>>>> IMHO, the 
->>>>>>>>> '/mm/transparent_hugepage/hugepage-XXkb/shmem_enabled' interface
->>>>>>>>> should only control the anonymous shmem. And 'huge=' controls 
->>>>>>>>> tmpfs
->>>>>>>>> allocation,
->>>>>>>>> so we should not use anonymous control to override tmpfs 
->>>>>>>>> control, which
->>>>>>>>> seems a
->>>>>>>>> little mess?
->>>>>>>>
->>>>>>>> I agree it would be cleaner to only handle mmap(SHARED|ANON) 
->>>>>>>> here, and leave
->>>>>>>> the
->>>>>>>> tmpfs stuff for another time. But my point is that
->>>>>>>> /mm/transparent_hugepage/shmem_enabled already interferes with 
->>>>>>>> tmpfs if the
->>>>>>>> value is deny or force. So if you have:
->>>>>>>>
->>>>>>>> echo deny > /mm/transparent_hugepage/shmem_enabled
->>>>>>>
->>>>>>> IIUC, this global control will cause shmem_is_huge() to always 
->>>>>>> return
->>>>>>> false, so
->>>>>>> no matter how 
->>>>>>> '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' is set,
->>>>>>> anonymous shmem will not use mTHP. No?
->>>>>>
->>>>>> No, that's not how 
->>>>>> '/mm/transparent_hugepage/hugepage-xxxkB/enabled' works, and
->>>>>> I think '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' 
->>>>>> should follow
->>>>>> the established pattern.
->>>>>>
->>>>>> For anon-private, each size is controlled by its
->>>>>> /mm/transparent_hugepage/hugepage-xxxkB/enabled value. Unless that 
->>>>>> value is
->>>>>> "inherit", in which case the value in 
->>>>>> /mm/transparent_hugepage/enabled is used
->>>>>> for that size.
->>>>>>
->>>>>> That approach enables us to 1) maintain back-compat and 2) control 
->>>>>> each size
->>>>>> independently
->>>>>>
->>>>>> 1) is met because the default is that all sizes are initially set 
->>>>>> to "never",
->>>>>> except the PMD-size (e.g. 
->>>>>> /mm/transparent_hugepage/hugepage-2048kB/enabled)
->>>>>> which is initially set to inherit. So any mTHP unaware SW can 
->>>>>> still modify
->>>>>> /mm/transparent_hugepage/enabled and it will still only apply to 
->>>>>> PMD size.
->>>>>>
->>>>>> 2) is met because mTHP aware SW can come along and e.g. enable the 
->>>>>> 64K size
->>>>>> (echo always > /mm/transparent_hugepage/hugepage-64kB/enabled) 
->>>>>> without
->>>>>> having to
->>>>>> modify the value in /mm/transparent_hugepage/enabled.
->>>>>
->>>>> Thanks for explanation. Initially, I want to make
->>>>> ‘/mm/transparent_hugepage/shmem_enabled’ be a global control for 
->>>>> huge page, but
->>>>> I think it should follow the same strategy as anon mTHP as you said.
->>>>>
->>>>>>>> echo inherit > /mm/transparent_hugepage/hugepage-64kB/shmem_enabled
->>>>>>>>
->>>>>>>> What does that mean?
->>>>>>
->>>>>> So I think /mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled 
->>>>>> will need to
->>>>>> support the deny and force values. When applied to non-PMD sizes, 
->>>>>> "deny" can
->>>>>> just be a noop for now, because there was no way to configure a 
->>>>>> tmpfs mount for
->>>>>> non-PMD size THP in the first place. But I'm not sure what to do 
->>>>>> with "force"?
->>>>>
->>>>> OK. And I also prefer that "force" should be a noop too, since anon 
->>>>> shmem
->>>>> control should not configure tmpfs huge page allocation.
->>>>
->>>> I guess technically they won't be noops, but (for the non-PMD-sizes) 
->>>> "force"
->>>> will be an alias for "always" and "deny" will be an alias for "never"?
->>>>
->>>> I was just a bit concerned about later changing that behavior to 
->>>> also impact
->>>> tmpfs once tmpfs supports mTHP; could that cause breaks? But 
->>>> thinking about it,
->>>> I don't see that as a problem.
->>>
->>> Is the question what should happen if we "inherit" "force" or if someone
->>> specifies "force" for a mTP size explicitly?
->>
->> Well I think it amounts to the same thing; there isn't much point in 
->> forbidding
->> "force" to be set directly because it can still be set indirectly through
->> "inherit". We can't forbid indirectly setting it, because "inherit" 
->> could be set
->> first, then the top-level shmem_enabled changed to "force" after - and we
->> wouldn't want to fail that.
+On 23-04-24, 11:39, Jie Hai wrote:
+> Hi, Vinod Koul,
 > 
-> The default for PMD should be "inherit", for the other mTHP sizes it 
-> should be "never".
+> Stop an ongoing test by
+> "echo 0 > /sys/module/dmatest/parameters/run".
+> If the current code is executed inside the while loop
+> "while (!(kthread_should_stop() ||
+>  (params->iterations &&
+>  total_tests >= params->iterations)))"
+> and before the call of "wait_event_freezable_timeout",
+> the "wait_event_freezable_timeout" will be interrupted
+> and result in  "time out" for the test even if the test
+> is not completed.
 > 
-> So we should fail if:
-> * Setting top-level to "force" when any non-PMD size is "inherit"
-> * Setting "inherit" of a non-PMD size when the top-level is force
+> 
+> 
+> Operations to the problem is as follows,
+> and the failures are probabilistic:
+> 
+> modprobe hisi_dma
+> modprobe dmatest
+> 
+> echo 0 > /sys/module/dmatest/parameters/iterations
+> echo "dma0chan0" > /sys/module/dmatest/parameters/channel
+> echo "dma0chan1" > /sys/module/dmatest/parameters/channel
+> echo "dma0chan2" > /sys/module/dmatest/parameters/channel
+> echo 1 > /sys/module/dmatest/parameters/run
+> echo 0 > /sys/module/dmatest/parameters/run
+> 
+> dmesg:
+> 
+> [52575.636992] dmatest: Added 1 threads using dma0chan0
+> [52575.637555] dmatest: Added 1 threads using dma0chan1
+> [52575.638044] dmatest: Added 1 threads using dma0chan2
+> [52581.020355] dmatest: Started 1 threads using dma0chan0
+> [52581.020585] dmatest: Started 1 threads using dma0chan1
+> [52581.020814] dmatest: Started 1 threads using dma0chan2
+> [52587.705782] dmatest: dma0chan0-copy0: result #57691: 'test timed out'
+> with src_off=0xfe6 dst_off=0x89 len=0x1d9a (0)
+> [52587.706527] dmatest: dma0chan0-copy0: summary 57691 tests, 1 failures
+> 51179.98 iops 411323 KB/s (0)
+> [52587.707028] dmatest: dma0chan1-copy0: result #63178: 'test timed out'
+> with src_off=0xdf dst_off=0x6ab len=0x389e (0)
+> [52587.707767] dmatest: dma0chan1-copy0: summary 63178 tests, 1 failures
+> 62851.60 iops 503835 KB/s (0)
+> [52587.708376] dmatest: dma0chan2-copy0: result #60527: 'test timed out'
+> with src_off=0x10e dst_off=0x58 len=0x3ea4 (0)
+> [52587.708951] dmatest: dma0chan2-copy0: summary 60527 tests, 1 failures
+> 52403.78 iops 420014 KB/s (0)
 
-IMO, for tmpfs this is true, but for anon shmem, this 2 cases should not 
-fail.
 
-So I think we should allow this configuration, but for tmpfs huge page 
-allocation, we will not check the mTHP.
+This is usefel in the commitlog, please add this and update the patchset
 
-> Both will only happen if someone messes with the mTHP configuration 
-> manually.
 > 
-> And we should only offer "force" as an option for PMD-sized mTHP as long 
-> as the others are not supported. See below.
 > 
->>
->> So I think the question is just 'what should happen when "force" is 
->> configured
->> for a non-PMD-sized mTHP'?
-> 
-> We should hide it and not offer a configuration toggle that is inactive.
-> 
-> If someone wants to sense support for other mTHP "force" settings in the 
-> future, they can just parse if the "shmem_enabled" toggle offers "force" 
-> as an option. Then they know that it can actually be enabled and will 
-> also do what is promised.
+> On 2024/4/18 1:18, Vinod Koul wrote:
+> > On 20-07-23, 19:41, Jie Hai wrote:
+> > > The change introduced by commit a7c01fa93aeb ("signal: break
+> > > out of wait loops on kthread_stop()") causes dmatest aborts
+> > > any ongoing tests and possible failure on the tests. This patch
+> > 
+> > Have you see this failure? Any log of that..
+> > 
+> > > use wait_event_timeout instead of wait_event_freezable_timeout
+> > > to avoid interrupting ongoing tests by signal brought by
+> > > kthread_stop().
+> > > 
+> > > Signed-off-by: Jie Hai <haijie1@huawei.com>
+> > > ---
+> > >   drivers/dma/dmatest.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/dma/dmatest.c b/drivers/dma/dmatest.c
+> > > index ffe621695e47..c06b8b16645a 100644
+> > > --- a/drivers/dma/dmatest.c
+> > > +++ b/drivers/dma/dmatest.c
+> > > @@ -827,7 +827,7 @@ static int dmatest_func(void *data)
+> > >   		} else {
+> > >   			dma_async_issue_pending(chan);
+> > > -			wait_event_freezable_timeout(thread->done_wait,
+> > > +			ret = wait_event_timeout(thread->done_wait,
+> > >   					done->done,
+> > >   					msecs_to_jiffies(params->timeout));
+> > > -- 
+> > > 2.33.0
+> > 
 
-Sounds good to me.
+-- 
+~Vinod
 
