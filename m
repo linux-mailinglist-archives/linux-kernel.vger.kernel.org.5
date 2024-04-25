@@ -1,204 +1,151 @@
-Return-Path: <linux-kernel+bounces-158981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B1E58B27BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:50:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 261068B27C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:52:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78A171F25B7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:50:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D25AA2879FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1D814EC42;
-	Thu, 25 Apr 2024 17:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A83C14F10D;
+	Thu, 25 Apr 2024 17:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="SjUUi0IJ"
-Received: from smtp-bc0c.mail.infomaniak.ch (smtp-bc0c.mail.infomaniak.ch [45.157.188.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rds8j4mS"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8610714E2FA
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 17:49:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1DD514EC56;
+	Thu, 25 Apr 2024 17:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714067404; cv=none; b=P5NpAGiPlQbYU0jrlQXPTTixHtFWs9ezDBKNVnYFXeP0fArW1P0w1Kq4840Z1OhndCn2N3A5Q8rZQPln3rsw104xwUISm6ilKzoWAdRoFuRyyAwvYFhRyuJXmGE1WCo8SeftQslbopDIVC/ywM7thp58TvhI4UOg4mpW9y9UQ/o=
+	t=1714067528; cv=none; b=JHAIGxy6/wjZsYvaWts8QyNZGqMQegv0soB2kHyRYwYdK+Kw3o5Ddz4eEqFY9woTZeBwTd6EozaU7GNp+y4irOzpJcJ0XNroliKDEDggABCAtLCqU/s/lfwL/uSPfV1JiLv0TtzOscXcUSN+cB3BxA9bLQ+rfSWmaxm8+/GUOkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714067404; c=relaxed/simple;
-	bh=Wcp+Os6j8PSxfC/nvGvMV2CKI+zcJnPAX63EWSKy9zQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sVcnhKhMCNhK/akJfXPrYm4JFYdpZrsc/Zl91JGfSe8zv3Mepd2rnwMh1J4WtZtEgnPyBrkvt6Aho8gSpl8HjlWzb1AB9tZ11UrY6OPD5iIjzTcueHmMhBwnFH4I5KsYpnBfemCtCLw5ppJmT6c24UmRPx6J2R5I5uHn7GQ0ExE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=SjUUi0IJ; arc=none smtp.client-ip=45.157.188.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-4-0000.mail.infomaniak.ch (smtp-4-0000.mail.infomaniak.ch [10.7.10.107])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4VQNfW00KyzB2p;
-	Thu, 25 Apr 2024 19:49:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1714067394;
-	bh=Wcp+Os6j8PSxfC/nvGvMV2CKI+zcJnPAX63EWSKy9zQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SjUUi0IJOshpQJ9nZ56s7gT/r7Qb/c12WMGE5uDH6WhD3GXyz/oolIi7D2oxL/05R
-	 KBERmBy12eBABcWlzrPlKqCgOrfX/3Z4EudkMwQXRT57q0P9ODnE6NDxbRmnW67Tlf
-	 dLNcDx63I2XuiJKdzqBA6S1yAm81UU/zQGl+WHSY=
-Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4VQNfT6fSQzBnF;
-	Thu, 25 Apr 2024 19:49:53 +0200 (CEST)
-Date: Thu, 25 Apr 2024 19:49:52 +0200
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: kernel test robot <oliver.sang@intel.com>, 
-	Christian Brauner <brauner@kernel.org>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org, 
-	"David S. Miller" <davem@davemloft.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
-	Shuah Khan <shuah@kernel.org>, Will Drewry <wad@chromium.org>, 
-	Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>, 
-	linux-kselftest@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: Re: [linus:master] [selftests/harness]  0710a1a73f:
- kernel-selftests.pidfd.pidfd_setns_test.fail
-Message-ID: <20240425.Oofoi5oghoo6@digikod.net>
-References: <202403291015.1fcfa957-oliver.sang@intel.com>
+	s=arc-20240116; t=1714067528; c=relaxed/simple;
+	bh=XZZ309lKzz2FgtGq6IxbSpt6n0q8YJjnxq4LkfGBc5I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b9ioxLRIYPZWwzLOWGKEFfBgjkN4sk5/+KEl2CtV3peg1qg9BW9vrT4ytxYZY3aV0YiKuI8XpVKPKsFwjqCg0AWJIwnLPvwAsxNX50/kBqt0RjbihA+PZ2wZtpGevPQvE3OZG9v4LwR8/yIPGA/9Az/GDQ3Z2tcSRpCl0fO4UzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rds8j4mS; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e2bbc2048eso11314275ad.3;
+        Thu, 25 Apr 2024 10:52:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714067526; x=1714672326; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=nLI14HLDXEzm+5OoTt6qQtArfJ7vcXnK68mQs2aOSF8=;
+        b=Rds8j4mSe8CGgvgHyCoJDycG9ieVE9tjjPReBseA79W9hmEmWuLKCb5qQgLm2FiKsw
+         kJSMxYc9CKv/wQSp39QOrR6g8ZO0QDrV19eqTd+uEqB2abZaAQ5REnl/lHY5GnaB6aot
+         U6og+Y0VT7GP+CnwwE1wLGnbN7JpmuhZttJcuXzcGVXZumyKr/hmY8ki+m81K7bZxuC8
+         WuaVPLROjAgU17pNbPjp5td7AtlaaDSaOQLT8iKTjKqke3DtR37HzbhscaMm1DoV1ogv
+         iQ+MfT0V43jDLE2ChHvYdPm2hE9ZCMNAYehGRO+Um8hvdJnXA8OX+HrX0m4mLnGjDdeW
+         Q24g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714067526; x=1714672326;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nLI14HLDXEzm+5OoTt6qQtArfJ7vcXnK68mQs2aOSF8=;
+        b=BNXwSJjDN5WinjaA4bpDvgO9X5XC4sGcDlFgPaOlyLvgP9p8h7/ReeKaEQFFZijHht
+         EBwYcyHjEOl8iY0nrvH1+CjHmLlACzhe7VCei3EDKfXALoBGBsx3dA8hJPi1h266bS9k
+         VuzIeFot1fblD7uItROW+YH0KgGjxgzW+8ijBHpi3L0L/kHeaCl4zTdl3867kwgnbFTn
+         UYbfwfP3IK7ZX7YrRYj/oe1xOTCsIAeY+tP6pmTf9W2bNFeiWgvuslNJn3H1+M70PL1G
+         tlYjGLe0I9H4wthZ9mGFQOoJWHVahimoVdCjbPzMhKOsCO8c7a+ft4KlEG5DE4uHhrHb
+         WoWw==
+X-Forwarded-Encrypted: i=1; AJvYcCVBLr0gG92XfceTwax7yPo64suxlEpQFnOZyAWKb7/h4YyKpkmpEKqYVD7sFyf1kuRAo7jwkGVt0kcmaaxBhhl+YOUhRXrqF+HXsp6CcQhHG5KCiASLFdDMilzFUBAWyeVaYn/f0ekNFpIl4vpgeMj6GdJ3TMqb1zFelLeZQJ/5iLS+6x8MFUe0Nf57amoVJtO3mjtWuclFN7QZFHdGkkQ3H13TkfAOQomc5OiTmnkf2XmZl4xQzbdTFI1B
+X-Gm-Message-State: AOJu0Yx8YnHQrZHEo0UEsFhrQzkAJlIjBqA450ou1FQKRjKXck32BplD
+	EnU6kWawBjN41iVDI2ymN5kwMdIDVv7HNOdWc6m1u9aTJIblqAAS
+X-Google-Smtp-Source: AGHT+IHdUbinzhAMt6ObMPO37xYdQin9/tenpe3KKQi4zQ5TIaMPGX/V//jDpEDORgnSK59t5Z/MTw==
+X-Received: by 2002:a17:902:b08c:b0:1e6:622c:7bb4 with SMTP id p12-20020a170902b08c00b001e6622c7bb4mr257096plr.19.1714067526217;
+        Thu, 25 Apr 2024 10:52:06 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id kp7-20020a170903280700b001e99fdbc515sm8114611plb.3.2024.04.25.10.52.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Apr 2024 10:52:05 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <1a2e6020-77d8-4299-87b0-e2b16dfb3f86@roeck-us.net>
+Date: Thu, 25 Apr 2024 10:52:03 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202403291015.1fcfa957-oliver.sang@intel.com>
-X-Infomaniak-Routing: alpha
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] hwmon: pmbus: adm1275: add adm1281 support
+To: Jose Ramon San Buenaventura <jose.sanbuenaventura@analog.com>,
+ linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-i2c@vger.kernel.org
+Cc: Jean Delvare <jdelvare@suse.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+References: <20240425070948.25788-1-jose.sanbuenaventura@analog.com>
+ <20240425070948.25788-3-jose.sanbuenaventura@analog.com>
+Content-Language: en-US
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240425070948.25788-3-jose.sanbuenaventura@analog.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-FYI, I'm working on this issue.
+On 4/25/24 00:09, Jose Ramon San Buenaventura wrote:
+> Adding support for adm1281 which is similar to adm1275
+> 
+> Signed-off-by: Jose Ramon San Buenaventura <jose.sanbuenaventura@analog.com>
 
-Regards,
- Mickaël
+Patch is fine, but we'll need to wait for Conor's feedback
+regarding the compatible fallback before I can apply it.
 
-On Fri, Mar 29, 2024 at 10:42:51AM +0800, kernel test robot wrote:
-> 
-> 
-> Hello,
-> 
-> kernel test robot noticed "kernel-selftests.pidfd.pidfd_setns_test.fail" on:
-> 
-> commit: 0710a1a73fb45033ebb06073e374ab7d44a05f15 ("selftests/harness: Merge TEST_F_FORK() into TEST_F()")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> [test failed on linus/master 4cece764965020c22cff7665b18a012006359095]
-> 
-> in testcase: kernel-selftests
-> version: kernel-selftests-x86_64-4306b286-1_20240301
-> with following parameters:
-> 
-> 	group: pidfd
-> 
-> 
-> 
-> compiler: gcc-12
-> test machine: 36 threads 1 sockets Intel(R) Core(TM) i9-10980XE CPU @ 3.00GHz (Cascade Lake) with 32G memory
-> 
-> (please refer to attached dmesg/kmsg for entire log/backtrace)
-> 
-> 
-> 
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <oliver.sang@intel.com>
-> | Closes: https://lore.kernel.org/oe-lkp/202403291015.1fcfa957-oliver.sang@intel.com
-> 
-> 
-> 
-> # timeout set to 300
-> # selftests: pidfd: pidfd_setns_test
-> # TAP version 13
-> # 1..7
-> # # Starting 7 tests from 2 test cases.
-> # #  RUN           global.setns_einval ...
-> # #            OK  global.setns_einval
-> # ok 1 global.setns_einval
-> # #  RUN           current_nsset.invalid_flags ...
-> # # pidfd_setns_test.c:161:invalid_flags:Expected self->child_pid_exited (0) > 0 (0)
-> # #            OK  current_nsset.invalid_flags
-> # ok 2 current_nsset.invalid_flags
-> # #  RUN           current_nsset.pidfd_exited_child ...
-> # # pidfd_setns_test.c:161:pidfd_exited_child:Expected self->child_pid_exited (0) > 0 (0)
-> # #            OK  current_nsset.pidfd_exited_child
-> # ok 3 current_nsset.pidfd_exited_child
-> # #  RUN           current_nsset.pidfd_incremental_setns ...
-> # # pidfd_setns_test.c:161:pidfd_incremental_setns:Expected self->child_pid_exited (0) > 0 (0)
-> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to user namespace of 45423 via pidfd 20
-> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to mnt namespace of 45423 via pidfd 20
-> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to pid namespace of 45423 via pidfd 20
-> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to uts namespace of 45423 via pidfd 20
-> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to ipc namespace of 45423 via pidfd 20
-> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to net namespace of 45423 via pidfd 20
-> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to cgroup namespace of 45423 via pidfd 20
-> # # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to pid_for_children namespace of 45423 via pidfd 20
-> # # pidfd_setns_test.c:391:pidfd_incremental_setns:Expected setns(self->child_pidfd1, info->flag) (-1) == 0 (0)
-> # # pidfd_setns_test.c:392:pidfd_incremental_setns:Too many users - Failed to setns to time namespace of 45423 via pidfd 20
-> # # pidfd_incremental_setns: Test terminated by timeout
-> # #          FAIL  current_nsset.pidfd_incremental_setns
-> # not ok 4 current_nsset.pidfd_incremental_setns
-> # #  RUN           current_nsset.nsfd_incremental_setns ...
-> # # pidfd_setns_test.c:161:nsfd_incremental_setns:Expected self->child_pid_exited (0) > 0 (0)
-> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to user namespace of 45524 via nsfd 19
-> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to mnt namespace of 45524 via nsfd 24
-> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to pid namespace of 45524 via nsfd 27
-> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to uts namespace of 45524 via nsfd 30
-> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to ipc namespace of 45524 via nsfd 33
-> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to net namespace of 45524 via nsfd 36
-> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to cgroup namespace of 45524 via nsfd 39
-> # # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to pid_for_children namespace of 45524 via nsfd 42
-> # # pidfd_setns_test.c:427:nsfd_incremental_setns:Expected setns(self->child_nsfds1[i], info->flag) (-1) == 0 (0)
-> # # pidfd_setns_test.c:428:nsfd_incremental_setns:Too many users - Failed to setns to time namespace of 45524 via nsfd 45
-> # # nsfd_incremental_setns: Test terminated by timeout
-> # #          FAIL  current_nsset.nsfd_incremental_setns
-> # not ok 5 current_nsset.nsfd_incremental_setns
-> # #  RUN           current_nsset.pidfd_one_shot_setns ...
-> # # pidfd_setns_test.c:161:pidfd_one_shot_setns:Expected self->child_pid_exited (0) > 0 (0)
-> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding user namespace of 45630 to list of namespaces to attach to
-> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding mnt namespace of 45630 to list of namespaces to attach to
-> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding pid namespace of 45630 to list of namespaces to attach to
-> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding uts namespace of 45630 to list of namespaces to attach to
-> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding ipc namespace of 45630 to list of namespaces to attach to
-> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding net namespace of 45630 to list of namespaces to attach to
-> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding cgroup namespace of 45630 to list of namespaces to attach to
-> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding pid_for_children namespace of 45630 to list of namespaces to attach to
-> # # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding time namespace of 45630 to list of namespaces to attach to
-> # # pidfd_setns_test.c:466:pidfd_one_shot_setns:Expected setns(self->child_pidfd1, flags) (-1) == 0 (0)
-> # # pidfd_setns_test.c:467:pidfd_one_shot_setns:Too many users - Failed to setns to namespaces of 45630
-> # # pidfd_one_shot_setns: Test terminated by timeout
-> # #          FAIL  current_nsset.pidfd_one_shot_setns
-> # not ok 6 current_nsset.pidfd_one_shot_setns
-> # #  RUN           current_nsset.no_foul_play ...
-> # # pidfd_setns_test.c:161:no_foul_play:Expected self->child_pid_exited (0) > 0 (0)
-> # # pidfd_setns_test.c:506:no_foul_play:Adding user namespace of 45737 to list of namespaces to attach to
-> # # pidfd_setns_test.c:506:no_foul_play:Adding mnt namespace of 45737 to list of namespaces to attach to
-> # # pidfd_setns_test.c:506:no_foul_play:Adding pid namespace of 45737 to list of namespaces to attach to
-> # # pidfd_setns_test.c:506:no_foul_play:Adding uts namespace of 45737 to list of namespaces to attach to
-> # # pidfd_setns_test.c:506:no_foul_play:Adding ipc namespace of 45737 to list of namespaces to attach to
-> # # pidfd_setns_test.c:506:no_foul_play:Adding net namespace of 45737 to list of namespaces to attach to
-> # # pidfd_setns_test.c:506:no_foul_play:Adding cgroup namespace of 45737 to list of namespaces to attach to
-> # # pidfd_setns_test.c:506:no_foul_play:Adding time namespace of 45737 to list of namespaces to attach to
-> # # pidfd_setns_test.c:510:no_foul_play:Expected setns(self->child_pidfd1, flags) (-1) == 0 (0)
-> # # pidfd_setns_test.c:511:no_foul_play:Too many users - Failed to setns to namespaces of 45737 vid pidfd 20
-> # # no_foul_play: Test terminated by timeout
-> # #          FAIL  current_nsset.no_foul_play
-> # not ok 7 current_nsset.no_foul_play
-> # # FAILED: 3 / 7 tests passed.
-> # # Totals: pass:3 fail:4 xfail:0 xpass:0 skip:0 error:0
-> not ok 7 selftests: pidfd: pidfd_setns_test # exit=1
-> make: Leaving directory '/usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-0710a1a73fb45033ebb06073e374ab7d44a05f15/tools/testing/selftests/pidfd'
-> 
-> 
-> 
-> The kernel config and materials to reproduce are available at:
-> https://download.01.org/0day-ci/archive/20240329/202403291015.1fcfa957-oliver.sang@intel.com
-> 
-> 
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
-> 
-> 
+Thanks,
+Guenter
+
 
