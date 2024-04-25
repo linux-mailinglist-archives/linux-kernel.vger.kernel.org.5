@@ -1,284 +1,65 @@
-Return-Path: <linux-kernel+bounces-158210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A9748B1D04
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:46:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAFD58B1D07
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:47:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0946288B2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:46:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A0091F22959
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:47:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A94B7FBA8;
-	Thu, 25 Apr 2024 08:46:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 025B17FBA8;
+	Thu, 25 Apr 2024 08:46:55 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49986EB56
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:46:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D666EB56
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:46:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714034767; cv=none; b=eo1tr0EP+mUO5HZy9rfy3XuhvIzZXyE6/RFctpC/v1FaIBiRQYr/ZGRxSiF40b2m6vE5QXUQKgfu8kcVXLA0euyUil6MhErIgBt2zvi2UOVGOVQaJ6b+Q5rx1ZD1JsDiFYaXwWJUfDKdyW8K3TTh13sBkcuNFcfGdbTu7hr2OKw=
+	t=1714034814; cv=none; b=Hre30UqOV+6IQ2kRDO1Pq9yTKpigr9LxDp/gy/0rIETcbcFvPSla0W3IT+ztixCK3CmgbKkBczcL2Zw8eEylPWeokjPkMk+2dSmE4ZCC6sOQEInGb6xkFs5FH8gODh6U5lpuYZoAcmubKV7o+CSKDDEN6J05GmUMxlcO+nWQ6Vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714034767; c=relaxed/simple;
-	bh=W/3igZ4DmOFyi+O0RANP5YjgaGV4dAW43iEwXCKJT5s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FKInQSKVkt2mkdxhsGx9NRWTu1huGUOxDadBT5JC9zghg7+rJzId47hs+OYkBg/R9Ml6hoB2LxP2C5+AK2u89rL05jHe6NAg4XvUfkECUmI3MstZCQWDW7J2Q8NrsT0ilcdDy+BgHsAk0dVs1v5I1D6y2E1Vnvz9gEK8rFWySXE=
+	s=arc-20240116; t=1714034814; c=relaxed/simple;
+	bh=hhrOka8cOheUP3a0Q+QLQNbvwyMXbpo1sO5jFHXBnhA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SxmoF5p9rNrx63Q5hncekuI+B+k8OLGqvMryaPw7aryO7UM370RJkrliHldHes6Be4qBuZz7q7jjnQBEyZDHllk7IUHRQAPeElrta6udCovmyZKSKfe3uQax/QpM8ZG1BOy+GbEcttK+0qhdkpaYtrjHlK/1ZSz7/4P7qTuByBw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 314D61007;
-	Thu, 25 Apr 2024 01:46:33 -0700 (PDT)
-Received: from [10.57.75.12] (unknown [10.57.75.12])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2CA433F64C;
-	Thu, 25 Apr 2024 01:46:03 -0700 (PDT)
-Message-ID: <71c1e953-84f9-4d47-bd4c-725a447627df@arm.com>
-Date: Thu, 25 Apr 2024 09:46:01 +0100
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9EB011007;
+	Thu, 25 Apr 2024 01:47:20 -0700 (PDT)
+Received: from bogus (unknown [10.57.84.59])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7AA733F64C;
+	Thu, 25 Apr 2024 01:46:50 -0700 (PDT)
+Date: Thu, 25 Apr 2024 09:46:47 +0100
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: lkp@intel.com, rafael@kernel.org, mingo@redhat.com,
+	Sudeep Holla <sudeep.holla@arm.com>, peterz@infradead.org,
+	lukasz.luba@arm.com, gregkh@linuxfoundation.org,
+	linux-kernel@vger.kernel.org, qyousef@layalina.io
+Subject: Re: [PATCH] arch/topology: Fix variable naming
+Message-ID: <20240425084647.ulyz4kzcdkfndhjs@bogus>
+References: <20240425073709.379016-1-vincent.guittot@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/5] add mTHP support for anonymous share pages
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>,
- Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org,
- hughd@google.com
-Cc: willy@infradead.org, wangkefeng.wang@huawei.com, 21cnbao@gmail.com,
- ying.huang@intel.com, shy828301@gmail.com, ziy@nvidia.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
- <4b998e7d-153f-48cc-a9bb-8c84bb675581@arm.com>
- <c1f68109-7665-4905-996f-f1067dfa2cb6@linux.alibaba.com>
- <80b5f87e-c156-4ccc-98f0-96f1fd864273@arm.com>
- <ef4f15dd-da31-4a1e-bec5-62a7002c4f7c@linux.alibaba.com>
- <5b8b22e7-6355-4b08-b5b5-1e33ebae6f16@arm.com>
- <813fe7fd-3004-4e8b-801d-95c33559a025@linux.alibaba.com>
- <76f816dd-3bbf-48c9-a630-3787051cf289@arm.com>
- <8c0d6358-3c16-4a57-822c-04b3b3403fe6@linux.alibaba.com>
- <4204b5f6-21f0-4aa2-a625-3dd2f416b649@arm.com>
- <94ae96f7-79ce-4b3f-a272-6af62d01a3f8@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <94ae96f7-79ce-4b3f-a272-6af62d01a3f8@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425073709.379016-1-vincent.guittot@linaro.org>
 
-On 25/04/2024 09:26, David Hildenbrand wrote:
-> On 25.04.24 10:17, Ryan Roberts wrote:
->> On 25/04/2024 07:20, Baolin Wang wrote:
->>>
->>>
->>> On 2024/4/24 22:20, Ryan Roberts wrote:
->>>> On 24/04/2024 14:49, Baolin Wang wrote:
->>>>>
->>>>>
->>>>> On 2024/4/24 18:01, Ryan Roberts wrote:
->>>>>> On 24/04/2024 10:55, Baolin Wang wrote:
->>>>>>>
->>>>>>>
->>>>>>> On 2024/4/24 16:26, Ryan Roberts wrote:
->>>>>>>> On 24/04/2024 07:55, Baolin Wang wrote:
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> On 2024/4/23 18:41, Ryan Roberts wrote:
->>>>>>>>>> On 22/04/2024 08:02, Baolin Wang wrote:
->>>>>>>>>>> Anonymous pages have already been supported for multi-size (mTHP)
->>>>>>>>>>> allocation
->>>>>>>>>>> through commit 19eaf44954df, that can allow THP to be configured
->>>>>>>>>>> through the
->>>>>>>>>>> sysfs interface located at
->>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled'.
->>>>>>>>>>>
->>>>>>>>>>> However, the anonymous shared pages will ignore the anonymous mTHP rule
->>>>>>>>>>> configured through the sysfs interface, and can only use the PMD-mapped
->>>>>>>>>>> THP, that is not reasonable. Many implement anonymous page sharing
->>>>>>>>>>> through
->>>>>>>>>>> mmap(MAP_SHARED | MAP_ANONYMOUS), especially in database usage
->>>>>>>>>>> scenarios,
->>>>>>>>>>> therefore, users expect to apply an unified mTHP strategy for anonymous
->>>>>>>>>>> pages,
->>>>>>>>>>> also including the anonymous shared pages, in order to enjoy the
->>>>>>>>>>> benefits of
->>>>>>>>>>> mTHP. For example, lower latency than PMD-mapped THP, smaller memory
->>>>>>>>>>> bloat
->>>>>>>>>>> than PMD-mapped THP, contiguous PTEs on ARM architecture to reduce TLB
->>>>>>>>>>> miss
->>>>>>>>>>> etc.
->>>>>>>>>>
->>>>>>>>>> This sounds like a very useful addition!
->>>>>>>>>>
->>>>>>>>>> Out of interest, can you point me at any workloads (and off-the-shelf
->>>>>>>>>> benchmarks
->>>>>>>>>> for those workloads) that predominantly use shared anon memory?
->>>>>>>>>
->>>>>>>>> As far as I know, some database related workloads make extensive use of
->>>>>>>>> shared
->>>>>>>>> anonymous page, such as PolarDB[1] in our Alibaba fleet, or MySQL likely
->>>>>>>>> also
->>>>>>>>> uses shared anonymous memory. And I still need to do some investigation to
->>>>>>>>> measure the performance.
->>>>>>>>>
->>>>>>>>> [1] https://github.com/ApsaraDB/PolarDB-for-PostgreSQL
->>>>>>>>
->>>>>>>> Thanks for the pointer!
->>>>>>>>
->>>>>>>>>
->>>>>>>>>>> The primary strategy is that, the use of huge pages for anonymous shared
->>>>>>>>>>> pages
->>>>>>>>>>> still follows the global control determined by the mount option "huge="
->>>>>>>>>>> parameter
->>>>>>>>>>> or the sysfs interface at
->>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled'.
->>>>>>>>>>> The utilization of mTHP is allowed only when the global 'huge' switch is
->>>>>>>>>>> enabled.
->>>>>>>>>>> Subsequently, the mTHP sysfs interface
->>>>>>>>>>> (/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled)
->>>>>>>>>>> is checked to determine the mTHP size that can be used for large folio
->>>>>>>>>>> allocation
->>>>>>>>>>> for these anonymous shared pages.
->>>>>>>>>>
->>>>>>>>>> I'm not sure about this proposed control mechanism; won't it break
->>>>>>>>>> compatibility? I could be wrong, but I don't think shmem's use of THP
->>>>>>>>>> used to
->>>>>>>>>> depend upon the value of /sys/kernel/mm/transparent_hugepage/enabled?
->>>>>>>>>> So it
->>>>>>>>>
->>>>>>>>> Yes, I realized this after more testing.
->>>>>>>>>
->>>>>>>>>> doesn't make sense to me that we now depend upon the
->>>>>>>>>> /sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled values
->>>>>>>>>> (which by
->>>>>>>>>> default disables all sizes except 2M, which is set to "inherit" from
->>>>>>>>>> /sys/kernel/mm/transparent_hugepage/enabled).
->>>>>>>>>>
->>>>>>>>>> The other problem is that shmem_enabled has a different set of options
->>>>>>>>>> (always/never/within_size/advise/deny/force) to enabled
->>>>>>>>>> (always/madvise/never)
->>>>>>>>>>
->>>>>>>>>> Perhaps it would be cleaner to do the same trick we did for enabled;
->>>>>>>>>> Introduce
->>>>>>>>>> /mm/transparent_hugepage/hugepage-XXkb/shmem_enabled, which can have all
->>>>>>>>>> the
->>>>>>>>>> same values as the top-level
->>>>>>>>>> /sys/kernel/mm/transparent_hugepage/shmem_enabled,
->>>>>>>>>> plus the additional "inherit" option. By default all sizes will be set to
->>>>>>>>>> "never" except 2M, which is set to "inherit".
->>>>>>>>>
->>>>>>>>> Sounds good to me. But I do not want to copy all same values from
->>>>>>>>> top-level
->>>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled':
->>>>>>>>> always within_size advise never deny force
->>>>>>>>>
->>>>>>>>> For mTHP's shmem_enabled interface, we can just keep below values:
->>>>>>>>> always within_size advise never
->>>>>>>>>
->>>>>>>>> Cause when checking if mTHP can be used for anon shmem, 'deny' is equal to
->>>>>>>>> 'never', and 'force' is equal to 'always'.
->>>>>>>>
->>>>>>>> I'll admit it wasn't completely clear to me after reading the docs, but my
->>>>>>>> rough
->>>>>>>> understanding is:
->>>>>>>>
->>>>>>>>      - /sys/kernel/mm/transparent_hugepage/shmem_enabled controls
->>>>>>>>        mmap(SHARED|ANON) allocations (mostly; see rule 3)
->>>>>>>>      - huge=... controls tmpfs allocations
->>>>>>>>      - deny and force in shmem_enabled are equivalent to never and
->>>>>>>> always for
->>>>>>>>        mmap(SHARED|ANON) but additionally override all tmpfs mounts so they
->>>>>>>> act as
->>>>>>>>        if they were mounted with huge=never or huge=always
->>>>>>>>
->>>>>>>> Is that correct? If so, then I think it still makes sense to support
->>>>>>>> per-size
->>>>>>>
->>>>>>> Correct.
->>>>>>>
->>>>>>>> deny/force. Certainly if a per-size control is set to "inherit" and the
->>>>>>>> top-level control is set to deny or force, you would need that to mean
->>>>>>>> something.
->>>>>>>
->>>>>>> IMHO, the '/mm/transparent_hugepage/hugepage-XXkb/shmem_enabled' interface
->>>>>>> should only control the anonymous shmem. And 'huge=' controls tmpfs
->>>>>>> allocation,
->>>>>>> so we should not use anonymous control to override tmpfs control, which
->>>>>>> seems a
->>>>>>> little mess?
->>>>>>
->>>>>> I agree it would be cleaner to only handle mmap(SHARED|ANON) here, and leave
->>>>>> the
->>>>>> tmpfs stuff for another time. But my point is that
->>>>>> /mm/transparent_hugepage/shmem_enabled already interferes with tmpfs if the
->>>>>> value is deny or force. So if you have:
->>>>>>
->>>>>> echo deny > /mm/transparent_hugepage/shmem_enabled
->>>>>
->>>>> IIUC, this global control will cause shmem_is_huge() to always return
->>>>> false, so
->>>>> no matter how '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' is set,
->>>>> anonymous shmem will not use mTHP. No?
->>>>
->>>> No, that's not how '/mm/transparent_hugepage/hugepage-xxxkB/enabled' works, and
->>>> I think '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' should follow
->>>> the established pattern.
->>>>
->>>> For anon-private, each size is controlled by its
->>>> /mm/transparent_hugepage/hugepage-xxxkB/enabled value. Unless that value is
->>>> "inherit", in which case the value in /mm/transparent_hugepage/enabled is used
->>>> for that size.
->>>>
->>>> That approach enables us to 1) maintain back-compat and 2) control each size
->>>> independently
->>>>
->>>> 1) is met because the default is that all sizes are initially set to "never",
->>>> except the PMD-size (e.g. /mm/transparent_hugepage/hugepage-2048kB/enabled)
->>>> which is initially set to inherit. So any mTHP unaware SW can still modify
->>>> /mm/transparent_hugepage/enabled and it will still only apply to PMD size.
->>>>
->>>> 2) is met because mTHP aware SW can come along and e.g. enable the 64K size
->>>> (echo always > /mm/transparent_hugepage/hugepage-64kB/enabled) without
->>>> having to
->>>> modify the value in /mm/transparent_hugepage/enabled.
->>>
->>> Thanks for explanation. Initially, I want to make
->>> ‘/mm/transparent_hugepage/shmem_enabled’ be a global control for huge page, but
->>> I think it should follow the same strategy as anon mTHP as you said.
->>>
->>>>>> echo inherit > /mm/transparent_hugepage/hugepage-64kB/shmem_enabled
->>>>>>
->>>>>> What does that mean?
->>>>
->>>> So I think /mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled will need to
->>>> support the deny and force values. When applied to non-PMD sizes, "deny" can
->>>> just be a noop for now, because there was no way to configure a tmpfs mount for
->>>> non-PMD size THP in the first place. But I'm not sure what to do with "force"?
->>>
->>> OK. And I also prefer that "force" should be a noop too, since anon shmem
->>> control should not configure tmpfs huge page allocation.
->>
->> I guess technically they won't be noops, but (for the non-PMD-sizes) "force"
->> will be an alias for "always" and "deny" will be an alias for "never"?
->>
->> I was just a bit concerned about later changing that behavior to also impact
->> tmpfs once tmpfs supports mTHP; could that cause breaks? But thinking about it,
->> I don't see that as a problem.
-> 
-> Is the question what should happen if we "inherit" "force" or if someone
-> specifies "force" for a mTP size explicitly?
+On Thu, Apr 25, 2024 at 09:37:09AM +0200, Vincent Guittot wrote:
+> Using hw_pressure for local variable is confusing in regard to the
+> per_cpu hw_pressure variable. Rename it to avoid confusion.
+>
 
-Well I think it amounts to the same thing; there isn't much point in forbidding
-"force" to be set directly because it can still be set indirectly through
-"inherit". We can't forbid indirectly setting it, because "inherit" could be set
-first, then the top-level shmem_enabled changed to "force" after - and we
-wouldn't want to fail that.
+Acked-by: Sudeep Holla <sudeep.holla@arm.com>
 
-So I think the question is just 'what should happen when "force" is configured
-for a non-PMD-sized mTHP'?
-
-I think the answer is 'for now, it behaves like "always", but in future it will
-also force any tmpfs mounts to consider that mTHP size even if that size wasn't
-specified by mount='
-
-
+--
+Regards,
+Sudeep
 
