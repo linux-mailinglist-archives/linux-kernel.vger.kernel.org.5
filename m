@@ -1,133 +1,103 @@
-Return-Path: <linux-kernel+bounces-158137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40CC88B1C06
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:37:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BF408B1C0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:39:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03BFE2816B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:37:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D1281C21299
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFA9F6E61F;
-	Thu, 25 Apr 2024 07:37:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4328A6D1BC;
+	Thu, 25 Apr 2024 07:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Oaty3V5Y"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="W5S9mW2P"
+Received: from fhigh1-smtp.messagingengine.com (fhigh1-smtp.messagingengine.com [103.168.172.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA3C2AF1E
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:37:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06CA4535A5;
+	Thu, 25 Apr 2024 07:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714030636; cv=none; b=YxAsJk17uohSUtptum9uU3gx7Phdt+NCLX8klgMK3gcsT7GoE5XS5zQptCjAOuv4rrap5zFxgPx9pHgqsFtcHB2QUNOOcv4eJO5KSGj4xXge3a7GnRlqiLcczC30z5r6Sl9gYI/LBpDBM9w2UmIgXH89P9paXv2cKzCPWsX79FQ=
+	t=1714030775; cv=none; b=ZwG76hPWFE/T6st7PUR8SD+e0dUXSPZibTRa+4xzdSGnIOvaHqrBC0c5H1Hudqiod5LbQf+qsgbXhf4Hsoc4OM5gHHGZtQqiuiHYvRF9Ir5HPww0SUblqUfwEuKjaj8QzEj05HRzeTN1jRGs0UQ9J8WWS3vJs3HqDtrpBTgzCtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714030636; c=relaxed/simple;
-	bh=BvmJaWcEjXz9GIa99rQTmLRaFz+8HDPHC+3PB1q9ce0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jGLmbDsl8bpoPBt2Re/ULFKhxpYIggNKlSGNxYEPR2jyeSGQXeaEErKLYypdLCdxm7ZEKWs+gNRwJ7vFke7B+X5/uGfPGz6l8oKTAurfV6wS0hh7rc3il7HO7YsT/05hhjGAvmHO1m84WQJBX4BEZ1rMt7sfvKX0TPdOPTbxoHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Oaty3V5Y; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-34c0f5f5cd0so218380f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:37:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714030633; x=1714635433; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jJQtTreS4rRlmFcykkG+1PeKJQ26Urc/O33Jw46EHTI=;
-        b=Oaty3V5Y75F1CziU6tjzmGWExdNWmfTX7KJSinrFXXERh9v1FDxjlM5WpqXSsHHn6D
-         IF/u23rS5GOBL6HcKHv6kEcg1YnXyu+UW4EaEjNtG3phiIus9Blkjl/eZlnVqssXgxkK
-         hbKqc4bNnM9J9gqi2GpZHfqDPIP7rZO2GNJktnsX6WTIWAGyQglcwjPopIgvTYHO3vms
-         8qul2ohiKmnrEvbqFbD3K9IbgrNq2oky4byzDXG7d2Mk+N9foP5z4y3xQsyQANyiE1oy
-         pQb+JySSp9qsadYyETkqn8puFsErFFHHVIX3DwLPPWyKIVY4imaM6Q3a1HZn8dYRMFl5
-         d7HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714030633; x=1714635433;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jJQtTreS4rRlmFcykkG+1PeKJQ26Urc/O33Jw46EHTI=;
-        b=rzlV2OjB1Hw0RSXg7/UWIhnGGC5X0Urn3oDUiu6tv0km3Nihpk/wn+RCZvHP6SqxFY
-         RwABlUEwcj+UucrBAkD7kkGIYq2GnxVzzTWDVScQOXcpWoH8edectgEoudkYHKBikjiB
-         kYtsDKtrdAeGoWihXw41EggvIVRPYxCf+rBgaUMi0dYB9wK03u1+YkGFTZN6FDrlr8yD
-         si0Ysh3JV+TFzaCQ/6FvxFkuq50vJyZMlP6bG47pVBKK7pNXGqXB8DRq2FVy/FCO2IvE
-         sPoKmdJULP/h9TDrKHAXd5Q/HwkLQkXA3XTpPZi3+TcGbMamugMzLuMyfwV8C5rmXAS9
-         1NHg==
-X-Forwarded-Encrypted: i=1; AJvYcCUo+1/ICQQwTZsP1oQUlhlVSEo+ALG5nCgvM68tMGJcA0nsragWDDcv/djb7WKKxmBGJs80aI2UjhBXGsAeBOcOTYsBWSmrxFRLXxAj
-X-Gm-Message-State: AOJu0YydtP6QVXEpQy3hjURiGApMJEpjXNVnav5kP/HdX23vWvQ0DP4d
-	2+KkQpJiofNPKEc+YRiB4VRCqHRWqk6QkV9uogljWhv8nSw/vWOJHnT8KaEdDlU=
-X-Google-Smtp-Source: AGHT+IHuH23iR2ntL6tx1g8Qm+E/dcqJX9TqgSpUslbuPYM9f8aE9MxTYcUu4lj3SWehxr6lYiM3wg==
-X-Received: by 2002:a5d:4b48:0:b0:346:cd6f:3fd9 with SMTP id w8-20020a5d4b48000000b00346cd6f3fd9mr2826746wrs.10.1714030632872;
-        Thu, 25 Apr 2024 00:37:12 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:f:6020:c9e5:6905:625:b832])
-        by smtp.gmail.com with ESMTPSA id l10-20020a5d410a000000b00343d1d09550sm19092060wrp.60.2024.04.25.00.37.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 00:37:11 -0700 (PDT)
-From: Vincent Guittot <vincent.guittot@linaro.org>
-To: lkp@intel.com,
-	sudeep.holla@arm.com,
-	rafael@kernel.org,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	lukasz.luba@arm.com,
-	gregkh@linuxfoundation.org,
-	linux-kernel@vger.kernel.org,
-	qyousef@layalina.io
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH] arch/topology: Fix variable naming
-Date: Thu, 25 Apr 2024 09:37:09 +0200
-Message-Id: <20240425073709.379016-1-vincent.guittot@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714030775; c=relaxed/simple;
+	bh=NXH9DFSKlZTB8H14nYXZsm7pEec5UcVC0Q7UASNlYTw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aFdC7v7E7cWcUTWy0CzqDJlaFnC0KvyRgnCiQE4t8TzA9Zq8JvAGD5qZMIgG2mM7jKaEbY500LMYn3w+p72dc5hQWmOnoxSeyP1oc3MZ5AWiwtFKDhnKMkgxkO9SLa17h1FjfXU3bVJuxuyA48zKQDXqdHa2XFlMP2w57aWyKDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org; spf=none smtp.mailfrom=idosch.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=W5S9mW2P; arc=none smtp.client-ip=103.168.172.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=idosch.org
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id F24A91140134;
+	Thu, 25 Apr 2024 03:39:32 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 25 Apr 2024 03:39:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1714030772; x=1714117172; bh=+iroGCBHnk6lu8W8CuyJ3SmNRcqb
+	HlQo8giK2UXnHgw=; b=W5S9mW2PHEWn2F2V9Kn04mjTM0H67/OonUvESwJqPIpA
+	TChtfeF+4E2olLEgnfe0rCO/ZntpD9rjNFkN53JAYnPJgxp1gTZdadEc8TZJIzKH
+	ZZ2pivpHMH2Irq+JKgRhHJu5gEV/J2VbLVAs8eE/YJIrOxDvsZCBAy6dB3/ij0Zs
+	i4U6g9AMYmIQy4VoWwS1T5Ul3D6Wfpf2LNtNXCMUzBl3Y6WeFvnv9keeJRsBUlBw
+	bTnuZnRqF8RGN7u/9Cu/H4e2PK5nnodTlUAp40hVPP2imihHfX1BBNoOOK38t6yN
+	s2jsKMPwYVfI9bMFXjknZUX0U3MbEz5qZOLTRDfaiA==
+X-ME-Sender: <xms:tAgqZqRfDmvY2wMg_7OMjN21KQ47bllRQ7OF7pfKZEJaix8auPdslQ>
+    <xme:tAgqZvwsMirF1LVvFrUsj0U3mjkfHuhkuSeh0g2_1tjNo-xjL2xXjULjnyvfRAaAW
+    HhqI4Y5G0PL_WU>
+X-ME-Received: <xmr:tAgqZn3ndwP0kfDtRSZ2vPtkyc2yQ-w-nCi62aqWm-OjZx2faHgeCFcPZniY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeliedguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkugho
+    ucfutghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrg
+    htthgvrhhnpedvudefveekheeugeeftddvveefgfduieefudeifefgleekheegleegjeej
+    geeghfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hiughoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:tAgqZmBKJ0bAjWIp8zZIo4q-sejqZpLMLjinyBUDvAay8_2jtgb1nw>
+    <xmx:tAgqZjivUDioYhho9Ff3JaNqXclCASN5Jv_9QnHzUgntS4xZFBp5zw>
+    <xmx:tAgqZiqHTRAyovXLStvxdVIgrxg0-uQIexcou-hUHbikSamwaq23fA>
+    <xmx:tAgqZmjaxxG4cAYTKuIdqKf67QKbmvtm6bc_FH8xua-DA7SpI6eKag>
+    <xmx:tAgqZuSno9Sh8o7kXlDnTSCSCtTZjr7wYBcCAGLsH4_PhLN2mUk8K53b>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 25 Apr 2024 03:39:31 -0400 (EDT)
+Date: Thu, 25 Apr 2024 10:39:23 +0300
+From: Ido Schimmel <idosch@idosch.org>
+To: Adrian Moreno <amorenoz@redhat.com>
+Cc: netdev@vger.kernel.org, aconole@redhat.com, echaudro@redhat.com,
+	horms@kernel.org, i.maximets@ovn.org,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 5/8] net: sched: act_sample: add action cookie
+ to sample
+Message-ID: <ZioIq3kNjivL9AnM@shredder>
+References: <20240424135109.3524355-1-amorenoz@redhat.com>
+ <20240424135109.3524355-6-amorenoz@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240424135109.3524355-6-amorenoz@redhat.com>
 
-Using hw_pressure for local variable is confusing in regard to the
-per_cpu hw_pressure variable. Rename it to avoid confusion.
+On Wed, Apr 24, 2024 at 03:50:52PM +0200, Adrian Moreno wrote:
+> If the action has a user_cookie, pass it along to the sample so it can
+> be easily identified.
+> 
+> Signed-off-by: Adrian Moreno <amorenoz@redhat.com>
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202404250740.VhQQoD7N-lkp@intel.com/
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
----
-
- drivers/base/arch_topology.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-index 0248912ff687..c66d070207a0 100644
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -179,7 +179,7 @@ DEFINE_PER_CPU(unsigned long, hw_pressure);
- void topology_update_hw_pressure(const struct cpumask *cpus,
- 				      unsigned long capped_freq)
- {
--	unsigned long max_capacity, capacity, hw_pressure;
-+	unsigned long max_capacity, capacity, pressure;
- 	u32 max_freq;
- 	int cpu;
- 
-@@ -196,12 +196,12 @@ void topology_update_hw_pressure(const struct cpumask *cpus,
- 	else
- 		capacity = mult_frac(max_capacity, capped_freq, max_freq);
- 
--	hw_pressure = max_capacity - capacity;
-+	pressure = max_capacity - capacity;
- 
--	trace_hw_pressure_update(cpu, hw_pressure);
-+	trace_hw_pressure_update(cpu, pressure);
- 
- 	for_each_cpu(cpu, cpus)
--		WRITE_ONCE(per_cpu(hw_pressure, cpu), hw_pressure);
-+		WRITE_ONCE(per_cpu(hw_pressure, cpu), pressure);
- }
- EXPORT_SYMBOL_GPL(topology_update_hw_pressure);
- 
--- 
-2.34.1
-
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
 
