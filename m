@@ -1,85 +1,106 @@
-Return-Path: <linux-kernel+bounces-159038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D873D8B2884
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:55:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 206008B2885
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:55:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F47728582B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:55:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5B851F23A9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:55:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58E311514E1;
-	Thu, 25 Apr 2024 18:54:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEBA315382C;
+	Thu, 25 Apr 2024 18:54:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Jxve/Ywx"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jJLZIrJ2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9480B14D717;
-	Thu, 25 Apr 2024 18:54:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F253C14D717;
+	Thu, 25 Apr 2024 18:54:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714071250; cv=none; b=pw5d/U4B7Xm94q0ju7Dp1KJEVuJQNTwIhx238oc6o0PO9aVk3n1XQjD+Bn7PqyMLHbTcIssBDe+RP6bedHG2qYo+DE2e+Rt3YlZGBQmPH+nvJS42doyAHyPbBMoCRKuls0LVdE979zHYO9cUfjlyrHs6mLtkNwJjH4PHgb1VRHQ=
+	t=1714071254; cv=none; b=mIH+QUNoMGygEibkY/6kz0SWXcxr5s4dwblhM503NpnPO/7uHR/gLXtJqFx3AGaSq8PiT7VZl2cMESIq5gMuPWVsSBjTXBRkYXiG0r22pDhr6Ul07B5lTDMGXIXP1LVN2NrbKgW0IcTwr1FQn/e3EvtCwRBamMP45Plapt1oKZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714071250; c=relaxed/simple;
-	bh=EmD01qjkuxsGFRwgYYLCHqdE8rYkUVWUDM7DxHmc0AU=;
+	s=arc-20240116; t=1714071254; c=relaxed/simple;
+	bh=VHygvCCRWd06KRLxvoIjlwQSyIzeulJmYat5rXiYnos=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vFDOoJQ4IfNMt3rGUTJ1IpPAKIyFoyPSuF7+aWi6ADY7w5BrMX0Q9OLhy76/8tRzl4tkZpQsUs8BcTYJe2sU0U3Y5z/5FcdoQEa+FyILWy+kmcJg2Atsuub7sTxVbkXArL/MTlgp755lpZwARQDszn8Q2aiCZxjIvUzE6pAcc+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Jxve/Ywx; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=oyktM7E7M+KuWF5/aH7rtY519Fb1ZAYOKfjC4XC5Z9w=; b=Jxve/YwxL+dQtqIlLtYdKWLJMs
-	UbHt8PJvUuKGgFbyB3H/5NK/iatBxYjqomlid8oQOKtjGb/7lMi/9+lVr06WliZh0NZyxuEalolj4
-	vyNiKjVObuqv2rnIgkltCLSW29eDwOXj5WiF+di6I1l0zKXkRkt6SbG8OqH6+NCnCtxQMd9ZLPXNg
-	ov2w1wl4w5UwEqDCzwWnAYQrrNeYzO6BDIAiN/tuRCVA/yuz1EEKLRpk6xav/3RT81EL3RmVvwAgF
-	kNBk9P0Y7DcOxH1NZPnqVX+0LNpHA1jrI7WovPoDfiyCwIPnEKRyzRIoKDgJTy55B+TnC6F/ATIlt
-	pPpvhqJg==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s04EG-00000003apA-0XsP;
-	Thu, 25 Apr 2024 18:53:56 +0000
-Date: Thu, 25 Apr 2024 19:53:56 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-Cc: djwong@kernel.org, brauner@kernel.org, david@fromorbit.com,
-	chandan.babu@oracle.com, akpm@linux-foundation.org,
-	linux-fsdevel@vger.kernel.org, hare@suse.de,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-xfs@vger.kernel.org, mcgrof@kernel.org, gost.dev@samsung.com,
-	p.raghav@samsung.com
-Subject: Re: [PATCH v4 04/11] readahead: allocate folios with
- mapping_min_order in readahead
-Message-ID: <ZiqmxCn0ks_GUq5-@casper.infradead.org>
-References: <20240425113746.335530-1-kernel@pankajraghav.com>
- <20240425113746.335530-5-kernel@pankajraghav.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fHuwPIpzjanNMWsNJx5HQSM+0aLUn57M8EEMqdzNT92m3u3etJ1+DTQ+n1i8IipmR89+SfM2X9U+0lvwUZbavgE3NdtYwOJ0h4Fv6xBZzZO/PRi9ENcO6yh2g9FmjvUNFW+2eeoRypjlkXBYuuH5RXTguJo7Ew71798E64t+P6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jJLZIrJ2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2A85C113CE;
+	Thu, 25 Apr 2024 18:54:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714071253;
+	bh=VHygvCCRWd06KRLxvoIjlwQSyIzeulJmYat5rXiYnos=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jJLZIrJ2jOfVBxdZZO8Xu7HvIWntCKIen2xW2kNJjuky1RFpERio0vEOKQuOksRgM
+	 rTocEtwIKjZWX7kVzdnsT28QCuXdPDbWB35cPTsMpabjNmF2f4xqbtbCUdeAtqoumO
+	 ZwI2P3JJPcMdptlZwYPrujIUYyLT3YDq2EqCJoFTEPrsLFc4iEIpJJhk2TvoBkVt0i
+	 m1qjvldXGPGEjXmH56nvYNP8wJLaLaYJuprTrgE8UYxpJGkr0BrU/u5RS1+CmIP0WN
+	 5FcoyAbIbP0KMXMGmXdLoKcf+uDZofQ7rhX8ZIRSzO2G612vQTJ2iW3mcNvkzJ0NSt
+	 nOpiVfpC6DAPg==
+Date: Thu, 25 Apr 2024 15:54:09 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Tanmay Jagdale <tanmay@marvell.com>
+Cc: john.g.garry@oracle.com, will@kernel.org, james.clark@arm.com,
+	mike.leach@linaro.org, leo.yan@linux.dev, suzuki.poulose@arm.com,
+	peterz@infradead.org, mingo@redhat.com,
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+	irogers@google.com, adrian.hunter@intel.com,
+	linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	sgoutham@marvell.com, gcherian@marvell.com, lcherian@marvell.com
+Subject: Re: [PATCH V2 0/2] Fix Coresight instruction synthesis logic
+Message-ID: <Ziqm0QYfGbYjF6xh@x1>
+References: <20240404180731.7006-1-tanmay@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240425113746.335530-5-kernel@pankajraghav.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240404180731.7006-1-tanmay@marvell.com>
 
-On Thu, Apr 25, 2024 at 01:37:39PM +0200, Pankaj Raghav (Samsung) wrote:
-> +	unsigned long index = readahead_index(ractl), ra_folio_index;
+On Thu, Apr 04, 2024 at 11:37:29PM +0530, Tanmay Jagdale wrote:
+> When we use perf to catpure Coresight trace and generate instruction
+> trace using 'perf script', we get the following output:
+> 
+> # perf record -e cs_etm/@tmc_etr0/ -C 9 taskset -c 9 sleep 1
+> # perf script --itrace=i1ns --ns -Fcomm,tid,pid,time,cpu,event,ip,sym,addr,symoff,flags,callindent
 
-This is confusing.  Uninitialised variables should go before initialised
-ones.  So either:
+Applies cleanly, can some Coresight people review this and provide a
+Reviewed-by?
 
-	unsigned long ra_folio_index, index = readahead_index(ractl);
-or
-	unsigned long index = readahead_index(ractl);
-	unsigned long ra_folio_index;
+Thanks!
 
-> +	unsigned long i = 0, mark;
+- Arnaldo
 
-ditto
-
+⬢[acme@toolbox perf-tools-next]$ b4 am -ctsl --cc-trailers 20240404180731.7006-3-tanmay@marvell.com
+Grabbing thread from lore.kernel.org/all/20240404180731.7006-3-tanmay@marvell.com/t.mbox.gz
+Checking for newer revisions
+Grabbing search results from lore.kernel.org
+Analyzing 3 messages in the thread
+Checking attestation on all messages, may take a moment...
+---
+  ✓ [PATCH v2 1/2] perf: cs-etm: Fixes in instruction sample synthesis
+    + Link: https://lore.kernel.org/r/20240404180731.7006-2-tanmay@marvell.com
+    + Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+  ✓ [PATCH v2 2/2] perf: cs-etm: Store previous timestamp in packet queue
+    + Link: https://lore.kernel.org/r/20240404180731.7006-3-tanmay@marvell.com
+    + Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+  ---
+  ✓ Signed: DKIM/marvell.com
+---
+Total patches: 2
+---
+Cover: ./v2_20240404_tanmay_fix_coresight_instruction_synthesis_logic.cover
+ Link: https://lore.kernel.org/r/20240404180731.7006-1-tanmay@marvell.com
+ Base: applies clean to current tree
+       git checkout -b v2_20240404_tanmay_marvell_com HEAD
+       git am ./v2_20240404_tanmay_fix_coresight_instruction_synthesis_logic.mbx
+⬢[acme@toolbox perf-tools-next]$
 
