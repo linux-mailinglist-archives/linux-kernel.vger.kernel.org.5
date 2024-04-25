@@ -1,107 +1,118 @@
-Return-Path: <linux-kernel+bounces-158516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B7438B2195
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:25:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEC1A8B2199
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:28:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 777BBB23171
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:25:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F2481F22BC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:28:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455D412C468;
-	Thu, 25 Apr 2024 12:24:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEF2312C46B;
+	Thu, 25 Apr 2024 12:28:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XcXZjaHA"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LQYJLaIH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2116112BF32
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 12:24:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A7912AAEC;
+	Thu, 25 Apr 2024 12:28:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714047896; cv=none; b=GXQsXiwlbQDsRIPSZgA0O6f4k6GTdEZoO4CHjbRDoGhhNmDC1j8AcNgLvNrzrV5fjtZ7PljSg6l4rbHzwHCdJOrAaJ994elbtwx+q6YWfj5gnMUr8Ws3e1pH7iP5Eyg/j5sKHfu/FP/SH7vZRKcfC6fBZU0n8b5j7b7q+XszVVQ=
+	t=1714048119; cv=none; b=bLKM52LrJ6M2jfkGtOOAaYvt844AKMWhXyeWZKeI/UyeHCtgoeWpsLKSk6uWxOG9Cx9IRPzw42E9XTT9prL4F414gLCraFRYDW2kCyuDSQgJRr37qbYf1Ay0Jj86ifO+GsX66v+kZZl5ZH1vgSUb4wGtUQdRzNALwqjw/sv8NuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714047896; c=relaxed/simple;
-	bh=M71qeK8Sdn8NVW2kZBFrMrpoDYzrjWTiYmyUYOxRzpc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jWAN7H4fzyqF3shjnlbhN/8xnbFsz99Mpl3G6u163WkNWyiw6VE4e2Dh6QgXVYZmOZKUhDKPLek1WPoBKU1jE0m7fkYeAndK5k5Yrp0s1+l3sQ3jcpN57N2ZjTd95vMZJq6H+Mnx8myAtTO5t0VxyanZEkNeYp1qrpWO/LUSj2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XcXZjaHA; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714047894;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uRbwdG+1XunRLInxSf/AH761bg3jaFbuEZ5fAcJb3TY=;
-	b=XcXZjaHA/IXooJMa+Y7QNb67CbKkm/og3i2878IYY4+58FP7qDJgFBhLDC60vck6g4KQ7p
-	bV65aUUz9G0QPA8RZxIzXNenYvmomFVRSlnRLU+X25yjlK3YuAC1eaverc4jEf0F+Rkx2O
-	DGcdxByhTWlSQmym8/rHJpETqkn+RC4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-611-fbcaXE1cMpCWsRlt9eVr4g-1; Thu, 25 Apr 2024 08:24:48 -0400
-X-MC-Unique: fbcaXE1cMpCWsRlt9eVr4g-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F3252800CA2;
-	Thu, 25 Apr 2024 12:24:47 +0000 (UTC)
-Received: from [10.22.17.9] (unknown [10.22.17.9])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 81A7040F01A;
-	Thu, 25 Apr 2024 12:24:47 +0000 (UTC)
-Message-ID: <a834a59d-9f31-4374-923f-ddd89780b62a@redhat.com>
-Date: Thu, 25 Apr 2024 08:24:46 -0400
+	s=arc-20240116; t=1714048119; c=relaxed/simple;
+	bh=saQubiJ8B8IiQWQ1nNmf3R9q/utKA2r6d7Pfe/giCGw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ExtzoxgXL79GsTZgrk6lTDoKjMVuL/tFUBwekMGnxWm/7/Z4OqsEeJz/vLRoFHkVpcJuFmQ0/KswXiUi9XN3Xs2TY1y1JKl3KQ52R8VPnH3tWIuWCFMaitFkpl2o4Bbc8RB05eyrE711Tfb90tkoIKlRvmqf0Nj7GvNopfR0yPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LQYJLaIH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 113B5C113CC;
+	Thu, 25 Apr 2024 12:28:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714048118;
+	bh=saQubiJ8B8IiQWQ1nNmf3R9q/utKA2r6d7Pfe/giCGw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=LQYJLaIHV4IcTJrE3/86wGqEexF4wZbsZ+syPCclBnWKmf8VEzLmXnxPjS6LaWRwW
+	 d6UVHNoe4rF4Gk57mxEKW8EvR2ORcwhopq9QMQ2cUyDwMZ8Ho9BHg10TuMkeK2oA2T
+	 WN5cyvdhCoH+IRBPXLy/iR+bCjNzM2ouAnCMA+Lyp67dEP8uqegyRaDl0xjR8yEVsZ
+	 bKLMN3dMajYdSoxMHOG9FakFW8yYMJNUCQB86XdFEStYfnBCBI4lWA9kmL5TcmLzXk
+	 EGj/89lt0Asiy7WbZ5Svw2Bn/iMknVatObou4ecXqQ+V+ama1CcbQ9hAn/Qi+OiIN0
+	 SpgroX1Z0/IFA==
+From: Christian Brauner <brauner@kernel.org>
+To: Zhang Yi <yi.zhang@huaweicloud.com>,
+	Chandan Babu R <chandanbabu@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	djwong@kernel.org,
+	hch@infradead.org,
+	david@fromorbit.com,
+	tytso@mit.edu,
+	jack@suse.cz,
+	yi.zhang@huawei.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com,
+	linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: (subset) [PATCH v4 0/9] xfs/iomap: fix non-atomic clone operation and don't update size when zeroing range post eof
+Date: Thu, 25 Apr 2024 14:25:47 +0200
+Message-ID: <20240425-modeerscheinung-ortstarif-bf25f0e3e6f3@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240320110548.2200662-1-yi.zhang@huaweicloud.com>
+References: <20240320110548.2200662-1-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup/cpuset: Remove outdated comment in
- sched_partition_write()
-To: Xiu Jianfeng <xiujianfeng@huawei.com>, lizefan.x@bytedance.com,
- tj@kernel.org, hannes@cmpxchg.org
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240425093016.1068567-1-xiujianfeng@huawei.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240425093016.1068567-1-xiujianfeng@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1847; i=brauner@kernel.org; h=from:subject:message-id; bh=saQubiJ8B8IiQWQ1nNmf3R9q/utKA2r6d7Pfe/giCGw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRp+bh+uvB+6mTTyLUH3LY735QI5729o+5o1iGLhU3pf rXb63obO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACbyfh3D/+gkxrvNMewCOlpf LytlXpldw1rwUXw1j82975HeF7arrmb4p61/MD4w5YVPY5Bzq/9Btvs6Fxqu/n+W9MA/4/Ebh6V TWQE=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On 4/25/24 05:30, Xiu Jianfeng wrote:
-> The comment here is outdated and can cause confusion, from the code
-> perspective, there’s also no need for new comment, so just remove it.
->
-> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-> ---
->   kernel/cgroup/cpuset.c | 3 ---
->   1 file changed, 3 deletions(-)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index f5443c039619..a10e4bd0c0c1 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -3774,9 +3774,6 @@ static ssize_t sched_partition_write(struct kernfs_open_file *of, char *buf,
->   
->   	buf = strstrip(buf);
->   
-> -	/*
-> -	 * Convert "root" to ENABLED, and convert "member" to DISABLED.
-> -	 */
->   	if (!strcmp(buf, "root"))
->   		val = PRS_ROOT;
->   	else if (!strcmp(buf, "member"))
+On Wed, 20 Mar 2024 19:05:39 +0800, Zhang Yi wrote:
+> Changes since v3:
+>  - Improve some git message comments and do some minor code cleanup, no
+>    logic changes.
+> 
+> Changes since v2:
+>  - Merge the patch for dropping of xfs_convert_blocks() and the patch
+>    for modifying xfs_bmapi_convert_delalloc().
+>  - Reword the commit message of the second patch.
+> 
+> [...]
 
-Yes, that comment is now no longer relevant.
+@Chandan, since the bug has been determined to be in the xfs specific changes
+for this I've picked up the cleanup patches into vfs.iomap. If you need to rely
+on that branch I can keep it stable.
 
-Acked-by: Waiman Long <longman@redhat.com>
+---
 
+Applied to the vfs.iomap branch of the vfs/vfs.git tree.
+Patches in the vfs.iomap branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.iomap
+
+[5/9] iomap: drop the write failure handles when unsharing and zeroing
+      https://git.kernel.org/vfs/vfs/c/89c6c1d91ab2
+[6/9] iomap: don't increase i_size if it's not a write operation
+      https://git.kernel.org/vfs/vfs/c/943bc0882ceb
+[7/9] iomap: use a new variable to handle the written bytes in iomap_write_iter()
+      https://git.kernel.org/vfs/vfs/c/1a61d74932d4
+[8/9] iomap: make iomap_write_end() return a boolean
+      https://git.kernel.org/vfs/vfs/c/815f4b633ba1
+[9/9] iomap: do some small logical cleanup in buffered write
+      https://git.kernel.org/vfs/vfs/c/e1f453d4336d
 
