@@ -1,88 +1,99 @@
-Return-Path: <linux-kernel+bounces-157979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D9268B19B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:47:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42A718B19B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:50:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 031861F22E57
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 03:47:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88FB0B23242
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 03:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56BC32C1A0;
-	Thu, 25 Apr 2024 03:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F5332C69B;
+	Thu, 25 Apr 2024 03:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cLcZBRSX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uTaM8r1A"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C8F122F0D;
-	Thu, 25 Apr 2024 03:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FD721CFAF;
+	Thu, 25 Apr 2024 03:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714016817; cv=none; b=eYhz2cKp4Nx77aF31/ZN30zXl5mBk/ln+bTqpA1YAevRf9iXVI9lWYBodnvuDH9GPArBKQmcPYYfqMgbpohe+gM0zE6W28Bme5Ko26nOW3Cikvuvx5AMaQBK3H1MDYn5VIAjloB4jAkd/LNrJ1BsA2vADu38ryczdbzKCyPn4SE=
+	t=1714017028; cv=none; b=nRuOde2yUFdh+2I5foeIsDMhzg0Cfnv4wPQ4YWLuV9SQcOQFNlbcpl3MT7VSkdYivqd/R2TFyDOSSNOihp9DY7JKh18JNmeQf9ej56pW6VnpvuUipselaW9Y7fPtPfi0PQv4no+cSgJJ0Honpplp9R5ratIi/7zzrXGuZscYl+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714016817; c=relaxed/simple;
-	bh=fSWVkSsgoRD6SMlmpNYA6oLa7Vc1xeL3oLQj477NoBM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bc23nTR3Qdjf/KujadRf/c33/pk+Ly9nDQWXOxP7hZ8VI2XfF2kLB/Px53gghw7gN2ohx1pSZpTCi68lI2c70BUyLnOyeBDnSrAsl+Q2MsZ+oARr/21Jtbhu733B6mh4nkJBxWtfVOmtcAIPajb0sK/kh+qhT5ffCoR4tyYtB5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cLcZBRSX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D81BC113CC;
-	Thu, 25 Apr 2024 03:46:56 +0000 (UTC)
+	s=arc-20240116; t=1714017028; c=relaxed/simple;
+	bh=V6A7xEEwHSmN9XOdUsMP+K63NokIKrr+DoQ1VWdGu/Q=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=DT0ykYT6Xm23ak6QlUit/6IR5jQInz/Ryg+ptoGsiWHJtQHNkmA5MHy1W4SSAwWiz0/YQxeirFhZqxbjoDptnow0WO6mQPAR98BdJ9JCYu9UxXKWGUeiFBPW8zZeFMZC9aU/0DKBi7IJAgpzn4maeqZnQItBcssf34c+BOsKtPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uTaM8r1A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 52373C2BD10;
+	Thu, 25 Apr 2024 03:50:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714016817;
-	bh=fSWVkSsgoRD6SMlmpNYA6oLa7Vc1xeL3oLQj477NoBM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=cLcZBRSXoRYHOTIYGK1XZF+WlxxKrgNCW8WexdZEsK80Le7fbZrWaeVL5FTWrRhsD
-	 fJFoDmC3FbjOwiILawqmeytWemyq5obxleRDfauRSCY6Qs8BUVLrSdkqFAGqBiNw8d
-	 pzGR1Q8mMYndOoOhBPnWD/3gW29HgBAcwJkhB1ckbKXPDoTUx/qZAgz/YtuN0gzv8e
-	 tCAm8snXKoAORd3+UzqEXnpTPOsnDp2nv/V1hkt6v24T0MpgByyBm8vxTxHLKZddZ/
-	 lKPpZMAwFRcxZjqtJJkj9SGC9oMD4jYLARcpwW8lLcHfG+75J5QWkLMEpJQd3BP1s3
-	 XLvI9608h8/mw==
-Date: Wed, 24 Apr 2024 20:46:55 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Joe Damato <jdamato@fastly.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, tariqt@nvidia.com,
- saeedm@nvidia.com, mkarsten@uwaterloo.ca, gal@nvidia.com,
- nalramli@fastly.com, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, "open list:MELLANOX
- MLX4 core VPI driver" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net-next 3/3] net/mlx4: support per-queue statistics via
- netlink
-Message-ID: <20240424204655.7042c614@kernel.org>
-In-Reply-To: <Zik1zCI9W9EUi13T@LQ3V64L9R2>
-References: <20240423194931.97013-1-jdamato@fastly.com>
-	<20240423194931.97013-4-jdamato@fastly.com>
-	<Zig5RZOkzhGITL7V@LQ3V64L9R2>
-	<20240423175718.4ad4dc5a@kernel.org>
-	<ZiieqiuqNiy_W0mr@LQ3V64L9R2>
-	<20240424072818.2c68a1ab@kernel.org>
-	<Zik1zCI9W9EUi13T@LQ3V64L9R2>
+	s=k20201202; t=1714017028;
+	bh=V6A7xEEwHSmN9XOdUsMP+K63NokIKrr+DoQ1VWdGu/Q=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=uTaM8r1A2hSXcgeMMo4LslAGBfl+miRnqoKZ4csbPGY866cfrMCQ3TGa6VI18R3QB
+	 CtOYpQP3SgvcVVxBk3DXlbB/O4wlNpCLWgSvvH0VffAA7mS3J/Aywf0//W1Un7KFJK
+	 NSUIYoA1tiyBPlJ0CsSTgsHgW3EUNZ++7i+DvAuNPjaCbAi4EzW2Etq1nUEH3J1jFx
+	 tgZloF5/HvFWK8eeih5e6W/SzElyLklBaKY+acJ9WMpzVQ4W1u3jJ2bFmq+jUkZ09e
+	 qr7YjlxrdnRusOtJn+XUHCHVCpNdKicwcwK+VDj6iB5frMCWu4dklFqjP8yRqI9EmV
+	 +jm2UFphfO6Yg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3C7E0C43614;
+	Thu, 25 Apr 2024 03:50:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v3 1/3] net: pse-pd: pse_core: Add missing kdoc
+ return description
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171401702824.27021.7662896832481098233.git-patchwork-notify@kernel.org>
+Date: Thu, 25 Apr 2024 03:50:28 +0000
+References: <20240423-fix_poe-v3-1-e50f32f5fa59@bootlin.com>
+In-Reply-To: <20240423-fix_poe-v3-1-e50f32f5fa59@bootlin.com>
+To: Kory Maincent <kory.maincent@bootlin.com>
+Cc: o.rempel@pengutronix.de, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, andrew@lunn.ch,
+ thomas.petazzoni@bootlin.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kyle.swenson@est.tech
 
-On Wed, 24 Apr 2024 09:39:40 -0700 Joe Damato wrote:
-> FWIW, I also attempted to implement this API for i40e (hardware I also
-> have):
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 23 Apr 2024 11:21:10 +0200 you wrote:
+> From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
 > 
->   https://lore.kernel.org/lkml/20240410043936.206169-1-jdamato@fastly.com/
+> Add missing kernel documentation return description.
+> This allows to remove all warning from kernel-doc test script.
+> 
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> 
+> [...]
 
-Ah, missed the second patch on that thread initially!
+Here is the summary with links:
+  - [net-next,v3,1/3] net: pse-pd: pse_core: Add missing kdoc return description
+    https://git.kernel.org/netdev/net-next/c/fb1676ed7114
+  - [net-next,v3,2/3] net: pse-pd: pse_core: Fix pse regulator type
+    https://git.kernel.org/netdev/net-next/c/326f442784c2
+  - [net-next,v3,3/3] net: pse-pd: Kconfig: Add missing Regulator API dependency
+    https://git.kernel.org/netdev/net-next/c/2fa809b90617
 
-> But there are some complications I haven't resolved, so I'm focusing on
-> mlx4 and mlx5, first, and will have to come back to i40e later.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-FWIW I hope this series will get ironed out soon and we'll have far
-more qstats defined:
-https://lore.kernel.org/all/20240423113141.1752-1-xuanzhuo@linux.alibaba.com/
 
-The drop counts in particular could be useful in production, not so
-sure about the rest :)
 
