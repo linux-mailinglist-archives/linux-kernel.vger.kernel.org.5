@@ -1,168 +1,164 @@
-Return-Path: <linux-kernel+bounces-158533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33E968B21C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:39:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FB698B21C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:40:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 411D4B21AE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:39:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04799282F30
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:40:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7B411494C7;
-	Thu, 25 Apr 2024 12:39:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503881494C8;
+	Thu, 25 Apr 2024 12:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="SARf4k9w"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="VS2JAjlp"
+Received: from forward500c.mail.yandex.net (forward500c.mail.yandex.net [178.154.239.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCA812BF04;
-	Thu, 25 Apr 2024 12:39:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7D712BF04;
+	Thu, 25 Apr 2024 12:40:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714048745; cv=none; b=RRvy3N2xHgRI5MBWHM099UHbqF4RI40LdvipPl/ywzvwXFJWC/i6oeTHIy5GRQbcUztwsuqXvMioVBs1OPoQYDCRcIlrHdn2j/RwHWNnUTNa3H6PIi6P59EJ47uzE+Ykb9GpZPeujNKGdQiKpBG3AAyWQ828cpmw1yQ4dC/XCGY=
+	t=1714048810; cv=none; b=bZlljtHcokslMiauyEFnTu+e9JqoQc/3SsrEaHk4h/O1jipO/5pWXvy0YXZ2iNpmW806fX7WOR90yfnqlW3lQdon/ioEA9h/qisdTYG4EW3GDU0MKpZXanugeUq/u6So9oOJSa+mFGC2kWqM1fUXWM4NQUMB0rQJk2gQ98Xhzhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714048745; c=relaxed/simple;
-	bh=BVdWvAedTNOZ6PJWR1bHtbmXUdHDTHAhobj91tClV38=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=EOEYFYgz8K/etqv3srhdVIBHTjqjJFPogpHYkKgaAbaekLN3XCGO4zyFeoIQ/H99PuCVp1yhgvCpVY2iUrdo4UCmtJymAetFpuVTWa7TFxUyU4i3oIPOg4E2M0uzl3QeL6e2vES50XZzgNE1/gteXQT6iY1IBFmgNjWAXNBTkLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=SARf4k9w; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43PC5GQD002355;
-	Thu, 25 Apr 2024 12:38:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=d1tj7b/5ep7BGWGsy9t18TIvNN2i9tXDWcCeCzfSP34=; b=SA
-	Rf4k9wD0I9s/MIjuVbAZnLcD92EK8UFEABS2udSa+6D0vBi31W927H4LU99gSBcU
-	fhQQfmuhs+fORkcPNYKu4T3W3G3fc90NJR1U+MkCUM5bAHIWrJ7aTvigHiLAdDFe
-	A3+L0oJr4b174royFO8FNdxjbp2UeSoSrvnsrdcNVfuG2FIxdijQPoFNlWLH3Rtz
-	lE+9D3W8FBLYr7WeZRYKvP1kBvqVjAApzXV9mSEBTy6ifqaQYuaOU6SrRMBPgPIy
-	gj6Vc0XPxpiS3ohpQBZbQOSj6Fz6950qTvv2/Txa9B6942UVioU1wZXICSouMfiW
-	FCXdaGwdJ9s+q/UilmLw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqenkjgtu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 12:38:51 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43PCcoVF032390
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 12:38:50 GMT
-Received: from [10.111.139.7] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 25 Apr
- 2024 05:38:46 -0700
-Message-ID: <77df205b-3577-7b89-dcaf-7cb3947b4fb4@quicinc.com>
-Date: Thu, 25 Apr 2024 18:08:44 +0530
+	s=arc-20240116; t=1714048810; c=relaxed/simple;
+	bh=6vkPmtDiLE+/0ji3+ctV49AgPYWn3Mz5TJN/ESYCMos=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GxpvbdtaQtKVZiOLZ2IYBrzAZrL+4cnKCckDYxEUB+M9hNWSvsij2gFpk1oLFpyDGZL9RhxuX/2iE5QF1lvHdQ/8Xdt3nvVqYl1oKAEH1f9I6k3FWWbkcPscUkFUO9PXSyoAhkaNnRZa4jb0Jt1HN/lU3XFJOEqs/Xk8qvPyhcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=VS2JAjlp; arc=none smtp.client-ip=178.154.239.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+Received: from mail-nwsmtp-smtp-production-main-36.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-36.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:c0e:0:640:c281:0])
+	by forward500c.mail.yandex.net (Yandex) with ESMTPS id 1866561532;
+	Thu, 25 Apr 2024 15:39:58 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-36.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id tdLplpYVsKo0-YxQbXXna;
+	Thu, 25 Apr 2024 15:39:57 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1714048797; bh=bcA6ElicbT39XJDeRPmuUikJSa8KgSxn19jArvtuNfg=;
+	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
+	b=VS2JAjlpNHO4g0QFJPCVOac0ldhMWQ9eQr28iHEADsrdWY2iu28fW33yGZ6mQ3bj7
+	 ggh3ZF75iIMTd0ZHoztyQmzsawi+V1fg8zWpY8o2G0md4HczmY1gLrN1RqPVQj/v82
+	 fH3JVA77UI0fjmWePCpqcfODngkm/Avxe7p9tvEA=
+Authentication-Results: mail-nwsmtp-smtp-production-main-36.iva.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+Message-ID: <8b136077-af77-4371-9e67-7ae339efc3c1@yandex.ru>
+Date: Thu, 25 Apr 2024 15:39:54 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 14/19] media: venus: core: Define a pointer to
- core->res
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Stanimir Varbanov
-	<stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross
-	<agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Mauro Carvalho
- Chehab" <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-CC: Marijn Suijten <marijn.suijten@somainline.org>,
-        Stanimir Varbanov
-	<stanimir.varbanov@linaro.org>,
-        Mauro Carvalho Chehab
-	<mchehab+huawei@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230911-topic-mars-v3-0-79f23b81c261@linaro.org>
- <20230911-topic-mars-v3-14-79f23b81c261@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/2] implement OA2_INHERIT_CRED flag for openat2()
 Content-Language: en-US
-From: Dikshita Agarwal <quic_dikshita@quicinc.com>
-In-Reply-To: <20230911-topic-mars-v3-14-79f23b81c261@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: cFnzlcj5cyhptGoRcYAAIAls-nGkJJ1r
-X-Proofpoint-GUID: cFnzlcj5cyhptGoRcYAAIAls-nGkJJ1r
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-25_12,2024-04-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- mlxlogscore=999 priorityscore=1501 impostorscore=0 malwarescore=0
- bulkscore=0 lowpriorityscore=0 spamscore=0 adultscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404250091
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
+ Eric Biederman <ebiederm@xmission.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>,
+ Jan Kara <jack@suse.cz>, Jeff Layton <jlayton@kernel.org>,
+ Chuck Lever <chuck.lever@oracle.com>, Alexander Aring
+ <alex.aring@gmail.com>, David Laight <David.Laight@aculab.com>,
+ linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+ Paolo Bonzini <pbonzini@redhat.com>,
+ =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+References: <20240424105248.189032-1-stsp2@yandex.ru>
+ <20240424-schummeln-zitieren-9821df7cbd49@brauner>
+ <6b46528a-965f-410a-9e6f-9654c5e9dba2@yandex.ru>
+ <20240425-ausfiel-beabsichtigen-a2ef9126ebda@brauner>
+ <df51f2fd-385a-47bf-a072-a8988a801d52@yandex.ru>
+ <20240425-loslassen-hexen-a1664a579ea1@brauner>
+From: stsp <stsp2@yandex.ru>
+In-Reply-To: <20240425-loslassen-hexen-a1664a579ea1@brauner>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+25.04.2024 15:08, Christian Brauner пишет:
+>> But I am sure you still don't understand
+>> what exactly the patch does, so why not
+>> to ask instead of asserting?
+>> You say uid/gid can be stolen, but no,
+>> it can't: the creds are reverted. Only
+>> fsuid/fsgid (and caps in v2 of the patch)
+>> actually affect openat2(), but nothing is
+>> "leaked" after openat2() finished.
+> I say "stolen" because the original opener has no say in this.
+
+The initial idea was to keep this all
+within a single-process boundary. It
+wasn't coded that way though. :(
 
 
+>   You're
+> taking their fsuid/fsgid and groups and overriding creds for the
+> duration of the lookup and open. Something the original opener never
+> consented to. But let's call it "borrowed" if you're hung up on
+> terminology here.
 
-On 3/27/2024 11:38 PM, Konrad Dybcio wrote:
-> To make the code more concise, define a new variable 'res' pointing to
-> the abundantly referenced core->res.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  drivers/media/platform/qcom/venus/core.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-> index 5b18b1f41267..e61aa863b7f7 100644
-> --- a/drivers/media/platform/qcom/venus/core.c
-> +++ b/drivers/media/platform/qcom/venus/core.c
-> @@ -285,6 +285,7 @@ static irqreturn_t venus_isr_thread(int irq, void *dev_id)
->  
->  static int venus_probe(struct platform_device *pdev)
->  {
-> +	const struct venus_resources *res;
->  	struct device *dev = &pdev->dev;
->  	struct venus_core *core;
->  	int i, ret;
-> @@ -315,9 +316,11 @@ static int venus_probe(struct platform_device *pdev)
->  	if (!core->res)
->  		return -ENODEV;
->  
-> +	res = core->res;
-> +
->  	mutex_init(&core->pm_lock);
->  
-> -	core->pm_ops = venus_pm_get(core->res->hfi_version);
-> +	core->pm_ops = venus_pm_get(res->hfi_version);
->  	if (!core->pm_ops)
->  		return -ENODEV;
->  
-> @@ -325,8 +328,8 @@ static int venus_probe(struct platform_device *pdev)
->  	if (ret)
->  		return ret;
->  
-> -	for (i = 0; i < core->res->resets_num; i++) {
-> -		core->resets[i] = devm_reset_control_get_exclusive(dev, core->res->resets[i]);
-> +	for (i = 0; i < res->resets_num; i++) {
-> +		core->resets[i] = devm_reset_control_get_exclusive(dev, res->resets[i]);
->  		if (IS_ERR(core->resets[i]))
->  			return PTR_ERR(core->resets[i]);
->  	}
-> @@ -337,7 +340,7 @@ static int venus_probe(struct platform_device *pdev)
->  			return ret;
->  	}
->  
-> -	ret = dma_set_mask_and_coherent(dev, core->res->dma_mask);
-> +	ret = dma_set_mask_and_coherent(dev, res->dma_mask);
->  	if (ret)
->  		goto err_core_put;
->  
-> 
-Reviewed-by: Dikshita Agarwal <quic_dikshita@quicinc.com>	
+Not a terminology: you were explicitly
+talking about uid/gid, blaming a v2 of
+my patch. But v2 was not any more
+harmful than others and uid/gid cannot
+be leaked even there.
+But I don't mind: if now you realize v2
+is not a leak for uid/gid, then we are on
+the same track.
+
+> But ultimately it's the same complaint: the original opener has no way
+> of controlling this behavior.
+
+It wasn't clear if the opener should
+control that behaviour, or maybe instead
+that all should be limited within a single
+process?
+Andy Lutomirski's explanation made it
+clear that even if the openers are the
+same, the control is still needed. So now
+this argument is undeniable.
+
+
+>   Once ignored in my first reply, and now
+> again conveniently cut off again. Let alone all the other objections.
+
+Sorry but your complains were about
+stealing uid/gid in v2, which were clearly
+wrong. But this is a matter of the past.
+
+> And fwiw, the same way you somehow feel like I haven't read your patch
+> it seems you to consistently underestimate the implications of this
+> change. Which is really strange because it's pretty obvious. It's
+> effectively temporary setuid/setgid with some light limitations.
+
+Temporary cred override is quite common
+within the current code AFAICS when I grep
+it for override_creds() call.
+
+> Leaking directory descriptors across security boundaries becomes a lot
+> more interesting with this patch applied. Something which has happened
+> multiple times already and heavily figures in container escapes. And the
+> RESOLVE_BENEATH/IN_ROOT restrictions only stave off symlink (and magic
+> link) attacks. If a directory fd is leaked a container can take the
+> fsuid/fsgid/groups from the original opener of that directory and write
+> to disk with whatever it resolves to in that namespace's idmapping. It's
+> basically a nice way to puzzle together arbitrary fsuid/fsgid and
+> idmapping pairs in whatever namespace the opener happens to be in.
+
+Yes, so the opt-in flag is undeniably needed.
+
+> And to the "unsuspecting userspace" point you dismissed earlier.
+> Providing a dirfd to a lesser privileged process isn't horrendously
+> dangerous right now. But with this change it sure is. For stuff like
+> libpathrs or systemd's fdstore this change has immediate security
+> implications.
+
+So am I getting your point correctly:
+- process A uses the opt-in flag (eg O_CAPTURE_CREDS)
+   and passes the fd to "unsuspecting userspace" B.
+- process B is not going to use O_INHERIT_CREDS,
+   but it now still can't drop his privs fully.
+
+Is this what you mean?
+
 
