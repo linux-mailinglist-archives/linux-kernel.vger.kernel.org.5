@@ -1,113 +1,92 @@
-Return-Path: <linux-kernel+bounces-158349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD0FC8B1EB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:03:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 741C48B1FF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:10:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A48F28974F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:03:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 313C3286A89
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B52585955;
-	Thu, 25 Apr 2024 10:03:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 515B284E11;
+	Thu, 25 Apr 2024 11:10:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="JNNWiFzS"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="yBOdJcW7"
+Received: from smtp-8fa8.mail.infomaniak.ch (smtp-8fa8.mail.infomaniak.ch [83.166.143.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76F984FD4;
-	Thu, 25 Apr 2024 10:03:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF5E822EE9
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 11:10:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714039415; cv=none; b=orkwOKcsrokyKpy8Yzro31Ohem2iumxBeNsoVO1LSkHbd5s/VtRuNNNhUMDu0/0KNPuqbCwnpiuMP0DHGajsvPpv4IOnjukWtuVYxJQm63/XuVEHrsDWrwDS4oT5uRT56H6HSQ98xvt8V1HHCi+lefS3gW20pmgLEb97of3Ks1Y=
+	t=1714043447; cv=none; b=TuPHxgu6pMOkwpZPcpXMbJekg+OHxxQpyUJR/h15J4ig9eGpOuItKtkRoyFxBqt/SD26qKZliRqFIDrL5CGzIqSze2khmSRzrrV3ueuYM66ozfEApGz/dI62UBfuOGiytjGVQU2kfy+O0u1I4TjmkuljXqd4F892pPzr1Fo1xx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714039415; c=relaxed/simple;
-	bh=3od3E4ATLOrKZD5prvwpsh6Qsde2VjYJWAfb7KIiH7c=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=oIqZLliu68HFhIy2/QvUI0XAJtIe/JVPsrtYuRHSEULxWBS0vIFsUZsEGA146jkzr58c6i0uimUjF5580vZ9Qeli239Qw2JIJvQZDws87WSspD8GMQkUxrLCWO96lQwzv+NILtUmeB9m7ZRLHvKL21sTzcyRsOkKxSahv6Oj6Wk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=JNNWiFzS; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:References:Reply-To:Cc:To:From:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=3od3E4ATLOrKZD5prvwpsh6Qsde2VjYJWAfb7KIiH7c=;
-	t=1714039414; x=1714471414; b=JNNWiFzSmiKzurVIHRHTw2YW5RPNJCzuiWkn3S/fIKgeidd
-	V7MmL9nH1+mv2gIgBHOarUE68zWdMkg5Fo/KDbcg24TKwNkp8HTIcXsTVFNxz2StwU5AMC+ye15/C
-	17izzkt1hDaIlb4w6r5Xla+Tddz6pwrJXtCSLP3oxcvDz7Hw8PD9Rq4aMr53Ks2HVBEAKx/6PQhIc
-	g5JCBTXw1ezAsUtTXsbysDvzR+n+Gh2mN87AibFlcqLZlAx+YCQfWEz8k1tgDqXXbMyB/WY3ViKyO
-	leyEgw6PFUqC/Gqu2goVIWxVRfAGeM1T/Bq5NmH7W4PYXu48bQTSSgfHXbY+P5hw==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rzvwx-0000MR-16; Thu, 25 Apr 2024 12:03:31 +0200
-Message-ID: <0b5da67a-7482-4f18-9246-9c118f182b8b@leemhuis.info>
-Date: Thu, 25 Apr 2024 12:03:29 +0200
+	s=arc-20240116; t=1714043447; c=relaxed/simple;
+	bh=hWMLyN7uK3gysN1YWIaf+Zxg9Lv6ljiK1vi+Jet7OSs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TN31hR/M79zv4D0HsyFgcf6vHU5qPKWhLY+JD+1w/3ToKI/DTgmYTIrplNGVsdFj4coa7ZeJWMUon1k557bTKlT5WD4oZihBd41vFLO9JnKFF5oTzw99zoK/rY1zu22jcpUd7EEIXeZTx7p8mPfiYynXcDovEqAqWSvNJE+Khso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=yBOdJcW7; arc=none smtp.client-ip=83.166.143.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-3-0001.mail.infomaniak.ch (smtp-3-0001.mail.infomaniak.ch [10.4.36.108])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4VQ9PW2PpnzxXd;
+	Thu, 25 Apr 2024 11:22:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1714036975;
+	bh=hWMLyN7uK3gysN1YWIaf+Zxg9Lv6ljiK1vi+Jet7OSs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=yBOdJcW7ZUSQX0UplevNzR5NSqrSvKzT6jSCp4jm0rMGyOviBzqxQSPPqiJRbyRo/
+	 xLHcW8s4CHqW4ZVRS1KAlozxy8oIjN7Sye5+varUhNurHSl0Kj6zYRwuZTJIgElJGO
+	 kak6bJ2V30zCLHHr02wq9xiKJ4IjlYx+dUg5C4z0=
+Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4VQ9PV10dKzTZ4;
+	Thu, 25 Apr 2024 11:22:54 +0200 (CEST)
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To: =?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+	linux-security-module@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	James Morris <jmorris@namei.org>,
+	Paul Moore <paul@paul-moore.com>,
+	"Serge E . Hallyn" <serge@hallyn.com>
+Subject: [PATCH] =?UTF-8?q?MAINTAINER:=20Add=20G=C3=BCnther=20Noack=20as?= =?UTF-8?q?=20Landlock=20reviewer?=
+Date: Thu, 25 Apr 2024 11:21:21 +0200
+Message-ID: <20240425092126.975830-1-mic@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: dmaengine: CPU stalls while loading bluetooth module
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-To: Vinod Koul <vkoul@kernel.org>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
- parthiban@linumiz.com, saravanan@linumiz.com,
- 'karthikeyan' <karthikeyan@linumiz.com>,
- "bumyong.lee" <bumyong.lee@samsung.com>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-References: <CGME20240305062038epcas2p143c5e1e725d8a934b0208266a2f78ccb@epcas2p1.samsung.com>
- <1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com>
- <000001da6ecc$adb25420$0916fc60$@samsung.com>
- <12de921e-ae42-4eb3-a61a-dadc6cd640b8@leemhuis.info>
- <000001da7140$6a0f1570$3e2d4050$@samsung.com>
- <07b0c5f6-1fe2-474e-a312-5eb85a14a5c8@leemhuis.info>
- <001001da7a60$78603130$69209390$@samsung.com>
- <9490757c-4d7c-4d8b-97e2-812a237f902b@leemhuis.info>
- <8734a80b-c7a9-4cc2-91c9-123b391d468c@leemhuis.info>
- <ZgUTbiL86_bg0ZkZ@matsya>
- <2b2a6c9f-4df2-4962-b926-09adccd20715@leemhuis.info>
-Content-Language: en-US, de-DE
-In-Reply-To: <2b2a6c9f-4df2-4962-b926-09adccd20715@leemhuis.info>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1714039414;7d5e5266;
-X-HE-SMSGID: 1rzvwx-0000MR-16
+Content-Transfer-Encoding: 8bit
+X-Infomaniak-Routing: alpha
 
-On 28.03.24 16:06, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 28.03.24 07:51, Vinod Koul wrote:
->> On 26-03-24, 14:50, Linux regression tracking (Thorsten Leemhuis) wrote:
->>>
->>> Vinod Koul, what's your option here? We have two reports about
->>> regressions caused by 22a9d958581244 ("dmaengine: pl330: issue_pending
->>> waits until WFP state") [v6.8-rc1] now:
->>>
->>> https://lore.kernel.org/lkml/1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com/
->>>
->>> https://lore.kernel.org/all/ZYhQ2-OnjDgoqjvt@wens.tw/
->>> [the first link points to the start of this thread]
->>>
->>> To me it sounds like this is a change that better should be reverted,
->>> but you are of course the better judge here.
->>
->> Sure I have reverted this,
->
-> Thx!
+Günther is a major contributor to Landlock, both on the kernel and user
+space sides, and he is already reviewing Landlock changes.  Thanks!
 
-That revert afaics has not made it to Linus yet. Is that intentional, or
-did it just fell through the cracks?
+Cc: Günther Noack <gnoack@google.com>
+Cc: James Morris <jmorris@namei.org>
+Cc: Paul Moore <paul@paul-moore.com>
+Cc: Serge E. Hallyn <serge@hallyn.com>
+Signed-off-by: Mickaël Salaün <mic@digikod.net>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c95dabf4ecc9..6a84cccbb6d1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12216,6 +12216,7 @@ F:	net/l3mdev
+ 
+ LANDLOCK SECURITY MODULE
+ M:	Mickaël Salaün <mic@digikod.net>
++R:	Günther Noack <gnoack@google.com>
+ L:	linux-security-module@vger.kernel.org
+ S:	Supported
+ W:	https://landlock.io
+-- 
+2.44.0
 
-#regzbot poke
 
