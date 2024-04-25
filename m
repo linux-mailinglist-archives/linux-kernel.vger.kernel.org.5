@@ -1,210 +1,236 @@
-Return-Path: <linux-kernel+bounces-158026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 373318B1A57
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:31:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC7158B1A60
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:37:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 835811F22C42
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:31:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C9711C21412
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E9C23B796;
-	Thu, 25 Apr 2024 05:31:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0002A3C08D;
+	Thu, 25 Apr 2024 05:37:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ldFimn6V"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="WbKBXPKZ";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="O44VQT3J"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14603B78B
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 05:31:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183662B9C8;
+	Thu, 25 Apr 2024 05:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714023094; cv=none; b=QggoDO94mGZRFsFq4vI1RK8EvTXxHRfeIMQhPpNtUgJW4rBboGwyCT4EkkqUB6uarM1ZRszrFlDk3m7duOjasVnUtDrePqyj+ns4ZeVsFi8oraQZ0AvfR9GNodGXJRiADSFxjSYF4gIPdQtbrrpcyEo/ZgeNRgClh06e+zLlEew=
+	t=1714023447; cv=none; b=FnuB+l0DtaBP7z6hDyrUfv3UfKws3GU0mVJgXRNr6M4XfK2gyJVcs8aSN6DuAeiJSoS3Cwl9g5Mg9UurrzBZ49qOyNSZLmZgsJoKuoUuMZadQ9kV0ffcECl+ACrtQK+dlxTGwQCR4w7PLqI7lu3WsoGiM9+NFIcNg9Dcau84R0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714023094; c=relaxed/simple;
-	bh=nVBrL7YJuNzCkb+t0TQFbZ+nLpcpPgHNZvsiUTjW2s0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=n8r2gLSvj1CiJDQLes4XsKcUxe13xkG0dGOiOl2+b+ATtP4EeL8SR0DzCuUlsjg4wktXJiPZOuBbxfvKQzRxSsyKheHcTfaDcoaQw3e+RzalCPDF1VUGwmM8nEOX80uYwL6zlLF2eyIcMS6G2BRRmrETbXVpGE1Leb0HVby8KD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ldFimn6V; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-418e4cd2196so4872535e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:31:32 -0700 (PDT)
+	s=arc-20240116; t=1714023447; c=relaxed/simple;
+	bh=jZmOl3rou60PlMW9u4r/ORdM+/lfAajXL/HWXhh7L48=;
+	h=Subject:Date:From:To:Cc:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CaYtHfOetoy5VDjhFDS6ze1DZbNC43eRThD9xfSFsPjqV8uDPlN2uRfPpLSm2REpRb1pak7LNaUX9g6yU1O19nqUZ71Q1+4dhbjGU6xG01zF63xy/6y/BeLrtFQKA/DYPlZn1uFnU1EwXwSuCI+mbWJx+PJ/0l2mgy0y4Sqws04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=WbKBXPKZ; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=O44VQT3J reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714023091; x=1714627891; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cMmQUcIVgSzWuW2ZWEiFPzqJ+do6tt+UV73InjD+R7U=;
-        b=ldFimn6VYEKPYfJ9z5hDKati26skJB1gGPdBZe0X7eJRUsk+gtLG2+DlOgM8AOh/Fr
-         s7M+g4rwXfq+RQddUFeGF813CkiDWUYYiNXcWXR89Am46oIpkd3J9Oz6uyRnj/isW3Iw
-         Gr3Q02mQ9ApYrTrPkuN2djPeRkQIL/ztKS6ENrhxcFVrVO6wfUtLunCN1wQK4ovue/V5
-         X5vQ/bo+O8weL0PZR8gECG8aN9o9zSzn9e8bzh8OaB6re6N0Kf+ckxkEWI+Vr+VpqyiL
-         nEZoiB6OE4rurow5bx6imA7zSTxrE2Fd8Zuo+RtIMIo6LdEV+SD8xTsCgEHM9qHKT/zS
-         bMhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714023091; x=1714627891;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cMmQUcIVgSzWuW2ZWEiFPzqJ+do6tt+UV73InjD+R7U=;
-        b=OYBEXuYqB4wcav7KMOPKlGiRxNsTe/UpuIDs/+K6MmyJ5WYswOohR872B4+BcF6VUB
-         wWXCD3X5BsvAX4bp2jqadtPeRH6RbRwPmib/vOoU/mGUV81IQif/Jvnfkxyz7ocaWHBx
-         mePD0m5VGPXSQJhX0RYTt1JymhzYnCKiGQisPyqNCAYzN0KreDj6zLELokVo4n/y50b2
-         4ptXtjzKFP1xSPq42cjnk5q4Vt4BUoXYB7IkRjvto6zsmRsDq8Qky1/1WiFaV6REbimS
-         s8sOsJVflDbm36usPa2MhFyLvuaqJu1x7/Qqb9+mVr4ZLiZrvNF/65qXvQGf4881qmPV
-         /H4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVGEmbo9raoQfhqg3pQyXjYpMFqyHuEPv9WFnk0lr1SFZxNLMbWsURF0IaD3/WeEjqmGp7JsJf0es6xuLhu3KjZzUpqACZVnNOzHEPl
-X-Gm-Message-State: AOJu0YycmHXqEV1Y73Bjc4XCoLmQ2+Ix7QT2BV5uOaayOYq45ZoD8t4e
-	0Xg1l28lxBjUvTq8GUVzUTp8ahwxZL7yDpb7liJPhGnzDbpiKAx4iqwOHWYBXas=
-X-Google-Smtp-Source: AGHT+IGnkVtA5Wtwo7q3DYXIHysN+Cu0EJxSPiMeca2h/hO/A4Gzv4GhNLke0XTi2A49j9T/1rc+tw==
-X-Received: by 2002:a05:600c:4f8f:b0:418:58ac:7477 with SMTP id n15-20020a05600c4f8f00b0041858ac7477mr3171421wmq.30.1714023090830;
-        Wed, 24 Apr 2024 22:31:30 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id fj3-20020a05600c0c8300b00416b2cbad06sm29941718wmb.41.2024.04.24.22.31.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 22:31:30 -0700 (PDT)
-Date: Thu, 25 Apr 2024 08:31:26 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, Aren Moynihan <aren@peacevolution.org>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-	Aren Moynihan <aren@peacevolution.org>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Ondrej Jirman <megi@xff.cz>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-iio@vger.kernel.org, phone-devel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	Willow Barraco <contact@willowbarraco.fr>
-Subject: Re: [PATCH v2 2/6] iio: light: stk3310: Implement vdd supply and
- power it off during suspend
-Message-ID: <b47ad9a6-2b17-497f-ac2d-33ffec1b2750@moroto.mountain>
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1714023443; x=1745559443;
+  h=date:from:to:cc:message-id:references:mime-version:
+   content-transfer-encoding:in-reply-to:subject;
+  bh=x2ZR+RxKM/yGV3UpXGKOOZBBDQ6YDdkkFSm5SsEI2O8=;
+  b=WbKBXPKZB2soyiaMmER/UYom8cLLZCEJpl3uQfNz4i7PSZj9GQNNReOc
+   ToSAaBGu8x27me6IbYbUPGAzug7mRv8ZJAmpDeNoYQOy+ux0TjcKBIhjy
+   A+LdduWDIjxKWrVcmtWMBuqw+G8C7Io/HgZEi39rCrTLn3bZ8PnBC7JVG
+   F0qSkjsKFGV5FERFrvmlj/E351v/QSJE0Ecpz6ZGESIU0+ZE4XbMzUA86
+   Dpiy0bmeSBNoW6dMf4Mswb3X4dwfE5NcLkPw27v3IXVz4QAT6TBYhyI8L
+   6QcDbiNdinSRI03HC/hCEdisr6diwQ5/WszswvWNlDHP/4WQpIijxgyRA
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.07,228,1708383600"; 
+   d="scan'208";a="36602691"
+Subject: Re: Re: [PATCH 2/4] can: mcp251xfd: mcp251xfd_regmap_crc_write(): workaround
+ for errata 5
+Received: from vmailcow01.tq-net.de ([10.150.86.48])
+  by mx1.tq-group.com with ESMTP; 25 Apr 2024 07:37:19 +0200
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BBEC71754C3;
+	Thu, 25 Apr 2024 07:37:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
+	s=dkim; t=1714023435;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=x2ZR+RxKM/yGV3UpXGKOOZBBDQ6YDdkkFSm5SsEI2O8=;
+	b=O44VQT3J6MtRj/ezPHG1zEQv2dl16x3f0IgUHHEGLhP9MW1QNn3QXnJ0+YzTqor4N5juyH
+	vKdoWzxDDywAOTvHeObegS838YXIKrgRuvduVoOlL73AOFj74+N90o2dHuYmVpU6rO9fsB
+	mm23DiqbyxnV5/o2DU/lRUlaYwgBU5cqwobBXnyMtIGPDSI2Mnb6gTKxFYLFAdkemRdz8R
+	iILPRW8JT9hJWNvPFOMaU4lfHe58zi6r9r4lmWbTLVVETDonbWn1qIFNjvy4W5vfEb2Lle
+	GjFGSvONhFL8KYgpRqaBYemFrjT0Q0Ed+FImsXcgrokCeHz5wPF5H/d8AwJ21Q==
+Date: Thu, 25 Apr 2024 07:37:13 +0200
+From: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Thomas Kopp <thomas.kopp@microchip.com>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux@ew.tq-group.com,
+	alexander.stein@ew.tq-group.com
+Message-ID: <ZinsCZy0D7YBK0Gu@herburgerg-w2>
+References: <20240417-mcp251xfd-gpio-feature-v1-0-bc0c61fd0c80@ew.tq-group.com>
+ <20240417-mcp251xfd-gpio-feature-v1-2-bc0c61fd0c80@ew.tq-group.com>
+ <20240424-worm-of-massive-triumph-2eaf27-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240423223309.1468198-4-aren@peacevolution.org>
+In-Reply-To: <20240424-worm-of-massive-triumph-2eaf27-mkl@pengutronix.de>
+X-Last-TLS-Session-Version: TLSv1.3
 
-Hi Aren,
+On Wed, Apr 24, 2024 at 01:51:37PM +0200, Marc Kleine-Budde wrote:
+> On 17.04.2024 15:43:55, Gregor Herburger wrote:
+> > According to Errata DS80000789E 5 writing IOCON register using one SPI
+> > write command clears LAT0/LAT1.
+> > 
+> > Errata Fix/Work Around suggests to write registers with single byte write
+> > instructions. However, it seems that every write to the second byte
+> > causes the overrite of LAT0/LAT1.
+> 
+> This change doesn't use single byte write instructions.
 
-kernel test robot noticed the following build warnings:
+Yes, because this is not necessary. Single byte write instructions
+wont't fix the problem. The microchip errata sheet is wrong or at least
+misleading expressed.
 
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+From my observation single byte insctructions won't fix the problem. No
+write to bits [16:24] does fix the problem.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Aren-Moynihan/dt-bindings-iio-light-stk33xx-add-vdd-and-leda-regulators/20240424-064250
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
-patch link:    https://lore.kernel.org/r/20240423223309.1468198-4-aren%40peacevolution.org
-patch subject: [PATCH v2 2/6] iio: light: stk3310: Implement vdd supply and power it off during suspend
-config: i386-randconfig-141-20240424 (https://download.01.org/0day-ci/archive/20240425/202404251021.4OPER3OS-lkp@intel.com/config)
-compiler: gcc-10 (Ubuntu 10.5.0-1ubuntu1) 10.5.0
+I talked to Thomas Kopp from Microchip about that and he confirmed my
+observations.
+> 
+> > Never write byte 2 of IOCON register to avoid clearing of LAT0/LAT1.
+> 
+> I discovered that erratum, it's described in
+> mcp251xfd_chip_rx_int_enable():
+> 
+> 	/* Configure GPIOs:
+> 	 * - PIN0: GPIO Input
+> 	 * - PIN1: GPIO Input/RX Interrupt
+> 	 *
+> 	 * PIN1 must be Input, otherwise there is a glitch on the
+> 	 * rx-INT line. It happens between setting the PIN as output
+> 	 * (in the first byte of the SPI transfer) and configuring the
+> 	 * PIN as interrupt (in the last byte of the SPI transfer).
+> 	 */
+> 
+> The problem is that the SPI writes 1 byte at a time, starting at the
+> lower address. The chip updates the GPIO pin's status after each written
+> byte.
+> 
+> This may leads to a glitch if you have an external pull up. The power on
+> default auf the chip is GPIO/input, the GPIO line is not driven by the
+> chip and with the external pull up this will result in a high level.
+> 
+> If you configure the GPIO as an output/high, the driver first writes
+> bits 0...7, which results in the GPIO line being configured as an
+> output; the subsequent bits 8...15 configure the level of the GPIO
+> line.
+> 
+> This change doesn't take care of this.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202404251021.4OPER3OS-lkp@intel.com/
+I'm not sure if this is the same problem. Anyway, with this fix we didn't
+see any glitches on the gpio lines.
+> 
+> I'm not sure, if it's better to have 2 dedicated writes to IOCON in the
+> driver or try to hide it here in the regmap.
 
-smatch warnings:
-drivers/iio/light/stk3310.c:615 stk3310_probe() error: uninitialized symbol 'ret'.
+What would be the alternative? Maybe add a mcp251xfd_write_iocon
+function to the driver and call there regmap_update_bits twice?
 
-vim +/ret +615 drivers/iio/light/stk3310.c
+> 
+> > Signed-off-by: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+> > ---
+> >  drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c | 35 +++++++++++++++++++++++-
+> >  1 file changed, 34 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
+> > index 92b7bc7f14b9..ab4e372baffb 100644
+> > --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
+> > +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
+> > @@ -229,14 +229,47 @@ mcp251xfd_regmap_crc_gather_write(void *context,
+> >  	return spi_sync_transfer(spi, xfer, ARRAY_SIZE(xfer));
+> >  }
+> >  
+> > +static int
+> > +mcp251xfd_regmap_crc_write_iocon(void *context, const void *data, size_t count)
+> > +{
+> > +	const size_t data_offset = sizeof(__be16) +
+> > +		mcp251xfd_regmap_crc.pad_bits / BITS_PER_BYTE;
+> > +	u16 reg = *(u16 *)data;
+> > +
+> > +	/* Never write to bits 16..23 of IOCON register to avoid clearing of LAT0/LAT1
+> > +	 *
+> > +	 * According to Errata DS80000789E 5 writing IOCON register using one
+> > +	 * SPI write command clears LAT0/LAT1.
+> > +	 *
+> > +	 * Errata Fix/Work Around suggests to write registers with single byte
+> > +	 * write instructions. However, it seems that the byte at 0xe06(IOCON[23:16])
+> > +	 * is for read-only access and writing to it causes the cleraing of LAT0/LAT1.
+> > +	 */
+> > +
+> > +	/* Write IOCON[15:0] */
+> > +	mcp251xfd_regmap_crc_gather_write(context, &reg, 1,
+> > +					  data + data_offset, 2);
+> 
+> You write 15:0 in 1 go here.
+See above.
+> 
+> > +	reg += 3;
+> > +	/* Write IOCON[31:24] */
+> > +	mcp251xfd_regmap_crc_gather_write(context, &reg, 1,
+> > +					  data + data_offset + 3, 1);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int
+> >  mcp251xfd_regmap_crc_write(void *context,
+> >  			   const void *data, size_t count)
+> >  {
+> >  	const size_t data_offset = sizeof(__be16) +
+> >  		mcp251xfd_regmap_crc.pad_bits / BITS_PER_BYTE;
+> > +	u16 reg = *(u16 *)data;
+> >  
+> > -	return mcp251xfd_regmap_crc_gather_write(context,
+> > +	if (reg == MCP251XFD_REG_IOCON)
+> > +		return mcp251xfd_regmap_crc_write_iocon(context,
+> > +						 data, count);
+> > +	else
+> > +		return mcp251xfd_regmap_crc_gather_write(context,
+> >  						 data, data_offset,
+> >  						 data + data_offset,
+> >  						 count - data_offset);
+> 
+> Marc
+> 
+> -- 
+> Pengutronix e.K.                 | Marc Kleine-Budde          |
+> Embedded Linux                   | https://www.pengutronix.de |
+> Vertretung Nürnberg              | Phone: +49-5121-206917-129 |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-9046d80dce04c6 Uwe Kleine-K�nig 2022-11-18  592  static int stk3310_probe(struct i2c_client *client)
-be9e6229d67696 Tiberiu Breana   2015-04-27  593  {
-be9e6229d67696 Tiberiu Breana   2015-04-27  594  	int ret;
-be9e6229d67696 Tiberiu Breana   2015-04-27  595  	struct iio_dev *indio_dev;
-be9e6229d67696 Tiberiu Breana   2015-04-27  596  	struct stk3310_data *data;
-be9e6229d67696 Tiberiu Breana   2015-04-27  597  
-be9e6229d67696 Tiberiu Breana   2015-04-27  598  	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*data));
-be9e6229d67696 Tiberiu Breana   2015-04-27  599  	if (!indio_dev) {
-be9e6229d67696 Tiberiu Breana   2015-04-27  600  		dev_err(&client->dev, "iio allocation failed!\n");
-be9e6229d67696 Tiberiu Breana   2015-04-27  601  		return -ENOMEM;
-be9e6229d67696 Tiberiu Breana   2015-04-27  602  	}
-be9e6229d67696 Tiberiu Breana   2015-04-27  603  
-be9e6229d67696 Tiberiu Breana   2015-04-27  604  	data = iio_priv(indio_dev);
-be9e6229d67696 Tiberiu Breana   2015-04-27  605  	data->client = client;
-be9e6229d67696 Tiberiu Breana   2015-04-27  606  	i2c_set_clientdata(client, indio_dev);
-d6ecb01583d4e0 Arnaud Ferraris  2022-04-20  607  
-d6ecb01583d4e0 Arnaud Ferraris  2022-04-20  608  	device_property_read_u32(&client->dev, "proximity-near-level",
-d6ecb01583d4e0 Arnaud Ferraris  2022-04-20  609  				 &data->ps_near_level);
-d6ecb01583d4e0 Arnaud Ferraris  2022-04-20  610  
-be9e6229d67696 Tiberiu Breana   2015-04-27  611  	mutex_init(&data->lock);
-be9e6229d67696 Tiberiu Breana   2015-04-27  612  
-dd231c1d219f6b Ondrej Jirman    2024-04-23  613  	data->vdd_reg = devm_regulator_get(&client->dev, "vdd");
-dd231c1d219f6b Ondrej Jirman    2024-04-23  614  	if (IS_ERR(data->vdd_reg))
-dd231c1d219f6b Ondrej Jirman    2024-04-23 @615  		return dev_err_probe(&client->dev, ret, "get regulator vdd failed\n");
 
-s/ret/PTR_ERR(data->vdd_reg)/
-
-dd231c1d219f6b Ondrej Jirman    2024-04-23  616  
-be9e6229d67696 Tiberiu Breana   2015-04-27  617  	ret = stk3310_regmap_init(data);
-be9e6229d67696 Tiberiu Breana   2015-04-27  618  	if (ret < 0)
-be9e6229d67696 Tiberiu Breana   2015-04-27  619  		return ret;
-be9e6229d67696 Tiberiu Breana   2015-04-27  620  
-be9e6229d67696 Tiberiu Breana   2015-04-27  621  	indio_dev->info = &stk3310_info;
-be9e6229d67696 Tiberiu Breana   2015-04-27  622  	indio_dev->name = STK3310_DRIVER_NAME;
-be9e6229d67696 Tiberiu Breana   2015-04-27  623  	indio_dev->modes = INDIO_DIRECT_MODE;
-be9e6229d67696 Tiberiu Breana   2015-04-27  624  	indio_dev->channels = stk3310_channels;
-be9e6229d67696 Tiberiu Breana   2015-04-27  625  	indio_dev->num_channels = ARRAY_SIZE(stk3310_channels);
-be9e6229d67696 Tiberiu Breana   2015-04-27  626  
-dd231c1d219f6b Ondrej Jirman    2024-04-23  627  	ret = regulator_enable(data->vdd_reg);
-dd231c1d219f6b Ondrej Jirman    2024-04-23  628  	if (ret)
-dd231c1d219f6b Ondrej Jirman    2024-04-23  629  		return dev_err_probe(&client->dev, ret,
-dd231c1d219f6b Ondrej Jirman    2024-04-23  630  				     "regulator vdd enable failed\n");
-dd231c1d219f6b Ondrej Jirman    2024-04-23  631  
-dd231c1d219f6b Ondrej Jirman    2024-04-23  632  	/* we need a short delay to allow the chip time to power on */
-dd231c1d219f6b Ondrej Jirman    2024-04-23  633  	fsleep(1000);
-dd231c1d219f6b Ondrej Jirman    2024-04-23  634  
-be9e6229d67696 Tiberiu Breana   2015-04-27  635  	ret = stk3310_init(indio_dev);
-be9e6229d67696 Tiberiu Breana   2015-04-27  636  	if (ret < 0)
-dd231c1d219f6b Ondrej Jirman    2024-04-23  637  		goto err_vdd_disable;
-be9e6229d67696 Tiberiu Breana   2015-04-27  638  
-6839c1b0700a79 Octavian Purdila 2015-09-23  639  	if (client->irq > 0) {
-3dd477acbdd1f1 Tiberiu Breana   2015-04-27  640  		ret = devm_request_threaded_irq(&client->dev, client->irq,
-3dd477acbdd1f1 Tiberiu Breana   2015-04-27  641  						stk3310_irq_handler,
-3dd477acbdd1f1 Tiberiu Breana   2015-04-27  642  						stk3310_irq_event_handler,
-3dd477acbdd1f1 Tiberiu Breana   2015-04-27  643  						IRQF_TRIGGER_FALLING |
-3dd477acbdd1f1 Tiberiu Breana   2015-04-27  644  						IRQF_ONESHOT,
-3dd477acbdd1f1 Tiberiu Breana   2015-04-27  645  						STK3310_EVENT, indio_dev);
-7c7a9eeaa335df Hartmut Knaack   2015-07-09  646  		if (ret < 0) {
-3dd477acbdd1f1 Tiberiu Breana   2015-04-27  647  			dev_err(&client->dev, "request irq %d failed\n",
-3dd477acbdd1f1 Tiberiu Breana   2015-04-27  648  				client->irq);
-7c7a9eeaa335df Hartmut Knaack   2015-07-09  649  			goto err_standby;
-7c7a9eeaa335df Hartmut Knaack   2015-07-09  650  		}
-3dd477acbdd1f1 Tiberiu Breana   2015-04-27  651  	}
-3dd477acbdd1f1 Tiberiu Breana   2015-04-27  652  
-037e966f2d6389 Hartmut Knaack   2015-07-09  653  	ret = iio_device_register(indio_dev);
-037e966f2d6389 Hartmut Knaack   2015-07-09  654  	if (ret < 0) {
-037e966f2d6389 Hartmut Knaack   2015-07-09  655  		dev_err(&client->dev, "device_register failed\n");
-7c7a9eeaa335df Hartmut Knaack   2015-07-09  656  		goto err_standby;
-037e966f2d6389 Hartmut Knaack   2015-07-09  657  	}
-037e966f2d6389 Hartmut Knaack   2015-07-09  658  
-7c7a9eeaa335df Hartmut Knaack   2015-07-09  659  	return 0;
-7c7a9eeaa335df Hartmut Knaack   2015-07-09  660  
-7c7a9eeaa335df Hartmut Knaack   2015-07-09  661  err_standby:
-7c7a9eeaa335df Hartmut Knaack   2015-07-09  662  	stk3310_set_state(data, STK3310_STATE_STANDBY);
-dd231c1d219f6b Ondrej Jirman    2024-04-23  663  err_vdd_disable:
-dd231c1d219f6b Ondrej Jirman    2024-04-23  664  	regulator_disable(data->vdd_reg);
-be9e6229d67696 Tiberiu Breana   2015-04-27  665  	return ret;
-be9e6229d67696 Tiberiu Breana   2015-04-27  666  }
-
+Best regards,
+Gregor
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht München, HRB 105018
+Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
+https://www.tq-group.com/
 
