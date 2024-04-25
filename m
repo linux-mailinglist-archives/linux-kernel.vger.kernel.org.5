@@ -1,74 +1,80 @@
-Return-Path: <linux-kernel+bounces-158260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 176BC8B1D99
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E96E68B1D9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:18:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B0641C21962
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:17:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AA4D1C20F6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:18:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C44D84D12;
-	Thu, 25 Apr 2024 09:16:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B1484FAB;
+	Thu, 25 Apr 2024 09:16:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Yzh3o42j"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O0yQDVjY"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B0A82D9D
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:16:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D16584DE6
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:16:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714036608; cv=none; b=W8ilDzT1jBCYN/NZqPcu/lnDbtKtBkCka3CRAYO9u+NW8iEUUrDSC90ddO61HUnIx5XOkVvNY/KKMbQFfpVr7GbrXfna63G3cys8DSGQTFg3KhEHbv1i1+pt4eXuuf7+XUBomAz2a2CyC/Xo68TwgRsNWDLsBRrZKMO0K6NOQ24=
+	t=1714036612; cv=none; b=kYRFEQoUQSR/ZJeTqldipv6WFBP+dtAxrIZUuWyJkI8pwNVUMVu+dxy407M+lDBYOjjQ2f/dmJ1crXRehxEWpBt9QIDl1j4RHwAP8py69KbgScUyP//F0ahSMxM8CstMNOB3cW7kGhobZRPRyhf35bXEE3UcK+VIb1ojlwLZQfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714036608; c=relaxed/simple;
-	bh=f3133uqFv4RXCOMEFhCG0DPHJZPjuMDDykb0W1SZ6oU=;
+	s=arc-20240116; t=1714036612; c=relaxed/simple;
+	bh=VoSU51VISO+hw99uq4P1Dk7m/L2h5BCQps7z+ffZUcQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Mrc3PG8tEjEC2RqifxXhHgQwSUs+n/KAZ0ltuBMjXu3izgIIaWcEFwt7dJ9U5cAiadheZKuvmiHYTHhIuxzkzoOOKa1IBhPABJ9zvsYF+JY63n9+lOWSY89T2TuNOtwQUYc0WeVQW3mHtGQGAJ7uTXwrjLAnrgR7uX/eA24byjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Yzh3o42j; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41b34d344a0so5943935e9.3
+	 In-Reply-To:Content-Type; b=eOocOHrWvkPE42KzlXgy/vaeICl/2i0wozmepKxWqg8wIcFtadULTSB2UIEvKC+1hcFKBWtIwZxvv/UgC5tsxkeM/IKJ5t5dPng5Vnu0bhBivilGFmUSc4MlQ+DJKRGvvinaA+LbmPlyynuACcjyCI3er4w/u42/A8YiUxxAbXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O0yQDVjY; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714036609;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=xWaBdNkfRQDI3g5Ki0XK8PI99M75gj9zBLOBAiQCsuU=;
+	b=O0yQDVjYCnt2Von7d9VuBIFESdrcNnEV+NXRjqNPAT8ox0X4nPPX/VX1NE3dM4llDHhGQv
+	qHPf4bWcbm3QJv68cwEfCp6+0ag+VfWtZnVYK7eDohptEzEWImCzhaRaH+x78XODY0pLFh
+	Qx5hMLBjuYfcFH8Bk3iv28kPAKqOiTc=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-689-H7s9dPJNNzqWiq3NDtlMIg-1; Thu, 25 Apr 2024 05:16:47 -0400
+X-MC-Unique: H7s9dPJNNzqWiq3NDtlMIg-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d86adb107eso4316971fa.3
         for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 02:16:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714036605; x=1714641405; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=AYDzBhKtpm+egzgFtB4HtgBcIwuui9EZnOvvgEKNBgs=;
-        b=Yzh3o42j8rhw3tdPPq/BR106A7ibm7ZlDffAW73faVJc4NkfzessUv6wlTqRGDfTmU
-         NHAnQbY4bRxTRj+E958+62IFa9aqNz9um0BCCZ5J47fmEV6bOKFBQWIJYeCkfwWzh+03
-         JWPSmX3fkyUDnDKi5cp+G4gTPu7UEJyrHbOrJgisdEBFbYEa/hGOSVToK8uHL1lYKLcH
-         /ZgPc8zB+0XM/HQ4E72YYdX5+hBY/XBj6h7HMzRbWR0Y3y+WAkk78ni0C46/3r9az1b+
-         6JVYnKa0sjv4H49RThB5RE1HR8h4ubrESjLEsq49Ay5ihLWuE8NXWN9wIb+QexPXR+9o
-         mHLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1714036605; x=1714641405;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AYDzBhKtpm+egzgFtB4HtgBcIwuui9EZnOvvgEKNBgs=;
-        b=m2YwFegqWlUCZpgUi782j7oJP1xLKeR5a6x+5ggdXiYlMxbDm548eGcgyj+N9WKq8C
-         JHsCFeFMsPrloO1UXvxdQx2CvMF7AQjdLcaJLKOBaHnnM/BX7+Hgm8Ptw5KW9ldc1gNF
-         Mfs0W+dEbnD3tRpblqq9cI+myOmbE86c+4g/dCqDLLwoGZunYc406KGhwj1NQYBDeI25
-         RwqzifinQ31B80dsc9ksGyb3nFjR91DDqPKtglGxu1Q5Kd6l2Uz2NRKd8xOJ+BOVK7Y2
-         Ks2YpuSo5ZkIJmfkO3ITUnluEgurwH3kISIin3g612Z68Z3xDwPE6gUxNtFvGGWWPBXH
-         qRHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW8YftlwOjrODF1EyAPtHx3wKb8ERdnP1ccWZq0c4MHz6Nhpot9DKsuKiSnNSUXH84IheH+2yevej3d/e79v68vUvv+dzJdBIUtjapf
-X-Gm-Message-State: AOJu0YwikvEaXAT+gSOG9i9jKKVdKRCASb0DjkSW/K4WRMZXeUQEfhCx
-	sfy8cXvzB1ABj7o+6pITBSw/9OaDNEbDzS5Gu9JOjjgWAj7t80GLvA+uI/Qn9b8=
-X-Google-Smtp-Source: AGHT+IFb+m8jFDSt8hUeNKrGm9liMRSXWx/YeCr7s2ouSLC7zhPY05EJh/Uh0z/U4sbYCNIueDt78w==
-X-Received: by 2002:a05:600c:5119:b0:418:c1a3:8521 with SMTP id o25-20020a05600c511900b00418c1a38521mr3935713wms.26.1714036605078;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xWaBdNkfRQDI3g5Ki0XK8PI99M75gj9zBLOBAiQCsuU=;
+        b=lckM7JYc95Kgb5nNSD472rWrW6ReCXhtRXY/j2POKgddZnDYju4N0DDGGmirpKj/8Y
+         pwuKAx96jCxRnhyxr7QchSvK0vgtj/ulWfdTW9X5qar0dZZiX0NYrzHqdptuZSu+6/A9
+         DHPoIFVdTM0Xk/SqGLT/36uZDf8oXMtzujpTX5vMAiUwUNOocOr/yEQjbVlXddryLc1h
+         7RS7Jb022jaDHZvRQNy2UC3oucarCyOhhfIRA6D2icz2JRUIVRdluOlFwS+HVoh+w1Ug
+         hFowxmihd7brARArhv4sJnW91cKggQGB2JwLmG0MBK7s7fVaC1uLB08hbG0rvbGXp1B5
+         OdJw==
+X-Forwarded-Encrypted: i=1; AJvYcCXga8sRyjdkqFPJOg4QkExIkaG6iJJkL720e/hFadLjOg/8sp7bX/ndwZxMWc+SBt8/WFAfjkEL1aZhhDl9me/qUF9lmXZ3o/zRzit0
+X-Gm-Message-State: AOJu0Yy4OgN8msRJSe1BmR0DEQF9uCgJZd2ZVqp8YKzAHI4fOkaw/rTj
+	K/e6xfrBsFI9WaUi3rFdUFtNdb4mG3HfDkHYVX2a8JkpkqvEYhRG58T0BkCrEVBtdTQv+U6Azi1
+	JLx+kr6bvuUIALC9fP8L7mBW/AtxS1uHUfHhsXMnN4c9a6OctE2m/ONwJNUSCGg==
+X-Received: by 2002:a2e:b710:0:b0:2de:8685:d07b with SMTP id j16-20020a2eb710000000b002de8685d07bmr2683189ljo.46.1714036605534;
         Thu, 25 Apr 2024 02:16:45 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id t4-20020a5d4604000000b00343826878e8sm19297903wrq.38.2024.04.25.02.16.43
+X-Google-Smtp-Source: AGHT+IGPbzn+T1zFO7KFXRELqIOh7quur2fsWLpq0W2IDqAc4nHr9+GYz1TazRzI3oNCV5cqSxS+VQ==
+X-Received: by 2002:a2e:b710:0:b0:2de:8685:d07b with SMTP id j16-20020a2eb710000000b002de8685d07bmr2683167ljo.46.1714036605060;
+        Thu, 25 Apr 2024 02:16:45 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c719:8200:487a:3426:a17e:d7b7? (p200300cbc7198200487a3426a17ed7b7.dip0.t-ipconnect.de. [2003:cb:c719:8200:487a:3426:a17e:d7b7])
+        by smtp.gmail.com with ESMTPSA id n40-20020a05600c502800b0041b4c293f75sm1386471wmr.13.2024.04.25.02.16.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Thu, 25 Apr 2024 02:16:44 -0700 (PDT)
-Message-ID: <f45a76b3-996f-4204-9b9c-289d40767708@linaro.org>
-Date: Thu, 25 Apr 2024 11:16:42 +0200
+Message-ID: <b55558a5-a9d4-4aea-956a-1babad01b6cd@redhat.com>
+Date: Thu, 25 Apr 2024 11:16:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,142 +82,163 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/5] dt-bindings: arm: blaize: Add Blaize BLZP1600 SoC
-To: Niko Pasaloukos <nikolaos.pasaloukos@blaize.com>,
- "robh@kernel.org" <robh@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
- "will@kernel.org" <will@kernel.org>, "arnd@arndb.de" <arnd@arndb.de>,
- "olof@lixom.net" <olof@lixom.net>, Neil Jones <neil.jones@blaize.com>,
- Matt Redfearn <matthew.redfearn@blaize.com>,
- James Cowgill <james.cowgill@blaize.com>,
- "heiko.stuebner@cherry.de" <heiko.stuebner@cherry.de>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "macromorgan@hotmail.com" <macromorgan@hotmail.com>,
- "sre@kernel.org" <sre@kernel.org>,
- "hvilleneuve@dimonoff.com" <hvilleneuve@dimonoff.com>,
- "andre.przywara@arm.com" <andre.przywara@arm.com>,
- "rafal@milecki.pl" <rafal@milecki.pl>,
- "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
- "andersson@kernel.org" <andersson@kernel.org>,
- "konrad.dybcio@linaro.org" <konrad.dybcio@linaro.org>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
- "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
- "nfraprado@collabora.com" <nfraprado@collabora.com>,
- "u-kumar1@ti.com" <u-kumar1@ti.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-References: <20240425091403.17483-1-nikolaos.pasaloukos@blaize.com>
- <20240425091403.17483-3-nikolaos.pasaloukos@blaize.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v1 1/2] arm64/mm: Move PTE_PROT_NONE and
+ PMD_PRESENT_INVALID
+To: Ryan Roberts <ryan.roberts@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Joey Gouly <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>, Peter Xu <peterx@redhat.com>,
+ Mike Rapoport <rppt@linux.ibm.com>, Shivansh Vij <shivanshvij@outlook.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240424111017.3160195-1-ryan.roberts@arm.com>
+ <20240424111017.3160195-2-ryan.roberts@arm.com>
+From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240425091403.17483-3-nikolaos.pasaloukos@blaize.com>
-Content-Type: text/plain; charset=UTF-8
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240424111017.3160195-2-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 25/04/2024 11:15, Niko Pasaloukos wrote:
-> Add device tree bindings for the Blaize BLZP1600 CB2
-> development board (carrier board), which uses the
-> BLZP1600 SoM.
+On 24.04.24 13:10, Ryan Roberts wrote:
+> Previously PTE_PROT_NONE was occupying bit 58, one of the bits reserved
+> for SW use when the PTE is valid. This is a waste of those precious SW
+> bits since PTE_PROT_NONE can only ever be set when valid is clear.
+> Instead let's overlay it on what would be a HW bit if valid was set.
 > 
-> Reviewed-by: James Cowgill <james.cowgill@blaize.com>
-> Reviewed-by: Matt Redfearn <matt.redfearn@blaize.com>
-> Reviewed-by: Neil Jones <neil.jones@blaize.com>
-> Signed-off-by: Nikolaos Pasaloukos <nikolaos.pasaloukos@blaize.com>
+> We need to be careful about which HW bit to choose since some of them
+> must be preserved; when pte_present() is true (as it is for a
+> PTE_PROT_NONE pte), it is legitimate for the core to call various
+> accessors, e.g. pte_dirty(), pte_write() etc. There are also some
+> accessors that are private to the arch which must continue to be
+> honoured, e.g. pte_user(), pte_user_exec() etc.
+> 
+> So we choose to overlay PTE_UXN; This effectively means that whenever a
+> pte has PTE_PROT_NONE set, it will always report pte_user_exec() ==
+> false, which is obviously always correct.
+> 
+> As a result of this change, we must shuffle the layout of the
+> arch-specific swap pte so that PTE_PROT_NONE is always zero and not
+> overlapping with any other field. As a result of this, there is no way
+> to keep the `type` field contiguous without conflicting with
+> PMD_PRESENT_INVALID (bit 59), which must also be 0 for a swap pte. So
+> let's move PMD_PRESENT_INVALID to bit 60.
+
+A note that some archs split/re-combine type and/or offset, to make use 
+of every bit possible :) But that's mostly relevant for 32bit.
+
+(and as long as PFNs can still fit into the swp offset for migration 
+entries etc.)
+
+> 
+> In the end, this frees up bit 58 for future use as a proper SW bit (e.g.
+> soft-dirty or uffd-wp).
+
+I was briefly confused about how you would use these bits as SW bits for 
+swap PTEs (which you can't as they overlay the type). See below 
+regarding bit 3.
+
+I would have said here "proper SW bit for present PTEs".
+
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 > ---
->  .../devicetree/bindings/arm/blaize.yaml       | 40 +++++++++++++++++++
->  1 file changed, 40 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/blaize.yaml
+>   arch/arm64/include/asm/pgtable-prot.h |  4 ++--
+>   arch/arm64/include/asm/pgtable.h      | 16 +++++++++-------
+>   2 files changed, 11 insertions(+), 9 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/blaize.yaml b/Documentation/devicetree/bindings/arm/blaize.yaml
-> new file mode 100644
-> index 000000000000..8034aeb7a2b4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/blaize.yaml
-> @@ -0,0 +1,40 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/arm/blaize.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Blaize Platforms
-> +
-> +maintainers:
-> +  - James Cowgill <james.cowgill@blaize.com>
-> +  - Matt Redfearn <matt.redfearn@blaize.com>
-> +  - Neil Jones <neil.jones@blaize.com>
-> +  - Nikolaos Pasaloukos <nikolaos.pasaloukos@blaize.com>
-> +
-> +description: |
-> +  Blaize Platforms using SoCs designed by Blaize Inc.
-> +
-> +  The products currently based on the BLZP1600 SoC:
-> +
-> +  - BLZP1600-SoM: SoM module
-> +  - BLZP1600-CB2: Development board CB2 based on BLZP1600-SoM
-> +
-> +  The compatible property should follow the format:
-> +
-> +  compatible = "blaize,blzp1600-cb2", "blaize,blzp1600";
+> diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
+> index dd9ee67d1d87..ef952d69fd04 100644
+> --- a/arch/arm64/include/asm/pgtable-prot.h
+> +++ b/arch/arm64/include/asm/pgtable-prot.h
+> @@ -18,14 +18,14 @@
+>   #define PTE_DIRTY		(_AT(pteval_t, 1) << 55)
+>   #define PTE_SPECIAL		(_AT(pteval_t, 1) << 56)
+>   #define PTE_DEVMAP		(_AT(pteval_t, 1) << 57)
+> -#define PTE_PROT_NONE		(_AT(pteval_t, 1) << 58) /* only when !PTE_VALID */
+> +#define PTE_PROT_NONE		(PTE_UXN)		 /* Reuse PTE_UXN; only when !PTE_VALID */
+>   
+>   /*
+>    * This bit indicates that the entry is present i.e. pmd_page()
+>    * still points to a valid huge page in memory even if the pmd
+>    * has been invalidated.
+>    */
+> -#define PMD_PRESENT_INVALID	(_AT(pteval_t, 1) << 59) /* only when !PMD_SECT_VALID */
+> +#define PMD_PRESENT_INVALID	(_AT(pteval_t, 1) << 60) /* only when !PMD_SECT_VALID */
+>   
+>   #define _PROT_DEFAULT		(PTE_TYPE_PAGE | PTE_AF | PTE_SHARED)
+>   #define _PROT_SECT_DEFAULT	(PMD_TYPE_SECT | PMD_SECT_AF | PMD_SECT_S)
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index afdd56d26ad7..23aabff4fa6f 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -1248,20 +1248,22 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
+>    * Encode and decode a swap entry:
+>    *	bits 0-1:	present (must be zero)
+>    *	bits 2:		remember PG_anon_exclusive
+> - *	bits 3-7:	swap type
+> - *	bits 8-57:	swap offset
+> - *	bit  58:	PTE_PROT_NONE (must be zero)
 
-This is a friendly reminder during the review process.
+Reading this patch alone: what happened to bit 3? Please mention that 
+that it will be used as a swap pte metadata bit (uffd-wp).
 
-It seems my or other reviewer's previous comments were not fully
-addressed. Maybe the feedback got lost between the quotes, maybe you
-just forgot to apply it. Please go back to the previous discussion and
-either implement all requested changes or keep discussing them.
+> + *	bits 4-53:	swap offset
 
-Thank you.
+So we'll still have 50bit for the offset, good. We could even use 61-63 
+if ever required to store bigger PFNs.
 
-Best regards,
-Krzysztof
+LGTM
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Cheers,
+
+David / dhildenb
 
 
