@@ -1,119 +1,111 @@
-Return-Path: <linux-kernel+bounces-159031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B65508B2870
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:48:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC1A18B2875
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:50:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E72101C212AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:48:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88A4528160D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:50:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3597614E2CC;
-	Thu, 25 Apr 2024 18:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3679114EC58;
+	Thu, 25 Apr 2024 18:50:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sPL6F28K"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qztlQEUz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D0912C559;
-	Thu, 25 Apr 2024 18:47:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792062135A;
+	Thu, 25 Apr 2024 18:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714070856; cv=none; b=cOv3mz0uBiguF7BMdDLgr/fux3GlwW1vbY3uxaXOOV5GY+N1H+fKxOFc4Oh7zG11Pp2e4NqTsNJfPcdcW200SiBSHx1580juHOVCk0aLIy/fMK7VejQSMNf9XrwOg2PK0kJeM7sc61WJyIf5Bb2n05QP1/6l/gOpAqjqNOyOcKc=
+	t=1714071034; cv=none; b=IZWlU84ycwboG4dZXcaDhT8kvftbUqRXiouq3m0e1VujSznS47YojwylBY92KT5YT/nCCSUS1I+E/bnccefidGVn27CzYW7Pc7Spv5y0jy9cn7FnA+mmxb2n/hUmkgA6ug6mXgCRHrKzFiI52mo0p65QvWBBD2IPqN+Lsq3S/mQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714070856; c=relaxed/simple;
-	bh=9RQpj8HeT4x95CTnJF7C+mOAuNgta4jz9NDCabC2ZQ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D+e/nsZ3J7y2xNhlZ2oqEzqE7ZeJqYy+NeNIx1fkHtAZ2G9E+qD97i1W45kUSyhfbaPRw/lL7dAQyceKkwoGL4fJ3lG44WJNhjYY3TD2uQD2Yx9cW9lTffhlw77LrAxEj5rg2RuLS8mAmpmO+McBJMDsPZGYZJ37/OCANkZOca4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sPL6F28K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 372E6C113CE;
-	Thu, 25 Apr 2024 18:47:34 +0000 (UTC)
+	s=arc-20240116; t=1714071034; c=relaxed/simple;
+	bh=kt8WoX1FzFxbm3s2wti1UEz7nEy1w2bo9zkTOhlslRg=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=DI+oMgfgzz46v+11PEIS2vt09W38aStH4JbtbrtW3WozRpPKrTM6Lpb6qXUaCGK/WmhQ544y3naqAcPazKOCxUckj8T5ISPDIgD3MzeBwOU3eY9G4hdWPbeDd5xdcxUJlHyCsineC7kRg9ipOukj58vOGACRMF8H2p59yBpNxIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qztlQEUz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EC6E9C2BD10;
+	Thu, 25 Apr 2024 18:50:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714070856;
-	bh=9RQpj8HeT4x95CTnJF7C+mOAuNgta4jz9NDCabC2ZQ0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sPL6F28KPCdhnmMh7lLejgetWyzuBnBOh4tuEc4AsT3h1DPMcDIMU18cvUWazsv3j
-	 Ze5RGZdgBlZv1MB0ko/WSjEiVyOOIvIS5PBShxjGg6rKwiCn1yjdwky4H/kpccmJxw
-	 dMrZu1dcST2q2VGAyJczFgdRw4WXy89YyVZRXoNpFW5qmwI4wcaNSg8FPWVgmw6Odn
-	 SyccbHx0F7xbthkth2Uv9YdhcqPaSsCcFjAtxikM/QNrp6FOo48+rqmIhMcFU5+s5w
-	 Zdfzd5j8xwh1GIfOFtz6Fq2JwKUO5zmVnwwlwlq0kF+dcq9kliq8IVpUSAUdX26901
-	 9UosIGoTwo4vQ==
-Date: Thu, 25 Apr 2024 15:47:32 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] perf build: Pretend scandirat is missing with msan
-Message-ID: <ZiqlRO9FvCwBaw9j@x1>
-References: <20240320163244.1287780-1-irogers@google.com>
- <CAP-5=fUVtGgaLgVhoSa3SZdSceifFWs_v1rMnEANj3N=VdpC_A@mail.gmail.com>
+	s=k20201202; t=1714071034;
+	bh=kt8WoX1FzFxbm3s2wti1UEz7nEy1w2bo9zkTOhlslRg=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=qztlQEUzIcGecgUOLaJcIw+pwInH4URPwrWfroNrxpprZeKywT1h4/UO1oEPpx2a5
+	 37W5fm8Au5hBjwYAwNCRARExfoqYIqqA1aRu8+yOwHG9/ukbKl3CrKioXVzsn0ugpy
+	 AMWB2mPIwPkb/Ls/tTYW2wC6TS/domdxkwvF1hQPBFAj7AgtYNXcTLqk/6LUINk71q
+	 Q/i8wmdAxPSLx+8INMISQTICl7Nm8YGX+UX4xVs9GSIgO5mXaCuGQL3U9/ZZeAjhzL
+	 PUeyTZcjypSZefDIgKsaIMutWBlsbJWvwyi4cqYm2UwCSYPzixAR4B+gOkTEUtJuTB
+	 CTrVS1zjGmqiw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DF640C43140;
+	Thu, 25 Apr 2024 18:50:33 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fUVtGgaLgVhoSa3SZdSceifFWs_v1rMnEANj3N=VdpC_A@mail.gmail.com>
+Subject: Re: [PATCH net-next 0/8] net: dsa: b53: Remove adjust_link
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171407103390.26281.405270567595119985.git-patchwork-notify@kernel.org>
+Date: Thu, 25 Apr 2024 18:50:33 +0000
+References: <20240423183339.1368511-1-florian.fainelli@broadcom.com>
+In-Reply-To: <20240423183339.1368511-1-florian.fainelli@broadcom.com>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: netdev@vger.kernel.org, andrew@lunn.ch, olteanv@gmail.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ linux@armlinux.org.uk, linux-kernel@vger.kernel.org
 
-On Wed, Mar 20, 2024 at 09:36:19AM -0700, Ian Rogers wrote:
-> On Wed, Mar 20, 2024 at 9:32 AM Ian Rogers <irogers@google.com> wrote:
-> >
-> > Memory sanitizer lacks an interceptor for scandirat, reporting all
-> > memory it allocates as uninitialized. Memory sanitizer has a scandir
-> > interceptor so use the fallback function in this case. This allows
-> > perf test to run under memory sanitizer.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 23 Apr 2024 11:33:31 -0700 you wrote:
+> b53 is now the only remaining driver that uses both PHYLIB's adjust_link
+> and PHYLINK's mac_ops callbacks, convert entirely to PHYLINK.
 > 
-> Note, as msan needs to instrument memory allocations libraries need to
-> be compiled with it. I lacked the msan built libraries and so built
-> with:
-> ```
-> $ make -C tools/perf O=/tmp/perf DEBUG=1 EXTRA_CFLAGS="-O0 -g
-> -fno-omit-frame-pointer -fsanitize=memory
-> -fsanitize-memory-track-origins" CC=clang CXX=clang++ HOSTCC=clang
-> NO_LIBTRACEEVENT=1 NO_LIBELF=1 BUILD_BPF_SKEL=0 NO_LIBPFM=1
-> ```
-> oh, I disabled libbpf here as the bpf system call also lacks msan interceptors.
-
-I added the above notes to the cset message.
-
-- Arnaldo
- 
-> Thanks,
-> Ian
+> Florian Fainelli (8):
+>   net: dsa: b53: Stop exporting b53_phylink_* routines
+>   net: dsa: b53: Introduce b53_adjust_531x5_rgmii()
+>   net: dsa: b53: Introduce b53_adjust_5325_mii()
+>   net: dsa: b53: Force flow control for BCM5301X CPU port(s)
+>   net: dsa: b53: Configure RGMII for 531x5 and MII for 5325
+>   net: dsa: b53: Call b53_eee_init() from b53_mac_link_up()
+>   net: dsa: b53: Remove b53_adjust_link()
+>   net: dsa: b53: provide own phylink MAC operations
 > 
-> > ---
-> >  tools/perf/Makefile.config | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> > index 1fe8df97fe88..74e0b17050b5 100644
-> > --- a/tools/perf/Makefile.config
-> > +++ b/tools/perf/Makefile.config
-> > @@ -486,7 +486,10 @@ ifdef NO_DWARF
-> >  endif
-> >
-> >  ifeq ($(feature-scandirat), 1)
-> > -  CFLAGS += -DHAVE_SCANDIRAT_SUPPORT
-> > +  # Ignore having scandirat with memory sanitizer that lacks an interceptor.
-> > +  ifeq ($(filter s% -fsanitize=memory%,$(EXTRA_CFLAGS),),)
-> > +    CFLAGS += -DHAVE_SCANDIRAT_SUPPORT
-> > +  endif
-> >  endif
-> >
-> >  ifeq ($(feature-sched_getcpu), 1)
-> > --
-> > 2.44.0.291.gc1ea87d7ee-goog
-> >
+> [...]
+
+Here is the summary with links:
+  - [net-next,1/8] net: dsa: b53: Stop exporting b53_phylink_* routines
+    https://git.kernel.org/netdev/net-next/c/65245197ecec
+  - [net-next,2/8] net: dsa: b53: Introduce b53_adjust_531x5_rgmii()
+    https://git.kernel.org/netdev/net-next/c/b3d06dc3707f
+  - [net-next,3/8] net: dsa: b53: Introduce b53_adjust_5325_mii()
+    https://git.kernel.org/netdev/net-next/c/0d18dea4cde6
+  - [net-next,4/8] net: dsa: b53: Force flow control for BCM5301X CPU port(s)
+    https://git.kernel.org/netdev/net-next/c/93a2579ed08c
+  - [net-next,5/8] net: dsa: b53: Configure RGMII for 531x5 and MII for 5325
+    https://git.kernel.org/netdev/net-next/c/536e5b2ecbae
+  - [net-next,6/8] net: dsa: b53: Call b53_eee_init() from b53_mac_link_up()
+    https://git.kernel.org/netdev/net-next/c/888128f360e1
+  - [net-next,7/8] net: dsa: b53: Remove b53_adjust_link()
+    https://git.kernel.org/netdev/net-next/c/600354352cf2
+  - [net-next,8/8] net: dsa: b53: provide own phylink MAC operations
+    https://git.kernel.org/netdev/net-next/c/d0a35d2948ec
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
