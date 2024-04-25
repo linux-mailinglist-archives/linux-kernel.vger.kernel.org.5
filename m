@@ -1,142 +1,95 @@
-Return-Path: <linux-kernel+bounces-159181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FAF48B2A5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:01:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 834728B2A5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:05:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C157F28144D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:01:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5AA71C22B5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:05:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9D815534E;
-	Thu, 25 Apr 2024 21:01:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12352155311;
+	Thu, 25 Apr 2024 21:04:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RnEhW8Ui"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="s1VhBEb1"
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17966153BC7;
-	Thu, 25 Apr 2024 21:01:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32A7152E13
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 21:04:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714078911; cv=none; b=sdH8irzn8Kq2BROPwdcfYuGQ8zxGTOJSLhQSj+LM86F3axHa9E62jkN8w1Y3IsUTzw/bb6jO+j6LJ3ofvl9BYocokf/U7tktJtA/97sFz4lZNnYP8hBp+hSIoIdp8gtoo4T9obOKV7JvQA/45WbnX46bChXCG/gdY0WSzYZswyU=
+	t=1714079094; cv=none; b=tnnYnJjGas2ZaQ5N2iiAK//H3MDvVdJ90qR1td4zLFcbUNTwq/+IMuVsLRpswxDi0esJE93MpR/2CGNML52niBQEvaMOWAAs97J6VsHHX+2d36pa8on16dfItprzers3e+YX9zhReEj9EEdeVgAexxBUvfYJSyAlLbW70f30D4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714078911; c=relaxed/simple;
-	bh=A2dKCGsB/Ici8fMlijpabSHqnvQKwWrWdSSIk88w2yQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jxTIzHgyV0iTFBqVI+wrB4hs1/ZP2Q1ffr/pc3kl4vxQoPU/e8QGlHcH6hpWE+DFwP1fotU/0tqswgzcZiqgKALT52gvGInq5HGF/cNQmaYIz3PeZ1M+mnxWcg1gh/VJxbFMJInn+ecPxDwYqeyIAYo2+VPiduUj16bJzWD4cIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RnEhW8Ui; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714078910; x=1745614910;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=A2dKCGsB/Ici8fMlijpabSHqnvQKwWrWdSSIk88w2yQ=;
-  b=RnEhW8UiwHrjJaj+FzhOLpIdVMRRVtWVA38AOgAU4igwYbksPWWcFUsK
-   0y69nqX2sAheOVypXYMcMvc0PTRAUX2ubaAQdpCftjvKIFSrKqunILsz8
-   Ar/RF6ghKV8nuY+DP8k9YZStlVabQKfAPCT3Xlb8BtnYYRn8XKQY02YeT
-   cwCOgeldNga/mQyTorTK196bAEtH/Z6+/Y6QG/Al+n9auWw0K5Pg+XBso
-   D5JzbH6WquMgS2qajBImc4LWxXmYoxL93g2eyPY0x8xYvlxBUSckX6S7a
-   nZYvKS4CE9mzCCefl793fCv0S+aBFNa3dSfra0iKdnGc92EBmUznHI+3j
-   A==;
-X-CSE-ConnectionGUID: ZqN86O9vQM2KbSJxDo5AfA==
-X-CSE-MsgGUID: ibPDEImPSqmvjMbACHEb7w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="10331472"
-X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
-   d="scan'208";a="10331472"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 14:01:49 -0700
-X-CSE-ConnectionGUID: SijPsIOcSD6JjPyqCYF1fg==
-X-CSE-MsgGUID: JrO6dyC7TOasSciPvgFpvw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
-   d="scan'208";a="25209874"
-Received: from patelni-desk.amr.corp.intel.com (HELO localhost) ([10.2.132.135])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 14:01:48 -0700
-Date: Thu, 25 Apr 2024 14:01:44 -0700
-From: Nirmal Patel <nirmal.patel@linux.intel.com>
-To: Jian-Hong Pan <jhp@endlessos.org>
-Cc: Bjorn Helgaas <helgaas@kernel.org>, Johan Hovold <johan@kernel.org>,
- David Box <david.e.box@linux.intel.com>, Ilpo =?ISO-8859-1?Q?J=E4rvinen?=
- <ilpo.jarvinen@linux.intel.com>, Kuppuswamy Sathyanarayanan
- <sathyanarayanan.kuppuswamy@linux.intel.com>, Mika Westerberg
- <mika.westerberg@linux.intel.com>, Damien Le Moal <dlemoal@kernel.org>,
- Jonathan Derrick <jonathan.derrick@linux.dev>, linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org, <paul.m.stillwell.jr@intel.com>
-Subject: Re: [PATCH v5 0/4] PCI: vmd: Enable PCI PM's L1 substates of
- remapped PCIe Root Port and NVMe
-Message-ID: <20240425140144.000049a4@linux.intel.com>
-In-Reply-To: <20240424105814.21690-2-jhp@endlessos.org>
-References: <20240424105814.21690-2-jhp@endlessos.org>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-w64-mingw32)
+	s=arc-20240116; t=1714079094; c=relaxed/simple;
+	bh=Nu0VY0jwpK1DX56a0LyK3/k7gCJhFBWD17UiCPPfiM0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tEdoZ5FJK8aY64K3L5A/CKQYfKyEsQm7Q+r5WsivQ8eZy0BThJ5UOZGVDRHCR/sbMP8vuyTYKUlJSFIMD5OnVOyPF2Dg6YjjRISCjubWsIhh5FKMpcMXDC4p7/p6SAZ7MOcUKb47E/257MdO6AkMimWvhxQz6+A2wI6lDpzyTFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=s1VhBEb1; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 25 Apr 2024 17:04:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714079091;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VklnmrM/oloTOZKNCrwIWgMU+XqIMz0SMCJXUZUJzsM=;
+	b=s1VhBEb1oCQ6MjYq3v8dmqur48xfAGo5Bo39s4wNorebzmH6gvf2V7i0tet2AM0MLF0RJ+
+	RPfAIodbT0oZlE3tTViJVpCPHYbZQ0OrjfrIlr7kNApAQS7i1wurRUqchGHzGBQAPWnWw0
+	Ia5a2fXMLZd9ZM5wUE+MOVK2tP5y/rU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Kees Cook <keescook@chromium.org>, 
+	Suren Baghdasaryan <surenb@google.com>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] alloc_tag: Tighten file permissions on /proc/allocinfo
+Message-ID: <64cngpnwyav4odustofs6hgsh7htpc5nu23tx4lb3vxaltmqf2@sxn63f2gg4gu>
+References: <20240425200844.work.184-kees@kernel.org>
+ <w6nbxvxt3itugrvtcvnayj5ducoxifwbffd7qh6vcastw77mse@2ugphwusgttz>
+ <ZirCbPR1XwX2WJSX@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZirCbPR1XwX2WJSX@casper.infradead.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 24 Apr 2024 18:58:15 +0800
-Jian-Hong Pan <jhp@endlessos.org> wrote:
+On Thu, Apr 25, 2024 at 09:51:56PM +0100, Matthew Wilcox wrote:
+> On Thu, Apr 25, 2024 at 04:45:51PM -0400, Kent Overstreet wrote:
+> > On Thu, Apr 25, 2024 at 01:08:50PM -0700, Kees Cook wrote:
+> > > The /proc/allocinfo file exposes a tremendous about of information about
+> > > kernel build details, memory allocations (obviously), and potentially
+> > > even image layout (due to ordering). As this is intended to be consumed
+> > > by system owners (like /proc/slabinfo), use the same file permissions as
+> > > there: 0400.
+> > 
+> > Err...
+> > 
+> > The side effect of locking down more and more reporting interfaces is
+> > that programs that consume those interfaces now have to run as root.
+> 
+> sudo cat /proc/allocinfo | analyse-that-fie
 
-> Re-send for the version information.
-> 
-> Notice the VMD remapped PCIe Root Port and NVMe have PCI PM L1
-> substates capability, but they are disabled originally.
-> 
-> Here is a failed example on ASUS B1400CEAE with enabled VMD:
-> 
-> 10000:e0:06.0 PCI bridge: Intel Corporation 11th Gen Core Processor
-> PCIe Controller (rev 01) (prog-if 00 [Normal decode]) ...
->     Capabilities: [200 v1] L1 PM Substates
->         L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+
-> L1_PM_Substates+ PortCommonModeRestoreTime=45us PortTPowerOnTime=50us
->         L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
->         	   T_CommonMode=45us LTR1.2_Threshold=101376ns
->         L1SubCtl2: T_PwrOn=50us
-> 
-> 10000:e1:00.0 Non-Volatile memory controller: Sandisk Corp WD Blue
-> SN550 NVMe SSD (rev 01) (prog-if 02 [NVM Express]) ...
->     Capabilities: [900 v1] L1 PM Substates
->         L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> L1_PM_Substates+ PortCommonModeRestoreTime=32us PortTPowerOnTime=10us
->         L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
->                    T_CommonMode=0us LTR1.2_Threshold=0ns
->         L1SubCtl2: T_PwrOn=10us
-> 
-> According to "PCIe r6.0, sec 5.5.4", to config the link between the
-> PCIe Root Port and the child device correctly:
-> * Ensure both devices are in D0 before enabling PCI-PM L1 PM
-> Substates.
-> * Ensure L1.2 parameters: Common_Mode_Restore_Times, T_POWER_ON and
->   LTR_L1.2_THRESHOLD are programmed properly on both devices before
-> enable bits for L1.2.
-> 
-> Prepare this series to fix that.
-> 
-> Jian-Hong Pan (4):
->   PCI: vmd: Set PCI devices to D0 before enable PCI PM's L1 substates
->   PCI/ASPM: Add notes about enabling PCI-PM L1SS to
-> pci_enable_link_state(_locked) PCI/ASPM: Introduce aspm_get_l1ss_cap()
->   PCI/ASPM: Fix L1.2 parameters when enable link state
-> 
->  drivers/pci/controller/vmd.c | 13 ++++++++----
->  drivers/pci/pcie/aspm.c      | 41
-> ++++++++++++++++++++++++++++-------- 2 files changed, 41
-> insertions(+), 13 deletions(-)
-> 
+Even that is still an annoyance, but I'm thinking more about a future
+daemon to collect this every n seconds - that really shouldn't need to
+be root.
 
-Hi,
+And the "lock everything down" approach really feels like paranoia gone
+too far - what's next, /proc/cpuinfo? Do we really want to go the
+Windows approach of UAC pop ups for everything? I'd rather be going the
+opposite direction, of making it as easy as possible for users to see
+what's going on with their machine.
 
-We are running some tests to make sure we dont have issue with other
-platforms and trying to avoid another hotplug scenario. Please wait for
-our Ack before merging this patch. Thanks.
+Instead, why not a sysctl, like we already have for perf?
 
--nirmal
+The concern about leaking image layout could be addressed by sorting the
+output before returning to userspace.
 
