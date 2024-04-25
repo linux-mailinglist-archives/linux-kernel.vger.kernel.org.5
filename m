@@ -1,147 +1,118 @@
-Return-Path: <linux-kernel+bounces-158145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 372958B1C23
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:48:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D3AB8B1C30
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:50:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71FA4B2508B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:47:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E1511C22F43
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DA246EB58;
-	Thu, 25 Apr 2024 07:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDAA96F077;
+	Thu, 25 Apr 2024 07:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MiLEZv0/"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="lHSbkGyj"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B72B167A1A
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:47:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B588B67A1A;
+	Thu, 25 Apr 2024 07:49:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714031258; cv=none; b=oI4kJXF9g1HrP3xDHZKIrHd31Wsvpm8kVvsUI46Zo46SjnscZjkALy3wkeJGzZobq4EAjvstVJrjTbRJb2ixSXajEzNVt3n/yo/jaTRoMuJ8zu7otM9zBzkkx2Y5MuoCdnRGVZ/V0fFSFnl1A/M2yVw1djqnlLCtrxeJwikzgx0=
+	t=1714031391; cv=none; b=j1uQizkqyrKpPWar4x1ftoQG/AvrSOb49UPEcX06LAsodTdJlMOfr/P9XtVpNZwPw3P/1n54SQTBXmcCt6/JZzdzO3l4kzs4YbrIS+R1XeI9ZoNjTuYEO822+t2rRcsgFt7YNsMC/GhIrpiitU8sSv9B2ueNsUfShw9WudZ4Ly8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714031258; c=relaxed/simple;
-	bh=iAHuugcSZ7gNPb/Zbw8nWBC0N1+7iJ0C+P+QylIbZeI=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=j8TaU1ratCHY/tLfKh/zIGkNY1KQPkmEUOYu9BoOMSYEE5K0MUKql8Jw3WUI7qcV2Lmqfnb2iadtUTgg5znKIYQCif6e1Mn5aQ/JQk00wjtlcz+83qR8rpIpp/VdLx/xKJIPdJz2vAgh6MrGTntjqeO0hxPXU8WGkpy8QdsC6Zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MiLEZv0/; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-41b4fd421c8so1577365e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 00:47:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714031255; x=1714636055; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wPJqdD/Tzg33ESGXWGEoqq776wvQs8gtsYLZyLqRGzk=;
-        b=MiLEZv0/6U0i4DDNEjAOPSBy5yEQ2ACgSdUsahVRPVIvcy1j/1RD4VYsuzkxfsCC9C
-         3jSsOX0rwowBgrnbr8B2+LkmX+YMwemh1YpgUJQlpYIZaCEsi60t47Zria5RC041CnoY
-         jVVZZPJto+uhdn+zwuRYezh+CmlM4HMyJ0W2W7kauLkki9pjvjdgUnKBdYVP5usRPvVA
-         D0XyAPygqnsrajisQQubFALcRMb2KlLHaJ8lcYDie2kR0a1/jvqIz+nHx2csNFijKGum
-         Xy7qqwGG+QfLdGxudbXP/St6zgoSCRs3iispAru8qM3l5+4WznVJUePeo7lF8dxIY2HL
-         9Gig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714031255; x=1714636055;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wPJqdD/Tzg33ESGXWGEoqq776wvQs8gtsYLZyLqRGzk=;
-        b=PKJrMMThrdDZiT5vj/OPZQbJXBQKpkUmlQsINlI1tI9OtJXrrk+1bJEQ6kQIBorbZJ
-         uKW9fHF9kGnYDOCKNC9KlpJaGkghB/wPtIgayftLFJtLJyBs45+J4drIWrkeSRMTYlKv
-         69w1xsebImvFb1Rie0PwbC9sbC7GnkSbr4Mv7m6I2yIhjwIqKU3XL+DALKDe+RpAIUxZ
-         K6tgABmMQk4vhpkDjl/8UIxVorbecdxWJmTIWVUjHJ/Crl/MtgfVLhFGzw+Bd39Y+7nm
-         k4E3vPAfJ5ifwIrfAovUQXGtXLxLhA6IF/IhA0rrWxw/NMoy6KWl2kjLQphlChbWVn8c
-         hD0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWwuz0wqQ9C6xntKLifvFE1Euz8XiYa0ETwKf4T20TxdOUTxdlChXc5lWLx7hFU5WYbgO8XsEusRNSHMR1RiIX7czLTFZo1FuDgTzcz
-X-Gm-Message-State: AOJu0YzNDcWiW1Xta2kCQJDjze3np5hd3UZENIjRvoplNdJrLJ6ZPNJi
-	4A8oCE//ipXGko6PIXJg5+WNTOEuqSeEgo0BsIoQnEwzgj4PFlVDR1z4nZaSb6Q=
-X-Google-Smtp-Source: AGHT+IGttzD9sok4hMZTxcAKeLHuq311JK4wtR4ABqpIEMGOh2yM6/pg2BssKk4024XY4L3VCE4gqA==
-X-Received: by 2002:a05:600c:3b8e:b0:41a:aa6:b68c with SMTP id n14-20020a05600c3b8e00b0041a0aa6b68cmr3882881wms.6.1714031254803;
-        Thu, 25 Apr 2024 00:47:34 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:15c7:bd9c:c500:ed62? ([2a01:e0a:982:cbb0:15c7:bd9c:c500:ed62])
-        by smtp.gmail.com with ESMTPSA id e6-20020a05600c4e4600b0041b43e301e8sm1384692wmq.42.2024.04.25.00.47.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 00:47:34 -0700 (PDT)
-Message-ID: <16de57e6-39c1-4528-b9a7-8b8af2ec6880@linaro.org>
-Date: Thu, 25 Apr 2024 09:47:33 +0200
+	s=arc-20240116; t=1714031391; c=relaxed/simple;
+	bh=ZaH5Y+5K4+LetM1zlsUQzT+6eYAidDXHlw0BoqJXgxc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UksYPtDUBZHCprORBk8KwwRbXLDC0xOQ5n4W6Kf4qJG4dxYjkcmBjDXVw4TOgBvp6jiOFGp6bJ+3rzqVjjNx9I/8vcNye9lRL4/se4e/0LWEtRCbih7ow8RA14UprtCZAFQNIrtZ9wjPnUO/3siGTFbSkg/06yfXw1/rHGseh9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=lHSbkGyj; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43P5kYQs018290;
+	Thu, 25 Apr 2024 09:49:37 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=selector1; bh=37REsQ2
+	FIwtIHcuFXf9WH6rSdUEg9FqQ4fkZiZRMvHk=; b=lHSbkGyjPRhga+SPcpoHitc
+	PP270bH2xydSDknnFzA7E2oOQ3ZenAWl9PHI0y3oJXFxsqXEnCbgnbZQPuNeli1k
+	dZCyyBdtHgtcGD38csJEKE53N3GO6PbiMGcyuyPWSsXcErSuYyF9Dv7eBHu1lqeo
+	BjG/keNpuifVGltVeJTKoRZl7BqMKnJIUKUh1tV6Bvfy6gevDWvEBQDPBbMs2m2/
+	IZ0o3v225ZsWJKvCJt6lzaDCxL7kUThYgTbct60cjhPHgloDukGVWU+yuJbXJk15
+	iUQ/XasKvdpKK1biABBJszXBftCtu2wmVd/snwCrOPJKPu8fYHjJZ8gAwtl6EDg=
+	=
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xm4cnmupb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 09:49:37 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 8CFDB4002D;
+	Thu, 25 Apr 2024 09:49:33 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B4F4C212FD7;
+	Thu, 25 Apr 2024 09:48:51 +0200 (CEST)
+Received: from localhost (10.48.86.112) by SHFDAG1NODE3.st.com (10.75.129.71)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 25 Apr
+ 2024 09:48:51 +0200
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+To: Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Liam Girdwood
+	<lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+        Rob Herring
+	<robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Olivier
+ Moysan <olivier.moysan@foss.st.com>,
+        Arnaud Pouliquen
+	<arnaud.pouliquen@foss.st.com>,
+        Pascal Paillet <p.paillet@foss.st.com>
+CC: Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: [PATCH 0/3] ARM: st: use a correct pwr compatible for stm32mp15
+Date: Thu, 25 Apr 2024 09:48:31 +0200
+Message-ID: <20240425074835.760134-1-patrick.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 1/2] drm/bridge: chipone-icn6211: drop driver owner
- assignment
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Jagan Teki <jagan@amarulasolutions.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20240330202741.83867-1-krzysztof.kozlowski@linaro.org>
- <ul5vzz54kppxo6zkr7k6seejmmlgp3d4dqfzjlj5la3e5ltolo@ug5dtoknkibu>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro
-In-Reply-To: <ul5vzz54kppxo6zkr7k6seejmmlgp3d4dqfzjlj5la3e5ltolo@ug5dtoknkibu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-25_06,2024-04-25_01,2023-05-22_02
 
-Hi Dmitry,
 
-On 24/04/2024 11:12, Dmitry Baryshkov wrote:
-> On Sat, Mar 30, 2024 at 09:27:40PM +0100, Krzysztof Kozlowski wrote:
->> Core in mipi_dsi_driver_register() already sets the .owner, so driver
->> does not need to.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> ---
->>   drivers/gpu/drm/bridge/chipone-icn6211.c | 1 -
->>   1 file changed, 1 deletion(-)
->>
-> 
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> 
-> 
+This patchset removes the unexpected comma in the PWR compatible
+"st,stm32mp1,pwr-reg" and uses a new compatible "st,stm32mp1-pwr-reg"
+in STM3MP15 device trees.
 
-I tried to apply them but you already applied them... could you make sure to notify the list when applying ?
+The support of old compatible is keep to avoid ABI break.
 
-Thanks,
-Neil
+
+
+Patrick Delaunay (3):
+  dt-bindings: regulator: st,stm32mp1-pwr-reg: add correct compatible
+  regulator: stm32-pwr: add support of correct compatible
+  ARM: dts: st: update the pwr compatible for stm32mp15
+
+ .../devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml  | 6 ++++--
+ arch/arm/boot/dts/st/stm32mp151.dtsi                        | 2 +-
+ drivers/regulator/stm32-pwr.c                               | 1 +
+ 3 files changed, 6 insertions(+), 3 deletions(-)
+
+-- 
+2.25.1
+
 
