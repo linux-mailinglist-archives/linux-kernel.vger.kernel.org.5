@@ -1,320 +1,227 @@
-Return-Path: <linux-kernel+bounces-158059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 074778B1ACE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:18:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FF8B8B1AD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:19:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D8731C20EA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:18:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 554B11C220A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:19:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79DA83DBBF;
-	Thu, 25 Apr 2024 06:18:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF824084C;
+	Thu, 25 Apr 2024 06:19:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="KdOVBGX8";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="KnX+VFwy"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="CwuXZPem"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E61927473;
-	Thu, 25 Apr 2024 06:18:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714025930; cv=fail; b=tyjS3PN/tSQjmrm8rYiUWeNTeH5cFJ8BSrXmxBNZNSdfNAlq/98bArdaO4+oaxNtzoG9JJqDF4G4kPEUJ6LmAod6yf1DUOw5i1t+kS3T9MniPUWV03a55l7kX4lHCOa8rdsC1d0JQGuzZYFNf7BRKFjUr/y4ap0sby98V6Tz/DU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714025930; c=relaxed/simple;
-	bh=BwWTspRjJiwqsGHKbzpGYElHOi6aZUgra9pUvGjdhmo=;
-	h=References:From:To:Cc:Subject:In-reply-to:Date:Message-ID:
-	 Content-Type:MIME-Version; b=OAsjmf/Y/YiozYDxTWTjIllfK+LVm+qNbZ/+gnjKGTsX8F/hcwlj3hC0PkLBNnxohiedHoy+L/FEAMSomuIQ7AZZ8Jsz2a0WkCdaVdC2eKrtF9taQVNAYiKDonBbnCskMHiCqnt90oU4EwhygUhAU7ocyDt58CrlK6tEdJ3AVFw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=KdOVBGX8; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=KnX+VFwy; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43P0ilKv015826;
-	Thu, 25 Apr 2024 06:18:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=references : from :
- to : cc : subject : in-reply-to : date : message-id : content-type :
- mime-version; s=corp-2023-11-20;
- bh=Kw/2lqUZ9LMyGDdE3IukIMaGlMyFXnI8xufzDIG8Obg=;
- b=KdOVBGX8rX8I62+pz6/eSHdV5utfNOcwZSbxz1XSp8yFgRXhob46xOvmVvDYmpfOuAx4
- kEExyQKVI6vzRJ5IskwuBsYIZIPDmXRC/GHEyZcFNlfn2U54vwPC2O2JpcXTgc3qyhYU
- l3oxdYKXd0TeTUme1LXxMr9emM159TkcBTCIaCta6x+uiu04/lPIDj1yYChumE4b3kKk
- vPBKKPAm1JBNCozdkQMn6SXipXMpfAU7zPsOR0H8wfJdqD1pArbnyiDJjpX0QzzXY74H
- 9XogjOoD5ajk0gnauw9yA+xVIckvhWF31JMT3Pm4fhqEztQKKnwWvSp3ImREjWFrshCK /w== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xm44f1n5u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 25 Apr 2024 06:18:08 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43P6E4QQ019811;
-	Thu, 25 Apr 2024 06:18:08 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2169.outbound.protection.outlook.com [104.47.73.169])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xpbf5wgw7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 25 Apr 2024 06:18:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QXSvgPshbyBmjHqve92cHIghrK6nxOu08dqJh9SiUlq5WL5ds7trjPZhvl+vAtqZ/Y0iX7elsh2Zu75WhTSmLubVa0v91kdw1F0n+D6nWzFf7wSwIQ2ER2Ot7B547Z3sPZxHHLL3CYr5aWg4H1nQmq76YU/hG2vixc/f+s4cPcHr5nyAO1XqOXCQGuvkT2kbbOskFRajUUdTY27mdPoxLQ1vSPxtb5tjdQeTlvEwKgF9vJsTDhWrNrEpEv+6M5n+NCabjQwe+62VtNeu/GuihIaufEcgdgdbueL6Kax/yoREvHliItpuvaf7cQUI8ciMf4F+Ia8ecW9wGklr9yHCDQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Kw/2lqUZ9LMyGDdE3IukIMaGlMyFXnI8xufzDIG8Obg=;
- b=bxtQKl7RD/12vIq7TN3hbzm+n+lr2PkurNZUSrXWIm+Ml0wi9MqelI9Ky9H9TMtQpOSz8ungKzufR/P0ANd4XxVUfKGXbGIP3Fd6mWcyjEiNbTNvcroWwdN+f6Ch4d15h3B+vHms/fKEY3OZKsEwcJj3WBSzL05GaBZ/EWReYw8CsNaSwz92XwirwuWJwTqUkPehzH83d/oH+Hfm1AdGAuWrs7bFxl9ZtUmJLkeHXdfZLIVkbyPWNVYYaeiwjiHFSMeTZRyx1x96+iU6SrVUqbCKmV2A/YVRhPiLNvM7jjzU+SVF3K8ptbjHSkH6ieTRBym8l6Rc7LT2pBIbcO9AWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Kw/2lqUZ9LMyGDdE3IukIMaGlMyFXnI8xufzDIG8Obg=;
- b=KnX+VFwyGAX8HChMfMB9vKv0cmYw9pXbENaXDuhe0LHkXpgK77vD/UJCjEyuKSqS+UWDWEUhEUAqp0LYbhaXF0eBAqwcAxdUhGJ8fS24uNKCOVfXVsyd+VrvDT3hlzPtB5hfQmJsKWc7z+Hr+cwQzhfH4ATYysjHo7TouNvDRAE=
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
- by PH0PR10MB5683.namprd10.prod.outlook.com (2603:10b6:510:148::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Thu, 25 Apr
- 2024 06:18:04 +0000
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::4104:529:ba06:fcb8]) by CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::4104:529:ba06:fcb8%7]) with mapi id 15.20.7472.044; Thu, 25 Apr 2024
- 06:18:04 +0000
-References: <20240312193911.1796717-1-seanjc@google.com>
- <20240312193911.1796717-3-seanjc@google.com>
-User-agent: mu4e 1.4.10; emacs 27.2
-From: Ankur Arora <ankur.a.arora@oracle.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-        Peter
- Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Will Deacon
- <will@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider
- <valentin.schneider@arm.com>,
-        Marco Elver <elver@google.com>,
-        Frederic
- Weisbecker <frederic@kernel.org>,
-        David Matlack <dmatlack@google.com>,
-        Friedrich Weber <f.weber@proxmox.com>,
-        Ankur Arora
- <ankur.a.arora@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2 2/2] sched/core: Drop spinlocks on contention iff
- kernel is preemptible
-In-reply-to: <20240312193911.1796717-3-seanjc@google.com>
-Date: Wed, 24 Apr 2024 23:18:02 -0700
-Message-ID: <87cyqedkyt.fsf@oracle.com>
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR04CA0247.namprd04.prod.outlook.com
- (2603:10b6:303:88::12) To CO6PR10MB5409.namprd10.prod.outlook.com
- (2603:10b6:5:357::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B29123C466
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 06:19:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714025958; cv=none; b=LSx6sqNsYaBw/muElDB2y3zqz4P3IxlDrig00dNorKmL6md1U6Wj3/YQ8CQmbTlQ568myUTOi/eSppmDKVzPEY2RRoQiFZF+AeIJA0oNkqkB/kl2AxPQ6jqcRE+5LFUxDloSljSAyeVMyJyLz0n5ozmOJiSeIu49L63CunBQpik=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714025958; c=relaxed/simple;
+	bh=//DNsUlBgI0vlLJDyF69vHpBDYm1UWrZbGpkoCdLwuo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FlW7JOrMEUJaaLHgI5kSvPU/pLsM76CKVzxhH0NAOao8Ct65u00uJ6FxllC5FmzjCoejhIP90k8znH7AxakfsvlSkAP58/m/zIf+ZIdj80RxvbzhO9Wfn3az+pdlDJPnVG0pRL+Wo+XAw16Efsf5BzXn0k75Z5QrNUj+svxp7/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=CwuXZPem; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4AD9D3FE51
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 06:19:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1714025949;
+	bh=HoVegtVV8p+Gh2AomBAcQ2xl6o91liRpQqxeqe2byac=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:In-Reply-To;
+	b=CwuXZPemIJqjgsV2TDJ7MM0quiF/bUSR7AlpLSpOV1ldX5Od2QfumOXanazVcyvHl
+	 TLZk7HoKbFOlUnVQNCIcIWbtYycGXohlTHpshCF8PJnsjZvHglKOutgnISvtQDhcDE
+	 tDxoXST1Bpj7Y9oniPG6hzSIjLy0PAWWHF9kwF9zvxnflOmMfmQqKp0xu4xZgeZ5tA
+	 SSWyRYMK/mZF0u2ZiBZ0R9ZC6b2Cd8taE3suM/6Roc0TCahzKB16LtguDf/3a34w1U
+	 23u1LDTNEsZly1oDug7tI+VVZIexRPhUwqdMeos2kYHeboApbcOntXxT7fqniETVGt
+	 4fRdWBMncGWaw==
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-56e7187af0fso266233a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:19:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714025949; x=1714630749;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HoVegtVV8p+Gh2AomBAcQ2xl6o91liRpQqxeqe2byac=;
+        b=MrYhjrqRSoQTz8/46mz5XU8kpHK52yW4UpADGOsbTCakpT+TR+NVNRZfeomhy9hY6D
+         denbnXJc7HmZkNz+bHH7jMaORtFbp5J/ONrV9oZgcVnjryAX0MjdjZnEctRLO4C+NVBN
+         WoyW9JkBIgvrRvIsbGb4qG5+4yU9YdCwQHwuvhI7WQJ3mqwjANqGxCDlGh7zECxO+Jei
+         /kugfB2vpvGhX4Tb3gThi10EEjnLDw8mF5amznQbg7lpHaKjqyah6CJfmCb/aIpix4S3
+         fwVBbXdEgFuHwpUPL2D+a2jQckQDo4jSNlleRotZ51r9IngOL6XWT8r054GwON7i3d7Z
+         sSyQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVyDuAD52kndF+5vigRVcH52cAz36+vp0LFTuEeri/LooSPrEJup/vETMJCUp+tm+fYPR1+6vPT4XfbJk4LyGLre7mUgzb9tHgFZh3z
+X-Gm-Message-State: AOJu0YzuDdfxnq2i6qfY+NanQz1y7mEMgtJYB60sdPC4x1AELygJ6LBc
+	3FJ/l+bXvRaFKmmO5pjpArDaxuJBDt6eNVwRBnEUzE6Szcta3ohxLgd0dXY98xz8vb3aiQRkq4C
+	RsGeChJni326hYQF78Lxqs1RvKoBSE4zJhD0V/5DpMnLovHo0fT0k+hP32SEnd4kEp2k8Ki2fa6
+	VY3g==
+X-Received: by 2002:a05:6402:2033:b0:572:325a:851a with SMTP id ay19-20020a056402203300b00572325a851amr2448517edb.10.1714025948829;
+        Wed, 24 Apr 2024 23:19:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEmz2xFXYeIc9DsevrrNqsLxot9gX+ty/nFrxSqWAYAoTEBo9LkdsRfBz18/zGUn4b5HLfSjA==
+X-Received: by 2002:a05:6402:2033:b0:572:325a:851a with SMTP id ay19-20020a056402203300b00572325a851amr2448483edb.10.1714025948178;
+        Wed, 24 Apr 2024 23:19:08 -0700 (PDT)
+Received: from localhost (host-82-49-69-7.retail.telecomitalia.it. [82.49.69.7])
+        by smtp.gmail.com with ESMTPSA id c7-20020a0564021f8700b0057000ecadb0sm8680895edc.8.2024.04.24.23.19.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 23:19:07 -0700 (PDT)
+Date: Thu, 25 Apr 2024 08:19:04 +0200
+From: Andrea Righi <andrea.righi@canonical.com>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests/bpf: Add ring_buffer__consume_n test.
+Message-ID: <Zin12J-emVljvVrJ@gpd>
+References: <20240420155904.1450768-1-andrea.righi@canonical.com>
+ <ZiVy9bYrX-w24huD@krava>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|PH0PR10MB5683:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3bd5b295-8086-45a3-597f-08dc64ef7765
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|366007|1800799015|7416005;
-X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?AtQ9GT/1sBttw0XvYAICvkabKdrcqjaz9tFDM+HB75oZG7dyM8xDPZ6OMN7b?=
- =?us-ascii?Q?y7OUQkctHXvOIKEUkfRshO1oPrYY+2Hd9kZ7xWpTQiME7rW9jKlqpZJV4URH?=
- =?us-ascii?Q?lxtB3NiE94S+TNU+X+VCgH3Pw/IfG/28k8R97H8BshKCEhekTtq4GawT5H3r?=
- =?us-ascii?Q?BHVSH2HJeSOh0YAkrVEjfWWEJ5rG2DHCixCNXISG6xAPJrDw2y+PA1q5IhCz?=
- =?us-ascii?Q?uzRKgn1NihLs8CuhFWstDj/yWnKgKrL1mi6Bb2wC/TMczMjRyyxIEmt8l6Qq?=
- =?us-ascii?Q?KQiEnII4a0nwoajSS794QMfOpR2aQ46KpFAYDLRD433A5qPjYeHuAntQ8W2R?=
- =?us-ascii?Q?LXqz3KZdAOYjhCZi7yTUaebti9H10LgYeODLSQYLWbpaRkZrVla3+mO85jfx?=
- =?us-ascii?Q?diwYEpLPirSiFXqxUA8ZOQhiNm1LqDEowvZYyKw1KOzBOlND58uq5yHO7Zw1?=
- =?us-ascii?Q?nH9yn5TGdrgX3W4eZx8kUlj+yKU1zVBlPFL2SsKW/Dru1cXNHr4daJAfw+oM?=
- =?us-ascii?Q?WEg5Sy+o0q+j7QocvjvhFiO+lTq6iI09LUNte4pkkFalhy69QFgSdIIwvMc5?=
- =?us-ascii?Q?CT63J4mPzOnUOgMB2LuP4Nvxu5rQlEg1JwtMluZK7Gg3QeovG7JJA1CW2dKy?=
- =?us-ascii?Q?XrubwhtKd4+3V0lx70y+rDUm95lONgcYFtoKw7mzq44QcZudOd7lgcvdZXG/?=
- =?us-ascii?Q?wXAxDlTWPKo+D2CchpRjSAtE+bFIVRMGQMjq1M+mrunNiI/QFbjh8MV00CTY?=
- =?us-ascii?Q?QWq3fxhUU83OzN0JdRrO9myOXzcRrQjH4zkPPKo4VkwkYqvXkqgI3oF3e2uH?=
- =?us-ascii?Q?OU6o7VsIwgNYcl5zk5OK/q7k2APEdHIkjmA7nlWxrqvjvrV1hUsfnY0b8WR5?=
- =?us-ascii?Q?zqI+YsdSz5HqEH+5+01X709WkeZwc7MC/ooaga6bSgsJkeotESbRCt/m9OkH?=
- =?us-ascii?Q?mMunQyNJ0F1hK5EhkVcd+TAIVgiwLKW5G7CqiUq3F5qSIKJJPLMGavuf4rVD?=
- =?us-ascii?Q?JYLsybpZuG7FvGCw6KLZa58HFAzn0v3qZDpkHCuolKTwxC1Rdbq3kzu0cWym?=
- =?us-ascii?Q?HMSmbgDfFNJfCgqK+0Ab9qZposZsoerGb4Rn5Gwuw9sEhvcAB0enJjzOFgZw?=
- =?us-ascii?Q?rmYVjE1hZl/ScZeHKjULXHuqsCS8d4yQbtUnpkVMknXCkiRk+i1Ez2K6lXZ1?=
- =?us-ascii?Q?Ji/BBl+y3o1hSh5ySNNjJvB7mKMQxVciayUZEpgxcHTxxHCS2XbvhykPyQJV?=
- =?us-ascii?Q?DfVRiV2WVcCkloar+ysKfJmbUYCqsVfofP1ymlp8vg=3D=3D?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(7416005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?2EW5ll2Wtbc22IJd8jw5o+IeM1U5RLhTtZbelxMyf8M/ouB3yk9vRqfA4Nj0?=
- =?us-ascii?Q?zZZg5msJXJrUmR1JeStlneiv5iFomgjK/zW0HB7UkS8Mw8DBi53Swmf2k2jO?=
- =?us-ascii?Q?eZpOFPA1di5XVBi6ucCDIE3y+PgV7HeIm2KLxxvubsUiKgcehtSIWGZ3hDwl?=
- =?us-ascii?Q?OidPkVE05DQnuevIQfnAVsQrxcojgEp9zXV2sdvwnupfhuzUXHHijGkHdqNr?=
- =?us-ascii?Q?Hwl86JX76pW59ST6ZaIcX4MNlOjtQGsrOnkuxS6eLjAWOmtr4JLm6R4BOHWG?=
- =?us-ascii?Q?syPdoMXeo01+VMhyxlYujhmp0JT3yT2ELLa3g25buZPMghhYeH2zZHuE53Wa?=
- =?us-ascii?Q?0hgLA2UVdGmoop0oV/D+rzMqY9gippZJ5yEpmPDhu2myKXYaxSIWaiM4/R4z?=
- =?us-ascii?Q?dot6Wpm3+X31ZCxKzZ8qSYQm4GGWjgFN/Cr61n55s7QQmfqkpjcKOJw+KB88?=
- =?us-ascii?Q?iWmu/93uGQZOj9sObxYevx6zhNiO/tFn3vaFF5+19hMwD6/1I8SHmCNYYnxF?=
- =?us-ascii?Q?6G8tBKVW1gZxjFccopAbYVx2O5rQIx2hFIVPhwfYtjn7dk6mZuilehEkBYF0?=
- =?us-ascii?Q?35dG6ju8GmCT535CIDpau6lmI5XTY3siU8u+S7K79/LJCa574lsyimvGIKAu?=
- =?us-ascii?Q?PQ14iHG8DoBzoBqcS9KV23fb8xPBSkqYyYllcxbONmWPXkzesPXLiWEhl8wF?=
- =?us-ascii?Q?ZjWFRX7hf+N3y+XfefgEWd5XojiSCBxnKqODu1LQViLGvODx2u/PWN0NFbpL?=
- =?us-ascii?Q?sz9xqD6GqIFYsX3kVzhNfekPjpnX0GRzeJQtAwU+0R5Bd+caEOc0vC7xReY+?=
- =?us-ascii?Q?WNImmO/JP0Ft3Cn6UqAW9d0CIbbbGZYNe8Gh/LxXCoDGxsvXlJFDxe7QAQVp?=
- =?us-ascii?Q?aNMYpU66yXXMD1eQJz8rRriSg/Q7QgOA4YtQhiZFlpp9W3pCch94EA6CipAX?=
- =?us-ascii?Q?jbN7iV7y9J4Vh2m7lTj+vc6DCSaGhZmbbgKFMEkbr2FMVIE9hVBQSi8Bog07?=
- =?us-ascii?Q?mMpGtabYW/THXRYJtb8WfnmkiMFHN/+4+gez3k2aoo++0s5t5y9k0pU7F22W?=
- =?us-ascii?Q?+zSUSgoIcj25pJ97ocBTwhIHtwGaLP/VpYt+nIeOtWxh/9n5U0HOv3b7D3KR?=
- =?us-ascii?Q?xwb1KNyJ4JxbYtHcqLjM0n5rUFLq9RnToVfXfAkG//ryBTTieSQMCxazzuUa?=
- =?us-ascii?Q?JKUUw+5JSjyzwOtYXaWs29/iMfdeInhiVvys2aJlH72N57zgeJHKoCSHj5nH?=
- =?us-ascii?Q?T+812GCrrZrN94Kfd+W0A1/yfG4gkIoSFlc+wM5DkihIZVkO2OeFPOw4ORYW?=
- =?us-ascii?Q?1sX5OQ/qklnpfh8/G7IhLPwhM6m/8J2Va+rFRduKLaKajiG1X01hQACZP0gI?=
- =?us-ascii?Q?8f3fCJ3IZ3M78ELph0A84Kl/y8D5wQhGlJ+YoqB/a3R5Z2bFbkbwX8pEJ4iH?=
- =?us-ascii?Q?/kUA+5JObzO676rS/4uRML2Qi9GrQV1etXK9yfH5vPPQ/Sp0lc6jFe41OF/K?=
- =?us-ascii?Q?PGAZny6YfJIPyaYVRFMrfiAZzHo62iEtBUwBFuKLnIwjVHbw/RW9dMJHLCXM?=
- =?us-ascii?Q?JuohJS7dkQV5aP+S5fLMB0xjjLrTsH7zCCTwQ9VDhTBIhe5FrzjKokgMQiu8?=
- =?us-ascii?Q?uA=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	1RDGrtSvduh0W7FoPcXM68uKKXK+rVBgTJl6YNHFV+EJG8QwMcoh5Fvye92HjMkiVZz27C8yyfzuPVcqKcT31shA8L3hrm9LIjj5mQujmwq976g5AmHRuuZJ3CpS+t4Tai8CcY7W4ngOyyxNS2WC9F0iUnOPat3ImWb+rzX1g/pvgUJF6QbcBgeSkrmfYnDU4xF7v7mrBO5fC6Qk40Qoi4gZ4g+T+dERP+DLqBo89hzdMgzTyuW/B44Vo9a//4EdEm5FwgvVK+VPwqn7dMfS9qzPhF/ZHoCCm8MaEhtTZR6Wfxh5mg0T12qbYodEmscNzA4Nl+Gw9DwqYA3XjfHphlXEFjIxPL1j7sMdksOiUYJuiFGE1/A7aFnFTftwbK31aUyQOLN1KMtlAiHzzuu01az5HebMDcpZfMODYfX5vyLK1cNSkKATTYVmejMRt91AVH/6I/LbX5SA9TeIyCh16a2hYr7JyaAY6DA19CPzxa1CUs/D6Py2dJ3fgT0y9iV8sbz1sT1uI6R7kH5XfT9WxBAoQZmYzGPLmJw0Ks5G8LqKlKMLGCsvzQN2XnyKxAJy1T/+TmJQBmpAcdNyeyFF7Z2nICFVhIxG2ny/ukceVCI=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bd5b295-8086-45a3-597f-08dc64ef7765
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 06:18:04.4815
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mdOSUvNP5OFssj19zcOcdeGOVwg8SbemUjc+7caGE5SlqbyibL5yoyVS5CfcZcY/dOEN0l7FsttCRaL9wj1Gd4swuzSr8uR+TStzd1OInjg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5683
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-25_04,2024-04-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- mlxscore=0 phishscore=0 spamscore=0 adultscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404250043
-X-Proofpoint-ORIG-GUID: FuHvl78EzC42BP8KN8PsSShBAN5E6pmV
-X-Proofpoint-GUID: FuHvl78EzC42BP8KN8PsSShBAN5E6pmV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZiVy9bYrX-w24huD@krava>
 
+On Sun, Apr 21, 2024 at 10:11:33PM +0200, Jiri Olsa wrote:
+..
+> >  static struct test_ringbuf_map_key_lskel *skel_map_key;
+> > +static struct test_ringbuf_n_lskel *skel_n;
+> 
+> seems like there's no need for this to be static variable
 
-Sean Christopherson <seanjc@google.com> writes:
+Can you elaborate more? I think we want these pointers to be static to
+limit the scope to this file, no?
 
-> Use preempt_model_preemptible() to detect a preemptible kernel when
-> deciding whether or not to reschedule in order to drop a contended
-> spinlock or rwlock.  Because PREEMPT_DYNAMIC selects PREEMPTION, kernels
-> built with PREEMPT_DYNAMIC=y will yield contended locks even if the live
-> preemption model is "none" or "voluntary".  In short, make kernels with
-> dynamically selected models behave the same as kernels with statically
-> selected models.
+> 
+> >  static struct test_ringbuf_lskel *skel;
+> >  static struct ring_buffer *ringbuf;
+> >  
+> > @@ -326,6 +328,67 @@ static void ringbuf_subtest(void)
+> >  	test_ringbuf_lskel__destroy(skel);
+> >  }
+> >  
+> > +/*
+> > + * Test ring_buffer__consume_n() by producing N_TOT_SAMPLES samples in the ring
+> > + * buffer, via getpid(), and consuming them in chunks of N_SAMPLES.
+> > + */
+> > +#define N_TOT_SAMPLES	32
+> > +#define N_SAMPLES	4
+> > +
+> > +/* Sample value to verify the callback validity */
+> > +#define SAMPLE_VALUE	42L
+> > +
+> > +static int process_n_sample(void *ctx, void *data, size_t len)
+> > +{
+> > +	struct sample *s = data;
+> > +
+> > +	CHECK(s->value != SAMPLE_VALUE,
+> > +	      "sample_value", "exp %ld, got %ld\n", SAMPLE_VALUE, s->value);
+> 
+> I think we should use ASSERT macros instead in the new code
 
-Agreed. This behaviour makes sense. Should also be useful for PREEMPT_AUTO.
+Good catch, I'll change this to an ASSERT_EQ().
 
-The only thing that gives me pause is that now there is an extra
-call+ret even when we don't yield the lock.
+> 
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void ringbuf_n_subtest(void)
+> > +{
+> > +	int err, i;
+> > +
+> > +	skel_n = test_ringbuf_n_lskel__open();
+> > +	if (!ASSERT_OK_PTR(skel_n, "test_ringbuf_n_lskel__open"))
+> > +		return;
+> > +
+> > +	skel_n->maps.ringbuf.max_entries = getpagesize();
+> > +	skel_n->bss->pid = getpid();
+> > +
+> > +	err = test_ringbuf_n_lskel__load(skel_n);
+> > +	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__load"))
+> > +		goto cleanup;
+> > +
+> > +	ringbuf = ring_buffer__new(skel_n->maps.ringbuf.map_fd,
+> > +				   process_n_sample, NULL, NULL);
+> > +	if (!ASSERT_OK_PTR(ringbuf, "ring_buffer__new"))
+> > +		goto cleanup;
+> > +
+> > +	err = test_ringbuf_n_lskel__attach(skel_n);
+> > +	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__attach"))
+> > +		goto cleanup_ringbuf;
+> > +
+> > +	/* Produce N_TOT_SAMPLES samples in the ring buffer by calling getpid() */
+> > +	skel->bss->value = SAMPLE_VALUE;
+> 
+> skel_n ?
 
-But maybe that could be addressed separately by converting
-preempt_model_* to use a static key or similar.
+Absolutely... I'm suprised that it works actually, I guess pure luck
+(unluck) to reuse the old pointer and have value mapped to the same
+location. Anyway, I'll fix this.
 
-> Somewhat counter-intuitively, NOT yielding a lock can provide better
-> latency for the relevant tasks/processes.  E.g. KVM x86's mmu_lock, a
-> rwlock, is often contended between an invalidation event (takes mmu_lock
-> for write) and a vCPU servicing a guest page fault (takes mmu_lock for
-> read).  For _some_ setups, letting the invalidation task complete even
-> if there is mmu_lock contention provides lower latency for *all* tasks,
-> i.e. the invalidation completes sooner *and* the vCPU services the guest
-> page fault sooner.
->
-> But even KVM's mmu_lock behavior isn't uniform, e.g. the "best" behavior
-> can vary depending on the host VMM, the guest workload, the number of
-> vCPUs, the number of pCPUs in the host, why there is lock contention, etc.
->
-> In other words, simply deleting the CONFIG_PREEMPTION guard (or doing the
-> opposite and removing contention yielding entirely) needs to come with a
-> big pile of data proving that changing the status quo is a net positive.
->
-> Opportunistically document this side effect of preempt=full, as yielding
-> contended spinlocks can have significant, user-visible impact.
->
-> Fixes: c597bfddc9e9 ("sched: Provide Kconfig support for default dynamic preempt mode")
-> Link: https://lore.kernel.org/kvm/ef81ff36-64bb-4cfe-ae9b-e3acf47bff24@proxmox.com
-> Cc: Valentin Schneider <valentin.schneider@arm.com>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Marco Elver <elver@google.com>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: David Matlack <dmatlack@google.com>
-> Cc: Friedrich Weber <f.weber@proxmox.com>
-> Cc: Ankur Arora <ankur.a.arora@oracle.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> 
+> > +	for (i = 0; i < N_TOT_SAMPLES; i++)
+> > +		syscall(__NR_getpgid);
+> > +
+> > +	/* Consume all samples from the ring buffer in batches of N_SAMPLES */
+> > +	for (i = 0; i < N_TOT_SAMPLES; i += err) {
+> > +		err = ring_buffer__consume_n(ringbuf, N_SAMPLES);
+> > +		ASSERT_EQ(err, N_SAMPLES, "rb_consume");
+> > +	}
+> > +
+> 
+> SNIP
+> 
+> > diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_n.c b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
+> > new file mode 100644
+> > index 000000000000..b98b5bb20699
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
+> > @@ -0,0 +1,52 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +// Copyright (c) 2024 Andrea Righi <andrea.righi@canonical.com>
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <sched.h>
+> > +#include <unistd.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#include "bpf_misc.h"
+> > +
+> > +char _license[] SEC("license") = "GPL";
+> > +
+> > +#define TASK_COMM_LEN 16
+> > +
+> > +struct sample {
+> > +	int pid;
+> > +	int seq;
+> 
+> seq does not seem to be checked, is it needed?
 
-Reviewed-by: Ankur Arora <ankur.a.arora@oracle.com>
+seq is not used at all, I can definitely drop it.
 
-> ---
->  Documentation/admin-guide/kernel-parameters.txt |  4 +++-
->  include/linux/spinlock.h                        | 14 ++++++--------
->  2 files changed, 9 insertions(+), 9 deletions(-)
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 825398d66c69..fdeddb066439 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -4689,7 +4689,9 @@
->  			none - Limited to cond_resched() calls
->  			voluntary - Limited to cond_resched() and might_sleep() calls
->  			full - Any section that isn't explicitly preempt disabled
-> -			       can be preempted anytime.
-> +			       can be preempted anytime.  Tasks will also yield
-> +			       contended spinlocks (if the critical section isn't
-> +			       explicitly preempt disabled beyond the lock itself).
+Thanks for the review! I'll send a v2.
 
-This seems to read a bit better:
-
-+			       can be preempted anytime.  Tasks will also yield
-+			       contended spinlocks (unless the critical section is
-+			       explicitly preempt disabled beyond the lock itself).
-
-
-Ankur
-
->  	print-fatal-signals=
->  			[KNL] debug: print fatal signals
-> diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
-> index 3fcd20de6ca8..63dd8cf3c3c2 100644
-> --- a/include/linux/spinlock.h
-> +++ b/include/linux/spinlock.h
-> @@ -462,11 +462,10 @@ static __always_inline int spin_is_contended(spinlock_t *lock)
->   */
->  static inline int spin_needbreak(spinlock_t *lock)
->  {
-> -#ifdef CONFIG_PREEMPTION
-> +	if (!preempt_model_preemptible())
-> +		return 0;
-> +
->  	return spin_is_contended(lock);
-> -#else
-> -	return 0;
-> -#endif
->  }
->
->  /*
-> @@ -479,11 +478,10 @@ static inline int spin_needbreak(spinlock_t *lock)
->   */
->  static inline int rwlock_needbreak(rwlock_t *lock)
->  {
-> -#ifdef CONFIG_PREEMPTION
-> +	if (!preempt_model_preemptible())
-> +		return 0;
-> +
->  	return rwlock_is_contended(lock);
-> -#else
-> -	return 0;
-> -#endif
->  }
->
->  /*
+-Andrea
 
