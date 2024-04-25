@@ -1,119 +1,115 @@
-Return-Path: <linux-kernel+bounces-158019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C8998B1A40
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AE57E8B1A45
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:17:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F17C1C213C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:16:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6DB01C214B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35E63BBF5;
-	Thu, 25 Apr 2024 05:15:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89AB33B78D;
+	Thu, 25 Apr 2024 05:17:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="jQ/CnkKo"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="j46R/NrE";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="m41kyz8+"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C7D73BBE8
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 05:15:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25653A268;
+	Thu, 25 Apr 2024 05:17:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714022152; cv=none; b=A6wIJLJwYwnu5FyZM4WuGT4TaNwFDz1LsRFNEoOzkMBMRru+vrTcc36COGnJTnFTFsUg05hDe4vzM65Nb/PvUiNzPCzN6lxC6wZiEINKJ4tQp8w902IB7gFlZ7hezUH77rkWEjLpycHICiNMZ3ysNJ/6AMIp2gy/sTTLgSFF04M=
+	t=1714022243; cv=none; b=RpPjCsqdDYlvqSVl1ruCcpzEegrTb2uaMHQRNQvuBYan/lx2a/xBuOn2XoiQbBG6ytqtGXX9Hnx71ypyGU/69BYp8S2jxSFV5azBAlt/GmXFN1nbmyRSo4jIVUiBNlCN2nELpe6D0ZMerZWrGMBNQuWdt2864XRXgVFUy8jLDcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714022152; c=relaxed/simple;
-	bh=h5XgYL+kTu62b7hNDSxzPP6u9jz8fudtRkl5iQVY9nY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JNlMVikK6gvBkLOAHVvwU5wlpaWBRU1lvS4RJfmQwY8vyTNLJcYpDOVNSbJ7ShDbclvWzXO5Q2aVMe+5Dsggz7jtJN7Sw67dF+NW78FtN8cqWWx+kGAYP1CYai21ZtZ7X+AX3zigPEPct44j4yfFG2ic0OW5iJjxTDlCjM3DycQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=jQ/CnkKo; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-343c7fae6e4so468046f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:15:49 -0700 (PDT)
+	s=arc-20240116; t=1714022243; c=relaxed/simple;
+	bh=RK2YlCh2s9KnyoLCc1jJ8rRT18CZqFxUXklyFFkdZSE=;
+	h=Subject:Date:From:To:Cc:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qk1RY6Su6VY//iBE02DqXVnVpJ7UO7pJVIrPZze+INMIssNBEWawApFY9u2DEkIGX2vfynEb2BqM9OWQg76z9hGXPPETXZ5q5ZiMC/RFfyBrbVJm8lbHR0H6lecZG+QpnXxn91X6NSrCtrcofSp675BiGxvdmHjOZObS+IHW8IQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=j46R/NrE; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=m41kyz8+ reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1714022148; x=1714626948; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rPwnOdBG2SaRdsMEeoWl+ELs4tjgPnIwN6XzuY1l5ZU=;
-        b=jQ/CnkKogU/6223BHUnfsE6y5Dj1QduTXK1092wE230r0y0xleJtHEXby7pNfyc4gz
-         9a8HAVTxVIkO+OBeJ9x/QEnaaH2kU2LSsp8N702gj0wR8Tz0eG6onE2kFWduVBVnyYav
-         l4ip829tduprmDyIwqGBaCUgqix1bgAVzA2JJmXvPQTMXbHVsoRhWOw5NChPVYAm+5yB
-         gyauJsObV/LKPV5romDwDN+shDCJb8lQpHFhjgGtKepix0D1W+xFiRaP4/1VqPQO0oSn
-         rD9DQXUMC5HitYG8PZAd4KTjR+VFlmvepnC0laXoHa9v7eQsy1KPqKSeivUa8wPGC46p
-         Z3AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714022148; x=1714626948;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rPwnOdBG2SaRdsMEeoWl+ELs4tjgPnIwN6XzuY1l5ZU=;
-        b=wBKbq2Y4JyxnUc9tMfPz3dKERQX2DLjBIRsYuh//Mt6hNBCkQS9Gq2e99hdR53Y/N9
-         g6tP3I4n4e99iJ0QGss3nC/SlfKVGWXYfsrfGKrj9t85dHY30u88mbHhBhg1fLcxpXo8
-         +6oIGrcXsQiXAE7X5PzfuBzggzGkTS+8J3G7PhTQ5szgYcLv6cFQDIcEW/gO+cdQyzg8
-         RZPHhuP5FPdhB9FOvPeid1mV0eMKnAjP5eiJ4WaJg91UEdgvhwxZCl2YQNlrJgl/n7Kh
-         9x1dWZUheHMDvICu7kn2Yj+UVKepyn2YA9u/HCNNoMfgm8mqG/js9APKmG3TDkYijxKy
-         +JXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWV7DhdY/0qBywxnk6MMcRBhzt3PJ0sF8dNK8djvKj6qGORLM9HEJYmhRPmvb3IUNNAebQIYDoaZguiaK81L+y3zGn+7eZ4z6Ou+gLR
-X-Gm-Message-State: AOJu0Yz8BnYgpTN4z6CPagu+WY0HRKtp4yGbMuU3uY3LSoYdOA6LWxsA
-	yCdrEnkHakhTeRKMtLHSeuwtUmdpBsEwFLqCBb8rle3PUIGhRJELPmP59ztyMsE=
-X-Google-Smtp-Source: AGHT+IEeV6TDjrdXaQGoM3HJdzhpudTgWaxacCa4OufB47081/eSEaxVevEOehF0nvVymHPv9aCEUQ==
-X-Received: by 2002:adf:f8c4:0:b0:34a:9afe:76f with SMTP id f4-20020adff8c4000000b0034a9afe076fmr2890742wrq.30.1714022148470;
-        Wed, 24 Apr 2024 22:15:48 -0700 (PDT)
-Received: from [192.168.50.4] ([82.78.167.53])
-        by smtp.gmail.com with ESMTPSA id o3-20020a05600c4fc300b00418f7605249sm23885375wmq.24.2024.04.24.22.15.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Apr 2024 22:15:48 -0700 (PDT)
-Message-ID: <067774d2-ad37-46ff-b90b-7a240473dd67@tuxon.dev>
-Date: Thu, 25 Apr 2024 08:15:45 +0300
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1714022240; x=1745558240;
+  h=date:from:to:cc:message-id:references:mime-version:
+   content-transfer-encoding:in-reply-to:subject;
+  bh=/xj/OOBC3+MsFiy3PYCAgX5GBgEu3yvNZiuEeiuPbtE=;
+  b=j46R/NrErrdUiQne0KGY6LkJUm8xy0dvpDMvOMdPmnadVgoNjXg9InM7
+   cU4tq6CdOUI0cHabWkK26YtKGn3QcXSWg8nWGy2w5ZxauXAXWF+0Y0pbT
+   VD0OgEEZ3OxehwiHNIvggFsERSiebIqdBah+vnDGo2KLNh43+AIiKqWRs
+   ISl4DfgWH8Wo/foxLq873fde+FmG9lREKggLNjnyPIySWpJYd161xhLw9
+   pNzwhL1X5QxMqcziKHzV5GWKSLZXp5Bq1e41/z5AAT/5ohZFwRLMcQC7r
+   OSebZrEeCAw0Yy4pr+HSOunDO7oAs5qQY3GQdJAMWWuGESlBvgPycefOP
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.07,228,1708383600"; 
+   d="scan'208";a="36602300"
+Subject: Re: Re: [PATCH 1/4] can: mcp251xfd: stop timestamp before sending chip to
+ sleep
+Received: from vmailcow01.tq-net.de ([10.150.86.48])
+  by mx1.tq-group.com with ESMTP; 25 Apr 2024 07:17:17 +0200
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 07567170DA8;
+	Thu, 25 Apr 2024 07:17:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
+	s=dkim; t=1714022233;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=/xj/OOBC3+MsFiy3PYCAgX5GBgEu3yvNZiuEeiuPbtE=;
+	b=m41kyz8+Hl86bU/LuB0roKPfJ9HH4G9cxaI4h2qJX9AcbSqdCzSz6kMRfbfHehajlTMlpW
+	ydzEgEhr15jSo6TSkOtWyrqtlzHnKC1hsxNWp/LdKQyyFWuw5Q9vdE4gOU3CATG+Q1BhzA
+	Tm9vDm7aiTFYbMgR6ErSiVRZ52ZmyvEFw/RVxpSZdp1UyCtgp9xPBT0HqGlLF69N4iM7We
+	235dcejgD5CPqcCUHy6BqnRDNh9eoouOXyqnnlqNHLDf38Sxr6vqhk7OiOfni1IVD5S4+S
+	utTCAVEktHx5HRJE14DzJ21/TCuSUlCNg5nQ0ys94OsknXoOho3ddYJLPDMZQQ==
+Date: Thu, 25 Apr 2024 07:17:11 +0200
+From: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Thomas Kopp <thomas.kopp@microchip.com>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux@ew.tq-group.com,
+	alexander.stein@ew.tq-group.com
+Message-ID: <ZinnV+GA20LWGUOV@herburgerg-w2>
+References: <20240417-mcp251xfd-gpio-feature-v1-0-bc0c61fd0c80@ew.tq-group.com>
+ <20240417-mcp251xfd-gpio-feature-v1-1-bc0c61fd0c80@ew.tq-group.com>
+ <20240424-adaptable-zircon-badger-1fefd9-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] clock, reset: microchip: move all mpfs reset code to
- the reset subsystem
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>, Stephen Boyd <sboyd@kernel.org>
-Cc: linux-riscv@lists.infradead.org, Conor Dooley
- <conor.dooley@microchip.com>, Philipp Zabel <p.zabel@pengutronix.de>,
- Daire McNamara <daire.mcnamara@microchip.com>,
- Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240424-strangle-sharpener-34755c5e6e3e@spud>
- <722f31da34e5e1cfef05fb966f6c8c96.sboyd@kernel.org>
- <20240424-glazing-handsaw-4c303fef4f7e@spud>
- <46c9baab4b3a834c27949b99668a9c30.sboyd@kernel.org>
- <20240424-gander-alibi-87f6e1896381@spud>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20240424-gander-alibi-87f6e1896381@spud>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240424-adaptable-zircon-badger-1fefd9-mkl@pengutronix.de>
+X-Last-TLS-Session-Version: TLSv1.3
 
-
-
-On 25.04.2024 00:16, Conor Dooley wrote:
-> On Wed, Apr 24, 2024 at 02:09:44PM -0700, Stephen Boyd wrote:
+On Wed, Apr 24, 2024 at 01:54:54PM +0200, Marc Kleine-Budde wrote:
+> On 17.04.2024 15:43:54, Gregor Herburger wrote:
+> > MCP2518FD exits Low-Power Mode (LPM) when CS is asserted. When chip
+> > is send to sleep and the timestamp workqueue is not stopped chip is
+> > waked by SPI transfer of mcp251xfd_timestamp_read.
 > 
->> Am I supposed to pick this patch up?
-> 
-> Eh, you'll probably save Claudiu a single patch PR if you do, there's
-> nothing in the clk-microchip queue at the moment & I wasn't going to ask
-> him to pick it up until you or Philipp were happy with it, given you two
-> were the ones that suggested the change.
-> I say go for it, 
+> How does the Low-Power Mode affect the GPIO lines? Is there a difference
+> if the device is only in sleep mode?
 
-Sounds good for me.
+The MCP251XFD_REG_IOCON is cleared when leaving Low-Power Mode. This is
+why I implemented regcache.
 
-Thank you,
-Claudiu Beznea
-
-> unless you want me to respin for dev_get_platdata().
-> 
-> Thanks,
-> Conor.
+Best regards
+Gregor
+-- 
+TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht München, HRB 105018
+Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
+https://www.tq-group.com/
 
