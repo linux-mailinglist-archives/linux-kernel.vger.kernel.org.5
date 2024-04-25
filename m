@@ -1,127 +1,132 @@
-Return-Path: <linux-kernel+bounces-158312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 544588B1E2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:38:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18E248B1E2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:39:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87DE41C21227
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:38:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29544B263CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:39:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D754284E06;
-	Thu, 25 Apr 2024 09:37:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Iu2Awh/K"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7C5A84D3E;
+	Thu, 25 Apr 2024 09:39:07 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F154D28F7;
-	Thu, 25 Apr 2024 09:37:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D6484D12
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714037879; cv=none; b=EFdbdm8wVGETxwsk1XsBSuiG+ETAZNkDRxVdwhxct67k4/oiGIaNLhxRVp9N2TwJ27uMQf02T7UELeT87lNtHYOgKJfFo+pkmjIzr06yaZdYca1T+6fwuN5vc3DUH1/Gu7OPC71U+8UqItESXoO2O4oeTJ6MCc5AiTbNbKCymrg=
+	t=1714037947; cv=none; b=T2kX8tMtOxEz91s6TXRMyAyHgnZPnR3tRATMegwAcJrZbeEUf1deXQiEph14YVgbiFWymUmS1dfrp8KMi4hVEL3hVlCaue+DXKhayXr0gTi0SftxZUx7GDbIPKV/3MHKHhsYd0SiCk89a0zGABjasVKZiKnIaEkLFNMNzBfxSxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714037879; c=relaxed/simple;
-	bh=B2QnoUC7+LFWaRs4o1LMiByLwNslJDQSlWXTtB7gBKk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Evlp9CN6TP0BHwf/gA6qRdokCxZIxeq6fZGGZi2Fdtu9sIwZRi+a4jpVawKxe1sZb+p4jEG4Uxi/e+Eb00cPreJ9M+TbBpoaCckqPN4G8JeHc88vLTTB2ZVFT7XUiQ8c6DmRks6EURhkfhyueSIVGbmMLRfMuQkX0hUanEaLK6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Iu2Awh/K; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ed3cafd766so731153b3a.0;
-        Thu, 25 Apr 2024 02:37:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714037877; x=1714642677; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DGzKI3EXkY4x8FVQwjB0FHYCOu3rJrUkYNddsUIIYmA=;
-        b=Iu2Awh/Ka6kuC281L6SjyUCRTkiqHdwpi7c6TJ2WZUgMv874GqbkO7YXTR2j3DzFDT
-         c9Pq+slq33ZK9RuYFOr9pE5JIIobSRmh5kcGzMoFk8DyMgFWNCxBgzsEeY3xawepdQ6V
-         p3NXlKuZRTp0FaPT9vWPi2XjdQ6suekoRiTc870WdKPots+6ZOBrvpZtf7UUJhHWja/S
-         HIOsnyjalMOfUICpf5TH+HWB2ZI4Lf8M7SJzmA5J6roNc9j1tHL4w8ILgv86QUAtmpXV
-         Y4gCqVbOiCIB5bpVvahdqWJg1WZmJiug1Oq3Yp86P6NHjbBTOUhRjt+lRwGQPoUps9JM
-         OtSw==
+	s=arc-20240116; t=1714037947; c=relaxed/simple;
+	bh=03lT3XxSci3zPv9hrgEFljQ+R9NGQW8uarqB1lXxEPQ=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=th6mQ1ezJTDfAOGbqHeMJtzv+2NxLeFCFRCsDULchDp87mV1PYnqZXcpOQWGXnTPcsodbo78+CNVqlU1zrEHmk5xKgeGf9knQVKWtysQK6OQ+t4pBc/+nSZ0C1dNmIx0nCoRZu/N4bWxA2CZ2iHbXsu4pQQWM6OqOKD+hHG0BJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7ddf0219685so85141639f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 02:39:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714037877; x=1714642677;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DGzKI3EXkY4x8FVQwjB0FHYCOu3rJrUkYNddsUIIYmA=;
-        b=dn0ZuzOutgdGWL3Q6aO745+nq3p0pOpV0ue1/4bhPxCDD76Ew9mMdTj1iptaqcXb7K
-         pOYIi2zCfycDplrF0VXTd6MI7d9O1j0ye3npBBBKC9Vy5GMld0aZotbBVguOimGluLq7
-         vbCA+wOWxswfuQcPBE93WyOYAGS1MrNDhiiIlePr5Qlyak9DrP0UEQUyYTRr/UTRlGz8
-         2STnCTDNqYSYbuI5bikQph7zUubGfsyf/Z07FXl1k13GqYyLsgT3Bdl8fPmmh05W6Xe0
-         sl9k1d+E/sLjgzwdjI2+eEBmrcIDzKesMgQXWUYoh9d2NRz7c2qF5Ypg4aeZzO4GuUqH
-         +qiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUL+7aah29PiEMeOgjyW8KACfZg5gVFPYw2DRyCpUgLa2qVOvM+YecCEeOujfno9lWm1Nwf3jX65SROTDti1sbBCofs06//VPzJdRIHsMruCQoe6RmVTMH45lZePiTEVVreldQ8sv065w==
-X-Gm-Message-State: AOJu0YyDBBEmKE1MbM0DUT+V17FS4UEta6FlPQZ1GSknJlHT3j6IMyat
-	gs+o7xr9qdHQmi5ANVyr1Rv/MkDHBCH0SJVVyS3GcewB2v/6dE/M
-X-Google-Smtp-Source: AGHT+IFKAcb89md+m4w+P6J7vPjdhv1NtjyZqxzk8PLc206EV3uuh6oa2kHLHIULqqT3GsbHEbilxQ==
-X-Received: by 2002:a05:6a00:190c:b0:6ed:de6f:d762 with SMTP id y12-20020a056a00190c00b006edde6fd762mr6411562pfi.6.1714037877239;
-        Thu, 25 Apr 2024 02:37:57 -0700 (PDT)
-Received: from VM-147-239-centos.localdomain ([43.132.141.3])
-        by smtp.gmail.com with ESMTPSA id u11-20020a056a00124b00b006eab7ca005esm13209145pfi.18.2024.04.25.02.37.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Apr 2024 02:37:56 -0700 (PDT)
-From: Yongzhi Liu <hyperlyzcs@gmail.com>
-To: skashyap@marvell.com,
-	njavali@marvell.com,
-	martin.petersen@oracle.com,
-	James.Bottomley@HansenPartnership.com
-Cc: himanshu.madhani@oracle.com,
-	GR-QLogic-Storage-Upstream@marvell.com,
-	linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	jitxie@tencent.com,
-	huntazhang@tencent.com,
-	Yongzhi Liu <hyperlyzcs@gmail.com>
-Subject: [PATCH] scsi: qla2xxx: Fix double free of fcport in error handling path
-Date: Thu, 25 Apr 2024 17:37:44 +0800
-Message-Id: <20240425093744.22207-1-hyperlyzcs@gmail.com>
-X-Mailer: git-send-email 2.36.1
+        d=1e100.net; s=20230601; t=1714037945; x=1714642745;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5ZT4FzdSo4L6YgWDEaAIanhrPCvvpAdi/DehWaqFisg=;
+        b=MnMsC/2XW8JN/rdP9bRGptvrK8HQjYnYLTWmwovTcUeR/yO2w/Nj5RzdjTrFjAWTKk
+         MsCUDGqyTgnq6vEMUZB7u1NI68nPqNIhhREBxz4f5211AYfGnNNWNrMPScnefwbbHVAI
+         B01fE6CSClv1siILmX96/zyIeaKn4NUvepMB2e7OT3APotsspKUFTvALdd+fXZ5v8E5Z
+         MB/DfEMnToWoI1E4aA2m100/wVT5Acbzth4Hp/ky2L+qeYs5OkCqhtx5wTGbFNr6S51m
+         osP5RlW1LUyBdtDjd3/fAMKcHb9m5P6JsCPq4z6j0LrYCJaPMo0JOdsMG9pDOCPy/Bdx
+         0WJA==
+X-Forwarded-Encrypted: i=1; AJvYcCUviM7Hf/lUn8n1YOUraPQmQI/asspJisyf8Px9PY6XbXoBkkgnTqjc/lvpSw+uPDziEWXU1ItOGou8u0ibVaoTtsUIOmymPUvJNLz5
+X-Gm-Message-State: AOJu0Yx1+B2m64D2WMW/c6/omHMa6c2xj9QHGVkjdAjDucgtZcdqefDf
+	j35L/h7xicbOmKXcve/0IqTvHkyX1fh4aZeGq0DVgN6E3DAIqrEMtZNkTpbpNyRARsYDOT7rdN1
+	7DOMH6h4RIB79fUHk3tuB0eXwtbpi0Ypfs93JiH32chDMASYq77PDO2k=
+X-Google-Smtp-Source: AGHT+IHpUekD78pcsKwOWCM0FNp6vPL+TnGRCGFb+iegtNlyAHwEAPDflY5qr+SUES9Dcl14paCfW6BJuIRoKxMNsTMEGWQ1EG9Q
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:150e:b0:485:7a8:42a6 with SMTP id
+ b14-20020a056638150e00b0048507a842a6mr424174jat.0.1714037943921; Thu, 25 Apr
+ 2024 02:39:03 -0700 (PDT)
+Date: Thu, 25 Apr 2024 02:39:03 -0700
+In-Reply-To: <20240425090403.15270-1-aha310510@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c780b90616e88e79@google.com>
+Subject: Re: [syzbot] [jfs?] UBSAN: array-index-out-of-bounds in diFree
+From: syzbot <syzbot+241c815bda521982cb49@syzkaller.appspotmail.com>
+To: aha310510@gmail.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-When dma_alloc_coherent() or qla2x00_start_sp() return an error,
-the callback function qla2x00_els_dcmd_sp_free in qla2x00_sp_release
-will call qla2x00_free_fcport() to kfree fcport. We shouldn't call
-qla2x00_free_fcport() again in the error handling path.
+Hello,
 
-Fix this by cleaning up the redundant qla2x00_free_fcport().
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+UBSAN: array-index-out-of-bounds in diFree
 
-Fixes: 82f522ae0d97 ("scsi: qla2xxx: Fix double free of fcport")
-Signed-off-by: Yongzhi Liu <hyperlyzcs@gmail.com>
----
- drivers/scsi/qla2xxx/qla_iocb.c | 2 --
- 1 file changed, 2 deletions(-)
+140741783322624 13 524288
+------------[ cut here ]------------
+UBSAN: array-index-out-of-bounds in fs/jfs/jfs_imap.c:888:2
+index 524288 is out of range for type 'struct mutex[128]'
+CPU: 1 PID: 111 Comm: jfsCommit Not tainted 6.9.0-rc5-syzkaller-00042-ge88c4cfcb7b8-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ ubsan_epilogue lib/ubsan.c:231 [inline]
+ __ubsan_handle_out_of_bounds+0x121/0x150 lib/ubsan.c:429
+ diFree+0x21ec/0x2fe0 fs/jfs/jfs_imap.c:888
+ jfs_evict_inode+0x32d/0x440 fs/jfs/inode.c:156
+ evict+0x2a8/0x630 fs/inode.c:667
+ txUpdateMap+0x829/0x9f0 fs/jfs/jfs_txnmgr.c:2367
+ txLazyCommit fs/jfs/jfs_txnmgr.c:2664 [inline]
+ jfs_lazycommit+0x49a/0xb80 fs/jfs/jfs_txnmgr.c:2733
+ kthread+0x2f0/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+---[ end trace ]---
+Kernel panic - not syncing: UBSAN: panic_on_warn set ...
+CPU: 1 PID: 111 Comm: jfsCommit Not tainted 6.9.0-rc5-syzkaller-00042-ge88c4cfcb7b8-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ panic+0x349/0x860 kernel/panic.c:348
+ check_panic_on_warn+0x86/0xb0 kernel/panic.c:241
+ ubsan_epilogue lib/ubsan.c:236 [inline]
+ __ubsan_handle_out_of_bounds+0x141/0x150 lib/ubsan.c:429
+ diFree+0x21ec/0x2fe0 fs/jfs/jfs_imap.c:888
+ jfs_evict_inode+0x32d/0x440 fs/jfs/inode.c:156
+ evict+0x2a8/0x630 fs/inode.c:667
+ txUpdateMap+0x829/0x9f0 fs/jfs/jfs_txnmgr.c:2367
+ txLazyCommit fs/jfs/jfs_txnmgr.c:2664 [inline]
+ jfs_lazycommit+0x49a/0xb80 fs/jfs/jfs_txnmgr.c:2733
+ kthread+0x2f0/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-diff --git a/drivers/scsi/qla2xxx/qla_iocb.c b/drivers/scsi/qla2xxx/qla_iocb.c
-index 0b41e8a06602..faec66bd1951 100644
---- a/drivers/scsi/qla2xxx/qla_iocb.c
-+++ b/drivers/scsi/qla2xxx/qla_iocb.c
-@@ -2751,7 +2751,6 @@ qla24xx_els_dcmd_iocb(scsi_qla_host_t *vha, int els_opcode,
- 	if (!elsio->u.els_logo.els_logo_pyld) {
- 		/* ref: INIT */
- 		kref_put(&sp->cmd_kref, qla2x00_sp_release);
--		qla2x00_free_fcport(fcport);
- 		return QLA_FUNCTION_FAILED;
- 	}
- 
-@@ -2776,7 +2775,6 @@ qla24xx_els_dcmd_iocb(scsi_qla_host_t *vha, int els_opcode,
- 	if (rval != QLA_SUCCESS) {
- 		/* ref: INIT */
- 		kref_put(&sp->cmd_kref, qla2x00_sp_release);
--		qla2x00_free_fcport(fcport);
- 		return QLA_FUNCTION_FAILED;
- 	}
- 
--- 
-2.36.1
+
+Tested on:
+
+commit:         e88c4cfc Merge tag 'for-6.9-rc5-tag' of git://git.kern..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/ master
+console output: https://syzkaller.appspot.com/x/log.txt?x=135717bb180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5a05c230e142f2bc
+dashboard link: https://syzkaller.appspot.com/bug?extid=241c815bda521982cb49
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=14aea028980000
 
 
