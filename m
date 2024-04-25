@@ -1,276 +1,289 @@
-Return-Path: <linux-kernel+bounces-159285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C3678B2CA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:06:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 269AE8B2CAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:08:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06BD4B29EBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:05:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B3D1B276E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:07:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592301C8FD1;
-	Thu, 25 Apr 2024 21:52:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49837156962;
+	Thu, 25 Apr 2024 21:53:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hviN/5WJ"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GgMm05b0"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2763181319;
-	Thu, 25 Apr 2024 21:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714081946; cv=none; b=VNygVqPbQF3kwvJTTtkXkFhLVJ8rC11rYVX7i4S/NbxcksN7ngfGgssOpRSirbqjj8rpfTOeipIYI7deFzEYG9Sm+V5C7hCUaVVqD3OmKahDz6jy+c2OPofLClLCiVO0/t7QbWzqiArUY5ATdxpf8kDhWV296TvWSzDHvl4In4E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714081946; c=relaxed/simple;
-	bh=AN/XgXmoDQDKQCkIKxg7LAaiRm5YSKCvNyan7MC6Bmo=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hk56VH9sHHLTwy7rfmLUkjs5CMZ6rk99GN/Eizvlabw+vWRNsy4Nos5bWRb4ApNIaEgGR2qmrY0BErW3IYV8y7F2nXIrNGWysHXPNbQpkU1Q2uPfGRJieB0U2KyL+L/l0GwrXMkBCwaTFLFP8abniFpQns+qo4LOakjsiAQ/BEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hviN/5WJ; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43PLf4fq022983;
-	Thu, 25 Apr 2024 21:51:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=+gRV719uqSc7oMUSU9Bc
-	8q0Q3IEefQWBi7497D++R6I=; b=hviN/5WJWUmG2uCKACI+bvS6vb//MWHOgEeH
-	yvFXCJ5kvyUysapblKEGwytgdzzvVtc9paBnKP44kKvfg9rgiycwiGvAvXjUp1W2
-	l9/HoVsNEihZ0YB0FstCR1dHSvP/jPZQ6Oq1+si935viOnyYKoxxmY2ylRb7nu7J
-	B+ajYw1QOdYqKRGWlAHPj9w/0BOKnmrdGoe7wXXVx084l3B31OL94eXAGM6/Zt41
-	w7DHoWjtI4nOO4RqCKynnG1/5eNp6gHc2NPtdVvcs/AcVFl6/heB7TAg3oj1Vei8
-	+99T51iJ5T9MkAKuRmGcAJ/bJQvkyD+yG18klvu4HCS4R2bNTw==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqenkks45-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 21:51:48 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43PLplVY008051
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 21:51:47 GMT
-Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA9015381B;
+	Thu, 25 Apr 2024 21:53:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714081988; cv=fail; b=g2teUyQf7DF7EcXpA5lfmo/VMvlul2E98+FriP7NteaXgA07CHoe1qbvsar3iyJyA/jzjXNSxFAxPHmMiKpajVEhmgAqCk/M1GVFeo1Uvr6Yoz3PVdc7IgNWzrm2y9LdpNqxI6+FRdbFAjllfu8wl7cynfRr+heSvxzs/m3ZJbo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714081988; c=relaxed/simple;
+	bh=wEeCdvsf6UsTEqxqmrQPCTBnP49YVq9KA19nagkzvH4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=RU1hfGc4ZGg153eJjvU5BcZpSaf/DxeOR+MMvuFmwXtJEhJj3oJbK/kjM/vH9bbBGssjAIGNn/u5/v/6Hd2kg2XXI1UfSHiZBVy3KbESlvOED3nopfiGxY3IEmFkJ6vHdQiNZ7RyBx9nm86pxRXvXfROWh3PZNBnhBmpKwx+7cY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GgMm05b0; arc=fail smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714081987; x=1745617987;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=wEeCdvsf6UsTEqxqmrQPCTBnP49YVq9KA19nagkzvH4=;
+  b=GgMm05b0O+VfFbvOPBQfEWDut04Ut9H3wZS1MVIEVpR6rOsXDxXwrpaq
+   rITgsuw5tO1PfGO9ePt6ysMN7DAbgQFOJXsJYZjiWRrtKcFV2HNnxvmqv
+   bLAJxdgQHCbYLvnkSyAE3CYhJOCj5i5s9UvujF0syEOtRqDBkH5i1GHbQ
+   s4Sgf6xZVdzq5SB3RhP1pC3hu1hxVj4vkE06bv28mFxX5lEniIYyOvxo4
+   pVN+LPSWiHkhSZxxRaFo/xSABeTgaRGTetvt9Z81vi+4qfIYev+HqMi1g
+   WTw1ndcxLYdL+Rw9Y2PR+Zw1NQ9eeqXo+16qHqjBk39IqjUNb31lbZRe0
+   w==;
+X-CSE-ConnectionGUID: bpUW3SEEQxGiC7slJ5AIJw==
+X-CSE-MsgGUID: hDIxWPJwS6mhtuqba+GkNQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="9962587"
+X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
+   d="scan'208";a="9962587"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 14:53:06 -0700
+X-CSE-ConnectionGUID: aatk0WrORKCFE7kVVY4/SA==
+X-CSE-MsgGUID: Ee+zRVYPS+mRfDvkfLPCgw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
+   d="scan'208";a="62692749"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Apr 2024 14:53:05 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 25 Apr 2024 14:53:04 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 25 Apr 2024 14:53:04 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 25 Apr 2024 14:53:04 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Thu, 25 Apr 2024 14:51:46 -0700
-From: Wesley Cheng <quic_wcheng@quicinc.com>
-To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
-        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
-        <lgirdwood@gmail.com>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
-        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
-        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh@kernel.org>,
-        <konrad.dybcio@linaro.org>
-CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v20 36/41] ALSA: usb-audio: Add USB offloading capable kcontrol
-Date: Thu, 25 Apr 2024 14:51:20 -0700
-Message-ID: <20240425215125.29761-37-quic_wcheng@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240425215125.29761-1-quic_wcheng@quicinc.com>
-References: <20240425215125.29761-1-quic_wcheng@quicinc.com>
+ 15.1.2507.35; Thu, 25 Apr 2024 14:53:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W0caYwS9BlaEfaguLgSGr79c8vRIoXRLeOceU60oY9CYAdxPPxrY5BQ1q2bu02/3y6CwFg+/ZkDWY+OgxHqrRp/+e1A2YTSfR2FJed5wyna5oF46O974rUYXsBKBF7LyQILmh3NiU8WL6FvAxlJ6A4M3PCeZqPBHVRjOqY1BE7yahdVgn8k23CkTuAXtreKwjyPiAq9vVjnVxtnhgl5g42fWaxboko5a7CkUvgqlZ2xSBpS54VtJaeNWT4ehb45fFmLsR2C7SlFN3FrdWPSp99+znnDThZ08J1kjpAxUKLHNdwP1Oto4jj0u0gV0g21P39PhHJ/RzkZp1hlsOcEgvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wEeCdvsf6UsTEqxqmrQPCTBnP49YVq9KA19nagkzvH4=;
+ b=TqU9nFKKwDhRISj6gCfwWo3qR2F2BeSJz4mf9/NQB/wX+fZOleZmr987rdaazyYIh1RNZWyDw6dcc7HYhYQ8roSbBHDlKRyrBF+0Ak0OmI4a6NLowf+JKfNQZ9HSoh+aJPI19vyzisdtrgu4QyHuVhRDO00q046SBxK1z8GYXTsanxeeb1n1TZEUikWpjfMYxqBubAA/RD8a7FFdGIw8yyM7xTzuUK5HWlnD3FYUIWVmMWOSvR+eEHF6bcr+mhvnbtuPRax5Z7+UdSytyL1qRKunly/GIdzUEvxm9GJjcHIlwgeKU/KMd4Huj8vR5hhMqkxoPsWfTcFswCYCgD72+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by MW3PR11MB4587.namprd11.prod.outlook.com (2603:10b6:303:58::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Thu, 25 Apr
+ 2024 21:53:01 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7519.021; Thu, 25 Apr 2024
+ 21:53:01 +0000
+From: "Huang, Kai" <kai.huang@intel.com>
+To: "seanjc@google.com" <seanjc@google.com>
+CC: "Zhang, Tina" <tina.zhang@intel.com>, "Yuan, Hang" <hang.yuan@intel.com>,
+	"Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Aktas, Erdem"
+	<erdemaktas@google.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>, "Yamahata, Isaku"
+	<isaku.yamahata@intel.com>, "isaku.yamahata@linux.intel.com"
+	<isaku.yamahata@linux.intel.com>
+Subject: Re: [PATCH v19 023/130] KVM: TDX: Initialize the TDX module when
+ loading the KVM intel kernel module
+Thread-Topic: [PATCH v19 023/130] KVM: TDX: Initialize the TDX module when
+ loading the KVM intel kernel module
+Thread-Index: AQHaaI2222Sa8TxUXk24fGddYGoigLFCUFIAgAIc5oCAHVMCAIAAJnsAgACCNICAAPghAIAAlYYAgAe6DYCAARI+AIAAFk4AgACOYoCAAAdQgIAAE+EAgADmKACAAJDvAIABMcMAgARpbwCAAEVEAIAAYpQAgAAWqwCAABgFAIAAAz+AgADiNACAAIG7gIACuUQAgABYxAA=
+Date: Thu, 25 Apr 2024 21:53:01 +0000
+Message-ID: <22821630a2616990e5899252da3f29691b9c9ea8.camel@intel.com>
+References: <22b19d11-056c-402b-ac19-a389000d6339@intel.com>
+	 <ZiKoqMk-wZKdiar9@google.com>
+	 <deb9ccacc4da04703086d7412b669806133be047.camel@intel.com>
+	 <ZiaWMpNm30DD1A-0@google.com>
+	 <3771fee103b2d279c415e950be10757726a7bd3b.camel@intel.com>
+	 <Zib76LqLfWg3QkwB@google.com>
+	 <6e83e89f145aee496c6421fc5a7248aae2d6f933.camel@intel.com>
+	 <d0563f077a7f86f90e72183cf3406337423f41fe.camel@intel.com>
+	 <ZifQiCBPVeld-p8Y@google.com>
+	 <61ec08765f0cd79f2d5ea1e2acf285ea9470b239.camel@intel.com>
+	 <ZiqGRErxDJ1FE8iA@google.com>
+In-Reply-To: <ZiqGRErxDJ1FE8iA@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|MW3PR11MB4587:EE_
+x-ms-office365-filtering-correlation-id: 15600c0d-e153-4a2a-7f37-08dc657213d5
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230031|1800799015|376005|366007|38070700009;
+x-microsoft-antispam-message-info: =?utf-8?B?VTJQSHN6WFl3blVYcXZYazg2Um1Hb1ZaS0R3cEsyc3BHcjB6NDBldHUzR2x3?=
+ =?utf-8?B?MjJ4KzhvSm9wTGNFU2k3c1hhaXhmeldCRkZ5NzZwSHF1M0QybGVQcUJ1Z0NM?=
+ =?utf-8?B?bFlwMFVwd0Y5N2xoTGFuRTFDbHhTSlE4byttR3JoTXlLbEltcWt0elRKMlNY?=
+ =?utf-8?B?eDJrWTd6Qm5DcGxwbXBEVHFjbG4rUmYwalNEREhpSldoTVJUQk1EYmFxSGJ0?=
+ =?utf-8?B?a3lzcFE4OVdoKzhqRmJURzNEek9GS0owckRwLzRhaE1tR3N2ajR0a0pqMStS?=
+ =?utf-8?B?S0xxZVQxWXJxbjBKS1NIemJXeG9ma00yYWgrTnArdjNablRoN0tTSVlhc2dm?=
+ =?utf-8?B?NDYvZzJLT3E1S04zUHhHR3g1enpETW1LbGNvc2JERDhqRUJrZXlIT1p3OXVj?=
+ =?utf-8?B?aldoUDhPeUpTYVYrSjV4bmcrck01eEVsUUJJU3EvTmNJM2VLNG5UMGxPSDRn?=
+ =?utf-8?B?U0VZSC9YMGRJdXc2bk5Ddy9ydXYzT2NnUzF1YkM1S2thQWtaU1VXVHJOYTRL?=
+ =?utf-8?B?RzdjUHVhdFJSY0x5a0FxbHhjY3FpNThOdlRGL0JDODg5eFQ4N0V6VlNCdTBQ?=
+ =?utf-8?B?NXU5TUxpKzZBMGRmRnVwUEcxU3J1RHJkckJyT0hXT2g5NjdpRS9mVVJtSWZN?=
+ =?utf-8?B?VUYvVHRUUFlOVUpabTQ4cSsvelhTLzJEWERXZEJ4RUcyeDdRbSt4cm9wQ0Zj?=
+ =?utf-8?B?aXl3Wnd4aVFiL1cyNTNZYkU3WWRuMU5vcTYxOXFCV1VNYUpPOFE5K01kcVAy?=
+ =?utf-8?B?cyt5WFlpeFRoclk2UEh6cVo1Tk1hdXhKT1lNd2lEZnk5OTFjS25YWnBMWTUx?=
+ =?utf-8?B?ajF4cWY3V3NIUTArT1lrcS9RanpucWhZQ2VBTitVaWFYWEhadi91VFIyS1ds?=
+ =?utf-8?B?MFFySzZKVzZleDVVd3R3TTk3U1lZdDNHcVRqbWhvbHRlakVOMEZZSVlKZG95?=
+ =?utf-8?B?dUFqVnR3bC9tWjdmeENHMW9SSWxQNXRyYXUzeTZJSEtWdHVOTHh5bnhZbXRo?=
+ =?utf-8?B?TlpVVEZuWFZDQ2xhKzVFNFhxbFJtYUZDRnJmZHBEb08vQ2Z3ampreE9kZVlQ?=
+ =?utf-8?B?dVhjOHBHVUx1V3lhd3BVNDBPTUNDbFpvZndnMnlJRjA4b29pcklXUCt0c2dt?=
+ =?utf-8?B?YVplK1JkdXM0WmFOMnJON2lTZXJ4OE1SeDRqQWNqV1ZmUXRIQkpYWEhZeVhJ?=
+ =?utf-8?B?Uk1pcU8rVCsvOGNKTVZoQWFxb0pSTEhJV2dlblIvSkZYNGdYZzlmL2orb3pV?=
+ =?utf-8?B?dXhwZzU5RWtZeU56eDF0Y2U4OVdTTllmd0lidkRvK3BlNUVmd3h2dkFxVGJ6?=
+ =?utf-8?B?YUl0TzcxUHJiZ0xwUTh4b2tOQlU2c2RiODd3Q0EvU0NxdjZieDY5ZFVtUUJH?=
+ =?utf-8?B?VW02b2NWcFZPdEdibU51bzRIMHJIMTEvM0Z0V2lpOEF1dXl5QmNjci9kS2Jy?=
+ =?utf-8?B?WE13UVIyOEVoSFEzeGErK2NsYUNUcXpYS0Z2ZW5ROTZJUEtHcHYvYXg3V3JW?=
+ =?utf-8?B?RXJOQ2Vobkd0L2szYU9oOXFISi9kem42cy9SdENSUXZmd3lsWXRjb0JUTzl4?=
+ =?utf-8?B?SWp3YTIwOExGTllsVE5LRmIrVXE1Q0lySGRiUUtPUk5wU1U5OEJEejRLd0Na?=
+ =?utf-8?B?T21YVHdUemZlVEFsSTR6b2JEZkJYVEJBb1ZobFJPeHNyekk4QmxHRVdic3Q4?=
+ =?utf-8?B?RXpPaHVqY1AzNGZrQ25xYnR6Ump6a2ZjZlFiMjc5TjdoSW5xYVRaZG8zWGl4?=
+ =?utf-8?B?Ry83aUZCYVFpSjVPQ0R4MnpmMGZhejlnRVJVQ210MUFYaVhGRE9uM1ppK21P?=
+ =?utf-8?B?VGJrYkZOcmprU1hqZHNVdz09?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NE1QUW0wTjQ5MHkvaEd6YVRRMStlcmYxQ09iNnJWSFUyOGpZLzJ3SXZPRXBj?=
+ =?utf-8?B?bVArWGEyWXNORXFZdXRENUJPTUJMUmtUZFhYdDVMNUFkSEdJTmZGd0dyZTlk?=
+ =?utf-8?B?bEhFai9lOXYvYTVtNWZLczdkcVcxdHQzM0FTMENSUWFJRUxzMkluV2FTQmR0?=
+ =?utf-8?B?ZFRCSWxvcEhvRjZIenNpZEdxSlp0TFgwWlVkbHJzakVZay9qVk1zeHVIR2Np?=
+ =?utf-8?B?SnJ5VUZKbFJ2TFIyaEFDMTFYU2V4cVRuZ24xS0dPRm1acGFlYWhpYVMwV0p5?=
+ =?utf-8?B?NFFzMHR1a0NKRjNJZ0VTV3JRSmd0Y3BFREdHUHhxRVh5TFdtZ2g4NFlWcGZ1?=
+ =?utf-8?B?ZEduT2RMMXdQTVp0Zkh3TkkwczVrWjlmQjVtUFYra1J5NUltb1FDek9nMjM1?=
+ =?utf-8?B?L0VKVC8xOWNuRHpLVjhOcnhGNzlHd2xlbjlYWGxlNlp0NHp1RVJOQnRuWmto?=
+ =?utf-8?B?TXl3bmtZK0g0YW15b3llTVV6RXRNZ3J4QlYzOGoycG5hSUpuYmJkLzZ2MmhQ?=
+ =?utf-8?B?RHZQdEY1MTlkTnNYZzVkNzcxRTRveE84M29rTjdTdjdqVExSRFNSMDFmMXBt?=
+ =?utf-8?B?bkU4SzE3YlZSOEEwUTRZb2RiN2F2bGpDZHBsbTRvTjgwWmRsdUMrTDY4ZnVq?=
+ =?utf-8?B?RXNkNVd3eklMK0VxaXBvMktjZUk1NGdKSnlRS0t1akVyc2g1WXNzWDI3bUF4?=
+ =?utf-8?B?YUQzS0g0bVZxcWJWRjVaUlNqSWhmcHFsL2pxVGZoL2RiSUVuYXRTVnR2Ulg5?=
+ =?utf-8?B?UEFUTS9iK3ZrZEVsREVMeFROemFkckwzRlhHUGdYaXBOa3dnTGtMK0tXbDI4?=
+ =?utf-8?B?cmZvQmZZQStDVHpvbVpvYWxLdU5ZYlllODEwbFdRTzRRUE9TWFFjbGdSVUZh?=
+ =?utf-8?B?T1pwdk1wbnNQTmd5dGIxVW1rUFJ6UUlJYTVzWTdPQ2ppQWF2V21nNnNvNVkz?=
+ =?utf-8?B?aXloZFZIZUlTSEJ6ZnIyU21WV3ZpVHN5MVZWWlBsd2REQitpKzJJYUpNTUFi?=
+ =?utf-8?B?bml3dHVBWENQM2UrMzhySVR6bnhXdmhLQ0t3eHRjaVVablRZb1RWSXNuUVBB?=
+ =?utf-8?B?L0dIY0VwTnY3K01XSlIxY0xoN213Mk90U2F1dEpaQjhNKzVUd2lVZ0ZtSURT?=
+ =?utf-8?B?RjBSZW1wV3lLYmpSUjlJbUdUOFp2ODBieVlyT2hSV0JPdzZ6MEFIbGREV01D?=
+ =?utf-8?B?cUU5cVhHbHVkUndaWUF5L0h1QmNRQ090WC9sRVlTWjlwbDlBRUxhOGVDN2RL?=
+ =?utf-8?B?eGJFYzJ0OTdHb2VQSXpqL1ltVHNLbXpjaUtkVXdaVjFhMWFocTNhZnY1ODlM?=
+ =?utf-8?B?QVVONXFIRTkzTFFFRCtrM21ad1lqTVJuUVY4MnZLbUp5ZEFxNHNTTFJOUHpt?=
+ =?utf-8?B?NCsvTTBMM0JKblNuZVNCazRZUVRRb0lIUkQ1Rlo4N0t1M0hhTXA1ODZ2aUZ1?=
+ =?utf-8?B?NnlWQitsQ3l1dlBJdDlYTXBzWGQyTk02a21EelVkQ1pKVG5kc05ldlhYeG5i?=
+ =?utf-8?B?OXZ5clNmOHd3RVlzUlNzemNQWmVqTTFzNE96YTRHTkhDRnFDWXhQbWxGMysr?=
+ =?utf-8?B?MXdVdFkxb2tvVUg3OGc4UzlhbU5jUEZwUkhCclZwVlZvM1ZMMlNlcDlRRDd4?=
+ =?utf-8?B?RklXWVFIUmF5TWpVUzFvOVJEdzRGKzB5NVplWkxtSVEwSkJqTmNrQi9QdmZm?=
+ =?utf-8?B?ckZsdE95eFhNaEx2NnBJZWdIVUFlckZaOW02Z1hoU3NnMXZtTjNJcUhMM29j?=
+ =?utf-8?B?UFRRNG04ZU1GaDh3ejFsSHZubDg5UGU5R0ZQRU9zb3NoeHBlaHI3S1FuWDdl?=
+ =?utf-8?B?NjM1OGdjVDQzWEJwR0ZMZG44dHRUTDRFRUQzZjR6YVhYdVBwL0VESFZQR0RU?=
+ =?utf-8?B?SmpNT08rRHR4Z3h3SS8wWWdRUmJ3SFZ3cWcyNnRLelVSYzdxREdtOVM4Z1Vo?=
+ =?utf-8?B?dTJaRXhwLzNsdDRUTng4aW50ZzYwREtJejdrNkZtdjVBTFE1QVRObkEwMjEr?=
+ =?utf-8?B?VWV3cTJDNkYyWDVKTXNPOGNMam11cHZ6cE16WHVIL21tMTRRQmZBTFVUQ2Z2?=
+ =?utf-8?B?N2FFOFQzOTBiTG9wYXZvOTJEZ05LWHo3RGJjOU9vUDJFZXlCeXBQWmc1OE5Q?=
+ =?utf-8?B?K2ppVVVRdi9DYnIycC9FOU9ka2J5U1R0aktVSmh0Y1BiUVBNdTA3b29lL0hr?=
+ =?utf-8?B?cUE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6B0563E92F7AC74FB8271C02044732F1@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: FnV47REiXYbGCHFe6mgzdp8o-6yZ6-oH
-X-Proofpoint-GUID: FnV47REiXYbGCHFe6mgzdp8o-6yZ6-oH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-25_21,2024-04-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- mlxlogscore=999 priorityscore=1501 impostorscore=0 malwarescore=0
- bulkscore=0 lowpriorityscore=0 spamscore=0 adultscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404250159
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 15600c0d-e153-4a2a-7f37-08dc657213d5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Apr 2024 21:53:01.2749
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nu32IP4yMUqo7CDr6caNCMi3SslqkgCyKvMFWPecvcmuo+d0MWKgefUvduxDso081JPrOmQkyc8WvUYPfJMfRA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4587
+X-OriginatorOrg: intel.com
 
-In order to allow userspace/applications know about USB offloading status,
-expose a sound kcontrol that fetches information about which sound card
-index is associated with the ASoC platform card supporting offloading.  In
-the USB audio offloading framework, the ASoC BE DAI link is the entity
-responsible for registering to the SOC USB layer.  SOC USB will expose more
-details about the current offloading status, which includes the USB sound
-card and USB PCM device indexes currently being used.
-
-It is expected for the USB offloading driver to add the kcontrol to the
-sound card associated with the USB audio device.  An example output would
-look like:
-
-tinymix -D 1 get 'USB Offload Playback Capable Card'
-0 (range -1->32)
-
-Ths example signifies that card#0 has an USB offload capable path
-available.
-
-Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
----
- sound/usb/Kconfig                  | 10 +++++
- sound/usb/qcom/Makefile            |  6 ++-
- sound/usb/qcom/mixer_usb_offload.c | 65 ++++++++++++++++++++++++++++++
- sound/usb/qcom/mixer_usb_offload.h | 17 ++++++++
- sound/usb/qcom/qc_audio_offload.c  |  3 ++
- 5 files changed, 100 insertions(+), 1 deletion(-)
- create mode 100644 sound/usb/qcom/mixer_usb_offload.c
- create mode 100644 sound/usb/qcom/mixer_usb_offload.h
-
-diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
-index 5cc3eaf53e6b..1228be3c1f83 100644
---- a/sound/usb/Kconfig
-+++ b/sound/usb/Kconfig
-@@ -176,6 +176,16 @@ config SND_BCD2000
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-bcd2000.
- 
-+config SND_USB_QC_OFFLOAD_MIXER
-+	bool "Qualcomm USB Audio Offload mixer control"
-+	help
-+	 Say Y to enable the Qualcomm USB audio offloading mixer controls.
-+	 This exposes an USB offload capable kcontrol to signal to
-+	 applications about which platform sound card can support USB
-+	 audio offload.  This can potentially be used to fetch further
-+	 information about the offloading status from the platform sound
-+	 card.
-+
- config SND_USB_AUDIO_QMI
- 	tristate "Qualcomm Audio Offload driver"
- 	depends on QCOM_QMI_HELPERS && SND_USB_AUDIO && USB_XHCI_SIDEBAND && SND_SOC_USB
-diff --git a/sound/usb/qcom/Makefile b/sound/usb/qcom/Makefile
-index a81c9b28d484..eada5cd7b71f 100644
---- a/sound/usb/qcom/Makefile
-+++ b/sound/usb/qcom/Makefile
-@@ -1,2 +1,6 @@
- snd-usb-audio-qmi-objs := usb_audio_qmi_v01.o qc_audio_offload.o
--obj-$(CONFIG_SND_USB_AUDIO_QMI) += snd-usb-audio-qmi.o
-\ No newline at end of file
-+obj-$(CONFIG_SND_USB_AUDIO_QMI) += snd-usb-audio-qmi.o
-+
-+ifneq ($(CONFIG_SND_USB_QC_OFFLOAD_MIXER),)
-+snd-usb-audio-qmi-objs += mixer_usb_offload.o
-+endif
-\ No newline at end of file
-diff --git a/sound/usb/qcom/mixer_usb_offload.c b/sound/usb/qcom/mixer_usb_offload.c
-new file mode 100644
-index 000000000000..cd6e5600e795
---- /dev/null
-+++ b/sound/usb/qcom/mixer_usb_offload.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#include <linux/usb.h>
-+
-+#include <sound/core.h>
-+#include <sound/control.h>
-+#include <sound/soc-usb.h>
-+
-+#include "../card.h"
-+#include "../mixer.h"
-+#include "../usbaudio.h"
-+
-+#include "mixer_usb_offload.h"
-+
-+static int
-+snd_usb_offload_available_get(struct snd_kcontrol *kcontrol,
-+		      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct device *sysdev = snd_kcontrol_chip(kcontrol);
-+	int ret;
-+
-+	ret = snd_soc_usb_device_offload_available(sysdev);
-+	ucontrol->value.integer.value[0] = ret < 0 ? -1 : ret;
-+
-+	return ret < 0 ? ret : 0;
-+}
-+
-+static int snd_usb_offload_available_info(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = -1;
-+	uinfo->value.integer.max = SNDRV_CARDS;
-+
-+	return 0;
-+}
-+
-+static const struct snd_kcontrol_new snd_usb_offload_available_ctl = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
-+	.access = SNDRV_CTL_ELEM_ACCESS_READ,
-+	.name = "USB Offload Playback Capable Card",
-+	.info = snd_usb_offload_available_info,
-+	.get = snd_usb_offload_available_get,
-+};
-+
-+/**
-+ * snd_usb_offload_create_ctl() - Add USB offload bounded mixer
-+ * @chip - USB SND chip device
-+ *
-+ * Creates a sound control for a USB audio device, so that applications can
-+ * query for if there is an available USB audio offload path, and which
-+ * card is managing it.
-+ */
-+int snd_usb_offload_create_ctl(struct snd_usb_audio *chip)
-+{
-+	struct usb_device *udev = chip->dev;
-+
-+	return snd_ctl_add(chip->card,
-+			   snd_ctl_new1(&snd_usb_offload_available_ctl,
-+					udev->bus->sysdev));
-+}
-diff --git a/sound/usb/qcom/mixer_usb_offload.h b/sound/usb/qcom/mixer_usb_offload.h
-new file mode 100644
-index 000000000000..0efda52e92b6
---- /dev/null
-+++ b/sound/usb/qcom/mixer_usb_offload.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#ifndef __USB_OFFLOAD_MIXER_H
-+#define __USB_OFFLOAD_MIXER_H
-+
-+#if IS_ENABLED(CONFIG_SND_USB_QC_OFFLOAD_MIXER)
-+int snd_usb_offload_create_ctl(struct snd_usb_audio *chip);
-+#else
-+static inline int snd_usb_offload_create_ctl(struct snd_usb_audio *chip)
-+{
-+	return -ENODEV;
-+}
-+#endif
-+#endif /* __USB_OFFLOAD_MIXER_H */
-diff --git a/sound/usb/qcom/qc_audio_offload.c b/sound/usb/qcom/qc_audio_offload.c
-index 4deec0b6fc08..6a25a390f8ae 100644
---- a/sound/usb/qcom/qc_audio_offload.c
-+++ b/sound/usb/qcom/qc_audio_offload.c
-@@ -37,6 +37,7 @@
- #include "../pcm.h"
- #include "../power.h"
- 
-+#include "mixer_usb_offload.h"
- #include "usb_audio_qmi_v01.h"
- 
- /* Stream disable request timeout during USB device disconnect */
-@@ -1660,6 +1661,8 @@ static void qc_usb_audio_offload_probe(struct snd_usb_audio *chip)
- 	uaudio_qdev->last_card_num = chip->card->number;
- 	snd_soc_usb_connect(usb_get_usb_backend(udev), sdev);
- 
-+	snd_usb_offload_create_ctl(chip);
-+
- 	mutex_unlock(&chip->mutex);
- 	mutex_unlock(&qdev_mutex);
- 
+T24gVGh1LCAyMDI0LTA0LTI1IGF0IDA5OjM1IC0wNzAwLCBTZWFuIENocmlzdG9waGVyc29uIHdy
+b3RlOg0KPiBPbiBUdWUsIEFwciAyMywgMjAyNCwgS2FpIEh1YW5nIHdyb3RlOg0KPiA+IE9uIFR1
+ZSwgMjAyNC0wNC0yMyBhdCAwODoxNSAtMDcwMCwgU2VhbiBDaHJpc3RvcGhlcnNvbiB3cm90ZToN
+Cj4gPiA+IFByZXN1bWFibHkgdGhhdCBhcHByb2FjaCByZWxpZXMgb24gc29tZXRoaW5nIGJsb2Nr
+aW5nIG9ubGluaW5nIENQVXMgd2hlbiBURFggaXMNCj4gPiA+IGFjdGl2ZS4gIEFuZCBpZiB0aGF0
+J3Mgbm90IHRoZSBjYXNlLCB0aGUgcHJvcG9zZWQgcGF0Y2hlcyBhcmUgYnVnZ3kuDQo+ID4gDQo+
+ID4gVGhlIGN1cnJlbnQgcGF0Y2ggKFtQQVRDSCAwMjMvMTMwXSBLVk06IFREWDogSW5pdGlhbGl6
+ZSB0aGUgVERYIG1vZHVsZQ0KPiA+IHdoZW4gbG9hZGluZyB0aGUgS1ZNIGludGVsIGtlcm5lbCBt
+b2R1bGUpIGluZGVlZCBpcyBidWdneSwgYnV0IEkgZG9uJ3QNCj4gPiBxdWl0ZSBmb2xsb3cgd2h5
+IHdlIG5lZWQgdG8gYmxvY2sgb25saW5pbmcgQ1BVICB3aGVuIFREWCBpcyBhY3RpdmU/DQo+IA0K
+PiBJIHdhcyBzYXlpbmcgdGhhdCBiYXNlZCBvbiBteSByZWFkaW5nIG9mIHRoZSBjb2RlLCBlaXRo
+ZXIgKGEpIHRoZSBjb2RlIGlzIGJ1Z2d5DQo+IG9yIChiKSBzb21ldGhpbmcgYmxvY2tzIG9ubGlu
+aW5nIENQVXMgd2hlbiBURFggaXMgYWN0aXZlLiAgU291bmRzIGxpa2UgdGhlIGFuc3dlcg0KPiBp
+cyAoYSkuDQoNClllYWggaXQncyBhKS4NCg0KPiANCj4gPiBUaGVyZSdzIG5vIGhhcmQgdGhpbmdz
+IHRoYXQgcHJldmVudCB1cyB0byBkbyBzby4gIEtWTSBqdXN0IG5lZWQgdG8gZG8NCj4gPiBWTVhP
+TiArIHRkeF9jcHVfZW5hYmxlKCkgaW5zaWRlIGt2bV9vbmxpbmVfY3B1KCkuDQo+ID4gDQo+ID4g
+PiANCj4gPiA+ID4gQnR3LCB0aGUgaWRlYWwgKG9yIHByb2JhYmx5IHRoZSBmaW5hbCkgcGxhbiBp
+cyB0byBoYW5kbGUgdGR4X2NwdV9lbmFibGUoKQ0KPiA+ID4gPiBpbiBURFgncyBvd24gQ1BVIGhv
+dHBsdWcgY2FsbGJhY2sgaW4gdGhlIGNvcmUta2VybmVsIGFuZCBoaWRlIGl0IGZyb20gYWxsDQo+
+ID4gPiA+IG90aGVyIGluLWtlcm5lbCBURFggdXNlcnMuIMKgDQo+ID4gPiA+IA0KPiA+ID4gPiBT
+cGVjaWZpY2FsbHk6DQo+ID4gPiA+IA0KPiA+ID4gPiAxKSB0aGF0IGNhbGxiYWNrLCBlLmcuLCB0
+ZHhfb25saW5lX2NwdSgpIHdpbGwgYmUgcGxhY2VkIF9iZWZvcmVfIGFueSBpbi0NCj4gPiA+ID4g
+a2VybmVsIFREWCB1c2VycyBsaWtlIEtWTSdzIGNhbGxiYWNrLg0KPiA+ID4gPiAyKSBJbiB0ZHhf
+b25saW5lX2NwdSgpLCB3ZSBkbyBWTVhPTiArIHRkeF9jcHVfZW5hYmxlKCkgKyBWTVhPRkYsIGFu
+ZA0KPiA+ID4gPiByZXR1cm4gZXJyb3IgaW4gY2FzZSBvZiBhbnkgZXJyb3IgdG8gcHJldmVudCB0
+aGF0IGNwdSBmcm9tIGdvaW5nIG9ubGluZS4NCj4gPiA+ID4gDQo+ID4gPiA+IFRoYXQgbWFrZXMg
+c3VyZSB0aGF0LCBpZiBURFggaXMgc3VwcG9ydGVkIGJ5IHRoZSBwbGF0Zm9ybSwgd2UgYmFzaWNh
+bGx5DQo+ID4gPiA+IGd1YXJhbnRlZXMgYWxsIG9ubGluZSBDUFVzIGFyZSByZWFkeSB0byBpc3N1
+ZSBTRUFNQ0FMTCAob2YgY291cnNlLCB0aGUgaW4tDQo+ID4gPiA+IGtlcm5lbCBURFggdXNlciBz
+dGlsbCBuZWVkcyB0byBkbyBWTVhPTiBmb3IgaXQsIGJ1dCB0aGF0J3MgVERYIHVzZXIncw0KPiA+
+ID4gPiByZXNwb25zaWJpbGl0eSkuDQo+ID4gPiA+IA0KPiA+ID4gPiBCdXQgdGhhdCBvYnZpb3Vz
+bHkgbmVlZHMgdG8gbW92ZSBWTVhPTiB0byB0aGUgY29yZS1rZXJuZWwuDQo+ID4gPiANCj4gPiA+
+IEl0IGRvZXNuJ3Qgc3RyaWN0bHkgaGF2ZSB0byBiZSBjb3JlIGtlcm5lbCBwZXIgc2UsIGp1c3Qg
+aW4gY29kZSB0aGF0IHNpdHMgYmVsb3cNCj4gPiA+IEtWTSwgZS5nLiBpbiBhIHNlcGVyYXRlIG1v
+ZHVsZSBjYWxsZWQgVkFDWypdIDstKQ0KPiA+ID4gDQo+ID4gPiBbKl0gaHR0cHM6Ly9sb3JlLmtl
+cm5lbC5vcmcvYWxsL1pXNkZSQm5Pd1lWLVVDa1lAZ29vZ2xlLmNvbQ0KPiA+IA0KPiA+IENvdWxk
+IHlvdSBlbGFib3JhdGUgd2h5IHZhYy5rbyBpcyBuZWNlc3Nhcnk/DQo+ID4gDQo+ID4gQmVpbmcg
+YSBtb2R1bGUgbmF0dWFsbHkgd2Ugd2lsbCBuZWVkIHRvIGhhbmRsZSBtb2R1bGUgaW5pdCBhbmQg
+ZXhpdC4gIEJ1dA0KPiA+IFREWCBjYW5ub3QgYmUgZGlzYWJsZWQgYW5kIHJlLWVuYWJsZWQgYWZ0
+ZXIgaW5pdGlhbGl6YXRpb24sIHNvIGluIGdlbmVyYWwNCj4gPiB0aGUgdmFjLmtvIGRvZXNuJ3Qg
+cXVpdGUgZml0IGZvciBURFguDQo+ID4gDQo+ID4gQW5kIEkgYW0gbm90IHN1cmUgd2hhdCdzIHRo
+ZSBmdW5kYW1lbnRhbCBkaWZmZXJlbmNlIGJldHdlZW4gbWFuYWdpbmcgVERYDQo+ID4gbW9kdWxl
+IGluIGEgbW9kdWxlIHZzIGluIHRoZSBjb3JlLWtlcm5lbCBmcm9tIEtWTSdzIHBlcnNwZWN0aXZl
+Lg0KPiANCj4gVkFDIGlzbid0IHN0cmljdGx5IG5lY2Vzc2FyeS4gIFdoYXQgSSB3YXMgc2F5aW5n
+IGlzIHRoYXQgaXQncyBub3Qgc3RyaWN0bHkNCj4gbmVjZXNzYXJ5IGZvciB0aGUgY29yZSBrZXJu
+ZWwgdG8gaGFuZGxlIFZNWE9OIGVpdGhlci4gIEkuZS4gaXQgY291bGQgYmUgZG9uZSBpbg0KPiBz
+b21ldGhpbmcgbGlrZSBWQUMsIG9yIGl0IGNvdWxkIGJlIGRvbmUgaW4gdGhlIGNvcmUga2VybmVs
+Lg0KDQpSaWdodCwgYnV0IHNvIGZhciBJIGNhbm5vdCBzZWUgYW55IGFkdmFudGFnZSBvZiB1c2lu
+ZyBhIFZBQyBtb2R1bGUsDQpwZXJoYXBzIEkgYW0gbWlzc2luZyBzb21ldGhpbmcgYWx0aG91Z2gu
+DQoNCj4gDQo+IFRoZSBpbXBvcnRhbnQgdGhpbmcgaXMgdGhhdCB0aGV5J3JlIGhhbmRsZWQgYnkg
+X29uZV8gZW50aXR5LiAgV2hhdCB3ZSBoYXZlIHRvZGF5DQo+IGlzIHByb2JhYmx5IHRoZSB3b3Jz
+dCBzZXR1cDsgVk1YT04gaXMgaGFuZGxlZCBieSBLVk0sIGJ1dCBURFguU1lTLkxQLklOSVQgaXMN
+Cj4gaGFuZGxlZCBieSBjb3JlIGtlcm5lbCAoc29ydCBvZikuDQoNCkkgY2Fubm90IGFyZ3VlIGFn
+YWluc3QgdGhpcyA6LSkNCg0KQnV0IGZyb20gdGhpcyBwb2ludCBvZiB2aWV3LCBJIGNhbm5vdCBz
+ZWUgZGlmZmVyZW5jZSBiZXR3ZWVuIHRkeF9lbmFibGUoKQ0KYW5kIHRkeF9jcHVfZW5hYmxlKCks
+IGJlY2F1c2UgdGhleSBib3RoIGluIGNvcmUta2VybmVsIHdoaWxlIGRlcGVuZCBvbiBLVk0NCnRv
+IGhhbmRsZSBWTVhPTi4NCg0KT3IsIGRvIHlvdSBwcmVmZXIgdG8gd2UgbW92ZSBWTVhPTiB0byB0
+aGUgY29yZS1rZXJuZWwgYXQgdGhpcyBzdGFnZSwgaS5lLiwNCmFzIGEgcHJlcGFyZSB3b3JrIGZv
+ciBLVk0gVERYPyANCg0KDQoNCg==
 
