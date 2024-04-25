@@ -1,173 +1,284 @@
-Return-Path: <linux-kernel+bounces-158209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 544B68B1D01
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:45:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A9748B1D04
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:46:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A94161F2389E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:45:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0946288B2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:46:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5773C7FBB0;
-	Thu, 25 Apr 2024 08:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RT9364VM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3C27764E;
-	Thu, 25 Apr 2024 08:44:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A94B7FBA8;
+	Thu, 25 Apr 2024 08:46:08 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49986EB56
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714034697; cv=none; b=erzepz+FtBwi3mZQWoaSsiuqaq6HGLV5AJ2xhPaGZ0Cd/EoC8ymmahaMcGN/b+JC7w0ROxaKa5o8DM7FSTIVNcvz8+8+finoZruquwo2Wy8rcuq7oV/hLLCbk/+rK26JtmWY+DxQxyNlxWH25ADOnTHNGcawhW/HLABvFUeT0dY=
+	t=1714034767; cv=none; b=eo1tr0EP+mUO5HZy9rfy3XuhvIzZXyE6/RFctpC/v1FaIBiRQYr/ZGRxSiF40b2m6vE5QXUQKgfu8kcVXLA0euyUil6MhErIgBt2zvi2UOVGOVQaJ6b+Q5rx1ZD1JsDiFYaXwWJUfDKdyW8K3TTh13sBkcuNFcfGdbTu7hr2OKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714034697; c=relaxed/simple;
-	bh=bYe5R8EHZCktdj4e/a8hGUSDaDaAOflN35ZbtmFQOug=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bGlJJHa5nPmildqyVfGoJFYQo6YxmHND2Bu4qfTyZq0c5SKApRw6rPRd7ZH+SeMPd7lEr96IdAOMWFFKvHrEjatF+7aIHA5kC/TrDk18y06CmgbCTeWviXfxs51Cteed749SKCr2gsFPWVKWV4lWINQ+dVvvfK67FG95ds1f/vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RT9364VM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DEC0C113CC;
-	Thu, 25 Apr 2024 08:44:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714034697;
-	bh=bYe5R8EHZCktdj4e/a8hGUSDaDaAOflN35ZbtmFQOug=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RT9364VMwPqaI687iYiSycOppH2GlmKYhIuETBhADlzf2DE4hannuC/Qr7kjZJ9Ez
-	 KfR+1aDxDrbcRrIEiKWq1Lty6sMtEnwv831kUatNt3rnzuZ1XgfJn0mdqWTLmVBrZZ
-	 rcAsAKKg5kV9SRIrY0pqRn6vLY2Sh5+0NSA0lMjY1xXsxS/u9oONPZCZDGcWpWKLSD
-	 2TUuPEzaudNGpTq5ZYKeoS8yIP4V9gL1jPh22HRu51sfGslT7y/PvBAyn5H1AlB9tn
-	 91oqDt/dM0GK9VhYbxK5Prj94nXLuewk2WD59PckNxBThXAGLc+3tDEwK0OYO7S9il
-	 k+UWWBanQwh+g==
-Date: Thu, 25 Apr 2024 10:44:52 +0200
-From: Benjamin Tissoires <bentiss@kernel.org>
-To: Thorsten Leemhuis <regressions@leemhuis.info>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	Jiri Kosina <jikos@kernel.org>, Douglas Anderson <dianders@chromium.org>, 
-	Hans de Goede <hdegoede@redhat.com>, linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Kenny Levinsen <kl@kl.wtf>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
-	Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: regression fixes sitting in subsystem git trees for a week or
- longer
-Message-ID: <qcd5klmhyx23rowpbm4egshm6hemhh4stq7r6soblnuul55524@yyktdlowepw7>
-References: <20240331182440.14477-1-kl@kl.wtf>
- <14d1b38e-0f11-4852-9c52-92b4bedb0a77@leemhuis.info>
- <CAO-hwJJtK2XRHK=HGaNUFb3mQhY5XbNGeCQwuAB0nmG2bjHX-Q@mail.gmail.com>
- <a810561a-14f3-412e-9903-acaba7a36160@leemhuis.info>
- <CAHk-=wjy_ph9URuFt-pq+2AJ__p7gFDx=yzVSCsx16xAYvNw9g@mail.gmail.com>
- <87698732-5439-42bd-b2b2-864bb4f3b3ec@leemhuis.info>
+	s=arc-20240116; t=1714034767; c=relaxed/simple;
+	bh=W/3igZ4DmOFyi+O0RANP5YjgaGV4dAW43iEwXCKJT5s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FKInQSKVkt2mkdxhsGx9NRWTu1huGUOxDadBT5JC9zghg7+rJzId47hs+OYkBg/R9Ml6hoB2LxP2C5+AK2u89rL05jHe6NAg4XvUfkECUmI3MstZCQWDW7J2Q8NrsT0ilcdDy+BgHsAk0dVs1v5I1D6y2E1Vnvz9gEK8rFWySXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 314D61007;
+	Thu, 25 Apr 2024 01:46:33 -0700 (PDT)
+Received: from [10.57.75.12] (unknown [10.57.75.12])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2CA433F64C;
+	Thu, 25 Apr 2024 01:46:03 -0700 (PDT)
+Message-ID: <71c1e953-84f9-4d47-bd4c-725a447627df@arm.com>
+Date: Thu, 25 Apr 2024 09:46:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87698732-5439-42bd-b2b2-864bb4f3b3ec@leemhuis.info>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/5] add mTHP support for anonymous share pages
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org,
+ hughd@google.com
+Cc: willy@infradead.org, wangkefeng.wang@huawei.com, 21cnbao@gmail.com,
+ ying.huang@intel.com, shy828301@gmail.com, ziy@nvidia.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
+ <4b998e7d-153f-48cc-a9bb-8c84bb675581@arm.com>
+ <c1f68109-7665-4905-996f-f1067dfa2cb6@linux.alibaba.com>
+ <80b5f87e-c156-4ccc-98f0-96f1fd864273@arm.com>
+ <ef4f15dd-da31-4a1e-bec5-62a7002c4f7c@linux.alibaba.com>
+ <5b8b22e7-6355-4b08-b5b5-1e33ebae6f16@arm.com>
+ <813fe7fd-3004-4e8b-801d-95c33559a025@linux.alibaba.com>
+ <76f816dd-3bbf-48c9-a630-3787051cf289@arm.com>
+ <8c0d6358-3c16-4a57-822c-04b3b3403fe6@linux.alibaba.com>
+ <4204b5f6-21f0-4aa2-a625-3dd2f416b649@arm.com>
+ <94ae96f7-79ce-4b3f-a272-6af62d01a3f8@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <94ae96f7-79ce-4b3f-a272-6af62d01a3f8@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Apr 25 2024, Thorsten Leemhuis wrote:
-> On 24.04.24 20:53, Linus Torvalds wrote:
-> > On Wed, 24 Apr 2024 at 09:56, Thorsten Leemhuis
-> > <regressions@leemhuis.info> wrote:
-> >>
-> >> out of interest: what's your stance on regression fixes sitting in
-> >> subsystem git trees for a week or longer before being mainlined?
-> > 
-> > Annoying, but probably depends on circumstances. The fact that it took
-> > a while to even be noticed presumably means it's not common or holding
-> > anything up.
+On 25/04/2024 09:26, David Hildenbrand wrote:
+> On 25.04.24 10:17, Ryan Roberts wrote:
+>> On 25/04/2024 07:20, Baolin Wang wrote:
+>>>
+>>>
+>>> On 2024/4/24 22:20, Ryan Roberts wrote:
+>>>> On 24/04/2024 14:49, Baolin Wang wrote:
+>>>>>
+>>>>>
+>>>>> On 2024/4/24 18:01, Ryan Roberts wrote:
+>>>>>> On 24/04/2024 10:55, Baolin Wang wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> On 2024/4/24 16:26, Ryan Roberts wrote:
+>>>>>>>> On 24/04/2024 07:55, Baolin Wang wrote:
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> On 2024/4/23 18:41, Ryan Roberts wrote:
+>>>>>>>>>> On 22/04/2024 08:02, Baolin Wang wrote:
+>>>>>>>>>>> Anonymous pages have already been supported for multi-size (mTHP)
+>>>>>>>>>>> allocation
+>>>>>>>>>>> through commit 19eaf44954df, that can allow THP to be configured
+>>>>>>>>>>> through the
+>>>>>>>>>>> sysfs interface located at
+>>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled'.
+>>>>>>>>>>>
+>>>>>>>>>>> However, the anonymous shared pages will ignore the anonymous mTHP rule
+>>>>>>>>>>> configured through the sysfs interface, and can only use the PMD-mapped
+>>>>>>>>>>> THP, that is not reasonable. Many implement anonymous page sharing
+>>>>>>>>>>> through
+>>>>>>>>>>> mmap(MAP_SHARED | MAP_ANONYMOUS), especially in database usage
+>>>>>>>>>>> scenarios,
+>>>>>>>>>>> therefore, users expect to apply an unified mTHP strategy for anonymous
+>>>>>>>>>>> pages,
+>>>>>>>>>>> also including the anonymous shared pages, in order to enjoy the
+>>>>>>>>>>> benefits of
+>>>>>>>>>>> mTHP. For example, lower latency than PMD-mapped THP, smaller memory
+>>>>>>>>>>> bloat
+>>>>>>>>>>> than PMD-mapped THP, contiguous PTEs on ARM architecture to reduce TLB
+>>>>>>>>>>> miss
+>>>>>>>>>>> etc.
+>>>>>>>>>>
+>>>>>>>>>> This sounds like a very useful addition!
+>>>>>>>>>>
+>>>>>>>>>> Out of interest, can you point me at any workloads (and off-the-shelf
+>>>>>>>>>> benchmarks
+>>>>>>>>>> for those workloads) that predominantly use shared anon memory?
+>>>>>>>>>
+>>>>>>>>> As far as I know, some database related workloads make extensive use of
+>>>>>>>>> shared
+>>>>>>>>> anonymous page, such as PolarDB[1] in our Alibaba fleet, or MySQL likely
+>>>>>>>>> also
+>>>>>>>>> uses shared anonymous memory. And I still need to do some investigation to
+>>>>>>>>> measure the performance.
+>>>>>>>>>
+>>>>>>>>> [1] https://github.com/ApsaraDB/PolarDB-for-PostgreSQL
+>>>>>>>>
+>>>>>>>> Thanks for the pointer!
+>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>>> The primary strategy is that, the use of huge pages for anonymous shared
+>>>>>>>>>>> pages
+>>>>>>>>>>> still follows the global control determined by the mount option "huge="
+>>>>>>>>>>> parameter
+>>>>>>>>>>> or the sysfs interface at
+>>>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled'.
+>>>>>>>>>>> The utilization of mTHP is allowed only when the global 'huge' switch is
+>>>>>>>>>>> enabled.
+>>>>>>>>>>> Subsequently, the mTHP sysfs interface
+>>>>>>>>>>> (/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled)
+>>>>>>>>>>> is checked to determine the mTHP size that can be used for large folio
+>>>>>>>>>>> allocation
+>>>>>>>>>>> for these anonymous shared pages.
+>>>>>>>>>>
+>>>>>>>>>> I'm not sure about this proposed control mechanism; won't it break
+>>>>>>>>>> compatibility? I could be wrong, but I don't think shmem's use of THP
+>>>>>>>>>> used to
+>>>>>>>>>> depend upon the value of /sys/kernel/mm/transparent_hugepage/enabled?
+>>>>>>>>>> So it
+>>>>>>>>>
+>>>>>>>>> Yes, I realized this after more testing.
+>>>>>>>>>
+>>>>>>>>>> doesn't make sense to me that we now depend upon the
+>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled values
+>>>>>>>>>> (which by
+>>>>>>>>>> default disables all sizes except 2M, which is set to "inherit" from
+>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/enabled).
+>>>>>>>>>>
+>>>>>>>>>> The other problem is that shmem_enabled has a different set of options
+>>>>>>>>>> (always/never/within_size/advise/deny/force) to enabled
+>>>>>>>>>> (always/madvise/never)
+>>>>>>>>>>
+>>>>>>>>>> Perhaps it would be cleaner to do the same trick we did for enabled;
+>>>>>>>>>> Introduce
+>>>>>>>>>> /mm/transparent_hugepage/hugepage-XXkb/shmem_enabled, which can have all
+>>>>>>>>>> the
+>>>>>>>>>> same values as the top-level
+>>>>>>>>>> /sys/kernel/mm/transparent_hugepage/shmem_enabled,
+>>>>>>>>>> plus the additional "inherit" option. By default all sizes will be set to
+>>>>>>>>>> "never" except 2M, which is set to "inherit".
+>>>>>>>>>
+>>>>>>>>> Sounds good to me. But I do not want to copy all same values from
+>>>>>>>>> top-level
+>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled':
+>>>>>>>>> always within_size advise never deny force
+>>>>>>>>>
+>>>>>>>>> For mTHP's shmem_enabled interface, we can just keep below values:
+>>>>>>>>> always within_size advise never
+>>>>>>>>>
+>>>>>>>>> Cause when checking if mTHP can be used for anon shmem, 'deny' is equal to
+>>>>>>>>> 'never', and 'force' is equal to 'always'.
+>>>>>>>>
+>>>>>>>> I'll admit it wasn't completely clear to me after reading the docs, but my
+>>>>>>>> rough
+>>>>>>>> understanding is:
+>>>>>>>>
+>>>>>>>>      - /sys/kernel/mm/transparent_hugepage/shmem_enabled controls
+>>>>>>>>        mmap(SHARED|ANON) allocations (mostly; see rule 3)
+>>>>>>>>      - huge=... controls tmpfs allocations
+>>>>>>>>      - deny and force in shmem_enabled are equivalent to never and
+>>>>>>>> always for
+>>>>>>>>        mmap(SHARED|ANON) but additionally override all tmpfs mounts so they
+>>>>>>>> act as
+>>>>>>>>        if they were mounted with huge=never or huge=always
+>>>>>>>>
+>>>>>>>> Is that correct? If so, then I think it still makes sense to support
+>>>>>>>> per-size
+>>>>>>>
+>>>>>>> Correct.
+>>>>>>>
+>>>>>>>> deny/force. Certainly if a per-size control is set to "inherit" and the
+>>>>>>>> top-level control is set to deny or force, you would need that to mean
+>>>>>>>> something.
+>>>>>>>
+>>>>>>> IMHO, the '/mm/transparent_hugepage/hugepage-XXkb/shmem_enabled' interface
+>>>>>>> should only control the anonymous shmem. And 'huge=' controls tmpfs
+>>>>>>> allocation,
+>>>>>>> so we should not use anonymous control to override tmpfs control, which
+>>>>>>> seems a
+>>>>>>> little mess?
+>>>>>>
+>>>>>> I agree it would be cleaner to only handle mmap(SHARED|ANON) here, and leave
+>>>>>> the
+>>>>>> tmpfs stuff for another time. But my point is that
+>>>>>> /mm/transparent_hugepage/shmem_enabled already interferes with tmpfs if the
+>>>>>> value is deny or force. So if you have:
+>>>>>>
+>>>>>> echo deny > /mm/transparent_hugepage/shmem_enabled
+>>>>>
+>>>>> IIUC, this global control will cause shmem_is_huge() to always return
+>>>>> false, so
+>>>>> no matter how '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' is set,
+>>>>> anonymous shmem will not use mTHP. No?
+>>>>
+>>>> No, that's not how '/mm/transparent_hugepage/hugepage-xxxkB/enabled' works, and
+>>>> I think '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' should follow
+>>>> the established pattern.
+>>>>
+>>>> For anon-private, each size is controlled by its
+>>>> /mm/transparent_hugepage/hugepage-xxxkB/enabled value. Unless that value is
+>>>> "inherit", in which case the value in /mm/transparent_hugepage/enabled is used
+>>>> for that size.
+>>>>
+>>>> That approach enables us to 1) maintain back-compat and 2) control each size
+>>>> independently
+>>>>
+>>>> 1) is met because the default is that all sizes are initially set to "never",
+>>>> except the PMD-size (e.g. /mm/transparent_hugepage/hugepage-2048kB/enabled)
+>>>> which is initially set to inherit. So any mTHP unaware SW can still modify
+>>>> /mm/transparent_hugepage/enabled and it will still only apply to PMD size.
+>>>>
+>>>> 2) is met because mTHP aware SW can come along and e.g. enable the 64K size
+>>>> (echo always > /mm/transparent_hugepage/hugepage-64kB/enabled) without
+>>>> having to
+>>>> modify the value in /mm/transparent_hugepage/enabled.
+>>>
+>>> Thanks for explanation. Initially, I want to make
+>>> ‘/mm/transparent_hugepage/shmem_enabled’ be a global control for huge page, but
+>>> I think it should follow the same strategy as anon mTHP as you said.
+>>>
+>>>>>> echo inherit > /mm/transparent_hugepage/hugepage-64kB/shmem_enabled
+>>>>>>
+>>>>>> What does that mean?
+>>>>
+>>>> So I think /mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled will need to
+>>>> support the deny and force values. When applied to non-PMD sizes, "deny" can
+>>>> just be a noop for now, because there was no way to configure a tmpfs mount for
+>>>> non-PMD size THP in the first place. But I'm not sure what to do with "force"?
+>>>
+>>> OK. And I also prefer that "force" should be a noop too, since anon shmem
+>>> control should not configure tmpfs huge page allocation.
+>>
+>> I guess technically they won't be noops, but (for the non-PMD-sizes) "force"
+>> will be an alias for "always" and "deny" will be an alias for "never"?
+>>
+>> I was just a bit concerned about later changing that behavior to also impact
+>> tmpfs once tmpfs supports mTHP; could that cause breaks? But thinking about it,
+>> I don't see that as a problem.
 > 
-> Well, I searched and found quite a few users that reported the problem:
-> 
-> https://bbs.archlinux.org/viewtopic.php?id=293971 (at least 4 people)
-> https://bbs.archlinux.org/viewtopic.php?id=293978 (2 people)
-> https://bugzilla.redhat.com/show_bug.cgi?id=2271136 (1)
-> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2061040 (1)
-> https://forums.opensuse.org/t/no-touchpad-found-el-touchpad-a-veces-es-reconocido-por-el-sistema/174100 (1)
-> https://oldos.me/@jay/112294956758222518 (1)
-> 
-> There are also these two I mentioned earlier already:
-> https://social.lol/@major/112294920993272987 (1)
-> https://lore.kernel.org/all/9a880b2b-2a28-4647-9f0f-223f9976fdee@manjaro.org/ (1)
-> 
-> Side note: there were more discussions about it here:
-> https://forums.lenovo.com/t5/Fedora/PSA-Z16-Gen-2-touchpad-not-working-on-kernel-6-8/m-p/5299530
-> https://www.reddit.com/r/thinkpad/comments/1bwxwnr/review_thinkpad_z16_gen_2_with_arch_linux/
-> https://www.reddit.com/r/linuxhardware/comments/1bwxhwa/review_thinkpad_z16_gen_2_arch_linux/
-> 
-> And the arch linux wiki even documents a workaround:
-> https://wiki.archlinux.org/title/Lenovo_ThinkPad_Z16_Gen_2#Initialization_failure
-> 
-> Those are just the reports and discussions I found. And you know how
-> it is: many people that struggle will never report a problem.
-> 
+> Is the question what should happen if we "inherit" "force" or if someone
+> specifies "force" for a mTP size explicitly?
 
-short FYI, (I've Cc-ed you on the PR), but I just sent the PR for HID,
-which includes this fix.
+Well I think it amounts to the same thing; there isn't much point in forbidding
+"force" to be set directly because it can still be set indirectly through
+"inherit". We can't forbid indirectly setting it, because "inherit" could be set
+first, then the top-level shmem_enabled changed to "force" after - and we
+wouldn't want to fail that.
 
-> 
-> IMHO this all casts a bad light on our "no regression" rule, as the
-> fix is ready, just not mainlined and backported. And as I mentioned:
-> I see similar situations all the time. That's why I made noise here.
-> 
-> 
-> > That said, th4e last HID pull I have is from March 14. If the issue is
-> > just that there's nothing else happening, I think people should just
-> > point me to the patch and say "can you apply this single fix?"
-> 
-> Then I'll likely do so in my regression reports more often.
-> 
-> Is cherry picking from -next as easy for you? Maintainers sometimes
-> improve small details when merging a fix, so it might be better to
-> take fixes from there instead of pulling them from lore.
+So I think the question is just 'what should happen when "force" is configured
+for a non-PMD-sized mTHP'?
 
-Maybe one suggestion that might help to reduce these kind of situations
-in the future: can you configure your bot to notify the maintainers
-after a couple of days that the patch has been merged that it would be
-nice if they could send the PR to Linus?
+I think the answer is 'for now, it behaves like "always", but in future it will
+also force any tmpfs mounts to consider that mTHP size even if that size wasn't
+specified by mount='
 
-In this case I bet Jiri forgot to send it because he was overloaded and
-so was I. So a friendly reminder could make things go faster.
 
-And maybe, before sending the reminder, if you could also check that the
-target branch hasn't been touched in 2 days that would prevent annoyances
-when we just added a commit and want to let it stay in for-next for 24h
-before sending the full branch.
-
-> 
-> Ciao, Thorsten
-> 
-> P.S: Wondering if I should team up with the kernel package maintainers
-> of Arch Linux, Fedora, and openSUSE and start a git tree based on the
-> latest stable tree with additional fixes and reverts for regressions
-> not yet fixed upstream...[1] But that feels kinda wrong: it IMHO
-> would be better to resolve those problems quickly in the proper
-> upstream trees.
-
-I would also say that this is wrong. Unless all regressions go through
-your tree and you then send PR to Linus, you might quickly get
-overloaded because sometimes the fix can not be cherry-picked if there
-is one other change just before.
-
-However, do you have some kind of dashboard that you could share with
-the package maintainers? This way they could easily compare the not-yet
-applied fixes with their bugs and decide to backport them themselves.
-
-In other words: let others do the hard work, you are doing a lot already
-:)
-
-Anyway, I really think a friendly reminder would help makes things go
-faster. Something like "Hey, it seems that you applied a regression fix
-that I am currently tracking and that you haven't sent the PR to Linus
-yet. Could you please send it ASAP as we already have several users
-reporting the issue?".
-
-Cheers,
-Benjamin
-
-> 
-> [1] yes, I'm fully aware that such a tree can only address some of the
-> issues; but from what I see that already would make quite a difference.
 
