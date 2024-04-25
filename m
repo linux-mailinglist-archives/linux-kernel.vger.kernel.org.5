@@ -1,195 +1,324 @@
-Return-Path: <linux-kernel+bounces-159014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E85738B2827
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:29:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCAE98B282B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:29:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9970B1F214CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:29:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B9F6284831
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:29:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88EC81509A5;
-	Thu, 25 Apr 2024 18:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15FA11509AE;
+	Thu, 25 Apr 2024 18:29:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BzEl2DPB"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UwZf5LiC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE9837152;
-	Thu, 25 Apr 2024 18:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2050914EC66;
+	Thu, 25 Apr 2024 18:29:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714069745; cv=none; b=o4zXg68unLlCrpgb+AMBlqQNapfvbfZehY/V2nnosMozkzifwCf2pzLCBKj1PFrv2JtOOwWPjERthviScikZOft++YMOpIouWHBty2dm52UEBEb3xgv7+kCySKra8vp5abtg6hECmqWeqsG7s3MnKXhlZtqAWVQxOK9Ek2i5MXw=
+	t=1714069765; cv=none; b=Iz30kBqkpdep9Ar8UCUU00zNUKelLzTjfrIYvRYcNHMszB/nMmqgyAciejJK/7bBhIgjLT+z4EF0alRr6bIXtOKDrjsgvSObz4nVRmZpjNsznijMKKLVcDgQr94gZ1QkmzYCNAVWV1MXBK0c5ZjjuC+Ijw2DQjmkmOu3pyOQRUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714069745; c=relaxed/simple;
-	bh=OjxtnIQqi9aFP14zSB3IGsqrO8gHisSDjKe8KENwCio=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=efGnblDlSh133lar6S8DYChUHZhU1LTjN2LUKi/RywHtcBA3pVbHaK4QHr2OfxRbDI8+ESa+iP+hyIZyCVs4aU08ybVPZZkEEqU3ve74TUsUckhRRMeCzI1DO8O0344QEEBVWNFu32KIqcc3qeEkapiuZJ1B5Agdwv+O3+UXBIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BzEl2DPB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B5A7C113CC;
-	Thu, 25 Apr 2024 18:29:05 +0000 (UTC)
+	s=arc-20240116; t=1714069765; c=relaxed/simple;
+	bh=huLm0nrM9QJkaRSU+mfJBR/sAYQYDXxsrsFULLV94Tc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZfcYw+BbmfaUItBEToppUN+gN/HcC7LkqUkW1BIfP21OOjHr/buvpDUiBQPpCPoOWxQ5yRes/RWqZ0CPeEE1YMj/L+mr45qO7jV+zqP0k/qqxCuVTVFj1axLJ9iVfJWOEk7lT+i087Hgwe/rNeoTJr7NmLkVudYLPwX0iWLRWMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UwZf5LiC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20E3CC113CC;
+	Thu, 25 Apr 2024 18:29:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714069745;
-	bh=OjxtnIQqi9aFP14zSB3IGsqrO8gHisSDjKe8KENwCio=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BzEl2DPBRHB0UySCs9wigyeH0aWNCdavF127izSUNeOSg1PrSkI3v6OzhS8zMYTLH
-	 C+Ca9cJNPgeZOIcmwB2swbAPB+oclc7ibWYLIYKd8Hper5KPXVNOzEsLo/cNtJFgRg
-	 Nbqa4g6DHAI/yzRZnOhZ6X0vJ7rpzRtmTMNUpxWosQ50HLhe7LaF3R1wjuPb+kB0WN
-	 oYnmIbE9asaNG+OR9TOg5t/5JhPy0ciLw69L1ZeUlwpBKuoljQwFMgDPkDYXDb9vPF
-	 cYTkvZWnbUBGKsQebiJxSAWjPKYXUcR1iytGkFHAFnuvQYepz5+9WzN0TZZ6NtA4+C
-	 q2q32WLJaHbtQ==
-Date: Thu, 25 Apr 2024 11:29:04 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, hch@infradead.org, brauner@kernel.org,
-	david@fromorbit.com, chandanbabu@kernel.org, tytso@mit.edu,
-	jack@suse.cz, yi.zhang@huawei.com, chengzhihao1@huawei.com,
-	yukuai3@huawei.com
-Subject: Re: [PATCH v5 4/9] xfs: convert delayed extents to unwritten when
- zeroing post eof blocks
-Message-ID: <20240425182904.GA360919@frogsfrogsfrogs>
-References: <20240425131335.878454-1-yi.zhang@huaweicloud.com>
- <20240425131335.878454-5-yi.zhang@huaweicloud.com>
+	s=k20201202; t=1714069764;
+	bh=huLm0nrM9QJkaRSU+mfJBR/sAYQYDXxsrsFULLV94Tc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=UwZf5LiCT+ILOk4aObtDysMTUdZKWNbNVH5+uMLVkdDr6CBVr6YW/rOghiI+gUX21
+	 BzD6a4/ikfgdRdJiuvDACNv84svsLHqae5cRHrCMNnqxR6JTcJe4rfahmOkSjaEvgt
+	 LbW5Z006xa74hnV0Xq/h3zWkuTUhwWRhN3D0AmIddAIXQS2HIOdJsnnhH0POirdxDC
+	 SOewiot2HewT0csXL1HesISJc5SJTchU26AuzW6hePK+r0BXQ+wRLL8xQjjdRIh6k9
+	 P+dx2PIMgrP6KKzDKZqfY5WrS8IqUeidJv4z3u/wj0BrekhPo3XIgCEi1Pd8NuIEct
+	 w9TJ6ETQXmRjQ==
+Message-ID: <e7d9993e-b51d-4348-aa1d-de0671062c57@kernel.org>
+Date: Thu, 25 Apr 2024 20:29:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240425131335.878454-5-yi.zhang@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] pinctrl: samsung: support a bus clock
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Alim Akhtar <alim.akhtar@samsung.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>,
+ Peter Griffin <peter.griffin@linaro.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Will McVicker <willmcvicker@google.com>, kernel-team@android.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240425-samsung-pinctrl-busclock-v1-0-898a200abe68@linaro.org>
+ <20240425-samsung-pinctrl-busclock-v1-2-898a200abe68@linaro.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240425-samsung-pinctrl-busclock-v1-2-898a200abe68@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 25, 2024 at 09:13:30PM +0800, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
+On 25/04/2024 18:03, André Draszik wrote:
+> On some Samsung-based SoCs there are separate bus clocks / gates each
+> for each pinctrl instance. To be able to access each pinctrl instance's
+> registers, this bus clock needs to be running, otherwise register
+> access will hang. Google Tensor gs101 is one example for such an
+> implementation.
 > 
-> Current clone operation could be non-atomic if the destination of a file
-> is beyond EOF, user could get a file with corrupted (zeroed) data on
-> crash.
+> Update the driver to handle this optional bus clock:
+> * handle an optional bus clock from DT
+> * prepare it during driver probe
+> * enclose all relevant register accesses with a clock enable & disable
 > 
-> The problem is about preallocations. If you write some data into a file:
-> 
-> 	[A...B)
-> 
-> and XFS decides to preallocate some post-eof blocks, then it can create
-> a delayed allocation reservation:
-> 
-> 	[A.........D)
-> 
-> The writeback path tries to convert delayed extents to real ones by
-> allocating blocks. If there aren't enough contiguous free space, we can
-> end up with two extents, the first real and the second still delalloc:
-> 
-> 	[A....C)[C.D)
-> 
-> After that, both the in-memory and the on-disk file sizes are still B.
-> If we clone into the range [E...F) from another file:
-> 
-> 	[A....C)[C.D)      [E...F)
-> 
-> then xfs_reflink_zero_posteof() calls iomap_zero_range() to zero out the
-> range [B, E) beyond EOF and flush it. Since [C, D) is still a delalloc
-> extent, its pagecache will be zeroed and both the in-memory and on-disk
-> size will be updated to D after flushing but before cloning. This is
-> wrong, because the user can see the size change and read the zeroes
-> while the clone operation is ongoing.
-> 
-> We need to keep the in-memory and on-disk size before the clone
-> operation starts, so instead of writing zeroes through the page cache
-> for delayed ranges beyond EOF, we convert these ranges to unwritten and
-> invalidate any cached data over that range beyond EOF.
-> 
-> Suggested-by: Dave Chinner <david@fromorbit.com>
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> ---
-> Changes since v4:
-> 
-> Move the delalloc converting hunk before searching the COW fork. Because
-> if the file has been reflinked and copied on write,
-> xfs_bmap_extsize_align() aligned the range of COW delalloc extent, after
-> the writeback, there might be some unwritten extents left over in the
-> COW fork that overlaps the delalloc extent we found in data fork.
-> 
->   data fork  ...wwww|dddddddddd...
->   cow fork          |uuuuuuuuuu...
->                     ^
->                   i_size
-> 
-> In my v4, we search the COW fork before checking the delalloc extent,
-> goto found_cow tag and return unconverted delalloc srcmap in the above
-> case, so the delayed extent in the data fork will have no chance to
-> convert to unwritten, it will lead to delalloc extent residue and break
-> generic/522 after merging patch 6.
 
-Hmmm.  I suppose that works, but it feels a little funny to convert the
-delalloc mapping in the data fork to unwritten /while/ there's unwritten
-extents in the cow fork too.  Would it make more sense to remap the cow
-fork extents here?
+..
 
-OTOH unwritten extents in the cow fork get changed to written ones by
-all the cow remapping functions.  Soooo maybe we don't want to go
-digging /that/ deep into the system.
-
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
-> 
->  fs/xfs/xfs_iomap.c | 29 +++++++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
-> 
-> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> index 236ee78aa75b..2857ef1b0272 100644
-> --- a/fs/xfs/xfs_iomap.c
-> +++ b/fs/xfs/xfs_iomap.c
-> @@ -1022,6 +1022,24 @@ xfs_buffered_write_iomap_begin(
->  		goto out_unlock;
->  	}
+>  	drvdata = pinctrl_dev_get_drvdata(pctldev);
+>  	pin_to_reg_bank(drvdata, pin, &reg_base, &pin_offset, &bank);
+> @@ -447,6 +456,12 @@ static int samsung_pinconf_rw(struct pinctrl_dev *pctldev, unsigned int pin,
+>  	width = type->fld_width[cfg_type];
+>  	cfg_reg = type->reg_offset[cfg_type];
 >  
-> +	/*
-> +	 * For zeroing, trim a delalloc extent that extends beyond the EOF
-> +	 * block.  If it starts beyond the EOF block, convert it to an
-> +	 * unwritten extent.
-> +	 */
-> +	if ((flags & IOMAP_ZERO) && imap.br_startoff <= offset_fsb &&
-> +	    isnullstartblock(imap.br_startblock)) {
-> +		xfs_fileoff_t eof_fsb = XFS_B_TO_FSB(mp, XFS_ISIZE(ip));
-> +
-> +		if (offset_fsb >= eof_fsb)
-> +			goto convert_delay;
-> +		if (end_fsb > eof_fsb) {
-> +			end_fsb = eof_fsb;
-> +			xfs_trim_extent(&imap, offset_fsb,
-> +					end_fsb - offset_fsb);
-> +		}
+> +	ret = clk_enable(drvdata->pclk);
+> +	if (ret) {
+> +		dev_err(drvdata->dev, "failed to enable clock\n");
+> +		return ret;
 > +	}
 > +
->  	/*
->  	 * Search the COW fork extent list even if we did not find a data fork
->  	 * extent.  This serves two purposes: first this implements the
-> @@ -1167,6 +1185,17 @@ xfs_buffered_write_iomap_begin(
->  	xfs_iunlock(ip, lockmode);
->  	return xfs_bmbt_to_iomap(ip, iomap, &imap, flags, 0, seq);
+>  	raw_spin_lock_irqsave(&bank->slock, flags);
 >  
-> +convert_delay:
-> +	xfs_iunlock(ip, lockmode);
-> +	truncate_pagecache(inode, offset);
-> +	error = xfs_bmapi_convert_delalloc(ip, XFS_DATA_FORK, offset,
-> +					   iomap, NULL);
-> +	if (error)
-> +		return error;
+>  	mask = (1 << width) - 1;
+> @@ -466,6 +481,8 @@ static int samsung_pinconf_rw(struct pinctrl_dev *pctldev, unsigned int pin,
+>  
+>  	raw_spin_unlock_irqrestore(&bank->slock, flags);
+>  
+> +	clk_disable(drvdata->pclk);
 > +
-> +	trace_xfs_iomap_alloc(ip, offset, count, XFS_DATA_FORK, &imap);
-> +	return 0;
+>  	return 0;
+>  }
+>  
+> @@ -539,16 +556,24 @@ static void samsung_gpio_set_value(struct gpio_chip *gc,
+>  {
+>  	struct samsung_pin_bank *bank = gpiochip_get_data(gc);
+>  	const struct samsung_pin_bank_type *type = bank->type;
+> +	struct samsung_pinctrl_drv_data *drvdata = bank->drvdata;
+>  	void __iomem *reg;
+>  	u32 data;
+>  
+>  	reg = bank->pctl_base + bank->pctl_offset;
+>  
+> +	if (clk_enable(drvdata->pclk)) {
+
+This is now called with bank->slock held, so you reversed the locking
+thus creating possibility of ABBA deadlock.
+
+Need to be moved to callers of samsung_gpio_set_value().
+
+> +		dev_err(drvdata->dev, "failed to enable clock\n");
+> +		return;
+> +	}
 > +
->  found_cow:
->  	seq = xfs_iomap_inode_sequence(ip, 0);
->  	if (imap.br_startoff <= offset_fsb) {
-> -- 
-> 2.39.2
-> 
-> 
+>  	data = readl(reg + type->reg_offset[PINCFG_TYPE_DAT]);
+>  	data &= ~(1 << offset);
+>  	if (value)
+>  		data |= 1 << offset;
+>  	writel(data, reg + type->reg_offset[PINCFG_TYPE_DAT]);
+> +
+> +	clk_disable(drvdata->pclk);
+>  }
+>  
+>  /* gpiolib gpio_set callback function */
+> @@ -569,12 +594,23 @@ static int samsung_gpio_get(struct gpio_chip *gc, unsigned offset)
+>  	u32 data;
+>  	struct samsung_pin_bank *bank = gpiochip_get_data(gc);
+>  	const struct samsung_pin_bank_type *type = bank->type;
+> +	struct samsung_pinctrl_drv_data *drvdata = bank->drvdata;
+> +	int ret;
+>  
+>  	reg = bank->pctl_base + bank->pctl_offset;
+>  
+> +	ret = clk_enable(drvdata->pclk);
+> +	if (ret) {
+> +		dev_err(drvdata->dev, "failed to enable clock\n");
+> +		return ret;
+> +	}
+> +
+>  	data = readl(reg + type->reg_offset[PINCFG_TYPE_DAT]);
+>  	data >>= offset;
+>  	data &= 1;
+> +
+> +	clk_disable(drvdata->pclk);
+> +
+>  	return data;
+>  }
+>  
+> @@ -591,9 +627,12 @@ static int samsung_gpio_set_direction(struct gpio_chip *gc,
+>  	struct samsung_pin_bank *bank;
+>  	void __iomem *reg;
+>  	u32 data, mask, shift;
+> +	struct samsung_pinctrl_drv_data *drvdata;
+> +	int ret;
+>  
+>  	bank = gpiochip_get_data(gc);
+>  	type = bank->type;
+> +	drvdata = bank->drvdata;
+>  
+>  	reg = bank->pctl_base + bank->pctl_offset
+>  			+ type->reg_offset[PINCFG_TYPE_FUNC];
+> @@ -606,12 +645,20 @@ static int samsung_gpio_set_direction(struct gpio_chip *gc,
+>  		reg += 4;
+>  	}
+>  
+> +	ret = clk_enable(drvdata->pclk);
+
+Same problem.
+
+> +	if (ret) {
+> +		dev_err(drvdata->dev, "failed to enable clock\n");
+> +		return ret;
+> +	}
+> +
+>  	data = readl(reg);
+>  	data &= ~(mask << shift);
+>  	if (!input)
+>  		data |= PIN_CON_FUNC_OUTPUT << shift;
+>  	writel(data, reg);
+>  
+> +	clk_disable(drvdata->pclk);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -1164,6 +1211,12 @@ static int samsung_pinctrl_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> +	drvdata->pclk = devm_clk_get_optional_prepared(dev, "pclk");
+> +	if (IS_ERR(drvdata->pclk)) {
+> +		ret = PTR_ERR(drvdata->pclk);
+> +		goto err_put_banks;
+> +	}
+> +
+>  	ret = samsung_pinctrl_register(pdev, drvdata);
+>  	if (ret)
+>  		goto err_put_banks;
+> @@ -1202,6 +1255,13 @@ static int __maybe_unused samsung_pinctrl_suspend(struct device *dev)
+>  	struct samsung_pinctrl_drv_data *drvdata = dev_get_drvdata(dev);
+>  	int i;
+>  
+> +	i = clk_enable(drvdata->pclk);
+> +	if (i) {
+> +		dev_err(drvdata->dev,
+> +			"failed to enable clock for saving state\n");
+> +		return i;
+> +	}
+> +
+>  	for (i = 0; i < drvdata->nr_banks; i++) {
+>  		struct samsung_pin_bank *bank = &drvdata->pin_banks[i];
+>  		const void __iomem *reg = bank->pctl_base + bank->pctl_offset;
+> @@ -1231,6 +1291,8 @@ static int __maybe_unused samsung_pinctrl_suspend(struct device *dev)
+>  		}
+>  	}
+>  
+> +	clk_disable(drvdata->pclk);
+> +
+>  	if (drvdata->suspend)
+>  		drvdata->suspend(drvdata);
+>  	if (drvdata->retention_ctrl && drvdata->retention_ctrl->enable)
+> @@ -1252,6 +1314,16 @@ static int __maybe_unused samsung_pinctrl_resume(struct device *dev)
+>  	struct samsung_pinctrl_drv_data *drvdata = dev_get_drvdata(dev);
+>  	int i;
+>  
+> +	/* enable clock before the callback, as we don't want to have to deal
+
+That's not netdev, so:
+
+/*
+ *
+
+> +	 * with callback cleanup on clock failures.
+> +	 */
+> +	i = clk_enable(drvdata->pclk);
+
+"i" is iterator, not return value. You want ret.
+
+	
+
+> +	if (i) {
+> +		dev_err(drvdata->dev,
+> +			"failed to enable clock for restoring state\n");
+> +		return i;
+> +	}
+> +
+>  	if (drvdata->resume)
+>  		drvdata->resume(drvdata);
+>  
+> @@ -1286,6 +1358,8 @@ static int __maybe_unused samsung_pinctrl_resume(struct device *dev)
+>  				writel(bank->pm_save[type], reg + offs[type]);
+>  	}
+>  
+> +	clk_disable(drvdata->pclk);
+> +
+>  	if (drvdata->retention_ctrl && drvdata->retention_ctrl->disable)
+>  		drvdata->retention_ctrl->disable(drvdata);
+>  
+
+
+Best regards,
+Krzysztof
+
 
