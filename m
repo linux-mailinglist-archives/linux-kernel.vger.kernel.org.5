@@ -1,344 +1,303 @@
-Return-Path: <linux-kernel+bounces-158801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A4D68B2512
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:27:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 032FD8B250F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:26:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4C892832D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:27:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 820622899D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:26:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6B8214AD36;
-	Thu, 25 Apr 2024 15:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDA7014BFAB;
+	Thu, 25 Apr 2024 15:26:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="NXXWc0fc"
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Kh7wNSRW"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B18F149E0A;
-	Thu, 25 Apr 2024 15:26:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F4F014B083
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:26:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714058803; cv=none; b=iBptSMK0LIzxTb6d6jK9QljVXkZ3nihc/VsYc4pRlX9LFNSpURV2jfJ/JeImQdacuepLcelABKx7/6FnmUJG37/1sYHu9WViGjddrrHIBpPjiZREirH9ud2yj7OyYJ1nrLCivqlXbD0VIt/XDOuOGH23o8inr7WuuUt1E3dZoUw=
+	t=1714058783; cv=none; b=NGMaY7w7DmFjRVA19PP9CzD9h2c8IsJeKS9Zv0rHSV9D9prlp37oLs8kejHTiYFUPXuzckeMNL+Qr/+5hOfTCvAP1rf8MHVp8egJPJJhaeXXul7Wa3MX5JhE9nJW2uo5gGlIFXR58s2cz/w7glArCl3tvmt4YBQoKEVM5IsbuwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714058803; c=relaxed/simple;
-	bh=KW0Nkti79XbKCumQk4b9EtfcbKYjbSCL9yD0xbL3PJY=;
-	h=Date:From:To:Cc:Message-Id:In-Reply-To:References:Mime-Version:
-	 Content-Type:Subject; b=uWe++ZndIPv+4mTgMbykppQvJQAiuEDMHJfNqKnhdgR8oNseYh/DW35fU8m1cGkNXFuiy+BnUDJQEpTSUG8NM1r/1sKYXy9Tvqr+AJEpNoioIcongtJjlqVUzPuZZIbJUyQpQ2Q6tmPNO/5EGhrNAD554Y0NCfgxdAc8gSMvvKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=NXXWc0fc; arc=none smtp.client-ip=162.243.120.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=2pZRkuVDIwUEfDKVZREz6rLgGL1jQIqIXjSG7zaftQk=; b=NXXWc0fcXcJd6xK3EPs4GcCmUU
-	RZmbmgmWM5Uh0hz2/SdKzgjCLXDm1YXHkmWg84PFX+M0kM3MKbGfBG70vOMXudAyVZ6OSvgk+Fnv8
-	9m6vLLH+bgDsDwsfkR5D6zSkcn6U/aLCE9sm0/hdXzY1fYGdN8ZfN/03c6g0NYikpssw=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:36886 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1s00z5-0003UQ-NR; Thu, 25 Apr 2024 11:26:07 -0400
-Date: Thu, 25 Apr 2024 11:26:02 -0400
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Konstantin Pugin <rilian.la.te@ya.ru>
-Cc: krzk@kernel.org, conor@kernel.org, lkp@intel.com, vz@mleia.com,
- robh@kernel.org, jcmvbkbc@gmail.com, nicolas.ferre@microchip.com,
- manikanta.guntupalli@amd.com, corbet@lwn.net, ychuang3@nuvoton.com,
- u.kleine-koenig@pengutronix.de, Maarten.Brock@sttls.nl, Konstantin Pugin
- <ria.freelander@gmail.com>, Andy Shevchenko <andy@kernel.org>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby
- <jirislaby@kernel.org>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Herve Codina
- <herve.codina@bootlin.com>, Andrew Jones <ajones@ventanamicro.com>, Hugo
- Villeneuve <hvilleneuve@dimonoff.com>, Lech Perczak
- <lech.perczak@camlingroup.com>, Ilpo =?ISO-8859-1?Q?J=E4rvinen?=
- <ilpo.jarvinen@linux.intel.com>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org
-Message-Id: <20240425112602.57610aad643525a0e9973ff6@hugovil.com>
-In-Reply-To: <20240424191908.32565-4-rilian.la.te@ya.ru>
-References: <20240424191908.32565-1-rilian.la.te@ya.ru>
-	<20240424191908.32565-4-rilian.la.te@ya.ru>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714058783; c=relaxed/simple;
+	bh=cHWyebxt5OQl4mT21gySDT3/gmUfFdKMxDeguLjl4yI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KnfmG8SGwxqQs1UMelN5ATI4vlS4snaUicOLqbVuserCG0+WY4kfc0pojzBd9ZZdwSpasn7nSPmAkq1hQ7kcPrfCoDS8rORkiBEezLxj2j721VK7AsMjLa02j6dD3eyYSXxa854hk+DxbVLhePonV/aIYjILgGtWyxKb4yXhsUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Kh7wNSRW; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-571e13cd856so17782a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:26:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714058778; x=1714663578; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qyLMtfVD3hHfrVSsuLjWOoTcQ0JXVPh5F7fHPduNv2k=;
+        b=Kh7wNSRWIia7fITMOS1ZFH82nrbEVH8W//pVJJf1L5lR8ZShDvqphBI1rXV8rz5fwM
+         5+Cc97ENzQgBPEn3mmHCkY4tgMGan28x1aVMhpdMhOkGp1AUt5mlI5HyFK7r80A8Rtr9
+         8MNelVazeMcmYcEgpsMVlin+zrVU5YwvQXXD0s4NkJwTFXP1aqKrLHZ6CfOpqcLsAa6u
+         5MpkzT75pxIQBA1U5ymHhcgQbBv8jxLHEEE5Ao3ak46fvDTkDYvnGp5YwhQ4KR1KMy5R
+         wBU/cPDRsxt4xiLcqJcc746Ie4BClxm6Kam6vwwax8SRBxWiQ4Zxv+x2YkFqymE+Jywi
+         TvOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714058778; x=1714663578;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qyLMtfVD3hHfrVSsuLjWOoTcQ0JXVPh5F7fHPduNv2k=;
+        b=fMJE536Lu4a6ok3VoTXImv843jnLQmD3HVTBbai6V3CJ1GwGszesDtirLwFpGAsF8N
+         IWmw4XgB3uRf6BPX7M0qUBzu400Z1SDgGJ+8aQ/zMiOHlEx8/W7+5wkcrjj46+DT+73i
+         qSFZurCPrpwCs2hUTkZdcsiFR84A37gdcdnwmXCyjJfPg7FUAeGn4BdVsxhiSiUKPBiZ
+         25VgUqKeo/9NxXzgZADJxh4lKG5BywxnkTE+PsoCIT4NV8Hqfr+3K5VplKJvXaGUAuBB
+         GIz7RAhEs8/53HqleWgPItuDiJY9JqqZlucYzi6s/PUEMrYR83TnLivkB7CO+FAmH/to
+         e1Wg==
+X-Forwarded-Encrypted: i=1; AJvYcCWzYLfI82M5ZQNZieym473gHR5YxsFoIGBX374v2RjuSzLkE+auQkE8JQwGhOJadtKYOJ5s3LR1FdH8xtjGNde5bzs9dei2PH6KmDpe
+X-Gm-Message-State: AOJu0YxjCOOOzlgxhcWINg8KgUp3PfkcQ2WNMJpyoaYYF6qoj9G/1YI2
+	QpoqdfdlCQw2L3sqS92+899bDxWAHDLyujv0loN308ITPkVwuFfWESPzSfpXzg7aVUFMQUU8fxm
+	GD3WOiUnJ5G1Ok0ZzxyksdrEyqgJEI06pvUUF
+X-Google-Smtp-Source: AGHT+IFiTUdvpYl91YDCAcS2bV0dz1FYCL5wneUM7lpb4Q/trYbnMteWBIQObXG8f2Mi7GjKqJNSG9gZrbhzkgSThRY=
+X-Received: by 2002:a05:6402:40cb:b0:572:3b8c:b936 with SMTP id
+ z11-20020a05640240cb00b005723b8cb936mr236550edb.2.1714058778010; Thu, 25 Apr
+ 2024 08:26:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -2.7 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH v8 3/3] serial: sc16is7xx: add support for EXAR
- XR20M1172 UART
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+MIME-Version: 1.0
+References: <20240425150432.44142-1-nbd@nbd.name> <20240425150432.44142-7-nbd@nbd.name>
+In-Reply-To: <20240425150432.44142-7-nbd@nbd.name>
+From: Eric Dumazet <edumazet@google.com>
+Date: Thu, 25 Apr 2024 17:26:04 +0200
+Message-ID: <CANn89iLqpADT6T_JtecgMJKKcTEBORVdVqTYYBRtwWWnk6=4ng@mail.gmail.com>
+Subject: Re: [PATCH v2 net-next v2 5/5] net: add heuristic for enabling TCP
+ fraglist GRO
+To: Felix Fietkau <nbd@nbd.name>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 24 Apr 2024 22:18:54 +0300
-Konstantin Pugin <rilian.la.te@ya.ru> wrote:
-
-Hi Konstantin,
-
-> From: Konstantin Pugin <ria.freelander@gmail.com>
-> 
-> XR20M1172 register set is mostly compatible with SC16IS762, but it has
-> a support for additional division rates of UART with special DLD register.
-
--> "... but it supports additional division rates with special..."
-
-> So, add handling this register by appropriate devicetree bindings.
-
-I am not sure about this, support for DLD is added in the driver,
-not in device tree. You can probably drop that sentence?
-
-> 
-> Reviewed-by: Andy Shevchenko <andy@kernel.org>
-> Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
+On Thu, Apr 25, 2024 at 5:04=E2=80=AFPM Felix Fietkau <nbd@nbd.name> wrote:
+>
+> When forwarding TCP after GRO, software segmentation is very expensive,
+> especially when the checksum needs to be recalculated.
+> One case where that's currently unavoidable is when routing packets over
+> PPPoE. Performance improves significantly when using fraglist GRO
+> implemented in the same way as for UDP.
+>
+> When NETIF_F_GRO_FRAGLIST is enabled, perform a lookup for an established
+> socket in the same netns as the receiving device. While this may not
+> cover all relevant use cases in multi-netns configurations, it should be
+> good enough for most configurations that need this.
+>
+> Here's a measurement of running 2 TCP streams through a MediaTek MT7622
+> device (2-core Cortex-A53), which runs NAT with flow offload enabled from
+> one ethernet port to PPPoE on another ethernet port + cake qdisc set to
+> 1Gbps.
+>
+> rx-gro-list off: 630 Mbit/s, CPU 35% idle
+> rx-gro-list on:  770 Mbit/s, CPU 40% idle
+>
+> Signe-off-by: Felix Fietkau <nbd@nbd.name>
 > ---
->  drivers/tty/serial/Kconfig         |  3 +-
->  drivers/tty/serial/sc16is7xx.c     | 61 ++++++++++++++++++++++++++++--
->  drivers/tty/serial/sc16is7xx.h     |  1 +
->  drivers/tty/serial/sc16is7xx_i2c.c |  1 +
->  drivers/tty/serial/sc16is7xx_spi.c |  1 +
->  5 files changed, 62 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-> index 4fdd7857ef4d..9d0438cfe147 100644
-> --- a/drivers/tty/serial/Kconfig
-> +++ b/drivers/tty/serial/Kconfig
-> @@ -1029,7 +1029,7 @@ config SERIAL_SC16IS7XX_CORE
->  	select SERIAL_SC16IS7XX_SPI if SPI_MASTER
->  	select SERIAL_SC16IS7XX_I2C if I2C
->  	help
-> -	  Core driver for NXP SC16IS7xx UARTs.
-> +	  Core driver for NXP SC16IS7xx and compatible UARTs.
->  	  Supported ICs are:
->  
->  	    SC16IS740
-> @@ -1038,6 +1038,7 @@ config SERIAL_SC16IS7XX_CORE
->  	    SC16IS752
->  	    SC16IS760
->  	    SC16IS762
-> +	    XR20M1172 (Exar)
->  
->  	  The driver supports both I2C and SPI interfaces.
->  
-> diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-> index dfcc804f558f..09c9e52d7ec2 100644
-> --- a/drivers/tty/serial/sc16is7xx.c
-> +++ b/drivers/tty/serial/sc16is7xx.c
-> @@ -10,6 +10,7 @@
->  #undef DEFAULT_SYMBOL_NAMESPACE
->  #define DEFAULT_SYMBOL_NAMESPACE SERIAL_NXP_SC16IS7XX
->  
-> +#include <linux/bitfield.h>
->  #include <linux/clk.h>
->  #include <linux/delay.h>
->  #include <linux/device.h>
-> @@ -68,6 +69,7 @@
->  /* Special Register set: Only if ((LCR[7] == 1) && (LCR != 0xBF)) */
->  #define SC16IS7XX_DLL_REG		(0x00) /* Divisor Latch Low */
->  #define SC16IS7XX_DLH_REG		(0x01) /* Divisor Latch High */
-> +#define XR20M117X_DLD_REG		(0x02) /* Divisor Fractional Register */
-
-Remove "Register".
-
-Also, DLD register needs EFR[4] = 1 to be accessed, so maybe add this
-to the comment:
-
-/* Divisor Fractional (requires EFR[4] = 1) */
-
-
->  
->  /* Enhanced Register set: Only if (LCR == 0xBF) */
->  #define SC16IS7XX_EFR_REG		(0x02) /* Enhanced Features */
-> @@ -221,6 +223,20 @@
->  #define SC16IS7XX_TCR_RX_HALT(words)	((((words) / 4) & 0x0f) << 0)
->  #define SC16IS7XX_TCR_RX_RESUME(words)	((((words) / 4) & 0x0f) << 4)
->  
-> +/*
-> + * Divisor Fractional Register bits (EXAR extension).
-> + * EXAR hardware is mostly compatible with SC16IS7XX, but supports additional feature:
-> + * 4x and 8x divisor, instead of default 16x. It has a special register to program it.
-> + * Bits 0 to 3 is fractional divisor, it used to set value of last 16 bits of
-> + * uartclk * (16 / divisor) / baud, in case of default it will be uartclk / baud.
-> + * Bits 4 and 5 used as switches, and should not be set to 1 simultaneously.
-> + */
-> +
-> +#define XR20M117X_DLD_16X			0
-> +#define XR20M117X_DLD_DIV_MASK			GENMASK(3, 0)
-> +#define XR20M117X_DLD_8X			BIT(4)
-> +#define XR20M117X_DLD_4X			BIT(5)
-> +
->  /*
->   * TLR register bits
->   * If TLR[3:0] or TLR[7:4] are logical 0, the selectable trigger levels via the
-> @@ -523,6 +539,13 @@ const struct sc16is7xx_devtype sc16is762_devtype = {
->  };
->  EXPORT_SYMBOL_GPL(sc16is762_devtype);
->  
-> +const struct sc16is7xx_devtype xr20m1172_devtype = {
-> +	.name		= "XR20M1172",
-> +	.nr_gpio	= 8,
-> +	.nr_uart	= 2,
-> +};
-> +EXPORT_SYMBOL_GPL(xr20m1172_devtype);
-> +
->  static bool sc16is7xx_regmap_volatile(struct device *dev, unsigned int reg)
->  {
->  	switch (reg) {
-> @@ -555,18 +578,43 @@ static bool sc16is7xx_regmap_noinc(struct device *dev, unsigned int reg)
->  	return reg == SC16IS7XX_RHR_REG;
+>  net/ipv4/tcp_offload.c   | 48 +++++++++++++++++++++++++++++++++++++
+>  net/ipv6/tcpv6_offload.c | 51 ++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 99 insertions(+)
+>
+> diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
+> index 520fd425ab19..3bb96a110402 100644
+> --- a/net/ipv4/tcp_offload.c
+> +++ b/net/ipv4/tcp_offload.c
+> @@ -405,6 +405,52 @@ void tcp_gro_complete(struct sk_buff *skb)
 >  }
->  
-> +static bool sc16is7xx_has_dld(struct device *dev)
+>  EXPORT_SYMBOL(tcp_gro_complete);
+>
+> +static void tcp4_check_fraglist_gro(struct list_head *head, struct sk_bu=
+ff *skb)
 > +{
-> +	struct sc16is7xx_port *s = dev_get_drvdata(dev);
+> +       const struct iphdr *iph =3D skb_gro_network_header(skb);
+
+I do not think loading iph before all skb_gro_header() and
+skb_gro_header_slow() calls is wise.
+
+pskb_may_pull() can re-allocate skb->head
+
+> +       struct net *net =3D dev_net(skb->dev);
+> +       unsigned int off, hlen, thlen;
+> +       struct sk_buff *p;
+> +       struct tcphdr *th;
+> +       struct sock *sk;
+> +       int iif, sdif;
 > +
-> +	if (s->devtype == &xr20m1172_devtype)
-> +		return true;
-> +	return false;
+> +       if (!(skb->dev->features & NETIF_F_GRO_FRAGLIST))
+> +               return;
+> +
+> +       off =3D skb_gro_offset(skb);
+> +       hlen =3D off + sizeof(*th);
+> +       th =3D skb_gro_header(skb, hlen, off);
+> +       if (unlikely(!th))
+> +               return;
+> +
+> +       thlen =3D th->doff * 4;
+> +       if (thlen < sizeof(*th))
+> +               return;
+> +
+> +       hlen =3D off + thlen;
+> +       if (!skb_gro_may_pull(skb, hlen)) {
+> +               th =3D skb_gro_header_slow(skb, hlen, off);
+> +               if (unlikely(!th))
+> +                       return;
+> +       }
+> +
+> +       p =3D tcp_gro_lookup(head, th);
+> +       if (p) {
+> +               NAPI_GRO_CB(skb)->is_flist =3D NAPI_GRO_CB(p)->is_flist;
+> +               return;
+> +       }
+> +
+> +       inet_get_iif_sdif(skb, &iif, &sdif);
+> +       sk =3D __inet_lookup_established(net, net->ipv4.tcp_death_row.has=
+hinfo,
+> +                                      iph->saddr, th->source,
+> +                                      iph->daddr, ntohs(th->dest),
+> +                                      iif, sdif);
+> +       NAPI_GRO_CB(skb)->is_flist =3D !sk;
+> +       if (sk)
+> +               sock_put(sk);
 > +}
 > +
->  static int sc16is7xx_set_baud(struct uart_port *port, int baud)
+>  INDIRECT_CALLABLE_SCOPE
+>  struct sk_buff *tcp4_gro_receive(struct list_head *head, struct sk_buff =
+*skb)
 >  {
->  	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
-> -	u8 lcr;
-> +	unsigned long clk = port->uartclk, div, div16;
-> +	bool has_dld = sc16is7xx_has_dld(port->dev);
-> +	u8 dld_mode = XR20M117X_DLD_16X;
->  	u8 prescaler = 0;
-> -	unsigned long clk = port->uartclk, div = clk / 16 / baud;
-> +	u8 divisor = 16;
-> +	u8 lcr;
+> @@ -416,6 +462,8 @@ struct sk_buff *tcp4_gro_receive(struct list_head *he=
+ad, struct sk_buff *skb)
+>                 return NULL;
+>         }
+>
+
+I would probably pull the whole TCP header here, before calling
+tcp4_check_fraglist_gro(head, skb)
+and no longer do this twice from tcp4_check_fraglist_gro() and tcp_gro_rece=
+ive()
+
+Perhaps define a new inline helper, that will be called from
+tcp4_gro_receive() and tcp6_gro_receive(),
+and not anymore from  tcp_gro_receive()
+
+static inline struct tcphdr *tcp_gro_pull_header(...)
+{
+     ....
+       off =3D skb_gro_offset(skb);
+       hlen =3D off + sizeof(*th);
+       th =3D skb_gro_header(skb, hlen, off);
+       if (unlikely(!th))
+               return NULL;
+
+       thlen =3D th->doff * 4;
+       if (thlen < sizeof(*th))
+               return NULL;
+
+       hlen =3D off + thlen;
+       if (!skb_gro_may_pull(skb, hlen))
+               th =3D skb_gro_header_slow(skb, hlen, off);
+
+      return th;
+}
+
+
+> +       tcp4_check_fraglist_gro(head, skb);
 > +
-> +	if (has_dld && DIV_ROUND_CLOSEST(clk, baud) < 16)
-> +		divisor = rounddown_pow_of_two(DIV_ROUND_CLOSEST(clk, baud));
-> +
-> +	div16 = (clk * 16) / divisor / baud;
-> +	div = div16 / 16;
->  
->  	if (div >= BIT(16)) {
->  		prescaler = SC16IS7XX_MCR_CLKSEL_BIT;
->  		div /= 4;
->  	}
->  
-> +	/* Count additional divisor for EXAR devices */
-> +	if (divisor == 8)
-> +		dld_mode = XR20M117X_DLD_8X;
-> +	if (divisor == 4)
-> +		dld_mode = XR20M117X_DLD_4X;
-> +	dld_mode |= FIELD_PREP(XR20M117X_DLD_DIV_MASK, div16);
-> +
->  	/* Enable enhanced features */
->  	sc16is7xx_efr_lock(port);
->  	sc16is7xx_port_update(port, SC16IS7XX_EFR_REG,
-> @@ -587,12 +635,14 @@ static int sc16is7xx_set_baud(struct uart_port *port, int baud)
->  	regcache_cache_bypass(one->regmap, true);
->  	sc16is7xx_port_write(port, SC16IS7XX_DLH_REG, div / 256);
->  	sc16is7xx_port_write(port, SC16IS7XX_DLL_REG, div % 256);
-> +	if (has_dld)
-> +		sc16is7xx_port_write(port, XR20M117X_DLD_REG, dld_mode);
->  	regcache_cache_bypass(one->regmap, false);
->  
->  	/* Restore LCR and access to general register set */
->  	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG, lcr);
->  
-> -	return DIV_ROUND_CLOSEST(clk / 16, div);
-> +	return DIV_ROUND_CLOSEST(clk / divisor, div);
+>         return tcp_gro_receive(head, skb);
 >  }
->  
->  static void sc16is7xx_handle_rx(struct uart_port *port, unsigned int rxlen,
-> @@ -1002,6 +1052,8 @@ static void sc16is7xx_set_termios(struct uart_port *port,
->  				  const struct ktermios *old)
+>
+> diff --git a/net/ipv6/tcpv6_offload.c b/net/ipv6/tcpv6_offload.c
+> index c97d55cf036f..7948420dcad0 100644
+> --- a/net/ipv6/tcpv6_offload.c
+> +++ b/net/ipv6/tcpv6_offload.c
+> @@ -7,12 +7,61 @@
+>   */
+>  #include <linux/indirect_call_wrapper.h>
+>  #include <linux/skbuff.h>
+> +#include <net/inet6_hashtables.h>
+>  #include <net/gro.h>
+>  #include <net/protocol.h>
+>  #include <net/tcp.h>
+>  #include <net/ip6_checksum.h>
+>  #include "ip6_offload.h"
+>
+> +static void tcp6_check_fraglist_gro(struct list_head *head, struct sk_bu=
+ff *skb)
+> +{
+> +#if IS_ENABLED(CONFIG_IPV6)
+> +       const struct ipv6hdr *hdr =3D skb_gro_network_header(skb);
+> +       struct net *net =3D dev_net(skb->dev);
+> +       unsigned int off, hlen, thlen;
+> +       struct sk_buff *p;
+> +       struct tcphdr *th;
+> +       struct sock *sk;
+> +       int iif, sdif;
+> +
+> +       if (!(skb->dev->features & NETIF_F_GRO_FRAGLIST))
+> +               return;
+> +
+> +       off =3D skb_gro_offset(skb);
+> +       hlen =3D off + sizeof(*th);
+> +       th =3D skb_gro_header(skb, hlen, off);
+> +       if (unlikely(!th))
+> +               return;
+> +
+> +       thlen =3D th->doff * 4;
+> +       if (thlen < sizeof(*th))
+> +               return;
+> +
+> +       hlen =3D off + thlen;
+> +       if (!skb_gro_may_pull(skb, hlen)) {
+> +               th =3D skb_gro_header_slow(skb, hlen, off);
+> +               if (unlikely(!th))
+> +                       return;
+> +       }
+> +
+> +       p =3D tcp_gro_lookup(head, th);
+> +       if (p) {
+> +               NAPI_GRO_CB(skb)->is_flist =3D NAPI_GRO_CB(p)->is_flist;
+> +               return;
+> +       }
+> +
+> +       inet6_get_iif_sdif(skb, &iif, &sdif);
+> +       sk =3D __inet6_lookup_established(net, net->ipv4.tcp_death_row.ha=
+shinfo,
+> +                                       &hdr->saddr, th->source,
+> +                                       &hdr->daddr, ntohs(th->dest),
+> +                                       iif, sdif);
+> +       NAPI_GRO_CB(skb)->is_flist =3D !sk;
+> +       if (sk)
+> +               sock_put(sk);
+> +#endif /* IS_ENABLED(CONFIG_IPV6) */
+> +}
+> +
+>  INDIRECT_CALLABLE_SCOPE
+>  struct sk_buff *tcp6_gro_receive(struct list_head *head, struct sk_buff =
+*skb)
 >  {
->  	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
-> +	bool has_dld = sc16is7xx_has_dld(port->dev);
-> +	u8 divisor = has_dld ? 4 : 16
-
-This still breaks compilation. I noted in V7 of the patch to fix this,
-but obviously you didn't do it, altough you mention that you would do
-it in your reply to me, and you also mention doing it in your cover
-letter...
-
-This means you didn't test your patchset V8 before sending it. You
-really need to properly test _before_ sending a new patchset.
-
-
-Hugo.
-
-
-
-
->  	unsigned int lcr, flow = 0;
->  	int baud;
->  	unsigned long flags;
-> @@ -1084,7 +1136,7 @@ static void sc16is7xx_set_termios(struct uart_port *port,
->  	/* Get baud rate generator configuration */
->  	baud = uart_get_baud_rate(port, termios, old,
->  				  port->uartclk / 16 / 4 / 0xffff,
-> -				  port->uartclk / 16);
-> +				  port->uartclk / divisor);
->  
->  	/* Setup baudrate generator */
->  	baud = sc16is7xx_set_baud(port, baud);
-> @@ -1684,6 +1736,7 @@ void sc16is7xx_remove(struct device *dev)
->  EXPORT_SYMBOL_GPL(sc16is7xx_remove);
->  
->  const struct of_device_id __maybe_unused sc16is7xx_dt_ids[] = {
-> +	{ .compatible = "exar,xr20m1172",	.data = &xr20m1172_devtype, },
->  	{ .compatible = "nxp,sc16is740",	.data = &sc16is74x_devtype, },
->  	{ .compatible = "nxp,sc16is741",	.data = &sc16is74x_devtype, },
->  	{ .compatible = "nxp,sc16is750",	.data = &sc16is750_devtype, },
-> diff --git a/drivers/tty/serial/sc16is7xx.h b/drivers/tty/serial/sc16is7xx.h
-> index afb784eaee45..eb2e3bc86f15 100644
-> --- a/drivers/tty/serial/sc16is7xx.h
-> +++ b/drivers/tty/serial/sc16is7xx.h
-> @@ -28,6 +28,7 @@ extern const struct sc16is7xx_devtype sc16is750_devtype;
->  extern const struct sc16is7xx_devtype sc16is752_devtype;
->  extern const struct sc16is7xx_devtype sc16is760_devtype;
->  extern const struct sc16is7xx_devtype sc16is762_devtype;
-> +extern const struct sc16is7xx_devtype xr20m1172_devtype;
->  
->  const char *sc16is7xx_regmap_name(u8 port_id);
->  
-> diff --git a/drivers/tty/serial/sc16is7xx_i2c.c b/drivers/tty/serial/sc16is7xx_i2c.c
-> index 3ed47c306d85..839de902821b 100644
-> --- a/drivers/tty/serial/sc16is7xx_i2c.c
-> +++ b/drivers/tty/serial/sc16is7xx_i2c.c
-> @@ -46,6 +46,7 @@ static const struct i2c_device_id sc16is7xx_i2c_id_table[] = {
->  	{ "sc16is752",	(kernel_ulong_t)&sc16is752_devtype, },
->  	{ "sc16is760",	(kernel_ulong_t)&sc16is760_devtype, },
->  	{ "sc16is762",	(kernel_ulong_t)&sc16is762_devtype, },
-> +	{ "xr20m1172",	(kernel_ulong_t)&xr20m1172_devtype, },
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(i2c, sc16is7xx_i2c_id_table);
-> diff --git a/drivers/tty/serial/sc16is7xx_spi.c b/drivers/tty/serial/sc16is7xx_spi.c
-> index 73df36f8a7fd..2b278282dbd0 100644
-> --- a/drivers/tty/serial/sc16is7xx_spi.c
-> +++ b/drivers/tty/serial/sc16is7xx_spi.c
-> @@ -69,6 +69,7 @@ static const struct spi_device_id sc16is7xx_spi_id_table[] = {
->  	{ "sc16is752",	(kernel_ulong_t)&sc16is752_devtype, },
->  	{ "sc16is760",	(kernel_ulong_t)&sc16is760_devtype, },
->  	{ "sc16is762",	(kernel_ulong_t)&sc16is762_devtype, },
-> +	{ "xr20m1172",	(kernel_ulong_t)&xr20m1172_devtype, },
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(spi, sc16is7xx_spi_id_table);
-> -- 
+> @@ -24,6 +73,8 @@ struct sk_buff *tcp6_gro_receive(struct list_head *head=
+, struct sk_buff *skb)
+>                 return NULL;
+>         }
+>
+> +       tcp6_check_fraglist_gro(head, skb);
+> +
+>         return tcp_gro_receive(head, skb);
+>  }
+>
+> --
 > 2.44.0
-> 
-> 
-> 
-
-
--- 
-Hugo Villeneuve
+>
 
