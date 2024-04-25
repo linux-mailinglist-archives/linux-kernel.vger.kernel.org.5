@@ -1,139 +1,191 @@
-Return-Path: <linux-kernel+bounces-157982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCA8C8B19C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:56:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD5488B19C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:57:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2122A1F232C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 03:56:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89EC42856E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 03:57:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F7053838F;
-	Thu, 25 Apr 2024 03:56:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8326374FB;
+	Thu, 25 Apr 2024 03:56:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KlGh8pyd"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TZra8rhA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96892381BD;
-	Thu, 25 Apr 2024 03:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7D01AACB;
+	Thu, 25 Apr 2024 03:56:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714017359; cv=none; b=KJPCYvPWGwY54mm08dyQORtcQZYyq7IQmmaOJWd018RWu+NCAftNGMOz6Qp41oPdOpATxlkJAZ4Zhqd0ZXL+gyPf6p4KOXS4fROhWDr6QRvYqQMCYK1H6QF0JrOoqwa9NQu4x+FRmyKhR7Cow1ZuMHaObxOR/HJvVLxX4NOSbpU=
+	t=1714017410; cv=none; b=MlQwOIFGnaGbRUI8eaeVycDlM41X8HG2L+tSdK1S+I+YtcZ9JtTaj4ZrvkpFYtb0N1x7hhc8e5WCUUx+2m6/JI92ltJ6mjfqSUqI2+zI2+FBJXHDITHNZXH5Zchjr4DGkeXu/7J3Y8DUUn8P+3yUmhwiGOsiNJIL3Ogn4SMOKG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714017359; c=relaxed/simple;
-	bh=lpblbahiz8bPblDm/1AOlijrM4+br6b34TjTLViMY4M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hkwN3HBhBXN9bHSrfCMrPZNsT14fqXE9s4Q1VjJitzCF/zQvmnsk7LSs1bzZCXhsDmCOfa618GvQj2tCQ8XMzFr8TrzpVXiulTCxUNAxin70Z11ZF2ayaPi/bL1fYXGjY7JIYnGPxkLNHiCVWsxw8bAks27z3eChWuDzpocTDhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KlGh8pyd; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714017358; x=1745553358;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=lpblbahiz8bPblDm/1AOlijrM4+br6b34TjTLViMY4M=;
-  b=KlGh8pydX9JBqXNTkF/Qbxe0kJDFDttvFmo6/pG4Sr/Ch3awdEIXGvty
-   wXIwVpicwWYXr5FmxeAJh1P4gOuM78XKvMrqSRx1IYh3ZZ57zqZyKhF9u
-   O4yK36fZm/77Au/Ol9OqAFqRW+nHKfA4WdIMGLRGuXHBxphkiWdWiMSli
-   jU52zyHeXJkXJz7MdGIW2XRfPuBQPTN4rdZkabu/Z3Rk5F8piJYqKIuc1
-   uo0FplQzycs2pz1TVhiTKAv7Q6G2qsUyO1TjPV3AAkv224Nzxdih1gXEB
-   iboHKhguz3OBmGCuslB8VpzJm6JC5vs188BLcaEc0qzANVG1XP0o5234s
-   Q==;
-X-CSE-ConnectionGUID: 0RJn/3ZNSO+v3Orno+EFaw==
-X-CSE-MsgGUID: Kz2Bj+WzQS+4jBg0fVls0A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="10215933"
-X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
-   d="scan'208";a="10215933"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 20:55:57 -0700
-X-CSE-ConnectionGUID: Rq8PEeZJRJ2aKqOraVbXLg==
-X-CSE-MsgGUID: WyTUdei7SX6gOfkKNXVeUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
-   d="scan'208";a="48174436"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.124.245.127]) ([10.124.245.127])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 20:55:53 -0700
-Message-ID: <7834a811-4764-42aa-8198-55c4556d947b@linux.intel.com>
-Date: Thu, 25 Apr 2024 11:55:50 +0800
+	s=arc-20240116; t=1714017410; c=relaxed/simple;
+	bh=xbvsl7p/tNI3FsAriBnf2RoEGr8k3R2uelHe67Dhz9o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ST/8KRxCEF0rYilvPXBHzOCS3yLE1/Xc0wAfjgk4ykieGW8cdwpL/lSVPEtFEA3O1WAweGI5Xh97RmG1K0xEravThpS98xW5aM6MAxF+uxcITnliHq7ZvMXQ14vPjy3Pa8bmuqEoHNl0gpOdCGUT8oYq1X/bZDlWG4XyZ7u6oNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TZra8rhA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE01AC113CC;
+	Thu, 25 Apr 2024 03:56:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714017409;
+	bh=xbvsl7p/tNI3FsAriBnf2RoEGr8k3R2uelHe67Dhz9o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TZra8rhAGO4C6E2iOW3rX/yd1YzAQbNgxnEMcEnXuyHAXwubnXPoZrPbUSD33Fu9J
+	 SxCM6i6yNtp0Gon16iAdINv7SG0lYFFTTwqw3OcfVSawRcWpbBIcnenmRTQdYMY2zN
+	 3Vjp42P8iLlstsam2vyZCnqHhxfhrZxWKFNTc3vpcuGvd+RCxQYUh9ckvfJOuJaUY0
+	 B5Dh12B+u/WvV4RA4obddHQ761gBea8YlSd95x/iENRuz26pdL+DALTCqc2EkE/6Zm
+	 KPD6Qe07CbTXQKGn+phST2tqBUgSWVTPjUSRotLn4LtgX65Q7AZ1h5c5X5Q879qrtY
+	 L0I9gmI/S5f6g==
+Date: Wed, 24 Apr 2024 20:56:47 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Fan Wu <wufan@linux.microsoft.com>
+Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+	serge@hallyn.com, tytso@mit.edu, axboe@kernel.dk, agk@redhat.com,
+	snitzer@kernel.org, eparis@redhat.com, paul@paul-moore.com,
+	linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org, fsverity@lists.linux.dev,
+	linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+	audit@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Deven Bowers <deven.desai@linux.microsoft.com>
+Subject: Re: [PATCH v17 13/21] dm verity: consume root hash digest and expose
+ signature data via LSM hook
+Message-ID: <20240425035647.GC1401@sol.localdomain>
+References: <1712969764-31039-1-git-send-email-wufan@linux.microsoft.com>
+ <1712969764-31039-14-git-send-email-wufan@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-To: Sean Christopherson <seanjc@google.com>
-Cc: Mingwei Zhang <mizhang@google.com>, maobibo <maobibo@loongson.cn>,
- Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
- peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
- jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
- irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
- chao.gao@intel.com
-References: <ZiaX3H3YfrVh50cs@google.com>
- <d8f3497b-9f63-e30e-0c63-253908d40ac2@loongson.cn>
- <d980dd10-e4c4-4774-b107-77b320cec9f9@linux.intel.com>
- <b5e97aa1-7683-4eff-e1e3-58ac98a8d719@loongson.cn>
- <1ec7a21c-71d0-4f3e-9fa3-3de8ca0f7315@linux.intel.com>
- <5279eabc-ca46-ee1b-b80d-9a511ba90a36@loongson.cn>
- <CAL715WJK893gQd1m9CCAjz5OkxsRc5C4ZR7yJWJXbaGvCeZxQA@mail.gmail.com>
- <b3868bf5-4e16-3435-c807-f484821fccc6@loongson.cn>
- <CAL715W++maAt2Ujfvmu1pZKS4R5EmAPebTU_h9AB8aFbdLFrTQ@mail.gmail.com>
- <f843298c-db08-4fde-9887-13de18d960ac@linux.intel.com>
- <Zikeh2eGjwzDbytu@google.com>
-Content-Language: en-US
-From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <Zikeh2eGjwzDbytu@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1712969764-31039-14-git-send-email-wufan@linux.microsoft.com>
 
+On Fri, Apr 12, 2024 at 05:55:56PM -0700, Fan Wu wrote:
+> dm verity: consume root hash digest and expose signature data via LSM hook
 
-On 4/24/2024 11:00 PM, Sean Christopherson wrote:
-> On Wed, Apr 24, 2024, Dapeng Mi wrote:
->> On 4/24/2024 1:02 AM, Mingwei Zhang wrote:
->>>>> Maybe, (just maybe), it is possible to do PMU context switch at vcpu
->>>>> boundary normally, but doing it at VM Enter/Exit boundary when host is
->>>>> profiling KVM kernel module. So, dynamically adjusting PMU context
->>>>> switch location could be an option.
->>>> If there are two VMs with pmu enabled both, however host PMU is not
->>>> enabled. PMU context switch should be done in vcpu thread sched-out path.
->>>>
->>>> If host pmu is used also, we can choose whether PMU switch should be
->>>> done in vm exit path or vcpu thread sched-out path.
->>>>
->>> host PMU is always enabled, ie., Linux currently does not support KVM
->>> PMU running standalone. I guess what you mean is there are no active
->>> perf_events on the host side. Allowing a PMU context switch drifting
->>> from vm-enter/exit boundary to vcpu loop boundary by checking host
->>> side events might be a good option. We can keep the discussion, but I
->>> won't propose that in v2.
->> I suspect if it's really doable to do this deferring. This still makes host
->> lose the most of capability to profile KVM. Per my understanding, most of
->> KVM overhead happens in the vcpu loop, exactly speaking in VM-exit handling.
->> We have no idea when host want to create perf event to profile KVM, it could
->> be at any time.
-> No, the idea is that KVM will load host PMU state asap, but only when host PMU
-> state actually needs to be loaded, i.e. only when there are relevant host events.
->
-> If there are no host perf events, KVM keeps guest PMU state loaded for the entire
-> KVM_RUN loop, i.e. provides optimal behavior for the guest.  But if a host perf
-> events exists (or comes along), the KVM context switches PMU at VM-Enter/VM-Exit,
-> i.e. lets the host profile almost all of KVM, at the cost of a degraded experience
-> for the guest while host perf events are active.
+As in the fsverity patch, nothing is being "consumed" here.  This patch adds a
+supplier, not a consumer.  I think you mean something like: expose root digest
+and signature to LSMs.
 
-I see. So KVM needs to provide a callback which needs to be called in 
-the IPI handler. The KVM callback needs to be called to switch PMU state 
-before perf really enabling host event and touching PMU MSRs. And only 
-the perf event with exclude_guest attribute is allowed to create on 
-host. Thanks.
+> diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
+> index bb5da66da4c1..fbb83c6fd99c 100644
+> --- a/drivers/md/dm-verity-target.c
+> +++ b/drivers/md/dm-verity-target.c
+> @@ -22,6 +22,8 @@
+>  #include <linux/scatterlist.h>
+>  #include <linux/string.h>
+>  #include <linux/jump_label.h>
+> +#include <linux/security.h>
+> +#include <linux/dm-verity.h>
+>  
+>  #define DM_MSG_PREFIX			"verity"
+>  
+> @@ -1017,6 +1019,38 @@ static void verity_io_hints(struct dm_target *ti, struct queue_limits *limits)
+>  	blk_limits_io_min(limits, limits->logical_block_size);
+>  }
+>  
+> +#ifdef CONFIG_SECURITY
+> +
+> +static int verity_init_sig(struct dm_verity *v, const void *sig,
+> +			   size_t sig_size)
+> +{
+> +	v->sig_size = sig_size;
+> +	v->root_digest_sig = kmemdup(sig, v->sig_size, GFP_KERNEL);
+> +	if (!v->root_digest)
+> +		return -ENOMEM;
 
+root_digest_sig, not root_digest
 
->
-> My original sketch: https://lore.kernel.org/all/ZR3eNtP5IVAHeFNC@google.com
+> +#ifdef CONFIG_SECURITY
+> +
+> +static int verity_finalize(struct dm_target *ti)
+> +{
+> +	struct block_device *bdev;
+> +	struct dm_verity_digest root_digest;
+> +	struct dm_verity *v;
+> +	int r;
+> +
+> +	v = ti->private;
+> +	bdev = dm_disk(dm_table_get_md(ti->table))->part0;
+> +	root_digest.digest = v->root_digest;
+> +	root_digest.digest_len = v->digest_size;
+> +	root_digest.alg = v->alg_name;
+> +
+> +	r = security_bdev_setintegrity(bdev, LSM_INT_DMVERITY_ROOTHASH, &root_digest,
+> +				       sizeof(root_digest));
+> +	if (r)
+> +		return r;
+> +
+> +	r = security_bdev_setintegrity(bdev,
+> +				       LSM_INT_DMVERITY_SIG_VALID,
+> +				       v->root_digest_sig,
+> +				       v->sig_size);
+
+The signature is only checked if CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG=y, whereas
+this code is built whenever CONFIG_SECURITY=y.
+
+So this seems like the same issue that has turned up elsewhere in the IPE
+patchset, where IPE is (apparently) happy with any signature, even one that
+hasn't been checked...
+
+> diff --git a/drivers/md/dm-verity.h b/drivers/md/dm-verity.h
+> index 20b1bcf03474..89e862f0cdf6 100644
+> --- a/drivers/md/dm-verity.h
+> +++ b/drivers/md/dm-verity.h
+> @@ -43,6 +43,9 @@ struct dm_verity {
+>  	u8 *root_digest;	/* digest of the root block */
+>  	u8 *salt;		/* salt: its size is salt_size */
+>  	u8 *zero_digest;	/* digest for a zero block */
+> +#ifdef CONFIG_SECURITY
+> +	u8 *root_digest_sig;	/* digest signature of the root block */
+> +#endif /* CONFIG_SECURITY */
+
+No, it's not a signature of the root block, at least not directly.  It's a
+signature of the root digest (the digest of the root block).
+
+> diff --git a/include/linux/dm-verity.h b/include/linux/dm-verity.h
+> new file mode 100644
+> index 000000000000..a799a8043d85
+> --- /dev/null
+> +++ b/include/linux/dm-verity.h
+> @@ -0,0 +1,12 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef _LINUX_DM_VERITY_H
+> +#define _LINUX_DM_VERITY_H
+> +
+> +struct dm_verity_digest {
+> +	const char *alg;
+> +	const u8 *digest;
+> +	size_t digest_len;
+> +};
+> +
+> +#endif /* _LINUX_DM_VERITY_H */
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index ac0985641611..9e46b13a356c 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -84,7 +84,8 @@ enum lsm_event {
+>  };
+>  
+>  enum lsm_integrity_type {
+> -	__LSM_INT_MAX
+> +	LSM_INT_DMVERITY_SIG_VALID,
+> +	LSM_INT_DMVERITY_ROOTHASH,
+>  };
+
+Shouldn't struct dm_verity_digest be defined next to LSM_INT_DMVERITY_ROOTHASH?
+It's the struct that's associated with it.
+
+It seems weird to create a brand new header <linux/dm-verity.h> that just
+contains this one LSM related definition, when there's already a header for the
+LSM definitions that even includes the related value LSM_INT_DMVERITY_ROOTHASH.
+
+- Eric
 
