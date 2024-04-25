@@ -1,297 +1,123 @@
-Return-Path: <linux-kernel+bounces-158187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E37B48B1CB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:20:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C007C8B1CB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:22:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6EDE282165
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:20:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED5E21C2168D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EEB96EB6F;
-	Thu, 25 Apr 2024 08:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D741E74432;
+	Thu, 25 Apr 2024 08:22:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I6KCWD+1"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="Z7bNRD/T"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF3E72D60A
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:19:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6324205D;
+	Thu, 25 Apr 2024 08:22:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714033197; cv=none; b=b4DPBxE3Vz8dCu2VfpHlPCPjfv6lJNhUOPlL1+M8Czxmo569P3og/dRLzJxpkDCHyzcnsnQBopVOwOUiC6WKLSD9dMAj4zDXR6WqWuy8iBwWVJzQrBKYT5yrcHAyxaKroXjEIFSNQnXpPNwCOaGi2RmEKs2ULfvVP4g6kueIht0=
+	t=1714033338; cv=none; b=A4e9evh9f5k4wvqpn5wEagsYJhMbs9cm6700EwfNm0hIL2F6WF8NQXM+doOtsJrmD0KFqBXimwWwP1VqBubPzWD6TQwCH1KZndXFye4XHTFX5fz5CJ3DBO8xjgikSD3fNSsh3dHP4HFzunqC5yDoug/KeLqgzjsoRpX0hiRUfjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714033197; c=relaxed/simple;
-	bh=X0LexaSUYca3KBoxilRdzCtdkjqHtHxgzOLPDEOLU4Q=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=uzHYTAR4iTRo9LGiQTmMscZrMy4mXOGN3QShr+zIWBIJ2Conna1F6DE1frKXrtGtE1RsYvmRcfxfakWLh060lcZ6VZQeA4+NDii8Qw737O2i8begPU60ZGo9I2MPERLFKTVkY5fYxlZFAuj+WVaYF1+Nuh0F6z/9fY8Tz+YZup0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I6KCWD+1; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714033195; x=1745569195;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=X0LexaSUYca3KBoxilRdzCtdkjqHtHxgzOLPDEOLU4Q=;
-  b=I6KCWD+1iw5Vm6Nnjiwx6gMBCjQ587F552mwTwzrj6j1nA9MnvLKR1d6
-   pQvnJymvQMkKRLzaq+mZOlQSbBQjKrIH7+ku9sgigKQNvGhLJ4xpENQMJ
-   k3e0YAKXpbog8xvhF24iW4x227obls/K773etBnbmSE5NF/DbVnBFxyBL
-   giUi9nda+xyjZdyoWRl2gQKdXUlX2SJebdF103JTKLXCgHb3q5idnHpF+
-   0TA1JE9ZGy+nE9D9/nSQ95NEwWHBZCGn3Az1sp/Qxx23tihegAqVDrb7M
-   DjGRqpyBptb6NAz8W7QM7CvMDba0Pu8BmUEFHr4Wfdl5X9c1qN6YeGv5W
-   Q==;
-X-CSE-ConnectionGUID: JJLMlsVJQwiq/wBxOCG7/g==
-X-CSE-MsgGUID: bAe3YfnyTpupxw+2yRv/Cw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9815789"
-X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
-   d="scan'208";a="9815789"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 01:19:53 -0700
-X-CSE-ConnectionGUID: 6XyZWAvmRVOwKqK+3DMurw==
-X-CSE-MsgGUID: NUqMB8tkRQuRepSk1h6YIg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
-   d="scan'208";a="24868019"
-Received: from scojocar-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.46.44])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 01:19:46 -0700
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Douglas Anderson <dianders@chromium.org>, dri-devel@lists.freedesktop.org
-Cc: Javier Martinez Canillas <javierm@redhat.com>, Neil Armstrong
- <neil.armstrong@linaro.org>, Dmitry Baryshkov
- <dmitry.baryshkov@linaro.org>, linus.walleij@linaro.org, Cong Yang
- <yangcong5@huaqin.corp-partner.google.com>,
- lvzhaoxiong@huaqin.corp-partner.google.com, Hsin-Yi Wang
- <hsinyi@google.com>, Sam Ravnborg <sam@ravnborg.org>, Douglas Anderson
- <dianders@chromium.org>, Daniel Vetter <daniel@ffwll.ch>, David Airlie
- <airlied@gmail.com>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/mipi-dsi: Reduce driver bloat of
- mipi_dsi_*_write_seq()
-In-Reply-To: <20240424172017.1.Id15fae80582bc74a0d4f1338987fa375738f45b9@changeid>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240424172017.1.Id15fae80582bc74a0d4f1338987fa375738f45b9@changeid>
-Date: Thu, 25 Apr 2024 11:19:43 +0300
-Message-ID: <87pludq2g0.fsf@intel.com>
+	s=arc-20240116; t=1714033338; c=relaxed/simple;
+	bh=65uS8QK637r5AEkeZi5BHkJu+vtvg1RJSMsNHk/A9oo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=AGt2DGuukUoboO8HXDIXlRA93kNpH1E0lTaGZNFQHcP9TxMpjh52c9a/RfoL2umvI5Vxm/6SSngDHNPKv3qKYmCJcMlZ7SSK9SZ1PGnswj3Z8ZmUO3nPCSWN62JwD9GtITma/NN2yG/ScjAicC7vm0zzxPeQ/6njsGP8vvxb8IE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=Z7bNRD/T; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43P7eqUk026286;
+	Thu, 25 Apr 2024 10:22:04 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=i2xvSKGi0kduhQpp0jPnnSJVZO3fv1dsJElSbwSfge8=; b=Z7
+	bNRD/T75coGR0wnv1ucjcEhcgQl/dfOAUul54AdY6QvnqmpAO2Z2gHItsg1gJIP4
+	DaeeF6FKZx3FvlLyXaIDVXkY/Xpguo55Kw0taSszYSqEnV03bKGlquTO5AX4gRD3
+	yIS2Yh3LmltmXQCVlF48IGxiFb5Qp9EQypAjXV6d3jpw3J8Tcq0d8HqiStEH33tM
+	sLpnhh33C8m3j0nXNshfuhKIe3YZM5aZf1OW+gsXCz10g6qJ8tX7mvdIv6ZZQ60V
+	RqaDvTZlkId0S/PovorxYAUvhbzOjBqKzrSFxdLxE5NTtKMznzlc2t0PBGTLipuc
+	u2wStV67X1JFeylNuRNw==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xmq90tnf0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 10:22:04 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id B41A84002D;
+	Thu, 25 Apr 2024 10:21:59 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 92D01210F60;
+	Thu, 25 Apr 2024 10:21:18 +0200 (CEST)
+Received: from [10.48.86.79] (10.48.86.79) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 25 Apr
+ 2024 10:21:17 +0200
+Message-ID: <c217117d-6388-4230-8afa-d26226bb11ce@foss.st.com>
+Date: Thu, 25 Apr 2024 10:21:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/6] spi: stm32: add support for stm32mp25
+To: Alain Volmat <alain.volmat@foss.st.com>, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Erwan Leray
+	<erwan.leray@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+CC: <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20231218155721.359198-1-alain.volmat@foss.st.com>
+Content-Language: en-US
+From: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+In-Reply-To: <20231218155721.359198-1-alain.volmat@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-25_07,2024-04-25_01,2023-05-22_02
 
-On Wed, 24 Apr 2024, Douglas Anderson <dianders@chromium.org> wrote:
-> The consensus of many DRM folks is that we want to move away from DSI
-> drivers defining tables of init commands. Instead, we want to move to
-> init functions that can use common DRM functions. The issue thus far
-> has been that using the macros mipi_dsi_generic_write_seq() and
-> mipi_dsi_dcs_write_seq() bloats the driver using them.
->
-> Through a cooperative effort between Hsin-Yi Wang and Dmitry
-> Baryshkov, we have realized that the majority of the bloat is the fact
-> that we have the dev_err_ratelimited() directly in the macros. Let's
-> hoist this call into drm_mipi_dsi.c by adding a "chatty" version of
-> the functions that includes the print.
->
-> Without any changes to clients this gives a dramatic savings. Building
-> with my build system shows one example:
->
-> $ scripts/bloat-o-meter \
->   .../before/panel-novatek-nt36672e.ko \
->   .../after/panel-novatek-nt36672e.ko
->
-> add/remove: 0/1 grow/shrink: 1/1 up/down: 6/-19652 (-19646)
-> Function                                     old     new   delta
-> __UNIQUE_ID_vermagic520                       64      70      +6
-> nt36672e_1080x2408_60hz_init               16592    7260   -9332
-> nt36672e_1080x2408_60hz_init._rs           10320       -  -10320
-> Total: Before=31503, After=11857, chg -62.36%
->
-> Note that given the change in location of the print it's harder to
-> include the "cmd" in the printout for mipi_dsi_dcs_write_seq() since,
-> theoretically, someone could call the new chatty function with a
-> zero-size array and it would be illegal to dereference data[0].
-> There's a printk format to print the whole buffer and this is probably
-> more useful for debugging anyway. Given that we're doing this for
-> mipi_dsi_dcs_write_seq(), let's also print the buffer for
-> mipi_dsi_generic_write_seq() in the error case.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> The MIPI device I have in front of me (wormdingler) hasn't been
-> converted to use these functions yet, so this is just compile
-> tested. It's about my end of day so I'm sending this out since it's
-> pretty straightforward. Hopefully others can confirm it works well for
-> them and also saves space under their compilers.
->
->  drivers/gpu/drm/drm_mipi_dsi.c | 54 ++++++++++++++++++++++++++++++++++
->  include/drm/drm_mipi_dsi.h     | 31 ++++++++-----------
->  2 files changed, 67 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
-> index 795001bb7ff1..5ded6aef38ed 100644
-> --- a/drivers/gpu/drm/drm_mipi_dsi.c
-> +++ b/drivers/gpu/drm/drm_mipi_dsi.c
-> @@ -764,6 +764,33 @@ ssize_t mipi_dsi_generic_write(struct mipi_dsi_device *dsi, const void *payload,
->  }
->  EXPORT_SYMBOL(mipi_dsi_generic_write);
->  
-> +/**
-> + * mipi_dsi_generic_write_chatty() - mipi_dsi_generic_write() w/ an error log
-> + * @dsi: DSI peripheral device
-> + * @payload: buffer containing the payload
-> + * @size: size of payload buffer
-> + *
-> + * Just like mipi_dsi_generic_write() but includes a dev_err_ratelimited()
-> + * call for you.
-> + *
-> + * Return: The number of bytes transmitted on success or a negative error code
-> + * on failure.
-> + */
-> +ssize_t mipi_dsi_generic_write_chatty(struct mipi_dsi_device *dsi,
-> +				      const void *payload, size_t size)
-> +{
-> +	struct device *dev = &dsi->dev;
-> +	int ret;
-> +
-> +	ret = mipi_dsi_generic_write(dsi, payload, size);
-> +	if (ret < 0)
-> +		dev_err_ratelimited(dev, "sending generic data %*ph failed: %d\n",
-> +				    (int)size, payload, ret);
+Hi Alain
 
-Why does this even need to be ratelimited? See below.
+On 12/18/23 16:57, Alain Volmat wrote:
+> This series adds support for spi bus found on the stm32mp25 and add
+> all instances within device-trees.
+> 
+> Alain Volmat (4):
+>    spi: stm32: use dma_get_slave_caps prior to configuring dma channel
+>    arm64: dts: st: add all 8 spi nodes on stm32mp251
+>    arm64: dts: st: add spi3/spi8 pins for stm32mp25
+>    arm64: dts: st: add spi3 / spi8 properties on stm32mp257f-ev1
+> 
+> Valentin Caron (2):
+>    dt-bindings: spi: stm32: add st,stm32mp25-spi compatible
+>    spi: stm32: add st,stm32mp25-spi compatible supporting STM32MP25 soc
+> 
+>   .../devicetree/bindings/spi/st,stm32-spi.yaml |   1 +
+>   arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi |  46 ++++++
+>   arch/arm64/boot/dts/st/stm32mp251.dtsi        |  88 +++++++++++
+>   arch/arm64/boot/dts/st/stm32mp257f-ev1.dts    |  14 ++
+>   drivers/spi/spi-stm32.c                       | 145 ++++++++++++++++--
+>   5 files changed, 280 insertions(+), 14 deletions(-)
+> 
 
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(mipi_dsi_generic_write_chatty);
-> +
->  /**
->   * mipi_dsi_generic_read() - receive data using a generic read packet
->   * @dsi: DSI peripheral device
-> @@ -852,6 +879,33 @@ ssize_t mipi_dsi_dcs_write_buffer(struct mipi_dsi_device *dsi,
->  }
->  EXPORT_SYMBOL(mipi_dsi_dcs_write_buffer);
->  
-> +/**
-> + * mipi_dsi_dcs_write_buffer_chatty - mipi_dsi_dcs_write_buffer() w/ an error log
-> + * @dsi: DSI peripheral device
-> + * @data: buffer containing data to be transmitted
-> + * @len: size of transmission buffer
-> + *
-> + * Just like mipi_dsi_dcs_write_buffer() but includes a dev_err_ratelimited()
-> + * call for you.
-> + *
-> + * Return: The number of bytes successfully transmitted or a negative error
-> + * code on failure.
-> + */
-> +ssize_t mipi_dsi_dcs_write_buffer_chatty(struct mipi_dsi_device *dsi,
-> +					 const void *data, size_t len)
-> +{
-> +	struct device *dev = &dsi->dev;
-> +	int ret;
-> +
-> +	ret = mipi_dsi_dcs_write_buffer(dsi, data, len);
-> +	if (ret < 0)
-> +		dev_err_ratelimited(dev, "sending dcs data %*ph failed: %d\n",
-> +				    (int)len, data, ret);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(mipi_dsi_dcs_write_buffer_chatty);
-> +
->  /**
->   * mipi_dsi_dcs_write() - send DCS write command
->   * @dsi: DSI peripheral device
-> diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
-> index 82b1cc434ea3..784e425dc4c8 100644
-> --- a/include/drm/drm_mipi_dsi.h
-> +++ b/include/drm/drm_mipi_dsi.h
-> @@ -256,6 +256,8 @@ int mipi_dsi_picture_parameter_set(struct mipi_dsi_device *dsi,
->  
->  ssize_t mipi_dsi_generic_write(struct mipi_dsi_device *dsi, const void *payload,
->  			       size_t size);
-> +ssize_t mipi_dsi_generic_write_chatty(struct mipi_dsi_device *dsi,
-> +				      const void *payload, size_t size);
->  ssize_t mipi_dsi_generic_read(struct mipi_dsi_device *dsi, const void *params,
->  			      size_t num_params, void *data, size_t size);
->  
-> @@ -279,6 +281,8 @@ enum mipi_dsi_dcs_tear_mode {
->  
->  ssize_t mipi_dsi_dcs_write_buffer(struct mipi_dsi_device *dsi,
->  				  const void *data, size_t len);
-> +ssize_t mipi_dsi_dcs_write_buffer_chatty(struct mipi_dsi_device *dsi,
-> +					 const void *data, size_t len);
->  ssize_t mipi_dsi_dcs_write(struct mipi_dsi_device *dsi, u8 cmd,
->  			   const void *data, size_t len);
->  ssize_t mipi_dsi_dcs_read(struct mipi_dsi_device *dsi, u8 cmd, void *data,
-> @@ -317,14 +321,10 @@ int mipi_dsi_dcs_get_display_brightness_large(struct mipi_dsi_device *dsi,
->  #define mipi_dsi_generic_write_seq(dsi, seq...)                                \
->  	do {                                                                   \
->  		static const u8 d[] = { seq };                                 \
-> -		struct device *dev = &dsi->dev;                                \
->  		int ret;                                                       \
-> -		ret = mipi_dsi_generic_write(dsi, d, ARRAY_SIZE(d));           \
-> -		if (ret < 0) {                                                 \
-> -			dev_err_ratelimited(dev, "transmit data failed: %d\n", \
-> -					    ret);                              \
-> +		ret = mipi_dsi_generic_write_chatty(dsi, d, ARRAY_SIZE(d));    \
-> +		if (ret < 0)                                                   \
->  			return ret;                                            \
-> -		}                                                              \
->  	} while (0)
+DT patches applied on stm32-next.
+I added "access-controller" bindings for all SPI nodes.
 
-The one thing that I've always disliked about these macros (even if I've
-never actually used them myself) is that they hide control flow from the
-caller, i.e. return directly. You don't see that in the code, it's not
-documented, and if you wanted to do better error handling yourself,
-you're out of luck.
-
-Be that as it may, the combo of ratelimited error printing and return on
-errors does not make much sense to me. If there's something to print,
-you bail out, that's it. I suspect we never hit the ratelimit.
-
-You might even want to try *only* changing the ratelimited printing to a
-regular error message, and see if the compiler can combine the logging
-to a single exit point in the callers. Ratelimited it obviously can't
-because every single one of them is unique.
-
-BR,
-Jani.
-
->  
->  /**
-> @@ -333,18 +333,13 @@ int mipi_dsi_dcs_get_display_brightness_large(struct mipi_dsi_device *dsi,
->   * @cmd: Command
->   * @seq: buffer containing data to be transmitted
->   */
-> -#define mipi_dsi_dcs_write_seq(dsi, cmd, seq...)                           \
-> -	do {                                                               \
-> -		static const u8 d[] = { cmd, seq };                        \
-> -		struct device *dev = &dsi->dev;                            \
-> -		int ret;                                                   \
-> -		ret = mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));    \
-> -		if (ret < 0) {                                             \
-> -			dev_err_ratelimited(                               \
-> -				dev, "sending command %#02x failed: %d\n", \
-> -				cmd, ret);                                 \
-> -			return ret;                                        \
-> -		}                                                          \
-> +#define mipi_dsi_dcs_write_seq(dsi, cmd, seq...)                               \
-> +	do {                                                                   \
-> +		static const u8 d[] = { cmd, seq };                            \
-> +		int ret;                                                       \
-> +		ret = mipi_dsi_dcs_write_buffer_chatty(dsi, d, ARRAY_SIZE(d)); \
-> +		if (ret < 0)                                                   \
-> +			return ret;                                            \
->  	} while (0)
->  
->  /**
-
--- 
-Jani Nikula, Intel
+Cheers
+Alex
 
