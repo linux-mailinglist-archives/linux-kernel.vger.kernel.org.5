@@ -1,102 +1,152 @@
-Return-Path: <linux-kernel+bounces-158967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD2CA8B277A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:18:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 698E28B2780
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:19:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2F52B2632A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:18:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85DECB263EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:19:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33F4414E2E8;
-	Thu, 25 Apr 2024 17:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0472B14E2FA;
+	Thu, 25 Apr 2024 17:19:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UOQHSu3E"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="QcLsvY2v"
+Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E841E864;
-	Thu, 25 Apr 2024 17:17:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 759FA1E864;
+	Thu, 25 Apr 2024 17:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714065476; cv=none; b=PoITy2LeTxkkzgNsLE0k0qpHAjJGGMjHSG79IWgwBMNl3sVogEcMe7rKZ636fc0BTHU9Dqeydpas1J/Omv96tnOMtk7UKY40Oo6pd5b/puC0Hxl0pf6VgzF3/o2qNbqqW0GU5IdbMdp/TU1vFtGcF12eJ8UKoE6o8IsVzFtLRQg=
+	t=1714065559; cv=none; b=KIUnJz3OTHBr09MPxxxMLb7W/J4hocF292EtjlfG2FBt00FzAOmhpVTb1+D3M1OV1fbTpveLWSk6bVipliPnDBIYPWvZh49UjW3f985p5onNcyPEXsd633MuJXpvS9QGyvT38kAGjjKEcyC1pHXHMHZNcMVWVd8NhWwg/yU8ulI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714065476; c=relaxed/simple;
-	bh=5snC8iqMbQWNRgYRrgyDI6dkWLiaUWRHNAhR4zzs6AQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tOdrWz8bQ9wtIJQ1QL3i2fxjVbidSUBmTItMXTu2Dao8R6cEGjpVa3yGKldTA0qbbkGxCKUMqsmBh/1QqW6PGvT6YEAktncaunP3+fbdWCz5xTk61U2YtKbxKY5Irc5KnP7ba0drz0jDkHNdCgF9KPAR3gQ/aWak1WlekvFP37E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UOQHSu3E; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e9451d8b71so11070265ad.0;
-        Thu, 25 Apr 2024 10:17:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714065474; x=1714670274; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UL5saDl1/HYC9QxiX3OYDnCtXKbXFzyViYUmGWcWo3w=;
-        b=UOQHSu3EGyfmU2GcqbJjrq7wz0/iJVuzQ1axE2axe7cpbbk8LHz7jaJDSD+GAePWFx
-         r6e4UTMIF1mC3OwGT5TsXrIypRMAV41CHFAQTJvKT2Xs7u5wlQ5NnHcrOcB6ku10VnSd
-         Yp0ueq1lf3W/aPseCVn0Q0m9SkKTTmU73FSRcMApxxU5PQ78AKONAW4XBHQDOHUbYA34
-         RnIMPo3a8K7zMRtGZelXsal09hg0mKsbr3z0T2IzjlM4CJX7l8InKUd/wG7xTrPLmT7/
-         b5o4KfUzRwfafG1MhZLFAkTGb275C7bRmZ42rYK9qOgGkLcw6FhE63NGl64IKYqNdLo2
-         3ZWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714065474; x=1714670274;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UL5saDl1/HYC9QxiX3OYDnCtXKbXFzyViYUmGWcWo3w=;
-        b=Dr8iRHRSkaCMjPUsaqA44mHHg3tiZY++Vhd/jAGUGbcygu7HtxUkfc5qIpQk29viU4
-         nLj+lCcfF4BwvwdwxVj/rnE4HMXIH1rMFskuCIIk+w2ejCyJJCqPGgmC6G/S4B7BzR8U
-         27gFJCu0b3xqjrcvvZI9R1lnETtpFuzoUsHzzuk3uiatDhdMSnHpCguyB0atIlXSv2Sy
-         WfMANoHqsEoYmWDsHaxv65ZR0OVS/Kdp/lv0D0VSv7rKT2BEiN5AqfhlbNc5z7toGg4L
-         YHUXEjrLpfSjUwAIPYJCy7Rw7la3q+fZ1OG+h7xTeXBlIP+aQEgoZxualwfDDJ9GMY0X
-         p4fQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVHoYidjomeaYNGEn4t1GIhR3yg1jlr7eiWx7ff/J7RnG9WODuQLuh4xQr3/WAJrddMdM+T6yQ4WjvUGZbmHW7yRu4Qo6fVObP6cBo+0veW82qTAZB21DtwcA9L9bplz7kNS4+qlQ==
-X-Gm-Message-State: AOJu0YxEf/9QLHW4rh6aHrlqRkBBUSe1U4/OjmJyCysTOo8Rry6zY6So
-	c0vB4bo1qu7m31RxAYQVH/llemfh7iZRu3LoK5MaEWls3Zdq4A1L
-X-Google-Smtp-Source: AGHT+IHqo9Qxba+7U0d5wxma8FuytFh+BWKBGanl+d15UZ4FatVV71SiA8rtledZVrDTc4EZ35NiJg==
-X-Received: by 2002:a17:903:1c2:b0:1e0:ca47:4d96 with SMTP id e2-20020a17090301c200b001e0ca474d96mr184034plh.3.1714065474383;
-        Thu, 25 Apr 2024 10:17:54 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:4652])
-        by smtp.gmail.com with ESMTPSA id w3-20020a170902a70300b001e83a718d87sm14042745plq.19.2024.04.25.10.17.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 10:17:54 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 25 Apr 2024 07:17:52 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Xiu Jianfeng <xiujianfeng@huawei.com>
-Cc: longman@redhat.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] cgroup/cpuset: Remove outdated comment in
- sched_partition_write()
-Message-ID: <ZiqQQJG2I5WsGKt4@slm.duckdns.org>
-References: <20240425093016.1068567-1-xiujianfeng@huawei.com>
+	s=arc-20240116; t=1714065559; c=relaxed/simple;
+	bh=jnjSDnMCXOOxXg1UUOieAbeuHVRhOq6Wkd+/w6HJWqU=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=UR5sHkNlpBj2bQYJKCR1LFHd70ppuLo56JwiJ6ktQYNETeKCNpxw5BjJme70kXNx3FdJ8FrMQ4PD8Ou8Mh7iPr0qTOoafuip6fseXtcDmh8i+A88n7T9KnbgwA1A59VJnsUJJBI64OTuo9RpBXB0lRz+wUF6bBkDtuk0Dlj9ZtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=QcLsvY2v; arc=none smtp.client-ip=193.238.174.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+	by mg.ssi.bg (Proxmox) with ESMTP id 85C531C1D8;
+	Thu, 25 Apr 2024 20:19:07 +0300 (EEST)
+Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
+	by mg.ssi.bg (Proxmox) with ESMTPS;
+	Thu, 25 Apr 2024 20:19:06 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [213.16.62.126])
+	by ink.ssi.bg (Postfix) with ESMTPSA id AE8F69003B8;
+	Thu, 25 Apr 2024 20:19:03 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
+	t=1714065544; bh=jnjSDnMCXOOxXg1UUOieAbeuHVRhOq6Wkd+/w6HJWqU=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References;
+	b=QcLsvY2vZ2mub1fhRo833PU26s1e3aScte8h6eE4C1k8SGNEbhSrMe761iPPOHKGv
+	 euJYUo1Igk9FPCTwPEmxjmN0Kvung3mT37ZRu79Am/wi/yJ1RFLITZl7ShgVr+0VFF
+	 vO3BzLL5Y7qynkCYZjIRvn0EjjMY3FeYyJusz91A=
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 43PHItdp113003;
+	Thu, 25 Apr 2024 20:18:56 +0300
+Date: Thu, 25 Apr 2024 20:18:55 +0300 (EEST)
+From: Julian Anastasov <ja@ssi.bg>
+To: Ismael Luceno <iluceno@suse.de>
+cc: linux-kernel@vger.kernel.org, Firo Yang <firo.yang@suse.com>,
+        Andreas Taschner <andreas.taschner@suse.com>,
+        =?UTF-8?Q?Michal_Kube=C4=8Dek?= <mkubecek@suse.com>,
+        Simon Horman <horms@verge.net.au>, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
+        coreteam@netfilter.org
+Subject: Re: [PATCH v3] ipvs: Fix checksumming on GSO of SCTP packets
+In-Reply-To: <20240425162842.23900-1-iluceno@suse.de>
+Message-ID: <41e7f590-9ff1-da7d-a1a2-1b6e5508f4f1@ssi.bg>
+References: <20240425162842.23900-1-iluceno@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240425093016.1068567-1-xiujianfeng@huawei.com>
+Content-Type: multipart/mixed; boundary="-1463811672-2035234302-1714065536=:89087"
 
-On Thu, Apr 25, 2024 at 09:30:16AM +0000, Xiu Jianfeng wrote:
-> The comment here is outdated and can cause confusion, from the code
-> perspective, there’s also no need for new comment, so just remove it.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+---1463811672-2035234302-1714065536=:89087
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+
+	Hello,
+
+On Thu, 25 Apr 2024, Ismael Luceno wrote:
+
+> It was observed in the wild that pairs of consecutive packets would leave
+> the IPVS with the same wrong checksum, and the issue only went away when
+> disabling GSO.
 > 
-> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+> IPVS needs to avoid computing the SCTP checksum when using GSO.
+> 
+> Fixes: 90017accff61 ("sctp: Add GSO support", 2016-06-02)
+> Co-developed-by: Firo Yang <firo.yang@suse.com>
+> Signed-off-by: Ismael Luceno <iluceno@suse.de>
+> Tested-by: Andreas Taschner <andreas.taschner@suse.com>
+> CC: Michal Kubeček <mkubecek@suse.com>
+> CC: Simon Horman <horms@verge.net.au>
+> CC: Julian Anastasov <ja@ssi.bg>
+> CC: lvs-devel@vger.kernel.org
+> CC: netfilter-devel@vger.kernel.org
+> CC: netdev@vger.kernel.org
+> CC: coreteam@netfilter.org
+> ---
+> 
+> Notes:
+>     Changes since v2:
+>     * Use only skb_is_gso, no need to check for GSO type
 
-Applied to cgroup/for-6.10.
+	v2 is already applied. I acked it because sctp_gso_segment()
+checks for skb_is_gso_sctp(). If v3 is just an optimization
+better to live with v2? Is it possible to see skb_is_gso() but
+not skb_is_gso_sctp() while working with SCTP packet?
 
-Thanks.
+>     Changes since v1:
+>     * Added skb_is_gso before skb_is_gso_sctp.
+>     * Added "Fixes" tag.
+> 
+>  net/netfilter/ipvs/ip_vs_proto_sctp.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/netfilter/ipvs/ip_vs_proto_sctp.c b/net/netfilter/ipvs/ip_vs_proto_sctp.c
+> index a0921adc31a9..83e452916403 100644
+> --- a/net/netfilter/ipvs/ip_vs_proto_sctp.c
+> +++ b/net/netfilter/ipvs/ip_vs_proto_sctp.c
+> @@ -126,7 +126,8 @@ sctp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
+>  	if (sctph->source != cp->vport || payload_csum ||
+>  	    skb->ip_summed == CHECKSUM_PARTIAL) {
+>  		sctph->source = cp->vport;
+> -		sctp_nat_csum(skb, sctph, sctphoff);
+> +		if (!skb_is_gso(skb))
+> +			sctp_nat_csum(skb, sctph, sctphoff);
+>  	} else {
+>  		skb->ip_summed = CHECKSUM_UNNECESSARY;
+>  	}
+> @@ -174,7 +175,8 @@ sctp_dnat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
+>  	    (skb->ip_summed == CHECKSUM_PARTIAL &&
+>  	     !(skb_dst(skb)->dev->features & NETIF_F_SCTP_CRC))) {
+>  		sctph->dest = cp->dport;
+> -		sctp_nat_csum(skb, sctph, sctphoff);
+> +		if (!skb_is_gso(skb))
+> +			sctp_nat_csum(skb, sctph, sctphoff);
+>  	} else if (skb->ip_summed != CHECKSUM_PARTIAL) {
+>  		skb->ip_summed = CHECKSUM_UNNECESSARY;
+>  	}
+> -- 
+> 2.43.0
 
--- 
-tejun
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
+---1463811672-2035234302-1714065536=:89087--
+
 
