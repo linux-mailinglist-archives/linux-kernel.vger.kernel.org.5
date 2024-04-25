@@ -1,353 +1,252 @@
-Return-Path: <linux-kernel+bounces-158185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 537A18B1CAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:17:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 477D98B1CB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:18:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7B901F22AD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:17:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05D552849AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:18:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A4B76035;
-	Thu, 25 Apr 2024 08:17:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Jv7qqWh4"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2088.outbound.protection.outlook.com [40.107.101.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B7883EA86;
-	Thu, 25 Apr 2024 08:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.88
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714033054; cv=fail; b=JTVrPWpVBSjjGhXI/nU9KFPQBlCtVzQziu+KwL3TPiVSb43mGQkW6hzyorbWrZDbu2gJgZRbFmNJyr3HZ/rXWg4WqqCy4xZtgXBKQAOD0zGPdlL3CiRJhrj1/PA9Kt8U57waMBEJadWRhtv8bsORUuva5V2y19ZnnSX3Dlj1xPk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714033054; c=relaxed/simple;
-	bh=bABQOhCPyMdYkdEgm2ntR53HRIc976uFCNrKx057cVE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=l/+Lb1tBqBiffSfJL24YglR1a6Bot43NRJLrBKO09Y/VTLhMvtJqQbRRkFMpqjS+An6nk3gB2VEnfwT+xhpAqFZ5XAYvq7pmWCCr/1a1c0Z4I1FlsHUnF+aJWnWmRq0KYz6mTfSPvP+VQwnRiM67YnGopN4rYcixHOamOgE/CvY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Jv7qqWh4; arc=fail smtp.client-ip=40.107.101.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=akXjUt6j0GMWdRBS/AlRaiugTWM9lQ+Jq9AywqNnSRxx2eihQotyMMy3a5El1NrYlFVPSSAI5l1vkmbSsi8R2U2+jg5D+LLZ9wtMsnYJOKionjA/mL5DH6opahHc5WC7osJ81ehp0U9ZJKcLu6VuPkRVgas/5Lxz2QFCO2HOX11sVqC+sEM8MfOtRn3oN3RF+//OYMTVM8UpFLl/5DNda+Le66dl22irjiDhwFdHkPJ5S9+3jRrjOiYChF5v3h9FZ+yDJ39jJ4p+XtJvS31opzlOIqIGr4V8q8HriVAm/gzAct0uuAFeGhWWR/gu5DmrSLLXEnqRwVOxJfiH84Uxjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bABQOhCPyMdYkdEgm2ntR53HRIc976uFCNrKx057cVE=;
- b=EP6taqINBYcwYZSNlXNecAS9mBy07U3zUzqZnXLYwsVNE75/ZqL2k9/Kx9R8CxjR6vhbw1I7JaQ3KOdXwpAKtY7Z3VIKNFU/5kTwGpYtppkPaCUD0/U7NU7ReJmZQ5ASsajjvUbVEGcCVXOdArCi1PmL49R/kUa5s41Z+JKwWSUlvDf66EBfQy+A9fzHzDdZqD8vcHtLGd2PzqtqvHrhXWK1XmrYshdRlD5SciLAP6ZKGCycfKGt2A3qaBLnQcmvTIAZYSr6Aosj1SdquKaZP6EJAndNWNJL5Ul9yJmN/QggFYY/VitGDxu8TQVu52SeaLJLKv1WKaou5dBs8QK4QA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bABQOhCPyMdYkdEgm2ntR53HRIc976uFCNrKx057cVE=;
- b=Jv7qqWh4OcHVV7/61vQXIsjIMF4nMxXK9E1sxvKPRUomeTPbxbbWU3hIe9IRTe+TdHYQDxY50Huen3tQt2wiJYgY1btMtF5OlWNTYO1r66r6FKuQk61x0xAxcZFgje+Vv39Oa6lLu1c5W3n4EAv0p9Fgn6zf8NTtpHv+RZoX9pNkwhDQCkGOkjBXtxvIy3x/btsUiFv5ONkNvZNU/OMIiCKux0SMatqIwwt68NPsYYhLDX+/zPV7c7vN4nUg+0kJS5BZQ8Gsox+Gon+VeEvfWbgehS0VO5CHGxB1eVq2UkWH+tgZo/OFYrxcn+dLs0JbrG945m/1TtnffpKAHsg1mg==
-Received: from DM6PR12MB5565.namprd12.prod.outlook.com (2603:10b6:5:1b6::13)
- by IA1PR12MB6044.namprd12.prod.outlook.com (2603:10b6:208:3d4::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Thu, 25 Apr
- 2024 08:17:28 +0000
-Received: from DM6PR12MB5565.namprd12.prod.outlook.com
- ([fe80::a8dd:546d:6166:c101]) by DM6PR12MB5565.namprd12.prod.outlook.com
- ([fe80::a8dd:546d:6166:c101%4]) with mapi id 15.20.7519.023; Thu, 25 Apr 2024
- 08:17:28 +0000
-From: Dragos Tatulea <dtatulea@nvidia.com>
-To: "almasrymina@google.com" <almasrymina@google.com>
-CC: "davem@davemloft.net" <davem@davemloft.net>, "pabeni@redhat.com"
-	<pabeni@redhat.com>, "ilias.apalodimas@linaro.org"
-	<ilias.apalodimas@linaro.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "jacob.e.keller@intel.com"
-	<jacob.e.keller@intel.com>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, Jianbo Liu <jianbol@nvidia.com>,
-	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
-	<kuba@kernel.org>
-Subject: Re: [RFC PATCH] net: Fix one page_pool page leak from skb_frag_unref
-Thread-Topic: [RFC PATCH] net: Fix one page_pool page leak from skb_frag_unref
-Thread-Index: AQHalmh2YwjSjfzzmU66VYtjn6H0WLF3q+gAgABPNgCAAKoVgA==
-Date: Thu, 25 Apr 2024 08:17:28 +0000
-Message-ID: <4c20b500c2ed615aba424c0f3c7a79f5f5a04171.camel@nvidia.com>
-References: <20240424165646.1625690-2-dtatulea@nvidia.com>
-	 <4ba023709249e11d97c78a98ac7db3b37f419960.camel@nvidia.com>
-	 <CAHS8izMbAJHatnM6SvsZVLPY+N7LgGJg03pSdNfSRFCufGh9Zg@mail.gmail.com>
-In-Reply-To:
- <CAHS8izMbAJHatnM6SvsZVLPY+N7LgGJg03pSdNfSRFCufGh9Zg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.50.4 (3.50.4-1.fc39) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR12MB5565:EE_|IA1PR12MB6044:EE_
-x-ms-office365-filtering-correlation-id: cf38224c-0e71-4083-3d40-08dc6500258e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- =?utf-8?B?MHU2Nk13eEFUZ0NVM0FLWFh4TnBIalFreDUwTTZtOGdoVE5JWVp2TDlYL0pS?=
- =?utf-8?B?Wit6aG9nWkplR3ZJVG9mMzdHN0RYcm5lcHp3WnV4WHNSSkpPSmVVNDN0TFZ5?=
- =?utf-8?B?VzZIQkRuQVZVbVY5VnRHVitxbUt2b3R1YUhlamlWZDBNYWV4cHZrMnNZVEg4?=
- =?utf-8?B?YzRtblg4OVQ3TEp0dHdiYVgzUTdIRVppVWl2c1IrNm5zbUtKcFc4MW1sMW1s?=
- =?utf-8?B?Q0RyVkhLUVU5YXd4K0JmaWc3NUg5K3RjT0lsTkRTVHFpUldXN1ppeVJDWnUy?=
- =?utf-8?B?U0lrbElyYXNCWnI5eG55USthYlFyWDI5TDJvb09rWHRqa0Iwb09VV0ZSc2dw?=
- =?utf-8?B?bnd4cDkwQVhzNkN6UmxFUE0zY2JqWHJhUk01aU1DZTZkdEpVUlQvbkU0ckFh?=
- =?utf-8?B?OVpBREhTOEl2N2VuQVhzU2REYWc1WjZFeWIvQVBrYmV1VGNFMFlmdmQ4bndl?=
- =?utf-8?B?UW1kVUFlTnB5RklKTFErUXhBZ3hkUGQzWVhtcDNmYktNd1BsWVZTbVArZkNC?=
- =?utf-8?B?d2dUV2VwNGkwczdSRFJITGlhYXZYT0lXd2NQN0NSWXhuRHgxRk82SGRBYm5s?=
- =?utf-8?B?Y3pZYnEwQWM2QWovQ2U1RTFnMVg4bFFkS29yOTU2RTBoelBBazhFUGZNcEtM?=
- =?utf-8?B?cnFvU3BkZ3lmcXpaOWMrUFNOazVLMVZUVUMzTFRGSGJJdUh3WU1PQlFWT1R2?=
- =?utf-8?B?cG42R0ZGbjdRMnFqTnFEOGNMMXBIbDkxQStlMm9tSGtKd1FRK09vVFBLR0pC?=
- =?utf-8?B?aXltK2JSMnFUTTJSb3FwdXRIelE0bUdCeXh4VUZES3NSUmZpV2RXT0RPSlFE?=
- =?utf-8?B?RCtlcnBkU1NVQ0hoSGJ1ZlJhV1RLc2M1YlBBUUhxbEZveDQ3ZTlaNGNpK3Vh?=
- =?utf-8?B?WjJiWlBEN3JpSFNlZ3o0L1NpZWxQYUVYWWw5OUw1MDB0SS9EL3VQMXlBVGlQ?=
- =?utf-8?B?dnlIMEsyamVzMUthNXE1WDcvWW5odTIwK2oySU1RclhuZGxiUFJrSGo2S0hW?=
- =?utf-8?B?NFdiTWdEWTRnbHpUQmZ4STRudnNQMHBwcnBEOVdDTVdUN08zYXNsZ0NRRzNW?=
- =?utf-8?B?RXp1bXJUVCs0dDd3V2FzNHByY2VCY1RUYTA1MlVRMnMvM2x3eW5HVmlrSE9m?=
- =?utf-8?B?eG14MWJBNHAwWThMbEhUdjFVdmpjSzc4akJSbTQvelBXOVA3dHhzNDEvb1Ev?=
- =?utf-8?B?b3hnTWdESmloY1g2YXN4Wi9Qd1FnSUlJYitYNm5TdkV2djdOdDR2WXhHbi9X?=
- =?utf-8?B?S3htUWIzZ2ZZSUZRM1hXRHRJYU14TkY2cWdTa3BYL1F2SnZuVEE4dzhrOFVr?=
- =?utf-8?B?Y1VSNm5ITDA3L3crZ1pHeDVpSVNFRW1odWZnWlR5Y2pkQTFPUG03QngzdzlK?=
- =?utf-8?B?Wk9zTXlEMmtKRjViYmlFZFA2RCs5NmNndlRJMXRNZTEyZXdvTDZlNFhXWFJX?=
- =?utf-8?B?RFo3N1RJVWQ3MytqK1U1dUlMMzFPR1lZK2JhVW9SN2ZjTzlYVCtUQzA4bERG?=
- =?utf-8?B?dUdDTzNaMFJISmFjMSsrMUJPMHIvdi9vbkl5UThNUDU4UkxuS0tJNlZZZEZv?=
- =?utf-8?B?MDV6dkE3MkIwdFhxZlB4NUg1ZVM4VlRoUVZaVTRBamlTOWtsZFg2MldNQTV4?=
- =?utf-8?B?cVhtdi8zT2NOb1Q5Mm9xNXh5bTZkNWhLNmtlbFRYY1JIMTVpM3d3Z21XcTMw?=
- =?utf-8?B?QWZxRnk1eEs1WHNveEs5OHNESGd2aTl1cGlabE9IM1dUNG5vS3JzVnMyRC9O?=
- =?utf-8?B?QUpFNFRCcFFhWUlhQjdlSThZOFdRYXRaZkl3d0l4eEVVV2hZZ3dtRmp5MUNE?=
- =?utf-8?B?dks5TlVpNGNoNFB6NGNtZz09?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5565.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?V1lDaDhFdHliV1RXYzVzYTdYSE5aWENJQ3B6UldkdUVWaGQwVjNNZjhsZE9j?=
- =?utf-8?B?ZGx0cExBU1YvZGM3VDRScXE2c2l2NVZOT2JGV25BSnFyMkxidld0dm5ZRG9H?=
- =?utf-8?B?U0dSNlVvZmh2M0UwUHJ5OHFBdjk2OS9zSE45ZWVhSCs4ZVpYNktCMFdzb3Rl?=
- =?utf-8?B?b3dtTlhtb3VjcmJiTS9sQmRkMEN5djNnSjQrM01FeW81UklVdVFXQ0NjelV6?=
- =?utf-8?B?d1U1bFNWZ3BDdHI1cDdxLzZKMUs1bWQvNjFENzZJaUNLYUE3NzA0eEkrbHJ6?=
- =?utf-8?B?OG5jL0szVExjL0lKNmVTSGk5bWFnbk5TbTJUUE9DanZSZjNrQ0VZTU0wVXZ0?=
- =?utf-8?B?aGVYT2lucUliMGZXNGpxa1Zzb1JLWmVFaFJHdEk0c2hHN3BkRVdSRSt6dFFj?=
- =?utf-8?B?NWtWQWRNNk0yTTYzeUZxS2VPYXFSeUJQTUVrdW1TdUs2dmxYZ2RQYXRzQWVJ?=
- =?utf-8?B?clM5M3lYb2Q0TkZValYwaDQvcEZHQVlmaXpUMEMxdFlJZkM5WjVDeGxzSjhR?=
- =?utf-8?B?RkI0UG5CdEpwc0hwSS9lNmRoaVN4bXRnSEpFcVIvY0gyeXUvb1lTbFZSMEVr?=
- =?utf-8?B?ZlZDeTJIbmljbWpDYkZ2QmFGVEVqclMzSkYybFFIRzFMZjRYTm1lUi9KVXJo?=
- =?utf-8?B?aHh5Skk1N1hVTHJKTnZaeVJpZDR1TVE1NjZzTExWUGh1VTBaUUY1OXhVNDU1?=
- =?utf-8?B?NnhQa2h3ZlFCbk5Dd2QwOUJHdlFNMkw3NFB1cTd3Z1c1Vlg4SWVTUU8wUW4r?=
- =?utf-8?B?Q0Z2NTJidTJNUVROMGluM3lWVm51STBnQXZlUHBlaVpHVUZucXJUZkpLaGNY?=
- =?utf-8?B?NVlKcjZjUmx2eEQxU0g3TElEN1c0VTY1VkpYWWpHYjFuenpRZmlTOE5ZYUdD?=
- =?utf-8?B?ZzVhNmxPQzUrY0g1WTNZMXFncUtYSzdLa2xlcTFXYW9OMGRPMlZPYWt6UHRF?=
- =?utf-8?B?L0FMdjNWU2oxbkRUeTBwbDJXdS9HY0dGVVlYSkFNd1JyM1cwMXNlYk9XbmNH?=
- =?utf-8?B?ZXNHMElnL0t4eVRIRzJCb1B0Ykx2QmZqeVEvSnRwZmJkdzNsMGx3dmpYbjFa?=
- =?utf-8?B?NXFzTnVZbHJCZURlc012Qk54VVI2QU15V29XV3dFWVJUeXljYWM3aXNiUzRz?=
- =?utf-8?B?Z1BOb3RvR2crRDZNeW15dUhMZDAzb3BNQ1R0K21lVjFzNVFWL1A0cHJtL3RF?=
- =?utf-8?B?RENEZmN2QTU3bGdTVlRWOWVEWHREdmNVWWUwWlcySkF3TEd4SVJFNm5RSkNZ?=
- =?utf-8?B?VTBuYjBLV0NHaHJiNkcrTWlCamtJcFMyNU1WbkNUN3ZMTTJOMVRnbU0xeTZV?=
- =?utf-8?B?bVRsdTcrUkNQZFRpaXNqVzFpenBzQk1CclFtdUtmSGxZM0k5aExvVXFlZnN2?=
- =?utf-8?B?R1grdFBIRDVZdWdFV3lDcFFMaFM5QUpLNCtORThIbkd4TUt4Nm82R1ZscVFn?=
- =?utf-8?B?dytXNjBsczdEUnAzQWp3NGpIZiszS3BOYUEvUUwyRkFJM2xGaXdCUmk0ZGpI?=
- =?utf-8?B?dUVmWFdjOWpBNTB3Mkprd3FIdG02T0l3WVhPaHNHckxkeGlYRzN1ajkyMTQz?=
- =?utf-8?B?MktCR3ZBdWxnelJYZERGV1V2NzBvc2dMWk8yeDh5ZGtqK2Q3Ni83WVNrMGVU?=
- =?utf-8?B?YzFyWDlxTGQxVmNoRm9tNnQyeXNybEU5NytjdmxlRytOaE5RUGJqblRpSGlS?=
- =?utf-8?B?cklQdU5RcDV4YjhwUkphd1Q1ZW5sTTBiR2RxQU42NHQxOElwMm5ya2Z4VE5I?=
- =?utf-8?B?TGpZZi93VDVuYk1OZ1IvUmc4ZDNlbjRCelB6b1BOYkkyV0dOZy9rd0VTMDYz?=
- =?utf-8?B?NXlJTmNaVjMrWStMVFduNldlOHlLU0pFRFA1STRBMStFOFlQZ05KeENIaGc2?=
- =?utf-8?B?VWRxZ0QrT0srY1RPb2tHZzJqc2RGb0lQMmlSWmlzNHBodmd3RzZ2MFRTUWFD?=
- =?utf-8?B?bWlSSFdTaUdTWmZxTi9GUVBvSWJ2bjI5MGFuck1PLzBtcTJUMjU0UUtKemQ2?=
- =?utf-8?B?VG9mLy9Objd4L1o2c2xoMU52NCtSRFh5K3owMURnRXc5dEF0TGdXUEJCTmgr?=
- =?utf-8?B?N1RXV2dlNHZiRGYwQUdLRlZmWnN2OHNrd1p0WGRPMTRtTkZWWlR4REFFY25N?=
- =?utf-8?B?dVdiSXVTSXZPREVWYWVqR3cxNU9PanZXWHRIV0tXeU41aENqRlZVYnFpcFkw?=
- =?utf-8?Q?ELov+5N7i/LkoqZc0hFaHgq6tI6nlvDEYyhawUKVV80S?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C4EFDE9E9A4DCA4888A5640C08DCF582@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD42B6EB7C;
+	Thu, 25 Apr 2024 08:17:51 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 721973EA86
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:17:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714033071; cv=none; b=jn8IR3Ez4RWVlO8nj65HhuEZgGRf3poF41LkIkA78STSES0g4S2F9YOgzYyP/LqOXMmPN7SIwmm6KN3gzOjuEzpVXiT1cg07UNYfk6E9apUjBTrs/JByr5Hn+Q2lQrgVF3d3thQGfogQ1ie0L4oz6Ir5ZJCBjYDTXyf+BLrffNc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714033071; c=relaxed/simple;
+	bh=hRWmynBQoyjehIaOOFj2XlwWXtPxnZ2VxLMQhUN/LRQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tQrHfz6jMIbgb75lnILdFsqnLoaP6YN9YFTuO2kceKPPedXPHNstRsyUsfJXVkfkFarsHBi7MtNRGEJLhriVxEXdIdUWftKSCCzAmcVpiwAwtd+KyruUIifMEkJ3sYszPbC8jV3rPNrMCwQJekN/AHSt2lWYhWPgp+tLFKSAqCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B09B1007;
+	Thu, 25 Apr 2024 01:18:15 -0700 (PDT)
+Received: from [10.57.75.12] (unknown [10.57.75.12])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8BC43F64C;
+	Thu, 25 Apr 2024 01:17:45 -0700 (PDT)
+Message-ID: <4204b5f6-21f0-4aa2-a625-3dd2f416b649@arm.com>
+Date: Thu, 25 Apr 2024 09:17:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5565.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf38224c-0e71-4083-3d40-08dc6500258e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Apr 2024 08:17:28.4210
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5hacXlfMXTn+Sa568Mmo+6nUnu19stl1obMV6MMkoCWltNlxLfVcdT0qTOIvPOUnYM6P35yWrRHjN6iVemUDhg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6044
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/5] add mTHP support for anonymous share pages
+Content-Language: en-GB
+To: Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org,
+ hughd@google.com
+Cc: willy@infradead.org, david@redhat.com, wangkefeng.wang@huawei.com,
+ 21cnbao@gmail.com, ying.huang@intel.com, shy828301@gmail.com,
+ ziy@nvidia.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
+ <4b998e7d-153f-48cc-a9bb-8c84bb675581@arm.com>
+ <c1f68109-7665-4905-996f-f1067dfa2cb6@linux.alibaba.com>
+ <80b5f87e-c156-4ccc-98f0-96f1fd864273@arm.com>
+ <ef4f15dd-da31-4a1e-bec5-62a7002c4f7c@linux.alibaba.com>
+ <5b8b22e7-6355-4b08-b5b5-1e33ebae6f16@arm.com>
+ <813fe7fd-3004-4e8b-801d-95c33559a025@linux.alibaba.com>
+ <76f816dd-3bbf-48c9-a630-3787051cf289@arm.com>
+ <8c0d6358-3c16-4a57-822c-04b3b3403fe6@linux.alibaba.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <8c0d6358-3c16-4a57-822c-04b3b3403fe6@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-T24gV2VkLCAyMDI0LTA0LTI0IGF0IDE1OjA4IC0wNzAwLCBNaW5hIEFsbWFzcnkgd3JvdGU6DQo+
-IE9uIFdlZCwgQXByIDI0LCAyMDI0IGF0IDEwOjI14oCvQU0gRHJhZ29zIFRhdHVsZWEgPGR0YXR1
-bGVhQG52aWRpYS5jb20+IHdyb3RlOg0KPiA+IA0KPiA+IE9uIFdlZCwgMjAyNC0wNC0yNCBhdCAx
-OTo1NiArMDMwMCwgRHJhZ29zIFRhdHVsZWEgd3JvdGU6DQo+ID4gPiBUaGUgcGF0Y2ggcmVmZXJl
-bmNlZCBpbiB0aGUgZml4ZXMgdGFnIGludHJvZHVjZWQgdGhlIHNrYl9mcmFnX3VucmVmIEFQSS4N
-Cj4gPiBUaGlzIGlzIHdyb25nIGFjdHVhbGx5LiBPbmx5IHNrYl9mcmFnX3JlZiB3YXMgaW50cm9k
-dWNlZC4gU29ycnkgZm9yIHRoZQ0KPiA+IGNvbmZ1c2lvbi4NCj4gPiANCj4gPiA+IFRoaXMgQVBJ
-IHN0aWxsIGhhcyBhIGRhcmsgY29ybmVyOiB3aGVuIHNrYi0+cHBfcmVjeWNsZWQgaXMgZmFsc2Ug
-YW5kIGENCj4gPiA+IGZyYWdtZW50IGJlaW5nIHJlZmVyZW5jZWQgaXMgYmFja2VkIGJ5IGEgcGFn
-ZV9wb29sIHBhZ2UsIHNrYl9mcmFnX3VucmVmDQo+ID4gPiBjYW4gbGVhayB0aGUgcGFnZSBvdXQg
-b2YgdGhlIHBhZ2VfcG9vbCwgbGlrZSBpbiB0aGUgZm9sbG93aW5nIGV4YW1wbGU6DQo+ID4gPiAN
-Cj4gPiA+ICBCVUc6IEJhZCBwYWdlIHN0YXRlIGluIHByb2Nlc3Mgc3dhcHBlci80ICBwZm46MTAz
-NDIzDQo+ID4gPiAgcGFnZTogcmVmY291bnQ6MCBtYXBjb3VudDowIG1hcHBpbmc6MDAwMDAwMDAw
-MDAwMDAwMCBpbmRleDoweDEwMzQyMzAwMCBwZm46MHgxMDM0MjMNCj4gPiA+ICBmbGFnczogMHgy
-MDAwMDAwMDAwMDAwMDAobm9kZT0wfHpvbmU9MikNCj4gPiA+ICBwYWdlX3R5cGU6IDB4ZmZmZmZm
-ZmYoKQ0KPiA+ID4gIHJhdzogMDIwMDAwMDAwMDAwMDAwMCBkZWFkMDAwMDAwMDAwMDQwIGZmZmY4
-ODgxMDZmMzgwMDAgMDAwMDAwMDAwMDAwMDAwMA0KPiA+ID4gIHJhdzogMDAwMDAwMDEwMzQyMzAw
-MCAwMDAwMDAwMDAwMDAwMDQxIDAwMDAwMDAwZmZmZmZmZmYgMDAwMDAwMDAwMDAwMDAwMA0KPiA+
-ID4gIHBhZ2UgZHVtcGVkIGJlY2F1c2U6IHBhZ2VfcG9vbCBsZWFrDQo+ID4gPiAgTW9kdWxlcyBs
-aW5rZWQgaW46IGFjdF9taXJyZWQgYWN0X2NzdW0gYWN0X3BlZGl0IGFjdF9nYWN0IGNsc19mbG93
-ZXINCj4gPiA+ICBhY3RfY3QgbmZfZmxvd190YWJsZSBzY2hfaW5ncmVzcyB4dF9jb25udHJhY2sg
-eHRfTUFTUVVFUkFERQ0KPiA+ID4gIG5mX2Nvbm50cmFja19uZXRsaW5rIG5mbmV0bGluayB4dF9h
-ZGRydHlwZSBpcHRhYmxlX25hdCBuZl9uYXQNCj4gPiA+ICBicl9uZXRmaWx0ZXIgb3ZlcmxheSBy
-cGNyZG1hIHJkbWFfdWNtIGliX2lzZXIgbGliaXNjc2kNCj4gPiA+ICBzY3NpX3RyYW5zcG9ydF9p
-c2NzaSBpYl91bWFkIHJkbWFfY20gaWJfaXBvaWIgaXdfY20gaWJfY20gbWx4NV9pYg0KPiA+ID4g
-IGliX3V2ZXJicyBpYl9jb3JlIHpyYW0genNtYWxsb2MgbWx4NV9jb3JlIGZ1c2UgQ1BVOiA0IFBJ
-RDogMCBDb21tOg0KPiA+ID4gIHN3YXBwZXIvNCBOb3QgdGFpbnRlZCA2LjkuMC1yYzQrICMyDQo+
-ID4gPiAgSGFyZHdhcmUgbmFtZTogUUVNVSBTdGFuZGFyZCBQQyAoUTM1ICsgSUNIOSwgMjAwOSks
-IEJJT1MgcmVsLTEuMTMuMC0wLWdmMjFiNWE0YWViMDItcHJlYnVpbHQucWVtdS5vcmcgMDQvMDEv
-MjAxNA0KPiA+ID4gIENhbGwgVHJhY2U6DQo+ID4gPiAgIDxJUlE+DQo+ID4gPiAgIGR1bXBfc3Rh
-Y2tfbHZsKzB4NTMvMHg3MA0KPiA+ID4gICBiYWRfcGFnZSsweDZmLzB4ZjANCj4gPiA+ICAgZnJl
-ZV91bnJlZl9wYWdlX3ByZXBhcmUrMHgyNzEvMHg0MjANCj4gPiA+ICAgZnJlZV91bnJlZl9wYWdl
-KzB4MzgvMHgxMjANCj4gPiA+ICAgX19fcHNrYl90cmltKzB4MjYxLzB4MzkwDQo+ID4gPiAgIHNr
-Yl9zZWdtZW50KzB4ZjYwLzB4MTA0MA0KPiA+ID4gICB0Y3BfZ3NvX3NlZ21lbnQrMHhlOC8weDRl
-MA0KPiA+ID4gICBpbmV0X2dzb19zZWdtZW50KzB4MTU1LzB4M2QwDQo+ID4gPiAgIHNrYl9tYWNf
-Z3NvX3NlZ21lbnQrMHg5OS8weDEwMA0KPiA+ID4gICBfX3NrYl9nc29fc2VnbWVudCsweGI0LzB4
-MTYwDQo+ID4gPiAgID8gbmV0aWZfc2tiX2ZlYXR1cmVzKzB4OTUvMHgyZjANCj4gPiA+ICAgdmFs
-aWRhdGVfeG1pdF9za2IrMHgxNmMvMHgzMzANCj4gPiA+ICAgdmFsaWRhdGVfeG1pdF9za2JfbGlz
-dCsweDRjLzB4NzANCj4gPiA+ICAgc2NoX2RpcmVjdF94bWl0KzB4MjNlLzB4MzUwDQo+ID4gPiAg
-IF9fZGV2X3F1ZXVlX3htaXQrMHgzMzQvMHhiYzANCj4gPiA+ICAgdGNmX21pcnJlZF90b19kZXYr
-MHgyYTUvMHgzZTAgW2FjdF9taXJyZWRdDQo+ID4gPiAgIHRjZl9taXJyZWRfYWN0KzB4ZDcvMHg0
-YjAgW2FjdF9taXJyZWRdDQo+ID4gPiAgID8gdGNmX3BlZGl0X2FjdCsweDZmLzB4NTQwIFthY3Rf
-cGVkaXRdDQo+ID4gPiAgIHRjZl9hY3Rpb25fZXhlYysweDgyLzB4MTcwDQo+ID4gPiAgIGZsX2Ns
-YXNzaWZ5KzB4MWVlLzB4MjAwIFtjbHNfZmxvd2VyXQ0KPiA+ID4gICA/IHRjZl9taXJyZWRfdG9f
-ZGV2KzB4MmE1LzB4M2UwIFthY3RfbWlycmVkXQ0KPiA+ID4gICA/IG1seDVlX2NvbXBsZXRpb25f
-ZXZlbnQrMHgzOS8weDQwIFttbHg1X2NvcmVdDQo+ID4gPiAgID8gbWx4NV9lcV9jb21wX2ludCsw
-eDFkNy8weDFmMCBbbWx4NV9jb3JlXQ0KPiA+ID4gICB0Y2ZfY2xhc3NpZnkrMHgyNmEvMHg0NzAN
-Cj4gPiA+ICAgdGNfcnVuKzB4YTIvMHgxMjANCj4gPiA+ICAgPyBoYW5kbGVfaXJxX2V2ZW50KzB4
-NTMvMHg4MA0KPiA+ID4gICA/IGt2bV9jbG9ja19nZXRfY3ljbGVzKzB4MTEvMHgyMA0KPiA+ID4g
-ICBfX25ldGlmX3JlY2VpdmVfc2tiX2NvcmUuY29uc3Rwcm9wLjArMHg5MzIvMHhlZTANCj4gPiA+
-ICAgX19uZXRpZl9yZWNlaXZlX3NrYl9saXN0X2NvcmUrMHhmZS8weDFmMA0KPiA+ID4gICBuZXRp
-Zl9yZWNlaXZlX3NrYl9saXN0X2ludGVybmFsKzB4MWI1LzB4MmIwDQo+ID4gPiAgIG5hcGlfZ3Jv
-X2NvbXBsZXRlLmNvbnN0cHJvcC4wKzB4ZWUvMHgxMjANCj4gPiA+ICAgZGV2X2dyb19yZWNlaXZl
-KzB4M2Y0LzB4NzEwDQo+ID4gPiAgIG5hcGlfZ3JvX3JlY2VpdmUrMHg3ZC8weDIyMA0KPiA+ID4g
-ICBtbHg1ZV9oYW5kbGVfcnhfY3FlX21wd3JxKzB4MTBkLzB4MWQwIFttbHg1X2NvcmVdDQo+ID4g
-PiAgIG1seDVlX3BvbGxfcnhfY3ErMHg4Yi8weDZmMCBbbWx4NV9jb3JlXQ0KPiA+ID4gICBtbHg1
-ZV9uYXBpX3BvbGwrMHhkYy8weDZjMCBbbWx4NV9jb3JlXQ0KPiA+ID4gICBfX25hcGlfcG9sbCsw
-eDI1LzB4MWIwDQo+ID4gPiAgIG5ldF9yeF9hY3Rpb24rMHgyYzEvMHgzMzANCj4gPiA+ICAgX19k
-b19zb2Z0aXJxKzB4Y2IvMHgyOGMNCj4gPiA+ICAgaXJxX2V4aXRfcmN1KzB4NjkvMHg5MA0KPiA+
-ID4gICBjb21tb25faW50ZXJydXB0KzB4ODUvMHhhMA0KPiA+ID4gICA8L0lSUT4NCj4gPiA+ICAg
-PFRBU0s+DQo+ID4gPiAgIGFzbV9jb21tb25faW50ZXJydXB0KzB4MjYvMHg0MA0KPiA+ID4gIFJJ
-UDogMDAxMDpkZWZhdWx0X2lkbGUrMHgxNy8weDIwDQo+ID4gPiAgQ29kZTogMDAgNGQgMjkgYzgg
-NGMgMDEgYzcgNGMgMjkgYzIgZTkgNzYgZmYgZmYgZmYgY2MgY2MgY2MgY2MgZjMgMGYgMWUNCj4g
-PiA+ICBmYSA4YiAwNSA3NiAzZiAwYSAwMSA4NSBjMCA3ZSAwNyAwZiAwMCAyZCAxZCA3NCA0MSAw
-MCBmYiBmNCA8ZmE+IGMzIDBmDQo+ID4gPiAgMWYgODAgMDAgMDAgMDAgMDAgZjMgMGYgMWUgZmEg
-NjUgNDggOGIgMzUgMDQgYjMgNDIgN2UgZjANCj4gPiA+ICBSU1A6IDAwMTg6ZmZmZjg4ODEwMDg3
-YmVkOCBFRkxBR1M6IDAwMDAwMjQ2DQo+ID4gPiAgUkFYOiAwMDAwMDAwMDAwMDAwMDAwIFJCWDog
-ZmZmZjg4ODEwMDg0MTVjMCBSQ1g6IDAwMDAwMGUxMTZkMzU5ZmINCj4gPiA+ICBSRFg6IDAwMDAw
-MDAwMDAwMDAwMDAgUlNJOiBmZmZmZmZmZjgyMjNlMWQxIFJESTogMDAwMDAwMDAwMDAzZjIxNA0K
-PiA+ID4gIFJCUDogMDAwMDAwMDAwMDAwMDAwNCBSMDg6IDAwMDAwMDAwMDAwM2YyMTQgUjA5OiAw
-MDAwMDBlMTE2ZDM1OWZiDQo+ID4gPiAgUjEwOiAwMDAwMDBlMTE2ZDM1OWZiIFIxMTogMDAwMDAw
-MDAwMDA1ZGZlZSBSMTI6IDAwMDAwMDAwMDAwMDAwMDQNCj4gPiA+ICBSMTM6IDAwMDAwMDAwMDAw
-MDAwMDAgUjE0OiAwMDAwMDAwMDAwMDAwMDAwIFIxNTogMDAwMDAwMDAwMDAwMDAwMA0KPiA+ID4g
-ICBkZWZhdWx0X2lkbGVfY2FsbCsweDNkLzB4ZjANCj4gPiA+ICAgZG9faWRsZSsweDFjZS8weDFl
-MA0KPiA+ID4gICBjcHVfc3RhcnR1cF9lbnRyeSsweDI5LzB4MzANCj4gPiA+ICAgc3RhcnRfc2Vj
-b25kYXJ5KzB4MTA5LzB4MTMwDQo+ID4gPiAgIGNvbW1vbl9zdGFydHVwXzY0KzB4MTI5LzB4MTM4
-DQo+ID4gPiAgIDwvVEFTSz4NCj4gPiA+IA0KPiA+ID4gSG93IGl0IGhhcHBlbnM6DQo+ID4gPiAt
-PiBza2Jfc2VnbWVudA0KPiA+ID4gICAtPiBjbG9uZSBza2IgaW50byBuc2tiDQo+ID4gPiAgIC0+
-IGNhbGwgX19wc2tiX3RyaW0obnNrYikNCj4gPiA+ICAgICAtPiBjYWxsIHBza2JfZXhwYW5kX2hl
-YWQobnNrYikgYmVjYXVzZSBuc2tiIGlzIGNsb25lZA0KPiA+ID4gICAgICAgLT4gY2FsbCBza2Jf
-cmVsZWFzZV9kYXRhKG5za2IpIGJlY2F1c2UgbnNrYiBpcyBjbG9uZWQNCj4gPiA+ICAgICAgICAg
-LT4gbnNrYi0+cHBfcmVjeWNsZSA9IDANCj4gPiA+ICAgICAtPiBza2JfdW5yZWYobnNrYi0+ZnJh
-Z1tpXSwgbnNrYikNCj4gPiA+ICAgICAgIC0+IG5za2ItPnBwX3JlY3ljbGUgaXMgZmFsc2UsIGZy
-YWcgaXMgcGFnZV9wb29sIHBhZ2UNCj4gPiA+ICAgICAgIC0+IEZyYWdtZW50IGlzIHJlbGVhc2Vk
-IHZpYSBwdXRfcGFnZShmcmFnIHBhZ2UpLCBoZW5jZSBsZWFraW5nDQo+ID4gPiAgICAgICAgICBm
-cm9tIHRoZSBwYWdlX3Bvb2wuDQo+ID4gPiANCj4gPiA+IFNvbWV0aGluZyB0ZWxscyBtZSB0aGF0
-IHRoaXMgaXMgbm90IGJlIHRoZSBvbmx5IGlzc3VlIG9mIHRoaXMga2luZC4uLg0KPiA+ID4gDQo+
-ID4gPiBUaGUgcGF0Y2ggaXRzZWxmIGNvbnRhaW5zIGEgc3VnZ2VzdGVkIGZpeCBmb3IgdGhpcyBz
-cGVjaWZpYyBidWc6IGl0DQo+ID4gPiBmb3JjZXMgdGhlIHVucmVmIGluIF9fX3Bza2JfdHJpbSB0
-byByZWN5Y2xlIHRvIHRoZSBwYWdlX3Bvb2wuIElmIHRoZQ0KPiA+ID4gcGFnZSBpcyBub3QgYSBw
-YWdlX3Bvb2wgcGFnZSwgaXQgd2lsbCBiZSBkZXJlZmVyZW5jZWQgYXMgYSByZWd1bGFyIHBhZ2Uu
-DQo+ID4gPiANCj4gPiA+IFRoZSBhbHRlcm5hdGl2ZSB3b3VsZCBiZSB0byBzYXZlIHRoZSBza2It
-PnBwX3JlY3ljbGVkIGZsYWcgYmVmb3JlDQo+ID4gPiBwc2tiX2V4cGFuZF9oZWFkIGFuZCB1c2Ug
-aXQgbGF0ZXIgZHVyaW5nIHRoZSB1bnJlZi4NCj4gPiA+IA0KPiA+IA0KPiA+IE9uZSBtb3JlIGlu
-dGVyZXN0aW5nIHBvaW50IGlzIHRoZSBjb21tZW50IGluIHNrYl9yZWxlYXNlX2RhdGEgWzFdIGFu
-ZCBpdCdzDQo+ID4gY29tbWl0IG1lc3NhZ2UgWzJdIGZyb20gSWxpYXMuIExvb2tpbmcgYXQgdGhl
-IGNvbW1pdCBtZXNzYWdlDQo+ID4gDQo+IA0KPiBTb3JyeSBmb3IgdGhlIGJ1Zy4gSSBkb24ndCB0
-aGluayB0aGlzIGlzIHRoZSByaWdodCBmaXggdG8gYmUgaG9uZXN0DQo+IHRob3VnaC4gQXMgeW91
-IG1lbnRpb24gdGhpcyBpcyBvbmx5IDEgc3VjaCBpbnN0YW5jZSBvZiBhIGdlbmVyYWwNCj4gdW5k
-ZXJseWluZyBpc3N1ZS4NCj4gDQpSaWdodC4gSXQgd2FzIGEgY29udmVyc2F0aW9uIHN0YXJ0ZXIg
-OikuDQoNCj4gVGhlIHVuZGVybHlpbmcgaXNzdWUgaXMgdGhhdCBiZWZvcmUgdGhlIGZpeGVzIGNv
-bW1pdCwgc2tiX2ZyYWdfcmVmKCkNCj4gZ3JhYmJlZCBhIHJlZ3VsYXIgcGFnZSByZWYuIEFmdGVy
-IHRoZSBmaXhlcyBjb21taXQsIHNrYl9mcmFnX3JlZigpDQo+IGdyYWJzIGEgcGFnZS1wb29sIHJl
-Zi4NCj4gDQpJdCBpcyBzdGlsbCBwb3NzaWJsZSBmb3Igc2tiX2ZyYWdfcmVmKCkgdG8gZ3JhYiBh
-IHJlZ3VsYXIgcGFnZSByZWYgZm9yIGENCnBhZ2VfcG9vbCBwYWdlOiBmb3IgZXhhbXBsZSBpbiBz
-a2Jfc2VnbWVudCgpIHdoZW4gYSBuc2tiIGlzIGNyZWF0ZWQgKG5vdCBjbG9uZWQsDQpzbyBwcF9y
-ZWN5Y2xlIGlzIG9mZikgYW5kIGZyYWdzIHdpdGggcGFnZV9wb29sIHBhZ2VzIGFyZSBhZGRlZCB0
-bw0KaXQuIEkgd2FzIHNlZWluZyB0aGlzIGluIG15IHRlc3QgYXMgd2VsbC4NCg0KSWYgdGhlIGlu
-dGVudGlvbiBpcyB0byBhbHdheXMgdXNlIHBhZ2VfcG9vbCByZWYvdW5yZWYgZm9yIHBhZ2VfcG9v
-bCBwYWdlcywgdGhlbg0KdGhlIHJlY3ljbGUgZmxhZyBjaGVjayBkb2Vzbid0IGJlbG9uZyBza2Jf
-ZnJhZ19yZWYvdW5yZWYoKS4NCg0KPiAgVGhlIHVucmVmIHBhdGggYWx3YXlzIGRyb3BwZWQgYSBy
-ZWd1bGFyIHBhZ2UNCj4gcmVmLCB0aGFua3MgdG8gdGhpcyBjb21taXQgYXMgeW91IHBvaW50IG91
-dDoNCj4gDQo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0
-L3RvcnZhbGRzL2xpbnV4LmdpdC9jb21taXQvP2lkPTJjYzNhZWI1ZWNjY2VjMGQyNjY4MTMxNzJm
-Y2Q4MmI0YjVmYTU4MDMNCj4gDQo+IEFGQUlDVCB0aGUgY29ycmVjdCBmaXggaXMgdG8gYWN0dWFs
-bHkgcmV2ZXJ0IGNvbW1pdCAyY2MzYWViNWVjY2MNCj4gKCJza2J1ZmY6IEZpeCBhIHBvdGVudGlh
-bCByYWNlIHdoaWxlIHJlY3ljbGluZyBwYWdlX3Bvb2wgcGFja2V0cyIpLg0KPiBUaGUgcmVhc29u
-IGlzIHRoYXQgbm93IHRoYXQgc2tiX2ZyYWdfcmVmKCkgY2FuIGdyYWIgcGFnZS1wb29sIHJlZnMs
-IHdlDQo+IGRvbid0IG5lZWQgdG8gbWFrZSBzdXJlIHRoZXJlIGlzIG9ubHkgMSBTS0IgdGhhdCB0
-cmlnZ2VycyB0aGUgcmVjeWNsZQ0KPiBwYXRoIGFueW1vcmUuIEFsbCB0aGUgc2tiIGFuZCBpdHMg
-Y2xvbmVzIGNhbiBvYnRhaW4gcGFnZS1wb29sIHJlZnMsDQo+IGFuZCBpbiB0aGUgdW5yZWYgcGF0
-aCB3ZSBkcm9wIHRoZSBwYWdlLXBvb2wgcmVmcy4gcGFnZV9wb29sX3B1dF9wYWdlKCkNCj4gZGV0
-ZWN0cyBjb3JyZWN0bHkgdGhhdCB0aGUgbGFzdCBwYWdlLXBvb2wgcmVmIGlzIHB1dCBhbmQgcmVj
-eWNsZXMgdGhlDQo+IHBhZ2Ugb25seSB0aGVuLg0KPiANCkkgZG9uJ3QgdGhpbmsgdGhpcyBpcyBh
-IGdvb2Qgd2F5IGZvcndhcmQuIEZvciBleGFtcGxlLCBza2ItPnBwX3JlY3ljbGUgaXMgdXNlZA0K
-YXMgYSBoaW50IGluIHNrYl9ncm9fcmVjZWl2ZSB0byBhdm9pZCBjb2FsZXNjaW5nIHNrYnMgd2l0
-aCBkaWZmZXJlbnQgcHBfcmVjeWNsZQ0KZmxhZyBzdGF0ZXMuIFRoaXMgY291bGQgaW50ZXJmZXJl
-IHdpdGggdGhhdC4NCg0KPiBJJ20gdW5hYmxlIHRvIHJlcHJvIHRoaXMgaXNzdWUuIERvIHlvdSBu
-ZWVkIHRvIGRvIGFueXRoaW5nIHNwZWNpYWw/IE9yDQo+IGlzIDEgZmxvdyB0aGF0IGhpdHMgc2ti
-X3NlZ21lbnQoKSBnb29kIGVub3VnaD8NCj4gDQpJIGRvbid0IGhhdmUgYSB2ZXJ5IGVhc3kgcmVw
-cm8uIEJ1dCB0aGUgdGVzdCBpcyBhIGZvcndhcmRpbmcgb25lLg0KDQo+IFJldmVydGluZyBjb21t
-aXQgMmNjM2FlYjVlY2NjICgic2tidWZmOiBGaXggYSBwb3RlbnRpYWwgcmFjZSB3aGlsZQ0KPiBy
-ZWN5Y2xpbmcgcGFnZV9wb29sIHBhY2tldHMiKSBzaG93cyBubyByZWdyZXNzaW9ucyBmb3IgbWUu
-IElzIGl0DQo+IHBvc3NpYmxlIHRvIHRyeSB0aGF0IG91dD8NCj4gDQpJIGNhbiB0cnkgaXQgb3V0
-LCBpdCBtaWdodCB3b3JrLiBCdXQgYWdhaW4sIEkgZmVhciB0aGF0IHNpbXBseSByZXZlcnRpbmcg
-dGhpcw0KY2hhbmdlIGNhbiBoYXZlIHRyaWdnZXIgb3RoZXIgdW5leHBlY3RlZCBiZWhhdmlvdXJz
-LiBBbHNvLCB0aGlzIGRvZXNuJ3QgaGFuZGxlDQp0aGUgYmVoYXZpb3VyIGZvciBza2JfZnJhZ19y
-ZWYgbWVudGlvbmVkIGFib3ZlLg0KDQo+ICBJZiB0aGF0IGRvZXNuJ3Qgd29yaywgSSB0aGluayBJ
-IHByZWZlcg0KPiByZXZlcnRpbmcgYTU4MGVhOTk0ZmQzICgibmV0OiBtaXJyb3Igc2tiIGZyYWcg
-cmVmL3VucmVmIGhlbHBlcnMiKQ0KPiByYXRoZXIgdGhhbiBtZXJnaW5nIHRoaXMgZml4IHRvIG1h
-a2Ugc3VyZSB3ZSByZW1vdmVkIHRoZSB1bmRlcmx5aW5nDQo+IGNhdXNlIG9mIHRoZSBpc3N1ZS4N
-ClRoaXMgaXMgdGhlIHNhZmVzdCBiZXQuDQoNClNvLCB0byByZWNhcCwgSSBzZWUgMiBwb3NzaWJp
-bGl0aWVzOg0KDQoxKSBSZXZlcnQgYTU4MGVhOTk0ZmQzICgibmV0OiBtaXJyb3Igc2tiIGZyYWcg
-cmVmL3VucmVmIGhlbHBlcnMiKTogc2FmZSwgYnV0IGl0DQp3aWxsIHByb2JhYmx5IGhhdmUgdG8g
-Y29tZSBiYWNrIGluIG9uZSB3YXkgb3IgYW5vdGhlci4NCjIpIERyb3AgdGhlIHJlY3ljbGUgY2hl
-Y2tzIGZyb20gc2tiX2ZyYWdfcmVmL3VucmVmOiB0aGlzIGVuZm9yY2VzIHRoZSBydWxlIG9mDQph
-bHdheXMgcmVmZXJlbmNpbmcvZGVyZWZlcmVuY2luZyBwYWdlcyBiYXNlZCBvbiB0aGVpciB0eXBl
-IChwYWdlX3Bvb2wgb3INCm5vcm1hbCkuIA0KDQpUaGFua3MsDQpEcmFnb3MNCj4gDQo+ID4gWzFd
-IGh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y2LjktcmM1L3NvdXJjZS9uZXQvY29y
-ZS9za2J1ZmYuYyNMMTEzNw0KPiA+IFsyXQ0KPiA+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHVi
-L3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC9jb21taXQvP2lkPTJjYzNh
-ZWI1ZWNjY2VjMGQyNjY4MTMxNzJmY2Q4MmI0YjVmYTU4MDMNCj4gPiANCj4gPiA+IFNpZ25lZC1v
-ZmYtYnk6IERyYWdvcyBUYXR1bGVhIDxkdGF0dWxlYUBudmlkaWEuY29tPg0KPiA+ID4gQ28tZGV2
-ZWxvcGVkLWJ5OiBKaWFuYm8gTGl1IDxqaWFuYm9sQG52aWRpYS5jb20+DQo+ID4gPiBGaXhlczog
-YTU4MGVhOTk0ZmQzICgibmV0OiBtaXJyb3Igc2tiIGZyYWcgcmVmL3VucmVmIGhlbHBlcnMiKQ0K
-PiA+ID4gQ2M6IE1pbmEgQWxtYXNyeSA8YWxtYXNyeW1pbmFAZ29vZ2xlLmNvbT4NCj4gPiA+IC0t
-LQ0KPiA+ID4gIG5ldC9jb3JlL3NrYnVmZi5jIHwgMiArLQ0KPiA+ID4gIDEgZmlsZSBjaGFuZ2Vk
-LCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiA+ID4gDQo+ID4gPiBkaWZmIC0tZ2l0
-IGEvbmV0L2NvcmUvc2tidWZmLmMgYi9uZXQvY29yZS9za2J1ZmYuYw0KPiA+ID4gaW5kZXggMzdj
-ODU4ZGMxMWE2Li5hYjc1YjRmODc2Y2UgMTAwNjQ0DQo+ID4gPiAtLS0gYS9uZXQvY29yZS9za2J1
-ZmYuYw0KPiA+ID4gKysrIGIvbmV0L2NvcmUvc2tidWZmLmMNCj4gPiA+IEBAIC0yNjM0LDcgKzI2
-MzQsNyBAQCBpbnQgX19fcHNrYl90cmltKHN0cnVjdCBza19idWZmICpza2IsIHVuc2lnbmVkIGlu
-dCBsZW4pDQo+ID4gPiAgICAgICAgICAgICAgIHNrYl9zaGluZm8oc2tiKS0+bnJfZnJhZ3MgPSBp
-Ow0KPiA+ID4gDQo+ID4gPiAgICAgICAgICAgICAgIGZvciAoOyBpIDwgbmZyYWdzOyBpKyspDQo+
-ID4gPiAtICAgICAgICAgICAgICAgICAgICAgc2tiX2ZyYWdfdW5yZWYoc2tiLCBpKTsNCj4gPiA+
-ICsgICAgICAgICAgICAgICAgICAgICBfX3NrYl9mcmFnX3VucmVmKCZza2Jfc2hpbmZvKHNrYikt
-PmZyYWdzW2ldLCB0cnVlKTsNCj4gPiA+IA0KPiA+ID4gICAgICAgICAgICAgICBpZiAoc2tiX2hh
-c19mcmFnX2xpc3Qoc2tiKSkNCj4gPiA+ICAgICAgICAgICAgICAgICAgICAgICBza2JfZHJvcF9m
-cmFnbGlzdChza2IpOw0KPiA+IA0KPiANCj4gDQoNCg==
+On 25/04/2024 07:20, Baolin Wang wrote:
+> 
+> 
+> On 2024/4/24 22:20, Ryan Roberts wrote:
+>> On 24/04/2024 14:49, Baolin Wang wrote:
+>>>
+>>>
+>>> On 2024/4/24 18:01, Ryan Roberts wrote:
+>>>> On 24/04/2024 10:55, Baolin Wang wrote:
+>>>>>
+>>>>>
+>>>>> On 2024/4/24 16:26, Ryan Roberts wrote:
+>>>>>> On 24/04/2024 07:55, Baolin Wang wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> On 2024/4/23 18:41, Ryan Roberts wrote:
+>>>>>>>> On 22/04/2024 08:02, Baolin Wang wrote:
+>>>>>>>>> Anonymous pages have already been supported for multi-size (mTHP)
+>>>>>>>>> allocation
+>>>>>>>>> through commit 19eaf44954df, that can allow THP to be configured
+>>>>>>>>> through the
+>>>>>>>>> sysfs interface located at
+>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled'.
+>>>>>>>>>
+>>>>>>>>> However, the anonymous shared pages will ignore the anonymous mTHP rule
+>>>>>>>>> configured through the sysfs interface, and can only use the PMD-mapped
+>>>>>>>>> THP, that is not reasonable. Many implement anonymous page sharing through
+>>>>>>>>> mmap(MAP_SHARED | MAP_ANONYMOUS), especially in database usage scenarios,
+>>>>>>>>> therefore, users expect to apply an unified mTHP strategy for anonymous
+>>>>>>>>> pages,
+>>>>>>>>> also including the anonymous shared pages, in order to enjoy the
+>>>>>>>>> benefits of
+>>>>>>>>> mTHP. For example, lower latency than PMD-mapped THP, smaller memory bloat
+>>>>>>>>> than PMD-mapped THP, contiguous PTEs on ARM architecture to reduce TLB
+>>>>>>>>> miss
+>>>>>>>>> etc.
+>>>>>>>>
+>>>>>>>> This sounds like a very useful addition!
+>>>>>>>>
+>>>>>>>> Out of interest, can you point me at any workloads (and off-the-shelf
+>>>>>>>> benchmarks
+>>>>>>>> for those workloads) that predominantly use shared anon memory?
+>>>>>>>
+>>>>>>> As far as I know, some database related workloads make extensive use of
+>>>>>>> shared
+>>>>>>> anonymous page, such as PolarDB[1] in our Alibaba fleet, or MySQL likely
+>>>>>>> also
+>>>>>>> uses shared anonymous memory. And I still need to do some investigation to
+>>>>>>> measure the performance.
+>>>>>>>
+>>>>>>> [1] https://github.com/ApsaraDB/PolarDB-for-PostgreSQL
+>>>>>>
+>>>>>> Thanks for the pointer!
+>>>>>>
+>>>>>>>
+>>>>>>>>> The primary strategy is that, the use of huge pages for anonymous shared
+>>>>>>>>> pages
+>>>>>>>>> still follows the global control determined by the mount option "huge="
+>>>>>>>>> parameter
+>>>>>>>>> or the sysfs interface at
+>>>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled'.
+>>>>>>>>> The utilization of mTHP is allowed only when the global 'huge' switch is
+>>>>>>>>> enabled.
+>>>>>>>>> Subsequently, the mTHP sysfs interface
+>>>>>>>>> (/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled)
+>>>>>>>>> is checked to determine the mTHP size that can be used for large folio
+>>>>>>>>> allocation
+>>>>>>>>> for these anonymous shared pages.
+>>>>>>>>
+>>>>>>>> I'm not sure about this proposed control mechanism; won't it break
+>>>>>>>> compatibility? I could be wrong, but I don't think shmem's use of THP
+>>>>>>>> used to
+>>>>>>>> depend upon the value of /sys/kernel/mm/transparent_hugepage/enabled? So it
+>>>>>>>
+>>>>>>> Yes, I realized this after more testing.
+>>>>>>>
+>>>>>>>> doesn't make sense to me that we now depend upon the
+>>>>>>>> /sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled values (which by
+>>>>>>>> default disables all sizes except 2M, which is set to "inherit" from
+>>>>>>>> /sys/kernel/mm/transparent_hugepage/enabled).
+>>>>>>>>
+>>>>>>>> The other problem is that shmem_enabled has a different set of options
+>>>>>>>> (always/never/within_size/advise/deny/force) to enabled
+>>>>>>>> (always/madvise/never)
+>>>>>>>>
+>>>>>>>> Perhaps it would be cleaner to do the same trick we did for enabled;
+>>>>>>>> Introduce
+>>>>>>>> /mm/transparent_hugepage/hugepage-XXkb/shmem_enabled, which can have all
+>>>>>>>> the
+>>>>>>>> same values as the top-level
+>>>>>>>> /sys/kernel/mm/transparent_hugepage/shmem_enabled,
+>>>>>>>> plus the additional "inherit" option. By default all sizes will be set to
+>>>>>>>> "never" except 2M, which is set to "inherit".
+>>>>>>>
+>>>>>>> Sounds good to me. But I do not want to copy all same values from top-level
+>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled':
+>>>>>>> always within_size advise never deny force
+>>>>>>>
+>>>>>>> For mTHP's shmem_enabled interface, we can just keep below values:
+>>>>>>> always within_size advise never
+>>>>>>>
+>>>>>>> Cause when checking if mTHP can be used for anon shmem, 'deny' is equal to
+>>>>>>> 'never', and 'force' is equal to 'always'.
+>>>>>>
+>>>>>> I'll admit it wasn't completely clear to me after reading the docs, but my
+>>>>>> rough
+>>>>>> understanding is:
+>>>>>>
+>>>>>>     - /sys/kernel/mm/transparent_hugepage/shmem_enabled controls
+>>>>>>       mmap(SHARED|ANON) allocations (mostly; see rule 3)
+>>>>>>     - huge=... controls tmpfs allocations
+>>>>>>     - deny and force in shmem_enabled are equivalent to never and always for
+>>>>>>       mmap(SHARED|ANON) but additionally override all tmpfs mounts so they
+>>>>>> act as
+>>>>>>       if they were mounted with huge=never or huge=always
+>>>>>>
+>>>>>> Is that correct? If so, then I think it still makes sense to support per-size
+>>>>>
+>>>>> Correct.
+>>>>>
+>>>>>> deny/force. Certainly if a per-size control is set to "inherit" and the
+>>>>>> top-level control is set to deny or force, you would need that to mean
+>>>>>> something.
+>>>>>
+>>>>> IMHO, the '/mm/transparent_hugepage/hugepage-XXkb/shmem_enabled' interface
+>>>>> should only control the anonymous shmem. And 'huge=' controls tmpfs
+>>>>> allocation,
+>>>>> so we should not use anonymous control to override tmpfs control, which
+>>>>> seems a
+>>>>> little mess?
+>>>>
+>>>> I agree it would be cleaner to only handle mmap(SHARED|ANON) here, and leave
+>>>> the
+>>>> tmpfs stuff for another time. But my point is that
+>>>> /mm/transparent_hugepage/shmem_enabled already interferes with tmpfs if the
+>>>> value is deny or force. So if you have:
+>>>>
+>>>> echo deny > /mm/transparent_hugepage/shmem_enabled
+>>>
+>>> IIUC, this global control will cause shmem_is_huge() to always return false, so
+>>> no matter how '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' is set,
+>>> anonymous shmem will not use mTHP. No?
+>>
+>> No, that's not how '/mm/transparent_hugepage/hugepage-xxxkB/enabled' works, and
+>> I think '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' should follow
+>> the established pattern.
+>>
+>> For anon-private, each size is controlled by its
+>> /mm/transparent_hugepage/hugepage-xxxkB/enabled value. Unless that value is
+>> "inherit", in which case the value in /mm/transparent_hugepage/enabled is used
+>> for that size.
+>>
+>> That approach enables us to 1) maintain back-compat and 2) control each size
+>> independently
+>>
+>> 1) is met because the default is that all sizes are initially set to "never",
+>> except the PMD-size (e.g. /mm/transparent_hugepage/hugepage-2048kB/enabled)
+>> which is initially set to inherit. So any mTHP unaware SW can still modify
+>> /mm/transparent_hugepage/enabled and it will still only apply to PMD size.
+>>
+>> 2) is met because mTHP aware SW can come along and e.g. enable the 64K size
+>> (echo always > /mm/transparent_hugepage/hugepage-64kB/enabled) without having to
+>> modify the value in /mm/transparent_hugepage/enabled.
+> 
+> Thanks for explanation. Initially, I want to make
+> ‘/mm/transparent_hugepage/shmem_enabled’ be a global control for huge page, but
+> I think it should follow the same strategy as anon mTHP as you said.
+> 
+>>>> echo inherit > /mm/transparent_hugepage/hugepage-64kB/shmem_enabled
+>>>>
+>>>> What does that mean?
+>>
+>> So I think /mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled will need to
+>> support the deny and force values. When applied to non-PMD sizes, "deny" can
+>> just be a noop for now, because there was no way to configure a tmpfs mount for
+>> non-PMD size THP in the first place. But I'm not sure what to do with "force"?
+> 
+> OK. And I also prefer that "force" should be a noop too, since anon shmem
+> control should not configure tmpfs huge page allocation.
+
+I guess technically they won't be noops, but (for the non-PMD-sizes) "force"
+will be an alias for "always" and "deny" will be an alias for "never"?
+
+I was just a bit concerned about later changing that behavior to also impact
+tmpfs once tmpfs supports mTHP; could that cause breaks? But thinking about it,
+I don't see that as a problem.
+
 
