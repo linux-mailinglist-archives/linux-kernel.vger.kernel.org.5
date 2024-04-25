@@ -1,389 +1,178 @@
-Return-Path: <linux-kernel+bounces-158367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 664F38B1EDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:13:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CCF38B1EE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:13:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88F871C211BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:13:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40A6C1C214BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F1A86274;
-	Thu, 25 Apr 2024 10:13:24 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B04DA8624C;
+	Thu, 25 Apr 2024 10:13:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="NMnuMYdm"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2725D2E647;
-	Thu, 25 Apr 2024 10:13:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7741084FC5;
+	Thu, 25 Apr 2024 10:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714040003; cv=none; b=OrCRfMJ/2MIcrOGiOsd142eX3ekXsvAMUQyZR3A1iHC5eMynPim5QduVff9YPh5CPu5Z2HPeLYdnJTGx55gcCJkkjUWyOps3xuKl9QqxGIoAEOgcJfOMdgDCu2y5uIHXV6pSvBpKnxz4Nj1mKaiJCQdYBZeDJOgAwMvVBAqEhYU=
+	t=1714040029; cv=none; b=elxHpio6Q6amkvt2kjI5ye/Y3NbY19PBjAHSpQDD/uo5kdTm4tSTzJQiB5TI9LZVHtp6FupYwVbpZXdunzt2imbQfzZycnD9geG6ODp1sARhHUngyvdPV6y9VN7Biqlu2TYE/CRsqblvQdsdlKe+2nzTNwlWKVRXd+jrz6h1iYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714040003; c=relaxed/simple;
-	bh=U+b8fa7W192UqFK+Q+qJIol6Ba04zHnJqB/lQJ6Cp9g=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L2NxY0Sk6/J3HPL+OT8rlXHJigmpqDtWxBw1xbt3bnS39iGXTK9I7wy0f0hySYcdYFPtZcq6W1KxwzXZ+8njSfPRr1eAR4LucM0SP1ast0+QR0xYgAqO6p6AfsCxaRYqQxZ8eCEVzaqXmtV3Vl4bH2griItZ6BwLDq/SgGg0Uk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VQBSt5g3Fz6JB3D;
-	Thu, 25 Apr 2024 18:10:54 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id C26F3140736;
-	Thu, 25 Apr 2024 18:13:16 +0800 (CST)
-Received: from localhost (10.122.247.231) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 25 Apr
- 2024 11:13:15 +0100
-Date: Thu, 25 Apr 2024 11:13:15 +0100
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To: Marc Zyngier <maz@kernel.org>, <linuxarm@huawei.com>
-CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
-	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
-	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, "James Morse"
-	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
- Brucker <jean-philippe@linaro.org>, Catalin Marinas
-	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Ingo Molnar
-	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <justin.he@arm.com>, <jianyong.wu@arm.com>
-Subject: Re: [PATCH v7 11/16] irqchip/gic-v3: Add support for ACPI's
- disabled but 'online capable' CPUs
-Message-ID: <20240425111315.00002948@huawei.com>
-In-Reply-To: <20240425105637.000030a7@huawei.com>
-References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
-	<20240418135412.14730-12-Jonathan.Cameron@huawei.com>
-	<20240422114020.0000294f@Huawei.com>
-	<87plugthim.wl-maz@kernel.org>
-	<20240424135438.00001ffc@huawei.com>
-	<20240425102806.00003683@Huawei.com>
-	<20240425105637.000030a7@huawei.com>
-Organization: Huawei Technologies R&D (UK) Ltd.
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
+	s=arc-20240116; t=1714040029; c=relaxed/simple;
+	bh=H6zHL7rUs2vabMzNYsm9w7b2QW4st9m6w0TxLm4FLFk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RAC5nZ63R+IPrhYFKdiFo962a6jN0ei3U//YJ1dvswpIAunC74yHg29YouEA10QK2tHbOP2RaVG1oxjz3EMxNjSWcX3w74yYpwFw2btwicPWcyB7xQ33U1TyAJkVgl5h2dUi4yonlDVv7hnywd6bSmRvmqr0GTRqqVjduQ0E0DQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=NMnuMYdm; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1714040015; x=1714644815; i=deller@gmx.de;
+	bh=pzkDqB4oCrdeansAkrKYjZ6pH+bsyogE99NCvj2aUQg=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=NMnuMYdmqQq1/cGfeJnBStCgm22HV3KdnkQsA9lFAvz3VAJ4lHe+suQrJUwXAC0L
+	 1J8PfzqdfCiaz0owdDv0FQJgTXfG8k2bdkBN9Ut8UOptbCeT5nJRFNs7DD3tUsa6E
+	 S57oRVW/o+VCFTiI+7yAHB5RRg3OSkrqRASxLl6kZyO/LQNUrn1MwYgqF/l/voLu9
+	 IUm2qeRyTZbMLCLRNZWAg40uHFMxIBzQgdxnwVvha8NiALn818vZr6sAu1sFEvxtt
+	 jprdJb+qktknewuz+5D1/SkqHmBJSd6mI/464XfAPtgdVKt8CBC8LsMVlzdgOUzD0
+	 dZrWplWRbF7tXprugQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.8.0.6] ([78.94.87.245]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MysW2-1suo7Z1ekM-00vzco; Thu, 25
+ Apr 2024 12:13:35 +0200
+Message-ID: <784db573-5903-4c13-b0ad-fdeeb7b649de@gmx.de>
+Date: Thu, 25 Apr 2024 12:13:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] video: fbdev: replacing of_node_put with
+ __free(device_node)
+To: Abdulrasaq Lawani <abdulrasaqolawani@gmail.com>, sam@ravnborg.org,
+ tzimmermann@suse.de, christophe.jaillet@wanadoo.fr,
+ u.kleine-koenig@pengutronix.de, julia.lawall@inria.fr
+Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+ javier.carrasco.cruz@gmail.com
+References: <20240423012021.56470-1-abdulrasaqolawani@gmail.com>
+Content-Language: en-US
+From: Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <20240423012021.56470-1-abdulrasaqolawani@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:cLoYK3RAKUWSdOY6pQlv7OlqIwml9+GVoL+EEXQ8NdchQNLb/zj
+ GXFCxHpUtoQ2ueZvax1PU+p/UTXOGjnhrfOL16gGtIKh2Aljp74vzu1NlXaxblZMcHBmLMT
+ MvizEjMG5UocoweYVAWJdHpGJDfEneRkOxzwBRaahxmhERpSZmEDQa9AoffIUn9loxGiqWc
+ fQsg6ql/RgDFBP7ader6w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:7Bm6gTeIB1w=;mvdNqtr9er35ddS/XAQnZYH2em/
+ p1B5ioWPV2HEdhWe7nLTc82QrOA/TzBvNHh1GAtWWp9VKwj3Ht0cGxtRk1iuG2uwu3jbBAu8o
+ l323RTgmnb5WdjENF8+rT2meXJUsK3hnIH+ZXGrasI/XmKNpP+gTr3MFJXjNw/de+dDYe1zg2
+ scNrCAGKLPVDtRVybE/lxQRjkUoM8njBeh+9t2DGfv46zcgmP9uydLXymZyoBT1EriohPPNm2
+ KsbxMrtJwp13oB87JrR44N5SFC9cgaD2xELN4L3nGkleLsMNu+T6NLsidDbAzsEWcvwKEb2Co
+ ZkcgZ8tk0JAAzdzpVMtrvhpWwRh+8jHYbGs6IZGFKOcPjWdf9VIP8uOjsFWM719kGaEBP0oV3
+ 1qa2q8jaSm2ct5Ygz4Gutrs9pYF/HOLb5wBCxDqdONLjIFBDRZAII+Z6D1fR2dfNcCrxhhj9N
+ SbtTMtHRU/34IdrNrSsXLYosbTPWBaqTB55x6VGrsab4Y8c/A8COcfDg/tYjpTVaToQJQeLsm
+ i8kZej7MEZzPem+LzC7A5w06YON3ItjRKAdjHgFhXNv+SFYnxCIjfNptn4HdkGy4E4+Kla19G
+ SQYIlqqS8UEA0zmO/8yvKukohVC+7vFZ5qNZwjU9QwsW+xTsLaRkHWEV2Xgh8/cQ7HoFKOHl/
+ JIgcRBduB/BXrJtCnSwHV6gcD8MI/Qw5Ypt6RP9OR0Sq2S2DUIDhqUQeMxtVDn4ZntK5nP7Ya
+ iPmviYJL5JB/Z+xBagMR8mdT9YXnBL89h+5EFYj7PSbzBzeHqeGa8tYECcDhAGFKRai5QlmBB
+ kPixGUkKaNsPoTchhAuRfVwybotQvmXVq2ylqwYnso3cU=
 
-On Thu, 25 Apr 2024 10:56:37 +0100
-Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
+On 4/23/24 03:20, Abdulrasaq Lawani wrote:
+> Replaced instance of of_node_put with __free(device_node)
+> to simplify code and protect against any memory leaks
+> due to future changes in the control flow.
+>
+> Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+> Signed-off-by: Abdulrasaq Lawani <abdulrasaqolawani@gmail.com>
 
-> On Thu, 25 Apr 2024 10:28:06 +0100
-> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> 
-> > On Wed, 24 Apr 2024 13:54:38 +0100
-> > Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
-> >   
-> > > On Tue, 23 Apr 2024 13:01:21 +0100
-> > > Marc Zyngier <maz@kernel.org> wrote:
-> > >     
-> > > > On Mon, 22 Apr 2024 11:40:20 +0100,
-> > > > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:      
-> > > > > 
-> > > > > On Thu, 18 Apr 2024 14:54:07 +0100
-> > > > > Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
-> > > > >         
-> > > > > > From: James Morse <james.morse@arm.com>
-> > > > > > 
-> > > > > > To support virtual CPU hotplug, ACPI has added an 'online capable' bit
-> > > > > > to the MADT GICC entries. This indicates a disabled CPU entry may not
-> > > > > > be possible to online via PSCI until firmware has set enabled bit in
-> > > > > > _STA.
-> > > > > > 
-> > > > > > This means that a "usable" GIC is one that is marked as either enabled,
-> > > > > > or online capable. Therefore, change acpi_gicc_is_usable() to check both
-> > > > > > bits. However, we need to change the test in gic_acpi_match_gicc() back
-> > > > > > to testing just the enabled bit so the count of enabled distributors is
-> > > > > > correct.
-> > > > > > 
-> > > > > > What about the redistributor in the GICC entry? ACPI doesn't want to say.
-> > > > > > Assume the worst: When a redistributor is described in the GICC entry,
-> > > > > > but the entry is marked as disabled at boot, assume the redistributor
-> > > > > > is inaccessible.
-> > > > > > 
-> > > > > > The GICv3 driver doesn't support late online of redistributors, so this
-> > > > > > means the corresponding CPU can't be brought online either. Clear the
-> > > > > > possible and present bits.
-> > > > > > 
-> > > > > > Systems that want CPU hotplug in a VM can ensure their redistributors
-> > > > > > are always-on, and describe them that way with a GICR entry in the MADT.
-> > > > > > 
-> > > > > > When mapping redistributors found via GICC entries, handle the case
-> > > > > > where the arch code believes the CPU is present and possible, but it
-> > > > > > does not have an accessible redistributor. Print a warning and clear
-> > > > > > the present and possible bits.
-> > > > > > 
-> > > > > > Signed-off-by: James Morse <james.morse@arm.com>
-> > > > > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> > > > > > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>        
-> > > > > 
-> > > > > +CC Marc,
-> > > > > 
-> > > > > Whilst this has been unchanged for a long time, I'm not 100% sure
-> > > > > we've specifically drawn your attention to it before now.
-> > > > > 
-> > > > > Jonathan
-> > > > >         
-> > > > > > 
-> > > > > > ---
-> > > > > > v7: No Change.
-> > > > > > ---
-> > > > > >  drivers/irqchip/irq-gic-v3.c | 21 +++++++++++++++++++--
-> > > > > >  include/linux/acpi.h         |  3 ++-
-> > > > > >  2 files changed, 21 insertions(+), 3 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> > > > > > index 10af15f93d4d..66132251c1bb 100644
-> > > > > > --- a/drivers/irqchip/irq-gic-v3.c
-> > > > > > +++ b/drivers/irqchip/irq-gic-v3.c
-> > > > > > @@ -2363,11 +2363,25 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
-> > > > > >  				(struct acpi_madt_generic_interrupt *)header;
-> > > > > >  	u32 reg = readl_relaxed(acpi_data.dist_base + GICD_PIDR2) & GIC_PIDR2_ARCH_MASK;
-> > > > > >  	u32 size = reg == GIC_PIDR2_ARCH_GICv4 ? SZ_64K * 4 : SZ_64K * 2;
-> > > > > > +	int cpu = get_cpu_for_acpi_id(gicc->uid);
-> > > > > >  	void __iomem *redist_base;
-> > > > > >  
-> > > > > >  	if (!acpi_gicc_is_usable(gicc))
-> > > > > >  		return 0;
-> > > > > >  
-> > > > > > +	/*
-> > > > > > +	 * Capable but disabled CPUs can be brought online later. What about
-> > > > > > +	 * the redistributor? ACPI doesn't want to say!
-> > > > > > +	 * Virtual hotplug systems can use the MADT's "always-on" GICR entries.
-> > > > > > +	 * Otherwise, prevent such CPUs from being brought online.
-> > > > > > +	 */
-> > > > > > +	if (!(gicc->flags & ACPI_MADT_ENABLED)) {
-> > > > > > +		pr_warn_once("CPU %u's redistributor is inaccessible: this CPU can't be brought online\n", cpu);
-> > > > > > +		set_cpu_present(cpu, false);
-> > > > > > +		set_cpu_possible(cpu, false);
-> > > > > > +		return 0;
-> > > > > > +	}        
-> > > > 
-> > > > It seems dangerous to clear those this late in the game, given how
-> > > > disconnected from the architecture code this is. Are we sure that
-> > > > nothing has sampled these cpumasks beforehand?      
-> > > 
-> > > Hi Marc,
-> > > 
-> > > Any firmware that does this is being considered as buggy already
-> > > but given it is firmware and the spec doesn't say much about this,
-> > > there is always the possibility.
-> > > 
-> > > Not much happens between the point where these are setup and
-> > > the point where the the gic inits and this code runs, but even if careful
-> > > review showed it was fine today, it will be fragile to future changes.
-> > > 
-> > > I'm not sure there is a huge disadvantage for such broken firmware in
-> > > clearing these masks from the point of view of what is used throughout
-> > > the rest of the kernel. Here I think we are just looking to prevent the CPU
-> > > being onlined later.
-> > > 
-> > > We could add a set_cpu_broken() with appropriate mask.
-> > > Given this is very arm64 specific I'm not sure Rafael will be keen on
-> > > us checking such a mask in the generic ACPI code, but we could check it in
-> > > arch_register_cpu() and just not register the cpu if it matches.
-> > > That will cover the vCPU hotplug case.
-> > > 
-> > > Does that sounds sensible, or would you prefer something else?    
-> > 
-> > Hi Marc
-> > 
-> > Some experiments later (faking this on a physical board - I never liked
-> > CPU 120 anyway!) and using a different mask brings it's own minor pain.
-> > 
-> > When all the rest of the CPUs are brought up cpuhp_bringup_mask() is called
-> > on cpu_present_mask so we need to do a dance in there to use a temporary
-> > mask with broken cpus removed.  I think it makes sense to cut that out
-> > at the top of the cpuhp_bringup_mask() pile of actions rather than trying
-> > to paper over each actual thing that is dying... (looks like an infinite loop
-> > somewhere but I haven't tracked down where yet).
-> > 
-> > I'll spin a patch so you can see what it looks like, but my concern is
-> > we are just moving the risk from early users of these masks to later cases
-> > where code assumes cpu_present_mask definitely means they are present.
-> > That is probably a small set of cases but not nice either.
-> > 
-> > Looks like one of those cases where we need to pick the lesser of two evils
-> > which is probably still the cpu_broken_mask approach.
-> > 
-> > On plus side if we decide to go back to the original approach having seen
-> > that I already have the code :)
-> > 
-> > Jonathan
-> >   
-> 
-> Patch on top of this series.  If no one shouts before I have it ready I'll
-> roll a v8 with the mask introduction as a new patch and the other changes pushed into
-> appropriate patches.
-> 
-> From 361b76f36bfb4ff74fdceca7ebf14cfa43cae4a9 Mon Sep 17 00:00:00 2001
-> From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Date: Wed, 24 Apr 2024 17:42:49 +0100
-> Subject: [PATCH] cpu: Add broken cpu mask to mark CPUs where inconsistent
->  firmware means we can't start them.
-> 
-> On ARM64, it is not currently possible to use CPUs where the GICC entry
-> in ACPI specifies that it is online capable but not enabled. Only
-> always enabled entries are supported.
-> 
-> Previously if this condition was met, the present and possible cpu masks
-> were cleared for the relevant cpus.  However, those masks may already
-> have been used by other code so this is not known to be safe.
-> 
-> An alternative is to use an additional mask (broken) and check that
-> in the subset of places where these CPUs might be onlined or the
-> infrastructure to indicate this is possible created.
-> Specifically in bringup_nonboot_cpus() and in arch_register_cpu().
-> 
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Obviously I'd missed Marc's reply on keeping this local to gicv3.
-Will give that a go.
+applied.
+Thanks!
 
-Sorry for the noise!
-
-Jonathan
+Helge
 
 > ---
->  arch/arm64/kernel/smp.c      |  3 +++
->  drivers/irqchip/irq-gic-v3.c |  3 +--
->  include/linux/cpumask.h      | 19 +++++++++++++++++++
->  kernel/cpu.c                 |  8 +++++++-
->  4 files changed, 30 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> index ccb6ad347df9..39cd6a7c40d8 100644
-> --- a/arch/arm64/kernel/smp.c
-> +++ b/arch/arm64/kernel/smp.c
-> @@ -513,6 +513,9 @@ int arch_register_cpu(int cpu)
->  	    IS_ENABLED(CONFIG_ACPI_HOTPLUG_CPU))
->  		return -EPROBE_DEFER;
->  
-> +	if (cpu_broken(cpu)) /* Inconsistent firmware - can't online */
-> +		return -ENODEV;
-> +
->  #ifdef CONFIG_ACPI_HOTPLUG_CPU
->  	/* For now block anything that looks like physical CPU Hotplug */
->  	if (invalid_logical_cpuid(cpu) || !cpu_present(cpu)) {
-> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> index 66132251c1bb..a0063eb6484d 100644
-> --- a/drivers/irqchip/irq-gic-v3.c
-> +++ b/drivers/irqchip/irq-gic-v3.c
-> @@ -2377,8 +2377,7 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
->  	 */
->  	if (!(gicc->flags & ACPI_MADT_ENABLED)) {
->  		pr_warn_once("CPU %u's redistributor is inaccessible: this CPU can't be brought online\n", cpu);
-> -		set_cpu_present(cpu, false);
-> -		set_cpu_possible(cpu, false);
-> +		set_cpu_broken(cpu);
->  		return 0;
->  	}
->  
-> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-> index 4b202b94c97a..70a93ad8e590 100644
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -96,6 +96,7 @@ static inline void set_nr_cpu_ids(unsigned int nr)
->   *     cpu_enabled_mask  - has bit 'cpu' set iff cpu can be brought online
->   *     cpu_online_mask  - has bit 'cpu' set iff cpu available to scheduler
->   *     cpu_active_mask  - has bit 'cpu' set iff cpu available to migration
-> + *     cpu_broken_mask  - has bit 'cpu' set iff the cpu should never be onlined
->   *
->   *  If !CONFIG_HOTPLUG_CPU, present == possible, and active == online.
->   *
-> @@ -130,12 +131,14 @@ extern struct cpumask __cpu_enabled_mask;
->  extern struct cpumask __cpu_present_mask;
->  extern struct cpumask __cpu_active_mask;
->  extern struct cpumask __cpu_dying_mask;
-> +extern struct cpumask __cpu_broken_mask;
->  #define cpu_possible_mask ((const struct cpumask *)&__cpu_possible_mask)
->  #define cpu_online_mask   ((const struct cpumask *)&__cpu_online_mask)
->  #define cpu_enabled_mask   ((const struct cpumask *)&__cpu_enabled_mask)
->  #define cpu_present_mask  ((const struct cpumask *)&__cpu_present_mask)
->  #define cpu_active_mask   ((const struct cpumask *)&__cpu_active_mask)
->  #define cpu_dying_mask    ((const struct cpumask *)&__cpu_dying_mask)
-> +#define cpu_broken_mask   ((const struct cpumask *)&__cpu_broken_mask)
->  
->  extern atomic_t __num_online_cpus;
->  
-> @@ -1073,6 +1076,12 @@ set_cpu_dying(unsigned int cpu, bool dying)
->  		cpumask_clear_cpu(cpu, &__cpu_dying_mask);
->  }
->  
-> +static inline void
-> +set_cpu_broken(unsigned int cpu)
-> +{
-> +	cpumask_set_cpu(cpu, &__cpu_broken_mask);
-> +}
-> +
->  /**
->   * to_cpumask - convert a NR_CPUS bitmap to a struct cpumask *
->   * @bitmap: the bitmap
-> @@ -1159,6 +1168,11 @@ static inline bool cpu_dying(unsigned int cpu)
->  	return cpumask_test_cpu(cpu, cpu_dying_mask);
->  }
->  
-> +static inline bool cpu_broken(unsigned int cpu)
-> +{
-> +	return cpumask_test_cpu(cpu, cpu_broken_mask);
-> +}
-> +
->  #else
->  
->  #define num_online_cpus()	1U
-> @@ -1197,6 +1211,11 @@ static inline bool cpu_dying(unsigned int cpu)
->  	return false;
->  }
->  
-> +static inline bool cpu_broken(unsigned int cpu)
-> +{
-> +	return false;
-> +}
-> +
->  #endif /* NR_CPUS > 1 */
->  
->  #define cpu_is_offline(cpu)	unlikely(!cpu_online(cpu))
-> diff --git a/kernel/cpu.c b/kernel/cpu.c
-> index 537099bf5d02..f8b73a11869e 100644
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -1907,12 +1907,15 @@ static inline bool cpuhp_bringup_cpus_parallel(unsigned int ncpus) { return fals
->  
->  void __init bringup_nonboot_cpus(unsigned int max_cpus)
->  {
-> +	static const struct cpumask tmp_mask __initdata;
-> +
->  	/* Try parallel bringup optimization if enabled */
->  	if (cpuhp_bringup_cpus_parallel(max_cpus))
->  		return;
->  
-> +	cpumask_andnot(&tmp_mask, cpu_present_mask, cpu_broken_mask);
->  	/* Full per CPU serialized bringup */
-> -	cpuhp_bringup_mask(cpu_present_mask, max_cpus, CPUHP_ONLINE);
-> +	cpuhp_bringup_mask(&tmp_mask, max_cpus, CPUHP_ONLINE);
->  }
->  
->  #ifdef CONFIG_PM_SLEEP_SMP
-> @@ -3129,6 +3132,9 @@ EXPORT_SYMBOL(__cpu_active_mask);
->  struct cpumask __cpu_dying_mask __read_mostly;
->  EXPORT_SYMBOL(__cpu_dying_mask);
->  
-> +struct cpumask __cpu_broken_mask __ro_after_init;
-> +EXPORT_SYMBOL(__cpu_broken_mask);
-> +
->  atomic_t __num_online_cpus __read_mostly;
->  EXPORT_SYMBOL(__num_online_cpus);
->  
+>   drivers/video/fbdev/offb.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/video/fbdev/offb.c b/drivers/video/fbdev/offb.c
+> index b421b46d88ef..ea38a260774b 100644
+> --- a/drivers/video/fbdev/offb.c
+> +++ b/drivers/video/fbdev/offb.c
+> @@ -357,7 +357,7 @@ static void offb_init_palette_hacks(struct fb_info *=
+info, struct device_node *dp
+>   			par->cmap_type =3D cmap_gxt2000;
+>   	} else if (of_node_name_prefix(dp, "vga,Display-")) {
+>   		/* Look for AVIVO initialized by SLOF */
+> -		struct device_node *pciparent =3D of_get_parent(dp);
+> +		struct device_node *pciparent __free(device_node) =3D of_get_parent(d=
+p);
+>   		const u32 *vid, *did;
+>   		vid =3D of_get_property(pciparent, "vendor-id", NULL);
+>   		did =3D of_get_property(pciparent, "device-id", NULL);
+> @@ -369,7 +369,6 @@ static void offb_init_palette_hacks(struct fb_info *=
+info, struct device_node *dp
+>   			if (par->cmap_adr)
+>   				par->cmap_type =3D cmap_avivo;
+>   		}
+> -		of_node_put(pciparent);
+>   	} else if (dp && of_device_is_compatible(dp, "qemu,std-vga")) {
+>   #ifdef __BIG_ENDIAN
+>   		const __be32 io_of_addr[3] =3D { 0x01000000, 0x0, 0x0 };
 
 
