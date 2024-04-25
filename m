@@ -1,219 +1,118 @@
-Return-Path: <linux-kernel+bounces-159053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEC638B28AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:03:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA99A8B28C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 21:06:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4CEB284B71
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:03:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 013CBB245D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:06:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D641514EE;
-	Thu, 25 Apr 2024 19:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F26D115252B;
+	Thu, 25 Apr 2024 19:06:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZsDIeNga"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="CmOp+Lqg"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182D238FB6;
-	Thu, 25 Apr 2024 19:03:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C32D1509B1;
+	Thu, 25 Apr 2024 19:06:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714071797; cv=none; b=ccNipz0WwzBxzWHCmCusjNIYCB3zsDy5rOZzsxemDQHKLleUMTrh1Eom2LCG1zryI7kkYzuQKQdU0E34XqeJQJqKjKEbOWw86En64ilqgnnpb0UqVQKSVjE14qqxOo8OsWC2QfBj1aX1LPvIfp1i5jG0ZJ8v6bH3NM9ybFhH8ZI=
+	t=1714071985; cv=none; b=KzQELSMhSBTMZ49hgMLmg9hUTYKyoyj/vfkf1aN7thNYOuKK6SJF0xTIA/x5OerIJ3ZrWXr6HpIpaoKFVOWB8OsQRScA3ZUal6b0xMBoQiXake0oA8fxXD6xfSYAE+p1YprzoJn/aSo0Io/LESrUIWtslliWvLX/aQ2kdV5zkbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714071797; c=relaxed/simple;
-	bh=fQMju6pl3GAVTlWaCN8Cg4LCisN2oyIKCLp10Fy+GBA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=k/QPUKoKnwgn4gWDLlkyzNIYQNeVfk9he2pKrbDZvT0kpVgoxjKWGvP4YkVL/kLw/wOn9l2QNQOOiHtTQ8IbGaudI5LPPaEHM3gvD7CohJnnQmIxfERkzwqUBqF5yRDCbevk15o4Q3x8MbUUqGP5/dS8BiIEqNPNilbfA83LVlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ZsDIeNga; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43PGFjPS017155;
-	Thu, 25 Apr 2024 19:02:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=v/PYIYzkJqGqylQaGpFlLt9ov7N8tLZ1LAEa89j9rUs=; b=Zs
-	DIeNga0zJxjgmzCblBnMaF9ZEfEWMXe5nm6pm4l9X5/o93nTRJqjSe2Mr+lZw1xA
-	d7tsXWUN8bqkRyeJCPPB2G6AdsIsPM1hh3tM1CxlmOi1ScswdZXRTl5nIyfQX8gk
-	Qfx6fT0y0T6daog7pKpDNPLcqi2HU64/RsDvK+sCtWiV0xgN7FE+HN8F0wNGJc16
-	CpxVcrC+ObE+756UzEamZV/y2y0mlCijYsLoZLwh4FDTyiGB3Kjalq/2PFmRv9Fz
-	tYjQA9k6wg6B1F3W68ciT4xKy5yAcqtlbdU74/wtv+7mI3V4btGHusHqUEc1gUEN
-	q8ehRsacSc3i1p0sOL2Q==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqthv0c4j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 19:02:49 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43PJ2lrL001630
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 19:02:47 GMT
-Received: from [10.46.19.239] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 25 Apr
- 2024 12:02:43 -0700
-Message-ID: <a84d314a-fca4-4317-9d33-0c7d3213c612@quicinc.com>
-Date: Thu, 25 Apr 2024 12:02:42 -0700
+	s=arc-20240116; t=1714071985; c=relaxed/simple;
+	bh=2Sb71T+xYEBOgO6OWGpiIk60zH773QV7/5n9WrUs7/s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kTsZAprh/7eZ/PMu0rGjtpxteX52cITcWa5sBUmOUkRkQdzgXbEzTuQHXJG1t/jDRtUb/7lTl0uwULVGiDaZ+7sYOhiVaUfMj/goi/NvTdaV44EA2MbFSy+krbQq3amZfqABp4Dj6QA0cjkJSkt+ElhNJsUucu2RJ1+GSWzsXc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=CmOp+Lqg reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
+ id 521fcd625bb25de9; Thu, 25 Apr 2024 21:06:21 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id A7BE766DF24;
+	Thu, 25 Apr 2024 21:06:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1714071981;
+	bh=2Sb71T+xYEBOgO6OWGpiIk60zH773QV7/5n9WrUs7/s=;
+	h=From:To:Cc:Subject:Date;
+	b=CmOp+LqgZo0qzXZJpaY0bkJjuuztK1RHKCi5MNNbQKaraU13J63gUf+6RjbcAYsC0
+	 mzqPBBRDqMZbJKv/nUaXBH7tJbZO2L741U8sGHM4FXuJlBEl7wEeRwk16bYz4VfvF5
+	 /1UFY78DNBQ5neNOjPU7Ubmw8o9kNbY8GEuVe38RIycThkEAJw5W2t5DHMJI5GomV3
+	 xDS7HLfVrENzwA7+6mOUz1ne9bKy8B3GELgeSigF/bxj5hfoRetW12iJvJptE8/kOv
+	 u9WAqEajEAhLX0oQxWUwhpdG1NfAUBV50wQ97zPXk+GvuOLCfB08fQ735g+8ukS8xA
+	 TQCnSVzcsdImQ==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: x86 Maintainers <x86@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Ricardo Neri <ricardo.neri@intel.com>, Tim Chen <tim.c.chen@intel.com>
+Subject:
+ [RFC][PATCH v1 0/3] x86 / intel_pstate: Set asymmetric CPU capacity on hybrid
+ systems
+Date: Thu, 25 Apr 2024 21:03:03 +0200
+Message-ID: <7663799.EvYhyI6sBW@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH bpf-next v5 1/2] net: Rename mono_delivery_time to
- tstamp_type for scalabilty
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
-        "Martin
- KaFai Lau" <martin.lau@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
-CC: <kernel@quicinc.com>
-References: <20240424222028.1080134-1-quic_abchauha@quicinc.com>
- <20240424222028.1080134-2-quic_abchauha@quicinc.com>
- <662a69475869_1de39b29415@willemb.c.googlers.com.notmuch>
-Content-Language: en-US
-From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-In-Reply-To: <662a69475869_1de39b29415@willemb.c.googlers.com.notmuch>
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: qWVlQCgbGNXPkuCTwWrIqa3G5YnBTx2i
-X-Proofpoint-GUID: qWVlQCgbGNXPkuCTwWrIqa3G5YnBTx2i
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-25_19,2024-04-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- phishscore=0 suspectscore=0 bulkscore=0 mlxlogscore=898 malwarescore=0
- adultscore=0 mlxscore=0 clxscore=1015 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404250136
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudeljedgudefgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeffffffkefgheehffelteeiveeffeevhfelteejvddvieejjeelvdeiheeuveeuffenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopedutddprhgtphhtthhopeigkeeisehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehtghhlgieslhhinhhuthhrohhnihigrdguvgdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggr
+ ugdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=10 Fuz1=10 Fuz2=10
+
+Hi Everyone,
+
+The purpose of this series is to provide the scheduler with asymmetric CPU
+capacity information on x86 hybrid systems based on Intel hardware.
+
+The asymmetric CPU capacity information is important on hybrid systems as it
+allows utilization to be computed for tasks in a consistent way across all
+CPUs in the system, regardless of their capacity.  This, in turn, allows
+the schedutil cpufreq governor to set CPU performance levels consistently
+in the cases when tasks migrate between CPUs of different capacities.  It
+should also help to improve task placement and load balancing decisions on
+hybrid systems and it is key for anything along the lines of EAS.
+
+The information in question comes from the MSR_HWP_CAPABILITIES register and
+is provided to the scheduler by the intel_pstate driver, as per the changelog
+of patch [3/3].  Patch [2/3] introduces the arch infrastructure needed for
+that (in the form of a per-CPU capacity variable) and patch [1/3] is a
+preliminary code adjustment.
+
+The changes made by patch [2/3] are very simple, which is why this series is
+being sent as an RFC.  Namely, it increases overhead on non-hybrid as well as
+on hybrid systems which may be regarded as objectionable, even though the
+overhead increase is arguably not significant.  The memory overhead is an
+unsigned long variable per CPU which is not a lot IMV and there is also
+additional memory access overhead at each arch_scale_cpu_capacity() call site
+which I'm not expecting to be noticeable, however.  In any case, the extra
+overhead can be avoided at the cost of making the code a bit more complex
+(for example, the additional per-CPU memory can be allocated dynamically
+on hybrid systems only and a static branch can be used for enabling access
+to it when necessary).  I'm just not sure if the extra complexity is really
+worth it, so I'd like to know the x86 maintainers' take on this.  If you'd
+prefer the overhead to be avoided, please let me know.
+
+Of course, any other feedback on the patches is welcome as well.
+
+Thank you!
 
 
 
-On 4/25/2024 7:31 AM, Willem de Bruijn wrote:
-> Abhishek Chauhan wrote:
->> mono_delivery_time was added to check if skb->tstamp has delivery
->> time in mono clock base (i.e. EDT) otherwise skb->tstamp has
->> timestamp in ingress and delivery_time at egress.
->>
->> Renaming the bitfield from mono_delivery_time to tstamp_type is for
->> extensibilty for other timestamps such as userspace timestamp
->> (i.e. SO_TXTIME) set via sock opts.
->>
->> As we are renaming the mono_delivery_time to tstamp_type, it makes
->> sense to start assigning tstamp_type based on enum defined
->> in this commit.
->>
->> Earlier we used bool arg flag to check if the tstamp is mono in
->> function skb_set_delivery_time, Now the signature of the functions
->> accepts tstamp_type to distinguish between mono and real time.
->>
->> Introduce a new function to set tstamp_type based on clockid. 
->>
->> In future tstamp_type:1 can be extended to support userspace timestamp
->> by increasing the bitfield.
->>
->> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
->> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
-> 
->> +static inline void skb_set_tstamp_type_frm_clkid(struct sk_buff *skb,
->> +						  ktime_t kt, clockid_t clockid)
->> +{
-> 
-> Please don't garble words to save a few characters: .._from_clockid.
-> 
-Noted and apologies for using garble words here. I will correct it. 
-> And this is essentially skb_set_delivery_type, just taking another
-> type. So skb_set_delivery_type_(by|from)_clockid.
-> 
-> Also, instead of reimplementing the same logic with a different
-> type, could implement as a conversion function that calls the main
-> function. It won't save lines. But will avoid duplicate logic that
-> needs to be kept in sync whenever there are future changes (fragile).
-> 
-
-I thought about doing this but as you remember that some places in the network stack, 
-we are passing tstamp_type and some places we are passing clockid. 
-
-So in the previous patchset we decided with two variants. 
-1. One that assigns the tstamp_type directly 
-2. Other one which computes tstamp_type based on clockid
-
-But i agree on the above comment that if we implement two different variants 
-then in future it requires maintenance to both functions. 
-
-I will make sure i handle both cases in one func.   
-
-
-> static inline void skb_set_delivery_type_by_clockid(struct sk_buff *skb,
-> 						    ktime_t kt, clockid_t clockid)
-> {
-> 	u8 tstamp_type = SKB_CLOCK_REAL;
-> 
-> 	switch(clockid) {
-> 	case CLOCK_REALTIME:
-> 		break;
-> 	case CLOCK_MONOTONIC:
-> 		tstamp_type = SKB_CLOCK_MONO;
-> 		break;
-> 	default:
-> 		WARN_ON_ONCE(1);
-> 		kt = 0;
-> 	};
-> 
-> 	skb_set_delivery_type(skb, kt, tstamp_type);
-> }
-> 
-> 
->> +	skb->tstamp = kt;
->> +
->> +	if (!kt) {
->> +		skb->tstamp_type = SKB_CLOCK_REALTIME;
->> +		return;
->> +	}
->> +
->> +	switch (clockid) {
->> +	case CLOCK_REALTIME:
->> +		skb->tstamp_type = SKB_CLOCK_REALTIME;
->> +		break;
->> +	case CLOCK_MONOTONIC:
->> +		skb->tstamp_type = SKB_CLOCK_MONOTONIC;
->> +		break;
->> +	}
->> +}
->> +
->>  static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
->> -					 bool mono)
->> +					  u8 tstamp_type)
-> 
-> Indentation change: error?
->>> @@ -9444,7 +9444,7 @@ static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
->>  					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
->>  		*insn++ = BPF_JMP32_IMM(BPF_JNE, tmp_reg,
->>  					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 2);
->> -		/* skb->tc_at_ingress && skb->mono_delivery_time,
->> +		/* skb->tc_at_ingress && skb->tstamp_type:1,
-> 
-> Is the :1 a stale comment after we discussed how to handle the 2-bit
-This is first patch which does not add tstamp_type:2 at the moment. 
-This series is divided into two patches 
-1. One patchset => Just rename (So the comment is still skb->tstamp_type:1)
-2. Second patchset => add another bit (comment is changed to skb->tstamp_type:2)
-
-> field going forward? I.e., not by ignoring the second bit.
-> 
-> 
 
