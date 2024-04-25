@@ -1,45 +1,66 @@
-Return-Path: <linux-kernel+bounces-158194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F5858B1CD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:28:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAE728B1CD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:29:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB951B21B64
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:28:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DE0E1F22E00
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0386978C64;
-	Thu, 25 Apr 2024 08:28:20 +0000 (UTC)
-Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7529978C66;
+	Thu, 25 Apr 2024 08:29:28 +0000 (UTC)
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E8F53EA86;
-	Thu, 25 Apr 2024 08:28:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF3A6E5FE;
+	Thu, 25 Apr 2024 08:29:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714033699; cv=none; b=CrGCGxlFmv+bwzHAnJZLosAeUoJzk9d1SYPV4sn7SvJBLAYnLD5eRkln7CbV0j/zsUpaEqUocPL/bJ6DyreC7oDWQeYa6jIkR8qkiu2OfNzoLX/obe9tiLRw6Z7t/gG/I+s99Or+UeqnxDp2hqWV+Oq0GJuomH9kCKke6bK7hu0=
+	t=1714033768; cv=none; b=j3hKDSjt9PmFiUYsQchR3og7otM1vfdIGIvaRbkJn4lnS+RY6FESQW9CHMzCjfpEvVlGO5qHX67Z0i6kqAr6Azyg1p0Grxt52vwFY3k0K1s6LTy8zsRL3HaUTnxdRoo/boX9zNtctQ9R2vhBMFi/xeYqGsQgH55RF+FWFM5kpuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714033699; c=relaxed/simple;
-	bh=bjj4W06ZrZrg6lhW2BBj9PMprnn35s2f3gB+hiw2rYk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pvTQcQQCxlnw2iSQ8HsE0D7h6oKzZG3X3cHxfFbn4T6q0DPWW+6r6i4F6MybfIKVBBgxvqecEF5hO9iAVioiW/gAux25HlFCXN3qw0Tnzm1b2LRmz20ud4nkHFe8GAQXXgvfPsk9p87dm62FT9F9nhbk4kKnwBpmGXPZaMpzoIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost (unknown [124.16.138.129])
-	by APP-01 (Coremail) with SMTP id qwCowADX3hobFCpmk58qAA--.7266S2;
-	Thu, 25 Apr 2024 16:28:11 +0800 (CST)
-From: Chen Ni <nichen@iscas.ac.cn>
-To: James.Bottomley@HansenPartnership.com,
-	martin.petersen@oracle.com
-Cc: linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chen Ni <nichen@iscas.ac.cn>
-Subject: [PATCH] scsi: aha1740: use dma_mapping_error to check map errors
-Date: Thu, 25 Apr 2024 16:28:03 +0800
-Message-Id: <20240425082803.829150-1-nichen@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1714033768; c=relaxed/simple;
+	bh=/ZDatUVmmNOdDrKLhq3beVPyjGPY9UgKPG6KHF+s2Q4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fw6JG3mddCqftA2oM1Z5B4r5he2YD8NIdJr4a6zUKw1yJxjyPQOm8LypcKCHFiYH2AUAG3L5cGDWyDHovK447XyHTlURe8D6cXAr0OB3cGYDeYsZbRHOeByTpcaNggaTz7qcckSemiZzZZsjeT8z5gEJgqsF2Zj2iQm+Y6zYdEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a556d22fa93so75503166b.3;
+        Thu, 25 Apr 2024 01:29:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714033764; x=1714638564;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f1/XovmdTy3VI68h9IXSaCtLx7m6jOBMvbb2UerIghU=;
+        b=Jj//RuRsgmq72zZDUJuf0oTZ0SWyRz7oGhr+EJhnXT/W4jZmTJs1HWZrYufBQAZIvc
+         9Ix1c+xxWGtLzdrslHjx77qb+dUqJnGTMttBhS2TTrIFPgSvQmyy2WidfWCKQoJnZsCE
+         +eh6K2XhhHkYMZJMyJTVInHR5HDdKjt4ITOZkanWiLeCGAXol72DZhAdUReHU42z+CvV
+         N0H8cvRB/eFj02biepnM8QAuSyDXXNhEyNrkzA59GMIkeOb3gcoWge1D6lJuLT7/MLes
+         khugpBENXyegLB2ctmSmjsmLHuNbuEiflESWxqADAoA6dqJkJbdWd04xlKw3aep1BTTi
+         jkAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW2tz0dirmweHDfp9RhJvruLduHqrVLYDdc9Wpx/Xfvc/SIOF6Avcc/3BNH+hZV+RjaqouZPI4zKklkZ9ow7P2wMVGP8YShhdRoqhd+RNwdoxmaE/qs0sFBMABAQPVdnVwBbiElpjeL/VoYqsY=
+X-Gm-Message-State: AOJu0Yz9daj83aXrz3hFksFjD/P2ypHc8vGt9ftwfiTc5bos2WDXdqw9
+	tEcaEK/r3GbvRWS93frWhF6diFQ4WXdbERO56PCykC6XxtG7L0VG
+X-Google-Smtp-Source: AGHT+IEW9CcgF7YqLEK7bW3ejg1NJU2GzXyM13uyiLbEvob+9GOKkwQHD3THqynRBX/b2miBq0W6pA==
+X-Received: by 2002:a17:907:7241:b0:a58:aa82:778d with SMTP id ds1-20020a170907724100b00a58aa82778dmr1285050ejc.63.1714033764017;
+        Thu, 25 Apr 2024 01:29:24 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-004.fbsv.net. [2a03:2880:30ff:4::face:b00c])
+        by smtp.gmail.com with ESMTPSA id og19-20020a1709071dd300b00a58bef9e471sm55766ejc.111.2024.04.25.01.29.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 01:29:23 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: Ping-Ke Shih <pkshih@realtek.com>,
+	Kalle Valo <kvalo@kernel.org>
+Cc: leit@meta.com,
+	linux-wireless@vger.kernel.org (open list:REALTEK WIRELESS DRIVER (rtw88)),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH wireless-next] wifi: rtw88: Un-embed dummy device
+Date: Thu, 25 Apr 2024 01:29:09 -0700
+Message-ID: <20240425082910.2824393-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -47,46 +68,85 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qwCowADX3hobFCpmk58qAA--.7266S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GryrJF13JF45Zr1DAw4kXrb_yoW3Zrg_ua
-	y2krn7Cw4DGr12gF1UtrZ8Ar9F93y0qF4S9rs2q3ZxAayrWryDWFy0vr98CwsrZ3yUCayr
-	ZwnrZryxZrnFgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbcxFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-	Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r43
-	MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-	0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
-	wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-	W8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-	cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjMKZJUUUUU==
-X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
 
-The return value of dma_map_single() should be checked by
-dma_mapping_error(). Update the check accordingly.
+Embedding net_device into structures prohibits the usage of flexible
+arrays in the net_device structure. For more details, see the discussion
+at [1].
 
-Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+Un-embed the net_device from the private struct by converting it
+into a pointer. Then use the leverage the new alloc_netdev_dummy()
+helper to allocate and initialize dummy devices.
+
+[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+
+Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/scsi/aha1740.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/realtek/rtw88/pci.c | 17 +++++++++++++----
+ drivers/net/wireless/realtek/rtw88/pci.h |  2 +-
+ 2 files changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/scsi/aha1740.c b/drivers/scsi/aha1740.c
-index 3d18945abaf7..9768be6fc919 100644
---- a/drivers/scsi/aha1740.c
-+++ b/drivers/scsi/aha1740.c
-@@ -598,7 +598,7 @@ static int aha1740_probe (struct device *dev)
- 	host->ecb_dma_addr = dma_map_single (&edev->dev, host->ecb,
- 					     sizeof (host->ecb),
- 					     DMA_BIDIRECTIONAL);
--	if (!host->ecb_dma_addr) {
-+	if (dma_mapping_error(&edev->dev, host->ecb_dma_addr)) {
- 		printk (KERN_ERR "aha1740_probe: Couldn't map ECB, giving up\n");
- 		goto err_host_put;
+PS: This is compile-tested only due to lack of hardware to do better
+testing.
+
+diff --git a/drivers/net/wireless/realtek/rtw88/pci.c b/drivers/net/wireless/realtek/rtw88/pci.c
+index 9986a4cb37eb..4ff4f875cefb 100644
+--- a/drivers/net/wireless/realtek/rtw88/pci.c
++++ b/drivers/net/wireless/realtek/rtw88/pci.c
+@@ -1681,12 +1681,16 @@ static int rtw_pci_napi_poll(struct napi_struct *napi, int budget)
+ 	return work_done;
+ }
+ 
+-static void rtw_pci_napi_init(struct rtw_dev *rtwdev)
++static int rtw_pci_napi_init(struct rtw_dev *rtwdev)
+ {
+ 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 
+-	init_dummy_netdev(&rtwpci->netdev);
+-	netif_napi_add(&rtwpci->netdev, &rtwpci->napi, rtw_pci_napi_poll);
++	rtwpci->netdev = alloc_netdev_dummy(0);
++	if (!rtwpci->netdev)
++		return -ENOMEM;
++
++	netif_napi_add(rtwpci->netdev, &rtwpci->napi, rtw_pci_napi_poll);
++	return 0;
+ }
+ 
+ static void rtw_pci_napi_deinit(struct rtw_dev *rtwdev)
+@@ -1695,6 +1699,7 @@ static void rtw_pci_napi_deinit(struct rtw_dev *rtwdev)
+ 
+ 	rtw_pci_napi_stop(rtwdev);
+ 	netif_napi_del(&rtwpci->napi);
++	free_netdev(rtwpci->netdev);
+ }
+ 
+ int rtw_pci_probe(struct pci_dev *pdev,
+@@ -1744,7 +1749,11 @@ int rtw_pci_probe(struct pci_dev *pdev,
+ 		goto err_pci_declaim;
  	}
+ 
+-	rtw_pci_napi_init(rtwdev);
++	ret = rtw_pci_napi_init(rtwdev);
++	if (ret) {
++		rtw_err(rtwdev, "failed to setup NAPI\n");
++		goto err_pci_declaim;
++	}
+ 
+ 	ret = rtw_chip_info_setup(rtwdev);
+ 	if (ret) {
+diff --git a/drivers/net/wireless/realtek/rtw88/pci.h b/drivers/net/wireless/realtek/rtw88/pci.h
+index 0c37efd8c66f..13988db1cb4c 100644
+--- a/drivers/net/wireless/realtek/rtw88/pci.h
++++ b/drivers/net/wireless/realtek/rtw88/pci.h
+@@ -215,7 +215,7 @@ struct rtw_pci {
+ 	bool running;
+ 
+ 	/* napi structure */
+-	struct net_device netdev;
++	struct net_device *netdev;
+ 	struct napi_struct napi;
+ 
+ 	u16 rx_tag;
 -- 
-2.25.1
+2.43.0
 
 
